@@ -16,7 +16,7 @@ const videos = [
       'Warum Giftstoffe unsere Körperaktivitäten lähmen',
       'Wie du dich effektiv entgiftest und deine Zellen wieder vollfunktionsfähig machst',
     ],
-  },
+  }, 
   {
     label: 'Video 2',
     title: 'Mentales Setting',
