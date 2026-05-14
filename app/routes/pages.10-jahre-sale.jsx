@@ -11,32 +11,46 @@ export const meta = () => [
 
 const DEAL_TILES = [
   {
+    key: 'qione-2-pro-duo',
     src: '/campaigns/ten-years/j-sale-price-tile-2x-q2pro-de.png',
     alt: 'Jubiläums Sale Angebot: 2x QiOne 2 Pro - spare 500 Euro',
+    href: null,
   },
   {
+    key: 'qione-2-pro-necklace',
     src: '/campaigns/ten-years/j-sale-price-tile-q2pro-necklace-de.png',
     alt: 'Jubiläums Sale Angebot: QiOne 2 Pro und Necklace - spare 250 Euro',
+    href: null,
   },
   {
+    key: 'qibracelet',
     src: '/campaigns/ten-years/j-sale-price-tile-qibracelet-de.png',
     alt: 'Jubiläums Sale Angebot: QiBracelet - spare 200 Euro',
+    href: null,
   },
   {
+    key: 'qihome',
     src: '/campaigns/ten-years/j-sale-price-tile-qihome-de.png',
     alt: 'Jubiläums Sale Angebot: QiHome - spare 400 Euro',
+    href: null,
   },
   {
+    key: 'cacao-create-awake',
     src: '/campaigns/ten-years/j-sale-price-tile-create-awake-de.png',
     alt: 'Jubiläums Sale Angebot: Crystal Cacao Create und Awake - spare 76 Euro',
+    href: null,
   },
   {
+    key: 'cacao-create-duo',
     src: '/campaigns/ten-years/j-sale-price-tile-2x-create-de.png',
     alt: 'Jubiläums Sale Angebot: 2x Crystal Cacao Create - spare 76 Euro',
+    href: null,
   },
   {
+    key: 'cacao-awake-duo',
     src: '/campaigns/ten-years/j-sale-price-tile-2x-awake-de.png',
     alt: 'Jubiläums Sale Angebot: 2x Crystal Cacao Awake - spare 76 Euro',
+    href: null,
   },
 ];
 
@@ -63,11 +77,8 @@ export default function TenYearsSale() {
           className="ten-years-sale__grid"
           aria-label="10 Jahre Jubiläums Sale Angebote"
         >
-          {DEAL_TILES.map((tile) => (
-            <div
-              className="ten-years-sale__tile ten-years-sale__tile--placeholder"
-              key={tile.src}
-            >
+          {DEAL_TILES.map((tile) => {
+            const tileImage = (
               <img
                 src={tile.src}
                 alt={tile.alt}
@@ -75,8 +86,22 @@ export default function TenYearsSale() {
                 height="918"
                 loading="lazy"
               />
-            </div>
-          ))}
+            );
+
+            return tile.href ? (
+              <a className="ten-years-sale__tile" href={tile.href} key={tile.key}>
+                {tileImage}
+              </a>
+            ) : (
+              <div
+                className="ten-years-sale__tile ten-years-sale__tile--placeholder"
+                data-deal-key={tile.key}
+                key={tile.key}
+              >
+                {tileImage}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

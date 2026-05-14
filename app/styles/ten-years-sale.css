@@ -72,12 +72,23 @@
 }
 
 .ten-years-pre-access__form > div,
+.ten-years-pre-access__form ._form_27,
 .ten-years-pre-access__form form,
 .ten-years-pre-access__form ._form-content,
 .ten-years-pre-access__form ._form_element {
   margin-left: 0 !important;
   margin-right: auto !important;
   text-align: left !important;
+}
+
+.ten-years-pre-access__form ._form_27 {
+  margin-top: 0 !important;
+  padding: 0 !important;
+  max-width: 500px !important;
+}
+
+.ten-years-pre-access__form ._button-wrapper {
+  margin-left: 0 !important;
 }
 
 .ten-years-pre-access__disclaimer {
@@ -133,7 +144,7 @@
 
 .ten-years-sale__hero {
   width: 100%;
-  margin: -24px 0 30px;
+  margin: 0 0 34px;
 }
 
 .ten-years-sale__hero img {
@@ -145,7 +156,7 @@
 }
 
 .ten-years-sale__headline {
-  margin-bottom: 24px;
+  margin-bottom: 40px;
   text-align: center;
 }
 
@@ -161,10 +172,10 @@
 
 .ten-years-sale__grid {
   display: grid;
-  width: min(980px, 100%);
+  width: min(900px, 100%);
   margin: 0 auto;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(14px, 2vw, 22px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 30px);
 }
 
 .ten-years-sale__tile {
@@ -218,16 +229,10 @@
   }
 
   .ten-years-sale__hero {
-    margin: -12px 0 24px;
+    margin: 0 0 28px;
   }
 
   .ten-years-sale__grid {
     width: min(100%, 420px);
-  }
-}
-
-@media (min-width: 781px) and (max-width: 1040px) {
-  .ten-years-sale__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
