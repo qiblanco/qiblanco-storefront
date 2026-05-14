@@ -12,11 +12,24 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
+import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
+import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
+import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
+
+export function links() {
+  return [{rel: 'stylesheet', href: tenYearsDealStyles}];
+}
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  if (data?.campaignDeal) {
+    return [
+      {title: `${data.campaignDeal.displayTitle} - 10 Jahre Jubiläums Sale`},
+      {name: 'robots', content: 'noindex,nofollow'},
+    ];
+  }
+
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
     {
@@ -30,6 +43,12 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  const campaignDeal = getTenYearsDealByHandle(args.params.handle);
+
+  if (campaignDeal) {
+    return {campaignDeal, product: null};
+  }
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
@@ -77,7 +96,7 @@ async function loadCriticalData({context, params, request}) {
  * Make sure to not throw any errors here, as it will cause the page to 500.
  * @param {LoaderFunctionArgs}
  */
-function loadDeferredData({context, params}) {
+function loadDeferredData() {
   // Put any API calls that is not critical to be available on first page render
   // For example: product reviews, product recommendations, social feeds.
 
@@ -97,8 +116,16 @@ function RenderProductPage({product}) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, campaignDeal} = useLoaderData();
 
+  if (campaignDeal) {
+    return <TenYearsDealPage deal={campaignDeal} />;
+  }
+
+  return <StandardProduct product={product} />;
+}
+
+function StandardProduct({product}) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,

@@ -1,4 +1,5 @@
 import tenYearsStyles from '~/styles/ten-years-sale.css?url';
+import {TEN_YEARS_DEALS} from '~/data/ten-years-deals';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsStyles}];
@@ -9,50 +10,13 @@ export const meta = () => [
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
-const DEAL_TILES = [
-  {
-    key: 'qione-2-pro-duo',
-    src: '/campaigns/ten-years/j-sale-price-tile-2x-q2pro-de.png',
-    alt: 'Jubiläums Sale Angebot: 2x QiOne 2 Pro - spare 500 Euro',
-    href: null,
-  },
-  {
-    key: 'qione-2-pro-necklace',
-    src: '/campaigns/ten-years/j-sale-price-tile-q2pro-necklace-de.png',
-    alt: 'Jubiläums Sale Angebot: QiOne 2 Pro und Necklace - spare 250 Euro',
-    href: null,
-  },
-  {
-    key: 'qibracelet',
-    src: '/campaigns/ten-years/j-sale-price-tile-qibracelet-de.png',
-    alt: 'Jubiläums Sale Angebot: QiBracelet - spare 200 Euro',
-    href: null,
-  },
-  {
-    key: 'qihome',
-    src: '/campaigns/ten-years/j-sale-price-tile-qihome-de.png',
-    alt: 'Jubiläums Sale Angebot: QiHome - spare 400 Euro',
-    href: null,
-  },
-  {
-    key: 'cacao-create-awake',
-    src: '/campaigns/ten-years/j-sale-price-tile-create-awake-de.png',
-    alt: 'Jubiläums Sale Angebot: Crystal Cacao Create und Awake - spare 76 Euro',
-    href: null,
-  },
-  {
-    key: 'cacao-create-duo',
-    src: '/campaigns/ten-years/j-sale-price-tile-2x-create-de.png',
-    alt: 'Jubiläums Sale Angebot: 2x Crystal Cacao Create - spare 76 Euro',
-    href: null,
-  },
-  {
-    key: 'cacao-awake-duo',
-    src: '/campaigns/ten-years/j-sale-price-tile-2x-awake-de.png',
-    alt: 'Jubiläums Sale Angebot: 2x Crystal Cacao Awake - spare 76 Euro',
-    href: null,
-  },
-];
+const DEAL_TILES = TEN_YEARS_DEALS.map((deal) => ({
+  key: deal.key,
+  src: deal.tileSrc,
+  alt: `Jubiläums Sale Angebot: ${deal.displayTitle}`,
+  href: deal.listingHref,
+}));
+
 
 export default function TenYearsSale() {
   return (
