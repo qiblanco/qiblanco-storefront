@@ -139,6 +139,7 @@
 }
 
 .ten-years-sale {
+  padding-top: 14px;
   padding-bottom: 64px;
 }
 
@@ -150,9 +151,8 @@
 .ten-years-sale__hero img {
   display: block;
   width: 100%;
-  height: clamp(220px, 28vw, 380px);
-  object-fit: cover;
-  object-position: center top;
+  height: auto;
+  border-radius: 0;
 }
 
 .ten-years-sale__headline {
