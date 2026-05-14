@@ -21,15 +21,19 @@
   display: grid;
   grid-template-columns: minmax(280px, 0.92fr) minmax(320px, 1fr);
   gap: clamp(28px, 5vw, 72px);
-  align-items: center;
+  align-items: start;
 }
 
 .ten-years-pre-access__image {
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   display: block;
   margin: 0 auto;
   border-radius: 0;
+}
+
+.ten-years-pre-access__content {
+  text-align: left;
 }
 
 .ten-years-eyebrow {
@@ -62,6 +66,18 @@
 
 .ten-years-pre-access__form {
   max-width: 520px;
+  margin-left: 0;
+  margin-right: auto;
+  text-align: left;
+}
+
+.ten-years-pre-access__form > div,
+.ten-years-pre-access__form form,
+.ten-years-pre-access__form ._form-content,
+.ten-years-pre-access__form ._form_element {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  text-align: left !important;
 }
 
 .ten-years-pre-access__disclaimer {
@@ -117,17 +133,19 @@
 
 .ten-years-sale__hero {
   width: 100%;
-  margin: 0 0 44px;
+  margin: -24px 0 30px;
 }
 
 .ten-years-sale__hero img {
   display: block;
   width: 100%;
-  height: auto;
+  height: clamp(220px, 28vw, 380px);
+  object-fit: cover;
+  object-position: center top;
 }
 
 .ten-years-sale__headline {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   text-align: center;
 }
 
@@ -143,8 +161,10 @@
 
 .ten-years-sale__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(18px, 3vw, 34px);
+  width: min(980px, 100%);
+  margin: 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 22px);
 }
 
 .ten-years-sale__tile {
@@ -198,6 +218,16 @@
   }
 
   .ten-years-sale__hero {
-    margin-bottom: 30px;
+    margin: -12px 0 24px;
+  }
+
+  .ten-years-sale__grid {
+    width: min(100%, 420px);
+  }
+}
+
+@media (min-width: 781px) and (max-width: 1040px) {
+  .ten-years-sale__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

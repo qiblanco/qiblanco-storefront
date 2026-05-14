@@ -33,7 +33,7 @@ export default function TenYearsSuccess() {
           E-Mail.
         </p>
         <Link className="ten-years-btn" to={dealLink}>
-          Zur Deal-Übersicht
+          Jetzt direkt Deals ansehen
         </Link>
       </div>
     </div>

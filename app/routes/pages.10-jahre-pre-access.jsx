@@ -22,8 +22,10 @@ export default function TenYearsPreAccess() {
         <div className="ten-years-pre-access__media">
           <img
             className="ten-years-pre-access__image"
-            src="/campaigns/ten-years/j-sale-pre-access-all-us.png"
+            src="/campaigns/ten-years/j-sale-26-all-de.png"
             alt="10 Jahre Jubiläums Sale - spare bis zu 500 Euro"
+            width="1250"
+            height="1607"
           />
         </div>
         <div className="ten-years-pre-access__content">
@@ -31,9 +33,8 @@ export default function TenYearsPreAccess() {
           <h1>Exklusiver 10 Jahre Jubiläums Pre-Sale!</h1>
           <p className="ten-years-pre-access__copy">
             Erhalte sofort Zugriff auf unsere{' '}
-            <strong>10 Jahre Jubiläums Sale / Pre-Sale Deals</strong>
-            <br />
-            und <strong>spare bis zu 500€!</strong>
+            <strong>10 Jahre Jubiläums Sale / Pre-Sale Deals</strong> und{' '}
+            <strong>spare bis zu 500€!</strong>
           </p>
           <div className="ten-years-pre-access__form" ref={formRef}>
             <ActiveCampaignForm formId={FORM_ID} />
