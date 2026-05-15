@@ -151,16 +151,6 @@
   font-size: clamp(1.8rem, 3.4vw, 4.2rem);
 }
 
-.j-sale-deal__template-hero-title-lines {
-  display: grid;
-  gap: 8px;
-}
-
-.j-sale-deal__template-hero-title-lines span {
-  font-size: clamp(1.65rem, 2.7vw, 3.35rem);
-  line-height: 0.96;
-}
-
 .j-sale-deal__template-hero-title-image,
 .j-sale-deal__template-hero-saving-image {
   display: block;
