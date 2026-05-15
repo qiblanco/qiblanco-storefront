@@ -69,7 +69,7 @@
   min-height: calc(100svh - var(--header-height) - 56px);
   display: block;
   margin: 0 auto;
-  padding: 42px 0 46px;
+  padding: 24px 0 46px;
 }
 
 .j-sale-deal__template-hero-top {
@@ -1583,7 +1583,7 @@
 
   .j-sale-deal__template-hero-inner {
     width: 100%;
-    padding: 22px 16px 34px;
+    padding: 14px 16px 34px;
   }
 
   .j-sale-deal__template-hero-bg {
