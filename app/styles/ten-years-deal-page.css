@@ -207,6 +207,14 @@
   filter: drop-shadow(0 24px 58px rgba(0, 0, 0, 0.42));
 }
 
+.j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
+  display: block;
+  top: 56%;
+  width: min(32vw, 390px);
+  max-height: none;
+  transform: translate(-50%, -46%);
+}
+
 .j-sale-deal__countdown {
   width: min(100%, 420px);
   margin: 12px auto 0;

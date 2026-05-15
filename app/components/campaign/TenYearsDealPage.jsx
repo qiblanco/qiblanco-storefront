@@ -74,7 +74,6 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroProductImage: file('QiOne_Necklace.png'),
     heroTitle: 'QiOne® 2 Pro + Necklace',
     heroTitleLines: ['QiOne® 2 Pro', '+ Necklace'],
-    hideHeroProductImage: true,
     heroSavings: 'Spare 250 €',
     purchaseImage: shopifyFile(
       'QiOne_NecklaceBundlev3Transparent_1.png?v=1719311888',
@@ -245,7 +244,7 @@ export function TenYearsDealPage({deal}) {
   );
 
   return (
-    <main className={`j-sale-deal j-sale-deal--${deal.theme}`}>
+    <main className={`j-sale-deal j-sale-deal--${deal.theme} j-sale-deal--${deal.key}`}>
       <TemplateHero deal={deal} template={template} />
 
       <UrgencyText>
