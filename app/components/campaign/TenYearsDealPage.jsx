@@ -104,7 +104,7 @@ const CACAO_TEMPLATE_COPY = {
     heroBackground: file('Create_Awake.png'),
     heroProductImage: file('Kakao_Bundle_71fcbd7f-174d-4e80-a046-b629e26467f3.png'),
     heroTitle: 'Crystal Cacao® Create + Awake',
-    heroSavings: 'Bundle-Deal',
+    heroSavings: 'Spare 76 €',
     purchaseTitle: '2x Crystal Cacao® CREATE + AWAKE - Bio',
     rating: '5.0 ★★★★★ über 1.000+ Nutzer',
     benefits:
@@ -114,7 +114,7 @@ const CACAO_TEMPLATE_COPY = {
     heroBackground: file('2x-Awake.webp'),
     heroProductImage: file('2x_Awake_765a9f2f-20f0-4332-a3f3-d8fa01c63c77.png'),
     heroTitle: '2x Crystal Cacao® Awake',
-    heroSavings: 'Bundle-Deal',
+    heroSavings: 'Spare 76 €',
     purchaseTitle: '2x Awake® - 28 Tage Fokus - Bio',
     rating: '5.0 ★★★★★ Über 1.000+ Nutzer',
     benefits:
@@ -124,7 +124,7 @@ const CACAO_TEMPLATE_COPY = {
     heroBackground: file('2x-Create-BF.webp'),
     heroProductImage: file('2x_Create_2.png'),
     heroTitle: '2x Crystal Cacao® Create',
-    heroSavings: 'Bundle-Deal',
+    heroSavings: 'Spare 76 €',
     purchaseTitle: '2x CREATE® - 28 Tage Fokus - Bio',
     rating: '5.0 ★★★★★ über 1.000+ Nutzer',
     benefits:
@@ -201,18 +201,24 @@ function TemplateHero({deal, template}) {
         aria-hidden="true"
       />
       <div className="j-sale-deal__template-hero-inner">
-        <div className="j-sale-deal__template-hero-copy">
-          <span>10 Jahre Qi Blanco</span>
+        <div className="j-sale-deal__template-hero-top">
           <h1>Jubiläumssale</h1>
-          <p>{template.heroTitle || deal.displayTitle}</p>
-          <strong>{template.heroSavings}</strong>
+          <Countdown placement="hero" />
         </div>
-        <img
-          className="j-sale-deal__template-hero-product"
-          src={template.heroProductImage || deal.productImage}
-          alt={deal.displayTitle}
-        />
-        <Countdown placement="hero" />
+        <div className="j-sale-deal__template-hero-side j-sale-deal__template-hero-side--deal">
+          <span>{template.heroTitle || deal.displayTitle}</span>
+        </div>
+        <div className="j-sale-deal__template-hero-side j-sale-deal__template-hero-side--saving">
+          <span>{template.heroSavings}</span>
+          <small>(*Angebot limitiert)</small>
+        </div>
+        {template.heroProductImage && (
+          <img
+            className="j-sale-deal__template-hero-product"
+            src={template.heroProductImage}
+            alt={deal.displayTitle}
+          />
+        )}
       </div>
     </section>
   );
@@ -335,17 +341,27 @@ function ProductPurchase({
 }
 
 function Countdown({placement = 'default'}) {
-  const [remaining, setRemaining] = useState(() =>
-    getRemaining(TEN_YEARS_COUNTDOWN_TARGET),
-  );
+  const [remaining, setRemaining] = useState({
+    days: '00',
+    hours: '00',
+    minutes: '00',
+    seconds: '00',
+  });
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    const update = () => {
       setRemaining(getRemaining(TEN_YEARS_COUNTDOWN_TARGET));
-    }, 1000);
+    };
+
+    update();
+    const timer = window.setInterval(update, 1000);
 
     return () => window.clearInterval(timer);
   }, []);
+
+  const totalHours = String(
+    Number(remaining.days) * 24 + Number(remaining.hours),
+  ).padStart(2, '0');
 
   return (
     <div
@@ -356,23 +372,18 @@ function Countdown({placement = 'default'}) {
       }
       aria-label="Pre-Sale Countdown"
     >
-      <span>Pre-Sale endet in</span>
       <div>
         <time>
-          <strong suppressHydrationWarning>{remaining.days}</strong>
-          Tage
-        </time>
-        <time>
-          <strong suppressHydrationWarning>{remaining.hours}</strong>
-          Std.
+          <strong suppressHydrationWarning>{totalHours}</strong>
+          Stunden
         </time>
         <time>
           <strong suppressHydrationWarning>{remaining.minutes}</strong>
-          Min.
+          Minuten
         </time>
         <time>
           <strong suppressHydrationWarning>{remaining.seconds}</strong>
-          Sek.
+          Sekunden
         </time>
       </div>
     </div>
@@ -624,11 +635,18 @@ function FrequencyProofSection() {
 function ProductCta({deal, template}) {
   return (
     <section className="j-sale-deal__product-cta">
-      <img
-        src={template.heroProductImage || deal.productImage}
-        alt={deal.displayTitle}
-        loading="lazy"
-      />
+      <div className="j-sale-deal__product-cta-media">
+        <img
+          src={template.heroProductImage || deal.productImage}
+          alt={deal.displayTitle}
+          loading="lazy"
+        />
+        <div className="j-sale-deal__product-cta-motion" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
       <div>
         <h2>{template.ctaHeader || 'Sichere dir dein Jubiläumsangebot'}</h2>
         <HtmlBlock html="<p><strong>✅ 100% deutsche Produktion</strong></p><p><strong>✅ Hochwertigste Materialien</strong></p><p><strong>✅ Weltweiter Versand</strong></p>" />
@@ -645,7 +663,7 @@ function CacaoTemplateSections({deal}) {
     <>
       <DealRail currentKey={deal.key} />
       <CacaoStory />
-      <DealRail currentKey={deal.key} compact />
+      <CacaoProductUpsell />
       <CacaoFaq />
     </>
   );
@@ -659,12 +677,12 @@ function CacaoStory() {
       />
       <FullImage src={file('2024-06-qiblanco-bali-06550.jpg')} />
       <HtmlTextSection
-        html="<h2><strong>Wach. Verbunden. Ohne den Absturz.</strong></h2><ul><li><strong>1.050 mg Theobromin &amp; 140 mg Koffein</strong> erzeugen zusammen eine stabile, langanhaltende Wachheit.</li><li><strong>10 mg Phenylethylamin</strong> ist bekannt als Teil des körpereigenen Glücks- &amp; Motivationssystems.</li><li><strong>61 µg Anandamid</strong> wird mit mentaler Klarheit und ruhiger Präsenz in Verbindung gebracht.</li><li><strong>20 mg freies L-Tryptophan</strong> unterstützt als Serotonin-Vorstufe emotionale Balance.</li><li><strong>5.620 mg Polyphenole &amp; Flavanole</strong> tragen zur allgemeinen kognitiven Vitalität bei.</li></ul><p><strong>Create enthält das stärkste aktivierende Profil aller Kristall Kakao® Sorten - für sanfte Wachheit, kognitive Klarheit und stabile innere Ausrichtung.</strong></p>"
+        html="<h2><strong>Wach. Verbunden. Ohne den Absturz.</strong></h2><ul><li><strong>1.050 mg Theobromin &amp; 140 mg Koffein</strong> erzeugen zusammen eine stabile, langanhaltende Wachheit. Das hohe natürliche Verhältnis von 7,5:1 wirkt aktivierend, aber ohne typischen Koffein-Crash.</li><li><strong>10 mg Phenylethylamin</strong> (PEA) ist bekannt als Teil des körpereigenen Glücks- &amp; Motivationssystems.</li><li><strong>61 µg Anandamid</strong> wird mit mentaler Klarheit und ruhiger Präsenz in Verbindung gebracht.</li><li><strong>20 mg freies L-Tryptophan</strong> unterstützt als Serotonin-Vorstufe emotionale Balance.</li><li><strong>5.620 mg Polyphenole &amp; Flavanole</strong> tragen zur allgemeinen kognitiven Vitalität bei.</li></ul><p><strong>Create enthält das stärkste aktivierende Profil aller Kristall Kakao® Sorten - für sanfte Wachheit, kognitive Klarheit und stabile innere Ausrichtung.</strong></p>"
       />
       <FullImage src={file('2024-06-qiblanco-bali-1052459-kaffee.webp')} />
       <FullImage src={file('bohne-create.jpg')} />
       <HtmlTextSection
-        html="<h2><strong>Für wen ist Crystal Cacao® Awake ideal?</strong></h2><p>Wenn du ...</p><ul><li>✅ klare Gedanken und geistige Struktur brauchst</li><li>✅ kreative Ideen entwickeln willst - mit innerer Ruhe</li><li>✅ präsent sein willst - ohne Reizüberflutung oder Nervosität</li><li>✅ dich emotional stabil und mental wach fühlen möchtest</li><li>✅ bewusst auf Kaffee oder stimulierende Drinks verzichten willst</li></ul><p>Dann ist Crystal Cacao® Create dein Ritual-Kakao für fokussierte Energie.</p>"
+        html="<h2><strong>Für wen ist Crystal Cacao® Awake ideal?</strong></h2><p>Wenn du ...</p><ul><li>✅ klare Gedanken und geistige Struktur brauchst</li><li>✅ kreative Ideen entwickeln willst - mit innerer Ruhe</li><li>✅ präsent sein willst - ohne Reizüberflutung oder Nervosität</li><li>✅ dich emotional stabil und mental wach fühlen möchtest</li><li>✅ bewusst auf Kaffee oder stimulierende Drinks verzichten willst</li><li>Dann ist Crystal Cacao® Create dein Ritual-Kakao für fokussierte Energie.</li></ul>"
       />
       <FullImage src={file('2024-06-qiblanco-bali-06610.jpg')} />
       <HtmlTextSection
@@ -672,22 +690,22 @@ function CacaoStory() {
       />
       <FullImage src={file('DSC02183.jpg')} />
       <HtmlTextSection
-        html="<h2>Natürlich reich an über 20 wichtigen Mineralstoffen &amp; Spurenelementen</h2><p><strong>Crystal Cacao® Create liefert dir eine breite Palette an bioverfügbaren Mikronährstoffen - genau so, wie sie die Natur vorgesehen hat.</strong></p><p>Durch den schonenden Herstellungsprozess bleiben in Create viele essenzielle Mikronährstoffe erhalten, die dein Körper täglich braucht - in bioverfügbarer Form und perfekt abgestimmt durch die Natur.</p><p>🧬 Enthält u. a.:<br/>✅ Magnesium, Kalium, Calcium, Phosphor, Natrium<br/>✅ Eisen, Zink, Kupfer, Mangan, Kobalt, Nickel, Chrom<br/>✅ sowie natürlich vorkommende Spurenelemente wie Silizium, Bor, Vanadium und weitere</p>"
+        html="<h2>Natürlich reich an über 20 wichtigen Mineralstoffen &amp; Spurenelementen</h2><p><strong>Crystal Cacao® Create liefert dir eine breite Palette an bioverfügbaren Mikronährstoffen - genau so, wie sie die Natur vorgesehen hat.</strong></p><p>Durch den schonenden Herstellungsprozess bleiben in Create viele essenzielle Mikronährstoffe erhalten, die dein Körper täglich braucht - in bioverfügbarer Form und perfekt abgestimmt durch die Natur.</p><p>🧬 Enthält u. a.:<br/>✅ Magnesium, Kalium, Calcium, Phosphor, Natrium<br/>✅ Eisen, Zink, Kupfer, Mangan, Kobalt, Nickel, Chrom<br/>✅ sowie natürlich vorkommende Spurenelemente wie Silizium, Bor, Vanadium und weitere</p><ul><li><strong>🛡️ Magnesium, Calcium, Eisen und Zink</strong> tragen zur normalen Funktion des Nervensystems, des Immunsystems und des Energiestoffwechsels bei.*</li><li><strong>❤️ Kupfer und Mangan</strong> unterstützen den Schutz der Zellen vor oxidativem Stress.*</li><li><strong>💡 Chrom</strong> trägt zur Aufrechterhaltung eines normalen Blutzuckerspiegels bei.*</li></ul>"
       />
       <HtmlTextSection
         html="<p>*Diese Aussagen basieren auf den allgemeinen wissenschaftlich anerkannten Funktionen der enthaltenen Mikronährstoffe gemäß EU-Verordnung.</p>"
         compact
       />
       <HtmlTextSection
-        html="<h2>Analyse der enthaltenen Mineralstoffe &amp; Spurenelemente</h2><h3>Essentielle Mineralstoffe</h3><ul><li>1. Magnesium (Mg) - Energiehaushalt, Nerven</li><li>2. Kalium (K) - Herzfunktion, Zellspannung</li><li>3. Calcium (Ca) - Knochen, Signalwege</li><li>4. Phosphor (P) - ATP-Bildung</li><li>5. Natrium (Na) - Elektrolytgleichgewicht</li></ul><h3>Essentielle Spurenelemente</h3><ul><li>6. Eisen (Fe) - Sauerstofftransport</li><li>7. Zink (Zn) - Immunsystem, Enzyme</li><li>8. Kupfer (Cu) - antioxidative Enzyme</li><li>9. Mangan (Mn) - antioxidative Cofaktoren</li><li>10. Chrom (Cr) - Glukosestoffwechsel</li><li>11. Nickel (Ni) - enzymatische Prozesse</li><li>12. Kobalt (Co) - Bestandteil von Vitamin B12</li></ul><h3>Weitere natürliche Spurenelemente</h3><ul><li>13. Silizium (Si) - Bindegewebe, Struktur</li><li>14. Bor (B) - Knochen, kognitive Funktionen</li><li>15. Strontium (Sr) - Mineralstoffwechsel</li><li>16. Rubidium (Rb) - intrazellulärer Marker</li><li>17. Vanadium (V) - Glukosestoffwechsel</li></ul>"
+        html="<h2>Analyse der enthaltenen Mineralstoffe &amp; Spurenelemente</h2><h3><strong>Essentielle Mineralstoffe</strong></h3><ul><li>1. Magnesium (Mg) - Energiehaushalt, Nerven</li><li>2. Kalium (K) - Herzfunktion, Zellspannung</li><li>3. Calcium (Ca) - Knochen, Signalwege</li><li>4. Phosphor (P) - ATP-Bildung</li><li>5. Natrium (Na) - Elektrolytgleichgewicht</li></ul><h3><strong>Essentielle Spurenelemente</strong></h3><ul><li>6. Eisen (Fe) - Sauerstofftransport</li><li>7. Zink (Zn) - Immunsystem, Enzyme</li><li>8. Kupfer (Cu) - antioxidative Enzyme</li><li>9. Mangan (Mn) - antioxidative Cofaktoren</li><li>10. Chrom (Cr) - Glukosestoffwechsel</li><li>11. Nickel (Ni) - enzymatische Prozesse</li><li>12. Kobalt (Co) - Bestandteil von Vitamin B12</li></ul><h3><strong>Weitere natürliche Spurenelemente</strong></h3><ul><li>13. Silizium (Si) - Bindegewebe, Struktur</li><li>14. Bor (B) - Knochen, kognitive Funktionen</li><li>15. Strontium (Sr) - Mineralstoffwechsel</li><li>16. Rubidium (Rb) - intrazellulärer Marker</li><li>17. Vanadium (V) - Glukosestoffwechsel</li><li>18. Cäsium (Cs) - bioenergetische Spur</li></ul><ol><li><strong>Reine esoterische Bedeutung:</strong></li></ol><ul><li>19. Barium (Ba) - energetische Schutzschicht</li><li>20. Gallium (Ga) - Klärung des Energiefeldes</li><li>21. Lanthan (La) - tiefere Intuition</li><li>22. Tellur (Te) - feinstoffliche Leitfähigkeit</li><li>23. Hafnium (Hf) - energetische Zentrierung</li><li>24. Tantal (Ta) - Stabilisierung spiritueller Frequenzen</li></ul>"
       />
       <FullImage src={file('DSC01491_Kopie.webp')} />
       <HtmlTextSection
-        html="<h2>Herkunft: Spüre die Kraft des Amazonas</h2><p>Aus dem geheimnisvollen Amazonas bringen wir dir eine heilige Pflanze in ihrer reinsten Form: unseren bio-zertifizierten <strong>Kristall Kakao® Create</strong>. Diese besonderen Kakaobohnen stammen aus nachhaltigem Anbau in den Bergwäldern des peruanischen Departamento Amazonas.</p><p>Sie werden behutsam bei niedriger Temperatur vermahlen und anschließend in eine elegante, quadratische 420 g-Tafel gegossen - ein purer Block Bio Kristall Kakao®.</p>"
+        html="<h2>Herkunft: Spüre die Kraft des Amazonas</h2><p>Aus dem geheimnisvollen Amazonas bringen wir dir eine heilige Pflanze in ihrer reinsten Form: unseren bio-zertifizierten <strong>Kristall Kakao® Create</strong>. Diese besonderen Kakaobohnen stammen aus nachhaltigem Anbau in den <strong>Bergwäldern des peruanischen Departamento Amazonas</strong>. Sie werden behutsam bei niedriger Temperatur vermahlen und anschließend in eine elegante, quadratische 420 g-Tafel gegossen - ein purer Block <strong>Bio Kristall Kakao®</strong>.</p><p>Nach der Formung geben wir dem Kakao die Zeit, die er braucht: In Ruhe kristallisiert er langsam und entwickelt dabei sein charakteristisches Kristallmuster - Sinnbild für naturbelassene Qualität, aromatische Tiefe und unsere tiefe Achtung vor dem Ursprung. Während dieser Reifephase setzen wir das <strong>QiHome® Air</strong> ein: Es schafft eine besondere Atmosphäre, die die Kristallisation begleitet und den Kakao auf seinem Weg zu seiner einzigartigen Struktur unterstützt.</p><p>So entsteht unser unverwechselbarer <strong>Kristall Kakao®</strong> - mit feiner Struktur, voller Kraft und lebendigem Geschmack. Versiegelt im Aroma-Schutzpack bleiben das volle Bouquet tropischer Früchte, feiner Kokosnoten und Zitrusnuancen sowie alle wertvollen Bestandteile optimal bewahrt.</p><p><strong>Brich dir ein Stück ab, bereite ein warmes Elixier zu und tauche ein in dein persönliches Ritual - voller Achtsamkeit, Herzöffnung und tiefer Verbundenheit.</strong></p>"
       />
       <FullImage src={file('montegrande.jpg')} />
       <HtmlTextSection
-        html="<p>Copyright: QUIRINO OLIVERA NUÑEZ<br/>ASOCIACION PARA LA INVESTICAGION CIENTIFICA DE LA AMAZONIA DE PERU</p><h2><strong>Crystal Cacao® - Ursprung, der 6.300 Jahre zurückreicht</strong></h2><p>Im Norden Perus, im Tal von Jaén und Bagua, erhebt sich der mystische Spiraltempel von Montegrande - ein Ort, an dem Archäologen Kakaorückstände in 6.300 Jahre alten Keramiken entdeckt haben.</p><p>Diese Verbindung aus Archäologie, Ökologie und Genetik zeichnet ein klares Bild: Crystal Cacao® wächst dort, wo die Geschichte des Kakaos ihren Ursprung hat.</p><h2><strong>🛡️ Unsere Garantie:</strong></h2><ul><li><strong>🔒 100% Kakao. 0% Risiko.</strong></li><li><strong>✔️ Wissenschaftlich analysiert</strong></li><li><strong>✔️ Rückgabe innerhalb von 20 Tagen - auch angebrochen</strong></li><li><strong>✔️ Bio-zertifiziert &amp; aromasicher verpackt</strong></li></ul>"
+        html="<ul><li>Copyright: QUIRINO OLIVERA NUÑEZ<br/>ASOCIACION PARA LA INVESTICAGION CIENTIFICA DE LA AMAZONIA DE PERU</li></ul><h2><strong>Crystal Cacao® - Ursprung, der 6.300 Jahre zurückreicht</strong></h2><p>Im Norden Perus, im Tal von Jaén und Bagua, erhebt sich der mystische <strong>Spiraltempel von Montegrande</strong> - ein Ort, an dem Archäologen Kakaorückstände in <strong>6.300 Jahre alten Keramiken entdeckt</strong> haben.</p><p>Diese Funde gelten heute als der <strong>älteste bekannte Nachweis von Kakao weltweit</strong> - der Beginn einer Geschichte, die bis in unsere Zeit fortlebt. Nur wenige Kilometer von diesem historischen Fundort entfernt, in denselben fruchtbaren Böden des oberen Amazonasbeckens, wachsen die Pflanzen, aus deren Früchten <strong>Crystal Cacao®</strong> entsteht.</p><p>Die Region bildet eine <strong>kontinuierliche Abstammungslinie:</strong> vom urzeitlichen Wildkakao über die ersten domestizierten Pflanzen des Montegrande-Kulturraums bis hin zu den heutigen, naturbelassenen Altlinien, die den genetischen Kern von <strong>Kristall Kakao®</strong> tragen.</p><p>Diese Verbindung aus Archäologie, Ökologie und Genetik zeichnet ein klares Bild: <strong>Crystal Cacao® wächst dort, wo die Geschichte des Kakaos begann</strong> - im selben Boden, unter derselben Sonne und in einer ununterbrochenen Linie, die seit über 6.000 Jahren fortbesteht.</p><p>Er trägt die Energie, Reinheit und Resonanz des ältesten bekannten Kakaos der Welt - und macht sie erlebbar für den Menschen von heute.</p><h2><strong>🛡️ Unsere Garantie:</strong></h2><ul><li><strong>🔒 100% Kakao. 0% Risiko.</strong></li><li><strong>✔️ Wissenschaftlich analysiert</strong></li><li><strong>✔️ Rückgabe innerhalb von 20 Tagen - auch angebrochen</strong></li><li><strong>✔️ Bio-zertifiziert &amp; aromasicher verpackt</strong></li></ul>"
       />
       <FullImage src={file('DSC01953_Kopie.webp')} />
       <HtmlTextSection
@@ -697,23 +715,87 @@ function CacaoStory() {
   );
 }
 
+function CacaoProductUpsell() {
+  const products = [
+    {
+      title: 'QiOne® 2 Pro',
+      subtitle: 'Kohärentes Wasser für deinen Alltag.',
+      image: file('2xQiOne_2_Pro_Product_Only.png'),
+      href: '/products/qione-2-pro',
+      detailHref: '/pages/qione',
+    },
+    {
+      title: 'QiBracelet®',
+      subtitle: 'Trage dein kohärentes Feld direkt am Körper.',
+      image: file('QiBracelet_Pro_Product_Only.png'),
+      href: '/products/qibracelet',
+      detailHref: '/pages/qibracelet',
+    },
+    {
+      title: 'QiHome® Air',
+      subtitle: 'Harmonisiere dein Zuhause und dein Umfeld.',
+      image: file('QiHome_Product_Only.png'),
+      href: '/products/qihome-air',
+      detailHref: '/pages/qihome',
+    },
+  ];
+
+  return (
+    <section className="j-sale-deal__cacao-upsell">
+      <div className="j-sale-deal__cacao-upsell-heading">
+        <h2>Werde jetzt Teil der Revolution.</h2>
+        <p>Über 300 neue Nutzer im Monat.</p>
+      </div>
+      <div className="j-sale-deal__cacao-upsell-grid">
+        {products.map((product) => (
+          <article className="j-sale-deal__cacao-product-card" key={product.title}>
+            <a href={product.href}>
+              <img src={product.image} alt={product.title} loading="lazy" />
+            </a>
+            <h3>{product.title}</h3>
+            <p>{product.subtitle}</p>
+            <a className="j-sale-deal__text-link" href={product.detailHref}>
+              Mehr erfahren
+            </a>
+            <a className="j-sale-deal__text-link" href={product.href}>
+              Jetzt Kaufen
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function CacaoFaq() {
   const faqs = [
     {
       title: 'Was ist zeremonieller Kakao?',
-      text: 'Zeremonieller Kakao ist eine spezielle Form von Kakao, die absichtsvoll und bewusst zubereitet und konsumiert wird.',
+      html: '<p>Zeremonieller Kakao ist eine spezielle Form von Kakao, die absichtsvoll und bewusst zubereitet und konsumiert wird. Im Gegensatz zu gewöhnlichem Kakao wird dieser Kakao unter Einbeziehung ritueller Elemente, Achtsamkeit und Intentionalität zubereitet. Zeremonieller Kakao wird oft in ganzheitlichen Praktiken verwendet und kann eine tiefere Verbindung mit dem Selbst, der Natur oder anderen Menschen fördern. Die Zubereitung und der Konsum werden als eine Art Zeremonie betrachtet, die die psychoaktiven und energetischen Eigenschaften des Kakaos betont.</p>',
     },
     {
       title: 'Was bedeutet psychoaktiv in diesem Zusammenhang?',
-      text: 'Psychoaktiver Kakao enthält natürliche Verbindungen wie Theobromin, Koffein, Phenylethylamin und Anandamid. Diese Effekte sind subtil und nicht mit starken Rauschzuständen vergleichbar.',
+      html: '<p>Psychoaktiver Kakao enthält natürliche Verbindungen wie Theobromin, Koffein, Phenylethylamin und Anandamid. Diese Substanzen können leichte Veränderungen in der Stimmung, Wachsamkeit und Entspannung auslösen. Der Ausdruck "psychoaktiv" wird hier verwendet, um darauf hinzuweisen, dass der Konsum von Kakao das zentrale Nervensystem beeinflussen kann, wodurch positive Veränderungen in Denken, Fühlen und Wahrnehmen auftreten können. Es ist wichtig zu betonen, dass diese Effekte subtil sind und nicht mit starken Rauschzuständen verglichen werden können.</p>',
     },
     {
       title: 'Wie wird zeremonieller Kakao zubereitet?',
-      text: 'Etwa 20 bis 25g Kakao zerkleinern, in warmer Pflanzenmilch oder Wasser auflösen und bewusst genießen.',
+      html: '<p>Die Zubereitung von zeremoniellem Kakao ist unkompliziert und kann nach den ersten Versuchen zu einer natürlichen und sogar freudigen Praxis werden. Eine Kurzanleitung dazu:</p><p>1. Erwärmen von etwa 150 ml Wasser oder pflanzlicher Milch (z.B. Hafermilch).</p><p>2. Zerkleinern der Kakaomasse.</p><p>3. Abmessen von 20 bis 25g für eine Alltagstasse und 30g für eine rituelle Tasse.</p><p>4. Auflösen der Kakaomasse in der warmen Flüssigkeit. Rühren kann dabei helfen!</p><p>5. Je nach Vorliebe den Kakao mit verschiedenen Gewürzen verfeinern.</p><p>6. Zeit nehmen, den Kakao spüren und genießen.</p>',
     },
     {
-      title: 'Für wen ist Kakao ungeeignet?',
-      text: 'Personen mit hoher Empfindlichkeit gegenüber Koffein, Schwangerschaft oder bestimmten Medikamenten sollten vorher ärztlichen Rat einholen.',
+      title: 'Für wen ist Kakao (un)geeignet?',
+      html: '<p>Kakao enthält Theobromin, ein natürliches Stimulans. Personen, die empfindlich auf Koffein reagieren, wird eine äußerst vorsichtige Dosierung von 5 bis 10 g pro Tasse empfohlen. Bei der Frage nach dem Konsum von reinem Kakao während der Schwangerschaft ist es ratsam, Gesundheitsfachleute zu konsultieren, da Ansichten dazu variieren können.</p><p>Kinder erleben oft eine positive Reaktion auf Kakao und genießen seine stimmungsaufhellende Wirkung. Hierbei ist eine behutsame Dosierung wichtig, und es ist ratsam, die Konsumzeit in Bezug auf die Schlafenszeiten der Kleinen zu beachten.</p><p>Für Personen, die Medikamente oder Antidepressiva (SSRIs) einnehmen, die die Wiederaufnahme von Serotonin hemmen, ist vor dem Genuss von zeremoniellem Kakao eine Rücksprache mit ihrem behandelnden Arzt äußerst empfehlenswert, um mögliche Wechselwirkungen zu klären.</p>',
+    },
+    {
+      title: 'Was ist eine Kakaozeremonie und ist diese nötig?',
+      html: '<p>Die Kakaozeremonie ist eine bewusste und absichtliche Praxis des Genießens von zeremoniellem Kakao an einem Ort der Wohlfühlatmosphäre. Diese einzigartige Art des Konsums verstärkt die tiefe und unterschwellige Wirkung des Kakaos, was sie für den Einnehmenden leichter erfahrbar macht.</p><p>Obwohl eine Kakaozeremonie keine zwingende Voraussetzung ist, bietet sie Raum für persönliche Entfaltung und Reflektion. Viele Menschen wählen bewusst, sich Zeit für ihren Kakao zu nehmen und ihn auf individuelle Weise zu zelebrieren, oft im Rahmen von Dankbarkeitspraktiken. Die Entscheidung, diese bewusste Form des Kakao-Konsums in den Alltag zu integrieren, liegt im freien Ermessen eines jeden Einzelnen.</p>',
+    },
+    {
+      title: 'Wie oft darf man zeremoniellen Kakao trinken?',
+      html: '<p>Die Häufigkeit des Konsums von zeremoniellem Kakao ist individuell und kann von Person zu Person variieren. Es wird empfohlen, auf die eigene körperliche und mentale Reaktion zu achten. Ein maßvoller Konsum, der das persönliche Wohlbefinden unterstützt, ist in der Regel angebracht.</p>',
+    },
+    {
+      title: 'Welche Effekte entstehen durch die Kombination von Qi Blanco®-Produkten und zeremoniellem Kakao?',
+      html: '<p>Die Verwendung von Qi Blanco®-Produkten in Verbindung mit psychoaktivem Kakao kann die psychoaktive Erfahrung intensivieren und klarer erlebbar machen. Die speziellen Eigenschaften des Gitterchips 2.0 fördert die Bildung kohärenter Strukturen, die dazu beitragen, die tiefgehende mentale Wirkung des Kakaos zu unterstützen.</p>',
     },
   ];
 
@@ -723,7 +805,7 @@ function CacaoFaq() {
       {faqs.map((faq) => (
         <details key={faq.title}>
           <summary>{faq.title}</summary>
-          <p>{faq.text}</p>
+          <HtmlBlock html={faq.html} />
         </details>
       ))}
     </section>
