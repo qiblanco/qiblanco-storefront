@@ -1635,8 +1635,15 @@
   }
 
   .j-sale-deal__template-hero-product {
+    display: none;
+  }
+
+  .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
     display: block;
-    width: min(76vw, 380px);
+    top: 62%;
+    width: min(72vw, 330px);
+    max-height: 28svh;
+    transform: translate(-50%, -32%);
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-bg {
@@ -1662,10 +1669,7 @@
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-product {
-    top: 62%;
-    width: min(48vw, 220px);
-    max-height: 24svh;
-    transform: translate(-50%, -26%);
+    display: none;
   }
 
   .j-sale-deal__countdown--hero {
@@ -1835,7 +1839,13 @@
   }
 
   .j-sale-deal__template-hero-product {
-    width: min(88vw, 330px);
+    display: none;
+  }
+
+  .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
+    display: block;
+    width: min(76vw, 300px);
+    max-height: 27svh;
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-side--deal {
@@ -1853,9 +1863,7 @@
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-product {
-    top: 62%;
-    width: min(48vw, 200px);
-    max-height: 23svh;
+    display: none;
   }
 
   .j-sale-deal__price-current {
