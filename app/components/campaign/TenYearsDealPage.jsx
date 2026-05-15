@@ -220,9 +220,17 @@ export function TenYearsDealPage({deal}) {
       />
 
       {deal.theme === 'frequency' ? (
-        <FrequencyTemplateSections deal={deal} template={template} />
+        <FrequencyTemplateSections
+          deal={deal}
+          template={template}
+          selectedVariant={selectedVariant}
+        />
       ) : (
-        <CacaoTemplateSections deal={deal} template={template} />
+        <CacaoTemplateSections
+          deal={deal}
+          template={template}
+          selectedVariant={selectedVariant}
+        />
       )}
     </main>
   );
@@ -443,7 +451,7 @@ function UrgencyText({children}) {
   );
 }
 
-function FrequencyTemplateSections({deal, template}) {
+function FrequencyTemplateSections({deal, template, selectedVariant}) {
   return (
     <>
       <UrgencyText>- Angebot limitiert auf die ersten 300 Bestellungen! -</UrgencyText>
@@ -458,7 +466,11 @@ function FrequencyTemplateSections({deal, template}) {
       </section>
       <MicroscopeSection />
       <FrequencyProofSection />
-      <ProductCta deal={deal} template={template} />
+      <DealFinalCta
+        deal={deal}
+        template={template}
+        selectedVariant={selectedVariant}
+      />
       <DealRail currentKey={deal.key} compact />
     </>
   );
@@ -677,37 +689,67 @@ function FrequencyProofSection() {
   );
 }
 
-function ProductCta({deal, template}) {
+function DealFinalCta({deal, template, selectedVariant}) {
+  const compareAtPrice = selectedVariant?.compareAtPrice;
+
   return (
-    <section className="j-sale-deal__product-cta">
-      <div className="j-sale-deal__product-cta-media">
+    <section className="j-sale-deal__final-cta">
+      <div className="j-sale-deal__final-cta-media">
         <img
           src={template.heroProductImage || deal.productImage}
           alt={deal.displayTitle}
           loading="lazy"
         />
-        <div className="j-sale-deal__product-cta-motion" aria-hidden="true">
-          <span />
-          <span />
-          <span />
+        <div className="j-sale-deal__final-cta-stamp" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <path
+                id="j-sale-final-cta-arc"
+                d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"
+              />
+            </defs>
+            <text className="j-sale-deal__final-cta-stamp-text">
+              <textPath href="#j-sale-final-cta-arc" startOffset="0">
+                JUBILAEUMSSALE - LIMITIERT -
+              </textPath>
+            </text>
+          </svg>
+          <div className="j-sale-deal__final-cta-stamp-core">
+            <span>10</span>
+            <small>Jahre</small>
+          </div>
         </div>
       </div>
-      <div>
+      <div className="j-sale-deal__final-cta-body">
         <h2>{template.ctaHeader || 'Sichere dir dein Jubiläumsangebot'}</h2>
         <HtmlBlock html="<p><strong>✅ 100% deutsche Produktion</strong></p><p><strong>✅ Hochwertigste Materialien</strong></p><p><strong>✅ Weltweiter Versand</strong></p>" />
+        <div className="j-sale-deal__final-cta-price">
+          <span>{formatMoney(selectedVariant.price)}</span>
+          {compareAtPrice && <sup>{formatMoney(compareAtPrice)}</sup>}
+        </div>
         <a className="j-sale-deal__button" href="#deal">
           {template.ctaButton || 'Jetzt sichern'}
         </a>
+        <ul className="j-sale-deal__final-cta-trust">
+          <li>Kostenloser Versand ab 99 Euro</li>
+          <li>20 Tage risikofrei testen</li>
+          <li>Kaeuferschutz</li>
+        </ul>
       </div>
     </section>
   );
 }
 
-function CacaoTemplateSections({deal}) {
+function CacaoTemplateSections({deal, template, selectedVariant}) {
   return (
     <>
       <DealRail currentKey={deal.key} />
       <CacaoStory />
+      <DealFinalCta
+        deal={deal}
+        template={template}
+        selectedVariant={selectedVariant}
+      />
       <CacaoProductUpsell />
       <CacaoFaq />
     </>
@@ -720,7 +762,7 @@ function CacaoStory() {
       <HtmlTextSection
         html="<h2><strong>Crystal Cacao® Create</strong></h2><h3><strong>💛 Klarheit. Fokus. Kreative Energie.</strong></h3><p>Viele Nutzer berichten, dass Create geistige Klarheit fördert, die Konzentration verbessert und gleichzeitig eine innere Ausgeglichenheit bewahrt - ohne nervös zu machen.</p>"
       />
-      <FullImage src={file('2024-06-qiblanco-bali-06550.jpg')} />
+      <CenteredImage src={file('2024-06-qiblanco-bali-06550.jpg')} />
       <HtmlTextSection
         html="<h2><strong>Wach. Verbunden. Ohne den Absturz.</strong></h2><ul><li><strong>1.050 mg Theobromin &amp; 140 mg Koffein</strong> erzeugen zusammen eine stabile, langanhaltende Wachheit. Das hohe natürliche Verhältnis von 7,5:1 wirkt aktivierend, aber ohne typischen Koffein-Crash.</li><li><strong>10 mg Phenylethylamin</strong> (PEA) ist bekannt als Teil des körpereigenen Glücks- &amp; Motivationssystems.</li><li><strong>61 µg Anandamid</strong> wird mit mentaler Klarheit und ruhiger Präsenz in Verbindung gebracht.</li><li><strong>20 mg freies L-Tryptophan</strong> unterstützt als Serotonin-Vorstufe emotionale Balance.</li><li><strong>5.620 mg Polyphenole &amp; Flavanole</strong> tragen zur allgemeinen kognitiven Vitalität bei.</li></ul><p><strong>Create enthält das stärkste aktivierende Profil aller Kristall Kakao® Sorten - für sanfte Wachheit, kognitive Klarheit und stabile innere Ausrichtung.</strong></p>"
       />
@@ -857,15 +899,32 @@ function CacaoFaq() {
   );
 }
 
-function FullImage({src}) {
+function FullImage({src, margin = 100}) {
   return (
-    <section className="j-sale-deal__fullscreen-image">
+    <section
+      className="j-sale-deal__fullscreen-image"
+      style={{'--image-margin': `${margin}px`}}
+    >
       <img src={src} alt="" loading="lazy" />
     </section>
   );
 }
 
-function HtmlTextSection({html, compact = false}) {
+function CenteredImage({src, margin = 50, width = 100}) {
+  return (
+    <section
+      className="j-sale-deal__centered-image"
+      style={{
+        '--image-margin': `${margin}px`,
+        '--image-width': `${width}%`,
+      }}
+    >
+      <img src={src} alt="" loading="lazy" />
+    </section>
+  );
+}
+
+function HtmlTextSection({html, compact = false, margin = 0, paddingTop = 0}) {
   return (
     <section
       className={
@@ -873,6 +932,10 @@ function HtmlTextSection({html, compact = false}) {
           ? 'j-sale-deal__html-section is-compact'
           : 'j-sale-deal__html-section'
       }
+      style={{
+        '--section-margin': `${margin}px`,
+        '--block-padding-top': `${paddingTop}px`,
+      }}
     >
       <HtmlBlock html={html} />
     </section>

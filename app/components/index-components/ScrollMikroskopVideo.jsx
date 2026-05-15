@@ -37,6 +37,9 @@ export function ScrollMikroskopVideo() {
 
     const onLoadedMetadata = () => {
       metadataLoadedRef.current = true;
+      if (Number.isFinite(video.duration)) {
+        try { video.currentTime = 0.01; } catch { /* ignore initial seek failures */ }
+      }
       window.requestAnimationFrame(() => {
         handleScrollRef.current?.();
       });
@@ -78,7 +81,7 @@ export function ScrollMikroskopVideo() {
     return () => window.removeEventListener("touchend", primeOnTouch);
   }, []);
 
-  // Scroll logic (calculations unchanged)
+  // Scroll-scrub the video while the long sticky container intersects the viewport.
   useEffect(() => {
     const video = videoRef.current;
     const container = containerRef.current;
@@ -89,16 +92,15 @@ export function ScrollMikroskopVideo() {
 
       const rect = container.getBoundingClientRect();
 
-      // Only react while fully visible
-      if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+      if (rect.top <= window.innerHeight && rect.bottom >= 0) {
         const scrollTop = window.scrollY;
         const start = container.offsetTop;
-        const end = start + container.offsetHeight - window.innerHeight;
+        const end = Math.max(start + container.offsetHeight - window.innerHeight, start + 1);
 
         const rawProgress = Math.min(Math.max((scrollTop - start) / (end - start), 0), 1);
         setProgress(rawProgress * 100);
 
-        if (video.seekable && video.seekable.length > 0 && Number.isFinite(video.duration)) {
+        if (Number.isFinite(video.duration) && video.duration > 0) {
           const maxTime = Math.max(video.duration - 0.05, 0);
           const targetTime = Math.min(video.duration * rawProgress, maxTime);
 
