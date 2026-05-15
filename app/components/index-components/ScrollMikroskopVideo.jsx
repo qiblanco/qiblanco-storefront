@@ -37,17 +37,22 @@ export function ScrollMikroskopVideo() {
 
     const onLoadedMetadata = () => {
       metadataLoadedRef.current = true;
-      if (Number.isFinite(video.duration)) {
-        try { video.currentTime = 0.01; } catch { /* ignore initial seek failures */ }
-      }
+      window.requestAnimationFrame(() => {
+        handleScrollRef.current?.();
+      });
+    };
+
+    const onLoadedData = () => {
       window.requestAnimationFrame(() => {
         handleScrollRef.current?.();
       });
     };
 
     video.addEventListener("loadedmetadata", onLoadedMetadata);
+    video.addEventListener("loadeddata", onLoadedData);
     return () => {
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.removeEventListener("loadeddata", onLoadedData);
     };
   }, []);
 
@@ -118,9 +123,11 @@ export function ScrollMikroskopVideo() {
     handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
       handleScrollRef.current = null;
     };
   }, []);

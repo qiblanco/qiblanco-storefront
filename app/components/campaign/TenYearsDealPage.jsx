@@ -1,11 +1,10 @@
 import {useEffect, useMemo, useState} from 'react';
 import {Link} from 'react-router';
-import {AddToCartButton} from '~/components/AddToCartButton';
-import {useAside} from '~/components/Aside';
 import {
   TEN_YEARS_COUNTDOWN_TARGET,
   TEN_YEARS_DEALS,
 } from '~/data/ten-years-deals';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {Studien} from '~/components/reusables/Studien';
@@ -19,6 +18,8 @@ const moneyFormatter = new Intl.NumberFormat('de-DE', {
 
 const file = (name) =>
   `/campaigns/ten-years/template-assets/${encodeURIComponent(name)}`;
+
+const checkoutCdn = (path) => `https://checkout.qiblanco.com${path}`;
 
 const COMMON_FREQUENCY_ICONS = [
   {
@@ -138,49 +139,22 @@ const SHIPPING_HTML =
 const CACAO_SHIPPING_HTML =
   '<p>✅ Kostenloser Versand ab 99 €<br/>🚚 Lieferung in 1-3 Werktagen<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
 
-function toVariantGid(id) {
-  if (String(id).startsWith('gid://')) return id;
-  return `gid://shopify/ProductVariant/${id}`;
-}
-
 function formatMoney(value) {
   return moneyFormatter.format(value);
 }
 
-function toCartMoney(amount) {
-  return {
-    amount: String(amount),
-    currencyCode: 'EUR',
-  };
-}
+function getCheckoutCartHref(deal, selectedVariant) {
+  const params = new URLSearchParams();
 
-function getOptimisticVariant({deal, selectedVariant, image}) {
-  const selectedOption =
-    selectedVariant.title && selectedVariant.title !== 'Default Title'
-      ? [{name: 'Variante', value: selectedVariant.title}]
-      : [{name: 'Title', value: 'Default Title'}];
+  if (deal.discountCode) {
+    params.set('discount', deal.discountCode);
+  }
 
-  return {
-    id: toVariantGid(selectedVariant.id),
-    title: selectedVariant.title,
-    availableForSale: true,
-    image: {
-      url: image,
-      altText: deal.displayTitle,
-      width: 800,
-      height: 800,
-    },
-    price: toCartMoney(selectedVariant.price),
-    compareAtPrice: selectedVariant.compareAtPrice
-      ? toCartMoney(selectedVariant.compareAtPrice)
-      : null,
-    selectedOptions: selectedOption,
-    product: {
-      handle: deal.handle,
-      title: deal.displayTitle,
-      vendor: 'Qi Blanco',
-    },
-  };
+  const query = params.toString();
+
+  return checkoutCdn(
+    `/cart/${selectedVariant.id}:1${query ? `?${query}` : ''}`,
+  );
 }
 
 function getTemplateCopy(deal) {
@@ -200,7 +174,6 @@ export function TenYearsDealPage({deal}) {
       deal.variants[0],
     [deal.variants, selectedVariantId],
   );
-  const {open} = useAside();
 
   return (
     <main className={`j-sale-deal j-sale-deal--${deal.theme}`}>
@@ -216,7 +189,6 @@ export function TenYearsDealPage({deal}) {
         template={template}
         selectedVariant={selectedVariant}
         setSelectedVariantId={setSelectedVariantId}
-        openCart={() => open('cart')}
       />
 
       {deal.theme === 'frequency' ? (
@@ -274,16 +246,10 @@ function ProductPurchase({
   template,
   selectedVariant,
   setSelectedVariantId,
-  openCart,
 }) {
   const compareAtPrice = selectedVariant.compareAtPrice;
   const productImage = template.heroProductImage || deal.productImage;
-  const merchandiseId = toVariantGid(selectedVariant.id);
-  const optimisticVariant = getOptimisticVariant({
-    deal,
-    selectedVariant,
-    image: productImage,
-  });
+  const checkoutCartHref = getCheckoutCartHref(deal, selectedVariant);
 
   return (
     <section className="j-sale-deal__product-template" id="deal">
@@ -371,18 +337,9 @@ function ProductPurchase({
           </p>
         )}
 
-        <AddToCartButton
-          lines={[
-            {
-              merchandiseId,
-              quantity: 1,
-              selectedVariant: optimisticVariant,
-            },
-          ]}
-          onClick={openCart}
-        >
+        <a className="btn--primary" href={checkoutCartHref}>
           In den Warenkorb legen
-        </AddToCartButton>
+        </a>
 
         <HtmlBlock
           className="j-sale-deal__shipping-list"
@@ -465,7 +422,9 @@ function FrequencyTemplateSections({deal, template, selectedVariant}) {
         <Studien headline="Wirkung an menschlichen Zellen bestätigt!" />
       </section>
       <MicroscopeSection />
-      <FrequencyProofSection />
+      <GoogleReviewVideoSection />
+      <CommunityProofSection />
+      <YoutubeProofSlider />
       <DealFinalCta
         deal={deal}
         template={template}
@@ -550,15 +509,17 @@ function GitterchipSection() {
             Das neue Herstellungsverfahren ermöglicht eine Lebensdauer von
             Jahrzehnten. Somit ist der QiOne® 2 Pro nicht nur etwas für dich,
             sondern für die ganze Familie. Intensive Zeiten erfordern intensive
-            Lösungen.
+            Lösungen!
           </p>
         </article>
         <article>
           <h3>Für jeden Einsatzort</h3>
           <p>
             Du kannst den QiOne® 2 Pro mit in die Sauna oder ins Schwimmbad
-            nehmen, denn er ist beständig gegen Hitze & Chlor. Du darfst ihn
-            beim Sport tragen - Schweiß macht ihm nichts mehr aus.
+            nehmen, denn er ist beständig gegen Hitze & Chlor. Wenn du ihn mal
+            in der Sonne vergisst oder er in die Waschmaschine fällt - kein
+            Problem. Du darfst ihn beim Sport tragen - Schweiß macht ihm nichts
+            mehr aus.
           </p>
         </article>
         <article>
@@ -566,8 +527,10 @@ function GitterchipSection() {
           <p>
             Der QiOne® 2 Pro stellt gegenüber seinem Vorgänger mit seinem 8x
             Leistungsvolumen und nur dem 2x Anschaffungswert das ideale
-            Investment dar. Leistung schlägt Preis. Mehr Power für deine
-            Zukunft.
+            Investment dar.
+          </p>
+          <p>
+            Leistung schlägt Preis. Mehr Power für deine Zukunft.
           </p>
         </article>
       </div>
@@ -651,20 +614,32 @@ function MicroscopeSection() {
   );
 }
 
-function FrequencyProofSection() {
-  const videos = [
-    'https://www.youtube-nocookie.com/embed/OAVUdRYGoDA',
-    'https://www.youtube-nocookie.com/embed/zIfDQ1N60fI',
-    'https://www.youtube-nocookie.com/embed/bgsAHLaQRLU',
-    'https://www.youtube-nocookie.com/embed/jyLyXZqHxaw',
-    'https://www.youtube-nocookie.com/embed/pI9fdZYhVUA',
-    'https://www.youtube-nocookie.com/embed/aG36zJKxDzg',
-  ];
-
+function GoogleReviewVideoSection() {
   return (
-    <section className="j-sale-deal__proof">
-      <h2>Erfahrungen aus der Community</h2>
-      <div className="j-sale-deal__proof-grid">
+    <section className="j-sale-deal__google-reviews">
+      <h2>Mehr als 14.000 zufriedene Kunden</h2>
+      <ReputonWidget />
+      <div className="j-sale-deal__google-video">
+        <h3>Deutscher Leichtathlet-Meister erleichtert</h3>
+        <ResponsiveIframe
+          src="https://www.youtube-nocookie.com/embed/jyLyXZqHxaw?rel=0&controls=0&showinfo=0&vq=720"
+          title="Deutscher Leichtathlet-Meister erleichtert"
+        />
+      </div>
+    </section>
+  );
+}
+
+function CommunityProofSection() {
+  return (
+    <section className="j-sale-deal__community-proof">
+      <div className="j-sale-deal__community-video">
+        <ResponsiveIframe
+          src="https://www.youtube-nocookie.com/embed/o1LlHKc8eZY"
+          title="Kundenfeedback Video"
+        />
+      </div>
+      <div className="j-sale-deal__comment-slider">
         <img
           src={file('Bildschirmfoto-2022-05-02-um-13.28.12-631x1024.png_1.webp')}
           alt="Kundenfeedback"
@@ -675,11 +650,23 @@ function FrequencyProofSection() {
           alt="Kundenfeedback"
           loading="lazy"
         />
-        <ResponsiveIframe
-          src="https://www.youtube-nocookie.com/embed/o1LlHKc8eZY"
-          title="Kundenfeedback Video"
-        />
       </div>
+    </section>
+  );
+}
+
+function YoutubeProofSlider() {
+  const videos = [
+    'https://www.youtube-nocookie.com/embed/OAVUdRYGoDA',
+    'https://www.youtube-nocookie.com/embed/zIfDQ1N60fI',
+    'https://www.youtube-nocookie.com/embed/bgsAHLaQRLU',
+    'https://www.youtube-nocookie.com/embed/jyLyXZqHxaw',
+    'https://www.youtube-nocookie.com/embed/pI9fdZYhVUA',
+    'https://www.youtube-nocookie.com/embed/aG36zJKxDzg',
+  ];
+
+  return (
+    <section className="j-sale-deal__youtube-proof">
       <div className="j-sale-deal__youtube-slider">
         {videos.map((video) => (
           <ResponsiveIframe src={video} title="Qi Blanco Erfahrung" key={video} />
@@ -888,13 +875,19 @@ function CacaoFaq() {
 
   return (
     <section className="j-sale-deal__faq">
-      <h2>Häufig gestellte Fragen (FAQ)</h2>
-      {faqs.map((faq) => (
-        <details key={faq.title}>
-          <summary>{faq.title}</summary>
-          <HtmlBlock html={faq.html} />
-        </details>
-      ))}
+      <details className="j-sale-deal__faq-shell" open>
+        <summary>
+          <h2>Häufig gestellte Fragen (FAQ)</h2>
+        </summary>
+        <div className="j-sale-deal__faq-list">
+          {faqs.map((faq) => (
+            <details key={faq.title}>
+              <summary>{faq.title}</summary>
+              <HtmlBlock html={faq.html} />
+            </details>
+          ))}
+        </div>
+      </details>
     </section>
   );
 }
