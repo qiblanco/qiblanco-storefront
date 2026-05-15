@@ -170,11 +170,30 @@
 }
 
 .ten-years-sale__hero-content h1 {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   color: #fff;
   font-size: clamp(2rem, 5.4vw, 4.9rem);
   font-weight: 900;
   line-height: 0.98;
+}
+
+.ten-years-sale__hero-content h1 span {
+  display: block;
+  margin-bottom: 8px;
+  color: #f2bf72;
+  font-size: clamp(0.88rem, 1.3vw, 1.18rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.ten-years-sale__hero-content h1 strong {
+  display: block;
+  color: #fff;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
 
 .ten-years-sale__countdown {
@@ -299,6 +318,11 @@
     line-height: 1.04;
     text-wrap: balance;
     white-space: normal;
+  }
+
+  .ten-years-sale__hero-content h1 span {
+    margin-bottom: 5px;
+    font-size: 0.72rem;
   }
 
   .ten-years-sale__countdown {

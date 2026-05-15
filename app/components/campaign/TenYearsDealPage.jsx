@@ -283,7 +283,10 @@ function TemplateHero({deal, template}) {
       />
       <div className="j-sale-deal__template-hero-inner">
         <div className="j-sale-deal__template-hero-top">
-          <h1>Jubiläumssale</h1>
+          <h1>
+            <span>10 Jahre</span>
+            <strong>Jubiläums Sale</strong>
+          </h1>
           <Countdown placement="hero" />
         </div>
         <div className="j-sale-deal__template-hero-side j-sale-deal__template-hero-side--deal">

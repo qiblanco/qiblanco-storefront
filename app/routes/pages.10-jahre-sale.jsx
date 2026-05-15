@@ -33,7 +33,10 @@ export default function TenYearsSale() {
           height="975"
         />
         <div className="ten-years-sale__hero-content">
-          <h1>10 Jahre Jubiläums Sale</h1>
+          <h1>
+            <span>10 Jahre</span>
+            <strong>Jubiläums Sale</strong>
+          </h1>
           <SaleCountdown />
         </div>
       </div>
