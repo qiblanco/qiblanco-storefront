@@ -20,6 +20,12 @@ const file = (name) =>
   `/campaigns/ten-years/template-assets/${encodeURIComponent(name)}`;
 
 const checkoutCdn = (path) => `https://checkout.qiblanco.com${path}`;
+const shopifyFile = (path) =>
+  `https://cdn.shopify.com/s/files/1/0279/3095/1750/files/${path}`;
+
+const KAKAO_HERO_SAVINGS_IMAGE = shopifyFile(
+  'kakao-sparen_e065a7fd-329e-423a-a285-ee9f20e8e099.png',
+);
 
 const COMMON_FREQUENCY_ICONS = [
   {
@@ -47,6 +53,13 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroProductImage: file('2xQiOne_2_Pro_Product_Only.png'),
     heroTitle: '2x QiOne® 2 Pro',
     heroSavings: 'Spare 500 €',
+    galleryImages: [
+      file('2xQiOne_2_Pro_Product_Only.png'),
+      shopifyFile('QiOne1.webp?v=1732874828'),
+      shopifyFile('QiOne2.webp?v=1732874829'),
+      shopifyFile('QiOne3.webp?v=1732874828'),
+      shopifyFile('productohoto_48a1ddae-fff5-4e7f-bc61-385f08a6ad26.png?v=1702472932'),
+    ],
     purchaseTitle: 'Jubiläumssale: 2x QiOne® 2 Pro',
     intro:
       'Für Superhumans - dank zweiter Chip Generation und 8-facher Stärke',
@@ -61,6 +74,13 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroProductImage: file('QiOne_Necklace.png'),
     heroTitle: 'QiOne® 2 Pro + Necklace',
     heroSavings: 'Spare 250 €',
+    galleryImages: [
+      file('QiOne_Necklace.png'),
+      shopifyFile('QiOne1.webp?v=1732874828'),
+      shopifyFile('QiOne2.webp?v=1732874829'),
+      shopifyFile('Necklace_07_fb5094a4-f6c8-4565-a5a8-5b86208cbb94.webp?v=1698259307'),
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/products/necklace_01.png?v=1698259307',
+    ],
     purchaseTitle: 'Jubiläumssale: QiOne® 2 Pro + Necklace',
     intro:
       'Für Superhumans - dank zweiter Chip Generation und 8-facher Stärke.',
@@ -77,6 +97,13 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroProductImage: file('QiBracelet_Pro_Product_Only.png'),
     heroTitle: 'QiBracelet®',
     heroSavings: 'Spare 200 €',
+    galleryImages: [
+      file('QiBracelet_Pro_Product_Only.png'),
+      shopifyFile('QiBracelet1.webp?v=1732874909'),
+      shopifyFile('QiBracelet3.webp?v=1732874910'),
+      shopifyFile('QiBracelet2.webp?v=1732874909'),
+      shopifyFile('2023-03-01-qiblanco-milva-martin-1020737_1.png?v=1732476042'),
+    ],
     purchaseTitle: 'Jubiläumssale: QiBracelet®',
     intro: 'Für Superhumans - dank dritter Chip Generation und 10-facher Stärke.',
     signal:
@@ -90,6 +117,13 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroProductImage: file('QiHome_Product_Only.png'),
     heroTitle: 'QiHome® Air',
     heroSavings: 'Spare 400 €',
+    galleryImages: [
+      file('QiHome_Product_Only.png'),
+      shopifyFile('QiHome1.webp?v=1732874979'),
+      shopifyFile('QiHome2.webp?v=1732874979'),
+      shopifyFile('QiHome3.webp?v=1732874981'),
+      shopifyFile('2023-03-01-qiblanco-milva-martin-1020566_40c1ab65-8437-4303-841a-e2741fcaa3c7.png?v=1762975086'),
+    ],
     purchaseTitle: 'Jubiläumssale: QiHome® Air',
     intro: 'Der ultimative Schutz für dich & dein gesamtes Zuhause!',
     signal:
@@ -104,8 +138,18 @@ const CACAO_TEMPLATE_COPY = {
   'cacao-create-awake': {
     heroBackground: file('Create_Awake.png'),
     heroProductImage: file('Kakao_Bundle_71fcbd7f-174d-4e80-a046-b629e26467f3.png'),
+    heroTitleImage: shopifyFile('create-awake-kakao-text.png'),
+    heroSavingsImage: KAKAO_HERO_SAVINGS_IMAGE,
     heroTitle: 'Crystal Cacao® Create + Awake',
     heroSavings: 'Spare 76 €',
+    galleryImages: [
+      file('Kakao_Bundle_71fcbd7f-174d-4e80-a046-b629e26467f3.png'),
+      shopifyFile('Doypack_Mockup__v3-min.png?v=1765893937'),
+      shopifyFile('Doypack_Mockup__v3_back-min.png?v=1766919082'),
+      shopifyFile('7.png?v=1765893911'),
+      shopifyFile('Kakao2.png?v=1766919082'),
+      shopifyFile('3_1f81ca34-c281-4907-b36c-783b7c6a2cb3.png?v=1766919764'),
+    ],
     purchaseTitle: '2x Crystal Cacao® CREATE + AWAKE - Bio',
     rating: '5.0 ★★★★★ über 1.000+ Nutzer',
     benefits:
@@ -114,8 +158,18 @@ const CACAO_TEMPLATE_COPY = {
   'cacao-awake-duo': {
     heroBackground: file('2x-Awake.webp'),
     heroProductImage: file('2x_Awake_765a9f2f-20f0-4332-a3f3-d8fa01c63c77.png'),
+    heroTitleImage: shopifyFile('awake-kakao-text.png'),
+    heroSavingsImage: KAKAO_HERO_SAVINGS_IMAGE,
     heroTitle: '2x Crystal Cacao® Awake',
     heroSavings: 'Spare 76 €',
+    galleryImages: [
+      file('2x_Awake_765a9f2f-20f0-4332-a3f3-d8fa01c63c77.png'),
+      shopifyFile('7.png?v=1765893911'),
+      shopifyFile('Kakao2.png?v=1766919082'),
+      shopifyFile('9.png?v=1766918956'),
+      shopifyFile('Crystal_Cacao_Awake.png?v=1766919672'),
+      shopifyFile('3_1f81ca34-c281-4907-b36c-783b7c6a2cb3.png?v=1766919764'),
+    ],
     purchaseTitle: '2x Awake® - 28 Tage Fokus - Bio',
     rating: '5.0 ★★★★★ Über 1.000+ Nutzer',
     benefits:
@@ -124,8 +178,18 @@ const CACAO_TEMPLATE_COPY = {
   'cacao-create-duo': {
     heroBackground: file('2x-Create-BF.webp'),
     heroProductImage: file('2x_Create_2.png'),
+    heroTitleImage: shopifyFile('create-kakao-text.png'),
+    heroSavingsImage: KAKAO_HERO_SAVINGS_IMAGE,
     heroTitle: '2x Crystal Cacao® Create',
     heroSavings: 'Spare 76 €',
+    galleryImages: [
+      file('2x_Create_2.png'),
+      shopifyFile('Doypack_Mockup__v3-min.png?v=1765893937'),
+      shopifyFile('Doypack_Mockup__v3_back-min.png?v=1766919082'),
+      shopifyFile('Kakao2.png?v=1766919082'),
+      shopifyFile('Crystal_Cacao_-2-min.png?v=1766919764'),
+      shopifyFile('3_1f81ca34-c281-4907-b36c-783b7c6a2cb3.png?v=1766919764'),
+    ],
     purchaseTitle: '2x CREATE® - 28 Tage Fokus - Bio',
     rating: '5.0 ★★★★★ über 1.000+ Nutzer',
     benefits:
@@ -223,10 +287,26 @@ function TemplateHero({deal, template}) {
           <Countdown placement="hero" />
         </div>
         <div className="j-sale-deal__template-hero-side j-sale-deal__template-hero-side--deal">
-          <span>{template.heroTitle || deal.displayTitle}</span>
+          {template.heroTitleImage ? (
+            <img
+              className="j-sale-deal__template-hero-title-image"
+              src={template.heroTitleImage}
+              alt={template.heroTitle || deal.displayTitle}
+            />
+          ) : (
+            <span>{template.heroTitle || deal.displayTitle}</span>
+          )}
         </div>
         <div className="j-sale-deal__template-hero-side j-sale-deal__template-hero-side--saving">
-          <span>{template.heroSavings}</span>
+          {template.heroSavingsImage ? (
+            <img
+              className="j-sale-deal__template-hero-saving-image"
+              src={template.heroSavingsImage}
+              alt={template.heroSavings}
+            />
+          ) : (
+            <span>{template.heroSavings}</span>
+          )}
           <small>(*Angebot limitiert)</small>
         </div>
         {template.heroProductImage && (
@@ -250,15 +330,43 @@ function ProductPurchase({
   const compareAtPrice = selectedVariant.compareAtPrice;
   const productImage = template.heroProductImage || deal.productImage;
   const checkoutCartHref = getCheckoutCartHref(deal, selectedVariant);
+  const galleryImages = useMemo(
+    () => normalizeGalleryImages(template.galleryImages, productImage, deal.displayTitle),
+    [deal.displayTitle, productImage, template.galleryImages],
+  );
+  const galleryName = `deal-gallery-${deal.key}`;
 
   return (
     <section className="j-sale-deal__product-template" id="deal">
       <div className="j-sale-deal__product-gallery">
+        <div className="j-sale-deal__product-thumbs" aria-label="Produktbilder">
+          {galleryImages.map((image, index) => (
+            <label
+              className="j-sale-deal__product-thumb"
+              key={image.src}
+            >
+              <input
+                defaultChecked={index === 0}
+                name={galleryName}
+                type="radio"
+                aria-label={`${image.alt} anzeigen`}
+              />
+              <span>
+                <img src={image.src} alt="" loading="lazy" />
+              </span>
+            </label>
+          ))}
+        </div>
         <div className="j-sale-deal__product-main-image">
-          <img
-            src={productImage}
-            alt={deal.displayTitle}
-          />
+          {galleryImages.map((image, index) => (
+            <img
+              className="j-sale-deal__product-main-option"
+              src={image.src}
+              alt={image.alt}
+              key={image.src}
+              loading={index === 0 ? 'eager' : 'lazy'}
+            />
+          ))}
         </div>
       </div>
 
@@ -348,6 +456,23 @@ function ProductPurchase({
       </div>
     </section>
   );
+}
+
+function normalizeGalleryImages(images, fallbackImage, fallbackAlt) {
+  const sourceImages = images?.length ? images : [fallbackImage];
+  const seen = new Set();
+
+  return sourceImages
+    .map((image, index) =>
+      typeof image === 'string'
+        ? {src: image, alt: `${fallbackAlt} Bild ${index + 1}`}
+        : {src: image.src, alt: image.alt || `${fallbackAlt} Bild ${index + 1}`},
+    )
+    .filter((image) => {
+      if (!image.src || seen.has(image.src)) return false;
+      seen.add(image.src);
+      return true;
+    });
 }
 
 function Countdown({placement = 'default'}) {
@@ -777,7 +902,7 @@ function CacaoStory() {
       <HtmlTextSection
         html="<h2>Herkunft: Spüre die Kraft des Amazonas</h2><p>Aus dem geheimnisvollen Amazonas bringen wir dir eine heilige Pflanze in ihrer reinsten Form: unseren bio-zertifizierten <strong>Kristall Kakao® Create</strong>. Diese besonderen Kakaobohnen stammen aus nachhaltigem Anbau in den <strong>Bergwäldern des peruanischen Departamento Amazonas</strong>. Sie werden behutsam bei niedriger Temperatur vermahlen und anschließend in eine elegante, quadratische 420 g-Tafel gegossen - ein purer Block <strong>Bio Kristall Kakao®</strong>.</p><p>Nach der Formung geben wir dem Kakao die Zeit, die er braucht: In Ruhe kristallisiert er langsam und entwickelt dabei sein charakteristisches Kristallmuster - Sinnbild für naturbelassene Qualität, aromatische Tiefe und unsere tiefe Achtung vor dem Ursprung. Während dieser Reifephase setzen wir das <strong>QiHome® Air</strong> ein: Es schafft eine besondere Atmosphäre, die die Kristallisation begleitet und den Kakao auf seinem Weg zu seiner einzigartigen Struktur unterstützt.</p><p>So entsteht unser unverwechselbarer <strong>Kristall Kakao®</strong> - mit feiner Struktur, voller Kraft und lebendigem Geschmack. Versiegelt im Aroma-Schutzpack bleiben das volle Bouquet tropischer Früchte, feiner Kokosnoten und Zitrusnuancen sowie alle wertvollen Bestandteile optimal bewahrt.</p><p><strong>Brich dir ein Stück ab, bereite ein warmes Elixier zu und tauche ein in dein persönliches Ritual - voller Achtsamkeit, Herzöffnung und tiefer Verbundenheit.</strong></p>"
       />
-      <FullImage src={file('montegrande.jpg')} />
+      <FullImage src={file('montegrande.jpg')} margin={70} marginBottom={18} />
       <HtmlTextSection
         html="<ul><li>Copyright: QUIRINO OLIVERA NUÑEZ<br/>ASOCIACION PARA LA INVESTICAGION CIENTIFICA DE LA AMAZONIA DE PERU</li></ul><h2><strong>Crystal Cacao® - Ursprung, der 6.300 Jahre zurückreicht</strong></h2><p>Im Norden Perus, im Tal von Jaén und Bagua, erhebt sich der mystische <strong>Spiraltempel von Montegrande</strong> - ein Ort, an dem Archäologen Kakaorückstände in <strong>6.300 Jahre alten Keramiken entdeckt</strong> haben.</p><p>Diese Funde gelten heute als der <strong>älteste bekannte Nachweis von Kakao weltweit</strong> - der Beginn einer Geschichte, die bis in unsere Zeit fortlebt. Nur wenige Kilometer von diesem historischen Fundort entfernt, in denselben fruchtbaren Böden des oberen Amazonasbeckens, wachsen die Pflanzen, aus deren Früchten <strong>Crystal Cacao®</strong> entsteht.</p><p>Die Region bildet eine <strong>kontinuierliche Abstammungslinie:</strong> vom urzeitlichen Wildkakao über die ersten domestizierten Pflanzen des Montegrande-Kulturraums bis hin zu den heutigen, naturbelassenen Altlinien, die den genetischen Kern von <strong>Kristall Kakao®</strong> tragen.</p><p>Diese Verbindung aus Archäologie, Ökologie und Genetik zeichnet ein klares Bild: <strong>Crystal Cacao® wächst dort, wo die Geschichte des Kakaos begann</strong> - im selben Boden, unter derselben Sonne und in einer ununterbrochenen Linie, die seit über 6.000 Jahren fortbesteht.</p><p>Er trägt die Energie, Reinheit und Resonanz des ältesten bekannten Kakaos der Welt - und macht sie erlebbar für den Menschen von heute.</p><h2><strong>🛡️ Unsere Garantie:</strong></h2><ul><li><strong>🔒 100% Kakao. 0% Risiko.</strong></li><li><strong>✔️ Wissenschaftlich analysiert</strong></li><li><strong>✔️ Rückgabe innerhalb von 20 Tagen - auch angebrochen</strong></li><li><strong>✔️ Bio-zertifiziert &amp; aromasicher verpackt</strong></li></ul>"
       />
@@ -875,7 +1000,7 @@ function CacaoFaq() {
 
   return (
     <section className="j-sale-deal__faq">
-      <details className="j-sale-deal__faq-shell" open>
+      <details className="j-sale-deal__faq-shell">
         <summary>
           <h2>Häufig gestellte Fragen (FAQ)</h2>
         </summary>
@@ -892,11 +1017,14 @@ function CacaoFaq() {
   );
 }
 
-function FullImage({src, margin = 100}) {
+function FullImage({src, margin = 100, marginBottom}) {
   return (
     <section
       className="j-sale-deal__fullscreen-image"
-      style={{'--image-margin': `${margin}px`}}
+      style={{
+        '--image-margin': `${margin}px`,
+        '--image-margin-bottom': `${marginBottom ?? margin}px`,
+      }}
     >
       <img src={src} alt="" loading="lazy" />
     </section>

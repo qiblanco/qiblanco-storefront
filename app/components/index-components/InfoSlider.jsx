@@ -120,10 +120,33 @@ Use props.background in InfoSlider as a shopify cdn url to insert the background
 
 function InfoSliderCard({title, label, description, background}){
     const [open, setOpen] = useState(false);
+    const toggleOpen = () => setOpen((current) => !current);
 
     return (
-        <div className={`InfoSliderCard${open ? " SliderCardOpened" : ""}`} style={{backgroundImage: `url(${background})`}}>
-            <button type="button" className="CardCollapseButton" onClick={() => setOpen(!open)} aria-label={open ? 'Details schließen' : 'Details öffnen'}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <div
+            className={`InfoSliderCard${open ? " SliderCardOpened" : ""}`}
+            style={{backgroundImage: `url(${background})`}}
+            role="button"
+            tabIndex={0}
+            aria-expanded={open}
+            onClick={toggleOpen}
+            onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleOpen();
+                }
+            }}
+        >
+            <button
+                type="button"
+                className="CardCollapseButton"
+                onClick={(event) => {
+                    event.stopPropagation();
+                    toggleOpen();
+                }}
+                aria-label={open ? 'Details schließen' : 'Details öffnen'}
+                aria-expanded={open}
+            ><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 5v14M5 12h14"></path>
               </svg></button>
             <div className="CardOverlay"></div>

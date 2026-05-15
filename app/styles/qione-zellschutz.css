@@ -55,6 +55,7 @@
   flex: 0 0 400px;
   width: 400px;
   max-width: 100%;
+  cursor: pointer;
 }
 @media (max-width: 600px) {
   .lp-vp .InfoSlider .InfoSliderCard,
@@ -72,6 +73,12 @@
   bottom: 1.5rem;
   display: flex;
   flex-direction: column;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.lp-vp .InfoSlider .InfoSliderCard .CardCollapseButton {
+  z-index: 3;
 }
 .lp-vp .InfoSlider .InfoSliderCard .CardDescription {
   position: static;
