@@ -1359,6 +1359,31 @@
   padding: 0;
 }
 
+.j-sale-deal__html-section.is-mineral-overview h2 {
+  font-size: clamp(1.72rem, 2.3vw, 2rem);
+  white-space: nowrap;
+}
+
+.j-sale-deal__html-section.is-footnote {
+  margin-top: 8px;
+  margin-bottom: 58px;
+}
+
+.j-sale-deal__html-section.is-footnote > div {
+  width: min(820px, 100%);
+  margin: 0 auto;
+}
+
+.j-sale-deal__html-section.is-footnote p {
+  color: rgba(78, 74, 68, 0.72);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.j-sale-deal__guarantee-heading {
+  margin-top: 70px !important;
+}
+
 .j-sale-deal__centered-image {
   width: min(1180px, calc(100% - 40px));
   margin: var(--image-margin, 50px) auto;
@@ -1635,6 +1660,10 @@
   .j-sale-deal__microscope > h2,
   .j-sale-deal__product-copy h2 {
     font-size: 2.05rem;
+  }
+
+  .j-sale-deal__html-section.is-mineral-overview h2 {
+    white-space: normal;
   }
 
   .j-sale-deal__product-cta {

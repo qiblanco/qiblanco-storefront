@@ -891,10 +891,12 @@ function CacaoStory() {
       <FullImage src={file('DSC02183.jpg')} />
       <HtmlTextSection
         html="<h2>Natürlich reich an über 20 wichtigen Mineralstoffen &amp; Spurenelementen</h2><p><strong>Crystal Cacao® Create liefert dir eine breite Palette an bioverfügbaren Mikronährstoffen - genau so, wie sie die Natur vorgesehen hat.</strong></p><p>Durch den schonenden Herstellungsprozess bleiben in Create viele essenzielle Mikronährstoffe erhalten, die dein Körper täglich braucht - in bioverfügbarer Form und perfekt abgestimmt durch die Natur.</p><p>🧬 Enthält u. a.:<br/>✅ Magnesium, Kalium, Calcium, Phosphor, Natrium<br/>✅ Eisen, Zink, Kupfer, Mangan, Kobalt, Nickel, Chrom<br/>✅ sowie natürlich vorkommende Spurenelemente wie Silizium, Bor, Vanadium und weitere</p><ul><li><strong>🛡️ Magnesium, Calcium, Eisen und Zink</strong> tragen zur normalen Funktion des Nervensystems, des Immunsystems und des Energiestoffwechsels bei.*</li><li><strong>❤️ Kupfer und Mangan</strong> unterstützen den Schutz der Zellen vor oxidativem Stress.*</li><li><strong>💡 Chrom</strong> trägt zur Aufrechterhaltung eines normalen Blutzuckerspiegels bei.*</li></ul>"
+        className="is-mineral-overview"
       />
       <HtmlTextSection
         html="<p>*Diese Aussagen basieren auf den allgemeinen wissenschaftlich anerkannten Funktionen der enthaltenen Mikronährstoffe gemäß EU-Verordnung.</p>"
         compact
+        className="is-footnote"
       />
       <HtmlTextSection
         html="<h2>Analyse der enthaltenen Mineralstoffe &amp; Spurenelemente</h2><h3><strong>Essentielle Mineralstoffe</strong></h3><ul><li>1. Magnesium (Mg) - Energiehaushalt, Nerven</li><li>2. Kalium (K) - Herzfunktion, Zellspannung</li><li>3. Calcium (Ca) - Knochen, Signalwege</li><li>4. Phosphor (P) - ATP-Bildung</li><li>5. Natrium (Na) - Elektrolytgleichgewicht</li></ul><h3><strong>Essentielle Spurenelemente</strong></h3><ul><li>6. Eisen (Fe) - Sauerstofftransport</li><li>7. Zink (Zn) - Immunsystem, Enzyme</li><li>8. Kupfer (Cu) - antioxidative Enzyme</li><li>9. Mangan (Mn) - antioxidative Cofaktoren</li><li>10. Chrom (Cr) - Glukosestoffwechsel</li><li>11. Nickel (Ni) - enzymatische Prozesse</li><li>12. Kobalt (Co) - Bestandteil von Vitamin B12</li></ul><h3><strong>Weitere natürliche Spurenelemente</strong></h3><ul><li>13. Silizium (Si) - Bindegewebe, Struktur</li><li>14. Bor (B) - Knochen, kognitive Funktionen</li><li>15. Strontium (Sr) - Mineralstoffwechsel</li><li>16. Rubidium (Rb) - intrazellulärer Marker</li><li>17. Vanadium (V) - Glukosestoffwechsel</li><li>18. Cäsium (Cs) - bioenergetische Spur</li></ul><ol><li><strong>Reine esoterische Bedeutung:</strong></li></ol><ul><li>19. Barium (Ba) - energetische Schutzschicht</li><li>20. Gallium (Ga) - Klärung des Energiefeldes</li><li>21. Lanthan (La) - tiefere Intuition</li><li>22. Tellur (Te) - feinstoffliche Leitfähigkeit</li><li>23. Hafnium (Hf) - energetische Zentrierung</li><li>24. Tantal (Ta) - Stabilisierung spiritueller Frequenzen</li></ul>"
@@ -905,7 +907,7 @@ function CacaoStory() {
       />
       <FullImage src={file('montegrande.jpg')} margin={70} marginBottom={18} />
       <HtmlTextSection
-        html="<ul><li>Copyright: QUIRINO OLIVERA NUÑEZ<br/>ASOCIACION PARA LA INVESTICAGION CIENTIFICA DE LA AMAZONIA DE PERU</li></ul><h2><strong>Crystal Cacao® - Ursprung, der 6.300 Jahre zurückreicht</strong></h2><p>Im Norden Perus, im Tal von Jaén und Bagua, erhebt sich der mystische <strong>Spiraltempel von Montegrande</strong> - ein Ort, an dem Archäologen Kakaorückstände in <strong>6.300 Jahre alten Keramiken entdeckt</strong> haben.</p><p>Diese Funde gelten heute als der <strong>älteste bekannte Nachweis von Kakao weltweit</strong> - der Beginn einer Geschichte, die bis in unsere Zeit fortlebt. Nur wenige Kilometer von diesem historischen Fundort entfernt, in denselben fruchtbaren Böden des oberen Amazonasbeckens, wachsen die Pflanzen, aus deren Früchten <strong>Crystal Cacao®</strong> entsteht.</p><p>Die Region bildet eine <strong>kontinuierliche Abstammungslinie:</strong> vom urzeitlichen Wildkakao über die ersten domestizierten Pflanzen des Montegrande-Kulturraums bis hin zu den heutigen, naturbelassenen Altlinien, die den genetischen Kern von <strong>Kristall Kakao®</strong> tragen.</p><p>Diese Verbindung aus Archäologie, Ökologie und Genetik zeichnet ein klares Bild: <strong>Crystal Cacao® wächst dort, wo die Geschichte des Kakaos begann</strong> - im selben Boden, unter derselben Sonne und in einer ununterbrochenen Linie, die seit über 6.000 Jahren fortbesteht.</p><p>Er trägt die Energie, Reinheit und Resonanz des ältesten bekannten Kakaos der Welt - und macht sie erlebbar für den Menschen von heute.</p><h2><strong>🛡️ Unsere Garantie:</strong></h2><ul><li><strong>🔒 100% Kakao. 0% Risiko.</strong></li><li><strong>✔️ Wissenschaftlich analysiert</strong></li><li><strong>✔️ Rückgabe innerhalb von 20 Tagen - auch angebrochen</strong></li><li><strong>✔️ Bio-zertifiziert &amp; aromasicher verpackt</strong></li></ul>"
+        html="<ul><li>Copyright: QUIRINO OLIVERA NUÑEZ<br/>ASOCIACION PARA LA INVESTICAGION CIENTIFICA DE LA AMAZONIA DE PERU</li></ul><h2><strong>Crystal Cacao® - Ursprung, der 6.300 Jahre zurückreicht</strong></h2><p>Im Norden Perus, im Tal von Jaén und Bagua, erhebt sich der mystische <strong>Spiraltempel von Montegrande</strong> - ein Ort, an dem Archäologen Kakaorückstände in <strong>6.300 Jahre alten Keramiken entdeckt</strong> haben.</p><p>Diese Funde gelten heute als der <strong>älteste bekannte Nachweis von Kakao weltweit</strong> - der Beginn einer Geschichte, die bis in unsere Zeit fortlebt. Nur wenige Kilometer von diesem historischen Fundort entfernt, in denselben fruchtbaren Böden des oberen Amazonasbeckens, wachsen die Pflanzen, aus deren Früchten <strong>Crystal Cacao®</strong> entsteht.</p><p>Die Region bildet eine <strong>kontinuierliche Abstammungslinie:</strong> vom urzeitlichen Wildkakao über die ersten domestizierten Pflanzen des Montegrande-Kulturraums bis hin zu den heutigen, naturbelassenen Altlinien, die den genetischen Kern von <strong>Kristall Kakao®</strong> tragen.</p><p>Diese Verbindung aus Archäologie, Ökologie und Genetik zeichnet ein klares Bild: <strong>Crystal Cacao® wächst dort, wo die Geschichte des Kakaos begann</strong> - im selben Boden, unter derselben Sonne und in einer ununterbrochenen Linie, die seit über 6.000 Jahren fortbesteht.</p><p>Er trägt die Energie, Reinheit und Resonanz des ältesten bekannten Kakaos der Welt - und macht sie erlebbar für den Menschen von heute.</p><h2 class='j-sale-deal__guarantee-heading'><strong>🛡️ Unsere Garantie:</strong></h2><ul><li><strong>🔒 100% Kakao. 0% Risiko.</strong></li><li><strong>✔️ Wissenschaftlich analysiert</strong></li><li><strong>✔️ Rückgabe innerhalb von 20 Tagen - auch angebrochen</strong></li><li><strong>✔️ Bio-zertifiziert &amp; aromasicher verpackt</strong></li></ul>"
       />
       <FullImage src={file('DSC01953_Kopie.webp')} />
       <HtmlTextSection
@@ -1048,6 +1050,7 @@ function CenteredImage({src, margin = 50, width = 100}) {
 
 function HtmlTextSection({
   html,
+  className = '',
   compact = false,
   listMarkers = false,
   margin = 0,
@@ -1058,6 +1061,7 @@ function HtmlTextSection({
       className={
         [
           'j-sale-deal__html-section',
+          className,
           compact ? 'is-compact' : '',
           listMarkers ? 'has-list-markers' : '',
         ]
