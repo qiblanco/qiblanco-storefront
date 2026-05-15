@@ -73,6 +73,8 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroBackground: file('02_qione_BF24-min.webp'),
     heroProductImage: file('QiOne_Necklace.png'),
     heroTitle: 'QiOne® 2 Pro + Necklace',
+    heroTitleLines: ['QiOne® 2 Pro', '+ Necklace'],
+    hideHeroProductImage: true,
     heroSavings: 'Spare 250 €',
     purchaseImage: shopifyFile(
       'QiOne_NecklaceBundlev3Transparent_1.png?v=1719311888',
@@ -299,6 +301,12 @@ function TemplateHero({deal, template}) {
               src={template.heroTitleImage}
               alt={template.heroTitle || deal.displayTitle}
             />
+          ) : template.heroTitleLines ? (
+            <span className="j-sale-deal__template-hero-title-lines">
+              {template.heroTitleLines.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </span>
           ) : (
             <span>{template.heroTitle || deal.displayTitle}</span>
           )}
@@ -315,7 +323,7 @@ function TemplateHero({deal, template}) {
           )}
           <small>(*Angebot limitiert)</small>
         </div>
-        {template.heroProductImage && (
+        {template.heroProductImage && !template.hideHeroProductImage && (
           <img
             className="j-sale-deal__template-hero-product"
             src={template.heroProductImage}
