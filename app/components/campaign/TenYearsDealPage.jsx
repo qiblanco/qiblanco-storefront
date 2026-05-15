@@ -60,7 +60,7 @@ const FREQUENCY_TEMPLATE_COPY = {
       shopifyFile('QiOne3.webp?v=1732874828'),
       shopifyFile('productohoto_48a1ddae-fff5-4e7f-bc61-385f08a6ad26.png?v=1702472932'),
     ],
-    purchaseTitle: 'Jubiläumssale: 2x QiOne® 2 Pro',
+    purchaseTitle: 'Jubiläums Sale: 2x QiOne® 2 Pro',
     intro:
       'Für Superhumans - dank zweiter Chip Generation und 8-facher Stärke',
     signal:
@@ -73,15 +73,19 @@ const FREQUENCY_TEMPLATE_COPY = {
     heroBackground: file('02_qione_BF24-min.webp'),
     heroProductImage: file('QiOne_Necklace.png'),
     heroTitle: 'QiOne® 2 Pro + Necklace',
+    heroTitleLines: ['QiOne® 2 Pro', '+ Necklace'],
     heroSavings: 'Spare 250 €',
+    purchaseImage: shopifyFile(
+      'QiOne_NecklaceBundlev3Transparent_1.png?v=1719311888',
+    ),
     galleryImages: [
-      file('QiOne_Necklace.png'),
+      shopifyFile('QiOne_NecklaceBundlev3Transparent_1.png?v=1719311888'),
       shopifyFile('QiOne1.webp?v=1732874828'),
       shopifyFile('QiOne2.webp?v=1732874829'),
       shopifyFile('Necklace_07_fb5094a4-f6c8-4565-a5a8-5b86208cbb94.webp?v=1698259307'),
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/products/necklace_01.png?v=1698259307',
     ],
-    purchaseTitle: 'Jubiläumssale: QiOne® 2 Pro + Necklace',
+    purchaseTitle: 'Jubiläums Sale: QiOne® 2 Pro + Necklace',
     intro:
       'Für Superhumans - dank zweiter Chip Generation und 8-facher Stärke.',
     extra:
@@ -104,7 +108,7 @@ const FREQUENCY_TEMPLATE_COPY = {
       shopifyFile('QiBracelet2.webp?v=1732874909'),
       shopifyFile('2023-03-01-qiblanco-milva-martin-1020737_1.png?v=1732476042'),
     ],
-    purchaseTitle: 'Jubiläumssale: QiBracelet®',
+    purchaseTitle: 'Jubiläums Sale: QiBracelet®',
     intro: 'Für Superhumans - dank dritter Chip Generation und 10-facher Stärke.',
     signal:
       '<p>Vernetze jetzt <strong>100 000 000 000 000</strong> Signale.</p>',
@@ -124,7 +128,7 @@ const FREQUENCY_TEMPLATE_COPY = {
       shopifyFile('QiHome3.webp?v=1732874981'),
       shopifyFile('2023-03-01-qiblanco-milva-martin-1020566_40c1ab65-8437-4303-841a-e2741fcaa3c7.png?v=1762975086'),
     ],
-    purchaseTitle: 'Jubiläumssale: QiHome® Air',
+    purchaseTitle: 'Jubiläums Sale: QiHome® Air',
     intro: 'Der ultimative Schutz für dich & dein gesamtes Zuhause!',
     signal:
       '<p>Vernetze jetzt <strong>100 000 000 000 000</strong> Signale.</p>',
@@ -244,8 +248,8 @@ export function TenYearsDealPage({deal}) {
       <TemplateHero deal={deal} template={template} />
 
       <UrgencyText>
-        - Jubiläumssale - <br />
-        {template.savingText || 'Jetzt sichern und im Presale sparen!'}
+        - Jubiläums Sale - <br />
+        {template.savingText || 'Jetzt sichern und im Pre-Sale sparen!'}
       </UrgencyText>
 
       <ProductPurchase
@@ -296,6 +300,12 @@ function TemplateHero({deal, template}) {
               src={template.heroTitleImage}
               alt={template.heroTitle || deal.displayTitle}
             />
+          ) : template.heroTitleLines ? (
+            <span className="j-sale-deal__template-hero-title-lines">
+              {template.heroTitleLines.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </span>
           ) : (
             <span>{template.heroTitle || deal.displayTitle}</span>
           )}
@@ -331,7 +341,8 @@ function ProductPurchase({
   setSelectedVariantId,
 }) {
   const compareAtPrice = selectedVariant.compareAtPrice;
-  const productImage = template.heroProductImage || deal.productImage;
+  const productImage =
+    template.purchaseImage || template.heroProductImage || deal.productImage;
   const checkoutCartHref = getCheckoutCartHref(deal, selectedVariant);
   const galleryImages = useMemo(
     () => normalizeGalleryImages(template.galleryImages, productImage, deal.displayTitle),
@@ -434,7 +445,7 @@ function ProductPurchase({
               {formatMoney(compareAtPrice)}
             </span>
           )}
-          <span className="j-sale-deal__price-label">Jubiläumssale</span>
+          <span className="j-sale-deal__price-label">Jubiläums Sale</span>
         </div>
 
         {template.savingText && (
@@ -1085,7 +1096,7 @@ function DealRail({currentKey, compact = false}) {
   return (
     <section
       className={compact ? 'j-sale-deal__rail is-compact' : 'j-sale-deal__rail'}
-      aria-label="Weitere 10 Jahre Jubiläumssale Angebote"
+      aria-label="Weitere 10 Jahre Jubiläums Sale Angebote"
     >
       <div className="j-sale-deal__section-heading">
         <span>Alle Deals</span>
