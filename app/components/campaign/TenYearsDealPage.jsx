@@ -139,11 +139,48 @@ const CACAO_SHIPPING_HTML =
   '<p>✅ Kostenloser Versand ab 99 €<br/>🚚 Lieferung in 1-3 Werktagen<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
 
 function toVariantGid(id) {
+  if (String(id).startsWith('gid://')) return id;
   return `gid://shopify/ProductVariant/${id}`;
 }
 
 function formatMoney(value) {
   return moneyFormatter.format(value);
+}
+
+function toCartMoney(amount) {
+  return {
+    amount: String(amount),
+    currencyCode: 'EUR',
+  };
+}
+
+function getOptimisticVariant({deal, selectedVariant, image}) {
+  const selectedOption =
+    selectedVariant.title && selectedVariant.title !== 'Default Title'
+      ? [{name: 'Variante', value: selectedVariant.title}]
+      : [{name: 'Title', value: 'Default Title'}];
+
+  return {
+    id: toVariantGid(selectedVariant.id),
+    title: selectedVariant.title,
+    availableForSale: true,
+    image: {
+      url: image,
+      altText: deal.displayTitle,
+      width: 800,
+      height: 800,
+    },
+    price: toCartMoney(selectedVariant.price),
+    compareAtPrice: selectedVariant.compareAtPrice
+      ? toCartMoney(selectedVariant.compareAtPrice)
+      : null,
+    selectedOptions: selectedOption,
+    product: {
+      handle: deal.handle,
+      title: deal.displayTitle,
+      vendor: 'Qi Blanco',
+    },
+  };
 }
 
 function getTemplateCopy(deal) {
@@ -232,13 +269,20 @@ function ProductPurchase({
   openCart,
 }) {
   const compareAtPrice = selectedVariant.compareAtPrice;
+  const productImage = template.heroProductImage || deal.productImage;
+  const merchandiseId = toVariantGid(selectedVariant.id);
+  const optimisticVariant = getOptimisticVariant({
+    deal,
+    selectedVariant,
+    image: productImage,
+  });
 
   return (
     <section className="j-sale-deal__product-template" id="deal">
       <div className="j-sale-deal__product-gallery">
         <div className="j-sale-deal__product-main-image">
           <img
-            src={template.heroProductImage || deal.productImage}
+            src={productImage}
             alt={deal.displayTitle}
           />
         </div>
@@ -322,8 +366,9 @@ function ProductPurchase({
         <AddToCartButton
           lines={[
             {
-              merchandiseId: toVariantGid(selectedVariant.id),
+              merchandiseId,
               quantity: 1,
+              selectedVariant: optimisticVariant,
             },
           ]}
           onClick={openCart}
