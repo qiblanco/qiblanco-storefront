@@ -1057,23 +1057,41 @@
   display: grid;
   gap: 10px;
   margin: 0 0 22px;
-  padding-left: 1.35rem;
+  padding-left: 0;
   text-align: left;
 }
 
 .j-sale-deal__html-section ul {
-  list-style: disc outside;
+  list-style: none;
 }
 
 .j-sale-deal__html-section ol {
-  list-style: decimal outside;
+  list-style: none;
 }
 
 .j-sale-deal__html-section li {
   display: list-item;
+  list-style: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.j-sale-deal__html-section.has-list-markers ul,
+.j-sale-deal__html-section.has-list-markers ol {
+  padding-left: 1.35rem;
+}
+
+.j-sale-deal__html-section.has-list-markers ul {
+  list-style: disc outside;
+}
+
+.j-sale-deal__html-section.has-list-markers ol {
+  list-style: decimal outside;
+}
+
+.j-sale-deal__html-section.has-list-markers li {
   list-style: inherit;
   padding-left: 0.15rem;
-  text-align: left;
 }
 
 .j-sale-deal__html-section li::marker {

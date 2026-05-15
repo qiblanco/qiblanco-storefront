@@ -877,6 +877,7 @@ function CacaoStory() {
       <CenteredImage src={file('2024-06-qiblanco-bali-06550.jpg')} />
       <HtmlTextSection
         html="<h2><strong>Wach. Verbunden. Ohne den Absturz.</strong></h2><ul><li><strong>1.050 mg Theobromin &amp; 140 mg Koffein</strong> erzeugen zusammen eine stabile, langanhaltende Wachheit. Das hohe natürliche Verhältnis von 7,5:1 wirkt aktivierend, aber ohne typischen Koffein-Crash.</li><li><strong>10 mg Phenylethylamin</strong> (PEA) ist bekannt als Teil des körpereigenen Glücks- &amp; Motivationssystems.</li><li><strong>61 µg Anandamid</strong> wird mit mentaler Klarheit und ruhiger Präsenz in Verbindung gebracht.</li><li><strong>20 mg freies L-Tryptophan</strong> unterstützt als Serotonin-Vorstufe emotionale Balance.</li><li><strong>5.620 mg Polyphenole &amp; Flavanole</strong> tragen zur allgemeinen kognitiven Vitalität bei.</li></ul><p><strong>Create enthält das stärkste aktivierende Profil aller Kristall Kakao® Sorten - für sanfte Wachheit, kognitive Klarheit und stabile innere Ausrichtung.</strong></p>"
+        listMarkers
       />
       <FullImage src={file('2024-06-qiblanco-bali-1052459-kaffee.webp')} />
       <FullImage src={file('bohne-create.jpg')} />
@@ -1045,13 +1046,23 @@ function CenteredImage({src, margin = 50, width = 100}) {
   );
 }
 
-function HtmlTextSection({html, compact = false, margin = 0, paddingTop = 0}) {
+function HtmlTextSection({
+  html,
+  compact = false,
+  listMarkers = false,
+  margin = 0,
+  paddingTop = 0,
+}) {
   return (
     <section
       className={
-        compact
-          ? 'j-sale-deal__html-section is-compact'
-          : 'j-sale-deal__html-section'
+        [
+          'j-sale-deal__html-section',
+          compact ? 'is-compact' : '',
+          listMarkers ? 'has-list-markers' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')
       }
       style={{
         '--section-margin': `${margin}px`,

@@ -29,18 +29,10 @@ export function InfoSlider(){
     const [relativeLocation, setRelativeLocation] = useState(0);
 
     const handlePointerDown = (event) => {
-        if (event.pointerId !== undefined) {
-            event.currentTarget.setPointerCapture(event.pointerId);
-        }
-
         setStartLocation(event.clientX);
     }
 
     const handlePointerUp = (event) => {
-        if (event.pointerId !== undefined) {
-            event.currentTarget.releasePointerCapture(event.pointerId);
-        }
-
         setRelativeLocation(startLocation - event.clientX);
     }
 
