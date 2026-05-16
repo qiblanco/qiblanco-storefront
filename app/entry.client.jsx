@@ -6,9 +6,9 @@ if (!window.location.origin.includes('webcache.googleusercontent.com')) {
   startTransition(() => {
     hydrateRoot(
       document,
-      <StrictMode>
+      <StrictMode> 
         <HydratedRouter />
-      </StrictMode>,
+      </StrictMode>, 
     );
   });
 }
