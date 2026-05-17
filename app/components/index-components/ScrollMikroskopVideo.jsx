@@ -8,6 +8,7 @@ export function ScrollMikroskopVideo() {
   const [videoSrc, setVideoSrc] = useState("");
   const metadataLoadedRef = useRef(false);
   const gesturePrimedRef = useRef(false);
+  const handleScrollRef = useRef(null);
 
   // Pick source by viewport width (unchanged)
   useEffect(() => {
@@ -36,11 +37,22 @@ export function ScrollMikroskopVideo() {
 
     const onLoadedMetadata = () => {
       metadataLoadedRef.current = true;
+      window.requestAnimationFrame(() => {
+        handleScrollRef.current?.();
+      });
+    };
+
+    const onLoadedData = () => {
+      window.requestAnimationFrame(() => {
+        handleScrollRef.current?.();
+      });
     };
 
     video.addEventListener("loadedmetadata", onLoadedMetadata);
+    video.addEventListener("loadeddata", onLoadedData);
     return () => {
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.removeEventListener("loadeddata", onLoadedData);
     };
   }, []);
 
@@ -48,6 +60,7 @@ export function ScrollMikroskopVideo() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoSrc) return;
+    metadataLoadedRef.current = false;
     video.load(); // important for Safari after src swap
   }, [videoSrc]);
 
@@ -65,7 +78,7 @@ export function ScrollMikroskopVideo() {
         p.then(() => video.pause()).catch(() => {/* ignore */});
       } else {
         // Older browsers
-        try { video.play(); video.pause(); } catch (e) {}
+        try { video.play(); video.pause(); } catch { /* Older browsers can reject play/pause priming. */ }
       }
     };
 
@@ -73,7 +86,7 @@ export function ScrollMikroskopVideo() {
     return () => window.removeEventListener("touchend", primeOnTouch);
   }, []);
 
-  // Scroll logic (calculations unchanged)
+  // Scroll-scrub the video while the long sticky container intersects the viewport.
   useEffect(() => {
     const video = videoRef.current;
     const container = containerRef.current;
@@ -84,54 +97,38 @@ export function ScrollMikroskopVideo() {
 
       const rect = container.getBoundingClientRect();
 
-      // Only react while fully visible
-      if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+      if (rect.top <= window.innerHeight && rect.bottom >= 0) {
         const scrollTop = window.scrollY;
         const start = container.offsetTop;
-        const end = start + container.offsetHeight - window.innerHeight;
+        const end = Math.max(start + container.offsetHeight - window.innerHeight, start + 1);
 
         const rawProgress = Math.min(Math.max((scrollTop - start) / (end - start), 0), 1);
         setProgress(rawProgress * 100);
 
-        if (rawProgress < 0.25) {
-          // Scrub (only when seekable is ready)
-          if (video.seekable && video.seekable.length > 0 && Number.isFinite(video.duration)) {
-            const targetTime = video.duration * rawProgress;
-            // Avoid thrashing if value already close
-            if (Math.abs(video.currentTime - targetTime) > 0.03) {
-              try { video.currentTime = targetTime; } catch (e) { /* Safari might ignore until more data */ }
-            }
-          }
-          if (!video.paused) video.pause();
-        } else {
-          // Autoplay after threshold
-          if (video.paused) {
-            const p = video.play();
-            if (p && typeof p.catch === "function") p.catch(() => {/* silently ignore policy rejections */});
+        if (Number.isFinite(video.duration) && video.duration > 0) {
+          const maxTime = Math.max(video.duration - 0.05, 0);
+          const targetTime = Math.min(video.duration * rawProgress, maxTime);
+
+          // Avoid thrashing if value already close
+          if (Math.abs(video.currentTime - targetTime) > 0.03) {
+            try { video.currentTime = targetTime; } catch { /* Safari might ignore until more data */ }
           }
         }
+
+        if (!video.paused) video.pause();
       }
     };
 
-    const handleLoopSection = () => {
-      // Custom loop: when reaching the end, jump back to 3s and continue
-      if (metadataLoadedRef.current && Number.isFinite(video.duration)) {
-        if (video.currentTime >= video.duration) {
-          try {
-            video.currentTime = 3;
-            const p = video.play();
-            if (p && typeof p.catch === "function") p.catch(() => {});
-          } catch (e) { /* ignore */ }
-        }
-      }
-    };
+    handleScrollRef.current = handleScroll;
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    video.addEventListener("timeupdate", handleLoopSection);
+    window.addEventListener("resize", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      video.removeEventListener("timeupdate", handleLoopSection);
+      window.removeEventListener("resize", handleScroll);
+      handleScrollRef.current = null;
     };
   }, []);
 

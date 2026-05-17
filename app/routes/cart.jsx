@@ -33,9 +33,16 @@ export async function action({request, context}) {
   let result;
 
   switch (action) {
-    case CartForm.ACTIONS.LinesAdd:
+    case CartForm.ACTIONS.LinesAdd: {
       result = await cart.addLines(inputs.lines);
+      const discountCode =
+        typeof inputs.discountCode === 'string' ? inputs.discountCode.trim() : '';
+
+      if (discountCode && result?.cart?.totalQuantity > 0) {
+        result = await cart.updateDiscountCodes([discountCode]);
+      }
       break;
+    }
     case CartForm.ACTIONS.LinesUpdate:
       result = await cart.updateLines(inputs.lines);
       break;

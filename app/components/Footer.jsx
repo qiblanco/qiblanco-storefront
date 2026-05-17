@@ -47,26 +47,28 @@ const STUDIES = [
 /**
  * @param {FooterProps}
  */
-export function Footer({footer: footerPromise, header, publicStoreDomain}) {
+export function Footer({footer: footerPromise}) {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <FooterContent />
+      }
+    >
       <Await resolve={footerPromise}>
-        {(footer) => (
-          <footer className="footer">
-            <FooterTop />
-            <FooterStudies />
-            <FooterDisclaimer />
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
-          </footer>
-        )}
+        {() => <FooterContent />}
       </Await>
     </Suspense>
+  );
+}
+
+function FooterContent() {
+  return (
+    <footer className="footer">
+      <FooterTop />
+      <FooterStudies />
+      <FooterDisclaimer />
+      <FooterMenu />
+    </footer>
   );
 }
 
@@ -167,9 +169,9 @@ function FooterStudies() {
             ←
           </button>
           <div className="footer-studies__dots">
-            {STUDIES.map((_, i) => (
+            {STUDIES.map((study, i) => (
               <button
-                key={i}
+                key={study.id}
                 className={`footer-studies__dot${i === current ? ' active' : ''}`}
                 onClick={() => setCurrent(i)}
                 aria-label={`Studie ${i + 1}`}
@@ -306,20 +308,13 @@ function PaymentIcons() {
   );
 }
 
-/**
- * @param {{
- *   menu: FooterQuery['menu'];
- *   primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
- *   publicStoreDomain: string;
- * }}
- */
 const LEGAL_LINKS = [
   {to: '/pages/impressum', label: 'Impressum'},
   {to: '/pages/datenschutz', label: 'Datenschutz'},
   {to: '/pages/agb', label: 'AGB'},
 ];
 
-function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
+function FooterMenu() {
   return (
     <nav className="footer-menu" role="navigation">
       {LEGAL_LINKS.map(({to, label}) => (
@@ -336,48 +331,6 @@ function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
     </nav>
   );
 }
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
 
 function activeLinkStyle({isActive, isPending}) {
   return {

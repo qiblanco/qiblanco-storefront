@@ -5,6 +5,7 @@ import {CartForm} from '@shopify/hydrogen';
  *   analytics?: unknown;
  *   children: React.ReactNode;
  *   disabled?: boolean;
+ *   discountCode?: string;
  *   lines: Array<OptimisticCartLineInput>;
  *   onClick?: () => void;
  * }}
@@ -13,11 +14,16 @@ export function AddToCartButton({
   analytics,
   children,
   disabled,
+  discountCode,
   lines,
   onClick,
 }) {
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
+    <CartForm
+      route="/cart"
+      inputs={discountCode ? {lines, discountCode} : {lines}}
+      action={CartForm.ACTIONS.LinesAdd}
+    >
       {(fetcher) => (
         <>
           <input

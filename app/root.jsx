@@ -4,7 +4,6 @@ import {
   useRouteError,
   isRouteErrorResponse,
   useRouteLoaderData,
-  useNavigation,
   Links,
   Meta,
   Scripts,
@@ -73,6 +72,7 @@ export async function loader(args) {
   return {
     ...deferredData,
     ...criticalData,
+    isProductionHost: isQiblancoProductionHost(args.request.url),
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -146,6 +146,7 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
+  const shouldLoadThirdPartyScripts = data?.isProductionHost;
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
@@ -158,52 +159,58 @@ export function Layout({children}) {
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
-        <script
-          id="Cookiebot"
-          src="https://consent.cookiebot.com/uc.js"
-          data-cbid="66dc4c98-f24c-4dfe-a18b-ac77444136c5"
-          data-blockingmode="auto"
-          type="text/javascript"
-          nonce={nonce}
-          async
-          suppressHydrationWarning
-        />
+        {shouldLoadThirdPartyScripts && (
+          <script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="66dc4c98-f24c-4dfe-a18b-ac77444136c5"
+            data-blockingmode="auto"
+            type="text/javascript"
+            nonce={nonce}
+            async
+            suppressHydrationWarning
+          />
+        )}
         <Meta />
         <Links />
-        <script
-          src="/cookiebot-shopify-consent-sync.js"
-          nonce={nonce}
-          defer
-          suppressHydrationWarning
-        />
-        <script src="/hotjar.js" nonce={nonce} defer suppressHydrationWarning />
-        <script
-          src="/qiblanco-tracker.js"
-          nonce={nonce}
-          defer
-          suppressHydrationWarning
-        />
-        <script
-          src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
-          data-gorgias-loader-chat=""
-          nonce={nonce}
-          defer
-          suppressHydrationWarning
-        />
-        <script
-          src="https://config.gorgias.help/api/contact-forms/replace-mailto-script.js?shopName=qi-blanco"
-          data-gorgias-loader-mailto-replace=""
-          nonce={nonce}
-          defer
-          suppressHydrationWarning
-        />
-        <script
-          src="https://content.9gtb.com/loader.js"
-          data-gorgias-loader-convert=""
-          nonce={nonce}
-          defer
-          suppressHydrationWarning
-        />
+        {shouldLoadThirdPartyScripts && (
+          <>
+            <script
+              src="/cookiebot-shopify-consent-sync.js"
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            <script src="/hotjar.js" nonce={nonce} defer suppressHydrationWarning />
+            <script
+              src="/qiblanco-tracker.js"
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            <script
+              src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
+              data-gorgias-loader-chat=""
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            <script
+              src="https://config.gorgias.help/api/contact-forms/replace-mailto-script.js?shopName=qi-blanco"
+              data-gorgias-loader-mailto-replace=""
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            <script
+              src="https://content.9gtb.com/loader.js"
+              data-gorgias-loader-convert=""
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+          </>
+        )}
       </head>
       <body>
         <LoadingBar />
@@ -227,6 +234,11 @@ export function Layout({children}) {
 
 export default function App() {
   return <Outlet />;
+}
+
+function isQiblancoProductionHost(requestUrl) {
+  const {hostname} = new URL(requestUrl);
+  return hostname === 'qiblanco.com' || hostname === 'www.qiblanco.com';
 }
 
 export function ErrorBoundary() {
