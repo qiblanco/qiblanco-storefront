@@ -3,10 +3,14 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
-import {useState} from 'react';
-import {useCart} from '@shopify/hydrogen-react';
 
-const CACAO_HANDLES = ['crystal-cacao-awake', 'crystal-cacao-create'];
+const CACAO_HANDLES = [
+  '37cr378n',
+  'aw783hfn',
+  'awcr37shyj',
+  'crystal-cacao-awake',
+  'crystal-cacao-create',
+];
 
 function correctCacaoTax(money) {
   if (!money?.amount) return money;
@@ -60,7 +64,13 @@ export function CartLineItem({layout, line}) {
             <strong>{product.title}</strong>
           </p>
         </Link>
-        <ProductPrice price={CACAO_HANDLES.includes(product.handle) ? correctCacaoTax(line?.cost?.totalAmount) : line?.cost?.totalAmount} />
+        <ProductPrice
+          price={
+            CACAO_HANDLES.includes(product.handle)
+              ? correctCacaoTax(line?.cost?.totalAmount)
+              : line?.cost?.totalAmount
+          }
+        />
         <ul>
           {selectedOptions.map((option) =>
             option.value !== 'Default Title' ? (
