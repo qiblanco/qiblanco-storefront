@@ -1,7 +1,10 @@
-import {CartForm, Money} from '@shopify/hydrogen';
-import {useRef} from 'react';
-
-const CACAO_HANDLES = ['crystal-cacao-awake', 'crystal-cacao-create'];
+const CACAO_HANDLES = [
+  '37cr378n',
+  'aw783hfn',
+  'awcr37shyj',
+  'crystal-cacao-awake',
+  'crystal-cacao-create',
+];
 
 /**
  * @param {CartSummaryProps}
@@ -49,7 +52,6 @@ export function CartSummary({cart, layout}) {
         </small>
       </div>
       <CartCheckoutActions
-        subTotal={formatEuroPrice(taxedSubtotal)}
         checkoutUrl={cart.checkoutUrl}
       />
       <PaymentMethods />
@@ -60,7 +62,7 @@ export function CartSummary({cart, layout}) {
 /**
  * @param {{checkoutUrl?: string}}
  */
-function CartCheckoutActions({subTotal, checkoutUrl}) {
+function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
   return (
