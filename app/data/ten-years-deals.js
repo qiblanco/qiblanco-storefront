@@ -98,9 +98,7 @@ export const TEN_YEARS_DEALS = [
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qibracelet-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiBracelet3.webp?v=1732874910'),
     path: '/products/sale-qibracelet?el=JSale2026',
-    listingHref:
-      '/discount/Bracelet200?redirect=%2Fproducts%2Fsale-qibracelet%3Fel%3DJSale2026',
-    discountCode: 'Bracelet200',
+    listingHref: '/products/sale-qibracelet?el=JSale2026',
     theme: 'frequency',
     variants: [
       {id: '53761546486028', title: 'S - 17', price: 1175.63, compareAtPrice: 1599},
@@ -126,9 +124,7 @@ export const TEN_YEARS_DEALS = [
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qihome-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiHome1.webp?v=1732874979'),
     path: '/products/sale-qihome-air?el=JSale2026',
-    listingHref:
-      '/discount/Home400?redirect=%2Fproducts%2Fsale-qihome-air%3Fel%3DJSale2026',
-    discountCode: 'Home400',
+    listingHref: '/products/sale-qihome-air?el=JSale2026',
     theme: 'frequency',
     variants: [
       {id: '53761506705676', title: 'Default Title', price: 3864.71, compareAtPrice: 4999},
