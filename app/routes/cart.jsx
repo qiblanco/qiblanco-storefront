@@ -37,9 +37,12 @@ export async function action({request, context}) {
       result = await cart.addLines(inputs.lines);
       const discountCode =
         typeof inputs.discountCode === 'string' ? inputs.discountCode.trim() : '';
+      const clearDiscountCodes = inputs.clearDiscountCodes === true;
 
       if (discountCode && result?.cart?.totalQuantity > 0) {
         result = await cart.updateDiscountCodes([discountCode]);
+      } else if (clearDiscountCodes && result?.cart?.totalQuantity > 0) {
+        result = await cart.updateDiscountCodes([]);
       }
       break;
     }
