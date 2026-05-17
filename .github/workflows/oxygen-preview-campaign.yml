@@ -48,7 +48,9 @@ jobs:
             --metadata-user "OpenClaw" \
             --metadata-description "PR #4 campaign preview"
 
+          cat h2_deploy_log.json
           preview_url="$(node -e "console.log(require('./h2_deploy_log.json').url)")"
+          echo "Preview URL: ${preview_url}"
           echo "preview_url=${preview_url}" >> "$GITHUB_OUTPUT"
           echo "### Oxygen Preview" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
