@@ -216,7 +216,7 @@
 }
 
 .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
-  top: 55%;
+  top: 57%;
   width: min(31vw, 380px);
   max-height: 40vh;
   transform: translate(-50%, -34%);
@@ -1672,7 +1672,7 @@
   }
 
   .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
-    top: 48%;
+    top: 50%;
     width: min(80vw, 348px);
   }
 
@@ -1888,6 +1888,7 @@
   }
 
   .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
+    top: 50.5%;
     width: min(84vw, 320px);
   }
 

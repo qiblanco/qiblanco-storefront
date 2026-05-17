@@ -1,7 +1,4 @@
-import {CartForm, Money} from '@shopify/hydrogen';
-import {useRef} from 'react';
-
-const CACAO_HANDLES = ['crystal-cacao-awake', 'crystal-cacao-create'];
+import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
 
 /**
  * @param {CartSummaryProps}
@@ -17,19 +14,11 @@ export function CartSummary({cart, layout}) {
     return `${amount.toLocaleString('de-DE')},- €`;
   };
 
-  // Shopify returns line totals as net prices (without tax).
-  // Apply correct tax rate per product: cacao = 7%, all others = 19%.
   const lines = cart?.lines?.nodes ?? [];
-  let correctedTotal = 0;
-  for (const line of lines) {
-    const handle = line.merchandise?.product?.handle ?? '';
-    const net = parseFloat(line.cost?.totalAmount?.amount ?? '0');
-    if (CACAO_HANDLES.includes(handle)) {
-      correctedTotal += net * 1.07;
-    } else {
-      correctedTotal += net * 1.19;
-    }
-  }
+  const correctedTotal = lines.reduce(
+    (total, line) => total + getCartLineGrossDisplayTotal(line),
+    0,
+  );
 
   const currencyCode = cart.cost?.subtotalAmount?.currencyCode ?? 'EUR';
   const taxedSubtotal = {amount: correctedTotal.toFixed(2), currencyCode};
@@ -49,7 +38,6 @@ export function CartSummary({cart, layout}) {
         </small>
       </div>
       <CartCheckoutActions
-        subTotal={formatEuroPrice(taxedSubtotal)}
         checkoutUrl={cart.checkoutUrl}
       />
       <PaymentMethods />
@@ -60,7 +48,7 @@ export function CartSummary({cart, layout}) {
 /**
  * @param {{checkoutUrl?: string}}
  */
-function CartCheckoutActions({subTotal, checkoutUrl}) {
+function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
   return (

@@ -26,12 +26,18 @@ export default function TenYearsSale() {
   return (
     <div className="ten-years-page ten-years-sale">
       <div className="ten-years-sale__hero">
-        <img
-          src="/campaigns/ten-years/j-sale-hero-products-edit.jpg"
-          alt="10 Jahre Jubiläums Sale - Sale des Jahres"
-          width="1920"
-          height="1024"
-        />
+        <picture>
+          <source
+            media="(max-width: 780px)"
+            srcSet="/campaigns/ten-years/j-sale-hero-products-mobile.jpg"
+          />
+          <img
+            src="/campaigns/ten-years/j-sale-hero-products-edit.jpg"
+            alt="10 Jahre Jubiläums Sale - Sale des Jahres"
+            width="1920"
+            height="1024"
+          />
+        </picture>
         <div className="ten-years-sale__hero-content">
           <h1>
             <span>10 Jahre</span>

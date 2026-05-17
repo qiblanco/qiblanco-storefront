@@ -151,6 +151,10 @@
   background: #080706;
 }
 
+.ten-years-sale__hero picture {
+  display: block;
+}
+
 .ten-years-sale__hero img {
   display: block;
   width: 100%;
@@ -299,14 +303,15 @@
   }
 
   .ten-years-sale__hero {
-    height: clamp(270px, 74vw, 360px);
+    height: auto;
     margin: 0 0 28px;
   }
 
   .ten-years-sale__hero img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
     object-position: center;
   }
 

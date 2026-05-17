@@ -818,6 +818,12 @@
   font-weight: 500;
   transition: background 220ms ease, color 220ms ease;
 }
+.lp-vp-product__image img {
+  display: block;
+  max-width: 88%;
+  max-height: 88%;
+  object-fit: contain;
+}
 .lp-vp-product:not(.lp-vp-product--featured):hover .lp-vp-product__image,
 .lp-vp-product:not(.lp-vp-product--featured):focus-within .lp-vp-product__image {
   background: #f2f2ed;
@@ -1271,6 +1277,62 @@
 
   .lp-vp-benefit__icon {
     font-size: 24px;
+  }
+
+  .lp-vp-pricing {
+    padding: 72px 0;
+  }
+
+  .lp-vp-pricing__inner {
+    padding: 0 18px;
+  }
+
+  .lp-vp-pricing-grid {
+    width: 100%;
+    max-width: 380px;
+    margin: 38px auto 0;
+    gap: 18px;
+  }
+
+  .lp-vp-product {
+    width: 100%;
+    min-width: 0;
+    padding: 24px 20px;
+    gap: 14px;
+  }
+
+  .lp-vp-product__image {
+    aspect-ratio: 16 / 9;
+    min-height: 148px;
+  }
+
+  .lp-vp-product__name {
+    font-size: clamp(1.35rem, 6vw, 1.65rem);
+  }
+
+  .lp-vp-product__price-row {
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+
+  .lp-vp-product__price {
+    font-size: clamp(1.8rem, 9vw, 2.18rem);
+  }
+
+  .lp-vp-product__features {
+    font-size: 0.86rem;
+  }
+
+  .lp-vp-product__cta {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .lp-vp-pricing__fineprint {
+    max-width: 360px;
+    margin: 30px auto 0;
+    padding: 0 8px;
   }
 
   .lp-vp .InfoSlider {
