@@ -1,25 +1,29 @@
 import {useEffect, useMemo, useState} from 'react';
 import {Link} from 'react-router';
 import {
-  TEN_YEARS_COUNTDOWN_TARGET,
   TEN_YEARS_DEALS,
+  getTenYearsCountdownRemaining,
 } from '~/data/ten-years-deals';
+import {AddToCartButton} from '~/components/AddToCartButton';
+import {useAside} from '~/components/Aside';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {Studien} from '~/components/reusables/Studien';
 
-const moneyFormatter = new Intl.NumberFormat('de-DE', {
+const wholeEuroFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
   currency: 'EUR',
   minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
+  maximumFractionDigits: 0,
 });
 
 const file = (name) =>
   `/campaigns/ten-years/template-assets/${encodeURIComponent(name)}`;
 
-const checkoutCdn = (path) => `https://checkout.qiblanco.com${path}`;
+const NEUTRAL_HERO_BACKGROUND = file('j-sale-neutral-hero-desktop.png');
+const NEUTRAL_HERO_MOBILE_BACKGROUND = file('j-sale-neutral-hero-mobile.png');
+
 const shopifyFile = (path) =>
   `https://cdn.shopify.com/s/files/1/0279/3095/1750/files/${path}`;
 
@@ -207,30 +211,40 @@ const SHIPPING_HTML =
 const CACAO_SHIPPING_HTML =
   '<p>✅ Kostenloser Versand ab 99 €<br/>🚚 Lieferung in 1-3 Werktagen<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
 
-function formatMoney(value) {
-  return moneyFormatter.format(value);
+function toGrossPrice(value, deal) {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue)) return 0;
+  const vat = deal.theme === 'cacao' ? 1.07 : 1.19;
+  return Math.round(numberValue * vat);
 }
 
-function getCheckoutCartHref(deal, selectedVariant) {
-  const params = new URLSearchParams();
+function formatWholeEuro(value) {
+  const numberValue = Number(value);
+  return wholeEuroFormatter.format(Number.isFinite(numberValue) ? Math.round(numberValue) : 0);
+}
 
-  if (deal.discountCode) {
-    params.set('discount', deal.discountCode);
-  }
+function formatDealPrice(value, deal) {
+  return wholeEuroFormatter.format(toGrossPrice(value, deal));
+}
 
-  const query = params.toString();
-
-  return checkoutCdn(
-    `/cart/${selectedVariant.id}:1${query ? `?${query}` : ''}`,
-  );
+function getProductVariantGid(id) {
+  const value = String(id);
+  return value.startsWith('gid://')
+    ? value
+    : `gid://shopify/ProductVariant/${value}`;
 }
 
 function getTemplateCopy(deal) {
-  if (deal.theme === 'cacao') {
-    return CACAO_TEMPLATE_COPY[deal.key] || CACAO_TEMPLATE_COPY['cacao-create-awake'];
-  }
+  const template =
+    deal.theme === 'cacao'
+      ? CACAO_TEMPLATE_COPY[deal.key] || CACAO_TEMPLATE_COPY['cacao-create-awake']
+      : FREQUENCY_TEMPLATE_COPY[deal.key] || FREQUENCY_TEMPLATE_COPY['qione-2-pro-duo'];
 
-  return FREQUENCY_TEMPLATE_COPY[deal.key] || FREQUENCY_TEMPLATE_COPY['qione-2-pro-duo'];
+  return {
+    ...template,
+    heroBackground: NEUTRAL_HERO_BACKGROUND,
+    heroMobileBackground: NEUTRAL_HERO_MOBILE_BACKGROUND,
+  };
 }
 
 export function TenYearsDealPage({deal}) {
@@ -279,12 +293,19 @@ export function TenYearsDealPage({deal}) {
 function TemplateHero({deal, template}) {
   return (
     <section className="j-sale-deal__template-hero">
-      <img
-        className="j-sale-deal__template-hero-bg"
-        src={template.heroBackground}
-        alt=""
-        aria-hidden="true"
-      />
+      <picture className="j-sale-deal__template-hero-bg-picture">
+        {template.heroMobileBackground && (
+          <source
+            media="(max-width: 900px)"
+            srcSet={template.heroMobileBackground}
+          />
+        )}
+        <img
+          className="j-sale-deal__template-hero-bg"
+          src={template.heroBackground}
+          alt=""
+        />
+      </picture>
       <div className="j-sale-deal__template-hero-inner">
         <div className="j-sale-deal__template-hero-top">
           <h1>
@@ -340,10 +361,45 @@ function ProductPurchase({
   selectedVariant,
   setSelectedVariantId,
 }) {
+  const {open} = useAside();
   const compareAtPrice = selectedVariant.compareAtPrice;
   const productImage =
     template.purchaseImage || template.heroProductImage || deal.productImage;
-  const checkoutCartHref = getCheckoutCartHref(deal, selectedVariant);
+  const cartLines = useMemo(() => {
+    if (!selectedVariant) return [];
+
+    const merchandiseId = getProductVariantGid(selectedVariant.id);
+
+    return [
+      {
+        merchandiseId,
+        quantity: 1,
+        selectedVariant: {
+          id: merchandiseId,
+          title: selectedVariant.title,
+          availableForSale: true,
+          image: {
+            url: productImage,
+            altText: deal.displayTitle,
+            width: 1000,
+            height: 1000,
+          },
+          price: {
+            amount: String(toGrossPrice(selectedVariant.price, deal)),
+            currencyCode: 'EUR',
+          },
+          product: {
+            handle: deal.handle,
+            title: deal.displayTitle,
+          },
+          selectedOptions:
+            selectedVariant.title && selectedVariant.title !== 'Default Title'
+              ? [{name: 'Variante', value: selectedVariant.title}]
+              : [],
+        },
+      },
+    ];
+  }, [deal, productImage, selectedVariant]);
   const galleryImages = useMemo(
     () => normalizeGalleryImages(template.galleryImages, productImage, deal.displayTitle),
     [deal.displayTitle, productImage, template.galleryImages],
@@ -438,11 +494,11 @@ function ProductPurchase({
 
         <div className="j-sale-deal__legacy-price">
           <span className="j-sale-deal__price-current">
-            {formatMoney(selectedVariant.price)}
+            {formatDealPrice(selectedVariant.price, deal)}
           </span>
           {compareAtPrice && (
             <span className="j-sale-deal__price-compare">
-              {formatMoney(compareAtPrice)}
+              {formatWholeEuro(compareAtPrice)}
             </span>
           )}
           <span className="j-sale-deal__price-label">Jubiläums Sale</span>
@@ -459,9 +515,14 @@ function ProductPurchase({
           </p>
         )}
 
-        <a className="btn--primary" href={checkoutCartHref}>
+        <AddToCartButton
+          disabled={!selectedVariant}
+          discountCode={deal.discountCode}
+          lines={cartLines}
+          onClick={() => open('cart')}
+        >
           In den Warenkorb legen
-        </a>
+        </AddToCartButton>
 
         <HtmlBlock
           className="j-sale-deal__shipping-list"
@@ -499,7 +560,10 @@ function Countdown({placement = 'default'}) {
 
   useEffect(() => {
     const update = () => {
-      setRemaining(getRemaining(TEN_YEARS_COUNTDOWN_TARGET));
+      setRemaining({
+        days: '00',
+        ...getTenYearsCountdownRemaining(),
+      });
     };
 
     update();
@@ -850,8 +914,8 @@ function DealFinalCta({deal, template, selectedVariant}) {
         <h2>{template.ctaHeader || 'Sichere dir dein Jubiläumsangebot'}</h2>
         <HtmlBlock html="<p><strong>✅ 100% deutsche Produktion</strong></p><p><strong>✅ Hochwertigste Materialien</strong></p><p><strong>✅ Weltweiter Versand</strong></p>" />
         <div className="j-sale-deal__final-cta-price">
-          <span>{formatMoney(selectedVariant.price)}</span>
-          {compareAtPrice && <sup>{formatMoney(compareAtPrice)}</sup>}
+          <span>{formatDealPrice(selectedVariant.price, deal)}</span>
+          {compareAtPrice && <sup>{formatWholeEuro(compareAtPrice)}</sup>}
         </div>
         <a className="j-sale-deal__button" href="#deal">
           {template.ctaButton || 'Jetzt sichern'}
@@ -1143,20 +1207,4 @@ function HtmlBlock({html, className, style}) {
       dangerouslySetInnerHTML={{__html: html}}
     />
   );
-}
-
-function getRemaining(target) {
-  const diff = Math.max(new Date(target).getTime() - Date.now(), 0);
-  const seconds = Math.floor(diff / 1000);
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-
-  return {
-    days: String(days).padStart(2, '0'),
-    hours: String(hours).padStart(2, '0'),
-    minutes: String(minutes).padStart(2, '0'),
-    seconds: String(secs).padStart(2, '0'),
-  };
 }

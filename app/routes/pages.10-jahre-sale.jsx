@@ -1,8 +1,8 @@
 import {useEffect, useState} from 'react';
 import tenYearsStyles from '~/styles/ten-years-sale.css?url';
 import {
-  TEN_YEARS_COUNTDOWN_TARGET,
   TEN_YEARS_DEALS,
+  getTenYearsCountdownRemaining,
 } from '~/data/ten-years-deals';
 
 export function links() {
@@ -27,10 +27,10 @@ export default function TenYearsSale() {
     <div className="ten-years-page ten-years-sale">
       <div className="ten-years-sale__hero">
         <img
-          src="/campaigns/ten-years/j-sale-hero-all-products.jpg"
+          src="/campaigns/ten-years/j-sale-hero-products-edit.jpg"
           alt="10 Jahre Jubiläums Sale - Sale des Jahres"
-          width="2880"
-          height="975"
+          width="1920"
+          height="1024"
         />
         <div className="ten-years-sale__hero-content">
           <h1>
@@ -90,7 +90,7 @@ function SaleCountdown() {
   });
 
   useEffect(() => {
-    const update = () => setRemaining(getRemaining(TEN_YEARS_COUNTDOWN_TARGET));
+    const update = () => setRemaining(getTenYearsCountdownRemaining());
 
     update();
     const timer = window.setInterval(update, 1000);
@@ -113,19 +113,4 @@ function SaleCountdown() {
       </time>
     </div>
   );
-}
-
-function getRemaining(target) {
-  const diff = Math.max(new Date(target).getTime() - Date.now(), 0);
-  const seconds = Math.floor(diff / 1000);
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-
-  return {
-    hours: String(days * 24 + hours).padStart(2, '0'),
-    minutes: String(minutes).padStart(2, '0'),
-    seconds: String(secs).padStart(2, '0'),
-  };
 }

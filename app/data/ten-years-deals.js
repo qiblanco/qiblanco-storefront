@@ -1,7 +1,22 @@
 export const TEN_YEARS_SALE_PATH = '/pages/10-jahre-sale';
 
-// Central campaign cutoff; update this once the customer confirms the exact sale timing.
-export const TEN_YEARS_COUNTDOWN_TARGET = '2026-05-15T23:59:59+02:00';
+export function getTenYearsCountdownRemaining(now = new Date()) {
+  const current = now instanceof Date ? now : new Date(now);
+  const nextReset = new Date(current);
+  nextReset.setHours(24, 0, 0, 0);
+
+  const diff = Math.max(nextReset.getTime() - current.getTime(), 0);
+  const seconds = Math.floor(diff / 1000);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  return {
+    hours: String(hours).padStart(2, '0'),
+    minutes: String(minutes).padStart(2, '0'),
+    seconds: String(secs).padStart(2, '0'),
+  };
+}
 
 const checkoutCdn = (path) => `https://checkout.qiblanco.com${path}`;
 
@@ -199,4 +214,3 @@ export function getTenYearsDealByHandle(handle) {
     (deal) => deal.handle === handle || deal.aliases?.includes(handle),
   );
 }
-

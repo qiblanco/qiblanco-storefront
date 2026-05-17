@@ -53,12 +53,17 @@
     linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.28));
 }
 
+.j-sale-deal__template-hero-bg-picture,
 .j-sale-deal__template-hero-bg {
   position: absolute;
   inset: 0;
   z-index: -2;
   width: 100%;
   height: 100%;
+}
+
+.j-sale-deal__template-hero-bg {
+  display: block;
   object-fit: cover;
   object-position: center;
 }
@@ -145,20 +150,19 @@
   white-space: nowrap;
 }
 
+.j-sale-deal__template-hero-title-lines {
+  display: grid;
+  gap: 0.12em;
+}
+
+.j-sale-deal__template-hero-title-lines span {
+  font-size: clamp(1.55rem, 2.8vw, 3.45rem);
+}
+
 .j-sale-deal__template-hero-side--saving span {
   color: #ffd9a0;
   white-space: nowrap;
   font-size: clamp(1.8rem, 3.4vw, 4.2rem);
-}
-
-.j-sale-deal__template-hero-title-lines {
-  display: grid;
-  gap: 8px;
-}
-
-.j-sale-deal__template-hero-title-lines span {
-  font-size: clamp(1.65rem, 2.7vw, 3.35rem);
-  line-height: 0.96;
 }
 
 .j-sale-deal__template-hero-title-image,
@@ -195,24 +199,41 @@
 }
 
 .j-sale-deal__template-hero-product {
-  display: none;
+  display: block;
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: 50%;
-  width: min(82vw, 430px);
-  max-height: 46vh;
-  transform: translate(-50%, -45%);
+  top: 54%;
+  width: min(31vw, 410px);
+  max-height: 42vh;
+  transform: translate(-50%, -35%);
   object-fit: contain;
   filter: drop-shadow(0 24px 58px rgba(0, 0, 0, 0.42));
 }
 
+.j-sale-deal--qione-2-pro-duo .j-sale-deal__template-hero-product {
+  width: min(34vw, 430px);
+}
+
 .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
-  display: block;
-  top: 56%;
-  width: min(32vw, 390px);
-  max-height: none;
-  transform: translate(-50%, -46%);
+  top: 55%;
+  width: min(31vw, 380px);
+  max-height: 40vh;
+  transform: translate(-50%, -34%);
+}
+
+.j-sale-deal--qibracelet .j-sale-deal__template-hero-product {
+  width: min(27vw, 350px);
+}
+
+.j-sale-deal--qihome .j-sale-deal__template-hero-product {
+  width: min(29vw, 380px);
+}
+
+.j-sale-deal--cacao .j-sale-deal__template-hero-product {
+  top: 49%;
+  width: min(31vw, 410px);
+  max-height: 42vh;
 }
 
 .j-sale-deal__countdown {
@@ -699,6 +720,10 @@
   margin: 0 0 14px;
   font-size: 1.45rem;
   line-height: 1.2;
+}
+
+.j-sale-deal__legacy-video-grid h3 {
+  text-align: center;
 }
 
 .j-sale-deal__feature-copy p,
@@ -1595,7 +1620,7 @@
   }
 
   .j-sale-deal__template-hero-bg {
-    object-position: left center;
+    object-position: center;
   }
 
   .j-sale-deal__template-hero-side {
@@ -1635,15 +1660,28 @@
   }
 
   .j-sale-deal__template-hero-product {
-    display: none;
+    display: block;
+    top: 48%;
+    width: min(78vw, 360px);
+    max-height: 34svh;
+    transform: translate(-50%, -24%);
+  }
+
+  .j-sale-deal--qione-2-pro-duo .j-sale-deal__template-hero-product {
+    width: min(84vw, 372px);
   }
 
   .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
-    display: block;
-    top: 62%;
-    width: min(72vw, 330px);
-    max-height: 28svh;
-    transform: translate(-50%, -32%);
+    top: 48%;
+    width: min(80vw, 348px);
+  }
+
+  .j-sale-deal--qibracelet .j-sale-deal__template-hero-product {
+    width: min(68vw, 300px);
+  }
+
+  .j-sale-deal--qihome .j-sale-deal__template-hero-product {
+    width: min(74vw, 330px);
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-bg {
@@ -1669,7 +1707,10 @@
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-product {
-    display: none;
+    top: 48%;
+    width: min(76vw, 330px);
+    max-height: 32svh;
+    transform: translate(-50%, -23%);
   }
 
   .j-sale-deal__countdown--hero {
@@ -1839,13 +1880,23 @@
   }
 
   .j-sale-deal__template-hero-product {
-    display: none;
+    width: min(82vw, 330px);
+  }
+
+  .j-sale-deal--qione-2-pro-duo .j-sale-deal__template-hero-product {
+    width: min(88vw, 340px);
   }
 
   .j-sale-deal--qione-2-pro-necklace .j-sale-deal__template-hero-product {
-    display: block;
-    width: min(76vw, 300px);
-    max-height: 27svh;
+    width: min(84vw, 320px);
+  }
+
+  .j-sale-deal--qibracelet .j-sale-deal__template-hero-product {
+    width: min(72vw, 276px);
+  }
+
+  .j-sale-deal--qihome .j-sale-deal__template-hero-product {
+    width: min(78vw, 302px);
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-side--deal {
@@ -1863,7 +1914,7 @@
   }
 
   .j-sale-deal--cacao .j-sale-deal__template-hero-product {
-    display: none;
+    width: min(78vw, 304px);
   }
 
   .j-sale-deal__price-current {
