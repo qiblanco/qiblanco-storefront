@@ -82,10 +82,10 @@ export const TEN_YEARS_DEALS = [
   },
   {
     key: 'qibracelet',
-    handle: 'bf-qibracelet',
-    aliases: ['687ghgf4ed'],
+    handle: 'sale-qibracelet',
+    aliases: ['bf-qibracelet', '687ghgf4ed'],
     title: 'QiBracelet',
-    productTitle: 'BF QiBracelet',
+    productTitle: 'Sale: QiBracelet',
     displayTitle: 'QiBracelet®',
     eyebrow: 'Rabattcode-Angebot',
     shortCopy:
@@ -97,9 +97,9 @@ export const TEN_YEARS_DEALS = [
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qibracelet-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiBracelet3.webp?v=1732874910'),
-    path: '/products/bf-qibracelet?el=JSale2026',
+    path: '/products/sale-qibracelet?el=JSale2026',
     listingHref:
-      '/discount/Bracelet200?redirect=%2Fproducts%2Fbf-qibracelet&el=JSale2026',
+      '/discount/Bracelet200?redirect=%2Fproducts%2Fsale-qibracelet%3Fel%3DJSale2026',
     discountCode: 'Bracelet200',
     theme: 'frequency',
     variants: [
@@ -110,10 +110,10 @@ export const TEN_YEARS_DEALS = [
   },
   {
     key: 'qihome',
-    handle: 'bf-qihome-air',
-    aliases: ['56huz67dds'],
+    handle: 'sale-qihome-air',
+    aliases: ['bf-qihome-air', '56huz67dds'],
     title: 'QiHome',
-    productTitle: 'BF QiHome® Air',
+    productTitle: 'Sale: QiHome',
     displayTitle: 'QiHome® Air',
     eyebrow: 'Rabattcode-Angebot',
     shortCopy:
@@ -125,9 +125,9 @@ export const TEN_YEARS_DEALS = [
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qihome-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiHome1.webp?v=1732874979'),
-    path: '/products/bf-qihome-air?el=JSale2026',
+    path: '/products/sale-qihome-air?el=JSale2026',
     listingHref:
-      '/discount/Home400?redirect=%2Fproducts%2Fbf-qihome-air&el=JSale2026',
+      '/discount/Home400?redirect=%2Fproducts%2Fsale-qihome-air%3Fel%3DJSale2026',
     discountCode: 'Home400',
     theme: 'frequency',
     variants: [
