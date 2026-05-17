@@ -516,6 +516,7 @@ function ProductPurchase({
         )}
 
         <AddToCartButton
+          clearDiscountCodes={!deal.discountCode}
           disabled={!selectedVariant}
           discountCode={deal.discountCode}
           lines={cartLines}
