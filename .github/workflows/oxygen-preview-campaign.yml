@@ -71,6 +71,7 @@ jobs:
           preview_url="$(node -e "console.log(require('./h2_deploy_log.json').url)")"
           auth_bypass_token="$(node -e "console.log(require('./h2_deploy_log.json').authBypassToken || '')")"
           echo "Preview URL: ${preview_url}"
+          echo "Auth bypass token: ${auth_bypass_token}"
           echo "preview_url=${preview_url}" >> "$GITHUB_OUTPUT"
           echo "### Oxygen Preview" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
