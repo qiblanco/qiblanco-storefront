@@ -87,13 +87,13 @@ export const TEN_YEARS_DEALS = [
     title: 'QiBracelet',
     productTitle: 'Sale: QiBracelet',
     displayTitle: 'QiBracelet®',
-    eyebrow: 'Rabattcode-Angebot',
+    eyebrow: 'Jubiläumsangebot',
     shortCopy:
-      'Das elegante Bracelet für deinen Alltag. Der Rabatt wird im Pre-Sale über den Deal-Link aktiviert.',
+      'Das elegante Bracelet für deinen Alltag zum finalen 10 Jahre Jubiläums Sale Preis.',
     benefits: [
       'QiBracelet® in drei Größen',
       'Dezent tragbar im Alltag',
-      'Rabattcode Bracelet200 wird über den Deal-Link angewendet',
+      'Spare 200 Euro gegenüber dem regulären Preis',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qibracelet-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiBracelet3.webp?v=1732874910'),
@@ -113,13 +113,13 @@ export const TEN_YEARS_DEALS = [
     title: 'QiHome',
     productTitle: 'Sale: QiHome',
     displayTitle: 'QiHome® Air',
-    eyebrow: 'Rabattcode-Angebot',
+    eyebrow: 'Jubiläumsangebot',
     shortCopy:
       'Die Lösung für dein Zuhause: QiHome® Air unterstützt dein Umfeld mit kohärenter Technologie.',
     benefits: [
       'QiHome® Air für Wohn- und Arbeitsbereiche',
       'Ein starkes Angebot für dein Zuhause',
-      'Rabattcode Home400 wird über den Deal-Link angewendet',
+      'Spare 400 Euro gegenüber dem regulären Preis',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qihome-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiHome1.webp?v=1732874979'),
