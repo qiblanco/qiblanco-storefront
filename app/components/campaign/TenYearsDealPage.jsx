@@ -368,7 +368,13 @@ function ProductPurchase({
   const cartLines = useMemo(() => {
     if (!selectedVariant) return [];
 
-    const merchandiseId = getProductVariantGid(selectedVariant.id);
+    const merchandiseId = getProductVariantGid(
+      selectedVariant.cartVariantId || selectedVariant.id,
+    );
+    const cartProductHandle =
+      selectedVariant.cartProductHandle || deal.cartProductHandle || deal.handle;
+    const cartProductTitle =
+      selectedVariant.cartProductTitle || deal.cartProductTitle || deal.displayTitle;
 
     return [
       {
@@ -389,8 +395,8 @@ function ProductPurchase({
             currencyCode: 'EUR',
           },
           product: {
-            handle: deal.handle,
-            title: deal.displayTitle,
+            handle: cartProductHandle,
+            title: cartProductTitle,
           },
           selectedOptions:
             selectedVariant.title && selectedVariant.title !== 'Default Title'
