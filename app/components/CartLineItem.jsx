@@ -3,22 +3,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
-
-const CACAO_HANDLES = [
-  '37cr378n',
-  'aw783hfn',
-  'awcr37shyj',
-  'crystal-cacao-awake',
-  'crystal-cacao-create',
-];
-
-function correctCacaoTax(money) {
-  if (!money?.amount) return money;
-  const gross19 = parseFloat(money.amount);
-  const net = gross19 / 1.19;
-  const gross7 = net * 1.07;
-  return {...money, amount: gross7.toFixed(2)};
-}
+import {getCartLinePriceDisplay} from '~/lib/cart-display-pricing';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -32,6 +17,7 @@ export function CartLineItem({layout, line}) {
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
+  const displayPrice = getCartLinePriceDisplay(line);
 
   return (
     <li
@@ -65,11 +51,8 @@ export function CartLineItem({layout, line}) {
           </p>
         </Link>
         <ProductPrice
-          price={
-            CACAO_HANDLES.includes(product.handle)
-              ? correctCacaoTax(line?.cost?.totalAmount)
-              : line?.cost?.totalAmount
-          }
+          price={displayPrice.price}
+          taxRate={displayPrice.taxRate}
         />
         <ul>
           {selectedOptions.map((option) =>
