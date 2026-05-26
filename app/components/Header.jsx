@@ -7,20 +7,40 @@ import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ReviewCount} from './reusables/ReviewCount';
 
+const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
+
+function resolveMenuItemLink(item) {
+  if (item?.title?.trim().toLowerCase() === 'partner werden') {
+    return {to: PARTNER_REGISTER_URL, isExternal: true};
+  }
+
+  return resolveMenuLink(item?.url);
+}
+
 function resolveMenuLink(rawUrl) {
   if (!rawUrl) return {to: '#', isExternal: false};
-  const isInternal =
-    rawUrl.includes('myshopify.com') ||
-    rawUrl.includes('qiblanco.com') ||
-    rawUrl.startsWith('/');
-  if (isInternal) {
-    try {
-      return {to: new URL(rawUrl, 'http://placeholder').pathname, isExternal: false};
-    } catch {
-      return {to: rawUrl, isExternal: false};
+
+  try {
+    const url = new URL(rawUrl, 'https://qiblanco.com');
+    const isInternalHost =
+      rawUrl.startsWith('/') ||
+      url.hostname === 'qiblanco.com' ||
+      url.hostname === 'www.qiblanco.com' ||
+      url.hostname === 'checkout.qiblanco.com' ||
+      url.hostname.endsWith('.myshopify.com');
+
+    if (isInternalHost) {
+      return {
+        to: `${url.pathname}${url.search}${url.hash}`,
+        isExternal: false,
+      };
     }
+
+    return {to: url.href, isExternal: true};
+  } catch {
+    if (rawUrl.startsWith('/')) return {to: rawUrl, isExternal: false};
+    return {to: rawUrl, isExternal: true};
   }
-  return {to: rawUrl, isExternal: true};
 }
 
 /**
@@ -126,9 +146,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
  */
 export function HeaderMenu({
   menu,
-  primaryDomainUrl,
   viewport,
-  publicStoreDomain,
 }) {
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
@@ -149,12 +167,7 @@ export function HeaderMenu({
       {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
         if (!item.url) return null;
 
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
+        const {to: url, isExternal} = resolveMenuItemLink(item);
 
         const hasChildren = item.items && item.items.length > 0;
 
@@ -163,6 +176,7 @@ export function HeaderMenu({
             key={item.id}
             item={item}
             url={url}
+            isExternal={isExternal}
             hasChildren={hasChildren}
             viewport={viewport}
             close={close}
@@ -176,7 +190,7 @@ export function HeaderMenu({
 /**
  * Handles parent items with optional children
  */
-function MenuItem({item, url, hasChildren, viewport, close}) {
+function MenuItem({item, url, isExternal, hasChildren, viewport, close}) {
   const [open, setOpen] = useState(false); // mobile accordion
   const [hover, setHover] = useState(false); // desktop hover/focus
   const [expandedKakaoMobile, setExpandedKakaoMobile] = useState(false);
@@ -207,7 +221,20 @@ function MenuItem({item, url, hasChildren, viewport, close}) {
       onBlur={onMouseLeave}
     >
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-        {!hasChildren && (
+        {!hasChildren && isExternal && (
+          <a
+            className="header-menu-item"
+            href={url}
+            onClick={close}
+            target="_blank"
+            rel="noopener noreferrer"
+            ref={triggerRef}
+          >
+            {item.title}
+          </a>
+        )}
+
+        {!hasChildren && !isExternal && (
           <NavLink
             className="header-menu-item"
             end
@@ -475,7 +502,8 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             );
           }
 
-          const {to: childTo, isExternal: isExternalChild} = resolveMenuLink(child.url);
+          const {to: childTo, isExternal: isExternalChild} =
+            resolveMenuItemLink(child);
           const childIcons = (
             <>
               {child.title === "QiOne® 2 Pro" && (<img width={45} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-qione.png?v=1760088701" alt="" />)}
@@ -524,7 +552,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
  */
 function SubMenuItem({item, close}) {
   if (!item.url) return null;
-  const {to, isExternal} = resolveMenuLink(item.url);
+  const {to, isExternal} = resolveMenuItemLink(item);
 
   return (
     <li style={{padding: '0.25rem 0'}}>
