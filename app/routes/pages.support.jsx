@@ -42,6 +42,20 @@ function sanitizeHeaderValue(s) {
   return s.replace(/[\r\n]+/g, ' ').trim();
 }
 
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\n/g, '<br>');
+}
+
+function normalizeFreshdeskDomain(rawDomain) {
+  return rawDomain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+}
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
@@ -52,6 +66,7 @@ export async function action({request, context}) {
     return data({ok: false, error: 'Methode nicht erlaubt.'}, {status: 405});
   }
 
+  const env = context.env || {};
   const formData = await request.formData();
   const honeypot = String(formData.get('company') || '');
   const name = sanitizeHeaderValue(String(formData.get('name') || ''));
@@ -80,7 +95,7 @@ export async function action({request, context}) {
     request.headers.get('X-Forwarded-For')?.split(',')[0].trim() ||
     'unknown';
 
-  const allowed = await checkRateLimit(context.env.CONTACT_RATE_LIMIT, ip);
+  const allowed = await checkRateLimit(env.CONTACT_RATE_LIMIT, ip);
   if (!allowed) {
     return data(
       {ok: false, error: 'Zu viele Anfragen. Bitte versuche es später erneut.'},
@@ -88,35 +103,61 @@ export async function action({request, context}) {
     );
   }
 
+  const freshdeskApiKey = env.FRESHDESK_API_KEY;
+  const freshdeskDomain = normalizeFreshdeskDomain(
+    env.FRESHDESK_DOMAIN || 'qiblanco.freshdesk.com',
+  );
+
+  if (!freshdeskApiKey) {
+    console.error('Contact form is missing FRESHDESK_API_KEY');
+    return data(
+      {
+        ok: false,
+        error:
+          'Das Kontaktformular ist aktuell nicht vollstaendig konfiguriert. Bitte schreibe uns direkt an service@qiblanco.com.',
+      },
+      {status: 503},
+    );
+  }
+
   const subject = `Kontaktanfrage von ${name}`;
-  const textBody = `${message}\n\n---\nVon: ${name} <${email}>\nIP: ${ip}\n`;
+  const description = [
+    `<p>${escapeHtml(message)}</p>`,
+    '<hr>',
+    `<p><strong>Von:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;<br>`,
+    `<strong>Quelle:</strong> QiBlanco Storefront Kontaktformular<br>`,
+    `<strong>IP:</strong> ${escapeHtml(ip)}</p>`,
+  ].join('');
 
   try {
-    const res = await fetch('https://api.resend.com/emails', {
+    const res = await fetch(`https://${freshdeskDomain}/api/v2/tickets`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${context.env.RESEND_API_KEY}`,
+        Authorization: `Basic ${btoa(`${freshdeskApiKey}:X`)}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: context.env.CONTACT_FROM_EMAIL,
-        to: [context.env.CONTACT_TO_EMAIL],
-        reply_to: email,
+        description,
+        email,
+        name,
+        priority: 1,
+        source: 2,
+        status: 2,
         subject,
-        text: textBody,
+        tags: ['storefront-contact'],
       }),
     });
 
     if (!res.ok) {
       const detail = await res.text();
-      console.error('Resend send failed', res.status, detail);
+      console.error('Freshdesk ticket creation failed', res.status, detail);
       return data(
         {ok: false, error: 'Versand fehlgeschlagen. Bitte versuche es später erneut.'},
         {status: 502},
       );
     }
   } catch (err) {
-    console.error('Resend request error', err);
+    console.error('Freshdesk request error', err);
     return data(
       {ok: false, error: 'Versand fehlgeschlagen. Bitte versuche es später erneut.'},
       {status: 502},

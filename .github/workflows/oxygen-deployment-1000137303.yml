@@ -46,6 +46,8 @@ jobs:
           PUBLIC_STORE_DOMAIN: ${{ secrets.PUBLIC_STORE_DOMAIN }}
           PUBLIC_STOREFRONT_ID: ${{ secrets.PUBLIC_STOREFRONT_ID }}
           PUBLIC_CHECKOUT_DOMAIN: ${{ secrets.PUBLIC_CHECKOUT_DOMAIN }}
+          FRESHDESK_API_KEY: ${{ secrets.FRESHDESK_API_KEY }}
+          FRESHDESK_DOMAIN: ${{ secrets.FRESHDESK_DOMAIN }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -53,6 +55,8 @@ jobs:
             printf 'PUBLIC_STORE_DOMAIN=%s\n' "$PUBLIC_STORE_DOMAIN"
             printf 'PUBLIC_STOREFRONT_ID=%s\n' "$PUBLIC_STOREFRONT_ID"
             printf 'PUBLIC_CHECKOUT_DOMAIN=%s\n' "$PUBLIC_CHECKOUT_DOMAIN"
+            printf 'FRESHDESK_API_KEY=%s\n' "$FRESHDESK_API_KEY"
+            printf 'FRESHDESK_DOMAIN=%s\n' "$FRESHDESK_DOMAIN"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
