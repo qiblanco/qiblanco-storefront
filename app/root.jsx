@@ -189,6 +189,12 @@ export function Layout({children}) {
               suppressHydrationWarning
             />
             <script
+              src="/qiblanco-google-tracking.js"
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            <script
               src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
               data-gorgias-loader-chat=""
               nonce={nonce}
