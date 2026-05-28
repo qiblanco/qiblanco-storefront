@@ -48,6 +48,7 @@ jobs:
           PUBLIC_CHECKOUT_DOMAIN: ${{ secrets.PUBLIC_CHECKOUT_DOMAIN }}
           FRESHDESK_API_KEY: ${{ secrets.FRESHDESK_API_KEY }}
           FRESHDESK_DOMAIN: ${{ secrets.FRESHDESK_DOMAIN }}
+          PUBLIC_ENABLE_TRACKING_IN_PREVIEW: ${{ github.ref_name == 'main' && 'false' || 'true' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -57,10 +58,21 @@ jobs:
             printf 'PUBLIC_CHECKOUT_DOMAIN=%s\n' "$PUBLIC_CHECKOUT_DOMAIN"
             printf 'FRESHDESK_API_KEY=%s\n' "$FRESHDESK_API_KEY"
             printf 'FRESHDESK_DOMAIN=%s\n' "$FRESHDESK_DOMAIN"
+            printf 'PUBLIC_ENABLE_TRACKING_IN_PREVIEW=%s\n' "$PUBLIC_ENABLE_TRACKING_IN_PREVIEW"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy --env-file "$OXYGEN_ENV_FILE"
+        run: |
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            npx shopify hydrogen deploy --env-file "$OXYGEN_ENV_FILE"
+          else
+            npx shopify hydrogen deploy \
+              --preview \
+              --auth-bypass-token \
+              --auth-bypass-token-duration 12 \
+              --env-file "$OXYGEN_ENV_FILE" \
+              --metadata-description "Preview for $GITHUB_REF_NAME"
+          fi
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000137303 }}
