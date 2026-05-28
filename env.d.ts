@@ -23,6 +23,7 @@ declare global {
     CONTACT_TO_EMAIL: string;
     CONTACT_FROM_EMAIL: string;
     CONTACT_RATE_LIMIT?: KVNamespace;
+    PUBLIC_ENABLE_TRACKING_IN_PREVIEW?: string;
   }
 }
 

@@ -73,6 +73,7 @@ export async function loader(args) {
     ...deferredData,
     ...criticalData,
     isProductionHost: isQiblancoProductionHost(args.request.url),
+    enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -146,7 +147,8 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
-  const shouldLoadThirdPartyScripts = data?.isProductionHost;
+  const shouldLoadThirdPartyScripts =
+    data?.isProductionHost || data?.enableTrackingInPreview;
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
