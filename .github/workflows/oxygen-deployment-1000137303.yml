@@ -76,3 +76,25 @@ jobs:
           fi
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000137303 }}
+
+      - name: Print Oxygen preview URL
+        if: ${{ github.ref_name != 'main' }}
+        run: |
+          if [ ! -f h2_deploy_log.json ]; then
+            echo "No Oxygen deploy output file found."
+            exit 0
+          fi
+
+          node <<'NODE'
+          const fs = require('fs');
+          const deploy = JSON.parse(fs.readFileSync('h2_deploy_log.json', 'utf8'));
+          const previewUrl = deploy.url || '';
+
+          if (!previewUrl) {
+            console.log('OXYGEN_PREVIEW_URL=');
+            process.exit(0);
+          }
+
+          console.log(`OXYGEN_PREVIEW_URL=${previewUrl}`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Oxygen preview: ${previewUrl}\n`);
+          NODE
