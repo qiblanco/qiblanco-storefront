@@ -48,6 +48,7 @@ jobs:
           PUBLIC_CHECKOUT_DOMAIN: ${{ secrets.PUBLIC_CHECKOUT_DOMAIN }}
           FRESHDESK_API_KEY: ${{ secrets.FRESHDESK_API_KEY }}
           FRESHDESK_DOMAIN: ${{ secrets.FRESHDESK_DOMAIN }}
+          PUBLIC_ENABLE_TRACKING_IN_PREVIEW: ${{ github.ref_name == 'main' && 'false' || 'true' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -57,10 +58,172 @@ jobs:
             printf 'PUBLIC_CHECKOUT_DOMAIN=%s\n' "$PUBLIC_CHECKOUT_DOMAIN"
             printf 'FRESHDESK_API_KEY=%s\n' "$FRESHDESK_API_KEY"
             printf 'FRESHDESK_DOMAIN=%s\n' "$FRESHDESK_DOMAIN"
+            printf 'PUBLIC_ENABLE_TRACKING_IN_PREVIEW=%s\n' "$PUBLIC_ENABLE_TRACKING_IN_PREVIEW"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy --env-file "$OXYGEN_ENV_FILE"
+        run: |
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            npx shopify hydrogen deploy --env-file "$OXYGEN_ENV_FILE"
+          else
+            npx shopify hydrogen deploy \
+              --preview \
+              --auth-bypass-token \
+              --auth-bypass-token-duration 12 \
+              --env-file "$OXYGEN_ENV_FILE" \
+              --metadata-description "Preview for $GITHUB_REF_NAME"
+          fi
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000137303 }}
+
+      - name: Print Oxygen preview URL
+        if: ${{ github.ref_name != 'main' }}
+        run: |
+          if [ ! -f h2_deploy_log.json ]; then
+            echo "No Oxygen deploy output file found."
+            exit 0
+          fi
+
+          node <<'NODE'
+          const fs = require('fs');
+          const deploy = JSON.parse(fs.readFileSync('h2_deploy_log.json', 'utf8'));
+          const previewUrl = deploy.url || '';
+
+          if (!previewUrl) {
+            console.log('OXYGEN_PREVIEW_URL=');
+            process.exit(0);
+          }
+
+          console.log(`OXYGEN_PREVIEW_URL=${previewUrl}`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Oxygen preview: ${previewUrl}\n`);
+          NODE
+
+      - name: Run tracking smoke test
+        if: ${{ github.ref_name != 'main' }}
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const vm = require('vm');
+
+          function assert(condition, message) {
+            if (!condition) throw new Error(message);
+          }
+
+          (async () => {
+            const deploy = JSON.parse(fs.readFileSync('h2_deploy_log.json', 'utf8'));
+            const headers = {
+              'oxygen-auth-bypass-token': deploy.authBypassToken,
+            };
+
+            assert(deploy.url, 'Missing Oxygen deployment URL');
+            assert(deploy.authBypassToken, 'Missing Oxygen auth bypass token');
+
+            const htmlResponse = await fetch(deploy.url, {headers});
+            const html = await htmlResponse.text();
+            const csp = htmlResponse.headers.get('content-security-policy') || '';
+
+            assert(htmlResponse.ok, `Preview HTML returned ${htmlResponse.status}`);
+            assert(
+              html.includes('/qiblanco-google-tracking.js'),
+              'Preview HTML does not include the QiBlanco Google tracking script',
+            );
+            assert(csp.includes('www.googletagmanager.com'), 'CSP does not allow GTM');
+            assert(csp.includes('www.clarity.ms'), 'CSP does not allow Clarity');
+
+            const scriptUrl = new URL('/qiblanco-google-tracking.js', deploy.url);
+            const scriptResponse = await fetch(scriptUrl, {headers});
+            const script = await scriptResponse.text();
+
+            assert(scriptResponse.ok, `Tracking script returned ${scriptResponse.status}`);
+            assert(script.includes('GTM-N7DRSN5'), 'Tracking script has the wrong GTM container ID');
+            assert(
+              !script.includes('clarity.ms/tag') && !script.includes('G-1YRY3WJMPT'),
+              'Tracking script should not load Clarity or GA4 directly',
+            );
+
+            function runTrackingScript(consent) {
+              const appendedScripts = [];
+              const listeners = {};
+              const window = {
+                Cookiebot: {consent},
+                dataLayer: [],
+                location: {href: 'https://preview.example/'},
+                history: {
+                  pushState() {},
+                  replaceState() {},
+                },
+                addEventListener(event, handler) {
+                  listeners[event] = handler;
+                },
+                setTimeout(callback) {
+                  callback();
+                },
+              };
+              const document = {
+                referrer: 'https://referrer.example/',
+                head: {
+                  appendChild(scriptElement) {
+                    appendedScripts.push(scriptElement);
+                  },
+                },
+                createElement(tagName) {
+                  return {tagName};
+                },
+                getElementById() {
+                  return null;
+                },
+              };
+
+              vm.runInNewContext(script, {
+                Date,
+                JSON,
+                console,
+                document,
+                encodeURIComponent,
+                window,
+              });
+
+              return {appendedScripts, dataLayer: window.dataLayer, listeners};
+            }
+
+            const denied = runTrackingScript({
+              marketing: false,
+              preferences: false,
+              statistics: false,
+            });
+            assert(
+              denied.appendedScripts.length === 0,
+              'GTM loaded before statistics consent',
+            );
+
+            const granted = runTrackingScript({
+              marketing: true,
+              preferences: true,
+              statistics: true,
+            });
+            assert(
+              granted.appendedScripts.some((element) =>
+                String(element.src || '').includes('googletagmanager.com/gtm.js?id=GTM-N7DRSN5'),
+              ),
+              'GTM did not load after statistics consent',
+            );
+            assert(
+              granted.dataLayer.some((entry) => entry && entry.event === 'cookie_consent_update'),
+              'cookie_consent_update was not pushed',
+            );
+            assert(
+              granted.dataLayer.some((entry) => entry && entry.event === 'shopify_page_view'),
+              'shopify_page_view was not pushed',
+            );
+
+            console.log('Tracking smoke test passed');
+            console.log('- Preview HTML includes /qiblanco-google-tracking.js');
+            console.log('- CSP allows GTM and Clarity endpoints');
+            console.log('- GTM stays blocked before statistics consent');
+            console.log('- GTM boots and pushes consent/page-view events after statistics consent');
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE
