@@ -1,5 +1,6 @@
 (function () {
   var GTM_CONTAINER_ID = 'GTM-N7DRSN5';
+  var CLARITY_PROJECT_ID = 'wpfx9m2wf0';
   var lastConsentSignature = '';
   var lastPageViewUrl = '';
 
@@ -76,7 +77,6 @@
   }
 
   function bootGtm() {
-    // The GTM container includes Clarity, so load it only after statistics consent.
     if (!hasStatisticsConsent() || window._qiblancoGtmBooted) return;
 
     window._qiblancoGtmBooted = true;
@@ -89,6 +89,22 @@
       'qiblanco-gtm',
       'https://www.googletagmanager.com/gtm.js?id=' +
         encodeURIComponent(GTM_CONTAINER_ID),
+    );
+  }
+
+  function bootClarity() {
+    if (!hasStatisticsConsent() || window._qiblancoClarityBooted) return;
+
+    window._qiblancoClarityBooted = true;
+    window.clarity =
+      window.clarity ||
+      function () {
+        (window.clarity.q = window.clarity.q || []).push(arguments);
+      };
+
+    loadScript(
+      'qiblanco-clarity',
+      'https://www.clarity.ms/tag/' + encodeURIComponent(CLARITY_PROJECT_ID),
     );
   }
 
@@ -125,6 +141,7 @@
     setDefaultGoogleConsent();
     var state = updateGoogleConsent();
     bootGtm();
+    bootClarity();
     pushCookieConsentUpdate(state);
     pushPageView();
   }

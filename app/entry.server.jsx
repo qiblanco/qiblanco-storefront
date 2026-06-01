@@ -43,6 +43,7 @@ export default async function handleRequest(
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'https://www.clarity.ms',
+      'https://*.clarity.ms',
       'https://config.gorgias.chat',
       'https://config.gorgias.help',
       'https://assets.gorgias.chat',

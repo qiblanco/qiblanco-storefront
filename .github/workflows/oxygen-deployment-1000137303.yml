@@ -130,6 +130,7 @@ jobs:
             );
             assert(csp.includes('www.googletagmanager.com'), 'CSP does not allow GTM');
             assert(csp.includes('www.clarity.ms'), 'CSP does not allow Clarity');
+            assert(csp.includes('*.clarity.ms'), 'CSP does not allow Clarity subdomains');
 
             const scriptUrl = new URL('/qiblanco-google-tracking.js', deploy.url);
             const scriptResponse = await fetch(scriptUrl, {headers});
@@ -137,9 +138,10 @@ jobs:
 
             assert(scriptResponse.ok, `Tracking script returned ${scriptResponse.status}`);
             assert(script.includes('GTM-N7DRSN5'), 'Tracking script has the wrong GTM container ID');
+            assert(script.includes('wpfx9m2wf0'), 'Tracking script has the wrong Clarity project ID');
             assert(
-              !script.includes('clarity.ms/tag') && !script.includes('G-1YRY3WJMPT'),
-              'Tracking script should not load Clarity or GA4 directly',
+              script.includes('clarity.ms/tag') && !script.includes('G-1YRY3WJMPT'),
+              'Tracking script should load Clarity directly but not GA4 directly',
             );
 
             function runTrackingScript(consent) {
@@ -194,7 +196,7 @@ jobs:
             });
             assert(
               denied.appendedScripts.length === 0,
-              'GTM loaded before statistics consent',
+              'Tracking scripts loaded before statistics consent',
             );
 
             const granted = runTrackingScript({
@@ -209,6 +211,12 @@ jobs:
               'GTM did not load after statistics consent',
             );
             assert(
+              granted.appendedScripts.some((element) =>
+                String(element.src || '').includes('clarity.ms/tag/wpfx9m2wf0'),
+              ),
+              'Clarity did not load after statistics consent',
+            );
+            assert(
               granted.dataLayer.some((entry) => entry && entry.event === 'cookie_consent_update'),
               'cookie_consent_update was not pushed',
             );
@@ -220,8 +228,8 @@ jobs:
             console.log('Tracking smoke test passed');
             console.log('- Preview HTML includes /qiblanco-google-tracking.js');
             console.log('- CSP allows GTM and Clarity endpoints');
-            console.log('- GTM stays blocked before statistics consent');
-            console.log('- GTM boots and pushes consent/page-view events after statistics consent');
+            console.log('- GTM and Clarity stay blocked before statistics consent');
+            console.log('- GTM, Clarity and consent/page-view events run after statistics consent');
           })().catch((error) => {
             console.error(error);
             process.exit(1);
