@@ -24,60 +24,46 @@ export function CourseLesson({
   courseTo,
   videoEmbed,
 }) {
+  const preparedBody = prepareCourseBody(body, Boolean(videoEmbed));
+
   return (
-    <div className="NormalSectionSize" style={{maxWidth: '860px', padding: '3rem 1.5rem 5rem'}}>
-      <p style={{marginBottom: '0.5rem'}}>
-        <Link
-          to={courseTo}
-          style={{fontSize: '0.9rem', opacity: 0.6, textDecoration: 'none'}}
-        >
-          <ChevronLeft size={14} style={{verticalAlign: 'middle'}} /> {courseTitle}
+    <div className="NormalSectionSize course-lesson">
+      <p className="course-lesson__breadcrumb">
+        <Link to={courseTo}>
+          <ChevronLeft size={14} /> {courseTitle}
         </Link>
       </p>
 
-      <h1 style={{marginBottom: '2rem'}}>{title}</h1>
+      <h1>{title}</h1>
 
       {videoEmbed && (
-        <div className="YoutubeIframe" style={{marginBottom: '2rem'}}>
+        <div className="course-lesson__video">
           <iframe
             src={videoEmbed}
             title={title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
           />
         </div>
       )}
 
       <div
         className="course-lesson-body"
-        dangerouslySetInnerHTML={{__html: body}}
+        dangerouslySetInnerHTML={{__html: preparedBody}}
       />
 
       <div
-        style={{
-          display: 'flex',
-          justifyContent: prevLesson ? 'space-between' : 'flex-end',
-          alignItems: 'center',
-          marginTop: '4rem',
-          paddingTop: '2rem',
-          borderTop: '1px solid rgba(0,0,0,0.1)',
-          gap: '1rem',
-          flexWrap: 'wrap',
-        }}
+        className={`course-lesson__nav ${
+          prevLesson ? 'course-lesson__nav--split' : ''
+        }`}
       >
         {prevLesson && (
           <Link
             to={prevLesson.to}
             prefetch="intent"
             className="btn--secondary"
-            style={{
-              maxWidth: '280px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              textDecoration: 'none',
-            }}
           >
             <ChevronLeft size={18} /> {prevLesson.label}
           </Link>
@@ -87,14 +73,6 @@ export function CourseLesson({
             to={nextLesson.to}
             prefetch="intent"
             className="btn--primary"
-            style={{
-              maxWidth: '280px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              textDecoration: 'none',
-            }}
           >
             {nextLesson.label} <ChevronRight size={18} />
           </Link>
@@ -103,3 +81,24 @@ export function CourseLesson({
     </div>
   );
 }
+
+function prepareCourseBody(body = '', hasManagedVideo) {
+  let preparedBody = body;
+
+  if (hasManagedVideo) {
+    preparedBody = preparedBody
+      .replace(LEGACY_VIMEO_WRAPPER_PATTERN, '')
+      .replace(LEGACY_VIMEO_IFRAME_PATTERN, '');
+  }
+
+  return preparedBody.replace(LEGACY_COURSE_NAV_PATTERN, '');
+}
+
+const LEGACY_VIMEO_WRAPPER_PATTERN =
+  /<div\b[^>]*style=["'][^"']*padding:\s*70%[^"']*position:\s*relative[^"']*["'][^>]*>\s*<iframe\b(?=[^>]*(?:src|data-src)=["']https?:\/\/player\.vimeo\.com\/video\/)[\s\S]*?<\/iframe>\s*<\/div>/gi;
+
+const LEGACY_VIMEO_IFRAME_PATTERN =
+  /<iframe\b(?=[^>]*(?:src|data-src)=["']https?:\/\/player\.vimeo\.com\/video\/)[\s\S]*?<\/iframe>/gi;
+
+const LEGACY_COURSE_NAV_PATTERN =
+  /<div\b[^>]*class=["'][^"']*\btext-center\b[^"']*\bmt-10vh\b[^"']*["'][^>]*>\s*<a\b[^>]*class=["'][^"']*\bbtn\b[^"']*["'][^>]*>[\s\S]*?<\/a>\s*<\/div>/gi;

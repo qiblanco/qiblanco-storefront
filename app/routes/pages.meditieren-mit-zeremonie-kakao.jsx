@@ -36,7 +36,7 @@ export default function MeditierenMitZeremonieKakaoPage() {
       body={page.body}
       courseTitle="Zeremonie Kakao Kurs"
       courseTo="/pages/zeremonie-kakao-kurs"
-      videoEmbed="https://player.vimeo.com/video/877602672?h=21538dd3d7"
+      videoEmbed="https://www.youtube-nocookie.com/embed/oDsYOC6zNJQ?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
       prevLesson={{label: 'Vorherige Lektion', to: '/pages/kakao-anwendung'}}
     />
   );

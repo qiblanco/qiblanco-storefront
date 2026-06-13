@@ -1,10 +1,11 @@
+import {redirect} from '@shopify/remix-oxygen';
+
 /**
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request}) {
-  throw new Response(`${new URL(request.url).pathname} not found`, {
-    status: 404,
-  });
+  const url = new URL(request.url);
+  throw redirect(`/${url.search}`);
 }
 
 export default function CatchAllPage() {

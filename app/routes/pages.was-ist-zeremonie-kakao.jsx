@@ -36,7 +36,7 @@ export default function WasIstZeremonieKakaoPage() {
       body={page.body}
       courseTitle="Zeremonie Kakao Kurs"
       courseTo="/pages/zeremonie-kakao-kurs"
-      videoEmbed="https://player.vimeo.com/video/877502666?h=a2edc03694"
+      videoEmbed="https://www.youtube-nocookie.com/embed/ninA8ZeJ58k?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
       prevLesson={{label: 'Vorherige Lektion', to: '/pages/intuition-erfahren'}}
       nextLesson={{label: 'Nächste Lektion', to: '/pages/kakao-anwendung'}}
     />

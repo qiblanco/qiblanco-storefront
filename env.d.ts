@@ -19,10 +19,16 @@ declare global {
   const process: {env: {NODE_ENV: 'production' | 'development'}};
 
   interface Env extends HydrogenEnv {
-    RESEND_API_KEY: string;
-    CONTACT_TO_EMAIL: string;
-    CONTACT_FROM_EMAIL: string;
+    FRESHDESK_API_KEY?: string;
+    FRESHDESK_DOMAIN?: string;
+    FRESHDESK_WITHDRAWAL_TICKET_TYPE?: string;
+    FRESHDESK_WITHDRAWAL_FROM_EMAIL?: string;
+    FRESHDESK_WITHDRAWAL_FIELD_ORDER_NUMBER?: string;
+    FRESHDESK_WITHDRAWAL_FIELD_PRODUCT?: string;
+    FRESHDESK_WITHDRAWAL_FIELD_EMAIL?: string;
+    FRESHDESK_WITHDRAWAL_FIELD_RECEIVED_AT?: string;
     CONTACT_RATE_LIMIT?: KVNamespace;
+    WITHDRAWAL_AUDIT_LOG?: KVNamespace;
     PUBLIC_ENABLE_TRACKING_IN_PREVIEW?: string;
   }
 }
