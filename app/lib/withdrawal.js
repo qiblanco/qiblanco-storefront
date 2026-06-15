@@ -49,13 +49,24 @@ export function getWithdrawalProductLabel(value) {
 }
 
 export function buildServerTimestamp(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    month: '2-digit',
+    timeZone: 'Europe/Berlin',
+    timeZoneName: 'short',
+    year: 'numeric',
+  })
+    .formatToParts(date)
+    .reduce((result, part) => {
+      result[part.type] = part.value;
+      return result;
+    }, {});
+
   return {
     iso: date.toISOString(),
-    display: new Intl.DateTimeFormat('de-DE', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-      timeZone: 'Europe/Berlin',
-    }).format(date),
+    display: `${parts.day}.${parts.month}.${parts.year} um ${parts.hour}:${parts.minute} Uhr (${parts.timeZoneName})`,
   };
 }
 

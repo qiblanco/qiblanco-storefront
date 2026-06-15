@@ -1538,6 +1538,10 @@ ul.submenu li a {
   width: 100%;
 }
 
+.course-lesson--with-products {
+  padding-bottom: 2.5rem;
+}
+
 .course-lesson__breadcrumb {
   margin-bottom: 0.75rem;
 }
@@ -1629,6 +1633,16 @@ ul.submenu li a {
 .course-lesson-body ol {
   margin: 0.75rem 0 1rem 1.25rem;
   padding-left: 1rem;
+}
+
+.course-lesson-body .course-lesson-question-list {
+  list-style: disc;
+  margin: 0.35rem 0 1.4rem 1.35rem;
+  padding-left: 1rem;
+}
+
+.course-lesson-body .course-lesson-question-list li::marker {
+  color: currentColor;
 }
 
 .course-lesson-body li {

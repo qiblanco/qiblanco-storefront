@@ -54,18 +54,13 @@ export async function submitWithdrawalToFreshdesk({env, values, ip, userAgent}) 
   const timestamp = buildServerTimestamp(receivedAt);
   const authHeader = `Basic ${btoa(`${freshdeskApiKey}:X`)}`;
   const productLabel = getWithdrawalProductLabel(values.product);
-  const subject = `Widerruf Bestellung ${values.orderNumber}`;
+  const subject = buildConfirmationSubject(values);
   const ticketDescription = buildTicketDescription({
     values,
     productLabel,
     timestamp,
     ip,
     userAgent,
-  });
-  const confirmationBody = buildConfirmationBody({
-    values,
-    productLabel,
-    timestamp,
   });
 
   const ticketPayload = {
@@ -108,7 +103,15 @@ export async function submitWithdrawalToFreshdesk({env, values, ip, userAgent}) 
     domain: freshdeskDomain,
     path: `/api/v2/tickets/${ticket.id}/reply`,
     authHeader,
-    payload: buildReplyPayload(env, confirmationBody),
+    payload: buildReplyPayload(
+      env,
+      buildConfirmationBody({
+        values,
+        productLabel,
+        ticketId: ticket.id,
+        timestamp,
+      }),
+    ),
     errorCode: 'confirmation_failed',
   });
 
@@ -147,7 +150,7 @@ export class WithdrawalSubmissionError extends Error {
 function buildReplyPayload(env, body) {
   const payload = {body};
   const fromEmail = sanitizePlainText(
-    env.FRESHDESK_WITHDRAWAL_FROM_EMAIL || '',
+    env.FRESHDESK_WITHDRAWAL_FROM_EMAIL || 'info@qiblanco.com',
     254,
   );
   if (fromEmail) {
@@ -235,6 +238,10 @@ function buildFreshdeskCustomFields(env, {values, productLabel, timestamp}) {
   );
 }
 
+function buildConfirmationSubject(values) {
+  return `Eingangsbestätigung Ihres Widerrufs – Bestellung ${values.orderNumber}`;
+}
+
 function buildTicketDescription({values, productLabel, timestamp, ip, userAgent}) {
   return [
     '<p><strong>Widerruf über qiblanco.com eingegangen.</strong></p>',
@@ -252,17 +259,45 @@ function buildTicketDescription({values, productLabel, timestamp, ip, userAgent}
   ].join('');
 }
 
-function buildConfirmationBody({values, productLabel, timestamp}) {
+function buildConfirmationBody({values, productLabel, ticketId, timestamp}) {
+  const firstName = getFirstName(values.name);
+
   return [
-    '<p>Hallo,</p>',
-    '<p>wir bestätigen den Eingang deines Widerrufs.</p>',
+    `<p>Hallo${firstName ? ` ${escapeHtml(firstName)}` : ''},</p>`,
+    '<p>vielen Dank für deine Nachricht. Wir bestätigen hiermit den Eingang deines Widerrufs.</p>',
     '<table>',
-    row('Eingang', `${timestamp.display} (${timestamp.iso})`),
+    row('Eingang', timestamp.display),
     row('Bestellnummer', values.orderNumber),
     row('Widerrufsinhalt', productLabel),
+    row('Referenz', `Freshdesk Ticket #${ticketId}`),
     '</table>',
-    '<p>Wir bearbeiten deinen Widerruf nun über unseren Kundenservice.</p>',
+    '<p><strong>So geht es weiter:</strong></p>',
+    '<ol>',
+    '<li>Wir prüfen deinen Widerruf und melden uns innerhalb von 1-2 Werktagen mit den Rücksendeinformationen.</li>',
+    '<li>Bitte sende die Ware innerhalb von 14 Tagen nach Erhalt unserer Rücksendeanweisung an uns zurück. Anweisungen hierzu erhältst du separat.</li>',
+    '<li>Nach Eingang der Ware erstatten wir dir den Kaufpreis gemäß den gesetzlichen Vorgaben.</li>',
+    '</ol>',
+    '<p>Bei Fragen erreichst du uns jederzeit unter:<br>',
+    '<a href="mailto:service@qiblanco.com">service@qiblanco.com</a><br>',
+    '<a href="https://www.qiblanco.com/">www.qiblanco.com</a></p>',
     '<p>Viele Grüße<br>Dein Qi Blanco Team</p>',
+    '<hr>',
+    '<p><strong>Technischer Zeitstempel (für deine Unterlagen):</strong><br>',
+    `${escapeHtml(timestamp.iso)}</p>`,
+    '<hr>',
+    '<p>Qi Blanco UG (haftungsbeschränkt)<br>',
+    'Geschäftsführer: Christian Bernd Bauer<br>',
+    'Brunnrangenstr. 25<br>',
+    '97711 Maßbach<br>',
+    'Deutschland</p>',
+    '<table>',
+    row('Registergericht', 'Amtsgericht Schweinfurt'),
+    row('Registernummer', 'HRB 7306'),
+    row('USt-IdNr.', 'DE306530406'),
+    row('E-Mail', 'info@qiblanco.com'),
+    row('Tel', '09735-5819883'),
+    '</table>',
+    '<p>Diese E-Mail dient als Eingangsbestätigung deines Widerrufs gemäß § 356a Abs. 4 BGB.</p>',
   ].join('');
 }
 
@@ -279,6 +314,10 @@ function buildAuditNote({values, productLabel, timestamp, ip, userAgent}) {
     row('User Agent', userAgent || 'Nicht verfügbar'),
     '</table>',
   ].join('');
+}
+
+function getFirstName(name) {
+  return sanitizePlainText(name, 120).split(/\s+/).filter(Boolean)[0] || '';
 }
 
 function row(label, value) {
