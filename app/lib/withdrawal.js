@@ -52,8 +52,10 @@ export function buildServerTimestamp(date = new Date()) {
   const parts = new Intl.DateTimeFormat('de-DE', {
     day: '2-digit',
     hour: '2-digit',
+    hourCycle: 'h23',
     minute: '2-digit',
     month: '2-digit',
+    second: '2-digit',
     timeZone: 'Europe/Berlin',
     timeZoneName: 'short',
     year: 'numeric',
@@ -66,8 +68,32 @@ export function buildServerTimestamp(date = new Date()) {
 
   return {
     iso: date.toISOString(),
+    localIso: buildBerlinIsoTimestamp(date, parts),
     display: `${parts.day}.${parts.month}.${parts.year} um ${parts.hour}:${parts.minute} Uhr (${parts.timeZoneName})`,
   };
+}
+
+function buildBerlinIsoTimestamp(date, parts) {
+  const offsetMinutes = Math.round(
+    (Date.UTC(
+      Number(parts.year),
+      Number(parts.month) - 1,
+      Number(parts.day),
+      Number(parts.hour),
+      Number(parts.minute),
+      Number(parts.second),
+      date.getUTCMilliseconds(),
+    ) -
+      date.getTime()) /
+      60000,
+  );
+  const sign = offsetMinutes >= 0 ? '+' : '-';
+  const absoluteOffset = Math.abs(offsetMinutes);
+  const offsetHours = String(Math.floor(absoluteOffset / 60)).padStart(2, '0');
+  const offsetRemainder = String(absoluteOffset % 60).padStart(2, '0');
+  const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}.${milliseconds}${sign}${offsetHours}:${offsetRemainder}`;
 }
 
 export function sanitizePlainText(value, maxLength) {

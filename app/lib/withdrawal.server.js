@@ -265,13 +265,13 @@ function buildConfirmationBody({values, productLabel, ticketId, timestamp}) {
   return [
     `<p>Hallo${firstName ? ` ${escapeHtml(firstName)}` : ''},</p>`,
     '<p>vielen Dank für deine Nachricht. Wir bestätigen hiermit den Eingang deines Widerrufs.</p>',
-    '<table>',
+    '<table style="margin: 16px 0 20px 0; border-collapse: collapse;">',
     row('Eingang', timestamp.display),
     row('Bestellnummer', values.orderNumber),
     row('Widerrufsinhalt', productLabel),
     row('Referenz', `Freshdesk Ticket #${ticketId}`),
     '</table>',
-    '<p><strong>So geht es weiter:</strong></p>',
+    '<p style="margin-top: 18px;"><strong>So geht es weiter:</strong></p>',
     '<ol>',
     '<li>Wir prüfen deinen Widerruf und melden uns innerhalb von 1-2 Werktagen mit den Rücksendeinformationen.</li>',
     '<li>Bitte sende die Ware innerhalb von 14 Tagen nach Erhalt unserer Rücksendeanweisung an uns zurück. Anweisungen hierzu erhältst du separat.</li>',
@@ -283,7 +283,7 @@ function buildConfirmationBody({values, productLabel, ticketId, timestamp}) {
     '<p>Viele Grüße<br>Dein Qi Blanco Team</p>',
     '<hr>',
     '<p><strong>Technischer Zeitstempel (für deine Unterlagen):</strong><br>',
-    `${escapeHtml(timestamp.iso)}</p>`,
+    `${escapeHtml(timestamp.localIso)}</p>`,
     '<hr>',
     '<p>Qi Blanco UG (haftungsbeschränkt)<br>',
     'Geschäftsführer: Christian Bernd Bauer<br>',
@@ -321,7 +321,9 @@ function getFirstName(name) {
 }
 
 function row(label, value) {
-  return `<tr><td><strong>${escapeHtml(label)}</strong></td><td>${escapeHtml(
+  return `<tr><td style="padding: 2px 14px 4px 0; vertical-align: top;"><strong>${escapeHtml(
+    label,
+  )}</strong></td><td style="padding: 2px 0 4px 0; vertical-align: top;">${escapeHtml(
     value,
   )}</td></tr>`;
 }
