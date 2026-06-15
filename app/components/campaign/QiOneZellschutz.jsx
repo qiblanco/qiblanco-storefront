@@ -322,6 +322,18 @@ function PricingSection() {
 }
 
 /* ───────── Trust / About ───────── */
+export function QiOneProductPricing({products}) {
+  const data = {products: products || []};
+
+  return (
+    <LiveDataCtx.Provider value={{data}}>
+      <div className="lp-vp course-product-pricing">
+        <PricingSection />
+      </div>
+    </LiveDataCtx.Provider>
+  );
+}
+
 function TrustSection() {
   const items = [
     { icon: <span style={{display:'inline-flex'}}><svg width="48" height="32" viewBox="0 0 5 3" aria-hidden="true"><rect width="5" height="1" y="0" fill="#000"/><rect width="5" height="1" y="1" fill="#DD0000"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg></span>, title: "Deutsche Produktion",

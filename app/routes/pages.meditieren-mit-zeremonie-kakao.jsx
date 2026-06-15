@@ -1,6 +1,12 @@
 import {useLoaderData} from 'react-router';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
+import {loadCourseProducts} from '~/lib/course-products';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import qioneZellschutzStyles from '~/styles/qione-zellschutz.css?url';
+
+export function links() {
+  return [{rel: 'stylesheet', href: qioneZellschutzStyles}];
+}
 
 export const meta = ({data}) => {
   return [
@@ -11,8 +17,11 @@ export const meta = ({data}) => {
 
 export async function loader(args) {
   const deferredData = loadDeferredData(args);
-  const criticalData = await loadCriticalData(args, 'meditieren-mit-zeremonie-kakao');
-  return {...deferredData, ...criticalData};
+  const [criticalData, products] = await Promise.all([
+    loadCriticalData(args, 'meditieren-mit-zeremonie-kakao'),
+    loadCourseProducts(args.context),
+  ]);
+  return {...deferredData, ...criticalData, products};
 }
 
 async function loadCriticalData({context, request}, handle) {
@@ -29,14 +38,15 @@ function loadDeferredData() {
 }
 
 export default function MeditierenMitZeremonieKakaoPage() {
-  const {page} = useLoaderData();
+  const {page, products} = useLoaderData();
   return (
     <CourseLesson
       title={page.title}
       body={page.body}
       courseTitle="Zeremonie Kakao Kurs"
       courseTo="/pages/zeremonie-kakao-kurs"
-      videoEmbed="https://player.vimeo.com/video/877602672?h=21538dd3d7"
+      products={products}
+      videoEmbed="https://www.youtube-nocookie.com/embed/oDsYOC6zNJQ?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
       prevLesson={{label: 'Vorherige Lektion', to: '/pages/kakao-anwendung'}}
     />
   );

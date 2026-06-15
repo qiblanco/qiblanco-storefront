@@ -186,7 +186,7 @@ const FAQ_ITEMS = [
   {
     question: 'Gibt es ein Widerrufsrecht?',
     answer:
-      'Ja. Es gilt das gesetzliche 14-tägige Widerrufsrecht. Das Widerrufsformular kannst du von unserer Website herunterladen und ausgefüllt an info@qiblanco.com senden. Wir empfehlen den versicherten Versand. Nach Eingang der Ware erstatten wir den Kaufpreis.',
+      'Ja. Es gilt das gesetzliche 14-tägige Widerrufsrecht. Deinen Widerruf kannst du online über den Link "Vertrag widerrufen" im Footer erklären. Für Warenrücksendungen empfehlen wir den versicherten Versand. Nach Eingang der Ware erstatten wir den Kaufpreis.',
   },
   {
     question: 'Darf der QiOne® nass werden oder in die Sauna?',

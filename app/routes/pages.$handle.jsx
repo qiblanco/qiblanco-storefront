@@ -1,3 +1,4 @@
+import {redirect} from '@shopify/remix-oxygen';
 import {useLoaderData} from 'react-router';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
@@ -41,7 +42,7 @@ async function loadCriticalData({context, request, params}) {
   ]);
 
   if (!page) {
-    throw new Response('Not Found', {status: 404});
+    throw redirect('/');
   }
 
   redirectIfHandleIsLocalized(request, {handle: params.handle, data: page});

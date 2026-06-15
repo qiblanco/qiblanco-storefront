@@ -312,6 +312,7 @@ const LEGAL_LINKS = [
   {to: '/pages/impressum', label: 'Impressum'},
   {to: '/pages/datenschutz', label: 'Datenschutz'},
   {to: '/pages/agb', label: 'AGB'},
+  {to: '/widerruf', label: 'Vertrag widerrufen'},
 ];
 
 function FooterMenu() {
