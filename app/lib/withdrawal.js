@@ -7,8 +7,12 @@ export const WITHDRAWAL_PRODUCTS = [
   {value: 'other', label: 'Anderes Qi Blanco Produkt / Vertrag'},
 ];
 
+export const WITHDRAWAL_HONEYPOT_FIELD = 'qiblanco_withdrawal_hidden_check';
+
 export function validateWithdrawalFormData(formData) {
-  const honeypot = String(formData.get('company') || '').trim();
+  const honeypot = String(
+    formData.get(WITHDRAWAL_HONEYPOT_FIELD) || '',
+  ).trim();
   const values = {
     orderNumber: sanitizePlainText(String(formData.get('orderNumber') || ''), 80),
     name: sanitizePlainText(String(formData.get('name') || ''), 120),

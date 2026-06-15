@@ -1,6 +1,7 @@
 import {data} from '@shopify/remix-oxygen';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {
+  WITHDRAWAL_HONEYPOT_FIELD,
   getWithdrawalProductLabel,
   validateWithdrawalFormData,
 } from '~/lib/withdrawal';
@@ -198,7 +199,7 @@ export default function WithdrawalConfirmPage() {
             aria-hidden="true"
             autoComplete="off"
             className="withdrawal-honeypot"
-            name="company"
+            name={WITHDRAWAL_HONEYPOT_FIELD}
             tabIndex={-1}
             type="text"
           />

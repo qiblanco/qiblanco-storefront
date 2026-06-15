@@ -1,5 +1,8 @@
 import {Form} from 'react-router';
-import {WITHDRAWAL_PRODUCTS} from '~/lib/withdrawal';
+import {
+  WITHDRAWAL_HONEYPOT_FIELD,
+  WITHDRAWAL_PRODUCTS,
+} from '~/lib/withdrawal';
 
 export const meta = () => [
   {title: 'Vertrag widerrufen | Qi Blanco'},
@@ -44,7 +47,7 @@ export default function WithdrawalPage() {
             aria-hidden="true"
             autoComplete="off"
             className="withdrawal-honeypot"
-            name="company"
+            name={WITHDRAWAL_HONEYPOT_FIELD}
             tabIndex={-1}
             type="text"
           />
