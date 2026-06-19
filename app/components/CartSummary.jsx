@@ -1,6 +1,8 @@
 import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
 import {appendTrackingToCheckoutUrl} from '~/lib/checkout-tracking';
 
+const ATTRIBUTION_STORAGE_KEY = 'qiblanco_checkout_attribution';
+
 /**
  * @param {CartSummaryProps}
  */
@@ -79,7 +81,7 @@ function getClientTrackedCheckoutUrl(checkoutUrl) {
   if (!hasMarketingConsent()) return checkoutUrl;
 
   return appendTrackingToCheckoutUrl(checkoutUrl, {
-    searchParams: window.location.search,
+    searchParams: getStoredAndCurrentTrackingParams(),
     cookieHeader: document.cookie,
     includeCookies: true,
   });
@@ -87,6 +89,28 @@ function getClientTrackedCheckoutUrl(checkoutUrl) {
 
 function hasMarketingConsent() {
   return Boolean(window.Cookiebot?.consent?.marketing);
+}
+
+function getStoredAndCurrentTrackingParams() {
+  const params = new URLSearchParams(readStoredTrackingParams());
+
+  for (const [name, value] of new URLSearchParams(window.location.search)) {
+    params.set(name, value);
+  }
+
+  return params;
+}
+
+function readStoredTrackingParams() {
+  try {
+    const saved = window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+    if (!saved) return [];
+
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed?.params) ? parsed.params : [];
+  } catch {
+    return [];
+  }
 }
 
 function PaymentMethods() {
