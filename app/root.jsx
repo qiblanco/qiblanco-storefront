@@ -244,9 +244,17 @@ export default function App() {
   return <Outlet />;
 }
 
+const TRACKING_PRODUCTION_HOSTS = new Set([
+  'qiblanco.com',
+  'www.qiblanco.com',
+  'us.qiblanco.com',
+  'qiblanco.de',
+  'www.qiblanco.de',
+]);
+
 function isQiblancoProductionHost(requestUrl) {
   const {hostname} = new URL(requestUrl);
-  return hostname === 'qiblanco.com' || hostname === 'www.qiblanco.com';
+  return TRACKING_PRODUCTION_HOSTS.has(hostname);
 }
 
 export function ErrorBoundary() {
