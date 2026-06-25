@@ -31,6 +31,7 @@ export default async function handleRequest(
     scriptSrc: [
       "'self'",
       "'unsafe-inline'",
+      "'strict-dynamic'",
       'https://cdn.shopify.com',
       'https://cdn.grw.reputon.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',

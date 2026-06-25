@@ -15,6 +15,7 @@ import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
+import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -149,12 +150,17 @@ export function Layout({children}) {
   const data = useRouteLoaderData('root');
   const shouldLoadThirdPartyScripts =
     data?.isProductionHost || data?.enableTrackingInPreview;
+  const isTrackingPreview =
+    Boolean(data?.enableTrackingInPreview) && !data?.isProductionHost;
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
 
   return (
-    <html lang="de">
+    <html
+      lang="de"
+      data-qiblanco-tracking-preview={isTrackingPreview ? 'true' : undefined}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -242,11 +248,6 @@ export function Layout({children}) {
 
 export default function App() {
   return <Outlet />;
-}
-
-function isQiblancoProductionHost(requestUrl) {
-  const {hostname} = new URL(requestUrl);
-  return hostname === 'qiblanco.com' || hostname === 'www.qiblanco.com';
 }
 
 export function ErrorBoundary() {

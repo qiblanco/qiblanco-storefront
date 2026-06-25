@@ -1,7 +1,5 @@
+import {Form} from 'react-router';
 import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
-import {appendTrackingToCheckoutUrl} from '~/lib/checkout-tracking';
-
-const ATTRIBUTION_STORAGE_KEY = 'qiblanco_checkout_attribution';
 
 /**
  * @param {CartSummaryProps}
@@ -54,63 +52,20 @@ export function CartSummary({cart, layout}) {
 function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
-  const handleCheckoutClick = (event) => {
-    const trackedCheckoutUrl = getClientTrackedCheckoutUrl(checkoutUrl);
-    if (trackedCheckoutUrl) event.currentTarget.href = trackedCheckoutUrl;
-  };
-
   return (
-    <div className="cartSummaryWrapper">
-      <a
+    <Form
+      action="/cart/attribution"
+      className="cartSummaryWrapper"
+      method="post"
+    >
+      <button
         className="btn--primary"
-        href={checkoutUrl}
-        onClick={handleCheckoutClick}
-        target="_self"
+        type="submit"
       >
         <p>Jetzt sicher zur Kasse</p>
-      </a>
-    </div>
+      </button>
+    </Form>
   );
-}
-
-function getClientTrackedCheckoutUrl(checkoutUrl) {
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return checkoutUrl;
-  }
-
-  if (!hasMarketingConsent()) return checkoutUrl;
-
-  return appendTrackingToCheckoutUrl(checkoutUrl, {
-    searchParams: getStoredAndCurrentTrackingParams(),
-    cookieHeader: document.cookie,
-    includeCookies: true,
-  });
-}
-
-function hasMarketingConsent() {
-  return Boolean(window.Cookiebot?.consent?.marketing);
-}
-
-function getStoredAndCurrentTrackingParams() {
-  const params = new URLSearchParams(readStoredTrackingParams());
-
-  for (const [name, value] of new URLSearchParams(window.location.search)) {
-    params.set(name, value);
-  }
-
-  return params;
-}
-
-function readStoredTrackingParams() {
-  try {
-    const saved = window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY);
-    if (!saved) return [];
-
-    const parsed = JSON.parse(saved);
-    return Array.isArray(parsed?.params) ? parsed.params : [];
-  } catch {
-    return [];
-  }
 }
 
 function PaymentMethods() {

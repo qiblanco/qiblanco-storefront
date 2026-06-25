@@ -1,8 +1,9 @@
 import {redirect} from '@shopify/remix-oxygen';
 import {
-  appendTrackingToCheckoutUrl,
-  hasCookiebotMarketingConsent,
-} from '~/lib/checkout-tracking';
+  getAttributionCartAttributes,
+  getTrackedCheckoutUrl,
+  hasAttributionConsent,
+} from '~/lib/cart-attribution.server';
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -24,7 +25,7 @@ import {
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context, params}) {
-  const {cart} = context;
+  const {cart, env} = context;
   const {lines} = params;
   if (!lines) return redirect('/cart');
   const linesMap = lines.split(',').map((line) => {
@@ -40,15 +41,20 @@ export async function loader({request, context, params}) {
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  const cookieHeader = request.headers.get('Cookie');
-
   const discount = searchParams.get('discount');
   const discountArray = discount ? [discount] : [];
+  const hasMarketingConsent = hasAttributionConsent(request, env);
+  const attributionAttributes = hasMarketingConsent
+    ? getAttributionCartAttributes(request)
+    : [];
 
   // create a cart
   const result = await cart.create({
     lines: linesMap,
     discountCodes: discountArray,
+    ...(attributionAttributes.length
+      ? {attributes: attributionAttributes}
+      : {}),
   });
 
   const cartResult = result.cart;
@@ -64,13 +70,8 @@ export async function loader({request, context, params}) {
 
   // redirect to checkout
   if (cartResult.checkoutUrl) {
-    const hasMarketingConsent = hasCookiebotMarketingConsent(cookieHeader);
     const trackedCheckoutUrl = hasMarketingConsent
-      ? appendTrackingToCheckoutUrl(cartResult.checkoutUrl, {
-          searchParams,
-          cookieHeader,
-          includeCookies: true,
-        })
+      ? getTrackedCheckoutUrl(cartResult.checkoutUrl, request, env)
       : cartResult.checkoutUrl;
 
     return redirect(trackedCheckoutUrl, {headers});

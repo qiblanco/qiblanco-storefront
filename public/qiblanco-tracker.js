@@ -1,5 +1,6 @@
 (function () {
   var ATTRIBUTION_STORAGE_KEY = 'qiblanco_checkout_attribution';
+  var ATTRIBUTION_COOKIE_MAX_AGE = 60 * 60 * 24 * 90;
   var TRACKING_PARAM_NAMES = {
     fbclid: true,
     fbc: true,
@@ -29,7 +30,7 @@
   }
 
   function storeAttributionParams() {
-    if (!window.sessionStorage || !window.location.search) return;
+    if (!window.location.search) return;
 
     var params = new URLSearchParams(window.location.search);
     var tracked = [];
@@ -40,18 +41,37 @@
 
     if (!tracked.length) return;
 
+    var attribution = {
+      params: tracked,
+      href: window.location.href,
+      referrer: document.referrer || '',
+      savedAt: new Date().toISOString(),
+    };
+    var serialized = JSON.stringify(attribution);
+
     try {
-      window.sessionStorage.setItem(
-        ATTRIBUTION_STORAGE_KEY,
-        JSON.stringify({
-          params: tracked,
-          href: window.location.href,
-          savedAt: new Date().toISOString(),
-        }),
-      );
+      window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, serialized);
     } catch {
       // Session storage can be unavailable in restricted browser contexts.
     }
+
+    try {
+      writeAttributionCookie(serialized);
+    } catch {
+      // Cookie writes can be unavailable in restricted browser contexts.
+    }
+  }
+
+  function writeAttributionCookie(serialized) {
+    var secure = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie =
+      ATTRIBUTION_STORAGE_KEY +
+      '=' +
+      encodeURIComponent(serialized) +
+      '; Max-Age=' +
+      ATTRIBUTION_COOKIE_MAX_AGE +
+      '; Path=/; SameSite=Lax' +
+      secure;
   }
 
   function boot() {
@@ -65,15 +85,28 @@
     document.head.appendChild(s);
   }
   function ready() {
-    if (
-      window.Cookiebot &&
-      window.Cookiebot.consent &&
-      window.Cookiebot.consent.marketing
-    ) {
+    if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
       storeAttributionParams();
       boot();
     }
   }
+
+  function hasMarketingConsent() {
+    return (
+      window.Cookiebot &&
+      window.Cookiebot.consent &&
+      window.Cookiebot.consent.marketing
+    );
+  }
+
+  function hasPreviewTrackingConsent() {
+    return (
+      document.documentElement.getAttribute(
+        'data-qiblanco-tracking-preview',
+      ) === 'true'
+    );
+  }
+
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
   window.addEventListener('CookiebotOnConsentReady', ready);

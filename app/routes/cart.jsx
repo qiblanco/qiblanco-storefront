@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {data} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
+import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
 
 /**
  * @type {MetaFunction}
@@ -19,7 +20,7 @@ export const headers = ({actionHeaders}) => actionHeaders;
  * @param {ActionFunctionArgs}
  */
 export async function action({request, context}) {
-  const {cart} = context;
+  const {cart, env} = context;
 
   const formData = await request.formData();
 
@@ -85,6 +86,8 @@ export async function action({request, context}) {
     default:
       throw new Error(`${action} cart action is not defined`);
   }
+
+  result = await persistAttributionOnCartResult({cart, request, env, result});
 
   const cartId = result?.cart?.id;
   const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
