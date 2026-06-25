@@ -12,14 +12,14 @@ import {mergeCartAttributes} from '~/lib/checkout-tracking';
  * @param {ActionFunctionArgs}
  */
 export async function action({request, context}) {
-  const {cart} = context;
+  const {cart, env} = context;
   const cartResult = await cart.get();
 
   if (!cartResult?.checkoutUrl) return redirect('/cart');
 
   let checkoutCart = cartResult;
 
-  if (hasAttributionConsent(request)) {
+  if (hasAttributionConsent(request, env)) {
     const attributionAttributes = getAttributionCartAttributes(request);
     const {attributes, changed} = mergeCartAttributes(
       cartResult.attributes,
@@ -36,6 +36,7 @@ export async function action({request, context}) {
   const checkoutUrl = getTrackedCheckoutUrl(
     checkoutCart.checkoutUrl ?? cartResult.checkoutUrl,
     request,
+    env,
   );
 
   return redirect(checkoutUrl, {headers});

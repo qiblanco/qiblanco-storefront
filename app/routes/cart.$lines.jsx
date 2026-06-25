@@ -25,7 +25,7 @@ import {
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context, params}) {
-  const {cart} = context;
+  const {cart, env} = context;
   const {lines} = params;
   if (!lines) return redirect('/cart');
   const linesMap = lines.split(',').map((line) => {
@@ -43,7 +43,7 @@ export async function loader({request, context, params}) {
   const searchParams = new URLSearchParams(url.search);
   const discount = searchParams.get('discount');
   const discountArray = discount ? [discount] : [];
-  const hasMarketingConsent = hasAttributionConsent(request);
+  const hasMarketingConsent = hasAttributionConsent(request, env);
   const attributionAttributes = hasMarketingConsent
     ? getAttributionCartAttributes(request)
     : [];
@@ -71,7 +71,7 @@ export async function loader({request, context, params}) {
   // redirect to checkout
   if (cartResult.checkoutUrl) {
     const trackedCheckoutUrl = hasMarketingConsent
-      ? getTrackedCheckoutUrl(cartResult.checkoutUrl, request)
+      ? getTrackedCheckoutUrl(cartResult.checkoutUrl, request, env)
       : cartResult.checkoutUrl;
 
     return redirect(trackedCheckoutUrl, {headers});

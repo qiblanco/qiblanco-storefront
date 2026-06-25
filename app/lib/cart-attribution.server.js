@@ -3,6 +3,7 @@ import {
   buildAttributionCartAttributes,
   getCheckoutTrackingSearchParams,
   hasCookiebotMarketingConsent,
+  isQiblancoProductionHost,
   mergeCartAttributes,
 } from '~/lib/checkout-tracking';
 
@@ -12,6 +13,7 @@ import {
  * @param {{
  *   cart: import('@shopify/hydrogen').HydrogenCart,
  *   request: Request,
+ *   env?: Record<string, string | undefined>,
  *   result: {
  *     cart?: {id?: string, attributes?: Array<{key?: string | null, value?: string | null}> | null} | null,
  *     errors?: Array<unknown>,
@@ -19,8 +21,13 @@ import {
  *   } | null,
  * }} options
  */
-export async function persistAttributionOnCartResult({cart, request, result}) {
-  if (!result?.cart || !hasAttributionConsent(request)) return result;
+export async function persistAttributionOnCartResult({
+  cart,
+  request,
+  env,
+  result,
+}) {
+  if (!result?.cart || !hasAttributionConsent(request, env)) return result;
 
   const attributionAttributes = getAttributionCartAttributes(request);
   if (!attributionAttributes.length) return result;
@@ -45,9 +52,13 @@ export async function persistAttributionOnCartResult({cart, request, result}) {
 
 /**
  * @param {Request} request
+ * @param {Record<string, string | undefined> | undefined} env
  */
-export function hasAttributionConsent(request) {
-  return hasCookiebotMarketingConsent(request.headers.get('Cookie'));
+export function hasAttributionConsent(request, env) {
+  return (
+    hasCookiebotMarketingConsent(request.headers.get('Cookie')) ||
+    isPreviewTrackingAllowed(request, env)
+  );
 }
 
 /**
@@ -66,9 +77,10 @@ export function getAttributionCartAttributes(request) {
 /**
  * @param {string} checkoutUrl
  * @param {Request} request
+ * @param {Record<string, string | undefined> | undefined} env
  */
-export function getTrackedCheckoutUrl(checkoutUrl, request) {
-  if (!hasAttributionConsent(request)) return checkoutUrl;
+export function getTrackedCheckoutUrl(checkoutUrl, request, env) {
+  if (!hasAttributionConsent(request, env)) return checkoutUrl;
 
   const url = new URL(request.url);
   const searchParams = getCheckoutTrackingSearchParams({
@@ -90,4 +102,15 @@ export function getTrackedCheckoutUrl(checkoutUrl, request) {
  */
 function mergeResultMessages(first, second) {
   return [...(first ?? []), ...(second ?? [])];
+}
+
+/**
+ * @param {Request} request
+ * @param {Record<string, string | undefined> | undefined} env
+ */
+function isPreviewTrackingAllowed(request, env) {
+  return (
+    env?.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true' &&
+    !isQiblancoProductionHost(request.url)
+  );
 }

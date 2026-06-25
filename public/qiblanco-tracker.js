@@ -85,15 +85,28 @@
     document.head.appendChild(s);
   }
   function ready() {
-    if (
-      window.Cookiebot &&
-      window.Cookiebot.consent &&
-      window.Cookiebot.consent.marketing
-    ) {
+    if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
       storeAttributionParams();
       boot();
     }
   }
+
+  function hasMarketingConsent() {
+    return (
+      window.Cookiebot &&
+      window.Cookiebot.consent &&
+      window.Cookiebot.consent.marketing
+    );
+  }
+
+  function hasPreviewTrackingConsent() {
+    return (
+      document.documentElement.getAttribute(
+        'data-qiblanco-tracking-preview',
+      ) === 'true'
+    );
+  }
+
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
   window.addEventListener('CookiebotOnConsentReady', ready);

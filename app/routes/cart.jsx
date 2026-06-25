@@ -20,7 +20,7 @@ export const headers = ({actionHeaders}) => actionHeaders;
  * @param {ActionFunctionArgs}
  */
 export async function action({request, context}) {
-  const {cart} = context;
+  const {cart, env} = context;
 
   const formData = await request.formData();
 
@@ -87,7 +87,7 @@ export async function action({request, context}) {
       throw new Error(`${action} cart action is not defined`);
   }
 
-  result = await persistAttributionOnCartResult({cart, request, result});
+  result = await persistAttributionOnCartResult({cart, request, env, result});
 
   const cartId = result?.cart?.id;
   const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();

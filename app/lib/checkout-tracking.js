@@ -1,6 +1,14 @@
 export const ATTRIBUTION_STORAGE_KEY = 'qiblanco_checkout_attribution';
 export const ATTRIBUTION_COOKIE_NAME = ATTRIBUTION_STORAGE_KEY;
 
+const TRACKING_PRODUCTION_HOSTS = new Set([
+  'qiblanco.com',
+  'www.qiblanco.com',
+  'us.qiblanco.com',
+  'qiblanco.de',
+  'www.qiblanco.de',
+]);
+
 const TRACKING_PARAM_NAMES = new Set([
   'fbclid',
   'fbc',
@@ -183,6 +191,18 @@ export function hasCookiebotMarketingConsent(cookieHeader) {
   return /(?:^|[,{]\s*|["'])marketing["']?\s*:\s*true(?:[,}]|$)/i.test(
     decoded,
   );
+}
+
+/**
+ * @param {string} requestUrl
+ */
+export function isQiblancoProductionHost(requestUrl) {
+  try {
+    const {hostname} = new URL(requestUrl);
+    return TRACKING_PRODUCTION_HOSTS.has(hostname);
+  } catch {
+    return false;
+  }
 }
 
 /**
