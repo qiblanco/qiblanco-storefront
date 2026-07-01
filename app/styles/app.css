@@ -1079,9 +1079,15 @@ ul.submenu li a {
 /* Newsletter form overrides */
 .footer ._form_15 input[type='text'],
 .footer ._form_15 input[type='email'] {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: #fff !important;
+  background: #fff !important;
+  border-color: #fff !important;
+  color: #1b1b1b !important;
+}
+
+.footer ._form_15 input[type='text']::placeholder,
+.footer ._form_15 input[type='email']::placeholder {
+  color: rgba(27, 27, 27, 0.62) !important;
+  opacity: 1 !important;
 }
 
 /* Mobile */
@@ -1857,17 +1863,29 @@ ul.submenu li a {
   left: 1rem;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px);
-  padding: 5px 20px;
+  padding: 0 18px;
   border-radius: 1000px;
   height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .InfoSlider .InfoSliderCard .CardLabel p {
   color: var(--color-light);
   font-size: 0.9em;
-  display: flex;
+  line-height: 1;
+  margin: 0;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  white-space: nowrap;
+}
+.InfoSlider .InfoSliderCard .CardLabel svg {
+  flex: 0 0 auto;
+  width: 1.05em;
+  height: 1.05em;
 }
 .InfoSlider .InfoSliderCard .CardTextWrapper {
   position: absolute;
