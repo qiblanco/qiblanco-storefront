@@ -22,7 +22,7 @@ export async function loader({context}) {
   });
 
   return {
-    products: [data.qione, data.bracelet, data.kette, data.qihome]
+    products: [data.fundament, data.unabhaengig, data.erholungsResidenz]
       .filter(Boolean)
       .map((product) => ({
         ...product,
@@ -70,7 +70,7 @@ const EXCLUSIVE_PRODUCTS_QUERY = `#graphql
       width
       height
     }
-    variants(first: 30) {
+    variants(first: 50) {
       nodes {
         ...ExclusiveProductVariant
       }
@@ -78,16 +78,13 @@ const EXCLUSIVE_PRODUCTS_QUERY = `#graphql
   }
 
   query ExclusiveProducts {
-    qione: product(handle: "qione-2-pro") {
+    fundament: product(handle: "bundle-fundament") {
       ...ExclusiveProduct
     }
-    bracelet: product(handle: "qibracelet") {
+    unabhaengig: product(handle: "bundle-unabhangig") {
       ...ExclusiveProduct
     }
-    kette: product(handle: "qione-kette") {
-      ...ExclusiveProduct
-    }
-    qihome: product(handle: "qihome-air") {
+    erholungsResidenz: product(handle: "bundle-erholungs-residenz") {
       ...ExclusiveProduct
     }
   }

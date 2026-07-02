@@ -80,6 +80,9 @@ ${shopId ? `Disallow: /${shopId}/checkouts` : ''}
 ${shopId ? `Disallow: /${shopId}/orders` : ''}
 Disallow: /carts
 Disallow: /account
+Disallow: /products/bundle-fundament
+Disallow: /products/bundle-unabhangig
+Disallow: /products/bundle-erholungs-residenz
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*

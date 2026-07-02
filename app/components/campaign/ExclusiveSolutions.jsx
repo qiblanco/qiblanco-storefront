@@ -87,11 +87,10 @@ const KETTE_SIZES = ["40 cm", "45 cm", "50 cm", "60 cm", "75 cm"];
 const BRACELET_SIZES = ["S", "M", "L"];
 const SIZE_OPTIONS = { kette: KETTE_SIZES, bracelet: BRACELET_SIZES };
 const DEFAULT_SIZE = { kette: "50 cm", bracelet: "M" };
-const PACKAGE_HANDLE_BY_KIND = {
-  qihome: 'qihome-air',
-  qione: 'qione-2-pro',
-  bracelet: 'qibracelet',
-  kette: 'qione-kette',
+const BUNDLE_HANDLE_BY_PACKAGE = {
+  Fundament: 'bundle-fundament',
+  Unabhängig: 'bundle-unabhangig',
+  'Erholungs-Residenz': 'bundle-erholungs-residenz',
 };
 
 const PRODUCT_IMG = {
@@ -138,19 +137,6 @@ function getProductsByHandle(products = []) {
   }, {});
 }
 
-function getPackageHandle(item) {
-  if (item.handle) return item.handle;
-  if (item.kind) return PACKAGE_HANDLE_BY_KIND[item.kind];
-
-  const label = normalizeVariantText(item.label);
-  if (label.includes('qihome')) return PACKAGE_HANDLE_BY_KIND.qihome;
-  if (label.includes('qibracelet')) return PACKAGE_HANDLE_BY_KIND.bracelet;
-  if (label.includes('kette')) return PACKAGE_HANDLE_BY_KIND.kette;
-  if (label.includes('qione')) return PACKAGE_HANDLE_BY_KIND.qione;
-
-  return null;
-}
-
 function getLineImage(product, variant) {
   const image = variant?.image || product?.featuredImage;
   if (!image?.url) return undefined;
@@ -163,91 +149,107 @@ function getLineImage(product, variant) {
   };
 }
 
-function findPackageVariant(product, item, size) {
-  const variants = product?.variants || [];
-  if (!variants.length) return null;
+function getConfigIndices(items) {
+  const seen = new Set();
+  return items
+    .map((item, index) => {
+      if (!item.kind || seen.has(item.kind)) return -1;
+      seen.add(item.kind);
+      return index;
+    })
+    .filter((index) => index >= 0);
+}
 
-  if (!item.kind) {
-    return variants.find((variant) => variant.availableForSale) || variants[0];
+function getPackageSelections(p, sizes) {
+  return getConfigIndices(p.items).map((index) => {
+    const item = p.items[index];
+    return {
+      index,
+      kind: item.kind,
+      label: item.label.replace(/^1 Ã— /, ''),
+      value: sizes[index] || item.defaultSize || DEFAULT_SIZE[item.kind],
+    };
+  });
+}
+
+function optionMatchesSelection(option, selection) {
+  const target = normalizeVariantText(selection.value);
+  const value = normalizeVariantText(option?.value || '');
+
+  if (selection.kind === 'bracelet') {
+    return value.startsWith(target) || value.includes(`${target}-`);
   }
 
-  const target = normalizeVariantText(size);
+  return value.includes(target);
+}
+
+function findBundleVariant(product, selections) {
+  const variants = product?.variants || [];
   return (
     variants.find((variant) => {
-      const haystack = normalizeVariantText(
-        [
-          variant.title,
-          ...(variant.selectedOptions || []).map((option) => option.value),
-        ].join(' '),
+      if (!variant.availableForSale) return false;
+      return selections.every((selection) =>
+        (variant.selectedOptions || []).some((option) =>
+          optionMatchesSelection(option, selection),
+        ),
       );
-
-      if (item.kind === 'bracelet') {
-        return haystack.startsWith(target) || haystack.includes(`${target}-`);
-      }
-
-      return haystack.includes(target);
     }) || null
   );
 }
 
 function buildPackageCartState(p, productsByHandle, sizes) {
-  const linesByKey = new Map();
-  const unavailable = [];
+  const product = productsByHandle[p.bundleHandle];
+  const selections = getPackageSelections(p, sizes);
+  const variant = findBundleVariant(product, selections);
 
-  p.items.forEach((item, index) => {
-    const handle = getPackageHandle(item);
-    const product = productsByHandle[handle];
-    const size = item.kind ? sizes[index] || item.defaultSize || DEFAULT_SIZE[item.kind] : null;
-    const variant = findPackageVariant(product, item, size);
-
-    if (!product || !variant || !variant.availableForSale) {
-      unavailable.push({item, size});
-      return;
-    }
-
-    const key = [variant.id, p.title, item.kind ? size : ''].join('|');
-    const existing = linesByKey.get(key);
-
-    if (existing) {
-      existing.quantity += 1;
-      return;
-    }
-
-    linesByKey.set(key, {
-      merchandiseId: variant.id,
-      quantity: 1,
-      attributes: [
-        {key: 'Paket', value: p.title},
-        ...(item.kind ? [{key: 'Auswahl', value: size}] : []),
-      ],
-      selectedVariant: {
-        id: variant.id,
-        title: variant.title,
-        availableForSale: variant.availableForSale,
-        image: getLineImage(product, variant),
-        price: variant.price,
-        product: {
-          handle: product.handle,
-          title: product.title,
-        },
-        selectedOptions: [
-          ...(variant.selectedOptions || []),
-          {name: 'Paket', value: p.title},
-        ],
-      },
-    });
-  });
+  if (!product || !variant) {
+    return {
+      lines: [],
+      selections,
+      unavailable: [{item: {label: p.title}, size: ''}],
+    };
+  }
 
   return {
-    lines: [...linesByKey.values()],
-    unavailable,
+    lines: [
+      {
+        merchandiseId: variant.id,
+        quantity: 1,
+        attributes: [
+          {key: 'Paket', value: p.title},
+          ...selections.map((selection) => ({
+            key: selection.kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe',
+            value: selection.value,
+          })),
+        ],
+        selectedVariant: {
+          id: variant.id,
+          title: variant.title,
+          availableForSale: variant.availableForSale,
+          image: getLineImage(product, variant),
+          price: variant.price,
+          product: {
+            handle: product.handle,
+            title: product.title,
+          },
+          selectedOptions: [
+            ...(variant.selectedOptions || []),
+            {name: 'Paket', value: p.title},
+          ],
+        },
+      },
+    ],
+    selections,
+    unavailable: [],
   };
 }
 
-function isPackageSizeAvailable(productsByHandle, item, size) {
-  const handle = getPackageHandle(item);
-  const variant = findPackageVariant(productsByHandle[handle], item, size);
-  return Boolean(variant?.availableForSale);
+function isPackageSizeAvailable(productsByHandle, p, itemIndex, size, sizes) {
+  const product = productsByHandle[p.bundleHandle];
+  const nextSizes = {...sizes, [itemIndex]: size};
+  const selections = getPackageSelections(p, nextSizes);
+  const variant = findBundleVariant(product, selections);
+  return Boolean(variant);
 }
 
 function Pak({ p, productsByHandle, onChoose }) {
@@ -259,7 +261,7 @@ function Pak({ p, productsByHandle, onChoose }) {
     const it = p.items[i];
     return it.defaultSize || DEFAULT_SIZE[it.kind];
   };
-  const configIndices = p.items.map((it, i) => (it.kind ? i : -1)).filter((i) => i >= 0);
+  const configIndices = React.useMemo(() => getConfigIndices(p.items), [p.items]);
   const cartState = React.useMemo(
     () => buildPackageCartState(p, productsByHandle, sizes),
     [p, productsByHandle, sizes],
@@ -272,7 +274,7 @@ function Pak({ p, productsByHandle, onChoose }) {
       label: p.items[i].label.replace(/^1 × /, ''),
       value: getSize(i),
     }));
-    onChoose(p, selections, cartState);
+    onChoose(p, cartState.selections || selections, cartState);
     if (!isDisabled) open('cart');
   };
 
@@ -283,7 +285,7 @@ function Pak({ p, productsByHandle, onChoose }) {
       <p className="ghx-pak__lead">{p.lead}</p>
       <ul className="ghx-pak__items">
         {p.items.map((it, i) => (
-          it.kind ? (
+          it.kind && configIndices.includes(i) ? (
             <li key={i} className="ghx-pak__item ghx-pak__item--config">
               <ItemLabel label={it.label} />
               <select
@@ -296,7 +298,7 @@ function Pak({ p, productsByHandle, onChoose }) {
                   <option
                     key={s}
                     value={s}
-                    disabled={!isPackageSizeAvailable(productsByHandle, it, s)}
+                    disabled={!isPackageSizeAvailable(productsByHandle, p, i, s, sizes)}
                   >
                     {s}
                   </option>
@@ -361,6 +363,7 @@ function GeldheldenPakete({products}) {
       pill: "★ Stabiles Fundament",
       pillCls: "ghx-pill--gold",
       title: "Fundament",
+      bundleHandle: BUNDLE_HANDLE_BY_PACKAGE.Fundament,
       lead: "Der Einstieg in die volle Lösung — Schutz für dich und dein Zuhause. Hausstation und Anhänger bieten ein perfektes Preis-Leistungsverhältnis.",
       items: [
         { label: "1 × QiHome® Air" },
@@ -395,12 +398,14 @@ function GeldheldenPakete({products}) {
       save: "Du sparst 1.260 €",
       cta: "Dieses Paket wählen",
       fine: "oder ab 770 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+      bundleHandle: 'bundle-unabhangig',
       featured: true,
     },
     {
       pill: "★ Gelebter Exklusiver Luxus",
       pillCls: "ghx-pill--gold",
       title: "Erholungs-Residenz",
+      bundleHandle: BUNDLE_HANDLE_BY_PACKAGE['Erholungs-Residenz'],
       lead: "Maximaler Schutz — 3 leistungsstarke QiHome® Air erzeugen ein gigantisches kohärentes Feld für dein Zuhause und Büro. Begleitet mit dem portablen QiOne® 2 Pro und dem edlen QiBracelet® entsteht ein absolutes Luxusgefühl.",
       items: [
         { label: "1 × QiHome® Air" },
@@ -429,6 +434,7 @@ function GeldheldenPakete({products}) {
     setToast({
       title: p.title,
       count: cartState.lines.reduce((sum, line) => sum + line.quantity, 0),
+      itemLabel: 'Paket',
       selections,
       price: p.price,
       save: p.save,
@@ -465,7 +471,7 @@ function GeldheldenPakete({products}) {
           <div className="ghx-toast__head">
             <span className="ghx-toast__check">✓</span>
             <div>
-              <strong>{toast.count} Produkte im Warenkorb</strong>
+              <strong>{toast.count} {toast.itemLabel} im Warenkorb</strong>
               <span className="ghx-toast__sub">
                 {toast.unavailable
                   ? 'Eine Auswahl ist aktuell nicht verfügbar.'
