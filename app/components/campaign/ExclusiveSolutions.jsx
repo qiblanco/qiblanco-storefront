@@ -166,7 +166,7 @@ function getPackageSelections(p, sizes) {
     return {
       index,
       kind: item.kind,
-      label: item.label.replace(/^1 Ã— /, ''),
+      label: item.label.replace(/^1 × /, ''),
       value: sizes[index] || item.defaultSize || DEFAULT_SIZE[item.kind],
     };
   });
@@ -345,7 +345,7 @@ function Pak({ p, productsByHandle, onChoose }) {
                 onClick={onClick}
                 disabled={isDisabled || fetcher.state !== 'idle'}
               >
-                {isDisabled ? 'Paket aktuell nicht verfÃ¼gbar' : p.cta}
+                {isDisabled ? 'Paket aktuell nicht verfügbar' : p.cta}
               </button>
             </>
           )}
