@@ -233,17 +233,32 @@ function optionMatchesSelection(option, selection) {
   return value.includes(target);
 }
 
+function variantMatchesSelections(variant, selections) {
+  // Jede Options-Position darf nur EINE Auswahl bedienen — sonst würde bei
+  // zwei getrennten Ketten-Optionen (z. B. „60 cm" / „50 cm") die Auswahl
+  // „50 + 50" fälschlich über die einzelne 50er-Option doppelt matchen.
+  const options = variant.selectedOptions || [];
+  const used = new Set();
+  return selections.every((selection) => {
+    for (let k = 0; k < options.length; k++) {
+      if (used.has(k)) continue;
+      if (optionMatchesSelection(options[k], selection)) {
+        used.add(k);
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
 function findBundleVariant(product, selections) {
   const variants = product?.variants || [];
   return (
-    variants.find((variant) => {
-      if (!variant.availableForSale) return false;
-      return selections.every((selection) =>
-        (variant.selectedOptions || []).some((option) =>
-          optionMatchesSelection(option, selection),
-        ),
-      );
-    }) || null
+    variants.find(
+      (variant) =>
+        variant.availableForSale &&
+        variantMatchesSelections(variant, selections),
+    ) || null
   );
 }
 
