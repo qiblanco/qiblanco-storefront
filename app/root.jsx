@@ -15,6 +15,7 @@ import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
+import {MetaPixel} from './components/MetaPixel';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -75,6 +76,9 @@ export async function loader(args) {
     ...criticalData,
     isProductionHost: isQiblancoProductionHost(args.request.url),
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
+    // First-Party-Pixel (qpx): lädt NUR, wenn der Receiver-Endpoint gesetzt ist
+    // (Rollout-Schalter; ohne env-Variable ist das Verhalten unverändert).
+    qpxEndpoint: env.PUBLIC_QPX_ENDPOINT || '',
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -223,6 +227,15 @@ export function Layout({children}) {
               defer
               suppressHydrationWarning
             />
+            {data?.qpxEndpoint ? (
+              <script
+                src="/qiblanco-qpx-loader.js"
+                data-qpx-endpoint={data.qpxEndpoint}
+                nonce={nonce}
+                defer
+                suppressHydrationWarning
+              />
+            ) : null}
           </>
         )}
       </head>
@@ -235,6 +248,9 @@ export function Layout({children}) {
           consent={data.consent}
           >
             <PageLayout {...data}>{children}</PageLayout>
+            {(data.isProductionHost || data.enableTrackingInPreview) && (
+              <MetaPixel />
+            )}
           </Analytics.Provider>
         ) : (
           children

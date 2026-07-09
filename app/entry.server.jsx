@@ -4,6 +4,22 @@ import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 
 /**
+ * First-Party-Pixel (qpx): erlaubt den Receiver-Origin in connect-src NUR,
+ * wenn PUBLIC_QPX_ENDPOINT gesetzt ist. Ohne env-Variable bleibt die CSP
+ * unverändert.
+ * @param {Record<string, string | undefined>} env
+ */
+function qpxConnectSrc(env) {
+  const endpoint = env?.PUBLIC_QPX_ENDPOINT;
+  if (!endpoint) return [];
+  try {
+    return [new URL(endpoint).origin];
+  } catch {
+    return [];
+  }
+}
+
+/**
  * @param {Request} request
  * @param {number} responseStatusCode
  * @param {Headers} responseHeaders
@@ -56,6 +72,7 @@ export default async function handleRequest(
       'https://content.9gtb.com',
       'https://*.gorgias-convert.com',
       'https://gorgias-convert.com',
+      'https://connect.facebook.net',
     ],
     styleSrc: [
       "'self'",
@@ -116,6 +133,10 @@ export default async function handleRequest(
       'https://*.9gti.com',
       'https://gorgias-convert.com',
       'https://*.gorgias-convert.com',
+      'https://www.facebook.com',
+      'https://connect.facebook.net',
+      // First-Party-Pixel (qpx): Receiver-Origin nur, wenn per env gesetzt.
+      ...qpxConnectSrc(context.env),
     ],
     mediaSrc: [
       "'self'",
@@ -159,6 +180,7 @@ export default async function handleRequest(
       'https://*.gorgias.chat',
       'https://*.gorgias.io',
       'https://*.gorgias-convert.com',
+      'https://www.facebook.com',
     ],
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
