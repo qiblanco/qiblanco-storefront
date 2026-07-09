@@ -126,15 +126,19 @@
       var value = 'fb.1.' + new Date().getTime() + '.' + fbclid;
       var domain = rootCookieDomain();
       var secure = window.location.protocol === 'https:' ? '; Secure' : '';
-      document.cookie =
-        '_fbc=' +
-        value +
+      var suffix =
         '; Max-Age=' +
         ATTRIBUTION_COOKIE_MAX_AGE +
-        '; Path=/' +
-        (domain ? '; Domain=' + domain : '') +
-        '; SameSite=Lax' +
+        '; Path=/; SameSite=Lax' +
         secure;
+      if (domain) {
+        document.cookie = '_fbc=' + value + suffix + '; Domain=' + domain;
+      }
+      // Fallback ohne Domain: greift auf Public-Suffix-Hosts (z. B.
+      // *.myshopify.dev Previews), wo Browser Domain-Cookies verwerfen.
+      if (!readCookie('_fbc')) {
+        document.cookie = '_fbc=' + value + suffix;
+      }
     } catch (e) {
       // Cookie writes can be unavailable in restricted browser contexts.
     }
