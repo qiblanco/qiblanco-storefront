@@ -29,45 +29,70 @@
     return TRACKING_PARAM_NAMES[name] || /^utm_[a-z0-9_]+$/i.test(name);
   }
 
-  function collectTrackingParams(search) {
-    if (!search) return null;
-    var params = new URLSearchParams(search);
+  function collectTrackedParams() {
+    if (!window.location.search) return null;
+
+    var params = new URLSearchParams(window.location.search);
     var tracked = [];
+
     params.forEach(function (value, name) {
       if (value && isTrackingParamName(name)) tracked.push([name, value]);
     });
+
     return tracked.length ? tracked : null;
   }
 
-  // Snapshot der Landing-Klick-IDs im Speicher, beim ersten Laden - VOR Consent.
-  // Hier wird NICHTS persistiert (kein Cookie/Storage); der Wert lebt nur im
-  // JS-Runtime, das die Hydrogen-SPA-Navigation uebersteht. Der Flush in den
-  // dauerhaften Store passiert spaeter, nur wenn Marketing-Consent erteilt wird.
-  var LANDING = {
-    params: collectTrackingParams(window.location.search),
-    href: window.location.href,
-    referrer: document.referrer || '',
-    savedAt: new Date().toISOString(),
-  };
-
-  function storeAttributionParams() {
-    // Bevorzugt den gepufferten Landing-Snapshot; Fallback = aktuelle URL
-    // (deckt den bereits eingewilligten Wiederkehrer-Fall ab).
-    var tracked = LANDING.params || collectTrackingParams(window.location.search);
-    if (!tracked || !tracked.length) return;
-
-    var attribution = {
+  function buildAttributionRecord(tracked) {
+    return {
       params: tracked,
-      href: LANDING.href,
-      referrer: LANDING.referrer,
-      savedAt: LANDING.savedAt,
+      href: window.location.href,
+      referrer: document.referrer || '',
+      savedAt: new Date().toISOString(),
     };
-    var serialized = JSON.stringify(attribution);
+  }
+
+  // Puffert Klick-IDs SOFORT beim Seitenaufruf in sessionStorage — auch VOR der
+  // Cookie-Zustimmung. sessionStorage ist kein Cookie, verlässt den Browser-Tab
+  // nicht und verfällt mit der Session: reiner technischer Zwischenspeicher,
+  // damit die Zuordnung nicht verloren ist, wenn der Besucher erst später im
+  // Funnel zustimmt oder per SPA-Navigation weitergeklickt hat, bevor er
+  // zustimmt. Ein Cookie entsteht erst NACH Marketing-Consent (persist…).
+  function bufferAttributionParams() {
+    var tracked = collectTrackedParams();
+    if (!tracked) return;
 
     try {
-      window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, serialized);
+      window.sessionStorage.setItem(
+        ATTRIBUTION_STORAGE_KEY,
+        JSON.stringify(buildAttributionRecord(tracked)),
+      );
     } catch {
       // Session storage can be unavailable in restricted browser contexts.
+    }
+  }
+
+  function readBufferedAttribution() {
+    try {
+      return window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  // Nur mit Consent: gepufferte (oder aktuelle) Klick-IDs als Cookie sichern,
+  // damit der Server sie in die Order-note_attributes schreiben kann.
+  function persistAttributionParams() {
+    var serialized = readBufferedAttribution();
+
+    if (!serialized) {
+      var tracked = collectTrackedParams();
+      if (!tracked) return;
+      serialized = JSON.stringify(buildAttributionRecord(tracked));
+      try {
+        window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, serialized);
+      } catch {
+        // Session storage can be unavailable in restricted browser contexts.
+      }
     }
 
     try {
@@ -93,17 +118,26 @@
     try {
       var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
       return m ? decodeURIComponent(m[1]) : null;
-    } catch (e) {
+    } catch {
       return null;
     }
   }
 
-  function landingParam(name) {
-    var p = LANDING.params || [];
-    for (var i = 0; i < p.length; i++) {
-      if (p[i][0] === name) return p[i][1];
+  function getBufferedParam(name) {
+    try {
+      var record = JSON.parse(readBufferedAttribution() || '{}');
+      var params = Array.isArray(record.params) ? record.params : [];
+      for (var i = 0; i < params.length; i++) {
+        if (params[i] && params[i][0] === name) return params[i][1];
+      }
+    } catch {
+      // fällt unten auf die aktuelle URL zurück
     }
-    return null;
+    try {
+      return new URLSearchParams(window.location.search).get(name);
+    } catch {
+      return null;
+    }
   }
 
   function rootCookieDomain() {
@@ -115,13 +149,14 @@
   }
 
   // Setzt den ECHTEN _fbc-Cookie aus einer echten fbclid (Meta-Format
-  // fb.1.<ts>.<fbclid>) - nur wenn das Meta-Pixel noch keinen gesetzt hat.
-  // Domain = Root (.qiblanco.com), damit der Checkout-Subdomain-Kontext ihn liest.
-  // So bekommt Shopifys nativer Meta-Kanal die Klick-ID. Kein Faken: nur aus fbclid.
+  // fb.1.<ts>.<fbclid>) — nur wenn das Meta-Pixel noch keinen gesetzt hat.
+  // Deckt die Lücke, in der fbevents.js kein _fbc mehr setzen kann, weil die
+  // fbclid zum Consent-Zeitpunkt nicht mehr in der URL steht (Puffer greift).
+  // Domain = Root (.qiblanco.com), damit der Checkout-Kontext ihn liest.
   function ensureFbcCookie() {
     try {
       if (readCookie('_fbc')) return;
-      var fbclid = landingParam('fbclid');
+      var fbclid = getBufferedParam('fbclid');
       if (!fbclid) return;
       var value = 'fb.1.' + new Date().getTime() + '.' + fbclid;
       var domain = rootCookieDomain();
@@ -139,7 +174,7 @@
       if (!readCookie('_fbc')) {
         document.cookie = '_fbc=' + value + suffix;
       }
-    } catch (e) {
+    } catch {
       // Cookie writes can be unavailable in restricted browser contexts.
     }
   }
@@ -156,10 +191,43 @@
   }
   function ready() {
     if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
-      storeAttributionParams();
+      persistAttributionParams();
       ensureFbcCookie();
       boot();
     }
+  }
+
+  // SPA-Navigation: falls eine client-seitige Route neue Klick-IDs in der URL
+  // trägt (z.B. interne Kampagnen-Links), nachpuffern — und bei vorhandenem
+  // Consent direkt persistieren.
+  function hookSpaNavigation() {
+    if (window._qiblancoAttrSpaHooked) return;
+    window._qiblancoAttrSpaHooked = true;
+
+    function onNavigate() {
+      window.setTimeout(function () {
+        bufferAttributionParams();
+        if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
+          persistAttributionParams();
+          ensureFbcCookie();
+        }
+      }, 0);
+    }
+
+    var pushState = window.history.pushState;
+    var replaceState = window.history.replaceState;
+
+    window.history.pushState = function () {
+      pushState.apply(window.history, arguments);
+      onNavigate();
+    };
+
+    window.history.replaceState = function () {
+      replaceState.apply(window.history, arguments);
+      onNavigate();
+    };
+
+    window.addEventListener('popstate', onNavigate);
   }
 
   function hasMarketingConsent() {
@@ -178,6 +246,8 @@
     );
   }
 
+  bufferAttributionParams();
+  hookSpaNavigation();
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
   window.addEventListener('CookiebotOnConsentReady', ready);
