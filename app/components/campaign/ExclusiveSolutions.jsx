@@ -1,10 +1,10 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
-import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 
 /* ════════════════════════════════════════════════════════════
@@ -150,23 +150,34 @@ function getLineImage(product, variant) {
 }
 
 function getConfigIndices(items) {
-  const seen = new Set();
+  // Jedes konfigurierbare Exemplar bekommt einen eigenen Selektor —
+  // auch wenn derselbe Produkttyp (kind) mehrfach im Paket liegt.
   return items
-    .map((item, index) => {
-      if (!item.kind || seen.has(item.kind)) return -1;
-      seen.add(item.kind);
-      return index;
-    })
+    .map((item, index) => (item.kind ? index : -1))
     .filter((index) => index >= 0);
 }
 
+function getKindCounts(items) {
+  return items.reduce((counts, item) => {
+    if (item.kind) counts[item.kind] = (counts[item.kind] || 0) + 1;
+    return counts;
+  }, {});
+}
+
 function getPackageSelections(p, sizes) {
+  const kindCounts = getKindCounts(p.items);
+  const seen = {};
   return getConfigIndices(p.items).map((index) => {
     const item = p.items[index];
+    seen[item.kind] = (seen[item.kind] || 0) + 1;
+    const ordinal = seen[item.kind];
+    const baseLabel = item.label.replace(/^1 × /, '');
     return {
       index,
       kind: item.kind,
-      label: item.label.replace(/^1 × /, ''),
+      ordinal,
+      multiple: kindCounts[item.kind] > 1,
+      label: kindCounts[item.kind] > 1 ? `${baseLabel} ${ordinal}` : baseLabel,
       value: sizes[index] || item.defaultSize || DEFAULT_SIZE[item.kind],
     };
   });
@@ -218,7 +229,11 @@ function buildPackageCartState(p, productsByHandle, sizes) {
         attributes: [
           {key: 'Paket', value: p.title},
           ...selections.map((selection) => ({
-            key: selection.kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe',
+            // Eindeutige Keys pro Exemplar — gleiche Keys würden sich in
+            // Shopify-Cart-Attributes gegenseitig überschreiben.
+            key:
+              (selection.kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe') +
+              (selection.multiple ? ` ${selection.ordinal}` : ''),
             value: selection.value,
           })),
         ],
@@ -252,9 +267,37 @@ function isPackageSizeAvailable(productsByHandle, p, itemIndex, size, sizes) {
   return Boolean(variant);
 }
 
+function computeInitialSizes(p, productsByHandle) {
+  const indices = getConfigIndices(p.items);
+  const defaults = {};
+  indices.forEach((i) => {
+    defaults[i] = p.items[i].defaultSize || DEFAULT_SIZE[p.items[i].kind];
+  });
+  if (buildPackageCartState(p, productsByHandle, defaults).lines.length) {
+    return defaults;
+  }
+
+  // Fallback: Unterstützt das Shopify-Bundle (noch) keine unterschiedlichen
+  // Größen pro Exemplar, alle Exemplare eines Typs auf die erste Default-Größe
+  // angleichen, statt "nicht verfügbar" als Startzustand zu zeigen.
+  const firstByKind = {};
+  const aligned = {};
+  indices.forEach((i) => {
+    const kind = p.items[i].kind;
+    if (firstByKind[kind] == null) firstByKind[kind] = defaults[i];
+    aligned[i] = firstByKind[kind];
+  });
+  if (buildPackageCartState(p, productsByHandle, aligned).lines.length) {
+    return aligned;
+  }
+  return defaults;
+}
+
 function Pak({ p, productsByHandle, onChoose }) {
   const {open} = useAside();
-  const [sizes, setSizes] = React.useState({});
+  const [sizes, setSizes] = React.useState(() =>
+    computeInitialSizes(p, productsByHandle),
+  );
   const setSize = (i, v) => setSizes((s) => ({ ...s, [i]: v }));
   const getSize = (i) => {
     if (sizes[i] != null) return sizes[i];
@@ -262,6 +305,18 @@ function Pak({ p, productsByHandle, onChoose }) {
     return it.defaultSize || DEFAULT_SIZE[it.kind];
   };
   const configIndices = React.useMemo(() => getConfigIndices(p.items), [p.items]);
+  const kindCounts = React.useMemo(() => getKindCounts(p.items), [p.items]);
+  const ordinalOf = (index) =>
+    configIndices.filter(
+      (j) => j <= index && p.items[j].kind === p.items[index].kind,
+    ).length;
+  const sizeLabel = (index) => {
+    const base =
+      p.items[index].kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe';
+    return kindCounts[p.items[index].kind] > 1
+      ? `${base} ${ordinalOf(index)}`
+      : base;
+  };
   const cartState = React.useMemo(
     () => buildPackageCartState(p, productsByHandle, sizes),
     [p, productsByHandle, sizes],
@@ -292,7 +347,7 @@ function Pak({ p, productsByHandle, onChoose }) {
                 className="ghx-pak__size"
                 value={getSize(i)}
                 onChange={(e) => setSize(i, e.target.value)}
-                aria-label={it.kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe'}
+                aria-label={sizeLabel(i)}
               >
                 {SIZE_OPTIONS[it.kind].map((s) => (
                   <option
@@ -609,14 +664,97 @@ function InfoSliderSection() {
   );
 }
 
-/* ───────── Wissenschaft / Studies — Original PeerReviewStudies ───────── */
+/* ───────── Studien-Slider (Elina-Layout: Titel oben links, Quelle unten links) ───────── */
+const STUDIEN = [
+  {
+    title: 'Wissenschaftliche Publikation an Immunzellen',
+    source: 'Japan Journal of Medicine · 30. April 2021',
+    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1667512705',
+    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510',
+  },
+  {
+    title: 'Wissenschaftliche Publikation an Darmzellen',
+    source: 'Applied Cell Biology Journal, 2021',
+    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1667513844',
+    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_1.png?v=1732276143',
+  },
+  {
+    title: 'Wissenschaftliche Publikation zum oxidativen Stress',
+    source: 'Applied Cell Biology Journal · 12. Januar 2024',
+    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505',
+    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229',
+  },
+  {
+    title: 'Forschungsartikel zur Nutzererfahrung',
+    source: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
+    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
+    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell-Biology-Cover-Remake-Seite-4.webp?v=1717500844',
+  },
+];
+
+function StudienSlider() {
+  const trackRef = React.useRef(null);
+  const scrollByCard = (dir) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelector('.ghx-studie');
+    const step = card ? card.offsetWidth + 24 : 340;
+    track.scrollBy({left: dir * step, behavior: 'smooth'});
+  };
+  return (
+    <div className="ghx-studien">
+      <div className="ghx-studien__track" ref={trackRef}>
+        {STUDIEN.map((s) => (
+          <article className="ghx-studie" key={s.title}>
+            <h3 className="ghx-studie__title">{s.title}</h3>
+            <a
+              className="ghx-studie__preview"
+              href={s.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src={s.img} alt={`Studien-Vorschau: ${s.title}`} loading="lazy" />
+            </a>
+            <p className="ghx-studie__source">{s.source}</p>
+          </article>
+        ))}
+      </div>
+      <div className="ghx-studien__nav">
+        <button
+          type="button"
+          className="ghx-studien__arrow"
+          onClick={() => scrollByCard(-1)}
+          aria-label="Vorherige Studie"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          className="ghx-studien__arrow"
+          onClick={() => scrollByCard(1)}
+          aria-label="Nächste Studie"
+        >
+          →
+        </button>
+      </div>
+      <p className="ghx-studien__footnote">
+        <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
+      </p>
+      <Link prefetch="intent" to="/pages/studien" className="btn--secondary m-center">
+        Zelluntersuchungen ansehen
+      </Link>
+    </div>
+  );
+}
+
+/* ───────── Wissenschaft / Studies — Studien im Slider ───────── */
 function ScienceSection() {
   return (
     <section className="lp-vp-section lp-vp-section--white">
       <span className="eyebrow">Wissenschaft</span>
       <h2>Nicht nur gefühlt – messbar bestätigt.</h2>
       <LpScrollMikroskopVideo />
-      <LpStudien headline="" />
+      <StudienSlider />
     </section>
   );
 }
