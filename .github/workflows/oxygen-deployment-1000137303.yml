@@ -55,6 +55,9 @@ jobs:
           FRESHDESK_WITHDRAWAL_FIELD_EMAIL: ${{ secrets.FRESHDESK_WITHDRAWAL_FIELD_EMAIL }}
           FRESHDESK_WITHDRAWAL_FIELD_RECEIVED_AT: ${{ secrets.FRESHDESK_WITHDRAWAL_FIELD_RECEIVED_AT }}
           PUBLIC_ENABLE_TRACKING_IN_PREVIEW: ${{ github.ref_name == 'main' && 'false' || 'true' }}
+          # First-Party-Pixel (qpx): Endpoint nur fuer main-Deploys — Previews
+          # bleiben dunkel, damit keine Testdaten in die Produktions-DB laufen.
+          PUBLIC_QPX_ENDPOINT: ${{ github.ref_name == 'main' && 'https://qpx.65-108-150-121.sslip.io/collect' || '' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -71,6 +74,7 @@ jobs:
             printf 'FRESHDESK_WITHDRAWAL_FIELD_EMAIL=%s\n' "$FRESHDESK_WITHDRAWAL_FIELD_EMAIL"
             printf 'FRESHDESK_WITHDRAWAL_FIELD_RECEIVED_AT=%s\n' "$FRESHDESK_WITHDRAWAL_FIELD_RECEIVED_AT"
             printf 'PUBLIC_ENABLE_TRACKING_IN_PREVIEW=%s\n' "$PUBLIC_ENABLE_TRACKING_IN_PREVIEW"
+            printf 'PUBLIC_QPX_ENDPOINT=%s\n' "$PUBLIC_QPX_ENDPOINT"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
