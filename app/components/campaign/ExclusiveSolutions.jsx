@@ -149,14 +149,6 @@ function getLineImage(product, variant) {
   };
 }
 
-function getConfigIndices(items) {
-  // Jedes konfigurierbare Exemplar bekommt einen eigenen Selektor —
-  // auch wenn derselbe Produkttyp (kind) mehrfach im Paket liegt.
-  return items
-    .map((item, index) => (item.kind ? index : -1))
-    .filter((index) => index >= 0);
-}
-
 function getKindCounts(items) {
   return items.reduce((counts, item) => {
     if (item.kind) counts[item.kind] = (counts[item.kind] || 0) + 1;
@@ -164,28 +156,75 @@ function getKindCounts(items) {
   }, {});
 }
 
-function getPackageSelections(p, sizes) {
-  const kindCounts = getKindCounts(p.items);
+function countKindOptions(product, kind) {
+  const options = product?.variants?.[0]?.selectedOptions || [];
+  return options.filter((option) => {
+    if (!option || option.name === 'Title') return false;
+    const isLength = /cm/i.test(option.value || '');
+    return kind === 'kette' ? isLength : !isLength;
+  }).length;
+}
+
+// Pro Typ eigene Selektoren nur, wenn das Bundle genug Optionen dafür hat
+// (z. B. „Kette 1"/„Kette 2" als getrennte Shopify-Optionen). Hat das Bundle
+// nur EINE Größen-Option pro Typ (heutiger Stand), gibt es EINEN gemeinsamen
+// Selektor — die Größe gilt dann für alle Exemplare des Typs. Rüstet sich
+// automatisch auf, sobald das Shopify-Bundle umgebaut ist.
+function getSelectorIndices(p, product) {
+  const counts = getKindCounts(p.items);
+  const perInstance = {};
+  Object.keys(counts).forEach((kind) => {
+    perInstance[kind] =
+      counts[kind] <= 1 || countKindOptions(product, kind) >= counts[kind];
+  });
+  const seen = new Set();
+  return p.items
+    .map((item, index) => {
+      if (!item.kind) return -1;
+      if (perInstance[item.kind]) return index;
+      if (seen.has(item.kind)) return -1;
+      seen.add(item.kind);
+      return index;
+    })
+    .filter((index) => index >= 0);
+}
+
+function getPackageSelections(p, product, sizes) {
+  const indices = getSelectorIndices(p, product);
+  const selectorKindCounts = indices.reduce((counts, index) => {
+    const kind = p.items[index].kind;
+    counts[kind] = (counts[kind] || 0) + 1;
+    return counts;
+  }, {});
   const seen = {};
-  return getConfigIndices(p.items).map((index) => {
+  return indices.map((index) => {
     const item = p.items[index];
     seen[item.kind] = (seen[item.kind] || 0) + 1;
     const ordinal = seen[item.kind];
     const baseLabel = item.label.replace(/^1 × /, '');
+    const multiple = selectorKindCounts[item.kind] > 1;
     return {
       index,
       kind: item.kind,
       ordinal,
-      multiple: kindCounts[item.kind] > 1,
-      label: kindCounts[item.kind] > 1 ? `${baseLabel} ${ordinal}` : baseLabel,
+      multiple,
+      label: multiple ? `${baseLabel} ${ordinal}` : baseLabel,
       value: sizes[index] || item.defaultSize || DEFAULT_SIZE[item.kind],
     };
   });
 }
 
 function optionMatchesSelection(option, selection) {
+  const rawValue = option?.value || '';
+  // Typ-Wächter: Ketten-Größen nur gegen Längen-Optionen („… cm") matchen,
+  // Bracelet-Größen nur gegen Nicht-Längen-Optionen — sonst matcht z. B.
+  // Bracelet „L" fälschlich die Ketten-Option „L - 60 cm".
+  const isLength = /cm/i.test(rawValue);
+  if (selection.kind === 'kette' && !isLength) return false;
+  if (selection.kind === 'bracelet' && isLength) return false;
+
   const target = normalizeVariantText(selection.value);
-  const value = normalizeVariantText(option?.value || '');
+  const value = normalizeVariantText(rawValue);
 
   if (selection.kind === 'bracelet') {
     return value.startsWith(target) || value.includes(`${target}-`);
@@ -210,7 +249,7 @@ function findBundleVariant(product, selections) {
 
 function buildPackageCartState(p, productsByHandle, sizes) {
   const product = productsByHandle[p.bundleHandle];
-  const selections = getPackageSelections(p, sizes);
+  const selections = getPackageSelections(p, product, sizes);
   const variant = findBundleVariant(product, selections);
 
   if (!product || !variant) {
@@ -262,13 +301,13 @@ function buildPackageCartState(p, productsByHandle, sizes) {
 function isPackageSizeAvailable(productsByHandle, p, itemIndex, size, sizes) {
   const product = productsByHandle[p.bundleHandle];
   const nextSizes = {...sizes, [itemIndex]: size};
-  const selections = getPackageSelections(p, nextSizes);
+  const selections = getPackageSelections(p, product, nextSizes);
   const variant = findBundleVariant(product, selections);
   return Boolean(variant);
 }
 
 function computeInitialSizes(p, productsByHandle) {
-  const indices = getConfigIndices(p.items);
+  const indices = getSelectorIndices(p, productsByHandle[p.bundleHandle]);
   const defaults = {};
   indices.forEach((i) => {
     defaults[i] = p.items[i].defaultSize || DEFAULT_SIZE[p.items[i].kind];
@@ -304,18 +343,23 @@ function Pak({ p, productsByHandle, onChoose }) {
     const it = p.items[i];
     return it.defaultSize || DEFAULT_SIZE[it.kind];
   };
-  const configIndices = React.useMemo(() => getConfigIndices(p.items), [p.items]);
+  const configIndices = React.useMemo(
+    () => getSelectorIndices(p, productsByHandle[p.bundleHandle]),
+    [p, productsByHandle],
+  );
   const kindCounts = React.useMemo(() => getKindCounts(p.items), [p.items]);
+  const selectorCountOf = (kind) =>
+    configIndices.filter((j) => p.items[j].kind === kind).length;
   const ordinalOf = (index) =>
     configIndices.filter(
       (j) => j <= index && p.items[j].kind === p.items[index].kind,
     ).length;
   const sizeLabel = (index) => {
-    const base =
-      p.items[index].kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe';
-    return kindCounts[p.items[index].kind] > 1
-      ? `${base} ${ordinalOf(index)}`
-      : base;
+    const kind = p.items[index].kind;
+    const base = kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe';
+    if (selectorCountOf(kind) > 1) return `${base} ${ordinalOf(index)}`;
+    if (kindCounts[kind] > 1) return `${base} (beide)`;
+    return base;
   };
   const cartState = React.useMemo(
     () => buildPackageCartState(p, productsByHandle, sizes),
