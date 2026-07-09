@@ -29,8 +29,8 @@
     return TRACKING_PARAM_NAMES[name] || /^utm_[a-z0-9_]+$/i.test(name);
   }
 
-  function storeAttributionParams() {
-    if (!window.location.search) return;
+  function collectTrackedParams() {
+    if (!window.location.search) return null;
 
     var params = new URLSearchParams(window.location.search);
     var tracked = [];
@@ -39,20 +39,60 @@
       if (value && isTrackingParamName(name)) tracked.push([name, value]);
     });
 
-    if (!tracked.length) return;
+    return tracked.length ? tracked : null;
+  }
 
-    var attribution = {
+  function buildAttributionRecord(tracked) {
+    return {
       params: tracked,
       href: window.location.href,
       referrer: document.referrer || '',
       savedAt: new Date().toISOString(),
     };
-    var serialized = JSON.stringify(attribution);
+  }
+
+  // Puffert Klick-IDs SOFORT beim Seitenaufruf in sessionStorage — auch VOR der
+  // Cookie-Zustimmung. sessionStorage ist kein Cookie, verlässt den Browser-Tab
+  // nicht und verfällt mit der Session: reiner technischer Zwischenspeicher,
+  // damit die Zuordnung nicht verloren ist, wenn der Besucher erst später im
+  // Funnel zustimmt oder per SPA-Navigation weitergeklickt hat, bevor er
+  // zustimmt. Ein Cookie entsteht erst NACH Marketing-Consent (persist…).
+  function bufferAttributionParams() {
+    var tracked = collectTrackedParams();
+    if (!tracked) return;
 
     try {
-      window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, serialized);
+      window.sessionStorage.setItem(
+        ATTRIBUTION_STORAGE_KEY,
+        JSON.stringify(buildAttributionRecord(tracked)),
+      );
     } catch {
       // Session storage can be unavailable in restricted browser contexts.
+    }
+  }
+
+  function readBufferedAttribution() {
+    try {
+      return window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  // Nur mit Consent: gepufferte (oder aktuelle) Klick-IDs als Cookie sichern,
+  // damit der Server sie in die Order-note_attributes schreiben kann.
+  function persistAttributionParams() {
+    var serialized = readBufferedAttribution();
+
+    if (!serialized) {
+      var tracked = collectTrackedParams();
+      if (!tracked) return;
+      serialized = JSON.stringify(buildAttributionRecord(tracked));
+      try {
+        window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, serialized);
+      } catch {
+        // Session storage can be unavailable in restricted browser contexts.
+      }
     }
 
     try {
@@ -86,9 +126,41 @@
   }
   function ready() {
     if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
-      storeAttributionParams();
+      persistAttributionParams();
       boot();
     }
+  }
+
+  // SPA-Navigation: falls eine client-seitige Route neue Klick-IDs in der URL
+  // trägt (z.B. interne Kampagnen-Links), nachpuffern — und bei vorhandenem
+  // Consent direkt persistieren.
+  function hookSpaNavigation() {
+    if (window._qiblancoAttrSpaHooked) return;
+    window._qiblancoAttrSpaHooked = true;
+
+    function onNavigate() {
+      window.setTimeout(function () {
+        bufferAttributionParams();
+        if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
+          persistAttributionParams();
+        }
+      }, 0);
+    }
+
+    var pushState = window.history.pushState;
+    var replaceState = window.history.replaceState;
+
+    window.history.pushState = function () {
+      pushState.apply(window.history, arguments);
+      onNavigate();
+    };
+
+    window.history.replaceState = function () {
+      replaceState.apply(window.history, arguments);
+      onNavigate();
+    };
+
+    window.addEventListener('popstate', onNavigate);
   }
 
   function hasMarketingConsent() {
@@ -107,6 +179,8 @@
     );
   }
 
+  bufferAttributionParams();
+  hookSpaNavigation();
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
   window.addEventListener('CookiebotOnConsentReady', ready);

@@ -40,6 +40,8 @@ export function CartSummary({cart, layout}) {
       </div>
       <CartCheckoutActions
         checkoutUrl={cart.checkoutUrl}
+        subtotal={taxedSubtotal}
+        numItems={lines.length}
       />
       <PaymentMethods />
     </div>
@@ -47,16 +49,34 @@ export function CartSummary({cart, layout}) {
 }
 
 /**
- * @param {{checkoutUrl?: string}}
+ * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number}}
  */
-function CartCheckoutActions({checkoutUrl}) {
+function CartCheckoutActions({checkoutUrl, subtotal, numItems}) {
   if (!checkoutUrl) return null;
+
+  // Meta-Pixel InitiateCheckout: feuert nur, wenn das Pixel (consent-gated)
+  // geladen ist. Die Form submittet normal weiter — Tracking darf den
+  // Checkout nie blockieren.
+  const trackInitiateCheckout = () => {
+    try {
+      if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+        window.fbq('track', 'InitiateCheckout', {
+          value: parseFloat(subtotal?.amount) || 0,
+          currency: subtotal?.currencyCode || 'EUR',
+          num_items: numItems || 0,
+        });
+      }
+    } catch {
+      // Tracking-Fehler ignorieren.
+    }
+  };
 
   return (
     <Form
       action="/cart/attribution"
       className="cartSummaryWrapper"
       method="post"
+      onSubmit={trackInitiateCheckout}
     >
       <button
         className="btn--primary"
