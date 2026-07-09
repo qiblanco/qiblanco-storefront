@@ -29,23 +29,38 @@
     return TRACKING_PARAM_NAMES[name] || /^utm_[a-z0-9_]+$/i.test(name);
   }
 
-  function storeAttributionParams() {
-    if (!window.location.search) return;
-
-    var params = new URLSearchParams(window.location.search);
+  function collectTrackingParams(search) {
+    if (!search) return null;
+    var params = new URLSearchParams(search);
     var tracked = [];
-
     params.forEach(function (value, name) {
       if (value && isTrackingParamName(name)) tracked.push([name, value]);
     });
+    return tracked.length ? tracked : null;
+  }
 
-    if (!tracked.length) return;
+  // Snapshot der Landing-Klick-IDs im Speicher, beim ersten Laden - VOR Consent.
+  // Hier wird NICHTS persistiert (kein Cookie/Storage); der Wert lebt nur im
+  // JS-Runtime, das die Hydrogen-SPA-Navigation uebersteht. Der Flush in den
+  // dauerhaften Store passiert spaeter, nur wenn Marketing-Consent erteilt wird.
+  var LANDING = {
+    params: collectTrackingParams(window.location.search),
+    href: window.location.href,
+    referrer: document.referrer || '',
+    savedAt: new Date().toISOString(),
+  };
+
+  function storeAttributionParams() {
+    // Bevorzugt den gepufferten Landing-Snapshot; Fallback = aktuelle URL
+    // (deckt den bereits eingewilligten Wiederkehrer-Fall ab).
+    var tracked = LANDING.params || collectTrackingParams(window.location.search);
+    if (!tracked || !tracked.length) return;
 
     var attribution = {
       params: tracked,
-      href: window.location.href,
-      referrer: document.referrer || '',
-      savedAt: new Date().toISOString(),
+      href: LANDING.href,
+      referrer: LANDING.referrer,
+      savedAt: LANDING.savedAt,
     };
     var serialized = JSON.stringify(attribution);
 
@@ -74,6 +89,57 @@
       secure;
   }
 
+  function readCookie(name) {
+    try {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function landingParam(name) {
+    var p = LANDING.params || [];
+    for (var i = 0; i < p.length; i++) {
+      if (p[i][0] === name) return p[i][1];
+    }
+    return null;
+  }
+
+  function rootCookieDomain() {
+    var host = window.location.hostname || '';
+    if (/^[0-9.]+$/.test(host)) return null; // IP-Adresse -> keine Domain setzen
+    var parts = host.split('.');
+    if (parts.length < 2) return null;
+    return '.' + parts.slice(-2).join('.');
+  }
+
+  // Setzt den ECHTEN _fbc-Cookie aus einer echten fbclid (Meta-Format
+  // fb.1.<ts>.<fbclid>) - nur wenn das Meta-Pixel noch keinen gesetzt hat.
+  // Domain = Root (.qiblanco.com), damit der Checkout-Subdomain-Kontext ihn liest.
+  // So bekommt Shopifys nativer Meta-Kanal die Klick-ID. Kein Faken: nur aus fbclid.
+  function ensureFbcCookie() {
+    try {
+      if (readCookie('_fbc')) return;
+      var fbclid = landingParam('fbclid');
+      if (!fbclid) return;
+      var value = 'fb.1.' + new Date().getTime() + '.' + fbclid;
+      var domain = rootCookieDomain();
+      var secure = window.location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie =
+        '_fbc=' +
+        value +
+        '; Max-Age=' +
+        ATTRIBUTION_COOKIE_MAX_AGE +
+        '; Path=/' +
+        (domain ? '; Domain=' + domain : '') +
+        '; SameSite=Lax' +
+        secure;
+    } catch (e) {
+      // Cookie writes can be unavailable in restricted browser contexts.
+    }
+  }
+
   function boot() {
     if (window._qiblancoBooted) return;
     window._qiblancoBooted = true;
@@ -87,6 +153,7 @@
   function ready() {
     if (hasMarketingConsent() || hasPreviewTrackingConsent()) {
       storeAttributionParams();
+      ensureFbcCookie();
       boot();
     }
   }
