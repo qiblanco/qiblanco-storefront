@@ -208,11 +208,6 @@ export default function DatenschutzPage() {
             die vorherige Einwilligung nach § 25 Abs. 1 TDDDG. Soweit gemeinsame Verarbeitung
             vorliegt, besteht mit Meta eine Vereinbarung nach Art. 26 DSGVO.
           </li>
-          <li>
-            <strong>Hyros</strong> (HYROS Inc., USA): Attributions- und Werbe-Tracking über ein
-            First-Party-Skript (über die Domain <code>t.qiblanco.com</code>) zur Erfolgsmessung
-            unserer Werbekampagnen. Übermittlung in die USA (siehe Ziffer 12).
-          </li>
         </ul>
       </section>
 
@@ -245,7 +240,7 @@ export default function DatenschutzPage() {
         <h2>12. Übermittlung in Drittländer (Art. 44–49 DSGVO)</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           Einige der von uns eingesetzten Dienste (insbesondere Google, Microsoft, Meta,
-          ActiveCampaign, Hyros und Gorgias) können personenbezogene Daten in Länder außerhalb der
+          ActiveCampaign und Gorgias) können personenbezogene Daten in Länder außerhalb der
           EU/des EWR – insbesondere in die USA – übermitteln. Für diese Übermittlungen stellen wir
           ein angemessenes Datenschutzniveau wie folgt sicher:
         </p>
