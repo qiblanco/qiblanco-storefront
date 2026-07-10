@@ -79,6 +79,12 @@ export async function loader(args) {
     // First-Party-Pixel (qpx): lädt NUR, wenn der Receiver-Endpoint gesetzt ist
     // (Rollout-Schalter; ohne env-Variable ist das Verhalten unverändert).
     qpxEndpoint: env.PUBLIC_QPX_ENDPOINT || '',
+    // Cookielose BASIS-Ebene (einwilligungsfrei): lädt NUR, wenn der Basis-
+    // Endpoint gesetzt ist (eigener Rollout-Schalter, Default leer = aus).
+    // Bewusst UNABHÄNGIG vom Cookiebot-Consent (setzt keine Cookies/kein
+    // localStorage/keine persistente ID) — Go-live = diese env + Server
+    // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
+    qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -231,6 +237,18 @@ export function Layout({children}) {
               <script
                 src="/qiblanco-qpx-loader.js"
                 data-qpx-endpoint={data.qpxEndpoint}
+                nonce={nonce}
+                defer
+                suppressHydrationWarning
+              />
+            ) : null}
+            {data?.qpxBasisEndpoint ? (
+              // Cookielose Basis-Ebene: BEWUSST direkt (nicht über den
+              // Consent-Loader) — einwilligungsfrei, setzt nichts auf dem
+              // Endgerät. Ohne PUBLIC_QPX_BASIS_ENDPOINT rendert nichts.
+              <script
+                src="/qiblanco-qpx-basis.js"
+                data-qpx-basis-endpoint={data.qpxBasisEndpoint}
                 nonce={nonce}
                 defer
                 suppressHydrationWarning
