@@ -35,7 +35,7 @@ const ITEMS = [
   },
 ];
 
-export function UpsellLineUp() {
+export function UpsellLineUp({dataSection}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const startX = useRef(0);
@@ -79,7 +79,7 @@ export function UpsellLineUp() {
     : '0px';
 
   return (
-    <div className="UpsellLineUp mt-2 NormalSectionSize">
+    <div className="UpsellLineUp mt-2 NormalSectionSize" data-section={dataSection}>
       <h2 className="text-5xl! text-center">
         Über 300 neue Nutzer im Monat. <br />
         Werde Teil der Qi Blanco® Revolution!

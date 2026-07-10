@@ -1,4 +1,4 @@
-export function SingleImage({link, size}){
+export function SingleImage({link, size, dataSection}){
     if (size === "fullscreen"){
         return (
             <>
@@ -7,7 +7,7 @@ export function SingleImage({link, size}){
         )
     }
     return (
-        <div className="NormalSectionSize">
+        <div className="NormalSectionSize" data-section={dataSection}>
             <img className="SingleImageCentered" src={link} alt="" />
         </div>
     )

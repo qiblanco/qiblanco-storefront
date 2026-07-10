@@ -1,8 +1,8 @@
 import { Link } from "react-router"
 
-export function FeaturedProduct({title, label, linkDetailseite, linkKaufseite, bildLinks, bildRechts}){
+export function FeaturedProduct({title, label, linkDetailseite, linkKaufseite, bildLinks, bildRechts, dataSection}){
     return(
-        <div className="FeaturedProduct">
+        <div className="FeaturedProduct" data-section={dataSection}>
             <h2>{title}</h2>
             <h3>{label}</h3>
             <div className="FeaturedProduct_Links">

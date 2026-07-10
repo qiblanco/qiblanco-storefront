@@ -1,4 +1,4 @@
-export function Richtext({text, alignment}){
+export function Richtext({text, alignment, dataSection}){
 
 const alignmentMap = {
     left: "text-left",
@@ -7,7 +7,7 @@ const alignmentMap = {
 }
 
     return (
-        <div className={`Richtext NormalSectionSize ${alignmentMap[alignment] || ""}`}>
+        <div className={`Richtext NormalSectionSize ${alignmentMap[alignment] || ""}`} data-section={dataSection}>
             {text}
         </div>
     )

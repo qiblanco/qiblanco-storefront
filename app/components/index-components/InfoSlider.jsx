@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-export function InfoSlider(){
+export function InfoSlider({dataSection}){
     const cardCount = 5;
     const maxSlideIndex = cardCount - 1;
     const trackRef = useRef(null);
@@ -72,7 +72,7 @@ export function InfoSlider(){
     }
 
     return (
-        <div className="NormalSectionSize">
+        <div className="NormalSectionSize" data-section={dataSection}>
             <div className="InfoSlider"
             role="region"
             aria-label="Qi Blanco Vorteile Slider"

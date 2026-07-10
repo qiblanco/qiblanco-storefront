@@ -1,6 +1,6 @@
-export function Maxim(){
+export function Maxim({dataSection}){
     return (
-        <div className="Maxim NormalSectionSize">
+        <div className="Maxim NormalSectionSize" data-section={dataSection}>
             <img width={500} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="" />
             <div className="MaximText">
                 <h2>Ausgezeichnet von Maxim: Das beste EMF-Tool – QiOne® 2 Pro</h2>

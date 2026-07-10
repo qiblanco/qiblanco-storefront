@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-export function ScrollMikroskopVideo() {
+export function ScrollMikroskopVideo({dataSection}) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -133,7 +133,7 @@ export function ScrollMikroskopVideo() {
   }, []);
 
   return (
-    <div ref={containerRef} className="ScrollMikroskopvideo">
+    <div ref={containerRef} className="ScrollMikroskopvideo" data-section={dataSection}>
       <div className="VideoOverlay">
         <div className="TextContent-Start" style={{ opacity: progress < 25 ? 1 : 0 }}>
           <h2>Zellbiologisch geprüft</h2>
