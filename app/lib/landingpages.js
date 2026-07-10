@@ -7,14 +7,15 @@
  *
  * `overrides` ist der Stufe-2-Hook: LP-spezifische Sektions-Anpassungen.
  * In Stufe 1 bewusst leer ({}) — der DOM ist byte-identisch zur Startseite.
+ *
+ * Hinweis: /pages/tiefer-schlaf ist seit 2026-07 KEIN Stufe-1-Klon der
+ * Startseite mehr, sondern eine eigene, verkaufspsychologisch optimierte
+ * Campaign-Route (app/routes/pages.tiefer-schlaf.jsx +
+ * app/components/campaign/TieferSchlaf.jsx) und daher hier nicht mehr
+ * registriert.
  */
 export const LANDING_PAGES = {
   'zell-schutz': {
-    title:
-      'Qi Blanco - Life Technology - Jetzt kennenlernen. - Qi Blanco UG (haftungsbeschränkt)',
-    overrides: {},
-  },
-  'tiefer-schlaf': {
     title:
       'Qi Blanco - Life Technology - Jetzt kennenlernen. - Qi Blanco UG (haftungsbeschränkt)',
     overrides: {},
