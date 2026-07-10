@@ -17,7 +17,8 @@
  * kein neuer Speicher (kein zusaetzliches Cookie). v1-Verhalten unveraendert.
  *
  * EINBAU = CHRISTIAN-HAND (Website). Diese Datei ist fertig + ausgeliefert.
- * Konfiguration via window.QPX_CONFIG = { endpoint: "https://t.qiblanco.com/collect" }.
+ * Konfiguration via window.QPX_CONFIG =
+ *   { endpoint: "https://qpx.65-108-150-121.sslip.io/collect" }.
  * Standard-Endpoint unten ist ein PLATZHALTER, bis die Domain/Proxy steht.
  */
 (function (w, d) {

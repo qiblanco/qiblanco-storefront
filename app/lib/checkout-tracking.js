@@ -33,14 +33,7 @@ const TRACKING_PARAM_NAMES = new Set([
   'h_click_id',
 ]);
 
-const TRACKING_COOKIE_NAMES = new Set([
-  '_fbc',
-  '_fbp',
-  'hyros_id',
-  'hyros_sid',
-  'hyros_session_id',
-  'hyros_visitor_id',
-]);
+const TRACKING_COOKIE_NAMES = new Set(['_fbc', '_fbp']);
 
 const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
 
