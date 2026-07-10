@@ -25,7 +25,7 @@ export default function ImpressumPage() {
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Vertreten durch</h2>
-        <p style={{marginTop: '0.5rem'}}>Geschäftsführer: Dipl.-Ing. Christian Bernd Bauer</p>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>Geschäftsführer: Dipl.-Ing. Christian Bernd Bauer</p>
       </section>
 
       <section style={{marginBottom: '2rem'}}>
@@ -48,17 +48,15 @@ export default function ImpressumPage() {
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Umsatzsteuer-ID</h2>
-        <p style={{marginTop: '0.5rem'}}>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           Umsatzsteuer-Identifikationsnummer gem. § 27a Umsatzsteuergesetz: DE306530406
         </p>
       </section>
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
-        <p style={{marginTop: '0.5rem'}}>Christian Bernd Bauer, Brunnrangenstr. 25, 97711 Maßbach</p>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>Christian Bernd Bauer, Brunnrangenstr. 25, 97711 Maßbach</p>
       </section>
-
-      <hr style={{margin: '2rem 0', opacity: 0.2}} />
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Haftungsausschluss</h2>
@@ -92,8 +90,6 @@ export default function ImpressumPage() {
           Dieser Haftungsausschluss ist als Teil des Internetangebotes zu betrachten, von dem aus auf diese Seite verwiesen wurde. Sofern Teile oder einzelne Formulierungen dieses Textes der geltenden Rechtslage nicht, nicht mehr oder nicht vollständig entsprechen sollten, bleiben die übrigen Teile des Dokumentes in ihrem Inhalt und ihrer Gültigkeit davon unberührt.
         </p>
       </section>
-
-      <hr style={{margin: '2rem 0', opacity: 0.2}} />
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Verbraucherstreitbeilegung</h2>
