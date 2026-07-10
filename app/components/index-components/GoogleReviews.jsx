@@ -45,9 +45,9 @@ function Stars({count}) {
   );
 }
 
-export function GoogleReviews() {
+export function GoogleReviews({dataSection}) {
   return (
-    <div className="NormalSectionSize my-[6vh]!">
+    <div className="NormalSectionSize my-[6vh]!" data-section={dataSection}>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {reviews.map((review) => (
           <div key={review.name} className="flex flex-col gap-5">

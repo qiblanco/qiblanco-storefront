@@ -5,10 +5,11 @@ export function CallToAction({
     text,
     link,
     linkText,
-    linkStyle
+    linkStyle,
+    dataSection
 }){
     return (
-        <div className="CallToAction NormalSectionSize">
+        <div className="CallToAction NormalSectionSize" data-section={dataSection}>
             <img width={500} 
             src={img} 
             alt="" />

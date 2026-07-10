@@ -1,9 +1,9 @@
 import { ReviewCount } from "../reusables/ReviewCount"
 import { Link } from "react-router"
 import LazyImage from "../reusables/LazyImage"
-export function HerobannerFeatured(){
+export function HerobannerFeatured({dataSection}){
     return(
-        <div className="HerobannerFeatured NormalSectionSize">
+        <div className="HerobannerFeatured NormalSectionSize" data-section={dataSection}>
             <h1 className="text-center">Tragbares Hightech <br /> mit messbaren Effekten auf Zellebene</h1>
             <div className="herobanner-seperator g-10p flex-container flex-row small--flex-column flex-align-start flex-justify-space-between">
                 <div className="text-content">

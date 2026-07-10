@@ -1,6 +1,6 @@
-export function ZellDiagramme(){
+export function ZellDiagramme({dataSection}){
     return (
-        <div className="ZellDiagramme NormalSectionSize">
+        <div className="ZellDiagramme NormalSectionSize" data-section={dataSection}>
             <div className="flex-container flex-row small--flex-column flex-align-start flex-justify-space-between g-50p">
                 <div className="ZellDiagramm text-center">
                     <h3>Zellregeneration<br />unter E-Smog Stress</h3>

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useEffect, useRef } from "react";
 
-export function Finanzierungsbanner() {
+export function Finanzierungsbanner({dataSection}) {
     const bannerRef = useRef(null);
     const bgRef = useRef(null);
     const infoRef = useRef(null);
@@ -40,7 +40,7 @@ export function Finanzierungsbanner() {
     }, []);
 
     return (
-        <div className="Finanzierungsbanner" ref={bannerRef}>
+        <div className="Finanzierungsbanner" ref={bannerRef} data-section={dataSection}>
             <div className="FinanzierungsBG" ref={bgRef}></div>
 
             <div className="FinanzierungsInfos" ref={infoRef}>

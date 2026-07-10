@@ -1,8 +1,8 @@
 import { Link } from "react-router"
 
-export function Studien({headline}) {
+export function Studien({headline, dataSection}) {
     return (
-        <div className="Studien NormalSectionSize">
+        <div className="Studien NormalSectionSize" data-section={dataSection}>
             <h2 className="text-center">{headline}</h2>
             <div className="FlexContainer text-center">
                 <div className="Row mt-3">
