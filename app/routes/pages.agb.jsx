@@ -262,6 +262,29 @@ export default function AGBPage() {
       </section>
 
       <section style={{marginBottom: '2rem'}}>
+        <h2>Freiwillige 20-Tage-Zufriedenheitsgarantie (zusätzlich zum gesetzlichen Widerrufsrecht)</h2>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+          (1) Zusätzlich zu Ihrem gesetzlichen Widerrufsrecht (siehe § 7) gewähren wir Ihnen
+          freiwillig eine 20-tägige Zufriedenheitsgarantie. Sollten Sie mit Ihrer Bestellung nicht
+          zufrieden sein, können Sie die Ware innerhalb von 20 Tagen ab Erhalt des Pakets an uns
+          zurücksenden und erhalten den vollen Kaufpreis zurück (volle Geld-zurück-Garantie).
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (2) Diese Zufriedenheitsgarantie ist eine rein freiwillige, zusätzliche Leistung von uns.
+          Sie tritt neben Ihr gesetzliches Widerrufsrecht sowie Ihre gesetzlichen
+          Gewährleistungsrechte, ohne diese einzuschränken, zu verändern oder zu ersetzen. Ihr
+          gesetzliches vierzehntägiges Widerrufsrecht nach § 7 und Ihre gesetzlichen
+          Gewährleistungsrechte nach § 9 bleiben in vollem Umfang bestehen und werden durch diese
+          freiwillige Garantie in keiner Weise berührt oder verkürzt.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (3) Um von der 20-Tage-Zufriedenheitsgarantie Gebrauch zu machen, genügt eine formlose
+          Mitteilung an <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>; bitte senden Sie
+          die Ware anschließend an uns zurück. Weitergehende gesetzliche Rechte bleiben unberührt.
+        </p>
+      </section>
+
+      <section style={{marginBottom: '2rem'}}>
         <h2>§ 8 Transportschäden</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           (1) Werden Waren mit offensichtlichen Transportschäden angeliefert, so reklamieren Sie
@@ -283,15 +306,11 @@ export default function AGBPage() {
           BGB).
         </p>
         <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
-          (2) Wenn Sie Verbraucher im Sinne des § 13 BGB sind, beträgt die Haftungsdauer für
-          Gewährleistungsansprüche bei gebrauchten Sachen — abweichend von den gesetzlichen
-          Bestimmungen — ein Jahr. Diese Beschränkung gilt nicht für Ansprüche aufgrund von
-          Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit oder aus der
-          Verletzung einer wesentlichen Vertragspflicht, deren Erfüllung die ordnungsgemäße
-          Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Einhaltung der
-          Vertragspartner regelmäßig vertrauen darf (Kardinalpflicht) sowie für Ansprüche
-          aufgrund von sonstigen Schäden, die auf einer vorsätzlichen oder grob fahrlässigen
-          Pflichtverletzung des Verwenders oder seiner Erfüllungsgehilfen beruhen.
+          (2) Wenn Sie Verbraucher im Sinne des § 13 BGB sind, gelten für Ihre
+          Gewährleistungsansprüche uneingeschränkt die gesetzlichen Bestimmungen. Da wir
+          ausschließlich neue Waren (Neuware) verkaufen, beträgt die Verjährungsfrist für
+          Gewährleistungsansprüche zwei Jahre ab Ablieferung der Ware (§ 438 Abs. 1 Nr. 3 BGB).
+          Eine Verkürzung dieser gesetzlichen Verjährungsfrist erfolgt Ihnen gegenüber nicht.
         </p>
         <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
           (3) Im Übrigen gelten für die Gewährleistung die gesetzlichen Bestimmungen,
