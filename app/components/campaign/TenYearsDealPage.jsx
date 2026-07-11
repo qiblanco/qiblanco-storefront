@@ -680,14 +680,17 @@ function MainFeatures() {
 function FrequencyVideoScience() {
   return (
     <section className="j-sale-deal__legacy-video-grid">
+      {/* CONTENT-MATCH (F-003): Überschrift muss den echten Video-Inhalt treffen —
+          Erklär-Videos (kohärentes Wasser) und Erfahrungs-Videos getrennt gruppiert.
+          Gate: codemeister content-match check <diese Datei>. */}
       <div>
-        <h3>Superwasser <br />die Grundlage unserer Evolution</h3>
+        <h3>Kohärentes Wasser: <br />die wissenschaftliche Grundlage</h3>
         <YoutubeIframe link="https://www.youtube.com/embed/6rNuQoIrdZQ?controls=0" />
-        <YoutubeIframe link="https://www.youtube.com/embed/aG36zJKxDzg?controls=0" />
+        <YoutubeIframe link="https://www.youtube.com/embed/C3gd-ldFh-M?controls=0" />
       </div>
       <div>
-        <h3>Schutz vor E-Smog: <br />kohärente Wasserstruktur</h3>
-        <YoutubeIframe link="https://www.youtube.com/embed/C3gd-ldFh-M?controls=0" />
+        <h3>Getragen im Alltag: <br />echte Erfahrungen</h3>
+        <YoutubeIframe link="https://www.youtube.com/embed/aG36zJKxDzg?controls=0" />
         <YoutubeIframe link="https://www.youtube.com/embed/jyLyXZqHxaw?controls=0" />
       </div>
     </section>
