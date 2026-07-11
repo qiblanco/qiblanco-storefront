@@ -14,23 +14,26 @@ export default function ImpressumPage() {
       <h1 style={{marginBottom: '2.5rem'}}>Impressum</h1>
 
       <section style={{marginBottom: '2rem'}}>
-        <h2>Angaben gemäß § 5 TMG</h2>
+        <h2>Angaben gemäß § 5 DDG</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           Qi Blanco UG (haftungsbeschränkt)<br />
           Brunnrangenstr. 25<br />
-          97711 Maßbach
+          97711 Maßbach<br />
+          Deutschland
         </p>
       </section>
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Vertreten durch</h2>
-        <p style={{marginTop: '0.5rem'}}>Geschäftsführer: Dipl.-Ing. Christian Bernd Bauer</p>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>Geschäftsführer: Dipl.-Ing. Christian Bernd Bauer</p>
       </section>
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Kontakt</h2>
-        <p style={{marginTop: '0.5rem'}}>
-          E-Mail: <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+          E-Mail: <a href="mailto:info@qiblanco.com">info@qiblanco.com</a><br />
+          Für eine schnelle Kontaktaufnahme steht Ihnen zusätzlich unser Support-Chat auf dieser
+          Website zur Verfügung.
         </p>
       </section>
 
@@ -45,17 +48,15 @@ export default function ImpressumPage() {
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Umsatzsteuer-ID</h2>
-        <p style={{marginTop: '0.5rem'}}>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           Umsatzsteuer-Identifikationsnummer gem. § 27a Umsatzsteuergesetz: DE306530406
         </p>
       </section>
 
       <section style={{marginBottom: '2rem'}}>
-        <h2>Verantwortlicher i.S.d. § 55 Abs. 2 RStV</h2>
-        <p style={{marginTop: '0.5rem'}}>Christian Bernd Bauer, Brunnrangenstr. 25, 97711 Maßbach</p>
+        <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>Christian Bernd Bauer, Brunnrangenstr. 25, 97711 Maßbach</p>
       </section>
-
-      <hr style={{margin: '2rem 0', opacity: 0.2}} />
 
       <section style={{marginBottom: '2rem'}}>
         <h2>Haftungsausschluss</h2>
@@ -77,7 +78,11 @@ export default function ImpressumPage() {
 
         <h3 style={{marginTop: '1.25rem', marginBottom: '0.4rem'}}>4. Datenschutz</h3>
         <p style={{lineHeight: '1.8'}}>
-          Sofern innerhalb des Internetangebotes die Möglichkeit zur Eingabe persönlicher oder geschäftlicher Daten (E-Mail-Adressen, Namen, Anschriften) besteht, so erfolgt die Preisgabe dieser Daten seitens des Nutzers auf ausdrücklich freiwilliger Basis. Die Nutzung und Bezahlung aller angebotenen Dienste ist - soweit technisch möglich und zumutbar - auch ohne Angabe solcher Daten bzw. unter Angabe anonymisierter Daten oder eines Pseudonyms gestattet.
+          Informationen zur Verarbeitung personenbezogener Daten finden Sie in unserer{' '}
+          <a href="/pages/datenschutz">Datenschutzerklärung</a>. Sofern innerhalb des
+          Internetangebotes die Möglichkeit zur Eingabe persönlicher oder geschäftlicher Daten
+          (E-Mail-Adressen, Namen, Anschriften) besteht, so erfolgt die Preisgabe dieser Daten
+          seitens des Nutzers auf ausdrücklich freiwilliger Basis.
         </p>
 
         <h3 style={{marginTop: '1.25rem', marginBottom: '0.4rem'}}>5. Rechtswirksamkeit dieses Haftungsausschlusses</h3>
@@ -86,16 +91,13 @@ export default function ImpressumPage() {
         </p>
       </section>
 
-      <hr style={{margin: '2rem 0', opacity: 0.2}} />
-
       <section style={{marginBottom: '2rem'}}>
-        <h2>Streitschlichtung</h2>
+        <h2>Verbraucherstreitbeilegung</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
-          Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{' '}
-          <a href="http://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">
-            http://ec.europa.eu/consumers/odr/
-          </a>
-          . Unsere E-Mail-Adresse finden Sie oben im Impressum. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+          Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+          Verbraucherschlichtungsstelle teilzunehmen. Hinweis: Die von der Europäischen Kommission
+          betriebene Plattform zur Online-Streitbeilegung (OS-Plattform) wurde zum 20. Juli 2025
+          eingestellt und steht nicht mehr zur Verfügung.
         </p>
       </section>
 
