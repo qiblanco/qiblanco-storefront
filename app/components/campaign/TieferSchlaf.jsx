@@ -313,35 +313,40 @@ function ExperienceSection() {
   );
 }
 
-/* ───────── Video-Erfahrungen ───────── */
+/* ───────── Video-Erfahrungen ─────────
+   CONTENT-MATCH (Christian-Regel 2026-07-11): Überschrift/Tag/Quote MÜSSEN das
+   tatsächlich Gesagte im Video treffen (Transkript-belegt, Register:
+   homepage-bauer data/medien/<id>.json). Gate vor jeder Änderung:
+   codemeister content-match check <diese Datei>. Zitate sinngemäß aus dem
+   jeweiligen Transkript — keine erfundenen Themen (Brain-Fog-Falle F-003). */
 function VideoSection() {
   const videos = [
     {
-      tag: '🧘 Meditation Coach',
-      title: 'Holistic Coach',
-      quote: 'Tiefere Ruhe und mehr Energie — schon in den ersten Tagen spürbar.',
-      id: 'zIfDQ1N60fI',
+      tag: '🏅 Deutscher Leichtathletik-Meister',
+      title: 'Constantin Preis — getrackter Tiefschlaf',
+      quote: 'Meine Tiefschlafphase hat sich deutlich verbessert — das habe ich getrackt.',
+      id: 'jyLyXZqHxaw',
     },
     {
-      tag: '🕉️ Spirituelle Mentoren',
-      title: 'Nada & Kurt — Mentoren',
-      quote: 'Mehr Fokus, weniger Brain Fog — im Alltag deutlich merkbar.',
+      tag: '🕉️ Nada & Kurt Tepperwein',
+      title: 'Spürbar stabiler im Alltag',
+      quote: 'So wie ich es trage und erlebe: Es stabilisiert.',
       id: 'aG36zJKxDzg',
     },
     {
-      tag: '🏅 Profi-Athlet',
-      title: 'Deutscher Leichtathletik-Meister',
-      quote: 'Bessere Regeneration und mehr Leistung mit dem QiOne®.',
-      id: 'jyLyXZqHxaw',
+      tag: '✨ Erste Tage mit dem QiOne®',
+      title: 'Michelle Christin Guse — „wie ein kleines Wunder"',
+      quote: 'Was für eine Energie — als würde sich mein Körper einmal neu strukturieren.',
+      id: 'zIfDQ1N60fI',
     },
   ];
   return (
     <section className="lp-vp-section lp-vp-section--white">
       <span className="eyebrow">Video-Erfahrungen</span>
-      <h2>Echte Menschen. Echte Nächte.</h2>
+      <h2>Echte Menschen. Echte Erfahrungen.</h2>
       <p className="lp-vp-section__lede">
-        Sieh dir an, wie der QiOne<sup>®</sup> 2 Pro den Alltag — und die Nächte — unserer
-        Nutzer verändert hat.
+        Drei Träger, drei Geschichten — vom getrackten Tiefschlaf des Leistungssportlers
+        bis zur spürbaren Veränderung im Alltag. Berichte einzelner Nutzer, deskriptiv.
       </p>
       <div className="lp-vp-videos-grid">
         {videos.map((v) => (
