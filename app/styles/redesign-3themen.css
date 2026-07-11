@@ -1,0 +1,562 @@
+/* ============================================================
+   Redesign „Drei Themen" — nur rd3-* Klassen (Konzept B7)
+   Global eingebunden (Homepage + LPs). Design-Soll B1:
+   - Flaechen Off-White #F8F4EE / Weiss, Text Anthrazit #1A1A1A
+   - Gold #f2bf72 NUR als Akzent (CTA/Badge/Beweis-Zahl), 0,3–10 % Flaeche
+   - 100px Sektions-Rhythmus (Desktop), grosser Negativraum, niedrige Saettigung
+   - Open Sans erbt sich (KEINE neue Font)
+   - mobile-first; alle Transitions hinter prefers-reduced-motion-Guard
+   ============================================================ */
+
+:root {
+  --rd3-offwhite: #f8f4ee;
+  --rd3-anthrazit: #1a1a1a;
+  --rd3-gold: #f2bf72;
+  --rd3-line: rgba(26, 26, 26, 0.1);
+  --rd3-muted: rgba(26, 26, 26, 0.62);
+}
+
+/* ---------- Sektions-Rhythmus (100px Takt, Desktop) ---------- */
+.rd3-hero,
+.rd3-akk-section,
+.rd3-podcast,
+.rd3-trio {
+  margin-top: 60px;
+  margin-bottom: 60px;
+  color: var(--rd3-anthrazit);
+}
+@media (min-width: 768px) {
+  .rd3-hero,
+  .rd3-akk-section,
+  .rd3-podcast,
+  .rd3-trio {
+    margin-top: 100px;
+    margin-bottom: 100px;
+  }
+}
+
+/* ============================================================
+   Hero3Themen
+   ============================================================ */
+.rd3-hero__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  background: var(--rd3-offwhite);
+  border-radius: 18px;
+  padding: 40px 24px;
+}
+@media (min-width: 900px) {
+  .rd3-hero__inner {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 56px;
+    padding: 72px 64px;
+  }
+}
+.rd3-hero__copy {
+  flex: 1 1 52%;
+  max-width: 620px;
+}
+.rd3-hero__title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 2.1rem;
+  line-height: 1.12;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: none;
+}
+@media (min-width: 768px) {
+  .rd3-hero__title {
+    font-size: 3rem;
+  }
+}
+.rd3-hero__title-line {
+  display: block;
+}
+.rd3-hero__subline {
+  margin-top: 22px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--rd3-muted);
+  max-width: 46ch;
+}
+.rd3-hero__cta {
+  display: inline-block;
+  margin-top: 30px;
+}
+.rd3-hero__trust {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+.rd3-hero__trust-item {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.9rem;
+  color: var(--rd3-muted);
+}
+.rd3-hero__trust-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rd3-gold);
+}
+.rd3-hero__visual {
+  flex: 1 1 44%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.rd3-hero__img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* ============================================================
+   ThemenAkkordeon
+   ============================================================ */
+.rd3-akk {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rd3-akk-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--rd3-anthrazit);
+}
+.rd3-akk-panel__btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-height: 130px;
+}
+.rd3-akk-panel__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  z-index: 0;
+}
+.rd3-akk-panel__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(26, 26, 26, 0.15) 0%,
+    rgba(26, 26, 26, 0.78) 100%
+  );
+}
+.rd3-akk-panel__content {
+  position: relative;
+  z-index: 2;
+  display: block;
+  padding: 22px 22px 18px;
+  color: #fff;
+}
+.rd3-akk-panel__titel {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.rd3-akk-panel__beweis {
+  display: block;
+  margin-top: 8px;
+}
+.rd3-akk-panel__zahl {
+  color: var(--rd3-gold);
+  font-weight: 700;
+  font-size: 1.35rem;
+  margin-right: 8px;
+}
+.rd3-akk-panel__label {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+.rd3-akk-panel__text {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.45s ease, margin-top 0.45s ease;
+}
+.rd3-akk-panel--offen .rd3-akk-panel__text {
+  max-height: 260px;
+  opacity: 1;
+}
+.rd3-akk-panel__link {
+  position: relative;
+  z-index: 3;
+  display: inline-block;
+  margin: 0 22px 20px;
+  color: var(--rd3-gold);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+.rd3-akk-panel__link:hover {
+  text-decoration: underline;
+}
+
+/* Desktop: horizontales Akkordeon mit flex-grow-Buehne */
+@media (min-width: 768px) {
+  .rd3-akk {
+    flex-direction: row;
+    height: 480px;
+    gap: 16px;
+  }
+  .rd3-akk-panel {
+    flex: 1;
+    transition: flex 0.5s ease;
+  }
+  .rd3-akk-panel--offen {
+    flex: 3;
+  }
+  .rd3-akk-panel__btn {
+    flex: 1;
+    height: 100%;
+  }
+  .rd3-akk-panel__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-bottom: 8px;
+  }
+  /* geschlossene Panels: Titel vertikal-kompakt, Text ausgeblendet */
+  .rd3-akk-panel:not(.rd3-akk-panel--offen) .rd3-akk-panel__label,
+  .rd3-akk-panel:not(.rd3-akk-panel--offen) .rd3-akk-panel__link {
+    display: none;
+  }
+  .rd3-akk-panel__link {
+    position: absolute;
+    z-index: 3;
+    bottom: 20px;
+    left: 22px;
+    margin: 0;
+  }
+  .rd3-akk-panel--offen .rd3-akk-panel__content {
+    padding-bottom: 56px;
+  }
+}
+
+/* ============================================================
+   PodcastStimmen
+   ============================================================ */
+.rd3-podcast__head {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.rd3-podcast__eyebrow {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--rd3-gold);
+}
+.rd3-podcast__h2 {
+  margin-top: 10px;
+  font-size: 1.9rem;
+  font-weight: 700;
+  text-shadow: none;
+}
+.rd3-podcast__grid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .rd3-podcast__grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .rd3-podcast__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.rd3-podcast__grid--1 {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.rd3-podcast__frame {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--rd3-anthrazit);
+  aspect-ratio: 9 / 16;
+}
+.rd3-podcast__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+.rd3-podcast__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(248, 244, 238, 0.92);
+  pointer-events: none;
+}
+.rd3-podcast__play::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 12px 0 12px 20px;
+  border-color: transparent transparent transparent var(--rd3-anthrazit);
+}
+.rd3-podcast__titel {
+  margin-top: 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: none;
+}
+.rd3-podcast__chip {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--rd3-line);
+  font-size: 0.78rem;
+  color: var(--rd3-muted);
+}
+
+/* ============================================================
+   ProduktTrio
+   ============================================================ */
+.rd3-trio__h2 {
+  text-align: center;
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  text-shadow: none;
+}
+.rd3-trio__grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .rd3-trio__grid {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+  }
+}
+.rd3-trio__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--rd3-offwhite);
+  border-radius: 16px;
+  padding: 28px 22px;
+}
+.rd3-trio__card--bestseller {
+  border: 2px solid var(--rd3-gold);
+}
+.rd3-trio__badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--rd3-gold);
+  color: var(--rd3-anthrazit);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.rd3-trio__media {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rd3-trio__media img {
+  max-width: 100%;
+  max-height: 200px;
+  height: auto;
+  object-fit: contain;
+}
+.rd3-trio__titel {
+  margin-top: 18px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-shadow: none;
+}
+.rd3-trio__tagline {
+  margin-top: 8px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--rd3-muted);
+  flex-grow: 1;
+}
+.rd3-trio__preis {
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--rd3-anthrazit);
+}
+.rd3-trio__links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  width: 100%;
+}
+.rd3-trio__kauf {
+  width: 100%;
+  text-align: center;
+}
+.rd3-trio__detail {
+  color: var(--rd3-muted);
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+.rd3-trio__detail:hover {
+  color: var(--rd3-anthrazit);
+}
+
+/* ============================================================
+   DreiThemenBand (LP-Streifen)
+   ============================================================ */
+.rd3-band {
+  background: var(--rd3-offwhite);
+  padding: 26px 16px;
+}
+.rd3-band__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .rd3-band__inner {
+    flex-direction: row;
+    justify-content: center;
+    gap: 24px;
+  }
+}
+.rd3-band__label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--rd3-muted);
+  white-space: nowrap;
+}
+.rd3-band__chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.rd3-band__chip-inner {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--rd3-line);
+  text-decoration: none;
+  color: var(--rd3-anthrazit);
+  background: #fff;
+}
+.rd3-band__chip--aktiv .rd3-band__chip-inner {
+  border-color: var(--rd3-gold);
+  background: var(--rd3-offwhite);
+}
+.rd3-band__chip-titel {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.rd3-band__chip-zahl {
+  color: var(--rd3-gold);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+a.rd3-band__chip-inner:hover {
+  border-color: var(--rd3-gold);
+}
+
+/* ============================================================
+   Reduced-Motion: alle rd3-Transitions abschalten (Konzept B1)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .rd3-akk-panel,
+  .rd3-akk-panel__text {
+    transition: none !important;
+  }
+  /* statisches 3er-Grid statt Buehne */
+  @media (min-width: 768px) {
+    .rd3-akk {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      height: auto;
+    }
+    .rd3-akk-panel,
+    .rd3-akk-panel--offen {
+      flex: none;
+    }
+    .rd3-akk-panel__text {
+      max-height: none;
+      opacity: 1;
+      margin-top: 12px;
+    }
+    .rd3-akk-panel:not(.rd3-akk-panel--offen) .rd3-akk-panel__label,
+    .rd3-akk-panel:not(.rd3-akk-panel--offen) .rd3-akk-panel__link {
+      display: inline-block;
+    }
+  }
+}

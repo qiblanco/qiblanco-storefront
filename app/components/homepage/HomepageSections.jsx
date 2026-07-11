@@ -1,4 +1,3 @@
-import {HerobannerFeatured} from '~/components/index-components/HerobannerFeatured';
 import {ZellDiagramme} from '~/components/index-components/ZellDiagramme';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {LogoBar} from '~/components/reusables/LogoBar';
@@ -15,6 +14,10 @@ import {CallToAction} from '~/components/index-components/CallToAction';
 import {HeroBanner} from '~/components/reusables/HeroBannerParallax';
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {Hero3Themen} from '~/components/redesign/Hero3Themen';
+import {ThemenAkkordeon} from '~/components/redesign/ThemenAkkordeon';
+import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
+import {ProduktTrio} from '~/components/redesign/ProduktTrio';
 
 /**
  * Reine Praesentationskomponente: exakt das Sektions-JSX der Startseite.
@@ -28,7 +31,8 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 export function HomepageSections({overrides = {}}) {
   return (
     <div className="home">
-      <HerobannerFeatured dataSection="hero" />
+      <Hero3Themen dataSection="hero" />
+      <ThemenAkkordeon dataSection="drei-themen" />
       <ZellDiagramme dataSection="zell-diagramme"/>
 
       <LogoBar dataSection="logo-bar"/>
@@ -42,6 +46,7 @@ export function HomepageSections({overrides = {}}) {
     <div className="NormalSectionSize" data-section="reputon-reviews">
       <ReputonWidget />
     </div>
+      <PodcastStimmen dataSection="podcast-stimmen" />
       <YoutubeIframe
         dataSection="youtube-testimonial-preis"
         link="https://www.youtube.com/embed/jyLyXZqHxaw?si=2ZVH9xtaSaEMmfTQ&amp;controls=0" />
@@ -141,6 +146,7 @@ export function HomepageSections({overrides = {}}) {
           linkStyle={"secondary"}
           linkText={"Jetzt kostenlos starten"}
         />
+      <ProduktTrio dataSection="produkt-trio" />
       <UpsellLineUp dataSection="upsell-lineup" />
     </div>
   );
