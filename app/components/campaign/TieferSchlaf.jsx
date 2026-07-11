@@ -4,6 +4,9 @@ import {ReputonWidget as LpReputonWidget} from '~/components/index-components/Re
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
+import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
+import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
+import {VIDEOS} from '~/lib/redesign3themen';
 
 /*
  * Landingpage /pages/tiefer-schlaf — verkaufspsychologisch optimiert.
@@ -74,7 +77,11 @@ function Hero() {
     '🛡️ 20 Nächte risikofrei testen',
   ];
   return (
-    <section className="lp-vp-hero lp-ts-hero" aria-labelledby="lp-ts-hero-title">
+    <section
+      className="lp-vp-hero lp-ts-hero"
+      aria-labelledby="lp-ts-hero-title"
+      data-section="lp-ts-hero"
+    >
       <div className="lp-vp-hero__inner">
         <div className="lp-vp-hero__copy">
           <span className="lp-vp-hero__badge">
@@ -150,7 +157,10 @@ function ProblemSection() {
     },
   ];
   return (
-    <section className="lp-vp-section lp-vp-section--stone">
+    <section
+      className="lp-vp-section lp-vp-section--stone"
+      data-section="lp-ts-problem"
+    >
       <span className="eyebrow">Warum Schlaf heute schwerer fällt</span>
       <h2>Es liegt selten an dir. Es liegt an deiner Umgebung.</h2>
       <p className="lp-vp-section__lede">
@@ -192,7 +202,10 @@ function MechanismSection() {
     },
   ];
   return (
-    <section className="lp-vp-section lp-vp-section--white lp-ts-mechanism">
+    <section
+      className="lp-vp-section lp-vp-section--white lp-ts-mechanism"
+      data-section="lp-ts-mechanismus"
+    >
       <span className="eyebrow">Was nachts in deinem Körper passiert</span>
       <h2>Kein Wunder. Biophysik.</h2>
       <p className="lp-vp-section__lede">
@@ -245,7 +258,10 @@ function ScienceSection() {
     },
   ];
   return (
-    <section className="lp-vp-section lp-vp-section--white">
+    <section
+      className="lp-vp-section lp-vp-section--white"
+      data-section="lp-ts-wissenschaft"
+    >
       <span className="eyebrow">Wissenschaft</span>
       <h2>Nicht nur gefühlt — an Zellen gemessen.</h2>
       <p className="lp-vp-section__lede">
@@ -272,7 +288,10 @@ function ScienceSection() {
 /* ───────── 171 Berichte (Message-Match C3, deskriptiv) ───────── */
 function ExperienceSection() {
   return (
-    <section className="lp-vp-section lp-vp-section--cream lp-ts-experience">
+    <section
+      className="lp-vp-section lp-vp-section--cream lp-ts-experience"
+      data-section="lp-ts-erfahrungen"
+    >
       <span className="eyebrow">171 dokumentierte Erfahrungsberichte</span>
       <h2>171 ehrliche Berichte — und ein Muster, das sich wiederholt.</h2>
       <p className="lp-vp-section__lede">
@@ -336,7 +355,10 @@ function VideoSection() {
     },
   ];
   return (
-    <section className="lp-vp-section lp-vp-section--white">
+    <section
+      className="lp-vp-section lp-vp-section--white"
+      data-section="lp-ts-videos"
+    >
       <span className="eyebrow">Video-Erfahrungen</span>
       <h2>Echte Menschen. Echte Nächte.</h2>
       <p className="lp-vp-section__lede">
@@ -370,7 +392,10 @@ function SchlafraumSection() {
     qihome?.featuredImage?.url ||
     'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp?v=1669000329';
   return (
-    <section className="lp-vp-section lp-vp-section--stone lp-ts-room">
+    <section
+      className="lp-vp-section lp-vp-section--stone lp-ts-room"
+      data-section="lp-ts-schlafraum"
+    >
       <div className="lp-ts-room__inner">
         <div className="lp-ts-room__media">
           <img src={img} alt="QiHome® Air" loading="lazy" />
@@ -416,7 +441,10 @@ function GuaranteeSection() {
     },
   ];
   return (
-    <section className="lp-vp-section lp-vp-section--white">
+    <section
+      className="lp-vp-section lp-vp-section--white"
+      data-section="lp-ts-garantie"
+    >
       <span className="eyebrow">Dein Risiko: keins</span>
       <h2>Überzeugt dich deine Nachtruhe — oder du bekommst dein Geld zurück.</h2>
       <p className="lp-vp-section__lede">
@@ -448,7 +476,11 @@ function PricingSection() {
   const priceOf = (p) => fmtBrutto(p?.priceRange?.minVariantPrice?.amount);
   const qioneCompare = fmtRaw(getCompareAt(qione));
   return (
-    <section className="lp-vp-pricing" aria-labelledby="lp-ts-pricing-title">
+    <section
+      className="lp-vp-pricing"
+      aria-labelledby="lp-ts-pricing-title"
+      data-section="lp-ts-preise"
+    >
       <div className="lp-vp-pricing__inner">
         <span className="eyebrow" style={{display: 'block', textAlign: 'center'}}>
           Unsere Produkte
@@ -560,7 +592,10 @@ function PricingSection() {
 /* ───────── QB-Sichtweise / Signatur (du-Anrede, Marke) ───────── */
 function SignatureSection() {
   return (
-    <section className="lp-vp-section lp-vp-section--dark lp-ts-signature">
+    <section
+      className="lp-vp-section lp-vp-section--dark lp-ts-signature"
+      data-section="lp-ts-signatur"
+    >
       <span className="eyebrow">Unsere Sichtweise</span>
       <h2>Wir verkaufen dir keinen Schmuck.</h2>
       <p className="lp-ts-signature__body">
@@ -583,7 +618,7 @@ function FinalCTA() {
   const compare = fmtRaw(getCompareAt(product));
   const image = product?.featuredImage?.url || product?.images?.[0]?.url;
   return (
-    <section className="lp-vp-final-cta">
+    <section className="lp-vp-final-cta" data-section="lp-ts-final-cta">
       <div className="lp-vp-final-cta__inner">
         <div className="lp-vp-final-cta__media">
           {image && <img src={image} alt="QiOne® 2 Pro" loading="lazy" />}
@@ -659,12 +694,21 @@ export function TieferSchlaf({products}) {
     <LiveDataCtx.Provider value={{data}}>
       <div className="lp-vp lp-ts">
         <Hero />
+        <DreiThemenBand dataSection="lp-ts-drei-themen" aktiv="schlaf" />
         <ProblemSection />
         <MechanismSection />
         <ScienceSection />
         <ExperienceSection />
-        <LpGoogleReviews />
-        <LpReputonWidget />
+        <div data-section="lp-ts-google-reviews">
+          <LpGoogleReviews />
+        </div>
+        <div data-section="lp-ts-reputon">
+          <LpReputonWidget />
+        </div>
+        <PodcastStimmen
+          dataSection="lp-ts-podcast"
+          clips={VIDEOS.filter((v) => v.thema === 'schlaf')}
+        />
         <VideoSection />
         <SchlafraumSection />
         <GuaranteeSection />
