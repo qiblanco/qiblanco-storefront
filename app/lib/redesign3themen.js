@@ -85,28 +85,43 @@ export const THEMEN = [
 
 /**
  * Podcast-Snippets „Christian im Gespräch" (Geldhelden EP01).
- * `src`/`poster`-Dateinamen sind FINAL (J2-Contract) — die Dateien selbst
- * liefert J2 nach public/videos/podcast/.
+ * `src`/`poster`-Dateinamen sind FINAL (J2-Contract).
+ *
+ * Medien-Hosting-Standard GL-PRO-0015: Video-Binaries gehören aufs
+ * Shopify-CDN (Shopify Files), nicht ins Repo. SHOPIFY_CDN trägt die
+ * CDN-URLs; solange ein Eintrag null ist (Upload wartet auf die
+ * write_files-Scope-Freigabe), greift der Fallback auf die public/-Datei.
+ * Den Abschluss macht medien-hosting/bin/finalize-podcast-clips: URLs
+ * eintragen + public/videos/podcast/ entfernen.
  */
+const SHOPIFY_CDN = {
+  'podcast-schlaf': {video: null, poster: null},
+  'podcast-esmog': {video: null, poster: null},
+  'podcast-wasser': {video: null, poster: null},
+};
+
+/** CDN-URL wenn vorhanden, sonst public/-Fallback (bis zum CDN-Umzug). */
+const cdnOderPublic = (id, art, fallback) => SHOPIFY_CDN[id]?.[art] ?? fallback;
+
 export const VIDEOS = [
   {
     id: 'podcast-schlaf',
-    src: '/videos/podcast/podcast-schlaf.mp4',
-    poster: '/videos/podcast/podcast-schlaf.jpg',
+    src: cdnOderPublic('podcast-schlaf', 'video', '/videos/podcast/podcast-schlaf.mp4'),
+    poster: cdnOderPublic('podcast-schlaf', 'poster', '/videos/podcast/podcast-schlaf.jpg'),
     thema: 'schlaf',
     titel: 'Das Kopfkissen-Experiment: Handy und Schlaf',
   },
   {
     id: 'podcast-esmog',
-    src: '/videos/podcast/podcast-esmog.mp4',
-    poster: '/videos/podcast/podcast-esmog.jpg',
+    src: cdnOderPublic('podcast-esmog', 'video', '/videos/podcast/podcast-esmog.mp4'),
+    poster: cdnOderPublic('podcast-esmog', 'poster', '/videos/podcast/podcast-esmog.jpg'),
     thema: 'esmog',
     titel: 'Was E-Smog in den Zellen auslöst',
   },
   {
     id: 'podcast-wasser',
-    src: '/videos/podcast/podcast-wasser.mp4',
-    poster: '/videos/podcast/podcast-wasser.jpg',
+    src: cdnOderPublic('podcast-wasser', 'video', '/videos/podcast/podcast-wasser.mp4'),
+    poster: cdnOderPublic('podcast-wasser', 'poster', '/videos/podcast/podcast-wasser.jpg'),
     thema: 'zellen',
     titel: 'Kohärentes Wasser: der Bindungswinkel, einfach erklärt',
   },
