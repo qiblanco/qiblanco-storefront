@@ -196,9 +196,12 @@ function ScienceSection() {
 /* ───────── Video Testimonials ───────── */
 function VideoSection() {
   const videos = [
-    { tag: "🏅 Profi-Athlet",         title: "Deutscher Leichtathlet-Meister", quote: "Höhere Regeneration und mehr Leistung mit dem QiOne®.", id: "jyLyXZqHxaw" },
-    { tag: "🕉️ Spirituelle Mentoren",  title: "Nada & Kurt – Mentoren",          quote: "Mehr Fokus, weniger Brain Fog – im Alltag spürbar.",              id: "aG36zJKxDzg" },
-    { tag: "🧘 Meditation Coach",     title: "Holistic Coach",                  quote: "Tiefere Meditation und mehr Energie – direkt am ersten Tag.",            id: "zIfDQ1N60fI" },
+    // CONTENT-MATCH (F-003): Tags/Titles/Quotes sinngemäß aus den echten Video-
+    // Transkripten (Register homepage-bauer data/medien/<id>.json). Gate vor
+    // Änderungen: codemeister content-match check <diese Datei>.
+    { tag: "🏅 Profi-Athlet",         title: "Deutscher Leichtathlet-Meister", quote: "Bessere Regeneration und mehr Leistung mit dem QiOne®.", id: "jyLyXZqHxaw" },
+    { tag: "🕉️ Nada & Kurt Tepperwein", title: "Spürbar stabiler im Alltag",   quote: "So wie ich es trage und erlebe: Es stabilisiert.",       id: "aG36zJKxDzg" },
+    { tag: "✨ Erste Tage mit dem QiOne®", title: "Michelle Christin Guse",    quote: "Was für eine Energie – als würde sich mein Körper einmal neu strukturieren.", id: "zIfDQ1N60fI" },
   ];
   return (
     <section className="lp-vp-section lp-vp-section--white">
