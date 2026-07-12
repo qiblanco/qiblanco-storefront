@@ -1,9 +1,6 @@
-import {createContext, useContext} from 'react';
+import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
-import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
-import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
-import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
 import {ThemenAkkordeon} from '~/components/redesign/ThemenAkkordeon';
@@ -11,7 +8,17 @@ import {ProduktTrio} from '~/components/redesign/ProduktTrio';
 import {VIDEOS} from '~/lib/redesign3themen';
 
 /*
- * Landingpage /pages/tiefer-schlaf — DESIGN v2 (Prototyp, 2026-07-12).
+ * Landingpage /pages/tiefer-schlaf — DESIGN v3 „Die ruhige Nacht" (2026-07-12).
+ *
+ * v3 = DARSTELLUNGS-Neubau ueber den verdrahteten Design-Meister-Pfad
+ * (design-meister web-brief -> Token-Bau tiefer-schlaf.css -> design-rubrik
+ * iterieren >= 80). Inhalte (Texte/Claims/Beweise) sind unveraendert v2;
+ * geaendert ist NUR die Praesentation: ein Token-System, ruhige Akte,
+ * kein Scroll-Jacking (ScrollMikroskopVideo raus -> typografische
+ * Mikroskop-Karte), stille YouTube-Poster statt Iframe-Chrome, EIN
+ * Review-Block (Reputon-Duplikat raus).
+ *
+ * Vorheriger Stand (v2-Kommentar, Historie):
  *
  * Redesign auf Basis des PR-#33-Wissens (Drei-Themen-Botschaft) + Christians
  * Anmerkungen: harmonisch + lebendig statt Roboter-Vibe, ECHTE Fotos statt
@@ -295,9 +302,35 @@ function ScienceSection() {
           </div>
         ))}
       </div>
-      <LpScrollMikroskopVideo />
+      <MikroskopKarte />
       <LpStudien headline="" />
     </section>
+  );
+}
+
+/* ───────── Mikroskop-Vergleich (typografisch; Texte = ScrollMikroskopVideo-
+   Overlay der Homepage — dort lebt weiter die Video-Fassung) ───────── */
+function MikroskopKarte() {
+  return (
+    <div className="lp-ts3-mikroskop" role="group" aria-label="Zellbiologisch geprüft">
+      <div className="lp-ts3-mikroskop__seite">
+        <span className="lp-ts3-mikroskop__label">Ohne Schutz</span>
+        <p className="lp-ts3-mikroskop__wert">
+          Zellkulturen unter E-Smog-Belastung: sichtbar reduzierte Regeneration.
+        </p>
+      </div>
+      <div className="lp-ts3-mikroskop__seite lp-ts3-mikroskop__seite--gitter">
+        <span className="lp-ts3-mikroskop__label">Gitterchip™</span>
+        <p className="lp-ts3-mikroskop__wert">
+          Deutlich gesteigerte Zellregeneration, trotz starkem E-Smog Einfluss.
+        </p>
+      </div>
+      <p className="lp-ts3-mikroskop__fuss">
+        Zellbiologisch geprüft — die Effekte auf Zellebene, unter dem Mikroskop
+        dokumentiert (in vitro). Das vollständige Mikroskop-Video läuft auf der
+        Startseite.
+      </p>
+    </div>
   );
 }
 
@@ -308,16 +341,18 @@ function ExperienceSection() {
       className="lp-vp-section lp-vp-section--cream lp-ts-experience"
       data-section="lp-ts-erfahrungen"
     >
+      <div className="lp-ts3-experience__kopf">
+        <span className="eyebrow">171 dokumentierte Erfahrungsberichte</span>
+        <h2>171 ehrliche Berichte — und ein Muster, das sich wiederholt.</h2>
+        <p className="lp-vp-section__lede lp-ts2-experience__lede">
+          In einer ausgewerteten Sammlung von 171 unabhängigen Nutzer-Berichten war ein
+          Thema mit Abstand am häufigsten: ruhigere, tiefere Nächte. Das sind
+          Erfahrungsberichte — deskriptiv, ohne Kontrollgruppe. Aber das Muster ist
+          deutlich.
+        </p>
+      </div>
       <div className="lp-ts2-experience__inner">
         <div className="lp-ts2-experience__copy">
-          <span className="eyebrow">171 dokumentierte Erfahrungsberichte</span>
-          <h2>171 ehrliche Berichte — und ein Muster, das sich wiederholt.</h2>
-          <p className="lp-vp-section__lede lp-ts2-experience__lede">
-            In einer ausgewerteten Sammlung von 171 unabhängigen Nutzer-Berichten war ein
-            Thema mit Abstand am häufigsten: ruhigere, tiefere Nächte. Das sind
-            Erfahrungsberichte — deskriptiv, ohne Kontrollgruppe. Aber das Muster ist
-            deutlich.
-          </p>
           <div className="lp-vp-stats-row lp-ts2-experience__stats">
             <div className="lp-vp-stat-item">
               <span className="lp-vp-stat-item__value">~20%</span>
@@ -367,6 +402,41 @@ function ExperienceSection() {
    homepage-bauer data/medien/<id>.json). Gate vor jeder Änderung:
    codemeister content-match check <diese Datei>. Zitate sinngemäß aus dem
    jeweiligen Transkript — keine erfundenen Themen (Brain-Fog-Falle F-003). */
+/* Stilles YouTube-Poster: laedt den Player erst beim Klick (kein rotes
+   Iframe-Chrome in der ruhigen Flaeche; Poster leicht entsaettigt via CSS). */
+function LiteYt({id, title}) {
+  const [laueft, setLaueft] = useState(false);
+  if (laueft) {
+    return (
+      <div className="lp-ts3-yt">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1`}
+          title={title}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
+  return (
+    <button
+      type="button"
+      className="lp-ts3-yt"
+      onClick={() => setLaueft(true)}
+      aria-label={`Video abspielen: ${title}`}
+    >
+      <img
+        src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+        alt=""
+        loading="lazy"
+      />
+      <span className="lp-ts3-yt__play" aria-hidden="true">
+        <span>▶</span>
+      </span>
+    </button>
+  );
+}
+
 function VideoSection() {
   const videos = [
     {
@@ -402,11 +472,7 @@ function VideoSection() {
       <div className="lp-vp-videos-grid">
         {videos.map((v) => (
           <article className="lp-vp-video" key={v.id}>
-            <div className="lp-vp-video__thumb lp-vp-video__thumb--iframe">
-              <LpYoutubeIframe
-                link={`https://www.youtube.com/embed/${v.id}?si=2ZVH9xtaSaEMmfTQ&controls=0`}
-              />
-            </div>
+            <LiteYt id={v.id} title={v.title} />
             <span className="lp-vp-video__tag">{v.tag}</span>
             <h3 className="lp-vp-video__title">{v.title}</h3>
             <p className="lp-vp-video__quote">{v.quote}</p>
@@ -430,13 +496,15 @@ function SchlafraumSection() {
       className="lp-vp-section lp-vp-section--stone lp-ts-room"
       data-section="lp-ts-schlafraum"
     >
+      <div className="lp-ts3-room__kopf">
+        <span className="eyebrow">Der Raum, in dem du schläfst</span>
+        <h2>Nicht nur du. Dein ganzes Schlafzimmer.</h2>
+      </div>
       <div className="lp-ts-room__inner">
         <div className="lp-ts-room__media">
           <img src={img} alt="QiHome® Air" loading="lazy" />
         </div>
         <div className="lp-ts-room__copy">
-          <span className="eyebrow">Der Raum, in dem du schläfst</span>
-          <h2>Nicht nur du. Dein ganzes Schlafzimmer.</h2>
           <p>
             Der QiOne<sup>®</sup> begleitet dich am Körper. Das QiHome<sup>®</sup> Air bringt
             kohärentes Wasser in den ganzen Raum — dorthin, wo du ein Drittel deines Lebens
@@ -618,7 +686,7 @@ export function TieferSchlaf({products}) {
 
   return (
     <LiveDataCtx.Provider value={{data}}>
-      <div className="lp-vp lp-ts lp-ts2">
+      <div className="lp-vp lp-ts lp-ts3">
         <Hero />
         <DreiThemenBand dataSection="lp-ts-drei-themen" aktiv="schlaf" />
         <NachtSection />
@@ -628,9 +696,6 @@ export function TieferSchlaf({products}) {
         <ExperienceSection />
         <div data-section="lp-ts-google-reviews">
           <LpGoogleReviews />
-        </div>
-        <div data-section="lp-ts-reputon">
-          <LpReputonWidget />
         </div>
         <PodcastStimmen
           dataSection="lp-ts-podcast"
