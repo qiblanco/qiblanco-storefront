@@ -12,6 +12,7 @@ import {
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
@@ -177,6 +178,7 @@ export function Layout({children}) {
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={redesign3themenStyles}></link>
         {shouldLoadThirdPartyScripts && (
           <script
             id="Cookiebot"

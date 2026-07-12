@@ -150,3 +150,302 @@
   letter-spacing: 0.02em;
   color: var(--lp-vp-gold);
 }
+
+/* ============================================================
+   DESIGN v2 (Prototyp 2026-07-12) — lp-ts2-* Klassen, additiv.
+   Harmonisch + lebendig: mehr Negativraum, editoriale Typo,
+   echte Fotos in weichen Rahmen, typografische Marker statt
+   Emojis, dosierte Interaktion. Gold NUR als Handlung.
+   ============================================================ */
+
+/* ─── Hero v2: editorial, echtes Foto ──────────────────────── */
+.lp-ts2-hero {
+  background: linear-gradient(180deg, #fdfcfa 0%, #f6f4ef 62%, #eceaf2 100%);
+  padding: 96px 24px 84px;
+}
+.lp-ts2-hero__inner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 72px;
+  align-items: center;
+  max-width: 1144px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .lp-ts2-hero { padding: 56px 20px 48px; }
+  .lp-ts2-hero__inner { grid-template-columns: 1fr; gap: 36px; }
+}
+.lp-ts2-hero__eyebrow {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lp-vp-gold-soft);
+  margin-bottom: 18px;
+}
+.lp-ts2-hero__title {
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5.2vw, 3.75rem);
+  line-height: 1.08;
+  color: var(--lp-vp-ink-soft);
+  margin: 0 0 22px;
+}
+.lp-ts2-hero__subline {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--lp-vp-muted);
+  max-width: 34em;
+  margin: 0 0 30px;
+}
+.lp-ts2-hero__cta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 26px;
+}
+.lp-ts2-hero__price {
+  font-size: 0.9375rem;
+  color: var(--lp-vp-muted);
+}
+.lp-ts2-hero__price s {
+  color: var(--lp-vp-quiet);
+  margin-right: 4px;
+}
+.lp-ts2-hero__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lp-ts2-hero__trust li {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--lp-vp-muted);
+  position: relative;
+  padding-left: 16px;
+}
+.lp-ts2-hero__trust li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lp-vp-gold);
+}
+.lp-ts2-hero__visual {
+  margin: 0;
+}
+.lp-ts2-hero__visual img {
+  width: 100%;
+  border-radius: 22px;
+  box-shadow: 0 40px 80px -46px rgba(44, 42, 38, 0.55);
+  display: block;
+}
+.lp-ts2-hero__visual figcaption {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--lp-vp-quiet);
+  text-align: right;
+}
+
+/* ─── Nacht-Dramaturgie (dunkler Story-Block) ──────────────── */
+.lp-ts2-nacht {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(214, 148, 33, 0.10) 0%, transparent 42%),
+    linear-gradient(180deg, #23211d 0%, #2c2a26 100%);
+  padding: 100px 24px;
+  text-align: center;
+}
+.lp-ts2-nacht .eyebrow { color: var(--lp-vp-gold); }
+.lp-ts2-nacht h2 {
+  color: #f4f2ec;
+  max-width: 22em;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lp-ts2-nacht__momente {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 1080px;
+  margin: 52px auto 0;
+}
+@media (max-width: 900px) {
+  .lp-ts2-nacht { padding: 64px 20px; }
+  .lp-ts2-nacht__momente { grid-template-columns: 1fr; gap: 18px; }
+}
+.lp-ts2-moment {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  padding: 34px 28px;
+  text-align: left;
+}
+.lp-ts2-moment__zeit {
+  font-variant-numeric: tabular-nums;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--lp-vp-gold);
+  letter-spacing: 0.04em;
+}
+.lp-ts2-moment__titel {
+  margin: 14px 0 10px;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  color: #f4f2ec;
+  line-height: 1.3;
+}
+.lp-ts2-moment__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: #b9b5ab;
+}
+.lp-ts2-nacht__bridge {
+  max-width: 44em;
+  margin: 52px auto 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #e6e4dc;
+}
+
+/* ─── Mechanismus-Timeline ─────────────────────────────────── */
+.lp-ts2-timeline {
+  list-style: none;
+  padding: 0;
+  max-width: 760px;
+  margin: 16px auto 0;
+}
+.lp-ts2-timeline__step {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 24px;
+  position: relative;
+  padding-bottom: 44px;
+  text-align: left;
+}
+.lp-ts2-timeline__step:last-child { padding-bottom: 0; }
+.lp-ts2-timeline__step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 31px;
+  top: 56px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--lp-vp-gold-tint), var(--lp-vp-line-soft));
+}
+.lp-ts2-timeline__num {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--lp-vp-gold);
+  color: var(--lp-vp-gold-soft);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.06em;
+}
+.lp-ts2-timeline__title {
+  margin: 8px 0 10px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--lp-vp-ink-soft);
+  line-height: 1.3;
+}
+.lp-ts2-timeline__body {
+  margin: 0;
+  font-size: 0.9688rem;
+  line-height: 1.65;
+  color: var(--lp-vp-muted);
+}
+
+/* ─── Drei Ebenen (Akkordeon-Rahmen) ───────────────────────── */
+.lp-ts2-ebenen {
+  background: var(--lp-vp-bg-cream);
+  padding: 100px 24px 90px;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .lp-ts2-ebenen { padding: 64px 20px; }
+}
+.lp-ts2-ebenen .rd3-akk-section {
+  padding-top: 44px;
+  padding-bottom: 0;
+}
+
+/* ─── 171 Berichte: Copy + echtes Morgen-Foto ──────────────── */
+.lp-ts2-experience__inner {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1144px;
+  margin: 0 auto;
+  text-align: left;
+}
+@media (max-width: 980px) {
+  .lp-ts2-experience__inner { grid-template-columns: 1fr; gap: 36px; }
+}
+.lp-ts2-experience__copy .eyebrow,
+.lp-ts2-experience__copy h2 { text-align: left; }
+.lp-ts2-experience__lede { margin-left: 0; }
+.lp-ts2-experience__stats { justify-content: flex-start; }
+.lp-ts2-experience__copy .lp-ts-quotes {
+  justify-content: flex-start;
+  margin-top: 36px;
+}
+.lp-ts2-experience__copy .lp-ts-experience__src { text-align: left; }
+.lp-ts2-experience__foto {
+  margin: 0;
+}
+.lp-ts2-experience__foto img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 30px 60px -40px rgba(74, 71, 65, 0.45);
+  display: block;
+}
+.lp-ts2-experience__foto figcaption {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--lp-vp-quiet);
+}
+
+/* ─── Garantie: typografische Nummern statt Emojis ─────────── */
+.lp-ts2-benefit { text-align: left; }
+.lp-ts2-benefit__num {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--lp-vp-gold-soft);
+  border-bottom: 2px solid var(--lp-vp-gold);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+/* ─── Produkt-Trio-Rahmen ──────────────────────────────────── */
+.lp-ts2-produkte {
+  background: #fff;
+  padding: 40px 24px 90px;
+}
+.lp-ts2-produkte .lp-vp-pricing__fineprint {
+  text-align: center;
+  margin-top: 26px;
+}
+
+/* Reduzierte Motion: alles Ruhige bleibt ruhig. */
+@media (prefers-reduced-motion: reduce) {
+  .lp-ts2 * { transition: none !important; animation: none !important; }
+}
