@@ -7,9 +7,16 @@ const themaTitel = (id) => THEMEN.find((t) => t.id === id)?.titel || '';
 /**
  * Ein einzelner Podcast-Clip mit Klick-Poster-Overlay (Play-Symbol via CSS).
  * Kein Autoplay, kein Ton ungefragt (WCAG 1.4.2), preload="none".
+ *
+ * FAIL-SOFT (Medien-Hosting GL-PRO-0015): ist `src` (noch) null — das Video
+ * wartet auf den Shopify-CDN-Upload (write_files-Scope = Christian) — rendert
+ * die Karte das ECHTE Standbild + das wortlaut-belegte Zitat statt eines
+ * toten Players. Sobald finalize-podcast-clips die CDN-URL eintraegt, wird
+ * daraus automatisch der Click-to-play-Player.
  */
 function Clip({clip}) {
   const [gestartet, setGestartet] = useState(false);
+  const spielbar = Boolean(clip.src);
   return (
     <article className="rd3-podcast__clip">
       <div
@@ -17,23 +24,42 @@ function Clip({clip}) {
           gestartet ? ' rd3-podcast__frame--playing' : ''
         }`}
       >
-        {/* Untertitel-VTT (WCAG 1.2.2) folgt als J-Nachzug mit dem
-            Wortlaut-Manifest aus J2 — bis dahin kein Track-Asset vorhanden. */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video
-          className="rd3-podcast__video"
-          preload="none"
-          controls
-          poster={clip.poster}
-          playsInline
-          onPlay={() => setGestartet(true)}
-        >
-          <source src={clip.src} type="video/mp4" />
-        </video>
-        {!gestartet && (
-          <span className="rd3-podcast__play" aria-hidden="true" />
+        {spielbar ? (
+          <>
+            {/* Untertitel-VTT (WCAG 1.2.2) folgt mit dem Wortlaut-Manifest —
+                bis dahin kein Track-Asset vorhanden. */}
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video
+              className="rd3-podcast__video"
+              preload="none"
+              controls
+              poster={clip.poster || undefined}
+              playsInline
+              onPlay={() => setGestartet(true)}
+            >
+              <source src={clip.src} type="video/mp4" />
+            </video>
+            {!gestartet && (
+              <span className="rd3-podcast__play" aria-hidden="true" />
+            )}
+          </>
+        ) : (
+          clip.poster && (
+            <img
+              className="rd3-podcast__video"
+              src={clip.poster}
+              alt={`${clip.titel} — Standbild aus dem Gespräch`}
+              loading="lazy"
+            />
+          )
         )}
       </div>
+      {clip.zitat && (
+        <blockquote className="rd3-podcast__zitat">
+          <p>„{clip.zitat}“</p>
+          {clip.quelle && <cite>{clip.quelle}</cite>}
+        </blockquote>
+      )}
       <h3 className="rd3-podcast__titel">{clip.titel}</h3>
       <span className="rd3-podcast__chip">{themaTitel(clip.thema)}</span>
     </article>
@@ -54,7 +80,7 @@ export function PodcastStimmen({dataSection, clips}) {
       <div className="rd3-podcast__head">
         <span className="rd3-podcast__eyebrow">Christian im Gespräch</span>
         <h2 className="rd3-podcast__h2">
-          Echte Menschen. Echte Erklärungen.
+          Der Gründer, ungeschnitten — aus dem Podcast.
         </h2>
       </div>
       <div

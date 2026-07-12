@@ -834,6 +834,67 @@ export type CampaignProductsQuery = {
   >;
 };
 
+export type CampaignProductsTieferSchlafQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type CampaignProductsTieferSchlafQuery = {
+  qione?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'handle' | 'title'> & {
+      featuredImage?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'url' | 'altText'>
+      >;
+      images: {nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'altText'>>};
+      priceRange: {
+        minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      };
+      variants: {
+        nodes: Array<{
+          compareAtPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          >;
+        }>;
+      };
+    }
+  >;
+  bracelet?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'handle' | 'title'> & {
+      featuredImage?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'url' | 'altText'>
+      >;
+      images: {nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'altText'>>};
+      priceRange: {
+        minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      };
+      variants: {
+        nodes: Array<{
+          compareAtPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          >;
+        }>;
+      };
+    }
+  >;
+  qihome?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'handle' | 'title'> & {
+      featuredImage?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'url' | 'altText'>
+      >;
+      images: {nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'altText'>>};
+      priceRange: {
+        minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      };
+      variants: {
+        nodes: Array<{
+          compareAtPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          >;
+        }>;
+      };
+    }
+  >;
+};
+
 export type PolicyFragment = Pick<
   StorefrontAPI.ShopPolicy,
   'body' | 'handle' | 'id' | 'title' | 'url'
@@ -1426,6 +1487,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  fragment CampaignProduct on Product {\n    handle\n    title\n    featuredImage {\n      url\n      altText\n    }\n    images(first: 1) {\n      nodes {\n        url\n        altText\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query CampaignProducts {\n    qione: product(handle: "qione-2-pro") {\n      ...CampaignProduct\n    }\n    bracelet: product(handle: "qibracelet") {\n      ...CampaignProduct\n    }\n    qihome: product(handle: "qihome-air") {\n      ...CampaignProduct\n    }\n  }\n': {
     return: CampaignProductsQuery;
     variables: CampaignProductsQueryVariables;
+  };
+  '#graphql\n  fragment CampaignProduct on Product {\n    handle\n    title\n    featuredImage {\n      url\n      altText\n    }\n    images(first: 1) {\n      nodes {\n        url\n        altText\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query CampaignProductsTieferSchlaf {\n    qione: product(handle: "qione-2-pro") {\n      ...CampaignProduct\n    }\n    bracelet: product(handle: "qibracelet") {\n      ...CampaignProduct\n    }\n    qihome: product(handle: "qihome-air") {\n      ...CampaignProduct\n    }\n  }\n': {
+    return: CampaignProductsTieferSchlafQuery;
+    variables: CampaignProductsTieferSchlafQueryVariables;
   };
   '#graphql\n  fragment Policy on ShopPolicy {\n    body\n    handle\n    id\n    title\n    url\n  }\n  query Policy(\n    $country: CountryCode\n    $language: LanguageCode\n    $privacyPolicy: Boolean!\n    $refundPolicy: Boolean!\n    $shippingPolicy: Boolean!\n    $termsOfService: Boolean!\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy @include(if: $privacyPolicy) {\n        ...Policy\n      }\n      shippingPolicy @include(if: $shippingPolicy) {\n        ...Policy\n      }\n      termsOfService @include(if: $termsOfService) {\n        ...Policy\n      }\n      refundPolicy @include(if: $refundPolicy) {\n        ...Policy\n      }\n    }\n  }\n': {
     return: PolicyQuery;

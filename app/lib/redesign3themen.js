@@ -10,9 +10,9 @@
  * wird NICHTS Neues erfunden. Zellstudien-Zahlen tragen ein erkennbares
  * in-vitro-/Zellstudien-Label im umgebenden Text.
  *
- * Bild-Pfade unter /images/redesign/ sind bewusste TODO-Platzhalter — sie
- * werden in Teiljob J4 mit den final exportierten WebP-Assets verdrahtet.
- * Video-Dateinamen unter /videos/podcast/ sind hingegen FINAL (J2-Contract).
+ * Bilder: seit DESIGN v2 (2026-07-12) ausschliesslich ECHTE Shooting-Fotos
+ * vom Shopify-CDN (Christian-Regel: echte statt offensichtlicher KI-Bilder;
+ * Bild-Ehrlichkeits-Lehre homepage-bauer D-013). Keine Repo-Binaries noetig.
  */
 
 /** Hero-Dreizeiler (Konzept B2, Empfehlung E1) — drei einzelne Zeilen. */
@@ -54,8 +54,10 @@ export const THEMEN = [
     mechanismusText:
       'Kohärentes Wasser hilft dem Nervensystem, den nächtlichen Daueralarm zu verlassen und leichter herunterzufahren. In einer Auswertung von 171 Erfahrungsberichten war ruhigerer, tieferer Schlaf das mit Abstand häufigste Thema.',
     link: '/pages/tiefer-schlaf',
-    bild: '/images/redesign/thema-schlaf-frau-schlafzimmer-kerze.webp',
-    alt: 'Ruhiger, tiefer Schlaf — Thema Schlaf',
+    // ECHTES Shooting-Foto (Shopify-CDN) — Christian-Regel 2026-07-11:
+    // echte statt offensichtlicher KI-Bilder (Bild-Ehrlichkeits-Lehre D-013)
+    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020791_1_0f03ee06-6ad1-4997-9182-3685335eb04c.webp?v=1738063344',
+    alt: 'Paar liegt entspannt im Bett — zur Ruhe kommen',
   },
   {
     id: 'esmog',
@@ -66,8 +68,9 @@ export const THEMEN = [
     mechanismusText:
       'Die kohärente Grenzschicht am Wasser puffert eingestrahlten E-Smog ab und stabilisiert die Zellmembran. In Zellstudien (in vitro) zeigte sich unter Mobilfunk-Stress eine bis zu zehnfach bessere Zell-Barrierefunktion.',
     link: '/products/qione-2-pro',
-    bild: '/images/redesign/thema-esmog-schreibtisch-bildschirm.webp',
-    alt: 'Schutz vor E-Smog und 5G — Thema E-Smog',
+    // ECHTES Shooting-Foto (Laptop-Arbeit = Funk-Alltag)
+    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250',
+    alt: 'Frau arbeitet am Laptop — Alltag zwischen WLAN und Bildschirm',
   },
   {
     id: 'zellen',
@@ -78,37 +81,65 @@ export const THEMEN = [
     mechanismusText:
       'Oxidativer Stress gilt als anerkannter Treiber der Zellalterung — kohärentes Wasser senkt ihn an den Zellgrenzflächen. In peer-review-kontrollierten Zellstudien (in vitro) sank die Zellbelastung durch oxidativen Stress um 75,0 %.',
     link: '/pages/zell-schutz',
-    bild: '/images/redesign/thema-zellen-dna-helix-wasser.webp',
-    alt: 'Zellgesundheit und Langlebigkeit — Thema Zellen',
+    // ECHTES Shooting-Foto (draussen, in Bewegung — Vitalitaet)
+    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579',
+    alt: 'Draussen in Bewegung — QiBracelet am Handgelenk',
   },
 ];
 
 /**
  * Podcast-Snippets „Christian im Gespräch" (Geldhelden EP01).
- * `src`/`poster`-Dateinamen sind FINAL (J2-Contract) — die Dateien selbst
- * liefert J2 nach public/videos/podcast/.
+ *
+ * Medien-Hosting-Standard GL-PRO-0015: Video-Binaries gehören aufs
+ * Shopify-CDN (Shopify Files), NICHT ins Repo — dieser Branch traegt darum
+ * bewusst KEIN mp4 (nur das Poster ≤ 500 KB). SHOPIFY_CDN traegt die
+ * CDN-URLs; solange `video` null ist (Upload wartet auf die
+ * write_files-Scope-Freigabe, medien-hosting/bin/finalize-podcast-clips),
+ * rendert PodcastStimmen fail-soft eine Zitat-Karte mit echtem Standbild
+ * statt eines toten Players.
+ *
+ * CONTENT-MATCH (Christian-Regel 2026-07-11): `titel` und `zitat` sind
+ * wortlaut-belegt aus dem Snippet-Transkript (video-snippets/manifest.json,
+ * Geldhelden EP01, t=817.9–836.1 s) — keine erfundenen Themen.
  */
+const SHOPIFY_CDN = {
+  'podcast-schlaf': {video: null, poster: null},
+  'podcast-esmog': {video: null, poster: null},
+  'podcast-wasser': {video: null, poster: null},
+};
+
+/** CDN-URL wenn vorhanden, sonst Fallback (null = Datei bewusst nicht im Repo). */
+const cdnOderPublic = (id, art, fallback) => SHOPIFY_CDN[id]?.[art] ?? fallback;
+
 export const VIDEOS = [
   {
     id: 'podcast-schlaf',
-    src: '/videos/podcast/podcast-schlaf.mp4',
-    poster: '/videos/podcast/podcast-schlaf.jpg',
+    src: cdnOderPublic('podcast-schlaf', 'video', null),
+    poster: cdnOderPublic('podcast-schlaf', 'poster', '/videos/podcast/podcast-schlaf.jpg'),
     thema: 'schlaf',
     titel: 'Das Kopfkissen-Experiment: Handy und Schlaf',
+    zitat:
+      'Das schönste Praxisbeispiel: eingeschaltetes Handy unters Kopfkissen legen — und dann gucken, schläft man besser oder schlechter.',
+    quelle: 'Christian Bauer im Geldhelden-Podcast (EP 01)',
   },
   {
     id: 'podcast-esmog',
-    src: '/videos/podcast/podcast-esmog.mp4',
-    poster: '/videos/podcast/podcast-esmog.jpg',
+    src: cdnOderPublic('podcast-esmog', 'video', null),
+    poster: cdnOderPublic('podcast-esmog', 'poster', null),
     thema: 'esmog',
     titel: 'Was E-Smog in den Zellen auslöst',
+    zitat:
+      'Es ist klar, dass dieser E-Smog, vereinfacht gesagt, auch immer oxidativen Stress in den Zellen erzeugt.',
+    quelle: 'Christian Bauer im Geldhelden-Podcast (EP 01)',
   },
   {
     id: 'podcast-wasser',
-    src: '/videos/podcast/podcast-wasser.mp4',
-    poster: '/videos/podcast/podcast-wasser.jpg',
+    src: cdnOderPublic('podcast-wasser', 'video', null),
+    poster: cdnOderPublic('podcast-wasser', 'poster', null),
     thema: 'zellen',
     titel: 'Kohärentes Wasser: der Bindungswinkel, einfach erklärt',
+    zitat: '',
+    quelle: 'Christian Bauer im Geldhelden-Podcast (EP 01)',
   },
 ];
 
