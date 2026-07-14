@@ -879,7 +879,8 @@ function ClosingCTA() {
 const GHX_STYLE_OVERRIDES = `
 .ghx-hero__kpi-value { color: rgb(201,163,78); }
 .ghx-studien__footnote { margin: 30px 0 22px; }
-.lp-vp-section--cream {
+.lp-exclusive-solutions { background: #fff; }
+.lp-exclusive-solutions .lp-vp-section {
   max-width: none;
   padding-left: max(24px, calc(50% - 616px));
   padding-right: max(24px, calc(50% - 616px));
