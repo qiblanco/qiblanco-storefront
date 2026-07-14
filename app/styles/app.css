@@ -4086,3 +4086,15 @@ ul.kakao-children li {
     display: none!important;
   }
 }
+
+/* Footer-Newsletter: Systemschrift statt Serifen-Fallback + Button-Rundung */
+.footer ._form_15 input[type='text'],
+.footer ._form_15 input[type='email'],
+.footer ._form_15 button,
+.footer ._form_15 ._submit {
+    font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+}
+.footer ._form_15 button,
+.footer ._form_15 ._submit {
+    border-radius: 10px !important;
+}
