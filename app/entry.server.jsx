@@ -158,6 +158,7 @@ export default async function handleRequest(
       "'self'",
       'data:',
       'https://cdn.shopify.com',
+      'https://i.ytimg.com',
       'https://*.googleusercontent.com',
       'https://lh3.googleusercontent.com',
       'https://maps.googleapis.com',
