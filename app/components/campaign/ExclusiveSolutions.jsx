@@ -61,6 +61,8 @@ function GeldheldenHero() {
           </h1>
           <p className="ghx-lead">
             Drei Pakete für alle, die nicht einsteigen, sondern ankommen wollen.
+          </p>
+          <p className="ghx-lead">
             Die gesamte proprietäre Gitterchip<sup>®</sup>-Technologie als komplettes Set
             für dich und deine Familie.
           </p>
@@ -859,7 +861,7 @@ function ClosingCTA() {
         <a href="#pakete" className="ghx-closing__cta" onClick={onClick}>
           Paket wählen
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M12 5v14M5 12l7 7 7-7"/>
+            <path d="M12 19V5M5 12l7-7 7 7"/>
           </svg>
         </a>
         <span className="ghx-closing__fineprint">100% Versicherter Versand · Klarna & PayPal · Käuferschutz</span>
@@ -869,9 +871,25 @@ function ClosingCTA() {
 }
 
 
+/* Design-Feinschliff (Overrides zur exclusive-solutions.css):
+   1) Hero-KPIs (10x, 84,7%, 14.000+) im Gold-Akzent des CTA-Buttons
+   2) Studien-Footnote: mehr Luft zu Pfeilen (davor) und Button (danach)
+   3) Cream-Sektion ("Warum Qi Blanco") vollflaechig ohne weissen Rand;
+      Inhalt bleibt auf 1280px zentriert (wie im Hero) */
+const GHX_STYLE_OVERRIDES = `
+.ghx-hero__kpi-value { color: rgb(201,163,78); }
+.ghx-studien__footnote { margin: 30px 0 22px; }
+.lp-vp-section--cream {
+  max-width: none;
+  padding-left: max(24px, calc(50% - 616px));
+  padding-right: max(24px, calc(50% - 616px));
+}
+`;
+
 export function ExclusiveSolutions({products = []}) {
   return (
     <div className="lp-vp lp-exclusive-solutions">
+      <style dangerouslySetInnerHTML={{__html: GHX_STYLE_OVERRIDES}} />
       <GeldheldenHero />
       <GeldheldenPakete products={products} />
       <GeldheldenAuthority />
