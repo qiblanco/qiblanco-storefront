@@ -82,16 +82,27 @@ function GeldheldenHero() {
   );
 }
 
-/* ───────── 2. Drei Pakete (ersetzt PricingSection) ───────── */
+/* ───────── 2. Drei Pakete (ersetzt PricingSection) ─────────
+   Shopify-Bundle-Produkte werden hier bewusst UMGANGEN:
+   Jede Paket-Komponente wird als eigenes Line Item mit eigener Variante in
+   den Warenkorb gelegt. Dadurch hat JEDES QiBracelet und JEDE Kette einen
+   eigenen Größen-Dropdown. Der Paketpreis entsteht über einen automatisch
+   angewendeten Prozent-Rabattcode (Prozent wirkt auf Netto- wie Bruttopreise
+   identisch — die Shopify-Preise sind netto, die 19% MwSt. kommen erst im
+   Checkout dazu, der Brutto-Endpreis stimmt trotzdem). */
 const KETTE_SIZES = ["40 cm", "45 cm", "50 cm", "60 cm", "75 cm"];
 const BRACELET_SIZES = ["S", "M", "L"];
 const SIZE_OPTIONS = { kette: KETTE_SIZES, bracelet: BRACELET_SIZES };
 const DEFAULT_SIZE = { kette: "50 cm", bracelet: "M" };
-const BUNDLE_HANDLE_BY_PACKAGE = {
-  Fundament: 'bundle-fundament',
-  Unabhängig: 'bundle-unabhangig',
-  'Erholungs-Residenz': 'bundle-erholungs-residenz',
+
+const COMPONENT_HANDLES = {
+  'QiHome® Air': 'qihome-air',
+  'QiOne® 2 Pro': 'qione-2-pro',
+  'QiBracelet®': 'qibracelet',
+  'Kette für den QiOne®': 'qione-kette',
 };
+
+const cleanLabel = (label = '') => label.replace(/^1 × /, '').trim();
 
 const PRODUCT_IMG = {
   "QiHome® Air":        "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp?v=1669000329",
@@ -99,10 +110,7 @@ const PRODUCT_IMG = {
   "QiBracelet®":         "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha_1.webp?v=1667284638",
   "Kette für den QiOne®": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Necklace_07_fb5094a4-f6c8-4565-a5a8-5b86208cbb94.webp?v=1698259307",
 };
-const findProductImg = (label) => {
-  const clean = label.replace(/^1 × /, '').trim();
-  return PRODUCT_IMG[clean];
-};
+const findProductImg = (label) => PRODUCT_IMG[cleanLabel(label)];
 function ItemLabel({ label }) {
   const img = findProductImg(label);
   if (!img) {
@@ -156,53 +164,59 @@ function getKindCounts(items) {
   }, {});
 }
 
-function countKindOptions(product, kind) {
-  const options = product?.variants?.[0]?.selectedOptions || [];
-  return options.filter((option) => {
-    if (!option || option.name === 'Title') return false;
-    const isLength = /cm/i.test(option.value || '');
-    return kind === 'kette' ? isLength : !isLength;
-  }).length;
+function findComponentProduct(productsByHandle, item) {
+  const handle = COMPONENT_HANDLES[cleanLabel(item.label)];
+  return handle ? productsByHandle[handle] : null;
 }
 
-// Pro Typ eigene Selektoren nur, wenn das Bundle genug Optionen dafür hat
-// (z. B. „Kette 1"/„Kette 2" als getrennte Shopify-Optionen). Hat das Bundle
-// nur EINE Größen-Option pro Typ (heutiger Stand), gibt es EINEN gemeinsamen
-// Selektor — die Größe gilt dann für alle Exemplare des Typs. Rüstet sich
-// automatisch auf, sobald das Shopify-Bundle umgebaut ist.
-function getSelectorIndices(p, product) {
-  const counts = getKindCounts(p.items);
-  const perInstance = {};
-  Object.keys(counts).forEach((kind) => {
-    perInstance[kind] =
-      counts[kind] <= 1 || countKindOptions(product, kind) >= counts[kind];
-  });
-  const seen = new Set();
+// Größen-Matching gegen die Einzelprodukt-Varianten:
+// Kette: UI "50 cm" → Variante "M - 50 cm" (Substring auf normalisiertem Text)
+// Bracelet: UI "M" → Variante "M – 19" (Prefix "m-" auf normalisiertem Text)
+function variantMatchesSize(variant, kind, size) {
+  const haystacks = [
+    variant?.title || '',
+    ...(variant?.selectedOptions || []).map((option) => option?.value || ''),
+  ].map(normalizeVariantText);
+  const target = normalizeVariantText(size);
+  if (!target) return false;
+
+  if (kind === 'kette') {
+    return haystacks.some((value) => value.includes(target));
+  }
+  return haystacks.some(
+    (value) => value === target || value.startsWith(`${target}-`),
+  );
+}
+
+function findComponentVariant(product, item, size) {
+  const variants = product?.variants || [];
+  if (!item.kind) {
+    // Einzelprodukte ohne Größenwahl (QiHome® Air, QiOne® 2 Pro)
+    return variants.find((variant) => variant.availableForSale) || variants[0] || null;
+  }
+  return (
+    variants.find((variant) => variantMatchesSize(variant, item.kind, size)) ||
+    null
+  );
+}
+
+// Jede Komponente mit Größenwahl bekommt einen EIGENEN Selektor —
+// keine geteilten Dropdowns mehr, da jedes Exemplar ein eigenes Line Item ist.
+function getSelectorIndices(p) {
   return p.items
-    .map((item, index) => {
-      if (!item.kind) return -1;
-      if (perInstance[item.kind]) return index;
-      if (seen.has(item.kind)) return -1;
-      seen.add(item.kind);
-      return index;
-    })
+    .map((item, index) => (item.kind ? index : -1))
     .filter((index) => index >= 0);
 }
 
-function getPackageSelections(p, product, sizes) {
-  const indices = getSelectorIndices(p, product);
-  const selectorKindCounts = indices.reduce((counts, index) => {
-    const kind = p.items[index].kind;
-    counts[kind] = (counts[kind] || 0) + 1;
-    return counts;
-  }, {});
+function getPackageSelections(p, sizes) {
+  const counts = getKindCounts(p.items);
   const seen = {};
-  return indices.map((index) => {
+  return getSelectorIndices(p).map((index) => {
     const item = p.items[index];
     seen[item.kind] = (seen[item.kind] || 0) + 1;
     const ordinal = seen[item.kind];
-    const baseLabel = item.label.replace(/^1 × /, '');
-    const multiple = selectorKindCounts[item.kind] > 1;
+    const multiple = counts[item.kind] > 1;
+    const baseLabel = cleanLabel(item.label);
     return {
       index,
       kind: item.kind,
@@ -214,137 +228,87 @@ function getPackageSelections(p, product, sizes) {
   });
 }
 
-function optionMatchesSelection(option, selection) {
-  const rawValue = option?.value || '';
-  // Typ-Wächter: Ketten-Größen nur gegen Längen-Optionen („… cm") matchen,
-  // Bracelet-Größen nur gegen Nicht-Längen-Optionen — sonst matcht z. B.
-  // Bracelet „L" fälschlich die Ketten-Option „L - 60 cm".
-  const isLength = /cm/i.test(rawValue);
-  if (selection.kind === 'kette' && !isLength) return false;
-  if (selection.kind === 'bracelet' && isLength) return false;
-
-  const target = normalizeVariantText(selection.value);
-  const value = normalizeVariantText(rawValue);
-
-  if (selection.kind === 'bracelet') {
-    return value.startsWith(target) || value.includes(`${target}-`);
-  }
-
-  return value.includes(target);
-}
-
-function variantMatchesSelections(variant, selections) {
-  // Jede Options-Position darf nur EINE Auswahl bedienen — sonst würde bei
-  // zwei getrennten Ketten-Optionen (z. B. „60 cm" / „50 cm") die Auswahl
-  // „50 + 50" fälschlich über die einzelne 50er-Option doppelt matchen.
-  const options = variant.selectedOptions || [];
-  const used = new Set();
-  return selections.every((selection) => {
-    for (let k = 0; k < options.length; k++) {
-      if (used.has(k)) continue;
-      if (optionMatchesSelection(options[k], selection)) {
-        used.add(k);
-        return true;
-      }
-    }
-    return false;
-  });
-}
-
-function findBundleVariant(product, selections) {
-  const variants = product?.variants || [];
-  return (
-    variants.find(
-      (variant) =>
-        variant.availableForSale &&
-        variantMatchesSelections(variant, selections),
-    ) || null
-  );
-}
-
 function buildPackageCartState(p, productsByHandle, sizes) {
-  const product = productsByHandle[p.bundleHandle];
-  const selections = getPackageSelections(p, product, sizes);
-  const variant = findBundleVariant(product, selections);
+  const selections = getPackageSelections(p, sizes);
+  const sizeByIndex = {};
+  selections.forEach((selection) => {
+    sizeByIndex[selection.index] = selection.value;
+  });
 
-  if (!product || !variant) {
-    return {
-      lines: [],
-      selections,
-      unavailable: [{item: {label: p.title}, size: ''}],
-    };
+  const lineByVariant = new Map();
+  const unavailable = [];
+
+  p.items.forEach((item, index) => {
+    const product = findComponentProduct(productsByHandle, item);
+    const size = sizeByIndex[index];
+    const variant = product ? findComponentVariant(product, item, size) : null;
+
+    if (!variant || !variant.availableForSale) {
+      unavailable.push({item, size: size || ''});
+      return;
+    }
+
+    const existing = lineByVariant.get(variant.id);
+    if (existing) {
+      // Identische Varianten (z. B. 2 × QiOne® 2 Pro oder zwei Ketten in
+      // derselben Länge) werden zu EINER Line mit höherer Menge gebündelt.
+      existing.quantity += 1;
+      return;
+    }
+
+    lineByVariant.set(variant.id, {
+      merchandiseId: variant.id,
+      quantity: 1,
+      attributes: [{key: 'Paket', value: p.title}],
+      selectedVariant: {
+        id: variant.id,
+        title: variant.title,
+        availableForSale: variant.availableForSale,
+        image: getLineImage(product, variant),
+        price: variant.price,
+        product: {
+          handle: product.handle,
+          title: product.title,
+        },
+        selectedOptions: [
+          ...(variant.selectedOptions || []),
+          {name: 'Paket', value: p.title},
+        ],
+      },
+    });
+  });
+
+  if (unavailable.length > 0) {
+    return {lines: [], selections, unavailable};
   }
 
-  return {
-    lines: [
-      {
-        merchandiseId: variant.id,
-        quantity: 1,
-        attributes: [
-          {key: 'Paket', value: p.title},
-          ...selections.map((selection) => ({
-            // Eindeutige Keys pro Exemplar — gleiche Keys würden sich in
-            // Shopify-Cart-Attributes gegenseitig überschreiben.
-            key:
-              (selection.kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe') +
-              (selection.multiple ? ` ${selection.ordinal}` : ''),
-            value: selection.value,
-          })),
-        ],
-        selectedVariant: {
-          id: variant.id,
-          title: variant.title,
-          availableForSale: variant.availableForSale,
-          image: getLineImage(product, variant),
-          price: variant.price,
-          product: {
-            handle: product.handle,
-            title: product.title,
-          },
-          selectedOptions: [
-            ...(variant.selectedOptions || []),
-            {name: 'Paket', value: p.title},
-          ],
-        },
-      },
-    ],
-    selections,
-    unavailable: [],
-  };
+  return {lines: [...lineByVariant.values()], selections, unavailable: []};
 }
 
-function isPackageSizeAvailable(productsByHandle, p, itemIndex, size, sizes) {
-  const product = productsByHandle[p.bundleHandle];
-  const nextSizes = {...sizes, [itemIndex]: size};
-  const selections = getPackageSelections(p, product, nextSizes);
-  const variant = findBundleVariant(product, selections);
-  return Boolean(variant);
+function isPackageSizeAvailable(productsByHandle, p, itemIndex, size) {
+  const item = p.items[itemIndex];
+  const product = findComponentProduct(productsByHandle, item);
+  const variant = product ? findComponentVariant(product, item, size) : null;
+  return Boolean(variant && variant.availableForSale);
 }
 
 function computeInitialSizes(p, productsByHandle) {
-  const indices = getSelectorIndices(p, productsByHandle[p.bundleHandle]);
-  const defaults = {};
-  indices.forEach((i) => {
-    defaults[i] = p.items[i].defaultSize || DEFAULT_SIZE[p.items[i].kind];
+  const sizes = {};
+  getSelectorIndices(p).forEach((index) => {
+    const item = p.items[index];
+    const preferred = item.defaultSize || DEFAULT_SIZE[item.kind];
+    if (isPackageSizeAvailable(productsByHandle, p, index, preferred)) {
+      sizes[index] = preferred;
+      return;
+    }
+    // Fallback: Ist die Default-Größe ausverkauft, die erste verfügbare
+    // Größe vorwählen, statt "nicht verfügbar" als Startzustand zu zeigen.
+    const fallback = SIZE_OPTIONS[item.kind].find((size) =>
+      isPackageSizeAvailable(productsByHandle, p, index, size),
+    );
+    sizes[index] = fallback || preferred;
   });
-  if (buildPackageCartState(p, productsByHandle, defaults).lines.length) {
-    return defaults;
-  }
-
-  // Fallback: Unterstützt das Shopify-Bundle (noch) keine unterschiedlichen
-  // Größen pro Exemplar, alle Exemplare eines Typs auf die erste Default-Größe
-  // angleichen, statt "nicht verfügbar" als Startzustand zu zeigen.
-  const firstByKind = {};
-  const aligned = {};
-  indices.forEach((i) => {
-    const kind = p.items[i].kind;
-    if (firstByKind[kind] == null) firstByKind[kind] = defaults[i];
-    aligned[i] = firstByKind[kind];
-  });
-  if (buildPackageCartState(p, productsByHandle, aligned).lines.length) {
-    return aligned;
-  }
-  return defaults;
+  return sizes;
 }
 
 function Pak({ p, productsByHandle, onChoose }) {
@@ -358,13 +322,8 @@ function Pak({ p, productsByHandle, onChoose }) {
     const it = p.items[i];
     return it.defaultSize || DEFAULT_SIZE[it.kind];
   };
-  const configIndices = React.useMemo(
-    () => getSelectorIndices(p, productsByHandle[p.bundleHandle]),
-    [p, productsByHandle],
-  );
+  const configIndices = React.useMemo(() => getSelectorIndices(p), [p]);
   const kindCounts = React.useMemo(() => getKindCounts(p.items), [p.items]);
-  const selectorCountOf = (kind) =>
-    configIndices.filter((j) => p.items[j].kind === kind).length;
   const ordinalOf = (index) =>
     configIndices.filter(
       (j) => j <= index && p.items[j].kind === p.items[index].kind,
@@ -372,8 +331,7 @@ function Pak({ p, productsByHandle, onChoose }) {
   const sizeLabel = (index) => {
     const kind = p.items[index].kind;
     const base = kind === 'kette' ? 'Kettenlänge' : 'Bracelet-Größe';
-    if (selectorCountOf(kind) > 1) return `${base} ${ordinalOf(index)}`;
-    if (kindCounts[kind] > 1) return `${base} (beide)`;
+    if (kindCounts[kind] > 1) return `${base} ${ordinalOf(index)}`;
     return base;
   };
   const cartState = React.useMemo(
@@ -383,12 +341,7 @@ function Pak({ p, productsByHandle, onChoose }) {
   const isDisabled = cartState.lines.length === 0 || cartState.unavailable.length > 0;
 
   const onClick = () => {
-    const selections = configIndices.map((i) => ({
-      kind: p.items[i].kind,
-      label: p.items[i].label.replace(/^1 × /, ''),
-      value: getSize(i),
-    }));
-    onChoose(p, cartState.selections || selections, cartState);
+    onChoose(p, cartState.selections, cartState);
     if (!isDisabled) open('cart');
   };
 
@@ -399,7 +352,7 @@ function Pak({ p, productsByHandle, onChoose }) {
       <p className="ghx-pak__lead">{p.lead}</p>
       <ul className="ghx-pak__items">
         {p.items.map((it, i) => (
-          it.kind && configIndices.includes(i) ? (
+          it.kind ? (
             <li key={i} className="ghx-pak__item ghx-pak__item--config">
               <ItemLabel label={it.label} />
               <select
@@ -412,7 +365,7 @@ function Pak({ p, productsByHandle, onChoose }) {
                   <option
                     key={s}
                     value={s}
-                    disabled={!isPackageSizeAvailable(productsByHandle, p, i, s, sizes)}
+                    disabled={!isPackageSizeAvailable(productsByHandle, p, i, s)}
                   >
                     {s}
                   </option>
@@ -436,7 +389,7 @@ function Pak({ p, productsByHandle, onChoose }) {
       <div className="ghx-pak__cta-form">
         <CartForm
           route="/cart"
-          inputs={{lines: cartState.lines}}
+          inputs={{lines: cartState.lines, discountCode: p.discountCode}}
           action={CartForm.ACTIONS.LinesAdd}
         >
           {(fetcher) => (
@@ -446,6 +399,7 @@ function Pak({ p, productsByHandle, onChoose }) {
                 type="hidden"
                 value={JSON.stringify({
                   package: p.title,
+                  discountCode: p.discountCode,
                   products: cartState.lines.map((line) => ({
                     id: line.merchandiseId,
                     quantity: line.quantity,
@@ -477,7 +431,7 @@ function GeldheldenPakete({products}) {
       pill: "★ Stabiles Fundament",
       pillCls: "ghx-pill--gold",
       title: "Fundament",
-      bundleHandle: BUNDLE_HANDLE_BY_PACKAGE.Fundament,
+      discountCode: 'PAKET-FUNDAMENT',
       lead: "Der Einstieg in die volle Lösung — Schutz für dich und dein Zuhause. Hausstation und Anhänger bieten ein perfektes Preis-Leistungsverhältnis.",
       items: [
         { label: "1 × QiHome® Air" },
@@ -497,6 +451,7 @@ function GeldheldenPakete({products}) {
       pill: "★ BELIEBTESTE WAHL",
       pillCls: "ghx-pill--gold",
       title: "Unabhängig",
+      discountCode: 'PAKET-UNABHAENGIG',
       lead: "Die vollständige Lösung — Hausstation, Anhänger und Armreif erzeugen ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
       items: [
         { label: "1 × QiHome® Air" },
@@ -512,14 +467,13 @@ function GeldheldenPakete({products}) {
       save: "Du sparst 1.260 €",
       cta: "Dieses Paket wählen",
       fine: "oder ab 770 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
-      bundleHandle: 'bundle-unabhangig',
       featured: true,
     },
     {
       pill: "★ Gelebter Exklusiver Luxus",
       pillCls: "ghx-pill--gold",
       title: "Erholungs-Residenz",
-      bundleHandle: BUNDLE_HANDLE_BY_PACKAGE['Erholungs-Residenz'],
+      discountCode: 'PAKET-RESIDENZ',
       lead: "Maximaler Schutz — 3 leistungsstarke QiHome® Air erzeugen ein gigantisches kohärentes Feld für dein Zuhause und Büro. Begleitet mit dem portablen QiOne® 2 Pro und dem edlen QiBracelet® entsteht ein absolutes Luxusgefühl.",
       items: [
         { label: "1 × QiHome® Air" },
@@ -548,7 +502,7 @@ function GeldheldenPakete({products}) {
     setToast({
       title: p.title,
       count: cartState.lines.reduce((sum, line) => sum + line.quantity, 0),
-      itemLabel: 'Paket',
+      itemLabel: 'Produkte',
       selections,
       price: p.price,
       save: p.save,
@@ -589,7 +543,7 @@ function GeldheldenPakete({products}) {
               <span className="ghx-toast__sub">
                 {toast.unavailable
                   ? 'Eine Auswahl ist aktuell nicht verfügbar.'
-                  : `${toast.title}-Paket · ${toast.price} · Paket wurde dem Warenkorb hinzugefügt`}
+                  : `${toast.title}-Paket · ${toast.price} · Rabatt wird im Warenkorb angewendet`}
               </span>
             </div>
             <button className="ghx-toast__x" onClick={() => setToast(null)} aria-label="Schließen">×</button>
@@ -629,7 +583,7 @@ function GeldheldenAuthority() {
           ))}
         </div>
         <p className="ghx-authority__footnote">
-          4 Peer-Review-Studien (Dartsch Scientific, Deutschland) · Mechanismus „kohärentes Wasser“ nach Prof. Dr. Gerald H. Pollack (USA) &amp; Dr. rer. nat. Ulrich Warnke (DE)
+          4 Peer-Review-Studien (Dartsch Scientific, Deutschland) · Mechanismus „kohärentes Wasser" nach Prof. Dr. Gerald H. Pollack (USA) &amp; Dr. rer. nat. Ulrich Warnke (DE)
         </p>
       </div>
     </section>
