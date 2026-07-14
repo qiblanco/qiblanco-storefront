@@ -77,9 +77,12 @@ const PAYPAL_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082';
 // ECHTES Shooting-Foto (Shopify-CDN) — ruhiger Alltag, kein KI-Motiv, kein
 // Alarm-Frame (Bild-Ehrlichkeits-Lehre homepage-bauer D-013; Konzept 3.3 D
-// „ruhiger Luxus statt Alarm-Rot").
+// „ruhiger Luxus statt Alarm-Rot"). Produktidentitaet gegen
+// bildmaterial/_db/bilder.jsonl verifiziert: QiOne2Pro-Anhaenger an duenner
+// Kette getragen, Homeoffice-Szene am Laptop — das alt behauptet den QiOne,
+// das Bild MUSS ihn zeigen (F-006-Klasse, bild-guard-Befund 2026-07-14).
 const ALLTAG_SZENE_IMG =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579';
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250';
 
 /* ───────── Hero (die unsichtbare Dauerbelastung, ruhig) ───────── */
 function Hero() {
