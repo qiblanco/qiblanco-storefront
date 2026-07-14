@@ -17,12 +17,16 @@ export const meta = () => [
 ];
 
 export async function loader({context}) {
+  // Bewusst KEINE Shopify-Bundle-Produkte mehr: Die Pakete werden aus den
+  // Einzelprodukten zusammengesetzt (jede Komponente = eigenes Line Item),
+  // der Paketpreis entsteht über einen automatisch angewendeten
+  // Prozent-Rabattcode.
   const data = await context.storefront.query(EXCLUSIVE_PRODUCTS_QUERY, {
     cache: context.storefront.CacheShort(),
   });
 
   return {
-    products: [data.fundament, data.unabhaengig, data.erholungsResidenz]
+    products: [data.qihomeAir, data.qione2Pro, data.qibracelet, data.qioneKette]
       .filter(Boolean)
       .map((product) => ({
         ...product,
@@ -78,13 +82,16 @@ const EXCLUSIVE_PRODUCTS_QUERY = `#graphql
   }
 
   query ExclusiveProducts {
-    fundament: product(handle: "bundle-fundament") {
+    qihomeAir: product(handle: "qihome-air") {
       ...ExclusiveProduct
     }
-    unabhaengig: product(handle: "bundle-unabhangig") {
+    qione2Pro: product(handle: "qione-2-pro") {
       ...ExclusiveProduct
     }
-    erholungsResidenz: product(handle: "bundle-erholungs-residenz") {
+    qibracelet: product(handle: "qibracelet") {
+      ...ExclusiveProduct
+    }
+    qioneKette: product(handle: "qione-kette") {
       ...ExclusiveProduct
     }
   }
