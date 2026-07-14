@@ -1,6 +1,7 @@
 import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
+import {claim} from '~/lib/claims';
 
 /*
  * Landingpage /pages/zell-schutz — ZELLSCHUTZ „Der Zellversuch als Held".
@@ -559,16 +560,19 @@ function PricingSection() {
   const qihome = findLp(data, 'qihome-air');
   const priceOf = (p) => fmtBrutto(p?.priceRange?.minVariantPrice?.amount);
   const qioneCompare = fmtRaw(getCompareAt(qione));
+  // Claims kommen aus dem Claims-SSoT (fakten-basis.yaml claims[] ->
+  // app/lib/claims.js, generiert) — Texte hier NIE hardcoden (Lehre Defekt 3:
+  // dieselbe Aussage darf nur EINMAL leben, sonst driftet sie).
   const cards = [
     {
       p: bracelet,
       name: 'QiBracelet®',
       handle: 'qibracelet',
-      tagline: 'Zellschutz für unterwegs',
+      tagline: claim('WM-qibracelet-zellschutz-unterwegs'),
       features: [
-        'Elegantes, luxuriöses Design',
-        'Kohärentes Zellwasser für den ganzen Körper',
-        'Gleiche Leistung wie der QiOne® 2 Pro',
+        claim('WM-design-elegant-luxurioes'),
+        claim('WM-zellwasser-ganzer-koerper'),
+        claim('WM-qibracelet-gleiche-leistung'),
       ],
       featured: false,
     },
@@ -576,12 +580,12 @@ function PricingSection() {
       p: qione,
       name: 'QiOne® 2 Pro',
       handle: 'qione-2-pro',
-      tagline: 'Der Allrounder — Tag und Nacht',
+      tagline: claim('WM-qione-allrounder-tag-nacht'),
       features: [
-        'Kohärentes Zellwasser für den ganzen Körper',
-        'Tragbar als Anhänger',
-        'Elegantes, luxuriöses Design',
-        'Unser Bestseller',
+        claim('WM-zellwasser-ganzer-koerper'),
+        claim('WM-qione-tragbar-anhaenger'),
+        claim('WM-design-elegant-luxurioes'),
+        claim('WM-qione-bestseller'),
       ],
       featured: true,
     },
@@ -589,11 +593,11 @@ function PricingSection() {
       p: qihome,
       name: 'QiHome® Air',
       handle: 'qihome-air',
-      tagline: 'Kohärente Atmosphäre für den ganzen Raum',
+      tagline: claim('WM-qihome-atmosphaere-raum'),
       features: [
-        'Zellschutz im ganzen Raum',
-        'Deutlich stärker als QiOne® und QiBracelet®',
-        'Ideal für Schlafzimmer und Büro',
+        claim('WM-qihome-zellschutz-raum'),
+        claim('WM-qihome-staerker'),
+        claim('WM-qihome-schlafzimmer-buero'),
       ],
       featured: false,
     },
