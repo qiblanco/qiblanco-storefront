@@ -164,6 +164,7 @@ export default async function handleRequest(
       'https://maps.gstatic.com',
       'https://cdn.grw.reputon.com',
       'https://i.vimeocdn.com',
+      'https://i.ytimg.com',
       'https://script.hotjar.com',
       'https://t.qiblanco.com',
       'https://lg.hyr.so',
