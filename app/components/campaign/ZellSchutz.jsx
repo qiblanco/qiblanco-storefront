@@ -70,10 +70,12 @@ const KLARNA_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816';
 const PAYPAL_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082';
-// ECHTES Shooting-Foto (Shopify-CDN) — Vitalitaet/Bewegung, kein KI-Motiv
-// (Bild-Ehrlichkeits-Lehre homepage-bauer D-013).
+// ECHTES Shooting-Foto (Shopify-CDN), kein KI-Motiv (Bild-Ehrlichkeits-Lehre
+// homepage-bauer D-013). Produktidentitaet gegen bildmaterial/_db/bilder.jsonl
+// verifiziert: QiOne2Pro-Anhaenger an duenner Kette getragen — die Sektion
+// heisst "Ein Anhaenger", das Bild MUSS den QiOne zeigen (Christian 2026-07-14).
 const ZELLEN_SZENE_IMG =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579';
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250';
 
 /* ───────── Hero (der Zellversuch als Held) ───────── */
 function Hero() {
@@ -485,7 +487,7 @@ function AnwendungSection() {
     <section className="lp-b-anwendung-section" data-section="lp-b-anwendung">
       <div className="lp-b-anwendung__inner">
         <figure className="lp-b-anwendung__media">
-          <img src={ZELLEN_SZENE_IMG} alt="Draußen in Bewegung — den QiOne® im Alltag tragen" loading="lazy" />
+          <img src={ZELLEN_SZENE_IMG} alt="Den QiOne® als Anhänger im Alltag tragen" loading="lazy" />
         </figure>
         <div className="lp-b-anwendung__copy">
           <span className="eyebrow">So einfach ist es</span>
@@ -563,7 +565,11 @@ function PricingSection() {
       name: 'QiBracelet®',
       handle: 'qibracelet',
       tagline: 'Zellschutz für unterwegs',
-      features: ['Eleganter GitterChip™ integriert', 'Kohärentes Wasser am Handgelenk', 'Ruhe für unterwegs'],
+      features: [
+        'Elegantes, luxuriöses Design',
+        'Kohärentes Zellwasser für den ganzen Körper',
+        'Gleiche Leistung wie der QiOne® 2 Pro',
+      ],
       featured: false,
     },
     {
@@ -572,9 +578,9 @@ function PricingSection() {
       handle: 'qione-2-pro',
       tagline: 'Der Allrounder — Tag und Nacht',
       features: [
-        'Stärkster Zellschutz im Sortiment',
+        'Kohärentes Zellwasser für den ganzen Körper',
         'Tragbar als Anhänger',
-        'Kohärente Wasserstruktur',
+        'Elegantes, luxuriöses Design',
         'Unser Bestseller',
       ],
       featured: true,
@@ -583,8 +589,12 @@ function PricingSection() {
       p: qihome,
       name: 'QiHome® Air',
       handle: 'qihome-air',
-      tagline: 'Kohärentes Wasser für den ganzen Raum',
-      features: ['Zellschutz im ganzen Raum', 'Kohärentes Wasser im Raum', 'Ideal fürs Schlafzimmer'],
+      tagline: 'Kohärente Atmosphäre für den ganzen Raum',
+      features: [
+        'Zellschutz im ganzen Raum',
+        'Deutlich stärker als QiOne® und QiBracelet®',
+        'Ideal für Schlafzimmer und Büro',
+      ],
       featured: false,
     },
   ];

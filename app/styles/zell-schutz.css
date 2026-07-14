@@ -395,6 +395,9 @@
   font-size: var(--a-fs-xs);
   color: var(--a-muted);
   text-align: center;
+  /* .lp-b3 p setzt max-width — ohne auto-Margin klebt die Box links
+     und text-align zentriert nur innerhalb der Box */
+  margin-inline: auto;
 }
 
 /* Studien-Bestandsblock (LpStudien) in die Papier-Welt heben */
@@ -408,6 +411,9 @@
 .lp-b3 .Studien p { font-size: var(--a-fs-base); }
 .lp-b3 .Studien img { border-radius: var(--a-r1); box-shadow: var(--a-shadow-sm); }
 .lp-b3 .Studien .btn--secondary { font-size: var(--a-fs-base); border-radius: var(--a-r1); }
+/* "Wissenschaftlich getestet..."-Zeile: .lp-b3 p setzt max-width — ohne
+   auto-Margin klebt die Box links statt zentriert unter den Studien */
+.lp-b3 .Studien p.text-center { margin-inline: auto; }
 
 /* ─── Google-Reviews (Fremd-Widget in Seiten-Tokens einfaerben) ───────────── */
 .lp-b3 [data-section='lp-b-google-reviews'] { padding: var(--a-s12) var(--a-s3); }
