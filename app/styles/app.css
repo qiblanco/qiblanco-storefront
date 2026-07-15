@@ -4103,3 +4103,16 @@ ul.kakao-children li {
 .footer ._form_15 input[type='email'] {
     border-radius: 10px !important;
 }
+
+/* ActiveCampaign injiziert eigene Styles im body (ID+Klasse, !important),
+   die die obigen Regeln schlagen. Daher hier mit hoeherer Spezifitaet. */
+.footer #_form_6A57722DAE755_ input[type='text'],
+.footer #_form_6A57722DAE755_ input[type='email'] {
+    font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+    border-radius: 10px !important;
+}
+.footer #_form_6A57722DAE755_ button,
+.footer #_form_6A57722DAE755_ ._submit {
+    font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+    border-radius: 10px !important;
+}
