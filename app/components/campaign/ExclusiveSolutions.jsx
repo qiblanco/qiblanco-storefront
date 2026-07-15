@@ -888,6 +888,17 @@ function ClosingCTA() {
 const GHX_STYLE_OVERRIDES = `
 .ghx-hero__kpi-value { color: rgb(201,163,78); }
 .lp-vp-stat-item__value { color: rgb(201,163,78); }
+/* Weisser Streifen zwischen Header und Hero: main-Padding-Bereich
+   in Hero-Beige einfaerben (nur auf dieser LP via :has). */
+main:has(.lp-exclusive-solutions) { background: rgb(253,251,247); }
+/* HRV-Karten (5 Jahre aelter / 9 Jahre juenger): Inhalt komplett zentrieren */
+.lp-vp-hrv-row { justify-content: center; justify-items: center; }
+.lp-vp-hrv-card {
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.lp-vp-hrv-card > * { text-align: center !important; }
 .ghx-hero__tile { background: #000; }
 .ghx-hero__tile-video,
 .ghx-hero__tile-video video {
