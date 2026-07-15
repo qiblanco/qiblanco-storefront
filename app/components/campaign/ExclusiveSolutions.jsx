@@ -6,6 +6,7 @@ import {ReputonWidget as LpReputonWidget} from '~/components/index-components/Re
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
+import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 
 /* ════════════════════════════════════════════════════════════
    GELDHELDEN × QI BLANCO — Entwurf aus Figma
@@ -15,15 +16,19 @@ import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIf
 
 /* ───────── 1. Geldhelden-Hero (ersetzt Hero) ───────── */
 function HeroStackedVisuals() {
+  // 360°-Animationen (Imgix/HLS) statt statischer Bilder;
+  // das bisherige Bild dient als Poster/Fallback.
   const slides = [
     {
       label: "QiBracelet®",
       tag: "GitterChip™ — am Handgelenk",
+      video: "new-360-QiBracelet-1x1.mov",
       img: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/JjGdCuv.webp?v=1747927956",
     },
     {
       label: "QiHome® Air",
       tag: "Schützt dein Zuhause",
+      video: "360-QiHome-1x1.mov",
       img: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/3d-animation-qi-home-preview.webp?v=1740224642",
     },
   ];
@@ -31,7 +36,11 @@ function HeroStackedVisuals() {
     <div className="ghx-hero__visual">
       {slides.map((s) => (
         <figure key={s.label} className="ghx-hero__tile">
-          <img src={s.img} alt={s.label} loading="lazy" />
+          <ImgixVideo
+            videoPath={s.video}
+            fallbackImage={s.img}
+            className="ghx-hero__tile-video"
+          />
         </figure>
       ))}
     </div>
@@ -878,6 +887,13 @@ function ClosingCTA() {
       Inhalt bleibt auf 1280px zentriert (wie im Hero) */
 const GHX_STYLE_OVERRIDES = `
 .ghx-hero__kpi-value { color: rgb(201,163,78); }
+.ghx-hero__tile-video,
+.ghx-hero__tile-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 .ghx-studien__footnote { margin: 30px 0 22px; }
 .lp-exclusive-solutions { background: #fff; }
 .lp-exclusive-solutions .lp-vp-section {
