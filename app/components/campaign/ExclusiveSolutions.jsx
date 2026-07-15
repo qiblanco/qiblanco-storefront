@@ -887,12 +887,19 @@ function ClosingCTA() {
       Inhalt bleibt auf 1280px zentriert (wie im Hero) */
 const GHX_STYLE_OVERRIDES = `
 .ghx-hero__kpi-value { color: rgb(201,163,78); }
+.lp-vp-stat-item__value { color: rgb(201,163,78); }
+.ghx-hero__tile { background: #000; }
 .ghx-hero__tile-video,
 .ghx-hero__tile-video video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+}
+/* Produkt nicht bis an den Kachelrand: Video komplett zeigen (contain)
+   und leicht verkleinern — schwarzer Kachel-Hintergrund fuellt den Rest. */
+.ghx-hero__tile-video video {
+  object-fit: contain;
+  transform: scale(0.82);
 }
 .ghx-studien__footnote { margin: 30px 0 22px; }
 .lp-exclusive-solutions { background: #fff; }
