@@ -16,6 +16,12 @@ import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
 import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
+const HIDDEN_BUNDLE_PRODUCT_HANDLES = new Set([
+  'bundle-fundament',
+  'bundle-unabhangig',
+  'bundle-erholungs-residenz',
+]);
+
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
 }
@@ -26,6 +32,16 @@ export const meta = ({data}) => {
   if (data?.campaignDeal) {
     return [
       {title: `${data.campaignDeal.displayTitle} - 10 Jahre Jubiläums Sale`},
+      {name: 'robots', content: 'noindex,nofollow'},
+    ];
+  }
+
+  if (
+    data?.product?.handle &&
+    HIDDEN_BUNDLE_PRODUCT_HANDLES.has(data.product.handle)
+  ) {
+    return [
+      {title: `${data.product.title ?? ''} | Qi Blanco UG (haftungsbeschrÃ¤nkt)`},
       {name: 'robots', content: 'noindex,nofollow'},
     ];
   }
