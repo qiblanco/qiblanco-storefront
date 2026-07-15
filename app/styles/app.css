@@ -4116,3 +4116,11 @@ ul.kakao-children li {
     font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
     border-radius: 10px !important;
 }
+
+/* Footer-Newsletter: weissen Formular-Kasten des AC-Embeds entfernen
+   (das Embed setzt background:white + padding direkt auf dem <form>). */
+.footer form#_form_15_ {
+    background: transparent !important;
+    padding: 0 !important;
+    border: 0 !important;
+}
