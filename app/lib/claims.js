@@ -2,7 +2,7 @@
  * Claims-SSoT-Konsument — GENERIERT, NICHT HAND-EDITIEREN.
  *
  * Quelle (Single Source of Truth): fakten-basis.yaml claims[]
- *   (/srv/openclaw/_design/gorgias-fact-gate/fakten-basis.yaml, stand 2026-07-14)
+ *   (/srv/openclaw/_design/gorgias-fact-gate/fakten-basis.yaml, stand 2026-07-16)
  * Generator: /srv/openclaw/_design/gorgias-fact-gate/claims_emit.py
  *   (Filter: kanal enthaelt 'homepage')
  *
@@ -76,6 +76,18 @@ export const CLAIMS = {
     aussage: 'Zellschutz im ganzen Raum',
     status: 'entwurf',
     produkt: ['qihomeair'],
+    kanal: ['homepage', 'lp'],
+  },
+  'WM-bewertung-4-8-sterne': {
+    aussage: '4,8 ★',
+    status: 'legitimiert',
+    produkt: ['qione', 'qibracelet', 'qihomeair'],
+    kanal: ['homepage', 'lp'],
+  },
+  'WM-nutzer-ueber-14000': {
+    aussage: 'Über 14.000 Nutzer',
+    status: 'legitimiert',
+    produkt: ['qione', 'qibracelet', 'qihomeair'],
     kanal: ['homepage', 'lp'],
   },
 };
