@@ -5,6 +5,7 @@ import {
   QiOneBuyBox,
   QiOneBenefitList,
 } from '~/components/product-pages/QiOneBuyBox';
+import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — die kaufbereite Fortsetzung der Paid-
@@ -26,8 +27,15 @@ import {
  * als kennzahl_ref-Claims legitimiert — sie SOLLEN hier erscheinen. Die
  * frühere Einstufung als »unbelegt« (F-007/D-032-Anwendung) war falsch;
  * fact_gate._check_kennzahl_bruecke macht die Fehlerklasse baulich
- * unmöglich. descriptionHtml ist dieselbe Shopify-CMS-Quelle, die die
- * echte Shopseite rendert (live_bestand-Semantik — ein Text, eine Quelle).
+ * unmöglich.
+ *
+ * HERO-BLOCK ENTKOPPELT (Job 20260716-bauer-homepage-verstaendnis-hero-
+ * nachbau-qione): Der description-Slot rendert hier NICHT mehr das geteilte
+ * Shopify-Feld descriptionHtml (das traf bei Admin-Änderungen immer /pages
+ * UND /products zugleich), sondern den unabhängig editierbaren 1:1-Nachbau
+ * QiOneHeroBulletsPages (eigene Bullet-Texte für die Paid-Strecke). Die
+ * organische PDP /products/qione-2-pro rendert descriptionHtml unverändert
+ * weiter — ihr DOM bleibt byte-identisch.
  *
  * TRACKING (D-006): KEIN Pixel-Code hier. ViewContent kommt aus der
  * geteilten QiOneBuyBox (<Analytics.ProductView>, exakt der PDP-Payload);
@@ -38,7 +46,6 @@ import {
  * Parität fail-closed via design-qa (Bauakte-Pflicht design_qa_pass).
  */
 export function QiOne2ProShop({product}) {
-  const {descriptionHtml} = product;
   return (
     <div className="shopq2">
       <section id="shopq-buybox" data-section="shopq-buybox">
@@ -50,12 +57,7 @@ export function QiOne2ProShop({product}) {
               <span>{claim('WM-nutzer-ueber-14000')}</span>
             </div>
           }
-          description={
-            <div
-              className="ProductDescription"
-              dangerouslySetInnerHTML={{__html: descriptionHtml}}
-            />
-          }
+          description={<QiOneHeroBulletsPages />}
           topBadge={
             <p className="mt-2">
               <b>{claim('WM-nutzer-ueber-14000')}</b>
