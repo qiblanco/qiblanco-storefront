@@ -118,7 +118,7 @@ function Hero() {
             nachts herunterzufahren. In Zellstudien gemessen, von 14.000+ Trägern getragen.
           </p>
           <div className="lp-a-hero__cta-row">
-            <a className="lp-vp-btn lp-vp-btn--primary" href="/products/qione-2-pro">
+            <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
               Jetzt 20 Nächte risikofrei testen
             </a>
             <span className="lp-a-hero__price">
@@ -573,7 +573,7 @@ function FinalCTA() {
               </div>
             </div>
           )}
-          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/products/qione-2-pro">
+          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/pages/qione-2-pro">
             Jetzt QiOne® 2 Pro sichern
           </a>
           <ul className="lp-vp-final-cta__trust">
