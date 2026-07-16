@@ -2,6 +2,7 @@
 import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler} from '@shopify/remix-oxygen';
 import {createAppLoadContext} from '~/lib/context';
+import {mitAbwehr} from '~/lib/abwehr/abwehr';
 
 /**
  * Export a fetch handler in module format.
@@ -14,50 +15,61 @@ export default {
    * @return {Promise<Response>}
    */
   async fetch(request, env, executionContext) {
-    try {
-      const appLoadContext = await createAppLoadContext(
-        request,
-        env,
-        executionContext,
-      );
-
-      /**
-       * Create a Remix request handler and pass
-       * Hydrogen's Storefront client to the loader context.
-       */
-      const handleRequest = createRequestHandler({
-        // eslint-disable-next-line import/no-unresolved
-        build: await import('virtual:react-router/server-build'),
-        mode: process.env.NODE_ENV,
-        getLoadContext: () => appLoadContext,
-      });
-
-      const response = await handleRequest(request);
-
-      if (appLoadContext.session.isPending) {
-        response.headers.set(
-          'Set-Cookie',
-          await appLoadContext.session.commit(),
-        );
-      }
-
-      if (response.status === 404) {
-        /**
-         * Check for redirects only when there's a 404 from the app.
-         * If the redirect doesn't exist, then `storefrontRedirect`
-         * will pass through the 404 response.
-         */
-        return storefrontRedirect({
+    /**
+     * Der unveraenderte Bestands-Handler. Der Abwehr-Vorfilter
+     * (sicherheitsmeister T2, SHADOW-Default) legt sich als never-break-
+     * Mantel davor: er aendert ausschliesslich Statuscode/Challenge, nie
+     * Content (INV-1), und faellt bei jedem Fehler/Flag-off auf genau
+     * diesen Handler zurueck.
+     */
+    const next = async () => {
+      try {
+        const appLoadContext = await createAppLoadContext(
           request,
-          response,
-          storefront: appLoadContext.storefront,
-        });
-      }
+          env,
+          executionContext,
+        );
 
-      return response;
-    } catch (error) {
-      console.error(error);
-      return new Response('An unexpected error occurred', {status: 500});
-    }
+        /**
+         * Create a Remix request handler and pass
+         * Hydrogen's Storefront client to the loader context.
+         */
+        const handleRequest = createRequestHandler({
+          // eslint-disable-next-line import/no-unresolved
+          build: await import('virtual:react-router/server-build'),
+          mode: process.env.NODE_ENV,
+          getLoadContext: () => appLoadContext,
+        });
+
+        const response = await handleRequest(request);
+
+        if (appLoadContext.session.isPending) {
+          response.headers.set(
+            'Set-Cookie',
+            await appLoadContext.session.commit(),
+          );
+        }
+
+        if (response.status === 404) {
+          /**
+           * Check for redirects only when there's a 404 from the app.
+           * If the redirect doesn't exist, then `storefrontRedirect`
+           * will pass through the 404 response.
+           */
+          return storefrontRedirect({
+            request,
+            response,
+            storefront: appLoadContext.storefront,
+          });
+        }
+
+        return response;
+      } catch (error) {
+        console.error(error);
+        return new Response('An unexpected error occurred', {status: 500});
+      }
+    };
+
+    return mitAbwehr(request, env, executionContext, next);
   },
 };
