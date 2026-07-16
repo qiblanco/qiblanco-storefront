@@ -54,7 +54,6 @@ export default function QiOne2Pro({
         linkStyling={'primary'}
         linkText={'Hole dir jetzt deinen QiOne® 2 Pro'}
       />
-      <Gitterchip />
     <RatenzahlungHerobanner
      link={ctaAnchor}
      linkText={"Hole dir jetzt deinen QiOne® 2 Pro"}
