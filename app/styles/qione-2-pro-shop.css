@@ -1,0 +1,127 @@
+/* ============================================================================
+   /pages/qione-2-pro — Campaign-PDP „Shopseite nach LP" (2026-07-16).
+
+   SHOP-SPEZIFISCHES ADDITIV zum geteilten LP-A-Token-System. Diese Route lädt
+   schlaf-zellen-schutz.css (LP A, Scope .lp-a3) UND diese Datei — die Scent-
+   Harmonie LP↔Shopseite ist damit per Konstruktion garantiert.
+
+   SUB-SCOPE: ausschließlich `.lp-a3 .shopq` (nichts leckt auf LP A oder andere
+   Seiten). REGEL: nur vorhandene `--a-*`-Tokens aus schlaf-zellen-schutz.css,
+   KEINE freien Werte (außer strukturelle 0/1fr/%-Layout-Primitive).
+
+   KOPPLUNG (Pflege-Hinweis): Diese Seite hängt am LP-A-Designsystem
+   (schlaf-zellen-schutz.css). Eine künftige LP-A-Redesign-Änderung wirkt hier
+   mit — beim Ändern von schlaf-zellen-schutz.css diese Seite MIT-TESTEN
+   (Konzept Kap. 8, sektion_registry-Live-Watch greift zusätzlich).
+   ========================================================================== */
+
+/* ─── BuyBox-Hero ─────────────────────────────────────────────────────────── */
+.lp-a3 .shopq .shopq-hero {
+  max-width: var(--a-breite);
+  margin: 0 auto;
+}
+.lp-a3 .shopq .shopq-hero__scent {
+  max-width: var(--a-mass);
+  margin: 0 auto var(--a-s4);
+  text-align: center;
+  font-size: var(--a-fs-md);
+  color: var(--a-muted);
+}
+
+/* Buy-Box-Layout: die geteilte `.product`-Grid erbt aus app.css; nur den
+   Seiten-Rhythmus glätten (der 85px-Margin passt nicht in den Sektions-Takt). */
+.lp-a3 .shopq .product {
+  margin-top: 0;
+}
+.lp-a3 .shopq .product-main h1 {
+  font-size: var(--a-fs-h1);
+  color: var(--a-text);
+}
+
+/* Zahlarten-Badges */
+.lp-a3 .shopq .shopq-hero__pay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--a-s3);
+  margin-top: var(--a-s6);
+}
+.lp-a3 .shopq .shopq-hero__pay img {
+  height: var(--a-s4);
+  width: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ─── Mechanismus-Kurzfassung (3 Kacheln) ─────────────────────────────────── */
+.lp-a3 .shopq .shopq-mechs__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--a-s3);
+  max-width: var(--a-breite);
+  margin: 0 auto;
+}
+.lp-a3 .shopq .shopq-mech {
+  background: var(--a-grund);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  padding: var(--a-s4);
+  box-shadow: var(--a-shadow-sm);
+}
+.lp-a3 .shopq .shopq-mech__zahl {
+  display: block;
+  font-size: var(--a-fs-xl);
+  font-weight: 600;
+  color: var(--a-akzent-tief);
+  margin-bottom: var(--a-s1);
+}
+.lp-a3 .shopq .shopq-mech__titel {
+  font-size: var(--a-fs-lg);
+}
+.lp-a3 .shopq .shopq-mech__text {
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+  margin: var(--a-s1) 0 0;
+}
+.lp-a3 .shopq .shopq-mechs__note {
+  max-width: var(--a-mass);
+  margin: var(--a-s6) auto 0;
+  text-align: center;
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+
+/* ─── Kauf-FAQ (ProductFAQ-Reuse) ─────────────────────────────────────────── */
+.lp-a3 .shopq .shopq-faq .ProductFAQ {
+  max-width: var(--a-breite-schmal);
+  margin: 0 auto;
+  padding: var(--a-s4) 0 0;
+}
+.lp-a3 .shopq .shopq-faq .ProductFAQ h2 {
+  font-size: var(--a-fs-xl);
+  text-align: left;
+}
+
+/* ─── Final-CTA (Scroll-Anker zur Buy-Box) ────────────────────────────────── */
+.lp-a3 .shopq .shopq-final {
+  background: var(--a-dunkel);
+  color: var(--a-text-hell);
+}
+.lp-a3 .shopq .shopq-final__inner {
+  max-width: var(--a-breite-schmal);
+  margin: 0 auto;
+  text-align: center;
+}
+.lp-a3 .shopq .shopq-final h2 {
+  color: var(--a-text-hell);
+}
+.lp-a3 .shopq .shopq-final .lp-vp-section__lede {
+  color: var(--a-muted-hell);
+}
+
+/* ─── Responsiv ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .lp-a3 .shopq .shopq-mechs__grid {
+    grid-template-columns: 1fr;
+  }
+}
