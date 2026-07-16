@@ -13,7 +13,21 @@ import {YoutubeIframe} from '../reusables/YoutubeIframe';
 import {Gitterchip} from '../reusables/Gitterchip';
 import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
 
-export default function QiOne2Pro() {
+/*
+ * Kompletter PDP-Inhalt unterhalb der Buy-Box. Seit 2026-07-16 auch von der
+ * Campaign-PDP /pages/qione-2-pro wiederverwendet (Job qione-shopniveau:
+ * Shop-Niveau per Komponenten-REUSE statt Nachbau). Die CTA-Ziele sind als
+ * Props parametrisiert; die DEFAULTS sind byte-identisch zum PDP-Bestand
+ * (organische PDP rendert unverändert — Markup-Identitäts-Vertrag wie
+ * QiOneBuyBox). Die Campaign-PDP übergibt '#shopq-buybox' (eine Kauflogik
+ * auf der Seite, kein Funnel-Bounce zur SEO-PDP). Hinweis Vorbestand:
+ * '#product' existiert als id auf der PDP nicht (toter Anker) — bleibt dort
+ * unverändert (Byte-Identität), nur die Campaign-Seite bekommt ein echtes Ziel.
+ */
+export default function QiOne2Pro({
+  ctaHref = '/products/qione-2-pro',
+  ctaAnchor = '#product',
+}) {
   return (
     <div className="ProductPageQiOne">
       <LogoBar />
@@ -36,13 +50,13 @@ export default function QiOne2Pro() {
         subheadline={"Navigiere klar und ruhig durch's Leben."}
         parallax={true}
         size={850}
-        link={'/products/qione-2-pro'}
+        link={ctaHref}
         linkStyling={'primary'}
         linkText={'Hole dir jetzt deinen QiOne® 2 Pro'}
       />
       <Gitterchip />
     <RatenzahlungHerobanner
-     link={"#product"} 
+     link={ctaAnchor}
      linkText={"Hole dir jetzt deinen QiOne® 2 Pro"}
      img={"ratenzahlungs-banner.webp?v=1752531325"}
      text={
@@ -80,7 +94,7 @@ export default function QiOne2Pro() {
         size={'normal'}
       />
       <div style={{marginBottom: '50px'}} className="text-center mt-2 NormalSectionSize">
-        <a className="btn--primary m-center" href="/products/qione-2-pro">
+        <a className="btn--primary m-center" href={ctaHref}>
           Hole dir jetzt deinen QiOne® 2 Pro
         </a>
       </div>
@@ -104,7 +118,7 @@ export default function QiOne2Pro() {
             </p>
           </>
         }
-        link={'#product'}
+        link={ctaAnchor}
         linkText={'Hole dir jetzt deinen QiOne® 2 Pro'}
         linkStyle={'primary'}
       />
