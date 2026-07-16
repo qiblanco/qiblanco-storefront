@@ -13,6 +13,11 @@
    aeltere lp-vp-Designsystem, sie definiert die genutzten lp-vp-Klassen selbst).
    Der body:has()-Layer hebt die fremden Gold-Toene (app.css, rd3) auf den EINEN
    Akzent und faerbt Header/Footer/Fremd-Widgets in die Token-Welt.
+
+   KOPPLUNG (2026-07-16): Die Campaign-PDP /pages/qione-2-pro laedt diese Datei
+   als geteilte Token-Quelle (styles/qione-2-pro-shop.css, Scope .lp-a3 .shopq).
+   Aenderungen hier wirken darum kuenftig AUCH auf die Shopseite -> beim Redesign
+   dieser LP die Shopseite MIT-TESTEN (Konzept „Shopseite nach LP" Kap. 8).
    ========================================================================== */
 
 :root {

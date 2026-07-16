@@ -374,8 +374,12 @@ function VideoSection() {
   );
 }
 
-/* ───────── Garantie ───────── */
-function GuaranteeSection() {
+/* ───────── Garantie ─────────
+   T2 (Konzept „Shopseite nach LP"): per reinem `export` freigegeben, damit die
+   Campaign-PDP /pages/qione-2-pro dieselbe Garantie-Sektion reusen kann
+   (Scent-Kontinuität LP↔Shopseite). GuaranteeSection ist self-contained (keine
+   Props/Context) — NULL Markup-/Verhaltens-Delta für LP A durch den Export. */
+export function GuaranteeSection() {
   const items = [
     {
       title: '20 Nächte, dein Alltag',
