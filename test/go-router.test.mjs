@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import {handleGoRequest, ZUTEILUNG_URL} from '../app/lib/go-router.server.js';
+import {baueBasisHit, handleGoRequest, ZUTEILUNG_URL} from '../app/lib/go-router.server.js';
 import {
   kaskadeEntscheiden,
   validiereZuteilung,
@@ -328,4 +328,62 @@ test('LP_PFAD deckt exakt die 4 Konzept-URLs ab (Kap. 3.1)', () => {
 test('DEFAULT_ZUTEILUNG ist in sich konsistent (modus=aus, default=A)', () => {
   assert.equal(DEFAULT_ZUTEILUNG.modus, 'aus');
   assert.equal(DEFAULT_ZUTEILUNG.default, LP_PFAD.A);
+});
+
+// ---- baueBasisHit: serverseitiger cookieloser Basis-Hit fuer /go ----------
+
+function reqMitHeadern(query, headerPairs = {}) {
+  const headers = new Headers();
+  for (const [k, v] of Object.entries(headerPairs)) headers.set(k, v);
+  return new Request(`https://qiblanco.com/go${query}`, {headers});
+}
+
+test('baueBasisHit: ohne PUBLIC_QPX_BASIS_ENDPOINT -> null (Gate wie Browser-Beacon)', () => {
+  assert.equal(baueBasisHit(reqMitHeadern(''), {}), null);
+  assert.equal(baueBasisHit(reqMitHeadern(''), {PUBLIC_QPX_BASIS_ENDPOINT: ''}), null);
+  assert.equal(baueBasisHit(reqMitHeadern(''), undefined), null);
+});
+
+test('baueBasisHit: Payload = Pfad OHNE Query, Plattform-KLASSE statt Klick-ID', () => {
+  const hit = baueBasisHit(
+    reqMitHeadern('?fbclid=abc123XYZ&utm_source=fb'),
+    {PUBLIC_QPX_BASIS_ENDPOINT: 'https://qpx.example/b'},
+  );
+  assert.equal(hit.endpoint, 'https://qpx.example/b');
+  assert.equal(hit.init.method, 'POST');
+  const body = JSON.parse(hit.init.body);
+  assert.equal(body.url, 'https://qiblanco.com/go'); // keine Query im Payload
+  assert.equal(body.platform, 'meta');               // Klasse, nie die ID
+  assert.ok(!hit.init.body.includes('abc123XYZ'));   // Klick-ID verlaesst uns NIE
+});
+
+test('baueBasisHit: reicht Client-UA + oxygen-buyer-ip (als XFF) an den Receiver durch', () => {
+  const hit = baueBasisHit(
+    reqMitHeadern('?gclid=g1', {
+      'User-Agent': 'Mozilla/5.0 (iPhone)',
+      'oxygen-buyer-ip': '198.51.100.7',
+      Referer: 'https://www.google.com/',
+    }),
+    {PUBLIC_QPX_BASIS_ENDPOINT: 'https://qpx.example/b'},
+  );
+  assert.equal(hit.init.headers['User-Agent'], 'Mozilla/5.0 (iPhone)');
+  assert.equal(hit.init.headers['X-Forwarded-For'], '198.51.100.7');
+  assert.equal(hit.init.headers['Content-Type'], 'application/json');
+  const body = JSON.parse(hit.init.body);
+  assert.equal(body.platform, 'google');
+  assert.equal(body.referrer, 'https://www.google.com/');
+});
+
+test('baueBasisHit: ohne UA/IP-Header keine leeren Header-Felder, ohne Klick-ID platform leer', () => {
+  const hit = baueBasisHit(reqMitHeadern('?utm_source=newsletter'), {
+    PUBLIC_QPX_BASIS_ENDPOINT: 'https://qpx.example/b',
+  });
+  assert.ok(!('User-Agent' in hit.init.headers));
+  assert.ok(!('X-Forwarded-For' in hit.init.headers));
+  assert.equal(JSON.parse(hit.init.body).platform, '');
+});
+
+test('baueBasisHit: fail-soft — kaputter Input wirft NIE (Redirect-Schutz)', () => {
+  assert.equal(baueBasisHit(null, {PUBLIC_QPX_BASIS_ENDPOINT: 'https://qpx.example/b'}), null);
+  assert.equal(baueBasisHit({}, {PUBLIC_QPX_BASIS_ENDPOINT: 'https://qpx.example/b'}), null);
 });
