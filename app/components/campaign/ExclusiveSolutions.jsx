@@ -7,6 +7,7 @@ import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 
 /* ════════════════════════════════════════════════════════════
    GELDHELDEN × QI BLANCO — Entwurf aus Figma
@@ -623,6 +624,14 @@ function HRVSection() {
           <span className="lp-vp-hrv-card__sub">biol. HRV-Alter (Kurzzeit-HRV)</span>
         </div>
       </div>
+      {/* Produkt-Demo direkt nach dem Gitterchip-Wirk-Erklaerblock
+          (erklaeren -> zeigen, GL-DES-0009 SHOW IT). IN der Section
+          (LP-Muster Job 20260716-scroll-animationen): erbt die
+          Cormorant-H2-Typo, erzeugt keine neue Sektionsgrenze.
+          BEWUSST ohne dataSection: diese Seite traegt sonst ihren ERSTEN
+          data-section-Anker und der Design-Rubrik-Collector saehe nur noch
+          1 Sektion statt der section-Elemente (Watch-Regression). */}
+      <GitterchipMoleculesScrub />
     </section>
   );
 }
