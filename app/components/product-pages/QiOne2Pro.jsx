@@ -345,7 +345,7 @@ function MassgeschneiderteTechnologie() {
 
 function StressfreiBezahlen(){
     return (
-        <div className="NormalSectionSize" style={{margin: "50px auto 100px auto"}}>
+        <div className="NormalSectionSize" style={{margin: "100px auto 100px auto"}}>
             <h2>Hole dir jetzt deinen QiOne® 2 Pro - flexibel und stressfrei bezahlen!</h2>
             <p>Mit unserer Ratenzahlung kannst du deinen QiOne® 2 Pro bequem in kleinen Beträgen abbezahlen – einfach, flexibel und unkompliziert.</p>
             <p className="mt-3">
