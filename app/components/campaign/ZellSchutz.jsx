@@ -1,5 +1,7 @@
 import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
+import {InfoSlider} from '~/components/index-components/InfoSlider';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {claim} from '~/lib/claims';
@@ -753,6 +755,10 @@ export function ZellSchutz({products}) {
         <SkeptikerSection />
         <div data-section="lp-b-google-reviews">
           <LpGoogleReviews />
+        </div>
+        <InfoSlider dataSection="lp-b-info-slider" />
+        <div className="NormalSectionSize" data-section="lp-b-reputon-reviews">
+          <ReputonWidget />
         </div>
         <VideoSection />
         <AnwendungSection />

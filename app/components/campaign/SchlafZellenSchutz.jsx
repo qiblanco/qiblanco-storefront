@@ -1,5 +1,7 @@
 import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
+import {InfoSlider} from '~/components/index-components/InfoSlider';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
@@ -605,6 +607,10 @@ export function SchlafZellenSchutz({products}) {
         <ScienceSection />
         <div data-section="lp-a-google-reviews">
           <LpGoogleReviews />
+        </div>
+        <InfoSlider dataSection="lp-a-info-slider" />
+        <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
+          <ReputonWidget />
         </div>
         <VideoSection />
         <GuaranteeSection />

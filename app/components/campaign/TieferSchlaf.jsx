@@ -1,5 +1,7 @@
 import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
+import {InfoSlider} from '~/components/index-components/InfoSlider';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
 import {ProduktTrio} from '~/components/redesign/ProduktTrio';
@@ -740,6 +742,10 @@ export function TieferSchlaf({products}) {
         <ExperienceSection />
         <div data-section="lp-ts-google-reviews">
           <LpGoogleReviews />
+        </div>
+        <InfoSlider dataSection="lp-ts-info-slider" />
+        <div className="NormalSectionSize" data-section="lp-ts-reputon-reviews">
+          <ReputonWidget />
         </div>
         <PodcastStimmen
           dataSection="lp-ts-podcast"
