@@ -115,7 +115,7 @@ function Hero() {
             besser stand.
           </p>
           <div className="lp-b-hero__cta-row">
-            <a className="lp-vp-btn lp-vp-btn--primary" href="/products/qione-2-pro">
+            <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
               Jetzt 20 Nächte risikofrei testen
             </a>
             <span className="lp-b-hero__price">
@@ -506,7 +506,7 @@ function AnwendungSection() {
               </li>
             ))}
           </ol>
-          <a className="lp-vp-btn lp-vp-btn--primary" href="/products/qione-2-pro">
+          <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
             Jetzt die 20 Nächte starten
           </a>
         </div>
@@ -721,7 +721,7 @@ function FinalCTA() {
               </div>
             </div>
           )}
-          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/products/qione-2-pro">
+          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/pages/qione-2-pro">
             Jetzt QiOne® 2 Pro sichern
           </a>
           <ul className="lp-vp-final-cta__trust">
