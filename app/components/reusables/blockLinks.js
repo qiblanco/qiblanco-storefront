@@ -5,7 +5,7 @@
  * ZWEI WELTEN, EIN SSoT fuer Produkt-Link-Ziele:
  *
  *   Block LP ('lp', geschlossener Paid-Funnel, alles noindex):
- *     /pages/qione-2-pro, /pages/qibracelet, /pages/qihome (LP-Shopseiten)
+ *     /pages/qione-2-pro, /pages/qibracelet, /pages/qihome-air (LP-Shopseiten)
  *     + Campaign-LPs. Kauf on-page (Buy-Box); Karten-Links NUR zu
  *     Geschwister-LP-Shopseiten — NIE /products, NIE *-details (Leak).
  *
@@ -43,7 +43,7 @@ const PRODUKT_LINKS = {
     },
   },
   'qihome-air': {
-    [BLOCK_LP]: {kauf: '/pages/qihome', detail: '/pages/qihome'},
+    [BLOCK_LP]: {kauf: '/pages/qihome-air', detail: '/pages/qihome-air'},
     [BLOCK_PUBLIC]: {
       kauf: '/products/qihome-air',
       detail: '/pages/qihome-details',
