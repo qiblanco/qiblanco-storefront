@@ -35,7 +35,7 @@ export function HerobannerFeatured({dataSection}){
                     </p>
                     <div className="flex-container flex-row small--flex-column flex-align-start flex-justify-start g-10p mt-2">
                         <Link prefetch="intent" to="/products/qione-2-pro" className="btn--primary">Jetzt kaufen</Link>
-                        <Link prefetch="intent" to="/pages/qione" className="btn--secondary">Mehr erfahren</Link>
+                        <Link prefetch="intent" to="/pages/qione-2-pro-details" className="btn--secondary">Mehr erfahren</Link>
                     </div>
                     <p className="micro-text mt-1"><strong> 20 Tage risikofrei - Jetzt mit 0% Finanzierung & Käuferschutz </strong></p>
                     <img style={{margin: "20px 20px 20px 0"}} width={75} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816" alt="" />

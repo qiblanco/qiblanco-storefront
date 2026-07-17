@@ -9,7 +9,7 @@ import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QIHOME_AIR} from '~/data/product-faqs';
 
 
-export function QiHome() {
+export function QiHome({block = undefined}) {
   return (
     <div className="ProductPageQiHome">
       <LogoBar />
@@ -72,7 +72,7 @@ export function QiHome() {
         </>
         }
       />
-      <UpsellLineUp />
+      <UpsellLineUp block={block} />
       <ProductFAQ items={FAQ_QIHOME_AIR} />
     </div>
   );

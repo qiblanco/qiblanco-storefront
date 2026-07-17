@@ -1,7 +1,15 @@
 import {Link} from 'react-router';
+import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 import {ChevronRight} from 'lucide-react';
 import {useState, useEffect, useRef, useCallback} from 'react';
 
+/*
+ * Zwei-Block-IA (Job 20260717-storefront-ia-zweiblock-umbau): Die Karte
+ * rendert in BEIDEN Welten (PDPs/Homepage/Detailseiten = public,
+ * LP-Shopseiten via QiOne2Pro/Shops = lp). Link-Ziele kommen deshalb
+ * block-abhaengig aus der Kontext-Link-Map (reusables/blockLinks.js);
+ * produktId ist der Map-Schluessel. Default BLOCK_PUBLIC = fail-safe.
+ */
 const ITEMS = [
   {
     image:
@@ -10,8 +18,7 @@ const ITEMS = [
     title: 'QiOne® 2 Pro',
     description:
       'Die effiziente Gitterchip™ -Technologie reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und dem Büro.',
-    detailLink: '/pages/qione',
-    buyLink: '/products/qione-2-pro',
+    produktId: 'qione-2-pro',
   },
   {
     image:
@@ -20,8 +27,7 @@ const ITEMS = [
     title: 'QiBracelet®',
     description:
       'Der elegant integrierte Gitterchip™ optimiert dein Umfeld und reduziert die Auswirkungen von E-Smog und 5G, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
-    detailLink: '/pages/qibracelet',
-    buyLink: '/products/qibracelet',
+    produktId: 'qibracelet',
   },
   {
     image:
@@ -30,12 +36,11 @@ const ITEMS = [
     title: 'QiHome® Air',
     description:
       'Der leistungsstärkste Gitterchip™ in unserem Sortiment schafft ein produktives Umfeld in deinem Zuhause und Büro, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
-    detailLink: '/pages/qihome',
-    buyLink: '/products/qihome-air',
+    produktId: 'qihome-air',
   },
 ];
 
-export function UpsellLineUp({dataSection}) {
+export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const startX = useRef(0);
@@ -107,14 +112,14 @@ export function UpsellLineUp({dataSection}) {
               <Link
                 prefetch="render"
                 className="mt-1 UpsellLink"
-                to={item.detailLink}
+                to={produktLink(item.produktId, block, 'detail')}
               >
                 Mehr erfahren <ChevronRight size={20} />
               </Link>
               <Link
                 prefetch="render"
                 className="mt-1 UpsellLink"
-                to={item.buyLink}
+                to={produktLink(item.produktId, block, 'kauf')}
               >
                 Jetzt kaufen <ChevronRight size={20} />
               </Link>

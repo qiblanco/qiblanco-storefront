@@ -622,7 +622,11 @@ function ProdukteSection() {
   const {data} = useLp();
   return (
     <div className="lp-ts2-produkte">
-      <ProduktTrio dataSection="lp-ts-produkte" products={data.products} />
+      <ProduktTrio
+        dataSection="lp-ts-produkte"
+        products={data.products}
+        block="lp"
+      />
       <p className="lp-vp-pricing__fineprint">
         Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna ·
         kostenloser Versand · Käuferschutz

@@ -1009,21 +1009,21 @@ function CacaoProductUpsell() {
       subtitle: 'Kohärentes Wasser für deinen Alltag.',
       image: file('2xQiOne_2_Pro_Product_Only.png'),
       href: '/products/qione-2-pro',
-      detailHref: '/pages/qione',
+      detailHref: '/pages/qione-2-pro-details',
     },
     {
       title: 'QiBracelet®',
       subtitle: 'Trage dein kohärentes Feld direkt am Körper.',
       image: file('QiBracelet_Pro_Product_Only.png'),
       href: '/products/qibracelet',
-      detailHref: '/pages/qibracelet',
+      detailHref: '/pages/qibracelet-details',
     },
     {
       title: 'QiHome® Air',
       subtitle: 'Harmonisiere dein Zuhause und dein Umfeld.',
       image: file('QiHome_Product_Only.png'),
       href: '/products/qihome-air',
-      detailHref: '/pages/qihome',
+      detailHref: '/pages/qihome-details',
     },
   ];
 

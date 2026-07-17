@@ -161,8 +161,6 @@ export const PRODUKT_TRIO = [
     bild:
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha_1.webp?v=1667284638',
     alt: 'QiBracelet®',
-    linkKauf: '/products/qibracelet',
-    linkDetail: '/pages/qibracelet',
     bestseller: false,
   },
   {
@@ -173,8 +171,6 @@ export const PRODUKT_TRIO = [
     bild:
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476',
     alt: 'QiOne® 2 Pro',
-    linkKauf: '/products/qione-2-pro',
-    linkDetail: '/pages/qione',
     bestseller: true,
   },
   {
@@ -185,8 +181,6 @@ export const PRODUKT_TRIO = [
     bild:
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp?v=1669000329',
     alt: 'QiHome® Air',
-    linkKauf: '/products/qihome-air',
-    linkDetail: '/pages/qihome',
     bestseller: false,
   },
 ];
