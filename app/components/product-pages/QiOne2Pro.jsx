@@ -12,6 +12,7 @@ import {FAQ_QIONE_2_PRO} from '~/data/product-faqs';
 import {YoutubeIframe} from '../reusables/YoutubeIframe';
 import {Gitterchip} from '../reusables/Gitterchip';
 import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
+import {StudienCards} from './StudienCards';
 
 /*
  * Kompletter PDP-Inhalt unterhalb der Buy-Box. Seit 2026-07-16 auch von der
@@ -85,7 +86,7 @@ export default function QiOne2Pro({
       <h2 className="text-center">Gründerinterview zum QiOne® 2 Pro</h2>
       <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} />
     </div>
-      <Studien headline={'Wirkung an menschlichen Zellen bestätigt!'} />
+      <StudienCards />
       <ScrollMikroskopVideo />
       <div className="NormalSectionSize text-center">
         <h2>
