@@ -112,7 +112,7 @@ export function QiBraceletShop({product}) {
         }}
       />
     </div>
-      <QiBracelet />
+      <QiBracelet block="lp" />
     </>
   );
 }
