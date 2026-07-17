@@ -41,6 +41,7 @@ export default function QiOne2Pro({
 }) {
   return (
     <div className="ProductPageQiOne">
+      <style>{`.ProductPageQiOne .LogoBar{margin-top:30px;}`}</style>
       <LogoBar />
       <OneTimeInvestment />
       <MainFeatures />
@@ -82,7 +83,7 @@ export default function QiOne2Pro({
      paypal={true}
      klarna={true}
      />
-		<div className="NormalSectionSize" style={{marginBottom: "100px"}}>
+		<div className="NormalSectionSize" style={{marginTop: "100px", marginBottom: "100px"}}>
       <h2 className="text-center">Gründerinterview zum QiOne® 2 Pro</h2>
       <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} />
     </div>

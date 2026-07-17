@@ -53,13 +53,14 @@ const STUDIEN_CSS = `
 .qione-studien-cards .ghx-studie__preview { display: block; }
 .qione-studien-cards .ghx-studie__preview img { width: 100%; height: auto; border-radius: 10px; display: block; }
 .qione-studien-cards .ghx-studie__source { margin: 0; margin-top: auto; font-size: 0.88rem; color: rgb(90, 90, 90); text-align: left; }
-.qione-studien-cards .ghx-studien__nav { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+.qione-studien-cards .ghx-studien__nav { display: flex; gap: 10px; justify-content: center; margin-top: 28px; }
 .qione-studien-cards .ghx-studien__arrow {
   width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(28, 25, 23, 0.15);
   background: #fff; cursor: pointer; font-size: 1.1rem; line-height: 1;
 }
 .qione-studien-cards .ghx-studien__arrow:hover { background: #f5f5f4; }
-.qione-studien-cards .ghx-studien__footnote { text-align: center; margin: 18px 0 10px; }
+.qione-studien-cards .ghx-studien__footnote { text-align: center; margin: 30px 0 22px; }
+.qione-studien-cards .btn--secondary { margin-top: 14px; }
 `;
 
 export function StudienCards({headline = 'Wirkung an menschlichen Zellen bestätigt!'}) {
