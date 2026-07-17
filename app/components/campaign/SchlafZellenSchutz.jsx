@@ -6,6 +6,7 @@ import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {THEMEN} from '~/lib/redesign3themen';
+import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 /*
  * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
@@ -493,7 +494,7 @@ function PricingSection() {
             </ul>
             <a
               className={`lp-vp-btn ${c.featured ? 'lp-vp-btn--primary' : 'lp-vp-btn--secondary'} lp-a-product__cta`}
-              href={c.featured ? '/pages/qione-2-pro' : `/products/${c.handle}`}
+              href={produktLink(c.handle, BLOCK_LP, c.featured ? 'kauf' : 'detail')}
             >
               {c.featured ? 'Jetzt risikofrei testen' : 'Mehr erfahren'}
             </a>
