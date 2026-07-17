@@ -1,83 +1,34 @@
-import {useLoaderData} from 'react-router';
-import {QiHomeLanding} from '~/components/index-components/detailseiten/QiHomeLanding';
-import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {redirect} from '@shopify/remix-oxygen';
 
-/**
- * @type {MetaFunction<typeof loader>}
+/*
+ * /pages/qihome — permanenter 301 auf /pages/qihome-details
+ * (IA-Umbau Zwei-Block-Struktur, Job 20260717-storefront-ia-zweiblock-umbau;
+ * Christian-Praezisierung im GO 2026-07-17: die neue LP-Shopseite traegt
+ * "Air" -> /pages/qihome-air, diese URL hier zieht auf -details um).
+ *
+ * Der bisherige Content (Detail-LP detailseiten/QiHomeLanding) lebt unter
+ * /pages/qihome-details weiter.
+ *
+ * WARUM CODE-ROUTE STATT SHOPIFY-ADMIN-REDIRECT: storefrontRedirect
+ * (server.js) greift NUR bei 404. Ohne diese Code-Route uebernaehme
+ * pages.$handle.jsx — der rendert bei existierender CMS-Seite "qihome" den
+ * Alt-Content und wirft bei fehlender CMS-Seite redirect('/') statt 404.
+ * Ein Admin-Redirect wuerde fuer /pages/* also NIE feuern; der 301 muss
+ * hier im Code liegen. Query-String bleibt erhalten (Klick-IDs ueberleben).
+ *
+ * Rollback: git revert dieses Commits stellt die alte Detail-LP-Route wieder her.
  */
-export const meta = ({data}) => {
-  return [
-    {title: `QiHome® Air | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/pages/qihome`,
-    },
-  ];
-};
-
-/**
- * @param {LoaderFunctionArgs} args
- */
-export async function loader(args) {
-  const deferredData = loadDeferredData(args);
-  const criticalData = await loadCriticalData(args, 'qihome');
-  return {...deferredData, ...criticalData};
-}
 
 /**
  * @param {LoaderFunctionArgs} args
- * @param {string} handle
  */
-async function loadCriticalData({context, request}, handle) {
-  const [{page}] = await Promise.all([
-    context.storefront.query(PAGE_QUERY, {
-      variables: {handle},
-    }),
-  ]);
-
-  if (!page) {
-    throw new Response('Not Found', {status: 404});
-  }
-
-  redirectIfHandleIsLocalized(request, {handle, data: page});
-
-  return {page};
+export async function loader({request}) {
+  const url = new URL(request.url);
+  throw redirect(`/pages/qihome-details${url.search}`, 301);
 }
 
-function loadDeferredData({context}) {
-  return {};
+export default function QiHomeRedirect() {
+  return null;
 }
-
-export default function QiHomePage() {
-  const {page} = useLoaderData();
-
-  return (
-    <>
-      <QiHomeLanding />
-    </>
-  );
-}
-
-const PAGE_QUERY = `#graphql
-  query Page(
-    $language: LanguageCode,
-    $country: CountryCode,
-    $handle: String!
-  )
-  @inContext(language: $language, country: $country) {
-    page(handle: $handle) {
-      handle
-      id
-      title
-      body
-      seo {
-        description
-        title
-      }
-    }
-  }
-`;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
-/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
