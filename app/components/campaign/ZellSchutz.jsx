@@ -641,7 +641,7 @@ function PricingSection() {
             </ul>
             <a
               className={`lp-vp-btn ${c.featured ? 'lp-vp-btn--primary' : 'lp-vp-btn--secondary'} lp-b-product__cta`}
-              href={`/products/${c.handle}`}
+              href={c.featured ? '/pages/qione-2-pro' : `/products/${c.handle}`}
             >
               {c.featured ? 'Jetzt risikofrei testen' : 'Mehr erfahren'}
             </a>
