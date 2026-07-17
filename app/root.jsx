@@ -201,7 +201,6 @@ export function Layout({children}) {
               defer
               suppressHydrationWarning
             />
-            <script src="/hotjar.js" nonce={nonce} defer suppressHydrationWarning />
             <script
               src="/qiblanco-tracker.js"
               nonce={nonce}
