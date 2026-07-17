@@ -67,6 +67,7 @@ export default function QiOne2Pro({
         linkStyling={'primary'}
         linkText={'Hole dir jetzt deinen QiOne® 2 Pro'}
       />
+		<StressfreiBezahlen />
     <RatenzahlungHerobanner
      link={ctaAnchor}
      linkText={"Hole dir jetzt deinen QiOne® 2 Pro"}
@@ -80,7 +81,6 @@ export default function QiOne2Pro({
      paypal={true}
      klarna={true}
      />
-		<StressfreiBezahlen />
 		<div className="NormalSectionSize" style={{marginBottom: "100px"}}>
       <h2 className="text-center">Gründerinterview zum QiOne® 2 Pro</h2>
       <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} />
