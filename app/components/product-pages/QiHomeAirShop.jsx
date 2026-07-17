@@ -111,7 +111,7 @@ export function QiHomeAirShop({product}) {
         }}
       />
     </div>
-      <QiHome />
+      <QiHome block="lp" />
     </>
   );
 }
