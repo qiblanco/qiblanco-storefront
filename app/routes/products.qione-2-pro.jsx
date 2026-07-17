@@ -4,6 +4,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuyBox';
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -96,7 +97,14 @@ export default function Product() {
         priceLabel={<div className="BestsellerLabel">Bestseller Angebot</div>}
         benefitList={<QiOneBenefitList />}
       />
-      <QiOne2Pro />
+      {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
+          von Christian 2026-07-17 ausdruecklich fuer die organische PDP
+          freigegeben (Job 20260717-gitterchip-animation-3seiten-rollout).
+          Aktivierung bewusst HIER in der Route (explizit wie die Campaign-
+          PDP), QiOne2Pro-Default bleibt null. BEWUSST ohne dataSection:
+          die PDP traegt sonst ihren ERSTEN data-section-Anker und der
+          Design-Rubrik-Collector saehe nur noch 1 Sektion (Watch-Regression). */}
+      <QiOne2Pro gitterchipAnimation={<GitterchipMoleculesScrub />} />
     </>
   );
 }
