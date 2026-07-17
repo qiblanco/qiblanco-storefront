@@ -59,7 +59,7 @@ export default function QiOne2Pro({
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
         }
-        headline={'Dein QiOne® 2 Pro sorgt für dich Tag und Nacht.'}
+        headline={<>Dein QiOne® 2 Pro sorgt für dich<br />Tag und Nacht.</>}
         subheadline={"Navigiere klar und ruhig durch's Leben."}
         parallax={true}
         size={850}
