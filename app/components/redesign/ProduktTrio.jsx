@@ -1,4 +1,5 @@
 import {PRODUKT_TRIO, PRODUKT_TRIO_TITEL} from '~/lib/redesign3themen';
+import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 
 const VAT = 1.19;
 
@@ -30,7 +31,14 @@ const fmtBrutto = (amount) => {
  *
  * @param {{dataSection?: string, products?: Array}} props
  */
-export function ProduktTrio({dataSection, products}) {
+/*
+ * Zwei-Block-IA (Job 20260717-storefront-ia-zweiblock-umbau): Link-Ziele
+ * block-abhaengig aus der Kontext-Link-Map (Karte rendert im LP-Block auf
+ * TieferSchlaf und kuenftig public auf der Homepage); die statischen
+ * Datenfelder linkKauf/linkDetail in PRODUKT_TRIO sind damit abgeloest.
+ * Default BLOCK_PUBLIC = fail-safe.
+ */
+export function ProduktTrio({dataSection, products, block = BLOCK_PUBLIC}) {
   const preisVon = (handle) => {
     if (!products || !products.length) return null;
     const p = products.find((x) => x?.handle === handle);
@@ -65,11 +73,11 @@ export function ProduktTrio({dataSection, products}) {
               <div className="rd3-trio__links">
                 <a
                   className="btn--primary rd3-trio__kauf"
-                  href={produkt.linkKauf}
+                  href={produktLink(produkt.handle, block, 'kauf')}
                 >
                   Jetzt kaufen
                 </a>
-                <a className="rd3-trio__detail" href={produkt.linkDetail}>
+                <a className="rd3-trio__detail" href={produktLink(produkt.handle, block, 'detail')}>
                   Mehr erfahren
                 </a>
               </div>

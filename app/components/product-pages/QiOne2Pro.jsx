@@ -32,6 +32,7 @@ import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
  * danach (Startseiten-Trust 1:1; Slider-REUSE statt Zweitinstanz, D-045).
  */
 export default function QiOne2Pro({
+  block = undefined,
   ctaHref = '/products/qione-2-pro',
   ctaAnchor = '#product',
   gitterchipAnimation = null,
@@ -181,7 +182,7 @@ export default function QiOne2Pro({
         </h2>
         <YoutubeIframe link={'https://www.youtube.com/embed/ugzSE3UXno4'} />
       </div>
-      <UpsellLineUp />
+      <UpsellLineUp block={block} />
       <ProductFAQ items={FAQ_QIONE_2_PRO} />
     </div>
   );

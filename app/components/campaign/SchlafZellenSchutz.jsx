@@ -601,7 +601,7 @@ export function SchlafZellenSchutz({products}) {
     <LiveDataCtx.Provider value={{data}}>
       <div className="lp-vp lp-a3">
         <Hero />
-        <DreiThemenBand dataSection="lp-a-drei-themen" />
+        <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
         <IntroSection />
         <MechanismSection />
         <ScienceSection />

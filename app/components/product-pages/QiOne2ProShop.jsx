@@ -71,11 +71,12 @@ export function QiOne2ProShop({product}) {
         />
       </section>
       {/* Scent-Anker der 4 LP-Herkünfte (global gestylt, shop-kompatibel) */}
-      <DreiThemenBand dataSection="shopq-drei-themen" />
+      <DreiThemenBand dataSection="shopq-drei-themen" block="lp" />
       {/* Trust-Elemente 1:1 aus der Startseite (Job 20260717-trust-elemente):
           Einzel-Bewertungen VOR dem bestehenden InfoSlider, Reputon-Widget
           danach — Slider-REUSE via Slots statt Zweitinstanz (D-045). */}
       <QiOne2Pro
+        block="lp"
         ctaHref="#shopq-buybox"
         ctaAnchor="#shopq-buybox"
         gitterchipAnimation={
