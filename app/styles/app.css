@@ -4124,3 +4124,154 @@ ul.kakao-children li {
     padding: 0 !important;
     border: 0 !important;
 }
+
+/* ============================================================================
+   ScrollScrubVideo — generalisierte Scroll-Down-Animation (2026-07-17).
+   Spiegel des bewaehrten .ScrollMikroskopvideo-Blocks, parametrisiert ueber
+   CSS-Variablen (--ssv-hoehe-*) und mit Full-Bleed-Breakout, damit die
+   Komponente auch INNERHALB gepaddeter LP-Sektionen viewport-breit laeuft.
+   Doku: homepage-bauer/SKILL-SCROLL-ANIMATIONEN.md
+   ========================================================================== */
+.ScrollScrubVideoBlock {
+  width: 100vw;
+  margin: 100px 0 100px calc(50% - 50vw);
+}
+.ScrollScrubVideo {
+  height: var(--ssv-hoehe-desktop, 500vh);
+  position: relative;
+  background: rgb(8, 9, 24);
+  z-index: 10000;
+}
+.ScrollScrubVideo .VideoOverlay {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+.ScrollScrubVideo video {
+  width: auto !important;
+  min-width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  aspect-ratio: 16/9;
+}
+.ScrollScrubVideo .VideoOverlay .VideoProgressTrackerWrapper {
+  width: 90%;
+  max-width: 750px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.ScrollScrubVideo
+  .VideoOverlay
+  .VideoProgressTrackerWrapper
+  .VideoProgressTracker {
+  height: 100%;
+  background: var(--color-light);
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-Start {
+  position: absolute;
+  top: 50%;
+  left: 50px;
+  max-width: 500px;
+  transform: translateY(-50%);
+  transition: 0.3s opacity linear;
+  z-index: 1;
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-Start h2 {
+  font-size: 2.5rem;
+  color: var(--color-light);
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-Start p {
+  font-size: 1.5rem;
+  color: var(--color-light);
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-End {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 0 12px;
+  transition: 0.3s opacity linear;
+  z-index: 1;
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-End div:not(.content) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  text-align: center;
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-End div.content {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  max-width: 620px;
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-End div h2,
+.ScrollScrubVideo .VideoOverlay .TextContent-End div p {
+  color: var(--color-light);
+  margin-bottom: 0;
+}
+.ScrollScrubVideo .VideoOverlay .TextContent-End div p {
+  font-size: 0.9em;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+.ScrollScrubVideo-fussnote {
+  margin: -70px auto 100px;
+  padding: 0 24px;
+  max-width: 680px;
+  text-align: center;
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+@media screen and (max-width: 749px) {
+  .ScrollScrubVideo {
+    height: var(--ssv-hoehe-mobil, 400vh);
+  }
+  .ScrollScrubVideo video {
+    width: auto !important;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    object-fit: cover;
+    aspect-ratio: auto;
+  }
+  .ScrollScrubVideo .VideoOverlay .TextContent-End div:not(.content) {
+    justify-content: flex-start;
+    padding: 50px 0;
+  }
+  .ScrollScrubVideo .VideoOverlay .TextContent-End > div:nth-child(2) {
+    justify-content: flex-end;
+  }
+  .ScrollScrubVideo .VideoOverlay .VideoProgressTrackerWrapper {
+    width: 100%;
+    bottom: 0;
+  }
+  .ScrollScrubVideo .VideoOverlay .TextContent-Start {
+    top: 40px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100%;
+    text-align: center;
+    padding: 0 16px;
+  }
+  .ScrollScrubVideo .VideoOverlay .TextContent-Start h2 {
+    font-size: 2rem;
+  }
+  .ScrollScrubVideo .VideoOverlay .TextContent-Start p {
+    font-size: 1.25rem;
+  }
+}

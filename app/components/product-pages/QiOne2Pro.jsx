@@ -23,10 +23,14 @@ import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
  * auf der Seite, kein Funnel-Bounce zur SEO-PDP). Hinweis Vorbestand:
  * '#product' existiert als id auf der PDP nicht (toter Anker) — bleibt dort
  * unverändert (Byte-Identität), nur die Campaign-Seite bekommt ein echtes Ziel.
+ * gitterchipAnimation (Default null = organische PDP unverändert): optionaler
+ * Scroll-Scrub-Block direkt nach dem Gitterchip-Erklärblock — die Campaign-PDP
+ * übergibt hier die GitterChip-Molecules-Animation (ScrollScrubVideo).
  */
 export default function QiOne2Pro({
   ctaHref = '/products/qione-2-pro',
   ctaAnchor = '#product',
+  gitterchipAnimation = null,
 }) {
   return (
     <div className="ProductPageQiOne">
@@ -42,6 +46,7 @@ export default function QiOne2Pro({
         }
       />
       <Gitterchip />
+      {gitterchipAnimation}
       <HeroBannerParallax
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'

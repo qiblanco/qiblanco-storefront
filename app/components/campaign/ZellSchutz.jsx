@@ -1,6 +1,7 @@
 import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
+import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {claim} from '~/lib/claims';
 
 /*
@@ -315,26 +316,29 @@ function ScienceSection() {
           </div>
         ))}
       </div>
-      <div className="lp-b-mikroskop">
-        <div className="lp-b-mikroskop__seite">
-          <span className="lp-b-mikroskop__label">Ohne GitterChip™</span>
-          <p className="lp-b-mikroskop__wert">
-            Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr
-            oxidative Belastung.
-          </p>
-        </div>
-        <div className="lp-b-mikroskop__seite lp-b-mikroskop__seite--gitter">
-          <span className="lp-b-mikroskop__label">Mit GitterChip™</span>
-          <p className="lp-b-mikroskop__wert">
-            Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht
-            (TEER-Messung, in vitro).
-          </p>
-        </div>
-        <p className="lp-b-mikroskop__fuss">
-          Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine
-          Heilaussage.
-        </p>
-      </div>
+      {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
+          Karte, gleiche Botschaften — Job 20260716-bauer-scroll-down-
+          animationen-capability; SHOW IT statt Behauptung) */}
+      <ScrollScrubVideo
+        dataSection="lp-b-mikroskop-video"
+        srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
+        srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
+        overlayStart={{
+          titel: 'Zellbiologisch geprüft',
+          text: 'Entdecke die Effekte auf Zellebene.',
+        }}
+        overlayEnd={[
+          {
+            titel: 'Ohne GitterChip™',
+            text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
+          },
+          {
+            titel: 'Mit GitterChip™',
+            text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
+          },
+        ]}
+        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
+      />
       <LpStudien headline="" />
     </section>
   );

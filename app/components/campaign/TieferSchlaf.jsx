@@ -3,6 +3,7 @@ import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/Go
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
 import {ProduktTrio} from '~/components/redesign/ProduktTrio';
+import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {VIDEOS} from '~/lib/redesign3themen';
 
 /*
@@ -23,9 +24,11 @@ import {VIDEOS} from '~/lib/redesign3themen';
  * (design-meister web-brief -> Token-Bau tiefer-schlaf.css -> design-rubrik
  * iterieren >= 80). Inhalte (Texte/Claims/Beweise) sind unveraendert v2;
  * geaendert ist NUR die Praesentation: ein Token-System, ruhige Akte,
- * kein Scroll-Jacking (ScrollMikroskopVideo raus -> typografische
- * Mikroskop-Karte), stille YouTube-Poster statt Iframe-Chrome, EIN
- * Review-Block (Reputon-Duplikat raus).
+ * stille YouTube-Poster statt Iframe-Chrome, EIN Review-Block
+ * (Reputon-Duplikat raus). NACHTRAG 2026-07-17: der v3-Entscheid „kein
+ * Scroll-Jacking" (Mikroskop-Video -> typografische Karte) wurde per
+ * explizitem Auftrag zurueckgenommen — der Mikroskop-Beweis laeuft wieder
+ * als Scroll-Scrub-Video (ScrollScrubVideo, Texte der Karte 1:1).
  *
  * Vorheriger Stand (v2-Kommentar, Historie):
  *
@@ -347,35 +350,32 @@ function ScienceSection() {
           </div>
         ))}
       </div>
-      <MikroskopKarte />
+      {/* Mikroskop-Beweis als Scroll-Scrub-Video: ersetzt die typografische
+          MikroskopKarte (v3-Entscheid „kein Scroll-Jacking" bewusst durch
+          expliziten Auftrag ueberschrieben, Job 20260716-bauer-scroll-down-
+          animationen-capability — Texte der Karte 1:1 uebernommen). */}
+      <ScrollScrubVideo
+        dataSection="lp-ts-mikroskop-video"
+        srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
+        srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
+        overlayStart={{
+          titel: 'Zellbiologisch geprüft',
+          text: 'Entdecke die Effekte auf Zellebene.',
+        }}
+        overlayEnd={[
+          {
+            titel: 'Ohne Schutz',
+            text: 'Zellkulturen unter E-Smog-Belastung: sichtbar reduzierte Regeneration.',
+          },
+          {
+            titel: 'Gitterchip™',
+            text: 'Deutlich gesteigerte Zellregeneration, trotz starkem E-Smog Einfluss.',
+          },
+        ]}
+        fussnote="Zellbiologisch geprüft — die Effekte auf Zellebene, unter dem Mikroskop dokumentiert (in vitro)."
+      />
       <LpStudien headline="" />
     </section>
-  );
-}
-
-/* ───────── Mikroskop-Vergleich (typografisch; Texte = ScrollMikroskopVideo-
-   Overlay der Homepage — dort lebt weiter die Video-Fassung) ───────── */
-function MikroskopKarte() {
-  return (
-    <div className="lp-ts3-mikroskop" role="group" aria-label="Zellbiologisch geprüft">
-      <div className="lp-ts3-mikroskop__seite">
-        <span className="lp-ts3-mikroskop__label">Ohne Schutz</span>
-        <p className="lp-ts3-mikroskop__wert">
-          Zellkulturen unter E-Smog-Belastung: sichtbar reduzierte Regeneration.
-        </p>
-      </div>
-      <div className="lp-ts3-mikroskop__seite lp-ts3-mikroskop__seite--gitter">
-        <span className="lp-ts3-mikroskop__label">Gitterchip™</span>
-        <p className="lp-ts3-mikroskop__wert">
-          Deutlich gesteigerte Zellregeneration, trotz starkem E-Smog Einfluss.
-        </p>
-      </div>
-      <p className="lp-ts3-mikroskop__fuss">
-        Zellbiologisch geprüft — die Effekte auf Zellebene, unter dem Mikroskop
-        dokumentiert (in vitro). Das vollständige Mikroskop-Video läuft auf der
-        Startseite.
-      </p>
-    </div>
   );
 }
 
