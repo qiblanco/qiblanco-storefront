@@ -41,7 +41,7 @@ export const meta = ({data}) => {
     HIDDEN_BUNDLE_PRODUCT_HANDLES.has(data.product.handle)
   ) {
     return [
-      {title: `${data.product.title ?? ''} | Qi Blanco UG (haftungsbeschrÃ¤nkt)`},
+      {title: `${data.product.title ?? ''} | Qi Blanco UG (haftungsbeschr\u00e4nkt)`},
       {name: 'robots', content: 'noindex,nofollow'},
     ];
   }

@@ -88,13 +88,13 @@ export function QiOne2ProShop({product}) {
               srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
               srcMobile={GITTERCHIP_VIDEO_MOBILE}
               overlayStart={{
-                titel: 'Der GitterChipâ„¢ in Aktion',
-                text: 'Scrolle: der Blick ins Innere des QiOneÂ® 2 Pro.',
+                titel: 'Der GitterChip\u2122 in Aktion',
+                text: 'Scrolle: der Blick ins Innere des QiOne\u00ae 2 Pro.',
               }}
               overlayEnd={[
                 {
-                  titel: 'KohÃ¤rente Ordnung',
-                  text: 'Der GitterChipâ„¢ hilft WassermolekÃ¼len, in den kohÃ¤renten, geordneten Zustand Ã¼berzugehen.',
+                  titel: 'Koh\u00e4rente Ordnung',
+                  text: 'Der GitterChip\u2122 hilft Wassermolek\u00fclen, in den koh\u00e4renten, geordneten Zustand \u00fcberzugehen.',
                 },
               ]}
             />
