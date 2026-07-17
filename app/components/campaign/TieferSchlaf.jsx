@@ -7,6 +7,7 @@ import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
 import {ProduktTrio} from '~/components/redesign/ProduktTrio';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {VIDEOS} from '~/lib/redesign3themen';
+import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 /*
  * Landingpage /pages/tiefer-schlaf — DESIGN v3 „Die ruhige Nacht" + C-REFOKUS
@@ -560,7 +561,7 @@ function SchlafraumSection() {
           </p>
           <a
             className="lp-vp-btn lp-vp-btn--secondary"
-            href="/products/qihome-air"
+            href={produktLink('qihome-air', BLOCK_LP, 'detail')}
           >
             QiHome® Air entdecken{priceOf(qihome) ? ` — ab ${priceOf(qihome)}` : ''}
           </a>

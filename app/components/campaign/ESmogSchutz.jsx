@@ -4,6 +4,7 @@ import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 /*
  * Landingpage /pages/E-Smog-Schutz — E-SMOG „Die unsichtbare Dauerbelastung,
@@ -673,7 +674,7 @@ function PricingSection() {
             </ul>
             <a
               className={`lp-vp-btn ${c.featured ? 'lp-vp-btn--primary' : 'lp-vp-btn--secondary'} lp-d-product__cta`}
-              href={c.featured ? '/pages/qione-2-pro' : `/products/${c.handle}`}
+              href={produktLink(c.handle, BLOCK_LP, c.featured ? 'kauf' : 'detail')}
             >
               {c.featured ? 'Jetzt risikofrei testen' : 'Mehr erfahren'}
             </a>
