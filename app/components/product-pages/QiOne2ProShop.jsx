@@ -8,6 +8,10 @@ import {
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+
+const GITTERCHIP_VIDEO_DESKTOP = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/gitterchip-molecules-desktop-16x9.mp4?v=1784313940';
+const GITTERCHIP_VIDEO_MOBILE = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/gitterchip-molecules-mobile-9x16.mp4?v=1784313946';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — die kaufbereite Fortsetzung der Paid-
@@ -77,6 +81,25 @@ export function QiOne2ProShop({product}) {
       <QiOne2Pro
         ctaHref="#shopq-buybox"
         ctaAnchor="#shopq-buybox"
+        gitterchipAnimation={
+          GITTERCHIP_VIDEO_DESKTOP && GITTERCHIP_VIDEO_MOBILE ? (
+            <ScrollScrubVideo
+              dataSection="shopq-gitterchip-video"
+              srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
+              srcMobile={GITTERCHIP_VIDEO_MOBILE}
+              overlayStart={{
+                titel: 'Der GitterChipâ„¢ in Aktion',
+                text: 'Scrolle: der Blick ins Innere des QiOneÂ® 2 Pro.',
+              }}
+              overlayEnd={[
+                {
+                  titel: 'KohÃ¤rente Ordnung',
+                  text: 'Der GitterChipâ„¢ hilft WassermolekÃ¼len, in den kohÃ¤renten, geordneten Zustand Ã¼berzugehen.',
+                },
+              ]}
+            />
+          ) : null
+        }
         trustVorSlider={<GoogleReviews dataSection="shopq-google-reviews" />}
         trustNachSlider={
           <div
