@@ -5,6 +5,7 @@ import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
+import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 const LiveDataCtx = createContext({data: {products: []}});
 const useLp = () => useContext(LiveDataCtx);
@@ -265,7 +266,7 @@ function PricingSection() {
               <li>✓  Reduziert E-Smog & 5G</li>
               <li>✓  Wohlbefinden & Klarheit für unterwegs</li>
             </ul>
-            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href="/products/qibracelet" style={{textAlign:'center'}}>Mehr erfahren</a>
+            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href={produktLink('qibracelet', BLOCK_LP, 'detail')} style={{textAlign:'center'}}>Mehr erfahren</a>
           </article>
 
           {/* QiOne 2 Pro – featured */}
@@ -310,7 +311,7 @@ function PricingSection() {
               <li>✓  Produktives Arbeitsumfeld</li>
               <li>✓  Ideal für Familien</li>
             </ul>
-            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href="/products/qihome-air" style={{textAlign:'center'}}>Mehr erfahren</a>
+            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href={produktLink('qihome-air', BLOCK_LP, 'detail')} style={{textAlign:'center'}}>Mehr erfahren</a>
           </article>
         </div>
         <p className="lp-vp-pricing__fineprint">

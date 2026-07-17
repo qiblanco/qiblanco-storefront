@@ -5,6 +5,7 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {claim} from '~/lib/claims';
+import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 /*
  * Landingpage /pages/zell-schutz — ZELLSCHUTZ „Der Zellversuch als Held".
@@ -641,7 +642,7 @@ function PricingSection() {
             </ul>
             <a
               className={`lp-vp-btn ${c.featured ? 'lp-vp-btn--primary' : 'lp-vp-btn--secondary'} lp-b-product__cta`}
-              href={c.featured ? '/pages/qione-2-pro' : `/products/${c.handle}`}
+              href={produktLink(c.handle, BLOCK_LP, c.featured ? 'kauf' : 'detail')}
             >
               {c.featured ? 'Jetzt risikofrei testen' : 'Mehr erfahren'}
             </a>
