@@ -1,95 +1,33 @@
-import {useLoaderData} from 'react-router';
-import { QiOne } from '~/components/index-components/detailseiten/QiOne';
-import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {redirect} from '@shopify/remix-oxygen';
 
-/**
- * @type {MetaFunction<typeof loader>}
+/*
+ * /pages/qione — permanenter 301 auf /pages/qione-2-pro-details
+ * (IA-Umbau Zwei-Block-Struktur, Job 20260717-storefront-ia-zweiblock-umbau).
+ *
+ * Der bisherige Content (Detail-LP detailseiten/QiOne) lebt unter
+ * /pages/qione-2-pro-details weiter; der Name "qione" traf als einziger das
+ * Produkt (qione-2-pro) nicht.
+ *
+ * WARUM CODE-ROUTE STATT SHOPIFY-ADMIN-REDIRECT: storefrontRedirect
+ * (server.js) greift NUR bei 404. Ohne diese Code-Route uebernaehme
+ * pages.$handle.jsx — der rendert bei existierender CMS-Seite "qione" den
+ * Alt-Content und wirft bei fehlender CMS-Seite redirect('/') statt 404.
+ * Ein Admin-Redirect wuerde fuer /pages/* also NIE feuern; der 301 muss
+ * hier im Code liegen. Query-String bleibt erhalten (Klick-IDs ueberleben).
+ *
+ * Rollback: git revert dieses Commits stellt die alte Detail-LP-Route wieder her.
  */
-export const meta = ({data}) => {
-  return [
-    {title: `Hydrogen | ${data?.page.title ?? ''}`},
-    {
-      rel: 'canonical',
-      href: `/pages/qione`,
-    },
-  ];
-};
 
 /**
  * @param {LoaderFunctionArgs} args
  */
-export async function loader(args) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args, 'qione'); // ✅ Static handle
-
-  return {...deferredData, ...criticalData};
+export async function loader({request}) {
+  const url = new URL(request.url);
+  throw redirect(`/pages/qione-2-pro-details${url.search}`, 301);
 }
 
-/**
- * Load data necessary for rendering content above the fold.
- * @param {LoaderFunctionArgs} args
- * @param {string} handle
- */
-async function loadCriticalData({context, request}, handle) {
-  const [{page}] = await Promise.all([
-    context.storefront.query(PAGE_QUERY, {
-      variables: {
-        handle,
-      },
-    }),
-  ]);
-
-  if (!page) {
-    throw new Response('Not Found', {status: 404});
-  }
-
-  redirectIfHandleIsLocalized(request, {handle, data: page});
-
-  return {page};
+export default function QiOneRedirect() {
+  return null;
 }
-
-/**
- * Load data for rendering content below the fold (deferred)
- * @param {LoaderFunctionArgs} args
- */
-function loadDeferredData({context}) {
-  return {};
-}
-
-export default function QionePage() {
-  /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
-
-  return (
-    <>
-     <QiOne />
-    </>
-  );
-}
-
-const PAGE_QUERY = `#graphql
-  query Page(
-    $language: LanguageCode,
-    $country: CountryCode,
-    $handle: String!
-  )
-  @inContext(language: $language, country: $country) {
-    page(handle: $handle) {
-      handle
-      id
-      title
-      body
-      seo {
-        description
-        title
-      }
-    }
-  }
-`;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
-/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
