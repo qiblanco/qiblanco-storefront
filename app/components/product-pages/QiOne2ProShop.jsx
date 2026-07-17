@@ -6,6 +6,18 @@ import {
   QiOneBenefitList,
 } from '~/components/product-pages/QiOneBuyBox';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
+import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+
+/*
+ * GitterChip-Molecules-Scroll-Animation (Job 20260716-bauer-scroll-down-
+ * animationen-capability): Quellen liegen fertig transkodiert auf dem Server
+ * (H.264 all-intra, scroll-video probe GRUEN), warten auf Shopify-CDN-Upload
+ * (write_files-Scope oder Admin-Upload = Christian-Handgriff). LEER = die
+ * Animation rendert NICHT (URL-Gate unten) — dieser Branch ist damit
+ * jederzeit gefahrlos mergebar; Aktivierung = die zwei URLs eintragen.
+ */
+const GITTERCHIP_VIDEO_DESKTOP = ''; // z. B. https://cdn.shopify.com/videos/c/o/v/<id>.mp4 (16:9)
+const GITTERCHIP_VIDEO_MOBILE = ''; // z. B. https://cdn.shopify.com/videos/c/o/v/<id>.mp4 (9:16)
 
 /*
  * Campaign-PDP /pages/qione-2-pro — die kaufbereite Fortsetzung der Paid-
@@ -69,7 +81,29 @@ export function QiOne2ProShop({product}) {
       </section>
       {/* Scent-Anker der 4 LP-Herkünfte (global gestylt, shop-kompatibel) */}
       <DreiThemenBand dataSection="shopq-drei-themen" />
-      <QiOne2Pro ctaHref="#shopq-buybox" ctaAnchor="#shopq-buybox" />
+      <QiOne2Pro
+        ctaHref="#shopq-buybox"
+        ctaAnchor="#shopq-buybox"
+        gitterchipAnimation={
+          GITTERCHIP_VIDEO_DESKTOP && GITTERCHIP_VIDEO_MOBILE ? (
+            <ScrollScrubVideo
+              dataSection="shopq-gitterchip-video"
+              srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
+              srcMobile={GITTERCHIP_VIDEO_MOBILE}
+              overlayStart={{
+                titel: 'Der GitterChip™ in Aktion',
+                text: 'Scrolle: der Blick ins Innere des QiOne® 2 Pro.',
+              }}
+              overlayEnd={[
+                {
+                  titel: 'Kohärente Ordnung',
+                  text: 'Der GitterChip™ hilft Wassermolekülen, in den kohärenten, geordneten Zustand überzugehen.',
+                },
+              ]}
+            />
+          ) : null
+        }
+      />
     </div>
   );
 }
