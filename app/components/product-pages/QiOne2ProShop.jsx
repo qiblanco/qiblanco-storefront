@@ -6,6 +6,8 @@ import {
   QiOneBenefitList,
 } from '~/components/product-pages/QiOneBuyBox';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
+import {GoogleReviews} from '~/components/index-components/GoogleReviews';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — die kaufbereite Fortsetzung der Paid-
@@ -69,7 +71,22 @@ export function QiOne2ProShop({product}) {
       </section>
       {/* Scent-Anker der 4 LP-Herkünfte (global gestylt, shop-kompatibel) */}
       <DreiThemenBand dataSection="shopq-drei-themen" />
-      <QiOne2Pro ctaHref="#shopq-buybox" ctaAnchor="#shopq-buybox" />
+      {/* Trust-Elemente 1:1 aus der Startseite (Job 20260717-trust-elemente):
+          Einzel-Bewertungen VOR dem bestehenden InfoSlider, Reputon-Widget
+          danach — Slider-REUSE via Slots statt Zweitinstanz (D-045). */}
+      <QiOne2Pro
+        ctaHref="#shopq-buybox"
+        ctaAnchor="#shopq-buybox"
+        trustVorSlider={<GoogleReviews dataSection="shopq-google-reviews" />}
+        trustNachSlider={
+          <div
+            className="NormalSectionSize"
+            data-section="shopq-reputon-reviews"
+          >
+            <ReputonWidget />
+          </div>
+        }
+      />
     </div>
   );
 }

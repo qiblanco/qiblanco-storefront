@@ -26,18 +26,26 @@ import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
  * gitterchipAnimation (Default null = organische PDP unverändert): optionaler
  * Scroll-Scrub-Block direkt nach dem Gitterchip-Erklärblock — die Campaign-PDP
  * übergibt hier die GitterChip-Molecules-Animation (ScrollScrubVideo).
+ * trustVorSlider/trustNachSlider (Default null = organische PDP unverändert):
+ * optionale Trust-Slots um den BESTEHENDEN InfoSlider — die Campaign-PDP
+ * übergibt die 3 Google-Einzel-Bewertungen davor und das Reputon-Widget
+ * danach (Startseiten-Trust 1:1; Slider-REUSE statt Zweitinstanz, D-045).
  */
 export default function QiOne2Pro({
   ctaHref = '/products/qione-2-pro',
   ctaAnchor = '#product',
   gitterchipAnimation = null,
+  trustVorSlider = null,
+  trustNachSlider = null,
 }) {
   return (
     <div className="ProductPageQiOne">
       <LogoBar />
       <OneTimeInvestment />
       <MainFeatures />
+      {trustVorSlider}
       <InfoSlider />
+      {trustNachSlider}
       <RisikofreiErleben />
       <SingleImage
         size={'fullscreen'}

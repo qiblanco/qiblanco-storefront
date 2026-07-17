@@ -1,5 +1,7 @@
 import {createContext, useContext, useState} from 'react';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
+import {InfoSlider} from '~/components/index-components/InfoSlider';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 
@@ -787,6 +789,10 @@ export function ESmogSchutz({products}) {
         <SkeptikerSection />
         <div data-section="lp-d-google-reviews">
           <LpGoogleReviews />
+        </div>
+        <InfoSlider dataSection="lp-d-info-slider" />
+        <div className="NormalSectionSize" data-section="lp-d-reputon-reviews">
+          <ReputonWidget />
         </div>
         <VideoSection />
         <AnwendungSection />
