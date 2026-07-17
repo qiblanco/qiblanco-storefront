@@ -10,7 +10,7 @@ import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QIBRACELET} from '~/data/product-faqs';
 
 
-export function QiBracelet() {
+export function QiBracelet({block = undefined}) {
   return (
     <div className="ProductPageQiBracelet">
       <LogoBar />
@@ -78,7 +78,7 @@ export function QiBracelet() {
         linkStyle={'primary'}
         img={'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha.webp?v=1732220427'}
       />
-      <UpsellLineUp />
+      <UpsellLineUp block={block} />
       <ProductFAQ items={FAQ_QIBRACELET} />
     </div>
   );
