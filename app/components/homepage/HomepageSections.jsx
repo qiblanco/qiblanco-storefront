@@ -15,6 +15,7 @@ import {CallToAction} from '~/components/index-components/CallToAction';
 import {HeroBanner} from '~/components/reusables/HeroBannerParallax';
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 
 /**
  * Reine Praesentationskomponente: exakt das Sektions-JSX der Startseite.
@@ -70,6 +71,11 @@ export function HomepageSections({overrides = {}}) {
       <p style={{marginBottom: "50px"}}><b>Persönliches Wachstum, Schutz vor 5G & E-Smog,
         Gesteigerte Anbindung zum Quantenfeld</b></p>
       </div>
+      {/* Produkt-Demo direkt nach dem Chip-Design-Erklaerblock (erklaeren ->
+          zeigen, GL-DES-0009 SHOW IT): GitterChip-Molecules-Scrub, Quellen/
+          Overlays zentral im Wrapper. Die Startseite ist voll anker-
+          instrumentiert -> dataSection hier korrekt (kein Collector-Kapern). */}
+      <GitterchipMoleculesScrub dataSection="gitterchip-video" />
       <SingleImage dataSection="chip-vergleich" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065"} size={"normal"}/>
       <div className="text-center mt-2" data-section="chip-cta">
         <a className="btn--primary m-center" href="/products/qione-2-pro">Hole dir jetzt deinen QiOne® 2 Pro</a>
