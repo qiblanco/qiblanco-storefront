@@ -66,7 +66,7 @@ function Hero() {
             {trust.map((t) => <li key={t}>{t}</li>)}
           </ul>
           <div className="lp-vp-hero__ctas">
-            <a className="lp-vp-btn lp-vp-btn--primary" href="/products/qione-2-pro">Jetzt ab {monthly}€/Monat starten →</a>
+            <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">Jetzt ab {monthly}€/Monat starten →</a>
             <div className="lp-vp-hero__pay">
               <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816" alt="Klarna" />
               <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082" alt="PayPal" />
@@ -289,7 +289,7 @@ function PricingSection() {
               <li>✓  Kohärente Wasserstruktur</li>
               <li>✓  Unser Bestseller</li>
             </ul>
-            <a className="lp-vp-btn lp-vp-btn--primary lp-vp-product__cta" href="/products/qione-2-pro" style={{textAlign:'center'}}>Jetzt risikofrei testen</a>
+            <a className="lp-vp-btn lp-vp-btn--primary lp-vp-product__cta" href="/pages/qione-2-pro" style={{textAlign:'center'}}>Jetzt risikofrei testen</a>
           </article>
 
           {/* QiHome Air */}
@@ -413,7 +413,7 @@ function FinalCTA() {
               </div>
             </div>
           )}
-          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/products/qione-2-pro">
+          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/pages/qione-2-pro">
             Jetzt QiOne® 2 Pro sichern
           </a>
           <ul className="lp-vp-final-cta__trust">
