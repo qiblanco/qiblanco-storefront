@@ -16,10 +16,11 @@ const ITEMS = [
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne1.webp?v=1732874828',
     label: 'Kompakt. Innovativ. Stark',
     title: 'QiOne® 2 Pro',
-    // Grammatik-Fix 20260718: „Gitterchip™ -Technologie" (Leerzeichen) +
-    // „für unterwegs und dem Büro" (Kasus) korrigiert.
+    // Claim-Nachschaerfung 20260718 (Christian-Fakten): Differenzierung uebers
+    // Leistungsvolumen — QiOne 2 Pro = QTA-T-333/333 (Dartsch 2024 ABBSR 7(3);
+    // HARDWARE_ENTSCHEIDUNGSHILFE_V1 Update v1.1).
     description:
-      'Die effiziente Gitterchip™-Technologie reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und im Büro.',
+      'Sein Gitterchip™ QTA-T-333 (Leistungsvolumen 333) reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und im Büro.',
     produktId: 'qione-2-pro',
   },
   {
@@ -27,10 +28,9 @@ const ITEMS = [
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiBracelet1.webp?v=1732874909',
     label: 'Eleganz und Schutz - dein Support.',
     title: 'QiBracelet®',
-    // Grammatik-Fix 20260718: haengender Relativsatz („..., das Wohlbefinden
-    // und Klarheit ermöglicht") sauber angebunden.
+    // Claim-Nachschaerfung 20260718: QiBracelet = QTA-O-400/400 (Dartsch 2024).
     description:
-      'Der elegant integrierte Gitterchip™ reduziert die Auswirkungen von E-Smog und 5G und unterstützt ein Umfeld, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
+      'Der elegant integrierte Gitterchip™ QTA-O-400 (Leistungsvolumen 400) reduziert die Auswirkungen von E-Smog und 5G und unterstützt ein Umfeld, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
     produktId: 'qibracelet',
   },
   {
@@ -38,12 +38,13 @@ const ITEMS = [
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHome1.webp?v=1732874979',
     label: 'Gesundes Zuhause, produktives Umfeld.',
     title: 'QiHome® Air',
-    // Claim-Fix 20260718: „Der leistungsstärkste Gitterchip im Sortiment" ist
-    // unbelegt (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
-    // Christian/Legal-Gate, HARDWARE_ENTSCHEIDUNGSHILFE_V1) — ersetzt durch
-    // das belegte Flächen-Merkmal (bis zu 300 m²).
+    // Claim-Nachschaerfung 20260718 (Christian-Fakten, HARDWARE_ENTSCHEIDUNGS-
+    // HILFE_V1 Update v1.1): hoechstes Leistungsvolumen QTA-U-5000 + Quarz-
+    // oszillator aus Laserquarz, ~100x Systemleistung belegt (Dartsch 2026,
+    // NDCR 6(1)); Wirkungsbereich 160 m Radius ≈ 8 ha = Herstellerangabe —
+    // die alte 300-m²-Angabe war FALSCH.
     description:
-      'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air deckt bis zu 300 m² ab und schafft ein Umfeld, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
+      'Unser stärkstes System – für den ganzen Raum: Im QiHome® Air arbeitet der Gitterchip™ mit dem höchsten Leistungsvolumen (QTA-U-5000), gekoppelt an einen Quarzoszillator aus Laserquarz – zusammen rund die 100-fache Systemleistung eines QiOne® 2 Pro, mit einem Wirkungsbereich von bis zu 160 m Radius (rund 8 Hektar). So schafft es ein Umfeld, das dir helfen kann, dich wohler zu fühlen und fokussierter zu arbeiten.',
     produktId: 'qihome-air',
   },
 ];
