@@ -61,6 +61,12 @@ jobs:
           # Cookielose Basis-Ebene: voller /b-Endpoint (Pixel nutzt den Wert
           # as-is), nur main — Previews bleiben dunkel wie beim qpx-Pixel.
           PUBLIC_QPX_BASIS_ENDPOINT: ${{ github.ref_name == 'main' && 'https://qpx.65-108-150-121.sslip.io/b' || '' }}
+          # Region-aware Consent (Job 20260718-usa-storefront-pixel-golive,
+          # Christian-Freigabe): Strict-Liste DE,AT,CH = DACH-Verhalten exakt
+          # wie bisher (consent-Pflicht), Nicht-DACH (insb. US) = optout —
+          # aktive Banner-Ablehnung wird IMMER respektiert (consent-policy.js).
+          # Previews '' = fail-closed strict. Kill: Zeilen entfernen.
+          PUBLIC_CONSENT_STRICT_REGIONS: ${{ github.ref_name == 'main' && 'DE,AT,CH' || '' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -79,6 +85,7 @@ jobs:
             printf 'PUBLIC_ENABLE_TRACKING_IN_PREVIEW=%s\n' "$PUBLIC_ENABLE_TRACKING_IN_PREVIEW"
             printf 'PUBLIC_QPX_ENDPOINT=%s\n' "$PUBLIC_QPX_ENDPOINT"
             printf 'PUBLIC_QPX_BASIS_ENDPOINT=%s\n' "$PUBLIC_QPX_BASIS_ENDPOINT"
+            printf 'PUBLIC_CONSENT_STRICT_REGIONS=%s\n' "$PUBLIC_CONSENT_STRICT_REGIONS"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
