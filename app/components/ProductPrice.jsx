@@ -3,7 +3,9 @@ export function ProductPrice({ price, compareAtPrice, taxRate = 0.19 }) {
     if (!money) return null;
     const numericAmount = Number.parseFloat(money.amount);
     if (!Number.isFinite(numericAmount)) return null;
-    const amount = Math.ceil(numericAmount * (1 + taxRate));
+    // Warenkorb-Kanon (cart-display-pricing: Math.round) — ceil zeigte
+    // 1.088 statt offiziell 1.087 bei netto 913,45 (QiOne 2 Pro).
+    const amount = Math.round(numericAmount * (1 + taxRate));
     return { ...money, amount };
   };
 
