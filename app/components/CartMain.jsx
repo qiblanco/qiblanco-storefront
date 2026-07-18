@@ -60,6 +60,12 @@ function CartEmpty({hidden = false}) {
 }
 
 function FreeShipping({cart}){
+  // M3: Schwelle (99) und Versandpreis (4,96) sind DE/EUR-spezifisch —
+  // in Nicht-EUR-Maerkten (CHF/USD) wird der Banner nicht gezeigt, statt
+  // falsche Betraege zu versprechen (fail-closed).
+  if ((cart?.cost?.subtotalAmount?.currencyCode ?? "EUR") !== "EUR") {
+    return null;
+  }
   let subtotal = parseFloat(cart?.cost?.subtotalAmount?.amount || "0");
   let difference = 99 - subtotal;
   let progress = (subtotal / 99) * 100;

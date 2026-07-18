@@ -58,3 +58,41 @@ export function formatPreis(wert, currencyCode = 'EUR', stil = 'lp') {
   const symbol = currencyCode === 'EUR' ? '€' : currencyCode;
   return stil === 'pdp' ? `${de},- ${symbol}` : `${de} ${symbol}`;
 }
+
+/* ───────── M3: Markt-Dynamik (Geo -> Markt-Kontext) ─────────
+   FLIP-SCHALTER der Geo-Dynamik: NUR hier gelistete Laender bekommen ihren
+   Shopify-Markets-Kontext ueber die Geo-Erkennung (Oxygen-Header
+   `oxygen-buyer-country`). LEERE Liste = dunkel (DE-Pin, Status quo).
+   Stufen-Flips sind bewusst eigene gegatete 1-Zeilen-Deploys mit eigenem
+   Rollback-SHA: Stufe CH: ['AT','CH'] -> Stufe US: ['AT','CH','US'].
+   Der explizite Preview-Parameter `?markt=XX` funktioniert UNABHAENGIG vom
+   Flip (QA/Verify-Werkzeug: gezielter Blick auf einen Markt-Kontext). */
+export const FREIGESCHALTETE_MAERKTE = [];
+
+// Maerkte, die der Shop anbietet (Shopify Markets, localization-API belegt
+// 2026-07-18): DE Default · AT EUR · CH/LI CHF · US USD · GB GBP.
+const MARKT_LAENDER = new Set(['DE', 'AT', 'CH', 'LI', 'US', 'GB']);
+
+/**
+ * Markt-Land eines Requests: ?markt-Preview > Geo (nur freigeschaltet) > DE.
+ * FAIL-CLOSED: alles Unbekannte/Abgeschaltete rendert den DE-Default.
+ * @param {Request} request
+ * @returns {string} ISO-Laendercode
+ */
+export function resolveCountry(request) {
+  try {
+    const override = (
+      new URL(request.url).searchParams.get('markt') || ''
+    ).toUpperCase();
+    if (override && MARKT_LAENDER.has(override)) return override;
+    const geo = (
+      request.headers.get('oxygen-buyer-country') || ''
+    ).toUpperCase();
+    if (geo && MARKT_LAENDER.has(geo) && FREIGESCHALTETE_MAERKTE.includes(geo)) {
+      return geo;
+    }
+  } catch {
+    // fail-closed: DE-Default
+  }
+  return 'DE';
+}
