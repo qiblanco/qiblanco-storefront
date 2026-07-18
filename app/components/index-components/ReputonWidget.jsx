@@ -1,4 +1,8 @@
 import {useEffect, useRef} from 'react';
+import {
+  StarRating,
+  GOOGLE_REVIEWS_URL,
+} from '~/components/reusables/StarRating';
 
 export function ReputonWidget() {
   const containerRef = useRef(null);
@@ -69,10 +73,11 @@ export function ReputonWidget() {
 function GoogleRatingBadge() {
   return (
     <a
-      href="https://maps.google.com/maps?cid=1372717443771750206"
+      href={GOOGLE_REVIEWS_URL}
       target="_blank"
       rel="noopener noreferrer"
       className="google-rating-badge"
+      aria-label="4,8 von 5 Sternen — Google-Rezensionen von Qi Blanco ansehen"
     >
       <img
         className="google-rating-badge__logo"
@@ -83,13 +88,9 @@ function GoogleRatingBadge() {
       />
       <div className="google-rating-badge__content">
         <div className="google-rating-badge__score">
-          <span className="google-rating-badge__number">4.8</span>
+          <span className="google-rating-badge__number">4,8</span>
           <span className="google-rating-badge__stars">
-            {[...Array(5)].map((_, i) => (
-              <svg key={i} width="20" height="20" viewBox="0 0 24 24" fill="#F4B400" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
-            ))}
+            <StarRating value={4.8} size={20} />
           </span>
         </div>
         <div className="google-rating-badge__powered">
