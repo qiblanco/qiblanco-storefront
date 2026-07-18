@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, no-empty, object-shorthand */
 /*!
- * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.0)
+ * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.2)
  * ====================================================
  * Erst-Party (laeuft auf eigener Domain, sendet an den eigenen Receiver).
  * Erfasst: anon_id (First-Party-Cookie+localStorage), Klick-IDs (gclid/fbclid/
@@ -15,6 +15,27 @@
  * Flush alle 15s nur bei Aenderung + IMMER bei hidden/pagehide.
  * Abschaltbar via window.QPX_CONFIG = { behavior: false }. Keine neue PII,
  * kein neuer Speicher (kein zusaetzliches Cookie). v1-Verhalten unveraendert.
+ *
+ * NEU in v2.1 (Frustrations-Signale, T2 2026-07-14): dead_click (Klick ohne
+ * DOM-/Scroll-Reaktion binnen 3s), rage_click (>=3 Klicks <=1s/<=30px = EIN
+ * Event/Burst), error_click/js_error (window error + unhandledrejection;
+ * <=1s nach Klick = error_click, msg auf 120 Zeichen gekappt). ELEMENT-basierte
+ * Verortung (section_id + kurzer Selektor + rx/ry relativ 0..1 im Element),
+ * NIE Seiten-x/y. Kumulativ im bestehenden behavior-Flush mitgesendet. Keine
+ * Feld-INHALTE, keine neue ID. Abschaltbar via QPX_CONFIG.frust=false.
+ *
+ * NEU in v2.2 (Storefront-Pixel-Fix, Job 20260718-storefront-pixel-tracking-
+ * vertiefung): (1) MATCH-SIGNALE — liest vorhandene _fbp/_fbc-First-Party-
+ * Cookies (nur LESEN, gesetzt werden sie von fbevents.js/Click-Capture) und
+ * sendet sie mit jedem Event -> events.db fbp/fbc, click_vault/Stitching.
+ * (2) CONSENT-REPORT — Cookiebot-Status (marketing) als consent.ad_storage/
+ * ad_user_data + region (QPX_CONFIG.region oder html[data-qb-region]) im
+ * Payload; der Receiver speichert das schon (event_model.py). (3) IDENTIFY-
+ * AUTO-HOOK — Form-Submit mit ausgefuelltem E-Mail-Feld sendet identify an
+ * den EIGENEN Receiver (der hasht mit Salt und verwirft den Klartext,
+ * privacy.hash_email); Dedupe je Session via nicht-umkehrbarem Kurz-Hash.
+ * Kill-Schalter je Feature: QPX_CONFIG = { match:false, consent_report:false,
+ * identity:false }. v2.1-Verhalten sonst byte-gleich.
  *
  * EINBAU = CHRISTIAN-HAND (Website). Diese Datei ist fertig + ausgeliefert.
  * Konfiguration via window.QPX_CONFIG = { endpoint: "https://t.qiblanco.com/collect" }.
@@ -81,6 +102,37 @@
     try { return d.referrer ? new URL(d.referrer).host : ""; } catch (e) { return ""; }
   }
 
+  // ---- v2.2: Match-Signale, Consent-Report, Region ------------------------
+  function matchSignals() {
+    // _fbp/_fbc werden NIE von qpx gesetzt — nur mitgelesen, wenn fbevents.js
+    // bzw. das Storefront-Click-Capture sie als First-Party-Cookie angelegt hat.
+    if (CFG.match === false) return {};
+    var out = {};
+    try {
+      var fbp = getCookie("_fbp"), fbc = getCookie("_fbc");
+      if (fbp && fbp.indexOf("fb.") === 0) out.fbp = fbp;
+      if (fbc && fbc.indexOf("fb.") === 0) out.fbc = fbc;
+    } catch (e) {}
+    return out;
+  }
+  function consentState() {
+    if (CFG.consent_report === false) return null;
+    try {
+      var cb = w.Cookiebot;
+      if (cb && cb.consent && typeof cb.consent.marketing !== "undefined") {
+        var mk = cb.consent.marketing ? "granted" : "denied";
+        return { ad_storage: mk, ad_user_data: mk };
+      }
+    } catch (e) {}
+    return null;
+  }
+  function region() {
+    if (CFG.region) return String(CFG.region);
+    try {
+      return d.documentElement.getAttribute("data-qb-region") || "";
+    } catch (e) { return ""; }
+  }
+
   function base(name, props) {
     props = props || {};
     var attr = captureAttr();
@@ -96,6 +148,14 @@
       utm: attr.utm,
       referrer_host: refHost()
     };
+    // v2.2: Match-Signale + Consent + Region additiv (Receiver kennt die Felder).
+    var ms = matchSignals();
+    if (ms.fbp) ev.fbp = ms.fbp;
+    if (ms.fbc) ev.fbc = ms.fbc;
+    var cs = consentState();
+    if (cs) ev.consent = cs;
+    var rg = region();
+    if (rg) ev.region = rg;
     for (var k in props) { if (Object.prototype.hasOwnProperty.call(props, k)) ev[k] = props[k]; }
     return ev;
   }
@@ -137,6 +197,16 @@
     var lastActivity = Date.now();
     var sections = {};                                   // id -> {seen,dwellAcc,visibleSince,clicks}
     var lastSent = "";                                   // Signatur des letzten Flushs
+    // ---- Frustrations-Signale (v2.1, T2): dead/rage/error_click -----------
+    // Additiv im bestehenden behavior-Flush; kumulativ je Pageview. ELEMENT-
+    // basierte Verortung (sel + rx/ry relativ 0..1), NIE Seiten-x/y. Keine
+    // Feld-Inhalte. Abschaltbar via QPX_CONFIG.frust=false.
+    var FRUST_ON = CFG.frust !== false;
+    var DEAD_MS = 3000, RAGE_MS = 1000, RAGE_PX = 30, RAGE_MIN = 3, FRUST_MAX = 40;
+    var frust = [];                                      // im Snapshot mitgesendet
+    var lastClick = null;                                // {t,x,y,el} fuer error_click
+    var rageChain = [], rageEmitted = false;             // Burst-Erkennung
+    var lastMutation = 0, lastScrollTs = 0, unloading = false;
 
     function sec(id) {
       if (!sections[id]) sections[id] = { seen: 0, dwellAcc: 0, visibleSince: 0, clicks: 0 };
@@ -147,6 +217,62 @@
       try { return (w.matchMedia && w.matchMedia("(pointer:coarse)").matches) ? "mobile" : "desktop"; }
       catch (e) { return "desktop"; }
     }
+    // ---- Frust-Helfer: kurzer Selektor + relative Position + Puffer ---------
+    function clamp01(n) { return n < 0 ? 0 : (n > 1 ? 1 : n); }
+    function selOf(el) {
+      // id > data-section > tag:nth-child. Klassen bewusst WEG: Hydrogen/Vite
+      // liefert gehashte, build-instabile Klassennamen -> kein tragfaehiger Anker.
+      try {
+        if (!el || el.nodeType !== 1) return "";
+        if (el.id) return "#" + el.id;
+        var t = el.tagName.toLowerCase(), da = el.getAttribute("data-section");
+        if (da) return t + "[data-section=" + da + "]";
+        var s = el, i = 1;
+        while ((s = s.previousElementSibling)) i++;
+        return t + ":nth-child(" + i + ")";
+      } catch (e) { return ""; }
+    }
+    function relPos(el, cx, cy) {
+      try {
+        var r = el.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0)
+          return { rx: clamp01((cx - r.left) / r.width), ry: clamp01((cy - r.top) / r.height) };
+      } catch (e) {}
+      return { rx: null, ry: null };
+    }
+    function sectionOf(el) {
+      try { var sc = el && el.closest ? el.closest("[data-section]") : null;
+            return sc ? (sc.getAttribute("data-section") || "") : ""; }
+      catch (e) { return ""; }
+    }
+    function pushFrust(typ, el, cx, cy, meta) {
+      if (!FRUST_ON || frust.length >= FRUST_MAX) return;
+      var rp = (el && cx != null) ? relPos(el, cx, cy) : { rx: null, ry: null };
+      frust.push({ typ: typ, section_id: sectionOf(el), sel: selOf(el),
+                   rx: rp.rx, ry: rp.ry, meta: meta || {} });
+    }
+    function exempt(el) {                                 // Nav/Download taeuscht keinen "toten" Klick vor
+      try {
+        if (el.tagName === "A") {
+          var h = el.getAttribute("href") || "";
+          if (/^(mailto:|tel:)/i.test(h) || el.hasAttribute("download") ||
+              el.getAttribute("target") === "_blank") return true;
+        }
+        if (el.tagName === "INPUT" && (el.getAttribute("type") || "").toLowerCase() === "file") return true;
+      } catch (e) {}
+      return false;
+    }
+    function onError(msg, src) {
+      if (!FRUST_ON) return;
+      try {
+        msg = ("" + (msg || "")).slice(0, 120);          // msg gekappt (keine PII-Leaks)
+        src = ("" + (src || "")).slice(0, 120);
+        if (lastClick && Date.now() - lastClick.t <= RAGE_MS)
+          pushFrust("error_click", lastClick.el, lastClick.x, lastClick.y, { msg: msg, src: src });
+        else if (frust.length < FRUST_MAX)
+          frust.push({ typ: "js_error", section_id: "", sel: "", rx: null, ry: null, meta: { msg: msg, src: src } });
+      } catch (e) {}
+    }
     function snapshot() {
       var now = Date.now(), list = [];
       for (var id in sections) {
@@ -156,7 +282,8 @@
         list.push({ id: id, seen: s.seen, dwell_ms: dw, clicks: s.clicks });
       }
       list.sort(function (a, b) { return a.id < b.id ? -1 : 1; });
-      return { attention_ms: attentionMs, scroll_max_pct: scrollMax, device: device(), sections: list };
+      return { attention_ms: attentionMs, scroll_max_pct: scrollMax,
+               device: device(), sections: list, frust: frust };
     }
     function flush(force) {
       var snap = snapshot();
@@ -190,7 +317,51 @@
         var el = e.target && e.target.closest ? e.target.closest("[data-section]") : null;
         if (el) { var id = el.getAttribute("data-section"); if (id) sec(id).clicks++; }
       } catch (e2) {}
+      // ---- Frust-Erkennung (v2.1): rage_click + dead_click + lastClick ----
+      if (!FRUST_ON) return;
+      try {
+        var now = Date.now(), tgt = e.target, cx = e.clientX, cy = e.clientY;
+        lastClick = { t: now, x: cx, y: cy, el: tgt };
+        // rage_click: >=RAGE_MIN Klicks je <=RAGE_MS und <=RAGE_PX -> EIN Event/Burst
+        rageChain = rageChain.filter(function (c) {
+          return now - c.t <= RAGE_MS && Math.abs(c.x - cx) <= RAGE_PX && Math.abs(c.y - cy) <= RAGE_PX;
+        });
+        rageChain.push({ t: now, x: cx, y: cy });
+        if (rageChain.length === 1) rageEmitted = false;   // neuer Burst
+        if (rageChain.length >= RAGE_MIN && !rageEmitted) {
+          pushFrust("rage_click", tgt, cx, cy, { clicks: rageChain.length, span_ms: now - rageChain[0].t });
+          rageEmitted = true;
+        }
+        // dead_click: actionable Element (closest filtert = actionable), danach
+        // 3s kein DOM-/Scroll-/Nav-Effekt. Nav/Download/mailto/tel ausgenommen.
+        var act = tgt && tgt.closest ? tgt.closest("button,input,a,[role=button]") : null;
+        if (act && !exempt(act)) {
+          var t0 = now, a0 = act, ax = cx, ay = cy;
+          w.setTimeout(function () {
+            try {
+              if (unloading || lastMutation > t0 || lastScrollTs > t0) return;
+              pushFrust("dead_click", a0, ax, ay, { waited_ms: DEAD_MS });
+            } catch (e3) {}
+          }, DEAD_MS);
+        }
+      } catch (e4) {}
     }, { passive: true, capture: true });
+
+    // DOM-Mutations-Beobachter fuer dead_click (setzt NUR einen Zeitstempel).
+    try {
+      if (w.MutationObserver && FRUST_ON) {
+        new w.MutationObserver(function () { lastMutation = Date.now(); })
+          .observe(d.documentElement, { childList: true, subtree: true, attributes: true, characterData: true });
+      }
+    } catch (e) {}
+
+    // JS-Fehler: window error + unhandledrejection (<=1s nach Klick = error_click).
+    w.addEventListener("error", function (ev) {
+      try { onError(ev && ev.message, ev && ev.filename); } catch (e) {}
+    }, { passive: true });
+    w.addEventListener("unhandledrejection", function (ev) {
+      try { var r = ev && ev.reason; onError(r && (r.message || r), ""); } catch (e) {}
+    }, { passive: true });
 
     // Scroll-Marken 25/50/75/100 (passive + rAF-throttled).
     var scrollPending = false;
@@ -205,7 +376,7 @@
       } catch (e) {}
     }
     w.addEventListener("scroll", function () {
-      lastActivity = Date.now();
+      lastActivity = lastScrollTs = Date.now();          // lastScrollTs: dead_click-Ausschluss
       if (!scrollPending) { scrollPending = true; (w.requestAnimationFrame || w.setTimeout)(measureScroll); }
     }, { passive: true });
     measureScroll();                                     // initiale Marke (kurze Seiten = 100)
@@ -227,11 +398,40 @@
     d.addEventListener("visibilitychange", function () {
       if (d.visibilityState === "hidden") { try { flush(true); } catch (e) {} }
     });
-    w.addEventListener("pagehide", function () { try { flush(true); } catch (e) {} });
+    w.addEventListener("pagehide", function () { unloading = true; try { flush(true); } catch (e) {} });
+  }
+
+  // ---- v2.2: identify-Auto-Hook (Form-Submit mit E-Mail-Feld) --------------
+  // Sendet an den EIGENEN First-Party-Receiver; dort wird die E-Mail sofort
+  // gesalzen-gehasht und der Klartext verworfen (privacy.hash_email). Dedupe
+  // je Session ueber nicht-umkehrbaren djb2-Kurz-Hash (keine PII im Storage).
+  function initIdentify() {
+    if (CFG.identity === false) return;
+    function djb2(s) {
+      var h = 5381, i;
+      for (i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+      return String(h);
+    }
+    d.addEventListener("submit", function (e) {
+      try {
+        var form = e.target;
+        if (!form || !form.querySelectorAll) return;
+        var inputs = form.querySelectorAll("input[type=email],input[name*=email i]");
+        for (var i = 0; i < inputs.length; i++) {
+          var v = (inputs[i].value || "").trim();
+          if (!v || v.indexOf("@") < 1 || v.length > 254) continue;
+          var sig = djb2(v.toLowerCase());
+          if (sessionStorageGet("_qpx_idf") === sig) return;
+          sessionStorageSet("_qpx_idf", sig);
+          identify(v.toLowerCase());
+          return;
+        }
+      } catch (e2) {}
+    }, { passive: true, capture: true });
   }
 
   // Auto page_view (v1-Verhalten unveraendert) + Verhaltens-Tracker (v2.0).
-  function boot() { track("page_view"); try { initBehavior(); } catch (e) {} }
+  function boot() { track("page_view"); try { initBehavior(); } catch (e) {} try { initIdentify(); } catch (e) {} }
   if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", boot);
   else boot();
 })(window, document);

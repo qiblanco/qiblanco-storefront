@@ -194,6 +194,23 @@ export function hasCookiebotMarketingConsent(cookieHeader) {
 }
 
 /**
+ * Aktive Ablehnung: Cookiebot-Stamp vorhanden UND marketing:false.
+ * (Kein Stamp = keine Entscheidung => false; Zustimmung => false.)
+ * Job 20260718: Grundlage der 'optout'-Policy — nie gegen erklaerten Willen.
+ *
+ * @param {string | null} cookieHeader
+ */
+export function hasCookiebotMarketingDeclined(cookieHeader) {
+  const cookieConsent = parseCookieHeader(cookieHeader).CookieConsent;
+  if (!cookieConsent) return false;
+
+  const decoded = safeDecode(cookieConsent);
+  return /(?:^|[,{]\s*|["'])marketing["']?\s*:\s*false(?:[,}]|$)/i.test(
+    decoded,
+  );
+}
+
+/**
  * @param {string} requestUrl
  */
 export function isQiblancoProductionHost(requestUrl) {
