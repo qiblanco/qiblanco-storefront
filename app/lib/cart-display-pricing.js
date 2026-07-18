@@ -20,8 +20,12 @@ function getCurrencyCode(line) {
   return line?.cost?.totalAmount?.currencyCode ?? 'EUR';
 }
 
+export function taxRateForHandle(handle) {
+  return CACAO_HANDLES.has(handle ?? '') ? 0.07 : 0.19;
+}
+
 export function getCartLineTaxRate(line) {
-  return CACAO_HANDLES.has(getProductHandle(line)) ? 0.07 : 0.19;
+  return taxRateForHandle(getProductHandle(line));
 }
 
 export function getCartLinePriceDisplay(line) {

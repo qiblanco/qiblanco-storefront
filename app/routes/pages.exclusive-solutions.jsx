@@ -21,9 +21,22 @@ export async function loader({context}) {
   // Einzelprodukten zusammengesetzt (jede Komponente = eigenes Line Item),
   // der Paketpreis entsteht über einen automatisch angewendeten
   // Prozent-Rabattcode.
-  const data = await context.storefront.query(EXCLUSIVE_PRODUCTS_QUERY, {
-    cache: context.storefront.CacheShort(),
-  });
+  let data;
+  try {
+    data = await context.storefront.query(EXCLUSIVE_PRODUCTS_QUERY, {
+      cache: context.storefront.CacheShort(),
+    });
+  } catch (fehler) {
+    // FAIL-CLOSED (M2, Auftrag 20260718-lp-preise-dynamisch-binden-gestuft):
+    // Storefront-API nicht erreichbar -> leere Produktliste; die Paket-Karten
+    // zeigen den letzten bekannten guten Stand (fallback-Literale) und die
+    // CTAs sind deaktiviert. Nie 0/leer/falsch rendern.
+    console.error(
+      '[preis-fallback] Exclusive-Query fehlgeschlagen:',
+      fehler?.message || fehler,
+    );
+    return {products: []};
+  }
 
   return {
     products: [data.qihomeAir, data.qione2Pro, data.qibracelet, data.qioneKette]
@@ -81,7 +94,8 @@ const EXCLUSIVE_PRODUCTS_QUERY = `#graphql
     }
   }
 
-  query ExclusiveProducts {
+  query ExclusiveProducts($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
     qihomeAir: product(handle: "qihome-air") {
       ...ExclusiveProduct
     }

@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Link} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
+import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
@@ -323,6 +324,79 @@ function computeInitialSizes(p, productsByHandle) {
   return sizes;
 }
 
+
+/* ───────── M2: Paket-Preise DYNAMISCH aus der Storefront-API ─────────
+   (Auftrag 20260718-lp-preise-dynamisch-binden-gestuft) Die Karten zeigen
+   exakt den Warenkorb: der Prozent-Rabatt (Rabattcode) wird wie von Shopify
+   PRO EINHEIT centgenau abgeschnitten (Cart-Probe 2026-07-18: 78,99 x 8 %
+   = 6,3192 -> 6,31), die Brutto-Anzeige rundet danach PRO LINE
+   (cart-display-pricing-Kanon). Line-Struktur == buildPackageCartState
+   (identische Varianten buendeln) — nur ohne Verfuegbarkeits-Filter,
+   denn der Gesamtwert gilt unabhaengig vom Lagerstand. */
+function paketPreisLines(p, productsByHandle, sizes) {
+  const selections = getPackageSelections(p, sizes);
+  const sizeByIndex = {};
+  selections.forEach((selection) => {
+    sizeByIndex[selection.index] = selection.value;
+  });
+  const byVariant = new Map();
+  for (let index = 0; index < p.items.length; index += 1) {
+    const item = p.items[index];
+    const product = findComponentProduct(productsByHandle, item);
+    const variant = product
+      ? findComponentVariant(product, item, sizeByIndex[index])
+      : null;
+    const einzelNetto = Number.parseFloat(variant?.price?.amount);
+    if (!variant || !Number.isFinite(einzelNetto)) return null; // fail-closed
+    const line = byVariant.get(variant.id);
+    if (line) {
+      line.quantity += 1;
+    } else {
+      byVariant.set(variant.id, {
+        quantity: 1,
+        einzelNetto,
+        waehrung: variant.price?.currencyCode || 'EUR',
+        handle: product.handle,
+      });
+    }
+  }
+  return [...byVariant.values()];
+}
+
+function paketAnzeige(p, productsByHandle, sizes) {
+  const lines = paketPreisLines(p, productsByHandle, sizes);
+  if (!lines || lines.length === 0) return null;
+  const waehrung = lines[0].waehrung;
+  let compare = 0;
+  let preis = 0;
+  for (const line of lines) {
+    const satz = anzeigeSatz(line.handle, line.waehrung);
+    const rabattProEinheit =
+      Math.floor(line.einzelNetto * p.rabatt * 100) / 100;
+    compare += Math.round(line.einzelNetto * line.quantity * (1 + satz));
+    preis += Math.round(
+      (line.einzelNetto - rabattProEinheit) * line.quantity * (1 + satz),
+    );
+  }
+  return {
+    compare: formatPreis(compare, waehrung),
+    price: formatPreis(preis, waehrung),
+    save: `Du sparst ${formatPreis(compare - preis, waehrung)}`,
+    fine: `oder ab ${formatPreis(Math.round(preis / 12), waehrung)}/Mon. · Klarna & Paypal · 100% Versicherter Versand`,
+  };
+}
+
+// FAIL-CLOSED: ohne API-Preise den letzten bekannten guten Stand zeigen
+// (Literale unten in den Paket-Definitionen) — nie 0/leer/falsch.
+function paketFallback(p) {
+  if (typeof console !== 'undefined') {
+    console.warn(
+      `[preis-fallback] Paket ${p.title}: API-Preise fehlen — letzter bekannter Stand wird gezeigt.`,
+    );
+  }
+  return p.fallback;
+}
+
 function Pak({ p, productsByHandle, onChoose }) {
   const {open} = useAside();
   const [sizes, setSizes] = React.useState(() =>
@@ -352,8 +426,16 @@ function Pak({ p, productsByHandle, onChoose }) {
   );
   const isDisabled = cartState.lines.length === 0 || cartState.unavailable.length > 0;
 
+  // M2: Anzeige-Preise dynamisch aus den API-Preisen der aktuellen Auswahl;
+  // fail-closed auf den letzten bekannten guten Stand (p.fallback).
+  const anzeige = React.useMemo(
+    () => paketAnzeige(p, productsByHandle, sizes),
+    [p, productsByHandle, sizes],
+  );
+  const labels = anzeige || paketFallback(p);
+
   const onClick = () => {
-    onChoose(p, cartState.selections, cartState);
+    onChoose(p, cartState.selections, cartState, labels);
     if (!isDisabled) open('cart');
   };
 
@@ -394,10 +476,10 @@ function Pak({ p, productsByHandle, onChoose }) {
       <div className="ghx-pak__divider" />
       <div className="ghx-pak__compare">
         <span className="ghx-pak__compare-label">Gesamtwert:</span>
-        <span className="ghx-pak__compare-value">{p.compare}</span>
+        <span className="ghx-pak__compare-value">{labels.compare}</span>
       </div>
-      <div className="ghx-pak__price">{p.price}</div>
-      <span className="ghx-pill ghx-pill--gold-soft ghx-pak__save">{p.save}</span>
+      <div className="ghx-pak__price">{labels.price}</div>
+      <span className="ghx-pill ghx-pill--gold-soft ghx-pak__save">{labels.save}</span>
       <div className="ghx-pak__cta-form">
         <CartForm
           route="/cart"
@@ -431,7 +513,7 @@ function Pak({ p, productsByHandle, onChoose }) {
           )}
         </CartForm>
       </div>
-      <p className="ghx-pak__fineprint">{p.fine}</p>
+      <p className="ghx-pak__fineprint">{labels.fine}</p>
     </article>
   );
 }
@@ -452,11 +534,14 @@ function GeldheldenPakete({products}) {
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "60 cm" },
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "50 cm" },
       ],
-      compare: "7.345 €",
-      price: "6.757 €",
-      save: "Du sparst 588 €",
+      rabatt: 0.08,
+      fallback: {
+        compare: "7.345 €",
+        price: "6.757 €",
+        save: "Du sparst 588 €",
+        fine: "oder ab 563 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+      },
       cta: "Dieses Paket wählen",
-      fine: "oder ab 563 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       featured: false,
     },
     {
@@ -474,11 +559,14 @@ function GeldheldenPakete({products}) {
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "60 cm" },
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "50 cm" },
       ],
-      compare: "10.501 €",
-      price: "9.241 €",
-      save: "Du sparst 1.260 €",
+      rabatt: 0.12,
+      fallback: {
+        compare: "10.501 €",
+        price: "9.241 €",
+        save: "Du sparst 1.260 €",
+        fine: "oder ab 770 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+      },
       cta: "Dieses Paket wählen",
-      fine: "oder ab 770 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       featured: true,
     },
     {
@@ -498,26 +586,29 @@ function GeldheldenPakete({products}) {
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "60 cm" },
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "50 cm" },
       ],
-      compare: "20.467 €",
-      price: "17.397 €",
-      save: "Du sparst 3.070 €",
+      rabatt: 0.15,
+      fallback: {
+        compare: "20.467 €",
+        price: "17.397 €",
+        save: "Du sparst 3.070 €",
+        fine: "oder ab 1.450 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+      },
       cta: "Dieses Paket wählen",
-      fine: "oder ab 1.450 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       featured: false,
     },
   ];
 
   const [toast, setToast] = React.useState(null);
   const toastTimer = React.useRef(null);
-  const onChoose = (p, selections, cartState) => {
+  const onChoose = (p, selections, cartState, labels) => {
     clearTimeout(toastTimer.current);
     setToast({
       title: p.title,
       count: cartState.lines.reduce((sum, line) => sum + line.quantity, 0),
       itemLabel: 'Produkte',
       selections,
-      price: p.price,
-      save: p.save,
+      price: labels.price,
+      save: labels.save,
       unavailable: cartState.unavailable.length > 0,
     });
     toastTimer.current = setTimeout(() => setToast(null), 5500);
