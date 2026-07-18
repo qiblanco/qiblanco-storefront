@@ -16,8 +16,10 @@ const ITEMS = [
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne1.webp?v=1732874828',
     label: 'Kompakt. Innovativ. Stark',
     title: 'QiOne® 2 Pro',
+    // Grammatik-Fix 20260718: „Gitterchip™ -Technologie" (Leerzeichen) +
+    // „für unterwegs und dem Büro" (Kasus) korrigiert.
     description:
-      'Die effiziente Gitterchip™ -Technologie reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und dem Büro.',
+      'Die effiziente Gitterchip™-Technologie reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und im Büro.',
     produktId: 'qione-2-pro',
   },
   {
@@ -25,8 +27,10 @@ const ITEMS = [
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiBracelet1.webp?v=1732874909',
     label: 'Eleganz und Schutz - dein Support.',
     title: 'QiBracelet®',
+    // Grammatik-Fix 20260718: haengender Relativsatz („..., das Wohlbefinden
+    // und Klarheit ermöglicht") sauber angebunden.
     description:
-      'Der elegant integrierte Gitterchip™ optimiert dein Umfeld und reduziert die Auswirkungen von E-Smog und 5G, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
+      'Der elegant integrierte Gitterchip™ reduziert die Auswirkungen von E-Smog und 5G und unterstützt ein Umfeld, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
     produktId: 'qibracelet',
   },
   {
@@ -34,8 +38,12 @@ const ITEMS = [
       'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHome1.webp?v=1732874979',
     label: 'Gesundes Zuhause, produktives Umfeld.',
     title: 'QiHome® Air',
+    // Claim-Fix 20260718: „Der leistungsstärkste Gitterchip im Sortiment" ist
+    // unbelegt (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
+    // Christian/Legal-Gate, HARDWARE_ENTSCHEIDUNGSHILFE_V1) — ersetzt durch
+    // das belegte Flächen-Merkmal (bis zu 300 m²).
     description:
-      'Der leistungsstärkste Gitterchip™ in unserem Sortiment schafft ein produktives Umfeld in deinem Zuhause und Büro, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
+      'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air deckt bis zu 300 m² ab und schafft ein Umfeld, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
     produktId: 'qihome-air',
   },
 ];

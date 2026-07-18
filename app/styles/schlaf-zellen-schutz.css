@@ -794,3 +794,8 @@ body:has(.lp-a3) ._form_15 input[type='submit'] {
   font-family: var(--a-font) !important;
 }
 body:has(.lp-a3) header img { border-radius: var(--a-r1); }
+
+/* „Wissenschaftlich getestet..."-Zeile: .lp-a3 p setzt max-width — ohne
+   auto-Margin klebt die Box links statt zentriert unter den Studien
+   (Hausmuster zell-schutz.css, gleicher Fix; 20260718). */
+.lp-a3 .Studien p.text-center { margin-inline: auto; }

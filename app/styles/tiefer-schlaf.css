@@ -856,3 +856,32 @@ body:has(.lp-ts3) ._form_15 input[type='submit'] {
   font-family: var(--ts3-font) !important;
 }
 body:has(.lp-ts3) header img { border-radius: var(--ts3-r1); }
+
+/* ─── Podcast neu: YouTube ab Zeitstempel statt totem 9:16-Standbild
+   (20260718, reusables/YoutubeTimestamp im Testimonial-Muster) ────────────── */
+.lp-ts3 .lp-ts-podcast2 .YoutubeTimestamp {
+  max-width: 880px;
+  margin: var(--ts3-s6) auto 0;
+}
+.lp-ts3 .lp-ts-podcast2__zitat {
+  max-width: 680px;
+  margin: var(--ts3-s4) auto 0;
+  text-align: center;
+}
+.lp-ts3 .lp-ts-podcast2__zitat p {
+  font-size: var(--ts3-fs-lg);
+  font-style: italic;
+  margin: 0 auto;
+}
+.lp-ts3 .lp-ts-podcast2__zitat cite {
+  display: block;
+  margin-top: var(--ts3-s2);
+  font-size: var(--ts3-fs-xs);
+  color: var(--ts3-muted);
+  font-style: normal;
+}
+
+/* „Wissenschaftlich getestet..."-Zeile: .lp-ts3 p setzt max-width — ohne
+   auto-Margin klebt die Box links statt zentriert unter den Studien
+   (Hausmuster zell-schutz.css, gleicher Fix). */
+.lp-ts3 .Studien p.text-center { margin-inline: auto; }
