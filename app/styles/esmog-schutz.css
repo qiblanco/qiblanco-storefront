@@ -866,3 +866,40 @@ body:has(.lp-d3) ._form_15 input[type='submit'] {
   font-family: var(--a-font) !important;
 }
 body:has(.lp-d3) header img { border-radius: var(--a-r1); }
+
+/* ─── Alltags-Quellen: 3-Karten-Grid (Fix Rohtext-Sektion, 20260718) ────────
+   .lp-d-quellen/.lp-d-quelle hatten nie Styles — die Problem-Sektion fiel
+   live auf gestapelten Rohtext zurueck (Read-First-Screenshot 20260718).
+   Muster = lp-d-mech-step-Karte + lp-d-fenster-Tag: ruhige Karten mit
+   Uppercase-Tag, Titel, Text — kein Alarm-Rot (Konzept 3.3 D). */
+.lp-d3 .lp-d-quellen {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--a-s3);
+}
+.lp-d3 .lp-d-quelle {
+  background: var(--a-grund);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  padding: var(--a-s4);
+  text-align: left;
+}
+.lp-d3 .lp-d-quelle__tag {
+  font-size: var(--a-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--a-akzent-tief);
+}
+.lp-d3 .lp-d-quelle__titel { font-size: var(--a-fs-lg); margin: var(--a-s1) 0; }
+.lp-d3 .lp-d-quelle__text { font-size: var(--a-fs-base); color: var(--a-muted); margin: 0; }
+@media (max-width: 767px) {
+  .lp-d3 .lp-d-quellen { grid-template-columns: 1fr; }
+}
+
+/* „Wissenschaftlich getestet..."-Zeile: .lp-d3 p setzt max-width — ohne
+   auto-Margin klebt die Box links statt zentriert unter den Studien
+   (Hausmuster zell-schutz.css, gleicher Fix). */
+.lp-d3 .Studien p.text-center { margin-inline: auto; }

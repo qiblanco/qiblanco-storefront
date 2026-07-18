@@ -4,6 +4,7 @@ import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 /*
@@ -111,7 +112,7 @@ function Hero() {
         <div className="lp-d-hero__copy">
           <span className="lp-d-hero__eyebrow">Handy, WLAN, Homeoffice — der Alltag strahlt</span>
           <h1 id="lp-d-hero-title" className="lp-d-hero__title">
-            E-Smog ist unsichtbar. Deine Ruhe muss es nicht sein.
+            E-Smog ist unsichtbar. Deine Ruhe muss ihm nicht ausgeliefert sein.
           </h1>
           <p className="lp-d-hero__subline">
             Elektromagnetische Felder umgeben uns rund um die Uhr — Handy am Ohr, WLAN
@@ -625,7 +626,11 @@ function PricingSection() {
       handle: 'qione-2-pro',
       tagline: 'Der Allrounder — Tag und Nacht',
       features: [
-        'Stärkster GitterChip™ im Sortiment',
+        // Claim-Fix 20260718: „Stärkster GitterChip im Sortiment" ist unbelegt
+        // (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
+        // Christian/Legal-Gate, HARDWARE_ENTSCHEIDUNGSHILFE_V1) — ersetzt
+        // durch das belegte Material-Merkmal.
+        'GitterChip™ aus 750er Goldlegierung, von Hand veredelt',
         'Tragbar als Anhänger',
         'Kohärente Wasserstruktur',
         'Unser Bestseller',
@@ -786,6 +791,11 @@ export function ESmogSchutz({products}) {
         <Hero />
         <ProblemSection />
         <MechanismSection />
+        {/* Produkt-Demo direkt NACH dem Erklaer-Block (SKILL-SCROLL-
+            ANIMATIONEN-Heuristik): der Blick ins Innere des QiOne 2 Pro.
+            Christians „GitterChip scroll down" war auf den LPs nie eingebaut
+            (kein IA-Regress; Read-First-Beleg 20260718) — hier ergaenzt. */}
+        <GitterchipMoleculesScrub dataSection="lp-d-gitterchip-video" />
         <ScienceSection />
         <SkeptikerSection />
         <div data-section="lp-d-google-reviews">

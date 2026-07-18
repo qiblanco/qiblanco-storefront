@@ -3,10 +3,10 @@ import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/Go
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
-import {PodcastStimmen} from '~/components/redesign/PodcastStimmen';
 import {ProduktTrio} from '~/components/redesign/ProduktTrio';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
-import {VIDEOS} from '~/lib/redesign3themen';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 
 /*
@@ -444,6 +444,44 @@ function ExperienceSection() {
   );
 }
 
+/* ───────── Podcast: Christian im Gespräch (YouTube ab Zeitstempel) ─────────
+   Ersetzt das tote 9:16-Hochkant-Standbild (PodcastStimmen rendert fail-soft
+   nur das Poster, weil der Shopify-CDN-Clip-Upload write_files-gated blieb —
+   Read-First-Beleg 20260718). Stattdessen: die volle Folge auf YouTube im
+   Testimonial-Muster (Thumbnail, Klick-zu-Play), Start an der Kopfkissen-
+   Experiment-Stelle. startSeconds=817 (13:37) ist ms-Transkript-belegt aus
+   dem Schnitt-Report podcast-schlaf (intent_t0=817.86 in GELDHELDEN_PODCAST_
+   EP_01, Laufzeit 40:41 == YouTube-Paket v2). Zitat/Titel wortlaut-belegt
+   (content-match, unverändert aus dem PodcastStimmen-Datenmodul). */
+function PodcastSection() {
+  return (
+    <section
+      className="lp-vp-section lp-vp-section--cream lp-ts-podcast2"
+      data-section="lp-ts-podcast"
+    >
+      <span className="eyebrow">Christian im Gespräch</span>
+      <h2>Der Gründer, ungeschnitten — aus dem Podcast.</h2>
+      <p className="lp-vp-section__lede">
+        Das Kopfkissen-Experiment: Was dein Handy nachts mit deinem Schlaf zu tun
+        hat — Christian erzählt es im Geldhelden-Podcast. Das Video startet direkt
+        an der Stelle.
+      </p>
+      <YoutubeTimestamp
+        videoId="BQxzbXqREWE"
+        startSeconds={817}
+        titel="Das Kopfkissen-Experiment: Handy und Schlaf — Christian Bauer im Geldhelden-Podcast"
+      />
+      <blockquote className="lp-ts-podcast2__zitat">
+        <p>
+          „Das schönste Praxisbeispiel: eingeschaltetes Handy unters Kopfkissen
+          legen — und dann gucken, schläft man besser oder schlechter.“
+        </p>
+        <cite>Christian Bauer im Geldhelden-Podcast (EP 01)</cite>
+      </blockquote>
+    </section>
+  );
+}
+
 /* ───────── Video-Erfahrungen ─────────
    CONTENT-MATCH (Christian-Regel 2026-07-11): Überschrift/Tag/Quote MÜSSEN das
    tatsächlich Gesagte im Video treffen (Transkript-belegt, Register:
@@ -602,7 +640,11 @@ function GuaranteeSection() {
         wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl, sondern an den
         Zeitraum: 20 Nächte, dann entscheidest du.
       </p>
-      <div className="lp-vp-benefits-grid lp-vp-benefits-grid--row">
+      {/* Zentrier-Fix 20260718: --row-Modifier entfernt — die Klasse ist hier
+          ungestylt, faengt aber die ungescopte !important-Regel (repeat(4,1fr))
+          aus exclusive-solutions/qione-zellschutz.css im globalen CSS-Bundle:
+          3 Karten in 4 Spalten = linksversetzt. Basis-Grid = 3 Spalten, mittig. */}
+      <div className="lp-vp-benefits-grid">
         {items.map((b) => (
           <article className="lp-vp-benefit lp-ts2-benefit" key={b.title}>
             <span className="lp-ts2-benefit__num" aria-hidden="true">
@@ -742,6 +784,11 @@ export function TieferSchlaf({products}) {
         <Hero />
         <NachtSection />
         <MechanismSection />
+        {/* Produkt-Demo direkt NACH dem Erklaer-Block (SKILL-SCROLL-
+            ANIMATIONEN-Heuristik): Schritt 01 nennt den GitterChip — hier
+            der Blick ins Innere. Christians „GitterChip scroll down" war auf
+            den LPs nie eingebaut (kein IA-Regress; Read-First 20260718). */}
+        <GitterchipMoleculesScrub dataSection="lp-ts-gitterchip-video" />
         <RitualSection />
         <ScienceSection />
         <ExperienceSection />
@@ -752,10 +799,7 @@ export function TieferSchlaf({products}) {
         <div className="NormalSectionSize" data-section="lp-ts-reputon-reviews">
           <ReputonWidget />
         </div>
-        <PodcastStimmen
-          dataSection="lp-ts-podcast"
-          clips={VIDEOS.filter((v) => v.thema === 'schlaf')}
-        />
+        <PodcastSection />
         <VideoSection />
         <SchlafraumSection />
         <GuaranteeSection />
