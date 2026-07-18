@@ -25,6 +25,49 @@
     return !!(consent && consent.preferences);
   }
 
+  // ---- Region-aware Consent-Policy (Job 20260718, Spiegel consent-policy.js)
+  // Ohne html[data-qb-consent-strict] gilt 'consent' fuer ALLE Regionen
+  // (heutiges Verhalten, fail-closed). 'optout'-Regionen: Tags laufen ab
+  // Seitenaufruf, eine AKTIV erklaerte Ablehnung wird immer respektiert —
+  // Googles Best Practice "region-scoped Consent Defaults" in Code.
+  function regionPolicy() {
+    var de = document.documentElement;
+    var strict = (de.getAttribute('data-qb-consent-strict') || '')
+      .toUpperCase()
+      .split(',')
+      .filter(function (c) {
+        return /^[A-Z]{2}$/.test(c.trim());
+      });
+    if (!strict.length) return 'consent';
+    var region = (de.getAttribute('data-qb-region') || '').toUpperCase();
+    if (!region) return 'consent';
+    return strict.indexOf(region) >= 0 ? 'consent' : 'optout';
+  }
+
+  function hasDeclined() {
+    return Boolean(
+      window.Cookiebot &&
+        window.Cookiebot.hasResponse &&
+        window.Cookiebot.consent &&
+        !window.Cookiebot.consent.marketing,
+    );
+  }
+
+  function statisticsAllowed() {
+    if (regionPolicy() === 'optout') return !hasDeclined();
+    return hasStatisticsConsent();
+  }
+
+  function marketingAllowed() {
+    if (regionPolicy() === 'optout') return !hasDeclined();
+    return hasMarketingConsent();
+  }
+
+  function preferencesAllowed() {
+    if (regionPolicy() === 'optout') return !hasDeclined();
+    return hasPreferencesConsent();
+  }
+
   function loadScript(id, src) {
     if (document.getElementById(id)) return;
     var script = document.createElement('script');
@@ -48,13 +91,16 @@
     window._qiblancoGoogleConsentDefaultSet = true;
 
     ensureGoogleDataLayer();
+    // Region-scoped Default (Google Consent Mode v2 Best Practice): nur in
+    // Consent-Pflicht-Regionen denied; 'optout'-Regionen starten granted.
+    var def = regionPolicy() === 'optout' && !hasDeclined() ? 'granted' : 'denied';
     window.gtag('consent', 'default', {
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'denied',
-      functionality_storage: 'denied',
-      personalization_storage: 'denied',
+      ad_storage: def,
+      ad_user_data: def,
+      ad_personalization: def,
+      analytics_storage: def,
+      functionality_storage: def,
+      personalization_storage: def,
       security_storage: 'granted',
     });
   }
@@ -63,12 +109,12 @@
     ensureGoogleDataLayer();
 
     var state = {
-      ad_storage: hasMarketingConsent() ? 'granted' : 'denied',
-      ad_user_data: hasMarketingConsent() ? 'granted' : 'denied',
-      ad_personalization: hasMarketingConsent() ? 'granted' : 'denied',
-      analytics_storage: hasStatisticsConsent() ? 'granted' : 'denied',
-      functionality_storage: hasPreferencesConsent() ? 'granted' : 'denied',
-      personalization_storage: hasPreferencesConsent() ? 'granted' : 'denied',
+      ad_storage: marketingAllowed() ? 'granted' : 'denied',
+      ad_user_data: marketingAllowed() ? 'granted' : 'denied',
+      ad_personalization: marketingAllowed() ? 'granted' : 'denied',
+      analytics_storage: statisticsAllowed() ? 'granted' : 'denied',
+      functionality_storage: preferencesAllowed() ? 'granted' : 'denied',
+      personalization_storage: preferencesAllowed() ? 'granted' : 'denied',
       security_storage: 'granted',
     };
 
@@ -77,7 +123,7 @@
   }
 
   function bootGtm() {
-    if (!hasStatisticsConsent() || window._qiblancoGtmBooted) return;
+    if (!statisticsAllowed() || window._qiblancoGtmBooted) return;
 
     window._qiblancoGtmBooted = true;
     ensureGoogleDataLayer();
@@ -93,7 +139,7 @@
   }
 
   function bootClarity() {
-    if (!hasStatisticsConsent() || window._qiblancoClarityBooted) return;
+    if (!statisticsAllowed() || window._qiblancoClarityBooted) return;
 
     window._qiblancoClarityBooted = true;
     window.clarity =
@@ -109,7 +155,7 @@
   }
 
   function pushCookieConsentUpdate(state) {
-    if (!hasStatisticsConsent()) return;
+    if (!statisticsAllowed()) return;
 
     var signature = JSON.stringify(state);
     if (signature === lastConsentSignature) return;
@@ -126,7 +172,7 @@
   }
 
   function pushPageView() {
-    if (!hasStatisticsConsent() || !window._qiblancoGtmBooted) return;
+    if (!statisticsAllowed() || !window._qiblancoGtmBooted) return;
     if (window.location.href === lastPageViewUrl) return;
     lastPageViewUrl = window.location.href;
 
