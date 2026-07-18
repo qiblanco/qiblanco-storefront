@@ -3991,6 +3991,52 @@ ul.kakao-children li {
   color: #333;
 }
 
+/* Star-Rating — geteilte 5-Sterne-Darstellung der 4,8-Bewertung
+   (Block LP, Job 20260718-lp-sterne-reputon-googlelink) */
+.star-rating {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+}
+
+.star-rating__star {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.star-rating__star svg {
+  display: block;
+}
+
+.star-rating__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Klickbare 4,8-Bewertungszeile in der BuyBox (Block LP) */
+.product .product-rating--google {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.product .product-rating--google:hover {
+  opacity: 0.85;
+}
+
+.product .product-rating--google span:last-child {
+  font-size: 1rem;
+  color: #000;
+  font-weight: 500;
+}
+
 /* Product 360° Hero Section */
 .product-360-hero {
   display: flex;

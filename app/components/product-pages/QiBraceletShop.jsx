@@ -13,6 +13,10 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {QiBraceletHeroBullets} from '~/components/product-pages/QiBraceletHeroBullets';
+import {
+  StarRating,
+  GOOGLE_REVIEWS_URL,
+} from '~/components/reusables/StarRating';
 
 /*
  * QiBraceletShop — Campaign-PDP-Komponente fuer die LP-Shopseite
@@ -81,7 +85,18 @@ export function QiBraceletShop({product}) {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <div className="product-rating"><span>4.8</span>{' \u2605\u2605\u2605\u2605\u2605 '}<span>{'\u00DCber 14.000 Nutzer'}</span></div>
+        {/* 5-Sterne-Darstellung + Klick zur Google-Rezensionen-Ansicht
+            (geteilte StarRating; Job 20260718-lp-sterne). */}
+        <a
+          className="product-rating product-rating--google"
+          href={GOOGLE_REVIEWS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={'4,8 von 5 Sternen \u2014 Google-Rezensionen von Qi Blanco ansehen'}
+        >
+          <span>{'4,8'}</span> <StarRating value={4.8} />{' '}
+          <span>{'\u00DCber 14.000 Nutzer'}</span>
+        </a>
         <QiBraceletHeroBullets />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>

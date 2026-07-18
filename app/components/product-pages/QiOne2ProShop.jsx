@@ -9,6 +9,10 @@ import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBullets
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {
+  StarRating,
+  GOOGLE_REVIEWS_URL,
+} from '~/components/reusables/StarRating';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — die kaufbereite Fortsetzung der Paid-
@@ -55,10 +59,20 @@ export function QiOne2ProShop({product}) {
         <QiOneBuyBox
           product={product}
           socialProof={
-            <div className="product-rating">
-              <span>{claim('WM-bewertung-4-8-sterne')}</span>{' '}
+            /* Claims-SSoT liefert »4,8 ★« als TEXT (ein Stern-Zeichen) —
+               die 5-Sterne-Darstellung uebernimmt StarRating; Zeile klickbar
+               zur Google-Rezensionen-Ansicht (Job 20260718-lp-sterne). */
+            <a
+              className="product-rating product-rating--google"
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="4,8 von 5 Sternen — Google-Rezensionen von Qi Blanco ansehen"
+            >
+              <span>{claim('WM-bewertung-4-8-sterne').replace(/\s*★\s*$/, '')}</span>{' '}
+              <StarRating value={4.8} />{' '}
               <span>{claim('WM-nutzer-ueber-14000')}</span>
-            </div>
+            </a>
           }
           description={<QiOneHeroBulletsPages />}
           topBadge={
