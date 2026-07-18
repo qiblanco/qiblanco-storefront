@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
+import {redirect} from '@shopify/remix-oxygen';
 import {QiOneZellschutz} from '~/components/campaign/QiOneZellschutz';
+import {lpTestPausiert, lpAZiel} from '~/lib/lp-pause.server';
 import qioneZellschutzStyles from '~/styles/qione-zellschutz.css?url';
 
 export function links() {
@@ -11,7 +13,17 @@ export const meta = () => [
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
-export async function loader({context}) {
+export async function loader({request, context}) {
+  // LP-PAUSE (Auftrag 20260718-ads-alle-auf-lp-a-redirect-pause): Ad-LP ohne
+  // interne Verlinkung, 1 aktive Meta-Ad zeigt direkt hierher — waehrend der
+  // Pause (zuteilung.json modus='aus') per 302 auf LP A, Query erhalten.
+  if (await lpTestPausiert()) {
+    throw redirect(lpAZiel(request.url), {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
+  }
+
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {

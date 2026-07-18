@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
+import {redirect} from '@shopify/remix-oxygen';
 import {ZellSchutz} from '~/components/campaign/ZellSchutz';
+import {lpTestPausiert, lpAZiel} from '~/lib/lp-pause.server';
 import lpBStyles from '~/styles/zell-schutz.css?url';
 
 /**
@@ -40,7 +42,19 @@ export const meta = () => [
  */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
-export async function loader({context}) {
+export async function loader({request, context}) {
+  // LP-PAUSE (Auftrag 20260718-ads-alle-auf-lp-a-redirect-pause): solange der
+  // A/B-Test pausiert ist (zuteilung.json modus='aus'), landet ALLER
+  // LP-B-Traffic (v.a. Meta-Ads mit direktem /pages/zell-schutz-Ziel) per 302
+  // auf LP A — Query komplett erhalten, Ad-Configs unangetastet. 302 statt 301,
+  // damit die Reaktivierung (modus='herkunft') auch Wiederkehrer erreicht.
+  if (await lpTestPausiert()) {
+    throw redirect(lpAZiel(request.url), {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
+  }
+
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
