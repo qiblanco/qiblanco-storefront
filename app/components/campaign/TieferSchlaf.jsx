@@ -8,6 +8,7 @@ import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
+import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 
 /*
  * Landingpage /pages/tiefer-schlaf — DESIGN v3 „Die ruhige Nacht" + C-REFOKUS
@@ -102,8 +103,9 @@ function Hero() {
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
-  const priceNum = priceAmount ? brutto(priceAmount) : 1087;
-  const priceLabel = fmtBrutto(priceAmount) || '1.087,00 €';
+  const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
+  const priceNum = priceAmount ? brutto(priceAmount) : fallback.bruttoWert;
+  const priceLabel = fmtBrutto(priceAmount) || fallback.label;
   const compareLabel = fmtRaw(getCompareAt(product));
   const monthly = Math.ceil(priceNum / 12);
   const trust = [

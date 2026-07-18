@@ -6,6 +6,7 @@ import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {claim} from '~/lib/claims';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
+import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 
 /*
  * Landingpage /pages/zell-schutz — ZELLSCHUTZ „Der Zellversuch als Held".
@@ -88,8 +89,9 @@ function Hero() {
   const product = findLp(data, 'qione-2-pro');
   const heroImg = product?.featuredImage?.url || QIONE_FALLBACK_IMG;
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
-  const priceNum = priceAmount ? brutto(priceAmount) : 1087;
-  const priceLabel = fmtBrutto(priceAmount) || '1.087,00 €';
+  const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
+  const priceNum = priceAmount ? brutto(priceAmount) : fallback.bruttoWert;
+  const priceLabel = fmtBrutto(priceAmount) || fallback.label;
   const compareLabel = fmtRaw(getCompareAt(product));
   const monthly = Math.ceil(priceNum / 12);
   const trust = [

@@ -6,6 +6,7 @@ import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlid
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
+import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 
 const LiveDataCtx = createContext({data: {products: []}});
 const useLp = () => useContext(LiveDataCtx);
@@ -36,8 +37,9 @@ function Hero() {
     || 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196';
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
   const compareAt = getCompareAt(product);
-  const priceNum = priceAmount ? brutto(priceAmount) : 1087;
-  const priceLabel = fmtBrutto(priceAmount) || '1.087,00 €';
+  const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
+  const priceNum = priceAmount ? brutto(priceAmount) : fallback.bruttoWert;
+  const priceLabel = fmtBrutto(priceAmount) || fallback.label;
   const compareLabel = fmtRaw(compareAt);
   const monthly = Math.ceil(priceNum / 12);
   const trust = [
