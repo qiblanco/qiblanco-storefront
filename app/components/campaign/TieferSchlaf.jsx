@@ -9,6 +9,7 @@ import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMolecul
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
+import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 
 /*
  * Landingpage /pages/tiefer-schlaf — DESIGN v3 „Die ruhige Nacht" + C-REFOKUS
@@ -64,31 +65,24 @@ const useLp = () => useContext(LiveDataCtx);
 const findLp = (data, handle) =>
   data?.products?.find((product) => product?.handle === handle) || null;
 
-const VAT = 1.19;
-const brutto = (a) => parseFloat(a || 0) * VAT;
-const fmtBrutto = (a) => {
-  if (!a) return null;
-  const n = Math.round(brutto(a));
-  return n.toLocaleString('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-};
-const fmtRaw = (a) => {
-  if (!a) return null;
-  const n = Math.round(parseFloat(a));
-  return n.toLocaleString('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-};
-const getCompareAt = (p) => {
+// M3 (Auftrag 20260718-lp-preise-dynamisch-binden-gestuft): Preise im
+// Markt-Kontext des Loaders (@inContext-Query) — EUR = netto*(1+Satz)
+// (Warenkorb-Kanon), andere Waehrungen = Markets-Endbetrag. Satz/Rundung/
+// Format kommen aus markt-pricing (die EINE Stelle, kein Doppelbau).
+const waehrungVon = (p) => p?.priceRange?.minVariantPrice?.currencyCode || 'EUR';
+const preisWert = (p) =>
+  bruttoAnzeige(p?.priceRange?.minVariantPrice?.amount, p?.handle, waehrungVon(p));
+const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
+const getCompareAtMoney = (p) => {
   const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return v?.compareAtPrice?.amount;
+  return v?.compareAtPrice || null;
+};
+// Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag)
+const compareLabelVon = (p) => {
+  const money = getCompareAtMoney(p);
+  const n = Number.parseFloat(money?.amount);
+  if (!Number.isFinite(n)) return null;
+  return formatPreis(Math.round(n), money.currencyCode || waehrungVon(p));
 };
 
 /* ECHTE Shooting-Fotos (Shopify-CDN, kein Repo-Binary — GL-PRO-0015;
@@ -104,9 +98,10 @@ function Hero() {
   const product = findLp(data, 'qione-2-pro');
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
   const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
-  const priceNum = priceAmount ? brutto(priceAmount) : fallback.bruttoWert;
-  const priceLabel = fmtBrutto(priceAmount) || fallback.label;
-  const compareLabel = fmtRaw(getCompareAt(product));
+  const waehrung = waehrungVon(product);
+  const priceNum = priceAmount ? preisWert(product) : fallback.bruttoWert;
+  const priceLabel = priceAmount ? preisLabelVon(product) : fallback.label;
+  const compareLabel = compareLabelVon(product);
   const monthly = Math.ceil(priceNum / 12);
   const trust = [
     '14.000+ Träger',
@@ -141,8 +136,8 @@ function Hero() {
               Jetzt 20 Nächte risikofrei testen
             </a>
             <span className="lp-ts2-hero__price">
-              {compareLabel && <s>{compareLabel}</s>} {priceLabel} · oder 12 Raten à{' '}
-              {monthly}&nbsp;€
+              {compareLabel && <s>{compareLabel}</s>} {priceLabel}
+              {waehrung === 'EUR' && <> · oder 12 Raten à {monthly}&nbsp;€</>}
             </span>
           </div>
           <ul className="lp-ts2-hero__trust">
@@ -575,7 +570,7 @@ function VideoSection() {
 function SchlafraumSection() {
   const {data} = useLp();
   const qihome = findLp(data, 'qihome-air');
-  const priceOf = (p) => fmtBrutto(p?.priceRange?.minVariantPrice?.amount);
+  const priceOf = (p) => preisLabelVon(p);
   const img =
     qihome?.featuredImage?.url ||
     'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp?v=1669000329';
@@ -704,8 +699,8 @@ function FinalCTA() {
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
-  const price = fmtBrutto(priceAmount);
-  const compare = fmtRaw(getCompareAt(product));
+  const price = preisLabelVon(product);
+  const compare = compareLabelVon(product);
   const image = product?.featuredImage?.url || product?.images?.[0]?.url;
   return (
     <section className="lp-vp-final-cta" data-section="lp-ts-final-cta">
