@@ -34,9 +34,40 @@ function hasPreviewTrackingConsent() {
   );
 }
 
+// Region-aware Consent-Policy (Job 20260718, Spiegel consent-policy.js):
+// ohne html[data-qb-consent-strict] strict fuer ALLE (heutiges Verhalten,
+// fail-closed); 'optout'-Regionen laden das Pixel ab Seitenaufruf, eine
+// AKTIV erklaerte Ablehnung wird immer respektiert.
+function regionPolicy() {
+  const de = document.documentElement;
+  const strict = (de.getAttribute('data-qb-consent-strict') || '')
+    .toUpperCase()
+    .split(',')
+    .filter((c) => /^[A-Z]{2}$/.test(c.trim()));
+  if (!strict.length) return 'consent';
+  const region = (de.getAttribute('data-qb-region') || '').toUpperCase();
+  if (!region) return 'consent';
+  return strict.includes(region) ? 'consent' : 'optout';
+}
+
+function hasDeclined() {
+  return Boolean(
+    window.Cookiebot &&
+      window.Cookiebot.hasResponse &&
+      window.Cookiebot.consent &&
+      !window.Cookiebot.consent.marketing,
+  );
+}
+
+function trackingAllowed() {
+  if (hasPreviewTrackingConsent()) return true;
+  if (regionPolicy() === 'optout') return !hasDeclined();
+  return hasMarketingConsent();
+}
+
 function bootMetaPixel() {
   if (window._qiblancoMetaPixelBooted) return;
-  if (!(hasMarketingConsent() || hasPreviewTrackingConsent())) return;
+  if (!trackingAllowed()) return;
   window._qiblancoMetaPixelBooted = true;
 
   // Offizieller Meta-Basecode (fbq-Stub + fbevents.js-Loader).
