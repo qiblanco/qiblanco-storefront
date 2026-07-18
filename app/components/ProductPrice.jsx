@@ -1,3 +1,5 @@
+import {formatPreis} from '~/lib/markt-pricing';
+
 export function ProductPrice({ price, compareAtPrice, taxRate = 0.19 }) {
   const applyTax = (money) => {
     if (!money) return null;
@@ -5,22 +7,22 @@ export function ProductPrice({ price, compareAtPrice, taxRate = 0.19 }) {
     if (!Number.isFinite(numericAmount)) return null;
     // Warenkorb-Kanon (cart-display-pricing: Math.round) — ceil zeigte
     // 1.088 statt offiziell 1.087 bei netto 913,45 (QiOne 2 Pro).
-    const amount = Math.round(numericAmount * (1 + taxRate));
+    // M3: Nicht-EUR-Maerkte (Shopify Markets) liefern den ENDBETRAG —
+    // dort gilt satz 0 (belegt: Cart-API == @inContext, keine Steuer-Zeile).
+    const satz = (money.currencyCode || 'EUR') === 'EUR' ? taxRate : 0;
+    const amount = Math.round(numericAmount * (1 + satz));
     return { ...money, amount };
   };
 
-  const formatGermanPrice = (money) => {
+  const formatMarktPreis = (money) => {
     if (!money) return null;
     const amount = Number(money.amount);
     if (!Number.isFinite(amount)) return null;
-    const formattedAmount = new Intl.NumberFormat('de-DE', {
-      maximumFractionDigits: 0,
-    }).format(amount);
-    return `${formattedAmount},- €`;
+    return formatPreis(Math.round(amount), money.currencyCode || 'EUR', 'pdp');
   };
 
-  const taxedPrice = formatGermanPrice(applyTax(price));
-  const compareAtFormatted = formatGermanPrice(compareAtPrice); // no tax here
+  const taxedPrice = formatMarktPreis(applyTax(price));
+  const compareAtFormatted = formatMarktPreis(compareAtPrice); // no tax here
 
   return (
     <div className="product-price">

@@ -39,12 +39,19 @@ export function getCartLinePriceDisplay(line) {
 }
 
 export function getCartLineGrossDisplayTotal(line) {
+  // M3: Nicht-EUR-Maerkte (Shopify Markets, CHF/USD/GBP): der Cart-Betrag
+  // IST der Endbetrag (belegt: Cart-API == @inContext, keine Steuer-Zeile)
+  // — keine deutsche MwSt aufschlagen, nur Warenkorb-Kanon-Rundung.
+  const net = parseFloat(line?.cost?.totalAmount?.amount ?? '0');
+  if (!Number.isFinite(net)) return 0;
+
+  if (getCurrencyCode(line) !== 'EUR') {
+    return Math.round(net);
+  }
+
   if (SALE_CACAO_HANDLES.has(getProductHandle(line))) {
     return SALE_CACAO_UNIT_GROSS_PRICE * getLineQuantity(line);
   }
-
-  const net = parseFloat(line?.cost?.totalAmount?.amount ?? '0');
-  if (!Number.isFinite(net)) return 0;
 
   return Math.round(net * (1 + getCartLineTaxRate(line)));
 }

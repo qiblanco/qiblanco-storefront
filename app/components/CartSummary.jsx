@@ -1,5 +1,6 @@
 import {Form} from 'react-router';
 import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
+import {formatPreis} from '~/lib/markt-pricing';
 
 /**
  * @param {CartSummaryProps}
@@ -8,11 +9,11 @@ export function CartSummary({cart, layout}) {
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
-  // Format as 1.087,- €
+  // Format as 1.087,- € / 1.048,- CHF / $1,383 (M3: Waehrung des Carts)
   const formatEuroPrice = (money) => {
     if (!money?.amount) return '';
     const amount = Math.floor(parseFloat(money.amount));
-    return `${amount.toLocaleString('de-DE')},- €`;
+    return formatPreis(amount, money.currencyCode || 'EUR', 'pdp') || '';
   };
 
   const lines = cart?.lines?.nodes ?? [];
