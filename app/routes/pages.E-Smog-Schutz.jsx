@@ -118,7 +118,8 @@ const CAMPAIGN_PRODUCTS_QUERY = `#graphql
     }
   }
 
-  query CampaignProductsESmogSchutz {
+  query CampaignProductsESmogSchutz($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
     qione: product(handle: "qione-2-pro") {
       ...CampaignProduct
     }

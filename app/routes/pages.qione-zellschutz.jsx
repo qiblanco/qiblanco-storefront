@@ -74,7 +74,8 @@ const CAMPAIGN_PRODUCTS_QUERY = `#graphql
     }
   }
 
-  query CampaignProducts {
+  query CampaignProducts($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
     qione: product(handle: "qione-2-pro") {
       ...CampaignProduct
     }
