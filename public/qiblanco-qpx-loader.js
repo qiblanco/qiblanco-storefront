@@ -25,9 +25,41 @@
     );
   }
 
+  // Region-aware Policy (Job 20260718, Spiegel von consent-policy.js):
+  // ohne html[data-qb-consent-strict] strict fuer ALLE (heutiges Verhalten);
+  // 'optout'-Region laedt qpx sofort, aktive Ablehnung wird respektiert.
+  function regionPolicy() {
+    var de = document.documentElement;
+    var strict = (de.getAttribute('data-qb-consent-strict') || '')
+      .toUpperCase()
+      .split(',')
+      .filter(function (c) {
+        return /^[A-Z]{2}$/.test(c.trim());
+      });
+    if (!strict.length) return 'consent';
+    var region = (de.getAttribute('data-qb-region') || '').toUpperCase();
+    if (!region) return 'consent';
+    return strict.indexOf(region) >= 0 ? 'consent' : 'optout';
+  }
+
+  function hasDeclined() {
+    return Boolean(
+      window.Cookiebot &&
+        window.Cookiebot.hasResponse &&
+        window.Cookiebot.consent &&
+        !window.Cookiebot.consent.marketing,
+    );
+  }
+
+  function trackingAllowed() {
+    if (hasPreviewTrackingConsent()) return true;
+    if (regionPolicy() === 'optout') return !hasDeclined();
+    return hasMarketingConsent();
+  }
+
   function boot() {
     if (window._qiblancoQpxBooted) return;
-    if (!(hasMarketingConsent() || hasPreviewTrackingConsent())) return;
+    if (!trackingAllowed()) return;
     var ep = endpoint();
     if (!ep) return;
     window._qiblancoQpxBooted = true;

@@ -2,10 +2,10 @@ import {
   appendTrackingToCheckoutUrl,
   buildAttributionCartAttributes,
   getCheckoutTrackingSearchParams,
-  hasCookiebotMarketingConsent,
   isQiblancoProductionHost,
   mergeCartAttributes,
 } from '~/lib/checkout-tracking';
+import {hasRegionAwareTrackingPermission} from '~/lib/consent-policy';
 
 /**
  * Persists ad click IDs on the Shopify cart so they become order note_attributes.
@@ -55,8 +55,10 @@ export async function persistAttributionOnCartResult({
  * @param {Record<string, string | undefined> | undefined} env
  */
 export function hasAttributionConsent(request, env) {
+  // Job 20260718: region-aware (DE=consent, sonst optout NACH Env-Flip;
+  // ohne PUBLIC_CONSENT_STRICT_REGIONS exakt heutiges Consent-Verhalten).
   return (
-    hasCookiebotMarketingConsent(request.headers.get('Cookie')) ||
+    hasRegionAwareTrackingPermission(request, env) ||
     isPreviewTrackingAllowed(request, env)
   );
 }

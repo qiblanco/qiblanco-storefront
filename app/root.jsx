@@ -77,6 +77,12 @@ export async function loader(args) {
     ...criticalData,
     isProductionHost: isQiblancoProductionHost(args.request.url),
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
+    // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
+    // Regionen-Konfig als data-Attribute an den Client (tracker/qpx-loader).
+    // Ohne PUBLIC_CONSENT_STRICT_REGIONS bleibt clientseitig ALLES beim
+    // heutigen Consent-Verhalten (fail-closed, s. consent-policy.js).
+    buyerCountry: args.request.headers.get('oxygen-buyer-country') || '',
+    consentStrictRegions: env.PUBLIC_CONSENT_STRICT_REGIONS || '',
     // First-Party-Pixel (qpx): lädt NUR, wenn der Receiver-Endpoint gesetzt ist
     // (Rollout-Schalter; ohne env-Variable ist das Verhalten unverändert).
     qpxEndpoint: env.PUBLIC_QPX_ENDPOINT || '',
@@ -171,6 +177,8 @@ export function Layout({children}) {
     <html
       lang="de"
       data-qiblanco-tracking-preview={isTrackingPreview ? 'true' : undefined}
+      data-qb-region={data?.buyerCountry || undefined}
+      data-qb-consent-strict={data?.consentStrictRegions || undefined}
     >
       <head>
         <meta charSet="utf-8" />
