@@ -37,9 +37,22 @@ export const meta = () => [
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
 export async function loader({context}) {
-  const data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
-    cache: context.storefront.CacheShort(),
-  });
+  let data;
+  try {
+    data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
+      cache: context.storefront.CacheShort(),
+    });
+  } catch (fehler) {
+    // FAIL-CLOSED (M1, Auftrag 20260718-lp-preise-dynamisch-binden-gestuft):
+    // Storefront-API nicht erreichbar -> leere Produktliste; die Komponenten
+    // zeigen den letzten bekannten guten Preis aus campaign-fallback-prices
+    // (+ Warnung) statt eines 500ers. Nie 0/leer/falsch rendern.
+    console.error(
+      '[preis-fallback] Campaign-Query fehlgeschlagen:',
+      fehler?.message || fehler,
+    );
+    return {products: []};
+  }
 
   return {
     products: [data.qione, data.bracelet, data.qihome]
