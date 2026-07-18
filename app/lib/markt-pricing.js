@@ -67,7 +67,7 @@ export function formatPreis(wert, currencyCode = 'EUR', stil = 'lp') {
    Rollback-SHA: Stufe CH: ['AT','CH'] -> Stufe US: ['AT','CH','US'].
    Der explizite Preview-Parameter `?markt=XX` funktioniert UNABHAENGIG vom
    Flip (QA/Verify-Werkzeug: gezielter Blick auf einen Markt-Kontext). */
-export const FREIGESCHALTETE_MAERKTE = [];
+export const FREIGESCHALTETE_MAERKTE = ['AT', 'CH'];
 
 // Maerkte, die der Shop anbietet (Shopify Markets, localization-API belegt
 // 2026-07-18): DE Default · AT EUR · CH/LI CHF · US USD · GB GBP.
