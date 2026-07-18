@@ -132,10 +132,15 @@ export default function Product() {
             <b>Mehr als 14.000+ aktive Nutzer</b>
           </p>
 
-          <CacaoPriceDisplay quantity={quantity} />
+          <CacaoPriceDisplay
+            quantity={quantity}
+            selectedVariant={selectedVariant}
+            handle={product.handle}
+          />
 
           <CacaoProductForm
             selectedVariant={selectedVariant}
+            handle={product.handle}
             quantity={quantity}
             onQuantityChange={setQuantity}
           />
