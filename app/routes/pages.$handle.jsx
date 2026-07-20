@@ -1,4 +1,3 @@
-import {redirect} from '@shopify/remix-oxygen';
 import {useLoaderData} from 'react-router';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
@@ -42,7 +41,11 @@ async function loadCriticalData({context, request, params}) {
   ]);
 
   if (!page) {
-    throw redirect('/');
+    // Ehrlicher 404 statt stillem redirect('/') (Auftrag 20260720-ads-lpa-
+    // s02-catchall-404): erst mit Status 404 kann server.js
+    // storefrontRedirect Shopify-Admin-URL-Redirects greifen lassen; findet
+    // Shopify nichts, rendert die root-ErrorBoundary die 404-Seite.
+    throw new Response(null, {status: 404});
   }
 
   redirectIfHandleIsLocalized(request, {handle: params.handle, data: page});
