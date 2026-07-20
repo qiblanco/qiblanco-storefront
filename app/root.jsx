@@ -4,11 +4,13 @@ import {
   useRouteError,
   isRouteErrorResponse,
   useRouteLoaderData,
+  useLocation,
   Links,
   Meta,
   Scripts,
   ScrollRestoration,
 } from 'react-router';
+import {useEffect, useState} from 'react';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
@@ -92,6 +94,7 @@ export async function loader(args) {
     // localStorage/keine persistente ID) — Go-live = diese env + Server
     // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
     qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
+    salesbotWidget: getSalesbotWidgetConfig(env, args.request.url),
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -169,6 +172,7 @@ export function Layout({children}) {
     data?.isProductionHost || data?.enableTrackingInPreview;
   const isTrackingPreview =
     Boolean(data?.enableTrackingInPreview) && !data?.isProductionHost;
+  const salesbotWidget = data?.salesbotWidget;
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
@@ -284,6 +288,7 @@ export function Layout({children}) {
         )}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
+        <SalesbotPreviewFrame config={salesbotWidget} />
       </body>
     </html>
   );
@@ -291,6 +296,120 @@ export function Layout({children}) {
 
 export default function App() {
   return <Outlet />;
+}
+
+function isTruthyEnv(value) {
+  return ['1', 'true', 'yes', 'on'].includes(String(value || '').toLowerCase());
+}
+
+function productKeyFromRequestUrl(requestUrl) {
+  const pathname = new URL(requestUrl).pathname;
+  const match = pathname.match(/^\/products\/([^/]+)/);
+  return match?.[1] || '';
+}
+
+function getSalesbotWidgetConfig(env, requestUrl) {
+  return {
+    enabled: isTruthyEnv(env.PUBLIC_SALESBOT_WIDGET_ENABLED),
+    origin:
+      env.PUBLIC_SALESBOT_WIDGET_ORIGIN ||
+      originFromUrl(env.PUBLIC_SALESBOT_WIDGET_SCRIPT_URL),
+    tenantId: env.PUBLIC_SALESBOT_WIDGET_TENANT_ID || 'tenant_qiblanco',
+    projectId:
+      env.PUBLIC_SALESBOT_WIDGET_PROJECT_ID || 'project_qiblanco_sales',
+    productKey:
+      env.PUBLIC_SALESBOT_WIDGET_PRODUCT_KEY ||
+      productKeyFromRequestUrl(requestUrl),
+    placement: env.PUBLIC_SALESBOT_WIDGET_PLACEMENT || 'right',
+    zIndex: env.PUBLIC_SALESBOT_WIDGET_Z_INDEX || '2147483000',
+    initialOpen: String(isTruthyEnv(env.PUBLIC_SALESBOT_WIDGET_INITIAL_OPEN)),
+  };
+}
+
+function originFromUrl(value) {
+  if (!value) return '';
+
+  try {
+    return new URL(value).origin;
+  } catch {
+    return '';
+  }
+}
+
+function SalesbotPreviewFrame({config}) {
+  const location = useLocation();
+  const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    setIsOpen(isTruthyEnv(config?.initialOpen));
+  }, [config?.initialOpen]);
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 560px)');
+    const updateViewport = () => setIsSmall(query.matches);
+    updateViewport();
+    query.addEventListener?.('change', updateViewport);
+    return () => query.removeEventListener?.('change', updateViewport);
+  }, []);
+
+  useEffect(() => {
+    if (!config?.origin) return undefined;
+
+    const handleMessage = (event) => {
+      if (event.origin !== config.origin) return;
+      if (event.data?.type !== 'qiblanco-widget:state') return;
+      setIsOpen(Boolean(event.data.isOpen));
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [config?.origin]);
+
+  if (!isMounted || !config?.enabled || !config.origin) return null;
+
+  const productKey = productKeyFromRequestUrl(
+    `${window.location.origin}${location.pathname}`,
+  );
+  const params = new URLSearchParams({
+    tenantId: config.tenantId,
+    projectId: config.projectId,
+    pageUrl: window.location.href,
+    initialOpen: config.initialOpen,
+  });
+  if (productKey) params.set('productKey', productKey);
+
+  const mobileOpen = isOpen && isSmall;
+  const placementLeft = config.placement === 'left';
+  const frameStyle = {
+    position: 'fixed',
+    bottom: mobileOpen ? '12px' : '20px',
+    left: mobileOpen ? '12px' : placementLeft ? '20px' : 'auto',
+    right: mobileOpen ? '12px' : placementLeft ? 'auto' : '20px',
+    width: mobileOpen ? 'calc(100vw - 24px)' : isOpen ? '420px' : '86px',
+    height: mobileOpen
+      ? 'min(620px, calc(100vh - 24px))'
+      : isOpen
+        ? '620px'
+        : '86px',
+    border: 0,
+    background: 'transparent',
+    zIndex: config.zIndex,
+    colorScheme: 'normal',
+  };
+
+  return (
+    <iframe
+      id="qiblanco-salesbot-widget-frame"
+      title="Qi Blanco Chat"
+      src={`${config.origin}/widget/embed?${params.toString()}`}
+      allow="clipboard-write"
+      aria-label="Qi Blanco Chat"
+      style={frameStyle}
+    />
+  );
 }
 
 export function ErrorBoundary() {

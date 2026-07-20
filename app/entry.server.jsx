@@ -19,6 +19,25 @@ function qpxConnectSrc(env) {
   }
 }
 
+function salesbotContentSources(env) {
+  if (!['1', 'true', 'yes', 'on'].includes(
+    String(env?.PUBLIC_SALESBOT_WIDGET_ENABLED || '').toLowerCase(),
+  )) {
+    return [];
+  }
+
+  try {
+    const url = new URL(
+      env?.PUBLIC_SALESBOT_WIDGET_ORIGIN ||
+        env?.PUBLIC_SALESBOT_WIDGET_SCRIPT_URL ||
+        '',
+    );
+    return ['http:', 'https:'].includes(url.protocol) ? [url.origin] : [];
+  } catch {
+    return [];
+  }
+}
+
 /**
  * @param {Request} request
  * @param {number} responseStatusCode
@@ -33,6 +52,7 @@ export default async function handleRequest(
   reactRouterContext,
   context,
 ) {
+  const salesbotSources = salesbotContentSources(context.env);
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     defaultSrc: [
       "'self'",
@@ -71,6 +91,7 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://gorgias-convert.com',
       'https://connect.facebook.net',
+      ...salesbotSources,
     ],
     styleSrc: [
       "'self'",
@@ -92,6 +113,7 @@ export default async function handleRequest(
       'https://consentcdn.cookiebot.com',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
+      ...salesbotSources,
     ],
     connectSrc: [
       "'self'",
@@ -131,6 +153,7 @@ export default async function handleRequest(
       'https://connect.facebook.net',
       // First-Party-Pixel (qpx): Receiver-Origin nur, wenn per env gesetzt.
       ...qpxConnectSrc(context.env),
+      ...salesbotSources,
     ],
     mediaSrc: [
       "'self'",
