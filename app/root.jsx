@@ -305,6 +305,23 @@ export function ErrorBoundary() {
     errorMessage = error.message;
   }
 
+  // 404 ist seit dem Catch-All-Umbau (Auftrag 20260720-ads-lpa-s02-
+  // catchall-404) der Regelfall fuer unbekannte Pfade — freundlicher
+  // deutscher Textblock statt "Oops" (bewusst klein, kein Redesign).
+  if (errorStatus === 404) {
+    return (
+      <div className="route-error">
+        <h1>Seite nicht gefunden</h1>
+        <p>
+          Diese Seite existiert leider nicht oder ist umgezogen.
+        </p>
+        <p>
+          <a href="/">Zur Startseite</a>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="route-error">
       <h1>Oops</h1>
