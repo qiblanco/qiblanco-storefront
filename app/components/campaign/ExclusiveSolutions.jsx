@@ -124,10 +124,16 @@ function GeldheldenHero() {
    erhalten, ausdrücklich anders als Bereich 3); Thumbnail-Stufe vor dem
    Eintragen messen (maxres nur bei HTTP 200 und Breite >= 1280, sonst
    sddefault/hqdefault — null = hqdefault-Fallback des Bausteins). */
+/* NACHTRAG Job 20260721-lp-bereich2-interview-nachzug (Jobspec §11,
+   2026-07-21): Christian hat das Video bestimmt — die Sperre oben ist
+   aufgelöst. BQxzbXqREWE = „das Geldhelden-Video" (Christian Bauer im
+   Geldhelden-Podcast); startSeconds 817 ÜBERNOMMEN von /pages/tiefer-schlaf
+   (live gegengeprüft per Klickprobe: iframe ?start=817, 2026-07-21);
+   Thumbnail-Stufe gemessen: maxresdefault HTTP 200, 1280x720. */
 const HERO_VIDEO = {
-  youtubeId: null, // Interview-Video Christian — ID nur von Christian
-  startSeconds: null, // übernommener Zeitstempel — mit der ID eintragen
-  thumbnail: null, // nach maxres-Messung setzen; null = hqdefault-Fallback
+  youtubeId: 'BQxzbXqREWE', // Interview-Video Christian — ID nur von Christian
+  startSeconds: 817, // übernommener Zeitstempel — mit der ID eintragen
+  thumbnail: 'https://i.ytimg.com/vi/BQxzbXqREWE/maxresdefault.jpg', // nach maxres-Messung setzen; null = hqdefault-Fallback
 };
 
 function HeroVideoSection() {
@@ -1305,7 +1311,7 @@ main:has(.lp-exclusive-solutions) { background: rgb(253,251,247); }
    Layout-Lücke) — die Sektion bringt ihren Abstand selbst mit.
    Freigabestand 2026-07-21 (Christian, 3 Nachrichten).            */
 const LP_SEKTIONEN = {
-  herovideo: false, // B0 „Das Interview mit Christian." — freigegeben, wartet auf Video-ID + startSeconds (§5)
+  herovideo: true, // B0 „Das Interview mit Christian." — freigegeben, aktiviert per Nachtrag §11 (BQxzbXqREWE @817, 2026-07-21)
   problem: true, // B1 „Das unsichtbare Risiko" — freigegeben
   solution: true, // B2 „So funktioniert der Schutz" — freigegeben
   marco: false, // B3 Marcos Empfehlung — nicht freigegeben
