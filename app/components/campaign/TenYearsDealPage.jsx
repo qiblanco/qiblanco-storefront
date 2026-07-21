@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {
   TEN_YEARS_DEALS,
@@ -10,6 +10,7 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {Studien} from '~/components/reusables/Studien';
+import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 
 const wholeEuroFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
@@ -875,9 +876,16 @@ function YoutubeProofSlider() {
     'https://www.youtube-nocookie.com/embed/aG36zJKxDzg',
   ];
 
+  const trackRef = useRef(null);
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
+
   return (
     <section className="j-sale-deal__youtube-proof">
-      <div className="j-sale-deal__youtube-slider">
+      <div
+        className={`j-sale-deal__youtube-slider${isDragging ? ' is-dragging' : ''}`}
+        ref={trackRef}
+        {...handlers}
+      >
         {videos.map((video) => (
           <ResponsiveIframe src={video} title="Qi Blanco Erfahrung" key={video} />
         ))}
@@ -1164,6 +1172,8 @@ function HtmlTextSection({
 }
 
 function DealRail({currentKey, compact = false}) {
+  const trackRef = useRef(null);
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
   return (
     <section
       className={compact ? 'j-sale-deal__rail is-compact' : 'j-sale-deal__rail'}
@@ -1173,7 +1183,11 @@ function DealRail({currentKey, compact = false}) {
         <span>Alle Deals</span>
         <h2>Wechsle direkt zum nächsten Jubiläumsangebot</h2>
       </div>
-      <div className="j-sale-deal__slider">
+      <div
+        className={`j-sale-deal__slider${isDragging ? ' is-dragging' : ''}`}
+        ref={trackRef}
+        {...handlers}
+      >
         {TEN_YEARS_DEALS.map((item) => (
           <Link
             className={
