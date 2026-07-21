@@ -123,6 +123,11 @@ jobs:
           }
 
           console.log(`OXYGEN_PREVIEW_URL=${previewUrl}`);
+          // Vorschau-Branch-Ergaenzung (preview/lp-obere-bereiche-20260721):
+          // authBypassToken zusaetzlich ausgeben — der Abnehmer (Spec 3.5)
+          // zieht URL+Token aus diesem Step; Token ist 12 h befristet und
+          // gilt nur fuer dieses Preview-Deployment.
+          console.log(`OXYGEN_AUTH_BYPASS_TOKEN=${deploy.authBypassToken || ''}`);
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Oxygen preview: ${previewUrl}\n`);
           NODE
 
