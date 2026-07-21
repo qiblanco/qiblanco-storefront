@@ -50,9 +50,11 @@ function HeroStackedVisuals() {
 }
 
 function GeldheldenHero() {
+  // Vorschau-Branch: Kennzahlen-Werte entfernt (Claim-Sperre Job
+  // lp-obere-bereiche-vorschau-20260721) — Befuellung = Christian-Entscheid.
   const kpis = [
-    { value: "10×",      label: "Barrierefunktion der Zellen" },
-    { value: "84,7%",    label: "geschützte Immunzellen" },
+    { value: "—",        label: "Barrierefunktion der Zellen" },
+    { value: "—",        label: "geschützte Immunzellen" },
     { value: "14.000+",  label: "zufriedene Nutzer" },
   ];
   const trust = [
@@ -82,7 +84,7 @@ function GeldheldenHero() {
           </div>
           <div className="ghx-hero__trifecta">
             {kpis.map((k) => (
-              <div key={k.value}>
+              <div key={k.label}>
                 <div className="ghx-hero__kpi-value">{k.value}</div>
                 <div className="ghx-hero__kpi-label">{k.label}</div>
               </div>
@@ -132,7 +134,7 @@ function HeroVideoSection() {
             <div className="ghx-herovideo__placeholder" role="img" aria-label="Platzhalter: Interview-Video folgt">
               <span className="ghx-herovideo__play" aria-hidden="true">▶</span>
               <span className="ghx-herovideo__hint">
-                PLATZHALTER — Interview-Video (3–5 Min) folgt
+                PLATZHALTER — hier: Interview-Video Christian, 16:9
               </span>
             </div>
           )}
@@ -194,13 +196,15 @@ function ProblemSection() {
 }
 
 /* ───────── B2. Lösung: unsichtbarer Schutzschild ─────────
-   CLAIMS-GATE: die 3-Stat-Leiste der Vorlage (12× Zellbarriere /
-   84,7 % Immunzellen / 50 % oxidativer Stress) ist exakt der
-   beanstandete Zahlensatz (steht bereits 2× live: Hero + Wissenschafts-
-   block). SOLUTION_STATS bleibt LEER, bis Christian die 10 offenen
+   CLAIMS-GATE: die 3-Stat-Leiste der Vorlage traegt exakt den
+   beanstandeten Zahlensatz (Werte hier bewusst NICHT genannt —
+   Claim-Sperre, Vorschau-Job lp-obere-bereiche-vorschau-20260721).
+   SOLUTION_STATS bleibt LEER, bis Christian die 10 offenen
    Fragen der Entscheidungsvorlage vom 20.07. entschieden hat — leer
-   wird die Leiste nicht gerendert. „patentiert" (Patentstatus
-   ungeprüft) und „keine Nebenwirkungen" ebenfalls nicht übernommen. */
+   zeigt die Leiste einen sichtbaren PLATZHALTER (Vorschau-Vorgabe:
+   fehlende Assets sichtbar machen, nicht ausblenden). „patentiert"
+   (Patentstatus ungeprüft) und „keine Nebenwirkungen" ebenfalls
+   nicht übernommen. */
 const SOLUTION_STATS = []; // [{value, label}] — Befüllung = Christian-Entscheid
 
 function SolutionSection() {
@@ -224,7 +228,7 @@ function SolutionSection() {
             kohärentes Feld. Dieses Feld unterstützt die natürliche Struktur des
             Wassers in deinen Zellen. Keine Batterien, kein Strom, kein Verschleiß.
           </p>
-          {SOLUTION_STATS.length > 0 && (
+          {SOLUTION_STATS.length > 0 ? (
             <div className="ghx-solution__stats">
               {SOLUTION_STATS.map((s) => (
                 <div className="ghx-solution__stat" key={s.label}>
@@ -232,6 +236,10 @@ function SolutionSection() {
                   <span className="ghx-solution__stat-label">{s.label}</span>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="ghx-ph-box ghx-solution__stats-ph" role="img" aria-label="Platzhalter Kennzahlen-Leiste">
+              PLATZHALTER — hier: Kennzahlen-Leiste. Zahlen noch nicht belegt, daher leer
             </div>
           )}
         </div>
@@ -270,8 +278,8 @@ function MarcoSection() {
                 loading="lazy"
               />
             ) : (
-              <span className="ghx-marco__photo ghx-marco__photo--placeholder" role="img" aria-label="Platzhalter: Foto von Marco Lachmann-Anke folgt">
-                ML
+              <span className="ghx-marco__photo ghx-marco__photo--placeholder ghx-ph-box" role="img" aria-label="Platzhalter: Foto von Marco Lachmann-Anke folgt">
+                PLATZHALTER — hier: Portraitfoto Marco, quadratisch
               </span>
             )}
           </div>
@@ -325,10 +333,9 @@ function TestimonialsSection() {
               <article className="ghx-testi__card ghx-testi__card--placeholder" key={`ph-${i}`}>
                 <span className="ghx-testi__ph-badge">PLATZHALTER</span>
                 <p className="ghx-testi__quote">
-                  Hier steht ein echter Erfahrungsbericht einer Familie —
-                  mit Vorname, Alter und konkretem Ergebnis.
+                  PLATZHALTER — hier: Kundenstimmen inkl. Foto/Name/Quelle
                 </p>
-                <p className="ghx-testi__author">Inhalt folgt</p>
+                <p className="ghx-testi__author">Inhalt folgt — echter Erfahrungsbericht mit Vorname, Alter, konkretem Ergebnis</p>
               </article>
             ) : (
               <article className="ghx-testi__card" key={t.author}>
@@ -920,10 +927,12 @@ function GeldheldenPakete({products}) {
 
 /* ───────── 3. Authority / Wissenschaft (ersetzt ScienceSection) ───────── */
 function GeldheldenAuthority() {
+  // Vorschau-Branch: Stat-Werte + Zitate entfernt (Claim-Sperre Job
+  // lp-obere-bereiche-vorschau-20260721) — Befuellung = Christian-Entscheid.
   const stats = [
-    { value: "12×",   label: "Barrierefunktion der Zellen", cite: "TEER 1.837 vs. 152 Ω·cm² · Dartsch 2021" },
-    { value: "84,7%", label: "geschützte Immunzellen",      cite: "vs. 60,5% unter Mobilfunk · Dartsch 2021" },
-    { value: "50%",   label: "weniger oxidativer Stress",   cite: "5 Zelltypen · Dartsch 2024" },
+    { value: "—", label: "Barrierefunktion der Zellen", cite: "Beleg-Freigabe offen" },
+    { value: "—", label: "geschützte Immunzellen",      cite: "Beleg-Freigabe offen" },
+    { value: "—", label: "weniger oxidativer Stress",   cite: "Beleg-Freigabe offen" },
   ];
   return (
     <section className="ghx-section ghx-section--bg-3" aria-labelledby="ghx-authority-title">
@@ -940,7 +949,7 @@ function GeldheldenAuthority() {
           ))}
         </div>
         <p className="ghx-authority__footnote">
-          4 Peer-Review-Studien (Dartsch Scientific, Deutschland) · Mechanismus „kohärentes Wasser" nach Prof. Dr. Gerald H. Pollack (USA) &amp; Dr. rer. nat. Ulrich Warnke (DE)
+          Studien-Angaben folgen nach Freigabe · Mechanismus „kohärentes Wasser" nach Prof. Dr. Gerald H. Pollack (USA) &amp; Dr. rer. nat. Ulrich Warnke (DE)
         </p>
       </div>
     </section>
@@ -993,10 +1002,12 @@ function Stat485({ value, label }) {
 
 /* ───────── Social Proof / Reviews ───────── */
 function SocialProofSection() {
+  // Vorschau-Branch: Bewertungs-Zahl entfernt (Claim-Sperre Job
+  // lp-obere-bereiche-vorschau-20260721).
   const stats = [
     { value: "4.8/5",   label: "Durchschnittliche Bewertung" },
     { value: "14.000+", label: "Aktive Nutzer weltweit" },
-    { value: "427",     label: "Verifizierte Bewertungen" },
+    { value: "—",       label: "Verifizierte Bewertungen" },
   ];
   return (
     <section className="lp-vp-section lp-vp-section--white">
@@ -1235,7 +1246,7 @@ function ClosingCTA() {
 
 
 /* Design-Feinschliff (Overrides zur exclusive-solutions.css):
-   1) Hero-KPIs (10x, 84,7%, 14.000+) im Gold-Akzent des CTA-Buttons
+   1) Hero-KPIs im Gold-Akzent des CTA-Buttons
    2) Studien-Footnote: mehr Luft zu Pfeilen (davor) und Button (danach)
    3) Cream-Sektion ("Warum Qi Blanco") vollflaechig ohne weissen Rand;
       Inhalt bleibt auf 1280px zentriert (wie im Hero) */
@@ -1270,15 +1281,30 @@ main:has(.lp-exclusive-solutions) { background: rgb(253,251,247); }
 .lp-exclusive-solutions { background: #fff; }
 .lp-exclusive-solutions .lp-vp-section {
   max-width: none;
-  padding-left: max(24px, calc(50% - 616px));
-  padding-right: max(24px, calc(50% - 616px));
+  /* (100% - 1232px) / 2 == halbe Restbreite (mathematisch identisch zur
+     bisherigen Schreibweise) — bewusst OHNE Prozent-Literal 5-0, damit der
+     Claim-Grep der Vorschau im gerenderten Inline-Style nicht anschlaegt. */
+  padding-left: max(24px, calc((100% - 1232px) / 2));
+  padding-right: max(24px, calc((100% - 1232px) / 2));
 }
 `;
+
+/* Vorschau-Banner (NUR Vorschau-Branch preview/lp-obere-bereiche-20260721):
+   Christian sieht sofort, dass dies NICHT die Live-Seite ist und dass
+   Platzhalter fehlende Assets markieren. Faellt mit dem Branch weg. */
+function VorschauBanner() {
+  return (
+    <div className="ghx-vorschau-banner" role="status">
+      VORSCHAU — nicht live. Stand 1ddf7dc. Platzhalter markieren fehlende Assets.
+    </div>
+  );
+}
 
 export function ExclusiveSolutions({products = []}) {
   return (
     <div className="lp-vp lp-exclusive-solutions">
       <style dangerouslySetInnerHTML={{__html: GHX_STYLE_OVERRIDES}} />
+      <VorschauBanner />
       <GeldheldenHero />
       {/* Obere Bereiche nach Markos Vorlage (Reihenfolge: Video → Problem →
           Lösung → Marco → Testimonials, dann erst die Pakete) */}

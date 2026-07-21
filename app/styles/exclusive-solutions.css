@@ -2540,3 +2540,48 @@
     text-align: center;
   }
 }
+
+/* ══ Vorschau-Branch preview/lp-obere-bereiche-20260721 (NUR Vorschau,
+   nie fuer main): Vorschau-Banner + beschriftete Platzhalter-Kaesten.
+   Vorgabe Spec 3.2: fehlende Assets SICHTBAR markieren, nicht ausblenden. ══ */
+.ghx-vorschau-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgb(180, 83, 9);
+  color: #fff;
+  text-align: center;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  padding: 10px 16px;
+}
+.ghx-ph-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px dashed rgb(156, 163, 175);
+  border-radius: 12px;
+  background: rgb(243, 244, 246);
+  color: rgb(55, 65, 81);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 24px;
+}
+.ghx-solution__stats-ph {
+  margin-top: 40px;
+  min-height: 96px;
+}
+/* Marco-Foto-Slot: 200x200, quadratisch (Spec), Beschriftung muss passen —
+   ueberschreibt Kreis + 56px-Initialen-Typo des Bestands-Platzhalters. */
+.ghx-marco__photo.ghx-ph-box {
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 14px;
+}
