@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useDragSwipe } from "../reusables/useDragSwipe";
 
 export function InfoSlider({dataSection}){
     const cardCount = 5;
     const maxSlideIndex = cardCount - 1;
     const trackRef = useRef(null);
-    const swipeStartRef = useRef(0);
-    const suppressClickRef = useRef(false);
     const [activeSlide, setActiveSlide] = useState(0);
     const [slideStep, setSlideStep] = useState(420);
 
@@ -46,74 +45,60 @@ export function InfoSlider({dataSection}){
     const progress = (activeSlide / maxSlideIndex) * 100;
     const placement = -activeSlide * slideStep;
 
-    const handlePointerDown = (event) => {
-        swipeStartRef.current = event.clientX;
-    }
-
-    const handlePointerUp = (event) => {
-        const movement = swipeStartRef.current - event.clientX;
-        const minSwipeDistance = 64;
-
-        if(movement >= minSwipeDistance){
-            suppressClickRef.current = true;
-            handlePlacementBehaviour("next");
-            window.setTimeout(() => {
-                suppressClickRef.current = false;
-            }, 220);
-        }
-
-        if(movement <= -minSwipeDistance){
-            suppressClickRef.current = true;
-            handlePlacementBehaviour("previous");
-            window.setTimeout(() => {
-                suppressClickRef.current = false;
-            }, 220);
-        }
-    }
+    const {handlers, isDragging, dragOffset, shouldSuppressClick} = useDragSwipe({
+        mode: 'transform',
+        slideStep,
+        onNext: () => handlePlacementBehaviour('next'),
+        onPrev: () => handlePlacementBehaviour('previous'),
+        canNext: () => true, // 'next' wickelt am Ende auf 0 (Bestandsverhalten)
+        canPrev: () => activeSlide > 0,
+    });
 
     return (
         <div className="NormalSectionSize" data-section={dataSection}>
-            <div className="InfoSlider"
+            <div className={`InfoSlider${isDragging ? ' is-dragging' : ''}`}
             role="region"
             aria-label="Qi Blanco Vorteile Slider"
-            onPointerDown={handlePointerDown}
-            onPointerUp={handlePointerUp}
+            {...handlers}
             >
-                <div className="InfoSliderTrack" ref={trackRef} style={{transform: `translateX(${placement}px)`}}>
+                <div className="InfoSliderTrack" ref={trackRef} style={{
+                    transform: `translateX(${placement + dragOffset}px)`,
+                    transition: isDragging ? 'none' : undefined,
+                }}>
                     <InfoSliderCard data-index="0"
                     title={<h3>Erholsame Nächte</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216c88.68 0 166.73-51.57 200-128c-26.39 11.49-57.38 16-88 16c-119.29 0-216-96.71-216-216"></path></svg> Erholsame Nächte</p>}
                     description="Mit seinem einzigartigen Ansatz unterstützt der QiOne® 2 Pro die Bildung kohärenter Wasserstrukturen, die von vielen Anwendern als beruhigend und ausgleichend empfunden werden. So kannst du dein Wohlbefinden auf natürliche Weise fördern und dein Lebensumfeld optimieren."
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06825.webp?v=1737715386"
-                    shouldSuppressClick={() => suppressClickRef.current}
+                    shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="1"
                     title={<h3>Vermeide Belastungen - stärke dein Wohlbefinden</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 28 28"><path fill="currentColor" d="M10.023 3a.75.75 0 0 1 .71.59l3.905 17.79l4.148-12.86a.75.75 0 0 1 1.438.033l1.349 4.947h3.677a.75.75 0 0 1 0 1.5H21a.75.75 0 0 1-.724-.553l-.836-3.067l-4.226 13.1a.75.75 0 0 1-1.447-.07L9.905 6.815L7.72 14.456A.75.75 0 0 1 7 15H2.75a.75.75 0 0 1 0-1.5h3.684L9.28 3.544A.75.75 0 0 1 10.023 3"></path></svg>Starkes Wohlbefinden</p>}
                     description="Viele Anwender berichten, dass sie sich mit dem QiOne® 2 Pro bewusster und ausgeglichener fühlen - ob zu Hause, am Arbeitsplatz oder unterwegs. Sein zeitloses Design und die innovative Technologie machen ihn zu einem Begleiter, der Stil und Funktion perfekt kombiniert."
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020791_1_0f03ee06-6ad1-4997-9182-3685335eb04c.webp?v=1738063344"
-                    shouldSuppressClick={() => suppressClickRef.current}
+                    shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="2"
                     title={<h3>Mach deinen Kopf frei - und deine Ziele greifbar.</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" d="M12 5a3 3 0 1 0-6 .13a4 4 0 0 0-2.53 5.77a4 4 0 0 0 .56 6.58A4 4 0 1 0 12 18zM12 5a3 3 0 1 1 6 .13a4 4 0 0 1 2.53 5.77a4 4 0 0 1-.56 6.58A4 4 0 1 1 12 18zM15 13a4.5 4.5 0 0 1-3-4a4.5 4.5 0 0 1-3 4"></path></svg>Klarer Kopf</p>}
                     description="Mit seinem einzigartigen GitterChip™ besitzt der QiOne® 2 Pro die Fähigkeit, um äußere Einflüsse wie E-Smog zu reduzieren. Viele Anwender schätzen ihn für seine Vielseitigkeit und das Gefühl, ihn bei jeder Aktivität an ihrer Seite zu haben."
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250"
-                    shouldSuppressClick={() => suppressClickRef.current}
+                    shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="3"
                     title={<h3>Mach Energie zur Grundlage deines Erfolgs</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"></circle><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"></circle><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M12 3v2M12 19v2M3 12h2M19 12h2"></path></svg>Klarer Fokus</p>}
                     description="Durch die Erzeugung eines statischen Feldes unterstützt der QiBracelet® Wasser dabei, seine molekulare Struktur in kohärente Zustände zu überführen. Diese Technologie kann dir ermöglichen, Energie bewusster in deinen Alltag zu integrieren. Zahlreiche Nutzer berichten von einer gesteigerten Vitalität, einem klareren Fokus und einer harmonischeren Lebensweise."
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579"
-                    shouldSuppressClick={() => suppressClickRef.current}
+                    shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="4"
                     title={<h3>Energie, die deinen Alltag antreibt</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1024 1024"><path fill="currentColor" d="M595.344 64.72h.176zm0 0l-72.207 379.377l261.584.88L428.657 959.28l72.208-417.376l-261.568-.912zm.049-63.999c-1.728 0-3.455.063-5.151.19c-11.296.913-18.785 4.689-27.664 10.657a64.3 64.3 0 0 0-13.392 11.936a57 57 0 0 0-3.297 4.288L187.281 502.4c-14.16 19.408-16.24 45.025-5.36 66.433c10.864 21.408 32.832 34.976 56.912 35.152l184.736 1.344l-58.08 342.192c-5.52 29.408 10.16 58.72 37.76 70.528a64.2 64.2 0 0 0 25.391 5.216c20.112 0 36.64-9.408 49.041-26.4L836.737 482.56c14.16-19.409 16.225-45.057 5.36-66.433c-10.864-21.408-32.832-34.977-56.912-35.152l-184.736-.32l57.456-300.88a62.5 62.5 0 0 0 1.825-15.056c0-34.624-27.569-62.848-62.065-63.968c-.767-.032-1.52-.032-2.271-.032z"></path></svg>Mehr Energie</p>}
                     description="Meditation ist eine der effektivsten Methoden, um innere Balance und Klarheit zu finden - und mit dem QiOne® 2 Pro kannst du deine Achtsamkeitsübungen auf eine neue Ebene heben. Dank seiner fortschrittlichen GitterChip™-Technologie fördert der QiOne® 2 Pro die Bildung kohärenter Wasserstrukturen, die dazu beitragen können, eine beruhigende und harmonisierende Atmosphäre zu schaffen."
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Shooting_-_2021-04-qiblanco-bali-11_1623305c-198d-4cea-9d20-12ba96d6a740.jpg?v=1738526957"
-                    shouldSuppressClick={() => suppressClickRef.current}
+                    shouldSuppressClick={shouldSuppressClick}
                     />
                 </div>
             </div>

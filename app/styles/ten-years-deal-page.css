@@ -1926,3 +1926,15 @@
     min-height: 0;
   }
 }
+
+/* Slider-Interaktions-Standard (GL-DES-0012): Desktop-Maus-Drag an den
+   scroll-snap-Tracks (Touch scrollt weiterhin nativ ueber overflow-x). */
+.j-sale-deal__slider,
+.j-sale-deal__youtube-slider {
+  cursor: grab;
+}
+.j-sale-deal__slider.is-dragging,
+.j-sale-deal__youtube-slider.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}

@@ -4321,3 +4321,21 @@ ul.kakao-children li {
     font-size: 1.25rem;
   }
 }
+
+/* Slider-Interaktions-Standard (GL-DES-0012, Job SLIDER-DRAG-SWIPE_2026-07-21):
+   Live-Drag via useDragSwipe — pan-y laesst vertikales Touch-Scrollen beim
+   Browser, horizontale Gesten steuert der Hook (Achsen-Lock). */
+.InfoSlider,
+.UpsellCarousel {
+  touch-action: pan-y;
+}
+.InfoSlider.is-dragging,
+.UpsellCarousel.is-dragging {
+  cursor: grabbing;
+}
+@media (prefers-reduced-motion: reduce) {
+  .InfoSlider .InfoSliderTrack,
+  .UpsellTrack {
+    transition: none;
+  }
+}

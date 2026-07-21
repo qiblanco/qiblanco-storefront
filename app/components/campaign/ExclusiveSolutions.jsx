@@ -6,6 +6,7 @@ import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
+import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
@@ -825,9 +826,14 @@ function StudienSlider() {
     const step = card ? card.offsetWidth + 24 : 340;
     track.scrollBy({left: dir * step, behavior: 'smooth'});
   };
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
   return (
     <div className="ghx-studien">
-      <div className="ghx-studien__track" ref={trackRef}>
+      <div
+        className={`ghx-studien__track${isDragging ? ' is-dragging' : ''}`}
+        ref={trackRef}
+        {...handlers}
+      >
         {STUDIEN.map((s) => (
           <article className="ghx-studie" key={s.title}>
             <h3 className="ghx-studie__title">{s.title}</h3>
