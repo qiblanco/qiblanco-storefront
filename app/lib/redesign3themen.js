@@ -103,9 +103,9 @@ export const THEMEN = [
  * Geldhelden EP01, t=817.9–836.1 s) — keine erfundenen Themen.
  */
 const SHOPIFY_CDN = {
-  'podcast-schlaf': {video: null, poster: null},
-  'podcast-esmog': {video: null, poster: null},
-  'podcast-wasser': {video: null, poster: null},
+  'podcast-schlaf': {video: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/podcast-schlaf.mp4?v=1784613028', poster: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/podcast-schlaf.jpg?v=1784613032'},
+  'podcast-esmog': {video: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/podcast-esmog.mp4?v=1784613038', poster: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/podcast-esmog.jpg?v=1784613041'},
+  'podcast-wasser': {video: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/podcast-wasser.mp4?v=1784613048', poster: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/podcast-wasser.jpg?v=1784613053'},
 };
 
 /** CDN-URL wenn vorhanden, sonst Fallback (null = Datei bewusst nicht im Repo). */
