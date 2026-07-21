@@ -565,7 +565,7 @@ function GeldheldenPakete({products}) {
         compare: "10.501 €",
         price: "9.241 €",
         save: "Du sparst 1.260 €",
-        fine: "oder ab 772 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+        fine: "oder ab 774 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       },
       cta: "Dieses Paket wählen",
       featured: true,
