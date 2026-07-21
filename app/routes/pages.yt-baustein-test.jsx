@@ -25,7 +25,7 @@ export default function YtBausteinTest() {
       <YoutubeTimestamp
         videoId="BQxzbXqREWE"
         startSeconds={120}
-        thumbnail="/images/redesign/j-sale-hero-all-products.jpg"
+        thumbnail="/campaigns/ten-years/j-sale-hero-all-products.jpg"
         titel="Test-Einsatzort A: eigener Startpunkt + eigenes Poster"
         dataSection="yt-baustein-test-a"
       />
