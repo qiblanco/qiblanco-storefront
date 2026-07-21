@@ -131,6 +131,18 @@ jobs:
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Oxygen preview: ${previewUrl}\n`);
           NODE
 
+      # Vorschau-Branch-Ergaenzung (preview/lp-obere-bereiche-20260721):
+      # der Runner maskiert authBypassToken in Logs (***) — Uebergabe daher
+      # als kurzlebiges Artefakt (Zugriff nur mit Repo-Token; Token selbst
+      # ist 12 h befristet, Artefakt wird nach Abholung geloescht).
+      - name: Upload deploy log (nur Vorschau)
+        if: ${{ github.ref_name != 'main' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: h2-deploy-log
+          path: h2_deploy_log.json
+          retention-days: 1
+
       - name: Run tracking smoke test
         if: ${{ github.ref_name != 'main' }}
         run: |
