@@ -10,12 +10,28 @@ import {useState} from 'react';
  * Autoplay ungefragt (WCAG 1.4.2). Erst der Klick lädt den youtube-nocookie-
  * Player mit `start=<startSeconds>` und Autoplay.
  *
+ * Poster-Kette (GL-DES-0009, Job YT-THUMB-MAXRES 2026-07-21): maxresdefault
+ * (1280x720) mit echtem Fallback sddefault (640x480) → hqdefault (480x360).
+ * srcset + width/height geben dem Browser die echten Bildgrößen — kein
+ * CSS-Upscaling kleiner Varianten. Fehlt eine Stufe (404), stuft der
+ * onError-Handler genau eine Stufe ab (idempotent, hqdefault existiert immer);
+ * hqdefault ist 4:3, object-fit: cover verhindert Balkenränder.
+ *
  * Props:
  *   videoId       Pflicht — YouTube-Video-ID (z.B. 'BQxzbXqREWE')
- *   startSeconds  Startpunkt in Sekunden (default 0 = Anfang)
+ *   startSeconds  Startpunkt in Sekunden, PRO EINSATZORT (default 0 = Anfang)
  *   titel         Pflicht — a11y (iframe-title + aria-label des Posters)
- *   thumbnail     optionale eigene Poster-URL (default: YouTube hqdefault)
+ *   thumbnail     optionale eigene Poster-URL, PRO EINSATZORT — ersetzt die
+ *                 YouTube-Kette komplett (kein srcset/kein Abstieg)
  *   dataSection   optionaler Watch-/Heatmap-Anker
+ *   sizes         srcset-sizes der Poster-Kette (default '100vw' — wählt im
+ *                 Zweifel die größere Variante, hochskaliert wird nie)
+ *   className     Seiten-eigener CSS-Scope (LiteYt-Erbe der Campaign-LPs):
+ *                 ersetzt Standard-Klasse UND Inline-Styles komplett, das
+ *                 Aussehen kommt dann ausschließlich aus dem Seiten-CSS
+ *                 (.lp-*-yt). DOM bleibt deckungsgleich zum alten LiteYt.
+ *   playClassName Klasse des Play-Overlays im className-Modus
+ *                 (default `${className}__play`)
  *
  * Selbsttragend: 16:9-Rahmen über Inline-aspect-ratio, funktioniert damit auf
  * jeder Route ohne seitenspezifisches CSS; Feinschliff je Seite über die
@@ -58,49 +74,83 @@ const PLAY_BADGE_STYLE = {
   paddingLeft: '5px',
 };
 
+/* Aufsteigend abzusteigende Poster-Stufen: [Datei, Breite, Höhe]. */
+const POSTER_STUFEN = [
+  ['maxresdefault', 1280, 720],
+  ['sddefault', 640, 480],
+  ['hqdefault', 480, 360],
+];
+
 export function YoutubeTimestamp({
   videoId,
   startSeconds = 0,
   titel,
   thumbnail,
   dataSection,
+  sizes = '100vw',
+  className,
+  playClassName,
 }) {
   const [laueft, setLaueft] = useState(false);
+  const [posterStufe, setPosterStufe] = useState(0);
   const start = Math.max(0, Math.floor(startSeconds || 0));
+  const eigenesKleid = Boolean(className);
   if (laueft) {
     return (
       <div
-        className="YoutubeTimestamp"
+        className={eigenesKleid ? className : 'YoutubeTimestamp'}
         data-section={dataSection || undefined}
-        style={FRAME_STYLE}
+        style={eigenesKleid ? undefined : FRAME_STYLE}
       >
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1`}
           title={titel}
-          style={{...FILL_STYLE, border: 0}}
+          style={eigenesKleid ? undefined : {...FILL_STYLE, border: 0}}
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
         />
       </div>
     );
   }
+  const [stufenDatei, stufenBreite, stufenHoehe] = POSTER_STUFEN[posterStufe];
+  const posterProps = thumbnail
+    ? {src: thumbnail, width: 1280, height: 720}
+    : {
+        src: `https://i.ytimg.com/vi/${videoId}/${stufenDatei}.jpg`,
+        srcSet: POSTER_STUFEN.slice(posterStufe)
+          .map(([datei, breite]) => `https://i.ytimg.com/vi/${videoId}/${datei}.jpg ${breite}w`)
+          .join(', '),
+        sizes,
+        width: stufenBreite,
+        height: stufenHoehe,
+        onError: () =>
+          setPosterStufe((s) => Math.min(s + 1, POSTER_STUFEN.length - 1)),
+      };
   return (
     <button
       type="button"
-      className="YoutubeTimestamp"
+      className={eigenesKleid ? className : 'YoutubeTimestamp'}
       data-section={dataSection || undefined}
       onClick={() => setLaueft(true)}
       aria-label={`Video abspielen: ${titel}`}
-      style={FRAME_STYLE}
+      style={eigenesKleid ? undefined : FRAME_STYLE}
     >
       <img
-        src={thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+        {...posterProps}
         alt=""
         loading="lazy"
-        style={FILL_STYLE}
+        style={eigenesKleid ? undefined : FILL_STYLE}
       />
-      <span className="YoutubeTimestamp__play" aria-hidden="true" style={PLAY_STYLE}>
-        <span style={PLAY_BADGE_STYLE}>▶</span>
+      <span
+        className={
+          eigenesKleid
+            ? playClassName || `${className}__play`
+            : 'YoutubeTimestamp__play'
+        }
+        aria-hidden="true"
+        style={eigenesKleid ? undefined : PLAY_STYLE}
+      >
+        <span style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}>▶</span>
       </span>
     </button>
   );
