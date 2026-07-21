@@ -126,6 +126,18 @@ jobs:
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Oxygen preview: ${previewUrl}\n`);
           NODE
 
+      # PREVIEW-ONLY (Job YT-THUMB-MAXRES 2026-07-21): Token-Uebergabe via
+      # Artefakt (Logs maskieren den authBypassToken). Wird vor dem Merge
+      # revertiert; always(), weil der Bestands-Smoke-Test bei Nicht-main-
+      # Dispatch crasht (bekannter Bestandsbug, D-066).
+      - name: Upload deploy log (preview handover)
+        if: ${{ github.ref_name != 'main' && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: h2-deploy-log
+          path: h2_deploy_log.json
+          retention-days: 1
+
       - name: Run tracking smoke test
         if: ${{ github.ref_name != 'main' }}
         run: |
