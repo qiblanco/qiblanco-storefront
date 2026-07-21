@@ -2269,3 +2269,260 @@
   cursor: grabbing;
   user-select: none;
 }
+
+/* ════════════════════════════════════════════════════════════
+   OBERE BEREICHE (Job 20260721-lp-exclusive-solutions-obere-bereiche)
+   Hero-Video-Slot + Problem + Lösung + Marco + Testimonials
+   ════════════════════════════════════════════════════════════ */
+
+/* NACHTRAG Job 20260721-lp-exclusive-solutions-drei-bereiche: Regeln
+   byte-identisch aus 1ddf7dc übernommen, additiv ans Dateiende (main
+   behält die Slider-Regeln GL-DES-0012 davor). Entfallen: die vier
+   B0-Platzhalter-Regeln (__placeholder/__play/__hint/__caption) — im
+   Bau existiert kein Platzhalter-Markup (Jobspec §5). NEU:
+   .ghx-solution__video (Erklär-Video im dunklen Block, §6.3). */
+/* ── B0. Hero-Video-Slot ── */
+.ghx-herovideo { padding-top: 0; }
+.ghx-herovideo__inner { max-width: 880px; }
+.ghx-herovideo__title { margin-bottom: 28px; }
+.ghx-herovideo__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgb(27,27,27);
+}
+.ghx-herovideo__frame iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+/* ── B1. Problem ── */
+.ghx-problem__inner { text-align: center; }
+.ghx-problem__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 48px;
+  text-align: left;
+}
+.ghx-problem__card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 28px;
+  border-left: 4px solid rgb(168,133,52);
+}
+.ghx-problem__icon { font-size: 34px; display: block; margin-bottom: 14px; }
+.ghx-problem__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 23px;
+  line-height: 1.15;
+  color: rgb(27,27,27);
+  margin: 0 0 10px;
+}
+.ghx-problem__body {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgb(90,90,90);
+  margin: 0;
+}
+
+/* ── B2. Lösung ── */
+.ghx-solution__inner { text-align: center; }
+.ghx-solution__visual {
+  background: rgb(27,27,27);
+  border-radius: 20px;
+  padding: 56px 40px;
+  margin-top: 48px;
+}
+.ghx-solution__shield {
+  width: 108px;
+  height: 108px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 3px solid rgb(201,163,78);
+  background: rgba(201,163,78,0.16);
+  font-size: 44px;
+  margin-bottom: 22px;
+}
+.ghx-solution__how {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: #fff;
+  margin: 0 0 14px;
+}
+.ghx-solution__text {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.72);
+  max-width: 560px;
+  margin: 0 auto;
+}
+/* Video im dunklen Lösungsblock (Jobspec §6.3): fügt sich in Breite/
+   Radius/Abstände des Blocks ein; Radius+16:9 bringt der gemeinsame
+   Baustein YoutubeTimestamp selbst mit. */
+.ghx-solution__video {
+  max-width: 640px;
+  margin: 40px auto 0;
+}
+.ghx-solution__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.ghx-solution__stat { text-align: center; }
+.ghx-solution__stat-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 38px;
+  color: rgb(201,163,78);
+  display: block;
+}
+.ghx-solution__stat-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── B3. Marco ── */
+.ghx-marco__head { text-align: center; margin-bottom: 48px; }
+.ghx-marco__grid {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.ghx-marco__photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+.ghx-marco__photo--placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(234,217,168);
+  border: 2px dashed rgb(168,133,52);
+  color: rgb(168,133,52);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 56px;
+}
+.ghx-marco__quote {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.5;
+  color: rgb(27,27,27);
+  border-left: 4px solid rgb(201,163,78);
+  padding-left: 24px;
+  margin: 0 0 20px;
+}
+.ghx-marco__text {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgb(90,90,90);
+  margin: 0 0 14px;
+}
+.ghx-marco__sig {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: rgb(27,27,27);
+  margin: 8px 0 0;
+}
+
+/* ── B4. Testimonials ── */
+.ghx-testi__head { text-align: center; }
+.ghx-testi__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.ghx-testi__card {
+  background: #fff;
+  border: 1px solid rgb(239,231,215);
+  border-radius: 16px;
+  padding: 30px 28px;
+}
+.ghx-testi__card--placeholder {
+  background: rgb(253,251,247);
+  border: 2px dashed rgb(201,163,78);
+}
+.ghx-testi__ph-badge {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgb(168,133,52);
+  background: rgb(234,217,168);
+  border-radius: 999px;
+  padding: 5px 12px;
+  margin-bottom: 14px;
+}
+.ghx-testi__stars {
+  display: block;
+  color: rgb(201,163,78);
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+.ghx-testi__quote {
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgb(27,27,27);
+  margin: 0 0 16px;
+}
+.ghx-testi__author {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: rgb(27,27,27);
+  margin: 0;
+}
+.ghx-testi__role {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: rgb(90,90,90);
+  margin: 2px 0 0;
+}
+
+/* ── Responsive (Muster wie .ghx-hero) ── */
+@media (max-width: 960px) {
+  .ghx-problem__grid,
+  .ghx-testi__grid,
+  .ghx-solution__stats {
+    grid-template-columns: 1fr;
+  }
+  .ghx-marco__grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .ghx-marco__quote {
+    border-left: none;
+    padding-left: 0;
+    text-align: center;
+  }
+}
