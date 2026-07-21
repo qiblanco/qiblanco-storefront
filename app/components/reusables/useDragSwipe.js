@@ -288,6 +288,12 @@ export function useDragSwipe({
     }
   }, []);
 
+  // Bilder/Links im Track starten sonst ein natives HTML5-Drag, das die
+  // Pointer-Events kapert (pointercancel) — im Slider nie erwuenscht.
+  const onDragStart = useCallback((event) => {
+    event.preventDefault();
+  }, []);
+
   // Cleanup: Fenster-Blur bricht einen haengenden Drag ab (D6)
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -308,7 +314,7 @@ export function useDragSwipe({
   }, [resetDrag, stopMomentum]);
 
   return {
-    handlers: {onPointerDown, onPointerMove, onPointerUp, onPointerCancel, onClickCapture},
+    handlers: {onPointerDown, onPointerMove, onPointerUp, onPointerCancel, onClickCapture, onDragStart},
     isDragging,
     dragOffset,
     shouldSuppressClick,
