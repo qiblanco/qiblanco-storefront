@@ -1,6 +1,13 @@
 /* eslint-disable no-unused-vars, no-empty, object-shorthand */
 /*!
- * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.2)
+ * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.3)
+ *
+ * NEU in v2.3 (Sektionsmessung, Job 20260721-sektionsmessung-usa-exposure-
+ * rueckkopplung): (a) Tall-Section-Fix — sichtbar = >=50% Element ODER >=50%
+ * Viewport-Deckung (threshold-Leiter 0..1/20 statt fix 0.5); (b) Nach-
+ * registrierung spaet gemounteter Anker (MutationObserver, rAF-throttled);
+ * (c) Anker-Fallback [data-section-type] fuer Liquid/GemPages (USA). KEIN
+ * neues Feld/Event — Payload byte-strukturgleich v2.2.
  * ====================================================
  * Erst-Party (laeuft auf eigener Domain, sendet an den eigenen Receiver).
  * Erfasst: anon_id (First-Party-Cookie+localStorage), Klick-IDs (gclid/fbclid/
@@ -294,21 +301,67 @@
       track("behavior", snap);
     }
 
-    // Sektionen: data-section-Anker, 50%-Sichtbarkeits-Schwelle.
-    var nodes = d.querySelectorAll("[data-section]");
-    if (w.IntersectionObserver && nodes.length) {
-      var io = new w.IntersectionObserver(function (entries) {
-        var now = Date.now();
-        for (var i = 0; i < entries.length; i++) {
-          var en = entries[i], id = en.target.getAttribute("data-section");
-          if (!id) continue;
-          var s = sec(id);
-          if (en.isIntersecting) { if (!s.visibleSince) s.visibleSince = now; }
-          else if (s.visibleSince) { s.dwellAcc += now - s.visibleSince; s.visibleSince = 0; }
-        }
-      }, { threshold: 0.5 });
-      for (var i = 0; i < nodes.length; i++) io.observe(nodes[i]);
+    // Sektionen (v2.3): Anker [data-section]; Fallback [data-section-type]
+    // fuer Themes ohne kuratierte Anker (USA-Liquid/GemPages) — KEIN neues
+    // Feld/Event, nur Anker-Aufloesung. "Sichtbar" = >=50% des ELEMENTS ODER
+    // Deckung >=50% des VIEWPORTS (Tall-Section-Fix: fixe threshold 0.5
+    // feuerte bei Sektionen hoeher ~2x Viewport strukturell nie, Beleg
+    // mikroskop-video 1/1279 seen). Spaet gemountete Anker (Hydration/Lazy)
+    // werden nachregistriert (Beleg gitterchip-video: nur 492/1280 pv
+    // ueberhaupt beobachtet). Job 20260721-sektionsmessung-usa-exposure.
+    var secIo = null, secObserved = [];
+    function anchorId(el) {
+      return el.getAttribute("data-section") ||
+             el.getAttribute("data-section-type") || "";
     }
+    function visEnough(en) {
+      if (en.intersectionRatio >= 0.5) return true;
+      try {
+        var vh = (en.rootBounds && en.rootBounds.height) || w.innerHeight || 0;
+        return vh > 0 && en.intersectionRect &&
+               en.intersectionRect.height >= vh * 0.5;
+      } catch (e) { return false; }
+    }
+    function observeSections() {
+      if (!w.IntersectionObserver) return;
+      var nodes = d.querySelectorAll("[data-section]");
+      if (!nodes.length) nodes = d.querySelectorAll("[data-section-type]");
+      if (!nodes.length) return;
+      if (!secIo) {
+        var thr = []; for (var t = 0; t <= 20; t++) thr.push(t / 20);
+        secIo = new w.IntersectionObserver(function (entries) {
+          var now = Date.now();
+          for (var i = 0; i < entries.length; i++) {
+            var en = entries[i], id = anchorId(en.target);
+            if (!id) continue;
+            var s = sec(id), vis = en.isIntersecting && visEnough(en);
+            if (vis) { if (!s.visibleSince) s.visibleSince = now; }
+            else if (s.visibleSince) { s.dwellAcc += now - s.visibleSince; s.visibleSince = 0; }
+          }
+        }, { threshold: thr });
+      }
+      for (var i = 0; i < nodes.length; i++) {
+        var bekannt = false;
+        for (var j = 0; j < secObserved.length; j++) {
+          if (secObserved[j] === nodes[i]) { bekannt = true; break; }
+        }
+        if (!bekannt) { secIo.observe(nodes[i]); secObserved.push(nodes[i]); }
+      }
+    }
+    observeSections();
+    try {                                    // Nachregistrierung (rAF-throttled)
+      if (w.MutationObserver) {
+        var secScanPending = false;
+        new w.MutationObserver(function () {
+          if (secScanPending) return;
+          secScanPending = true;
+          (w.requestAnimationFrame || w.setTimeout)(function () {
+            secScanPending = false;
+            try { observeSections(); } catch (e) {}
+          });
+        }).observe(d.documentElement, { childList: true, subtree: true });
+      }
+    } catch (e) {}
 
     // Klicks: delegiert (capture, passive) -> naechster data-section-Vorfahr.
     d.addEventListener("click", function (e) {
