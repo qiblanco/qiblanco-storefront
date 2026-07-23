@@ -18,6 +18,7 @@ import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
+import {organizationSchema, webSiteSchema} from '~/lib/structured-data';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -172,6 +173,10 @@ export function Layout({children}) {
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
+  // schema.org Organization-Logo: bevorzugt das volle Logo, sonst der Favicon-
+  // Fallback. Fehlt beides, laesst der Bauer das logo-Feld weg (kein Platzhalter).
+  const orgLogoUrl =
+    data?.header?.shop?.brand?.logo?.image?.url || faviconUrl || undefined;
 
   return (
     <html
@@ -201,6 +206,24 @@ export function Layout({children}) {
         )}
         <Meta />
         <Links />
+        {/*
+          schema.org / JSON-LD — site-weiter Entitaets-Anker (Organization +
+          WebSite). type="application/ld+json" ist ein DATEN-Block (wird NICHT
+          als Script ausgefuehrt) -> CSP script-src greift nicht, kein nonce
+          noetig. Rein faktisch, keine Wirk-/Heilaussage. Rendert auf JEDER Seite.
+        */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema({logo: orgLogoUrl})),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webSiteSchema()),
+          }}
+        />
         {shouldLoadThirdPartyScripts && (
           <>
             <script

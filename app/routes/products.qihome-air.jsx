@@ -13,6 +13,7 @@ import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import { useState } from 'react';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {productMetaLdJson, SITE_ORIGIN} from '~/lib/structured-data';
 import { QiHome } from '~/components/product-pages/QiHome';
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
@@ -26,6 +27,7 @@ export const meta = ({data}) => {
       rel: 'canonical',
       href: `/products/qihome-air`,
     },
+    ...productMetaLdJson(data?.product, `${SITE_ORIGIN}/products/qihome-air`),
   ];
 };
 

@@ -15,6 +15,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
 import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
+import {productMetaLdJson, SITE_ORIGIN} from '~/lib/structured-data';
 
 const HIDDEN_BUNDLE_PRODUCT_HANDLES = new Set([
   'bundle-fundament',
@@ -46,12 +47,17 @@ export const meta = ({data}) => {
     ];
   }
 
+  // Nur der indexierbare Regel-Branch bekommt Product/Breadcrumb-JSON-LD.
+  // (Kampagnen-Deals + versteckte Bundles sind oben noindex -> bewusst KEIN
+  // Schema, um kein widerspruechliches Signal zu senden.)
+  const canonicalUrl = `${SITE_ORIGIN}/products/${data?.product.handle}`;
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
     {
       rel: 'canonical',
       href: `/products/${data?.product.handle}`,
     },
+    ...productMetaLdJson(data?.product, canonicalUrl),
   ];
 };
 

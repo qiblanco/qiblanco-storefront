@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {productMetaLdJson, SITE_ORIGIN} from '~/lib/structured-data';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuyBox';
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
@@ -15,6 +16,7 @@ export const meta = ({data}) => {
       rel: 'canonical',
       href: `/products/qione-2-pro`,
     },
+    ...productMetaLdJson(data?.product, `${SITE_ORIGIN}/products/qione-2-pro`),
   ];
 };
 

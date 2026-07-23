@@ -12,6 +12,7 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {productMetaLdJson, SITE_ORIGIN} from '~/lib/structured-data';
 import {Kakao} from '~/components/product-pages/Kakao';
 import {SingleImage} from '~/components/reusables/SingleImage';
 import { KursInhalteKakao } from '~/components/reusables/KursinhalteKakao';
@@ -27,6 +28,7 @@ export const meta = ({data}) => {
       rel: 'canonical',
       href: `/products/zeremonie-kakao`,
     },
+    ...productMetaLdJson(data?.product, `${SITE_ORIGIN}/products/zeremonie-kakao`),
   ];
 };
 

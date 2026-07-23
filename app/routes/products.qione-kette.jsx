@@ -12,6 +12,7 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {productMetaLdJson, SITE_ORIGIN} from '~/lib/structured-data';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 import {ProductFAQ} from '~/components/ProductFAQ';
 import {FAQ_QIONE_KETTE} from '~/data/product-faqs';
@@ -28,6 +29,7 @@ export const meta = ({data}) => {
       rel: 'canonical',
       href: `/products/qione-kette`,
     },
+    ...productMetaLdJson(data?.product, `${SITE_ORIGIN}/products/qione-kette`),
   ];
 };
 

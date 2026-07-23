@@ -12,6 +12,7 @@ import {CacaoProductForm} from '~/components/CacaoProductForm';
 import {CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {productMetaLdJson, SITE_ORIGIN} from '~/lib/structured-data';
 import {useState} from 'react';
 import Create from '~/components/product-pages/Create';
 import LazyImage from '~/components/reusables/LazyImage';
@@ -26,6 +27,7 @@ export const meta = ({data}) => {
       rel: 'canonical',
       href: `/products/crystal-cacao-create`,
     },
+    ...productMetaLdJson(data?.product, `${SITE_ORIGIN}/products/crystal-cacao-create`),
   ];
 };
 
