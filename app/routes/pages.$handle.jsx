@@ -1,11 +1,17 @@
 import {useLoaderData} from 'react-router';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {seoMeta, DEFAULT_DESCRIPTION} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+  const page = data?.page;
+  return seoMeta({
+    title: page?.title ?? '',
+    description: page?.seo?.description || DEFAULT_DESCRIPTION,
+    path: page?.handle ? `/pages/${page.handle}` : undefined,
+  });
 };
 
 /**

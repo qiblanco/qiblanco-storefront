@@ -2,12 +2,18 @@ import {useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
+import {seoMeta} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Products`}];
+  return seoMeta({
+    title: 'Alle Produkte',
+    description:
+      'Alle Produkte von Qi Blanco im Überblick: QiOne, QiBracelet, QiHome und Zeremonie-Kakao.',
+    path: '/collections/all',
+  });
 };
 
 /**

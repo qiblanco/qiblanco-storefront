@@ -8,7 +8,7 @@ import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{title: `Warenkorb | Qi Blanco`}];
 };
 
 /**

@@ -3,12 +3,18 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
+import {seoMeta} from '~/lib/seo';
 
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Search`}];
+  return seoMeta({
+    title: 'Suche',
+    description:
+      'Durchsuche das Sortiment von Qi Blanco: Produkte rund um kohärentes Wasser, den Gitterchip und Zeremonie-Kakao.',
+    path: '/search',
+  });
 };
 
 /**

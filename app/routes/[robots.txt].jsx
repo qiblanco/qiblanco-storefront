@@ -22,6 +22,40 @@ export async function loader({request, context}) {
 }
 
 /**
+ * GEO/AEO (FJ3) - Bot-Politik, Stand 2026-07-23:
+ *
+ * AKTIV: Search-/RAG-Bots (OAI-SearchBot, PerplexityBot, Claude-SearchBot) sind
+ * unten explizit gelistet und duerfen crawlen (mit den Standard-Sperren fuer
+ * Checkout/Warenkorb/Konto). Diese Bots liefern die Zitate in der KI-Suche.
+ *
+ * OFFEN - CHRISTIAN-ENTSCHEIDUNG (bewusst NICHT autonom gesetzt): die Politik
+ * fuer TRAINING-/Dataset-Bots (GPTBot = OpenAI-Training, ClaudeBot =
+ * Anthropic-Training, Google-Extended = Gemini-Training, CCBot = Common Crawl).
+ * Default HEUTE = unveraendert = sie fallen unter "User-agent: *" oben und
+ * duerfen damit crawlen.
+ *
+ *   Variante A (opt-in / erlauben) = Status quo, nichts ergaenzen.
+ *
+ *   Variante B (opt-out / Training sperren, Search bleibt erlaubt): die
+ *   folgenden Bloecke zusaetzlich in den Rueckgabestring von robotsTxtData()
+ *   aufnehmen -
+ *     User-agent: GPTBot
+ *     Disallow: /
+ *
+ *     User-agent: ClaudeBot
+ *     Disallow: /
+ *
+ *     User-agent: Google-Extended
+ *     Disallow: /
+ *
+ *     User-agent: CCBot
+ *     Disallow: /
+ *
+ * Trade-off (Deep-Dive 20260723-ki-sichtbarkeit, Sec. 1.2): Search-Bot sperren
+ * = keine KI-Zitate; Training-Bot sperren = kein Modell-Gedaechtnis von uns,
+ * aber Schutz der Inhalte vor Trainings-Nutzung. Beides ist legitim - die Wahl
+ * gehoert Christian (Positionierung/Recht).
+ *
  * @param {{shopId?: string; url?: string}}
  */
 function robotsTxtData({url, shopId}) {
@@ -59,6 +93,18 @@ Crawl-Delay: 10
 
 User-agent: Pinterest
 Crawl-delay: 1
+
+# AI search & RAG crawlers are explicitly welcome, so Qi Blanco can be cited
+# in ChatGPT Search, Perplexity and Claude web search. The same private-path
+# disallows as every other bot apply (checkout/cart/account stay private).
+User-agent: OAI-SearchBot
+${generalDisallowRules({sitemapUrl, shopId})}
+
+User-agent: PerplexityBot
+${generalDisallowRules({sitemapUrl, shopId})}
+
+User-agent: Claude-SearchBot
+${generalDisallowRules({sitemapUrl, shopId})}
 `.trim();
 }
 

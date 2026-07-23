@@ -1,12 +1,18 @@
 import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {seoMeta} from '~/lib/seo';
 
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Blogs`}];
+  return seoMeta({
+    title: 'Magazin',
+    description:
+      'Magazin und Beiträge von Qi Blanco rund um kohärentes Wasser, Anwendung und Hintergründe.',
+    path: '/blogs',
+  });
 };
 
 /**

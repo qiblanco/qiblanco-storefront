@@ -183,6 +183,22 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/*
+          Default Open-Graph / Twitter-Card (site-weit, GEO-/Entity-Hygiene FJ3).
+          Nur KONSTANTE, seiten-unabhaengige Tags: KEINE Route emittiert eigene
+          og:-Tags (grep leer) -> keine Duplikate. Seiten-spezifische
+          og:title/description/url setzt die jeweilige Route selbst (z.B.
+          Startseite); hier bewusst nicht, damit Scraper sonst auf
+          <title>/<meta description> zurueckfallen. twitter:card=summary, da das
+          Default-Bild das (quadratische) Shop-Logo ist; ein dediziertes
+          1200x630-Bild + summary_large_image ist ein Design-Folgeschritt.
+          Rein faktisch, kein Tracking-Key, kein Cookie.
+        */}
+        <meta property="og:site_name" content="Qi Blanco" />
+        <meta property="og:locale" content="de_DE" />
+        {faviconUrl && <meta property="og:image" content={faviconUrl} />}
+        {faviconUrl && <meta property="og:image:alt" content="Qi Blanco" />}
+        <meta name="twitter:card" content="summary" />
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>

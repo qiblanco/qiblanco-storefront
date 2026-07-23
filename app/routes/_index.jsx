@@ -1,10 +1,23 @@
 import {HomepageSections} from '~/components/homepage/HomepageSections';
+import {absoluteCanonical} from '~/lib/seo';
+
+const HOME_TITLE = 'Qi Blanco – Life Technology';
+const HOME_DESCRIPTION =
+  'Qi Blanco entwickelt Life-Technology-Produkte rund um kohärentes Wasser und den Gitterchip: QiOne 2 Pro, QiBracelet, QiHome Air und Zeremonie-Kakao. Hersteller aus Deutschland.';
 
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Qi Blanco - Life Technology - Jetzt kennenlernen. - Qi Blanco UG (haftungsbeschränkt)'}];
+  return [
+    {title: HOME_TITLE},
+    {name: 'description', content: HOME_DESCRIPTION},
+    {tagName: 'link', rel: 'canonical', href: absoluteCanonical('/')},
+    {property: 'og:title', content: HOME_TITLE},
+    {property: 'og:description', content: HOME_DESCRIPTION},
+    {property: 'og:url', content: absoluteCanonical('/')},
+    {property: 'og:type', content: 'website'},
+  ];
 };
 
 /**

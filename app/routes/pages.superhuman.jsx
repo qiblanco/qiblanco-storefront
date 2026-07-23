@@ -7,7 +7,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
  */
 export const meta = ({data}) => {
   return [
-    {title: `Hydrogen | ${data?.page.title ?? ''}`},
+    {title: `${data?.page.title ?? 'Superhuman'} | Qi Blanco`},
     {
       rel: 'canonical',
       href: `/pages/superhuman`,

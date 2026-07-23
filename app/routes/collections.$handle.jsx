@@ -4,12 +4,18 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
+import {seoMeta, clampDescription, DEFAULT_DESCRIPTION} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  const collection = data?.collection;
+  return seoMeta({
+    title: collection?.title ?? '',
+    description: clampDescription(collection?.description) || DEFAULT_DESCRIPTION,
+    path: collection?.handle ? `/collections/${collection.handle}` : undefined,
+  });
 };
 
 /**
