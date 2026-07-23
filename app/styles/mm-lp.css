@@ -1,0 +1,382 @@
+/* ============================================================================
+   mm-lp.css — Geteiltes Design-System der neuen Message-Match- & Trust-Ketten-
+   Landingpages (Job 20260723-neue-landingpages-message-match-trust-kette-welle-abc).
+
+   WARUM DIESES FILE: Diese LP-Familie ist bewusst EINE zusammengehoerige,
+   nuechtern-evidenzbasierte Flaeche (Marketing-Manager-Doktrin: nuechterne
+   Evidenz statt Eso = der Trust-Hebel). Statt je Seite 30 KB Einzel-CSS teilen
+   sich alle Seiten dieses EINE Token-System (Design-Meister-Regel „define
+   systems in advance"; scope .mm-lp). Jede Seite ergaenzt nur ihren Modifier
+   (.mm-messbar / .mm-alltag / ...).
+
+   DESIGN-SPRACHE (Design-Meister SSoT): warmes Neutral-Kontinuum + EIN Gold-
+   Akzent nur auf Handlung/Beweis (60-30-10), Saturation niedrig, Weissraum
+   grosszuegig (>=28%), max. 3 visuelle Ebenen je Sektion, „SHOW IT" statt
+   Behauptung. Alle Werte kommen aus den :root-Tokens; ausserhalb des Token-
+   Blocks erfindet KEINE Regel freie Farben/Groessen.
+
+   FEHLERFREIE TECHNIK (MM-Trust-Signal „paid Landing kein Crash"): KEIN
+   Countdown/kein Timer-JS (der bekannte JS-Crash-Fall) — alle interaktiven
+   Elemente sind natives HTML (<details> fuer FAQ), null Laufzeit-Risiko.
+   ========================================================================== */
+
+.mm-lp {
+  /* Schrift */
+  --mm-font: 'Open Sans Variable', 'Open Sans', system-ui, sans-serif;
+
+  /* Typo-Skala (~1.25 modular, fluid an den Enden; 7 Stufen) */
+  --mm-fs-xs: 0.8125rem;   /* 13px  Eyebrow, Feindruck, Tags */
+  --mm-fs-sm: 0.9375rem;   /* 15px  Label, Fussnote */
+  --mm-fs-base: 1.0625rem; /* 17px  Body (mobil gut lesbar) */
+  --mm-fs-md: 1.1875rem;   /* 19px  Lede */
+  --mm-fs-lg: 1.375rem;    /* 22px  Stat-Zahl klein, Zitat */
+  --mm-fs-xl: 1.6875rem;   /* 27px  H3 */
+  --mm-fs-h2: clamp(1.75rem, 1.15rem + 2.1vw, 2.375rem);
+  --mm-fs-h1: clamp(2.1rem, 1.3rem + 3.1vw, 3.15rem);
+  --mm-fs-stat: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+
+  /* Spacing: 8pt-Grid */
+  --mm-s1: 8px; --mm-s2: 16px; --mm-s3: 24px; --mm-s4: 32px;
+  --mm-s5: 40px; --mm-s6: 48px; --mm-s8: 64px; --mm-s10: 80px; --mm-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Gold-Akzent */
+  --mm-grund: #faf9f5;      /* Papier */
+  --mm-flaeche: #f3efe8;    /* warme Karten-Flaeche */
+  --mm-flaeche-2: #ece6db;  /* zweite Flaeche (Wechsel-Akt) */
+  --mm-linie: #e2dbcf;      /* Haarlinie */
+  --mm-dunkel: #17150f;     /* DER dunkle Ton (Schluss-Akte, Hero-Text-Kontrast) */
+  --mm-text: #2b2822;       /* Fliesstext */
+  --mm-text-2: #5c574d;     /* gedaempft (Sekundaertext, Grenzen-Hinweise) */
+  --mm-text-hell: #f4f0e9;
+  --mm-gold: #a9822f;       /* Akzent (desaturiert, Handlung/Beweis) */
+  --mm-gold-tief: #8a6a24;  /* Hover / Zahl-Betonung */
+  --mm-gold-hauch: #f6efe0; /* Gold-Wash-Flaeche (Badges) */
+
+  /* Radien + Schatten (zwei Tiefen) */
+  --mm-r1: 8px; --mm-r2: 14px; --mm-r3: 22px;
+  --mm-schatten-1: 0 1px 3px rgba(23, 21, 15, 0.06);
+  --mm-schatten-2: 0 14px 40px -18px rgba(23, 21, 15, 0.28);
+
+  /* Layout */
+  --mm-max: 62rem;
+  --mm-max-schmal: 46rem;
+
+  font-family: var(--mm-font);
+  color: var(--mm-text);
+  background: var(--mm-grund);
+  font-size: var(--mm-fs-base);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mm-lp *,
+.mm-lp *::before,
+.mm-lp *::after { box-sizing: border-box; }
+
+.mm-lp h1, .mm-lp h2, .mm-lp h3 {
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: var(--mm-dunkel);
+  margin: 0;
+  font-weight: 700;
+}
+.mm-lp p { margin: 0; }
+.mm-lp strong { color: var(--mm-dunkel); font-weight: 700; }
+
+/* Bahn / Sektions-Rhythmus (Weissraum grosszuegig) */
+.mm-bahn {
+  max-width: var(--mm-max);
+  margin: 0 auto;
+  padding: var(--mm-s10) var(--mm-s3);
+}
+.mm-bahn--schmal { max-width: var(--mm-max-schmal); }
+.mm-bahn--flaeche { background: var(--mm-flaeche); }
+.mm-bahn--dunkel { background: var(--mm-dunkel); color: var(--mm-text-hell); }
+.mm-bahn--dunkel h1, .mm-bahn--dunkel h2, .mm-bahn--dunkel h3 { color: var(--mm-text-hell); }
+@media (max-width: 640px) {
+  .mm-bahn { padding: var(--mm-s8) var(--mm-s3); }
+}
+
+.mm-eyebrow {
+  display: inline-block;
+  font-size: var(--mm-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mm-gold-tief);
+  margin-bottom: var(--mm-s2);
+}
+.mm-lede { font-size: var(--mm-fs-md); color: var(--mm-text); max-width: 40ch; }
+.mm-zentriert { text-align: center; margin-left: auto; margin-right: auto; }
+
+/* Buttons ------------------------------------------------------------------ */
+.mm-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mm-s1);
+  background: var(--mm-gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--mm-fs-base);
+  padding: 14px 28px;
+  border-radius: var(--mm-r1);
+  text-decoration: none;
+  border: 1px solid var(--mm-gold-tief);
+  box-shadow: var(--mm-schatten-1);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.mm-cta:hover { background: var(--mm-gold-tief); transform: translateY(-1px); }
+.mm-cta--sekundaer {
+  background: transparent;
+  color: var(--mm-gold-tief);
+  border: 1px solid var(--mm-linie);
+  box-shadow: none;
+}
+.mm-cta--sekundaer:hover { background: var(--mm-flaeche); color: var(--mm-gold-tief); }
+
+/* Hero (mobile-first: Angebot + Problem in einem Screen) -------------------- */
+.mm-hero { background: var(--mm-grund); border-bottom: 1px solid var(--mm-linie); }
+.mm-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--mm-s6);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .mm-hero__grid { grid-template-columns: 1.1fr 0.9fr; gap: var(--mm-s8); }
+}
+.mm-hero h1 { font-size: var(--mm-fs-h1); margin-bottom: var(--mm-s3); }
+.mm-hero__sub { font-size: var(--mm-fs-md); color: var(--mm-text); margin-bottom: var(--mm-s4); max-width: 46ch; }
+.mm-hero__bullets { list-style: none; padding: 0; margin: 0 0 var(--mm-s5); display: grid; gap: var(--mm-s2); }
+.mm-hero__bullets li { display: flex; gap: var(--mm-s2); align-items: flex-start; font-size: var(--mm-fs-base); }
+.mm-hero__actions { display: flex; flex-wrap: wrap; gap: var(--mm-s2); align-items: center; }
+.mm-hero__media {
+  border-radius: var(--mm-r3);
+  overflow: hidden;
+  box-shadow: var(--mm-schatten-2);
+  background: var(--mm-flaeche);
+}
+.mm-hero__media img { display: block; width: 100%; height: auto; }
+.mm-hero__mediahint {
+  font-size: var(--mm-fs-xs);
+  color: var(--mm-text-2);
+  padding: var(--mm-s2) var(--mm-s3);
+  background: var(--mm-flaeche);
+  text-align: center;
+}
+
+/* Haken-Icon (SVG-frei, reines CSS) */
+.mm-haken {
+  flex: 0 0 auto;
+  width: 20px; height: 20px; margin-top: 3px;
+  border-radius: 50%;
+  background: var(--mm-gold-hauch);
+  color: var(--mm-gold-tief);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+
+/* Problem-Framing ---------------------------------------------------------- */
+.mm-problem h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s3); max-width: 22ch; }
+.mm-problem__text { font-size: var(--mm-fs-md); color: var(--mm-text); max-width: 60ch; }
+.mm-problem__punkte { margin: var(--mm-s5) 0 0; padding: 0; list-style: none; display: grid; gap: var(--mm-s3); }
+@media (min-width: 720px) { .mm-problem__punkte { grid-template-columns: repeat(3, 1fr); } }
+.mm-problem__punkte li {
+  background: var(--mm-flaeche);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: var(--mm-s3);
+  font-size: var(--mm-fs-sm);
+  color: var(--mm-text-2);
+}
+
+/* Mechanismus (Wirkkette in Schritten) ------------------------------------- */
+.mm-mech h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s3); }
+.mm-mech__intro { font-size: var(--mm-fs-md); color: var(--mm-text); max-width: 58ch; margin-bottom: var(--mm-s6); }
+.mm-mech__schritte { display: grid; gap: var(--mm-s3); counter-reset: mm-step; }
+@media (min-width: 800px) { .mm-mech__schritte { grid-template-columns: repeat(2, 1fr); gap: var(--mm-s4); } }
+.mm-mech__schritt {
+  position: relative;
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: var(--mm-s4) var(--mm-s4) var(--mm-s4) var(--mm-s6);
+  box-shadow: var(--mm-schatten-1);
+}
+.mm-mech__schritt::before {
+  counter-increment: mm-step;
+  content: counter(mm-step);
+  position: absolute; left: var(--mm-s3); top: var(--mm-s4);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--mm-gold); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: var(--mm-fs-sm);
+}
+.mm-mech__schritt h3 { font-size: var(--mm-fs-lg); margin-bottom: var(--mm-s1); }
+.mm-mech__schritt p { font-size: var(--mm-fs-sm); color: var(--mm-text-2); }
+.mm-mech__note {
+  margin-top: var(--mm-s5);
+  font-size: var(--mm-fs-sm);
+  color: var(--mm-text-2);
+  border-left: 3px solid var(--mm-gold);
+  padding-left: var(--mm-s3);
+  max-width: 62ch;
+}
+
+/* Diagramm-Rahmen (inline SVG) --------------------------------------------- */
+.mm-diagramm { display: flex; justify-content: center; margin: var(--mm-s6) auto 0; max-width: 34rem; }
+.mm-diagramm svg { width: 100%; height: auto; }
+.mm-diagramm figcaption { font-size: var(--mm-fs-xs); color: var(--mm-text-2); text-align: center; margin-top: var(--mm-s2); }
+
+/* Stat-Band (messbare Groessen) -------------------------------------------- */
+.mm-statband { display: grid; gap: var(--mm-s3); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 760px) { .mm-statband { grid-template-columns: repeat(4, 1fr); } }
+.mm-stat { text-align: center; padding: var(--mm-s3) var(--mm-s2); }
+.mm-stat__zahl { font-size: var(--mm-fs-stat); font-weight: 800; color: var(--mm-gold-tief); line-height: 1.05; letter-spacing: -0.02em; }
+.mm-stat__label { font-size: var(--mm-fs-sm); color: var(--mm-text-2); margin-top: var(--mm-s1); }
+
+/* Evidenz-Karten ----------------------------------------------------------- */
+.mm-evidenz h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s3); }
+.mm-evidenz__intro { font-size: var(--mm-fs-md); color: var(--mm-text); max-width: 60ch; margin-bottom: var(--mm-s6); }
+.mm-evidenz__grid { display: grid; gap: var(--mm-s3); }
+@media (min-width: 760px) { .mm-evidenz__grid { grid-template-columns: repeat(2, 1fr); gap: var(--mm-s4); } }
+.mm-karte {
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: var(--mm-s4);
+  box-shadow: var(--mm-schatten-1);
+  display: flex; flex-direction: column; gap: var(--mm-s2);
+}
+.mm-karte__tag {
+  align-self: flex-start;
+  font-size: var(--mm-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mm-text-2);
+  background: var(--mm-flaeche-2);
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+.mm-karte h3 { font-size: var(--mm-fs-lg); }
+.mm-karte__meta { font-size: var(--mm-fs-sm); color: var(--mm-text-2); }
+.mm-karte__body { font-size: var(--mm-fs-sm); color: var(--mm-text); }
+.mm-karte a { color: var(--mm-gold-tief); font-weight: 700; text-decoration: none; }
+.mm-karte a:hover { text-decoration: underline; }
+
+/* Berichte / deskriptive Nutzerdaten --------------------------------------- */
+.mm-reports { display: grid; gap: var(--mm-s5); }
+@media (min-width: 820px) { .mm-reports { grid-template-columns: 0.9fr 1.1fr; align-items: center; } }
+.mm-reports__balken { display: grid; gap: var(--mm-s3); }
+.mm-balken__label { font-size: var(--mm-fs-sm); display: flex; justify-content: space-between; margin-bottom: 6px; }
+.mm-balken__spur { background: var(--mm-flaeche-2); border-radius: 999px; height: 12px; overflow: hidden; }
+.mm-balken__fuell { background: var(--mm-gold); height: 100%; border-radius: 999px; }
+
+/* Trust-Reihe (kuratiert, <=6 Badges) -------------------------------------- */
+.mm-trust { display: grid; gap: var(--mm-s2); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 720px) { .mm-trust { grid-template-columns: repeat(3, 1fr); } }
+.mm-badge {
+  display: flex; gap: var(--mm-s2); align-items: center;
+  background: var(--mm-flaeche);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: var(--mm-s3);
+}
+.mm-badge__mark {
+  flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--mm-gold-hauch); color: var(--mm-gold-tief);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.mm-badge__t { font-weight: 700; font-size: var(--mm-fs-sm); color: var(--mm-dunkel); }
+.mm-badge__s { font-size: var(--mm-fs-xs); color: var(--mm-text-2); }
+
+/* Risiko-Umkehr ------------------------------------------------------------ */
+.mm-risk { text-align: center; }
+.mm-risk__ring {
+  width: 84px; height: 84px; margin: 0 auto var(--mm-s3);
+  border-radius: 50%; border: 2px solid var(--mm-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--mm-fs-lg); font-weight: 800; color: var(--mm-gold-tief);
+  background: var(--mm-gold-hauch);
+}
+.mm-risk h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s3); }
+.mm-risk__text { font-size: var(--mm-fs-md); color: var(--mm-text); max-width: 52ch; margin: 0 auto var(--mm-s4); }
+.mm-risk__punkte { list-style: none; padding: 0; margin: 0 auto; max-width: 40rem; display: grid; gap: var(--mm-s2); text-align: left; }
+@media (min-width: 720px) { .mm-risk__punkte { grid-template-columns: repeat(3, 1fr); } }
+.mm-risk__punkte li { background: var(--mm-grund); border: 1px solid var(--mm-linie); border-radius: var(--mm-r1); padding: var(--mm-s3); font-size: var(--mm-fs-sm); }
+
+/* FAQ (natives <details>, kein JS) ----------------------------------------- */
+.mm-faq h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s5); }
+.mm-faq__liste { display: grid; gap: var(--mm-s2); }
+.mm-faq details {
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: 0 var(--mm-s4);
+}
+.mm-faq summary {
+  cursor: pointer; list-style: none;
+  padding: var(--mm-s3) 0;
+  font-weight: 700; color: var(--mm-dunkel);
+  display: flex; justify-content: space-between; gap: var(--mm-s2); align-items: center;
+}
+.mm-faq summary::-webkit-details-marker { display: none; }
+.mm-faq summary::after { content: '+'; color: var(--mm-gold-tief); font-size: 1.4em; font-weight: 400; }
+.mm-faq details[open] summary::after { content: '\2013'; }
+.mm-faq details[open] summary { border-bottom: 1px solid var(--mm-linie); }
+.mm-faq__a { padding: var(--mm-s3) 0; font-size: var(--mm-fs-sm); color: var(--mm-text); }
+
+/* Funnel-Navigation (Kette der Seiten) ------------------------------------- */
+.mm-funnel h2 { font-size: var(--mm-fs-xl); margin-bottom: var(--mm-s4); }
+.mm-funnel__grid { display: grid; gap: var(--mm-s2); }
+@media (min-width: 720px) { .mm-funnel__grid { grid-template-columns: repeat(3, 1fr); } }
+.mm-funnel__karte {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: var(--mm-s4);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.mm-funnel__karte:hover { border-color: var(--mm-gold); transform: translateY(-2px); }
+.mm-funnel__karte h3 { font-size: var(--mm-fs-base); margin-bottom: 6px; }
+.mm-funnel__karte p { font-size: var(--mm-fs-sm); color: var(--mm-text-2); }
+.mm-funnel__pfeil { color: var(--mm-gold-tief); font-weight: 700; font-size: var(--mm-fs-sm); margin-top: var(--mm-s2); display: inline-block; }
+
+/* Produkt-Auswahl (Live-Preis) --------------------------------------------- */
+.mm-pick h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s5); text-align: center; }
+.mm-pick__grid { display: grid; gap: var(--mm-s3); }
+@media (min-width: 760px) { .mm-pick__grid { grid-template-columns: repeat(3, 1fr); } }
+.mm-produkt {
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: var(--mm-schatten-1);
+}
+.mm-produkt__bild { background: var(--mm-flaeche); aspect-ratio: 4 / 3; }
+.mm-produkt__bild img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mm-produkt__body { padding: var(--mm-s3); display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.mm-produkt__name { font-weight: 700; color: var(--mm-dunkel); font-size: var(--mm-fs-base); }
+.mm-produkt__preis { font-size: var(--mm-fs-lg); font-weight: 800; color: var(--mm-gold-tief); }
+.mm-produkt__streich { font-size: var(--mm-fs-sm); color: var(--mm-text-2); text-decoration: line-through; }
+.mm-produkt .mm-cta { margin-top: auto; justify-content: center; }
+
+/* Schluss-CTA -------------------------------------------------------------- */
+.mm-final { text-align: center; }
+.mm-final h2 { font-size: var(--mm-fs-h2); margin-bottom: var(--mm-s3); max-width: 24ch; margin-left: auto; margin-right: auto; }
+.mm-final p { font-size: var(--mm-fs-md); margin: 0 auto var(--mm-s5); max-width: 48ch; opacity: 0.92; }
+
+/* Disclaimer / ehrliche Grenzen (Trust durch Transparenz) ------------------ */
+.mm-grenzen {
+  font-size: var(--mm-fs-xs);
+  color: var(--mm-text-2);
+  max-width: 68ch;
+  margin: 0 auto;
+  line-height: 1.7;
+  border-top: 1px solid var(--mm-linie);
+  padding-top: var(--mm-s4);
+}
+.mm-grenzen strong { color: var(--mm-text-2); }
