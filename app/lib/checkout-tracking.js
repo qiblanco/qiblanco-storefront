@@ -40,6 +40,14 @@ const TRACKING_COOKIE_NAMES = new Set([
   'hyros_sid',
   'hyros_session_id',
   'hyros_visitor_id',
+  // First-Party qpx-Visitor-ID (Job 20260722-stitch-gap-session-kauf, 2026-07-23):
+  // der eigene qpx-Pixel setzt _qpx_anon (365-Tage-Cookie, opakes uuid). Ihn als
+  // Order-note_attribute mitzufuehren schliesst die Session->Kauf-Luecke: der
+  // own-source-Stitch (own_source.py, gated OS_STITCH_SESSION) verbindet den Kauf
+  // deterministisch mit der Ad-Klick-Session ueber identity_edge(anon) — auch bei
+  // Multi-Session/Return-Visit ohne fbclid in der URL. Rein first-party/intern,
+  // NICHT an Meta/Google gesendet; Capture bleibt consent-gated (wie fbc/fbp).
+  '_qpx_anon',
 ]);
 
 const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
