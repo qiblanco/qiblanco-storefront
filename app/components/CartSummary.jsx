@@ -2,6 +2,7 @@ import {Form} from 'react-router';
 import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
 import {formatPreis} from '~/lib/markt-pricing';
 import {cartLineContentIds} from '~/lib/pixel-content';
+import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
 
 /**
  * @param {CartSummaryProps}
@@ -76,6 +77,13 @@ function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
     } catch {
       // Tracking-Fehler ignorieren.
     }
+    // First-Party (qpx-Receiver): schliesst das initiate_checkout-Leck der
+    // First-Party-Funnel-Messung (Job 20260723-commerce-microfunnel). Eigener
+    // try/catch/no-op via qpxTrack — unabhaengig vom Meta-Pixel, blockt nie.
+    qpxTrack(
+      'initiate_checkout',
+      buildInitiateCheckoutEvent({subtotal, numItems, contentIds}),
+    );
   };
 
   return (
