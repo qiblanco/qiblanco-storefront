@@ -1,3 +1,5 @@
+import {studienSchema} from '~/lib/structured-data';
+
 export const meta = () => [
   {title: 'Wissenschaftliche Studien | Qi Blanco'},
   {
@@ -6,6 +8,9 @@ export const meta = () => [
       'Wissenschaftlich getestet und in Fachpublikationen bestätigt. Zellstudien zur Wirkung des QiOne® 2 Pro auf Immunzellen, Darmzellen und oxidativen Stress.',
   },
   {rel: 'canonical', href: '/pages/studien'},
+  // (A4, optional) NUR bibliografische Auszeichnung der real verlinkten
+  // Publikationen (Titel/Journal/Jahr/PDF) — KEINE Aufwertung der Evidenzstaerke.
+  {'script:ld+json': studienSchema()},
 ];
 
 export function loader() {
