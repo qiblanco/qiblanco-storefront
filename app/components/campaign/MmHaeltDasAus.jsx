@@ -1,4 +1,5 @@
-import {GoogleReviews} from '~/components/index-components/GoogleReviews';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {useGoogleRating} from '~/lib/googleRating';
 import {
   MmPage,
   MmHero,
@@ -16,13 +17,13 @@ import {
 } from '~/components/reusables/MmKit';
 
 /**
- * MmHaeltDasAus — Composer der Message-Match-LP „Haelt das mein Leben aus?".
- * Cluster Alltags-Durability (Ad-Welle B, qb45-b3 „Haelt das mein Leben aus?
+ * MmHaeltDasAus — Composer der Message-Match-LP „Hält das mein Leben aus?".
+ * Cluster Alltags-Durability (Ad-Welle B, qb45-b3 „Hält das mein Leben aus?
  * Dusche, Sport, Sauna — er bleibt einfach dran"). Aufbau der Seite folgt der
  * Ad-Logik: die Sorge (muss ich ihn abnehmen?) ernst nehmen -> zeigen, warum
- * ihm Wasser/Hitze/Schweiss/Chlor nichts anhaben (passiv, keine Elektronik) ->
- * gemessene Zell-Evidenz (praeklinisch, ehrlich) -> 20-Tage-Selbsttest.
- * Nordstern: robust genug fuer den ganzen Alltag — anlegen und vergessen.
+ * ihm Wasser/Hitze/Schweiß/Chlor nichts anhaben (passiv, keine Elektronik) ->
+ * gemessene Zell-Evidenz (präklinisch, ehrlich) -> 20-Tage-Selbsttest.
+ * Nordstern: robust genug für den ganzen Alltag — anlegen und vergessen.
  */
 
 const STUDIEN = [
@@ -57,10 +58,10 @@ const STUDIEN = [
 ];
 
 const BADGES = [
-  {mark: '⚙', titel: 'Chirurgenstahl', sub: 'korrosionsfester Koerper'},
-  {mark: '♨', titel: 'Hitze & Chlor', sub: 'bestaendig'},
+  {mark: '⚙', titel: 'Chirurgenstahl', sub: 'korrosionsfester Körper'},
+  {mark: '♨', titel: 'Hitze & Chlor', sub: 'beständig'},
   {mark: '∞', titel: 'Kein Akku', sub: 'passiv, wartungsfrei'},
-  {mark: '↺', titel: '20 Tage', sub: 'Geld-zurueck'},
+  {mark: '↺', titel: '20 Tage', sub: 'Geld-zurück'},
   {mark: '★', titel: '4,8 / 5', sub: 'Google-Bewertung'},
   {mark: '⚑', titel: 'Fertigung in Bayern', sub: 'Deutschland'},
 ];
@@ -68,44 +69,44 @@ const BADGES = [
 const FAQ = [
   {
     frage: 'Kann ich damit wirklich in die Sauna und ins Schwimmbad?',
-    antwort: 'Ja. Er ist bestaendig gegen Hitze und Chlor. Du kannst ihn anbehalten.',
+    antwort: 'Ja. Er ist beständig gegen Hitze und Chlor. Du kannst ihn anbehalten.',
   },
   {
     frage: 'Muss ich ihn zum Duschen oder Sport abnehmen?',
-    antwort: 'Nein. Es gibt keine Elektronik und keinen Akku, dem Wasser oder Schweiss schaden koennten.',
+    antwort: 'Nein. Es gibt keine Elektronik und keinen Akku, dem Wasser oder Schweiß schaden könnten.',
   },
   {
     frage: 'Muss ich ihn laden oder pflegen?',
     antwort: 'Nein. Der Chip ist passiv — kein Laden, keine App, kein Pflegeaufwand. Anlegen und vergessen.',
   },
   {
-    frage: 'Haelt er wirklich Jahrzehnte?',
+    frage: 'Hält er wirklich Jahrzehnte?',
     antwort:
-      'Das Herstellungsverfahren ist auf sehr lange Lebensdauer ausgelegt und bewusst vererbbar gedacht. Verschleissteile gibt es keine.',
+      'Das Herstellungsverfahren ist auf sehr lange Lebensdauer ausgelegt und bewusst vererbbar gedacht. Verschleißteile gibt es keine.',
   },
   {
     frage: 'Und die gesundheitliche Wirkung?',
     antwort:
-      'Dazu gibt es vier publizierte Zellstudien (in-vitro, praeklinisch) und deskriptive Erfahrungsberichte. Wir machen kein Heilversprechen — teste selbst in 20 Tagen.',
+      'Dazu gibt es vier publizierte Zellstudien (in-vitro, präklinisch) und deskriptive Erfahrungsberichte. Wir machen kein Heilversprechen — teste selbst in 20 Tagen.',
   },
 ];
 
 const FUNNEL = [
   {
-    titel: 'So wirkt kohaerentes Wasser',
-    text: 'Der Mechanismus in Ruhe erklaert.',
+    titel: 'So wirkt kohärentes Wasser',
+    text: 'Der Mechanismus in Ruhe erklärt.',
     href: '/pages/so-wirkt-kohaerentes-wasser',
     cta: 'Mechanismus',
   },
   {
     titel: 'Ist das Einbildung? Wir machen ihn auf',
-    text: 'Der Chip geoeffnet — Aufbau, Messung, Erfahrung.',
+    text: 'Der Chip geöffnet — Aufbau, Messung, Erfahrung.',
     href: '/pages/wir-machen-ihn-auf',
-    cta: 'Fuer Skeptiker',
+    cta: 'Für Skeptiker',
   },
   {
     titel: 'Das 20-Tage-Versprechen',
-    text: 'Wie die Rueckgabe wirklich ablaeuft.',
+    text: 'Wie die Rückgabe wirklich abläuft.',
     href: '/pages/das-20-tage-versprechen',
     cta: 'Garantie',
   },
@@ -114,28 +115,32 @@ const FUNNEL = [
 const PICK = [
   {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — unsichtbar unter der Kleidung', cta: 'Zum QiOne 2 Pro'},
   {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — robust am Handgelenk', cta: 'Zum QiBracelet'},
-  {handle: 'qihome-air', name: 'QiHome Air', note: 'Fuer den Raum daheim', cta: 'Zum QiHome Air'},
+  {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum daheim', cta: 'Zum QiHome Air'},
 ];
 
 export function MmHaeltDasAus({products}) {
+  const g = useGoogleRating();
+  const badges = BADGES.map((b) =>
+    b.sub === 'Google-Bewertung' ? {...b, titel: `${g.komma} / 5`} : b,
+  );
   return (
     <MmPage scope="mm-alltag">
       <MmHero
         dataSection="mm-alltag-hero"
         eyebrow="Alltag, ehrlich getestet"
-        headline={'„Haelt das mein Leben aus?" Dusche, Sport, Sauna — er bleibt dran.'}
-        sub="Ein Premium-Schmuckstueck, das man schont, waere kein Alltagsbegleiter. Der QiOne 2 Pro ist bewusst so gebaut, dass ihm Wasser, Hitze, Schweiss und Chlor nichts anhaben — weil er passiv ist und keine Elektronik enthaelt."
+        headline={'„Hält das mein Leben aus?" Dusche, Sport, Sauna — er bleibt dran.'}
+        sub="Ein Premium-Schmuckstück, das man schont, wäre kein Alltagsbegleiter. Der QiOne 2 Pro ist bewusst so gebaut, dass ihm Wasser, Hitze, Schweiß und Chlor nichts anhaben — weil er passiv ist und keine Elektronik enthält."
         bullets={[
-          'Hitze-, Chlor- und schweissbestaendig — Sauna und Schwimmbad inklusive',
+          'Hitze-, Chlor- und schweißbeständig — Sauna und Schwimmbad inklusive',
           'Kein Akku, kein Laden, keine Wartung',
-          '20 Tage selbst testen, sonst Geld zurueck',
+          '20 Tage selbst testen, sonst Geld zurück',
         ]}
         cta={{href: '#mechanismus', label: 'Warum ihm Alltag nichts anhaben kann'}}
         ctaSekundaer={{href: '/products/qione-2-pro', label: 'Direkt zum QiOne 2 Pro'}}
         media={{
-          src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919',
-          alt: 'QiOne 2 Pro Detailaufnahme',
-          hint: 'Chirurgenstahl-Koerper, 750er Gold-Gitter — robust im Alltag.',
+          src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
+          alt: 'Frontansicht des QiOne 2 Pro mit dem Gold-Gitter',
+          hint: 'Chirurgenstahl-Körper, 750er Gold-Gitter — robust im Alltag.',
         }}
       />
 
@@ -144,8 +149,8 @@ export function MmHaeltDasAus({products}) {
         eyebrow="Die Sorge"
         title="Muss ich ihn abnehmen, wenn es drauf ankommt?"
         text={[
-          'Bei einem teuren Schmuckstueck denkt man sofort: bloss nicht beim Duschen, beim Sport, in der Sauna. Genau dann wuerde man den groessten Nutzen verlieren — die Wirkung soll ja durchgehend laufen.',
-          'Der QiOne 2 Pro ist deshalb kein empfindliches Schmuckstueck, sondern ein robuster Alltagsbegleiter. Du sollst ihn tragen und vergessen koennen.',
+          'Bei einem teuren Schmuckstück denkt man sofort: bloß nicht beim Duschen, beim Sport, in der Sauna. Genau dann würde man den größten Nutzen verlieren — die Wirkung soll ja durchgehend laufen.',
+          'Der QiOne 2 Pro ist deshalb kein empfindliches Schmuckstück, sondern ein robuster Alltagsbegleiter. Du sollst ihn tragen und vergessen können.',
         ]}
         punkte={[
           'Kein Akku, der leer wird.',
@@ -159,14 +164,14 @@ export function MmHaeltDasAus({products}) {
         dataSection="mm-alltag-mechanismus"
         eyebrow="Warum das geht"
         title="Was ihm nichts anhaben kann — und warum"
-        intro="Der Grund ist simpel: Was nicht elektronisch ist, kann nicht durch Wasser oder Hitze ausfallen. Der Chip ist eine feste, passive Gitterstruktur aus 750er Gold in einem Koerper aus Chirurgenstahl."
+        intro="Der Grund ist simpel: Was nicht elektronisch ist, kann nicht durch Wasser oder Hitze ausfallen. Der Chip ist eine feste, passive Gitterstruktur aus 750er Gold in einem Körper aus Chirurgenstahl."
         schritte={[
-          {titel: 'Dusche & Alltag', text: 'Wasser macht ihm nichts — es gibt keine Batterie und keine Kontakte, die korrodieren koennten.'},
-          {titel: 'Sport & Schweiss', text: 'Schweiss ist kein Problem. Chirurgenstahl ist korrosionsbestaendig, das Gold-Gitter ohnehin.'},
-          {titel: 'Sauna & Schwimmbad', text: 'Bestaendig gegen Hitze und Chlor. Du kannst ihn anbehalten, wo du ihn sonst abnehmen wuerdest.'},
-          {titel: 'Ueber Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig — bewusst vererbbar gedacht, nicht als Wegwerfprodukt.'},
+          {titel: 'Dusche & Alltag', text: 'Wasser macht ihm nichts — es gibt keine Batterie und keine Kontakte, die korrodieren könnten.'},
+          {titel: 'Sport & Schweiß', text: 'Schweiß ist kein Problem. Chirurgenstahl ist korrosionsbeständig, das Gold-Gitter ohnehin.'},
+          {titel: 'Sauna & Schwimmbad', text: 'Beständig gegen Hitze und Chlor. Du kannst ihn anbehalten, wo du ihn sonst abnehmen würdest.'},
+          {titel: 'Über Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig — bewusst vererbbar gedacht, nicht als Wegwerfprodukt.'},
         ]}
-        note="Ehrliche Grenze: Robustheit ist eine Materialeigenschaft — sie sagt nichts ueber eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, steht weiter unten (praeklinisch)."
+        note="Ehrliche Grenze: Robustheit ist eine Materialeigenschaft — sie sagt nichts über eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, steht weiter unten (präklinisch)."
       />
 
       <MmStatBand
@@ -174,7 +179,7 @@ export function MmHaeltDasAus({products}) {
         stats={[
           {zahl: 'Jahrzehnte', label: 'gedachte Lebensdauer'},
           {zahl: '0', label: 'Ladezyklen · Wartung'},
-          {zahl: 'Hitze · Chlor', label: 'bestaendig'},
+          {zahl: 'Hitze · Chlor', label: 'beständig'},
           {zahl: '24/7', label: 'tragbar, auch nachts'},
         ]}
       />
@@ -189,25 +194,25 @@ export function MmHaeltDasAus({products}) {
         mehrLabel="Die Studien im Detail — mit Grenzen"
       />
 
-      <MmProblem variante="flaeche" dataSection="mm-alltag-reviews-intro" title="Stimmen aus der Praxis" text="Drei von tausenden Google-Bewertungen (Durchschnitt 4,8 / 5). Einzelerfahrungen, kein Wirknachweis." />
-      <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><GoogleReviews dataSection="mm-alltag-reviews" /></div></div>
+      <MmProblem variante="flaeche" dataSection="mm-alltag-reviews-intro" title="Stimmen aus der Praxis" text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`} />
+      <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-alltag-trust"
-        eyebrow="Kuratiert — die 6 Signale, die zaehlen"
+        eyebrow="Kuratiert — die 6 Signale, die zählen"
         title="Woran du dich festhalten kannst"
-        badges={BADGES}
+        badges={badges}
       />
 
       <MmRisk
         dataSection="mm-alltag-risk"
         ring="20"
         title="20 Tage im echten Alltag testen"
-        text={'Trag ihn 20 Tage durch deinen Alltag — Dusche, Sport, Sauna. Bist du nicht ueberzeugt, schickst du ihn zurueck und bekommst dein Geld. Die Rueckgabe haengt an deiner Ueberzeugung und der Frist, nicht am „Spueren".'}
-        punkte={['Frist: 20 Tage ab Erhalt', 'Grund: keiner noetig', 'Ablauf: melden, zuruecksenden, Erstattung']}
+        text={'Trag ihn 20 Tage durch deinen Alltag — Dusche, Sport, Sauna. Bist du nicht überzeugt, schickst du ihn zurück und bekommst dein Geld. Die Rückgabe hängt an deiner Überzeugung und der Frist, nicht am „Spüren".'}
+        punkte={['Frist: 20 Tage ab Erhalt', 'Grund: keiner nötig', 'Ablauf: melden, zurücksenden, Erstattung']}
       />
 
-      <MmPick dataSection="mm-alltag-pick" title="Zwei Trageformen fuer deinen Alltag" products={products} handles={PICK} variante="flaeche" />
+      <MmPick dataSection="mm-alltag-pick" title="Drei Möglichkeiten für deinen Alltag" products={products} handles={PICK} variante="flaeche" />
 
       <MmFaq dataSection="mm-alltag-faq" title="Ehrliche Antworten zum Alltag" items={FAQ} />
 
@@ -216,16 +221,16 @@ export function MmHaeltDasAus({products}) {
       <MmFinal
         dataSection="mm-alltag-final"
         title="Anlegen. Vergessen. 20 Tage testen."
-        text="Robust genug fuer deinen ganzen Alltag — mit Rueckgabe ohne Kleingedrucktes."
+        text="Robust genug für deinen ganzen Alltag — mit Rückgabe ohne Kleingedrucktes."
         cta={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
-        ctaSekundaer={{href: '/pages/das-20-tage-versprechen', label: 'So laeuft die Rueckgabe'}}
+        ctaSekundaer={{href: '/pages/das-20-tage-versprechen', label: 'So läuft die Rückgabe'}}
       />
 
       <MmGrenzen dataSection="mm-alltag-grenzen">
         <strong>Transparenz-Hinweis:</strong> QiOne&reg; 2 Pro ist kein Medizinprodukt und nicht dazu bestimmt, Krankheiten
-        zu diagnostizieren, zu behandeln oder zu heilen. Die genannten Studien sind praeklinische In-vitro-Untersuchungen an
+        zu diagnostizieren, zu behandeln oder zu heilen. Die genannten Studien sind präklinische In-vitro-Untersuchungen an
         Zellkulturen; sie belegen keinen Heileffekt am Menschen. Erfahrungsberichte sind deskriptiv und ohne Kontrollgruppe.
-        &bdquo;Kohaerentes Wasser&ldquo; bezeichnet ein Ordnungs-Modell und ist keine anerkannte medizinische Diagnose.
+        &bdquo;Kohärentes Wasser&ldquo; bezeichnet ein Ordnungs-Modell und ist keine anerkannte medizinische Diagnose.
       </MmGrenzen>
     </MmPage>
   );
