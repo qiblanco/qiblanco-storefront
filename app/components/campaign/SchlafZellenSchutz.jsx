@@ -1,4 +1,5 @@
-import {createContext, useContext, useState} from 'react';
+import {createContext, useContext} from 'react';
+import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
@@ -9,6 +10,7 @@ import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
+import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 
 /*
  * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
@@ -53,7 +55,7 @@ const preisWert = (p) =>
 const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
 const getCompareAtMoney = (p) => {
   const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return v?.compareAtPrice || null;
+  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
 };
 // Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag)
 const compareLabelVon = (p) => {
@@ -299,35 +301,9 @@ function ScienceSection() {
   );
 }
 
-/* ───────── Social Proof (quer durch alle Themen) ───────── */
-function LiteYt({id, title}) {
-  const [laueft, setLaueft] = useState(false);
-  if (laueft) {
-    return (
-      <div className="lp-a-yt">
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1`}
-          title={title}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
-  return (
-    <button
-      type="button"
-      className="lp-a-yt"
-      onClick={() => setLaueft(true)}
-      aria-label={`Video abspielen: ${title}`}
-    >
-      <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
-      <span className="lp-a-yt__play" aria-hidden="true">
-        <span>▶</span>
-      </span>
-    </button>
-  );
-}
+/* ───────── Social Proof (quer durch alle Themen) ─────────
+   Stilles YouTube-Poster: seit YT-THUMB-MAXRES (2026-07-21, GL-DES-0009) der
+   gemeinsame Baustein YoutubeTimestamp im Seiten-Kleid lp-a-yt (maxres-Kette). */
 
 /*
  * CONTENT-MATCH (Christian-Regel 2026-07-11, F-003): Tag/Titel/Zitat MÜSSEN
@@ -367,7 +343,7 @@ function VideoSection() {
       <div className="lp-vp-videos-grid">
         {videos.map((v) => (
           <article className="lp-vp-video" key={v.id}>
-            <LiteYt id={v.id} title={v.title} />
+            <YoutubeTimestamp videoId={v.id} titel={v.title} className="lp-a-yt" />
             <span className="lp-vp-video__tag">{v.tag}</span>
             <h3 className="lp-vp-video__title">{v.title}</h3>
             <p className="lp-vp-video__quote">{v.quote}</p>

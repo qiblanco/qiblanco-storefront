@@ -25,7 +25,9 @@ export const TEN_YEARS_DEALS = [
     key: 'qione-2-pro-duo',
     handle: 'jhsdhze783',
     title: '2x QiOne 2 Pro',
-    productTitle: 'Black Friday Sale: 2x QiOne® 2 Pro',
+    // Inhalts-Fix EL-20260724-9b18d2ba: BF24-Resttitel ersetzt — die Kampagne
+    // läuft als 10 Jahre Jubiläums Sale (Titel-Wortlaut von Elina).
+    productTitle: '2x QiOne® 2 Pro — 10 Jahre Jubiläums Sale',
     displayTitle: '2x QiOne® 2 Pro',
     eyebrow: 'Bundle-Angebot',
     shortCopy:
@@ -39,13 +41,30 @@ export const TEN_YEARS_DEALS = [
     productImage: checkoutCdn(
       '/cdn/shop/files/2xQiOne2Profreistehend_1.png?v=1731614283',
     ),
-    path: '/products/jhsdhze783?el=JSale2026',
-    listingHref: '/products/jhsdhze783?el=JSale2026',
+    // Repoint (EL-20260722-04de90b3, Christian-Freigabe 24.07.2026):
+    // Campaign-PDP statt Preis-Klon — Set-Preis kommt vom Automatic Discount.
+    // handle bleibt 'jhsdhze783' (getTenYearsDealByHandle).
+    path: '/pages/qione-2-pro-2x?el=JSale2026',
+    listingHref: '/pages/qione-2-pro-2x?el=JSale2026',
+    // Alt-URL /products/jhsdhze783 → Campaign-PDP: als Code-301 im Loader
+    // (products.$handle.jsx), weil die Deal-Route nie 404 liefert und der
+    // Shopify-URL-Redirect (storefrontRedirect greift NUR bei 404) hier
+    // deshalb nie feuern kann (Inhalts-Fix EL-20260724-9b18d2ba).
+    redirectTo: '/pages/qione-2-pro-2x?el=JSale2026',
+    // Kauf-Referenz = das EINE kanonische Produkt (kein Klon): 2× qione-2-pro,
+    // der Set-Preis entsteht am Warenkorb (Automatic Discount 166,40 € netto
+    // aufs Paar). Angezeigte Preise unten bleiben die SSoT-Set-Zahlen.
+    cartProductHandle: 'qione-2-pro',
+    cartProductTitle: 'QiOne® 2 Pro',
+    cartQuantity: 2,
     theme: 'frequency',
     variants: [
       {
         id: '53739505058060',
         title: 'Default Title',
+        // Kanonische Variante QiOne® 2 Pro (Admin-verifiziert 2026-07-24):
+        // 2 × 913,45 netto − 166,40 Discount = 1.660,50 netto = Set-Preis.
+        cartVariantId: '39680087326790',
         price: 1660.5,
         compareAtPrice: 2476,
       },

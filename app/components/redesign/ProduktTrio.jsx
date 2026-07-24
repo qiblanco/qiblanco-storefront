@@ -1,23 +1,6 @@
 import {PRODUKT_TRIO, PRODUKT_TRIO_TITEL} from '~/lib/redesign3themen';
 import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
-
-const VAT = 1.19;
-
-/**
- * Brutto-Preis-Formatierung — identisches Muster wie TieferSchlaf PricingSection
- * (priceRange.minVariantPrice * MwSt, gerundet, de-DE-EUR ohne Nachkommastellen).
- * Gibt null zurueck, wenn kein Preis vorliegt (dann wird KEIN Preis gerendert).
- */
-const fmtBrutto = (amount) => {
-  if (!amount) return null;
-  const n = Math.round(parseFloat(amount) * VAT);
-  return n.toLocaleString('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-};
+import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 
 /**
  * ProduktTrio (Konzept B3, Pos 24): Standard-Closer mit Kurz-Vorstellung aller
@@ -39,10 +22,21 @@ const fmtBrutto = (amount) => {
  * Default BLOCK_PUBLIC = fail-safe.
  */
 export function ProduktTrio({dataSection, products, block = BLOCK_PUBLIC}) {
+  // Brutto-Anzeigepreis DELEGIERT an den Markt-Preis-Kanon (markt-pricing.js:
+  // bruttoAnzeige + formatPreis) — identisch zu TieferSchlaf/QiOneZellschutz.
+  // KEINE eigene Rechenlogik, KEIN fester Steuersatz (der Kanon setzt 0 fuer
+  // Nicht-EUR-Endbetraege), KEINE feste Waehrung (Symbol aus dem echten
+  // currencyCode des Loaders). Vorher waehrungsblind: round(amount*1.19)+EUR
+  // fest -> US-Kachel "1.646 €" statt "$1,383" (Bug 2026-07-21). bruttoAnzeige
+  // liefert null bei fehlendem Betrag -> es wird KEIN Preis gerendert.
   const preisVon = (handle) => {
     if (!products || !products.length) return null;
     const p = products.find((x) => x?.handle === handle);
-    return fmtBrutto(p?.priceRange?.minVariantPrice?.amount);
+    const waehrung = p?.priceRange?.minVariantPrice?.currencyCode || 'EUR';
+    return formatPreis(
+      bruttoAnzeige(p?.priceRange?.minVariantPrice?.amount, handle, waehrung),
+      waehrung,
+    );
   };
 
   return (

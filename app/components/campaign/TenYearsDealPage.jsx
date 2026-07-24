@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {
   TEN_YEARS_DEALS,
@@ -10,6 +10,7 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {Studien} from '~/components/reusables/Studien';
+import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 
 const wholeEuroFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
@@ -375,11 +376,17 @@ function ProductPurchase({
       selectedVariant.cartProductHandle || deal.cartProductHandle || deal.handle;
     const cartProductTitle =
       selectedVariant.cartProductTitle || deal.cartProductTitle || deal.displayTitle;
+    // Referenzierender Set-Kauf (EL-20260724-9b18d2ba): cartQuantity legt N
+    // Stück des EINEN kanonischen Produkts in den Warenkorb — der Set-Preis
+    // entsteht dort per Automatic Discount. Default 1 hält alle übrigen
+    // Deals byte-identisch.
+    const cartQuantity =
+      selectedVariant.cartQuantity || deal.cartQuantity || 1;
 
     return [
       {
         merchandiseId,
-        quantity: 1,
+        quantity: cartQuantity,
         selectedVariant: {
           id: merchandiseId,
           title: selectedVariant.title,
@@ -391,7 +398,10 @@ function ProductPurchase({
             height: 1000,
           },
           price: {
-            amount: String(toGrossPrice(selectedVariant.price, deal)),
+            // Optimistischer Cart-Flash: bei Set-Menge den Set-Bruttopreis
+            // pro Stück anteilig zeigen (echte Zeile+Discount kommen aus
+            // Shopify, sobald die Cart-Query antwortet).
+            amount: String(toGrossPrice(selectedVariant.price, deal) / cartQuantity),
             currencyCode: 'EUR',
           },
           product: {
@@ -875,9 +885,16 @@ function YoutubeProofSlider() {
     'https://www.youtube-nocookie.com/embed/aG36zJKxDzg',
   ];
 
+  const trackRef = useRef(null);
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
+
   return (
     <section className="j-sale-deal__youtube-proof">
-      <div className="j-sale-deal__youtube-slider">
+      <div
+        className={`j-sale-deal__youtube-slider${isDragging ? ' is-dragging' : ''}`}
+        ref={trackRef}
+        {...handlers}
+      >
         {videos.map((video) => (
           <ResponsiveIframe src={video} title="Qi Blanco Erfahrung" key={video} />
         ))}
@@ -930,7 +947,7 @@ function DealFinalCta({deal, template, selectedVariant}) {
         <ul className="j-sale-deal__final-cta-trust">
           <li>Kostenloser Versand ab 99 Euro</li>
           <li>20 Tage risikofrei testen</li>
-          <li>Kaeuferschutz</li>
+          <li>Käuferschutz</li>
         </ul>
       </div>
     </section>
@@ -1164,6 +1181,8 @@ function HtmlTextSection({
 }
 
 function DealRail({currentKey, compact = false}) {
+  const trackRef = useRef(null);
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
   return (
     <section
       className={compact ? 'j-sale-deal__rail is-compact' : 'j-sale-deal__rail'}
@@ -1173,7 +1192,11 @@ function DealRail({currentKey, compact = false}) {
         <span>Alle Deals</span>
         <h2>Wechsle direkt zum nächsten Jubiläumsangebot</h2>
       </div>
-      <div className="j-sale-deal__slider">
+      <div
+        className={`j-sale-deal__slider${isDragging ? ' is-dragging' : ''}`}
+        ref={trackRef}
+        {...handlers}
+      >
         {TEN_YEARS_DEALS.map((item) => (
           <Link
             className={

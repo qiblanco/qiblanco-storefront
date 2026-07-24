@@ -1,8 +1,6 @@
 import {useEffect, useRef} from 'react';
-import {
-  StarRating,
-  GOOGLE_REVIEWS_URL,
-} from '~/components/reusables/StarRating';
+import {StarRating} from '~/components/reusables/StarRating';
+import {useGoogleRating} from '~/lib/googleRating';
 
 export function ReputonWidget() {
   const containerRef = useRef(null);
@@ -71,13 +69,14 @@ export function ReputonWidget() {
 }
 
 function GoogleRatingBadge() {
+  const g = useGoogleRating();
   return (
     <a
-      href={GOOGLE_REVIEWS_URL}
+      href={g.url}
       target="_blank"
       rel="noopener noreferrer"
       className="google-rating-badge"
-      aria-label="4,8 von 5 Sternen — Google-Rezensionen von Qi Blanco ansehen"
+      aria-label={`${g.komma} von 5 Sternen aus ${g.total} Google-Rezensionen von Qi Blanco ansehen`}
     >
       <img
         className="google-rating-badge__logo"
@@ -88,13 +87,13 @@ function GoogleRatingBadge() {
       />
       <div className="google-rating-badge__content">
         <div className="google-rating-badge__score">
-          <span className="google-rating-badge__number">4,8</span>
+          <span className="google-rating-badge__number">{g.komma}</span>
           <span className="google-rating-badge__stars">
-            <StarRating value={4.8} size={20} />
+            <StarRating value={g.value} size={20} />
           </span>
         </div>
         <div className="google-rating-badge__powered">
-          Powered by <strong>Google</strong>
+          {g.total} Bewertungen · <strong>Google</strong>
         </div>
       </div>
     </a>

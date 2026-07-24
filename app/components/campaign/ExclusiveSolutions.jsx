@@ -6,9 +6,11 @@ import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
+import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 
 /* ════════════════════════════════════════════════════════════
    GELDHELDEN × QI BLANCO — Entwurf aus Figma
@@ -90,6 +92,283 @@ function GeldheldenHero() {
           </div>
         </div>
         <HeroStackedVisuals />
+      </div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════
+   OBERE BEREICHE nach Markos Vorlage (Job 20260721-lp-exclusive-
+   solutions-obere-bereiche): Hero-Video-Slot + problem + solution +
+   marco + testimonials, eingesetzt ZWISCHEN Hero und Paketen.
+   CLAIMS-GATE: kein neuer Zahlen-/Wirk-Claim im Markup — gated
+   Inhalte stehen als leere/null-Konstanten und werden erst nach
+   Christian-Freigabe befüllt (RESULT.md, Entscheidungsliste).
+   ════════════════════════════════════════════════════════════ */
+/* NACHTRAG Job 20260721-lp-exclusive-solutions-drei-bereiche (Christian,
+   3 Freigabe-Nachrichten + Klarstellung, 2026-07-21): B1 problem und
+   B2 solution sind freigegeben und live geschaltet; B2 trägt statt der
+   leeren Kennzahlen-Leiste jetzt das Erklär-Video (Jobspec §6.2/6.3).
+   B0 herovideo ist freigegeben, wartet aber auf Video-ID + startSeconds
+   (§5) — ohne ID rendert er NICHTS. marco/testimonials sind nicht
+   freigegeben. Geschaltet wird ausschließlich über LP_SEKTIONEN
+   (direkt oberhalb der Montage, §3). */
+
+/* ───────── B0. „Das Interview mit Christian." (Bereich 2, Jobspec §5) ─────────
+   Video-ID + startSeconds sind Christians offener Parameter — beide erst
+   nach seiner Bestätigung eintragen, NICHT raten (die Repo-Kandidaten
+   BQxzbXqREWE/mH0vaUEeFqg sind ausdrücklich gesperrt). Ohne ID rendert
+   die Sektion NICHTS — ein Platzhalter darf unter keinen Umständen live
+   gehen. Einbindung wie Bereich 3 über den gemeinsamen Baustein
+   YoutubeTimestamp; der Zeitstempel wird ÜBERNOMMEN (startSeconds bleibt
+   erhalten, ausdrücklich anders als Bereich 3); Thumbnail-Stufe vor dem
+   Eintragen messen (maxres nur bei HTTP 200 und Breite >= 1280, sonst
+   sddefault/hqdefault — null = hqdefault-Fallback des Bausteins). */
+/* NACHTRAG Job 20260721-lp-bereich2-interview-nachzug (Jobspec §11,
+   2026-07-21): Christian hat das Video bestimmt — die Sperre oben ist
+   aufgelöst. BQxzbXqREWE = „das Geldhelden-Video" (Christian Bauer im
+   Geldhelden-Podcast); startSeconds 817 ÜBERNOMMEN von /pages/tiefer-schlaf
+   (live gegengeprüft per Klickprobe: iframe ?start=817, 2026-07-21);
+   Thumbnail-Stufe gemessen: maxresdefault HTTP 200, 1280x720. */
+const HERO_VIDEO = {
+  youtubeId: 'BQxzbXqREWE', // Interview-Video Christian — ID nur von Christian
+  startSeconds: 817, // übernommener Zeitstempel — mit der ID eintragen
+  thumbnail: 'https://i.ytimg.com/vi/BQxzbXqREWE/maxresdefault.jpg', // nach maxres-Messung setzen; null = hqdefault-Fallback
+};
+
+function HeroVideoSection() {
+  if (!HERO_VIDEO.youtubeId) return null; // kein Platzhalter live (Jobspec §5)
+  return (
+    <section className="ghx-section ghx-section--bg-1 ghx-herovideo" aria-labelledby="ghx-herovideo-title">
+      <div className="ghx-inner ghx-herovideo__inner">
+        <h2 className="ghx-h2 ghx-herovideo__title" id="ghx-herovideo-title">
+          Das Interview mit Christian.
+        </h2>
+        <div className="ghx-herovideo__frame">
+          <LpYoutubeTimestamp
+            videoId={HERO_VIDEO.youtubeId}
+            startSeconds={HERO_VIDEO.startSeconds || 0}
+            thumbnail={HERO_VIDEO.thumbnail}
+            titel="Das Interview mit Christian."
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────── B1. Problem: Das unsichtbare Risiko ─────────
+   CLAIMS-GATE: WHO-Einstufung („möglicherweise krebserregend") und
+   „Studien zeigen: E-Smog verschlechtert Schlaf" aus der Vorlage
+   bewusst NICHT übernommen — Entscheidungsliste an Christian. */
+const PROBLEM_CARDS = [
+  {
+    icon: '📡',
+    title: 'Dein Zuhause strahlt 24/7',
+    body: 'WLAN-Router, Smartphones, Smart-TVs, Bluetooth-Geräte — ein durchschnittlicher Haushalt hat heute 15–25 strahlende Geräte. Und es werden jedes Jahr mehr.',
+  },
+  {
+    icon: '😴',
+    title: 'Schlafprobleme nehmen zu',
+    body: 'Immer mehr Menschen über 50 berichten von Schlafstörungen, Kopfschmerzen und Erschöpfung im Alltag.',
+  },
+  {
+    icon: '👨‍👩‍👧‍👦',
+    title: 'Deine Familie ist schutzlos',
+    body: 'Besonders Kinder und ältere Familienmitglieder reagieren empfindlicher auf elektromagnetische Felder. Abschalten ist keine Option — aber Schutz ist möglich.',
+  },
+];
+
+function ProblemSection() {
+  return (
+    <section className="ghx-section ghx-section--bg-3 ghx-problem" aria-labelledby="ghx-problem-title">
+      <div className="ghx-inner ghx-problem__inner">
+        <span className="ghx-pill ghx-pill--white">DAS UNSICHTBARE RISIKO</span>
+        <h2 className="ghx-h2" id="ghx-problem-title">
+          Was du nicht siehst, kann deiner Familie trotzdem schaden.
+        </h2>
+        <p className="ghx-sub">
+          Jeden Tag ist deine Familie elektromagnetischer Strahlung ausgesetzt —
+          zu Hause, im Büro, unterwegs. Und mit 5G wird es nicht weniger.
+        </p>
+        <div className="ghx-problem__grid">
+          {PROBLEM_CARDS.map((c) => (
+            <article className="ghx-problem__card" key={c.title}>
+              <span className="ghx-problem__icon" aria-hidden="true">{c.icon}</span>
+              <h3 className="ghx-problem__title">{c.title}</h3>
+              <p className="ghx-problem__body">{c.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────── B2. Lösung: unsichtbarer Schutzschild ─────────
+   CLAIMS-GATE: die 3-Stat-Leiste der Vorlage (12× Zellbarriere /
+   84,7 % Immunzellen / 50 % oxidativer Stress) ist exakt der
+   beanstandete Zahlensatz (steht bereits 2× live: Hero + Wissenschafts-
+   block). SOLUTION_STATS bleibt LEER, bis Christian die 10 offenen
+   Fragen der Entscheidungsvorlage vom 20.07. entschieden hat — leer
+   wird die Leiste nicht gerendert. „patentiert" (Patentstatus
+   ungeprüft) und „keine Nebenwirkungen" ebenfalls nicht übernommen. */
+/* NACHTRAG 2026-07-21 (Job …-drei-bereiche, Jobspec §6.2): Christians
+   Claim-Entscheid vom 2026-07-21 = Status quo, bewusste Entscheidung;
+   SOLUTION_STATS bleibt LEER und wird nicht befüllt. An der Stelle der
+   Leiste steht jetzt das Erklär-Video (PQfmajgjR7E, Start 0:00,
+   maxresdefault gemessen: HTTP 200, 1280×720). */
+const SOLUTION_STATS = []; // [{value, label}] — Befüllung = Christian-Entscheid
+
+function SolutionSection() {
+  return (
+    <section className="ghx-section ghx-section--bg-1 ghx-solution" aria-labelledby="ghx-solution-title">
+      <div className="ghx-inner ghx-solution__inner">
+        <span className="ghx-pill ghx-pill--gold-soft">DIE LÖSUNG</span>
+        <h2 className="ghx-h2" id="ghx-solution-title">
+          Ein unsichtbarer Schutzschild für dein Zuhause.
+        </h2>
+        <p className="ghx-sub">
+          Die proprietäre Gitterchip<sup>®</sup>-Technologie von Qi Blanco erzeugt ein
+          kohärentes Feld, das die natürliche Struktur des Wassers in deinen
+          Zellen unterstützt — für dich, deine Partnerin und deine ganze Familie.
+        </p>
+        <div className="ghx-solution__visual">
+          <span className="ghx-solution__shield" aria-hidden="true">🛡️</span>
+          <h3 className="ghx-solution__how">So funktioniert der Schutz</h3>
+          <p className="ghx-solution__text">
+            Der GitterChip<sup>®</sup> im Inneren jedes Qi Blanco Produkts erzeugt ein
+            kohärentes Feld. Dieses Feld unterstützt die natürliche Struktur des
+            Wassers in deinen Zellen. Keine Batterien, kein Strom, kein Verschleiß.
+          </p>
+          <div className="ghx-solution__video">
+            <LpYoutubeTimestamp
+              videoId="PQfmajgjR7E"
+              startSeconds={0}
+              thumbnail="https://i.ytimg.com/vi/PQfmajgjR7E/maxresdefault.jpg"
+              titel="So funktioniert der Schutz"
+            />
+          </div>
+          {SOLUTION_STATS.length > 0 && (
+            <div className="ghx-solution__stats">
+              {SOLUTION_STATS.map((s) => (
+                <div className="ghx-solution__stat" key={s.label}>
+                  <span className="ghx-solution__stat-value">{s.value}</span>
+                  <span className="ghx-solution__stat-label">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────── B3. Marcos persönliche Empfehlung ─────────
+   Foto-Asset fehlt (nicht im Repo/CDN, keine externen Quellen wegen
+   Bildrechten) — runder Initialen-Platzhalter, MARCO_FOTO_URL nach
+   Lieferung eintragen. CLAIMS-GATE: „in vier unabhängigen Zellstudien
+   nachgewiesen" aus der Vorlage NICHT übernommen (Wirk- +
+   Unabhängigkeitsbehauptung, Entscheidungsliste). */
+const MARCO_FOTO_URL = null; // 200×200, Foto von Marco — Asset-Bitte an Christian
+
+function MarcoSection() {
+  return (
+    <section className="ghx-section ghx-section--bg-3 ghx-marco" aria-labelledby="ghx-marco-title">
+      <div className="ghx-inner">
+        <div className="ghx-marco__head">
+          <span className="ghx-pill ghx-pill--white">PERSÖNLICHE EMPFEHLUNG</span>
+          <h2 className="ghx-h2" id="ghx-marco-title">
+            Warum ich meiner Familie Qi Blanco geschenkt habe.
+          </h2>
+        </div>
+        <div className="ghx-marco__grid">
+          <div className="ghx-marco__photo-col">
+            {MARCO_FOTO_URL ? (
+              <img
+                className="ghx-marco__photo"
+                src={MARCO_FOTO_URL}
+                alt="Marco Lachmann-Anke"
+                width="200"
+                height="200"
+                loading="lazy"
+              />
+            ) : (
+              <span className="ghx-marco__photo ghx-marco__photo--placeholder" role="img" aria-label="Platzhalter: Foto von Marco Lachmann-Anke folgt">
+                ML
+              </span>
+            )}
+          </div>
+          <div className="ghx-marco__copy">
+            <blockquote className="ghx-marco__quote">
+              „Als ich zum ersten Mal von der Gitterchip-Technologie gehört habe,
+              war ich skeptisch. Dann habe ich Christian interviewt und die
+              Studien gelesen. Heute hat jeder in meiner Familie ein Qi Blanco
+              Produkt — und meine Frau sagt, sie schläft besser als seit Jahren.“
+            </blockquote>
+            <p className="ghx-marco__text">
+              Ich empfehle nur Produkte, hinter denen ich zu 100 % stehe.
+              Qi Blanco gehört dazu.
+            </p>
+            <p className="ghx-marco__text">
+              Als Geldhelden-Mitglied bekommst du auf dieser Seite exklusive
+              Familien-Pakete, die es so im normalen Shop nicht gibt. Mit allem,
+              was du brauchst, um dein Zuhause und deine Liebsten zu schützen.
+            </p>
+            <p className="ghx-marco__sig">— Marco Lachmann-Anke, Gründer Geldhelden</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────── B4. Testimonials (Familien 50+) ─────────
+   Marko markiert die drei Vorlagen-Texte SELBST als Platzhalter.
+   Erfundene Kundenzitate mit Namen/Alter sind rechtlich dasselbe
+   Problem wie erfundene Messwerte — deshalb: Struktur fertig,
+   Inhalt = sichtbar markierte Platzhalter-Karten OHNE Namen und
+   OHNE Sterne. Echte Erfahrungsberichte (Vorname, Alter, konkretes
+   Ergebnis, ideal mit Foto) muss Christian liefern; dann
+   TESTIMONIALS befüllen — der Platzhalter-Zweig fällt von selbst weg. */
+const TESTIMONIALS = []; // [{quote, author, role, stars}] — echte Berichte folgen
+
+function TestimonialsSection() {
+  const istPlatzhalter = TESTIMONIALS.length === 0;
+  const cards = istPlatzhalter ? [1, 2, 3] : TESTIMONIALS;
+  return (
+    <section className="ghx-section ghx-section--bg-1 ghx-testi" aria-labelledby="ghx-testi-title">
+      <div className="ghx-inner">
+        <div className="ghx-testi__head">
+          <span className="ghx-pill ghx-pill--gold-soft">ERFAHRUNGEN</span>
+          <h2 className="ghx-h2" id="ghx-testi-title">Familien wie deine berichten.</h2>
+        </div>
+        <div className="ghx-testi__grid">
+          {cards.map((t, i) =>
+            istPlatzhalter ? (
+              <article className="ghx-testi__card ghx-testi__card--placeholder" key={`ph-${i}`}>
+                <span className="ghx-testi__ph-badge">PLATZHALTER</span>
+                <p className="ghx-testi__quote">
+                  Hier steht ein echter Erfahrungsbericht einer Familie —
+                  mit Vorname, Alter und konkretem Ergebnis.
+                </p>
+                <p className="ghx-testi__author">Inhalt folgt</p>
+              </article>
+            ) : (
+              <article className="ghx-testi__card" key={t.author}>
+                {t.stars ? (
+                  <span className="ghx-testi__stars" aria-label={`${t.stars} von 5 Sternen`}>
+                    {'★'.repeat(t.stars)}
+                  </span>
+                ) : null}
+                <p className="ghx-testi__quote">{t.quote}</p>
+                <p className="ghx-testi__author">{t.author}</p>
+                <p className="ghx-testi__role">{t.role}</p>
+              </article>
+            ),
+          )}
+        </div>
       </div>
     </section>
   );
@@ -564,7 +843,7 @@ function GeldheldenPakete({products}) {
         compare: "10.501 €",
         price: "9.241 €",
         save: "Du sparst 1.260 €",
-        fine: "oder ab 770 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+        fine: "oder ab 774 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       },
       cta: "Dieses Paket wählen",
       featured: true,
@@ -825,9 +1104,14 @@ function StudienSlider() {
     const step = card ? card.offsetWidth + 24 : 340;
     track.scrollBy({left: dir * step, behavior: 'smooth'});
   };
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
   return (
     <div className="ghx-studien">
-      <div className="ghx-studien__track" ref={trackRef}>
+      <div
+        className={`ghx-studien__track${isDragging ? ' is-dragging' : ''}`}
+        ref={trackRef}
+        {...handlers}
+      >
         {STUDIEN.map((s) => (
           <article className="ghx-studie" key={s.title}>
             <h3 className="ghx-studie__title">{s.title}</h3>
@@ -1021,11 +1305,32 @@ main:has(.lp-exclusive-solutions) { background: rgb(253,251,247); }
 }
 `;
 
+/* ── SEKTIONS-SCHALTER ────────────────────────────────────────────────
+   Eine Zeile pro Bereich. true = live, false = nicht gerendert.
+   false rendert NICHTS (kein Platzhalter, kein leerer Rahmen, keine
+   Layout-Lücke) — die Sektion bringt ihren Abstand selbst mit.
+   Freigabestand 2026-07-21 (Christian, 3 Nachrichten).            */
+const LP_SEKTIONEN = {
+  herovideo: true, // B0 „Das Interview mit Christian." — freigegeben, aktiviert per Nachtrag §11 (BQxzbXqREWE @817, 2026-07-21)
+  problem: true, // B1 „Das unsichtbare Risiko" — freigegeben
+  solution: true, // B2 „So funktioniert der Schutz" — freigegeben
+  marco: false, // B3 Marcos Empfehlung — nicht freigegeben
+  testimonials: false, // B4 Testimonials — nicht freigegeben
+};
+
 export function ExclusiveSolutions({products = []}) {
   return (
     <div className="lp-vp lp-exclusive-solutions">
       <style dangerouslySetInnerHTML={{__html: GHX_STYLE_OVERRIDES}} />
       <GeldheldenHero />
+      {/* Obere Bereiche (Job 20260721-lp-exclusive-solutions-drei-bereiche):
+          geschaltet über LP_SEKTIONEN, Reihenfolge Video → Problem →
+          Lösung → Marco → Testimonials, zwischen Hero und Paketen */}
+      {LP_SEKTIONEN.herovideo && <HeroVideoSection />}
+      {LP_SEKTIONEN.problem && <ProblemSection />}
+      {LP_SEKTIONEN.solution && <SolutionSection />}
+      {LP_SEKTIONEN.marco && <MarcoSection />}
+      {LP_SEKTIONEN.testimonials && <TestimonialsSection />}
       <GeldheldenPakete products={products} />
       <GeldheldenAuthority />
       <InfoSliderSection />

@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {redirect} from '@shopify/remix-oxygen';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -62,6 +63,21 @@ export async function loader(args) {
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
   if (campaignDeal) {
+    // Deal-Handles kurzschließen die Produkt-Query -> nie 404 -> der
+    // Shopify-URL-Redirect (storefrontRedirect, greift NUR bei 404) kann
+    // für Alt-Handles NIE feuern. Trägt der Deal ein redirectTo, ist die
+    // Alt-URL dauerhaft umgezogen: 301 mit Query-Erhalt (fbclid/gclid/UTM
+    // überleben die Weiterleitung; Params aus redirectTo gewinnen).
+    if (campaignDeal.redirectTo) {
+      const incoming = new URL(args.request.url);
+      const target = new URL(campaignDeal.redirectTo, incoming.origin);
+      incoming.searchParams.forEach((value, key) => {
+        if (!target.searchParams.has(key)) {
+          target.searchParams.set(key, value);
+        }
+      });
+      throw redirect(target.pathname + target.search, 301);
+    }
     return {campaignDeal, product: null};
   }
 

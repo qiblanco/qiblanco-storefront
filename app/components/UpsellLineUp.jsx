@@ -2,6 +2,7 @@ import {Link} from 'react-router';
 import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 import {ChevronRight} from 'lucide-react';
 import {useState, useEffect, useRef, useCallback} from 'react';
+import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 
 /*
  * Zwei-Block-IA (Job 20260717-storefront-ia-zweiblock-umbau): Die Karte
@@ -51,11 +52,15 @@ const ITEMS = [
 export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const startX = useRef(0);
   const trackRef = useRef(null);
+  const [slideStep, setSlideStep] = useState(400);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 750);
+    const check = () => {
+      setIsMobile(window.innerWidth < 750);
+      const first = trackRef.current?.children?.[0];
+      if (first) setSlideStep(first.getBoundingClientRect().width + 20);
+    };
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
@@ -71,24 +76,24 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
     setCurrentIndex((i) => Math.max(i - 1, 0));
   }, []);
 
-  const handlePointerDown = (e) => {
-    startX.current = e.touches ? e.touches[0].clientX : e.clientX;
-  };
-
-  const handlePointerUp = (e) => {
-    const endX = e.changedTouches
-      ? e.changedTouches[0].clientX
-      : e.clientX;
-    const diff = startX.current - endX;
-    if (diff > 60) goNext();
-    else if (diff < -60) goPrev();
-  };
+  // Slider existiert nur mobil (Desktop zeigt alle Karten nebeneinander),
+  // deshalb enabled: isMobile. Schwellen/Velocity kommen aus dem Hook (GL-DES-0012).
+  const {handlers, isDragging, dragOffset} = useDragSwipe({
+    mode: 'transform',
+    enabled: isMobile,
+    slideStep,
+    onNext: goNext,
+    onPrev: goPrev,
+    canNext: () => currentIndex < maxIndex,
+    canPrev: () => currentIndex > 0,
+  });
 
   const progress = ((currentIndex + 1) / ITEMS.length) * 100;
 
-  // On mobile, translate by one card width per index
+  // On mobile, translate by one card width per index; waehrend des Drags
+  // folgt der Track dem Finger 1:1 (dragOffset in px).
   const translateX = isMobile
-    ? `calc(-${currentIndex} * (100vw - 2rem + 20px))`
+    ? `calc(-${currentIndex} * (100vw - 2rem + 20px) + ${dragOffset}px)`
     : '0px';
 
   return (
@@ -98,16 +103,16 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
         Werde Teil der Qi Blanco® Revolution!
       </h2>
       <div
-        className="UpsellCarousel"
-        onMouseDown={handlePointerDown}
-        onMouseUp={handlePointerUp}
-        onTouchStart={handlePointerDown}
-        onTouchEnd={handlePointerUp}
+        className={`UpsellCarousel${isDragging ? ' is-dragging' : ''}`}
+        {...handlers}
       >
         <div
           className="UpsellTrack"
           ref={trackRef}
-          style={{transform: `translateX(${translateX})`}}
+          style={{
+            transform: `translateX(${translateX})`,
+            transition: isDragging ? 'none' : undefined,
+          }}
         >
           {ITEMS.map((item, i) => (
             <div className="UpsellItem" key={i}>

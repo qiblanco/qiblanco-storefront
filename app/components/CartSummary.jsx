@@ -1,6 +1,7 @@
 import {Form} from 'react-router';
 import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
 import {formatPreis} from '~/lib/markt-pricing';
+import {cartLineContentIds} from '~/lib/pixel-content';
 
 /**
  * @param {CartSummaryProps}
@@ -43,6 +44,7 @@ export function CartSummary({cart, layout}) {
         checkoutUrl={cart.checkoutUrl}
         subtotal={taxedSubtotal}
         numItems={lines.length}
+        contentIds={cartLineContentIds(lines)}
       />
       <PaymentMethods />
     </div>
@@ -50,18 +52,22 @@ export function CartSummary({cart, layout}) {
 }
 
 /**
- * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number}}
+ * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[]}}
  */
-function CartCheckoutActions({checkoutUrl, subtotal, numItems}) {
+function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
   if (!checkoutUrl) return null;
 
   // Meta-Pixel InitiateCheckout: feuert nur, wenn das Pixel (consent-gated)
   // geladen ist. Die Form submittet normal weiter — Tracking darf den
   // Checkout nie blockieren.
+  // content_ids/content_type spiegeln ViewContent/AddToCart (MetaPixel.jsx),
+  // damit die Event-Kette dieselben Produkt-IDs traegt (Meta-Match-Qualitaet).
   const trackInitiateCheckout = () => {
     try {
       if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
         window.fbq('track', 'InitiateCheckout', {
+          content_ids: contentIds || [],
+          content_type: 'product',
           value: parseFloat(subtotal?.amount) || 0,
           currency: subtotal?.currencyCode || 'EUR',
           num_items: numItems || 0,

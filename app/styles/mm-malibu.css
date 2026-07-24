@@ -1,0 +1,191 @@
+/* ============================================================================
+   mm-malibu.css — USA/Malibu-Mood-Layer ueber mm-lp.css.
+   Bau: 20260724-how-funktioniert-qione-malibu-v2 (erster Test des kommenden
+   haus-weiten „Malibu"-Styles: kalifornisches Lifestyle-Gefuehl — Sonne,
+   Leichtigkeit, Premium-Coolness — auf sauberem Handwerk, nicht „AI-grob").
+
+   PRINZIP (das Rezept): Malibu ist KEIN zweites Token-System. Die Token-Welt
+   von mm-lp.css IST bereits kalifornisch-warm (Sand-Papier #faf9f5, Sonnen-
+   Gold #c9a14b, luftiger Weissraum). Der Mood entsteht aus (1) warmer, golden-
+   stundiger Editorial-Foto­grafie mit echten Menschen + begehrenswertem
+   Produkt, bewusst gedeckte Saettigung; (2) einem full-bleed, kinoreifen Hero;
+   (3) grosszuegiger Weite = Leichtigkeit. NICHT aus neuen Farbwerten.
+
+   REGEL DIESES FILES: ausschliesslich die :root-Tokens aus mm-lp.css (dort auf
+   :root, hier verfuegbar) — KEINE freien Groessen/Farben/Radien, KEIN zweiter
+   Gold-Ton. Alle Selektoren sind `.mm-malibu`-praefixiert: dieser Layer wird
+   NUR von /pages/so-funktioniert-der-qione geladen und kann die 6 Bestands-LPs
+   NICHT beeinflussen (0 Regression). Additiv + reversibel.
+   ========================================================================== */
+
+/* ─── Kinoreifer Hero: Foto full-bleed, warmer Scrim, Text im Kontrast ─────── */
+.mm-malibu .mm-mal-hero {
+  position: relative;
+  isolation: isolate;
+  background: var(--mm-dunkel);
+  border-bottom: 1px solid var(--mm-linie);
+}
+.mm-malibu .mm-mal-hero__media {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  z-index: 0;
+}
+.mm-malibu .mm-mal-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  display: block;
+  border-radius: 0;
+  /* gedeckte Premium-Saettigung — „Luxus fluestert" statt Postkarten-Grelle */
+  filter: saturate(0.92);
+}
+/* Warmer Scrim aus dem EINEN Dunkel-Ton (keine neue Hue): unten dicht fuer
+   Textkontrast (WCAG), oben licht — die Sonne bleibt sichtbar. */
+.mm-malibu .mm-mal-hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to top,
+      rgba(25, 23, 20, 0.86) 0%,
+      rgba(25, 23, 20, 0.62) 34%,
+      rgba(25, 23, 20, 0.18) 66%,
+      rgba(25, 23, 20, 0.04) 100%
+    );
+}
+.mm-malibu .mm-mal-hero__inhalt {
+  position: relative;
+  z-index: 2;
+  max-width: var(--mm-max);
+  margin: 0 auto;
+  padding: var(--mm-s12) var(--mm-s3) var(--mm-s8);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 30rem;
+  justify-content: flex-end;
+}
+.mm-malibu .mm-mal-hero .mm-eyebrow {
+  color: var(--mm-gold);
+  text-align: left;
+  margin-left: 0;
+}
+.mm-malibu .mm-mal-hero h1 {
+  color: var(--mm-text-hell);
+  font-size: var(--mm-fs-h1);
+  max-width: 20ch;
+  margin-bottom: var(--mm-s3);
+}
+.mm-malibu .mm-mal-hero__sub {
+  color: var(--mm-text-hell);
+  font-size: var(--mm-fs-md);
+  max-width: 46ch;
+  margin-bottom: var(--mm-s5);
+}
+.mm-malibu .mm-mal-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mm-s2);
+  align-items: center;
+}
+/* Sekundaer-CTA auf dem dunklen Foto: heller Rahmen (Token-rein) */
+.mm-malibu .mm-mal-hero .mm-cta--sekundaer {
+  color: var(--mm-text-hell);
+  border-color: var(--mm-linie-hell);
+  background: transparent;
+}
+.mm-malibu .mm-mal-hero .mm-cta--sekundaer:hover {
+  background: rgba(244, 240, 233, 0.1);
+  color: var(--mm-text-hell);
+}
+
+/* ─── „In 20 Sekunden": ruhige Kurz-Erklaerung (drei Karten) ──────────────── */
+.mm-malibu .mm-mal-schnell__karten {
+  display: grid;
+  gap: var(--mm-s3);
+  margin-top: var(--mm-s6);
+}
+.mm-malibu .mm-mal-karte {
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  padding: var(--mm-s4);
+}
+.mm-malibu .mm-bahn--flaeche .mm-mal-karte { background: var(--mm-grund); }
+.mm-malibu .mm-mal-karte__num {
+  width: var(--mm-s5);
+  height: var(--mm-s5);
+  border-radius: 50%;
+  border: 1px solid var(--mm-gold);
+  color: var(--mm-gold-tief);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--mm-fs-lg);
+  margin-bottom: var(--mm-s3);
+  font-variant-numeric: tabular-nums;
+}
+.mm-malibu .mm-mal-karte h3 { font-size: var(--mm-fs-lg); margin-bottom: var(--mm-s1); }
+.mm-malibu .mm-mal-karte p { font-size: var(--mm-fs-base); color: var(--mm-text-2); }
+
+/* ─── Effekt-Baender: editorial Foto | Text, abwechselnd ──────────────────── */
+.mm-malibu .mm-mal-effekte { display: grid; gap: var(--mm-s8); }
+.mm-malibu .mm-mal-effekt { display: grid; gap: var(--mm-s5); align-items: center; }
+.mm-malibu .mm-mal-effekt__media {
+  margin: 0;
+  border-radius: var(--mm-r2);
+  overflow: hidden;
+  box-shadow: var(--mm-schatten-2);
+  background: var(--mm-flaeche);
+}
+.mm-malibu .mm-mal-effekt__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 3 / 2;
+  display: block;
+  border-radius: 0;
+  filter: saturate(0.92);
+}
+.mm-malibu .mm-mal-effekt__eyebrow {
+  display: block;
+  font-size: var(--mm-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mm-gold-tief);
+  margin-bottom: var(--mm-s2);
+}
+.mm-malibu .mm-mal-effekt h3 { font-size: var(--mm-fs-xl); margin-bottom: var(--mm-s2); }
+.mm-malibu .mm-mal-effekt__text { font-size: var(--mm-fs-md); color: var(--mm-text-2); }
+.mm-malibu .mm-mal-effekt__beleg {
+  margin-top: var(--mm-s4);
+  padding-top: var(--mm-s3);
+  border-top: 1px solid var(--mm-linie);
+}
+.mm-malibu .mm-mal-effekt__zahl {
+  font-size: var(--mm-fs-h2);
+  font-weight: 700;
+  color: var(--mm-gold-tief);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.mm-malibu .mm-mal-effekt__label {
+  display: block;
+  font-size: var(--mm-fs-xs);
+  color: var(--mm-text-2);
+  margin-top: var(--mm-s1);
+}
+
+/* ─── Desktop (>= 768px): Baender entfalten ───────────────────────────────── */
+@media (min-width: 768px) {
+  .mm-malibu .mm-mal-hero__inhalt { min-height: 34rem; padding-top: var(--mm-s12); }
+  .mm-malibu .mm-mal-schnell__karten { grid-template-columns: repeat(3, 1fr); }
+  .mm-malibu .mm-mal-effekt { grid-template-columns: 6fr 5fr; gap: var(--mm-s8); }
+  .mm-malibu .mm-mal-effekt--gewendet .mm-mal-effekt__media { order: 2; }
+}
