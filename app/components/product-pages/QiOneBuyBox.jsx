@@ -37,6 +37,17 @@ import {ProductImageList} from '~/components/ProductImageList';
  * „Zustand"-Option (Neuware|Rückläufer, Konzept Kap. 5) erscheint dadurch ohne
  * Codeänderung auf PDP UND Campaign-PDP zugleich.
  *
+ * QUANTITY-SLOT (additiv, Default 1): `quantity` steuert NUR die Stückzahl der
+ * Add-to-Cart-Zeile (durchgereicht an ProductForm), NICHT das gerenderte DOM.
+ * Da der Default 1 ist, bleibt die organische PDP byte-identisch — sie übergibt
+ * die Prop nicht. Die Campaign-PDP /pages/qione-2-pro-2x setzt quantity={2} für
+ * das 2er-Set; der Kampagnen-PREIS entsteht über einen Automatic Discount am
+ * Warenkorb, NICHT über ein Preis-Klon-Produkt (Konzept Kap. 5). Der
+ * <Analytics.ProductView>-Payload bleibt BEWUSST bei quantity 1 = ein Produkt-
+ * View, ViewContent-Parität zur PDP gewahrt (D-006); die Stückzahl 2 gehört an
+ * das AddToCart-Event, nicht an den View. `ctaLabel` erlaubt der Kampagne einen
+ * eigenen Button-Text.
+ *
  * @param {{
  *   product: any,
  *   socialProof?: import('react').ReactNode,
@@ -44,6 +55,8 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   topBadge?: import('react').ReactNode,
  *   priceLabel?: import('react').ReactNode,
  *   benefitList?: import('react').ReactNode,
+ *   quantity?: number,
+ *   ctaLabel?: string,
  * }} props
  */
 export function QiOneBuyBox({
@@ -53,6 +66,8 @@ export function QiOneBuyBox({
   topBadge = null,
   priceLabel = null,
   benefitList = null,
+  quantity = 1,
+  ctaLabel,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -105,6 +120,8 @@ export function QiOneBuyBox({
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
+          quantity={quantity}
+          ctaLabel={ctaLabel}
         />
         {benefitList}
       </div>
