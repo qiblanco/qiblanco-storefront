@@ -4,6 +4,7 @@ import {
   useRouteError,
   isRouteErrorResponse,
   useRouteLoaderData,
+  useMatches,
   Links,
   Meta,
   Scripts,
@@ -14,6 +15,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 import {PageLayout} from './components/PageLayout';
+import {UsLayout} from '~/components/us/UsLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
@@ -165,6 +167,13 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
+  // Markt-Layout-Weiche (fail-closed): nur wenn die tiefste Route explizit
+  // handle.layout === 'us' exportiert, rendert der US-Rahmen (en-us-Block);
+  // jede Route ohne handle bleibt byte-identisch beim DACH-PageLayout.
+  const matches = useMatches();
+  const routeHandle = matches[matches.length - 1]?.handle;
+  const isUsRoute = routeHandle?.layout === 'us';
+  const htmlLang = routeHandle?.htmlLang || 'de';
   const shouldLoadThirdPartyScripts =
     data?.isProductionHost || data?.enableTrackingInPreview;
   const isTrackingPreview =
@@ -175,7 +184,7 @@ export function Layout({children}) {
 
   return (
     <html
-      lang="de"
+      lang={htmlLang}
       data-qiblanco-tracking-preview={isTrackingPreview ? 'true' : undefined}
       data-qb-region={data?.buyerCountry || undefined}
       data-qb-consent-strict={data?.consentStrictRegions || undefined}
@@ -274,7 +283,11 @@ export function Layout({children}) {
           shop={data.shop}
           consent={data.consent}
           >
-            <PageLayout {...data}>{children}</PageLayout>
+            {isUsRoute ? (
+              <UsLayout cart={data.cart}>{children}</UsLayout>
+            ) : (
+              <PageLayout {...data}>{children}</PageLayout>
+            )}
             {(data.isProductionHost || data.enableTrackingInPreview) && (
               <MetaPixel />
             )}

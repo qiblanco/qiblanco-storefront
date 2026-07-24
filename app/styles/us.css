@@ -1,0 +1,142 @@
+/*
+ * US-Rahmen (Vorabversion /en-us — Job 20260720-usa-seite-auf-dach-basis-
+ * vorabversion s05). Additives, schmales Stylesheet NUR fuer Header/Footer/
+ * Hilfselemente der EN-Schicht; der Seiten-Content erbt die bestehenden
+ * Klassen aus app.css/redesign-3themen.css (Struktur-Traeger = DACH-DOM).
+ */
+
+.us-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.us-header-logo {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.us-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.us-header-nav a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.us-header-nav a:hover,
+.us-header-nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.us-cart-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.us-footer {
+  margin-top: 80px;
+  background: #10141c;
+  color: #e8e6e1;
+  padding: 48px 24px 32px;
+}
+
+.us-footer a {
+  color: #e8e6e1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.us-footer-cols {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.us-footer-col {
+  min-width: 220px;
+}
+
+.us-footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.us-footer-col li {
+  margin-bottom: 0.5rem;
+}
+
+.us-footer-heading {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.us-footer-disclaimer {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: #b9b6af;
+}
+
+.us-draft-notice {
+  max-width: 860px;
+  margin: 1.5rem auto 0;
+  padding: 0.5rem 1rem;
+  border: 1px dashed #b08d3f;
+  border-radius: 6px;
+  color: #7a5d20;
+  background: #fdf7ea;
+  font-size: 0.85rem;
+}
+
+.us-trust-bullets {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.9;
+}
+
+.us-buybox-note {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.75rem;
+}
+
+.us-faq-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+}
+
+.us-faq-item h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.us-faq-item p {
+  line-height: 1.8;
+  margin: 0.4rem 0;
+}
