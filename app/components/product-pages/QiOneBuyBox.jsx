@@ -7,6 +7,7 @@ import {
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {ProductPrice} from '~/components/ProductPrice';
+import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
@@ -92,7 +93,11 @@ export function QiOneBuyBox({
         <div className="Bestseller-Price">
           <ProductPrice
             price={selectedVariant?.price}
-            compareAtPrice={selectedVariant?.compareAtPrice}
+            compareAtPrice={mitStreichpreisFallback(
+              selectedVariant?.compareAtPrice,
+              product?.handle,
+              selectedVariant?.price?.currencyCode,
+            )}
           />
           {priceLabel}
         </div>

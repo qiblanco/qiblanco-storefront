@@ -9,6 +9,7 @@ import {claim} from '~/lib/claims';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
+import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 
 /*
  * Landingpage /pages/zell-schutz — ZELLSCHUTZ „Der Zellversuch als Held".
@@ -55,7 +56,7 @@ const preisWert = (p) =>
 const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
 const getCompareAtMoney = (p) => {
   const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return v?.compareAtPrice || null;
+  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
 };
 // Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag)
 const compareLabelVon = (p) => {
