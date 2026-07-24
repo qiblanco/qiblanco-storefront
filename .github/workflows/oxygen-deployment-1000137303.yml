@@ -210,6 +210,15 @@ jobs:
               };
               const document = {
                 referrer: 'https://referrer.example/',
+                // BRANCH-ONLY Mock-Nachzug (usa-vorab): seit #73 liest das
+                // Tracking-Script document.documentElement.getAttribute()
+                // (regionPolicy) — ohne dieses Mock stirbt der Smoke an
+                // TypeError. Main-seitiger Fix gehoert in einen Repair-Job.
+                documentElement: {
+                  getAttribute() {
+                    return null;
+                  },
+                },
                 head: {
                   appendChild(scriptElement) {
                     appendedScripts.push(scriptElement);
