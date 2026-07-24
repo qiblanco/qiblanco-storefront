@@ -4,16 +4,16 @@ import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
 
 /**
- * Trust-Ketten-Hub „Garantie / Risiko-Umkehr" — 20-Tage-Rueckgabe, Spuer-Regel #7
- * (Rueckgabe an Frist+Ueberzeugung, nie am Spueren); verlinkt von den
+ * Trust-Ketten-Hub „Garantie / Risiko-Umkehr" — 20-Tage-Rückgabe, Spür-Regel #7
+ * (Rückgabe an Frist+Überzeugung, nie am Spüren); verlinkt von den
  * Message-Match-LPs.
  *
- * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosentraeger, D-006): Freigabe-
- * Ansicht fuer Christian, NICHT oeffentlich indexiert. BEWUSST kein canonical.
+ * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosenträger, D-006): Freigabe-
+ * Ansicht für Christian, NICHT öffentlich indexiert. BEWUSST kein canonical.
  * Nicht in Nav (Shopify-Menu-getrieben) und nicht in Sitemap (Shopify-getrieben,
  * reine Route-Datei) — selbst-definierter, nicht-crawlbarer Link.
  *
- * Tracking haengt global im root-Layout — der Loader fragt NUR Produktdaten ab.
+ * Tracking hängt global im root-Layout — der Loader fragt NUR Produktdaten ab.
  */
 export function links() {
   return [{rel: 'stylesheet', href: mmStyles}];

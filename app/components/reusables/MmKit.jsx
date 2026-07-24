@@ -4,16 +4,16 @@ import {Link} from 'react-router';
  * MmKit — geteilte Sektions-Bausteine der neuen Message-Match- & Trust-Ketten-
  * Landingpages (Job 20260723-neue-landingpages-message-match-trust-kette-welle-abc).
  *
- * WARUM EIN File: Diese LP-Familie teilt EIN nuechtern-evidenzbasiertes
+ * WARUM EIN File: Diese LP-Familie teilt EIN nüchtern-evidenzbasiertes
  * Design-System (styles/mm-lp.css, scope .mm-lp). Die Sektionen sind reine
- * Praesentation (props rein, JSX raus) — jede Seite (composer in
- * components/campaign/Mm*.jsx) waehlt Reihenfolge + Inhalt.
+ * Präsentation (props rein, JSX raus) — jede Seite (composer in
+ * components/campaign/Mm*.jsx) wählt Reihenfolge + Inhalt.
  *
  * PFLICHT-INVARIANTEN:
- *  - KEIN Pixel-/Tracking-Code hier (R1/R2/R3 haengen global im root-Layout;
- *    ein Pixel hier = Doppelzaehlung, Attributions-Bruch — homepage-bauer D-006).
+ *  - KEIN Pixel-/Tracking-Code hier (R1/R2/R3 hängen global im root-Layout;
+ *    ein Pixel hier = Doppelzählung, Attributions-Bruch — homepage-bauer D-006).
  *  - KEIN Countdown/Timer-JS (der bekannte paid-Landing-JS-Crash). Interaktion
- *    ausschliesslich nativ (<details> im FAQ) = null Laufzeit-Risiko.
+ *    ausschließlich nativ (<details> im FAQ) = null Laufzeit-Risiko.
  *  - SSR-safe: keine id-Kollisionen, kein window-Zugriff im Render (Hydrogen
  *    streamt serverseitig).
  */
@@ -162,11 +162,11 @@ export function MmMechanism({eyebrow, title, intro, schritte, note, kinder, vari
 export function MmDiagramWasser({caption}) {
   return (
     <figure className="mm-diagramm">
-      <svg viewBox="0 0 520 200" role="img" aria-label="Von ungeordneten zu geordneten Wassermolekuelen">
+      <svg viewBox="0 0 520 200" role="img" aria-label="Von ungeordneten zu geordneten Wassermolekülen">
         <rect x="0" y="0" width="520" height="200" fill="none" />
         <text x="90" y="24" textAnchor="middle" fontSize="13" fill="#5c574d">ungeordnet</text>
-        <text x="430" y="24" textAnchor="middle" fontSize="13" fill="#8a6a24">geordnet / kohaerent</text>
-        {/* linke Wolke: zufaellige Punkte */}
+        <text x="430" y="24" textAnchor="middle" fontSize="13" fill="#8a6a24">geordnet / kohärent</text>
+        {/* linke Wolke: zufällige Punkte */}
         {[[40,70],[70,110],[110,60],[130,120],[60,150],[100,150],[150,95],[45,110],[95,95],[135,75]].map(([x,y],i)=>(
           <circle key={`l${i}`} cx={x} cy={y} r="6" fill="#cdbf9f" opacity="0.8" />
         ))}
@@ -199,7 +199,7 @@ export function MmDiagramChip({caption}) {
           )),
         )}
         <text x="180" y="180" textAnchor="middle" fontSize="12" fill="#5c574d">
-          750er Gold-Gitter im Chirurgenstahl-Koerper
+          750er Gold-Gitter im Chirurgenstahl-Körper
         </text>
       </svg>
       {caption ? <figcaption>{caption}</figcaption> : null}
@@ -345,7 +345,7 @@ export function MmFaq({title, items, variante, dataSection}) {
   return (
     <MmBahn variante={variante} schmal>
       <div className="mm-faq" data-section={dataSection}>
-        <h2>{title || 'Haeufige Fragen'}</h2>
+        <h2>{title || 'Häufige Fragen'}</h2>
         <div className="mm-faq__liste">
           {(items || []).map((it, i) => (
             <details key={i}>

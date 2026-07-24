@@ -7,12 +7,12 @@ import {mmLadeProdukte} from '~/components/campaign/mmProducts';
  * Trust-Ketten-Hub „Mechanismus / Wie funktioniert es" — verlinkt von den
  * Message-Match-LPs (Nordstern: WIE es wirkt, nicht DASS es Premium ist).
  *
- * Zentrale „how it works"-Erklaerseite: die Message-Match-Landingpages linken
- * hier hinein. Ruhig, nuechtern, evidenzbasiert, ehrlich ueber Grenzen.
+ * Zentrale „how it works"-Erklärseite: die Message-Match-Landingpages linken
+ * hier hinein. Ruhig, nüchtern, evidenzbasiert, ehrlich über Grenzen.
  *
- * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosentraeger, D-006): Freigabe-
- * Ansicht fuer Christian, NICHT oeffentlich indexiert. BEWUSST kein canonical.
- * Tracking haengt global im root-Layout — der Loader fragt NUR Produktdaten ab.
+ * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosenträger, D-006): Freigabe-
+ * Ansicht für Christian, NICHT öffentlich indexiert. BEWUSST kein canonical.
+ * Tracking hängt global im root-Layout — der Loader fragt NUR Produktdaten ab.
  */
 export function links() {
   return [{rel: 'stylesheet', href: mmStyles}];
@@ -20,7 +20,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'So wirkt kohaerentes Wasser — der Mechanismus, ehrlich erklaert | Qi Blanco'},
+  {title: 'So wirkt kohärentes Wasser — der Mechanismus, ehrlich erklärt | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 

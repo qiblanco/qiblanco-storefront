@@ -4,17 +4,17 @@ import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
 
 /**
- * Trust-Ketten-Hub „Evidenz / Studien" /pages/zellstudien-ehrlich — nuechterne
+ * Trust-Ketten-Hub „Evidenz / Studien" /pages/zellstudien-ehrlich — nüchterne
  * Evidenz statt Eso, mit ehrlichen Grenzen. Die vier Zellstudien mit Methode,
  * Ergebnis und Grenze plus die deskriptiven Nutzerberichte. Verlinkt von den
  * Message-Match-LPs (Cluster Skeptiker/Mechanismus) — der ehrliche Beleg-Anker.
  *
- * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosentraeger, D-006): Freigabe-
- * Ansicht fuer Christian, NICHT oeffentlich indexiert. BEWUSST kein canonical.
+ * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosenträger, D-006): Freigabe-
+ * Ansicht für Christian, NICHT öffentlich indexiert. BEWUSST kein canonical.
  * Nicht in Nav (Shopify-Menu-getrieben) und nicht in Sitemap (Shopify-getrieben,
  * reine Route-Datei) — selbst-definierter, nicht-crawlbarer Link.
  *
- * Tracking haengt global im root-Layout — der Loader fragt NUR Produktdaten ab.
+ * Tracking hängt global im root-Layout — der Loader fragt NUR Produktdaten ab.
  */
 export function links() {
   return [{rel: 'stylesheet', href: mmStyles}];

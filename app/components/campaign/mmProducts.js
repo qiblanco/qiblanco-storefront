@@ -12,7 +12,7 @@
  * zeigen dann Text/Fallback statt eines 500ers. Nie 0/leer/falsch rendern.
  *
  * KEIN Pixel/Tracking hier: der Loader fragt NUR Produktdaten ab; die
- * R1/R2/R3-Kette haengt pfad-agnostisch im root-Layout (keine Doppelzaehlung).
+ * R1/R2/R3-Kette hängt pfad-agnostisch im root-Layout (keine Doppelzählung).
  */
 
 export const MM_PRODUCTS_QUERY = `#graphql

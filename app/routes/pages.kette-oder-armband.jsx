@@ -5,17 +5,17 @@ import {mmLadeProdukte} from '~/components/campaign/mmProducts';
 
 /**
  * Message-Match-Landingpage /pages/kette-oder-armband — Cluster „Produktwahl /
- * Kaufentscheidung" (Ad-Welle C: qb45-c2 „Die haeufigste Frage kurz vor
+ * Kaufentscheidung" (Ad-Welle C: qb45-c2 „Die häufigste Frage kurz vor
  * Bestellung: Kette oder Armband?"). 1:1-Match: die Ad stellt die Trageform-Frage
  * — die Seite beantwortet sie ehrlich: gleiche Technik, gleiche Wirkung, der
  * Unterschied ist nur die Sichtbarkeit/Trageweise.
  *
- * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosentraeger, D-006): Freigabe-
- * Ansicht fuer Christian, NICHT oeffentlich indexiert. BEWUSST kein canonical.
+ * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosenträger, D-006): Freigabe-
+ * Ansicht für Christian, NICHT öffentlich indexiert. BEWUSST kein canonical.
  * Nicht in Nav (Shopify-Menu-getrieben) und nicht in Sitemap (Shopify-getrieben,
  * reine Route-Datei) — selbst-definierter, nicht-crawlbarer Link.
  *
- * Tracking haengt global im root-Layout — der Loader fragt NUR Produktdaten ab.
+ * Tracking hängt global im root-Layout — der Loader fragt NUR Produktdaten ab.
  */
 export function links() {
   return [{rel: 'stylesheet', href: mmStyles}];
