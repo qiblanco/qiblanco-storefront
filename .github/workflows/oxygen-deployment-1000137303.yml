@@ -145,6 +145,17 @@ jobs:
           );
           NODE
 
+      # BRANCH-ONLY (usa-vorab, nie auf main mergen): h2_deploy_log.json als
+      # Artifact — GitHub maskiert den authBypassToken in Logs/Summary (***),
+      # das Artifact ist der einzige API-abholbare Weg fuer die serverseitige
+      # Preview-Verifikation (hb-transfer verify --bypass-token). Token 12h.
+      - name: Upload preview access artifact (BRANCH-ONLY)
+        if: ${{ github.ref_name != 'main' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-access
+          path: h2_deploy_log.json
+
       - name: Run tracking smoke test
         if: ${{ github.ref_name != 'main' }}
         run: |
