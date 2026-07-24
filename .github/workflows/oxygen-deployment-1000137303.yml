@@ -132,6 +132,17 @@ jobs:
 
           console.log(`OXYGEN_PREVIEW_URL=${previewUrl}`);
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Oxygen preview: ${previewUrl}\n`);
+
+          // BRANCH-ONLY (usa-vorab, nie auf main mergen — Praezedenz
+          // preview/final-sale-polish-oxygen 5d73278): Bypass-Token zusaetzlich
+          // ausgeben, damit die serverseitige Verifikation (hb-transfer verify)
+          // und Christians 12h-Direktlink ohne Runner-Zugriff moeglich sind.
+          const bypassToken = deploy.authBypassToken || '';
+          console.log(`OXYGEN_PREVIEW_BYPASS_TOKEN=${bypassToken}`);
+          fs.appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            `Auth-Bypass-Token (12h): ${bypassToken}\n`,
+          );
           NODE
 
       - name: Run tracking smoke test
