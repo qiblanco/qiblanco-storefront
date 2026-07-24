@@ -3,6 +3,7 @@ import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
 import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
+import jubiUpgradeStyles from '~/styles/jubilaeum-2x-upgrade.css?url';
 
 /*
  * Campaign-PDP /pages/qione-2-pro-2x — die 2er-Set-Fortsetzung der Paid-Strecke
@@ -29,7 +30,13 @@ import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
  */
 
 export function links() {
-  return [{rel: 'stylesheet', href: tenYearsDealStyles}];
+  return [
+    {rel: 'stylesheet', href: tenYearsDealStyles},
+    // Design-Token-Upgrade NUR für diese Route (Scope .jubi-up, D-084-Muster):
+    // hebt die Token-Disziplin (Typo-Skala/EIN Gold/8pt-Takt), ohne die
+    // geteilte TenYearsDealPage-Basis der anderen Deal-Seiten anzufassen.
+    {rel: 'stylesheet', href: jubiUpgradeStyles},
+  ];
 }
 
 /*
@@ -84,7 +91,11 @@ export async function loader({context, request}) {
  */
 export default function QiOne2Pro2xShopRoute() {
   const deal = getTenYearsDealByHandle('jhsdhze783');
-  return <TenYearsDealPage deal={deal} />;
+  return (
+    <div className="jubi-up">
+      <TenYearsDealPage deal={deal} />
+    </div>
+  );
 }
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
