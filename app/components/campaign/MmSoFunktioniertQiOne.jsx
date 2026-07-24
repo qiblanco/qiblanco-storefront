@@ -17,7 +17,7 @@ import {
 
 /**
  * MmSoFunktioniertQiOne — Composer der Erklär-Seite /pages/so-funktioniert-der-qione.
- * Zweck (Christian 2026-07-24): maximal verständlich („Bild-Zeitung"-Niveau —
+ * Zweck (Christian 2026-07-24): maximal verständlich („Bild-Zeitung“-Niveau —
  * jeder versteht es in Sekunden, kurze Sätze, Alltags-Analogien) UND im NEUEN
  * USA/Malibu-Style (warmes kalifornisches Lebensgefühl, hübsche Menschen,
  * begehrenswertes Produkt, Leichtigkeit) — erster Test des kommenden Haus-Styles.
@@ -63,7 +63,7 @@ const EFFEKTE = [
     bild: BILD_ZELLE,
     alt: 'Mann trägt den QiOne im Alltag, ruhiger Moment bei Kaffee',
     gewendet: true,
-    text: 'Jeden Tag setzt Stress deinen Zellen zu — Fachleute nennen das „oxidativen Stress". Stell es dir wie leichtes Rosten vor, nur in der Zelle. Geordnetes Wasser an der Zellhülle federt das ab. In Zellstudien blieben geschützte Zellen deutlich stabiler.',
+    text: 'Jeden Tag setzt Stress deinen Zellen zu — Fachleute nennen das „oxidativen Stress“. Stell es dir wie leichtes Rosten vor, nur in der Zelle. Geordnetes Wasser an der Zellhülle federt das ab. In Zellstudien blieben geschützte Zellen deutlich stabiler.',
     zahl: '75,0 %',
     label: 'weniger oxidativer Zellstress in Zellstudien (in vitro, an Zellkulturen — nicht am Menschen).',
   },
@@ -108,7 +108,7 @@ const FAQ = [
       'Nein. Der Effekt hängt nicht daran, ob du etwas spürst. Manche merken eine Veränderung, andere nicht — beides ist normal. Die 20-Tage-Rückgabe hängt an deiner Überzeugung und der Frist, nie am Spüren.',
   },
   {
-    frage: 'Was heißt „in vitro" / „Zellstudie"?',
+    frage: 'Was heißt „in vitro“ / „Zellstudie“?',
     antwort:
       'Die Studien wurden an Zellen im Labor gemacht, nicht am Menschen. Das ist eine echte, aber begrenzte Stufe von Beweis. Wir sagen das bewusst dazu, statt mehr zu behaupten.',
   },
@@ -254,7 +254,7 @@ export function MmSoFunktioniertQiOne({products}) {
         intro="Etwas genauer, aber immer noch einfach. Der QiOne trägt ein festes Gitter aus 750er Gold, eingefasst in Chirurgenstahl. Keine Elektronik, kein Akku."
         schritte={[
           {titel: 'Das Gold-Gitter gibt den Takt', text: 'Eine feste, präzise Gitterstruktur — wie eine Stimmgabel. Sie beeinflusst das Wasser direkt daneben.'},
-          {titel: 'Wasser ordnet sich', text: 'Die Wassermoleküle an biologischen Grenzflächen gehen in einen geordneteren, „kohärenten" Zustand über. Genau das haben die Zellstudien untersucht.'},
+          {titel: 'Wasser ordnet sich', text: 'Die Wassermoleküle an biologischen Grenzflächen gehen in einen geordneteren, „kohärenten“ Zustand über. Genau das haben die Zellstudien untersucht.'},
           {titel: 'Die Zelle arbeitet ruhiger', text: 'Eine geordnete Wasserschicht stabilisiert die Zellhülle, puffert E-Smog ab und senkt Stress — der Körper ist weniger im Abwehrmodus.'},
         ]}
         kinder={
@@ -263,7 +263,7 @@ export function MmSoFunktioniertQiOne({products}) {
             <MmDiagramWasser caption="Modell: von ungeordneten zu geordneten Wassermolekülen entlang der Gitterstruktur." />
           </>
         }
-        note="Ehrliche Grenze: „Kohärentes Wasser" ist ein Modell aus der Grenzforschung, keine etablierte Medizin. Belegt sind Effekte in Zellkulturen (in vitro) — kein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
+        note="Ehrliche Grenze: „Kohärentes Wasser“ ist ein Modell aus der Grenzforschung, keine etablierte Medizin. Belegt sind Effekte in Zellkulturen (in vitro) — kein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
       />
 
       <MmStatBand
