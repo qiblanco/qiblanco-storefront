@@ -18,6 +18,7 @@ import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
+import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
@@ -100,9 +101,12 @@ export async function loader(args) {
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
     // Regionen-Konfig als data-Attribute an den Client (tracker/qpx-loader).
     // Ohne PUBLIC_CONSENT_STRICT_REGIONS bleibt clientseitig ALLES beim
-    // heutigen Consent-Verhalten (fail-closed, s. consent-policy.js).
+    // strengsten Consent-Verhalten (fail-closed, s. consent-policy.js).
+    // Seit Job 20260724 (Consent-Mode-v2 EWR/UK-Floor): der Client bekommt
+    // die AUFGELÖSTE Liste (Env vereinigt mit EEA_UK_STRICT_FLOOR), nicht
+    // die rohe Env — so erben alle Client-Skripte den Floor automatisch.
     buyerCountry: args.request.headers.get('oxygen-buyer-country') || '',
-    consentStrictRegions: env.PUBLIC_CONSENT_STRICT_REGIONS || '',
+    consentStrictRegions: strictRegions(env).join(','),
     // First-Party-Pixel (qpx): lädt NUR, wenn der Receiver-Endpoint gesetzt ist
     // (Rollout-Schalter; ohne env-Variable ist das Verhalten unverändert).
     qpxEndpoint: env.PUBLIC_QPX_ENDPOINT || '',
