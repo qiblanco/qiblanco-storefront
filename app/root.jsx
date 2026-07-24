@@ -103,7 +103,7 @@ export async function loader(args) {
     // Ohne PUBLIC_CONSENT_STRICT_REGIONS bleibt clientseitig ALLES beim
     // strengsten Consent-Verhalten (fail-closed, s. consent-policy.js).
     // Seit Job 20260724 (Consent-Mode-v2 EWR/UK-Floor): der Client bekommt
-    // die AUFGELOESTE Liste (Env vereinigt mit EEA_UK_STRICT_FLOOR), nicht
+    // die AUFGELÖSTE Liste (Env vereinigt mit EEA_UK_STRICT_FLOOR), nicht
     // die rohe Env — so erben alle Client-Skripte den Floor automatisch.
     buyerCountry: args.request.headers.get('oxygen-buyer-country') || '',
     consentStrictRegions: strictRegions(env).join(','),

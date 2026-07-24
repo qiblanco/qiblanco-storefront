@@ -4,15 +4,15 @@
  *
  * Christian-Direktive 2026-07-24 (Consent-Mode-v2 "jetzt", ersetzt die
  * engere DE-only-Vorgabe vom 18.07.): Google Consent Mode v2 verlangt
- * default=denied fuer ALLE EWR-Laender + UK — nicht nur DACH. Sobald die
- * Region-Oeffnung aktiv ist (Env-Var gesetzt), erzwingt EEA_UK_STRICT_FLOOR
+ * default=denied für ALLE EWR-Länder + UK — nicht nur DACH. Sobald die
+ * Region-Öffnung aktiv ist (Env-Var gesetzt), erzwingt EEA_UK_STRICT_FLOOR
  * diesen gesetzlichen Mindestumfang als Union; die Env-Var kann Regionen
  * ADDIEREN, den Floor aber nicht entfernen (Lockerung = bewusste
- * Code-Aenderung, kein Env-Versehen).
+ * Code-Änderung, kein Env-Versehen).
  *
  * FAIL-CLOSED: Ohne PUBLIC_CONSENT_STRICT_REGIONS (Oxygen-Env, Christian-Hand)
- * gilt 'consent' fuer ALLE Regionen = strengstes Verhalten, unveraendert.
- * Erst der Env-Flip oeffnet Nicht-Floor-Regionen (z.B. US) auf 'optout'.
+ * gilt 'consent' für ALLE Regionen = strengstes Verhalten, unveraendert.
+ * Erst der Env-Flip öffnet Nicht-Floor-Regionen (z.B. US) auf 'optout'.
  *
  * Policies:
  *   'consent'  Tracking NUR nach aktiver Cookiebot-Marketing-Einwilligung.
@@ -31,7 +31,7 @@ export const OXYGEN_COUNTRY_HEADER = 'oxygen-buyer-country';
 
 // EWR (EU-27 + IS/LI/NO) + UK (GB) + CH (revDSG, Bestand seit 18.07.):
 // nicht-entfernbarer Consent-Pflicht-Mindestumfang bei aktiver
-// Region-Oeffnung. GR = ISO-Code Griechenlands (nicht EL).
+// Region-Öffnung. GR = ISO-Code Griechenlands (nicht EL).
 export const EEA_UK_STRICT_FLOOR = [
   'AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR',
   'GB', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT',
