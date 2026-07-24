@@ -380,3 +380,29 @@
   padding-top: var(--mm-s4);
 }
 .mm-grenzen strong { color: var(--mm-text-2); }
+
+/* ==========================================================================
+   FIX-RUNDE v2 (Christian-Feedback 2026-07-24) — additive Overrides.
+   Höhere Spezifität (.mm-lp <sel>) gewinnt über die Basis-Regeln oben, ohne
+   sie zu ersetzen (reversibel).
+   ========================================================================== */
+
+/* Punkt 3: Der goldene Nummern-Kreis (.mm-mech__schritt::before, 28px @ left 24)
+   lief in die Überschrift („1Präzises Gold-Gitter"). Mehr Innenabstand links
+   (s6=48 → s8=64) schafft ~12px Luft zwischen Badge-Rand und Titel. */
+.mm-lp .mm-mech__schritt {
+  padding: var(--mm-s4) var(--mm-s4) var(--mm-s4) var(--mm-s8);
+}
+
+/* Punkt 2: Auf Desktop klebten Textblöcke an den darunterliegenden Cards und
+   die Sektionen zu eng. Mehr vertikaler Rhythmus (nur ab Tablet/Desktop —
+   Mobile war luftig genug). */
+@media (min-width: 800px) {
+  .mm-lp .mm-mech__intro { margin-bottom: var(--mm-s8); }   /* Intro → Schritt-Cards */
+  .mm-lp .mm-problem__punkte { margin-top: var(--mm-s6); }  /* Text → Punkt-Cards */
+  .mm-lp .mm-evidenz__intro { margin-bottom: var(--mm-s8); } /* Intro → Evidenz-Cards */
+  .mm-lp .mm-mech__note { margin-top: var(--mm-s6); }
+}
+@media (min-width: 900px) {
+  .mm-lp .mm-bahn { padding-top: var(--mm-s12); padding-bottom: var(--mm-s12); }
+}
