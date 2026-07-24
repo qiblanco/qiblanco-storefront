@@ -376,11 +376,17 @@ function ProductPurchase({
       selectedVariant.cartProductHandle || deal.cartProductHandle || deal.handle;
     const cartProductTitle =
       selectedVariant.cartProductTitle || deal.cartProductTitle || deal.displayTitle;
+    // Referenzierender Set-Kauf (EL-20260724-9b18d2ba): cartQuantity legt N
+    // Stück des EINEN kanonischen Produkts in den Warenkorb — der Set-Preis
+    // entsteht dort per Automatic Discount. Default 1 hält alle übrigen
+    // Deals byte-identisch.
+    const cartQuantity =
+      selectedVariant.cartQuantity || deal.cartQuantity || 1;
 
     return [
       {
         merchandiseId,
-        quantity: 1,
+        quantity: cartQuantity,
         selectedVariant: {
           id: merchandiseId,
           title: selectedVariant.title,
@@ -392,7 +398,10 @@ function ProductPurchase({
             height: 1000,
           },
           price: {
-            amount: String(toGrossPrice(selectedVariant.price, deal)),
+            // Optimistischer Cart-Flash: bei Set-Menge den Set-Bruttopreis
+            // pro Stück anteilig zeigen (echte Zeile+Discount kommen aus
+            // Shopify, sobald die Cart-Query antwortet).
+            amount: String(toGrossPrice(selectedVariant.price, deal) / cartQuantity),
             currencyCode: 'EUR',
           },
           product: {
