@@ -1,14 +1,18 @@
 /**
- * Region-aware Consent-Policy (Job 20260718-storefront-pixel-tracking-vertiefung).
+ * Region-aware Consent-Policy (Job 20260718-storefront-pixel-tracking-vertiefung;
+ * EWR/UK-Floor: Job 20260724-consent-mode-v2-kontrolle-bauen-live-debugging).
  *
- * Christian-Vorgabe: DSGVO-Consent-Gating NUR fuer Deutschland (DE); US, CH und
- * EU-Ausland ohne DSGVO-Restriktion. Ehrlicher Hinweis: CH (revDSG) und
- * AT/EU (ePrivacy/TKG) kennen aehnliche Regeln — die Umstufung folgt Christians
- * expliziter Vorgabe und ist pro Region per Env-Var reversibel.
+ * Christian-Direktive 2026-07-24 (Consent-Mode-v2 "jetzt", ersetzt die
+ * engere DE-only-Vorgabe vom 18.07.): Google Consent Mode v2 verlangt
+ * default=denied fuer ALLE EWR-Laender + UK — nicht nur DACH. Sobald die
+ * Region-Oeffnung aktiv ist (Env-Var gesetzt), erzwingt EEA_UK_STRICT_FLOOR
+ * diesen gesetzlichen Mindestumfang als Union; die Env-Var kann Regionen
+ * ADDIEREN, den Floor aber nicht entfernen (Lockerung = bewusste
+ * Code-Aenderung, kein Env-Versehen).
  *
  * FAIL-CLOSED: Ohne PUBLIC_CONSENT_STRICT_REGIONS (Oxygen-Env, Christian-Hand)
- * gilt 'consent' fuer ALLE Regionen = heutiges Verhalten, byte-gleich. Erst der
- * Env-Flip (z.B. "DE") oeffnet die Nicht-DE-Regionen auf 'optout'.
+ * gilt 'consent' fuer ALLE Regionen = strengstes Verhalten, unveraendert.
+ * Erst der Env-Flip oeffnet Nicht-Floor-Regionen (z.B. US) auf 'optout'.
  *
  * Policies:
  *   'consent'  Tracking NUR nach aktiver Cookiebot-Marketing-Einwilligung.
@@ -25,18 +29,30 @@ import {
 
 export const OXYGEN_COUNTRY_HEADER = 'oxygen-buyer-country';
 
+// EWR (EU-27 + IS/LI/NO) + UK (GB) + CH (revDSG, Bestand seit 18.07.):
+// nicht-entfernbarer Consent-Pflicht-Mindestumfang bei aktiver
+// Region-Oeffnung. GR = ISO-Code Griechenlands (nicht EL).
+export const EEA_UK_STRICT_FLOOR = [
+  'AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR',
+  'GB', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT',
+  'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK',
+];
+
 /**
  * @param {Record<string, string | undefined> | undefined} env
  * @returns {string[]} ISO-3166-1-alpha-2 Laender mit Consent-Pflicht;
  *   leeres Array = Flag nicht gesetzt = ALLE Regionen streng (fail-closed).
+ *   Flag gesetzt = Union aus Env-Liste und EEA_UK_STRICT_FLOOR.
  */
 export function strictRegions(env) {
   const raw = env?.PUBLIC_CONSENT_STRICT_REGIONS;
   if (!raw || typeof raw !== 'string') return [];
-  return raw
+  const fromEnv = raw
     .split(',')
     .map((c) => c.trim().toUpperCase())
     .filter((c) => /^[A-Z]{2}$/.test(c));
+  if (!fromEnv.length) return [];
+  return [...new Set([...fromEnv, ...EEA_UK_STRICT_FLOOR])];
 }
 
 /**
