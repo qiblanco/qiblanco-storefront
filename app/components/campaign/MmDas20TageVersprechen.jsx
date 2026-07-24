@@ -105,7 +105,7 @@ export function MmDas20TageVersprechen({products}) {
           'Klarna / PayPal möglich — auch in Raten, mit Käuferschutz',
         ]}
         cta={{href: '#ablauf', label: 'So läuft die Rückgabe'}}
-        ctaSekundaer={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
+        ctaSekundaer={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
           alt: 'Frontansicht des QiOne 2 Pro mit dem Gold-Gitter',
@@ -212,7 +212,7 @@ export function MmDas20TageVersprechen({products}) {
         dataSection="mm-garantie-final"
         title="Das Risiko liegt bei uns. Starte in Ruhe."
         text="20 Tage, kein Grund nötig, faire Erstattung. Mehr Sicherheit geht kaum."
-        cta={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
+        cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/wir-machen-ihn-auf', label: 'Erst die Belege ansehen'}}
       />
 

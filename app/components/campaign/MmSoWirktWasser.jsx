@@ -251,7 +251,7 @@ export function MmSoWirktWasser({products}) {
         dataSection="mm-mechanismus-final"
         title="Jetzt weißt du, wie es gedacht ist."
         text="Der nächste Schritt ist deiner: 20 Tage prüfen, ohne Risiko."
-        cta={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
+        cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/zellstudien-ehrlich', label: 'Erst die Evidenz prüfen'}}
       />
 

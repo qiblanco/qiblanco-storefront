@@ -245,7 +245,7 @@ export function MmZellstudienEhrlich({products}) {
         dataSection="mm-evidenz-final"
         title="Evidenz geprüft. Jetzt du."
         text="Der ehrlichste nächste Schritt: 20 Tage selbst testen."
-        cta={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
+        cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/das-20-tage-versprechen', label: 'So läuft die Rückgabe'}}
       />
 

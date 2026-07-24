@@ -138,7 +138,7 @@ export function MmWirMachenIhnAuf({products}) {
           '20 Tage selbst testen, sonst Geld zurück',
         ]}
         cta={{href: '#mechanismus', label: 'So ist er aufgebaut'}}
-        ctaSekundaer={{href: '/products/qione-2-pro', label: 'Direkt zum QiOne 2 Pro'}}
+        ctaSekundaer={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Direkt zum QiOne 2 Pro'}}
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919',
           alt: 'Querschnitt des QiOne 2 Pro mit sichtbarem Gold-Gitterchip',
@@ -246,7 +246,7 @@ export function MmWirMachenIhnAuf({products}) {
         dataSection="mm-messbar-final"
         title="Prüf es an dir selbst — 20 Tage."
         text="Kein Vorschuss-Vertrauen nötig. Aufbau sichtbar, Studien offen, Rückgabe klar."
-        cta={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
+        cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/so-wirkt-kohaerentes-wasser', label: 'Erst den Mechanismus verstehen'}}
       />
 

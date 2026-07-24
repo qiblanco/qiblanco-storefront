@@ -104,7 +104,7 @@ export function MmKetteOderArmband({products}) {
           '20 Tage Rückgabe — auch beim Umtausch von Kette zu Armband',
         ]}
         cta={{href: '#vergleich', label: 'Direkt vergleichen'}}
-        ctaSekundaer={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
+        ctaSekundaer={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
           alt: 'Frontansicht des QiOne 2 Pro mit dem Gold-Gitter',
@@ -192,8 +192,8 @@ export function MmKetteOderArmband({products}) {
         dataSection="mm-wahl-final"
         title="Du kannst nichts falsch machen."
         text="Gleiche Technik, deine Trageform — und 20 Tage, um sicher zu sein."
-        cta={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
-        ctaSekundaer={{href: '/products/qibracelet', label: 'Zum QiBracelet'}}
+        cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
+        ctaSekundaer={{href: '/pages/qibracelet?Title=Default+Title', label: 'Zum QiBracelet'}}
       />
 
       <MmGrenzen dataSection="mm-wahl-grenzen">
