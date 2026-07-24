@@ -947,7 +947,7 @@ function DealFinalCta({deal, template, selectedVariant}) {
         <ul className="j-sale-deal__final-cta-trust">
           <li>Kostenloser Versand ab 99 Euro</li>
           <li>20 Tage risikofrei testen</li>
-          <li>Kaeuferschutz</li>
+          <li>Käuferschutz</li>
         </ul>
       </div>
     </section>
