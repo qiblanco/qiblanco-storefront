@@ -19,6 +19,8 @@ import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
+import {redirect} from '@shopify/remix-oxygen';
+import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -65,6 +67,18 @@ export function links() {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // AD-TRAFFIC-WEICHE (Auftrag 20260724-ads-umleiten-schlafzellen-v2, Christian
+  // 2026-07-24): erkannter Paid-Klick (utm_medium=paid / gclid & Co., Vetos +
+  // Ausschluesse in ad-weiche.server.js) landet auf JEDER Route serverseitig
+  // 302 auf LP A — vor jeder Datenarbeit; organischer Traffic kostet nichts.
+  const adWeicheZiel = await pruefeAdWeiche(args.request);
+  if (adWeicheZiel) {
+    throw redirect(adWeicheZiel, {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
+  }
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
