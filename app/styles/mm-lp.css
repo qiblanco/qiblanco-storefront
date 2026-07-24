@@ -758,6 +758,30 @@ body:has(.mm-lp) .header-submenu-item { font-size: var(--mm-fs-base) !important;
 body:has(.mm-lp) .menu-toggle-mobile { font-size: var(--mm-fs-md) !important; }
 body:has(.mm-lp) aside h3 { font-size: var(--mm-fs-xl) !important; }
 body:has(.mm-lp) .footer p { max-width: var(--mm-mass); }
+
+/* Cookie-Banner (Cookiebot-Custom #cookiebanner) auf mm-Routen in die
+   Token-Welt: die Rubrik misst die GANZE Seite — der Banner brachte je nach
+   Load-Timing 2 fremde H2-Kombis (27/400, 35/600, links), das Hell-Gold
+   #f2bf72 als Pill (100px) und 14.4/19.2px-Streugroessen (Messdrift 78 vs
+   92, 2026-07-24). NUR Farbe/Typo/Radius — Funktion/Verhalten unangetastet,
+   z-index bewusst NICHT gekappt (Aside-Overlay liegt bei 10000). */
+body:has(.mm-lp) #cookiebanner { font-family: var(--mm-font) !important; }
+body:has(.mm-lp) #cookiebanner h2 {
+  font-size: var(--mm-fs-h2) !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
+}
+body:has(.mm-lp) #cookiebanner h3 { font-size: var(--mm-fs-xs) !important; }
+body:has(.mm-lp) #cookiebanner a { font-size: var(--mm-fs-base) !important; }
+body:has(.mm-lp) #cookiebanner .cookie-banner-button {
+  font-size: var(--mm-fs-xs) !important;
+  border-radius: var(--mm-r1) !important;
+}
+body:has(.mm-lp) #cookiebanner .cookie-banner-button.accept {
+  background: var(--mm-gold) !important;
+  color: #fff !important;
+}
 /* Bild-Radien: EIN Wert für Fremd-Bilder (Header/Submenu/Footer/Widgets);
    Kit-Bilder in geclippten Containern bleiben 0 (Regeln oben, spezifischer). */
 body:has(.mm-lp) img { border-radius: var(--mm-r1); }
