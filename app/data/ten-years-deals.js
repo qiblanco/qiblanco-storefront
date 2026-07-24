@@ -39,8 +39,11 @@ export const TEN_YEARS_DEALS = [
     productImage: checkoutCdn(
       '/cdn/shop/files/2xQiOne2Profreistehend_1.png?v=1731614283',
     ),
-    path: '/products/jhsdhze783?el=JSale2026',
-    listingHref: '/products/jhsdhze783?el=JSale2026',
+    // Repoint (EL-20260722-04de90b3, Christian-Freigabe 24.07.2026):
+    // Campaign-PDP statt Preis-Klon — Set-Preis kommt vom Automatic Discount.
+    // handle bleibt 'jhsdhze783' (getTenYearsDealByHandle + Server-Redirect).
+    path: '/pages/qione-2-pro-2x?el=JSale2026',
+    listingHref: '/pages/qione-2-pro-2x?el=JSale2026',
     theme: 'frequency',
     variants: [
       {
