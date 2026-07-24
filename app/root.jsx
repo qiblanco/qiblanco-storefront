@@ -18,6 +18,7 @@ import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
+import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -75,6 +76,11 @@ export async function loader(args) {
   return {
     ...deferredData,
     ...criticalData,
+    // Sitewide dynamische Google-Gesamtbewertung (Fix v2 Punkt 5): fail-safe,
+    // 24h gecacht, fällt ohne API-Key auf 4,8/429 zurück (nie 500en/erfinden).
+    googleRating: await ladeGoogleRating(args.context).catch(
+      () => ({...GOOGLE_RATING_FALLBACK}),
+    ),
     isProductionHost: isQiblancoProductionHost(args.request.url),
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-

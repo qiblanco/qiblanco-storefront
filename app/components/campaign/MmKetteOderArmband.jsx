@@ -1,4 +1,5 @@
-import {GoogleReviews} from '~/components/index-components/GoogleReviews';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {useGoogleRating} from '~/lib/googleRating';
 import {
   MmPage,
   MmHero,
@@ -16,93 +17,97 @@ import {
 
 /**
  * MmKetteOderArmband — Composer der Message-Match-LP „Kette oder Armband?".
- * Cluster Produktwahl/Kaufentscheidung (Ad qb45-c2). Positionierung (Spuer-Regel
- * #7): die Wahl ist Sichtbarkeit/Lifestyle, NICHT „willst du es spueren". Beide
+ * Cluster Produktwahl/Kaufentscheidung (Ad qb45-c2). Positionierung (Spür-Regel
+ * #7): die Wahl ist Sichtbarkeit/Lifestyle, NICHT „willst du es spüren". Beide
  * tragen denselben 750er-Gold-Gitterchip — der EINZIGE Unterschied ist die
- * Trageweise. Die Wirkung unterscheidet sich nicht und haengt an nichts, was man
- * fuehlt.
+ * Trageweise. Die Wirkung unterscheidet sich nicht und hängt an nichts, was man
+ * fühlt.
  */
 
 const PICK = [
-  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — unsichtbar, nah am Koerper', cta: 'QiOne 2 Pro waehlen'},
-  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — sichtbar am Handgelenk', cta: 'QiBracelet waehlen'},
-  {handle: 'qihome-air', name: 'QiHome Air', note: 'Ergaenzung fuer deinen Raum', cta: 'QiHome Air ansehen'},
+  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — unsichtbar, nah am Körper', cta: 'QiOne 2 Pro wählen'},
+  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — sichtbar am Handgelenk', cta: 'QiBracelet wählen'},
+  {handle: 'qihome-air', name: 'QiHome Air', note: 'Ergänzung für deinen Raum', cta: 'QiHome Air ansehen'},
 ];
 
 const BADGES = [
   {mark: '✦', titel: '750er Gold', sub: 'gleicher Gitterchip'},
   {mark: '∞', titel: 'Kein Akku', sub: 'passiv, wartungsfrei'},
-  {mark: '♨', titel: 'Alltagsfest', sub: 'Hitze, Chlor, Schweiss'},
-  {mark: '↺', titel: '20 Tage', sub: 'Geld-zurueck'},
+  {mark: '♨', titel: 'Alltagsfest', sub: 'Hitze, Chlor, Schweiß'},
+  {mark: '↺', titel: '20 Tage', sub: 'Geld-zurück'},
   {mark: '★', titel: '4,8 / 5', sub: 'Google-Bewertung'},
-  {mark: '▤', titel: '4 Studien', sub: 'praeklinisch, als PDF'},
+  {mark: '▤', titel: '4 Studien', sub: 'präklinisch, als PDF'},
 ];
 
 const FAQ = [
   {
-    frage: 'Wirkt die Kette staerker als das Armband?',
+    frage: 'Wirkt die Kette stärker als das Armband?',
     antwort:
       'Nein. Beide enthalten denselben 750er-Gold-Gitterchip mit identischer Technik. Es gibt keinen Unterschied in der Wirkung — nur in der Trageweise.',
   },
   {
     frage: 'Wann ist die Kette die bessere Wahl?',
     antwort:
-      'Wenn du ihn diskret und unsichtbar unter der Kleidung tragen moechtest, durchgehend, ohne dass man ihn sieht.',
+      'Wenn du ihn diskret und unsichtbar unter der Kleidung tragen möchtest, durchgehend, ohne dass man ihn sieht.',
   },
   {
     frage: 'Wann ist das Armband die bessere Wahl?',
-    antwort: 'Wenn du ihn offen am Handgelenk tragen und sichtbar haben moechtest.',
+    antwort: 'Wenn du ihn offen am Handgelenk tragen und sichtbar haben möchtest.',
   },
   {
     frage: 'Kann ich beide gleichzeitig tragen?',
     antwort:
-      'Ja, das ist moeglich. Notwendig ist es nicht — ein Chip genuegt fuer die beschriebene Wirkung.',
+      'Ja, das ist möglich. Notwendig ist es nicht — ein Chip genügt für die beschriebene Wirkung.',
   },
   {
     frage: 'Was, wenn ich mich falsch entscheide?',
-    antwort: 'Dann tauschst oder erstattest du innerhalb von 20 Tagen. Dafuer ist die Frist da.',
+    antwort: 'Dann tauschst oder erstattest du innerhalb von 20 Tagen. Dafür ist die Frist da.',
   },
 ];
 
 const FUNNEL = [
   {
-    titel: 'So wirkt kohaerentes Wasser',
+    titel: 'So wirkt kohärentes Wasser',
     text: 'Der gemeinsame Mechanismus beider Formen.',
     href: '/pages/so-wirkt-kohaerentes-wasser',
     cta: 'Mechanismus',
   },
   {
     titel: 'Die Zellstudien, ehrlich',
-    text: 'Die Evidenz, die fuer beide gilt.',
+    text: 'Die Evidenz, die für beide gilt.',
     href: '/pages/zellstudien-ehrlich',
     cta: 'Evidenz',
   },
   {
     titel: 'Das 20-Tage-Versprechen',
-    text: 'Rueckgabe und Umtausch ohne Kleingedrucktes.',
+    text: 'Rückgabe und Umtausch ohne Kleingedrucktes.',
     href: '/pages/das-20-tage-versprechen',
     cta: 'Garantie',
   },
 ];
 
 export function MmKetteOderArmband({products}) {
+  const g = useGoogleRating();
+  const badges = BADGES.map((b) =>
+    b.sub === 'Google-Bewertung' ? {...b, titel: `${g.komma} / 5`} : b,
+  );
   return (
     <MmPage scope="mm-wahl">
       <MmHero
         dataSection="mm-wahl-hero"
         eyebrow="Entscheidungshilfe"
         headline={'Kette oder Armband? Gleiche Technik — deine Trageform.'}
-        sub="Die haeufigste Frage kurz vor der Bestellung. Die gute Nachricht: Du kannst nichts falsch machen. Beide tragen denselben 750er-Gold-Gitterchip. Der Unterschied ist nur, wie du ihn traegst."
+        sub="Die häufigste Frage kurz vor der Bestellung. Die gute Nachricht: Du kannst nichts falsch machen. Beide tragen denselben 750er-Gold-Gitterchip. Der Unterschied ist nur, wie du ihn trägst."
         bullets={[
           'Identische Technik in beiden — gleiche Wirkung',
           'Kette: unsichtbar unter der Kleidung. Armband: sichtbar getragen.',
-          '20 Tage Rueckgabe — auch beim Umtausch von Kette zu Armband',
+          '20 Tage Rückgabe — auch beim Umtausch von Kette zu Armband',
         ]}
         cta={{href: '#vergleich', label: 'Direkt vergleichen'}}
         ctaSekundaer={{href: '/products/qione-2-pro', label: 'Zum QiOne 2 Pro'}}
         media={{
-          src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919',
-          alt: 'QiOne 2 Pro',
+          src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
+          alt: 'Frontansicht des QiOne 2 Pro mit dem Gold-Gitter',
           hint: 'Ein Chip — zwei Wege, ihn zu tragen.',
         }}
       />
@@ -112,12 +117,12 @@ export function MmKetteOderArmband({products}) {
         eyebrow="Worum es wirklich geht"
         title="Nicht welcher wirkt besser — sondern welcher zu dir passt"
         text={[
-          'Viele fragen kurz vor der Bestellung, ob Kette oder Armband „staerker" wirkt. Tut keiner von beiden — es ist derselbe Chip, dieselbe Technik.',
+          'Viele fragen kurz vor der Bestellung, ob Kette oder Armband „stärker" wirkt. Tut keiner von beiden — es ist derselbe Chip, dieselbe Technik.',
           'Die einzige echte Frage: Soll er unsichtbar unter der Kleidung mitlaufen (Kette) oder sichtbar am Handgelenk getragen werden (Armband)? Das entscheidest du nach deinem Alltag und Stil.',
         ]}
         punkte={[
           'Gleicher 750er-Gold-Gitterchip in beiden.',
-          'Gleiche 20-Tage-Rueckgabe.',
+          'Gleiche 20-Tage-Rückgabe.',
           'Kein Unterschied in der Wirkung — nur im Tragen.',
         ]}
       />
@@ -127,12 +132,12 @@ export function MmKetteOderArmband({products}) {
         dataSection="mm-wahl-mechanismus"
         eyebrow="Der direkte Vergleich"
         title="Kette oder Armband — nebeneinander"
-        intro="Beide enthalten dieselbe Gitterchip-Technik. Waehle nach Sichtbarkeit und Trageweise, nicht nach vermeintlicher Staerke."
+        intro="Beide enthalten dieselbe Gitterchip-Technik. Wähle nach Sichtbarkeit und Trageweise, nicht nach vermeintlicher Stärke."
         schritte={[
-          {titel: 'QiOne 2 Pro — die Kette', text: 'Wird nah am Koerper getragen, unsichtbar unter der Kleidung. Ideal, wenn du ihn diskret und durchgehend tragen willst.'},
-          {titel: 'QiBracelet — das Armband', text: 'Sichtbar am Handgelenk getragen. Ideal, wenn du ihn offen tragen und im Blick haben moechtest.'},
+          {titel: 'QiOne 2 Pro — die Kette', text: 'Wird nah am Körper getragen, unsichtbar unter der Kleidung. Ideal, wenn du ihn diskret und durchgehend tragen willst.'},
+          {titel: 'QiBracelet — das Armband', text: 'Sichtbar am Handgelenk getragen. Ideal, wenn du ihn offen tragen und im Blick haben möchtest.'},
         ]}
-        note="Beide sind hitze-, chlor- und schweissbestaendig, ohne Akku, ueber Jahrzehnte ausgelegt. Der Chip ist identisch — die Studienlage gilt fuer beide Trageformen gleichermassen."
+        note="Beide sind hitze-, chlor- und schweißbeständig, ohne Akku, über Jahrzehnte ausgelegt. Der Chip ist identisch — die Studienlage gilt für beide Trageformen gleichermaßen."
       />
 
       <MmStatBand
@@ -140,8 +145,8 @@ export function MmKetteOderArmband({products}) {
         stats={[
           {zahl: '1', label: 'Chip-Technik in beiden'},
           {zahl: '2', label: 'Trageformen zur Wahl'},
-          {zahl: '20', label: 'Tage Rueckgabe (beide)'},
-          {zahl: '4,8', label: '/ 5 Google-Bewertung'},
+          {zahl: '20', label: 'Tage Rückgabe (beide)'},
+          {zahl: g.komma, label: '/ 5 Google-Bewertung'},
         ]}
       />
 
@@ -156,28 +161,28 @@ export function MmKetteOderArmband({products}) {
         variante="flaeche"
         dataSection="mm-wahl-reviews-intro"
         title="Stimmen aus der Praxis"
-        text="Drei von tausenden Google-Bewertungen (Durchschnitt 4,8 / 5). Einzelerfahrungen, kein Wirknachweis."
+        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
       />
-      <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><GoogleReviews dataSection="mm-wahl-reviews" /></div></div>
+      <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-wahl-trust"
-        eyebrow="Kuratiert — die 6 Signale, die zaehlen"
+        eyebrow="Kuratiert — die 6 Signale, die zählen"
         title="Bei beiden gleich"
-        badges={BADGES}
+        badges={badges}
       />
 
       <MmRisk
         dataSection="mm-wahl-risk"
         ring="20"
         title="Unsicher? 20 Tage entscheiden lassen."
-        text={'Bestell die Form, zu der du tendierst, und trag sie 20 Tage. Passt sie nicht zu deinem Alltag, tauschst oder erstattest du — die Rueckgabe haengt an Frist und Ueberzeugung, nicht am „Spueren".'}
-        punkte={['Frist: 20 Tage ab Erhalt', 'Umtausch Kette <-> Armband moeglich', 'Grund: keiner noetig']}
+        text={'Bestell die Form, zu der du tendierst, und trag sie 20 Tage. Passt sie nicht zu deinem Alltag, tauschst oder erstattest du — die Rückgabe hängt an Frist und Überzeugung, nicht am „Spüren".'}
+        punkte={['Frist: 20 Tage ab Erhalt', 'Umtausch Kette <-> Armband möglich', 'Grund: keiner nötig']}
       />
 
       <MmFaq
         dataSection="mm-wahl-faq"
-        title="Kette oder Armband — die haeufigsten Fragen"
+        title="Kette oder Armband — die häufigsten Fragen"
         items={FAQ}
       />
 
@@ -193,9 +198,9 @@ export function MmKetteOderArmband({products}) {
 
       <MmGrenzen dataSection="mm-wahl-grenzen">
         <strong>Transparenz-Hinweis:</strong> QiOne&reg; 2 Pro ist kein Medizinprodukt und nicht dazu bestimmt, Krankheiten
-        zu diagnostizieren, zu behandeln oder zu heilen. Die genannten Studien sind praeklinische In-vitro-Untersuchungen an
+        zu diagnostizieren, zu behandeln oder zu heilen. Die genannten Studien sind präklinische In-vitro-Untersuchungen an
         Zellkulturen; sie belegen keinen Heileffekt am Menschen. Erfahrungsberichte sind deskriptiv und ohne Kontrollgruppe.
-        &bdquo;Kohaerentes Wasser&ldquo; bezeichnet ein Ordnungs-Modell und ist keine anerkannte medizinische Diagnose.
+        &bdquo;Kohärentes Wasser&ldquo; bezeichnet ein Ordnungs-Modell und ist keine anerkannte medizinische Diagnose.
       </MmGrenzen>
     </MmPage>
   );
