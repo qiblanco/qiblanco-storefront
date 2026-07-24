@@ -72,7 +72,7 @@ test('Veto utm_medium social/email/referral/company_profile', () => {
 
 // --- Ausschluss-Pfade -------------------------------------------------------
 
-test('LP A selbst + /go sind ausgeschlossen (Loop unmoeglich)', () => {
+test('LP A selbst + /go sind ausgeschlossen (Loop unmöglich)', () => {
   assert.equal(istAusgeschlossen(LP_A_PFAD), true);
   assert.equal(istAusgeschlossen('/go'), true);
   assert.equal(entscheideAdWeiche(`${BASIS}${LP_A_PFAD}?utm_medium=paid`), null);

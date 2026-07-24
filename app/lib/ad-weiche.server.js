@@ -23,10 +23,10 @@
  *    (56/7T, referrer l.facebook.com) — bewusst NICHT umleiten.
  *
  * AUSSCHLUESSE:
- *  - LP A selbst + /go (Ziel bzw. eigener Router — Loop unmoeglich).
- *  - /products/* NUR fuer google-paid: Google-Shopping/PMax MUESSEN auf der
+ *  - LP A selbst + /go (Ziel bzw. eigener Router — Loop unmöglich).
+ *  - /products/* NUR für google-paid: Google-Shopping/PMax MÜSSEN auf der
  *    PDP landen (Merchant-Center-Policy Landing=Produktdaten, Suspend-Risiko;
- *    Shopping-Ad 645809256666 = groesster Google-Traffic). meta-paid auf PDP
+ *    Shopping-Ad 645809256666 = größter Google-Traffic). meta-paid auf PDP
  *    wird umgeleitet (Dekret ALLE).
  *  - Infra/Nicht-Dokument: *.data (React-Router-Datenrequests), _data-Query,
  *    /collect, /b, /api, /cart, /checkouts, /account, /policies, /assets,
@@ -57,7 +57,7 @@ const GOOGLE_CLICK_IDS = ['gclid', 'gbraid', 'wbraid'];
 const WEITERE_CLICK_IDS = ['ttclid', 'msclkid'];
 
 // Segment-genaue Ausschluesse: Treffer nur bei exakt gleichem Pfad oder
-// '<eintrag>/...' — '/b' schliesst den Beacon-Pfad aus, NICHT /blogs.
+// '<eintrag>/...' — '/b' schließt den Beacon-Pfad aus, NICHT /blogs.
 export const AUSSCHLUSS_SEGMENTE = [
   LP_A_PFAD,
   '/go',
@@ -150,8 +150,8 @@ export async function adWeicheAktiv(fetchImpl) {
 }
 
 /**
- * Glue fuer den root-Loader: prueft Methode + Entscheidung + Schalter und
- * liefert das Redirect-Ziel (String) oder null. Der Schalter-Fetch laeuft
+ * Glue für den root-Loader: prueft Methode + Entscheidung + Schalter und
+ * liefert das Redirect-Ziel (String) oder null. Der Schalter-Fetch läuft
  * NUR bei erkanntem Paid-Marker — organischer Traffic kostet nichts.
  * Jeder Treffer wird strukturiert nach stdout geloggt (Oxygen-Logs,
  * Messbarkeits-Muster catchall.server.js).
