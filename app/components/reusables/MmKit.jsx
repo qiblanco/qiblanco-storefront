@@ -38,6 +38,48 @@ export function mmFinde(products, handle) {
   return (products || []).find((p) => p && p.handle === handle) || null;
 }
 
+/* ------------------------------------------------------------------- Icons */
+/*
+ * Strich-Icon-Set (24er-Raster, 1.5er Strich, currentColor) — ersetzt die
+ * Unicode-Glyphen der Trust-Badges (Rendering war font-abhängig und wirkte
+ * grob). Die Composer-API bleibt unverändert: `mark` trägt weiter dieselben
+ * Zeichen, MmIcon mappt sie auf gezeichnete Icons (unbekannt -> stiller Punkt).
+ */
+const MM_ICON_PATHS = {
+  '✦': ['M12 4l1.8 6.2L20 12l-6.2 1.8L12 20l-1.8-6.2L4 12l6.2-1.8z'],
+  '⚑': ['M6 21V4', 'M6 5h11l-2.5 3.5L17 12H6'],
+  '▤': ['M4.5 5.5h15v13h-15z', 'M4.5 10.5h15', 'M4.5 15h15'],
+  '↺': ['M5 8.5A8 8 0 1 1 4.5 13', 'M5 4.5v4h4'],
+  '★': ['M12 4.5l2.2 4.9 5.3.5-4 3.6 1.2 5.2-4.7-2.8-4.7 2.8 1.2-5.2-4-3.6 5.3-.5z'],
+  '∞': ['M8.5 8.5a3.5 3.5 0 1 0 0 7c3 0 4-7 7-7a3.5 3.5 0 1 1 0 7c-3 0-4-7-7-7z'],
+  '⚙': [
+    'M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z',
+    'M12 4.5V7M12 17v2.5M4.5 12H7M17 12h2.5M6.7 6.7l1.8 1.8M15.5 15.5l1.8 1.8M17.3 6.7l-1.8 1.8M8.5 15.5l-1.8 1.8',
+  ],
+  '♨': [
+    'M8 5c-1.3 1.7-1.3 3.3 0 5s1.3 3.3 0 5',
+    'M12 5c-1.3 1.7-1.3 3.3 0 5s1.3 3.3 0 5',
+    'M16 5c-1.3 1.7-1.3 3.3 0 5s1.3 3.3 0 5',
+  ],
+  '◇': ['M12 4.5L19.5 12 12 19.5 4.5 12z'],
+  '◈': ['M12 4.5L19.5 12 12 19.5 4.5 12z', 'M12 10.5l1.5 1.5-1.5 1.5-1.5-1.5z'],
+  '∅': ['M12 5a7 7 0 1 1 0 14 7 7 0 0 1 0-14z', 'M7.5 16.5l9-9'],
+  '✎': ['M5 19l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L9 18l-4 1z', 'M14.5 6.5l3 3'],
+  '⇩': ['M12 4.5V15', 'M7.5 10.5L12 15l4.5-4.5', 'M5 19.5h14'],
+  '✓': ['M4.5 12.5l5 5L19.5 7'],
+};
+
+export function MmIcon({zeichen}) {
+  const pfade = MM_ICON_PATHS[zeichen] || ['M12 10.5l1.5 1.5-1.5 1.5-1.5-1.5z'];
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {pfade.map((d, i) => (
+        <path d={d} key={i} />
+      ))}
+    </svg>
+  );
+}
+
 /* -------------------------------------------------------------- Page-Rahmen */
 
 export function MmPage({scope, children}) {
@@ -71,7 +113,7 @@ export function MmHero({eyebrow, headline, sub, bullets, cta, ctaSekundaer, medi
               <ul className="mm-hero__bullets">
                 {bullets.map((b, i) => (
                   <li key={i}>
-                    <span className="mm-haken" aria-hidden="true">&#10003;</span>
+                    <span className="mm-haken" aria-hidden="true"><MmIcon zeichen={'✓'} /></span>
                     <span>{b}</span>
                   </li>
                 ))}
@@ -112,7 +154,7 @@ export function MmProblem({eyebrow, title, text, punkte, variante, dataSection})
         <h2>{title}</h2>
         {Array.isArray(text) ? (
           text.map((t, i) => (
-            <p key={i} className="mm-problem__text" style={i ? {marginTop: '16px'} : undefined}>
+            <p key={i} className="mm-problem__text">
               {t}
             </p>
           ))
@@ -159,28 +201,70 @@ export function MmMechanism({eyebrow, title, intro, schritte, note, kinder, vari
 
 /* -------------------------------------------------- Inline-SVG-Diagramme */
 
+/*
+ * Beide Diagramme: SVG rein grafisch (Strich-Präzision, Farben über CSS-
+ * Klassen aus den Tokens), Beschriftung als HTML daneben — kein SVG-<text>
+ * (skaliert auf Mobile unter 12px und rendert unscharf).
+ */
+
+const MM_DIA_FREI = [
+  [30, 40], [62, 26], [96, 50], [140, 30], [168, 56],
+  [38, 84], [76, 72], [116, 92], [156, 86],
+  [58, 112], [100, 116], [142, 114],
+];
+const MM_DIA_REIHEN = [
+  {y: 32, xs: [40, 80, 120, 160]},
+  {y: 66, xs: [60, 100, 140]},
+  {y: 100, xs: [40, 80, 120, 160]},
+];
+
+function mmGitterKanten() {
+  const kanten = [];
+  MM_DIA_REIHEN.forEach((reihe, ri) => {
+    reihe.xs.forEach((x, xi) => {
+      if (xi + 1 < reihe.xs.length) kanten.push([x, reihe.y, reihe.xs[xi + 1], reihe.y]);
+      const folge = MM_DIA_REIHEN[ri + 1];
+      if (folge) {
+        folge.xs.forEach((nx) => {
+          if (Math.abs(nx - x) === 20) kanten.push([x, reihe.y, nx, folge.y]);
+        });
+      }
+    });
+  });
+  return kanten;
+}
+
 export function MmDiagramWasser({caption}) {
   return (
     <figure className="mm-diagramm">
-      <svg viewBox="0 0 520 200" role="img" aria-label="Von ungeordneten zu geordneten Wassermolekülen">
-        <rect x="0" y="0" width="520" height="200" fill="none" />
-        <text x="90" y="24" textAnchor="middle" fontSize="13" fill="#5c574d">ungeordnet</text>
-        <text x="430" y="24" textAnchor="middle" fontSize="13" fill="#8a6a24">geordnet / kohärent</text>
-        {/* linke Wolke: zufällige Punkte */}
-        {[[40,70],[70,110],[110,60],[130,120],[60,150],[100,150],[150,95],[45,110],[95,95],[135,75]].map(([x,y],i)=>(
-          <circle key={`l${i}`} cx={x} cy={y} r="6" fill="#cdbf9f" opacity="0.8" />
-        ))}
-        {/* Pfeil */}
-        <line x1="200" y1="110" x2="300" y2="110" stroke="#a9822f" strokeWidth="2" />
-        <polygon points="300,110 290,104 290,116" fill="#a9822f" />
-        <text x="250" y="98" textAnchor="middle" fontSize="11" fill="#a9822f">Gitterchip</text>
-        {/* rechtes Gitter: geordnete Punkte */}
-        {Array.from({length: 3}).map((_, r) =>
-          Array.from({length: 4}).map((__, c) => (
-            <circle key={`g${r}-${c}`} cx={360 + c * 34} cy={70 + r * 34} r="6" fill="#a9822f" opacity="0.9" />
-          )),
-        )}
-      </svg>
+      <div className="mm-diagramm__panels" role="img" aria-label="Von ungeordneten zu geordneten Wassermolekülen">
+        <div className="mm-diagramm__panel">
+          <svg viewBox="0 0 200 132" aria-hidden="true">
+            {MM_DIA_FREI.map(([x, y], i) => (
+              <circle key={`f${i}`} cx={x} cy={y} r="5" className="mm-dia-frei" />
+            ))}
+          </svg>
+          <span className="mm-diagramm__label">Ungeordnet</span>
+        </div>
+        <div className="mm-diagramm__panel mm-diagramm__panel--gold">
+          <svg viewBox="0 0 200 132" aria-hidden="true">
+            {mmGitterKanten().map(([x1, y1, x2, y2], i) => (
+              <line key={`k${i}`} x1={x1} y1={y1} x2={x2} y2={y2} className="mm-dia-gitter" />
+            ))}
+            {MM_DIA_REIHEN.map((reihe, ri) =>
+              reihe.xs.map((x) => (
+                <circle key={`g${ri}-${x}`} cx={x} cy={reihe.y} r="4.5" className="mm-dia-dot" />
+              )),
+            )}
+          </svg>
+          <span className="mm-diagramm__label mm-diagramm__label--gold">Geordnet / kohärent</span>
+        </div>
+        <span className="mm-diagramm__wechsel" aria-hidden="true">
+          <svg viewBox="0 0 16 16">
+            <path d="M2.5 8h10M9 4.5L12.5 8 9 11.5" className="mm-dia-pfeil" />
+          </svg>
+        </span>
+      </div>
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
   );
@@ -189,19 +273,26 @@ export function MmDiagramWasser({caption}) {
 export function MmDiagramChip({caption}) {
   return (
     <figure className="mm-diagramm">
-      <svg viewBox="0 0 360 200" role="img" aria-label="Aufbau des Gitterchips im Querschnitt">
-        <rect x="60" y="50" width="240" height="100" rx="10" fill="#f3efe8" stroke="#e2dbcf" />
-        <rect x="60" y="50" width="240" height="100" rx="10" fill="none" stroke="#a9822f" strokeWidth="1.5" />
-        {/* Gitterstruktur */}
-        {Array.from({length: 4}).map((_, r) =>
-          Array.from({length: 9}).map((__, c) => (
-            <circle key={`c${r}-${c}`} cx={80 + c * 25} cy={70 + r * 22} r="4" fill="#a9822f" opacity="0.85" />
-          )),
-        )}
-        <text x="180" y="180" textAnchor="middle" fontSize="12" fill="#5c574d">
-          750er Gold-Gitter im Chirurgenstahl-Körper
-        </text>
-      </svg>
+      <div className="mm-diagramm__einzel" role="img" aria-label="Aufbau des Gitterchips im Querschnitt">
+        <svg viewBox="0 0 320 168" aria-hidden="true">
+          <rect x="40" y="28" width="240" height="104" rx="8" className="mm-dia-flaeche" />
+          <rect x="40" y="28" width="240" height="104" rx="8" className="mm-dia-kontur" />
+          <rect x="54" y="42" width="212" height="76" rx="4" className="mm-dia-ring" />
+          {Array.from({length: 4}).map((_, r) => (
+            <line key={`h${r}`} x1="66" y1={54 + r * 17.33} x2="254" y2={54 + r * 17.33} className="mm-dia-gitter" />
+          ))}
+          {Array.from({length: 8}).map((_, c) => (
+            <line key={`v${c}`} x1={66 + c * 26.85} y1="54" x2={66 + c * 26.85} y2="106" className="mm-dia-gitter" />
+          ))}
+          {Array.from({length: 4}).map((_, r) =>
+            Array.from({length: 8}).map((__, c) => (
+              <circle key={`c${r}-${c}`} cx={66 + c * 26.85} cy={54 + r * 17.33} r="3" className="mm-dia-dot" />
+            )),
+          )}
+          <path d="M40 146v8M280 146v8M40 150h240" className="mm-dia-mass" />
+        </svg>
+        <span className="mm-diagramm__label">750er-Gold-Gitter im Chirurgenstahl-Körper</span>
+      </div>
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
   );
@@ -249,11 +340,11 @@ export function MmEvidenz({eyebrow, title, intro, studien, mehrHref, mehrLabel, 
           ))}
         </div>
         {mehrHref ? (
-          <p style={{marginTop: '32px'}}>
+          <div className="mm-evidenz__mehr">
             <Link className="mm-cta mm-cta--sekundaer" to={mehrHref} prefetch="intent">
               {mehrLabel || 'Alle Studien im Detail'}
             </Link>
-          </p>
+          </div>
         ) : null}
       </div>
     </MmBahn>
@@ -269,9 +360,9 @@ export function MmReports({eyebrow, title, text, balken, note, variante, dataSec
         {eyebrow ? <span className="mm-eyebrow">{eyebrow}</span> : null}
         <div className="mm-reports">
           <div>
-            <h2 style={{fontSize: 'var(--mm-fs-h2)', marginBottom: 'var(--mm-s3)'}}>{title}</h2>
+            <h2>{title}</h2>
             <p className="mm-problem__text">{text}</p>
-            {note ? <p className="mm-mech__note" style={{marginTop: 'var(--mm-s4)'}}>{note}</p> : null}
+            {note ? <p className="mm-mech__note">{note}</p> : null}
           </div>
           <div className="mm-reports__balken">
             {(balken || []).map((b, i) => (
@@ -300,11 +391,11 @@ export function MmTrust({eyebrow, title, badges, variante, dataSection}) {
     <MmBahn variante={variante}>
       <div data-section={dataSection}>
         {eyebrow ? <span className="mm-eyebrow">{eyebrow}</span> : null}
-        {title ? <h2 style={{fontSize: 'var(--mm-fs-xl)', marginBottom: 'var(--mm-s4)'}}>{title}</h2> : null}
+        {title ? <h2>{title}</h2> : null}
         <div className="mm-trust">
           {kuratiert.map((b, i) => (
             <div className="mm-badge" key={i}>
-              <span className="mm-badge__mark" aria-hidden="true">{b.mark}</span>
+              <span className="mm-badge__mark" aria-hidden="true"><MmIcon zeichen={b.mark} /></span>
               <span>
                 <span className="mm-badge__t">{b.titel}</span>
                 <br />
@@ -406,7 +497,9 @@ export function MmPick({title, products, handles, variante, dataSection}) {
                     {preis || h.fallbackPreis || ''}
                     {streich ? <span className="mm-produkt__streich" style={{marginLeft: '8px'}}>{streich}</span> : null}
                   </span>
-                  <Link className="mm-cta" to={`/products/${h.handle}`} prefetch="intent">
+                  {/* Kauf-CTA -> /pages-Kaufseite (Christian 2026-07-24, Stufe 3;
+                      Default-Variante vorselektiert wie /pages/qihome-air-Beispiel) */}
+                  <Link className="mm-cta" to={`/pages/${h.handle}?Title=Default+Title`} prefetch="intent">
                     {h.cta || 'Ansehen'}
                   </Link>
                 </div>
@@ -434,7 +527,7 @@ export function MmFinal({title, text, cta, ctaSekundaer, dataSection}) {
             </Link>
           ) : null}
           {ctaSekundaer ? (
-            <Link className="mm-cta mm-cta--sekundaer" to={ctaSekundaer.href} prefetch="intent" style={{color: 'var(--mm-text-hell)', borderColor: 'rgba(244,240,233,0.3)'}}>
+            <Link className="mm-cta mm-cta--sekundaer" to={ctaSekundaer.href} prefetch="intent">
               {ctaSekundaer.label}
             </Link>
           ) : null}
