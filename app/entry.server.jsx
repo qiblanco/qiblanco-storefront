@@ -4,19 +4,30 @@ import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 
 /**
- * First-Party-Pixel (qpx): erlaubt den Receiver-Origin in connect-src NUR,
- * wenn PUBLIC_QPX_ENDPOINT gesetzt ist. Ohne env-Variable bleibt die CSP
- * unverändert.
+ * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
+ * wenn die jeweilige env-Variable gesetzt ist. Ohne env-Variablen bleibt die
+ * CSP unverändert. Berücksichtigt BEIDE Pixel-Endpoints: PUBLIC_QPX_ENDPOINT
+ * (qpx) UND PUBLIC_QPX_BASIS_ENDPOINT (cookielose Basis-Ebene /b) — seit der
+ * ITP-Härtung (Job 20260726-storefront-tracking-deploy) zeigt der qpx-Endpoint
+ * same-origin auf /collect (relativ, 'self' deckt ihn), der Basis-Endpoint
+ * bleibt cross-origin und braucht seinen Origin weiterhin — sonst würde der
+ * /b-Beacon still per CSP geblockt.
  * @param {Record<string, string | undefined>} env
  */
 function qpxConnectSrc(env) {
-  const endpoint = env?.PUBLIC_QPX_ENDPOINT;
-  if (!endpoint) return [];
-  try {
-    return [new URL(endpoint).origin];
-  } catch {
-    return [];
+  const origins = [];
+  for (const endpoint of [
+    env?.PUBLIC_QPX_ENDPOINT,
+    env?.PUBLIC_QPX_BASIS_ENDPOINT,
+  ]) {
+    if (!endpoint) continue;
+    try {
+      origins.push(new URL(endpoint).origin);
+    } catch {
+      // relative Endpoints (same-origin, z.B. '/collect') deckt 'self'
+    }
   }
+  return [...new Set(origins)];
 }
 
 /**

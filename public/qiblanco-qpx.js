@@ -1,6 +1,15 @@
 /* eslint-disable no-unused-vars, no-empty, object-shorthand */
 /*!
- * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.3)
+ * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.4)
+ *
+ * NEU in v2.4 (Google-Kampagnen-Capture, Job 20260726-storefront-tracking-
+ * deploy): CLICK_KEYS zusaetzlich gad_campaignid (Google-Auto-Tagging-
+ * Kampagnen-ID) + h_ad_id (Ad-ID aus unserem Tracking-Template). KEINE
+ * Klick-IDs im Receiver-Sinn (CLICK_PARAM_PLATFORM unberuehrt, kein
+ * click_kind/is_paid-Einfluss) — reine Metadaten im click_ids-Payload,
+ * damit die Kampagnen-/Ad-Ebene nicht mehr an der Pixel-Grenze verloren
+ * geht (Befund Tracking-Debug: 117/123 Google-Klicks ohne Kampagne).
+ * Payload sonst byte-strukturgleich v2.3; kein neues Cookie, keine PII.
  *
  * NEU in v2.3 (Sektionsmessung, Job 20260721-sektionsmessung-usa-exposure-
  * rueckkopplung): (a) Tall-Section-Fix — sichtbar = >=50% Element ODER >=50%
@@ -56,7 +65,7 @@
   var SES = "_qpx_ses";
   var STORE = "_qpx_attr"; // persistiertes erstes Klick-Attribut (first-touch)
   var DAYS = 365;
-  var CLICK_KEYS = ["gclid","gbraid","wbraid","fbclid","msclid","msclkid","ttclid","twclid","epik","sccid"];
+  var CLICK_KEYS = ["gclid","gbraid","wbraid","fbclid","msclid","msclkid","ttclid","twclid","epik","sccid","gad_campaignid","h_ad_id"];
 
   function uuid() {
     if (w.crypto && w.crypto.randomUUID) { try { return w.crypto.randomUUID(); } catch (e) {} }
