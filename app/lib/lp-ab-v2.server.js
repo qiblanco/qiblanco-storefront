@@ -94,6 +94,19 @@ export function entscheideLpAbV2(request, env, zufall = Math.random) {
   const url = new URL(request.url);
   if (url.pathname.endsWith('.data')) return null;
   if (url.searchParams.has('_data')) return null;
+  // VARIANTEN-PIN (s08, nach einem real beobachteten Kollateral-Defekt): ein
+  // Redirect-Split macht die Quell-URL für JEDES Mess-Werkzeug mehrdeutig —
+  // der Design-Scorer folgte der Weiche und lieferte für LP A eine V2-Messung.
+  // Der taegliche Design-Watch haette damit LP As Beleg-Datei ueberschrieben,
+  // und hb-deploy Gate 9 liest genau die. Deshalb muss JEDE Variante
+  // deterministisch adressierbar bleiben:
+  //   ?lp_ab=a -> immer LP A   ?lp_ab=b -> immer V2
+  // Nur für QA/Monitoring gedacht; der Kill-Schalter dominiert weiterhin
+  // (steht oben), und die Wuerfel-Zuteilung bleibt für echten Traffic
+  // unveraendert. Contamination: der Watch erzeugt 1 gepinnten Aufruf/Tag.
+  const pin = url.searchParams.get('lp_ab');
+  if (pin === 'a') return null;
+  if (pin === 'b') return {ziel: zielUrl(LP_V2_PFAD, url.search, LP_V2_MARKER), prozent: 100};
   const prozent = leseSplitProzent(env);
   if (prozent <= 0) return null;
   if (zufall() * 100 >= prozent) return null;

@@ -128,3 +128,27 @@ test('LOOP-GUARD: der LP-A-Eintrag deckt den Suffix-Slug NICHT mit ab', () => {
 test('Ad-Weiche leitet organischen V2-Aufruf ebenfalls nicht um', () => {
   assert.equal(entscheideAdWeiche(`${BASIS}${LP_V2_PFAD}`), null);
 });
+
+// --- VARIANTEN-PIN (s08): jede Variante deterministisch adressierbar -------
+test('?lp_ab=a erzwingt LP A, auch wenn der Wuerfel auf V2 zeigt', () => {
+  const r = entscheideLpAbV2(req(`${LP_A}?lp_ab=a`),
+                             {LP_AB_V2_MODE: 'on'}, () => 0);   // 0 = würde umleiten
+  assert.equal(r, null);
+});
+
+test('?lp_ab=b erzwingt V2, auch wenn der Wuerfel auf LP A zeigt', () => {
+  const r = entscheideLpAbV2(req(`${LP_A}?lp_ab=b`),
+                             {LP_AB_V2_MODE: 'on'}, () => 0.99); // 0.99 = würde bleiben
+  assert.ok(r && r.ziel.includes('/pages/schlaf-zellen-schutz-v2-18ef'));
+});
+
+test('Der Kill-Schalter dominiert den Pin (lp_ab=b bei Split aus bleibt LP A)', () => {
+  assert.equal(entscheideLpAbV2(req(`${LP_A}?lp_ab=b`),
+                                {}, () => 0), null);
+});
+
+test('Der Pin faehrt im Query mit und zerstört den Passthrough nicht', () => {
+  const r = entscheideLpAbV2(req(`${LP_A}?lp_ab=b&fbclid=X1`),
+                             {LP_AB_V2_MODE: 'on'}, () => 0.99);
+  assert.ok(r.ziel.includes('fbclid=X1'), r.ziel);
+});
