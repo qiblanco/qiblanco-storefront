@@ -1,5 +1,6 @@
-import {useLoaderData} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import {SchlafZellenSchutz} from '~/components/campaign/SchlafZellenSchutz';
+import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 
 /**
@@ -32,11 +33,35 @@ export const meta = () => [
 /**
  * X-Robots-Tag zusaetzlich (Gurt + Hosentraeger): greift auch, wenn ein Bot
  * das HTML-head nicht parst. Identische Wirkung laut Google-Doku (D-006).
+ *
+ * Cache-Control: no-store (s07, Konzept §E.3 Auflage 2) — waehrend des A/B-
+ * Splits darf keine CDN-/Proxy-Kopie dieses Dokuments existieren: sie wuerde
+ * EINE Variante einfrieren und damit die Randomisierung toeten. Bewusst
+ * UNKONDITIONAL statt env-abhaengig: der statische headers()-Export sieht die
+ * Env nicht, und die Fail-Richtung „nie cachen" ist hier gratis — die Seite
+ * ist noindex, traegt dynamische Preise und steht ohnehin hinter zwei 302-
+ * Weichen. Kein Verlust, wenn der Split aus ist.
  * @type {HeadersFunction}
  */
-export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
+export const headers = () => ({
+  'X-Robots-Tag': 'noindex, nofollow',
+  'Cache-Control': 'no-store',
+});
 
-export async function loader({context}) {
+export async function loader({context, request}) {
+  // A/B-SPLIT V1 gegen V2 (s07, Konzept §E.1): ein Teil der Eintritte wird
+  // cookie-los per 302 auf die V2-Route umgeleitet — VOR jeder Datenarbeit,
+  // damit ein Split-Treffer keine Storefront-Query kostet. Kill
+  // LP_AB_V2_MODE !== 'on' => 100 % diese Seite (Fail-Richtung auf den
+  // Bestand). Der rohe Query faehrt byte-identisch mit (zielUrl-Invariante).
+  const v2 = entscheideLpAbV2(request, context.env);
+  if (v2) {
+    throw redirect(v2.ziel, {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
+  }
+
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
