@@ -1,0 +1,915 @@
+/* ============================================================================
+   /pages/schlaf-zellen-schutz-v2-18ef — LP-V2, Variante B des A/B-Tests
+   (Grossjob 20260726-scoring-standortbestimmung-lp-v2-psychobuild, s07 nach
+   Konzept §A/§B; Rezept-Erbe .lp-a3 / tiefer-schlaf-v3).
+
+   REGEL DIESES FILES: Alle Groessen/Farben/Radien/Schatten kommen aus den
+   :root-Tokens unten. Ausserhalb des Token-Blocks erfindet KEINE Regel freie
+   Werte. Scope: .lp-v2 (self-contained; eigener Token-Praefix --v2-*, damit
+   ein gleichzeitig geladenes .lp-a3-Stylesheet bei Client-Navigation zwischen
+   den Varianten NICHT durchschlaegt).
+
+   ZWEI KORREKTUREN GEGEN .lp-a3, beide gemessen begruendet
+   (Design-Meister-Lernkarte web-kampagnenseite-token-upgrade-jubi2x-20260724):
+     - --v2-mass: 65ch statt 68ch — 70ch in CSS misst bei Open Sans real ~77
+       Zeichen, die Rubrik-Grenze liegt bei 75.
+     - Scrub-Strecke 320vh statt 500vh (als Prop, s. Komponente) — 500vh riss
+       auf LP A das Sektions-Ausreisser-Kriterium (>5x Median).
+
+   DIE SHELL ZAEHLT MIT (Q4b): die Rubrik misst das DOM, nicht diese Datei.
+   .lp-a3 definiert 7 Schriftgroessen — der Live-Audit von LP A mass trotzdem
+   12, dazu 2 Goldtoene, 6 Hintergrundwelten und 5 Bild-Radien, weil Header/
+   Footer/Fremd-Widgets ihre eigenen mitbringen. Der body:has(.lp-v2)-Layer
+   unten zaehmt die Shell deshalb aktiv — er laedt NUR auf dieser Route.
+   ========================================================================== */
+
+:root {
+  --v2-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala (modulare Skala ~1.25; 7 Stufen, Soll <= 9) */
+  --v2-fs-xs: 0.8125rem;                                   /* 13px */
+  --v2-fs-base: 1rem;                                      /* 16px */
+  --v2-fs-md: 1.125rem;                                    /* 18px */
+  --v2-fs-lg: 1.25rem;                                     /* 20px */
+  --v2-fs-xl: 1.5625rem;                                   /* 25px */
+  --v2-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);     /* EIN H2-Stil */
+  --v2-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);        /* Hero */
+
+  /* Spacing: 8pt-Grid */
+  --v2-s1: 8px; --v2-s2: 16px; --v2-s3: 24px; --v2-s4: 32px;
+  --v2-s6: 48px; --v2-s8: 64px; --v2-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10).
+     Drei geplante Akte: grund -> flaeche -> dunkel. Gold ist Handlung/Beweis,
+     nie Flaeche. Mehr Hintergrund-Welten vertraegt die Rubrik nicht (Soll <= 4,
+     und der Gold-Button zaehlt als vierte). */
+  --v2-grund: #faf9f5;
+  --v2-flaeche: #f4f0e9;
+  --v2-dunkel: #191714;
+  --v2-text: #2c2a26;
+  --v2-text-hell: #f4f0e9;
+  --v2-muted: #6b665d;
+  --v2-muted-hell: rgba(244, 240, 233, 0.72);
+  --v2-akzent: #c9a14b;              /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --v2-akzent-tief: #b8893a;         /* selber Hue-Cluster (Abstand < 40) */
+  --v2-linie: rgba(44, 42, 38, 0.12);
+  --v2-linie-hell: rgba(244, 240, 233, 0.2);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --v2-r1: 8px; --v2-r2: 16px;
+  --v2-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --v2-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --v2-mass: 65ch;
+  --v2-breite: 1080px;
+  --v2-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss: EIN Sektions-Takt (96 Desktop / 64 Mobil) ──────────────── */
+.lp-v2 {
+  font-family: var(--v2-font);
+  font-size: var(--v2-fs-base);
+  line-height: 1.65;
+  color: var(--v2-text);
+  background: var(--v2-grund);
+}
+.lp-v2 * { box-sizing: border-box; }
+
+.lp-v2 section {
+  margin: 0;
+  padding: var(--v2-s12) var(--v2-s3);
+  background: var(--v2-grund);
+  max-width: none;
+}
+
+/* Hintergrund-Dramaturgie: genau drei Akte */
+.lp-v2 [data-section='lp-v2-ebenen'],
+.lp-v2 [data-section='lp-v2-beweis'] { background: var(--v2-flaeche); }
+.lp-v2 [data-section='lp-v2-haltung'],
+.lp-v2 [data-section='lp-v2-final'] { background: var(--v2-dunkel); }
+
+.lp-v2 .v2-inner {
+  max-width: var(--v2-breite);
+  margin: 0 auto;
+}
+
+/* Typo-Hierarchie: EIN H2-Stil (zentriert), EIN H3-Stil */
+.lp-v2 h2 {
+  font-family: var(--v2-font);
+  font-size: var(--v2-fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  color: inherit;
+  max-width: var(--v2-breite-schmal);
+  margin: 0 auto var(--v2-s3);
+  letter-spacing: -0.01em;
+}
+.lp-v2 h3 {
+  font-family: var(--v2-font);
+  font-size: var(--v2-fs-xl);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 var(--v2-s1);
+  color: inherit;
+}
+.lp-v2 h4 {
+  font-family: var(--v2-font);
+  font-size: var(--v2-fs-md);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 var(--v2-s1);
+  color: inherit;
+}
+.lp-v2 .v2-eyebrow {
+  display: block;
+  font-size: var(--v2-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--v2-akzent-tief);
+  text-align: center;
+  margin: 0 0 var(--v2-s2);
+}
+.lp-v2 .v2-lede {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-muted);
+  max-width: var(--v2-mass);
+  margin: 0 auto var(--v2-s6);
+  text-align: center;
+}
+/* Groesse EXPLIZIT setzen: ohne diese Regel erben freie Absaetze 19,25 px aus
+   app.css — eine Zwischengroesse ausserhalb der Skala (Iteration 1 gemessen).
+   Klassen-Regeln (.v2-lede, .v2-stat__desc …) gewinnen weiter, weil zwei
+   Klassen mehr wiegen als Klasse+Element. */
+.lp-v2 p,
+.lp-v2 li {
+  max-width: var(--v2-mass);
+  font-size: var(--v2-fs-base);
+}
+/* Spans/Labels sind Textbloecke wie Absaetze — ohne Deckel messen sie
+   ueber 100 Zeichen Zeilenlaenge (Rubrik-Grenze 90 gemessene Zeichen). */
+.lp-v2 span,
+.lp-v2 dd { max-width: var(--v2-mass); }
+
+/* Dunkle Akte: Text-Invertierung, damit der Kontrast >= 4,5:1 bleibt */
+.lp-v2 [data-section='lp-v2-haltung'],
+.lp-v2 [data-section='lp-v2-final'] { color: var(--v2-text-hell); }
+.lp-v2 [data-section='lp-v2-haltung'] p,
+.lp-v2 [data-section='lp-v2-final'] p,
+.lp-v2 [data-section='lp-v2-haltung'] li,
+.lp-v2 [data-section='lp-v2-final'] li { color: var(--v2-muted-hell); }
+.lp-v2 [data-section='lp-v2-haltung'] .v2-eyebrow,
+.lp-v2 [data-section='lp-v2-final'] .v2-eyebrow { color: var(--v2-akzent); }
+
+/* ─── Buttons: genau ZWEI Stile, EIN gesaettigter (Rubrik zaehlt nur die) ── */
+.lp-v2 .v2-btn {
+  display: inline-block;
+  font-family: var(--v2-font);
+  font-size: var(--v2-fs-base);
+  font-weight: 600;
+  line-height: 1.2;
+  padding: var(--v2-s2) var(--v2-s4);
+  border-radius: var(--v2-r1);
+  border: 1px solid transparent;
+  background: var(--v2-akzent);
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease;
+  box-shadow: var(--v2-shadow-sm);
+  max-width: none;
+}
+.lp-v2 .v2-btn:hover { background: var(--v2-akzent-tief); color: #fff; }
+.lp-v2 .v2-btn:focus-visible {
+  outline: 2px solid var(--v2-akzent-tief);
+  outline-offset: 2px;
+}
+.lp-v2 .v2-btn--still {
+  background: transparent;
+  color: var(--v2-text);
+  border: 1px solid var(--v2-linie);
+  box-shadow: none;
+}
+.lp-v2 .v2-btn--still:hover { background: rgba(44, 42, 38, 0.04); color: var(--v2-text); }
+.lp-v2 .v2-btn--lg { padding: var(--v2-s3) var(--v2-s6); }
+
+/* ─── Bilder: EIN Bild-Radius-Token (Zahlarten/Logos bewusst 0 = zaehlt nicht) */
+.lp-v2 figure { margin: 0; }
+.lp-v2 figure img,
+.lp-v2 .v2-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--v2-r2);
+  box-shadow: var(--v2-shadow-md);
+}
+.lp-v2 figcaption {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  margin-top: var(--v2-s2);
+  text-align: center;
+  max-width: var(--v2-mass);
+  margin-inline: auto;
+}
+
+/* ─── 1 HERO ─────────────────────────────────────────────────────────────── */
+.lp-v2 .v2-hero { padding-top: var(--v2-s8); }
+.lp-v2 .v2-hero__inner {
+  max-width: var(--v2-breite);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: var(--v2-s8);
+  align-items: center;
+}
+.lp-v2 .v2-hero__eyebrow {
+  display: block;
+  font-size: var(--v2-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--v2-akzent-tief);
+  margin: 0 0 var(--v2-s2);
+}
+.lp-v2 .v2-hero__title {
+  font-family: var(--v2-font);
+  font-size: var(--v2-fs-h1);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--v2-s2);
+  color: var(--v2-text);
+}
+.lp-v2 .v2-hero__dreizeiler {
+  list-style: none;
+  margin: 0 0 var(--v2-s3);
+  padding: 0;
+}
+.lp-v2 .v2-hero__dreizeiler li {
+  font-size: var(--v2-fs-lg);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--v2-text);
+}
+.lp-v2 .v2-hero__subline {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-muted);
+  margin: 0 0 var(--v2-s4);
+}
+.lp-v2 .v2-hero__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s3);
+  margin-bottom: var(--v2-s3);
+}
+.lp-v2 .v2-hero__preis {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-muted);
+}
+.lp-v2 .v2-hero__preis s { color: var(--v2-muted); }
+.lp-v2 .v2-hero__preis b {
+  color: var(--v2-text);
+  font-weight: 600;
+}
+.lp-v2 .v2-hero__trust {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v2-s1) var(--v2-s3);
+  margin: 0;
+  padding: 0;
+}
+.lp-v2 .v2-hero__trust li {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  letter-spacing: 0.02em;
+}
+.lp-v2 .v2-hero__trust li::before {
+  content: '·\00a0';
+  color: var(--v2-akzent-tief);
+}
+
+/* ─── 2 EBENEN (Accordion statt Ausleitung, R5) ──────────────────────────── */
+.lp-v2 .v2-ebenen {
+  max-width: var(--v2-breite);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--v2-s3);
+}
+.lp-v2 .v2-ebene {
+  background: var(--v2-grund);
+  border: 1px solid var(--v2-linie);
+  border-radius: var(--v2-r2);
+  overflow: hidden;
+}
+.lp-v2 .v2-ebene__figur { display: block; }
+.lp-v2 .v2-ebene__figur img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
+}
+.lp-v2 .v2-ebene__body { padding: var(--v2-s3); }
+.lp-v2 .v2-ebene__kurz {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-muted);
+  margin: 0 0 var(--v2-s2);
+}
+.lp-v2 .v2-ebene details { margin: 0; }
+.lp-v2 .v2-ebene summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--v2-fs-base);
+  font-weight: 600;
+  color: var(--v2-akzent-tief);
+  padding: var(--v2-s1) 0;
+}
+.lp-v2 .v2-ebene summary::-webkit-details-marker { display: none; }
+.lp-v2 .v2-ebene summary::after { content: '\00a0+'; }
+.lp-v2 .v2-ebene details[open] summary::after { content: '\00a0–'; }
+.lp-v2 .v2-ebene details p {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-text);
+  margin: var(--v2-s1) 0 0;
+}
+
+/* ─── 3 MECHANISMUS (Eisenberg-Layering: Nutzen zuerst, Detail aufklappbar) ─ */
+.lp-v2 .v2-mechs {
+  max-width: var(--v2-breite-schmal);
+  margin: 0 auto;
+  display: grid;
+  gap: var(--v2-s3);
+}
+.lp-v2 .v2-mech {
+  border: 1px solid var(--v2-linie);
+  border-radius: var(--v2-r2);
+  padding: var(--v2-s4);
+  background: var(--v2-grund);
+}
+.lp-v2 .v2-mech__nutzen {
+  font-size: var(--v2-fs-md);
+  font-weight: 600;
+  color: var(--v2-text);
+  margin: 0 0 var(--v2-s1);
+}
+.lp-v2 .v2-mech__zahl {
+  display: inline-block;
+  font-size: var(--v2-fs-xl);
+  font-weight: 600;
+  color: var(--v2-akzent-tief);
+  line-height: 1.2;
+}
+.lp-v2 .v2-mech__zahl-label {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  display: block;
+  max-width: var(--v2-mass);
+  margin-bottom: var(--v2-s2);
+}
+.lp-v2 .v2-mech details p { margin-top: var(--v2-s1); }
+.lp-v2 .v2-mech summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--v2-fs-base);
+  font-weight: 600;
+  color: var(--v2-akzent-tief);
+}
+.lp-v2 .v2-mech summary::-webkit-details-marker { display: none; }
+.lp-v2 .v2-mech summary::after { content: '\00a0+'; }
+.lp-v2 .v2-mech details[open] summary::after { content: '\00a0–'; }
+.lp-v2 .v2-note {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  max-width: var(--v2-mass);
+  margin: var(--v2-s6) auto 0;
+  text-align: center;
+}
+
+/* ─── 4 BEWEIS (konsolidiert: Zahlen + Autoritaet + Stimmen + Studien) ───── */
+.lp-v2 .v2-stats {
+  max-width: var(--v2-breite);
+  margin: 0 auto var(--v2-s8);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--v2-s3);
+}
+.lp-v2 .v2-stat {
+  background: var(--v2-grund);
+  border: 1px solid var(--v2-linie);
+  border-radius: var(--v2-r2);
+  padding: var(--v2-s4);
+  text-align: center;
+}
+.lp-v2 .v2-stat__wert {
+  font-size: var(--v2-fs-xl);
+  font-weight: 600;
+  color: var(--v2-akzent-tief);
+  line-height: 1.2;
+}
+.lp-v2 .v2-stat__label {
+  font-size: var(--v2-fs-base);
+  font-weight: 600;
+  margin-bottom: var(--v2-s1);
+}
+.lp-v2 .v2-stat__desc,
+.lp-v2 .v2-stat__cite {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  margin: 0 auto;
+}
+.lp-v2 .v2-stat__cite { margin-top: var(--v2-s1); }
+
+.lp-v2 .v2-autoritaet {
+  max-width: var(--v2-breite-schmal);
+  margin: 0 auto var(--v2-s8);
+  background: var(--v2-grund);
+  border: 1px solid var(--v2-linie);
+  border-left: 3px solid var(--v2-akzent);
+  border-radius: var(--v2-r2);
+  padding: var(--v2-s4);
+}
+.lp-v2 .v2-autoritaet__zitat {
+  font-size: var(--v2-fs-md);
+  color: var(--v2-text);
+  margin: 0 0 var(--v2-s2);
+}
+.lp-v2 .v2-autoritaet__quelle {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  margin: 0;
+}
+
+.lp-v2 .v2-video-solo {
+  max-width: var(--v2-breite-schmal);
+  margin: 0 auto var(--v2-s8);
+}
+.lp-v2 .v2-video__tag {
+  display: block;
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-akzent-tief);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: var(--v2-s2);
+}
+.lp-v2 .v2-video__zitat {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-muted);
+  margin: var(--v2-s1) 0 0;
+}
+
+.lp-v2 .v2-stimmen {
+  max-width: var(--v2-breite);
+  margin: 0 auto var(--v2-s8);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--v2-s3);
+}
+.lp-v2 .v2-stimme {
+  background: var(--v2-grund);
+  border: 1px solid var(--v2-linie);
+  border-radius: var(--v2-r2);
+  padding: var(--v2-s4);
+}
+.lp-v2 .v2-stimme__text {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-text);
+  margin: 0 0 var(--v2-s2);
+}
+.lp-v2 .v2-stimme__name {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  font-weight: 600;
+  margin: 0;
+}
+.lp-v2 .v2-bewertung {
+  text-align: center;
+  margin: 0 auto var(--v2-s6);
+}
+.lp-v2 .v2-bewertung__wert {
+  font-size: var(--v2-fs-xl);
+  font-weight: 600;
+  color: var(--v2-akzent-tief);
+}
+.lp-v2 .v2-bewertung__meta {
+  display: block;
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  max-width: var(--v2-mass);
+  margin: 0 auto;
+}
+
+/* Studien-Bestandsblock in die Token-Welt holen (Fremd-Markup, Q4b) */
+.lp-v2 .Studien { max-width: var(--v2-breite); margin: 0 auto; }
+.lp-v2 .Studien h2 { margin-bottom: 0; }
+.lp-v2 .Studien h3 { font-size: var(--v2-fs-md); text-align: center; }
+.lp-v2 .Studien p {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  max-width: var(--v2-mass);
+  margin-inline: auto;
+  text-align: center;
+}
+.lp-v2 .Studien .Row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--v2-s3);
+  margin-top: var(--v2-s3);
+}
+.lp-v2 .Studien .Column { min-width: 0; }
+.lp-v2 .Studien img {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  margin: var(--v2-s2) auto 0;
+  border-radius: var(--v2-r2);
+  box-shadow: var(--v2-shadow-sm);
+}
+/* app.css setzt `.btn--secondary { border-radius: 10px!important }` — ein
+   drittes Radius-Mass. Ohne eigenes !important gewinnt der Bestand (Iteration
+   1 gemessen: 10px trotz Token-Regel). */
+.lp-v2 .Studien .btn--secondary,
+.lp-v2 .Studien a.btn--secondary {
+  display: inline-block;
+  background: transparent;
+  color: var(--v2-text);
+  border: 1px solid var(--v2-linie);
+  border-radius: var(--v2-r1) !important;
+  box-shadow: none;
+  font-size: var(--v2-fs-base);
+  font-weight: 600;
+  padding: var(--v2-s2) var(--v2-s4);
+  text-decoration: none;
+  margin: var(--v2-s3) auto 0;
+}
+
+/* ─── 5 KAUFBLOCK ────────────────────────────────────────────────────────── */
+.lp-v2 .v2-preise {
+  max-width: var(--v2-breite);
+  margin: 0 auto var(--v2-s6);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--v2-s3);
+  align-items: stretch;
+}
+.lp-v2 .v2-produkt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--v2-flaeche);
+  border: 1px solid var(--v2-linie);
+  border-radius: var(--v2-r2);
+  padding: var(--v2-s4);
+  text-align: center;
+}
+.lp-v2 .v2-produkt--held { border-color: var(--v2-akzent); }
+.lp-v2 .v2-produkt__badge {
+  position: absolute;
+  top: calc(-1 * var(--v2-s2));
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--v2-akzent);
+  color: #fff;
+  font-size: var(--v2-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: var(--v2-s1) var(--v2-s2);
+  border-radius: var(--v2-r1);
+}
+.lp-v2 .v2-produkt__bild {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--v2-s2);
+}
+.lp-v2 .v2-produkt__bild img {
+  max-height: 160px;
+  width: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+.lp-v2 .v2-produkt__name { margin-bottom: var(--v2-s1); }
+.lp-v2 .v2-produkt__tagline {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  margin: 0 auto var(--v2-s2);
+}
+.lp-v2 .v2-produkt__preis {
+  font-size: var(--v2-fs-xl);
+  font-weight: 600;
+  color: var(--v2-text);
+}
+.lp-v2 .v2-produkt__streich {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  margin-left: var(--v2-s1);
+}
+.lp-v2 .v2-produkt__features {
+  list-style: none;
+  margin: var(--v2-s2) auto var(--v2-s3);
+  padding: 0;
+  text-align: left;
+  max-width: var(--v2-mass);
+}
+.lp-v2 .v2-produkt__features li {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  padding-left: var(--v2-s2);
+  position: relative;
+}
+.lp-v2 .v2-produkt__features li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--v2-akzent-tief);
+}
+.lp-v2 .v2-produkt .v2-btn { margin-top: auto; }
+
+.lp-v2 .v2-garantie {
+  max-width: var(--v2-breite-schmal);
+  margin: 0 auto;
+  background: var(--v2-flaeche);
+  border-radius: var(--v2-r2);
+  padding: var(--v2-s4);
+  text-align: center;
+}
+.lp-v2 .v2-garantie__kern {
+  font-size: var(--v2-fs-md);
+  color: var(--v2-text);
+  margin: 0 auto var(--v2-s2);
+}
+.lp-v2 .v2-garantie summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--v2-fs-base);
+  font-weight: 600;
+  color: var(--v2-akzent-tief);
+}
+.lp-v2 .v2-garantie summary::-webkit-details-marker { display: none; }
+.lp-v2 .v2-garantie summary::after { content: '\00a0+'; }
+.lp-v2 .v2-garantie details[open] summary::after { content: '\00a0–'; }
+.lp-v2 .v2-garantie details p {
+  font-size: var(--v2-fs-base);
+  color: var(--v2-muted);
+  margin: var(--v2-s2) auto 0;
+  text-align: left;
+}
+.lp-v2 .v2-feinprint {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted);
+  text-align: center;
+  max-width: var(--v2-mass);
+  margin: var(--v2-s6) auto 0;
+}
+
+/* ─── 6 MIKROSKOP: Fremd-Block in die Token-Welt (Takt, Farbe, Ebene) ────── */
+.lp-v2 .ScrollScrubVideoBlock {
+  margin-top: var(--v2-s12);
+  margin-bottom: var(--v2-s12);
+}
+.lp-v2 .ScrollScrubVideo {
+  background: var(--v2-dunkel);
+  /* 10000 im Bestand reisst die z-index-Hygiene (Soll <= 5000). Der Block
+     bildet einen eigenen Stacking-Kontext; 900 reicht fuer das sticky-Overlay
+     und bleibt unter der Grenze. */
+  z-index: 900;
+}
+/* Die Overlay-Regeln des Bestands sind DREI Klassen tief
+   (.ScrollScrubVideo .VideoOverlay .TextContent-Start h2 = 2,5rem) und
+   schlagen eine flachere Token-Regel. Iteration 1 mass deshalb einen
+   ZWEITEN H2-Stil (40 px neben 36 px) — hier gleichgezogen. */
+.lp-v2 .ScrollScrubVideo .VideoOverlay .TextContent-Start h2,
+.lp-v2 .ScrollScrubVideo .VideoOverlay .TextContent-End div h2 {
+  font-size: var(--v2-fs-h2);
+  font-weight: 600;
+  text-align: center;
+  color: var(--v2-text-hell);
+}
+.lp-v2 .ScrollScrubVideo .VideoOverlay .TextContent-Start p {
+  font-size: var(--v2-fs-lg);
+  color: var(--v2-muted-hell);
+  max-width: var(--v2-mass);
+  margin-inline: auto;
+}
+.lp-v2 .ScrollScrubVideo .VideoOverlay .TextContent-End div p {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted-hell);
+  max-width: var(--v2-mass);
+  margin-inline: auto;
+}
+/* Scrim ueber dem Video: rgba(0,0,0,.3) ist eine eigene Hintergrund-Welt.
+   Auf den dunklen Token gezogen (gleiche Farbgruppe) und zugleich etwas
+   deckender = besser lesbar. */
+.lp-v2 .ScrollScrubVideo .VideoOverlay .TextContent-End div.content {
+  background: rgba(25, 23, 20, 0.55);
+}
+
+/* ─── 7 STIMMEN (Video-Belohnung nach dem Hoehepunkt) ────────────────────── */
+.lp-v2 .v2-videos {
+  max-width: var(--v2-breite);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--v2-s6);
+}
+.lp-v2 .v2-yt img,
+.lp-v2 .v2-yt iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--v2-r2);
+  box-shadow: var(--v2-shadow-md);
+  border: 0;
+  display: block;
+}
+
+/* ─── 8 HALTUNG ──────────────────────────────────────────────────────────── */
+.lp-v2 .v2-haltung__body {
+  font-size: var(--v2-fs-md);
+  color: var(--v2-muted-hell);
+  max-width: var(--v2-mass);
+  margin: 0 auto var(--v2-s4);
+  text-align: center;
+}
+.lp-v2 .v2-haltung__sign {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted-hell);
+  text-align: center;
+  margin: 0 auto var(--v2-s4);
+}
+.lp-v2 .v2-mitte { text-align: center; }
+
+/* ─── 9 FINAL ────────────────────────────────────────────────────────────── */
+.lp-v2 .v2-final__inner {
+  max-width: var(--v2-breite);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--v2-s8);
+  align-items: center;
+}
+.lp-v2 .v2-final__preis-zeile {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v2-s2);
+  margin-bottom: var(--v2-s3);
+}
+.lp-v2 .v2-final__preis {
+  font-size: var(--v2-fs-xl);
+  font-weight: 600;
+  color: var(--v2-text-hell);
+}
+.lp-v2 .v2-final__streich {
+  font-size: var(--v2-fs-xs);
+  color: var(--v2-muted-hell);
+}
+.lp-v2 .v2-final__pay {
+  display: flex;
+  align-items: center;
+  gap: var(--v2-s3);
+  margin: var(--v2-s3) 0;
+}
+.lp-v2 .v2-final__pay img {
+  height: 28px;
+  width: auto;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+  padding: 2px 6px;
+}
+.lp-v2 .v2-final__trust {
+  list-style: none;
+  padding: 0;
+  margin: var(--v2-s3) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v2-s1) var(--v2-s3);
+}
+.lp-v2 .v2-final__trust li { font-size: var(--v2-fs-xs); }
+
+/* ─── Mobil (mobile-first-Pflicht: 92,6 % paid_meta_mobile) ──────────────── */
+@media screen and (max-width: 900px) {
+  .lp-v2 section { padding: var(--v2-s8) var(--v2-s3); }
+  .lp-v2 .v2-hero__inner,
+  .lp-v2 .v2-final__inner {
+    grid-template-columns: 1fr;
+    gap: var(--v2-s4);
+  }
+  .lp-v2 .v2-ebenen,
+  .lp-v2 .v2-stats,
+  .lp-v2 .v2-stimmen,
+  .lp-v2 .v2-preise,
+  .lp-v2 .v2-videos { grid-template-columns: 1fr; }
+  .lp-v2 .Studien .Row { grid-template-columns: 1fr; }
+  .lp-v2 .ScrollScrubVideoBlock {
+    margin-top: var(--v2-s8);
+    margin-bottom: var(--v2-s8);
+  }
+  .lp-v2 .v2-hero__cta-row { gap: var(--v2-s2); }
+  .lp-v2 .v2-btn { width: 100%; }
+  .lp-v2 .v2-hero__preis { width: 100%; }
+}
+
+/* ============================================================================
+   SHELL-ZAEHMUNG — laedt NUR auf dieser Route (body:has(.lp-v2)).
+   Grund (Q4b, Live-Audit LP A 26.07.): die Rubrik misst das gerenderte DOM.
+   Ein sauberes Token-File allein genuegt nicht, weil Header/Footer/Announcement
+   eigene Schriftgroessen, Goldtoene, Flaechen und Radien mitbringen — auf LP A
+   waren es 12 statt 7 Schriftgroessen, 2 Goldtoene, 6 Hintergrundwelten.
+   ========================================================================== */
+body:has(.lp-v2) {
+  background: var(--v2-grund);
+  --color-accent-primary: var(--v2-akzent);
+  --rd3-gold: var(--v2-akzent);
+}
+body:has(.lp-v2) header,
+body:has(.lp-v2) .header { background: var(--v2-grund); }
+
+/* BILD-RADIEN DER SHELL (Iteration 1 gemessen: 5 Werte statt 2).
+   Die drei Fremd-Masse kamen aus dem Header-Megamenue (20px), den
+   Submenue-Icons (4px) und den Footer-Studien (6px) — alle auf EIN Token. */
+body:has(.lp-v2) header img,
+body:has(.lp-v2) .header img,
+body:has(.lp-v2) .submenu img,
+body:has(.lp-v2) .nav-styling-wrapper img,
+body:has(.lp-v2) .header-submenu-item img,
+body:has(.lp-v2) .footer img,
+body:has(.lp-v2) .footer-study__image img { border-radius: var(--v2-r1) !important; }
+
+/* HINTERGRUND-WELTEN DER SHELL (Iteration 1: 5 statt <= 4).
+   Suchformular/Eingabe waren reinweiss, das Megamenue trug einen zweiten
+   Creme-Ton — beide in das Neutral-Kontinuum geholt. */
+body:has(.lp-v2) .predictive-search-form,
+body:has(.lp-v2) .predictive-search-form input,
+body:has(.lp-v2) .submenu { background: var(--v2-flaeche) !important; }
+/* Newsletter-Eingabe war die letzte reinweisse Flaeche (768x57) und wird —
+   wie der Submit-Button — per ID mit !important gesetzt. */
+body:has(.lp-v2) #qi-newsletter input,
+body:has(.lp-v2) .footer input[type='email'],
+body:has(.lp-v2) .footer input[type='text'],
+body:has(.lp-v2) ._form_15 input[type='email'],
+body:has(.lp-v2) ._form_15 input[type='text'] {
+  background: var(--v2-flaeche) !important;
+}
+
+/* Announcement-Zeile auf die Token-Skala (war 14,5px = Zwischengroesse). */
+body:has(.lp-v2) .Header-AnnouncementBanner,
+body:has(.lp-v2) .Header-AnnouncementBanner p,
+body:has(.lp-v2) .Header-AnnouncementBanner a { font-size: var(--v2-fs-xs); }
+body:has(.lp-v2) .footer,
+body:has(.lp-v2) footer {
+  background: var(--v2-dunkel);
+  font-family: var(--v2-font);
+}
+body:has(.lp-v2) .footer p,
+body:has(.lp-v2) .footer a,
+body:has(.lp-v2) .footer li,
+body:has(.lp-v2) .footer span { font-size: var(--v2-fs-xs); }
+body:has(.lp-v2) .footer .footer-heading { font-size: var(--v2-fs-base); }
+/* Footer-Disclaimer liefen ueber die volle 1216px-Breite = ~180 gemessene
+   Zeichen je Zeile (Rubrik-Grenze 90). Zeilenlaenge deckeln, zentriert. */
+body:has(.lp-v2) .footer p,
+body:has(.lp-v2) .footer .footer-heading {
+  max-width: var(--v2-mass);
+  margin-inline: auto;
+}
+body:has(.lp-v2) .footer .btn--primary,
+body:has(.lp-v2) .footer button[type='submit'],
+body:has(.lp-v2) .footer input[type='submit'] {
+  background: var(--v2-akzent);
+  color: #fff;
+  border-radius: var(--v2-r1);
+  font-size: var(--v2-fs-base);
+}
+body:has(.lp-v2) .footer input[type='email'],
+body:has(.lp-v2) .footer input[type='text'] {
+  border-radius: var(--v2-r1);
+  font-size: var(--v2-fs-base);
+}
+/* NEWSLETTER-BUTTON = der zweite Goldton (Iteration 1: rgb(242,191,114)).
+   Er wird von einem INJIZIERTEN <style> gesetzt — `#_form_<zufalls-id>
+   ._submit { background:#f2bf72 !important }` — plus der Shell-Regel
+   `.footer #qi-newsletter ._submit { border-radius:10px !important }`.
+   Beide tragen eine ID; eine reine Klassen-Regel mit !important verliert
+   dagegen. Deshalb hier selbst ueber eine ID (#qi-newsletter) gehen: gleiche
+   ID-Gewichtung, aber eine Klasse mehr => gewinnt. Die Form-ID ist bei jedem
+   Render neu, darf also NICHT adressiert werden. */
+body:has(.lp-v2) #qi-newsletter ._submit,
+body:has(.lp-v2) #qi-newsletter button,
+body:has(.lp-v2) #qi-newsletter input[type='submit'],
+body:has(.lp-v2) ._form_15 button,
+body:has(.lp-v2) ._form_15 ._submit,
+body:has(.lp-v2) ._form_15 input[type='submit'] {
+  background: var(--v2-akzent) !important;
+  color: #fff !important;
+  border-radius: var(--v2-r1) !important;
+  font-family: var(--v2-font) !important;
+}
