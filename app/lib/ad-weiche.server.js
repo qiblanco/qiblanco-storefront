@@ -48,6 +48,7 @@
  */
 import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
+import {LP_V2_PFAD} from './lp-ab-v2.server.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
 const FETCH_TIMEOUT_MS = 1500;
@@ -58,8 +59,20 @@ const WEITERE_CLICK_IDS = ['ttclid', 'msclkid'];
 
 // Segment-genaue Ausschluesse: Treffer nur bei exakt gleichem Pfad oder
 // '<eintrag>/...' — '/b' schließt den Beacon-Pfad aus, NICHT /blogs.
+//
+// LP_V2_PFAD ist SCHLEIFEN-KRITISCH (Konzept §0.3, Segment s06): LP A splittet
+// seit s07 einen Teil der Eintritte per 302 auf V2, und der Original-Query
+// faehrt dabei byte-identisch mit — also AUCH utm_medium=paid. Stuende V2 hier
+// nicht drin, wuerfe der root-Loader den Besucher sofort wieder auf LP A, LP A
+// splittete erneut auf V2, ... = Endlosschleife über den GESAMTEN bezahlten
+// Traffic (seit der Weiche vom 24.07. praktisch alle Ads). Der Suffix-Slug
+// wird vom LP-A-Eintrag NICHT mitgedeckt: istAusgeschlossen matcht nur exakt
+// oder '<eintrag>/...' — '/pages/schlaf-zellen-schutz-v2-18ef' ist beides
+// nicht. Verallgemeinerte Regel (DEV-DB): jede neue Dokument-Route gegen diese
+// Liste prüfen — und jede Route, die ihrerseits weiterleitet, doppelt.
 export const AUSSCHLUSS_SEGMENTE = [
   LP_A_PFAD,
+  LP_V2_PFAD,
   '/go',
   '/collect',
   '/b',
