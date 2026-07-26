@@ -49,6 +49,7 @@
 import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
 import {LP_V2_PFAD} from './lp-ab-v2.server.js';
+import {LP_V3_PFAD} from './lp-v3.server.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
 const FETCH_TIMEOUT_MS = 1500;
@@ -73,6 +74,12 @@ const WEITERE_CLICK_IDS = ['ttclid', 'msclkid'];
 export const AUSSCHLUSS_SEGMENTE = [
   LP_A_PFAD,
   LP_V2_PFAD,
+  // LP-V3 (Review-Artefakt, 20260726-lp-v3-apple-microsoft-scrollanim):
+  // NICHT schleifen-kritisch (nichts leitet auf V3), aber ein GETEILTER
+  // Review-Link trägt schnell fbclid/utm (Messenger/WhatsApp-Klicks) —
+  // ohne Ausschluss wuerfe die Weiche den Betrachter auf LP A und die
+  // Review-URL saehe „kaputt" aus. Genau die DEV-DB-Regel oben.
+  LP_V3_PFAD,
   '/go',
   '/collect',
   '/b',
