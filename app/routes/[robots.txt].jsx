@@ -83,6 +83,7 @@ Disallow: /account
 Disallow: /products/bundle-fundament
 Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
+Disallow: /pages/schlaf-zellen-schutz-v3-67a7
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*

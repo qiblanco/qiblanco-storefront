@@ -79,6 +79,14 @@ test('LP A selbst + /go sind ausgeschlossen (Loop unmöglich)', () => {
   assert.equal(entscheideAdWeiche(`${BASIS}/go?utm_medium=paid`), null);
 });
 
+test('LP V3 (Review-Artefakt) ist ausgeschlossen — geteilter Link mit fbclid rendert V3', () => {
+  assert.equal(istAusgeschlossen('/pages/schlaf-zellen-schutz-v3-67a7'), true);
+  assert.equal(
+    entscheideAdWeiche(`${BASIS}/pages/schlaf-zellen-schutz-v3-67a7?fbclid=IwAR0abc&utm_medium=paid`),
+    null,
+  );
+});
+
 test('Infra-Segmente ausgeschlossen', () => {
   for (const pfad of [
     '/collect', '/b', '/api/x', '/cart', '/checkouts/c/123', '/account',
