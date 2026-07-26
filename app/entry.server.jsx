@@ -31,6 +31,34 @@ function qpxConnectSrc(env) {
 }
 
 /**
+ * Eigener Sales-Chatbot (Grossjob 20260726, Segment s08): gibt den Origin des
+ * Bots zurück, aber NUR wenn `PUBLIC_SALESBOT_WIDGET_ORIGIN` gesetzt ist.
+ * Ohne die env bleibt die CSP Byte-gleich zum Vorzustand.
+ *
+ * Das Widget braucht ZWEI CSP-Direktiven, und das ist die eigentliche Falle:
+ *   scriptSrc  — der Loader `<script src="<origin>/embed/qiblanco-widget.js">`
+ *   frameSrc   — das iframe, das der Loader auf `<origin>/widget/embed` öffnet
+ * Fehlt EINE davon, blockt die CSP STILL: das Widget erscheint einfach nicht,
+ * ohne Fehler in der Seite. Deshalb liefert diese eine Funktion beide Stellen
+ * — sie können nicht auseinanderlaufen.
+ *
+ * `connectSrc` ist bewusst NICHT dabei: die Chat-API läuft same-origin INNERHALB
+ * des iframe (auf der Bot-Domain), nicht vom Storefront-Dokument aus.
+ * @param {Record<string, string | undefined>} env
+ */
+function salesbotOrigin(env) {
+  const roh = env?.PUBLIC_SALESBOT_WIDGET_ORIGIN;
+  if (!roh) return [];
+  try {
+    return [new URL(roh).origin];
+  } catch {
+    // Kaputte env darf die Seite nicht reissen — dann lädt das Widget eben
+    // nicht (fail-closed, wie beim qpx-Endpoint).
+    return [];
+  }
+}
+
+/**
  * @param {Request} request
  * @param {number} responseStatusCode
  * @param {Headers} responseHeaders
@@ -82,6 +110,8 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://gorgias-convert.com',
       'https://connect.facebook.net',
+      // Eigener Sales-Chatbot (s08): Loader-Skript. Stelle 1 von 2.
+      ...salesbotOrigin(context.env),
     ],
     styleSrc: [
       "'self'",
@@ -103,6 +133,9 @@ export default async function handleRequest(
       'https://consentcdn.cookiebot.com',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
+      // Eigener Sales-Chatbot (s08): das iframe. Stelle 2 von 2 — ohne diese
+      // Zeile lädt das Loader-Skript, das iframe bleibt aber leer (still).
+      ...salesbotOrigin(context.env),
     ],
     connectSrc: [
       "'self'",

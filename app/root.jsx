@@ -116,6 +116,13 @@ export async function loader(args) {
     // localStorage/keine persistente ID) — Go-live = diese env + Server
     // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
     qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
+    // Eigener Sales-Chatbot (Grossjob 20260726, Segment s08): das Widget lädt
+    // NUR, wenn diese env gesetzt ist. Ohne sie rendert nichts und die CSP
+    // bleibt Byte-gleich — der Merge dieses Branches ist damit für sich allein
+    // wirkungslos, das Scharfschalten ist ein zweiter, eigener Schritt (C2).
+    // Der Bot ERSETZT Gorgias nicht mit diesem Merge; die Absteuerung ist C3
+    // und läuft über die Cutover-Phasen (docs/s08-betrieb-und-cutover.md §9).
+    salesbotWidgetOrigin: env.PUBLIC_SALESBOT_WIDGET_ORIGIN || '',
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -270,6 +277,28 @@ export function Layout({children}) {
               <script
                 src="/qiblanco-qpx-loader.js"
                 data-qpx-endpoint={data.qpxEndpoint}
+                nonce={nonce}
+                defer
+                suppressHydrationWarning
+              />
+            ) : null}
+            {data?.salesbotWidgetOrigin ? (
+              // Eigener Sales-Chatbot (s08). Muster: exakt der Gorgias-Loader
+              // eine Ebene höher — nonce, defer, suppressHydrationWarning.
+              // Das Skript erzeugt ein iframe auf <origin>/widget/embed und
+              // gibt window.location.href als `pageUrl` mit; daraus löst der
+              // Bot seinen Rechtsraum auf (s07: Host bekannt -> dessen Region,
+              // fremder Host -> fail-closed). Der Bot bekommt KEINEN eigenen
+              // Identitäts-Key und liest auch `_qpx_anon` nicht — Begründung
+              // und Messung in qi-salesbot/docs/s08-betrieb-und-cutover.md §12.
+              // data-z-index: die Design-Rubrik verbietet z-index > 5000;
+              // Leons Loader-Default wäre 2147483000.
+              <script
+                src={`${data.salesbotWidgetOrigin}/embed/qiblanco-widget.js`}
+                data-tenant-id="tenant_qiblanco"
+                data-project-id="project_qiblanco_sales"
+                data-z-index="4900"
+                data-placement="right"
                 nonce={nonce}
                 defer
                 suppressHydrationWarning
