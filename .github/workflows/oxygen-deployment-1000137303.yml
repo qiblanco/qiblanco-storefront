@@ -81,24 +81,24 @@ jobs:
           # aktive Banner-Ablehnung wird IMMER respektiert (consent-policy.js).
           # Previews '' = fail-closed strict. Kill: Zeilen entfernen.
           PUBLIC_CONSENT_STRICT_REGIONS: ${{ github.ref_name == 'main' && 'DE,AT,CH' || '' }}
-          # LP-V2 A/B-SPLIT SCHARF (Grossjob 20260726-scoring-standort-
-          # bestimmung-lp-v2-psychobuild, Segment s08; Christian-Auftrag
-          # woertlich: "Autonom konzipieren, bauen, live schalten — KEIN
-          # Shadow, KEINE Christian-Entscheidung noetig"). Der Loader der
-          # Alt-Route /pages/schlaf-zellen-schutz leitet einen Teil der
-          # Eintritte cookie-los per 302 auf /pages/schlaf-zellen-schutz-v2-
-          # 18ef um (roher Query faehrt mit, Marker lp_m=v).
-          # NUR der exakte Wert 'on' aktiviert; jeder andere Wert und die
+          # LP-V2 A/B-SPLIT ABGEBROCHEN (Job 20260727-ab-abbruch-nur-original-
+          # lp, Christian-Anweisung 27.07.: Test SOFORT abbrechen, bis auf
+          # Weiteres 100 % des Traffics — insbesondere ALLE Ads — auf das
+          # ORIGINAL /pages/schlaf-zellen-schutz; die V2 ist real deutlich
+          # schlechter (<5/10)). Gefahren wurde der dokumentierte Kill-Pfad
+          # Stufe 1 aus dem Bau-Job (RESULT §6): 'on' -> '' — zusaetzlich
+          # SPLIT auf '0' (Stufe 1b) als zweite, unabhaengige Sperre.
+          # Der Split-CODE bleibt liegen und ist unveraendert reversibel:
+          # nur der exakte Wert 'on' aktiviert, jeder andere Wert und die
           # Abwesenheit = 100 % LP A (Fail-Richtung zeigt auf den Bestand).
-          # Previews bleiben '' = dunkel, damit Testtraffic die A/B-Messung
-          # nicht verfaelscht.
-          # ROLLBACK (ein Handgriff): 'on' -> '' und Deploy — Code bleibt
-          # liegen, 100 % der Besucher sehen sofort wieder LP A.
-          LP_AB_V2_MODE: ${{ github.ref_name == 'main' && 'on' || '' }}
-          # Anteil der Eintritte auf V2 in Prozent (0-100). 50 = gleiche
-          # Power je Variante (Konzept par.F). Runterdrehen ist ein
-          # Env-Handgriff, kein Code-Change; 0 = faktisch aus.
-          LP_AB_V2_SPLIT: ${{ github.ref_name == 'main' && '50' || '' }}
+          # Die V2-Route /pages/schlaf-zellen-schutz-v2-18ef bleibt direkt
+          # erreichbar (200) — abgeschaltet ist NUR die Zuteilung.
+          # WIEDER-EINSCHALTEN ist ein Christian-Gate (nachbau-audit
+          # gate-register lp-ab-v2-mode-20260726, Klasse live, geparkt).
+          LP_AB_V2_MODE: ''
+          # Anteil der Eintritte auf V2 in Prozent (0-100); 0 = faktisch aus
+          # (prozent <= 0 => kein Redirect). Vor dem Abbruch stand hier '50'.
+          LP_AB_V2_SPLIT: '0'
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
