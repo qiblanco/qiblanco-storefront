@@ -248,7 +248,29 @@ function getTemplateCopy(deal) {
   };
 }
 
-export function TenYearsDealPage({deal}) {
+/*
+ * `sektionen` (Default {} = jede Deal-Seite rendert unveraendert): Slot-Karte
+ * für die seiten-spezifische Sektions-Wahl, Muster wie QiOne2Pro
+ * (gitterchipAnimation/trustVorSlider) — Markup-Identitaets-Vertrag: fehlt ein
+ * Slot, steht dort exakt der Bestand.
+ *
+ * WARUM ueberhaupt: dieser Baum trägt VIER frequency-Deals gleichzeitig
+ * (/pages/qione-2-pro-2x + /products/734husd8hh + sale-qibracelet +
+ * sale-qihome-air, s. app/data/ten-years-deals.js) und wird zusaetzlich aus
+ * products.$handle.jsx gerendert. Ein Umbau direkt in
+ * FrequencyTemplateSections würde alle vier aendern; der Elina-Wunsch vom
+ * 2026-07-27 gilt ausdrücklich NUR der 2er-Set-Seite. Die Slots halten den
+ * Blast-Radius bei genau einer Route.
+ *
+ *   studien       — Inhalt der Studien-Sektion (der Rahmen
+ *                   j-sale-deal__studies-wrap bleibt stehen und trägt
+ *                   Breite/Abstand; Default = <Studien> Kachel-Raster)
+ *   wasserzustand — Default = <WaterStateSection> („Der Superzustand des Wassers")
+ *   nachDealRail  — zusätzlicher Block direkt hinter der ersten Deal-Rail
+ *                   („Wechsle direkt zum nächsten Jubiläumsangebot" + Angebote);
+ *                   Default = nichts
+ */
+export function TenYearsDealPage({deal, sektionen = {}}) {
   const template = getTemplateCopy(deal);
   const [selectedVariantId, setSelectedVariantId] = useState(deal.variants[0].id);
   const selectedVariant = useMemo(
@@ -279,6 +301,7 @@ export function TenYearsDealPage({deal}) {
           deal={deal}
           template={template}
           selectedVariant={selectedVariant}
+          sektionen={sektionen}
         />
       ) : (
         <CacaoTemplateSections
@@ -628,18 +651,21 @@ function UrgencyText({children}) {
   );
 }
 
-function FrequencyTemplateSections({deal, template, selectedVariant}) {
+function FrequencyTemplateSections({deal, template, selectedVariant, sektionen = {}}) {
   return (
     <>
       <UrgencyText>- Angebot limitiert auf die ersten 300 Bestellungen! -</UrgencyText>
       <MainFeatures />
       <DealRail currentKey={deal.key} />
+      {sektionen.nachDealRail ?? null}
       <FrequencyVideoScience />
       <GitterchipSection />
       <FounderSection />
-      <WaterStateSection />
+      {sektionen.wasserzustand ?? <WaterStateSection />}
       <section className="j-sale-deal__studies-wrap">
-        <Studien headline="Wirkung an menschlichen Zellen bestätigt!" />
+        {sektionen.studien ?? (
+          <Studien headline="Wirkung an menschlichen Zellen bestätigt!" />
+        )}
       </section>
       <MicroscopeSection />
       <GoogleReviewVideoSection />
