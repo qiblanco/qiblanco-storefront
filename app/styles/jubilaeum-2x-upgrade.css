@@ -1,0 +1,610 @@
+/*
+ * JUBILÄUMS-KAMPAGNE /pages/qione-2-pro-2x — Design-Token-Upgrade-Layer.
+ * Auftrag 20260724-folge-route301-design-upgrade (Folge zu rechte-elina-
+ * klarstellung §8.2). Scope: NUR diese Route (Wrapper .jubi-up) — die
+ * geteilte Basis ten-years-deal-page.css und TenYearsDealPage.jsx bleiben
+ * byte-identisch (D-084-Muster: Scope-CSS hebt die eine Seite allein,
+ * andere Deal-Seiten unberührt).
+ *
+ * Elinas Kernintention (1:1-Jubiläums-Kampagne) bleibt: Dark-Hero,
+ * Countdown, Limitiert-Dringlichkeit, Gold-Akzent, Copy unangetastet.
+ * Gehoben wird NUR die Token-Disziplin (web-soll.yaml v1):
+ *  - Typo-Skala <= 9 Größen (modulare Ratio ~1.25, kleinste 12px)
+ *  - EIN H2-Stil, Body-Größe vereinheitlicht, 70ch-Zeilenlänge
+ *  - EIN Gold-Akzent (#c9a14b) statt zwei Goldtöne + Rot + Blau-Lila
+ *  - Hintergrund-Kontinuum auf 4 Gruppen (Weiß / Off-White / Warm-Dunkel / Video-Schwarz)
+ *  - 8pt-Sektions-Takt 96/64, Innenabstände 48/24
+ *  - EIN Bild-Radius-Token (16px, Kreise 50% bleiben), Button-Token
+ *  - Sättigung zurückgenommen (saturate .92, mm-malibu-Präzedenz)
+ */
+
+.jubi-up {
+  /* Typo-Skala (8 Stufen, Ratio ~1.25; Stufe 1 = 12px Mobile-Minimum) */
+  --jt-fs-1: 0.75rem; /* 12px  Labels, Countdown-Beschriftung, Stamp */
+  --jt-fs-2: 0.875rem; /* 14px  Small, Trust, Footnote, Eyebrow */
+  --jt-fs-3: 1rem; /* 16px  Body (= Shell-Basis, ein Wert) */
+  --jt-fs-4: 1.25rem; /* 20px  H3, Summary, Lead, Rating */
+  --jt-fs-5: 1.5625rem; /* 25px  Zwischen-Display, Countdown-Ziffern, Preis-Sup */
+  --jt-h2: 2.5rem; /* 40px — EIN H2-Stil (= Shell-H2, modulare Stufe 16*1.25^4) */
+  --jt-h1: 3.125rem; /* 50px Hero-Display (40*1.25) */
+  --jt-lh-heading: 1.15;
+  --jt-lh-body: 1.6;
+
+  /* Ein-Akzent-Palette (web-soll: akzent #c9a14b nur auf Handlung/Beweis) */
+  --jub-gold: #c9a14b;
+  --jub-gold-dunkel: #9a7b33; /* gleiche Hue, AA-tauglich für große Preise */
+  --jub-gold-hell: #dfc891; /* gleiche Hue, Text auf Dunkel */
+  --jub-dunkel: #1a1a1a; /* EIN warmes Fast-Schwarz */
+  --jub-flaeche: #f8f4ee; /* EIN Off-White */
+
+  /* Basis-Vars der Kampagne im Scope überschreiben: EIN Gold, Rot -> dunkles
+     Gold (Dringlichkeit bleibt, aber in der EINEN Akzent-Familie) */
+  --j-sale-gold: var(--jub-gold);
+  --j-sale-gold-soft: var(--jub-gold-hell);
+  --j-sale-red: var(--jub-gold-dunkel);
+  --j-sale-soft: var(--jub-flaeche);
+
+  /* Spacing-Takt (8pt): Sektion 96/64, innen 48/24 */
+  --jub-sektion: 96px;
+  --jub-innen: 48px;
+  --jub-klein: 24px;
+}
+
+/* ---------- TYPO: eine Skala, ein H2-Stil, Body vereinheitlicht ---------- */
+
+.jubi-up .j-sale-deal {
+  background: #fff;
+}
+
+/* EIN H2-Stil für die ganze Seite (Größe × Gewicht × Ausrichtung) */
+.jubi-up .j-sale-deal h2,
+.jubi-up .j-sale-deal__section-heading h2,
+.jubi-up .j-sale-deal__product-copy h2,
+.jubi-up .j-sale-deal__main-features > h2,
+.jubi-up .j-sale-deal__gitterchip > h2,
+.jubi-up .j-sale-deal__founder h2,
+.jubi-up .j-sale-deal__water-state > h2,
+.jubi-up .j-sale-deal__proof > h2,
+.jubi-up .j-sale-deal__google-reviews > h2,
+.jubi-up .j-sale-deal__product-cta h2,
+.jubi-up .j-sale-deal__cacao-upsell h2,
+.jubi-up .j-sale-deal__cacao-upsell-heading h2,
+.jubi-up .j-sale-deal__html-section h2,
+.jubi-up .j-sale-deal__html-section.is-mineral-overview h2,
+.jubi-up .j-sale-deal__faq h2,
+.jubi-up .j-sale-deal__microscope > h2,
+.jubi-up .j-sale-deal__final-cta-body h2 {
+  font-size: var(--jt-h2);
+  font-weight: 700;
+  line-height: var(--jt-lh-heading);
+  text-align: center;
+  max-width: 24ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* H3-Ebene: eine Größe, ein Gewicht */
+.jubi-up .j-sale-deal h3,
+.jubi-up .j-sale-deal__feature-copy h3,
+.jubi-up .j-sale-deal__legacy-video-grid h3,
+.jubi-up .j-sale-deal__gitterchip h3,
+.jubi-up .j-sale-deal__founder h3,
+.jubi-up .j-sale-deal__water-state h3,
+.jubi-up .j-sale-deal__html-section h3,
+.jubi-up .j-sale-deal__google-video h3,
+.jubi-up .j-sale-deal__cacao-product-card h3,
+.jubi-up .j-sale-deal__faq summary {
+  font-size: var(--jt-fs-4);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Body: EINE Größe, 70ch-Zeilenlänge */
+.jubi-up .j-sale-deal p,
+.jubi-up .j-sale-deal li,
+.jubi-up .j-sale-deal__lead,
+.jubi-up .j-sale-deal__product-copy p,
+.jubi-up .j-sale-deal__signal,
+.jubi-up .j-sale-deal__feature-copy p,
+.jubi-up .j-sale-deal__gitterchip p,
+.jubi-up .j-sale-deal__founder p,
+.jubi-up .j-sale-deal__water-state p,
+.jubi-up .j-sale-deal__proof p,
+.jubi-up .j-sale-deal__google-reviews p,
+.jubi-up .j-sale-deal__community-proof p,
+.jubi-up .j-sale-deal__html-section p,
+.jubi-up .j-sale-deal__html-section li,
+.jubi-up .j-sale-deal__faq p,
+.jubi-up .j-sale-deal__final-cta-body p {
+  font-size: var(--jt-fs-3);
+  line-height: var(--jt-lh-body);
+  max-width: 70ch;
+}
+
+.jubi-up .j-sale-deal p,
+.jubi-up .j-sale-deal__html-section p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Links ausgerichtete Textspalten behalten ihren Fluss, nur Breite kappen */
+.jubi-up .j-sale-deal__text-stack p,
+.jubi-up .j-sale-deal__founder p,
+.jubi-up .j-sale-deal__feature-copy p,
+.jubi-up .j-sale-deal__final-cta-body p,
+.jubi-up .j-sale-deal__product-copy p {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.jubi-up .j-sale-deal__final-cta-body p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Kleine Ebene: 14px */
+.jubi-up .j-sale-deal__section-heading span,
+.jubi-up .j-sale-deal__price-label,
+.jubi-up .j-sale-deal__discount-note,
+.jubi-up .j-sale-deal__final-cta-trust,
+.jubi-up .j-sale-deal__html-section.is-footnote p,
+.jubi-up .j-sale-deal__template-hero-side small,
+.jubi-up .j-sale-deal__template-hero-top h1 span {
+  font-size: var(--jt-fs-2);
+  font-weight: 700;
+}
+
+.jubi-up .j-sale-deal__html-section.is-footnote p {
+  font-weight: 400;
+}
+
+/* Kleinste Ebene: 12px-Floor (Mobile-Lesbarkeit) */
+.jubi-up .j-sale-deal__countdown time,
+.jubi-up .j-sale-deal__final-cta-stamp-text,
+.jubi-up .j-sale-deal__final-cta-stamp-core small {
+  font-size: var(--jt-fs-1);
+  font-weight: 700;
+}
+
+/* Display-Ebene */
+.jubi-up .j-sale-deal__template-hero-top h1 {
+  font-size: var(--jt-h1);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.jubi-up .j-sale-deal__template-hero-side span,
+.jubi-up .j-sale-deal__template-hero-title-lines span {
+  font-size: var(--jt-h2);
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+.jubi-up .j-sale-deal__template-hero-side--saving span {
+  font-size: var(--jt-h1);
+  color: var(--jub-gold-hell);
+}
+
+.jubi-up .j-sale-deal__price-current,
+.jubi-up .j-sale-deal__final-cta-price span {
+  font-size: var(--jt-h2);
+  font-weight: 800;
+  color: var(--jub-gold-dunkel);
+}
+
+.jubi-up .j-sale-deal__final-cta-price sup,
+.jubi-up .j-sale-deal__price-compare {
+  font-size: var(--jt-fs-5);
+  font-weight: 600;
+}
+
+.jubi-up .j-sale-deal__countdown strong {
+  font-size: var(--jt-fs-5);
+  font-weight: 800;
+  border-radius: 8px;
+}
+
+.jubi-up .j-sale-deal__final-cta-stamp-core span {
+  font-size: var(--jt-fs-5);
+  font-weight: 800;
+}
+
+.jubi-up .j-sale-deal__rating,
+.jubi-up .j-sale-deal__urgency p,
+.jubi-up .j-sale-deal__cacao-upsell-heading p,
+.jubi-up .j-sale-deal__gitterchip h4 {
+  font-size: var(--jt-fs-4);
+  font-weight: 700;
+}
+
+/* ---------- FARBE: EIN Akzent, 4 Hintergrund-Gruppen, ruhige Fläche ---------- */
+
+/* Dunkle Akte auf EIN warmes Fast-Schwarz vereinheitlicht */
+.jubi-up .j-sale-deal__template-hero {
+  background: var(--jub-dunkel);
+}
+
+.jubi-up .j-sale-deal__microscope .ScrollMikroskopvideo {
+  background: var(--jub-dunkel);
+}
+
+.jubi-up .j-sale-deal__price-label {
+  background: var(--jub-dunkel);
+}
+
+.jubi-up .j-sale-deal__final-cta-stamp-core {
+  background: var(--jub-dunkel);
+  color: var(--jub-gold-hell);
+}
+
+.jubi-up .j-sale-deal__final-cta-stamp-core small {
+  color: var(--jub-gold-hell);
+}
+
+/* Helle Akte auf EIN Off-White-Kontinuum */
+.jubi-up .j-sale-deal__rail {
+  background: var(--jub-flaeche);
+}
+
+.jubi-up .j-sale-deal__final-cta {
+  background: var(--jub-flaeche);
+}
+
+.jubi-up .j-sale-deal__final-cta-media {
+  background: #fff;
+  border-radius: 16px;
+}
+
+.jubi-up .j-sale-deal__product-main-image,
+.jubi-up .j-sale-deal__proof-grid > img,
+.jubi-up .j-sale-deal__comment-slider img {
+  background: var(--jub-flaeche);
+}
+
+/* Blau-Lila-Fremdwelt raus: warmes Dunkel + Gold-Glow (Ein-Akzent-Regel) */
+.jubi-up .j-sale-deal__product-cta-media {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(201, 161, 75, 0.18), transparent 52%),
+    linear-gradient(180deg, #1a1a1a 0%, #2c2a26 100%);
+  border-radius: 16px;
+}
+
+/* Sättigung der Bildflächen leicht zurücknehmen (mm-malibu: saturate .92) */
+.jubi-up .j-sale-deal img {
+  filter: saturate(0.92);
+}
+
+/* ---------- DETAIL: EIN Bild-Radius, EIN Button-Stil ---------- */
+
+.jubi-up .j-sale-deal img,
+.jubi-up .j-sale-deal iframe,
+.jubi-up .j-sale-deal .YoutubeIframe,
+.jubi-up .j-sale-deal__iframe,
+.jubi-up .j-sale-deal__image-pair img,
+.jubi-up .j-sale-deal__comment-slider img {
+  border-radius: 16px;
+}
+
+/* Kreise bleiben Kreise */
+.jubi-up .j-sale-deal__final-cta-stamp-core,
+.jubi-up .j-sale-deal__product-cta-motion span {
+  border-radius: 50%;
+}
+
+/* Hero-Hintergrundbild randlos (Full-Bleed gehört ohne Radius) */
+.jubi-up .j-sale-deal__template-hero-bg {
+  border-radius: 0;
+  filter: none;
+}
+
+.jubi-up .j-sale-deal .btn--primary,
+.jubi-up .j-sale-deal__button {
+  background: var(--jub-gold);
+  color: #fff !important;
+  font-weight: 700;
+  font-size: var(--jt-fs-3);
+  border-radius: 8px;
+  border: 0;
+}
+
+.jubi-up .j-sale-deal .btn--primary:hover,
+.jubi-up .j-sale-deal__button:hover {
+  background: var(--jub-gold-dunkel);
+}
+
+/* ---------- LAYOUT: 8pt-Sektions-Takt (96 Desktop / 64 Mobile) ---------- */
+
+.jubi-up .j-sale-deal__main-features,
+.jubi-up .j-sale-deal__legacy-video-grid,
+.jubi-up .j-sale-deal__gitterchip,
+.jubi-up .j-sale-deal__founder,
+.jubi-up .j-sale-deal__water-state,
+.jubi-up .j-sale-deal__proof,
+.jubi-up .j-sale-deal__google-reviews,
+.jubi-up .j-sale-deal__community-proof,
+.jubi-up .j-sale-deal__youtube-proof,
+.jubi-up .j-sale-deal__product-cta,
+.jubi-up .j-sale-deal__cacao-upsell,
+.jubi-up .j-sale-deal__html-section,
+.jubi-up .j-sale-deal__faq,
+.jubi-up .j-sale-deal__studies-wrap,
+.jubi-up .j-sale-deal__microscope {
+  padding: var(--jub-sektion) 0;
+}
+
+.jubi-up .j-sale-deal__product-template {
+  padding: var(--jub-innen) 0 var(--jub-sektion);
+  gap: var(--jub-innen);
+}
+
+.jubi-up .j-sale-deal__rail {
+  padding: var(--jub-sektion) 0;
+}
+
+.jubi-up .j-sale-deal__urgency {
+  padding: var(--jub-klein) 0 0;
+}
+
+.jubi-up .j-sale-deal__section-heading {
+  margin-bottom: var(--jub-klein);
+}
+
+@media (max-width: 768px) {
+  .jubi-up {
+    --jub-sektion: 64px;
+    --jub-innen: 32px;
+    --jub-klein: 16px;
+  }
+}
+
+/* ---------- NACHSCHÄRFUNG Iteration 2 (Render-Diagnose 2026-07-24) ---------- */
+
+/* Mobile-Stufen der Skala */
+@media (max-width: 768px) {
+  .jubi-up {
+    --jt-h2: 2rem;
+    --jt-h1: 2.5rem;
+  }
+}
+
+/* Bild-Radius-Token hart durchsetzen (6px/20px-Bestandsregeln überstimmen) */
+.jubi-up .j-sale-deal img,
+.jubi-up .j-sale-deal iframe {
+  border-radius: 16px !important;
+}
+
+.jubi-up .j-sale-deal__template-hero-bg {
+  border-radius: 0 !important;
+}
+
+.jubi-up .j-sale-deal__final-cta-stamp-core,
+.jubi-up .j-sale-deal__product-cta-motion span {
+  border-radius: 50% !important;
+}
+
+/* Scroll-Scrub-Sektion: 500vh-Basisregel (app.css) reißt den Sektions-Takt
+   (4449px bei Median ~730px). 320vh erhält den Scrub-Effekt, bleibt aber
+   unter dem 5x-Median-Ausreißer-Kriterium; Off-Grid-Margin 100px -> 0. */
+.jubi-up .j-sale-deal__microscope .ScrollMikroskopvideo {
+  height: 320vh !important;
+  margin: 0 !important;
+  background: var(--jub-dunkel) !important;
+}
+
+/* EIN Button-Radius seitenweit (Basis .btn--primary hat 10px) */
+.jubi-up .btn--primary,
+.jubi-up .btn--secondary,
+.jubi-up .j-sale-deal__button {
+  border-radius: 8px !important;
+}
+
+/*
+ * Shell-Einfärbung (nur diese Route lädt dieses Stylesheet — App-Shell
+ * behält überall sonst ihr Standard-Design): kühle Fremd-Farbwelten auf
+ * das warme Kontinuum der Kampagne ziehen (Rubrik: "Fremd-Widgets
+ * einfärben", EIN Gold statt Shell-Gold #f2bf72, EIN Dunkel statt Navy).
+ */
+main,
+aside {
+  background: #fff;
+}
+
+.footer {
+  background: #1a1a1a;
+}
+
+.submenu {
+  background: #f8f4ee;
+}
+
+.cart-count,
+.footer #qi-newsletter form._form_15 ._submit,
+.footer-studies__dot.active {
+  background: #c9a14b;
+}
+
+.footer-studies__btn {
+  border-radius: 8px;
+}
+
+/* Reputon-Fremd-Widget: kühle Grau-Blau-Flächen -> warme Neutrale,
+   Mini-Schriften auf 12px-Floor */
+.jubi-up [class*='reputon-top-part'],
+.jubi-up [class*='reputon-swiper-button'],
+.jubi-up [class*='reputon-name'] {
+  background: #f8f4ee !important;
+}
+
+.jubi-up [class*='reputon-verified-label'] {
+  background: #6b665d !important;
+  font-size: 12px !important;
+}
+
+.jubi-up [class*='reputon-logo-text'],
+.jubi-up [class*='reputon-logo-text'] span {
+  font-size: 12px !important;
+}
+
+/* ---------- NACHSCHÄRFUNG Iteration 3 (Shell-Reste, Render-Diagnose 2) ---------- */
+
+/* Shell-Flächen: kühles #f5fdff (aside/main) + Submenu-Creme + cart-count-Altgold
+   hart auf das Seiten-Kontinuum ziehen (nur diese Route lädt dieses CSS) */
+main,
+aside {
+  background: #fff !important;
+}
+
+.submenu {
+  background: #f8f4ee !important;
+}
+
+.cart-count {
+  background: #c9a14b !important;
+}
+
+.footer #qi-newsletter form._form_15 ._submit,
+.footer-studies__dot.active {
+  background: #c9a14b !important;
+}
+
+/* Submenu-/Shell-Preview-Bilder auf den EINEN Content-Bild-Radius (16px);
+   die kleinen 4px-Icons bleiben als zweiter erlaubter Wert */
+.submenu img:not([class*='icon']),
+.predictive-search img {
+  border-radius: 16px !important;
+}
+
+/* Einzelne Rest-Dunkelflächen auf das EINE Warm-Dunkel */
+a[href='#mainContent'],
+.skip-link {
+  background: #1a1a1a !important;
+}
+
+.Header-AnnouncementBanner a {
+  background: #1a1a1a !important;
+}
+
+/* ---------- NACHSCHÄRFUNG Iteration 4 ---------- */
+
+/* Announcement-Banner (ausserhalb des Wrappers): Alt-Rot/Alt-Gold -> die
+   EINE Akzent-Familie (Gold-Hell auf Warm-Dunkel) */
+.Header-AnnouncementBanner p,
+.Header-AnnouncementBanner .j-sale-deal__saving-text,
+.j-sale-deal__saving-text {
+  color: #dfc891 !important;
+}
+
+.Header-AnnouncementBanner .ReviewCount {
+  color: #dfc891 !important;
+}
+
+/* Reputon-SVGs: Lila-KI-Sterne + Blau-Verified -> Akzent-/Neutral-Familie */
+.jubi-up [class*='reputon-rating-stars'] {
+  color: #c9a14b !important;
+}
+
+.jubi-up [class*='reputon-ai-stars'],
+.jubi-up [class*='reputon-ai-stars'] * {
+  color: #c9a14b !important;
+  fill: #c9a14b !important;
+}
+
+.jubi-up [class*='reputon-verified-icon'],
+.jubi-up [class*='reputon-verified-icon'] * {
+  color: #6b665d !important;
+  fill: #6b665d !important;
+}
+
+/* Newsletter-Input: Navy-Text -> warmes Dunkel */
+.footer #qi-newsletter input {
+  color: #2c2a26 !important;
+}
+
+/* Zeilenlänge: 65ch (echte Zeichenbreite von Open Sans liegt über 0.5em —
+   70ch CSS ≈ 77 gemessene Zeichen; 65ch bringt alle Blöcke unter 75) */
+.jubi-up .j-sale-deal p,
+.jubi-up .j-sale-deal li,
+.jubi-up .j-sale-deal__urgency p,
+.jubi-up .j-sale-deal__gitterchip p,
+.jubi-up .j-sale-deal__water-state p {
+  max-width: 65ch;
+}
+
+/* Sektions-Takt final: nur noch Stufen 48/96 (+24 klein) */
+.jubi-up .j-sale-deal__template-hero {
+  padding: var(--jub-innen) 0;
+}
+
+.jubi-up .j-sale-deal__urgency {
+  padding: var(--jub-innen) 0 0;
+}
+
+/* ---------- NACHSCHÄRFUNG Iteration 5 ---------- */
+
+/* Die Kampagnen-Vars sind auf .j-sale-deal SELBST definiert (nicht :root) —
+   Override muss deshalb auf demselben Element sitzen, sonst gewinnt die
+   nähere Definition gegen den Wrapper (Var-Inheritance). */
+.jubi-up .j-sale-deal {
+  --j-sale-gold: var(--jub-gold);
+  --j-sale-gold-soft: var(--jub-gold-hell);
+  --j-sale-red: var(--jub-gold-dunkel);
+  --j-sale-soft: var(--jub-flaeche);
+}
+
+/* Deal-Kacheln (Rail): eingebrannte Rot-Badges der PNG-Artworks in die
+   warme Familie ziehen (Pixel-Ebene, CSS-Filter statt Artwork-Edit) */
+.jubi-up .j-sale-deal__slide img,
+.jubi-up .j-sale-deal__template-hero-title-image,
+.jubi-up .j-sale-deal__template-hero-saving-image {
+  filter: sepia(0.28) saturate(0.72);
+}
+
+/* Hero-Foto: satte Dschungel-Grüns dämpfen, Mood erhalten */
+.jubi-up .j-sale-deal__template-hero-bg {
+  filter: saturate(0.78) !important;
+}
+
+/* Shell-Typo auf die Seiten-Skala ziehen (Route-lokal): 14.4/17.6/19.2/
+   13.12/13.6/27.2 -> 14/16/20/14/14/25 */
+.Header-AnnouncementBanner .ReviewCount,
+.cart-count,
+.footer p,
+.footer a,
+.footer li,
+.footer-heading {
+  font-size: 14px !important;
+}
+
+.btn--primary,
+.header-submenu-item,
+.btn--secondary {
+  font-size: 16px !important;
+}
+
+.menu-toggle-mobile {
+  font-size: 20px !important;
+}
+
+aside .close,
+aside button.reset {
+  font-size: 25px !important;
+}
+
+/* Footer-Textblöcke unter 75 Zeichen halten */
+.footer p,
+.footer li {
+  max-width: 65ch;
+}
+
+/* ---------- NACHSCHÄRFUNG Iteration 6 (Feinschliff) ---------- */
+
+/* Footer-Studien-Bilder: 6px -> Content-Radius 16px */
+.footer-studies img {
+  border-radius: 16px !important;
+}
+
+/* Eyebrow auf hellem Grund: gold-hell wäre kontrastarm — dunkles Gold
+   (gleiche Familie, lesbar); gold-hell bleibt NUR auf dunklen Flächen */
+.jubi-up .j-sale-deal__section-heading span {
+  color: var(--jub-gold-dunkel);
+}
