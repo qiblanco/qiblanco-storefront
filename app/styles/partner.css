@@ -1,0 +1,153 @@
+/* ============================================================================
+   /pages/partner — Empfehlungs-/Vertrauensseite für Partner-Traffic
+   (Grossjob 20260726-partner-affiliate-manager-programm s05, 2026-07-26).
+
+   ADDITIV zur geteilten Token-Quelle styles/schlaf-zellen-schutz.css
+   (Scope .lp-a3 — gleiches Muster wie die Campaign-PDP /pages/qione-2-pro):
+   diese Datei definiert ausschließlich lp-pt-*-Regeln und die Akt-Hintergründe
+   der Partner-Route. Alle Werte kommen aus den :root-Tokens der Token-Quelle —
+   keine freien Größen, kein zweiter Goldton, keine neuen Radien.
+
+   Farb-Dramaturgie (3 Farbwelten, alternierend):
+   grund:   Hero, Mechanismus, Erfahrungen, Garantie
+   fläche:  Code, Wissenschaft, Passt, Produkte
+   dunkel:  Signatur, Final CTA (EIN dunkler Schluss-Bogen wie LP A)
+   ========================================================================== */
+
+/* ─── Akt-Hintergründe der Partner-Sektionen ─────────────────────────────── */
+.lp-a3 [data-section='lp-pt-code'],
+.lp-a3 [data-section='lp-pt-wissenschaft'],
+.lp-a3 [data-section='lp-pt-passt'],
+.lp-a3 [data-section='lp-pt-produkte'] {
+  background: var(--a-flaeche);
+}
+
+/* Karten auf Flächen-Akten wechseln auf den Grund-Ton, damit sie sich ruhig
+   abheben (statt Ton-in-Ton zu verschwimmen). */
+.lp-a3 [data-section='lp-pt-code'] .lp-a-benefit,
+.lp-a3 [data-section='lp-pt-passt'] .lp-a-benefit {
+  background: var(--a-grund);
+}
+.lp-a3 [data-section='lp-pt-wissenschaft'] .lp-vp-peer-stat {
+  background: var(--a-grund);
+}
+
+/* ─── Zweispaltiges Karten-Raster (Code + Passt: 2 Karten statt 3) ────────── */
+.lp-a3 .lp-pt-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: var(--a-breite);
+}
+
+/* ─── Qualifizierungs-Listen (Passt-Sektion) ──────────────────────────────── */
+.lp-a3 .lp-pt-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+  text-align: left;
+}
+.lp-a3 .lp-pt-liste li {
+  padding-left: var(--a-s3);
+  position: relative;
+}
+/* Gold nur auf der bejahenden Seite (Handlung/Beweis) — die Abgrenzung bleibt
+   bewusst still. */
+.lp-a3 .lp-pt-liste--ja li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--a-akzent-tief);
+  font-weight: 700;
+}
+.lp-a3 .lp-pt-liste--nein li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--a-muted);
+  font-weight: 600;
+}
+
+/* ─── Drei-Schritte-Liste im Final CTA ────────────────────────────────────── */
+.lp-a3 .lp-pt-schritte {
+  list-style: none;
+  counter-reset: lp-pt-schritt;
+  margin: 0 auto var(--a-s4);
+  padding: 0;
+  max-width: var(--a-mass);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s2);
+  text-align: left;
+}
+.lp-a3 .lp-pt-schritte li {
+  counter-increment: lp-pt-schritt;
+  position: relative;
+  padding-left: var(--a-s6);
+  font-size: var(--a-fs-base);
+  color: var(--a-muted-hell);
+}
+.lp-a3 .lp-pt-schritte li::before {
+  content: counter(lp-pt-schritt);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--a-s4);
+  height: var(--a-s4);
+  border-radius: 50%;
+  background: var(--a-akzent);
+  color: var(--a-dunkel);
+  font-size: var(--a-fs-base);
+  font-weight: 700;
+  display: grid;
+  place-content: center;
+}
+
+/* ─── Route-Chrome-Harmonisierung (nur /pages/partner, Marker .lp-pt) ───────
+   Die Rubrik misst die GANZE Seite — Header/Footer/Fremd-Widgets müssen in
+   die Token-Welt (Hausmuster mm-lp.css, Zwei-Gold-Befund 2026-07-24). */
+
+/* ActiveCampaign-Submit: die injizierte Vendor-Regel trägt eine ID
+   (#_form_..._ ._submit) + !important und schlägt jede Klassen-Kette —
+   deshalb MIT ID-Anker plus Klassen-Fallback, beides !important (das fremde
+   Hell-Gold #f2bf72 wäre sonst der Zwei-Gold-Befund der Rubrik). */
+body #_form_15_submit._submit,
+body:has(.lp-pt) ._form_15 button,
+body:has(.lp-pt) ._form_15 ._submit,
+body:has(.lp-pt) ._form_15 input[type='submit'] {
+  background: var(--a-akzent) !important;
+  color: #fff !important;
+  border-radius: var(--a-r1) !important;
+  font-family: var(--a-font) !important;
+}
+
+/* Reines Weiß der Such-/Formular-Inputs wäre die 5. Hintergrund-Welt —
+   auf den warmen Grund-Ton heben. */
+body:has(.lp-pt) .predictive-search-form,
+body:has(.lp-pt) .predictive-search-form input,
+body:has(.lp-pt) ._form_15 input,
+body:has(.lp-pt) input#fullname#fullname,
+body:has(.lp-pt) input#email#email {
+  background-color: var(--a-grund) !important;
+}
+
+/* Bild-Radien: EIN Wert für Fremd-Bilder (Header-Submenu 4px, Nav-Teaser
+   20px, Footer-Studienbild 6px). Seiten-eigene Bild-Stile mit spezifischeren
+   Selektoren (Mechanismus-Karten 0, figure r2, Karten-Bilder r1) bleiben
+   unberührt bzw. werden direkt danach re-deklariert. */
+body:has(.lp-pt) img {
+  border-radius: var(--a-r1);
+}
+.lp-a3.lp-pt figure img {
+  border-radius: var(--a-r2);
+}
+
+/* ─── Mobile: zweispaltige Raster einspaltig (gleicher Takt wie LP A) ─────── */
+@media (max-width: 767px) {
+  .lp-a3 .lp-pt-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
