@@ -2,6 +2,9 @@ import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
 import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
+import {StudienSlider} from '~/components/reusables/StudienSlider';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {InfoSlider} from '~/components/index-components/InfoSlider';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
 /*
@@ -82,9 +85,52 @@ export async function loader({context, request}) {
  * Doppelzählung. (Parität zur bisherigen Aktionsseite /products/jhsdhze783,
  * die denselben TenYearsDealPage-Baum ohne Route-Pixel trug.)
  */
+/*
+ * SEKTIONS-KARTE (Elina-Wunsch 2026-07-27, von Christian freigegeben; reine
+ * Layout-Änderung, kein Preis-/Rechte-Bezug, kein Produkt-Duplikat):
+ * Alle drei Bausteine sind REFERENZEN auf die geteilten Vorlagen, keine
+ * Kopien — eine künftige Änderung am Original schlaegt hier automatisch
+ * durch. Deshalb steht die Karte hier an der Route und nicht im Deal-Baum:
+ * die uebrigen drei frequency-Deals (734husd8hh, sale-qibracelet,
+ * sale-qihome-air) bleiben dadurch unveraendert.
+ *
+ *  1. studien       StudienSlider = dieselbe Vorlage wie /pages/exclusive-solutions
+ *                   (seit heute app/components/reusables/StudienSlider.jsx).
+ *                   Die Überschrift der Sektion bleibt stehen — der Wunsch
+ *                   tauscht die DARSTELLUNG der Studien, und ein ersatzloser
+ *                   Wegfall wäre eine Inhalts-Löschung. Sie steht bewusst
+ *                   hier im Slot: so ist sie ohne Eingriff am geteilten Baum
+ *                   änderbar, falls Elina sie doch anders will.
+ *  2. wasserzustand GitterchipMoleculesScrub = dieselbe Vorlage wie
+ *                   /products/qione-2-pro, ersetzt „Der Superzustand des Wassers".
+ *  3. nachDealRail  InfoSlider = das geteilte Drei-Themen-Karussell
+ *                   (Erholsame Nächte / Starkes Wohlbefinden / Klarer Kopf)
+ *                   von /products/qione-2-pro, direkt hinter der Deal-Rail.
+ *
+ * dataSection-Praefix j2x-* = Watch-/Heatmap-Anker dieser Seite
+ * (hb-heatmap-sync pflegt die sektion_registry daraus).
+ */
 export default function QiOne2Pro2xShopRoute() {
   const deal = getTenYearsDealByHandle('jhsdhze783');
-  return <TenYearsDealPage deal={deal} />;
+  return (
+    <TenYearsDealPage
+      deal={deal}
+      sektionen={{
+        nachDealRail: <InfoSlider dataSection="j2x-drei-themen" />,
+        wasserzustand: (
+          <GitterchipMoleculesScrub dataSection="j2x-gitterchip-video" />
+        ),
+        studien: (
+          <>
+            <h2 className="text-center">
+              Wirkung an menschlichen Zellen bestätigt!
+            </h2>
+            <StudienSlider dataSection="j2x-studien-kacheln" />
+          </>
+        ),
+      }}
+    />
+  );
 }
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
