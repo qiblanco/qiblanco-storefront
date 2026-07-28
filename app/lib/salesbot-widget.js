@@ -16,7 +16,7 @@
  *
  * `connect-src` ist bewusst NICHT dabei: die Chat-API läuft same-origin
  * INNERHALB des iframe (auf der Bot-Domain), nicht vom Storefront-Dokument
- * aus. Das Eltern-Dokument redet mit dem Bot ausschliesslich über
+ * aus. Das Eltern-Dokument redet mit dem Bot ausschließlich über
  * postMessage (Grössenwechsel des iframe) — das braucht keine CSP-Direktive.
  */
 

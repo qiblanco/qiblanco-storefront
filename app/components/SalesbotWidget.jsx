@@ -1,5 +1,17 @@
 import {useEffect} from 'react';
 
+/** Die id, die der Loader seinem iframe gibt. */
+const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
+
+/** Loader-Attribute an EINER Stelle — SSR-Tag und Nachzug dürfen nicht driften. */
+const LOADER_DATEN = {
+  tenantId: 'tenant_qiblanco',
+  projectId: 'project_qiblanco_sales',
+  zIndex: '4900',
+  placement: 'right',
+  initialOpen: 'false',
+};
+
 /**
  * Loader-Einbindung des eigenen Sales-Chat-Assistenten.
  * Grossjob 20260728-leon-chatbot-live-pages-chatbot, Segment s05.
@@ -30,18 +42,6 @@ import {useEffect} from 'react';
  * ihn; der Hinweis-Balken oben auf der Seite sagt bereits, dass hier ein
  * Assistent im Test läuft.
  */
-/** Die id, die der Loader seinem iframe gibt. */
-const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
-
-/** Loader-Attribute an EINER Stelle — SSR-Tag und Nachzug dürfen nicht driften. */
-const LOADER_DATEN = {
-  tenantId: 'tenant_qiblanco',
-  projectId: 'project_qiblanco_sales',
-  zIndex: '4900',
-  placement: 'right',
-  initialOpen: 'false',
-};
-
 export function SalesbotWidget({origin, nonce}) {
   useEffect(() => {
     /**
@@ -118,7 +118,7 @@ export function SalesbotWidget({origin, nonce}) {
      * AUFRÄUMEN BEI CLIENT-NAVIGATION: iframe und Flag überleben das Entfernen
      * des <script>-Tags. Ohne diesen Rückbau bliebe der Assistent nach einer
      * SPA-Navigation von /pages/chat-bot auf eine FREMDE Seite dort sichtbar
-     * stehen — und Christians Vorgabe ist „ausschliesslich auf /pages/chat-bot".
+     * stehen — und Christians Vorgabe ist „ausschließlich auf /pages/chat-bot".
      * Die serverseitige Weiche in root.jsx deckt nur den ersten Seitenaufruf
      * ab, nicht den Weg danach.
      *

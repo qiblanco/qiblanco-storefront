@@ -204,7 +204,7 @@ export function Layout({children}) {
     Boolean(data?.enableTrackingInPreview) && !data?.isProductionHost;
 
   // ── WEICHE FÜR DEN EIGENEN CHAT-ASSISTENTEN (s05) ────────────────────────
-  // Christians Vorgabe: der Assistent läuft AUSSCHLIESSLICH auf der Route,
+  // Christians Vorgabe: der Assistent läuft ausschließlich auf der Route,
   // die ihn anfordert (heute /pages/chat-bot) — überall sonst bleibt Gorgias
   // unangetastet. Die Route erklärt das selbst über ihren `handle`-Export:
   //
@@ -219,7 +219,7 @@ export function Layout({children}) {
   // braucht keinen hartcodierten Pfad.
   //
   // SERVERSEITIG: die Matches stehen schon beim SSR fest, der Loader-Tag ist
-  // deshalb auf fremden Seiten gar nicht erst im HTML — nicht bloss per CSS
+  // deshalb auf fremden Seiten gar nicht erst im HTML — nicht bloß per CSS
   // versteckt.
   const matches = useMatches();
   const salesbotSeite = (matches || []).some(
