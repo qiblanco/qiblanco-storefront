@@ -4,6 +4,7 @@ import {
   useRouteError,
   isRouteErrorResponse,
   useRouteLoaderData,
+  useMatches,
   Links,
   Meta,
   Scripts,
@@ -22,6 +23,8 @@ import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
+import {salesbotWidgetOrigin} from '~/lib/salesbot-widget';
+import {SalesbotWidget} from './components/SalesbotWidget';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -116,6 +119,12 @@ export async function loader(args) {
     // localStorage/keine persistente ID) — Go-live = diese env + Server
     // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
     qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
+    // Eigener Sales-Chat-Assistent (s05): der Origin des Bots. Default ist
+    // der in s03 scharf geschaltete Edge, `PUBLIC_SALESBOT_WIDGET_ORIGIN=off`
+    // schaltet ab (lib/salesbot-widget.js). Dieser Wert sagt NUR, OB der
+    // Assistent verfügbar ist — WO er erscheint, entscheidet der
+    // `handle`-Export der Route, nicht dieser Loader (siehe Layout).
+    salesbotWidgetOrigin: salesbotWidgetOrigin(env),
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -193,6 +202,31 @@ export function Layout({children}) {
     data?.isProductionHost || data?.enableTrackingInPreview;
   const isTrackingPreview =
     Boolean(data?.enableTrackingInPreview) && !data?.isProductionHost;
+
+  // ── WEICHE FÜR DEN EIGENEN CHAT-ASSISTENTEN (s05) ────────────────────────
+  // Christians Vorgabe: der Assistent läuft AUSSCHLIESSLICH auf der Route,
+  // die ihn anfordert (heute /pages/chat-bot) — überall sonst bleibt Gorgias
+  // unangetastet. Die Route erklärt das selbst über ihren `handle`-Export:
+  //
+  //     export const handle = {salesbotWidget: true};
+  //
+  // WARUM AUS DEN MATCHES UND NICHT AUS DEM ROOT-LOADER: `shouldRevalidate`
+  // oben gibt für Sub-Navigationen bewusst `false` zurück — der Root-Loader
+  // läuft bei Client-Navigation NICHT neu. Ein Loader-Feld wäre also nach dem
+  // ersten Seitenaufruf eingefroren (Assistent würde bei SPA-Navigation auf
+  // die Testseite fehlen und auf fremden Seiten hängenbleiben). `handle` kommt
+  // aus den Matches und ist damit bei JEDER Navigation aktuell — und root.jsx
+  // braucht keinen hartcodierten Pfad.
+  //
+  // SERVERSEITIG: die Matches stehen schon beim SSR fest, der Loader-Tag ist
+  // deshalb auf fremden Seiten gar nicht erst im HTML — nicht bloss per CSS
+  // versteckt.
+  const matches = useMatches();
+  const salesbotSeite = (matches || []).some(
+    (match) => match?.handle?.salesbotWidget === true,
+  );
+  const salesbotAktiv = salesbotSeite && Boolean(data?.salesbotWidgetOrigin);
+
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
@@ -245,13 +279,32 @@ export function Layout({children}) {
               defer
               suppressHydrationWarning
             />
-            <script
-              src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
-              data-gorgias-loader-chat=""
-              nonce={nonce}
-              defer
-              suppressHydrationWarning
-            />
+            {!salesbotAktiv && (
+              // GORGIAS-CHAT — auf JEDER Seite ausser der, auf der unser
+              // eigener Assistent aktiv läuft. Zwei Chat-Starter gleichzeitig
+              // gehen baulich nicht gut: beide docken bottom-right an und
+              // nutzen beide das z-index-Maximum (Stapel-Reihenfolge nicht
+              // deterministisch), dazu doppelter Focus-Trap und doppelte
+              // aria-live-Ansage für Screenreader — auf Mobil ist ohnehin kein
+              // Platz für zwei.
+              //
+              // Die Bedingung hängt am AKTIVEN Assistenten, nicht an der
+              // Route: schaltet PUBLIC_SALESBOT_WIDGET_ORIGIN=off den
+              // Assistenten ab, kehrt Gorgias hier automatisch zurück — die
+              // Seite steht nie ohne Chat da.
+              //
+              // Die zwei Gorgias-Loader darunter (mailto-replace, convert)
+              // bleiben ABSICHTLICH auch hier aktiv: sie rendern keinen
+              // konkurrierenden Chat-Starter, und ein grösserer Diff hätte nur
+              // mehr Risiko ohne Nutzen.
+              <script
+                src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
+                data-gorgias-loader-chat=""
+                nonce={nonce}
+                defer
+                suppressHydrationWarning
+              />
+            )}
             <script
               src="https://config.gorgias.help/api/contact-forms/replace-mailto-script.js?shopName=qi-blanco"
               data-gorgias-loader-mailto-replace=""
@@ -288,6 +341,22 @@ export function Layout({children}) {
               />
             ) : null}
           </>
+        )}
+        {/*
+          EIGENER SALES-CHAT-ASSISTENT (s05) — BEWUSST AUSSERHALB des
+          shouldLoadThirdPartyScripts-Blocks darüber.
+
+          Jenes Gate ist `isProductionHost || enableTrackingInPreview` und
+          schützt DRITT-Anbieter-Tracking (Cookiebot, Gorgias, Meta, qpx). Der
+          Assistent ist unser EIGENER Dienst: er setzt im Eltern-Dokument
+          keinen Cookie, liest keinen, und trägt seine Einwilligung selbst IM
+          iframe (Zustimmungs-Screen vor dem ersten Modell-Aufruf, nicht vor
+          dem iframe-Load). Stünde er im Gate, wäre er auf jedem Preview-Host
+          und auf localhost unsichtbar — die Seite liesse sich dann vor dem
+          Go-live nicht prüfen.
+        */}
+        {salesbotAktiv && (
+          <SalesbotWidget origin={data.salesbotWidgetOrigin} nonce={nonce} />
         )}
       </head>
       <body>

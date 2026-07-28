@@ -20,6 +20,24 @@ import chatBotStyles from '~/styles/chat-bot.css?url';
  * neuen Cookies — die R1/R2/R3-Kette hängt pfad-agnostisch im root-Layout
  * (D-006, keine Doppelzählung). TRACKING_COOKIE_NAMES bleibt unverändert.
  */
+
+/**
+ * WIDGET-WEICHE (Segment s05): DIESE Route — und nur sie — fordert den eigenen
+ * Chat-Assistenten an. `app/root.jsx` liest das Flag über `useMatches()` und
+ * rendert daraufhin den Loader im <head>, während es den Gorgias-Chat-Loader
+ * für genau diesen Seitenaufruf auslässt (ein Chat-Starter, nicht zwei).
+ *
+ * WARUM HIER UND NICHT IN root.jsx: die Route weiss selbst, was sie braucht —
+ * root.jsx bleibt frei von hartcodierten Pfaden, und die Weiche greift schon
+ * beim SSR (der Loader steht auf fremden Seiten gar nicht im HTML) UND bei
+ * Client-Navigation (Matches sind immer aktuell, der Root-Loader wäre es
+ * wegen `shouldRevalidate: false` nicht).
+ *
+ * Abschalten des Assistenten ohne Code-Änderung:
+ * `PUBLIC_SALESBOT_WIDGET_ORIGIN=off` — dann kehrt hier der Gorgias-Chat
+ * zurück, die Seite bleibt also nie ohne Chat.
+ */
+export const handle = {salesbotWidget: true};
 export function links() {
   return [
     {rel: 'stylesheet', href: lpTokenStyles},
