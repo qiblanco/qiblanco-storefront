@@ -2,6 +2,7 @@ import {ServerRouter} from 'react-router';
 import {isbot} from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
+import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
 
 /**
  * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
@@ -82,6 +83,10 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://gorgias-convert.com',
       'https://connect.facebook.net',
+      // Eigener Sales-Chat-Assistent (s05): das Loader-Skript
+      // <origin>/embed/qiblanco-widget.js. STELLE 1 VON 2 — die zweite ist
+      // frame-src weiter unten. Fehlt eine davon, blockt die CSP STILL.
+      ...salesbotWidgetCspQuellen(context.env),
     ],
     styleSrc: [
       "'self'",
@@ -103,6 +108,10 @@ export default async function handleRequest(
       'https://consentcdn.cookiebot.com',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
+      // Eigener Sales-Chat-Assistent (s05): das iframe, das der Loader auf
+      // <origin>/widget/embed öffnet. STELLE 2 VON 2 — ohne diese Zeile lädt
+      // das Loader-Skript, das iframe bleibt aber leer, und zwar STILL.
+      ...salesbotWidgetCspQuellen(context.env),
     ],
     connectSrc: [
       "'self'",
