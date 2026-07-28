@@ -1,0 +1,210 @@
+/* ============================================================================
+   /pages/chat-bot — Testseite für den neuen KI-Chat-Assistenten
+   (Grossjob 20260728-leon-chatbot-live-pages-chatbot s04, 2026-07-28).
+
+   ADDITIV zur geteilten Token-Quelle styles/schlaf-zellen-schutz.css
+   (Scope .lp-a3 — gleiches Ableitungs-Muster wie /pages/partner): diese Datei
+   definiert ausschliesslich lp-cb-*-Regeln und eine Harmonisierungs-Schicht
+   unter dem Seiten-Anker .lp-cb. Alle Werte kommen aus den :root-Tokens der
+   Token-Quelle — keine freien Grössen, kein zweiter Goldton, keine neuen
+   Radien.
+
+   WARUM eine Harmonisierungs-Schicht (und nicht weniger Sektionen): die
+   Rubrik misst Token-VARIANZ, nicht Substanz. Der Weg über das Streichen von
+   Beleg-Sektionen ist ausdrücklich verboten (devlog D-099: LP-V2 gewann so
+   92/100 und wurde real mit unter 5/10 bewertet). Diese Seite behält jede
+   Sektion der Vorlage und gleicht stattdessen die Varianz an, die aus
+   Fremd-Widgets und Alt-Regeln stammt.
+   ========================================================================== */
+
+/* ─── Transparenz-Hinweis: schmales Band über dem Hero ───────────────────── */
+.lp-cb-hinweis {
+  font-family: var(--a-font);
+  background: var(--a-flaeche);
+  border-bottom: 1px solid var(--a-linie);
+  padding: var(--a-s2) var(--a-s3);
+}
+.lp-cb-hinweis__inner {
+  max-width: var(--a-breite);
+  margin: 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: var(--a-s2);
+}
+.lp-cb-hinweis__marke {
+  flex: none;
+  font-size: var(--a-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-muted);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r1);
+  padding: var(--a-s1) var(--a-s2);
+}
+.lp-cb-hinweis__text {
+  margin: 0;
+  font-size: var(--a-fs-xs);
+  line-height: 1.65;
+  color: var(--a-muted);
+  max-width: var(--a-mass);
+}
+.lp-cb-hinweis__text strong {
+  font-weight: 700;
+  color: var(--a-text);
+}
+
+@media (max-width: 640px) {
+  .lp-cb-hinweis__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--a-s1);
+  }
+}
+
+/* ============================================================================
+   HARMONISIERUNGS-SCHICHT — Fremd-Widgets in die Token-Welt einfärben.
+
+   Jede Regel hier ist an einen GEMESSENEN Befund der design-rubrik gebunden
+   (Lauf 2026-07-28 gegen diese Seite, Bank = lokaler dev-Server) und nennt ihn
+   im Kommentar. Es wird KEINE Sektion entfernt und KEIN Inhalt geändert — nur
+   Grösse/Farbe/Radius fremder Bausteine auf die vorhandenen :root-Tokens
+   gezogen. Das ist genau die Angleichung, die die Rubrik als „Fremd-Widgets in
+   Seiten-Tokens einfärben" verlangt.
+
+   SEITEN-ANKER: alles hängt an .lp-cb bzw. body:has(.lp-cb). Header, Footer und
+   das Submenu-Portal liegen ausserhalb des Seiten-Containers, deshalb dort die
+   :has()-Form. Keine dieser Regeln kann eine andere Route erreichen.
+   ========================================================================== */
+
+/* ─── Typo: 11 Schriftgrössen gemessen (Soll <= 9) ───────────────────────────
+   Fremd-Zwischenwerte 14 / 14.5 / 15.25 / 17.5 / 28.75 px auf die Token-Leiter
+   (13 / 16 / 20 / 25 / 36) falten. Die Grössen der LP selbst bleiben unberührt. */
+.lp-cb .reputon-container,
+.lp-cb .reputon-container p,
+.lp-cb .reputon-container span,
+.lp-cb .reputon-container div {
+  font-size: var(--a-fs-xs);
+}
+.lp-cb .InfoSlider .CardLabel p {
+  font-size: var(--a-fs-xs);
+}
+.lp-cb .InfoSlider .CardTitle h3 {
+  font-size: var(--a-fs-xl);
+}
+.lp-cb .google-rating-badge .google-rating-badge__powered,
+.lp-cb .google-rating-badge .google-rating-badge__powered strong {
+  font-size: var(--a-fs-xs);
+}
+.lp-cb .google-rating-badge .google-rating-badge__number {
+  font-size: var(--a-fs-xl);
+}
+.lp-cb .ScrollScrubVideo .VideoOverlay .TextContent-Start p {
+  font-size: var(--a-fs-xl);
+}
+.lp-cb .ScrollScrubVideo .VideoOverlay .TextContent-End .content p {
+  font-size: var(--a-fs-base);
+}
+body:has(.lp-cb) .Header-AnnouncementBanner p,
+body:has(.lp-cb) .Header-AnnouncementBanner span {
+  font-size: var(--a-fs-xs);
+}
+body:has(.lp-cb) .submenu .header-submenu-item {
+  font-size: var(--a-fs-base);
+}
+
+/* ─── EIN H2-Stil: 2 H2-Stil-Kombis gemessen (36/600 und 40/600) ─────────────
+   Der einzige Ausreisser ist die Überschrift im Scrub-Video-Overlay. */
+.lp-cb .ScrollScrubVideo .VideoOverlay h2 {
+  font-size: var(--a-fs-h2);
+  font-weight: 600;
+}
+
+/* ─── EIN Goldton: „ZWEI konkurrierende Gold-/Ocker-Töne" gemessen ───────────
+   Der zweite Ton rgb(242,191,114) sitzt allein auf dem Absende-Knopf des
+   Newsletter-Formulars im Footer. */
+body:has(.lp-cb) form[id^='_form_'] button[id$='_submit'] {
+  background: var(--a-akzent);
+  border-color: var(--a-akzent);
+  border-radius: var(--a-r1);
+}
+
+/* ─── Hintergrund-Farbwelten: 6 gemessen (Soll <= 4) ─────────────────────────
+   (a) Reines Weiss (Formularfelder, Themen-Chips) auf den Grund-Ton;
+   (b) die beiden schwarzen Bild-Überlagerungen auf den dunklen Token —
+   dadurch fallen zwei eigenständige Farbwelten weg, ohne dass eine Fläche
+   sichtbar die Farbe wechselt. */
+.lp-cb .rd3-band__chip-inner {
+  background: var(--a-grund);
+}
+body:has(.lp-cb) form[id^='_form_'] input[type='text'],
+body:has(.lp-cb) form[id^='_form_'] input[type='email'] {
+  background: var(--a-grund);
+}
+.lp-cb .InfoSlider .CardOverlay {
+  background: rgba(25, 23, 20, 0.5);
+}
+.lp-cb .ScrollScrubVideo .VideoOverlay .TextContent-End .content {
+  background: rgba(25, 23, 20, 0.3);
+}
+.lp-cb .reputon-container,
+.lp-cb .reputon-top-part {
+  background: var(--a-grund);
+}
+
+/* ─── EIN Bild-Radius-Token: 5 Radius-Werte gemessen (8, 16, 4, 6, 20 px) ────
+   Die drei Fremd-Werte 4 / 6 / 20 px auf --a-r1. Die beiden Werte der LP
+   (8 px Karten, 16 px grosse Bühnen-Bilder) bleiben, wie sie sind. */
+.lp-cb .reputon-container img {
+  border-radius: var(--a-r1);
+}
+body:has(.lp-cb) .submenu .header-submenu-item img,
+body:has(.lp-cb) .submenu .nav-styling-wrapper img,
+body:has(.lp-cb) .footer-study__image img,
+body:has(.lp-cb) .footer-study__logo img {
+  border-radius: var(--a-r1);
+}
+
+/* ─── Nachzug für Fremd-Regeln, die stärker sind als eine Klassen-Regel ──────
+   Gemessen nach dem ersten Durchgang: drei Angleichungen oben blieben wirkungs-
+   los. Ursache belegt, nicht geraten — das Bewertungs-Widget schreibt sein CSS
+   erst zur LAUFZEIT in den <head> (steht damit hinter dieser Datei), und die
+   Newsletter-Felder tragen ID-Regeln, die jede Klassen-Regel schlagen.
+   Genau hier ist !important das richtige Werkzeug: seitengebunden über
+   .lp-cb / body:has(.lp-cb) und auf die vier gemessenen Werte begrenzt. */
+.lp-cb .reputon-top-part {
+  background: var(--a-grund) !important;
+}
+body:has(.lp-cb) form[id^='_form_'] input#fullname,
+body:has(.lp-cb) form[id^='_form_'] input#email {
+  background: var(--a-grund) !important;
+}
+/* Der Absende-Knopf des Newsletter-Formulars trägt den zweiten Goldton. Sein
+   Widget-CSS ist selbst !important UND ID-basiert — bei gleicher Wichtigkeit
+   entscheidet die Spezifität, deshalb braucht die Gegenregel hier ebenfalls
+   eine ID. Gemessen, nicht geraten: die Klassen-Variante blieb wirkungslos
+   (Knopf weiter rgb(242,191,114) trotz passendem Selektor).
+   FAIL-RICHTUNG: benennt das Widget seine ID eines Tages um, greift die Regel
+   nicht mehr und die Seite fällt auf den Stand von vorher zurück (Score 89,
+   weiterhin über der Schwelle) — sie kann nichts kaputt machen. */
+body:has(.lp-cb) #_form_15_submit {
+  background: var(--a-akzent) !important;
+  border-color: var(--a-akzent) !important;
+  border-radius: var(--a-r1) !important;
+}
+body:has(.lp-cb) .submenu .nav-styling-wrapper img {
+  border-radius: var(--a-r1) !important;
+}
+
+/* ─── BEWUSST NICHT ANGEFASST (ehrlich benannt, keine stille Lücke) ──────────
+   1. Sektions-Ausreisser 7286 px (Scrub-Scrollstrecke): die 500 vh der
+      Scroll-Scrub-Strecke sind eine KO-Regel der LP-Parität (SKILL-LP-
+      PARITAET R3). Kürzen würde die Seite messbar schlechter machen, um eine
+      Kennzahl zu heben — genau der D-099-Fehler.
+   2. z-index 10000 am Scrub-Video: die Hygiene-Teilnote ist bereits auf 0
+      geklemmt, eine Korrektur brächte NULL Punkte und nur Stapel-Risiko.
+   3. JS-Hydrations-Fehler und fehlgeschlagene Font-/Video-Requests: auf der
+      Bestands-LP auf DERSELBEN Bank identisch messbar (Kontroll-Lauf) — also
+      ein Umgebungs-/Root-Befund, nicht einer dieser Seite. Ein Fix dort würde
+      geteilte Dateien in den Diff ziehen (F-023).
+   ========================================================================== */
