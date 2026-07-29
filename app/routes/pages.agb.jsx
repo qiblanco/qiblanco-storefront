@@ -368,8 +368,57 @@ export default function AGBPage() {
         </p>
       </section>
 
+      <section style={{marginBottom: '2rem'}}>
+        <h2>§ 12 Zulässige Nutzung der Website; automatisierte Abfragen</h2>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+          (1) Diese Bestimmungen gelten für jede Nutzung dieser Website, unabhängig davon, ob
+          ein Kundenkonto besteht oder ein Nutzer angemeldet ist.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (2) Die Website darf zum Zweck der Information über unser Angebot sowie zur Anbahnung
+          und Abwicklung von Bestellungen genutzt werden. Zulässig sind dabei die üblichen
+          Funktionen eines Webbrowsers.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (3) Ohne unsere vorherige schriftliche Zustimmung ist es untersagt,
+        </p>
+        <ul style={{marginTop: '0.5rem', lineHeight: '1.8', paddingLeft: '1.5rem'}}>
+          <li>
+            a) Inhalte der Website mittels automatisierter Verfahren systematisch auszulesen, zu
+            vervielfältigen, zu speichern oder abzurufen (insbesondere Scraping, Crawling,
+            Spidering, automatisierte Screenshots oder vergleichbare Verfahren),
+          </li>
+          <li>
+            b) wesentliche Teile der auf der Website bereitgestellten Datenbank zu entnehmen oder
+            weiterzuverwenden (§ 87b UrhG),
+          </li>
+          <li>
+            c) Inhalte der Website als Trainingsmaterial für Systeme der künstlichen Intelligenz
+            oder des maschinellen Lernens zu verwenden,
+          </li>
+          <li>
+            d) technische Schutz-, Zugangs- oder Begrenzungsmaßnahmen zu umgehen, zu deaktivieren
+            oder zu stören,
+          </li>
+          <li>
+            e) die Website in einer Weise abzufragen, die geeignet ist, deren Verfügbarkeit oder
+            Geschwindigkeit für andere Nutzer zu beeinträchtigen.
+          </li>
+        </ul>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (4) Nicht von Absatz 3 erfasst sind: der Abruf durch allgemeine Suchmaschinen im Rahmen
+          der in <a href="/robots.txt">/robots.txt</a> erklärten Vorgaben sowie der Abruf durch
+          einen Assistenzdienst, den ein Nutzer im Einzelfall selbst zur Beantwortung seiner
+          eigenen Anfrage veranlasst.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (5) Wir behalten uns vor, bei Verstößen gegen Absatz 3 den Zugang zur Website technisch
+          zu beschränken oder zu sperren. Weitergehende gesetzliche Ansprüche bleiben unberührt.
+        </p>
+      </section>
+
       <section>
-        <h2>§ 12 Schlussbestimmungen</h2>
+        <h2>§ 13 Schlussbestimmungen</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           (1) Sollten eine oder mehrere Bestimmungen dieser AGB unwirksam sein oder werden, wird
           dadurch die Wirksamkeit der anderen Bestimmungen im Übrigen nicht berührt.

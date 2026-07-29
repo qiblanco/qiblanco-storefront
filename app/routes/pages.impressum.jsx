@@ -92,6 +92,22 @@ export default function ImpressumPage() {
       </section>
 
       <section style={{marginBottom: '2rem'}}>
+        <h2>Urheberrecht und Nutzungsvorbehalt</h2>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+          Alle Inhalte dieser Website – insbesondere Texte, Bilder, Videos, Grafiken,
+          Produktbeschreibungen und deren Anordnung – sind urheberrechtlich geschützt. Die
+          Qi Blanco UG (haftungsbeschränkt) behält sich eine Nutzung ihrer Inhalte für
+          kommerzielles Text- und Data-Mining im Sinne von § 44b UrhG ausdrücklich vor.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          Dieser Nutzungsvorbehalt wird zusätzlich in maschinenlesbarer Form erklärt,
+          insbesondere über die Datei <code>/.well-known/tdmrep.json</code> (W3C TDM
+          Reservation Protocol), den HTTP-Header <code>tdm-reservation: 1</code> sowie die
+          Datei <a href="/robots.txt">/robots.txt</a>.
+        </p>
+      </section>
+
+      <section style={{marginBottom: '2rem'}}>
         <h2>Verbraucherstreitbeilegung</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
