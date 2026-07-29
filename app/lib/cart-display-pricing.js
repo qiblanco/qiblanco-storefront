@@ -1,8 +1,16 @@
 const SALE_CACAO_HANDLES = new Set(['37cr378n', 'aw783hfn', 'awcr37shyj']);
+// Lebensmittel-Satz statt Regelsatz. Alle Cacao-Produkte liegen in der
+// Shopify-Collection Zeremonie Kakao (524038045964), die den 7%-Override
+// trägt; taxable/tax_code/product_type sind identisch, die Collection ist
+// das einzige steuerlich differenzierende Merkmal. Belegt an realen
+// Bestellungen: SKU 6666/6668 mit rate 0.07 DE MwSt (41 Positionen).
+// Job 20260729-cacao-mwst-anzeige-sku6667-klaerung.
 const CACAO_HANDLES = new Set([
   ...SALE_CACAO_HANDLES,
   'crystal-cacao-awake',
   'crystal-cacao-create',
+  'crystal-cacao-adfiefiale',
+  'crystal-cacao-angebot',
 ]);
 
 const SALE_CACAO_UNIT_GROSS_PRICE = 76;
