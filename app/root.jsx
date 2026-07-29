@@ -241,6 +241,18 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/*
+          Nutzungsvorbehalt / TDM reservation (W3C TDMRep), Job 20260729-anti-
+          scraping-s04. Dritter Träger neben /.well-known/tdmrep.json und
+          robots.txt (beide seit PR #141 live) und Gegenstück zur Prosa-Klausel
+          im Impressum (PR #142), die diese maschinenlesbare Erklärung
+          ausdrücklich NENNT — Deklaration muss dem realen Bestand entsprechen.
+          Der HTML-meta-Träger war im Konzept mitgeplant, fehlte aber real:
+          das Live-HTML hatte 0 Treffer. Bewusst hier und NICHT als sitewide
+          HTTP-Header: der gehörte nach entry.server.jsx (nicht in ALLOW_GLOB)
+          und ließe sich ohne Oxygen-Preview nicht verifizieren.
+        */}
+        <meta name="tdm-reservation" content="1" />
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
