@@ -1,0 +1,347 @@
+/* ============================================================================
+   /pages/uebersicht — ÜBERSICHT aller Seiten (2026-07-30).
+   Auftrag 20260728-pages-uebersicht-linkliste-live-noindex, Segment s02.
+
+   Token-System abgeleitet aus dem Referenz-Rezept der LP A
+   (styles/schlaf-zellen-schutz.css, design-rubrik 94/100): warmes
+   Neutral-Kontinuum („Papier statt Bildschirm"), EIN Gold-Akzent, 8pt-Grid,
+   modulare Typo-Skala. Leitidee des Design-Meister-Briefs, hier auf eine
+   NAVIGATIONS-Seite übertragen statt auf eine Verkaufsseite: die Aufgabe ist
+   Lesbarkeit einer langen Liste, nicht Überzeugung. Deshalb sind die drei
+   Farb-Akte flach (Grund / Fläche / Dunkel nur im Kopf), und der Gold-Akzent
+   liegt ausschließlich auf HANDLUNG (Hover/Fokus, aktiver Sprunganker) und
+   BEWEIS (Marker „Ads aktiv") — nie auf Dekoration.
+
+   REGEL DIESES FILES: alle Größen/Farben/Radien kommen aus dem Token-Block
+   unten. Außerhalb des Blocks erfindet KEINE Regel freie Werte.
+
+   SCOPE: .ue — und zwar FLACH. Jede Regel selektiert eine .ue-*-Klasse direkt,
+   nicht als Nachfahre von .ue. Grund ist F-009 (homepage-bauer FEHLER-DB):
+   dort trug der Wrapper `.lp-a3` und `.shopq` am SELBEN Element, das
+   Stylesheet prefixte aber `.lp-a3 .shopq` (Nachfahre) — 100 % der Regeln
+   liefen tot, und design-rubrik gab trotzdem 92/100, weil die Rubrik die
+   gerenderte Fläche misst, nicht ob eine Datei greift. Flache Klassen können
+   diesen Fehler baulich nicht haben. Die Tokens hängen an .ue und erreichen
+   alle Nachfahren per Vererbung.
+   ========================================================================== */
+
+.ue {
+  /* Schrift: EINE ruhige Sans (Body) + EINE Monospace für Pfade.
+     Pfade sind Daten — Monospace macht Segmentgrenzen lesbar. */
+  --ue-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+  --ue-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Typo-Skala — GENAU 6 Stufen auf einer echten modularen Leiter.
+     Gemessen und nachgezogen (Iteration 1 -> 2): die erste Fassung trug eine
+     eigene Monospace-Größe 14px direkt neben 13px (Verhältnis 1,08) und sprang
+     dann von 18px auf 30px (1,67). Beide Nachbarschaften liegen ausserhalb des
+     Skalen-Fensters der Rubrik — Befund „Schriftgroessen folgen keiner
+     modularen Skala". Jetzt: 13 / 16 / 18 / 20 / 25 / 39, wirksame
+     Nachbar-Verhältnisse 1,23 · 1,13 · 1,39. Die Pfade nutzen die Body-Größe;
+     Monospace ist eine FAMILIE, sie braucht keine eigene Stufe.
+     Untergrenze 13px liegt über mobile_font_px_min (12). */
+  --ue-fs-xs: 0.8125rem;   /* 13px — Marker, Meta */
+  --ue-fs-base: 1rem;      /* 16px — Body UND Pfade */
+  --ue-fs-md: 1.125rem;    /* 18px — Bereichs-Beschreibung */
+  --ue-fs-lg: 1.25rem;     /* 20px — Kopf-Lead */
+  --ue-fs-h2: clamp(1.5rem, 1.1rem + 1.4vw, 1.5625rem);   /* EIN H2-Stil */
+  --ue-fs-h1: clamp(1.9375rem, 1.4rem + 2.4vw, 2.4375rem);
+
+  /* Spacing: 8pt-Grid, keine Zwischenwerte */
+  --ue-s1: 8px;  --ue-s2: 16px; --ue-s3: 24px; --ue-s4: 32px;
+  --ue-s6: 48px; --ue-s8: 64px; --ue-s12: 96px; --ue-takt: 104px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --ue-grund: #faf9f5;
+  --ue-flaeche: #f4f0e9;
+  --ue-dunkel: #191714;
+  --ue-text: #2c2a26;
+  --ue-text-hell: #f4f0e9;
+  --ue-muted: #6b665d;
+  --ue-muted-hell: rgba(244, 240, 233, 0.72);
+  --ue-akzent: #c9a14b;             /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --ue-linie: rgba(44, 42, 38, 0.12);
+  --ue-linie-hell: rgba(244, 240, 233, 0.2);
+
+  /* EIN Radius-Token (Kreise/0 sind keine zweite Größe, sondern Sonderfälle) */
+  --ue-r: 8px;
+
+  /* Layout: eine Lesebreite, ein Maß */
+  --ue-breite: 1000px;
+  --ue-mass: 68ch;
+
+  font-family: var(--ue-font);
+  font-size: var(--ue-fs-base);
+  line-height: 1.6;
+  color: var(--ue-text);
+  background: var(--ue-grund);
+}
+
+.ue *,
+.ue *::before,
+.ue *::after { box-sizing: border-box; }
+
+/* ─── Sektions-Takt: 96 Desktop / 64 Mobil, EIN Container ─────────────────── */
+.ue-abschnitt {
+  margin: 0;
+  padding: var(--ue-takt) var(--ue-s3);
+  background: var(--ue-grund);
+  max-width: none;
+}
+.ue-innen {
+  width: 100%;
+  max-width: var(--ue-breite);
+  margin: 0 auto;
+}
+
+/* Farb-Akt 1: der Kopf steht dunkel, damit die lange helle Liste danach
+   ruhig wirkt. Danach bleibt die Seite bewusst EINFARBIG hell — eine
+   Navigationsliste braucht keine Farb-Dramaturgie, sie braucht Ruhe. */
+.ue-kopf {
+  background: var(--ue-dunkel);
+  color: var(--ue-text-hell);
+  padding-top: var(--ue-s8);
+  padding-bottom: var(--ue-s8);
+}
+.ue-kopf h1 {
+  margin: 0 0 var(--ue-s3);
+  font-family: var(--ue-font);
+  font-size: var(--ue-fs-h1);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ue-text-hell);
+}
+.ue-lead {
+  margin: 0;
+  max-width: var(--ue-mass);
+  font-size: var(--ue-fs-lg);
+  line-height: 1.55;
+  color: var(--ue-muted-hell);
+}
+.ue-stand {
+  margin: var(--ue-s3) 0 0;
+  max-width: var(--ue-mass);        /* gemessen: ohne Maß 148 Zeichen je Zeile */
+  font-size: var(--ue-fs-xs);
+  color: var(--ue-muted-hell);
+}
+
+/* ─── Sprunganker: 6 Bereiche auf einen Blick ─────────────────────────────── */
+.ue-anker {
+  background: var(--ue-flaeche);
+  padding-top: var(--ue-s4);
+  padding-bottom: var(--ue-s4);
+  border-bottom: 1px solid var(--ue-linie);
+}
+.ue-anker-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ue-s1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ue-anker-eintrag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--ue-s1);
+  padding: var(--ue-s1) var(--ue-s2);
+  border: 1px solid var(--ue-linie);
+  border-radius: var(--ue-r);
+  background: var(--ue-grund);
+  color: var(--ue-text);
+  font-size: var(--ue-fs-xs);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+/* HANDLUNG -> Gold. Der einzige Ort neben Hover/Fokus und „Ads aktiv". */
+.ue-anker-eintrag:hover,
+.ue-anker-eintrag:focus-visible {
+  border-color: var(--ue-akzent);
+  color: var(--ue-akzent);
+  outline: none;
+}
+.ue-anker-zahl {
+  color: var(--ue-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Bereich: EIN H2-Stil, eine Beschreibung, dann die Liste ─────────────── */
+.ue-bereich { scroll-margin-top: var(--ue-s6); }
+.ue-bereich:nth-of-type(even) { background: var(--ue-flaeche); }
+
+.ue h2 {
+  margin: 0 0 var(--ue-s1);
+  font-family: var(--ue-font);
+  font-size: var(--ue-fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ue-text);
+  text-align: left;
+}
+.ue-bereich-text {
+  margin: 0 0 var(--ue-s6);
+  max-width: var(--ue-mass);
+  font-size: var(--ue-fs-md);
+  line-height: 1.55;
+  color: var(--ue-muted);
+}
+
+/* ─── Die Liste: Links UNTEREINANDER, eine Zeile je Seite ─────────────────── */
+.ue-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ue-linie);
+}
+.ue-zeile { border-bottom: 1px solid var(--ue-linie); }
+
+.ue-link {
+  /* Zeilen-Dichte: eine Index-Liste wird GESCANNT, nicht gelesen — 8px statt
+     16px vertikal machen 72 Einträge in einem Bereich überblickbar statt zum
+     Scrollband. Auf Mobil bleibt die grössere Trefferfläche (s. Media-Query). */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ue-s1) var(--ue-s2);
+  padding: var(--ue-s1);
+  color: var(--ue-text);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.ue-link:hover,
+.ue-link:focus-visible {
+  background: rgba(201, 161, 75, 0.07);   /* derselbe Akzent, nur als Fläche */
+  outline: none;
+}
+.ue-link:focus-visible { box-shadow: inset 3px 0 0 var(--ue-akzent); }
+
+.ue-pfad {
+  font-family: var(--ue-mono);
+  font-size: var(--ue-fs-base);
+  color: var(--ue-text);
+  word-break: break-word;
+}
+.ue-link:hover .ue-pfad,
+.ue-link:focus-visible .ue-pfad { text-decoration: underline; }
+
+.ue-titel {
+  /* Gemessen Iteration 1: mit `flex: 1 1 22ch` wuchs der Titel auf 757-783px
+     = ~91 Zeichen je Zeile. Er wird jetzt gedeckelt statt gestreckt — der Pfad
+     ist die Hauptinformation, der Shop-Titel die Beifügung. */
+  flex: 0 1 auto;
+  max-width: 48ch;
+  min-width: 0;
+  font-size: var(--ue-fs-base);
+  color: var(--ue-muted);
+}
+
+/* ─── Marker: dezent. Nur „Ads aktiv" darf Gold tragen (BEWEIS). ─────────── */
+.ue-marker {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--ue-s1);
+  border: 1px solid var(--ue-linie);
+  border-radius: var(--ue-r);
+  background: transparent;
+  font-size: var(--ue-fs-xs);
+  line-height: 1.9;
+  color: var(--ue-muted);
+  white-space: nowrap;
+}
+.ue-marker--aktiv {
+  border-color: var(--ue-akzent);
+  color: var(--ue-akzent);
+}
+
+.ue-fuss {
+  padding-top: var(--ue-s8);
+  padding-bottom: var(--ue-s12);
+  background: var(--ue-flaeche);
+  border-top: 1px solid var(--ue-linie);
+}
+.ue-fuss p {
+  margin: 0;
+  max-width: var(--ue-mass);
+  font-size: var(--ue-fs-xs);
+  color: var(--ue-muted);
+}
+
+/* ─── Mobil: Sektions-Takt 64, sonst identische Tokens ───────────────────── */
+@media (max-width: 749px) {
+  .ue-abschnitt { padding: var(--ue-s8) var(--ue-s2); }
+  .ue-link { padding: var(--ue-s2) var(--ue-s1); }   /* Trefferfläche vor Dichte */
+  .ue-kopf { padding-top: var(--ue-s6); padding-bottom: var(--ue-s6); }
+  .ue-anker { padding-top: var(--ue-s3); padding-bottom: var(--ue-s3); }
+  .ue-titel { flex-basis: 100%; }
+}
+
+/* ─── Fremdflächen in die Token-Welt holen ────────────────────────────────
+   Header/Footer der Storefront bringen einen ZWEITEN Goldton (app.css
+   --color-accent-primary, redesign-3themen --rd3-gold) und eigene
+   Schriftgrößen mit. Beides würde auf DIESER Seite als zweiter Akzent und
+   als Skalen-Ausreißer erscheinen. Dieselbe Technik wie im Referenz-Rezept
+   (schlaf-zellen-schutz.css): ein body:has()-Layer, der nur greift, solange
+   diese Seite im Dokument steht. Keine Bestandsdatei wird angefasst.
+
+   WARUM HIER LITERALE STATT var(): `body` liegt AUSSERHALB von .ue, die Tokens
+   sind dort nicht vererbt — ein var(--ue-akzent) wäre hier leer und die Regel
+   still wirkungslos (dieselbe Klasse stiller Fehler wie F-009). Die Werte sind
+   identisch mit dem Token-Block oben; es sind keine freien Werte. */
+body:has(.ue) {
+  background: #faf9f5;
+  --color-accent-primary: #c9a14b;
+  --rd3-gold: #c9a14b;
+}
+body:has(.ue) .footer,
+body:has(.ue) footer {
+  background: #191714;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+}
+/* Footer auf die Body-Größe und auf ein Lese-Maß.
+   Gemessen Iteration 1: die Footer-Absätze liefen 1216px breit bei 13px
+   Schrift = ~180 Zeichen je Zeile (Soll ≤ 75). Sie waren 5 der 9 zu langen
+   Textblöcke der Seite. Beides ist hier seitenlokal korrigiert — die
+   Bestandsdatei des Footers wird nicht angefasst. */
+body:has(.ue) .footer p,
+body:has(.ue) .footer a,
+body:has(.ue) .footer li,
+body:has(.ue) .footer span { font-size: 1rem; }
+body:has(.ue) .footer p { max-width: 68ch; }
+body:has(.ue) .footer .footer-heading { font-size: 1.125rem; }
+body:has(.ue) .footer .btn--primary,
+body:has(.ue) .footer button[type='submit'],
+body:has(.ue) .footer input[type='submit'] {
+  background: #c9a14b;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+body:has(.ue) .footer input[type='email'],
+body:has(.ue) .footer input[type='text'] {
+  border-radius: 8px;
+  font-size: 1rem;
+}
+/* NEWSLETTER-BUTTON = der zweite Goldton. Gemessen Iteration 1+2: das einzige
+   Element mit rgb(242,191,114) auf dieser Seite ist `button._submit`
+   („Jetzt anmelden") im Footer-Newsletter. Gesetzt wird er von einer
+   INJIZIERTEN Vendor-Regel `#_form_<zufalls-id> ._submit { background:#f2bf72
+   !important }` — die trägt eine ID, also verliert jede reine Klassen-Regel
+   dagegen, auch mit !important. Deshalb derselbe Weg wie in den Schwester-LPs
+   (schlaf-zellen-schutz-v2-18ef.css, partner.css): über die STABILE ID
+   #qi-newsletter gehen (gleiche ID-Gewichtung, eine Klasse mehr => gewinnt).
+   Die Form-ID selbst ist bei jedem Render neu und darf NICHT adressiert
+   werden. */
+body:has(.ue) #qi-newsletter ._submit,
+body:has(.ue) #qi-newsletter button,
+body:has(.ue) #qi-newsletter input[type='submit'],
+body:has(.ue) ._form_15 button,
+body:has(.ue) ._form_15 ._submit,
+body:has(.ue) ._form_15 input[type='submit'] {
+  background: #c9a14b !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+}
+body:has(.ue) header img { border-radius: 8px; }
