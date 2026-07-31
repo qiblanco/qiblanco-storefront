@@ -16,6 +16,7 @@ import {
   MmGrenzen,
 } from '~/components/reusables/MmKit';
 import {useGoogleRating} from '~/lib/googleRating';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 
 /**
  * MmSoWirktWasser — Composer des Trust-Ketten-Hubs „So wirkt kohärentes Wasser".
@@ -219,6 +220,17 @@ export function MmSoWirktWasser({products}) {
           'Es wirkt nicht „stärker", je mehr du daran glaubst — die Wirkung ist wahrnehmungs-unabhängig.',
         ]}
       />
+
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon wie in den Geschwister-Mm-Seiten (mm-bahn-Muster),
+          Überschrift = Christian-Ergänzung; Zahl claims-SSoT-kanonisch. */}
+      <MmProblem
+        variante="flaeche"
+        dataSection="mm-mechanismus-reviews-intro"
+        title="Über 14.000 zufriedene Kunden – entscheide dich jetzt!"
+        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
+      />
+      <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-mechanismus-trust"

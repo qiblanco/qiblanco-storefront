@@ -14,6 +14,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import { useState } from 'react';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {QiBracelet} from '~/components/product-pages/QiBracelet';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 /**
@@ -157,6 +158,9 @@ export default function Product() {
       />
     </div>
       <QiBracelet /> 
+    {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+        Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+    <GoogleRezensionenBereich />
     </>
   );
 }
