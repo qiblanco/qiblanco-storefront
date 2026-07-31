@@ -4423,3 +4423,123 @@ ul.kakao-children li {
   cursor: grabbing;
   user-select: none;
 }
+
+/* ═══ DIE NAHT ZUR CLAUDE-ANSICHT DES ASSISTENTEN ═══════════════════════════
+   Job 20260731-claude-ansicht-header-dropdown-docked-fix.
+   Christian, 2026-07-30/31: "In der neuen Claude-Ansicht (docked rechts) passt
+   sich der Header oben — der Dropdown mit der Menueleiste — nicht an das
+   schmalere docked-Format an. Man sieht nur einen Teil davon."
+
+   ── WAS HIER PASSIERT UND WARUM ES NICHT DER ASSISTENT LOEST ──────────────
+   Der Assistent (qi-salesbot) laeuft als cross-origin iframe. Steht er als
+   Claude-Ansicht, legt sein Loader eine 520 px breite Spalte an den rechten
+   Bildrand und gibt dem <html> DIESER Seite `padding-right: 520px`. Der
+   normale Seiteninhalt reflowt dadurch sauber nach links.
+
+   `position: fixed`-Elemente folgen einem Innenabstand am <html> NICHT — ihr
+   Bezugsrahmen ist der Viewport. Genau deshalb blieb unser Kopf 1440 px breit,
+   waehrend die Seite darunter nur noch 920 px hatte. GEMESSEN am 2026-07-31
+   live an /pages/chat-bot (1440x900, Claude-Ansicht offen):
+
+     .header-wrapper   x=0    w=1440  ->  520 px unter dem Panel
+     .header           x=36   w=1368  ->  484 px unter dem Panel
+     .header-ctas      x=1346 w=42    ->  VOLLSTAENDIG verdeckt (Warenkorb,
+                                          Burger — nicht sicht-, nicht klickbar)
+     Menuepunkt "Mehr"        right=1028 -> ganz weg
+     Menuepunkt "Online Kurse" right=934 -> angeschnitten
+     .submenu (Mega-Menue)    w=1440, Inhalt bis x=1042 -> 122 px verdeckt
+                                          (bei 1280 px Wirt: 202 px)
+
+   Der Loader KANN das nicht selbst richten: er kennt fremdes Layout nicht und
+   duerfte fremde fixe Elemente nicht raten (ausformuliert in qi-salesbot
+   src/lib/docked.ts, "Drei Grenzen", Punkt (a)). Er stellt stattdessen zwei
+   Signale am <html> bereit — die Klasse `qb-chat-docked` und die Variable
+   `--qb-chat-dock-breite` —, und DAS HIER ist der vorgesehene Verbraucher.
+   Der Vorgaenger-Job hat diese Naht ausdruecklich offen hinterlassen.
+
+   ── WARUM ES NICHT BEIM VERSCHMAELERN BLEIBT ──────────────────────────────
+   Ein 520 px schmalerer Kopf haette die Menueleiste bei kleineren Schirmen
+   nur aus dem Panel heraus in den Ueberlauf geschoben: bei 1024 px Wirt
+   bleiben 504 px Seitenflaeche, die Desktop-Navigation braucht rund 731.
+
+   Deshalb wird die Seitenflaeche auf die EIGENEN Umbruchpunkte dieser Datei
+   abgebildet, statt neue Zahlen zu erfinden — die Seite soll sich verhalten
+   wie ihre TATSAECHLICHE Breite, nicht wie der Viewport:
+
+     Seitenflaeche >= 1024 px  ->  volle Desktop-Navigation   (ab Wirt 1544)
+     Seitenflaeche  750-1023   ->  Tablet-Rezept dieser Datei (Wirt 1270-1543)
+     Seitenflaeche  <  750 px  ->  Burger dieser Datei        (Wirt <= 1269)
+
+   Die Wirt-Kanten sind reine Addition: 1269 = 749 + 520, 1543 = 1023 + 520.
+   Die 520 ist DOCK_BREITE aus qi-salesbot/src/lib/docked.ts. Media-Queries
+   koennen keine Custom-Property lesen, diese beiden Zahlen sind deshalb die
+   EINZIGE harte Kopplung an jenen Wert — qi-salesbot/bin/kopf-naht-probe
+   prueft sie (Block "naht") und wird rot, wenn dort jemand die Spaltenbreite
+   aendert, statt hier still falsch umzubrechen.
+
+   ── RUECKBAU ──────────────────────────────────────────────────────────────
+   Jede Regel haengt an `html.qb-chat-docked`. Die Klasse setzt ausschliesslich
+   der Loader und nur, solange die Spalte steht. Im Overlay-Zustand (der
+   Umschalt-Knopf im Kopf des Chats) und auf dem Handy (dort gibt es die
+   Claude-Ansicht baulich nicht) faellt dieser ganze Block ersatzlos weg — der
+   Kopf ist dann Byte fuer Byte der Bestand. Ein Kill-Schalter ist deshalb
+   nicht noetig: `CHAT_DOCKED=off` in qi-salesbot/config/docked.conf nimmt
+   Spalte, Knopf UND diesen Block gemeinsam zurueck.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Der Kopfbalken endet an der Panel-Kante statt am Bildrand.
+      `width` und nicht `right`: der Balken setzt `left: 0` UND `width: 100%`
+      — bei gesetzter Breite bliebe ein `right` wirkungslos. Fuer ein
+      fixiertes Element rechnet `100%` gegen den Viewport, die Rechnung geht
+      also gegen dieselbe Groesse, die auch das Panel belegt. */
+html.qb-chat-docked .header-wrapper {
+  width: calc(100% - var(--qb-chat-dock-breite, 0px));
+}
+
+/* 2. Das Mega-Menue. Es haengt per Portal am <body> und traegt seine Breite
+      inline (`width: 100vw`) — dagegen kommt nur `!important`, und weil die
+      Bestandsregel `.submenu` ihre Breite ebenfalls mit `!important` setzt,
+      entscheidet hier die hoehere Spezifitaet, nicht die Reihenfolge. */
+html.qb-chat-docked .submenu {
+  width: calc(100% - var(--qb-chat-dock-breite, 0px)) !important;
+}
+
+/* 3. Warenkorb-/Menue-Schubfach. Es ist der einzige Wirt-Bereich, den man
+      erst SEHEN kann, seit Regel 1 den Warenkorb-Knopf wieder freilegt —
+      ohne diese Zeile faehrt es genau ueber den Chat. Bezug ist der
+      Bestandswert `right: 25px` aus dem 1024er-Block weiter oben. */
+html.qb-chat-docked .overlay aside {
+  right: calc(25px + var(--qb-chat-dock-breite, 0px));
+}
+
+/* 4. Seitenflaeche 750-1023 px: das Tablet-Rezept dieser Datei
+      (@media 750-1023: gap 0.5rem, Schrift 0.85rem). Die Schriftgroesse
+      braucht hier `!important`, weil `.header-menu-item` seine 1rem bereits
+      mit `!important` setzt — dieselbe Falle, an der die Tablet-Regel oben
+      bis heute wirkungslos bleibt. */
+@media (min-width: 1270px) and (max-width: 1543px) {
+  html.qb-chat-docked .header-menu-desktop {
+    gap: 0.5rem;
+    margin-left: 1rem;
+  }
+  html.qb-chat-docked .header-menu-desktop .header-menu-item,
+  html.qb-chat-docked .header-menu-desktop p.header-menu-item {
+    font-size: 0.85rem !important;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+  }
+}
+
+/* 5. Seitenflaeche unter 750 px: der Burger dieser Datei. Der Knopf steht
+      ohnehin im Markup (`.header-menu-mobile-toggle`) und ist oberhalb 48em
+      nur ausgeblendet — es entsteht also KEIN zweiter Navigations-Bau,
+      sondern der bestehende wird sichtbar gemacht. */
+@media (max-width: 1269px) {
+  html.qb-chat-docked .header-menu-desktop {
+    display: none;
+  }
+  html.qb-chat-docked .header-menu-mobile-toggle {
+    display: inline-flex;
+  }
+}
+/* ═══ Ende Naht zur Claude-Ansicht ═══════════════════════════════════════ */
