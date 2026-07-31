@@ -534,17 +534,36 @@ aside h3 {
   text-decoration: none;
   background: #000000;
 }
+/* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
+   wrap happens cleanly between them, never mid-phrase. */
+.Header-AnnouncementBanner .banner-line {
+  white-space: nowrap;
+}
 @media (max-width: 749px) {
+  /* No ellipsis truncation: the units wrap as whole, centered lines. The
+     textual " - " separator is desktop-only; column-gap spaces the units
+     when they still share one line. */
   .Header-AnnouncementBanner a p {
     font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.4em;
+    row-gap: 0.1em;
+    line-height: 1.45;
     max-width: 100%;
-    display: block;
+  }
+  .Header-AnnouncementBanner .banner-offer-sep {
+    display: none;
   }
   .Header-AnnouncementBanner a {
     padding: 0.5rem 0.75rem;
+  }
+}
+@media (max-width: 374px) {
+  /* very narrow devices: line 1 (stars + 14.000 claim) must fit w/o overflow */
+  .Header-AnnouncementBanner a p {
+    font-size: 0.7rem;
   }
 }
 .header-menu-desktop {
