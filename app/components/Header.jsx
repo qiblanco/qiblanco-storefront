@@ -114,13 +114,23 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         announcement={
           isCacaoPage ? (
             <p>
-              5.0/5.0 ⭐⭐⭐⭐⭐ - Über 1.000 aktive Nutzer - jetzt mit
-              Zufriedenheitsgarantie!
+              <span className="banner-line">
+                5.0/5.0 ⭐⭐⭐⭐⭐ - Über 1.000 aktive Nutzer
+              </span>
+              <span className="banner-offer-sep"> - </span>
+              <span className="banner-line">
+                jetzt mit Zufriedenheitsgarantie!
+              </span>
             </p>
           ) : (
             <p>
-              <GoogleSterneBadge /> - Über 14.000 zufriedene Kunden - Jetzt 20
-              Tage risikofrei erleben!
+              <span className="banner-line">
+                <GoogleSterneBadge /> - Über 14.000 zufriedene Kunden
+              </span>
+              <span className="banner-offer-sep"> - </span>
+              <span className="banner-line">
+                Jetzt 20 Tage risikofrei erleben!
+              </span>
             </p>
           )
         }
