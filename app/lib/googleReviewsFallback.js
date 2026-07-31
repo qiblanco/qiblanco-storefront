@@ -3,7 +3,7 @@
  * Rezensionen (Quelle: Reputon-Storefront-Feed, Stand 2026-07-31, live 437
  * Bewertungen). Wird NUR gerendert, wenn der server-gecachte Live-Abruf
  * (googleRating.js) scheitert — nie erfundene Inhalte, nur echte Reviews.
- * zeitText ist bewusst leer (eine eingefrorene Relativzeit wuerde luegen).
+ * zeitText ist bewusst leer (eine eingefrorene Relativzeit würde lügen).
  */
 export const GOOGLE_REVIEWS_FALLBACK = [
   {
