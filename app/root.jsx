@@ -94,8 +94,10 @@ export async function loader(args) {
   return {
     ...deferredData,
     ...criticalData,
-    // Sitewide dynamische Google-Gesamtbewertung (Fix v2 Punkt 5): fail-safe,
-    // 24h gecacht, fällt ohne API-Key auf 4,8/429 zurück (nie 500en/erfinden).
+    // Sitewide dynamische Google-Gesamtbewertung + neueste 5-Sterne-Reviews
+    // (Fix v2 Punkt 5; Repair 2026-07-31): fail-safe, 6h gecacht (Reputon-
+    // Feed, kein Key nötig), fällt auf 4,8/437-Schnappschuss zurück (nie
+    // 500en/erfinden).
     googleRating: await ladeGoogleRating(args.context).catch(
       () => ({...GOOGLE_RATING_FALLBACK}),
     ),
