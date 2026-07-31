@@ -79,3 +79,32 @@ export function salesbotWidgetCspQuellen(env) {
   const origin = salesbotWidgetOrigin(env);
   return origin ? [origin] : [];
 }
+
+/**
+ * DACH-Region-Gate für den store-weiten Go-live (Christian-Freigabe
+ * 2026-07-31: die GESAMTE Storefront nutzt AI-Anna; Gorgias wird für DE/AT/CH
+ * abgeschaltet. USA bleibt VORERST auf Gorgias — nächste Stufe, hier NICHT
+ * angefasst).
+ *
+ * Region-Quelle ist derselbe Oxygen-Geo-Header wie bei der Consent-Policy
+ * (`oxygen-buyer-country`, siehe lib/consent-policy.js), im Root-Loader bereits
+ * als `buyerCountry` aufgelöst. EINE Quelle für WO das Widget store-weit
+ * erscheint — analog zu salesbotWidgetOrigin für OB.
+ *
+ * FAIL-CLOSED zugunsten des Bestands: unbekannte/leere/fremde Region => false
+ * => Widget bleibt aus, Gorgias bleibt an. So kann ein fehlender Geo-Header
+ * (Preview/localhost) oder ein US-Besucher NIE versehentlich store-weit auf
+ * AI-Anna umschalten. Die USA-Trennung hängt damit nicht an einer Zusatz-
+ * Bedingung, sondern ist die Default-Richtung dieses Gates.
+ */
+export const SALESBOT_DACH_LAENDER = ['DE', 'AT', 'CH'];
+
+/**
+ * @param {string | null | undefined} country ISO-3166-1-alpha-2 (z.B. 'DE'),
+ *   '' / unbekannt = nicht-DACH (fail-closed)
+ * @returns {boolean} true NUR für DE/AT/CH
+ */
+export function istSalesbotDachRegion(country) {
+  const c = (country || '').trim().toUpperCase();
+  return SALESBOT_DACH_LAENDER.includes(c);
+}
