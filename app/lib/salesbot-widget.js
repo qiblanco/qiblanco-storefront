@@ -81,30 +81,32 @@ export function salesbotWidgetCspQuellen(env) {
 }
 
 /**
- * DACH-Region-Gate für den store-weiten Go-live (Christian-Freigabe
- * 2026-07-31: die GESAMTE Storefront nutzt AI-Anna; Gorgias wird für DE/AT/CH
- * abgeschaltet. USA bleibt VORERST auf Gorgias — nächste Stufe, hier NICHT
- * angefasst).
+ * Shop-Sprach-Gate für den store-weiten Go-live (Christian-Freigabe
+ * 2026-07-31, Weichen-Korrektur 2026-07-31): die Sichtbarkeit hängt an der
+ * GEWÄHLTEN Seitensprache/dem Markt des geladenen Shops — NICHT an der
+ * Besucher-IP. Fehlerfall vorher: ein Besucher mit US-IP im deutschen Shop
+ * bekam über `oxygen-buyer-country` fälschlich Gorgias.
  *
- * Region-Quelle ist derselbe Oxygen-Geo-Header wie bei der Consent-Policy
- * (`oxygen-buyer-country`, siehe lib/consent-policy.js), im Root-Loader bereits
- * als `buyerCountry` aufgelöst. EINE Quelle für WO das Widget store-weit
- * erscheint — analog zu salesbotWidgetOrigin für OB.
+ * Quelle ist `storefront.i18n.language` (im Root-Loader als `storefrontSprache`
+ * aufgelöst): der qiblanco.com-Storefront ist der deutschsprachige DACH-Shop
+ * (language === 'DE' für JEDEN Besucher, auch mit US-IP oder USD-Markt). Der
+ * englischsprachige US-Store (us-qiblanco-2024) ist ein SEPARATER Shopify-Store
+ * und NICHT dieses Repo. Die Region ist damit eine Eigenschaft des SHOPS, nicht
+ * des Besuchers — wie in der Region-Logik des qi-salesbot (region-source.ts:
+ * Region ist eine Eigenschaft des Shops, nicht der Sprache).
  *
- * FAIL-CLOSED zugunsten des Bestands: unbekannte/leere/fremde Region => false
- * => Widget bleibt aus, Gorgias bleibt an. So kann ein fehlender Geo-Header
- * (Preview/localhost) oder ein US-Besucher NIE versehentlich store-weit auf
- * AI-Anna umschalten. Die USA-Trennung hängt damit nicht an einer Zusatz-
- * Bedingung, sondern ist die Default-Richtung dieses Gates.
+ * FAIL-CLOSED zugunsten des Bestands: unbekannte/leere Sprache => false =>
+ * Widget bleibt aus. Auf diesem Storefront ist `language` konstant 'DE'
+ * (context.js), AI-Anna läuft also store-weit für ALLE Besucher.
  */
-export const SALESBOT_DACH_LAENDER = ['DE', 'AT', 'CH'];
+export const SALESBOT_SHOP_SPRACHEN = ['DE'];
 
 /**
- * @param {string | null | undefined} country ISO-3166-1-alpha-2 (z.B. 'DE'),
- *   '' / unbekannt = nicht-DACH (fail-closed)
- * @returns {boolean} true NUR für DE/AT/CH
+ * @param {string | null | undefined} language Storefront-Sprache aus
+ *   storefront.i18n.language (z.B. 'DE'); '' / unbekannt = false (fail-closed)
+ * @returns {boolean} true für den deutschsprachigen DACH-Shop
  */
-export function istSalesbotDachRegion(country) {
-  const c = (country || '').trim().toUpperCase();
-  return SALESBOT_DACH_LAENDER.includes(c);
+export function istSalesbotDeutscherShop(language) {
+  const l = (language || '').trim().toUpperCase();
+  return SALESBOT_SHOP_SPRACHEN.includes(l);
 }

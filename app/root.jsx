@@ -23,7 +23,7 @@ import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
-import {salesbotWidgetOrigin, istSalesbotDachRegion} from '~/lib/salesbot-widget';
+import {salesbotWidgetOrigin, istSalesbotDeutscherShop} from '~/lib/salesbot-widget';
 import {SalesbotWidget} from './components/SalesbotWidget';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -127,6 +127,11 @@ export async function loader(args) {
     // Assistent verfügbar ist — WO er erscheint, entscheidet der
     // `handle`-Export der Route, nicht dieser Loader (siehe Layout).
     salesbotWidgetOrigin: salesbotWidgetOrigin(env),
+    // Gewählte Seitensprache/Locale des geladenen Shops
+    // (storefront.i18n.language; context.js: konstant 'DE' = deutschsprachiger
+    // DACH-Storefront). Steuert die store-weite Chat-Weiche AI-Anna vs Gorgias
+    // nach dem SHOP, NICHT nach der Besucher-IP (Weichen-Korrektur 2026-07-31).
+    storefrontSprache: storefront.i18n.language,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -238,10 +243,10 @@ export function Layout({children}) {
   //
   // Die Testseite /pages/chat-bot (handle.salesbotWidget) bleibt ZUSÄTZLICH
   // erhalten, damit Christians Prüf-Route regionsunabhängig funktioniert.
-  const salesbotDachRegion = istSalesbotDachRegion(data?.buyerCountry);
+  const salesbotDeutscherShop = istSalesbotDeutscherShop(data?.storefrontSprache);
   const salesbotAktiv =
     Boolean(data?.salesbotWidgetOrigin) &&
-    (salesbotSeite || salesbotDachRegion);
+    (salesbotSeite || salesbotDeutscherShop);
 
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
@@ -307,32 +312,17 @@ export function Layout({children}) {
               defer
               suppressHydrationWarning
             />
-            {!salesbotAktiv && (
-              // GORGIAS-CHAT — auf JEDER Seite ausser der, auf der unser
-              // eigener Assistent aktiv läuft. Zwei Chat-Starter gleichzeitig
-              // gehen baulich nicht gut: beide docken bottom-right an und
-              // nutzen beide das z-index-Maximum (Stapel-Reihenfolge nicht
-              // deterministisch), dazu doppelter Focus-Trap und doppelte
-              // aria-live-Ansage für Screenreader — auf Mobil ist ohnehin kein
-              // Platz für zwei.
-              //
-              // Die Bedingung hängt am AKTIVEN Assistenten, nicht an der
-              // Route: schaltet PUBLIC_SALESBOT_WIDGET_ORIGIN=off den
-              // Assistenten ab, kehrt Gorgias hier automatisch zurück — die
-              // Seite steht nie ohne Chat da.
-              //
-              // Die zwei Gorgias-Loader darunter (mailto-replace, convert)
-              // bleiben ABSICHTLICH auch hier aktiv: sie rendern keinen
-              // konkurrierenden Chat-Starter, und ein grösserer Diff hätte nur
-              // mehr Risiko ohne Nutzen.
-              <script
-                src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
-                data-gorgias-loader-chat=""
-                nonce={nonce}
-                defer
-                suppressHydrationWarning
-              />
-            )}
+            {/*
+              GORGIAS-CHAT ENTFERNT (Christian 2026-07-31, Weichen-Korrektur):
+              Auf dem deutschsprachigen DACH-Storefront läuft AI-Anna store-weit
+              für ALLE Besucher; der Gorgias-Chat-Loader ist hier dauerhaft raus
+              (nicht nur unterdrückt). Rollback = git revert dieses Merges;
+              PUBLIC_SALESBOT_WIDGET_ORIGIN=off schaltet AI-Anna ab, bringt den
+              Gorgias-Chat NICHT zurück (entfernt). Der separate US-/englische
+              Store (us-qiblanco-2024) behält seinen Gorgias-Chat — anderes Repo.
+              Die Gorgias mailto-replace-/convert-Loader unten sind KEIN Chat und
+              bleiben unverändert.
+            */}
             <script
               src="https://config.gorgias.help/api/contact-forms/replace-mailto-script.js?shopName=qi-blanco"
               data-gorgias-loader-mailto-replace=""
