@@ -23,7 +23,7 @@ import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
-import {salesbotWidgetOrigin} from '~/lib/salesbot-widget';
+import {salesbotWidgetOrigin, istSalesbotDachRegion} from '~/lib/salesbot-widget';
 import {SalesbotWidget} from './components/SalesbotWidget';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -227,7 +227,21 @@ export function Layout({children}) {
   const salesbotSeite = (matches || []).some(
     (match) => match?.handle?.salesbotWidget === true,
   );
-  const salesbotAktiv = salesbotSeite && Boolean(data?.salesbotWidgetOrigin);
+  // STORE-WEITER GO-LIVE DACH (Christian-Freigabe 2026-07-31): in DE/AT/CH
+  // rendert der Assistent auf JEDER Seite und verdrängt dort Gorgias; USA und
+  // alle Nicht-DACH-Regionen bleiben unverändert auf Gorgias (istSalesbotDach-
+  // Region ist fail-closed, s. lib/salesbot-widget.js). Die Region kommt aus
+  // dem Root-Loader-Feld `buyerCountry` (Oxygen-Geo-Header, EINMAL pro Dokument
+  // aufgelöst) — anders als der pro-Navigation wechselnde `handle` ist die
+  // Region über die Session konstant, das eingefrorene Loader-Feld ist hier
+  // also KORREKT (kein shouldRevalidate-Problem wie beim handle).
+  //
+  // Die Testseite /pages/chat-bot (handle.salesbotWidget) bleibt ZUSÄTZLICH
+  // erhalten, damit Christians Prüf-Route regionsunabhängig funktioniert.
+  const salesbotDachRegion = istSalesbotDachRegion(data?.buyerCountry);
+  const salesbotAktiv =
+    Boolean(data?.salesbotWidgetOrigin) &&
+    (salesbotSeite || salesbotDachRegion);
 
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
@@ -413,7 +427,7 @@ export function ErrorBoundary() {
   }
 
   // 404 ist seit dem Catch-All-Umbau (Auftrag 20260720-ads-lpa-s02-
-  // catchall-404) der Regelfall fuer unbekannte Pfade — freundlicher
+  // catchall-404) der Regelfall für unbekannte Pfade — freundlicher
   // deutscher Textblock statt "Oops" (bewusst klein, kein Redesign).
   if (errorStatus === 404) {
     return (
