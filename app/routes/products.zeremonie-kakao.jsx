@@ -156,7 +156,9 @@ export default function Product() {
       <WarumKakao />
       <Kundenstimmen />
 
-      <div className="product">
+      {/* id="product" NUR hier (erste Buy-Box): Anker-Ziel der "#product"-CTAs;
+          die zweite Buy-Box unten bleibt ohne id (keine Doppel-id). */}
+      <div className="product" id="product">
         <div className="ProductImages">
           <ProductImage image={selectedVariant?.image} />
           <ProductImageList images={product?.images} />

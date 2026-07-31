@@ -76,7 +76,9 @@ export function QiBraceletShop({product}) {
         <ImgixVideo videoPath="new-360-QiBracelet-1x1.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/JjGdCuv.webp?v=1747927956" />
       </div>
     </div>
-    <div className="product" data-qi-shop="qibracelet-pages">
+    {/* id="product" = Anker-Ziel der "#product"-CTAs im QiBracelet-Content
+        darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
+    <div className="product" id="product" data-qi-shop="qibracelet-pages">
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
