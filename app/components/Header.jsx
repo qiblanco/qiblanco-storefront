@@ -5,7 +5,12 @@ import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
-import {ReviewCount} from './reusables/ReviewCount';
+import {useGoogleRating} from '~/lib/googleRating';
+import {
+  GoogleRezensionenPopup,
+  findeRezensionsZiel,
+  GOOGLE_REZENSIONEN_ANKER_ID,
+} from '~/components/reusables/GoogleRezensionenBereich';
 
 const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
 
@@ -83,6 +88,23 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     pathname === '/products/crystal-cacao-create' ||
     pathname === '/products/crystal-cacao-awake';
 
+  // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
+  // schwarzen Banner scrollt zum Google-Rezensionsbereich DIESER Seite;
+  // trägt die Seite keinen (findeRezensionsZiel=null), öffnet das
+  // Fallback-Popup mit genau demselben Bereich. Der Link-href bleibt als
+  // No-JS-Fallback erhalten (PDP + Anker). Vorher war der Klick auf der
+  // PDP selbst ein No-Op (Link auf dieselbe Route, Christian-Bug 2026-07-31).
+  const [rezensionenPopupOffen, setRezensionenPopupOffen] = useState(false);
+  const onRezensionenKlick = (e) => {
+    e.preventDefault();
+    const ziel = findeRezensionsZiel();
+    if (ziel) {
+      ziel.scrollIntoView({behavior: 'smooth', block: 'start'});
+    } else {
+      setRezensionenPopupOffen(true);
+    }
+  };
+
   return (
     <header
       className={`header-wrapper ${hidden ? 'header--hidden' : ''}`}
@@ -97,12 +119,21 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             </p>
           ) : (
             <p>
-              <ReviewCount /> - Über 14.000 zufriedene Kunden - Jetzt 20 Tage
-              risikofrei erleben!
+              <GoogleSterneBadge /> - Über 14.000 zufriedene Kunden - Jetzt 20
+              Tage risikofrei erleben!
             </p>
           )
         }
-        link={isCacaoPage ? '/pages/crystal-cacao' : '/products/qione-2-pro'}
+        link={
+          isCacaoPage
+            ? '/pages/crystal-cacao'
+            : `/products/qione-2-pro#${GOOGLE_REZENSIONEN_ANKER_ID}`
+        }
+        onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
+      />
+      <GoogleRezensionenPopup
+        offen={rezensionenPopupOffen}
+        onSchliessen={() => setRezensionenPopupOffen(false)}
       />
 
       <div
@@ -671,7 +702,20 @@ function CartToggle({cart}) {
   );
 }
 
-function AnnouncementBanner({announcement, link, scrolled}) {
+/* Sterne-Zeile im Banner aus der KANONISCHEN Google-Quelle (useGoogleRating:
+   Places-API, server-gecacht, Fallback 4,8/429) statt des frueheren
+   Client-Fetches gegen die vercel-serpapi-App (Fallback dort 4.7 — inkonsistent
+   zum Rezensionsbereich). Optik unveraendert (.ReviewCount-Bestand). */
+function GoogleSterneBadge() {
+  const g = useGoogleRating();
+  return (
+    <span className="ReviewCount">
+      {g.komma} {'★'.repeat(5)}
+    </span>
+  );
+}
+
+function AnnouncementBanner({announcement, link, scrolled, onAnnouncementClick}) {
   return (
     <div
       className="Header-AnnouncementBanner"
@@ -682,7 +726,7 @@ function AnnouncementBanner({announcement, link, scrolled}) {
         transition: 'max-height 0.8s ease, opacity 0.8s ease',
       }}
     >
-      <Link prefetch="intent" to={link}>
+      <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
       </Link>
     </div>

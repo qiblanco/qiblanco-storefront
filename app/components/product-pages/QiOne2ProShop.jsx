@@ -7,7 +7,7 @@ import {
 } from '~/components/product-pages/QiOneBuyBox';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
-import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {
   StarRating,
@@ -99,12 +99,11 @@ export function QiOne2ProShop({product}) {
         }
         trustVorSlider={<GoogleReviews dataSection="shopq-google-reviews" />}
         trustNachSlider={
-          <div
-            className="NormalSectionSize"
-            data-section="shopq-reputon-reviews"
-          >
-            <ReputonWidget />
-          </div>
+          /* Geteilte Rezensions-Sektion (Job 20260731-google-rezensionen):
+             gleicher Inhalt wie vorher (Live-Reputon) + verkaufsstarke
+             Überschrift + Anker für den 4,8-Banner-Klick; data-section
+             bleibt shopq-reputon-reviews (Design-Watch-Kontinuität). */
+          <GoogleRezensionenBereich dataSection="shopq-reputon-reviews" />
         }
       />
     </div>

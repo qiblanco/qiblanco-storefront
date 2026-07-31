@@ -14,6 +14,7 @@ import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
@@ -216,7 +217,12 @@ function StandardProduct({product}) {
       />
     </div>
 
-    
+    {/* Google-Rezensionsbereich sitewide auf Produktseiten (Job
+        20260731-google-rezensionen): auch die generischen PDPs tragen die
+        echten Google-Bewertungen (Live-Reputon) + Anker für den
+        4,8-Banner-Klick. Marken-Bewertung (Qi Blanco), daher produkt-
+        unabhängig korrekt. */}
+    <GoogleRezensionenBereich />
     </>
   );
 }
