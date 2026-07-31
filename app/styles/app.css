@@ -4543,3 +4543,122 @@ html.qb-chat-docked .overlay aside {
   }
 }
 /* ═══ Ende Naht zur Claude-Ansicht ═══════════════════════════════════════ */
+
+/* ═══ NAHT ZUR CLAUDE-ANSICHT, TEIL 2: DIE FULL-BLEED-AUSBRUECHE ═════════════
+   Job 20260731-repair-claude-ansicht-scrollanim-schneidet-chatfenster.
+   Christian, 2026-07-31 (Screenshot /pages/chat-bot, Claude-Ansicht): die
+   Scroll-Animation des Mikroskop-Abschnitts rendert UEBER das angedockte
+   Chatfenster und schneidet es ab.
+
+   Teil 1 dieser Naht (weiter oben, Job 20260731-claude-ansicht-header-
+   dropdown-docked-fix) hat die `position: fixed`-Elemente des Wirts an die
+   Panel-Kante gezogen. Dieser Block schliesst die ZWEITE Klasse, die einem
+   `padding-right` am <html> baulich nicht folgt: Abschnitte, die per
+   VIEWPORT-MASS aus dem Fluss ausbrechen.
+
+   ── DER GEMESSENE BEFUND ──────────────────────────────────────────────────
+   Live an /pages/chat-bot, 1440x900, Claude-Ansicht offen (Panel x=920,
+   w=520, z-index 4900 aus components/SalesbotWidget.jsx):
+
+     .ScrollScrubVideoBlock   x=-260  w=1440  margin-left=-284px -> Kante 1180
+     .ScrollScrubVideo        z-index 10000   (> 4900 des Panels)
+     .VideoOverlay            position: sticky, 100vh, 1440 px breit
+     video                    min-width: 1440px (aus `min-width: 100vw`)
+
+   Ergebnis: von 36 Messpunkten INNERHALB der reservierten Spalte lieferten
+   18 nicht das iframe, sondern `.VideoOverlay` — die linken 260 der 520 px
+   gehoerten ueber die volle Hoehe der Wirt-Sektion. Genau Christians Bild.
+
+   ── WARUM DAS AUSGERECHNET HIER PASSIERT ──────────────────────────────────
+   Der Block ist ABSICHTLICH ein Full-Bleed-Ausbruch (Kommentar im Bestand:
+   "damit die Komponente auch INNERHALB gepaddeter LP-Sektionen viewport-breit
+   laeuft"). Das Rezept dafuer ist `width: 100vw` plus
+   `margin-left: calc(50% - 50vw)`. `vw` ist der VIEWPORT — ein Innenabstand
+   am <html> verkleinert es nicht. Der Ausbruch bricht also weiter auf die
+   volle Bildbreite aus, obwohl die Seite nur noch 920 px hat.
+
+   Der Loader kann das nicht selbst richten und sagt das ausdruecklich:
+   qi-salesbot/src/lib/docked.ts, "Drei Grenzen", Punkt (c) — und er lehnt
+   `overflow-x: clip` am <html> bewusst ab, weil das auf den Viewport
+   propagiert und dem Wirt jedes legitime Querscrollen naehme. Er stellt
+   stattdessen `qb-chat-docked` und `--qb-chat-dock-breite` bereit. Der Wirt
+   ist der vorgesehene Verbraucher; hier wird verbraucht.
+
+   ── WAS TRAEGT UND WAS ABSICHERT (einzeln gemessen, nicht geraten) ────────
+   Regel 7 (Breite) macht die Probe ALLEIN gruen: Stapel 0/18, kein Ueber-
+   stand, sticky haelt. Sie ist die Reparatur.
+   Regel 6 (Clip) macht allein zwar den Stapel gruen, laesst die Geometrie
+   aber ueberstehen — sie repariert nichts, sie BEGRENZT. Ihr Wert liegt beim
+   NAECHSTEN Full-Bleed-Bau, den niemand hier eintraegt: was in `body > main`
+   liegt, kann die Spalte dann weder bemalen noch Klicks abfangen — und zwar
+   unabhaengig von seinem z-index. Damit ist auch der Stapel-Teil des Befunds
+   (10000 > 4900) strukturell erledigt, ohne dass an einem einzigen
+   z-index-Wert gedreht werden muss.
+   VERWORFEN wurde genau das: den z-index der Sektion in der Claude-Ansicht
+   zu senken. Allein gemessen waere er gruen gewesen, neben 6+7 ist er
+   wirkungslos — und ein Stapel-Eingriff ohne Wirkung ist nur ein Risiko.
+
+   ── RUECKBAU ──────────────────────────────────────────────────────────────
+   Jede Regel haengt an `html.qb-chat-docked`. Im Overlay-Zustand (Knopf im
+   Kopf des Chats) und auf dem Handy faellt der Block ersatzlos weg — gemessen
+   nach dem Umschalten: Klasse weg, Block wieder 1440 px, `main` wieder
+   `overflow-x: visible`. Ein eigener Kill-Schalter ist deshalb nicht noetig:
+   CHAT_DOCKED=off in qi-salesbot/config/docked.conf nimmt Spalte, Knopf und
+   diesen Block gemeinsam zurueck.
+   Maschinelle Nachpruefung: qi-salesbot/bin/spalten-naht-probe (exit 0/2/4).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Die reservierte Seitenflaeche als EINE Groesse — damit die Rechnung nicht
+   in jeder Regel neu dasteht und beim naechsten Verbraucher auseinanderlaeuft.
+   Bewusst eine eigene Variable und keine Aenderung an --qb-chat-dock-breite:
+   jene gehoert dem Loader, diese uns. */
+html.qb-chat-docked {
+  --qb-seitenbreite: calc(100vw - var(--qb-chat-dock-breite, 0px));
+}
+
+/* 6. DER BACKSTOP: kein Ausbruch verlaesst die Seitenflaeche.
+
+      `body > main` und NICHT `main`: diese Seite fuehrt VIER <main>-Elemente
+      — drei davon stecken in den <aside>-Schubfaechern (Warenkorb, Menue,
+      Suche) und tragen ihr eigenes `overflow-x: scroll`. Ein nackter
+      `main`-Selektor haette deren Inhalte mitgeschnitten (gemessen, bevor es
+      jemand gesehen haette).
+
+      `clip` und nicht `hidden`: `hidden` machte `main` zum Scroll-Container
+      und loeste damit das sticky-Overlay der Scroll-Animation von der Seite.
+      `clip` klemmt, ohne zu scrollen — nachgemessen: Overlay klebt weiter bei
+      y=0 ueber zwei Scroll-Positionen. `overflow-y: visible` steht
+      ausdruecklich daneben, weil nur die Paarung clip/visible zulaessig ist;
+      hidden/visible wuerde der Browser still zu hidden/auto verbiegen.
+
+      Alte Safari-Staende (< 16) kennen `clip` nicht und lassen die Zeile
+      fallen. Das ist vertretbar, weil Regel 7 die eigentliche Reparatur ist
+      und ohne den Backstop auskommt — hier faellt eine Absicherung weg, kein
+      Fix. */
+html.qb-chat-docked body > main {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* 7. DIE REPARATUR: die Full-Bleed-Rechnung wird spaltenbewusst.
+      Dasselbe Rezept wie im Bestand (`50% - 50vw`), nur gegen die
+      Seitenflaeche statt gegen den Viewport gerechnet. Der Block bleibt also
+      voll ausbrechend — er bricht nur nicht mehr in fremdes Gebiet aus. */
+html.qb-chat-docked .ScrollScrubVideoBlock {
+  width: var(--qb-seitenbreite);
+  margin-left: calc(50% - var(--qb-seitenbreite) / 2);
+}
+
+/* 8. Das Video selbst traegt seine eigene Viewport-Zusage (`min-width: 100vw`,
+      dazu `width: auto !important` und `object-fit: cover`). Ohne diese Zeile
+      bliebe es 1440 px breit, obwohl sein Kasten nur noch 920 hat.
+      Der Bestands-Zwilling .ScrollMikroskopvideo steht hier mit drin: er
+      traegt dieselbe Zeile und liegt auf den Schwester-LPs — er ist auf
+      /pages/chat-bot heute nicht im DOM, waere aber morgen derselbe Fehler.
+      Kein `!important` noetig: `min-width` ist im Bestand ohne, und dieser
+      Selektor ist spezifischer. */
+html.qb-chat-docked .ScrollScrubVideo video,
+html.qb-chat-docked .ScrollMikroskopvideo video {
+  min-width: var(--qb-seitenbreite);
+}
+/* ═══ Ende Naht zur Claude-Ansicht, Teil 2 ═══════════════════════════════ */
