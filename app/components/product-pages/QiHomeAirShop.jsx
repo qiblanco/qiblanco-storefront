@@ -75,7 +75,9 @@ export function QiHomeAirShop({product}) {
         <ImgixVideo videoPath="360-QiHome-1x1.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/3d-animation-qi-home-preview.webp?v=1740224642" />
       </div>
     </div>
-    <div className="product" data-qi-shop="qihome-pages">
+    {/* id="product" = Anker-Ziel der "#product"-CTAs im QiHome-Content
+        darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
+    <div className="product" id="product" data-qi-shop="qihome-pages">
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
