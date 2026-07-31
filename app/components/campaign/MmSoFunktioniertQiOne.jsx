@@ -14,6 +14,8 @@ import {
   MmFinal,
   MmGrenzen,
 } from '~/components/reusables/MmKit';
+import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {useGoogleRating} from '~/lib/googleRating';
 
 /**
  * MmSoFunktioniertQiOne — Composer der Erklär-Seite /pages/so-funktioniert-der-qione.
@@ -208,6 +210,7 @@ function MalibuEffekt({effekt}) {
 }
 
 export function MmSoFunktioniertQiOne({products}) {
+  const g = useGoogleRating();
   return (
     <MmPage scope="mm-malibu">
       <MalibuHero />
@@ -275,6 +278,17 @@ export function MmSoFunktioniertQiOne({products}) {
           {zahl: '0', label: 'Akku · Elektronik · App'},
         ]}
       />
+
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon wie in den Geschwister-Mm-Seiten (mm-bahn-Muster),
+          Überschrift = Christian-Ergänzung; Zahl claims-SSoT-kanonisch. */}
+      <MmProblem
+        variante="flaeche"
+        dataSection="mm-malibu-reviews-intro"
+        title="Über 14.000 zufriedene Kunden – entscheide dich jetzt!"
+        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
+      />
+      <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-malibu-trust"

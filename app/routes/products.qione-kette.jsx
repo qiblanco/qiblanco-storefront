@@ -14,6 +14,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 import {ProductFAQ} from '~/components/ProductFAQ';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {FAQ_QIONE_KETTE} from '~/data/product-faqs';
 import { useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
@@ -153,6 +154,9 @@ export default function Product() {
     </>}/>
     <UpsellLineUp />
     <ProductFAQ items={FAQ_QIONE_KETTE} />
+    {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+        Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+    <GoogleRezensionenBereich />
     <SingleImage size={"fullscreen"} link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} />
     </>
   );

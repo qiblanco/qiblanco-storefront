@@ -9,6 +9,7 @@ import { ReviewCount } from '~/components/reusables/ReviewCount';
 import { Studien } from '~/components/reusables/Studien';
 import { YoutubeIframe } from '~/components/reusables/YoutubeIframe';
 import { HeroBanner } from '~/components/reusables/HeroBannerParallax';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 export function QiBracelet() {
   return (
     <div className="Detailseite">
@@ -69,6 +70,9 @@ export function QiBracelet() {
           linkStyle={"secondary"}
           linkText={"Jetzt kostenlos starten"}
         />
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+      <GoogleRezensionenBereich />
       <UpsellLineUp />
     </div>
   );

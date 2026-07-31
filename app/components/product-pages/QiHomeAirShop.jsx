@@ -17,6 +17,7 @@ import {
   StarRating,
   GOOGLE_REVIEWS_URL,
 } from '~/components/reusables/StarRating';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 
 /*
  * QiHomeAirShop — Campaign-PDP-Komponente fuer die LP-Shopseite
@@ -127,6 +128,9 @@ export function QiHomeAirShop({product}) {
       />
     </div>
       <QiHome block="lp" />
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+      <GoogleRezensionenBereich />
     </>
   );
 }
