@@ -5,6 +5,7 @@ import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuyBox';
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -104,7 +105,16 @@ export default function Product() {
           PDP), QiOne2Pro-Default bleibt null. BEWUSST ohne dataSection:
           die PDP traegt sonst ihren ERSTEN data-section-Anker und der
           Design-Rubrik-Collector saehe nur noch 1 Sektion (Watch-Regression). */}
-      <QiOne2Pro gitterchipAnimation={<GitterchipMoleculesScrub />} />
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen): auf
+          dieser PDP fehlte er komplett (Christian-Bug — 4,8-Klick im Banner
+          lief ins Leere). Gleicher Slot wie auf der Campaign-PDP
+          /pages/qione-2-pro (trustNachSlider nach dem InfoSlider), Inhalt =
+          Live-Reputon-Widget + Überschrift. BEWUSST ohne dataSection
+          (Anker-frei-Regel dieser PDP, siehe oben). */}
+      <QiOne2Pro
+        gitterchipAnimation={<GitterchipMoleculesScrub />}
+        trustNachSlider={<GoogleRezensionenBereich />}
+      />
     </>
   );
 }

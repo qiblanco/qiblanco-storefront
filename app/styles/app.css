@@ -4662,3 +4662,125 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
   min-width: var(--qb-seitenbreite);
 }
 /* ═══ Ende Naht zur Claude-Ansicht, Teil 2 ═══════════════════════════════ */
+
+/* ═══ GOOGLE-REZENSIONEN-BEREICH + 4,8-KLICK (Job 20260731-google-rezensionen) ═══
+   Sitewide-Sektion (Ueberschrift + Live-Reputon + Badge) fuer Produktseiten,
+   das Fallback-Popup fuer Seiten ohne Sektion, und die Docked-Naht der
+   organischen PDP (Teil 3 der Claude-Ansicht-Naht, Muster #147/#148). */
+
+/* Anker-Scroll: Sektion nicht unter dem fixen Kopf landen lassen. */
+.GoogleRezensionenBereich {
+  scroll-margin-top: 150px;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+.GoogleRezensionenBereich-titel {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+/* Fallback-Popup: zeigt GENAU dieselbe Sektion als Dialog. In der
+   Claude-Ansicht endet das Overlay an der Panel-Kante (Naht-Konvention:
+   --qb-chat-dock-breite aus dem qi-salesbot-Loader). z-index unter den
+   Bestands-Modals (ImageGalleryModal 10000), ueber Kopf + Chat-Panel (4900). */
+.GoogleRezensionenPopup {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: rgba(26, 26, 26, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+html.qb-chat-docked .GoogleRezensionenPopup {
+  right: var(--qb-chat-dock-breite, 520px);
+}
+.GoogleRezensionenPopup-inhalt {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px 16px 32px;
+}
+.GoogleRezensionenPopup-inhalt .GoogleRezensionenBereich {
+  margin: 0;
+  scroll-margin-top: 0;
+}
+.GoogleRezensionenPopup-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #1a1a1a;
+  padding: 6px;
+}
+@media (max-width: 749px) {
+  .GoogleRezensionenPopup {
+    padding: 12px;
+  }
+  .GoogleRezensionenPopup-inhalt {
+    max-height: 92vh;
+  }
+}
+
+/* ── Docked-Naht Teil 3: organische PDP (.product) ──────────────────────────
+   Christian-Bug 2026-07-31 ("links leer/weiss, rechts auch nicht gut"):
+   die Desktop-Galerie-Regeln (>=1024px: ProductImageWrapperSticky als Row,
+   Bild width:auto/aspect-ratio an max-height 75vh gekoppelt) haengen am
+   VIEWPORT und folgen dem padding-right der Claude-Ansicht nicht — bei
+   1440x900 mit Panel schrumpft das Produktbild auf 204x204 in einer
+   440px-Spalte, der Rest bleibt weiss. GEMESSENES SOLL = das eigene
+   Basis-Rezept bei echtem 920px-Viewport: Bild 440x440 (volle Spalte),
+   Thumbnails als Reihe darunter. Wirt-Kanten wie #147: eigene Umbruchpunkte
+   + 520px Dock-Breite (719.98+520 / 1023.98+520). */
+@media (min-width: 45em) and (max-width: 1239.98px) {
+  /* effektive Flaeche unter 720px -> das eigene Mobil-Rezept: 1 Spalte */
+  html.qb-chat-docked .product {
+    grid-template-columns: 1fr;
+    grid-gap: 2rem;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1543.98px) {
+  /* effektive Flaeche unter 1024px -> zurueck aufs Basis-Rezept der Galerie */
+  html.qb-chat-docked .ProductImageWrapperSticky {
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: none;
+  }
+  html.qb-chat-docked .product-image {
+    flex: none;
+    width: 100%;
+  }
+  html.qb-chat-docked .product-image img {
+    aspect-ratio: auto;
+    width: 100%;
+    max-height: none;
+  }
+  html.qb-chat-docked .ProductImages {
+    height: auto;
+  }
+  html.qb-chat-docked .ProductImages .product-image-list {
+    flex-direction: row;
+    align-self: auto;
+    width: 100%;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    overflow-x: auto;
+  }
+  /* Basis-Werte gegen die !important-Desktop-Regeln durchsetzen */
+  html.qb-chat-docked .ProductImages .product-image-list > img.thumb-image,
+  html.qb-chat-docked .ProductImages .product-image-list .ImageSeeMore {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+/* ═══ Ende Google-Rezensionen-Bereich + Docked-Naht Teil 3 ═══════════════ */
