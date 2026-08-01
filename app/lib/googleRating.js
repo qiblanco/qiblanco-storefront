@@ -57,7 +57,10 @@ export const GOOGLE_RATING_FALLBACK = {
 };
 
 const CACHE_TTL_S = 21600; // 6 h — „periodischer Refresh", nie je Seitenaufruf
-const MAX_REVIEWS = 10; // Deckel für die root-Loader-Payload (sitewide)
+const MAX_REVIEWS = 50; // Deckel: die NEUESTEN 50 Fünf-Sterne-Reviews
+// (Christian 2026-08-01). Hinweis: der Reputon-Storefront-Feed liefert
+// real nur 37 Fünf-Sterne-Reviews (keine Pagination) — mehr gibt die
+// Quelle derzeit nicht her; NICHT auffüllen/erfinden.
 
 function istPlausibel(v) {
   return (
