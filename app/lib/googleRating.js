@@ -32,12 +32,12 @@
  */
 
 import {useRouteLoaderData} from 'react-router';
-import {GOOGLE_REVIEWS_FALLBACK} from '~/lib/googleReviewsFallback';
+import {GOOGLE_REVIEWS_FALLBACK, GOOGLE_AI_SUMMARY_FALLBACK} from '~/lib/googleReviewsFallback';
 
 // Place-ID identisch zu StarRating.GOOGLE_REVIEWS_URL (Business-Profil „Qi Blanco")
 export const GOOGLE_PLACE_ID = 'ChIJafc6o-z3okcRPlf__D3fDBM';
 export const GOOGLE_REVIEWS_URL =
-  'https://search.google.com/local/reviews?placeid=' + GOOGLE_PLACE_ID;
+  'https://search.google.com/local/reviews?placeid=' + GOOGLE_PLACE_ID + '&sortby=ratingHigh';
 
 // Reputon-Storefront-Feed: öffentlicher, unauthentifizierter JSON-Endpunkt,
 // den das bisherige Widget-Script client-seitig nutzte — jetzt serverseitig
@@ -53,6 +53,7 @@ export const GOOGLE_RATING_FALLBACK = {
   total: 437,
   source: 'fallback',
   reviews: GOOGLE_REVIEWS_FALLBACK,
+  aiSummary: GOOGLE_AI_SUMMARY_FALLBACK,
 };
 
 const CACHE_TTL_S = 21600; // 6 h — „periodischer Refresh", nie je Seitenaufruf
@@ -106,6 +107,7 @@ export function normalisiereGoogleAntwort(data) {
       typeof t === 'number' && t > 0 ? Math.round(t) : GOOGLE_RATING_FALLBACK.total,
     source: 'google',
     reviews: GOOGLE_REVIEWS_FALLBACK, // Places liefert keine sortierbaren Reviews
+    aiSummary: GOOGLE_AI_SUMMARY_FALLBACK,
   };
 }
 
@@ -139,6 +141,12 @@ export function normalisiereReputonAntwort(data) {
     }))
     .sort((a, c) => a.alterTage - c.alterTage || c.zeit - a.zeit)
     .slice(0, MAX_REVIEWS);
+  // Fix #1: Googles KI-Zusammenfassung der Rezensionen (business.summary.items)
+  const aiSummary = Array.isArray(b?.summary?.items)
+    ? b.summary.items
+        .map((s) => (typeof s === 'string' ? s.replace(/[;.\s]+$/, '').trim() : ''))
+        .filter(Boolean)
+    : [];
   return {
     rating: Math.round(r * 10) / 10,
     total:
@@ -147,6 +155,7 @@ export function normalisiereReputonAntwort(data) {
         : GOOGLE_RATING_FALLBACK.total,
     source: 'reputon',
     reviews: reviews.length > 0 ? reviews : GOOGLE_REVIEWS_FALLBACK,
+    aiSummary: aiSummary.length > 0 ? aiSummary : GOOGLE_AI_SUMMARY_FALLBACK,
   };
 }
 
@@ -269,5 +278,9 @@ export function useGoogleReviews() {
     g && Array.isArray(g.reviews) && g.reviews.length > 0
       ? g.reviews
       : GOOGLE_REVIEWS_FALLBACK;
-  return {reviews, url: GOOGLE_REVIEWS_URL};
+  const aiSummary =
+    g && Array.isArray(g.aiSummary) && g.aiSummary.length > 0
+      ? g.aiSummary
+      : GOOGLE_AI_SUMMARY_FALLBACK;
+  return {reviews, aiSummary, url: GOOGLE_REVIEWS_URL};
 }
