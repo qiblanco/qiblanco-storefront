@@ -37,7 +37,7 @@ import {GOOGLE_REVIEWS_FALLBACK, GOOGLE_AI_SUMMARY_FALLBACK} from '~/lib/googleR
 // Place-ID identisch zu StarRating.GOOGLE_REVIEWS_URL (Business-Profil „Qi Blanco")
 export const GOOGLE_PLACE_ID = 'ChIJafc6o-z3okcRPlf__D3fDBM';
 export const GOOGLE_REVIEWS_URL =
-  'https://search.google.com/local/reviews?placeid=' + GOOGLE_PLACE_ID + '&sortby=ratingHigh';
+  'https://search.google.com/local/reviews?placeid=' + GOOGLE_PLACE_ID;
 
 // Reputon-Storefront-Feed: öffentlicher, unauthentifizierter JSON-Endpunkt,
 // den das bisherige Widget-Script client-seitig nutzte — jetzt serverseitig
