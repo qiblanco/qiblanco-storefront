@@ -28,12 +28,39 @@ import {useDragSwipe} from '~/components/reusables/useDragSwipe';
  * Komponentenname + Call-Sites (16 Seiten) bleiben unverändert.
  */
 export function ReputonWidget() {
+  const {reviews, aiSummary} = useGoogleReviews();
   return (
     <>
-      <GoogleReviewsCarousel />
+      <ReviewsSlider
+        reviews={reviews}
+        aiSummary={aiSummary}
+        label="Neueste Google-Rezensionen von Qi Blanco"
+      />
       <GoogleRatingBadge />
     </>
   );
+}
+
+/**
+ * relativeVonDatum — rendert eine ISO-Datumsangabe (kuratierte Karten) LIVE
+ * als deutsche Relativzeit („vor 3 Monaten"), self-updating (nie eingefroren).
+ */
+function relativeVonDatum(iso) {
+  if (!iso) return '';
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return '';
+  const tage = Math.max(0, Math.floor((Date.now() - then) / 86400000));
+  if (tage < 7) return tage <= 1 ? 'vor 1 Tag' : `vor ${tage} Tagen`;
+  if (tage < 30) {
+    const w = Math.round(tage / 7);
+    return w <= 1 ? 'vor 1 Woche' : `vor ${w} Wochen`;
+  }
+  if (tage < 365) {
+    const m = Math.max(1, Math.round(tage / 30));
+    return m === 1 ? 'vor 1 Monat' : `vor ${m} Monaten`;
+  }
+  const j = Math.max(1, Math.floor(tage / 365));
+  return j === 1 ? 'vor 1 Jahr' : `vor ${j} Jahren`;
 }
 
 const AUTOSCROLL_MS = 4000; // Takt pro Karte (Christian: 3–4 s; ruhiger 4 s,
@@ -91,8 +118,15 @@ function AiSummaryKarte({aiSummary}) {
   );
 }
 
-function GoogleReviewsCarousel() {
-  const {reviews, aiSummary} = useGoogleReviews();
+/**
+ * ReviewsSlider — der EINE geteilte Rezensions-Slider (Design + Verhalten).
+ * Wird von BEIDEN Widgets genutzt: dem oberen „Beeindruckende Kundenerfahrungen"
+ * (12 kuratierte Karten, ohne AI-Summary) und dem unteren „Alle Google
+ * Bewertungen" (Live-Feed + AI-Summary als erste Karte). Gleiches Kartendesign,
+ * gleiches Drag-/Autoscroll-/„weiterlesen"-Verhalten — kein zweites Layout.
+ * @param {{reviews:Array, aiSummary?:Array, label?:string}} props
+ */
+export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen von Qi Blanco'}) {
   const trackRef = useRef(null);
   const hoverRef = useRef(false);
   const dragRef = useRef(false);
@@ -200,7 +234,7 @@ function GoogleReviewsCarousel() {
       }`}
       style={{gap: KARTEN_LUECKE_PX, scrollbarWidth: 'thin'}}
       role="region"
-      aria-label="Neueste Google-Rezensionen von Qi Blanco"
+      aria-label={label}
     >
       <AiSummaryKarte aiSummary={aiSummary} />
       {reviews.map((review) => (
@@ -215,6 +249,9 @@ function ReviewKarte({review}) {
   const [ueberlaeuft, setUeberlaeuft] = useState(false);
   const textRef = useRef(null);
   const text = review.text || '';
+  // Live-Feed-Karten liefern zeitText („vor 3 Tagen"); kuratierte Karten
+  // liefern ein ISO-datum, das hier LIVE zur Relativzeit gerendert wird.
+  const datum = review.zeitText || relativeVonDatum(review.datum);
 
   // „weiterlesen" nur zeigen, wenn der geklammerte Text WIRKLICH überläuft
   // (im eingeklappten Zustand gemessen — robust gegen Kartenbreite/Zeilenhöhe,
@@ -256,8 +293,8 @@ function ReviewKarte({review}) {
           )}
           <div className="min-w-0">
             <div className="font-medium text-sm truncate">{review.name}</div>
-            {review.zeitText ? (
-              <div className="text-xs text-gray-500">{review.zeitText}</div>
+            {datum ? (
+              <div className="text-xs text-gray-500">{datum}</div>
             ) : null}
           </div>
         </div>

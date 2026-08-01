@@ -41,6 +41,9 @@ export function HomepageSections({overrides = {}}) {
       <InfoSlider dataSection="info-slider" />
     <GoogleReviews dataSection="google-reviews" />
     <div className="NormalSectionSize" data-section="reputon-reviews">
+      <h2 className="text-[1.6rem] sm:text-4xl font-semibold text-center mb-6 mt-2">
+        Alle Google Bewertungen
+      </h2>
       <ReputonWidget />
     </div>
       <YoutubeIframe
