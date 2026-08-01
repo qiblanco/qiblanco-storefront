@@ -55,3 +55,14 @@ export const GOOGLE_REVIEWS_FALLBACK = [
     "zeitText": ""
   }
 ];
+
+/**
+ * AI-Zusammenfassung von Google — statischer Fallback (Stand 2026-07-27,
+ * Quelle: Reputon-Feed business.summary.items). Wird nur genutzt, wenn der
+ * Live-Abruf keine Zusammenfassung liefert (nie erfunden, echte Kernthemen).
+ */
+export const GOOGLE_AI_SUMMARY_FALLBACK = [
+  'Regeneration des Körpers',
+  'Steigerung des Selbstbewusstseins',
+  'Verbesserter Schlaf und innere Ruhe',
+];

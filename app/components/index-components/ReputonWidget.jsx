@@ -1,6 +1,7 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {StarRating} from '~/components/reusables/StarRating';
 import {useGoogleRating, useGoogleReviews} from '~/lib/googleRating';
+import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 
 /**
  * ReputonWidget — Google-Rezensions-Carousel + Gesamtbewertungs-Badge.
@@ -8,8 +9,20 @@ import {useGoogleRating, useGoogleReviews} from '~/lib/googleRating';
  * Seit 2026-07-31 (Repair-Job „gecachte Bewertungszahl veraltet"): rendert
  * die NEUESTEN 5-Sterne-Google-Rezensionen aus dem server-gecachten
  * root-Loader (useGoogleReviews, Reputon-Feed, 6-h-Refresh) statt des
- * Reputon-Drittscripts (406 KB widget.js, Live-Fetch bei jedem Seitenladen,
- * Googles „bedeutendste"-Relevanzordnung statt neueste zuerst).
+ * Reputon-Drittscripts.
+ *
+ * Repair 2026-08-01 (Christian, vier Regressionen nach dem Update):
+ *  (1) Die KI-/AI-Zusammenfassung von Google (business.summary aus dem Feed)
+ *      steht wieder ganz oben — als erstes Element im Widget.
+ *  (2) Das Carousel ist wieder mit der Maus greif- und ziehbar (Klick-Halten-
+ *      Ziehen) und auf Touch nativ wischbar — via gemeinsamem useDragSwipe-
+ *      Hook (Baustandard GL-DES-0012, mode 'scroll').
+ *  (3) Unter jeder Rezension klappt „weiterlesen" den vollständigen Text
+ *      INLINE im Widget auf (statt des externen „Auf Google lesen"-Links);
+ *      alle Bewertungen bleiben zusätzlich über das Profil (Badge) erreichbar.
+ *  (4) Der Badge-/Profil-Link öffnet Google nach HÖCHSTER Bewertung sortiert
+ *      (sortby=ratingHigh in googleRating.js / StarRating.js).
+ *
  * Der RAHMEN bleibt (Christian): nur 5-Sterne-Rezensionen im Carousel,
  * alle Bewertungen per Klick über das vollständige Google-Profil (Badge).
  * Komponentenname + Call-Sites (16 Seiten) bleiben unverändert.
@@ -17,6 +30,7 @@ import {useGoogleRating, useGoogleReviews} from '~/lib/googleRating';
 export function ReputonWidget() {
   return (
     <>
+      <GoogleAiSummary />
       <GoogleReviewsCarousel />
       <GoogleRatingBadge />
     </>
@@ -25,13 +39,67 @@ export function ReputonWidget() {
 
 const AUTOSCROLL_MS = 5000; // wie zuvor (Reputon data-delay=5)
 const KARTEN_LUECKE_PX = 20;
+const CLAMP_ZEILEN = 6; // eingeklappte Höhe (wie zuvor)
+const WEITERLESEN_AB_ZEICHEN = 180; // ab hier lohnt der Aufklapp-Umschalter
+
+/**
+ * Fix (1): AI-Zusammenfassung von Google — die von Google mit KI aus den
+ * Rezensionen destillierten Kernthemen (business.summary.items im Reputon-
+ * Feed, server-gecacht). Steht als erstes Element im Widget. Fehlt sie im
+ * Feed, greift der statische Fallback aus googleReviewsFallback.js.
+ */
+function GoogleAiSummary() {
+  const {aiSummary} = useGoogleReviews();
+  if (!Array.isArray(aiSummary) || aiSummary.length === 0) return null;
+
+  return (
+    <div
+      className="mb-5 p-4! bg-[#f3f6f9] rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-2.5"
+      aria-label="Mit KI zusammengefasste Google-Rezensionen von Qi Blanco"
+    >
+      <div className="flex items-center gap-2">
+        <SparkleIcon />
+        <span className="text-sm font-medium text-gray-700">
+          Zusammenfassung von Google
+        </span>
+        <GoogleIcon />
+      </div>
+      <ul className="flex flex-col gap-1.5 m-0! p-0! list-none">
+        {aiSummary.map((thema) => (
+          <li
+            key={thema}
+            className="flex items-start gap-2 text-sm! text-gray-700 leading-relaxed"
+          >
+            <span
+              aria-hidden="true"
+              className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#4285f4] flex-shrink-0"
+            />
+            <span>{thema}</span>
+          </li>
+        ))}
+      </ul>
+      <span className="text-xs text-gray-400">Mit KI zusammengefasst</span>
+    </div>
+  );
+}
 
 function GoogleReviewsCarousel() {
-  const {reviews, url} = useGoogleReviews();
+  const {reviews} = useGoogleReviews();
   const trackRef = useRef(null);
+  const hoverRef = useRef(false);
+  const dragRef = useRef(false);
+
+  // Fix (2): Maus-Drag (Klick-Halten-Ziehen) + Touch-Swipe über den
+  // gemeinsamen Slider-Hook. mode 'scroll' steuert genau so einen
+  // overflow-x-Container: Maus setzt scrollLeft, Touch scrollt nativ.
+  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
+
+  useEffect(() => {
+    dragRef.current = isDragging;
+  }, [isDragging]);
 
   // Sanfter Autoscroll wie beim bisherigen Widget: alle 5 s eine Karte
-  // weiter, am Ende zurück zum Anfang; pausiert bei Interaktion und
+  // weiter, am Ende zurück zum Anfang; pausiert bei Hover/Drag und
   // respektiert prefers-reduced-motion.
   useEffect(() => {
     const track = trackRef.current;
@@ -42,19 +110,8 @@ function GoogleReviewsCarousel() {
     ) {
       return undefined;
     }
-    let pausiert = false;
-    const pause = () => {
-      pausiert = true;
-    };
-    const weiter = () => {
-      pausiert = false;
-    };
-    track.addEventListener('pointerenter', pause);
-    track.addEventListener('pointerdown', pause);
-    track.addEventListener('touchstart', pause, {passive: true});
-    track.addEventListener('pointerleave', weiter);
     const intervall = setInterval(() => {
-      if (pausiert || !track.isConnected) return;
+      if (hoverRef.current || dragRef.current || !track.isConnected) return;
       const karte = track.firstElementChild;
       if (!karte) return;
       const schritt = karte.getBoundingClientRect().width + KARTEN_LUECKE_PX;
@@ -65,13 +122,7 @@ function GoogleReviewsCarousel() {
         behavior: 'smooth',
       });
     }, AUTOSCROLL_MS);
-    return () => {
-      clearInterval(intervall);
-      track.removeEventListener('pointerenter', pause);
-      track.removeEventListener('pointerdown', pause);
-      track.removeEventListener('touchstart', pause);
-      track.removeEventListener('pointerleave', weiter);
-    };
+    return () => clearInterval(intervall);
   }, [reviews.length]);
 
   if (!reviews.length) return null;
@@ -79,18 +130,32 @@ function GoogleReviewsCarousel() {
   return (
     <div
       ref={trackRef}
-      className="flex overflow-x-auto pb-4 snap-x snap-mandatory"
+      {...handlers}
+      onPointerEnter={() => {
+        hoverRef.current = true;
+      }}
+      onPointerLeave={() => {
+        hoverRef.current = false;
+      }}
+      className={`flex items-start overflow-x-auto pb-4 snap-x snap-mandatory select-none ${
+        isDragging ? 'cursor-grabbing' : 'cursor-grab'
+      }`}
       style={{gap: KARTEN_LUECKE_PX, scrollbarWidth: 'thin'}}
+      role="region"
       aria-label="Neueste Google-Rezensionen von Qi Blanco"
     >
       {reviews.map((review) => (
-        <ReviewKarte key={review.id || review.name} review={review} url={url} />
+        <ReviewKarte key={review.id || review.name} review={review} />
       ))}
     </div>
   );
 }
 
-function ReviewKarte({review, url}) {
+function ReviewKarte({review}) {
+  const [offen, setOffen] = useState(false);
+  const text = review.text || '';
+  const langerText = text.length > WEITERLESEN_AB_ZEICHEN;
+
   return (
     <div
       className="snap-start flex-shrink-0 w-[85vw] sm:w-[340px] p-4! bg-[#f3f6f9] rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3"
@@ -107,6 +172,7 @@ function ReviewKarte({review, url}) {
               height="36"
               loading="lazy"
               referrerPolicy="no-referrer"
+              draggable="false"
               className="w-9 h-9 rounded-full flex-shrink-0"
             />
           ) : (
@@ -132,27 +198,52 @@ function ReviewKarte({review, url}) {
         </svg>
       </div>
 
-      {/* Review-Text, geklammert; ganzer Text via Google-Profil */}
+      {/* Fix (3): Review-Text — eingeklappt geklammert, „weiterlesen" klappt
+          den GANZEN Text inline auf (kein externer Google-Link mehr). */}
       <p
-        className="text-sm! text-gray-700 leading-relaxed"
-        style={{
-          display: '-webkit-box',
-          WebkitLineClamp: 6,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}
+        className="text-sm! text-gray-700 leading-relaxed whitespace-pre-line"
+        style={
+          offen
+            ? undefined
+            : {
+                display: '-webkit-box',
+                WebkitLineClamp: CLAMP_ZEILEN,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }
+        }
       >
-        {review.text}
+        {text}
       </p>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-xs text-gray-500 underline mt-auto"
-      >
-        Auf Google lesen
-      </a>
+      {langerText ? (
+        <button
+          type="button"
+          className="self-start text-xs font-medium text-[#1a73e8] hover:underline mt-auto bg-transparent border-0 p-0! cursor-pointer"
+          aria-expanded={offen}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOffen((v) => !v);
+          }}
+        >
+          {offen ? 'weniger anzeigen' : 'weiterlesen'}
+        </button>
+      ) : null}
     </div>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="#4285f4"
+      aria-hidden="true"
+      className="flex-shrink-0"
+    >
+      <path d="M12 2l1.9 5.1L19 9l-5.1 1.9L12 16l-1.9-5.1L5 9l5.1-1.9L12 2zM19 14l.95 2.55L22.5 17.5l-2.55.95L19 21l-.95-2.55L15.5 17.5l2.55-.95L19 14z" />
+    </svg>
   );
 }
 
