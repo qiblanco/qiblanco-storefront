@@ -30,37 +30,46 @@ import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 export function ReputonWidget() {
   return (
     <>
-      <GoogleAiSummary />
       <GoogleReviewsCarousel />
       <GoogleRatingBadge />
     </>
   );
 }
 
-const AUTOSCROLL_MS = 5000; // wie zuvor (Reputon data-delay=5)
+const AUTOSCROLL_MS = 4000; // Takt pro Karte (Christian: 3–4 s; ruhiger 4 s,
+// gibt Lesezeit — WCAG: >5 s bewegte Inhalte brauchen Pause, hier zusätzlich
+// Pause bei Hover/Drag)
+const START_VERZOEGERUNG_MS = 3000; // erst 3 s nach Sichtbarkeit loslaufen,
+// damit die AI-Zusammenfassung (erste Karte) in Ruhe gelesen werden kann
+const SICHTBAR_SCHWELLE = 0.4; // Widget gilt ab 40 % im Viewport als „angekommen"
 const KARTEN_LUECKE_PX = 20;
 const CLAMP_ZEILEN = 6; // eingeklappte Höhe (wie zuvor)
 
 /**
  * Fix (1): AI-Zusammenfassung von Google — die von Google mit KI aus den
  * Rezensionen destillierten Kernthemen (business.summary.items im Reputon-
- * Feed, server-gecacht). Steht als erstes Element im Widget. Fehlt sie im
- * Feed, greift der statische Fallback aus googleReviewsFallback.js.
+ * Feed, server-gecacht). Wird — wie zuvor — als eigene „Bewertungs"-Karte
+ * IM Carousel gerendert und als ERSTE Karte in den Track gesetzt (gleicher
+ * Kartenstil wie die Rezensions-Karten). Fehlt sie im Feed, greift der
+ * statische Fallback aus googleReviewsFallback.js.
  */
-function GoogleAiSummary() {
-  const {aiSummary} = useGoogleReviews();
+function AiSummaryKarte({aiSummary}) {
   if (!Array.isArray(aiSummary) || aiSummary.length === 0) return null;
 
   return (
     <div
-      className="mb-5 p-4! bg-[#f3f6f9] rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-2.5"
+      className="snap-start flex-shrink-0 w-[85vw] sm:w-[340px] p-4! bg-[#f3f6f9] rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3"
+      style={{minHeight: 220}}
       aria-label="Mit KI zusammengefasste Google-Rezensionen von Qi Blanco"
     >
-      <div className="flex items-center gap-2">
-        <SparkleIcon />
-        <span className="text-sm font-medium text-gray-700">
-          Zusammenfassung von Google
-        </span>
+      {/* Kopfzeile im Karten-Stil: Titel links, Google-Logo rechts */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <SparkleIcon />
+          <span className="text-sm font-medium text-gray-700 truncate">
+            Zusammenfassung von Google
+          </span>
+        </div>
         <GoogleIcon />
       </div>
       <ul className="flex flex-col gap-1.5 m-0! p-0! list-none">
@@ -77,13 +86,13 @@ function GoogleAiSummary() {
           </li>
         ))}
       </ul>
-      <span className="text-xs text-gray-400">Mit KI zusammengefasst</span>
+      <span className="text-xs text-gray-400 mt-auto">Mit KI zusammengefasst</span>
     </div>
   );
 }
 
 function GoogleReviewsCarousel() {
-  const {reviews} = useGoogleReviews();
+  const {reviews, aiSummary} = useGoogleReviews();
   const trackRef = useRef(null);
   const hoverRef = useRef(false);
   const dragRef = useRef(false);
@@ -97,9 +106,13 @@ function GoogleReviewsCarousel() {
     dragRef.current = isDragging;
   }, [isDragging]);
 
-  // Sanfter Autoscroll wie beim bisherigen Widget: alle 5 s eine Karte
-  // weiter, am Ende zurück zum Anfang; pausiert bei Hover/Drag und
-  // respektiert prefers-reduced-motion.
+  // Sanfter Autoscroll: pro Karte (4 s) eine weiter, am Ende zurück zum
+  // Anfang; pausiert bei Hover/Drag und respektiert prefers-reduced-motion.
+  // NEU (Christian): NICHT sofort loslaufen — erst wenn das Widget wirklich
+  // im Viewport sichtbar ist (IntersectionObserver) UND dann noch 3 s
+  // warten, damit die AI-Zusammenfassung (erste Karte) in Ruhe gelesen
+  // werden kann. Verlässt das Widget den Viewport vor Ablauf, wird der
+  // Start-Timer zurückgesetzt (nur bei echtem „Ankommen" starten).
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return undefined;
@@ -109,7 +122,12 @@ function GoogleReviewsCarousel() {
     ) {
       return undefined;
     }
-    const intervall = setInterval(() => {
+
+    let gestartet = false;
+    let startTimer = 0;
+    let intervall = 0;
+
+    const einenSchritt = () => {
       if (hoverRef.current || dragRef.current || !track.isConnected) return;
       const karte = track.firstElementChild;
       if (!karte) return;
@@ -120,8 +138,49 @@ function GoogleReviewsCarousel() {
         left: amEnde ? 0 : track.scrollLeft + schritt,
         behavior: 'smooth',
       });
-    }, AUTOSCROLL_MS);
-    return () => clearInterval(intervall);
+    };
+
+    const starteAutoscroll = () => {
+      if (gestartet) return;
+      gestartet = true;
+      intervall = window.setInterval(einenSchritt, AUTOSCROLL_MS);
+    };
+
+    // Ohne IntersectionObserver (sehr alte Browser): konservativ sofort mit
+    // der Lese-Verzögerung starten statt gar nicht.
+    if (typeof IntersectionObserver === 'undefined') {
+      startTimer = window.setTimeout(starteAutoscroll, START_VERZOEGERUNG_MS);
+      return () => {
+        if (startTimer) window.clearTimeout(startTimer);
+        if (intervall) window.clearInterval(intervall);
+      };
+    }
+
+    const beobachter = new IntersectionObserver(
+      (eintraege) => {
+        const sichtbar = eintraege.some((e) => e.isIntersecting);
+        if (sichtbar) {
+          if (!gestartet && !startTimer) {
+            startTimer = window.setTimeout(() => {
+              startTimer = 0;
+              starteAutoscroll();
+            }, START_VERZOEGERUNG_MS);
+          }
+        } else if (startTimer) {
+          // Vor Ablauf wieder aus dem Blick → Start-Timer zurücksetzen
+          window.clearTimeout(startTimer);
+          startTimer = 0;
+        }
+      },
+      {threshold: SICHTBAR_SCHWELLE},
+    );
+    beobachter.observe(track);
+
+    return () => {
+      beobachter.disconnect();
+      if (startTimer) window.clearTimeout(startTimer);
+      if (intervall) window.clearInterval(intervall);
+    };
   }, [reviews.length]);
 
   if (!reviews.length) return null;
@@ -143,6 +202,7 @@ function GoogleReviewsCarousel() {
       role="region"
       aria-label="Neueste Google-Rezensionen von Qi Blanco"
     >
+      <AiSummaryKarte aiSummary={aiSummary} />
       {reviews.map((review) => (
         <ReviewKarte key={review.id || review.name} review={review} />
       ))}
