@@ -40,7 +40,6 @@ export function ReputonWidget() {
 const AUTOSCROLL_MS = 5000; // wie zuvor (Reputon data-delay=5)
 const KARTEN_LUECKE_PX = 20;
 const CLAMP_ZEILEN = 6; // eingeklappte Höhe (wie zuvor)
-const WEITERLESEN_AB_ZEICHEN = 180; // ab hier lohnt der Aufklapp-Umschalter
 
 /**
  * Fix (1): AI-Zusammenfassung von Google — die von Google mit KI aus den
@@ -153,8 +152,23 @@ function GoogleReviewsCarousel() {
 
 function ReviewKarte({review}) {
   const [offen, setOffen] = useState(false);
+  const [ueberlaeuft, setUeberlaeuft] = useState(false);
+  const textRef = useRef(null);
   const text = review.text || '';
-  const langerText = text.length > WEITERLESEN_AB_ZEICHEN;
+
+  // „weiterlesen" nur zeigen, wenn der geklammerte Text WIRKLICH überläuft
+  // (im eingeklappten Zustand gemessen — robust gegen Kartenbreite/Zeilenhöhe,
+  // statt einer Zeichenschwelle, die auf schmalen Karten daneben liegt).
+  useEffect(() => {
+    const messen = () => {
+      const el = textRef.current;
+      if (!el || offen) return;
+      setUeberlaeuft(el.scrollHeight > el.clientHeight + 4);
+    };
+    messen();
+    window.addEventListener('resize', messen);
+    return () => window.removeEventListener('resize', messen);
+  }, [text, offen]);
 
   return (
     <div
@@ -201,6 +215,7 @@ function ReviewKarte({review}) {
       {/* Fix (3): Review-Text — eingeklappt geklammert, „weiterlesen" klappt
           den GANZEN Text inline auf (kein externer Google-Link mehr). */}
       <p
+        ref={textRef}
         className="text-sm! text-gray-700 leading-relaxed whitespace-pre-line"
         style={
           offen
@@ -215,7 +230,7 @@ function ReviewKarte({review}) {
       >
         {text}
       </p>
-      {langerText ? (
+      {ueberlaeuft || offen ? (
         <button
           type="button"
           className="self-start text-xs font-medium text-[#1a73e8] hover:underline mt-auto bg-transparent border-0 p-0! cursor-pointer"
