@@ -57,14 +57,28 @@
   // damit die Zuordnung nicht verloren ist, wenn der Besucher erst später im
   // Funnel zustimmt oder per SPA-Navigation weitergeklickt hat, bevor er
   // zustimmt. Ein Cookie entsteht erst NACH Marketing-Consent (persist…).
+  //
+  // Job 20260802-fj1: der Record entsteht jetzt AUCH ohne Klick-ID. Vorher
+  // brach collectTrackedParams()==null hier ab — für Direkt-/Organik-Einstieg
+  // gab es NIE einen Record und damit server-seitig auch keine landing_page/
+  // referrer, obwohl das nicht-identifizierende Felder sind.
   function bufferAttributionParams() {
     var tracked = collectTrackedParams();
-    if (!tracked) return;
+
+    // Ein param-LOSER Record darf einen bestehenden NIE verdraengen: sonst
+    // loescht eine SPA-Navigation auf eine interne Seite — oder eine organische
+    // Rueckkehr in neuer Session, in der nur noch das 90-Tage-Cookie lebt — die
+    // Klick-Attribution des urspruenglichen Ad-Einstiegs. First-Touch gewinnt;
+    // ein Record MIT Params ueberschreibt weiterhin wie bisher (Last-Click).
+    if (!tracked) {
+      if (readBufferedAttribution()) return;
+      if (readCookie(ATTRIBUTION_STORAGE_KEY)) return;
+    }
 
     try {
       window.sessionStorage.setItem(
         ATTRIBUTION_STORAGE_KEY,
-        JSON.stringify(buildAttributionRecord(tracked)),
+        JSON.stringify(buildAttributionRecord(tracked || [])),
       );
     } catch {
       // Session storage can be unavailable in restricted browser contexts.
@@ -85,9 +99,12 @@
     var serialized = readBufferedAttribution();
 
     if (!serialized) {
+      // sessionStorage nicht verfuegbar (restriktiver Browser-Kontext): Record
+      // direkt aus der aktuellen Seite bilden. Auch hier gilt der Verdraengungs-
+      // Schutz — ohne Klick-ID nur schreiben, wenn noch KEIN Cookie existiert.
       var tracked = collectTrackedParams();
-      if (!tracked) return;
-      serialized = JSON.stringify(buildAttributionRecord(tracked));
+      if (!tracked && readCookie(ATTRIBUTION_STORAGE_KEY)) return;
+      serialized = JSON.stringify(buildAttributionRecord(tracked || []));
       try {
         window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, serialized);
       } catch {

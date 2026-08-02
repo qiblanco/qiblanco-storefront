@@ -29,7 +29,7 @@ export async function persistAttributionOnCartResult({
 }) {
   if (!result?.cart || !hasAttributionConsent(request, env)) return result;
 
-  const attributionAttributes = getAttributionCartAttributes(request);
+  const attributionAttributes = getAttributionCartAttributes(request, env);
   if (!attributionAttributes.length) return result;
 
   const {attributes, changed} = mergeCartAttributes(
@@ -65,15 +65,28 @@ export function hasAttributionConsent(request, env) {
 
 /**
  * @param {Request} request
+ * @param {Record<string, string | undefined> | undefined} env
  */
-export function getAttributionCartAttributes(request) {
+export function getAttributionCartAttributes(request, env) {
   const url = new URL(request.url);
 
   return buildAttributionCartAttributes({
     searchParams: url.searchParams,
     cookieHeader: request.headers.get('Cookie'),
     includeCookies: true,
+    alwaysMarkEntry: isEntryMarkEnabled(env),
   });
+}
+
+/**
+ * Kill-Schalter für den Einstiegs-Marker (Job 20260802-fj1). Abwesenheit = on
+ * (Parity zum LINKAGE_GATE); nur ein ausdrueckliches 'off' stellt das alte
+ * All-or-Nothing-Verhalten wieder her.
+ *
+ * @param {Record<string, string | undefined> | undefined} env
+ */
+function isEntryMarkEnabled(env) {
+  return env?.PUBLIC_ATTRIBUTION_ENTRY_MARK !== 'off';
 }
 
 /**
