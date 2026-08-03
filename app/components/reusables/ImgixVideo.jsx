@@ -6,7 +6,7 @@ import Hls from 'hls.js';
  *
  * Browser-Autoplay-Policy erlaubt Video-Autoplay NUR stummgeschaltet, darum
  * bleibt das `muted`-HTML-ATTRIBUT unten hart gesetzt (das ist es, was der
- * Browser VOR jedem JS fuer die Autoplay-Erlaubnis prueft). Der sichtbare
+ * Browser VOR jedem JS für die Autoplay-Erlaubnis prueft). Der sichtbare
  * Button togglet danach NUR die `.muted`-DOM-PROPERTY per Klick (= die
  * geforderte User-Geste) — kein Versuch, gegen die Policy anzuautoplayen.
  * Konzept + Abgrenzung: homepage-bauer/SKILL-VIDEO-SOUND-TOGGLE.md.
@@ -52,7 +52,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
   }, [hlsUrl, mp4Url]);
 
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
-  // das Attribut bleibt fuer die Autoplay-Erlaubnis unveraendert `muted`).
+  // das Attribut bleibt für die Autoplay-Erlaubnis unveraendert `muted`).
   useEffect(() => {
     const video = videoRef.current;
     if (video) video.muted = stumm;
