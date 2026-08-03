@@ -4,6 +4,7 @@ import {
   getCheckoutTrackingSearchParams,
   isQiblancoProductionHost,
   mergeCartAttributes,
+  resolveAttributionSource,
 } from '~/lib/checkout-tracking';
 import {hasRegionAwareTrackingPermission} from '~/lib/consent-policy';
 
@@ -73,6 +74,9 @@ export function getAttributionCartAttributes(request) {
     searchParams: url.searchParams,
     cookieHeader: request.headers.get('Cookie'),
     includeCookies: true,
+    // Beschriftet den Warenkorb mit der Flaeche, von der er kam. Aendert nichts
+    // am Consent-Gate und nichts an der Kanal-Attribution.
+    source: resolveAttributionSource(request.headers.get('Referer')),
   });
 }
 

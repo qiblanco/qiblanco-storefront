@@ -52,6 +52,51 @@ const TRACKING_COOKIE_NAMES = new Set([
 
 const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
 
+export const ATTRIBUTION_SOURCE_DEFAULT = 'qiblanco_hydrogen';
+
+/**
+ * Herkunfts-Flaechen, die ueber die Bridge-Route /cart/<variantId>:<qty> in
+ * diesen Checkout fuehren, aber NICHT diese Storefront sind.
+ *
+ * Warum ueberhaupt: seit Crystal Cacao eine eigene Domain bekommt, tragen die
+ * Orders beider Flaechen dasselbe `attribution_source: 'qiblanco_hydrogen'` —
+ * in der Auswertung sind sie danach nicht mehr auseinanderzuhalten. Das ist
+ * KEINE Attributions-Aenderung: welcher Kanal den Kauf verursacht hat,
+ * entscheidet weiterhin allein die Klick-ID (siehe attribution_orders_merge.py
+ * CLICK_SIGNAL_KEYS). Hier wird nur beschriftet, WO der Warenkorb entstand.
+ *
+ * Quelle ist der Referer-HEADER, nicht ein Query-Parameter: bei einer
+ * Cross-Origin-Navigation liefert der Browser unter der Default-Referrer-
+ * Policy genau den Origin — und niemand kann ihn per Link-Basteln faelschen,
+ * ohne tatsaechlich von dort zu kommen. Nur Hosts aus dieser Liste ergeben
+ * einen eigenen Wert; alles andere bleibt beim Default.
+ */
+const ATTRIBUTION_SOURCE_BY_HOST = new Map([
+  ['crystal-cacao.de', 'crystal_cacao_site'],
+  ['www.crystal-cacao.de', 'crystal_cacao_site'],
+  ['crystalcacao.de', 'crystal_cacao_site'],
+  ['www.crystalcacao.de', 'crystal_cacao_site'],
+  ['crystal-cacao.com', 'crystal_cacao_site'],
+  ['www.crystal-cacao.com', 'crystal_cacao_site'],
+]);
+
+/**
+ * @param {string | null | undefined} refererHeader
+ * @returns {string}
+ */
+export function resolveAttributionSource(refererHeader) {
+  if (!refererHeader) return ATTRIBUTION_SOURCE_DEFAULT;
+  try {
+    const {hostname} = new URL(refererHeader);
+    return (
+      ATTRIBUTION_SOURCE_BY_HOST.get(hostname.toLowerCase()) ??
+      ATTRIBUTION_SOURCE_DEFAULT
+    );
+  } catch {
+    return ATTRIBUTION_SOURCE_DEFAULT;
+  }
+}
+
 /**
  * Appends only allowlisted ad attribution values to a checkout URL.
  *
@@ -136,6 +181,7 @@ export function buildAttributionCartAttributes({
   searchParams,
   cookieHeader,
   includeCookies = true,
+  source = ATTRIBUTION_SOURCE_DEFAULT,
 } = {}) {
   const storedAttribution = readStoredAttribution(cookieHeader);
   const trackingParams = getCheckoutTrackingSearchParams({
@@ -158,7 +204,7 @@ export function buildAttributionCartAttributes({
     'attribution_saved_at',
     storedAttribution?.savedAt,
   );
-  addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
+  addCartAttribute(attributes, 'attribution_source', source);
 
   return attributes;
 }
