@@ -102,7 +102,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     if (ziel) {
       // Responsive-Repair 2026-08-04: scrollIntoView({block:'start'}) legt die
       // Sektionsoberkante auf die VIEWPORT-Oberkante und ignoriert damit den
-      // fixen Kopf. scrolleZuRezensionen misst die Kopfhoehe live (Mobil-Kopf
+      // fixen Kopf. scrolleZuRezensionen misst die Kopfhöhe live (Mobil-Kopf
       // ist niedriger als Desktop) und zieht sie ab — kein Doppel-Offset.
       scrolleZuRezensionen(ziel);
     } else {

@@ -4729,7 +4729,7 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
 
 /* Responsive-Repair 2026-08-04 (Job bl-20260804T022554Z-a0de0e):
    Die obere Sektion "Beeindruckende Kundenerfahrungen" ist seither das
-   primaere Sprungziel des 4,8-Klicks und traegt dafuer den Anker
+   primäre Sprungziel des 4,8-Klicks und trägt dafür den Anker
    #kundenerfahrungen. Diese Regel deckt NUR den nativen Hash-/No-JS-Pfad
    ab (Direktlink, Reload mit #kundenerfahrungen) — der Klick selbst rechnet
    den Offset live in scrolleZuRezensionen(). Gemessen 2026-08-04 ist die

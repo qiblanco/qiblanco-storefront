@@ -77,29 +77,29 @@ const CLAMP_ZEILEN = 6; // eingeklappte Höhe (wie zuvor)
 // Die bisherige Pause hing allein an hoverRef (onPointerEnter/Leave) und
 // dragRef (isDragging aus useDragSwipe). BEIDE sind auf Touch baulich
 // wirkungslos:
-//   • useDragSwipe.js:145 steigt im mode 'scroll' fuer jeden pointerType
-//     ausser 'mouse' sofort aus (Touch scrollt nativ) -> isDragging bleibt
+//   • useDragSwipe.js:145 steigt im mode 'scroll' für jeden pointerType
+//     außer 'mouse' sofort aus (Touch scrollt nativ) -> isDragging bleibt
 //     auf dem Handy IMMER false.
 //   • pointerleave feuert auf Touch bereits beim Finger-Heben -> hoverRef
 //     ist Sekundenbruchteile nach dem Wisch wieder false.
-// Gemessen (vorher_live.json): Autoscroll laeuft nach echter Touch-Geste
+// Gemessen (vorher_live.json): Autoscroll läuft nach echter Touch-Geste
 // weiter @360/390/414/768, nur @1440 (Maus) stand er still.
-// Deshalb zusaetzlich ein geraete-unabhaengiger Interaktions-Riegel:
-// jede echte Nutzer-Geste setzt einen Zeitstempel, und der Takt ruht, bis
-// WIEDERAUFNAHME_MS lang KEINE Geste mehr kam.
-// WIEDERAUFNAHME — bewusst NICHT ueber einen Timer:
+// Deshalb zusätzlich ein geräte-unabhängiger Interaktions-Riegel
+// (`uebernommen`): jede echte Nutzer-Geste legt ihn um, und der Takt ruht,
+// solange er liegt.
+// WIEDERAUFNAHME — bewusst NICHT über einen Timer:
 // Ein Zeit-Timeout („nach X s wieder loslaufen") stellt genau Christians
 // Beschwerde wieder her, denn Lesen erzeugt keine Events — nach Ablauf
 // springt die Karte mitten im Satz weg. Gemessen: mit 8-s-Timer war W2 auf
 // 360/390/414/768 px weiterhin rot. Der Auftrag nennt die Wiederaufnahme
-// ausdruecklich nur als „idealerweise"; verbindlich ist „geht aus".
-// Deshalb: der Takt ruht, sobald der Nutzer die Steuerung uebernimmt, und
+// ausdrücklich nur als „idealerweise"; verbindlich ist „geht aus".
+// Deshalb: der Takt ruht, sobald der Nutzer die Steuerung übernimmt, und
 // wird erst wieder freigegeben, wenn der Slider den Viewport VERLASSEN hat
-// (echte Inaktivitaet am Widget) — dann startet er beim naechsten
-// „Ankommen" erneut mit der ueblichen Lese-Verzoegerung.
-// Ein programmatischer scrollTo({behavior:'smooth'}) loest selbst scroll-
+// (echte Inaktivität am Widget) — dann startet er beim nächsten
+// „Ankommen" erneut mit der üblichen Lese-Verzögerung.
+// Ein programmatischer scrollTo({behavior:'smooth'}) löst selbst scroll-
 // Events aus. Innerhalb dieses Fensters gelten sie NICHT als Nutzer-Geste,
-// sonst wuerde der Autoscroll sich mit dem ersten Schritt selbst abschalten.
+// sonst würde der Autoscroll sich mit dem ersten Schritt selbst abschalten.
 const PROGRAMMATISCH_FENSTER_MS = 1500;
 
 /**
