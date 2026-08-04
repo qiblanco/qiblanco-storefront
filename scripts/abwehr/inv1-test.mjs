@@ -57,6 +57,14 @@ const SIGNALE_90 = {
   missing_behavior_token: true,
 }; // 35+15+30+10=90 -> S3
 
+// LANE-LAGE (seit der Erlaub-Lane, kundenpfad.js): der Score allein bestimmt
+// die Stufe nicht mehr — er wird VOR der Eskalation lane-gedeckelt. Ein
+// Besucher, ueber den nichts Belastendes bekannt ist, kommt hoechstens auf S2;
+// ein Besucher mit Kunden-Muster hoechstens auf S1. Tests, die eine BESTIMMTE
+// Stufe erzwingen wollen, muessen die Lane-Lage deshalb explizit benennen —
+// sie zu umgehen waere genau die Test-Umgebung, in der die Lane nie laeuft.
+const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
+
 // ---- 1) Struktur: Aktions-Objekt kann baulich keinen Content tragen --------
 {
   let sauber = true;
@@ -116,7 +124,7 @@ const SIGNALE_90 = {
 {
   _testReset();
   const env = {SM_MODE: 'on'};
-  const r90 = await mitAbwehr(req(), env, undefined, next, SIGNALE_90);
+  const r90 = await mitAbwehr(req(), env, undefined, next, SIGNALE_90, LANE_BULK);
   ok(
     r90.status === 503 && r90.headers.get('Retry-After') === '900',
     'On/S3: uniformer befristeter 503-Temp-Block (Statuscode-Eskalation erlaubt)',
@@ -127,7 +135,7 @@ const SIGNALE_90 = {
 {
   _testReset();
   const env = {SM_MODE: 'on'};
-  const rCart = await mitAbwehr(req('/cart'), env, undefined, next, SIGNALE_90);
+  const rCart = await mitAbwehr(req('/cart'), env, undefined, next, SIGNALE_90, LANE_BULK);
   ok(
     rCart.status === 429,
     'On/Checkout: S3 auf /cart wird zur Challenge gekappt (never-block-Checkout)',
@@ -145,6 +153,7 @@ const SIGNALE_90 = {
     undefined,
     next,
     SIGNALE_65,
+    LANE_BULK,
   );
   _testReset();
   const b = await mitAbwehr(
@@ -153,6 +162,7 @@ const SIGNALE_90 = {
     undefined,
     next,
     SIGNALE_65,
+    LANE_BULK,
   );
   ok(
     a.status === 429 && b.status === 429 && (await hash(a)) === (await hash(b)),

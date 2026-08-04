@@ -33,6 +33,13 @@
 import {score as scoreBerechnen} from './scoring.js';
 import {aktion as aktionBerechnen, HYSTERESE_N} from './eskalation.js';
 import {headerSignale, pfadSignale, vollkatalogRatio} from './signals.js';
+import {bewerte as laneBewerte, capsAusEnv, laneAktiv} from './kundenpfad.js';
+import {
+  ausWorkerZustand,
+  istIntent,
+  istSweep,
+  LANE_MAX_PFADE_GEMERKT,
+} from './kundenpfad_signale.js';
 
 // ---- Konfiguration (env-overridebar, Defaults konservativ) -----------------
 
@@ -47,9 +54,19 @@ const ASSET_RE =
 
 // ---- In-Memory-State (pro Isolate; F-2 ehrlich: best-effort) ---------------
 
+// Beobachtungsfenster der Erlaub-Lane. BEWUSST identisch mit
+// KATALOG_FENSTER_MS: `katalog_ratio` (Lane) und `vollkatalog_ratio` (Score)
+// sind DIESELBE Groesse — verschiedene Fenster wuerden Score und Lane ueber
+// "Breite" verschiedener Meinung sein lassen.
+const LANE_FENSTER_MS = KATALOG_FENSTER_MS;
+
+/**
+ * @typedef {{anfragen: number, pfade: Set<string>, intent: number,
+ *            sweep: boolean, seit: number}} LaneState
+ */
 /**
  * @typedef {{fenster: number[], katalog: Set<string>, verlauf: number[],
- *            zuletzt: number}} KeyState
+ *            zuletzt: number, lane: LaneState}} KeyState
  */
 /** @type {Map<string, KeyState>} */
 const zustand = new Map();
@@ -92,6 +109,34 @@ async function besucherSchluessel(request, jetzt) {
     .join('');
 }
 
+/** @returns {LaneState} */
+function leeresLaneFenster(jetzt) {
+  return {anfragen: 0, pfade: new Set(), intent: 0, sweep: false, seit: jetzt};
+}
+
+/**
+ * Traegt einen Abruf ins Lane-Fenster ein (Achsen VOLUMEN/BREITE/INTENT/MUSTER).
+ * Der Schluessel ist Pfad + Query: `?page=7` ist ein anderer Abruf als
+ * `?page=1`, und die Sweep-Erkennung braucht den Query ohnehin.
+ * @param {LaneState} l
+ */
+function laneErfassen(l, pfadMitQuery, jetzt) {
+  if (jetzt - l.seit > LANE_FENSTER_MS) {
+    const frisch = leeresLaneFenster(jetzt);
+    l.anfragen = frisch.anfragen;
+    l.pfade = frisch.pfade;
+    l.intent = frisch.intent;
+    l.sweep = frisch.sweep;
+    l.seit = jetzt;
+  }
+  l.anfragen += 1;
+  // Memory-Deckel: die Menge saettigt OBERHALB von BULK_PFADE (40), ein
+  // saturierter Zaehler faellt also nach `bulk` = weniger Schutz, nie mehr.
+  if (l.pfade.size < LANE_MAX_PFADE_GEMERKT) l.pfade.add(pfadMitQuery);
+  if (istIntent(pfadMitQuery)) l.intent += 1;
+  if (istSweep(pfadMitQuery)) l.sweep = true;
+}
+
 /** @returns {KeyState} */
 function keyState(schluessel, jetzt) {
   let st = zustand.get(schluessel);
@@ -108,7 +153,13 @@ function keyState(schluessel, jetzt) {
       }
       if (aeltester) zustand.delete(aeltester);
     }
-    st = {fenster: [], katalog: new Set(), verlauf: [], zuletzt: jetzt};
+    st = {
+      fenster: [],
+      katalog: new Set(),
+      verlauf: [],
+      zuletzt: jetzt,
+      lane: leeresLaneFenster(jetzt),
+    };
     zustand.set(schluessel, st);
   }
   st.zuletzt = jetzt;
@@ -169,8 +220,13 @@ function modus(env) {
  * @param {{waitUntil?: Function}} [ctx]
  * @param {Record<string, unknown>} [testSignale] NUR fuer Tests: ersetzt die
  *        gesammelten Signale (die Entscheidungs-/Antwort-Kette bleibt echt).
+ * @param {Record<string, unknown>} [testLaneSignale] NUR fuer Tests: ersetzt
+ *        die aus dem Isolate-Zustand abgeleiteten LANE-Signale. Symmetrisch zu
+ *        `testSignale` — ein Test, der eine bestimmte Eskalations-Stufe
+ *        erzwingen will, muss die Lane-Lage explizit benennen statt sie zu
+ *        umgehen (`{evasion: true}` = bulk = kein Deckel).
  */
-export async function pruefe(request, env, ctx, testSignale) {
+export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
   const jetzt = Date.now();
   const url = new URL(request.url);
   const pfad = url.pathname;
@@ -186,7 +242,17 @@ export async function pruefe(request, env, ctx, testSignale) {
     st.fenster = [];
     st.katalog.clear();
     st.verlauf = [];
+    // Das Lane-Fenster gehoert zum selben Reset: wer die Challenge geloest
+    // hat, startet auf ALLEN Achsen frisch. Ein stehenbleibendes Lane-Fenster
+    // waere die einzige Achse, auf der ihn seine Vorgeschichte weiter belastet.
+    st.lane = leeresLaneFenster(jetzt);
   }
+
+  // Lane-Fenster IMMER fuehren — auch im Test-Signal-Pfad. Die Erfassung ist
+  // von der Score-Berechnung unabhaengig; wer sie an `testSignale` haengt,
+  // baut sich eine Test-Umgebung, in der die Lane nie laeuft.
+  const pfadMitQuery = pfad + url.search;
+  laneErfassen(st.lane, pfadMitQuery, jetzt);
 
   /** @type {Record<string, unknown>} */
   let signale;
@@ -252,7 +318,31 @@ export async function pruefe(request, env, ctx, testSignale) {
     if (ps.treffer.length) gruende = gruende.concat(ps.treffer);
   }
 
-  const sc = scoreBerechnen(signale);
+  const scRoh = scoreBerechnen(signale);
+
+  // ---- ERLAUB-LANE: der monotone Daempfer VOR der Eskalation --------------
+  // Die Reihenfolge ist tragend: der Deckel muss VOR `st.verlauf.push()`
+  // greifen. Die Eskalation urteilt ueber `stufeMitHysterese(st.verlauf)` —
+  // ein erst danach gedeckelter Score liesse die ROHEN Werte in der Historie
+  // stehen, und der naechste Request eskaliert daran vorbei.
+  const laneSignale =
+    testLaneSignale || ausWorkerZustand(st, signale.vollkatalog_ratio ?? 0);
+  let laneVerdikt = null;
+  let laneFehler = null;
+  let sc = scRoh;
+  if (laneAktiv(env)) {
+    try {
+      laneVerdikt = laneBewerte(scRoh, laneSignale, capsAusEnv(env));
+      sc = laneVerdikt.score_nachher;
+    } catch (e) {
+      // Ein Lane-Fehler faellt auf den ROHEN Score zurueck — den Zustand VOR
+      // dieser Lane, nie auf einen erfundenen Deckel. Er wird aber SICHTBAR
+      // (Shadow-Log), statt den Schutz still abzuschalten.
+      laneFehler = String(e?.message || e);
+      sc = scRoh;
+    }
+  }
+
   st.verlauf.push(sc);
   if (st.verlauf.length > HYSTERESE_N) {
     st.verlauf = st.verlauf.slice(-HYSTERESE_N);
@@ -262,9 +352,22 @@ export async function pruefe(request, env, ctx, testSignale) {
   return {
     modus: modus(env),
     score: sc,
+    score_roh: scRoh,
     stufe: akt.stufe,
     aktion: akt,
     signale,
+    lane: laneVerdikt
+      ? {
+          verdikt: laneVerdikt.lane,
+          max_stufe: laneVerdikt.max_stufe,
+          gedaempft_um: laneVerdikt.gedaempft_um,
+          begruendung: laneVerdikt.begruendung,
+          belege: laneVerdikt.belege,
+          signale: laneVerdikt.signale,
+        }
+      : null,
+    lane_aktiv: laneAktiv(env),
+    lane_fehler: laneFehler,
     gruende,
     schluessel,
     pfad,
@@ -334,7 +437,14 @@ function shadowLog(verdikt) {
   // keine IP/UA (INV-3). Rueckfluss in die sicherheitsmeister-Signal-DB =
   // deklarierte offene Flanke (s05/s06).
   try {
-    if (verdikt.stufe !== 'S0' || verdikt.challengeBestanden) {
+    if (
+      verdikt.stufe !== 'S0' ||
+      verdikt.challengeBestanden ||
+      verdikt.lane_fehler ||
+      // Eine wirksame Daempfung ist das interessanteste Ereignis der
+      // Lane — sie faellt oft AUF S0 und waere sonst unsichtbar.
+      (verdikt.lane && verdikt.lane.gedaempft_um > 0)
+    ) {
       // eslint-disable-next-line no-console -- structured Shadow-Log ist der Zweck
       console.log(
         JSON.stringify({
@@ -342,6 +452,17 @@ function shadowLog(verdikt) {
           modus: verdikt.modus,
           stufe: verdikt.stufe,
           score: verdikt.score,
+          score_roh: verdikt.score_roh,
+          lane: verdikt.lane
+            ? {
+                verdikt: verdikt.lane.verdikt,
+                max_stufe: verdikt.lane.max_stufe,
+                gedaempft_um: verdikt.lane.gedaempft_um,
+                signale: verdikt.lane.signale,
+              }
+            : null,
+          lane_aktiv: verdikt.lane_aktiv,
+          lane_fehler: verdikt.lane_fehler,
           gruende: verdikt.gruende,
           signale: verdikt.signale,
           schluessel: verdikt.schluessel,
@@ -365,18 +486,22 @@ function shadowLog(verdikt) {
  *  - on: S2/S3 -> uniforme Challenge-/Block-Antwort (NIE auf Checkout-Block,
  *    eskalation.js kappt auf Challenge); S1 -> Retry-After-Header + tarpit
  *    auf der UNVERAENDERTEN Antwort (Body-Bytes identisch, INV-1); S0 -> pur.
+ *  - Die ERLAUB-LANE (kundenpfad.js) deckelt den Score VOR der Eskalation.
+ *    Sie kann eine Stufe nur SENKEN (INV-8), nie anheben — die obigen
+ *    Garantien bleiben davon unberuehrt.
  *
  * @param {Request} request
  * @param {Record<string, string|undefined>} env
  * @param {{waitUntil?: Function}} ctx
  * @param {() => Promise<Response>} next
  * @param {Record<string, unknown>} [testSignale] NUR fuer Tests (INV-1-Test).
+ * @param {Record<string, unknown>} [testLaneSignale] NUR fuer Tests (Lane-Lage).
  */
-export async function mitAbwehr(request, env, ctx, next, testSignale) {
+export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSignale) {
   let verdikt = null;
   try {
     if (modus(env) === 'off') return await next();
-    verdikt = await pruefe(request, env, ctx, testSignale);
+    verdikt = await pruefe(request, env, ctx, testSignale, testLaneSignale);
     shadowLog(verdikt);
     if (
       verdikt.modus === 'on' &&

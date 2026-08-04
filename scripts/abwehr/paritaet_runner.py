@@ -18,6 +18,8 @@ SM_SRC = os.environ.get(
 sys.path.insert(0, SM_SRC)
 
 import eskalation  # noqa: E402
+import kundenpfad  # noqa: E402
+import kundenpfad_signale  # noqa: E402
 import scoring  # noqa: E402
 import signals  # noqa: E402
 
@@ -27,6 +29,17 @@ def _safe(fn):
         return fn()
     except ValueError:
         return {"wirft": True}
+
+
+def _deckel(v):
+    """`explizit` unterscheidet 'max_stufe weggelassen' von 'max_stufe=None'.
+
+    Weglassen zieht den Standard-Deckel des Verdikts, ein explizites None
+    schaltet den Deckel ab — ueber JSON waeren beide sonst dasselbe `null`.
+    """
+    if v.get("explizit"):
+        return kundenpfad.deckel_score(v["score"], v["lane"], v.get("max_stufe"))
+    return kundenpfad.deckel_score(v["score"], v["lane"])
 
 
 def main():
@@ -58,6 +71,26 @@ def main():
             v.get("pfad", ""), v.get("query", "")))
         for v in vek["pfad"]
     ]
+    out["lane_entscheide"] = [
+        _safe(lambda v=v: kundenpfad.entscheide(v)) for v in vek["lane_entscheide"]
+    ]
+    out["lane_deckel"] = [
+        _safe(lambda v=v: {"score": _deckel(v)}) for v in vek["lane_deckel"]
+    ]
+    out["lane_bewerte"] = [
+        _safe(lambda v=v: kundenpfad.bewerte(
+            v["score"], v["signale"], v.get("caps")))
+        for v in vek["lane_bewerte"]
+    ]
+    out["lane_signale"] = [
+        _safe(lambda v=v: kundenpfad_signale.aus_verlauf(
+            [tuple(a) if isinstance(a, list) else a for a in v["abrufe"]],
+            v.get("katalog_groesse", 60),
+            v.get("netz_klasse", "unbestimmt"),
+            v.get("evasion", False)))
+        for v in vek["lane_signale"]
+    ]
+
     # Drift-Anker: echte Version aus der YAML-SSoT — muss WAF_RULES_VERSION
     # (JS-Spiegel) entsprechen, sonst ist der JS-Port veraltet.
     import yaml
