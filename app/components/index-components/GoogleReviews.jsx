@@ -1,4 +1,5 @@
 import {ReviewsSlider} from '~/components/index-components/ReputonWidget';
+import {GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID} from '~/components/reusables/GoogleRezensionenBereich';
 import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
 
 /**
@@ -18,8 +19,12 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  */
 export function GoogleReviews({dataSection}) {
   return (
+    // Anker (Responsive-Repair 2026-08-04): Sprungziel des 4,8-Klicks im
+    // Header-Banner. Vorher anker-los — der Klick sprang an dieser Sektion
+    // vorbei zur weiter unten liegenden #google-rezensionen-Sektion.
     <section
-      className="NormalSectionSize"
+      id={GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID}
+      className="GoogleKundenerfahrungen NormalSectionSize"
       {...(dataSection ? {'data-section': dataSection} : {})}
     >
       <h2 className="text-[1.6rem] sm:text-4xl font-semibold text-center mb-6 mt-2">

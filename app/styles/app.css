@@ -4726,6 +4726,19 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
   margin-top: 3rem;
   margin-bottom: 3rem;
 }
+
+/* Responsive-Repair 2026-08-04 (Job bl-20260804T022554Z-a0de0e):
+   Die obere Sektion "Beeindruckende Kundenerfahrungen" ist seither das
+   primäre Sprungziel des 4,8-Klicks und trägt dafür den Anker
+   #kundenerfahrungen. Diese Regel deckt NUR den nativen Hash-/No-JS-Pfad
+   ab (Direktlink, Reload mit #kundenerfahrungen) — der Klick selbst rechnet
+   den Offset live in scrolleZuRezensionen(). Gemessen 2026-08-04 ist die
+   Kopf-Unterkante bei 360/390/768/1440 px 127-137 px hoch, 150 px deckt
+   alle Formate mit etwas Luft ab (gleicher Wert wie beim Schwester-Anker,
+   damit beide Sprungziele identisch sitzen). */
+.GoogleKundenerfahrungen {
+  scroll-margin-top: 150px;
+}
 .GoogleRezensionenBereich-titel {
   text-align: center;
   margin-bottom: 1.75rem;

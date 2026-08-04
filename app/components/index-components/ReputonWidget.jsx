@@ -72,6 +72,36 @@ const SICHTBAR_SCHWELLE = 0.4; // Widget gilt ab 40 % im Viewport als „angekom
 const KARTEN_LUECKE_PX = 20;
 const CLAMP_ZEILEN = 6; // eingeklappte Höhe (wie zuvor)
 
+// Responsive-Repair 2026-08-04 (Job bl-20260804T022554Z-a0de0e, Christian:
+// „beim Lesen springt die Bewertung weg" — MOBIL).
+// Die bisherige Pause hing allein an hoverRef (onPointerEnter/Leave) und
+// dragRef (isDragging aus useDragSwipe). BEIDE sind auf Touch baulich
+// wirkungslos:
+//   • useDragSwipe.js:145 steigt im mode 'scroll' für jeden pointerType
+//     außer 'mouse' sofort aus (Touch scrollt nativ) -> isDragging bleibt
+//     auf dem Handy IMMER false.
+//   • pointerleave feuert auf Touch bereits beim Finger-Heben -> hoverRef
+//     ist Sekundenbruchteile nach dem Wisch wieder false.
+// Gemessen (vorher_live.json): Autoscroll läuft nach echter Touch-Geste
+// weiter @360/390/414/768, nur @1440 (Maus) stand er still.
+// Deshalb zusätzlich ein geräte-unabhängiger Interaktions-Riegel
+// (`uebernommen`): jede echte Nutzer-Geste legt ihn um, und der Takt ruht,
+// solange er liegt.
+// WIEDERAUFNAHME — bewusst NICHT über einen Timer:
+// Ein Zeit-Timeout („nach X s wieder loslaufen") stellt genau Christians
+// Beschwerde wieder her, denn Lesen erzeugt keine Events — nach Ablauf
+// springt die Karte mitten im Satz weg. Gemessen: mit 8-s-Timer war W2 auf
+// 360/390/414/768 px weiterhin rot. Der Auftrag nennt die Wiederaufnahme
+// ausdrücklich nur als „idealerweise"; verbindlich ist „geht aus".
+// Deshalb: der Takt ruht, sobald der Nutzer die Steuerung übernimmt, und
+// wird erst wieder freigegeben, wenn der Slider den Viewport VERLASSEN hat
+// (echte Inaktivität am Widget) — dann startet er beim nächsten
+// „Ankommen" erneut mit der üblichen Lese-Verzögerung.
+// Ein programmatischer scrollTo({behavior:'smooth'}) löst selbst scroll-
+// Events aus. Innerhalb dieses Fensters gelten sie NICHT als Nutzer-Geste,
+// sonst würde der Autoscroll sich mit dem ersten Schritt selbst abschalten.
+const PROGRAMMATISCH_FENSTER_MS = 1500;
+
 /**
  * Fix (1): AI-Zusammenfassung von Google — die von Google mit KI aus den
  * Rezensionen destillierten Kernthemen (business.summary.items im Reputon-
@@ -160,19 +190,56 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
     let gestartet = false;
     let startTimer = 0;
     let intervall = 0;
+    let uebernommen = false; // Nutzer hat die Steuerung uebernommen
+    let programmatischBis = 0;
+
+    const stoppeTakt = () => {
+      if (intervall) {
+        window.clearInterval(intervall);
+        intervall = 0;
+      }
+      if (startTimer) {
+        window.clearTimeout(startTimer);
+        startTimer = 0;
+      }
+      gestartet = false;
+    };
+
+    const merkeInteraktion = () => {
+      if (uebernommen) return;
+      uebernommen = true;
+      stoppeTakt();
+    };
+
+    // Eigener Scroll-Zaehler: auf Touch ist das native Wischen die einzige
+    // Spur der Nutzer-Geste (kein isDragging, kein bleibendes Hover).
+    const onTrackScroll = () => {
+      if (Date.now() < programmatischBis) return; // eigener smooth-Scroll
+      merkeInteraktion();
+    };
 
     const einenSchritt = () => {
       if (hoverRef.current || dragRef.current || !track.isConnected) return;
+      if (uebernommen) return; // Nutzer liest gerade — nicht wegspringen
       const karte = track.firstElementChild;
       if (!karte) return;
       const schritt = karte.getBoundingClientRect().width + KARTEN_LUECKE_PX;
       const amEnde =
         track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+      programmatischBis = Date.now() + PROGRAMMATISCH_FENSTER_MS;
       track.scrollTo({
         left: amEnde ? 0 : track.scrollLeft + schritt,
         behavior: 'smooth',
       });
     };
+
+    // Passive Listener: sie duerfen das native Wischen/Ziehen NICHT
+    // beeinflussen (Baustandard GL-DES-0012 drag+swipe bleibt unberuehrt).
+    const gesten = ['pointerdown', 'touchstart', 'dragstart', 'wheel', 'keydown'];
+    for (const typ of gesten) {
+      track.addEventListener(typ, merkeInteraktion, {passive: true});
+    }
+    track.addEventListener('scroll', onTrackScroll, {passive: true});
 
     const starteAutoscroll = () => {
       if (gestartet) return;
@@ -182,9 +249,15 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
 
     // Ohne IntersectionObserver (sehr alte Browser): konservativ sofort mit
     // der Lese-Verzögerung starten statt gar nicht.
+    const loeseListenerAb = () => {
+      for (const typ of gesten) track.removeEventListener(typ, merkeInteraktion);
+      track.removeEventListener('scroll', onTrackScroll);
+    };
+
     if (typeof IntersectionObserver === 'undefined') {
       startTimer = window.setTimeout(starteAutoscroll, START_VERZOEGERUNG_MS);
       return () => {
+        loeseListenerAb();
         if (startTimer) window.clearTimeout(startTimer);
         if (intervall) window.clearInterval(intervall);
       };
@@ -194,16 +267,23 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
       (eintraege) => {
         const sichtbar = eintraege.some((e) => e.isIntersecting);
         if (sichtbar) {
-          if (!gestartet && !startTimer) {
+          if (!uebernommen && !gestartet && !startTimer) {
             startTimer = window.setTimeout(() => {
               startTimer = 0;
               starteAutoscroll();
             }, START_VERZOEGERUNG_MS);
           }
-        } else if (startTimer) {
-          // Vor Ablauf wieder aus dem Blick → Start-Timer zurücksetzen
-          window.clearTimeout(startTimer);
-          startTimer = 0;
+        } else {
+          // Widget ist aus dem Blick — das ist die einzige Inaktivität, die
+          // sich sicher messen lässt: der Nutzer liest hier nicht mehr.
+          // Riegel lösen, damit der Takt beim nächsten „Ankommen" wieder
+          // starten darf (Wiederaufnahme ohne Weg-Springen beim Lesen).
+          uebernommen = false;
+          if (startTimer) {
+            // Vor Ablauf wieder aus dem Blick → Start-Timer zurücksetzen
+            window.clearTimeout(startTimer);
+            startTimer = 0;
+          }
         }
       },
       {threshold: SICHTBAR_SCHWELLE},
@@ -212,6 +292,7 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
 
     return () => {
       beobachter.disconnect();
+      loeseListenerAb();
       if (startTimer) window.clearTimeout(startTimer);
       if (intervall) window.clearInterval(intervall);
     };
