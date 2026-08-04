@@ -9,6 +9,7 @@ import {useGoogleRating} from '~/lib/googleRating';
 import {
   GoogleRezensionenPopup,
   findeRezensionsZiel,
+  scrolleZuRezensionen,
   GOOGLE_REZENSIONEN_ANKER_ID,
 } from '~/components/reusables/GoogleRezensionenBereich';
 
@@ -99,7 +100,11 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     e.preventDefault();
     const ziel = findeRezensionsZiel();
     if (ziel) {
-      ziel.scrollIntoView({behavior: 'smooth', block: 'start'});
+      // Responsive-Repair 2026-08-04: scrollIntoView({block:'start'}) legt die
+      // Sektionsoberkante auf die VIEWPORT-Oberkante und ignoriert damit den
+      // fixen Kopf. scrolleZuRezensionen misst die Kopfhoehe live (Mobil-Kopf
+      // ist niedriger als Desktop) und zieht sie ab — kein Doppel-Offset.
+      scrolleZuRezensionen(ziel);
     } else {
       setRezensionenPopupOffen(true);
     }
