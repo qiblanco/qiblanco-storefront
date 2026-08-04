@@ -46,10 +46,19 @@ export const SALESBOT_WIDGET_AUS = 'off';
  * Origin des Widgets, oder '' wenn es nicht laden soll.
  *
  * KILL-SCHALTER (ohne Code-Änderung, ohne Merge):
- *   PUBLIC_SALESBOT_WIDGET_ORIGIN=off   → Widget aus. Auf /pages/chat-bot
- *   kehrt dann der Gorgias-Chat automatisch zurück (root.jsx koppelt die
- *   Unterdrückung an das AKTIVE Widget, nicht an die Route) — die Seite
- *   steht also nie ohne Chat da. Abwesenheit der env = AN, nicht invertiert.
+ *   PUBLIC_SALESBOT_WIDGET_ORIGIN=off   → AI-Anna aus, und zwar STORE-WEIT
+ *   (nicht nur auf /pages/chat-bot): der Wert ist die erste, alles
+ *   beherrschende Konjunktion der Aktivierung in root.jsx. Abwesenheit der
+ *   env = AN, nicht invertiert.
+ *
+ *   KEIN CHAT-FALLBACK AUF DACH — Gegenstück zum Block "GORGIAS-CHAT
+ *   ENTFERNT" in root.jsx (Christian 2026-07-31, Weichen-Korrektur, PRs
+ *   #154/#155): der Gorgias-CHAT-Loader ist auf diesem Storefront dauerhaft
+ *   ENTFERNT, nicht nur unterdrückt. `off` nimmt der Seite damit JEDEN Chat;
+ *   es gibt nichts, worauf zurückgefallen wird. Wer den Notaus zieht, muss
+ *   das wissen — der Rückweg zum Chat ist ein `git revert` jenes Merges,
+ *   keine env. Der separate US-/englische Store (us-qiblanco-2024, anderes
+ *   Repo) behält seinen Gorgias-Chat und ist von dieser env nicht betroffen.
  *
  * Ein kaputter env-Wert darf die Seite nicht reissen: dann lädt das Widget
  * eben nicht (fail-closed, genau wie beim qpx-Endpoint).
