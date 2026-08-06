@@ -15,7 +15,10 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
-import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
+import {
+  getTenYearsDealByHandle,
+  TEN_YEARS_SALE_RETIRED,
+} from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
 const HIDDEN_BUNDLE_PRODUCT_HANDLES = new Set([
@@ -64,6 +67,19 @@ export async function loader(args) {
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
   if (campaignDeal) {
+    /*
+     * STILLGELEGTER JUBILÄUMS-SALE (Schalter: app/data/ten-years-deals.js).
+     * Diese Deal-Handles rendern sonst die Aktionsseite mit den Sale-Preisen.
+     * Stillgelegt liefern sie 404 — BEWUSST statt eines Durchfallens in die
+     * normale Produkt-Query: die Handles tragen Sale-Titel („Sale: …",
+     * „Black Friday Sale: …"), ein Durchfallen würde die Aktion also weiter
+     * bewerben statt sie zu beenden. Der 301 auf die ebenfalls stillgelegte
+     * Campaign-PDP entfällt damit gewollt mit. Das 404 erlaubt zugleich, dass
+     * eine in Shopify gepflegte Weiterleitung greift (storefrontRedirect).
+     */
+    if (TEN_YEARS_SALE_RETIRED) {
+      throw new Response(null, {status: 404});
+    }
     // Deal-Handles kurzschließen die Produkt-Query -> nie 404 -> der
     // Shopify-URL-Redirect (storefrontRedirect, greift NUR bei 404) kann
     // für Alt-Handles NIE feuern. Trägt der Deal ein redirectTo, ist die

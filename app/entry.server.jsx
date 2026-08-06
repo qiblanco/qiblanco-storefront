@@ -3,6 +3,7 @@ import {isbot} from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
+import {istStillgelegteJSaleSeite} from '~/data/ten-years-deals';
 
 /**
  * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
@@ -45,6 +46,23 @@ export default async function handleRequest(
   reactRouterContext,
   context,
 ) {
+  /*
+   * STILLGELEGTER JUBILÄUMS-SALE (Schalter + Pfadliste: app/data/ten-years-deals.js).
+   * Der Guard sitzt bewusst HIER und nicht in den vier Route-Dateien: er greift
+   * damit VOR dem Router und schlägt sowohl die Code-Route als auch ein
+   * etwaiges gleichnamiges Shopify-Admin-Page-Objekt (letzteres wäre mangels
+   * write_content von uns nicht abschaltbar). Die Route-Dateien bleiben
+   * unverändert erhalten — stillgelegt ist die Erreichbarkeit, nicht der Code.
+   *
+   * 404 statt Redirect: ein Redirect-Ziel wäre eine Marketing-Entscheidung, die
+   * hier niemand getroffen hat. Das 404 fließt in server.js weiter durch
+   * storefrontRedirect — eine in Shopify gepflegte Weiterleitung greift also
+   * weiterhin, ohne dass wir eine erfinden.
+   */
+  if (istStillgelegteJSaleSeite(new URL(request.url).pathname)) {
+    return new Response(null, {status: 404});
+  }
+
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     defaultSrc: [
       "'self'",
