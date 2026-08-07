@@ -644,13 +644,13 @@ function HeaderCtas({isLoggedIn, cart}) {
 
 /**
  * Kunden-Login sichtbar machen. Die Account-Schicht (app/routes/account*.jsx +
- * GraphQL customer-account) existiert vollstaendig; root.jsx laedt isLoggedIn
+ * GraphQL customer-account) existiert vollständig; root.jsx lädt isLoggedIn
  * und PageLayout reicht es bis hierher durch — bis heute wurde die Prop nur
- * ignoriert. Hier wird ausschliesslich der Einstieg gerendert, nichts gebaut.
+ * ignoriert. Hier wird ausschließlich der Einstieg gerendert, nichts gebaut.
  *
- * isLoggedIn ist ein Promise: bis es aufloest, zeigt der Fallback den
+ * isLoggedIn ist ein Promise: bis es auflöst, zeigt der Fallback den
  * Login-Weg. Das ist der sichere Ausgang — ein nicht eingeloggter Besucher
- * gehoert ohnehin dorthin, ein eingeloggter wird von /account/login zum
+ * gehört ohnehin dorthin, ein eingeloggter wird von /account/login zum
  * Konto weitergeleitet.
  *
  * @param {{isLoggedIn: Promise<boolean> | boolean}}

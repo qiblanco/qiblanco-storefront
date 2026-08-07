@@ -3,7 +3,7 @@
 // Erzeuger: homepage-bauer/shop-switch/bin/shop-switch-gen
 //
 // Zuordnung der gleichwertigen Seite im jeweils anderen Shop. Gibt es keine,
-// faellt der Umschalter auf die Startseite des Zielshops zurueck — nie auf eine
+// fällt der Umschalter auf die Startseite des Zielshops zurück — nie auf eine
 // unpassende Seite.
 
 export const SHOP_ORIGIN = {

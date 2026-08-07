@@ -5,7 +5,7 @@
 //
 // Geprueft wird das GENERAT app/lib/shop-switch.js. Es wird nie von Hand
 // editiert — Quelle ist homepage-bauer/shop-switch/shop-mapping.yaml, der
-// Byte-Abgleich laeuft ueber `shop-switch-gen --pruefe`. Dieser Test misst die
+// Byte-Abgleich läuft über `shop-switch-gen --pruefe`. Dieser Test misst die
 // andere Haelfte: dass die erzeugte Funktion sich auch so VERHAELT.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -23,7 +23,7 @@ test('Origins und Labels beider Shops stehen im Generat', () => {
   assert.equal(SHOP_LABEL.us, 'USA');
 });
 
-test('GLEICHWERTIG: eine Seite mit Entsprechung fuehrt auf genau diese', () => {
+test('GLEICHWERTIG: eine Seite mit Entsprechung führt auf genau diese', () => {
   assert.equal(
     switchTarget('/pages/impressum', 'us'),
     'https://qi-blanco.com/pages/imprint',
@@ -32,7 +32,7 @@ test('GLEICHWERTIG: eine Seite mit Entsprechung fuehrt auf genau diese', () => {
     switchTarget('/pages/kohaerentes-wasser', 'us'),
     'https://qi-blanco.com/pages/coherent-water',
   );
-  // und derselbe Weg zurueck
+  // und derselbe Weg zurück
   assert.equal(
     switchTarget('/pages/imprint', 'de'),
     'https://qiblanco.com/pages/impressum',
@@ -83,7 +83,7 @@ test('ROBUST: leerer/fehlender Pfad und unbekannter Zielshop kippen nicht', () =
   assert.equal(switchTarget('/pages/impressum', 'xx'), 'https://qiblanco.com');
 });
 
-test('KEIN Ziel zeigt versehentlich auf den eigenen Shop zurueck', () => {
+test('KEIN Ziel zeigt versehentlich auf den eigenen Shop zurück', () => {
   for (const pfad of [
     '/pages/impressum',
     '/pages/agb',
@@ -94,7 +94,7 @@ test('KEIN Ziel zeigt versehentlich auf den eigenen Shop zurueck', () => {
     const ziel = switchTarget(pfad, 'us');
     assert.ok(
       ziel.startsWith('https://qi-blanco.com'),
-      `Ziel fuer ${pfad} zeigt nicht in den US-Shop: ${ziel}`,
+      `Ziel für ${pfad} zeigt nicht in den US-Shop: ${ziel}`,
     );
   }
 });

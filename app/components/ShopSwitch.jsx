@@ -3,16 +3,16 @@ import {useLocation} from 'react-router';
 import {SHOP_LABEL, switchTarget} from '~/lib/shop-switch';
 
 /**
- * Shop-Umschalter (DACH -> USA und zurueck).
+ * Shop-Umschalter (DACH -> USA und zurück).
  *
  * Warum die Ziele schon im gerenderten HTML stehen: die Optionen sind echte
  * <a href> aus switchTarget(). Der Umschalter funktioniert damit ohne JS und
- * ist crawlbar; JS traegt hier nur das Auf-/Zuklappen, nicht das Ziel.
+ * ist crawlbar; JS trägt hier nur das Auf-/Zuklappen, nicht das Ziel.
  *
  * Warum Inline-SVG statt Icon-CDN: die Optik muss in BEIDEN Shops identisch
- * sein. Das ist ueber zwei Plattformen (Hydrogen/Liquid) nur garantiert, wenn
- * beide dasselbe Markup rendern — ein CDN-Icon laedt asynchron (Flackern) und
- * haengt einen Drittanbieter in den Header-Kritischpfad.
+ * sein. Das ist über zwei Plattformen (Hydrogen/Liquid) nur garantiert, wenn
+ * beide dasselbe Markup rendern — ein CDN-Icon lädt asynchron (Flackern) und
+ * hängt einen Drittanbieter in den Header-Kritischpfad.
  *
  * Die Zuordnung selbst wird NICHT hier gepflegt: app/lib/shop-switch.js ist
  * generiert aus homepage-bauer/shop-switch/shop-mapping.yaml.
@@ -93,8 +93,8 @@ export function ShopSwitch({aktiv = 'de'}) {
   const location = useLocation();
   const pfad = location?.pathname || '/';
 
-  // Schliessen per Esc und Klick nach aussen. Beides nur solange offen —
-  // ein dauerhaft haengender document-Listener im Header ist unnoetige Last.
+  // Schließen per Esc und Klick nach außen. Beides nur solange offen —
+  // ein dauerhaft hängender document-Listener im Header ist unnötige Last.
   useEffect(() => {
     if (!offen) return undefined;
 
@@ -180,9 +180,9 @@ export function ShopSwitch({aktiv = 'de'}) {
                 aria-selected={istAktiv}
                 {...(istAktiv ? {'aria-current': 'true'} : {})}
                 /* Die aktive Option zeigt auf die Seite, auf der man steht —
-                   nicht auf die Startseite. switchTarget waere hier falsch:
-                   seine Rueckwaerts-Karte erwartet einen Pfad des ANDEREN
-                   Shops und faende fuer den eigenen nichts, also die Front. */
+                   nicht auf die Startseite. switchTarget wäre hier falsch:
+                   seine Rückwärts-Karte erwartet einen Pfad des ANDEREN
+                   Shops und fände für den eigenen nichts, also die Front. */
                 href={istAktiv ? pfad : switchTarget(pfad, shop)}
                 onClick={() => setOffen(false)}
               >
