@@ -45,12 +45,17 @@ export const GOOGLE_REVIEWS_URL =
 export const REPUTON_FEED_URL =
   'https://grw.reputon.com/app/storefront/widget?shop=qi-blanco.myshopify.com';
 
-// Letzter bekannter guter Wert (aktualisiert 2026-07-31: live 437; davor 429
-// vom 2026-07-24 — die Zahl stand fest, weil der Places-Key nie gesetzt wurde
-// und es damit nie einen Live-Abruf gab).
+// Letzter bekannter guter Wert (aktualisiert 2026-08-08: live 438; davor 437
+// vom 2026-07-31 und 429 vom 2026-07-24 — die Zahl stand damals fest, weil der
+// Places-Key nie gesetzt wurde und es damit nie einen Live-Abruf gab).
+// NAHT: dieser Wert muss mit dem US-Fallback uebereinstimmen
+// (us-qiblanco-2024 sections/qb-reviews-google.liquid, settings.fallback_total).
+// Beide Shops zeigen dieselbe Google-Quelle (cid 1372717443771750206); divergente
+// Fallbacks zeigen dieselbe Marke mit zwei Zahlen — und zwar genau im Ausfall,
+// also wenn niemand hinschaut. Bewacht von pruefungen/probe_naht_variante_a_zahlen.py.
 export const GOOGLE_RATING_FALLBACK = {
   rating: 4.8,
-  total: 437,
+  total: 438,
   source: 'fallback',
   reviews: GOOGLE_REVIEWS_FALLBACK,
   aiSummary: GOOGLE_AI_SUMMARY_FALLBACK,
@@ -99,6 +104,27 @@ export function relativZeitInTagen(zeitText, epochSekunden) {
   return 99999;
 }
 
+/**
+ * Kundenfoto-URL → Thumbnail-URL in Anzeigegröße.
+ *
+ * Der Feed liefert `thumbnailUrl` IDENTISCH zur Vollbild-`url` (beide enden
+ * auf `=k-no`) — der Feldname ist also kein Beleg für ein Thumbnail: gemessen
+ * 2026-08-08 sind das 78 KB für ein 56×56-Bild. Googles Bild-Host akzeptiert
+ * stattdessen ein Größensuffix; `=s112-c` (56 px bei DPR 2, quadratisch
+ * beschnitten) sind 7,5 KB — dasselbe Muster, das der Avatar schon nutzt
+ * (`=s120-c-rp-mo-br100`).
+ *
+ * Defensiv: nur bei Googles Bild-Host und nur, wenn im letzten Pfadsegment
+ * wirklich ein `=`-Suffix steht. Alles andere bleibt unverändert — eine
+ * fremde URL soll hier nie zerschnitten werden.
+ */
+export function bildThumbUrl(url, groesse = 112) {
+  if (typeof url !== 'string' || !url.includes('googleusercontent.com/')) return url;
+  const schnitt = url.lastIndexOf('=');
+  if (schnitt <= url.lastIndexOf('/')) return url; // kein Suffix → nicht anfassen
+  return `${url.slice(0, schnitt)}=s${groesse}-c`;
+}
+
 /** Rohantwort der Places-API → normalisiertes {rating,total,source} oder null. */
 export function normalisiereGoogleAntwort(data) {
   const r = data?.result?.rating;
@@ -136,6 +162,16 @@ export function normalisiereReputonAntwort(data) {
       id: String(rv.hashId || rv.id || ''),
       name: rv.authorName || 'Google-Nutzer',
       foto: rv.profilePhotoUrl || '',
+      // KUNDENFOTOS (Feed-Feld `images`) — NICHT mit `foto` verwechseln:
+      // `foto`/profilePhotoUrl ist das Google-PROFILBILD des Verfassers
+      // (37/37 Rezensionen), `bilder`/images sind die vom Kunden GEPOSTETEN
+      // Fotos (gemessen 2026-08-08: 3/37). Das Feld wurde bis hierher gar
+      // nicht durchgereicht — genau deshalb rendert der Slider bisher keine.
+      bilder: Array.isArray(rv.images)
+        ? rv.images
+            .filter((b) => b && typeof b.url === 'string' && b.url)
+            .map((b) => ({url: b.url, thumb: b.thumbnailUrl || b.url}))
+        : [],
       rating: 5,
       text: rv.text.trim(),
       zeitText: rv.relativeTimeDescription || '',
@@ -272,7 +308,8 @@ export function useGoogleRating() {
  * Hook: die neuesten 5-Sterne-Google-Rezensionen aus dem root-Loader
  * (server-gecacht, neueste zuerst). Nie leer: fällt auf den statischen
  * Schnappschuss echter Reviews zurück.
- * @returns {{reviews:Array<{id:string,name:string,foto:string,rating:number,text:string,zeitText:string}>,url:string}}
+ * `foto` = Avatar des Verfassers, `bilder` = vom Kunden gepostete Kundenfotos.
+ * @returns {{reviews:Array<{id:string,name:string,foto:string,bilder:Array<{url:string,thumb:string}>,rating:number,text:string,zeitText:string}>,url:string}}
  */
 export function useGoogleReviews() {
   const root = useRouteLoaderData('root');

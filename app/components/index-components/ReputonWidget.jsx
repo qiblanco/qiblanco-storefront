@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {StarRating} from '~/components/reusables/StarRating';
-import {useGoogleRating, useGoogleReviews} from '~/lib/googleRating';
+import {useGoogleRating, useGoogleReviews, bildThumbUrl} from '~/lib/googleRating';
 import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 
 /**
@@ -71,6 +71,9 @@ const START_VERZOEGERUNG_MS = 3000; // erst 3 s nach Sichtbarkeit loslaufen,
 const SICHTBAR_SCHWELLE = 0.4; // Widget gilt ab 40 % im Viewport als „angekommen"
 const KARTEN_LUECKE_PX = 20;
 const CLAMP_ZEILEN = 6; // eingeklappte Höhe (wie zuvor)
+// Kundenfotos je Karte: mehr als 3 Thumbnails sprengen die Kartenbreite
+// (3 × 56 px + 2 × 8 px Lücke = 184 px), der Rest wird als „+n" gezählt.
+const MAX_BILDER = 3;
 
 // Responsive-Repair 2026-08-04 (Job bl-20260804T022554Z-a0de0e, Christian:
 // „beim Lesen springt die Bewertung weg" — MOBIL).
@@ -330,6 +333,9 @@ function ReviewKarte({review}) {
   const [ueberlaeuft, setUeberlaeuft] = useState(false);
   const textRef = useRef(null);
   const text = review.text || '';
+  // Defensiv: ältere/fremde Review-Quellen kennen `bilder` nicht — die Zeile
+  // darf daran nicht scheitern (der Bestand liefert es überall mit).
+  const bilder = Array.isArray(review.bilder) ? review.bilder : [];
   // Live-Feed-Karten liefern zeitText („vor 3 Tagen"); kuratierte Karten
   // liefern ein ISO-datum, das hier LIVE zur Relativzeit gerendert wird.
   const datum = review.zeitText || relativeVonDatum(review.datum);
@@ -408,6 +414,46 @@ function ReviewKarte({review}) {
       >
         {text}
       </p>
+
+      {/* Kundenfotos: die vom Kunden bei Google GEPOSTETEN Bilder (Feed-Feld
+          `images` → `bilder`) — nicht der Avatar (`foto`) in der Kopfzeile.
+          Nur 3 der 37 Rezensionen tragen welche; bei allen anderen entfällt
+          die Zeile ersatzlos. Feste width/height + w-14/h-14 halten die
+          Kartenhöhe stabil (kein Layout-Shift beim Nachladen). Der Klick auf
+          ein Bild öffnet es groß in einem neuen Tab — nach einer echten
+          Zieh-Geste fängt useDragSwipe (onClickCapture) ihn ab, es braucht
+          also kein eigenes Popup und keinen eigenen Drag-Schutz. */}
+      {bilder.length ? (
+        <div className="flex items-center gap-2">
+          {bilder.slice(0, MAX_BILDER).map((bild) => (
+            <a
+              key={bild.url}
+              href={bild.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0"
+            >
+              <img
+                src={bildThumbUrl(bild.thumb)}
+                alt={`Kundenfoto zur Rezension von ${review.name}`}
+                width="56"
+                height="56"
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                draggable="false"
+                className="w-14 h-14 rounded-2xl object-cover"
+              />
+            </a>
+          ))}
+          {bilder.length > MAX_BILDER ? (
+            <span className="text-xs text-gray-500">
+              +{bilder.length - MAX_BILDER}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
       {ueberlaeuft || offen ? (
         <button
           type="button"
