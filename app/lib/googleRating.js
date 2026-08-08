@@ -45,12 +45,17 @@ export const GOOGLE_REVIEWS_URL =
 export const REPUTON_FEED_URL =
   'https://grw.reputon.com/app/storefront/widget?shop=qi-blanco.myshopify.com';
 
-// Letzter bekannter guter Wert (aktualisiert 2026-07-31: live 437; davor 429
-// vom 2026-07-24 — die Zahl stand fest, weil der Places-Key nie gesetzt wurde
-// und es damit nie einen Live-Abruf gab).
+// Letzter bekannter guter Wert (aktualisiert 2026-08-08: live 438; davor 437
+// vom 2026-07-31 und 429 vom 2026-07-24 — die Zahl stand damals fest, weil der
+// Places-Key nie gesetzt wurde und es damit nie einen Live-Abruf gab).
+// NAHT: dieser Wert muss mit dem US-Fallback uebereinstimmen
+// (us-qiblanco-2024 sections/qb-reviews-google.liquid, settings.fallback_total).
+// Beide Shops zeigen dieselbe Google-Quelle (cid 1372717443771750206); divergente
+// Fallbacks zeigen dieselbe Marke mit zwei Zahlen — und zwar genau im Ausfall,
+// also wenn niemand hinschaut. Bewacht von pruefungen/probe_naht_variante_a_zahlen.py.
 export const GOOGLE_RATING_FALLBACK = {
   rating: 4.8,
-  total: 437,
+  total: 438,
   source: 'fallback',
   reviews: GOOGLE_REVIEWS_FALLBACK,
   aiSummary: GOOGLE_AI_SUMMARY_FALLBACK,
