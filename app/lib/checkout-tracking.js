@@ -44,7 +44,7 @@ const TRACKING_COOKIE_NAMES = new Set([
   // der eigene qpx-Pixel setzt _qpx_anon (365-Tage-Cookie, opakes uuid). Ihn als
   // Order-note_attribute mitzufuehren schliesst die Session->Kauf-Luecke: der
   // own-source-Stitch (own_source.py, gated OS_STITCH_SESSION) verbindet den Kauf
-  // deterministisch mit der Ad-Klick-Session ueber identity_edge(anon) — auch bei
+  // deterministisch mit der Ad-Klick-Session über identity_edge(anon) — auch bei
   // Multi-Session/Return-Visit ohne fbclid in der URL. Rein first-party/intern,
   // NICHT an Meta/Google gesendet; Capture bleibt consent-gated (wie fbc/fbp).
   '_qpx_anon',
@@ -149,15 +149,34 @@ export function buildAttributionCartAttributes({
     addCartAttribute(attributes, key, value);
   }
 
-  if (!attributes.length) return attributes;
+  // Job 20260809-dach-tracking-schluessel-verlust (2026-08-09): früher stand
+  // hier `if (!attributes.length) return attributes;` VOR dem Marker. Ein
+  // signal-loser Besucher verließ die Funktion damit, bevor irgendetwas
+  // geschrieben wurde — gemessen trugen 41,7 % der DACH-Orders GAR KEIN
+  // note_attribute. Folge: "Order lief nicht über die instrumentierte Kasse"
+  // war von "Besucher hatte kein Ad-Signal" nicht mehr unterscheidbar, und
+  // Gate B von `shop-ankunft` meldete darauf falsch-grün.
+  //
+  // Der US-Zwilling (us-qiblanco-2024, Commit afa642c, 2026-08-08) hat exakt
+  // diesen Frühausstieg geschlossen; hier dieselbe Bauform. ZWEI Hälften,
+  // beide nötig:
+  //   1. Der Marker wird UNBEDINGT geschrieben (auch ohne jedes Signal).
+  //   2. Der Marker zählt NICHT als Signal — sonst würden landing_page und
+  //      referrer plötzlich für jeden organischen Besucher mitgeschrieben,
+  //      also eine stille Ausweitung der Datenmenge statt eines Fixes.
+  // Regression: test/checkout-tracking-signallos.test.mjs
+  const hasTrackingSignal = attributes.length > 0;
 
-  addCartAttribute(attributes, 'landing_page', storedAttribution?.href);
-  addCartAttribute(attributes, 'referrer', storedAttribution?.referrer);
-  addCartAttribute(
-    attributes,
-    'attribution_saved_at',
-    storedAttribution?.savedAt,
-  );
+  if (hasTrackingSignal) {
+    addCartAttribute(attributes, 'landing_page', storedAttribution?.href);
+    addCartAttribute(attributes, 'referrer', storedAttribution?.referrer);
+    addCartAttribute(
+      attributes,
+      'attribution_saved_at',
+      storedAttribution?.savedAt,
+    );
+  }
+
   addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
 
   return attributes;
