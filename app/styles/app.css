@@ -4849,3 +4849,69 @@ html.qb-chat-docked .GoogleRezensionenPopup {
   }
 }
 /* ═══ Ende Google-Rezensionen-Bereich + Docked-Naht Teil 3 ═══════════════ */
+
+/* ═══ ANZEIGEGROESSE AN DIE QUELLAUFLOESUNG BINDEN (GATE 12, bild-aufloesung) ══
+   Job 20260809-qione-2-pro-format-maengel-fix.
+
+   BEFUND (live gemessen 2026-08-09 auf /products/qione-2-pro): zwei Bilder
+   werden groesser dargestellt, als ihre Quelle Pixel hat — auf Geraeten mit
+   dpr>=2 sichtbar unscharf:
+     QiOne2Pro_04.jpg_1.webp   Quelle  600px, dargestellt bis 434 CSS-px (*2 = 868)
+     New_Project_1.webp        Quelle 1080px, dargestellt bis 868 CSS-px (*2 = 1736)
+
+   WARUM NICHT "groesseres Bild nachladen": nachgemessen — die Shopify-CDN
+   kann NICHT hochskalieren. `&width=1000` liefert bei beiden Dateien
+   unveraendert 600 bzw. 1080 px zurueck (HTTP 200, gleiche Kantenlaenge), und
+   hoehere Originale existieren weder auf der CDN (4 Namensvarianten je Datei
+   geprueft, alle 404) noch in einem lokalen Asset-Speicher. Ein `&width=`-
+   Parameter waere hier also ein Fix gewesen, der nichts aendert.
+
+   WAS HIER STATTDESSEN PASSIERT: die im JSX bereits deklarierte Wunschbreite
+   wird wieder wirksam. Beide Komponenten schreiben sie seit jeher hin —
+   Gitterchip.jsx `<img width={300}>`, CallToAction.jsx `<img width={500}>` —
+   aber `width: 50%` bzw. `flex: 1 0 50%` haben sie ueberstimmt und die Bilder
+   auf das Doppelte gedehnt. Das Attribut war die Absicht, die CSS-Regel der
+   Unfall.
+
+   WARUM AN dpr GEKOPPELT UND NICHT GLOBAL: die Bedingung ist woertlich
+   "Quellpixel < CSS-Breite * dpr". Auf dpr-1-Desktops reicht dieselbe Quelle
+   fuer die volle Breite (gemessen: desktop-1280/1440 waren nie beanstandet).
+   Eine globale Kappe haette die Bilder dort ohne jeden Gegenwert verkleinert.
+   Darum greift sie genau dort, wo die Unschaerfe entsteht.
+
+   RUECKWEG: diesen Block loeschen — es sind reine max-width-Zusaetze, kein
+   Bestandsselektor wurde geaendert. */
+@media (min-resolution: 2dppx) {
+  /* 600px Quelle / (2 * 0.9 Unschaerfe-Faktor) = 333px Obergrenze; 320 mit Reserve */
+  .Gitterchip .GitterchipImageWrapper img {
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  /* 1080px Quelle / (2 * 0.9) = 600px Obergrenze; 580 mit Reserve */
+  .CallToAction img {
+    max-width: 580px;
+    margin-inline: auto;
+  }
+  /* Studien-Kacheln: 620px Quelle / (2 * 0.9) = 344px Obergrenze; 330 mit
+     Reserve. GILT BEWUSST FUER BEIDE Kacheln, obwohl nur eine zu klein ist:
+     Seite 3 liegt mit 2480x3508 vor, Seite 4 nur mit 620x877. Eine Kappe
+     allein auf Seite 4 haette das nebeneinanderstehende Paar unterschiedlich
+     gross gemacht — ein Darstellungsfehler gegen einen anderen getauscht.
+
+     GEPRUEFT UND VERWORFEN, Seite 4 hochaufloesend zu ersetzen: der
+     naheliegende Weg waere, Seite 4 aus dem verlinkten Quell-PDF
+     (ABBSR-24_-31_3.pdf, liegt lokal) neu zu rendern — die Schwesterseiten
+     1-3 existieren ja als A4-300dpi-Fassung. Das ist FALSCH: die Kachel ist
+     ein gestaltetes "Cover Remake", nicht die PDF-Seite. Nachgemessen
+     2026-08-09: Pearson-Korrelation zwischen 300dpi-PDF-Render und
+     CDN-Kachel -0,009 bei mittlerer Kanaldifferenz 123/255 — zwei
+     verschiedene Bilder, trotz identischem Seitenverhaeltnis (0,707) und
+     passendem Dateinamen. Ein Austausch waere ein Inhaltsfehler gewesen,
+     kein Fix. Eine hochaufloesende Fassung von Seite 4 existiert serverweit
+     nicht; sie braucht neues Quellmaterial. */
+  .Studien .FlexContainer .Row .Column img {
+    max-width: 330px;
+    margin-inline: auto;
+  }
+}
+/* ═══ Ende Anzeigegroesse an die Quellaufloesung binden ══════════════════ */
