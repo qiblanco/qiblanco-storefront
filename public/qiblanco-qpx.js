@@ -461,6 +461,53 @@
       if (d.visibilityState === "hidden") { try { flush(true); } catch (e) {} }
     });
     w.addEventListener("pagehide", function () { unloading = true; try { flush(true); } catch (e) {} });
+
+    // ---- v2.4: SPA-Routenwechsel — pv_id lebt je SEITE, nicht je JS-Modul ---
+    // qiblanco.com ist eine Hydrogen-SPA. Ohne diesen Hook läuft boot() genau
+    // einmal, und EINE pv_id überlebt jeden Client-Routenwechsel: die Sektionen
+    // MEHRERER Seiten landen unter derselben pv_id, während behavior_page nur
+    // EINEN url_path je pv_id führt. Gemessen 2026-08-09 auf qiblanco.com:
+    // 438 von 11735 Pageviews (3,7 %) trugen eine seiten-fremde Sektion.
+    // Bei ECHTEM Pfadwechsel: laufenden Pageview flushen, dann pv_id und alle
+    // Akkumulatoren neu setzen und den neuen Pageview zählen. Reine Query-/
+    // Hash-Wechsel (?variant=, #anker) sind KEIN neuer Pageview.
+    var lastPath = w.location.pathname;
+    function routeChanged() {
+      try {
+        var p = w.location.pathname;
+        if (p === lastPath) return;
+        lastPath = p;
+        try { flush(true); } catch (e) {}   // alten Pageview mit ALTER pv_id abschließen
+        PV_ID = uuid(); seq = 0; lastSent = "";
+        scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
+        sections = {}; frust = []; lastClick = null;
+        rageChain = []; rageEmitted = false;
+        var keep = [];                      // abgeräumte Knoten der Altseite vergessen
+        for (var i = 0; i < secObserved.length; i++) {
+          var n = secObserved[i];
+          if (n && n.isConnected !== false) keep.push(n);
+        }
+        secObserved = keep;
+        track("page_view");                 // base() liest w.location.href -> neuer Pfad
+        try { observeSections(); } catch (e) {}
+      } catch (e) {}
+    }
+    // History-API patchen (SPA-Navigation feuert kein eigenes Event) + Zurück/Vor.
+    var histM = ["pushState", "replaceState"];
+    for (var hm = 0; hm < histM.length; hm++) {
+      (function (m) {
+        try {
+          var orig = w.history && w.history[m];
+          if (typeof orig !== "function") return;
+          w.history[m] = function () {
+            var r = orig.apply(this, arguments);
+            try { routeChanged(); } catch (e) {}
+            return r;
+          };
+        } catch (e) {}
+      })(histM[hm]);
+    }
+    w.addEventListener("popstate", function () { routeChanged(); });
   }
 
   // ---- v2.2: identify-Auto-Hook (Form-Submit mit E-Mail-Feld) --------------
