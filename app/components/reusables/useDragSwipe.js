@@ -23,6 +23,18 @@ const CLICK_SUPPRESS_PX = 8; // darunter gilt die Geste als Klick (D3)
 const FLICK_VELOCITY = 0.5; // px/ms — schneller Flick schaltet auch unter Schwelle (D1)
 const VELOCITY_WINDOW_MS = 100; // Velocity aus den letzten ~100 ms
 const SNAP_RATIO = 0.5; // Weg-Schwelle: halber slideStep
+// Obergrenze der Weg-Schwelle, gemessen am SICHTBAREN Container statt am
+// slideStep. Grund (gemessen 2026-08-09, /products/qione-2-pro, mobil-360):
+// slideStep ist Kartenbreite + gap (328+20=348) und damit größer als der
+// sichtbare Container (328). Die Schwelle lag folglich bei 174 px, während
+// eine Wischgeste über die ganze sichtbare Breite höchstens 328 px und in
+// der Praxis ~164 px (halbe Breite) erreicht: der Nutzer musste mehr als die
+// halbe sichtbare Karte ziehen, um einen Slide auszulösen. Auf Desktop fiel
+// das nie auf, weil dort slideStep (420) weit unter der Containerbreite
+// (1248) liegt. Die Kappe greift also GENAU dann, wenn ein Slide breiter ist
+// als das Fenster, das ihn zeigt — und lässt Desktop unverändert
+// (min(210, 374) = 210, exakt der Bestandswert).
+const VIEWPORT_RATIO = 0.3;
 
 function prefersReducedMotion() {
   return (
@@ -245,7 +257,14 @@ export function useDragSwipe({
           }
         } else {
           const step = o.slideStep || 420;
-          const movedFar = Math.abs(dx) >= step * SNAP_RATIO;
+          // Sichtbare Breite des Wrappers, auf dem die Geste liegt. Fällt sie
+          // aus (kein Element / 0), bleibt es beim reinen slideStep-Verhalten
+          // — die Kappe darf nie strenger sein als der Bestand.
+          const sichtbar = s.captureEl?.clientWidth || 0;
+          const schwelle = sichtbar > 0
+            ? Math.min(step * SNAP_RATIO, sichtbar * VIEWPORT_RATIO)
+            : step * SNAP_RATIO;
+          const movedFar = Math.abs(dx) >= schwelle;
           const flicked =
             !prefersReducedMotion() &&
             Math.abs(dx) > CLICK_SUPPRESS_PX &&

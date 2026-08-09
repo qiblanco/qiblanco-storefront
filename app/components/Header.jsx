@@ -473,7 +473,12 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
 
       {item.title === "Online Kurse" && (
         <div className="nav-styling-wrapper">
-          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296_400x.png?v=1645756351' />
+          {/* Ohne den `_400x`-Zusatz: dieselbe Aufnahme in ihrer vollen
+              Ablagegroesse (526x296 statt 400x225). Bei 285 CSS-px Anzeige und
+              dpr>=2 trugen 400 Quellpixel die Flaeche nicht (Gate 12,
+              bild-aufloesung), 526 tragen sie. Nachgemessen 2026-08-09: beide
+              URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung. */}
+          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
         </div>
       )}
 
