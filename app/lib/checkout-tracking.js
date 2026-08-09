@@ -149,15 +149,34 @@ export function buildAttributionCartAttributes({
     addCartAttribute(attributes, key, value);
   }
 
-  if (!attributes.length) return attributes;
+  // Job 20260809-dach-tracking-schluessel-verlust (2026-08-09): frueher stand
+  // hier `if (!attributes.length) return attributes;` VOR dem Marker. Ein
+  // signal-loser Besucher verliess die Funktion damit, bevor irgendetwas
+  // geschrieben wurde — gemessen trugen 41,7 % der DACH-Orders GAR KEIN
+  // note_attribute. Folge: "Order lief nicht ueber die instrumentierte Kasse"
+  // war von "Besucher hatte kein Ad-Signal" nicht mehr unterscheidbar, und
+  // Gate B von `shop-ankunft` meldete darauf falsch-gruen.
+  //
+  // Der US-Zwilling (us-qiblanco-2024, Commit afa642c, 2026-08-08) hat exakt
+  // diesen Fruehausstieg geschlossen; hier dieselbe Bauform. ZWEI Haelften,
+  // beide noetig:
+  //   1. Der Marker wird UNBEDINGT geschrieben (auch ohne jedes Signal).
+  //   2. Der Marker zaehlt NICHT als Signal — sonst wuerden landing_page und
+  //      referrer ploetzlich fuer jeden organischen Besucher mitgeschrieben,
+  //      also eine stille Ausweitung der Datenmenge statt eines Fixes.
+  // Regression: test/checkout-tracking-signallos.test.mjs
+  const hasTrackingSignal = attributes.length > 0;
 
-  addCartAttribute(attributes, 'landing_page', storedAttribution?.href);
-  addCartAttribute(attributes, 'referrer', storedAttribution?.referrer);
-  addCartAttribute(
-    attributes,
-    'attribution_saved_at',
-    storedAttribution?.savedAt,
-  );
+  if (hasTrackingSignal) {
+    addCartAttribute(attributes, 'landing_page', storedAttribution?.href);
+    addCartAttribute(attributes, 'referrer', storedAttribution?.referrer);
+    addCartAttribute(
+      attributes,
+      'attribution_saved_at',
+      storedAttribution?.savedAt,
+    );
+  }
+
   addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
 
   return attributes;
