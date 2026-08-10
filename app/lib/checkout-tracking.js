@@ -52,6 +52,61 @@ const TRACKING_COOKIE_NAMES = new Set([
 
 const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
 
+// Query-Keys, die nie in ein Order-note_attribute gehören (Identitaet,
+// Zugangsdaten, Kontakt). Bewusst eine DENYLIST, keine Allowlist:
+// die Backend-Konsumenten der `landing_page`-Query sitzen in mehreren fremden
+// Modulen (hyros-eigenbau own_source `_landing_params` + herkunft,
+// capi-rueckspeisung order_to_event, google-rueckspeisung click_conversions,
+// funnel-substrat sources) und lesen dort u.a. `sca_ref`, `gad_campaignid` und
+// `source` — Keys, die in TRACKING_PARAM_NAMES bewusst NICHT stehen und darum
+// ausschließlich über diese Query erreichbar sind. Eine Allowlist wäre hier
+// eine handgepflegte Spiegelliste fremder Parser ohne Durchsetzer: ein
+// übersehener Key = stiller Attributionsverlust. Bei der Denylist ist ein
+// übersehener Key = unveränderter Bestand. Die Fehlerrichtung entscheidet.
+const SENSITIVE_QUERY_PARAM_NAMES = new Set([
+  'email',
+  'e_mail',
+  'mail',
+  'user_email',
+  'customer_email',
+  'phone',
+  'telephone',
+  'mobile',
+  'first_name',
+  'firstname',
+  'last_name',
+  'lastname',
+  'fullname',
+  'address',
+  'street',
+  'postal_code',
+  'birthday',
+  'birthdate',
+  'dob',
+  'password',
+  'passwd',
+  'pwd',
+  'secret',
+  'token',
+  'access_token',
+  'id_token',
+  'refresh_token',
+  'auth',
+  'authorization',
+  'api_key',
+  'apikey',
+  'otp',
+  'session',
+  'session_id',
+  'sessionid',
+  'sid',
+  'iban',
+  'card_number',
+  'cvv',
+  'cvc',
+  'ssn',
+]);
+
 /**
  * Appends only allowlisted ad attribution values to a checkout URL.
  *
@@ -168,8 +223,21 @@ export function buildAttributionCartAttributes({
   const hasTrackingSignal = attributes.length > 0;
 
   if (hasTrackingSignal) {
-    addCartAttribute(attributes, 'landing_page', storedAttribution?.href);
-    addCartAttribute(attributes, 'referrer', storedAttribution?.referrer);
+    // Job 20260809-fj1 (2026-08-10): `landing_page`/`referrer` trugen bisher den
+    // VOLLEN href inklusive Query und Fragment in ein Order-note_attribute. Ein
+    // Query-String kann personenbeziehbar sein (`?email=`, `?token=`); er wird
+    // deshalb vor dem Schreiben bereinigt. Gerettet aus PR #163, der wegen des
+    // hiesigen `hasTrackingSignal`-Gates (#174) sonst nicht mehr mergebar war.
+    addCartAttribute(
+      attributes,
+      'landing_page',
+      sanitizeAttributionUrl(storedAttribution?.href),
+    );
+    addCartAttribute(
+      attributes,
+      'referrer',
+      sanitizeAttributionUrl(storedAttribution?.referrer),
+    );
     addCartAttribute(
       attributes,
       'attribution_saved_at',
@@ -302,6 +370,43 @@ function addCartAttribute(attributes, key, value) {
     key,
     value: truncateCartAttributeValue(value),
   });
+}
+
+/**
+ * Entfernt Identitäts-/Zugangs-Query-Keys und den Fragment-Teil aus einer URL,
+ * bevor sie als `landing_page`/`referrer` in ein Order-note_attribute geht.
+ *
+ * Gibt den Eingabe-String BYTE-IDENTISCH zurück, wenn nichts zu entfernen war —
+ * so bleibt der Bestandswert (den fremde Parser per `urlsplit().query` lesen)
+ * frei von URL-Normalisierungs-Nebenwirkungen.
+ *
+ * @param {string | null | undefined} rawUrl
+ * @returns {string} bereinigte URL oder '' wenn unbrauchbar
+ */
+function sanitizeAttributionUrl(rawUrl) {
+  if (typeof rawUrl !== 'string' || !rawUrl) return '';
+
+  let url;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    return '';
+  }
+
+  // Nur echte Web-URLs (schuetzt vor javascript:/data:/android-app: im referrer).
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return '';
+
+  let removed = false;
+  for (const name of [...url.searchParams.keys()]) {
+    if (!SENSITIVE_QUERY_PARAM_NAMES.has(name.toLowerCase())) continue;
+    url.searchParams.delete(name);
+    removed = true;
+  }
+
+  if (!removed && !url.hash) return rawUrl;
+
+  url.hash = '';
+  return url.toString();
 }
 
 /**
