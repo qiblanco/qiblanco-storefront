@@ -5,7 +5,12 @@ import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
 import {StudienSlider} from '~/components/reusables/StudienSlider';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
+import {
+  VideoSection,
+  GuaranteeSection,
+} from '~/components/campaign/SchlafZellenSchutz';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
+import qione2x2Styles from '~/styles/qione-2-pro-2x.css?url';
 
 /*
  * Campaign-PDP /pages/qione-2-pro-2x — die 2er-Set-Fortsetzung der Paid-Strecke
@@ -32,7 +37,10 @@ import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
  */
 
 export function links() {
-  return [{rel: 'stylesheet', href: tenYearsDealStyles}];
+  return [
+    {rel: 'stylesheet', href: tenYearsDealStyles},
+    {rel: 'stylesheet', href: qione2x2Styles},
+  ];
 }
 
 /*
@@ -106,6 +114,34 @@ export async function loader({context, request}) {
  *  3. nachDealRail  InfoSlider = das geteilte Drei-Themen-Karussell
  *                   (Erholsame Nächte / Starkes Wohlbefinden / Klarer Kopf)
  *                   von /products/qione-2-pro, direkt hinter der Deal-Rail.
+ *  4. beweisStrecke Elina-Wunsch 2026-08-10 (Lane AUTO, reine Content-/Layout-
+ *                   Änderung): die bisherige Testimonial-Strecke der Vorlage
+ *                   (YouTube-Einbettung + Instagram-Kommentar-Screenshots +
+ *                   Video-Kachel-Reihe = GoogleReviewVideoSection +
+ *                   CommunityProofSection + YoutubeProofSlider) entfällt HIER;
+ *                   an ihre Stelle treten die beiden Sektionen von
+ *                   /pages/chat-bot — <VideoSection> „Echte Menschen. Echte
+ *                   Erfahrungen." (Constantin Preis · Nada & Kurt Tepperwein ·
+ *                   Michelle Christin Guse) und direkt danach
+ *                   <GuaranteeSection> „Überzeugt es dich — oder du bekommst
+ *                   dein Geld zurück." („Dein Risiko: keins"; 20 Nächte /
+ *                   In Raten / Made in Germany). Beide sind IMPORTE aus
+ *                   SchlafZellenSchutz.jsx, also dieselbe Vorlage, die
+ *                   /pages/chat-bot rendert — Referenz, keine Kopie.
+ *                   Der Slot sitzt hinter „Mikroskop" und vor dem Schluss-CTA
+ *                   „Lass deinen QiOne® kohärentes Wasser für dich produzieren",
+ *                   genau die vom Wunsch verlangte Reihenfolge.
+ *
+ * WARUM KEIN .lp-a3 / kein schlaf-zellen-schutz.css: dessen body:has(.lp-a3)-
+ * Layer würde Header, Footer, Formulare und die Gold-Töne der GANZEN Deal-Seite
+ * umfärben (nachgemessen: styles/schlaf-zellen-schutz.css ab Z.760) — der Wunsch
+ * nennt zwei Sektionen, nicht das Seitenkleid. Stattdessen bekommen die
+ * geteilten Markup-Klassen (.lp-vp-*) hier ihr eigenes, seiten-geskoptes Kleid
+ * in styles/qione-2-pro-2x.css. Das IST das Hausmuster: dieselben Klassen
+ * werden in sechs Seiten-Stylesheets je neu eingekleidet (exclusive-solutions,
+ * qione-zellschutz, esmog-schutz, zell-schutz, tiefer-schlaf,
+ * schlaf-zellen-schutz). Das Kleid erbt die Deal-Tokens (--j-sale-*), es gibt
+ * also keinen zweiten Goldton.
  *
  * dataSection-Praefix j2x-* = Watch-/Heatmap-Anker dieser Seite
  * (hb-heatmap-sync pflegt die sektion_registry daraus).
@@ -121,12 +157,18 @@ export default function QiOne2Pro2xShopRoute() {
           <GitterchipMoleculesScrub dataSection="j2x-gitterchip-video" />
         ),
         studien: (
-          <>
+          <div className="j2x-studien-block">
             <h2 className="text-center">
               Wirkung an menschlichen Zellen bestätigt!
             </h2>
             <StudienSlider dataSection="j2x-studien-kacheln" />
-          </>
+          </div>
+        ),
+        beweisStrecke: (
+          <div className="j2x-lp-sektionen" data-section="j2x-beweis-strecke">
+            <VideoSection />
+            <GuaranteeSection />
+          </div>
         ),
       }}
     />

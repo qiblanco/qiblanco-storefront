@@ -1,0 +1,248 @@
+/*
+ * /pages/qione-2-pro-2x — seiten-geskoptes Delta zur geteilten Deal-Vorlage
+ * (styles/ten-years-deal-page.css). Elina-Wunsch 2026-08-10, Lane AUTO:
+ * reine Abstands-/Einbindungs-Arbeit, kein Preis-/Rechte-Bezug.
+ *
+ * WARUM EIGENE DATEI und nicht ten-years-deal-page.css / app.css:
+ * die Deal-Vorlage traegt VIER Deals (qione-2-pro-2x, 734husd8hh,
+ * sale-qibracelet, sale-qihome-air) und app.css ist global (die
+ * Studien-Kacheln stehen auch auf /pages/exclusive-solutions). Der Wunsch
+ * gilt ausdruecklich NUR dieser Seite — also Blast-Radius = diese Route.
+ *
+ * REGEL DIESES FILES: keine freien Werte. Alle Farben kommen aus den
+ * Deal-Tokens (--j-sale-*, definiert auf .j-sale-deal und hierher vererbt) —
+ * es gibt darum KEINEN zweiten Goldton. Alle Groessen kommen aus den beiden
+ * Token-Bloecken unten und greifen ausschliesslich Werte auf, die die Seite
+ * schon fuehrt (Typo 2.8/1.45/1.06/0.82rem, Radius 18px, 8pt-Raster).
+ */
+
+/* ==========================================================================
+   1) LUFT in der Studien-Sektion (Wunsch-Punkt 1)
+
+   Die Enge kommt aus app.css (global, geteilt): .ghx-studien{margin-top:32px}
+   und .ghx-studien__footnote{margin:18px 0 10px} — gegen die 72px-Rhythmik
+   und die 2.8rem-Ueberschriften dieser Seite sitzt die Kette
+   Kacheln -> "Wissenschaftlich getestet ..." -> Button "Zelluntersuchungen
+   ansehen" -> Sektion "Kann man den Effekt unter dem Mikroskop sehen? Ja!"
+   zu dicht aufeinander. Hier wird sie seiten-geskopt auf das 8pt-Raster
+   gebracht; app.css bleibt unangetastet.
+   ========================================================================== */
+
+.j2x-studien-block {
+  --j2x-luft-1: 24px;
+  --j2x-luft-2: 40px;
+  --j2x-luft-3: 56px;
+}
+
+/* Ueberschrift -> Kachel-Slider */
+.j2x-studien-block .ghx-studien {
+  margin-top: var(--j2x-luft-2);
+}
+
+/* Kachel-Slider/Pfeile -> Fussnoten-Zeile */
+.j2x-studien-block .ghx-studien__nav {
+  margin-bottom: var(--j2x-luft-1);
+}
+
+/* Fussnote "Wissenschaftlich getestet und in internationalen
+   Fachpublikationen bestaetigt." -> Button */
+.j2x-studien-block .ghx-studien__footnote {
+  margin-top: var(--j2x-luft-2);
+  margin-bottom: var(--j2x-luft-1);
+}
+
+/* Button "Zelluntersuchungen ansehen" -> Sektionsende. Die
+   Mikroskop-Sektion setzt darunter ihre eigenen 72px + Trennlinie an; die
+   zusaetzliche Luft hier trennt den Button sichtbar vom naechsten Thema,
+   statt ihn an der Linie kleben zu lassen. */
+.j2x-studien-block .btn--secondary {
+  margin-bottom: var(--j2x-luft-3);
+}
+
+/* ==========================================================================
+   2) KLEID fuer die eingebundenen Sektionen von /pages/chat-bot
+      (Wunsch-Punkte 2 + 3)
+
+   <VideoSection> "Echte Menschen. Echte Erfahrungen." und
+   <GuaranteeSection> "Ueberzeugt es dich - oder du bekommst dein Geld
+   zurueck." werden aus components/campaign/SchlafZellenSchutz.jsx
+   IMPORTIERT (Referenz, keine Kopie). Ihr Markup traegt die geteilten
+   .lp-vp-*-Klassen, die im Haus in JEDER Seite ihr eigenes Kleid bekommen
+   (exclusive-solutions, qione-zellschutz, esmog-schutz, zell-schutz,
+   tiefer-schlaf, schlaf-zellen-schutz) — dies ist das siebte.
+
+   BEWUSST NICHT schlaf-zellen-schutz.css mitladen: deren
+   body:has(.lp-a3)-Layer faerbt Header, Footer, Formulare und die Gold-Toene
+   der GANZEN Seite um. Der Wunsch nennt zwei Sektionen, nicht das Seitenkleid.
+
+   F-009-LEHRE (qione-2-pro-shop.css): .j2x-lp-sektionen liegt am
+   Wrapper-DIV, die .lp-vp-*-Knoten sind seine KINDER — Descendant-Selektor
+   ist hier also korrekt (der tote `.lp-a3 .shopq`-Vorfall hatte beide
+   Klassen am SELBEN Element).
+   ========================================================================== */
+
+.j2x-lp-sektionen {
+  --j2x-s1: 8px;
+  --j2x-s2: 16px;
+  --j2x-s3: 24px;
+  --j2x-s4: 32px;
+  --j2x-s6: 48px;
+  --j2x-radius: 18px;
+  --j2x-fs-eyebrow: 0.82rem;
+  --j2x-fs-body: 1.06rem;
+  --j2x-fs-titel: 1.45rem;
+  --j2x-fs-h2: 2.8rem;
+}
+
+/* Sektions-Rahmen exakt wie die Nachbar-Sektionen der Deal-Seite:
+   gleiche Breite, gleiche 72px-Rhythmik, gleiche Trennlinie. */
+.j2x-lp-sektionen .lp-vp-section {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 72px 0;
+  border-top: 1px solid var(--j-sale-line);
+}
+
+.j2x-lp-sektionen .eyebrow {
+  display: block;
+  margin: 0 0 var(--j2x-s2);
+  color: var(--j-sale-gold);
+  font-size: var(--j2x-fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.j2x-lp-sektionen .lp-vp-section > h2 {
+  margin: 0 0 30px;
+  font-size: var(--j2x-fs-h2);
+  line-height: 1.05;
+  text-align: center;
+}
+
+.j2x-lp-sektionen .lp-vp-section__lede {
+  max-width: 62ch;
+  margin: 0 auto var(--j2x-s6);
+  color: var(--j-sale-muted);
+  font-size: var(--j2x-fs-body);
+  text-align: center;
+}
+
+/* ---- Drei Karten (Videos wie Garantie teilen dasselbe Raster) ---- */
+.j2x-lp-sektionen .lp-vp-videos-grid,
+.j2x-lp-sektionen .lp-vp-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--j2x-s3);
+  margin: var(--j2x-s6) auto 0;
+}
+
+/* ---- Video-Karten ---- */
+.j2x-lp-sektionen .lp-vp-video {
+  text-align: left;
+}
+
+.j2x-lp-sektionen .lp-a-yt {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  border: 0;
+  border-radius: var(--j2x-radius);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--j-sale-ink);
+}
+
+.j2x-lp-sektionen .lp-a-yt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.j2x-lp-sektionen .lp-a-yt iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.j2x-lp-sektionen .lp-a-yt__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.j2x-lp-sektionen .lp-a-yt__play span {
+  display: grid;
+  place-items: center;
+  width: var(--j2x-s6);
+  height: var(--j2x-s6);
+  border-radius: 50%;
+  background: rgba(41, 39, 34, 0.72);
+  color: #fff;
+  font-size: var(--j2x-fs-body);
+  transition: background 0.15s ease;
+}
+
+.j2x-lp-sektionen .lp-a-yt:hover .lp-a-yt__play span,
+.j2x-lp-sektionen .lp-a-yt:focus-visible .lp-a-yt__play span {
+  background: var(--j-sale-gold);
+}
+
+.j2x-lp-sektionen .lp-vp-video__tag {
+  display: inline-block;
+  margin: var(--j2x-s2) 0 var(--j2x-s1);
+  color: var(--j-sale-gold);
+  font-size: var(--j2x-fs-eyebrow);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.j2x-lp-sektionen .lp-vp-video__title,
+.j2x-lp-sektionen .lp-vp-benefit__title {
+  margin: 0 0 var(--j2x-s1);
+  font-size: var(--j2x-fs-titel);
+  line-height: 1.2;
+}
+
+.j2x-lp-sektionen .lp-vp-video__quote,
+.j2x-lp-sektionen .lp-vp-benefit__body {
+  margin: 0;
+  color: var(--j-sale-muted);
+  font-size: var(--j2x-fs-body);
+}
+
+/* ---- Garantie-Karten ---- */
+.j2x-lp-sektionen .lp-a-benefit {
+  padding: var(--j2x-s4);
+  border: 1px solid var(--j-sale-line);
+  border-radius: var(--j2x-radius);
+  background: var(--j-sale-soft);
+  text-align: left;
+}
+
+/* ==========================================================================
+   3) Schmale Viewports — dieselbe Umbruch-Schwelle wie die Deal-Vorlage
+      (ten-years-deal-page.css schaltet dort ebenfalls auf einspaltig).
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .j2x-lp-sektionen .lp-vp-section {
+    width: min(100% - 28px, 1180px);
+    padding: 48px 0;
+  }
+
+  .j2x-lp-sektionen .lp-vp-videos-grid,
+  .j2x-lp-sektionen .lp-vp-benefits-grid {
+    grid-template-columns: 1fr;
+    margin-top: var(--j2x-s4);
+  }
+
+  .j2x-studien-block .btn--secondary {
+    margin-bottom: var(--j2x-luft-2);
+  }
+}

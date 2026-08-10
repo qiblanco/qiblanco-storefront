@@ -269,6 +269,13 @@ function getTemplateCopy(deal) {
  *   nachDealRail  — zusätzlicher Block direkt hinter der ersten Deal-Rail
  *                   („Wechsle direkt zum nächsten Jubiläumsangebot" + Angebote);
  *                   Default = nichts
+ *   beweisStrecke — die Testimonial-/Social-Proof-Strecke zwischen der
+ *                   Mikroskop-Sektion und dem Schluss-CTA; Default = der
+ *                   Bestand aus <GoogleReviewVideoSection> + <CommunityProofSection>
+ *                   + <YoutubeProofSlider>. EIN Slot für beide Richtungen:
+ *                   wer ihn besetzt, ersetzt die Strecke (Entfernen) UND setzt
+ *                   damit zugleich eigene Sektionen an genau diese Stelle,
+ *                   also hinter „Mikroskop" und vor „Lass deinen QiOne® …".
  */
 export function TenYearsDealPage({deal, sektionen = {}}) {
   const template = getTemplateCopy(deal);
@@ -668,9 +675,13 @@ function FrequencyTemplateSections({deal, template, selectedVariant, sektionen =
         )}
       </section>
       <MicroscopeSection />
-      <GoogleReviewVideoSection />
-      <CommunityProofSection />
-      <YoutubeProofSlider />
+      {sektionen.beweisStrecke ?? (
+        <>
+          <GoogleReviewVideoSection />
+          <CommunityProofSection />
+          <YoutubeProofSlider />
+        </>
+      )}
       <DealFinalCta
         deal={deal}
         template={template}
