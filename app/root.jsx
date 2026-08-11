@@ -18,6 +18,7 @@ import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
+import {QpxCommerce} from './components/QpxCommerce';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
@@ -387,7 +388,10 @@ export function Layout({children}) {
           >
             <PageLayout {...data}>{children}</PageLayout>
             {(data.isProductionHost || data.enableTrackingInPreview) && (
-              <MetaPixel />
+              <>
+                <MetaPixel />
+                <QpxCommerce />
+              </>
             )}
           </Analytics.Provider>
         ) : (
