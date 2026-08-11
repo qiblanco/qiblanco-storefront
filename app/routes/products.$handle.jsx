@@ -195,26 +195,38 @@ function StandardProduct({product}) {
 
   return (
     <>
+    {/* data-section-Anker: instrumentieren die Standard-PDP (products.$handle,
+        z.B. /products/qione) wie Homepage/LPs für den qpx-Sektions-Tracker
+        (behavior_section). Drei DISJUNKTE Zonen (kein Verschachteln — sonst
+        zählt Dwell doppelt und Description-Klicks stanzen ein Loch in die
+        Buybox): pdp-gallery (Bilder), pdp-description (Produkttext), pdp-buybox
+        (Preis + Kauf/ATC). Reine Attribute bzw. EIN Wrapper-Div in normalem
+        Blockfluss (.product-main ist kein Flex/Grid mit gap/>child) — kein
+        Layout-Effekt. Erfasst beim HARD-LOAD (Ad-Traffic landet hart) analog
+        zum bestehenden Tracker; SPA-navigierte PDPs bleiben ungemessen (Eigen-
+        schaft des Trackers, s. RESULT). Job 20260723-commerce-microfunnel. */}
     <div className="product">
-      <div className="ProductImages">
+      <div className="ProductImages" data-section="pdp-gallery">
         <ProductImage image={selectedVariant?.image} />
         <ProductImageList images={product?.images} />
       </div>
       <div className="product-main">
         <h1>{title}</h1>
         <div className="product-rating mt-2"><span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span></div>
-        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
+        <div data-section="pdp-buybox">
+          <ProductPrice
+            price={selectedVariant?.price}
+            compareAtPrice={selectedVariant?.compareAtPrice}
+          />
+          <ProductForm
+            productOptions={productOptions}
+            selectedVariant={selectedVariant}
+          />
+        </div>
       </div>
       <Analytics.ProductView
         data={{
