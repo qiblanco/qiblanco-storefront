@@ -590,7 +590,7 @@ function PricingSection() {
       name: 'QiBracelet®',
       handle: 'qibracelet',
       tagline: 'Ruhiger Puffer für unterwegs',
-      features: ['Eleganter GitterChip™ integriert', 'Kohärentes Wasser am Handgelenk', 'Dabei, wo das Handy ist'],
+      features: ['Eleganter GitterChip™ QTA-O-400 — Leistungsvolumen 400', 'Kohärentes Wasser am Handgelenk', 'Dabei, wo das Handy ist'],
       featured: false,
     },
     {
@@ -599,11 +599,11 @@ function PricingSection() {
       handle: 'qione-2-pro',
       tagline: 'Der Allrounder — Tag und Nacht',
       features: [
-        // Claim-Fix 20260718: „Stärkster GitterChip im Sortiment" ist unbelegt
-        // (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
-        // Christian/Legal-Gate, HARDWARE_ENTSCHEIDUNGSHILFE_V1) — ersetzt
-        // durch das belegte Material-Merkmal.
-        'GitterChip™ aus 750er Goldlegierung, von Hand veredelt',
+        // Claim-Nachschaerfung 20260718 (Christian-Fakten): gleiche GitterChip™-
+        // Technologie in allen Produkten, Differenzierung uebers Leistungsvolumen
+        // (QiOne 2 Pro = QTA-T-333/333, Dartsch 2024 ABBSR 7(3); HARDWARE_
+        // ENTSCHEIDUNGSHILFE_V1 Update v1.1). Kein Superlativ (QiBracelet = 400).
+        'GitterChip™ QTA-T-333 — Leistungsvolumen 333, aus 750er Goldlegierung',
         'Tragbar als Anhänger',
         'Kohärente Wasserstruktur',
         'Unser Bestseller',
@@ -615,7 +615,14 @@ function PricingSection() {
       name: 'QiHome® Air',
       handle: 'qihome-air',
       tagline: 'Für Schlafzimmer & Homeoffice',
-      features: ['Kohärentes Wasser im ganzen Raum', 'Ideal neben Router & Schreibtisch', 'Ruhe fürs Schlafzimmer'],
+      // Claim-Nachschaerfung 20260718: QTA-U-5000 + Laserquarz ~100x belegt
+      // (Dartsch 2026, NDCR 6(1)); 160 m Radius / 8 ha = Herstellerangabe
+      // (Christian 2026-07-18; alte 300-m²-Angabe war falsch).
+      features: [
+        'GitterChip™ QTA-U-5000 + Quarzoszillator aus Laserquarz — ca. 100-fache Systemleistung ggü. QiOne® 2 Pro',
+        'Wirkungsbereich bis zu 160 m Radius (rund 8 Hektar)',
+        'Kohärentes Wasser im ganzen Raum — ideal neben Router & Schreibtisch',
+      ],
       featured: false,
     },
   ];

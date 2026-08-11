@@ -140,8 +140,9 @@ function DasQiHome() {
         <li>
           <b>Erweitertes Wirkungsfeld:</b> Während der QiOne® dein
           unmittelbares Umfeld beeinflusst, entfaltet das QiHome® Air seine
-          Wirkung großflächig – ein System reicht für ein Einfamilienhaus oder
-          bis zu 300m² Büro- bzw. Produktionsfläche.
+          Wirkung großflächig – ein System wirkt in einem Radius von bis zu
+          160 m (rund 8 Hektar) und deckt damit Haus, Büro- oder
+          Produktionsfläche vollständig ab.
         </li>
         <li>
           <b>Perfekt für Unternehmen & Teams:</b> Unterstützt eine angenehme
