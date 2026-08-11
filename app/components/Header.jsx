@@ -5,6 +5,7 @@ import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
+import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
 import {
   GoogleRezensionenPopup,
@@ -639,8 +640,68 @@ function HeaderCtas({isLoggedIn, cart}) {
   return (
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
+      <ShopSwitch aktiv="de" />
+      <AccountToggle isLoggedIn={isLoggedIn} />
       <CartToggle cart={cart} />
     </nav>
+  );
+}
+
+/**
+ * Kunden-Login sichtbar machen. Die Account-Schicht (app/routes/account*.jsx +
+ * GraphQL customer-account) existiert vollständig; root.jsx lädt isLoggedIn
+ * und PageLayout reicht es bis hierher durch — bis heute wurde die Prop nur
+ * ignoriert. Hier wird ausschließlich der Einstieg gerendert, nichts gebaut.
+ *
+ * isLoggedIn ist ein Promise: bis es auflöst, zeigt der Fallback den
+ * Login-Weg. Das ist der sichere Ausgang — ein nicht eingeloggter Besucher
+ * gehört ohnehin dorthin, ein eingeloggter wird von /account/login zum
+ * Konto weitergeleitet.
+ *
+ * @param {{isLoggedIn: Promise<boolean> | boolean}}
+ */
+function AccountToggle({isLoggedIn}) {
+  return (
+    <Suspense fallback={<AccountLink eingeloggt={false} />}>
+      <Await
+        resolve={isLoggedIn}
+        errorElement={<AccountLink eingeloggt={false} />}
+      >
+        {(eingeloggt) => <AccountLink eingeloggt={Boolean(eingeloggt)} />}
+      </Await>
+    </Suspense>
+  );
+}
+
+/**
+ * @param {{eingeloggt: boolean}}
+ */
+function AccountLink({eingeloggt}) {
+  return (
+    <NavLink
+      className="header-account"
+      prefetch="intent"
+      to={eingeloggt ? '/account' : '/account/login'}
+      aria-label={eingeloggt ? 'Mein Konto' : 'Anmelden'}
+      title={eingeloggt ? 'Mein Konto' : 'Anmelden'}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </NavLink>
   );
 }
 

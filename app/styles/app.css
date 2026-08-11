@@ -16,6 +16,24 @@
   --color-accent-primary: rgb(242, 191, 114);
   --color-footer: #0a1127;
   --checkmark-color: #396e25;
+
+  /* Shop-Umschalter / Header-Icons — Token-Satz aus
+     homepage-bauer/shop-switch/konzeptplan.md Abschnitt 3. Wortgleich auch im
+     US-Liquid-Theme zu setzen; Gold erscheint AUSSCHLIESSLICH als
+     --shop-switch-active auf der aktiven Option (kein zweiter Goldton). */
+  --shop-switch-radius: 10px;
+  --shop-switch-gap: 8px;
+  --shop-switch-pad-y: 8px;
+  --shop-switch-pad-x: 10px;
+  --shop-switch-surface: #ffffff;
+  --shop-switch-ink: #4a4741;
+  --shop-switch-border: rgba(74, 71, 65, 0.14);
+  --shop-switch-shadow: 0 8px 24px rgba(74, 71, 65, 0.14);
+  --shop-switch-hover: rgba(74, 71, 65, 0.06);
+  --shop-switch-active: rgba(242, 191, 114, 0.18);
+  --shop-switch-flag-w: 20px;
+  --shop-switch-flag-h: 14px;
+  --shop-switch-flag-radius: 2px;
 }
 main {
   padding-top: calc(var(--header-height) + 40px);
@@ -467,10 +485,120 @@ aside h3 {
   height: 18px;
   width: 18px;
   font-size: 0.9em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--shop-switch-ink);
   top: -5px;
   right: -5px;
   background: var(--color-accent-primary);
   border-radius: 1000px;
+}
+
+/*
+* --------------------------------------------------
+* Shop-Umschalter (DACH <-> USA) — Tokens siehe :root
+*
+* Die Optionen sind echte <a href> und tragen ihr Ziel bereits im gerenderten
+* HTML (siehe app/components/ShopSwitch.jsx). Diese Regeln kleiden das nur ein;
+* ohne CSS bleibt der Umschalter eine bedienbare Liste.
+* --------------------------------------------------
+*/
+.shop-switch {
+  position: relative;
+}
+.shop-switch__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y) var(--shop-switch-pad-x);
+  border: 1px solid var(--shop-switch-border);
+  border-radius: var(--shop-switch-radius);
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  transition: background 0.2s linear;
+}
+.shop-switch__trigger:hover {
+  background: var(--shop-switch-hover);
+}
+.shop-switch__trigger:focus-visible,
+.shop-switch__option:focus-visible,
+.header-account:focus-visible,
+.header-ctas a.openCart:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+.shop-switch__chevron {
+  transition: transform 0.2s ease;
+}
+.shop-switch__trigger[aria-expanded='true'] .shop-switch__chevron {
+  transform: rotate(180deg);
+}
+.shop-switch__flag {
+  display: block;
+  width: var(--shop-switch-flag-w);
+  height: var(--shop-switch-flag-h);
+  border-radius: var(--shop-switch-flag-radius);
+  flex: 0 0 auto;
+}
+.shop-switch__panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + var(--shop-switch-gap));
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  min-width: 168px;
+  background: var(--shop-switch-surface);
+  border: 1px solid var(--shop-switch-border);
+  border-radius: var(--shop-switch-radius);
+  box-shadow: var(--shop-switch-shadow);
+}
+.shop-switch__panel--offen {
+  display: block;
+}
+.shop-switch__option {
+  display: flex;
+  align-items: center;
+  gap: var(--shop-switch-gap);
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y) var(--shop-switch-pad-x);
+  border-radius: calc(var(--shop-switch-radius) - 4px);
+  color: var(--shop-switch-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.shop-switch__option:hover {
+  background: var(--shop-switch-hover);
+}
+.shop-switch__option--aktiv {
+  background: var(--shop-switch-active);
+  font-weight: 600;
+}
+.shop-switch__label {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+/* Kunden-Login: gleiche Trefferflaeche und Strichstaerke wie der Warenkorb. */
+.header-account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y);
+  border: 1px solid var(--shop-switch-border);
+  border-radius: 1000px;
+  color: currentColor;
+  transition: background 0.2s linear;
+}
+.header-account:hover {
+  background: var(--shop-switch-hover);
 }
 .header-menu-mobile-toggle {
   @media (min-width: 48em) {
@@ -501,7 +629,9 @@ aside h3 {
 .header-ctas {
   align-items: center;
   display: flex;
-  grid-gap: 1rem;
+  /* 8pt-Raster statt 1rem: die Icon-Reihe traegt seit dem Umschalter vier
+     Elemente statt zwei und soll in beiden Shops denselben Abstand haben. */
+  grid-gap: var(--shop-switch-gap);
 }
 
 .header-ctas > * {
@@ -2676,15 +2806,24 @@ ul.submenu li a {
   }
 }
 .openCart {
-  padding: 10px;
-  border: 1px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y);
+  border: 1px solid var(--shop-switch-border);
   border-radius: 1000px;
-  opacity: 0.5;
-  transition: 0.2s all linear;
+  /* Frueher opacity: 0.5 auf dem ganzen Knopf. Das dimmt in CSS zwingend auch
+     das Kind — die goldene Zahl-Blase wurde dadurch blass, und genau sie muss
+     seit der Angleichung auch die 0 lesbar zeigen. Statt der Deckkraft
+     zurueckgenommen ist jetzt der Rahmen (--shop-switch-border). */
+  opacity: 1;
+  transition: 0.2s background linear, 0.2s border-color linear;
 }
 .openCart:hover {
-  opacity: 1;
-  border: 1px solid currentColor;
+  background: var(--shop-switch-hover);
+  border: 1px solid var(--shop-switch-border);
 }
 .ProductDescription ul {
   margin-top: 30px;
