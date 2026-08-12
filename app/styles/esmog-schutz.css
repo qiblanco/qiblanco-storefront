@@ -49,6 +49,10 @@
   --a-muted-hell: rgba(244, 240, 233, 0.72);
   --a-akzent: #c9a14b;               /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --a-akzent-tief: #b8893a;
+  --a-akzent-tinte: #856828;  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+       Gleicher Hue/Saettigung wie --a-akzent, nur abgedunkelt -> KEIN zweiter Gold-
+       ton (Rubrik-Hue-Bin bleibt 1). --a-akzent-tief bleibt die FLAECHE
+       (hover/outline/fill) — die beiden Rollen haben gegenlaeufige Anforderungen. */
   --a-linie: rgba(44, 42, 38, 0.12);
   --a-linie-hell: rgba(244, 240, 233, 0.2);
 
@@ -61,6 +65,27 @@
   --a-mass: 68ch;
   --a-breite: 1080px;
   --a-breite-schmal: 760px;
+}
+
+/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere #856828 zu dunkel
+   (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt Selektor-Pflege:
+   jedes Element in diesen Sektionen erbt die Korrektur automatisch. */
+.lp-d3 .lp-vp-final-cta,
+.lp-d3 .lp-d-yt,
+body:has(.lp-d3) .footer,
+body:has(.lp-d3) footer {
+  --a-akzent-tinte: var(--a-akzent);
+}
+
+/* reset.css setzt "p, li { color: var(--color-dark) }" als DIREKTE Elementregel.
+   Direkt schlaegt GEERBT — deshalb gewinnt der dunkle Fliesstext-Ton in einer
+   dunklen Sektion gegen deren helle Sektionsfarbe (gemessen 1.93:1). "inherit"
+   gibt die Vererbung zurueck (8.57:1). Dieselbe Bauart wie im US-Theme. */
+.lp-d3 .lp-vp-final-cta p,
+.lp-d3 .lp-vp-final-cta li,
+.lp-d3 .lp-d-yt p,
+.lp-d3 .lp-d-yt li {
+  color: inherit;
 }
 
 /* ─── Grundfluss: Sektions-Takt (96 Desktop / 64 Mobil), EIN Container ────── */
@@ -113,7 +138,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   text-align: center;
   margin: 0 0 var(--a-s2);
 }
@@ -137,13 +162,13 @@
   border-radius: var(--a-r1);
   border: 1px solid transparent;
   background: var(--a-akzent);
-  color: #fff;
+  color: var(--a-text);
   text-decoration: none;
   text-align: center;
   transition: background 0.15s ease;
   box-shadow: var(--a-shadow-sm);
 }
-.lp-d3 .lp-vp-btn:hover { background: var(--a-akzent-tief); color: #fff; }
+.lp-d3 .lp-vp-btn:hover { background: var(--a-akzent-tief); color: var(--a-text); }
 .lp-d3 .lp-vp-btn:focus-visible {
   outline: 2px solid var(--a-akzent-tief);
   outline-offset: 2px;
@@ -190,7 +215,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   margin: 0 0 var(--a-s2);
 }
 .lp-d3 .lp-d-hero__title {
@@ -216,7 +241,7 @@
   margin-bottom: var(--a-s4);
 }
 .lp-d3 .lp-d-hero__price { font-size: var(--a-fs-xs); color: var(--a-muted); }
-.lp-d3 .lp-d-hero__price s { opacity: 0.7; }
+.lp-d3 .lp-d-hero__price s { opacity: 1; }  /* 0.7 machte aus dem muted-Ton #96928b = 2.94:1 */
 .lp-d3 .lp-d-hero__trust {
   list-style: none;
   display: flex;
@@ -296,7 +321,7 @@
 }
 .lp-d3 .lp-d-schema__pfeil {
   font-size: var(--a-fs-xl);
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   text-align: center;
 }
 
@@ -321,7 +346,7 @@
   height: var(--a-s4);
   border-radius: 50%;
   background: var(--a-akzent);
-  color: #fff;
+  color: var(--a-text);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   margin-bottom: var(--a-s2);
@@ -355,7 +380,7 @@
 .lp-d3 .lp-vp-peer-stat__value {
   font-size: var(--a-fs-h2);
   font-weight: 700;
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   font-variant-numeric: tabular-nums;
 }
 .lp-d3 .lp-vp-peer-stat__label { font-size: var(--a-fs-lg); font-weight: 600; margin-top: var(--a-s1); }
@@ -388,7 +413,7 @@
   color: var(--a-muted);
   margin-bottom: var(--a-s1);
 }
-.lp-d3 .lp-d-mikroskop__seite--gitter .lp-d-mikroskop__label { color: var(--a-akzent-tief); }
+.lp-d3 .lp-d-mikroskop__seite--gitter .lp-d-mikroskop__label { color: var(--a-akzent-tinte); }
 .lp-d3 .lp-d-mikroskop__wert { font-size: var(--a-fs-base); color: var(--a-text); margin: 0 auto; }
 .lp-d3 .lp-d-mikroskop__fuss {
   grid-column: 1 / -1;
@@ -483,7 +508,7 @@
   font-size: var(--a-fs-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   margin: var(--a-s2) 0 var(--a-s1);
 }
 .lp-d3 .lp-vp-video__title { font-size: var(--a-fs-lg); margin: 0 0 var(--a-s1); }
@@ -534,7 +559,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: var(--a-akzent);
-  color: #fff;
+  color: var(--a-text);
   font-size: var(--a-fs-xs);
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -582,7 +607,7 @@
 }
 .lp-d3 .lp-d-product__features li::before {
   content: '✓';
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   font-weight: 700;
   margin-right: var(--a-s1);
 }
@@ -792,7 +817,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -848,7 +873,7 @@ body:has(.lp-d3) .footer .btn--primary,
 body:has(.lp-d3) .footer button[type='submit'],
 body:has(.lp-d3) .footer input[type='submit'] {
   background: var(--a-akzent);
-  color: #fff;
+  color: var(--a-text);
   border-radius: var(--a-r1);
   font-size: var(--a-fs-base);
 }
@@ -861,7 +886,7 @@ body:has(.lp-d3) ._form_15 button,
 body:has(.lp-d3) ._form_15 ._submit,
 body:has(.lp-d3) ._form_15 input[type='submit'] {
   background: var(--a-akzent) !important;
-  color: #fff !important;
+  color: var(--a-text) !important;
   border-radius: var(--a-r1) !important;
   font-family: var(--a-font) !important;
 }
@@ -891,7 +916,7 @@ body:has(.lp-d3) header img { border-radius: var(--a-r1); }
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--a-akzent-tief);
+  color: var(--a-akzent-tinte);
 }
 .lp-d3 .lp-d-quelle__titel { font-size: var(--a-fs-lg); margin: var(--a-s1) 0; }
 .lp-d3 .lp-d-quelle__text { font-size: var(--a-fs-base); color: var(--a-muted); margin: 0; }
