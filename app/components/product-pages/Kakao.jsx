@@ -364,10 +364,10 @@ function SparSection() {
           <b>Spare bis zu 30 % – sortenübergreifend kombinierbar.</b>
         </p>
         <p>
-          <b>2 Packungen = 20 % Rabatt + Gratisversand</b>
+          <b>2 Packungen = 20 % Rabatt + Gratisversand innerhalb Deutschlands</b>
         </p>
         <p>
-          <b>3 Packungen = 30 % Rabatt + Gratisversand</b>
+          <b>3 Packungen = 30 % Rabatt + Gratisversand innerhalb Deutschlands</b>
         </p>
       </div>
       <div className="aspect-square overflow-hidden rounded-xl mb-[10vh]">
