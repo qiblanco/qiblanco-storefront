@@ -171,7 +171,7 @@ function CacaoBenefitList() {
   return (
     <div className="CacaoBenefitList">
       <ul>
-        <li>✅ Kostenloser Versand ab 99 €</li>
+        <li>✅ Kostenloser Versand ab 99 € innerhalb Deutschlands</li>
         <li>🚚 Lieferung in 1–3 Werktagen</li>
         <li>🔄 100 % Geld-zurück-Garantie bei Unzufriedenheit</li>
         <li>🔬 Laboranalytisch geprüft (Dartsch Institut)</li>

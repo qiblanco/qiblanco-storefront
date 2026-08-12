@@ -235,11 +235,11 @@ export default function Product() {
             Nutze die Kraft des Kristall Kakao® regelmäßig – und spare dabei:
           </h2>
           <p className="mt-2">
-            ✅ 2 Stück kaufen → 20 % Rabatt + gratis Versand <br /> 👉
+            ✅ 2 Stück kaufen → 20 % Rabatt + gratis Versand innerhalb Deutschlands <br /> 👉
             Beliebteste Wahl – perfekt für deine tägliche Zeremonie
           </p>
           <p className="mt-2">
-            ✅ 3 Stück kaufen → 30 % Rabatt + gratis Versand <br />
+            ✅ 3 Stück kaufen → 30 % Rabatt + gratis Versand innerhalb Deutschlands <br />
             🌟 Beste Wahl – teilen, verschenken & selbst genießen
           </p>
           <p className="mt-2">

@@ -59,16 +59,30 @@ function CartEmpty({hidden = false}) {
   );
 }
 
+// Beide Zahlen stammen aus DERSELBEN Quelle — der Versandpolicy des DACH-Shops
+// (checkout.qiblanco.com/policies/shipping-policy, live nachgemessen über
+// /cart/shipping_rates.json am 2026-08-12): Deutschland 5,90 EUR, ab 99 EUR
+// versandkostenfrei. Sie stehen deshalb nebeneinander statt verstreut: vorher
+// lag die Schwelle im Rechenweg und der Versandpreis als Textliteral tief im
+// JSX — und dieses Literal war mit "4,96" der NETTO-Betrag (5,90 / 1,19), dem
+// B2C-Kunden also zu niedrig ausgewiesen. Wer eine der Zahlen anfasst, sieht
+// jetzt die andere.
+const SCHWELLE_DE = 99;
+const VERSAND_DE = '5,90';
+
 function FreeShipping({cart}){
-  // M3: Schwelle (99) und Versandpreis (4,96) sind DE/EUR-spezifisch —
-  // in Nicht-EUR-Maerkten (CHF/USD) wird der Banner nicht gezeigt, statt
-  // falsche Betraege zu versprechen (fail-closed).
+  // Die Schwelle gilt ausschließlich für Deutschland — Österreich (6,90 EUR)
+  // und die Schweiz (21,00 EUR) haben überhaupt keine. Der Währungs-Riegel
+  // unten blendet den Banner in Nicht-EUR-Märkten aus (CHF/USD) und fängt
+  // damit die Schweiz, NICHT aber Österreich: das kauft ebenfalls in EUR und
+  // sähe hier sonst einen Fortschrittsbalken auf ein Versprechen zu, das der
+  // Checkout ihm nie einlöst. Deshalb nennt jeder Satz das Land ausdrücklich.
   if ((cart?.cost?.subtotalAmount?.currencyCode ?? "EUR") !== "EUR") {
     return null;
   }
   let subtotal = parseFloat(cart?.cost?.subtotalAmount?.amount || "0");
-  let difference = 99 - subtotal;
-  let progress = (subtotal / 99) * 100;
+  let difference = SCHWELLE_DE - subtotal;
+  let progress = (subtotal / SCHWELLE_DE) * 100;
 
   let diffMoney = {
     amount: difference.toFixed(2),
@@ -83,7 +97,7 @@ function FreeShipping({cart}){
   return (
     <div className="free-shipping-wrapper">
       <small className="free-shipping-header"> 
-        Nur noch <b><Money data={diffMoney} /></b> bis zum kostenlosen Versand!
+        Nur noch <b><Money data={diffMoney} /></b> bis zum kostenlosen Versand innerhalb Deutschlands!
       </small>
       <div className="freeshipping-tracker-and-icon">
         <div className="free-shipping-progress">
@@ -92,7 +106,7 @@ function FreeShipping({cart}){
         <div className="svg"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="M128 129.09V232a8 8 0 0 1-3.84-1l-88-48.18a8 8 0 0 1-4.16-7V80.18a8 8 0 0 1 .7-3.25Z" opacity={0.2}></path><path d="m223.68 66.15l-88-48.15a15.88 15.88 0 0 0-15.36 0l-88 48.17a16 16 0 0 0-8.32 14v95.64a16 16 0 0 0 8.32 14l88 48.17a15.88 15.88 0 0 0 15.36 0l88-48.17a16 16 0 0 0 8.32-14V80.18a16 16 0 0 0-8.32-14.03M128 32l80.34 44l-29.77 16.3l-80.35-44Zm0 88L47.66 76l33.9-18.56l80.34 44ZM40 90l80 43.78v85.79l-80-43.75Zm176 85.78l-80 43.79v-85.75l32-17.51V152a8 8 0 0 0 16 0v-44.45L216 90v85.77Z"></path></g></svg></div>
       </div> 
       <small className="free-shipping-footer">
-        Versandkosten innerhalb von Deutschland: €4,96
+        Versandkosten innerhalb von Deutschland: €{VERSAND_DE}
       </small>
     </div>
   )
