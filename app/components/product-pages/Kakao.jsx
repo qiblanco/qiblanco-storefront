@@ -217,16 +217,16 @@ function ComparisonTable() {
             Wertspalten sind wischbar. Ohne das lief die Tabelle auf dem Handy
             rechts aus dem Bild (gemessen: 374 px Bedarf gegen 326 px Platz).
             Rahmen + Radius sitzen auf dem Wrapper, NICHT auf dem <table> —
-            ein Radius am <table> braucht overflow:hidden, und das toetet sticky. */}
+            ein Radius am <table> braucht overflow:hidden, und das tötet sticky. */}
         <SwipeTable
           className="qb-swipetab--zebra rounded-xl border border-gray-200"
-          label="Naehrstoff-Vergleich Crystal Cacao, Kaffee, Energydrink — horizontal wischbar"
+          label="Nährstoff-Vergleich Crystal Cacao, Kaffee, Energydrink — horizontal wischbar"
         >
           <table className="w-full text-sm">
             <thead>
               {/* Trennlinie auf den <th>, NICHT auf dem <tr>: der Baukasten schaltet
-                  auf border-collapse:separate, und dort zeichnet der Browser Raender
-                  auf <tr> laut Spezifikation nicht — sie waere lautlos verschwunden.
+                  auf border-collapse:separate, und dort zeichnet der Browser Ränder
+                  auf <tr> laut Spezifikation nicht — sie wäre lautlos verschwunden.
                   bg-white: im Zebra-Modus erbt die feste Spalte die Zeilenfarbe, die
                   muss also deckend sein. */}
               <tr className="bg-white">
@@ -272,7 +272,7 @@ function ComparisonTable() {
             <tbody>
               {rows.map((row, i) => (
                 // bg-white statt "": im Zebra-Modus erbt die feste Spalte die
-                // Zeilenfarbe — eine transparente Zeile liesse die wandernden
+                // Zeilenfarbe — eine transparente Zeile ließe die wandernden
                 // Wertspalten durch die feste Spalte durchscheinen.
                 <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                   <td className="py-2 px-3 font-bold text-md">{row.label}</td>

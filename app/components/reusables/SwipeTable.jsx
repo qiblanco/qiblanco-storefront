@@ -7,25 +7,25 @@ import {useDragSwipe} from '~/components/reusables/useDragSwipe';
  * shared-state/homepage-bauer/baukasten/qb-swipetab/).
  * Gebaut 2026-08-12, Job 20260811-responsive-tabelle-sticky-...-prio95.
  *
- * ROLLENTEILUNG (wichtig fuers Verstaendnis):
+ * ROLLENTEILUNG (wichtig fürs Verständnis):
  *   Das Wischen selbst kann der Browser. Touch und Trackpad scrollen den Container
- *   nativ — dafuer ist hier KEIN Javascript noetig. Diese Komponente liefert nur
+ *   nativ — dafür ist hier KEIN Javascript nötig. Diese Komponente liefert nur
  *   die zwei Dinge, die CSS nicht messen kann:
- *     (a) "gibt es ueberhaupt etwas zu wischen, und in welche Richtung noch?"
+ *     (a) "gibt es überhaupt etwas zu wischen, und in welche Richtung noch?"
  *         -> Klassen is-wischbar / is-mehr-rechts / is-ab-links
- *     (b) Ziehen mit gedrueckter MAUS — dafuer der GEMEINSAME Storefront-Hook
+ *     (b) Ziehen mit gedrückter MAUS — dafür der GEMEINSAME Storefront-Hook
  *         useDragSwipe(mode:'scroll'), Baustandard GL-DES-0012. Bewusst KEINE
- *         zweite Gesten-Implementierung: ein Server, ein Gefuehl.
- *   Faellt Javascript aus, bleibt die Tabelle vollstaendig bedienbar: sticky-Spalte,
+ *         zweite Gesten-Implementierung: ein Server, ein Gefühl.
+ *   Fällt Javascript aus, bleibt die Tabelle vollständig bedienbar: sticky-Spalte,
  *   Touch-Wisch, Trackpad, Tastatur und Scrollbar sind reines CSS/Browser-Verhalten.
  *   Der Hinweis-Text erscheint dann nicht — er verspricht also nie etwas, das
  *   gerade nicht ginge.
  *
- * Anpassung je Einsatzort ausschliesslich ueber die CSS-Variablen (style-Prop),
- * niemals ueber freie Werte im Markup.
+ * Anpassung je Einsatzort ausschließlich über die CSS-Variablen (style-Prop),
+ * niemals über freie Werte im Markup.
  */
 
-const REST_PX = 2; // Sub-Pixel-Rundung: darunter zaehlt "am Anschlag"
+const REST_PX = 2; // Sub-Pixel-Rundung: darunter zählt "am Anschlag"
 
 export function SwipeTable({
   children,
@@ -52,7 +52,7 @@ export function SwipeTable({
         abLinks: vp.scrollLeft > REST_PX,
         mehrRechts: wischbar && vp.scrollLeft < weg - REST_PX,
       };
-      // Nur bei echter Aenderung neu rendern — scroll feuert sonst pro Frame.
+      // Nur bei echter Änderung neu rendern — scroll feuert sonst pro Frame.
       return alt.wischbar === neu.wischbar &&
         alt.abLinks === neu.abLinks &&
         alt.mehrRechts === neu.mehrRechts
@@ -68,8 +68,8 @@ export function SwipeTable({
 
     vp.addEventListener('scroll', messen, {passive: true});
     window.addEventListener('resize', messen, {passive: true});
-    // Spaet ladende Schriften/Bilder aendern die Spaltenbreiten -> nachmessen.
-    // (Die Tabellenkoepfe tragen Logos: ohne das misst man vor dem Layout.)
+    // Spät ladende Schriften/Bilder ändern die Spaltenbreiten -> nachmessen.
+    // (Die Tabellenköpfe tragen Logos: ohne das misst man vor dem Layout.)
     if (document.fonts?.ready?.then) {
       document.fonts.ready.then(messen).catch(() => {});
     }
@@ -108,10 +108,10 @@ export function SwipeTable({
         ref={vpRef}
         className="qb-swipetab__vp"
         // tabindex/role: der Scrollbereich muss per Tastatur erreichbar und
-        // fuer Screenreader als eigener Bereich benannt sein (WCAG 2.1.1).
+        // für Screenreader als eigener Bereich benannt sein (WCAG 2.1.1).
         // Der Lint-Regel ist nur role="tabpanel" als nicht-interaktive Ausnahme
-        // bekannt; fuer einen SCROLLBAREN Bereich ist tabindex=0 aber genau die
-        // vorgeschriebene Loesung — ohne ihn kaeme man per Tastatur nicht an die
+        // bekannt; für einen SCROLLBAREN Bereich ist tabindex=0 aber genau die
+        // vorgeschriebene Lösung — ohne ihn käme man per Tastatur nicht an die
         // rechten Spalten (axe: "scrollable region must have keyboard access").
         // Bewusst hier eng begrenzt statt die Regel projektweit aufzuweichen.
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex

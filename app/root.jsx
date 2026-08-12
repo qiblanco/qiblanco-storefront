@@ -15,7 +15,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 // Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
-// wiederverwendbar sein soll. Wirkt ausschliesslich innerhalb von .qb-swipetab —
+// wiederverwendbar sein soll. Wirkt ausschließlich innerhalb von .qb-swipetab —
 // eine Seite ohne den Baustein sieht davon baulich nichts.
 import qbSwipetabStyles from '~/styles/qb-swipetab.css?url';
 import {PageLayout} from './components/PageLayout';
