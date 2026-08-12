@@ -50,6 +50,10 @@
   --mm-text-hell-2: rgba(244, 240, 233, 0.72);
   --mm-gold: #c9a14b;        /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --mm-gold-tief: #b8893a;   /* Hover + Text-Akzent auf hell */
+  --mm-gold-tinte: #856828;  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+       Gleicher Hue/Saettigung wie --mm-gold, nur abgedunkelt -> KEIN zweiter Gold-
+       ton (Rubrik-Hue-Bin bleibt 1). --mm-gold-tief bleibt die FLAECHE
+       (hover/outline/fill) — die beiden Rollen haben gegenlaeufige Anforderungen. */
   --mm-gold-hauch: var(--mm-flaeche);
   --mm-linie: rgba(44, 42, 38, 0.12);
   --mm-linie-hell: rgba(244, 240, 233, 0.2);
@@ -63,6 +67,24 @@
   --mm-max: 1080px;
   --mm-max-schmal: 760px;
   --mm-mass: 68ch;
+}
+
+/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere #856828 zu dunkel
+   (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt Selektor-Pflege:
+   jedes Element in diesen Sektionen erbt die Korrektur automatisch. */
+.mm-bahn--dunkel,
+body:has(.mm-lp) .footer,
+body:has(.mm-lp) footer {
+  --mm-gold-tinte: var(--mm-gold);
+}
+
+/* reset.css setzt "p, li { color: var(--color-dark) }" als DIREKTE Elementregel.
+   Direkt schlaegt GEERBT — deshalb gewinnt der dunkle Fliesstext-Ton in einer
+   dunklen Sektion gegen deren helle Sektionsfarbe (gemessen 1.93:1). "inherit"
+   gibt die Vererbung zurueck (8.57:1). Dieselbe Bauart wie im US-Theme. */
+.mm-bahn--dunkel p,
+.mm-bahn--dunkel li {
+  color: inherit;
 }
 
 /* ─── Grundfluss ──────────────────────────────────────────────────────────── */
@@ -123,7 +145,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   text-align: center;
   max-width: max-content;
   margin: 0 auto var(--mm-s2);
@@ -144,7 +166,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   justify-content: center;
   gap: var(--mm-s1);
   background: var(--mm-gold);
-  color: #fff;
+  color: var(--mm-text);
   font-weight: 600;
   font-size: var(--mm-fs-base);
   line-height: 1.2;
@@ -155,7 +177,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   box-shadow: var(--mm-schatten-1);
   transition: background 0.15s ease;
 }
-.mm-cta:hover { background: var(--mm-gold-tief); color: #fff; }
+.mm-cta:hover { background: var(--mm-gold-tief); color: var(--mm-text); }
 .mm-cta:focus-visible { outline: 2px solid var(--mm-gold-tief); outline-offset: 2px; }
 .mm-cta--sekundaer {
   background: transparent;
@@ -221,7 +243,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   flex: 0 0 auto;
   width: var(--mm-s3);
   margin-top: 2px;
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -286,7 +308,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   height: var(--mm-s4);
   border-radius: 50%;
   background: var(--mm-gold);
-  color: #fff;
+  color: var(--mm-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -339,7 +361,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   margin-left: auto;
   margin-right: auto;
 }
-.mm-diagramm__label--gold { color: var(--mm-gold-tief); }
+.mm-diagramm__label--gold { color: var(--mm-gold-tinte); }
 .mm-diagramm__wechsel {
   position: absolute;
   left: 50%;
@@ -350,7 +372,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   border-radius: 50%;
   background: var(--mm-grund);
   border: 1px solid var(--mm-linie);
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,7 +406,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 .mm-stat__zahl {
   font-size: var(--mm-fs-xl);
   font-weight: 700;
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
@@ -425,12 +447,12 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
 }
 .mm-karte h3 { font-size: var(--mm-fs-lg); }
 .mm-karte__meta { font-size: var(--mm-fs-xs); color: var(--mm-text-2); }
 .mm-karte__body { font-size: var(--mm-fs-base); color: var(--mm-text); }
-.mm-karte a { color: var(--mm-gold-tief); font-weight: 600; text-decoration: none; }
+.mm-karte a { color: var(--mm-gold-tinte); font-weight: 600; text-decoration: none; }
 .mm-karte a:hover { text-decoration: underline; }
 
 /* ─── Berichte / deskriptive Nutzerdaten ──────────────────────────────────── */
@@ -478,7 +500,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   border-radius: 50%;
   border: 1px solid var(--mm-linie);
   background: var(--mm-grund);
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -501,7 +523,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   justify-content: center;
   font-size: var(--mm-fs-lg);
   font-weight: 700;
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   background: transparent;
   font-variant-numeric: tabular-nums;
 }
@@ -555,7 +577,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 .mm-faq summary::-webkit-details-marker { display: none; }
 .mm-faq summary::after {
   content: '+';
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   font-size: var(--mm-fs-lg);
   font-weight: 400;
   line-height: 1;
@@ -587,7 +609,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 .mm-funnel__karte h3 { font-size: var(--mm-fs-lg); margin-bottom: var(--mm-s1); }
 .mm-funnel__karte p { font-size: var(--mm-fs-base); color: var(--mm-text-2); }
 .mm-funnel__pfeil {
-  color: var(--mm-gold-tief);
+  color: var(--mm-gold-tinte);
   font-weight: 600;
   font-size: var(--mm-fs-xs);
   letter-spacing: 0.08em;
@@ -706,7 +728,7 @@ body:has(.mm-lp) .footer .btn--primary,
 body:has(.mm-lp) .footer button[type='submit'],
 body:has(.mm-lp) .footer input[type='submit'] {
   background: var(--mm-gold);
-  color: #fff;
+  color: var(--mm-text);
   border-radius: var(--mm-r1);
   font-size: var(--mm-fs-base);
 }
@@ -725,7 +747,7 @@ body:has(.mm-lp) ._form_15 button,
 body:has(.mm-lp) ._form_15 ._submit,
 body:has(.mm-lp) ._form_15 input[type='submit'] {
   background: var(--mm-gold) !important;
-  color: #fff !important;
+  color: var(--mm-text) !important;
   border-radius: var(--mm-r1) !important;
   font-family: var(--mm-font) !important;
 }
@@ -780,7 +802,7 @@ body:has(.mm-lp) #cookiebanner .cookie-banner-button {
 }
 body:has(.mm-lp) #cookiebanner .cookie-banner-button.accept {
   background: var(--mm-gold) !important;
-  color: #fff !important;
+  color: var(--mm-text) !important;
 }
 /* Bild-Radien: EIN Wert für Fremd-Bilder (Header/Submenu/Footer/Widgets);
    Kit-Bilder in geclippten Containern bleiben 0 (Regeln oben, spezifischer). */

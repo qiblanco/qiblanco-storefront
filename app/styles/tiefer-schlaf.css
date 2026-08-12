@@ -42,6 +42,10 @@
   --ts3-muted-hell: rgba(244, 240, 233, 0.72);
   --ts3-akzent: #c9a14b;         /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --ts3-akzent-tief: #b8893a;    /* Hover / Text-Akzent auf hell */
+  --ts3-akzent-tinte: #856828;  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+       Gleicher Hue/Saettigung wie --ts3-akzent, nur abgedunkelt -> KEIN zweiter Gold-
+       ton (Rubrik-Hue-Bin bleibt 1). --ts3-akzent-tief bleibt die FLAECHE
+       (hover/outline/fill) — die beiden Rollen haben gegenlaeufige Anforderungen. */
   --ts3-linie: rgba(44, 42, 38, 0.12);
   --ts3-linie-hell: rgba(244, 240, 233, 0.2);
 
@@ -54,6 +58,27 @@
   --ts3-mass: 68ch;              /* Zeilenlaenge Body */
   --ts3-breite: 1080px;          /* Sektions-Container */
   --ts3-breite-schmal: 760px;
+}
+
+/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere #856828 zu dunkel
+   (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt Selektor-Pflege:
+   jedes Element in diesen Sektionen erbt die Korrektur automatisch. */
+.lp-ts3 .lp-vp-final-cta,
+.lp-ts3 .lp-ts3-yt,
+body:has(.lp-ts3) .footer,
+body:has(.lp-ts3) footer {
+  --ts3-akzent-tinte: var(--ts3-akzent);
+}
+
+/* reset.css setzt "p, li { color: var(--color-dark) }" als DIREKTE Elementregel.
+   Direkt schlaegt GEERBT — deshalb gewinnt der dunkle Fliesstext-Ton in einer
+   dunklen Sektion gegen deren helle Sektionsfarbe (gemessen 1.93:1). "inherit"
+   gibt die Vererbung zurueck (8.57:1). Dieselbe Bauart wie im US-Theme. */
+.lp-ts3 .lp-vp-final-cta p,
+.lp-ts3 .lp-vp-final-cta li,
+.lp-ts3 .lp-ts3-yt p,
+.lp-ts3 .lp-ts3-yt li {
+  color: inherit;
 }
 
 /* ─── Grundfluss: Sektions-Takt (96 Desktop / 64 Mobil), EIN Container ────── */
@@ -114,7 +139,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   text-align: center;
   margin: 0 0 var(--ts3-s2);
 }
@@ -140,7 +165,7 @@
   border-radius: var(--ts3-r1);
   border: 1px solid transparent;
   background: var(--ts3-akzent);
-  color: #fff;
+  color: var(--ts3-text);
   text-decoration: none;
   text-align: center;
   transition: background 0.15s ease;
@@ -148,7 +173,7 @@
   border-radius: var(--ts3-r1) !important;
 }
 .lp-ts3 .lp-vp-btn:hover, .lp-ts3 .btn--primary:hover,
-.lp-ts3 .rd3-trio__kauf:hover { background: var(--ts3-akzent-tief); color: #fff; }
+.lp-ts3 .rd3-trio__kauf:hover { background: var(--ts3-akzent-tief); color: var(--ts3-text); }
 .lp-ts3 .lp-vp-btn:focus-visible, .lp-ts3 .btn--primary:focus-visible,
 .lp-ts3 .rd3-trio__kauf:focus-visible {
   outline: 2px solid var(--ts3-akzent-tief);
@@ -220,7 +245,7 @@
   font-size: var(--ts3-fs-xs);
   color: var(--ts3-muted);
 }
-.lp-ts3 .lp-ts2-hero__price s { opacity: 0.7; }
+.lp-ts3 .lp-ts2-hero__price s { opacity: 1; }  /* 0.7 machte aus dem muted-Ton #96928b = 2.94:1 */
 .lp-ts3 .lp-ts2-hero__trust {
   list-style: none;
   display: flex;
@@ -258,7 +283,7 @@
 }
 .lp-ts3 .rd3-band__chip-inner { font-family: var(--ts3-font); }
 .lp-ts3 .rd3-band__chip-zahl {
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   font-size: var(--ts3-fs-lg);
   font-weight: 700;
 }
@@ -318,7 +343,7 @@
 .lp-ts3 .lp-ts2-timeline__num {
   font-size: var(--ts3-fs-lg);
   font-weight: 700;
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   font-variant-numeric: tabular-nums;
   line-height: 1.4;
 }
@@ -370,7 +395,7 @@
 .lp-ts3 .lp-vp-peer-stat__value {
   font-size: var(--ts3-fs-h2);
   font-weight: 700;
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   font-variant-numeric: tabular-nums;
 }
 .lp-ts3 .lp-vp-peer-stat__label { font-size: var(--ts3-fs-lg); font-weight: 600; margin-top: var(--ts3-s1); }
@@ -403,7 +428,7 @@
   color: var(--ts3-muted);
   margin-bottom: var(--ts3-s1);
 }
-.lp-ts3 .lp-ts3-mikroskop__seite--gitter .lp-ts3-mikroskop__label { color: var(--ts3-akzent-tief); }
+.lp-ts3 .lp-ts3-mikroskop__seite--gitter .lp-ts3-mikroskop__label { color: var(--ts3-akzent-tinte); }
 .lp-ts3 .lp-ts3-mikroskop__wert { font-size: var(--ts3-fs-base); color: var(--ts3-text); margin: 0 auto; }
 .lp-ts3 .lp-ts3-mikroskop__fuss {
   grid-column: 1 / -1;
@@ -451,7 +476,7 @@
   display: block;
   font-size: var(--ts3-fs-h2);
   font-weight: 700;
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   font-variant-numeric: tabular-nums;
 }
 .lp-ts3 .lp-vp-stat-item__label { font-size: var(--ts3-fs-xs); color: var(--ts3-muted); }
@@ -503,7 +528,7 @@
 body:has(.lp-ts3) .footer img { border-radius: var(--ts3-r1); }
 
 /* ─── Podcast (rd3) in die Flaechen-Welt heben ────────────────────────────── */
-.lp-ts3 .rd3-podcast__eyebrow { color: var(--ts3-akzent-tief); font-size: var(--ts3-fs-xs); }
+.lp-ts3 .rd3-podcast__eyebrow { color: var(--ts3-akzent-tinte); font-size: var(--ts3-fs-xs); }
 .lp-ts3 .rd3-podcast__h2 {
   font-family: var(--ts3-font);
   font-size: var(--ts3-fs-h2);
@@ -569,7 +594,7 @@ body:has(.lp-ts3) .footer img { border-radius: var(--ts3-r1); }
   font-size: var(--ts3-fs-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   margin: var(--ts3-s2) 0 var(--ts3-s1);
 }
 .lp-ts3 .lp-vp-video__title { font-size: var(--ts3-fs-lg); margin: 0 0 var(--ts3-s1); }
@@ -618,7 +643,7 @@ body:has(.lp-ts3) .footer img { border-radius: var(--ts3-r1); }
 .lp-ts3 .lp-ts2-benefit__num {
   font-size: var(--ts3-fs-lg);
   font-weight: 700;
-  color: var(--ts3-akzent-tief);
+  color: var(--ts3-akzent-tinte);
   font-variant-numeric: tabular-nums;
 }
 .lp-ts3 .lp-vp-benefit__title { font-size: var(--ts3-fs-lg); margin: var(--ts3-s1) 0; }
@@ -640,7 +665,7 @@ body:has(.lp-ts3) .footer img { border-radius: var(--ts3-r1); }
 }
 .lp-ts3 .rd3-trio__badge {
   background: var(--ts3-akzent);
-  color: #fff;
+  color: var(--ts3-text);
   font-size: var(--ts3-fs-xs);
   border-radius: var(--ts3-r1);
   letter-spacing: 0.08em;
@@ -835,7 +860,7 @@ body:has(.lp-ts3) .footer .btn--primary,
 body:has(.lp-ts3) .footer button[type='submit'],
 body:has(.lp-ts3) .footer input[type='submit'] {
   background: var(--ts3-akzent);
-  color: #fff;
+  color: var(--ts3-text);
   border-radius: var(--ts3-r1);
   font-size: var(--ts3-fs-base);
 }
@@ -851,7 +876,7 @@ body:has(.lp-ts3) ._form_15 button,
 body:has(.lp-ts3) ._form_15 ._submit,
 body:has(.lp-ts3) ._form_15 input[type='submit'] {
   background: var(--ts3-akzent) !important;
-  color: #fff !important;
+  color: var(--ts3-text) !important;
   border-radius: var(--ts3-r1) !important;
   font-family: var(--ts3-font) !important;
 }
