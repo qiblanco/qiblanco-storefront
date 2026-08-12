@@ -454,10 +454,13 @@ function ReviewKarte({review}) {
         </div>
       ) : null}
 
+      {/* Google-Blau, aber AA-fest: #1a73e8 liegt als 12px-Text unter WCAG AA
+          (4.28:1 auf #faf9f5, 4.15:1 auf der Karte #f3f6f9). #1565c0 ist
+          derselbe Blauton eine Stufe dunkler -> 5.45:1 bzw. 5.30:1. */}
       {ueberlaeuft || offen ? (
         <button
           type="button"
-          className="self-start text-xs font-medium text-[#1a73e8] hover:underline mt-auto bg-transparent border-0 p-0! cursor-pointer"
+          className="self-start text-xs font-medium text-[#1565c0] hover:underline mt-auto bg-transparent border-0 p-0! cursor-pointer"
           aria-expanded={offen}
           onClick={(event) => {
             event.stopPropagation();

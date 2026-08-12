@@ -314,7 +314,7 @@ body:has(.ue) .footer .btn--primary,
 body:has(.ue) .footer button[type='submit'],
 body:has(.ue) .footer input[type='submit'] {
   background: #c9a14b;
-  color: #fff;
+  color: #2c2a26;  /* Gold ist FLAECHE, Schrift darauf dunkel (weiss war 2.42:1) */
   border-radius: 8px;
   font-size: 1rem;
 }
@@ -340,7 +340,7 @@ body:has(.ue) ._form_15 button,
 body:has(.ue) ._form_15 ._submit,
 body:has(.ue) ._form_15 input[type='submit'] {
   background: #c9a14b !important;
-  color: #fff !important;
+  color: #2c2a26 !important;  /* weiss auf Gold war 2.42:1 */
   border-radius: 8px !important;
   font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
 }
