@@ -14,6 +14,10 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
+// Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
+// wiederverwendbar sein soll. Wirkt ausschliesslich innerhalb von .qb-swipetab —
+// eine Seite ohne den Baustein sieht davon baulich nichts.
+import qbSwipetabStyles from '~/styles/qb-swipetab.css?url';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
@@ -279,6 +283,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
+        <link rel="stylesheet" href={qbSwipetabStyles}></link>
         {shouldLoadThirdPartyScripts && (
           <script
             id="Cookiebot"

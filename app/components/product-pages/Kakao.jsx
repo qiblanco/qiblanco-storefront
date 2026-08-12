@@ -1,5 +1,6 @@
 import LazyImage from '../reusables/LazyImage';
 import {ActiveCampaignForm} from '../reusables/ActiveCampaignForm';
+import {SwipeTable} from '../reusables/SwipeTable';
 
 export function Kakao() {
   return (
@@ -212,12 +213,25 @@ function ComparisonTable() {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-[100px]! NormalSectionSize">
       {/* Left: table */}
       <div className="flex flex-col gap-4">
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
+        {/* Baukasten qb-swipetab: die Beschriftungsspalte bleibt stehen, die
+            Wertspalten sind wischbar. Ohne das lief die Tabelle auf dem Handy
+            rechts aus dem Bild (gemessen: 374 px Bedarf gegen 326 px Platz).
+            Rahmen + Radius sitzen auf dem Wrapper, NICHT auf dem <table> —
+            ein Radius am <table> braucht overflow:hidden, und das toetet sticky. */}
+        <SwipeTable
+          className="qb-swipetab--zebra rounded-xl border border-gray-200"
+          label="Naehrstoff-Vergleich Crystal Cacao, Kaffee, Energydrink — horizontal wischbar"
+        >
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="py-3 px-3" />
-                <th className="py-3 px-3 text-center!">
+              {/* Trennlinie auf den <th>, NICHT auf dem <tr>: der Baukasten schaltet
+                  auf border-collapse:separate, und dort zeichnet der Browser Raender
+                  auf <tr> laut Spezifikation nicht — sie waere lautlos verschwunden.
+                  bg-white: im Zebra-Modus erbt die feste Spalte die Zeilenfarbe, die
+                  muss also deckend sein. */}
+              <tr className="bg-white">
+                <th className="py-3 px-3 border-b border-gray-200" />
+                <th className="py-3 px-3 text-center! border-b border-gray-200">
                   <img
                     width={50}
                     src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-bean-logo.png?v=1764252027"
@@ -229,7 +243,7 @@ function ComparisonTable() {
                   </h3>
                   <h4 className="text-gray-500">15g</h4>
                 </th>
-                <th className="py-3 px-3 text-center">
+                <th className="py-3 px-3 text-center border-b border-gray-200">
                   <img
                     width={50}
                     src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/coffee-logo.png?v=1763976173"
@@ -241,7 +255,7 @@ function ComparisonTable() {
                   </h3>
                   <h4 className="text-gray-500">200ml</h4>
                 </th>
-                <th className="py-3 px-3 text-center">
+                <th className="py-3 px-3 text-center border-b border-gray-200">
                   <img
                     width={50}
                     src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/energy-logo.png?v=1763976173"
@@ -257,7 +271,10 @@ function ComparisonTable() {
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : ''}>
+                // bg-white statt "": im Zebra-Modus erbt die feste Spalte die
+                // Zeilenfarbe — eine transparente Zeile liesse die wandernden
+                // Wertspalten durch die feste Spalte durchscheinen.
+                <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                   <td className="py-2 px-3 font-bold text-md">{row.label}</td>
                   {cell(row.kakao)}
                   {cell(row.kaffee)}
@@ -266,7 +283,7 @@ function ComparisonTable() {
               ))}
             </tbody>
           </table>
-        </div>
+        </SwipeTable>
         <div className="text-center">
           <a
             target="_blank"
