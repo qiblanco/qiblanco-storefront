@@ -472,14 +472,14 @@ function KaufblockSection() {
             20 Nächte, dein Alltag: keine Bedingung, keine Begründung — du schickst das
             Produkt zurück und bekommst den vollen Kaufpreis erstattet. Zahlen kannst du
             in Raten über Klarna oder PayPal mit 0&nbsp;% Finanzierung. Entwickelt und
-            gefertigt in Deutschland, inklusive Käuferschutz und kostenlosem Versand.
+            gefertigt in Deutschland, inklusive Käuferschutz und kostenlosem Versand innerhalb Deutschlands.
           </p>
         </details>
       </div>
 
       <p className="v2-feinprint">
         Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna ·
-        kostenloser Versand · Käuferschutz
+        kostenloser Versand innerhalb Deutschlands · Käuferschutz
       </p>
     </section>
   );
@@ -621,7 +621,7 @@ function FinalSection() {
           </a>
           <ul className="v2-final__trust">
             <li>0 % Finanzierung über Klarna und PayPal</li>
-            <li>Kostenloser Versand</li>
+            <li>Kostenloser Versand innerhalb Deutschlands</li>
             <li>Käuferschutz</li>
           </ul>
         </div>
