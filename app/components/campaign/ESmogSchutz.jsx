@@ -553,7 +553,7 @@ function GuaranteeSection() {
     },
     {
       title: 'Made in Germany',
-      body: '100 % in Deutschland entwickelt und gefertigt, aus hochwertigsten Materialien. Inkl. Käuferschutz und kostenlosem Versand.',
+      body: '100 % in Deutschland entwickelt und gefertigt, aus hochwertigsten Materialien. Inkl. Käuferschutz und kostenlosem Versand innerhalb Deutschlands.',
     },
   ];
   return (
@@ -664,7 +664,7 @@ function PricingSection() {
       </div>
       <p className="lp-vp-pricing__fineprint">
         Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna ·
-        kostenloser Versand · Käuferschutz
+        kostenloser Versand innerhalb Deutschlands · Käuferschutz
       </p>
     </section>
   );
@@ -748,7 +748,7 @@ function FinalCTA() {
           </a>
           <ul className="lp-vp-final-cta__trust">
             <li>0 % Finanzierung über Klarna und PayPal</li>
-            <li>Kostenloser Versand</li>
+            <li>Kostenloser Versand innerhalb Deutschlands</li>
             <li>Käuferschutz</li>
           </ul>
         </div>
