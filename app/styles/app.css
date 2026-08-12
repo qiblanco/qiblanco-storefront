@@ -14,6 +14,11 @@
   --color-dark: #4A4741;
   --color-light: #fff;
   --color-accent-primary: rgb(242, 191, 114);
+  /* Gold-Rollen (Kontrast-Konzept 2026-08-12). --color-accent-primary ist die
+     FLAECHE. Als SCHRIFT auf hellem Grund reisst sie WCAG AA (1.68:1), darum
+     zwei eigene Rollen — gleicher Farbton, nur andere Helligkeit: */
+  --color-accent-ink: #856828;   /* Gold als SCHRIFT auf hellem Grund (>= 4.5:1) */
+  --color-on-accent: #2c2a26;    /* Schrift AUF einer Gold-Flaeche (>= 5.9:1) */
   --color-footer: #0a1127;
   --checkmark-color: #396e25;
 
@@ -61,7 +66,7 @@ footer *{
 * --------------------------------------------------
 */
 .color-accent-main {
-  color: var(--color-accent-primary);
+  color: var(--color-accent-ink);
 }
 .text-center {
   text-align: center;
@@ -121,7 +126,7 @@ footer *{
   text-align: center;
   max-width: 500px;
   width: 100%;
-  color: var(--color-dark)!important;
+  color: var(--color-on-accent)!important;  /* auf Gold: --color-dark war 3.83:1 */
   border: 2px solid var(--color-accent-primary);
   border-radius: 10px!important;
   background: var(--color-accent-primary);
@@ -487,7 +492,9 @@ aside h3 {
   font-size: 0.9em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--shop-switch-ink);
+  /* Zaehler sitzt auf der Gold-Flaeche: --shop-switch-ink (#4a4741) reisst dort
+     AA (3.83:1), sobald --color-accent-primary auf das LP-Gold #c9a14b zeigt. */
+  color: var(--color-on-accent);
   top: -5px;
   right: -5px;
   background: var(--color-accent-primary);
@@ -2183,11 +2190,16 @@ ul.submenu li a {
   transform: translateY(-50%);
   transition: 0.3s opacity linear;
 }
+/* Farbe auf dunklem Grund (rgb(8,9,24)) EXPLIZIT — geerbt waere es --color-dark
+   (#4a4741 = 2.14:1). Das Geschwister-Element .TextContent-End setzt genau das
+   seit jeher; hier fehlte es. */
 .ScrollMikroskopvideo .VideoOverlay .TextContent-Start h2 {
   font-size: 2.5rem;
+  color: var(--color-light);
 }
 .ScrollMikroskopvideo .VideoOverlay .TextContent-Start p {
   font-size: 1.5rem;
+  color: var(--color-light);
 }
 .ScrollMikroskopvideo .VideoOverlay .TextContent-End {
   position: absolute;
@@ -2298,7 +2310,7 @@ ul.submenu li a {
   margin-top: 100px;
 }
 .FeaturedProduct h3 {
-  color: var(--color-accent-primary);
+  color: var(--color-accent-ink);
 }
 .FeaturedProduct .FeaturedProduct_Links {
   display: flex;
@@ -4466,13 +4478,15 @@ ul.kakao-children li {
   margin-top: 10px;
   opacity: 0.8;
 }
+/* Ruhig, aber lesbar: opacity 0.7 auf --color-dark ergab #7f7c77 = 3.93:1.
+   Statt Deckkraft jetzt ein expliziter, gedaempfter Ton (5.41:1). */
 .ScrollScrubVideo-fussnote {
   margin: -70px auto 100px;
   padding: 0 24px;
   max-width: 680px;
   text-align: center;
   font-size: 0.8125rem;
-  opacity: 0.7;
+  color: #6b665d;
 }
 @media screen and (max-width: 749px) {
   .ScrollScrubVideo {

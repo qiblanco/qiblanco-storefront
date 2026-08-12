@@ -1023,7 +1023,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   margin-top: 4px;
-  color: #d8c79a;
+  color: #2c2a26;  /* auf Gold-Flaeche: #d8c79a war 1.45:1 */
 }
 @keyframes lp-vp-stamp-spin { to { transform: rotate(360deg); } }
 @keyframes lp-vp-stamp-spin-rev { to { transform: rotate(-360deg); } }
