@@ -1,6 +1,5 @@
 import {data} from '@shopify/remix-oxygen';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
-import {canonicalLink} from '~/lib/seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   getWithdrawalProductLabel,
@@ -13,7 +12,7 @@ export const meta = () => [
     name: 'description',
     content: 'Bestätigungsseite für den Online-Widerruf bei Qi Blanco.',
   },
-  canonicalLink('/widerruf/bestaetigen'),
+  {rel: 'canonical', href: '/widerruf/bestaetigen'},
 ];
 
 export function loader() {
