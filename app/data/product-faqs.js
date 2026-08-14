@@ -44,7 +44,7 @@ export const FAQ_QIBRACELET = [
   },
   {
     q: 'Ist die kohärente Wasserstruktur messbar?',
-    a: 'Ja, die kohärente Wasserstruktur kann am einfachsten mit dem Mikroskop an hydrophoben Oberflächen beobachtet werden. Grenzflächenwasser ist ein Synonym für kohärentes Wasser. Kohärentes Wasser absorbiert verstärkt Licht bei 170nm. Je höher die Absorptionsrate bei 170nm, je höher der Anteil der kohärenten Wasserstruktur. Indirekt ist der Gehalt über ein HRV oder EKG-Gerät messbar. Quelle: Bionisches Wasser, Prof. Dr. Warnke, 2019',
+    a: 'Ja, die kohärente Wasserstruktur kann am einfachsten mit dem Mikroskop an hydrophoben Oberflächen beobachtet werden. Grenzflächenwasser ist ein Synonym für kohärentes Wasser. Kohärentes Wasser absorbiert verstärkt Licht bei 270nm. Je höher die Absorptionsrate bei 270nm, je höher der Anteil der kohärenten Wasserstruktur. Indirekt ist der Gehalt über ein HRV oder EKG-Gerät messbar. Quelle: Bionisches Wasser, Prof. Dr. Warnke, 2019',
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
@@ -75,7 +75,7 @@ export const FAQ_QIHOME_AIR = [
   },
   {
     q: 'Ist die kohärente Wasserstruktur messbar?',
-    a: 'Ja, die kohärente Wasserstruktur kann am einfachsten mit dem Mikroskop an hydrophoben Oberflächen beobachtet werden. Grenzflächenwasser ist ein Synonym für kohärentes Wasser. Kohärentes Wasser absorbiert verstärkt Licht bei 170nm. Je höher die Absorptionsrate bei 170nm, je höher der Anteil der kohärenten Wasserstruktur. Indirekt ist der Gehalt über ein HRV oder EKG-Gerät messbar. Quelle: Bionisches Wasser, Prof. Dr. Warnke, 2019',
+    a: 'Ja, die kohärente Wasserstruktur kann am einfachsten mit dem Mikroskop an hydrophoben Oberflächen beobachtet werden. Grenzflächenwasser ist ein Synonym für kohärentes Wasser. Kohärentes Wasser absorbiert verstärkt Licht bei 270nm. Je höher die Absorptionsrate bei 270nm, je höher der Anteil der kohärenten Wasserstruktur. Indirekt ist der Gehalt über ein HRV oder EKG-Gerät messbar. Quelle: Bionisches Wasser, Prof. Dr. Warnke, 2019',
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
@@ -118,7 +118,7 @@ export const FAQ_QIONE_KETTE = [
   },
   {
     q: 'Ist die kohärente Wasserstruktur messbar?',
-    a: 'Ja, die kohärente Wasserstruktur kann am einfachsten mit dem Mikroskop an hydrophoben Oberflächen beobachtet werden. Grenzflächenwasser ist ein Synonym für kohärentes Wasser. Kohärentes Wasser absorbiert verstärkt Licht bei 170nm. Je höher die Absorptionsrate bei 170nm, je höher der Anteil der kohärenten Wasserstruktur. Indirekt ist der Gehalt über ein HRV oder EKG-Gerät messbar. Zitat: Bionisches Wasser, Prof. Dr. Warnke, 2019',
+    a: 'Ja, die kohärente Wasserstruktur kann am einfachsten mit dem Mikroskop an hydrophoben Oberflächen beobachtet werden. Grenzflächenwasser ist ein Synonym für kohärentes Wasser. Kohärentes Wasser absorbiert verstärkt Licht bei 270nm. Je höher die Absorptionsrate bei 270nm, je höher der Anteil der kohärenten Wasserstruktur. Indirekt ist der Gehalt über ein HRV oder EKG-Gerät messbar. Zitat: Bionisches Wasser, Prof. Dr. Warnke, 2019',
   },
   {
     q: 'Darf der QiOne® 2 Pro nass werden, bzw. in die Sauna?',
