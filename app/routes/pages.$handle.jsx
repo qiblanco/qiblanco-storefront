@@ -6,7 +6,11 @@ import {istNichtIndexierbar, noindexMeta} from '~/lib/seo';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data, params}) => {
-  const tags = [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+  // Shopify pflegt je Seite ein eigenes seo.title — der Loader holt es
+  // (PAGE_QUERY seo{title description}), benutzt wurde es nie. Vorrang für
+  // das gepflegte Feld, sonst der Seitentitel, immer mit der Marke dahinter.
+  const roh = data?.page?.seo?.title || data?.page?.title || '';
+  const tags = [{title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'}];
   // Stufe S0 (Index-Hygiene): Entwicklungs-/Restseiten gehören nicht in den
   // Index. Die Liste steht in ~/lib/seo, weil die Sitemap-Route sie ebenfalls
   // liest — eine zweite Liste hier würde früher oder später abweichen.
