@@ -69,17 +69,66 @@ export const ORG_ID = `${CANONICAL_ORIGIN}/#organization`;
 export const SITE_ID = `${CANONICAL_ORIGIN}/#website`;
 
 /**
+ * Belegte Marken-Profile für `sameAs`.
+ *
+ * DIE AUFNAHME-REGEL (sie ist der ganze Wert dieser Liste): hier steht eine
+ * URL NUR, wenn wir KONTROLLE über das Profil nachgewiesen haben — nicht,
+ * wenn der Markenname darin vorkommt. Ein Profil, das "Qi Blanco" heißt,
+ * kann jedem gehören; ein Zugang, der uns dessen Identität zurückmeldet,
+ * gehört uns. sameAs ist der stärkste Hebel der Entitätsauflösung und
+ * zugleich der einzige, der bei falschem Wert AKTIV schadet: ein fehlendes
+ * sameAs kostet Reichweite, ein falsches kostet Vertrauen.
+ *
+ * DER BELEG IST DER LIVE-AUFRUF, NICHT DER DATEINAME. Bei der Aufnahme am
+ * 2026-08-14 nannte die Vorrecherche für Facebook eine Fundstelle, die es
+ * nicht gab (meta.env führt kein FB_PAGE_ID) — der Wert stimmte trotzdem,
+ * weil er aus `owned_pages` kam. Wer den nächsten Eintrag ergänzt, führt
+ * den Aufruf aus und schreibt sein Ergebnis in `beleg`.
+ *
+ * WARUM HTTP 200 HIER KEIN KRITERIUM IST: facebook.com antwortete demselben
+ * Server am selben Tag auf JEDE Profil-URL mit 400 (auch auf die numerische,
+ * die Facebook selbst als `link` zurückgibt), LinkedIn antwortet 999. Das
+ * sind Bot-Blocks — Messausfälle, keine Aussage über die Seite. Ein
+ * API-Nachweis der Kontrolle ist ohnehin der stärkere Beleg als ein
+ * öffentlicher 200er, den jeder Fremde ebenfalls bekäme.
+ *
+ * BEWUSST NICHT AUFGENOMMEN:
+ * - Trustpilot (de/at): Christian beansprucht das Profil separat
+ *   (Auftrag 2026-08-14, ausdrückliche Ausnahme). Ohne Eigentumsnachweis
+ *   wäre der Eintrag genau die unbelegte Identitätsbehauptung, gegen die
+ *   die Aufnahme-Regel oben steht.
+ * - LinkedIn: es existiert kein Server-Credential und kein Nachweis, dass
+ *   linkedin.com/company/qi-blanco uns gehört. Die URL wäre geraten.
+ * @type {{url: string, beleg: string}[]}
+ */
+export const MARKEN_PROFILE = [
+  {
+    url: 'https://www.youtube.com/@qiblanco',
+    beleg:
+      'OAuth-Refresh (youtube.env) -> youtube/v3/channels?mine=true gab am ' +
+      '2026-08-14 channelId UChJcmyKzrFFZGgOPhY_pk2g, title "Qi Blanco", ' +
+      'customUrl "@qiblanco" zurück. Schreibzugriff = Kontrolle.',
+  },
+  {
+    url: 'https://www.instagram.com/qiblanco',
+    beleg:
+      'graph.instagram.com/v21.0/me (ig.env) gab am 2026-08-14 username ' +
+      '"qiblanco", name "Qi Blanco | Frequency Technology", account_type ' +
+      'BUSINESS zurück.',
+  },
+  {
+    url: 'https://www.facebook.com/qiblanco',
+    beleg:
+      'graph.facebook.com/<business>/owned_pages (meta.env) führte am ' +
+      '2026-08-14 die Seite id 266585757325797, name "Qi Blanco", username ' +
+      '"qiblanco" als EIGENE Seite des Business. Numerische Dauerform wäre ' +
+      'facebook.com/266585757325797, falls der username je wechselt.',
+  },
+];
+
+/**
  * Organization-Knoten. Bewusst rein faktische Stammdaten — keine Wirkungs-
  * oder Gesundheitsaussage, damit dieser Knoten claim-neutral bleibt.
- *
- * WARUM KEIN sameAs: sameAs ist der stärkste Hebel der Entitätsauflösung und
- * zugleich der einzige, der bei falschem Wert AKTIV schadet. Gemessen am
- * 2026-08-14 verlinkt die Live-Startseite KEIN Marken-Profil (nur YouTube-
- * Embeds einzelner Videos — das sind Video-URLs, keine Profile), und der
- * SEO-Wochenlauf meldet weder Wikidata- noch Wikipedia-Eintrag. Ein
- * geratenes Profil wäre eine unbelegte Identitätsbehauptung. sameAs bleibt
- * deshalb leer, bis belegte Profil-URLs vorliegen (Christian-Vorlage L10).
- * Ein fehlendes sameAs kostet Reichweite; ein falsches kostet Vertrauen.
  *
  * @param {{logoUrl?: string}} [opt]
  */
@@ -109,6 +158,11 @@ export function organizationSchema({logoUrl} = {}) {
   // Nur setzen, wenn wirklich eine URL vorliegt — ein leeres logo-Feld ist
   // ein kaputter Knoten, kein neutraler.
   if (logoUrl) knoten.logo = {'@type': 'ImageObject', url: logoUrl};
+  // Gleiche Regel wie beim logo: lieber kein sameAs als ein leeres Array.
+  // Ein `sameAs: []` ist für eine Suchmaschine kein "wir haben keine
+  // Profile", sondern ein kaputtes Feld.
+  const profile = MARKEN_PROFILE.map((p) => p.url);
+  if (profile.length) knoten.sameAs = profile;
   return knoten;
 }
 
