@@ -17,6 +17,8 @@ export const meta = ({data}) => {
     bildUrl:
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
+    // SEO S6: Product-/BreadcrumbList-JSON-LD aus den Loader-Daten.
+    produkt: data?.product,
   });
 };
 
