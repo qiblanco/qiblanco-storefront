@@ -1,3 +1,4 @@
+import {canonicalLink} from '~/lib/seo';
 export const meta = () => [
   {title: 'Wissenschaftliche Studien | Qi Blanco'},
   {
@@ -5,7 +6,7 @@ export const meta = () => [
     content:
       'Wissenschaftlich getestet und in Fachpublikationen bestätigt. Zellstudien zur Wirkung des QiOne® 2 Pro auf Immunzellen, Darmzellen und oxidativen Stress.',
   },
-  {rel: 'canonical', href: '/pages/studien'},
+  canonicalLink('/pages/studien'),
 ];
 
 export function loader() {

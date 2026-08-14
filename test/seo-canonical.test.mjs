@@ -192,3 +192,36 @@ test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async
   assert.match(quelle, /noindexMeta\(\)/, 'meta() muss den noindex-Descriptor AUSGEBEN');
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'beides muss aus der geteilten Quelle kommen');
 });
+
+test('NAHT: die gemeldeten Routen rufen canonicalLink WIRKLICH auf', async () => {
+  // Dieselbe Lehre wie beim noindex: der Test "die 5 Ziele bekommen je einen
+  // wirksamen Canonical" oben prueft nur den HELFER mit diesen Pfaden — er
+  // bliebe gruen, wenn eine Route wieder auf {rel:'canonical'} zurueckfaellt.
+  // Hier wird die Verdrahtung in der Route selbst geprueft.
+  const {readFile} = await import('node:fs/promises');
+  const {fileURLToPath} = await import('node:url');
+  const routen = [
+    ['pages.studien.jsx', '/pages/studien'],
+    ['pages.technologie.jsx', '/pages/technologie'],
+    ['pages.crystal-cacao.jsx', '/pages/crystal-cacao'],
+    ['pages.support.jsx', '/pages/support'],
+  ];
+  for (const [datei, pfad] of routen) {
+    const quelle = await readFile(
+      fileURLToPath(new URL(`../app/routes/${datei}`, import.meta.url)),
+      'utf8',
+    );
+    assert.match(quelle, /export const meta/, `Fixture-Kontrolle: ${datei} hat ein meta()`);
+    assert.ok(
+      quelle.includes(`canonicalLink('${pfad}')`),
+      `${datei} muss canonicalLink('${pfad}') aufrufen`,
+    );
+    // Der eigentliche Defekt: ein roher Descriptor OHNE tagName rendert als
+    // wirkungsloses <meta rel="canonical">.
+    assert.doesNotMatch(
+      quelle,
+      /\{\s*rel:\s*'canonical'/,
+      `${datei} darf keinen rohen {rel:'canonical'}-Descriptor mehr fuehren`,
+    );
+  }
+});
