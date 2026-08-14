@@ -1,8 +1,8 @@
 /**
- * /pages/studien — die Uebersicht der Studien-Sektion.
+ * /pages/studien — die Übersicht der Studien-Sektion.
  *
  * WAS HIER BEWUSST GLEICH BLEIBT (und warum): Diese Seite stand am 2026-08-14
- * gemessen auf Platz 1 fuer "Qi Blanco Studien" und auf Platz 3 fuer die
+ * gemessen auf Platz 1 für "Qi Blanco Studien" und auf Platz 3 für die
  * Markensuche "Qi Blanco" (seo.db, Lauf 2026-W33). Wir verteidigen eine
  * Position, wir erobern sie nicht. Deshalb: gleiche URL, gleicher Titel,
  * gleiche Substanz — die HRV-Messreihe bleibt VOLLSTAENDIG erhalten. Alles
@@ -13,12 +13,12 @@
  * Weg in den Volltext; (2) der Volltext selbst zieht auf vier Einzelseiten um,
  * damit jede Publikation ihre eigene Ranking-Flaeche mit eigenem
  * ScholarlyArticle-Schema bekommt; (3) die HRV-Messreihe steht jetzt
- * ausdruecklich als EIGENER Einzelnachweis da.
+ * ausdrücklich als EIGENER Einzelnachweis da.
  *
  * ZU (3), das ist der inhaltlich wichtigste Punkt: die HRV-Zahlen
  * (biologisches HRV-Alter -14 Jahre, ANS +20 %) waren auf der alten Seite in
- * die Naehe der Nutzererfahrungs-Publikation geraten. Diese Publikation
- * enthaelt aber gar keine HRV-Messung — sie wertet 171 Forenbeitraege aus
+ * die Nähe der Nutzererfahrungs-Publikation geraten. Diese Publikation
+ * enthält aber gar keine HRV-Messung — sie wertet 171 Forenbeitraege aus
  * (gegen den Volltext geprueft). Die HRV-Reihe ist eine eigene, hausinterne
  * Messung an zwei Probanden. Sie darf gezeigt werden, sie darf nur nicht als
  * Ergebnis einer Fachpublikation gelesen werden. Genau diese Trennung stellt
@@ -30,7 +30,7 @@ import {STUDIEN, studienPfad} from '~/data/studien';
 
 export function StudienUebersicht() {
   return (
-    <div className="qb-st qb-st-uebersicht">
+    <div className="qb-st qb-st-übersicht">
       <div className="qb-st-wrap">
         <header className="qb-st-hero">
           <p className="qb-st-kicker">Belege statt Behauptungen</p>
@@ -178,10 +178,10 @@ function StudienKarte({studie}) {
 }
 
 /**
- * Die HRV-Messreihe — unveraendert uebernommen aus der Vorgaengerseite, nur in
- * das Token-System der Sektion ueberfuehrt. Inhaltlich identisch: dieselben
+ * Die HRV-Messreihe — unveraendert übernommen aus der Vorgaengerseite, nur in
+ * das Token-System der Sektion überfuehrt. Inhaltlich identisch: dieselben
  * Messungen, dieselben Bilder, dieselben Zahlen, dieselbe Anmerkung am Ende.
- * Neu ist ausschliesslich die Ueberschrift-Ebene, die klarstellt, dass dies
+ * Neu ist ausschließlich die Überschrift-Ebene, die klarstellt, dass dies
  * KEINE der vier Publikationen ist.
  */
 function HrvMessreihe() {

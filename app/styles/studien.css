@@ -1,22 +1,22 @@
 /* ============================================================================
-   Studien-Sektion — /pages/studien (Uebersicht) + die vier Einzelseiten.
+   Studien-Sektion — /pages/studien (Übersicht) + die vier Einzelseiten.
 
-   Token-System uebernommen aus dem 94/100-Rezept .lp-a3
+   Token-System übernommen aus dem 94/100-Rezept .lp-a3
    (app/styles/schlaf-zellen-schutz.css): dieselbe modulare Typo-Skala,
    dasselbe 8pt-Spacing-Grid, dasselbe warme Neutral-Kontinuum, DERSELBE EINE
    Gold-Akzent. Bewusst KEINE zweite Gold-Familie und keine zweite Typo-Skala —
-   der Live-Befund vom 2026-07-24 (15 Schriftgroessen, 2 konkurrierende
+   der Live-Befund vom 2026-07-24 (15 Schriftgrößen, 2 konkurrierende
    Goldtoene) war genau die Ursache des "von AI gemacht"-Eindrucks.
 
    EIGENER SCOPE `.qb-st` statt Wiederverwendung von `.lp-a3`: die LP-Datei ist
-   ausdruecklich mit /pages/qione-2-pro gekoppelt (Kommentar dort). Wer sich
-   hier anhaengt, aendert beim naechsten Studien-Feinschliff still die
+   ausdrücklich mit /pages/qione-2-pro gekoppelt (Kommentar dort). Wer sich
+   hier anhaengt, ändert beim nächsten Studien-Feinschliff still die
    Campaign-PDP mit. Die Token-WERTE sind identisch, die Kopplung ist es nicht.
 
    LEITIDEE: Diese Seiten sind Beweis-Flaechen, keine Verkaufsflaechen
    (seo-manager fuehrt /pages/studien als optimierungs_prio="beweis"). Der
    Gold-Akzent liegt deshalb auf Beleg und Navigation, nie auf Druck. Lange
-   Lesestrecken brauchen Ruhe: ein Textmass, grosszuegige Zeilenhoehe,
+   Lesestrecken brauchen Ruhe: ein Textmass, großzuegige Zeilenhoehe,
    Abbildungen mit Luft.
    ========================================================================== */
 
@@ -425,7 +425,7 @@
   color: var(--st-text);
 }
 
-/* Studien-Karte auf der Uebersicht */
+/* Studien-Karte auf der Übersicht */
 .qb-st-karte {
   display: flex;
   flex-direction: column;
@@ -511,7 +511,7 @@
   margin-top: var(--st-s2);
 }
 
-/* Einordnungs-Block (gilt fuer alle vier Studien) */
+/* Einordnungs-Block (gilt für alle vier Studien) */
 .qb-st-rahmen {
   max-width: var(--st-mass);
   padding: var(--st-s4);
@@ -533,12 +533,12 @@
 }
 
 /* ─── Route-Chrome-Harmonisierung (gilt NUR auf den Studien-Routen) ────────
-   Uebernommen aus dem .lp-a3-Rezept (schlaf-zellen-schutz.css, 94/100). Der
+   Übernommen aus dem .lp-a3-Rezept (schlaf-zellen-schutz.css, 94/100). Der
    Grund ist dort belegt und gilt hier unveraendert: Header und Footer bringen
    ihre eigenen Gold-Toene (app.css --color-accent-primary, rd3 --rd3-gold),
-   ihre eigene Schriftgroessen-Familie und eigene Bild-Radien mit. Ohne diesen
-   Layer misst die Design-Rubrik ZWEI konkurrierende Goldtoene und ueber neun
-   Schriftgroessen — beides entsteht nicht in dieser Datei, wirkt aber auf
+   ihre eigene Schriftgrößen-Familie und eigene Bild-Radien mit. Ohne diesen
+   Layer misst die Design-Rubrik ZWEI konkurrierende Goldtoene und über neun
+   Schriftgrößen — beides entsteht nicht in dieser Datei, wirkt aber auf
    dieser Seite. Token-Remap statt Doppel-Gold. */
 body:has(.qb-st) {
   background: var(--st-grund, #faf9f5);
@@ -576,20 +576,20 @@ body:has(.qb-st) ._form_15 input[type='submit'] {
   border-radius: 8px !important;
   font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
 }
-/* EIN Bild-Radius auf der ganzen Route (Rubrik zaehlte 4 Werte: 4/8/6/20px). */
+/* EIN Bild-Radius auf der ganzen Route (Rubrik zählte 4 Werte: 4/8/6/20px). */
 body:has(.qb-st) header img,
 body:has(.qb-st) .footer img { border-radius: 8px; }
 
-/* EIN H2-Stil: Chrome-Ueberschriften erben den Seiten-H2, statt eine zweite
-   Groesse x Gewicht-Kombination aufzumachen. */
+/* EIN H2-Stil: Chrome-Überschriften erben den Seiten-H2, statt eine zweite
+   Größe x Gewicht-Kombination aufzumachen. */
 body:has(.qb-st) .footer h2,
 body:has(.qb-st) header h2 {
   font-size: 1.25rem;
   font-weight: 700;
 }
 
-/* Zeilenlaenge: Tabellen-Zellen und Bildunterschriften sind Textbloecke, die
-   die Rubrik mitmisst — sie standen ohne eigenes Mass ueber 75 Zeichen. */
+/* Zeilenlänge: Tabellen-Zellen und Bildunterschriften sind Textbloecke, die
+   die Rubrik mitmisst — sie standen ohne eigenes Mass über 75 Zeichen. */
 .qb-st-tab td, .qb-st-tab th { max-width: 46ch; }
 .qb-st-abb figcaption,
 .qb-st-hrv-bild figcaption { max-width: var(--st-mass); }
@@ -598,7 +598,7 @@ body:has(.qb-st) header h2 {
 .qb-st-faq details p { max-width: 68ch; }
 
 /* H3 der Volltext-/HRV-Abschnitte trug keinen Token und fiel damit auf die
-   Browser-Default-Groesse (2em/1.17em) — das riss die modulare Skala auf und
+   Browser-Default-Größe (2em/1.17em) — das riss die modulare Skala auf und
    erzeugte die zweite H2-/H3-Stil-Kombination, die die Rubrik gezaehlt hat. */
 .qb-st h3 {
   font-size: var(--st-fs-lg);
@@ -609,3 +609,14 @@ body:has(.qb-st) header h2 {
 }
 .qb-st-volltext h3:first-child { margin-top: 0; }
 .qb-st-faq summary { font-size: var(--st-fs-md); }
+
+/* Die HRV-Bilder sind Altbestand mit kleinen Quellen (die ANS-Diagramme haben
+   562 px, die Zeitverlaeufe 600 px). Frueher lagen sie in einem Drittel-Raster
+   und wurden auf Tablet/Mobil-quer auf ~578 px CSS-Breite gezogen — bei 2x
+   Pixeldichte also sichtbar unscharf hochskaliert (hb-formate: bild-aufloesung
+   kaputt in mobil-414, mobil-quer-883, tablet-768).
+   Statt die Bilder neu zu beschaffen (Quelle liegt nicht vor) wird die
+   ANZEIGEFLAECHE auf die native Aufloesung gedeckelt: 300 px CSS * 2x = 600 px
+   = genau die Quellbreite. Lieber scharf und kleiner als gross und matschig. */
+.qb-st-hrv-bild img { max-width: 300px; margin-inline: auto; }
+.qb-st-hrv-grid { justify-items: center; }

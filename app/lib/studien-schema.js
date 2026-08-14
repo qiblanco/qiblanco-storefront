@@ -1,18 +1,18 @@
 /**
- * JSON-LD fuer die Studien-Sektion. Reine Datenfabrik ohne React-Import
+ * JSON-LD für die Studien-Sektion. Reine Datenfabrik ohne React-Import
  * (Node-unit-testbar, analog seo.js / structured-data.js).
  *
  * WARUM: /pages/studien trug am 2026-08-14 gemessen NULL JSON-LD-Bloecke
- * (seo.db OnPage-Messung: `jsonld_typen: []`). Fuer Google und fuer zitierende
+ * (seo.db OnPage-Messung: `jsonld_typen: []`). Für Google und für zitierende
  * KI-Systeme war die Seite damit Fliesstext, kein wissenschaftlicher Beleg —
  * obwohl vier peer-reviewte Publikationen mit DOI dahinterstehen. Das ist
- * Massnahme St-3 aus dem SEO-Master-Konzept Kap. 6.4.
+ * Maßnahme St-3 aus dem SEO-Master-Konzept Kap. 6.4.
  *
  * TYPWAHL: `ScholarlyArticle` statt `MedicalScholarlyArticle`. Der
  * medizinische Subtyp erwartet eine medizinische Fachpublikation und zieht
  * Gesundheits-Auswertung nach sich; unsere Arbeiten sind zellbiologische
- * In-vitro-Untersuchungen ohne klinischen Endpunkt. Der engere Typ waere hier
- * eine Behauptung ueber die Evidenzstufe, die die Studien nicht tragen.
+ * In-vitro-Untersuchungen ohne klinischen Endpunkt. Der engere Typ wäre hier
+ * eine Behauptung über die Evidenzstufe, die die Studien nicht tragen.
  */
 
 import {CANONICAL_ORIGIN, absoluteCanonical} from './seo';
@@ -137,12 +137,12 @@ function faqSchema(studie, url) {
 }
 
 /**
- * CollectionPage + ItemList fuer die Uebersicht. Die ItemList nennt die vier
+ * CollectionPage + ItemList für die Übersicht. Die ItemList nennt die vier
  * Einzelseiten in derselben Reihenfolge, in der sie gerendert werden — eine
  * Liste, die eine andere Reihenfolge behauptet als die Seite zeigt, ist ein
  * Widerspruch, den Google als Unstimmigkeit liest.
  */
-export function uebersichtSchema(studien) {
+export function übersichtSchema(studien) {
   const url = absoluteCanonical('/pages/studien');
   return {
     '@context': 'https://schema.org',

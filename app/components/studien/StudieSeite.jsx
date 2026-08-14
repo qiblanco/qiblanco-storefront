@@ -1,6 +1,6 @@
 /**
  * Renderer EINER Studien-Einzelseite. Vier Routen teilen ihn sich — der
- * Unterschied zwischen den Seiten ist ausschliesslich das Daten-JSON.
+ * Unterschied zwischen den Seiten ist ausschließlich das Daten-JSON.
  *
  * AUFBAU (von oben nach unten, so beauftragt):
  *   1. Kopf: H1, Journal/Autor/Datum sichtbar (E-E-A-T), Original-PDF
@@ -13,8 +13,8 @@
  * WARUM DIE LAIEN-EBENE VOR DEM VOLLTEXT STEHT: der Kaufueberzeugungs-Kanon
  * misst, dass wissenschaftlicher Beweis kein Hook ist, sondern ein Closer —
  * er wirkt beim Zweifel. Wer hier landet, zweifelt bereits und sucht eine
- * Antwort, keine Methodik. Die Methodik muss trotzdem vollstaendig da sein,
- * denn sie ist der Grund, warum die Antwort traegt.
+ * Antwort, keine Methodik. Die Methodik muss trotzdem vollständig da sein,
+ * denn sie ist der Grund, warum die Antwort trägt.
  */
 
 import {Link} from 'react-router';
@@ -164,7 +164,7 @@ export function StudieSeite({studie}) {
           ))}
 
           {/* Tabellen/Abbildungen, die kein Abschnitt referenziert, gehen nicht
-              verloren — sie haengen am Ende an, statt still zu verschwinden. */}
+              verloren — sie hängen am Ende an, statt still zu verschwinden. */}
           {(studie.tabellen || [])
             .filter((t) => !referenziert(studie, 'tabellen', t.key))
             .map((t) => (
@@ -255,9 +255,23 @@ function Eckdatum({label, children}) {
 
 function Abbildung({grafik}) {
   if (!grafik.url) return null;
+  // Anzeigebreite auf die native Aufloesung deckeln: bei 2x Pixeldichte traegt
+  // eine 660-px-Quelle hoechstens 330 px CSS-Breite, sonst skaliert der Browser
+  // sichtbar hoch (hb-formate: bild-aufloesung kaputt). width/height nehmen
+  // zusaetzlich den Layoutsprung beim Nachladen heraus.
+  const stil = grafik.breite
+    ? {maxWidth: `min(100%, ${Math.round(grafik.breite / 2)}px)`}
+    : undefined;
   return (
     <figure className="qb-st-abb">
-      <img src={grafik.url} alt={grafik.alt} loading="lazy" />
+      <img
+        src={grafik.url}
+        alt={grafik.alt}
+        width={grafik.breite || undefined}
+        height={grafik.hoehe || undefined}
+        style={stil}
+        loading="lazy"
+      />
       <figcaption>
         <strong>{grafik.nummer}:</strong> {grafik.bildunterschrift}
       </figcaption>

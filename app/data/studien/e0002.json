@@ -248,7 +248,9 @@
    "bildunterschrift": "Anordnung der Zellkulturschale, die auf dem Mobiltelefon-Display (Strahlungsrichtung zum Benutzer) zusammen mit einem QiOne® 2 Pro-Gerät auf der rechten Seite platziert wurde.",
    "alt": "Versuchsaufbau: Zellkulturschale auf Smartphone-Display; QiOne® 2 Pro-Gerät rechts daneben; Strahlungsrichtung zum Benutzer hin.",
    "quelleSeite": 2,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb1--4e85ac477062.png?v=1786745388"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb1--4e85ac477062.png?v=1786745388",
+   "breite": 760,
+   "hoehe": 295
   },
   {
    "key": "abb2",
@@ -256,7 +258,9 @@
    "bildunterschrift": "Originalmikrofotografien (linker Teil) sowie die Auswertung durch die IKOSA-KI-Software (rechter Teil) mit markierten berechneten Frontlinien der IPEC-J2-Zellen, die den zellfreien Bereich schließen. (A) Unbehandelte Kontrolle unter denselben Kulturbedingungen wie unten, jedoch ohne Exposition gegenüber Mobiltelefon-Bestrahlung. (B) Ungeschützte Zellen nach 4 Stunden Mobiltelefon-Bestrahlung mit anschließender Kultivierung für 8 Stunden. (C) QiOne® 2 Pro geschützte Zellen nach 4 Stunden Mobiltelefon-Bestrahlung mit anschließender Kultivierung für 8 Stunden. Beachten Sie die stark verringerte Besiedlung des zellfreien Bereichs in (B). Unbehandelte Kontrolle und QiOne® 2 Pro geschützte Zellen zeigen ein ähnliches Besiedlungsmuster.",
    "alt": "Mikrofotografien des Wundheilungs-Assays: (A) Kontrollzellen mit dichter Besiedlung; (B) ungeschützte bestrahlte Zellen mit großem Zelldefekt; (C) QiOne-geschützte Zellen mit Besiedlungsmuster ähnlich der Kontrolle. KI-Frontlinien eingezeichnet.",
    "quelleSeite": 3,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb2--7c77fe0ef4d0.png?v=1786745395"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb2--7c77fe0ef4d0.png?v=1786745395",
+   "breite": 1400,
+   "hoehe": 1148
   },
   {
    "key": "abb3",
@@ -264,7 +268,9 @@
    "bildunterschrift": "Darstellung der Ergebnisse zur Zellregeneration nach Mobiltelefonexposition mit und ohne QiOne® 2 Pro für 4 Stunden und anschließender Kultivierung für 8 Stunden. Beachten Sie, dass sich die verbleibenden zellfreien Flächen von unbehandelter Kontrolle und QiOne® 2 Pro geschützten Zellen nicht voneinander unterscheiden, während ungeschützte Zellen eine signifikant größere zellfreie Fläche aufgrund einer deutlich reduzierten Zellaktivität und sogar Zelltod aufweisen. Daten repräsentieren Mittelwert ± Standardabweichung aus vier unabhängigen Experimenten.",
    "alt": "Balkendiagramm: verbleibende zellfreie Fläche (%) für Kontrolle ~13,8 %, QiOne-geschützt ~14,5 % und ungeschützt ~43,7 %. Fehlerbalken zeigen Standardabweichungen (n=4). Signifikanzstern bei ungeschützt vs. geschützt (p ≤ 0,01).",
    "quelleSeite": 4,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb3--856842cec839.png?v=1786745399"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb3--856842cec839.png?v=1786745399",
+   "breite": 750,
+   "hoehe": 685
   },
   {
    "key": "abb4",
@@ -272,7 +278,9 @@
    "bildunterschrift": "Originalmikrofotografien von IPEC-J2-Zellen, die eine physikalische Barriere auf den porösen Membranen von Transwells nach 4 Stunden Mobiltelefon-Bestrahlung mit anschließender Kultivierung für 24 Stunden ausbilden. (A) Unbehandelte Kontrolle. (B) Ungeschützte Zellen. (C) QiOne® 2 Pro geschützte Zellen. Die kleinen dunklen Punkte sind die 0,4-µm-Poren in der Membran, und die violett angefärbten Strukturen sind die Zellkerne. Das Zytoplasma der Zellen ist durch den Farbstoff nur schwach angefärbt. Beachten Sie den Einriss der Epithelbarriere in (B), während die Barriereintegrität in QiOne® 2 Pro geschützten Zellen in (C) der unbehandelten Kontrolle in (A) nahezu ähnlich ist.",
    "alt": "Mikrofotografien der TEER-Transwell-Experimente: (A) intakter Zellmonolayer Kontrolle; (B) ungeschützt — deutlicher Einriss der Epithelbarriere, Zellverlust; (C) QiOne-geschützt — weitgehend intakter Monolayer wie Kontrolle. Poren der Membran als dunkle Punkte sichtbar.",
    "quelleSeite": 4,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb4--4500f27ee948.png?v=1786745406"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb4--4500f27ee948.png?v=1786745406",
+   "breite": 1400,
+   "hoehe": 818
   },
   {
    "key": "abb5",
@@ -280,7 +288,9 @@
    "bildunterschrift": "Darstellung der Ergebnisse zum transepithelialen elektrischen Widerstand (TEER) nach Mobiltelefonexposition mit und ohne QiOne® 2 Pro für 4 Stunden und anschließender Kultivierung für 8 Stunden. Beachten Sie, dass sich der TEER von unbehandelter Kontrolle und QiOne® 2 Pro geschützten Zellen nicht voneinander unterscheiden, während ungeschützte Zellen einen signifikant verringerten TEER aufgrund eines Einrisses der Epithelbarriere aufweisen. Daten repräsentieren Mittelwert ± Standardabweichung aus drei unabhängigen Experimenten.",
    "alt": "Balkendiagramm: TEER (Ω/cm²) für Kontrolle ~2.542, QiOne-geschützt ~1.837 und ungeschützt ~152. Fehlerbalken zeigen Standardabweichungen (n=3). Signifikanzstern bei ungeschützt vs. geschützt (p ≤ 0,01).",
    "quelleSeite": 5,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb5--6c73695d6e53.png?v=1786745411"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb5--6c73695d6e53.png?v=1786745411",
+   "breite": 750,
+   "hoehe": 763
   }
  ],
  "zitation": {

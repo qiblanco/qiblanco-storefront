@@ -231,7 +231,9 @@
    "bildunterschrift": "Anordnung der 96-Well-Platte, die während des durch Wasserstoffperoxid induzierten oxidativen Stresses in den Mini-Inkubator gestellt wurde. Das QiBracelet® wurde auf der Oberseite der 96-Well-Platte platziert.",
    "alt": "Foto eines Mini-Inkubators mit 96-Well-Platte; das QiBracelet® liegt oben auf der Platte – Versuchsanordnung für Zellschutz-Experiment",
    "quelleSeite": 3,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003-abb1--9365bcd7ba92.png?v=1786745417"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003-abb1--9365bcd7ba92.png?v=1786745417",
+   "breite": 1400,
+   "hoehe": 401
   },
   {
    "key": "abb2",
@@ -239,7 +241,9 @@
    "bildunterschrift": "Mikroskopische Aufnahmen, die die Wirkung von oxidativem Stress durch Wasserstoffperoxid auf kultivierte Hep G2-Leberzellen zu verschiedenen Zeitpunkten demonstrieren. Kontrollkulturen ohne Wasserstoffperoxid nach 1 Stunde (A), 4 Stunden (B) und 8 Stunden (C). Ungeschützte Zellen mit 2 mM Wasserstoffperoxid nach 1 Stunde (D), 4 Stunden (E) und 8 Stunden (F). QiBracelet®-geschützte Zellen mit 2 mM Wasserstoffperoxid nach 1 Stunde (G), 4 Stunden (H) und 8 Stunden (I). Hinweis: Die geschützten Zellen zeigen eine deutlich geringere Abrundung und Ablösung, was Zelltraumatisierung und -tod darstellt. Olympus IX50 Inversmikroskop mit 10x Planachromat im Phasenkontrastverfahren. Mikroskopaufnahmen wurden mit einer Olympus E20P bei 5-Megapixel-Auflösung gemacht.",
    "alt": "9-teilige Mikrofotografie-Collage (3×3) von Hep G2-Leberzellen: Kontrolle (A–C), Zellen mit 2 mM H₂O₂ ohne Schutz (D–F), Zellen mit 2 mM H₂O₂ und QiBracelet® (G–I) – zu sehen ist deutlich weniger Zellablösung in der geschützten Gruppe",
    "quelleSeite": 3,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003-abb2--49b2814846bd.png?v=1786745424"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003-abb2--49b2814846bd.png?v=1786745424",
+   "breite": 1400,
+   "hoehe": 1101
   },
   {
    "key": "abb3",
@@ -247,7 +251,9 @@
    "bildunterschrift": "Darstellung der Ergebnisse zur Zellvitalität nach 24 Stunden oxidativen Stresses ohne Schutz (A) und mit Schutz durch das QiBracelet® (B). Der relative Schutzeffekt durch das QiBracelet® ist in (C) angegeben. Die Daten repräsentieren Mittelwerte ± Standardabweichung aus drei unabhängigen Versuchsreihen.",
    "alt": "Drei Balkendiagramme: (A) Zellvitalität der 5 Zelltypen ohne Schutz nach H₂O₂-Exposition, (B) Zellvitalität mit QiBracelet®-Schutz, (C) relativer Schutzeffekt je Zelltyp in Prozent mit Fehlerbalken (SD)",
    "quelleSeite": 4,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003-abb3--6955b1ff7807.png?v=1786745428"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003-abb3--6955b1ff7807.png?v=1786745428",
+   "breite": 660,
+   "hoehe": 1650
   }
  ],
  "zitation": {

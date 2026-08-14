@@ -163,7 +163,9 @@
    "bildunterschrift": "Versuchsaufbau während der Exposition mit Vierfachproben, die auf dem Display des Mobiltelefons platziert sind (= Strahlungsrichtung zum Benutzer hin) und unterhalb seiner Rückseite (= Strahlungsrichtung vom Benutzer weg). QiOne® 2 Pro wurde zwischen den Kulturflaschen auf jeder Strahlungsebene platziert. Die Positionen der Flaschen sind als UL (= oben links), UR (= oben rechts), LL (= unten links), LR (= unten rechts) markiert.",
    "alt": "Schematische Darstellung des Versuchsaufbaus: Vier Kulturflaschen sind rund um ein Mobiltelefon angeordnet – zwei auf dem Display (oben links/rechts), zwei an der Rückseite nahe Akku und Antenne (unten links/rechts). QiOne® 2 Pro liegt mittig zwischen den Flaschen.",
    "quelleSeite": 3,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0001-abb1--a88ae7042555.png?v=1786745378"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0001-abb1--a88ae7042555.png?v=1786745378",
+   "breite": 1400,
+   "hoehe": 649
   },
   {
    "key": "abb2",
@@ -171,7 +173,9 @@
    "bildunterschrift": "Darstellung der unterschiedlichen prozentualen Abnahme der Superoxid-Anion-Radikalgenerierung durch funktionelle Neutrophile nach 4 Stunden Exposition gegenüber der Strahlung eines aktiven Mobiltelefons ohne Schutz (blaue Balken) und nach Schutz durch QiOne® 2 Pro (gelbe Balken). Die unbehandelten Kontrollen sind als „100 %” gesetzt. Die Positionen der Flaschen sind als UL (= oben links), UR (= oben rechts), LL (= unten links), LR (= unten rechts) markiert. Die Daten repräsentieren Mittelwerte ± Standardabweichungen von 3 unabhängigen Experimenten. **p ≤ 0,01 für geschützte vs. ungeschützte Zellen; zweiseitiger Wilcoxon-Mann-Whitney-Test.",
    "alt": "Balkendiagramm: Superoxid-Radikalbildung in Prozent der Kontrolle (100 %) für vier Positionen (UL, UR, LL, LR). Blaue Balken (ungeschützt) liegen bei ~50–65 %, gelbe Balken (QiOne® 2 Pro geschützt) deutlich höher bei ~80–90 %. Signifikanzstern p ≤ 0,01 markiert.",
    "quelleSeite": 3,
-   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0001-abb2--fefc845db96d.png?v=1786745382"
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0001-abb2--fefc845db96d.png?v=1786745382",
+   "breite": 1320,
+   "hoehe": 760
   }
  ],
  "zitation": {
