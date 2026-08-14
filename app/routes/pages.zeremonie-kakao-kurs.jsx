@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {canonicalLink} from '~/lib/seo';
 import {KakaoKurs} from '~/components/kurse/KakaoKurs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
@@ -7,11 +8,8 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
  */
 export const meta = ({data}) => {
   return [
-    {title: `Hydrogen | ${data?.page.title ?? ''}`},
-    {
-      rel: 'canonical',
-      href: `/pages/zeremonie-kakao-kurs`,
-    },
+    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    canonicalLink('/pages/zeremonie-kakao-kurs'),
   ];
 };
 
