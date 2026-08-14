@@ -2,12 +2,19 @@ import {Link, useLoaderData} from 'react-router';
 import {Image, getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {blogMeta} from '~/lib/blog-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+export const meta = ({data, location}) => {
+  return blogMeta({
+    pfad: location?.pathname ?? '/blogs',
+    titel: data?.blog?.seo?.title || data?.blog?.title,
+    // Nur was Shopify wirklich pflegt — ein erfundener Fuelltext wäre hier
+    // schlechter als gar keiner (er stuende auf JEDER Blog-Uebersicht gleich).
+    beschreibung: data?.blog?.seo?.description,
+  });
 };
 
 /**

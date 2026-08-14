@@ -1,12 +1,19 @@
 import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {blogMeta} from '~/lib/blog-seo';
 
 /**
  * @type {MetaFunction}
  */
-export const meta = () => {
-  return [{title: `Hydrogen | Blogs`}];
+export const meta = ({location}) => {
+  return blogMeta({
+    pfad: location?.pathname ?? '/blogs',
+    titel: 'Magazin',
+    beschreibung:
+      'Das Magazin von Qi Blanco: Beiträge rund um Strahlung, Schlaf und ' +
+      'Energie im Alltag — und wie unsere Life Technology dabei hilft.',
+  });
 };
 
 /**
