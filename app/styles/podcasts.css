@@ -1,0 +1,301 @@
+/* ============================================================================
+   /pages/podcasts — Podcast-Index (2026-08-14).
+
+   KEIN eigenes Design-System: diese Datei erfindet KEINE Farbe, KEINE
+   Schriftgroesse, KEINEN Radius. Alle Werte kommen aus den :root-Tokens von
+   styles/schlaf-zellen-schutz.css (dem 94/100-Rezept), die die Route als
+   erstes Stylesheet laedt. Scope .lp-a3 .qbp — dadurch gilt hier dieselbe
+   Token-Welt wie auf den Landingpages, inklusive der body:has()-Korrektur,
+   die Header/Footer in die warme Flaeche zieht.
+
+   Leitidee: eine Leseseite, keine Kachelwand. Das Poster fuehrt ins Video,
+   der Text traegt die Seite. Weissraum gruppiert statt Rahmen.
+   ========================================================================== */
+
+.lp-a3 .qbp {
+  background: var(--a-grund);
+  color: var(--a-text);
+  font-family: var(--a-font);
+  padding: var(--a-s8) var(--a-s3);
+}
+.lp-a3 .qbp__kopf {
+  max-width: var(--a-breite-schmal);
+  margin: 0 auto var(--a-s8);
+  text-align: center;
+}
+.lp-a3 .qbp__h1 {
+  font-size: var(--a-fs-h1);
+  line-height: 1.15;
+  margin: 0 0 var(--a-s3);
+  color: var(--a-dunkel);
+}
+.lp-a3 .qbp__intro {
+  font-size: var(--a-fs-md);
+  line-height: 1.65;
+  margin: 0 auto var(--a-s2);
+  max-width: var(--a-mass);
+}
+.lp-a3 .qbp__zaehler,
+.lp-a3 .qbp__meta,
+.lp-a3 .qbp__klein {
+  font-size: var(--a-fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-muted);
+  margin: 0;
+}
+
+/* --- Liste --------------------------------------------------------------- */
+
+.lp-a3 .qbp__liste {
+  max-width: var(--a-breite);
+  margin: 0 auto;
+  display: grid;
+  gap: var(--a-s12);
+}
+.lp-a3 .qbp__folge {
+  display: grid;
+  gap: var(--a-s3);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  align-items: start;
+  scroll-margin-top: var(--a-s8);
+}
+.lp-a3 .qbp__gast {
+  display: grid;
+  gap: var(--a-s2);
+}
+
+/* --- Player (Lite-Embed) -------------------------------------------------
+   Der Breiten-Deckel ist eine BILDQUALITAETS-Regel, keine Geschmacksfrage:
+   YouTube liefert maximal 1280 px (maxresdefault), das deckt auf einem Geraet
+   mit 2x-Pixeldichte hoechstens 640 CSS-px. Ohne Deckel spannt das Poster im
+   einspaltigen Layout ueber die volle Breite (Tablet 736 px -> 1472 Geraete-px)
+   und ist sichtbar unscharf — Gate 12 hat genau das im Format tablet-768
+   blockiert (gemessen 2026-08-14). 600 statt 640 laesst Luft, damit die Regel
+   nicht auf der Gleichheit steht; im zweispaltigen Layout bindet sie nicht. */
+
+.lp-a3 .qbp__buehne {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  margin-inline: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--a-r1);
+  background: var(--a-flaeche);
+  box-shadow: var(--a-shadow-sm);
+}
+.lp-a3 .qbp__start {
+  cursor: pointer;
+}
+.lp-a3 .qbp__poster,
+.lp-a3 .qbp__iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+  object-fit: cover;
+}
+/* Der Abspielknopf ist die einzige Handlung auf der Flaeche — deshalb traegt
+   genau er den Gold-Akzent. */
+.lp-a3 .qbp__knopf {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: var(--a-s8);
+  height: var(--a-s8);
+  border-radius: 50%;
+  background: var(--a-akzent);
+  box-shadow: var(--a-shadow-md);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.lp-a3 .qbp__knopf::after {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 10px 0 10px 17px;
+  border-color: transparent transparent transparent var(--a-dunkel);
+}
+.lp-a3 .qbp__start:hover .qbp__knopf,
+.lp-a3 .qbp__start:focus-visible .qbp__knopf {
+  background: var(--a-akzent-tief);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+/* --- Textteil ------------------------------------------------------------ */
+
+.lp-a3 .qbp__titel {
+  font-size: var(--a-fs-h2);
+  line-height: 1.25;
+  margin: 0;
+  color: var(--a-dunkel);
+}
+.lp-a3 .qbp__titel--klein {
+  font-size: var(--a-fs-xl);
+}
+.lp-a3 .qbp__meta {
+  margin: var(--a-s1) 0 var(--a-s2);
+}
+.lp-a3 .qbp__punkt {
+  margin: 0 var(--a-s1);
+}
+.lp-a3 .qbp__text p {
+  font-size: var(--a-fs-base);
+  line-height: 1.7;
+  max-width: var(--a-mass);
+  margin: 0 0 var(--a-s2);
+  color: inherit;
+  white-space: pre-line;
+}
+.lp-a3 .qbp__klein {
+  display: block;
+  margin: 0 0 var(--a-s1);
+  font-weight: 600;
+}
+
+/* --- Kapitel ------------------------------------------------------------- */
+
+.lp-a3 .qbp__kapitel {
+  margin-top: var(--a-s3);
+  padding-top: var(--a-s2);
+  border-top: 1px solid var(--a-linie);
+}
+.lp-a3 .qbp__kapitel ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--a-s1);
+}
+.lp-a3 .qbp__kapitel a {
+  display: flex;
+  gap: var(--a-s2);
+  font-size: var(--a-fs-base);
+  line-height: 1.5;
+  color: var(--a-text);
+  text-decoration: none;
+}
+.lp-a3 .qbp__kapitel a:hover,
+.lp-a3 .qbp__kapitel a:focus-visible {
+  color: var(--a-akzent-tinte);
+  text-decoration: underline;
+}
+.lp-a3 .qbp__zeit {
+  flex: 0 0 auto;
+  min-width: 4.5rem;
+  color: var(--a-akzent-tinte);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Produktlinks + Blaettern -------------------------------------------- */
+
+.lp-a3 .qbp__produkte {
+  margin: var(--a-s3) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--a-s1) var(--a-s2);
+  align-items: baseline;
+}
+.lp-a3 .qbp__produkt {
+  font-size: var(--a-fs-base);
+  color: var(--a-akzent-tinte);
+  text-decoration: none;
+  border-bottom: 1px solid var(--a-akzent);
+  padding-bottom: 2px;
+}
+.lp-a3 .qbp__produkt:hover,
+.lp-a3 .qbp__produkt:focus-visible {
+  color: var(--a-akzent-tief);
+}
+.lp-a3 .qbp__blaettern {
+  max-width: var(--a-breite);
+  margin: var(--a-s12) auto 0;
+  padding-top: var(--a-s4);
+  border-top: 1px solid var(--a-linie);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--a-s2);
+}
+.lp-a3 .qbp__seiten {
+  list-style: none;
+  display: flex;
+  gap: var(--a-s1);
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+}
+.lp-a3 .qbp__seiten a,
+.lp-a3 .qbp__seiten span {
+  display: grid;
+  place-items: center;
+  min-width: var(--a-s4);
+  height: var(--a-s4);
+  border-radius: var(--a-r1);
+  font-size: var(--a-fs-base);
+  text-decoration: none;
+  color: var(--a-text);
+}
+.lp-a3 .qbp__seiten a:hover,
+.lp-a3 .qbp__seiten a:focus-visible {
+  background: var(--a-flaeche);
+}
+.lp-a3 .qbp__seiten [aria-current='page'] {
+  background: var(--a-akzent);
+  color: var(--a-dunkel);
+  font-weight: 600;
+}
+.lp-a3 .qbp__weiter {
+  font-size: var(--a-fs-base);
+  color: var(--a-akzent-tinte);
+  text-decoration: none;
+}
+.lp-a3 .qbp__weiter:hover,
+.lp-a3 .qbp__weiter:focus-visible {
+  text-decoration: underline;
+}
+.lp-a3 .qbp__blaettern > :last-child {
+  text-align: right;
+}
+
+/* --- Gaeste-Bestand ------------------------------------------------------ */
+
+.lp-a3 .qbp__gaeste {
+  max-width: var(--a-breite);
+  margin: var(--a-s12) auto 0;
+  padding-top: var(--a-s8);
+  border-top: 1px solid var(--a-linie);
+}
+.lp-a3 .qbp__gastliste {
+  margin-top: var(--a-s6);
+  display: grid;
+  gap: var(--a-s6);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* --- Schmale Fenster ----------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .lp-a3 .qbp {
+    padding: var(--a-s6) var(--a-s2);
+  }
+  .lp-a3 .qbp__folge {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-a3 .qbp__liste {
+    gap: var(--a-s8);
+  }
+  .lp-a3 .qbp__blaettern {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: var(--a-s3);
+  }
+  .lp-a3 .qbp__blaettern > :last-child {
+    text-align: center;
+  }
+}
