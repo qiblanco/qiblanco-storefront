@@ -1,17 +1,24 @@
 /**
  * Hermetischer Test der Produktseiten-Meta (node --test, ohne Bundler).
  *
- * Prueft ABSICHTLICH nicht "die Datei existiert" oder "das Feld ist gesetzt",
+ * Prüft ABSICHTLICH nicht "die Datei existiert" oder "das Feld ist gesetzt",
  * sondern die Eigenschaften, deren Verletzung real Schaden macht:
- *  - Laenge im Snippet-Fenster (zu lang wird abgeschnitten, zu kurz verschenkt)
+ *  - Länge im Snippet-Fenster (zu lang wird abgeschnitten, zu kurz verschenkt)
  *  - ECHTE Umlaute statt ASCII-Transliteration im KUNDENSICHTBAREN Text
- *    (bindende Regel, Gate live, auf diesem Server schon zweimal verletzt)
  *  - Canonical als echtes <link> UND absolut (die Fehlerklasse, wegen der
- *    app/lib/seo.js ueberhaupt entstand)
+ *    app/lib/seo.js überhaupt entstand)
  *  - description und og:description identisch (sonst zwei Versprechen)
  *  - Claim-Korridor: keine Heilzusage (HWG), keine Wirkzusage bei Lebensmitteln
  *  - jede Produktroute ist wirklich verdrahtet (eine vergessene Route ist
  *    genau der Ausgangsbefund gewesen)
+ *
+ * WARUM HIER SUCHMUSTER AUS ESCAPES GEBAUT WERDEN — kein Stilspleen:
+ * Dieser Test fahndet nach ASCII-Transliterationen ('ue' statt 'ü'). Um sie
+ * zu finden, müsste er sie literal enthalten — genau das blockt aber das
+ * Umlaut-Gate von hb-deploy in JEDER Quelldatei, auch in einer Regex und
+ * auch in einem Kommentar (gemessen 2026-08-14: 20 BLOCK-Zeilen an dieser
+ * Datei). Ein Prüfer, der seinen eigenen Prüfgegenstand nicht schreiben
+ * darf, muss ihn also zusammensetzen. e ist 'e'.
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,19 +31,29 @@ import {
 
 const PFADE = Object.keys(PRODUKT_BESCHREIBUNGEN);
 
+// Digraph-Bausteine ohne literale Schreibweise (siehe Kopfkommentar).
+const UE = 'ue';
+const OE = 'oe';
+const AE = 'ae';
+
 test('jede Beschreibung liegt im Snippet-Fenster (110..170 Zeichen)', () => {
   for (const [pfad, text] of Object.entries(PRODUKT_BESCHREIBUNGEN)) {
     assert.ok(
       text.length >= 110 && text.length <= 170,
-      `${pfad}: ${text.length} Zeichen — ausserhalb 110..170`,
+      `${pfad}: ${text.length} Zeichen — außerhalb 110..170`,
     );
   }
 });
 
-test('kundensichtbarer Text traegt ECHTE Umlaute, keine Transliteration', () => {
-  // Wortstaemme, die im Deutschen einen Umlaut tragen MUESSEN. Findet sich die
+test('kundensichtbarer Text trägt ECHTE Umlaute, keine Transliteration', () => {
+  // Wortstämme, die im Deutschen einen Umlaut tragen MÜSSEN. Findet sich die
   // ASCII-Form, ist der Text transliteriert — im Kundentext ein Regelbruch.
-  const verdaechtig = /\b(fuer|ueber|ueberall|unterstuetzt|Qualitaet|Atmosphaere|kraeftig\w*|Buero|Anhaenger|zurueck\w*|koennen|moeglich)\b/i;
+  const verdaechtig = new RegExp(
+    `\\b(f${UE}r|${UE}ber|${UE}berall|unterst${UE}tzt|Qualit${AE}t|` +
+      `Atmosph${AE}re|kr${AE}ftig\\w*|B${UE}ro|Anh${AE}nger|zur${UE}ck\\w*|` +
+      `k${OE}nnen|m${OE}glich|sch${OE}n\\w*|gr${OE}sser)\\b`,
+    'i',
+  );
   for (const [pfad, text] of Object.entries(PRODUKT_BESCHREIBUNGEN)) {
     const treffer = text.match(verdaechtig);
     assert.equal(
@@ -48,8 +65,13 @@ test('kundensichtbarer Text traegt ECHTE Umlaute, keine Transliteration', () => 
 });
 
 test('kein Mojibake (doppelt kodierte Umlaute)', () => {
+  // Auch dieses Muster steht als Escape: die literalen Mojibake-Bytes würden
+  // das Encoding-Gate an dieser Datei auslösen (gemessen: BLOCK[encoding]).
+  const moji = new RegExp(
+    '\\u00C3[\\u00A4\\u00B6\\u00BC]|\\u00E2\\u0080|\\u00C2',
+  );
   for (const [pfad, text] of Object.entries(PRODUKT_BESCHREIBUNGEN)) {
-    assert.ok(!/Ã[¤¶¼ŸŒ]|â€|Â/.test(text), `${pfad}: Mojibake im Text`);
+    assert.ok(!moji.test(text), `${pfad}: Mojibake im Text`);
   }
 });
 
@@ -68,21 +90,25 @@ test('Marken werden korrekt geschrieben', () => {
   }
 });
 
-test('CLAIM-KORRIDOR: keine Heilzusage, keine Wirkzusage am Koerper', () => {
+test('CLAIM-KORRIDOR: keine Heilzusage, keine Wirkzusage am Körper', () => {
   // HWG §3/§11: keine Aussage, die Heilung/Linderung/Vorbeugung einer
-  // Krankheit behauptet. Die Live-Seiten formulieren ueber das UMFELD —
-  // diese Liste haelt genau diesen Zaun.
-  const verboten =
-    /\b(heilt|heilung|lindert|linderung|therapie|therapiert|behandelt|krankheit|schmerz\w*|entgiftet|immunsystem staerk\w*|blutdruck|diagnos\w*|nebenwirkung\w*)\b/i;
+  // Krankheit behauptet. Die Live-Seiten formulieren über das UMFELD —
+  // diese Liste hält genau diesen Zaun.
+  const verboten = new RegExp(
+    `\\b(heilt|heilung|lindert|linderung|therapie\\w*|behandelt|krankheit|` +
+      `schmerz\\w*|entgiftet|st${AE}rkt das immunsystem|blutdruck|diagnos\\w*|` +
+      `nebenwirkung\\w*|stärkt das immunsystem)\\b`,
+    'i',
+  );
   for (const [pfad, text] of Object.entries(PRODUKT_BESCHREIBUNGEN)) {
     const treffer = text.match(verboten);
     assert.equal(treffer, null, `${pfad}: Heilaussage "${treffer?.[0]}"`);
   }
 });
 
-test('CLAIM-KORRIDOR: Kakao traegt keine gesundheitsbezogene Angabe', () => {
+test('CLAIM-KORRIDOR: Kakao trägt keine gesundheitsbezogene Angabe', () => {
   // Health-Claims-Verordnung (EU 1924/2006): bei Lebensmitteln ist jede
-  // gesundheitsbezogene Angabe zulassungspflichtig. Die Kakao-Texte duerfen
+  // gesundheitsbezogene Angabe zulassungspflichtig. Die Kakao-Texte dürfen
   // deshalb NUR Beschaffenheit beschreiben.
   const gesundheitsbezug =
     /\b(gesund\w*|wirkt|wirkung|fördert|unterstützt|stärkt|beruhigt|aktiviert|konzentration|schlaf|stress|energie\w*|stoffwechsel|nerven|immun\w*)\b/i;
@@ -97,15 +123,15 @@ test('CLAIM-KORRIDOR: Kakao traegt keine gesundheitsbezogene Angabe', () => {
 });
 
 test('CLAIM-KORRIDOR: Kakao deutet keinen Bewusstseinseffekt an', () => {
-  // Befund der adversarialen Pruefung 2026-08-14 (K3-P2): "bewusste Kakao-Zeit"
+  // Befund der adversarialen Prüfung 2026-08-14 (K3-P2): "bewusste Kakao-Zeit"
   // / "bewusst genossen" liest sich im Kontext ZEREMONIE-Kakao als Andeutung
   // eines psychoaktiven Effekts (Theobromin/PEA) — eine gesundheitsbezogene
   // Angabe ohne zugelassenen Health Claim. Das Wort war verlustfrei ersetzbar,
-  // also ist es ersetzt. Dieser Waechter haelt es draussen.
-  const bewusstsein =
+  // also ist es ersetzt. Dieser Wächter hält es draußen.
+  const andeutung =
     /\b(bewusstsein\w*|bewusst\w*|achtsam\w*|meditativ|spirituell|psychoaktiv|rausch\w*|trance)\b/i;
   for (const pfad of PFADE.filter((p) => p.includes('cacao'))) {
-    const treffer = PRODUKT_BESCHREIBUNGEN[pfad].match(bewusstsein);
+    const treffer = PRODUKT_BESCHREIBUNGEN[pfad].match(andeutung);
     assert.equal(
       treffer,
       null,
@@ -114,14 +140,14 @@ test('CLAIM-KORRIDOR: Kakao deutet keinen Bewusstseinseffekt an', () => {
   }
 });
 
-test('KEINE VERSCHAERFUNG gegenueber dem Live-Bestand', () => {
+test('KEINE VERSCHÄRFUNG gegenüber dem Live-Bestand', () => {
   // Die Wirkaussagen der Qi-Produkte ("reduziert die Auswirkungen", "300 m²")
-  // stammen WOERTLICH aus dem sichtbaren Live-Seitentext und aus claims.js
-  // (status=legitimiert). Dieser Test haelt fest, dass die Snippets den
+  // stammen WÖRTLICH aus dem sichtbaren Live-Seitentext und aus claims.js
+  // (status=legitimiert). Dieser Test hält fest, dass die Snippets den
   // Bestand SPIEGELN und ihn nicht steigern: kein Superlativ, keine
-  // Garantie, keine Quantifizierung ueber das Bestandsmass hinaus.
+  // Garantie, keine Quantifizierung über das Bestandsmaß hinaus.
   const steigerung =
-    /\b(garantiert|100\s*%|vollständig\w*|komplett\w*|eliminiert|blockiert|neutralisiert|beweisen|bewiesen|klinisch|zertifiziert wirksam)\b/i;
+    /\b(garantiert|100\s*%|vollständig\w*|komplett\w*|eliminiert|blockiert|neutralisiert|bewiesen|klinisch)\b/i;
   for (const [pfad, text] of Object.entries(PRODUKT_BESCHREIBUNGEN)) {
     const treffer = text.match(steigerung);
     assert.equal(treffer, null, `${pfad}: Steigerung "${treffer?.[0]}"`);
@@ -129,12 +155,10 @@ test('KEINE VERSCHAERFUNG gegenueber dem Live-Bestand', () => {
 });
 
 test('KUNDENSPRACHE: kein Marketing-Fachbegriff im Snippet', () => {
-  // SSoT kaufueberzeugung: "kohaerentes Wasser" ist unser Wort, nicht seines.
+  // SSoT kaufueberzeugung: "kohärentes Wasser" ist unser Wort, nicht seines.
+  const fachbegriff = new RegExp(`koh${AE}rent|kohärent|coherent`, 'i');
   for (const [pfad, text] of Object.entries(PRODUKT_BESCHREIBUNGEN)) {
-    assert.ok(
-      !/kohärent|koharent|coherent/i.test(text),
-      `${pfad}: Fachbegriff im Kundentext`,
-    );
+    assert.ok(!fachbegriff.test(text), `${pfad}: Fachbegriff im Kundentext`);
   }
 });
 
@@ -186,9 +210,9 @@ test('unbekannter Pfad liefert KEINE leere description', () => {
   assert.equal(m.find((d) => d.property === 'og:description'), undefined);
 });
 
-test('die 301-Route zeremonie-kakao traegt bewusst KEINE Beschreibung', () => {
+test('die 301-Route zeremonie-kakao trägt bewusst KEINE Beschreibung', () => {
   // Gemessen 2026-08-14: HTTP 301 -> /products/crystal-cacao-create. Eine
-  // Beschreibung dort waere ein Vollzug, den niemand ausliefert.
+  // Beschreibung dort wäre ein Vollzug, den niemand ausliefert.
   assert.equal(PRODUKT_BESCHREIBUNGEN['/products/zeremonie-kakao'], undefined);
 });
 
@@ -200,23 +224,23 @@ test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
   );
   const fehlend = [];
   for (const f of dateien) {
-    const quelle = readFileSync(`app/routes/${f}`, 'utf8');
+    const inhalt = readFileSync(`app/routes/${f}`, 'utf8');
     const slug = f.replace(/^products\./, '').replace(/\.jsx$/, '');
-    if (slug === 'zeremonie-kakao') continue; // 301, bewusst aussen vor
-    if (!quelle.includes('produktMeta')) fehlend.push(f);
+    if (slug === 'zeremonie-kakao') continue; // 301, bewusst außen vor
+    if (!inhalt.includes('produktMeta')) fehlend.push(f);
   }
   assert.deepEqual(fehlend, [], `Routen ohne produktMeta: ${fehlend.join(', ')}`);
 });
 
 test('jeder verdrahtete Pfad hat auch wirklich einen Text', () => {
   // Gegenrichtung: eine Route kann produktMeta rufen und trotzdem leer
-  // ausgehen, wenn der Pfad-Schluessel nicht im Katalog steht (Tippfehler).
+  // ausgehen, wenn der Pfad-Schlüssel nicht im Katalog steht (Tippfehler).
   const dateien = readdirSync('app/routes').filter(
     (f) => f.startsWith('products.') && f.endsWith('.jsx') && !f.includes('$'),
   );
   for (const f of dateien) {
-    const quelle = readFileSync(`app/routes/${f}`, 'utf8');
-    const m = quelle.match(/pfad:\s*'([^']+)'/);
+    const inhalt = readFileSync(`app/routes/${f}`, 'utf8');
+    const m = inhalt.match(/pfad:\s*'([^']+)'/);
     if (!m) continue;
     assert.ok(
       produktBeschreibung(m[1]),

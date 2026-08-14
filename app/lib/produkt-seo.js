@@ -7,18 +7,18 @@
  * WARUM ES DIESE DATEI GIBT (Befund SEO-2026-W33 L6/L3, am 2026-08-14 an der
  * Live-Auslieferung nachgemessen): alle sieben Produktrouten trugen einen
  * korrekten Canonical, aber KEINE `meta description` und NULL og-Tags. Für
- * eine Suchmaschine heisst das: sie reimt sich das Snippet aus dem Seitentext
- * selbst zusammen; für jedes soziale Netzwerk heisst es, dass es beim Teilen
+ * eine Suchmaschine heißt das: sie reimt sich das Snippet aus dem Seitentext
+ * selbst zusammen; für jedes soziale Netzwerk heißt es, dass es beim Teilen
  * selbst entscheidet, was erscheint. Das sind die Umsatzseiten — die Stelle,
  * an der ein zusammengereimtes Snippet am teuersten ist.
  *
  * WARUM NEBEN app/lib/seo.js UND NICHT DARIN:
- * seo.js liefert die Canonical-Bausteine und wird ausserdem von
+ * seo.js liefert die Canonical-Bausteine und wird außerdem von
  * pages.support/impressum/agb/datenschutz/teilnahmebedingungen importiert.
  * `support` hat einen etablierten Formate-Beleg-Ordner, und hb-deploy Gate 12
  * blockt im Modus FORMATE_GATE_REICHWEITE=beleg genau für solche Seiten. Eine
  * Änderung an seo.js würde diese fremden, völlig unbeteiligten Seiten in die
- * Prüfmenge ziehen. Diese Datei wird ausschliesslich von den Produktrouten
+ * Prüfmenge ziehen. Diese Datei wird ausschließlich von den Produktrouten
  * importiert; ihre Import-Closure sind damit die Produktseiten selbst.
  *
  * WER SIE VON EINER FREMDEN ROUTE IMPORTIERT, ZIEHT DEREN SEITE IN DIE
