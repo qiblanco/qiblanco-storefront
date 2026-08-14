@@ -1,7 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {Kakao} from '~/components/product-pages/Kakao';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {canonicalLink} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -14,7 +13,10 @@ export const meta = ({data}) => {
       content:
         'Crystal Cacao® – High Performance Cacao. Wach. Klar. Mineralisiert. 100 % reiner Premium-Naturkakao aus Peru.',
     },
-    canonicalLink('/pages/crystal-cacao'),
+    {
+      rel: 'canonical',
+      href: `/pages/crystal-cacao`,
+    },
   ];
 };
 
