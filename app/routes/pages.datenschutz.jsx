@@ -1,7 +1,9 @@
+import {canonicalLink} from '~/lib/seo';
+
 export const meta = () => [
   {title: 'Datenschutzerklärung | Qi Blanco'},
   {name: 'description', content: 'Datenschutzerklärung der Qi Blanco UG (haftungsbeschränkt)'},
-  {rel: 'canonical', href: '/pages/datenschutz'},
+  canonicalLink('/pages/datenschutz'),
 ];
 
 export function loader() {

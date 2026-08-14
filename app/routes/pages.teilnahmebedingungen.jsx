@@ -1,3 +1,5 @@
+import {canonicalLink} from '~/lib/seo';
+
 export const meta = () => [
   {title: 'Teilnahmebedingungen | Qi Blanco'},
   {
@@ -5,7 +7,7 @@ export const meta = () => [
     content:
       'Teilnahmebedingungen für die Gewinnspiele der Qi Blanco UG (haftungsbeschränkt)',
   },
-  {rel: 'canonical', href: '/pages/teilnahmebedingungen'},
+  canonicalLink('/pages/teilnahmebedingungen'),
 ];
 
 export function loader() {
