@@ -46,6 +46,7 @@
 // aufgelöst, nicht von Node. Der hermetische Test (node --test, ohne Bundler)
 // könnte diese Datei sonst gar nicht laden.
 import {absoluteCanonical} from './seo.js';
+import {produktGraph} from './produkt-schema.js';
 
 /**
  * Beschreibung je Produktpfad.
@@ -99,10 +100,18 @@ export function produktBeschreibung(pfad) {
  * driften die Routen auseinander, und genau diese Drift war der Ausgangs-
  * befund (jede Route trug ihren Canonical, keine eine Beschreibung).
  *
- * @param {{pfad: string, titel: string, bildUrl?: string}} args
+ * `produkt` ist OPTIONAL und rein additiv (SEO-Stufe S6): wird es übergeben,
+ * hängt diese Funktion zusätzlich den Product-/BreadcrumbList-JSON-LD-Graphen
+ * an. Ohne das Argument verhält sie sich byte-identisch wie vorher — eine
+ * Route, die es nicht übergibt, verliert nichts. Der Graph selbst entsteht in
+ * app/lib/produkt-schema.js; die Beschreibung wird von HIER hineingereicht,
+ * damit produkt-schema.js nicht zurück auf diese Datei importieren muss
+ * (Zyklus).
+ *
+ * @param {{pfad: string, titel: string, bildUrl?: string, produkt?: object}} args
  * @returns {Array<object>} meta-Descriptoren für react-router 7
  */
-export function produktMeta({pfad, titel, bildUrl}) {
+export function produktMeta({pfad, titel, bildUrl, produkt}) {
   const beschreibung = produktBeschreibung(pfad);
   const url = absoluteCanonical(pfad);
   const descriptoren = [
@@ -127,6 +136,17 @@ export function produktMeta({pfad, titel, bildUrl}) {
   }
   if (bildUrl) {
     descriptoren.push({property: 'og:image', content: bildUrl});
+  }
+  if (produkt) {
+    const graph = produktGraph({
+      pfad,
+      produkt,
+      beschreibung,
+    });
+    // Nur anhängen, wenn wirklich ein Graph entstand. Ein leeres
+    // script:ld+json wäre für einen Parser kaputtes Markup statt fehlender
+    // Information — und damit schlechter als gar keins.
+    if (graph) descriptoren.push({'script:ld+json': graph});
   }
   return descriptoren;
 }
