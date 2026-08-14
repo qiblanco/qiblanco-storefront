@@ -13,10 +13,10 @@ import {
 
 // --- Der eigentliche Befund: es MUSS ein <link> werden, kein <meta> ---------
 // react-router-7 rendert einen meta-Descriptor nur dann als <link>, wenn
-// `tagName` gesetzt und laut isValidMetaTag = /^(meta|link)$/ gueltig ist.
-// Ohne tagName faellt der Router auf createElement('meta', {...props}) zurueck
+// `tagName` gesetzt und laut isValidMetaTag = /^(meta|link)$/ gültig ist.
+// Ohne tagName faellt der Router auf createElement('meta', {...props}) zurück
 // — genau der wirkungslose Zustand, den dieser Auftrag beseitigt.
-test('canonicalLink traegt tagName=link (sonst rendert react-router <meta>)', () => {
+test('canonicalLink trägt tagName=link (sonst rendert react-router <meta>)', () => {
   const d = canonicalLink('/pages/studien');
   assert.equal(d.tagName, 'link');
   assert.match(d.tagName, /^(meta|link)$/); // isValidMetaTag des Routers
@@ -25,7 +25,7 @@ test('canonicalLink traegt tagName=link (sonst rendert react-router <meta>)', ()
 
 test('canonicalLink hat KEINE Keys, die der Router vorher abfaengt', () => {
   // Reihenfolge der Renderschleife: tagName -> title -> charset/charSet ->
-  // script:ld+json -> Fallback <meta>. Ein versehentliches `title` wuerde den
+  // script:ld+json -> Fallback <meta>. Ein versehentliches `title` würde den
   // Descriptor zu einem <title> machen.
   const d = canonicalLink('/pages/studien');
   for (const key of ['title', 'charset', 'charSet', 'script:ld+json']) {
@@ -66,7 +66,7 @@ test('absoluteCanonical: abschliessender Slash wird getrimmt (ausser Root)', () 
   );
 });
 
-test('absoluteCanonical: fuehrender Slash wird ergaenzt', () => {
+test('absoluteCanonical: fuehrender Slash wird ergänzt', () => {
   assert.equal(
     absoluteCanonical('pages/studien'),
     'https://qiblanco.com/pages/studien',
@@ -74,8 +74,8 @@ test('absoluteCanonical: fuehrender Slash wird ergaenzt', () => {
 });
 
 test('absoluteCanonical zeigt NIE auf einen Preview-/Oxygen-Host', () => {
-  // Der Grund fuer absolute Canonicals: react-router merged meta nicht
-  // baumweit, ein relativer Canonical wuerde auf Preview-Hosts die
+  // Der Grund für absolute Canonicals: react-router merged meta nicht
+  // baumweit, ein relativer Canonical würde auf Preview-Hosts die
   // Preview-URL selbst kanonisieren.
   for (const p of ['/pages/studien', '/products/qione-2-pro', '/']) {
     assert.ok(absoluteCanonical(p).startsWith('https://qiblanco.com'));

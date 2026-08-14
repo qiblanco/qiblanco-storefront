@@ -2,7 +2,7 @@
  * Zentraler SEO-Helper (DACH-Storefront) — Canonical-Bausteine.
  *
  * Reine Datenfabrik ohne React-Import (Node-unit-testbar, analog
- * structured-data.js). Liefert ABSOLUTE Canonical-URLs fuer die
+ * structured-data.js). Liefert ABSOLUTE Canonical-URLs für die
  * Route-`meta`-Exporte.
  *
  * WARUM ES DIESE DATEI GIBT (Befund SEO-2026-W33 F_canonical):
@@ -12,17 +12,17 @@
  * tagName -> title -> charset -> script:ld+json -> Fallback
  * `createElement('meta', {...metaProps})`). Ein Descriptor
  * `{rel:'canonical', href:X}` ergibt deshalb `<meta rel="canonical" href="X">`
- * — im Quelltext fast nicht von der korrekten Form zu unterscheiden, fuer
+ * — im Quelltext fast nicht von der korrekten Form zu unterscheiden, für
  * Suchmaschinen aber wirkungslos. Korrekt ist:
  *
  *     {tagName: 'link', rel: 'canonical', href: absoluteCanonical(pfad)}
  *
  * `isValidMetaTag` des Routers akzeptiert genau /^(meta|link)$/.
  *
- * WARUM ABSOLUT: react-router-7 merged `meta` NICHT baumweit (der naechste
+ * WARUM ABSOLUT: react-router-7 merged `meta` NICHT baumweit (der nächste
  * Leaf gewinnt vollstaendig) — es gibt also keinen zentralen Ort, an dem ein
  * relativer Canonical serverseitig gegen die Produktions-Domain aufgeloest
- * wird. Auf einem Oxygen-Preview-Host wuerde ein relativer Canonical auf den
+ * wird. Auf einem Oxygen-Preview-Host würde ein relativer Canonical auf den
  * Preview-Host zeigen und die Preview-URL selbst kanonisieren. Ein absoluter
  * Canonical ist auf Preview wie Produktion identisch korrekt.
  *
@@ -38,7 +38,7 @@
 export const CANONICAL_ORIGIN = 'https://qiblanco.com';
 
 /**
- * Absolute Canonical-URL fuer einen Pfad. Query/Hash werden entfernt, ein
+ * Absolute Canonical-URL für einen Pfad. Query/Hash werden entfernt, ein
  * abschliessender Slash (ausser Root) getrimmt.
  * @param {string} pathname
  * @returns {string}
@@ -52,7 +52,7 @@ export function absoluteCanonical(pathname) {
 }
 
 /**
- * Fertiger meta-Descriptor fuer den Canonical einer Route.
+ * Fertiger meta-Descriptor für den Canonical einer Route.
  * Rendert ein echtes `<link rel="canonical" href="...">`.
  * @param {string} pathname
  * @returns {{tagName: 'link', rel: 'canonical', href: string}}
