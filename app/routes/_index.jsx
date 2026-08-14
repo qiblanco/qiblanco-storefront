@@ -23,6 +23,15 @@ const BESCHREIBUNG =
   'Energie im Alltag: QiOne® 2 Pro, QiBracelet, QiHome Air und Crystal Cacao®.';
 
 /**
+ * Teilbild für Open Graph. Native Kantenlaenge 1024 — die CDN-Breite wird
+ * ausdrücklich mitgegeben, damit das ausgelieferte Bild eine feste, zu
+ * og:image:width passende Größe hat und nicht von Shopify-Defaults abhängt.
+ */
+const OG_BILD =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
+  'qiblanco-com-qione-2-pro-transparent_1.webp?width=1024';
+
+/**
  * @type {MetaFunction}
  */
 export const meta = ({matches}) => {
@@ -48,6 +57,30 @@ export const meta = ({matches}) => {
     {property: 'og:title', content: TITEL},
     {property: 'og:description', content: BESCHREIBUNG},
     {property: 'og:url', content: absoluteCanonical('/')},
+    // og:image — als einziges og-Tag noch offen, nachdem PR #187 die übrigen
+    // gesetzt hat. Ohne Bild wählt jedes Netzwerk beim Teilen selbst etwas
+    // aus der Seite; bei uns hiess das: gar nichts.
+    //
+    // WARUM DIESES BILD (gemessen, nicht geraten):
+    //   Shopify-Markenlogo  2000x703 RGBA, alpha_min=0 — das INVERTIERTE
+    //     (weisse) Logo auf Transparenz. Netzwerke flachen Transparenz auf
+    //     Weiss ab, es wäre also weiss auf weiss: unsichtbar. Deshalb NICHT
+    //     das naheliegende logoUrl, obwohl es hier bereits aufgelöst vorliegt.
+    //   Flaggschiff-Produktbild 1024x1024 RGBA — dunkles, kontrastreiches
+    //     Objekt, das auf weissem Grund trägt. Quadratisch ist für og:image
+    //     zulässig und wird von allen großen Netzwerken unterstuetzt.
+    // Offen und bewusst so benannt: ein eigens gebautes 1200x630-Sharebild
+    // wäre besser als ein freigestelltes Produktfoto. Das ist eine Gestaltungs-
+    // aufgabe, kein Head-Tag — siehe RESULT des Auftrags.
+    {property: 'og:image', content: OG_BILD},
+    {property: 'og:image:type', content: 'image/png'},
+    {property: 'og:image:width', content: '1024'},
+    {property: 'og:image:height', content: '1024'},
+    // Alt-Text in Kundensprache (Schutz/Alltag), nicht im Fachbegriff.
+    {
+      property: 'og:image:alt',
+      content: 'QiOne® 2 Pro von Qi Blanco – das Gerät für den Alltag',
+    },
     // Entitäts-Graph. react-router 7 rendert diesen Descriptor nativ als
     // <script type="application/ld+json"> und maskiert den Inhalt selbst.
     {'script:ld+json': entityGraph({logoUrl})},
