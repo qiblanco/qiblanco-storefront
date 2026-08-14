@@ -11,6 +11,7 @@ import {
   ORG_ID,
   SITE_ID,
   MARKEN_PROFILE,
+  WISSENSGRAPH_ENTITAETEN,
   organizationSchema,
   websiteSchema,
   entityGraph,
@@ -98,7 +99,15 @@ test('sameAs führt NUR belegte Profile, und jedes trägt seinen Beleg', () => {
   assert.ok(Array.isArray(s), 'sameAs fehlt oder ist kein Array');
   assert.ok(s.length >= 3, `Abnahmeziel >=3 belegte Profile, ist ${s.length}`);
   assert.equal(s.length, new Set(s).size, 'doppelte URL in sameAs');
-  assert.equal(s.length, MARKEN_PROFILE.length);
+  // Die Gleichheit bindet sameAs an die DEKLARIERTEN Listen: nichts darf im
+  // Schema landen, was nicht durch eine der beiden Aufnahme-Regeln gegangen
+  // ist. Bewusst KEIN gepinnter Zahlenwert — wächst eine Liste ehrlich, wächst
+  // die Erwartung mit; wer dagegen am Schema vorbei einträgt, fällt auf.
+  assert.equal(
+    s.length,
+    MARKEN_PROFILE.length + WISSENSGRAPH_ENTITAETEN.length,
+    'sameAs enthält Einträge, die in keiner der beiden belegten Listen stehen',
+  );
   for (const p of MARKEN_PROFILE) {
     assert.ok(
       p.url.startsWith('https://'),
@@ -127,6 +136,84 @@ test('sameAs enthält NICHT die ausdrücklich ausgeschlossenen Flächen', () => 
       `${verboten} steht in sameAs, ist aber nicht als Eigentum belegt`,
     );
   }
+});
+
+// --- Wikidata-Rückverweis (Auftrag 20260814-wikidata-qid-backref) ----------
+// Der Wikidata-Eintrag ist der Anker, an dem eine Suchmaschine die Marke als
+// ENTITÄT auflöst. Er steht bewusst in einer EIGENEN Liste: MARKEN_PROFILE
+// verlangt den Nachweis von Kontrolle, und den kann ein öffentlich
+// editierbares Wiki baulich nie erfüllen. Die Regel hier ist der Rückverweis.
+test('WISSENSGRAPH_ENTITAETEN trägt QID, absolute URL und Beleg', () => {
+  assert.ok(
+    WISSENSGRAPH_ENTITAETEN.length >= 1,
+    'keine Wissensgraph-Entität deklariert',
+  );
+  for (const e of WISSENSGRAPH_ENTITAETEN) {
+    assert.match(e.qid, /^Q\d+$/, `QID hat nicht die Form Q<zahl>: ${e.qid}`);
+    assert.ok(
+      e.url.startsWith('https://'),
+      `Entitäts-URL nicht absolut/https: ${e.url}`,
+    );
+    // Der häufigste stille Fehler beim Nachtragen wäre eine URL, die auf ein
+    // ANDERES Item zeigt als das qid-Feld daneben behauptet. Dann stimmte das
+    // Markup nicht mit der Kennung überein, und beide sähen einzeln richtig aus.
+    assert.ok(
+      e.url.includes(e.qid),
+      `URL ${e.url} zeigt nicht auf die daneben deklarierte QID ${e.qid}`,
+    );
+    assert.ok(
+      typeof e.beleg === 'string' && e.beleg.trim().length > 30,
+      `Wissensgraph-Eintrag ohne belastbaren Beleg: ${e.url}`,
+    );
+    // Der Beleg dieser Klasse IST der Rückverweis — steht er nicht drin, ist
+    // die Aufnahme-Regel nicht angewandt, sondern nur behauptet worden.
+    assert.ok(
+      e.beleg.includes('P856'),
+      `Beleg nennt P856 (official website) nicht — die Rückrichtung ist damit ` +
+        `nicht dokumentiert: ${e.url}`,
+    );
+  }
+});
+
+test('sameAs führt den Wikidata-Rückverweis (der eigentliche Auftrag)', () => {
+  const s = organizationSchema().sameAs;
+  const wd = s.filter((u) => /wikidata\.org/.test(u));
+  assert.equal(wd.length, 1, `erwartet genau 1 Wikidata-URL in sameAs, ist ${wd.length}`);
+  assert.equal(wd[0], WISSENSGRAPH_ENTITAETEN[0].url);
+});
+
+test('POSITIV-KONTROLLE: eine QID/URL-Verwechslung würde auffallen', () => {
+  // Beweis, dass die Kopplungs-Prüfung oben etwas misst und nicht nur
+  // durchläuft: ein Eintrag, dessen URL auf ein anderes Item zeigt als sein
+  // qid-Feld, muss die Bedingung verletzen.
+  const falsch = {url: 'https://www.wikidata.org/wiki/Q1', qid: 'Q999'};
+  assert.equal(falsch.url.includes(falsch.qid), false);
+});
+
+test('@id bleibt der lokale Organization-Anker, NICHT die Wikidata-URI', () => {
+  // Der Auftrag stellte das Umhängen von @id auf die Wikidata-Entity-URI als
+  // Option frei. Es wäre falsch: websiteSchema().publisher zeigt auf ORG_ID,
+  // und ein Umhängen zerrisse genau die Kopplung, die den Graphen zu EINER
+  // Entität macht. Wikidata gehört baulich in sameAs. Dieser Test hält die
+  // Entscheidung fest, damit sie nicht versehentlich zurückgedreht wird.
+  const org = organizationSchema();
+  assert.equal(org['@id'], ORG_ID);
+  assert.equal(/wikidata/.test(org['@id']), false);
+  assert.equal(websiteSchema().publisher['@id'], ORG_ID);
+});
+
+test('identifier behält das Handelsregister UND trägt die Wikidata-Kennung', () => {
+  // Die Erweiterung auf ein Array ist genau die Stelle, an der eine
+  // Bestandsangabe still verschwinden könnte. Beide werden deshalb geprüft.
+  const ids = organizationSchema().identifier;
+  assert.ok(Array.isArray(ids), 'identifier ist kein Array');
+  const hr = ids.find((i) => i.value === ORGANISATION.handelsregister);
+  assert.ok(hr, 'Handelsregister-identifier ist verlorengegangen');
+  assert.equal(hr.name, ORGANISATION.registergericht);
+  const wd = ids.find((i) => i.propertyID === 'wikidata');
+  assert.ok(wd, 'kein Wikidata-identifier');
+  assert.equal(wd.value, WISSENSGRAPH_ENTITAETEN[0].qid);
+  for (const i of ids) assert.equal(i['@type'], 'PropertyValue');
 });
 
 test('Startseite liefert og:image (der einzige fehlende OG-Wert am 14.08.)', () => {
