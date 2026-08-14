@@ -1,10 +1,10 @@
 /**
- * FAQPage / JSON-LD Datenfabrik fuer die Produkt-FAQ der DACH-Storefront.
+ * FAQPage / JSON-LD Datenfabrik für die Produkt-FAQ der DACH-Storefront.
  *
  * Herkunft: Folgejob FJ2 aus dem GEO/AEO-Deep-Dive
- * (20260723-ki-sichtbarkeit-geo-aeo-empfehlbarkeit-nicht-eso, Massnahme A2).
+ * (20260723-ki-sichtbarkeit-geo-aeo-empfehlbarkeit-nicht-eso, Maßnahme A2).
  * Befund dort: ProductFAQ.jsx rendert die Antworten client-seitig (nicht im
- * initialen HTML) UND ohne FAQPage-Schema -> fuer Crawler/KI doppelt unsichtbar.
+ * initialen HTML) UND ohne FAQPage-Schema -> für Crawler/KI doppelt unsichtbar.
  *
  * LEITPLANKE (verbindlich, identisch zu structured-data.js / FJ1):
  * NUR faktisch saubere Q&A werden ins Schema geschrieben. KEINE unfalsifizierbare
@@ -25,7 +25,7 @@
  *  (2) SICHERHEITSNETZ: ein Deny-Token-Scan gegen das bekannte Eso-/
  *      Wirkmechanismus-Vokabular — faengt ein versehentlich NICHT geflaggtes
  *      Item ab, bevor eine Wirkaussage in strukturierte Daten leckt.
- * Kein sauberes Bestands-Item enthaelt eines dieser Tokens (verifiziert im
+ * Kein sauberes Bestands-Item enthält eines dieser Tokens (verifiziert im
  * Selftest), d.h. das Netz erzeugt keine False-Positives auf dem Ist-Content.
  */
 export const FORBIDDEN_PATTERNS = [
@@ -36,7 +36,7 @@ export const FORBIDDEN_PATTERNS = [
   /entgift/i, // Detox-Schuldumkehr
   /k(ö|oe)rpersensorik/i, // Schuldumkehr ("Empfinden lag an dir")
   /\bdetox\b/i,
-  /koh(ä|ae)rent/i, // "kohaerente Wasserstruktur/Domaene/Zustand" — unbelegter Wirkmechanismus
+  /koh(ä|ae)rent/i, // "kohärente Wasserstruktur/Domaene/Zustand" — unbelegter Wirkmechanismus
   /statisches?\s+feld/i, // Wirkmechanismus als Faktum
   /energetisch/i, // Eso-Buzzword
 ];
@@ -56,7 +56,7 @@ export function normalizeText(s) {
 }
 
 /**
- * Ist ein Q&A-Item faktisch sauber genug fuer das publizierte FAQPage-Schema?
+ * Ist ein Q&A-Item faktisch sauber genug für das publizierte FAQPage-Schema?
  * @param {{q?: string, a?: string, flag?: string}} item
  * @returns {boolean}
  */
@@ -70,8 +70,8 @@ export function isSchemaSafe(item) {
 }
 
 /**
- * Baut ein valides schema.org-FAQPage-JSON-LD-Objekt — AUSSCHLIESSLICH aus den
- * sauberen Items. Gibt `null` zurueck, wenn kein sauberes Item uebrig bleibt
+ * Baut ein valides schema.org-FAQPage-JSON-LD-Objekt — ausschließlich aus den
+ * sauberen Items. Gibt `null` zurück, wenn kein sauberes Item uebrig bleibt
  * (dann emittiert die Komponente bewusst KEIN leeres Schema).
  *
  * @param {Array<{q?: string, a?: string, flag?: string}>} items
@@ -97,9 +97,9 @@ export function buildFaqPageJsonLd(items, opts = {}) {
 }
 
 /**
- * Serialisiert das FAQPage-Schema XSS-sicher fuer die Einbettung in ein
+ * Serialisiert das FAQPage-Schema XSS-sicher für die Einbettung in ein
  * <script type="application/ld+json">-Tag: `<` wird zu `<` maskiert, damit
- * ein etwaiges "</script>" im Text den Tag nicht vorzeitig schliesst.
+ * ein etwaiges "</script>" im Text den Tag nicht vorzeitig schließt.
  *
  * @param {Array<{q?: string, a?: string, flag?: string}>} items
  * @param {{inLanguage?: string}} [opts]

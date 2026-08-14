@@ -8,7 +8,7 @@ import {faqPageJsonLdString} from '~/lib/faq-schema';
  * Crawlbarkeit (FJ2, GEO/AEO): Die Antworten stehen JETZT server-seitig im
  * initialen HTML — sie werden IMMER gerendert und per `hidden`-Attribut nur
  * visuell ein-/ausgeklappt (WAI-ARIA-Accordion-Muster) statt bedingt gemountet.
- * Zusaetzlich wird ein FAQPage-JSON-LD emittiert, ABER NUR fuer faktisch saubere
+ * Zusaetzlich wird ein FAQPage-JSON-LD emittiert, ABER NUR für faktisch saubere
  * Q&A-Items (faqPageJsonLdString filtert geflaggte + eso-/wirkmechanismus-
  * behaftete Items heraus — Content-Bereinigung = Christian-Gate).
  *
