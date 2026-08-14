@@ -5,7 +5,14 @@ import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
-import {ReviewCount} from './reusables/ReviewCount';
+import {ShopSwitch} from '~/components/ShopSwitch';
+import {useGoogleRating} from '~/lib/googleRating';
+import {
+  GoogleRezensionenPopup,
+  findeRezensionsZiel,
+  scrolleZuRezensionen,
+  GOOGLE_REZENSIONEN_ANKER_ID,
+} from '~/components/reusables/GoogleRezensionenBereich';
 
 const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
 
@@ -83,6 +90,27 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     pathname === '/products/crystal-cacao-create' ||
     pathname === '/products/crystal-cacao-awake';
 
+  // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
+  // schwarzen Banner scrollt zum Google-Rezensionsbereich DIESER Seite;
+  // trägt die Seite keinen (findeRezensionsZiel=null), öffnet das
+  // Fallback-Popup mit genau demselben Bereich. Der Link-href bleibt als
+  // No-JS-Fallback erhalten (PDP + Anker). Vorher war der Klick auf der
+  // PDP selbst ein No-Op (Link auf dieselbe Route, Christian-Bug 2026-07-31).
+  const [rezensionenPopupOffen, setRezensionenPopupOffen] = useState(false);
+  const onRezensionenKlick = (e) => {
+    e.preventDefault();
+    const ziel = findeRezensionsZiel();
+    if (ziel) {
+      // Responsive-Repair 2026-08-04: scrollIntoView({block:'start'}) legt die
+      // Sektionsoberkante auf die VIEWPORT-Oberkante und ignoriert damit den
+      // fixen Kopf. scrolleZuRezensionen misst die Kopfhöhe live (Mobil-Kopf
+      // ist niedriger als Desktop) und zieht sie ab — kein Doppel-Offset.
+      scrolleZuRezensionen(ziel);
+    } else {
+      setRezensionenPopupOffen(true);
+    }
+  };
+
   return (
     <header
       className={`header-wrapper ${hidden ? 'header--hidden' : ''}`}
@@ -92,17 +120,36 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         announcement={
           isCacaoPage ? (
             <p>
-              5.0/5.0 ⭐⭐⭐⭐⭐ - Über 1.000 aktive Nutzer - jetzt mit
-              Zufriedenheitsgarantie!
+              <span className="banner-line">
+                5.0/5.0 ⭐⭐⭐⭐⭐ - Über 1.000 aktive Nutzer
+              </span>
+              <span className="banner-offer-sep"> - </span>
+              <span className="banner-line">
+                jetzt mit Zufriedenheitsgarantie!
+              </span>
             </p>
           ) : (
             <p>
-              <ReviewCount /> - Über 14.000 zufriedene Kunden - Jetzt 20 Tage
-              risikofrei erleben!
+              <span className="banner-line">
+                <GoogleSterneBadge /> - Über 14.000 zufriedene Kunden
+              </span>
+              <span className="banner-offer-sep"> - </span>
+              <span className="banner-line">
+                Jetzt 20 Tage risikofrei erleben!
+              </span>
             </p>
           )
         }
-        link={isCacaoPage ? '/pages/crystal-cacao' : '/products/qione-2-pro'}
+        link={
+          isCacaoPage
+            ? '/pages/crystal-cacao'
+            : `/products/qione-2-pro#${GOOGLE_REZENSIONEN_ANKER_ID}`
+        }
+        onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
+      />
+      <GoogleRezensionenPopup
+        offen={rezensionenPopupOffen}
+        onSchliessen={() => setRezensionenPopupOffen(false)}
       />
 
       <div
@@ -427,7 +474,12 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
 
       {item.title === "Online Kurse" && (
         <div className="nav-styling-wrapper">
-          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296_400x.png?v=1645756351' />
+          {/* Ohne den `_400x`-Zusatz: dieselbe Aufnahme in ihrer vollen
+              Ablagegroesse (526x296 statt 400x225). Bei 285 CSS-px Anzeige und
+              dpr>=2 trugen 400 Quellpixel die Flaeche nicht (Gate 12,
+              bild-aufloesung), 526 tragen sie. Nachgemessen 2026-08-09: beide
+              URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung. */}
+          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
         </div>
       )}
 
@@ -588,8 +640,68 @@ function HeaderCtas({isLoggedIn, cart}) {
   return (
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
+      <ShopSwitch aktiv="de" />
+      <AccountToggle isLoggedIn={isLoggedIn} />
       <CartToggle cart={cart} />
     </nav>
+  );
+}
+
+/**
+ * Kunden-Login sichtbar machen. Die Account-Schicht (app/routes/account*.jsx +
+ * GraphQL customer-account) existiert vollständig; root.jsx lädt isLoggedIn
+ * und PageLayout reicht es bis hierher durch — bis heute wurde die Prop nur
+ * ignoriert. Hier wird ausschließlich der Einstieg gerendert, nichts gebaut.
+ *
+ * isLoggedIn ist ein Promise: bis es auflöst, zeigt der Fallback den
+ * Login-Weg. Das ist der sichere Ausgang — ein nicht eingeloggter Besucher
+ * gehört ohnehin dorthin, ein eingeloggter wird von /account/login zum
+ * Konto weitergeleitet.
+ *
+ * @param {{isLoggedIn: Promise<boolean> | boolean}}
+ */
+function AccountToggle({isLoggedIn}) {
+  return (
+    <Suspense fallback={<AccountLink eingeloggt={false} />}>
+      <Await
+        resolve={isLoggedIn}
+        errorElement={<AccountLink eingeloggt={false} />}
+      >
+        {(eingeloggt) => <AccountLink eingeloggt={Boolean(eingeloggt)} />}
+      </Await>
+    </Suspense>
+  );
+}
+
+/**
+ * @param {{eingeloggt: boolean}}
+ */
+function AccountLink({eingeloggt}) {
+  return (
+    <NavLink
+      className="header-account"
+      prefetch="intent"
+      to={eingeloggt ? '/account' : '/account/login'}
+      aria-label={eingeloggt ? 'Mein Konto' : 'Anmelden'}
+      title={eingeloggt ? 'Mein Konto' : 'Anmelden'}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </NavLink>
   );
 }
 
@@ -671,7 +783,20 @@ function CartToggle({cart}) {
   );
 }
 
-function AnnouncementBanner({announcement, link, scrolled}) {
+/* Sterne-Zeile im Banner aus der KANONISCHEN Google-Quelle (useGoogleRating:
+   Places-API, server-gecacht, Fallback 4,8/429) statt des frueheren
+   Client-Fetches gegen die vercel-serpapi-App (Fallback dort 4.7 — inkonsistent
+   zum Rezensionsbereich). Optik unveraendert (.ReviewCount-Bestand). */
+function GoogleSterneBadge() {
+  const g = useGoogleRating();
+  return (
+    <span className="ReviewCount">
+      {g.komma} {'★'.repeat(5)}
+    </span>
+  );
+}
+
+function AnnouncementBanner({announcement, link, scrolled, onAnnouncementClick}) {
   return (
     <div
       className="Header-AnnouncementBanner"
@@ -682,7 +807,7 @@ function AnnouncementBanner({announcement, link, scrolled}) {
         transition: 'max-height 0.8s ease, opacity 0.8s ease',
       }}
     >
-      <Link prefetch="intent" to={link}>
+      <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
       </Link>
     </div>

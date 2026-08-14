@@ -6,6 +6,7 @@ import {HeroBannerParallax} from '~/components/reusables/HeroBannerParallaxButto
 import {ZellDiagramme} from '../ZellDiagramme';
 import {UpsellLineUp} from '~/components/UpsellLineUp';
 import { ImgixVideo } from '~/components/reusables/ImgixVideo';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 export function QiOne() {
   return (
     <div className="Detailseite">
@@ -81,6 +82,9 @@ export function QiOne() {
           </>
         }
       />
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+      <GoogleRezensionenBereich />
       <UpsellLineUp />
     </div>
   );

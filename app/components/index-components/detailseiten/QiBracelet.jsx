@@ -9,6 +9,7 @@ import { ReviewCount } from '~/components/reusables/ReviewCount';
 import { Studien } from '~/components/reusables/Studien';
 import { YoutubeIframe } from '~/components/reusables/YoutubeIframe';
 import { HeroBanner } from '~/components/reusables/HeroBannerParallax';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 export function QiBracelet() {
   return (
     <div className="Detailseite">
@@ -69,6 +70,9 @@ export function QiBracelet() {
           linkStyle={"secondary"}
           linkText={"Jetzt kostenlos starten"}
         />
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+      <GoogleRezensionenBereich />
       <UpsellLineUp />
     </div>
   );
@@ -275,7 +279,7 @@ function HerobannerBracelet(){
                     <div className="flex-container flex-row small--flex-column flex-align-start flex-justify-start g-10p mt-2">
                         <Link prefetch="intent" to="/products/qibracelet" className="btn--primary">Jetzt kaufen</Link>
                     </div>
-                    <p className="micro-text mt-1"><strong>20 Tage testen · Gratis Versand · 0 % Raten mit PayPal und Klarna</strong></p>
+                    <p className="micro-text mt-1"><strong>20 Tage testen · Gratis Versand innerhalb Deutschlands · 0 % Raten mit PayPal und Klarna</strong></p>
                 </div>
                 <div className="featured-image">
                     <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiBracelet_mit_Siegel_1a200b5e-85ca-4b6f-a176-42af66701b6f.webp?v=1673884874" alt="QiOne 2 Pro" />

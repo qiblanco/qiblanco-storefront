@@ -44,13 +44,68 @@ const TRACKING_COOKIE_NAMES = new Set([
   // der eigene qpx-Pixel setzt _qpx_anon (365-Tage-Cookie, opakes uuid). Ihn als
   // Order-note_attribute mitzufuehren schliesst die Session->Kauf-Luecke: der
   // own-source-Stitch (own_source.py, gated OS_STITCH_SESSION) verbindet den Kauf
-  // deterministisch mit der Ad-Klick-Session ueber identity_edge(anon) — auch bei
+  // deterministisch mit der Ad-Klick-Session über identity_edge(anon) — auch bei
   // Multi-Session/Return-Visit ohne fbclid in der URL. Rein first-party/intern,
   // NICHT an Meta/Google gesendet; Capture bleibt consent-gated (wie fbc/fbp).
   '_qpx_anon',
 ]);
 
 const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
+
+// Query-Keys, die nie in ein Order-note_attribute gehören (Identitaet,
+// Zugangsdaten, Kontakt). Bewusst eine DENYLIST, keine Allowlist:
+// die Backend-Konsumenten der `landing_page`-Query sitzen in mehreren fremden
+// Modulen (hyros-eigenbau own_source `_landing_params` + herkunft,
+// capi-rueckspeisung order_to_event, google-rueckspeisung click_conversions,
+// funnel-substrat sources) und lesen dort u.a. `sca_ref`, `gad_campaignid` und
+// `source` — Keys, die in TRACKING_PARAM_NAMES bewusst NICHT stehen und darum
+// ausschließlich über diese Query erreichbar sind. Eine Allowlist wäre hier
+// eine handgepflegte Spiegelliste fremder Parser ohne Durchsetzer: ein
+// übersehener Key = stiller Attributionsverlust. Bei der Denylist ist ein
+// übersehener Key = unveränderter Bestand. Die Fehlerrichtung entscheidet.
+const SENSITIVE_QUERY_PARAM_NAMES = new Set([
+  'email',
+  'e_mail',
+  'mail',
+  'user_email',
+  'customer_email',
+  'phone',
+  'telephone',
+  'mobile',
+  'first_name',
+  'firstname',
+  'last_name',
+  'lastname',
+  'fullname',
+  'address',
+  'street',
+  'postal_code',
+  'birthday',
+  'birthdate',
+  'dob',
+  'password',
+  'passwd',
+  'pwd',
+  'secret',
+  'token',
+  'access_token',
+  'id_token',
+  'refresh_token',
+  'auth',
+  'authorization',
+  'api_key',
+  'apikey',
+  'otp',
+  'session',
+  'session_id',
+  'sessionid',
+  'sid',
+  'iban',
+  'card_number',
+  'cvv',
+  'cvc',
+  'ssn',
+]);
 
 /**
  * Appends only allowlisted ad attribution values to a checkout URL.
@@ -149,15 +204,47 @@ export function buildAttributionCartAttributes({
     addCartAttribute(attributes, key, value);
   }
 
-  if (!attributes.length) return attributes;
+  // Job 20260809-dach-tracking-schluessel-verlust (2026-08-09): früher stand
+  // hier `if (!attributes.length) return attributes;` VOR dem Marker. Ein
+  // signal-loser Besucher verließ die Funktion damit, bevor irgendetwas
+  // geschrieben wurde — gemessen trugen 41,7 % der DACH-Orders GAR KEIN
+  // note_attribute. Folge: "Order lief nicht über die instrumentierte Kasse"
+  // war von "Besucher hatte kein Ad-Signal" nicht mehr unterscheidbar, und
+  // Gate B von `shop-ankunft` meldete darauf falsch-grün.
+  //
+  // Der US-Zwilling (us-qiblanco-2024, Commit afa642c, 2026-08-08) hat exakt
+  // diesen Frühausstieg geschlossen; hier dieselbe Bauform. ZWEI Hälften,
+  // beide nötig:
+  //   1. Der Marker wird UNBEDINGT geschrieben (auch ohne jedes Signal).
+  //   2. Der Marker zählt NICHT als Signal — sonst würden landing_page und
+  //      referrer plötzlich für jeden organischen Besucher mitgeschrieben,
+  //      also eine stille Ausweitung der Datenmenge statt eines Fixes.
+  // Regression: test/checkout-tracking-signallos.test.mjs
+  const hasTrackingSignal = attributes.length > 0;
 
-  addCartAttribute(attributes, 'landing_page', storedAttribution?.href);
-  addCartAttribute(attributes, 'referrer', storedAttribution?.referrer);
-  addCartAttribute(
-    attributes,
-    'attribution_saved_at',
-    storedAttribution?.savedAt,
-  );
+  if (hasTrackingSignal) {
+    // Job 20260809-fj1 (2026-08-10): `landing_page`/`referrer` trugen bisher den
+    // VOLLEN href inklusive Query und Fragment in ein Order-note_attribute. Ein
+    // Query-String kann personenbeziehbar sein (`?email=`, `?token=`); er wird
+    // deshalb vor dem Schreiben bereinigt. Gerettet aus PR #163, der wegen des
+    // hiesigen `hasTrackingSignal`-Gates (#174) sonst nicht mehr mergebar war.
+    addCartAttribute(
+      attributes,
+      'landing_page',
+      sanitizeAttributionUrl(storedAttribution?.href),
+    );
+    addCartAttribute(
+      attributes,
+      'referrer',
+      sanitizeAttributionUrl(storedAttribution?.referrer),
+    );
+    addCartAttribute(
+      attributes,
+      'attribution_saved_at',
+      storedAttribution?.savedAt,
+    );
+  }
+
   addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
 
   return attributes;
@@ -283,6 +370,43 @@ function addCartAttribute(attributes, key, value) {
     key,
     value: truncateCartAttributeValue(value),
   });
+}
+
+/**
+ * Entfernt Identitäts-/Zugangs-Query-Keys und den Fragment-Teil aus einer URL,
+ * bevor sie als `landing_page`/`referrer` in ein Order-note_attribute geht.
+ *
+ * Gibt den Eingabe-String BYTE-IDENTISCH zurück, wenn nichts zu entfernen war —
+ * so bleibt der Bestandswert (den fremde Parser per `urlsplit().query` lesen)
+ * frei von URL-Normalisierungs-Nebenwirkungen.
+ *
+ * @param {string | null | undefined} rawUrl
+ * @returns {string} bereinigte URL oder '' wenn unbrauchbar
+ */
+function sanitizeAttributionUrl(rawUrl) {
+  if (typeof rawUrl !== 'string' || !rawUrl) return '';
+
+  let url;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    return '';
+  }
+
+  // Nur echte Web-URLs (schuetzt vor javascript:/data:/android-app: im referrer).
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return '';
+
+  let removed = false;
+  for (const name of [...url.searchParams.keys()]) {
+    if (!SENSITIVE_QUERY_PARAM_NAMES.has(name.toLowerCase())) continue;
+    url.searchParams.delete(name);
+    removed = true;
+  }
+
+  if (!removed && !url.hash) return rawUrl;
+
+  url.hash = '';
+  return url.toString();
 }
 
 /**

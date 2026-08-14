@@ -1,15 +1,14 @@
 import * as React from 'react';
-import {Link} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
-import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {StudienSlider} from '~/components/reusables/StudienSlider';
 import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 
 /* ════════════════════════════════════════════════════════════
@@ -1067,93 +1066,10 @@ function InfoSliderSection() {
   );
 }
 
-/* ───────── Studien-Slider (Elina-Layout: Titel oben links, Quelle unten links) ───────── */
-const STUDIEN = [
-  {
-    title: 'Wissenschaftliche Publikation an Immunzellen',
-    source: 'Japan Journal of Medicine · 30. April 2021',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1667512705',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510',
-  },
-  {
-    title: 'Wissenschaftliche Publikation an Darmzellen',
-    source: 'Applied Cell Biology Journal, 2021',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1667513844',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_1.png?v=1732276143',
-  },
-  {
-    title: 'Wissenschaftliche Publikation zum oxidativen Stress',
-    source: 'Applied Cell Biology Journal · 12. Januar 2024',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229',
-  },
-  {
-    title: 'Forschungsartikel zur Nutzererfahrung',
-    source: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell-Biology-Cover-Remake-Seite-4.webp?v=1717500844',
-  },
-];
-
-function StudienSlider() {
-  const trackRef = React.useRef(null);
-  const scrollByCard = (dir) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.querySelector('.ghx-studie');
-    const step = card ? card.offsetWidth + 24 : 340;
-    track.scrollBy({left: dir * step, behavior: 'smooth'});
-  };
-  const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
-  return (
-    <div className="ghx-studien">
-      <div
-        className={`ghx-studien__track${isDragging ? ' is-dragging' : ''}`}
-        ref={trackRef}
-        {...handlers}
-      >
-        {STUDIEN.map((s) => (
-          <article className="ghx-studie" key={s.title}>
-            <h3 className="ghx-studie__title">{s.title}</h3>
-            <a
-              className="ghx-studie__preview"
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src={s.img} alt={`Studien-Vorschau: ${s.title}`} loading="lazy" />
-            </a>
-            <p className="ghx-studie__source">{s.source}</p>
-          </article>
-        ))}
-      </div>
-      <div className="ghx-studien__nav">
-        <button
-          type="button"
-          className="ghx-studien__arrow"
-          onClick={() => scrollByCard(-1)}
-          aria-label="Vorherige Studie"
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          className="ghx-studien__arrow"
-          onClick={() => scrollByCard(1)}
-          aria-label="Nächste Studie"
-        >
-          →
-        </button>
-      </div>
-      <p className="ghx-studien__footnote">
-        <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
-      </p>
-      <Link prefetch="intent" to="/pages/studien" className="btn--secondary m-center">
-        Zelluntersuchungen ansehen
-      </Link>
-    </div>
-  );
-}
+/* Studien-Kachel-Ansicht: Definition + Studien-Daten liegen seit 2026-07-27 in
+   ~/components/reusables/StudienSlider (geteilt mit /pages/qione-2-pro-2x).
+   Das zugehoerige `.ghx-studien*`-CSS wanderte nach app/styles/studien-slider.css
+   und wird von dieser Route jetzt explizit geladen. */
 
 /* ───────── Wissenschaft / Studies — Studien im Slider ───────── */
 function ScienceSection() {

@@ -16,16 +16,14 @@ import {useState} from 'react';
 import Awake from '~/components/product-pages/Awake';
 import LazyImage from '~/components/reusables/LazyImage';
 
+import {canonicalLink} from '~/lib/seo';
 /** 
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/crystal-cacao-awake`,
-    },
+    canonicalLink('/products/crystal-cacao-awake'),
   ];
 };
 
@@ -171,7 +169,7 @@ function CacaoBenefitList() {
   return (
     <div className="CacaoBenefitList">
       <ul>
-        <li>✅ Kostenloser Versand ab 99 €</li>
+        <li>✅ Kostenloser Versand ab 99 € innerhalb Deutschlands</li>
         <li>🚚 Lieferung in 1–3 Werktagen</li>
         <li>🔄 100 % Geld-zurück-Garantie bei Unzufriedenheit</li>
         <li>🔬 Laboranalytisch geprüft (Dartsch Institut)</li>

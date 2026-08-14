@@ -10,6 +10,7 @@ import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
+import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 
 /*
  * Landingpage /pages/tiefer-schlaf — DESIGN v3 „Die ruhige Nacht" + C-REFOKUS
@@ -75,7 +76,7 @@ const preisWert = (p) =>
 const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
 const getCompareAtMoney = (p) => {
   const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return v?.compareAtPrice || null;
+  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
 };
 // Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag)
 const compareLabelVon = (p) => {
@@ -590,7 +591,7 @@ function GuaranteeSection() {
     {
       num: '03',
       title: 'Made in Germany',
-      body: '100 % in Deutschland entwickelt und gefertigt, aus hochwertigsten Materialien. Inkl. Käuferschutz und kostenlosem Versand.',
+      body: '100 % in Deutschland entwickelt und gefertigt, aus hochwertigsten Materialien. Inkl. Käuferschutz und kostenlosem Versand innerhalb Deutschlands.',
     },
   ];
   return (
@@ -636,7 +637,7 @@ function ProdukteSection() {
       />
       <p className="lp-vp-pricing__fineprint">
         Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna ·
-        kostenloser Versand · Käuferschutz
+        kostenloser Versand innerhalb Deutschlands · Käuferschutz
       </p>
     </div>
   );
@@ -730,7 +731,7 @@ function FinalCTA() {
           </a>
           <ul className="lp-vp-final-cta__trust">
             <li>0 % Finanzierung über Klarna und PayPal</li>
-            <li>Kostenloser Versand</li>
+            <li>Kostenloser Versand innerhalb Deutschlands</li>
             <li>Käuferschutz</li>
           </ul>
         </div>

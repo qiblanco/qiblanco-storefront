@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {redirect} from '@shopify/remix-oxygen';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -13,8 +14,14 @@ import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
-import {getTenYearsDealByHandle} from '~/data/ten-years-deals';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
+import {
+  getTenYearsDealByHandle,
+  TEN_YEARS_SALE_RETIRED,
+} from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
+
+import {canonicalLink} from '~/lib/seo';
 
 const HIDDEN_BUNDLE_PRODUCT_HANDLES = new Set([
   'bundle-fundament',
@@ -48,10 +55,7 @@ export const meta = ({data}) => {
 
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
-    },
+    canonicalLink(`/products/${data?.product.handle}`),
   ];
 };
 
@@ -62,6 +66,34 @@ export async function loader(args) {
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
   if (campaignDeal) {
+    /*
+     * STILLGELEGTER JUBILÄUMS-SALE (Schalter: app/data/ten-years-deals.js).
+     * Diese Deal-Handles rendern sonst die Aktionsseite mit den Sale-Preisen.
+     * Stillgelegt liefern sie 404 — BEWUSST statt eines Durchfallens in die
+     * normale Produkt-Query: die Handles tragen Sale-Titel („Sale: …",
+     * „Black Friday Sale: …"), ein Durchfallen würde die Aktion also weiter
+     * bewerben statt sie zu beenden. Der 301 auf die ebenfalls stillgelegte
+     * Campaign-PDP entfällt damit gewollt mit. Das 404 erlaubt zugleich, dass
+     * eine in Shopify gepflegte Weiterleitung greift (storefrontRedirect).
+     */
+    if (TEN_YEARS_SALE_RETIRED) {
+      throw new Response(null, {status: 404});
+    }
+    // Deal-Handles kurzschließen die Produkt-Query -> nie 404 -> der
+    // Shopify-URL-Redirect (storefrontRedirect, greift NUR bei 404) kann
+    // für Alt-Handles NIE feuern. Trägt der Deal ein redirectTo, ist die
+    // Alt-URL dauerhaft umgezogen: 301 mit Query-Erhalt (fbclid/gclid/UTM
+    // überleben die Weiterleitung; Params aus redirectTo gewinnen).
+    if (campaignDeal.redirectTo) {
+      const incoming = new URL(args.request.url);
+      const target = new URL(campaignDeal.redirectTo, incoming.origin);
+      incoming.searchParams.forEach((value, key) => {
+        if (!target.searchParams.has(key)) {
+          target.searchParams.set(key, value);
+        }
+      });
+      throw redirect(target.pathname + target.search, 301);
+    }
     return {campaignDeal, product: null};
   }
 
@@ -162,26 +194,38 @@ function StandardProduct({product}) {
 
   return (
     <>
+    {/* data-section-Anker: instrumentieren die Standard-PDP (products.$handle,
+        z.B. /products/qione) wie Homepage/LPs für den qpx-Sektions-Tracker
+        (behavior_section). Drei DISJUNKTE Zonen (kein Verschachteln — sonst
+        zählt Dwell doppelt und Description-Klicks stanzen ein Loch in die
+        Buybox): pdp-gallery (Bilder), pdp-description (Produkttext), pdp-buybox
+        (Preis + Kauf/ATC). Reine Attribute bzw. EIN Wrapper-Div in normalem
+        Blockfluss (.product-main ist kein Flex/Grid mit gap/>child) — kein
+        Layout-Effekt. Erfasst beim HARD-LOAD (Ad-Traffic landet hart) analog
+        zum bestehenden Tracker; SPA-navigierte PDPs bleiben ungemessen (Eigen-
+        schaft des Trackers, s. RESULT). Job 20260723-commerce-microfunnel. */}
     <div className="product">
-      <div className="ProductImages">
+      <div className="ProductImages" data-section="pdp-gallery">
         <ProductImage image={selectedVariant?.image} />
         <ProductImageList images={product?.images} />
       </div>
       <div className="product-main">
         <h1>{title}</h1>
         <div className="product-rating mt-2"><span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span></div>
-        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
+        <div data-section="pdp-buybox">
+          <ProductPrice
+            price={selectedVariant?.price}
+            compareAtPrice={selectedVariant?.compareAtPrice}
+          />
+          <ProductForm
+            productOptions={productOptions}
+            selectedVariant={selectedVariant}
+          />
+        </div>
       </div>
       <Analytics.ProductView
         data={{
@@ -200,7 +244,12 @@ function StandardProduct({product}) {
       />
     </div>
 
-    
+    {/* Google-Rezensionsbereich sitewide auf Produktseiten (Job
+        20260731-google-rezensionen): auch die generischen PDPs tragen die
+        echten Google-Bewertungen (Live-Reputon) + Anker für den
+        4,8-Banner-Klick. Marken-Bewertung (Qi Blanco), daher produkt-
+        unabhängig korrekt. */}
+    <GoogleRezensionenBereich />
     </>
   );
 }

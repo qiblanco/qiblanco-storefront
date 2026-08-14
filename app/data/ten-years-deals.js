@@ -1,5 +1,54 @@
 export const TEN_YEARS_SALE_PATH = '/pages/10-jahre-sale';
 
+/*
+ * STILLLEGUNG DES JUBILÄUMS-SALES (Christian-Freigabe 2026-08-05, Job
+ * jsale-offline-rabatt-deaktiv-20260805). Der Sale ist beendet: der Automatic
+ * Discount „2er-Set QiOne 2 Pro" (166,40 € netto aufs Paar) ist seit dem
+ * 30.07.2026 EXPIRED. Die Kampagnen-Flächen bewarben den Set-Preis 1.660,50 €
+ * aber unverändert weiter, während der Warenkorb den Rabatt nicht mehr zog —
+ * Differenz 198,02 € brutto je Kauf, laufender Kundenschaden.
+ *
+ * BEWUSST KEIN LÖSCHEN: Routen, Komponenten, Styles und Assets bleiben
+ * unangetastet im Repo — das Know-how bleibt für eine Wiederverwendung
+ * erhalten. Stillgelegt wird ausschließlich die öffentliche ERREICHBARKEIT;
+ * das ist das Hydrogen-Äquivalent zu „unpublished/Entwurf".
+ *
+ * EIN HEBEL, EIN RÜCKWEG: TEN_YEARS_SALE_RETIRED = false stellt alle Flächen
+ * unverändert wieder her — kein weiterer Handgriff nötig. Der Rabatt selbst
+ * liegt in Shopify und ist von hier aus NICHT schaltbar (fehlende Scopes).
+ */
+export const TEN_YEARS_SALE_RETIRED = true;
+
+/*
+ * Die dedizierten JSale-SEITEN-Routen. Sie werden am Server-Entry abgefangen
+ * (app/entry.server.jsx) statt in den Route-Dateien selbst: so bleibt jede
+ * Route-Datei byte-identisch erhalten, und der Guard schlägt zusätzlich ein
+ * etwaiges gleichnamiges Shopify-Admin-Page-Objekt — Code-Route und Admin-Page
+ * teilen sich den Handle-Raum (siehe Kopf von pages.qione-2-pro-2x.jsx), und
+ * ein Admin-Page-Objekt wäre von hier aus mangels Scopes nicht abschaltbar.
+ */
+export const TEN_YEARS_RETIRED_PAGE_PATHS = [
+  '/pages/10-jahre-sale',
+  '/pages/10-jahre-pre-access',
+  '/pages/anmeldung-erfolgreich-pre-access',
+  '/pages/qione-2-pro-2x',
+];
+
+/**
+ * true, wenn dieser Pfad eine stillgelegte JSale-Seite ist. Normalisiert
+ * Groß-/Kleinschreibung und einen abschließenden Slash (beides erreicht
+ * dieselbe Route), vergleicht sonst EXAKT — kein Präfix-Match, damit
+ * Nachbarpfade wie /pages/qione-2-pro-details oder /pages/qione-2-pro nie
+ * mitgerissen werden.
+ * @param {string} pathname
+ */
+export function istStillgelegteJSaleSeite(pathname) {
+  if (!TEN_YEARS_SALE_RETIRED || typeof pathname !== 'string') return false;
+  let pfad = pathname.toLowerCase();
+  if (pfad.length > 1 && pfad.endsWith('/')) pfad = pfad.slice(0, -1);
+  return TEN_YEARS_RETIRED_PAGE_PATHS.includes(pfad);
+}
+
 export function getTenYearsCountdownRemaining(now = new Date()) {
   const current = now instanceof Date ? now : new Date(now);
   const nextReset = new Date(current);
@@ -25,7 +74,9 @@ export const TEN_YEARS_DEALS = [
     key: 'qione-2-pro-duo',
     handle: 'jhsdhze783',
     title: '2x QiOne 2 Pro',
-    productTitle: 'Black Friday Sale: 2x QiOne® 2 Pro',
+    // Inhalts-Fix EL-20260724-9b18d2ba: BF24-Resttitel ersetzt — die Kampagne
+    // läuft als 10 Jahre Jubiläums Sale (Titel-Wortlaut von Elina).
+    productTitle: '2x QiOne® 2 Pro — 10 Jahre Jubiläums Sale',
     displayTitle: '2x QiOne® 2 Pro',
     eyebrow: 'Bundle-Angebot',
     shortCopy:
@@ -39,13 +90,30 @@ export const TEN_YEARS_DEALS = [
     productImage: checkoutCdn(
       '/cdn/shop/files/2xQiOne2Profreistehend_1.png?v=1731614283',
     ),
-    path: '/products/jhsdhze783?el=JSale2026',
-    listingHref: '/products/jhsdhze783?el=JSale2026',
+    // Repoint (EL-20260722-04de90b3, Christian-Freigabe 24.07.2026):
+    // Campaign-PDP statt Preis-Klon — Set-Preis kommt vom Automatic Discount.
+    // handle bleibt 'jhsdhze783' (getTenYearsDealByHandle).
+    path: '/pages/qione-2-pro-2x?el=JSale2026',
+    listingHref: '/pages/qione-2-pro-2x?el=JSale2026',
+    // Alt-URL /products/jhsdhze783 → Campaign-PDP: als Code-301 im Loader
+    // (products.$handle.jsx), weil die Deal-Route nie 404 liefert und der
+    // Shopify-URL-Redirect (storefrontRedirect greift NUR bei 404) hier
+    // deshalb nie feuern kann (Inhalts-Fix EL-20260724-9b18d2ba).
+    redirectTo: '/pages/qione-2-pro-2x?el=JSale2026',
+    // Kauf-Referenz = das EINE kanonische Produkt (kein Klon): 2× qione-2-pro,
+    // der Set-Preis entsteht am Warenkorb (Automatic Discount 166,40 € netto
+    // aufs Paar). Angezeigte Preise unten bleiben die SSoT-Set-Zahlen.
+    cartProductHandle: 'qione-2-pro',
+    cartProductTitle: 'QiOne® 2 Pro',
+    cartQuantity: 2,
     theme: 'frequency',
     variants: [
       {
         id: '53739505058060',
         title: 'Default Title',
+        // Kanonische Variante QiOne® 2 Pro (Admin-verifiziert 2026-07-24):
+        // 2 × 913,45 netto − 166,40 Discount = 1.660,50 netto = Set-Preis.
+        cartVariantId: '39680087326790',
         price: 1660.5,
         compareAtPrice: 2476,
       },

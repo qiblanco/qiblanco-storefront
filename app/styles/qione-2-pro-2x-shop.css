@@ -1,0 +1,99 @@
+/*
+ * Campaign-PDP /pages/qione-2-pro-2x — 2er-Set-Variante. Erbt das komplette
+ * Styling aus den GLOBALEN Shop-Stylesheets (app.css: .product/.Bestseller-
+ * Price; redesign-3themen.css: DreiThemenBand) — identisch zur organischen PDP
+ * und zu /pages/qione-2-pro. Diese Datei trägt NUR die 2er-Set-Kampagnen-Deltas
+ * im eigenen Wrapper-Scope `.shopq2x`.
+ *
+ * Kopplung: Diese Datei ist bewusst schwesterlich zu qione-2-pro-shop.css
+ * (Scope .shopq2). Bei einer Änderung am Campaign-PDP-Grundgerüst beide Dateien
+ * mit-prüfen (Pflegehinweis, Konzept „Offene Flanken").
+ */
+
+/* CTA-Anker: Buy-Box darf beim Sprung nicht unter dem Sticky-Header liegen. */
+.shopq2x #shopq2x-buybox {
+  scroll-margin-top: 96px;
+}
+
+/* Luft zwischen Buy-Box und DreiThemenBand (die PDP hat hier die LogoBar). */
+.shopq2x .rd3-band {
+  margin-top: 24px;
+}
+
+/* Kampagnen-Eyebrow „2er-Set Aktion" — Scent-Band über der Buy-Box. */
+.shopq2x-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 16px auto 0;
+  padding: 12px 20px;
+}
+
+.shopq2x-eyebrow__tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--color-gold, #c9a227);
+  color: #fff;
+}
+
+.shopq2x-eyebrow p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* ================================================================
+ * DESIGN-TOKEN-LAYER (Beauty-Gate 9, Job 20260724-elina-bf-auftraege-
+ * ausfuehren-v2): seiten-scoped Harmonisierung nach Design-Meister-
+ * Rubrik (Referenz-Rezept .lp-a3 / tiefer-schlaf-v3). NUR .shopq2x —
+ * Shared-Komponenten bleiben fuer PDP + /pages/qione-2-pro byte-identisch.
+ * Regeln: EIN H2-Stil (Groesse/Gewicht/Ausrichtung), Typo-Skala ohne
+ * Beinahe-Duplikate, Sektions-Takt auf 8px-Grid (32/48/96), Lesebreite
+ * <=72ch, Hintergrund-Welten <=4 (Navy->Neutraldunkel, Widget-Grau->
+ * Near-White). !important nur gegen Tailwind-!-Utilities der geteilten
+ * Sektionen — Wirkung strikt im Seiten-Scope.
+ * ================================================================ */
+
+/* EIN H2-Stil je Seite: Groesse x Gewicht x Ausrichtung */
+.shopq2x h2 {
+  font-size: clamp(26px, 2.5vw, 36px) !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+}
+
+/* Typo-Skala: Beinahe-Duplikate auf Token ziehen (13/14/16) */
+.shopq2x .rd3-band__label { font-size: 13px; }
+.shopq2x .rd3-band__chip-titel,
+.shopq2x .rd3-band__chip-zahl { font-size: 14px; }
+.shopq2x .google-rating-badge__powered { font-size: 14px; }
+.shopq2x-eyebrow__tag { font-size: 13px; }
+.shopq2x-eyebrow p { font-size: 16px; }
+
+/* Lesebreite: lange Bloecke auf ~72ch begrenzen (zentriert gehalten) */
+.shopq2x p { max-width: 72ch; margin-inline: auto; }
+
+/* Sektions-Takt: 3 Stufen (32 / 48 / 96) auf dem 8px-Grid */
+.shopq2x-eyebrow { padding-top: 16px; }
+.shopq2x .rd3-band { padding-top: 24px; }
+.shopq2x [data-section='shopq2x-google-reviews'] {
+  margin-top: 48px !important;
+  margin-bottom: 48px !important;
+}
+.shopq2x [data-section='shopq2x-gitterchip-video'] {
+  margin-top: 96px !important;
+  margin-bottom: 96px !important;
+}
+
+/* Hintergrund-Welten: Navy-Videowrapper -> Neutraldunkel (Cluster mit
+ * Schwarz), Widget-Hellgrau -> Near-White (Cluster mit Weiss) */
+.shopq2x .ScrollScrubVideo,
+.shopq2x .ScrollMikroskopvideo { background-color: rgb(5, 5, 8); }
+.shopq2x [class*='f3f6f9'] { background-color: #fbfcfd !important; }
+.shopq2x .reputon-top-part { background-color: #fbfcfd !important; }

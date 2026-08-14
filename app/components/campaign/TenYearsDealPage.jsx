@@ -210,7 +210,7 @@ const SHIPPING_HTML =
   '<p><strong>Kostenloser Versand</strong> innerhalb Deutschlands</p><p>In 2-3 Tagen bei Dir</p><p>100% Versicherter Versand</p>';
 
 const CACAO_SHIPPING_HTML =
-  '<p>✅ Kostenloser Versand ab 99 €<br/>🚚 Lieferung in 1-3 Werktagen<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
+  '<p>✅ Kostenloser Versand ab 99 € innerhalb Deutschlands<br/>🚚 Lieferung in 1-3 Werktagen<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
 
 function toGrossPrice(value, deal) {
   const numberValue = Number(value);
@@ -248,7 +248,29 @@ function getTemplateCopy(deal) {
   };
 }
 
-export function TenYearsDealPage({deal}) {
+/*
+ * `sektionen` (Default {} = jede Deal-Seite rendert unveraendert): Slot-Karte
+ * für die seiten-spezifische Sektions-Wahl, Muster wie QiOne2Pro
+ * (gitterchipAnimation/trustVorSlider) — Markup-Identitaets-Vertrag: fehlt ein
+ * Slot, steht dort exakt der Bestand.
+ *
+ * WARUM ueberhaupt: dieser Baum trägt VIER frequency-Deals gleichzeitig
+ * (/pages/qione-2-pro-2x + /products/734husd8hh + sale-qibracelet +
+ * sale-qihome-air, s. app/data/ten-years-deals.js) und wird zusaetzlich aus
+ * products.$handle.jsx gerendert. Ein Umbau direkt in
+ * FrequencyTemplateSections würde alle vier aendern; der Elina-Wunsch vom
+ * 2026-07-27 gilt ausdrücklich NUR der 2er-Set-Seite. Die Slots halten den
+ * Blast-Radius bei genau einer Route.
+ *
+ *   studien       — Inhalt der Studien-Sektion (der Rahmen
+ *                   j-sale-deal__studies-wrap bleibt stehen und trägt
+ *                   Breite/Abstand; Default = <Studien> Kachel-Raster)
+ *   wasserzustand — Default = <WaterStateSection> („Der Superzustand des Wassers")
+ *   nachDealRail  — zusätzlicher Block direkt hinter der ersten Deal-Rail
+ *                   („Wechsle direkt zum nächsten Jubiläumsangebot" + Angebote);
+ *                   Default = nichts
+ */
+export function TenYearsDealPage({deal, sektionen = {}}) {
   const template = getTemplateCopy(deal);
   const [selectedVariantId, setSelectedVariantId] = useState(deal.variants[0].id);
   const selectedVariant = useMemo(
@@ -279,6 +301,7 @@ export function TenYearsDealPage({deal}) {
           deal={deal}
           template={template}
           selectedVariant={selectedVariant}
+          sektionen={sektionen}
         />
       ) : (
         <CacaoTemplateSections
@@ -376,11 +399,17 @@ function ProductPurchase({
       selectedVariant.cartProductHandle || deal.cartProductHandle || deal.handle;
     const cartProductTitle =
       selectedVariant.cartProductTitle || deal.cartProductTitle || deal.displayTitle;
+    // Referenzierender Set-Kauf (EL-20260724-9b18d2ba): cartQuantity legt N
+    // Stück des EINEN kanonischen Produkts in den Warenkorb — der Set-Preis
+    // entsteht dort per Automatic Discount. Default 1 hält alle übrigen
+    // Deals byte-identisch.
+    const cartQuantity =
+      selectedVariant.cartQuantity || deal.cartQuantity || 1;
 
     return [
       {
         merchandiseId,
-        quantity: 1,
+        quantity: cartQuantity,
         selectedVariant: {
           id: merchandiseId,
           title: selectedVariant.title,
@@ -392,7 +421,10 @@ function ProductPurchase({
             height: 1000,
           },
           price: {
-            amount: String(toGrossPrice(selectedVariant.price, deal)),
+            // Optimistischer Cart-Flash: bei Set-Menge den Set-Bruttopreis
+            // pro Stück anteilig zeigen (echte Zeile+Discount kommen aus
+            // Shopify, sobald die Cart-Query antwortet).
+            amount: String(toGrossPrice(selectedVariant.price, deal) / cartQuantity),
             currencyCode: 'EUR',
           },
           product: {
@@ -619,18 +651,21 @@ function UrgencyText({children}) {
   );
 }
 
-function FrequencyTemplateSections({deal, template, selectedVariant}) {
+function FrequencyTemplateSections({deal, template, selectedVariant, sektionen = {}}) {
   return (
     <>
       <UrgencyText>- Angebot limitiert auf die ersten 300 Bestellungen! -</UrgencyText>
       <MainFeatures />
       <DealRail currentKey={deal.key} />
+      {sektionen.nachDealRail ?? null}
       <FrequencyVideoScience />
       <GitterchipSection />
       <FounderSection />
-      <WaterStateSection />
+      {sektionen.wasserzustand ?? <WaterStateSection />}
       <section className="j-sale-deal__studies-wrap">
-        <Studien headline="Wirkung an menschlichen Zellen bestätigt!" />
+        {sektionen.studien ?? (
+          <Studien headline="Wirkung an menschlichen Zellen bestätigt!" />
+        )}
       </section>
       <MicroscopeSection />
       <GoogleReviewVideoSection />
@@ -936,9 +971,9 @@ function DealFinalCta({deal, template, selectedVariant}) {
           {template.ctaButton || 'Jetzt sichern'}
         </a>
         <ul className="j-sale-deal__final-cta-trust">
-          <li>Kostenloser Versand ab 99 Euro</li>
+          <li>Kostenloser Versand ab 99 Euro innerhalb Deutschlands</li>
           <li>20 Tage risikofrei testen</li>
-          <li>Kaeuferschutz</li>
+          <li>Käuferschutz</li>
         </ul>
       </div>
     </section>

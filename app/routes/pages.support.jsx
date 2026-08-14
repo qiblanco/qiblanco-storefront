@@ -1,11 +1,12 @@
 import {useState} from 'react';
 import {data} from '@shopify/remix-oxygen';
 import {Form, useActionData, useNavigation} from 'react-router';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta = () => [
   {title: 'Support & FAQ | Qi Blanco'},
   {name: 'description', content: 'Häufige Fragen und Antworten sowie Kontaktformular für Qi Blanco Kunden.'},
-  {rel: 'canonical', href: '/pages/support'},
+  canonicalLink('/pages/support'),
 ];
 
 export function loader() {

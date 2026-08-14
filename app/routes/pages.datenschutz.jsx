@@ -1,7 +1,9 @@
+import {canonicalLink} from '~/lib/seo';
+
 export const meta = () => [
   {title: 'Datenschutzerklärung | Qi Blanco'},
   {name: 'description', content: 'Datenschutzerklärung der Qi Blanco UG (haftungsbeschränkt)'},
-  {rel: 'canonical', href: '/pages/datenschutz'},
+  canonicalLink('/pages/datenschutz'),
 ];
 
 export function loader() {
@@ -18,7 +20,7 @@ export default function DatenschutzPage() {
         gemäß Art. 13 und 14 der Datenschutz-Grundverordnung (DSGVO) darüber, welche
         personenbezogenen Daten wir beim Besuch unserer Website und bei der Abwicklung von
         Bestellungen verarbeiten, zu welchen Zwecken und auf welcher Rechtsgrundlage dies geschieht
-        und welche Rechte Ihnen zustehen. <strong>Stand: Juli 2026.</strong>
+        und welche Rechte Ihnen zustehen. <strong>Stand: August 2026.</strong>
       </p>
 
       <section style={{marginBottom: '2rem'}}>
@@ -59,6 +61,10 @@ export default function DatenschutzPage() {
           <li>Versand von Newslettern (nur mit Einwilligung)</li>
           <li>Sicherheit, Missbrauchsprävention und Stabilität</li>
           <li>Reichweitenmessung, Optimierung und Marketing (nur mit Einwilligung)</li>
+          <li>
+            Ausschluss bestehender Kundinnen und Kunden von Neukunden-Werbung
+            (Werbe-Unterdrückung, siehe Ziffer 9)
+          </li>
         </ul>
       </section>
 
@@ -209,6 +215,33 @@ export default function DatenschutzPage() {
             vorliegt, besteht mit Meta eine Vereinbarung nach Art. 26 DSGVO.
           </li>
         </ul>
+
+        <h3 style={{marginTop: '1.5rem'}}>
+          Abgleich zur Werbe-Unterdrückung (Ausschlusslisten)
+        </h3>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+          Unabhängig von den vorstehenden, einwilligungsbasierten Diensten übermitteln wir
+          E-Mail-Adressen unserer Kundinnen und Kunden ausschließlich in kryptografisch gehashter
+          Form (SHA-256) – also nicht im Klartext – an <strong>Meta Platforms Ireland Ltd.</strong>
+          {' '}Meta gleicht diesen Hashwert mit den dort vorhandenen Nutzerkonten ab, und zwar allein
+          zu dem Zweck, Ihnen keine Werbung mehr anzuzeigen, die sich an Neukundinnen und Neukunden
+          richtet. Die Liste dient ausschließlich der <strong>Unterdrückung</strong> von Werbung,
+          nicht deren Ausspielung: Wir bilden daraus weder Zielgruppen noch ähnliche Zielgruppen
+          („Lookalike"), und wir reichern sie nicht mit weiteren Daten an.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          Rechtsgrundlage ist unser berechtigtes Interesse nach Art. 6 Abs. 1 lit. f DSGVO,
+          bestehende Kundinnen und Kunden nicht mit für sie unpassender Werbung anzusprechen und den
+          Werbedruck zu verringern. Über das rechtlich Gebotene hinaus berücksichtigen wir dabei
+          ausschließlich Personen, die dem Erhalt von E-Mail-Werbung zugestimmt haben.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          Sie können dieser Übermittlung jederzeit widersprechen (Art. 21 DSGVO) – formlos an{' '}
+          <a href="mailto:info@qiblanco.com">info@qiblanco.com</a> oder durch Abmeldung vom
+          Newsletter. Nach einer Abmeldung wird Ihre Adresse nicht erneut übermittelt; auf Ihr
+          Verlangen entfernen wir zusätzlich den bereits übermittelten Hashwert aus der Zielgruppe
+          bei Meta. Für die Übermittlung in die USA gilt Ziffer 12 entsprechend.
+        </p>
       </section>
 
       <section style={{marginBottom: '2rem'}}>
@@ -227,12 +260,15 @@ export default function DatenschutzPage() {
         <h2>11. Newsletter und E-Mail-Marketing</h2>
         <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
           Für den Versand von Newslettern und die Verwaltung von Anmeldeformularen nutzen wir{' '}
-          <strong>ActiveCampaign, LLC</strong> (USA). Die Anmeldung erfolgt im
-          Double-Opt-In-Verfahren: Nach Ihrer Anmeldung erhalten Sie eine Bestätigungs-E-Mail, mit
-          der Sie den Empfang aktiv bestätigen. Rechtsgrundlage ist Ihre Einwilligung nach
-          Art. 6 Abs. 1 lit. a DSGVO. Sie können den Newsletter jederzeit über den Abmeldelink in
-          jeder E-Mail oder per Nachricht an uns abbestellen. Eine Übermittlung in die USA erfolgt
-          nach den unter Ziffer 12 genannten Garantien.
+          <strong>ActiveCampaign, LLC</strong> (USA). Melden Sie sich über ein Newsletter-Formular
+          auf unserer Website an, erfolgt die Anmeldung im Double-Opt-In-Verfahren: Sie erhalten
+          eine Bestätigungs-E-Mail, mit der Sie den Empfang aktiv bestätigen. Haben Sie dagegen im
+          Bestellvorgang das Feld für den Erhalt von E-Mails mit Neuigkeiten und Angeboten
+          aktiviert, gilt Ihre dort erteilte Einwilligung unmittelbar (Single-Opt-In).
+          Rechtsgrundlage ist in beiden Fällen Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO.
+          Sie können den Newsletter jederzeit über den Abmeldelink in jeder E-Mail oder per
+          Nachricht an uns abbestellen. Eine Übermittlung in die USA erfolgt nach den unter
+          Ziffer 12 genannten Garantien.
         </p>
       </section>
 

@@ -57,16 +57,48 @@ jobs:
           PUBLIC_ENABLE_TRACKING_IN_PREVIEW: ${{ github.ref_name == 'main' && 'false' || 'true' }}
           # First-Party-Pixel (qpx): Endpoint nur fuer main-Deploys — Previews
           # bleiben dunkel, damit keine Testdaten in die Produktions-DB laufen.
-          PUBLIC_QPX_ENDPOINT: ${{ github.ref_name == 'main' && 'https://qpx.65-108-150-121.sslip.io/collect' || '' }}
+          # ITP-HAERTUNG SCHARF (Job 20260726-storefront-tracking-deploy,
+          # Christian-Freigabe 2026-07-26): '/collect' = same-origin ueber die
+          # collect.jsx-Proxy-Route (Upstream unten), die _qpx_anon/_fbp/_fbc
+          # als HTTP-Set-Cookie 400d refresht (WebKit/ITP-Exemption; JS-Cookies
+          # kappt Safari auf 7d bzw. 24h bei Klick-ID-URL). CSP: 'self' deckt
+          # same-origin, Basis-Origin haelt qpxConnectSrc (entry.server.jsx).
+          # Rollback = diese Zeile zurueck auf die Receiver-URL.
+          PUBLIC_QPX_ENDPOINT: ${{ github.ref_name == 'main' && '/collect' || '' }}
           # Cookielose Basis-Ebene: voller /b-Endpoint (Pixel nutzt den Wert
           # as-is), nur main — Previews bleiben dunkel wie beim qpx-Pixel.
           PUBLIC_QPX_BASIS_ENDPOINT: ${{ github.ref_name == 'main' && 'https://qpx.65-108-150-121.sslip.io/b' || '' }}
+          # QPX-Server-Proxy-Upstream (ads-lpa s05, dunkle Vorbereitungs-Zeile):
+          # armiert NUR die fail-closed /collect-Proxy-Route (collect.jsx POSTet
+          # den Wert as-is an den Receiver, daher inkl. /collect-Pfad). Das
+          # Besucher-Verhalten bleibt unverändert, solange PUBLIC_QPX_ENDPOINT
+          # nicht auf '/collect' steht — dieser Flip ist Christians
+          # Scharfschalt-Handgriff (Segment s07). Previews '' = fail-closed 404.
+          QPX_PROXY_UPSTREAM: ${{ github.ref_name == 'main' && 'https://qpx.65-108-150-121.sslip.io/collect' || '' }}
           # Region-aware Consent (Job 20260718-usa-storefront-pixel-golive,
           # Christian-Freigabe): Strict-Liste DE,AT,CH = DACH-Verhalten exakt
           # wie bisher (consent-Pflicht), Nicht-DACH (insb. US) = optout —
           # aktive Banner-Ablehnung wird IMMER respektiert (consent-policy.js).
           # Previews '' = fail-closed strict. Kill: Zeilen entfernen.
           PUBLIC_CONSENT_STRICT_REGIONS: ${{ github.ref_name == 'main' && 'DE,AT,CH' || '' }}
+          # LP-V2 A/B-SPLIT ABGEBROCHEN (Job 20260727-ab-abbruch-nur-original-
+          # lp, Christian-Anweisung 27.07.: Test SOFORT abbrechen, bis auf
+          # Weiteres 100 % des Traffics — insbesondere ALLE Ads — auf das
+          # ORIGINAL /pages/schlaf-zellen-schutz; die V2 ist real deutlich
+          # schlechter (<5/10)). Gefahren wurde der dokumentierte Kill-Pfad
+          # Stufe 1 aus dem Bau-Job (RESULT §6): 'on' -> '' — zusaetzlich
+          # SPLIT auf '0' (Stufe 1b) als zweite, unabhaengige Sperre.
+          # Der Split-CODE bleibt liegen und ist unveraendert reversibel:
+          # nur der exakte Wert 'on' aktiviert, jeder andere Wert und die
+          # Abwesenheit = 100 % LP A (Fail-Richtung zeigt auf den Bestand).
+          # Die V2-Route /pages/schlaf-zellen-schutz-v2-18ef bleibt direkt
+          # erreichbar (200) — abgeschaltet ist NUR die Zuteilung.
+          # WIEDER-EINSCHALTEN ist ein Christian-Gate (nachbau-audit
+          # gate-register lp-ab-v2-mode-20260726, Klasse live, geparkt).
+          LP_AB_V2_MODE: ''
+          # Anteil der Eintritte auf V2 in Prozent (0-100); 0 = faktisch aus
+          # (prozent <= 0 => kein Redirect). Vor dem Abbruch stand hier '50'.
+          LP_AB_V2_SPLIT: '0'
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -85,7 +117,10 @@ jobs:
             printf 'PUBLIC_ENABLE_TRACKING_IN_PREVIEW=%s\n' "$PUBLIC_ENABLE_TRACKING_IN_PREVIEW"
             printf 'PUBLIC_QPX_ENDPOINT=%s\n' "$PUBLIC_QPX_ENDPOINT"
             printf 'PUBLIC_QPX_BASIS_ENDPOINT=%s\n' "$PUBLIC_QPX_BASIS_ENDPOINT"
+            printf 'QPX_PROXY_UPSTREAM=%s\n' "$QPX_PROXY_UPSTREAM"
             printf 'PUBLIC_CONSENT_STRICT_REGIONS=%s\n' "$PUBLIC_CONSENT_STRICT_REGIONS"
+            printf 'LP_AB_V2_MODE=%s\n' "$LP_AB_V2_MODE"
+            printf 'LP_AB_V2_SPLIT=%s\n' "$LP_AB_V2_SPLIT"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 

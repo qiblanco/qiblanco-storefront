@@ -17,16 +17,14 @@ import {SingleImage} from '~/components/reusables/SingleImage';
 import { KursInhalteKakao } from '~/components/reusables/KursinhalteKakao';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/zeremonie-kakao`,
-    },
+    canonicalLink('/products/zeremonie-kakao'),
   ];
 };
 
@@ -156,7 +154,9 @@ export default function Product() {
       <WarumKakao />
       <Kundenstimmen />
 
-      <div className="product">
+      {/* id="product" NUR hier (erste Buy-Box): Anker-Ziel der "#product"-CTAs;
+          die zweite Buy-Box unten bleibt ohne id (keine Doppel-id). */}
+      <div className="product" id="product">
         <div className="ProductImages">
           <ProductImage image={selectedVariant?.image} />
           <ProductImageList images={product?.images} />
@@ -233,11 +233,11 @@ export default function Product() {
             Nutze die Kraft des Kristall Kakao® regelmäßig – und spare dabei:
           </h2>
           <p className="mt-2">
-            ✅ 2 Stück kaufen → 20 % Rabatt + gratis Versand <br /> 👉
+            ✅ 2 Stück kaufen → 20 % Rabatt + gratis Versand innerhalb Deutschlands <br /> 👉
             Beliebteste Wahl – perfekt für deine tägliche Zeremonie
           </p>
           <p className="mt-2">
-            ✅ 3 Stück kaufen → 30 % Rabatt + gratis Versand <br />
+            ✅ 3 Stück kaufen → 30 % Rabatt + gratis Versand innerhalb Deutschlands <br />
             🌟 Beste Wahl – teilen, verschenken & selbst genießen
           </p>
           <p className="mt-2">

@@ -14,20 +14,19 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 import {ProductFAQ} from '~/components/ProductFAQ';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {FAQ_QIONE_KETTE} from '~/data/product-faqs';
 import { useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/qione-kette`,
-    },
+    canonicalLink('/products/qione-kette'),
   ];
 };
 
@@ -153,6 +152,9 @@ export default function Product() {
     </>}/>
     <UpsellLineUp />
     <ProductFAQ items={FAQ_QIONE_KETTE} />
+    {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+        Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+    <GoogleRezensionenBereich />
     <SingleImage size={"fullscreen"} link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} />
     </>
   );
@@ -174,7 +176,7 @@ function BenefitList() {
               d="M576 1152q0-52-38-90t-90-38t-90 38t-38 90t38 90t90 38t90-38t38-90M192 640h384V384H418q-13 0-22 9L201 588q-9 9-9 22zm1280 512q0-52-38-90t-90-38t-90 38t-38 90t38 90t90 38t90-38t38-90M1728 64v1024q0 15-4 26.5t-13.5 18.5t-16.5 11.5t-23.5 6t-22.5 2t-25.5 0t-22.5-.5q0 106-75 181t-181 75t-181-75t-75-181H704q0 106-75 181t-181 75t-181-75t-75-181h-64q-3 0-22.5.5t-25.5 0t-22.5-2t-23.5-6t-16.5-11.5T4 1114.5T0 1088q0-26 19-45t45-19V704q0-8-.5-35t0-38t2.5-34.5t6.5-37t14-30.5t22.5-30l198-198q19-19 50.5-32t58.5-13h160V64q0-26 19-45t45-19h1024q26 0 45 19t19 45"
             ></path>
           </svg>
-          <b>Kostenloser Versand</b> ab 99€ <span className='movedup-small'>1</span>
+          <b>Kostenloser Versand</b> ab 99€ innerhalb Deutschlands
         </li>
         <li>
           <svg

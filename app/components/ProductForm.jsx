@@ -6,9 +6,24 @@ import {useAside} from './Aside';
  * @param {{
  *   productOptions: MappedProductOptions[];
  *   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
+ *   quantity?: number;
+ *   ctaLabel?: string;
  * }}
+ *
+ * `quantity` (Default 1) legt die Stückzahl der EINEN Add-to-Cart-Zeile fest.
+ * Der Default hält jeden Bestands-Aufrufer byte-identisch; nur die Campaign-PDP
+ * /pages/qione-2-pro-2x übergibt quantity={2} für das 2er-Set. Der Kampagnen-
+ * PREIS entsteht NICHT hier, sondern über einen Automatic Discount am Warenkorb
+ * (Konzept „Shopseite nach LP" Kap. 5: ein Produkt referenziert, kein Preis-
+ * Klon-Produkt). `ctaLabel` erlaubt der Kampagne einen eigenen Button-Text,
+ * ohne eine zweite Kauflogik zu bauen.
  */
-export function ProductForm({productOptions, selectedVariant}) {
+export function ProductForm({
+  productOptions,
+  selectedVariant,
+  quantity = 1,
+  ctaLabel,
+}) {
   const navigate = useNavigate();
   const {open} = useAside();
   return (
@@ -106,14 +121,16 @@ export function ProductForm({productOptions, selectedVariant}) {
               ? [
                   {
                     merchandiseId: selectedVariant.id,
-                    quantity: 1,
+                    quantity,
                     selectedVariant,
                   },
                 ]
               : []
           }
         >
-          {selectedVariant?.availableForSale ? 'In den Warenkorb legen' : 'Ausverkauft'}
+          {selectedVariant?.availableForSale
+            ? ctaLabel ?? 'In den Warenkorb legen'
+            : 'Ausverkauft'}
         </AddToCartButton>
       </div>
     </div>

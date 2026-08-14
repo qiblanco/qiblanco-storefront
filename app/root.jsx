@@ -4,6 +4,7 @@ import {
   useRouteError,
   isRouteErrorResponse,
   useRouteLoaderData,
+  useMatches,
   Links,
   Meta,
   Scripts,
@@ -13,11 +14,22 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
+// Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
+// wiederverwendbar sein soll. Wirkt ausschließlich innerhalb von .qb-swipetab —
+// eine Seite ohne den Baustein sieht davon baulich nichts.
+import qbSwipetabStyles from '~/styles/qb-swipetab.css?url';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
+import {QpxCommerce} from './components/QpxCommerce';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
+import {strictRegions} from '~/lib/consent-policy';
+import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
+import {redirect} from '@shopify/remix-oxygen';
+import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
+import {salesbotWidgetOrigin, istSalesbotDeutscherShop} from '~/lib/salesbot-widget';
+import {SalesbotWidget} from './components/SalesbotWidget';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -64,6 +76,18 @@ export function links() {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // AD-TRAFFIC-WEICHE (Auftrag 20260724-ads-umleiten-schlafzellen-v2, Christian
+  // 2026-07-24): erkannter Paid-Klick (utm_medium=paid / gclid & Co., Vetos +
+  // Ausschluesse in ad-weiche.server.js) landet auf JEDER Route serverseitig
+  // 302 auf LP A — vor jeder Datenarbeit; organischer Traffic kostet nichts.
+  const adWeicheZiel = await pruefeAdWeiche(args.request);
+  if (adWeicheZiel) {
+    throw redirect(adWeicheZiel, {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
+  }
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
@@ -75,14 +99,24 @@ export async function loader(args) {
   return {
     ...deferredData,
     ...criticalData,
+    // Sitewide dynamische Google-Gesamtbewertung + neueste 5-Sterne-Reviews
+    // (Fix v2 Punkt 5; Repair 2026-07-31): fail-safe, 6h gecacht (Reputon-
+    // Feed, kein Key nötig), fällt auf 4,8/437-Schnappschuss zurück (nie
+    // 500en/erfinden).
+    googleRating: await ladeGoogleRating(args.context).catch(
+      () => ({...GOOGLE_RATING_FALLBACK}),
+    ),
     isProductionHost: isQiblancoProductionHost(args.request.url),
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
     // Regionen-Konfig als data-Attribute an den Client (tracker/qpx-loader).
     // Ohne PUBLIC_CONSENT_STRICT_REGIONS bleibt clientseitig ALLES beim
-    // heutigen Consent-Verhalten (fail-closed, s. consent-policy.js).
+    // strengsten Consent-Verhalten (fail-closed, s. consent-policy.js).
+    // Seit Job 20260724 (Consent-Mode-v2 EWR/UK-Floor): der Client bekommt
+    // die AUFGELÖSTE Liste (Env vereinigt mit EEA_UK_STRICT_FLOOR), nicht
+    // die rohe Env — so erben alle Client-Skripte den Floor automatisch.
     buyerCountry: args.request.headers.get('oxygen-buyer-country') || '',
-    consentStrictRegions: env.PUBLIC_CONSENT_STRICT_REGIONS || '',
+    consentStrictRegions: strictRegions(env).join(','),
     // First-Party-Pixel (qpx): lädt NUR, wenn der Receiver-Endpoint gesetzt ist
     // (Rollout-Schalter; ohne env-Variable ist das Verhalten unverändert).
     qpxEndpoint: env.PUBLIC_QPX_ENDPOINT || '',
@@ -92,6 +126,17 @@ export async function loader(args) {
     // localStorage/keine persistente ID) — Go-live = diese env + Server
     // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
     qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
+    // Eigener Sales-Chat-Assistent (s05): der Origin des Bots. Default ist
+    // der in s03 scharf geschaltete Edge, `PUBLIC_SALESBOT_WIDGET_ORIGIN=off`
+    // schaltet ab (lib/salesbot-widget.js). Dieser Wert sagt NUR, OB der
+    // Assistent verfügbar ist — WO er erscheint, entscheidet der
+    // `handle`-Export der Route, nicht dieser Loader (siehe Layout).
+    salesbotWidgetOrigin: salesbotWidgetOrigin(env),
+    // Gewählte Seitensprache/Locale des geladenen Shops
+    // (storefront.i18n.language; context.js: konstant 'DE' = deutschsprachiger
+    // DACH-Storefront). Steuert die store-weite Chat-Weiche AI-Anna vs Gorgias
+    // nach dem SHOP, NICHT nach der Besucher-IP (Weichen-Korrektur 2026-07-31).
+    storefrontSprache: storefront.i18n.language,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -169,6 +214,45 @@ export function Layout({children}) {
     data?.isProductionHost || data?.enableTrackingInPreview;
   const isTrackingPreview =
     Boolean(data?.enableTrackingInPreview) && !data?.isProductionHost;
+
+  // ── WEICHE FÜR DEN EIGENEN CHAT-ASSISTENTEN (s05) ────────────────────────
+  // Christians Vorgabe: der Assistent läuft ausschließlich auf der Route,
+  // die ihn anfordert (heute /pages/chat-bot) — überall sonst bleibt Gorgias
+  // unangetastet. Die Route erklärt das selbst über ihren `handle`-Export:
+  //
+  //     export const handle = {salesbotWidget: true};
+  //
+  // WARUM AUS DEN MATCHES UND NICHT AUS DEM ROOT-LOADER: `shouldRevalidate`
+  // oben gibt für Sub-Navigationen bewusst `false` zurück — der Root-Loader
+  // läuft bei Client-Navigation NICHT neu. Ein Loader-Feld wäre also nach dem
+  // ersten Seitenaufruf eingefroren (Assistent würde bei SPA-Navigation auf
+  // die Testseite fehlen und auf fremden Seiten hängenbleiben). `handle` kommt
+  // aus den Matches und ist damit bei JEDER Navigation aktuell — und root.jsx
+  // braucht keinen hartcodierten Pfad.
+  //
+  // SERVERSEITIG: die Matches stehen schon beim SSR fest, der Loader-Tag ist
+  // deshalb auf fremden Seiten gar nicht erst im HTML — nicht bloß per CSS
+  // versteckt.
+  const matches = useMatches();
+  const salesbotSeite = (matches || []).some(
+    (match) => match?.handle?.salesbotWidget === true,
+  );
+  // STORE-WEITER GO-LIVE DACH (Christian-Freigabe 2026-07-31): in DE/AT/CH
+  // rendert der Assistent auf JEDER Seite und verdrängt dort Gorgias; USA und
+  // alle Nicht-DACH-Regionen bleiben unverändert auf Gorgias (istSalesbotDach-
+  // Region ist fail-closed, s. lib/salesbot-widget.js). Die Region kommt aus
+  // dem Root-Loader-Feld `buyerCountry` (Oxygen-Geo-Header, EINMAL pro Dokument
+  // aufgelöst) — anders als der pro-Navigation wechselnde `handle` ist die
+  // Region über die Session konstant, das eingefrorene Loader-Feld ist hier
+  // also KORREKT (kein shouldRevalidate-Problem wie beim handle).
+  //
+  // Die Testseite /pages/chat-bot (handle.salesbotWidget) bleibt ZUSÄTZLICH
+  // erhalten, damit Christians Prüf-Route regionsunabhängig funktioniert.
+  const salesbotDeutscherShop = istSalesbotDeutscherShop(data?.storefrontSprache);
+  const salesbotAktiv =
+    Boolean(data?.salesbotWidgetOrigin) &&
+    (salesbotSeite || salesbotDeutscherShop);
+
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
@@ -183,10 +267,23 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/*
+          Nutzungsvorbehalt / TDM reservation (W3C TDMRep), Job 20260729-anti-
+          scraping-s04. Dritter Träger neben /.well-known/tdmrep.json und
+          robots.txt (beide seit PR #141 live) und Gegenstück zur Prosa-Klausel
+          im Impressum (PR #142), die diese maschinenlesbare Erklärung
+          ausdrücklich NENNT — Deklaration muss dem realen Bestand entsprechen.
+          Der HTML-meta-Träger war im Konzept mitgeplant, fehlte aber real:
+          das Live-HTML hatte 0 Treffer. Bewusst hier und NICHT als sitewide
+          HTTP-Header: der gehörte nach entry.server.jsx (nicht in ALLOW_GLOB)
+          und ließe sich ohne Oxygen-Preview nicht verifizieren.
+        */}
+        <meta name="tdm-reservation" content="1" />
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
+        <link rel="stylesheet" href={qbSwipetabStyles}></link>
         {shouldLoadThirdPartyScripts && (
           <script
             id="Cookiebot"
@@ -221,13 +318,17 @@ export function Layout({children}) {
               defer
               suppressHydrationWarning
             />
-            <script
-              src="https://config.gorgias.chat/bundle-loader/shopify/qi-blanco.myshopify.com"
-              data-gorgias-loader-chat=""
-              nonce={nonce}
-              defer
-              suppressHydrationWarning
-            />
+            {/*
+              GORGIAS-CHAT ENTFERNT (Christian 2026-07-31, Weichen-Korrektur):
+              Auf dem deutschsprachigen DACH-Storefront läuft AI-Anna store-weit
+              für ALLE Besucher; der Gorgias-Chat-Loader ist hier dauerhaft raus
+              (nicht nur unterdrückt). Rollback = git revert dieses Merges;
+              PUBLIC_SALESBOT_WIDGET_ORIGIN=off schaltet AI-Anna ab, bringt den
+              Gorgias-Chat NICHT zurück (entfernt). Der separate US-/englische
+              Store (us-qiblanco-2024) behält seinen Gorgias-Chat — anderes Repo.
+              Die Gorgias mailto-replace-/convert-Loader unten sind KEIN Chat und
+              bleiben unverändert.
+            */}
             <script
               src="https://config.gorgias.help/api/contact-forms/replace-mailto-script.js?shopName=qi-blanco"
               data-gorgias-loader-mailto-replace=""
@@ -265,6 +366,22 @@ export function Layout({children}) {
             ) : null}
           </>
         )}
+        {/*
+          EIGENER SALES-CHAT-ASSISTENT (s05) — BEWUSST AUSSERHALB des
+          shouldLoadThirdPartyScripts-Blocks darüber.
+
+          Jenes Gate ist `isProductionHost || enableTrackingInPreview` und
+          schützt DRITT-Anbieter-Tracking (Cookiebot, Gorgias, Meta, qpx). Der
+          Assistent ist unser EIGENER Dienst: er setzt im Eltern-Dokument
+          keinen Cookie, liest keinen, und trägt seine Einwilligung selbst IM
+          iframe (Zustimmungs-Screen vor dem ersten Modell-Aufruf, nicht vor
+          dem iframe-Load). Stünde er im Gate, wäre er auf jedem Preview-Host
+          und auf localhost unsichtbar — die Seite liesse sich dann vor dem
+          Go-live nicht prüfen.
+        */}
+        {salesbotAktiv && (
+          <SalesbotWidget origin={data.salesbotWidgetOrigin} nonce={nonce} />
+        )}
       </head>
       <body>
         <LoadingBar />
@@ -276,7 +393,10 @@ export function Layout({children}) {
           >
             <PageLayout {...data}>{children}</PageLayout>
             {(data.isProductionHost || data.enableTrackingInPreview) && (
-              <MetaPixel />
+              <>
+                <MetaPixel />
+                <QpxCommerce />
+              </>
             )}
           </Analytics.Provider>
         ) : (
@@ -306,7 +426,7 @@ export function ErrorBoundary() {
   }
 
   // 404 ist seit dem Catch-All-Umbau (Auftrag 20260720-ads-lpa-s02-
-  // catchall-404) der Regelfall fuer unbekannte Pfade — freundlicher
+  // catchall-404) der Regelfall für unbekannte Pfade — freundlicher
   // deutscher Textblock statt "Oops" (bewusst klein, kein Redesign).
   if (errorStatus === 404) {
     return (

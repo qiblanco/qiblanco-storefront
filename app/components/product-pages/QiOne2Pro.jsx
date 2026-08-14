@@ -12,6 +12,7 @@ import {FAQ_QIONE_2_PRO} from '~/data/product-faqs';
 import {YoutubeIframe} from '../reusables/YoutubeIframe';
 import {Gitterchip} from '../reusables/Gitterchip';
 import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
+import {StudienCards} from './StudienCards';
 
 /*
  * Kompletter PDP-Inhalt unterhalb der Buy-Box. Seit 2026-07-16 auch von der
@@ -41,6 +42,7 @@ export default function QiOne2Pro({
 }) {
   return (
     <div className="ProductPageQiOne">
+      <style>{`.ProductPageQiOne .LogoBar{margin-top:30px;}`}</style>
       <LogoBar />
       <OneTimeInvestment />
       <MainFeatures />
@@ -60,7 +62,7 @@ export default function QiOne2Pro({
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
         }
-        headline={'Dein QiOne® 2 Pro sorgt für dich Tag und Nacht.'}
+        headline={<>Dein QiOne® 2 Pro sorgt für dich<br />Tag und Nacht.</>}
         subheadline={"Navigiere klar und ruhig durch's Leben."}
         parallax={true}
         size={850}
@@ -68,6 +70,7 @@ export default function QiOne2Pro({
         linkStyling={'primary'}
         linkText={'Hole dir jetzt deinen QiOne® 2 Pro'}
       />
+		<StressfreiBezahlen />
     <RatenzahlungHerobanner
      link={ctaAnchor}
      linkText={"Hole dir jetzt deinen QiOne® 2 Pro"}
@@ -81,12 +84,11 @@ export default function QiOne2Pro({
      paypal={true}
      klarna={true}
      />
-		<StressfreiBezahlen />
-		<div className="NormalSectionSize" style={{marginBottom: "100px"}}>
+		<div className="NormalSectionSize" style={{marginTop: "100px", marginBottom: "100px"}}>
       <h2 className="text-center">Gründerinterview zum QiOne® 2 Pro</h2>
       <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} />
     </div>
-      <Studien headline={'Wirkung an menschlichen Zellen bestätigt!'} />
+      <StudienCards />
       <ScrollMikroskopVideo />
       <div className="NormalSectionSize text-center">
         <h2>
@@ -346,7 +348,7 @@ function MassgeschneiderteTechnologie() {
 
 function StressfreiBezahlen(){
     return (
-        <div className="NormalSectionSize" style={{margin: "50px auto 100px auto"}}>
+        <div className="NormalSectionSize" style={{margin: "100px auto 100px auto"}}>
             <h2>Hole dir jetzt deinen QiOne® 2 Pro - flexibel und stressfrei bezahlen!</h2>
             <p>Mit unserer Ratenzahlung kannst du deinen QiOne® 2 Pro bequem in kleinen Beträgen abbezahlen – einfach, flexibel und unkompliziert.</p>
             <p className="mt-3">

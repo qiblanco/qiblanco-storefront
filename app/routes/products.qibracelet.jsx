@@ -14,18 +14,17 @@ import {ProductImageList} from '~/components/ProductImageList';
 import { useState } from 'react';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {QiBracelet} from '~/components/product-pages/QiBracelet';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/qibracelet`,
-    },
+    canonicalLink('/products/qibracelet'),
   ];
 };
 
@@ -115,7 +114,9 @@ export default function Product() {
         <ImgixVideo videoPath="new-360-QiBracelet-1x1.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/JjGdCuv.webp?v=1747927956" />
       </div>
     </div>
-    <div className="product">
+    {/* id="product" = Anker-Ziel der "#product"-CTAs im QiBracelet-Content
+        darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
+    <div className="product" id="product">
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
@@ -157,6 +158,9 @@ export default function Product() {
       />
     </div>
       <QiBracelet /> 
+    {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+        Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+    <GoogleRezensionenBereich />
     </>
   );
 }

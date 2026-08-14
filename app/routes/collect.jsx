@@ -48,7 +48,7 @@ export async function action({request, context}) {
     const res = await fetch(upstream, {
       method: 'POST',
       body,
-      headers: {'Content-Type': 'application/json'},
+      headers: upstreamHeaders(request),
     });
     upstreamOk = res.status < 400;
   } catch {
@@ -61,6 +61,48 @@ export async function action({request, context}) {
     headers.append('Set-Cookie', cookie);
   }
   return new Response(JSON.stringify({ok: upstreamOk}), {status: 200, headers});
+}
+
+/**
+ * Header für den Weiterreich-Fetch an den Receiver.
+ *
+ * WARUM (Job 20260809-dach-tracking-schluessel-verlust, 2026-08-09): Diese
+ * Route ist ein SERVERSEITIGER Proxy — der Receiver sieht also nicht den
+ * Browser, sondern uns. Bis zu diesem Fix ging nur `Content-Type` mit, und
+ * damit kam beim Receiver WEDER der echte User-Agent NOCH die echte Client-IP
+ * an. Gemessene Folge: 0 von 11.037 DACH-Events mit device_fp/ua_hash, während
+ * der USA-Shop (Liquid, sendet direkt aus dem Browser) 1.367 von 2.036 trug —
+ * bei identischem Code und identischer Schalterstellung (`full` auf beiden
+ * Shops). Ein Transportweg kann einen HTTP-Header still schlucken.
+ *
+ * Zwei Header, zwei verschiedene Empfänger im Receiver:
+ *   User-Agent      -> fingerprint.ua_hash()/device_fp()/device_class()
+ *   X-Forwarded-For -> basis.client_ip() nimmt den LINKESTEN Eintrag. Caddy
+ *                      hängt seinen Peer rechts an, links bleibt unsere
+ *                      Client-IP. Ohne diesen Header stand dort die Egress-IP
+ *                      des Oxygen-Edge — der ip_net_hash war also nicht bloß
+ *                      dünn, sondern FALSCH (gemessen: 190 verschiedene
+ *                      Besucher hinter EINEM Hash).
+ *
+ * IP-Quelle ist `CF-Connecting-IP` (vom Edge gesetzt, client-seitig NICHT
+ * fälschbar) mit dem repo-üblichen XFF-Rückfall (vgl. pages.support.jsx).
+ * Leere Werte werden WEGGELASSEN statt als leerer Header gesendet: der
+ * Receiver soll "nicht gemessen" von "gemessen und leer" unterscheiden können.
+ *
+ * @param {Request} request
+ */
+function upstreamHeaders(request) {
+  const headers = {'Content-Type': 'application/json'};
+
+  const ua = request.headers.get('User-Agent');
+  if (ua) headers['User-Agent'] = ua;
+
+  const ip =
+    request.headers.get('CF-Connecting-IP') ||
+    request.headers.get('X-Forwarded-For')?.split(',')[0].trim();
+  if (ip) headers['X-Forwarded-For'] = ip;
+
+  return headers;
 }
 
 /**

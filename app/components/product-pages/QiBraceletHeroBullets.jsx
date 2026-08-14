@@ -44,7 +44,7 @@ export const BULLET_TEXTE = {
  */
 const LEGACY_HIDDEN = `<p class="p1"><br></p>
 <p class="qi-price qi-price_fundable"><meta charset="utf-8"><span>1.578</span><span>,-\u20AC</span></p>
-<p class="p1">inkl. MwSt, weltweiter Versand<br>Versandkostenfrei innerhalb Deutschland, ins europ\u00E4ische Ausland (z.B. Schweiz) fallen zus\u00E4tzlich Zollgeb\u00FChren an<br><br><br></p>
+<p class="p1">inkl. MwSt, weltweiter Versand<br>Versandkostenfrei innerhalb Deutschlands; nach \u00D6sterreich und in die Schweiz fallen Versandkosten laut Versandpolicy an (Zoll- und Importgeb\u00FChren sind im Preis enthalten)<br><br><br></p>
 <p class="qi-status qi-available">In drei Gr\u00F6\u00DFen erh\u00E4ltlich: S, M und L<br></p>
 <p style="color: #729f49;" class="qi-status qi-available"><span>Wirkung in Zellstudien best\u00E4tigt</span></p>
 <p class="qi-status qi-shipping">In 2-7\u00A0Tagen nach Versand bei dir\u00B9\u00A0</p>

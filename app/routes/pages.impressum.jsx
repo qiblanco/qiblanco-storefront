@@ -1,7 +1,9 @@
+import {canonicalLink} from '~/lib/seo';
+
 export const meta = () => [
   {title: 'Impressum | Qi Blanco'},
   {name: 'description', content: 'Impressum der Qi Blanco UG (haftungsbeschränkt)'},
-  {rel: 'canonical', href: '/pages/impressum'},
+  canonicalLink('/pages/impressum'),
 ];
 
 export function loader() {
@@ -88,6 +90,22 @@ export default function ImpressumPage() {
         <h3 style={{marginTop: '1.25rem', marginBottom: '0.4rem'}}>5. Rechtswirksamkeit dieses Haftungsausschlusses</h3>
         <p style={{lineHeight: '1.8'}}>
           Dieser Haftungsausschluss ist als Teil des Internetangebotes zu betrachten, von dem aus auf diese Seite verwiesen wurde. Sofern Teile oder einzelne Formulierungen dieses Textes der geltenden Rechtslage nicht, nicht mehr oder nicht vollständig entsprechen sollten, bleiben die übrigen Teile des Dokumentes in ihrem Inhalt und ihrer Gültigkeit davon unberührt.
+        </p>
+      </section>
+
+      <section style={{marginBottom: '2rem'}}>
+        <h2>Urheberrecht und Nutzungsvorbehalt</h2>
+        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+          Alle Inhalte dieser Website – insbesondere Texte, Bilder, Videos, Grafiken,
+          Produktbeschreibungen und deren Anordnung – sind urheberrechtlich geschützt. Die
+          Qi Blanco UG (haftungsbeschränkt) behält sich eine Nutzung ihrer Inhalte für
+          kommerzielles Text- und Data-Mining im Sinne von § 44b UrhG ausdrücklich vor.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          Dieser Nutzungsvorbehalt wird zusätzlich in maschinenlesbarer Form erklärt,
+          insbesondere über die Datei <code>/.well-known/tdmrep.json</code> (W3C TDM
+          Reservation Protocol), den HTTP-Header <code>tdm-reservation: 1</code> sowie die
+          Datei <a href="/robots.txt">/robots.txt</a>.
         </p>
       </section>
 

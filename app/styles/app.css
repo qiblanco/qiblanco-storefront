@@ -14,8 +14,31 @@
   --color-dark: #4A4741;
   --color-light: #fff;
   --color-accent-primary: rgb(242, 191, 114);
+  /* Gold-Rollen (Kontrast-Konzept 2026-08-12). --color-accent-primary ist die
+     FLAECHE. Als SCHRIFT auf hellem Grund reisst sie WCAG AA (1.68:1), darum
+     zwei eigene Rollen — gleicher Farbton, nur andere Helligkeit: */
+  --color-accent-ink: #856828;   /* Gold als SCHRIFT auf hellem Grund (>= 4.5:1) */
+  --color-on-accent: #2c2a26;    /* Schrift AUF einer Gold-Flaeche (>= 5.9:1) */
   --color-footer: #0a1127;
   --checkmark-color: #396e25;
+
+  /* Shop-Umschalter / Header-Icons — Token-Satz aus
+     homepage-bauer/shop-switch/konzeptplan.md Abschnitt 3. Wortgleich auch im
+     US-Liquid-Theme zu setzen; Gold erscheint AUSSCHLIESSLICH als
+     --shop-switch-active auf der aktiven Option (kein zweiter Goldton). */
+  --shop-switch-radius: 10px;
+  --shop-switch-gap: 8px;
+  --shop-switch-pad-y: 8px;
+  --shop-switch-pad-x: 10px;
+  --shop-switch-surface: #ffffff;
+  --shop-switch-ink: #4a4741;
+  --shop-switch-border: rgba(74, 71, 65, 0.14);
+  --shop-switch-shadow: 0 8px 24px rgba(74, 71, 65, 0.14);
+  --shop-switch-hover: rgba(74, 71, 65, 0.06);
+  --shop-switch-active: rgba(242, 191, 114, 0.18);
+  --shop-switch-flag-w: 20px;
+  --shop-switch-flag-h: 14px;
+  --shop-switch-flag-radius: 2px;
 }
 main {
   padding-top: calc(var(--header-height) + 40px);
@@ -43,7 +66,7 @@ footer *{
 * --------------------------------------------------
 */
 .color-accent-main {
-  color: var(--color-accent-primary);
+  color: var(--color-accent-ink);
 }
 .text-center {
   text-align: center;
@@ -103,7 +126,7 @@ footer *{
   text-align: center;
   max-width: 500px;
   width: 100%;
-  color: var(--color-dark)!important;
+  color: var(--color-on-accent)!important;  /* auf Gold: --color-dark war 3.83:1 */
   border: 2px solid var(--color-accent-primary);
   border-radius: 10px!important;
   background: var(--color-accent-primary);
@@ -467,10 +490,122 @@ aside h3 {
   height: 18px;
   width: 18px;
   font-size: 0.9em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  /* Zaehler sitzt auf der Gold-Flaeche: --shop-switch-ink (#4a4741) reisst dort
+     AA (3.83:1), sobald --color-accent-primary auf das LP-Gold #c9a14b zeigt. */
+  color: var(--color-on-accent);
   top: -5px;
   right: -5px;
   background: var(--color-accent-primary);
   border-radius: 1000px;
+}
+
+/*
+* --------------------------------------------------
+* Shop-Umschalter (DACH <-> USA) — Tokens siehe :root
+*
+* Die Optionen sind echte <a href> und tragen ihr Ziel bereits im gerenderten
+* HTML (siehe app/components/ShopSwitch.jsx). Diese Regeln kleiden das nur ein;
+* ohne CSS bleibt der Umschalter eine bedienbare Liste.
+* --------------------------------------------------
+*/
+.shop-switch {
+  position: relative;
+}
+.shop-switch__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y) var(--shop-switch-pad-x);
+  border: 1px solid var(--shop-switch-border);
+  border-radius: var(--shop-switch-radius);
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  transition: background 0.2s linear;
+}
+.shop-switch__trigger:hover {
+  background: var(--shop-switch-hover);
+}
+.shop-switch__trigger:focus-visible,
+.shop-switch__option:focus-visible,
+.header-account:focus-visible,
+.header-ctas a.openCart:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+.shop-switch__chevron {
+  transition: transform 0.2s ease;
+}
+.shop-switch__trigger[aria-expanded='true'] .shop-switch__chevron {
+  transform: rotate(180deg);
+}
+.shop-switch__flag {
+  display: block;
+  width: var(--shop-switch-flag-w);
+  height: var(--shop-switch-flag-h);
+  border-radius: var(--shop-switch-flag-radius);
+  flex: 0 0 auto;
+}
+.shop-switch__panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + var(--shop-switch-gap));
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  min-width: 168px;
+  background: var(--shop-switch-surface);
+  border: 1px solid var(--shop-switch-border);
+  border-radius: var(--shop-switch-radius);
+  box-shadow: var(--shop-switch-shadow);
+}
+.shop-switch__panel--offen {
+  display: block;
+}
+.shop-switch__option {
+  display: flex;
+  align-items: center;
+  gap: var(--shop-switch-gap);
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y) var(--shop-switch-pad-x);
+  border-radius: calc(var(--shop-switch-radius) - 4px);
+  color: var(--shop-switch-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.shop-switch__option:hover {
+  background: var(--shop-switch-hover);
+}
+.shop-switch__option--aktiv {
+  background: var(--shop-switch-active);
+  font-weight: 600;
+}
+.shop-switch__label {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+/* Kunden-Login: gleiche Trefferflaeche und Strichstaerke wie der Warenkorb. */
+.header-account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y);
+  border: 1px solid var(--shop-switch-border);
+  border-radius: 1000px;
+  color: currentColor;
+  transition: background 0.2s linear;
+}
+.header-account:hover {
+  background: var(--shop-switch-hover);
 }
 .header-menu-mobile-toggle {
   @media (min-width: 48em) {
@@ -501,7 +636,9 @@ aside h3 {
 .header-ctas {
   align-items: center;
   display: flex;
-  grid-gap: 1rem;
+  /* 8pt-Raster statt 1rem: die Icon-Reihe traegt seit dem Umschalter vier
+     Elemente statt zwei und soll in beiden Shops denselben Abstand haben. */
+  grid-gap: var(--shop-switch-gap);
 }
 
 .header-ctas > * {
@@ -534,17 +671,36 @@ aside h3 {
   text-decoration: none;
   background: #000000;
 }
+/* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
+   wrap happens cleanly between them, never mid-phrase. */
+.Header-AnnouncementBanner .banner-line {
+  white-space: nowrap;
+}
 @media (max-width: 749px) {
+  /* No ellipsis truncation: the units wrap as whole, centered lines. The
+     textual " - " separator is desktop-only; column-gap spaces the units
+     when they still share one line. */
   .Header-AnnouncementBanner a p {
     font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.4em;
+    row-gap: 0.1em;
+    line-height: 1.45;
     max-width: 100%;
-    display: block;
+  }
+  .Header-AnnouncementBanner .banner-offer-sep {
+    display: none;
   }
   .Header-AnnouncementBanner a {
     padding: 0.5rem 0.75rem;
+  }
+}
+@media (max-width: 374px) {
+  /* very narrow devices: line 1 (stars + 14.000 claim) must fit w/o overflow */
+  .Header-AnnouncementBanner a p {
+    font-size: 0.7rem;
   }
 }
 .header-menu-desktop {
@@ -2034,11 +2190,16 @@ ul.submenu li a {
   transform: translateY(-50%);
   transition: 0.3s opacity linear;
 }
+/* Farbe auf dunklem Grund (rgb(8,9,24)) EXPLIZIT — geerbt waere es --color-dark
+   (#4a4741 = 2.14:1). Das Geschwister-Element .TextContent-End setzt genau das
+   seit jeher; hier fehlte es. */
 .ScrollMikroskopvideo .VideoOverlay .TextContent-Start h2 {
   font-size: 2.5rem;
+  color: var(--color-light);
 }
 .ScrollMikroskopvideo .VideoOverlay .TextContent-Start p {
   font-size: 1.5rem;
+  color: var(--color-light);
 }
 .ScrollMikroskopvideo .VideoOverlay .TextContent-End {
   position: absolute;
@@ -2149,7 +2310,7 @@ ul.submenu li a {
   margin-top: 100px;
 }
 .FeaturedProduct h3 {
-  color: var(--color-accent-primary);
+  color: var(--color-accent-ink);
 }
 .FeaturedProduct .FeaturedProduct_Links {
   display: flex;
@@ -2657,15 +2818,24 @@ ul.submenu li a {
   }
 }
 .openCart {
-  padding: 10px;
-  border: 1px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: var(--shop-switch-pad-y);
+  border: 1px solid var(--shop-switch-border);
   border-radius: 1000px;
-  opacity: 0.5;
-  transition: 0.2s all linear;
+  /* Frueher opacity: 0.5 auf dem ganzen Knopf. Das dimmt in CSS zwingend auch
+     das Kind — die goldene Zahl-Blase wurde dadurch blass, und genau sie muss
+     seit der Angleichung auch die 0 lesbar zeigen. Statt der Deckkraft
+     zurueckgenommen ist jetzt der Rahmen (--shop-switch-border). */
+  opacity: 1;
+  transition: 0.2s background linear, 0.2s border-color linear;
 }
 .openCart:hover {
-  opacity: 1;
-  border: 1px solid currentColor;
+  background: var(--shop-switch-hover);
+  border: 1px solid var(--shop-switch-border);
 }
 .ProductDescription ul {
   margin-top: 30px;
@@ -3942,6 +4112,39 @@ ul.kakao-children li {
   }
 }
 
+/* Video-Sound-Toggle (ImgixVideo, Job bl-20260803T232952Z-b702ec, 2026-08-03) */
+.ImgixVideo-wrap {
+  position: relative;
+}
+.ImgixVideo-wrap video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.ImgixVideo-sound-toggle {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s;
+}
+.ImgixVideo-sound-toggle:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+.ImgixVideo-sound-toggle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 /* Google Rating Badge */
 .google-rating-badge {
   display: flex;
@@ -4275,13 +4478,15 @@ ul.kakao-children li {
   margin-top: 10px;
   opacity: 0.8;
 }
+/* Ruhig, aber lesbar: opacity 0.7 auf --color-dark ergab #7f7c77 = 3.93:1.
+   Statt Deckkraft jetzt ein expliziter, gedaempfter Ton (5.41:1). */
 .ScrollScrubVideo-fussnote {
   margin: -70px auto 100px;
   padding: 0 24px;
   max-width: 680px;
   text-align: center;
   font-size: 0.8125rem;
-  opacity: 0.7;
+  color: #6b665d;
 }
 @media screen and (max-width: 749px) {
   .ScrollScrubVideo {
@@ -4339,3 +4544,527 @@ ul.kakao-children li {
     transition: none;
   }
 }
+
+/* ═══ STUDIEN-KACHEL-ANSICHT (geteilt) ═══════════════════════════════════
+   Regeln zu app/components/reusables/StudienSlider.jsx. Bis 2026-07-27 lagen
+   sie in app/styles/exclusive-solutions.css und waren damit an EINE Route
+   gebunden. Seit dem Elina-Wunsch "Studien-Kachel-Ansicht auch auf
+   /pages/qione-2-pro-2x" stehen sie hier im global geladenen app.css --
+   dieselbe Heimat, die .InfoSlider und .ScrollScrubVideo als geteilte
+   Bausteine schon haben. Damit braucht keine Route einen Extra-Link und die
+   Kachel-Ansicht ist überall verfuegbar, wo die Komponente gerendert wird.
+   Die Selektoren sind UNVERAENDERT uebernommen (kein Scope-Wechsel, keine
+   Spezifitaets-Änderung) -- /pages/exclusive-solutions rendert dadurch
+   unveraendert. Der ghx-Praefix bleibt aus genau diesem Grund stehen. */
+/* ───────── Studien-Slider (Elina-Layout) ───────── */
+.ghx-studien { margin-top: 32px; }
+.ghx-studien__track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 4px 14px;
+  scrollbar-width: thin;
+}
+.ghx-studie {
+  flex: 0 0 min(340px, 78vw);
+  scroll-snap-align: start;
+  background: #fff;
+  border: 1px solid rgba(28, 25, 23, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(28, 25, 23, 0.06);
+}
+.ghx-studie__title {
+  font-size: 1.05rem;
+  line-height: 1.35;
+  margin: 0;
+  text-align: left;
+}
+.ghx-studie__preview { display: block; }
+.ghx-studie__preview img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+.ghx-studie__source {
+  margin: 0;
+  margin-top: auto;
+  font-size: 0.88rem;
+  color: rgb(90, 90, 90);
+  text-align: left;
+}
+.ghx-studien__nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.ghx-studien__arrow {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(28, 25, 23, 0.15);
+  background: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.ghx-studien__arrow:hover { background: #f5f5f4; }
+.ghx-studien__footnote { text-align: center; margin: 18px 0 10px; }
+
+/* Slider-Interaktions-Standard (GL-DES-0012): Desktop-Maus-Drag am
+   Studien-Track (Touch scrollt weiterhin nativ ueber overflow-x). */
+.ghx-studien__track {
+  cursor: grab;
+}
+.ghx-studien__track.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* ═══ DIE NAHT ZUR CLAUDE-ANSICHT DES ASSISTENTEN ═══════════════════════════
+   Job 20260731-claude-ansicht-header-dropdown-docked-fix.
+   Christian, 2026-07-30/31: "In der neuen Claude-Ansicht (docked rechts) passt
+   sich der Header oben — der Dropdown mit der Menueleiste — nicht an das
+   schmalere docked-Format an. Man sieht nur einen Teil davon."
+
+   ── WAS HIER PASSIERT UND WARUM ES NICHT DER ASSISTENT LOEST ──────────────
+   Der Assistent (qi-salesbot) laeuft als cross-origin iframe. Steht er als
+   Claude-Ansicht, legt sein Loader eine 520 px breite Spalte an den rechten
+   Bildrand und gibt dem <html> DIESER Seite `padding-right: 520px`. Der
+   normale Seiteninhalt reflowt dadurch sauber nach links.
+
+   `position: fixed`-Elemente folgen einem Innenabstand am <html> NICHT — ihr
+   Bezugsrahmen ist der Viewport. Genau deshalb blieb unser Kopf 1440 px breit,
+   waehrend die Seite darunter nur noch 920 px hatte. GEMESSEN am 2026-07-31
+   live an /pages/chat-bot (1440x900, Claude-Ansicht offen):
+
+     .header-wrapper   x=0    w=1440  ->  520 px unter dem Panel
+     .header           x=36   w=1368  ->  484 px unter dem Panel
+     .header-ctas      x=1346 w=42    ->  VOLLSTAENDIG verdeckt (Warenkorb,
+                                          Burger — nicht sicht-, nicht klickbar)
+     Menuepunkt "Mehr"        right=1028 -> ganz weg
+     Menuepunkt "Online Kurse" right=934 -> angeschnitten
+     .submenu (Mega-Menue)    w=1440, Inhalt bis x=1042 -> 122 px verdeckt
+                                          (bei 1280 px Wirt: 202 px)
+
+   Der Loader KANN das nicht selbst richten: er kennt fremdes Layout nicht und
+   duerfte fremde fixe Elemente nicht raten (ausformuliert in qi-salesbot
+   src/lib/docked.ts, "Drei Grenzen", Punkt (a)). Er stellt stattdessen zwei
+   Signale am <html> bereit — die Klasse `qb-chat-docked` und die Variable
+   `--qb-chat-dock-breite` —, und DAS HIER ist der vorgesehene Verbraucher.
+   Der Vorgaenger-Job hat diese Naht ausdruecklich offen hinterlassen.
+
+   ── WARUM ES NICHT BEIM VERSCHMAELERN BLEIBT ──────────────────────────────
+   Ein 520 px schmalerer Kopf haette die Menueleiste bei kleineren Schirmen
+   nur aus dem Panel heraus in den Ueberlauf geschoben: bei 1024 px Wirt
+   bleiben 504 px Seitenflaeche, die Desktop-Navigation braucht rund 731.
+
+   Deshalb wird die Seitenflaeche auf die EIGENEN Umbruchpunkte dieser Datei
+   abgebildet, statt neue Zahlen zu erfinden — die Seite soll sich verhalten
+   wie ihre TATSAECHLICHE Breite, nicht wie der Viewport:
+
+     Seitenflaeche >= 1024 px  ->  volle Desktop-Navigation   (ab Wirt 1544)
+     Seitenflaeche  750-1023   ->  Tablet-Rezept dieser Datei (Wirt 1270-1543)
+     Seitenflaeche  <  750 px  ->  Burger dieser Datei        (Wirt <= 1269)
+
+   Die Wirt-Kanten sind reine Addition: 1269 = 749 + 520, 1543 = 1023 + 520.
+   Die 520 ist DOCK_BREITE aus qi-salesbot/src/lib/docked.ts. Media-Queries
+   koennen keine Custom-Property lesen, diese beiden Zahlen sind deshalb die
+   EINZIGE harte Kopplung an jenen Wert — qi-salesbot/bin/kopf-naht-probe
+   prueft sie (Block "naht") und wird rot, wenn dort jemand die Spaltenbreite
+   aendert, statt hier still falsch umzubrechen.
+
+   ── RUECKBAU ──────────────────────────────────────────────────────────────
+   Jede Regel haengt an `html.qb-chat-docked`. Die Klasse setzt ausschliesslich
+   der Loader und nur, solange die Spalte steht. Im Overlay-Zustand (der
+   Umschalt-Knopf im Kopf des Chats) und auf dem Handy (dort gibt es die
+   Claude-Ansicht baulich nicht) faellt dieser ganze Block ersatzlos weg — der
+   Kopf ist dann Byte fuer Byte der Bestand. Ein Kill-Schalter ist deshalb
+   nicht noetig: `CHAT_DOCKED=off` in qi-salesbot/config/docked.conf nimmt
+   Spalte, Knopf UND diesen Block gemeinsam zurueck.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Der Kopfbalken endet an der Panel-Kante statt am Bildrand.
+      `width` und nicht `right`: der Balken setzt `left: 0` UND `width: 100%`
+      — bei gesetzter Breite bliebe ein `right` wirkungslos. Fuer ein
+      fixiertes Element rechnet `100%` gegen den Viewport, die Rechnung geht
+      also gegen dieselbe Groesse, die auch das Panel belegt. */
+html.qb-chat-docked .header-wrapper {
+  width: calc(100% - var(--qb-chat-dock-breite, 0px));
+}
+
+/* 2. Das Mega-Menue. Es haengt per Portal am <body> und traegt seine Breite
+      inline (`width: 100vw`) — dagegen kommt nur `!important`, und weil die
+      Bestandsregel `.submenu` ihre Breite ebenfalls mit `!important` setzt,
+      entscheidet hier die hoehere Spezifitaet, nicht die Reihenfolge. */
+html.qb-chat-docked .submenu {
+  width: calc(100% - var(--qb-chat-dock-breite, 0px)) !important;
+}
+
+/* 3. Warenkorb-/Menue-Schubfach. Es ist der einzige Wirt-Bereich, den man
+      erst SEHEN kann, seit Regel 1 den Warenkorb-Knopf wieder freilegt —
+      ohne diese Zeile faehrt es genau ueber den Chat. Bezug ist der
+      Bestandswert `right: 25px` aus dem 1024er-Block weiter oben. */
+html.qb-chat-docked .overlay aside {
+  right: calc(25px + var(--qb-chat-dock-breite, 0px));
+}
+
+/* 4. Seitenflaeche 750-1023 px: das Tablet-Rezept dieser Datei
+      (@media 750-1023: gap 0.5rem, Schrift 0.85rem). Die Schriftgroesse
+      braucht hier `!important`, weil `.header-menu-item` seine 1rem bereits
+      mit `!important` setzt — dieselbe Falle, an der die Tablet-Regel oben
+      bis heute wirkungslos bleibt. */
+@media (min-width: 1270px) and (max-width: 1543px) {
+  html.qb-chat-docked .header-menu-desktop {
+    gap: 0.5rem;
+    margin-left: 1rem;
+  }
+  html.qb-chat-docked .header-menu-desktop .header-menu-item,
+  html.qb-chat-docked .header-menu-desktop p.header-menu-item {
+    font-size: 0.85rem !important;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+  }
+}
+
+/* 5. Seitenflaeche unter 750 px: der Burger dieser Datei. Der Knopf steht
+      ohnehin im Markup (`.header-menu-mobile-toggle`) und ist oberhalb 48em
+      nur ausgeblendet — es entsteht also KEIN zweiter Navigations-Bau,
+      sondern der bestehende wird sichtbar gemacht. */
+@media (max-width: 1269px) {
+  html.qb-chat-docked .header-menu-desktop {
+    display: none;
+  }
+  html.qb-chat-docked .header-menu-mobile-toggle {
+    display: inline-flex;
+  }
+}
+/* ═══ Ende Naht zur Claude-Ansicht ═══════════════════════════════════════ */
+
+/* ═══ NAHT ZUR CLAUDE-ANSICHT, TEIL 2: DIE FULL-BLEED-AUSBRUECHE ═════════════
+   Job 20260731-repair-claude-ansicht-scrollanim-schneidet-chatfenster.
+   Christian, 2026-07-31 (Screenshot /pages/chat-bot, Claude-Ansicht): die
+   Scroll-Animation des Mikroskop-Abschnitts rendert UEBER das angedockte
+   Chatfenster und schneidet es ab.
+
+   Teil 1 dieser Naht (weiter oben, Job 20260731-claude-ansicht-header-
+   dropdown-docked-fix) hat die `position: fixed`-Elemente des Wirts an die
+   Panel-Kante gezogen. Dieser Block schliesst die ZWEITE Klasse, die einem
+   `padding-right` am <html> baulich nicht folgt: Abschnitte, die per
+   VIEWPORT-MASS aus dem Fluss ausbrechen.
+
+   ── DER GEMESSENE BEFUND ──────────────────────────────────────────────────
+   Live an /pages/chat-bot, 1440x900, Claude-Ansicht offen (Panel x=920,
+   w=520, z-index 4900 aus components/SalesbotWidget.jsx):
+
+     .ScrollScrubVideoBlock   x=-260  w=1440  margin-left=-284px -> Kante 1180
+     .ScrollScrubVideo        z-index 10000   (> 4900 des Panels)
+     .VideoOverlay            position: sticky, 100vh, 1440 px breit
+     video                    min-width: 1440px (aus `min-width: 100vw`)
+
+   Ergebnis: von 36 Messpunkten INNERHALB der reservierten Spalte lieferten
+   18 nicht das iframe, sondern `.VideoOverlay` — die linken 260 der 520 px
+   gehoerten ueber die volle Hoehe der Wirt-Sektion. Genau Christians Bild.
+
+   ── WARUM DAS AUSGERECHNET HIER PASSIERT ──────────────────────────────────
+   Der Block ist ABSICHTLICH ein Full-Bleed-Ausbruch (Kommentar im Bestand:
+   "damit die Komponente auch INNERHALB gepaddeter LP-Sektionen viewport-breit
+   laeuft"). Das Rezept dafuer ist `width: 100vw` plus
+   `margin-left: calc(50% - 50vw)`. `vw` ist der VIEWPORT — ein Innenabstand
+   am <html> verkleinert es nicht. Der Ausbruch bricht also weiter auf die
+   volle Bildbreite aus, obwohl die Seite nur noch 920 px hat.
+
+   Der Loader kann das nicht selbst richten und sagt das ausdruecklich:
+   qi-salesbot/src/lib/docked.ts, "Drei Grenzen", Punkt (c) — und er lehnt
+   `overflow-x: clip` am <html> bewusst ab, weil das auf den Viewport
+   propagiert und dem Wirt jedes legitime Querscrollen naehme. Er stellt
+   stattdessen `qb-chat-docked` und `--qb-chat-dock-breite` bereit. Der Wirt
+   ist der vorgesehene Verbraucher; hier wird verbraucht.
+
+   ── WAS TRAEGT UND WAS ABSICHERT (einzeln gemessen, nicht geraten) ────────
+   Regel 7 (Breite) macht die Probe ALLEIN gruen: Stapel 0/18, kein Ueber-
+   stand, sticky haelt. Sie ist die Reparatur.
+   Regel 6 (Clip) macht allein zwar den Stapel gruen, laesst die Geometrie
+   aber ueberstehen — sie repariert nichts, sie BEGRENZT. Ihr Wert liegt beim
+   NAECHSTEN Full-Bleed-Bau, den niemand hier eintraegt: was in `body > main`
+   liegt, kann die Spalte dann weder bemalen noch Klicks abfangen — und zwar
+   unabhaengig von seinem z-index. Damit ist auch der Stapel-Teil des Befunds
+   (10000 > 4900) strukturell erledigt, ohne dass an einem einzigen
+   z-index-Wert gedreht werden muss.
+   VERWORFEN wurde genau das: den z-index der Sektion in der Claude-Ansicht
+   zu senken. Allein gemessen waere er gruen gewesen, neben 6+7 ist er
+   wirkungslos — und ein Stapel-Eingriff ohne Wirkung ist nur ein Risiko.
+
+   ── RUECKBAU ──────────────────────────────────────────────────────────────
+   Jede Regel haengt an `html.qb-chat-docked`. Im Overlay-Zustand (Knopf im
+   Kopf des Chats) und auf dem Handy faellt der Block ersatzlos weg — gemessen
+   nach dem Umschalten: Klasse weg, Block wieder 1440 px, `main` wieder
+   `overflow-x: visible`. Ein eigener Kill-Schalter ist deshalb nicht noetig:
+   CHAT_DOCKED=off in qi-salesbot/config/docked.conf nimmt Spalte, Knopf und
+   diesen Block gemeinsam zurueck.
+   Maschinelle Nachpruefung: qi-salesbot/bin/spalten-naht-probe (exit 0/2/4).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Die reservierte Seitenflaeche als EINE Groesse — damit die Rechnung nicht
+   in jeder Regel neu dasteht und beim naechsten Verbraucher auseinanderlaeuft.
+   Bewusst eine eigene Variable und keine Aenderung an --qb-chat-dock-breite:
+   jene gehoert dem Loader, diese uns. */
+html.qb-chat-docked {
+  --qb-seitenbreite: calc(100vw - var(--qb-chat-dock-breite, 0px));
+}
+
+/* 6. DER BACKSTOP: kein Ausbruch verlaesst die Seitenflaeche.
+
+      `body > main` und NICHT `main`: diese Seite fuehrt VIER <main>-Elemente
+      — drei davon stecken in den <aside>-Schubfaechern (Warenkorb, Menue,
+      Suche) und tragen ihr eigenes `overflow-x: scroll`. Ein nackter
+      `main`-Selektor haette deren Inhalte mitgeschnitten (gemessen, bevor es
+      jemand gesehen haette).
+
+      `clip` und nicht `hidden`: `hidden` machte `main` zum Scroll-Container
+      und loeste damit das sticky-Overlay der Scroll-Animation von der Seite.
+      `clip` klemmt, ohne zu scrollen — nachgemessen: Overlay klebt weiter bei
+      y=0 ueber zwei Scroll-Positionen. `overflow-y: visible` steht
+      ausdruecklich daneben, weil nur die Paarung clip/visible zulaessig ist;
+      hidden/visible wuerde der Browser still zu hidden/auto verbiegen.
+
+      Alte Safari-Staende (< 16) kennen `clip` nicht und lassen die Zeile
+      fallen. Das ist vertretbar, weil Regel 7 die eigentliche Reparatur ist
+      und ohne den Backstop auskommt — hier faellt eine Absicherung weg, kein
+      Fix. */
+html.qb-chat-docked body > main {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* 7. DIE REPARATUR: die Full-Bleed-Rechnung wird spaltenbewusst.
+      Dasselbe Rezept wie im Bestand (`50% - 50vw`), nur gegen die
+      Seitenflaeche statt gegen den Viewport gerechnet. Der Block bleibt also
+      voll ausbrechend — er bricht nur nicht mehr in fremdes Gebiet aus. */
+html.qb-chat-docked .ScrollScrubVideoBlock {
+  width: var(--qb-seitenbreite);
+  margin-left: calc(50% - var(--qb-seitenbreite) / 2);
+}
+
+/* 8. Das Video selbst traegt seine eigene Viewport-Zusage (`min-width: 100vw`,
+      dazu `width: auto !important` und `object-fit: cover`). Ohne diese Zeile
+      bliebe es 1440 px breit, obwohl sein Kasten nur noch 920 hat.
+      Der Bestands-Zwilling .ScrollMikroskopvideo steht hier mit drin: er
+      traegt dieselbe Zeile und liegt auf den Schwester-LPs — er ist auf
+      /pages/chat-bot heute nicht im DOM, waere aber morgen derselbe Fehler.
+      Kein `!important` noetig: `min-width` ist im Bestand ohne, und dieser
+      Selektor ist spezifischer. */
+html.qb-chat-docked .ScrollScrubVideo video,
+html.qb-chat-docked .ScrollMikroskopvideo video {
+  min-width: var(--qb-seitenbreite);
+}
+/* ═══ Ende Naht zur Claude-Ansicht, Teil 2 ═══════════════════════════════ */
+
+/* ═══ GOOGLE-REZENSIONEN-BEREICH + 4,8-KLICK (Job 20260731-google-rezensionen) ═══
+   Sitewide-Sektion (Ueberschrift + Live-Reputon + Badge) fuer Produktseiten,
+   das Fallback-Popup fuer Seiten ohne Sektion, und die Docked-Naht der
+   organischen PDP (Teil 3 der Claude-Ansicht-Naht, Muster #147/#148). */
+
+/* Anker-Scroll: Sektion nicht unter dem fixen Kopf landen lassen. */
+.GoogleRezensionenBereich {
+  scroll-margin-top: 150px;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+/* Responsive-Repair 2026-08-04 (Job bl-20260804T022554Z-a0de0e):
+   Die obere Sektion "Beeindruckende Kundenerfahrungen" ist seither das
+   primäre Sprungziel des 4,8-Klicks und trägt dafür den Anker
+   #kundenerfahrungen. Diese Regel deckt NUR den nativen Hash-/No-JS-Pfad
+   ab (Direktlink, Reload mit #kundenerfahrungen) — der Klick selbst rechnet
+   den Offset live in scrolleZuRezensionen(). Gemessen 2026-08-04 ist die
+   Kopf-Unterkante bei 360/390/768/1440 px 127-137 px hoch, 150 px deckt
+   alle Formate mit etwas Luft ab (gleicher Wert wie beim Schwester-Anker,
+   damit beide Sprungziele identisch sitzen). */
+.GoogleKundenerfahrungen {
+  scroll-margin-top: 150px;
+}
+.GoogleRezensionenBereich-titel {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+/* Fallback-Popup: zeigt GENAU dieselbe Sektion als Dialog. In der
+   Claude-Ansicht endet das Overlay an der Panel-Kante (Naht-Konvention:
+   --qb-chat-dock-breite aus dem qi-salesbot-Loader). z-index unter den
+   Bestands-Modals (ImageGalleryModal 10000), ueber Kopf + Chat-Panel (4900). */
+.GoogleRezensionenPopup {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: rgba(26, 26, 26, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+html.qb-chat-docked .GoogleRezensionenPopup {
+  right: var(--qb-chat-dock-breite, 520px);
+}
+.GoogleRezensionenPopup-inhalt {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px 16px 32px;
+}
+.GoogleRezensionenPopup-inhalt .GoogleRezensionenBereich {
+  margin: 0;
+  scroll-margin-top: 0;
+}
+.GoogleRezensionenPopup-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #1a1a1a;
+  padding: 6px;
+}
+@media (max-width: 749px) {
+  .GoogleRezensionenPopup {
+    padding: 12px;
+  }
+  .GoogleRezensionenPopup-inhalt {
+    max-height: 92vh;
+  }
+}
+
+/* ── Docked-Naht Teil 3: organische PDP (.product) ──────────────────────────
+   Christian-Bug 2026-07-31 ("links leer/weiss, rechts auch nicht gut"):
+   die Desktop-Galerie-Regeln (>=1024px: ProductImageWrapperSticky als Row,
+   Bild width:auto/aspect-ratio an max-height 75vh gekoppelt) haengen am
+   VIEWPORT und folgen dem padding-right der Claude-Ansicht nicht — bei
+   1440x900 mit Panel schrumpft das Produktbild auf 204x204 in einer
+   440px-Spalte, der Rest bleibt weiss. GEMESSENES SOLL = das eigene
+   Basis-Rezept bei echtem 920px-Viewport: Bild 440x440 (volle Spalte),
+   Thumbnails als Reihe darunter. Wirt-Kanten wie #147: eigene Umbruchpunkte
+   + 520px Dock-Breite (719.98+520 / 1023.98+520). */
+@media (min-width: 45em) and (max-width: 1239.98px) {
+  /* effektive Flaeche unter 720px -> das eigene Mobil-Rezept: 1 Spalte */
+  html.qb-chat-docked .product {
+    grid-template-columns: 1fr;
+    grid-gap: 2rem;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1543.98px) {
+  /* effektive Flaeche unter 1024px -> zurueck aufs Basis-Rezept der Galerie */
+  html.qb-chat-docked .ProductImageWrapperSticky {
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: none;
+  }
+  html.qb-chat-docked .product-image {
+    flex: none;
+    width: 100%;
+  }
+  html.qb-chat-docked .product-image img {
+    aspect-ratio: auto;
+    width: 100%;
+    max-height: none;
+  }
+  html.qb-chat-docked .ProductImages {
+    height: auto;
+  }
+  html.qb-chat-docked .ProductImages .product-image-list {
+    flex-direction: row;
+    align-self: auto;
+    width: 100%;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    overflow-x: auto;
+  }
+  /* Basis-Werte gegen die !important-Desktop-Regeln durchsetzen */
+  html.qb-chat-docked .ProductImages .product-image-list > img.thumb-image,
+  html.qb-chat-docked .ProductImages .product-image-list .ImageSeeMore {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+/* ═══ Ende Google-Rezensionen-Bereich + Docked-Naht Teil 3 ═══════════════ */
+
+/* ═══ ANZEIGEGROESSE AN DIE QUELLAUFLOESUNG BINDEN (GATE 12, bild-aufloesung) ══
+   Job 20260809-qione-2-pro-format-maengel-fix.
+
+   BEFUND (live gemessen 2026-08-09 auf /products/qione-2-pro): zwei Bilder
+   werden groesser dargestellt, als ihre Quelle Pixel hat — auf Geraeten mit
+   dpr>=2 sichtbar unscharf:
+     QiOne2Pro_04.jpg_1.webp   Quelle  600px, dargestellt bis 434 CSS-px (*2 = 868)
+     New_Project_1.webp        Quelle 1080px, dargestellt bis 868 CSS-px (*2 = 1736)
+
+   WARUM NICHT "groesseres Bild nachladen": nachgemessen — die Shopify-CDN
+   kann NICHT hochskalieren. `&width=1000` liefert bei beiden Dateien
+   unveraendert 600 bzw. 1080 px zurueck (HTTP 200, gleiche Kantenlaenge), und
+   hoehere Originale existieren weder auf der CDN (4 Namensvarianten je Datei
+   geprueft, alle 404) noch in einem lokalen Asset-Speicher. Ein `&width=`-
+   Parameter waere hier also ein Fix gewesen, der nichts aendert.
+
+   WAS HIER STATTDESSEN PASSIERT: die im JSX bereits deklarierte Wunschbreite
+   wird wieder wirksam. Beide Komponenten schreiben sie seit jeher hin —
+   Gitterchip.jsx `<img width={300}>`, CallToAction.jsx `<img width={500}>` —
+   aber `width: 50%` bzw. `flex: 1 0 50%` haben sie ueberstimmt und die Bilder
+   auf das Doppelte gedehnt. Das Attribut war die Absicht, die CSS-Regel der
+   Unfall.
+
+   WARUM AN dpr GEKOPPELT UND NICHT GLOBAL: die Bedingung ist woertlich
+   "Quellpixel < CSS-Breite * dpr". Auf dpr-1-Desktops reicht dieselbe Quelle
+   fuer die volle Breite (gemessen: desktop-1280/1440 waren nie beanstandet).
+   Eine globale Kappe haette die Bilder dort ohne jeden Gegenwert verkleinert.
+   Darum greift sie genau dort, wo die Unschaerfe entsteht.
+
+   RUECKWEG: diesen Block loeschen — es sind reine max-width-Zusaetze, kein
+   Bestandsselektor wurde geaendert. */
+@media (min-resolution: 2dppx) {
+  /* 600px Quelle / (2 * 0.9 Unschaerfe-Faktor) = 333px Obergrenze; 320 mit Reserve */
+  .Gitterchip .GitterchipImageWrapper img {
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  /* 1080px Quelle / (2 * 0.9) = 600px Obergrenze; 580 mit Reserve */
+  .CallToAction img {
+    max-width: 580px;
+    margin-inline: auto;
+  }
+  /* Studien-Kacheln: 620px Quelle / (2 * 0.9) = 344px Obergrenze; 330 mit
+     Reserve. GILT BEWUSST FUER BEIDE Kacheln, obwohl nur eine zu klein ist:
+     Seite 3 liegt mit 2480x3508 vor, Seite 4 nur mit 620x877. Eine Kappe
+     allein auf Seite 4 haette das nebeneinanderstehende Paar unterschiedlich
+     gross gemacht — ein Darstellungsfehler gegen einen anderen getauscht.
+
+     GEPRUEFT UND VERWORFEN, Seite 4 hochaufloesend zu ersetzen: der
+     naheliegende Weg waere, Seite 4 aus dem verlinkten Quell-PDF
+     (ABBSR-24_-31_3.pdf, liegt lokal) neu zu rendern — die Schwesterseiten
+     1-3 existieren ja als A4-300dpi-Fassung. Das ist FALSCH: die Kachel ist
+     ein gestaltetes "Cover Remake", nicht die PDF-Seite. Nachgemessen
+     2026-08-09: Pearson-Korrelation zwischen 300dpi-PDF-Render und
+     CDN-Kachel -0,009 bei mittlerer Kanaldifferenz 123/255 — zwei
+     verschiedene Bilder, trotz identischem Seitenverhaeltnis (0,707) und
+     passendem Dateinamen. Ein Austausch waere ein Inhaltsfehler gewesen,
+     kein Fix. Eine hochaufloesende Fassung von Seite 4 existiert serverweit
+     nicht; sie braucht neues Quellmaterial. */
+  .Studien .FlexContainer .Row .Column img {
+    max-width: 330px;
+    margin-inline: auto;
+  }
+}
+/* ═══ Ende Anzeigegroesse an die Quellaufloesung binden ══════════════════ */

@@ -8,6 +8,7 @@ import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIf
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
+import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 
 const LiveDataCtx = createContext({data: {products: []}});
 const useLp = () => useContext(LiveDataCtx);
@@ -23,7 +24,7 @@ const preisWert = (p) =>
 const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
 const getCompareAtMoney = (p) => {
   const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return v?.compareAtPrice || null;
+  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
 };
 // Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag)
 const compareLabelVon = (p) => {
@@ -321,7 +322,7 @@ function PricingSection() {
           </article>
         </div>
         <p className="lp-vp-pricing__fineprint">
-          Alle Produkte: 20 Tage risikofrei testen · 0% Finanzierung über Klarna · Kostenloser Versand · Käuferschutz
+          Alle Produkte: 20 Tage risikofrei testen · 0% Finanzierung über Klarna · Kostenloser Versand innerhalb Deutschlands · Käuferschutz
         </p>
       </div>
     </section>
@@ -424,7 +425,7 @@ function FinalCTA() {
           </a>
           <ul className="lp-vp-final-cta__trust">
             <li>0% Finanzierung über Klarna und PayPal</li>
-            <li>Kostenloser Versand</li>
+            <li>Kostenloser Versand innerhalb Deutschlands</li>
             <li>Käuferschutz</li>
           </ul>
         </div>

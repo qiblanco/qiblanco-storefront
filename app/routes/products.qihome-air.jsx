@@ -14,18 +14,17 @@ import {ProductImageList} from '~/components/ProductImageList';
 import { useState } from 'react';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import { QiHome } from '~/components/product-pages/QiHome';
+import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/qihome-air`,
-    },
+    canonicalLink('/products/qihome-air'),
   ];
 };
 
@@ -114,7 +113,9 @@ export default function Product() {
         <ImgixVideo videoPath="360-QiHome-1x1.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/3d-animation-qi-home-preview.webp?v=1740224642" />
       </div>
     </div>
-    <div className="product">
+    {/* id="product" = Anker-Ziel der "#product"-CTAs im QiHome-Content
+        darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
+    <div className="product" id="product">
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
@@ -156,6 +157,9 @@ export default function Product() {
       />
     </div>
       <QiHome /> 
+    {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+        Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+    <GoogleRezensionenBereich />
     </>
   );
 }
