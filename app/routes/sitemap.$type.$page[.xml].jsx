@@ -1,10 +1,25 @@
 import {getSitemap} from '@shopify/hydrogen';
+import {NICHT_INDEXIERBARE_SEITEN} from '~/lib/seo';
 
 const HIDDEN_PRODUCT_HANDLES = [
   'bundle-fundament',
   'bundle-unabhangig',
   'bundle-erholungs-residenz',
 ];
+
+/**
+ * Welche Handles fliegen aus welchem Sitemap-Typ?
+ *
+ * `pages` kam mit Stufe S0 (Index-Hygiene) dazu: eine Seite auf `noindex` zu
+ * setzen und sie gleichzeitig in der Sitemap anzubieten, ist ein Widerspruch,
+ * den die Search Console dauerhaft als Konflikt meldet. Die Handle-Liste ist
+ * DIESELBE, die `pages.$handle.jsx` für das robots-meta liest (Quelle
+ * ~/lib/seo) — genau deshalb steht sie dort und nicht hier.
+ */
+const VERSTECKTE_HANDLES = {
+  products: HIDDEN_PRODUCT_HANDLES,
+  pages: NICHT_INDEXIERBARE_SEITEN,
+};
 
 /**
  * @param {LoaderFunctionArgs}
@@ -21,7 +36,8 @@ export async function loader({request, params, context: {storefront}}) {
     },
   });
 
-  if (params.type !== 'products') {
+  const versteckt = VERSTECKTE_HANDLES[params.type];
+  if (!versteckt || versteckt.length === 0) {
     response.headers.set('Cache-Control', `max-age=${60 * 60 * 24}`);
     return response;
   }
@@ -29,8 +45,12 @@ export async function loader({request, params, context: {storefront}}) {
   const body = (await response.text()).replace(
     /<url>[\s\S]*?<\/url>/g,
     (urlEntry) =>
-      HIDDEN_PRODUCT_HANDLES.some((handle) =>
-        urlEntry.includes(`/products/${handle}`),
+      // Auf `</loc>` verankert statt loser Teilstring-Suche: sonst risse ein
+      // Handle auch seinen längeren Namensvetter mit raus (…-2, …-alt).
+      // Für die drei Bundle-Handles ist das wirkungsgleich zur früheren
+      // Form — es kann nur WENIGER entfernen, nie mehr.
+      versteckt.some((handle) =>
+        urlEntry.includes(`/${params.type}/${handle}</loc>`),
       )
         ? ''
         : urlEntry,

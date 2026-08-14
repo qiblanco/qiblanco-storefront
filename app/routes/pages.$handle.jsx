@@ -1,11 +1,23 @@
 import {useLoaderData} from 'react-router';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {istNichtIndexierbar, noindexMeta} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+export const meta = ({data, params}) => {
+  const tags = [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+  // Stufe S0 (Index-Hygiene): Entwicklungs-/Restseiten gehören nicht in den
+  // Index. Die Liste steht in ~/lib/seo, weil die Sitemap-Route sie ebenfalls
+  // liest — eine zweite Liste hier würde früher oder später abweichen.
+  //
+  // Bewusst NUR das robots-meta und KEIN X-Robots-Tag-Header: der Header
+  // brauchte einen Umbau der Loader-Rückgabe auf data(payload, {headers}),
+  // und dieser Loader bedient JEDE Shopify-Seite des Shops. Das Flächen-
+  // Risiko steht in keinem Verhältnis zum Nutzen eines zweiten Signals —
+  // Google honoriert `noindex` im meta-Tag vollständig.
+  if (istNichtIndexierbar(params?.handle)) tags.push(noindexMeta());
+  return tags;
 };
 
 /**
