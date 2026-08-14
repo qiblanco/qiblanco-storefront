@@ -1,12 +1,19 @@
 import {useLoaderData} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {blogMeta} from '~/lib/blog-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+export const meta = ({data, location}) => {
+  return blogMeta({
+    pfad: location?.pathname ?? '/blogs',
+    titel: data?.article?.seo?.title || data?.article?.title,
+    beschreibung: data?.article?.seo?.description,
+    bildUrl: data?.article?.image?.url,
+    typ: 'article',
+  });
 };
 
 /**
