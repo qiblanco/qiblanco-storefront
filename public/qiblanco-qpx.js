@@ -1,6 +1,25 @@
 /* eslint-disable no-unused-vars, no-empty, object-shorthand */
 /*!
- * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.4)
+ * qpx.js — Qi-Blanco First-Party Tracking-Pixel (v2.5)
+ *
+ * NEU in v2.5 (2026-08-14, Job 20260814-us-pixel-flush-dedup-sektionsdwell-
+ * wurzelfix; nach DACH portiert von 20260815-dach-storefront-qpx-v25-nachzug):
+ * SEKTIONS-DWELL UND DEDUP. (a) Die Dwell-Uhr hält an, wenn der Tab nach
+ * hinten geht (der IntersectionObserver feuert bei visibilitychange NICHT) --
+ * dwell_ms misst wieder Sichtzeit statt Wanduhr; zuvor standen dort bis 24 h
+ * bei attention_ms = 0. (b) dwell_ms ist raus aus dem Dedup-SCHLÜSSEL des
+ * 15-s-Timers: eine laufende Uhr kann kein Schlüssel sein, sonst ist jede
+ * Signatur neu, sobald EINE Sektion sichtbar ist (DACH gemessen: mean 8-11
+ * Fluesse je Pageview seit 01.08.). Der ZWANGS-Flush (hidden/pagehide)
+ * vergleicht weiter den VOLLEN Snapshot, sonst bliebe der Endstand stehen
+ * (83 % dwell-Verlust). KEIN neues Feld, Payload-Vertrag unveraendert.
+ *
+ * DACH-BESONDERHEIT gegenüber den beiden Schwester-Kopien: diese Datei trägt
+ * zusaetzlich den v2.4-SPA-Routenwechsel-Hook (qiblanco.com ist eine Hydrogen-
+ * SPA). Er setzt den Dedup-Zustand je Pageview zurück und MUSS deshalb beide
+ * neuen Zustände (lastKey UND lastVoll) mitziehen -- sonst wird der erste
+ * Flush eines neuen Pageviews gegen den Schlüssel der ALTEN Seite verglichen
+ * und still unterdrückt. Naht-Probe: probe_qpx_spa_dedup_naht.mjs.
  *
  * NEU in v2.4 (Google-Kampagnen-Capture, Job 20260726-storefront-tracking-
  * deploy): CLICK_KEYS zusaetzlich gad_campaignid (Google-Auto-Tagging-
@@ -212,7 +231,9 @@
     var attentionMs = 0;                                 // sichtbar + aktiv (5s-Raster)
     var lastActivity = Date.now();
     var sections = {};                                   // id -> {seen,dwellAcc,visibleSince,clicks}
-    var lastSent = "";                                   // Signatur des letzten Flushs
+    var lastKey = "";                                    // Schlüssel des letzten Flushs (ohne dwell_ms)
+    var lastVoll = "";                                   // voller Snapshot des letzten Flushs (mit dwell_ms)
+    var hiddenUnterdrueckt = 0;                          // inhaltsgleiche Zwangs-Fluesse (s. flush)
     // ---- Frustrations-Signale (v2.1, T2): dead/rage/error_click -----------
     // Additiv im bestehenden behavior-Flush; kumulativ je Pageview. ELEMENT-
     // basierte Verortung (sel + rx/ry relativ 0..1), NIE Seiten-x/y. Keine
@@ -225,10 +246,35 @@
     var lastMutation = 0, lastScrollTs = 0, unloading = false;
 
     function sec(id) {
-      if (!sections[id]) sections[id] = { seen: 0, dwellAcc: 0, visibleSince: 0, clicks: 0 };
+      // vis = GEOMETRISCH im Viewport (setzt der IntersectionObserver).
+      // visibleSince = laufende Uhr. Beide sind NICHT dasselbe: die Uhr läuft
+      // nur, wenn die Sektion geometrisch sichtbar ist UND der Tab vorne liegt.
+      if (!sections[id]) sections[id] = { seen: 0, dwellAcc: 0, visibleSince: 0, clicks: 0, vis: 0 };
       return sections[id];
     }
     function dwellOf(s, now) { return s.dwellAcc + (s.visibleSince ? now - s.visibleSince : 0); }
+    function tabSichtbar() {
+      // Fail-safe: kennt die Umgebung visibilityState nicht, gilt "sichtbar"
+      // (v2.0-Verhalten) -- ein unbekannter Zustand darf die Messung nicht toeten.
+      try { return d.visibilityState !== "hidden"; } catch (e) { return true; }
+    }
+    function dwellAnhalten(now) {                        // Tab geht nach hinten
+      for (var id in sections) {
+        if (!Object.prototype.hasOwnProperty.call(sections, id)) continue;
+        var s = sections[id];
+        if (s.visibleSince) { s.dwellAcc += now - s.visibleSince; s.visibleSince = 0; }
+      }
+    }
+    function dwellFortsetzen(now) {                      // Tab kommt nach vorne
+      // Nur für Sektionen, die der IntersectionObserver zuletzt als sichtbar
+      // gemeldet hat -- er feuert beim Tab-Wechsel NICHT, also müssen wir den
+      // geometrischen Zustand selbst mitfuehren (Feld vis).
+      for (var id in sections) {
+        if (!Object.prototype.hasOwnProperty.call(sections, id)) continue;
+        var s = sections[id];
+        if (s.vis && !s.visibleSince) s.visibleSince = now;
+      }
+    }
     function device() {
       try { return (w.matchMedia && w.matchMedia("(pointer:coarse)").matches) ? "mobile" : "desktop"; }
       catch (e) { return "desktop"; }
@@ -301,12 +347,44 @@
       return { attention_ms: attentionMs, scroll_max_pct: scrollMax,
                device: device(), sections: list, frust: frust };
     }
+    // Dedup-SCHLÜSSEL ohne dwell_ms. Begründung (gemessen 2026-08-14 am
+    // US-Zwilling, Job 20260814-us-pixel-flush-dedup-sektionsdwell-wurzelfix):
+    // dwell_ms ist eine LAUFENDE UHR. Solange eine Sektion sichtbar ist, ist
+    // jede Signatur neu, also greift der Vergleich in flush() nie -- 12 Fluesse
+    // in einer 3-min-Sitzung. Im Schlüssel stehen nur Größen, die sich an
+    // ECHTEM Verhalten aendern: seen (Stufenfunktion), clicks, attention_ms,
+    // scroll_max_pct, frust, device. dwell_ms bleibt in der NUTZLAST aktuell --
+    // diese Trennung ist der Unterschied zu "sende nie".
+    function schluessel(snap) {
+      var kern = [];
+      for (var i = 0; i < snap.sections.length; i++) {
+        var s = snap.sections[i];
+        kern.push({ id: s.id, seen: s.seen, clicks: s.clicks });
+      }
+      return JSON.stringify({ attention_ms: snap.attention_ms, scroll_max_pct: snap.scroll_max_pct,
+                              device: snap.device, sections: kern, frust: snap.frust });
+    }
     function flush(force) {
       var snap = snapshot();
       var sig = JSON.stringify(snap);
-      if (!force && sig === lastSent) return;            // 15s-Flush nur bei Aenderung
-      lastSent = sig;
+      // ZWEI Maßstäbe, weil die beiden Flush-Wege verschiedene Risiken haben:
+      //  - TIMER (alle 15 s, unbegrenzt oft): vergleicht den SCHLÜSSEL. Sonst
+      //    stuermt er, sobald eine Sektion sichtbar ist.
+      //  - ZWANGS-Flush (hidden/pagehide, je Pageview eine Handvoll): vergleicht
+      //    den VOLLEN Snapshot. Er ist die letzte Gelegenheit, den Endstand zu
+      //    retten -- würde er nur den Schlüssel prüfen, bliebe dwell_ms auf
+      //    dem Wert der letzten Schlüssel-Änderung stehen (Datenverlust).
+      var key = schluessel(snap);
+      if (force ? (sig === lastVoll) : (key === lastKey)) {
+        if (force) hiddenUnterdrueckt++;
+        return;
+      }
+      lastKey = key; lastVoll = sig;
       snap.pv_id = PV_ID; snap.seq = seq++;              // kumulativer Stand, Server-Upsert monoton
+      // BEWUSST NICHT Teil der Signatur -- ein mitgezähltes Feld würde selbst
+      // wieder Sends ausloesen. HINWEIS: der Receiver verwirft das Feld derzeit
+      // (store.insert_behavior liest es nicht) -- reine Client-Diagnose.
+      if (hiddenUnterdrueckt) snap.hidden_unterdrueckt = hiddenUnterdrueckt;
       track("behavior", snap);
     }
 
@@ -344,7 +422,8 @@
             var en = entries[i], id = anchorId(en.target);
             if (!id) continue;
             var s = sec(id), vis = en.isIntersecting && visEnough(en);
-            if (vis) { if (!s.visibleSince) s.visibleSince = now; }
+            s.vis = vis ? 1 : 0;                         // geometrischer Zustand, überlebt Tab-Wechsel
+            if (vis && tabSichtbar()) { if (!s.visibleSince) s.visibleSince = now; }
             else if (s.visibleSince) { s.dwellAcc += now - s.visibleSince; s.visibleSince = 0; }
           }
         }, { threshold: thr });
@@ -458,9 +537,17 @@
     // Flush: alle 15s nur bei Aenderung; bei hidden/pagehide IMMER.
     w.setInterval(function () { try { flush(false); } catch (e) {} }, 15000);
     d.addEventListener("visibilitychange", function () {
-      if (d.visibilityState === "hidden") { try { flush(true); } catch (e) {} }
+      // Der IntersectionObserver feuert beim Tab-Wechsel NICHT. Ohne diesen
+      // Handler liefe visibleSince im Hintergrund weiter -> dwell_ms misst die
+      // WANDUHR statt Sichtbarkeit. Anhalten passiert VOR dem Zwangs-Flush,
+      // damit der gerettete letzte Stand die echte Sichtzeit trägt.
+      var now = Date.now();
+      if (d.visibilityState === "hidden") { dwellAnhalten(now); try { flush(true); } catch (e) {} }
+      else { dwellFortsetzen(now); }
     });
-    w.addEventListener("pagehide", function () { unloading = true; try { flush(true); } catch (e) {} });
+    w.addEventListener("pagehide", function () {
+      unloading = true; dwellAnhalten(Date.now()); try { flush(true); } catch (e) {}
+    });
 
     // ---- v2.4: SPA-Routenwechsel — pv_id lebt je SEITE, nicht je JS-Modul ---
     // qiblanco.com ist eine Hydrogen-SPA. Ohne diesen Hook läuft boot() genau
@@ -478,7 +565,13 @@
         if (p === lastPath) return;
         lastPath = p;
         try { flush(true); } catch (e) {}   // alten Pageview mit ALTER pv_id abschließen
-        PV_ID = uuid(); seq = 0; lastSent = "";
+        // v2.5-NAHT: BEIDE Dedup-Zustände zuruecksetzen, nicht nur einen. Der
+        // neue Pageview startet mit leeren Akkumulatoren; bliebe lastKey auf dem
+        // Stand der Altseite, würde der erste Timer-Flush der NEUEN Seite gegen
+        // einen fremden Schlüssel verglichen -- und bei zufaelliger Gleichheit
+        // still unterdrückt, obwohl er eine neue pv_id trägt. hiddenUnterdrueckt
+        // ist eine Je-Pageview-Diagnose und darf nicht über die Grenze lecken.
+        PV_ID = uuid(); seq = 0; lastKey = ""; lastVoll = ""; hiddenUnterdrueckt = 0;
         scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
         sections = {}; frust = []; lastClick = null;
         rageChain = []; rageEmitted = false;
