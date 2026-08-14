@@ -7,8 +7,11 @@ import assert from 'node:assert/strict';
 
 import {
   CANONICAL_ORIGIN,
+  NICHT_INDEXIERBARE_SEITEN,
   absoluteCanonical,
   canonicalLink,
+  istNichtIndexierbar,
+  noindexMeta,
 } from '../app/lib/seo.js';
 
 // --- Der eigentliche Befund: es MUSS ein <link> werden, kein <meta> ---------
@@ -96,4 +99,96 @@ test('die gemeldeten Ziele bekommen je einen wirksamen Canonical', () => {
     assert.equal(d.tagName, 'link');
     assert.equal(d.href, `https://qiblanco.com${p}`);
   }
+});
+
+// ===========================================================================
+// Stufe S0 — Index-Hygiene (Job 20260814-seo-stufen-s0-s3-live-qiblanco)
+// ===========================================================================
+// Was hier GETESTET wird, ist der Vertrag: Liste + Helfer + die Naht gegen
+// Listen-Drift. Was hier BEWUSST NICHT getestet wird, ist die echte Sitemap —
+// eine handgebaute XML-Fixture würde meine eigene Vorstellung der Ausgabe
+// messen, nicht Shopifys. Dafür gibt es die Live-Probe des nachbau-audit.
+
+test('istNichtIndexierbar trennt die Entwicklungsseite von echten Seiten', () => {
+  assert.equal(istNichtIndexierbar('development-nicht-loschen'), true);
+  // Gegenprobe: der Detektor darf NICHT einfach immer true sagen.
+  for (const echt of ['studien', 'technologie', 'crystal-cacao', 'support']) {
+    assert.equal(istNichtIndexierbar(echt), false, `${echt} muss indexierbar bleiben`);
+  }
+  assert.equal(istNichtIndexierbar(undefined), false);
+  assert.equal(istNichtIndexierbar(''), false);
+});
+
+test('istNichtIndexierbar trifft NICHT den laengeren Namensvetter', () => {
+  // Genau die Substring-Kollision, gegen die der Sitemap-Filter auf </loc>
+  // verankert ist. Hier auf der Listen-Ebene abgesichert.
+  assert.equal(istNichtIndexierbar('development-nicht-loschen-2'), false);
+  assert.equal(istNichtIndexierbar('development-nicht-loschen-alt'), false);
+});
+
+test('noindexMeta ist ein robots-meta, das react-router als <meta> rendert', () => {
+  const d = noindexMeta();
+  assert.equal(d.name, 'robots');
+  assert.match(d.content, /noindex/);
+  // KEIN tagName: dieser Descriptor SOLL ein <meta> werden (anders als der
+  // Canonical). Ein versehentliches tagName='link' machte ihn wirkungslos.
+  assert.equal('tagName' in d, false);
+});
+
+test('die Liste ist nicht leer — sonst wäre der ganze Mechanismus stumm', () => {
+  // Eine Abdeckungs-Aussage über der leeren Menge ist wahr und wertlos:
+  // ohne diesen Test bliebe eine versehentlich geleerte Liste unbemerkt,
+  // und alle Tests oben blieben trotzdem gruen.
+  assert.ok(NICHT_INDEXIERBARE_SEITEN.length >= 1);
+  assert.ok(NICHT_INDEXIERBARE_SEITEN.includes('development-nicht-loschen'));
+});
+
+test('NAHT: die Sitemap-Route liest DIESELBE Liste, statt eine zweite zu fuehren', async () => {
+  // Der Sinn der geteilten Liste ist, dass "noindex gesetzt" und "aus der
+  // Sitemap raus" nicht auseinanderlaufen können. Genau das prueft dieser
+  // Test — er wird rot, sobald jemand in der Sitemap-Route wieder ein eigenes
+  // Handle-Literal einfuehrt.
+  const {readFile} = await import('node:fs/promises');
+  const {fileURLToPath} = await import('node:url');
+  const pfad = fileURLToPath(
+    new URL('../app/routes/sitemap.$type.$page[.xml].jsx', import.meta.url),
+  );
+  const quelle = await readFile(pfad, 'utf8');
+  // Auf die VERDRAHTUNG zielen, nicht auf den Namen: ein blosses
+  // /NICHT_INDEXIERBARE_SEITEN/ trifft auch die Import-Zeile und bliebe
+  // gruen, wenn jemand die Liste importiert und trotzdem ein eigenes Array
+  // einhaengt (im Mutationstest genau so passiert).
+  assert.match(
+    quelle,
+    /pages:\s*NICHT_INDEXIERBARE_SEITEN/,
+    'pages muss AN die geteilte Liste gehaengt sein, nicht an ein eigenes Array',
+  );
+  assert.match(quelle, /from\s+'~\/lib\/seo'/, 'Import muss aus ~/lib/seo kommen');
+  assert.equal(
+    quelle.includes("'development-nicht-loschen'"),
+    false,
+    'Sitemap darf das Handle NICHT als eigenes Literal fuehren (Listen-Drift)',
+  );
+  // Positiv-Kontrolle: die Datei wurde wirklich gelesen und ist die richtige.
+  assert.match(quelle, /getSitemap/, 'Fixture-Kontrolle: das ist die Sitemap-Route');
+});
+
+test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async () => {
+  // Dieser Test existiert wegen eines EIGENEN Messfehlers: die Tests oben
+  // prüfen den Helfer-Vertrag und die Sitemap-Naht — beim Mutationstest
+  // blieben aber ALLE 14 gruen, als `tags.push(noindexMeta())` aus der Route
+  // entfernt wurde. Ein Orakel, das die Verdrahtung nicht prueft, kodiert nur
+  // eine FORM des Defekts. Bewusst eine Quelltext-Prüfung: die Route lässt
+  // sich in nacktem node nicht importieren (~/-Alias + react-router), und die
+  // Naht ist hier statisch (ein Aufruf), nicht dynamisch.
+  const {readFile} = await import('node:fs/promises');
+  const {fileURLToPath} = await import('node:url');
+  const quelle = await readFile(
+    fileURLToPath(new URL('../app/routes/pages.$handle.jsx', import.meta.url)),
+    'utf8',
+  );
+  assert.match(quelle, /getriebe|export const meta/, 'Fixture-Kontrolle: Route hat ein meta()');
+  assert.match(quelle, /istNichtIndexierbar\(/, 'meta() muss die Liste ABFRAGEN');
+  assert.match(quelle, /noindexMeta\(\)/, 'meta() muss den noindex-Descriptor AUSGEBEN');
+  assert.match(quelle, /from\s+'~\/lib\/seo'/, 'beides muss aus der geteilten Quelle kommen');
 });

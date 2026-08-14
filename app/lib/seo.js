@@ -60,3 +60,49 @@ export function absoluteCanonical(pathname) {
 export function canonicalLink(pathname) {
   return {tagName: 'link', rel: 'canonical', href: absoluteCanonical(pathname)};
 }
+
+/**
+ * Shopify-Page-Handles, die NICHT in den Google-Index gehören.
+ *
+ * WARUM DIESE LISTE HIER STEHT UND NICHT IN DER ROUTE (Befund SEO-2026-W33,
+ * Stufe S0): sie hat ZWEI Leser — die Route `pages.$handle.jsx` (setzt
+ * `robots: noindex`) und die Sitemap-Route (wirft den Eintrag raus). Stünden
+ * zwei Listen nebeneinander, driften sie auseinander, und der häufigere Fall
+ * ist der gefährliche: Seite trägt `noindex`, steht aber weiter in der
+ * Sitemap — dann meldet die Search Console dauerhaft einen Konflikt, und
+ * niemand sieht ihn, weil beide Einzelstellen für sich richtig aussehen.
+ *
+ * BELEGTER ANLASS: `/pages/development-nicht-loschen` ist eine
+ * Entwicklungsseite und stand am 2026-08-14 auf Platz 4 der Suche nach
+ * "Qi Blanco Studien" — sie war NICHT intern verlinkt (0 Treffer im
+ * gerenderten HTML der Startseite), sondern ausschließlich über
+ * `sitemap/pages/1.xml` auffindbar (lastmod 2025-02-02). Der Discovery-Pfad
+ * ist also die Sitemap, und deshalb genügt `noindex` allein nicht.
+ *
+ * AUFNAHME-KRITERIUM: nur Seiten, die für Kunden keinen Zweck haben
+ * (Entwicklungs-/Test-/Rest-Seiten). Eine Seite, die Kunden nutzen sollen,
+ * gehört NIE hierher — dann ist die richtige Antwort besserer Inhalt, nicht
+ * Unsichtbarkeit.
+ * @type {string[]}
+ */
+export const NICHT_INDEXIERBARE_SEITEN = ['development-nicht-loschen'];
+
+/**
+ * Gehört dieser Page-Handle aus dem Index?
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istNichtIndexierbar(handle) {
+  return !!handle && NICHT_INDEXIERBARE_SEITEN.includes(handle);
+}
+
+/**
+ * meta-Descriptor, der eine Seite aus dem Index nimmt.
+ * `noindex` schließt den Index aus, `nofollow` verhindert, dass die Seite
+ * ihre Linkkraft weiterreicht — bei einer Entwicklungsseite ist beides
+ * gewollt.
+ * @returns {{name: 'robots', content: string}}
+ */
+export function noindexMeta() {
+  return {name: 'robots', content: 'noindex,nofollow'};
+}
