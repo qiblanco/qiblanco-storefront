@@ -127,6 +127,54 @@ export const MARKEN_PROFILE = [
 ];
 
 /**
+ * Wissensgraph-Entitäten für `sameAs`.
+ *
+ * WARUM DAS EINE ZWEITE LISTE IST UND NICHT MARKEN_PROFILE ERWEITERT — die
+ * Aufnahme-Regel ist eine ANDERE, und das ist der ganze Punkt:
+ * MARKEN_PROFILE verlangt den Nachweis von KONTROLLE (ein Zugang, der uns die
+ * Identität des Profils zurückmeldet). Auf ein Wikidata-Item trifft dieser
+ * Nachweis baulich NIE zu: Wikidata ist ein öffentlich editierbares Wiki, das
+ * niemandem gehört — auch uns nicht. Wer den Eintrag trotzdem unter die
+ * Kontroll-Regel schöbe, hätte diese Regel stillschweigend aufgeweicht, und
+ * die Liste verlöre genau die Aussage, die sie wertvoll macht.
+ *
+ * DIE REGEL HIER IST DER RÜCKVERWEIS: eine Wissensgraph-Entität wird nur
+ * aufgenommen, wenn sie IHRERSEITS auf unsere kanonische Domain zeigt
+ * (Property P856 "official website"). Für die Entitätsauflösung ist das sogar
+ * der stärkere Beleg als Kontrolle, weil er das Paar BEIDSEITIG macht: Seite
+ * -> Entität allein ist eine Behauptung, die jeder über jeden aufstellen kann;
+ * erst Entität -> Seite bestätigt sie. Genau diese Gegenseitigkeit ist es, was
+ * eine Suchmaschine für ein Knowledge-Panel braucht.
+ *
+ * GEPRÜFT WIRD AM LIVE-ITEM, NICHT AM QID AUS DEM AUFTRAGSTEXT. Bei der
+ * Aufnahme am 2026-08-14 wurde Special:EntityData/Q141070656.json abgerufen
+ * (HTTP 200) und P856 im Ergebnis gelesen — nicht die Angabe des Auftrags
+ * übernommen. Wer den nächsten Eintrag ergänzt, führt denselben Abruf aus.
+ *
+ * DIE HÄLFTE, DIE UNS NICHT GEHÖRT, KANN SICH ÄNDERN. Entfernt ein Fremder
+ * dort P856 oder hängt ihn auf eine andere Domain um, wird dieser Eintrag
+ * still zu einer unbestätigten Behauptung, ohne dass in diesem Repo eine Zeile
+ * fällt. Deshalb ist die Naht nicht bloß einmal geprüft, sondern steht unter
+ * einer laufenden Wache: seo-manager/pruefungen/probe_wikidata_paar.py misst
+ * BEIDE Richtungen und liest das QID aus der Live-Seite, statt es zu pinnen.
+ *
+ * @type {{url: string, qid: string, beleg: string}[]}
+ */
+export const WISSENSGRAPH_ENTITAETEN = [
+  {
+    url: 'https://www.wikidata.org/wiki/Q141070656',
+    qid: 'Q141070656',
+    beleg:
+      'wikidata.org/wiki/Special:EntityData/Q141070656.json gab am 2026-08-14 ' +
+      'HTTP 200 mit label "Qi Blanco", P31 (instance of) = Q4830453 ' +
+      '(business enterprise), P17 (country) = Q183 (Germany) und vor allem ' +
+      'P856 (official website) = https://qiblanco.com — das Item nennt also ' +
+      'UNSERE Domain als seine offizielle Website. Das ist die Rückrichtung ' +
+      'des Paars und damit der Beleg für diesen Eintrag.',
+  },
+];
+
+/**
  * Organization-Knoten. Bewusst rein faktische Stammdaten — keine Wirkungs-
  * oder Gesundheitsaussage, damit dieser Knoten claim-neutral bleibt.
  *
@@ -149,11 +197,27 @@ export function organizationSchema({logoUrl} = {}) {
       addressLocality: o.addressLocality,
       addressCountry: o.addressCountry,
     },
-    identifier: {
-      '@type': 'PropertyValue',
-      name: o.registergericht,
-      value: o.handelsregister,
-    },
+    // identifier ist bewusst IMMER ein Array, auch bei einem einzigen Eintrag.
+    // schema.org erlaubt jeder Property mehrere Werte, und eine Form, die je
+    // nach Listenlänge zwischen Objekt und Array springt, ist für jeden Leser
+    // die unangenehmere: er müsste beide Fälle behandeln, um an dieselbe
+    // Angabe zu kommen. Das Handelsregister steht zuerst und bleibt — die
+    // Wikidata-Kennung tritt daneben, nicht an seine Stelle.
+    identifier: [
+      {
+        '@type': 'PropertyValue',
+        name: o.registergericht,
+        value: o.handelsregister,
+      },
+      // Die QID zusätzlich als maschinenlesbare Kennung: sameAs trägt die
+      // Auflösung für Suchmaschinen, aber ein Konsument, der eine ID will,
+      // müsste sie sonst aus einer URL herausparsen.
+      ...WISSENSGRAPH_ENTITAETEN.map((e) => ({
+        '@type': 'PropertyValue',
+        propertyID: 'wikidata',
+        value: e.qid,
+      })),
+    ],
   };
   // Nur setzen, wenn wirklich eine URL vorliegt — ein leeres logo-Feld ist
   // ein kaputter Knoten, kein neutraler.
@@ -161,7 +225,14 @@ export function organizationSchema({logoUrl} = {}) {
   // Gleiche Regel wie beim logo: lieber kein sameAs als ein leeres Array.
   // Ein `sameAs: []` ist für eine Suchmaschine kein "wir haben keine
   // Profile", sondern ein kaputtes Feld.
-  const profile = MARKEN_PROFILE.map((p) => p.url);
+  // Beide Belegklassen laufen in EIN sameAs-Array: für die Suchmaschine ist
+  // das eine einzige Liste "dieselbe Entität, anderswo". Getrennt gehalten
+  // werden sie nur bei der AUFNAHME, weil dort zwei verschiedene Nachweise
+  // gelten (Kontrolle bzw. Rückverweis) — siehe die beiden Listen oben.
+  const profile = [
+    ...MARKEN_PROFILE.map((p) => p.url),
+    ...WISSENSGRAPH_ENTITAETEN.map((e) => e.url),
+  ];
   if (profile.length) knoten.sameAs = profile;
   return knoten;
 }
