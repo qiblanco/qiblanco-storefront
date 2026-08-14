@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {canonicalLink} from '~/lib/seo';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {loadCourseProducts} from '~/lib/course-products';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -11,7 +12,7 @@ export function links() {
 export const meta = ({data}) => {
   return [
     {title: `Qi Blanco | ${data?.page.title ?? ''}`},
-    {rel: 'canonical', href: '/pages/kakao-anwendung'},
+    canonicalLink('/pages/kakao-anwendung'),
   ];
 };
 
