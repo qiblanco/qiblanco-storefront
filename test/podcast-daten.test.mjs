@@ -11,6 +11,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  beschreibung,
   FOLGEN,
   GAESTE,
   PRO_SEITE,
@@ -24,6 +25,13 @@ import {
 
 const BASIS = 'https://qiblanco.com';
 
+// Folgen, deren YouTube-Beschreibung real KEINEN Fliesstext hergibt (hier: sie
+// bestand nur aus einem Link). Nichts wird erfunden — die Folge läuft mit
+// Titel und Video, die Schema-Beschreibung fällt auf den Titel zurück.
+// Die Liste ist SELBSTAUFLOESEND: bekommt die Folge doch Text, wird der Test
+// rot und verlangt, den Eintrag zu streichen. So bleibt keine stille Ausnahme.
+const OHNE_ORIGINALTEXT = new Set(['rMuIWLlI-9Y']);
+
 // --- Bestand ---------------------------------------------------------------
 
 test('jede Folge trägt die Felder, die Markup und Schema brauchen', () => {
@@ -34,8 +42,12 @@ test('jede Folge trägt die Felder, die Markup und Schema brauchen', () => {
     assert.match(f.d, /^\d{4}-\d{2}-\d{2}$/, `Datum unplausibel: ${f.id}`);
     assert.match(f.iso, /^PT/, `ISO-Dauer unplausibel: ${f.id}`);
     assert.ok(f.thumb.startsWith('https://i.ytimg.com/'), `kein echtes Poster: ${f.id}`);
-    assert.ok(f.txt.length > 0, `keine Beschreibung: ${f.id}`);
-    assert.ok(f.txt.join(' ').length >= 40, `Beschreibung zu duenn: ${f.id}`);
+    if (OHNE_ORIGINALTEXT.has(f.id)) {
+      assert.equal(f.txt.length, 0, `${f.id} hat jetzt Text — Ausnahme streichen`);
+    } else {
+      assert.ok(f.txt.length > 0, `keine Beschreibung: ${f.id}`);
+      assert.ok(f.txt.join(' ').length >= 40, `Beschreibung zu duenn: ${f.id}`);
+    }
   }
 });
 
@@ -113,6 +125,36 @@ test('R3: kein YouTube-Restmuell im Beschreibungstext', () => {
     const text = f.txt.join('\n');
     assert.ok(!/https?:\/\//.test(text), `URL im Text: ${f.id}`);
     assert.ok(!/^#\w+/m.test(text), `Hashtag-Zeile im Text: ${f.id}`);
+    for (const a of f.txt) {
+      // Haengendes Label: die URL dahinter ist weg, die Anrede blieb stehen.
+      assert.ok(
+        !(a.length < 80 && a.endsWith(':')),
+        `haengendes CTA-Label in ${f.id}: ${JSON.stringify(a)}`,
+      );
+      // Nackte Domain in einer kurzen Zeile = Kontaktzeile, kein Inhalt.
+      assert.ok(
+        !(a.length < 90 && /www\.[a-z0-9-]+\.[a-z]{2,}/i.test(a)),
+        `nackte Domain in ${f.id}: ${JSON.stringify(a)}`,
+      );
+    }
+  }
+});
+
+test('die Schema-Beschreibung ist tragfähig und je Folge verschieden', () => {
+  // Der Befund, der diesen Test erzwungen hat (adversariale Gegenprobe
+  // 2026-08-14): drei Folgen lieferten dieselben 65 Zeichen "Erfahre mehr und
+  // starte jetzt den vollständigen Kurs - gratis:" als description.
+  // Identische Beschreibungen sind für eine Suchmaschine dünner Inhalt — und
+  // genau dieser Text ist der Grund, warum es diese Seite gibt.
+  const gesehen = new Map();
+  for (const f of FOLGEN) {
+    const b = beschreibung(f);
+    assert.ok(b && b.trim().length > 0, `leere Beschreibung: ${f.id}`);
+    if (f.txt.some((a) => a.length >= 120)) {
+      assert.ok(b.length >= 120, `Beschreibung zu dünn trotz langem Text: ${f.id}`);
+    }
+    assert.equal(gesehen.get(b), undefined, `doppelte Beschreibung: ${f.id} = ${gesehen.get(b)}`);
+    gesehen.set(b, f.id);
   }
 });
 
