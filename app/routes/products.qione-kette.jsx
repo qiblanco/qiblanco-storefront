@@ -19,15 +19,18 @@ import {FAQ_QIONE_KETTE} from '~/data/product-faqs';
 import { useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
-import {canonicalLink} from '~/lib/seo';
+import {produktMeta} from '~/lib/produkt-seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [
-    {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    canonicalLink('/products/qione-kette'),
-  ];
+  return produktMeta({
+    pfad: '/products/qione-kette',
+    titel: `${data?.product?.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`,
+    bildUrl:
+      data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
+      data?.product?.images?.nodes?.[0]?.url,
+  });
 };
 
 /**

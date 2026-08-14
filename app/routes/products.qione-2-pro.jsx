@@ -6,15 +6,18 @@ import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuy
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
-import {canonicalLink} from '~/lib/seo';
+import {produktMeta} from '~/lib/produkt-seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [
-    {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    canonicalLink('/products/qione-2-pro'),
-  ];
+  return produktMeta({
+    pfad: '/products/qione-2-pro',
+    titel: `${data?.product?.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`,
+    bildUrl:
+      data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
+      data?.product?.images?.nodes?.[0]?.url,
+  });
 };
 
 /**
