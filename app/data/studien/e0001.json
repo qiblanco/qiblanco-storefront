@@ -1,0 +1,213 @@
+{
+ "id": "e0001",
+ "slug": "studie-immunzellen",
+ "seo": {
+  "titel": "Immunzellen & Handystrahlung: QiOne® 2 Pro | Qi Blanco",
+  "beschreibung": "In-vitro-Studie 2021: QiOne® 2 Pro verbesserte die Superoxid-Radikalbildung bestrahlter Neutrophiler auf 84,7 ± 7,0 % – gegenüber 60,5 ± 3,9 % ohne Schutz.",
+  "keyword": "QiOne 2 Pro Immunzellen Handystrahlung Studie",
+  "h1": "QiOne® 2 Pro und Immunzellen: Was die In-vitro-Studie von 2021 gemessen hat"
+ },
+ "eckdaten": {
+  "titelOriginal": "QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation",
+  "titelDeutsch": "QiOne® 2 Pro – Untersuchungen zu seinem Potenzial zur Ausschaltung unerwünschter zellulärer Wirkungen von Mobilfunkstrahlung",
+  "autor": "Prof. Dr. Peter C. Dartsch",
+  "institut": "Dartsch Scientific GmbH, Institute for Cell Biological Test Systems, Wagenfeld",
+  "journal": "Japan Journal of Medicine",
+  "band": "4(1): 484-488",
+  "doi": "10.31488/JJM.165",
+  "issn": "",
+  "eingereicht": "2021-04-08",
+  "angenommen": "2021-04-28",
+  "veroeffentlicht": "2021-04-30",
+  "lizenz": "",
+  "produkt": "QiOne® 2 Pro",
+  "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1679586513",
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510"
+ },
+ "laienSummary": {
+  "frage": "Kann QiOne® 2 Pro meine Immunzellen vor den Auswirkungen von Handystrahlung schützen?",
+  "antwort": "In einer Zellkulturstudie wurden menschliche Immunzellen (Neutrophile) vier Stunden lang Mobilfunkstrahlung ausgesetzt. Ohne Schutz sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf rund 60 % des Ausgangswertes. Mit QiOne® 2 Pro in der Nähe blieb diese Fähigkeit bei etwa 85 % erhalten – ein statistisch hochsignifikanter Unterschied. Die Zellen blieben also vitaler. Wichtig: Das sind Messungen im Labor an Zellkulturen, keine Aussagen über Wirkungen am Menschen.",
+  "punkte": [
+   "Handystrahlung (4 h, SAR 0,76 W/kg) reduzierte die Radikalbildung der Immunzellen auf 60,5 ± 3,9 % der unbestrahlten Kontrolle.",
+   "Mit QiOne® 2 Pro blieb die Radikalbildung bei 84,7 ± 7,0 % – nahezu 50 % besser als ohne Schutz.",
+   "Der Unterschied zwischen geschützten und ungeschützten Zellen war hochsignifikant (p ≤ 0,01).",
+   "Auch die geschützten Zellen erreichten das Niveau vollständig unbestrahlter Kontrollen nicht ganz."
+  ],
+  "einordnung": "Dies ist eine reine In-vitro-Studie an einer Zelllinie (HL-60) aus drei unabhängigen Experimenten – kein Nachweis einer Wirkung am lebenden Menschen. Das Gerät wurde vom Hersteller Qi Blanco bereitgestellt; eine Bestätigung durch unabhängige Labore liegt nicht vor."
+ },
+ "abschnitte": [
+  {
+   "id": "abstract",
+   "titel": "Zusammenfassung (Abstract)",
+   "absaetze": [
+    "QiOne® 2 Pro ist ein speziell entwickeltes Gerät, das ein statisches Feld erzeugt, das Wassermoleküle dazu anregt, in den kohärenten Zustand überzugehen. Da unser Körper je nach Alter zu etwa 60 bis 75 % aus Wasser besteht, könnte dieser kohärente Zustand der Wassermoleküle die zelluläre Widerstandsfähigkeit gegen äußere Einflüsse wie elektromagnetische Felder erhöhen. Menschliche Promyelozyten (HL-60-Zellen) wurden über einen Zeitraum von 6 Tagen durch Zugabe von 1,5 Vol-% Dimethylsulfoxid zum Kulturmedium zu funktionellen Neutrophilen (Granulozyten, die eine Schlüsselrolle in der angeborenen Immunabwehr spielen) differenziert. Funktionelle Neutrophile sind in der Lage, nach Stimulation hochreaktive Superoxid-Anion-Radikale zu erzeugen, und spielen eine Schlüsselrolle bei der vordersten Abwehr gegen eindringende mikrobielle Krankheitserreger in vivo.",
+    "Nach der Differenzierung wurden die kultivierten Zellen einem diskontinuierlich sprachübertragenden Mobiltelefon mit eingeschalteter WLAN-Verbindung und ausgeschaltetem Display ausgesetzt, das 4 Stunden lang auf die Zellen in einem externen Mini-Inkubator (einem kleinen, temperaturgesteuerten Behälter außerhalb des normalen Zellkulturbrutschranks) angewendet wurde. Die Zellen wurden mit und ohne Anwesenheit von QiOne® 2 Pro exponiert. Entsprechende Kontrollen wurden für denselben Zeitraum in einem anderen Mini-Inkubator ohne Mobilfunkstrahlung inkubiert. Schließlich wurden die Zellen zurück in den Standard-Inkubator überführt und weitere 20 Stunden kultiviert, bevor die Intensität der Superoxid-Anion-Radikalgenerierung im Verlauf eines induzierten oxidativen Bursts (eines Schubs hochreaktiver Sauerstoffradikale, der als Abwehrreaktion ausgelöst wird) untersucht wurde.",
+    "Ungeschützte Zellen zeigten nach der Exposition gegenüber Mobilfunkstrahlung eine deutlich verringerte Erzeugung von Sauerstoffradikalen, die von der Platzierung der Zellkultur in Bezug auf das aktive Mobiltelefon abhing. Im Gegensatz dazu zeigten die durch QiOne® 2 Pro geschützten Zellen an allen Positionen eine signifikant höhere Sauerstoffradikalerzeugung, was auf eine höhere Vitalität der Zellen aufgrund der Schutzwirkung von QiOne® 2 Pro hindeutet. Jedoch wurden selbst unter den Schutzbedingungen die Werte der unbehandelten Kontrollen ohne Mobilfunkstrahlung nicht vollständig erreicht. Zusammenfassend lässt sich sagen, dass die Wirksamkeit des angeborenen Immunsystems, die in vivo durch Mobilfunkstrahlung vermindert werden könnte, in der vorliegenden Studie durch QiOne® 2 Pro deutlich verbessert wird. Somit könnte die kontinuierliche Verwendung von QiOne® 2 Pro die persönliche Gesundheit und das Wohlbefinden durch eine stärkere Resistenz gegen äußere Einflüsse wie elektromagnetische Felder verbessern und aufrechterhalten.",
+    "Schlüsselwörter: Mobilfunkstrahlung, kohärentes Wasser, angeborenes Immunsystem, oxidativer Burst, Neutrophiler, HL-60, Zellkultur"
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "einleitung",
+   "titel": "Einleitung",
+   "absaetze": [
+    "Neutrophile (neutrophile Granulozyten) sind der häufigste Granulozytentyp, der etwa 60 % aller weißen Blutkörperchen beim Menschen ausmacht und normalerweise im Blutkreislauf zu finden ist. Sie bilden einen wesentlichen Bestandteil des angeborenen Immunsystems [1] und spielen daher eine Schlüsselrolle bei der vordersten Abwehr gegen eindringende mikrobielle Krankheitserreger. Sie sind auch einer der ersten Responder bei Entzündungen. Sie sind in der Lage, im Verlauf eines sogenannten oxidativen oder respiratorischen Bursts hochreaktive Superoxid-Anion-Radikale zu erzeugen [2,3].",
+    "Gemäß der Quantenelektrodynamik (QED, eine Theorie, die elektromagnetische Wechselwirkungen auf quantenphysikalischer Ebene beschreibt) ist flüssiges Wasser ein System aus zwei Phasen, von denen eine im kohärenten Zustand ist, in dem alle Moleküle in derselben Phase schwingen, während die andere aus unkorrelierten Molekülen in einem gasähnlichen Zustand besteht [4]. Das Aufeinandertreffen solcher unkorrelierter Wassermoleküle könnte die Zellkommunikation und -signalgebung beeinträchtigen [5,6]. Im Falle von kohärentem Wasser bewirken zusätzliche Wasserstoffbrückenbindungen, dass sich die Wassermoleküle in einer Struktur ohne jeglichen Einfluss anordnen. Somit sollten alle Signale im Körper die Zellen unbeeinflusst erreichen und sie dazu bringen, äußeren Einflüssen wie elektromagnetischen Feldern auf eine sicherere Weise zu widerstehen.",
+    "Gemäß dem Hersteller und Vertreiber, Qi Blanco UG (haftungsbeschränkt), D-97711 Maßbach, Deutschland, enthält QiOne® 2 Pro einen Gitterchip aus einer speziell entwickelten Goldlegierung, der ein statisches Feld erzeugt, das die Wassermoleküle im Körper dazu anregt, in einen kohärenten Zustand einzutreten (https://www.qiblanco.com). Da unser Körper je nach Alter zu etwa 60 bis 75 % aus Wasser besteht, beeinflusst dieser kohärente Zustand der Wassermoleküle die Zellen unseres gesamten Körpers.",
+    "In der vorliegenden Studie wurden aktuelle Bioassays (biologische Testverfahren) mit funktionellen Neutrophilen verwendet, um zu untersuchen, ob die Verwendung von QiOne® 2 Pro zu einem Schutz gegen unerwünschte Mobilfunkstrahlung führen könnte."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "material-methoden",
+   "titel": "Material und Methoden",
+   "absaetze": [
+    "QiOne® 2 Pro wurde von Qi Blanco UG (haftungsbeschränkt), D-97711 Maßbach, Deutschland, für die Dauer der Experimente zur Verfügung gestellt. Das Gerät ist ein Gitterchip der zweiten Generation aus einer speziell entwickelten Goldlegierung mit achtfacher Stärke, der ein statisches Feld erzeugt, das die Wassermoleküle im Körper dazu anregt, in einen kohärenten Zustand einzutreten (https://www.qiblanco.com).",
+    "Die Untersuchungen wurden mit menschlichen Promyelozyten (Zelllinie HL-60; ACC-3; ECACC 98070106; Leibniz-Institut; DSMZ German Collection for Microorganisms and Cell Cultures, Braunschweig, Deutschland) in den Subkultivierungsstufen (Passagen) 31 bis 36 über einen Zeitraum von mehr als einem Monat durchgeführt. Die Zellen wurden routinemäßig in RPMI 1640-Medium kultiviert, das mit 10 % Wachstumsmischung und 0,5 % Gentamycin supplementiert war. Die nicht adhärenten Zellen wurden routinemäßig als Suspensions-Massenkulturen kultiviert und zweimal wöchentlich mit frischem Kulturmedium regelmäßig subkultiviert. Die Kulturen wurden in einem Brutschrank bei 37 °C und einer Atmosphäre von 5 % CO2 und 95 % Luft bei fast 100 % Luftfeuchtigkeit inkubiert. Alle Zellreagenzien wurden von Pan-Biotech, Aidenbach, Deutschland, bezogen.",
+    "Für die Experimente wurden die Zellen als Suspensionskulturen in speziellen Kulturflaschen mit belüftetem Deckel (25 cm² Wachstumsfläche; TPP Schweiz, Faust Lab Science, Klettgau, Deutschland) kultiviert, die dafür ausgelegt sind, den Gasaustausch zwischen dem Kulturmedium und der normalen Luft mit ihrer geringen CO2-Konzentration während der Behandlung zu hemmen, damit keine pH-Änderungen entstehen.",
+    "Durch Zugabe von 1,5 % Dimethylsulfoxid (DMSO) zum Kulturmedium wurden die Zellen über einen Zeitraum von 6 Tagen zu funktionellen Neutrophilen differenziert, die in der Lage sind, nach Zugabe von Phorbol-12-Myristat-13-Acetat (Sigma-Aldrich, Deisenhofen, Deutschland) Superoxid-Anion-Radikale zu erzeugen [7–11].",
+    "Abschließend wurden die Zellen für jede Versuchsreihe durch zwei Zentrifugationsschritte (6 min bei 190 × g) und wiederholte Waschungen in phosphatgepufferter Salzlösung mit Kalzium und Magnesium vorbereitet. Schließlich wurden 40–60 µl Aliquote der in phosphatgepufferter Salzlösung mit Kalzium und Magnesium, die 10 mM Glukose enthielt, resuspendierten Zellen für die Tests entnommen.",
+    "Die reaktiven Superoxid-Anion-Radikale in der Reaktionsmischung verursachten die Spaltung des Tetrazolium-Farbstoffs WST-1 (Roche Diagnostics, Mannheim, Deutschland), der ebenfalls in der Reaktionsmischung vorhanden war. Die Menge der in der Reaktionsmischung vorhandenen Superoxid-Anion-Radikale war direkt mit der Farbänderung des Farbstoffs korreliert. Die optische Dichte wurde zu verschiedenen Zeitpunkten bis zu 45 min als Differenzmessung ΔOD = 450 – 690 nm mit einem Elisareader (BioTek ELx 808 mit Software Gen 5 Version 3.00) aufgezeichnet und mit Microsoft Excel 2016 berechnet.",
+    "Die Promyelozyten, die über 6 Tage zu funktionellen Neutrophilen differenziert worden waren, wurden der Strahlung eines handelsüblichen Mobiltelefons eines führenden Markenherstellers mit einem SAR-Wert (Spezifische Absorptionsrate, ein Maß für die vom Körper aufgenommene Strahlungsenergie) von 0,76 W/kg ausgesetzt [12]. Es wurde keine Unterscheidung zwischen thermischer und nicht-thermischer Strahlung getroffen, da beide auch in der Realität beim Telefonieren und bei der Nutzung von WLAN vorhanden sind und Auswirkungen auf den menschlichen Körper haben.",
+    "Das Versuchsdesign wurde so gestaltet, dass zwei Kulturflaschen mit den Zellen auf dem Display des Mobiltelefons und zwei Kulturflaschen unterhalb seiner Rückseite nahe den Energiezellen und der Antenne platziert wurden. Das Mobiltelefon übertrug Sprache und Umgebungsgeräusche diskontinuierlich; die WLAN-Funktion war eingeschaltet und das Display war ausgeschaltet. Zur Verdeutlichung des Versuchsaufbaus und der Positionen der Flaschen und ihrer Bezeichnung (Abbildung 1). Dies entsprach der realen Situation einer Strahlungsrichtung zum Benutzer hin oder vom Benutzer weg. Durch dieses Versuchsdesign konnten auch unterschiedliche Strahlungsintensitäten in verschiedenen lokalen Bereichen des Mobiltelefons untersucht werden. Es wurden drei unabhängige Experimente mit Vierfach-Kulturflaschen durchgeführt.",
+    "Die gesamte Expositionszeit gegenüber dem aktiv sendenden Mobiltelefon betrug 4 Stunden bei 37 °C für jedes unabhängige Experiment (mit und ohne Anwesenheit von QiOne® 2 Pro) in einem temperaturgesteuerten externen Mini-Inkubator. Danach wurden die Zellen zurück in den Standard-Inkubator überführt und weitere 20 Stunden inkubiert, bevor die Intensität der Superoxid-Anion-Radikalgenerierung im Verlauf eines induzierten oxidativen Bursts untersucht wurde.",
+    "Die statistische Analyse wurde mit dem nicht-parametrischen zweiseitigen Wilcoxon-Mann-Whitney-Test durchgeführt."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": [
+    "abb1"
+   ]
+  },
+  {
+   "id": "ergebnisse",
+   "titel": "Ergebnisse",
+   "absaetze": [
+    "Im Wesentlichen verursachten die verschiedenen Expositionspositionen rund um das Mobiltelefon eine unterschiedlich starke Reduktion der Erzeugung von Superoxid-Anion-Radikalen (Abbildung 2). Wenn jedoch kein Schutz verwendet wurde, verblieben nur 50 % der Radikalgenerierung durch die funktionellen Neutrophile an der oberen rechten Position und etwa 65 % an der unteren linken Position.",
+    "Wenn alle Daten und Kulturflaschenpositionen zusammengenommen wurden, verursachte die Mobilfunkstrahlung in der ungeschützten Situation eine Reduzierung der Superoxid-Anion-Radikalgenerierung auf 60,5 ± 3,9 % (Mittelwert ± Standardabweichung) im Vergleich zu unbehandelten Zellen, die als 100 % gesetzt wurden. Die mit QiOne® 2 Pro geschützten Zellen zeigten an allen Kulturflaschenpositionen eine deutlich geringere Reduktion der Superoxid-Anion-Radikalgenerierung. Insgesamt wurde sie auf 84,7 ± 7,0 % (Mittelwert ± Standardabweichung) im Vergleich zu unbehandelten Zellen (gesetzt als 100 %) reduziert, was nahezu 50 % besser ist als bei den ungeschützten Zellen. Der Unterschied zwischen beiden Situationen, ungeschützte Zellen und mit QiOne® 2 Pro geschützte Zellen, war hochsignifikant (p ≤ 0,01). Jedoch wurden selbst unter den Schutzbedingungen die Werte der unbehandelten Kontrollen ohne Mobilfunkstrahlung nicht vollständig erreicht."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": [
+    "abb2"
+   ]
+  },
+  {
+   "id": "diskussion",
+   "titel": "Diskussion",
+   "absaetze": [
+    "Obwohl die Prinzipien der Quantenelektrodynamik (QED) in der konventionellen Medizin nicht wirklich als Methode zur Beeinflussung des Wasserzustands anerkannt sind – was auch für sich genommen umstritten ist [13] – hat die vorliegende Untersuchung gezeigt, dass kohärentes Wasser offensichtlich einen definitiv positiven Einfluss auf Zellen hat, indem es ihre Widerstandsfähigkeit gegen äußere Einflüsse wie elektromagnetische Felder erhöht.",
+    "Nicht-thermische elektromagnetische Feldeffekte beruhen auf sehr schwachen Feldern, die die Zellen oder Gewebe von Organismen nicht wie Mikrowellen erhitzen [14,15]. Jedoch sind beide beim Telefonieren oder bei der Verbindung mit dem Internet über WLAN in wässrigen Systemen vorhanden. Beide Effekte spielen eine wesentliche Rolle in der mobilen Telekommunikation. Dem kohärenten Zustand des Wassers, der durch eine homogene Schwingung der Elektronenwolken von Wassermolekülen und zusätzliche Wasserstoffbrückenbindungen [4–6] charakterisiert ist, wurde auch eine relevante Rolle für elektromagnetische Felder zugeschrieben [5].",
+    "Es wurde festgestellt, dass elektromagnetische Felder an kohärente Systeme gekoppelt werden können, was zu einem „Self-Trapping” (einer Art Selbsteinfangung des Schwingungszustands) führt, das eine gemeinsame phasensynchrone dynamische Schwingung verursacht [4,16–18]. Tatsächlich könnte das kohärente System gegen äußere elektromagnetische Felder geschützt sein, wie das Innere eines Faraday-Käfigs (einer metallischen Abschirmung, die elektrische Felder abschirmt).",
+    "Wie in der vorliegenden Untersuchung gezeigt, verursachte QiOne® 2 Pro eine signifikante Ausschaltung der Auswirkungen von Mobilfunkstrahlung im Vergleich zu ungeschützten funktionellen Neutrophilen. Die Erzeugung von Superoxid-Anion-Radikalen im Verlauf eines oxidativen Bursts war das eigentliche Untersuchungskriterium, das auch die Vitalität der Zellen widerspiegelt. Darüber hinaus könnte eine verringerte Erzeugung von Superoxid-Anion-Radikalen in der ungeschützten Situation auch mit einer verringerten angeborenen Immunabwehr in vivo zusammenhängen, da die Neutrophilen möglicherweise eine verminderte Aktivität bei der Abtötung mikrobieller Krankheitserreger aufweisen könnten.",
+    "Es könnte jedoch eingewendet werden, dass Zellkulturen nicht den menschlichen Körper mit seinen komplexen Stoffwechselwegen repräsentieren, aber es sollte berücksichtigt werden, dass Zellkulturen ausgewählte Aspekte der lebenden Materie beleuchten können.",
+    "Derzeit kann man nur spekulieren über die grundlegenden Schutzmechanismen von QiOne® 2 Pro gegen Mobilfunkstrahlung. Der Effekt könnte jedoch mit der Induktion des kohärenten Zustands des Wassers zusammenhängen, der elektromagnetische Wellen dazu bringt, eine gemeinsame phasensynchrone dynamische Schwingung zu erhalten. Es muss mehr Arbeit geleistet werden, um die Korrelation zwischen dem kohärenten Zustand des Wassers und seinem Einfluss auf lebende Materie zu klären."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "schlussfolgerung",
+   "titel": "Schlussfolgerung",
+   "absaetze": [
+    "Die vorliegende Studie mit kultivierten funktionellen Neutrophilen hat gezeigt, dass QiOne® 2 Pro wirksam darin war, die Auswirkungen von Mobilfunkstrahlung auszuschalten, die einen negativen Einfluss auf die Erzeugung reaktiver Sauerstoffradikale durch diese Zellen hat. Die Erzeugung von Sauerstoffradikalen ist als vorderste Abwehr des angeborenen Immunsystems gegen mikrobielle Krankheitserreger, die in den Blutkreislauf eindringen, notwendig.",
+    "Somit könnte die kontinuierliche Verwendung von QiOne® 2 Pro die persönliche Gesundheit und das Wohlbefinden durch eine stärkere Resistenz gegen äußere Einflüsse wie elektromagnetische Felder verbessern und aufrechterhalten."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "literatur",
+   "titel": "Literaturverzeichnis",
+   "absaetze": [],
+   "listen": [
+    {
+     "titel": "",
+     "punkte": [
+      "1. Witko-Sarsat V, Rieu P, Descamps-Latscha B, et al. Neutrophils: molecules, functions and pathophysiological aspects. Lab Invest. 2000; 80: 617-653.",
+      "2. Nathan C. Points of control in inflammation. Nature. 2002; 420: 846-852.",
+      "3. Ward PA. The acute inflammatory response and its regulation. Arch Surg. 1999; 134: 666-669.",
+      "4. Bono I, Del Giudice E, Gamberale L, et al. Emergence of the coherent structure of liquid water. Water. 2012; 4: 510-532.",
+      "5. Del Giudice E, Voeikov V, Tedeschi A, et al. The origin and the special role of coherent water in living systems. In: Fels D, Cifra M. Fields of the Cell. Trivandrum Kerala, India: Research Signpost. 2014; 91-107.",
+      "6. Del Giudice E, De Ninno A, Fleischmann M, et al. Coherent quantum electrodynamics in living matter. Electromagn Biol Med. 2005; 24: 199-210.",
+      "7. Babior BM. NADPH oxidase: An update. Blood. 1999; 93: 1464-1476.",
+      "8. Tan AS, Berridge MV. Superoxide produced by activated neutrophils efficiently reduces the tetrazolium salt WST-1 to produce a soluble formazan: a simple colorimetric assay for measuring respiratory burst activation and for screening anti-inflammatory agents. J Immunol Meth. 2000; 238: 59-68.",
+      "9. Teufelhofer O, Weiss RM, Parzefall W, et al. Promyelocytic HL60 cells express NADPH oxidase and are excellent targets in a rapid spectrophotometric microplate assay for extracellular superoxide. Toxicol Sci. 2003; 76: 376-383.",
+      "10. Droge W. Free radicals in the physiological control of cell function. Physiol Rev. 2002; 82: 47-95.",
+      "11. Dartsch PC. TIIOS – a sensitive and cell-based test assay for the screening of biologically active substances for their antioxidant potential. Innov Food Technol. 2006; 32: 72-75.",
+      "12. Dartsch PC. Compensation of mobile phone radiation by the Medic Amber: in vitro investigations using a novel test system. J Biomed Sci Res. 2020; 2(3): 131.",
+      "13. Pollack GH, Cameron IL, Wheatley DN (eds). Water and the Cell. Springer, Dordrecht, 2006.",
+      "14. Ho MW. Non-thermal effects. Science in Society. 2003; 17: 12-13.",
+      "15. Giuliani L, Soffritti M (eds). Non-thermal Effects and Mechanisms of Interaction between electromagnetic Fields and Living Matter. ICEMS Monograph, Ramazzini Institute, European J Oncol Library. 2010; 5, Bologna, Italy.",
+      "16. Preparata G. QED, Coherence in Matter. World Scientific, Singapore-London-New Jersey, 1995.",
+      "17. Arani R, Bono I, Del Giudice E, et al. QED coherence and the thermodynamics of water. Int J Mod Phys B. 1995; 9: 1813-1841.",
+      "18. Blasone M, Jizba M, Vitiello G. Quantum Field Theory and its Macroscopic Manifestations. Imperial College Press, 2011."
+     ]
+    }
+   ],
+   "tabellen": [],
+   "abbildungen": []
+  }
+ ],
+ "tabellen": [],
+ "grafiken": [
+  {
+   "key": "abb1",
+   "nummer": "Abbildung 1",
+   "bildunterschrift": "Versuchsaufbau während der Exposition mit Vierfachproben, die auf dem Display des Mobiltelefons platziert sind (= Strahlungsrichtung zum Benutzer hin) und unterhalb seiner Rückseite (= Strahlungsrichtung vom Benutzer weg). QiOne® 2 Pro wurde zwischen den Kulturflaschen auf jeder Strahlungsebene platziert. Die Positionen der Flaschen sind als UL (= oben links), UR (= oben rechts), LL (= unten links), LR (= unten rechts) markiert.",
+   "alt": "Schematische Darstellung des Versuchsaufbaus: Vier Kulturflaschen sind rund um ein Mobiltelefon angeordnet – zwei auf dem Display (oben links/rechts), zwei an der Rückseite nahe Akku und Antenne (unten links/rechts). QiOne® 2 Pro liegt mittig zwischen den Flaschen.",
+   "quelleSeite": 3,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0001-abb1--a88ae7042555.png?v=1786745378"
+  },
+  {
+   "key": "abb2",
+   "nummer": "Abbildung 2",
+   "bildunterschrift": "Darstellung der unterschiedlichen prozentualen Abnahme der Superoxid-Anion-Radikalgenerierung durch funktionelle Neutrophile nach 4 Stunden Exposition gegenüber der Strahlung eines aktiven Mobiltelefons ohne Schutz (blaue Balken) und nach Schutz durch QiOne® 2 Pro (gelbe Balken). Die unbehandelten Kontrollen sind als „100 %” gesetzt. Die Positionen der Flaschen sind als UL (= oben links), UR (= oben rechts), LL (= unten links), LR (= unten rechts) markiert. Die Daten repräsentieren Mittelwerte ± Standardabweichungen von 3 unabhängigen Experimenten. **p ≤ 0,01 für geschützte vs. ungeschützte Zellen; zweiseitiger Wilcoxon-Mann-Whitney-Test.",
+   "alt": "Balkendiagramm: Superoxid-Radikalbildung in Prozent der Kontrolle (100 %) für vier Positionen (UL, UR, LL, LR). Blaue Balken (ungeschützt) liegen bei ~50–65 %, gelbe Balken (QiOne® 2 Pro geschützt) deutlich höher bei ~80–90 %. Signifikanzstern p ≤ 0,01 markiert.",
+   "quelleSeite": 3,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0001-abb2--fefc845db96d.png?v=1786745382"
+  }
+ ],
+ "zitation": {
+  "text": "Dartsch PC. QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Jpn J Med 2021; 4(1): 484-488.",
+  "doiUrl": "https://doi.org/10.31488/JJM.165"
+ },
+ "grenzen": [
+  "Die Studie ist eine reine In-vitro-Untersuchung an einer humanen Zelllinie (HL-60); die Ergebnisse lassen keine direkte Übertragung auf den lebenden menschlichen Organismus mit seinen komplexen Stoffwechselwegen zu.",
+  "Es wurden lediglich 3 unabhängige Experimente mit Vierfach-Kulturflaschen durchgeführt; die statistische Aussagekraft ist dementsprechend begrenzt.",
+  "Das getestete Gerät (QiOne® 2 Pro) wurde vom Hersteller Qi Blanco UG zur Verfügung gestellt; eine unabhängige Replikation durch ein weiteres Labor ist nicht dokumentiert.",
+  "Selbst unter Schutzbedingungen wurde das Niveau der vollständig unbestrahlten Kontrollen (100 %) nicht vollständig erreicht.",
+  "Der postulierte Wirkmechanismus (kohärenter Wasserzustand durch Quantenelektrodynamik) ist in der konventionellen Medizin nicht anerkannt und bleibt eine Hypothese, die weiterer Forschung bedarf."
+ ],
+ "faq": [
+  {
+   "frage": "Was hat die Studie konkret gemessen?",
+   "antwort": "Die Studie hat gemessen, wie stark Mobilfunkstrahlung die Fähigkeit von Immunzellen (Neutrophilen) verringert, schützende Sauerstoffradikale zu bilden. Ohne QiOne® 2 Pro sank diese Fähigkeit im Labor auf durchschnittlich 60,5 % des normalen Niveaus. Mit QiOne® 2 Pro blieb sie bei 84,7 % – ein hochsignifikanter Unterschied (p ≤ 0,01)."
+  },
+  {
+   "frage": "Beweist die Studie, dass QiOne® 2 Pro das Immunsystem am Menschen schützt?",
+   "antwort": "Nein. Es handelt sich um eine In-vitro-Studie, also eine Untersuchung in der Zellkultur im Labor, nicht am lebenden Menschen. Die Ergebnisse zeigen eine messbare Wirkung unter Laborbedingungen, erlauben aber keine Schlüsse über Wirkungen im menschlichen Körper."
+  },
+  {
+   "frage": "Welches Mobiltelefon wurde verwendet, und wie stark war die Strahlung?",
+   "antwort": "Es wurde ein handelsübliches Smartphone eines führenden Markenherstellers mit einem SAR-Wert (Spezifische Absorptionsrate) von 0,76 W/kg eingesetzt. WLAN war eingeschaltet, das Display war ausgeschaltet, und das Telefon übertrug diskontinuierlich Sprache und Umgebungsgeräusche."
+  },
+  {
+   "frage": "Welcher Wirkmechanismus wird vorgeschlagen?",
+   "antwort": "Die Studie beschreibt als Hypothese, dass QiOne® 2 Pro über seinen Gitterchip aus einer Goldlegierung ein statisches Feld erzeugt, das Wassermoleküle in einen kohärenten Zustand überführt. Dieser Zustand soll die Zellen widerstandsfähiger gegen elektromagnetische Felder machen. Der Autor betont ausdrücklich, dass dieser Mechanismus wissenschaftlich nicht gesichert ist und weitere Forschung erfordert."
+  }
+ ],
+ "verwandt": [
+  "e0002",
+  "e0003"
+ ],
+ "factGate": [
+  "Die auf der aktuellen Live-Studienseite dieser Publikation zugeschriebenen Werte 'Basalstoffwechsel +12,5 ± 2,9 %' und 'Radikalgenerierung +27,7 ± 7,7 %' kommen im Volltext dieser Publikation (Japan Journal of Medicine 2021, 4(1): 484-488) NICHT vor. Das PDF behandelt ausschließlich die Superoxid-Anion-Radikalbildung im Kontext der Handystrahlungs-Exposition (60,5 ± 3,9 % ungeschützt vs. 84,7 ± 7,0 % geschützt). Die Werte +12,5 ± 2,9 % und +27,7 ± 7,7 % stammen aus einer anderen Quelle und dürfen dieser Studie nicht zugeschrieben werden."
+ ]
+}
