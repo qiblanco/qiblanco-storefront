@@ -1,10 +1,57 @@
 import {HomepageSections} from '~/components/homepage/HomepageSections';
+import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {entityGraph} from '~/lib/entity-schema';
+
+const TITEL =
+  'Qi Blanco - Life Technology - Jetzt kennenlernen. - Qi Blanco UG (haftungsbeschränkt)';
+
+/**
+ * Meta-Beschreibung der Startseite.
+ *
+ * Gemessen am 2026-08-14 hatte die Startseite ÜBERHAUPT KEINE Beschreibung —
+ * Google reimt sich das Snippet dann aus dem Seitentext zusammen.
+ *
+ * Bewusst in KUNDENSPRACHE (Strahlung, Schlaf, Energie) statt im Fachbegriff
+ * „kohärentes Wasser": laut Kaufüberzeugungs-Kanon suchen Kunden mit den
+ * eigenen Wörtern und spiegeln den Fachbegriff nur zurück, wenn wir ihn
+ * zuerst benutzen. Bewusst OHNE Wirkungs-/Heilaussage — „rund um" ist
+ * thematisch, nicht kausal —, weil der Auftrag das für die L6-Texte
+ * ausdrücklich verlangt. 151 Zeichen, unter der Snippet-Kappung von ~155.
+ */
+const BESCHREIBUNG =
+  'Qi Blanco® – Life Technology aus Deutschland. Rund um Strahlung, Schlaf und ' +
+  'Energie im Alltag: QiOne® 2 Pro, QiBracelet, QiHome Air und Crystal Cacao®.';
 
 /**
  * @type {MetaFunction}
  */
-export const meta = () => {
-  return [{title: 'Qi Blanco - Life Technology - Jetzt kennenlernen. - Qi Blanco UG (haftungsbeschränkt)'}];
+export const meta = ({matches}) => {
+  // Logo aus den Shopify-Markendaten des root-Loaders. Fehlt es, lässt
+  // organizationSchema() das Feld weg — ein leeres logo wäre ein kaputter
+  // Knoten, kein neutraler. Defensiv gelesen: eine Formänderung der
+  // Loader-Daten darf die Startseite nicht 500en.
+  const marke = matches?.find((m) => m?.id === 'root')?.data?.header?.shop
+    ?.brand;
+  const logoUrl = marke?.logo?.image?.url || marke?.squareLogo?.image?.url;
+
+  return [
+    {title: TITEL},
+    {name: 'description', content: BESCHREIBUNG},
+    // Canonical als echtes <link> (tagName) und absolut — Begründung im Kopf
+    // von app/lib/seo.js.
+    canonicalLink('/'),
+    // Open Graph: gemessen 0 og-Tags auf allen Routen. Ohne sie entscheidet
+    // das jeweilige Netzwerk selbst, was beim Teilen erscheint.
+    {property: 'og:type', content: 'website'},
+    {property: 'og:site_name', content: 'Qi Blanco'},
+    {property: 'og:locale', content: 'de_DE'},
+    {property: 'og:title', content: TITEL},
+    {property: 'og:description', content: BESCHREIBUNG},
+    {property: 'og:url', content: absoluteCanonical('/')},
+    // Entitäts-Graph. react-router 7 rendert diesen Descriptor nativ als
+    // <script type="application/ld+json"> und maskiert den Inhalt selbst.
+    {'script:ld+json': entityGraph({logoUrl})},
+  ];
 };
 
 /**
