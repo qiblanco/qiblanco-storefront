@@ -1,7 +1,9 @@
+import {canonicalLink} from '~/lib/seo';
+
 export const meta = () => [
   {title: 'Impressum | Qi Blanco'},
   {name: 'description', content: 'Impressum der Qi Blanco UG (haftungsbeschränkt)'},
-  {rel: 'canonical', href: '/pages/impressum'},
+  canonicalLink('/pages/impressum'),
 ];
 
 export function loader() {

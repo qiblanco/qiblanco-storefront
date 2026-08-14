@@ -1,3 +1,5 @@
+import {canonicalLink} from '~/lib/seo';
+
 export const meta = () => [
   {title: 'Allgemeine Geschäftsbedingungen | Qi Blanco'},
   {
@@ -5,7 +7,7 @@ export const meta = () => [
     content:
       'Allgemeine Geschäftsbedingungen der Qi Blanco UG (haftungsbeschränkt)',
   },
-  {rel: 'canonical', href: '/pages/agb'},
+  canonicalLink('/pages/agb'),
 ];
 
 export function loader() {
