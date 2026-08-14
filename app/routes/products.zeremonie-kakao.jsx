@@ -17,16 +17,14 @@ import {SingleImage} from '~/components/reusables/SingleImage';
 import { KursInhalteKakao } from '~/components/reusables/KursinhalteKakao';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/zeremonie-kakao`,
-    },
+    canonicalLink('/products/zeremonie-kakao'),
   ];
 };
 

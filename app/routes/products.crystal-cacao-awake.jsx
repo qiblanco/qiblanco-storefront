@@ -16,16 +16,14 @@ import {useState} from 'react';
 import Awake from '~/components/product-pages/Awake';
 import LazyImage from '~/components/reusables/LazyImage';
 
+import {canonicalLink} from '~/lib/seo';
 /** 
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/crystal-cacao-awake`,
-    },
+    canonicalLink('/products/crystal-cacao-awake'),
   ];
 };
 
