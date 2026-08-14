@@ -255,7 +255,7 @@ function Eckdatum({label, children}) {
 
 function Abbildung({grafik}) {
   if (!grafik.url) return null;
-  // Anzeigebreite auf die native Aufloesung deckeln: bei 2x Pixeldichte traegt
+  // Anzeigebreite auf die native Aufloesung deckeln: bei 2x Pixeldichte erlaubt
   // eine 660-px-Quelle hoechstens 330 px CSS-Breite, sonst skaliert der Browser
   // sichtbar hoch (hb-formate: bild-aufloesung kaputt). width/height nehmen
   // zusaetzlich den Layoutsprung beim Nachladen heraus.
