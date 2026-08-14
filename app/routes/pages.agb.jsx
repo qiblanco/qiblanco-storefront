@@ -198,7 +198,7 @@ export default function AGBPage() {
           jedem Fall spätestens binnen vierzehn Tagen ab dem Tag, an dem Sie uns über den
           Widerruf dieses Vertrags unterrichten, an uns zurückzusenden oder zu übergeben. Die
           Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von vierzehn Tagen absenden.
-          Sie tragen die unmittelbaren Kosten der Rücksendung der Waren. Sie müssen für einen
+          Wir tragen die Kosten der Rücksendung der Waren. Sie müssen für einen
           etwaigen Wertverlust der Waren nur aufkommen, wenn dieser Wertverlust auf einen zur
           Prüfung der Beschaffenheit, Eigenschaften und Funktionsweise der Waren nicht
           notwendigen Umgang mit ihnen zurückzuführen ist.
@@ -272,7 +272,14 @@ export default function AGBPage() {
           zurücksenden und erhalten den vollen Kaufpreis zurück (volle Geld-zurück-Garantie).
         </p>
         <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
-          (2) Diese Zufriedenheitsgarantie ist eine rein freiwillige, zusätzliche Leistung von uns.
+          (2) Die Rücksendung ist für Sie kostenlos. Die Kosten der Rücksendung tragen wir —
+          sowohl im Rahmen dieser freiwilligen Garantie als auch bei Ausübung Ihres gesetzlichen
+          Widerrufsrechts nach § 7. Melden Sie sich vor der Rücksendung kurz bei uns; wir stimmen
+          den Rückweg mit Ihnen ab und übernehmen die Portokosten bzw. stellen Ihnen ein
+          Rücksendeetikett bereit.
+        </p>
+        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+          (3) Diese Zufriedenheitsgarantie ist eine rein freiwillige, zusätzliche Leistung von uns.
           Sie tritt neben Ihr gesetzliches Widerrufsrecht sowie Ihre gesetzlichen
           Gewährleistungsrechte, ohne diese einzuschränken, zu verändern oder zu ersetzen. Ihr
           gesetzliches vierzehntägiges Widerrufsrecht nach § 7 und Ihre gesetzlichen
@@ -280,9 +287,11 @@ export default function AGBPage() {
           freiwillige Garantie in keiner Weise berührt oder verkürzt.
         </p>
         <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
-          (3) Um von der 20-Tage-Zufriedenheitsgarantie Gebrauch zu machen, genügt eine formlose
+          (4) Um von der 20-Tage-Zufriedenheitsgarantie Gebrauch zu machen, genügt eine formlose
           Mitteilung an <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>; bitte senden Sie
-          die Ware anschließend an uns zurück. Weitergehende gesetzliche Rechte bleiben unberührt.
+          die Ware anschließend an uns zurück. Die vorstehend genannten Modalitäten sind nicht
+          Voraussetzung für die wirksame Ausübung Ihres gesetzlichen Widerrufsrechts.
+          Weitergehende gesetzliche Rechte bleiben unberührt.
         </p>
       </section>
 
