@@ -21,6 +21,8 @@ import {
 } from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
+import {canonicalLink} from '~/lib/seo';
+
 const HIDDEN_BUNDLE_PRODUCT_HANDLES = new Set([
   'bundle-fundament',
   'bundle-unabhangig',
@@ -53,10 +55,7 @@ export const meta = ({data}) => {
 
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
-    },
+    canonicalLink(`/products/${data?.product.handle}`),
   ];
 };
 

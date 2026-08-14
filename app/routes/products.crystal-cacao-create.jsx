@@ -16,16 +16,14 @@ import {useState} from 'react';
 import Create from '~/components/product-pages/Create';
 import LazyImage from '~/components/reusables/LazyImage';
 
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/crystal-cacao-create`,
-    },
+    canonicalLink('/products/crystal-cacao-create'),
   ];
 };
 

@@ -19,16 +19,14 @@ import {FAQ_QIONE_KETTE} from '~/data/product-faqs';
 import { useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
+import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    {
-      rel: 'canonical',
-      href: `/products/qione-kette`,
-    },
+    canonicalLink('/products/qione-kette'),
   ];
 };
 
