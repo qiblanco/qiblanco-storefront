@@ -85,17 +85,24 @@ export const meta = ({matches}) => {
     // <script type="application/ld+json"> und maskiert den Inhalt selbst.
     {'script:ld+json': entityGraph({logoUrl})},
   ];
-  // og:image war der einzige fehlende Open-Graph-Wert der Startseite
-  // (gemessen live am 2026-08-14: og:type/site_name/locale/title/description/
-  // url vorhanden, og:image nicht). Ohne ihn wählt jedes Netzwerk beim Teilen
-  // selbst ein Bild aus der Seite — oder zeigt gar keines.
+  // HIER STAND EIN ZWEITES og:image (PR #197, Stufe S1), das dieselbe Luecke
+  // schließen sollte wie das og:image oben aus PR #198 (Stufe S0.4). Beide
+  // PRs aenderten diese Datei an VERSCHIEDENEN Zeilen, also mergte git sie
+  // konfliktfrei — und die Startseite lieferte live ZWEI og:image-Tags aus.
+  // Nachgemessen am 2026-08-14 nach beiden Merges: genau zwei.
   //
-  // Quelle ist dasselbe Marken-Logo, das schon in den Organization-Knoten
-  // geht: es ist bereits geladen (kein zweiter Abruf), es ist im Shopify-Admin
-  // pflegbar, und es kann nicht auf ein Motiv zeigen, das die Redaktion
-  // später von der Seite nimmt. Bedingt gepusht wie in produkt-seo.js und
-  // blog-seo.js — ein leeres og:image ist schlechter als keines.
-  if (logoUrl) descriptoren.push({property: 'og:image', content: logoUrl});
+  // Behalten wurde das Produktbild, entfernt das Logo — nicht nach Vorrang,
+  // sondern nach Messung: logoUrl zeigt auf 03_Logo_2020_INVERTED, 2000x703
+  // RGBA mit alpha_min=0, also das WEISSE Logo auf Transparenz. Netzwerke
+  // flachen Transparenz auf Weiss ab; als Share-Karte wäre es weiss auf
+  // weiss und damit unsichtbar. Das Produktbild (1024x1024, dunkles Objekt)
+  // trägt auf Weiss.
+  //
+  // Die Begründung von PR #197 bleibt sachlich richtig (Logo ist bereits
+  // geladen, im Admin pflegbar, kann nicht verwaisen) — sie scheitert allein
+  // an der Invertierung dieses konkreten Assets. Ein gepflegtes, deckendes
+  // 1200x630-Sharebild wäre besser als beide und ist als Folgeaufgabe
+  // vermerkt; sobald es existiert, gehört OG_BILD darauf umgestellt.
   return descriptoren;
 };
 
