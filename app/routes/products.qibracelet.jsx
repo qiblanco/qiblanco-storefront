@@ -17,15 +17,18 @@ import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {canonicalLink} from '~/lib/seo';
+import {produktMeta} from '~/lib/produkt-seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [
-    {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
-    canonicalLink('/products/qibracelet'),
-  ];
+  return produktMeta({
+    pfad: '/products/qibracelet',
+    titel: `${data?.product?.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`,
+    bildUrl:
+      data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
+      data?.product?.images?.nodes?.[0]?.url,
+  });
 };
 
 /**
