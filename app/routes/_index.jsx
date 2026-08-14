@@ -34,7 +34,7 @@ export const meta = ({matches}) => {
     ?.brand;
   const logoUrl = marke?.logo?.image?.url || marke?.squareLogo?.image?.url;
 
-  return [
+  const descriptoren = [
     {title: TITEL},
     {name: 'description', content: BESCHREIBUNG},
     // Canonical als echtes <link> (tagName) und absolut — Begründung im Kopf
@@ -52,6 +52,18 @@ export const meta = ({matches}) => {
     // <script type="application/ld+json"> und maskiert den Inhalt selbst.
     {'script:ld+json': entityGraph({logoUrl})},
   ];
+  // og:image war der einzige fehlende Open-Graph-Wert der Startseite
+  // (gemessen live am 2026-08-14: og:type/site_name/locale/title/description/
+  // url vorhanden, og:image nicht). Ohne ihn wählt jedes Netzwerk beim Teilen
+  // selbst ein Bild aus der Seite — oder zeigt gar keines.
+  //
+  // Quelle ist dasselbe Marken-Logo, das schon in den Organization-Knoten
+  // geht: es ist bereits geladen (kein zweiter Abruf), es ist im Shopify-Admin
+  // pflegbar, und es kann nicht auf ein Motiv zeigen, das die Redaktion
+  // später von der Seite nimmt. Bedingt gepusht wie in produkt-seo.js und
+  // blog-seo.js — ein leeres og:image ist schlechter als keines.
+  if (logoUrl) descriptoren.push({property: 'og:image', content: logoUrl});
+  return descriptoren;
 };
 
 /**

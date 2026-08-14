@@ -10,6 +10,7 @@ import {
   ORGANISATION,
   ORG_ID,
   SITE_ID,
+  MARKEN_PROFILE,
   organizationSchema,
   websiteSchema,
   entityGraph,
@@ -84,14 +85,52 @@ test('POSITIV-KONTROLLE: erfundene Stammdaten würden auffallen', () => {
   assert.equal(IMPRESSUM.includes('Musterstr. 1'), false);
 });
 
-// --- Bewusste Unterlassungen festhalten ------------------------------------
-test('KEIN sameAs ohne belegte Profil-URL', () => {
-  // Bewusste Unterlassung, kein Versäumnis: gemessen 2026-08-14 verlinkt die
-  // Live-Startseite kein Marken-Profil (nur YouTube-Embeds einzelner Videos),
-  // und es gibt keinen Wikidata-Eintrag. Ein geratenes Profil wäre eine
-  // unbelegte Identitätsbehauptung. Dieser Test hält die Unterlassung fest,
-  // damit sie bewusst aufgehoben wird statt versehentlich zu entstehen.
-  assert.equal('sameAs' in organizationSchema(), false);
+// --- sameAs: die Unterlassung wurde BEWUSST aufgehoben ---------------------
+// Der Vorgänger-Test hier hieß "KEIN sameAs ohne belegte Profil-URL" und
+// verlangte ausdrücklich, die Unterlassung "bewusst aufzuheben statt
+// versehentlich entstehen zu lassen". Genau das ist am 2026-08-14 geschehen
+// (Auftrag S1): für drei Profile wurde KONTROLLE live nachgewiesen, nicht
+// Namensähnlichkeit. Der Test wurde deshalb nicht gelöscht, sondern auf die
+// Invariante umgehängt, die ihn überlebt — die Regel war nie "kein sameAs",
+// sondern "kein UNBELEGTES sameAs".
+test('sameAs führt NUR belegte Profile, und jedes trägt seinen Beleg', () => {
+  const s = organizationSchema().sameAs;
+  assert.ok(Array.isArray(s), 'sameAs fehlt oder ist kein Array');
+  assert.ok(s.length >= 3, `Abnahmeziel >=3 belegte Profile, ist ${s.length}`);
+  assert.equal(s.length, new Set(s).size, 'doppelte URL in sameAs');
+  assert.equal(s.length, MARKEN_PROFILE.length);
+  for (const p of MARKEN_PROFILE) {
+    assert.ok(
+      p.url.startsWith('https://'),
+      `Profil-URL nicht absolut/https: ${p.url}`,
+    );
+    // Ein Eintrag ohne Beleg ist genau die unbelegte Identitätsbehauptung,
+    // gegen die die Liste gebaut ist. Länge statt bloßer Existenz, damit ein
+    // leerer String nicht durchrutscht.
+    assert.ok(
+      typeof p.beleg === 'string' && p.beleg.trim().length > 30,
+      `Profil ohne belastbaren Beleg: ${p.url}`,
+    );
+  }
+});
+
+test('sameAs enthält NICHT die ausdrücklich ausgeschlossenen Flächen', () => {
+  // Trustpilot beansprucht Christian separat (Auftrags-Ausnahme 2026-08-14);
+  // LinkedIn ist unbelegt (kein Credential, HTTP 999 = Messausfall, kein
+  // Eigentumsnachweis). Beide wären geraten. Dieser Test ist der Riegel
+  // dagegen, dass sie später "der Vollständigkeit halber" dazukommen.
+  const s = organizationSchema().sameAs.join(' ').toLowerCase();
+  for (const verboten of ['trustpilot', 'linkedin']) {
+    assert.equal(
+      s.includes(verboten),
+      false,
+      `${verboten} steht in sameAs, ist aber nicht als Eigentum belegt`,
+    );
+  }
+});
+
+test('Startseite liefert og:image (der einzige fehlende OG-Wert am 14.08.)', () => {
+  assert.match(STARTSEITE, /'og:image'/);
 });
 
 test('logo wird nur gesetzt, wenn wirklich eine URL vorliegt', () => {
