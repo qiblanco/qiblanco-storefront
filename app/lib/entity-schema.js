@@ -175,6 +175,62 @@ export const WISSENSGRAPH_ENTITAETEN = [
 ];
 
 /**
+ * Schwester-Domains derselben juristischen Person für `sameAs`.
+ *
+ * WARUM EINE DRITTE LISTE — weil die Aufnahme-Regel wieder eine ANDERE ist,
+ * und dieselbe Begründung trägt wie schon die Trennung der ersten beiden:
+ * MARKEN_PROFILE verlangt KONTROLLE, WISSENSGRAPH_ENTITAETEN verlangt den
+ * RÜCKVERWEIS. Auf eine eigene Schwester-Domain passt beides schlecht — ein
+ * Shop meldet uns keine Profil-Identität zurück, und er ist kein Wissensgraph
+ * mit P856. Wer sie unter eine der bestehenden Regeln schöbe, hätte diese
+ * Regel stillschweigend aufgeweicht; genau davor warnt der Kopf der zweiten
+ * Liste bereits, und der Fall wiederholt sich hier.
+ *
+ * DIE REGEL HIER IST DIE REGISTER-IDENTITÄT: eine Domain wird nur
+ * aufgenommen, wenn ihr Impressum DIESELBE juristische Person ausweist wie
+ * unseres — nachgewiesen an den harten Registerdaten (Handelsregisternummer,
+ * Registergericht, USt-IdNr.), NICHT am Markennamen. Der Markenname ist als
+ * Beleg wertlos: "Qi Blanco" kann jeder auf eine Seite schreiben. HRB 7306 am
+ * Amtsgericht Schweinfurt bezeichnet genau eine Gesellschaft. Für `sameAs`
+ * ist Register-Identität sogar die sachlich richtige Frage, denn die Property
+ * behauptet "dieselbe ENTITÄT anderswo" — und die Entität ist die
+ * Gesellschaft, nicht der Shop.
+ *
+ * WAS HIER NICHT DER BELEG IST, obwohl es naheliegt: dass die Gegenseite uns
+ * ihrerseits in ihrem `sameAs` führt. Sie tut es (der US-Shop trägt seit
+ * 2026-08-14 den Cross-Domain-Anker auf qiblanco.com), aber das ist der
+ * Zustand einer AUSLIEFERUNG, und Shopifys page_cache staffelt ihn: am
+ * 2026-08-14 war er in 3 von 5 Stichproben zu sehen. Eine Aufnahme-Regel, die
+ * daran hinge, wäre je nach Abrufzeitpunkt erfüllt oder nicht. Die
+ * Register-Identität ist dagegen eine Eigenschaft der Firma und ändert sich
+ * nicht zwischen zwei HTTP-Abrufen. Die Gegenrichtung ist deshalb hier
+ * willkommene Bestätigung, aber ausdrücklich nicht das Kriterium.
+ *
+ * WER DIE FIRMA UMFIRMIERT ODER DEN SHOP VERKAUFT, MUSS DIESEN EINTRAG
+ * ZIEHEN. Ein verkaufter Shop behält seine Domain und verliert die Identität;
+ * `sameAs` zeigte dann auf ein fremdes Unternehmen. Das ist der Fall, gegen
+ * den diese Datei durchgehend argumentiert: ein fehlendes sameAs kostet
+ * Reichweite, ein falsches kostet Vertrauen.
+ *
+ * @type {{url: string, beleg: string}[]}
+ */
+export const SCHWESTER_DOMAINS = [
+  {
+    url: 'https://qi-blanco.com',
+    beleg:
+      'Impressum-Abgleich am 2026-08-14 live gegen BEIDE Shops: ' +
+      'qiblanco.com/pages/impressum und qi-blanco.com/pages/imprint (die ' +
+      'Pfade heissen bewusst verschieden — /pages/imprint ist auf dem ' +
+      'DACH-Shop HTTP 404) nennen identisch "Qi Blanco UG ' +
+      '(haftungsbeschränkt)", Brunnrangenstr. 25, 97711 Maßbach, ' +
+      'Registergericht Amtsgericht Schweinfurt, HRB 7306, USt-IdNr. ' +
+      'DE306530406. Alle vier Register-Anker stimmen überein, nicht nur der ' +
+      'Markenname. Bestätigend (nicht Kriterium): der US-Shop führt ' +
+      'seinerseits https://qiblanco.com in seinem sameAs.',
+  },
+];
+
+/**
  * Organization-Knoten. Bewusst rein faktische Stammdaten — keine Wirkungs-
  * oder Gesundheitsaussage, damit dieser Knoten claim-neutral bleibt.
  *
@@ -225,13 +281,15 @@ export function organizationSchema({logoUrl} = {}) {
   // Gleiche Regel wie beim logo: lieber kein sameAs als ein leeres Array.
   // Ein `sameAs: []` ist für eine Suchmaschine kein "wir haben keine
   // Profile", sondern ein kaputtes Feld.
-  // Beide Belegklassen laufen in EIN sameAs-Array: für die Suchmaschine ist
+  // Alle Belegklassen laufen in EIN sameAs-Array: für die Suchmaschine ist
   // das eine einzige Liste "dieselbe Entität, anderswo". Getrennt gehalten
-  // werden sie nur bei der AUFNAHME, weil dort zwei verschiedene Nachweise
-  // gelten (Kontrolle bzw. Rückverweis) — siehe die beiden Listen oben.
+  // werden sie nur bei der AUFNAHME, weil dort drei verschiedene Nachweise
+  // gelten (Kontrolle, Rückverweis bzw. Register-Identität) — siehe die drei
+  // Listen oben.
   const profile = [
     ...MARKEN_PROFILE.map((p) => p.url),
     ...WISSENSGRAPH_ENTITAETEN.map((e) => e.url),
+    ...SCHWESTER_DOMAINS.map((d) => d.url),
   ];
   if (profile.length) knoten.sameAs = profile;
   return knoten;

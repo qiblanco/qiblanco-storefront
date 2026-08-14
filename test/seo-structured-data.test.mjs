@@ -12,6 +12,7 @@ import {
   SITE_ID,
   MARKEN_PROFILE,
   WISSENSGRAPH_ENTITAETEN,
+  SCHWESTER_DOMAINS,
   organizationSchema,
   websiteSchema,
   entityGraph,
@@ -100,15 +101,19 @@ test('sameAs führt NUR belegte Profile, und jedes trägt seinen Beleg', () => {
   assert.ok(s.length >= 3, `Abnahmeziel >=3 belegte Profile, ist ${s.length}`);
   assert.equal(s.length, new Set(s).size, 'doppelte URL in sameAs');
   // Die Gleichheit bindet sameAs an die DEKLARIERTEN Listen: nichts darf im
-  // Schema landen, was nicht durch eine der beiden Aufnahme-Regeln gegangen
+  // Schema landen, was nicht durch eine der drei Aufnahme-Regeln gegangen
   // ist. Bewusst KEIN gepinnter Zahlenwert — wächst eine Liste ehrlich, wächst
   // die Erwartung mit; wer dagegen am Schema vorbei einträgt, fällt auf.
   assert.equal(
     s.length,
-    MARKEN_PROFILE.length + WISSENSGRAPH_ENTITAETEN.length,
-    'sameAs enthält Einträge, die in keiner der beiden belegten Listen stehen',
+    MARKEN_PROFILE.length +
+      WISSENSGRAPH_ENTITAETEN.length +
+      SCHWESTER_DOMAINS.length,
+    'sameAs enthält Einträge, die in keiner der drei belegten Listen stehen',
   );
-  for (const p of MARKEN_PROFILE) {
+  // Beleg-Pflicht gilt für JEDE Klasse mit einem beleg-Feld, nicht nur für
+  // MARKEN_PROFILE — sonst wäre die jüngste Liste die einzige ungeprüfte.
+  for (const p of [...MARKEN_PROFILE, ...SCHWESTER_DOMAINS]) {
     assert.ok(
       p.url.startsWith('https://'),
       `Profil-URL nicht absolut/https: ${p.url}`,
@@ -188,6 +193,60 @@ test('POSITIV-KONTROLLE: eine QID/URL-Verwechslung würde auffallen', () => {
   // qid-Feld, muss die Bedingung verletzen.
   const falsch = {url: 'https://www.wikidata.org/wiki/Q1', qid: 'Q999'};
   assert.equal(falsch.url.includes(falsch.qid), false);
+});
+
+// --- Cross-Domain-Kopplung DACH -> US (Auftrag 20260815-dach-crossdomain) --
+// Die Gegenrichtung: der US-Shop führt qiblanco.com bereits, unsere Seite
+// führte qi-blanco.com nicht — die Kopplung war einseitig. Eigene Liste, weil
+// die Aufnahme-Regel eine dritte ist: Register-Identität statt Kontrolle
+// (MARKEN_PROFILE) oder Rückverweis (WISSENSGRAPH_ENTITAETEN).
+test('SCHWESTER_DOMAINS trägt absolute URL und einen Register-Beleg', () => {
+  assert.ok(SCHWESTER_DOMAINS.length >= 1, 'keine Schwester-Domain deklariert');
+  for (const d of SCHWESTER_DOMAINS) {
+    assert.ok(
+      d.url.startsWith('https://'),
+      `Schwester-Domain nicht absolut/https: ${d.url}`,
+    );
+    // Der Beleg dieser Klasse IST die Register-Identität. Ein Beleg, der bloß
+    // den Markennamen nennt, wäre genau die Namensgleichheit, gegen die die
+    // Aufnahme-Regel steht — deshalb werden die harten Anker verlangt, nicht
+    // eine Mindestlänge allein.
+    for (const anker of ['HRB 7306', 'DE306530406']) {
+      assert.ok(
+        d.beleg.includes(anker),
+        `Beleg für ${d.url} nennt den Register-Anker ${anker} nicht — die ` +
+          `Aufnahme-Regel ist damit nur behauptet, nicht angewandt`,
+      );
+    }
+  }
+});
+
+test('sameAs führt den Cross-Domain-Anker zum US-Shop (der eigentliche Auftrag)', () => {
+  const s = organizationSchema().sameAs;
+  assert.ok(
+    s.includes('https://qi-blanco.com'),
+    `Cross-Domain-Anker fehlt in sameAs: ${JSON.stringify(s)}`,
+  );
+});
+
+test('sameAs enthält KEINEN Selbstverweis auf die eigene Domain', () => {
+  // Der naheliegende Fehlgriff beim Nachtragen einer "eigenen Domain": die
+  // EIGENE einzutragen. sameAs bedeutet "dieselbe Entität ANDERSWO" — ein
+  // Verweis auf uns selbst ist keine Zusatzinformation, sondern eine
+  // Selbstreferenz, die den Knoten entwertet. Die eigene Origin wird aus
+  // ORG_ID abgeleitet statt neu importiert, damit dieser Test nicht an einer
+  // zweiten Quelle für dieselbe Domain hängt.
+  const eigene = ORG_ID.split('/#')[0];
+  for (const u of organizationSchema().sameAs) {
+    assert.notEqual(u.replace(/\/$/, ''), eigene, `Selbstverweis in sameAs: ${u}`);
+  }
+});
+
+test('POSITIV-KONTROLLE: ein Selbstverweis würde auffallen', () => {
+  // Beweis, dass der Detektor oben misst: die eigene Origin muss die
+  // Bedingung verletzen, gegen die er prüft.
+  const eigene = ORG_ID.split('/#')[0];
+  assert.equal(`${eigene}/`.replace(/\/$/, ''), eigene);
 });
 
 test('@id bleibt der lokale Organization-Anker, NICHT die Wikidata-URI', () => {
