@@ -1,0 +1,330 @@
+{
+ "id": "e0002",
+ "slug": "studie-darmbarriere",
+ "seo": {
+  "titel": "Darmbarriere & Handystrahlung: IPEC-J2-Studie | Qi Blanco",
+  "beschreibung": "In-vitro-Studie: QiOne® 2 Pro erhielt den transepithelialen Widerstand (TEER) auf 1.837 Ω/cm² gegenüber 152 Ω/cm² bei ungeschützten Darmzellen.",
+  "keyword": "Darmbarriere Handystrahlung Schutz",
+  "h1": "Schutzwirkung von QiOne® 2 Pro auf kultivierte Darmepithelzellen nach Handybestrahlung"
+ },
+ "eckdaten": {
+  "titelOriginal": "Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation",
+  "titelDeutsch": "Schutzwirkung von QiOne® 2 Pro auf kultivierte intestinale Epithelzellen nach Mobiltelefon-Bestrahlung",
+  "autor": "Prof. Dr. Peter C. Dartsch",
+  "institut": "Dartsch Scientific GmbH, Institute for Cell Biological Test Systems, Wagenfeld",
+  "journal": "Applied Cell Biology",
+  "band": "9(3): 69-74",
+  "doi": "10.53043/2320-1991.acb90012",
+  "issn": "2320-1991 (Online), 2320-1983 (Print)",
+  "eingereicht": "",
+  "angenommen": "",
+  "veroeffentlicht": "2021",
+  "lizenz": "",
+  "produkt": "QiOne® 2 Pro",
+  "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1679586513",
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_1.png?v=1732276143"
+ },
+ "laienSummary": {
+  "frage": "Kann QiOne® 2 Pro die Darmschleimhaut vor den Auswirkungen von Handystrahlung schützen?",
+  "antwort": "In dieser Laborstudie wurden Darmzellen in der Zellkultur vier Stunden lang Handystrahlung ausgesetzt. Ungeschützte Zellen zeigten dabei einen nahezu vollständigen Zusammenbruch der Barriere. Zellen, die mit QiOne® 2 Pro geschützt wurden, wiesen dagegen eine weitgehend intakte Barriere auf — ihr Messwert lag auf einem ähnlichen Niveau wie völlig unbestrahlte Kontrollzellen.",
+  "punkte": [
+   "In der Zellkultur reduzierte Handystrahlung die Regenerationsaktivität ungeschützter Darmzellen um etwa 60 %.",
+   "Bei mit QiOne® 2 Pro geschützten Zellen lag die Verringerung der Regenerationsaktivität nur bei etwa 15 % — ähnlich wie bei unbestrahlten Kontrollzellen.",
+   "Der elektrische Widerstand der Darmbarriere (TEER) war bei ungeschützten Zellen auf ein Zehntel des Ausgangswertes eingebrochen; geschützte Zellen zeigten kaum eine Veränderung.",
+   "Die Unterschiede zwischen geschützten und ungeschützten Zellen waren statistisch hoch signifikant (p ≤ 0,01)."
+  ],
+  "einordnung": "Die Studie wurde im Labor an einer Schweine-Zelllinie (IPEC-J2) durchgeführt — kein Tierversuch und keine Humanstudie. Ergebnisse aus der Zellkultur lassen sich nicht direkt auf den menschlichen Darm übertragen, und die Studie belegt keine medizinische Wirkung am Menschen."
+ },
+ "abschnitte": [
+  {
+   "id": "abstract",
+   "titel": "Zusammenfassung (Abstract)",
+   "absaetze": [
+    "QiOne® 2 Pro ist ein spezifisches Gerät, das ein statisches Feld erzeugt, das Wassermoleküle dazu anregt, in den kohärenten Zustand überzugehen. Da unser Körper zu etwa 70 bis 85 % aus Wasser besteht (je nach Alter), könnte dieser kohärente Zustand der Wassermoleküle den zellulären Widerstand gegen exogene Einflüsse wie elektromagnetische Felder erhöhen. In der vorliegenden Studie wurde die Schutzwirkung von QiOne® 2 Pro gegen Mobiltelefon-Bestrahlung untersucht, indem kultivierte intestinale Epithelzellen verwendet wurden. Ungeschützte Zellen sowie unbehandelte Kontrollzellen dienten als Referenzpunkte. Sowohl der Zellregenerationsprozess als auch die Integrität der intestinalen Epithelbarriere wurden durch Messung des transepithelialen elektrischen Widerstands (TEER) untersucht.",
+    "Mobiltelefon-Bestrahlung verursachte eine um etwa 60 % reduzierte Zellregenerationsaktivität, während die Werte für QiOne® 2 Pro geschützte Zellen und unbehandelte Kontrollzellen jeweils bei etwa 15 % lagen. Darüber hinaus verursachte die Mobiltelefon-Bestrahlung bei ungeschützten Zellen durch oxidativen Stress einen Einriss in der Epithelbarriere mit einem vollständigen Verlust der morphologischen Integrität der Barriere. Im Gegensatz dazu zeigten unbehandelte Kontrollzellen und QiOne® 2 Pro geschützte Zellen keine morphologischen Veränderungen der Zellschichten; ihre Epithelbarriere wies einen etwa 10-fach höheren transepithelialen elektrischen Widerstand auf als die ungeschützten Zellen.",
+    "Insgesamt demonstrieren die Ergebnisse eindeutig die Empfindlichkeit der Darmbarriere gegenüber oxidativem Stress, der durch Mobiltelefon-Bestrahlung erzeugt wird. Zusätzlich zeigen die Ergebnisse, dass das QiOne® 2 Pro-Gerät in der Lage ist, unerwünschte zelluläre Auswirkungen von Mobiltelefon-Bestrahlung zu reduzieren."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "abkuerzungen",
+   "titel": "Abkürzungen",
+   "absaetze": [
+    "TEER: Transepithelialer elektrischer Widerstand (Transepithelial Electrical Resistance)"
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "einleitung",
+   "titel": "Einleitung",
+   "absaetze": [
+    "Das intestinale Epithel mit seiner einzelligen Schichtdicke hat zwei wesentliche Aufgaben. Die erste besteht darin, eine physikalische Barriere zwischen dem Inhalt des Darmlumens und dem Rest unseres Körpers zu schaffen. Die zweite besteht darin, eine effiziente Absorption essenzieller Nährstoffe aus dem Darmlumen zu gewährleisten und Schleim sowie antimikrobielle Peptide und Zytokine mit sowohl schützenden als auch immunregulatorischen Eigenschaften zu produzieren. Eine reduzierte Barrierefunktion kann daher weitreichende Konsequenzen haben, nicht nur für den Darm, sondern auch für die systemische Gesundheit [1]. Diese Barrierefunktion kann durch oxidativen Stress zerstört werden [2], wie er durch Mobiltelefon-Bestrahlung erzeugt wird.",
+    "Obwohl die Allgegenwart von Quellen elektromagnetischer Felder bekannt ist, ist deren Einfluss auf lebende Organismen und Zellen zum Gegenstand zahlreicher Forschungsstudien mit widersprüchlichen Ergebnissen geworden [3–6]. Es wurde jedoch gezeigt, dass oxidativer Stress eine Schlüsselrolle bei Ereignissen spielt, die zum Zelltod führen [7–11]. Obwohl der Gastrointestinaltrakt keine zentrale Rolle in der Mobiltelefon-Strahlungsforschung spielt, gibt es einige Veröffentlichungen, die sich mit dem Einfluss elektromagnetischer Strahlung auf den Darm befassen. Zum Beispiel demonstrierte Sieroń et al. [12] in einer experimentellen Tierstudie, dass elektromagnetische Strahlung das Redoxgleichgewicht im Gastrointestinaltrakt von Ratten veränderte. Dies könnte die Empfindlichkeit gegenüber intestinalem oxidativen Stress durch Verletzung oder Krankheit mit all seinen unerwünschten gesundheitlichen Folgen erhöhen.",
+    "Gemäß den Angaben des Herstellers, Qi Blanco UG (haftungsbeschränkt) aus Deutschland, enthält das QiOne® 2 Pro-Gerät einen Gitterchip, der ein statisches Feld bildet, das Wassermoleküle dazu anregt, in den kohärenten Zustand überzugehen. Da unser Körper zu etwa 70–85 % aus Wasser besteht (je nach Alter), beeinflusst der kohärente Zustand der Wassermoleküle die Zellen unseres gesamten Körpers positiv. Darüber hinaus soll QiOne® 2 Pro die unerwünschten Auswirkungen von Mobiltelefon-Bestrahlung neutralisieren.",
+    "In der vorliegenden In-vitro-Studie wurden aktuelle Bioassays verwendet, um zu untersuchen, ob die Verwendung von QiOne® 2 Pro zu einer Schutzwirkung auf kultivierte intestinale Epithelzellen gegen Mobiltelefon-Bestrahlung und den dadurch entstehenden oxidativen Stress führt."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "material-methoden",
+   "titel": "Material und Methoden",
+   "absaetze": [
+    "QiOne® 2 Pro-Gerät: QiOne® 2 Pro wurde von Qi Blanco UG (haftungsbeschränkt), D-97711 Maßbach, Deutschland, für die Dauer der Experimente zur Verfügung gestellt. Das Gerät ist ein Gitterchip der zweiten Generation aus einer speziell entwickelten Goldlegierung mit achtfacher Stärke, der ein statisches Feld erzeugt, das Wassermoleküle dazu anregt, in Ihrem Körper in einen kohärenten Zustand einzutreten.",
+    "Mobiltelefon: Es wurde ein aktuelles und handelsübliches Mobiltelefon eines führenden Markenherstellers mit einem SAR-Wert (Spezifische Absorptionsrate als Maß für die vom Körper aufgenommene Strahlungsenergie) von 0,76 W/kg verwendet. Es wurde keine Unterscheidung zwischen thermischer und nicht-thermischer Strahlung vorgenommen, da beide auch in der Realität beim Telefonieren vorhanden sind und eine Wirkung auf den menschlichen Körper haben.",
+    "Kultivierung intestinaler Zellen: Die hier vorgestellten Untersuchungen wurden mit IPEC-J2-Zellen (ACC-701; Leibniz Institut, DSMZ, Braunschweig, Deutschland) durchgeführt. Die Zellen wurden in Dulbeccos Modifikation des Eagle-Mediums (DMEM; 1,0 g/L Glucose) mit 10 % Wachstumsmischung und 0,5 % Gentamycin kultiviert und in einem Inkubator bei 37 °C in einer Atmosphäre von 5 % CO₂ und 95 % Luft bei nahezu 100 % Luftfeuchtigkeit gezogen. Die Zellen wurden als Massenkulturen kultiviert und zweimal wöchentlich mit frischem Kulturmedium regelmäßig subkultiviert. Für die Experimente wurden Zellen aus 80–90 % konfluenten Massenkulturen entnommen.",
+    "Zellregeneration nach Mobiltelefon-Bestrahlung: Zellen wurden mit einer Dichte von 100.000 Zellen/ml in die vier einzelnen Kompartimente eines Silikon-4-Well-Kulturinserts (ibidi, Gräfelfing, Deutschland) eingesät. Die einzelnen Kompartimente der Inserts sind durch einen 500 µm dicken Silikonstreifen mit einem äußeren Silikonrahmen von 700 µm getrennt. Aufgrund des speziellen Haftbereichs haftet ein Insert fest am Boden einer Kulturschale und bildet einen distinkten zellfreien Bereich (künstliche Wunde), in dem die Zellen durch Migration und Proliferation besiedeln können. Nach Erreichen der Konfluenz innerhalb von 48 Stunden nach der Zellaussaat wurden die Zellen der Strahlung eines aktiv sendenden Mobiltelefons & WLAN mit und ohne QiOne® 2 Pro ausgesetzt. Die Kulturschale wurde auf dem Mobiltelefon-Display (Strahlungsrichtung zum Benutzer) in einem Mini-Inkubator für 4 Stunden bei 37 °C ohne Begasung platziert (Abbildung 1). Um pH-Änderungen während der Exposition unter normalen Luftbedingungen zu vermeiden, wurde das routinemäßige Kulturmedium durch Leibowitz L-15-Medium mit 1 % Wachstumsmischung und 0,5 % Gentamycin ersetzt. Zellen, die auf dieselbe Weise kultiviert, aber ohne Mobiltelefon-Bestrahlung behandelt wurden, dienten als entsprechende Kontrollen. Nach 4 Stunden Bestrahlung wurden die Zellen für weitere 8 Stunden im selben Kulturmedium inkubiert. Schließlich wurden die Zellen mit Methanol fixiert, mit Giemsa-Azur-Eosin-Methylenblaulösung (Merck, Darmstadt, Deutschland) angefärbt, luftgetrocknet und anhand von Mikrofotografien und einer spezialisierten Software mit künstlicher Intelligenz von KML Vision, Graz, Österreich (IKOSA-KI-Software) untersucht.",
+    "Transepithelialer elektrischer Widerstand (TEER) nach Mobiltelefon-Bestrahlung: IPEC-J2-Zellen wurden 5 Tage lang auf der Oberfläche einer 0,4-µm-porösen Membran (Transwell-Platte, Corning, Sigma-Aldrich, Deisenhofen, Deutschland) gezogen, was zwei getrennte Kompartimente innerhalb der Kulturschale ergibt. Die Zellen, die die Oberfläche der Membran bedecken, stellen eine physikalische Barriere gegenüber dem unteren Kompartiment dar. Der TEER (elektrischer Widerstand der Zellschicht als Maß für die Barriere-Dichtheit) wurde gemessen, indem eine Elektrode in das Kulturmedium im oberen Kompartiment und eine Elektrode in das Kulturmedium im unteren Kompartiment gelegt wurde. Der elektrische Widerstand wurde direkt mit einem tragbaren Voltmeter (Millicell ERS-2 Voltmeter, Millipore/Merck, Darmstadt, Deutschland) gemessen, wie an anderer Stelle im Detail beschrieben [1,13,14]. Epitheliale Zellschichten wurden für die Experimente bei einem elektrischen Widerstand von mindestens 2.000 Ω/cm² — stellvertretend für eine intakte physikalische Barriere mit sehr guter Integrität — herangezogen und dem aktiv sendenden Mobiltelefon & WLAN mit und ohne QiOne® 2 Pro für 4 Stunden bei 37 °C wie bereits beschrieben ausgesetzt. Nach weiteren 24 Stunden Kultivierung wurde der TEER erneut gemessen und die Daten miteinander verglichen. Drei unabhängige Experimente wurden durchgeführt. Als Referenz wurde der TEER der porösen Membranen ohne Zellbarriere mit 150 bis 180 Ω/cm² gemessen."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": [
+    "abb1"
+   ]
+  },
+  {
+   "id": "ergebnisse",
+   "titel": "Ergebnisse",
+   "absaetze": [
+    "Zellregeneration: Wie in den Abbildungen 2 und 3 zu sehen ist, verursachte die Mobiltelefon-Bestrahlung eine Reduktion der Zellregenerationsaktivität, indem eine zellfreie Fläche von 43,7 ± 9,0 % (Mittelwert ± Standardabweichung; n=4) im Vergleich zur gesamten besiedelten Zellfläche verbleibend blieb. Im Gegensatz dazu betrug die verbleibende zellfreie Fläche lediglich 13,8 ± 2,6 % für die unbehandelte Kontrolle und 14,5 ± 1,6 % für die QiOne® 2 Pro geschützten Zellen (jeweils Mittelwert ± Standardabweichung; n=4). Der Unterschied zwischen den ungeschützten Zellen und den QiOne® 2 Pro geschützten Zellen war statistisch signifikant (p ≤ 0,01; zweiseitiger Wilcoxon-Mann-Whitney-Test), was die Wirksamkeit des Geräts gegen Mobiltelefon-Bestrahlung demonstriert. Darüber hinaus gab es keinen statistisch relevanten Unterschied zwischen den QiOne® 2 Pro geschützten Zellen und den Zellen, die überhaupt keiner Mobiltelefon-Bestrahlung ausgesetzt waren.",
+    "Transepithelialer elektrischer Widerstand (TEER): Wie in Abbildung 4 zu sehen ist, verursachte die Mobiltelefon-Bestrahlung einen Einriss in der Epithelbarriere durch Zelltod infolge oxidativen Stresses. Im Gegensatz dazu zeigten unbehandelte Kontrollen und QiOne® 2 Pro geschützte Zellen keine derartigen massiven morphologischen Veränderungen der Zellschichten. Diese Situation spiegelt sich in den gemessenen TEER-Werten wider. Bei den ungeschützten Zellen wurde ein TEER von 152 ± 16 Ω/cm² gemessen, was den vollständigen Verlust der Barriereintegrität demonstriert. Der TEER-Wert für die QiOne® 2 Pro geschützten Zellen betrug 1.837 ± 349 Ω/cm² und für die unbehandelten Kontrollen 2.542 ± 389 Ω/cm² (alle Mittelwerte ± Standardabweichung). Der Unterschied zwischen geschützten und unbehandelten Zellen war statistisch nicht signifikant, während der Unterschied zu den ungeschützten Zellen hochsignifikant war (p ≤ 0,01; zweiseitiger Wilcoxon-Mann-Whitney-Test; n=3). Bei der Berechnung der relativen Werte, wobei der TEER der unbehandelten Kontrollen als 100 ± 13,8 % gesetzt wurde, wiesen die QiOne® 2 Pro geschützten Zellen einen Wert von 72,6 ± 14,5 % und die ungeschützten Zellen einen Wert von 6,0 ± 3,2 % auf (alle Mittelwerte ± Standardabweichungen; Abbildung 5). Die Daten demonstrieren erneut die Wirksamkeit des Geräts gegen Mobiltelefon-Bestrahlung."
+   ],
+   "listen": [],
+   "tabellen": [
+    "tab1",
+    "tab2"
+   ],
+   "abbildungen": [
+    "abb2",
+    "abb3",
+    "abb4",
+    "abb5"
+   ]
+  },
+  {
+   "id": "diskussion",
+   "titel": "Diskussion",
+   "absaetze": [
+    "Bhattacharyya et al. [15] haben in ihrer Übersichtsarbeit zusammengefasst, dass reaktive Sauerstoffspezies als Nebenprodukte normaler zellulärer Stoffwechselaktivitäten entstehen, die durch endogene Enzyme wie Superoxiddismutase, Glutathionperoxidase und Katalase inaktiviert werden können. Reaktive Sauerstoffspezies entstehen jedoch auch als Reaktion auf eine Reihe von traumatischen Einflüssen auf unseren Körper. Dazu gehören ultraviolette Strahlung, Zigarettenrauchen, Alkohol, nichtsteroidale Antirheumatika, Ischämie-Reperfusionsverletzungen, chronische Infektionen und entzündliche Erkrankungen.",
+    "Darüber hinaus ist bekannt, dass Mobiltelefon-Bestrahlung einen Überschuss an reaktiven Sauerstoffradikalen produziert [10–13, 16–20], der durch die oben genannten Enzyme nicht inaktiviert werden kann. Da die Epithelzellen der Darmbarriere eine hohe Umsatzrate aufweisen, sind sie empfindlicher gegenüber oxidativem Stress, der oxidative Verletzungen und entzündliche Reaktionen induzieren kann, an denen eine Defizienz des Epithels und immun-/entzündungsvermittelnde Zellen beteiligt sind [15].",
+    "Vor diesem Hintergrund wurden kultivierte Darmzellen verwendet, um den Einfluss von oxidativem Stress auf das Regenerationspotenzial und die Integrität der Epithelbarriere zu untersuchen. Laut Vergauwen [21] \"sind IPEC-J2-Zellen intestinale Schweine-Enterozyten, die aus dem Jejunum eines neugeborenen Ferkels isoliert wurden. Die IPEC-J2-Zelllinie ist insofern einzigartig, als sie aus dem Dünndarm stammt und weder transformiert noch tumorigener Natur ist. IPEC-J2-Zellen ahmen die menschliche Physiologie genauer nach als jede andere Zelllinie nicht-menschlichen Ursprungs.\" Die Zellen wurden ursprünglich 1989 von Helen Berschneider an der Universität von North Carolina isoliert [22]. Der Vorteil der IPEC-J2-Zelllinie als In-vitro-Modell ergibt sich aus ihren morphologischen und funktionellen Ähnlichkeiten mit intestinalen Epithelzellen in vivo. IPEC-J2-Zellen haben Mikrovilli auf ihrer apikalen Seite und Tight Junctions (Verbindungsstrukturen, die den Zelllayer abdichten), um als Barriere zu wirken und die epitheliale Funktionalität widerzuspiegeln [23]. Die Bestimmung des TEER ist eine Technik, die Informationen über die Gleichmäßigkeit der IPEC-J2-Zellschicht auf der mikroporösen Filtermembran und die Integrität der zwischen den polarisierten Zellen gebildeten Tight Junctions liefert. Daher werden TEER-Messungen häufig zur Untersuchung der epithelialen Barrierefunktion eingesetzt [1].",
+    "Die vorliegenden Ergebnisse mit QiOne® 2 Pro ergänzen und bestätigen unsere früheren Befunde, in denen wir demonstriert haben, dass dieses Gerät in der Lage war, funktionelle Neutrophile (weiße Blutkörperchen der angeborenen Immunabwehr) gegen Mobiltelefon-Bestrahlung zu schützen [24]. In diesen Experimenten wurde die Zellvitalität durch die Erzeugung von Superoxid-Anion-Radikalen im Rahmen eines oxidativen oder respiratorischen Bursts überprüft. Mobiltelefon-Bestrahlung bei ungeschützten funktionellen Neutrophilen verursachte eine Reduktion der Superoxid-Anion-Radikalerzeugung um etwa 40 % im Vergleich zu unbehandelten Zellen. Im Gegensatz dazu zeigten QiOne® 2 Pro geschützte Zellen eine Reduktion der Superoxid-Anion-Radikalerzeugung um lediglich 16 % im Vergleich zu unbehandelten Zellen. In den vorliegenden Experimenten mit IPEC-J2-Zellen lagen die Regenerationswerte für ungeschützte und QiOne® 2 Pro geschützte Zellen im gleichen Bereich wie in den früheren Experimenten mit funktionellen Neutrophilen. Die Untersuchung der Integrität einer dreidimensionalen Darmbarriere zeigte jedoch eine viel höhere Empfindlichkeit gegenüber oxidativem Stress durch Mobiltelefon-Bestrahlung. Dies stimmt mit den von Bhattacharyya et al. [15] zusammengefassten Erkenntnissen überein. Die Verwendung von QiOne® 2 Pro schützte die Zellen in signifikanter Weise, wie hier gezeigt.",
+    "Obwohl die Prinzipien der Quantenelektrodynamik (QED) in der konventionellen Medizin als Methode zur Beeinflussung des Wasserzustands nicht wirklich akzeptiert sind, hat die vorliegende Untersuchung gezeigt, dass kohärentes Wasser, wie es durch die Verwendung von QiOne® 2 Pro erzeugt wird, offensichtlich einen eindeutig positiven Einfluss auf Zellen hat, indem es deren Widerstand gegen exogene traumatische Einflüsse wie Mobiltelefon-Bestrahlung erhöht. Es wurde behauptet, dass elektromagnetische Felder an kohärente Systeme gekoppelt werden können, was zu einem 'Self-Trapping' führt, das eine gemeinsame phasengleiche dynamische Oszillation verursacht [25–28]. Tatsächlich könnte das kohärente System wie das Innere eines Faradayschen Käfigs gegen exogene elektromagnetische Felder geschützt sein."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "schlussfolgerung",
+   "titel": "Schlussfolgerung",
+   "absaetze": [
+    "Die Ergebnisse dieser In-vitro-Studie mit kultivierten intestinalen Epithelzellen (IPEC-J2) demonstrieren eindeutig die Empfindlichkeit der Darmbarriere gegenüber oxidativem Stress, der durch Mobiltelefon-Bestrahlung erzeugt wird. Mobiltelefon-Bestrahlung verursachte sowohl eine deutlich reduzierte Zellregenerationsaktivität als auch einen vollständigen Einriss der Epithelbarriere in ungeschützten Zellen. QiOne® 2 Pro war in der Lage, diese unerwünschten zellulären Auswirkungen signifikant zu reduzieren, wobei geschützte Zellen sowohl in der Regenerationsaktivität als auch in der Barriereintegrität (TEER) ein dem unbestrahlten Kontrollniveau vergleichbares Ergebnis zeigten."
+   ],
+   "listen": [],
+   "tabellen": [],
+   "abbildungen": []
+  },
+  {
+   "id": "literatur",
+   "titel": "Literaturverzeichnis",
+   "absaetze": [],
+   "listen": [
+    {
+     "titel": "",
+     "punkte": [
+      "1. Lea T (2015) Epithelial cell models; general introduction. In: Verhoeckx K. et al. (eds) The Impact of Food Bioactives on Health. Springer, Cham, pp. 95–102.",
+      "2. Wang H, Zhai N, Chen Y, Chongyang F, Huang K (2018) OTA induces intestinal epithelial barrier dysfunction and tight junction disruption in IPEC-J2 cells through ROS/Ca2+-mediated MLCK activation. Environ Pollution 242: 106–112.",
+      "3. Funk RHW, Monsees T, Özkucur N (2009) Electromagnetic effects – from cell biology to medicine. Progr Histochem Cytochem 43: 177–264.",
+      "4. Giuliani L, Soffritti M (2010) Non-thermal effects and mechanisms of interaction between electromagnetic fields and living matter. Eur J Oncol.",
+      "5. Panagopoulos DJ, Johansson O, Carlo GL (2015) Polarization: A key difference between man-made and natural electromagnetic fields, in regard to biological activity. Scientific Reports 5: 14914.",
+      "6. Barnes F, Greenebaum B (2016) Some effects of weak magnetic fields on biological systems – RF fields can change radical concentrations and cancer cell growth rates. IEEE Power Electronics Magazine 3: 60–68.",
+      "7. Yakymenko I, Sidorik E, Henshel D, Kyrylenko S (2014) Low intensity radiofrequency radiation: A new oxidant for living cells. Oxid Antioxid Med Sci 3: 1–3.",
+      "8. Yakymenko I, Tsybulin O, Sidorik E, Henshel D, Kyrylenko O, et al. (2016) Oxidative mechanisms of biological activity of low-intensity radiofrequency radiation. Electromagn Biol Med 35: 186–202.",
+      "9. Funk RHW, Monsees TK (2006) Effects of electromagnetic fields on cells: Physiological and therapeutical approaches and molecular mechanisms of interaction. Cells Tissues Organs 182: 59–78.",
+      "10. Wang H, Zhang X (2017) Magnetic fields and reactive oxygen species. Int J Mol Sci 18: 2175–2195.",
+      "11. Hou Q, Wang M, Wu S, Ma X, An G, et al. (2015) Oxidative changes and apoptosis induced by 1800-MHz electromagnetic radiation in NIH/3T3 cells. Electromagn Biol Med 34: 85–92.",
+      "12. Sieroń K, Knapik K, Onik G, Romuk E, Birkner E, et al. (2021) Electromagnetic fields modify redox balance in the rat gastrointestinal tract. Front Public Health 9: 710484.",
+      "13. Geens MM, Niewold TA (2011) Optimizing culture conditions of a porcine epithelial cell line IPEC-J2 through a histological and physiological characterization. Cytotechnology 63: 415–423.",
+      "14. Bernardini C, Algieri C, Mantia LD, Zannoni A, Salaroli R, et al. (2021) Relationship between serum concentration, functional parameters and cell bioenergetics in IPEC-J2 cell line. Histochem Cell Biol 156: 59–67.",
+      "15. Bhattacharyya A, Chattopadhyay R, Mitra S, Crowe SE (2014) Oxidative stress: An essential factor in the pathogenesis of gastrointestinal mucosal diseases. Physiol Rev 94: 329–354.",
+      "16. Balci M, Devrim E, Durak I (2007) Effects of mobile phones on oxidant/antioxidant balance in cornea and lens of rats. Curr Eye Res 32: 21–25.",
+      "17. Meral I, Mert H, Mert N, Deger Y, Yoruk I, et al. (2007) Effects of 900-MHz electromagnetic field emitted from cellular phone on brain oxidative stress and some vitamin levels of guinea pigs. Brain Res 1169: 120–124.",
+      "18. Oktem F, Ozguner F, Mollaoglu H, Koyu A, Uz E (2005) Oxidative damage in the kidney induced by 900-MHz-emitted mobile phone: protection by melatonin. Arch Med Res 36: 350–355.",
+      "19. Oral B, Guney M, Ozguner F, Karahan N, Mungan T, et al. (2006) Endometrial apoptosis induced by a 900-MHz mobile phone: Preventive effects of vitamins E and C. Adv Ther 23: 957–973.",
+      "20. Ozguner F, Bardak Y, Comlekci S (2006) Protective effects of melatonin and caffeic acid phenethyl ester against retinal oxidative stress in long-term use of mobile phone: A comparative study. Mol Cell Biochem 282: 83–88.",
+      "21. Vergauwen H, Verhoeckx K, Lopez-Exposito I, Kleiveland C, Lea T, et al. (2015) The IPEC-J2 cell line. In: (eds) The Impact of Food Bioactives on Health. Springer, Cham, pp. 125–134.",
+      "22. Berschneider HM (1989) Development of normal cultured small intestinal epithelial cell lines which transport Na and Cl. Gastroenterology 96: A41.",
+      "23. Schierack P, Nordhoff M, Pollmann M, Weyrauch KD, Amasheh S, et al. (2006) Characterization of a porcine intestinal epithelial cell line for in vitro studies of microbial pathogenesis in swine. Histochem Cell Biol 125: 293–305.",
+      "24. Dartsch PC (2021) QiOne® 2 Pro – investigations on its potential for the exclusion of unwanted cellular effects of mobile phone radiation. Jpn J Med 4: 484–488.",
+      "25. Bono I, Del Giudice E, Gamberale L, Henry M (2012) Emergence of the coherent structure of liquid water. Water 4: 510–532.",
+      "26. Preparata G (1995) QED, Coherence in Matter. World Scientific, Singapore–London–New Jersey.",
+      "27. Arani R, Bono I, Del Giudice E, Preparata G (1995) QED coherence and the thermodynamics of water. Int J Mod Phys B 9: 1813–1841.",
+      "28. Blasone M, Jizba M, Vitiello G (2011) Quantum Field Theory and its Macroscopic Manifestations. Imperial College Press."
+     ]
+    }
+   ],
+   "tabellen": [],
+   "abbildungen": []
+  }
+ ],
+ "tabellen": [
+  {
+   "key": "tab1",
+   "titel": "Zellregeneration (Wundheilungs-Assay): verbleibende zellfreie Fläche nach 4 h Mobiltelefon-Bestrahlung + 8 h Nachkultur",
+   "kopf": [
+    "Bedingung",
+    "Verbleibende zellfreie Fläche (Mittelwert ± SD)",
+    "n",
+    "Statistik vs. ungeschützt"
+   ],
+   "zeilen": [
+    [
+     "Unbestrahlte Kontrolle",
+     "13,8 ± 2,6 %",
+     "4",
+     "kein signifikanter Unterschied zu geschützt"
+    ],
+    [
+     "QiOne® 2 Pro geschützt",
+     "14,5 ± 1,6 %",
+     "4",
+     "kein signifikanter Unterschied zu Kontrolle"
+    ],
+    [
+     "Ungeschützt (Bestrahlung ohne QiOne® 2 Pro)",
+     "43,7 ± 9,0 %",
+     "4",
+     "p ≤ 0,01 (zweiseitiger Wilcoxon-Mann-Whitney-Test)"
+    ]
+   ],
+   "fussnote": "Methode: KI-gestützte Bildauswertung (IKOSA AI, KML Vision, Graz). Niedrigere Werte = bessere Regeneration."
+  },
+  {
+   "key": "tab2",
+   "titel": "Transepithelialer elektrischer Widerstand (TEER): Barriereintegrität nach 4 h Mobiltelefon-Bestrahlung + 24 h Nachkultur",
+   "kopf": [
+    "Bedingung",
+    "TEER absolut (Mittelwert ± SD) [Ω/cm²]",
+    "TEER relativ (Kontrolle = 100 %)",
+    "n",
+    "Statistik vs. ungeschützt"
+   ],
+   "zeilen": [
+    [
+     "Unbestrahlte Kontrolle",
+     "2.542 ± 389 Ω/cm²",
+     "100 ± 13,8 %",
+     "3",
+     "—"
+    ],
+    [
+     "QiOne® 2 Pro geschützt",
+     "1.837 ± 349 Ω/cm²",
+     "72,6 ± 14,5 %",
+     "3",
+     "p ≤ 0,01; nicht signifikant vs. Kontrolle"
+    ],
+    [
+     "Ungeschützt (Bestrahlung ohne QiOne® 2 Pro)",
+     "152 ± 16 Ω/cm²",
+     "6,0 ± 3,2 %",
+     "3",
+     "p ≤ 0,01 (zweiseitiger Wilcoxon-Mann-Whitney-Test)"
+    ]
+   ],
+   "fussnote": "Messung mit Millicell ERS-2 Voltmeter (Millipore/Merck). Referenz-TEER der porösen Membran ohne Zellen: 150–180 Ω/cm². Ausgangswert für Einschluss in Experiment: ≥ 2.000 Ω/cm²."
+  }
+ ],
+ "grafiken": [
+  {
+   "key": "abb1",
+   "nummer": "Abbildung 1",
+   "bildunterschrift": "Anordnung der Zellkulturschale, die auf dem Mobiltelefon-Display (Strahlungsrichtung zum Benutzer) zusammen mit einem QiOne® 2 Pro-Gerät auf der rechten Seite platziert wurde.",
+   "alt": "Versuchsaufbau: Zellkulturschale auf Smartphone-Display; QiOne® 2 Pro-Gerät rechts daneben; Strahlungsrichtung zum Benutzer hin.",
+   "quelleSeite": 2,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb1--4e85ac477062.png?v=1786745388",
+   "breite": 760,
+   "hoehe": 295
+  },
+  {
+   "key": "abb2",
+   "nummer": "Abbildung 2",
+   "bildunterschrift": "Originalmikrofotografien (linker Teil) sowie die Auswertung durch die IKOSA-KI-Software (rechter Teil) mit markierten berechneten Frontlinien der IPEC-J2-Zellen, die den zellfreien Bereich schließen. (A) Unbehandelte Kontrolle unter denselben Kulturbedingungen wie unten, jedoch ohne Exposition gegenüber Mobiltelefon-Bestrahlung. (B) Ungeschützte Zellen nach 4 Stunden Mobiltelefon-Bestrahlung mit anschließender Kultivierung für 8 Stunden. (C) QiOne® 2 Pro geschützte Zellen nach 4 Stunden Mobiltelefon-Bestrahlung mit anschließender Kultivierung für 8 Stunden. Beachten Sie die stark verringerte Besiedlung des zellfreien Bereichs in (B). Unbehandelte Kontrolle und QiOne® 2 Pro geschützte Zellen zeigen ein ähnliches Besiedlungsmuster.",
+   "alt": "Mikrofotografien des Wundheilungs-Assays: (A) Kontrollzellen mit dichter Besiedlung; (B) ungeschützte bestrahlte Zellen mit großem Zelldefekt; (C) QiOne-geschützte Zellen mit Besiedlungsmuster ähnlich der Kontrolle. KI-Frontlinien eingezeichnet.",
+   "quelleSeite": 3,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb2--7c77fe0ef4d0.png?v=1786745395",
+   "breite": 1400,
+   "hoehe": 1148
+  },
+  {
+   "key": "abb3",
+   "nummer": "Abbildung 3",
+   "bildunterschrift": "Darstellung der Ergebnisse zur Zellregeneration nach Mobiltelefonexposition mit und ohne QiOne® 2 Pro für 4 Stunden und anschließender Kultivierung für 8 Stunden. Beachten Sie, dass sich die verbleibenden zellfreien Flächen von unbehandelter Kontrolle und QiOne® 2 Pro geschützten Zellen nicht voneinander unterscheiden, während ungeschützte Zellen eine signifikant größere zellfreie Fläche aufgrund einer deutlich reduzierten Zellaktivität und sogar Zelltod aufweisen. Daten repräsentieren Mittelwert ± Standardabweichung aus vier unabhängigen Experimenten.",
+   "alt": "Balkendiagramm: verbleibende zellfreie Fläche (%) für Kontrolle ~13,8 %, QiOne-geschützt ~14,5 % und ungeschützt ~43,7 %. Fehlerbalken zeigen Standardabweichungen (n=4). Signifikanzstern bei ungeschützt vs. geschützt (p ≤ 0,01).",
+   "quelleSeite": 4,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb3--856842cec839.png?v=1786745399",
+   "breite": 750,
+   "hoehe": 685
+  },
+  {
+   "key": "abb4",
+   "nummer": "Abbildung 4",
+   "bildunterschrift": "Originalmikrofotografien von IPEC-J2-Zellen, die eine physikalische Barriere auf den porösen Membranen von Transwells nach 4 Stunden Mobiltelefon-Bestrahlung mit anschließender Kultivierung für 24 Stunden ausbilden. (A) Unbehandelte Kontrolle. (B) Ungeschützte Zellen. (C) QiOne® 2 Pro geschützte Zellen. Die kleinen dunklen Punkte sind die 0,4-µm-Poren in der Membran, und die violett angefärbten Strukturen sind die Zellkerne. Das Zytoplasma der Zellen ist durch den Farbstoff nur schwach angefärbt. Beachten Sie den Einriss der Epithelbarriere in (B), während die Barriereintegrität in QiOne® 2 Pro geschützten Zellen in (C) der unbehandelten Kontrolle in (A) nahezu ähnlich ist.",
+   "alt": "Mikrofotografien der TEER-Transwell-Experimente: (A) intakter Zellmonolayer Kontrolle; (B) ungeschützt — deutlicher Einriss der Epithelbarriere, Zellverlust; (C) QiOne-geschützt — weitgehend intakter Monolayer wie Kontrolle. Poren der Membran als dunkle Punkte sichtbar.",
+   "quelleSeite": 4,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb4--4500f27ee948.png?v=1786745406",
+   "breite": 1400,
+   "hoehe": 818
+  },
+  {
+   "key": "abb5",
+   "nummer": "Abbildung 5",
+   "bildunterschrift": "Darstellung der Ergebnisse zum transepithelialen elektrischen Widerstand (TEER) nach Mobiltelefonexposition mit und ohne QiOne® 2 Pro für 4 Stunden und anschließender Kultivierung für 8 Stunden. Beachten Sie, dass sich der TEER von unbehandelter Kontrolle und QiOne® 2 Pro geschützten Zellen nicht voneinander unterscheiden, während ungeschützte Zellen einen signifikant verringerten TEER aufgrund eines Einrisses der Epithelbarriere aufweisen. Daten repräsentieren Mittelwert ± Standardabweichung aus drei unabhängigen Experimenten.",
+   "alt": "Balkendiagramm: TEER (Ω/cm²) für Kontrolle ~2.542, QiOne-geschützt ~1.837 und ungeschützt ~152. Fehlerbalken zeigen Standardabweichungen (n=3). Signifikanzstern bei ungeschützt vs. geschützt (p ≤ 0,01).",
+   "quelleSeite": 5,
+   "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0002-abb5--6c73695d6e53.png?v=1786745411",
+   "breite": 750,
+   "hoehe": 763
+  }
+ ],
+ "zitation": {
+  "text": "Dartsch PC. Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Appl Cell Biol 2021; 9(3): 69-74.",
+  "doiUrl": "https://doi.org/10.53043/2320-1991.acb90012"
+ },
+ "grenzen": [
+  "Die Studie wurde ausschließlich in vitro an der intestinalen Epithelzelllinie IPEC-J2 (porzinen Ursprungs) durchgeführt; eine direkte Übertragbarkeit auf den menschlichen Darm ist nicht belegt.",
+  "Die Stichprobengrößen sind klein: n=4 für den Zellregenerations-Assay und n=3 für den TEER-Assay.",
+  "Das QiOne® 2 Pro-Gerät wurde vom Hersteller Qi Blanco UG zur Verfügung gestellt; es handelt sich um ein Einzellabor-Experiment ohne unabhängige Replikation.",
+  "Der vorgeschlagene Wirkungsmechanismus — Induktion von kohärentem Wasser durch Quantenelektrodynamik (QED) — ist in der konventionellen Medizin nicht anerkannt und wird in der Publikation selbst als Hypothese dargestellt.",
+  "Die TEER-Werte der QiOne® 2 Pro geschützten Zellen (1.837 ± 349 Ω/cm²) lagen tendenziell unterhalb der unbehandelten Kontrolle (2.542 ± 389 Ω/cm²); der Unterschied war statistisch nicht signifikant, zeigt jedoch an, dass die Schutzwirkung nicht vollständig war."
+ ],
+ "faq": [
+  {
+   "frage": "Was wurde in dieser Studie gemessen?",
+   "antwort": "In dieser Laborstudie wurden zwei verschiedene Messverfahren eingesetzt: Erstens ein Wundheilungs-Assay, bei dem verfolgt wurde, wie schnell Darmzellen einen zellfreien Bereich wieder schließen (Zellregeneration). Zweitens wurde der transepitheliale elektrische Widerstand (TEER) gemessen — ein etablierter Laborwert, der anzeigt, wie dicht und intakt eine Zellbarriere ist. Je höher der TEER-Wert, desto dichter ist die Barriere."
+  },
+  {
+   "frage": "Wie stark war der Effekt von Handystrahlung auf die Darmzellen im Labor?",
+   "antwort": "Ungeschützte Darmzellen zeigten nach 4 Stunden Bestrahlung einen Zusammenbruch der Barriere: Ihr TEER sank auf 152 Ω/cm², verglichen mit 2.542 Ω/cm² bei unbestrahlten Kontrollzellen. Auch die Regenerationsaktivität war bei ungeschützten Zellen deutlich eingeschränkt — der zellfreie Bereich betrug noch 43,7 %, während er bei Kontrollzellen nur 13,8 % ausmachte."
+  },
+  {
+   "frage": "Welche Ergebnisse wurden für QiOne® 2 Pro geschützte Zellen beobachtet?",
+   "antwort": "Zellen, die mit QiOne® 2 Pro geschützt wurden, zeigten in beiden Messungen Werte, die nahe an denen unbestrahlter Kontrollzellen lagen. Der TEER betrug 1.837 Ω/cm² (gegenüber 152 Ω/cm² bei ungeschützten Zellen), und die verbleibende zellfreie Fläche war 14,5 % (gegenüber 43,7 % bei ungeschützten Zellen). Beide Unterschiede zwischen geschützt und ungeschützt waren statistisch hochsignifikant (p ≤ 0,01)."
+  },
+  {
+   "frage": "Gilt dieses Ergebnis auch für Menschen?",
+   "antwort": "Nein — die Studie wurde ausschließlich im Labor mit einer Schweinezelllinie (IPEC-J2) durchgeführt. In-vitro-Ergebnisse lassen sich nicht direkt auf den lebenden menschlichen Organismus übertragen. Die Studie belegt keine medizinische Wirkung am Menschen und erlaubt keine Heilversprechen."
+  }
+ ],
+ "verwandt": [
+  "e0001",
+  "e0003"
+ ],
+ "factGate": []
+}

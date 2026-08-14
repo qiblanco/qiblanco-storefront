@@ -1,0 +1,622 @@
+/* ============================================================================
+   Studien-Sektion — /pages/studien (Übersicht) + die vier Einzelseiten.
+
+   Token-System übernommen aus dem 94/100-Rezept .lp-a3
+   (app/styles/schlaf-zellen-schutz.css): dieselbe modulare Typo-Skala,
+   dasselbe 8pt-Spacing-Grid, dasselbe warme Neutral-Kontinuum, DERSELBE EINE
+   Gold-Akzent. Bewusst KEINE zweite Gold-Familie und keine zweite Typo-Skala —
+   der Live-Befund vom 2026-07-24 (15 Schriftgrößen, 2 konkurrierende
+   Goldtoene) war genau die Ursache des "von AI gemacht"-Eindrucks.
+
+   EIGENER SCOPE `.qb-st` statt Wiederverwendung von `.lp-a3`: die LP-Datei ist
+   ausdrücklich mit /pages/qione-2-pro gekoppelt (Kommentar dort). Wer sich
+   hier anhaengt, ändert beim nächsten Studien-Feinschliff still die
+   Campaign-PDP mit. Die Token-WERTE sind identisch, die Kopplung ist es nicht.
+
+   LEITIDEE: Diese Seiten sind Beweis-Flaechen, keine Verkaufsflaechen
+   (seo-manager fuehrt /pages/studien als optimierungs_prio="beweis"). Der
+   Gold-Akzent liegt deshalb auf Beleg und Navigation, nie auf Druck. Lange
+   Lesestrecken brauchen Ruhe: ein Textmass, großzuegige Zeilenhoehe,
+   Abbildungen mit Luft.
+   ========================================================================== */
+
+.qb-st {
+  /* Typo-Skala (modulare Skala ~1.25; 7 Stufen — nicht erweitern) */
+  --st-fs-xs: 0.8125rem;
+  --st-fs-base: 1rem;
+  --st-fs-md: 1.125rem;
+  --st-fs-lg: 1.25rem;
+  --st-fs-xl: 1.5625rem;
+  --st-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --st-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --st-s1: 8px;
+  --st-s2: 16px;
+  --st-s3: 24px;
+  --st-s4: 32px;
+  --st-s6: 48px;
+  --st-s8: 64px;
+  --st-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --st-grund: #faf9f5;
+  --st-flaeche: #f4f0e9;
+  --st-dunkel: #191714;
+  --st-text: #2c2a26;
+  --st-text-hell: #f4f0e9;
+  --st-muted: #6b665d;
+  --st-akzent: #c9a14b;
+  --st-akzent-tief: #b8893a;
+  --st-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
+  --st-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --st-r1: 8px;
+  --st-r2: 16px;
+  --st-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --st-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --st-mass: 68ch;
+  --st-breite: 1080px;
+  --st-breite-schmal: 760px;
+
+  background: var(--st-grund);
+  color: var(--st-text);
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: var(--st-fs-base);
+  line-height: 1.7;
+}
+
+.qb-st *, .qb-st *::before, .qb-st *::after { box-sizing: border-box; }
+
+.qb-st-wrap {
+  max-width: var(--st-breite);
+  margin: 0 auto;
+  padding: var(--st-s6) var(--st-s3) var(--st-s12);
+}
+
+/* ---- Brotkrume ---------------------------------------------------------- */
+.qb-st-krume {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-s1);
+  align-items: center;
+  font-size: var(--st-fs-xs);
+  color: var(--st-muted);
+  margin-bottom: var(--st-s4);
+}
+.qb-st-krume a { color: var(--st-muted); text-decoration: none; }
+.qb-st-krume a:hover { color: var(--st-akzent-tinte); text-decoration: underline; }
+.qb-st-krume [aria-current='page'] { color: var(--st-text); }
+
+/* ---- Kopf --------------------------------------------------------------- */
+.qb-st-kopf { max-width: var(--st-mass); }
+.qb-st-kicker {
+  font-size: var(--st-fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--st-akzent-tinte);
+  font-weight: 600;
+  margin: 0 0 var(--st-s2);
+}
+.qb-st h1 {
+  font-size: var(--st-fs-h1);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--st-s2);
+  color: var(--st-dunkel);
+}
+.qb-st-original {
+  font-size: var(--st-fs-md);
+  font-style: italic;
+  color: var(--st-muted);
+  margin: 0 0 var(--st-s4);
+}
+
+.qb-st-eckdaten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--st-s2) var(--st-s4);
+  margin: 0 0 var(--st-s6);
+  padding: var(--st-s3);
+  background: var(--st-flaeche);
+  border-radius: var(--st-r1);
+  border-left: 3px solid var(--st-akzent);
+}
+.qb-st-eckdatum dt {
+  font-size: var(--st-fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-muted);
+  margin: 0 0 2px;
+}
+.qb-st-eckdatum dd {
+  margin: 0;
+  font-size: var(--st-fs-base);
+  line-height: 1.45;
+}
+.qb-st-eckdatum a { color: var(--st-akzent-tinte); }
+
+/* ---- Antwort in Normalsprache (Snippet-Kandidat) ------------------------ */
+.qb-st-antwort {
+  max-width: var(--st-mass);
+  margin: 0 0 var(--st-s6);
+}
+.qb-st-antwort h2,
+.qb-st h2 {
+  font-size: var(--st-fs-h2);
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--st-dunkel);
+  margin: 0 0 var(--st-s3);
+}
+.qb-st-antwort-text {
+  font-size: var(--st-fs-lg);
+  line-height: 1.6;
+  margin: 0 0 var(--st-s3);
+}
+.qb-st-punkte {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--st-s3);
+}
+.qb-st-punkte li {
+  position: relative;
+  padding-left: var(--st-s4);
+  margin-bottom: var(--st-s2);
+  font-size: var(--st-fs-md);
+}
+.qb-st-punkte li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 14px;
+  height: 2px;
+  background: var(--st-akzent);
+}
+.qb-st-einordnung {
+  margin: 0;
+  padding: var(--st-s3);
+  background: var(--st-flaeche);
+  border-radius: var(--st-r1);
+  font-size: var(--st-fs-base);
+  color: var(--st-text);
+}
+
+/* ---- PDF-Karte ---------------------------------------------------------- */
+.qb-st-pdf-zeile { margin: 0 0 var(--st-s6); }
+.qb-st-pdf-karte {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--st-s3);
+  padding: var(--st-s3);
+  background: #fff;
+  border: 1px solid var(--st-linie);
+  border-radius: var(--st-r2);
+  box-shadow: var(--st-shadow-sm);
+  text-decoration: none;
+  color: var(--st-text);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.qb-st-pdf-karte:hover {
+  box-shadow: var(--st-shadow-md);
+  transform: translateY(-2px);
+}
+.qb-st-pdf-karte img {
+  width: 80px;
+  height: auto;
+  border-radius: var(--st-r1);
+  box-shadow: var(--st-shadow-sm);
+}
+.qb-st-pdf-karte strong { display: block; font-size: var(--st-fs-md); }
+.qb-st-pdf-meta {
+  display: block;
+  font-size: var(--st-fs-xs);
+  color: var(--st-muted);
+  margin-top: 2px;
+}
+
+/* ---- Inhaltsverzeichnis ------------------------------------------------- */
+.qb-st-toc {
+  max-width: var(--st-mass);
+  margin: 0 0 var(--st-s6);
+  padding: var(--st-s3) var(--st-s4);
+  background: var(--st-flaeche);
+  border-radius: var(--st-r2);
+}
+.qb-st-toc h2 { font-size: var(--st-fs-lg); margin: 0 0 var(--st-s2); }
+.qb-st-toc ol { margin: 0; padding-left: var(--st-s3); }
+.qb-st-toc li { margin-bottom: var(--st-s1); }
+.qb-st-toc a { color: var(--st-akzent-tinte); text-decoration: none; }
+.qb-st-toc a:hover { text-decoration: underline; }
+
+/* ---- Volltext ----------------------------------------------------------- */
+.qb-st-volltext { max-width: var(--st-mass); }
+.qb-st-hinweis {
+  font-size: var(--st-fs-xs);
+  color: var(--st-muted);
+  padding: var(--st-s2) var(--st-s3);
+  border-left: 2px solid var(--st-linie);
+  margin: 0 0 var(--st-s6);
+}
+.qb-st-abschnitt { margin: 0 0 var(--st-s8); scroll-margin-top: var(--st-s8); }
+.qb-st-abschnitt p { margin: 0 0 var(--st-s3); }
+.qb-st-liste h3 {
+  font-size: var(--st-fs-md);
+  font-weight: 600;
+  margin: 0 0 var(--st-s1);
+}
+.qb-st-liste ul { margin: 0 0 var(--st-s3); padding-left: var(--st-s3); }
+.qb-st-liste li { margin-bottom: var(--st-s1); }
+
+/* ---- Abbildungen -------------------------------------------------------- */
+.qb-st-abb {
+  margin: var(--st-s6) 0;
+  padding: 0;
+}
+.qb-st-abb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--st-r1);
+  border: 1px solid var(--st-linie);
+  background: #fff;
+}
+.qb-st-abb figcaption {
+  font-size: var(--st-fs-xs);
+  line-height: 1.6;
+  color: var(--st-muted);
+  margin-top: var(--st-s2);
+}
+.qb-st-abb figcaption strong { color: var(--st-text); }
+
+/* ---- Tabellen ----------------------------------------------------------- */
+.qb-st-tab { margin: var(--st-s6) 0; padding: 0; }
+.qb-st-tab > figcaption {
+  font-size: var(--st-fs-md);
+  font-weight: 600;
+  color: var(--st-text);
+  margin-bottom: var(--st-s2);
+}
+.qb-st-tab-scroll { overflow-x: auto; border-radius: var(--st-r1); }
+.qb-st-tab table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--st-fs-base);
+  background: #fff;
+}
+.qb-st-tab th, .qb-st-tab td {
+  padding: var(--st-s2) var(--st-s3);
+  text-align: left;
+  border-bottom: 1px solid var(--st-linie);
+}
+.qb-st-tab thead th {
+  background: var(--st-flaeche);
+  font-size: var(--st-fs-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--st-muted);
+  font-weight: 600;
+}
+.qb-st-tab tbody th { font-weight: 600; }
+.qb-st-tab-fuss {
+  font-size: var(--st-fs-xs);
+  color: var(--st-muted);
+  margin: var(--st-s2) 0 0;
+}
+
+/* ---- Grenzen ------------------------------------------------------------ */
+.qb-st-grenzen {
+  max-width: var(--st-mass);
+  margin: var(--st-s8) 0 var(--st-s6);
+  padding: var(--st-s4);
+  background: var(--st-flaeche);
+  border-radius: var(--st-r2);
+  scroll-margin-top: var(--st-s8);
+}
+.qb-st-grenzen ul { margin: 0; padding-left: var(--st-s3); }
+.qb-st-grenzen li { margin-bottom: var(--st-s2); }
+
+/* ---- FAQ ---------------------------------------------------------------- */
+.qb-st-faq {
+  max-width: var(--st-mass);
+  margin: 0 0 var(--st-s6);
+  scroll-margin-top: var(--st-s8);
+}
+.qb-st-faq details {
+  border-bottom: 1px solid var(--st-linie);
+  padding: var(--st-s3) 0;
+}
+.qb-st-faq summary {
+  cursor: pointer;
+  font-size: var(--st-fs-md);
+  font-weight: 600;
+  color: var(--st-dunkel);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--st-s2);
+}
+.qb-st-faq summary::-webkit-details-marker { display: none; }
+.qb-st-faq summary::after {
+  content: '+';
+  color: var(--st-akzent-tinte);
+  font-weight: 400;
+  flex: none;
+}
+.qb-st-faq details[open] summary::after { content: '−'; }
+.qb-st-faq details p { margin: var(--st-s2) 0 0; }
+
+/* ---- Zitation ----------------------------------------------------------- */
+.qb-st-zitat {
+  max-width: var(--st-mass);
+  margin: 0 0 var(--st-s8);
+  scroll-margin-top: var(--st-s8);
+}
+.qb-st-zitat-text {
+  font-size: var(--st-fs-base);
+  padding: var(--st-s3);
+  background: var(--st-flaeche);
+  border-radius: var(--st-r1);
+  border-left: 3px solid var(--st-akzent);
+  margin: 0 0 var(--st-s2);
+}
+.qb-st-zitat a { color: var(--st-akzent-tinte); }
+
+/* ---- Verwandte / Karten-Grid ------------------------------------------- */
+.qb-st-verwandt-grid,
+.qb-st-karten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--st-s3);
+}
+.qb-st-verwandt-karte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-s1);
+  padding: var(--st-s3);
+  background: #fff;
+  border: 1px solid var(--st-linie);
+  border-radius: var(--st-r2);
+  box-shadow: var(--st-shadow-sm);
+  text-decoration: none;
+  color: var(--st-text);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.qb-st-verwandt-karte:hover {
+  box-shadow: var(--st-shadow-md);
+  transform: translateY(-2px);
+}
+.qb-st-verwandt-kicker {
+  font-size: var(--st-fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-akzent-tinte);
+  font-weight: 600;
+}
+.qb-st-verwandt-karte strong { font-size: var(--st-fs-md); line-height: 1.3; }
+.qb-st-verwandt-text { font-size: var(--st-fs-xs); color: var(--st-muted); }
+
+/* ========================================================================== */
+/* UEBERSICHT                                                                 */
+/* ========================================================================== */
+
+.qb-st-hero {
+  max-width: var(--st-mass);
+  margin: 0 0 var(--st-s8);
+}
+.qb-st-hero p {
+  font-size: var(--st-fs-lg);
+  line-height: 1.6;
+  color: var(--st-text);
+  margin: 0 0 var(--st-s3);
+}
+
+.qb-st-sektion { margin: 0 0 var(--st-s12); scroll-margin-top: var(--st-s8); }
+.qb-st-sektion > h2 { max-width: var(--st-mass); }
+.qb-st-sektion-intro {
+  max-width: var(--st-mass);
+  margin: 0 0 var(--st-s6);
+  color: var(--st-text);
+}
+
+/* Studien-Karte auf der Übersicht */
+.qb-st-karte {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--st-linie);
+  border-radius: var(--st-r2);
+  box-shadow: var(--st-shadow-sm);
+  overflow: hidden;
+}
+.qb-st-karte-kopf {
+  display: flex;
+  gap: var(--st-s3);
+  padding: var(--st-s3);
+  border-bottom: 1px solid var(--st-linie);
+}
+.qb-st-karte-cover {
+  flex: none;
+  width: 96px;
+  align-self: flex-start;
+  border-radius: var(--st-r1);
+  box-shadow: var(--st-shadow-sm);
+  transition: transform 0.2s ease;
+}
+.qb-st-karte-cover:hover { transform: scale(1.03); }
+.qb-st-karte-cover img { display: block; width: 100%; height: auto; border-radius: var(--st-r1); }
+.qb-st-karte-titel { font-size: var(--st-fs-md); line-height: 1.3; margin: 0 0 var(--st-s1); }
+.qb-st-karte-titel a { color: var(--st-dunkel); text-decoration: none; }
+.qb-st-karte-titel a:hover { color: var(--st-akzent-tinte); }
+.qb-st-karte-meta { font-size: var(--st-fs-xs); color: var(--st-muted); margin: 0; }
+.qb-st-karte-body { padding: var(--st-s3); flex: 1; display: flex; flex-direction: column; }
+.qb-st-karte-body p { margin: 0 0 var(--st-s3); }
+.qb-st-karte-zahl {
+  display: block;
+  font-size: var(--st-fs-xs);
+  color: var(--st-muted);
+  margin: 0 0 var(--st-s3);
+  padding-left: var(--st-s2);
+  border-left: 2px solid var(--st-akzent);
+}
+.qb-st-karte-links {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-s2);
+  align-items: center;
+}
+.qb-st-btn {
+  display: inline-block;
+  padding: 10px var(--st-s3);
+  border-radius: var(--st-r1);
+  background: var(--st-akzent);
+  color: var(--st-dunkel);
+  font-weight: 600;
+  font-size: var(--st-fs-base);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.qb-st-btn:hover { background: var(--st-akzent-tief); }
+.qb-st-btn-flach {
+  background: transparent;
+  color: var(--st-akzent-tinte);
+  padding: 10px 0;
+}
+.qb-st-btn-flach:hover { background: transparent; text-decoration: underline; }
+
+/* HRV-Sektion */
+.qb-st-hrv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--st-s3);
+  margin-bottom: var(--st-s4);
+}
+.qb-st-hrv-bild {
+  background: #fff;
+  border: 1px solid var(--st-linie);
+  border-radius: var(--st-r1);
+  padding: var(--st-s2);
+}
+.qb-st-hrv-bild img { display: block; width: 100%; height: auto; border-radius: var(--st-r1); }
+.qb-st-hrv-bild figcaption {
+  font-size: var(--st-fs-xs);
+  color: var(--st-muted);
+  margin-top: var(--st-s2);
+}
+
+/* Einordnungs-Block (gilt für alle vier Studien) */
+.qb-st-rahmen {
+  max-width: var(--st-mass);
+  padding: var(--st-s4);
+  background: var(--st-dunkel);
+  color: var(--st-text-hell);
+  border-radius: var(--st-r2);
+  margin: 0 0 var(--st-s8);
+}
+.qb-st-rahmen h2 { color: var(--st-text-hell); }
+.qb-st-rahmen ul { margin: 0; padding-left: var(--st-s3); }
+.qb-st-rahmen li { margin-bottom: var(--st-s2); }
+.qb-st-rahmen a { color: var(--st-akzent); }
+
+@media (max-width: 640px) {
+  .qb-st-wrap { padding: var(--st-s4) var(--st-s2) var(--st-s8); }
+  .qb-st-karte-kopf { flex-direction: column; }
+  .qb-st-karte-cover { width: 120px; }
+  .qb-st-pdf-karte { flex-direction: column; align-items: flex-start; }
+}
+
+/* ─── Route-Chrome-Harmonisierung (gilt NUR auf den Studien-Routen) ────────
+   Übernommen aus dem .lp-a3-Rezept (schlaf-zellen-schutz.css, 94/100). Der
+   Grund ist dort belegt und gilt hier unveraendert: Header und Footer bringen
+   ihre eigenen Gold-Toene (app.css --color-accent-primary, rd3 --rd3-gold),
+   ihre eigene Schriftgrößen-Familie und eigene Bild-Radien mit. Ohne diesen
+   Layer misst die Design-Rubrik ZWEI konkurrierende Goldtoene und über neun
+   Schriftgrößen — beides entsteht nicht in dieser Datei, wirkt aber auf
+   dieser Seite. Token-Remap statt Doppel-Gold. */
+body:has(.qb-st) {
+  background: var(--st-grund, #faf9f5);
+  --color-accent-primary: #c9a14b;
+  --rd3-gold: #c9a14b;
+}
+body:has(.qb-st) .footer,
+body:has(.qb-st) footer {
+  background: #191714;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+}
+body:has(.qb-st) .footer p,
+body:has(.qb-st) .footer a,
+body:has(.qb-st) .footer li,
+body:has(.qb-st) .footer span { font-size: 0.8125rem; }
+body:has(.qb-st) .footer .footer-heading { font-size: 1rem; }
+body:has(.qb-st) .footer .btn--primary,
+body:has(.qb-st) .footer button[type='submit'],
+body:has(.qb-st) .footer input[type='submit'] {
+  background: #c9a14b;
+  color: #2c2a26;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+body:has(.qb-st) .footer input[type='email'],
+body:has(.qb-st) .footer input[type='text'] {
+  border-radius: 8px;
+  font-size: 1rem;
+}
+body:has(.qb-st) ._form_15 button,
+body:has(.qb-st) ._form_15 ._submit,
+body:has(.qb-st) ._form_15 input[type='submit'] {
+  background: #c9a14b !important;
+  color: #2c2a26 !important;
+  border-radius: 8px !important;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+}
+/* EIN Bild-Radius auf der ganzen Route (Rubrik zählte 4 Werte: 4/8/6/20px). */
+body:has(.qb-st) header img,
+body:has(.qb-st) .footer img { border-radius: 8px; }
+
+/* EIN H2-Stil: Chrome-Überschriften erben den Seiten-H2, statt eine zweite
+   Größe x Gewicht-Kombination aufzumachen. */
+body:has(.qb-st) .footer h2,
+body:has(.qb-st) header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Zeilenlänge: Tabellen-Zellen und Bildunterschriften sind Textbloecke, die
+   die Rubrik mitmisst — sie standen ohne eigenes Mass über 75 Zeichen. */
+.qb-st-tab td, .qb-st-tab th { max-width: 46ch; }
+.qb-st-abb figcaption,
+.qb-st-hrv-bild figcaption { max-width: var(--st-mass); }
+.qb-st-rahmen li,
+.qb-st-grenzen li,
+.qb-st-faq details p { max-width: 68ch; }
+
+/* H3 der Volltext-/HRV-Abschnitte trug keinen Token und fiel damit auf die
+   Browser-Default-Größe (2em/1.17em) — das riss die modulare Skala auf und
+   erzeugte die zweite H2-/H3-Stil-Kombination, die die Rubrik gezaehlt hat. */
+.qb-st h3 {
+  font-size: var(--st-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--st-dunkel);
+  margin: var(--st-s6) 0 var(--st-s2);
+}
+.qb-st-volltext h3:first-child { margin-top: 0; }
+.qb-st-faq summary { font-size: var(--st-fs-md); }
+
+/* Die HRV-Bilder sind Altbestand mit kleinen Quellen (die ANS-Diagramme haben
+   562 px, die Zeitverlaeufe 600 px). Frueher lagen sie in einem Drittel-Raster
+   und wurden auf Tablet/Mobil-quer auf ~578 px CSS-Breite gezogen — bei 2x
+   Pixeldichte also sichtbar unscharf hochskaliert (hb-formate: bild-aufloesung
+   kaputt in mobil-414, mobil-quer-883, tablet-768).
+   Statt die Bilder neu zu beschaffen (Quelle liegt nicht vor) wird die
+   ANZEIGEFLAECHE auf die native Aufloesung gedeckelt: 300 px CSS * 2x = 600 px
+   = genau die Quellbreite. Lieber scharf und kleiner als gross und matschig. */
+.qb-st-hrv-bild img { max-width: 300px; margin-inline: auto; }
+.qb-st-hrv-grid { justify-items: center; }
