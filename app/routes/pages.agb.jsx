@@ -1,4 +1,5 @@
 import {canonicalLink} from '~/lib/seo';
+import {Rechtsseite} from '~/components/Rechtsseite';
 
 export const meta = () => [
   {title: 'Allgemeine Geschäftsbedingungen | Qi Blanco'},
@@ -16,17 +17,17 @@ export function loader() {
 
 export default function AGBPage() {
   return (
-    <div className="NormalSectionSize" style={{maxWidth: '860px', padding: '3rem 1.5rem 5rem'}}>
-      <h1 style={{marginBottom: '2.5rem'}}>Allgemeine Geschäftsbedingungen</h1>
+    <Rechtsseite>
+      <h1>Allgemeine Geschäftsbedingungen</h1>
 
-      <p style={{lineHeight: '1.8', marginBottom: '2rem'}}>
+      <p>
         Nachfolgend finden Sie die Allgemeinen Geschäftsbedingungen (AGB) für Bestellungen in
         unserem Online-Shop. <strong>Stand: Juli 2026.</strong>
       </p>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 1 Geltungsbereich und Anbieter</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen, die Sie bei dem
           Online-Shop der
           <br />
@@ -40,11 +41,11 @@ export default function AGBPage() {
           <br />
           tätigen.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Das Warenangebot in unserem Online-Shop richtet sich ausschließlich an Käufer, die
           das 18. Lebensjahr vollendet haben.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (3) Unsere Lieferungen, Leistungen und Angebote erfolgen ausschließlich auf der
           Grundlage dieser Allgemeinen Geschäftsbedingungen. Die Allgemeinen Geschäftsbedingungen
           gelten gegenüber Unternehmen somit auch für alle künftigen Geschäftsbeziehungen, auch
@@ -52,59 +53,59 @@ export default function AGBPage() {
           Geschäftsbedingungen eines Kunden, die unseren Allgemeinen Geschäftsbedingungen
           widersprechen, wird schon jetzt widersprochen.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (4) Vertragssprache ist ausschließlich deutsch.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (5) Sie können die derzeit gültigen Allgemeinen Geschäftsbedingungen auf der Website{' '}
           <a href="/pages/agb">https://www.qiblanco.com/pages/agb</a> abrufen und ausdrucken.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 2 Nutzung des Onlineshops, Vertragsschluss</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Der Nutzer hat auf den Webseiten von Qi Blanco UG (haftungsbeschränkt) die Möglichkeit,
           frequenzstimulierende Produkte und ähnliche Produkte gegen Entgelt zu erwerben.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Durch Anklicken der Schaltfläche &quot;kaufen&quot; gibt der Nutzer ein
           rechtsverbindliches Angebot zum Kauf des angeforderten Produkts gegenüber Qi Blanco UG
           (haftungsbeschränkt) ab. Qi Blanco UG (haftungsbeschränkt) nimmt dieses Angebot durch
           Übersendung einer E-Mail an.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Die Vertragsabwicklung erfolgt ausschließlich in deutscher Sprache.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Die Produktbeschreibung ist keine Garantie.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 3 Zahlungsbedingungen</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Vor Anforderung eines Artikels durch den Nutzer wird der Preis für dieses Produkt,
           Versandkosten und seine Beschreibung angezeigt. Diese Summe (Kaufpreis und
           Versandkosten) ist Bestandteil des zwischen dem Nutzer und Qi Blanco UG
           (haftungsbeschränkt) gemäß § 2 zustande gekommenen Vertrages.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Der Nutzer verpflichtet sich zur Zahlung dieses Preises. Die Zahlung wird mit
           Zustandekommen des Vertrags fällig.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Sämtliche Preise verstehen sich inklusive der jeweils in der Bundesrepublik Deutschland
           geltenden Umsatzsteuer.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Die Zahlung des Preises erfolgt über die im Bestellvorgang angebotenen Zahlungsarten,
           insbesondere PayPal, Kreditkarte, Klarna sowie die über Shopify Payments bereitgestellten
           weiteren Zahlungsarten externer Zahlungsanbieter. Andere Zahlungen, insbesondere Zahlung
           per Scheck oder Barzahlung, können nicht bearbeitet werden und entbinden nicht von der
           Pflicht zur Zahlung des Preises über eine der angebotenen Zahlungsarten.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Der Nutzer nimmt zur Kenntnis, dass Qi Blanco UG (haftungsbeschränkt) sich zur
           Abwicklung von Zahlungsvorgängen Drittunternehmen, insbesondere Shopify Payments, PayPal
           und Klarna, bedient. Sämtliche eingebundenen Drittunternehmen werden im Bestell- bzw.
@@ -114,30 +115,30 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 4 Eigentumsvorbehalt</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Qi Blanco UG (haftungsbeschränkt) behält sich das Eigentum an der bestellten Sache bis
           zur vollständigen Kaufpreiszahlung vor.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 5 Lieferung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Die Übersendung von Produkten erfolgt ausschließlich durch unabhängige
           Transportunternehmen nach Zahlungseingang und innerhalb der Bundesrepublik Deutschland.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Erfüllungsort ist Sitz der Qi Blanco UG (haftungsbeschränkt).
           <br />
           Die Abholung ist ausgeschlossen.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 6 Widerrufsbelehrung und Widerrufs- und Rückgaberecht des Verbrauchers</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Ist der Nutzer des Onlineshops ein Verbraucher, so steht ihm nach § 312g, § 355 BGB ein
           Widerrufs- und Rückgaberecht zu. Verbraucher ist eine natürliche Person, die ein
           Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch
@@ -145,15 +146,15 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 7 Widerrufsbelehrung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Für den Fall, dass Sie Verbraucher im Sinne des § 13 BGB sind, also den Kauf zu Zwecken
           tätigen, die überwiegend weder Ihrer gewerblichen noch Ihrer selbständigen beruflichen
           Tätigkeit zugerechnet werden können, haben Sie ein Widerrufsrecht nach Maßgabe der
           folgenden Bestimmungen.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           <strong>Widerrufsrecht</strong>
           <br />
           Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu
@@ -161,7 +162,7 @@ export default function AGBPage() {
           Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen
           haben bzw. hat.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Um Ihr Widerrufsrecht auszuüben, müssen Sie uns
           <br />
           Firma: Qi Blanco UG (haftungsbeschränkt)
@@ -178,7 +179,7 @@ export default function AGBPage() {
           Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
         </p>
 
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           <strong>Folgen des Widerrufs</strong>
           <br />
           Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen
@@ -191,7 +192,7 @@ export default function AGBPage() {
           sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden
           Ihnen wegen dieser Rückzahlung Entgelte berechnet.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben
           oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je
           nachdem, welches der frühere Zeitpunkt ist. Sie haben die Waren unverzüglich und in
@@ -204,7 +205,7 @@ export default function AGBPage() {
           notwendigen Umgang mit ihnen zurückzuführen ist.
         </p>
 
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           <strong>Widerrufsformular</strong>
           <br />
           Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und
@@ -218,7 +219,7 @@ export default function AGBPage() {
             <strong>Formular downloaden</strong>
           </a>
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           An:
           <br />
           Firma: Qi Blanco UG (haftungsbeschränkt)
@@ -230,7 +231,7 @@ export default function AGBPage() {
           Tel: 09735-5819883
         </p>
 
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (1) Das Widerrufsrecht besteht nicht bei der Lieferung von Waren, die nicht vorgefertigt
           sind und für deren Herstellung eine individuelle Auswahl oder Bestimmung durch den
           Verbraucher maßgeblich ist oder die eindeutig auf die persönlichen Bedürfnisse des
@@ -242,7 +243,7 @@ export default function AGBPage() {
           einer versiegelten Packung, wenn die Versiegelung nach der Lieferung entfernt wurde, von
           Zeitungen, Zeitschriften oder Illustrierten mit Ausnahme von Abonnement-Verträgen.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Bitte vermeiden Sie Beschädigungen und Verunreinigungen. Senden Sie die Ware bitte
           möglichst in Originalverpackung mit sämtlichem Zubehör und mit allen
           Verpackungsbestandteilen an uns zurück. Verwenden Sie ggf. eine schützende
@@ -251,34 +252,34 @@ export default function AGBPage() {
           Schadenersatzansprüche wegen Beschädigungen infolge mangelhafter Verpackung zu
           vermeiden.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (3) Bitte schicken Sie vor der Rücksendung eine E-Mail an:{' '}
           <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>, um die Rücksendung
           anzukündigen. Auf diese Weise ermöglichen Sie uns eine schnellstmögliche Zuordnung der
           Produkte.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (4) Bitte beachten Sie, dass die in den vorstehenden Absätzen 2 und 3 genannten
           Modalitäten nicht Voraussetzung für die wirksame Ausübung des Widerrufsrechts sind.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>Freiwillige 20-Tage-Zufriedenheitsgarantie (zusätzlich zum gesetzlichen Widerrufsrecht)</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Zusätzlich zu Ihrem gesetzlichen Widerrufsrecht (siehe § 7) gewähren wir Ihnen
           freiwillig eine 20-tägige Zufriedenheitsgarantie. Sollten Sie mit Ihrer Bestellung nicht
           zufrieden sein, können Sie die Ware innerhalb von 20 Tagen ab Erhalt des Pakets an uns
           zurücksenden und erhalten den vollen Kaufpreis zurück (volle Geld-zurück-Garantie).
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Die Rücksendung ist für Sie kostenlos. Die Kosten der Rücksendung tragen wir —
           sowohl im Rahmen dieser freiwilligen Garantie als auch bei Ausübung Ihres gesetzlichen
           Widerrufsrechts nach § 7. Melden Sie sich vor der Rücksendung kurz bei uns; wir stimmen
           den Rückweg mit Ihnen ab und übernehmen die Portokosten bzw. stellen Ihnen ein
           Rücksendeetikett bereit.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (3) Diese Zufriedenheitsgarantie ist eine rein freiwillige, zusätzliche Leistung von uns.
           Sie tritt neben Ihr gesetzliches Widerrufsrecht sowie Ihre gesetzlichen
           Gewährleistungsrechte, ohne diese einzuschränken, zu verändern oder zu ersetzen. Ihr
@@ -286,7 +287,7 @@ export default function AGBPage() {
           Gewährleistungsrechte nach § 9 bleiben in vollem Umfang bestehen und werden durch diese
           freiwillige Garantie in keiner Weise berührt oder verkürzt.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (4) Um von der 20-Tage-Zufriedenheitsgarantie Gebrauch zu machen, genügt eine formlose
           Mitteilung an <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>; bitte senden Sie
           die Ware anschließend an uns zurück. Die vorstehend genannten Modalitäten sind nicht
@@ -295,39 +296,39 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 8 Transportschäden</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Werden Waren mit offensichtlichen Transportschäden angeliefert, so reklamieren Sie
           solche Fehler bitte sofort bei dem Zusteller und nehmen Sie bitte schnellstmöglich
           Kontakt zu uns auf.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Die Versäumung einer Reklamation oder Kontaktaufnahme hat für Ihre gesetzlichen
           Gewährleistungsrechte keine Konsequenzen. Sie helfen uns aber, unsere eigenen Ansprüche
           gegenüber dem Frachtführer bzw. der Transportversicherung geltend machen zu können.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 9 Gewährleistung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Soweit nicht ausdrücklich etwas anderes vereinbart ist, richten sich Ihre
           Gewährleistungsansprüche nach den gesetzlichen Bestimmungen des Kaufrechts (§§ 433 ff.
           BGB).
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Wenn Sie Verbraucher im Sinne des § 13 BGB sind, gelten für Ihre
           Gewährleistungsansprüche uneingeschränkt die gesetzlichen Bestimmungen. Da wir
           ausschließlich neue Waren (Neuware) verkaufen, beträgt die Verjährungsfrist für
           Gewährleistungsansprüche zwei Jahre ab Ablieferung der Ware (§ 438 Abs. 1 Nr. 3 BGB).
           Eine Verkürzung dieser gesetzlichen Verjährungsfrist erfolgt Ihnen gegenüber nicht.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (3) Im Übrigen gelten für die Gewährleistung die gesetzlichen Bestimmungen,
           insbesondere die zweijährige Verjährungsfrist. § 438 Abs. 1 Nr. 3 BGB.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (4) Wenn Sie Unternehmer im Sinne des § 14 BGB sind, gelten die gesetzlichen
           Bestimmungen mit folgenden Modifikationen: Für die Beschaffenheit der Ware sind nur
           unsere eigenen Angaben und die Produktbeschreibung des Herstellers verbindlich, nicht
@@ -347,14 +348,14 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 10 Haftung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Unbeschränkte Haftung: Wir haften unbeschränkt für Vorsatz und grobe Fahrlässigkeit
           sowie nach Maßgabe des Produkthaftungsgesetzes. Für leichte Fahrlässigkeit haften wir
           bei Schäden aus der Verletzung des Lebens, des Körpers und der Gesundheit von Personen.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Im Übrigen gilt folgende beschränkte Haftung: Bei leichter Fahrlässigkeit haften
           wir nur im Falle der Verletzung einer wesentlichen Vertragspflicht, deren Erfüllung die
           ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren
@@ -365,13 +366,13 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 11 Alternative Streitbeilegung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Die von der Europäischen Kommission betriebene Plattform zur Online-Streitbeilegung
           (OS-Plattform) wurde zum 20. Juli 2025 eingestellt und steht nicht mehr zur Verfügung.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Wir sind bemüht, eventuelle Meinungsverschiedenheiten aus unserem Vertrag
           einvernehmlich beizulegen. Darüber hinaus sind wir zu einer Teilnahme an einem
           Schlichtungsverfahren nicht verpflichtet und können Ihnen die Teilnahme an einem
@@ -379,21 +380,21 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>§ 12 Zulässige Nutzung der Website; automatisierte Abfragen</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Diese Bestimmungen gelten für jede Nutzung dieser Website, unabhängig davon, ob
           ein Kundenkonto besteht oder ein Nutzer angemeldet ist.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Die Website darf zum Zweck der Information über unser Angebot sowie zur Anbahnung
           und Abwicklung von Bestellungen genutzt werden. Zulässig sind dabei die üblichen
           Funktionen eines Webbrowsers.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (3) Ohne unsere vorherige schriftliche Zustimmung ist es untersagt,
         </p>
-        <ul style={{marginTop: '0.5rem', lineHeight: '1.8', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>
             a) Inhalte der Website mittels automatisierter Verfahren systematisch auszulesen, zu
             vervielfältigen, zu speichern oder abzurufen (insbesondere Scraping, Crawling,
@@ -416,13 +417,13 @@ export default function AGBPage() {
             Geschwindigkeit für andere Nutzer zu beeinträchtigen.
           </li>
         </ul>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (4) Nicht von Absatz 3 erfasst sind: der Abruf durch allgemeine Suchmaschinen im Rahmen
           der in <a href="/robots.txt">/robots.txt</a> erklärten Vorgaben sowie der Abruf durch
           einen Assistenzdienst, den ein Nutzer im Einzelfall selbst zur Beantwortung seiner
           eigenen Anfrage veranlasst.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (5) Wir behalten uns vor, bei Verstößen gegen Absatz 3 den Zugang zur Website technisch
           zu beschränken oder zu sperren. Weitergehende gesetzliche Ansprüche bleiben unberührt.
         </p>
@@ -430,23 +431,23 @@ export default function AGBPage() {
 
       <section>
         <h2>§ 13 Schlussbestimmungen</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           (1) Sollten eine oder mehrere Bestimmungen dieser AGB unwirksam sein oder werden, wird
           dadurch die Wirksamkeit der anderen Bestimmungen im Übrigen nicht berührt.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (2) Auf Verträge zwischen uns und Ihnen ist ausschließlich deutsches Recht anwendbar
           unter Ausschluss der Bestimmungen der United Nations Convention on Contracts for the
           International Sale of Goods (CISG, &quot;UN-Kaufrecht&quot;). Zwingende Bestimmungen
           des Landes, in dem Sie sich gewöhnlich aufhalten, bleiben von der Rechtswahl unberührt.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           (3) Sind Sie Kaufmann, juristische Person des öffentlichen Rechts oder
           öffentlich-rechtliches Sondervermögen, so ist unser Geschäftssitz Gerichtsstand für
           alle Streitigkeiten aus oder im Zusammenhang mit Verträgen zwischen uns und Ihnen.
         </p>
       </section>
-    </div>
+    </Rechtsseite>
   );
 }
 

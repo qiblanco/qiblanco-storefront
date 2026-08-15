@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {Rechtsseite} from '~/components/Rechtsseite';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {istNichtIndexierbar, noindexMeta} from '~/lib/seo';
 
@@ -85,13 +86,35 @@ export default function Page() {
   /** @type {LoaderReturnData} */
   const {page} = useLoaderData();
 
+  // DIESE ROUTE IST DER LETZTE UNGESTALTETE DEFAULT DES SHOPS GEWESEN.
+  //
+  // Sie bedient JEDE Shopify-Seite, für die es keine eigene Route gibt, und
+  // rendert deren `body` als rohes CMS-HTML. Bis zum Job 20260815-designmeister-
+  // rechtsseiten... stand hier ein nacktes <div className="page"> ohne jede
+  // Typografie — eine im Shopify-Admin angelegte Seite war damit sofort live
+  // und ungestaltet. Genau so lag /pages/widerrufsbelehrung draußen: 7646
+  // Zeichen Gesetzestext, 95 % der Textbloecke über 75 Zeichen Zeilenlaenge.
+  //
+  // Warum ein DOKUMENT-Layout der richtige Default ist (gemessen, nicht
+  // vermutet): von den 48 Shopify-Seiten laufen 17 über diese Route, davon
+  // 7 reiner Flies-/Rechtstext und 10 mit leerem body — KEINE EINZIGE mit
+  // Bild, iframe oder eigenem Layout-Geruest. Reiche Seiten haben in diesem
+  // Repo ausnahmslos eine eigene Route. Der Katchall trägt also per Bauart
+  // Lesetext, und Lesetext gehört in eine Lese-Spalte.
+  //
+  // Wer hier kuenftig eine reiche Seite braucht, legt ihr eine eigene Route an
+  // (das etablierte Muster) — statt den Default für alle aufzuweichen.
   return (
-    <div className="page">
-      <header>
-        <h1>{page.title}</h1>
-      </header>
-      <main dangerouslySetInnerHTML={{__html: page.body}} />
-    </div>
+    <Rechtsseite titel={page.title}>
+      {/* Inhalt unveraendert aus dem Shopify-Admin. Gestaltet wird er
+          ausschließlich über die .rs-doc-Tokens, nie durch Eingriff in den
+          Text. Kein <main> mehr: PageLayout liefert bereits eines
+          (components/PageLayout.jsx), das hier war ein zweites, verschachteltes. */}
+      <div
+        className="rs-doc__rumpf"
+        dangerouslySetInnerHTML={{__html: page.body}}
+      />
+    </Rechtsseite>
   );
 }
 

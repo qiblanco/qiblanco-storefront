@@ -1,4 +1,5 @@
 import {canonicalLink} from '~/lib/seo';
+import {Rechtsseite} from '~/components/Rechtsseite';
 
 export const meta = () => [
   {title: 'Teilnahmebedingungen | Qi Blanco'},
@@ -14,28 +15,26 @@ export function loader() {
   return {};
 }
 
-const listItemStyle = {marginBottom: '1.5rem', lineHeight: '1.8'};
-const absatzStyle = {marginTop: '0.75rem', lineHeight: '1.8'};
 
 export default function TeilnahmebedingungenPage() {
   return (
-    <div className="NormalSectionSize" style={{maxWidth: '860px', padding: '3rem 1.5rem 5rem'}}>
-      <h1 style={{marginBottom: '2.5rem'}}>Teilnahmebedingungen</h1>
+    <Rechtsseite>
+      <h1>Teilnahmebedingungen</h1>
 
-      <p style={{lineHeight: '1.8', marginBottom: '1.5rem'}}>
+      <p>
         Hier erfährst du, wie du an unseren Gewinnspielen teilnehmen und mit ein wenig Glück
         gewinnen kannst. Lies dir bitte unsere Teilnahmebedingungen und Hinweise zu den
         Datenschutzbestimmungen durch.
       </p>
 
-      <p style={{lineHeight: '1.8', marginBottom: '1.5rem'}}>
+      <p>
         <strong>Teile deine Erfahrung und gewinne 200€ Cashback</strong>
       </p>
 
-      <p style={{lineHeight: '1.8', marginBottom: '2rem'}}>Es gelten die folgenden Bedingungen:</p>
+      <p>Es gelten die folgenden Bedingungen:</p>
 
-      <ol style={{paddingLeft: '1.25rem'}}>
-        <li style={listItemStyle}>
+      <ol>
+        <li>
           <strong>Veranstalter</strong>
           <br />
           Das Gewinnspiel wird durchgeführt von Qi Blanco UG (haftungsbeschränkt)
@@ -43,26 +42,26 @@ export default function TeilnahmebedingungenPage() {
           (nachfolgend: Qi Blanco).
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Teilnehmer</strong>
-          <p style={absatzStyle}>
+          <p>
             Teilnahmeberechtigt sind alle natürlichen Personen ab 18 Jahren, unabhängig vom
             Wohnsitz, sofern die Teilnahme nicht durch gesetzliche Regelungen ihres Wohnsitzlandes
             untersagt ist.
           </p>
-          <p style={absatzStyle}>
+          <p>
             Die Teilnahme über Gewinnspielvereine oder Teilnahme- und Eintragungsdienste,
             automatisierte Teilnahmen, Mehrfachteilnahmen (bspw. mit unterschiedlichen
             E-Mail-Adressen) sowie die Teilnahme mit gefälschten Identitäten oder mit Identitäten
             von Drittpersonen sind nicht gestattet.
           </p>
-          <p style={absatzStyle}>
+          <p>
             Die Teilnehmer müssen unter Umständen ihre Teilnahmeberechtigung an dem Gewinnspiel
             nachweisen.
           </p>
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Gewinne und Einlösebedingungen</strong>
           <br />
           Bei den ausgeschriebenen Gewinnen handelt es sich um 4x 200 Euro Barauszahlung im Jahr.
@@ -71,56 +70,56 @@ export default function TeilnahmebedingungenPage() {
           Rücksprache auf das gewünschte Konto überwiesen.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Wie erfolgt die Teilnahme?</strong>
           <br />
           Das Gewinnspiel findet permanent statt.
-          <p style={absatzStyle}>
+          <p>
             Um an dem Gewinnspiel teilnehmen zu können, muss der Teilnehmer eine Bewertung auf
             unserer Google-Review Seite hinterlassen und die Teilnahmebedingungen und
             Datenschutzhinweise akzeptieren.
           </p>
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Gewinnerermittlung</strong>
           <br />
           Die Gewinner werden per Zufallsprinzip ermittelt.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Gewinnerbenachrichtigung</strong>
           <br />
           Die Gewinner werden nach Ablauf des Gewinnspiels per E-Mail benachrichtigt und
           aufgefordert, ihre Kontaktdaten (Vollständiger Name) per E-Mail anzugeben.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Gewinnübermittlung</strong>
           <br />
           Die Gewinnsumme wird nach Rücksprache auf das gewünschte Konto des Teilnehmenden
           überwiesen.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Ausschluss von Teilnehmern</strong>
-          <p style={absatzStyle}>
+          <p>
             Qi Blanco behält sich das Recht vor, Teilnehmer, die falsche oder unvollständige
             Angaben machen, sich unerlaubter Hilfsmittel bedienen, bei denen der Verdacht auf
             Manipulation besteht oder die in sonstiger Weise gegen die Teilnahmebedingungen
             verstoßen, ohne Angabe von Gründen von der Teilnahme auszuschließen.
           </p>
-          <p style={absatzStyle}>
+          <p>
             Liegen die Voraussetzungen für einen Ausschluss vor, können Gewinne nachträglich
             aberkannt oder bereits ausgelieferte Gewinne zurückgefordert werden.
           </p>
-          <p style={absatzStyle}>
+          <p>
             Qi Blanco bleibt es vorbehalten, den Teilnehmer bei Verdacht eines Ausschlussgrundes
             zur Stellungnahme aufzufordern.
           </p>
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Keine Gewinnübermittlung</strong>
           <br />
           Sollte eine Gewinnübermittlung an den Teilnehmer nicht möglich sein (z. B. da der
@@ -131,32 +130,32 @@ export default function TeilnahmebedingungenPage() {
           dieser nicht vergeben und z. B. für ein anderes Gewinnspiel genutzt wird).
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Datenschutz</strong>
           <br />
           Siehe <a href="/pages/datenschutz">Datenschutzerklärung</a>.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Haftungsausschluss</strong>
-          <p style={absatzStyle}>
+          <p>
             Qi Blanco übernimmt keine Verantwortung für Datenverluste, insbesondere solche, die auf
             dem Wege der Datenübertragung entstanden sind, technische Defekte sowie verloren
             gegangene, beschädigte oder verspätete Einsendungen, die auf Netzwerk-, Hardware- oder
             Softwareprobleme zurückzuführen sind.
           </p>
-          <p style={absatzStyle}>
+          <p>
             Etwaige Gewährleistungsansprüche der Gewinner sind ausgeschlossen.
           </p>
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Änderung/Einstellung des Gewinnspiels</strong>
-          <p style={absatzStyle}>
+          <p>
             Qi Blanco behält sich das Recht vor, das Gewinnspiel im Fall unvorhergesehener Umstände
             zu ändern oder einzustellen.
           </p>
-          <p style={absatzStyle}>
+          <p>
             Qi Blanco ist insbesondere berechtigt, das Gewinnspiel einzustellen, abzubrechen oder
             auszusetzen, wenn
             <br />
@@ -169,26 +168,26 @@ export default function TeilnahmebedingungenPage() {
           </p>
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Unwirksamkeit einzelner Klauseln</strong>
           <br />
           Sollte eine Klausel dieser Bedingungen unwirksam sein, gilt die entsprechende gesetzliche
           Regelung und die Wirksamkeit der übrigen Bedingungen bleibt hiervon unberührt.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Übertragung, Rechtsweg</strong>
           <br />
           Eventuelle Gewinnansprüche sind nicht übertragbar. Der Rechtsweg ist ausgeschlossen.
         </li>
 
-        <li style={listItemStyle}>
+        <li>
           <strong>Verbraucherschlichtung</strong>
           <br />
           Hiermit informieren wir dich darüber, dass Qi Blanco nicht an Streitbeilegungsverfahren
           einer Verbraucherschlichtungsstelle teilnimmt und dazu auch nicht verpflichtet ist.
         </li>
       </ol>
-    </div>
+    </Rechtsseite>
   );
 }
