@@ -1,10 +1,12 @@
 import {Link, useLoaderData} from 'react-router';
+import {policyTitelDe} from '~/lib/policy-titel';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.policy.title ?? ''}`}];
+export const meta = ({data, params}) => {
+  const titel = policyTitelDe(params?.handle, data?.policy?.title);
+  return [{title: titel ? `${titel} | Qi Blanco` : 'Qi Blanco'}];
 };
 
 /**
@@ -36,24 +38,29 @@ export async function loader({params, context}) {
     throw new Response('Could not find the policy', {status: 404});
   }
 
-  return {policy};
+  return {policy, handle: params.handle};
 }
 
 export default function Policy() {
   /** @type {LoaderReturnData} */
-  const {policy} = useLoaderData();
+  const {policy, handle} = useLoaderData();
 
   return (
-    <div className="policy">
-      <br />
-      <br />
-      <div>
-        <Link to="/policies">← Back to Policies</Link>
-      </div>
-      <br />
-      <h1>{policy.title}</h1>
-      <div dangerouslySetInnerHTML={{__html: policy.body}} />
-    </div>
+    <article className="policy">
+      <header className="rs-doc__kopf">
+        <Link to="/policies" className="rs-doc__back">
+          ← Zurück zur Übersicht
+        </Link>
+        <h1>{policyTitelDe(handle, policy.title)}</h1>
+      </header>
+      {/* Rechtlich wirksamer Rumpf — unveraendert aus dem Shopify-Admin.
+          Gestaltet wird er ausschließlich über .rs-doc__rumpf (CSS), nie
+          durch Eingriff in den Text. */}
+      <div
+        className="rs-doc__rumpf"
+        dangerouslySetInnerHTML={{__html: policy.body}}
+      />
+    </article>
   );
 }
 
