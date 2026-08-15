@@ -2,13 +2,21 @@
  * Renderer EINER Studien-Einzelseite. Alle Routen teilen ihn sich — der
  * Unterschied zwischen den Seiten ist ausschließlich das Daten-JSON.
  *
- * AUFBAU (von oben nach unten, so beauftragt):
- *   1. Kopf: H1, Journal/Autor/Datum sichtbar (E-E-A-T), Original-PDF
- *   2. Antwort in Normalsprache — der Featured-Snippet-Kandidat, ganz oben
- *   3. Ehrliche Einordnung direkt darunter (nicht im Kleingedruckten)
+ * AUFBAU (von oben nach unten) — GOLDSTANDARD seit 2026-08-15, Auftrag
+ * 20260815-studien-oberbereich-goldstandard-us-layout-de-qa:
+ *   1. Kopf: Kicker, H1, Originaltitel
+ *   2. Antwort in Normalsprache mit Befund-Bullets — der Featured-Snippet-
+ *      Kandidat, ganz oben
+ *   3. Beleg-Kopf: Titelseite (PDF-Klickziel) UND Metadaten NEBENEINANDER
  *   4. Inhaltsverzeichnis mit Sprungmarken
  *   5. Der deutsche Volltext mit Abbildungen und Tabellen
- *   6. Grenzen, FAQ, Zitation, verwandte Studien, Produktbezug
+ *   6. FAQ, Zitation, verwandte Studien, Produktbezug
+ *
+ * WAS SICH GEGENUEBER DEM VORGAENGER-AUFBAU GEAENDERT HAT: die Metadaten
+ * standen bis dahin als schlichte Liste IM Kopf, also VOR der Antwort, und
+ * die PDF-Titelseite in einer eigenen Zeile DANACH. Beides ist jetzt der
+ * gemeinsame `.qb-st-belegkopf` unterhalb der Antwort — die Anordnung der
+ * US-Studienseiten, die Christian als Vorbild benannt hat.
  *
  * WARUM DIE LAIEN-EBENE VOR DEM VOLLTEXT STEHT: der Kaufueberzeugungs-Kanon
  * misst, dass wissenschaftlicher Beweis kein Hook ist, sondern ein Closer —
@@ -86,7 +94,7 @@ export function StudieSeite({studie}) {
           Kanon misst, dass wissenschaftlicher Beweis kein Hook ist, sondern
           ein Closer. Wer auf dieser Seite landet, zweifelt und sucht ZUERST
           die Antwort — die Q&A-Box darueber. Journal, DOI und ISSN sind das,
-          was den Zweifel danach traegt. Sie vor die Antwort zu stellen (der
+          was den Zweifel danach trägt. Sie vor die Antwort zu stellen (der
           alte Aufbau) verschenkt beides: die Antwort kommt spaeter, der Beleg
           wirkt, bevor jemand ihn braucht.
         */}
@@ -130,7 +138,7 @@ export function StudieSeite({studie}) {
 
               `materialLabel` ist ein DATENFELD und keine Konstante, weil e0004
               KEINE Zellstudie ist (171 Anwenderberichte, keine Kontrollgruppe).
-              Eine fest verdrahtete Zeile "Zellen / Material" waere dort eine
+              Eine fest verdrahtete Zeile "Zellen / Material" wäre dort eine
               sachliche Falschaussage auf einer Beleg-Seite.
             */}
             {e.studientyp ? (
