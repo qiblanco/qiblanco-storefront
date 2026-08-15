@@ -16,7 +16,7 @@ import {useState} from 'react';
 import Awake from '~/components/product-pages/Awake';
 import LazyImage from '~/components/reusables/LazyImage';
 
-import {produktMeta} from '~/lib/produkt-seo';
+import {produktMeta, MARKE} from '~/lib/produkt-seo';
 /** 
  * @type {MetaFunction<typeof loader>}
  */
@@ -25,7 +25,7 @@ export const meta = ({data}) => {
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
     pfad: '/products/crystal-cacao-awake',
-    titel: `${data?.product?.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`,
+    titel: `${data?.product?.title ?? ''} | ${MARKE}`,
     bildUrl:
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,

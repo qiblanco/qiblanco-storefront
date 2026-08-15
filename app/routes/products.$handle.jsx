@@ -27,6 +27,7 @@ import {
   noindexMeta,
 } from '~/lib/seo';
 import {produktSchema} from '~/lib/produkt-schema';
+import {MARKE} from '~/lib/produkt-seo';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -48,13 +49,13 @@ export const meta = ({data}) => {
   // genau vor deren Auseinanderdriften warnt der Kommentar an der Liste.
   if (istNichtIndexierbaresProdukt(data?.product?.handle)) {
     return [
-      {title: `${data.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
+      {title: `${data.product.title ?? ''} | ${MARKE}`},
       noindexMeta(),
     ];
   }
 
   const descriptoren = [
-    {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
+    {title: `${data?.product.title ?? ''} | ${MARKE}`},
     canonicalLink(`/products/${data?.product.handle}`),
   ];
 

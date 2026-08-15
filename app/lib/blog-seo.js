@@ -29,9 +29,13 @@
 // aufgelöst, nicht von Node — sonst wäre diese Datei nicht hermetisch testbar.
 import {absoluteCanonical} from './seo.js';
 
-/** Firmen-Suffix — identisch zu den Produktrouten, damit die Marke im
- * Suchergebnis nicht je Bereich anders heißt. */
-export const MARKEN_SUFFIX = 'Qi Blanco UG (haftungsbeschränkt)';
+/** Marken-Suffix — identisch zu den Produktrouten, damit die Marke im
+ * Suchergebnis nicht je Bereich anders heißt. Die Rechtsform ist hier am
+ * 2026-08-15 entfallen (Begründung an MARKE in produkt-seo.js: 24 Zeichen
+ * ohne Suchwert, und "Qi Blanco" ist die Schreibweise von Organization-Schema
+ * und Wikidata Q141070656). Bewusst als eigene Konstante und NICHT als Import
+ * aus produkt-seo.js: das koppelte die Blog- an die Produkt-Import-Closure. */
+export const MARKEN_SUFFIX = 'Qi Blanco';
 
 /**
  * meta-Descriptoren einer Blog-Route.
