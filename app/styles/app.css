@@ -4629,6 +4629,84 @@ ul.kakao-children li {
   user-select: none;
 }
 
+/* ───────── Studien-Slider: 5 Kacheln, Klickziel Detailseite ─────────────────
+   Job 20260814-studien-slider-5-... s03, 2026-08-15. Additiv ans Ende des
+   ghx-Blocks: die Regeln oben bleiben byte-identisch, damit
+   /pages/exclusive-solutions und /pages/qione-2-pro-2x sich nicht verschieben.
+
+   TOKEN MIT RUECKFALLWERT — und warum der Rueckfall hier tragend ist:
+   die Design-Token (--a-text u.a.) stehen im :root von
+   app/styles/schlaf-zellen-schutz.css. Dieses Stylesheet ist ein ROUTE-Level-
+   Stylesheet und wird nur von einzelnen Landingpages geladen — auf der
+   Startseite und den Produktseiten ist `--a-text` schlicht nicht definiert.
+   Ein blankes `color: var(--a-text)` waere dort UNGUELTIG und die Farbe wuerde
+   wieder geerbt: genau der Zustand, den die Design-Auflage verhindern will
+   (vererbte Farbe verliert gegen jede direkte Theme-Regel, und der
+   Kontrast-Check des Gates misst nur haeufigste Textfarbe gegen haeufigsten
+   Hintergrund — einen Ausreisser IN einer Karte findet er baulich nie).
+   Der zweite Wert ist deshalb kein Schmuck, sondern der eigentliche Anker;
+   er ist identisch mit dem Token-Wert (#2c2a26 / #6b665d / #c9a14b). */
+
+/* Die ganze Kachel ist EIN Link: grosse Klickflaeche, ein Tab-Stopp,
+   und im SSR-Markup ein echtes <a> (crawlbar auch ohne JavaScript). */
+.ghx-studie__link {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  text-decoration: none;
+  color: var(--a-text, #2c2a26);
+}
+.ghx-studie__link:hover .ghx-studie__title { text-decoration: underline; }
+
+/* Kartentext EXPLIZIT, nie geerbt (siehe Token-Hinweis oben). */
+.ghx-studie__title { color: var(--a-text, #2c2a26); }
+.ghx-studie__source {
+  color: var(--a-muted, #6b665d);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+/* Radius-Token: die Kachel traegt 16px, das Deckblatt 8px. Der Bestandswert
+   war 10px — ein dritter Radius ohne Grund. */
+.ghx-studie__preview img { border-radius: 8px; }
+
+/* Gold ausschliesslich auf Handlung/Beweis: die Pfeile sind die Handlung. */
+.ghx-studien__arrow {
+  color: var(--a-akzent, #c9a14b);
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+.ghx-studien__arrow:hover { border-color: var(--a-akzent, #c9a14b); }
+
+.ghx-studien__nav { align-items: center; }
+.ghx-studien__wischhinweis {
+  font-size: 0.8125rem;
+  color: var(--a-muted, #6b665d);
+  letter-spacing: 0.02em;
+  padding: 0 8px;
+}
+
+/* Der Track ist fokussierbar (Pfeiltasten blaettern) — also braucht er einen
+   sichtbaren Fokus. Nur :focus-visible, damit ein Mausklick keinen Rahmen
+   hinterlaesst. */
+.ghx-studien__track:focus-visible {
+  outline: 2px solid var(--a-akzent, #c9a14b);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.ghx-studie__link:focus-visible {
+  outline: 2px solid var(--a-akzent, #c9a14b);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* prefers-reduced-motion: hartes Snap statt Momentum. Den Fling unterdrueckt
+   useDragSwipe bereits in JS; hier faellt zusaetzlich das weiche Scrollen weg. */
+@media (prefers-reduced-motion: reduce) {
+  .ghx-studien__track { scroll-behavior: auto; }
+  .ghx-studien__arrow { transition: none; }
+}
+
 /* ═══ DIE NAHT ZUR CLAUDE-ANSICHT DES ASSISTENTEN ═══════════════════════════
    Job 20260731-claude-ansicht-header-dropdown-docked-fix.
    Christian, 2026-07-30/31: "In der neuen Claude-Ansicht (docked rechts) passt

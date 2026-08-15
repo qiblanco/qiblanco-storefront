@@ -203,6 +203,10 @@
  "factGate": [
   "HRV-Messung: Die auf der bisherigen Studienseite unter 'Nutzererfahrung' genannten HRV-Werte (biologisches HRV-Alter −14 Jahre / −23 %, ANS-Status +20 %) sind in dieser Publikation (ABBSR-24, Dartsch 2024) NICHT enthalten. Diese Arbeit enthält keinerlei HRV-Messung — sie wertet ausschließlich 171 freiwillige Social-Media-Berichte aus. Die genannten HRV-Zahlen dürfen dieser Studie nicht zugeschrieben werden; ihre tatsächliche Quelle konnte im vorliegenden PDF nicht verifiziert werden."
  ],
+ "kachel": {
+  "zeile1": "Wissenschaftliche Publikation zu 171 Nutzerbeobachtungen",
+  "zeile2": "veröffentlicht in Adv Bioeng Biomed Sci Res am 10. Mai 2024"
+ },
  "art": "deskriptiv",
  "produkte": [
   "QiOne® 2 Pro",
