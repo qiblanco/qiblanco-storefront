@@ -13,6 +13,7 @@ import {
   MARKEN_PROFILE,
   WISSENSGRAPH_ENTITAETEN,
   SCHWESTER_DOMAINS,
+  KANAELE_OHNE_ZUGANG,
   organizationSchema,
   websiteSchema,
   entityGraph,
@@ -101,19 +102,24 @@ test('sameAs führt NUR belegte Profile, und jedes trägt seinen Beleg', () => {
   assert.ok(s.length >= 3, `Abnahmeziel >=3 belegte Profile, ist ${s.length}`);
   assert.equal(s.length, new Set(s).size, 'doppelte URL in sameAs');
   // Die Gleichheit bindet sameAs an die DEKLARIERTEN Listen: nichts darf im
-  // Schema landen, was nicht durch eine der drei Aufnahme-Regeln gegangen
+  // Schema landen, was nicht durch eine der vier Aufnahme-Regeln gegangen
   // ist. Bewusst KEIN gepinnter Zahlenwert — wächst eine Liste ehrlich, wächst
   // die Erwartung mit; wer dagegen am Schema vorbei einträgt, fällt auf.
   assert.equal(
     s.length,
     MARKEN_PROFILE.length +
       WISSENSGRAPH_ENTITAETEN.length +
-      SCHWESTER_DOMAINS.length,
-    'sameAs enthält Einträge, die in keiner der drei belegten Listen stehen',
+      SCHWESTER_DOMAINS.length +
+      KANAELE_OHNE_ZUGANG.length,
+    'sameAs enthält Einträge, die in keiner der vier belegten Listen stehen',
   );
   // Beleg-Pflicht gilt für JEDE Klasse mit einem beleg-Feld, nicht nur für
   // MARKEN_PROFILE — sonst wäre die jüngste Liste die einzige ungeprüfte.
-  for (const p of [...MARKEN_PROFILE, ...SCHWESTER_DOMAINS]) {
+  for (const p of [
+    ...MARKEN_PROFILE,
+    ...SCHWESTER_DOMAINS,
+    ...KANAELE_OHNE_ZUGANG,
+  ]) {
     assert.ok(
       p.url.startsWith('https://'),
       `Profil-URL nicht absolut/https: ${p.url}`,
@@ -124,6 +130,35 @@ test('sameAs führt NUR belegte Profile, und jedes trägt seinen Beleg', () => {
     assert.ok(
       typeof p.beleg === 'string' && p.beleg.trim().length > 30,
       `Profil ohne belastbaren Beleg: ${p.url}`,
+    );
+  }
+});
+
+// --- die schwächste Klasse muss schwach BLEIBEN ----------------------------
+// KANAELE_OHNE_ZUGANG senkt die Beweislast bewusst von "Kontrolle" auf
+// "gemessene Identität". Genau deshalb ist sie die Liste, in die ein späterer
+// Eintrag am leichtesten hineinrutscht — sie ist die bequemste. Dieser Test
+// hält die Absenkung an ihrer Grenze fest: der Beleg muss die fehlende
+// Kontrolle AUSSPRECHEN. Ein Eintrag, der hier steht und Eigentum behauptet,
+// hat die Klassengrenze überschritten und wäre wieder die unbelegte
+// Identitätsbehauptung, gegen die diese Datei durchgehend argumentiert.
+test('KANAELE_OHNE_ZUGANG benennt die fehlende Kontrolle ausdrücklich', () => {
+  for (const k of KANAELE_OHNE_ZUGANG) {
+    assert.ok(
+      k.url.startsWith('https://'),
+      `Kanal-URL nicht absolut/https: ${k.url}`,
+    );
+    // Der Beleg muss BEIDE Hälften der Aufnahme-Regel tragen: dass gemessen
+    // wurde (ein Datum) und dass Eigentum NICHT bewiesen ist.
+    assert.ok(
+      /\d{4}-\d{2}-\d{2}/.test(k.beleg),
+      `Beleg ohne Messdatum — dann ist es keine Rückmessung: ${k.url}`,
+    );
+    assert.ok(
+      /Eigentum NICHT bewiesen/i.test(k.beleg),
+      `Beleg verschweigt die fehlende Kontrolle — dieser Eintrag gehört ` +
+        `entweder nach MARKEN_PROFILE (mit Zugangs-Nachweis) oder gar ` +
+        `nicht ins sameAs: ${k.url}`,
     );
   }
 });
