@@ -22,6 +22,7 @@ import {
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
 import {
+  absoluteCanonical,
   canonicalLink,
   istNichtIndexierbaresProdukt,
   noindexMeta,
@@ -54,10 +55,31 @@ export const meta = ({data}) => {
     ];
   }
 
+  const titel = `${data?.product.title ?? ''} | ${MARKE}`;
+  const url = absoluteCanonical(`/products/${data?.product.handle}`);
   const descriptoren = [
-    {title: `${data?.product.title ?? ''} | ${MARKE}`},
+    {title: titel},
     canonicalLink(`/products/${data?.product.handle}`),
+    // Open-Graph-Satz analog produktMeta() (app/lib/produkt-seo.js), das die
+    // sechs eigenen Produktrouten bedient. Diese Sammelroute hatte bis
+    // 2026-08-15 zwar og:description, aber weder Titel, URL noch Bild — eine
+    // halb gebaute Karte: beim Teilen entschied jedes Netzwerk selbst, was
+    // erscheint. Gemessen trugen 7 der 13 DACH-Produktseiten kein og:image,
+    // und es waren genau die, die durch diese Route laufen.
+    {property: 'og:type', content: 'product'},
+    {property: 'og:site_name', content: MARKE},
+    {property: 'og:locale', content: 'de_DE'},
+    {property: 'og:title', content: titel},
+    {property: 'og:url', content: url},
   ];
+
+  // Bildquelle in derselben Reihenfolge wie die eigenen Produktrouten: erst
+  // das Bild der gewählten/ersten verfügbaren Variante, sonst das erste
+  // Produktbild. Fehlt beides, entsteht bewusst KEIN leerer og:image-Knoten.
+  const bildUrl =
+    data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
+    data?.product?.images?.nodes?.[0]?.url;
+  if (bildUrl) descriptoren.push({property: 'og:image', content: bildUrl});
 
   // Snippet-Vorgabe. Gemessen am 2026-08-15 trug KEINE der 17 DACH-Produkt-
   // URLs eine meta description — Google reimt sich das Snippet dann aus dem
