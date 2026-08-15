@@ -46,6 +46,7 @@
 // aufgelöst, nicht von Node. Der hermetische Test (node --test, ohne Bundler)
 // könnte diese Datei sonst gar nicht laden.
 import {absoluteCanonical} from './seo.js';
+import {produktSchema} from './produkt-schema.js';
 
 /**
  * Beschreibung je Produktpfad.
@@ -99,10 +100,23 @@ export function produktBeschreibung(pfad) {
  * driften die Routen auseinander, und genau diese Drift war der Ausgangs-
  * befund (jede Route trug ihren Canonical, keine eine Beschreibung).
  *
- * @param {{pfad: string, titel: string, bildUrl?: string}} args
+ * PRODUKT-AUSZEICHNUNG (seit 2026-08-15): Wird `produkt` mitgegeben, hängt
+ * diese Funktion zusätzlich den schema.org-Product-Knoten an. Gemessen am
+ * 2026-08-15 trug KEINE der 17 DACH-Produkt-URLs eine Product-Auszeichnung,
+ * während alle 6 US-Produktseiten sie tragen — ohne sie kann Google auf den
+ * Umsatzseiten weder Preis noch Verfügbarkeit als Rich Result zeigen.
+ *
+ * Der Parameter ist OPTIONAL, und das ist Absicht: die sechs Flaggschiff-
+ * Routen haben eigene Route-Dateien, der Rest des Sortiments läuft über
+ * `products.$handle.jsx`. Genau diese Zweiteilung hat beim ersten Anlauf
+ * (PR #217) dazu geführt, dass die Auszeichnung überall ANKAM, nur nicht auf
+ * den sechs wichtigsten Seiten. Ein optionaler Parameter lässt jede Route
+ * einzeln nachziehen, ohne die anderen zu brechen.
+ *
+ * @param {{pfad: string, titel: string, bildUrl?: string, produkt?: object}} args
  * @returns {Array<object>} meta-Descriptoren für react-router 7
  */
-export function produktMeta({pfad, titel, bildUrl}) {
+export function produktMeta({pfad, titel, bildUrl, produkt}) {
   const beschreibung = produktBeschreibung(pfad);
   const url = absoluteCanonical(pfad);
   const descriptoren = [
@@ -127,6 +141,15 @@ export function produktMeta({pfad, titel, bildUrl}) {
   }
   if (bildUrl) {
     descriptoren.push({property: 'og:image', content: bildUrl});
+  }
+  // react-router 7 rendert diesen Descriptor nativ als
+  // <script type="application/ld+json"> und maskiert den Inhalt selbst.
+  // produktSchema() gibt null zurück, wenn Preis oder Titel fehlen — dann
+  // entsteht bewusst KEIN Knoten: ein unvollständiges Element steht dauerhaft
+  // als Fehler in der Search Console, ein fehlendes bewirkt nur nichts.
+  const schema = produkt ? produktSchema(produkt) : null;
+  if (schema) {
+    descriptoren.push({'script:ld+json': schema});
   }
   return descriptoren;
 }

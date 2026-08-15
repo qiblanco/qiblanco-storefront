@@ -12,6 +12,8 @@ import {produktMeta} from '~/lib/produkt-seo';
  */
 export const meta = ({data}) => {
   return produktMeta({
+    // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
+    produkt: data?.product,
     pfad: '/products/qione-2-pro',
     titel: `${data?.product?.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`,
     bildUrl:
