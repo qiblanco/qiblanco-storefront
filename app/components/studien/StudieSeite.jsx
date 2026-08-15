@@ -156,20 +156,18 @@ export function StudieSeite({studie}) {
             <section key={a.id} id={a.id} className="qb-st-abschnitt">
               <h2>{a.titel}</h2>
               {/*
-                Optionale Abschnitts-Einordnung. Der Volltext ist eine GETREUE
-                Wiedergabe der Publikation; ihre Saetze werden nicht geglaettet,
-                denn das ist Quellenfaelschung. Zieht die Arbeit selbst einen
-                Kausalschluss, den sie nicht gemessen hat, macht diese Zeile an
-                genau DIESER Stelle sichtbar, dass es die Deutung des Autors ist:
-                das Inhaltsverzeichnis erlaubt den Direktsprung, ein Leser landet
-                also mitten im Text, ohne die Einordnung oben gesehen zu haben.
-                Ohne Feld rendert nichts — die anderen Abschnitte sind unberuehrt.
+                KORREKTUR 2026-08-15 (Christian, Job 20260815-studienseiten-
+                textfix): Die Abschnitts-Einordnung ("Einordnung der Redaktion")
+                wurde hier ERSATZLOS ENTFERNT — der redaktionelle Zusatz gehört
+                nicht in die Wiedergabe der Publikation.
+                CHESTERTON-NOTIZ, damit niemand den Zaun blind wieder aufstellt:
+                der Block stand hier bewusst, weil der Volltext eine GETREUE
+                Wiedergabe ist (Glätten wäre Quellenfälschung) und das
+                Inhaltsverzeichnis den Direktsprung mitten in den Text erlaubt.
+                Das Feld `einordnung` bleibt in den JSON-Daten erhalten und ist
+                unverändert — ein Rückbau ist damit ein reiner Render-Revert
+                ohne Datenverlust.
               */}
-              {a.einordnung ? (
-                <p className="qb-st-einordnung">
-                  <strong>Einordnung der Redaktion:</strong> {a.einordnung}
-                </p>
-              ) : null}
               {(a.absaetze || []).map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
