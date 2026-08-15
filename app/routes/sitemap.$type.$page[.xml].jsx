@@ -1,11 +1,8 @@
 import {getSitemap} from '@shopify/hydrogen';
-import {NICHT_INDEXIERBARE_SEITEN} from '~/lib/seo';
-
-const HIDDEN_PRODUCT_HANDLES = [
-  'bundle-fundament',
-  'bundle-unabhangig',
-  'bundle-erholungs-residenz',
-];
+import {
+  NICHT_INDEXIERBARE_SEITEN,
+  NICHT_INDEXIERBARE_PRODUKTE,
+} from '~/lib/seo';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -15,9 +12,15 @@ const HIDDEN_PRODUCT_HANDLES = [
  * den die Search Console dauerhaft als Konflikt meldet. Die Handle-Liste ist
  * DIESELBE, die `pages.$handle.jsx` für das robots-meta liest (Quelle
  * ~/lib/seo) — genau deshalb steht sie dort und nicht hier.
+ *
+ * `products` folgte am 2026-08-15 derselben Regel. Bis dahin stand die
+ * Produkt-Liste ZWEIMAL: hier und als `HIDDEN_BUNDLE_PRODUCT_HANDLES` in
+ * `products.$handle.jsx`. Beide Kopien trugen zufällig denselben Inhalt —
+ * also genau der Zustand, vor dem der Absatz oben warnt, nur für Produkte
+ * noch nicht aufgelöst. Jetzt liest auch sie ~/lib/seo.
  */
 const VERSTECKTE_HANDLES = {
-  products: HIDDEN_PRODUCT_HANDLES,
+  products: NICHT_INDEXIERBARE_PRODUKTE,
   pages: NICHT_INDEXIERBARE_SEITEN,
 };
 

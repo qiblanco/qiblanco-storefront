@@ -1,5 +1,6 @@
 import {HomepageSections} from '~/components/homepage/HomepageSections';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {hreflangLinks} from '~/lib/hreflang';
 import {entityGraph} from '~/lib/entity-schema';
 
 const TITEL =
@@ -49,6 +50,11 @@ export const meta = ({matches}) => {
     // Canonical als echtes <link> (tagName) und absolut — Begründung im Kopf
     // von app/lib/seo.js.
     canonicalLink('/'),
+    // hreflang-Gegenrichtung zur US-Startseite. Die US-Seite nennt uns seit
+    // jeher als ihre deutsche Fassung, wir sie bis 2026-08-15 nicht zurück —
+    // und eine unbestätigte hreflang-Angabe verwirft Google vollständig.
+    // Begründung und Aufnahmebedingung im Kopf von app/lib/hreflang.js.
+    ...hreflangLinks('/'),
     // Open Graph: gemessen 0 og-Tags auf allen Routen. Ohne sie entscheidet
     // das jeweilige Netzwerk selbst, was beim Teilen erscheint.
     {property: 'og:type', content: 'website'},
