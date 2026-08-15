@@ -15,7 +15,7 @@ import {
   hreflangLinks,
   normalisiere,
 } from '../app/lib/hreflang.js';
-import {produktSchema} from '../app/lib/produkt-schema.js';
+import {produktSchema, OHNE_PREIS_NACHWEIS} from '../app/lib/produkt-schema.js';
 import {
   NICHT_INDEXIERBARE_PRODUKTE,
   istNichtIndexierbaresProdukt,
@@ -274,6 +274,46 @@ test('unbrauchbarer Betrag ergibt KEINEN Knoten', () => {
       }),
       null,
       `amount=${String(amount)} haette keinen Knoten ergeben duerfen`,
+    );
+  }
+});
+
+// --- Kein Knoten ohne Preis-Nachweis (Messung 2026-08-15) ------------------
+// Auf diesen fuenf Seiten stimmt der angezeigte Preis nicht mit dem
+// Kanon-Wert ueberein (crystal-cacao-angebot: Seite 85,- EUR gegen Kanon 76)
+// bzw. war gar kein Preis-Element auffindbar. Solange das ungeklaert ist,
+// darf dort KEIN Preis ausgezeichnet werden.
+test('Seiten ohne Preis-Nachweis bekommen KEINEN Product-Knoten', () => {
+  for (const handle of OHNE_PREIS_NACHWEIS) {
+    assert.equal(
+      produktSchema({
+        handle,
+        title: 'Irgendein Titel',
+        selectedOrFirstAvailableVariant: {
+          availableForSale: true,
+          price: {amount: '71.03', currencyCode: 'EUR'},
+        },
+      }),
+      null,
+      `${handle}: darf keinen Knoten bekommen`,
+    );
+  }
+});
+
+// Gegenrichtung: die Sperre darf die belegten Seiten nicht mitnehmen.
+test('die belegten Produktseiten behalten ihren Knoten', () => {
+  for (const handle of ['qione-2-pro', 'qibracelet', 'qihome-air', 'qione-kette',
+                        'crystal-cacao-awake', 'crystal-cacao-create', 'qione-1']) {
+    assert.ok(
+      produktSchema({
+        handle,
+        title: 'T',
+        selectedOrFirstAvailableVariant: {
+          availableForSale: true,
+          price: {amount: '100.00', currencyCode: 'EUR'},
+        },
+      }),
+      `${handle}: haette einen Knoten behalten müssen`,
     );
   }
 });
