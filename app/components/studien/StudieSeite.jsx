@@ -104,11 +104,14 @@ export function StudieSeite({studie}) {
               ))}
             </ul>
           ) : null}
-          {laie.einordnung ? (
-            <p className="qb-st-einordnung">
-              <strong>Ehrlich eingeordnet:</strong> {laie.einordnung}
-            </p>
-          ) : null}
+          {/* Der selbstkritische Einordnungs-Absatz aus `laienSummary.einordnung`
+              wird bewusst NICHT mehr gerendert — Christian-Auftrag
+              20260815-studienseiten-funding-limitations-sektionen-entfernen:
+              ersatzlos, KEINE Ersatz-Formulierung. Das Datenfeld bleibt in
+              app/data/studien/*.json erhalten (reiner Render-Rückbau, kein
+              Datenverlust; Rückweg = diesen Block wiederherstellen).
+              Wortlaut der alten Überschrift bewusst nicht zitiert: er würde
+              sonst im Client-Bundle stehen und die Live-Proben falsch-rot machen. */}
         </section>
 
         <div className="qb-st-pdf-zeile">
@@ -211,16 +214,18 @@ export function StudieSeite({studie}) {
             ))}
         </div>
 
-        {studie.grenzen?.length ? (
-          <section className="qb-st-grenzen" id="grenzen">
-            <h2>Was diese Studie nicht zeigt</h2>
-            <ul>
-              {studie.grenzen.map((g, i) => (
-                <li key={i}>{g}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+        {/* Die Grenzen-Sektion aus `studie.grenzen` (vormals id="grenzen",
+            Klasse qb-st-grenzen) wird bewusst NICHT mehr gerendert —
+            Christian-Auftrag 20260815-studienseiten-funding-limitations-
+            sektionen-entfernen: ersatzlos, KEINE Ersatz-Formulierung.
+            Sie trug zugleich die Funding-/Unabhängigkeits-Offenlegung (Gerät
+            vom Hersteller gestellt, keine unabhängige Replikation): auf DACH
+            gab es dafür nie eine eigene Sektion, sie steckte in diesen Bullets
+            — deshalb ist der US-Block `disclosure` hier mit abgedeckt.
+            Das Datenfeld `grenzen` bleibt in app/data/studien/*.json erhalten
+            (reiner Render-Rückbau, kein Datenverlust; Rückweg = diesen Block
+            wiederherstellen). Alte Überschriften bewusst nicht zitiert: sie
+            stünden sonst im Client-Bundle und machten die Proben falsch-rot. */}
 
         {studie.faq?.length ? (
           <section className="qb-st-faq" id="fragen">
