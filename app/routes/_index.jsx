@@ -3,8 +3,23 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {hreflangLinks} from '~/lib/hreflang';
 import {entityGraph} from '~/lib/entity-schema';
 
-const TITEL =
-  'Qi Blanco - Life Technology - Jetzt kennenlernen. - Qi Blanco UG (haftungsbeschränkt)';
+/**
+ * Titel der Startseite — der wichtigste einzelne Titel der Domain, weil er
+ * die Marken-Suche „Qi Blanco" bedient.
+ *
+ * Gemessen am 2026-08-15 war er 84 Zeichen lang und endete auf
+ * „ - Qi Blanco UG (haftungsbeschränkt)". Google kappt bei rund 60 Zeichen:
+ * die Rechtsform war im Suchergebnis also ohnehin abgeschnitten und kostete
+ * nur Platz — sichtbar blieb ein Titel, der mitten im Firmennamen endete.
+ *
+ * Entfernt ist deshalb NUR die Rechtsform (gleiche Begründung wie an MARKE in
+ * app/lib/produkt-seo.js: kein Suchwert, und „Qi Blanco" ist die Schreibweise
+ * von Organization-Schema und Wikidata Q141070656). Der übrige Wortlaut
+ * bleibt bewusst unverändert — er ist gewachsene Marken-Ansprache und nicht
+ * Gegenstand dieser technischen Hygiene. Ergebnis: 49 Zeichen, vollständig
+ * sichtbar.
+ */
+const TITEL = 'Qi Blanco - Life Technology - Jetzt kennenlernen.';
 
 /**
  * Meta-Beschreibung der Startseite.
