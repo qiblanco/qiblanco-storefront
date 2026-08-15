@@ -1,5 +1,5 @@
 /**
- * Renderer EINER Studien-Einzelseite. Vier Routen teilen ihn sich — der
+ * Renderer EINER Studien-Einzelseite. Alle Routen teilen ihn sich — der
  * Unterschied zwischen den Seiten ist ausschließlich das Daten-JSON.
  *
  * AUFBAU (von oben nach unten, so beauftragt):
@@ -18,7 +18,13 @@
  */
 
 import {Link} from 'react-router';
-import {UEBERSICHT_PFAD, studienPfad, verwandteStudien} from '~/data/studien';
+import {
+  STUDIEN,
+  UEBERSICHT_PFAD,
+  studienPfad,
+  verwandteStudien,
+  zahlwort,
+} from '~/data/studien';
 
 export function StudieSeite({studie}) {
   const e = studie.eckdaten;
@@ -61,11 +67,26 @@ export function StudieSeite({studie}) {
                 <time dateTime={e.veroeffentlicht}>{datum(e.veroeffentlicht)}</time>
               </Eckdatum>
             ) : null}
+            {/*
+              DOI: genannt IMMER, verlinkt nur wenn er auch aufloest.
+              Setzt eine Studie `doiAufloesbar: false`, ist der DOI beim
+              Resolver nicht registriert (bei der QiHome-Air-Arbeit belegt:
+              doi.org antwortet 404, ein Kontroll-DOI im selben Lauf 302/200).
+              Ihn trotzdem zu verlinken würde ausgerechnet auf der Beleg-Seite
+              einen toten Beleg-Link erzeugen und damit den häufigsten Einwand
+              ueberhaupt bedienen ("Wirkt das ueberhaupt?"). Ihn wegzulassen
+              wäre die andere Haelfte des Fehlers: die Kennung gehört zur
+              Zitierbarkeit. Ohne das Feld bleibt alles wie bisher.
+            */}
             {e.doi ? (
               <Eckdatum label="DOI">
-                <a href={`https://doi.org/${e.doi}`} rel="noopener">
-                  {e.doi}
-                </a>
+                {e.doiAufloesbar === false ? (
+                  <span>{e.doi}</span>
+                ) : (
+                  <a href={`https://doi.org/${e.doi}`} rel="noopener">
+                    {e.doi}
+                  </a>
+                )}
               </Eckdatum>
             ) : null}
             {e.issn ? <Eckdatum label="ISSN">{e.issn}</Eckdatum> : null}
@@ -225,6 +246,16 @@ export function StudieSeite({studie}) {
               </a>
             </p>
           ) : null}
+          {/* Loest der DOI nicht auf, braucht die Seite trotzdem EINEN
+              nachpruefbaren Weg zur Originalquelle — sonst ist die Zitation
+              eine Behauptung. Fehlt das Feld, rendert nichts. */}
+          {e.artikelUrl ? (
+            <p>
+              <a href={e.artikelUrl} target="_blank" rel="noopener noreferrer">
+                Artikelseite beim Journal öffnen
+              </a>
+            </p>
+          ) : null}
         </section>
 
         {verwandt.length ? (
@@ -244,7 +275,7 @@ export function StudieSeite({studie}) {
                 <span className="qb-st-verwandt-kicker">Übersicht</span>
                 <strong>Alle Studien und die HRV-Messreihe</strong>
                 <span className="qb-st-verwandt-text">
-                  Vier Publikationen auf einen Blick
+                  {zahlwort(STUDIEN.length)} Publikationen auf einen Blick
                 </span>
               </Link>
             </div>

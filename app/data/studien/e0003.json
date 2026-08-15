@@ -289,10 +289,15 @@
  ],
  "verwandt": [
   "e0002",
-  "e0004"
+  "e0004",
+  "e0005"
  ],
  "factGate": [
   "WIDERSPRUCH IM ORIGINALTEXT – Vitalitätswerte L-929 und A-549: Das Abstract des Originals formuliert 'connective tissue fibroblasts showed a loss in viability of 24% and lung cells of 84%', was wörtlich einen Vitalitätsverlust (= Abfall) von 24 % bzw. 84 % bedeuten würde. Der Ergebnisabschnitt desselben Textes nennt dagegen 'viability ... from 24% (L-929) to 84% (A-549)' (Figure 3A), was Restvitalitätswerte (= verbleibende Vitalität nach Stress) beschreibt. Diese Formulierungen widersprechen sich innerhalb desselben Dokuments. Beide Faktenkontroll-Quellen (e0003-oxidativer-stress-qibracelet.md, 03_QiBracelet_OxStress_2024.md) interpretieren die 24 % als Restvitalität von L-929 (empfindlichster Typ) und 84 % als Restvitalität von A-549 (unempfindlichster Typ), was mit dem Ergebnisabschnitt und Figure 3A konsistent ist. In dieser Datei wird die Interpretation des Ergebnisabschnitts übernommen (24 % = Restvitalität L-929; 84 % = Restvitalität A-549). Zur Transparenz bleibt dieser Widerspruch im factGate dokumentiert.",
   "p-Werte je Zelltyp: Weder im _raw-Volltext noch im Ergebnisabschnitt werden separate p-Werte je Zelltyp ausgewiesen. Der statistische Test (Wilcoxon-Mann-Whitney) wird nur im Abschnitt 'Statistical Analysis' global erwähnt. Eine Aussage wie 'statistisch signifikant (p < 0,05) für alle Zelltypen' wäre durch den _raw-Volltext nicht belegbar."
+ ],
+ "art": "in-vitro",
+ "produkte": [
+  "QiBracelet®"
  ]
 }
