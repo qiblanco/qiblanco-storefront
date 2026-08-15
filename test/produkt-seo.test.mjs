@@ -248,3 +248,65 @@ test('jeder verdrahtete Pfad hat auch wirklich einen Text', () => {
     );
   }
 });
+
+// --- Product-Auszeichnung (Nachtrag 2026-08-15) -----------------------------
+// BELEGTER ANLASS: PR #217 hängte den Product-Knoten an `products.$handle.jsx`
+// und erreichte damit alles AUSSER den sechs wichtigsten Seiten — die haben
+// eigene Route-Dateien und laufen nie durch den Catch-all. Der Fehler war von
+// aussen unsichtbar: die Auszeichnung war live, nur eben auf Broschüre und
+// Bundles statt auf QiOne 2 Pro. Dieser Test macht genau diese Lücke sichtbar.
+test('jede eigene Produktroute reicht `produkt` an produktMeta durch', () => {
+  const dateien = readdirSync('app/routes').filter(
+    (f) => f.startsWith('products.') && f.endsWith('.jsx') && !f.includes('$'),
+  );
+  for (const f of dateien) {
+    const inhalt = readFileSync(`app/routes/${f}`, 'utf8');
+    // Nur Routen prüfen, die überhaupt über produktMeta laufen.
+    if (!inhalt.includes('produktMeta(')) continue;
+    assert.match(
+      inhalt,
+      /produkt:\s*data\?\.product/,
+      `${f}: ohne 'produkt: data?.product' entsteht KEIN Product-Schema`,
+    );
+  }
+});
+
+test('produktMeta ohne `produkt` bleibt unveraendert (kein ld+json)', () => {
+  const d = produktMeta({pfad: '/products/qione-2-pro', titel: 'T'});
+  assert.equal(
+    d.filter((x) => x['script:ld+json']).length,
+    0,
+    'ohne Produkt darf kein Schema-Knoten entstehen',
+  );
+});
+
+test('produktMeta mit `produkt` hängt genau EINEN Product-Knoten an', () => {
+  const d = produktMeta({
+    pfad: '/products/qione-2-pro',
+    titel: 'T',
+    produkt: {
+      handle: 'qione-2-pro',
+      title: 'QiOne® 2 Pro',
+      selectedOrFirstAvailableVariant: {
+        availableForSale: true,
+        price: {amount: '1290.00', currencyCode: 'EUR'},
+      },
+    },
+  });
+  const knoten = d.filter((x) => x['script:ld+json']);
+  assert.equal(knoten.length, 1, 'genau ein Knoten, nicht null und nicht zwei');
+  const s = knoten[0]['script:ld+json'];
+  assert.equal(s['@type'], 'Product');
+  assert.equal(s.offers.price, '1290.00');
+});
+
+// Ein Produkt ohne Preis darf die Seite NICHT mit einem kaputten Knoten
+// belasten — lieber gar keine Auszeichnung.
+test('produktMeta mit preislosem Produkt hängt KEINEN Knoten an', () => {
+  const d = produktMeta({
+    pfad: '/products/qione-2-pro',
+    titel: 'T',
+    produkt: {handle: 'x', title: 'X', selectedOrFirstAvailableVariant: {}},
+  });
+  assert.equal(d.filter((x) => x['script:ld+json']).length, 0);
+});
