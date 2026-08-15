@@ -211,6 +211,10 @@
  "factGate": [
   "Die auf der aktuellen Live-Studienseite dieser Publikation zugeschriebenen Werte 'Basalstoffwechsel +12,5 ± 2,9 %' und 'Radikalgenerierung +27,7 ± 7,7 %' kommen im Volltext dieser Publikation (Japan Journal of Medicine 2021, 4(1): 484-488) NICHT vor. Das PDF behandelt ausschließlich die Superoxid-Anion-Radikalbildung im Kontext der Handystrahlungs-Exposition (60,5 ± 3,9 % ungeschützt vs. 84,7 ± 7,0 % geschützt). Die Werte +12,5 ± 2,9 % und +27,7 ± 7,7 % stammen aus einer anderen Quelle und dürfen dieser Studie nicht zugeschrieben werden."
  ],
+ "kachel": {
+  "zeile1": "Wissenschaftliche Publikation an Immunzellen",
+  "zeile2": "veröffentlicht im Japan Journal of Medicine am 30. April 2021"
+ },
  "art": "in-vitro",
  "produkte": [
   "QiOne® 2 Pro"

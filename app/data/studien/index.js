@@ -43,6 +43,51 @@ export function studienPfad(slug) {
   return `/pages/${slug}`;
 }
 
+const MONATE = [
+  'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
+];
+
+/**
+ * `veroeffentlicht` als deutscher Fliesstext — und zwar GENAU so genau, wie das
+ * Feld es hergibt. e0002 trägt in der Primaerquelle nur "2021" (kein
+ * Tagesdatum); daraus ein Datum zu bauen wäre eine Erfindung. Volles Datum ->
+ * "am 12. Januar 2024", nur Jahr -> "2024".
+ */
+export function veroeffentlichtLang(wert) {
+  const s = String(wert || '');
+  const voll = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (voll) return `am ${Number(voll[3])}. ${MONATE[Number(voll[2]) - 1]} ${voll[1]}`;
+  const jahr = /^(\d{4})/.exec(s);
+  return jahr ? jahr[1] : '';
+}
+
+/**
+ * Die zwei Kachel-Zeilen des Studien-Sliders: Zeile 1 sagt, WORAN gemessen
+ * wurde (Immunzellen, Darmepithel, neuronale Zellen), Zeile 2 WO und WANN
+ * veroeffentlicht wurde. Diese Reihenfolge ist Absicht — die Kachel beantwortet
+ * zuerst die Frage des Zweiflers, nicht die Bibliografie.
+ *
+ * WARUM MIT RUECKFALL: der redaktionelle Wortlaut steht je Studie in `kachel`
+ * (Abschnitt 5 des gemeinsamen Konzepts). Fehlt er bei einer kuenftig
+ * ergaenzten Studie, leitet diese Funktion eine wahrheitsgemaesse Zeile aus den
+ * Eckdaten ab, statt die Kachel halb leer zu lassen — dieselbe Haltung wie bei
+ * `zahlwort`: eine neue Studie darf nirgends eine stille Luecke hinterlassen.
+ */
+export function kachelZeilen(studie) {
+  const e = studie.eckdaten || {};
+  const k = studie.kachel || {};
+  const wann = veroeffentlichtLang(e.veroeffentlicht);
+  return {
+    zeile1: k.zeile1 || e.titelDeutsch || studie.seo?.h1 || '',
+    zeile2:
+      k.zeile2 ||
+      [e.journal ? `veröffentlicht in ${e.journal}` : '', wann]
+        .filter(Boolean)
+        .join(' '),
+  };
+}
+
 /**
  * Die verwandten Studien EINER Studie, als volle Objekte.
  * Unbekannte IDs werden still verworfen — eine kaputte Querverlinkung darf die
