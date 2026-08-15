@@ -27,6 +27,25 @@
  * geprüft. Eine falsche GTIN ist schlechter als keine, weil Google sie gegen
  * den Produktkatalog abgleicht.
  *
+ * DER PREIS IST BRUTTO, UND ZWAR ZWINGEND (Korrektur 2026-08-15, am selben
+ * Tag live nachgemessen und behoben): Shopify speichert auf den EUR-Märkten
+ * NETTO (`taxes_included=false`). Die erste Fassung dieser Datei schrieb den
+ * API-Betrag ungeprüft ins Schema — für QiOne 2 Pro also 913.45, während die
+ * Seite dem Kunden 1.087,- € zeigt (913,45 × 1,19). Ein Suchergebnis, das
+ * einen NIEDRIGEREN Preis nennt als die Seite, ist gegenüber dem Kunden
+ * irreführend, verstößt gegen Googles Richtlinien für strukturierte Daten
+ * (der ausgezeichnete Preis muss der sein, den der Nutzer zahlt) und ist für
+ * deutsche Endkundenpreise zusätzlich die falsche Größe (PAngV: Endpreis).
+ *
+ * Umgerechnet wird NICHT hier, sondern über `bruttoAnzeige()` aus
+ * app/lib/markt-pricing.js — dem dokumentierten Kanon, der schon vorher die
+ * EINE Stelle war, an der aus einem API-Preis der Anzeigewert wird (inkl.
+ * 7 % statt 19 % bei den Kakao-Handles und inkl. der Regel, dass Nicht-EUR-
+ * Märkte den Endbetrag bereits liefern). Eine eigene Umrechnung an dieser
+ * Stelle wäre eine zweite Wahrheit über den Preis — genau der Fehler, den
+ * der Kanon verhindern soll. So zeigt das Schema exakt den Betrag, der auch
+ * auf der Seite steht.
+ *
  * ZUR SPRACHE DER BESCHREIBUNG: Es wird ausschließlich der in Shopify
  * gepflegte Text übernommen, nie ein hier formulierter. Damit sagt die
  * Auszeichnung exakt das, was der Shop ohnehin sagt, und der Claim-Korridor
@@ -36,6 +55,7 @@
 
 import {CANONICAL_ORIGIN} from './seo.js';
 import {ORG_ID, ORGANISATION} from './entity-schema.js';
+import {bruttoAnzeige} from './markt-pricing.js';
 
 /**
  * schema.org-Verfügbarkeit aus dem Shopify-Flag.
@@ -63,12 +83,14 @@ export function produktSchema(produkt) {
   if (!produkt?.handle || !produkt?.title) return null;
 
   const variante = produkt.selectedOrFirstAvailableVariant;
-  const preis = variante?.price?.amount;
   const waehrung = variante?.price?.currencyCode;
+  // Brutto — siehe Kopf. bruttoAnzeige() liefert denselben Wert, den die
+  // Seite anzeigt; null, wenn der Betrag fehlt oder unbrauchbar ist.
+  const preis = bruttoAnzeige(variante?.price?.amount, produkt.handle, waehrung);
   // Ohne Preis KEIN offers-Block und damit kein Rich Result — dann lohnt der
   // ganze Knoten nicht, denn Preis und Verfügbarkeit sind sein einziger
   // Mehrwert gegenüber dem, was Google ohnehin aus der Seite liest.
-  if (!preis || !waehrung) return null;
+  if (preis == null || !waehrung) return null;
 
   const url = `${CANONICAL_ORIGIN}/products/${produkt.handle}`;
   const bilder = (produkt.images?.nodes ?? [])
@@ -86,7 +108,7 @@ export function produktSchema(produkt) {
     offers: {
       '@type': 'Offer',
       url,
-      price: preis,
+      price: String(preis),
       priceCurrency: waehrung,
       availability: verfuegbarkeit(variante?.availableForSale),
       itemCondition: 'https://schema.org/NewCondition',
