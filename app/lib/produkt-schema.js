@@ -46,6 +46,27 @@
  * der Kanon verhindern soll. So zeigt das Schema exakt den Betrag, der auch
  * auf der Seite steht.
  *
+ * KEIN KNOTEN OHNE PREIS-NACHWEIS (Nachtrag 2026-08-15, an allen 13
+ * Produktseiten einzeln nachgemessen): Auf den Angebots-, Bundle- und
+ * Mengenrabatt-Seiten weicht der angezeigte Preis vom Kanon-Wert ab. Belegt
+ * an `crystal-cacao-angebot`: der Kanon rechnet 71,03 x 1,07 = 76 EUR (der
+ * Handle steht in CACAO_HANDLES, und der 7-%-Satz ist dort an 41 realen
+ * Bestellpositionen belegt), die Buybox der Seite zeigt aber "85,- EUR",
+ * also 71,03 x 1,19. Auf den Bundle-Seiten war ueberhaupt kein Preis-Element
+ * auffindbar, der angezeigte Wert also nicht messbar.
+ *
+ * Beides führt zur selben Entscheidung: Wo nicht BEWIESEN ist, dass der
+ * ausgezeichnete Preis dem angezeigten entspricht, entsteht KEIN Knoten. Ein
+ * Rich Result, das weniger nennt als die Seite verlangt, ist gegenueber dem
+ * Kunden irrefuehrend — und "nicht messbar" ist hier kein Freibrief, sondern
+ * gilt wie ein Fehlschlag.
+ *
+ * DIE ABWEICHUNG SELBST IST NICHT HIER ZU HEILEN: ob die Buybox oder der
+ * Kanon recht hat, ist eine Preis-Frage mit Wirkung bis in den Checkout und
+ * gehört zum bestehenden preiswatch/Cacao-MwSt-Vorgang, nicht in eine
+ * SEO-Auszeichnung. Diese Liste ist die konservative Zwischenlage, bis das
+ * geklaert ist — sie schrumpft, sobald die Preise uebereinstimmen.
+ *
  * ZUR SPRACHE DER BESCHREIBUNG: Es wird ausschließlich der in Shopify
  * gepflegte Text übernommen, nie ein hier formulierter. Damit sagt die
  * Auszeichnung exakt das, was der Shop ohnehin sagt, und der Claim-Korridor
@@ -79,8 +100,17 @@ function verfuegbarkeit(verfuegbar) {
  * @param {object|undefined} produkt Shopify-Produkt aus PRODUCT_QUERY
  * @returns {object|null}
  */
+export const OHNE_PREIS_NACHWEIS = [
+  'crystal-cacao-angebot',
+  'bundle-2x-awake',
+  'bundle-3x-awake',
+  'mengenrabatt-2x',
+  'mengenrabatt-3x-create',
+];
+
 export function produktSchema(produkt) {
   if (!produkt?.handle || !produkt?.title) return null;
+  if (OHNE_PREIS_NACHWEIS.includes(produkt.handle)) return null;
 
   const variante = produkt.selectedOrFirstAvailableVariant;
   const waehrung = variante?.price?.currencyCode;
