@@ -4,7 +4,7 @@ import {hatHoerbarenTon} from '~/lib/video-ton';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
- * seit 2026-08-15 nur noch bei Videos MIT hoerbarem Ton.
+ * seit 2026-08-15 nur noch bei Videos MIT hörbarem Ton.
  *
  * Browser-Autoplay-Policy erlaubt Video-Autoplay NUR stummgeschaltet, darum
  * bleibt das `muted`-HTML-ATTRIBUT unten hart gesetzt (das ist es, was der
@@ -16,11 +16,11 @@ import {hatHoerbarenTon} from '~/lib/video-ton';
  * AENDERUNG 2026-08-15 (Christian, Screenshot-Befund): der Toggle war
  * BEDINGUNGSLOS eingebaut, also bekamen ihn auch stumme Hintergrund- und
  * 360-Grad-Produktvideos — ein Audio-Umschalter an einem Video ohne Ton.
- * Ob ein Video hoerbaren Ton traegt, beantwortet jetzt ausschliesslich das
+ * Ob ein Video hörbaren Ton trägt, beantwortet jetzt ausschließlich das
  * gemessene Manifest `app/lib/video-ton.js`; ohne Eintrag wird KEINE
- * Audio-UI gerendert. Bewusst NICHT ueber Browser-Feature-Detection
- * geloest: die stummen 360-Grad-Videos besitzen eine AAC-Spur (digitale
- * Stille, -91 dB), jede Existenzpruefung meldet dort faelschlich "hat Ton".
+ * Audio-UI gerendert. Bewusst NICHT über Browser-Feature-Detection
+ * gelöst: die stummen 360-Grad-Videos besitzen eine AAC-Spur (digitale
+ * Stille, -91 dB), jede Existenzprüfung meldet dort faelschlich "hat Ton".
  */
 
 const SOUND_STORAGE_PREFIX = 'qb-video-sound:';
@@ -70,7 +70,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
   // das Attribut bleibt für die Autoplay-Erlaubnis unveraendert `muted`).
   // Ohne Ton-Steuerung bleibt das Video HART stumm: ein Besucher kann aus
-  // einer frueheren Sitzung noch ein `an` im sessionStorage fuer diesen
+  // einer frueheren Sitzung noch ein `an` im sessionStorage für diesen
   // Pfad stehen haben (der Toggle war bis 2026-08-15 auch hier sichtbar) —
   // das darf ein stummes Video nicht entstummen.
   useEffect(() => {
