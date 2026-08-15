@@ -24,7 +24,11 @@
   "produkt": "QiHome® Air",
   "artikelUrl": "https://www.neurodegenerativejournal.com/article/beneficial-effect-of-the-qihome-air-on-cultured-neuronal-and-inflammation-mediating-cells",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0005--b754deb9ee0d.pdf?v=1786753494",
-  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0005-cover--3d3dc8a5a60b.png?v=1786753497"
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0005-cover--3d3dc8a5a60b.png?v=1786753497",
+  "studientyp": "In-vitro-Zellstudie (Zellkultur)",
+  "materialLabel": "Zellen / Material",
+  "material": "SH-SY5Y (humane Nervenzellen) und HL-60, 4 Replikate",
+  "geprueft": "QiHome® Air"
  },
  "laienSummary": {
   "frage": "Gibt es zum QiHome® Air eine wissenschaftliche Studie?",

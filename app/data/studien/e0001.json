@@ -22,7 +22,11 @@
   "lizenz": "",
   "produkt": "QiOne® 2 Pro",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1679586513",
-  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510"
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510",
+  "studientyp": "In-vitro-Zellstudie (Zellkultur)",
+  "materialLabel": "Zellen / Material",
+  "material": "HL-60 (humane Immunzellen), 3 unabhängige Experimente",
+  "geprueft": "QiOne® 2 Pro"
  },
  "laienSummary": {
   "frage": "Kann QiOne® 2 Pro meine Immunzellen vor den Auswirkungen von Handystrahlung schützen?",

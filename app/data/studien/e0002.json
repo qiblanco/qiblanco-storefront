@@ -22,7 +22,11 @@
   "lizenz": "",
   "produkt": "QiOne® 2 Pro",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1679586513",
-  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_1.png?v=1732276143"
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_1.png?v=1732276143",
+  "studientyp": "In-vitro-Zellstudie (Zellkultur)",
+  "materialLabel": "Zellen / Material",
+  "material": "IPEC-J2 (Darmepithelzellen vom Schwein), n = 3–4",
+  "geprueft": "QiOne® 2 Pro"
  },
  "laienSummary": {
   "frage": "Kann QiOne® 2 Pro die Darmschleimhaut vor den Auswirkungen von Handystrahlung schützen?",

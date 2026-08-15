@@ -22,7 +22,11 @@
   "lizenz": "Open Access, CC-BY",
   "produkt": "QiOne® 2 Pro",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318",
-  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell-Biology-Cover-Remake-Seite-4.webp?v=1717500844"
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell-Biology-Cover-Remake-Seite-4.webp?v=1717500844",
+  "studientyp": "Deskriptive Auswertung von Anwenderberichten (ohne Kontrollgruppe)",
+  "materialLabel": "Untersuchtes Material",
+  "material": "171 öffentliche Anwenderberichte",
+  "geprueft": "QiOne® 2 Pro und QiBracelet®"
  },
  "laienSummary": {
   "frage": "Was sagen Nutzer von QiOne® 2 Pro und QiBracelet® über ihre Erfahrungen?",
