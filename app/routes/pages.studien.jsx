@@ -1,5 +1,5 @@
 import {StudienUebersicht} from '~/components/studien/StudienUebersicht';
-import {STUDIEN} from '~/data/studien';
+import {STUDIEN, zahlwort} from '~/data/studien';
 import {übersichtSchema} from '~/lib/studien-schema';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
@@ -36,7 +36,9 @@ export const meta = () => [
   {
     property: 'og:description',
     content:
-      'Vier zellbiologische Fachpublikationen zu QiOne® 2 Pro und QiBracelet® — mit Zusammenfassung, deutschem Volltext und Original-PDF.',
+      `${zahlwort(STUDIEN.length).replace(/^./, (c) => c.toUpperCase())} ` +
+      'zellbiologische Fachpublikationen zu QiOne® 2 Pro, QiBracelet® und ' +
+      'QiHome® Air — mit Zusammenfassung, deutschem Volltext und Original-PDF.',
   },
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {'script:ld+json': übersichtSchema(STUDIEN)},

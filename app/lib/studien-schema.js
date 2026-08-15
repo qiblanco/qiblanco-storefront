@@ -5,7 +5,7 @@
  * WARUM: /pages/studien trug am 2026-08-14 gemessen NULL JSON-LD-Bloecke
  * (seo.db OnPage-Messung: `jsonld_typen: []`). Für Google und für zitierende
  * KI-Systeme war die Seite damit Fliesstext, kein wissenschaftlicher Beleg —
- * obwohl vier peer-reviewte Publikationen mit DOI dahinterstehen. Das ist
+ * obwohl mehrere peer-reviewte Publikationen dahinterstehen. Das ist
  * Maßnahme St-3 aus dem SEO-Master-Konzept Kap. 6.4.
  *
  * TYPWAHL: `ScholarlyArticle` statt `MedicalScholarlyArticle`. Der
@@ -71,13 +71,21 @@ export function studieSchema(studie) {
   if (e.eingereicht) artikel.dateCreated = e.eingereicht;
   if (e.lizenz) artikel.license = e.lizenz;
   if (e.doi) {
+    // identifier ist eine KENNUNG — wahr, unabhängig davon, ob ein Resolver sie
+    // kennt. sameAs ist dagegen die Behauptung "diese Seite ist dasselbe Ding wie
+    // jene URL". Bei `doiAufloesbar: false` wäre das eine maschinenlesbare
+    // Falschaussage an Suchmaschinen auf eine 404-URL — schlimmer als der
+    // sichtbare tote Link, weil sie niemand sieht. Deshalb nur sameAs entfaellt.
     artikel.identifier = {
       '@type': 'PropertyValue',
       propertyID: 'DOI',
       value: e.doi,
     };
-    artikel.sameAs = `https://doi.org/${e.doi}`;
+    if (e.doiAufloesbar !== false) artikel.sameAs = `https://doi.org/${e.doi}`;
   }
+  // Loest der DOI nicht auf, ist die Artikelseite des Journals der einzige
+  // maschinenlesbare Weg zur Originalquelle.
+  if (e.artikelUrl) artikel.isBasedOn = [e.pdfUrl, e.artikelUrl].filter(Boolean);
   if (e.issn) artikel.isPartOf = {'@type': 'Periodical', name: e.journal, issn: e.issn};
   else if (e.journal) artikel.isPartOf = {'@type': 'Periodical', name: e.journal};
   if (e.band) artikel.pagination = e.band;
@@ -137,7 +145,33 @@ function faqSchema(studie, url) {
 }
 
 /**
- * CollectionPage + ItemList für die Übersicht. Die ItemList nennt die vier
+ * Zahlwort am Satzanfang. Bewusst LOKAL statt aus ~/data/studien importiert:
+ * dieses Modul ist eine reine Datenfabrik ohne Registry-Abhaengigkeit und soll
+ * mit einer beliebigen Studien-Liste als Argument testbar bleiben.
+ */
+const ZAHLWORTE_CAP = ['Null', 'Eine', 'Zwei', 'Drei', 'Vier', 'Fünf', 'Sechs', 'Sieben', 'Acht'];
+
+function zahlwortCap(n) {
+  return ZAHLWORTE_CAP[n] || String(n);
+}
+
+/** „QiOne® 2 Pro, QiBracelet® und QiHome® Air" — aus den Daten, nach Studienzahl. */
+function produktAufzaehlung(studien) {
+  const zahl = new Map();
+  for (const s of studien) {
+    for (const p of s.produkte || [s.eckdaten?.produkt]) {
+      if (p) zahl.set(p, (zahl.get(p) || 0) + 1);
+    }
+  }
+  const namen = [...zahl.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([n]) => n);
+  if (namen.length <= 1) return namen[0] || '';
+  return `${namen.slice(0, -1).join(', ')} und ${namen[namen.length - 1]}`;
+}
+
+/**
+ * CollectionPage + ItemList für die Übersicht. Die ItemList nennt die
  * Einzelseiten in derselben Reihenfolge, in der sie gerendert werden — eine
  * Liste, die eine andere Reihenfolge behauptet als die Seite zeigt, ist ein
  * Widerspruch, den Google als Unstimmigkeit liest.
@@ -152,8 +186,12 @@ export function übersichtSchema(studien) {
         '@id': `${url}#sammlung`,
         url,
         name: 'Wissenschaftliche Studien zu Qi Blanco',
+        // Anzahl und Produktliste kommen aus den Daten: eine feste Zahl hier war
+        // schon einmal die Naht, die beim Ergänzen der fuenften Studie riss.
         description:
-          'Vier zellbiologische Fachpublikationen zu QiOne® 2 Pro und QiBracelet® — je mit Zusammenfassung in Normalsprache, deutschem Volltext, Abbildungen und Original-PDF.',
+          `${zahlwortCap(studien.length)} zellbiologische Fachpublikationen zu ` +
+          `${produktAufzaehlung(studien)} — je mit Zusammenfassung in Normalsprache, ` +
+          'deutschem Volltext, Abbildungen und Original-PDF.',
         inLanguage: 'de',
         isPartOf: {'@type': 'WebSite', '@id': `${CANONICAL_ORIGIN}/#website`},
         about: 'Zellbiologische In-vitro-Untersuchungen zu Qi Blanco Produkten',

@@ -8,9 +8,9 @@
  * gleiche Substanz — die HRV-Messreihe bleibt VOLLSTAENDIG erhalten. Alles
  * Neue kommt additiv dazu.
  *
- * WAS SICH AENDERT: (1) statt zwei ausformulierter Studien stehen jetzt alle
- * VIER als Karte mit Zusammenfassung in Normalsprache, eigener Abbildung und
- * Weg in den Volltext; (2) der Volltext selbst zieht auf vier Einzelseiten um,
+ * WAS SICH AENDERT: (1) statt zwei ausformulierter Studien steht jetzt JEDE
+ * als Karte mit Zusammenfassung in Normalsprache, eigener Abbildung und
+ * Weg in den Volltext; (2) der Volltext selbst zieht auf Einzelseiten um,
  * damit jede Publikation ihre eigene Ranking-Flaeche mit eigenem
  * ScholarlyArticle-Schema bekommt; (3) die HRV-Messreihe steht jetzt
  * ausdrücklich als EIGENER Einzelnachweis da.
@@ -26,9 +26,28 @@
  */
 
 import {Link} from 'react-router';
-import {STUDIEN, studienPfad} from '~/data/studien';
+import {
+  STUDIEN,
+  anzahlNachArt,
+  studienPfad,
+  untersuchteProdukte,
+  zahlwort,
+} from '~/data/studien';
+
+/** „A, B und C" — deutsche Aufzaehlung ohne Oxford-Komma. */
+function aufzaehlung(namen) {
+  if (namen.length <= 1) return namen[0] || '';
+  return `${namen.slice(0, -1).join(', ')} und ${namen[namen.length - 1]}`;
+}
+
+function initialCap(w) {
+  return w.charAt(0).toUpperCase() + w.slice(1);
+}
 
 export function StudienUebersicht() {
+  const produkte = untersuchteProdukte();
+  const anzahl = zahlwort(STUDIEN.length);
+
   return (
     <div className="qb-st qb-st-übersicht">
       <div className="qb-st-wrap">
@@ -36,16 +55,17 @@ export function StudienUebersicht() {
           <p className="qb-st-kicker">Belege statt Behauptungen</p>
           <h1>Wissenschaftlich getestet und in Fachpublikationen bestätigt</h1>
           <p>
-            Vier zellbiologische Untersuchungen zu QiOne® 2 Pro und QiBracelet®,
-            durchgeführt am Institut für zellbiologische Testsysteme von Prof.
-            Dr. Peter C. Dartsch und in Fachjournalen veröffentlicht. Jede
-            Studie finden Sie hier in verständlicher Zusammenfassung, im
-            vollständigen deutschen Text und als englisches Original-PDF.
+            {initialCap(anzahl)} zellbiologische Untersuchungen zu{' '}
+            {aufzaehlung(produkte.map((p) => p.name))}, durchgeführt am Institut
+            für zellbiologische Testsysteme von Prof. Dr. Peter C. Dartsch und
+            in Fachjournalen veröffentlicht. Jede Studie finden Sie hier in
+            verständlicher Zusammenfassung, im vollständigen deutschen Text und
+            als englisches Original-PDF.
           </p>
         </header>
 
         <section className="qb-st-sektion" id="studien" aria-labelledby="studien-titel">
-          <h2 id="studien-titel">Die vier Publikationen</h2>
+          <h2 id="studien-titel">Die {anzahl} Publikationen</h2>
           <p className="qb-st-sektion-intro">
             Klicken Sie auf die Titelseite, um das Original-PDF zu öffnen, oder
             auf „Studie vollständig lesen“ für die deutsche Fassung mit allen
@@ -63,16 +83,17 @@ export function StudienUebersicht() {
           <h2 id="rahmen-titel">Wie diese Studien einzuordnen sind</h2>
           <ul>
             <li>
-              Alle vier Arbeiten sind <strong>präklinisch</strong>: drei
-              Zellkultur-Untersuchungen (in vitro) und eine beschreibende
-              Auswertung freiwilliger Nutzerberichte. Keine davon ist eine
-              klinische Studie am Menschen.
+              Alle {anzahl} Arbeiten sind <strong>präklinisch</strong>:{' '}
+              {zahlwort(anzahlNachArt('in-vitro'))} Zellkultur-Untersuchungen
+              (in vitro) und {zahlwort(anzahlNachArt('deskriptiv'))}{' '}
+              beschreibende Auswertung freiwilliger Nutzerberichte. Keine davon
+              ist eine klinische Studie am Menschen.
             </li>
             <li>
-              Alle vier stammen aus <strong>einem Labor</strong> (Dartsch
+              Alle {anzahl} stammen aus <strong>einem Labor</strong> (Dartsch
               Scientific GmbH); die getesteten Geräte wurden vom Hersteller
-              gestellt. Eine unabhängige Wiederholung durch ein zweites Labor
-              steht aus.
+              gestellt und die Arbeiten von Qi Blanco finanziert. Eine
+              unabhängige Wiederholung durch ein zweites Labor steht aus.
             </li>
             <li>
               Der im Diskussionsteil genannte Erklärungsansatz über
@@ -93,24 +114,28 @@ export function StudienUebersicht() {
         <section className="qb-st-sektion" aria-labelledby="produkte-titel">
           <h2 id="produkte-titel">Die untersuchten Produkte</h2>
           <p className="qb-st-sektion-intro">
-            Drei der vier Arbeiten untersuchen den QiOne® 2 Pro, eine den
-            QiBracelet®.
+            {/* Eine Arbeit kann mehrere Geraete untersuchen — die Summe der
+                Karten ist deshalb größer als die Zahl der Studien. */}
+            {aufzaehlung(
+              produkte.map(
+                (p) =>
+                  `${initialCap(zahlwort(p.anzahl))} ${
+                    p.anzahl === 1 ? 'Arbeit untersucht' : 'Arbeiten untersuchen'
+                  } den ${p.name}`,
+              ),
+            )}
+            .
           </p>
           <div className="qb-st-verwandt-grid">
-            <Link to="/pages/qione-2-pro" className="qb-st-verwandt-karte">
-              <span className="qb-st-verwandt-kicker">Untersucht in 3 Studien</span>
-              <strong>QiOne® 2 Pro</strong>
-              <span className="qb-st-verwandt-text">
-                Immunzellen, Darmbarriere und Nutzerbeobachtungen
-              </span>
-            </Link>
-            <Link to="/products/qibracelet" className="qb-st-verwandt-karte">
-              <span className="qb-st-verwandt-kicker">Untersucht in 2 Studien</span>
-              <strong>QiBracelet®</strong>
-              <span className="qb-st-verwandt-text">
-                Oxidativer Stress und Nutzerbeobachtungen
-              </span>
-            </Link>
+            {produkte.map((p) => (
+              <Link key={p.name} to={p.pfad} className="qb-st-verwandt-karte">
+                <span className="qb-st-verwandt-kicker">
+                  Untersucht in {p.anzahl} {p.anzahl === 1 ? 'Studie' : 'Studien'}
+                </span>
+                <strong>{p.name}</strong>
+                <span className="qb-st-verwandt-text">{p.text}</span>
+              </Link>
+            ))}
           </div>
         </section>
       </div>
@@ -182,7 +207,10 @@ function StudienKarte({studie}) {
  * das Token-System der Sektion überfuehrt. Inhaltlich identisch: dieselben
  * Messungen, dieselben Bilder, dieselben Zahlen, dieselbe Anmerkung am Ende.
  * Neu ist ausschließlich die Überschrift-Ebene, die klarstellt, dass dies
- * KEINE der vier Publikationen ist.
+ * KEINE der Publikationen ist. Die Anzahl im Hinweistext kommt aus den Daten:
+ * genau dieser Satz wäre beim Ergänzen der fuenften Studie still falsch
+ * geworden — und er ist der inhaltlich wichtigste der Seite, weil er die
+ * hausinterne Messreihe von den Fachpublikationen trennt.
  */
 function HrvMessreihe() {
   const rang = [
@@ -228,9 +256,9 @@ function HrvMessreihe() {
       <h2 id="hrv-titel">HRV-Messungen</h2>
       <p className="qb-st-sektion-intro">
         <strong>Hinweis zur Einordnung:</strong> Die folgende Messreihe ist{' '}
-        <em>keine</em> der vier oben genannten Fachpublikationen, sondern eine
-        eigene Versuchsreihe an zwei Probanden. Sie ist nicht peer-reviewed und
-        versteht sich als Einzelnachweis.
+        <em>keine</em> der {zahlwort(STUDIEN.length)} oben genannten
+        Fachpublikationen, sondern eine eigene Versuchsreihe an zwei Probanden.
+        Sie ist nicht peer-reviewed und versteht sich als Einzelnachweis.
       </p>
 
       <div className="qb-st-volltext">

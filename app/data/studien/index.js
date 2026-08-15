@@ -21,9 +21,10 @@ import e0001 from './e0001.json';
 import e0002 from './e0002.json';
 import e0003 from './e0003.json';
 import e0004 from './e0004.json';
+import e0005 from './e0005.json';
 
 /** Reihenfolge = Reihenfolge auf der Übersicht und im Dropdown (chronologisch). */
-export const STUDIEN = [e0001, e0002, e0003, e0004];
+export const STUDIEN = [e0001, e0002, e0003, e0004, e0005];
 
 /** @type {Record<string, typeof e0001>} */
 export const STUDIEN_NACH_SLUG = Object.fromEntries(
@@ -51,4 +52,58 @@ export function verwandteStudien(studie) {
   return (studie.verwandt || [])
     .map((id) => STUDIEN_NACH_ID[id])
     .filter(Boolean);
+}
+
+/**
+ * ZAHLWORT — WARUM DAS HIER STEHT UND NICHT ALS WORT IM FLIESSTEXT:
+ * Beim Anlegen der fuenften Studie stand "vier" an neun Stellen als Prosa
+ * (Ueberschrift „Die vier Publikationen", „Alle vier Arbeiten sind
+ * präklinisch", CollectionPage-description, og:description ...). Die Karten
+ * rendern seit jeher generisch über STUDIEN.map — die ZAHL daneben tat es
+ * nicht. Eine Studie zu ergänzen haette also die Ueberschrift „Die vier
+ * Publikationen" über FUENF Karten gestellt: jede Seite für sich stimmig,
+ * die Naht offen. Seitdem kommt jede Anzahl aus den Daten.
+ */
+const ZAHLWORTE = ['null', 'eine', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht'];
+
+export function zahlwort(n) {
+  return ZAHLWORTE[n] || String(n);
+}
+
+/** Anzahl der Studien einer präklinischen Bauart (Feld `art` je Studie). */
+export function anzahlNachArt(art) {
+  return STUDIEN.filter((s) => s.art === art).length;
+}
+
+/**
+ * Die untersuchten Produkte, absteigend nach Studienzahl.
+ * Gezählt wird über `produkte` (Liste), NICHT über `eckdaten.produkt`: die
+ * Nutzerbeobachtungs-Arbeit untersucht zwei Geraete, trägt als Anzeige-Kicker
+ * aber nur eines. Wer `eckdaten.produkt` zählt, verliert genau diese Studie.
+ * Link und Kurztext bleiben redaktionell — die ZAHL kommt aus den Daten.
+ */
+const PRODUKT_TEXTE = {
+  'QiOne® 2 Pro': {
+    pfad: '/pages/qione-2-pro',
+    text: 'Immunzellen, Darmbarriere und Nutzerbeobachtungen',
+  },
+  'QiBracelet®': {
+    pfad: '/products/qibracelet',
+    text: 'Oxidativer Stress und Nutzerbeobachtungen',
+  },
+  'QiHome® Air': {
+    pfad: '/pages/qihome-air',
+    text: 'Zellregeneration und oxidativer Stress',
+  },
+};
+
+export function untersuchteProdukte() {
+  const zahl = new Map();
+  for (const s of STUDIEN) {
+    for (const p of s.produkte || []) zahl.set(p, (zahl.get(p) || 0) + 1);
+  }
+  return [...zahl.entries()]
+    .filter(([name]) => PRODUKT_TEXTE[name])
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([name, anzahl]) => ({name, anzahl, ...PRODUKT_TEXTE[name]}));
 }
