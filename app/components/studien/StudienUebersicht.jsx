@@ -135,7 +135,12 @@ function StudienKarte({studie}) {
             loading="lazy"
           />
         </a>
-        <div>
+        {/* Diese Spalte MUSS eine Klasse tragen. Ohne sie war sie ein Flex-Item
+            im Vorgabezustand `min-width: auto` und konnte damit nicht schmaler
+            werden als ihr laengstes Wort — bei den deutschen Komposita
+            (Darmepithelzellen, Nutzererfahrungen, Zellregeneration) lief sie
+            deshalb aus dem Rahmen. Vertrag: .qb-st-karte-kopftext in studien.css. */}
+        <div className="qb-st-karte-kopftext">
           <h3 className="qb-st-karte-titel">
             <Link to={studienPfad(studie.slug)}>{studie.seo.h1}</Link>
           </h3>

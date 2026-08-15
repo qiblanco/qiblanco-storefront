@@ -472,6 +472,35 @@
   padding: var(--st-s3);
   border-bottom: 1px solid var(--st-linie);
 }
+
+/* ---- Der Textspalten-Vertrag (Befund 2026-08-15) ------------------------
+   ALLE fuenf Karten kommen aus EINER Komponente — trotzdem sahen drei anders
+   aus als zwei. Die Ursache war kein karten-individueller Style, sondern eine
+   Spalte OHNE Styling-Vertrag: als Flex-Item galt der Vorgabewert
+   `min-width: auto`, die Spalte konnte also nicht schmaler werden als ihr
+   laengstes ununterbrechbares Wort. Wo ein deutsches Kompositum breiter war
+   als die Spalte (Darmepithelzellen 17, Nutzererfahrungen 17,
+   Zellregeneration 16 Zeichen), lief sie ueber den Innenrand — und
+   `.qb-st-karte { overflow: hidden }` schnitt den Text am Rahmen ab.
+   Gemessen live: +34px, +25px, +7px bei 1280px; +53px, +44px, +26px bei 1024px.
+
+   MERKSATZ: Eine gemeinsame Vorlage macht Instanzen noch nicht gleich. Gleich
+   werden sie erst, wenn die Vorlage auch gegen ungleichen INHALT unempfindlich
+   ist — hier also erst mit `min-width: 0` (hebt den intrinsischen Boden auf)
+   PLUS einer Umbruchregel (macht das lange Wort brechbar). */
+.qb-st-karte-kopftext {
+  min-width: 0;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Uniform BY CONSTRUCTION statt uniform by Aufmerksamkeit: der Boden gilt
+   jedem direkten Kind des Kopfes, nicht nur der heute bekannten Textspalte.
+   Wer hier morgen eine zweite Spalte ergaenzt und die Klasse vergisst, faellt
+   nicht in dieselbe Falle zurueck. Das Cover ist ausgenommen — es ist bewusst
+   `flex: none` und soll seine 96px behalten. */
+.qb-st-karte-kopf > *:not(.qb-st-karte-cover) { min-width: 0; }
+
 .qb-st-karte-cover {
   flex: none;
   width: 96px;
