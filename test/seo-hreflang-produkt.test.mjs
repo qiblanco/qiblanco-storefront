@@ -161,7 +161,10 @@ test('Product-Knoten trägt die tragenden Felder', () => {
   assert.equal(s['@type'], 'Product');
   assert.equal(s.name, 'QiOne® 2 Pro');
   assert.equal(s.url, 'https://qiblanco.com/products/qione-2-pro');
-  assert.equal(s.offers.price, '1290.00');
+  // BRUTTO, nicht der Netto-Betrag der API: 1290,00 x 1,19 = 1535,1 -> 1535.
+  // Ein Suchergebnis, das weniger nennt als die Seite verlangt, ist
+  // irrefuehrend — das war der Live-Defekt vom 2026-08-15.
+  assert.equal(s.offers.price, '1535');
   assert.equal(s.offers.priceCurrency, 'EUR');
   assert.equal(s.offers.availability, 'https://schema.org/InStock');
   assert.equal(s.sku, 'QO2P');
@@ -215,4 +218,62 @@ test('KEINE geratene GTIN/MPN', () => {
   assert.equal(s.gtin, undefined);
   assert.equal(s.gtin13, undefined);
   assert.equal(s.mpn, undefined);
+});
+
+// --- Preis ist der BRUTTO-Anzeigewert (Live-Defekt 2026-08-15) -------------
+// Shopify speichert auf den EUR-Maerkten NETTO. Die erste Fassung schrieb den
+// API-Betrag ungeprueft ins Schema: 913,45 statt der 1.087,- EUR, die die
+// Seite zeigt. Diese Tests halten die Umrechnung fest.
+test('EUR-Preis wird als Brutto ausgezeichnet (19 %)', () => {
+  const s = produktSchema({
+    handle: 'qione-2-pro',
+    title: 'QiOne® 2 Pro',
+    selectedOrFirstAvailableVariant: {
+      availableForSale: true,
+      price: {amount: '913.45', currencyCode: 'EUR'},
+    },
+  });
+  // Genau der Betrag, den die Live-Seite als "1.087,- €" anzeigt.
+  assert.equal(s.offers.price, '1087');
+});
+
+test('Kakao trägt den ermaessigten Satz (7 %), nicht 19 %', () => {
+  const s = produktSchema({
+    handle: 'crystal-cacao-awake',
+    title: 'Crystal Cacao® Awake',
+    selectedOrFirstAvailableVariant: {
+      availableForSale: true,
+      price: {amount: '66.38', currencyCode: 'EUR'},
+    },
+  });
+  // 66,38 x 1,07 = 71,03 -> 71. Mit 19 % wären es 79 — der Kanon kennt den
+  // Unterschied, eine eigene Umrechnung an dieser Stelle würde ihn verlieren.
+  assert.equal(s.offers.price, '71');
+});
+
+test('Nicht-EUR-Maerkte liefern bereits den Endbetrag (kein MwSt-Aufschlag)', () => {
+  const s = produktSchema({
+    handle: 'qione-2-pro',
+    title: 'QiOne® 2 Pro',
+    selectedOrFirstAvailableVariant: {
+      availableForSale: true,
+      price: {amount: '1048.00', currencyCode: 'CHF'},
+    },
+  });
+  assert.equal(s.offers.price, '1048');
+  assert.equal(s.offers.priceCurrency, 'CHF');
+});
+
+test('unbrauchbarer Betrag ergibt KEINEN Knoten', () => {
+  for (const amount of [undefined, null, '', 'abc']) {
+    assert.equal(
+      produktSchema({
+        handle: 'x',
+        title: 'X',
+        selectedOrFirstAvailableVariant: {price: {amount, currencyCode: 'EUR'}},
+      }),
+      null,
+      `amount=${String(amount)} haette keinen Knoten ergeben duerfen`,
+    );
+  }
 });
