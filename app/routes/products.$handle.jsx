@@ -21,13 +21,12 @@ import {
 } from '~/data/ten-years-deals';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 
-import {canonicalLink} from '~/lib/seo';
-
-const HIDDEN_BUNDLE_PRODUCT_HANDLES = new Set([
-  'bundle-fundament',
-  'bundle-unabhangig',
-  'bundle-erholungs-residenz',
-]);
+import {
+  canonicalLink,
+  istNichtIndexierbaresProdukt,
+  noindexMeta,
+} from '~/lib/seo';
+import {produktSchema} from '~/lib/produkt-schema';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -43,21 +42,63 @@ export const meta = ({data}) => {
     ];
   }
 
-  if (
-    data?.product?.handle &&
-    HIDDEN_BUNDLE_PRODUCT_HANDLES.has(data.product.handle)
-  ) {
+  // Test-, Dubletten- und reine Link-Ziel-Handles aus dem Index nehmen.
+  // Die Liste steht in ~/lib/seo, weil die Sitemap-Route sie ebenfalls liest:
+  // bis 2026-08-15 lagen hier und dort ZWEI Listen mit gleichem Inhalt, und
+  // genau vor deren Auseinanderdriften warnt der Kommentar an der Liste.
+  if (istNichtIndexierbaresProdukt(data?.product?.handle)) {
     return [
-      {title: `${data.product.title ?? ''} | Qi Blanco UG (haftungsbeschr\u00e4nkt)`},
-      {name: 'robots', content: 'noindex,nofollow'},
+      {title: `${data.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
+      noindexMeta(),
     ];
   }
 
-  return [
+  const descriptoren = [
     {title: `${data?.product.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`},
     canonicalLink(`/products/${data?.product.handle}`),
   ];
+
+  // Snippet-Vorgabe. Gemessen am 2026-08-15 trug KEINE der 17 DACH-Produkt-
+  // URLs eine meta description — Google reimt sich das Snippet dann aus dem
+  // Seitentext zusammen, ausgerechnet auf den Umsatzseiten. Der Text kommt
+  // aus dem in Shopify gepflegten Beschreibungsfeld: dieselbe Aussage, die
+  // im Backend steht, ohne eine Wirkzusage dazuzuerfinden.
+  const beschreibung = kuerzeBeschreibung(
+    data?.product?.seo?.description || data?.product?.description,
+  );
+  if (beschreibung) {
+    descriptoren.push({name: 'description', content: beschreibung});
+    descriptoren.push({property: 'og:description', content: beschreibung});
+  }
+
+  // Produkt-Auszeichnung. Gemessen am 2026-08-15: 0 von 17 DACH-Produktseiten
+  // trugen Product-Schema, während alle 6 US-Produktseiten es tragen. Ohne
+  // sie kann Google Preis und Verfügbarkeit nicht als Rich Result zeigen.
+  const schema = produktSchema(data?.product);
+  if (schema) descriptoren.push({'script:ld+json': schema});
+
+  return descriptoren;
 };
+
+/**
+ * Shopify-`description` (Klartext, oft mehrere Absätze) auf Snippet-Länge
+ * bringen. Google schneidet Snippets bei rund 160 Zeichen ab; wir schneiden
+ * an der letzten Wortgrenze davor, damit kein Wort zerrissen wird. Fehlt die
+ * Beschreibung, kommt `null` zurück — dann bleibt es beim bisherigen
+ * Zustand statt bei einem leeren Tag.
+ * @param {string|undefined} text
+ * @returns {string|null}
+ */
+function kuerzeBeschreibung(text) {
+  const roh = String(text ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!roh) return null;
+  if (roh.length <= 160) return roh;
+  const schnitt = roh.slice(0, 160);
+  const grenze = schnitt.lastIndexOf(' ');
+  return `${(grenze > 80 ? schnitt.slice(0, grenze) : schnitt).trim()}…`;
+}
 
 /**
  * @param {LoaderFunctionArgs} args

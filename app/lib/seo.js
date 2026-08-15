@@ -20,7 +20,7 @@
  * `isValidMetaTag` des Routers akzeptiert genau /^(meta|link)$/.
  *
  * WARUM ABSOLUT: react-router-7 merged `meta` NICHT baumweit (der nächste
- * Leaf gewinnt vollstaendig) — es gibt also keinen zentralen Ort, an dem ein
+ * Leaf gewinnt vollständig) — es gibt also keinen zentralen Ort, an dem ein
  * relativer Canonical serverseitig gegen die Produktions-Domain aufgeloest
  * wird. Auf einem Oxygen-Preview-Host würde ein relativer Canonical auf den
  * Preview-Host zeigen und die Preview-URL selbst kanonisieren. Ein absoluter
@@ -105,4 +105,66 @@ export function istNichtIndexierbar(handle) {
  */
 export function noindexMeta() {
   return {name: 'robots', content: 'noindex,nofollow'};
+}
+
+/**
+ * Produkt-Handles, die NICHT in den Google-Index gehören.
+ *
+ * WARUM DIESE LISTE HIER STEHT (und zwei Vorgänger-Listen ersetzt):
+ * Für Produkte existierte dieselbe Trennung bereits ZWEIMAL nebeneinander —
+ * `HIDDEN_BUNDLE_PRODUCT_HANDLES` in `products.$handle.jsx` (setzt das
+ * robots-meta) und `HIDDEN_PRODUCT_HANDLES` in der Sitemap-Route (wirft den
+ * Eintrag raus). Beide trugen zufällig denselben Inhalt. Genau vor dieser
+ * Doppelung warnt der Kommentar an NICHT_INDEXIERBARE_SEITEN oben; für
+ * Seiten wurde sie deshalb schon zusammengelegt, für Produkte war es nur
+ * noch nicht passiert. Zwei Listen driften, und der gefährliche Fall ist
+ * der leise: Produkt trägt `noindex`, steht aber weiter in der Sitemap —
+ * die Search Console meldet das dauerhaft als Konflikt, während jede
+ * Einzelstelle für sich richtig aussieht.
+ *
+ * BELEGTER ANLASS (live gemessen 2026-08-15 gegen sitemap/products/1.xml,
+ * 19 Einträge): SECHS der 19 Produkt-URLs sind keine Kundenseiten.
+ *   - `test-page-crystal-cacao®-create-spater-wieder-loschen` — eine
+ *     Testseite, die ihren Zweck im eigenen Handle nennt, ausgeliefert mit
+ *     HTTP 200 und indexierbar.
+ *   - `crystal-cacao-adfiefiale` — Vertipper-Handle, Titel identisch mit
+ *     `crystal-cacao-create`: eine Dublette der Umsatzseite.
+ *   - `8kendiw34hd`, `pjdz538hgs0` — Angebots-Handles aus Zufallszeichen.
+ *     Sie sind Ziel verschickter Angebotslinks, nicht Suchergebnis.
+ *   - `aw783hfn`, `37cr378n` — antworten selbst mit HTTP 404 und standen
+ *     trotzdem in der Sitemap: wir haben Google aktiv auf zwei tote URLs
+ *     gezeigt.
+ * Für die Suche heißt das: rund um das umsatztragende Wort
+ * "Crystal Cacao Create" konkurrieren mehrere fast gleiche Seiten, und
+ * Google muss selbst raten, welche die echte ist.
+ *
+ * AUFNAHME-KRITERIUM (bewusst identisch zu NICHT_INDEXIERBARE_SEITEN): nur
+ * Handles, die für Kunden keinen Zweck haben — Test-, Rest-, Dubletten- und
+ * reine Link-Ziel-Handles. NICHT aufgenommen sind deshalb die realen
+ * Bundle-/Mengenrabatt-Produkte (`bundle-2x-awake`, `mengenrabatt-3x-create`
+ * u. a.): die kann man kaufen. Sie sind inhaltlich dünn, aber die richtige
+ * Antwort darauf ist besserer Inhalt, nicht Unsichtbarkeit.
+ * @type {string[]}
+ */
+export const NICHT_INDEXIERBARE_PRODUKTE = [
+  // Bestand: nie beworbene Bundle-Handles (bis 2026-08-15 in zwei Listen).
+  'bundle-fundament',
+  'bundle-unabhangig',
+  'bundle-erholungs-residenz',
+  // Neu 2026-08-15, jeder Handle an der Live-Auslieferung belegt.
+  'test-page-crystal-cacao®-create-spater-wieder-loschen',
+  'crystal-cacao-adfiefiale',
+  '8kendiw34hd',
+  'pjdz538hgs0',
+  'aw783hfn',
+  '37cr378n',
+];
+
+/**
+ * Gehört dieser Produkt-Handle aus dem Index?
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istNichtIndexierbaresProdukt(handle) {
+  return !!handle && NICHT_INDEXIERBARE_PRODUKTE.includes(handle);
 }
