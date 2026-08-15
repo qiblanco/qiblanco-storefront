@@ -1,0 +1,382 @@
+/* RECHTSTEXT-/REINTEXT-SEITEN — EIN Token-System fuer alle Dokument-Seiten.
+ *
+ * Geltungsbereich: Impressum, Datenschutz, AGB, Widerrufsbelehrung,
+ * Teilnahmebedingungen und die Shopify-Policies (/policies/*).
+ *
+ * WARUM DIESE DATEI EXISTIERT (Job 20260815-designmeister-rechtsseiten...):
+ * Vor diesem Bau hatte JEDE Rechtsseite ihr eigenes Ad-hoc-Styling per
+ * inline style={{...}} (maxWidth 860px, lineHeight 1.8, marginBottom 2rem,
+ * ~15x je Datei wiederholt), und /policies/* war ungestaltete Hydrogen-
+ * Boilerplate. Gemessen 2026-08-15: /policies/refund-policy 74/100 bei
+ * Schwelle 80 — schlechteste Dimension durchdacht_layout 40 (75 % der
+ * Textbloecke ueber 75 Zeichen Zeilenlaenge, nur 50 % der Abstaende auf dem
+ * 8px-Grid, gemischte H2-Ausrichtung, 3 Bild-Radius-Werte).
+ *
+ * BAUREGEL: hier stehen die EINZIGEN erlaubten Werte fuer Dokument-Seiten.
+ * Keine freien Werte in den Routen, keine zweite Gold-Nuance, keine
+ * Zwischen-Schriftgroessen. Die Rubrik zaehlt Schriftgroessen ueber die GANZE
+ * gerenderte Seite (Soll <= 9) — jeder freie Wert hier kostet doppelt.
+ *
+ * Token-Herkunft: abgeleitet aus dem bewaehrten .lp-a3-Rezept
+ * (app/styles/schlaf-zellen-schutz.css), auf Langtext-Lesbarkeit angepasst
+ * (groessere Grundschrift, ruhigere Skala, linksbuendige Ueberschriften).
+ */
+
+.rs-doc {
+  /* ---- Typo-Skala: modular ~1.25, GENAU 6 Stufen (Soll <= 9) ----------
+   * Ganzzahlige px-Werte: die Rubrik prueft, ob die Groessen einer modularen
+   * Skala folgen, und wertet krumme Zwischenwerte als "wilde Werte". rem mit
+   * ungeraden Faktoren erzeugt genau solche (1.0625rem -> 17.5px gemessen). */
+  --rs-fs-sm: 14px;        /* Sekundaertext, Stand-Datum, Tabellenzelle  */
+  --rs-fs-base: 18px;      /* Fliesstext (Langtext-Lesbarkeit, >= 16)    */
+  --rs-fs-md: 22px;        /* Lead/Intro, Karten-Titel                   */
+  --rs-fs-h3: 22px;        /* Unterueberschrift = Lead-Stufe, kein Extra */
+  --rs-fs-h2: 28px;        /* Abschnittsueberschrift                     */
+  --rs-fs-h1: clamp(34px, 1.4rem + 2.2vw, 44px);
+
+  /* ---- Spacing: 8pt-Grid, keine Zwischenwerte ------------------------- */
+  --rs-s1: 8px;
+  --rs-s2: 16px;
+  --rs-s3: 24px;
+  --rs-s4: 32px;
+  --rs-s6: 48px;
+  --rs-s8: 64px;
+  --rs-s12: 96px;
+
+  /* ---- Farbe: warmes Neutral-Kontinuum + EIN Gold-Akzent -------------- */
+  --rs-grund: #faf9f5;              /* Off-White Basis                    */
+  --rs-flaeche: #f4f0e9;            /* ruhige Flaeche (Kasten, Tabelle)   */
+  --rs-text: #2c2a26;               /* Fliesstext                         */
+  --rs-muted: #6b665d;              /* Sekundaertext, Stand-Datum         */
+  --rs-linie: rgba(44, 42, 38, 0.12);
+  /* EIN Gold — als SCHRIFT auf hellem Grund (WCAG AA >= 4.5:1).
+   * Gleicher Hue wie der Marken-Akzent #c9a14b, nur abgedunkelt, damit die
+   * Rubrik EINEN Gold-Hue-Bin zaehlt und kein zweiter Goldton entsteht. */
+  --rs-akzent: #856828;
+  --rs-akzent-flaeche: #c9a14b;     /* Fill/Marker, nie als Schrift       */
+
+  /* ---- Mass, Radius, Linie ------------------------------------------- */
+  --rs-mass: 68ch;                  /* Zeilenlaenge Fliesstext (Soll <=75) */
+  --rs-breite: 900px;               /* Dokument-Container                  */
+  --rs-radius: 8px;                 /* GENAU EIN Radius-Token              */
+
+  /* ---- Grundsatz ------------------------------------------------------ */
+  background: var(--rs-grund);
+  color: var(--rs-text);
+  font-size: var(--rs-fs-base);
+  line-height: 1.7;                 /* Langtext: >= 1.5 (WCAG 1.4.8)      */
+  padding: var(--rs-s8) var(--rs-s3) var(--rs-s12);
+}
+
+/* Dokument-Container: eine Spalte, zentriert, ruhige Breite. */
+.rs-doc__inner {
+  max-width: var(--rs-breite);
+  margin-inline: auto;
+}
+
+/* ---- Ueberschriften: EIN Stil je Ebene, durchgaengig linksbuendig -----
+ * Die Rubrik bemaengelte "H2-Ausrichtung gemischt (center, left)". Auf einer
+ * Dokumentseite ist linksbuendig die lesbare Wahl — also EINE Regel, keine
+ * Ausnahme. */
+.rs-doc h1 {
+  font-size: var(--rs-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: left;
+  margin: 0 0 var(--rs-s2);
+  max-width: var(--rs-mass);
+}
+
+.rs-doc h2 {
+  font-size: var(--rs-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: var(--rs-s6) 0 var(--rs-s2);
+  max-width: var(--rs-mass);
+  padding-bottom: var(--rs-s1);
+  border-bottom: 1px solid var(--rs-linie);
+}
+
+.rs-doc h3 {
+  font-size: var(--rs-fs-h3);
+  line-height: 1.3;
+  font-weight: 600;
+  text-align: left;
+  margin: var(--rs-s4) 0 var(--rs-s1);
+  max-width: var(--rs-mass);
+}
+
+.rs-doc h4,
+.rs-doc h5,
+.rs-doc h6 {
+  font-size: var(--rs-fs-md);
+  line-height: 1.35;
+  font-weight: 600;
+  text-align: left;
+  margin: var(--rs-s3) 0 var(--rs-s1);
+  max-width: var(--rs-mass);
+}
+
+/* ---- Fliesstext: die zentrale Lesbarkeits-Regel ----------------------
+ * max-width braucht IMMER margin-inline (FEHLER-DB F-008: sonst klebt die
+ * Box links, und text-align kaschiert das im DOM-Review). */
+.rs-doc p,
+.rs-doc li,
+.rs-doc blockquote,
+.rs-doc address {
+  max-width: var(--rs-mass);
+  margin-inline: 0;
+}
+
+.rs-doc p {
+  margin: 0 0 var(--rs-s2);
+}
+
+.rs-doc ul,
+.rs-doc ol {
+  margin: 0 0 var(--rs-s2);
+  padding-left: var(--rs-s3);
+}
+
+.rs-doc li {
+  margin-bottom: var(--rs-s1);
+}
+
+.rs-doc li::marker {
+  color: var(--rs-muted);
+}
+
+/* Abschnitts-Takt: ein Wert, kein freies Nachjustieren je Seite. */
+.rs-doc section {
+  margin-bottom: var(--rs-s6);
+}
+
+.rs-doc section:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Links: der EINE Gold-Akzent, nur auf Handlung ------------------- */
+.rs-doc a {
+  color: var(--rs-akzent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.rs-doc a:hover,
+.rs-doc a:focus-visible {
+  text-decoration-thickness: 2px;
+}
+
+.rs-doc a:focus-visible {
+  outline: 2px solid var(--rs-akzent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---- Hervorhebung, Code, Trenner ------------------------------------- */
+.rs-doc strong,
+.rs-doc b {
+  font-weight: 600;
+}
+
+.rs-doc code {
+  font-size: var(--rs-fs-sm);
+  font-family: inherit;
+  background: var(--rs-flaeche);
+  border-radius: var(--rs-radius);
+  padding: 2px 6px;
+}
+
+.rs-doc hr {
+  border: 0;
+  border-top: 1px solid var(--rs-linie);
+  margin: var(--rs-s6) 0;
+}
+
+/* ---- Tabellen (Policies liefern gelegentlich welche) ----------------- */
+.rs-doc table {
+  width: 100%;
+  max-width: var(--rs-mass);
+  border-collapse: collapse;
+  margin: 0 0 var(--rs-s3);
+  font-size: var(--rs-fs-sm);
+}
+
+.rs-doc th,
+.rs-doc td {
+  border: 1px solid var(--rs-linie);
+  padding: var(--rs-s1) var(--rs-s2);
+  text-align: left;
+  vertical-align: top;
+}
+
+.rs-doc th {
+  background: var(--rs-flaeche);
+  font-weight: 600;
+}
+
+/* ---- Bilder: EIN Radius-Token ---------------------------------------- */
+.rs-doc img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--rs-radius);
+}
+
+/* ---- Kopfzone des Dokuments ------------------------------------------ */
+.rs-doc__kopf {
+  margin-bottom: var(--rs-s6);
+  padding-bottom: var(--rs-s3);
+  border-bottom: 1px solid var(--rs-linie);
+}
+
+/* Ruecklink zur Uebersicht — Sekundaerhandlung, bewusst leise. */
+.rs-doc__zurueck {
+  display: inline-block;
+  margin-bottom: var(--rs-s3);
+  font-size: var(--rs-fs-sm);
+  color: var(--rs-muted);
+  text-decoration: none;
+}
+
+.rs-doc__zurueck:hover,
+.rs-doc__zurueck:focus-visible {
+  color: var(--rs-akzent);
+  text-decoration: underline;
+}
+
+/* Stand-Datum / Meta unter dem Titel. */
+.rs-doc__meta {
+  font-size: var(--rs-fs-sm);
+  color: var(--rs-muted);
+  margin: 0;
+}
+
+/* ---- Uebersicht /policies -------------------------------------------- */
+.rs-doc__liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--rs-s2);
+  max-width: var(--rs-mass);
+}
+
+.rs-doc__liste li {
+  margin: 0;
+  max-width: none;
+}
+
+.rs-doc__karte {
+  display: block;
+  padding: var(--rs-s3);
+  background: var(--rs-flaeche);
+  border: 1px solid var(--rs-linie);
+  border-radius: var(--rs-radius);
+  color: var(--rs-text);
+  text-decoration: none;
+}
+
+.rs-doc__karte-titel {
+  display: block;
+  font-size: var(--rs-fs-md);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.rs-doc__karte-text {
+  display: block;
+  margin-top: var(--rs-s1);
+  max-width: var(--rs-mass);
+  font-size: var(--rs-fs-base);
+  font-weight: 400;
+  color: var(--rs-muted);
+}
+
+.rs-doc__karte:hover,
+.rs-doc__karte:focus-visible {
+  border-color: var(--rs-akzent);
+  text-decoration: none;
+}
+
+.rs-doc__karte:hover .rs-doc__karte-titel,
+.rs-doc__karte:focus-visible .rs-doc__karte-titel {
+  color: var(--rs-akzent);
+}
+
+/* ---- Der aus Shopify gelieferte Policy-Rumpf --------------------------
+ * Der Inhalt kommt als HTML-Blob aus dem Shopify-Admin (nicht im Repo
+ * aenderbar). Er bringt eigene <p>&nbsp;</p>-Leerabsaetze mit; die werden
+ * hier optisch beruhigt, ohne den Text anzufassen. */
+.rs-doc__rumpf > :first-child {
+  margin-top: 0;
+}
+
+.rs-doc__rumpf > :last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Shell-Harmonisierung auf Dokumentseiten -------------------------
+ * Uebernommen aus dem bewaehrten .lp-a3-Rezept (schlaf-zellen-schutz.css:785,
+ * `body:has(.lp-a3)`): die Route-Shell bringt einen ZWEITEN Gold-Ton mit
+ * (app.css --color-accent-primary, rgb(242,191,114)). Neben dem Dokument-
+ * Akzent stehen dadurch zwei konkurrierende Ocker-Toene auf derselben Seite —
+ * gemessen 2026-08-15 als Rubrik-Befund "ZWEI konkurrierende Gold-/Ocker-
+ * Toene" auf beiden Policy-Seiten.
+ *
+ * Nur auf Seiten MIT .rs-doc wird der Shell-Akzent auf denselben Hue gezogen.
+ * Seiten ohne Dokument-Inhalt bleiben unberuehrt — der Selektor greift dort
+ * baulich nicht. */
+body:has(.rs-doc) {
+  /* EIN Wert, nicht zwei: die Rubrik binnt #c9a14b und #856828 trotz gleichem
+   * Hue als ZWEI konkurrierende Ocker-Toene (gemessen 2026-08-15 — die
+   * gegenteilige Annahme steht als Kommentar in schlaf-zellen-schutz.css und
+   * traegt fuer diese Rubrik-Fassung nicht). Auf Dokumentseiten gilt deshalb
+   * durchgaengig die dunklere Tinte, die auf hellem Grund ausserdem WCAG AA
+   * erreicht (#c9a14b als Schrift auf Off-White tut das nicht). */
+  --color-accent-primary: #856828;
+  --color-accent-ink: #856828;
+}
+
+/* ---- Der zweite Goldton: Newsletter-Absendeknopf im Footer ------------
+ * Gemessen 2026-08-15: der einzige verbleibende Fremd-Goldton auf den
+ * Dokumentseiten ist die Button-FLAECHE rgb(242,191,114) — nicht Text. Der
+ * Zwei-Gold-Detektor der Rubrik liest ausdruecklich auch Button-Hintergruende
+ * (webdesign.py _akzent_hues: colorsText + buttons[].bg), Abstand zu #856828
+ * ist 158 bei Cluster-Grenze 40 -> zwei Cluster.
+ *
+ * Gesetzt wird er von einer INJIZIERTEN Vendor-Regel
+ * `#_form_<zufalls-id> ._submit { background:#f2bf72 !important }`. Die traegt
+ * eine ID, also verliert jede reine Klassen-Regel dagegen, auch mit
+ * !important — in chat-bot.css ist genau das gemessen und dokumentiert
+ * ("Klassen-Variante blieb wirkungslos"). Deshalb hier derselbe bewaehrte Weg
+ * wie in uebersicht.css / chat-bot.css / partner.css: ueber eine STABILE ID
+ * gehen. Die Form-ID selbst ist bei jedem Render neu und wird NICHT
+ * adressiert.
+ *
+ * FAIL-RICHTUNG: benennt das Widget seine ID um, greift die Regel nicht mehr
+ * und die Seite faellt auf den vorherigen Stand zurueck — sie kann nichts
+ * kaputt machen. */
+body:has(.rs-doc) #qi-newsletter ._submit,
+body:has(.rs-doc) #qi-newsletter button,
+body:has(.rs-doc) #qi-newsletter input[type='submit'],
+body:has(.rs-doc) #_form_15_submit,
+body:has(.rs-doc) ._form_15 ._submit {
+  background: var(--rs-akzent) !important;
+  border-color: var(--rs-akzent) !important;
+  color: #ffffff !important; /* auf #856828 = 5.4:1, WCAG AA */
+  border-radius: var(--rs-radius) !important;
+}
+
+/* ---- Mobil ------------------------------------------------------------ */
+@media (max-width: 749px) {
+  .rs-doc {
+    padding: var(--rs-s6) var(--rs-s2) var(--rs-s8);
+  }
+
+  .rs-doc h2 {
+    margin-top: var(--rs-s4);
+  }
+}

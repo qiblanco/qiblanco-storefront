@@ -18,6 +18,12 @@ import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 // wiederverwendbar sein soll. Wirkt ausschließlich innerhalb von .qb-swipetab —
 // eine Seite ohne den Baustein sieht davon baulich nichts.
 import qbSwipetabStyles from '~/styles/qb-swipetab.css?url';
+// Dokument-/Rechtstext-Seiten (Impressum, Datenschutz, AGB, Widerruf,
+// Teilnahmebedingungen, /policies/*): nach demselben Muster global geladen.
+// Wirkt ausschließlich innerhalb von .rs-doc — eine Seite ohne diese Klasse
+// sieht davon baulich nichts. Bewusst NICHT per links() je Route: genau das
+// "daran denken müssen" hat die ungestalteten Rechtsseiten erzeugt.
+import rechtstextStyles from '~/styles/rechtstext.css?url';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
@@ -284,6 +290,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>
+        <link rel="stylesheet" href={rechtstextStyles}></link>
         {shouldLoadThirdPartyScripts && (
           <script
             id="Cookiebot"

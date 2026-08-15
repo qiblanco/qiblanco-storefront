@@ -1,4 +1,14 @@
 import {useLoaderData, Link} from 'react-router';
+import {policyBeschreibungDe, policyTitelDe} from '~/lib/policy-titel';
+
+export const meta = () => [
+  {title: 'Rechtliche Hinweise | Qi Blanco'},
+  {
+    name: 'description',
+    content:
+      'Rückerstattung, Datenschutz, Versand und Nutzungsbedingungen von Qi Blanco im Überblick.',
+  },
+];
 
 /**
  * @param {LoaderFunctionArgs}
@@ -20,17 +30,38 @@ export default function Policies() {
 
   return (
     <div className="policies">
-      <h1>Policies</h1>
-      <div>
+      <header className="rs-doc__kopf">
+        <h1>Rechtliche Hinweise</h1>
+        <p className="rs-doc__meta">
+          Rückerstattung, Datenschutz, Versand und Nutzungsbedingungen im
+          Überblick.
+        </p>
+      </header>
+      {/* <fieldset> war hier ein Layout-Behelf aus der Hydrogen-Vorlage —
+          semantisch gehoert es zu Formularfeldern. Eine Liste von Links ist
+          eine Liste. */}
+      <ul className="rs-doc__liste">
         {policies.map((policy) => {
           if (!policy) return null;
           return (
-            <fieldset key={policy.id}>
-              <Link to={`/policies/${policy.handle}`}>{policy.title}</Link>
-            </fieldset>
+            <li key={policy.id}>
+              <Link
+                to={`/policies/${policy.handle}`}
+                className="rs-doc__karte"
+              >
+                <span className="rs-doc__karte-titel">
+                  {policyTitelDe(policy.handle, policy.title)}
+                </span>
+                {policyBeschreibungDe(policy.handle) ? (
+                  <span className="rs-doc__karte-text">
+                    {policyBeschreibungDe(policy.handle)}
+                  </span>
+                ) : null}
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 }
