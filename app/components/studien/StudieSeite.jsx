@@ -2,13 +2,21 @@
  * Renderer EINER Studien-Einzelseite. Alle Routen teilen ihn sich — der
  * Unterschied zwischen den Seiten ist ausschließlich das Daten-JSON.
  *
- * AUFBAU (von oben nach unten, so beauftragt):
- *   1. Kopf: H1, Journal/Autor/Datum sichtbar (E-E-A-T), Original-PDF
- *   2. Antwort in Normalsprache — der Featured-Snippet-Kandidat, ganz oben
- *   3. Ehrliche Einordnung direkt darunter (nicht im Kleingedruckten)
+ * AUFBAU (von oben nach unten) — GOLDSTANDARD seit 2026-08-15, Auftrag
+ * 20260815-studien-oberbereich-goldstandard-us-layout-de-qa:
+ *   1. Kopf: Kicker, H1, Originaltitel
+ *   2. Antwort in Normalsprache mit Befund-Bullets — der Featured-Snippet-
+ *      Kandidat, ganz oben
+ *   3. Beleg-Kopf: Titelseite (PDF-Klickziel) UND Metadaten NEBENEINANDER
  *   4. Inhaltsverzeichnis mit Sprungmarken
  *   5. Der deutsche Volltext mit Abbildungen und Tabellen
- *   6. Grenzen, FAQ, Zitation, verwandte Studien, Produktbezug
+ *   6. FAQ, Zitation, verwandte Studien, Produktbezug
+ *
+ * WAS SICH GEGENUEBER DEM VORGAENGER-AUFBAU GEAENDERT HAT: die Metadaten
+ * standen bis dahin als schlichte Liste IM Kopf, also VOR der Antwort, und
+ * die PDF-Titelseite in einer eigenen Zeile DANACH. Beides ist jetzt der
+ * gemeinsame `.qb-st-belegkopf` unterhalb der Antwort — die Anordnung der
+ * US-Studienseiten, die Christian als Vorbild benannt hat.
  *
  * WARUM DIE LAIEN-EBENE VOR DEM VOLLTEXT STEHT: der Kaufueberzeugungs-Kanon
  * misst, dass wissenschaftlicher Beweis kein Hook ist, sondern ein Closer —
@@ -54,19 +62,98 @@ export function StudieSeite({studie}) {
           <p className="qb-st-original" lang="en">
             {e.titelOriginal}
           </p>
+        </header>
+
+        <section className="qb-st-antwort" aria-labelledby="kurz">
+          <h2 id="kurz">{laie.frage || 'Worum geht es in dieser Studie?'}</h2>
+          <p className="qb-st-antwort-text">{laie.antwort}</p>
+          {laie.punkte?.length ? (
+            <ul className="qb-st-punkte">
+              {laie.punkte.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
+            </ul>
+          ) : null}
+          {/* Der selbstkritische Einordnungs-Absatz aus `laienSummary.einordnung`
+              wird bewusst NICHT mehr gerendert — Christian-Auftrag
+              20260815-studienseiten-funding-limitations-sektionen-entfernen:
+              ersatzlos, KEINE Ersatz-Formulierung. Das Datenfeld bleibt in
+              app/data/studien/*.json erhalten (reiner Render-Rückbau, kein
+              Datenverlust; Rückweg = diesen Block wiederherstellen).
+              Wortlaut der alten Überschrift bewusst nicht zitiert: er würde
+              sonst im Client-Bundle stehen und die Live-Proben falsch-rot machen. */}
+        </section>
+
+        {/*
+          BELEG-KOPF (Goldstandard, Auftrag 20260815-studien-oberbereich-
+          goldstandard-us-layout-de-qa): Titelseite und Metadaten stehen
+          NEBENEINANDER statt untereinander — die Anordnung der US-Seiten,
+          die Christian als Vorbild benannt hat.
+
+          WARUM ER HIER STEHT UND NICHT MEHR IM <header>: der Kaufueberzeugungs-
+          Kanon misst, dass wissenschaftlicher Beweis kein Hook ist, sondern
+          ein Closer. Wer auf dieser Seite landet, zweifelt und sucht ZUERST
+          die Antwort — die Q&A-Box darueber. Journal, DOI und ISSN sind das,
+          was den Zweifel danach trägt. Sie vor die Antwort zu stellen (der
+          alte Aufbau) verschenkt beides: die Antwort kommt spaeter, der Beleg
+          wirkt, bevor jemand ihn braucht.
+        */}
+        <div className="qb-st-belegkopf">
+          <a
+            className="qb-st-pdf-karte"
+            href={e.pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={e.coverUrl}
+              alt={`Titelseite der Publikation „${e.titelOriginal}“`}
+              width="160"
+              height="207"
+              loading="lazy"
+            />
+            <span>
+              <strong>Original-Publikation als PDF</strong>
+              <span className="qb-st-pdf-meta">
+                {e.journal} · englisch · öffnet in neuem Tab
+              </span>
+            </span>
+          </a>
 
           <dl className="qb-st-eckdaten">
-            <Eckdatum label="Autor">{e.autor}</Eckdatum>
-            <Eckdatum label="Institut">{e.institut}</Eckdatum>
-            <Eckdatum label="Journal">
+            <Eckdatum label="Veröffentlicht in">
               {e.journal}
               {e.band ? `, ${e.band}` : ''}
             </Eckdatum>
             {e.veroeffentlicht ? (
-              <Eckdatum label="Veröffentlicht">
+              <Eckdatum label="Datum">
                 <time dateTime={e.veroeffentlicht}>{datum(e.veroeffentlicht)}</time>
               </Eckdatum>
             ) : null}
+            {/*
+              Die drei folgenden Felder sind die DACH-Haelfte des Goldstandard-
+              Kreuztauschs: die US-Seiten trugen sie (Study type / Cells-
+              material / Device tested), die DACH-Seiten nicht — gemessen am
+              2026-08-15 auf allen 10 Live-Seiten.
+
+              `materialLabel` ist ein DATENFELD und keine Konstante, weil e0004
+              KEINE Zellstudie ist (171 Anwenderberichte, keine Kontrollgruppe).
+              Eine fest verdrahtete Zeile "Zellen / Material" wäre dort eine
+              sachliche Falschaussage auf einer Beleg-Seite.
+            */}
+            {e.studientyp ? (
+              <Eckdatum label="Studientyp">{e.studientyp}</Eckdatum>
+            ) : null}
+            {e.material ? (
+              <Eckdatum label={e.materialLabel || 'Zellen / Material'}>
+                {e.material}
+              </Eckdatum>
+            ) : null}
+            {e.geprueft ? (
+              <Eckdatum label="Geprüftes Produkt">{e.geprueft}</Eckdatum>
+            ) : null}
+            <Eckdatum label="Autor">{e.autor}</Eckdatum>
+            <Eckdatum label="Institut">{e.institut}</Eckdatum>
             {/*
               DOI: genannt IMMER, verlinkt nur wenn er auch aufloest.
               Setzt eine Studie `doiAufloesbar: false`, ist der DOI beim
@@ -92,49 +179,6 @@ export function StudieSeite({studie}) {
             {e.issn ? <Eckdatum label="ISSN">{e.issn}</Eckdatum> : null}
             {e.lizenz ? <Eckdatum label="Lizenz">{e.lizenz}</Eckdatum> : null}
           </dl>
-        </header>
-
-        <section className="qb-st-antwort" aria-labelledby="kurz">
-          <h2 id="kurz">{laie.frage || 'Worum geht es in dieser Studie?'}</h2>
-          <p className="qb-st-antwort-text">{laie.antwort}</p>
-          {laie.punkte?.length ? (
-            <ul className="qb-st-punkte">
-              {laie.punkte.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-          ) : null}
-          {/* Der selbstkritische Einordnungs-Absatz aus `laienSummary.einordnung`
-              wird bewusst NICHT mehr gerendert — Christian-Auftrag
-              20260815-studienseiten-funding-limitations-sektionen-entfernen:
-              ersatzlos, KEINE Ersatz-Formulierung. Das Datenfeld bleibt in
-              app/data/studien/*.json erhalten (reiner Render-Rückbau, kein
-              Datenverlust; Rückweg = diesen Block wiederherstellen).
-              Wortlaut der alten Überschrift bewusst nicht zitiert: er würde
-              sonst im Client-Bundle stehen und die Live-Proben falsch-rot machen. */}
-        </section>
-
-        <div className="qb-st-pdf-zeile">
-          <a
-            className="qb-st-pdf-karte"
-            href={e.pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src={e.coverUrl}
-              alt={`Titelseite der Publikation „${e.titelOriginal}“`}
-              width="160"
-              height="207"
-              loading="lazy"
-            />
-            <span>
-              <strong>Original-Publikation als PDF</strong>
-              <span className="qb-st-pdf-meta">
-                {e.journal} · englisch · öffnet in neuem Tab
-              </span>
-            </span>
-          </a>
         </div>
 
         <nav className="qb-st-toc" aria-labelledby="toc-titel">

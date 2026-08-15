@@ -188,8 +188,39 @@
   color: var(--st-text);
 }
 
+/* ---- Beleg-Kopf: Titelseite + Metadaten nebeneinander -------------------
+   GOLDSTANDARD (Auftrag 20260815-studien-oberbereich-goldstandard-us-layout-
+   de-qa): die Anordnung der US-Studienseiten (dort `qs-kopf`), die Christian
+   als Vorbild benannt hat — Cover links, Metadaten rechts, statt beides
+   untereinander.
+
+   AUSSCHLIESSLICH BESTANDS-TOKENS: keine freie Groesse, kein zweiter Goldton,
+   kein dritter Radius. Die Spaltenbreite ist der einzige Rohwert und bewusst
+   eine Spanne (minmax), damit die Karte nicht auf jedem Viewport neu
+   ausgemessen werden muss.
+   ------------------------------------------------------------------------ */
+.qb-st-belegkopf {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) 1fr;
+  gap: var(--st-s4);
+  align-items: start;
+  margin: 0 0 var(--st-s6);
+}
+.qb-st-belegkopf .qb-st-pdf-karte {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--st-s2);
+  width: 100%;
+}
+.qb-st-belegkopf .qb-st-pdf-karte img {
+  width: 100%;
+  max-width: 160px;
+}
+/* Die Eckdaten bringen ihren eigenen Abstand mit; im Raster setzt ihn das
+   Grid. Ohne diese Zeile stuende der Block sichtbar tiefer als die Karte. */
+.qb-st-belegkopf .qb-st-eckdaten { margin: 0; }
+
 /* ---- PDF-Karte ---------------------------------------------------------- */
-.qb-st-pdf-zeile { margin: 0 0 var(--st-s6); }
 .qb-st-pdf-karte {
   display: inline-flex;
   align-items: center;
@@ -530,6 +561,11 @@
   .qb-st-karte-kopf { flex-direction: column; }
   .qb-st-karte-cover { width: 120px; }
   .qb-st-pdf-karte { flex-direction: column; align-items: flex-start; }
+  /* Beleg-Kopf stapelt: Titelseite zuerst (sie traegt den PDF-Weg), die
+     Metadaten darunter. Zweispaltig blieben beide Spalten zu schmal, um
+     lange Zellinien-Angaben umbruchfrei zu tragen. */
+  .qb-st-belegkopf { grid-template-columns: 1fr; gap: var(--st-s3); }
+  .qb-st-belegkopf .qb-st-pdf-karte img { max-width: 120px; }
 }
 
 /* ─── Route-Chrome-Harmonisierung (gilt NUR auf den Studien-Routen) ────────

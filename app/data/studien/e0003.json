@@ -22,7 +22,11 @@
   "lizenz": "",
   "produkt": "QiBracelet®",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505",
-  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229"
+  "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229",
+  "studientyp": "In-vitro-Zellstudie (Zellkultur)",
+  "materialLabel": "Zellen / Material",
+  "material": "MDCK (Hund), Hep G2 (Mensch), IPEC-J2 (Schwein), A-549 (Mensch), L-929 (Maus) — 5 Zelltypen in 3 Serien",
+  "geprueft": "QiBracelet®"
  },
  "laienSummary": {
   "frage": "Kann das QiBracelet® Zellen vor oxidativem Stress schützen?",
