@@ -1,4 +1,5 @@
 import {canonicalLink} from '~/lib/seo';
+import {Rechtsseite} from '~/components/Rechtsseite';
 
 export const meta = () => [
   {title: 'Datenschutzerklärung | Qi Blanco'},
@@ -12,10 +13,10 @@ export function loader() {
 
 export default function DatenschutzPage() {
   return (
-    <div className="NormalSectionSize" style={{maxWidth: '860px', padding: '3rem 1.5rem 5rem'}}>
-      <h1 style={{marginBottom: '2.5rem'}}>Datenschutzerklärung</h1>
+    <Rechtsseite>
+      <h1>Datenschutzerklärung</h1>
 
-      <p style={{lineHeight: '1.8', marginBottom: '2rem'}}>
+      <p>
         Der Schutz Ihrer personenbezogenen Daten ist uns wichtig. Nachfolgend informieren wir Sie
         gemäß Art. 13 und 14 der Datenschutz-Grundverordnung (DSGVO) darüber, welche
         personenbezogenen Daten wir beim Besuch unserer Website und bei der Abwicklung von
@@ -23,25 +24,25 @@ export default function DatenschutzPage() {
         und welche Rechte Ihnen zustehen. <strong>Stand: August 2026.</strong>
       </p>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>1. Verantwortlicher</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Qi Blanco UG (haftungsbeschränkt)<br />
           Vertreten durch: Dipl.-Ing. Christian Bernd Bauer<br />
           Brunnrangenstr. 25, 97711 Maßbach, Deutschland<br />
           E-Mail: <a href="mailto:info@qiblanco.com">info@qiblanco.com</a><br />
           Handelsregister: Amtsgericht Schweinfurt, HRB 7306
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Einen Datenschutzbeauftragten haben wir nicht bestellt, da die gesetzlichen
           Voraussetzungen hierfür (Art. 37 DSGVO, § 38 BDSG) auf uns nicht zutreffen. Bei Fragen zum
           Datenschutz erreichen Sie uns unter der oben genannten E-Mail-Adresse.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>2. Arten der verarbeiteten Daten</h2>
-        <ul style={{marginTop: '0.5rem', lineHeight: '2', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>Bestandsdaten (z. B. Namen, Adressen)</li>
           <li>Kontaktdaten (z. B. E-Mail-Adressen, Telefonnummern)</li>
           <li>Inhaltsdaten (z. B. Texteingaben, Nachrichten)</li>
@@ -52,9 +53,9 @@ export default function DatenschutzPage() {
         </ul>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>3. Zwecke der Verarbeitung</h2>
-        <ul style={{marginTop: '0.5rem', lineHeight: '2', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>Bereitstellung der Website und ihrer Funktionen</li>
           <li>Abwicklung von Bestellungen und Vertragserfüllung</li>
           <li>Beantwortung von Kontakt- und Supportanfragen</li>
@@ -68,14 +69,14 @@ export default function DatenschutzPage() {
         </ul>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>4. Rechtsgrundlagen</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Die Verarbeitung personenbezogener Daten erfolgt auf Grundlage der DSGVO. Soweit wir
           Informationen auf Ihrem Endgerät speichern oder auslesen (z. B. Cookies), erfolgt dies
           zusätzlich auf Grundlage von § 25 TDDDG (Telekommunikation-Digitale-Dienste-Datenschutz-Gesetz).
         </p>
-        <ul style={{marginTop: '0.5rem', lineHeight: '2', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>Art. 6 Abs. 1 lit. a DSGVO – Einwilligung (z. B. Cookies, Tracking, Newsletter)</li>
           <li>Art. 6 Abs. 1 lit. b DSGVO – Vertragserfüllung/vorvertragliche Maßnahmen</li>
           <li>Art. 6 Abs. 1 lit. c DSGVO – Erfüllung rechtlicher Verpflichtungen</li>
@@ -84,9 +85,9 @@ export default function DatenschutzPage() {
         </ul>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>5. Hosting und Bereitstellung der Website (Server-Logfiles)</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Unsere Website wird auf der E-Commerce- und Hosting-Infrastruktur der{' '}
           <strong>Shopify International Ltd.</strong> (Victoria Buildings, 1–2 Haddington Road,
           Dublin 4, Irland) bzw. <strong>Shopify Inc.</strong> (Kanada) betrieben (u. a. Shopify
@@ -101,9 +102,9 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>6. Bestellung und Zahlungsabwicklung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Zur Abwicklung von Bestellungen verarbeiten wir die von Ihnen angegebenen Bestands-,
           Kontakt- und Zahlungsdaten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Die
           Zahlungsabwicklung erfolgt über die von Ihnen gewählten Zahlungsdienstleister (z. B.
@@ -115,16 +116,16 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>7. Cookies und Einwilligungsverwaltung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Unsere Website verwendet Cookies und vergleichbare Technologien. Technisch notwendige
           Cookies, die für den Betrieb und die Bestellabwicklung erforderlich sind, setzen wir auf
           Grundlage von § 25 Abs. 2 TDDDG und Art. 6 Abs. 1 lit. f DSGVO ohne Einwilligung ein. Alle
           nicht notwendigen Cookies sowie Statistik- und Marketing-Dienste werden erst nach Ihrer
           Einwilligung gesetzt (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO).
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Zur Verwaltung Ihrer Einwilligung nutzen wir die Consent-Management-Plattform{' '}
           <strong>Cookiebot</strong> der Usercentrics A/S (Havnegade 39, 1058 Kopenhagen, Dänemark).
           Cookiebot dokumentiert und verwaltet Ihre Einwilligung; die Verarbeitung erfolgt innerhalb
@@ -133,14 +134,14 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>8. Reichweitenmessung und Analyse</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           <strong>a) Einwilligungsbasierte Analyse.</strong> Die folgenden Dienste werden
           ausschließlich nach Ihrer Einwilligung (Kategorie „Statistik") geladen. Rechtsgrundlage
           ist Art. 6 Abs. 1 lit. a DSGVO i. V. m. § 25 Abs. 1 TDDDG.
         </p>
-        <ul style={{marginTop: '0.5rem', lineHeight: '1.9', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>
             <strong>Google Tag Manager, Google Analytics 4</strong> (Google Ireland Ltd., Gordon
             House, Barrow Street, Dublin 4, Irland; Google LLC, USA): Verwaltung von Tags sowie
@@ -168,11 +169,11 @@ export default function DatenschutzPage() {
             hierbei nicht statt.
           </li>
         </ul>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Mit den genannten externen Anbietern bestehen Auftragsverarbeitungsverträge nach
           Art. 28 DSGVO.
         </p>
-        <p style={{marginTop: '1rem', lineHeight: '1.8'}}>
+        <p>
           <strong>b) Einwilligungsfreie Basis-Reichweitenmessung (cookielos).</strong> Zusätzlich
           setzen wir eine selbst betriebene, cookielose Basis-Messung ein, um die grundsätzliche
           Reichweite und Herkunft der Zugriffe zu verstehen. Diese Messung <em>setzt und liest
@@ -191,14 +192,14 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>9. Marketing und Conversion-Messung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Die folgenden Dienste werden ausschließlich nach Ihrer Einwilligung (Kategorie
           „Marketing") aktiv. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO i. V. m.
           § 25 Abs. 1 TDDDG.
         </p>
-        <ul style={{marginTop: '0.5rem', lineHeight: '1.9', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>
             <strong>Google Ads</strong> (Google Ireland Ltd. / Google LLC, USA): Messung des Erfolgs
             unserer Werbeanzeigen (Conversion-Tracking) und Remarketing. Wir nutzen den Google
@@ -216,10 +217,10 @@ export default function DatenschutzPage() {
           </li>
         </ul>
 
-        <h3 style={{marginTop: '1.5rem'}}>
+        <h3>
           Abgleich zur Werbe-Unterdrückung (Ausschlusslisten)
         </h3>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Unabhängig von den vorstehenden, einwilligungsbasierten Diensten übermitteln wir
           E-Mail-Adressen unserer Kundinnen und Kunden ausschließlich in kryptografisch gehashter
           Form (SHA-256) – also nicht im Klartext – an <strong>Meta Platforms Ireland Ltd.</strong>
@@ -229,13 +230,13 @@ export default function DatenschutzPage() {
           nicht deren Ausspielung: Wir bilden daraus weder Zielgruppen noch ähnliche Zielgruppen
           („Lookalike"), und wir reichern sie nicht mit weiteren Daten an.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Rechtsgrundlage ist unser berechtigtes Interesse nach Art. 6 Abs. 1 lit. f DSGVO,
           bestehende Kundinnen und Kunden nicht mit für sie unpassender Werbung anzusprechen und den
           Werbedruck zu verringern. Über das rechtlich Gebotene hinaus berücksichtigen wir dabei
           ausschließlich Personen, die dem Erhalt von E-Mail-Werbung zugestimmt haben.
         </p>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Sie können dieser Übermittlung jederzeit widersprechen (Art. 21 DSGVO) – formlos an{' '}
           <a href="mailto:info@qiblanco.com">info@qiblanco.com</a> oder durch Abmeldung vom
           Newsletter. Nach einer Abmeldung wird Ihre Adresse nicht erneut übermittelt; auf Ihr
@@ -244,9 +245,9 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>10. Kundensupport-Chat (Gorgias)</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Für Support- und Kontaktanfragen setzen wir das Helpdesk- und Chat-System von{' '}
           <strong>Gorgias Inc.</strong> (USA) ein. Wenn Sie den Chat nutzen oder uns kontaktieren,
           verarbeiten wir die von Ihnen mitgeteilten Daten zur Bearbeitung Ihres Anliegens.
@@ -256,9 +257,9 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>11. Newsletter und E-Mail-Marketing</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Für den Versand von Newslettern und die Verwaltung von Anmeldeformularen nutzen wir{' '}
           <strong>ActiveCampaign, LLC</strong> (USA). Melden Sie sich über ein Newsletter-Formular
           auf unserer Website an, erfolgt die Anmeldung im Double-Opt-In-Verfahren: Sie erhalten
@@ -272,15 +273,15 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>12. Übermittlung in Drittländer (Art. 44–49 DSGVO)</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Einige der von uns eingesetzten Dienste (insbesondere Google, Microsoft, Meta,
           ActiveCampaign und Gorgias) können personenbezogene Daten in Länder außerhalb der
           EU/des EWR – insbesondere in die USA – übermitteln. Für diese Übermittlungen stellen wir
           ein angemessenes Datenschutzniveau wie folgt sicher:
         </p>
-        <ul style={{marginTop: '0.5rem', lineHeight: '1.9', paddingLeft: '1.5rem'}}>
+        <ul>
           <li>
             <strong>EU-U.S. Data Privacy Framework (DPF):</strong> Soweit der US-Empfänger unter dem
             EU-U.S. Data Privacy Framework zertifiziert ist, erfolgt die Übermittlung auf Grundlage
@@ -303,7 +304,7 @@ export default function DatenschutzPage() {
             Empfehlungen des Europäischen Datenschutzausschusses 01/2020).
           </li>
         </ul>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Eine Kopie der Standardvertragsklauseln bzw. weitere Informationen zu den getroffenen
           Garantien erhalten Sie auf Anfrage unter{' '}
           <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>. Bitte beachten Sie, dass trotz
@@ -313,9 +314,9 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>13. Speicherdauer und Löschung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Personenbezogene Daten werden gelöscht oder gesperrt, sobald der Zweck der Speicherung
           entfällt und keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Steuerrechtlich
           relevante Daten bewahren wir gemäß § 147 AO bis zu 10 Jahre auf; handelsrechtlich relevante
@@ -324,10 +325,10 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>14. Ihre Rechte als betroffene Person</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>Gemäß der DSGVO stehen Ihnen folgende Rechte zu:</p>
-        <ul style={{marginTop: '0.5rem', lineHeight: '2', paddingLeft: '1.5rem'}}>
+        <p>Gemäß der DSGVO stehen Ihnen folgende Rechte zu:</p>
+        <ul>
           <li><strong>Auskunft (Art. 15 DSGVO)</strong></li>
           <li><strong>Berichtigung (Art. 16 DSGVO)</strong></li>
           <li><strong>Löschung (Art. 17 DSGVO)</strong> – sofern keine Aufbewahrungspflichten entgegenstehen</li>
@@ -345,24 +346,24 @@ export default function DatenschutzPage() {
             Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung bleibt unberührt.
           </li>
         </ul>
-        <p style={{marginTop: '0.75rem', lineHeight: '1.8'}}>
+        <p>
           Zur Ausübung Ihrer Rechte wenden Sie sich bitte an{' '}
           <a href="mailto:info@qiblanco.com">info@qiblanco.com</a>.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>15. Beschwerderecht bei der Aufsichtsbehörde</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Sie haben gemäß Art. 77 DSGVO das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu
           beschweren. Die für uns zuständige Behörde ist das Bayerische Landesamt für
           Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach.
         </p>
       </section>
 
-      <section style={{marginBottom: '2rem'}}>
+      <section>
         <h2>16. Datensicherheit (SSL/TLS)</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Diese Website nutzt aus Sicherheitsgründen und zum Schutz der Übertragung
           personenbezogener Daten eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte Verbindung
           erkennen Sie an „https://" in der Adresszeile Ihres Browsers.
@@ -371,13 +372,13 @@ export default function DatenschutzPage() {
 
       <section>
         <h2>17. Änderungen dieser Datenschutzerklärung</h2>
-        <p style={{marginTop: '0.5rem', lineHeight: '1.8'}}>
+        <p>
           Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen
           rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen umzusetzen. Für
           Ihren erneuten Besuch gilt dann die jeweils aktuelle Fassung.
         </p>
       </section>
-    </div>
+    </Rechtsseite>
   );
 }
 
