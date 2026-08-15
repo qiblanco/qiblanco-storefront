@@ -286,6 +286,10 @@
   "e0001"
  ],
  "factGate": [],
+ "kachel": {
+  "zeile1": "Wissenschaftliche Publikation an neuronalen Zellen",
+  "zeile2": "veröffentlicht in Neurodegenerative Diseases: Current Research 2026 (Open Access)"
+ },
  "art": "in-vitro",
  "produkte": [
   "QiHome® Air"

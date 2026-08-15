@@ -1,6 +1,7 @@
 import {useRef} from 'react';
 import {Link} from 'react-router';
 import {useDragSwipe} from './useDragSwipe';
+import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
 
 /*
  * StudienSlider -- die EINE Definition der Studien-KACHEL-Ansicht (Elina-Layout:
@@ -21,8 +22,33 @@ import {useDragSwipe} from './useDragSwipe';
  * `dataSection` (Default undefined = Attribut fällt weg): Watch-/Heatmap-Anker
  * je Seite. Der Bestands-Aufruf auf /pages/exclusive-solutions übergibt ihn
  * bewusst NICHT -- so bleibt dessen Markup byte-identisch zum Vorzustand.
+ *
+ * ── 2026-08-15, Job 20260814-studien-slider-5-... s03: DATENGETRIEBEN ────────
+ * Die vier Studien lagen bis hierher als hartkodiertes Array UNTEN in dieser
+ * Datei -- und in vier weiteren Dateien noch einmal. Eine fuenfte Publikation
+ * (QiHome® Air, e0005) haette also an fuenf Stellen nachgezogen werden müssen,
+ * jede für sich stimmig, die Naht offen. Seitdem ist `app/data/studien` die
+ * EINE Quelle: dieselbe Registry, aus der die Detailseiten und das Schema
+ * lesen. Eine neue Studie erscheint damit ueberall zugleich, ohne dass jemand
+ * eine Liste pflegt.
+ *
+ * ZWEI VERHALTENSAENDERUNGEN, beide bewusst:
+ *  1. KLICKZIEL ist jetzt die DETAILSEITE, nicht mehr das PDF. Ein direkter
+ *     PDF-Sprung verlaesst die Seite und verliert den Kontext; die interne
+ *     Verlinkung trägt den SEO-Wert der Sektion. Das PDF öffnet weiterhin --
+ *     eine Ebene tiefer, auf der Detailseite über das klickbare Deckblatt.
+ *  2. Die Kachel trägt zwei Zeilen: WORAN gemessen wurde, dann WO/WANN
+ *     veroeffentlicht (kachelZeilen()). Der Zweifler bekommt zuerst die
+ *     Antwort auf seine Frage, nicht die Bibliografie.
+ *
+ * KEIN Autoplay: eine Beweisflaeche, die sich selbst weiterschiebt, nimmt dem
+ * Leser die Kontrolle über genau den Moment, in dem er überzeugt wird.
+ *
+ * `headline` bleibt bewusst OHNE Default -- ExclusiveSolutions ruft
+ * <StudienSlider /> ganz ohne Props und haette sonst ploetzlich eine H2, die es
+ * nie hatte. Den Default trägt der Wrapper Studien.jsx.
  */
-export function StudienSlider({dataSection}) {
+export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
   const trackRef = useRef(null);
   const scrollByCard = (dir) => {
     const track = trackRef.current;
@@ -32,27 +58,58 @@ export function StudienSlider({dataSection}) {
     track.scrollBy({left: dir * step, behavior: 'smooth'});
   };
   const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
+
+  // Tastatur: der Track ist fokussierbar, Pfeiltasten blaettern kartenweise.
+  const onKeyDown = (event) => {
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      scrollByCard(1);
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      scrollByCard(-1);
+    }
+  };
+
   return (
     <div className="ghx-studien" data-section={dataSection}>
+      {headline ? <h2 className="text-center">{headline}</h2> : null}
       <div
         className={`ghx-studien__track${isDragging ? ' is-dragging' : ''}`}
         ref={trackRef}
+        role="group"
+        aria-label="Wissenschaftliche Publikationen — horizontal scrollbar"
+        tabIndex={0}
+        onKeyDown={onKeyDown}
         {...handlers}
       >
-        {STUDIEN.map((s) => (
-          <article className="ghx-studie" key={s.title}>
-            <h3 className="ghx-studie__title">{s.title}</h3>
-            <a
-              className="ghx-studie__preview"
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src={s.img} alt={`Studien-Vorschau: ${s.title}`} loading="lazy" />
-            </a>
-            <p className="ghx-studie__source">{s.source}</p>
-          </article>
-        ))}
+        {studien.map((s) => {
+          const e = s.eckdaten || {};
+          const {zeile1, zeile2} = kachelZeilen(s);
+          return (
+            <article className="ghx-studie" key={s.id}>
+              {/*
+                Die ganze Kachel ist EIN echtes <a> im SSR-Markup: ohne
+                JavaScript bleibt eine scrollbare, crawlbare Liste stehen
+                (progressive enhancement). Kein Inhalt entsteht erst per JS.
+              */}
+              <Link
+                className="ghx-studie__link"
+                prefetch="intent"
+                to={studienPfad(s.slug)}
+              >
+                <h3 className="ghx-studie__title">{zeile1}</h3>
+                <span className="ghx-studie__preview">
+                  <img
+                    src={e.coverUrl}
+                    alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
+                    loading="lazy"
+                  />
+                </span>
+                <span className="ghx-studie__source">{zeile2}</span>
+              </Link>
+            </article>
+          );
+        })}
       </div>
       <div className="ghx-studien__nav">
         <button
@@ -63,6 +120,9 @@ export function StudienSlider({dataSection}) {
         >
           ←
         </button>
+        <span className="ghx-studien__wischhinweis" aria-hidden="true">
+          weiterwischen →
+        </span>
         <button
           type="button"
           className="ghx-studien__arrow"
@@ -81,37 +141,3 @@ export function StudienSlider({dataSection}) {
     </div>
   );
 }
-
-/*
- * Studien-Bestand = DATEN, bewusst neben der Komponente und nicht als Prop:
- * die vier Publikationen sind seiten-uebergreifend dieselben. Reihenfolge und
- * Quellen-Schreibweise stammen 1:1 aus dem Elina-Layout der
- * /pages/exclusive-solutions (Job 20260721-lp-exclusive-solutions-obere-bereiche)
- * und sind beim Umzug unveraendert geblieben.
- */
-const STUDIEN = [
-  {
-    title: 'Wissenschaftliche Publikation an Immunzellen',
-    source: 'Japan Journal of Medicine · 30. April 2021',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1667512705',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510',
-  },
-  {
-    title: 'Wissenschaftliche Publikation an Darmzellen',
-    source: 'Applied Cell Biology Journal, 2021',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1667513844',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_1.png?v=1732276143',
-  },
-  {
-    title: 'Wissenschaftliche Publikation zum oxidativen Stress',
-    source: 'Applied Cell Biology Journal · 12. Januar 2024',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229',
-  },
-  {
-    title: 'Forschungsartikel zur Nutzererfahrung',
-    source: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell-Biology-Cover-Remake-Seite-4.webp?v=1717500844',
-  },
-];

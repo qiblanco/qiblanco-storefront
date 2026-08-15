@@ -323,6 +323,10 @@
   "e0003"
  ],
  "factGate": [],
+ "kachel": {
+  "zeile1": "Wissenschaftliche Publikation an Darmepithelzellen",
+  "zeile2": "veröffentlicht in Applied Cell Biology 2021"
+ },
  "art": "in-vitro",
  "produkte": [
   "QiOne® 2 Pro"
