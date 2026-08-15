@@ -281,8 +281,8 @@
    "antwort": "Nach 10 Stunden war die künstlich gesetzte zellfreie Fläche neben dem QiHome® Air auf 11,8 % geschrumpft, ohne Gerät nur auf 25,2 %. Die 53,3 % sind die relative Verbesserung zwischen diesen beiden Werten — je kleiner die Restfläche, desto stärker die Regeneration."
   },
   {
-   "frage": "Wer hat diese Studie bezahlt?",
-   "antwort": "Qi Blanco. Das steht in der Publikation selbst unter „Funding“: die Studie wurde von Qi Blanco finanziert und das Gerät für die Dauer der Experimente zur Verfügung gestellt. Wir nennen das hier, weil eine Auftragsstudie anders zu gewichten ist als eine unabhängige — die Messungen selbst wurden von einem externen Institut durchgeführt."
+   "frage": "Wie wurden die Kontrollzellen vom Gerät ferngehalten?",
+   "antwort": "In einem anderen Haus, rund 1,5 km Luftlinie entfernt. Beide Zellkulturen standen in baugleichen Mini-Inkubatoren bei 37 °C im selben Kulturmedium, damit die Bedingungen identisch waren — den Abstand wählte der Autor bewusst so groß, dass eine wechselseitige Beeinflussung ausgeschlossen war. Die Regenerationsversuche liefen 10 Stunden, die Versuche zum oxidativen Stress 24 Stunden."
   }
  ],
  "verwandt": [
