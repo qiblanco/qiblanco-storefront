@@ -231,6 +231,63 @@ export const SCHWESTER_DOMAINS = [
 ];
 
 /**
+ * Kanäle, für die es KEINEN Zugang gibt — die schwächste Klasse, und sie
+ * heißt hier absichtlich so.
+ *
+ * WARUM EINE VIERTE LISTE UND NICHT MARKEN_PROFILE — weil MARKEN_PROFILE
+ * KONTROLLE verlangt (ein Zugang meldet uns die Identität zurück) und dieser
+ * Eintrag sie nicht hat. Ihn dort einzureihen hieße, die Regel der ersten
+ * Liste stillschweigend aufzuweichen; dann stünde neben drei Einträgen, die
+ * ein Token bestätigt hat, einer, den niemand bestätigt hat, und die Liste
+ * verlöre genau die Aussage, die sie wertvoll macht. Dieselbe Begründung hat
+ * schon die zweite und dritte Liste erzwungen.
+ *
+ * DIE REGEL HIER IST DIE DOPPELTE RÜCKMESSUNG, und sie ist schwächer als die
+ * drei anderen:
+ *   1. Die Firma weist den Kanal auf einer Fläche, die sie NACHWEISLICH
+ *      kontrolliert, bereits als ihren aus.
+ *   2. Der Kanal wurde öffentlich rückgemessen (existiert, trägt die Marke,
+ *      Sprache passt) — es ist also keine geratene URL, sondern eine gemessene.
+ * Beides zusammen macht eine Verwechslung unwahrscheinlich. Es macht sie
+ * nicht unmöglich, und darum steht das hier und nicht oben.
+ *
+ * WAS DIESEN EINTRAG AUF `MARKEN_PROFILE` HEBEN WÜRDE: ein TikTok-Zugang auf
+ * dem Server (heute gibt es keinen — kein `tiktok.env`, der Adapter im
+ * Support-Modul ist gegatet und ohne Token). Ein einziger API-Abruf, der
+ * `qiblanco` als eigenes Konto zurückmeldet, und der Eintrag wandert nach
+ * oben. Wer das nachrüstet, verschiebt ihn bitte, statt hier den Beleg
+ * aufzuweichen.
+ *
+ * WARUM LINKEDIN TROTZ ÄHNLICHER LAGE NICHT HIER STEHT — der Unterschied ist
+ * Punkt 2: bei LinkedIn ist die URL GERATEN. Es gibt keine Messung, die sagt,
+ * dass linkedin.com/company/qi-blanco überhaupt existiert (HTTP 999 ist ein
+ * Bot-Block, also ein Messausfall und keine Aussage). Diese Liste senkt die
+ * Beweislast von "Kontrolle" auf "gemessene Identität" — sie hebt sie nicht
+ * auf.
+ *
+ * @type {{url: string, beleg: string}[]}
+ */
+export const KANAELE_OHNE_ZUGANG = [
+  {
+    url: 'https://www.tiktok.com/@qiblanco',
+    beleg:
+      'Öffentliche Rückmessung am 2026-08-15: tiktok.com/@qiblanco liefert ' +
+      'uniqueId "qiblanco", nickname "Qi Blanco | Frequency Tech", Sprache ' +
+      'de, 106 Videos, angelegt 2021-07-21. Der entscheidende Abgleich ist ' +
+      'aber die Bio: sie ist der about-Text UNSERER Facebook-Seite, den ' +
+      'graph.facebook.com/<business>/owned_pages am selben Tag aus dem ' +
+      'eigenen Business-Zugang zurückgab ("Frequency Technology für ' +
+      'E-Smog-Schutz & Performance. 10+ Jahre · 14k+ Nutzer."), bis auf die ' +
+      'Kürzung "Technology"->"Tech" wörtlich gleich — inklusive Trennzeichen ' +
+      'und Nutzerzahl. Die Kürzung erklärt sich mechanisch: TikTok deckelt ' +
+      'den nickname bei 30 Zeichen, "Qi Blanco | Frequency Technology" hat ' +
+      '32. Zweitens weist der eigene US-Storefront den Kanal im Footer live ' +
+      'als seinen aus. KEIN TikTok-Zugang auf dem Server -> Identität ' +
+      'gemessen, Eigentum NICHT bewiesen.',
+  },
+];
+
+/**
  * Organization-Knoten. Bewusst rein faktische Stammdaten — keine Wirkungs-
  * oder Gesundheitsaussage, damit dieser Knoten claim-neutral bleibt.
  *
@@ -283,13 +340,14 @@ export function organizationSchema({logoUrl} = {}) {
   // Profile", sondern ein kaputtes Feld.
   // Alle Belegklassen laufen in EIN sameAs-Array: für die Suchmaschine ist
   // das eine einzige Liste "dieselbe Entität, anderswo". Getrennt gehalten
-  // werden sie nur bei der AUFNAHME, weil dort drei verschiedene Nachweise
-  // gelten (Kontrolle, Rückverweis bzw. Register-Identität) — siehe die drei
-  // Listen oben.
+  // werden sie nur bei der AUFNAHME, weil dort vier verschiedene Nachweise
+  // gelten (Kontrolle, Rückverweis, Register-Identität bzw. doppelte
+  // Rückmessung) — siehe die vier Listen oben.
   const profile = [
     ...MARKEN_PROFILE.map((p) => p.url),
     ...WISSENSGRAPH_ENTITAETEN.map((e) => e.url),
     ...SCHWESTER_DOMAINS.map((d) => d.url),
+    ...KANAELE_OHNE_ZUGANG.map((k) => k.url),
   ];
   if (profile.length) knoten.sameAs = profile;
   return knoten;
