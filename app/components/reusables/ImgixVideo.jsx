@@ -1,8 +1,10 @@
 import {useEffect, useRef, useState} from 'react';
 import Hls from 'hls.js';
+import {hatHoerbarenTon} from '~/lib/video-ton';
 
 /*
- * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03).
+ * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
+ * seit 2026-08-15 nur noch bei Videos MIT hörbarem Ton.
  *
  * Browser-Autoplay-Policy erlaubt Video-Autoplay NUR stummgeschaltet, darum
  * bleibt das `muted`-HTML-ATTRIBUT unten hart gesetzt (das ist es, was der
@@ -10,6 +12,15 @@ import Hls from 'hls.js';
  * Button togglet danach NUR die `.muted`-DOM-PROPERTY per Klick (= die
  * geforderte User-Geste) — kein Versuch, gegen die Policy anzuautoplayen.
  * Konzept + Abgrenzung: homepage-bauer/SKILL-VIDEO-SOUND-TOGGLE.md.
+ *
+ * AENDERUNG 2026-08-15 (Christian, Screenshot-Befund): der Toggle war
+ * BEDINGUNGSLOS eingebaut, also bekamen ihn auch stumme Hintergrund- und
+ * 360-Grad-Produktvideos — ein Audio-Umschalter an einem Video ohne Ton.
+ * Ob ein Video hörbaren Ton trägt, beantwortet jetzt ausschließlich das
+ * gemessene Manifest `app/lib/video-ton.js`; ohne Eintrag wird KEINE
+ * Audio-UI gerendert. Bewusst NICHT über Browser-Feature-Detection
+ * gelöst: die stummen 360-Grad-Videos besitzen eine AAC-Spur (digitale
+ * Stille, -91 dB), jede Existenzprüfung meldet dort faelschlich "hat Ton".
  */
 
 const SOUND_STORAGE_PREFIX = 'qb-video-sound:';
@@ -30,6 +41,11 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
   const videoRef = useRef(null);
   const hlsUrl = `https://qiblanco-video.imgix.video/${videoPath}?fm=hls`;
   const mp4Url = `https://qiblanco-video.imgix.video/${videoPath}?fm=mp4`;
+
+  // Gemessene Ton-Wahrheit (SSoT app/lib/video-ton.js). Konstant je
+  // videoPath, daher kein State und kein Effekt — das Video rendert
+  // sofort im richtigen Zustand, der Button flackert nie auf.
+  const zeigtTonSteuerung = hatHoerbarenTon(videoPath);
 
   const [stumm, setStumm] = useState(() => anfangsZustandStumm(videoPath));
 
@@ -53,10 +69,14 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
 
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
   // das Attribut bleibt für die Autoplay-Erlaubnis unveraendert `muted`).
+  // Ohne Ton-Steuerung bleibt das Video HART stumm: ein Besucher kann aus
+  // einer frueheren Sitzung noch ein `an` im sessionStorage für diesen
+  // Pfad stehen haben (der Toggle war bis 2026-08-15 auch hier sichtbar) —
+  // das darf ein stummes Video nicht entstummen.
   useEffect(() => {
     const video = videoRef.current;
-    if (video) video.muted = stumm;
-  }, [stumm]);
+    if (video) video.muted = zeigtTonSteuerung ? stumm : true;
+  }, [stumm, zeigtTonSteuerung]);
 
   function toggleTon() {
     setStumm((vorher) => {
@@ -92,6 +112,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
         preload="metadata"
         poster={fallbackImage}
       />
+      {zeigtTonSteuerung && (
       <button
         type="button"
         className="ImgixVideo-sound-toggle"
@@ -113,6 +134,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
           </svg>
         )}
       </button>
+      )}
     </div>
   );
 }
