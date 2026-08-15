@@ -28,7 +28,6 @@
 import {Link} from 'react-router';
 import {
   STUDIEN,
-  anzahlNachArt,
   studienPfad,
   untersuchteProdukte,
   zahlwort,
@@ -77,36 +76,6 @@ export function StudienUebersicht() {
               <StudienKarte key={s.id} studie={s} />
             ))}
           </div>
-        </section>
-
-        <section className="qb-st-rahmen" aria-labelledby="rahmen-titel">
-          <h2 id="rahmen-titel">Wie diese Studien einzuordnen sind</h2>
-          <ul>
-            <li>
-              Alle {anzahl} Arbeiten sind <strong>präklinisch</strong>:{' '}
-              {zahlwort(anzahlNachArt('in-vitro'))} Zellkultur-Untersuchungen
-              (in vitro) und {zahlwort(anzahlNachArt('deskriptiv'))}{' '}
-              beschreibende Auswertung freiwilliger Nutzerberichte. Keine davon
-              ist eine klinische Studie am Menschen.
-            </li>
-            <li>
-              Alle {anzahl} stammen aus <strong>einem Labor</strong> (Dartsch
-              Scientific GmbH); die getesteten Geräte wurden vom Hersteller
-              gestellt und die Arbeiten von Qi Blanco finanziert. Eine
-              unabhängige Wiederholung durch ein zweites Labor steht aus.
-            </li>
-            <li>
-              Der im Diskussionsteil genannte Erklärungsansatz über
-              „kohärentes Wasser“ ist ausdrücklich eine{' '}
-              <strong>Hypothese</strong> und in der konventionellen Medizin
-              nicht etabliert — die Messergebnisse selbst hängen nicht davon ab.
-            </li>
-            <li>
-              Aus keiner dieser Arbeiten lässt sich eine Aussage über die
-              Behandlung, Linderung oder Heilung von Krankheiten ableiten, und
-              wir leiten auch keine ab.
-            </li>
-          </ul>
         </section>
 
         <HrvMessreihe />
