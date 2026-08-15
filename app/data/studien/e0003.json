@@ -15,12 +15,14 @@
   "journal": "Applied Cell Biology",
   "band": "12(1): 1-6",
   "doi": "10.53043/2320-1991.acb12000",
+  "doiAufloesbar": false,
   "issn": "2320-1991 (Online), 2320-1983 (Print)",
   "eingereicht": "",
   "angenommen": "",
   "veroeffentlicht": "2024-01-12",
   "lizenz": "",
   "produkt": "QiBracelet®",
+  "artikelUrl": "https://www.appliedcellbiology.com/open-access/protective-effect-of-the-qibraceletreg-against-oxidative-stress-514.pdf",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505",
   "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229",
   "studientyp": "In-vitro-Zellstudie (Zellkultur)",
@@ -262,7 +264,7 @@
  ],
  "zitation": {
   "text": "Dartsch PC. Protective Effect of the QiBracelet® Against Oxidative Stress. Appl Cell Biol 2024; 12(1): 1-6.",
-  "doiUrl": "https://doi.org/10.53043/2320-1991.acb12000"
+  "doiUrl": ""
  },
  "grenzen": [
   "Die Studie wurde ausschließlich in Zellkulturen durchgeführt (In-vitro); eine Übertragbarkeit der Ergebnisse auf den lebenden Organismus (in vivo) ist nicht belegt.",

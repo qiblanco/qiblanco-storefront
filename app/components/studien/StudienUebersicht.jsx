@@ -50,17 +50,45 @@ export function StudienUebersicht() {
   return (
     <div className="qb-st qb-st-übersicht">
       <div className="qb-st-wrap">
+        {/* BANNER — das Bild ist kein Schmuck, sondern der Beleg selbst.
+            Gezeigt werden die echten Titelseiten aller Publikationen, nicht
+            ein Stock-Motiv: die Profi-Praxis für Evidenz-Flächen ist, das
+            Dokument zu zeigen statt eine Laborstimmung zu behaupten.
+            WICHTIG: der Fächer rendert aus STUDIEN, nicht aus einer Liste im
+            Markup. Die fünfte Arbeit (QiHome® Air) fehlte im Banner, WEIL die
+            alte Fassung gar kein Bild hatte — eine handgepflegte Bildliste
+            hätte denselben Fehler beim nächsten Zuwachs wiederholt. So ist
+            Vollzähligkeit eine Eigenschaft der Datenquelle. */}
         <header className="qb-st-hero">
-          <p className="qb-st-kicker">Belege statt Behauptungen</p>
-          <h1>Wissenschaftlich getestet und in Fachpublikationen bestätigt</h1>
-          <p>
-            {initialCap(anzahl)} zellbiologische Untersuchungen zu{' '}
-            {aufzaehlung(produkte.map((p) => p.name))}, durchgeführt am Institut
-            für zellbiologische Testsysteme von Prof. Dr. Peter C. Dartsch und
-            in Fachjournalen veröffentlicht. Jede Studie finden Sie hier in
-            verständlicher Zusammenfassung, im vollständigen deutschen Text und
-            als englisches Original-PDF.
-          </p>
+          <div className="qb-st-hero-text">
+            <p className="qb-st-kicker">Belege statt Behauptungen</p>
+            <h1>Wissenschaftlich getestet und in Fachpublikationen bestätigt</h1>
+            <p>
+              {initialCap(anzahl)} zellbiologische Untersuchungen zu{' '}
+              {aufzaehlung(produkte.map((p) => p.name))}, durchgeführt am
+              Institut für zellbiologische Testsysteme von Prof. Dr. Peter C.
+              Dartsch und in Fachjournalen veröffentlicht. Jede Studie finden
+              Sie hier in verständlicher Zusammenfassung, im vollständigen
+              deutschen Text und als englisches Original-PDF.
+            </p>
+          </div>
+          <div className="qb-st-hero-bild">
+            <ul className="qb-st-hero-faecher">
+              {STUDIEN.map((s) => (
+                <li key={s.id}>
+                  <img
+                    src={s.eckdaten.coverUrl}
+                    alt={`Titelseite der Publikation „${s.eckdaten.titelOriginal}“ im ${s.eckdaten.journal}`}
+                    loading="lazy"
+                  />
+                </li>
+              ))}
+            </ul>
+            <p className="qb-st-hero-bildunter">
+              Die Titelseiten der {anzahl} Publikationen — jede einzeln unten
+              als Original-PDF abrufbar.
+            </p>
+          </div>
         </header>
 
         <section className="qb-st-sektion" id="studien" aria-labelledby="studien-titel">
@@ -118,43 +146,46 @@ function StudienKarte({studie}) {
   const jahr = (e.veroeffentlicht || '').slice(0, 4);
 
   return (
+    /* AUFBAU (Desktop): EINE Karte je Zeile, Titelseite groß links, Text
+       rechts. Der Vorgänger stellte die Karten nebeneinander
+       (auto-fit/minmax) — bei fünf Karten wurde die Titelseite dabei auf
+       96px gequetscht und war als Bild nicht mehr lesbar. Untereinander
+       trägt jede Karte ihre Grafik in voller Größe.
+       Warum überhaupt gestapelt: für Evidenz-Listen, die der Leser
+       VERGLEICHT, schlägt die Zeilenform das Kachelraster — die Merkmale
+       stehen dann bei jeder Studie an derselben Stelle untereinander. */
     <article className="qb-st-karte">
-      <div className="qb-st-karte-kopf">
-        <a
-          className="qb-st-karte-cover"
-          href={e.pdfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Original-Publikation als PDF öffnen"
-        >
-          <img
-            src={e.coverUrl}
-            alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
-            width="96"
-            height="124"
-            loading="lazy"
-          />
-        </a>
-        {/* Diese Spalte MUSS eine Klasse tragen. Ohne sie war sie ein Flex-Item
-            im Vorgabezustand `min-width: auto` und konnte damit nicht schmaler
-            werden als ihr laengstes Wort — bei den deutschen Komposita
-            (Darmepithelzellen, Nutzererfahrungen, Zellregeneration) lief sie
-            deshalb aus dem Rahmen. Vertrag: .qb-st-karte-kopftext in studien.css. */}
-        <div className="qb-st-karte-kopftext">
-          <h3 className="qb-st-karte-titel">
-            <Link to={studienPfad(studie.slug)}>{studie.seo.h1}</Link>
-          </h3>
-          <p className="qb-st-karte-meta">
-            {e.journal}
-            {jahr ? ` · ${jahr}` : ''}
-            <br />
-            {e.produkt}
-          </p>
-        </div>
-      </div>
+      <a
+        className="qb-st-karte-cover"
+        href={e.pdfUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Original-Publikation als PDF öffnen (neuer Tab)"
+      >
+        <img
+          src={e.coverUrl}
+          alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
+          width="300"
+          height="388"
+          loading="lazy"
+        />
+      </a>
 
-      <div className="qb-st-karte-body">
-        <p>{laie.antwort}</p>
+      {/* Diese Spalte MUSS eine Klasse tragen. Ohne sie galt der Vorgabewert
+          `min-width: auto` und die Spalte konnte nicht schmaler werden als ihr
+          laengstes Wort — bei den deutschen Komposita (Darmepithelzellen,
+          Nutzererfahrungen, Zellregeneration) lief sie deshalb aus dem Rahmen.
+          Der Vertrag gilt im Grid genauso wie vorher im Flex-Kopf und steht
+          in studien.css unter .qb-st-karte-inhalt. */}
+      <div className="qb-st-karte-inhalt">
+        <h3 className="qb-st-karte-titel">
+          <Link to={studienPfad(studie.slug)}>{studie.seo.h1}</Link>
+        </h3>
+        <p className="qb-st-karte-meta">
+          {e.journal}
+          {jahr ? ` · ${jahr}` : ''} · {e.produkt}
+        </p>
+        <p className="qb-st-karte-text">{laie.antwort}</p>
         {laie.punkte?.[0] ? (
           <span className="qb-st-karte-zahl">{laie.punkte[0]}</span>
         ) : null}
@@ -168,7 +199,7 @@ function StudienKarte({studie}) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Original-PDF
+            Original-PDF (öffnet im neuen Tab)
           </a>
         </div>
       </div>

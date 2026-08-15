@@ -15,12 +15,14 @@
   "journal": "Japan Journal of Medicine",
   "band": "4(1): 484-488",
   "doi": "10.31488/JJM.165",
+  "doiAufloesbar": false,
   "issn": "",
   "eingereicht": "2021-04-08",
   "angenommen": "2021-04-28",
   "veroeffentlicht": "2021-04-30",
   "lizenz": "",
   "produkt": "QiOne® 2 Pro",
+  "artikelUrl": "https://japanjournalofmedicine.com/qione-2-pro-investigations-on-its-potential-for-the-exclusion-of-unwanted-cellular-effects-of-mobile-phone-radiation",
   "pdfUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1679586513",
   "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studienvorschau_hellblau-1-957x1024_2.png?v=1732276510",
   "studientyp": "In-vitro-Zellstudie (Zellkultur)",
@@ -184,7 +186,7 @@
  ],
  "zitation": {
   "text": "Dartsch PC. QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Jpn J Med 2021; 4(1): 484-488.",
-  "doiUrl": "https://doi.org/10.31488/JJM.165"
+  "doiUrl": ""
  },
  "grenzen": [
   "Die Studie ist eine reine In-vitro-Untersuchung an einer humanen Zelllinie (HL-60); die Ergebnisse lassen keine direkte Übertragung auf den lebenden menschlichen Organismus mit seinen komplexen Stoffwechselwegen zu.",
