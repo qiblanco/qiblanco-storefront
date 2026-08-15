@@ -49,6 +49,30 @@ import {absoluteCanonical} from './seo.js';
 import {produktSchema} from './produkt-schema.js';
 
 /**
+ * Markenname für den Titel-Suffix im Suchergebnis.
+ *
+ * WARUM OHNE RECHTSFORM (gemessen 2026-08-15 an der Live-Auslieferung):
+ * 18 der 72 DACH-URLs trugen den Suffix "| Qi Blanco UG (haftungsbeschränkt)",
+ * darunter JEDE Produktseite. Das sind 24 Zeichen, die im Suchergebnis den
+ * Platz des Produktnamens wegnehmen — "Crystal Cacao® Create & Awake – Bio |
+ * Qi Blanco UG (haftungsbeschränkt)" stand bei 75 Zeichen und wurde von
+ * Google abgeschnitten. Niemand sucht nach "UG (haftungsbeschränkt)".
+ *
+ * Die Rechtsform ist an keiner Stelle als Pflicht im Titel dokumentiert; die
+ * Impressumspflicht erfüllt die Impressumsseite, und die trägt sie
+ * unverändert weiter. Kanonischer Markenname der Storefront ist "Qi Blanco"
+ * (devlog D-081) — dieselbe Schreibweise, die das Organization-Schema und der
+ * Wikidata-Eintrag Q141070656 führen. Genau diese Gleichheit ist der Zweck:
+ * eine Marke, die in Titel, Schema und Wikidata identisch heißt, ist für
+ * Google EINE Entität statt dreier Schreibweisen.
+ *
+ * WARUM HIER UND NICHT IN seo.js: siehe Kopf dieser Datei — seo.js wird von
+ * pages.support/impressum/agb/… importiert und zöge diese unbeteiligten
+ * Seiten in die Gate-12-Prüfmenge.
+ */
+export const MARKE = 'Qi Blanco';
+
+/**
  * Beschreibung je Produktpfad.
  *
  * Der Schlüssel ist exakt der Pfad, der auch an canonicalLink() geht — so kann

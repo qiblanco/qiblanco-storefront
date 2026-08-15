@@ -17,7 +17,7 @@ import { QiHome } from '~/components/product-pages/QiHome';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {produktMeta} from '~/lib/produkt-seo';
+import {produktMeta, MARKE} from '~/lib/produkt-seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -26,7 +26,7 @@ export const meta = ({data}) => {
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
     pfad: '/products/qihome-air',
-    titel: `${data?.product?.title ?? ''} | Qi Blanco UG (haftungsbeschränkt)`,
+    titel: `${data?.product?.title ?? ''} | ${MARKE}`,
     bildUrl:
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,

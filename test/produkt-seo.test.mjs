@@ -24,10 +24,12 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import {
+  MARKE,
   PRODUKT_BESCHREIBUNGEN,
   produktBeschreibung,
   produktMeta,
 } from '../app/lib/produkt-seo.js';
+import {MARKEN_SUFFIX} from '../app/lib/blog-seo.js';
 
 const PFADE = Object.keys(PRODUKT_BESCHREIBUNGEN);
 
@@ -311,4 +313,44 @@ test('produktMeta mit preislosem Produkt hängt KEINEN Knoten an', () => {
     produkt: {handle: 'x', title: 'X', selectedOrFirstAvailableVariant: {}},
   });
   assert.equal(d.filter((x) => x['script:ld+json']).length, 0);
+});
+
+// --- Marken-Titel-Hygiene (Nachtrag 2026-08-15) -----------------------------
+// BELEGTER ANLASS: am 2026-08-15 trugen 18 der 72 DACH-URLs den Titel-Suffix
+// "| Qi Blanco UG (haftungsbeschränkt)", darunter JEDE Produktseite. Die
+// Rechtsform kostet 24 Zeichen im Suchergebnis, nach denen niemand sucht;
+// "Crystal Cacao® Create & Awake – Bio | …" lag damit bei 75 Zeichen und
+// wurde abgeschnitten. Diese Tests halten den Rückfall auf, nicht die Absicht.
+test('der Titel-Suffix trägt die Marke, nicht die Rechtsform', () => {
+  assert.equal(MARKE, 'Qi Blanco');
+  assert.ok(
+    !/\bUG\b/.test(MARKE),
+    `Rechtsform zurück im Titel-Suffix: ${MARKE}`,
+  );
+});
+
+test('NAHT: Blog- und Produktbereich führen DIESELBE Marke', () => {
+  // Zwei Konstanten an zwei Orten (bewusst, wegen der Import-Closure) driften
+  // sonst auseinander — und Google sähe zwei Marken statt einer Entität.
+  assert.equal(MARKEN_SUFFIX, MARKE);
+});
+
+test('KEINE Produktroute schreibt die Rechtsform selbst in den Titel', () => {
+  // Gegenrichtung: die Konstante kann sauber sein, während eine Route den
+  // alten Text weiter hartkodiert. Genau so lag der Bestand vor dem Fix.
+  const dateien = readdirSync('app/routes').filter(
+    (f) => f.startsWith('products.') && f.endsWith('.jsx'),
+  );
+  const treffer = [];
+  for (const f of dateien) {
+    const inhalt = readFileSync(`app/routes/${f}`, 'utf8');
+    const titelZeilen = inhalt
+      .split('\n')
+      .filter((z) => /title:|titel:/.test(z) && /\bUG\b/.test(z));
+    if (titelZeilen.length) treffer.push(f);
+  }
+  // products.zeremonie-kakao.jsx ist die 301-Route (ihr meta wird nie
+  // ausgeliefert) und bleibt bewusst unverändert — sie darf hier stehen.
+  const echte = treffer.filter((f) => f !== 'products.zeremonie-kakao.jsx');
+  assert.deepEqual(echte, [], `Rechtsform im Titel: ${echte.join(', ')}`);
 });
