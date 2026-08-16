@@ -43,6 +43,7 @@ export async function action({request, context}) {
     return new Response(null, {status: 413});
   }
 
+  const {quelle} = clientIp(request);
   let upstreamOk = false;
   try {
     const res = await fetch(upstream, {
@@ -60,7 +61,15 @@ export async function action({request, context}) {
   for (const cookie of refreshCookies(request)) {
     headers.append('Set-Cookie', cookie);
   }
-  return new Response(JSON.stringify({ok: upstreamOk}), {status: 200, headers});
+  // `ipsrc` ist der NAME der Quelle, nie ein IP-Wert — der Aufrufer erfaehrt
+  // nichts, was er nicht ohnehin über sich selbst weiß. Er existiert, damit
+  // die Naht VON AUSSEN in einem einzigen Request pruefbar ist: der Fix vom
+  // 2026-08-09 sah im Code richtig aus und war sieben Tage lang wirkungslos,
+  // weil niemand die Wirkung messen konnte, ohne die Datenbank zu befragen.
+  return new Response(JSON.stringify({ok: upstreamOk, ipsrc: quelle}), {
+    status: 200,
+    headers,
+  });
 }
 
 /**
@@ -84,8 +93,36 @@ export async function action({request, context}) {
  *                      dünn, sondern FALSCH (gemessen: 190 verschiedene
  *                      Besucher hinter EINEM Hash).
  *
- * IP-Quelle ist `CF-Connecting-IP` (vom Edge gesetzt, client-seitig NICHT
- * fälschbar) mit dem repo-üblichen XFF-Rückfall (vgl. pages.support.jsx).
+ * KORREKTUR 2026-08-16 (Job 20260816-dach-ipnet-transport-wirkungslos-
+ * nachfassen) — die UA-Hälfte oben hat gewirkt, die IP-Hälfte NIE. Gemessen
+ * über 7 Tage: `ua_hash` 0 % -> 100 %, aber der größte `ip_net_hash` blieb
+ * unverändert bei 26,2 % -> 32,3 % aller DACH-Besucher (USA-Kontrollshop, der
+ * direkt aus dem Browser sendet: 2,4 %). Zwei Ursachen, hintereinander — jede
+ * allein hätte genügt, und beide waren im Code unsichtbar:
+ *
+ *   [1] FALSCHER HEADER. `CF-Connecting-IP` existiert auf Oxygen nicht. Die
+ *       Cloudflare-Edge beansprucht den Namen selbst und weist einen vom
+ *       Client gesetzten Wert mit "error code: 1000" ab — die App sieht ihn
+ *       nie. Der dokumentierte Oxygen-Weg ist `oxygen-buyer-ip` (Shopify
+ *       Oxygen-Runtime, OXYGEN_HEADERS_MAP). Auch der eingehende
+ *       `X-Forwarded-For` trägt hier keine Buyer-IP. `ip` war also IMMER
+ *       undefined — der Header wurde nie gesetzt, nicht einmal falsch.
+ *
+ *   [2] FALSCHER TRANSPORT. Der alte Kommentar an dieser Stelle sagte, Caddy
+ *       hänge seinen Peer rechts an und links bleibe unsere Client-IP. Das ist
+ *       widerlegt: Caddy >= 2.7 ERSETZT einen eingehenden `X-Forwarded-For`
+ *       durch die Peer-Adresse, solange der Absender nicht in `trusted_proxies`
+ *       steht (dort steht bei uns nichts). Beleg: ein POST mit
+ *       `X-Forwarded-For: 1.2.3.4` direkt an den Caddy-vhost kam beim Receiver
+ *       als dessen Peer-IP an. Über `X-Forwarded-For` kann diese Route den
+ *       Receiver baulich NICHT erreichen — auch mit dem richtigen Header [1]
+ *       wäre der Fix wirkungslos geblieben.
+ *
+ * Deshalb reist die IP jetzt unter EIGENEM Namen (`X-QPX-Client-IP`): Caddy
+ * verwaltet ausschließlich XFF/X-Forwarded-Proto/X-Forwarded-Host und reicht
+ * jeden anderen Header unverändert durch. Kein Caddy-Eingriff nötig — der
+ * Perimeter bleibt unangetastet.
+ *
  * Leere Werte werden WEGGELASSEN statt als leerer Header gesendet: der
  * Receiver soll "nicht gemessen" von "gemessen und leer" unterscheiden können.
  *
@@ -97,12 +134,36 @@ function upstreamHeaders(request) {
   const ua = request.headers.get('User-Agent');
   if (ua) headers['User-Agent'] = ua;
 
-  const ip =
-    request.headers.get('CF-Connecting-IP') ||
-    request.headers.get('X-Forwarded-For')?.split(',')[0].trim();
-  if (ip) headers['X-Forwarded-For'] = ip;
+  const {ip} = clientIp(request);
+  if (ip) headers['X-QPX-Client-IP'] = ip;
 
   return headers;
+}
+
+/**
+ * Buyer-IP + NAME ihrer Quelle. Die Reihenfolge ist die Beweislage aus dem
+ * Job-Header, nicht Geschmack: `oxygen-buyer-ip` ist der einzige auf Oxygen
+ * belegte Träger, die beiden anderen sind Rückfälle für andere Laufzeiten
+ * (lokales `h2 dev`, ein etwaiger Umzug hinter einen echten CF-Worker).
+ *
+ * Die Quelle wird mitgegeben, damit ein Rückfall LAUT wird: liefert Shopify
+ * `oxygen-buyer-ip` eines Tages nicht mehr, steht in der Antwort `ipsrc:"keine"`
+ * statt stillschweigend wieder die Egress-IP in der Datenbank.
+ *
+ * @param {Request} request
+ * @returns {{ip: string, quelle: string}}
+ */
+function clientIp(request) {
+  const kandidaten = [
+    ['oxygen-buyer-ip', request.headers.get('oxygen-buyer-ip')],
+    ['cf-connecting-ip', request.headers.get('CF-Connecting-IP')],
+    ['x-forwarded-for', request.headers.get('X-Forwarded-For')?.split(',')[0]],
+  ];
+  for (const [quelle, roh] of kandidaten) {
+    const ip = roh?.trim();
+    if (ip) return {ip, quelle};
+  }
+  return {ip: '', quelle: 'keine'};
 }
 
 /**
