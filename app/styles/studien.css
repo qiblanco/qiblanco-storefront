@@ -465,35 +465,117 @@
   margin: 0;
   max-width: var(--st-mass);
 }
-.qb-st-hero-bild { min-width: 0; }
+/* Bezugsrahmen des Faechers. container-type macht 100cqw zur BREITE DIESER
+   SPALTE — nicht des Viewports; nur so kann der Faecher seine Hoehe so
+   deckeln, dass er in seine eigene Spalte passt. */
+.qb-st-hero-bild { min-width: 0; container-type: inline-size; }
 
 /* Der Faecher: fuenf Titelseiten, leicht ueberlappend wie ein Stapel auf dem
    Tisch. Die Ueberlappung kommt aus einem negativen Rand, nicht aus
    Rotation — gedrehte Karten sind genau der Effekt, der Evidenz-Flaechen
-   billig aussehen laesst. */
+   billig aussehen laesst.
+
+   ---- DIE DARSTELLUNGSNORM (titelbild-norm-v1) -------------------------
+   Christian, 2026-08-17: "zwei Studien werden kleiner dargestellt — das
+   kommt nicht gut." Live gemessen war das exakt so: alle fuenf Bilder
+   rendern gleich BREIT (das alte `flex:1 1 0` + `width:100%`), aber die
+   Hoehe ergab sich aus dem natuerlichen Seitenverhaeltnis — 134,5 px bei
+   e0001/e0002 gegen 177,2 px bei den anderen, also 24 % kuerzer. Weil
+   `align-items:flex-end` unten buendig setzt, stand die Differenz OBEN
+   offen, und genau dort liest das Auge im Stapel eine Linie.
+
+   NORMIERT WIRD AUF DIE CONTENT-BOX, NICHT AUF DIE LEINWAND. Die Bilder
+   sind Montagen (Journal-Cover schraeg vorne, angeschnittene Innenseite
+   dahinter, weicher Schatten) auf transparentem Grund, und der transparente
+   Rand ist je Datei verschieden gross — Content-Hoehenanteil gemessen
+   88,4 % bis 100,0 %. Wuerde man nur die Leinwand gleich hoch machen,
+   blieben 13,2 % Streuung uebrig, und der groesste Ausreisser waere
+   ausgerechnet das neue kanonische Bild der fuenften Studie (0 % Rand).
+   Auf die Content-Box normiert ist die Streuung 0,0 % — gemessen bei
+   1440, 1024 und 390 px.
+
+   Die fuenf Faktoren je Bild kommen aus den Daten (eckdaten.coverNorm,
+   gerechnet von medien-hosting/bin/kanon-titelbilder aus der DATEI) und
+   sind alle auf die Content-Hoehe bezogen. Sie werden NIE geschaetzt und
+   NIE je Studie im CSS ueberschrieben — genau dieser Einzelfall-Override
+   war ausdruecklich verboten und waere beim naechsten unbekannten
+   Seitenverhaeltnis ohnehin wieder faellig.
+
+   KEIN BILD WIRD BESCHNITTEN. Christian hat die Datei der fuenften Studie
+   als Original bezeichnet; die Norm nimmt sie auf, statt sie passend zu
+   machen. Ihr quadratisches Format rendert dadurch breiter als die
+   anderen — das ist die ehrliche Darstellung eines breiteren Artefakts,
+   kein Fehler.
+
+   WARUM KEIN RAHMEN, KEIN WEISSER GRUND, KEIN CSS-SCHATTEN MEHR: die
+   Montagen bringen ihren Schatten eingebacken mit (gemessen 4,5-16,4 %
+   halbtransparente Pixel). Ein weisser Kasten mit Rahmen fuellte vorher
+   den transparenten Rand und machte damit die LEINWAND zur sichtbaren
+   Karte — bei je verschieden grossem Rand sass die Montage in jeder Karte
+   anders. Der CSS-Schatten doppelte zusaetzlich den eingebackenen. */
 .qb-st-hero-faecher {
+  /* --st-fae-ovl: Ueberlappung als Anteil der Faecher-Hoehe. Bewusst ein
+     FESTES Verhaeltnis und nicht wie vorher `margin-left: -14%`: Prozent
+     loesen gegen die Breite des UL auf, also waere die Luecke zwischen
+     zwei Bildern bei variablen Bildbreiten ungleich. */
+  --st-fae-ovl: 0.12;
+  /* --st-fae-kbox-eff setzt die Komponente aus den Daten: Summe aller
+     kBox minus der Ueberlappungen. Damit deckelt die Hoehe sich selbst,
+     und der Faecher waechst auch bei einer sechsten oder siebten Studie
+     nicht aus seiner Spalte heraus. Rueckfall 3.4 entspricht etwa fuenf
+     Studien und greift nur, wenn die Daten fehlen. */
+  --st-fae-h: min(
+    clamp(150px, 26cqw, 320px),
+    calc(100cqw / var(--st-fae-kbox-eff, 3.4))
+  );
   display: flex;
   align-items: flex-end;
+  justify-content: center;
   list-style: none;
   margin: 0 0 var(--st-s2);
   padding: 0;
 }
 .qb-st-hero-faecher li {
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 0 0 auto;
+  position: relative;
+  height: var(--st-fae-h);
+  width: calc(var(--st-fae-h) * var(--st-kbox));
   margin: 0;
+  /* FRUEHERE KACHEL LIEGT OBEN. Ohne das gewinnt die DOM-Reihenfolge, und
+     weil in jeder Montage die Innenseite links und das Cover rechts sitzt,
+     verdeckt die naechste Kachel exakt das COVER der vorherigen — also
+     genau das, was die Bildunterschrift verspricht. Das war schon vor
+     dieser Aenderung so und faellt erst im Vorher/Nachher-Vergleich auf. */
+  z-index: calc(var(--st-fae-n, 5) - var(--st-i, 0));
   transition: transform 0.2s ease;
 }
-.qb-st-hero-faecher li + li { margin-left: -14%; }
-.qb-st-hero-faecher li:hover { transform: translateY(-6px); }
+.qb-st-hero-faecher li + li {
+  margin-left: calc(var(--st-fae-h) * var(--st-fae-ovl) * -1);
+}
+.qb-st-hero-faecher li:hover {
+  transform: translateY(-6px);
+  z-index: calc(var(--st-fae-n, 5) + 1);
+}
 .qb-st-hero-faecher img {
   display: block;
-  width: 100%;
-  height: auto;
-  border-radius: var(--st-r1);
-  border: 1px solid var(--st-linie);
-  box-shadow: var(--st-shadow-md);
-  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  height: calc(var(--st-fae-h) * var(--st-kh));
+  width: calc(var(--st-fae-h) * var(--st-kw));
+  /* Schiebt die Content-Box des Bildes buendig in die Kachel. Was dabei
+     ueber den Kachelrand hinausragt, ist ausschliesslich der transparente
+     Rand — der Schatten gehoert zur Content-Box und bleibt drin. */
+  transform: translate(
+    calc(var(--st-fae-h) * var(--st-kx) * -1),
+    calc(var(--st-fae-h) * var(--st-ky) * -1)
+  );
+}
+/* Wer weiche Bewegung abgeschaltet hat, bekommt kein Wandern beim Hover. */
+@media (prefers-reduced-motion: reduce) {
+  .qb-st-hero-faecher li { transition: none; }
+  .qb-st-hero-faecher li:hover { transform: none; }
 }
 .qb-st-hero-bildunter {
   font-size: var(--st-fs-xs);

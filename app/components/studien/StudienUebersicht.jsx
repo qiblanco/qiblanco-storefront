@@ -43,6 +43,74 @@ function initialCap(w) {
   return w.charAt(0).toUpperCase() + w.slice(1);
 }
 
+/**
+ * DIE DARSTELLUNGSNORM DES FÄCHERS (titelbild-norm-v1) — Rechenteil.
+ *
+ * Alle Titelseiten sollen gleich groß erscheinen. "Gleich groß" heißt
+ * hier gleiche Höhe des SICHTBAREN INHALTS, nicht gleiche Leinwand: die
+ * Bilder sind Montagen auf transparentem Grund, und der transparente Rand
+ * ist je Datei verschieden groß (gemessen 88,4 % bis 100,0 % Content-Anteil
+ * an der Höhe). Wer nur die Leinwand angleicht, lässt 13,2 % Streuung
+ * stehen — und der größte Ausreißer wäre ausgerechnet das kanonische
+ * Titelbild der fünften Studie, das gar keinen Rand hat.
+ *
+ * Die Faktoren stehen je Studie in `eckdaten.coverNorm` und sind aus der
+ * Bilddatei gerechnet (medien-hosting/bin/kanon-titelbilder messen), nicht
+ * geschätzt. Die kanonische Zuordnung Studie -> Titelbild liegt in
+ * medien-hosting/kanon/studien-titelbilder.yaml; diese Komponente liest sie
+ * über die Studien-Registry und hält keine eigene Bildliste.
+ *
+ * FAIL-SOFT: fehlt einer Studie `coverNorm` (z. B. weil jemand eine sechste
+ * Arbeit ohne Vermessung ergänzt), fällt genau diese Kachel auf die
+ * Leinwand-Normierung zurück. Das ist sichtbar schlechter, aber nicht
+ * kaputt — und es reißt nicht den ganzen Fächer.
+ */
+const FAECHER_UEBERLAPPUNG = 0.12;
+
+/** Norm-Faktoren einer Studie, mit Rückfall auf die Leinwand. */
+function coverNorm(studie) {
+  const n = studie.eckdaten?.coverNorm;
+  if (n && typeof n.kBox === 'number' && n.kBox > 0) return n;
+  // Rückfall: ohne Vermessung ist die Content-Box unbekannt, also gilt die
+  // Leinwand als Inhalt (kX/kY = 0, kH = 1).
+  const m = studie.eckdaten?.coverMasse;
+  const ratio = m?.w && m?.h ? m.w / m.h : 0.75;
+  return {kH: 1, kW: ratio, kX: 0, kY: 0, kBox: ratio};
+}
+
+/**
+ * Variablen des Fächers selbst. `--st-fae-kbox-eff` ist die Breite des
+ * ganzen Stapels in Vielfachen der Fächer-Höhe — daraus deckelt das CSS
+ * die Höhe so, dass der Fächer IMMER in seine Spalte passt, auch bei
+ * einer sechsten oder siebten Studie. Ohne diesen Deckel wächst ein
+ * höhen-normierter Fächer mit jeder weiteren Arbeit aus dem Container.
+ */
+function faecherVars(studien) {
+  const kboxSumme = studien.reduce((s, st) => s + coverNorm(st).kBox, 0);
+  const kboxEff = Math.max(
+    0.5,
+    kboxSumme - (studien.length - 1) * FAECHER_UEBERLAPPUNG,
+  );
+  return {
+    '--st-fae-n': studien.length,
+    '--st-fae-ovl': FAECHER_UEBERLAPPUNG,
+    '--st-fae-kbox-eff': Number(kboxEff.toFixed(5)),
+  };
+}
+
+/** Variablen einer einzelnen Kachel. `--st-i` steuert nur die Stapelfolge. */
+function kachelVars(studie, i) {
+  const n = coverNorm(studie);
+  return {
+    '--st-i': i,
+    '--st-kh': n.kH,
+    '--st-kw': n.kW,
+    '--st-kx': n.kX,
+    '--st-ky': n.kY,
+    '--st-kbox': n.kBox,
+  };
+}
+
 export function StudienUebersicht() {
   const produkte = untersuchteProdukte();
   const anzahl = zahlwort(STUDIEN.length);
@@ -73,12 +141,14 @@ export function StudienUebersicht() {
             </p>
           </div>
           <div className="qb-st-hero-bild">
-            <ul className="qb-st-hero-faecher">
-              {STUDIEN.map((s) => (
-                <li key={s.id}>
+            <ul className="qb-st-hero-faecher" style={faecherVars(STUDIEN)}>
+              {STUDIEN.map((s, i) => (
+                <li key={s.id} style={kachelVars(s, i)}>
                   <img
                     src={s.eckdaten.coverUrl}
                     alt={`Titelseite der Publikation „${s.eckdaten.titelOriginal}“ im ${s.eckdaten.journal}`}
+                    width={s.eckdaten.coverMasse?.w}
+                    height={s.eckdaten.coverMasse?.h}
                     loading="lazy"
                   />
                 </li>

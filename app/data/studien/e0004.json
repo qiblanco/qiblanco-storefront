@@ -26,7 +26,19 @@
   "studientyp": "Deskriptive Auswertung von Anwenderberichten (ohne Kontrollgruppe)",
   "materialLabel": "Untersuchtes Material",
   "material": "171 öffentliche Anwenderberichte",
-  "geprueft": "QiOne® 2 Pro und QiBracelet®"
+  "geprueft": "QiOne® 2 Pro und QiBracelet®",
+  "coverMasse": {
+   "w": 620,
+   "h": 877
+  },
+  "coverNorm": {
+   "kH": 1.13161,
+   "kW": 0.8,
+   "kX": 0.01548,
+   "kY": 0.07226,
+   "kBox": 0.75613
+  },
+  "coverPixelSha": "9160837e19286866e83600cccf0f4959aca7ec3a05186c3690c2248aa83398af"
  },
  "laienSummary": {
   "frage": "Was sagen Nutzer von QiOne® 2 Pro und QiBracelet® über ihre Erfahrungen?",
