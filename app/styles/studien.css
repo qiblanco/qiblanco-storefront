@@ -639,7 +639,7 @@
   box-shadow: var(--st-shadow-md);
   background: #fff;
 }
-.qb-st-lightbox-schliessen {
+.qb-st-lightbox-close {
   all: unset;
   position: absolute;
   top: calc(var(--st-s3) * -1);
@@ -657,7 +657,7 @@
   box-shadow: var(--st-shadow-md);
   cursor: pointer;
 }
-.qb-st-lightbox-schliessen:focus-visible {
+.qb-st-lightbox-close:focus-visible {
   outline: 2px solid var(--st-akzent-tief);
   outline-offset: 2px;
 }

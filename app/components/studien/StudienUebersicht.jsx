@@ -154,19 +154,19 @@ export function StudienUebersicht() {
     }
   }
 
-  function schliessen() {
+  function schließen() {
     setAktiveStudie(null);
-    // FOKUS-RUECKGABE: ohne das verliert ein Tastatur-Nutzer nach dem
-    // Schliessen die Position im Dokument — der Fokus fiele auf <body>
-    // zurueck. Rueckgabe an genau das Element, das den Dialog geoeffnet hat.
+    // FOKUS-RÜCKGABE: ohne das verliert ein Tastatur-Nutzer nach dem
+    // Schließen die Position im Dokument — der Fokus fiele auf <body>
+    // zurück. Rückgabe an genau das Element, das den Dialog geöffnet hat.
     // { preventScroll: true } ist PFLICHT: .focus() scrollt das Ziel sonst
-    // in den sichtbaren Bereich und reisst den Nutzer von der Studien-Karte,
-    // zu der gerade gesprungen wurde, zurueck zur Faecher-Kachel — das
-    // Sprung-Verhalten waere dann beim Schliessen wieder aufgehoben.
+    // in den sichtbaren Bereich und reißt den Nutzer von der Studien-Karte,
+    // zu der gerade gesprungen wurde, zurück zur Fächer-Kachel — das
+    // Sprung-Verhalten wäre dann beim Schließen wieder aufgehoben.
     letzterAusloeserRef.current?.focus({preventScroll: true});
   }
 
-  // ESCAPE SCHLIESST — Idiom aus components/Aside.jsx uebernommen
+  // Escape schließt den Dialog — Idiom aus components/Aside.jsx übernommen
   // (AbortController statt manuellem removeEventListener).
   useEffect(() => {
     if (!aktiveStudie) return undefined;
@@ -174,7 +174,7 @@ export function StudienUebersicht() {
     document.addEventListener(
       'keydown',
       (ev) => {
-        if (ev.key === 'Escape') schliessen();
+        if (ev.key === 'Escape') schließen();
       },
       {signal: controller.signal},
     );
@@ -287,13 +287,13 @@ export function StudienUebersicht() {
       </div>
 
       {/* LIGHTBOX (Teil B2/B3). role=dialog + aria-modal folgt dem
-          Bestands-Muster aus components/Aside.jsx — hier zusaetzlich mit
-          Fokus-Falle (Tab bleibt im Dialog) und Fokus-Rueckgabe beim
-          Schliessen, was Aside.jsx noch nicht mitbringt. Schliessen geht
+          Bestands-Muster aus components/Aside.jsx — hier zusätzlich mit
+          Fokus-Falle (Tab bleibt im Dialog) und Fokus-Rückgabe beim
+          Schließen, was Aside.jsx noch nicht mitbringt. Schließen geht
           DREIFACH: Escape (Effekt oben), Klick auf den Hintergrund, Klick
-          auf das ×-Symbol — "auf Mobilgeraeten darf man nie feststecken". */}
+          auf das ×-Symbol — "auf Mobilgeräten darf man nie feststecken". */}
       {aktiveStudie ? (
-        // Fokus-Falle des ARIA-Dialog-Musters: der Tastatur-Handler gehoert
+        // Fokus-Falle des ARIA-Dialog-Musters: der Tastatur-Handler gehört
         // auf den Dialog-Container, damit Tab/Shift+Tab beim Rand umlaufen
         // statt in die dahinterliegende Seite zu wandern. Der Container
         // selbst bleibt unfokussierbar (kein tabIndex) — nur seine echten
@@ -306,12 +306,12 @@ export function StudienUebersicht() {
           aria-label={`Titelseite „${aktiveStudie.eckdaten.titelOriginal}“`}
           onKeyDown={(ev) => {
             // FOKUS-FALLE: Tab/Shift+Tab kreisen zwischen den zwei
-            // fokussierbaren Elementen des Dialogs (Schliessen-Knopf,
+            // fokussierbaren Elementen des Dialogs (Schließen-Knopf,
             // Original-PDF-Link), statt in die verdeckte Seite zu wandern.
-            // tabIndex=-1-Elemente (der grossflaechige Hintergrund-Knopf)
+            // tabIndex=-1-Elemente (der großflächige Hintergrund-Knopf)
             // sind bewusst ausgeschlossen: er ist per Klick/Touch bedienbar,
-            // aber ohne sichtbaren Fokus-Ring — in der Tab-Reihenfolge waere
-            // er eine unsichtbare Falle fuer Tastatur-Nutzer.
+            // aber ohne sichtbaren Fokus-Ring — in der Tab-Reihenfolge wäre
+            // er eine unsichtbare Falle für Tastatur-Nutzer.
             if (ev.key !== 'Tab') return;
             const fokussierbar = Array.from(
               ev.currentTarget.querySelectorAll('button, a[href]'),
@@ -333,15 +333,15 @@ export function StudienUebersicht() {
             className="qb-st-lightbox-hintergrund"
             aria-label="Schließen"
             tabIndex={-1}
-            onClick={schliessen}
+            onClick={schließen}
           />
           <div className="qb-st-lightbox-inhalt">
             <button
               type="button"
-              className="qb-st-lightbox-schliessen"
+              className="qb-st-lightbox-close"
               aria-label="Schließen"
               ref={schliessenRef}
-              onClick={schliessen}
+              onClick={schließen}
             >
               ×
             </button>
