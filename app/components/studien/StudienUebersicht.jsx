@@ -25,6 +25,7 @@
  * die neue Struktur her.
  */
 
+import {useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {
   STUDIEN,
@@ -32,6 +33,16 @@ import {
   untersuchteProdukte,
   zahlwort,
 } from '~/data/studien';
+
+/** Bestands-Idiom (reusables/useDragSwipe.js, campaign/SchlafZellenSchutzV3.jsx,
+ * index-components/ReputonWidget.jsx) — hier wiederverwendet, nicht neu erfunden. */
+function prefersReducedMotion() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
 
 /** „A, B und C" — deutsche Aufzaehlung ohne Oxford-Komma. */
 function aufzaehlung(namen) {
@@ -115,6 +126,67 @@ export function StudienUebersicht() {
   const produkte = untersuchteProdukte();
   const anzahl = zahlwort(STUDIEN.length);
 
+  /**
+   * KLICKVERHALTEN (Teil B2/B3): Klick/Enter/Space auf eine Titelseite im
+   * Fächer vergrößert sie UND springt zur Karte derselben Studie weiter
+   * unten. Die Auftrags-Prämisse "das gibt es schon" war an der Live-Seite
+   * widerlegt (weder klickbar noch fokussierbar) — das hier ist Neubau,
+   * nicht Nachbesserung.
+   *
+   * ID-BASIERT, NICHT POSITIONSBASIERT: Ziel ist `#${studie.id}`
+   * (`e0001`…), nicht "die dritte Karte". Sortiert STUDIEN künftig um oder
+   * kommt eine sechste Arbeit dazu, bleibt der Sprung korrekt — dieselbe
+   * Wurzel wie bei der Kanon-Zuordnung in Teil A.
+   */
+  const [aktiveStudie, setAktiveStudie] = useState(null);
+  const letzterAusloeserRef = useRef(null);
+  const schliessenRef = useRef(null);
+
+  function oeffneUndSpringe(studie, ausloeserEl) {
+    letzterAusloeserRef.current = ausloeserEl;
+    setAktiveStudie(studie);
+    const ziel = document.getElementById(studie.id);
+    if (ziel) {
+      ziel.scrollIntoView({
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
+  }
+
+  function schließen() {
+    setAktiveStudie(null);
+    // FOKUS-RÜCKGABE: ohne das verliert ein Tastatur-Nutzer nach dem
+    // Schließen die Position im Dokument — der Fokus fiele auf <body>
+    // zurück. Rückgabe an genau das Element, das den Dialog geöffnet hat.
+    // { preventScroll: true } ist PFLICHT: .focus() scrollt das Ziel sonst
+    // in den sichtbaren Bereich und reißt den Nutzer von der Studien-Karte,
+    // zu der gerade gesprungen wurde, zurück zur Fächer-Kachel — das
+    // Sprung-Verhalten wäre dann beim Schließen wieder aufgehoben.
+    letzterAusloeserRef.current?.focus({preventScroll: true});
+  }
+
+  // Escape schließt den Dialog — Idiom aus components/Aside.jsx übernommen
+  // (AbortController statt manuellem removeEventListener).
+  useEffect(() => {
+    if (!aktiveStudie) return undefined;
+    const controller = new AbortController();
+    document.addEventListener(
+      'keydown',
+      (ev) => {
+        if (ev.key === 'Escape') schließen();
+      },
+      {signal: controller.signal},
+    );
+    // Fokus IN den Dialog, sobald er steht — sonst bleibt der Tastatur-Fokus
+    // auf der jetzt verdeckten Auslöser-Kachel stehen. preventScroll, damit
+    // dieser Fokuswechsel die parallel laufende Sprung-Animation zur
+    // Studien-Karte nicht unterbricht (der Knopf ist ohnehin fixiert und
+    // damit immer im sichtbaren Bereich).
+    schliessenRef.current?.focus({preventScroll: true});
+    return () => controller.abort();
+  }, [aktiveStudie]);
+
   return (
     <div className="qb-st qb-st-übersicht">
       <div className="qb-st-wrap">
@@ -144,13 +216,20 @@ export function StudienUebersicht() {
             <ul className="qb-st-hero-faecher" style={faecherVars(STUDIEN)}>
               {STUDIEN.map((s, i) => (
                 <li key={s.id} style={kachelVars(s, i)}>
-                  <img
-                    src={s.eckdaten.coverUrl}
-                    alt={`Titelseite der Publikation „${s.eckdaten.titelOriginal}“ im ${s.eckdaten.journal}`}
-                    width={s.eckdaten.coverMasse?.w}
-                    height={s.eckdaten.coverMasse?.h}
-                    loading="lazy"
-                  />
+                  <button
+                    type="button"
+                    className="qb-st-hero-faecher-knopf"
+                    aria-label={`Titelseite der Publikation „${s.eckdaten.titelOriginal}“ im ${s.eckdaten.journal} vergrößern und zur Studie springen`}
+                    onClick={(ev) => oeffneUndSpringe(s, ev.currentTarget)}
+                  >
+                    <img
+                      src={s.eckdaten.coverUrl}
+                      alt={`Titelseite der Publikation „${s.eckdaten.titelOriginal}“ im ${s.eckdaten.journal}`}
+                      width={s.eckdaten.coverMasse?.w}
+                      height={s.eckdaten.coverMasse?.h}
+                      loading="lazy"
+                    />
+                  </button>
                 </li>
               ))}
             </ul>
@@ -206,6 +285,83 @@ export function StudienUebersicht() {
           </div>
         </section>
       </div>
+
+      {/* LIGHTBOX (Teil B2/B3). role=dialog + aria-modal folgt dem
+          Bestands-Muster aus components/Aside.jsx — hier zusätzlich mit
+          Fokus-Falle (Tab bleibt im Dialog) und Fokus-Rückgabe beim
+          Schließen, was Aside.jsx noch nicht mitbringt. Schließen geht
+          DREIFACH: Escape (Effekt oben), Klick auf den Hintergrund, Klick
+          auf das ×-Symbol — "auf Mobilgeräten darf man nie feststecken". */}
+      {aktiveStudie ? (
+        // Fokus-Falle des ARIA-Dialog-Musters: der Tastatur-Handler gehört
+        // auf den Dialog-Container, damit Tab/Shift+Tab beim Rand umlaufen
+        // statt in die dahinterliegende Seite zu wandern. Der Container
+        // selbst bleibt unfokussierbar (kein tabIndex) — nur seine echten
+        // interaktiven Kinder (Knopf, Link) sind Ziel der Falle.
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+        <div
+          className="qb-st-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Titelseite „${aktiveStudie.eckdaten.titelOriginal}“`}
+          onKeyDown={(ev) => {
+            // FOKUS-FALLE: Tab/Shift+Tab kreisen zwischen den zwei
+            // fokussierbaren Elementen des Dialogs (Schließen-Knopf,
+            // Original-PDF-Link), statt in die verdeckte Seite zu wandern.
+            // tabIndex=-1-Elemente (der großflächige Hintergrund-Knopf)
+            // sind bewusst ausgeschlossen: er ist per Klick/Touch bedienbar,
+            // aber ohne sichtbaren Fokus-Ring — in der Tab-Reihenfolge wäre
+            // er eine unsichtbare Falle für Tastatur-Nutzer.
+            if (ev.key !== 'Tab') return;
+            const fokussierbar = Array.from(
+              ev.currentTarget.querySelectorAll('button, a[href]'),
+            ).filter((el) => el.tabIndex !== -1);
+            if (fokussierbar.length === 0) return;
+            const erster = fokussierbar[0];
+            const letzter = fokussierbar[fokussierbar.length - 1];
+            if (ev.shiftKey && document.activeElement === erster) {
+              ev.preventDefault();
+              letzter.focus();
+            } else if (!ev.shiftKey && document.activeElement === letzter) {
+              ev.preventDefault();
+              erster.focus();
+            }
+          }}
+        >
+          <button
+            type="button"
+            className="qb-st-lightbox-hintergrund"
+            aria-label="Schließen"
+            tabIndex={-1}
+            onClick={schließen}
+          />
+          <div className="qb-st-lightbox-inhalt">
+            <button
+              type="button"
+              className="qb-st-lightbox-close"
+              aria-label="Schließen"
+              ref={schliessenRef}
+              onClick={schließen}
+            >
+              ×
+            </button>
+            <img
+              src={aktiveStudie.eckdaten.coverUrl}
+              alt={`Titelseite der Publikation „${aktiveStudie.eckdaten.titelOriginal}“ im ${aktiveStudie.eckdaten.journal}`}
+              width={aktiveStudie.eckdaten.coverMasse?.w}
+              height={aktiveStudie.eckdaten.coverMasse?.h}
+            />
+            <a
+              className="qb-st-btn qb-st-lightbox-pdf"
+              href={aktiveStudie.eckdaten.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Original-PDF (öffnet im neuen Tab)
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -224,7 +380,7 @@ function StudienKarte({studie}) {
        Warum überhaupt gestapelt: für Evidenz-Listen, die der Leser
        VERGLEICHT, schlägt die Zeilenform das Kachelraster — die Merkmale
        stehen dann bei jeder Studie an derselben Stelle untereinander. */
-    <article className="qb-st-karte">
+    <article className="qb-st-karte" id={studie.id} tabIndex={-1}>
       <a
         className="qb-st-karte-cover"
         href={e.pdfUrl}

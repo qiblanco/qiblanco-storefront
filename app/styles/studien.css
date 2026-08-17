@@ -572,11 +572,96 @@
     calc(var(--st-fae-h) * var(--st-ky) * -1)
   );
 }
-/* Wer weiche Bewegung abgeschaltet hat, bekommt kein Wandern beim Hover. */
+/* Wer weiche Bewegung abgeschaltet hat, bekommt kein Wandern beim Hover.
+   Das weiche SCROLLEN zur Studie steuert `scrollIntoView({behavior})` im
+   Component selbst (prefersReducedMotion()) — CSS kann `behavior:smooth`
+   nicht bedingt an ein `window.scrollTo`-Signal binden. */
 @media (prefers-reduced-motion: reduce) {
   .qb-st-hero-faecher li { transition: none; }
   .qb-st-hero-faecher li:hover { transform: none; }
 }
+
+/* Der Knopf um die Titelseite (Teil B2: Klick vergroessert + springt zur
+   Studie). Reset auf die Fensterflaeche der Kachel — keine eigene
+   Button-Optik, das Bild bleibt das einzig sichtbare Element. */
+.qb-st-hero-faecher-knopf {
+  all: unset;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.qb-st-hero-faecher-knopf:focus-visible {
+  outline: 2px solid var(--st-akzent-tief);
+  outline-offset: 3px;
+  border-radius: var(--st-r1);
+}
+
+/* ---- Lightbox (Teil B2/B3) -----------------------------------------------
+   role=dialog + aria-modal, Muster aus components/Aside.jsx uebernommen
+   (Ueberlagerung mit einem Hintergrund-Knopf statt einem generischen
+   Klick-ausserhalb-Listener — funktioniert identisch auf Touch UND Maus,
+   ohne Event-Bubbling-Sonderfaelle).
+   MOBIL PFLICHT (B3): der Schliessen-Knopf bleibt IMMER erreichbar — fixiert
+   oben rechts, nie unter dem Bild versteckt, Mindesttastflaeche 44px. */
+.qb-st-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--st-s4);
+}
+.qb-st-lightbox-hintergrund {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  background: rgba(25, 23, 20, 0.72);
+  cursor: pointer;
+}
+.qb-st-lightbox-inhalt {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--st-s3);
+  max-width: min(90vw, 640px);
+  max-height: 90vh;
+}
+.qb-st-lightbox-inhalt img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(90vh - 96px);
+  width: auto;
+  height: auto;
+  border-radius: var(--st-r1);
+  box-shadow: var(--st-shadow-md);
+  background: #fff;
+}
+.qb-st-lightbox-close {
+  all: unset;
+  position: absolute;
+  top: calc(var(--st-s3) * -1);
+  right: calc(var(--st-s3) * -1);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--st-dunkel);
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: var(--st-shadow-md);
+  cursor: pointer;
+}
+.qb-st-lightbox-close:focus-visible {
+  outline: 2px solid var(--st-akzent-tief);
+  outline-offset: 2px;
+}
+.qb-st-lightbox-pdf { flex: 0 0 auto; }
 .qb-st-hero-bildunter {
   font-size: var(--st-fs-xs);
   color: var(--st-muted);
@@ -604,6 +689,10 @@
   border-radius: var(--st-r2);
   box-shadow: var(--st-shadow-sm);
   transition: box-shadow 0.2s ease;
+  /* Scroll-Ziel von Teil B2 (Klick im Faecher springt hierher). Gleicher
+     Bestands-Wert wie .qb-st-sektion/.qb-st-abschnitt, damit die Karte beim
+     Sprung nicht direkt an der Fensterkante klebt. */
+  scroll-margin-top: var(--st-s8);
 }
 .qb-st-karte:hover { box-shadow: var(--st-shadow-md); }
 
