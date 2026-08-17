@@ -44,34 +44,34 @@ function initialCap(w) {
 }
 
 /**
- * DIE DARSTELLUNGSNORM DES FAECHERS (titelbild-norm-v1) — Rechenteil.
+ * DIE DARSTELLUNGSNORM DES FÄCHERS (titelbild-norm-v1) — Rechenteil.
  *
- * Alle Titelseiten sollen gleich gross erscheinen. "Gleich gross" heisst
- * hier gleiche Hoehe des SICHTBAREN INHALTS, nicht gleiche Leinwand: die
+ * Alle Titelseiten sollen gleich groß erscheinen. "Gleich groß" heißt
+ * hier gleiche Höhe des SICHTBAREN INHALTS, nicht gleiche Leinwand: die
  * Bilder sind Montagen auf transparentem Grund, und der transparente Rand
- * ist je Datei verschieden gross (gemessen 88,4 % bis 100,0 % Content-Anteil
- * an der Hoehe). Wer nur die Leinwand angleicht, laesst 13,2 % Streuung
- * stehen — und der groesste Ausreisser waere ausgerechnet das kanonische
- * Titelbild der fuenften Studie, das gar keinen Rand hat.
+ * ist je Datei verschieden groß (gemessen 88,4 % bis 100,0 % Content-Anteil
+ * an der Höhe). Wer nur die Leinwand angleicht, lässt 13,2 % Streuung
+ * stehen — und der größte Ausreißer wäre ausgerechnet das kanonische
+ * Titelbild der fünften Studie, das gar keinen Rand hat.
  *
  * Die Faktoren stehen je Studie in `eckdaten.coverNorm` und sind aus der
  * Bilddatei gerechnet (medien-hosting/bin/kanon-titelbilder messen), nicht
- * geschaetzt. Die kanonische Zuordnung Studie -> Titelbild liegt in
+ * geschätzt. Die kanonische Zuordnung Studie -> Titelbild liegt in
  * medien-hosting/kanon/studien-titelbilder.yaml; diese Komponente liest sie
- * ueber die Studien-Registry und haelt keine eigene Bildliste.
+ * über die Studien-Registry und hält keine eigene Bildliste.
  *
  * FAIL-SOFT: fehlt einer Studie `coverNorm` (z. B. weil jemand eine sechste
- * Arbeit ohne Vermessung ergaenzt), faellt genau diese Kachel auf die
- * Leinwand-Normierung zurueck. Das ist sichtbar schlechter, aber nicht
- * kaputt — und es reisst nicht den ganzen Faecher.
+ * Arbeit ohne Vermessung ergänzt), fällt genau diese Kachel auf die
+ * Leinwand-Normierung zurück. Das ist sichtbar schlechter, aber nicht
+ * kaputt — und es reißt nicht den ganzen Fächer.
  */
 const FAECHER_UEBERLAPPUNG = 0.12;
 
-/** Norm-Faktoren einer Studie, mit Rueckfall auf die Leinwand. */
+/** Norm-Faktoren einer Studie, mit Rückfall auf die Leinwand. */
 function coverNorm(studie) {
   const n = studie.eckdaten?.coverNorm;
   if (n && typeof n.kBox === 'number' && n.kBox > 0) return n;
-  // Rueckfall: ohne Vermessung ist die Content-Box unbekannt, also gilt die
+  // Rückfall: ohne Vermessung ist die Content-Box unbekannt, also gilt die
   // Leinwand als Inhalt (kX/kY = 0, kH = 1).
   const m = studie.eckdaten?.coverMasse;
   const ratio = m?.w && m?.h ? m.w / m.h : 0.75;
@@ -79,11 +79,11 @@ function coverNorm(studie) {
 }
 
 /**
- * Variablen des Faechers selbst. `--st-fae-kbox-eff` ist die Breite des
- * ganzen Stapels in Vielfachen der Faecher-Hoehe — daraus deckelt das CSS
- * die Hoehe so, dass der Faecher IMMER in seine Spalte passt, auch bei
- * einer sechsten oder siebten Studie. Ohne diesen Deckel waechst ein
- * hoehen-normierter Faecher mit jeder weiteren Arbeit aus dem Container.
+ * Variablen des Fächers selbst. `--st-fae-kbox-eff` ist die Breite des
+ * ganzen Stapels in Vielfachen der Fächer-Höhe — daraus deckelt das CSS
+ * die Höhe so, dass der Fächer IMMER in seine Spalte passt, auch bei
+ * einer sechsten oder siebten Studie. Ohne diesen Deckel wächst ein
+ * höhen-normierter Fächer mit jeder weiteren Arbeit aus dem Container.
  */
 function faecherVars(studien) {
   const kboxSumme = studien.reduce((s, st) => s + coverNorm(st).kBox, 0);
