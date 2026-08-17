@@ -28,7 +28,19 @@
   "studientyp": "In-vitro-Zellstudie (Zellkultur)",
   "materialLabel": "Zellen / Material",
   "material": "MDCK (Hund), Hep G2 (Mensch), IPEC-J2 (Schwein), A-549 (Mensch), L-929 (Maus) — 5 Zelltypen in 3 Serien",
-  "geprueft": "QiBracelet®"
+  "geprueft": "QiBracelet®",
+  "coverMasse": {
+   "w": 2480,
+   "h": 3508
+  },
+  "coverNorm": {
+   "kH": 1.13125,
+   "kW": 0.79974,
+   "kX": 0.01483,
+   "kY": 0.07159,
+   "kBox": 0.75653
+  },
+  "coverPixelSha": "0707617b3839f696c1e446d117e28fe9a0dc211b1f2f99ec0e75366a56f2ceeb"
  },
  "laienSummary": {
   "frage": "Kann das QiBracelet® Zellen vor oxidativem Stress schützen?",

@@ -26,7 +26,19 @@
   "studientyp": "In-vitro-Zellstudie (Zellkultur)",
   "materialLabel": "Zellen / Material",
   "material": "IPEC-J2 (Darmepithelzellen vom Schwein), n = 3–4",
-  "geprueft": "QiOne® 2 Pro"
+  "geprueft": "QiOne® 2 Pro",
+  "coverMasse": {
+   "w": 957,
+   "h": 1024
+  },
+  "coverNorm": {
+   "kH": 1.08936,
+   "kW": 1.01809,
+   "kX": 0.02872,
+   "kY": 0.06489,
+   "kBox": 0.95
+  },
+  "coverPixelSha": "ff26ba576ef9bce935c3adbf7eb29e5615a1e3bc8ab9b4fe2fa50cf1ba297a4f"
  },
  "laienSummary": {
   "frage": "Kann QiOne® 2 Pro die Darmschleimhaut vor den Auswirkungen von Handystrahlung schützen?",
