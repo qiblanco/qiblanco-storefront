@@ -4620,6 +4620,59 @@ ul.kakao-children li {
   border-radius: 10px;
   display: block;
 }
+
+/* ───────── Flaechen-Norm der Belegbilder (Job 20260818-studien-grafiken-…) ────
+   PROBLEM (live gemessen, Desktop 1440 + Mobil 390): die fuenf Titelbilder sind
+   Montagen auf VERSCHIEDEN gerahmten Leinwaenden (957x1024 … 2480x3508 …
+   1080x1080). "width:100%" normiert deshalb die LEINWAND, nicht den sichtbaren
+   Beleg: Leinwand-Breiten 0,0 % Streuung, aber Leinwand-Hoehen 29,3 % und die
+   sichtbare Content-FLAECHE 35,0 %. Das ist die Unruhe im Screenshot.
+
+   NORM: gleiche optische CONTENT-FLAECHE, nicht gleiche Kante. Gemessen laesst
+   "gleiche Hoehe" 20,4 % Flaechen-Streuung uebrig und "gleiche Breite" ebenso;
+   gleiche Flaeche deckelt JEDE Achse auf <= 10,8 %. Der Faecher auf
+   /pages/studien nutzt bewusst die andere Achse (gleiche Hoehe) — dort liest das
+   Auge die Oberkante als Linie, hier gibt es keine gemeinsame Kante.
+
+   NICHT BESCHNITTEN, und das ist rechenbar statt behauptet: bei ZIEL_FLAECHE
+   0,93 ist die groesste Content-Hoehe 1,109 und die groesste Content-Breite
+   0,940 Buehnenbreiten — die Buehne misst 1,0 x 1,25. Jede Content-Box liegt
+   also mit Luft VOLLSTAENDIG in der Buehne; `overflow:hidden` kann baulich nur
+   transparenten Leinwandrand treffen. Genau das prueft die Probe
+   (Content-Box in Buehne), nicht "sieht ok aus".
+
+   Additiv: ohne die --norm-Klasse bleibt der Bestandspfad darueber unveraendert
+   — eine Studie ohne coverNorm rendert exakt wie bisher. */
+.ghx-studie__preview--norm {
+  position: relative;
+  aspect-ratio: 1 / var(--ghx-buehne-h, 1.25);
+  container-type: inline-size;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--a-buehne, #faf9f7);
+}
+.ghx-studie__preview--norm img {
+  position: absolute;
+  /* Alle Masse sind Vielfache der BUEHNENBREITE, deshalb durchgaengig
+     `<faktor> * 100cqw` (100cqw = eine Buehnenbreite). `1cqw` waere ein
+     Hundertstel davon — der Prototyp rendert dann auf 1/100 und sieht dabei
+     rechnerisch voellig gesund aus (Flaechen-Streuung war auch dort 0,00 %). */
+  /* Leinwand = Content-Hoehe * kH bzw. kW; --ghx-hc ist in Buehnenbreiten. */
+  width: calc(var(--ghx-hc) * var(--ghx-kw) * 100cqw);
+  height: calc(var(--ghx-hc) * var(--ghx-kh) * 100cqw);
+  /* Content-MITTE auf die Buehnen-Mitte legen — gemeinsame optische Mitte statt
+     gemeinsamer Grundlinie (bei Collagen die ruhigere der beiden Achsen). */
+  left: calc(
+    (0.5 - var(--ghx-hc) * (var(--ghx-kx) + var(--ghx-kbox) / 2)) * 100cqw
+  );
+  top: calc(
+    (var(--ghx-buehne-h, 1.25) * 0.5 - var(--ghx-hc) * (var(--ghx-ky) + 0.5)) *
+      100cqw
+  );
+  max-width: none;
+  display: block;
+  border-radius: 0;
+}
 .ghx-studie__source {
   margin: 0;
   margin-top: auto;
