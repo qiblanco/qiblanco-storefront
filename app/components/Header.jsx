@@ -16,6 +16,46 @@ import {
 
 const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
 
+/**
+ * TITELBILD DER NEUESTEN STUDIE (e0005) FÜR DAS STUDIEN-DROPDOWN.
+ *
+ * Kanonische Quelle: medien-hosting/kanon/studien-titelbilder.yaml, Eintrag
+ * `studien.e0005.kanon.dach`. Derselbe Dateiname steht in
+ * `app/data/studien/e0005.json` unter `eckdaten.coverUrl` — hier bewusst als
+ * Literal wiederholt und NICHT von dort importiert:
+ *
+ *   Header.jsx ist "use client" und hängt am root-Chunk, läuft also auf JEDER
+ *   Seite. Ein `import {...} from '~/data/studien'` zieht die fünf Studien-JSON
+ *   (169 KB, davon ~34 KB Artikel-Volltext je Studie) als STATISCHE
+ *   root-Abhängigkeit herein. Gemessen 2026-08-18 mit zwei Builds: der
+ *   root-Chunk bekam den 164-KB-Chunk index-*.js zusätzlich als statischen
+ *   Import, den er vorher nicht hatte — 164 KB auf jeder Seite für EIN Bild.
+ *   Die Gesamt-Bytezahl verriet das NICHT (+759 B, +0,04 %), weil der Chunk
+ *   vorher schon existierte, nur eben lazy. Wer das nachprüft, muss den
+ *   IMPORT-GRAPHEN des root-Chunks ansehen, nicht die Bundle-Größe.
+ *
+ * PREIS DIESER ENTSCHEIDUNG, offen benannt: die URL steht damit außerhalb der
+ * Reichweite von `kanon-titelbilder pruefe` — dessen DACH-Zweig liest
+ * ausschließlich app/data/studien/e*.json (`pruefumfang.dach.pfade` ist dort
+ * Dokumentation, kein Code-Pfad). Gegen genau diese stille Drift hängt an
+ * diesem Bau eine nachbau-audit-Probe, die den Dateinamen HIER gegen die
+ * Kanon-Registry vergleicht. Wer die URL ändert, ändert sie an beiden Stellen
+ * — sonst wird die Probe rot.
+ *
+ * Maße aus der Registry (`canvas: 1080x1080`): das Bild ist QUADRATISCH, die
+ * drei Nachbar-Dropdowns tragen Querformate. Es wird trotzdem NICHT beschnitten
+ * — Christians Auflage zum Original, wörtlich in der Kanon-Datei: "nicht
+ * stillschweigend zurechtschneiden ... dann muss eher die Norm sie aufnehmen
+ * können als umgekehrt". Kein object-fit, kein Zuschnitt; width/height nennen
+ * nur das echte Verhältnis, damit der Platz vor dem Laden feststeht.
+ */
+const STUDIEN_DROPDOWN_BILD = {
+  url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0005-deckblatt--56291027b5c1.png?v=1786754235',
+  breite: 325,
+  hoehe: 325, // canvas 1080x1080 => 1:1
+  alt: 'Titelseite der Publikation in Neurodegenerative Diseases: Current Research',
+};
+
 function resolveMenuItemLink(item) {
   if (item?.title?.trim().toLowerCase() === 'partner werden') {
     return {to: PARTNER_REGISTER_URL, isExternal: true};
@@ -486,6 +526,23 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
       {item.title === "Mehr" && (
         <div className="nav-styling-wrapper">
           <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
+        </div>
+      )}
+
+      {/* Studien war als einziges der vier Dropdowns ohne Bild — gemessen
+          2026-08-18 an der ausgelieferten Seite: Shop/Online Kurse/Mehr trugen
+          einen .nav-styling-wrapper, Studien nicht, Leerraum links 470 px.
+          Quelle und Format des Bildes: siehe STUDIEN_DROPDOWN_BILD oben. */}
+      {item.title === "Studien" && (
+        <div className="nav-styling-wrapper">
+          <img
+            style={{borderRadius: '20px'}}
+            width={STUDIEN_DROPDOWN_BILD.breite}
+            height={STUDIEN_DROPDOWN_BILD.hoehe}
+            src={STUDIEN_DROPDOWN_BILD.url}
+            alt={STUDIEN_DROPDOWN_BILD.alt}
+            loading="lazy"
+          />
         </div>
       )}
 
