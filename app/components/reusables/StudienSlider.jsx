@@ -48,6 +48,53 @@ import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
  * <StudienSlider /> ganz ohne Props und haette sonst ploetzlich eine H2, die es
  * nie hatte. Den Default trägt der Wrapper Studien.jsx.
  */
+
+/*
+ * FLÄCHEN-NORM DER BELEGBILDER (Job 20260818-studien-grafiken-…).
+ *
+ * Die Titelbilder sind Montagen auf verschieden gerahmten Leinwänden. Wer sie
+ * über die Leinwand normiert (`width:100%`), normiert den transparenten Rand
+ * mit -- der sichtbare Beleg streute dadurch live um 35,0 % in der Fläche.
+ * Normiert wird deshalb über die CONTENT-Box aus `eckdaten.coverNorm`
+ * (dieselbe Quelle, aus der der Fächer auf /pages/studien seine Norm zieht --
+ * KEINE zweite Messung, keine zweite Wahrheit).
+ *
+ * Bezugsgröße ist durchweg die Content-HÖHE in Bühnenbreiten (`hc`):
+ *   Leinwand-Höhe  = hc * kH      Content-Breite = hc * kBox
+ *   Leinwand-Breite = hc * kW     Rand links/oben = hc * kX bzw. hc * kY
+ * Gleiche Fläche heißt kBox * hc² = ZIEL_FLAECHE, also hc = sqrt(A / kBox).
+ *
+ * Beide Zahlen unten sind Design-Tokens, keine Naturkonstanten -- sie stehen
+ * hier an EINER Stelle, damit eine spätere Studie sie nicht einzeln aufweicht.
+ */
+const BUEHNE_HOEHE = 1.25; // Bühnenhöhe in Bühnenbreiten
+const ZIEL_FLAECHE = 0.93; // Content-Fläche in (Bühnenbreite)²
+
+/**
+ * Liefert die CSS-Variablen der Flächen-Norm -- oder null, wenn die Studie
+ * keine coverNorm trägt. null heißt: Bestandspfad, unverändertes Rendering.
+ * Fail-soft ist hier richtig, weil eine neue Studie ohne vermessene Content-Box
+ * sonst gar nicht erschiene; sichtbar bleibt sie so in jedem Fall.
+ */
+function flaechenNorm(eckdaten) {
+  const cn = eckdaten && eckdaten.coverNorm;
+  if (!cn) return null;
+  const {kH, kW, kX, kY, kBox} = cn;
+  if (![kH, kW, kX, kY, kBox].every((v) => typeof v === 'number' && isFinite(v))) {
+    return null;
+  }
+  if (kBox <= 0 || kH <= 0 || kW <= 0) return null;
+  return {
+    '--ghx-buehne-h': String(BUEHNE_HOEHE),
+    '--ghx-hc': Math.sqrt(ZIEL_FLAECHE / kBox).toFixed(5),
+    '--ghx-kh': String(kH),
+    '--ghx-kw': String(kW),
+    '--ghx-kx': String(kX),
+    '--ghx-ky': String(kY),
+    '--ghx-kbox': String(kBox),
+  };
+}
+
 export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
   const trackRef = useRef(null);
   const scrollByCard = (dir) => {
@@ -85,6 +132,7 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
         {studien.map((s) => {
           const e = s.eckdaten || {};
           const {zeile1, zeile2} = kachelZeilen(s);
+          const norm = flaechenNorm(e);
           return (
             <article className="ghx-studie" key={s.id}>
               {/*
@@ -98,7 +146,14 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
                 to={studienPfad(s.slug)}
               >
                 <h3 className="ghx-studie__title">{zeile1}</h3>
-                <span className="ghx-studie__preview">
+                <span
+                  className={
+                    norm
+                      ? 'ghx-studie__preview ghx-studie__preview--norm'
+                      : 'ghx-studie__preview'
+                  }
+                  style={norm || undefined}
+                >
                   <img
                     src={e.coverUrl}
                     alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
