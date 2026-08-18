@@ -120,9 +120,9 @@ function FreeShipping({cart}){
  *
  * WARUM HIER UND NICHT AUF DER DANKE-SEITE: Das Konzept nennt als wirksamsten
  * Ort die Danke-Seite. Die liegt aber auf checkout.qiblanco.com (Shopify) und
- * ist nur ueber eine Checkout-UI-Extension erreichbar — Partner-Dashboard-
+ * ist nur über eine Checkout-UI-Extension erreichbar — Partner-Dashboard-
  * Deploy, also Perimeter/R3 und nicht autonom. Der Warenkorb ist die letzte
- * Flaeche im Kaufpfad, die WIR ausliefern. Er traegt dieselbe These: gemessen
+ * Flaeche im Kaufpfad, die WIR ausliefern. Er trägt dieselbe These: gemessen
  * 12 Kaeufer haben Geraet und Kakao am SELBEN Tag gekauft, der gemeinsame
  * Checkout existiert also real (postkauf.db, 2026-08-18).
  *
@@ -133,11 +133,11 @@ function FreeShipping({cart}){
  *
  * DREI BAULICHE AUFLAGEN, die aus echten Fallen stammen:
  * (1) CartMain rendert NICHT nur /cart, sondern auch den Cart-Aside auf JEDER
- *     Seite (PageLayout.jsx). Ein Fehler hier waere seitenweit sichtbar —
+ *     Seite (PageLayout.jsx). Ein Fehler hier wäre seitenweit sichtbar —
  *     deshalb ist die Funktion total: jeder Fehler endet in `return null`,
  *     der Warenkorb bleibt in jedem Fall stehen.
  * (2) KEIN AddToCart. Nur ein Link auf die Produktseite. Ein eigener
- *     Warenkorb-Schreibpfad wuerde an `persistAttributionOnCartResult`
+ *     Warenkorb-Schreibpfad würde an `persistAttributionOnCartResult`
  *     (routes/cart.jsx) vorbeilaufen und die Attributions-Naht beschaedigen —
  *     exakt die _qpx_anon-Fehlerklasse. Es wird kein Identitaets-/Tracking-Key
  *     gesetzt, gelesen oder weitergereicht.

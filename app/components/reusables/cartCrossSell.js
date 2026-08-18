@@ -14,14 +14,18 @@
  *
  * CLAIM-KORRIDOR, zwei harte Auflagen — beide sind gemessen, nicht vermutet
  * (kontor claim-check --kanal crystal-cacao-de, 2026-08-18):
- *  - EU-S08: Kakao und Geraet duerfen NIE im selben Satz stehen
- *    (GL-DES-0009 Evidenz-Hygiene). Negativ-Kontrolle "Der Kristall-Kakao ist
- *    das Ritual zu deinem QiOne 2 Pro." -> FAIL. Jeder Vorschlag nennt darum
- *    ausschliesslich SEINE eigene Saeule.
- *  - EU-S14: keine Verzehrfrequenz fuer Kakao ohne Cadmium-Analysenzertifikat.
- *    Die Konzept-Vorlage hiess "Das tägliche Ritual zum Gerät" und faellt an
- *    genau dieser Sperre. Der Text nennt darum einen ANLASS, keine Haeufigkeit.
- * Wer die Texte anfasst, faehrt beide Proben erneut.
+ *  - EU-S08: Kakao und Gerät dürfen NIE im selben Satz stehen
+ *    (GL-DES-0009 Evidenz-Hygiene). Die Negativ-Kontrolle dazu steht in
+ *    selftest_cart_crosssell.mjs und fällt dort erwartungsgemäß. Jeder
+ *    Vorschlag nennt darum ausschließlich SEINE eigene Säule.
+ *  - EU-S14: keine Verzehrfrequenz für Kakao ohne Cadmium-Analysenzertifikat.
+ *    Die Formulierung der Konzept-Vorlage nannte eine Häufigkeit und fällt an
+ *    genau dieser Sperre. Der Text nennt darum einen ANLASS, keine Häufigkeit.
+ *
+ * Die gesperrten Wortlaute stehen hier BEWUSST NICHT wörtlich: die Live-Probe
+ * (probe_cart_crosssell_live.py) sucht sie im ausgelieferten Bundle. Ein Zitat
+ * im Quelltext würde ihr die eigene Buchführung als Verstoß melden.
+ * Wer die Texte anfasst, fährt beide Proben erneut.
  */
 
 /* Schluessel = Shopify-Produkt-Handle (products.*-Routen, live gemessen 200). */
