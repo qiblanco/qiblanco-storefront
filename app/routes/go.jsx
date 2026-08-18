@@ -1,5 +1,5 @@
 import {redirect} from '@shopify/remix-oxygen';
-import {handleGoRequest} from '~/lib/go-router.server';
+import {baueBasisHit, handleGoRequest} from '~/lib/go-router.server';
 
 /**
  * LP-Router /go (qiblanco.com/go) — Konzept landingpage-4lp-abcd-konzept, Kap. 4.2.
@@ -22,6 +22,14 @@ import {handleGoRequest} from '~/lib/go-router.server';
  * Build-Toolchain prüfbar ist. Dieser Adapter übersetzt nur in ein redirect().
  */
 export async function loader({request, context}) {
+  // Cookieloser Basis-Hit (serverseitig, da 302 ohne DOM): fire-and-forget via
+  // waitUntil, gated durch PUBLIC_QPX_BASIS_ENDPOINT — fail-soft, verzoegert
+  // den Redirect nicht und bricht ihn nie.
+  const basisHit = baueBasisHit(request, context?.env);
+  if (basisHit) {
+    const senden = fetch(basisHit.endpoint, basisHit.init).catch(() => {});
+    if (typeof context?.waitUntil === 'function') context.waitUntil(senden);
+  }
   const {location, headers} = await handleGoRequest({
     request,
     env: context?.env,
