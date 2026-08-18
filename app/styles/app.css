@@ -2376,6 +2376,33 @@ ul.submenu li a {
 .cart-details {
   max-height: 80%;
 }
+/* Cross-Sell-Hinweis im Warenkorb (CartMain.jsx). Bewusst zurueckhaltend:
+   der Kauf-Button darf optisch nicht konkurrieren, der Hinweis ist ein
+   Angebot und kein zweiter Call-to-Action. Rendert in /cart UND im Aside. */
+.cart-crosssell {
+  margin: 0 0 20px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.015);
+}
+.cart-crosssell-titel {
+  display: block;
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+.cart-crosssell-text {
+  margin: 4px 0 8px 0;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.cart-crosssell-link {
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 0.8em;
+  text-decoration: underline;
+}
 .free-shipping-wrapper {
   margin: 0 0 30px 0;
 }
