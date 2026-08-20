@@ -32,13 +32,19 @@ export function CartSummary({cart, layout}) {
       <div className="cart-aside-subtotal">
        <div>Zwischensumme:</div> {formatEuroPrice(taxedSubtotal)}
       </div>
+      {/* Zwei Vertrauenszeilen unmittelbar über dem Kaufbutton.
+          Der früher dazwischenstehende Punkt-Trenner (div.trenner) ist
+          ersatzlos entfallen: sobald der erste Hinweis umbrach, setzte
+          `align-items:center` ihn zwischen die Zeilen, wo er wie ein verirrtes
+          Komma aussah. Gestapelt braucht es ihn nicht.
+          "versichterter" war ein Tippfehler und stand damit auf jeder Seite des
+          Shops direkt über dem Kaufbutton. */}
       <div className="cart-delivery-notes">
         <small className="additional-delivery-notice">
           In 2 bis 3 Tagen bei dir!
         </small>
-        <div className="trenner"></div>
         <small className="additional-delivery-notice">
-          100% versichterter Versand!
+          100&nbsp;% versicherter Versand!
         </small>
       </div>
       <CartCheckoutActions
