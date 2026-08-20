@@ -4,7 +4,6 @@ import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {Money} from '@shopify/hydrogen';
-import {crossSellVorschlag} from '~/components/reusables/cartCrossSell';
 
 /**
  * The main cart component that displays the cart items and summary.
@@ -36,7 +35,6 @@ export function CartMain({layout, cart: originalCart}) {
           </ul>
         </div>
       </div>
-      {cartHasItems && <CrossSellHinweis cart={cart} />}
       {cartHasItems && <CartSummary cart={cart} layout={layout} />}
     </div>
   );
@@ -112,57 +110,6 @@ function FreeShipping({cart}){
       </small>
     </div>
   )
-}
-
-/*
- * CROSS-SELL IM WARENKORB (Doing pdf-cross-selling-...#006, Job
- * nachhol-pdf-cross-selling-zwei-saeulen-ein-funda-006).
- *
- * WARUM HIER UND NICHT AUF DER DANKE-SEITE: Das Konzept nennt als wirksamsten
- * Ort die Danke-Seite. Die liegt aber auf checkout.qiblanco.com (Shopify) und
- * ist nur über eine Checkout-UI-Extension erreichbar — Partner-Dashboard-
- * Deploy, also Perimeter/R3 und nicht autonom. Der Warenkorb ist die letzte
- * Flaeche im Kaufpfad, die WIR ausliefern. Er trägt dieselbe These: gemessen
- * 12 Kaeufer haben Geraet und Kakao am SELBEN Tag gekauft, der gemeinsame
- * Checkout existiert also real (postkauf.db, 2026-08-18).
- *
- * BESITZ-BEWUSST (Prinzip aus dem postkauf-manager): vorgeschlagen wird immer
- * nur die Saeule, die NICHT schon im Warenkorb liegt. Liegen beide drin, ist
- * der Kunde bereits Beide-Kaeufer und bekommt nichts — kein Nachfassen auf
- * etwas, das er schon hat.
- *
- * DREI BAULICHE AUFLAGEN, die aus echten Fallen stammen:
- * (1) CartMain rendert NICHT nur /cart, sondern auch den Cart-Aside auf JEDER
- *     Seite (PageLayout.jsx). Ein Fehler hier wäre seitenweit sichtbar —
- *     deshalb ist die Funktion total: jeder Fehler endet in `return null`,
- *     der Warenkorb bleibt in jedem Fall stehen.
- * (2) KEIN AddToCart. Nur ein Link auf die Produktseite. Ein eigener
- *     Warenkorb-Schreibpfad würde an `persistAttributionOnCartResult`
- *     (routes/cart.jsx) vorbeilaufen und die Attributions-Naht beschaedigen —
- *     exakt die _qpx_anon-Fehlerklasse. Es wird kein Identitaets-/Tracking-Key
- *     gesetzt, gelesen oder weitergereicht.
- * (3) Kakao und Geraet stehen NIE im selben Satz. Das ist nicht Kosmetik,
- *     sondern GL-DES-0009 Evidenz-Hygiene (claim-korridor crystal-cacao-de
- *     EU-S08): der Kakao leiht sich nie die Geraete-Evidenz.
- */
-function CrossSellHinweis({cart}) {
-  try {
-    const v = crossSellVorschlag(cart?.lines?.nodes);
-    if (!v) return null;
-
-    return (
-      <aside className="cart-crosssell" data-section="cart-crosssell">
-        <small className="cart-crosssell-titel">{v.titel}</small>
-        <p className="cart-crosssell-text">{v.text}</p>
-        <Link className="cart-crosssell-link" to={v.ziel} prefetch="intent">
-          {v.linkText}
-        </Link>
-      </aside>
-    );
-  } catch {
-    // Auflage (1): der Warenkorb steht in jedem Fall.
-    return null;
-  }
 }
 
 /** @typedef {'page' | 'aside'} CartLayout */
