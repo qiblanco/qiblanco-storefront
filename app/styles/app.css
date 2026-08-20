@@ -473,6 +473,31 @@ aside li {
   margin-bottom: 0.125rem;
 }
 
+/* z-index 10 -> 5000, live gemessen am 2026-08-20 nach dem Drei-Zonen-Umbau.
+ *
+ * DAS <aside> DARIN DEKLARIERT z-index:10000 — WIRKUNGSLOS. `.overlay` ist
+ * `position:fixed` mit eigenem z-index und oeffnet damit einen STAPELKONTEXT;
+ * alles darin wird gemeinsam auf der Stufe des Overlays einsortiert. Der
+ * gesamte Drawer lag also real auf Stufe 10, nicht 10000 — unterhalb des
+ * Salesbot-Chat-Widgets (iframe#qiblanco-salesbot-widget-frame, position:fixed,
+ * z-index:4900, unten rechts).
+ *
+ * Das war eine LATENTE Falle, die dieser Umbau ausgeloest, aber nicht gebaut
+ * hat: solange der Kaufbutton mitten im Drawer stand, traf er das Widget nie.
+ * Die dritte Zone setzt den Fuss korrekt an die Unterkante — genau dorthin, wo
+ * das Chat-Widget klebt. Gemessen (elementFromPoint auf die Buttonmitte):
+ *   390x844  Knopf [16,730,358,70]  vs iframe [58,743,325,94]  -> verdeckt
+ *   768x1024 Knopf [284,910,400,70] vs iframe [388,915,373,102] -> verdeckt
+ *   1440x900 Knopf [931,345,400,70] — Panel haengt oben        -> frei
+ * Der Kaufbutton war damit auf Mobil und Tablet sichtbar, aber nicht klickbar.
+ *
+ * 5000 ist die im Salesbot-Widget dokumentierte HAUSREGEL-Obergrenze
+ * (SalesbotWidget.jsx: "Hausregel ist z-index <= 5000, die Design-Rubrik
+ * straft hoehere Werte ab"); das Widget selbst nimmt 4900. Ein modaler Dialog
+ * (role="dialog", aria-modal) gehoert ueber ein schwebendes Chat-Widget — der
+ * Wert ist der kleinste, der das leistet, statt eines neuen Rekordwerts.
+ * Die uebrigen Overlays des Shops (Bildergalerie, 360-Video, Toast) liegen
+ * bewusst darueber und bleiben unberuehrt. */
 .overlay {
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
@@ -485,7 +510,7 @@ aside li {
   transition: opacity 400ms ease-in-out;
   transition: opacity 400ms;
   visibility: hidden;
-  z-index: 10;
+  z-index: 5000;
 }
 
 .overlay .close-outside {
