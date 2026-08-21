@@ -8,7 +8,11 @@ import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Cart`}];
+  // Stand vorher: `Hydrogen | Cart` — der Vorgabewert des Hydrogen-Starters. Er
+  // stand englisch UND mit dem Namen des Frameworks im Browser-Tab und in der
+  // Google-Trefferzeile der deutschen Storefront. Das Muster hier ist das der
+  // übrigen Routen (agb, datenschutz, pages.$handle, partner): "<Seite> | Qi Blanco".
+  return [{title: 'Warenkorb | Qi Blanco'}];
 };
 
 /**
@@ -124,10 +128,21 @@ export default function Cart() {
   /** @type {LoaderReturnData} */
   const cart = useLoaderData();
 
+  // `.cart` ist der SEITENRAHMEN (Shop-Breite, Seitenabstand), `.cart-page-inner`
+  // die INHALTSSPALTE in Drawer-Geometrie. Zwei Ebenen, weil beides verschiedene
+  // Aufgaben hat: der Rahmen bindet die Seite an das Breitensystem des Shops, die
+  // Spalte hält Label und Betrag beieinander. Die Überschrift steht MIT in der
+  // Spalte — stünde sie im Rahmen, begänne sie 470 px links von der Produktzeile.
   return (
     <div className="cart">
-      <h1>Cart</h1>
-      <CartMain layout="page" cart={cart} />
+      <div className="cart-page-inner">
+        {/* Stand vorher: <h1>Cart</h1> — englisch auf der deutschen Storefront,
+            während der Drawer daneben korrekt "Warenkorb" sagt. Bleibt bewusst
+            ein <h1> (genau eine Hauptüberschrift je Seite) und behält damit die
+            h1-Skala des Shops; der Drawer nutzt <h3>, weil er ein Dialog ist. */}
+        <h1>Warenkorb</h1>
+        <CartMain layout="page" cart={cart} />
+      </div>
     </div>
   );
 }

@@ -1460,21 +1460,94 @@ ul.submenu li a {
   margin-right: 0.75rem;
 }
 
+/* ===================================================================
+ * WARENKORB-SEITE (/cart) — Seitenrahmen und Inhaltsspalte
+ * Job 20260821-cart-seite-gestaltung-an-drawer-angleichen-prio15.
+ *
+ * WARUM ES DAS VORHER NICHT GAB: `div.cart` hatte im ganzen Stylesheet KEINE
+ * einzige Regel. Die Seite war der unveraenderte Rest des Hydrogen-Starters,
+ * waehrend der Drawer daneben ueber Monate gestaltet wurde — zuletzt am
+ * 2026-08-20. Ohne Rahmen beginnt der Inhalt bei x=0: gemessen klebten 14
+ * Elemente an der linken Kante, und die Zwischensummen-Zeile spannte ueber die
+ * VOLLE Viewportbreite (1440 px), sodass zwischen "Zwischensumme:" und dem
+ * Betrag 1292 px Leere lagen.
+ *
+ * Zwei Ebenen, weil zwei verschiedene Aufgaben:
+ *   .cart            — bindet die Seite an das BREITENSYSTEM des Shops
+ *   .cart-page-inner — haelt Label und Betrag BEIEINANDER
+ * ------------------------------------------------------------------- */
+
+/* Seitenrahmen. Beide Werte sind am laufenden Shop GEMESSEN, nicht gewaehlt:
+ * max-width:1350px ist der mit Abstand haeufigste Container-Wert (Startseite 14,
+ * Produktseite 17 Treffer bei 1440 px Viewport), und er tritt dort immer
+ * zusammen mit calc(100% - 32px) auf — also 16 px Abstand je Seite. */
+.cart {
+  max-width: 1350px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+/* Inhaltsspalte in der GEMESSENEN Geometrie des Drawers (aside.aside--cart ist
+ * live 500 px breit, Inhalt 468 px, Abstand Label/Betrag 320 px). Damit erbt die
+ * Seite die Proportion des Soll-Zustands 1:1 — jede Abnahmezahl ist gegen den
+ * Drawer pruefbar statt gegen Geschmack.
+ *
+ * BEWUSST NICHT auf die vollen 1350 px aufgezogen: dann laege zwischen Label und
+ * Betrag rund 1200 px Leere — Christians Befund in gross. Zwei unabhaengige
+ * Regeln verbieten das: die Gestalt-Naehe (weit auseinanderliegende Paare werden
+ * nicht mehr als zusammengehoerig gelesen, NN/g) und die Zeilenlaenge von 45-75
+ * Zeichen (Bringhurst; WCAG 1.4.8 deckelt bei 80). Baymard raet fuer breite
+ * Schirme ausdruecklich, eine Spalte NICHT zu strecken. Der Raum rechts bleibt
+ * damit zwar frei — aber SYMMETRISCH, also als Weissraum lesbar statt als
+ * abgerutschter Inhalt. */
+.cart-page-inner {
+  max-width: 500px;
+  margin-inline: auto;
+}
+
+/* Die Seite scrollt als SEITE. `.cart-main`/`.cart-details` tragen aus der
+ * Drawer-Architektur `overflow:hidden` bzw. `overflow-y:auto` — im Drawer ist das
+ * richtig (dort ist .cart-details der EINE Scroller innerhalb fester 100dvh), auf
+ * einer Seite waere es ein Kasten-im-Kasten-Scroller.
+ * BEIDE Achsen gemeinsam auf `visible`: `overflow-x:hidden` neben
+ * `overflow-y:visible` rechnet CSS zu `auto` um, und dann steht doch wieder ein
+ * Balken da (dieselbe Mechanik, die am 2026-08-20 die Leisten im Drawer erzeugte).
+ * `visible` statt `auto` ist hier die staerkere Zusage: kein Scroll-Container,
+ * also auch kein bedingungslos gezeichneter Balken. */
+.cart .cart-main,
+.cart .cart-details {
+  overflow: visible;
+}
+
+/* BASIS fuer BEIDE Ansichten — die EINE Quelle der gemeinsamen Gestaltung.
+ * Vorher trug `.cart-summary-aside` diese Werte allein und `.cart-summary-page`
+ * hatte nur `position:relative`. Beide Klassen kommen aus DERSELBEN Komponente
+ * (CartSummary.jsx waehlt sie ueber `layout`), die Komponenten sind also laengst
+ * geteilt — auseinandergelaufen ist allein das CSS, und zwar durch AUSLASSUNG:
+ * der Seiten-Zweig war deklariert und nie befuellt.
+ * Basis + Modifier (BEM) verhindert die Wiederholung: wer die Trennlinie aendert,
+ * aendert sie ab jetzt zwangslaeufig fuer beide Ansichten. */
+.cart-summary-page,
+.cart-summary-aside {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 8px;
+  width: 100%;
+}
+
+/* Nur die SEITE. */
 .cart-summary-page {
   position: relative;
 }
 
-/* FUSS-ZONE: strukturell fix, ausserhalb des Scrollers — nicht `position:sticky`.
- * Sticky klebt nur relativ zum scrollenden Container und verschwindet mit ihm;
- * eine dritte Flex-Zone kann baulich nicht weggescrollt werden.
- * `padding-bottom` haelt den iPhone-Homeindikator frei, ohne auf Geraeten ohne
- * Aussparung Platz zu verschenken (env() ist dort 0, max() faellt auf 8px). */
+/* Nur der DRAWER — FUSS-ZONE: strukturell fix, ausserhalb des Scrollers, nicht
+ * `position:sticky`. Sticky klebt nur relativ zum scrollenden Container und
+ * verschwindet mit ihm; eine dritte Flex-Zone kann baulich nicht weggescrollt
+ * werden. `padding-bottom` haelt den iPhone-Homeindikator frei, ohne auf
+ * Geraeten ohne Aussparung Platz zu verschenken (env() ist dort 0, max() faellt
+ * auf 8px). */
 .cart-summary-aside {
   flex: 0 0 auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding-top: 8px;
   padding-bottom: max(8px, env(safe-area-inset-bottom));
-  width: 100%;
 }
 .cart-aside-subtotal {
   width: 100%;
