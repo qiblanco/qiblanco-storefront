@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useId, useRef, useState} from 'react';
 import {useLocation} from 'react-router';
 import {SHOP_LABEL, switchTarget} from '~/lib/shop-switch';
 
@@ -16,6 +16,27 @@ import {SHOP_LABEL, switchTarget} from '~/lib/shop-switch';
  *
  * Die Zuordnung selbst wird NICHT hier gepflegt: app/lib/shop-switch.js ist
  * generiert aus homepage-bauer/shop-switch/shop-mapping.yaml.
+ *
+ * ARIA: DISCLOSURE, NICHT LISTBOX (umgestellt 2026-08-21, Job
+ * 20260821-dach-shopswitch-aria-disclosure). Bis dahin rendete dieses Bauteil
+ * <ul role="listbox"> mit role="option" auf den <a href>. Das ist laut W3C
+ * WAI-ARIA Authoring Practices ein Anti-Muster: eine Listbox "does not provide
+ * an accessible way to present a list of interactive elements, such as links",
+ * und "the interaction model conveyed by the listbox role to assistive
+ * technologies does not support interacting with elements inside of an
+ * option" — role="option" hat presentational children, ein Link darin wird
+ * Screenreadern gar nicht als Link angeboten, und das Pfeiltasten-Modell der
+ * Listbox passt nicht zu Navigation.
+ *   https://www.w3.org/WAI/ARIA/apg/patterns/listbox/
+ * Richtig ist das Disclosure-Muster: Button mit aria-expanded/aria-controls,
+ * dahinter eine gewöhnliche Liste echter Links, der aktuelle mit aria-current.
+ *   https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/
+ * Der US-Zwilling (snippets/shop-switch.liquid) trägt es seit 2026-08-19; hier
+ * wird die verbliebene Hälfte nachgezogen. Geändert ist NUR die Semantik, die
+ * man nicht sieht: die Optik hängt ausschließlich an den Klassen
+ * (.shop-switch__panel/__option/__option--aktiv) und an dem EINEN
+ * Attribut-Selektor .shop-switch__trigger[aria-expanded='true'] für den
+ * Chevron — kein CSS-Selektor greift auf role oder aria-selected zu.
  */
 
 const SHOPS = ['de', 'us'];
@@ -90,6 +111,15 @@ function Flagge({shop}) {
 export function ShopSwitch({aktiv = 'de'}) {
   const [offen, setOffen] = useState(false);
   const wurzelRef = useRef(null);
+  const triggerRef = useRef(null);
+  // useId statt eines festen id-Literals wie im US-Zwilling ("shop-switch-panel"):
+  // dieses Bauteil ist über {aktiv} parametrisiert, also bewusst mehrfach
+  // instanziierbar, und der Header trägt genau die Doppel-Instanz-Gefahr, die der
+  // US-Toggle selbst dokumentiert (Desktop-/Mobil-Variante). Zwei gleiche id
+  // machten aria-controls mehrdeutig — ein STILLER A11y-Defekt genau der Klasse,
+  // die dieser Umbau beseitigt. Nichts sucht das Panel über seine id: CSS und
+  // alle Proben greifen auf .shop-switch__panel zu.
+  const panelId = useId();
   const location = useLocation();
   const pfad = location?.pathname || '/';
 
@@ -99,7 +129,14 @@ export function ShopSwitch({aktiv = 'de'}) {
     if (!offen) return undefined;
 
     function beiTaste(e) {
-      if (e.key === 'Escape') setOffen(false);
+      if (e.key === 'Escape') {
+        setOffen(false);
+        // Fokus zurück auf den Auslöser. Ohne das hängt ein Tastatur-Nutzer
+        // nach Escape im Nirgendwo: der Fokus stünde auf einem Link in einem
+        // gerade zugeklappten Panel. Der US-Zwilling tut das seit 2026-08-19,
+        // DACH schloss bis hierher nur.
+        triggerRef.current?.focus();
+      }
     }
     function beiKlick(e) {
       if (wurzelRef.current && !wurzelRef.current.contains(e.target)) {
@@ -119,9 +156,16 @@ export function ShopSwitch({aktiv = 'de'}) {
     <div className="shop-switch" ref={wurzelRef}>
       <button
         type="button"
+        ref={triggerRef}
         className="shop-switch__trigger reset"
+        /* aria-expanded ist hier NICHT nur Semantik, sondern Optik-Träger:
+           app/styles/app.css dreht den Chevron über
+           .shop-switch__trigger[aria-expanded='true']. Es bleibt unverändert.
+           aria-haspopup entfällt ersatzlos — das Disclosure-Muster der APG
+           kennt es nicht, und "listbox" wäre nach diesem Umbau schlicht
+           gelogen. aria-controls tritt an seine Stelle. */
         aria-expanded={offen}
-        aria-haspopup="listbox"
+        aria-controls={panelId}
         aria-label={`Shop wechseln — aktuell ${SHOP_LABEL[aktiv]}`}
         onClick={() => setOffen((v) => !v)}
       >
@@ -158,26 +202,30 @@ export function ShopSwitch({aktiv = 'de'}) {
       </noscript>
 
       <ul
+        id={panelId}
         className={
           offen
             ? 'shop-switch__panel shop-switch__panel--offen'
             : 'shop-switch__panel'
         }
-        role="listbox"
-        aria-label="Shop"
       >
         {SHOPS.map((shop) => {
           const istAktiv = shop === aktiv;
           return (
-            <li key={shop} role="none">
+            <li key={shop}>
               <a
                 className={
                   istAktiv
                     ? 'shop-switch__option shop-switch__option--aktiv'
                     : 'shop-switch__option'
                 }
-                role="option"
-                aria-selected={istAktiv}
+                /* aria-current bleibt bewusst "true" (nicht das feinere
+                   "page"): der US-Zwilling und der Enforcer
+                   probe_us_header_naht.py fordern genau diesen Wert, und
+                   "true" ist gültiges ARIA für "aktuelles Element der Menge".
+                   Es ist jetzt die EINZIGE Auszeichnung der aktiven Option —
+                   aria-selected fiel mit role="option" weg, weil es außerhalb
+                   einer Listbox/eines Grids bedeutungslos ist. */
                 {...(istAktiv ? {'aria-current': 'true'} : {})}
                 /* Die aktive Option zeigt auf die Seite, auf der man steht —
                    nicht auf die Startseite. switchTarget wäre hier falsch:
