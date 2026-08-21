@@ -1500,8 +1500,15 @@ ul.submenu li a {
  * Schirme ausdruecklich, eine Spalte NICHT zu strecken. Der Raum rechts bleibt
  * damit zwar frei — aber SYMMETRISCH, also als Weissraum lesbar statt als
  * abgerutschter Inhalt. */
+/* 468px, nicht 500px: der Drawer ist AUSSEN 500 px breit und traegt 16 px
+ * Innenabstand je Seite — sein INHALT misst 468 px. Die Seite hat ihren
+ * Seitenabstand schon eine Ebene hoeher (`.cart`), hier zaehlt also die
+ * Inhaltsbreite. Mit 500 px war die Summenzeile auf 768 und 1440 um genau
+ * diese 32 px breiter als im Drawer (live nachgemessen: Luecke Label/Betrag
+ * 352 statt 320 px). 468 px trifft den Drawer auf allen drei Viewports exakt:
+ * 390 -> 358 = 358, 768 -> 468 = 468, 1440 -> 468 = 468. */
 .cart-page-inner {
-  max-width: 500px;
+  max-width: 468px;
   margin-inline: auto;
 }
 
