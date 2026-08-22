@@ -9,7 +9,13 @@ import {ProductItem} from '~/components/ProductItem';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  // Stand vorher: `Hydrogen | <Name> Collection` — der Vorgabewert des
+  // Hydrogen-Starters. Er stand auf JEDER Kollektionsseite im Browser-Tab und
+  // in der Google-Trefferzeile: der Name des Frameworks und das englische Wort
+  // "Collection" neben einem deutschen Kollektionsnamen (live gemessen
+  // 2026-08-22: <title>Hydrogen | Digitale Kurse Collection</title>).
+  // Muster wie cart.jsx und collections.all.jsx: "<Seite> | Qi Blanco".
+  return [{title: `${data?.collection.title ?? 'Kollektion'} | Qi Blanco`}];
 };
 
 /**
