@@ -46,17 +46,30 @@ export const GOOGLE_REZENSIONEN_ANKER_ID = 'google-rezensionen';
  */
 export const GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID = 'kundenerfahrungen';
 
+/** Stabiler Sektions-Marker (Job 20260820-wurzel-sterne-klick-scroll, s03).
+ *  Ersetzt `.google-rating-badge` als dritten Rueckfall — Begründung an
+ *  findeRezensionsZiel(). */
+export const REVIEWS_SEKTION_ATTR = 'data-qb-reviews-section';
+
 /** Scroll-Ziel des 4,8-Klicks, in Reihenfolge der Nähe zum Nutzer-Wunsch:
  *  1. die obere „Beeindruckende Kundenerfahrungen"-Sektion (Shop-Seiten/LPs),
  *  2. sonst der Rezensionsbereich (organische PDPs tragen NUR diesen),
- *  3. sonst das Bestands-Widget über den GoogleRatingBadge (LPs ohne Anker;
- *     seit PR #149 gibt es keinen .reputon-google-reviews-widget-Container). */
+ *  3. sonst die per Marker ausgezeichnete Rezensions-Sektion (LPs ohne Anker).
+ *
+ *  KOLLISION A4, AUFGELOEST 2026-08-22 (Job 20260820, Segment s03): der dritte
+ *  Rueckfall war bis hierher `.google-rating-badge` — ausgerechnet das
+ *  Klasse-G-Element. Dasselbe Element wäre damit Sprung-ZIEL und
+ *  Google-LINK zugleich gewesen: der Klick darauf soll zu Google fuehren, der
+ *  Sprung soll dorthin fuehren. Der Badge war nie das Ziel, sondern nur sein
+ *  zufaellig erreichbarer Nachbar — wo ein Badge steht, steht ohnehin eine
+ *  Sektion. Der Rueckfall zeigt deshalb jetzt auf den Sektions-Container
+ *  selbst; die beiden Anker-IDs bleiben unveraendert davor. */
 export function findeRezensionsZiel() {
   if (typeof document === 'undefined') return null;
   return (
     document.getElementById(GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID) ||
     document.getElementById(GOOGLE_REZENSIONEN_ANKER_ID) ||
-    document.querySelector('.google-rating-badge')
+    document.querySelector(`[${REVIEWS_SEKTION_ATTR}]`)
   );
 }
 
@@ -83,37 +96,174 @@ export function messeKopfHoehe() {
   return unten;
 }
 
+const SCROLL_LUFT_PX = 12; // kleine Luft, damit die Überschrift nicht klebt
+const STILL_FRAMES = 3; // so viele Frames ohne Bewegung = Animation fertig
+const MAX_WARTE_MS = 2500; // Notbremse, KEIN Taktgeber
+const TOLERANZ_PX = 3;
+const KORREKTUREN = 3; // erster Sprung + höchstens zwei Nachzüge
+
+/** Soll-Position mit LIVE gemessener Kopfhöhe. */
+function sollPosition(ziel) {
+  const zielOben = ziel.getBoundingClientRect().top + window.scrollY;
+  return Math.max(0, zielOben - messeKopfHoehe() - SCROLL_LUFT_PX);
+}
+
 /** Scrollt das Ziel unter den Kopf — mit gemessenem, NICHT geerbtem Offset.
- *  Ersetzt scrollIntoView({block:'start'}), das den fixen Kopf ignoriert. */
+ *  Ersetzt scrollIntoView({block:'start'}), das den fixen Kopf ignoriert.
+ *
+ *  KORRIGIERT WIRD AUF STILLSTAND, NICHT NACH GESCHAETZTER DAUER (Lehre aus
+ *  dem 08-15-Lauf, im US-Stack seit Wochen verankert — Uebertragungsrichtung
+ *  US -> DACH): eine laufende `behavior:'smooth'`-Animation trägt ihr Ziel
+ *  intern und schlaegt jede zeitgesteuerte Nachkorrektur. Erst den Zustand
+ *  herstellen, dann messen. */
 export function scrolleZuRezensionen(ziel) {
   if (!ziel || typeof window === 'undefined') return;
-  const abstand = 12; // kleine Luft, damit die Überschrift nicht klebt
-  const zielOben = ziel.getBoundingClientRect().top + window.scrollY;
+
+  const sanft = !(
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+
+  const y = () => window.pageYOffset || window.scrollY || 0;
+  const naechsterFrame = (fn) =>
+    window.requestAnimationFrame ? window.requestAnimationFrame(fn) : setTimeout(fn, 16);
+
+  /* Wartet, bis die Scrollposition über STILL_FRAMES Frames steht — oder bis
+     die Notbremse greift. Erst danach ist eine Neumessung aussagekräftig. */
+  function beiStillstand(weiter) {
+    let letzte = null;
+    let ruhig = 0;
+    const start = Date.now();
+    naechsterFrame(function tick() {
+      const jetzt = y();
+      ruhig = letzte !== null && Math.abs(jetzt - letzte) < 1 ? ruhig + 1 : 0;
+      letzte = jetzt;
+      if (ruhig >= STILL_FRAMES || Date.now() - start > MAX_WARTE_MS) {
+        weiter();
+        return;
+      }
+      naechsterFrame(tick);
+    });
+  }
+
+  function fahre(rest) {
+    const soll = sollPosition(ziel);
+    if (Math.abs(soll - y()) <= TOLERANZ_PX) return; // sitzt
+    if (sanft) window.scrollTo({top: soll, behavior: 'smooth'});
+    else window.scrollTo(0, soll);
+    if (rest <= 1) return;
+    beiStillstand(() => fahre(rest - 1));
+  }
 
   /*
-   * Der Kopf blendet sich beim ABWÄRTS-Scrollen selbst aus (Header.jsx
-   * scroll-hide ab 100 px) und beim Aufwärts-Scrollen wieder ein. Deshalb
-   * ist die richtige Korrektur richtungsabhängig — ein pauschaler Abzug
-   * (oder das feste `scroll-margin-top: 150px`) erzeugt sonst genau das
-   * Doppel-Offset, das der Auftrag ausschließt:
-   *   • abwärts (Normalfall: Klick oben im Banner) → Kopf ist am Ziel weg,
-   *     die Überschrift gehört an den oberen Rand (gemessen kopfUnten = 0),
-   *   • aufwärts → Kopf bleibt stehen und verdeckt sonst die Überschrift.
+   * ERSTER SPRUNG RICHTUNGSABHÄNGIG — dieser Teil ist GEMESSEN richtig und
+   * wird bewusst NICHT durch die reine Live-Messung ersetzt: der Kopf blendet
+   * sich beim ABWÄRTS-Scrollen selbst aus (Header.jsx scroll-hide ab 100 px),
+   * ist zum Zeitpunkt des ersten Messens aber noch sichtbar. Wer hier schon
+   * `messeKopfHoehe()` abzieht, springt um die Kopfhöhe zu kurz und korrigiert
+   * das sichtbar in einem zweiten Ruck nach. Nachgemessen am 2026-08-22
+   * (s02, alle drei Viewports 360/768/1440): mit kopf=0 landet die Überschrift
+   * auf +12 px, also mitten im Sichtfenster 0..220.
+   * Die Konvergenzschleife darunter deckt den AUFWÄRTS-Fall und jede
+   * Layoutverschiebung ab, die der erste Sprung nicht vorhersehen konnte.
    */
-  const nachUnten = zielOben > window.scrollY;
-  const kopf = nachUnten ? 0 : messeKopfHoehe();
+  const zielOben = ziel.getBoundingClientRect().top + window.scrollY;
+  const nachUnten = zielOben > y();
+  const ersterKopf = nachUnten ? 0 : messeKopfHoehe();
 
-  window.scrollTo({
-    top: Math.max(0, zielOben - kopf - abstand),
-    behavior: 'smooth',
-  });
+  if (sanft) {
+    window.scrollTo({
+      top: Math.max(0, zielOben - ersterKopf - SCROLL_LUFT_PX),
+      behavior: 'smooth',
+    });
+  } else {
+    window.scrollTo(0, Math.max(0, zielOben - ersterKopf - SCROLL_LUFT_PX));
+  }
+  beiStillstand(() => fahre(KORREKTUREN - 1));
+}
+
+/**
+ * Kopfhöhe als CSS-Variable zurückspeisen (`--qb-kopf-hoehe`).
+ *
+ * `scroll-margin-top: 150px` (app.css) ist ein DESKTOP-Maß und sitzt auf
+ * 360–414 px zwangsläufig daneben; ob das Banner eingeblendet ist, ändert die
+ * Höhe zusätzlich. Der Festwert bleibt als No-JS-Rückfall im Stylesheet
+ * stehen — diese Variable überschreibt ihn, sobald JS läuft.
+ *
+ * Nachgeführt wird bei Scroll (Banner ein/aus), Resize und
+ * Orientierungswechsel. Die Messung ist billig (wenige Elemente), wird aber
+ * über requestAnimationFrame entprellt, damit sie den Scroll nicht bremst.
+ */
+export function useKopfHoeheVariable() {
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    let offen = false;
+    const schreibe = () => {
+      offen = false;
+      const h = messeKopfHoehe();
+      document.documentElement.style.setProperty(
+        '--qb-kopf-hoehe',
+        `${Math.round(h)}px`,
+      );
+    };
+    const anfordern = () => {
+      if (offen) return;
+      offen = true;
+      window.requestAnimationFrame(schreibe);
+    };
+    schreibe();
+    window.addEventListener('scroll', anfordern, {passive: true});
+    window.addEventListener('resize', anfordern);
+    window.addEventListener('orientationchange', anfordern);
+    return () => {
+      window.removeEventListener('scroll', anfordern);
+      window.removeEventListener('resize', anfordern);
+      window.removeEventListener('orientationchange', anfordern);
+    };
+  }, []);
+}
+
+/**
+ * Dokumentweite Delegation für JEDE Klasse-S-Sterne-Ansicht.
+ *
+ * WARUM DELEGIERT UND NICHT PRO KOMPONENTE: (1) ein Import der Scroll-Logik in
+ * StarRating wäre der Zyklus StarRating -> GoogleRezensionenBereich ->
+ * ReputonWidget -> StarRating; (2) es ist das Muster, das der US-Stack bereits
+ * fährt (qb-reviews.js) — geprüft am MARKER, nicht am Selektor, damit später
+ * hinzugefügte Sterne-Ansichten das Verhalten ohne Codeänderung erben.
+ *
+ * KEIN keydown-HANDLER: die Träger sind echte <button> (bzw. der Banner-<a>),
+ * dort lösen Enter/Leertaste nativ ein click aus. Ein eigener keydown-Handler
+ * würde auf genau diesen Elementen doppelt feuern.
+ */
+export function useSterneSprungDelegation(aufSprung) {
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    const onClick = (e) => {
+      /* Der Banner-<a> trägt bereits einen React-onClick, der preventDefault
+         aufruft. React hängt seine Listener am Root-Container, der IM document
+         liegt — beim Bubbling läuft der Container-Listener also VOR diesem
+         hier. `defaultPrevented` ist damit ein exakter, kein heuristischer
+         Schnitt gegen die Doppelauslösung. */
+      if (e.defaultPrevented) return;
+      const knoten = e.target?.closest?.('[data-qb-rating="s"]');
+      if (!knoten) return;
+      aufSprung(e);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, [aufSprung]);
 }
 
 export function GoogleRezensionenBereich({dataSection, mitAnker = true}) {
+  /* Sektions-Marker NUR zusammen mit dem Anker: das Fallback-Popup rendert
+     denselben Bereich mit mitAnker=false und darf nicht zum eigenen
+     Sprungziel werden — gleiche Regel wie „nie zwei Anker-IDs im Dokument". */
   return (
     <section
       id={mitAnker ? GOOGLE_REZENSIONEN_ANKER_ID : undefined}
       className="GoogleRezensionenBereich NormalSectionSize"
+      {...(mitAnker ? {[REVIEWS_SEKTION_ATTR]: ''} : {})}
       {...(dataSection ? {'data-section': dataSection} : {})}
     >
       <h2 className="GoogleRezensionenBereich-titel">

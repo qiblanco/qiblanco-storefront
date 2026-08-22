@@ -7,6 +7,7 @@ import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -83,9 +84,7 @@ export default function Product() {
       <QiOneBuyBox
         product={product}
         socialProof={
-          <div className="product-rating">
-            <span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span>
-          </div>
+          <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         }
         description={
           <div

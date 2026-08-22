@@ -1,6 +1,6 @@
 "use client"; // required for Hydrogen client components
 
-import {Suspense, useState, useEffect, useRef} from 'react';
+import {Suspense, useState, useEffect, useRef, useCallback} from 'react';
 import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
@@ -11,6 +11,8 @@ import {
   GoogleRezensionenPopup,
   findeRezensionsZiel,
   scrolleZuRezensionen,
+  useSterneSprungDelegation,
+  useKopfHoeheVariable,
   GOOGLE_REZENSIONEN_ANKER_ID,
 } from '~/components/reusables/GoogleRezensionenBereich';
 
@@ -137,7 +139,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   // No-JS-Fallback erhalten (PDP + Anker). Vorher war der Klick auf der
   // PDP selbst ein No-Op (Link auf dieselbe Route, Christian-Bug 2026-07-31).
   const [rezensionenPopupOffen, setRezensionenPopupOffen] = useState(false);
-  const onRezensionenKlick = (e) => {
+  const onRezensionenKlick = useCallback((e) => {
     e.preventDefault();
     const ziel = findeRezensionsZiel();
     if (ziel) {
@@ -149,7 +151,24 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     } else {
       setRezensionenPopupOffen(true);
     }
-  };
+  }, []);
+
+  /*
+   * DASSELBE VERHALTEN FÜR JEDE Klasse-S-Sterne-Ansicht DER SEITE, nicht nur
+   * für den Banner-Badge (Job 20260820-wurzel-sterne-klick-scroll, s03).
+   *
+   * Der Header ist der richtige Ort dafür, weil er ohnehin auf JEDER Route
+   * gerendert wird UND weil der Fallback-Zustand (Popup, wenn die Seite keinen
+   * Bewertungsbereich hat) hier bereits liegt — es gibt also genau EINE
+   * Definition des Verhaltens, die sich Banner und Sterne teilen.
+   *
+   * Geprueft wird der MARKER, nicht ein Selektor: eine spaeter hinzugefuegte
+   * Sterne-Ansicht erbt das Verhalten damit ohne Codeaenderung. Genau das ist
+   * der Grund, warum dieses Thema seit dem 2026-07-18 fuenfmal wiederkam —
+   * jeder Anlauf hat eine neue Merkliste gepflegt statt den Marker.
+   */
+  useSterneSprungDelegation(onRezensionenKlick);
+  useKopfHoeheVariable();
 
   return (
     <header
@@ -846,8 +865,33 @@ function CartToggle({cart}) {
    zum Rezensionsbereich). Optik unveraendert (.ReviewCount-Bestand). */
 function GoogleSterneBadge() {
   const g = useGoogleRating();
+  /*
+   * KLASSE S über den Marker — aber BEWUSST OHNE eigenen <button> und
+   * BEWUSST MIT literalen ★-Glyphen. Beides hat einen eigenen Grund:
+   *
+   * (1) KEIN eigener Traeger: dieser Badge sitzt bereits in dem <a> des
+   *     Ankuendigungsbandes, das onRezensionenKlick trägt. Ein <button>
+   *     darin wäre verschachtelte Interaktivitaet. Der Marker genügt, die
+   *     Tastaturbedienung liefert das umschliessende <a>. Damit die
+   *     Delegation nicht ZUSAETZLICH feuert, schneidet sie über
+   *     e.defaultPrevented ab (siehe useSterneSprungDelegation).
+   *
+   * (2) GLYPHEN BLEIBEN: das Ankuendigungsband steht unter der stehenden
+   *     Wache probe-topbanner-2zeilen („wird der Satz mobil mitten im Claim
+   *     abgeschnitten?", seit Job 20260731-repair-topbanner-resp). Fuenf
+   *     SVG-Sterne statt fuenf Textzeichen aendern die Umbruchbreite eines
+   *     mobil engen, bewachten Elements — Risiko ohne Ertrag, denn dieser
+   *     Badge war schon vorher der EINE funktionierende Trigger.
+   *     Nebeneffekt, der ausdrücklich gewollt ist: das Enumerations-Signal
+   *     `glyph` bleibt auf DACH nicht-null. Die Signal-Invariante der Wache
+   *     ist MONOTON — faellt ein je gemessenes Signal auf 0, ist das ein
+   *     BEFUND. Wer hier doch auf SVG migriert, muss die Basis-Datei
+   *     pruefungen/state/sterne_signal_basis.json VORHER von Hand und mit
+   *     Begründung pflegen, sonst meldet die Wache den eigenen Bau als
+   *     „Signal verstummt" und schickt einen repair-Fall gegen gesunden Code.
+   */
   return (
-    <span className="ReviewCount">
+    <span className="ReviewCount" data-qb-rating="s">
       {g.komma} {'★'.repeat(5)}
     </span>
   );

@@ -388,9 +388,14 @@ function ReviewKarte({review}) {
         <GoogleIcon />
       </div>
 
-      {/* Sterne + Verifiziert-Haken */}
+      {/* Sterne + Verifiziert-Haken.
+          KLASSE D: die Sterne EINER Bewertungskarte sind rein darstellend.
+          Am TRAEGER deklariert, NICHT über Container-Zugehoerigkeit — die
+          Startseite trägt zwei Karussells und nur eines hat eine id; eine
+          Herleitung „steht im Bewertungsbereich, also darstellend" würde die
+          Karten des zweiten Karussells als Fehlstelle zählen. */}
       <div className="flex items-center gap-1.5">
-        <StarRating value={review.rating} size={16} />
+        <StarRating value={review.rating} size={16} qb="d" />
         <svg width="14" height="14" viewBox="0 0 24 24" fill="#3b82f6" aria-hidden="true">
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
         </svg>
@@ -509,12 +514,26 @@ function GoogleIcon() {
 
 function GoogleRatingBadge() {
   const g = useGoogleRating();
+  /*
+   * KLASSE G — die AUSNAHME vom Standard, und sie gilt nur als Paar mit ihm:
+   * die GESAMTbewertung INNERHALB des Bewertungsbereichs verlinkt auf Google,
+   * weil ein Sprung dorthin, wo man schon steht, sinnlos wäre. Erwartet wird
+   * GENAU EINE solche Ansicht je Seite mit Bewertungsbereich — 0 ist ebenso
+   * ein Fehler wie 2.
+   *
+   * DER MARKER GEHÖRT AN DAS <a>, NICHT AN DIE STARRATING DARIN: die
+   * Enumeration zählt den AEUSSERSTEN Treffer, und `google-rating-badge`
+   * steht selbst auf der Klassenliste. Gezaehlt wird also dieses <a>, und die
+   * Klassenzuordnung läuft über closest() — ein nur innen gesetzter Marker
+   * wäre von hier aus unerreichbar und die Ansicht fiele als Fehlstelle auf.
+   */
   return (
     <a
       href={g.url}
       target="_blank"
       rel="noopener noreferrer"
       className="google-rating-badge"
+      data-qb-rating="g"
       aria-label={`${g.komma} von 5 Sternen aus ${g.total} Google-Rezensionen von Qi Blanco ansehen`}
     >
       <img
@@ -528,7 +547,7 @@ function GoogleRatingBadge() {
         <div className="google-rating-badge__score">
           <span className="google-rating-badge__number">{g.komma}</span>
           <span className="google-rating-badge__stars">
-            <StarRating value={g.value} size={20} />
+            <StarRating value={g.value} size={20} qb="g" />
           </span>
         </div>
         <div className="google-rating-badge__powered">

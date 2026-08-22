@@ -29,6 +29,7 @@ import {
 } from '~/lib/seo';
 import {produktSchema} from '~/lib/produkt-schema';
 import {MARKE} from '~/lib/produkt-seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -275,7 +276,7 @@ function StandardProduct({product}) {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <div className="product-rating mt-2"><span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span></div>
+        <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>

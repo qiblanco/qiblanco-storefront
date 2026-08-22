@@ -4462,6 +4462,54 @@ ul.kakao-children li {
   color: #333;
 }
 
+/* Sterne-Sprung — bedienbarer Traeger einer Sterne-Zeile
+   (Job 20260820-wurzel-sterne-klick-scroll, Segment s03).
+
+   REINER BUTTON-RESET, KEIN NEUES AUSSEHEN: die Optik der Zeile kommt weiter
+   aus .product-rating bzw. .ReviewCount, damit sich am Bild nichts aendert.
+   Neu ist ausschliesslich die AFFORDANZ — Zeigehand und ein sichtbarer
+   Fokusring. Keine neuen Farb-, Schrift- oder Radius-Werte: Ring und Hover
+   nutzen den bestehenden Token --color-accent-primary und dieselbe
+   outline-Schreibweise wie .shop-switch__trigger:focus-visible (kein zweiter
+   Goldton, keine freie Groesse). */
+.sterne-sprung {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.sterne-sprung:hover {
+  opacity: 0.85;
+}
+
+/* Nur :focus-visible — ein Mausklick soll keinen Rahmen hinterlassen, die
+   Tastaturbedienung dagegen sichtbar sein (beide Stacks hatten bisher gar
+   keinen sichtbaren Fokus auf den Sterne-Zeilen). */
+.sterne-sprung:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Die Nutzerzahl bleibt klein und schwarz — wie bei der Google-Variante.
+   Die Bestandsregel .product .product-rating span:nth-child(2) traegt hier
+   NICHT mehr: seit der Glyphen-Migration steht die StarRating-Grafik als
+   zweites Kind zwischen Bewertungszahl und Nutzerzahl. */
+.product .sterne-sprung.product-rating span:last-child {
+  font-size: 1rem;
+  color: #000;
+  font-weight: 500;
+}
+
 /* Star-Rating — geteilte 5-Sterne-Darstellung der 4,8-Bewertung
    (Block LP, Job 20260718-lp-sterne-reputon-googlelink) */
 .star-rating {
@@ -5272,9 +5320,15 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
    das Fallback-Popup fuer Seiten ohne Sektion, und die Docked-Naht der
    organischen PDP (Teil 3 der Claude-Ansicht-Naht, Muster #147/#148). */
 
-/* Anker-Scroll: Sektion nicht unter dem fixen Kopf landen lassen. */
+/* Anker-Scroll: Sektion nicht unter dem fixen Kopf landen lassen.
+
+   --qb-kopf-hoehe wird zur Laufzeit aus der GEMESSENEN Kopfunterkante gesetzt
+   (useKopfHoeheVariable in GoogleRezensionenBereich.jsx) und bei Banner-
+   Ein/Ausblenden, Resize und Orientierungswechsel nachgefuehrt. Die 150px
+   sind ein DESKTOP-Mass und sitzen auf 360-414px zwangslaeufig daneben; sie
+   bleiben ausschliesslich als No-JS-Rueckfall stehen. */
 .GoogleRezensionenBereich {
-  scroll-margin-top: 150px;
+  scroll-margin-top: var(--qb-kopf-hoehe, 150px);
   margin-top: 3rem;
   margin-bottom: 3rem;
 }
@@ -5289,7 +5343,8 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
    alle Formate mit etwas Luft ab (gleicher Wert wie beim Schwester-Anker,
    damit beide Sprungziele identisch sitzen). */
 .GoogleKundenerfahrungen {
-  scroll-margin-top: 150px;
+  /* siehe .GoogleRezensionenBereich: gemessene Kopfhoehe, 150px nur No-JS. */
+  scroll-margin-top: var(--qb-kopf-hoehe, 150px);
 }
 .GoogleRezensionenBereich-titel {
   text-align: center;

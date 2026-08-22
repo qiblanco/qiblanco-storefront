@@ -18,6 +18,7 @@ import { KursInhalteKakao } from '~/components/reusables/KursinhalteKakao';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 
 import {canonicalLink} from '~/lib/seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -122,7 +123,7 @@ export default function Product() {
         </div>
         <div className="KakaoHero-imgText">
           <h2>Kristall Kakao®</h2>
-          <div className="ReviewCount">5.0 ★★★★★</div>
+          <SterneSprung className="ReviewCount">5.0 <StarRating value={5.0} size={16} /></SterneSprung>
           <img
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
             alt=""
@@ -163,9 +164,7 @@ export default function Product() {
         </div>
         <div className="product-main">
           <h1>{title}</h1>
-          <div className="product-rating mt-2">
-            <span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span>
-          </div>
+          <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
           <div
             className="ProductDescription mt-2 mb-2"
             dangerouslySetInnerHTML={{__html: descriptionHtml}}
@@ -444,9 +443,7 @@ export default function Product() {
           </div>
           <div className="product-main">
             <h1>{title}</h1>
-            <div className="product-rating mt-2">
-              <span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span>
-            </div>
+            <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
             <div
               className="ProductDescription"
               dangerouslySetInnerHTML={{__html: descriptionHtml}}
@@ -545,7 +542,7 @@ function Kundenstimmen() {
         style={{margin: '100px auto 0 auto'}}
       >
         <h2 className="text-center">Kundenstimmen</h2>
-        <div className="ReviewCount">5.0 ★★★★★</div>
+        <SterneSprung className="ReviewCount">5.0 <StarRating value={5.0} size={16} /></SterneSprung>
       </div>
       <div className="Kundenstimmen-Slider NormalSectionSize mt-2">
         <div className="Kundenstimme">

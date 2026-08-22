@@ -11,7 +11,7 @@ import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionen
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {
   StarRating,
-  GOOGLE_REVIEWS_URL,
+  SterneSprung,
 } from '~/components/reusables/StarRating';
 
 /*
@@ -60,19 +60,17 @@ export function QiOne2ProShop({product}) {
           product={product}
           socialProof={
             /* Claims-SSoT liefert »4,8 ★« als TEXT (ein Stern-Zeichen) —
-               die 5-Sterne-Darstellung uebernimmt StarRating; Zeile klickbar
-               zur Google-Rezensionen-Ansicht (Job 20260718-lp-sterne). */
-            <a
-              className="product-rating product-rating--google"
-              href={GOOGLE_REVIEWS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="4,8 von 5 Sternen — Google-Rezensionen von Qi Blanco ansehen"
-            >
+               die 5-Sterne-Darstellung uebernimmt StarRating; die Zeile
+               springt zum Bewertungsbereich dieser Seite (Klasse S seit Job
+               20260820-wurzel-sterne-klick-scroll). Der früher hier
+               haengende EXTERNE Google-Link ist bewusst entfallen — er ist
+               die AUSNAHME und sitzt genau einmal je Seite am
+               GoogleRatingBadge im Bewertungsbereich. */
+            <SterneSprung className="product-rating">
               <span>{claim('WM-bewertung-4-8-sterne').replace(/\s*★\s*$/, '')}</span>{' '}
               <StarRating value={4.8} />{' '}
               <span>{claim('WM-nutzer-ueber-14000')}</span>
-            </a>
+            </SterneSprung>
           }
           description={<QiOneHeroBulletsPages />}
           topBadge={

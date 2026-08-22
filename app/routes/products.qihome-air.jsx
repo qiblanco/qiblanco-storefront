@@ -18,6 +18,7 @@ import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionen
 import {Video360Button} from '~/components/reusables/Video360Viewer';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -130,7 +131,7 @@ export default function Product() {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <div className="product-rating"><span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span></div>
+        <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>

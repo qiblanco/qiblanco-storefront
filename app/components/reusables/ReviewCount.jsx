@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
 export function ReviewCount() {
   const [reviewCount, setReviewCount] = useState(4.7);
@@ -29,9 +30,19 @@ export function ReviewCount() {
     };
   }, []);
 
+  /*
+   * Migration 2026-08-22 (Job 20260820-wurzel-sterne-klick-scroll, s03):
+   * Diese Zeile war die live gemessene TOTE Sterne-Ansicht der Startseite
+   * (HerobannerFeatured, top_doc=345) — Sterne ohne Link, ohne Klickziel.
+   *
+   * Zwei Aenderungen: die literalen ★-Glyphen weichen der geteilten
+   * StarRating-Komponente (EIN Renderort), und die ganze Zeile wird über
+   * SterneSprung zum bedienbaren Sprung-Ausloeser. Die Klasse `ReviewCount`
+   * bleibt erhalten — sie trägt die Optik.
+   */
   return (
-    <span className="ReviewCount">
-      {reviewCount} {'★'.repeat(5)}
-    </span>
+    <SterneSprung className="ReviewCount">
+      {reviewCount} <StarRating value={reviewCount} size={16} />
+    </SterneSprung>
   );
 }
