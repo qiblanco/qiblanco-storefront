@@ -8,7 +8,7 @@ import {getEmptyPredictiveSearchResult} from '~/lib/search';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `Qi Blanco | Suche`}];
 };
 
 /**
@@ -39,19 +39,19 @@ export default function SearchPage() {
 
   return (
     <div className="search">
-      <h1>Search</h1>
+      <h1>Suche</h1>
       <SearchForm>
         {({inputRef}) => (
           <>
             <input
               defaultValue={term}
               name="q"
-              placeholder="Search…"
+              placeholder="Suchen…"
               ref={inputRef}
               type="search"
             />
             &nbsp;
-            <button type="submit">Search</button>
+            <button type="submit">Suchen</button>
           </>
         )}
       </SearchForm>
