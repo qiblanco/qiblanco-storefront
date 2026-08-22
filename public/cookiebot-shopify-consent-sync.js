@@ -104,18 +104,22 @@
 
   function belebeAnker(a, art) {
     function tun() {
-      // ZUSTIMMUNG WIRD DETERMINISTISCH GESETZT, NICHT AUS EINEM KLICK
-      // ABGELEITET. Der erste Entwurf liess den Anker den echten Knopf
-      // anklicken. Gemessen am 2026-08-22 nach dem Deploy 12:48Z: auf Desktop
-      // setzte das den CookieConsent-Cookie, auf Mobil NICHT - der Banner
-      // schloss sich dort, ohne dass eine Einwilligung gespeichert wurde, und
-      // stand nach dem Reload wieder da. Cookiebots eigene Bindung an die
-      // Knopf-ID greift bei einem synthetischen .click() also nicht
-      // verlässlich.
-      // Ein Banner, der ohne gespeicherte Einwilligung zugeht, ist SCHLIMMER
-      // als der ursprüngliche Defekt: er sieht erledigt aus und ist es nicht.
+      // ZUSTIMMUNG ÜBER DEN AUSDRÜCKLICHEN API-AUFRUF.
       // changeConsentToAll() ruft Cookiebot.submitCustomConsent(true,true,true)
       // - genau den Weg, den der Knopf "Alle erlauben" der Vorlage selbst geht.
+      // Ein Klick auf den echten Knopf (unten als Rückfall) tut es ebenfalls;
+      // der ausdrückliche Aufruf wird vorgezogen, weil er nicht davon abhängt,
+      // dass Cookiebot seine Bindung an eine bestimmte Knopf-ID behält.
+      //
+      // RICHTIGSTELLUNG ZUR COMMIT-BEGRÜNDUNG VON e51898b: dort stand, ein
+      // synthetisches .click() setze den Cookie auf Mobil NICHT. Das war ein
+      // MESSFEHLER, kein Befund - meine Probe wartete nach dem Klick nur 800 ms,
+      // und das Schreiben des Consent-Cookies ist asynchron (~1 s), während das
+      // Schließen des Banners synchron passiert. Nachgemessen mit 2,5 s
+      // Wartezeit setzten am 2026-08-22 ALLE drei Wege den Cookie zuverlässig:
+      // echter Mausklick, programmatisches .click() und submitCustomConsent.
+      // Die Zeile bleibt hier stehen, damit niemand die falsche Begründung aus
+      // der Historie erneut als Messung liest.
       if (art === 'akzeptieren' &&
           typeof window.changeConsentToAll === 'function') {
         window.changeConsentToAll();
@@ -188,6 +192,21 @@
       }, 0);
     });
     mo.observe(document.documentElement, {childList: true, subtree: true});
+
+    // ZUSÄTZLICH EIN KURZER TAKT ÜBER DIE ERSTEN 15 SEKUNDEN.
+    // Gemessen am 2026-08-22 auf Mobil: der Banner stand bereits im DOM, der
+    // Anker "Akzeptieren" trug aber noch handler=0 und kein tabindex - es gibt
+    // also ein Fenster, in dem der Banner sichtbar und noch nicht belebt ist.
+    // Der Beobachter allein schließt es nicht zuverlässig, weil Cookiebot den
+    // Banner auch ersetzen kann (ein frischer Knoten trägt die Markierung
+    // nicht). In diesem Fenster sähe der Kunde genau den Defekt, der hier
+    // behoben wird. belebeBanner() ist idempotent und steigt ohne #cookiebanner
+    // sofort aus, der Takt kostet also praktisch nichts - und er endet.
+    var takte = 0;
+    var iv = setInterval(function () {
+      belebeBanner();
+      if (++takte > 60) clearInterval(iv);
+    }, 250);
   }
 
   if (document.readyState === 'loading') {
