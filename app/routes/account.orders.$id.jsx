@@ -27,7 +27,7 @@ export async function loader({params, context}) {
   );
 
   if (errors?.length || !data?.order) {
-    throw new Error('Order not found');
+    throw new Error('Bestellung nicht gefunden');
   }
 
   const {order} = data;
@@ -67,17 +67,17 @@ export default function OrderRoute() {
   } = useLoaderData();
   return (
     <div className="account-order">
-      <h2>Order {order.name}</h2>
-      <p>Placed on {new Date(order.processedAt).toDateString()}</p>
+      <h2>Bestellung {order.name}</h2>
+      <p>Bestellt am {new Date(order.processedAt).toLocaleDateString('de-DE')}</p>
       <br />
       <div>
         <table>
           <thead>
             <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
+              <th scope="col">Produkt</th>
+              <th scope="col">Preis</th>
+              <th scope="col">Menge</th>
+              <th scope="col">Gesamt</th>
             </tr>
           </thead>
           <tbody>
@@ -91,14 +91,14 @@ export default function OrderRoute() {
               discountPercentage) && (
               <tr>
                 <th scope="row" colSpan={3}>
-                  <p>Discounts</p>
+                  <p>Rabatte</p>
                 </th>
                 <th scope="row">
-                  <p>Discounts</p>
+                  <p>Rabatte</p>
                 </th>
                 <td>
                   {discountPercentage ? (
-                    <span>-{discountPercentage}% OFF</span>
+                    <span>-{discountPercentage}% RABATT</span>
                   ) : (
                     discountValue && <Money data={discountValue} />
                   )}
@@ -107,10 +107,10 @@ export default function OrderRoute() {
             )}
             <tr>
               <th scope="row" colSpan={3}>
-                <p>Subtotal</p>
+                <p>Zwischensumme</p>
               </th>
               <th scope="row">
-                <p>Subtotal</p>
+                <p>Zwischensumme</p>
               </th>
               <td>
                 <Money data={order.subtotal} />
@@ -118,10 +118,10 @@ export default function OrderRoute() {
             </tr>
             <tr>
               <th scope="row" colSpan={3}>
-                Tax
+                Steuer
               </th>
               <th scope="row">
-                <p>Tax</p>
+                <p>Steuer</p>
               </th>
               <td>
                 <Money data={order.totalTax} />
@@ -129,10 +129,10 @@ export default function OrderRoute() {
             </tr>
             <tr>
               <th scope="row" colSpan={3}>
-                Total
+                Gesamt
               </th>
               <th scope="row">
-                <p>Total</p>
+                <p>Gesamt</p>
               </th>
               <td>
                 <Money data={order.totalPrice} />
@@ -141,7 +141,7 @@ export default function OrderRoute() {
           </tfoot>
         </table>
         <div>
-          <h3>Shipping Address</h3>
+          <h3>Versandadresse</h3>
           {order?.shippingAddress ? (
             <address>
               <p>{order.shippingAddress.name}</p>
@@ -157,7 +157,7 @@ export default function OrderRoute() {
               )}
             </address>
           ) : (
-            <p>No shipping address defined</p>
+            <p>Keine Versandadresse hinterlegt</p>
           )}
           <h3>Status</h3>
           <div>
@@ -168,7 +168,7 @@ export default function OrderRoute() {
       <br />
       <p>
         <a target="_blank" href={order.statusPageUrl} rel="noreferrer">
-          View Order Status →
+          Bestellstatus ansehen →
         </a>
       </p>
     </div>

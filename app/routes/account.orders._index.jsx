@@ -11,7 +11,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Orders'}];
+  return [{title: 'Bestellungen'}];
 };
 
 /**
@@ -32,7 +32,7 @@ export async function loader({request, context}) {
   );
 
   if (errors?.length || !data?.customer) {
-    throw Error('Customer orders not found');
+    throw Error('Bestellungen nicht gefunden');
   }
 
   return {customer: data.customer};
@@ -69,10 +69,10 @@ function OrdersTable({orders}) {
 function EmptyOrders() {
   return (
     <div>
-      <p>You haven&apos;t placed any orders yet.</p>
+      <p>Du hast noch keine Bestellung aufgegeben.</p>
       <br />
       <p>
-        <Link to="/collections">Start Shopping →</Link>
+        <Link to="/collections">Jetzt einkaufen →</Link>
       </p>
     </div>
   );
@@ -89,11 +89,11 @@ function OrderItem({order}) {
         <Link to={`/account/orders/${btoa(order.id)}`}>
           <strong>#{order.number}</strong>
         </Link>
-        <p>{new Date(order.processedAt).toDateString()}</p>
+        <p>{new Date(order.processedAt).toLocaleDateString('de-DE')}</p>
         <p>{order.financialStatus}</p>
         {fulfillmentStatus && <p>{fulfillmentStatus}</p>}
         <Money data={order.totalPrice} />
-        <Link to={`/account/orders/${btoa(order.id)}`}>View Order →</Link>
+        <Link to={`/account/orders/${btoa(order.id)}`}>Bestellung ansehen →</Link>
       </fieldset>
       <br />
     </>
