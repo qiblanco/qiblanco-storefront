@@ -104,27 +104,29 @@
 
   function belebeAnker(a, art) {
     function tun() {
-      // ZUSTIMMUNG ÜBER DEN AUSDRÜCKLICHEN API-AUFRUF.
-      // changeConsentToAll() ruft Cookiebot.submitCustomConsent(true,true,true)
-      // - genau den Weg, den der Knopf "Alle erlauben" der Vorlage selbst geht.
-      // Ein Klick auf den echten Knopf (unten als Rückfall) tut es ebenfalls;
-      // der ausdrückliche Aufruf wird vorgezogen, weil er nicht davon abhängt,
-      // dass Cookiebot seine Bindung an eine bestimmte Knopf-ID behält.
+      // DER ANKER KLICKT DEN ECHTEN KNOPF. Nicht, weil das eleganter wäre,
+      // sondern weil es der einzige Weg ist, der im ECHTEN Klick-Kontext
+      // gemessen funktioniert. Die Fassung dazwischen (e51898b) rief statt
+      // dessen changeConsentToAll() - das war in zwei Stufen falsch:
       //
-      // RICHTIGSTELLUNG ZUR COMMIT-BEGRÜNDUNG VON e51898b: dort stand, ein
-      // synthetisches .click() setze den Cookie auf Mobil NICHT. Das war ein
-      // MESSFEHLER, kein Befund - meine Probe wartete nach dem Klick nur 800 ms,
-      // und das Schreiben des Consent-Cookies ist asynchron (~1 s), während das
-      // Schließen des Banners synchron passiert. Nachgemessen mit 2,5 s
-      // Wartezeit setzten am 2026-08-22 ALLE drei Wege den Cookie zuverlässig:
-      // echter Mausklick, programmatisches .click() und submitCustomConsent.
-      // Die Zeile bleibt hier stehen, damit niemand die falsche Begründung aus
-      // der Historie erneut als Messung liest.
-      if (art === 'akzeptieren' &&
-          typeof window.changeConsentToAll === 'function') {
-        window.changeConsentToAll();
-        return;
-      }
+      //   Der ANLASS war ein Messfehler. Meine Probe wartete nach dem Klick
+      //   fest 800 ms; das Schließen des Banners ist synchron, das Schreiben
+      //   des Consent-Cookies asynchron (~0,3 s). Auf Mobil fiel die Messung
+      //   in dieses Fenster und meldete "Banner zu, kein Cookie".
+      //
+      //   Die ERSATZLÖSUNG war ihrerseits kaputt, nur unauffälliger. Gemessen
+      //   am 2026-08-22 mit Spionen am Live-Shop: aus dem Klick-Handler heraus
+      //   läuft changeConsentToAll(), läuft hideCookieBanner() - und der Cookie
+      //   kommt NIE (12 s gewartet). Derselbe Aufruf ausserhalb eines
+      //   Klick-Handlers setzt ihn in 0,3 s. Der Banner ging also zu, ohne dass
+      //   eine Einwilligung gespeichert wurde - schlimmer als der
+      //   Ausgangsdefekt, weil es erledigt aussieht.
+      //
+      // Im echten Klick-Kontext gegeneinander gemessen, beide grün über den
+      // Reload hinweg: Anker -> echter Knopf .click() (Cookie nach 0,34 s,
+      // Banner zu) und Anker -> submitCustomConsent direkt (0,26 s, Banner
+      // bleibt offen). Gewählt ist der erste: er schließt den Banner mit und
+      // tut per Definition dasselbe wie der Knopf daneben.
       var ziele = art === 'akzeptieren' ? AKZEPT_ZIELE : VERWALT_ZIELE;
       var ziel = ersterVorhandener(ziele);
       // ziel !== a schließt aus, dass ein Anker sich selbst anklickt.
@@ -132,10 +134,19 @@
         ziel.click();
         return;
       }
-      // Letzter Rückfall: nie schweigen. Ein Klick, der nichts tut, ist genau
-      // der Defekt, der hier behoben wird.
-      if (art !== 'akzeptieren' &&
-          typeof window.cookieBannerToggle === 'function') {
+      // Letzter Rückfall, falls die Vorlage die Knopf-IDs umbenennt: nie
+      // schweigen. Ein Klick, der nichts tut, ist genau der Defekt, der hier
+      // behoben wird.
+      // ACHTUNG bei changeConsentToAll: aus einem Klick-Handler heraus setzt es
+      // GEMESSEN keinen Cookie (siehe oben). Es steht hier trotzdem, weil
+      // "der Knopf ist weg" ein anderer Zustand ist als der heutige - dann ist
+      // ein halber Versuch besser als gar keiner, und die Wache
+      // bin/probe_consent_bedienbarkeit.py schlägt in diesem Fall an.
+      if (art === 'akzeptieren') {
+        if (typeof window.changeConsentToAll === 'function') {
+          window.changeConsentToAll();
+        }
+      } else if (typeof window.cookieBannerToggle === 'function') {
         window.cookieBannerToggle();
       }
     }
