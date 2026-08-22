@@ -877,6 +877,22 @@ function CartBanner() {
   return <CartBadge count={cart?.totalQuantity ?? 0} />;
 }
 
+/*
+ * Notmenü, das nur einspringt, wenn das echte Shopify-Menü nicht lädt.
+ *
+ * Übersetzt werden hier nur die title-Felder — sie sind das, was der Kunde
+ * liest. id, resourceId, type und url bleiben unberührt: das ist die
+ * Verdrahtung, nicht der Text.
+ *
+ * OFFEN, BEWUSST NICHT HIER GELÖST (live nachgemessen 2026-08-22, echter
+ * Browser-UA, cookielos): das ECHTE Menü lautet Start / Shop / Studien /
+ * Online Kurse / Mehr. Dieses Notmenü führt andere Punkte und fremde
+ * Beispiel-gids aus dem Hydrogen-Starter — es ist also kein Spiegel des
+ * Menüs, sondern dessen Vorgabewert. Die Übersetzung macht es weniger falsch,
+ * nicht richtig: fällt das Shopify-Menü aus, sieht der Kunde weiterhin ein
+ * Menü, das es so nie gab. Das gehört inhaltlich nachgezogen, ist aber eine
+ * andere Aufgabe als diese Übersetzung.
+ */
 const FALLBACK_HEADER_MENU = {
   id: 'gid://shopify/Menu/199655587896',
   items: [
@@ -884,7 +900,7 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609500728',
       resourceId: null,
       tags: [],
-      title: 'Collections',
+      title: 'Kollektionen',
       type: 'HTTP',
       url: '/collections',
       items: [],
@@ -902,7 +918,7 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609566264',
       resourceId: null,
       tags: [],
-      title: 'Policies',
+      title: 'Richtlinien',
       type: 'HTTP',
       url: '/policies',
       items: [],
@@ -911,7 +927,7 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609599032',
       resourceId: 'gid://shopify/Page/92591030328',
       tags: [],
-      title: 'About',
+      title: 'Über uns',
       type: 'PAGE',
       url: '/pages/about',
       items: [],

@@ -7,7 +7,11 @@ import {ProductItem} from '~/components/ProductItem';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Products`}];
+  // Stand vorher: `Hydrogen | Products` — der Vorgabewert des Hydrogen-Starters,
+  // englisch UND mit dem Namen des Frameworks im Browser-Tab der deutschen
+  // Storefront (live nachgemessen 2026-08-22: <title>Hydrogen | Products</title>).
+  // Muster wie bei cart.jsx und den übrigen Routen: "<Seite> | Qi Blanco".
+  return [{title: 'Alle Produkte | Qi Blanco'}];
 };
 
 /**
@@ -59,7 +63,7 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <h1>Products</h1>
+      <h1>Alle Produkte</h1>
       <PaginatedResourceSection
         connection={products}
         resourcesClassName="products-grid"
