@@ -478,7 +478,12 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100vw',
+        // `width` steht bewusst NICHT mehr hier (2026-08-22, Job
+        // 20260820-dropdown-menueleiste-grafik-ueberstand). Die Inline-Breite
+        // war der Grund, warum app.css die Breite zweimal mit !important
+        // setzen musste und warum die Chat-Andock-Regel ein drittes
+        // !important brauchte. Die Breite gehört an EINE Stelle:
+        // `.submenu { width: 100% }` in app/styles/app.css.
         backgroundColor: 'rgb(247, 241, 232)',
         boxShadow: 'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px',
         padding: '1.5rem',
@@ -491,21 +496,32 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
     >
       {item.title === "Shop" && (
         <>
+          {/* height/alt ergänzt 2026-08-22 (Job 20260820-dropdown-
+              menueleiste-grafik-ueberstand). Die fünf Dropdown-Bilder
+              trugen `width` ohne `height` — der Browser kann dann vor dem
+              Laden keine Fläche reservieren, das Panel springt beim
+              Öffnen. Die height-Werte sind KEINE Wunschzahlen, sondern die
+              am 2026-08-22 gemessenen natürlichen Seitenverhältnisse auf
+              width=325 gerechnet (1368x913 -> 217, 597x399 -> 217,
+              1118x840 -> 244, 526x296 -> 183, 668x350 -> 170). Die
+              tatsächliche Anzeigehöhe bestimmt weiterhin
+              `img { height: auto }` (app.css) — die Attribute liefern nur
+              das Seitenverhältnis. */}
           {hoverItem === "QiBracelet®" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
+              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiBracelet® am Handgelenk getragen" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
               <div className="nav-styling-overlay">QiBracelet®</div>
             </div>
           )}
           {hoverItem === "QiOne® 2 Pro" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
+              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiOne® 2 Pro im Alltag am Strand" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
               <div className="nav-styling-overlay">QiOne 2 Pro®</div>
             </div>
           )}
           {hoverItem === "QiHome® Air" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
+              <img style={{borderRadius: '20px'}} width={325} height={244} loading="lazy" alt="QiHome® Air im Wohnraum aufgestellt" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
               <div className="nav-styling-overlay">QiHome Air®</div>
             </div>
           )}
@@ -519,13 +535,13 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
               dpr>=2 trugen 400 Quellpixel die Flaeche nicht (Gate 12,
               bild-aufloesung), 526 tragen sie. Nachgemessen 2026-08-09: beide
               URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung. */}
-          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
+          <img style={{borderRadius: '20px'}} width={325} height={183} loading="lazy" alt="Online-Masterclass „In 5 Stufen zum Superhuman“" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
         </div>
       )}
 
       {item.title === "Mehr" && (
         <div className="nav-styling-wrapper">
-          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
+          <img style={{borderRadius: '20px'}} width={325} height={170} loading="lazy" alt="Qi Blanco in den Bergen bei Kitzbühel" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
         </div>
       )}
 
