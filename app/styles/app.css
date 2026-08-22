@@ -883,6 +883,17 @@ button[aria-label="Close"],
   }
 }
 
+/* MEGA-MENUE-PANEL.
+   Aufgeraeumt 2026-08-22 (Job 20260820-dropdown-menueleiste-grafik-
+   ueberstand). Der Block trug drei !important, von denen eines TOT war:
+   `width: 100vw !important` wurde von der spaeteren Zeile
+   `width: 100% !important` bei gleicher Spezifitaet ueberschrieben. Beide
+   waren ueberhaupt nur noetig, weil Header.jsx die Breite zusaetzlich
+   INLINE setzte. Die Inline-Breite ist dort jetzt entfernt — damit reicht
+   hier eine gewoehnliche Deklaration, und `html.qb-chat-docked .submenu`
+   gewinnt wieder ueber Spezifitaet statt ueber ein Wettruesten.
+   `padding-top` bleibt bewusst !important: es ueberschreibt das inline
+   gesetzte `padding: 1.5rem` und haelt den Inhalt unter dem Kopf. */
 .submenu {
   position: absolute;
   left: 0;
@@ -890,15 +901,18 @@ button[aria-label="Close"],
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 8rem;
+  /* Der Abstand war breiten-invariant (8rem = 128 px bei JEDER Breite),
+     waehrend die Nav bis hinunter zu 750 px im Mega-Menue-Modus bleibt.
+     Er wurde ausschliesslich dem Bild abgezogen: gemessen 2026-08-22 fiel
+     es von 325 px auf 224 (900) und 135,8 (750). */
+  gap: clamp(1.5rem, 6vw, 8rem);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   z-index: 5;
   padding-top: 150px !important;
   min-width: 200px;
-  width: 100vw !important;
   border-radius: 20px;
-  width: 100% !important;
+  width: 100%;
   transition: 0.2s all ease;
 }
 .submenu ul {
@@ -3129,10 +3143,26 @@ ul.submenu li a {
 .nav-styling-wrapper {
   position: relative;
 }
+/* Bild-Label im Mega-Menue.
+   Es war NUR rechts verankert (right:15px) und damit nach links unbegrenzt:
+   ist der Wrapper schmaler als der Text, waechst das Label aus dem Bild und
+   aus dem Panel heraus. GEMESSEN 2026-08-22 an der Live-Storefront im Format
+   mobil-360: `.nav-styling-overlay` stand 12 px links AUSSERHALB von
+   `.submenu` (GATE 12, Pruefpunkt overlay-ueberstand-stacking). Das ist
+   dieselbe Klasse wie ein klassenloses Flex-Kind, das auf sein laengstes
+   Wort waechst — nur ueber die absolute Positionierung statt ueber die
+   Mindestbreite.
+   `left` bindet jetzt die zweite Kante, `max-width` deckelt zusaetzlich fuer
+   den Fall, dass ein Vorfahr die Bindung aufhebt; `text-align: right` haelt
+   die urspruengliche Optik (rechtsbuendig), solange der Text passt. */
 .nav-styling-wrapper .nav-styling-overlay {
   position: absolute;
   bottom: 15px;
   right: 15px;
+  left: 15px;
+  max-width: calc(100% - 30px);
+  text-align: right;
+  overflow-wrap: break-word;
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--color-light);
@@ -5100,12 +5130,19 @@ html.qb-chat-docked .header-wrapper {
   width: calc(100% - var(--qb-chat-dock-breite, 0px));
 }
 
-/* 2. Das Mega-Menue. Es haengt per Portal am <body> und traegt seine Breite
-      inline (`width: 100vw`) — dagegen kommt nur `!important`, und weil die
-      Bestandsregel `.submenu` ihre Breite ebenfalls mit `!important` setzt,
-      entscheidet hier die hoehere Spezifitaet, nicht die Reihenfolge. */
+/* 2. Das Mega-Menue. Es haengt per Portal am <body>.
+      NACHTRAG 2026-08-22 (Job 20260820-dropdown-menueleiste-grafik-
+      ueberstand): der urspruengliche Kommentar hier beschrieb den Zustand
+      korrekt — Header.jsx trug die Breite inline (`width: 100vw`), dagegen
+      kam nur `!important`. Diese Inline-Breite ist jetzt entfernt und die
+      Bestandsregel `.submenu` setzt `width: 100%` ohne `!important`. Damit
+      entscheidet hier ausschliesslich die hoehere Spezifitaet
+      (html.qb-chat-docked .submenu schlaegt .submenu), und das `!important`
+      ist nicht mehr noetig. Es faellt weg, statt als Blindgaenger stehen zu
+      bleiben — ein !important, das niemand mehr braucht, ist die naechste
+      Stufe des Wettruestens fuer den, der danach hier baut. */
 html.qb-chat-docked .submenu {
-  width: calc(100% - var(--qb-chat-dock-breite, 0px)) !important;
+  width: calc(100% - var(--qb-chat-dock-breite, 0px));
 }
 
 /* 3. Warenkorb-/Menue-Schubfach. Es ist der einzige Wirt-Bereich, den man
