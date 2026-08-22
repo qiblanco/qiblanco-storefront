@@ -157,9 +157,106 @@
     tastaturFaehig(a, tun);
   }
 
+  // --- CSP: inline onclick feuert auf dieser Seite NIE --------------------
+  //
+  // DER BEFUND. Diese Seite liefert eine Content-Security-Policy mit
+  // script-src-attr aus. Damit führt der Browser KEINEN inline
+  // Event-Handler mehr aus - jedes onclick="..." im Cookiebot-Markup ist tot.
+  //
+  // GEMESSEN am 2026-08-22 an https://www.qiblanco.com/ (Chromium 151, echter
+  // Mausklick auf die gemessene Elementmitte, frischer Kontext ohne Consent):
+  //   - Ein FRISCH eingehängtes Testelement mit onclick="..." feuerte
+  //     ebenfalls nicht (in beiden Läufen) -> es liegt nicht am Bedienelement,
+  //     sondern an der Policy. Dazu je 3 securitypolicyviolation-Ereignisse
+  //     mit violatedDirective "script-src-attr".
+  //   - Klick auf #cookie-banner-button-edit: capture- UND bubble-Listener
+  //     feuern, elementFromPoint trifft das Ziel, das Element ist unveraendert
+  //     - aber cookieBannerToggle() wird NIE gerufen. Der
+  //     Einstellungs-Bereich #edit-cookie-consent bleibt display:none.
+  //   - window.cookieBannerToggle() direkt gerufen öffnet ihn sofort
+  //     (600x810). Die Funktion ist also in Ordnung, ihr AUFRUF fehlt.
+  //
+  // WAS DAS FÜR DEN KUNDEN BEDEUTET. "Cookies verwalten" tut nichts. Der
+  // gesamte Einstellungs-Bereich - Auswahl je Kategorie, "Speichern",
+  // "Alle ablehnen", "Alle erlauben" - war für JEDEN Kunden unerreichbar.
+  // Der Vorgängerjob hat das als "Knöpfe haben width=0" gesehen; das war die
+  // FOLGE (ein Kind von display:none hat kein Rect), nicht die Ursache.
+  //
+  // WARUM DIE HAUPT-KNÖPFE TROTZDEM WIRKEN. Sie tragen Cookiebots eigene IDs
+  // (#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll & Co.); Cookiebot
+  // bindet die selbst und setzt den Consent über seinen eigenen Weg. Gemessen:
+  // Klick -> CookiebotOnAccept, Cookie nach 0,22 s, überlebt den Reload -
+  // und zwar OHNE dass unser hideCookieBanner() über das inline onclick lief.
+  // #cookie-banner-button-edit ist die einzige EIGENE ID im Banner und deshalb
+  // der einzige Knopf, den niemand bindet.
+  //
+  // WARUM NICHT DIE CSP LOCKERN. script-src-attr wieder zu erlauben, macht
+  // jedes inline onclick der Seite wieder ausfuehrbar - das ist eine
+  // Abschwächung der Sicherheitslage für ein Bedienproblem. Die Bindung
+  // gehört in diese Datei, die wir ohnehin ausliefern.
+  function cspKnopfNachruesten() {
+    // (1) "Cookies verwalten" - der Aufruf, den die CSP verschluckt.
+    var edit = document.getElementById('cookie-banner-button-edit');
+    if (edit && edit.getAttribute('data-qb-csp') !== 'gebunden') {
+      edit.setAttribute('data-qb-csp', 'gebunden');
+      // Das tote Attribut entfernen: sollte die CSP je gelockert werden,
+      // liefe sonst BEIDES (inline + diese Bindung) und der Bereich klappte
+      // sofort wieder zu. Die ID ist unsere eigene, Cookiebot liest sie nicht.
+      edit.removeAttribute('onclick');
+      edit.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        if (typeof window.cookieBannerToggle === 'function') {
+          window.cookieBannerToggle();
+        }
+      });
+      // Die Tastatur-Nachrüstung oben ruft k.click(); das trifft ab jetzt
+      // diese Bindung. Vorher lief sie ebenfalls ins Leere.
+    }
+
+    // (2) "Alle erlauben" IM Einstellungs-Bereich erlaubte nicht alles.
+    //
+    // GEMESSEN (Bereich zum Messen kuenstlich geöffnet, dann echter
+    // Mausklick): der Knopf setzt zwar einen dauerhaften Consent, aber mit
+    // statistics:false und marketing:false - also exakt dasselbe wie
+    // "Speichern" mit den Vorgabewerten. changeConsentToAll() lief dabei nicht
+    // (CSP, siehe oben); gehandelt hat Cookiebots eigene ID-Bindung, und die
+    // behandelt #CybotCookiebotDialogBodyButtonAccept wie "Auswahl speichern".
+    // Ein Knopf mit der Aufschrift "Alle erlauben", der Statistik und Werbung
+    // ablehnt, ist eine falsche Einwilligungs-Auskunft - in beide Richtungen.
+    //
+    // WARUM DIE RADIOS UND NICHT submitCustomConsent. Direkt gegeneinander
+    // gemessen, je mit Gegenprobe ohne Fix (die statistics:false ergab):
+    //   setTimeout(0) + submitCustomConsent(true,true,true) -> BLIEB
+    //     statistics:false. Cookiebots eigene Bindung gewinnt das Rennen; ein
+    //     zweiter Consent-Weg daneben ist nicht durchsetzbar.
+    //   Radios auf "Ja" + Cookiebots eigenem Weg das Speichern überlassen
+    //     -> statistics:true, marketing:true, überlebt den Reload.
+    // Der zweite Weg baut keine zweite Consent-Mechanik, sondern benutzt die
+    // vorhandene - und er hält die ANZEIGE ehrlich: wer den Bereich danach
+    // wieder öffnet, sieht überall "Ja" stehen und nicht "Nein".
+    // capture:true, damit die Auswahl steht, BEVOR Cookiebot sie liest.
+    var alle = document.getElementById('CybotCookiebotDialogBodyButtonAccept');
+    if (alle && alle.getAttribute('data-qb-csp') !== 'gebunden') {
+      alle.setAttribute('data-qb-csp', 'gebunden');
+      alle.addEventListener('click', function () {
+        var ids = ['CybotCookiebotDialogBodyLevelButtonNecessary',
+                   'CybotCookiebotDialogBodyLevelButtonStatistics',
+                   'CybotCookiebotDialogBodyLevelButtonMarketing'];
+        for (var i = 0; i < ids.length; i++) {
+          var r = document.getElementById(ids[i]);
+          if (r && !r.checked) {
+            r.checked = true;
+            r.dispatchEvent(new Event('change', {bubbles: true}));
+          }
+        }
+      }, true);
+    }
+  }
+
   function belebeBanner() {
     var wurzel = document.getElementById('cookiebanner');
     if (!wurzel) return;
+    cspKnopfNachruesten();
     var anker = wurzel.getElementsByTagName('a');
     for (var i = 0; i < anker.length; i++) {
       var el = anker[i];
