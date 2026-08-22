@@ -104,6 +104,23 @@
 
   function belebeAnker(a, art) {
     function tun() {
+      // ZUSTIMMUNG WIRD DETERMINISTISCH GESETZT, NICHT AUS EINEM KLICK
+      // ABGELEITET. Der erste Entwurf liess den Anker den echten Knopf
+      // anklicken. Gemessen am 2026-08-22 nach dem Deploy 12:48Z: auf Desktop
+      // setzte das den CookieConsent-Cookie, auf Mobil NICHT - der Banner
+      // schloss sich dort, ohne dass eine Einwilligung gespeichert wurde, und
+      // stand nach dem Reload wieder da. Cookiebots eigene Bindung an die
+      // Knopf-ID greift bei einem synthetischen .click() also nicht
+      // verlässlich.
+      // Ein Banner, der ohne gespeicherte Einwilligung zugeht, ist SCHLIMMER
+      // als der ursprüngliche Defekt: er sieht erledigt aus und ist es nicht.
+      // changeConsentToAll() ruft Cookiebot.submitCustomConsent(true,true,true)
+      // - genau den Weg, den der Knopf "Alle erlauben" der Vorlage selbst geht.
+      if (art === 'akzeptieren' &&
+          typeof window.changeConsentToAll === 'function') {
+        window.changeConsentToAll();
+        return;
+      }
       var ziele = art === 'akzeptieren' ? AKZEPT_ZIELE : VERWALT_ZIELE;
       var ziel = ersterVorhandener(ziele);
       // ziel !== a schließt aus, dass ein Anker sich selbst anklickt.
@@ -111,14 +128,10 @@
         ziel.click();
         return;
       }
-      // Rückfall, falls die Vorlage die IDs umbenennt: lieber die Funktion
-      // direkt rufen als schweigen. Ein Klick, der nichts tut, ist genau der
-      // Defekt, der hier behoben wird.
-      if (art === 'akzeptieren') {
-        if (typeof window.changeConsentToAll === 'function') {
-          window.changeConsentToAll();
-        }
-      } else if (typeof window.cookieBannerToggle === 'function') {
+      // Letzter Rückfall: nie schweigen. Ein Klick, der nichts tut, ist genau
+      // der Defekt, der hier behoben wird.
+      if (art !== 'akzeptieren' &&
+          typeof window.cookieBannerToggle === 'function') {
         window.cookieBannerToggle();
       }
     }
