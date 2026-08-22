@@ -451,7 +451,7 @@ export function ErrorBoundary() {
 
   return (
     <div className="route-error">
-      <h1>Oops</h1>
+      <h1>Hoppla</h1>
       <h2>{errorStatus}</h2>
       {errorMessage && (
         <fieldset>
