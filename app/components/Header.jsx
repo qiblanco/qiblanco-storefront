@@ -864,7 +864,7 @@ function GoogleSterneBadge() {
   const g = useGoogleRating();
   return (
     <span className="ReviewCount">
-      {g.komma} {'★'.repeat(5)}
+      {g.komma} <span className="qb-sterne">{'★'.repeat(5)}</span>
     </span>
   );
 }

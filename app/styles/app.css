@@ -19,6 +19,19 @@
      zwei eigene Rollen — gleicher Farbton, nur andere Helligkeit: */
   --color-accent-ink: #856828;   /* Gold als SCHRIFT auf hellem Grund (>= 4.5:1) */
   --color-on-accent: #2c2a26;    /* Schrift AUF einer Gold-Flaeche (>= 5.9:1) */
+  /* BEWERTUNGSSTERNE — DIE EINE QUELLE (Job 20260822-sterne-farbe-dach).
+     Bewusst EIGENE Rollen und NICHT --color-accent-primary: die Sterne geben
+     eine Google-Bewertung wieder und folgen deren Sternton, waehrend
+     --color-accent-primary die Handlungs-/CTA-Flaeche des Shops ist. Deren
+     Goldton ist zudem eine OFFENE Christian-Frage (design-meister
+     db/tokens/web-dach.yaml, gold-akzent-web-vs-marke: #F2BF72 vs #C9A14B) —
+     die Sterne daran zu koppeln haette diese Frage still vorentschieden.
+     Gemessen 2026-08-22 live: #F4B400 ist der real dominante Sternton auf
+     BEIDEN Shops (DACH 250 von 252, US 215 von 216 gemalten Sternen der
+     Startseite) und damit kein Geschmacksurteil, sondern der Bestand.
+     WER DIESE ZWEI WERTE AENDERT, AENDERT JEDEN STERN DER STOREFRONT. */
+  --qb-sterne-gold: #F4B400;     /* gefuellter Stern */
+  --qb-sterne-leer: #dadce0;     /* ungefuellter Stern (fraktionale Fuellung) */
   --color-footer: #0a1127;
   --checkmark-color: #396e25;
 
@@ -107,9 +120,19 @@ footer *{
   cursor: pointer;
 }
 
+/* Der Traeger faerbt die STERNE. Die Sterne stehen in dieser Bauform als
+   blanker Textknoten ZWISCHEN den beiden <span> (»<span>4.8</span> ★★★★★
+   <span>Ueber 14.000 Nutzer</span>«) und haben deshalb kein eigenes Element,
+   an dem eine Regel greifen koennte. Die beiden <span> setzen ihre Farbe
+   darunter selbst wieder — die Zahl bleibt damit exakt, wie sie war.
+   BEWUSST NICHT die Sterne in ein <span> gewickelt: das haette sie zu
+   span:nth-child(2) gemacht und die Regel darunter auf die Sterne gezogen. */
 .product .product-rating{
   font-size: 1.5rem;
   font-weight: 600;
+  color: var(--qb-sterne-gold);
+}
+.product .product-rating > span:first-child{
   color: var(--color-accent-primary);
 }
 .product .product-rating span:nth-child(2){
@@ -4492,6 +4515,18 @@ ul.kakao-children li {
   color: #333;
 }
 
+/* GLYPH-STERNE (★ als Textzeichen) an derselben Quelle wie die SVG-Sterne.
+   Warum es diese Klasse ueberhaupt braucht: ein ★-Textzeichen hat keine
+   eigene Farbe, es erbt die Textfarbe seines Elternknotens. Genau daran ist
+   die Storefront auseinandergelaufen — dieselbe Bewertungszeile stand je nach
+   Elternkontext in #F2BF72, #856828 oder #eabb6e (gemessen 2026-08-22).
+   Wer kuenftig Glyph-Sterne rendert, wickelt sie hier hinein und erbt nichts.
+   NICHT anwendbar auf ⭐ (U+2B50): das ist ein FARB-Emoji und ignoriert
+   color — solche Sterne stehen im Ankuendigungs-INHALT, nicht im Stylesheet. */
+.qb-sterne {
+  color: var(--qb-sterne-gold);
+}
+
 /* Star-Rating — geteilte 5-Sterne-Darstellung der 4,8-Bewertung
    (Block LP, Job 20260718-lp-sterne-reputon-googlelink) */
 .star-rating {
@@ -4508,6 +4543,16 @@ ul.kakao-children li {
 
 .star-rating__star svg {
   display: block;
+}
+
+/* Die beiden Sterntoene der SVG-Darstellung — hier und NUR hier. Die
+   Komponente StarRating.jsx setzt bewusst kein fill mehr. */
+.star-rating__star > svg {
+  fill: var(--qb-sterne-leer);
+}
+
+.star-rating__fill > svg {
+  fill: var(--qb-sterne-gold);
 }
 
 .star-rating__fill {
