@@ -30,8 +30,11 @@ export function ReviewCount() {
   }, []);
 
   return (
+    /* Nur die STERNE tragen die Sterne-Farbe; die Zahl behaelt die Farbe
+       ihres Kontexts (im Hero war das --color-accent-ink = #856828 — genau
+       die vererbte Tinte, die die Sterne stumpf-oliv gemacht hat). */
     <span className="ReviewCount">
-      {reviewCount} {'★'.repeat(5)}
+      {reviewCount} <span className="qb-sterne">{'★'.repeat(5)}</span>
     </span>
   );
 }

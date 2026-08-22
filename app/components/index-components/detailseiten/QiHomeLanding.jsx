@@ -114,7 +114,9 @@ function HeroBannerWithHRV() {
       <div className="QiHomeHeroBanner__grid">
         <div className="QiHomeHeroBanner__content">
           <h2>QiHome® Air</h2>
-          <h3 style={{color: '#eabb6e', fontWeight: 600}}>4.7 ★★★★★</h3>
+          <h3 style={{fontWeight: 600}}>
+            4.7 <span className="qb-sterne">★★★★★</span>
+          </h3>
           <h3>Mehr als 14.000+ aktive Nutzer</h3>
           <p>
             <b>Der ultimative Schutz für dich & dein gesamtes Zuhause!</b>
