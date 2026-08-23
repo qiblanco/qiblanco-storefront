@@ -99,7 +99,7 @@ export function canonicalLink(pathname) {
  * `Disallow` in der robots.txt, nur durch die zweite Tür: das Ausschluss-
  * Signal muss crawlbar bleiben, bis es gewirkt hat.
  *
- * Deshalb: `ausSitemap: false` heisst „noindex ja, Sitemap-Eintrag bleibt
+ * Deshalb: `ausSitemap: false` heißt „noindex ja, Sitemap-Eintrag bleibt
  * vorerst". Der Preis ist bewusst gewählt und benannt — für die Dauer des
  * Übergangs besteht der Zustand „noindex UND in der Sitemap", vor dem der
  * Absatz oben warnt. Er ist hier gewollt und endlich, nicht versehentlich.

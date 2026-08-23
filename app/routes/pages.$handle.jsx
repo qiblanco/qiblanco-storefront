@@ -70,7 +70,7 @@ export async function loader(args) {
 }
 
 /**
- * Reicht ausschliesslich das X-Robots-Tag des Loaders durch und erbt sonst
+ * Reicht ausschließlich das X-Robots-Tag des Loaders durch und erbt sonst
  * unverändert, was der Elternbaum liefert.
  *
  * Bewusst NICHT `loaderHeaders` als Ganzes zurückgeben: das würde auch jeden

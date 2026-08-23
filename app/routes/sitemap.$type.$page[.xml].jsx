@@ -16,7 +16,7 @@ import {
  * werden weiterhin aus GENAU EINER Definition in ~/lib/seo abgeleitet
  * (`NICHT_INDEXIERBARE_SEITEN_DEF`), können also nach wie vor nicht
  * auseinanderdriften. Getrennt wurde nur der ZEITPUNKT: eine Seite ohne
- * eingehende interne Links wird ausschliesslich über die Sitemap besucht,
+ * eingehende interne Links wird ausschließlich über die Sitemap besucht,
  * und wer sie im selben Deploy dort herausnimmt, in dem sie ihr `noindex`
  * bekommt, sorgt dafür, dass Google das `noindex` nie liest. Der Eintrag
  * bleibt deshalb zunächst in der Sitemap (`ausSitemap: false`) und fliegt

@@ -187,18 +187,18 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
 
 // --- Die neue Naht: noindex und Sitemap-Entfernung sind ZEITLICH getrennt ---
 // Der teure Befund von s05: ein einziger Listeneintrag loeste beide Wirkungen
-// gleichzeitig aus. Fuer eine Seite OHNE eingehende interne Links ist die
+// gleichzeitig aus. Für eine Seite OHNE eingehende interne Links ist die
 // Sitemap der einzige Weg, auf dem Google das frische `noindex` je liest —
 // wer sie im selben Deploy dort herausnimmt, friert sie im Index ein.
 
 test('NAHT: die Sitemap-Sicht ist eine echte TEILMENGE der noindex-Sicht', () => {
   // Die Richtung ist tragend: aus der Sitemap darf nur fliegen, was ohnehin
-  // schon noindex traegt. Umgekehrt entstuende genau der Zustand, den dieser
+  // schon noindex trägt. Umgekehrt entstuende genau der Zustand, den dieser
   // ganze Mechanismus verhindern soll — unauffindbar, aber indexierbar.
   for (const handle of AUS_SITEMAP_ENTFERNTE_SEITEN) {
     assert.ok(
       NICHT_INDEXIERBARE_SEITEN.includes(handle),
-      `${handle} fliegt aus der Sitemap, traegt aber kein noindex`,
+      `${handle} fliegt aus der Sitemap, trägt aber kein noindex`,
     );
   }
   assert.ok(
@@ -206,7 +206,7 @@ test('NAHT: die Sitemap-Sicht ist eine echte TEILMENGE der noindex-Sicht', () =>
   );
 });
 
-test('NAHT: pre-access traegt noindex und bleibt VORERST in der Sitemap', () => {
+test('NAHT: pre-access trägt noindex und bleibt VORERST in der Sitemap', () => {
   // Der konkrete Fall, wegen dem die Trennung gebaut wurde. Dieser Test wird
   // rot, wenn jemand den Eintrag auf ausSitemap:true kippt, BEVOR das noindex
   // gewirkt hat — und er ist damit auch die Stelle, an der man ihn spaeter
@@ -225,18 +225,18 @@ test('NAHT: development-nicht-loschen bleibt in BEIDEN Sichten (kein Rueckschrit
   assert.ok(AUS_SITEMAP_ENTFERNTE_SEITEN.includes('development-nicht-loschen'));
 });
 
-test('jeder Definitionseintrag traegt Handle, Sitemap-Entscheid UND Begruendung', () => {
-  // Ohne `grund` waere die Liste in einem halben Jahr eine Sammlung von
+test('jeder Definitionseintrag trägt Handle, Sitemap-Entscheid UND Begründung', () => {
+  // Ohne `grund` wäre die Liste in einem halben Jahr eine Sammlung von
   // Zeichenketten, die niemand mehr zu entfernen wagt.
   assert.ok(NICHT_INDEXIERBARE_SEITEN_DEF.length >= 2);
   for (const e of NICHT_INDEXIERBARE_SEITEN_DEF) {
     assert.equal(typeof e.handle, 'string');
     assert.ok(e.handle.length > 0);
     assert.equal(typeof e.ausSitemap, 'boolean', `${e.handle}: ausSitemap fehlt`);
-    assert.ok(e.grund && e.grund.length > 10, `${e.handle}: Begruendung fehlt`);
+    assert.ok(e.grund && e.grund.length > 10, `${e.handle}: Begründung fehlt`);
   }
-  // Keine Dublette — ein doppelter Handle waere still folgenlos und ein
-  // Zeichen dafuer, dass zwei Leute dieselbe Seite unabhaengig eingetragen haben.
+  // Keine Dublette — ein doppelter Handle wäre still folgenlos und ein
+  // Zeichen dafür, dass zwei Leute dieselbe Seite unabhängig eingetragen haben.
   assert.equal(
     new Set(NICHT_INDEXIERBARE_SEITEN).size,
     NICHT_INDEXIERBARE_SEITEN.length,
@@ -252,7 +252,7 @@ test('noindexHeader ist der X-Robots-Tag mit demselben Wortlaut wie die Einzelro
 
 test('NAHT: die Page-Route verdrahtet auch die ZWEITE Haelfte des Doppelgates', async () => {
   // Gegenstueck zum meta()-Verdrahtungstest unten, und aus demselben Grund
-  // eine Quelltext-Pruefung: die Route laesst sich in nacktem node nicht
+  // eine Quelltext-Prüfung: die Route lässt sich in nacktem node nicht
   // importieren. Geprueft wird die KETTE, nicht die Existenz eines Namens —
   // ein `headers`-Export allein bewirkt nichts, wenn der Loader den Header
   // nie setzt, und ein gesetzter Loader-Header erreicht das Dokument nie
@@ -278,7 +278,7 @@ test('NAHT: die Page-Route verdrahtet auch die ZWEITE Haelfte des Doppelgates', 
   assert.match(
     quelle,
     /new Headers\(parentHeaders\)/,
-    'Elternheader muessen geerbt statt ersetzt werden',
+    'Elternheader müssen geerbt statt ersetzt werden',
   );
 });
 
