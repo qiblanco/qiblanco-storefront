@@ -350,4 +350,53 @@
   window.addEventListener('CookiebotOnAccept', trySync);
   window.addEventListener('CookiebotOnDecline', trySync);
   window.addEventListener('CookiebotOnConsentReady', trySync);
+
+  // ---- Hydration-Wettlauf: Banner erscheint nicht zuverlaessig ------------
+  // BEFUND (gemessen 2026-08-23 am Live-Shop, Job 20260823-verkauft-der-laden):
+  // Hydrogen hydratisiert das GANZE Dokument. Cookiebot fuegt #cookiebanner
+  // asynchron in <body> ein (~1,2 s). Landet er VOR dem Hydration-Commit,
+  // löscht ihn Reacts Reconciler ~150 ms später wieder -- belegt über
+  // removeChild aus dem Oxygen-Client-Bundle (index-*.js, Funktion `qf`,
+  // Kette lc/Qn/ea). Späte Einfügungen überleben, frühe nicht; daher der
+  // Zufall. FOLGE: in rund einem Viertel der frischen Sitzungen bekommt der
+  // Kunde GAR KEINE Einwilligungs-Wahl vorgelegt, und es wird nichts
+  // gespeichert (hasResponse bleibt false).
+  //
+  // HEILUNG, bewusst additiv und ohne Inhalt/Design anzufassen: NACH der
+  // Hydration nachsehen, ob eine Antwort aussteht und trotzdem kein Banner
+  // steht. Nur dann Cookiebot den Dialog neu aufbauen lassen. Wer bereits
+  // geantwortet hat, sieht nichts (hasResponse-Riegel) -- die Heilung darf
+  // niemandem einen zweiten Banner vorlegen.
+  //
+  // Warum nicht einfach Cookiebot später laden: `data-blockingmode=auto`
+  // muss FRÜH laufen, sonst feuern Tracker vor der Einwilligung. Der Loader
+  // bleibt darum unangetastet; geheilt wird nur der Verlust danach.
+  function bannerNachHydrationHeilen() {
+    var versuche = 0;
+    var MAX = 40;              // ~10 s bei 250 ms Takt, dann still aufgeben
+    var iv = setInterval(function () {
+      versuche++;
+      var cb = window.Cookiebot;
+      if (versuche > MAX) { clearInterval(iv); return; }
+      if (!cb) return;                                   // Skript noch nicht da
+      if (cb.hasResponse) { clearInterval(iv); return; } // Kunde hat gewählt
+      if (document.getElementById('cookiebanner')) {     // Banner steht
+        clearInterval(iv); return;
+      }
+      if (typeof cb.renew === 'function') {
+        clearInterval(iv);
+        try { cb.renew(); } catch (e) { /* nie den Kaufweg blockieren */ }
+      }
+    }, 250);
+  }
+  // Erst NACH der Hydration starten -- vorher würde die Heilung in denselben
+  // Reconciler laufen, der den Banner gelöscht hat. Die gemessene Löschung
+  // liegt bei ~1,1-1,3 s; 3 s Vorlauf ab `load` hält sicheren Abstand.
+  if (document.readyState === 'complete') {
+    setTimeout(bannerNachHydrationHeilen, 3000);
+  } else {
+    window.addEventListener('load', function () {
+      setTimeout(bannerNachHydrationHeilen, 3000);
+    });
+  }
 })();
