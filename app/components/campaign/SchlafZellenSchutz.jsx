@@ -310,8 +310,15 @@ function ScienceSection() {
  * das tatsächlich Gesagte im Video treffen (Transkript-belegt). Diese drei
  * Videos + Zitate sind wortgleich aus der bestehenden Tiefschlaf-LP übernommen
  * (dort content-match-geprüft) — keine erfundenen Themen.
+ *
+ * Per reinem `export` freigegeben (2026-08-10, Elina-Wunsch): die Campaign-Deal-
+ * Seite /pages/qione-2-pro-2x bindet dieselbe Sektion als REFERENZ ein statt sie
+ * zu kopieren — eine künftige Korrektur an Tag/Titel/Zitat/Video-ID wirkt damit
+ * an beiden Stellen. Gleiches Muster und gleicher Grund wie bei GuaranteeSection
+ * unten. VideoSection ist self-contained (keine Props/Context) — NULL Markup-/
+ * Verhaltens-Delta für LP A durch den Export.
  */
-function VideoSection() {
+export function VideoSection() {
   const videos = [
     {
       tag: 'Deutscher Leichtathletik-Meister',
