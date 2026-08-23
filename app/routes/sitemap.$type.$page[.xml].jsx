@@ -1,6 +1,6 @@
 import {getSitemap} from '@shopify/hydrogen';
 import {
-  NICHT_INDEXIERBARE_SEITEN,
+  AUS_SITEMAP_ENTFERNTE_SEITEN,
   NICHT_INDEXIERBARE_PRODUKTE,
 } from '~/lib/seo';
 
@@ -9,19 +9,31 @@ import {
  *
  * `pages` kam mit Stufe S0 (Index-Hygiene) dazu: eine Seite auf `noindex` zu
  * setzen und sie gleichzeitig in der Sitemap anzubieten, ist ein Widerspruch,
- * den die Search Console dauerhaft als Konflikt meldet. Die Handle-Liste ist
- * DIESELBE, die `pages.$handle.jsx` für das robots-meta liest (Quelle
- * ~/lib/seo) — genau deshalb steht sie dort und nicht hier.
+ * den die Search Console dauerhaft als Konflikt meldet.
+ *
+ * SEIT 2026-08-23 (s05) IST DAS NICHT MEHR DIESELBE LISTE, SONDERN IHRE
+ * TEILMENGE — und das ist der Punkt, nicht ein Rückschritt. Beide Sichten
+ * werden weiterhin aus GENAU EINER Definition in ~/lib/seo abgeleitet
+ * (`NICHT_INDEXIERBARE_SEITEN_DEF`), können also nach wie vor nicht
+ * auseinanderdriften. Getrennt wurde nur der ZEITPUNKT: eine Seite ohne
+ * eingehende interne Links wird ausschliesslich über die Sitemap besucht,
+ * und wer sie im selben Deploy dort herausnimmt, in dem sie ihr `noindex`
+ * bekommt, sorgt dafür, dass Google das `noindex` nie liest. Der Eintrag
+ * bleibt deshalb zunächst in der Sitemap (`ausSitemap: false`) und fliegt
+ * erst raus, wenn das Signal gewirkt hat. Die Begründung je Handle steht an
+ * der Definition.
  *
  * `products` folgte am 2026-08-15 derselben Regel. Bis dahin stand die
  * Produkt-Liste ZWEIMAL: hier und als `HIDDEN_BUNDLE_PRODUCT_HANDLES` in
  * `products.$handle.jsx`. Beide Kopien trugen zufällig denselben Inhalt —
  * also genau der Zustand, vor dem der Absatz oben warnt, nur für Produkte
- * noch nicht aufgelöst. Jetzt liest auch sie ~/lib/seo.
+ * noch nicht aufgelöst. Jetzt liest auch sie ~/lib/seo. Produkte tragen
+ * bewusst keine Übergangsstufe: dort war der Discovery-Pfad nicht das
+ * Problem.
  */
 const VERSTECKTE_HANDLES = {
   products: NICHT_INDEXIERBARE_PRODUKTE,
-  pages: NICHT_INDEXIERBARE_SEITEN,
+  pages: AUS_SITEMAP_ENTFERNTE_SEITEN,
 };
 
 /**

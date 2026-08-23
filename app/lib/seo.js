@@ -82,10 +82,120 @@ export function canonicalLink(pathname) {
  * AUFNAHME-KRITERIUM: nur Seiten, die für Kunden keinen Zweck haben
  * (Entwicklungs-/Test-/Rest-Seiten). Eine Seite, die Kunden nutzen sollen,
  * gehört NIE hierher — dann ist die richtige Antwort besserer Inhalt, nicht
- * Unsichtbarkeit.
+ * Unsichtbarkeit. Funnel-Bestätigungsseiten sind der Grenzfall, der trotzdem
+ * hierher gehört: Kunden SEHEN sie (nach dem Absenden eines Formulars), aber
+ * niemand SUCHT nach ihnen — sie sind Ziel eines Klicks, nie eines Treffers.
+ *
+ * ZWEI WIRKUNGEN, EINE QUELLE — und warum `ausSitemap` je Eintrag steht
+ * (Befund s05 des Grossjobs 20260823-seo-…-indexhygiene…, 2026-08-23):
+ * Bis hierher löste EIN Listeneintrag BEIDE Wirkungen zugleich aus, weil
+ * beide Leser dasselbe Array bekamen. Für `development-nicht-loschen` war das
+ * richtig. Für `/pages/pre-access` ist es GENAU FALSCHHERUM: die Seite hat
+ * NULL eingehende interne Links (gemessen über 79 gecrawlte DACH-Seiten), die
+ * Sitemap ist also der einzige Weg, auf dem Google sie noch besucht. Wer sie
+ * im selben Deploy aus der Sitemap wirft, nimmt Google die Gelegenheit, das
+ * frische `noindex` überhaupt zu LESEN — die Seite bliebe im Index und wäre
+ * zugleich unerreichbar für die Korrektur. Das ist derselbe Defekt wie ein
+ * `Disallow` in der robots.txt, nur durch die zweite Tür: das Ausschluss-
+ * Signal muss crawlbar bleiben, bis es gewirkt hat.
+ *
+ * Deshalb: `ausSitemap: false` heisst „noindex ja, Sitemap-Eintrag bleibt
+ * vorerst". Der Preis ist bewusst gewählt und benannt — für die Dauer des
+ * Übergangs besteht der Zustand „noindex UND in der Sitemap", vor dem der
+ * Absatz oben warnt. Er ist hier gewollt und endlich, nicht versehentlich.
+ * Aufgelöst wird er, wenn das noindex nachweislich gewirkt hat; dann kippt
+ * der Eintrag auf `ausSitemap: true`.
+ *
+ * Was hier NICHT passieren darf, ist eine ZWEITE Liste: die beiden Sichten
+ * unten werden aus DIESER einen Definition abgeleitet, können also nicht
+ * auseinanderdriften.
+ * @type {Array<{handle: string, ausSitemap: boolean, grund: string}>}
+ */
+export const NICHT_INDEXIERBARE_SEITEN_DEF = [
+  {
+    handle: 'development-nicht-loschen',
+    ausSitemap: true,
+    grund: 'Entwicklungsseite; Sitemap war ihr einziger Discovery-Pfad (2026-08-14)',
+  },
+  // Neu 2026-08-23 (s05). Jeder Handle live gemessen: HTTP 200, KEIN
+  // robots-meta, in `sitemap/pages/1.xml` geführt. Die ersten sechs tragen
+  // NULL eigene Wörter (das leere DACH-Gerüst misst 424 Wörter, sie messen
+  // exakt 424), die Funnel-Seiten wenige Zeilen.
+  {
+    handle: 'pre-access',
+    ausSitemap: false,
+    grund: 'leere Kampagnen-Restseite, stand auf Platz 2 der Suche nach "QiOne 2 Pro"',
+  },
+  {
+    handle: 'qibracelet_',
+    ausSitemap: false,
+    grund: 'leerer Handle-Vertipper zu /pages/qibracelet',
+  },
+  {
+    handle: 'qiblanco-qibracelet',
+    ausSitemap: false,
+    grund: 'leere Dublette zu /pages/qibracelet',
+  },
+  {
+    handle: 'kakao-anwendung-de',
+    ausSitemap: false,
+    grund: 'leere Sprachvariante zu /pages/kakao-anwendung',
+  },
+  {
+    handle: 'kakao-anwendung-us',
+    ausSitemap: false,
+    grund: 'leere Sprachvariante, rankte auf der DACH-Markensuche',
+  },
+  {
+    handle: 'zeremonie-kakao-language-select',
+    ausSitemap: false,
+    grund: 'leere Sprachweiche ohne Inhalt',
+  },
+  {
+    handle: 'anmeldung-erfolgreich',
+    ausSitemap: false,
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+  },
+  {
+    handle: 'kw-anmeldung-erfolgreich',
+    ausSitemap: false,
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+  },
+  {
+    handle: 'superhuman-anmeldung-erfolgreich',
+    ausSitemap: false,
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+  },
+  {
+    handle: 'erinnerung-erfolgreich',
+    ausSitemap: false,
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+  },
+  {
+    handle: 'superhuman-kurs-bestatigung',
+    ausSitemap: false,
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+  },
+];
+
+/**
+ * Sicht 1 — alle Handles, die ein `noindex` bekommen. Leser: die Route
+ * `pages.$handle.jsx` (robots-meta UND X-Robots-Tag).
  * @type {string[]}
  */
-export const NICHT_INDEXIERBARE_SEITEN = ['development-nicht-loschen'];
+export const NICHT_INDEXIERBARE_SEITEN = NICHT_INDEXIERBARE_SEITEN_DEF.map(
+  (e) => e.handle,
+);
+
+/**
+ * Sicht 2 — die TEILMENGE, die zusätzlich aus der Sitemap fliegt. Leser: die
+ * Sitemap-Route. Immer eine Teilmenge von Sicht 1: aus der Sitemap fliegt nur,
+ * was ohnehin schon `noindex` trägt — nie umgekehrt.
+ * @type {string[]}
+ */
+export const AUS_SITEMAP_ENTFERNTE_SEITEN = NICHT_INDEXIERBARE_SEITEN_DEF.filter(
+  (e) => e.ausSitemap,
+).map((e) => e.handle);
 
 /**
  * Gehört dieser Page-Handle aus dem Index?
@@ -105,6 +215,18 @@ export function istNichtIndexierbar(handle) {
  */
 export function noindexMeta() {
   return {name: 'robots', content: 'noindex,nofollow'};
+}
+
+/**
+ * Die ZWEITE, vom HTML unabhängige Sperre desselben Signals (Hausmuster
+ * D-006, „Gurt und Hosenträger"): greift auch bei einem Bot, der den
+ * HTML-head nicht parst. Bewusst wortgleich zu dem, was die eigenen Routen
+ * mit eigener Datei setzen (z. B. `pages.uebersicht.jsx`) — ein zweiter
+ * Wortlaut wäre ein zweiter Wartungspunkt ohne Nutzen.
+ * @returns {{'X-Robots-Tag': string}}
+ */
+export function noindexHeader() {
+  return {'X-Robots-Tag': 'noindex, nofollow'};
 }
 
 /**
