@@ -529,12 +529,22 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
       )}
 
       {item.title === "Online Kurse" && (
-        <div className="nav-styling-wrapper">
+        <div className="nav-styling-wrapper nav-styling-wrapper--kurse">
           {/* Ohne den `_400x`-Zusatz: dieselbe Aufnahme in ihrer vollen
               Ablagegroesse (526x296 statt 400x225). Bei 285 CSS-px Anzeige und
               dpr>=2 trugen 400 Quellpixel die Flaeche nicht (Gate 12,
               bild-aufloesung), 526 tragen sie. Nachgemessen 2026-08-09: beide
-              URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung. */}
+              URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung.
+
+              526 IST DIE OBERGRENZE DIESER AUFNAHME, nicht eine Wahl:
+              nachgemessen 2026-08-23 liefert das Shopify-CDN für `_1200x`
+              wieder 526x296 — es gibt keine größeren Pixel, auch die
+              `.webp`-Fassung hat nur 526. Die Annahme "285 CSS-px" von
+              2026-08-09 gilt seit dem Mega-Menü-Umbau nicht mehr: gemessen
+              308 px (mobil-quer-883) und 314 px (tablet-900), und bei dpr>=2
+              trägt 526 diese Fläche nicht. Weil die Quelle nicht wachsen
+              kann, deckelt `.nav-styling-wrapper--kurse` in app/styles/app.css
+              die ANZEIGE — dort steht die Herleitung des Werts. */}
           <img style={{borderRadius: '20px'}} width={325} height={183} loading="lazy" alt="Online-Masterclass „In 5 Stufen zum Superhuman“" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
         </div>
       )}
