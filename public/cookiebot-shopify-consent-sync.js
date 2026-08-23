@@ -372,31 +372,35 @@
   // muss FRÜH laufen, sonst feuern Tracker vor der Einwilligung. Der Loader
   // bleibt darum unangetastet; geheilt wird nur der Verlust danach.
   function bannerNachHydrationHeilen() {
-    var versuche = 0;
-    var MAX = 40;              // ~10 s bei 250 ms Takt, dann still aufgeben
+    var versuche = 0, heilungen = 0;
+    var MAX = 60;              // ~15 s bei 250 ms Takt, dann still aufgeben
+    var MAX_HEILUNGEN = 3;     // gegen eine Endlosschleife, falls renew() nie greift
     var iv = setInterval(function () {
       versuche++;
       var cb = window.Cookiebot;
       if (versuche > MAX) { clearInterval(iv); return; }
       if (!cb) return;                                   // Skript noch nicht da
       if (cb.hasResponse) { clearInterval(iv); return; } // Kunde hat gewählt
-      if (document.getElementById('cookiebanner')) {     // Banner steht
-        clearInterval(iv); return;
-      }
+      // Banner steht: NICHT aufhören zu beobachten. Er kann auch später noch
+      // wegreconciled werden -- ein einmaliger Blick würde das verpassen.
+      if (document.getElementById('cookiebanner')) return;
+      if (heilungen >= MAX_HEILUNGEN) { clearInterval(iv); return; }
+      heilungen++;
       if (typeof cb.renew === 'function') {
-        clearInterval(iv);
         try { cb.renew(); } catch (e) { /* nie den Kaufweg blockieren */ }
       }
     }, 250);
   }
-  // Erst NACH der Hydration starten -- vorher würde die Heilung in denselben
-  // Reconciler laufen, der den Banner gelöscht hat. Die gemessene Löschung
-  // liegt bei ~1,1-1,3 s; 3 s Vorlauf ab `load` hält sicheren Abstand.
-  if (document.readyState === 'complete') {
-    setTimeout(bannerNachHydrationHeilen, 3000);
+  // Start so früh wie sicher möglich. NICHT an `load` hängen: auf Mobil feuert
+  // `load` spät (viele Bilder), gemessen 2026-08-23 kam die Heilung dort erst
+  // zwischen 9 s und 15 s -- 8/10 statt 10/10 im 9-s-Fenster. Die gemessene
+  // Löschung liegt bei ~1,1-1,3 s und die Hydration ist bei ~1,6 s durch;
+  // DOMContentLoaded + 2,5 s hält sicheren Abstand und ist auf Mobil um ein
+  // Vielfaches früher als `load`.
+  function heilungStarten() { setTimeout(bannerNachHydrationHeilen, 2500); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', heilungStarten);
   } else {
-    window.addEventListener('load', function () {
-      setTimeout(bannerNachHydrationHeilen, 3000);
-    });
+    heilungStarten();
   }
 })();
