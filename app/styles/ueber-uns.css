@@ -1,0 +1,244 @@
+/* ============================================================================
+   /pages/ueber-uns — WER HINTER QI BLANCO STEHT (2026-08-24).
+   Auftrag 20260823-seo-grossjob-…-prio50, Segment s06, Backlog-Posten B-10(a).
+
+   Token-System abgeleitet aus dem Referenz-Rezept der LP A
+   (styles/schlaf-zellen-schutz.css, design-rubrik 94/100) über den nächsten
+   Bestands-Verwandten styles/uebersicht.css: warmes Neutral-Kontinuum, EIN
+   Gold-Akzent, 8pt-Grid, modulare Typo-Skala, EIN Radius, EIN H2-Stil.
+
+   WARUM DIESELBE LEITIDEE, ABER EINE ANDERE AUFGABE: uebersicht.css bedient
+   eine lange Navigationsliste und hält die Farbe deshalb flach. Diese Seite
+   bedient eine VERTRAUENSFRAGE — sie besteht aus Angaben, die man nachprüfen
+   können soll. Der Gold-Akzent liegt darum ausschließlich auf BELEG (die
+   Verweise auf Studien und Register) und auf HANDLUNG (Hover/Fokus), nie auf
+   Dekoration; drei geplante Farb-Akte (Kopf dunkel / Grund hell / EINE helle
+   Fläche für die Angaben-Blöcke) und sonst nichts.
+
+   REGEL DIESES FILES: alle Größen/Farben/Radien kommen aus dem Token-Block
+   unten. Außerhalb des Blocks erfindet KEINE Regel freie Werte.
+
+   SCOPE: .uu — und zwar FLACH. Jede Regel selektiert eine .uu-*-Klasse direkt,
+   nicht als Nachfahre von .uu. Grund ist F-009 (homepage-bauer FEHLER-DB):
+   dort trug der Wrapper zwei Klassen am SELBEN Element, das Stylesheet
+   prefixte aber als Nachfahre — 100 % der Regeln liefen tot, und die Rubrik
+   gab trotzdem 92/100, weil sie die gerenderte Fläche misst und nicht, ob eine
+   Datei greift. Flache Klassen können diesen Fehler baulich nicht haben.
+   ========================================================================== */
+
+.uu {
+  /* Schrift: EINE ruhige Sans. Keine zweite Familie — auf dieser Seite gibt es
+     keine Daten-Kolonnen, die eine Monospace bräuchten. */
+  --uu-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala — GENAU 6 Stufen auf einer modularen Leiter.
+     13 / 16 / 18 / 20 / 25 / 39, wirksame Nachbar-Verhältnisse
+     1,23 · 1,13 · 1,39 (identisch zu uebersicht.css, dort auf 94/100
+     nachgemessen). Untergrenze 13px liegt über mobile_font_px_min (12). */
+  --uu-fs-xs: 0.8125rem;   /* 13px — Meta, Quellenzeile */
+  --uu-fs-base: 1rem;      /* 16px — Body */
+  --uu-fs-md: 1.125rem;    /* 18px — Angaben-Blöcke */
+  --uu-fs-lg: 1.25rem;     /* 20px — Lead */
+  --uu-fs-h2: clamp(1.5rem, 1.1rem + 1.4vw, 1.5625rem);   /* EIN H2-Stil */
+  --uu-fs-h1: clamp(1.9375rem, 1.4rem + 2.4vw, 2.4375rem);
+
+  /* Spacing: 8pt-Grid, keine Zwischenwerte */
+  --uu-s1: 8px;  --uu-s2: 16px; --uu-s3: 24px; --uu-s4: 32px;
+  --uu-s6: 48px; --uu-s8: 64px; --uu-takt: 104px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --uu-grund: #faf9f5;
+  --uu-flaeche: #f4f0e9;
+  --uu-dunkel: #191714;
+  --uu-text: #2c2a26;
+  --uu-text-hell: #f4f0e9;
+  --uu-muted: #6b665d;
+  --uu-muted-hell: rgba(244, 240, 233, 0.72);
+  --uu-akzent: #c9a14b;             /* GL-DES-0001 Gold — NUR Handlung/Beleg */
+  --uu-linie: rgba(44, 42, 38, 0.12);
+
+  /* EIN Radius-Token */
+  --uu-r: 8px;
+
+  /* Layout: eine Lesebreite, ein Maß */
+  --uu-breite: 1000px;
+  --uu-mass: 68ch;
+
+  font-family: var(--uu-font);
+  font-size: var(--uu-fs-base);
+  line-height: 1.6;
+  color: var(--uu-text);
+  background: var(--uu-grund);
+}
+
+.uu *,
+.uu *::before,
+.uu *::after { box-sizing: border-box; }
+
+/* ─── Sektions-Takt: EIN Container, EIN Rhythmus ──────────────────────────── */
+.uu-abschnitt {
+  margin: 0;
+  padding: var(--uu-takt) var(--uu-s3);
+  background: var(--uu-grund);
+  max-width: none;
+}
+.uu-abschnitt-flaeche { background: var(--uu-flaeche); }
+
+.uu-innen {
+  width: 100%;
+  max-width: var(--uu-breite);
+  margin: 0 auto;
+}
+
+/* ─── Farb-Akt 1: der Kopf steht dunkel ───────────────────────────────────── */
+.uu-kopf {
+  background: var(--uu-dunkel);
+  color: var(--uu-text-hell);
+  padding-top: var(--uu-s8);
+  padding-bottom: var(--uu-s8);
+}
+.uu-kopf h1 {
+  margin: 0 0 var(--uu-s3);
+  font-size: var(--uu-fs-h1);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--uu-text-hell);
+}
+.uu-lead {
+  margin: 0;
+  max-width: var(--uu-mass);
+  font-size: var(--uu-fs-lg);
+  line-height: 1.55;
+  color: var(--uu-muted-hell);
+}
+
+/* ─── EIN H2-Stil für die ganze Seite ─────────────────────────────────────── */
+/* Das Lesemaß liegt auf JEDEM Textknoten, nicht nur auf den Absätzen —
+   Iteration 1 -> 2: die Rubrik maß „40 % der Textblöcke über 75 Zeichen
+   Zeilenlänge" und zählt dabei auch Überschriften und die Zeilen im
+   Personen-Block mit. Ein Maß, das die Hälfte der Textknoten auslässt, ist
+   kein Maß. */
+.uu-h2 {
+  margin: 0 0 var(--uu-s3);
+  max-width: var(--uu-mass);
+  font-size: var(--uu-fs-h2);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--uu-text);
+}
+
+.uu-text {
+  margin: 0 0 var(--uu-s3);
+  max-width: var(--uu-mass);
+  font-size: var(--uu-fs-base);
+}
+.uu-text:last-child { margin-bottom: 0; }
+
+/* ─── Angaben-Block: die nachprüfbaren Daten ──────────────────────────────── */
+.uu-angaben {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(11rem, 15rem) 1fr;
+  gap: var(--uu-s2) var(--uu-s4);
+  max-width: var(--uu-mass);
+  font-size: var(--uu-fs-md);
+}
+.uu-angaben-schluessel {
+  margin: 0;
+  color: var(--uu-muted);
+  font-size: var(--uu-fs-base);
+}
+.uu-angaben-wert {
+  margin: 0;
+  color: var(--uu-text);
+}
+
+@media (max-width: 640px) {
+  .uu-abschnitt { padding: var(--uu-s8) var(--uu-s3); }
+  .uu-angaben { grid-template-columns: 1fr; gap: var(--uu-s1); }
+  .uu-angaben-wert { margin-bottom: var(--uu-s2); }
+}
+
+/* ─── Person: die benannte Verantwortung ──────────────────────────────────── */
+.uu-person {
+  margin: 0 0 var(--uu-s4);
+  padding: var(--uu-s4);
+  background: var(--uu-grund);
+  border: 1px solid var(--uu-linie);
+  border-radius: var(--uu-r);
+  max-width: var(--uu-mass);
+}
+.uu-person-name {
+  margin: 0 0 var(--uu-s1);
+  max-width: var(--uu-mass);
+  font-size: var(--uu-fs-md);
+  font-weight: 600;
+}
+.uu-person-rolle {
+  margin: 0;
+  max-width: var(--uu-mass);
+  color: var(--uu-muted);
+  font-size: var(--uu-fs-base);
+}
+
+/* ─── Beleg-Liste: Gold liegt hier, weil hier der Beweis liegt ────────────── */
+.uu-belege {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--uu-mass);
+}
+.uu-belege li {
+  margin: 0 0 var(--uu-s2);
+  max-width: var(--uu-mass);
+  padding-left: var(--uu-s3);
+  border-left: 2px solid var(--uu-akzent);
+}
+.uu-belege li:last-child { margin-bottom: 0; }
+
+/* ─── Verweise: Gold nur im Hover/Fokus, also auf der Handlung ────────────── */
+.uu-link {
+  color: var(--uu-text);
+  text-decoration: underline;
+  text-decoration-color: var(--uu-akzent);
+  text-underline-offset: 3px;
+}
+.uu-link:hover,
+.uu-link:focus-visible {
+  color: var(--uu-akzent);
+  text-decoration-color: var(--uu-akzent);
+}
+.uu-kopf .uu-link { color: var(--uu-text-hell); }
+.uu-kopf .uu-link:hover,
+.uu-kopf .uu-link:focus-visible { color: var(--uu-akzent); }
+
+/* ─── Der eine Knopf der Seite (Google-Quellenwahl) ───────────────────────── */
+.uu-knopf {
+  display: inline-block;
+  margin: 0;
+  padding: 14px var(--uu-s3);
+  border: 1px solid var(--uu-akzent);
+  border-radius: var(--uu-r);
+  background: var(--uu-akzent);
+  color: var(--uu-dunkel);
+  font-family: var(--uu-font);
+  font-size: var(--uu-fs-base);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+.uu-knopf:hover,
+.uu-knopf:focus-visible {
+  background: var(--uu-grund);
+  color: var(--uu-text);
+}
+
+.uu-fussnote {
+  margin: var(--uu-s3) 0 0;
+  max-width: var(--uu-mass);
+  font-size: var(--uu-fs-xs);
+  color: var(--uu-muted);
+}
