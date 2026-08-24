@@ -101,6 +101,10 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://gorgias-convert.com',
       'https://connect.facebook.net',
+      // UpPromote-Affiliate-Pixel (collect.js, von UpPromoteTracking.jsx nach
+      // Einwilligung nachgeladen). STELLE 1 VON 2 — die zweite ist connect-src
+      // weiter unten. Fehlt eine davon, blockt die CSP STILL.
+      'https://static-pixel.uppromote.com',
       // Eigener Sales-Chat-Assistent (s05): das Loader-Skript
       // <origin>/embed/qiblanco-widget.js. STELLE 1 VON 2 — die zweite ist
       // frame-src weiter unten. Fehlt eine davon, blockt die CSP STILL.
@@ -167,6 +171,9 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://www.facebook.com',
       'https://connect.facebook.net',
+      // UpPromote-Affiliate-Pixel: die Messpunkte, die collect.js sendet
+      // (Klick-Zuordnung + cart_updated). STELLE 2 VON 2 zu script-src oben.
+      'https://static-pixel.uppromote.com',
       // First-Party-Pixel (qpx): Receiver-Origin nur, wenn per env gesetzt.
       ...qpxConnectSrc(context.env),
     ],
