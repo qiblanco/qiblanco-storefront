@@ -8,6 +8,11 @@ import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
 import {
+  istKakaoPfad,
+  KAKAO_KENNZAHLEN,
+  QIBLANCO_KENNZAHLEN,
+} from '~/lib/kakao-zone';
+import {
   GoogleRezensionenPopup,
   findeRezensionsZiel,
   scrolleZuRezensionen,
@@ -125,10 +130,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   }, []);
 
   const {pathname} = useLocation();
-  const isCacaoPage =
-    pathname === '/pages/crystal-cacao' ||
-    pathname === '/products/crystal-cacao-create' ||
-    pathname === '/products/crystal-cacao-awake';
+  // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
+  // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
+  // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
+  // /products/zeremonie-kakao wären beim nächsten Deploy auf die
+  // Qi-Blanco-Leiste gekippt ("über 14.000" auf einer Kakaoseite).
+  const isCacaoPage = istKakaoPfad(pathname);
 
   // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
   // schwarzen Banner scrollt zum Google-Rezensionsbereich DIESER Seite;
@@ -161,7 +168,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           isCacaoPage ? (
             <p>
               <span className="banner-line">
-                5.0/5.0 ⭐⭐⭐⭐⭐ - Über 1.000 aktive Nutzer
+                {KAKAO_KENNZAHLEN.bewertungSkala} ⭐⭐⭐⭐⭐ - Über{' '}
+                {KAKAO_KENNZAHLEN.nutzer} aktive Nutzer
               </span>
               <span className="banner-offer-sep"> - </span>
               <span className="banner-line">
@@ -171,7 +179,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           ) : (
             <p>
               <span className="banner-line">
-                <GoogleSterneBadge /> - Über 14.000 zufriedene Kunden
+                <GoogleSterneBadge /> - Über {QIBLANCO_KENNZAHLEN.nutzer}{' '}
+                zufriedene Kunden
               </span>
               <span className="banner-offer-sep"> - </span>
               <span className="banner-line">
