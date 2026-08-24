@@ -58,12 +58,29 @@ const TITEL = 'Über uns — wer hinter Qi Blanco steht | Qi Blanco';
 /**
  * Meta-Beschreibung. Sie sagt, was die Seite BIETET (Namen, Register,
  * Prüfinstitut) — bewusst ohne jede Vorsichtsformel, weil genau die aus dem
- * Snippet heraus soll (Christian 2026-08-23). 148 Zeichen, unter der
- * Snippet-Kappung von ~155.
+ * Snippet heraus soll (Christian 2026-08-23). Unter der Snippet-Kappung
+ * von ~155 Zeichen.
+ *
+ * WARUM HIER NICHT MEHR „unabhängige" STEHT (geändert 2026-08-24, nachdem
+ * eine unabhängige Gegenprüfung dieses Segments genau dieses Wort als
+ * einzigen echten Angriffspunkt der Seite benannt hat): Dartsch Scientific
+ * ist ein eigenständiges Unternehmen, aber ein von UNS BEAUFTRAGTES
+ * Auftragslabor. „Unabhängig" behauptet Unbefangenheit — und das ist die
+ * Sorte Aussage, die wir nicht belegen können, hier auf einer YMYL-Fläche
+ * und in einem snippet-relevanten Feld, das Google wörtlich ausspielt.
+ *
+ * Christians Regel geht in die andere Richtung, als man beim Wort
+ * „selbstbewusst" zuerst vermutet: was belegbar ist, wird belegt — was
+ * nicht belegbar ist, wird GESTRICHEN statt relativiert. Also kein
+ * „weitgehend unabhängig" und kein Konjunktiv, sondern das Adjektiv
+ * ersatzlos weg. Übrig bleibt die überprüfbare Tatsache: es gibt ein
+ * Institut, es ist nicht unseres, und die Seite nennt es beim Namen.
+ * Für E-E-A-T ist das ohnehin das stärkere Signal — ein NAME ist prüfbar,
+ * ein Adjektiv nicht.
  */
 const BESCHREIBUNG =
   'Wer Qi Blanco verantwortet, mit Namen, Anschrift und Handelsregister — und ' +
-  'welches unabhängige Institut unsere Produkte zellbiologisch geprüft hat.';
+  'in welchem Institut unsere Produkte zellbiologisch geprüft wurden.';
 
 /** Aus dem Impressum, wörtlich. Die einzige natürliche Person dieser Seite. */
 const VERANTWORTLICH = {
