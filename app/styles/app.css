@@ -5314,8 +5314,21 @@ html.qb-chat-docked .submenu {
       erst SEHEN kann, seit Regel 1 den Warenkorb-Knopf wieder freilegt —
       ohne diese Zeile faehrt es genau ueber den Chat. Bezug ist der
       Bestandswert `right: 25px` aus dem 1024er-Block weiter oben. */
-html.qb-chat-docked .overlay aside {
-  right: calc(25px + var(--qb-chat-dock-breite, 0px));
+/* HAERTUNG 2026-08-24 (Job 20260824-storefront-hydration-418-und-csp-bunny, s04):
+   Die Media-Query ist HEUTE ein No-op — `html.qb-chat-docked` wird ohnehin nur
+   gesetzt, wenn der Wirt >= 1024 px breit ist und nicht als schmal gilt
+   (<= 560 px), siehe qi-salesbot/config/docked.conf. Sie steht hier fuer den Tag,
+   an dem jemand diese Schwelle senkt: ohne sie spraenge das Schubfach bei 375 px
+   auf left:-525, und der Kasse-Knopf waere nicht mehr klickbar — also genau der
+   mobile Kaufweg, der im August 2026 schon einmal gebrochen war (PR #234/#235).
+   EHRLICHE EINORDNUNG: das ist Tiefenverteidigung gegen eine Konfig-Aenderung,
+   KEINE unabhaengige zweite Sperre — CSS und JS lesen dieselbe Groesse
+   (Viewport-Breite). Wer echte Unabhaengigkeit will, braucht eine Probe am
+   Kaufweg, nicht eine zweite Breitenabfrage. */
+@media (min-width: 1024px) {
+  html.qb-chat-docked .overlay aside {
+    right: calc(25px + var(--qb-chat-dock-breite, 0px));
+  }
 }
 
 /* 4. Seitenflaeche 750-1023 px: das Tablet-Rezept dieser Datei
