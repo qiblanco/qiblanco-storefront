@@ -131,10 +131,10 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
 
   const {pathname} = useLocation();
   // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
-  // welche Flaeche zu welcher Produktwelt gehoert. Vorher stand die Liste hier
-  // und kannte nur DREI der fuenf Kakao-Pfade: /pages/kristall-kakao und
-  // /products/zeremonie-kakao waeren beim naechsten Deploy auf die
-  // Qi-Blanco-Leiste gekippt ("ueber 14.000" auf einer Kakaoseite).
+  // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
+  // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
+  // /products/zeremonie-kakao wären beim nächsten Deploy auf die
+  // Qi-Blanco-Leiste gekippt ("über 14.000" auf einer Kakaoseite).
   const isCacaoPage = istKakaoPfad(pathname);
 
   // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
