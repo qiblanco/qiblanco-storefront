@@ -1,4 +1,5 @@
 import LazyImage from '../reusables/LazyImage';
+import {KAKAO_KENNZAHLEN} from '~/lib/kakao-zone';
 import {ActiveCampaignForm} from '../reusables/ActiveCampaignForm';
 import {SwipeTable} from '../reusables/SwipeTable';
 
@@ -66,9 +67,12 @@ function Hero() {
         </div>
         <h2 className="text-2xl">Crystal Cacao® - Bio</h2>
         <div className="text-2xl font-bold">
-          5.0 <span className="qb-sterne">★★★★★</span>
+          {KAKAO_KENNZAHLEN.bewertung}{' '}
+          <span className="qb-sterne">★★★★★</span>
         </div>
-        <h3 className="text-2xl font-bold">Mehr als 1.000+ aktive Nutzer</h3>
+        <h3 className="text-2xl font-bold">
+          Mehr als {KAKAO_KENNZAHLEN.nutzer}+ aktive Nutzer
+        </h3>
         <div className="text-lg text-[#4A4741]">
           Erfahre jetzt die Vorteile von Kristall Kakao
         </div>

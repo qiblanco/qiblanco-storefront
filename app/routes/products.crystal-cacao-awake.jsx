@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {KAKAO_KENNZAHLEN} from '~/lib/kakao-zone';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -124,7 +125,7 @@ export default function Product() {
         <div className="product-main">
           <h1>{title}</h1>
           <div className="product-rating">
-            <span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span>
+            <span>{KAKAO_KENNZAHLEN.bewertung}</span> ★★★★★ <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
           </div>
           <div
             className="ProductDescription"
@@ -132,7 +133,7 @@ export default function Product() {
           />
 
           <p className="mt-2">
-            <b>Mehr als 14.000+ aktive Nutzer</b>
+            <b>Mehr als {KAKAO_KENNZAHLEN.nutzer}+ aktive Nutzer</b>
           </p>
 
           <CacaoPriceDisplay
