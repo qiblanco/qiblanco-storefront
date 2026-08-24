@@ -1,0 +1,125 @@
+/* /pages/technologie — seiteneigene Regeln.
+ *
+ * Job 20260824-technologie-seite-formatschuld-und-disclaimer-prio50.
+ * BEWUSST eine eigene Datei und NICHT app.css: die Seite hat zwei
+ * Bestandsfehler, die beide nur sie betreffen. In app.css geschrieben,
+ * zoege dieselbe Zeile jede andere Seite in die Gate-12-Messpflicht — ohne
+ * dass sich dort irgendetwas ändert. Muster wie styles/uebersicht.css.
+ *
+ * ================================================================
+ * (1) .tech-duo — das zweispaltige Gitter
+ * ================================================================
+ * BEFUND (gemessen 2026-08-24 auf origin/main): scrollWidth 451 gegen
+ * clientWidth 360 bzw. 414 — der Nutzer musste die Seite seitlich schieben.
+ * Als Überstand meldete Gate 12 `header-wrapper` und
+ * `Header-AnnouncementBanner`, also den KOPFBEREICH. Das ist eine falsche
+ * Fährte: dieselben Formate sind auf `podcasts`, `ueber-uns` und `studien`
+ * mit demselben Kopf bei scrollWidth == clientWidth sauber. Der Kopf ist
+ * 451 px breit, WEIL die Seite es ist — nicht umgekehrt.
+ *
+ * Die Ursache sind sechs `grid-template-columns: 1fr 1fr` ohne
+ * schmales Gegenstück. Ein Grid-Element hat `min-width: auto`, seine
+ * kleinste Größe ist also die seines längsten unumbrechbaren Wortes
+ * ("Wasserstoffbrücken", fett, gemessen 189 px). Zwei solche Spalten plus
+ * 3rem Abstand ergeben 427 px in einem 312 px breiten Container. Der
+ * eigentliche Auslöser ist der Text, nicht das Layout — deshalb wird die
+ * KLASSE geheilt und nicht die eine Sektion, in der es heute auffällt.
+ * (Die Überstands-Liste des Prüfers ist bei 12 Einträgen gekappt; aus ihr
+ * auf eine einzelne Sektion zu schließen wäre ein Messfehler.)
+ *
+ * `minmax(0, 1fr)` nimmt der Spalte die automatische Mindestgröße, damit ein
+ * langes Wort in der breiten Ansicht nicht erneut aufspreizen kann;
+ * `overflow-wrap: anywhere` gibt ihm stattdessen einen Umbruchpunkt.
+ * Unterhalb von 750 px steht ohnehin nur eine Spalte.
+ *
+ * ================================================================
+ * (2) .tech-bild — Anzeigebreite auf die echte Quellbreite gedeckelt
+ * ================================================================
+ * BEFUND: `bild-aufloesung` (Upscaling) in 9 von 11 Formaten.
+ * WEG (a) — größere Quelle — ist NICHT unterstellt, sondern ausgemessen und
+ * ausgeschlossen: `?...&width=2000` liefert bei allen zwölf Bildern dieser
+ * Seite byte-identisch dieselbe Datei wie ohne Parameter. Das Shopify-CDN
+ * skaliert nie über die Masterbreite. Zwei Quellen sind schlicht klein
+ * (`qiblanco-com-gehirn-frequenzen` 300 px, `qiblanco-com-leiternetzwerk`
+ * 283 px); ein hochskalierter Neu-Upload hätte das Gate grün gefärbt und die
+ * sichtbare Unschärfe stehen gelassen — Gate-Gaming mit einem Zwischenschritt.
+ * Also WEG (b), wie im Präzedenzfall vom 2026-08-23: die Anzeigefläche wird
+ * gedeckelt.
+ *
+ * Der Deckel ist keine gewählte Zahl, sondern eine Regel: jedes Bild trägt
+ * seine gemessene Quellbreite als `--qb` bei sich, und die Anzeigebreite ist
+ * höchstens `--qb` Gerätepixel. Bei dpr 1 sind das `--qb` CSS-px, ab dpr 2
+ * die Hälfte. Das ist die physikalische Wahrheit "nie mehr als 1:1", nicht
+ * die Gate-Schwelle (`--qb / (dpr * 0,9)`) — auf der Schwelle zu sitzen
+ * hieße, die Messtoleranz aufzubrauchen und beim nächsten Subpixel-Wechsel
+ * wieder rot zu stehen.
+ *
+ * `min(100%, ...)` ist Absicht und teuer gelernt (Gate-12-Repair 2026-08-23):
+ * ein klassengenauer Selektor ERSETZT die globale Regel `img{max-width:100%}`,
+ * er ergänzt sie nicht. Ein nacktes `max-width: 400px` macht ein Bild in
+ * einer 300-px-Spalte BREITER statt schmaler.
+ */
+
+/* ================================================================
+ * (0) .tech-seite — lange deutsche Komposita duerfen umbrechen
+ * ================================================================
+ * Der Seiten-Überlauf hat ZWEI Wurzeln, und die zweite wäre nach der ersten
+ * fast durchgerutscht: nach dem Gitter-Fix blieb bei mobil-360 ein Rest von
+ * 383 gegen 360 px. Ursache war KEIN Layout, sondern EIN WORT —
+ * "Weltgesundheitsorganisation" in der WHO-Überschrift, gemessen 343 px in
+ * einem 280 px breiten Kasten. Deutsche Komposita sind auf 360 px regelmäßig
+ * breiter als ihre Spalte; ohne Umbruchpunkt schiebt jedes einzelne von
+ * ihnen die ganze Seite auf.
+ *
+ * `hyphens: auto` trennt nach Silben, wo die Engine ein Wörterbuch hat
+ * (deshalb steht `lang="de"` am Seiten-Wurzelelement — ohne Sprachangabe
+ * trennt niemand). `overflow-wrap: anywhere` ist der Rückfall, wenn keins da
+ * ist, und ist zugleich das, was die Gitterspalten oben brauchen: es senkt
+ * die intrinsische Mindestbreite eines Elements auf die eines Zeichens,
+ * womit `min-width: auto` nicht mehr aufspreizen kann. `break-word` täte das
+ * NICHT — es bricht nur die Darstellung, nicht die Mindestbreite.
+ */
+.tech-seite {
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.tech-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.tech-duo--eng {
+  gap: 2.5rem;
+}
+
+.tech-duo--mitte {
+  align-items: center;
+}
+
+.tech-duo > * {
+  min-width: 0;
+}
+
+@media (max-width: 749px) {
+  .tech-duo {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.tech-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: min(100%, var(--max, 100%), calc(var(--qb, 9999) * 1px));
+  margin-inline: auto;
+}
+
+@media (min-resolution: 2dppx) {
+  .tech-bild {
+    max-width: min(100%, var(--max, 100%), calc(var(--qb, 9999) * 0.5px));
+  }
+}
