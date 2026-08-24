@@ -41,7 +41,7 @@ import ueberUnsStyles from '~/styles/ueber-uns.css?url';
  * statt relativiert. Selbstbewusst heißt hier nachprüfbare Herkunft, nicht
  * starke Worte.
  *
- * DESIGN: eigenes Token-System `styles/ueber-uns.css` (Scope .uu, flach) nach
+ * DESIGN: eigenes Token-System `styles/über-uns.css` (Scope .uu, flach) nach
  * dem Referenz-Rezept der LP A über den Bestands-Verwandten uebersicht.css.
  *
  * TRACKING-NAHT: diese Seite setzt KEINE Cookies, führt KEINEN neuen

@@ -80,8 +80,8 @@ export function standFuer(pfad) {
   const wert = REDAKTIONSSTAND[pfad];
   if (!wert) {
     throw new Error(
-      `redaktionsstand: kein Stand fuer "${pfad}" — Eintrag in ` +
-        'app/data/redaktionsstand.js ergaenzen (Datum aus ' +
+      `redaktionsstand: kein Stand für "${pfad}" — Eintrag in ` +
+        'app/data/redaktionsstand.js ergänzen (Datum aus ' +
         '`git log -1 --format=%cs -- <inhaltsdatei>`).',
     );
   }
