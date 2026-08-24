@@ -120,12 +120,12 @@ export default function ImpressumPage() {
         </p>
       </section>
 
-      <section>
-        <h2>Wissenschaftlicher Hinweis</h2>
-        <p>
-          Die von Qi Blanco vertriebene Technologie entspricht nicht dem konventionellen wissenschaftlichen Verständnis und ersetzt nicht die Konsultation eines Arztes oder Heilpraktikers.
-        </p>
-      </section>
+      {/* Der Abschnitt "Wissenschaftlicher Hinweis" (Kurzfassung des Disclaimers) stand
+          bis 2026-08-24 hier und ist entfallen — Christian-Nachtrag vom 2026-08-23:
+          "Auf der ganzen Seite entfernen, auch im Rechtsblock." Die Pflichtangaben des
+          Impressums (Anbieterkennzeichnung, Kontakt, Registereintrag, USt-IdNr.,
+          Haftungsausschluss, Urheberrecht/Nutzungsvorbehalt IMP-11/IMP-12,
+          Verbraucherstreitbeilegung) sind davon NICHT berührt und stehen unverändert. */}
     </Rechtsseite>
   );
 }

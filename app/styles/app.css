@@ -1467,26 +1467,35 @@ ul.submenu li a {
   /* Das Studien-Logo wird auf schmalen Geräten gedeckelt, weil seine QUELLE
      nicht wachsen kann — dieselbe Lage und dieselbe Abhilfe wie beim
      Mega-Menü-Bild in Header.jsx (Gate 12, `bild-aufloesung`, repariert am
-     2026-08-23).
+     2026-08-23). Sobald das Gitter hier einspaltig wird, zieht
+     `.footer-study img {width:100%}` das Logo auf die volle Spaltenbreite:
+     bei mobil-600 sind das 568 CSS-px, bei dpr 2 also 1136 nötige Quellpixel
+     — sichtbar unscharf, und genau das meldet Gate 12.
 
-     HERLEITUNG DES WERTS, gemessen statt gewählt (2026-08-24): die Datei
-     heißt `...electromagnetic_fields.webp`, ist aber real ein progressives
-     JPEG mit 800x1066 Pixeln; das Shopify-CDN liefert für `&width=1200` und
-     `&width=2000` byte-identisch dieselben 800 px — es gibt keine größeren.
-     Sobald das Gitter hier einspaltig wird, zieht `.footer-study img
-     {width:100%}` das Logo auf die volle Spaltenbreite: bei mobil-600 sind
-     das 568 CSS-px, bei dpr 2 also 1136 nötige Quellpixel gegen 800
-     vorhandene — sichtbar unscharf, und genau das meldet Gate 12.
-     800 / 2 = 400 ist damit die größte Anzeigebreite, die diese Quelle
-     scharf trägt. `margin-inline: auto` hält es dabei mittig, statt links
-     zu kleben.
+     HERLEITUNG DES WERTS — 300, NICHT 400 (Konfliktauflösung 2026-08-24,
+     Job 20260824-technologie-seite-formatschuld-und-disclaimer): hier trafen
+     zwei unabhängig entstandene Fassungen dieser Regel aufeinander, 400 px
+     (aus #257/#258) und 300 px (aus dem Disclaimer-Ausbau). Beide Werte sind
+     `Quellbreite / 2`; sie unterscheiden sich darin, WELCHE Quelle gemessen
+     wurde. Selbst nachgemessen, alle drei Logos dieses EINEN Selektors:
+       Studie 1 `...electromagnetic_fields.webp`  800 x 1066
+       Studie 2 `Studie2_1.webp`                 1000 x 1328
+       Studie 3 `Studie3_1.webp`                  600 x  377
+     `&width=2000` liefert bei allen dreien byte-identisch dieselbe Datei —
+     das Shopify-CDN skaliert nie über die Masterbreite. Eine Regel, die für
+     drei Bilder gilt, muss sich am KLEINSTEN richten: 600 / 2 = 300.
+     400 wäre für Studie 1 richtig und für Studie 3 falsch (400 * 2 * 0,9 =
+     720 nötige Quellpixel gegen 600 vorhandene). Dass es heute nicht
+     auffällt, liegt allein daran, dass der Fächer bei Studie 1 startet und
+     die Messung nicht weiterklickt — ein Wert, der nur solange hält, wie
+     niemand die zweite Kachel ansieht, ist kein Wert.
+     `margin-inline: auto` hält das Logo dabei mittig, statt links zu kleben.
 
-     Ohne diesen Deckel kann KEINE neue Seite einen Alle-Formate-Beleg
-     bestehen, weil der Fußbereich auf jeder Seite mitrendert. Der Befund ist
-     nicht neu und gehört nicht zu diesem Bau — er ist hier repariert, weil
-     er ihn blockierte. Rückbau = diese eine Regel löschen. */
+     Ohne diesen Deckel kann KEINE Seite einen Alle-Formate-Beleg bestehen,
+     weil der Fußbereich auf jeder Seite mitrendert. Rückbau = diese eine
+     Regel löschen. */
   .footer-study__logo img {
-    max-width: 400px;
+    max-width: 300px;
     margin-inline: auto;
   }
 
