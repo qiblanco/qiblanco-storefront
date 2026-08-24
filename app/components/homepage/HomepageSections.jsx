@@ -151,6 +151,73 @@ export function HomepageSections({overrides = {}}) {
           linkText={"Jetzt kostenlos starten"}
         />
       <UpsellLineUp dataSection="upsell-lineup" />
+      <WeiterlesenHubs />
+    </div>
+  );
+}
+
+/**
+ * Drei Wege von der Startseite tiefer in die Domain.
+ *
+ * WARUM ES DIESEN BLOCK GIBT (s04 hat den Link-Graphen über 79 DACH-Seiten
+ * gecrawlt, das sind keine Schätzwerte): `/pages/technologie` hatte NULL
+ * eingehende interne Links — nicht nur keinen von der Startseite, sondern von
+ * nirgends. `/pages/crystal-cacao` hatte zwei, beide von Produktseiten,
+ * keinen von `/`. Eine Seite, auf die nichts zeigt, ist für einen Crawler
+ * kaum vorhanden, egal wie gut sie ist. Backlog-Posten B-12.
+ *
+ * WARUM GENAU DIESE DREI UND NICHT MEHR: die beiden Hubs sind der beschlossene
+ * Posten. Die Über-uns-Seite kommt dazu, weil sie in diesem Segment neu
+ * entsteht und sonst denselben Fehler von Tag eins an hätte.
+ *
+ * WARUM HIER UNTEN: die Startseite verkauft oben. Wer bis hierher gelesen hat,
+ * sucht Tiefe — genau die beiden Fragen, die der Kaufüberzeugungs-Kanon als
+ * stärkste Neugier-Themen für DACH führt („Wie wirkt das überhaupt", 9,8 %)
+ * und als stärksten Einwand („Wirkt das überhaupt?"). Weiter oben wäre es ein
+ * Ausgang aus dem Kaufweg, hier ist es die Fortsetzung.
+ *
+ * WARUM KEINE EIGENEN DESIGN-TOKEN: der Block benutzt ausschließlich das
+ * Vokabular, das die Startseite schon trägt (`NormalSectionSize`, `text-center`
+ * und die vorhandenen Utilities). Eine neue Kachel-Optik auf der wichtigsten
+ * Seite der Domain wäre ein Design-Risiko ohne Gegenwert — der Posten ist eine
+ * Verlinkungs-, keine Gestaltungsaufgabe.
+ */
+function WeiterlesenHubs() {
+  return (
+    <div
+      className="NormalSectionSize text-center"
+      data-section="weiterlesen-hubs"
+    >
+      <h2 className="text-center">Wenn du es genauer wissen willst</h2>
+      <div className="PeerReviewResults">
+        <div className="PeerReviewResult">
+          <h3>
+            <a href="/pages/technologie">Die Technologie dahinter</a>
+          </h3>
+          <p>
+            Kohärentes Wasser, Frequenzkommunikation und das Leiternetzwerk des
+            Körpers — erklärt statt behauptet.
+          </p>
+        </div>
+        <div className="PeerReviewResult">
+          <h3>
+            <a href="/pages/crystal-cacao">Crystal Cacao®</a>
+          </h3>
+          <p>
+            Wach, klar, mineralisiert: 100 % reiner Premium-Naturkakao aus
+            Peru.
+          </p>
+        </div>
+        <div className="PeerReviewResult">
+          <h3>
+            <a href="/pages/ueber-uns">Wer hinter Qi Blanco steht</a>
+          </h3>
+          <p>
+            Name, Anschrift, Handelsregister — und das Institut, das unsere
+            Produkte zellbiologisch untersucht hat.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

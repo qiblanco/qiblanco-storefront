@@ -334,6 +334,13 @@ function PaymentIcons() {
 }
 
 const LEGAL_LINKS = [
+  // „Über uns" steht bewusst VOR dem Impressum und nicht darin: das Impressum
+  // ist die Pflichtangabe, die Über-uns-Seite ist die Antwort auf „wer steckt
+  // dahinter". Sie hängt hier, weil der Fußbereich die einzige Navigation ist,
+  // die auf JEDER Seite liegt — eine Über-uns-Seite, die nur die Startseite
+  // verlinkt, ist für den Besucher der Unterseiten nicht vorhanden.
+  // (Segment s06, Backlog-Posten B-10(a).)
+  {to: '/pages/ueber-uns', label: 'Über uns'},
   {to: '/pages/impressum', label: 'Impressum'},
   {to: '/pages/datenschutz', label: 'Datenschutz'},
   {to: '/pages/agb', label: 'AGB'},

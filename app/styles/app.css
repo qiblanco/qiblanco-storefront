@@ -1464,6 +1464,32 @@ ul.submenu li a {
     grid-template-columns: 1fr;
   }
 
+  /* Das Studien-Logo wird auf schmalen Geräten gedeckelt, weil seine QUELLE
+     nicht wachsen kann — dieselbe Lage und dieselbe Abhilfe wie beim
+     Mega-Menü-Bild in Header.jsx (Gate 12, `bild-aufloesung`, repariert am
+     2026-08-23).
+
+     HERLEITUNG DES WERTS, gemessen statt gewählt (2026-08-24): die Datei
+     heißt `...electromagnetic_fields.webp`, ist aber real ein progressives
+     JPEG mit 800x1066 Pixeln; das Shopify-CDN liefert für `&width=1200` und
+     `&width=2000` byte-identisch dieselben 800 px — es gibt keine größeren.
+     Sobald das Gitter hier einspaltig wird, zieht `.footer-study img
+     {width:100%}` das Logo auf die volle Spaltenbreite: bei mobil-600 sind
+     das 568 CSS-px, bei dpr 2 also 1136 nötige Quellpixel gegen 800
+     vorhandene — sichtbar unscharf, und genau das meldet Gate 12.
+     800 / 2 = 400 ist damit die größte Anzeigebreite, die diese Quelle
+     scharf trägt. `margin-inline: auto` hält es dabei mittig, statt links
+     zu kleben.
+
+     Ohne diesen Deckel kann KEINE neue Seite einen Alle-Formate-Beleg
+     bestehen, weil der Fußbereich auf jeder Seite mitrendert. Der Befund ist
+     nicht neu und gehört nicht zu diesem Bau — er ist hier repariert, weil
+     er ihn blockierte. Rückbau = diese eine Regel löschen. */
+  .footer-study__logo img {
+    max-width: 400px;
+    margin-inline: auto;
+  }
+
   .footer-study__image {
     display: none;
   }
