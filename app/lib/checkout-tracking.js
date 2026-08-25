@@ -31,6 +31,34 @@ const TRACKING_PARAM_NAMES = new Set([
   'clickid',
   'h_ad_id',
   'h_click_id',
+  // UpPromote-Affiliate-Referenz (Großjob s03, 2026-08-25). Der Wert kommt als
+  // Query-Parameter am Affiliate-Link an (`?sca_ref=<id>.<hash>`) und ist KEIN
+  // Cookie — er gehört deshalb hierher und ausdrücklich NICHT in
+  // TRACKING_COOKIE_NAMES, genau wie fbclid und gclid (Entscheidung 2026-07-27,
+  // sie steht weiter).
+  //
+  // WARUM DER WERT DIE CHECKOUT-GRENZE ÜBERQUERT: die UpPromote-Cookies auf
+  // qiblanco.com sind host-only und auf checkout.qiblanco.com nicht lesbar. Der
+  // Linker der App könnte sie überreichen, aber er dekoriert nur <a href> —
+  // und in diesem Storefront führt KEIN einziger <a> zum Checkout, beide Wege
+  // (cart.attribution.jsx, cart.$lines.jsx) enden in einem Server-Redirect.
+  // Der Übergabeweg, den die Gegenseite selbst vorsieht, ist dieser Parameter:
+  // das App-Embed auf checkout.qiblanco.com liest `sca_ref` aus der URL
+  // (core.min.js: REF_CODE:"sca_ref") und misst sogar, wie lange sein Web-Pixel
+  // braucht, um daraus die Affiliate-Cookies zu machen.
+  //
+  // ZWEITE WIRKUNG, die hier beabsichtigt ist: der Wert wird dadurch auch zum
+  // Order-note_attribute und macht die Zuordnung für uns GEGENPRÜFBAR. Vor
+  // diesem Bau trug 0 von 4 nachweislichen Affiliate-Orders die Referenz in
+  // einem eigenen Attribut (gemessen 2026-08-25).
+  //
+  // ACHTUNG BEI ÄNDERUNGEN: diese Liste hat eine ZWILLINGSLISTE in
+  // public/qiblanco-tracker.js (Z. 4). Der Tracker entscheidet, was überhaupt
+  // GESPEICHERT wird, diese Liste, was davon WEITERGEREICHT wird. Wer nur eine
+  // von beiden ergänzt, baut einen stillen Verlust — in beide Richtungen.
+  // Bewacht von probe-uppromote-dach (Subkommando `naht`).
+  'sca_ref',
+  'sca_source',
 ]);
 
 const TRACKING_COOKIE_NAMES = new Set([
