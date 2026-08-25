@@ -101,6 +101,10 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://gorgias-convert.com',
       'https://connect.facebook.net',
+      // UpPromote-Affiliate-Pixel (collect.js, von UpPromoteTracking.jsx nach
+      // Einwilligung nachgeladen). STELLE 1 VON 2 — die zweite ist connect-src
+      // weiter unten. Fehlt eine davon, blockt die CSP STILL.
+      'https://static-pixel.uppromote.com',
       // Eigener Sales-Chat-Assistent (s05): das Loader-Skript
       // <origin>/embed/qiblanco-widget.js. STELLE 1 VON 2 — die zweite ist
       // frame-src weiter unten. Fehlt eine davon, blockt die CSP STILL.
@@ -167,6 +171,21 @@ export default async function handleRequest(
       'https://*.gorgias-convert.com',
       'https://www.facebook.com',
       'https://connect.facebook.net',
+      // UpPromote-Affiliate-Pixel: die Messpunkte, die collect.js sendet
+      // (Klick-Zuordnung + cart_updated). STELLE 2 VON 2 zu script-src oben.
+      //
+      // ZWEI HOSTS, UND SIE SIND VERSCHIEDEN — das ist keine Redundanz:
+      // GELADEN wird collect.js von static-pixel.uppromote.com (script-src),
+      // GESENDET wird an pixel.uppromote.com. Der Sende-Host steht nur im
+      // Skript selbst (`pixelHost:"https://pixel.uppromote.com"`), nie im
+      // src-Attribut und nicht in der Einbau-Anleitung des Herstellers.
+      // Fehlt er hier, blockt die CSP den POST auf /api/logs — und das ist
+      // KEIN Teilausfall: der Server erfährt vom Klick nichts, und weil das
+      // Folgeereignis `affiliate_tracked` ausschließlich im .then() dieses
+      // POSTs gefeuert wird (ohne .catch()), stehen auch Linker und Redirect
+      // still. Gemessen 2026-08-25 am ausgelieferten Bundle, Großjob s03.
+      'https://static-pixel.uppromote.com',
+      'https://pixel.uppromote.com',
       // First-Party-Pixel (qpx): Receiver-Origin nur, wenn per env gesetzt.
       ...qpxConnectSrc(context.env),
     ],

@@ -59,10 +59,44 @@ function hasDeclined() {
   );
 }
 
-function trackingAllowed() {
+/**
+ * Das Marketing-Consent-Tor dieses Shops (Cookiebot + Region-Policy + das
+ * Preview-Attribut). Seit 2026-08-24 EXPORTIERT, weil UpPromoteTracking.jsx
+ * genau dasselbe Tor braucht: ein zweiter, abgeschriebener Gate wäre die Drift,
+ * die wir bei den public/-Skripten schon einmal hatten. Logik unverändert.
+ */
+export function trackingAllowed() {
   if (hasPreviewTrackingConsent()) return true;
   if (regionPolicy() === 'optout') return !hasDeclined();
   return hasMarketingConsent();
+}
+
+/**
+ * Ruft `boot` sofort auf und danach bei jeder Cookiebot-Consent-Meldung erneut.
+ *
+ * Der Sofort-Aufruf deckt „Zustimmung lag beim Seitenaufruf schon vor" ab
+ * (Cookiebot-Cookie aus einer früheren Sitzung), die drei Events decken
+ * „Besucher entscheidet sich erst jetzt" ab. `boot` muss deshalb selbst
+ * idempotent sein UND das Tor selbst prüfen.
+ *
+ * Ebenfalls seit 2026-08-24 exportiert — dies ist die CookiebotOnAccept-Logik,
+ * die UpPromoteTracking.jsx mitbenutzt statt sie nachzubauen. Herausgezogen aus
+ * dem useEffect unten; Verhalten des Meta-Pixels dadurch unverändert.
+ *
+ * @param {() => void} boot
+ * @returns {() => void} Cleanup für useEffect
+ */
+export function subscribeConsentChanges(boot) {
+  boot();
+  const onConsent = () => boot();
+  window.addEventListener('CookiebotOnAccept', onConsent);
+  window.addEventListener('CookiebotOnConsentReady', onConsent);
+  window.addEventListener('CookiebotOnLoad', onConsent);
+  return () => {
+    window.removeEventListener('CookiebotOnAccept', onConsent);
+    window.removeEventListener('CookiebotOnConsentReady', onConsent);
+    window.removeEventListener('CookiebotOnLoad', onConsent);
+  };
 }
 
 function bootMetaPixel() {
@@ -127,18 +161,7 @@ export function MetaPixel() {
   const {subscribe} = useAnalytics();
   const subscribed = useRef(false);
 
-  useEffect(() => {
-    bootMetaPixel();
-    const onConsent = () => bootMetaPixel();
-    window.addEventListener('CookiebotOnAccept', onConsent);
-    window.addEventListener('CookiebotOnConsentReady', onConsent);
-    window.addEventListener('CookiebotOnLoad', onConsent);
-    return () => {
-      window.removeEventListener('CookiebotOnAccept', onConsent);
-      window.removeEventListener('CookiebotOnConsentReady', onConsent);
-      window.removeEventListener('CookiebotOnLoad', onConsent);
-    };
-  }, []);
+  useEffect(() => subscribeConsentChanges(bootMetaPixel), []);
 
   useEffect(() => {
     if (subscribed.current) return;
