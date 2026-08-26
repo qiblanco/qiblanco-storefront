@@ -309,7 +309,7 @@ test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async
 // 30 davon bereits `noindex` — ihr fehlender canonical war also KEIN Defekt,
 // sondern die schon in `pages.uebersicht.jsx` niedergeschriebene Entscheidung
 // („noindex plus ein canonical auf eine andere URL sind widersprüchliche
-// Signale"). Diese Tests halten genau diese Ausschliesslichkeit fest, damit
+// Signale"). Diese Tests halten genau diese Ausschließlichkeit fest, damit
 // ein späterer Lauf sie nicht als vermeintliche Lücke wieder aufmacht.
 // ===========================================================================
 
@@ -389,7 +389,7 @@ test('s04 NAHT: die Page-Route setzt den canonical im else-Zweig des noindex', a
   assert.match(quelle, /canonicalLink\(`\/pages\/\$\{params\.handle\}`\)/);
 });
 
-test('s04 NAHT: die Kollektions-Route trägt beide Hälften und schliesst sie aus', async () => {
+test('s04 NAHT: die Kollektions-Route trägt beide Hälften und schließt sie aus', async () => {
   const quelle = await s04Quelle('routes/collections.$handle.jsx');
   // noindex-Zweig verlässt meta() SOFORT (return), erreicht den canonical also nie.
   assert.match(
