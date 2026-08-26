@@ -1,4 +1,5 @@
 import {Form} from 'react-router';
+import {canonicalLink} from '~/lib/seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   WITHDRAWAL_PRODUCTS,
@@ -11,7 +12,7 @@ export const meta = () => [
     content:
       'Online-Widerruf für Qi Blanco Bestellungen ohne Kundenkonto oder Login.',
   },
-  {rel: 'canonical', href: '/widerruf'},
+  canonicalLink('/widerruf'),
 ];
 
 export function loader() {
