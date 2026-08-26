@@ -213,7 +213,14 @@ const GRENZEN = [
     der Erklärung ab. Was in den Zellschalen passiert ist, ist gemessen worden —
     warum es passiert ist, ist offen. Beides auseinanderzuhalten ist der
     ehrlichste Umgang mit dieser Datenlage.{' '}
-    <a href="/pages/so-wirkt-kohaerentes-wasser">Wie das Modell gedacht ist</a>
+    {/* Zeigte bis 2026-08-26 auf /pages/so-wirkt-kohaerentes-wasser. Das ist
+        eine noindex-Seite des Landing-Bereichs und laut ihrem eigenen
+        Docstring eine „Freigabe-Ansicht für Christian, NICHT öffentlich
+        indexiert" — diese Seite hier ist das Gegenteil: öffentlich und
+        ausdrücklich zum Gefundenwerden gebaut. /pages/technologie trägt
+        dasselbe Thema öffentlich (Beschreibung wörtlich: „kohärentes Wasser,
+        Frequenzkommunikation und das Leiternetzwerk des Körpers"). */}
+    <a href="/pages/technologie">Wie das Modell gedacht ist</a>
   </>,
 ];
 
@@ -289,13 +296,27 @@ const ZWEIFEL = [
   },
 ];
 
+/*
+ * JEDES ZIEL HIER MUSS ÖFFENTLICH SEIN — diese Seite ist indexierbar und
+ * bekommt organischen Verkehr. Drei der ursprünglich vier Karten zeigten in
+ * den noindex-Landing-Bereich (/pages/das-20-tage-versprechen,
+ * /pages/zellstudien-ehrlich, /pages/so-wirkt-kohaerentes-wasser). Diese
+ * Fläche trägt ihre Aussagekraft aus genau einer Bedingung: dorthin führt
+ * kein öffentlicher Link, deshalb IST Bewegung dort Ads-Verkehr. Ein Link
+ * kostet nicht die verlinkte Seite, sondern die Zahlen der ganzen Fläche —
+ * live gemessen am 2026-08-26, drei von damals 17 Verweisen.
+ *
+ * ZWEI KARTEN SIND DESHALB WEGGEFALLEN, und beide waren mit dem eigenen
+ * Seiteninhalt ohnehin doppelt:
+ *   „So funktionieren die 20 Tage" — die Zusage steht wörtlich im FAQ dieser
+ *       Seite („20 Tage lang an sich selbst prüfen und ohne Angabe von
+ *       Gründen zurückgeben").
+ *   „Jede Studie mit ihrer Grenze" — die Einschränkungen stehen als eigener
+ *       Abschnitt („Vier Dinge, die dagegen sprechen") auf dieser Seite.
+ * Die dritte ist umgebogen auf die öffentliche Themenseite. Der Ausgang der
+ * Seite bleibt damit „selbst prüfen", nur ohne Tür in den Paid-Funnel.
+ */
 const WEITER = [
-  {
-    titel: 'So funktionieren die 20 Tage',
-    text: 'Rückgabe ohne Begründung, ohne Bedingung, die am Spüren hängt.',
-    href: '/pages/das-20-tage-versprechen',
-    cta: 'Ansehen',
-  },
   {
     titel: 'Die fünf Studien im Original',
     text: 'Jede Publikation mit Eckdaten, Zahlen und PDF zum Nachlesen.',
@@ -303,15 +324,9 @@ const WEITER = [
     cta: 'Zu den Studien',
   },
   {
-    titel: 'Jede Studie mit ihrer Grenze',
-    text: 'Methode, Ergebnis und was daraus ausdrücklich nicht folgt.',
-    href: '/pages/zellstudien-ehrlich',
-    cta: 'Einordnung lesen',
-  },
-  {
     titel: 'Das Modell dahinter',
     text: 'Wie die Publikationen den Effekt erklären — und warum das eine Hypothese bleibt.',
-    href: '/pages/so-wirkt-kohaerentes-wasser',
+    href: '/pages/technologie',
     cta: 'Modell ansehen',
   },
 ];
