@@ -454,6 +454,112 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 .mm-karte__body { font-size: var(--mm-fs-base); color: var(--mm-text); }
 .mm-karte a { color: var(--mm-gold-tinte); font-weight: 600; text-decoration: none; }
 .mm-karte a:hover { text-decoration: underline; }
+/* Einschraenkung im Karten-Text: eigene Zeile, gedaempft, KEINE eigene Groesse.
+   Sie traegt die Grenze der Messung ("an einer Zelllinie", "vom Schwein, nicht
+   vom Menschen") und muss lesbar bleiben — --mm-text-2 liegt bei 5.4:1. */
+.mm-karte__body em {
+  display: block;
+  margin-top: var(--mm-s2);
+  color: var(--mm-text-2);
+}
+
+/* ─── Publikations-Belege (Cover -> PDF) ──────────────────────────────────── */
+/* Ausschliesslich Token-Werte; keine eigene Groesse, keine eigene Farbe. Der
+   Radius liegt auf der KACHEL und der Bildbahn, das <img> selbst traegt 0 —
+   dieselbe Bauart wie .mm-hero__media, damit die Rubrik-Achse
+   "Bild-Radius-Werte" nicht waechst. */
+/* Mobile-first wie jedes andere Grid dieses Files: die Spalten entfalten sich
+   erst im EINEN Breakpoint unten. `minmax(0, 1fr)` statt `1fr` ist hier
+   tragend und nicht Geschmack — die Kacheln tragen lange Journal-Namen
+   ("Advances in Bioengineering & Biomedical Science Research"), und die
+   Default-Mindestbreite `auto` einer Grid-Spur ist die MIN-CONTENT-Breite:
+   die Spur waechst dann ueber den Viewport hinaus statt umzubrechen.
+   Gemessen 2026-08-26 bei 390px: scrollWidth 445 statt 390. */
+.mm-belege__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--mm-s3);
+}
+/* Journal-Namen sind lang und tragen keine Trennstellen ("Advances in
+   Bioengineering & Biomedical Science Research"). In einer schmalen Spur
+   laufen sie aus der Kachel heraus, ohne dass die Kachel selbst breiter wird —
+   der Ueberlauf erscheint dann am <html>, nicht am Verursacher, und ist von
+   dort aus nicht zu finden. Deshalb hier, an der Quelle. */
+.mm-beleg__t,
+.mm-beleg__s { overflow-wrap: anywhere; }
+.mm-beleg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mm-s1);
+  padding: var(--mm-s3);
+  background: var(--mm-flaeche);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r2);
+  text-decoration: none;
+  color: inherit;
+}
+.mm-bahn--flaeche .mm-beleg { background: var(--mm-grund); }
+.mm-beleg__bild {
+  display: block;
+  aspect-ratio: 3 / 4;
+  margin-bottom: var(--mm-s2);
+  background: var(--mm-grund);
+  border: 1px solid var(--mm-linie);
+  border-radius: var(--mm-r1);
+  overflow: hidden;
+}
+.mm-bahn--flaeche .mm-beleg__bild { background: var(--mm-flaeche); }
+.mm-beleg__bild img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+}
+.mm-beleg__t { font-size: var(--mm-fs-base); font-weight: 600; color: var(--mm-dunkel); }
+.mm-beleg__s { font-size: var(--mm-fs-xs); color: var(--mm-text-2); }
+.mm-beleg__pfeil {
+  margin-top: auto;
+  padding-top: var(--mm-s2);
+  font-size: var(--mm-fs-xs);
+  font-weight: 600;
+  color: var(--mm-gold-tinte);
+}
+.mm-beleg:hover .mm-beleg__pfeil { text-decoration: underline; }
+
+/* ─── Zweifelseite /pages/wirkt-das: Scroll-Scrub in die Token-Welt heben ─── */
+/* Der Bestands-Block app/styles/app.css (.ScrollScrubVideo, 10 Traeger) setzt
+   den Start-Text OHNE Abdunklung direkt auf das Bewegtbild und den End-Text
+   auf rgba(0,0,0,.3). Die Animation wechselt ueber ihre Laufzeit von dunklen
+   zu hellen Bildbereichen — der Kontrast wandert also mit dem Frame. Statt die
+   GETEILTE Regel zu aendern (das aendert neun Bestandsseiten mit), bekommt der
+   Text HIER eine deckende Flaeche: rgba(8,9,24,.72) ergibt selbst ueber einem
+   rein weissen Frame noch rgb(77,78,88) und damit 8,2:1 gegen helle Schrift.
+   Der Kontrast ist damit konstruktiv garantiert statt frame-abhaengig.
+   Die freien Schriftgroessen (2.5rem/1.5rem) und der 100px-Aussenabstand des
+   Bestands-Blocks werden im selben Zug auf Token-Werte gezogen. */
+.mm-wirkt-das .ScrollScrubVideoBlock {
+  margin-top: var(--mm-s12);
+  margin-bottom: var(--mm-s12);
+}
+/* z-index: der Bestands-Block setzt 10000 — web-soll.yaml verlangt <= 5000, und
+   die Lehren-Liste des web-brief fuehrt genau diesen Befund ("z-index 10000 —
+   Stacking-Hack statt sauberer Ebenen"). Auf DIESER Seite hat kein anderes
+   Element einen z-index; der Block liegt im normalen Fluss zwischen zwei
+   Sektionen und braucht keine Ebene ueber dem Seiten-Chrome. Die 10000 bleiben
+   fuer die anderen zehn Traeger unangetastet — geaendert wird nur der Scope. */
+.mm-wirkt-das .ScrollScrubVideo { z-index: 1; }
+.mm-wirkt-das .ScrollScrubVideo .VideoOverlay .TextContent-Start {
+  padding: var(--mm-s3);
+  border-radius: var(--mm-r2);
+  background: rgba(8, 9, 24, 0.72);
+}
+.mm-wirkt-das .ScrollScrubVideo .VideoOverlay .TextContent-End div.content {
+  background: rgba(8, 9, 24, 0.72);
+  border-radius: var(--mm-r2);
+}
+.mm-wirkt-das .ScrollScrubVideo .VideoOverlay .TextContent-Start h2 { font-size: var(--mm-fs-h2); }
+.mm-wirkt-das .ScrollScrubVideo .VideoOverlay .TextContent-Start p { font-size: var(--mm-fs-md); }
 
 /* ─── Berichte / deskriptive Nutzerdaten ──────────────────────────────────── */
 .mm-reports { display: grid; gap: var(--mm-s6); }
@@ -687,6 +793,8 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   .mm-stat { padding: var(--mm-s2) var(--mm-s3); }
   .mm-stat:nth-child(n+2) { border-left: 1px solid var(--mm-linie); }
   .mm-evidenz__grid { grid-template-columns: repeat(2, 1fr); gap: var(--mm-s4); }
+  /* Fuenf Publikationen in EINER Reihe: die Anzahl ist hier die Aussage. */
+  .mm-belege__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .mm-reports { grid-template-columns: 5fr 7fr; align-items: center; gap: var(--mm-s8); }
   .mm-reports h2 { text-align: center; }
   .mm-trust { grid-template-columns: repeat(3, 1fr); }
@@ -696,6 +804,9 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 }
 @media (min-width: 480px) and (max-width: 767px) {
   .mm-trust { grid-template-columns: repeat(2, 1fr); }
+  /* Ab 480px tragen zwei Cover-Kacheln ihren Journal-Namen; darunter nicht
+     (gemessen bei 360px: Kachel 142 px breit, Inhalt braucht 175 px). */
+  .mm-belege__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ─── Mobile (<= 767px): gleicher Rhythmus, halbierter Takt ───────────────── */
