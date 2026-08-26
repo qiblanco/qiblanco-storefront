@@ -1,11 +1,12 @@
 import {useLoaderData} from 'react-router';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {canonicalLink} from '~/lib/seo';
 
 export const meta = ({data}) => {
   return [
     {title: `Qi Blanco | ${data?.page.title ?? ''}`},
-    {rel: 'canonical', href: '/pages/entgiftung'},
+    canonicalLink('/pages/entgiftung'),
   ];
 };
 
