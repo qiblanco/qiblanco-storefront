@@ -2,7 +2,19 @@ import {useLoaderData} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {data} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
+import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
+import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
+
+/**
+ * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
+ * `.qb-zweifel` gehören NICHT in die globale app.css — dort hängen 45 Seiten
+ * dran, sechs davon mit offenen Formate-Befunden, und der Deploy dieser
+ * Änderung wäre an eine fremde Bestandsschuld gekettet gewesen.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: zweifelStyles}];
+}
 
 /**
  * @type {MetaFunction}
@@ -142,6 +154,14 @@ export default function Cart() {
             h1-Skala des Shops; der Drawer nutzt <h3>, weil er ein Dialog ist. */}
         <h1>Warenkorb</h1>
         <CartMain layout="page" cart={cart} />
+        {/* Der zweite Zweifelort, und der späteste: hier entscheidet er sich.
+            Die Zeile steht in der Route und NICHT in CartMain, weil CartMain
+            auch den Drawer rendert — dort wäre sie ein Ausgang aus einem
+            Dialog, der gerade zum Kauf führen soll. Auf der Warenkorb-SEITE
+            ist sie ein Angebot, auf dem Weg zur Kasse wäre sie eine
+            Ablenkung. Sie steht NACH der Summe: wer schon entschieden hat,
+            liest sie gar nicht erst. */}
+        <ZweifelBeleg text="Noch unsicher, ob das wirkt? Wir legen unsere Belege offen — samt ihrer Grenzen." />
       </div>
     </div>
   );

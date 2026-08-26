@@ -6,7 +6,17 @@ import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuy
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
+import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
+import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+
+/**
+ * Route-gebundenes Stylesheet (Muster mm-lp.css) — Begründung siehe
+ * app/styles/zweifel-beleg.css: die globale app.css hätte 45 Seiten erreicht.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: zweifelStyles}];
+}
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -99,7 +109,20 @@ export default function Product() {
           </p>
         }
         priceLabel={<div className="BestsellerLabel">Bestseller Angebot</div>}
-        benefitList={<QiOneBenefitList />}
+        benefitList={
+          <>
+            <QiOneBenefitList />
+            {/* Beleg-Ort GENAU HIER: unter der Nutzen-Liste und damit direkt
+                neben Preis und Kaufknopf — das ist die Stelle, an der der
+                Zweifel VOR dem Kauf entsteht. Bewusst NICHT im Fußbereich
+                (dort liest ihn niemand, der gerade abwägt) und bewusst NICHT
+                als zweiter Knopf (er würde mit dem Kaufknopf um dieselbe
+                Handlung konkurrieren). Slot statt eigener Sektion, damit die
+                Anker-frei-Regel dieser PDP unberührt bleibt: ein neues
+                data-section hätte den Design-Rubrik-Collector verschoben. */}
+            <ZweifelBeleg />
+          </>
+        }
       />
       {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
           von Christian 2026-07-17 ausdruecklich fuer die organische PDP
