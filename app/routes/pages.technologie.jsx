@@ -1,5 +1,6 @@
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import technologieStyles from '~/styles/technologie.css?url';
+import {canonicalLink} from '~/lib/seo';
 
 export function links() {
   return [{rel: 'stylesheet', href: technologieStyles}];
@@ -12,7 +13,7 @@ export const meta = () => [
     content:
       'Die Technologie hinter den Qi Blanco® Systemen – kohärentes Wasser, Frequenzkommunikation und das Leiternetzwerk des Körpers.',
   },
-  {rel: 'canonical', href: '/pages/technologie'},
+  canonicalLink('/pages/technologie'),
 ];
 
 export function loader() {

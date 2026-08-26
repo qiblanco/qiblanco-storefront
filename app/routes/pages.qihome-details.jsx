@@ -1,5 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {QiHomeLanding} from '~/components/index-components/detailseiten/QiHomeLanding';
+import {canonicalLink} from '~/lib/seo';
 
 /*
  * /pages/qihome-details — oeffentliche Detailseite QiHome Air
@@ -23,10 +24,7 @@ import {QiHomeLanding} from '~/components/index-components/detailseiten/QiHomeLa
 export const meta = () => {
   return [
     {title: 'QiHome\u00AE Air im Detail | Qi Blanco UG (haftungsbeschr\u00E4nkt)'},
-    {
-      rel: 'canonical',
-      href: '/pages/qihome-details',
-    },
+    canonicalLink('/pages/qihome-details'),
   ];
 };
 

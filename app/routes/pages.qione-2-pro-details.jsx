@@ -1,5 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {QiOne} from '~/components/index-components/detailseiten/QiOne';
+import {canonicalLink} from '~/lib/seo';
 
 /*
  * /pages/qione-2-pro-details — oeffentliche Detailseite QiOne 2 Pro
@@ -23,10 +24,7 @@ import {QiOne} from '~/components/index-components/detailseiten/QiOne';
 export const meta = () => {
   return [
     {title: 'QiOne\u00AE 2 Pro im Detail | Qi Blanco UG (haftungsbeschr\u00E4nkt)'},
-    {
-      rel: 'canonical',
-      href: '/pages/qione-2-pro-details',
-    },
+    canonicalLink('/pages/qione-2-pro-details'),
   ];
 };
 
