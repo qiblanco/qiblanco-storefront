@@ -241,8 +241,7 @@ function FooterDisclaimer() {
         <p>3. Bezahlmethoden</p>
         <PaymentIcons />
         <p>
-          4. Gesetzliche Gewaehrleistung:{' '}
-          <EuGewaehrleistungsLink />
+          4. <EuGewaehrleistungsLink />
         </p>
       </div>
     </div>
