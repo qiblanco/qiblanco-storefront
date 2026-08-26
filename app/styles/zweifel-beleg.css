@@ -1,0 +1,39 @@
+/* zweifel-beleg.css — der Beleg-Ort dort, wo der Zweifel entsteht.
+ *
+ * WARUM EINE EIGENE DATEI UND NICHT app.css, obwohl das kürzer wäre:
+ * app/styles/app.css ist GLOBAL. Der Formate-Gate hat den ersten Versuch
+ * dieses Baus zu Recht geblockt — an app.css hängen 45 Seiten, davon sechs
+ * mit einem Beleg-Ordner voller Bestandsbefunde (crystal-cacao, e-smog,
+ * qibracelet-details, qihome-details, qione-2-pro-details, superhuman).
+ * Vier Regeln für zwei Seiten hätten eine fremde Bestandsschuld zur
+ * Vorbedingung dieses Deploys gemacht und ihn an eine Arbeit gekettet, die
+ * einem anderen gehört. Eine route-gebundene Datei hat die Reichweite, die
+ * die Änderung wirklich braucht: zwei Routen (Muster mm-lp.css).
+ *
+ * Alle Werte kommen aus den :root-Tokens in app.css — kein freier Farbwert,
+ * kein zweiter Goldton, keine neue Schriftgrößen-Stufe.
+ *
+ * BEWUSST ZURÜCKHALTEND, und das ist eine inhaltliche Entscheidung, keine
+ * gestalterische Bequemlichkeit: die Zeile steht neben dem Kaufknopf. Ein
+ * zweiter goldener Knopf daneben würde mit ihm um dieselbe Handlung
+ * konkurrieren und genau den Kaufweg schwächen, den er begleiten soll —
+ * Gold bleibt im Shop die Farbe der HANDLUNG. Ein unterstrichener Textlink
+ * ist als Link erkennbar (nicht nur an der Farbe, also auch für
+ * Farbfehlsichtige) und tritt trotzdem zurück.
+ */
+.qb-zweifel {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.qb-zweifel__link {
+  color: var(--color-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.qb-zweifel__link:hover,
+.qb-zweifel__link:focus-visible {
+  color: var(--color-dark);
+}
