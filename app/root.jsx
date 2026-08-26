@@ -24,7 +24,11 @@ import qbSwipetabStyles from '~/styles/qb-swipetab.css?url';
 // sieht davon baulich nichts. Bewusst NICHT per links() je Route: genau das
 // "daran denken müssen" hat die ungestalteten Rechtsseiten erzeugt.
 import rechtstextStyles from '~/styles/rechtstext.css?url';
+// Global geladen wie qb-swipetab: ein Route-eigenes links() zoege jede
+// nutzende Route in den Design-Gate-Diff. Alles ist auf .eu-gwl gescopt.
+import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
 import {PageLayout} from './components/PageLayout';
+import {EuLabelProvider} from './components/EuGewaehrleistungsLabel';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
@@ -292,6 +296,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>
         <link rel="stylesheet" href={rechtstextStyles}></link>
+        <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
         {shouldLoadThirdPartyScripts && (
           <script
             id="Cookiebot"
@@ -417,7 +422,16 @@ export function Layout({children}) {
           shop={data.shop}
           consent={data.consent}
           >
-            <PageLayout {...data}>{children}</PageLayout>
+            {/*
+              EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
+              27.09.2026). Der Provider haelt GENAU EIN Overlay je Seite --
+              Produktseite und Footer teilen es sich. Er steht hier und nicht
+              in den einzelnen Bausteinen, damit nicht jede Naht ein eigenes
+              Overlay in den Baum haengt.
+            */}
+            <EuLabelProvider>
+              <PageLayout {...data}>{children}</PageLayout>
+            </EuLabelProvider>
             {(data.isProductionHost || data.enableTrackingInPreview) && (
               <>
                 <MetaPixel />

@@ -5,6 +5,7 @@ import {
   getTenYearsCountdownRemaining,
 } from '~/data/ten-years-deals';
 import {AddToCartButton} from '~/components/AddToCartButton';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import {useAside} from '~/components/Aside';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
@@ -582,6 +583,15 @@ function ProductPurchase({
           className="j-sale-deal__shipping-list"
           html={deal.theme === 'cacao' ? CACAO_SHIPPING_HTML : SHIPPING_HTML}
         />
+
+        {/*
+          Diese Flaeche rendert den AddToCartButton SELBST (nicht ueber
+          ProductForm) -- ohne eigene Naht traege sie den Pflichthinweis
+          nicht. Hier steht die Versandliste unmittelbar ueber dieser Stelle,
+          der Link sitzt also woertlich "unter den Versand-Icons", wie
+          bestellt.
+        */}
+        <EuGewaehrleistungsHinweis />
       </div>
     </section>
   );
