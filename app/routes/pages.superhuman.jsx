@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {Superhuman} from '~/components/kurse/Superhuman';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {canonicalLink} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -8,10 +9,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 export const meta = ({data}) => {
   return [
     {title: `Hydrogen | ${data?.page.title ?? ''}`},
-    {
-      rel: 'canonical',
-      href: `/pages/superhuman`,
-    },
+    canonicalLink('/pages/superhuman'),
   ];
 };
 
