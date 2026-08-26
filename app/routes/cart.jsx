@@ -3,6 +3,7 @@ import {CartForm} from '@shopify/hydrogen';
 import {data} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
+import {noindexMeta} from '~/lib/seo';
 
 /**
  * @type {MetaFunction}
@@ -12,10 +13,28 @@ export const meta = () => {
   // stand englisch UND mit dem Namen des Frameworks im Browser-Tab und in der
   // Google-Trefferzeile der deutschen Storefront. Das Muster hier ist das der
   // übrigen Routen (agb, datenschutz, pages.$handle, partner): "<Seite> | Qi Blanco".
-  return [{title: 'Warenkorb | Qi Blanco'}];
+  //
+  // noindex (s04, 2026-08-26): der Warenkorb ist ein Zustand, keine Seite. Sein
+  // Inhalt ist je Besucher verschieden und für einen Bot immer leer — live
+  // gemessen liefert `/cart` „Dein Warenkorb ist zurzeit leer!". Er steht
+  // folgerichtig auch nicht in der Sitemap. Deshalb noindex und BEWUSST KEIN
+  // canonical: beides zugleich wären widersprüchliche Signale (dieselbe Regel
+  // wie in `pages.uebersicht.jsx`).
+  return [{title: 'Warenkorb | Qi Blanco'}, noindexMeta()];
 };
 
 /**
+ * BEWUSST OHNE X-Robots-Tag — die einzige Stelle, an der von Hausmuster D-006
+ * („Gurt und Hosenträger", zwei unabhängige noindex-Signale) abgewichen wird.
+ *
+ * GRUND, und er ist ein Kaufweg-Risiko, kein Geschmack: dieser Export reicht
+ * `actionHeaders` durch, und darin liegen die `Set-Cookie`-Header der
+ * Warenkorb-Mutationen (Cart-Id). `Set-Cookie` ist der eine Header, der
+ * mehrfach vorkommen darf; ein `new Headers(actionHeaders)` zum Hinzufügen des
+ * X-Robots-Tags kann diese Mehrfachwerte je nach Runtime zu einem einzigen
+ * zusammenfalten — der Warenkorb verlöre dann seine Identität. Das Risiko steht
+ * in keinem Verhältnis zum Gewinn: das robots-meta oben wirkt für jeden Bot,
+ * der den head parst, und `/cart` steht in keiner Sitemap.
  * @type {HeadersFunction}
  */
 export const headers = ({actionHeaders}) => actionHeaders;

@@ -3,7 +3,12 @@
 import {data as mitHeadern, useLoaderData} from 'react-router';
 import {Rechtsseite} from '~/components/Rechtsseite';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {istNichtIndexierbar, noindexHeader, noindexMeta} from '~/lib/seo';
+import {
+  canonicalLink,
+  istNichtIndexierbar,
+  noindexHeader,
+  noindexMeta,
+} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -20,7 +25,27 @@ export const meta = ({data, params}) => {
   //
   // Die zweite Hälfte des Doppelgates (X-Robots-Tag) sitzt im Loader und im
   // `headers`-Export unten — hier steht nur das meta.
-  if (istNichtIndexierbar(params?.handle)) tags.push(noindexMeta());
+  //
+  // ENTWEDER noindex ODER canonical, nie beides (s04, 2026-08-26). Die Regel
+  // ist nicht neu, sie stand bisher nur in den Routen mit eigener Datei —
+  // wörtlich in `pages.uebersicht.jsx`: „noindex plus ein canonical auf eine
+  // andere URL sind widersprüchliche Signale; ein Bot, der dem canonical
+  // folgt, kann das noindex der Zielseite zuordnen." Dieser Katchall bediente
+  // bis hierher BEIDE Fälle und setzte für KEINEN einen canonical: die
+  // indexierbaren Shopify-Seiten (`/pages/widerrufsbelehrung`,
+  // `/pages/support-1`) gingen deshalb ganz ohne canonical live.
+  //
+  // WARUM DER canonical AUS `params.handle` UND NICHT AUS DER ANGEFRAGTEN URL
+  // GEBAUT WIRD: `absoluteCanonical` würde eine mitgegebene URL zwar von Query
+  // und Hash befreien, aber der Pfad selbst kann eine lokalisierte Variante
+  // sein. `params.handle` ist der Wert, unter dem Shopify die Seite führt —
+  // damit zeigt der canonical immer auf die eine kanonische Fassung, auch wenn
+  // die Seite über einen Alias erreicht wurde.
+  if (istNichtIndexierbar(params?.handle)) {
+    tags.push(noindexMeta());
+  } else if (params?.handle) {
+    tags.push(canonicalLink(`/pages/${params.handle}`));
+  }
   return tags;
 };
 

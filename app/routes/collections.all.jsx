@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
+import {canonicalLink} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -11,7 +12,21 @@ export const meta = () => {
   // englisch UND mit dem Namen des Frameworks im Browser-Tab der deutschen
   // Storefront (live nachgemessen 2026-08-22: <title>Hydrogen | Products</title>).
   // Muster wie bei cart.jsx und den übrigen Routen: "<Seite> | Qi Blanco".
-  return [{title: 'Alle Produkte | Qi Blanco'}];
+  //
+  // Selbst-canonical (s04, 2026-08-26): `/collections/all` ist die echte
+  // Kategorieübersicht des Shops und bleibt indexierbar. Die beiden
+  // Shopify-Eigenkollektionen mit demselben Inhalt (`frontpage`, `products`)
+  // bekommen stattdessen noindex — siehe NICHT_INDEXIERBARE_KOLLEKTIONEN in
+  // ~/lib/seo. Bewusst KEIN canonical von dort hierher: noindex plus fremdes
+  // canonical sind widersprüchliche Signale.
+  //
+  // Wie in `collections.$handle.jsx` sammelt der canonical die cursor-basierte
+  // Paginierung bewusst ein — die Cursor-Parameter sind opake, alternde Zeiger
+  // auf dieselbe Produktmenge, keine eigenständigen Seiten.
+  return [
+    {title: 'Alle Produkte | Qi Blanco'},
+    canonicalLink('/collections/all'),
+  ];
 };
 
 /**
