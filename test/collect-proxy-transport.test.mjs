@@ -31,7 +31,7 @@
 //
 //   [1] `CF-Connecting-IP` existiert auf Oxygen nicht — die Cloudflare-Edge
 //       beansprucht den Namen selbst und weist einen vom Client gesetzten Wert
-//       mit "error code: 1000" ab. Der belegte Träger heisst `oxygen-buyer-ip`.
+//       mit "error code: 1000" ab. Der belegte Träger heißt `oxygen-buyer-ip`.
 //   [2] Caddy >= 2.7 ERSETZT einen eingehenden `X-Forwarded-For` durch die
 //       Peer-Adresse, solange der Absender nicht in `trusted_proxies` steht.
 //       Über X-Forwarded-For kann diese Route den Receiver BAULICH nie
