@@ -206,11 +206,12 @@ jobs:
               'Tracking script should load Clarity directly but not GA4 directly',
             );
 
-            function runTrackingScript(consent) {
+            function runTrackingScript(consent, options = {}) {
+              const attributes = options.attributes || {};
               const appendedScripts = [];
               const listeners = {};
               const window = {
-                Cookiebot: {consent},
+                Cookiebot: {consent, hasResponse: options.hasResponse === true},
                 dataLayer: [],
                 location: {href: 'https://preview.example/'},
                 history: {
@@ -226,6 +227,16 @@ jobs:
               };
               const document = {
                 referrer: 'https://referrer.example/',
+                // Seit #73 liest das Script document.documentElement.getAttribute()
+                // (regionPolicy: data-qb-consent-strict / data-qb-region) — ohne
+                // documentElement stirbt jeder Lauf am TypeError.
+                documentElement: {
+                  getAttribute(name) {
+                    return Object.prototype.hasOwnProperty.call(attributes, name)
+                      ? attributes[name]
+                      : null;
+                  },
+                },
                 head: {
                   appendChild(scriptElement) {
                     appendedScripts.push(scriptElement);
@@ -287,11 +298,49 @@ jobs:
               'shopify_page_view was not pushed',
             );
 
+            const noConsent = {marketing: false, preferences: false, statistics: false};
+
+            const strictNoRegion = runTrackingScript(noConsent, {
+              attributes: {'data-qb-consent-strict': 'DE,AT,CH'},
+            });
+            assert(
+              strictNoRegion.appendedScripts.length === 0,
+              'Strict list without region attribute must stay in consent mode (fail-closed)',
+            );
+
+            const strictRegionInList = runTrackingScript(noConsent, {
+              attributes: {'data-qb-consent-strict': 'DE,AT,CH', 'data-qb-region': 'DE'},
+            });
+            assert(
+              strictRegionInList.appendedScripts.length === 0,
+              'Region on the strict list must stay in consent mode without statistics consent',
+            );
+
+            const optoutRegion = runTrackingScript(noConsent, {
+              attributes: {'data-qb-consent-strict': 'DE,AT,CH', 'data-qb-region': 'US'},
+            });
+            assert(
+              optoutRegion.appendedScripts.some((element) =>
+                String(element.src || '').includes('googletagmanager.com/gtm.js?id=GTM-N7DRSN5'),
+              ),
+              'Opt-out region did not load GTM without an active decline',
+            );
+
+            const optoutDeclined = runTrackingScript(noConsent, {
+              attributes: {'data-qb-consent-strict': 'DE,AT,CH', 'data-qb-region': 'US'},
+              hasResponse: true,
+            });
+            assert(
+              optoutDeclined.appendedScripts.length === 0,
+              'Opt-out region must respect an active decline',
+            );
+
             console.log('Tracking smoke test passed');
             console.log('- Preview HTML includes /qiblanco-google-tracking.js');
             console.log('- CSP allows GTM and Clarity endpoints');
             console.log('- GTM and Clarity stay blocked before statistics consent');
             console.log('- GTM, Clarity and consent/page-view events run after statistics consent');
+            console.log('- Region policy: strict/region paths fail closed, opt-out honors active decline');
           })().catch((error) => {
             console.error(error);
             process.exit(1);
