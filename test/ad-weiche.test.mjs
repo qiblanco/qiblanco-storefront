@@ -7,9 +7,12 @@ import assert from 'node:assert/strict';
 
 import {
   LP_A_PFAD,
+  AUSNAHME_ZIELSEITEN,
   entscheideAdWeiche,
+  entscheideAdWeicheDetail,
   klassifizierePaid,
   istAusgeschlossen,
+  istAusnahmeZielseite,
   adWeicheAktiv,
   pruefeAdWeiche,
 } from '../app/lib/ad-weiche.server.js';
@@ -225,4 +228,114 @@ test('pruefeAdWeiche: Schalter aus -> null trotz Paid-Marker', async () => {
     fakeFetch({ad_weiche: 'aus'}),
   );
   assert.equal(ziel, null);
+});
+
+// --- ZIELSEITEN-AUSNAHME (Auftrag 20260827-ad-weiche-ausnahme-mof-beweis-ad) --
+// Die Anzeige qb45-c12 verspricht woertlich "Vier Studien offen einsehbar —
+// lies sie selbst". Der bezahlte Klick MUSS dort landen, sonst bricht die
+// Anzeige ihr eigenes Versprechen. Jeder Test hier hat sein Gegenstueck in der
+// Gruppe darunter: der Zaun darf nur an dieser einen Stelle Tuer sein.
+
+test('Ausnahme: meta-paid auf /pages/studien wird NICHT umgeleitet', () => {
+  assert.equal(istAusnahmeZielseite('/pages/studien'), true);
+  assert.equal(
+    entscheideAdWeiche(
+      `${BASIS}/pages/studien?fbclid=IwAR0abc&utm_source=facebook&utm_medium=paid`,
+    ),
+    null,
+  );
+});
+
+test('Ausnahme: google-paid (gclid/gbraid/wbraid) auf /pages/studien ebenso', () => {
+  for (const q of ['gclid=EAIaX', 'gbraid=0AAA', 'wbraid=Cj0KC']) {
+    assert.equal(entscheideAdWeiche(`${BASIS}/pages/studien?${q}`), null);
+  }
+});
+
+test('Ausnahme ist ERKANNT und bewusst gelassen — nicht "war nie bezahlt"', () => {
+  // Genau diese Unterscheidung macht die Verschiebung sichtbar statt still:
+  // ein Ausschluss liefert null, die Ausnahme liefert den Grund mit.
+  const d = entscheideAdWeicheDetail(`${BASIS}/pages/studien?utm_medium=paid`);
+  assert.equal(d.erkennung, 'meta-paid');
+  assert.equal(d.ziel, null);
+  assert.equal(d.ausnahme, 'zielseite');
+  // Gegenstueck: eine Seite ohne Paid-Marker ist gar keine Entscheidung.
+  assert.equal(entscheideAdWeicheDetail(`${BASIS}/pages/studien`), null);
+  // Gegenstueck: ein echter Ausschluss traegt keinen Grund.
+  assert.equal(entscheideAdWeicheDetail(`${BASIS}/cart?utm_medium=paid`), null);
+});
+
+test('Ausnahme unterlaeuft die VETOS nicht (organisch bleibt organisch)', () => {
+  // Ein Veto heisst "kein Paid-Klick" — dann gibt es auch nichts auszunehmen,
+  // und die Seite rendert wie immer. Sonst waere die Ausnahme ein zweiter,
+  // stiller Klassifikator neben klassifizierePaid.
+  assert.equal(
+    entscheideAdWeicheDetail(`${BASIS}/pages/studien?utm_medium=social`),
+    null,
+  );
+  assert.equal(
+    entscheideAdWeicheDetail(`${BASIS}/pages/studien?utm_source=r3check&utm_medium=paid`),
+    null,
+  );
+});
+
+test('pruefeAdWeiche: Ausnahme -> null OHNE Zuteilungs-Fetch (Schalter irrelevant)', async () => {
+  let fetches = 0;
+  const zaehlFetch = async () => {
+    fetches += 1;
+    return {ok: true, status: 200, json: async () => ({})};
+  };
+  const ziel = await pruefeAdWeiche(
+    new Request(`${BASIS}/pages/studien?utm_medium=paid`),
+    zaehlFetch,
+  );
+  assert.equal(ziel, null);
+  assert.equal(fetches, 0); // 'an' und 'aus' fuehren hier zum selben Ergebnis
+});
+
+// --- GEGENPROBE: der Zaun steht ueberall sonst unveraendert ------------------
+
+test('Gegenprobe: NUR der versprochene Pfad ist Tuer — Nachbarn nicht', () => {
+  // Suffix-Slug ist ein ANDERER Pfad (Muster istAusgeschlossen: exakt oder
+  // '<eintrag>/...'). Ohne diesen Test waere ein Praefix-Match unbemerkt.
+  for (const pfad of ['/pages/studien-alt', '/pages/studienlage', '/pages/studie']) {
+    assert.equal(istAusnahmeZielseite(pfad), false);
+    const d = entscheideAdWeicheDetail(`${BASIS}${pfad}?utm_medium=paid`);
+    assert.equal(d.ziel, `${LP_A_PFAD}?utm_medium=paid&lp_m=w`);
+  }
+  // Unterpfad gehoert dagegen zur versprochenen Seite.
+  assert.equal(istAusnahmeZielseite('/pages/studien/immunzellen'), true);
+});
+
+test('Gegenprobe: die uebrigen Ad-Ziele behalten ihr Verhalten (Dekret ALLE)', () => {
+  // Startseite, PDP, generische Seiten und die 6 Message-Match-LPs vom
+  // 2026-07-23 — alles, was die Weiche vor dieser Aenderung umgeleitet hat.
+  for (const pfad of [
+    '/',
+    '/products/qibracelet',
+    '/pages/qione-2-pro',
+    '/pages/wir-machen-ihn-auf',
+    '/pages/haelt-das-mein-leben-aus',
+    '/pages/kette-oder-armband',
+    '/pages/so-wirkt-kohaerentes-wasser',
+    '/pages/zellstudien-ehrlich',
+    '/pages/das-20-tage-versprechen',
+  ]) {
+    const ziel = entscheideAdWeiche(`${BASIS}${pfad}?utm_medium=paid&utm_source=facebook`);
+    assert.ok(ziel, `kein Redirect mehr fuer ${pfad}`);
+    assert.equal(ziel.ziel, `${LP_A_PFAD}?utm_medium=paid&utm_source=facebook&lp_m=w`);
+  }
+});
+
+test('Gegenprobe: die Ausnahmen-Liste bleibt eine bewusste Einzelmenge', () => {
+  // Eine Liste, die unbemerkt waechst, hebelt das Dekret aus. Waechst sie
+  // absichtlich, faellt dieser Test auf und zwingt zur Begruendung im Kopf.
+  assert.deepEqual(AUSNAHME_ZIELSEITEN, ['/pages/studien']);
+});
+
+test('Gegenprobe: google-paid auf /products/* bleibt durchgelassen (Shopping)', () => {
+  const d = entscheideAdWeicheDetail(`${BASIS}/products/qione-2-pro?gclid=EAIaX`);
+  assert.equal(d.ziel, null);
+  assert.equal(d.ausnahme, 'shopping-pdp');
+  assert.equal(entscheideAdWeiche(`${BASIS}/products/qione-2-pro?gclid=EAIaX`), null);
 });

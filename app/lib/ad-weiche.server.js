@@ -32,6 +32,8 @@
  *    /collect, /b, /api, /cart, /checkouts, /account, /policies, /assets,
  *    /build, /cdn, /.well-known sowie Prefixe /__qb, /sitemap, /robots,
  *    /favicon, /apple-. Segment-genau gematcht — /blogs faellt NICHT unter /b.
+ *  - ZIELSEITEN-AUSNAHME (AUSNAHME_ZIELSEITEN, s.u.): die Anzeige hat DIESE
+ *    Seite ausdruecklich versprochen — die Weiche haelt das Versprechen.
  *
  * SCHALTER (dynamisch, ohne Deploy): zuteilung.json ROH-Feld "ad_weiche".
  * NUR der explizite Wert 'aus' deaktiviert; Abwesenheit/Fetch-Fehler = AKTIV
@@ -97,6 +99,66 @@ export const AUSSCHLUSS_SEGMENTE = [
 // Echte Prefix-Ausschluesse (Dateinamens-Familien ohne Segmentgrenze).
 export const AUSSCHLUSS_PREFIXE = ['/__qb', '/sitemap', '/robots', '/favicon', '/apple-'];
 
+/**
+ * ZIELSEITEN-AUSNAHME (Auftrag 20260827-ad-weiche-ausnahme-mof-beweis-ad-prio40).
+ *
+ * WARUM ES DIESEN ZAUN GIBT — erst lesen, dann beschneiden. Christians Dekret
+ * vom 2026-07-24 lautet "ALLE Ads landen auf LP A", und es wurde als
+ * REDIRECT-Layer gebaut, damit die Ad-Configs unangetastet bleiben (Meta-
+ * Lernphase/Engagement). Zum Zeitpunkt des Dekrets zeigte KEINE Anzeige
+ * absichtlich auf eine Beweis-Seite: die Ziele waren Startseite, PDPs und
+ * generische Seiten, bei denen LP A nachweislich das bessere Ziel ist. Genau
+ * dieser Fall ist hier NICHT gemeint.
+ *
+ * WAS NEU IST. Die vier Anzeigen zu ads.db qb45-c12 ("So entsteht kohaerentes
+ * Wasser") versprechen im Text UND auf der Endkarte woertlich "Vier Studien
+ * offen einsehbar — lies sie selbst". Ihr link_url zeigt deshalb auf
+ * /pages/studien. Ohne diese Ausnahme loest der Klick das Versprechen nicht
+ * ein: gemessen am 2026-08-27 landete derselbe Abruf mit fbclid+utm auf LP A.
+ * Ein Versprechen im Creative, das der Klick nicht einloest, ist ein Bruch im
+ * Kaufweg — und der Bruch ist teurer als der Zielseiten-Vorteil von LP A,
+ * denn er trifft genau das Vertrauen, das eine Beweis-Anzeige verdienen will.
+ *
+ * NAECHSTER PRAEZEDENZFALL IM SELBEN BESTAND: LP_V3_PFAD oben. Auch dort ist
+ * der Grund nicht "Technik", sondern "die URL wurde bewusst geteilt und muss
+ * sich selbst zeigen". Diese Liste ist dieselbe Klasse, nur benannt — sie
+ * steht bewusst NICHT in AUSSCHLUSS_SEGMENTE, weil dort "die Weiche geht uns
+ * nichts an" steht (Infra, Loop, Ziel), hier aber "die Weiche hat erkannt und
+ * bewusst durchgelassen". Der Unterschied ist im Log sichtbar (entscheidung:
+ * 'ausnahme-zielseite') statt still.
+ *
+ * SO ENG WIE MOEGLICH: nur der versprochene Pfad, nicht die Kampagne. Eine
+ * Kampagnen-Allowlist waere breiter (sie liesse DIESE Kampagne auf JEDE Seite)
+ * und zugleich schwaecher: utm_campaign traegt {campaign.id}, und die ID
+ * wechselt beim Re-Launch — die Ausnahme waere nach dem naechsten Neustart
+ * still weg, ohne dass jemand etwas merkt. Das Versprechen haengt am ZIEL,
+ * also haengt die Ausnahme am Ziel.
+ *
+ * WAS DAS AN DER MESSUNG VERSCHIEBT (bewusst, nicht still — arch-context
+ * fallen ads, Zirkularitaets-Falle): bisher galt baulich "jeder bezahlte
+ * Erst-Einstieg ist LP A" (Ausnahme google-paid auf /products/*). Ab hier
+ * kann auch /pages/studien bezahlte Erst-Einstiege sehen. Das kippt die
+ * LP-Ad-Signal-Sprosse NICHT: /pages/studien steht bewusst nicht in
+ * hyros-eigenbau/journey/lp_registry.json (crawlbare Front-Seite, bleibt ohne
+ * weiteres Signal 'direct'), und weil hier GAR NICHT umgeleitet wird, kommen
+ * fbclid/gclid/utm unveraendert an — channel.infer entscheidet also am
+ * Klick-Signal, nicht am Pfad. Die 6 Message-Match-LPs bleiben unberuehrt.
+ *
+ * JEDER NEUE EINTRAG BRAUCHT: eine Anzeige, die diese Seite woertlich
+ * verspricht, und einen Blick in lp_registry.json (steht der Pfad dort, wird
+ * er zum Paid-Beleg — dann ist die Ausnahme eine Messverschiebung und keine
+ * Kaufweg-Reparatur mehr).
+ */
+export const AUSNAHME_ZIELSEITEN = ['/pages/studien'];
+
+/** true, wenn die Anzeige genau diesen Pfad versprochen hat (Segment-genau). */
+export function istAusnahmeZielseite(pfad) {
+  for (const seg of AUSNAHME_ZIELSEITEN) {
+    if (pfad === seg || pfad.startsWith(`${seg}/`)) return true;
+  }
+  return false;
+}
+
 /** true, wenn die Weiche auf diesem Pfad grundsaetzlich nie feuert. */
 export function istAusgeschlossen(pfad) {
   for (const seg of AUSSCHLUSS_SEGMENTE) {
@@ -128,11 +190,14 @@ export function klassifizierePaid(searchParams) {
 }
 
 /**
- * Reine Entscheidungsfunktion (hermetisch testbar): liefert
- * {erkennung, ziel} wenn dieser Request umgeleitet werden soll, sonst null.
+ * Volle Entscheidung (hermetisch testbar). Drei unterscheidbare Ausgaenge —
+ * die Unterscheidung ist der Zweck, siehe AUSNAHME_ZIELSEITEN:
+ *   null                                  kein Paid-Klick / Veto / Ausschluss
+ *   {erkennung, ziel}                     umleiten auf LP A
+ *   {erkennung, ziel:null, ausnahme:...}  Paid ERKANNT und bewusst durchgelassen
  * Ziel = LP A + kompletter Original-Query byte-identisch + lp_m=w.
  */
-export function entscheideAdWeiche(requestUrl) {
+export function entscheideAdWeicheDetail(requestUrl) {
   const url = new URL(requestUrl);
   const pfad = url.pathname;
   if (pfad.endsWith('.data')) return null;
@@ -140,10 +205,25 @@ export function entscheideAdWeiche(requestUrl) {
   if (istAusgeschlossen(pfad)) return null;
   const erkennung = klassifizierePaid(url.searchParams);
   if (!erkennung) return null;
+  // Die Anzeige hat diese Seite versprochen -> sie bekommt sie, unveraendert.
+  if (istAusnahmeZielseite(pfad)) {
+    return {erkennung, ziel: null, ausnahme: 'zielseite'};
+  }
   if (erkennung === 'google-paid' && (pfad === '/products' || pfad.startsWith('/products/'))) {
-    return null;
+    return {erkennung, ziel: null, ausnahme: 'shopping-pdp'};
   }
   return {erkennung, ziel: zielUrl(LP_A_PFAD, url.search, 'w')};
+}
+
+/**
+ * Bestands-Vertrag (unveraendert): {erkennung, ziel} NUR wenn wirklich
+ * umgeleitet wird, sonst null. Ein bewusst durchgelassener Paid-Klick ist
+ * hier — wie jeder andere Nicht-Redirect — null; wer den Grund braucht,
+ * nimmt entscheideAdWeicheDetail.
+ */
+export function entscheideAdWeiche(requestUrl) {
+  const detail = entscheideAdWeicheDetail(requestUrl);
+  return detail && detail.ziel ? {erkennung: detail.erkennung, ziel: detail.ziel} : null;
 }
 
 /**
@@ -178,19 +258,36 @@ export async function adWeicheAktiv(fetchImpl) {
  */
 export async function pruefeAdWeiche(request, fetchImpl) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return null;
-  const entscheidung = entscheideAdWeiche(request.url);
+  const entscheidung = entscheideAdWeicheDetail(request.url);
   if (!entscheidung) return null;
+  // Bewusst durchgelassener Paid-Klick: kein Redirect, aber der Schalter-Fetch
+  // entfaellt — 'aus' und 'an' fuehren hier zum selben Ergebnis.
+  if (!entscheidung.ziel) {
+    protokolliere(request, entscheidung);
+    return null;
+  }
   if (!(await adWeicheAktiv(fetchImpl))) return null;
+  protokolliere(request, entscheidung);
+  return entscheidung.ziel;
+}
+
+/**
+ * Eine Zeile je erkanntem Paid-Klick nach stdout (Oxygen-Logs, Muster
+ * catchall.server.js). Das Feld 'entscheidung' macht den Unterschied zwischen
+ * "umgeleitet" und "erkannt und bewusst gelassen" ablesbar — ohne es waere
+ * eine Ausnahme von "war nie bezahlt" nicht zu unterscheiden.
+ */
+function protokolliere(request, entscheidung) {
   try {
     console.log(
       JSON.stringify({
         typ: 'ad-weiche',
         erkennung: entscheidung.erkennung,
+        entscheidung: entscheidung.ausnahme ? `ausnahme-${entscheidung.ausnahme}` : 'umgeleitet',
         pfad: new URL(request.url).pathname,
       }),
     );
   } catch {
     // Logging darf die Weiche nie brechen.
   }
-  return entscheidung.ziel;
 }
