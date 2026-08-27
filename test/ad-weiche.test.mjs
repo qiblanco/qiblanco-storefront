@@ -261,7 +261,7 @@ test('Ausnahme ist ERKANNT und bewusst gelassen — nicht "war nie bezahlt"', ()
   assert.equal(d.ausnahme, 'zielseite');
   // Gegenstueck: eine Seite ohne Paid-Marker ist gar keine Entscheidung.
   assert.equal(entscheideAdWeicheDetail(`${BASIS}/pages/studien`), null);
-  // Gegenstueck: ein echter Ausschluss traegt keinen Grund.
+  // Gegenstueck: ein echter Ausschluss trägt keinen Grund.
   assert.equal(entscheideAdWeicheDetail(`${BASIS}/cart?utm_medium=paid`), null);
 });
 
