@@ -107,7 +107,7 @@
    *                      -> QR 92,5 CSS-px = 24,5 mm im ausgelieferten DE
    *
    * Die 480 px sind damit ~16 % ueber der Untergrenze, auch in der
-   * unguenstigsten Sprachfassung. `test/eu-gewaehrleistungslabel.test.mjs`
+   * unguenstigsten Sprachfassung. `test/eu-gewaehrleistung.test.mjs`
    * liest diesen Wert aus DIESER Datei und rechnet nach -- eine Aenderung
    * hier ohne Nachrechnen faellt dort auf.
    */
