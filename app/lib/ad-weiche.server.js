@@ -33,7 +33,7 @@
  *    /build, /cdn, /.well-known sowie Prefixe /__qb, /sitemap, /robots,
  *    /favicon, /apple-. Segment-genau gematcht — /blogs faellt NICHT unter /b.
  *  - ZIELSEITEN-AUSNAHME (AUSNAHME_ZIELSEITEN, s.u.): die Anzeige hat DIESE
- *    Seite ausdruecklich versprochen — die Weiche haelt das Versprechen.
+ *    Seite ausdrücklich versprochen — die Weiche hält das Versprechen.
  *
  * SCHALTER (dynamisch, ohne Deploy): zuteilung.json ROH-Feld "ad_weiche".
  * NUR der explizite Wert 'aus' deaktiviert; Abwesenheit/Fetch-Fehler = AKTIV
@@ -110,7 +110,7 @@ export const AUSSCHLUSS_PREFIXE = ['/__qb', '/sitemap', '/robots', '/favicon', '
  * generische Seiten, bei denen LP A nachweislich das bessere Ziel ist. Genau
  * dieser Fall ist hier NICHT gemeint.
  *
- * WAS NEU IST. Die vier Anzeigen zu ads.db qb45-c12 ("So entsteht kohaerentes
+ * WAS NEU IST. Die vier Anzeigen zu ads.db qb45-c12 ("So entsteht kohärentes
  * Wasser") versprechen im Text UND auf der Endkarte woertlich "Vier Studien
  * offen einsehbar — lies sie selbst". Ihr link_url zeigt deshalb auf
  * /pages/studien. Ohne diese Ausnahme loest der Klick das Versprechen nicht
@@ -127,12 +127,12 @@ export const AUSSCHLUSS_PREFIXE = ['/__qb', '/sitemap', '/robots', '/favicon', '
  * bewusst durchgelassen". Der Unterschied ist im Log sichtbar (entscheidung:
  * 'ausnahme-zielseite') statt still.
  *
- * SO ENG WIE MOEGLICH: nur der versprochene Pfad, nicht die Kampagne. Eine
- * Kampagnen-Allowlist waere breiter (sie liesse DIESE Kampagne auf JEDE Seite)
- * und zugleich schwaecher: utm_campaign traegt {campaign.id}, und die ID
- * wechselt beim Re-Launch — die Ausnahme waere nach dem naechsten Neustart
- * still weg, ohne dass jemand etwas merkt. Das Versprechen haengt am ZIEL,
- * also haengt die Ausnahme am Ziel.
+ * SO ENG WIE MÖGLICH: nur der versprochene Pfad, nicht die Kampagne. Eine
+ * Kampagnen-Allowlist wäre breiter (sie liesse DIESE Kampagne auf JEDE Seite)
+ * und zugleich schwaecher: utm_campaign trägt {campaign.id}, und die ID
+ * wechselt beim Re-Launch — die Ausnahme wäre nach dem nächsten Neustart
+ * still weg, ohne dass jemand etwas merkt. Das Versprechen hängt am ZIEL,
+ * also hängt die Ausnahme am Ziel.
  *
  * WAS DAS AN DER MESSUNG VERSCHIEBT (bewusst, nicht still — arch-context
  * fallen ads, Zirkularitaets-Falle): bisher galt baulich "jeder bezahlte
@@ -274,7 +274,7 @@ export async function pruefeAdWeiche(request, fetchImpl) {
 /**
  * Eine Zeile je erkanntem Paid-Klick nach stdout (Oxygen-Logs, Muster
  * catchall.server.js). Das Feld 'entscheidung' macht den Unterschied zwischen
- * "umgeleitet" und "erkannt und bewusst gelassen" ablesbar — ohne es waere
+ * "umgeleitet" und "erkannt und bewusst gelassen" ablesbar — ohne es wäre
  * eine Ausnahme von "war nie bezahlt" nicht zu unterscheiden.
  */
 function protokolliere(request, entscheidung) {

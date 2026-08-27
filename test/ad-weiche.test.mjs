@@ -231,7 +231,7 @@ test('pruefeAdWeiche: Schalter aus -> null trotz Paid-Marker', async () => {
 });
 
 // --- ZIELSEITEN-AUSNAHME (Auftrag 20260827-ad-weiche-ausnahme-mof-beweis-ad) --
-// Die Anzeige qb45-c12 verspricht woertlich "Vier Studien offen einsehbar —
+// Die Anzeige qb45-c12 verspricht wörtlich "Vier Studien offen einsehbar —
 // lies sie selbst". Der bezahlte Klick MUSS dort landen, sonst bricht die
 // Anzeige ihr eigenes Versprechen. Jeder Test hier hat sein Gegenstueck in der
 // Gruppe darunter: der Zaun darf nur an dieser einen Stelle Tuer sein.
@@ -266,8 +266,8 @@ test('Ausnahme ist ERKANNT und bewusst gelassen — nicht "war nie bezahlt"', ()
 });
 
 test('Ausnahme unterlaeuft die VETOS nicht (organisch bleibt organisch)', () => {
-  // Ein Veto heisst "kein Paid-Klick" — dann gibt es auch nichts auszunehmen,
-  // und die Seite rendert wie immer. Sonst waere die Ausnahme ein zweiter,
+  // Ein Veto heißt "kein Paid-Klick" — dann gibt es auch nichts auszunehmen,
+  // und die Seite rendert wie immer. Sonst wäre die Ausnahme ein zweiter,
   // stiller Klassifikator neben klassifizierePaid.
   assert.equal(
     entscheideAdWeicheDetail(`${BASIS}/pages/studien?utm_medium=social`),
@@ -297,13 +297,13 @@ test('pruefeAdWeiche: Ausnahme -> null OHNE Zuteilungs-Fetch (Schalter irrelevan
 
 test('Gegenprobe: NUR der versprochene Pfad ist Tuer — Nachbarn nicht', () => {
   // Suffix-Slug ist ein ANDERER Pfad (Muster istAusgeschlossen: exakt oder
-  // '<eintrag>/...'). Ohne diesen Test waere ein Praefix-Match unbemerkt.
+  // '<eintrag>/...'). Ohne diesen Test wäre ein Präfix-Match unbemerkt.
   for (const pfad of ['/pages/studien-alt', '/pages/studienlage', '/pages/studie']) {
     assert.equal(istAusnahmeZielseite(pfad), false);
     const d = entscheideAdWeicheDetail(`${BASIS}${pfad}?utm_medium=paid`);
     assert.equal(d.ziel, `${LP_A_PFAD}?utm_medium=paid&lp_m=w`);
   }
-  // Unterpfad gehoert dagegen zur versprochenen Seite.
+  // Unterpfad gehört dagegen zur versprochenen Seite.
   assert.equal(istAusnahmeZielseite('/pages/studien/immunzellen'), true);
 });
 
@@ -322,14 +322,14 @@ test('Gegenprobe: die uebrigen Ad-Ziele behalten ihr Verhalten (Dekret ALLE)', (
     '/pages/das-20-tage-versprechen',
   ]) {
     const ziel = entscheideAdWeiche(`${BASIS}${pfad}?utm_medium=paid&utm_source=facebook`);
-    assert.ok(ziel, `kein Redirect mehr fuer ${pfad}`);
+    assert.ok(ziel, `kein Redirect mehr für ${pfad}`);
     assert.equal(ziel.ziel, `${LP_A_PFAD}?utm_medium=paid&utm_source=facebook&lp_m=w`);
   }
 });
 
 test('Gegenprobe: die Ausnahmen-Liste bleibt eine bewusste Einzelmenge', () => {
   // Eine Liste, die unbemerkt waechst, hebelt das Dekret aus. Waechst sie
-  // absichtlich, faellt dieser Test auf und zwingt zur Begruendung im Kopf.
+  // absichtlich, fällt dieser Test auf und zwingt zur Begründung im Kopf.
   assert.deepEqual(AUSNAHME_ZIELSEITEN, ['/pages/studien']);
 });
 
