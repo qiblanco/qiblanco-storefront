@@ -176,6 +176,44 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     ausSitemap: false,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
   },
+  // Neu 2026-08-26 (s04 des Grossjobs …seo-rest-kanonisierung…). Diese fünf
+  // sind derselbe Fall wie `pre-access` oben, nur später gefunden: sie waren
+  // nicht im damaligen Suchraum. Gemessen wurde nicht die Wortzahl, sondern
+  // die DIFFERENZ zu zwei nachweislich leeren Referenzseiten (`pre-access`,
+  // `qibracelet_` — beide oben mit Begründung geführt): das Gerüst aus Kopf,
+  // Navigation und Fuß ist damit abgezogen. Alle fünf messen 0 eigene
+  // Textstücke, tragen also NULL eigenen Inhalt, liefern HTTP 200 und stehen
+  // in `sitemap/pages/1.xml` (Beleg: belege/inhalts-delta.json, 20:12Z).
+  //
+  // `qiblanco` ist dabei der teuerste: eine leere Seite unter dem MARKENNAMEN
+  // konkurriert mit der Startseite um genau die Suche, die am sichersten
+  // konvertiert. Das ist der Präzedenzfall `pre-access` („stand auf Platz 2
+  // der Suche nach QiOne 2 Pro"), nur eine Ebene wichtiger.
+  {
+    handle: 'qiblanco',
+    ausSitemap: false,
+    grund: 'leere Restseite unter dem Markennamen; konkurriert mit der Startseite',
+  },
+  {
+    handle: 'linkseite',
+    ausSitemap: false,
+    grund: 'leere Link-in-Bio-Restseite ohne eigenen Inhalt',
+  },
+  {
+    handle: 'one-inch',
+    ausSitemap: false,
+    grund: 'leere Kampagnen-Restseite (One Inch Club), laut Grossjob depubliziert',
+  },
+  {
+    handle: 'ketogenes-wochenende',
+    ausSitemap: false,
+    grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+  },
+  {
+    handle: 'superhuman-kurs',
+    ausSitemap: false,
+    grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+  },
 ];
 
 /**
@@ -289,4 +327,60 @@ export const NICHT_INDEXIERBARE_PRODUKTE = [
  */
 export function istNichtIndexierbaresProdukt(handle) {
   return !!handle && NICHT_INDEXIERBARE_PRODUKTE.includes(handle);
+}
+
+/**
+ * Kollektions-Handles, die NICHT in den Google-Index gehören.
+ *
+ * WARUM DIE DRITTE LISTE UND NICHT EIN EINTRAG IN EINER DER OBEREN: Seiten,
+ * Produkte und Kollektionen sind drei getrennte Shopify-Namensräume mit je
+ * eigenem URL-Präfix. Ein Handle `products` existiert als Kollektion UND
+ * könnte als Seite existieren; eine gemeinsame Liste müsste den Typ mitführen
+ * und wäre an jeder Lesestelle zu filtern. Die Trennung ist hier billiger als
+ * die Vereinigung — die Doppelungs-Warnung oben richtet sich gegen ZWEI Listen
+ * für DENSELBEN Namensraum, nicht gegen eine je Namensraum.
+ *
+ * AUFNAHME-KRITERIUM (wortgleich zu den beiden Listen oben): nur Handles ohne
+ * Zweck für Kunden. Entscheidend ist NICHT, ob die Kollektion heute leer ist —
+ * eine leere Saison-Kollektion (`valentinstag-angebote`,
+ * `blackfriday-sale-artikel`) ist eine echte Kundenkategorie, die wieder
+ * gefüllt wird; dort ist die richtige Antwort Inhalt, nicht Unsichtbarkeit.
+ * Aufgenommen ist nur, was seiner NATUR nach intern ist.
+ *
+ * BELEGTER ANLASS (live gemessen 2026-08-26T20:07Z gegen alle neun in der
+ * Sitemap geführten Kollektionen, belege/inhalts-delta.json): fünf davon sind
+ * Steuerungs-Kollektionen des Shops, keine Kategorien.
+ *   - `slider` sagt es in der eigenen Beschreibung: „Artikel, die im Slider
+ *     angezeigt werden sollen." Das ist eine Konfiguration der Startseite,
+ *     die versehentlich eine öffentliche URL bekommen hat.
+ *   - `frontpage` („Home page") und `products` („Products") legt Shopify
+ *     selbst an. Beide tragen einen ENGLISCHEN Titel auf der deutschen
+ *     Storefront und dieselben Produkte wie `/collections/all` — sie sind
+ *     Dubletten der Kategorieübersicht, nicht eigene Kategorien.
+ *   - `digital-goods-vat-tax` ist eine steuerliche Gruppierung für die
+ *     Umsatzsteuer digitaler Güter, `cross-selling` eine Merchandising-Quelle
+ *     für Produktempfehlungen. Beide messen 0 eigene Produkte.
+ *
+ * WARUM noindex UND KEIN canonical: dieselbe Regel, die schon
+ * `pages.uebersicht.jsx` trägt — noindex neben einem canonical auf eine
+ * andere URL sind widersprüchliche Signale. Für `frontpage`/`products` wäre
+ * ein canonical auf `/collections/all` fachlich naheliegend und trotzdem
+ * falsch: es machte die Dublette wieder crawlbar.
+ * @type {string[]}
+ */
+export const NICHT_INDEXIERBARE_KOLLEKTIONEN = [
+  'frontpage',
+  'products',
+  'slider',
+  'cross-selling',
+  'digital-goods-vat-tax',
+];
+
+/**
+ * Gehört dieser Kollektions-Handle aus dem Index?
+ * @param {string|undefined} handle
+ * @returns {boolean}
+ */
+export function istNichtIndexierbareKollektion(handle) {
+  return !!handle && NICHT_INDEXIERBARE_KOLLEKTIONEN.includes(handle);
 }

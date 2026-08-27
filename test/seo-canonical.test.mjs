@@ -301,3 +301,126 @@ test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async
   assert.match(quelle, /noindexMeta\(\)/, 'meta() muss den noindex-Descriptor AUSGEBEN');
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'beides muss aus der geteilten Quelle kommen');
 });
+
+// ===========================================================================
+// s04 (2026-08-26): ENTWEDER noindex ODER canonical — nie beides
+// ---------------------------------------------------------------------------
+// Anlass: 49 DACH-Seiten lieferten gar keinen canonical. Live gemessen trugen
+// 30 davon bereits `noindex` — ihr fehlender canonical war also KEIN Defekt,
+// sondern die schon in `pages.uebersicht.jsx` niedergeschriebene Entscheidung
+// („noindex plus ein canonical auf eine andere URL sind widersprüchliche
+// Signale"). Diese Tests halten genau diese Ausschließlichkeit fest, damit
+// ein späterer Lauf sie nicht als vermeintliche Lücke wieder aufmacht.
+// ===========================================================================
+
+const s04Quelle = async (datei) => {
+  const {readFile} = await import('node:fs/promises');
+  const {fileURLToPath} = await import('node:url');
+  return readFile(fileURLToPath(new URL(`../app/${datei}`, import.meta.url)), 'utf8');
+};
+
+test('s04: die fünf leeren Restseiten stehen in der noindex-Liste', () => {
+  for (const handle of [
+    'qiblanco',
+    'linkseite',
+    'one-inch',
+    'ketogenes-wochenende',
+    'superhuman-kurs',
+  ]) {
+    assert.equal(istNichtIndexierbar(handle), true, `${handle} muss noindex tragen`);
+  }
+});
+
+test('s04: die Kollektions-Liste kennt nur INTERNE Handles, keine Kategorien', async () => {
+  const {
+    NICHT_INDEXIERBARE_KOLLEKTIONEN,
+    istNichtIndexierbareKollektion,
+  } = await import('../app/lib/seo.js');
+  for (const handle of [
+    'frontpage',
+    'products',
+    'slider',
+    'cross-selling',
+    'digital-goods-vat-tax',
+  ]) {
+    assert.equal(istNichtIndexierbareKollektion(handle), true, `${handle} ist intern`);
+  }
+  // GEGENFALL — der eigentliche Zweck dieses Tests: eine heute LEERE
+  // Saison-Kollektion ist trotzdem eine echte Kundenkategorie. Wer sie aus
+  // Bequemlichkeit mit aufnimmt, nimmt dem Shop eine Kategorie aus dem Index,
+  // die nächste Saison wieder gefüllt wird.
+  for (const handle of [
+    'valentinstag-angebote',
+    'blackfriday-sale-artikel',
+    'digitale-kurse',
+    'zeremonie-kakao',
+    'all',
+  ]) {
+    assert.equal(
+      istNichtIndexierbareKollektion(handle),
+      false,
+      `${handle} ist eine Kundenkategorie und darf NICHT noindex sein`,
+    );
+  }
+  assert.equal(NICHT_INDEXIERBARE_KOLLEKTIONEN.length, 5);
+});
+
+test('s04: kein Handle steht zugleich in der Seiten- UND der Kollektions-Liste', async () => {
+  // Getrennte Namensräume sind erlaubt und gewollt — eine ÜBERSCHNEIDUNG wäre
+  // aber fast sicher ein Kopierfehler, weil kein Handle beides sein kann.
+  const {NICHT_INDEXIERBARE_KOLLEKTIONEN} = await import('../app/lib/seo.js');
+  const doppelt = NICHT_INDEXIERBARE_KOLLEKTIONEN.filter((h) =>
+    NICHT_INDEXIERBARE_SEITEN.includes(h),
+  );
+  assert.deepEqual(doppelt, []);
+});
+
+test('s04 NAHT: die Page-Route setzt den canonical im else-Zweig des noindex', async () => {
+  // Die STRUKTUR ist der Gegenstand, nicht die blosse Anwesenheit beider
+  // Aufrufe: ein `tags.push(canonicalLink(...))` VOR oder NEBEN dem
+  // noindex-Zweig erzeugt genau das widersprüchliche Signalpaar. Der Test
+  // verlangt deshalb die Kette if(noindex){…} else if(…){canonicalLink}.
+  const quelle = await s04Quelle('routes/pages.$handle.jsx');
+  assert.match(
+    quelle,
+    /if\s*\(\s*istNichtIndexierbar\([^)]*\)\s*\)\s*\{[^}]*noindexMeta\(\)[^}]*\}\s*else\s+if[^{]*\{[^}]*canonicalLink\(/s,
+    'canonical muss im else-Zweig des noindex stehen',
+  );
+  assert.match(quelle, /canonicalLink\(`\/pages\/\$\{params\.handle\}`\)/);
+});
+
+test('s04 NAHT: die Kollektions-Route trägt beide Hälften und schließt sie aus', async () => {
+  const quelle = await s04Quelle('routes/collections.$handle.jsx');
+  // noindex-Zweig verlässt meta() SOFORT (return), erreicht den canonical also nie.
+  assert.match(
+    quelle,
+    /if\s*\(\s*istNichtIndexierbareKollektion\([^)]*\)\s*\)\s*\{[^}]*noindexMeta\(\)[^}]*return\s+tags;[^}]*\}/s,
+    'der noindex-Zweig muss vor dem canonical zurückkehren',
+  );
+  assert.match(quelle, /canonicalLink\(`\/collections\/\$\{params\.handle\}`\)/);
+  // Zweite Hälfte des Doppelgates: Loader-Header UND headers-Export.
+  assert.match(quelle, /noindexHeader\(\)/, 'Loader muss X-Robots-Tag setzen');
+  assert.match(quelle, /export const headers\s*=/, 'headers-Export muss ihn durchreichen');
+  assert.match(quelle, /loaderHeaders\?\.get\('X-Robots-Tag'\)/);
+});
+
+test('s04 NAHT: /cart trägt noindex und BEWUSST keinen canonical', async () => {
+  const quelle = await s04Quelle('routes/cart.jsx');
+  assert.match(quelle, /noindexMeta\(\)/, '/cart muss noindex tragen');
+  assert.equal(
+    /canonicalLink\(/.test(quelle),
+    false,
+    '/cart darf KEINEN canonical tragen (widersprüchliches Signalpaar)',
+  );
+});
+
+test('s04 NAHT: Kategorie- und Rechtstext-Routen setzen einen Selbst-canonical', async () => {
+  assert.match(
+    await s04Quelle('routes/collections.all.jsx'),
+    /canonicalLink\('\/collections\/all'\)/,
+  );
+  assert.match(
+    await s04Quelle('routes/policies.$handle.jsx'),
+    /canonicalLink\(`\/policies\/\$\{params\.handle\}`\)/,
+  );
+});
