@@ -8,9 +8,9 @@
  *
  *   1. Auf der Produktseite steht NUR der Text-Link. Wer die Grafik eines
  *      Tages "der Sichtbarkeit zuliebe" offen daneben stellt, baut genau die
- *      Abweichung zurueck, die am 2026-08-25 ausdruecklich kassiert wurde.
- *   2. Die Grafik im Overlay muss GROSS GENUG bleiben, damit der QR-Code
- *      scanbar ist. Seit sie nur noch dort vorkommt, haengt die Scanbarkeit
+ *      Abweichung zurück, die am 2026-08-25 ausdrücklich kassiert wurde.
+ *   2. Die Grafik im Overlay muss GENÜGEND groß bleiben, damit der QR-Code
+ *      scanbar ist. Seit sie nur noch dort vorkommt, hängt die Scanbarkeit
  *      allein an dieser einen Zahl -- und eine CSS-Zahl aendert man schnell.
  *   3. Die amtliche Grafik darf nicht nachbearbeitet werden.
  *   4. Der Rueckfall muss Englisch sein, nie "kein Bild".
@@ -43,10 +43,10 @@ const CSS = join(HIER, '..', 'app', 'styles', 'eu-gewaehrleistung.css');
  * Kommentare entfernen, BEVOR am Quelltext gezaehlt oder gesucht wird.
  *
  * Ein frueherer Anlauf zaehlte 6 Overlays statt 1 -- die Treffer standen in
- * der Prosa. Ein Quelltext-Waechter, der den NAMEN einer Sache zaehlt statt
+ * der Prosa. Ein Quelltext-Waechter, der den NAMEN einer Sache zählt statt
  * die Sache, misst die Dokumentation mit und schlaegt genau dann Alarm, wenn
  * jemand gut kommentiert. Das gilt hier doppelt: der Dateikopf ZITIERT die
- * alte, offene Darstellung, um zu erklaeren, warum es sie nicht mehr gibt.
+ * alte, offene Darstellung, um zu erklären, warum es sie nicht mehr gibt.
  */
 function ohneKommentare(quelle) {
   return quelle
@@ -109,7 +109,7 @@ test('auf der Produktseite steht NUR der Text-Link -- keine offene Grafik', () =
     pdpKoerper,
     /<img\b/,
     'Der Produktseiten-Baustein rendert wieder ein <img>. Bestellt ist: NUR ' +
-      'der Text-Link im Seitenfluss, die Grafik ausschliesslich im Overlay ' +
+      'der Text-Link im Seitenfluss, die Grafik ausschließlich im Overlay ' +
       'nach Klick.',
   );
 
@@ -120,11 +120,11 @@ test('auf der Produktseite steht NUR der Text-Link -- keine offene Grafik', () =
       'es auf der Kaufflaeche gar keinen Hinweis.',
   );
 
-  // Positiv-Kontrolle: ohne sie waere ein leerer Ausschnitt (z.B. weil sich
+  // Positiv-Kontrolle: ohne sie wäre ein leerer Ausschnitt (z.B. weil sich
   // ein Funktionsname geaendert hat) ununterscheidbar von "sauber".
   assert.ok(
     pdpKoerper.includes('eu-gwl--pdp'),
-    'Ausschnitt leer oder verrutscht -- die Aussage oben traegt dann nichts.',
+    'Ausschnitt leer oder verrutscht -- die Aussage oben trägt dann nichts.',
   );
 });
 
@@ -149,22 +149,22 @@ test('genau EIN <img> in der ganzen Komponente, und es sitzt im Overlay', () => 
   );
 });
 
-test('die CSS kennt keinen Regelblock mehr fuer eine offene Produktseiten-Grafik', () => {
+test('die CSS kennt keinen Regelblock mehr für eine offene Produktseiten-Grafik', () => {
   const css = readFileSync(CSS, 'utf8');
   const ohneCssKommentare = css.replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(
     ohneCssKommentare,
     /\.eu-gwl__bild\s*\{/,
-    'Ein .eu-gwl__bild-Block ist zurueck -- das ist die Gestaltung fuer die ' +
+    'Ein .eu-gwl__bild-Block ist zurück -- das ist die Gestaltung für die ' +
       'offen sichtbare Produktseiten-Grafik, die es nicht mehr geben soll.',
   );
 });
 
 /* ------------------------------------------------------------------ */
-/* Scanbarkeit haengt jetzt allein am Overlay                          */
+/* Scanbarkeit hängt jetzt allein am Overlay                          */
 /* ------------------------------------------------------------------ */
 
-test('die Mindestbreite im Overlay haelt den QR-Code ueber 2 x 2 cm', () => {
+test('die Mindestbreite im Overlay hält den QR-Code über 2 x 2 cm', () => {
   const css = readFileSync(CSS, 'utf8');
 
   const m = css.match(/--eu-gwl-bild-mindestbreite:\s*(\d+(?:\.\d+)?)px/);
@@ -200,23 +200,23 @@ test('der Ueberstand ist erreichbar -- die Buehne scrollt waagerecht', () => {
     buehne,
     /overflow-x:\s*auto/,
     'Ohne waagerechten Scroll ist die Grafik auf schmalen Viewports zwar ' +
-      'gross genug, aber teilweise unerreichbar -- das waere faktisch ein ' +
+      'groß genug, aber teilweise unerreichbar -- das wäre faktisch ein ' +
       'Beschnitt.',
   );
 
-  // Das Bild muss auch tatsaechlich IN der Buehne haengen, sonst scrollt der
-  // Dialog selbst und der Schliessen-Knopf wandert mit aus dem Bild.
+  // Das Bild muss auch tatsaechlich IN der Buehne hängen, sonst scrollt der
+  // Dialog selbst und der Schließen-Knopf wandert mit aus dem Bild.
   //
-  // Diese Pruefung war zuerst eine Naehe-Heuristik ("<img> steht innerhalb
-  // der naechsten 400 Zeichen"). Ein Mutant, der die Buehne leer laesst und
-  // das Bild direkt dahinter haengt, hat sie ueberlebt -- Naehe ist eben
+  // Diese Prüfung war zuerst eine Naehe-Heuristik ("<img> steht innerhalb
+  // der nächsten 400 Zeichen"). Ein Mutant, der die Buehne leer lässt und
+  // das Bild direkt dahinter hängt, hat sie ueberlebt -- Naehe ist eben
   // keine Verschachtelung. Jetzt wird die Verschachtelung selbst geprueft.
   const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
   const tag = code.match(/<div className="eu-gwl-dialog__buehne"([^>]*)>/);
   assert.ok(tag, 'die Buehne fehlt in der Komponente');
   assert.ok(
     !tag[1].trim().endsWith('/'),
-    'Die Buehne ist selbstschliessend -- sie enthaelt gar nichts.',
+    'Die Buehne ist selbstschliessend -- sie enthält gar nichts.',
   );
 
   const nachDemTag = code.slice(tag.index + tag[0].length);
@@ -226,7 +226,7 @@ test('der Ueberstand ist erreichbar -- die Buehne scrollt waagerecht', () => {
     nachDemTag.slice(0, zu),
     /<img\b/,
     'Das <img> steht nicht INNERHALB der Buehne -- dann scrollt der Dialog ' +
-      'selbst und der Schliessen-Knopf wandert seitlich aus dem Bild.',
+      'selbst und der Schließen-Knopf wandert seitlich aus dem Bild.',
   );
 });
 
@@ -239,7 +239,7 @@ test('genau EIN Overlay je Seite', () => {
   const dialoge = code.match(/<dialog\b/g) ?? [];
   assert.equal(dialoge.length, 1, 'es darf genau einen <dialog> geben');
 
-  // Positiv-Kontrolle: ohne sie waere eine 0 (z.B. weil das Strippen zu
+  // Positiv-Kontrolle: ohne sie wäre eine 0 (z.B. weil das Strippen zu
   // gierig war) ununterscheidbar von "sauber genau einer".
   assert.ok(
     code.includes('EuLabelProvider'),
@@ -255,8 +255,8 @@ test('der Ausloeser ist ein echtes button-Element -- auf beiden Flaechen', () =>
   const ausloeser = code.slice(ab, ab + 600);
   assert.match(ausloeser, /<button\s+type="button"/, 'kein echtes button-Element');
 
-  // Beide Flaechen muessen ihn auch benutzen -- sonst waere der Test oben
-  // eine Aussage ueber toten Code.
+  // Beide Flaechen müssen ihn auch benutzen -- sonst wäre der Test oben
+  // eine Aussage über toten Code.
   for (const baustein of ['EuGewaehrleistungsHinweis', 'EuGewaehrleistungsLink']) {
     const von = code.indexOf(`export function ${baustein}`);
     assert.ok(von >= 0, `${baustein} fehlt`);
@@ -273,8 +273,8 @@ test('beide Flaechen sind im Markup unterscheidbar', () => {
   for (const flaeche of ['pdp', 'footer']) {
     assert.ok(
       code.includes(`flaeche="${flaeche}"`),
-      `Messmarke fehlt: ${flaeche}. Ohne sie laesst sich am Live-HTML nicht ` +
-        `nachweisen, dass die Flaeche den Hinweis traegt.`,
+      `Messmarke fehlt: ${flaeche}. Ohne sie lässt sich am Live-HTML nicht ` +
+        `nachweisen, dass die Flaeche den Hinweis trägt.`,
     );
   }
 });
@@ -283,15 +283,15 @@ test('die amtliche Grafik wird nicht nachbearbeitet (Anhang I Nr. 1 und 5)', () 
   const css = readFileSync(CSS, 'utf8');
   const block = cssBlock(css, '.eu-gwl-dialog__bild');
 
-  assert.match(block, /filter:\s*none/, 'filter muss ausdruecklich none sein');
-  assert.match(block, /height:\s*auto/, 'height:auto haelt das Seitenverhaeltnis');
-  assert.match(block, /border-radius:\s*0/, 'Radius wuerde die Ecken beschneiden');
+  assert.match(block, /filter:\s*none/, 'filter muss ausdrücklich none sein');
+  assert.match(block, /height:\s*auto/, 'height:auto hält das Seitenverhaeltnis');
+  assert.match(block, /border-radius:\s*0/, 'Radius würde die Ecken beschneiden');
   assert.doesNotMatch(block, /object-fit:\s*cover/, 'cover beschneidet die Grafik');
   assert.doesNotMatch(block, /mix-blend-mode/, 'Blendmodus faerbt nach');
 });
 
-test('Alt-Text traegt die Substanz, nicht nur ein Etikett', () => {
-  assert.ok(LABEL_ALT_DE.length > 400, 'Alt-Text ist zu kurz fuer den Inhalt der Grafik');
+test('Alt-Text trägt die Substanz, nicht nur ein Etikett', () => {
+  assert.ok(LABEL_ALT_DE.length > 400, 'Alt-Text ist zu kurz für den Inhalt der Grafik');
   for (const wort of ['zwei Jahren', 'Gewährleistung', 'Verkäufer']) {
     assert.ok(LABEL_ALT_DE.includes(wort), `Alt-Text nennt "${wort}" nicht`);
   }
@@ -318,7 +318,7 @@ test('QR_DEFEKT und QR_GRENZFALL sind gemessene Listen, keine stillen Ausnahmen'
     doppelt,
     [],
     `dieselbe Sprache steht in beiden Listen: ${doppelt.join(', ')} -- ` +
-      `"gar nicht lesbar" und "nur mit Muehe lesbar" schliessen sich aus.`,
+      `"gar nicht lesbar" und "nur mit Muehe lesbar" schließen sich aus.`,
   );
 
   assert.equal(labelFuerSprache('sv').qrDefekt, QR_DEFEKT.includes('sv'));

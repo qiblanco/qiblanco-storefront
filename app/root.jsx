@@ -424,10 +424,10 @@ export function Layout({children}) {
           >
             {/*
               EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
-              27.09.2026). Der Provider haelt GENAU EIN Overlay je Seite --
+              27.09.2026). Der Provider hält GENAU EIN Overlay je Seite --
               Produktseite und Footer teilen es sich. Er steht hier und nicht
               in den einzelnen Bausteinen, damit nicht jede Naht ein eigenes
-              Overlay in den Baum haengt.
+              Overlay in den Baum hängt.
             */}
             <EuLabelProvider>
               <PageLayout {...data}>{children}</PageLayout>

@@ -1,5 +1,5 @@
 /**
- * Harmonisierte Mitteilung ueber das gesetzliche Gewaehrleistungsrecht
+ * Harmonisierte Mitteilung über das gesetzliche Gewaehrleistungsrecht
  * (Anhang I der Durchfuehrungsverordnung (EU) 2025/1960, anwendbar ab
  * 27.09.2026) -- Sprachaufloesung und Asset-Verzeichnis.
  *
@@ -11,7 +11,7 @@
  * ------------------------------------------------------------------
  * Der Auftrag verlangt "per Storefront API einbinden statt fester URLs".
  * Gemessen am 2026-08-25: die 24 Dateien liegen unter Shopify ->
- * Einstellungen -> Dateien. Dateien AUS DIESEM BEREICH sind ueber die
+ * Einstellungen -> Dateien. Dateien AUS DIESEM BEREICH sind über die
  * Storefront API nicht adressierbar -- die Storefront API kennt Medien nur
  * als Anhaengsel von Produkten, Metaobjekten oder Metafeldern. Ein
  * Datei-Verzeichnis gibt es dort nicht; die Abfrage, mit der die Liste unten
@@ -25,7 +25,7 @@
  *       Live-Admin-API (`werkzeuge/manifest_bauen.py`).
  *
  * Gebaut ist (b), weil es ohne Schreibzugriff auskommt und keine handgetippte
- * URL enthaelt. Der Weg nach (a) ist damit nicht verbaut: nur diese eine
+ * URL enthält. Der Weg nach (a) ist damit nicht verbaut: nur diese eine
  * Konstante wechselt dann die Quelle, kein Aufrufer aendert sich.
  *
  * ------------------------------------------------------------------
@@ -45,20 +45,20 @@
  * Die Vormessung (Vorjob, andere Skalen und Aufbereitung) kam auf
  * `fi, sl, sv` hart und `lv` als Grenzfall; diese Messung kommt auf
  * `et, fi, sl, sv` hart und `da, el, pl` als Grenzfall -- `lv` schaffen hier
- * beide Leser, dafuer faellt `et` neu durch. Wer daraus eine gepflegte
+ * beide Leser, dafür faellt `et` neu durch. Wer daraus eine gepflegte
  * Ausnahmeliste macht, pflegt eine Eigenschaft seines Messgeraets.
  *
  * Der belastbare, geraeteunabhaengige Schluss ist deshalb NICHT "diese vier
- * Dateien tauschen", sondern: ueber beide Messungen zusammen sind 8 der 24
+ * Dateien tauschen", sondern: über beide Messungen zusammen sind 8 der 24
  * Dateien mindestens einmal durchgefallen (da, el, et, fi, lv, pl, sl, sv),
- * und welche genau, haengt vom Leser ab. Zu ersetzen
+ * und welche genau, hängt vom Leser ab. Zu ersetzen
  * sind alle 24 -- die amtlichen PNG-Originale (1654x2339) dekodieren
  * ausnahmslos fehlerfrei. Der Schaden entsteht erst beim Verkleinern und
  * JPEG-Wandeln vor dem Upload, nicht in der Grafik der Kommission.
  *
- * WICHTIG FUER DIE EINORDNUNG: eine groessere Darstellung im Overlay heilt
- * das NICHT. Was in der Quelldatei zerstoert ist, bleibt bei jeder
- * Anzeigegroesse zerstoert. Die Anzeigegroesse (siehe CSS) und die
+ * WICHTIG FÜR DIE EINORDNUNG: eine groessere Darstellung im Overlay heilt
+ * das NICHT. Was in der Quelldatei zerstört ist, bleibt bei jeder
+ * Anzeigegroesse zerstört. Die Anzeigegroesse (siehe CSS) und die
  * Quelldatei-Qualitaet sind zwei getrennte Baustellen.
  */
 
@@ -85,32 +85,32 @@ export const QR_DEFEKT = ['et', 'fi', 'sl', 'sv'];
  *
  * `lv` steht hier bewusst NICHT drin, obwohl der Vorjob es als Grenzfall
  * fuehrte: beide Leser dieser Messung kommen damit zurecht. Die Liste gibt
- * wieder, was probe_overlay_qr_groesse.py misst -- sonst waere sie gegen
+ * wieder, was probe_overlay_qr_groesse.py misst -- sonst wäre sie gegen
  * die Probe nicht pruefbar. Dass `lv` bei einem anderen Leser durchfaellt,
  * steht im Kopfkommentar, wo es hingehoert.
  */
 export const QR_GRENZFALL = ['da', 'el', 'pl'];
 
 /**
- * Kleinster gemessener Anteil des QR-Codes an der Bildbreite, ueber alle 24
+ * Kleinster gemessener Anteil des QR-Codes an der Bildbreite, über alle 24
  * Sprachfassungen (schmalster Fall: fr mit 18,24 %; breitester: pl mit
  * 20,23 %). Erhoben von pruefungen/probe_overlay_qr_groesse.py.
  *
  * Diese Zahl ist die Bruecke zwischen "wie breit rendert die Grafik" und
- * "wie gross ist der QR-Code dann". Ohne sie waere die Mindestbreite in der
+ * "wie groß ist der QR-Code dann". Ohne sie wäre die Mindestbreite in der
  * CSS eine gegriffene Zahl.
  */
 export const QR_ANTEIL_DER_BILDBREITE_MIN = 0.1824;
 
 /**
- * Untergrenze fuer die Kantenlaenge des QR-Codes auf dem Bildschirm.
+ * Untergrenze für die Kantenlaenge des QR-Codes auf dem Bildschirm.
  *
  * Quelle: "Practical guidelines for sellers and producers" (Europaeische
  * Kommission, GD Justiz und Verbraucher, April 2026), Abschnitt 3.1.2:
  * "The QR code should never be smaller than 2 x 2 cm."
  *
- * EHRLICH DAZU: dieser Satz steht dort im Kapitel ueber das GARAN-Label
- * (Anhang II). Fuer den QR-Code der MITTEILUNG nennen weder Verordnung noch
+ * EHRLICH DAZU: dieser Satz steht dort im Kapitel über das GARAN-Label
+ * (Anhang II). Für den QR-Code der MITTEILUNG nennen weder Verordnung noch
  * Leitlinien eine Zahl -- dort steht nur die Anforderung "scannable under
  * normal lighting conditions using a standard mobile device". Die 2 cm sind
  * hier bewusst uebertragen, weil eine gemessene Untergrenze besser ist als
@@ -119,7 +119,7 @@ export const QR_ANTEIL_DER_BILDBREITE_MIN = 0.1824;
  */
 export const QR_MINDESTKANTE_MM = 20;
 
-/** 1 CSS-Pixel = 1/96 Zoll. Fuer die Umrechnung Bildschirmgroesse <-> mm. */
+/** 1 CSS-Pixel = 1/96 Zoll. Für die Umrechnung Bildschirmgroesse <-> mm. */
 export const MM_JE_CSS_PIXEL = 25.4 / 96;
 
 /**
@@ -158,7 +158,7 @@ export const LABEL_ASSETS = {
  *
  * Bewusst tolerant in der EINGABE (die Hydrogen-i18n liefert 'DE', ein
  * Accept-Language-Kopf 'de-AT', ein Metafeld vielleicht 'de_DE') und streng
- * in der AUSGABE: es kommt immer ein gueltiges Asset zurueck, nie undefined.
+ * in der AUSGABE: es kommt immer ein gueltiges Asset zurück, nie undefined.
  *
  * @param {string|null|undefined} sprache z.B. 'DE', 'de-AT', 'fr_FR'
  * @returns {{iso: string, url: string, breite: number, hoehe: number,
@@ -184,7 +184,7 @@ export function labelFuerSprache(sprache) {
 }
 
 /**
- * Alt-Text. Die amtliche Grafik enthaelt NULL Textknoten -- saemtliche
+ * Alt-Text. Die amtliche Grafik enthält NULL Textknoten -- saemtliche
  * Schrift ist zu Pfaden konvertiert, der QR-Code ist gezeichnet. Ohne alt
  * laese ein Screenreader von einer gesetzlich vorgeschriebenen
  * Verbraucherinformation exakt gar nichts (BFSG, gilt seit 28.06.2025).

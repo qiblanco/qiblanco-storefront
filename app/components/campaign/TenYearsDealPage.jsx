@@ -585,9 +585,9 @@ function ProductPurchase({
         />
 
         {/*
-          Diese Flaeche rendert den AddToCartButton SELBST (nicht ueber
+          Diese Flaeche rendert den AddToCartButton SELBST (nicht über
           ProductForm) -- ohne eigene Naht traege sie den Pflichthinweis
-          nicht. Hier steht die Versandliste unmittelbar ueber dieser Stelle,
+          nicht. Hier steht die Versandliste unmittelbar über dieser Stelle,
           der Link sitzt also woertlich "unter den Versand-Icons", wie
           bestellt.
         */}

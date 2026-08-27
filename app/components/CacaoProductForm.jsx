@@ -153,14 +153,14 @@ export function CacaoProductForm({selectedVariant, handle, quantity, onQuantityC
         Kauf-Button (Art. 6 Abs. 1 lit. l RL 2011/83/EU: "in hervorgehobener
         Weise", BEVOR der Verbraucher gebunden ist). Die amtliche Grafik
         selbst erscheint erst im Overlay nach Klick -- so beschreiben es die
-        Praxisleitlinien der Kommission (April 2026, Abschnitt 2.3) fuer die
+        Praxisleitlinien der Kommission (April 2026, Abschnitt 2.3) für die
         Mitteilung.
 
         Die Naht sitzt bewusst HIER und nicht in den einzelnen
-        Produktseiten-Komponenten: die Kaufflaechen entstehen ueber
+        Produktseiten-Komponenten: die Kaufflaechen entstehen über
         veroeffentlichte Shopify-Produkte, von denen ein Grossteil ohne
-        eigene Route-Datei ueber den Catch-all laeuft. Eine Naht je Seite
-        wuerde genau die stillschweigend auslassen.
+        eigene Route-Datei über den Catch-all läuft. Eine Naht je Seite
+        würde genau die stillschweigend auslassen.
       */}
       <EuGewaehrleistungsHinweis />
     </div>
