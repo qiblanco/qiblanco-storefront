@@ -31,9 +31,9 @@
   try {
     var CFG = w.QPX_BASIS || {};
     if (CFG.off === true) return; // Kill-Flag (Storefront)
-    // Mehrfach-Einbindung darf NICHT doppelt zaehlen (und den History-Hook nicht
+    // Mehrfach-Einbindung darf NICHT doppelt zählen (und den History-Hook nicht
     // doppelt legen). Reine Seiten-Lebenszeit im Speicher: kein Storage, keine
-    // ID, beim Entladen weg — die Einwilligungsfreiheit bleibt unberuehrt.
+    // ID, beim Entladen weg — die Einwilligungsfreiheit bleibt unberührt.
     if (w.__qpxBasisAktiv === true) return;
     w.__qpxBasisAktiv = true;
     // Endpoint: 1) Script-Tag data-Attribut (Storefront env-gated), 2) window-
@@ -61,13 +61,13 @@
         if (klass[key]) { platform = klass[key]; break; }
       }
     }
-    // Verweis und Plattform-Klasse werden EINMAL beim Einstieg bestimmt und fuer
-    // alle weiteren Hits desselben Besuchs beibehalten. Grund: d.referrer aendert
+    // Verweis und Plattform-Klasse werden EINMAL beim Einstieg bestimmt und für
+    // alle weiteren Hits desselben Besuchs beibehalten. Grund: d.referrer ändert
     // sich bei clientseitiger Navigation nicht, und die Klick-ID steht nur in der
-    // Einstiegs-URL. Die Spalte heisst serverseitig `entry_platform` — genau das
+    // Einstiegs-URL. Die Spalte heißt serverseitig `entry_platform` — genau das
     // ist die Semantik. So bleibt die cookielose Ebene mit qpx.js vergleichbar,
-    // das die Zuordnung ebenfalls ueber den ganzen Besuch haelt; ohne das wuerde
-    // jeder SPA-Wechsel faelschlich als verweisloser Direkt-Zugriff gezaehlt.
+    // das die Zuordnung ebenfalls über den ganzen Besuch hält; ohne das würde
+    // jeder SPA-Wechsel fälschlich als verweisloser Direkt-Zugriff gezählt.
     var referrer = d.referrer || '';
 
     function sende(pfad) {
@@ -92,7 +92,7 @@
       }
     }
 
-    // DOPPELZAEHLUNG BAULICH AUSGESCHLOSSEN: `letzterPfad` wird vom Erstaufruf
+    // DOPPELZÄHLUNG BAULICH AUSGESCHLOSSEN: `letzterPfad` wird vom Erstaufruf
     // gesetzt, bevor irgendein Hook liegt. Gemeldet wird nur eine echte
     // AENDERUNG des Pfades — ein replaceState auf denselben Pfad (Hydrogen setzt
     // so Filter/Query) und ein doppelt gefeuertes popstate bleiben damit stumm.
@@ -111,9 +111,9 @@
 
     // SPA-HOOK: die Hydrogen-Storefront wechselt die Seite clientseitig, ohne
     // ein neues Dokument zu laden. Ohne diesen Hook sieht die cookielose Ebene
-    // ausschliesslich den EINSTIEG eines Besuchs, waehrend qpx.js jeden Wechsel
-    // zaehlt — der Abdeckungs-Quotient vergleicht dann Einstiege gegen
-    // Navigationen und wird groesser als 100 %.
+    // ausschließlich den EINSTIEG eines Besuchs, während qpx.js jeden Wechsel
+    // zählt — der Abdeckungs-Quotient vergleicht dann Einstiege gegen
+    // Navigationen und wird größer als 100 %.
     function wickle(name) {
       var orig = w.history && w.history[name];
       if (typeof orig !== 'function') return;
@@ -130,7 +130,7 @@
     try {
       wickle('pushState');   // Vorwaerts-Navigation der SPA
       wickle('replaceState');
-      w.addEventListener('popstate', melde);  // Zurueck/Vorwaerts im Browser
+      w.addEventListener('popstate', melde);  // Zurück/Vorwärts im Browser
     } catch (errWire) {
       void errWire; // ohne History-API bleibt es beim Einstiegs-Hit
     }
