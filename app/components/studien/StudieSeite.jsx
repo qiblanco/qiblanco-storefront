@@ -166,9 +166,53 @@ export function StudieSeite({studie}) {
               Zitierbarkeit. Ohne das Feld bleibt alles wie bisher.
             */}
             {e.doi ? (
-              <Eckdatum label="DOI">
+              <Eckdatum
+                label="DOI"
+                klasse={e.doiAufloesbar === false ? 'qb-st-eckdatum--voll' : ''}
+              >
                 {e.doiAufloesbar === false ? (
-                  <span>{e.doi}</span>
+                  <>
+                    <span>{e.doi}</span>
+                    {/*
+                      NACHTRAG 2026-08-29 (Job 20260829-dach-studienseiten-doi-
+                      ohne-offenlegung): Den Link wegzulassen war nur die HALBE
+                      Heilung. Wer den DOI danach selbst nachschlägt, landet im
+                      404 und muss die Quelle für erfunden halten — ausgerechnet
+                      auf der Seite, die den Zweifel ausräumen soll. Ein nicht
+                      auflösender DOI OHNE Hinweis ist schlechter als gar keiner.
+                      Die US-Seiten legen das seit 2026-08-15 offen; DACH war auf
+                      dieser Achse der schlechtere Stand. Wortlaut sinngemäß
+                      von dort übernommen, nicht neu erfunden (P10).
+
+                      WARUM DER WORTLAUT HIER STEHT UND NICHT JE JSON: das Feld
+                      doiAufloesbar ist bereits die eine Wahrheit darüber, OB ein
+                      DOI auflöst, und sie steht je Studie in den Daten. Den
+                      Satz dreimal danebenzulegen hieße, dieselbe Aussage an
+                      vier Orten zu pflegen — und eine sechste Studie könnte das
+                      Flag setzen und den Text vergessen: eine stille Lücke
+                      genau der Art, die dieser Job schließt. Aus den Daten
+                      kommt deshalb nur, was je Studie WIRKLICH verschieden ist:
+                      der DOI selbst und das Messdatum (`doiGeprueft`).
+                    */}
+                    {/*
+                      EIN Template-Literal statt JSX-Fließtext, und das ist
+                      kein Stilgeschmack: JSX macht aus jedem Zeilenumbruch ein
+                      Leerzeichen. Als mehrzeiliger JSX-Text gesetzt, rendert
+                      der Satz sichtbar falsch — „registriert (geprüft am
+                      29. August 2026) : https://doi.org/ 10.31488/JJM.165“ mit
+                      Leerzeichen vor dem Doppelpunkt und mitten in der URL
+                      (lokal am 2026-08-29 so gemessen, bevor es hierher kam).
+                      Ausgerechnet auf der Beleg-Seite sieht eine zerbrochene
+                      URL nach Schlamperei aus.
+                    */}
+                    <p className="qb-st-doi-hinweis">
+                      {`Der Verlag hat diesen DOI abgedruckt, aber er ist im DOI-System nicht registriert${
+                        e.doiGeprueft
+                          ? ` (geprüft am ${datum(e.doiGeprueft)})`
+                          : ''
+                      }: https://doi.org/${e.doi} antwortet mit HTTP 404 ohne Weiterleitung, ein Kontroll-DOI im selben Lauf mit 302. Wir nennen ihn deshalb, verlinken ihn aber nicht — die Publikation erreichen Sie über das PDF oben.`}
+                    </p>
+                  </>
                 ) : (
                   <a href={`https://doi.org/${e.doi}`} rel="noopener">
                     {e.doi}
@@ -337,9 +381,13 @@ function referenziert(studie, feld, key) {
   return studie.abschnitte.some((a) => (a[feld] || []).includes(key));
 }
 
-function Eckdatum({label, children}) {
+// `klasse` ist optional und additiv: ohne sie rendert das Eckdatum exakt wie
+// bisher. Gebraucht wird sie bisher nur von der DOI-Offenlegung, die als
+// Fließtext über die volle Rasterbreite laufen muss — in einer 220-px-Spalte
+// wäre der Satz eine schmale Säule neben lauter Einzeilern.
+function Eckdatum({label, children, klasse}) {
   return (
-    <div className="qb-st-eckdatum">
+    <div className={klasse ? `qb-st-eckdatum ${klasse}` : 'qb-st-eckdatum'}>
       <dt>{label}</dt>
       <dd>{children}</dd>
     </div>

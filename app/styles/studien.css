@@ -140,6 +140,32 @@
 }
 .qb-st-eckdatum a { color: var(--st-akzent-tinte); }
 
+/* ---- DOI-Offenlegung ----------------------------------------------------
+   Ein gedruckter, aber nicht registrierter DOI wird genannt, nicht verlinkt —
+   und der Grund steht daneben, statt den Leser im 404 landen zu lassen.
+   Nur Bestands-Tokens: keine neue Schriftgröße, keine zweite Akzentfarbe,
+   kein eigener Radius (Design-Pflicht: die Typo-Skala bleibt bei ihren Stufen).
+   `--voll` lässt die Zelle über das ganze auto-fit-Raster laufen; auf dem
+   Telefon ist das Raster ohnehin einspaltig, dort ändert die Regel nichts. */
+.qb-st-eckdatum--voll { grid-column: 1 / -1; }
+.qb-st-doi-hinweis {
+  margin: var(--st-s1) 0 0;
+  max-width: var(--st-mass);
+  font-size: var(--st-fs-xs);
+  line-height: 1.5;
+  color: var(--st-muted);
+  /* GEMESSEN 2026-08-29, und zwar mit dem ehrlichen Ergebnis: für die heutigen
+     drei DOIs ist diese Zeile WIRKUNGSLOS — die URLs brechen ohnehin an "/",
+     "-" und ".", scrollWidth == clientWidth mit und ohne sie (320/390 px, beide
+     Seiten). Sie bleibt trotzdem stehen, aber als das, was sie ist: ein Schutz
+     gegen einen DOI OHNE Umbruchgelegenheit. Die Zeichenkette kommt vom Verlag,
+     nicht von uns, und diese drei Seiten stehen NICHT in der responsive-
+     lesbarkeit-wache (config/seiten.yaml, geprüft am 2026-08-29) — ein solcher
+     Überlauf fände hier also keinen Wächter. Wer sie entfernen will, misst
+     vorher mit einem DOI ohne Trennzeichen, nicht mit den heutigen. */
+  overflow-wrap: anywhere;
+}
+
 /* ---- Antwort in Normalsprache (Snippet-Kandidat) ------------------------ */
 .qb-st-antwort {
   max-width: var(--st-mass);
