@@ -214,6 +214,40 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     ausSitemap: false,
     grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
   },
+  // Neu 2026-08-29 (Job 20260829-ads-ziel-url-verstoss-...). Achse B der
+  // landing-bereich-Wache: beide Handles standen in `sitemap/pages/1.xml`,
+  // tragen live aber `noindex,nofollow` — wir bieten Google also eine Seite
+  // an, die wir ihm zugleich verbieten.
+  //
+  // DIESE BEIDEN GEHEN DIREKT AUF `ausSitemap: true`, ANDERS ALS DIE
+  // ÜBERGANGS-EINTRÄGE DARÜBER: die Zweistufigkeit existiert für Seiten,
+  // deren EINZIGER Discovery-Pfad die Sitemap ist — dort würde ein sofortiges
+  // Entfernen dafür sorgen, dass Google das frische `noindex` nie liest. Hier
+  // ist das `noindex` kein frisches Signal, sondern steht seit dem
+  // IA-Zweiblock-Umbau vom 2026-07-17 (~6 Wochen, live nachgemessen am
+  // 2026-08-29). Stufe 1 ist damit abgelaufen, nicht übersprungen.
+  //
+  // NEBENWIRKUNGS-PRÜFUNG: `NICHT_INDEXIERBARE_SEITEN` (Sicht 1) wird nur von
+  // `pages.$handle.jsx` gelesen. Beide Handles haben eigene Code-Routen
+  // (pages.partner.jsx, pages.qibracelet.jsx) und laufen nie durch den
+  // Catch-all — der Eintrag ändert also KEIN robots-meta, nur die Sitemap.
+  // Insbesondere bleibt der öffentliche Zwilling /pages/qibracelet-details
+  // unberührt, obwohl er denselben CMS-Handle 'qibracelet' abfragt.
+  {
+    handle: 'partner',
+    ausSitemap: true,
+    grund:
+      'noindex-LP im Landing-Bereich (Partner-Funnel); stand trotz noindex in ' +
+      'der Sitemap — Achse B der landing-bereich-Wache, gemessen 2026-08-29',
+  },
+  {
+    handle: 'qibracelet',
+    ausSitemap: true,
+    grund:
+      'noindex-LP-Shopseite im Landing-Bereich; stand trotz noindex in der ' +
+      'Sitemap. Der öffentliche Zwilling ist /pages/qibracelet-details und ' +
+      'bleibt indexierbar — Achse B, gemessen 2026-08-29',
+  },
 ];
 
 /**
