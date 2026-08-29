@@ -127,9 +127,17 @@ export function anzahlNachArt(art) {
  * aber nur eines. Wer `eckdaten.produkt` zählt, verliert genau diese Studie.
  * Link und Kurztext bleiben redaktionell — die ZAHL kommt aus den Daten.
  */
+/*
+ * PFAD-REGEL: /pages/studien ist CRAWLBAR, also zeigen diese Links auf die
+ * ÖFFENTLICHEN Produktseiten (/products/<handle>) — nie in den noindex-
+ * Landing-Bereich. QiBracelet stand schon richtig; QiOne 2 Pro und QiHome Air
+ * zeigten auf ihre LP-Shopseiten und waren damit 2 der 14 live gemessenen
+ * Verweise, die die Ads-Zuordnung des Bereichs gebrochen haben
+ * (Job 20260829-ads-ziel-url-verstoss-...).
+ */
 const PRODUKT_TEXTE = {
   'QiOne® 2 Pro': {
-    pfad: '/pages/qione-2-pro',
+    pfad: '/products/qione-2-pro',
     text: 'Immunzellen, Darmbarriere und Nutzerbeobachtungen',
   },
   'QiBracelet®': {
@@ -137,7 +145,7 @@ const PRODUKT_TEXTE = {
     text: 'Oxidativer Stress und Nutzerbeobachtungen',
   },
   'QiHome® Air': {
-    pfad: '/pages/qihome-air',
+    pfad: '/products/qihome-air',
     text: 'Zellregeneration und oxidativer Stress',
   },
 };
