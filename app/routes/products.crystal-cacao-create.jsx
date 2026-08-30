@@ -132,7 +132,7 @@ export default function Product() {
             * KENNZAHLEN. Der Zweig trug hier noch hartkodiert 4.8 und "14.000
             * Nutzer" — das ist der Stand VOR jener Aenderung. Wer beim
             * Aufloesen "ours" nimmt, dreht eine juengere, bewusste
-            * Inhalts-Entscheidung an einer KUNDENSICHTBAREN ZAHL zurueck.
+            * Inhalts-Entscheidung an einer KUNDENSICHTBAREN ZAHL zurück.
             * Die Sterne-Zahl wird aus derselben Konstante ABGELEITET statt
             * daneben geschrieben, damit sie nicht erneut auseinanderlaufen kann.
             */}

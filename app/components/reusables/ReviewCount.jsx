@@ -47,12 +47,12 @@ export function ReviewCount() {
      * aus EINER Quelle") wickelte die ★-Glyphen in <span class="qb-sterne">,
      * damit sie nicht mehr die Elternfarbe erben (#F2BF72/#856828/#eabb6e
      * liefen auseinander). Dieser Zweig ersetzt die Glyphen durch die geteilte
-     * SVG-StarRating — und die traegt ihre Farbe bereits aus derselben Quelle
+     * SVG-StarRating — und die trägt ihre Farbe bereits aus derselben Quelle
      * (app.css: .star-rating svg path { fill: var(--qb-sterne-gold) }).
      *
      * Die Farb-Absicht von main ist damit ERFUELLT, nicht uebergangen: der
-     * Wrapper .qb-sterne ist ausschliesslich fuer GLYPH-Sterne gebaut und
-     * waere hier wirkungslos (ein SVG erbt keine color). Mains zweite
+     * Wrapper .qb-sterne ist ausschließlich für GLYPH-Sterne gebaut und
+     * wäre hier wirkungslos (ein SVG erbt keine color). Mains zweite
      * Beobachtung gilt unveraendert und wird hier festgehalten: nur die
      * STERNE tragen die Sterne-Farbe, die ZAHL behaelt die Farbe ihres
      * Kontexts. Genau das leistet diese Form.
