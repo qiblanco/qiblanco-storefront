@@ -52,6 +52,20 @@
   --shop-switch-flag-w: 20px;
   --shop-switch-flag-h: 14px;
   --shop-switch-flag-radius: 2px;
+
+  /* ZEILENLAENGE — DIE EINE QUELLE (Job 20260830-drei-dach-seiten-ohne-design-beleg).
+     Wert 75ch ist NICHT frei gewaehlt, sondern der Token zeilenlaenge_ch_max aus
+     der Design-SSoT (design-meister db/webdesign/web-soll.yaml, Regel "Zeilenlaenge
+     <= 75ch"). `ch` ist relativ zur EIGENEN Schriftgroesse des Elements, ein Token
+     deckt darum jede Textgroesse ab.
+     WARUM GLOBAL UND NICHT JE SEITE: gemessen 2026-08-30 lagen 5 der 6 zu langen
+     Textbloecke der Lektionsseiten im GEMEINSAMEN Footer (Disclaimer 178 Zeichen,
+     Studien 162) — also nicht in der einzelnen Seite, sondern im Bestand, den jede
+     Seite mittraegt. Kurze Seiten trifft das am haertesten, weil der Footer-Anteil
+     dort nicht verduennt wird: vitamine-mineralien 6/9 Bloecke = 67 %,
+     mentales-setting bei gleichem Footer nur 6/48 = 12 %.
+     WER DIESEN WERT AENDERT, AENDERT DAS TEXTMASS JEDER SEITE DER STOREFRONT. */
+  --measure-text: 75ch;
 }
 main {
   padding-top: calc(var(--header-height) + 40px);
@@ -1258,6 +1272,7 @@ ul.submenu li a {
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   margin-bottom: 1.2rem;
+  max-width: var(--measure-text);
 }
 
 .footer-products ul {
@@ -1296,6 +1311,7 @@ ul.submenu li a {
 .footer-studies h4 {
   font-size: 0.9rem;
   line-height: 1.65;
+  max-width: var(--measure-text);
 }
 
 .footer-studies a {
@@ -1385,6 +1401,7 @@ ul.submenu li a {
   opacity: 0.7;
   line-height: 1.65;
   margin-top: 0.75rem;
+  max-width: var(--measure-text);
 }
 
 .footer-disclaimer a {
@@ -2121,6 +2138,11 @@ ul.submenu li a {
 
 .course-lesson-body .mb-3 {
   margin-bottom: 0.65rem !important;
+}
+
+.course-lesson-body p,
+.course-lesson-body li {
+  max-width: var(--measure-text);
 }
 
 .course-lesson-body p {
