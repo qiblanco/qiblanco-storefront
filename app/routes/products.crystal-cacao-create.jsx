@@ -1,4 +1,5 @@
 import {useLoaderData} from 'react-router';
+import {KAKAO_KENNZAHLEN} from '~/lib/kakao-zone';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -124,14 +125,31 @@ export default function Product() {
         </div>
         <div className="product-main">
           <h1>{title}</h1>
-          <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
+          {/*
+            * MERGE 2026-08-30 (Job 20260830-sterne-s05-...): VEREINIGUNG, kein
+            * Seiten-Sieg. Von diesem Zweig kommt die Bedienbarkeit (SterneSprung
+            * + StarRating + Marker), von origin/main (a75fd47) kommen die
+            * KENNZAHLEN. Der Zweig trug hier noch hartkodiert 4.8 und "14.000
+            * Nutzer" — das ist der Stand VOR jener Aenderung. Wer beim
+            * Aufloesen "ours" nimmt, dreht eine juengere, bewusste
+            * Inhalts-Entscheidung an einer KUNDENSICHTBAREN ZAHL zurueck.
+            * Die Sterne-Zahl wird aus derselben Konstante ABGELEITET statt
+            * daneben geschrieben, damit sie nicht erneut auseinanderlaufen kann.
+            */}
+          <SterneSprung className="product-rating">
+            <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+            <StarRating
+              value={Number(KAKAO_KENNZAHLEN.bewertung.replace(',', '.'))}
+            />{' '}
+            <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
+          </SterneSprung>
           <div
             className="ProductDescription"
             dangerouslySetInnerHTML={{__html: descriptionHtml}}
           />
 
           <p className="mt-2">
-            <b>Mehr als 14.000+ aktive Nutzer</b>
+            <b>Mehr als {KAKAO_KENNZAHLEN.nutzer}+ aktive Nutzer</b>
           </p>
 
           <CacaoPriceDisplay

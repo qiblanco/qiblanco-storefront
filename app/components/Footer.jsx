@@ -212,23 +212,15 @@ function FooterStudies() {
   );
 }
 
+// Der Disclaimer-Absatz und seine Überschrift standen bis 2026-08-24 hier
+// (Christian-Entscheid: "Der Disclaimer ist nicht notwendig. Es war Vorsicht,
+// ist aber nicht notwendig."). Der Container bleibt, weil er die nummerierten
+// Pflicht-Fußnoten 1.-3. trägt, auf die hochgestellte Verweise im Shop zeigen —
+// er ist trotz seines Klassennamens nicht der Disclaimer, sondern deren Träger.
 function FooterDisclaimer() {
   return (
     <div className="footer-disclaimer">
       <div className="footer-inner">
-        <h4 className="footer-heading">Disclaimer</h4>
-        <p>
-          Die hier vorgestellte Technologie entspricht (wie beispielsweise die
-          Homöopathie, die Bioresonanz, Bereiche der Akupunktur) nicht der
-          schulwissenschaftlichen Auffassung und Lehrmeinung. Der Einsatz der
-          Qi Blanco® Produkte beinhaltet keine Therapie und ersetzt nicht die
-          Konsultation eines Arztes oder Heilpraktikers.
-          <br />
-          Alle erwähnten Aussagen oder Produkte sollen das allgemeine
-          Wohlbefinden unterstützen und beabsichtigen nicht, einen Zustand oder
-          eine Krankheit zu behandeln, zu diagnostizieren, zu lindern, zu
-          verhindern oder zu heilen.
-        </p>
         <p>
           1. Gilt für Lieferungen in folgendes Land: Deutschland. Lieferzeiten
           für andere Länder und Informationen zur Berechnung des Liefertermins
@@ -334,6 +326,13 @@ function PaymentIcons() {
 }
 
 const LEGAL_LINKS = [
+  // „Über uns" steht bewusst VOR dem Impressum und nicht darin: das Impressum
+  // ist die Pflichtangabe, die Über-uns-Seite ist die Antwort auf „wer steckt
+  // dahinter". Sie hängt hier, weil der Fußbereich die einzige Navigation ist,
+  // die auf JEDER Seite liegt — eine Über-uns-Seite, die nur die Startseite
+  // verlinkt, ist für den Besucher der Unterseiten nicht vorhanden.
+  // (Segment s06, Backlog-Posten B-10(a).)
+  {to: '/pages/ueber-uns', label: 'Über uns'},
   {to: '/pages/impressum', label: 'Impressum'},
   {to: '/pages/datenschutz', label: 'Datenschutz'},
   {to: '/pages/agb', label: 'AGB'},

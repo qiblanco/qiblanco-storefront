@@ -52,12 +52,34 @@ const COMMON_FREQUENCY_ICONS = [
   },
 ];
 
+/*
+ * KEINE EURO-BETRÄGE IN DIESER COPY-TABELLE (Job 20260821-shopmgr-s04, 2026-08-22).
+ *
+ * Diese Tabelle führte die Ersparnis-Beträge der Kampagne ein ZWEITES Mal —
+ * `heroSavings: 'Spare 400 €'`, `savingText: 'Jetzt kaufen und 400€ sparen!'`,
+ * `ctaButton: 'Spare jetzt 400€'` — parallel zu `price`/`compareAtPrice` in
+ * app/data/ten-years-deals.js. Als der Sale endete, wurde die Datenhälfte
+ * gefunden (ein Monitor liest sie: shop-manager landkarte) und diese hier
+ * nicht: sie steht in keinem Array mit `variants` und trägt keinen
+ * `discountCode`, also sieht kein Scanner sie an. Zwei Hälften, eine davon
+ * überwacht — das ist die Naht, an der die tote Zusage überlebt hätte.
+ *
+ * Die Beträge sind deshalb raus. `savingText` und `ctaButton` fallen auf ihre
+ * neutralen Defaults im JSX zurück; `heroSavings` trägt neutralen Text, weil
+ * es eine Layout-Fläche füllt und den alt-Text des Kakao-Badges stellt.
+ * Durchgesetzt von test/ten-years-retired.test.mjs.
+ *
+ * OFFEN UND HIER NICHT LÖSBAR: KAKAO_HERO_SAVINGS_IMAGE ist ein PNG mit
+ * eingebranntem Betrag. Ein Bild lässt sich nicht entpreisen, ohne es neu zu
+ * setzen; es rendert nur auf Seiten, die stillgelegt 404 liefern, und steht
+ * im RESULT des Jobs als offene Flanke.
+ */
 const FREQUENCY_TEMPLATE_COPY = {
   'qione-2-pro-duo': {
     heroBackground: file('03_2xQiOne_BF24-min.webp'),
     heroProductImage: file('2xQiOne_2_Pro_Product_Only.png'),
     heroTitle: '2x QiOne® 2 Pro',
-    heroSavings: 'Spare 500 €',
+    heroSavings: 'Jubiläums Sale',
     galleryImages: [
       file('2xQiOne_2_Pro_Product_Only.png'),
       shopifyFile('QiOne1.webp?v=1732874828'),
@@ -70,16 +92,14 @@ const FREQUENCY_TEMPLATE_COPY = {
       'Für Superhumans - dank zweiter Chip Generation und 8-facher Stärke',
     signal:
       '<p>Vernetze jetzt <strong>100 000 000 000 000</strong> Signale</p>',
-    savingText: 'Jetzt kaufen und 500€ sparen!',
     ctaHeader: 'Lass deinen QiOne® kohärentes Wasser für dich produzieren',
-    ctaButton: 'Spare jetzt 500€',
   },
   'qione-2-pro-necklace': {
     heroBackground: file('02_qione_BF24-min.webp'),
     heroProductImage: file('QiOne_Necklace.png'),
     heroTitle: 'QiOne® 2 Pro + Necklace',
     heroTitleLines: ['QiOne® 2 Pro', '+ Necklace'],
-    heroSavings: 'Spare 250 €',
+    heroSavings: 'Jubiläums Sale',
     purchaseImage: shopifyFile(
       'QiOne_NecklaceBundlev3Transparent_1.png?v=1719311888',
     ),
@@ -97,15 +117,13 @@ const FREQUENCY_TEMPLATE_COPY = {
       '<p><strong>Unsere hochwertige Necklace ist im Paket enthalten.</strong> Die Länge kannst du dir nach Belieben aussuchen.</p>',
     signal:
       '<p>Vernetze jetzt <strong>100 000 000 000 000</strong> Signale.</p>',
-    savingText: 'Jetzt kaufen und 250€ sparen!',
     ctaHeader: 'Lass deinen QiOne® kohärentes Wasser für dich produzieren',
-    ctaButton: 'Spare jetzt 250€',
   },
   qibracelet: {
     heroBackground: file('04_QiBracelet_BF24-min.webp'),
     heroProductImage: file('QiBracelet_Pro_Product_Only.png'),
     heroTitle: 'QiBracelet®',
-    heroSavings: 'Spare 200 €',
+    heroSavings: 'Jubiläums Sale',
     galleryImages: [
       file('QiBracelet_Pro_Product_Only.png'),
       shopifyFile('QiBracelet1.webp?v=1732874909'),
@@ -117,15 +135,13 @@ const FREQUENCY_TEMPLATE_COPY = {
     intro: 'Für Superhumans - dank dritter Chip Generation und 10-facher Stärke.',
     signal:
       '<p>Vernetze jetzt <strong>100 000 000 000 000</strong> Signale.</p>',
-    savingText: 'Jetzt kaufen und 200€ sparen!',
     ctaHeader: 'Trage dein kohärentes Feld direkt am Körper',
-    ctaButton: 'Spare jetzt 200€',
   },
   qihome: {
     heroBackground: file('05_QiHome_BF24-min.webp'),
     heroProductImage: file('QiHome_Product_Only.png'),
     heroTitle: 'QiHome® Air',
-    heroSavings: 'Spare 400 €',
+    heroSavings: 'Jubiläums Sale',
     galleryImages: [
       file('QiHome_Product_Only.png'),
       shopifyFile('QiHome1.webp?v=1732874979'),
@@ -137,9 +153,7 @@ const FREQUENCY_TEMPLATE_COPY = {
     intro: 'Der ultimative Schutz für dich & dein gesamtes Zuhause!',
     signal:
       '<p>Vernetze jetzt <strong>100 000 000 000 000</strong> Signale.</p>',
-    savingText: 'Jetzt kaufen und 400€ sparen!',
     ctaHeader: 'Bring kohärente Technologie in dein Zuhause',
-    ctaButton: 'Spare jetzt 400€',
   },
 };
 
@@ -150,7 +164,7 @@ const CACAO_TEMPLATE_COPY = {
     heroTitleImage: shopifyFile('create-awake-kakao-text.png'),
     heroSavingsImage: KAKAO_HERO_SAVINGS_IMAGE,
     heroTitle: 'Crystal Cacao® Create + Awake',
-    heroSavings: 'Spare 76 €',
+    heroSavings: 'Jubiläums Sale',
     galleryImages: [
       file('Kakao_Bundle_71fcbd7f-174d-4e80-a046-b629e26467f3.png'),
       shopifyFile('Doypack_Mockup__v3-min.png?v=1765893937'),
@@ -170,7 +184,7 @@ const CACAO_TEMPLATE_COPY = {
     heroTitleImage: shopifyFile('awake-kakao-text.png'),
     heroSavingsImage: KAKAO_HERO_SAVINGS_IMAGE,
     heroTitle: '2x Crystal Cacao® Awake',
-    heroSavings: 'Spare 76 €',
+    heroSavings: 'Jubiläums Sale',
     galleryImages: [
       file('2x_Awake_765a9f2f-20f0-4332-a3f3-d8fa01c63c77.png'),
       shopifyFile('7.png?v=1765893911'),
@@ -190,7 +204,7 @@ const CACAO_TEMPLATE_COPY = {
     heroTitleImage: shopifyFile('create-kakao-text.png'),
     heroSavingsImage: KAKAO_HERO_SAVINGS_IMAGE,
     heroTitle: '2x Crystal Cacao® Create',
-    heroSavings: 'Spare 76 €',
+    heroSavings: 'Jubiläums Sale',
     galleryImages: [
       file('2x_Create_2.png'),
       shopifyFile('Doypack_Mockup__v3-min.png?v=1765893937'),

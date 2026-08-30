@@ -2,7 +2,20 @@ import {useLoaderData} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {data} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
+import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
+import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
+import {noindexMeta} from '~/lib/seo';
+
+/**
+ * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
+ * `.qb-zweifel` gehören NICHT in die globale app.css — dort hängen 45 Seiten
+ * dran, sechs davon mit offenen Formate-Befunden, und der Deploy dieser
+ * Änderung wäre an eine fremde Bestandsschuld gekettet gewesen.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: zweifelStyles}];
+}
 
 /**
  * @type {MetaFunction}
@@ -12,10 +25,28 @@ export const meta = () => {
   // stand englisch UND mit dem Namen des Frameworks im Browser-Tab und in der
   // Google-Trefferzeile der deutschen Storefront. Das Muster hier ist das der
   // übrigen Routen (agb, datenschutz, pages.$handle, partner): "<Seite> | Qi Blanco".
-  return [{title: 'Warenkorb | Qi Blanco'}];
+  //
+  // noindex (s04, 2026-08-26): der Warenkorb ist ein Zustand, keine Seite. Sein
+  // Inhalt ist je Besucher verschieden und für einen Bot immer leer — live
+  // gemessen liefert `/cart` „Dein Warenkorb ist zurzeit leer!". Er steht
+  // folgerichtig auch nicht in der Sitemap. Deshalb noindex und BEWUSST KEIN
+  // canonical: beides zugleich wären widersprüchliche Signale (dieselbe Regel
+  // wie in `pages.uebersicht.jsx`).
+  return [{title: 'Warenkorb | Qi Blanco'}, noindexMeta()];
 };
 
 /**
+ * BEWUSST OHNE X-Robots-Tag — die einzige Stelle, an der von Hausmuster D-006
+ * („Gurt und Hosenträger", zwei unabhängige noindex-Signale) abgewichen wird.
+ *
+ * GRUND, und er ist ein Kaufweg-Risiko, kein Geschmack: dieser Export reicht
+ * `actionHeaders` durch, und darin liegen die `Set-Cookie`-Header der
+ * Warenkorb-Mutationen (Cart-Id). `Set-Cookie` ist der eine Header, der
+ * mehrfach vorkommen darf; ein `new Headers(actionHeaders)` zum Hinzufügen des
+ * X-Robots-Tags kann diese Mehrfachwerte je nach Runtime zu einem einzigen
+ * zusammenfalten — der Warenkorb verlöre dann seine Identität. Das Risiko steht
+ * in keinem Verhältnis zum Gewinn: das robots-meta oben wirkt für jeden Bot,
+ * der den head parst, und `/cart` steht in keiner Sitemap.
  * @type {HeadersFunction}
  */
 export const headers = ({actionHeaders}) => actionHeaders;
@@ -142,6 +173,14 @@ export default function Cart() {
             h1-Skala des Shops; der Drawer nutzt <h3>, weil er ein Dialog ist. */}
         <h1>Warenkorb</h1>
         <CartMain layout="page" cart={cart} />
+        {/* Der zweite Zweifelort, und der späteste: hier entscheidet er sich.
+            Die Zeile steht in der Route und NICHT in CartMain, weil CartMain
+            auch den Drawer rendert — dort wäre sie ein Ausgang aus einem
+            Dialog, der gerade zum Kauf führen soll. Auf der Warenkorb-SEITE
+            ist sie ein Angebot, auf dem Weg zur Kasse wäre sie eine
+            Ablenkung. Sie steht NACH der Summe: wer schon entschieden hat,
+            liest sie gar nicht erst. */}
+        <ZweifelBeleg text="Noch unsicher, ob das wirkt? Wir legen unsere Belege offen — samt ihrer Grenzen." />
       </div>
     </div>
   );

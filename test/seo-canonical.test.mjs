@@ -6,11 +6,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  AUS_SITEMAP_ENTFERNTE_SEITEN,
   CANONICAL_ORIGIN,
   NICHT_INDEXIERBARE_SEITEN,
+  NICHT_INDEXIERBARE_SEITEN_DEF,
   absoluteCanonical,
   canonicalLink,
   istNichtIndexierbar,
+  noindexHeader,
   noindexMeta,
 } from '../app/lib/seo.js';
 
@@ -143,11 +146,18 @@ test('die Liste ist nicht leer — sonst wäre der ganze Mechanismus stumm', () 
   assert.ok(NICHT_INDEXIERBARE_SEITEN.includes('development-nicht-loschen'));
 });
 
-test('NAHT: die Sitemap-Route liest DIESELBE Liste, statt eine zweite zu fuehren', async () => {
-  // Der Sinn der geteilten Liste ist, dass "noindex gesetzt" und "aus der
+test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehren', async () => {
+  // Der Sinn der geteilten Quelle ist, dass "noindex gesetzt" und "aus der
   // Sitemap raus" nicht auseinanderlaufen können. Genau das prueft dieser
   // Test — er wird rot, sobald jemand in der Sitemap-Route wieder ein eigenes
   // Handle-Literal einfuehrt.
+  //
+  // UMGEDREHT AM 2026-08-23 (s05), NICHT GELOESCHT: bis dahin pinnte er
+  // `pages: NICHT_INDEXIERBARE_SEITEN`, also die IDENTITAET beider Listen.
+  // Genau die ist jetzt bewusst aufgegeben — die Sitemap liest die TEILMENGE
+  // `AUS_SITEMAP_ENTFERNTE_SEITEN`. Was der Test schuetzt, bleibt unveraendert
+  // (eine Quelle, kein zweites Array in der Route); was er pinnt, ist die neue
+  // Zusage. Ein geloeschter Test haette die Drift-Sicherung mit entfernt.
   const {readFile} = await import('node:fs/promises');
   const {fileURLToPath} = await import('node:url');
   const pfad = fileURLToPath(
@@ -155,22 +165,121 @@ test('NAHT: die Sitemap-Route liest DIESELBE Liste, statt eine zweite zu fuehren
   );
   const quelle = await readFile(pfad, 'utf8');
   // Auf die VERDRAHTUNG zielen, nicht auf den Namen: ein blosses
-  // /NICHT_INDEXIERBARE_SEITEN/ trifft auch die Import-Zeile und bliebe
+  // /AUS_SITEMAP_ENTFERNTE_SEITEN/ trifft auch die Import-Zeile und bliebe
   // gruen, wenn jemand die Liste importiert und trotzdem ein eigenes Array
   // einhaengt (im Mutationstest genau so passiert).
   assert.match(
     quelle,
-    /pages:\s*NICHT_INDEXIERBARE_SEITEN/,
-    'pages muss AN die geteilte Liste gehaengt sein, nicht an ein eigenes Array',
+    /pages:\s*AUS_SITEMAP_ENTFERNTE_SEITEN/,
+    'pages muss AN die abgeleitete Sitemap-Sicht gehaengt sein, nicht an ein eigenes Array',
   );
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'Import muss aus ~/lib/seo kommen');
-  assert.equal(
-    quelle.includes("'development-nicht-loschen'"),
-    false,
-    'Sitemap darf das Handle NICHT als eigenes Literal fuehren (Listen-Drift)',
-  );
+  for (const handle of NICHT_INDEXIERBARE_SEITEN) {
+    assert.equal(
+      quelle.includes(`'${handle}'`),
+      false,
+      `Sitemap darf '${handle}' NICHT als eigenes Literal fuehren (Listen-Drift)`,
+    );
+  }
   // Positiv-Kontrolle: die Datei wurde wirklich gelesen und ist die richtige.
   assert.match(quelle, /getSitemap/, 'Fixture-Kontrolle: das ist die Sitemap-Route');
+});
+
+// --- Die neue Naht: noindex und Sitemap-Entfernung sind ZEITLICH getrennt ---
+// Der teure Befund von s05: ein einziger Listeneintrag loeste beide Wirkungen
+// gleichzeitig aus. Für eine Seite OHNE eingehende interne Links ist die
+// Sitemap der einzige Weg, auf dem Google das frische `noindex` je liest —
+// wer sie im selben Deploy dort herausnimmt, friert sie im Index ein.
+
+test('NAHT: die Sitemap-Sicht ist eine echte TEILMENGE der noindex-Sicht', () => {
+  // Die Richtung ist tragend: aus der Sitemap darf nur fliegen, was ohnehin
+  // schon noindex trägt. Umgekehrt entstuende genau der Zustand, den dieser
+  // ganze Mechanismus verhindern soll — unauffindbar, aber indexierbar.
+  for (const handle of AUS_SITEMAP_ENTFERNTE_SEITEN) {
+    assert.ok(
+      NICHT_INDEXIERBARE_SEITEN.includes(handle),
+      `${handle} fliegt aus der Sitemap, trägt aber kein noindex`,
+    );
+  }
+  assert.ok(
+    AUS_SITEMAP_ENTFERNTE_SEITEN.length <= NICHT_INDEXIERBARE_SEITEN.length,
+  );
+});
+
+test('NAHT: pre-access trägt noindex und bleibt VORERST in der Sitemap', () => {
+  // Der konkrete Fall, wegen dem die Trennung gebaut wurde. Dieser Test wird
+  // rot, wenn jemand den Eintrag auf ausSitemap:true kippt, BEVOR das noindex
+  // gewirkt hat — und er ist damit auch die Stelle, an der man ihn spaeter
+  // bewusst umdreht statt es nebenbei zu tun.
+  assert.equal(istNichtIndexierbar('pre-access'), true);
+  assert.equal(
+    AUS_SITEMAP_ENTFERNTE_SEITEN.includes('pre-access'),
+    false,
+    'pre-access darf noch NICHT aus der Sitemap fliegen (Discovery-Pfad)',
+  );
+});
+
+test('NAHT: development-nicht-loschen bleibt in BEIDEN Sichten (kein Rueckschritt)', () => {
+  // Der Bestandsfall darf durch die Umstellung nichts verlieren.
+  assert.equal(istNichtIndexierbar('development-nicht-loschen'), true);
+  assert.ok(AUS_SITEMAP_ENTFERNTE_SEITEN.includes('development-nicht-loschen'));
+});
+
+test('jeder Definitionseintrag trägt Handle, Sitemap-Entscheid UND Begründung', () => {
+  // Ohne `grund` wäre die Liste in einem halben Jahr eine Sammlung von
+  // Zeichenketten, die niemand mehr zu entfernen wagt.
+  assert.ok(NICHT_INDEXIERBARE_SEITEN_DEF.length >= 2);
+  for (const e of NICHT_INDEXIERBARE_SEITEN_DEF) {
+    assert.equal(typeof e.handle, 'string');
+    assert.ok(e.handle.length > 0);
+    assert.equal(typeof e.ausSitemap, 'boolean', `${e.handle}: ausSitemap fehlt`);
+    assert.ok(e.grund && e.grund.length > 10, `${e.handle}: Begründung fehlt`);
+  }
+  // Keine Dublette — ein doppelter Handle wäre still folgenlos und ein
+  // Zeichen dafür, dass zwei Leute dieselbe Seite unabhängig eingetragen haben.
+  assert.equal(
+    new Set(NICHT_INDEXIERBARE_SEITEN).size,
+    NICHT_INDEXIERBARE_SEITEN.length,
+  );
+});
+
+test('noindexHeader ist der X-Robots-Tag mit demselben Wortlaut wie die Einzelrouten', () => {
+  const h = noindexHeader();
+  assert.deepEqual(Object.keys(h), ['X-Robots-Tag']);
+  assert.match(h['X-Robots-Tag'], /noindex/);
+  assert.match(h['X-Robots-Tag'], /nofollow/);
+});
+
+test('NAHT: die Page-Route verdrahtet auch die ZWEITE Haelfte des Doppelgates', async () => {
+  // Gegenstueck zum meta()-Verdrahtungstest unten, und aus demselben Grund
+  // eine Quelltext-Prüfung: die Route lässt sich in nacktem node nicht
+  // importieren. Geprueft wird die KETTE, nicht die Existenz eines Namens —
+  // ein `headers`-Export allein bewirkt nichts, wenn der Loader den Header
+  // nie setzt, und ein gesetzter Loader-Header erreicht das Dokument nie
+  // ohne den `headers`-Export.
+  const {readFile} = await import('node:fs/promises');
+  const {fileURLToPath} = await import('node:url');
+  const quelle = await readFile(
+    fileURLToPath(new URL('../app/routes/pages.$handle.jsx', import.meta.url)),
+    'utf8',
+  );
+  assert.match(quelle, /getSitemap|export async function loader/, 'Fixture-Kontrolle');
+  assert.match(quelle, /noindexHeader\(\)/, 'der Loader muss den Header AUSGEBEN');
+  assert.match(
+    quelle,
+    /export const headers\s*=/,
+    'ohne headers-Export erreicht der Loader-Header das Dokument nie',
+  );
+  assert.match(
+    quelle,
+    /loaderHeaders\??\.get\('X-Robots-Tag'\)/,
+    'der headers-Export muss genau diesen Header durchreichen',
+  );
+  assert.match(
+    quelle,
+    /new Headers\(parentHeaders\)/,
+    'Elternheader müssen geerbt statt ersetzt werden',
+  );
 });
 
 test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async () => {
@@ -191,4 +300,127 @@ test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async
   assert.match(quelle, /istNichtIndexierbar\(/, 'meta() muss die Liste ABFRAGEN');
   assert.match(quelle, /noindexMeta\(\)/, 'meta() muss den noindex-Descriptor AUSGEBEN');
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'beides muss aus der geteilten Quelle kommen');
+});
+
+// ===========================================================================
+// s04 (2026-08-26): ENTWEDER noindex ODER canonical — nie beides
+// ---------------------------------------------------------------------------
+// Anlass: 49 DACH-Seiten lieferten gar keinen canonical. Live gemessen trugen
+// 30 davon bereits `noindex` — ihr fehlender canonical war also KEIN Defekt,
+// sondern die schon in `pages.uebersicht.jsx` niedergeschriebene Entscheidung
+// („noindex plus ein canonical auf eine andere URL sind widersprüchliche
+// Signale"). Diese Tests halten genau diese Ausschließlichkeit fest, damit
+// ein späterer Lauf sie nicht als vermeintliche Lücke wieder aufmacht.
+// ===========================================================================
+
+const s04Quelle = async (datei) => {
+  const {readFile} = await import('node:fs/promises');
+  const {fileURLToPath} = await import('node:url');
+  return readFile(fileURLToPath(new URL(`../app/${datei}`, import.meta.url)), 'utf8');
+};
+
+test('s04: die fünf leeren Restseiten stehen in der noindex-Liste', () => {
+  for (const handle of [
+    'qiblanco',
+    'linkseite',
+    'one-inch',
+    'ketogenes-wochenende',
+    'superhuman-kurs',
+  ]) {
+    assert.equal(istNichtIndexierbar(handle), true, `${handle} muss noindex tragen`);
+  }
+});
+
+test('s04: die Kollektions-Liste kennt nur INTERNE Handles, keine Kategorien', async () => {
+  const {
+    NICHT_INDEXIERBARE_KOLLEKTIONEN,
+    istNichtIndexierbareKollektion,
+  } = await import('../app/lib/seo.js');
+  for (const handle of [
+    'frontpage',
+    'products',
+    'slider',
+    'cross-selling',
+    'digital-goods-vat-tax',
+  ]) {
+    assert.equal(istNichtIndexierbareKollektion(handle), true, `${handle} ist intern`);
+  }
+  // GEGENFALL — der eigentliche Zweck dieses Tests: eine heute LEERE
+  // Saison-Kollektion ist trotzdem eine echte Kundenkategorie. Wer sie aus
+  // Bequemlichkeit mit aufnimmt, nimmt dem Shop eine Kategorie aus dem Index,
+  // die nächste Saison wieder gefüllt wird.
+  for (const handle of [
+    'valentinstag-angebote',
+    'blackfriday-sale-artikel',
+    'digitale-kurse',
+    'zeremonie-kakao',
+    'all',
+  ]) {
+    assert.equal(
+      istNichtIndexierbareKollektion(handle),
+      false,
+      `${handle} ist eine Kundenkategorie und darf NICHT noindex sein`,
+    );
+  }
+  assert.equal(NICHT_INDEXIERBARE_KOLLEKTIONEN.length, 5);
+});
+
+test('s04: kein Handle steht zugleich in der Seiten- UND der Kollektions-Liste', async () => {
+  // Getrennte Namensräume sind erlaubt und gewollt — eine ÜBERSCHNEIDUNG wäre
+  // aber fast sicher ein Kopierfehler, weil kein Handle beides sein kann.
+  const {NICHT_INDEXIERBARE_KOLLEKTIONEN} = await import('../app/lib/seo.js');
+  const doppelt = NICHT_INDEXIERBARE_KOLLEKTIONEN.filter((h) =>
+    NICHT_INDEXIERBARE_SEITEN.includes(h),
+  );
+  assert.deepEqual(doppelt, []);
+});
+
+test('s04 NAHT: die Page-Route setzt den canonical im else-Zweig des noindex', async () => {
+  // Die STRUKTUR ist der Gegenstand, nicht die blosse Anwesenheit beider
+  // Aufrufe: ein `tags.push(canonicalLink(...))` VOR oder NEBEN dem
+  // noindex-Zweig erzeugt genau das widersprüchliche Signalpaar. Der Test
+  // verlangt deshalb die Kette if(noindex){…} else if(…){canonicalLink}.
+  const quelle = await s04Quelle('routes/pages.$handle.jsx');
+  assert.match(
+    quelle,
+    /if\s*\(\s*istNichtIndexierbar\([^)]*\)\s*\)\s*\{[^}]*noindexMeta\(\)[^}]*\}\s*else\s+if[^{]*\{[^}]*canonicalLink\(/s,
+    'canonical muss im else-Zweig des noindex stehen',
+  );
+  assert.match(quelle, /canonicalLink\(`\/pages\/\$\{params\.handle\}`\)/);
+});
+
+test('s04 NAHT: die Kollektions-Route trägt beide Hälften und schließt sie aus', async () => {
+  const quelle = await s04Quelle('routes/collections.$handle.jsx');
+  // noindex-Zweig verlässt meta() SOFORT (return), erreicht den canonical also nie.
+  assert.match(
+    quelle,
+    /if\s*\(\s*istNichtIndexierbareKollektion\([^)]*\)\s*\)\s*\{[^}]*noindexMeta\(\)[^}]*return\s+tags;[^}]*\}/s,
+    'der noindex-Zweig muss vor dem canonical zurückkehren',
+  );
+  assert.match(quelle, /canonicalLink\(`\/collections\/\$\{params\.handle\}`\)/);
+  // Zweite Hälfte des Doppelgates: Loader-Header UND headers-Export.
+  assert.match(quelle, /noindexHeader\(\)/, 'Loader muss X-Robots-Tag setzen');
+  assert.match(quelle, /export const headers\s*=/, 'headers-Export muss ihn durchreichen');
+  assert.match(quelle, /loaderHeaders\?\.get\('X-Robots-Tag'\)/);
+});
+
+test('s04 NAHT: /cart trägt noindex und BEWUSST keinen canonical', async () => {
+  const quelle = await s04Quelle('routes/cart.jsx');
+  assert.match(quelle, /noindexMeta\(\)/, '/cart muss noindex tragen');
+  assert.equal(
+    /canonicalLink\(/.test(quelle),
+    false,
+    '/cart darf KEINEN canonical tragen (widersprüchliches Signalpaar)',
+  );
+});
+
+test('s04 NAHT: Kategorie- und Rechtstext-Routen setzen einen Selbst-canonical', async () => {
+  assert.match(
+    await s04Quelle('routes/collections.all.jsx'),
+    /canonicalLink\('\/collections\/all'\)/,
+  );
+  assert.match(
+    await s04Quelle('routes/policies.$handle.jsx'),
+    /canonicalLink\(`\/policies\/\$\{params\.handle\}`\)/,
+  );
 });

@@ -14,8 +14,38 @@ export const TEN_YEARS_SALE_PATH = '/pages/10-jahre-sale';
  * das ist das Hydrogen-Äquivalent zu „unpublished/Entwurf".
  *
  * EIN HEBEL, EIN RÜCKWEG: TEN_YEARS_SALE_RETIRED = false stellt alle Flächen
- * unverändert wieder her — kein weiterer Handgriff nötig. Der Rabatt selbst
- * liegt in Shopify und ist von hier aus NICHT schaltbar (fehlende Scopes).
+ * wieder her. Der Rabatt selbst liegt in Shopify und ist von hier aus NICHT
+ * schaltbar (fehlende Scopes).
+ *
+ * NACHTRAG 2026-08-22 (Job 20260821-shopmgr-s04-totes-kampagnenversprechen) —
+ * DIE STILLLEGUNG SCHÜTZTE DIE ERREICHBARKEIT, NICHT DIE WAHRHEIT DER ZAHLEN.
+ * Die Datenhälfte der Kampagne lebte weiter: `discountCode: 'Bracelet200'` und
+ * `'Home400'` (beide in Shopify seit 2026-06-17 EXPIRED), dazu rabattierte
+ * `price`/`compareAtPrice` in fünf Deals. Erreichbar war davon nichts — aber
+ * ein einziges `TEN_YEARS_SALE_RETIRED = false` hätte alle Zusagen auf einen
+ * Schlag wieder scharf gestellt, und keine davon wäre noch wahr gewesen.
+ * Das war keine Altlast, sondern eine Mine mit genau einem Zünder.
+ *
+ * DESHALB GILT AB HIER: ein stillgelegter Deal trägt KEINE kommerzielle
+ * Zusage. Kein `discountCode`, kein `/discount/…`-Link, kein `price`, kein
+ * `compareAtPrice`, kein Euro-Betrag in `benefits` — auch nicht in der
+ * Copy-Tabelle von TenYearsDealPage.jsx (`heroSavings`/`savingText`/
+ * `ctaButton`), die dieselben Beträge ein zweites Mal führte und von keinem
+ * Monitor gelesen wird. Durchgesetzt von test/ten-years-retired.test.mjs.
+ *
+ * WAS BLEIBT, UND WARUM: Struktur und Know-how — `key`, `handle`, `aliases`,
+ * Varianten-IDs und -Titel, Bilder, Texte, `theme`. Die Einträge sind während
+ * der Stilllegung LASTTRAGEND: `getTenYearsDealByHandle` speist den 404-Zaun
+ * in products.$handle.jsx, und dahinter stehen echte Shopify-Produkte im
+ * Status DRAFT („Sale: QiBracelet" 687ghgf4ed, „Sale: QiHome® Air"
+ * 56huz67dds, gemessen 2026-08-22). Ein gelöschter Eintrag nimmt diesen Zaun
+ * mit — ein Admin-Klick DRAFT→ACTIVE veröffentlichte dann eine „Sale:"-Seite
+ * zum vollen Preis. Löschen ist hier also die GEFÄHRLICHERE Variante.
+ *
+ * WIEDERINBETRIEBNAHME ist damit bewusst kein Ein-Wort-Handgriff mehr: wer
+ * `TEN_YEARS_SALE_RETIRED = false` setzt, muss Preise und Codes neu erheben
+ * und gegen den echten Warenkorb messen (shop-manager landkarte). Genau diese
+ * Messung hat zuletzt gefehlt.
  */
 export const TEN_YEARS_SALE_RETIRED = true;
 
@@ -84,7 +114,6 @@ export const TEN_YEARS_DEALS = [
     benefits: [
       '2x QiOne® 2 Pro im Bundle',
       'Ideal für Alltag, Schlafplatz und Arbeitsplatz',
-      'Spare 500 Euro gegenüber dem regulären Preis',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-2x-q2pro-de.png',
     productImage: checkoutCdn(
@@ -100,9 +129,7 @@ export const TEN_YEARS_DEALS = [
     // Shopify-URL-Redirect (storefrontRedirect greift NUR bei 404) hier
     // deshalb nie feuern kann (Inhalts-Fix EL-20260724-9b18d2ba).
     redirectTo: '/pages/qione-2-pro-2x?el=JSale2026',
-    // Kauf-Referenz = das EINE kanonische Produkt (kein Klon): 2× qione-2-pro,
-    // der Set-Preis entsteht am Warenkorb (Automatic Discount 166,40 € netto
-    // aufs Paar). Angezeigte Preise unten bleiben die SSoT-Set-Zahlen.
+    // Kauf-Referenz = das EINE kanonische Produkt (kein Klon): 2× qione-2-pro.
     cartProductHandle: 'qione-2-pro',
     cartProductTitle: 'QiOne® 2 Pro',
     cartQuantity: 2,
@@ -111,11 +138,11 @@ export const TEN_YEARS_DEALS = [
       {
         id: '53739505058060',
         title: 'Default Title',
-        // Kanonische Variante QiOne® 2 Pro (Admin-verifiziert 2026-07-24):
-        // 2 × 913,45 netto − 166,40 Discount = 1.660,50 netto = Set-Preis.
+        // Kanonische Variante QiOne® 2 Pro (Admin-verifiziert 2026-07-24).
+        // Zusage entfernt 2026-08-22: `price: 1660.5` war der Set-Preis aus
+        // dem Automatic Discount „2er-Set QiOne 2 Pro", der seit 2026-07-30
+        // EXPIRED ist. Gemessen am Warenkorb: 1826.90 statt 1660.50 netto.
         cartVariantId: '39680087326790',
-        price: 1660.5,
-        compareAtPrice: 2476,
       },
     ],
   },
@@ -131,7 +158,6 @@ export const TEN_YEARS_DEALS = [
     benefits: [
       'QiOne® 2 Pro plus Necklace',
       'Mehrere Necklace-Größen auswählbar',
-      'Spare 250 Euro gegenüber dem regulären Preis',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-q2pro-necklace-de.png',
     productImage: checkoutCdn(
@@ -140,12 +166,17 @@ export const TEN_YEARS_DEALS = [
     path: '/products/734husd8hh?el=JSale2026',
     listingHref: '/products/734husd8hh?el=JSale2026',
     theme: 'frequency',
+    // Zusage entfernt 2026-08-22: alle fünf Varianten trugen `price: 909.24`
+    // für eine Kauf-Variante, die an der Storefront nicht mehr existiert —
+    // der Warenkorb legte eine LEERE Zeile an (Betrag 0,00), gemeldet als
+    // `landkarte_kaufweg_tot`. Ohne Preis-Zusage gibt es keinen Kaufweg, den
+    // diese Daten versprechen; die Variante-IDs bleiben als Größenraster.
     variants: [
-      {id: '53739513512204', title: 'XS - 40 cm', price: 909.24, compareAtPrice: 1332},
-      {id: '53739513544972', title: 'S - 45cm', price: 909.24, compareAtPrice: 1332},
-      {id: '53739513577740', title: 'M - 50 cm', price: 909.24, compareAtPrice: 1332},
-      {id: '53739513610508', title: 'L - 60 cm', price: 909.24, compareAtPrice: 1332},
-      {id: '53739513643276', title: 'XL - 75 cm', price: 909.24, compareAtPrice: 1332},
+      {id: '53739513512204', title: 'XS - 40 cm'},
+      {id: '53739513544972', title: 'S - 45cm'},
+      {id: '53739513577740', title: 'M - 50 cm'},
+      {id: '53739513610508', title: 'L - 60 cm'},
+      {id: '53739513643276', title: 'XL - 75 cm'},
     ],
   },
   {
@@ -155,20 +186,21 @@ export const TEN_YEARS_DEALS = [
     title: 'QiBracelet',
     productTitle: 'Sale: QiBracelet',
     displayTitle: 'QiBracelet®',
-    eyebrow: 'Rabattcode-Angebot',
-    shortCopy:
-      'Das elegante Bracelet für deinen Alltag. Der Rabatt wird im Pre-Sale über den Deal-Link aktiviert.',
+    eyebrow: 'Angebot',
+    shortCopy: 'Das elegante Bracelet für deinen Alltag.',
     benefits: [
       'QiBracelet® in drei Größen',
       'Dezent tragbar im Alltag',
-      'Rabattcode Bracelet200 wird über den Deal-Link angewendet',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qibracelet-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiBracelet3.webp?v=1732874910'),
     path: '/products/sale-qibracelet?el=JSale2026',
-    listingHref:
-      '/discount/Bracelet200?redirect=%2Fproducts%2Fbf-qibracelet&el=JSale2026',
-    discountCode: 'Bracelet200',
+    // Zusage entfernt 2026-08-22: `discountCode: 'Bracelet200'` und der
+    // listingHref `/discount/Bracelet200?redirect=…` versprachen einen Code,
+    // der in Shopify seit 2026-06-17 EXPIRED ist (gemessen: 1326.05 ohne
+    // Code, 1326.05 mit Code, Abzug 0,00). Der listingHref zeigt jetzt auf
+    // denselben Pfad wie `path` — kein Code-Einlösen mehr im Link.
+    listingHref: '/products/sale-qibracelet?el=JSale2026',
     theme: 'frequency',
     variants: [
       {
@@ -177,8 +209,6 @@ export const TEN_YEARS_DEALS = [
         cartProductHandle: 'qibracelet',
         cartProductTitle: 'QiBracelet®',
         title: 'S - 17',
-        price: 1157.98,
-        compareAtPrice: 1578,
       },
       {
         id: '53761546518796',
@@ -186,8 +216,6 @@ export const TEN_YEARS_DEALS = [
         cartProductHandle: 'qibracelet',
         cartProductTitle: 'QiBracelet®',
         title: 'M - 19',
-        price: 1157.98,
-        compareAtPrice: 1578,
       },
       {
         id: '53761546551564',
@@ -195,8 +223,6 @@ export const TEN_YEARS_DEALS = [
         cartProductHandle: 'qibracelet',
         cartProductTitle: 'QiBracelet®',
         title: 'L - 21',
-        price: 1157.98,
-        compareAtPrice: 1578,
       },
     ],
   },
@@ -207,20 +233,20 @@ export const TEN_YEARS_DEALS = [
     title: 'QiHome',
     productTitle: 'Sale: QiHome',
     displayTitle: 'QiHome® Air',
-    eyebrow: 'Rabattcode-Angebot',
+    eyebrow: 'Angebot',
     shortCopy:
       'Die Lösung für dein Zuhause: QiHome® Air unterstützt dein Umfeld mit kohärenter Technologie.',
     benefits: [
       'QiHome® Air für Wohn- und Arbeitsbereiche',
       'Ein starkes Angebot für dein Zuhause',
-      'Rabattcode Home400 wird über den Deal-Link angewendet',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-qihome-de.png',
     productImage: checkoutCdn('/cdn/shop/files/QiHome1.webp?v=1732874979'),
     path: '/products/sale-qihome-air?el=JSale2026',
-    listingHref:
-      '/discount/Home400?redirect=%2Fproducts%2Fbf-qihome-air&el=JSale2026',
-    discountCode: 'Home400',
+    // Zusage entfernt 2026-08-22: `discountCode: 'Home400'` + der
+    // `/discount/Home400?redirect=…`-listingHref. Code seit 2026-06-17
+    // EXPIRED (gemessen: 4187.40 ohne Code, 4187.40 mit Code, Abzug 0,00).
+    listingHref: '/products/sale-qihome-air?el=JSale2026',
     theme: 'frequency',
     variants: [
       {
@@ -229,8 +255,6 @@ export const TEN_YEARS_DEALS = [
         cartProductHandle: 'qihome-air',
         cartProductTitle: 'QiHome® Air',
         title: 'Default Title',
-        price: 3851.27,
-        compareAtPrice: 4983,
       },
     ],
   },
@@ -246,7 +270,6 @@ export const TEN_YEARS_DEALS = [
     benefits: [
       '1x Crystal Cacao® Create',
       '1x Crystal Cacao® Awake',
-      'Bundle-Rabatt wird automatisch über die Produktseite abgebildet',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-create-awake-de.png',
     productImage: checkoutCdn(
@@ -256,7 +279,7 @@ export const TEN_YEARS_DEALS = [
     listingHref: '/products/awcr37shyj?el=JSale2026',
     theme: 'cacao',
     variants: [
-      {id: '54552762614028', title: 'Default Title', price: 71.03, compareAtPrice: 147.03},
+      {id: '54552762614028', title: 'Default Title'},
     ],
   },
   {
@@ -271,7 +294,6 @@ export const TEN_YEARS_DEALS = [
     benefits: [
       '2x Crystal Cacao® Awake',
       'Bio-zertifiziert und laboranalytisch geprüft',
-      'Bundle-Rabatt wird automatisch über die Produktseite abgebildet',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-2x-awake-de.png',
     productImage: checkoutCdn('/cdn/shop/files/6.png?v=1765893911'),
@@ -279,7 +301,7 @@ export const TEN_YEARS_DEALS = [
     listingHref: '/products/aw783hfn?el=JSale2026',
     theme: 'cacao',
     variants: [
-      {id: '54552759697676', title: 'Default Title', price: 71.03, compareAtPrice: 147.03},
+      {id: '54552759697676', title: 'Default Title'},
     ],
   },
   {
@@ -294,7 +316,6 @@ export const TEN_YEARS_DEALS = [
     benefits: [
       '2x Crystal Cacao® Create',
       '100% naturrein und in Bio-Qualität',
-      'Bundle-Rabatt wird automatisch über die Produktseite abgebildet',
     ],
     tileSrc: '/campaigns/ten-years/j-sale-price-tile-2x-create-de.png',
     productImage: checkoutCdn(
@@ -304,7 +325,7 @@ export const TEN_YEARS_DEALS = [
     listingHref: '/products/37cr378n?el=JSale2026',
     theme: 'cacao',
     variants: [
-      {id: '54552759140620', title: 'Default Title', price: 71.03, compareAtPrice: 147.03},
+      {id: '54552759140620', title: 'Default Title'},
     ],
   },
 ];

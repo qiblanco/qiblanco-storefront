@@ -1,12 +1,20 @@
 import {Link, useLoaderData} from 'react-router';
 import {policyTitelDe} from '~/lib/policy-titel';
+import {canonicalLink} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data, params}) => {
   const titel = policyTitelDe(params?.handle, data?.policy?.title);
-  return [{title: titel ? `${titel} | Qi Blanco` : 'Qi Blanco'}];
+  const tags = [{title: titel ? `${titel} | Qi Blanco` : 'Qi Blanco'}];
+  // Selbst-canonical (s04, 2026-08-26). Die Rechtstexte (Versand, Widerruf,
+  // Datenschutz, AGB) sind eigenständige, indexierbare Seiten mit echtem
+  // Inhalt — `/policies/shipping-policy` misst 475 eigene Wörter gegen ein
+  // nachweislich leeres Gerüst. Sie bleiben im Index; ihnen fehlte nur der
+  // canonical, weil diese Route nie einen setzte.
+  if (params?.handle) tags.push(canonicalLink(`/policies/${params.handle}`));
+  return tags;
 };
 
 /**

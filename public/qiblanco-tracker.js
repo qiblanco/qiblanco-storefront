@@ -23,6 +23,19 @@
     clickid: true,
     h_ad_id: true,
     h_click_id: true,
+    // UpPromote-Affiliate-Referenz (Großjob s03, 2026-08-25). Ohne diesen
+    // Eintrag wird ein Affiliate-Klick gar nicht erst gespeichert, und die
+    // Provision des Partners hängt allein daran, dass sein Link zufällig die
+    // Landing-Seite war.
+    //
+    // ZWILLINGSLISTE: dieselben Namen müssen in
+    // app/lib/checkout-tracking.js TRACKING_PARAM_NAMES stehen. Diese Liste
+    // hier entscheidet, was GESPEICHERT wird; die dortige, was davon an die
+    // Checkout-URL und in die note_attributes WEITERGEREICHT wird. Wer nur
+    // eine der beiden ergänzt, baut einen stillen Verlust — in beide
+    // Richtungen. Bewacht von probe-uppromote-dach (Subkommando `naht`).
+    sca_ref: true,
+    sca_source: true,
   };
 
   function isTrackingParamName(name) {

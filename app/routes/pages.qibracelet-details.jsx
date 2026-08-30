@@ -1,5 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {QiBracelet} from '~/components/index-components/detailseiten/QiBracelet';
+import {canonicalLink} from '~/lib/seo';
 
 /*
  * /pages/qibracelet-details — oeffentliche Detailseite QiBracelet
@@ -25,10 +26,7 @@ import {QiBracelet} from '~/components/index-components/detailseiten/QiBracelet'
 export const meta = () => {
   return [
     {title: 'QiBracelet\u00AE im Detail | Qi Blanco UG (haftungsbeschr\u00E4nkt)'},
-    {
-      rel: 'canonical',
-      href: '/pages/qibracelet-details',
-    },
+    canonicalLink('/pages/qibracelet-details'),
   ];
 };
 

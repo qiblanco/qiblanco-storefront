@@ -19,6 +19,19 @@
      zwei eigene Rollen — gleicher Farbton, nur andere Helligkeit: */
   --color-accent-ink: #856828;   /* Gold als SCHRIFT auf hellem Grund (>= 4.5:1) */
   --color-on-accent: #2c2a26;    /* Schrift AUF einer Gold-Flaeche (>= 5.9:1) */
+  /* BEWERTUNGSSTERNE — DIE EINE QUELLE (Job 20260822-sterne-farbe-dach).
+     Bewusst EIGENE Rollen und NICHT --color-accent-primary: die Sterne geben
+     eine Google-Bewertung wieder und folgen deren Sternton, waehrend
+     --color-accent-primary die Handlungs-/CTA-Flaeche des Shops ist. Deren
+     Goldton ist zudem eine OFFENE Christian-Frage (design-meister
+     db/tokens/web-dach.yaml, gold-akzent-web-vs-marke: #F2BF72 vs #C9A14B) —
+     die Sterne daran zu koppeln haette diese Frage still vorentschieden.
+     Gemessen 2026-08-22 live: #F4B400 ist der real dominante Sternton auf
+     BEIDEN Shops (DACH 250 von 252, US 215 von 216 gemalten Sternen der
+     Startseite) und damit kein Geschmacksurteil, sondern der Bestand.
+     WER DIESE ZWEI WERTE AENDERT, AENDERT JEDEN STERN DER STOREFRONT. */
+  --qb-sterne-gold: #F4B400;     /* gefuellter Stern */
+  --qb-sterne-leer: #dadce0;     /* ungefuellter Stern (fraktionale Fuellung) */
   --color-footer: #0a1127;
   --checkmark-color: #396e25;
 
@@ -107,9 +120,19 @@ footer *{
   cursor: pointer;
 }
 
+/* Der Traeger faerbt die STERNE. Die Sterne stehen in dieser Bauform als
+   blanker Textknoten ZWISCHEN den beiden <span> (»<span>4.8</span> ★★★★★
+   <span>Ueber 14.000 Nutzer</span>«) und haben deshalb kein eigenes Element,
+   an dem eine Regel greifen koennte. Die beiden <span> setzen ihre Farbe
+   darunter selbst wieder — die Zahl bleibt damit exakt, wie sie war.
+   BEWUSST NICHT die Sterne in ein <span> gewickelt: das haette sie zu
+   span:nth-child(2) gemacht und die Regel darunter auf die Sterne gezogen. */
 .product .product-rating{
   font-size: 1.5rem;
   font-weight: 600;
+  color: var(--qb-sterne-gold);
+}
+.product .product-rating > span:first-child{
   color: var(--color-accent-primary);
 }
 .product .product-rating span:nth-child(2){
@@ -498,6 +521,51 @@ aside li {
  * Wert ist der kleinste, der das leistet, statt eines neuen Rekordwerts.
  * Die uebrigen Overlays des Shops (Bildergalerie, 360-Video, Toast) liegen
  * bewusst darueber und bleiben unberuehrt. */
+/* CHAT-WIDGET AUF SEHR FLACHEN SICHTFELDERN — Handy im Querformat.
+ *
+ * ZWEITER FALL DERSELBEN KLASSE, darum die Regel und nicht die Instanz: am
+ * 2026-08-20 verdeckte dasselbe iframe den Kaufknopf des Warenkorb-Drawers
+ * (Kommentar oben). Dort war die Heilung moeglich, weil der Drawer selbst ein
+ * Overlay ist und ueber das Widget gehoben werden konnte. Fuer normalen
+ * Seiteninhalt geht das nicht — Inhalt ueber ein schwebendes Chat-Widget zu
+ * heben, verschiebt den Fehler nur.
+ *
+ * GEMESSEN 2026-08-23 an /pages/studien im Gate-12-Format mobil-quer-883
+ * (883x412, dpr 3), gegen den Branch-Build:
+ *   iframe#qiblanco-salesbot-widget-frame  fixed, inset auto 7px 7px auto,
+ *   nach 2 s stabil 373x237 px = 58 % der Sichtfeldhoehe, pointer-events auto
+ *   -> alle fuenf <button.qb-st-hero-faecher-knopf> (y 344..435) liegen darunter.
+ * NICHT die Handler gezaehlt, sondern die WIRKUNG gemessen: ein echter Klick
+ * auf die Knopfmitte (705, 389) liess den Faecher unveraendert und oeffnete
+ * stattdessen den Chat (iframe 373x237 -> 371x412). Der Besucher, der die
+ * Publikation antippt, bekommt den Assistenten.
+ *
+ * WARUM AUSBLENDEN UND NICHT VERKLEINERN: das Widget klebt an der Unterkante
+ * (bottom: 7px). Damit es die Knopfmitte auf y=389 freigibt, muesste es
+ * niedriger als 16 px sein — eine Hoehenbegrenzung kann diesen Fall baulich
+ * nicht loesen. Die Innenaufteilung (Starter vs. automatisch aufklappender
+ * Teaser) liegt in einem fremden Origin und ist von hier nicht ansprechbar.
+ * Ein Chat, der auf einem 412 px hohen Sichtfeld die Haelfte des Bildschirms
+ * einnimmt UND die Klicks darunter schluckt, ist schlechter als kein Chat.
+ *
+ * `!important`, weil der Loader die GESAMTE Geometrie dieses Elements inline
+ * schreibt (position/inset/width/height/z-index, am 2026-08-23 ausgelesen).
+ * `display` steht heute NICHT darin — eine Unterdrueckung, die beim naechsten
+ * Loader-Stand still verliert, waere aber nicht von einer wirksamen zu
+ * unterscheiden.
+ *
+ * RUECKWEG: diesen Block loeschen. Ohne Code-Aenderung: der Kill-Schalter des
+ * Widgets ist PUBLIC_SALESBOT_WIDGET_ORIGIN=off (app/lib/salesbot-widget.js) —
+ * der wirkt allerdings auf ALLE Formate, nicht nur auf die flachen.
+ * 500 px ist eine HYPOTHESE, keine Konstante: sie trennt Handy-Querformat
+ * (390-430 px hoch) von Tablet-Querformat (768 px) und trifft von den neun
+ * Gate-Formaten genau eines (883x412). */
+@media (max-height: 500px) {
+  #qiblanco-salesbot-widget-frame {
+    display: none !important;
+  }
+}
+
 .overlay {
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
@@ -883,6 +951,17 @@ button[aria-label="Close"],
   }
 }
 
+/* MEGA-MENUE-PANEL.
+   Aufgeraeumt 2026-08-22 (Job 20260820-dropdown-menueleiste-grafik-
+   ueberstand). Der Block trug drei !important, von denen eines TOT war:
+   `width: 100vw !important` wurde von der spaeteren Zeile
+   `width: 100% !important` bei gleicher Spezifitaet ueberschrieben. Beide
+   waren ueberhaupt nur noetig, weil Header.jsx die Breite zusaetzlich
+   INLINE setzte. Die Inline-Breite ist dort jetzt entfernt — damit reicht
+   hier eine gewoehnliche Deklaration, und `html.qb-chat-docked .submenu`
+   gewinnt wieder ueber Spezifitaet statt ueber ein Wettruesten.
+   `padding-top` bleibt bewusst !important: es ueberschreibt das inline
+   gesetzte `padding: 1.5rem` und haelt den Inhalt unter dem Kopf. */
 .submenu {
   position: absolute;
   left: 0;
@@ -890,15 +969,18 @@ button[aria-label="Close"],
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 8rem;
+  /* Der Abstand war breiten-invariant (8rem = 128 px bei JEDER Breite),
+     waehrend die Nav bis hinunter zu 750 px im Mega-Menue-Modus bleibt.
+     Er wurde ausschliesslich dem Bild abgezogen: gemessen 2026-08-22 fiel
+     es von 325 px auf 224 (900) und 135,8 (750). */
+  gap: clamp(1.5rem, 6vw, 8rem);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   z-index: 5;
   padding-top: 150px !important;
   min-width: 200px;
-  width: 100vw !important;
   border-radius: 20px;
-  width: 100% !important;
+  width: 100%;
   transition: 0.2s all ease;
 }
 .submenu ul {
@@ -1380,6 +1462,41 @@ ul.submenu li a {
 
   .footer-study {
     grid-template-columns: 1fr;
+  }
+
+  /* Das Studien-Logo wird auf schmalen Geräten gedeckelt, weil seine QUELLE
+     nicht wachsen kann — dieselbe Lage und dieselbe Abhilfe wie beim
+     Mega-Menü-Bild in Header.jsx (Gate 12, `bild-aufloesung`, repariert am
+     2026-08-23). Sobald das Gitter hier einspaltig wird, zieht
+     `.footer-study img {width:100%}` das Logo auf die volle Spaltenbreite:
+     bei mobil-600 sind das 568 CSS-px, bei dpr 2 also 1136 nötige Quellpixel
+     — sichtbar unscharf, und genau das meldet Gate 12.
+
+     HERLEITUNG DES WERTS — 300, NICHT 400 (Konfliktauflösung 2026-08-24,
+     Job 20260824-technologie-seite-formatschuld-und-disclaimer): hier trafen
+     zwei unabhängig entstandene Fassungen dieser Regel aufeinander, 400 px
+     (aus #257/#258) und 300 px (aus dem Disclaimer-Ausbau). Beide Werte sind
+     `Quellbreite / 2`; sie unterscheiden sich darin, WELCHE Quelle gemessen
+     wurde. Selbst nachgemessen, alle drei Logos dieses EINEN Selektors:
+       Studie 1 `...electromagnetic_fields.webp`  800 x 1066
+       Studie 2 `Studie2_1.webp`                 1000 x 1328
+       Studie 3 `Studie3_1.webp`                  600 x  377
+     `&width=2000` liefert bei allen dreien byte-identisch dieselbe Datei —
+     das Shopify-CDN skaliert nie über die Masterbreite. Eine Regel, die für
+     drei Bilder gilt, muss sich am KLEINSTEN richten: 600 / 2 = 300.
+     400 wäre für Studie 1 richtig und für Studie 3 falsch (400 * 2 * 0,9 =
+     720 nötige Quellpixel gegen 600 vorhandene). Dass es heute nicht
+     auffällt, liegt allein daran, dass der Fächer bei Studie 1 startet und
+     die Messung nicht weiterklickt — ein Wert, der nur solange hält, wie
+     niemand die zweite Kachel ansieht, ist kein Wert.
+     `margin-inline: auto` hält das Logo dabei mittig, statt links zu kleben.
+
+     Ohne diesen Deckel kann KEINE Seite einen Alle-Formate-Beleg bestehen,
+     weil der Fußbereich auf jeder Seite mitrendert. Rückbau = diese eine
+     Regel löschen. */
+  .footer-study__logo img {
+    max-width: 300px;
+    margin-inline: auto;
   }
 
   .footer-study__image {
@@ -3129,10 +3246,66 @@ ul.submenu li a {
 .nav-styling-wrapper {
   position: relative;
 }
+/* AUFLOESUNGS-DECKEL DER ONLINE-KURSE-KACHEL — die eine Kachel, deren Quelle
+   nicht mitwaechst. Alle Mega-Menue-Bilder tragen `width={325}` und
+   `max-width:100%`; sie werden also so breit, wie das jeweilige Panel es
+   zulaesst. Nachgemessen 2026-08-23 ueber alle neun Gate-12-Formate:
+
+     Quelle 526 px (Online Kurse)  -> 883:307,7  900:314,0  820:284,4  768:265,2
+     Quelle 597 px (QiOne 2 Pro)   -> 883:282,0  900:298,0
+     Quelle 668 px (Mehr)          -> 883:325,0  900:325,0
+     Quelle 1080 px (Studien)      -> 883:282,0  900:298,0
+
+   Bei dpr>=2 braucht eine 308-px-Flaeche 616 echte Bildpunkte. Nur diese eine
+   Quelle kann das nicht liefern — und sie kann es AUCH NICHT LERNEN: das
+   Shopify-CDN gibt fuer `_1200x` wieder 526x296 zurueck, ein groesseres
+   Original existiert dort nicht (vier Abrufe am 2026-08-23: .png 526, .webp
+   526, _400x 400, _1200x 526). Eine hochskalierte Neu-Ablage haette das Gate
+   gruen gefaerbt und die sichtbare Unschaerfe stehen gelassen.
+
+   DER WERT IST ABGELEITET, NICHT AUF DAS GATE GEFITTET: 263 px = 526/2, also
+   genau die Breite, die die Quelle bei dpr 2 pixelgenau traegt. Die
+   Gate-Schwelle laege bei 292 px (526 / (2 * 0,9)) — darauf zu deckeln hiesse,
+   die Toleranz des Messgeraets aufzubrauchen und beim naechsten
+   Subpixel-Wechsel wieder rot zu stehen.
+
+   NUR unter dpr>=2: auf Desktop (dpr 1) traegt die Quelle die vollen 325 px,
+   dort aendert sich nichts. Der Deckel greift damit an 883/900/820/768 und
+   laesst 360/414 (113/134 px) sowie alle Desktop-Formate unberuehrt.
+   `-webkit-min-device-pixel-ratio` steht daneben fuer aeltere Safari-Staende,
+   die `min-resolution` noch nicht kennen.
+
+   `min(100%, 263px)` UND NICHT `263px` — das ist keine Feinheit, sondern ein
+   selbst gebauter und gemessener Fehler: die Bilder haengen an einer globalen
+   `img { max-width: 100% }`-Regel, und ein klassen-genauer Selektor ERSETZT
+   die, statt sie zu ergaenzen. Mit nacktem `263px` sprang die Kachel auf
+   mobil-360 von 113,3 px auf 263 px HOCH und riss das Menue-Panel mit — ein
+   Deckel, der breiter macht. `min()` behaelt beide Grenzen. */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .nav-styling-wrapper--kurse img {
+    max-width: min(100%, 263px);
+  }
+}
+/* Bild-Label im Mega-Menue.
+   Es war NUR rechts verankert (right:15px) und damit nach links unbegrenzt:
+   ist der Wrapper schmaler als der Text, waechst das Label aus dem Bild und
+   aus dem Panel heraus. GEMESSEN 2026-08-22 an der Live-Storefront im Format
+   mobil-360: `.nav-styling-overlay` stand 12 px links AUSSERHALB von
+   `.submenu` (GATE 12, Pruefpunkt overlay-ueberstand-stacking). Das ist
+   dieselbe Klasse wie ein klassenloses Flex-Kind, das auf sein laengstes
+   Wort waechst — nur ueber die absolute Positionierung statt ueber die
+   Mindestbreite.
+   `left` bindet jetzt die zweite Kante, `max-width` deckelt zusaetzlich fuer
+   den Fall, dass ein Vorfahr die Bindung aufhebt; `text-align: right` haelt
+   die urspruengliche Optik (rechtsbuendig), solange der Text passt. */
 .nav-styling-wrapper .nav-styling-overlay {
   position: absolute;
   bottom: 15px;
   right: 15px;
+  left: 15px;
+  max-width: calc(100% - 30px);
+  text-align: right;
+  overflow-wrap: break-word;
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--color-light);
@@ -4510,6 +4683,18 @@ ul.kakao-children li {
   font-weight: 500;
 }
 
+/* GLYPH-STERNE (★ als Textzeichen) an derselben Quelle wie die SVG-Sterne.
+   Warum es diese Klasse ueberhaupt braucht: ein ★-Textzeichen hat keine
+   eigene Farbe, es erbt die Textfarbe seines Elternknotens. Genau daran ist
+   die Storefront auseinandergelaufen — dieselbe Bewertungszeile stand je nach
+   Elternkontext in #F2BF72, #856828 oder #eabb6e (gemessen 2026-08-22).
+   Wer kuenftig Glyph-Sterne rendert, wickelt sie hier hinein und erbt nichts.
+   NICHT anwendbar auf ⭐ (U+2B50): das ist ein FARB-Emoji und ignoriert
+   color — solche Sterne stehen im Ankuendigungs-INHALT, nicht im Stylesheet. */
+.qb-sterne {
+  color: var(--qb-sterne-gold);
+}
+
 /* Star-Rating — geteilte 5-Sterne-Darstellung der 4,8-Bewertung
    (Block LP, Job 20260718-lp-sterne-reputon-googlelink) */
 .star-rating {
@@ -4526,6 +4711,16 @@ ul.kakao-children li {
 
 .star-rating__star svg {
   display: block;
+}
+
+/* Die beiden Sterntoene der SVG-Darstellung — hier und NUR hier. Die
+   Komponente StarRating.jsx setzt bewusst kein fill mehr. */
+.star-rating__star > svg {
+  fill: var(--qb-sterne-leer);
+}
+
+.star-rating__fill > svg {
+  fill: var(--qb-sterne-gold);
 }
 
 .star-rating__fill {
@@ -5148,12 +5343,19 @@ html.qb-chat-docked .header-wrapper {
   width: calc(100% - var(--qb-chat-dock-breite, 0px));
 }
 
-/* 2. Das Mega-Menue. Es haengt per Portal am <body> und traegt seine Breite
-      inline (`width: 100vw`) — dagegen kommt nur `!important`, und weil die
-      Bestandsregel `.submenu` ihre Breite ebenfalls mit `!important` setzt,
-      entscheidet hier die hoehere Spezifitaet, nicht die Reihenfolge. */
+/* 2. Das Mega-Menue. Es haengt per Portal am <body>.
+      NACHTRAG 2026-08-22 (Job 20260820-dropdown-menueleiste-grafik-
+      ueberstand): der urspruengliche Kommentar hier beschrieb den Zustand
+      korrekt — Header.jsx trug die Breite inline (`width: 100vw`), dagegen
+      kam nur `!important`. Diese Inline-Breite ist jetzt entfernt und die
+      Bestandsregel `.submenu` setzt `width: 100%` ohne `!important`. Damit
+      entscheidet hier ausschliesslich die hoehere Spezifitaet
+      (html.qb-chat-docked .submenu schlaegt .submenu), und das `!important`
+      ist nicht mehr noetig. Es faellt weg, statt als Blindgaenger stehen zu
+      bleiben — ein !important, das niemand mehr braucht, ist die naechste
+      Stufe des Wettruestens fuer den, der danach hier baut. */
 html.qb-chat-docked .submenu {
-  width: calc(100% - var(--qb-chat-dock-breite, 0px)) !important;
+  width: calc(100% - var(--qb-chat-dock-breite, 0px));
 }
 
 /* 3. Warenkorb-/Menue-Schubfach. Es ist der einzige Wirt-Bereich, den man

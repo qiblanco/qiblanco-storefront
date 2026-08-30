@@ -351,6 +351,44 @@ export function MmEvidenz({eyebrow, title, intro, studien, mehrHref, mehrLabel, 
   );
 }
 
+/* ------------------------------------------------------- Publikations-Belege */
+
+/*
+ * MmBelege — die Titelseiten der Publikationen als Beleg-Reihe, jede verlinkt
+ * auf ihr PDF. Bewusst KEIN Diagramm: für einen Skeptiker ist die reale,
+ * nachprüfbare Publikation der stärkere Beleg (Kanon ew-05 „erreichbarer
+ * Beleg-Ort" — billig zu erfüllen, teuer zu ignorieren). Ein Cover ohne
+ * Klickziel wäre Dekoration, deshalb ist `href` die tragende Eigenschaft.
+ *
+ * Die Cover haben UNTERSCHIEDLICHE Seitenverhältnisse (957x1024 bis
+ * 2480x3508 bis 1080x1080). Deshalb feste Bahn + object-fit: contain statt
+ * Zuschnitt: ein Zuschnitt würde bei einem Deckblatt den Titel abschneiden.
+ */
+export function MmBelege({eyebrow, title, intro, belege, note, variante, dataSection}) {
+  return (
+    <MmBahn variante={variante}>
+      <div className="mm-belege" data-section={dataSection}>
+        {eyebrow ? <span className="mm-eyebrow">{eyebrow}</span> : null}
+        <h2>{title}</h2>
+        {intro ? <p className="mm-evidenz__intro">{intro}</p> : null}
+        <div className="mm-belege__grid">
+          {(belege || []).map((b, i) => (
+            <a className="mm-beleg" key={i} href={b.href} target="_blank" rel="noreferrer">
+              <span className="mm-beleg__bild">
+                <img src={b.bild} alt={b.alt || ''} loading="lazy" width="480" height="640" />
+              </span>
+              <span className="mm-beleg__t">{b.titel}</span>
+              <span className="mm-beleg__s">{b.meta}</span>
+              <span className="mm-beleg__pfeil">{b.linkText || 'PDF ansehen'} &rarr;</span>
+            </a>
+          ))}
+        </div>
+        {note ? <p className="mm-mech__note">{note}</p> : null}
+      </div>
+    </MmBahn>
+  );
+}
+
 /* ------------------------------------------------------------------ Berichte */
 
 export function MmReports({eyebrow, title, text, balken, note, variante, dataSection}) {

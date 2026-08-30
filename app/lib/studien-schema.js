@@ -15,7 +15,13 @@
  * eine Behauptung über die Evidenzstufe, die die Studien nicht tragen.
  */
 
-import {CANONICAL_ORIGIN, absoluteCanonical} from './seo';
+// Import-Spezifizierer MIT `.js` — wie in entity-schema.js und aus demselben
+// Grund: Vite loest beide Formen auf, `node --test` nur diese. Ohne die
+// Endung ist dieses Modul aus einem Bordmittel-Test baulich nicht erreichbar,
+// und genau das war es bis 2026-08-24 auch (0 Tests auf den Studien-Graphen).
+import {CANONICAL_ORIGIN, absoluteCanonical} from './seo.js';
+import {ORG_ID} from './entity-schema.js';
+import {standFuer} from '../data/redaktionsstand.js';
 
 const VERLAG = {
   '@type': 'Organization',
@@ -69,6 +75,12 @@ export function studieSchema(studie) {
 
   if (e.veroeffentlicht) artikel.datePublished = e.veroeffentlicht;
   if (e.eingereicht) artikel.dateCreated = e.eingereicht;
+  // ZWEI VERSCHIEDENE DATEN, DIE MAN LEICHT VERWECHSELT: `datePublished` ist
+  // das Erscheinungsdatum der PUBLIKATION (2021 bei e0002 — daran ändern wir
+  // nie etwas), `dateModified` ist der Stand UNSERER Wiedergabe. Am 2026-08-24
+  // gemessen fehlte das zweite auf allen fünf Blättern; das Backlog nahm an,
+  // die Blätter trügen es bereits und nur der Hub nicht. Sie trugen es nicht.
+  artikel.dateModified = standFuer(`/pages/${studie.slug}`);
   if (e.lizenz) artikel.license = e.lizenz;
   if (e.doi) {
     // identifier ist eine KENNUNG — wahr, unabhängig davon, ob ein Resolver sie
@@ -175,6 +187,24 @@ function produktAufzaehlung(studien) {
  * Einzelseiten in derselben Reihenfolge, in der sie gerendert werden — eine
  * Liste, die eine andere Reihenfolge behauptet als die Seite zeigt, ist ein
  * Widerspruch, den Google als Unstimmigkeit liest.
+ *
+ * URHEBERSCHAFT UND DATIERUNG (Backlog-Posten B-10(c), ergänzt 2026-08-24):
+ * Der Hub war schwächer ausgezeichnet als seine eigenen Blätter — die
+ * Einzelseiten tragen seit jeher `author` (Prof. Dr. Dartsch) und
+ * `datePublished`, die Übersicht trug NICHTS davon. Genau verkehrt herum: die
+ * Übersicht ist die Seite, auf der eine Suchmaschine einsteigt.
+ *
+ * WER IST HIER `author`, UND WARUM NICHT DER STUDIENAUTOR: diese Seite ist
+ * keine Publikation, sondern eine redaktionelle Zusammenstellung. Prof. Dr.
+ * Dartsch hat die Untersuchungen verfasst, nicht unsere Übersicht über sie —
+ * ihn hier als Autor zu führen wäre eine Zuschreibung, die er nie gemacht
+ * hat. Autor der Zusammenstellung ist die Organisation, und sie wird per
+ * `@id` referenziert statt gedoppelt (der Knoten entsteht einmal in
+ * app/lib/entity-schema.js). Der Studienautor steht unverändert dort, wo er
+ * hingehört: auf jedem einzelnen ScholarlyArticle.
+ *
+ * `dateModified` kommt aus app/data/redaktionsstand.js — einem gemessenen
+ * Datum, nicht aus `new Date()`. Begründung im Kopf jener Datei.
  */
 export function übersichtSchema(studien) {
   const url = absoluteCanonical('/pages/studien');
@@ -186,6 +216,9 @@ export function übersichtSchema(studien) {
         '@id': `${url}#sammlung`,
         url,
         name: 'Wissenschaftliche Studien zu Qi Blanco',
+        author: {'@id': ORG_ID},
+        publisher: {'@id': ORG_ID},
+        dateModified: standFuer('/pages/studien'),
         // Anzahl und Produktliste kommen aus den Daten: eine feste Zahl hier war
         // schon einmal die Naht, die beim Ergänzen der fuenften Studie riss.
         description:

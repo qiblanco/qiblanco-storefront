@@ -1,7 +1,14 @@
-import {useLoaderData} from 'react-router';
+// `data` bewusst umbenannt importiert: der meta()-Export unten destrukturiert
+// selbst ein Argument namens `data` und würde den Import sonst beschatten.
+import {data as mitHeadern, useLoaderData} from 'react-router';
 import {Rechtsseite} from '~/components/Rechtsseite';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {istNichtIndexierbar, noindexMeta} from '~/lib/seo';
+import {
+  canonicalLink,
+  istNichtIndexierbar,
+  noindexHeader,
+  noindexMeta,
+} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -16,12 +23,29 @@ export const meta = ({data, params}) => {
   // Index. Die Liste steht in ~/lib/seo, weil die Sitemap-Route sie ebenfalls
   // liest — eine zweite Liste hier würde früher oder später abweichen.
   //
-  // Bewusst NUR das robots-meta und KEIN X-Robots-Tag-Header: der Header
-  // brauchte einen Umbau der Loader-Rückgabe auf data(payload, {headers}),
-  // und dieser Loader bedient JEDE Shopify-Seite des Shops. Das Flächen-
-  // Risiko steht in keinem Verhältnis zum Nutzen eines zweiten Signals —
-  // Google honoriert `noindex` im meta-Tag vollständig.
-  if (istNichtIndexierbar(params?.handle)) tags.push(noindexMeta());
+  // Die zweite Hälfte des Doppelgates (X-Robots-Tag) sitzt im Loader und im
+  // `headers`-Export unten — hier steht nur das meta.
+  //
+  // ENTWEDER noindex ODER canonical, nie beides (s04, 2026-08-26). Die Regel
+  // ist nicht neu, sie stand bisher nur in den Routen mit eigener Datei —
+  // wörtlich in `pages.uebersicht.jsx`: „noindex plus ein canonical auf eine
+  // andere URL sind widersprüchliche Signale; ein Bot, der dem canonical
+  // folgt, kann das noindex der Zielseite zuordnen." Dieser Katchall bediente
+  // bis hierher BEIDE Fälle und setzte für KEINEN einen canonical: die
+  // indexierbaren Shopify-Seiten (`/pages/widerrufsbelehrung`,
+  // `/pages/support-1`) gingen deshalb ganz ohne canonical live.
+  //
+  // WARUM DER canonical AUS `params.handle` UND NICHT AUS DER ANGEFRAGTEN URL
+  // GEBAUT WIRD: `absoluteCanonical` würde eine mitgegebene URL zwar von Query
+  // und Hash befreien, aber der Pfad selbst kann eine lokalisierte Variante
+  // sein. `params.handle` ist der Wert, unter dem Shopify die Seite führt —
+  // damit zeigt der canonical immer auf die eine kanonische Fassung, auch wenn
+  // die Seite über einen Alias erreicht wurde.
+  if (istNichtIndexierbar(params?.handle)) {
+    tags.push(noindexMeta());
+  } else if (params?.handle) {
+    tags.push(canonicalLink(`/pages/${params.handle}`));
+  }
   return tags;
 };
 
@@ -35,8 +59,57 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  const payload = {...deferredData, ...criticalData};
+
+  // ZWEITE HÄLFTE DES noindex-DOPPELGATES (s05, 2026-08-23).
+  //
+  // Bis hierher stand hier der ausdrückliche Verzicht: „bewusst NUR das
+  // robots-meta und KEIN X-Robots-Tag — das Flächen-Risiko steht in keinem
+  // Verhältnis". Das benannte Risiko war, dass ein `headers`-Export einer
+  // Blattroute die Header der Elternroute verdrängt, und dieser Loader
+  // bedient JEDE Shopify-Seite des Shops.
+  //
+  // DAS RISIKO IST NACHGEMESSEN UND EXISTIERT NICHT: `app/root.jsx`
+  // exportiert gar kein `headers`, und die Sicherheits-/CSP-Header setzt
+  // `app/entry.server.jsx` über `responseHeaders.set()` — also AUSSERHALB
+  // der Routen-Header-Kette. Live gegengeprüft am 2026-08-23:
+  // /pages/uebersicht (Blattroute MIT headers-Export) und /pages/support
+  // (ohne) liefern denselben Header-Satz, die erste zusätzlich x-robots-tag.
+  // Es gibt keine Elternheader, die verloren gehen könnten. Der `headers`-
+  // Export unten baut trotzdem auf `parentHeaders` auf statt sie zu
+  // ersetzen — dann bleibt das auch wahr, wenn root eines Tages welche setzt.
+  //
+  // Warum überhaupt zwei Signale: Hausmuster D-006 („Gurt und Hosenträger").
+  // Google honoriert das meta-Tag vollständig, aber nur, wenn der Bot das
+  // HTML-head parst. Alle eigenen noindex-Routen des Repos (uebersicht,
+  // tiefer-schlaf, partner, …) tragen beide — der Katchall war die letzte
+  // Fläche, die nur eines trug.
+  //
+  // `data()` greift NUR im noindex-Fall; für die anderen ~47 Shopify-Seiten
+  // gibt der Loader unverändert das nackte Objekt zurück.
+  if (istNichtIndexierbar(args.params?.handle)) {
+    return mitHeadern(payload, {headers: noindexHeader()});
+  }
+
+  return payload;
 }
+
+/**
+ * Reicht ausschließlich das X-Robots-Tag des Loaders durch und erbt sonst
+ * unverändert, was der Elternbaum liefert.
+ *
+ * Bewusst NICHT `loaderHeaders` als Ganzes zurückgeben: das würde auch jeden
+ * künftigen Loader-Header (Cache-Control, Set-Cookie) ungeprüft zum
+ * Dokument-Header machen. Gefiltert wird auf genau den einen Namen, den diese
+ * Route setzt.
+ * @type {HeadersFunction}
+ */
+export const headers = ({loaderHeaders, parentHeaders}) => {
+  const kopf = new Headers(parentHeaders);
+  const robots = loaderHeaders?.get('X-Robots-Tag');
+  if (robots) kopf.set('X-Robots-Tag', robots);
+  return kopf;
+};
 
 /**
  * Load data necessary for rendering content above the fold. This is the critical data
@@ -140,4 +213,5 @@ const PAGE_QUERY = `#graphql
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
+/** @typedef {import('react-router').HeadersFunction} HeadersFunction */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */

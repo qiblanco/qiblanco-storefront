@@ -1,4 +1,10 @@
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
+import technologieStyles from '~/styles/technologie.css?url';
+import {canonicalLink} from '~/lib/seo';
+
+export function links() {
+  return [{rel: 'stylesheet', href: technologieStyles}];
+}
 
 export const meta = () => [
   {title: 'Technologie | Qi Blanco'},
@@ -7,7 +13,7 @@ export const meta = () => [
     content:
       'Die Technologie hinter den Qi Blanco® Systemen – kohärentes Wasser, Frequenzkommunikation und das Leiternetzwerk des Körpers.',
   },
-  {rel: 'canonical', href: '/pages/technologie'},
+  canonicalLink('/pages/technologie'),
 ];
 
 export function loader() {
@@ -19,7 +25,58 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 const pStyle = {lineHeight: '1.85', marginBottom: '1rem', opacity: 0.88};
 const h2Style = {marginTop: '2.5rem', marginBottom: '0.75rem'};
 const h3Style = {marginTop: '1.75rem', marginBottom: '0.5rem'};
-const imgFullStyle = {width: '100%', height: 'auto', display: 'block', marginTop: '1rem'};
+const imgFullStyle = {marginTop: '1rem'};
+
+/**
+ * GEMESSENE Masterbreite je CDN-Datei dieser Seite (Pixel, 2026-08-24).
+ * Erhoben mit PIL gegen cdn.shopify.com, jeweils zusätzlich gegen die
+ * `_2000x`-Variante gegengeprüft: die kam bei ALLEN zwölf Dateien
+ * byte-identisch zurück. Das ist der Beleg dafür, dass Weg (a) — eine
+ * größere Quelle vom CDN — hier nicht existiert, und nicht bloß eine
+ * Annahme darüber.
+ *
+ * Der Wert wandert als CSS-Variable `--qb` an das Bild; die Deckel-Regel
+ * steht in styles/technologie.css (`.tech-bild`). Wer eine Datei tauscht,
+ * misst die neue Breite und trägt sie HIER ein — der Deckel folgt dann von
+ * selbst. Eine Zahl, die nicht neben ihrer Quelle steht, veraltet still.
+ */
+const QUELLBREITE = {
+  'InkohaerentesWasser-2_transparent.png': 490,
+  'KohaerentesWasser-2_transparent.png': 610,
+  'qiblanco-com-knochen_jpg.webp': 622,
+  'WhatsApp_Bild_2025-07-16_um_22.07.04_96093ac7.jpg': 950,
+  'qiblanco-com-gehirn-frequenzen_jpg.webp': 300,
+  'zelle_png.webp': 508,
+  'zellaktivierung_png.webp': 522,
+  'Frequenzschluessel_png.webp': 638,
+  'qiblanco-com-leiternetzwerk_jpg.webp': 283,
+  'KristallineStrukturSalz_png.webp': 562,
+  'Kolloidkristalle_png.webp': 626,
+  'ezgif-5-b78604ff40_500x500.webp': 500,
+};
+
+/**
+ * Bild mit gedeckelter Anzeigefläche. `datei` ist der Schlüssel in
+ * QUELLBREITE, `max` ein zusätzlicher GESTALTERISCHER Deckel (z.B. eine
+ * Illustration, die absichtlich klein bleibt).
+ *
+ * Beide Deckel stehen NEBENEINANDER in einem `min()` (styles/technologie.css)
+ * und nicht als konkurrierende Werte: ein gestalterisches `max-width` inline
+ * würde den Auflösungs-Deckel der Klasse sonst ERSETZEN statt ergänzen —
+ * genau der Fehler, der im Gate-12-Repair vom 2026-08-23 ein Bild breiter
+ * statt schmaler gemacht hat.
+ */
+function TechBild({datei, version, alt, style, max}) {
+  return (
+    <img
+      src={CDN + datei + '?v=' + version}
+      alt={alt}
+      className="tech-bild"
+      style={{...(style || {}), '--qb': QUELLBREITE[datei],
+              ...(max ? {'--max': max} : {})}}
+    />
+  );
+}
 const captionStyle = {
   fontSize: '0.8rem',
   opacity: 0.6,
@@ -32,7 +89,7 @@ const captionStyle = {
 
 export default function TechnologiePage() {
   return (
-    <div>
+    <div className="tech-seite" lang="de">
       {/* ── INTRO ── */}
       <section style={{padding: '4rem 1.5rem 2rem'}}>
         <div className="NormalSectionSize" style={{maxWidth: '860px'}}>
@@ -58,16 +115,7 @@ export default function TechnologiePage() {
 
       {/* ── INKOHÄRENTES / KOHÄRENTES WASSER ── */}
       <section style={{padding: '4rem 1.5rem'}}>
-        <div
-          className="NormalSectionSize"
-          style={{
-            maxWidth: '1000px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '3rem',
-            alignItems: 'start',
-          }}
-        >
+        <div className="NormalSectionSize tech-duo" style={{maxWidth: '1000px'}}>
           <div>
             <h2 style={{marginBottom: '0.75rem'}}>Inkohärentes Wasser</h2>
             <p style={pStyle}>
@@ -77,13 +125,16 @@ export default function TechnologiePage() {
               Diese unkontrollierten Bewegungen erzeugen Störfrequenzen, die die natürlichen Schwingungen des Körpers
               überlagern und dadurch die Zellkommunikation stören.
             </p>
-            <img
-              src={CDN + 'InkohaerentesWasser-2_transparent.png?v=1670949073'}
+            <TechBild
+              datei="InkohaerentesWasser-2_transparent.png"
+              version="1670949073"
               alt="Inkohärentes Wasser"
-              style={{...imgFullStyle, maxWidth: '260px'}}
+              max="260px"
+              style={imgFullStyle}
             />
-            <img
-              src={CDN + 'qiblanco-com-knochen_jpg.webp?v=1666867432'}
+            <TechBild
+              datei="qiblanco-com-knochen_jpg.webp"
+              version="1666867432"
               alt="Körperstruktur inkohärent"
               style={imgFullStyle}
             />
@@ -97,13 +148,16 @@ export default function TechnologiePage() {
               </strong>{' '}
               Somit kommen alle Signale optimal am Ziel an.
             </p>
-            <img
-              src={CDN + 'KohaerentesWasser-2_transparent.png?v=1670949081'}
+            <TechBild
+              datei="KohaerentesWasser-2_transparent.png"
+              version="1670949081"
               alt="Kohärentes Wasser"
-              style={{...imgFullStyle, maxWidth: '260px'}}
+              max="260px"
+              style={imgFullStyle}
             />
-            <img
-              src={CDN + 'WhatsApp_Bild_2025-07-16_um_22.07.04_96093ac7.jpg?v=1752832087'}
+            <TechBild
+              datei="WhatsApp_Bild_2025-07-16_um_22.07.04_96093ac7.jpg"
+              version="1752832087"
               alt="Körperstruktur kohärent"
               style={imgFullStyle}
             />
@@ -145,20 +199,14 @@ export default function TechnologiePage() {
 
         {/* Frequenzentstehung im Gehirn */}
         <div
-          className="NormalSectionSize"
-          style={{
-            maxWidth: '1000px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '3rem',
-            alignItems: 'start',
-            marginTop: '2.5rem',
-          }}
+          className="NormalSectionSize tech-duo"
+          style={{maxWidth: '1000px', marginTop: '2.5rem'}}
         >
-          <img
-            src={CDN + 'qiblanco-com-gehirn-frequenzen_jpg.webp?v=1666867432'}
+          <TechBild
+            datei="qiblanco-com-gehirn-frequenzen_jpg.webp"
+            version="1666867432"
             alt="Frequenzentstehung im Gehirn"
-            style={{width: '100%', borderRadius: '12px'}}
+            style={{borderRadius: '12px'}}
           />
           <div>
             <h3 style={h3Style}>Frequenzentstehung im Gehirn</h3>
@@ -207,22 +255,16 @@ export default function TechnologiePage() {
             Der Körper besitzt maßgeblich zwei Möglichkeiten zur biologischen Regulierung, d.h. „Steuerung" der Zelle.
           </p>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '2.5rem',
-              alignItems: 'start',
-            }}
-          >
+          <div className="tech-duo tech-duo--eng">
             <div>
               <h3 style={h3Style}>1) Zellaktivierung durch Signalmoleküle</h3>
               <p style={pStyle}>
                 Signalmoleküle können Hormone, Antigene oder Ionen (z.B. Magnesiumionen aus der Nahrung) sein. Hier
                 wird die Zelle aktiviert, indem das Signalmolekül an den Rezeptor andockt.
               </p>
-              <img
-                src={CDN + 'zelle_png.webp?v=1666867432'}
+              <TechBild
+                datei="zelle_png.webp"
+                version="1666867432"
                 alt="Zellaktivierung durch Signalmoleküle"
                 style={imgFullStyle}
               />
@@ -235,8 +277,9 @@ export default function TechnologiePage() {
                 dadurch entstandenen Extrem Niedrigen Frequenzen durch den Körper aus. Die Muskelzellen bekommen z.B.
                 die Anweisung, sich zu lockern, um die Dehnung der Muskulatur zu ermöglichen.
               </p>
-              <img
-                src={CDN + 'zellaktivierung_png.webp?v=1666867432'}
+              <TechBild
+                datei="zellaktivierung_png.webp"
+                version="1666867432"
                 alt="Zellaktivierung durch Frequenzen"
                 style={imgFullStyle}
               />
@@ -248,10 +291,12 @@ export default function TechnologiePage() {
               Jede Zelle reagiert auf einen gewissen „Frequenzschlüssel". Dieser ist ähnlich einem herkömmlichen
               Schlüssel. Die Zacken des Schlüssels entsprechen dem Frequenzband des Signals.
             </p>
-            <img
-              src={CDN + 'Frequenzschluessel_png.webp?v=1666867432'}
+            <TechBild
+              datei="Frequenzschluessel_png.webp"
+              version="1666867432"
               alt="Vergleich Schlüssel mit einem Frequenzschlüssel"
-              style={{...imgFullStyle, maxWidth: '600px', margin: '0 auto 0.5rem'}}
+              max="600px"
+              style={{marginBottom: '0.5rem'}}
             />
             <p style={captionStyle}>Vergleich Schlüssel mit einem „Frequenzschlüssel"</p>
 
@@ -282,19 +327,14 @@ export default function TechnologiePage() {
       {/* ── LEITERNETZWERK ── */}
       <section style={{padding: '4rem 1.5rem', background: '#f7f1e8'}}>
         <div
-          className="NormalSectionSize"
-          style={{
-            maxWidth: '1000px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '3rem',
-            alignItems: 'center',
-          }}
+          className="NormalSectionSize tech-duo tech-duo--mitte"
+          style={{maxWidth: '1000px'}}
         >
-          <img
-            src={CDN + 'qiblanco-com-leiternetzwerk_jpg.webp?v=1666867432'}
+          <TechBild
+            datei="qiblanco-com-leiternetzwerk_jpg.webp"
+            version="1666867432"
             alt="Leiternetzwerk des Körpers"
-            style={{width: '100%', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)'}}
+            style={{borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)'}}
           />
           <div>
             <h2 style={{marginBottom: '1rem'}}>Leiternetzwerk des Körpers</h2>
@@ -337,14 +377,7 @@ export default function TechnologiePage() {
             Die Funktionsweise der Qi Blanco® Systeme beruht auf der Fähigkeit, mit modifizierten kristallinen
             Materialien maßgeblich Einfluss auf die Kohärenzbildung von Wassermolekülen zu nehmen.
           </p>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '2.5rem',
-              alignItems: 'start',
-            }}
-          >
+          <div className="tech-duo tech-duo--eng">
             <div>
               <h3 style={h3Style}>Kristalline Strukturen</h3>
               <p style={pStyle}>
@@ -353,8 +386,9 @@ export default function TechnologiePage() {
                 Moleküle in kristalline Strukturen anordnen. Qi Blanco verwendet eine eigens entwickelte Legierung,
                 die maßgeblich auf Feingold, Kupfer und Kohlenstoff beruht.
               </p>
-              <img
-                src={CDN + 'KristallineStrukturSalz_png.webp?v=1666867432'}
+              <TechBild
+                datei="KristallineStrukturSalz_png.webp"
+                version="1666867432"
                 alt="Kristalline Struktur Salz"
                 style={imgFullStyle}
               />
@@ -376,8 +410,9 @@ export default function TechnologiePage() {
                 Vogelgezwitscher aber durchlässig sind. Damit bieten sich für diese Technik revolutionäre
                 Möglichkeiten im Bereich des Lärmschutzes.
               </p>
-              <img
-                src={CDN + 'Kolloidkristalle_png.webp?v=1666867432'}
+              <TechBild
+                datei="Kolloidkristalle_png.webp"
+                version="1666867432"
                 alt="Kolloidkristalle"
                 style={imgFullStyle}
               />
@@ -536,44 +571,22 @@ export default function TechnologiePage() {
         </div>
       </section>
 
-      {/* ── DISCLAIMER ── */}
-      <section style={{padding: '2.5rem 1.5rem', background: '#fff'}}>
-        <div className="NormalSectionSize" style={{maxWidth: '860px'}}>
-          <p
-            style={{
-              fontSize: '0.875rem',
-              opacity: 0.65,
-              lineHeight: '1.75',
-              borderLeft: '3px solid rgba(0,0,0,0.15)',
-              paddingLeft: '1rem',
-            }}
-          >
-            Die hier vorgestellte Technologie entspricht (wie beispielsweise die Homöopathie, die Bioresonanz,
-            Bereiche der Akupunktur) nicht der schulwissenschaftlichen Auffassung und Lehrmeinung. Der Einsatz der
-            Qi Blanco® Produkte beinhaltet keine Therapie und ersetzt nicht die Konsultation eines Arztes oder
-            Heilpraktikers. Alle erwähnten Aussagen oder Produkte sollen das allgemeine Wohlbefinden unterstützen und
-            beabsichtigen nicht, einen Zustand oder eine Krankheit zu behandeln, zu diagnostizieren, zu lindern, zu
-            verhindern oder zu heilen.
-          </p>
-        </div>
-      </section>
+      {/* Der DISCLAIMER-Abschnitt stand bis 2026-08-24 hier und ist entfallen —
+          Christian-Entscheid vom 2026-08-23: "Überall. Der Disclaimer ist
+          nicht notwendig. Es war Vorsicht, ist aber nicht notwendig."
+          Entfernt wurde ausschließlich dieser Abschnitt; die Studienlage
+          darüber und die CTA darunter stehen unverändert. */}
 
       {/* ── CTA ── */}
       <div style={{padding: '5rem 1.5rem'}}>
         <div
-          className="NormalSectionSize"
-          style={{
-            maxWidth: '900px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '3rem',
-            alignItems: 'center',
-          }}
+          className="NormalSectionSize tech-duo tech-duo--mitte"
+          style={{maxWidth: '900px'}}
         >
-          <img
-            src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ezgif-5-b78604ff40_500x500.webp?v=1682415134"
+          <TechBild
+            datei="ezgif-5-b78604ff40_500x500.webp"
+            version="1682415134"
             alt="QiOne 2 Pro"
-            style={{width: '100%', height: 'auto'}}
           />
           <div>
             <h2 style={{marginBottom: '1.25rem'}}>

@@ -5,7 +5,7 @@ import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
-import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
+import {BLOCK_LP, BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
@@ -241,7 +241,24 @@ function UrgencyBanner() {
 }
 
 /* ───────── Pricing ───────── */
-function PricingSection() {
+/*
+ * block: BLOCK_LP (Default) = die Sektion steht auf der LP selbst, ihre Karten
+ * zeigen auf die Geschwister-LP-Shopseiten. BLOCK_PUBLIC = sie steht auf einer
+ * CRAWLBAREN Seite (Kursseiten via QiOneProductPricing) — dann muss sie auf die
+ * öffentlichen Zwillinge zeigen.
+ *
+ * DER DEFAULT BLEIBT BLOCK_LP: der Aufruf aus QiOneZellschutz selbst ist der
+ * Bestandsfall und ändert sich dadurch nicht — nur der crawlbare Aufrufer
+ * setzt den Block um. Fail-safe in Richtung des heutigen Verhaltens.
+ *
+ * BEFUND, DER DAS AUSGELÖST HAT (Job 20260829-ads-ziel-url-verstoss-...):
+ * PricingSection stand hart auf BLOCK_LP und wird über CourseLesson auf vier
+ * crawlbaren Kursseiten gerendert — 3 Links je Seite = 12 der 14 live
+ * gemessenen Verweise in den Landing-Bereich. Der Schaden ist nicht auf die
+ * verlinkte Seite begrenzt: sickert organischer Verkehr in den Bereich, ist
+ * die paid/organisch-Herleitung von funnel-substrat für die GANZE Fläche hin.
+ */
+function PricingSection({block = BLOCK_LP}) {
   const { data } = useLp();
   const bracelet = findLp(data, 'qibracelet');
   const qione    = findLp(data, 'qione-2-pro');
@@ -273,7 +290,7 @@ function PricingSection() {
               <li>✓  Reduziert E-Smog & 5G</li>
               <li>✓  Wohlbefinden & Klarheit für unterwegs</li>
             </ul>
-            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href={produktLink('qibracelet', BLOCK_LP, 'detail')} style={{textAlign:'center'}}>Mehr erfahren</a>
+            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href={produktLink('qibracelet', block, 'detail')} style={{textAlign:'center'}}>Mehr erfahren</a>
           </article>
 
           {/* QiOne 2 Pro – featured */}
@@ -297,7 +314,7 @@ function PricingSection() {
               <li>✓  Kohärente Wasserstruktur</li>
               <li>✓  Unser Bestseller</li>
             </ul>
-            <a className="lp-vp-btn lp-vp-btn--primary lp-vp-product__cta" href="/pages/qione-2-pro" style={{textAlign:'center'}}>Jetzt risikofrei testen</a>
+            <a className="lp-vp-btn lp-vp-btn--primary lp-vp-product__cta" href={produktLink('qione-2-pro', block, 'kauf')} style={{textAlign:'center'}}>Jetzt risikofrei testen</a>
           </article>
 
           {/* QiHome Air */}
@@ -318,7 +335,7 @@ function PricingSection() {
               <li>✓  Produktives Arbeitsumfeld</li>
               <li>✓  Ideal für Familien</li>
             </ul>
-            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href={produktLink('qihome-air', BLOCK_LP, 'detail')} style={{textAlign:'center'}}>Mehr erfahren</a>
+            <a className="lp-vp-btn lp-vp-btn--ghost-dark lp-vp-product__cta" href={produktLink('qihome-air', block, 'detail')} style={{textAlign:'center'}}>Mehr erfahren</a>
           </article>
         </div>
         <p className="lp-vp-pricing__fineprint">
@@ -330,13 +347,19 @@ function PricingSection() {
 }
 
 /* ───────── Trust / About ───────── */
+/*
+ * Einstieg für CRAWLBARE Seiten (CourseLesson auf den Kursseiten).
+ * Deshalb BLOCK_PUBLIC: von hier darf kein Link in den noindex-Landing-Bereich
+ * führen — sonst bricht die Bedingung, auf der die Ads-Zuordnung des Bereichs
+ * ruht ("dorthin führt kein öffentlicher Link").
+ */
 export function QiOneProductPricing({products}) {
   const data = {products: products || []};
 
   return (
     <LiveDataCtx.Provider value={{data}}>
       <div className="lp-vp course-product-pricing">
-        <PricingSection />
+        <PricingSection block={BLOCK_PUBLIC} />
       </div>
     </LiveDataCtx.Provider>
   );

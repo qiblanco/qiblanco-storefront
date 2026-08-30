@@ -41,6 +41,22 @@ export function ReviewCount() {
    * bleibt erhalten — sie trägt die Optik.
    */
   return (
+    /*
+     * MERGE 2026-08-30 (Job 20260830-sterne-s05-...): hier trafen zwei Baeume
+     * aufeinander, die DASSELBE wollten. origin/main (e4f5e11, "Sterne-Farbe
+     * aus EINER Quelle") wickelte die ★-Glyphen in <span class="qb-sterne">,
+     * damit sie nicht mehr die Elternfarbe erben (#F2BF72/#856828/#eabb6e
+     * liefen auseinander). Dieser Zweig ersetzt die Glyphen durch die geteilte
+     * SVG-StarRating — und die traegt ihre Farbe bereits aus derselben Quelle
+     * (app.css: .star-rating svg path { fill: var(--qb-sterne-gold) }).
+     *
+     * Die Farb-Absicht von main ist damit ERFUELLT, nicht uebergangen: der
+     * Wrapper .qb-sterne ist ausschliesslich fuer GLYPH-Sterne gebaut und
+     * waere hier wirkungslos (ein SVG erbt keine color). Mains zweite
+     * Beobachtung gilt unveraendert und wird hier festgehalten: nur die
+     * STERNE tragen die Sterne-Farbe, die ZAHL behaelt die Farbe ihres
+     * Kontexts. Genau das leistet diese Form.
+     */
     <SterneSprung className="ReviewCount">
       {reviewCount} <StarRating value={reviewCount} size={16} />
     </SterneSprung>

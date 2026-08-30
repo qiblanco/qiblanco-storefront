@@ -8,6 +8,11 @@ import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
 import {
+  istKakaoPfad,
+  KAKAO_KENNZAHLEN,
+  QIBLANCO_KENNZAHLEN,
+} from '~/lib/kakao-zone';
+import {
   GoogleRezensionenPopup,
   findeRezensionsZiel,
   scrolleZuRezensionen,
@@ -127,10 +132,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   }, []);
 
   const {pathname} = useLocation();
-  const isCacaoPage =
-    pathname === '/pages/crystal-cacao' ||
-    pathname === '/products/crystal-cacao-create' ||
-    pathname === '/products/crystal-cacao-awake';
+  // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
+  // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
+  // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
+  // /products/zeremonie-kakao wären beim nächsten Deploy auf die
+  // Qi-Blanco-Leiste gekippt ("über 14.000" auf einer Kakaoseite).
+  const isCacaoPage = istKakaoPfad(pathname);
 
   // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
   // schwarzen Banner scrollt zum Google-Rezensionsbereich DIESER Seite;
@@ -180,7 +187,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           isCacaoPage ? (
             <p>
               <span className="banner-line">
-                5.0/5.0 ⭐⭐⭐⭐⭐ - Über 1.000 aktive Nutzer
+                {KAKAO_KENNZAHLEN.bewertungSkala} ⭐⭐⭐⭐⭐ - Über{' '}
+                {KAKAO_KENNZAHLEN.nutzer} aktive Nutzer
               </span>
               <span className="banner-offer-sep"> - </span>
               <span className="banner-line">
@@ -190,7 +198,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           ) : (
             <p>
               <span className="banner-line">
-                <GoogleSterneBadge /> - Über 14.000 zufriedene Kunden
+                <GoogleSterneBadge /> - Über {QIBLANCO_KENNZAHLEN.nutzer}{' '}
+                zufriedene Kunden
               </span>
               <span className="banner-offer-sep"> - </span>
               <span className="banner-line">
@@ -497,7 +506,12 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100vw',
+        // `width` steht bewusst NICHT mehr hier (2026-08-22, Job
+        // 20260820-dropdown-menueleiste-grafik-ueberstand). Die Inline-Breite
+        // war der Grund, warum app.css die Breite zweimal mit !important
+        // setzen musste und warum die Chat-Andock-Regel ein drittes
+        // !important brauchte. Die Breite gehört an EINE Stelle:
+        // `.submenu { width: 100% }` in app/styles/app.css.
         backgroundColor: 'rgb(247, 241, 232)',
         boxShadow: 'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px',
         padding: '1.5rem',
@@ -510,21 +524,32 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
     >
       {item.title === "Shop" && (
         <>
+          {/* height/alt ergänzt 2026-08-22 (Job 20260820-dropdown-
+              menueleiste-grafik-ueberstand). Die fünf Dropdown-Bilder
+              trugen `width` ohne `height` — der Browser kann dann vor dem
+              Laden keine Fläche reservieren, das Panel springt beim
+              Öffnen. Die height-Werte sind KEINE Wunschzahlen, sondern die
+              am 2026-08-22 gemessenen natürlichen Seitenverhältnisse auf
+              width=325 gerechnet (1368x913 -> 217, 597x399 -> 217,
+              1118x840 -> 244, 526x296 -> 183, 668x350 -> 170). Die
+              tatsächliche Anzeigehöhe bestimmt weiterhin
+              `img { height: auto }` (app.css) — die Attribute liefern nur
+              das Seitenverhältnis. */}
           {hoverItem === "QiBracelet®" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
+              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiBracelet® am Handgelenk getragen" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
               <div className="nav-styling-overlay">QiBracelet®</div>
             </div>
           )}
           {hoverItem === "QiOne® 2 Pro" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
+              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiOne® 2 Pro im Alltag am Strand" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
               <div className="nav-styling-overlay">QiOne 2 Pro®</div>
             </div>
           )}
           {hoverItem === "QiHome® Air" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
+              <img style={{borderRadius: '20px'}} width={325} height={244} loading="lazy" alt="QiHome® Air im Wohnraum aufgestellt" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
               <div className="nav-styling-overlay">QiHome Air®</div>
             </div>
           )}
@@ -532,19 +557,29 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
       )}
 
       {item.title === "Online Kurse" && (
-        <div className="nav-styling-wrapper">
+        <div className="nav-styling-wrapper nav-styling-wrapper--kurse">
           {/* Ohne den `_400x`-Zusatz: dieselbe Aufnahme in ihrer vollen
               Ablagegroesse (526x296 statt 400x225). Bei 285 CSS-px Anzeige und
               dpr>=2 trugen 400 Quellpixel die Flaeche nicht (Gate 12,
               bild-aufloesung), 526 tragen sie. Nachgemessen 2026-08-09: beide
-              URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung. */}
-          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
+              URLs liefern HTTP 200, `_400x` ist eine reine Verkleinerung.
+
+              526 IST DIE OBERGRENZE DIESER AUFNAHME, nicht eine Wahl:
+              nachgemessen 2026-08-23 liefert das Shopify-CDN für `_1200x`
+              wieder 526x296 — es gibt keine größeren Pixel, auch die
+              `.webp`-Fassung hat nur 526. Die Annahme "285 CSS-px" von
+              2026-08-09 gilt seit dem Mega-Menü-Umbau nicht mehr: gemessen
+              308 px (mobil-quer-883) und 314 px (tablet-900), und bei dpr>=2
+              trägt 526 diese Fläche nicht. Weil die Quelle nicht wachsen
+              kann, deckelt `.nav-styling-wrapper--kurse` in app/styles/app.css
+              die ANZEIGE — dort steht die Herleitung des Werts. */}
+          <img style={{borderRadius: '20px'}} width={325} height={183} loading="lazy" alt="Online-Masterclass „In 5 Stufen zum Superhuman“" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
         </div>
       )}
 
       {item.title === "Mehr" && (
         <div className="nav-styling-wrapper">
-          <img style={{borderRadius: '20px'}} width={325} src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
+          <img style={{borderRadius: '20px'}} width={325} height={170} loading="lazy" alt="Qi Blanco in den Bergen bei Kitzbühel" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
         </div>
       )}
 
@@ -892,7 +927,7 @@ function GoogleSterneBadge() {
    */
   return (
     <span className="ReviewCount" data-qb-rating="s">
-      {g.komma} {'★'.repeat(5)}
+      {g.komma} <span className="qb-sterne">{'★'.repeat(5)}</span>
     </span>
   );
 }

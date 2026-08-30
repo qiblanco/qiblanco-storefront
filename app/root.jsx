@@ -29,6 +29,7 @@ import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {QpxCommerce} from './components/QpxCommerce';
+import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
@@ -326,6 +327,24 @@ export function Layout({children}) {
               suppressHydrationWarning
             />
             {/*
+              UpPromote-Affiliate-Basis-Code (Third-Party-Store): Queue +
+              upTag-Stub + die zwei config-Werte (myshopify_domain, linker zur
+              Checkout-Domain). Inert — setzt nichts auf dem Endgerät und sendet
+              nichts, deshalb steht er hier ungegatet neben den anderen
+              First-Party-Skripten.
+              Das einwilligungspflichtige collect.js von uppromote.com steht
+              BEWUSST NICHT als eigener Tag hier: ein fester Tag würde bei JEDEM
+              Seitenaufruf laden, auch ohne Einwilligung. Es wird von
+              <UpPromoteTracking /> unten hinter demselben Cookiebot-
+              Marketing-Tor wie das Meta-Pixel nachgeladen.
+            */}
+            <script
+              src="/qiblanco-uppromote-tracker.js"
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            {/*
               GORGIAS-CHAT ENTFERNT (Christian 2026-07-31, Weichen-Korrektur):
               Auf dem deutschsprachigen DACH-Storefront läuft AI-Anna store-weit
               für ALLE Besucher; der Gorgias-Chat-Loader ist hier dauerhaft raus
@@ -403,6 +422,14 @@ export function Layout({children}) {
               <>
                 <MetaPixel />
                 <QpxCommerce />
+                {/*
+                  UpPromote-Affiliate-Tracking: lädt collect.js nach und gibt
+                  cart_updated für den Auto-Rabatt weiter. Steht bewusst HIER im
+                  selben Production/Preview-Gate wie Meta/qpx und trägt sein
+                  Cookiebot-Marketing-Tor zusätzlich in sich (importiert aus
+                  MetaPixel.jsx).
+                */}
+                <UpPromoteTracking />
               </>
             )}
           </Analytics.Provider>
