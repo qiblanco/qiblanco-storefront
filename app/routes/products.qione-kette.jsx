@@ -20,6 +20,7 @@ import { useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -117,7 +118,7 @@ export default function Product() {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <div className="product-rating mt-2"><span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span></div>
+        <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>

@@ -19,6 +19,20 @@ import { KursInhalteKakao } from '~/components/reusables/KursinhalteKakao';
 import { UpsellLineUp } from '~/components/UpsellLineUp';
 
 import {canonicalLink} from '~/lib/seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+
+/*
+ * MERGE 2026-08-30 (Job 20260830-sterne-s05-...): die Sterne-ZAHL wird aus der
+ * Kennzahl-Konstante ABGELEITET, nie daneben geschrieben. Dieser Zweig trug an
+ * vier Stellen hartkodiert 5.0 bzw. 4.8 — den Stand VOR origin/main a75fd47
+ * ("Kakao-Kennzahlen: 4,9 Sterne und 1.000 Nutzer"). StarRating braucht eine
+ * Zahl (es rechnet value - i), KAKAO_KENNZAHLEN.bewertung ist ein String mit
+ * Dezimalkomma — genau hier entstuende sonst die zweite Wahrheit.
+ */
+const KAKAO_BEWERTUNG_ZAHL = Number(
+  KAKAO_KENNZAHLEN.bewertung.replace(',', '.'),
+);
+
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -123,7 +137,10 @@ export default function Product() {
         </div>
         <div className="KakaoHero-imgText">
           <h2>Kristall Kakao®</h2>
-          <div className="ReviewCount">{KAKAO_KENNZAHLEN.bewertung} ★★★★★</div>
+          <SterneSprung className="ReviewCount">
+            {KAKAO_KENNZAHLEN.bewertung}{' '}
+            <StarRating value={KAKAO_BEWERTUNG_ZAHL} size={16} />
+          </SterneSprung>
           <img
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
             alt=""
@@ -164,9 +181,11 @@ export default function Product() {
         </div>
         <div className="product-main">
           <h1>{title}</h1>
-          <div className="product-rating mt-2">
-            <span>{KAKAO_KENNZAHLEN.bewertung}</span> ★★★★★ <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
-          </div>
+          <SterneSprung className="product-rating mt-2">
+            <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+            <StarRating value={KAKAO_BEWERTUNG_ZAHL} />{' '}
+            <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
+          </SterneSprung>
           <div
             className="ProductDescription mt-2 mb-2"
             dangerouslySetInnerHTML={{__html: descriptionHtml}}
@@ -445,9 +464,11 @@ export default function Product() {
           </div>
           <div className="product-main">
             <h1>{title}</h1>
-            <div className="product-rating mt-2">
-              <span>{KAKAO_KENNZAHLEN.bewertung}</span> ★★★★★ <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
-            </div>
+            <SterneSprung className="product-rating mt-2">
+              <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+              <StarRating value={KAKAO_BEWERTUNG_ZAHL} />{' '}
+              <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
+            </SterneSprung>
             <div
               className="ProductDescription"
               dangerouslySetInnerHTML={{__html: descriptionHtml}}
@@ -546,7 +567,10 @@ function Kundenstimmen() {
         style={{margin: '100px auto 0 auto'}}
       >
         <h2 className="text-center">Kundenstimmen</h2>
-        <div className="ReviewCount">{KAKAO_KENNZAHLEN.bewertung} ★★★★★</div>
+        <SterneSprung className="ReviewCount">
+          {KAKAO_KENNZAHLEN.bewertung}{' '}
+          <StarRating value={KAKAO_BEWERTUNG_ZAHL} size={16} />
+        </SterneSprung>
       </div>
       <div className="Kundenstimmen-Slider NormalSectionSize mt-2">
         <div className="Kundenstimme">

@@ -15,7 +15,7 @@ import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {QiHomeHeroBullets} from '~/components/product-pages/QiHomeHeroBullets';
 import {
   StarRating,
-  GOOGLE_REVIEWS_URL,
+  SterneSprung,
 } from '~/components/reusables/StarRating';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 
@@ -87,18 +87,15 @@ export function QiHomeAirShop({product}) {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        {/* 5-Sterne-Darstellung + Klick zur Google-Rezensionen-Ansicht
-            (geteilte StarRating; Job 20260718-lp-sterne). */}
-        <a
-          className="product-rating product-rating--google"
-          href={GOOGLE_REVIEWS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={'4,8 von 5 Sternen \u2014 Google-Rezensionen von Qi Blanco ansehen'}
-        >
+        {/* 5-Sterne-Darstellung + Sprung zum Bewertungsbereich dieser Seite
+            (geteilte StarRating; Standard-Klasse S seit Job 20260820-wurzel-
+            sterne-klick-scroll. Der früher hier haengende EXTERNE Google-Link
+            ist bewusst entfallen: er ist die AUSNAHME und sitzt genau einmal
+            je Seite am GoogleRatingBadge im Bewertungsbereich). */}
+        <SterneSprung className="product-rating">
           <span>{'4,8'}</span> <StarRating value={4.8} />{' '}
           <span>{'\u00DCber 14.000 Nutzer'}</span>
-        </a>
+        </SterneSprung>
         <QiHomeHeroBullets />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>

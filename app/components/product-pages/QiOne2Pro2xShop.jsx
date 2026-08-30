@@ -11,7 +11,7 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {
   StarRating,
-  GOOGLE_REVIEWS_URL,
+  SterneSprung,
 } from '~/components/reusables/StarRating';
 
 /*
@@ -70,17 +70,11 @@ export function QiOne2Pro2xShop({product}) {
           quantity={2}
           ctaLabel="2er-Set in den Warenkorb"
           socialProof={
-            <a
-              className="product-rating product-rating--google"
-              href={GOOGLE_REVIEWS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="4,8 von 5 Sternen — Google-Rezensionen von Qi Blanco ansehen"
-            >
+            <SterneSprung className="product-rating">
               <span>{claim('WM-bewertung-4-8-sterne').replace(/\s*★\s*$/, '')}</span>{' '}
               <StarRating value={4.8} />{' '}
               <span>{claim('WM-nutzer-ueber-14000')}</span>
-            </a>
+            </SterneSprung>
           }
           description={<QiOneHeroBulletsPages />}
           topBadge={

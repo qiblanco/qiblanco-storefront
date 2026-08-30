@@ -9,6 +9,7 @@ import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionen
 import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
 import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css) — Begründung siehe
@@ -93,9 +94,7 @@ export default function Product() {
       <QiOneBuyBox
         product={product}
         socialProof={
-          <div className="product-rating">
-            <span>4.8</span> ★★★★★ <span>Über 14.000 Nutzer</span>
-          </div>
+          <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         }
         description={
           <div

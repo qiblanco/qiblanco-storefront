@@ -1,5 +1,8 @@
 import {ReviewsSlider} from '~/components/index-components/ReputonWidget';
-import {GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID} from '~/components/reusables/GoogleRezensionenBereich';
+import {
+  GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID,
+  REVIEWS_SEKTION_ATTR,
+} from '~/components/reusables/GoogleRezensionenBereich';
 import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
 
 /**
@@ -25,6 +28,7 @@ export function GoogleReviews({dataSection}) {
     <section
       id={GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID}
       className="GoogleKundenerfahrungen NormalSectionSize"
+      {...{[REVIEWS_SEKTION_ATTR]: ''}}
       {...(dataSection ? {'data-section': dataSection} : {})}
     >
       <h2 className="text-[1.6rem] sm:text-4xl font-semibold text-center mb-6 mt-2">
