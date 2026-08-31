@@ -13,9 +13,26 @@ import {Link} from 'react-router';
  *
  * WARUM DIE FRAGE UND NICHT DER SEITENNAME: der Kunde sucht keine „Seite
  * Wirkt das", er hat einen Zweifel. Die Zeile spricht seinen Zustand an, nicht
- * unser Artefakt (KWD-0001) — und sie verspricht ausdrücklich auch die
- * GRENZEN, weil genau das die Seite einlöst und ein bloßes „unsere Studien"
- * die Skepsis eher bestätigt als auflöst.
+ * unser Artefakt (KWD-0001).
+ *
+ * ZIEL GEÄNDERT AM 2026-08-31: von `/pages/wirkt-das` auf `/pages/studien`.
+ * Christian hat die Zweifelseite wegen ihrer Textqualität zurückgezogen (raus
+ * aus dem Menü, noindex, raus aus der Sitemap). Sie ist zwar weiterhin HTTP
+ * 200, aber eine Seite, die zu schlecht für den Index ist, ist erst recht zu
+ * schlecht für den Warenkorb — dort steht der Kunde unmittelbar vor der
+ * Entscheidung. Die Zeile SELBST bleibt: der Zweifel, den sie adressiert, ist
+ * unverändert da (12,8 % der Support-Vorgänge), und ihn wortlos zu lassen wäre
+ * die schlechtere Antwort als ihn auf einen belastbaren Beleg zu führen.
+ * `/pages/studien` ist öffentlich, ohne noindex und stand am 2026-08-14 auf
+ * Platz 1 für „Qi Blanco Studien" — es ist der stärkste Beleg-Ort, den wir
+ * haben.
+ *
+ * DER TEXT WURDE MITGEZOGEN, NICHT NUR DER LINK. Vorher versprach die Zeile
+ * „samt ihrer Grenzen" — das löste die Zweifelseite ein, die Studienübersicht
+ * tut es nicht. Ein Versprechen stehen zu lassen, dessen Ziel es nicht mehr
+ * einlöst, ist derselbe Vertrauensbruch, den die Zeile eigentlich heilen soll.
+ * Sie verspricht jetzt, was `/pages/studien` tatsächlich liefert: Volltext und
+ * Original-PDF zum Selbstnachlesen.
  *
  * Die Gestaltung liegt in app/styles/zweifel-beleg.css und wird von den
  * benutzenden Routen über ihren links()-Export geladen (Muster mm-lp.css) —
@@ -27,12 +44,12 @@ import {Link} from 'react-router';
  * }} props
  */
 export function ZweifelBeleg({
-  text = 'Wirkt das überhaupt? Wir legen unsere Belege offen — samt ihrer Grenzen.',
+  text = 'Wirkt das überhaupt? Lies die Studien im Volltext — mit Original-PDF, und urteile selbst.',
   className = '',
 }) {
   return (
     <p className={`qb-zweifel ${className}`.trim()}>
-      <Link to="/pages/wirkt-das" className="qb-zweifel__link">
+      <Link to="/pages/studien" className="qb-zweifel__link">
         {text}
       </Link>
     </p>

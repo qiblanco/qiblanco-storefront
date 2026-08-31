@@ -180,7 +180,7 @@ export default function Cart() {
             ist sie ein Angebot, auf dem Weg zur Kasse wäre sie eine
             Ablenkung. Sie steht NACH der Summe: wer schon entschieden hat,
             liest sie gar nicht erst. */}
-        <ZweifelBeleg text="Noch unsicher, ob das wirkt? Wir legen unsere Belege offen — samt ihrer Grenzen." />
+        <ZweifelBeleg text="Noch unsicher, ob das wirkt? Lies die Studien im Volltext — mit Original-PDF, und urteile selbst." />
       </div>
     </div>
   );

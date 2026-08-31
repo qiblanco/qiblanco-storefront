@@ -1,6 +1,6 @@
 import {MmWirktDas} from '~/components/campaign/MmWirktDas';
 import mmStyles from '~/styles/mm-lp.css?url';
-import {canonicalLink} from '~/lib/seo';
+import {noindexMeta, noindexHeader} from '~/lib/seo';
 
 /**
  * /pages/wirkt-das — Antwort auf den größten Einwand des Bestands
@@ -22,15 +22,38 @@ import {canonicalLink} from '~/lib/seo';
  * nachweislich die Route (eindeutiger Marker im Live-HTML) und der
  * Sitemap-Eintrag existiert trotzdem.
  *
- * INDEXIERBAR, im Gegensatz zu /pages/zellstudien-ehrlich: diese Seite ist
- * genau dafür gebaut, von einem zweifelnden Menschen gefunden zu werden.
- * Deshalb canonical und KEIN noindex. Der Canonical kommt aus `canonicalLink`
- * (app/lib/seo.js) und NICHT als `{rel:'canonical'}`-Descriptor: react-router-7
- * rendert einen Descriptor ohne `tagName` als `<meta rel="canonical">`, was im
- * Quelltext fast gleich aussieht und für Suchmaschinen wirkungslos ist. Genau
- * diese Stelle wurde am 2026-08-26 in 14 Bestands-Routen repariert (Commits
- * 6cbb85b/a70ab68); eine neue Route mit dem alten Muster hätte den Defekt am
- * Tag seiner Behebung wieder eingeführt.
+ * AUSSER BETRIEB SEIT 2026-08-31 — NICHT MEHR INDEXIERBAR (Christian, direkt:
+ * „die Seite ist so schlecht, dass sie rausgenommen wird — also raus aus dem
+ * Reiter und nicht mehr crawlbar"). Bis dahin stand hier das Gegenteil: die
+ * Seite war genau dafür gebaut, gefunden zu werden, und trug deshalb einen
+ * Canonical und KEIN noindex. Anlass der Umkehr waren Mängel an der
+ * ausgelieferten Seite selbst (durchgehender Anrede-Mix Sie/Du, ein
+ * Wortumbruch mitten im Wort, ein Komma am Zeilenanfang, zweimal derselbe
+ * falsch sitzende Zitatblock, ein sich selbst abwertender Einstieg) — nicht
+ * am Zweck der Seite.
+ *
+ * ENTWEDER noindex ODER canonical, nie beides (Hausregel, wörtlich in
+ * `pages.uebersicht.jsx`): ein Bot, der dem Canonical folgt, kann das noindex
+ * der Zielseite zuordnen. Der `canonicalLink`-Aufruf ist deshalb ENTFERNT und
+ * nicht auskommentiert stehengeblieben.
+ *
+ * DIE ROUTE BLEIBT ERREICHBAR (HTTP 200) — Variante (a) des Vollzugsauftrags.
+ * Es gibt keinen externen eingehenden Link (gemessen: 0 Treffer in Mail-,
+ * Ads- und Social-Beständen), aber die Seite ist erst fünf Tage alt und ihr
+ * Inhalt soll wiederverwendbar bleiben; ein 404/410 würde Arbeit vernichten,
+ * die eine spätere Entscheidung noch braucht. Der Rückweg steht im RESULT des
+ * Jobs 20260831-vollzug-wirkt-das-aus-menue-und-index-nehmen-prio6.
+ *
+ * DER SITEMAP-EINTRAG fliegt zusätzlich raus — über den Handle `wirkt-das` in
+ * `NICHT_INDEXIERBARE_SEITEN_DEF` (app/lib/seo.js, `ausSitemap: true`), also
+ * über dieselbe eine Definition, aus der beide Sichten abgeleitet werden.
+ * Warum hier KEINE Übergangsstufe `ausSitemap: false` wie bei `pre-access`:
+ * die Begründung dort ist „die Sitemap ist der einzige Weg, auf dem Google die
+ * Seite noch besucht" — sie gilt für eine seit Jahren liegende Restseite. Diese
+ * hier war fünf Tage in der Sitemap; ihr Discovery-Pfad war zusätzlich das
+ * Hauptmenü und die Produktseite. Sie steht damit in Googles Crawl-Frontier
+ * und wird auch ohne Sitemap-Eintrag wieder besucht — und trifft dann auf
+ * noindex im HTML UND im X-Robots-Tag.
  *
  * Tracking hängt global im root-Layout; die Seite braucht keine Produktdaten
  * und hat bewusst keinen Kauf-CTA — ihr Ausgang ist „selbst prüfen".
@@ -47,8 +70,16 @@ export const meta = () => [
     content:
       'Fünf Zellstudien, ein Labor, klare Grenzen: was bei Qi Blanco im Labor gemessen wurde, was daraus folgt und was ausdrücklich nicht. Zum Selbstnachlesen.',
   },
-  canonicalLink('/pages/wirkt-das'),
+  noindexMeta(),
 ];
+
+/**
+ * Die ZWEITE, vom HTML unabhängige Sperre desselben Signals (Hausmuster D-006,
+ * „Gurt und Hosenträger"): greift auch bei einem Bot, der den HTML-head nicht
+ * parst. Wortgleich zu `pages.uebersicht.jsx` und zum Katchall
+ * `pages.$handle.jsx` — beide beziehen ihn aus `noindexHeader()`.
+ */
+export const headers = () => noindexHeader();
 
 export function loader() {
   return {};
