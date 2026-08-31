@@ -248,6 +248,51 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Sitemap. Der öffentliche Zwilling ist /pages/qibracelet-details und ' +
       'bleibt indexierbar — Achse B, gemessen 2026-08-29',
   },
+  // Neu 2026-08-31 (Vollzugsauftrag Christian, direkt). DIESER EINTRAG BRICHT
+  // DAS AUFNAHME-KRITERIUM OBEN, UND ZWAR ABSICHTLICH — hier steht warum, damit
+  // ihn niemand als Präzedenzfall missversteht.
+  //
+  // Das Kriterium lautet: „nur Seiten, die für Kunden keinen Zweck haben […]
+  // Eine Seite, die Kunden nutzen sollen, gehört NIE hierher — dann ist die
+  // richtige Antwort besserer Inhalt, nicht Unsichtbarkeit." `wirkt-das` HAT
+  // einen Kundenzweck (der größte Einwand des Bestands, ew-01), und trotzdem
+  // steht sie jetzt hier. Der Unterschied: die Entscheidung „besserer Inhalt
+  // statt Unsichtbarkeit" IST getroffen worden — sie fiel gegen die Seite.
+  // Christian am 2026-08-31 wörtlich: „die Seite ist so schlecht, dass sie
+  // rausgenommen wird — also raus aus dem Reiter und nicht mehr crawlbar."
+  // Das Kriterium schützt davor, schwachen Inhalt wegzuverstecken statt ihn zu
+  // reparieren; es steht einer ausdrücklichen Rücknahme-Entscheidung nicht
+  // entgegen. Wer die Seite wieder aufnimmt, repariert erst den Inhalt und
+  // entfernt DANN diesen Eintrag — nicht umgekehrt.
+  //
+  // `ausSitemap: true` OHNE die Übergangsstufe `ausSitemap: false`: die
+  // Begründung der Übergangsstufe („die Sitemap ist der einzige Weg, auf dem
+  // Google die Seite noch besucht") gilt für Restseiten, die seit Jahren ohne
+  // eingehende Links liegen. Diese Seite ging am 2026-08-26 live, stand fünf
+  // Tage im Hauptmenü und auf der Produktseite und ist damit in der
+  // Crawl-Frontier — sie wird auch ohne Sitemap-Eintrag wieder besucht und
+  // trifft dann auf noindex in HTML und X-Robots-Tag. Der Widerspruch
+  // „noindex UND in der Sitemap" entsteht hier also gar nicht erst.
+  // Die beiden Einträge DIREKT DARÜBER (`partner`, `qibracelet`, 2026-08-29)
+  // sind unabhängig zum selben Schluss gekommen und nennen dieselbe Bedingung:
+  // die Zweistufigkeit existiert für Seiten, deren EINZIGER Discovery-Pfad die
+  // Sitemap ist. Sie begründen ihr Überspringen mit „Stufe 1 ist abgelaufen"
+  // (das noindex stand schon sechs Wochen), dieser hier mit „Stufe 1 ist
+  // gegenstandslos" (die Sitemap war nie der einzige Weg). Zwei Wege, dieselbe
+  // Regel — die Übergangsstufe ist die Ausnahme, nicht der Normalfall.
+  //
+  // WIRKUNG DIESES EINTRAGS IST NUR DIE SITEMAP: `/pages/wirkt-das` hat eine
+  // EIGENE Route (`pages.wirkt-das.jsx`), die den Katchall `pages.$handle.jsx`
+  // sticht — die Sicht `NICHT_INDEXIERBARE_SEITEN` erreicht sie deshalb nicht.
+  // Das noindex-meta und der X-Robots-Tag stehen in der eigenen Route. Der
+  // Eintrag hier bleibt trotzdem vollständig richtig: fiele die eigene Route
+  // je weg, griffe der Katchall und trüge das noindex weiter.
+  {
+    handle: 'wirkt-das',
+    ausSitemap: true,
+    grund:
+      'am 2026-08-31 von Christian wegen Textqualität zurückgezogen; URL bleibt 200, noindex in der eigenen Route',
+  },
 ];
 
 /**
