@@ -1,5 +1,6 @@
 import {redirect, useLoaderData} from 'react-router';
 import {SchlafZellenSchutz} from '~/components/campaign/SchlafZellenSchutz';
+import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
 import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 
@@ -91,7 +92,22 @@ export async function loader({context, request}) {
 
 export default function SchlafZellenSchutzRoute() {
   const {products} = useLoaderData();
-  return <SchlafZellenSchutz products={products} />;
+  return (
+    <>
+      {/*
+        HYDRATIONS-RETTUNG (Job 20260830-lp-a-review-sektionen-…-prio25).
+        Gemessen am 2026-08-31: fällt EINER der 35 Bundle-Chunks
+        dieser Route aus, läuft das React-Router-Bootstrap gar nicht — die Seite
+        bleibt lesbares SSR-HTML ohne jeden React-Handler, `karussells_bedienbar`
+        fällt von 41 auf 15. Das gilt für JEDEN Chunk des Graphen, auch für
+        solche ohne Bezug zu den Bewertungen; die beiden Bewertungs-Sektionen
+        sind NICHT aneinander gekoppelt. Begründung, Messreihe und Schleifen-
+        schutz stehen in der Komponente.
+      */}
+      <HydrationsRettung />
+      <SchlafZellenSchutz products={products} />
+    </>
+  );
 }
 
 const CAMPAIGN_PRODUCTS_QUERY = `#graphql
