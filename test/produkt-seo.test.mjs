@@ -26,6 +26,7 @@ import {readFileSync, readdirSync} from 'node:fs';
 import {
   MARKE,
   PRODUKT_BESCHREIBUNGEN,
+  PRODUKT_TITEL,
   produktBeschreibung,
   produktMeta,
 } from '../app/lib/produkt-seo.js';
@@ -273,6 +274,39 @@ test('jede eigene Produktroute reicht `produkt` an produktMeta durch', () => {
   }
 });
 
+test('der Titel-Überschreiber gewinnt, und og:title folgt ihm', () => {
+  // Die zweite Hälfte ist die eigentliche Zusage: ein <title>, dem og:title
+  // NICHT folgt, zeigt beim Teilen etwas anderes als im Suchergebnis — genau
+  // die Zwei-Versprechen-Falle, die für die Beschreibung schon gilt.
+  const d = produktMeta({pfad: '/products/qione-2-pro', titel: 'ROH'});
+  const titel = d.find((x) => x.title)?.title;
+  const og = d.find((x) => x.property === 'og:title')?.content;
+  assert.equal(titel, PRODUKT_TITEL['/products/qione-2-pro']);
+  assert.notEqual(titel, 'ROH', 'der Überschreiber hat nicht gegriffen');
+  assert.equal(og, titel, 'og:title folgt dem <title> nicht');
+});
+
+test('ein Pfad OHNE Überschreiber behält den Titel der Route', () => {
+  // Gegenrichtung, sonst wäre ein Überschreiber, der IMMER greift, von
+  // einem korrekten nicht zu unterscheiden.
+  const pfad = '/products/qibracelet';
+  assert.equal(PRODUKT_TITEL[pfad], undefined, 'Testannahme veraltet');
+  const d = produktMeta({pfad, titel: 'ROH'});
+  assert.equal(d.find((x) => x.title)?.title, 'ROH');
+  assert.equal(d.find((x) => x.property === 'og:title')?.content, 'ROH');
+});
+
+test('jeder überschriebene Titel bleibt im Snippet-Fenster', () => {
+  for (const [pfad, t] of Object.entries(PRODUKT_TITEL)) {
+    assert.ok(
+      t.length <= 65,
+      `${pfad}: ${t.length} Zeichen — Google schneidet bei ~60 ab`,
+    );
+    assert.ok(t.includes(MARKE), `${pfad}: Marken-Suffix fehlt`);
+    assert.ok(!/\bUG\b/.test(t), `${pfad}: Rechtsform zurück im Titel`);
+  }
+});
+
 test('produktMeta ohne `produkt` bleibt unveraendert (kein ld+json)', () => {
   const d = produktMeta({pfad: '/products/qione-2-pro', titel: 'T'});
   assert.equal(
@@ -335,12 +369,21 @@ test('NAHT: Blog- und Produktbereich führen DIESELBE Marke', () => {
   assert.equal(MARKEN_SUFFIX, MARKE);
 });
 
-test('KEINE Produktroute schreibt die Rechtsform selbst in den Titel', () => {
+test('KEINE Route schreibt die Rechtsform selbst in den Titel', () => {
   // Gegenrichtung: die Konstante kann sauber sein, während eine Route den
   // alten Text weiter hartkodiert. Genau so lag der Bestand vor dem Fix.
-  const dateien = readdirSync('app/routes').filter(
-    (f) => f.startsWith('products.') && f.endsWith('.jsx'),
-  );
+  //
+  // DER ZAUN MISST DIE EIGENSCHAFT, NICHT DEN ORT (s02 des Grossjobs
+  // 20260831-…-warum-ranken-kritiker… (s02), 2026-08-31): bis hierher
+  // filterte dieser Test auf `products.*` und war deshalb grün, während VIER
+  // Seitenrouten den Suffix unverändert weitertrugen —
+  // `pages.qione-2-pro-details`, `pages.qibracelet-details`,
+  // `pages.qihome-details`, `pages.crystal-cacao`. Das sind exakt die
+  // /pages/-Fassungen der Produkte, also die Seiten, die mit den Kaufseiten
+  // um dieselben Marken-Suchen konkurrieren; der Ort trennte hier also
+  // genau falsch. Gefragt ist nicht „liegt die Datei unter products.*",
+  // sondern „schreibt hier jemand eine Rechtsform in einen Titel".
+  const dateien = readdirSync('app/routes').filter((f) => f.endsWith('.jsx'));
   const treffer = [];
   for (const f of dateien) {
     const inhalt = readFileSync(`app/routes/${f}`, 'utf8');

@@ -23,7 +23,7 @@ import {canonicalLink} from '~/lib/seo';
  */
 export const meta = () => {
   return [
-    {title: 'QiHome\u00AE Air im Detail | Qi Blanco UG (haftungsbeschr\u00E4nkt)'},
+    {title: 'QiHome\u00AE Air im Detail | Qi Blanco'},
     canonicalLink('/pages/qihome-details'),
   ];
 };
