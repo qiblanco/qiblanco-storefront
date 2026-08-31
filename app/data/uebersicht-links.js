@@ -118,7 +118,7 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/pages/qione-2-pro-2x", "url": "https://qiblanco.com/pages/qione-2-pro-2x", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/qione-zellschutz", "url": "https://qiblanco.com/pages/qione-zellschutz", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "pausiert"},
       {"pfad": "/pages/schlaf-zellen-schutz", "url": "https://qiblanco.com/pages/schlaf-zellen-schutz", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "pausiert"},
-      {"pfad": "/pages/so-funktioniert-der-qione", "url": "https://qiblanco.com/pages/so-funktioniert-der-qione", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "aktiv"},
+      {"pfad": "/pages/so-funktioniert-der-qione", "url": "https://qiblanco.com/pages/so-funktioniert-der-qione", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "pausiert"},
       {"pfad": "/pages/so-wirkt-kohaerentes-wasser", "url": "https://qiblanco.com/pages/so-wirkt-kohaerentes-wasser", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/tiefer-schlaf", "url": "https://qiblanco.com/pages/tiefer-schlaf", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/wir-machen-ihn-auf", "url": "https://qiblanco.com/pages/wir-machen-ihn-auf", "titel": "", "crawlbar": false, "herkunft": "code"},
