@@ -25,7 +25,7 @@ import {canonicalLink} from '~/lib/seo';
  */
 export const meta = () => {
   return [
-    {title: 'QiBracelet\u00AE im Detail | Qi Blanco UG (haftungsbeschr\u00E4nkt)'},
+    {title: 'QiBracelet\u00AE im Detail | Qi Blanco'},
     canonicalLink('/pages/qibracelet-details'),
   ];
 };
