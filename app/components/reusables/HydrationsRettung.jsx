@@ -113,7 +113,7 @@ const RETTUNGS_SKRIPT = `(function () {
   function rette(grund) {
     if (window.__qbHydratationOk) return;
     // Nie in einer Vorab-Darstellung (der Nutzer sieht die Seite noch gar nicht)
-    // und nie in einem fremden Rahmen (dort gehoert uns das Fenster nicht).
+    // und nie in einem fremden Rahmen (dort gehört uns das Fenster nicht).
     if (document.prerendering) return;
     try { if (window.top !== window) return; } catch (e) { return; }
     var speicher;
