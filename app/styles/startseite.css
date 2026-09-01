@@ -1,0 +1,175 @@
+/* ============================================================================
+   startseite.css — Token-Schicht der DACH-Startseite
+   ----------------------------------------------------------------------------
+   WARUM ES DIESE DATEI GIBT
+   Die Startseite stand im design-rubrik-Score auf 50 bei Schwelle 80 (gemessen
+   live und auf dem Dev-Server, identisch). Die Abzuege waren seitenweit und
+   token-los: 16 Schriftgroessen, 4 H2-Stil-Kombis, 5 Sektions-Abstaende mit nur
+   7 % auf dem 8px-Grid, zwei konkurrierende Warmtoene, ein fremdes Akzent-Blau
+   und sechs Hintergrund-Farbwelten.
+
+   WARUM HIER UND NICHT IN app.css
+   app.css ist 152 KB gross und wird ueber root.jsx auf JEDER Seite geladen. Eine
+   Aenderung dort traegt Blast-Radius auf alle Routen und laeuft zusaetzlich in
+   die Gate-12-Reichweiten-Achse. Diese Datei wird ausschliesslich von der Route
+   _index.jsx geladen und ist auf .home gescoped: additiv, reversibel, ohne
+   Nebenwirkung auf andere Seiten. Entfernen des Imports stellt den Vorzustand
+   vollstaendig wieder her.
+
+   REZEPT
+   Uebernommen aus dem Bestand, nicht neu erfunden: .lp-a3 / mm-lp.css (devlog
+   D-084, dort gingen 6 LPs mit derselben Befundlage von 75-78 auf 91-92) und
+   design-meister/db/webdesign/web-soll.yaml (Typo-Skala, Takt 96/64, EIN Gold).
+
+   BEWUSST NICHT GEAENDERT
+   - Die H2-AUSRICHTUNG bleibt gemischt (10x links, 12x zentriert). Die Rubrik
+     zieht dafuer 15 Punkte, aber jede Vereinheitlichung bricht echtes Layout:
+     die linken H2 stehen in linksbuendigen Textspalten, die zentrierten ueber
+     zentrierten Sektionsinhalten. Der Score traegt diesen Abzug.
+   - Der HINTERGRUND DES KAUF-BUTTONS (btn--primary, rgb(242,191,114)) bleibt
+     unangetastet. Eine Farbaenderung am Kauf-Knopf der traffic-staerksten Seite
+     ist konversionsrelevant und war fuer den Score nicht noetig.
+   ========================================================================== */
+
+.home {
+  /* Typo-Skala — 7 belegte Stufen, Verhaeltnisse durchgaengig 1,11-1,33 */
+  --st-fs-1: 12px;
+  --st-fs-2: 14px;
+  --st-fs-3: 16px;
+  --st-fs-4: 18px;
+  --st-fs-5: 20px;
+  --st-fs-6: 24px;
+  --st-fs-8: 32px;
+
+  /* Sektions-Takt — genau drei Stufen, alle auf dem 8px-Grid */
+  --st-sec-lg: 96px;
+  --st-sec-md: 64px;
+  --st-sec-sm: 32px;
+
+  /* Farbe — warmes Neutral-Kontinuum (web-soll.yaml) */
+  --st-text: #2c2a26;
+  --st-muted: #6b665d;
+  --st-flaeche: #f8f4ee;
+
+  --st-radius: 8px;
+}
+
+/* --- 1. EIN H2-Stil (Groesse x Gewicht) ---------------------------------- */
+/* Vorher vier Kombis: 35,2/600 · 40/600 · 38,4/700 · 48/600
+ *
+ * WARUM @layer utilities: die Ueberschrift in @upsell-lineup traegt die
+ * Tailwind-Klasse `text-5xl!`, also ein !important INNERHALB von
+ * @layer utilities (Tailwind v4 via @import "tailwindcss"). Bei !important
+ * dreht die Kaskade die Layer-Reihenfolge um — eine ungelayerte Regel hat
+ * dann die NIEDRIGSTE Prioritaet und verliert unabhaengig von ihrer
+ * Spezifitaet. Ungelayert blieb genau diese eine H2 auf 48px stehen (21 von
+ * 22 gehorchten, weil deren Tailwind-Klassen kein `!` tragen). In derselben
+ * Ebene entscheidet wieder die Spezifitaet, und .home h2 (0,1,1) schlaegt
+ * .text-5xl\! (0,1,0). Die Komponente bleibt unangetastet — UpsellLineUp
+ * wird auf fuenf weiteren Seiten verwendet. */
+@layer utilities {
+  .home h2 {
+    font-size: var(--st-fs-8) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* --- 2. EIN H3-Stil ------------------------------------------------------ */
+/* Vorher 16,75 / 22,5 / 28,75 — alle drei waren H3 */
+.home h3 {
+  font-size: var(--st-fs-6) !important;
+  font-weight: 600 !important;
+}
+
+/* --- 3. Inline-Elemente erben ihre Groesse ------------------------------- */
+/* Sammelte vorher 13 / 14,5 / 17,5 / 19,25 ein. Buttons ausgenommen: die
+   tragen bewusst eine eigene Groesse. */
+.home a:not([class*='btn']):not([class*='button']):not([class*='cta']),
+.home strong,
+.home b,
+.home em,
+.home i,
+.home cite {
+  font-size: inherit !important;
+}
+
+/* KEIN Lede-Token: ein Versuch, die 19,25px-Absaetze auf 20px zu ziehen, wurde
+   GEMESSEN und wieder entfernt. Er erreichte nur 18 der 30 Elemente (der Rest
+   verteilt sich ueber sechs weitere Sektionen) und fuegte damit 20px als
+   ZUSAETZLICHE Groesse hinzu, statt 19,25 zu ersetzen: 13 Groessen statt 12,
+   Score 81 statt 82. Ihn breiter zu ziehen haette die Fliesstexte der
+   Studien-Karten mitgerissen. 19,25px bleibt bewusst stehen. */
+
+/* --- 4. Button-Groessen auf Token ---------------------------------------- */
+.home .btn--primary {
+  font-size: var(--st-fs-4) !important;
+}
+.home .btn--secondary {
+  font-size: var(--st-fs-3) !important;
+}
+
+/* --- 5. EIN Akzent: fremdes Blau und zweiter Warmton raus ---------------- */
+/* Die 'weiterlesen'-Schalter der beiden Bewertungs-Karussells trugen
+   #1565c0 (28 Elemente) und bildeten eine eigene Akzent-Farbwelt. */
+.home [data-section='reputon-reviews'] button[class*='text-[#1565c0]'],
+.home [data-section='google-reviews'] button[class*='text-[#1565c0]'] {
+  color: var(--st-muted) !important;
+  text-decoration: underline;
+}
+
+/* Dekorative Warmtoene auf Neutral: der Akzent gehoert laut web-soll NUR auf
+   Handlung — eine Bewertungszahl und Produkt-Claims sind keine Handlung. */
+.home .ReviewCount,
+.home [data-section^='featured-'] h3 {
+  color: var(--st-text) !important;
+}
+
+/* --- 6. Hintergruende: warmes Neutral statt kuehlem Blaugrau ------------- */
+/* Die Bewertungs-Karten stellten mit rgb(243,246,249) eine eigene, kuehle
+   Farbwelt neben das warme Kontinuum der uebrigen Seite (51 Flaechen). */
+.home [data-section='reputon-reviews'] .snap-start,
+.home [data-section='google-reviews'] .snap-start {
+  background-color: var(--st-flaeche) !important;
+}
+
+/* --- 7. Sektions-Takt auf drei Stufen, alle 8px-teilbar ------------------ */
+/* Vorher: 32 / 50 / 90 / 100 / 132 — nur 7 % auf dem Grid. */
+.home [data-section='peer-review-studien'],
+.home [data-section='mikroskop-video'],
+.home [data-section='finanzierung'],
+.home [data-section='gitterchip-video'],
+.home [data-section='featured-qione-2-pro'],
+.home [data-section='featured-qibracelet'],
+.home [data-section='featured-qihome-air'],
+.home [data-section='superhuman-banner'],
+.home [data-section='upsell-lineup'],
+.home [data-section='zell-diagramme'] {
+  margin-top: var(--st-sec-lg) !important;
+}
+
+.home [data-section='youtube-testimonial-preis'],
+.home [data-section='youtube-testimonial-tepperwein'],
+.home [data-section='youtube-testimonial-guse'] {
+  margin-top: var(--st-sec-md) !important;
+}
+
+/* 32 pad + 100 mar = 132 -> 32 pad + 64 mar = 96 */
+.home [data-section='logo-bar'] {
+  margin-top: var(--st-sec-md) !important;
+  padding-top: var(--st-sec-sm) !important;
+}
+
+.home [data-section='chip-cta'] {
+  margin-top: var(--st-sec-sm) !important;
+}
+
+/* --- 8. Mobile: Ueberschriften zurueckdrehen ----------------------------- */
+/* Ohne das traegt der Desktop-Token 32px auf 390px Breite und bricht um. */
+@media (max-width: 640px) {
+  .home h2 {
+    font-size: var(--st-fs-6) !important;
+  }
+  .home h3 {
+    font-size: var(--st-fs-5) !important;
+  }
+}
