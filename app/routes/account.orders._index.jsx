@@ -1,4 +1,4 @@
-import {Link, useLoaderData} from 'react-router';
+import {useLoaderData} from 'react-router';
 import {
   Money,
   getPaginationVariables,
@@ -6,12 +6,18 @@ import {
 } from '@shopify/hydrogen';
 import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {
+  BestellKarte,
+  KontoAbschnitt,
+  KontoLeer,
+} from '~/components/konto/KontoUI';
+import {datumText, versandText, zahlungsText} from '~/lib/konto-texte';
 
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Bestellungen'}];
+  return [{title: 'Bestellungen | Qi Blanco'}];
 };
 
 /**
@@ -42,39 +48,24 @@ export default function Orders() {
   /** @type {LoaderReturnData} */
   const {customer} = useLoaderData();
   const {orders} = customer;
-  return (
-    <div className="orders">
-      {orders.nodes.length ? <OrdersTable orders={orders} /> : <EmptyOrders />}
-    </div>
-  );
-}
+  const hatBestellungen = Boolean(orders?.nodes?.length);
 
-/**
- * @param {Pick<CustomerOrdersFragment, 'orders'>}
- */
-function OrdersTable({orders}) {
   return (
-    <div className="acccount-orders">
-      {orders?.nodes.length ? (
-        <PaginatedResourceSection connection={orders}>
-          {({node: order}) => <OrderItem key={order.id} order={order} />}
-        </PaginatedResourceSection>
+    <KontoAbschnitt titel="Deine Bestellungen">
+      {hatBestellungen ? (
+        <div className="konto-bestellungen">
+          <PaginatedResourceSection connection={orders}>
+            {({node: order}) => <OrderItem key={order.id} order={order} />}
+          </PaginatedResourceSection>
+        </div>
       ) : (
-        <EmptyOrders />
+        <KontoLeer
+          text="Hier ist noch nichts. Sobald du bestellst, findest du jede Bestellung an dieser Stelle wieder — mit Status und Versandinfo."
+          ctaText="Produkte ansehen"
+          ctaZu="/collections"
+        />
       )}
-    </div>
-  );
-}
-
-function EmptyOrders() {
-  return (
-    <div>
-      <p>Du hast noch keine Bestellung aufgegeben.</p>
-      <br />
-      <p>
-        <Link to="/collections">Jetzt einkaufen →</Link>
-      </p>
-    </div>
+    </KontoAbschnitt>
   );
 }
 
@@ -82,21 +73,17 @@ function EmptyOrders() {
  * @param {{order: OrderItemFragment}}
  */
 function OrderItem({order}) {
-  const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
+  const versand = versandText(flattenConnection(order.fulfillments)[0]?.status);
+  const zahlung = zahlungsText(order.financialStatus);
+
   return (
-    <>
-      <fieldset>
-        <Link to={`/account/orders/${btoa(order.id)}`}>
-          <strong>#{order.number}</strong>
-        </Link>
-        <p>{new Date(order.processedAt).toLocaleDateString('de-DE')}</p>
-        <p>{order.financialStatus}</p>
-        {fulfillmentStatus && <p>{fulfillmentStatus}</p>}
-        <Money data={order.totalPrice} />
-        <Link to={`/account/orders/${btoa(order.id)}`}>Bestellung ansehen →</Link>
-      </fieldset>
-      <br />
-    </>
+    <BestellKarte
+      nummer={`#${order.number}`}
+      datum={datumText(order.processedAt)}
+      status={versand ?? zahlung}
+      summe={<Money data={order.totalPrice} />}
+      zu={`/account/orders/${btoa(order.id)}`}
+    />
   );
 }
 

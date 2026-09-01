@@ -2,12 +2,19 @@ import {redirect} from '@shopify/remix-oxygen';
 import {useLoaderData} from 'react-router';
 import {Money, Image, flattenConnection} from '@shopify/hydrogen';
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
+import {
+  AdressLese,
+  BestellPosten,
+  BestellSummen,
+  KontoAbschnitt,
+} from '~/components/konto/KontoUI';
+import {datumText, versandText} from '~/lib/konto-texte';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [{title: `Order ${data?.order?.name}`}];
+  return [{title: `Bestellung ${data?.order?.name ?? ''} | Qi Blanco`}];
 };
 
 /**
@@ -36,7 +43,7 @@ export async function loader({params, context}) {
   const discountApplications = flattenConnection(order.discountApplications);
 
   const fulfillmentStatus =
-    flattenConnection(order.fulfillments)[0]?.status ?? 'N/A';
+    flattenConnection(order.fulfillments)[0]?.status ?? null;
 
   const firstDiscount = discountApplications[0]?.value;
 
@@ -65,143 +72,101 @@ export default function OrderRoute() {
     discountPercentage,
     fulfillmentStatus,
   } = useLoaderData();
+
+  const versand = versandText(fulfillmentStatus);
+
+  // Summenzeilen als Daten statt als Markup — dadurch verschwindet die
+  // doppelte <th>-Zeile des Scaffolds, die jede Summe zweimal beschriftete
+  // ("Rabatte Rabatte", "Zwischensumme Zwischensumme").
+  const summen = [];
+  if (discountPercentage) {
+    summen.push({text: 'Rabatt', wert: `−${discountPercentage} %`});
+  } else if (discountValue && discountValue.amount) {
+    summen.push({text: 'Rabatt', wert: <Money data={discountValue} />});
+  }
+  summen.push({text: 'Zwischensumme', wert: <Money data={order.subtotal} />});
+  summen.push({text: 'Enthaltene Steuer', wert: <Money data={order.totalTax} />});
+  summen.push({
+    text: 'Gesamt',
+    wert: <Money data={order.totalPrice} />,
+    gesamt: true,
+  });
+
+  const adresse = order?.shippingAddress;
+
   return (
-    <div className="account-order">
-      <h2>Bestellung {order.name}</h2>
-      <p>Bestellt am {new Date(order.processedAt).toLocaleDateString('de-DE')}</p>
-      <br />
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Produkt</th>
-              <th scope="col">Preis</th>
-              <th scope="col">Menge</th>
-              <th scope="col">Gesamt</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lineItems.map((lineItem, lineItemIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
-            ))}
-          </tbody>
-          <tfoot>
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
-              <tr>
-                <th scope="row" colSpan={3}>
-                  <p>Rabatte</p>
-                </th>
-                <th scope="row">
-                  <p>Rabatte</p>
-                </th>
-                <td>
-                  {discountPercentage ? (
-                    <span>-{discountPercentage}% RABATT</span>
-                  ) : (
-                    discountValue && <Money data={discountValue} />
-                  )}
-                </td>
-              </tr>
-            )}
-            <tr>
-              <th scope="row" colSpan={3}>
-                <p>Zwischensumme</p>
-              </th>
-              <th scope="row">
-                <p>Zwischensumme</p>
-              </th>
-              <td>
-                <Money data={order.subtotal} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Steuer
-              </th>
-              <th scope="row">
-                <p>Steuer</p>
-              </th>
-              <td>
-                <Money data={order.totalTax} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Gesamt
-              </th>
-              <th scope="row">
-                <p>Gesamt</p>
-              </th>
-              <td>
-                <Money data={order.totalPrice} />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+    <KontoAbschnitt
+      titel={`Bestellung ${order.name}`}
+      beschreibung={`Bestellt am ${datumText(order.processedAt)}`}
+    >
+      <div className="konto-karte">
+        <h3 className="konto-karte__titel">Das hast du bestellt</h3>
         <div>
-          <h3>Versandadresse</h3>
-          {order?.shippingAddress ? (
-            <address>
-              <p>{order.shippingAddress.name}</p>
-              {order.shippingAddress.formatted ? (
-                <p>{order.shippingAddress.formatted}</p>
-              ) : (
-                ''
-              )}
-              {order.shippingAddress.formattedArea ? (
-                <p>{order.shippingAddress.formattedArea}</p>
-              ) : (
-                ''
-              )}
-            </address>
+          {lineItems.map((lineItem, lineItemIndex) => (
+            <BestellPosten
+              // eslint-disable-next-line react/no-array-index-key
+              key={lineItemIndex}
+              titel={lineItem.title}
+              variante={lineItem.variantTitle}
+              menge={lineItem.quantity}
+              preis={<Money data={lineItem.price} />}
+              bild={
+                lineItem?.image ? (
+                  <Image
+                    className="konto-posten__bild"
+                    data={lineItem.image}
+                    width={64}
+                    height={64}
+                  />
+                ) : null
+              }
+            />
+          ))}
+        </div>
+        <BestellSummen zeilen={summen} />
+      </div>
+
+      <div className="konto-raster konto-raster--zwei konto-raster--luft">
+        <div className="konto-karte">
+          <h3 className="konto-karte__titel">Lieferadresse</h3>
+          {adresse ? (
+            <AdressLese
+              name={adresse.name}
+              zeilen={[adresse.formatted, adresse.formattedArea]
+                .flat()
+                .filter(Boolean)}
+            />
           ) : (
-            <p>Keine Versandadresse hinterlegt</p>
+            <p className="konto-meta">Zu dieser Bestellung ist keine Lieferadresse hinterlegt.</p>
           )}
-          <h3>Status</h3>
-          <div>
-            <p>{fulfillmentStatus}</p>
-          </div>
+        </div>
+
+        <div className="konto-karte">
+          <h3 className="konto-karte__titel">Status</h3>
+          <p className="konto-meta">
+            {versand ?? 'Wir bereiten deine Bestellung vor.'}
+          </p>
+          {order.statusPageUrl ? (
+            <div className="konto-form__knoepfe">
+              <a
+                className="konto-cta konto-cta--sekundaer"
+                target="_blank"
+                href={order.statusPageUrl}
+                rel="noreferrer"
+              >
+                Sendung verfolgen
+              </a>
+            </div>
+          ) : null}
         </div>
       </div>
-      <br />
-      <p>
-        <a target="_blank" href={order.statusPageUrl} rel="noreferrer">
-          Bestellstatus ansehen →
-        </a>
-      </p>
-    </div>
-  );
-}
 
-/**
- * @param {{lineItem: OrderLineItemFullFragment}}
- */
-function OrderLineRow({lineItem}) {
-  return (
-    <tr key={lineItem.id}>
-      <td>
-        <div>
-          {lineItem?.image && (
-            <div>
-              <Image data={lineItem.image} width={96} height={96} />
-            </div>
-          )}
-          <div>
-            <p>{lineItem.title}</p>
-            <small>{lineItem.variantTitle}</small>
-          </div>
-        </div>
-      </td>
-      <td>
-        <Money data={lineItem.price} />
-      </td>
-      <td>{lineItem.quantity}</td>
-      <td>
-        <Money data={lineItem.totalDiscount} />
-      </td>
-    </tr>
+      <div className="konto-form__knoepfe konto-form__knoepfe--luft">
+        <a className="konto-cta konto-cta--sekundaer" href="/account/orders">
+          Zurück zu deinen Bestellungen
+        </a>
+      </div>
+    </KontoAbschnitt>
   );
 }
 

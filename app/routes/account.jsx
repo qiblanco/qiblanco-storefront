@@ -1,6 +1,27 @@
 import {data as remixData} from '@shopify/remix-oxygen';
-import {Form, NavLink, Outlet, useLoaderData} from 'react-router';
+import {Outlet, useLoaderData} from 'react-router';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
+import {
+  KontoNav,
+  KontoRahmen,
+  KontoStoerung,
+} from '~/components/konto/KontoUI';
+import kontoStyles from '~/styles/konto.css?url';
+
+/**
+ * Layout-Route der Konto-Fläche.
+ *
+ * Route-gebundenes Stylesheet (Muster mm-lp.css): konto.css führt seine Tokens
+ * unter dem Scope `.konto` und wird nur hier geladen — es leakt nichts in
+ * fremde Routen. Weil alle Konto-Kindrouten unter diesem Layout hängen, genügt
+ * dieser eine links()-Export für den ganzen Bereich.
+ *
+ * DIE AUTH-MECHANIK IST UNVERÄNDERT: der Loader fragt weiter über
+ * context.customerAccount.query ab. Geändert sind Darstellung und Texte.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: kontoStyles}];
+}
 
 export function shouldRevalidate() {
   return true;
@@ -32,57 +53,33 @@ export default function AccountLayout() {
   /** @type {LoaderReturnData} */
   const {customer} = useLoaderData();
 
-  const heading = customer
-    ? customer.firstName
-      ? `Willkommen, ${customer.firstName}`
-      : `Willkommen in deinem Konto.`
-    : 'Kontodetails';
+  const titel = customer?.firstName
+    ? `Willkommen, ${customer.firstName}`
+    : 'Willkommen in deinem Konto';
 
   return (
-    <div className="account">
-      <h1>{heading}</h1>
-      <br />
-      <AccountMenu />
-      <br />
-      <br />
+    <KontoRahmen
+      eyebrow="Dein Konto"
+      titel={titel}
+      lede="Hier findest du deine Bestellungen, deine Daten und deine Adressen."
+    >
+      <KontoNav />
       <Outlet context={{customer}} />
-    </div>
+    </KontoRahmen>
   );
 }
 
-function AccountMenu() {
-  function isActiveStyle({isActive, isPending}) {
-    return {
-      fontWeight: isActive ? 'bold' : undefined,
-      color: isPending ? 'grey' : 'black',
-    };
-  }
-
-  return (
-    <nav role="navigation">
-      <NavLink to="/account/orders" style={isActiveStyle}>
-        Bestellungen &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/profile" style={isActiveStyle}>
-        &nbsp; Profil &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/addresses" style={isActiveStyle}>
-        &nbsp; Adressen &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <Logout />
-    </nav>
-  );
-}
-
-function Logout() {
-  return (
-    <Form className="account-logout" method="POST" action="/account/logout">
-      &nbsp;<button type="submit">Abmelden</button>
-    </Form>
-  );
+/**
+ * Fängt jeden Fehler der Konto-Fläche ab — auch den dokumentierten 500er, den
+ * Hydrogen wirft, solange die Customer-Account-API-Zugangsdaten fehlen.
+ * Ohne diese Grenze sah der Kunde die generische "Hoppla"-Seite bzw. bei
+ * /account/login 21 Byte text/plain.
+ *
+ * Der Fehler wird NICHT verschluckt: er geht weiter ins Server-Log (Hydrogen
+ * protokolliert die geworfene Response), nur die Kunden-Ansicht ist eine andere.
+ */
+export function ErrorBoundary() {
+  return <KontoStoerung />;
 }
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
