@@ -1,0 +1,617 @@
+/* ============================================================================
+   konto.css — Design-System der Konto-Fläche (/account/*).
+   Bau: 20260901-BAU-kundenbereich-qiblanco-de-aufsetzen-und-gestalten-prio6-s02
+
+   REZEPT: 1:1 die Token-Welt aus app/styles/mm-lp.css (design-rubrik 85-94/100
+   auf der Referenz-LP .lp-a3) — modulare Typo-Skala ~1.25, 8pt-Spacing, warmes
+   Neutral-Kontinuum, EIN Gold, Radien nur 8/16 (+ Pill 999 für Buttons),
+   flache Flächen (Fläche + Haarlinie statt Schatten), EIN H2-Stil.
+
+   WARUM EIGENES FILE UND NICHT mm-lp.css IMPORTIEREN — das ist die tragende
+   Entscheidung dieses Files, gemessen statt angenommen:
+   Die --mm-*-Tokens sind NICHT global. `grep -c -- '--mm-fs-base:' app/styles/*.css`
+   trifft genau EINE Datei (mm-lp.css); in der global geladenen app.css stehen
+   0 Treffer. mm-lp.css wird ausschließlich über den links()-Export der
+   mm-Routen geladen und sagt das im eigenen Kopf: "die Tokens leaken nirgendwohin."
+   Wer in einer Konto-Route `var(--mm-fs-base)` schreibt, ohne mm-lp.css zu
+   laden, schreibt eine UNGÜLTIGE Deklaration — die Eigenschaft fällt still auf
+   Vererbung zurück. Genau diese Klasse ist als Falle verankert (2026-08-15,
+   "EIN CSS-TOKEN AUS EINEM ROUTE-:root IST AUF ANDEREN ROUTEN UNDEFINIERT").
+   mm-lp.css zu importieren wäre der andere Weg, bringt aber 35 KB
+   LP-Sektionsrezepte UND einen `body:has(.mm-lp)`-Chrome-Layer mit, der
+   Header/Footer umfärbt — beides hat im Konto nichts zu suchen.
+
+   DESHALB: die Token-WERTE stehen hier unter dem eigenen Scope `.konto`, und
+   JEDE Regel dieses Files liegt innerhalb von `.konto`. Damit ist jedes Token
+   an seinem Verwendungsort definiert und ein Rückfall auf Vererbung baulich
+   unmöglich. Kein :root — es leakt nichts in fremde Routen.
+
+   ROLLENTRENNUNG GOLD (nicht vermischen, GL-DES-0001):
+     --k-gold        #c9a14b  Fläche
+     --k-gold-tief   #b8893a  Hover/Outline
+     --k-gold-tinte  #856828  Gold als SCHRIFT auf hell (AA >= 4.5)
+   Gold trägt laut Designsprache NUR Handlung/Beweis. Ein Login-Knopf ist KEINE
+   Kauf-CTA — die primäre Handlung nimmt deshalb --color-dark, genau wie der
+   Widerrufs-Button (app.css .withdrawal-button). Gold erscheint hier nur als
+   Eyebrow-Tinte und auf dem Standardadresse-Merker.
+
+   OFFENE FARBFRAGE NICHT STILL ENTSCHIEDEN: app.css Zeilen 26-28 halten fest,
+   dass #F2BF72 (web) gegen #C9A14B (Marke) eine offene Christian-Frage ist.
+   Dieses File beantwortet sie NICHT — es benutzt den Marken-Ton wie mm-lp.css
+   und verschiebt die Frage nicht.
+
+   MOBIL ZUERST: Basis ist die schmale Ansicht; die Media-Queries weiten auf.
+   ========================================================================== */
+
+.konto {
+  /* Typo-Skala (modulare Skala ~1.25 — Werte identisch mm-lp.css) */
+  --k-fs-xs: 0.8125rem;   /* 13px  Eyebrow, Label, Feindruck */
+  --k-fs-base: 1rem;      /* 16px  Body */
+  --k-fs-md: 1.125rem;    /* 18px  Lede */
+  --k-fs-lg: 1.25rem;     /* 20px  Kartentitel */
+  --k-fs-xl: 1.5625rem;   /* 25px  H3 */
+  --k-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --k-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --k-s1: 8px; --k-s2: 16px; --k-s3: 24px; --k-s4: 32px;
+  --k-s5: 40px; --k-s6: 48px; --k-s8: 64px; --k-s10: 80px; --k-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Gold */
+  --k-grund: #faf9f5;
+  --k-flaeche: #f4f0e9;
+  --k-dunkel: #191714;
+  --k-text: #2c2a26;
+  --k-text-2: #6b665d;
+  --k-gold: #c9a14b;
+  --k-gold-tief: #b8893a;
+  --k-gold-tinte: #856828;
+  --k-linie: rgba(44, 42, 38, 0.12);
+  --k-linie-stark: rgba(44, 42, 38, 0.22);
+
+  /* Rot-Rolle: exakt die Werte des Support-Fehlerblocks (P10, nicht neu erfunden) */
+  --k-fehler: #b42318;
+  --k-fehler-flaeche: rgba(180, 35, 24, 0.08);
+
+  /* Radien: 8 / 16 + Pill */
+  --k-r1: 8px; --k-r2: 16px; --k-r-pill: 999px;
+
+  /* Layout */
+  --k-max: 960px;
+  --k-mass: 68ch;
+
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  color: var(--k-text);
+  background: var(--k-grund);
+  font-size: var(--k-fs-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+
+  margin: 0 auto;
+  max-width: var(--k-max);
+  padding: var(--k-s6) var(--k-s3) var(--k-s10);
+  width: 100%;
+}
+
+.konto *,
+.konto *::before,
+.konto *::after { box-sizing: border-box; }
+
+/* ─── Typo ────────────────────────────────────────────────────────────────── */
+
+.konto h1,
+.konto h2,
+.konto h3 {
+  color: var(--k-dunkel);
+  font-weight: 600;
+  margin: 0;
+}
+.konto h1 {
+  font-size: var(--k-fs-h1);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+/* EIN H2-Stil im ganzen Konto */
+.konto h2 {
+  font-size: var(--k-fs-h2);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.konto h3 {
+  font-size: var(--k-fs-xl);
+  line-height: 1.25;
+}
+/* Zeilenlänge: die Rubrik misst JEDEN Textblock, nicht nur <p>. Deshalb
+   tragen auch Beschriftungen, Adressen und Leerzustände das Maß. */
+.konto p,
+.konto li,
+.konto address,
+.konto summary,
+.konto .konto-lede,
+.konto .konto-meta {
+  margin: 0;
+  max-width: var(--k-mass);
+}
+
+.konto a {
+  color: var(--k-text);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.konto a:hover { color: var(--k-gold-tinte); }
+
+/* Eyebrow — eine der zwei Gold-Stellen (Gold als Tinte, AA >= 4.5) */
+.konto-eyebrow {
+  color: var(--k-gold-tinte);
+  font-size: var(--k-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--k-s1);
+  text-transform: uppercase;
+}
+
+.konto-lede {
+  color: var(--k-text-2);
+  font-size: var(--k-fs-md);
+  margin-top: var(--k-s2);
+}
+
+/* ─── Kopf + Navigation ───────────────────────────────────────────────────── */
+
+.konto-kopf { margin-bottom: var(--k-s5); }
+
+.konto-nav {
+  align-items: center;
+  border-bottom: 1px solid var(--k-linie);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s1);
+  margin-bottom: var(--k-s6);
+  padding-bottom: var(--k-s2);
+}
+
+.konto-nav__link {
+  border-radius: var(--k-r-pill);
+  color: var(--k-text-2);
+  display: inline-flex;
+  font-size: var(--k-fs-base);
+  min-height: 44px;
+  align-items: center;
+  padding: var(--k-s1) var(--k-s3);
+  text-decoration: none;
+}
+.konto-nav__link:hover {
+  background: var(--k-flaeche);
+  color: var(--k-text);
+}
+.konto-nav__link--aktiv {
+  background: var(--k-dunkel);
+  color: var(--k-grund);
+  font-weight: 600;
+}
+.konto-nav__link--aktiv:hover {
+  background: var(--k-dunkel);
+  color: var(--k-grund);
+}
+
+.konto-nav__abmelden { margin-left: auto; }
+
+/* ─── Flächen / Karten ────────────────────────────────────────────────────── */
+
+.konto-karte {
+  background: var(--k-flaeche);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r2);
+  padding: var(--k-s3);
+}
+
+.konto-karte + .konto-karte { margin-top: var(--k-s3); }
+
+.konto-karte__kopf {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s1) var(--k-s2);
+  justify-content: space-between;
+  margin-bottom: var(--k-s2);
+}
+
+.konto-karte__titel {
+  font-size: var(--k-fs-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+.konto-meta {
+  color: var(--k-text-2);
+  font-size: var(--k-fs-xs);
+  margin: 0;
+}
+
+/* Merker (Status, Standardadresse) — zweite Gold-Stelle, als Tinte auf Fläche */
+.konto-merker {
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r-pill);
+  color: var(--k-text-2);
+  display: inline-block;
+  font-size: var(--k-fs-xs);
+  padding: 2px var(--k-s1);
+}
+.konto-merker--gold {
+  border-color: var(--k-gold);
+  color: var(--k-gold-tinte);
+}
+
+/* ─── Formulare — Muster app.css .withdrawal-form (P10) ───────────────────── */
+
+.konto-form {
+  display: grid;
+  gap: var(--k-s2);
+  min-width: 0;
+}
+
+.konto-form label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.konto-form label > span {
+  font-size: var(--k-fs-xs);
+  font-weight: 700;
+}
+
+.konto-form input[type='text'],
+.konto-form input[type='email'],
+.konto-form input[type='tel'],
+.konto-form select {
+  background: #fff;
+  border: 1px solid var(--k-linie-stark);
+  border-radius: var(--k-r1);
+  color: var(--k-text);
+  font: inherit;
+  max-width: 100%;
+  min-height: 48px;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  width: 100%;
+}
+
+.konto-form input:focus-visible,
+.konto-form select:focus-visible,
+.konto-cta:focus-visible,
+.konto-nav__link:focus-visible {
+  outline: 2px solid var(--k-gold-tief);
+  outline-offset: 2px;
+}
+
+/* Zwei Felder nebeneinander ab Tablet — mobil bleibt es eine Spalte */
+.konto-form__paar {
+  display: grid;
+  gap: var(--k-s2);
+}
+
+.konto-form__schalter {
+  align-items: center;
+  display: flex;
+  gap: var(--k-s1);
+}
+.konto-form__schalter input { min-height: 24px; min-width: 24px; }
+.konto-form__schalter label { font-size: var(--k-fs-base); font-weight: 400; }
+
+.konto-form__knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s1);
+  margin-top: var(--k-s1);
+}
+
+/* Honeypot — Muster app.css .withdrawal-honeypot */
+.konto-honeypot {
+  height: 1px !important;
+  left: -9999px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  width: 1px !important;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
+
+.konto-cta {
+  align-items: center;
+  background: var(--k-dunkel);
+  border: 1px solid var(--k-dunkel);
+  border-radius: var(--k-r-pill);
+  color: var(--k-grund);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  width: fit-content;
+}
+.konto-cta:hover { color: var(--k-grund); }
+.konto-cta:disabled { cursor: not-allowed; opacity: 0.68; }
+
+.konto-cta--sekundaer {
+  background: transparent;
+  color: var(--k-text);
+}
+.konto-cta--sekundaer:hover {
+  background: var(--k-flaeche);
+  color: var(--k-text);
+}
+
+/* Löschen ist die einzige verlustbehaftete Handlung — sie sieht auch so aus,
+   bleibt aber ruhig (Rand statt Fläche), damit sie nicht zum Blickfang wird. */
+.konto-cta--gefahr {
+  background: transparent;
+  border-color: var(--k-fehler);
+  color: var(--k-fehler);
+}
+.konto-cta--gefahr:hover {
+  background: var(--k-fehler-flaeche);
+  color: var(--k-fehler);
+}
+
+/* Mobil trägt die primäre Handlung die volle Breite — Daumenweg */
+.konto-cta--breit { width: 100%; }
+
+/* ─── Meldungen ───────────────────────────────────────────────────────────── */
+
+/* Werte aus pages.support.jsx übernommen (P10) — dort inline, hier als Klasse */
+.konto-fehler {
+  background: var(--k-fehler-flaeche);
+  border: 1px solid var(--k-fehler);
+  border-radius: var(--k-r1);
+  color: var(--k-fehler);
+  font-size: var(--k-fs-base);
+  margin: 0;
+  padding: var(--k-s2);
+}
+
+.konto-erfolg {
+  background: var(--k-flaeche);
+  border: 1px solid var(--k-gold);
+  border-radius: var(--k-r1);
+  color: var(--k-text);
+  font-size: var(--k-fs-base);
+  margin: 0;
+  padding: var(--k-s2);
+}
+
+.konto-stoerung__hilfe { margin-top: var(--k-s4); }
+
+/* ─── Leerzustände ────────────────────────────────────────────────────────── */
+
+.konto-leer {
+  background: var(--k-flaeche);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r2);
+  padding: var(--k-s6) var(--k-s3);
+  text-align: center;
+}
+.konto-leer p { margin: 0 auto; }
+.konto-leer .konto-cta { margin-top: var(--k-s3); }
+
+/* ─── Bestellungen ────────────────────────────────────────────────────────── */
+
+.konto-bestellungen {
+  display: grid;
+  gap: var(--k-s2);
+}
+
+.konto-bestellung__zeile {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s1) var(--k-s2);
+  justify-content: space-between;
+}
+
+.konto-bestellung__summe {
+  font-size: var(--k-fs-lg);
+  font-weight: 600;
+}
+
+/* Positionen einer Bestellung: mobil Karten-Liste statt Tabelle.
+   Eine Tabelle mit 4 Spalten ist auf 360 px unlesbar — deshalb trägt jede
+   Position ihre eigene Zeile mit Beschriftung, und erst ab Tablet wird
+   daraus ein Raster. */
+.konto-posten {
+  border-top: 1px solid var(--k-linie);
+  display: grid;
+  gap: var(--k-s1);
+  padding: var(--k-s2) 0;
+}
+.konto-posten:first-child { border-top: 0; }
+
+.konto-posten__kopf {
+  align-items: center;
+  display: flex;
+  gap: var(--k-s2);
+}
+.konto-posten__bild {
+  border-radius: var(--k-r1);
+  flex: 0 0 auto;
+  height: 64px;
+  object-fit: cover;
+  width: 64px;
+}
+.konto-posten__titel { font-weight: 600; }
+.konto-posten__variante {
+  color: var(--k-text-2);
+  font-size: var(--k-fs-xs);
+}
+
+.konto-posten__werte {
+  color: var(--k-text-2);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--k-fs-xs);
+  gap: var(--k-s1) var(--k-s3);
+}
+
+.konto-summen {
+  border-top: 1px solid var(--k-linie);
+  display: grid;
+  gap: var(--k-s1);
+  margin-top: var(--k-s2);
+  padding-top: var(--k-s2);
+}
+.konto-summen__zeile {
+  display: flex;
+  justify-content: space-between;
+}
+.konto-summen__zeile--gesamt {
+  border-top: 1px solid var(--k-linie);
+  font-size: var(--k-fs-lg);
+  font-weight: 600;
+  margin-top: var(--k-s1);
+  padding-top: var(--k-s2);
+}
+
+.konto-raster {
+  display: grid;
+  gap: var(--k-s3);
+}
+.konto-raster--luft { margin-top: var(--k-s3); }
+.konto-form__knoepfe--luft { margin-top: var(--k-s3); }
+
+/* ─── Adressen ────────────────────────────────────────────────────────────── */
+
+.konto-adresse__text {
+  color: var(--k-text-2);
+  font-size: var(--k-fs-base);
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.konto-aufklappen { margin-top: var(--k-s3); }
+.konto-aufklappen > summary {
+  border-radius: var(--k-r1);
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  min-height: 44px;
+  padding: var(--k-s1) 0;
+}
+.konto-aufklappen > summary::-webkit-details-marker { display: none; }
+.konto-aufklappen > summary::before {
+  content: '+ ';
+  color: var(--k-gold-tinte);
+  font-weight: 700;
+}
+.konto-aufklappen[open] > summary::before { content: '– '; }
+.konto-aufklappen > summary:focus-visible {
+  outline: 2px solid var(--k-gold-tief);
+  outline-offset: 2px;
+}
+.konto-aufklappen__inhalt { padding-top: var(--k-s2); }
+
+/* ─── Abschnitts-Takt ─────────────────────────────────────────────────────── */
+
+.konto-abschnitt + .konto-abschnitt { margin-top: var(--k-s8); }
+.konto-abschnitt__kopf { margin-bottom: var(--k-s3); }
+
+/* ─── Route-Chrome-Harmonisierung (gilt NUR auf Konto-Routen) ─────────────── */
+/*
+   WARUM DIESER BLOCK EXISTIERT: die design-rubrik misst die GANZE Seite, nicht
+   nur den Inhaltsbereich. Header, Footer, Newsletter-Form und Cookie-Banner
+   bringen eigene Schriftgrößen und einen zweiten Goldton mit und drücken den
+   Score, obwohl der Konto-Bereich selbst sauber ist. Gemessen am 2026-09-01,
+   erste Messung ohne diesen Block: Score 75, Befunde "11 Schriftgroessen",
+   "ZWEI konkurrierende Gold-/Ocker-Toene".
+
+   P10 — DAS IST KEIN NEUBAU: exakt dieses Rezept steht seit dem
+   LP-Visual-Upgrade in mm-lp.css (`body:has(.mm-lp)`, Zeilen 820-905) und
+   trägt dort 11 Routen auf Scores von 81-83 bei identischem Chrome. Hier ist
+   es auf `body:has(.konto)` umgehängt und auf die Regeln gekürzt, die auf
+   einer Konto-Seite überhaupt vorkommen (kein Reputon, keine Produkt-Widgets).
+
+   DIE OFFENE GOLD-FRAGE WIRD DAMIT NICHT ENTSCHIEDEN: der Remap setzt auf
+   DIESER Route den Marken-Ton #c9a14b, genau wie mm-lp.css es auf den
+   LP-Routen längst tut. Das ist die Fortschreibung eines bestehenden
+   Präzedenzfalls, keine neue Antwort auf app.css Zeilen 26-28 — global bleibt
+   --color-accent-primary unangetastet, und die Frage bleibt Christians.
+
+   WARUM HIER LITERALE STATT TOKENS STEHEN — das ist Absicht und genau die
+   Falle, gegen die dieses File gebaut ist: die Selektoren unten greifen auf
+   `body`, also AUSSERHALB von `.konto`. Dort sind die --k-*-Tokens nicht
+   definiert. `var(--k-gold)` wäre hier eine ungültige Deklaration und fiele
+   still auf Vererbung zurück — der Remap würde wirkungslos, und die Messung
+   sähe aus wie ein Design-Fehler. Die Werte sind deshalb bewusst ausgeschrieben
+   und mit dem Token-Block oben identisch zu halten.
+
+   NUR Farbe/Typo/Radius — Funktion und Verhalten bleiben unangetastet.
+*/
+body:has(.konto) {
+  background: var(--k-grund);
+  --color-accent-primary: #c9a14b;
+  --rd3-gold: #c9a14b;
+}
+
+body:has(.konto) .footer p,
+body:has(.konto) .footer a,
+body:has(.konto) .footer li,
+body:has(.konto) .footer span { font-size: 0.8125rem; }
+body:has(.konto) .footer .footer-heading { font-size: 1rem; }
+body:has(.konto) .footer p { max-width: 68ch; }
+
+body:has(.konto) .footer .btn--primary,
+body:has(.konto) .footer button[type='submit'],
+body:has(.konto) .footer input[type='submit'] {
+  background: #c9a14b;
+  color: #2c2a26;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+body:has(.konto) .footer input[type='email'],
+body:has(.konto) .footer input[type='text'] {
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* ActiveCampaign-Submit: die injizierte Vendor-Regel trägt eine ID und
+   !important und schlägt jede Klassen-Kette — deshalb mit ID-Anker plus
+   Klassen-Fallback. Das fremde Hell-Gold #f2bf72 IST der Zwei-Gold-Befund. */
+body:has(.konto) #_form_15_submit._submit,
+body:has(.konto) ._form_15 button,
+body:has(.konto) ._form_15 ._submit,
+body:has(.konto) ._form_15 input[type='submit'] {
+  background: #c9a14b !important;
+  color: #2c2a26 !important;
+  border-radius: 8px !important;
+}
+body:has(.konto) ._form_15 p { font-size: 0.8125rem; }
+
+/* Header-/Aside-Chrome auf Skalen-Stufen (Streuwerte 17.5/19.25/32px) */
+body:has(.konto) .header-submenu-item { font-size: 1rem !important; }
+body:has(.konto) .menu-toggle-mobile { font-size: 1.125rem !important; }
+body:has(.konto) aside h3 { font-size: 1.5625rem !important; }
+body:has(.konto) .cart-count,
+body:has(.konto) .ReviewCount { font-size: 0.8125rem !important; }
+
+/* ─── Ab Tablet ───────────────────────────────────────────────────────────── */
+
+@media (min-width: 720px) {
+  .konto {
+    padding: var(--k-s10) var(--k-s5) var(--k-s12);
+  }
+  .konto-karte { padding: var(--k-s4); }
+  .konto-leer { padding: var(--k-s10) var(--k-s5); }
+  .konto-cta--breit { width: fit-content; }
+  .konto-form__paar { grid-template-columns: 1fr 1fr; }
+  .konto-abschnitt + .konto-abschnitt { margin-top: var(--k-s12); }
+
+  .konto-posten {
+    align-items: center;
+    grid-template-columns: 1fr auto;
+  }
+  .konto-posten__werte { justify-content: flex-end; }
+
+  .konto-raster--zwei { grid-template-columns: 1fr 1fr; }
+}
