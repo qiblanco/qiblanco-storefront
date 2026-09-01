@@ -107,7 +107,17 @@ body:has(.mm-lp) footer {
 }
 .mm-lp h1 { line-height: 1.1; letter-spacing: -0.015em; }
 .mm-lp h3 { font-size: var(--mm-fs-xl); line-height: 1.25; }
-.mm-lp p { margin: 0; max-width: var(--mm-mass); }
+/* RESET, und deshalb `:where`. Als `.mm-lp p` trug diese Zeile (0,1,1) und schlug
+   damit JEDE blosse Bausteinklasse (0,1,0) — sie hat von 8 Absatz-Regeln des Kits
+   7 still ueberstimmt (margin UND max-width; `.mm-hero__sub`/`.mm-risk__text`
+   deklarieren 54ch und bekamen 68ch). Ein Reset, der gegen die Bausteine gewinnt,
+   ist kein Reset. `:where(p)` traegt Spezifitaet 0, die Zeile steht damit bei
+   (0,1,0) gleichauf mit einer Bausteinklasse und verliert nach Quellreihenfolge
+   gegen jede weiter unten stehende — genau so, wie ein Reset sich verhalten soll.
+   Gegen reset.css `p { margin: 0 }` (0,0,1) gewinnt sie weiter. NICHT auf
+   `.mm-lp p` zuruecknehmen: das macht die 7 Regeln in einem Zug wieder tot.
+   Wirkung am Rand gemessen 2026-09-01: 91 von 836 Absaetzen auf 7 Live-Seiten. */
+.mm-lp :where(p) { margin: 0; max-width: var(--mm-mass); }
 .mm-lp strong { color: var(--mm-dunkel); font-weight: 600; }
 
 /* EIN H2-Stil seitenweit (Größe × Gewicht × Ausrichtung — Referenzmuster) */
@@ -317,26 +327,16 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 }
 .mm-mech__schritt h3 { font-size: var(--mm-fs-lg); margin-bottom: var(--mm-s1); }
 .mm-mech__schritt p { font-size: var(--mm-fs-base); color: var(--mm-text-2); }
-/* SPEZIFITAET IST HIER DIE EIGENTLICHE REGEL, NICHT DIE WERTE.
-   `.mm-lp p { margin: 0 }` (Zeile 110) ist als Reset gedacht, steht aber als
-   Nachfahren-Selektor da und traegt damit (0,1,1) gegen die (0,1,0) einer
-   blossen Bausteinklasse — es gewinnt und macht die Regel hier still
-   wirkungslos. Genau das war der Fall: `margin-top: var(--mm-s6)` stand seit
-   dem Bau im Quelltext und rendert mit 0px, nachgemessen am 2026-08-31 auf
-   allen 7 Live-Seiten, die diesen Baustein tragen (Christians Befund zur
-   zurueckgezogenen /pages/wirkt-das: "fast ohne Abstand nach oben").
-   `.mm-lp .mm-mech__note` ist (0,2,0) und schlaegt den Reset.
-
-   WARUM HIER `0` STATT DES URSPRUENGLICHEN `auto`: `auto` haette den Block
-   zentriert. Seine Geschwister (.mm-mech__intro, .mm-problem__text …) tragen
-   dieselbe tote Regel und stehen deshalb weiter linksbuendig — ein einzeln
-   zentrierter Absatz zwischen linksbuendigen waere schlechter als der
-   Ist-Zustand. Die Zentrierung gehoert in die Reparatur der GANZEN Klasse
-   (7 von 8 Absatz-Regeln des MmKit sind aus demselben Grund tot, gemessen
-   91 betroffene Absaetze auf 7 Seiten) und ist als eigener Job eingereiht;
-   dieser hier faehrt nur den beauftragten Zitatblock. */
+/* `.mm-lp .mm-mech__note` ist (0,2,0) und war die EINZELREPARATUR vom 2026-09-01,
+   solange der Reset in Zeile 110 noch (0,1,1) trug und alle Geschwister ueberstimmte.
+   Seit der Reset `:where` benutzt, waere schon `.mm-mech__note` genug; der Selektor
+   bleibt, weil er nichts kostet und den Baustein gegen kuenftige Nachfahren-Regeln
+   haelt. Das `0` in der margin war der Kompensator dazu: `auto` haette den Block
+   damals als EINZIGEN zwischen linksbuendigen Geschwistern zentriert. Diese Praemisse
+   ist mit dem Wurzelfix entfallen — die Geschwister sind jetzt zentriert, also steht
+   hier wieder `auto`, wie es der Baustein von Anfang an deklariert hatte. */
 .mm-lp .mm-mech__note {
-  margin: var(--mm-s6) 0 0;
+  margin: var(--mm-s6) auto 0;
   font-size: var(--mm-fs-base);
   color: var(--mm-text-2);
   border-left: 2px solid var(--mm-gold);
