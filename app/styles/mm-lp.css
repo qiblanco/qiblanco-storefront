@@ -317,8 +317,26 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
 }
 .mm-mech__schritt h3 { font-size: var(--mm-fs-lg); margin-bottom: var(--mm-s1); }
 .mm-mech__schritt p { font-size: var(--mm-fs-base); color: var(--mm-text-2); }
-.mm-mech__note {
-  margin: var(--mm-s6) auto 0;
+/* SPEZIFITAET IST HIER DIE EIGENTLICHE REGEL, NICHT DIE WERTE.
+   `.mm-lp p { margin: 0 }` (Zeile 110) ist als Reset gedacht, steht aber als
+   Nachfahren-Selektor da und traegt damit (0,1,1) gegen die (0,1,0) einer
+   blossen Bausteinklasse — es gewinnt und macht die Regel hier still
+   wirkungslos. Genau das war der Fall: `margin-top: var(--mm-s6)` stand seit
+   dem Bau im Quelltext und rendert mit 0px, nachgemessen am 2026-08-31 auf
+   allen 7 Live-Seiten, die diesen Baustein tragen (Christians Befund zur
+   zurueckgezogenen /pages/wirkt-das: "fast ohne Abstand nach oben").
+   `.mm-lp .mm-mech__note` ist (0,2,0) und schlaegt den Reset.
+
+   WARUM HIER `0` STATT DES URSPRUENGLICHEN `auto`: `auto` haette den Block
+   zentriert. Seine Geschwister (.mm-mech__intro, .mm-problem__text …) tragen
+   dieselbe tote Regel und stehen deshalb weiter linksbuendig — ein einzeln
+   zentrierter Absatz zwischen linksbuendigen waere schlechter als der
+   Ist-Zustand. Die Zentrierung gehoert in die Reparatur der GANZEN Klasse
+   (7 von 8 Absatz-Regeln des MmKit sind aus demselben Grund tot, gemessen
+   91 betroffene Absaetze auf 7 Seiten) und ist als eigener Job eingereiht;
+   dieser hier faehrt nur den beauftragten Zitatblock. */
+.mm-lp .mm-mech__note {
+  margin: var(--mm-s6) 0 0;
   font-size: var(--mm-fs-base);
   color: var(--mm-text-2);
   border-left: 2px solid var(--mm-gold);
@@ -484,9 +502,26 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
    Bioengineering & Biomedical Science Research"). In einer schmalen Spur
    laufen sie aus der Kachel heraus, ohne dass die Kachel selbst breiter wird —
    der Ueberlauf erscheint dann am <html>, nicht am Verursacher, und ist von
-   dort aus nicht zu finden. Deshalb hier, an der Quelle. */
+   dort aus nicht zu finden. Deshalb hier, an der Quelle.
+
+   `hyphens: auto` GEHOERT ZWINGEND DANEBEN, und das ist der Fix vom
+   2026-09-01: `overflow-wrap: anywhere` ALLEIN bricht an JEDEM Zeichen statt
+   an Silbengrenzen — gemessen auf /pages/wirkt-das erzeugte das
+   "Mobilfunkstrahlun/g" und ein Komma am Zeilenanfang (10 sichtbare Elemente,
+   390x844). `anywhere` bleibt trotzdem stehen und wird NICHT durch
+   `break-word` ersetzt: nur `anywhere` senkt die intrinsische Mindestbreite,
+   die die Gitterspur oben ueber den Viewport spreizen wuerde — `break-word`
+   bricht nur die Darstellung. Dieselbe Begruendung und dieselbe Kombination
+   stehen in technologie.css (Kontrollgruppe, dort seit dem WHO-Ueberschrift-
+   Befund), qione-zellschutz.css und exclusive-solutions.css; mm-lp.css war
+   die einzige der vier Dateien ohne den Silben-Partner.
+   Voraussetzung, hier erfuellt: <html lang="de"> (app/root.jsx) — ohne
+   Sprachangabe hat die Engine kein Woerterbuch und `auto` bliebe wirkungslos. */
 .mm-beleg__t,
-.mm-beleg__s { overflow-wrap: anywhere; }
+.mm-beleg__s {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
 .mm-beleg {
   display: flex;
   flex-direction: column;

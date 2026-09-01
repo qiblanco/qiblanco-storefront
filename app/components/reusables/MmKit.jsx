@@ -400,7 +400,6 @@ export function MmReports({eyebrow, title, text, balken, note, variante, dataSec
           <div>
             <h2>{title}</h2>
             <p className="mm-problem__text">{text}</p>
-            {note ? <p className="mm-mech__note">{note}</p> : null}
           </div>
           <div className="mm-reports__balken">
             {(balken || []).map((b, i) => (
@@ -416,6 +415,14 @@ export function MmReports({eyebrow, title, text, balken, note, variante, dataSec
             ))}
           </div>
         </div>
+        {/* Der Zitatblock steht AUSSERHALB des Gitters .mm-reports, nicht in
+            seiner linken Spalte. Vorher lag er im linken <div>: auf 1440px
+            ergab das eine Quellenangabe in 423px Breite neben 1080px
+            Inhaltskasten (39,2 %), während die Balken, auf die sie sich
+            bezieht, rechts danebenstanden — Christians Befund vom 2026-08-31
+            ("nur unter der linken Spalte statt über die volle Breite").
+            Die Quelle gehört unter BEIDE Spalten, weil sie beide belegt. */}
+        {note ? <p className="mm-mech__note">{note}</p> : null}
       </div>
     </MmBahn>
   );
