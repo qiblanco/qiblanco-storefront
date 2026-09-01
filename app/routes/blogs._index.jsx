@@ -2,6 +2,7 @@ import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {blogMeta} from '~/lib/blog-seo';
+import {BLOG_BESTAND_FRAGMENT, hatArtikel} from '~/lib/blog-bestand';
 
 /**
  * @type {MetaFunction}
@@ -48,7 +49,24 @@ async function loadCriticalData({context, request}) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  return {blogs};
+  // Blogs OHNE Artikel werden hier NICHT verlinkt.
+  //
+  // Das ist kein kosmetischer Nachzug, sondern der zweite Pflichtteil des
+  // 301-Fixes: `storefrontRedirect` lebt in `server.js` und sieht nur echte
+  // Dokument-Anfragen. Ein Klick von hier aus ist eine Client-Navigation,
+  // also ein Data-Request — der 404 der Ziel-Route landete dann in der
+  // ErrorBoundary statt in der Weiterleitung, und der Kunde saehe einen
+  // Fehler, wo ein Crawler sauber umgeleitet wird.
+  //
+  // Gefiltert wird der ANGEZEIGTE Knoten-Satz, die Cursor bleiben
+  // unangetastet: `pageInfo` gehört der echten Verbindung, und eine
+  // gefaelschte Seiten-Info wäre schlimmer als eine kuerzere Seite.
+  return {
+    blogs: {
+      ...blogs,
+      nodes: (blogs?.nodes ?? []).filter(hatArtikel),
+    },
+  };
 }
 
 /**
@@ -115,9 +133,11 @@ const BLOGS_QUERY = `#graphql
           title
           description
         }
+        ...BlogBestand
       }
     }
   }
+  ${BLOG_BESTAND_FRAGMENT}
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
