@@ -160,7 +160,16 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   max-width: max-content;
   margin: 0 auto var(--mm-s2);
 }
-.mm-lede {
+/* `.mm-lp` davor, damit (0,2,0): sonst gewinnt der Band-Selektor
+   `section.mm-bahn--flaeche > *` (0,1,1) mit `max-width: var(--mm-max)` und das
+   Lesemass hier ist tot. Am 2026-09-01 live gemessen auf so-funktioniert-der-qione
+   (der einzigen Seite mit .mm-lede): 1080px statt 612px, also 140 Zeichen auf EINER
+   Zeile statt zwei — genau das, was das Lesemass-Token verhindern soll. Gefunden hat
+   es die Klassen-Probe probe_mmkit_regel_wirkt_was_sie_sagt.py, nicht der Mensch:
+   derselbe Defekttyp wie der Reset in Zeile 110, nur ein anderer Ueberstimmer.
+   Der Band-Selektor bleibt unangetastet — er ist fuer Kinder OHNE eigenes Lesemass
+   richtig und zieht deren Kasten korrekt auf die Inhaltsbreite. */
+.mm-lp .mm-lede {
   font-size: var(--mm-fs-base);
   color: var(--mm-text-2);
   max-width: var(--mm-mass);
