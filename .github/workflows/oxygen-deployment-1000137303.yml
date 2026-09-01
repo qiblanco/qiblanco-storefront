@@ -46,6 +46,35 @@ jobs:
           PUBLIC_STORE_DOMAIN: ${{ secrets.PUBLIC_STORE_DOMAIN }}
           PUBLIC_STOREFRONT_ID: ${{ secrets.PUBLIC_STOREFRONT_ID }}
           PUBLIC_CHECKOUT_DOMAIN: ${{ secrets.PUBLIC_CHECKOUT_DOMAIN }}
+          # KUNDENKONTEN (Job 20260901-BAU-kundenbereich-...-prio6-s05).
+          # WARUM DIESE ZWEI ZEILEN NOETIG SIND: Shopify stellt beide Werte im
+          # Admin als "schreibgeschuetzte Variable" bereit ("allen Umgebungen
+          # zur Verfuegung gestellt") — in der Oxygen-LAUFZEIT kamen sie ueber
+          # diesen Actions-Deploy aber nicht an. Belegt am Hydrogen-Code statt
+          # vermutet: dist/development/index.js:3788 ist der EINZIGE 500-Werfer
+          # in ganz Hydrogen, und von seinen zwei Bedingungen kann nur
+          # `!customerAccountId` ziehen (die Alternativbedingung baut
+          # `https://shopify.com/${shopId}` — auch bei fehlendem shopId eine
+          # gueltige URL, die nicht wirft). Die 500 auf /account/login war
+          # damit ein Beweis, dass PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID zur
+          # Laufzeit leer war. Ursache: `--env-file` unten definiert die
+          # Variablen dieses Deployments; was hier nicht steht, ist unten weg.
+          # KEINE GEHEIMNISSE, deshalb literal wie die QPX-/Consent-Zeilen
+          # darunter und nicht als secrets.*: die Client-ID ist ein OAuth2-
+          # PUBLIC-Client mit PKCE, und Hydrogen setzt sie in Zeile 3590 selbst
+          # in die Login-URL, die JEDER Kunde im Browser sieht. SHOP_ID steht
+          # ohnehin in jeder gehosteten Konto-URL. Wer sie dennoch als Secret
+          # will: Wert nach secrets.<NAME> und hier auf ${{ secrets.<NAME> }} —
+          # Wirkung identisch.
+          # SHOP_ID IST NICHT OPTIONAL, auch wenn es die 500 nicht ausloest:
+          # ohne den Wert liefert isLoggedIn() (Zeile 3516) bedingungslos
+          # false — der Kundenbereich waere dann fehlerfrei und trotzdem
+          # dauerhaft abgemeldet. PUBLIC_CUSTOMER_ACCOUNT_API_URL gehoert
+          # BEWUSST NICHT hierher: Hydrogen 2025.7 liest den Schluessel
+          # nirgends (0 Treffer), die Basis-URL wird aus SHOP_ID gerechnet.
+          # Rueckbau = diese zwei Zeilen + ihre zwei printf-Zeilen loeschen.
+          PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: 'f1922e8e-006f-4111-8485-33324b7a0e6e'
+          SHOP_ID: '27930951750'
           FRESHDESK_API_KEY: ${{ secrets.FRESHDESK_API_KEY }}
           FRESHDESK_DOMAIN: ${{ secrets.FRESHDESK_DOMAIN }}
           FRESHDESK_WITHDRAWAL_TICKET_TYPE: ${{ secrets.FRESHDESK_WITHDRAWAL_TICKET_TYPE }}
@@ -106,6 +135,8 @@ jobs:
             printf 'PUBLIC_STORE_DOMAIN=%s\n' "$PUBLIC_STORE_DOMAIN"
             printf 'PUBLIC_STOREFRONT_ID=%s\n' "$PUBLIC_STOREFRONT_ID"
             printf 'PUBLIC_CHECKOUT_DOMAIN=%s\n' "$PUBLIC_CHECKOUT_DOMAIN"
+            printf 'PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=%s\n' "$PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID"
+            printf 'SHOP_ID=%s\n' "$SHOP_ID"
             printf 'FRESHDESK_API_KEY=%s\n' "$FRESHDESK_API_KEY"
             printf 'FRESHDESK_DOMAIN=%s\n' "$FRESHDESK_DOMAIN"
             printf 'FRESHDESK_WITHDRAWAL_TICKET_TYPE=%s\n' "$FRESHDESK_WITHDRAWAL_TICKET_TYPE"
