@@ -2,6 +2,16 @@ import {HomepageSections} from '~/components/homepage/HomepageSections';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {hreflangLinks} from '~/lib/hreflang';
 import {entityGraph} from '~/lib/entity-schema';
+import startseiteStyles from '~/styles/startseite.css?url';
+
+/**
+ * Token-Schicht der Startseite (Typo-Skala, Sektions-Takt, EIN Akzent).
+ * Bewusst NUR hier geladen und auf .home gescoped — app.css ist global und
+ * trägt jede Änderung auf alle Routen mit. Begründung im Kopf der CSS-Datei.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: startseiteStyles}];
+}
 
 /**
  * Titel der Startseite — der wichtigste einzelne Titel der Domain, weil er
