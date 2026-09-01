@@ -3,6 +3,7 @@ import {Image, getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
+import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -56,6 +57,21 @@ async function loadCriticalData({context, request, params}) {
 
   if (!blog?.articles) {
     throw new Response('Not found', {status: 404});
+  }
+
+  // Ein Blog OHNE Artikel ist keine Seite, sondern eine leere Huelle mit
+  // Selbst-Canonical. Er wird als 404 beantwortet — nicht damit der Kunde
+  // einen Fehler sieht, sondern weil `server.js` NUR bei 404 den
+  // Shopify-Admin nach einer Weiterleitung fragt (`storefrontRedirect`).
+  // Für /blogs/news und /blogs/e-smog liegen dort seit dem 2026-08-31
+  // Weiterleitungen auf /blogs/wissen bereit; erst diese Zeile macht sie
+  // wirksam. Gibt es für einen leeren Blog keine Weiterleitung, reicht
+  // `storefrontRedirect` den 404 durch — auch das ist richtig, ein leerer
+  // Container gehört nicht in den Index.
+  // Zur Ausnahme des Anker-Handles und dazu, warum hier keine Handle-Liste
+  // steht: siehe Kopf von ~/lib/blog-bestand.
+  if (!istEigenstaendig(params.blogHandle, blog)) {
+    throw new Response(null, {status: 404});
   }
 
   redirectIfHandleIsLocalized(request, {handle: params.blogHandle, data: blog});
@@ -146,6 +162,7 @@ const BLOGS_QUERY = `#graphql
         title
         description
       }
+      ...BlogBestand
       articles(
         first: $first,
         last: $last,
@@ -166,6 +183,7 @@ const BLOGS_QUERY = `#graphql
       }
     }
   }
+  ${BLOG_BESTAND_FRAGMENT}
   fragment ArticleItem on Article {
     author: authorV2 {
       name
