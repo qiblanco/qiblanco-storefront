@@ -549,7 +549,10 @@
    NUR Farbe/Typo/Radius — Funktion und Verhalten bleiben unangetastet.
 */
 body:has(.konto) {
-  background: var(--k-grund);
+  /* Literal, NICHT var(--k-grund): dieser Selektor greift auf `body`, wo der
+     .konto-Scope noch nicht gilt. Genau das ist hier einmal passiert und wurde
+     von bin/probe_konto_token_scope.py gefangen. */
+  background: #faf9f5;
   --color-accent-primary: #c9a14b;
   --rd3-gold: #c9a14b;
 }
