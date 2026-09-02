@@ -333,6 +333,17 @@ const LEGAL_LINKS = [
   // verlinkt, ist für den Besucher der Unterseiten nicht vorhanden.
   // (Segment s06, Backlog-Posten B-10(a).)
   {to: '/pages/ueber-uns', label: 'Über uns'},
+  // „Häufige Fragen" steht hier oben bei „Über uns" und NICHT zwischen
+  // Impressum/Datenschutz/AGB: das sind Pflichtangaben, die FAQ ist eine
+  // Hilfe-Fläche. Wer eine Frage hat, sucht sie nicht im Rechtsblock.
+  // Die Wortwahl ist bewusst dieselbe wie auf /pages/support („stehen die
+  // häufigen Fragen hier") — zwei Namen für dieselbe Seite kosten den
+  // Besucher den Wiedererkennungswert.
+  // WARUM DER FUSSBEREICH: /pages/faq war seit dem 2026-09-02 erreichbar und
+  // in der Sitemap, aber aus dem Fußbereich NICHT verlinkt — sie hing allein
+  // an /pages/support. Der Fußbereich ist die einzige Navigation auf JEDER
+  // Seite. (Job 20260902-faq-footer-link-und-fuenf-formate-belege.)
+  {to: '/pages/faq', label: 'Häufige Fragen'},
   {to: '/pages/impressum', label: 'Impressum'},
   {to: '/pages/datenschutz', label: 'Datenschutz'},
   {to: '/pages/agb', label: 'AGB'},
