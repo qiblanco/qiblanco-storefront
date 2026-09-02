@@ -1,11 +1,38 @@
 import {useState} from 'react';
 import {data} from '@shopify/remix-oxygen';
-import {Form, useActionData, useNavigation} from 'react-router';
+import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
 
+/**
+ * TITEL UND BESCHREIBUNG GESCHÄRFT AM 2026-09-02 (Grossjob-Segment s04) — und
+ * zwar NUR sie, kein einziger Q&A-Text.
+ *
+ * ANLASS: Seit diesem Tag gibt es /pages/faq, eine eigene, indexierbare
+ * Fragen-Fläche mit FAQPage-Schema. Zwei indexierte Seiten, die beide „FAQ"
+ * im Titel führen, konkurrieren um dieselbe Suchabsicht — und der Titel ist
+ * der stärkste Signalgeber, den Google dafür liest. Diese Seite ist ihrer
+ * Funktion nach das KONTAKTFORMULAR (Rate-Limit, Freshdesk-Anbindung, action);
+ * die Fragen-Absicht gehört nach /pages/faq. Der Titel sagt das jetzt.
+ *
+ * WAS AUSDRÜCKLICH NICHT ANGEFASST WURDE, obwohl es auffiel: die Konstante
+ * FAQ_ITEMS weiter unten ist ein DRITTER, unabhängiger FAQ-Bestand (weder
+ * product-faqs.js noch faq-schema.js, kein FAQPage-JSON-LD) und widerspricht
+ * an drei Stellen anderen Live-Flächen — Sauna, 14-vs-20-Tage-Rückgabe und
+ * eine ungefilterte Wirkaussage. Inhalts-Umformulierungen sind laut Kopf von
+ * app/lib/faq-schema.js ein CHRISTIAN-GATE; die drei Widersprüche liegen ihm
+ * mit Fundstellen als Vorlage vor (RESULT des Segments, Abschnitt „Offene
+ * Flanken"). Sie hier im Vorbeigehen zu heilen wäre bequem und nicht meine
+ * Entscheidung.
+ */
 export const meta = () => [
-  {title: 'Support & FAQ | Qi Blanco'},
-  {name: 'description', content: 'Häufige Fragen und Antworten sowie Kontaktformular für Qi Blanco Kunden.'},
+  {title: 'Kontakt & Hilfe | Qi Blanco'},
+  {
+    name: 'description',
+    content:
+      'Schreib uns direkt — wir antworten dir persönlich. Kontaktformular für Fragen zu ' +
+      'Bestellung, Größe und Rückgabe. Die häufigsten Fragen beantworten wir gebündelt ' +
+      'unter „Häufige Fragen".',
+  },
   canonicalLink('/pages/support'),
 ];
 
@@ -115,7 +142,7 @@ export async function action({request, context}) {
       {
         ok: false,
         error:
-          'Das Kontaktformular ist aktuell nicht vollstaendig konfiguriert. Bitte schreibe uns direkt an service@qiblanco.com.',
+          'Das Kontaktformular ist aktuell nicht vollständig konfiguriert. Bitte schreibe uns direkt an service@qiblanco.com.',
       },
       {status: 503},
     );
@@ -402,6 +429,14 @@ export default function SupportPage() {
         )}
 
         <h2>Häufige Fragen &amp; Antworten</h2>
+        {/* Der Verweis auf die vollständige FAQ steht VOR dem Akkordeon, nicht
+            darunter: wer hier landet und eine Antwort sucht, soll den besseren
+            Ort finden, bevor er sich durch die Kurzfassung klickt. */}
+        <p style={{marginTop: '0.5rem'}}>
+          Ausführlicher — inklusive Größentabelle, Reichweite, Rückgabe und der
+          ehrlichen Antwort auf „Wirkt das überhaupt?" —{' '}
+          <Link to="/pages/faq">stehen die häufigen Fragen hier</Link>.
+        </p>
         <FaqAccordion />
       </div>
     </div>
