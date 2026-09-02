@@ -19,25 +19,25 @@
  *   "g"  Link auf das Google-Profil — genau 1 je Seite mit Bewertungsbereich
  *   "d"  rein darstellend (Sterne der einzelnen Bewertungskarten)
  *   "z"  ZIERDE/Piktogramm — KEIN gerendertes Rating (seit 2026-09-02, Job
- *        20260831-sterne-vertrag-luecken-schliessen-wirtliste-prio35)
+ *        20260831-sterne-vertrag-luecken-schließen-wirtliste-prio35)
  *
  * OHNE Marker = Fehlstelle. "Darstellend" gilt nur, wenn es im Code STEHT —
  * die Klasse wird an der VERWENDUNGSSTELLE gesetzt, nie zur Laufzeit aus dem
  * DOM erraten (Christian 2026-08-20 21:47).
  *
  * DER UNTERSCHIED ZWISCHEN "d" UND "z" IST DIE FARB-ACHSE, und er ist der
- * ganze Grund fuer den vierten Wert: "d" ist eine BEWERTUNG, die nur nicht
+ * ganze Grund für den vierten Wert: "d" ist eine BEWERTUNG, die nur nicht
  * springt — ihre Farbe WIRD geurteilt und muss --qb-sterne-gold tragen. "z"
- * ist ueberhaupt keine Bewertung, sondern ein Symbol neben einer Zahl; seine
+ * ist überhaupt keine Bewertung, sondern ein Symbol neben einer Zahl; seine
  * Farbe folgt seinem Kontext und wird NICHT geurteilt (sterne-farbe-wache
- * zaehlt ihn getrennt aus, statt ihn stillzuschweigen).
+ * zählt ihn getrennt aus, statt ihn stillzuschweigen).
  * MISSBRAUCHS-GRENZE: "z" ist kein Freibrief, dem Farb-Urteil zu entkommen.
- * Er gilt fuer ein Piktogramm aus einem Icon-Satz (MmKit MM_ICON_PATHS), wo
+ * Er gilt für ein Piktogramm aus einem Icon-Satz (MmKit MM_ICON_PATHS), wo
  * der Stern dieselbe Rolle hat wie ↺ oder ✓ daneben. Eine Sternenreihe, die
  * einen Wert RENDERT (auch eine unklickbare), ist "d" — nie "z".
- * WEGLASSEN BLEIBT UNMOEGLICH: ein Stern ohne Marker, den das strukturelle
- * Praedikat als Bewertung erkennt, faellt auf exit 2 (Vertragsluecke) — nicht
- * auf gruen. Ein UNBEKANNTER Wert faellt seit 2026-09-02 ebenfalls dorthin
+ * WEGLASSEN BLEIBT AUSGESCHLOSSEN: ein Stern ohne Marker, den das strukturelle
+ * Prädikat als Bewertung erkennt, fällt auf exit 2 (Vertragslücke) — nicht
+ * auf grün. Ein UNBEKANNTER Wert fällt seit 2026-09-02 ebenfalls dorthin
  * (fail-closed), damit ein Tippfehler nicht still zur Zierde wird.
  *
  * WARUM DIE GRAFIK UNVERAENDERT BLEIBT — das ist der teure Teil dieser Datei:

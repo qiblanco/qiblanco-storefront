@@ -81,18 +81,18 @@ export function MmIcon({zeichen}) {
       strokeLinejoin="round"
       aria-hidden="true"
       /* Klasse "z" = ZIERDE/Piktogramm, nur am Stern und nur hier (Entscheid
-         2026-09-02, Job 20260831-sterne-vertrag-luecken-schliessen-wirtliste).
+         2026-09-02, Job 20260831-sterne-vertrag-luecken-schließen-wirtliste).
          Ein ★ AUS DIESER TABELLE ist ein Icon wie ↺ ∅ ▤ ✓ ⚑ daneben — die
          Bewertung selbst steht als TEXT ("4,8 / 5") im Nachbarknoten, nicht in
-         diesem Strich-Symbol. Ohne die Deklaration faellt er der Farb-Wache als
-         "unmarkierte Bewertung" auf (exit 2), weil ihr Naht-Praedikat C das
+         diesem Strich-Symbol. Ohne die Deklaration fällt er der Farb-Wache als
+         "unmarkierte Bewertung" auf (exit 2), weil ihr Naht-Prädikat C das
          "4,8 / 5" im Onkelknoten korrekt findet.
-         WARUM ER NICHT VERGOLDET WIRD: .mm-badge__mark faerbt die ganze Reihe
-         ueber --mm-gold-tinte (#856828 = --mm-gold, nur abgedunkelt, KEIN
+         WARUM ER NICHT VERGOLDET WIRD: .mm-badge__mark färbt die ganze Reihe
+         über --mm-gold-tinte (#856828 = --mm-gold, nur abgedunkelt, KEIN
          zweiter Goldton). Gemessen auf --mm-grund: #856828 = 4.97:1, der
-         Sternton #F4B400 = 1.75:1 — letzteres reisst WCAG 1.4.11 (3:1) fuer
-         Grafik. Vergolden hiesse: ein Icon aus sechs ausbrechen lassen UND den
-         Kontrast halbieren. Der Marker gilt NUR fuer dieses Piktogramm-Set;
+         Sternton #F4B400 = 1.75:1 — letzteres reißt WCAG 1.4.11 (3:1) für
+         Grafik. Vergolden hieße: ein Icon aus sechs ausbrechen lassen UND den
+         Kontrast halbieren. Der Marker gilt NUR für dieses Piktogramm-Set;
          echte Sternreihen tragen weiter s|g|d (s. StarRating.jsx). */
       {...(zeichen === '★' ? {'data-qb-rating': 'z'} : {})}
     >
