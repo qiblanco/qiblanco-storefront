@@ -39,6 +39,7 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/pages/e-smog", "url": "https://qiblanco.com/pages/e-smog", "titel": "Tag 4: E-Smog", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/entgiftung", "url": "https://qiblanco.com/pages/entgiftung", "titel": "Tag 1: Entgiftung", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/erinnerung-erfolgreich", "url": "https://qiblanco.com/pages/erinnerung-erfolgreich", "titel": "Erinnerung erfolgreich", "crawlbar": true, "herkunft": "shopify"},
+      {"pfad": "/pages/faq", "url": "https://qiblanco.com/pages/faq", "titel": "Häufige Fragen", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/intuition-erfahren", "url": "https://qiblanco.com/pages/intuition-erfahren", "titel": "Teil 1: Intuition erfahren – Raus aus dem Kopf, rein ins Herz! – 9 min", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/kakao-anwendung", "url": "https://qiblanco.com/pages/kakao-anwendung", "titel": "Teil 3: Die Zeremonie-Kakao Kur in der Anwendung – 8 min", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/kakao-anwendung-de", "url": "https://qiblanco.com/pages/kakao-anwendung-de", "titel": "Kakao Anwendung DE", "crawlbar": true, "herkunft": "shopify"},
@@ -131,6 +132,7 @@ export const UEBERSICHT_BEREICHE = [
     "titel": "Landingpage Bau",
     "beschreibung": "Nicht crawlbare Seiten in Test/Bau.",
     "eintraege": [
+      {"pfad": "/konto-vorschau", "url": "https://qiblanco.com/konto-vorschau", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/schlaf-zellen-schutz-v2-18ef", "url": "https://qiblanco.com/pages/schlaf-zellen-schutz-v2-18ef", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/schlaf-zellen-schutz-v3-67a7", "url": "https://qiblanco.com/pages/schlaf-zellen-schutz-v3-67a7", "titel": "", "crawlbar": false, "herkunft": "code"}
     ]
