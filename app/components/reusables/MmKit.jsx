@@ -72,7 +72,30 @@ const MM_ICON_PATHS = {
 export function MmIcon({zeichen}) {
   const pfade = MM_ICON_PATHS[zeichen] || ['M12 10.5l1.5 1.5-1.5 1.5-1.5-1.5z'];
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      /* Klasse "z" = ZIERDE/Piktogramm, nur am Stern und nur hier (Entscheid
+         2026-09-02, Job 20260831-sterne-vertrag-luecken-schliessen-wirtliste).
+         Ein ★ AUS DIESER TABELLE ist ein Icon wie ↺ ∅ ▤ ✓ ⚑ daneben — die
+         Bewertung selbst steht als TEXT ("4,8 / 5") im Nachbarknoten, nicht in
+         diesem Strich-Symbol. Ohne die Deklaration faellt er der Farb-Wache als
+         "unmarkierte Bewertung" auf (exit 2), weil ihr Naht-Praedikat C das
+         "4,8 / 5" im Onkelknoten korrekt findet.
+         WARUM ER NICHT VERGOLDET WIRD: .mm-badge__mark faerbt die ganze Reihe
+         ueber --mm-gold-tinte (#856828 = --mm-gold, nur abgedunkelt, KEIN
+         zweiter Goldton). Gemessen auf --mm-grund: #856828 = 4.97:1, der
+         Sternton #F4B400 = 1.75:1 — letzteres reisst WCAG 1.4.11 (3:1) fuer
+         Grafik. Vergolden hiesse: ein Icon aus sechs ausbrechen lassen UND den
+         Kontrast halbieren. Der Marker gilt NUR fuer dieses Piktogramm-Set;
+         echte Sternreihen tragen weiter s|g|d (s. StarRating.jsx). */
+      {...(zeichen === '★' ? {'data-qb-rating': 'z'} : {})}
+    >
       {pfade.map((d, i) => (
         <path d={d} key={i} />
       ))}
