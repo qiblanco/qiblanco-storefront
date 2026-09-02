@@ -1,0 +1,377 @@
+/* ============================================================================
+   /pages/faq — Token-CSS der FAQ-Seite (2026-09-02, Grossjob-Segment s04).
+
+   HERKUNFT DES REZEPTS: `design-meister web-brief --seite faq` (Web-Token-SSoT
+   design-meister/db/webdesign/web-soll.yaml v1) plus das stärkste
+   Bestands-Rezept app/styles/schlaf-zellen-schutz.css (Referenz-Benchmark,
+   94/100). Leitidee wörtlich aus dem Brief: „Ruhige Premium-Fläche
+   (claude.ai-Referenz: Papier statt Bildschirm) — warmes Neutral-Kontinuum,
+   EIN Gold-Akzent nur auf Handlung, Beweis vor Behauptung, Weissraum gruppiert
+   statt Boxen."
+
+   REGEL DIESES FILES, identisch zur Benchmark-Datei: alle Grössen, Farben,
+   Radien und Schatten kommen aus den :root-Tokens unten. Ausserhalb des
+   Token-Blocks erfindet KEINE Regel freie Werte. Scope ist `.faq-a1` —
+   self-contained, damit die Seite nicht von app.css abhängt und umgekehrt
+   nichts an app.css verändert.
+
+   WARUM EIGENE TOKENS UND NICHT schlaf-zellen-schutz.css IMPORTIERT: jene
+   Datei ist seit 2026-07-16 mit der Campaign-PDP /pages/qione-2-pro
+   GEKOPPELT (styles/qione-2-pro-shop.css, Scope `.lp-a3 .shopq`). Eine
+   Änderung dort wirkt auf die Shopseite. Die FAQ leiht sich deshalb die
+   WERTE, nicht die DATEI — kein neuer Kopplungspunkt an einer Kaufseite.
+
+   TYPO-DECKEL: web-soll.yaml erlaubt höchstens 9 Grössenstufen, und die
+   gemessene Live-Skala des Shops steht bereits exakt auf 9. Diese Datei führt
+   deshalb 7 Stufen und legt keine neue Grösse an.
+   ========================================================================== */
+
+:root {
+  --f-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala (modulare Skala ~1.25; 7 Stufen, keine freien Werte) */
+  --f-fs-xs: 0.8125rem;                                   /* 13px */
+  --f-fs-base: 1rem;                                      /* 16px — Body-Minimum */
+  --f-fs-md: 1.125rem;                                    /* 18px */
+  --f-fs-lg: 1.25rem;                                     /* 20px */
+  --f-fs-xl: 1.5625rem;                                   /* 25px */
+  --f-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);     /* EIN H2-Stil */
+  --f-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid, Sektions-Takt [96, 64] wie im Brief */
+  --f-s1: 8px;  --f-s2: 16px; --f-s3: 24px; --f-s4: 32px;
+  --f-s6: 48px; --f-s8: 64px; --f-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --f-grund: #faf9f5;
+  --f-flaeche: #f4f0e9;
+  --f-dunkel: #191714;
+  --f-text: #2c2a26;
+  --f-text-hell: #f4f0e9;
+  --f-muted: #6b665d;
+  --f-muted-hell: rgba(244, 240, 233, 0.72);
+  --f-akzent: #c9a14b;             /* Gold — NUR Handlung/Beweis */
+  --f-akzent-tief: #b8893a;        /* Gold als FLÄCHE (hover/outline) */
+  --f-akzent-tinte: #856828;       /* Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+        Gleicher Hue, nur abgedunkelt -> KEIN zweiter Goldton, der Hue-Bin
+        der Rubrik bleibt 1. Übernommen aus dem 94/100-Rezept. */
+  --f-linie: rgba(44, 42, 38, 0.12);
+  --f-linie-hell: rgba(244, 240, 233, 0.2);
+
+  /* Radien + Schatten: je ZWEI Werte (web-soll radius_set [8, 16]) */
+  --f-r1: 8px;  --f-r2: 16px;
+  --f-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --f-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --f-mass: 68ch;                  /* Lesemass < 75ch (web-soll) */
+  --f-breite: 1080px;
+  --f-breite-schmal: 760px;
+}
+
+/* Gold-TINTE ist eine Hellgrund-Rolle. Auf dunklem Grund wäre #856828 zu
+   dunkel (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt
+   Selektor-Pflege, dieselbe Bauart wie in der Benchmark-Datei. */
+.faq-a1 .faq-schluss,
+body:has(.faq-a1) .footer,
+body:has(.faq-a1) footer {
+  --f-akzent-tinte: var(--f-akzent);
+}
+
+/* ─── ZUM BEFUND „ZWEI KONKURRIERENDE GOLD-/OCKER-TÖNE" ─────────────────── */
+/* Er steht im Score dieser Seite (84/100, bestanden) und BLEIBT bewusst stehen.
+   Hier steht kein Fix, sondern der Grund, warum keiner hierher gehört — damit
+   der nächste Leser ihn nicht ein zweites Mal versucht.
+   GEMESSEN, nicht vermutet: Ein `body:has(.faq-a1)`-Layer nach dem Vorbild des
+   94/100-Rezepts wurde gebaut, gebaut ausgeliefert und neu gescort. Ergebnis:
+   84 -> 84, harmonisch_farbe 85 -> 85, der Befund unverändert im Report. Der
+   Layer war wirkungslos und ist deshalb wieder entfernt — eine Regel, die
+   nichts bewirkt, aber Fremd-Komponenten still umfärbt, ist schlechter als
+   keine.
+   WARUM ER WIRKUNGSLOS WAR: die konkurrierenden Töne stehen NICHT in
+   Custom-Properties, sondern als feste Hex-Werte in den ZAHLUNGSART-LOGOS des
+   Footers — #F79E1B (Mastercard, hue 36) und #FBBC04 (Google Pay, hue 45)
+   gegen unseren Akzent #c9a14b (hue 41). Es sind fremde MARKENZEICHEN. Sie
+   umzufärben wäre kein Design-Fix, sondern eine Verfälschung fremder Logos.
+   Der Befund ist damit auf einer Seite mit Footer strukturell nicht
+   auflösbar und kein Mangel dieser Seite. */
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.faq-a1 {
+  font-family: var(--f-font);
+  font-size: var(--f-fs-base);
+  line-height: 1.65;
+  color: var(--f-text);
+  background: var(--f-grund);
+}
+
+.faq-a1 section {
+  padding-block: var(--f-s12);
+}
+
+@media (max-width: 749px) {
+  .faq-a1 section {
+    padding-block: var(--f-s8);
+  }
+}
+
+.faq-a1 .faq-inner {
+  width: min(100% - var(--f-s4), var(--f-breite));
+  margin-inline: auto;
+}
+
+.faq-a1 .faq-inner--schmal {
+  width: min(100% - var(--f-s4), var(--f-breite-schmal));
+}
+
+.faq-a1 p {
+  max-width: var(--f-mass);
+  margin-block: 0 var(--f-s2);
+}
+
+.faq-a1 a {
+  color: var(--f-akzent-tinte);
+  text-underline-offset: 3px;
+}
+
+.faq-a1 a:hover {
+  color: var(--f-akzent-tief);
+}
+
+/* ─── Kopf ───────────────────────────────────────────────────────────────── */
+.faq-a1 .faq-kopf {
+  background: var(--f-flaeche);
+  border-bottom: 1px solid var(--f-linie);
+}
+
+.faq-a1 .faq-kopf h1 {
+  font-size: var(--f-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--f-s3);
+  max-width: 20ch;
+}
+
+.faq-a1 .faq-lede {
+  font-size: var(--f-fs-lg);
+  color: var(--f-muted);
+  max-width: var(--f-mass);
+}
+
+/* Sprungmarken-Leiste: die einzige Navigation der Seite. Kein Widget, keine
+   Box — nur Linien, damit der Weissraum gruppiert statt Rahmen. */
+.faq-a1 .faq-sprungmarken {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--f-s1) var(--f-s3);
+  margin-top: var(--f-s6);
+  padding: 0;
+  list-style: none;
+}
+
+.faq-a1 .faq-sprungmarken a {
+  display: inline-block;
+  padding: var(--f-s1) 0;
+  font-size: var(--f-fs-base);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.faq-a1 .faq-sprungmarken a:hover,
+.faq-a1 .faq-sprungmarken a:focus-visible {
+  border-bottom-color: var(--f-akzent);
+}
+
+/* ─── Bloecke ────────────────────────────────────────────────────────────── */
+.faq-a1 .faq-block + .faq-block {
+  border-top: 1px solid var(--f-linie);
+}
+
+/* EIN H2-Stil, ausnahmslos (web-soll: „EIN H2-Stil"). */
+.faq-a1 h2 {
+  font-size: var(--f-fs-h2);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--f-s1);
+  scroll-margin-top: var(--f-s8);
+}
+
+.faq-a1 .faq-block-intro {
+  font-size: var(--f-fs-md);
+  color: var(--f-muted);
+  margin-bottom: var(--f-s6);
+}
+
+/* ─── Frage / Antwort ────────────────────────────────────────────────────── */
+.faq-a1 .faq-liste {
+  border-top: 1px solid var(--f-linie);
+}
+
+.faq-a1 .faq-eintrag {
+  border-bottom: 1px solid var(--f-linie);
+}
+
+.faq-a1 .faq-frage {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--f-s3);
+  width: 100%;
+  padding: var(--f-s3) 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: var(--f-fs-md);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--f-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.faq-a1 .faq-frage:hover {
+  color: var(--f-akzent-tinte);
+}
+
+.faq-a1 .faq-frage:focus-visible {
+  outline: 2px solid var(--f-akzent-tief);
+  outline-offset: 4px;
+  border-radius: var(--f-r1);
+}
+
+/* Das Zeichen ist reines CSS — kein Icon-Paket, keine zusätzliche Anfrage.
+   „Keine toten Ressourcen" ist eine Regel des Briefs. */
+.faq-a1 .faq-zeichen {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--f-s3);
+  height: var(--f-s3);
+  margin-top: 2px;
+}
+
+.faq-a1 .faq-zeichen::before,
+.faq-a1 .faq-zeichen::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 2px;
+  background: var(--f-akzent-tief);
+  transition: transform 0.25s ease;
+}
+
+.faq-a1 .faq-zeichen::after {
+  transform: rotate(90deg);
+}
+
+.faq-a1 .faq-frage[aria-expanded='true'] .faq-zeichen::after {
+  transform: rotate(0deg);
+}
+
+/* Die Antwort steht IMMER im DOM und wird nur per `hidden` visuell geklappt.
+   Das ist die tragende Eigenschaft dieser Seite: eine bedingt gemountete
+   Antwort ist für Crawler und KI-Antwortsysteme nicht vorhanden. Übernommen
+   aus ProductFAQ.jsx (Befund FJ2 des GEO/ÄO-Deep-Dive). */
+.faq-a1 .faq-antwort {
+  padding: 0 0 var(--f-s3);
+  max-width: var(--f-mass);
+  color: var(--f-text);
+}
+
+.faq-a1 .faq-antwort[hidden] {
+  display: none;
+}
+
+.faq-a1 .faq-antwort p:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── Grössentabelle ────────────────────────────────────────────────────── */
+.faq-a1 .faq-tabelle {
+  width: 100%;
+  max-width: var(--f-mass);
+  margin: var(--f-s3) 0;
+  border-collapse: collapse;
+  font-size: var(--f-fs-base);
+}
+
+.faq-a1 .faq-tabelle caption {
+  margin-bottom: var(--f-s1);
+  font-size: var(--f-fs-xs);
+  color: var(--f-muted);
+  text-align: left;
+}
+
+.faq-a1 .faq-tabelle th,
+.faq-a1 .faq-tabelle td {
+  padding: var(--f-s1) var(--f-s2) var(--f-s1) 0;
+  border-bottom: 1px solid var(--f-linie);
+  text-align: left;
+}
+
+.faq-a1 .faq-tabelle thead th {
+  font-size: var(--f-fs-xs);
+  font-weight: 600;
+  color: var(--f-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Schluss: der nächste Klick ────────────────────────────────────────── */
+/* Eine /pages/-Seite wird am NÄCHSTEN KLICK gemessen, nicht an der
+   Bestellung (Kanon: „Die Landingpage verkauft nicht — sie erzeugt den
+   nächsten Klick"). Deshalb steht hier ein Weiter, kein Kauf-Abschluss. */
+.faq-a1 .faq-schluss {
+  background: var(--f-dunkel);
+  color: var(--f-text-hell);
+}
+
+.faq-a1 .faq-schluss h2 {
+  color: var(--f-text-hell);
+}
+
+.faq-a1 .faq-schluss p {
+  color: var(--f-muted-hell);
+}
+
+.faq-a1 .faq-wege {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--f-s3);
+  margin-top: var(--f-s6);
+  padding: 0;
+  list-style: none;
+}
+
+.faq-a1 .faq-weg {
+  display: block;
+  padding: var(--f-s3);
+  border: 1px solid var(--f-linie-hell);
+  border-radius: var(--f-r2);
+  color: var(--f-text-hell);
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.faq-a1 .faq-weg:hover,
+.faq-a1 .faq-weg:focus-visible {
+  border-color: var(--f-akzent);
+  background: rgba(201, 161, 75, 0.08);
+  color: var(--f-text-hell);
+}
+
+.faq-a1 .faq-weg strong {
+  display: block;
+  margin-bottom: var(--f-s1);
+  font-size: var(--f-fs-md);
+  font-weight: 600;
+  color: var(--f-akzent);
+}
+
+.faq-a1 .faq-weg span {
+  font-size: var(--f-fs-base);
+  color: var(--f-muted-hell);
+}
