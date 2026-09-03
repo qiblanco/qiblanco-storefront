@@ -5550,7 +5550,14 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
    (useKopfHoeheVariable in GoogleRezensionenBereich.jsx) und bei Banner-
    Ein/Ausblenden, Resize und Orientierungswechsel nachgefuehrt. Die 150px
    sind ein DESKTOP-Mass und sitzen auf 360-414px zwangslaeufig daneben; sie
-   bleiben ausschliesslich als No-JS-Rueckfall stehen. */
+   bleiben ausschliesslich als No-JS-Rueckfall stehen.
+
+   Gemessen wird seit 2026-09-03 die RUHELAGE des Kopfes (eigenes translateY
+   herausgerechnet), nicht seine momentane Unterkante: `header--hidden` schiebt
+   ihn per transform aus dem Bild, die Unterkante ist dann 0 -- ein
+   scroll-margin-top von 0 laesst keine Reserve, und die Ueberschrift liegt
+   hinter dem Kopf, sobald dieser wieder ausfaehrt. Der Wert ist dadurch
+   kopfzustands-unabhaengig (gemessen 84/103/95 auf 360/768/1440). */
 .GoogleRezensionenBereich {
   scroll-margin-top: var(--qb-kopf-hoehe, 150px);
   margin-top: 3rem;

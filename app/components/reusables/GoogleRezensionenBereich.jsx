@@ -79,6 +79,34 @@ export function findeRezensionsZiel() {
  * Ein fester Wert (bisher `scroll-margin-top: 150px`, Desktop-Maß) sitzt auf
  * 360–414 px zwangsläufig daneben. Gemessen wird die Unterkante aller
  * tatsächlich oben klebenden fixed/sticky-Kopfelemente.
+ *
+ * GEMESSEN WIRD DIE RUHELAGE, NICHT DIE MOMENTANE LAGE — das ist die
+ * Korrektur vom 2026-09-03 (Job 20260831-storefront-kopf-reserve-sternesprung):
+ *
+ *   `.header-wrapper.header--hidden { transform: translateY(-100%) }` schiebt
+ *   den Kopf aus dem Bild. `getBoundingClientRect()` bildet Transformationen ab
+ *   — die Unterkante ist dann ~0, und diese Funktion lieferte 0 statt der
+ *   Kopfhöhe. Live nachgemessen 2026-09-03 auf qiblanco.com, alle drei
+ *   Viewports, eingefahren gegen ausgefahren:
+ *
+ *     vw=360   top -84  bottom 0  dy -84   |  top 0  bottom  84
+ *     vw=768   top -103 bottom 0  dy -103  |  top 0  bottom 103
+ *     vw=1440  top -95  bottom 0  dy -95   |  top 0  bottom  95
+ *
+ *   Wer daraus 0 macht, rechnet eine Sprung-Landung ohne jede Kopf-Reserve:
+ *   fährt der Kopf danach aus — und das tut er bei JEDER Aufwärts-Bewegung,
+ *   Header.jsx kennt keine Totzone — liegt die Überschrift dahinter. Genau
+ *   das war der gemeldete Defekt (Probe `probe_sterne_kopf_zustaende.py`,
+ *   Verdikt `keine_kopf_reserve`, versatz −71/−90/−82).
+ *
+ *   Herausgerechnet wird deshalb das EIGENE translateY des Elements. Der Wert
+ *   ist danach vom Kopfzustand unabhängig (Spalte links == Spalte rechts oben),
+ *   und die Landung wettet nicht mehr darauf, dass der Kopf eingefahren bleibt.
+ *
+ * NICHT geändert wurde Header.jsx: eine Totzone im Scroll-Listener senkt nur
+ * die Häufigkeit des selbst ausgelösten Falls — ein Besucher, der bewusst nach
+ * oben scrollt, fährt den Kopf weiter aus, und die Überschrift wäre wieder
+ * verdeckt. Die Reserve trägt gegen BEIDE Zustände; die Totzone gegen einen.
  */
 export function messeKopfHoehe() {
   if (typeof document === 'undefined') return 0;
@@ -89,8 +117,23 @@ export function messeKopfHoehe() {
     const stil = window.getComputedStyle(el);
     if (stil.position !== 'fixed' && stil.position !== 'sticky') continue;
     const kasten = el.getBoundingClientRect();
-    if (kasten.height > 0 && kasten.top <= 5) {
-      unten = Math.max(unten, kasten.bottom);
+    if (kasten.height <= 0) continue;
+    /* Eigenes translateY herausrechnen (0, wenn keine Transformation läuft).
+       DOMMatrixReadOnly steht in jedem Browser, der Hydrogen ausführt; der
+       try/catch ist der Rückfall auf „keine Verschiebung" statt auf einen
+       Absturz im Scroll-Pfad. */
+    let versatzY = 0;
+    if (stil.transform && stil.transform !== 'none') {
+      try {
+        versatzY = new DOMMatrixReadOnly(stil.transform).m42 || 0;
+      } catch {
+        versatzY = 0;
+      }
+    }
+    const ruheOben = kasten.top - versatzY;
+    const ruheUnten = kasten.bottom - versatzY;
+    if (ruheOben <= 5) {
+      unten = Math.max(unten, ruheUnten);
     }
   }
   return unten;
@@ -156,20 +199,29 @@ export function scrolleZuRezensionen(ziel) {
   }
 
   /*
-   * ERSTER SPRUNG RICHTUNGSABHÄNGIG — dieser Teil ist GEMESSEN richtig und
-   * wird bewusst NICHT durch die reine Live-Messung ersetzt: der Kopf blendet
-   * sich beim ABWÄRTS-Scrollen selbst aus (Header.jsx scroll-hide ab 100 px),
-   * ist zum Zeitpunkt des ersten Messens aber noch sichtbar. Wer hier schon
-   * `messeKopfHoehe()` abzieht, springt um die Kopfhöhe zu kurz und korrigiert
-   * das sichtbar in einem zweiten Ruck nach. Nachgemessen am 2026-08-22
-   * (s02, alle drei Viewports 360/768/1440): mit kopf=0 landet die Überschrift
-   * auf +12 px, also mitten im Sichtfenster 0..220.
-   * Die Konvergenzschleife darunter deckt den AUFWÄRTS-Fall und jede
-   * Layoutverschiebung ab, die der erste Sprung nicht vorhersehen konnte.
+   * ERSTER SPRUNG NICHT MEHR RICHTUNGSABHÄNGIG (Korrektur 2026-09-03,
+   * Job 20260831-storefront-kopf-reserve-sternesprung).
+   *
+   * Bis hierher stand hier `nachUnten ? 0 : messeKopfHoehe()` — mit der
+   * Begründung, der Kopf blende sich beim Abwärts-Scrollen ohnehin aus, ein
+   * Abzug springe also zu kurz. Die Begründung stimmte, solange
+   * `messeKopfHoehe()` die MOMENTANE Unterkante lieferte: nach der Landung war
+   * sie 0, der Abzug also unbegründet.
+   *
+   * Seit die Messung die RUHELAGE liefert (Kommentar dort), ist der Wert vom
+   * Kopfzustand unabhängig — und der Abzug ist die Reserve, die genau dann
+   * gebraucht wird, wenn der Kopf nach der Landung wieder ausfährt. Die
+   * Fallunterscheidung wäre jetzt der Fehler: sie würde in der einen Richtung
+   * eine Reserve lassen und in der anderen nicht.
+   *
+   * WAS DAS KOSTET, offen benannt: am Seitenanfang ist der Kopf höher als im
+   * gescrollten Zustand (gemessen 2026-09-03: 124/135/127 bei scrollY=0 gegen
+   * 84/103/95 danach). Der erste Sprung reserviert deshalb ~32 px zu viel, und
+   * die Konvergenzschleife zieht sie nach. Das ist ein kleiner Nachzug NACH
+   * UNTEN — er lässt den Kopf eingefahren, statt ihn erneut auszufahren.
    */
   const zielOben = ziel.getBoundingClientRect().top + window.scrollY;
-  const nachUnten = zielOben > y();
-  const ersterKopf = nachUnten ? 0 : messeKopfHoehe();
+  const ersterKopf = messeKopfHoehe();
 
   if (sanft) {
     window.scrollTo({
@@ -193,6 +245,12 @@ export function scrolleZuRezensionen(ziel) {
  * Nachgeführt wird bei Scroll (Banner ein/aus), Resize und
  * Orientierungswechsel. Die Messung ist billig (wenige Elemente), wird aber
  * über requestAnimationFrame entprellt, damit sie den Scroll nicht bremst.
+ *
+ * SEIT 2026-09-03 trägt die Variable die RUHELAGE des Kopfes, nicht seine
+ * momentane Unterkante (siehe messeKopfHoehe). Für `scroll-margin-top` ist das
+ * der richtige Wert: der native Hash-Sprung landet sonst mit 0 px Reserve und
+ * schiebt die Überschrift hinter den Kopf, sobald dieser wieder ausfährt. Die
+ * Variable springt dadurch beim Scrollen nicht mehr zwischen 0 und Kopfhöhe.
  */
 export function useKopfHoeheVariable() {
   useEffect(() => {
