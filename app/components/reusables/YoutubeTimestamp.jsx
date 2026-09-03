@@ -1,4 +1,5 @@
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
 
 /*
  * YoutubeTimestamp — das wiederverwendbare Muster „YouTube-Video als
@@ -32,6 +33,14 @@ import {useState} from 'react';
  *                 (.lp-*-yt). DOM bleibt deckungsgleich zum alten LiteYt.
  *   playClassName Klasse des Play-Overlays im className-Modus
  *                 (default `${className}__play`)
+ *
+ * ÄNDERUNG 2026-09-03 (Grossjob 20260903-tracking-videowatchtime, s04):
+ * Der beim Klick erzeugte Player bekommt `enablejsapi=1` und meldet seine
+ * Watchtime an die Medien-Erfassung des Pixels (`app/lib/video-watchtime.js`).
+ * Das Facade-Muster ist dafür der billigste Ort, den es gibt: der Player
+ * entsteht erst beim Klick, und ein Klick IST der Abspielbeginn — die Messung
+ * kostet hier null Vorablast. Vor dem Klick wird NICHTS angebunden und NICHTS
+ * gemessen; das Poster bleibt ein `<img>`.
  *
  * Selbsttragend: 16:9-Rahmen über Inline-aspect-ratio, funktioniert damit auf
  * jeder Route ohne seitenspezifisches CSS; Feinschliff je Seite über die
@@ -93,17 +102,31 @@ export function YoutubeTimestamp({
 }) {
   const [laueft, setLaueft] = useState(false);
   const [posterStufe, setPosterStufe] = useState(0);
+  const rahmen = useRef(null);
   const start = Math.max(0, Math.floor(startSeconds || 0));
   const eigenesKleid = Boolean(className);
+  /* Anker: der vom Menschen vergebene Sektions-Anker, sonst die
+   * YouTube-Kennung. Die Herkunft wird mitgemeldet. */
+  const objekt = dataSection || (videoId ? 'yt-' + String(videoId).toLowerCase() : '');
+  const objektQuelle = dataSection ? 'anker' : 'quelle';
+  useEffect(() => {
+    if (!laueft || !rahmen.current || !objekt) return undefined;
+    return youtubeWatchtimeAnbinden(rahmen.current, {objekt, objektQuelle});
+  }, [laueft, objekt, objektQuelle]);
   if (laueft) {
     return (
       <div
         className={eigenesKleid ? className : 'YoutubeTimestamp'}
         data-section={dataSection || undefined}
+        data-video={objekt || undefined}
+        data-video-familie="youtube"
         style={eigenesKleid ? undefined : FRAME_STYLE}
       >
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1`}
+          ref={rahmen}
+          src={mitJsApi(
+            `https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1`,
+          )}
           title={titel}
           style={eigenesKleid ? undefined : {...FILL_STYLE, border: 0}}
           allow="autoplay; encrypted-media; picture-in-picture"

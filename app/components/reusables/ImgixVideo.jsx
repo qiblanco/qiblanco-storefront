@@ -103,8 +103,20 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
 
   return (
     <div className={`${className} ImgixVideo-wrap`}>
+      {/* ANKER für die Medien-Erfassung (Grossjob 20260903-tracking-
+          videowatchtime, s04). Ohne sie leitet der Pixel den Namen aus einer
+          blob:-URL bzw. dem poster ab (hls.js hängt die Quelle nachtraeglich
+          an, video.src ist dann bedeutungslos) und meldet die Herkunft als
+          Notbehelf. `data-video-ton` kommt aus dem GEMESSENEN Manifest
+          app/lib/video-ton.js, nicht aus einer Browser-Erkennung: die
+          360-Grad-Videos tragen eine AAC-Spur mit digitaler Stille, auf die
+          jede Feature-Detection hereinfaellt. Reine Attribute, kein Verhalten,
+          keine Ladezeit. */}
       <video
         ref={videoRef}
+        data-video={videoPath}
+        data-video-familie="imgix"
+        data-video-ton={zeigtTonSteuerung ? 'hoerbar' : 'stumm'}
         muted
         playsInline
         loop
