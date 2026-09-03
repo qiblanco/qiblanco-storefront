@@ -37,8 +37,32 @@ export async function loader(args) {
  * @param {LoaderFunctionArgs}
  */
 async function loadCriticalData({context, request, params}) {
+  // WARUM 50 UND WARUM ÜBERHAUPT EINE ZAHL (Befund 2026-09-03, live gemessen):
+  // hier stand `pageBy: 4` — unverändert aus dem Scaffolding-Commit f0c1158
+  // ("Generate routes for core functionality", 2025-07-08), also die
+  // Hydrogen-Skeleton-Vorgabe und nie eine redaktionelle Entscheidung. Bei
+  // sechs veröffentlichten Artikeln lagen dadurch ZWEI hinter dem
+  // "Mehr laden"-Link: /blogs/wissen verlinkte 4, die Sitemap führte 6.
+  // Für den Kunden hieß das, ein ausgelieferter Artikel war über die
+  // Übersicht nicht auffindbar — nur per Direktlink oder Suchmaschine.
+  //
+  // Die Paginierung BLEIBT (Artikel 51 geht nicht verloren, er steht auf
+  // Seite 2). Sie ist aber cursor-basiert (`?direction=next&cursor=...`),
+  // nicht seitenbasiert: `?page=2` wird von Hydrogen ignoriert und liefert
+  // byte-identisch Seite 1 zurück. Genau diese Byte-Identität wurde am
+  // 2026-09-01 als "es gibt hier gar keine Paginierung" gelesen — sie ist
+  // ein Messartefakt, kein Abwesenheitsbeweis.
+  //
+  // 50 ist eine HYPOTHESE, keine Konstante: eine Kachel wiegt Titel, Datum
+  // und ein lazy geladenes Bild, 50 davon bleiben weit unter jedem
+  // Seitengewichts-Budget, und der Bestand wächst menschlich gegated
+  // (blog-redaktion veröffentlicht nicht selbst). Wächst er über 50,
+  // meldet das die stehende Wache
+  // blog-redaktion/pruefungen/probe_blog_index_vollstaendig.py von selbst
+  // rot — dann ist eine Archiv-/Blätter-Fläche fällig, nicht die
+  // nächsthöhere Zahl.
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 50,
   });
 
   if (!params.blogHandle) {
@@ -145,6 +169,14 @@ function ArticleItem({article, loading}) {
   );
 }
 
+// KEIN `contentHtml` im ArticleItem-Fragment (entfernt 2026-09-03): die
+// Übersicht rendert nur Bild, Titel und Datum — der volle Artikeltext ging
+// ungerendert in den Hydrations-Payload. Er kostete den größten Teil der
+// 183 KB dieser Seite UND machte die Messung unehrlich: ein Querverweis IM
+// FLIESSTEXT eines Artikels sah für jede Vollständigkeits-Probe aus wie ein
+// Eintrag der Übersicht (gemessen: zellulaere-hydration-biophysik galt so als
+// "verlinkt", obwohl keine Kachel dafür existierte). Der Artikeltext wird
+// weiterhin dort geladen, wo er gebraucht wird: blogs.$blogHandle.$articleHandle.
 // NOTE: https://shopify.dev/docs/api/storefront/latest/objects/blog
 const BLOGS_QUERY = `#graphql
   query Blog(
@@ -188,7 +220,6 @@ const BLOGS_QUERY = `#graphql
     author: authorV2 {
       name
     }
-    contentHtml
     handle
     id
     image {
