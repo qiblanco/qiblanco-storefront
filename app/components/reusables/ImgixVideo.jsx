@@ -103,9 +103,9 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
 
   return (
     <div className={`${className} ImgixVideo-wrap`}>
-      {/* ANKER fuer die Medien-Erfassung (Grossjob 20260903-tracking-
+      {/* ANKER für die Medien-Erfassung (Grossjob 20260903-tracking-
           videowatchtime, s04). Ohne sie leitet der Pixel den Namen aus einer
-          blob:-URL bzw. dem poster ab (hls.js haengt die Quelle nachtraeglich
+          blob:-URL bzw. dem poster ab (hls.js hängt die Quelle nachtraeglich
           an, video.src ist dann bedeutungslos) und meldet die Herkunft als
           Notbehelf. `data-video-ton` kommt aus dem GEMESSENEN Manifest
           app/lib/video-ton.js, nicht aus einer Browser-Erkennung: die

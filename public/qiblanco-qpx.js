@@ -2,10 +2,10 @@
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
-  var ENDPOINT = CFG.endpoint || "/collect"; // gleicher Origin via Reverse-Proxy
+  var ENDPOINT = CFG.endpoint || "/collect";
   var COOKIE = "_qpx_anon";
   var SES = "_qpx_ses";
-  var STORE = "_qpx_attr"; // persistiertes erstes Klick-Attribut (first-touch)
+  var STORE = "_qpx_attr";
   var DAYS = 365;
   var CLICK_KEYS = ["gclid","gbraid","wbraid","fbclid","msclid","msclkid","ttclid","twclid","epik","sccid","gad_campaignid","h_ad_id"];
 
@@ -50,8 +50,8 @@
     ["source","medium","campaign","content","term"].forEach(function (k) { if (q["utm_" + k]) { utm[k] = q["utm_" + k]; } });
     if (found || Object.keys(utm).length) {
       var attr = { click_ids: click_ids, utm: utm, ts: Date.now() };
-      if (!existing) { ls(STORE, JSON.stringify(attr)); existing = attr; } // first-touch bleibt
-      return { click_ids: click_ids, utm: utm }; // aktueller Touch (last-touch fuer dieses Event)
+      if (!existing) { ls(STORE, JSON.stringify(attr)); existing = attr; }
+      return { click_ids: click_ids, utm: utm };
     }
     return existing ? { click_ids: existing.click_ids || {}, utm: existing.utm || {} } : { click_ids: {}, utm: {} };
   }
@@ -176,21 +176,21 @@
   q.forEach(function (a) { api.apply(null, a); });
 
   function initBehavior() {
-    if (CFG.behavior === false) return;                 // Tracker-Flag (Konzept E1)
-    var PV_ID = uuid();                                  // Pageview-UUID (kein Cookie)
-    var seq = 0;                                         // waechst je Flush, Server: letzter Stand gewinnt
-    var scrollMax = 0;                                   // erreichte Marke 25/50/75/100
-    var attentionMs = 0;                                 // sichtbar + aktiv (5s-Raster)
+    if (CFG.behavior === false) return;
+    var PV_ID = uuid();
+    var seq = 0;
+    var scrollMax = 0;
+    var attentionMs = 0;
     var lastActivity = Date.now();
-    var sections = {};                                   // id -> {seen,dwellAcc,visibleSince,clicks}
-    var lastKey = "";                                    // Schluessel des letzten Flushs (ohne dwell_ms)
-    var lastVoll = "";                                   // voller Snapshot des letzten Flushs (mit dwell_ms)
-    var hiddenUnterdrueckt = 0;                          // inhaltsgleiche Zwangs-Fluesse (s. flush)
+    var sections = {};
+    var lastKey = "";
+    var lastVoll = "";
+    var hiddenUnterdrueckt = 0;
     var FRUST_ON = CFG.frust !== false;
     var DEAD_MS = 3000, RAGE_MS = 1000, RAGE_PX = 30, RAGE_MIN = 3, FRUST_MAX = 40;
-    var frust = [];                                      // im Snapshot mitgesendet
-    var lastClick = null;                                // {t,x,y,el} fuer error_click
-    var rageChain = [], rageEmitted = false;             // Burst-Erkennung
+    var frust = [];
+    var lastClick = null;
+    var rageChain = [], rageEmitted = false;
     var lastMutation = 0, lastScrollTs = 0, unloading = false;
 
     function sec(id) {
@@ -201,14 +201,14 @@
     function tabSichtbar() {
       try { return d.visibilityState !== "hidden"; } catch (e) { return true; }
     }
-    function dwellAnhalten(now) {                        // Tab geht nach hinten
+    function dwellAnhalten(now) {
       for (var id in sections) {
         if (!Object.prototype.hasOwnProperty.call(sections, id)) continue;
         var s = sections[id];
         if (s.visibleSince) { s.dwellAcc += now - s.visibleSince; s.visibleSince = 0; }
       }
     }
-    function dwellFortsetzen(now) {                      // Tab kommt nach vorne
+    function dwellFortsetzen(now) {
       for (var id in sections) {
         if (!Object.prototype.hasOwnProperty.call(sections, id)) continue;
         var s = sections[id];
@@ -250,7 +250,7 @@
       frust.push({ typ: typ, section_id: sectionOf(el), sel: selOf(el),
                    rx: rp.rx, ry: rp.ry, meta: meta || {} });
     }
-    function exempt(el) {                                 // Nav/Download taeuscht keinen "toten" Klick vor
+    function exempt(el) {
       try {
         if (el.tagName === "A") {
           var h = el.getAttribute("href") || "";
@@ -264,7 +264,7 @@
     function onError(msg, src, ch, san, tr) {
       if (!FRUST_ON) return;
       try {
-        msg = ("" + (msg || "")).slice(0, 120);          // msg gekappt (keine PII-Leaks)
+        msg = ("" + (msg || "")).slice(0, 120);
         src = ("" + (src || "")).slice(0, 120);
         var meta = { msg: msg, src: src };
         if (ch) meta.ch = ch;
@@ -277,8 +277,8 @@
       } catch (e) {}
     }
     var MEDIEN_ON = CFG.medien !== false;
-    var MED_MRC_MS = 2000;          // MRC: >=50% Flaeche >=2s zusammenhaengend
-    var MED_SEG_MAX = 6 * 3600000;  // ein einzelnes Segment > 6 h ist ein Defekt
+    var MED_MRC_MS = 2000;
+    var MED_SEG_MAX = 6 * 3600000;
     var MED_VIDEO_MAX = 20, MED_BILD_MAX = 40, MED_EINTRAG_MAX = 55;
     var MED_UMKEHR_PCT = 5, MED_UMKEHR_MAX = 20, MED_BILD_MIN_MS = 500;
     var MED_EXTERN_MAX = 40;
@@ -286,13 +286,13 @@
     var MED_FAMILIEN = { imgix: 1, youtube: 1, scrub: 1, "360": 1, unbekannt: 1 };
     var MED_ARTEN = { video_start: 1, video_quartil: 1, video_stand: 1,
                       video_scrub: 1, bild_gesehen: 1, scroll_umkehr: 1, ausstieg: 1 };
-    var medien = {};                // objekt_id -> Konto
+    var medien = {};
     var medN = 0, medBildN = 0;
     var medIo = null, medObserved = [];
-    var medExtern = [];             // Naht fuer s04 (YouTube-Player-API)
-    var medExternVerworfen = 0;     // was der Deckel geschluckt hat -- zaehlbar statt still
+    var medExtern = [];
+    var medExternVerworfen = 0;
     var scrollPct = 0, scrollWende = null, scrollUmkehrN = 0, scrollUmkehrListe = [];
-    var letzterAnker = "";          // zuletzt sichtbar gewordener Anker -> Ausstieg
+    var letzterAnker = "";
     var ausstiegAn = 0;
     var MED_T0 = Date.now();
 
@@ -353,7 +353,7 @@
       return ton ? "unsichtbar_ton" : "unsichtbar_stumm";
     }
     function medLauf(k, el, now) {
-      if (!k.laeuft || !k.seit) return 0;
+      if (!k.spielt || !k.seit) return 0;
       if (k.zustand === "hintergrund") {
         var c = medCt(el);
         return (c > k.ctSeit) ? Math.round((c - k.ctSeit) * 1000) : 0;
@@ -376,7 +376,7 @@
     function medSumme(o) { var s = 0, id; for (id in o) s += o[id]; return s; }
     function medMrc(k, el, now) {
       if (k.mrc) return;
-      if (!k.laeuft || !k.vis || !tabSichtbar()) { k.sichtSeit = 0; return; }
+      if (!k.spielt || !k.vis || !tabSichtbar()) { k.sichtSeit = 0; return; }
       if (!k.sichtSeit) { k.sichtSeit = now; return; }
       if (now - k.sichtSeit >= MED_MRC_MS) { k.mrc = 1; k.startOff = now - MED_T0; k.start = 1; }
     }
@@ -397,12 +397,12 @@
       if (!MEDIEN_ON) return;
       var k = el && el.__qpxMed; if (!k) return;
       var now = Date.now();
-      medBuche(k, el, now);                       // alte Zeit auf das ALTE Konto
-      var lief = k.laeuft;
-      try { k.laeuft = !!(!el.paused && !el.ended && el.readyState > 1); }
-      catch (e) { k.laeuft = false; }
+      medBuche(k, el, now);
+      var lief = k.spielt;
+      try { k.spielt = !!(!el.paused && !el.ended && el.readyState > 1); }
+      catch (e) { k.spielt = false; }
       var ct = medCt(el);
-      if (!k.laeuft && !lief && k.letztCt >= 0 && Math.abs(ct - k.letztCt) > 0.05) {
+      if (!k.spielt && !lief && k.letztCt >= 0 && Math.abs(ct - k.letztCt) > 0.05) {
         var durS = medDauer(el);
         if (durS) {
           var pct = Math.round(ct / durS * 100);
@@ -411,13 +411,13 @@
           k.scrubN++;
           if (k.famQ !== "anker") { k.fam = "scrub"; k.famQ = "laufzeit"; }
         }
-      } else if (k.laeuft && k.famQ !== "anker" && k.fam === "unbekannt") {
-        k.fam = "imgix";                          // spielt wirklich ab
+      } else if (k.spielt && k.famQ !== "anker" && k.fam === "unbekannt") {
+        k.fam = "imgix";
         k.famQ = "laufzeit";
       }
       k.letztCt = ct;
       k.zustand = medZustand(k, el);
-      if (k.laeuft) { k.seit = now; k.ctSeit = ct; }
+      if (k.spielt) { k.seit = now; k.ctSeit = ct; }
       medMrc(k, el, now);
       medQuartile(k, el, now);
     }
@@ -427,14 +427,14 @@
       else if (medN >= MED_VIDEO_MAX) return;
       var o = medObjekt(el);
       if (!o.id) return;
-      var k = medien[o.id];                        // ein Konto je Name
+      var k = medien[o.id];
       if (!k) {
         var f = art === "bild" ? { f: null, q: null } : medFamilie(el);
         var ton = el.getAttribute && el.getAttribute("data-video-ton");
         k = { art: art, id: o.id, objQ: o.q, fam: f.f, famQ: f.q, el: el,
               tonBekannt: ton === "hoerbar" || ton === "stumm",
               tonHoerbar: ton === "hoerbar",
-              konten: {}, zustand: "sichtbar_stumm", laeuft: false, vis: 0,
+              konten: {}, zustand: "sichtbar_stumm", spielt: false, vis: 0,
               seit: 0, ctSeit: 0, letztCt: medCt(el), letztP: 0,
               mrc: 0, sichtSeit: 0, start: 0, startOff: 0, q: {},
               scrubMax: 0, scrubUmkehr: 0, scrubN: 0,
@@ -528,7 +528,7 @@
           var v = medExtern[i];
           if (v.art !== eintrag.art || v.obj !== eintrag.obj) continue;
           if (stand) { medExtern[i] = eintrag; return true; }
-          if (v.wert === eintrag.wert) return true;   // dieselbe Marke, kein zweiter Eintrag
+          if (v.wert === eintrag.wert) return true;
         }
         if (medExtern.length >= MED_EXTERN_MAX) { medExternVerworfen++; return false; }
         medExtern.push(eintrag);
@@ -603,7 +603,7 @@
       for (var id in sections) {
         if (!Object.prototype.hasOwnProperty.call(sections, id)) continue;
         var s = sections[id], dw = Math.round(dwellOf(s, now));
-        if (dw >= 1000) s.seen = 1;                      // seen ab >=1s kumulativ sichtbar
+        if (dw >= 1000) s.seen = 1;
         list.push({ id: id, seen: s.seen, dwell_ms: dw, clicks: s.clicks });
       }
       list.sort(function (a, b) { return a.id < b.id ? -1 : 1; });
@@ -631,7 +631,7 @@
         return;
       }
       lastKey = key; lastVoll = sig;
-      snap.pv_id = PV_ID; snap.seq = seq++;              // kumulativer Stand, Server-Upsert monoton
+      snap.pv_id = PV_ID; snap.seq = seq++;
       if (hiddenUnterdrueckt) snap.hidden_unterdrueckt = hiddenUnterdrueckt;
       track("behavior", snap);
     }
@@ -662,8 +662,8 @@
             var en = entries[i], id = anchorId(en.target);
             if (!id) continue;
             var s = sec(id), vis = en.isIntersecting && visEnough(en);
-            s.vis = vis ? 1 : 0;                         // geometrischer Zustand, ueberlebt Tab-Wechsel
-            if (vis) letzterAnker = id;                  // Ausstiegsstelle (v2.7)
+            s.vis = vis ? 1 : 0;
+            if (vis) letzterAnker = id;
             if (vis && tabSichtbar()) { if (!s.visibleSince) s.visibleSince = now; }
             else if (s.visibleSince) { s.dwellAcc += now - s.visibleSince; s.visibleSince = 0; }
           }
@@ -678,8 +678,8 @@
       }
     }
     observeSections();
-    try { medObserve(); } catch (e) {}       // Video-/Bild-Knoten (v2.7)
-    try {                                    // Nachregistrierung (rAF-throttled)
+    try { medObserve(); } catch (e) {}
+    try {
       if (w.MutationObserver) {
         var secScanPending = false;
         new w.MutationObserver(function () {
@@ -688,7 +688,7 @@
           (w.requestAnimationFrame || w.setTimeout)(function () {
             secScanPending = false;
             try { observeSections(); } catch (e) {}
-            try { medObserve(); } catch (e) {}   // spaet gemountete Videos/Bilder
+            try { medObserve(); } catch (e) {}
           });
         }).observe(d.documentElement, { childList: true, subtree: true });
       }
@@ -708,7 +708,7 @@
           return now - c.t <= RAGE_MS && Math.abs(c.x - cx) <= RAGE_PX && Math.abs(c.y - cy) <= RAGE_PX;
         });
         rageChain.push({ t: now, x: cx, y: cy });
-        if (rageChain.length === 1) rageEmitted = false;   // neuer Burst
+        if (rageChain.length === 1) rageEmitted = false;
         if (rageChain.length >= RAGE_MIN && !rageEmitted) {
           pushFrust("rage_click", tgt, cx, cy, { clicks: rageChain.length, span_ms: now - rageChain[0].t });
           rageEmitted = true;
@@ -757,14 +757,14 @@
         var pct = ((w.pageYOffset || de.scrollTop || 0) + (w.innerHeight || de.clientHeight || 0)) / h * 100;
         var marks = [25, 50, 75, 100];
         for (var i = 0; i < marks.length; i++) { if (pct >= marks[i] && marks[i] > scrollMax) scrollMax = marks[i]; }
-        medScroll(Math.max(0, Math.min(100, pct)));      // Umkehr (v2.7)
+        medScroll(Math.max(0, Math.min(100, pct)));
       } catch (e) {}
     }
     w.addEventListener("scroll", function () {
-      lastActivity = lastScrollTs = Date.now();          // lastScrollTs: dead_click-Ausschluss
+      lastActivity = lastScrollTs = Date.now();
       if (!scrollPending) { scrollPending = true; (w.requestAnimationFrame || w.setTimeout)(measureScroll); }
     }, { passive: true });
-    measureScroll();                                     // initiale Marke (kurze Seiten = 100)
+    measureScroll();
 
     var acts = ["keydown", "mousemove", "touchstart"];
     for (var a = 0; a < acts.length; a++) {

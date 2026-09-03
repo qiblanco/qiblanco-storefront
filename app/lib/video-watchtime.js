@@ -82,7 +82,7 @@ function zustandVon(konto) {
  * im falschen Konto. */
 function buche(konto) {
   const t = jetzt();
-  if (konto.spieltSeit && konto.laeuft) {
+  if (konto.spieltSeit && konto.spielt) {
     const delta = t - konto.spieltSeit;
     // Ein einzelnes Segment über 6 h ist ein Defekt, kein Zuschauer (dieselbe
     // Schranke, die qpx.js für die interne Erfassung zieht).
@@ -91,7 +91,7 @@ function buche(konto) {
       konto.konten[z] = (konto.konten[z] || 0) + delta;
     }
   }
-  konto.spieltSeit = konto.laeuft ? t : 0;
+  konto.spieltSeit = konto.spielt ? t : 0;
 }
 
 function melde(konto, eintrag) {
@@ -147,7 +147,7 @@ function pruefeQuartile(konto) {
  * einem Vorbeiscrollen einen Start. Ohne sie beginnt die Verlaufskurve bei
  * einer erfundenen Grundmenge. */
 function pruefeStart(konto) {
-  if (konto.gestartet || !konto.laeuft || !konto.mrc) return;
+  if (konto.gestartet || !konto.spielt || !konto.mrc) return;
   konto.gestartet = 1;
   melde(konto, {
     art: 'video_start',
@@ -178,7 +178,7 @@ function aufNachricht(ev) {
 
   if (d.event === 'onReady') konto.bereit = 1;
 
-  let neuerLauf = konto.laeuft;
+  let neuerLauf = konto.spielt;
   if (d.event === 'onStateChange') {
     const st = typeof d.info === 'number' ? d.info : (info && info.playerState);
     neuerLauf = st === ZUSTAND_ABSPIELEND;
@@ -199,9 +199,9 @@ function aufNachricht(ev) {
     }
   }
 
-  if (neuerLauf !== konto.laeuft) {
+  if (neuerLauf !== konto.spielt) {
     buche(konto);
-    konto.laeuft = neuerLauf ? 1 : 0;
+    konto.spielt = neuerLauf ? 1 : 0;
     konto.spieltSeit = neuerLauf ? jetzt() : 0;
   } else {
     buche(konto);
@@ -243,7 +243,7 @@ export function youtubeWatchtimeAnbinden(iframe, {objekt, objektQuelle = 'anker'
     objektQuelle,
     konten: {},
     quartile: {},
-    laeuft: 0,
+    spielt: 0,
     spieltSeit: 0,
     position: 0,
     dauer: 0,
