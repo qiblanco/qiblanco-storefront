@@ -113,6 +113,32 @@ const POSTER_STUFEN = [
  * Player-Konfiguration, also den kritischen Pfad. i.ytimg.com ist durch das
  * Poster ohnehin schon warm; die Mediendaten liegen auf einem pro Abruf
  * gewürfelten googlevideo-Host, der sich nicht vorwaermen lässt.
+ *
+ * ---------------------------------------------------------------------------
+ * GEMESSEN WIRKUNGSLOS — DESHALB STEHT `vorwaermen` AUF false
+ * (Job 20260905-MESSEN-wirkt-preconnect-wirklich-messgeraet-ist-blind-prio25,
+ * 2026-09-03; Belege in dessen belege/, Werkzeuge in dessen build/)
+ *
+ * Der Gedanke oben stimmt für ein <img> oder ein <script>. Er stimmt NICHT für
+ * eine KREUZ-SEITIGE IFRAME-NAVIGATION, und genau die ist unser Klick.
+ *
+ * Chrome trennt seine Verbindungen nach NetworkAnonymizationKey. Das preconnect
+ * aus dem ELTERN-Dokument (Site qiblanco.com) landet in einer anderen Partition
+ * als die Navigation des IFRAMES (Site youtube-nocookie.com). Der vorgewärmte
+ * Socket ist da, er ist fertig ausgehandelt — und der Player benutzt ihn nicht.
+ *
+ * Gezählt auf der GEGENSEITE, nicht im Browser erfragt (3/3 Läufe je Zeile):
+ *   kreuz-seitig, preconnect + <img>     -> 1 Verbindung, 2473 ms alt  WARM
+ *   kreuz-seitig, preconnect + <iframe>  -> 2 Verbindungen, 4 ms alt   KALT
+ *   gleich-seitig, preconnect + <iframe> -> 1 Verbindung, 2472 ms alt  WARM
+ * Echtfall Startseite gegen das echte www.youtube-nocookie.com, mit-Arm 3/3:
+ *   ein Tunnel beim Absichtssignal (2058-2122 B, reiner TLS-Handschlag, nie
+ *   benutzt) und ein ZWEITER beim Klick, der die 25 kB Player trägt.
+ *
+ * Es bleibt ein PROP statt gelöscht: der Mechanismus ist für gleich-seitige
+ * Ziele gemessen wirksam. Wer ein Ziel auf UNSERER Site vorwärmt, schaltet ihn
+ * bewusst mit `vorwaermen` ein. Für YouTube ist er es nicht.
+ * ---------------------------------------------------------------------------
  */
 const VORWAERM_ORIGIN = 'https://www.youtube-nocookie.com';
 
@@ -144,7 +170,7 @@ export function YoutubeTimestamp({
   sizes = '100vw',
   className,
   playClassName,
-  vorwaermen = true,
+  vorwaermen = false, // gemessen wirkungslos fuer kreuz-seitige iframes, s.o.
   noscriptFallback = false,
 }) {
   const [laueft, setLaueft] = useState(false);

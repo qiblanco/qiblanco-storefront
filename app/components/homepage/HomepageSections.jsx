@@ -55,8 +55,12 @@ export function HomepageSections({overrides = {}}) {
           Jetzt: Facade-Muster über den BESTANDS-Baustein YoutubeTimestamp
           (seit Juli auf acht Seiten live, P10 — nichts Neues erfunden).
           SSR rendert nur das Vorschaubild; der Player kommt beim Klick.
-          `vorwaermen` bereitet auf ein Absichtssignal hin nur die VERBINDUNG
-          vor (kein Player, keine Videodaten, nichts bei Save-Data/2G).
+          `vorwaermen` steht seit dem 2026-09-03 auf false: gemessen bringt
+          es dem kreuz-seitigen iframe nichts (Job 20260905-MESSEN-wirkt-
+          preconnect-wirklich-...; Chrome trennt die Verbindungen nach
+          NetworkAnonymizationKey, der vorgewärmte Socket liegt in einer
+          anderen Partition als die iframe-Navigation). Der Kostenteil der
+          Umstellung — kein Player vor dem Klick — ist davon unberührt.
           `noscriptFallback` hält den Klickweg ohne JavaScript offen — das
           abgeloeste <iframe> konnte das, ein <button> kann es sonst nicht.
 
