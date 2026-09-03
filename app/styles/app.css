@@ -5753,3 +5753,101 @@ html.qb-chat-docked .GoogleRezensionenPopup {
   }
 }
 /* ═══ Ende Anzeigegroesse an die Quellaufloesung binden ══════════════════ */
+
+/* ── VORAUSSCHAUENDES LADEN — Facade-Kleid der Startseiten-Testimonials ──────
+   Job 20260903-BAU-vorausschauendes-laden-klick-ohne-ladebalken-...
+   (Christian 2026-09-03).
+
+   Die drei Testimonials tragen weiterhin .YoutubeIframe, damit Breite, Rand
+   und Seitenverhaeltnis EXAKT die von vorher sind (max-width 800, 16:9,
+   margin 50px auto). .YoutubeIframe--facade ergaenzt nur, was ein <button>
+   zusaetzlich braucht und was das <iframe> nicht hatte.
+
+   WARUM DER RADIUS HIER UND NICHT NUR AUF DEM iframe: .YoutubeIframe iframe
+   traegt border-radius 20px. Im Facade-Zustand gibt es (noch) kein iframe,
+   sondern ein <img> — ohne diese Regel waeren die Ecken vor dem Klick eckig
+   und nach dem Klick rund. Der Uebergang soll nicht springen: gleiche Flaeche,
+   gleicher Radius, gleiches Seitenverhaeltnis. Genau daraus entsteht das
+   Gefuehl, dass das Video "schon da war". */
+.YoutubeIframe--facade {
+  display: block;
+  padding: 0;
+  border: none;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.YoutubeIframe--facade > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+/* Der Player nach dem Klick sitzt exakt auf der Flaeche des Posters. */
+.YoutubeIframe--facade > iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 20px;
+}
+
+/* Play-Abzeichen: dieselbe ruhige Form wie im Bestands-Baustein. */
+.YoutubeIframe--facade__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+/* Das Abzeichen muss auf JEDEM Poster lesbar sein - unsere Testimonial-Bilder
+   sind hell (beige Flaeche, helle Schrift). Ein halbtransparentes Dunkelgrau
+   verschwimmt darauf mit dem Text darunter. Deshalb: kraeftigerer Grund plus
+   ein weisser Ring, der die Form gegen JEDEN Hintergrund abgrenzt, statt sich
+   auf die Helligkeit des Bildes zu verlassen. */
+.YoutubeIframe--facade__play > span {
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 9vw, 72px);
+  height: clamp(52px, 9vw, 72px);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.68);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 2px 12px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  line-height: 1;
+  padding-left: 5px;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.YoutubeIframe--facade:hover .YoutubeIframe--facade__play > span,
+.YoutubeIframe--facade:focus-visible .YoutubeIframe--facade__play > span {
+  background: rgba(0, 0, 0, 0.72);
+  transform: scale(1.06);
+}
+
+/* Tastaturbedienung sichtbar machen — das <iframe> hatte nie einen Fokusring. */
+.YoutubeIframe--facade:focus-visible {
+  outline: 3px solid #c9a14b;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .YoutubeIframe--facade__play > span {
+    transition: none;
+  }
+  .YoutubeIframe--facade:hover .YoutubeIframe--facade__play > span,
+  .YoutubeIframe--facade:focus-visible .YoutubeIframe--facade__play > span {
+    transform: none;
+  }
+}

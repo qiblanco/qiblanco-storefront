@@ -1,6 +1,6 @@
 import {HerobannerFeatured} from '~/components/index-components/HerobannerFeatured';
 import {ZellDiagramme} from '~/components/index-components/ZellDiagramme';
-import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
+import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {LogoBar} from '~/components/reusables/LogoBar';
 import {Richtext} from '~/components/reusables/Richtext';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
@@ -46,15 +46,52 @@ export function HomepageSections({overrides = {}}) {
       </h2>
       <ReputonWidget />
     </div>
-      <YoutubeIframe
+      {/* VORAUSSCHAUENDES LADEN (Job 20260903-BAU-vorausschauendes-laden-...,
+          Christian 2026-09-03). Diese drei Testimonials luden bis heute je
+          einen ECHTEN YouTube-Player beim Seitenaufbau — gemessen 3 Player und
+          1,18 MB Video-Infrastruktur, BEVOR irgendjemand geklickt hat, auf
+          jedem Seitenaufruf und für die große Mehrheit vergeblich.
+
+          Jetzt: Facade-Muster über den BESTANDS-Baustein YoutubeTimestamp
+          (seit Juli auf acht Seiten live, P10 — nichts Neues erfunden).
+          SSR rendert nur das Vorschaubild; der Player kommt beim Klick.
+          `vorwaermen` steht seit dem 2026-09-03 auf false: gemessen bringt
+          es dem kreuz-seitigen iframe nichts (Job 20260905-MESSEN-wirkt-
+          preconnect-wirklich-...; Chrome trennt die Verbindungen nach
+          NetworkAnonymizationKey, der vorgewärmte Socket liegt in einer
+          anderen Partition als die iframe-Navigation). Der Kostenteil der
+          Umstellung — kein Player vor dem Klick — ist davon unberührt.
+          `noscriptFallback` hält den Klickweg ohne JavaScript offen — das
+          abgeloeste <iframe> konnte das, ein <button> kann es sonst nicht.
+
+          Poster je Video vorab gemessen: alle drei tragen ein echtes
+          maxresdefault 1280x720 (kein Hochskalieren, keine Verschlechterung).
+          Klasse .YoutubeIframe bleibt bewusst als Kleid stehen: identische
+          Geometrie (max-width 800, 16:9, margin 50px auto) wie vorher. */}
+      <YoutubeTimestamp
         dataSection="youtube-testimonial-preis"
-        link="https://www.youtube.com/embed/jyLyXZqHxaw?si=2ZVH9xtaSaEMmfTQ&amp;controls=0" />
-      <YoutubeIframe
+        videoId="jyLyXZqHxaw"
+        titel="Erfahrungsbericht von Constantin Preis"
+        className="YoutubeIframe YoutubeIframe--facade"
+        playClassName="YoutubeIframe--facade__play"
+        sizes="(max-width: 840px) 100vw, 800px"
+        noscriptFallback />
+      <YoutubeTimestamp
         dataSection="youtube-testimonial-tepperwein"
-        link="https://www.youtube.com/embed/aG36zJKxDzg?si=cF6ATzVJfU8kpZUd&amp;controls=0" />
-      <YoutubeIframe
+        videoId="aG36zJKxDzg"
+        titel="Erfahrungsbericht von Nada und Kurt Tepperwein"
+        className="YoutubeIframe YoutubeIframe--facade"
+        playClassName="YoutubeIframe--facade__play"
+        sizes="(max-width: 840px) 100vw, 800px"
+        noscriptFallback />
+      <YoutubeTimestamp
         dataSection="youtube-testimonial-guse"
-        link="https://www.youtube.com/embed/zIfDQ1N60fI?si=2ZVH9xtaSaEMmfTQ&amp;controls=0" />
+        videoId="zIfDQ1N60fI"
+        titel="Erfahrungsbericht von Michelle Christin Guse"
+        className="YoutubeIframe YoutubeIframe--facade"
+        playClassName="YoutubeIframe--facade__play"
+        sizes="(max-width: 840px) 100vw, 800px"
+        noscriptFallback />
 
       {/* Externe Stimmen (Job 20260903-BAU-externe-stimmen-startseite-...):
           Fremdbelege als EINE Reihe, direkt unter den drei Testimonial-Videos
@@ -215,7 +252,7 @@ function WeiterlesenHubs() {
         </div>
         <div className="PeerReviewResult">
           <h3>
-            <a href="/pages/ueber-uns">Wer hinter Qi Blanco steht</a>
+            <a href="/pages/über-uns">Wer hinter Qi Blanco steht</a>
           </h3>
           <p>
             Name, Anschrift, Handelsregister — und das Institut, das unsere
