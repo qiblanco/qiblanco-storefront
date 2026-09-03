@@ -293,7 +293,33 @@ export function youtubeWatchtimeAnbinden(iframe, {objekt, objektQuelle = 'anker'
   anklopfen();
   handschlag = window.setInterval(anklopfen, 700);
 
-  /* MRC-Sichtbarkeit am iframe selbst. */
+  /* MRC-Sichtbarkeit am iframe selbst.
+   *
+   * DIE ZEITKANTE MUSS AM SICHTBARWERDEN HÄNGEN, NICHT AM EINHAENGEN. Ein
+   * IntersectionObserver meldet nur AENDERUNGEN: wird ein Video sichtbar und
+   * bleibt es, kommt genau EIN Ereignis und danach nie wieder eines. Ein
+   * einzelner Timer, der 2 s nach dem Einhaengen läuft, findet ein Video
+   * unterhalb des Falzes deshalb noch unsichtbar vor — und die Schwelle wird
+   * NIE erreicht. Das haette ausgerechnet die drei Startseiten-Testimonials
+   * getroffen (sie liegen unterhalb des Falzes) und still gar nichts gemessen.
+   * Also: Uhr beim Sichtbarwerden stellen, beim Verschwinden loeschen. */
+  let mrcUhr = 0;
+  const mrcUhrStellen = () => {
+    if (mrcUhr || konto.mrc) return;
+    mrcUhr = window.setTimeout(() => {
+      mrcUhr = 0;
+      if (konto.sichtbar) {
+        konto.mrc = 1;
+        pruefeStart(konto);
+      }
+    }, MRC_MS);
+  };
+  const mrcUhrLoeschen = () => {
+    if (!mrcUhr) return;
+    window.clearTimeout(mrcUhr);
+    mrcUhr = 0;
+  };
+
   let io = null;
   if (typeof window.IntersectionObserver === 'function') {
     io = new window.IntersectionObserver(
@@ -305,13 +331,14 @@ export function youtubeWatchtimeAnbinden(iframe, {objekt, objektQuelle = 'anker'
           konto.sichtbar = sichtbar ? 1 : 0;
           if (sichtbar) {
             konto.sichtbarSeit = jetzt();
+            mrcUhrStellen();
           } else {
+            // Unterbrochen zählt nicht: die MRC-Schwelle verlangt 2 s
+            // ZUSAMMENHAENGEND. Wer hier nur die Uhr weiterlaufen liesse,
+            // machte aus zweimal einer Sekunde Vorbeiscrollen einen View.
             konto.sichtbarSeit = 0;
+            mrcUhrLoeschen();
           }
-        }
-        if (konto.sichtbar && !konto.mrc && konto.sichtbarSeit &&
-            jetzt() - konto.sichtbarSeit >= MRC_MS) {
-          konto.mrc = 1;
         }
         pruefeStart(konto);
       },
@@ -319,20 +346,16 @@ export function youtubeWatchtimeAnbinden(iframe, {objekt, objektQuelle = 'anker'
     );
     io.observe(iframe);
   } else {
+    // Ohne IntersectionObserver ist Sichtbarkeit nicht messbar. Dann wird sie
+    // nicht geraten, sondern angenommen — und `mrc: 0` bleibt im Meta stehen,
+    // damit die Auswertung diese Faelle trennen kann.
     konto.sichtbar = 1;
     konto.mrc = 1;
   }
 
-  /* Die MRC-Schwelle braucht eine Zeitkante — der Beobachter feuert nicht von
-   * selbst nach 2 s. Genau EIN Timer je Video, danach nie wieder. */
-  const mrcUhr = window.setTimeout(() => {
-    if (konto.sichtbar) konto.mrc = 1;
-    pruefeStart(konto);
-  }, MRC_MS);
-
   return () => {
     window.clearInterval(handschlag);
-    window.clearTimeout(mrcUhr);
+    mrcUhrLoeschen();
     if (io) io.disconnect();
     const i = spieler.indexOf(eintrag);
     if (i >= 0) spieler.splice(i, 1);
