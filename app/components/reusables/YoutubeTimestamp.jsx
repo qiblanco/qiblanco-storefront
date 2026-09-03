@@ -170,7 +170,7 @@ export function YoutubeTimestamp({
   sizes = '100vw',
   className,
   playClassName,
-  vorwaermen = false, // gemessen wirkungslos fuer kreuz-seitige iframes, s.o.
+  vorwaermen = false, // gemessen wirkungslos für kreuz-seitige iframes, s.o.
   noscriptFallback = false,
 }) {
   const [laueft, setLaueft] = useState(false);
