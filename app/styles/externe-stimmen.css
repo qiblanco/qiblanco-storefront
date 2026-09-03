@@ -1,0 +1,247 @@
+/* EXTERNE STIMMEN — Token-Scope des Startseiten-Abschnitts.
+   Job 20260903-BAU-externe-stimmen-startseite-maxim-und-zwei-podcasts-vor-
+   der-folge-morgen-prio4 (Christian, 2026-09-03).
+
+   WARUM EIGENE DATEI STATT app.css: app.css haengt an app/root.jsx und ist
+   damit die GLOBALE CSS-Kette — jede Aenderung daran zieht im Alle-Formate-
+   Gate (Gate 12) saemtliche Seiten mit, auch solche mit vorbestehender,
+   fremder Format-Schuld. Gemessen am 2026-09-03: der Diff blockte darueber
+   fuer 5 fremde Seiten (crystal-cacao, qibracelet-details, qione-2-pro-
+   details, schlaf-zellen-schutz, superhuman), von denen KEINE etwas mit
+   diesem Abschnitt zu tun hat. Eine eigene Datei, die nur die Startseiten-
+   Route einbindet, hat diesen Radius baulich nicht — und folgt dem
+   Hausmuster der 28 uebrigen Scope-CSS in diesem Verzeichnis.
+*/
+/* ═══════════════════════════════════════════════════════════════════════════
+   EXTERNE STIMMEN — Fremdbelege als EINE Reihe (Startseite)
+   Job 20260903-BAU-externe-stimmen-startseite-maxim-und-zwei-podcasts-vor-der-
+   folge-morgen-prio4 (Christian, 2026-09-03).
+
+   TOKEN STATT FREIER WERTE (Design-Pflicht, SSoT design-meister
+   db/webdesign/web-soll.yaml): alle Werte unten kommen aus den Skalen —
+   8pt-Spacing-Grid, EIN Bild-Radius, EIN Goldakzent (nur auf die Handlung, also
+   das Play-Abzeichen), warmes Neutral-Kontinuum, EIN H3-Stil. Keine zweite
+   Kartenoptik, kein zweiter Goldton.
+
+   DIE TRAGENDE REGEL DES ABSCHNITTS: alle drei Kacheln sind geometrisch
+   IDENTISCH — gleiche Breite, gleiche Abstände, gleiche Typografie, gleiche
+   Bildproportion (16:9). Der Artikel unterscheidet sich vom Video nur dadurch,
+   dass er kein Play-Abzeichen trägt.
+   ═════════════════════════════════════════════════════════════════════════ */
+.ExterneStimmen {
+  /* Skalen-Token, bewusst auf den Scope begrenzt */
+  --es-flaeche: #f8f4ee;      /* warmes Off-White (palette.flaeche) */
+  --es-text: #2c2a26;         /* palette.text */
+  --es-muted: #6b665d;        /* palette.muted */
+  --es-akzent: #c9a14b;       /* palette.akzent — NUR auf Handlung */
+  --es-radius: 16px;          /* EIN Radius (radius_set_px) */
+  --es-luecke: 32px;          /* 8pt-Grid */
+  --es-innen: 24px;           /* 8pt-Grid */
+  --es-spalte-min: 320px;     /* Umbruch folgt der BREITE, nicht dem Gerät */
+}
+
+.ExterneStimmen__titel {
+  text-align: center;
+  margin-bottom: 48px;        /* 8pt-Grid */
+}
+
+/* Umbruch aus der verfügbaren Breite statt aus geratenen Gerätebreiten —
+   genau der Fehler, den SKILL-RESPONSIVE-MEDIEN-STANDARD.md am S23-Ultra-Fall
+   dokumentiert (883px fiel durch BEIDE Türen). auto-fit + minmax hat diese
+   Klasse von Lücken baulich nicht. */
+.ExterneStimmen__raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--es-spalte-min), 1fr));
+  gap: var(--es-luecke);
+  /* stretch (Default) statt start: die Karten einer Reihe sind dadurch GLEICH
+     HOCH, auch wenn die Titel unterschiedlich viele Zeilen brauchen. Mit
+     `start` endet jede Karte auf eigener Hoehe, und die Reihe franst unten aus
+     — genau das, was "alle drei in aehnlicher Aufmachung" verfehlt. */
+  align-items: stretch;
+}
+
+.ExterneStimmen__karte {
+  display: flex;
+  flex-direction: column;
+  background: var(--es-flaeche);
+  border-radius: var(--es-radius);
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Die Medienfläche ist bei ALLEN DREI Kacheln exakt 16:9 — das ist es, was die
+   Reihe zu einer Reihe macht. */
+.ExterneStimmen__medium {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.ExterneStimmen__text {
+  padding: var(--es-innen);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;                   /* 8pt-Grid */
+}
+
+.ExterneStimmen__quelle {
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--es-muted);
+  margin: 0;
+}
+
+/* EIN H3-Stil im Scope (h2_stil_kombis_max-Gedanke, auf H3 übertragen) */
+.ExterneStimmen__karteTitel {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  color: var(--es-text);
+  margin: 0;
+}
+
+.ExterneStimmen__lede {
+  font-size: 1rem;            /* body_px_min: 16 */
+  line-height: 1.55;
+  color: var(--es-muted);
+  margin: 0;
+  max-width: 60ch;            /* zeilenlaenge_ch_max: 75 */
+}
+
+/* ── Die Video-Kacheln (YoutubeTimestamp im className-Modus) ───────────────
+   className ersetzt Standardklasse UND Inline-Styles der Komponente komplett —
+   das Aussehen kommt ausschließlich von hier (LiteYt-Erbe, vgl. .lp-*-yt). */
+.ExterneStimmen__yt {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: #000;
+  cursor: pointer;
+}
+
+.ExterneStimmen__yt img,
+.ExterneStimmen__yt iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+}
+
+.ExterneStimmen__yt__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+/* Der EINE Goldakzent des Abschnitts, und er sitzt auf der Handlung. */
+.ExterneStimmen__yt__play > span {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--es-akzent);
+  font-size: 1.6rem;
+  padding-left: 5px;
+}
+
+.ExterneStimmen__yt:hover .ExterneStimmen__yt__play > span,
+.ExterneStimmen__yt:focus-visible .ExterneStimmen__yt__play > span {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.ExterneStimmen__yt:focus-visible {
+  outline: 3px solid var(--es-akzent);
+  outline-offset: 3px;
+}
+
+/* ── Maxim in der Kachelform ───────────────────────────────────────────────
+   Maxim.jsx bleibt UNVERÄNDERT (eigene Datei, bewusst außerhalb der
+   Deploy-Allowlist). Ihr Standard-Layout ist eine breite Flex-Reihe
+   (Bild neben Text) — hier wird ausschließlich die Darstellung neu gefasst:
+   nur das Bild bleibt sichtbar und füllt die 16:9-Medienfläche, der Text der
+   Komponente wird ausgeblendet, weil er in der Kachel als eigener, mit den
+   anderen beiden gleich gebauter Textblock steht (sonst stünde er doppelt).
+
+   object-fit: CONTAIN, nicht cover: das Bild ist eine quadratische
+   Zeitschriften-Montage — ein Crop auf 16:9 würde genau die Titel abschneiden,
+   die der Beleg sind. Die Kachelgeometrie bleibt trotzdem exakt gleich. */
+.ExterneStimmen__medium--bild {
+  background: var(--es-flaeche);
+}
+
+.ExterneStimmen .Maxim {
+  display: block;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.ExterneStimmen .Maxim > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  padding: 8px;               /* 8pt-Grid: Montage klebt nicht am Rand */
+}
+
+.ExterneStimmen .Maxim .MaximText {
+  display: none;
+}
+
+/* Mobil: die Kachel bleibt dieselbe Kachel, nur eine Spalte. Maxim bringt für
+   < 750px eine eigene Spalten-/Padding-Regel mit — die wird hier neutralisiert,
+   damit die drei Kacheln auch schmal identisch bleiben. */
+@media (max-width: 749px) {
+  .ExterneStimmen {
+    --es-luecke: 24px;
+    --es-spalte-min: 260px;
+  }
+  .ExterneStimmen__titel {
+    margin-bottom: 32px;
+  }
+  .ExterneStimmen .Maxim {
+    flex-direction: unset;
+    text-align: left;
+    padding: 0;
+  }
+  .ExterneStimmen .Maxim > * {
+    width: auto;
+    max-width: none;
+  }
+}
+
+/* Eine Spalte wird EXPLIZIT gesetzt, nicht ueber die Spaltenbreite erschlichen.
+   GEMESSENE FALLE (2026-09-03, dieser Bau): `--es-spalte-min: 0` ergibt
+   `repeat(auto-fit, minmax(0, 1fr))` — und das sind nicht "eine Spalte", sondern
+   BELIEBIG VIELE. Bei 320px Viewport entstanden real 12 Spalten a 80px, also ein
+   zerstoertes Layout, das jede Gleichheits-Pruefung passiert (alle drei Karten
+   waren gleich breit und exakt 16:9 — nur eben 80px). Unterhalb der
+   Zwei-Spalten-Schwelle wird die Einspaltigkeit deshalb direkt angesagt. */
+@media (max-width: 599px) {
+  .ExterneStimmen__raster {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ExterneStimmen__yt__play > span {
+    transition: background 160ms ease;
+  }
+}

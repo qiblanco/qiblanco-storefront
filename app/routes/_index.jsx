@@ -1,4 +1,5 @@
 import {HomepageSections} from '~/components/homepage/HomepageSections';
+import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {hreflangLinks} from '~/lib/hreflang';
 import {entityGraph} from '~/lib/entity-schema';
@@ -174,6 +175,15 @@ function loadDeferredData({context}) {
   return {
     recommendedProducts,
   };
+}
+
+/* Scope-CSS des Abschnitts „Externe Stimmen".
+   Bewusst eine eigene Datei statt app/styles/app.css: app.css hängt an
+   app/root.jsx und ist damit die GLOBALE CSS-Kette — jede Änderung dort
+   zieht im Alle-Formate-Gate sämtliche Seiten mit hinein, auch solche mit
+   fremder, vorbestehender Format-Schuld. */
+export function links() {
+  return [{rel: 'stylesheet', href: externeStimmenStyles}];
 }
 
 export default function Homepage() {
