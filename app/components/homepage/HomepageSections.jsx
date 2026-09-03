@@ -8,7 +8,7 @@ import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikrosko
 import {Studien} from '~/components/reusables/Studien';
 import {FeaturedProduct} from '~/components/index-components/FeaturedProduct';
 import {UpsellLineUp} from '~/components/UpsellLineUp';
-import {Maxim} from '~/components/small-components/Maxim';
+import {ExterneStimmen} from '~/components/reusables/ExterneStimmen';
 import {Finanzierungsbanner} from '~/components/index-components/Finanzierungsbanner';
 import {SingleImage} from '~/components/reusables/SingleImage';
 import {CallToAction} from '~/components/index-components/CallToAction';
@@ -56,13 +56,18 @@ export function HomepageSections({overrides = {}}) {
         dataSection="youtube-testimonial-guse"
         link="https://www.youtube.com/embed/zIfDQ1N60fI?si=2ZVH9xtaSaEMmfTQ&amp;controls=0" />
 
+      {/* Externe Stimmen (Job 20260903-BAU-externe-stimmen-startseite-...):
+          Fremdbelege als EINE Reihe, direkt unter den drei Testimonial-Videos
+          und VOR den eigenen Studien - Fremdbeleg wirkt vor Eigenbeleg.
+          Maxim ist hierher UMGEZOGEN (vorher unterhalb des Mikroskop-Videos);
+          die Komponente selbst ist unveraendert. */}
+      <ExterneStimmen dataSection="externe-stimmen" />
+
       <PeerReviewStudies />
 
       <Studien dataSection="studien" headline="Wirkung an menschlichen Zellen bestätigt!" />
 
       <ScrollMikroskopVideo dataSection="mikroskop-video" />
-
-      <Maxim dataSection="maxim" />
 
       <Finanzierungsbanner dataSection="finanzierung" />
 
