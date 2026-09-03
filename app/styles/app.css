@@ -1193,9 +1193,25 @@ ul.submenu li a {
   font-weight: 700;
 }
 
+/* `anywhere` bleibt und wird NICHT durch `break-word` ersetzt: nur `anywhere`
+   senkt die intrinsische Mindestbreite, die die 0.6fr/1.4fr-Spur oben sonst
+   ueber den Viewport spreizt. Gefehlt hat der Silben-Partner — ohne ihn bricht
+   der Browser an JEDEM Zeichen. Gemessen 2026-09-01 am Live-Rand (390px,
+   Name "Wohnungsbaugenossenschaftsverwaltung Rheinlandpfalz"): Umbruch nach
+   "verwaltun", einzelnes "g" in der Folgezeile. Mit `hyphens: auto`:
+   "verwal-/tung". Voraussetzung <html lang="de"> ist in app/root.jsx erfuellt.
+   DIE SORGE, EIN TRENNSTRICH KOENNTE EINE E-MAIL ODER BESTELLNUMMER
+   VERFAELSCHEN, IST AUSGEMESSEN, NICHT WEGGEDACHT: A/B ueber 3 Eingaben x 2
+   Breiten am Live-Rand ergab in 5 von 6 Faellen IDENTISCHE Zeilenkaesten —
+   Chrome trennt weder ein Token mit @ noch eine Bestellnummer. Die Regel wirkt
+   ausschliesslich auf deutsche Komposita im Namensfeld. Wer sie entfernt,
+   holt den Buchstaben-Waisen zurueck; wer `anywhere` entfernt, die Spur-
+   Spreizung. Probe: pruefungen/probe_widerruf_zusammenfassung_umbruch.py
+   (erreicht die confirm-Phase per intent=review, sendet keinen Widerruf). */
 .withdrawal-summary dd {
   margin: 0;
   overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
 .withdrawal-alert {
