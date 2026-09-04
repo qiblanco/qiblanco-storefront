@@ -8,6 +8,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import {HREFLANG_PAARE} from '../app/lib/shop-switch.js';
 import {
   DACH_ORIGIN,
   SEITEN_PAARE,
@@ -68,16 +69,71 @@ test('deutscher Zweig ist der reine Sprachcode, nicht de-DE', () => {
 
 // --- Die Aufnahmebedingung ist der Schutz vor Wirkungslosigkeit -------------
 // Ein Paar ohne Gegenrichtung ist nicht halb so gut, sondern wirkungslos.
-// Solange das US-Theme kein hreflang ausliefert, darf hier NUR die Startseite
-// stehen. Dieser Test fällt absichtlich, wenn jemand Produktpaare einträgt,
-// ohne die US-Seite mitzuliefern.
-test('Paar-Tabelle enthält nur beidseitig belegte Paare', () => {
-  assert.deepEqual(Object.keys(SEITEN_PAARE), ['/']);
+//
+// BIS 2026-09-04 stand hier `assert.deepEqual(Object.keys(SEITEN_PAARE), ['/'])`
+// — richtig gemessen und bewusst so gebaut: das US-Theme lieferte auf keiner
+// Innenseite ein hreflang, also durfte hier nur die Startseite stehen.
+// Seit s05 liefert es 20 Paare aus DERSELBEN Quelle (shop-mapping.yaml).
+// Der alte Test war damit kein Schutz mehr, sondern nur noch die Konservierung
+// eines ueberholten Zustands. Ersetzt wird er NICHT durch Nachziehen der Zahl
+// (eine gepinnte Zahl waere beim naechsten Paar wieder falsch), sondern durch
+// die EIGENSCHAFT, die den Schutz eigentlich traegt:
+//   - die Tabelle wird NICHT von Hand erweitert, sie IST die generierte Karte,
+//   - und Seiten, die auf noindex stehen, duerfen NICHT darin vorkommen.
+test('Paar-Tabelle ist die generierte Karte, keine Handpflege', () => {
+  assert.equal(SEITEN_PAARE, HREFLANG_PAARE);
+});
+
+// Der Schutz mit Zaehnen: ein hreflang, das als deutsche Fassung eine
+// noindex-Seite benennt, benennt eine Fassung, die Google nicht indexieren
+// darf. Diese fuenf sind am 2026-09-04 live als noindex gemessen worden und
+// stehen darum in shop-mapping.yaml auf `hreflang: false`. Traegt sie jemand
+// nach, ohne das noindex zu entfernen, faellt dieser Test.
+test('noindex-Seiten stehen NICHT in der hreflang-Tabelle', () => {
+  for (const pfad of [
+    '/pages/linkseite',
+    '/pages/partner',
+    '/pages/pre-access',
+    '/pages/qibracelet',
+    '/pages/qihome-air',
+  ]) {
+    assert.equal(SEITEN_PAARE[pfad], undefined, `${pfad} traegt noindex`);
+    assert.deepEqual(hreflangLinks(pfad), [], `${pfad} darf nichts ausgeben`);
+  }
+});
+
+// Mehrdeutigkeit: zwei DE-Generationen zeigen auf EIN US-Produkt. Der
+// Umschalter darf das (Hinweg eindeutig), eine hreflang-Gruppe nicht.
+test('mehrdeutige Paare (reverse:false) fallen heraus', () => {
+  assert.equal(SEITEN_PAARE['/products/qione-1'], undefined);
+  assert.deepEqual(hreflangLinks('/products/qione-1'), []);
+});
+
+// Die Paare, um derentwillen s05 gebaut wurde — die gemessene
+// Kannibalisierung lag auf den Produktseiten.
+test('die belegten Produkt- und Studienpaare sind ausgezeichnet', () => {
+  assert.equal(SEITEN_PAARE['/products/qione-2-pro'], '/products/qione');
+  assert.equal(SEITEN_PAARE['/products/qihome-air'], '/products/qihome');
+  assert.equal(SEITEN_PAARE['/products/qione-kette'], '/products/necklace');
+  assert.equal(SEITEN_PAARE['/products/crystal-cacao-create'],
+               '/products/crystal-cacao-create');
+  assert.equal(SEITEN_PAARE['/pages/studien'], '/pages/studies');
+});
+
+test('ausgezeichneter Pfad nennt beide Seiten absolut und gegenseitig', () => {
+  const nach = Object.fromEntries(
+    hreflangLinks('/products/qione-2-pro').map((l) => [l.hrefLang, l.href]),
+  );
+  assert.deepEqual(nach, {
+    en: `${US_ORIGIN}/products/qione`,
+    de: `${DACH_ORIGIN}/products/qione-2-pro`,
+    'x-default': `${US_ORIGIN}/products/qione`,
+  });
 });
 
 test('unbekannter Pfad ergibt KEINE geratene Zuordnung', () => {
-  assert.deepEqual(hreflangLinks('/products/qione-2-pro'), []);
-  assert.deepEqual(hreflangLinks('/pages/studien'), []);
+  assert.deepEqual(hreflangLinks('/products/gibt-es-nicht'), []);
+  assert.deepEqual(hreflangLinks('/pages/irgendwas'), []);
 });
 
 test('normalisiere trimmt Query, Hash und Schluss-Slash', () => {

@@ -1,5 +1,5 @@
 // GENERIERT AUS shop-mapping.yaml — NICHT VON HAND AENDERN.
-// Quelle: homepage-bauer/shop-switch/shop-mapping.yaml (Version 1)
+// Quelle: homepage-bauer/shop-switch/shop-mapping.yaml (Version 2)
 // Erzeuger: homepage-bauer/shop-switch/bin/shop-switch-gen
 //
 // Zuordnung der gleichwertigen Seite im jeweils anderen Shop. Gibt es keine,
@@ -14,6 +14,32 @@ export const SHOP_ORIGIN = {
 export const SHOP_LABEL = {
   de: 'Deutsch',
   us: 'USA',
+};
+
+// hreflang-taugliche Teilmenge (Schluessel = DACH-Pfad, Wert = US-Pfad).
+// Enger als MAP_DE_US: nur bijektive UND auf beiden Seiten indexierbare Paare.
+// Begruendung in shop-mapping.yaml, Abschnitt "ZWEITE, ENGERE RELATION".
+export const HREFLANG_PAARE = {
+  "/": "/",
+  "/pages/agb": "/pages/terms-conditions",
+  "/pages/das-beispiel": "/pages/example",
+  "/pages/datenschutz": "/pages/privacy-policy",
+  "/pages/e-smog": "/pages/e-smog",
+  "/pages/entgiftung": "/pages/detoxification",
+  "/pages/impressum": "/pages/imprint",
+  "/pages/kohaerentes-wasser": "/pages/coherent-water",
+  "/pages/mentales-setting": "/pages/mental-setting",
+  "/pages/studien": "/pages/studies",
+  "/pages/support": "/pages/support",
+  "/pages/teilnahmebedingungen": "/pages/terms-of-participation",
+  "/pages/vitamine-mineralien": "/pages/minerals-vitamins",
+  "/pages/widerrufsbelehrung": "/pages/return-instructions",
+  "/products/crystal-cacao-awake": "/products/crystal-cacao-awake",
+  "/products/crystal-cacao-create": "/products/crystal-cacao-create",
+  "/products/qibracelet": "/products/qibracelet",
+  "/products/qihome-air": "/products/qihome",
+  "/products/qione-2-pro": "/products/qione",
+  "/products/qione-kette": "/products/necklace"
 };
 
 const MAP_DE_US = {
