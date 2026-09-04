@@ -14,16 +14,16 @@ import {useEffect} from 'react';
  * NACH UNTEN auf: kein Bedienelement darf sichtbar und zugleich nicht
  * treffbar sein — entweder es liegt oben und der Hit-Test trifft es, oder es
  * wird nicht dargestellt. Das Widget wird deshalb UNTERDRUECKT, solange ein
- * modaler Dialog offen ist, statt ueber ihn gehoben zu werden: ein Chat ueber
+ * modaler Dialog offen ist, statt über ihn gehoben zu werden: ein Chat über
  * der offenen Warenkorb-Schublade verdeckt den KAUFWEG.
  *
  * WARUM EIN ATTRIBUT UND NICHT `body:has(...)` IM CSS. Die reine CSS-Fassung
- * waere kuerzer und braeuchte diese Datei nicht. Sie faellt aber auf genau
- * den Geraeten aus, um die es hier geht: ein Browser ohne `:has()` verwirft
+ * wäre kuerzer und braeuchte diese Datei nicht. Sie faellt aber auf genau
+ * den Geräten aus, um die es hier geht: ein Browser ohne `:has()` verwirft
  * die GESAMTE Regel als ungueltigen Selektor, still und ohne Fehlermeldung.
  * `:has()` gibt es ab iOS/Safari 15.4, Chrome 105 und Firefox 121 — das sind
- * heute weit ueber 95 %, aber der Rest sind ALTE Handys, und der Auftrag
- * heisst "auf JEDEM Handy". Eine Loesung, die ausgerechnet dort stumm
+ * heute weit über 95 %, aber der Rest sind ALTE Handys, und der Auftrag
+ * heißt "auf JEDEM Handy". Eine Loesung, die ausgerechnet dort stumm
  * ausfaellt, wo der Fehler am wahrscheinlichsten auffiel, ist der falsche
  * Rest. Ein Attribut lesen kann jeder Browser.
  *
@@ -35,7 +35,7 @@ import {useEffect} from 'react';
  * qi-salesbot/src/app/embed/qiblanco-widget.js/route.ts: der Loader setzt 24
  * Eigenschaften an `iframe.style` und KEINE davon ist `display` — unser
  * `!important` gewinnt konfliktfrei. Wer das Attribut trotzdem lesen KANN,
- * ist der Loader (er laeuft im Seitenkontext, nicht im iframe); dass er es
+ * ist der Loader (er läuft im Seitenkontext, nicht im iframe); dass er es
  * nicht muss, ist der Sinn der Einseitigkeit.
  */
 
@@ -61,7 +61,7 @@ export const DIALOG_SELEKTOREN = [
   '.qb-st-lightbox',
 ].join(', ');
 
-/** Das Attribut am <html>, auf das die Unterdrueckungs-Regel in app.css haengt. */
+/** Das Attribut am <html>, auf das die Unterdrueckungs-Regel in app.css hängt. */
 export const DIALOG_ATTRIBUT = 'data-dialog-offen';
 
 export function DialogSignal() {
@@ -73,7 +73,7 @@ export function DialogSignal() {
       // Nur schreiben, wenn sich etwas aendert: ein setAttribute in einem
       // MutationObserver, der auf Attribute hoert, ist sonst seine eigene
       // Ursache. Der Observer beobachtet zwar nicht <html>, aber die
-      // Bedingung kostet nichts und macht die Schleife baulich unmoeglich
+      // Bedingung kostet nichts und macht die Schleife baulich unmöglich
       // statt nur unwahrscheinlich.
       if (offen === wurzel.hasAttribute(DIALOG_ATTRIBUT)) return;
       if (offen) wurzel.setAttribute(DIALOG_ATTRIBUT, '');
@@ -81,22 +81,22 @@ export function DialogSignal() {
     };
 
     // Erster Lauf VOR dem Beobachten: bei einer Client-Navigation kann eine
-    // modale Flaeche schon stehen, bevor dieser Effekt laeuft.
+    // modale Flaeche schon stehen, bevor dieser Effekt läuft.
     schreibe();
 
     /**
-     * WARUM EIN MutationObserver UND KEIN REACT-ZUSTAND: die fuenf modalen
-     * Flaechen liegen in fuenf Komponenten mit fuenf unabhaengigen Zustaenden
+     * WARUM EIN MutationObserver UND KEIN REACT-ZUSTAND: die fünf modalen
+     * Flaechen liegen in fünf Komponenten mit fünf unabhaengigen Zustaenden
      * (Aside, ProductImageList, Video360Viewer, GoogleRezensionenBereich,
-     * StudienUebersicht). Sie an einen gemeinsamen Context zu haengen waere
-     * ein Umbau an fuenf kundensichtbaren Flaechen fuer ein Signal — und
+     * StudienUebersicht). Sie an einen gemeinsamen Context zu hängen wäre
+     * ein Umbau an fünf kundensichtbaren Flaechen für ein Signal — und
      * `Aside.jsx` ist eine Bestandskomponente, um die man herum baut, nicht
      * in sie hinein. Der Observer sitzt an EINER Stelle und kennt die
-     * Flaechen nur ueber die Selektorliste oben.
+     * Flaechen nur über die Selektorliste oben.
      *
-     * `attributeFilter: ['class']` ist noetig, weil `.overlay` seinen Zustand
-     * NUR in der Klasse traegt und nie aus dem DOM verschwindet; `childList`
-     * fuer die vier uebrigen, die per Portal an <body> haengen.
+     * `attributeFilter: ['class']` ist nötig, weil `.overlay` seinen Zustand
+     * NUR in der Klasse trägt und nie aus dem DOM verschwindet; `childList`
+     * für die vier uebrigen, die per Portal an <body> hängen.
      */
     let angefordert = 0;
     const waechter = new MutationObserver(() => {
@@ -120,7 +120,7 @@ export function DialogSignal() {
       waechter.disconnect();
       if (angefordert) window.cancelAnimationFrame(angefordert);
       // Das Attribut mit zuruecknehmen: ein haengendes `data-dialog-offen`
-      // wuerde das Widget dauerhaft unterdruecken — also genau den Chat
+      // würde das Widget dauerhaft unterdruecken — also genau den Chat
       // abschalten, den es schuetzen soll.
       wurzel.removeAttribute(DIALOG_ATTRIBUT);
     };

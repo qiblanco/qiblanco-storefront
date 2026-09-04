@@ -459,7 +459,7 @@ export function Layout({children}) {
       </head>
       <body>
         {/* Setzt `data-dialog-offen` am <html>, solange eine modale Flaeche
-            offen ist. Daran haengt die Unterdrueckung des Chat-Widgets in
+            offen ist. Daran hängt die Unterdrueckung des Chat-Widgets in
             app.css — die Naht zwischen Storefront und qi-salesbot. Rendert
             nichts und steht deshalb bewusst ohne Bedingung hier: die
             Unterdrueckung muss auch dann greifen, wenn das Widget erst per
