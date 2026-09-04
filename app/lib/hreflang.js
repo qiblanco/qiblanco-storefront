@@ -24,17 +24,48 @@
  * Die bereits ausgelieferte US-Seite war damit wirkungslos: sie hat nie
  * jemand bestätigt. Diese Datei liefert die fehlende Gegenrichtung.
  *
- * DESHALB IST DIE PAAR-TABELLE ABSICHTLICH KURZ UND NICHT „vollständig":
- * ein einseitig ausgezeichnetes Paar ist nicht etwa halb so gut, sondern
- * wirkungslos — es sieht nur nach Arbeit aus. Aufgenommen wird ein Paar
- * daher erst, wenn die GEGENSEITE die Auszeichnung ebenfalls trägt. Für die
- * sechs Produktpaare (crystal-cacao-awake/-create, qibracelet,
- * qihome-air↔qihome, qione-2-pro↔qione, qione-kette↔necklace — inhaltlich
- * am 2026-08-15 über die Live-Titel geprüft und identisch) ist das derzeit
- * NICHT der Fall: 49 der 50 US-Seiten tragen kein hreflang. Sie gehören
- * hier erst hinein, wenn das US-Theme (us-qiblanco-2024, layout/theme.liquid)
- * seine Hälfte ausliefert — sonst tragen wir eine Zusage ein, die niemand
- * bestätigt.
+ * ===========================================================================
+ * ERWEITERUNG 2026-09-04 — Job 20260831-GROSSJOB-seo-warum-ranken-kritiker-
+ * über-uns-fruechte-prio6, Segment s05. VON EINEM PAAR AUF ZWANZIG.
+ * ===========================================================================
+ *
+ * Die alte Fassung fuehrte SEITEN_PAARE als handgepflegte Tabelle mit genau
+ * einem Eintrag und begründete das so: die US-Gegenseite trage ihre Haelfte
+ * nicht, also duerfe hier nichts stehen. Das war richtig gemessen und ist
+ * heute überholt — die Gegenseite wird im selben Zug gebaut
+ * (us-qiblanco-2024, snippets/qb-seo-hreflang.liquid), und beide Seiten
+ * speisen sich aus DERSELBEN Quelle.
+ *
+ * DIE TABELLE IST DESHALB NICHT MEHR HIER. Sie kommt aus dem generierten
+ * app/lib/shop-switch.js, das seinerseits aus dem SSoT
+ * homepage-bauer/shop-switch/shop-mapping.yaml fällt (Erzeuger
+ * bin/shop-switch-gen). Zwei von Hand gepflegte Tabellen für dieselbe Größe
+ * driften auseinander, ohne dass eine Seite für sich falsch aussieht — genau
+ * der Naht-Fehler, gegen den dieser SSoT 2026-08-06 gebaut wurde. Ein
+ * hreflang-Paar IST eine Seiten-Aequivalenz; es gibt keinen Grund, sie ein
+ * zweites Mal zu behaupten.
+ *
+ * WARUM HREFLANG_PAARE UND NICHT MAP_DE_US: hreflang ist ENGER als der
+ * Flaggen-Umschalter, aus zwei Gruenden, die beide in shop-mapping.yaml
+ * ausgeschrieben sind.
+ *   (1) bijektiv    — Paare mit `reverse: false` fallen heraus. Zwei
+ *       DE-Generationen auf EIN US-Produkt (qione-1/qione-2-pro) wären als
+ *       hreflang-Gruppe mehrdeutig.
+ *   (2) indexierbar — Paare mit `hreflang: false` fallen heraus. Gemessen
+ *       2026-09-04 tragen fünf DACH-Seiten noindex (linkseite, partner,
+ *       pre-access, qibracelet, qihome-air). Ein hreflang, das als deutsche
+ *       Fassung eine noindex-Seite benennt, benennt eine Fassung, die Google
+ *       gar nicht indexieren darf — das Paar kann nie wirken.
+ *   Der Umschalter darf diese Seiten weiter anspringen: dort hat ein MENSCH
+ *   geklickt, und der soll ankommen. Nur die Aussage an die Suchmaschine fällt weg.
+ *
+ * MESSUNG 2026-09-04 (je Seite einzeln, OHNE Redirect-Folgen, drei Kriterien:
+ * HTTP 200 + kein noindex + selbst-referenzierendes canonical):
+ * 25 bijektive Paare inkl. Startseite -> 20 hreflang-tauglich, 5 ausgeschlossen.
+ *
+ * DIE AUFNAHMEBEDINGUNG GILT UNVERAENDERT WEITER — sie ist nur umgezogen:
+ * sie steht jetzt als Regel im SSoT und wird dort erfuellt, statt hier als
+ * kurze Tabelle vorgeführt zu werden.
  *
  * WARUM DIE WERTE EXAKT DIE DER US-SEITE SPIEGELN: In einer hreflang-Gruppe
  * müssen alle Seiten DIESELBE Menge an Alternativen nennen, sich selbst
@@ -52,6 +83,12 @@
  * entspricht dem, was die US-Seite bereits deklariert.
  */
 
+// Relativ und nicht über den `~/`-Alias: diese Datei wird von
+// test/seo-hreflang-produkt.test.mjs direkt mit node:test importiert, und node
+// kennt den Vite-Alias nicht. Dieselbe Form nutzen app/lib/entity-schema.js und
+// app/lib/blog-seo.js für ./seo.js.
+import {HREFLANG_PAARE} from './shop-switch.js';
+
 export const DACH_ORIGIN = 'https://qiblanco.com';
 export const US_ORIGIN = 'https://qi-blanco.com';
 
@@ -59,14 +96,12 @@ export const US_ORIGIN = 'https://qi-blanco.com';
  * Belegte, BEIDSEITIG ausgezeichnete Seitenpaare.
  * Schlüssel = Pfad auf der DACH-Domain, Wert = Pfad auf der US-Domain.
  *
- * Aufnahmebedingung (nicht verhandelbar, siehe Kopf): die US-Seite liefert
- * die Gegenrichtung bereits aus. Am 2026-08-15 erfüllt das genau die
- * Startseite.
+ * NICHT hier gepflegt — generiert aus homepage-bauer/shop-switch/shop-mapping.yaml.
+ * Begründung im Kopf dieser Datei. Der Re-Export bleibt bestehen, damit
+ * bestehende Leser (Tests, Proben) ihren Namen behalten.
  * @type {Record<string, string>}
  */
-export const SEITEN_PAARE = {
-  '/': '/',
-};
+export const SEITEN_PAARE = HREFLANG_PAARE;
 
 /**
  * hreflang-Descriptoren für einen DACH-Pfad.
@@ -86,9 +121,10 @@ export const SEITEN_PAARE = {
  * @returns {Array<{tagName: 'link', rel: 'alternate', hrefLang: string, href: string}>}
  */
 export function hreflangLinks(dachPfad) {
-  const usPfad = SEITEN_PAARE[normalisiere(dachPfad)];
+  const pfad = normalisiere(dachPfad);
+  const usPfad = SEITEN_PAARE[pfad];
   if (!usPfad) return [];
-  const de = `${DACH_ORIGIN}${usPfad === '/' ? '/' : normalisiere(dachPfad)}`;
+  const de = `${DACH_ORIGIN}${pfad}`;
   const en = `${US_ORIGIN}${usPfad}`;
   return [
     {tagName: 'link', rel: 'alternate', hrefLang: 'en', href: en},
