@@ -709,8 +709,8 @@
 }
 .lp-v3 .ScrollScrubVideo {
   background: var(--v3-dunkel);
-  /* 10000 im Bestand reisst die z-index-Hygiene (Soll <= 5000). */
-  z-index: 900;
+  /* wie v2: 900 lag weiter ueber dem fixierten Kopf. Inhalts-Deckel. */
+  z-index: var(--z-inhalt-max);
 }
 .lp-v3 .ScrollScrubVideo .VideoOverlay .TextContent-Start h2,
 .lp-v3 .ScrollScrubVideo .VideoOverlay .TextContent-End div h2 {

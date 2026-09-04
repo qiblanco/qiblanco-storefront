@@ -1879,11 +1879,23 @@
 }
 
 /* Toast (after CTA click) */
+/* Ebenenleiter 2026-09-04 (SSoT design-meister web-soll.yaml
+   overlay_ordnung): 2147483645 war der Griff nach dem 32-Bit-Maximum, um das
+   Consent-Banner zu schlagen. Der Toast gehoert auf `meldung` — ueber den
+   Dialogen (eine Fehlermeldung IM Dialog waere sonst unsichtbar), aber unter
+   dem Consent-Banner. Das ist Absicht: eine Einwilligungsschicht, die ein
+   eigenes Overlay verdeckt, waere ein Rechtsmangel (overlay_ordnung.fremd_oben).
+   Der Randabstand nach unten folgt der FORM statt der Zahl; der Grundabstand
+   bleibt die begruendeten 24px dieser Flaeche und steht als eigene Property,
+   damit eine Probe ihn zur Laufzeit forcieren kann. KEIN viewport-fit=cover —
+   auf iOS rueckt das System ohne cover bereits selbst ein, auf Android
+   (Chrome 135+ edge-to-edge) wird der Inset ohne unser Zutun echt. */
 .ghx-toast {
   position: fixed;
+  --overlay-grundabstand: 24px;
   right: 24px;
-  bottom: 24px;
-  z-index: 2147483645;
+  bottom: max(var(--overlay-grundabstand), env(safe-area-inset-bottom));
+  z-index: var(--z-meldung);
   max-width: 360px;
   background: #fff;
   border: 1px solid rgb(229,223,210);

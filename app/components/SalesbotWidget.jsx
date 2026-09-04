@@ -7,7 +7,7 @@ const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
 const LOADER_DATEN = {
   tenantId: 'tenant_qiblanco',
   projectId: 'project_qiblanco_sales',
-  zIndex: '4900',
+  zIndex: '200',
   placement: 'right',
   initialOpen: 'false',
 };
@@ -29,8 +29,24 @@ const LOADER_DATEN = {
  * diese Komponente die Cross-Boundary-Kette nicht (keine neue Zeile in
  * TRACKING_COOKIE_NAMES nötig; maschinell belegt über `linkage-check`).
  *
- * data-z-index: Hausregel ist z-index <= 5000 (die Design-Rubrik straft
- * höhere Werte ab). Leons Loader-Default wäre 2147483000.
+ * data-z-index: seit 2026-09-04 die Stufe `schwebend` der Ebenenleiter
+ * (SSoT design-meister db/webdesign/web-soll.yaml, Abschnitt
+ * `overlay_ordnung`) — über dem Kopf (100), unter jedem Dialog (300).
+ * Vorher 4900, und genau diese Zahl war Christians gemessener Befund: bei
+ * offener Warenkorb-Schublade (`.overlay` lag bei 5000) war das Widget
+ * SICHTBAR und sein X trotzdem nicht treffbar. Die Ebene allein heilt das
+ * nicht — dafür sorgt die Unterdrückung über `data-dialog-offen`
+ * (components/DialogSignal.jsx). Beides zusammen ist bewusst nicht dieselbe
+ * Sperre zweimal: die eine liest „welche Ebene", die andere „ist ein Dialog
+ * offen".
+ *
+ * DIE ZAHL BLEIBT EINE ZAHL UND WIRD KEIN `var(--z-schwebend)`, obwohl das
+ * hier naheliegt: der Loader macht daraus `parseInt(zIndex, 10) ||
+ * 2147483000` (qi-salesbot route.ts). Ein `var(...)` ergäbe NaN und damit
+ * still den Loader-Default knapp unter dem 32-Bit-Maximum — also die
+ * größtmögliche Ebenen-Inversion, erzeugt durch den vermeintlich saubereren
+ * Bau. Wer die Stufe verschiebt, zieht diese Zahl von Hand nach; der Wächter
+ * `design-meister/bin/overlay-ordnung pruefe` sieht sie.
  *
  * data-initial-open="false": der Bot-Default wäre OFFEN (initialOpen=true aus
  * getDefaultWidgetSettings — im Browser gemessen stand das iframe ohne dieses
@@ -145,7 +161,7 @@ export function SalesbotWidget({origin, nonce}) {
       data-qiblanco-salesbot-loader=""
       data-tenant-id="tenant_qiblanco"
       data-project-id="project_qiblanco_sales"
-      data-z-index="4900"
+      data-z-index="200"
       data-placement="right"
       data-initial-open="false"
       nonce={nonce}

@@ -678,10 +678,13 @@
 }
 .lp-v2 .ScrollScrubVideo {
   background: var(--v2-dunkel);
-  /* 10000 im Bestand reisst die z-index-Hygiene (Soll <= 5000). Der Block
-     bildet einen eigenen Stacking-Kontext; 900 reicht fuer das sticky-Overlay
-     und bleibt unter der Grenze. */
-  z-index: 900;
+  /* 10000 im Bestand riss die z-index-Hygiene; 900 war der erste Nachzug.
+     Auch 900 liegt noch ueber dem fixierten Kopf (jetzt --z-kopf 100) und
+     haette dessen Bedienelemente auf dieser LP weiter unerreichbar gemacht —
+     genau der 2026-09-04 live gemessene Befund. Jetzt auf dem Inhalts-Deckel
+     der Ebenenleiter; fuer das sticky-Overlay INNERHALB des Blocks reicht das
+     unveraendert, weil der Block seinen eigenen Stapelkontext bildet. */
+  z-index: var(--z-inhalt-max);
 }
 /* Die Overlay-Regeln des Bestands sind DREI Klassen tief
    (.ScrollScrubVideo .VideoOverlay .TextContent-Start h2 = 2,5rem) und

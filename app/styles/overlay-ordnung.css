@@ -1,0 +1,30 @@
+/* ERZEUGT — NICHT VON HAND AENDERN.
+ * Quelle: design-meister db/webdesign/web-soll.yaml -> overlay_ordnung
+ *         (Version 1, Stand 2026-09-04)
+ * Neu erzeugen: design-meister/bin/overlay-ordnung css
+ *
+ * LEITSATZ: Kein Bedienelement darf sichtbar und zugleich nicht treffbar sein. Entweder es liegt oben und der Hit-Test trifft es, oder es wird nicht dargestellt.
+ */
+:root {
+  /* --- Ebenenleiter -------------------------------------------------- */
+  --z-inhalt-max: 90;   /* Deckel fuer JEDE Zahl im normalen Fluss */
+  --z-kopf: 100;        /* Header / Hauptnavigation — dauerhaft sichtbar, aber unter allem Schwebenden. */
+  --z-schwebend: 200;   /* Schwebende Bedienelemente ueber dem Inhalt: Chat-Widget, Zurueck-nach-oben, ... */
+  --z-dialog: 300;      /* Die modale Schicht. Vorhang (Backdrop) UND Panel tragen GEMEINSAM diesen einen Wert, weil ... */
+  --z-meldung: 400;     /* Toast, Ladebalken, Fehlermeldung. Muss UEBER dem Dialog liegen: eine Fehlermeldung zu einer ... */
+  --z-notfall: 500;     /* Reserviert. Benutzung nur mit einem Eintrag in `ausnahmen` DIESER Datei ... */
+
+  /* --- Randabstand: die FORM, nicht die Zahl ------------------------- */
+  /* --overlay-grundabstand darf jede Flaeche in ihrem eigenen Scope
+     ueberschreiben (der Widget-Rahmen tut es begruendet mit 7px) — und
+     eine Probe kann ihn zur Laufzeit forcieren. Deshalb steht die Zahl
+     NIE direkt in der max()-Form. KEIN viewport-fit=cover. */
+  --overlay-grundabstand: 16px;
+  --overlay-rand-unten: max(var(--overlay-grundabstand), env(safe-area-inset-bottom));
+  --overlay-rand-oben: max(var(--overlay-grundabstand), env(safe-area-inset-top));
+  --overlay-rand-links: max(var(--overlay-grundabstand), env(safe-area-inset-left));
+  --overlay-rand-rechts: max(var(--overlay-grundabstand), env(safe-area-inset-right));
+
+  /* --- Tippziel: WCAG 2.5.5 Target Size (Enhanced, AAA) — woertlich 'at least 44 by 44 CSS pixels'; deckungsgleich mit Apple HIG --- */
+  --schliesskreuz-min: 44px;
+}
