@@ -308,7 +308,7 @@ const PRODUCT_QUERY = `#graphql
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
 
 /*
- * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
- * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ * EU-Gewährleistungslabel: Overlay + Trigger hängen an DIESER Route,
+ * nicht am globalen Seitengerüst (Elina EL-20260901-3fb38a2a).
  */
 export default withEuLabel(Product);

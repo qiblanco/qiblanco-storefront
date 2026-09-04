@@ -17,7 +17,7 @@ import resetStyles from '~/styles/reset.css?url';
 // ERZEUGT aus der SSoT (design-meister db/webdesign/web-soll.yaml, Abschnitt
 // overlay_ordnung) mit `design-meister/bin/overlay-ordnung css` — nie von Hand
 // aendern, sonst laufen Regelwerk und Stylesheet auseinander. Steht bewusst
-// VOR app.css: die Datei deklariert nur Custom Properties und ueberschreibt
+// VOR app.css: die Datei deklariert nur Custom Properties und überschreibt
 // nichts, und so ist im Head auf einen Blick sichtbar, woher die Zahlen
 // kommen, die weiter unten benutzt werden.
 import overlayOrdnungStyles from '~/styles/overlay-ordnung.css?url';
@@ -476,15 +476,15 @@ export function Layout({children}) {
               27.09.2026): der Provider steht BEWUSST NICHT MEHR HIER.
 
               Elina EL-20260901-3fb38a2a (2026-09-01): "der Overlay-Baustein
-              und der Trigger-Link duerfen NICHT im globalen Seitengeruest
-              oder in der Footer-Komponente liegen, sondern ausschliesslich
+              und der Trigger-Link dürfen NICHT im globalen Seitengerüst
+              oder in der Footer-Komponente liegen, sondern ausschließlich
               auf den betroffenen Produktseiten-Routen eingebunden werden,
-              damit KEINE Aenderung an einer ueberall mitlaufenden Komponente
+              damit KEINE Änderung an einer überall mitlaufenden Komponente
               entsteht."
 
-              Er sitzt jetzt je Route, die den Hinweis wirklich traegt (siehe
+              Er sitzt jetzt je Route, die den Hinweis wirklich trägt (siehe
               EU_LABEL_ROUTEN in test/eu-gewaehrleistung.test.mjs, das die
-              Deckung maschinell erzwingt). Wer ihn hierher zurueckholt, macht
+              Deckung maschinell erzwingt). Wer ihn hierher zurückholt, macht
               das Label wieder global — der Test schlaegt dann fehl.
             */}
             <PageLayout {...data}>{children}</PageLayout>

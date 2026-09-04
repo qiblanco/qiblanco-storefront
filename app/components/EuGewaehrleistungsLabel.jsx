@@ -49,11 +49,11 @@ import {
  * die Checkout-Seite. Der sichtbare SATZ ist die Pflicht, die Grafik
  * erscheint auf den ersten Klick. Genau das ist hier gebaut.
  *
- * Einordnung, damit niemand die Quelle ueberschaetzt: die Leitlinien sind
+ * Einordnung, damit niemand die Quelle überschaetzt: die Leitlinien sind
  * KEINE Rechtsquelle. Sie tragen den Disclaimer "preliminary views of the
  * European Commission (EC) services". Der Verordnungstext selbst regelt das
  * verschachtelte Format weiterhin nur für die Kennzeichnung. Wer diesen Bau
- * uebernimmt, folgt dem Verstaendnis der Kommissionsdienststelle -- ein
+ * übernimmt, folgt dem Verstaendnis der Kommissionsdienststelle -- ein
  * Restrisiko abweichender nationaler Auslegung bleibt und gehört vor dem
  * Livegang auf einen juristischen Tisch, nicht auf diesen.
  *
@@ -64,14 +64,14 @@ import {
  * Lesbarkeit des QR-Codes tragen. Anhang I Nr. 3 verlangt, dass er mit einem
  * mobilen Standardgeraet ablesbar ist; die Leitlinien nennen als Untergrenze
  * 2 x 2 cm (Abschnitt 3.1.2 -- dort für das GARAN-Label geschrieben, hier
- * bewusst auf die Mitteilung uebertragen, weil es für deren QR-Code keine
+ * bewusst auf die Mitteilung übertragen, weil es für deren QR-Code keine
  * eigene Zahl gibt).
  *
  * Gemessen an 20 der 24 Sprachfassungen belegt der QR-Code 18,2-20,2 % der
  * Bildbreite. Die vier fehlenden (et, fi, sl, sv) sind in der Quelldatei so
  * beschaedigt, dass sich der QR-Code darin nicht einmal lokalisieren lässt
  * (siehe QR_DEFEKT). Werden sie neu hochgeladen, ist dieser Anteil
- * nachzumessen -- faellt er unter 18,24 %, trägt die Mindestbreite unten
+ * nachzumessen -- fällt er unter 18,24 %, trägt die Mindestbreite unten
  * nicht mehr. Die CSS setzt darum eine MINDESTBREITE für die Grafik im
  * Overlay, statt sie nur "auf volle Breite" zu ziehen: bei schmalen
  * Viewports schiebt die Buehne waagerecht, statt den QR-Code unter die
@@ -122,18 +122,18 @@ export function EuLabelProvider({children}) {
 }
 
 /**
- * ROUTEN-BINDUNG. Haengt GENAU EIN Overlay an eine einzelne Route, statt an
- * das globale Seitengeruest.
+ * ROUTEN-BINDUNG. hängt GENAU EIN Overlay an eine einzelne Route, statt an
+ * das globale Seitengerüst.
  *
  * WARUM ALS HOC UND NICHT ALS JSX-WRAPPER IN JEDER ROUTE: die betroffenen
- * Routen haben mehrere Rueckgabepfade (fruehe `return` fuer Kampagnen- und
- * Standardfassung). Ein JSX-Wrapper muesste jeden davon einzeln treffen --
- * ein uebersehener Pfad liefert die Pflichtmitteilung still nicht aus, weil
- * `EuGewaehrleistungsHinweis` ohne Kontext `null` rendert. Der HOC umschliesst
- * die Komponente und damit ALLE Rueckgabepfade auf einmal.
+ * Routen haben mehrere Rückgabepfade (fruehe `return` für Kampagnen- und
+ * Standardfassung). Ein JSX-Wrapper müsste jeden davon einzeln treffen --
+ * ein übersehener Pfad liefert die Pflichtmitteilung still nicht aus, weil
+ * `EuGewaehrleistungsHinweis` ohne Kontext `null` rendert. Der HOC umschließt
+ * die Komponente und damit ALLE Rückgabepfade auf einmal.
  *
- * Deckung wird maschinell erzwungen: test/eu-gewaehrleistung.test.mjs prueft,
- * dass jede Route, die den Hinweis traegt, auch diese Bindung hat.
+ * Deckung wird maschinell erzwungen: test/eu-gewaehrleistung.test.mjs prüft,
+ * dass jede Route, die den Hinweis trägt, auch diese Bindung hat.
  */
 export function withEuLabel(Komponente) {
   function MitEuLabel(props) {
@@ -294,7 +294,7 @@ export function EuGewaehrleistungsHinweis() {
 
 /**
  * FOOTER. Punkt 4 unter "3. Bezahlmethoden" -- reiner Textlink, gleiches
- * Overlay, kein zweiter Dialog. Baulich unveraendert gegenueber der
+ * Overlay, kein zweiter Dialog. Baulich unveraendert gegenüber der
  * Vorfassung (Elina: "Footer-Umsetzung bleibt wie sie ist").
  */
 export function EuGewaehrleistungsLink() {

@@ -2,9 +2,9 @@
  * Hermetischer Test der EU-Gewaehrleistungs-Mitteilung (node --test, ohne
  * Bundler) -- Hausmuster wie test/blog-seo.test.mjs.
  *
- * Die Sprachlogik wird als reine Funktion geprueft. Die Auflagen, die man
+ * Die Sprachlogik wird als reine Funktion geprüft. Die Auflagen, die man
  * einer Datei NICHT ansieht, werden am Quelltext bewacht -- denn genau sie
- * gehen bei einer spaeteren, gut gemeinten Aenderung als Erstes verloren:
+ * gehen bei einer spaeteren, gut gemeinten Änderung als Erstes verloren:
  *
  *   1. Auf der Produktseite steht NUR der Text-Link. Wer die Grafik eines
  *      Tages "der Sichtbarkeit zuliebe" offen daneben stellt, baut genau die
@@ -121,7 +121,7 @@ test('auf der Produktseite steht NUR der Text-Link -- keine offene Grafik', () =
   );
 
   // Positiv-Kontrolle: ohne sie wäre ein leerer Ausschnitt (z.B. weil sich
-  // ein Funktionsname geaendert hat) ununterscheidbar von "sauber".
+  // ein Funktionsname geändert hat) ununterscheidbar von "sauber".
   assert.ok(
     pdpKoerper.includes('eu-gwl--pdp'),
     'Ausschnitt leer oder verrutscht -- die Aussage oben trägt dann nichts.',
@@ -209,8 +209,8 @@ test('der Ueberstand ist erreichbar -- die Buehne scrollt waagerecht', () => {
   //
   // Diese Prüfung war zuerst eine Naehe-Heuristik ("<img> steht innerhalb
   // der nächsten 400 Zeichen"). Ein Mutant, der die Buehne leer lässt und
-  // das Bild direkt dahinter hängt, hat sie ueberlebt -- Naehe ist eben
-  // keine Verschachtelung. Jetzt wird die Verschachtelung selbst geprueft.
+  // das Bild direkt dahinter hängt, hat sie überlebt -- Naehe ist eben
+  // keine Verschachtelung. Jetzt wird die Verschachtelung selbst geprüft.
   const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
   const tag = code.match(/<div className="eu-gwl-dialog__buehne"([^>]*)>/);
   assert.ok(tag, 'die Buehne fehlt in der Komponente');
@@ -302,8 +302,8 @@ test('der Rechte-Link zeigt auf das amtliche Portal', () => {
 });
 
 test('QR_DEFEKT und QR_GRENZFALL sind gemessene Listen, keine stillen Ausnahmen', () => {
-  // Der Sinn dieses Tests: die Listen duerfen nur ISO-Codes enthalten, die es
-  // auch gibt, und sie duerfen sich nicht ueberschneiden. Zwei leere Listen
+  // Der Sinn dieses Tests: die Listen dürfen nur ISO-Codes enthalten, die es
+  // auch gibt, und sie dürfen sich nicht überschneiden. Zwei leere Listen
   // sind der SOLL-Zustand nach dem PNG-Ersatz -- sie sollen dann gruen
   // bleiben, ohne dass jemand den Test anfasst.
   for (const [name, liste] of [['QR_DEFEKT', QR_DEFEKT], ['QR_GRENZFALL', QR_GRENZFALL]]) {
@@ -327,18 +327,18 @@ test('QR_DEFEKT und QR_GRENZFALL sind gemessene Listen, keine stillen Ausnahmen'
 /* ------------------------------------------------------------------ *
  * MONTAGE-ORT (Elina EL-20260901-3fb38a2a, 2026-09-01)
  *
- * "der Overlay-Baustein und der Trigger-Link duerfen NICHT im globalen
- *  Seitengeruest oder in der Footer-Komponente liegen, sondern ausschliesslich
+ * "der Overlay-Baustein und der Trigger-Link dürfen NICHT im globalen
+ *  Seitengerüst oder in der Footer-Komponente liegen, sondern ausschließlich
  *  auf den betroffenen Produktseiten-Routen eingebunden werden, damit KEINE
- *  Aenderung an einer ueberall mitlaufenden Komponente entsteht."
+ *  Änderung an einer überall mitlaufenden Komponente entsteht."
  *
- * Bis hierher konnte KEIN Test diese Auflage sehen: die Suite prueft die
- * Komponente und die CSS, nie den Ort, an dem sie haengt. Genau deshalb lief
+ * Bis hierher konnte KEIN Test diese Auflage sehen: die Suite prüft die
+ * Komponente und die CSS, nie den Ort, an dem sie hängt. Genau deshalb lief
  * die globale Fassung durch 15 gruene Tests.
  *
- * Die Traegerliste wird BERECHNET, nicht aufgeschrieben: wer morgen eine neue
- * Produktseite anlegt, die den Hinweis rendert, faellt hier auf -- eine
- * abgetippte Liste wuerde ihn stillschweigend auslassen.
+ * Die Trägerliste wird BERECHNET, nicht aufgeschrieben: wer morgen eine neue
+ * Produktseite anlegt, die den Hinweis rendert, fällt hier auf -- eine
+ * abgetippte Liste würde ihn stillschweigend auslassen.
  * ------------------------------------------------------------------ */
 
 const APP = join(HIER, '..', 'app');
@@ -353,7 +353,7 @@ function jsxDateien(verzeichnis) {
   return raus;
 }
 
-/** Routen, die den Hinweis ueber IRGENDEINE Verschachtelungstiefe rendern. */
+/** Routen, die den Hinweis über IRGENDEINE Verschachtelungstiefe rendern. */
 function traegerRouten() {
   const dateien = new Map();
   for (const p of jsxDateien(APP)) dateien.set(p, readFileSync(p, 'utf8'));
@@ -391,16 +391,16 @@ function traegerRouten() {
   return [...traeger].filter((p) => p.includes(`${sep}routes${sep}`)).sort();
 }
 
-test('jede Route, die den Hinweis traegt, bindet auch das Overlay', () => {
+test('jede Route, die den Hinweis trägt, bindet auch das Overlay', () => {
   const routen = traegerRouten();
 
-  // Rot-vor-Gruen-Schutz: faellt die Berechnung auf 0 zurueck (Umbenennung,
-  // Umbau der Ordnerstruktur), waere dieser Test leer wahr und koennte nie
+  // Rot-vor-Gruen-Schutz: fällt die Berechnung auf 0 zurück (Umbenennung,
+  // Umbau der Ordnerstruktur), wäre dieser Test leer wahr und könnte nie
   // wieder ausschlagen.
   assert.ok(
     routen.length >= 8,
-    `nur ${routen.length} Traeger-Routen gefunden -- die Berechnung greift ` +
-      `nicht mehr; der Test waere ohne diese Schranke leer wahr.`,
+    `nur ${routen.length} Träger-Routen gefunden -- die Berechnung greift ` +
+      `nicht mehr; der Test wäre ohne diese Schranke leer wahr.`,
   );
 
   const ohne = routen.filter((p) => !readFileSync(p, 'utf8').includes('withEuLabel'));
@@ -409,33 +409,33 @@ test('jede Route, die den Hinweis traegt, bindet auch das Overlay', () => {
     [],
     `Diese Routen rendern die Pflichtmitteilung, binden aber kein Overlay. ` +
       `Ohne Kontext rendert EuGewaehrleistungsHinweis STILL null -- die ` +
-      `Mitteilung faellt aus, ohne dass etwas kaputt aussieht:\n  ` +
+      `Mitteilung fällt aus, ohne dass etwas kaputt aussieht:\n  ` +
       ohne.join('\n  '),
   );
 });
 
-test('das Label haengt NICHT im globalen Seitengeruest', () => {
+test('das Label hängt NICHT im globalen Seitengerüst', () => {
   for (const datei of ['root.jsx', join('components', 'PageLayout.jsx'), join('components', 'Footer.jsx')]) {
     const p = join(APP, datei);
     const code = ohneKommentare(readFileSync(p, 'utf8'));
     for (const baustein of ['EuLabelProvider', 'withEuLabel', 'EuGewaehrleistungsLink']) {
       assert.ok(
         !code.includes(baustein),
-        `${datei} montiert ${baustein}. Das ist eine ueberall mitlaufende ` +
-          `Komponente -- Elina EL-20260901-3fb38a2a schliesst genau das aus.`,
+        `${datei} montiert ${baustein}. Das ist eine überall mitlaufende ` +
+          `Komponente -- Elina EL-20260901-3fb38a2a schließt genau das aus.`,
       );
     }
   }
 });
 
-test('der Footer-Baustein ist zurueckgestellt, nicht heimlich wieder montiert', () => {
-  // Elina: Footer-Teil "jetzt bewusst weglassen und fuer spaeter
-  // zurueckstellen". Der Baustein DARF also existieren -- er darf nur
+test('der Footer-Baustein ist zurückgestellt, nicht heimlich wieder montiert', () => {
+  // Elina: Footer-Teil "jetzt bewusst weglassen und für spaeter
+  // zurückstellen". Der Baustein DARF also existieren -- er darf nur
   // nirgends gerendert werden.
   const code = readFileSync(KOMPONENTE, 'utf8');
   assert.ok(
     code.includes('export function EuGewaehrleistungsLink'),
-    'der zurueckgestellte Footer-Baustein wurde geloescht statt geparkt',
+    'der zurückgestellte Footer-Baustein wurde geloescht statt geparkt',
   );
 
   const montiert = jsxDateien(APP)

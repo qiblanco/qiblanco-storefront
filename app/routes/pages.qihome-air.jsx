@@ -72,7 +72,7 @@ function QiHomeAirShopRoute() {
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
 
 /*
- * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
- * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ * EU-Gewährleistungslabel: Overlay + Trigger hängen an DIESER Route,
+ * nicht am globalen Seitengerüst (Elina EL-20260901-3fb38a2a).
  */
 export default withEuLabel(QiHomeAirShopRoute);
