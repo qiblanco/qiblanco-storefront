@@ -21,16 +21,23 @@
 
 /* --- Übersicht ------------------------------------------------------- */
 
+/* WARUM HIER EIN OBERER ABSTAND STEHT UND NICHT NUR margin AM h1 (live
+   nachgemessen 2026-09-04, Viewport 1280): der Kopf der Storefront ist KLEBEND
+   und endet bei y=127 — Ankuendigungsband plus Navigation. `main` haelt aber
+   nur `calc(var(--header-height) + 40px)` = 104px frei, gerechnet OHNE das
+   Band. Die Ueberschrift lag damit 23px UNTER dem Kopf, sobald sie ihren
+   Standard-Abstand verliert. Der Abstand gehoert deshalb an den Container,
+   nicht an die Ueberschrift: er gilt dann auch, wenn oben ein Bild steht. */
 .blog {
   margin: 0 auto;
   max-width: 860px;
-  padding: 0 1.5rem 4rem;
+  padding: 3rem 1.5rem 4rem;
   width: 100%;
 }
 
 .blog > h1 {
   line-height: 1.18;
-  margin-bottom: 1.75rem;
+  margin: 0 0 1.75rem;
   text-wrap: balance;
 }
 
@@ -93,7 +100,7 @@
   margin: 0 auto;
   max-width: 860px;
   min-width: 0;
-  padding: 0 1.5rem 5rem;
+  padding: 3rem 1.5rem 5rem;
   text-align: left;
   width: 100%;
 }
