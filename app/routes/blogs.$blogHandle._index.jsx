@@ -4,6 +4,15 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
+import blogStyles from '~/styles/blog.css?url';
+
+// EIGENES STYLESHEET STATT app/styles/app.css: die Blog-Regeln lagen bis zum
+// 2026-09-04 im globalen Blatt. Dort ist jede Zeile eine Änderung an ALLEN 43
+// Seiten, die daran hängen — eine Stunde vor einem öffentlichen Auftritt ist
+// das ein Risiko ohne Not. Hausmuster: app/routes/pages.faq.jsx,
+// pages.studien.jsx. Die Zeilenlänge kommt weiterhin aus dem globalen Token
+// --measure-text, das in app.css auf :root steht.
+export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -143,7 +152,8 @@ export default function Blog() {
  * }}
  */
 function ArticleItem({article, loading}) {
-  const publishedAt = new Intl.DateTimeFormat('en-US', {
+  // de-DE statt en-US (Hausmuster app/lib/withdrawal.js) — deutschsprachiger Blog.
+  const publishedAt = new Intl.DateTimeFormat('de-DE', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

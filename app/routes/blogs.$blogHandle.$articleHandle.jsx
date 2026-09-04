@@ -2,6 +2,16 @@ import {useLoaderData} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
+import {artikelInhaltAufraeumen} from '~/lib/blog-inhalt';
+import blogStyles from '~/styles/blog.css?url';
+
+// EIGENES STYLESHEET STATT app/styles/app.css: die Blog-Regeln lagen bis zum
+// 2026-09-04 im globalen Blatt. Dort ist jede Zeile eine Änderung an ALLEN 43
+// Seiten, die daran hängen — eine Stunde vor einem öffentlichen Auftritt ist
+// das ein Risiko ohne Not. Hausmuster: app/routes/pages.faq.jsx,
+// pages.studien.jsx. Die Zeilenlänge kommt weiterhin aus dem globalen Token
+// --measure-text, das in app.css auf :root steht.
+export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -84,26 +94,44 @@ export default function Article() {
   const {article} = useLoaderData();
   const {title, image, contentHtml, author} = article;
 
-  const publishedDate = new Intl.DateTimeFormat('en-US', {
+  // de-DE statt en-US: das Hausmuster steht in app/lib/withdrawal.js. Auf einem
+  // deutschsprachigen Blog ist "August 31, 2026" kein Stilfehler, sondern ein
+  // sichtbar falscher Ort.
+  const publishedDate = new Intl.DateTimeFormat('de-DE', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }).format(new Date(article.publishedAt));
 
+  // Siehe app/lib/blog-inhalt.js: der Artikelkörper aus Shopify trägt den
+  // Titel ein zweites Mal und die wörtlichen Markdown-Trenner.
+  const inhaltHtml = artikelInhaltAufraeumen(contentHtml, title);
+
   return (
     <div className="article">
-      <h1>
-        {title}
-        <div>
-          <time dateTime={article.publishedAt}>{publishedDate}</time> &middot;{' '}
-          <address>{author?.name}</address>
-        </div>
-      </h1>
+      {/* Das Datum stand bis 2026-09-04 IM <h1> und erbte damit dessen
+          Schriftgröße — Datum und Autor waren so groß wie die Überschrift.
+          Der Kopf trägt jetzt nur noch den Titel; die Angaben stehen als
+          eigene Zeile darunter. */}
+      <h1 className="article-titel">{title}</h1>
+      <p className="article-meta">
+        <time dateTime={article.publishedAt}>{publishedDate}</time>
+        {author?.name ? (
+          <>
+            {' '}
+            &middot; <address>{author.name}</address>
+          </>
+        ) : null}
+      </p>
 
-      {image && <Image data={image} sizes="90vw" loading="eager" />}
+      {image && (
+        <div className="article-bild">
+          <Image data={image} sizes="(min-width: 900px) 900px, 100vw" loading="eager" />
+        </div>
+      )}
       <div
-        dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="article"
+        dangerouslySetInnerHTML={{__html: inhaltHtml}}
+        className="article-inhalt"
       />
     </div>
   );
