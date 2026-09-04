@@ -75,20 +75,20 @@ test('deutscher Zweig ist der reine Sprachcode, nicht de-DE', () => {
 // Innenseite ein hreflang, also durfte hier nur die Startseite stehen.
 // Seit s05 liefert es 20 Paare aus DERSELBEN Quelle (shop-mapping.yaml).
 // Der alte Test war damit kein Schutz mehr, sondern nur noch die Konservierung
-// eines ueberholten Zustands. Ersetzt wird er NICHT durch Nachziehen der Zahl
-// (eine gepinnte Zahl waere beim naechsten Paar wieder falsch), sondern durch
-// die EIGENSCHAFT, die den Schutz eigentlich traegt:
+// eines überholten Zustands. Ersetzt wird er NICHT durch Nachziehen der Zahl
+// (eine gepinnte Zahl wäre beim nächsten Paar wieder falsch), sondern durch
+// die EIGENSCHAFT, die den Schutz eigentlich trägt:
 //   - die Tabelle wird NICHT von Hand erweitert, sie IST die generierte Karte,
 //   - und Seiten, die auf noindex stehen, duerfen NICHT darin vorkommen.
 test('Paar-Tabelle ist die generierte Karte, keine Handpflege', () => {
   assert.equal(SEITEN_PAARE, HREFLANG_PAARE);
 });
 
-// Der Schutz mit Zaehnen: ein hreflang, das als deutsche Fassung eine
+// Der Schutz mit Zähnen: ein hreflang, das als deutsche Fassung eine
 // noindex-Seite benennt, benennt eine Fassung, die Google nicht indexieren
-// darf. Diese fuenf sind am 2026-09-04 live als noindex gemessen worden und
-// stehen darum in shop-mapping.yaml auf `hreflang: false`. Traegt sie jemand
-// nach, ohne das noindex zu entfernen, faellt dieser Test.
+// darf. Diese fünf sind am 2026-09-04 live als noindex gemessen worden und
+// stehen darum in shop-mapping.yaml auf `hreflang: false`. Trägt sie jemand
+// nach, ohne das noindex zu entfernen, fällt dieser Test.
 test('noindex-Seiten stehen NICHT in der hreflang-Tabelle', () => {
   for (const pfad of [
     '/pages/linkseite',
@@ -97,7 +97,7 @@ test('noindex-Seiten stehen NICHT in der hreflang-Tabelle', () => {
     '/pages/qibracelet',
     '/pages/qihome-air',
   ]) {
-    assert.equal(SEITEN_PAARE[pfad], undefined, `${pfad} traegt noindex`);
+    assert.equal(SEITEN_PAARE[pfad], undefined, `${pfad} trägt noindex`);
     assert.deepEqual(hreflangLinks(pfad), [], `${pfad} darf nichts ausgeben`);
   }
 });

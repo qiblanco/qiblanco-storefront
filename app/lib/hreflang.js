@@ -26,21 +26,21 @@
  *
  * ===========================================================================
  * ERWEITERUNG 2026-09-04 — Job 20260831-GROSSJOB-seo-warum-ranken-kritiker-
- * ueber-uns-fruechte-prio6, Segment s05. VON EINEM PAAR AUF ZWANZIG.
+ * über-uns-fruechte-prio6, Segment s05. VON EINEM PAAR AUF ZWANZIG.
  * ===========================================================================
  *
  * Die alte Fassung fuehrte SEITEN_PAARE als handgepflegte Tabelle mit genau
- * einem Eintrag und begruendete das so: die US-Gegenseite trage ihre Haelfte
+ * einem Eintrag und begründete das so: die US-Gegenseite trage ihre Haelfte
  * nicht, also duerfe hier nichts stehen. Das war richtig gemessen und ist
- * heute ueberholt — die Gegenseite wird im selben Zug gebaut
+ * heute überholt — die Gegenseite wird im selben Zug gebaut
  * (us-qiblanco-2024, snippets/qb-seo-hreflang.liquid), und beide Seiten
  * speisen sich aus DERSELBEN Quelle.
  *
  * DIE TABELLE IST DESHALB NICHT MEHR HIER. Sie kommt aus dem generierten
  * app/lib/shop-switch.js, das seinerseits aus dem SSoT
- * homepage-bauer/shop-switch/shop-mapping.yaml faellt (Erzeuger
- * bin/shop-switch-gen). Zwei von Hand gepflegte Tabellen fuer dieselbe Groesse
- * driften auseinander, ohne dass eine Seite fuer sich falsch aussieht — genau
+ * homepage-bauer/shop-switch/shop-mapping.yaml fällt (Erzeuger
+ * bin/shop-switch-gen). Zwei von Hand gepflegte Tabellen für dieselbe Größe
+ * driften auseinander, ohne dass eine Seite für sich falsch aussieht — genau
  * der Naht-Fehler, gegen den dieser SSoT 2026-08-06 gebaut wurde. Ein
  * hreflang-Paar IST eine Seiten-Aequivalenz; es gibt keinen Grund, sie ein
  * zweites Mal zu behaupten.
@@ -49,15 +49,15 @@
  * Flaggen-Umschalter, aus zwei Gruenden, die beide in shop-mapping.yaml
  * ausgeschrieben sind.
  *   (1) bijektiv    — Paare mit `reverse: false` fallen heraus. Zwei
- *       DE-Generationen auf EIN US-Produkt (qione-1/qione-2-pro) waeren als
+ *       DE-Generationen auf EIN US-Produkt (qione-1/qione-2-pro) wären als
  *       hreflang-Gruppe mehrdeutig.
  *   (2) indexierbar — Paare mit `hreflang: false` fallen heraus. Gemessen
- *       2026-09-04 tragen fuenf DACH-Seiten noindex (linkseite, partner,
+ *       2026-09-04 tragen fünf DACH-Seiten noindex (linkseite, partner,
  *       pre-access, qibracelet, qihome-air). Ein hreflang, das als deutsche
  *       Fassung eine noindex-Seite benennt, benennt eine Fassung, die Google
  *       gar nicht indexieren darf — das Paar kann nie wirken.
  *   Der Umschalter darf diese Seiten weiter anspringen: dort hat ein MENSCH
- *   geklickt, und der soll ankommen. Nur die Aussage an die Suchmaschine faellt weg.
+ *   geklickt, und der soll ankommen. Nur die Aussage an die Suchmaschine fällt weg.
  *
  * MESSUNG 2026-09-04 (je Seite einzeln, OHNE Redirect-Folgen, drei Kriterien:
  * HTTP 200 + kein noindex + selbst-referenzierendes canonical):
@@ -65,7 +65,7 @@
  *
  * DIE AUFNAHMEBEDINGUNG GILT UNVERAENDERT WEITER — sie ist nur umgezogen:
  * sie steht jetzt als Regel im SSoT und wird dort erfuellt, statt hier als
- * kurze Tabelle vorgefuehrt zu werden.
+ * kurze Tabelle vorgeführt zu werden.
  *
  * WARUM DIE WERTE EXAKT DIE DER US-SEITE SPIEGELN: In einer hreflang-Gruppe
  * müssen alle Seiten DIESELBE Menge an Alternativen nennen, sich selbst
@@ -83,10 +83,10 @@
  * entspricht dem, was die US-Seite bereits deklariert.
  */
 
-// Relativ und nicht ueber den `~/`-Alias: diese Datei wird von
+// Relativ und nicht über den `~/`-Alias: diese Datei wird von
 // test/seo-hreflang-produkt.test.mjs direkt mit node:test importiert, und node
 // kennt den Vite-Alias nicht. Dieselbe Form nutzen app/lib/entity-schema.js und
-// app/lib/blog-seo.js fuer ./seo.js.
+// app/lib/blog-seo.js für ./seo.js.
 import {HREFLANG_PAARE} from './shop-switch.js';
 
 export const DACH_ORIGIN = 'https://qiblanco.com';

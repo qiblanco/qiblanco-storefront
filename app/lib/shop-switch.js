@@ -18,7 +18,7 @@ export const SHOP_LABEL = {
 
 // hreflang-taugliche Teilmenge (Schluessel = DACH-Pfad, Wert = US-Pfad).
 // Enger als MAP_DE_US: nur bijektive UND auf beiden Seiten indexierbare Paare.
-// Begruendung in shop-mapping.yaml, Abschnitt "ZWEITE, ENGERE RELATION".
+// Begründung in shop-mapping.yaml, Abschnitt "ZWEITE, ENGERE RELATION".
 export const HREFLANG_PAARE = {
   "/": "/",
   "/pages/agb": "/pages/terms-conditions",
