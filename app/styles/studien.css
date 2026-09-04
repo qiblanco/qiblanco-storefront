@@ -604,10 +604,14 @@
    ohne Event-Bubbling-Sonderfaelle).
    MOBIL PFLICHT (B3): der Schliessen-Knopf bleibt IMMER erreichbar — fixiert
    oben rechts, nie unter dem Bild versteckt, Mindesttastflaeche 44px. */
+/* Ebenenleiter 2026-09-04: die 100 war ZU KLEIN, nicht zu gross — das
+   Chat-Widget lag bei 4900 darueber und konnte genau den Schliessen-Knopf
+   verdecken, dessen Erreichbarkeit der Kommentar oben zusagt. Derselbe Defekt
+   wie eine Rekordzahl, nur in die andere Richtung. */
 .qb-st-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: var(--z-dialog);
   display: grid;
   place-items: center;
   padding: var(--st-s4);

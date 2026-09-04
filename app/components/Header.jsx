@@ -515,7 +515,9 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
         backgroundColor: 'rgb(247, 241, 232)',
         boxShadow: 'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px',
         padding: '1.5rem',
-        zIndex: 4, // stays under header
+        // Ebenenleiter: hängt an der Kopf-Stufe statt an einer freien Zahl,
+        // damit es beim nächsten Verschieben des Kopfes von selbst mitgeht.
+        zIndex: 'calc(var(--z-kopf) - 1)', // stays under header
         borderRadius: '0 0 50px 50px',
         transform: hover ? 'translateY(0)' : 'translateY(-300%)',
         opacity: 1,

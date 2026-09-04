@@ -39,7 +39,8 @@ export default function LoadingBar() {
         borderRadius: "2px",
         transition: "width 0.25s ease-out, opacity 0.3s ease-out",
         opacity: visible ? 1 : 0,
-        zIndex: 9999,
+        // Meldungs-Stufe der Ebenenleiter (über Dialogen, unter Consent).
+        zIndex: 'var(--z-meldung)',
       }}
     />
   );

@@ -13,6 +13,14 @@ import {
 } from 'react-router';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
+// Ebenenleiter, Randabstands-Form und Mindest-Tippziel als :root-Tokens.
+// ERZEUGT aus der SSoT (design-meister db/webdesign/web-soll.yaml, Abschnitt
+// overlay_ordnung) mit `design-meister/bin/overlay-ordnung css` — nie von Hand
+// aendern, sonst laufen Regelwerk und Stylesheet auseinander. Steht bewusst
+// VOR app.css: die Datei deklariert nur Custom Properties und ueberschreibt
+// nichts, und so ist im Head auf einen Blick sichtbar, woher die Zahlen
+// kommen, die weiter unten benutzt werden.
+import overlayOrdnungStyles from '~/styles/overlay-ordnung.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 // Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
@@ -43,6 +51,7 @@ import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
 import {salesbotWidgetOrigin, istSalesbotDeutscherShop} from '~/lib/salesbot-widget';
 import {SalesbotWidget} from './components/SalesbotWidget';
+import {DialogSignal} from './components/DialogSignal';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -325,6 +334,7 @@ export function Layout({children}) {
         ))}
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
+        <link rel="stylesheet" href={overlayOrdnungStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>
@@ -448,6 +458,13 @@ export function Layout({children}) {
         )}
       </head>
       <body>
+        {/* Setzt `data-dialog-offen` am <html>, solange eine modale Flaeche
+            offen ist. Daran hängt die Unterdrueckung des Chat-Widgets in
+            app.css — die Naht zwischen Storefront und qi-salesbot. Rendert
+            nichts und steht deshalb bewusst ohne Bedingung hier: die
+            Unterdrueckung muss auch dann greifen, wenn das Widget erst per
+            Client-Navigation dazukommt. */}
+        <DialogSignal />
         <LoadingBar />
         {data ? (
           <Analytics.Provider

@@ -391,7 +391,13 @@ footer *{
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
-  z-index: 10000;
+  /* z-index GESTRICHEN (Ebenenleiter, 2026-09-04). Die Zeile war
+     WIRKUNGSLOS und ist es immer gewesen: `.overlay` ist position:fixed MIT
+     z-index und oeffnet damit einen Stapelkontext — alles darin wird
+     gemeinsam auf der Stufe des Overlays einsortiert. Das steht seit dem
+     2026-08-20 als Kommentar 200 Zeilen weiter unten. Sie wird gestrichen
+     statt auf die Leiter gezogen: ein Panel INNERHALB seines Vorhangs
+     braucht keinen eigenen Wert (web-soll.yaml overlay_ordnung.regeln). */
   transition: transform 200ms ease-in-out;
   display: flex;
   flex-direction: column;
@@ -580,6 +586,49 @@ aside li {
   }
 }
 
+/* CHAT-WIDGET BEI OFFENEM MODALEM DIALOG — DERSELBE SATZ, DRITTER FALL.
+ *
+ * Christians Befund: "man kommt nicht gescheit aufs X". Live gemessen am
+ * 2026-09-01 auf qiblanco.com (iPhone 14 Pro 393x852, Warenkorb-Schublade
+ * offen): das Widget-iframe war SICHTBAR (325x275 @ 224,708), aber
+ * elementFromPoint traf auf seiner Mitte UND auf seiner X-Ecke
+ * div.cart-details. Ein Kreuz, das man sieht und nicht treffen kann.
+ *
+ * DIE AUFLOESUNG GEHT BEWUSST NACH UNTEN, NICHT NACH OBEN. Der naheliegende
+ * Weg waere, das Widget ueber die Overlays zu heben (so macht es Intercom:
+ * "The Messenger on mobile web will always remain on a high z-index"). Fuer
+ * uns ist das ein Regelbruch: ein Chat ueber der offenen Warenkorb-Schublade
+ * verdeckt den KAUFWEG. Also wird das Widget unterdrueckt, nicht gehoben —
+ * dann gibt es kein unerreichbares X mehr, statt eines erreichbaren, das
+ * etwas Wichtigeres verdeckt.
+ *
+ * Leitsatz (design-meister web-soll.yaml overlay_ordnung.leitsatz): kein
+ * Bedienelement darf sichtbar und zugleich nicht treffbar sein. Entweder es
+ * liegt oben und der Hit-Test trifft es, oder es wird nicht dargestellt.
+ *
+ * P10: das ist die Regel ueber dieser Zeile, nur allgemeiner gefasst. Ihr
+ * Kommentar begruendet dasselbe schon woertlich — "Ein Chat, der die Klicks
+ * darunter schluckt, ist schlechter als kein Chat."
+ *
+ * DIE NAHT ZU s05 (qi-salesbot) IST EINSEITIG UND GEMESSEN: die Storefront
+ * unterdrueckt VON AUSSEN. Der Loader setzt 24 Eigenschaften an iframe.style
+ * (position/bottom/width/height/border/background/zIndex/top/left/right) und
+ * KEINE davon ist `display` — nachgemessen 2026-09-04 an
+ * qi-salesbot/src/app/embed/qiblanco-widget.js/route.ts. Ein Stylesheet mit
+ * !important schlaegt jede dieser Inline-Deklarationen. Das Widget selbst
+ * muss dafuer nichts tun und kann es auch nicht: es lebt in einem
+ * Cross-Origin-iframe und sieht unser <html> baulich nie.
+ *
+ * `display:none` und nicht `visibility:hidden`, obwohl beides den Hit-Test
+ * beendet: der Leitsatz sagt "wird nicht dargestellt", und ein Element ohne
+ * Layout-Kasten kann auch keinen Rand mehr ueberragen. Der Chat-Verlauf
+ * ueberlebt das — ein iframe verliert seinen Browsing-Kontext erst, wenn es
+ * aus dem DOM genommen oder verschoben wird, nicht beim Umschalten von
+ * `display`. */
+html[data-dialog-offen] #qiblanco-salesbot-widget-frame {
+  display: none !important;
+}
+
 .overlay {
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
@@ -592,7 +641,7 @@ aside li {
   transition: opacity 400ms ease-in-out;
   transition: opacity 400ms;
   visibility: hidden;
-  z-index: 5000;
+  z-index: var(--z-dialog);
 }
 
 .overlay .close-outside {
@@ -660,7 +709,7 @@ aside h3 {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 5;
+  z-index: var(--z-kopf);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -924,12 +973,49 @@ p.header-menu-item {
   font-size: 1rem !important;
 }
 
-/* Touch target minimums (44x44px) */
-button.close.reset,
-button[aria-label="Close"],
-.close-outside {
-  min-width: 44px;
-  min-height: 44px;
+/* Touch target minimums (44x44px) — WCAG 2.5.5 Target Size (Enhanced, AAA),
+   woertlich "at least 44 by 44 CSS pixels"; deckungsgleich mit Apple HIG.
+   SSoT: design-meister web-soll.yaml overlay_ordnung.tippziel.
+
+   DER ZAUN HAENGT SEIT 2026-09-04 AN DER EIGENSCHAFT, NICHT AN NAMEN.
+   Vorher standen hier drei Klassennamen, und der mittlere war auf DIESEM
+   Shop TOT: `button[aria-label="Close"]` trifft null Elemente, weil hier
+   ueberall die deutsche Beschriftung steht (gemessen 2026-09-01). Ein toter
+   Selektor in einer Schutzregel ist schlimmer als eine fehlende Regel — er
+   sieht wie Schutz aus. Die beiden Kreuze aus Christians Meldung
+   (.ImageGalleryModal__close 36x36, .video360-close 24x24) standen in KEINEM
+   der drei Namen und blieben deshalb jahrelang zu klein.
+   Die Eigenschaft ist der ZUGAENGLICHE NAME: ein Knopf, der genau
+   "Schliessen"/"Close" heisst, IST das Schliesskreuz — unabhaengig davon, wie
+   seine Klasse morgen heisst.
+
+   WARUM EXAKT UND NICHT ENTHAELT: `[aria-label*="schliessen" i]` faenge auch
+   `aria-label="Details schliessen"` des InfoSliders (ein Aufklapper, kein
+   Kreuz) und zwaenge ihn in eine 44er-Box. Der eine Knopf, der beschreibend
+   heisst und trotzdem ein Kreuz IST, wird deshalb einzeln genannt und der
+   Grund steht dabei: .video360-close ("360-Grad-Ansicht schliessen") — sein
+   laengerer Name ist fuer Screenreader besser und wird nicht gekuerzt. */
+button[aria-label="Schließen" i],
+button[aria-label="Close" i],
+.close-outside,
+.video360-close {
+  min-width: var(--schliesskreuz-min);
+  min-height: var(--schliesskreuz-min);
+}
+/* Die Zentrierung mit Spezifitaet 0, die Flaeche oben mit normaler.
+   GRUND, gemessen: .qb-st-lightbox-close bringt bereits `display: grid;
+   place-items: center` mit und ist schon 44x44. Ein `display: inline-flex`
+   mit hoeherer Spezifitaet wuerde dort `justify-items` wirkungslos machen und
+   das × nach links ruecken — die Regel wuerde eine gesunde Flaeche
+   beschaedigen, um ihr eine Groesse zu geben, die sie schon hat. Mit
+   `:where()` gewinnt jede vorhandene eigene Zentrierung, und nur wo keine
+   steht, greift diese hier. Die ZUSAGE (44x44 Trefferflaeche) bleibt hart. */
+:where(
+  button[aria-label="Schließen" i],
+  button[aria-label="Close" i],
+  .close-outside,
+  .video360-close
+) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2538,11 +2624,19 @@ ul.submenu li a {
 .SliderButtonWrapper .SliderButton:hover {
   cursor: pointer;
 }
+/* z-index 10000 -> Inhalts-Deckel (Ebenenleiter, 2026-09-04). GEMESSEN, nicht
+   aufgeraeumt: bei 10000 lag dieser Inhaltsblock ueber dem fixierten Kopf
+   (z-index 5) und machte ihn auf 500vh Scrollweg UNERREICHBAR. Live gemessen
+   am 2026-09-04 auf qiblanco.com (393x852): elementFromPoint auf die Mitte
+   JEDES sichtbaren Kopf-Bedienelements traf Kinder dieses Blocks —
+   A.NavLink-logo, Menue, Shop-Wechsel, Anmelden und A.openCart (/cart), also
+   auch der Warenkorb. Nach dem Nachzug malt der Kopf ueber den Block statt
+   darunter; das ist eine gewollte, sichtbare Ordnungsaenderung. */
 .ScrollMikroskopvideo {
   height: 500vh;
   position: relative;
   background: rgb(8, 9, 24);
-  z-index: 10000;
+  z-index: var(--z-inhalt-max);
   margin: 100px 0;
 }
 .ScrollMikroskopvideo .VideoOverlay {
@@ -2822,7 +2916,9 @@ ul.submenu li a {
 .freeshipping-tracker-and-icon .svg {
   position: relative;
   right: 5px;
-  z-index: 1000;
+  /* Inhalts-Plan: die 1000 hat nie mehr geleistet, als ueber den Geschwistern
+     (0..3) zu liegen. Deckel statt Streuwert (Ebenenleiter 2026-09-04). */
+  z-index: var(--z-inhalt-max);
   width: 25px;
   height: 25px;
   flex-shrink: 0;
@@ -3063,7 +3159,7 @@ ul.submenu li a {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 100000000000;
+  z-index: var(--z-dialog);
   background: rgba(0, 0, 0, 0.82);
   display: flex;
   align-items: center;
@@ -4552,7 +4648,7 @@ ul.kakao-children li {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.62);
-  z-index: 10000000;
+  z-index: var(--z-dialog);
 }
 .video360-content {
   position: relative;
@@ -4934,11 +5030,14 @@ ul.kakao-children li {
   width: 100vw;
   margin: 100px 0 100px calc(50% - 50vw);
 }
+/* z-index 10000 -> Inhalts-Deckel: gleiche Messung und gleiche Begruendung wie
+   bei .ScrollMikroskopvideo oben (Kopf-Bedienelemente inkl. /cart waren auf
+   /pages/tiefer-schlaf ebenso nicht treffbar). */
 .ScrollScrubVideo {
   height: var(--ssv-hoehe-desktop, 500vh);
   position: relative;
   background: rgb(8, 9, 24);
-  z-index: 10000;
+  z-index: var(--z-inhalt-max);
 }
 .ScrollScrubVideo .VideoOverlay {
   position: sticky;
@@ -5605,7 +5704,7 @@ html.qb-chat-docked .ScrollMikroskopvideo video {
 .GoogleRezensionenPopup {
   position: fixed;
   inset: 0;
-  z-index: 9500;
+  z-index: var(--z-dialog);
   background: rgba(26, 26, 26, 0.55);
   display: flex;
   align-items: center;
