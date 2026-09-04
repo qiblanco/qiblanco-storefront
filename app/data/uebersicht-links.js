@@ -97,7 +97,8 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/products/qione-2-pro", "url": "https://qiblanco.com/products/qione-2-pro", "titel": "QiOne® 2 Pro", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/products/qione-kette", "url": "https://qiblanco.com/products/qione-kette", "titel": "Necklace für QiOne®", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/products/test-page-crystal-cacao®-create-spater-wieder-loschen", "url": "https://qiblanco.com/products/test-page-crystal-cacao®-create-spater-wieder-loschen", "titel": "Test Page - Crystal Cacao® Create später wieder löschen", "crawlbar": true, "herkunft": "shopify"},
-      {"pfad": "/products/zeremonie-kakao", "url": "https://qiblanco.com/products/zeremonie-kakao", "titel": "", "crawlbar": true, "herkunft": "code"}
+      {"pfad": "/products/zeremonie-kakao", "url": "https://qiblanco.com/products/zeremonie-kakao", "titel": "", "crawlbar": true, "herkunft": "code"},
+      {"pfad": "/qione", "url": "https://qiblanco.com/qione", "titel": "", "crawlbar": true, "herkunft": "code"}
     ]
   },
   {
@@ -107,7 +108,7 @@ export const UEBERSICHT_BEREICHE = [
     "eintraege": [
       {"pfad": "/pages/E-Smog-Schutz", "url": "https://qiblanco.com/pages/E-Smog-Schutz", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/chat-bot", "url": "https://qiblanco.com/pages/chat-bot", "titel": "", "crawlbar": false, "herkunft": "code"},
-      {"pfad": "/pages/crystal-cacao", "url": "https://qiblanco.com/pages/crystal-cacao", "titel": "Kristall Kakao", "crawlbar": true, "herkunft": "code+shopify", "ads": "pausiert"},
+      {"pfad": "/pages/crystal-cacao", "url": "https://qiblanco.com/pages/crystal-cacao", "titel": "Kristall Kakao", "crawlbar": true, "herkunft": "code+shopify", "ads": "aktiv"},
       {"pfad": "/pages/das-20-tage-versprechen", "url": "https://qiblanco.com/pages/das-20-tage-versprechen", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/haelt-das-mein-leben-aus", "url": "https://qiblanco.com/pages/haelt-das-mein-leben-aus", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/kette-oder-armband", "url": "https://qiblanco.com/pages/kette-oder-armband", "titel": "", "crawlbar": false, "herkunft": "code"},
