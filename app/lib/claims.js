@@ -2,7 +2,7 @@
  * Claims-SSoT-Konsument — GENERIERT, NICHT HAND-EDITIEREN.
  *
  * Quelle (Single Source of Truth): fakten-basis.yaml claims[]
- *   (/srv/openclaw/_design/gorgias-fact-gate/fakten-basis.yaml, stand 2026-07-16)
+ *   (/srv/openclaw/_design/gorgias-fact-gate/fakten-basis.yaml, stand 2026-07-26)
  * Generator: /srv/openclaw/_design/gorgias-fact-gate/claims_emit.py
  *   (Filter: kanal enthaelt 'homepage')
  *
@@ -89,6 +89,24 @@ export const CLAIMS = {
     status: 'legitimiert',
     produkt: ['qione', 'qibracelet', 'qihomeair'],
     kanal: ['homepage', 'lp'],
+  },
+  'IB-qione-14000': {
+    aussage: 'mehr als 14.000 QiOnes im Einsatz',
+    status: 'legitimiert',
+    produkt: ['qione'],
+    kanal: ['homepage', 'lp', 'ads', 'sales', 'support'],
+  },
+  'IB-qibracelet-1000': {
+    aussage: 'mehr als 1.000 QiBracelets im Einsatz',
+    status: 'legitimiert',
+    produkt: ['qibracelet'],
+    kanal: ['homepage', 'lp', 'ads', 'sales', 'support'],
+  },
+  'IB-qihome-400': {
+    aussage: 'mehr als 400 QiHomes im Einsatz',
+    status: 'legitimiert',
+    produkt: ['qihomeair'],
+    kanal: ['homepage', 'lp', 'ads', 'sales', 'support'],
   },
 };
 
