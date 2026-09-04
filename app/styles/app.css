@@ -1193,25 +1193,40 @@ ul.submenu li a {
   font-weight: 700;
 }
 
-/* `anywhere` bleibt und wird NICHT durch `break-word` ersetzt: nur `anywhere`
-   senkt die intrinsische Mindestbreite, die die 0.6fr/1.4fr-Spur oben sonst
-   ueber den Viewport spreizt. Gefehlt hat der Silben-Partner — ohne ihn bricht
-   der Browser an JEDEM Zeichen. Gemessen 2026-09-01 am Live-Rand (390px,
-   Name "Wohnungsbaugenossenschaftsverwaltung Rheinlandpfalz"): Umbruch nach
-   "verwaltun", einzelnes "g" in der Folgezeile. Mit `hyphens: auto`:
-   "verwal-/tung". Voraussetzung <html lang="de"> ist in app/root.jsx erfuellt.
-   DIE SORGE, EIN TRENNSTRICH KOENNTE EINE E-MAIL ODER BESTELLNUMMER
-   VERFAELSCHEN, IST AUSGEMESSEN, NICHT WEGGEDACHT: A/B ueber 3 Eingaben x 2
-   Breiten am Live-Rand ergab in 5 von 6 Faellen IDENTISCHE Zeilenkaesten —
-   Chrome trennt weder ein Token mit @ noch eine Bestellnummer. Die Regel wirkt
-   ausschliesslich auf deutsche Komposita im Namensfeld. Wer sie entfernt,
-   holt den Buchstaben-Waisen zurueck; wer `anywhere` entfernt, die Spur-
-   Spreizung. Probe: pruefungen/probe_widerruf_zusammenfassung_umbruch.py
-   (erreicht die confirm-Phase per intent=review, sendet keinen Widerruf). */
+/* HIER STEHEN AUSSCHLIESSLICH KUNDENDATEN, KEIN FLIESSTEXT — deshalb
+   `hyphens: manual` und NICHT `auto`. Jedes dd dieser Liste ist ein Wert, den
+   der Kunde ablies, abtippt oder ausgedruckt weiterreicht: Bestellnummer,
+   Name, E-Mail, Produkt, Eingangsdatum, Freshdesk-Referenz
+   (app/routes/widerruf_.bestaetigen.jsx, beide Phasen).
+
+   `hyphens: auto` stand hier vom 2026-09-04 (PR #298) bis zu diesem Commit und
+   hat auf jeder Engine mit deutschen Trenn-Pattern ein Zeichen ERFUNDEN.
+   Gemessen an der LIVE-Seite mit Firefox 150, 390x844:
+       maximiliane.donnersmarck@musterhausverwaltung.de
+       -> "maximiliane.donnersmarck@musterhaus-" / "verwaltung.de"
+   Der Trennstrich ist linguistisch sauber (Muster-haus-verwaltung) und
+   sachlich falsch — er steht nicht in der Adresse des Kunden. Auf einer
+   Pflichtseite ist das ein Datenfehler, kein Schoenheitsfehler.
+
+   WARUM DIE ENTLASTUNG VON #298 DAS NICHT SAH: ihr A/B lief auf
+   Playwright-Chromium. Diese Engine hat keine deutschen Trenn-Pattern —
+   `hyphens: auto` erzeugt dort Umbrueche OHNE Trennstrich, sogar in einem
+   unaussprechlichen Buchstabensalat. Der Effekt konnte dort strukturell nie
+   auftreten; die Messung war auf der einen blinden Engine gemacht.
+
+   `anywhere` BLEIBT und wird NICHT durch `break-word` ersetzt: nur `anywhere`
+   senkt die intrinsische Mindestbreite. Ohne Trennstrich ist ein Zeichen-
+   umbruch hier auch das ehrlichere Verhalten — er fuegt nichts hinzu.
+
+   Probe: pruefungen/probe_widerruf_zusammenfassung_umbruch.py (misst den
+   GERENDERTEN Trennstrich auf Firefox, erreicht die confirm-Phase per
+   intent=review, sendet keinen Widerruf). Auf einer Engine ohne deutsche
+   Pattern faellt sie auf Messausfall, nie auf gruen.
+   Job: 20260903-widerruf-umbruch-wirkung-statt-deklaration-prio30 */
 .withdrawal-summary dd {
   margin: 0;
   overflow-wrap: anywhere;
-  hyphens: auto;
+  hyphens: manual;
 }
 
 .withdrawal-alert {
