@@ -6,6 +6,7 @@ import {StudienSlider} from '~/components/reusables/StudienSlider';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
+import {withEuLabel} from '~/components/EuGewaehrleistungsLabel';
 
 /*
  * Campaign-PDP /pages/qione-2-pro-2x — die 2er-Set-Fortsetzung der Paid-Strecke
@@ -110,7 +111,7 @@ export async function loader({context, request}) {
  * dataSection-Praefix j2x-* = Watch-/Heatmap-Anker dieser Seite
  * (hb-heatmap-sync pflegt die sektion_registry daraus).
  */
-export default function QiOne2Pro2xShopRoute() {
+function QiOne2Pro2xShopRoute() {
   const deal = getTenYearsDealByHandle('jhsdhze783');
   return (
     <TenYearsDealPage
@@ -136,3 +137,9 @@ export default function QiOne2Pro2xShopRoute() {
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
+
+/*
+ * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
+ * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ */
+export default withEuLabel(QiOne2Pro2xShopRoute);

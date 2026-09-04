@@ -17,9 +17,9 @@
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, readdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {dirname, join} from 'node:path';
+import {dirname, join, sep} from 'node:path';
 
 import {
   EU_SPRACHEN,
@@ -322,4 +322,124 @@ test('QR_DEFEKT und QR_GRENZFALL sind gemessene Listen, keine stillen Ausnahmen'
   );
 
   assert.equal(labelFuerSprache('sv').qrDefekt, QR_DEFEKT.includes('sv'));
+});
+
+/* ------------------------------------------------------------------ *
+ * MONTAGE-ORT (Elina EL-20260901-3fb38a2a, 2026-09-01)
+ *
+ * "der Overlay-Baustein und der Trigger-Link duerfen NICHT im globalen
+ *  Seitengeruest oder in der Footer-Komponente liegen, sondern ausschliesslich
+ *  auf den betroffenen Produktseiten-Routen eingebunden werden, damit KEINE
+ *  Aenderung an einer ueberall mitlaufenden Komponente entsteht."
+ *
+ * Bis hierher konnte KEIN Test diese Auflage sehen: die Suite prueft die
+ * Komponente und die CSS, nie den Ort, an dem sie haengt. Genau deshalb lief
+ * die globale Fassung durch 15 gruene Tests.
+ *
+ * Die Traegerliste wird BERECHNET, nicht aufgeschrieben: wer morgen eine neue
+ * Produktseite anlegt, die den Hinweis rendert, faellt hier auf -- eine
+ * abgetippte Liste wuerde ihn stillschweigend auslassen.
+ * ------------------------------------------------------------------ */
+
+const APP = join(HIER, '..', 'app');
+
+function jsxDateien(verzeichnis) {
+  const raus = [];
+  for (const e of readdirSync(verzeichnis, {withFileTypes: true})) {
+    const p = join(verzeichnis, e.name);
+    if (e.isDirectory()) raus.push(...jsxDateien(p));
+    else if (/\.(jsx|js)$/.test(e.name)) raus.push(p);
+  }
+  return raus;
+}
+
+/** Routen, die den Hinweis ueber IRGENDEINE Verschachtelungstiefe rendern. */
+function traegerRouten() {
+  const dateien = new Map();
+  for (const p of jsxDateien(APP)) dateien.set(p, readFileSync(p, 'utf8'));
+
+  // Komponentenname -> definierende Datei
+  const definiert = new Map();
+  for (const [p, src] of dateien) {
+    for (const m of src.matchAll(
+      /export\s+(?:default\s+)?(?:function|const)\s+([A-Z]\w*)/g,
+    )) {
+      if (!definiert.has(m[1])) definiert.set(m[1], new Set());
+      definiert.get(m[1]).add(p);
+    }
+  }
+
+  const traeger = new Set(
+    [...dateien].filter(([, s]) => s.includes('<EuGewaehrleistungsHinweis')).map(([p]) => p),
+  );
+  for (let wieder = true; wieder; ) {
+    wieder = false;
+    const komponenten = new Set(
+      [...definiert].filter(([, ps]) => [...ps].some((p) => traeger.has(p))).map(([k]) => k),
+    );
+    for (const [p, src] of dateien) {
+      if (traeger.has(p)) continue;
+      for (const m of src.matchAll(/<([A-Z]\w*)/g)) {
+        if (komponenten.has(m[1])) {
+          traeger.add(p);
+          wieder = true;
+          break;
+        }
+      }
+    }
+  }
+  return [...traeger].filter((p) => p.includes(`${sep}routes${sep}`)).sort();
+}
+
+test('jede Route, die den Hinweis traegt, bindet auch das Overlay', () => {
+  const routen = traegerRouten();
+
+  // Rot-vor-Gruen-Schutz: faellt die Berechnung auf 0 zurueck (Umbenennung,
+  // Umbau der Ordnerstruktur), waere dieser Test leer wahr und koennte nie
+  // wieder ausschlagen.
+  assert.ok(
+    routen.length >= 8,
+    `nur ${routen.length} Traeger-Routen gefunden -- die Berechnung greift ` +
+      `nicht mehr; der Test waere ohne diese Schranke leer wahr.`,
+  );
+
+  const ohne = routen.filter((p) => !readFileSync(p, 'utf8').includes('withEuLabel'));
+  assert.deepEqual(
+    ohne,
+    [],
+    `Diese Routen rendern die Pflichtmitteilung, binden aber kein Overlay. ` +
+      `Ohne Kontext rendert EuGewaehrleistungsHinweis STILL null -- die ` +
+      `Mitteilung faellt aus, ohne dass etwas kaputt aussieht:\n  ` +
+      ohne.join('\n  '),
+  );
+});
+
+test('das Label haengt NICHT im globalen Seitengeruest', () => {
+  for (const datei of ['root.jsx', join('components', 'PageLayout.jsx'), join('components', 'Footer.jsx')]) {
+    const p = join(APP, datei);
+    const code = ohneKommentare(readFileSync(p, 'utf8'));
+    for (const baustein of ['EuLabelProvider', 'withEuLabel', 'EuGewaehrleistungsLink']) {
+      assert.ok(
+        !code.includes(baustein),
+        `${datei} montiert ${baustein}. Das ist eine ueberall mitlaufende ` +
+          `Komponente -- Elina EL-20260901-3fb38a2a schliesst genau das aus.`,
+      );
+    }
+  }
+});
+
+test('der Footer-Baustein ist zurueckgestellt, nicht heimlich wieder montiert', () => {
+  // Elina: Footer-Teil "jetzt bewusst weglassen und fuer spaeter
+  // zurueckstellen". Der Baustein DARF also existieren -- er darf nur
+  // nirgends gerendert werden.
+  const code = readFileSync(KOMPONENTE, 'utf8');
+  assert.ok(
+    code.includes('export function EuGewaehrleistungsLink'),
+    'der zurueckgestellte Footer-Baustein wurde geloescht statt geparkt',
+  );
+
+  const montiert = jsxDateien(APP)
+    .filter((p) => p !== KOMPONENTE)
+    .filter((p) => ohneKommentare(readFileSync(p, 'utf8')).includes('<EuGewaehrleistungsLink'));
+  assert.deepEqual(montiert, [], `Footer-Baustein ist wieder montiert in:\n  ${montiert.join('\n  ')}`);
 });

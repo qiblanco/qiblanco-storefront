@@ -121,6 +121,34 @@ export function EuLabelProvider({children}) {
   );
 }
 
+/**
+ * ROUTEN-BINDUNG. Haengt GENAU EIN Overlay an eine einzelne Route, statt an
+ * das globale Seitengeruest.
+ *
+ * WARUM ALS HOC UND NICHT ALS JSX-WRAPPER IN JEDER ROUTE: die betroffenen
+ * Routen haben mehrere Rueckgabepfade (fruehe `return` fuer Kampagnen- und
+ * Standardfassung). Ein JSX-Wrapper muesste jeden davon einzeln treffen --
+ * ein uebersehener Pfad liefert die Pflichtmitteilung still nicht aus, weil
+ * `EuGewaehrleistungsHinweis` ohne Kontext `null` rendert. Der HOC umschliesst
+ * die Komponente und damit ALLE Rueckgabepfade auf einmal.
+ *
+ * Deckung wird maschinell erzwungen: test/eu-gewaehrleistung.test.mjs prueft,
+ * dass jede Route, die den Hinweis traegt, auch diese Bindung hat.
+ */
+export function withEuLabel(Komponente) {
+  function MitEuLabel(props) {
+    return (
+      <EuLabelProvider>
+        <Komponente {...props} />
+      </EuLabelProvider>
+    );
+  }
+  MitEuLabel.displayName = `withEuLabel(${
+    Komponente.displayName || Komponente.name || 'Route'
+  })`;
+  return MitEuLabel;
+}
+
 function useEuLabel() {
   return useContext(EuLabelKontext);
 }

@@ -1,5 +1,4 @@
 import {Suspense, useState, useEffect} from 'react';
-import {EuGewaehrleistungsLink} from './EuGewaehrleistungsLabel';
 import {Await, NavLink, Link} from 'react-router';
 
 const PRODUCT_LINKS = [
@@ -240,9 +239,6 @@ function FooterDisclaimer() {
         </p>
         <p>3. Bezahlmethoden</p>
         <PaymentIcons />
-        <p>
-          4. <EuGewaehrleistungsLink />
-        </p>
       </div>
     </div>
   );

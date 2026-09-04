@@ -3,6 +3,7 @@ import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {QiOne2ProShop} from '~/components/product-pages/QiOne2ProShop';
 import shopStyles from '~/styles/qione-2-pro-shop.css?url';
+import {withEuLabel} from '~/components/EuGewaehrleistungsLabel';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — kaufbereite Fortsetzung der Paid-Strecke
@@ -79,7 +80,7 @@ export async function loader({context, request}) {
  * Cart-Event (routen-unabhängig). R1/R2/R3 hängen im root-Layout. Ein
  * zusätzlicher fbq/gtag/MetaPixel hier wäre Doppelzählung.
  */
-export default function QiOne2ProShopRoute() {
+function QiOne2ProShopRoute() {
   const {product} = useLoaderData();
   return <QiOne2ProShop product={product} />;
 }
@@ -87,3 +88,9 @@ export default function QiOne2ProShopRoute() {
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
+
+/*
+ * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
+ * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ */
+export default withEuLabel(QiOne2ProShopRoute);

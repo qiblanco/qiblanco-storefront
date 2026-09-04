@@ -10,6 +10,7 @@ import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
 import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {withEuLabel} from '~/components/EuGewaehrleistungsLabel';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css) — Begründung siehe
@@ -79,7 +80,7 @@ function loadDeferredData({context, params}) {
   return {};
 }
 
-export default function Product() {
+function Product() {
   /** @type {LoaderReturnData} */
   const {product} = useLoaderData();
 
@@ -147,3 +148,9 @@ export default function Product() {
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+
+/*
+ * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
+ * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ */
+export default withEuLabel(Product);

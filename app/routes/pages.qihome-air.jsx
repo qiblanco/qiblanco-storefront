@@ -4,6 +4,7 @@ import {
   QiHomeAirShop,
   QIHOME_AIR_PRODUCT_QUERY,
 } from '~/components/product-pages/QiHomeAirShop';
+import {withEuLabel} from '~/components/EuGewaehrleistungsLabel';
 
 /*
  * Campaign-PDP /pages/qihome-air — LP-Shopseite des LP-Blocks
@@ -61,7 +62,7 @@ export async function loader({context, request}) {
  * aus <Analytics.ProductView> in QiHomeAirShop (exakt der PDP-Payload);
  * AddToCart als Cart-Event routen-unabhaengig; R1/R2/R3 im root-Layout.
  */
-export default function QiHomeAirShopRoute() {
+function QiHomeAirShopRoute() {
   const {product} = useLoaderData();
   return <QiHomeAirShop product={product} />;
 }
@@ -69,3 +70,9 @@ export default function QiHomeAirShopRoute() {
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
+
+/*
+ * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
+ * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ */
+export default withEuLabel(QiHomeAirShopRoute);

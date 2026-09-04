@@ -4,6 +4,7 @@ import {
   QiBraceletShop,
   QIBRACELET_PRODUCT_QUERY,
 } from '~/components/product-pages/QiBraceletShop';
+import {withEuLabel} from '~/components/EuGewaehrleistungsLabel';
 
 /*
  * Campaign-PDP /pages/qibracelet — LP-Shopseite des LP-Blocks
@@ -63,7 +64,7 @@ export async function loader({context, request}) {
  * aus <Analytics.ProductView> in QiBraceletShop (exakt der PDP-Payload);
  * AddToCart als Cart-Event routen-unabhaengig; R1/R2/R3 im root-Layout.
  */
-export default function QiBraceletShopRoute() {
+function QiBraceletShopRoute() {
   const {product} = useLoaderData();
   return <QiBraceletShop product={product} />;
 }
@@ -71,3 +72,9 @@ export default function QiBraceletShopRoute() {
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
+
+/*
+ * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
+ * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ */
+export default withEuLabel(QiBraceletShopRoute);

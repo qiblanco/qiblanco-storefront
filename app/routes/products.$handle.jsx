@@ -30,6 +30,7 @@ import {
 import {produktSchema} from '~/lib/produkt-schema';
 import {MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {withEuLabel} from '~/components/EuGewaehrleistungsLabel';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -227,7 +228,7 @@ function RenderProductPage({product}) {
   )
 } */
 
-export default function Product() {
+function Product() {
   /** @type {LoaderReturnData} */
   const {product, campaignDeal} = useLoaderData();
 
@@ -425,3 +426,9 @@ const PRODUCT_QUERY = `#graphql
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+
+/*
+ * EU-Gewaehrleistungslabel: Overlay + Trigger haengen an DIESER Route,
+ * nicht am globalen Seitengeruest (Elina EL-20260901-3fb38a2a).
+ */
+export default withEuLabel(Product);
