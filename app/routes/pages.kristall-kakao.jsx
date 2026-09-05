@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import { Kakao } from '~/components/product-pages/Kakao';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {canonicalLink} from '~/lib/seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -13,20 +14,25 @@ export const meta = ({data}) => {
   // weil sie beim nächsten Rückbau des Redirects wieder ausgeliefert würde
   // — dann wäre der Scaffold-Titel sofort wieder live.
   //
-  // NICHT MITGEZOGEN und hier benannt, damit es beim Rückbau nicht untergeht:
-  // der canonical-Descriptor unten hat die im Kopf von ~/lib/seo.js
-  // beschriebene wirkungslose Form (ohne `tagName` rendert react-router 7
-  // daraus `<meta rel="canonical">` statt `<link>`, und der Pfad ist relativ).
-  // Er bleibt unverändert, weil die richtige Ziel-URL für eine Route, die
-  // nie ausgeliefert wird, nicht messbar ist — ein Rateergebnis wäre hier
-  // schlechter als der sichtbare Defekt.
+  // ZUNÄCHST LIEGENGELASSEN, DANN DOCH MITGEZOGEN — und der Grund gehört
+  // hierher, weil er die Entscheidung umgedreht hat: der canonical-Descriptor
+  // stand hier in der im Kopf von ~/lib/seo.js beschriebenen WIRKUNGSLOSEN
+  // Form. Ohne `tagName` rendert react-router 7 daraus `<meta rel="canonical">`
+  // statt `<link>`, und der Pfad war relativ — auf einem Oxygen-Preview-Host
+  // kanonisiert das die Preview-URL auf sich selbst.
+  //
+  // Das CANONICAL-Gate von hb-deploy hat ihn beim ersten Lauf über diese Datei
+  // gemeldet, und es hat recht: die RICHTIGE FORM ist bekannt, unabhängig
+  // davon, ob die Route heute ausgeliefert wird. Nicht messbar war allein die
+  // Ziel-URL — und die ist der EIGENE Pfad, nicht das Redirect-Ziel
+  // /pages/crystal-cacao. Ein canonical sagt „das ist die kanonische Fassung
+  // DIESER ausgelieferten Seite"; solange die 301 steht, wird hier nichts
+  // ausgeliefert und der Descriptor bleibt folgenlos, und fällt sie weg, ist
+  // die Seite wieder ihre eigene kanonische Fassung.
   const roh = data?.page?.seo?.title || data?.page?.title || '';
   return [
     {title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'},
-    {
-      rel: 'canonical',
-      href: `/pages/kristall-kakao`,
-    },
+    canonicalLink('/pages/kristall-kakao'),
   ];
 };
 

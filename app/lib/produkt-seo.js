@@ -219,7 +219,7 @@ export function produktMeta({pfad, titel, bildUrl, produkt}) {
     descriptoren.push({property: 'og:image', content: bildUrl});
     // Twitter-Karte. Sie steht ABSICHTLICH in derselben Bedingung wie das
     // og:image und nicht daneben: `summary_large_image` sagt einem Netzwerk
-    // zu, dass ein grosses Bild folgt. Ohne og:image wäre das eine Zusage
+    // zu, dass ein großes Bild folgt. Ohne og:image wäre das eine Zusage
     // ohne Deckung, und die Karte fällt beim Teilen auf einen nackten Link
     // zurück — schlechter als gar keine Kartenangabe.
     //
