@@ -34,6 +34,7 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/collections/slider", "url": "https://qiblanco.com/collections/slider", "titel": "Slider", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/collections/valentinstag-angebote", "url": "https://qiblanco.com/collections/valentinstag-angebote", "titel": "Valentinstag Angebote", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/collections/zeremonie-kakao", "url": "https://qiblanco.com/collections/zeremonie-kakao", "titel": "Zeremonie Kakao", "crawlbar": true, "herkunft": "shopify"},
+      {"pfad": "/pages/affiliate-partnerprogramm", "url": "https://qiblanco.com/pages/affiliate-partnerprogramm", "titel": "", "crawlbar": true, "herkunft": "code"},
       {"pfad": "/pages/das-beispiel", "url": "https://qiblanco.com/pages/das-beispiel", "titel": "Bonus: Das Beispiel", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/development-nicht-loschen", "url": "https://qiblanco.com/pages/development-nicht-loschen", "titel": "Development - Nicht löschen", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/pages/e-smog", "url": "https://qiblanco.com/pages/e-smog", "titel": "Tag 4: E-Smog", "crawlbar": true, "herkunft": "code+shopify"},
