@@ -36,8 +36,8 @@ export const GOOGLE_REVIEWS_CURATED = [
     "foto": "https://lh3.googleusercontent.com/a/ACg8ocJUi0d8M-kNnbG-gdlXEFRpq3x_1Qvds2SUD2LnPv7MtDrmfA=s120-c-rp-mo-br100",
     "bilder": [
       {
-        "url": "https://lh3.googleusercontent.com/grass-cs/ACvplmPDQy2NTGoHaEwB8C5TBpHaIgautvxWMCUQOhv6DfWlvlq0vFG_gid_TXxyNSDBcHgj32mCm8bYzVM53dLQDFMuSr0qaAB24aqTsxZU2VXIb5cM0QgVnePYcvb9uJsvdgQ3Vhac_1Uiun8m=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/ACvplmPDQy2NTGoHaEwB8C5TBpHaIgautvxWMCUQOhv6DfWlvlq0vFG_gid_TXxyNSDBcHgj32mCm8bYzVM53dLQDFMuSr0qaAB24aqTsxZU2VXIb5cM0QgVnePYcvb9uJsvdgQ3Vhac_1Uiun8m=k-no"
+        "url": "https://lh3.googleusercontent.com/grass-cs/ACvplmN0iXLImBiorGhsYDp-VZd1WgLgxTegquybAorRDZpTRizF_DpBTr4Jm3KcOcTdUQiDR7sJiI7pKb_C19IgXHTBKq3K8-I-isfhFRfsixktmr30Sthmg3MHB3bvawJf0ArQxFBpbKHeiK9d=k-no",
+        "thumb": "https://lh3.googleusercontent.com/grass-cs/ACvplmN0iXLImBiorGhsYDp-VZd1WgLgxTegquybAorRDZpTRizF_DpBTr4Jm3KcOcTdUQiDR7sJiI7pKb_C19IgXHTBKq3K8-I-isfhFRfsixktmr30Sthmg3MHB3bvawJf0ArQxFBpbKHeiK9d=k-no"
       }
     ],
     "rating": 5,

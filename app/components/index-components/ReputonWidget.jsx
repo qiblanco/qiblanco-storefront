@@ -331,11 +331,44 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
 function ReviewKarte({review}) {
   const [offen, setOffen] = useState(false);
   const [ueberlaeuft, setUeberlaeuft] = useState(false);
+  // TOTE KUNDENFOTOS AUSBLENDEN statt sie kaputt zu zeigen.
+  //
+  // Gemessen 2026-09-05 (Repair-Job „ein Bild lädt nie fertig, Seite
+  // unmessbar"): die von Google GEPOSTETEN Kundenfotos liegen als absolute
+  // lh3.googleusercontent.com-URLs im Bestand — und Google gibt diese IDs neu
+  // aus. Das Foto zur Rezension von Therin Moreland antwortete mit HTTP 403
+  // (text/html + `x-content-type-options: nosniff`, also von Chrome per ORB
+  // blockiert), während DASSELBE Foto im Live-Feed unter einer NEUEN ID mit
+  // 200 auslieferte. Es ist also kein gelöschtes Foto, sondern eine rotierte
+  // Adresse — die Klasse trifft jede fest hinterlegte Google-Bild-URL und
+  // kommt wieder.
+  //
+  // WAS DER KUNDE OHNE DIESE ZEILE SIEHT: das <img> trägt width/height 56 und
+  // `w-14 h-14`, aber ein fehlgeschlagenes Bild ignoriert beides — Chrome
+  // rendert stattdessen den deutschen alt-Text als Inline-Kasten. Gemessen:
+  // 379x26 px statt 56x56, der Satz „Kundenfoto zur Rezension von Therin Mo…"
+  // läuft aus der Karte heraus. Genau im sozialen Beweis, wo Ruhe und
+  // Glaubwürdigkeit die ganze Wirkung sind.
+  //
+  // KEIN PLATZHALTER, SONDERN WEG: ein Ersatzbild wäre eine Behauptung über
+  // ein Foto, das es nicht gibt. Die Zeile entfällt ersatzlos — genau so, wie
+  // sie bei den 34 von 37 Rezensionen ohne Foto ohnehin entfällt.
+  //
+  // DAS VERSTECKT KEINEN BEFUND: das Verrotten wird getrennt gemessen
+  // (homepage-bauer/pruefungen/probe_rezensionsbilder_erreichbar.py, täglich)
+  // — hier wird nur verhindert, dass der Kunde die Verrottung ausbaden muss.
+  const [totesBild, setTotesBild] = useState({});
   const textRef = useRef(null);
   const text = review.text || '';
   // Defensiv: ältere/fremde Review-Quellen kennen `bilder` nicht — die Zeile
   // darf daran nicht scheitern (der Bestand liefert es überall mit).
   const bilder = Array.isArray(review.bilder) ? review.bilder : [];
+  // Erst deckeln, DANN die toten aussortieren: die Reihenfolge hält den
+  // „+N"-Zähler unten an der ungefilterten Menge — er zählt weiterhin die
+  // Fotos, die es gibt, nicht die, die geladen haben.
+  const sichtbareBilder = bilder
+    .slice(0, MAX_BILDER)
+    .filter((b) => !totesBild[b.url]);
   // Live-Feed-Karten liefern zeitText („vor 3 Tagen"); kuratierte Karten
   // liefern ein ISO-datum, das hier LIVE zur Relativzeit gerendert wird.
   const datum = review.zeitText || relativeVonDatum(review.datum);
@@ -428,9 +461,9 @@ function ReviewKarte({review}) {
           ein Bild öffnet es groß in einem neuen Tab — nach einer echten
           Zieh-Geste fängt useDragSwipe (onClickCapture) ihn ab, es braucht
           also kein eigenes Popup und keinen eigenen Drag-Schutz. */}
-      {bilder.length ? (
+      {sichtbareBilder.length ? (
         <div className="flex items-center gap-2">
-          {bilder.slice(0, MAX_BILDER).map((bild) => (
+          {sichtbareBilder.map((bild) => (
             <a
               key={bild.url}
               href={bild.url}
@@ -448,6 +481,11 @@ function ReviewKarte({review}) {
                 referrerPolicy="no-referrer"
                 draggable="false"
                 className="w-14 h-14 rounded-2xl object-cover"
+                onError={() =>
+                  setTotesBild((v) =>
+                    v[bild.url] ? v : {...v, [bild.url]: true},
+                  )
+                }
               />
             </a>
           ))}
