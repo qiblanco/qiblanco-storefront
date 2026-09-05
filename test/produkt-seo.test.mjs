@@ -330,7 +330,7 @@ test('produktMeta mit `produkt` hängt genau EINEN Product-Knoten an', () => {
     },
   });
   // GEZÄHLT WIRD JETZT NACH @type, NICHT ÜBER ALLE ld+json-Knoten (2026-09-05).
-  // Dieser Test heisst „genau EINEN Product-Knoten" und hat das bis hierher
+  // Dieser Test heißt „genau EINEN Product-Knoten" und hat das bis hierher
   // über einen Stellvertreter gemessen: „genau ein ld+json-Knoten". Der
   // Stellvertreter galt nur, solange Product der EINZIGE Knoten war. Seit dem
   // Restposten-Nachzug aus PR #100 hängt produktMeta() zusätzlich eine
