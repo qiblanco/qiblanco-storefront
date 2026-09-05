@@ -296,6 +296,39 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
 ];
 
 /**
+ * Seiten, die es NUR als Hydrogen-Route gibt — ohne Shopify-Seitenobjekt.
+ *
+ * WOZU: `getSitemap` zieht ausschliesslich Shopify-Ressourcen. Eine Seite, die
+ * allein aus einer Route in diesem Repo besteht, liefert HTTP 200 mit vollem
+ * Inhalt und steht in KEINER Sitemap — gebaut und fuer die Suche unsichtbar.
+ * Die Sitemap-Route traegt die Eintraege dieser Liste deshalb nach.
+ *
+ * AUFNAHME-KRITERIUM, bewusst eng: (1) die Seite hat eine eigene Route in
+ * app/routes/, (2) sie ist indexierbar gewollt (kein noindex), (3) es gibt eine
+ * stehende Wache auf ihren Live-Zustand — sonst wird aus dem Eintrag still eine
+ * 404-URL in der Sitemap. Wer hier ergaenzt, nennt die Wache im Grund.
+ *
+ * DAS IST DIE ZWEITE BAUFORM, NICHT DIE ABLOESUNG DER ERSTEN: der Hausweg
+ * "leeres Shopify-Seitenobjekt als Sitemap-Traeger" (technologie, studien)
+ * bleibt gueltig und wird von hier NICHT angefasst. Diese Liste ist fuer
+ * Seiten, deren Traeger sichtbar im Repo stehen soll.
+ * @type {Array<{pfad: string, grund: string}>}
+ */
+export const NUR_ROUTE_SEITEN = [
+  {
+    pfad: '/pages/affiliate-partnerprogramm',
+    grund:
+      'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
+      '20260905-eigene-indexierbare-partnerseite-...-prio25). Sie ersetzt die ' +
+      'Vendor-Seite aff.revolution.qiblanco.com/register, die mit dem ' +
+      'entschiedenen X-Robots-Tag ueber die ganze Subdomain aus dem Index ' +
+      'faellt. Wache: homepage-bauer/pruefungen/' +
+      'probe_partnerseite_naht_sitemap_route.py (Sitemap-Eintrag UND ' +
+      'Routen-Marker live) sowie probe_partnerseite_inhalt_live.py.',
+  },
+];
+
+/**
  * Sicht 1 — alle Handles, die ein `noindex` bekommen. Leser: die Route
  * `pages.$handle.jsx` (robots-meta UND X-Robots-Tag).
  * @type {string[]}

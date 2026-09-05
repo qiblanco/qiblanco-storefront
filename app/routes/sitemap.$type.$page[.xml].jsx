@@ -2,6 +2,8 @@ import {getSitemap} from '@shopify/hydrogen';
 import {
   AUS_SITEMAP_ENTFERNTE_SEITEN,
   NICHT_INDEXIERBARE_PRODUKTE,
+  NUR_ROUTE_SEITEN,
+  absoluteCanonical,
 } from '~/lib/seo';
 import {BLOG_BESTAND_FRAGMENT, leereHandles} from '~/lib/blog-bestand';
 import {
@@ -167,12 +169,16 @@ export async function loader({request, params, context: {storefront}}) {
   // greift für `articles` (kein Eintrag in VERSTECKTE_HANDLES) und haette
   // den Filter zuverlaessig uebersprungen.
   const hatVersteckte = Boolean(versteckt && versteckt.length > 0);
-  if (!hatVersteckte && params.type !== 'articles') {
+  // Nur-Route-Seiten kommen NACH dem Filter dazu (s. mitNurRouteSeiten unten).
+  // Sie muessen den Schnell-Ausstieg mit oeffnen, sonst greift die Ergaenzung
+  // genau dann nicht, wenn es sonst nichts zu tun gibt.
+  const ergaenzung = params.type === 'pages' ? NUR_ROUTE_SEITEN : [];
+  if (!hatVersteckte && params.type !== 'articles' && !ergaenzung.length) {
     response.headers.set('Cache-Control', `max-age=${cacheSekunden}`);
     return response;
   }
 
-  const body = (await response.text()).replace(
+  const gefiltert = (await response.text()).replace(
     /<url>[\s\S]*?<\/url>/g,
     (urlEntry) => {
       // Ein Artikel ohne bekannten Blog hat keine bekannte Adresse. Lieber
@@ -192,6 +198,8 @@ export async function loader({request, params, context: {storefront}}) {
     },
   );
 
+  const body = mitNurRouteSeiten(gefiltert, ergaenzung);
+
   const headers = new Headers(response.headers);
   headers.set('Cache-Control', `max-age=${cacheSekunden}`);
 
@@ -199,6 +207,53 @@ export async function loader({request, params, context: {storefront}}) {
     status: response.status,
     headers,
   });
+}
+
+/**
+ * Traegt Seiten nach, die es NUR als Hydrogen-Route gibt (kein Shopify-Objekt).
+ *
+ * WARUM ES DIESE FUNKTION BRAUCHT: `getSitemap` kennt ausschliesslich
+ * Shopify-Ressourcen. Eine Seite, die allein aus einer Route in diesem Repo
+ * besteht, liefert HTTP 200 mit vollem Inhalt und steht trotzdem in KEINER
+ * Sitemap — sie ist gebaut und fuer die Suche unsichtbar. Das ist kein
+ * Sonderfall: /pages/tiefer-schlaf, /pages/qione-2-pro und /pages/podcasts
+ * sind seit jeher genau so unsichtbar (gemessen 2026-09-05 gegen
+ * sitemap/pages/1.xml, 47 Eintraege).
+ *
+ * DER HAUSWEG WAR BISHER EIN ANDERER und bleibt gueltig: ein leeres
+ * Shopify-Seitenobjekt als Sitemap-Traeger (so gebaut bei `technologie` und
+ * `studien`). Diese Funktion ersetzt ihn NICHT und raeumt ihn nicht ab — sie
+ * ist die zweite Bauform fuer Seiten, deren Traeger im Repo stehen soll.
+ * Der Unterschied ist die Sichtbarkeit: das leere Shopify-Objekt sieht im
+ * Admin aus wie eine vergessene leere Seite, und wer es loescht, nimmt der
+ * Route ihre Auffindbarkeit, ohne dass irgendwo steht, warum sie existierte.
+ *
+ * DIE LISTE IST ABSICHTLICH KURZ UND KEINE SAMMELSTELLE: sie traegt genau die
+ * Seiten, fuer die diese Entscheidung getroffen ist UND deren Live-Zustand
+ * gewacht wird. Ein Eintrag ohne Wache waere eine Sitemap-URL, die still auf
+ * 404 laufen kann — derselbe Schaden, vor dem der Blog-Filter oben warnt, nur
+ * andersherum. Die Begruendung je Eintrag steht an der Definition in ~/lib/seo.
+ *
+ * IDEMPOTENT: steht der Pfad schon im Rumpf (weil doch ein Shopify-Objekt
+ * existiert), wird nichts ergaenzt — sonst stuende die URL doppelt.
+ * KEINE hreflang-Alternates: die Locale-Praefixe (/EN-US/…) sind fuer diese
+ * deutschsprachigen Routen keine eigenen Seiten.
+ *
+ * @param {string} body Sitemap-XML nach dem Versteckt-Filter
+ * @param {Array<{pfad: string}>} seiten
+ * @returns {string}
+ */
+function mitNurRouteSeiten(body, seiten) {
+  const neu = seiten
+    .filter((s) => !body.includes(`${s.pfad}</loc>`))
+    .map(
+      (s) =>
+        `<url>\n  <loc>${absoluteCanonical(s.pfad)}</loc>\n` +
+        `  <changefreq>weekly</changefreq>\n</url>\n`,
+    )
+    .join('');
+  if (!neu) return body;
+  return body.replace('</urlset>', `${neu}</urlset>`);
 }
 
 // 50 statt eines Defaults: der Shop hat heute 3 Blogs, und ein Seitenlimit,
