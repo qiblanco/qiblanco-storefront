@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
@@ -76,7 +76,14 @@ async function loadCriticalData({context, request, params}) {
 
   const article = blog.articleByHandle;
 
-  return {article};
+  // Der aktuelle Beitrag faellt raus; hoechstens drei bleiben stehen. Fehlt
+  // die Verbindung (leerer Blog, alte Antwort aus dem Cache), ist die Liste
+  // leer und der Abschluss-Block rendert seinen Weiterlesen-Teil gar nicht.
+  const weitere = (blog.articles?.nodes ?? [])
+    .filter((a) => a?.handle && a.handle !== articleHandle)
+    .slice(0, 3);
+
+  return {article, blogHandle, weitere};
 }
 
 /**
@@ -91,7 +98,7 @@ function loadDeferredData({context}) {
 
 export default function Article() {
   /** @type {LoaderReturnData} */
-  const {article} = useLoaderData();
+  const {article, blogHandle, weitere} = useLoaderData();
   const {title, image, contentHtml, author} = article;
 
   // de-DE statt en-US: das Hausmuster steht in app/lib/withdrawal.js. Auf einem
@@ -108,31 +115,67 @@ export default function Article() {
   const inhaltHtml = artikelInhaltAufraeumen(contentHtml, title);
 
   return (
-    <div className="article">
-      {/* Das Datum stand bis 2026-09-04 IM <h1> und erbte damit dessen
+    <div className="blog-wissen">
+      <div className="article">
+        {/* Das Datum stand bis 2026-09-04 IM <h1> und erbte damit dessen
           Schriftgröße — Datum und Autor waren so groß wie die Überschrift.
           Der Kopf trägt jetzt nur noch den Titel; die Angaben stehen als
           eigene Zeile darunter. */}
-      <h1 className="article-titel">{title}</h1>
-      <p className="article-meta">
-        <time dateTime={article.publishedAt}>{publishedDate}</time>
-        {author?.name ? (
-          <>
-            {' '}
-            &middot; <address>{author.name}</address>
-          </>
-        ) : null}
-      </p>
+        <h1 className="article-titel">{title}</h1>
+        <p className="article-meta">
+          <time dateTime={article.publishedAt}>{publishedDate}</time>
+          {author?.name ? (
+            <>
+              {' '}
+              &middot; <address>{author.name}</address>
+            </>
+          ) : null}
+        </p>
 
-      {image && (
-        <div className="article-bild">
-          <Image data={image} sizes="(min-width: 900px) 900px, 100vw" loading="eager" />
-        </div>
-      )}
-      <div
-        dangerouslySetInnerHTML={{__html: inhaltHtml}}
-        className="article-inhalt"
-      />
+        {image && (
+          <div className="article-bild">
+            <Image
+              data={image}
+              sizes="(min-width: 900px) 900px, 100vw"
+              loading="eager"
+            />
+          </div>
+        )}
+        <div
+          dangerouslySetInnerHTML={{__html: inhaltHtml}}
+          className="article-inhalt"
+        />
+
+        {/* WOHIN NACH DEM LESEN. Bisher endete der Beitrag im Nichts.
+          Bewusst am Ende, bewusst ruhig und bewusst KEIN Verkaufsbanner: ein
+          Wissensbeitrag, der zur Verkaufsseite wird, verliert genau die
+          Glaubwuerdigkeit, die ihn wertvoll macht. Eine Wissensseite wird am
+          naechsten KLICK gemessen, nicht an der Bestellung — deshalb fuehren
+          die ersten Wege zum naechsten Beitrag und nur der letzte, einzelne
+          in die Produktwelt. */}
+        <aside className="article-weiter">
+          {weitere?.length ? (
+            <>
+              <h2>Weiterlesen</h2>
+              <ul>
+                {weitere.map((a) => (
+                  <li key={a.handle}>
+                    <Link to={`/blogs/${blogHandle}/${a.handle}`}>
+                      {a.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <p className="article-weiter-fuss">
+            <Link to={`/blogs/${blogHandle}`}>Alle Beiträge</Link>
+            <Link className="article-weiter-produkt" to="/">
+              Womit wir arbeiten
+            </Link>
+          </p>
+        </aside>
+      </div>
     </div>
   );
 }
@@ -147,6 +190,16 @@ const ARTICLE_QUERY = `#graphql
   ) @inContext(language: $language, country: $country) {
     blog(handle: $blogHandle) {
       handle
+      # NUR handle und title, ausdruecklich KEIN contentHtml und kein Bild:
+      # der Abschluss-Block braucht Namen, keine Inhalte. Ein zweites Mal
+      # Artikeltext im Payload war 2026-09-03 der Grund, warum die Uebersicht
+      # 183 KB wog.
+      articles(first: 4) {
+        nodes {
+          handle
+          title
+        }
+      }
       articleByHandle(handle: $articleHandle) {
         handle
         title

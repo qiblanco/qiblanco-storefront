@@ -1,207 +1,489 @@
 /*
-* --------------------------------------------------
-* routes/blogs.* — Übersicht und Beitrag
+* ============================================================================
+* routes/blogs.* — Wissens-Blog: Übersicht und Beitrag
 *
-* STAND VOR DEM 2026-09-04: dieser Abschnitt bestand aus vier Regeln, die
-* unveraendert aus dem Hydrogen-Skeleton stammten. Weder .blog noch
-* .article hatten eine Breite, einen Innenabstand oder eine Zeilenhöhe —
-* der Fließtext lief ueber die volle Fensterbreite und begann hart am linken
-* Rand, und auf der Übersicht standen Titel und Datum ohne jede erkennbare
-* Trennung untereinander.
+* TOKEN-SYSTEM. Alle Größen, Farben, Radien und Abstände dieser Datei kommen
+* aus dem :root-Block unten. Außerhalb dieses Blocks erfindet KEINE Regel
+* freie Werte — dieselbe Hausregel wie in app/styles/schlaf-zellen-schutz.css
+* (Referenz-Rezept tiefer-schlaf-v3, 94/100).
 *
-* WOHER DIE WERTE HIER KOMMEN: NICHT neu erfunden, sondern aus der
-* Langform-Flaeche, die dieser Auftritt schon hat — .course-lesson /
-* .course-lesson-body (weiter unten in dieser Datei): Spaltenbreite 860px,
-* Innenabstand 2.25rem/1.5rem, Zeilenhöhe 1.72, Überschriftenabstand
-* 1.9rem/0.7rem. Die Zeilenlänge selbst kommt aus dem einen Haus-Token
-* --measure-text (75ch, SSoT design-meister web-soll.yaml) und wird hier
-* NICHT abweichend gesetzt.
-* --------------------------------------------------
+* WOHER DIE WERTE KOMMEN — die Leitfrage war NICHT "wie sieht ein Blog aus",
+* sondern "welche Werte hat dieser Auftritt schon". Christians Maßstab
+* wörtlich: „Ein Besucher darf nicht merken, dass er einen anderen Seitentyp
+* betreten hat." Deshalb:
+*   - Typo-Familie/Skala/Farbwelt: identisch zu app/styles/schlaf-zellen-
+*     schutz.css (warmes Neutral-Kontinuum, EIN Gold-Akzent).
+*   - Spaltenbreite 860px, Innenabstand, Zeilenhöhe 1.72: übernommen aus dem
+*     Bestand des 2026-09-04 (PR #305), der sie seinerseits aus der
+*     Langform-Fläche .course-lesson dieses Auftritts geholt hat.
+*   - Zeilenlänge: das EINE Haus-Token --measure-text (75ch, SSoT
+*     design-meister web-soll.yaml). Hier wird KEIN abweichender Wert gesetzt.
+*
+* STAND VOR DEM 2026-09-04 (zur Einordnung, nicht als Aufgabe): .blog und
+* .article waren unverändertes Hydrogen-Skeleton — keine Breite, kein
+* Innenabstand, keine Zeilenhöhe. PR #305 hat Spalte, Innenabstand und die
+* Trennlinie je Beitrag gebaut; diese Datei baut daraus ein Token-System und
+* ergänzt, was #305 ausdrücklich diesem Auftrag überlassen hat: Karten mit
+* Bild, Datum und Anriss.
+*
+* ---------------------------------------------------------------------------
+* NAHT ZU EINER STEHENDEN WACHE — BITTE VOR JEDEM UMBAU LESEN.
+* homepage-bauer/pruefungen/probe_wissensblog_vorzeigbar.py misst diese Datei
+* TÄGLICH am Live-Rand, und zwar am AUSGELIEFERTEN, MINIFIZIERTEN CSS per
+* Regex. Vier Namen sind damit ein Vertrag, kein Geschmack:
+*   1. Der Dateiname muss mit "blog" beginnen (gesucht wird
+*      /assets/blog-<hash>.css), und das Blatt muss auf /blogs/wissen geladen
+*      sein.
+*   2. `.blog-article{...}` muss die Eigenschaft WÖRTLICH als `border-bottom`
+*      führen. Die Kurzform `border:` enthält das Wort nicht — eine Karte mit
+*      Rundum-Rahmen allein fällt durch, obwohl sie mehr trennt als vorher.
+*      Der Rahmen unten ist deshalb bewusst ANDERS als die drei übrigen
+*      Kanten (2px statt 1px): so kann auch kein Minifier die vier Kanten zu
+*      einer Kurzform zusammenziehen und den Vertrag unbemerkt auflösen.
+*   3. Die Regel `.article{}` selbst muss `max-width` UND ein `padding` != 0
+*      tragen — nicht ein Elternteil.
+*   4. `.article-inhalt p` muss die Zeilenlängen-Begrenzung tragen.
+* Dazu im Markup: das Klassen-Attribut der Kachel muss exakt "blog-article"
+* lauten (die Wache sucht die Zeichenkette class="blog-article"), und der
+* Artikelkörper exakt "article-inhalt".
+* ---------------------------------------------------------------------------
+*
+* SCOPE: alles unter der Wurzelklasse .blog-wissen. Diese Datei ändert nichts
+* außerhalb des Blogs.
+* ============================================================================
 */
 
-/* --- Übersicht ------------------------------------------------------- */
+.blog-wissen {
+  /* Typo — EINE Familie, modulare Skala ~1.25, 8 Stufen (Höchstwert 9). */
+  --bw-fs-xs: 0.8125rem; /* 13px */
+  --bw-fs-sm: 0.9375rem; /* 15px */
+  --bw-fs-base: 1rem; /* 16px */
+  --bw-fs-md: 1.125rem; /* 18px — Fließtext */
+  --bw-fs-lg: 1.25rem; /* 20px */
+  --bw-fs-xl: 1.5625rem; /* 25px */
+  --bw-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem); /* EIN H2-Stil */
+  --bw-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+
+  /* Abstände — 8pt-Grid, keine Zwischenwerte. */
+  --bw-s1: 8px;
+  --bw-s2: 16px;
+  --bw-s3: 24px;
+  --bw-s4: 32px;
+  --bw-s6: 48px;
+  --bw-s8: 64px;
+  --bw-s12: 96px;
+
+  /* Farbe — warmes Neutral-Kontinuum + EIN Gold-Akzent (60-30-10).
+     Werte identisch zu schlaf-zellen-schutz.css; KEIN zweiter Goldton. */
+  --bw-grund: #faf9f5;
+  --bw-flaeche: #f4f0e9;
+  --bw-text: #2c2a26;
+  --bw-muted: #6b665d;
+  --bw-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA */
+  --bw-linie: rgba(44, 42, 38, 0.12);
+  --bw-linie-stark: rgba(44, 42, 38, 0.22);
+
+  /* Radius — EIN Bild-/Flächen-Radius plus die kleine Stufe für Knöpfe. */
+  --bw-r-bild: 8px;
+  --bw-r-flaeche: 16px;
+
+  /* Layout — beide Werte stehen schon in diesem Auftritt. */
+  --bw-breite-liste: 1080px;
+  --bw-breite-text: 860px;
+}
+
+/* ─── Übersicht ──────────────────────────────────────────────────────────── */
 
 /* WARUM HIER EIN OBERER ABSTAND STEHT UND NICHT NUR margin AM h1 (live
    nachgemessen 2026-09-04, Viewport 1280): der Kopf der Storefront ist KLEBEND
-   und endet bei y=127 — Ankuendigungsband plus Navigation. `main` haelt aber
-   nur `calc(var(--header-height) + 40px)` = 104px frei, gerechnet OHNE das
-   Band. Die Ueberschrift lag damit 23px UNTER dem Kopf, sobald sie ihren
-   Standard-Abstand verliert. Der Abstand gehoert deshalb an den Container,
-   nicht an die Ueberschrift: er gilt dann auch, wenn oben ein Bild steht. */
-.blog {
+   und endet bei y=127 — Ankündigungsband plus Navigation. `main` hält aber nur
+   `calc(var(--header-height) + 40px)` = 104px frei, gerechnet OHNE das Band.
+   Die Überschrift lag damit 23px UNTER dem Kopf, sobald sie ihren
+   Standard-Abstand verliert. Der Abstand gehört deshalb an den Container,
+   nicht an die Überschrift: er gilt dann auch, wenn oben ein Bild steht. */
+.blog-wissen .blog,
+.blog-wissen .blogs {
+  color: var(--bw-text);
   margin: 0 auto;
-  max-width: 860px;
-  padding: 3rem 1.5rem 4rem;
+  max-width: var(--bw-breite-liste);
+  padding: var(--bw-s6) var(--bw-s3) var(--bw-s8);
   width: 100%;
 }
 
-.blog > h1 {
+.blog-wissen .blog > h1,
+.blog-wissen .blogs > h1 {
+  font-size: var(--bw-fs-h1);
+  letter-spacing: -0.01em;
   line-height: 1.18;
-  margin: 0 0 1.75rem;
+  margin: 0 0 var(--bw-s2);
   text-wrap: balance;
 }
 
-.blog-grid {
+/* Die Einleitung: sie sagt, was den Besucher hier erwartet. Bewusst schmaler
+   als das Kartenraster — eine Zeile Fließtext über die volle Rasterbreite ist
+   genau der Fehler, den diese Datei auf der Beitragsseite behebt. */
+.blog-wissen .blog-einleitung {
+  color: var(--bw-muted);
+  font-size: var(--bw-fs-md);
+  line-height: 1.6;
+  margin: 0 0 var(--bw-s6);
+  max-width: var(--measure-text);
+}
+
+.blog-wissen .blog-grid {
   display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-width), 1fr));
-  margin-bottom: 2rem;
+  gap: var(--bw-s4);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin: 0 0 var(--bw-s4);
 }
 
-/* Die sichtbare Trennung zwischen zwei Beitraegen. Bewusst eine Linie und kein
-   Kasten: Karten mit Bildern sind Sache des großen Blog-Auftrags
-   (20260903-BAU-wissensblog-gestaltung...), hier geht es nur darum, dass der
-   Leser sieht, wo ein Beitrag aufhört. Der letzte trägt keine Linie. */
-.blog-article {
-  border-bottom: 1px solid rgba(74, 71, 65, 0.14);
-  padding-bottom: 1.5rem;
+/* DIE KACHEL. Vorher eine reine Titelzeile — „man sieht nicht, wo ein Beitrag
+   aufhört" (Christian). Jetzt eine Fläche mit eigenem Grund, Rahmen und
+   Rundung; der untere Rand ist bewusst stärker und macht das Ende sichtbar.
+   Zum WÖRTLICHEN `border-bottom` siehe den Kopf dieser Datei — das ist ein
+   Vertrag mit der stehenden Wache, keine Redundanz. */
+.blog-wissen .blog-article {
+  background: var(--bw-grund);
+  border-top: 1px solid var(--bw-linie);
+  border-right: 1px solid var(--bw-linie);
+  border-left: 1px solid var(--bw-linie);
+  border-bottom: 2px solid var(--bw-linie-stark);
+  border-radius: var(--bw-r-flaeche);
+  display: flex;
+  overflow: hidden;
+  padding: 0;
 }
 
-.blog-article:last-child {
-  border-bottom: 0;
-}
-
-.blog-article a {
+.blog-wissen .blog-article > a {
   color: inherit;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   text-decoration: none;
+  width: 100%;
 }
 
-.blog-article h3 {
-  line-height: 1.3;
-  margin: 0 0 0.35rem;
+/* Der Bild-Platz. FAIL-SOFT ist hier tragend: solange kein Aufmacherbild
+   gepflegt ist (das ist Sache des Bild-Segments), rendert die Route den Block
+   gar nicht — die Kachel bleibt vollständig und das Raster bündig, weil die
+   Höhe aus dem Textteil kommt und nicht aus einem leeren Rahmen. */
+.blog-wissen .blog-article-image {
+  aspect-ratio: 3 / 2;
+  background: var(--bw-grund);
+  display: block;
+  margin: 0;
+  overflow: hidden;
+}
+
+.blog-wissen .blog-article-image img {
+  border-radius: 0;
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.blog-wissen .blog-article-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bw-s1);
+  padding: var(--bw-s3);
+}
+
+.blog-wissen .blog-article h3 {
+  font-size: var(--bw-fs-xl);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0;
   text-wrap: balance;
 }
 
-.blog-article a:hover h3,
-.blog-article a:focus-visible h3 {
+.blog-wissen .blog-article a:hover h3,
+.blog-wissen .blog-article a:focus-visible h3 {
   text-decoration: underline;
 }
 
-.blog-article small {
-  color: var(--color-dark);
-  font-size: 0.9rem;
-  opacity: 0.68;
+.blog-wissen .blog-article small,
+.blog-wissen .blog-article time {
+  color: var(--bw-muted);
+  font-size: var(--bw-fs-sm);
+  letter-spacing: 0.02em;
 }
 
-.blog-article-image {
-  aspect-ratio: 3/2;
-  display: block;
-  margin-bottom: 0.9rem;
+/* Der Anriss. Ohne ihn ist eine Kachel eine Titelzeile mit Rahmen; mit ihm
+   kann ein Leser entscheiden, ob der Beitrag seine Frage beantwortet. Auf
+   drei Zeilen begrenzt, damit ungleich lange Anrisse kein zerfranstes Raster
+   erzeugen (irreguläre Kachelhöhen kosten Blickzeit — NN/g-Eyetracking). */
+.blog-wissen .blog-article-anriss {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: var(--bw-muted);
+  display: -webkit-box;
+  font-size: var(--bw-fs-base);
+  line-height: 1.55;
+  margin: 0;
+  overflow: hidden;
 }
 
-.blog-article-image img {
-  height: 100%;
+/* KEIN Gold hier, und das ist eine Messung, keine Meinung: mit der Gold-Tinte
+   auf sechs Kachel-Etiketten meldete die Design-Rubrik am 2026-09-05 „ZWEI
+   konkurrierende Gold-/Ocker-Toene" (Farbachse 100 -> 85), weil der zweite Ton
+   aus dem Kopfbereich des Shops kommt und dort bleibt (offene Markenfrage
+   gold-akzent-web-vs-marke, zustaendig Christian — nicht von hier zu
+   entscheiden). Der EINE Gold-Akzent dieser Datei sitzt auf der EINEN
+   Handlung, die aus dem Wissen herausfuehrt: .article-weiter-produkt.
+   Anklickbar ist ohnehin die ganze Kachel. */
+.blog-wissen .blog-article-mehr {
+  color: var(--bw-muted);
+  font-size: var(--bw-fs-sm);
+  font-weight: 600;
+  margin-top: auto;
+  padding-top: var(--bw-s1);
 }
 
-/* --- Beitrag ---------------------------------------------------------- */
+/* ─── Beitrag ────────────────────────────────────────────────────────────── */
 
-.article {
+.blog-wissen .article {
+  color: var(--bw-text);
   margin: 0 auto;
-  max-width: 860px;
+  max-width: var(--bw-breite-text);
   min-width: 0;
-  padding: 3rem 1.5rem 5rem;
+  padding: var(--bw-s6) var(--bw-s3) var(--bw-s8);
   text-align: left;
   width: 100%;
 }
 
-.article-titel {
-  font-size: clamp(2rem, 4vw, 3.25rem);
+.blog-wissen .article-titel {
+  font-size: var(--bw-fs-h1);
+  letter-spacing: -0.01em;
   line-height: 1.18;
-  margin: 0 0 0.6rem;
+  margin: 0 0 var(--bw-s1);
   overflow-wrap: normal;
   text-align: left;
   text-wrap: balance;
   word-break: normal;
 }
 
-.article-meta {
-  color: var(--color-dark);
-  font-size: 0.9rem;
-  margin: 0 0 2rem;
-  opacity: 0.68;
+/* Datum und Autor: EINE Zeile. Bis zum 2026-09-04 standen sie als drei Zeilen
+   untereinander, weil <address> ein Block-Element ist und im <h1> stand. */
+.blog-wissen .article-meta {
+  color: var(--bw-muted);
+  font-size: var(--bw-fs-sm);
+  margin: 0 0 var(--bw-s4);
 }
 
-.article-meta address {
+.blog-wissen .article-meta address {
   display: inline;
   font-style: normal;
 }
 
-.article-bild {
-  margin: 0 0 2rem;
+.blog-wissen .article-bild {
+  border-radius: var(--bw-r-bild);
+  margin: 0 0 var(--bw-s6);
+  overflow: hidden;
 }
 
-.article img {
+.blog-wissen .article img {
+  border-radius: var(--bw-r-bild);
   height: auto;
   width: 100%;
 }
 
-.article-inhalt {
-  font-size: 1rem;
+.blog-wissen .article-bild img {
+  border-radius: 0;
+  display: block;
+}
+
+.blog-wissen .article-inhalt {
+  font-size: var(--bw-fs-md);
   line-height: 1.72;
   min-width: 0;
   overflow-wrap: break-word;
   width: 100%;
 }
 
-.article-inhalt p,
-.article-inhalt li {
+/* Die wirkungsvollste einzelne Maßnahme für einen langen Text: begrenzte
+   Zeilenlänge. Der Wert ist NICHT hier erfunden, sondern das Haus-Token
+   --measure-text (75ch). Bei 18px Fließtext liegt die Zeile damit im Bereich,
+   den die Leseforschung als Optimum führt (50–75 Zeichen). */
+.blog-wissen .article-inhalt p,
+.blog-wissen .article-inhalt li {
   max-width: var(--measure-text);
 }
 
-.article-inhalt p {
-  margin: 0 0 0.85rem;
+.blog-wissen .article-inhalt p {
+  margin: 0 0 var(--bw-s2);
 }
 
-.article-inhalt p:first-child {
+.blog-wissen .article-inhalt p:first-child {
   margin-top: 0;
 }
 
-.article-inhalt h2,
-.article-inhalt h3,
-.article-inhalt h4 {
-  line-height: 1.35;
-  margin: 1.9rem 0 0.7rem;
+/* Rangfolge der Überschriften: EIN H2-Stil, H3 eine Stufe darunter. Der
+   Abstand ÜBER einer Überschrift ist deutlich größer als der darunter — so
+   gehört sie sichtbar zum folgenden Abschnitt und nicht zum vorherigen. */
+.blog-wissen .article-inhalt h2 {
+  font-size: var(--bw-fs-h2);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: var(--bw-s6) 0 var(--bw-s2);
+  max-width: var(--measure-text);
   text-wrap: balance;
 }
 
-.article-inhalt ul,
-.article-inhalt ol {
-  margin: 0.75rem 0 1rem 1.25rem;
-  padding-left: 1rem;
+.blog-wissen .article-inhalt h3 {
+  font-size: var(--bw-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: var(--bw-s4) 0 var(--bw-s1);
+  max-width: var(--measure-text);
+  text-wrap: balance;
 }
 
-.article-inhalt li {
-  margin-bottom: 0.4rem;
+.blog-wissen .article-inhalt h4 {
+  font-size: var(--bw-fs-base);
+  font-weight: 700;
+  line-height: 1.35;
+  margin: var(--bw-s3) 0 var(--bw-s1);
+  max-width: var(--measure-text);
+}
+
+.blog-wissen .article-inhalt ul,
+.blog-wissen .article-inhalt ol {
+  margin: var(--bw-s1) 0 var(--bw-s2) var(--bw-s2);
+  padding-left: var(--bw-s2);
+}
+
+.blog-wissen .article-inhalt li {
+  margin-bottom: var(--bw-s1);
+}
+
+.blog-wissen .article-inhalt blockquote {
+  border-left: 2px solid var(--bw-linie-stark);
+  color: var(--bw-muted);
+  margin: var(--bw-s4) 0;
+  max-width: var(--measure-text);
+  padding-left: var(--bw-s3);
 }
 
 /* Die Artikel tragen Vergleichstabellen. Ohne diese Regel laufen sie auf dem
    Handy aus der Spalte heraus statt zu scrollen. */
-.article-inhalt table {
+.blog-wissen .article-inhalt table {
   border-collapse: collapse;
   display: block;
-  margin: 1.25rem 0 1.5rem;
+  margin: var(--bw-s3) 0 var(--bw-s4);
   max-width: 100%;
   overflow-x: auto;
   width: 100%;
 }
 
-.article-inhalt th,
-.article-inhalt td {
-  border-bottom: 1px solid rgba(74, 71, 65, 0.14);
-  padding: 0.55rem 0.9rem 0.55rem 0;
+.blog-wissen .article-inhalt th,
+.blog-wissen .article-inhalt td {
+  border-bottom: 1px solid var(--bw-linie);
+  padding: var(--bw-s1) var(--bw-s2) var(--bw-s1) 0;
   text-align: left;
   vertical-align: top;
 }
 
-.article-inhalt th {
+.blog-wissen .article-inhalt th {
   font-weight: 700;
 }
 
+/* ─── Abschluss: wohin nach dem Lesen ────────────────────────────────────── */
+
+/* Bewusst KEIN Verkaufsbanner und bewusst am ENDE, nicht im Text: ein
+   Wissensbeitrag, der zur Verkaufsseite wird, verliert genau die
+   Glaubwürdigkeit, die ihn wertvoll macht. Gemessen wird eine solche Seite am
+   nächsten KLICK, nicht an der Bestellung — deshalb führen die ersten Wege
+   zum nächsten Beitrag, und nur der letzte in die Produktwelt. */
+.blog-wissen .article-weiter {
+  border-top: 1px solid var(--bw-linie);
+  margin: var(--bw-s8) 0 0;
+  max-width: var(--measure-text);
+  padding-top: var(--bw-s4);
+}
+
+/* DERSELBE H2-Stil wie im Fließtext, nicht ein kleinerer. „EIN H2-Stil je
+   Seite" ist Hausregel und wird von der Design-Rubrik gemessen: eine zweite
+   Größen-/Gewichts-Kombination auf demselben Element kostet die Typo-Achse,
+   und der Leser liest sie als zweite Ordnung, die es nicht gibt. Gemessen
+   2026-09-05: mit einer eigenen Größe meldete die Rubrik „2 H2-Stil-Kombis". */
+.blog-wissen .article-weiter h2 {
+  font-size: var(--bw-fs-h2);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 0 0 var(--bw-s2);
+}
+
+.blog-wissen .article-weiter ul {
+  list-style: none;
+  margin: 0 0 var(--bw-s3);
+  padding: 0;
+}
+
+.blog-wissen .article-weiter li {
+  border-bottom: 1px solid var(--bw-linie);
+  margin: 0;
+}
+
+.blog-wissen .article-weiter li:last-child {
+  border-bottom: 0;
+}
+
+.blog-wissen .article-weiter a {
+  color: inherit;
+  display: block;
+  font-size: var(--bw-fs-md);
+  line-height: 1.45;
+  padding: var(--bw-s2) 0;
+  text-decoration: none;
+}
+
+.blog-wissen .article-weiter a:hover,
+.blog-wissen .article-weiter a:focus-visible {
+  text-decoration: underline;
+}
+
+.blog-wissen .article-weiter-fuss {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bw-s3);
+  margin: 0;
+}
+
+.blog-wissen .article-weiter-fuss a {
+  display: inline;
+  font-size: var(--bw-fs-sm);
+  padding: 0;
+}
+
+/* Der EINZIGE Gold-Akzent dieser Datei sitzt auf der einen Handlung, die aus
+   dem Wissen herausführt. */
+.blog-wissen .article-weiter-produkt {
+  color: var(--bw-akzent-tinte);
+  font-weight: 600;
+}
+
+/* ─── Schmale Breiten ────────────────────────────────────────────────────── */
+
 @media (max-width: 749px) {
-  .blog,
-  .article {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .blog-wissen .blog,
+  .blog-wissen .blogs,
+  .blog-wissen .article {
+    padding-left: var(--bw-s2);
+    padding-right: var(--bw-s2);
+  }
+
+  .blog-wissen .blog-grid {
+    gap: var(--bw-s3);
+    grid-template-columns: 1fr;
+  }
+
+  .blog-wissen .article-inhalt {
+    font-size: var(--bw-fs-base);
   }
 }
