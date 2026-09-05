@@ -127,19 +127,33 @@ export default function Blog() {
   const {blog} = useLoaderData();
   const {articles} = blog;
 
+  // Die Überschrift stand nackt über einer reinen Titelliste. Eine Einleitung
+  // sagt in Kundensprache (Schutz, Schlaf, Energie, Strahlung), was hier
+  // erwartet werden darf — und was NICHT: der Begriff „kohärentes Wasser"
+  // kommt aus unserem Marketing und wird von Kunden nur zurückgespiegelt.
+  // Gepflegte SEO-Beschreibung geht vor, damit die Redaktion sie in Shopify
+  // ändern kann, ohne dass jemand diese Datei anfasst.
+  const einleitung =
+    blog.seo?.description?.trim() ||
+    'Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist — ' +
+      'und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.';
+
   return (
-    <div className="blog">
-      <h1>{blog.title}</h1>
-      <div className="blog-grid">
-        <PaginatedResourceSection connection={articles}>
-          {({node: article, index}) => (
-            <ArticleItem
-              article={article}
-              key={article.id}
-              loading={index < 2 ? 'eager' : 'lazy'}
-            />
-          )}
-        </PaginatedResourceSection>
+    <div className="blog-wissen">
+      <div className="blog">
+        <h1>{blog.title}</h1>
+        <p className="blog-einleitung">{einleitung}</p>
+        <div className="blog-grid">
+          <PaginatedResourceSection connection={articles}>
+            {({node: article, index}) => (
+              <ArticleItem
+                article={article}
+                key={article.id}
+                loading={index < 2 ? 'eager' : 'lazy'}
+              />
+            )}
+          </PaginatedResourceSection>
+        </div>
       </div>
     </div>
   );
@@ -152,15 +166,29 @@ export default function Blog() {
  * }}
  */
 function ArticleItem({article, loading}) {
-  // de-DE statt en-US (Hausmuster app/lib/withdrawal.js) — deutschsprachiger Blog.
+  // de-DE statt en-US: „August 31, 2026" ist auf einem deutschsprachigen Blog
+  // kein Stilfehler, sondern ein sichtbar falscher Ort. Hausmuster:
+  // app/lib/withdrawal.js.
   const publishedAt = new Intl.DateTimeFormat('de-DE', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }).format(new Date(article.publishedAt));
+
+  // ANRISS, und warum er aus `excerpt` kommt und NICHT aus dem Artikeltext:
+  // `contentHtml` wurde am 2026-09-03 bewusst aus diesem Fragment entfernt —
+  // der volle Text ging ungerendert in den Hydrations-Payload und kostete den
+  // größten Teil der Seitengröße. Ein Anriss, den wir uns aus dem Volltext
+  // schneiden, holte ihn zurück. Ist kein Auszug gepflegt, bleibt die Kachel
+  // ohne Anriss; sie ist dann kürzer, aber nicht kaputt.
+  const anriss = article.excerpt?.trim();
+
   return (
     <div className="blog-article" key={article.id}>
       <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
+        {/* FAIL-SOFT: solange kein Aufmacherbild gepflegt ist, rendert hier
+            nichts — kein leerer Rahmen, keine gerissene Rasterhöhe. Das Bild
+            selbst liefert das Bild-Segment dieses Auftrags. */}
         {article.image && (
           <div className="blog-article-image">
             <Image
@@ -168,12 +196,18 @@ function ArticleItem({article, loading}) {
               aspectRatio="3/2"
               data={article.image}
               loading={loading}
-              sizes="(min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 1100px) 340px, (min-width: 750px) 45vw, 100vw"
             />
           </div>
         )}
-        <h3>{article.title}</h3>
-        <small>{publishedAt}</small>
+        <div className="blog-article-text">
+          <time dateTime={article.publishedAt}>{publishedAt}</time>
+          <h3>{article.title}</h3>
+          {anriss ? <p className="blog-article-anriss">{anriss}</p> : null}
+          <span className="blog-article-mehr" aria-hidden="true">
+            Weiterlesen
+          </span>
+        </div>
       </Link>
     </div>
   );
@@ -230,6 +264,7 @@ const BLOGS_QUERY = `#graphql
     author: authorV2 {
       name
     }
+    excerpt
     handle
     id
     image {
