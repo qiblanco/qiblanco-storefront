@@ -349,7 +349,7 @@ export function produktSchema(produkt) {
  * nur nicht auf den sechs wichtigsten Seiten (PR #217, siehe Kopf von
  * produkt-seo.js). Ein Knoten, zwei Aufrufer.
  *
- * WARUM SIE AUCH FUER `OHNE_PREIS_NACHWEIS`-HANDLES ENTSTEHT — die einzige
+ * WARUM SIE AUCH FÜR `OHNE_PREIS_NACHWEIS`-HANDLES ENTSTEHT — die einzige
  * Stelle, an der diese Funktion bewusst ANDERS urteilt als produktSchema():
  * Die fünf dort geführten Handles (Bundles, Mengenrabatte, das
  * Kakao-Angebot) tragen absichtlich KEIN Product-JSON-LD, weil ein

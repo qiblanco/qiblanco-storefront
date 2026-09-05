@@ -195,7 +195,7 @@ test('produktMeta liefert genau EIN twitter:card und genau EINE BreadcrumbList',
 });
 
 test('produktMeta setzt KEIN twitter:card ohne og:image', () => {
-  // Die Deckungsbedingung: `summary_large_image` sagt ein grosses Bild zu.
+  // Die Deckungsbedingung: `summary_large_image` sagt ein großes Bild zu.
   // Ohne og:image wäre das eine Zusage ohne Träger, und die Karte fällt beim
   // Teilen auf einen nackten Link zurück.
   const m = produktMeta({

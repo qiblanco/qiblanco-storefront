@@ -110,7 +110,7 @@ export const meta = ({matches}) => {
     //
     // Deckung: `summary_large_image` ist hier zulässig, weil das og:image
     // direkt darüber unbedingt gesetzt ist (OG_BILD, 1024x1024, Begründung
-    // oben) — die Zusage „grosses Bild" hat also einen Träger. Titel und
+    // oben) — die Zusage „großes Bild" hat also einen Träger. Titel und
     // Beschreibung kommen über den og-Fallback; eigene twitter:title/
     // twitter:description entstehen bewusst NICHT (zwei Quellen für denselben
     // Text driften auseinander).
