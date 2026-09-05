@@ -8,7 +8,7 @@ import {canonicalLink} from '~/lib/seo';
  */
 export const meta = ({data}) => {
   return [
-    {title: `Hydrogen | ${data?.page.title ?? ''}`},
+    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
     canonicalLink('/pages/superhuman'),
   ];
 };
