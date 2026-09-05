@@ -5,25 +5,25 @@
 
    ADDITIV zur geteilten Token-Quelle styles/schlaf-zellen-schutz.css
    (Scope .lp-a3 — dasselbe Muster wie /pages/partner und die Campaign-PDP
-   /pages/qione-2-pro): diese Datei definiert ausschliesslich lp-pp-*-Regeln
-   und die Akt-Hintergruende dieser Route. JEDER Wert kommt aus den
-   :root-Tokens der Token-Quelle — keine freien Groessen, kein zweiter
+   /pages/qione-2-pro): diese Datei definiert ausschließlich lp-pp-*-Regeln
+   und die Akt-Hintergründe dieser Route. JEDER Wert kommt aus den
+   :root-Tokens der Token-Quelle — keine freien Größen, kein zweiter
    Goldton, kein dritter Radius, kein zweiter H2-Stil.
 
    Farb-Dramaturgie (3 Farbwelten, alternierend — wie das Referenz-Rezept):
    grund:   Hero, Ablauf, Fragen
-   flaeche: Konditionen, Bedingungen
+   fläche: Konditionen, Bedingungen
    dunkel:  Abschluss (EIN dunkler Schluss-Bogen)
    ========================================================================== */
 
-/* ─── Akt-Hintergruende ───────────────────────────────────────────────────── */
+/* ─── Akt-Hintergründe ───────────────────────────────────────────────────── */
 .lp-a3 [data-section='lp-pp-vorteile'],
 .lp-a3 [data-section='lp-pp-bedingungen'] {
-  background: var(--a-flaeche);
+  background: var(--a-fläche);
 }
 
-/* Karten auf Flaechen-Akten wechseln auf den Grund-Ton, damit sie sich ruhig
-   abheben statt Ton-in-Ton zu verschwimmen (Bestands-Loesung aus partner.css). */
+/* Karten auf Flächen-Akten wechseln auf den Grund-Ton, damit sie sich ruhig
+   abheben statt Ton-in-Ton zu verschwimmen (Bestands-Lösung aus partner.css). */
 .lp-a3 [data-section='lp-pp-vorteile'] .lp-a-benefit,
 .lp-a3 [data-section='lp-pp-bedingungen'] .lp-a-benefit {
   background: var(--a-grund);
@@ -36,14 +36,14 @@
 .lp-a3 .lp-pp-hero__visual img {
   display: block;
   width: 100%;
-  /* Deckel = groesste srcset-Breite bei 1x. Ohne ihn zieht ein schmales
-     Handy-Layout das Bild ueber seine Quellbreite hinaus auf (Upscaling). */
+  /* Deckel = größte srcset-Breite bei 1x. Ohne ihn zieht ein schmales
+     Handy-Layout das Bild über seine Quellbreite hinaus auf (Upscaling). */
   max-width: 440px;
   margin: 0 auto;
   height: auto;
   border-radius: var(--a-r2);
   box-shadow: var(--a-shadow-md);
-  background: var(--a-flaeche);
+  background: var(--a-fläche);
 }
 .lp-a3 .lp-pp-hero__visual figcaption {
   margin-top: var(--a-s2);
@@ -74,7 +74,7 @@
   border-bottom: 0;
   padding-bottom: 0;
 }
-/* Gold traegt hier die FUEHRUNG durch den Ablauf — Handlung, nicht Deko. */
+/* Gold trägt hier die FÜHRUNG durch den Ablauf — Handlung, nicht Deko. */
 .lp-a3 .lp-pp-schritt__nr {
   display: grid;
   place-content: center;

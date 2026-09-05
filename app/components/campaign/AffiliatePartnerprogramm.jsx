@@ -30,14 +30,14 @@
 const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
 
 // Bestands-Asset vom Shopify-CDN (dieselbe Datei, die /pages/partner als
-// Hero-Rueckfall nutzt) — GL-PRO-0015: Medien liegen auf dem CDN, nie im Repo.
+// Hero-Rückfall nutzt) — GL-PRO-0015: Medien liegen auf dem CDN, nie im Repo.
 //
-// MIT `width=` AUSGELIEFERT, nicht in Originalgroesse: der Alle-Formate-Lauf
-// (bin/hb-formate, Pruefpunkt `bild-ueberaufloesung`) hat am 2026-09-05 in
+// MIT `width=` AUSGELIEFERT, nicht in Originalgröße: der Alle-Formate-Lauf
+// (bin/hb-formate, Prüfpunkt `bild-ueberaufloesung`) hat am 2026-09-05 in
 // allen elf Formaten gemessen, dass die 1080-px-Quelle auf einer 423-px-
-// Flaeche landet — Ladezeit ohne Gegenwert. Zwei Breiten als srcset: 440 fuer
-// Standard-Displays, 880 fuer Retina. Damit `sizes` in JEDEM Format stimmt,
-// deckelt die CSS die Anzeigeflaeche bei 440 px — sonst zieht ein 600-px-Handy
+// Fläche landet — Ladezeit ohne Gegenwert. Zwei Breiten als srcset: 440 für
+// Standard-Displays, 880 für Retina. Damit `sizes` in JEDEM Format stimmt,
+// deckelt die CSS die Anzeigefläche bei 440 px — sonst zieht ein 600-px-Handy
 // bei 100vw das 440er Bild auf 600 px auf und wird sichtbar unscharf (genau
 // dieser Blocker, gemessen im Format mobil-600 am 2026-09-05).
 const HERO_BASIS =
@@ -82,7 +82,8 @@ export const FRAGEN = [
       'Nein. Provision gibt es ausschließlich für Empfehlungen an Dritte. ' +
       'Eigenkäufe, Bestellungen deiner eigenen Firma oder verbundener ' +
       'Unternehmen und die systematische Eigennutzung deines Codes sind ' +
-      'ausgeschlossen. Wir sagen das lieber vorher als hinterher.',
+      'ausgeschlossen. Der Rabatt aus deinem Code greift dabei weiterhin — ' +
+      'nur eine Provision entsteht daraus nicht.',
   },
   {
     frage: 'Wann wird ausgezahlt?',
@@ -289,8 +290,9 @@ function Bedingungen() {
       <span className="eyebrow">Klarheit vorab</span>
       <h2 id="lp-pp-bedingungen-title">Für wen das passt — und für wen nicht</h2>
       <p className="lp-vp-section__lede">
-        Wir sagen die Ausschlüsse lieber vorher. Dann weißt du, woran du bist,
-        bevor du Zeit investierst.
+        Provision entsteht nur für Empfehlungen an Dritte, und jede Anmeldung
+        wird vor der Freischaltung geprüft. Was das konkret bedeutet, steht
+        hier.
       </p>
       <div className="lp-pp-grid-2">
         <article className="lp-a-benefit">

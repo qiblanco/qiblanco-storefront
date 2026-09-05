@@ -18,25 +18,25 @@ const BESCHREIBUNG =
  * Frage „Qi Blanco Partnerprogramm" (Job 20260905-eigene-indexierbare-
  * partnerseite-statt-vendor-flaeche-prio25).
  *
- * WARUM ES DIESE SEITE GIBT. Die SEO-Massnahme L4 ist am 2026-09-05 als
- * Option B entschieden: das `noindex` fuer aff.revolution.qiblanco.com wird
- * beim Vendor UpPromote als X-Robots-Tag ueber die GANZE Subdomain bestellt.
- * Das nimmt `/register` mit — eine oeffentliche, deutschsprachige
+ * WARUM ES DIESE SEITE GIBT. Die SEO-Maßnahme L4 ist am 2026-09-05 als
+ * Option B entschieden: das `noindex` für aff.revolution.qiblanco.com wird
+ * beim Vendor UpPromote als X-Robots-Tag über die GANZE Subdomain bestellt.
+ * Das nimmt `/register` mit — eine öffentliche, deutschsprachige
  * Partner-Werbeseite (203 KB, gemessen 2026-09-05), die heute die einzige
- * indexierbare Antwort auf diese Frage ist. Ohne Ersatz haette die Frage
- * danach auf KEINER von uns kontrollierten Flaeche mehr eine Antwort. Diese
+ * indexierbare Antwort auf diese Frage ist. Ohne Ersatz hätte die Frage
+ * danach auf KEINER von uns kontrollierten Fläche mehr eine Antwort. Diese
  * Seite ist der Ersatz; das Formular selbst bleibt beim Vendor und wird
- * ausdruecklich NICHT nachgebaut.
+ * ausdrücklich NICHT nachgebaut.
  *
- * ABGRENZUNG ZU /pages/partner — die haeufigste Verwechslung und der Grund,
- * warum hier kein Handle mit dem Praefix `partner` steht: /pages/partner ist
- * die Landeseite fuer BEREITS GEWORBENE Kunden („Auf Empfehlung hier"), ist
+ * ABGRENZUNG ZU /pages/partner — die häufigste Verwechslung und der Grund,
+ * warum hier kein Handle mit dem Präfix `partner` steht: /pages/partner ist
+ * die Landeseite für BEREITS GEWORBENE Kunden („Auf Empfehlung hier"), ist
  * absichtlich `noindex,nofollow` und bleibt es. Zwei Seiten, zwei Aufgaben.
  * Wer ihr das noindex nimmt, erzeugt genau die Eigen-Kannibalisierung
  * (Klasse C), die der seo-manager ohnehin misst.
  *
  * INDEXIERBARKEIT, die drei Teile: (1) KEIN robots-noindex und kein
- * X-Robots-Tag, (2) canonical ueber `canonicalLink()` als echtes
+ * X-Robots-Tag, (2) canonical über `canonicalLink()` als echtes
  * `<link rel="canonical">` mit absoluter URL — ein Deskriptor ohne `tagName`
  * rendert in react-router-7 als wirkungsloses `<meta rel="canonical">`
  * (Befund F_canonical, Doku in ~/lib/seo), (3) der Sitemap-Eintrag kommt
@@ -45,9 +45,9 @@ const BESCHREIBUNG =
  * von homepage-bauer/pruefungen/probe_partnerseite_naht_sitemap_route.py.
  *
  * TRACKING-NAHT: KEIN Redirect, KEIN eigener Pixel, KEINE neuen Cookies. Die
- * R1/R2/R3-Kette haengt pfad-agnostisch im root-Layout (Hausmuster D-006),
+ * R1/R2/R3-Kette hängt pfad-agnostisch im root-Layout (Hausmuster D-006),
  * TRACKING_COOKIE_NAMES bleibt unangetastet. Der Link auf das Vendor-Formular
- * ist ein gewoehnlicher Aussenlink ohne Parameter-Uebergabe.
+ * ist ein gewöhnlicher Außenlink ohne Parameter-Uebergabe.
  *
  * DESIGN: geteilte Token-Quelle styles/schlaf-zellen-schutz.css (Scope
  * .lp-a3, Referenz-Rezept) + additive lp-pp-*-Regeln in
@@ -63,9 +63,9 @@ export function links() {
 
 /**
  * FAQPage-Auszeichnung aus DERSELBEN Quelle wie der sichtbare Text
- * (FRAGEN im Komponenten-Modul). Zwei Listen wuerden auseinanderdriften, und
+ * (FRAGEN im Komponenten-Modul). Zwei Listen würden auseinanderdriften, und
  * strukturierte Daten, die etwas anderes sagen als die Seite, sind ein
- * Verstoss gegen Googles Richtlinie — nicht nur eine Unsauberkeit.
+ * Verstoß gegen Googles Richtlinie — nicht nur eine Unsauberkeit.
  */
 function faqSchema() {
   return {
