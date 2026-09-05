@@ -273,6 +273,29 @@ export function buildAttributionCartAttributes({
     );
   }
 
+  // qb_ad_id — DIE NORMALISIERTE AD-ID (Grossjob 20260905-ads-rabattcode-sonde
+  // s03). Sie ist der PREISNEUTRALE Zwilling des ad-scharfen Rabattcodes und
+  // die Bedingung dafür, dass der Code ueberhaupt kausal gelesen werden darf:
+  // ohne einen zweiten, unabhaengigen Zeugen kann eine Bestellung mit Code X
+  // nicht von einer Bestellung unterschieden werden, deren Kaeufer den Code
+  // nur weitergereicht bekam (Leck-Kennzahl, Sollwert 0).
+  //
+  // WARUM EIN EIGENES ATTRIBUT UND NICHT utm_content DIREKT: utm_content ist
+  // KEIN Ad-ID-Feld. Gemessen über 14 Tage stehen dort auch 'Facebook_UA'
+  // (11.174 Landungen), 'linktree' (1.420) und 'link_in_bio'. Ein Konsument
+  // könnte Ad-ID und Freitext nicht trennen. Und die beiden Traeger sind
+  // komplementaer, nicht redundant: Ad 120251220869070704 liefert 32.621 mal
+  // utm_content und 0 mal h_ad_id, Ad 120243903213670443 genau umgekehrt —
+  // erst ihre Vereinigung deckt alle aktiven Anzeigen.
+  //
+  // Regel wie hyros-eigenbau/journey/own_source.py:_AD_ID_RE (rein numerisch,
+  // 10-20 Stellen). Reihenfolge = Deckung: utm_content 98,7 %, h_ad_id 54,1 %.
+  //
+  // ZÄHLT NICHT ALS SIGNAL: der Wert wird aus `trackingParams` abgeleitet,
+  // existiert also nur, wenn ohnehin ein Ad-Signal da war — er kann den
+  // hasTrackingSignal-Zweig oben nicht kuenstlich öffnen (Job 20260809).
+  addCartAttribute(attributes, 'qb_ad_id', adIdAusTrackingParams(trackingParams));
+
   addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
 
   return attributes;
@@ -385,6 +408,25 @@ function isTrackingParamName(name) {
     TRACKING_COOKIE_NAMES.has(name) ||
     /^utm_[a-z0-9_]+$/i.test(name)
   );
+}
+
+const AD_ID_RE = /^[0-9]{10,20}$/;
+
+/**
+ * Plattform-Ad-ID aus den bereits erlaubten Tracking-Parametern. Liefert nur
+ * eine rein numerische ID (10-20 Stellen) — Freitext-utm_content wird
+ * verworfen, nicht durchgereicht.
+ *
+ * @param {URLSearchParams} trackingParams
+ * @returns {string | null}
+ */
+export function adIdAusTrackingParams(trackingParams) {
+  if (!trackingParams) return null;
+  for (const key of ['utm_content', 'h_ad_id']) {
+    const wert = (trackingParams.get(key) || '').trim();
+    if (AD_ID_RE.test(wert)) return wert;
+  }
+  return null;
 }
 
 /**
