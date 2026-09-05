@@ -4,6 +4,12 @@ import {
   NICHT_INDEXIERBARE_PRODUKTE,
 } from '~/lib/seo';
 import {BLOG_BESTAND_FRAGMENT, leereHandles} from '~/lib/blog-bestand';
+import {
+  ARTIKEL_PFAD_FRAGMENT,
+  artikelBlogKarte,
+  artikelKarteUnvollstaendig,
+  artikelPfad,
+} from '~/lib/blog-artikel-pfad';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -75,17 +81,73 @@ async function leereBlogHandles(storefront) {
 }
 
 /**
+ * Marke für einen Artikel ohne bekannten Blog.
+ *
+ * `getLink` ist synchron und kann keinen Eintrag ueberspringen — es MUSS eine
+ * Zeichenkette liefern. Der so markierte `<url>`-Block wird unten entfernt.
+ * Die Marke trägt bewusst ein Zeichen, das in keinem Shopify-Handle
+ * vorkommen kann, damit sie nie einen echten Pfad trifft.
+ */
+const OHNE_BLOG = '#kein-blog-bekannt';
+
+/**
+ * lädt die Zuordnung Artikel -> Blog.
+ *
+ * Fehlerfall gibt `null` statt einer leeren Karte zurück, und der
+ * Unterschied ist tragend: eine LEERE Karte hiesse "gemessen, kein Artikel
+ * hat einen Blog" und würde die Sitemap für 24 h leer einfrieren. `null`
+ * heißt "nicht gemessen" — der Aufrufer verkuerzt dann die Cache-Dauer,
+ * damit der nächste Abruf es erneut versucht.
+ *
+ * @param {LoaderFunctionArgs['context']['storefront']} storefront
+ * @returns {Promise<Map<string, string> | null>}
+ */
+async function artikelKarte(storefront) {
+  try {
+    const {blogs} = await storefront.query(ARTIKEL_PFAD_QUERY);
+    if (artikelKarteUnvollstaendig(blogs)) {
+      console.warn(
+        '[sitemap/articles] mehr Artikel je Blog als abgefragt — die Karte ist eine Teilmenge, ueberzaehlige Artikel fehlen in der Sitemap',
+      );
+    }
+    if (blogs?.pageInfo?.hasNextPage) {
+      console.warn(
+        '[sitemap/articles] mehr Blogs als abgefragt — die Karte ist eine Teilmenge',
+      );
+    }
+    return artikelBlogKarte(blogs);
+  } catch (fehler) {
+    console.error('[sitemap/articles] Zuordnungs-Abfrage fehlgeschlagen', fehler);
+    return null;
+  }
+}
+
+/**
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, params, context: {storefront}}) {
+  // Artikel liegen unter /blogs/<blogHandle>/<slug>; die generische Form
+  // `${baseUrl}/${type}/${handle}` traefe /articles/<slug> und damit eine
+  // Route, die es nie gab. Die Zuordnung steht nur VOR getSitemap zur
+  // Verfuegung, weil getLink synchron ist.
+  const karte = params.type === 'articles' ? await artikelKarte(storefront) : null;
+  const nichtGemessen = params.type === 'articles' && karte === null;
+
+  const pfad = (type, handle) => {
+    if (type !== 'articles') return `/${type}/${handle}`;
+    return artikelPfad(karte, handle) ?? OHNE_BLOG;
+  };
+
   const response = await getSitemap({
     storefront,
     request,
     params,
     locales: ['EN-US', 'EN-CA', 'FR-CA'],
     getLink: ({type, baseUrl, handle, locale}) => {
-      if (!locale) return `${baseUrl}/${type}/${handle}`;
-      return `${baseUrl}/${locale}/${type}/${handle}`;
+      const rest = pfad(type, handle);
+      if (rest === OHNE_BLOG) return OHNE_BLOG;
+      if (!locale) return `${baseUrl}${rest}`;
+      return `${baseUrl}/${locale}${rest}`;
     },
   });
 
@@ -93,27 +155,45 @@ export async function loader({request, params, context: {storefront}}) {
     params.type === 'blogs'
       ? await leereBlogHandles(storefront)
       : VERSTECKTE_HANDLES[params.type];
-  if (!versteckt || versteckt.length === 0) {
-    response.headers.set('Cache-Control', `max-age=${60 * 60 * 24}`);
+  // Konnte die Zuordnung nicht gelesen werden, faellt die Sitemap vorerst
+  // leer aus. Sie darf dann NICHT 24 h so festhaengen — die kurze Frist ist
+  // der Unterschied zwischen "gleich nochmal versuchen" und "einen Tag lang
+  // nichts anmelden".
+  const cacheSekunden = nichtGemessen ? 60 * 5 : 60 * 60 * 24;
+
+  // Artikel werden IMMER gefiltert, auch ohne versteckte Handles: sonst
+  // truege die Sitemap die `OHNE_BLOG`-Marken als `<loc>` aus. Genau hier lag
+  // eine Falle — der früher an dieser Stelle stehende Schnell-Ausstieg
+  // greift für `articles` (kein Eintrag in VERSTECKTE_HANDLES) und haette
+  // den Filter zuverlaessig uebersprungen.
+  const hatVersteckte = Boolean(versteckt && versteckt.length > 0);
+  if (!hatVersteckte && params.type !== 'articles') {
+    response.headers.set('Cache-Control', `max-age=${cacheSekunden}`);
     return response;
   }
 
   const body = (await response.text()).replace(
     /<url>[\s\S]*?<\/url>/g,
-    (urlEntry) =>
+    (urlEntry) => {
+      // Ein Artikel ohne bekannten Blog hat keine bekannte Adresse. Lieber
+      // gar keine URL als eine tote: fehlend bleibt über den Blog-Index
+      // crawlbar, tot kostet Crawl-Budget und Vertrauen.
+      if (urlEntry.includes(OHNE_BLOG)) return '';
       // Auf `</loc>` verankert statt loser Teilstring-Suche: sonst risse ein
       // Handle auch seinen längeren Namensvetter mit raus (…-2, …-alt).
       // Für die drei Bundle-Handles ist das wirkungsgleich zur früheren
       // Form — es kann nur WENIGER entfernen, nie mehr.
-      versteckt.some((handle) =>
-        urlEntry.includes(`/${params.type}/${handle}</loc>`),
-      )
+      return hatVersteckte &&
+        versteckt.some((handle) =>
+          urlEntry.includes(`/${params.type}/${handle}</loc>`),
+        )
         ? ''
-        : urlEntry,
+        : urlEntry;
+    },
   );
 
   const headers = new Headers(response.headers);
-  headers.set('Cache-Control', `max-age=${60 * 60 * 24}`);
+  headers.set('Cache-Control', `max-age=${cacheSekunden}`);
 
   return new Response(body, {
     status: response.status,
@@ -138,6 +218,23 @@ const BLOG_BESTAND_QUERY = `#graphql
     }
   }
   ${BLOG_BESTAND_FRAGMENT}
+`;
+
+// Dieselbe Blog-Obergrenze wie oben und aus demselben Grund: der Shop hat
+// heute 3 Blogs, und ein Seitenlimit, das die zuletzt angelegten Objekte
+// hinter den Rand schiebt, faellt genau bei neuen Inhalten auf.
+const ARTIKEL_PFAD_QUERY = `#graphql
+  query SitemapArtikelPfade($language: LanguageCode) @inContext(language: $language) {
+    blogs(first: 50) {
+      pageInfo {
+        hasNextPage
+      }
+      nodes {
+        ...BlogArtikelPfad
+      }
+    }
+  }
+  ${ARTIKEL_PFAD_FRAGMENT}
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
