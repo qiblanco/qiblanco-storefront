@@ -167,13 +167,13 @@ export async function loader({request, params, context: {storefront}}) {
   // truege die Sitemap die `OHNE_BLOG`-Marken als `<loc>` aus. Genau hier lag
   // eine Falle — der früher an dieser Stelle stehende Schnell-Ausstieg
   // greift für `articles` (kein Eintrag in VERSTECKTE_HANDLES) und haette
-  // den Filter zuverlaessig uebersprungen.
+  // den Filter zuverlaessig übersprungen.
   const hatVersteckte = Boolean(versteckt && versteckt.length > 0);
   // Nur-Route-Seiten kommen NACH dem Filter dazu (s. mitNurRouteSeiten unten).
-  // Sie muessen den Schnell-Ausstieg mit oeffnen, sonst greift die Ergaenzung
+  // Sie müssen den Schnell-Ausstieg mit öffnen, sonst greift die Ergänzung
   // genau dann nicht, wenn es sonst nichts zu tun gibt.
-  const ergaenzung = params.type === 'pages' ? NUR_ROUTE_SEITEN : [];
-  if (!hatVersteckte && params.type !== 'articles' && !ergaenzung.length) {
+  const nachtrag = params.type === 'pages' ? NUR_ROUTE_SEITEN : [];
+  if (!hatVersteckte && params.type !== 'articles' && !nachtrag.length) {
     response.headers.set('Cache-Control', `max-age=${cacheSekunden}`);
     return response;
   }
@@ -198,7 +198,7 @@ export async function loader({request, params, context: {storefront}}) {
     },
   );
 
-  const body = mitNurRouteSeiten(gefiltert, ergaenzung);
+  const body = mitNurRouteSeiten(gefiltert, nachtrag);
 
   const headers = new Headers(response.headers);
   headers.set('Cache-Control', `max-age=${cacheSekunden}`);
@@ -210,33 +210,33 @@ export async function loader({request, params, context: {storefront}}) {
 }
 
 /**
- * Traegt Seiten nach, die es NUR als Hydrogen-Route gibt (kein Shopify-Objekt).
+ * Trägt Seiten nach, die es NUR als Hydrogen-Route gibt (kein Shopify-Objekt).
  *
- * WARUM ES DIESE FUNKTION BRAUCHT: `getSitemap` kennt ausschliesslich
+ * WARUM ES DIESE FUNKTION BRAUCHT: `getSitemap` kennt ausschließlich
  * Shopify-Ressourcen. Eine Seite, die allein aus einer Route in diesem Repo
  * besteht, liefert HTTP 200 mit vollem Inhalt und steht trotzdem in KEINER
- * Sitemap — sie ist gebaut und fuer die Suche unsichtbar. Das ist kein
+ * Sitemap — sie ist gebaut und für die Suche unsichtbar. Das ist kein
  * Sonderfall: /pages/tiefer-schlaf, /pages/qione-2-pro und /pages/podcasts
  * sind seit jeher genau so unsichtbar (gemessen 2026-09-05 gegen
- * sitemap/pages/1.xml, 47 Eintraege).
+ * sitemap/pages/1.xml, 47 Einträge).
  *
- * DER HAUSWEG WAR BISHER EIN ANDERER und bleibt gueltig: ein leeres
- * Shopify-Seitenobjekt als Sitemap-Traeger (so gebaut bei `technologie` und
- * `studien`). Diese Funktion ersetzt ihn NICHT und raeumt ihn nicht ab — sie
- * ist die zweite Bauform fuer Seiten, deren Traeger im Repo stehen soll.
+ * DER HAUSWEG WAR BISHER EIN ANDERER und bleibt gültig: ein leeres
+ * Shopify-Seitenobjekt als Sitemap-Träger (so gebaut bei `technologie` und
+ * `studien`). Diese Funktion ersetzt ihn NICHT und räumt ihn nicht ab — sie
+ * ist die zweite Bauform für Seiten, deren Träger im Repo stehen soll.
  * Der Unterschied ist die Sichtbarkeit: das leere Shopify-Objekt sieht im
  * Admin aus wie eine vergessene leere Seite, und wer es loescht, nimmt der
  * Route ihre Auffindbarkeit, ohne dass irgendwo steht, warum sie existierte.
  *
- * DIE LISTE IST ABSICHTLICH KURZ UND KEINE SAMMELSTELLE: sie traegt genau die
- * Seiten, fuer die diese Entscheidung getroffen ist UND deren Live-Zustand
- * gewacht wird. Ein Eintrag ohne Wache waere eine Sitemap-URL, die still auf
+ * DIE LISTE IST ABSICHTLICH KURZ UND KEINE SAMMELSTELLE: sie trägt genau die
+ * Seiten, für die diese Entscheidung getroffen ist UND deren Live-Zustand
+ * gewacht wird. Ein Eintrag ohne Wache wäre eine Sitemap-URL, die still auf
  * 404 laufen kann — derselbe Schaden, vor dem der Blog-Filter oben warnt, nur
  * andersherum. Die Begruendung je Eintrag steht an der Definition in ~/lib/seo.
  *
  * IDEMPOTENT: steht der Pfad schon im Rumpf (weil doch ein Shopify-Objekt
- * existiert), wird nichts ergaenzt — sonst stuende die URL doppelt.
- * KEINE hreflang-Alternates: die Locale-Praefixe (/EN-US/…) sind fuer diese
+ * existiert), wird nichts ergänzt — sonst stünde die URL doppelt.
+ * KEINE hreflang-Alternates: die Locale-Präfixe (/EN-US/…) sind für diese
  * deutschsprachigen Routen keine eigenen Seiten.
  *
  * @param {string} body Sitemap-XML nach dem Versteckt-Filter

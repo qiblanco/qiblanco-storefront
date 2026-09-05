@@ -1,18 +1,18 @@
 /**
- * Hermetischer Test der ECHTEN Sitemap-Route fuer Seiten, die es NUR als
+ * Hermetischer Test der ECHTEN Sitemap-Route für Seiten, die es NUR als
  * Hydrogen-Route gibt (kein Shopify-Seitenobjekt).
  *
- *   node test/sitemap-nur-route-seiten.test.mjs      # exit 0 = gruen
+ *   node test/sitemap-nur-route-seiten.test.mjs      # exit 0 = grün
  *
  * WARUM ER NEBEN sitemap-artikel.test.mjs STEHT: jener prueft das ENTFERNEN
- * aus der Sitemap, dieser das ERGAENZEN. Beide Richtungen laufen durch
+ * aus der Sitemap, dieser das ERGÄNZEN. Beide Richtungen laufen durch
  * denselben Schnell-Ausstieg ("nichts zu tun -> Antwort unveraendert
- * durchreichen"), und genau dort war die Falle schon einmal: fuer `articles`
- * hat er den Filter uebersprungen. Fuer `pages` OHNE versteckte Handles
- * haette er jetzt die Ergaenzung uebersprungen — dieselbe Stelle, andere
+ * durchreichen"), und genau dort war die Falle schon einmal: für `articles`
+ * hat er den Filter übersprungen. Für `pages` OHNE versteckte Handles
+ * hätte er jetzt die Ergänzung übersprungen — dieselbe Stelle, andere
  * Richtung.
  *
- * DIE ERGAENZUNG IST EINE ZUSAGE AN GOOGLE: was hier in die Sitemap kommt,
+ * DIE ERGÄNZUNG IST EINE ZUSAGE AN GOOGLE: was hier in die Sitemap kommt,
  * muss live antworten. Die Live-Haelfte dieser Zusage prueft
  * homepage-bauer/pruefungen/probe_partnerseite_naht_sitemap_route.py am
  * echten Shop; dieser Test prueft die Mechanik ohne Netz.
@@ -80,17 +80,17 @@ const locs = (xml) => [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1])
 const zaehle = (xml, pfad) =>
   locs(xml).filter((u) => u.endsWith(pfad)).length;
 
-let gruen = 0;
+let grün = 0;
 async function pruefe(name, fn) {
   await fn();
-  gruen += 1;
+  grün += 1;
   console.log(`  ok  ${name}`);
 }
 
 assert.ok(
   NUR_ROUTE_SEITEN.length > 0,
-  'Die Liste ist leer — dieser Test haette dann keinen Gegenstand und wuerde ' +
-    'strukturell nie rot. Das ist ein MESSAUSFALL, kein gruener Lauf.',
+  'Die Liste ist leer — dieser Test hätte dann keinen Gegenstand und würde ' +
+    'strukturell nie rot. Das ist ein MESSAUSFALL, kein grüner Lauf.',
 );
 
 await pruefe('jede Nur-Route-Seite steht in sitemap/pages/1.xml', async () => {
@@ -104,9 +104,9 @@ await pruefe('jede Nur-Route-Seite steht in sitemap/pages/1.xml', async () => {
   }
 });
 
-await pruefe('Ergaenzung greift AUCH ohne versteckte Handles', async () => {
+await pruefe('Ergänzung greift AUCH ohne versteckte Handles', async () => {
   // Der Schnell-Ausstieg der Route: ohne versteckte Handles wurde die Antwort
-  // frueher unveraendert durchgereicht. Genau dieser Fall.
+  // früher unveraendert durchgereicht. Genau dieser Fall.
   const xml = await sitemapXml('pages', ['studien']);
   assert.ok(!AUS_SITEMAP_ENTFERNTE_SEITEN.includes('studien'));
   assert.equal(zaehle(xml, NUR_ROUTE_SEITEN[0].pfad), 1);
@@ -118,7 +118,7 @@ await pruefe('kein Doppel-Eintrag, wenn es das Shopify-Objekt doch gibt', async 
   assert.equal(
     zaehle(xml, NUR_ROUTE_SEITEN[0].pfad),
     1,
-    'Pfad steht doppelt — die Idempotenz-Pruefung greift nicht',
+    'Pfad steht doppelt — die Idempotenz-Prüfung greift nicht',
   );
 });
 
@@ -132,7 +132,7 @@ await pruefe('das Entfernen versteckter Handles wirkt unveraendert weiter', asyn
   assert.equal(zaehle(xml, '/pages/studien'), 1);
 });
 
-await pruefe('andere Sitemap-Typen werden NICHT ergaenzt', async () => {
+await pruefe('andere Sitemap-Typen werden NICHT ergänzt', async () => {
   const xml = await sitemapXml('products', ['qione-2-pro']);
   for (const s of NUR_ROUTE_SEITEN) {
     assert.equal(zaehle(xml, s.pfad), 0, `${s.pfad} in der Produkt-Sitemap`);
@@ -145,4 +145,4 @@ await pruefe('die ergaenzte URL ist absolut und auf der Produktions-Domain', asy
   assert.equal(treffer, `https://qiblanco.com${NUR_ROUTE_SEITEN[0].pfad}`);
 });
 
-console.log(`\nsitemap-nur-route-seiten: ${gruen} Pruefungen gruen`);
+console.log(`\nsitemap-nur-route-seiten: ${grün} Prüfungen grün`);
