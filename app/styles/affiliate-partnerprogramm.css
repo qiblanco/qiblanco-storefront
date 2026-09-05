@@ -1,0 +1,192 @@
+/* ============================================================================
+   /pages/affiliate-partnerprogramm — eigene, indexierbare Partnerprogramm-
+   Seite (Job 20260905-eigene-indexierbare-partnerseite-statt-vendor-flaeche-
+   prio25, 2026-09-05).
+
+   ADDITIV zur geteilten Token-Quelle styles/schlaf-zellen-schutz.css
+   (Scope .lp-a3 — dasselbe Muster wie /pages/partner und die Campaign-PDP
+   /pages/qione-2-pro): diese Datei definiert ausschließlich lp-pp-*-Regeln
+   und die Akt-Hintergründe dieser Route. JEDER Wert kommt aus den
+   :root-Tokens der Token-Quelle — keine freien Größen, kein zweiter
+   Goldton, kein dritter Radius, kein zweiter H2-Stil.
+
+   Farb-Dramaturgie (3 Farbwelten, alternierend — wie das Referenz-Rezept):
+   grund:   Hero, Ablauf, Fragen
+   fläche: Konditionen, Bedingungen
+   dunkel:  Abschluss (EIN dunkler Schluss-Bogen)
+   ========================================================================== */
+
+/* ─── Akt-Hintergründe ───────────────────────────────────────────────────── */
+.lp-a3 [data-section='lp-pp-vorteile'],
+.lp-a3 [data-section='lp-pp-bedingungen'] {
+  background: var(--a-fläche);
+}
+
+/* Karten auf Flächen-Akten wechseln auf den Grund-Ton, damit sie sich ruhig
+   abheben statt Ton-in-Ton zu verschwimmen (Bestands-Lösung aus partner.css). */
+.lp-a3 [data-section='lp-pp-vorteile'] .lp-a-benefit,
+.lp-a3 [data-section='lp-pp-bedingungen'] .lp-a-benefit {
+  background: var(--a-grund);
+}
+
+/* ─── Hero-Bild ───────────────────────────────────────────────────────────── */
+.lp-a3 .lp-pp-hero__visual {
+  margin: 0;
+}
+.lp-a3 .lp-pp-hero__visual img {
+  display: block;
+  width: 100%;
+  /* Deckel = größte srcset-Breite bei 1x. Ohne ihn zieht ein schmales
+     Handy-Layout das Bild über seine Quellbreite hinaus auf (Upscaling). */
+  max-width: 440px;
+  margin: 0 auto;
+  height: auto;
+  border-radius: var(--a-r2);
+  box-shadow: var(--a-shadow-md);
+  background: var(--a-fläche);
+}
+.lp-a3 .lp-pp-hero__visual figcaption {
+  margin-top: var(--a-s2);
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+  text-align: center;
+}
+
+/* ─── Ablauf: nummerierte Schritte ────────────────────────────────────────── */
+.lp-a3 .lp-pp-schritte {
+  list-style: none;
+  max-width: var(--a-breite-schmal);
+  margin: var(--a-s6) auto 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s3);
+}
+.lp-a3 .lp-pp-schritt {
+  display: grid;
+  grid-template-columns: var(--a-s6) 1fr;
+  gap: var(--a-s3);
+  align-items: start;
+  padding-bottom: var(--a-s3);
+  border-bottom: 1px solid var(--a-linie);
+}
+.lp-a3 .lp-pp-schritt:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+/* Gold trägt hier die FÜHRUNG durch den Ablauf — Handlung, nicht Deko. */
+.lp-a3 .lp-pp-schritt__nr {
+  display: grid;
+  place-content: center;
+  width: var(--a-s6);
+  height: var(--a-s6);
+  border-radius: var(--a-r1);
+  background: var(--a-akzent);
+  color: var(--a-dunkel);
+  font-size: var(--a-fs-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.lp-a3 .lp-pp-schritt__text h3 {
+  font-size: var(--a-fs-lg);
+}
+.lp-a3 .lp-pp-schritt__text p {
+  margin: 0;
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+}
+
+/* ─── Bedingungen: zwei Karten nebeneinander ──────────────────────────────── */
+.lp-a3 .lp-pp-grid-2 {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--a-s3);
+}
+.lp-a3 .lp-pp-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+  text-align: left;
+}
+.lp-a3 .lp-pp-liste li {
+  position: relative;
+  padding-left: var(--a-s3);
+}
+/* Gold NUR auf der bejahenden Seite; die Abgrenzung bleibt bewusst still —
+   sie soll informieren, nicht abschrecken. */
+.lp-a3 .lp-pp-liste--ja li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--a-akzent-tinte);
+  font-weight: 700;
+}
+.lp-a3 .lp-pp-liste--nein li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--a-muted);
+  font-weight: 700;
+}
+
+/* ─── Fragen ──────────────────────────────────────────────────────────────── */
+.lp-a3 .lp-pp-faq {
+  max-width: var(--a-breite-schmal);
+  margin: var(--a-s6) auto 0;
+  padding: 0;
+}
+.lp-a3 .lp-pp-faq__item {
+  padding: var(--a-s3) 0;
+  border-bottom: 1px solid var(--a-linie);
+}
+.lp-a3 .lp-pp-faq__item:last-child {
+  border-bottom: 0;
+}
+.lp-a3 .lp-pp-faq dt {
+  font-size: var(--a-fs-lg);
+  font-weight: 600;
+  margin: 0 0 var(--a-s1);
+  color: var(--a-text);
+}
+.lp-a3 .lp-pp-faq dd {
+  margin: 0;
+  max-width: var(--a-mass);
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+}
+
+/* ─── Abschluss (dunkler Akt) ─────────────────────────────────────────────── */
+.lp-a3 .lp-pp-cta__inner {
+  max-width: var(--a-breite-schmal);
+  margin: 0 auto;
+  text-align: center;
+}
+.lp-a3 [data-section='lp-pp-cta'] .lp-vp-final-cta__lede {
+  margin-bottom: var(--a-s4);
+}
+
+/* ─── Responsive: eine Spalte ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .lp-a3 .lp-pp-grid-2 {
+    grid-template-columns: 1fr;
+    gap: var(--a-s3);
+  }
+}
+@media (max-width: 640px) {
+  .lp-a3 .lp-pp-schritt {
+    grid-template-columns: var(--a-s4) 1fr;
+    gap: var(--a-s2);
+  }
+  .lp-a3 .lp-pp-schritt__nr {
+    width: var(--a-s4);
+    height: var(--a-s4);
+    font-size: var(--a-fs-base);
+  }
+}
