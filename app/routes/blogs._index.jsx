@@ -3,6 +3,13 @@ import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {blogMeta} from '~/lib/blog-seo';
 import {BLOG_BESTAND_FRAGMENT, hatArtikel} from '~/lib/blog-bestand';
+import blogStyles from '~/styles/blog.css?url';
+
+// Dasselbe Blatt wie auf /blogs/wissen und auf der Beitragsseite. Diese
+// Route hatte bis hierher GAR KEIN eigenes Stylesheet — ihre Klassen lagen
+// als Skelett-Reste im globalen Blatt. Ein zweites Blog-Blatt waere der
+// naechste Bruch; es gibt genau eines.
+export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 
 /**
  * @type {MetaFunction}
@@ -10,10 +17,14 @@ import {BLOG_BESTAND_FRAGMENT, hatArtikel} from '~/lib/blog-bestand';
 export const meta = ({location}) => {
   return blogMeta({
     pfad: location?.pathname ?? '/blogs',
-    titel: 'Magazin',
+    // „Magazin" war der Vorgabetitel des Hydrogen-Skeletons und stand nie in
+    // einer redaktionellen Entscheidung — der Blog heißt Wissen. Der
+    // Seitentitel bleibt vom Blog selbst unterscheidbar (/blogs listet die
+    // Blogs, /blogs/wissen die Beiträge), sonst tragen beide dieselbe Zeile.
+    titel: 'Wissen — Übersicht',
     beschreibung:
-      'Das Magazin von Qi Blanco: Beiträge rund um Strahlung, Schlaf und ' +
-      'Energie im Alltag — und wie unsere Life Technology dabei hilft.',
+      'Beiträge von Qi Blanco zu Schutz, Schlaf, Energie und Strahlung im ' +
+      'Alltag: was gemessen ist — und wo die Messung aufhört.',
   });
 };
 
@@ -84,21 +95,32 @@ export default function Blogs() {
   const {blogs} = useLoaderData();
 
   return (
-    <div className="blogs">
-      <h1>Magazin</h1>
-      <div className="blogs-grid">
-        <PaginatedResourceSection connection={blogs}>
-          {({node: blog}) => (
-            <Link
-              className="blog"
-              key={blog.handle}
-              prefetch="intent"
-              to={`/blogs/${blog.handle}`}
-            >
-              <h2>{blog.title}</h2>
-            </Link>
-          )}
-        </PaginatedResourceSection>
+    <div className="blog-wissen">
+      <div className="blogs">
+        <h1>Wissen</h1>
+        <p className="blog-einleitung">
+          Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist —
+          und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.
+        </p>
+        {/* Die Kacheln tragen dieselbe Klasse wie auf der Beitragsübersicht,
+            damit ein Besucher zwischen den beiden Seiten keinen Wechsel des
+            Seitentyps bemerkt — das ist der Maßstab dieses Umbaus. */}
+        <div className="blog-grid">
+          <PaginatedResourceSection connection={blogs}>
+            {({node: blog}) => (
+              <div className="blog-article" key={blog.handle}>
+                <Link prefetch="intent" to={`/blogs/${blog.handle}`}>
+                  <div className="blog-article-text">
+                    <h3>{blog.title}</h3>
+                    <span className="blog-article-mehr" aria-hidden="true">
+                      Zu den Beiträgen
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </PaginatedResourceSection>
+        </div>
       </div>
     </div>
   );
