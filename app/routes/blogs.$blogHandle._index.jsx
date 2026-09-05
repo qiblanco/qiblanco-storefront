@@ -143,8 +143,7 @@ export default function Blog() {
       <div className="blog">
         <h1>{blog.title}</h1>
         <p className="blog-einleitung">{einleitung}</p>
-        <div className="blog-grid">
-          <PaginatedResourceSection connection={articles}>
+        <PaginatedResourceSection connection={articles} resourcesClassName="blog-grid">
             {({node: article, index}) => (
               <ArticleItem
                 article={article}
@@ -152,8 +151,7 @@ export default function Blog() {
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
             )}
-          </PaginatedResourceSection>
-        </div>
+        </PaginatedResourceSection>
       </div>
     </div>
   );

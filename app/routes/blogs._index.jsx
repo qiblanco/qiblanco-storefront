@@ -105,8 +105,7 @@ export default function Blogs() {
         {/* Die Kacheln tragen dieselbe Klasse wie auf der Beitragsübersicht,
             damit ein Besucher zwischen den beiden Seiten keinen Wechsel des
             Seitentyps bemerkt — das ist der Maßstab dieses Umbaus. */}
-        <div className="blog-grid">
-          <PaginatedResourceSection connection={blogs}>
+        <PaginatedResourceSection connection={blogs} resourcesClassName="blog-grid">
             {({node: blog}) => (
               <div className="blog-article" key={blog.handle}>
                 <Link prefetch="intent" to={`/blogs/${blog.handle}`}>
@@ -119,8 +118,7 @@ export default function Blogs() {
                 </Link>
               </div>
             )}
-          </PaginatedResourceSection>
-        </div>
+        </PaginatedResourceSection>
       </div>
     </div>
   );
