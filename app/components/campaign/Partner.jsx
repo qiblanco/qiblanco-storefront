@@ -5,6 +5,7 @@ import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
+import {bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 
 /*
  * Landingpage /pages/partner — Empfehlungs-/Vertrauensseite für Partner-Traffic
@@ -198,7 +199,19 @@ function MechanismSection() {
         {ebenen.map(({thema, ebene, link}) => (
           <article className="lp-a-mech" key={thema.id}>
             <figure className="lp-a-mech__media">
-              <img src={thema.bild} alt={thema.alt} loading="lazy" />
+              {/* sizes bildet die ECHTE Kachelbreite ab (schlaf-zellen-schutz.css):
+                  <=767px eine Spalte, section-padding 2x24px; darueber drei
+                  Spalten in max 1080px mit 2x24px Gap, also (min(1080,100vw-48)
+                  -48)/3 — ab 1128px konstant 344px. partner.css ueberschreibt
+                  diese Geometrie NICHT (nachgemessen 2026-09-05: Kachel 342 px
+                  bei 1440, identisch zu /pages/schlaf-zellen-schutz). */}
+              <img
+                src={thema.bild}
+                srcSet={bildSrcSet(thema.bild)}
+                sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1127px) calc((100vw - 96px) / 3), 344px"
+                alt={thema.alt}
+                loading="lazy"
+              />
             </figure>
             <div className="lp-a-mech__body">
               <span className="lp-a-mech__ebene">{ebene}</span>
