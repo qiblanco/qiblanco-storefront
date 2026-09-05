@@ -6,8 +6,23 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  // Derselbe Hydrogen-Gerüst-Titel wie in `pages.superhuman.jsx`, hier aber
+  // OHNE Live-Wirkung: /pages/kristall-kakao antwortet mit 301 auf
+  // /pages/crystal-cacao (gemessen 2026-09-05, ein Redirect, Zieltitel
+  // korrekt). Diese Route rendert heute nie. Sie wird trotzdem mitgezogen,
+  // weil sie beim nächsten Rückbau des Redirects wieder ausgeliefert würde
+  // — dann wäre der Scaffold-Titel sofort wieder live.
+  //
+  // NICHT MITGEZOGEN und hier benannt, damit es beim Rückbau nicht untergeht:
+  // der canonical-Descriptor unten hat die im Kopf von ~/lib/seo.js
+  // beschriebene wirkungslose Form (ohne `tagName` rendert react-router 7
+  // daraus `<meta rel="canonical">` statt `<link>`, und der Pfad ist relativ).
+  // Er bleibt unverändert, weil die richtige Ziel-URL für eine Route, die
+  // nie ausgeliefert wird, nicht messbar ist — ein Rateergebnis wäre hier
+  // schlechter als der sichtbare Defekt.
+  const roh = data?.page?.seo?.title || data?.page?.title || '';
   return [
-    {title: `Hydrogen | ${data?.page.title ?? ''}`},
+    {title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'},
     {
       rel: 'canonical',
       href: `/pages/kristall-kakao`,
