@@ -5,8 +5,11 @@ import {
   NUR_ROUTE_SEITEN,
   absoluteCanonical,
   ausSitemapEntfernteKollektionen,
+  istNichtIndexierbar,
   istNichtIndexierbaresProdukt,
+  seitenHandleAusPfad,
 } from '~/lib/seo';
+import {sitemapSeiten as podcastSitemapSeiten} from '~/lib/podcast-daten.server';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 import {mitZusammenlegungsLastmod} from '~/lib/zusammenlegungen-lastmod';
@@ -182,7 +185,7 @@ export async function loader({request, params, context: {storefront}}) {
   // Nur-Route-Seiten kommen NACH dem Filter dazu (s. mitNurRouteSeiten unten).
   // Sie müssen den Schnell-Ausstieg mit öffnen, sonst greift die Ergänzung
   // genau dann nicht, wenn es sonst nichts zu tun gibt.
-  const nachtrag = params.type === 'pages' ? NUR_ROUTE_SEITEN : [];
+  const nachtrag = params.type === 'pages' ? nurRouteSeiten() : [];
   if (!hatVersteckte && params.type !== 'articles' && !nachtrag.length) {
     response.headers.set('Cache-Control', `max-age=${cacheSekunden}`);
     return response;
@@ -230,6 +233,42 @@ export async function loader({request, params, context: {storefront}}) {
   return new Response(body, {
     status: response.status,
     headers,
+  });
+}
+
+/**
+ * Die Nachtrags-Menge für `type=pages` — aus BEIDEN Quellen und durch die
+ * noindex-Sperre.
+ *
+ * ZWEI QUELLEN, EIN MECHANISMUS (2026-09-05, Podcast-Sitemap-Naht):
+ * `NUR_ROUTE_SEITEN` führt Pfade, die FESTSTEHEN (eine Seite, eine
+ * Entscheidung). `podcastSitemapSeiten()` liefert Pfade, deren MENGE aus Daten
+ * folgt: die paginierte Podcast-Sektion hat so viele Seiten, wie 43 Folgen zu
+ * je zehn ergeben. Eine Aufzählung ihrer heutigen vier Folgeseiten wäre ab der
+ * ersten neuen Seite falsch, ohne dass irgendetwas rot würde — die Menge wird
+ * deshalb aus `SEITEN_ZAHL` abgeleitet. Warum sie nicht in `~/lib/seo` steht,
+ * begründet der Kommentar an `NUR_ROUTE_SEITEN` (Client-Bundle vs. `.server`).
+ *
+ * DIE SPERRE IST KEIN BEIWERK: der Nachtrag läuft NACH dem Versteckt-Filter,
+ * könnte also zurückholen, was der Schritt davor gerade entfernt hat. Damit
+ * das nicht von der Sorgfalt einer Liste abhängt, wird hier die EIGENSCHAFT
+ * gemessen: trägt der Handle des Pfades `noindex`, fliegt er raus. Geprüft
+ * wird gegen Sicht 1 (alle noindex-Handles), nicht gegen die Teilmenge
+ * `AUS_SITEMAP_ENTFERNTE_SEITEN` — die Übergangsstufe `ausSitemap: false`
+ * erlaubt, einen BESTEHENDEN Eintrag stehen zu lassen, damit Google das
+ * frische `noindex` überhaupt liest; sie erlaubt nicht, einen NEUEN Eintrag
+ * für eine noindex-Seite anzulegen. Dafür gäbe es keinen Discovery-Grund.
+ *
+ * @returns {Array<{pfad: string, grund: string}>}
+ */
+function nurRouteSeiten() {
+  const alle = [...NUR_ROUTE_SEITEN, ...podcastSitemapSeiten()];
+  const gesehen = new Set();
+  return alle.filter((s) => {
+    if (gesehen.has(s.pfad)) return false;
+    if (istNichtIndexierbar(seitenHandleAusPfad(s.pfad))) return false;
+    gesehen.add(s.pfad);
+    return true;
   });
 }
 
