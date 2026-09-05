@@ -678,10 +678,11 @@
 }
 .lp-v2 .ScrollScrubVideo {
   background: var(--v2-dunkel);
-  /* 10000 im Bestand reisst die z-index-Hygiene (Soll <= 5000). Der Block
-     bildet einen eigenen Stacking-Kontext; 900 reicht fuer das sticky-Overlay
-     und bleibt unter der Grenze. */
-  z-index: 900;
+  /* Der Block ist INHALT und gehoert unter den fixierten Kopf. 900 lag
+     darueber (Kopf --z-kopf 100) und machte auf der ganzen Scroll-Strecke
+     jedes Kopf-Bedienelement unantippbar, auch A.openCart -> /cart
+     (FEHLER-DB F-2186). Die Ebenenleiter deckelt Inhalt bei 90. */
+  z-index: var(--z-inhalt-max);
 }
 /* Die Overlay-Regeln des Bestands sind DREI Klassen tief
    (.ScrollScrubVideo .VideoOverlay .TextContent-Start h2 = 2,5rem) und

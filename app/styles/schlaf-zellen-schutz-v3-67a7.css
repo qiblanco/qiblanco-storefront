@@ -709,8 +709,11 @@
 }
 .lp-v3 .ScrollScrubVideo {
   background: var(--v3-dunkel);
-  /* 10000 im Bestand reisst die z-index-Hygiene (Soll <= 5000). */
-  z-index: 900;
+  /* Der Block ist INHALT und gehoert unter den fixierten Kopf. 900 lag
+     darueber (Kopf --z-kopf 100) und machte auf der ganzen Scroll-Strecke
+     jedes Kopf-Bedienelement unantippbar, auch A.openCart -> /cart
+     (FEHLER-DB F-2186). Die Ebenenleiter deckelt Inhalt bei 90. */
+  z-index: var(--z-inhalt-max);
 }
 .lp-v3 .ScrollScrubVideo .VideoOverlay .TextContent-Start h2,
 .lp-v3 .ScrollScrubVideo .VideoOverlay .TextContent-End div h2 {
