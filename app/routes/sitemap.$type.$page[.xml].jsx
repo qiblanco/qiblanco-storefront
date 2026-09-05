@@ -232,7 +232,7 @@ export async function loader({request, params, context: {storefront}}) {
  * Seiten, für die diese Entscheidung getroffen ist UND deren Live-Zustand
  * gewacht wird. Ein Eintrag ohne Wache wäre eine Sitemap-URL, die still auf
  * 404 laufen kann — derselbe Schaden, vor dem der Blog-Filter oben warnt, nur
- * andersherum. Die Begruendung je Eintrag steht an der Definition in ~/lib/seo.
+ * andersherum. Die Begründung je Eintrag steht an der Definition in ~/lib/seo.
  *
  * IDEMPOTENT: steht der Pfad schon im Rumpf (weil doch ein Shopify-Objekt
  * existiert), wird nichts ergänzt — sonst stünde die URL doppelt.
