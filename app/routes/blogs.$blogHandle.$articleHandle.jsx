@@ -150,8 +150,8 @@ export default function Article() {
           Bewusst am Ende, bewusst ruhig und bewusst KEIN Verkaufsbanner: ein
           Wissensbeitrag, der zur Verkaufsseite wird, verliert genau die
           Glaubwuerdigkeit, die ihn wertvoll macht. Eine Wissensseite wird am
-          naechsten KLICK gemessen, nicht an der Bestellung — deshalb fuehren
-          die ersten Wege zum naechsten Beitrag und nur der letzte, einzelne
+          folgenden KLICK gemessen, nicht an der Bestellung — deshalb fuehren
+          die ersten Wege zum folgenden Beitrag und nur der letzte, einzelne
           in die Produktwelt. */}
         <aside className="article-weiter">
           {weitere?.length ? (
@@ -190,7 +190,7 @@ const ARTICLE_QUERY = `#graphql
   ) @inContext(language: $language, country: $country) {
     blog(handle: $blogHandle) {
       handle
-      # NUR handle und title, ausdruecklich KEIN contentHtml und kein Bild:
+      # NUR handle und title, bewusst KEIN contentHtml und kein Bild:
       # der Abschluss-Block braucht Namen, keine Inhalte. Ein zweites Mal
       # Artikeltext im Payload war 2026-09-03 der Grund, warum die Uebersicht
       # 183 KB wog.

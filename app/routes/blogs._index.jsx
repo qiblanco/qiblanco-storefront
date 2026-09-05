@@ -7,8 +7,8 @@ import blogStyles from '~/styles/blog.css?url';
 
 // Dasselbe Blatt wie auf /blogs/wissen und auf der Beitragsseite. Diese
 // Route hatte bis hierher GAR KEIN eigenes Stylesheet — ihre Klassen lagen
-// als Skelett-Reste im globalen Blatt. Ein zweites Blog-Blatt waere der
-// naechste Bruch; es gibt genau eines.
+// als Skelett-Reste im globalen Blatt. Ein zweites Blog-Blatt bringt den
+// zweiten Bruch; es gibt genau eines.
 export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 
 /**
