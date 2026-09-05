@@ -35,8 +35,11 @@ const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
 // MIT `width=` AUSGELIEFERT, nicht in Originalgroesse: der Alle-Formate-Lauf
 // (bin/hb-formate, Pruefpunkt `bild-ueberaufloesung`) hat am 2026-09-05 in
 // allen elf Formaten gemessen, dass die 1080-px-Quelle auf einer 423-px-
-// Flaeche landet — Ladezeit ohne Gegenwert. Zwei Breiten als srcset, damit
-// Handy und Retina-Desktop je das passende Bild ziehen.
+// Flaeche landet — Ladezeit ohne Gegenwert. Zwei Breiten als srcset: 440 fuer
+// Standard-Displays, 880 fuer Retina. Damit `sizes` in JEDEM Format stimmt,
+// deckelt die CSS die Anzeigeflaeche bei 440 px — sonst zieht ein 600-px-Handy
+// bei 100vw das 440er Bild auf 600 px auf und wird sichtbar unscharf (genau
+// dieser Blocker, gemessen im Format mobil-600 am 2026-09-05).
 const HERO_BASIS =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
   'QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196';
@@ -211,7 +214,7 @@ function Hero() {
           <img
             src={HERO_IMG}
             srcSet={HERO_SRCSET}
-            sizes="(max-width: 900px) 100vw, 440px"
+            sizes="440px"
             alt="QiOne® 2 Pro — eines der Produkte, die du als Partner empfiehlst"
             width="880"
             height="880"
