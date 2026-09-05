@@ -46,7 +46,7 @@
 // aufgelöst, nicht von Node. Der hermetische Test (node --test, ohne Bundler)
 // könnte diese Datei sonst gar nicht laden.
 import {absoluteCanonical} from './seo.js';
-import {produktSchema} from './produkt-schema.js';
+import {brotkrumeSchema, produktSchema} from './produkt-schema.js';
 
 /**
  * Markenname für den Titel-Suffix im Suchergebnis.
@@ -217,6 +217,26 @@ export function produktMeta({pfad, titel, bildUrl, produkt}) {
   }
   if (bildUrl) {
     descriptoren.push({property: 'og:image', content: bildUrl});
+    // Twitter-Karte. Sie steht ABSICHTLICH in derselben Bedingung wie das
+    // og:image und nicht daneben: `summary_large_image` sagt einem Netzwerk
+    // zu, dass ein grosses Bild folgt. Ohne og:image wäre das eine Zusage
+    // ohne Deckung, und die Karte fällt beim Teilen auf einen nackten Link
+    // zurück — schlechter als gar keine Kartenangabe.
+    //
+    // Titel, Beschreibung und Bild kommen über den og-Fallback, den X/Twitter
+    // dokumentiert; es entstehen bewusst KEINE eigenen `twitter:title`/
+    // `twitter:description`-Tags. Zwei Quellen für denselben Text driften
+    // auseinander, und dann zeigt ein geteilter Link etwas anderes als das
+    // Suchergebnis — dieselbe Zwei-Versprechen-Falle, die oben schon für
+    // Beschreibung und Titel benannt ist.
+    //
+    // BAUFORM (die Korrektur an PR #103, 2026-09-05): #103 sagte site-weite
+    // Default-OG/Twitter-Tags in app/root.jsx zu. Der Bestand setzt OG heute
+    // PRO ROUTE, und das ist die jüngere, bewusste Entscheidung (#187/#189).
+    // Ein zusätzlicher site-weiter Emitter neben den Route-Emittern erzeugt
+    // Duplikate — genau das ist auf der Startseite schon einmal passiert
+    // (zwei og:image aus #197 und #198, konfliktfrei gemergt, live doppelt).
+    descriptoren.push({name: 'twitter:card', content: 'summary_large_image'});
   }
   // react-router 7 rendert diesen Descriptor nativ als
   // <script type="application/ld+json"> und maskiert den Inhalt selbst.
@@ -226,6 +246,18 @@ export function produktMeta({pfad, titel, bildUrl, produkt}) {
   const schema = produkt ? produktSchema(produkt) : null;
   if (schema) {
     descriptoren.push({'script:ld+json': schema});
+  }
+  // Brotkrume als EIGENER ld+json-Knoten neben dem Product-Knoten (die
+  // Auslieferung trägt schon heute zwei getrennte Blöcke — Product und
+  // FAQPage, live gemessen 2026-09-05). Bewusst NICHT in den Product-Knoten
+  // hineingefaltet: BreadcrumbList ist kein Produktfeld.
+  //
+  // Die Bedingung ist absichtlich `produkt` und nicht `schema`: die fünf
+  // Handles ohne Preisnachweis bekommen kein Product-JSON-LD, aber sehr wohl
+  // eine Brotkrume — Begründung an brotkrumeSchema() in produkt-schema.js.
+  const brotkrume = produkt ? brotkrumeSchema(produkt) : null;
+  if (brotkrume) {
+    descriptoren.push({'script:ld+json': brotkrume});
   }
   return descriptoren;
 }
