@@ -476,12 +476,12 @@ export function Layout({children}) {
               27.09.2026): HIER STEHT BEWUSST NICHTS MEHR.
               Elina EL-20260901-3fb38a2a: der Overlay-Baustein und der
               Trigger-Link duerfen NICHT im globalen Seitengeruest und nicht
-              in der Footer-Komponente liegen, sondern ausschliesslich dort,
+              in der Footer-Komponente liegen, sondern ausschließlich dort,
               wo ein Produkt gekauft werden kann. Das Overlay bringt seit dem
               2026-09-06 die Mitteilung SELBST mit
               (EuGewaehrleistungsHinweis in EuGewaehrleistungsLabel.jsx) --
               es gibt darum keine Stelle mehr, an der es global montiert
-              werden muesste, und keine Route, die man vergessen kann.
+              werden müsste, und keine Route, die man vergessen kann.
             */}
             <PageLayout {...data}>{children}</PageLayout>
             {(data.isProductionHost || data.enableTrackingInPreview) && (

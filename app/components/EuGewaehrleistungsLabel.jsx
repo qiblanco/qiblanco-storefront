@@ -97,19 +97,19 @@ const EuLabelKontext = createContext(null);
  *
  * DAS GILT SEIT DEM 2026-09-06 NICHT MEHR, und zwar auf Anweisung:
  * Elina EL-20260901-3fb38a2a verbietet die Montage im globalen
- * Seitengeruest und in der Footer-Komponente ausdruecklich -- die
- * Mitteilung gehoert ausschliesslich dorthin, wo ein Produkt gekauft
+ * Seitengeruest und in der Footer-Komponente ausdrücklich -- die
+ * Mitteilung gehört ausschließlich dorthin, wo ein Produkt gekauft
  * werden kann. Der Provider wird deshalb NICHT MEHR VON AUSSEN montiert;
- * die beiden oeffentlichen Bausteine (EuGewaehrleistungsHinweis,
+ * die beiden öffentlichen Bausteine (EuGewaehrleistungsHinweis,
  * EuGewaehrleistungsLink) bringen ihn selbst mit.
  *
  * WARUM AM BAUSTEIN UND NICHT JE ROUTE: der Hinweis sitzt bewusst in
  * ProductForm/CacaoProductForm/TenYearsDealPage und nicht in den einzelnen
- * Seiten-Komponenten, weil die meisten Kaufflaechen ueber veroeffentlichte
+ * Seiten-Komponenten, weil die meisten Kaufflaechen über veroeffentlichte
  * Shopify-Produkte OHNE eigene Route-Datei laufen (Catch-all
- * products.$handle) -- die Begruendung steht woertlich an der Naht in
- * ProductForm.jsx. Eine Bindung je Route wuerde genau die stillschweigend
- * auslassen und muesste von Hand nachgepflegt werden. Am Baustein montiert
+ * products.$handle) -- die Begründung steht woertlich an der Naht in
+ * ProductForm.jsx. Eine Bindung je Route würde genau die stillschweigend
+ * auslassen und müsste von Hand nachgepflegt werden. Am Baustein montiert
  * ist die Kopplung strukturell: wo die Mitteilung steht, steht auch ihr
  * Overlay.
  *
@@ -117,9 +117,9 @@ const EuLabelKontext = createContext(null);
  * bekommt ZWEI Overlays statt einem (gemessen: app/routes/
  * products.zeremonie-kakao.jsx rendert <ProductForm> zweimal als
  * Geschwister). Das ist bewusst in Kauf genommen und nicht kaputt: jeder
- * Ausloeser oeffnet ueber seinen eigenen Kontext seinen eigenen Dialog,
+ * Ausloeser öffnet über seinen eigenen Kontext seinen eigenen Dialog,
  * <dialog>.showModal() hebt ihn in den Top-Layer, und beide tragen
- * denselben Inhalt. Eine Verschachtelungs-Sperre wuerde hier nichts
+ * denselben Inhalt. Eine Verschachtelungs-Sperre würde hier nichts
  * helfen -- Geschwister sehen einander baulich nicht.
  */
 export function EuLabelProvider({children}) {
@@ -316,14 +316,14 @@ function EuLabelHinweisFlaeche() {
  * FOOTER. Punkt 4 unter "3. Bezahlmethoden" -- reiner Textlink.
  *
  * DERZEIT NIRGENDS MONTIERT: Elina EL-20260901-3fb38a2a stellt den
- * Footer-Teil ausdruecklich zurueck ("jetzt bewusst weglassen und fuer
+ * Footer-Teil ausdrücklich zurück ("jetzt bewusst weglassen und für
  * spaeter zurueckstellen"). Der Baustein bleibt deshalb erhalten -- er ist
  * zurueckgestellt, nicht entfernt.
  *
  * GEAENDERT gegenueber der Vorfassung, und das ist kein Schoenheitsfehler:
- * frueher stand hier "gleiches Overlay, kein zweiter Dialog", weil ein
+ * früher stand hier "gleiches Overlay, kein zweiter Dialog", weil ein
  * globaler Provider im Seitengeruest hing. Den gibt es nicht mehr. Ohne
- * eigenen Provider wuerde `useEuLabel()` hier `null` liefern und der
+ * eigenen Provider würde `useEuLabel()` hier `null` liefern und der
  * Ausloeser beim ersten Rendern an `kontext.open` WERFEN -- ein Fehler, der
  * erst auftritt, wenn jemand den Baustein spaeter wieder einhaengt, also
  * genau dann, wenn niemand mehr mit ihm rechnet. Der Provider steht deshalb

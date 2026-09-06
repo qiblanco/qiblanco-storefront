@@ -328,25 +328,25 @@ test('QR_DEFEKT und QR_GRENZFALL sind gemessene Listen, keine stillen Ausnahmen'
  * MONTAGE-ORT (Elina EL-20260901-3fb38a2a, gebaut 2026-09-06).
  *
  * Die Mitteilung darf NICHT mehr im globalen Seitengeruest und nicht in der
- * Footer-Komponente haengen, sondern ausschliesslich dort, wo ein Produkt
+ * Footer-Komponente hängen, sondern ausschließlich dort, wo ein Produkt
  * gekauft werden kann. Diese drei Waechter halten den Zuschnitt fest.
  *
  * WARUM HIER NICHT GESTRIPPT WIRD (Lehre aus der Vorrunde, teuer bezahlt):
  * `ohneKommentare()` entfernt an app/root.jsx rund 14 kB und damit auch
  * Code-Zeilen. Eine ABWESENHEITS-Zusage auf vorbehandeltem Text kann
- * strukturell nie ausschlagen -- sie waere fuer immer gruen. Positiv-Zusagen
+ * strukturell nie ausschlagen -- sie wäre für immer gruen. Positiv-Zusagen
  * duerfen strippen, Negativ-Zusagen nie.
  *
  * Gemessen wird deshalb die JSX-VERWENDUNG ('<EuLabelProvider') statt des
  * blossen Namens: der Name steht bewusst noch in den erklaerenden
- * Kommentaren beider Dateien, und ein Waechter, der ihn verbietet, wuerde
- * die Begruendung seiner eigenen Regel loeschen lassen.
+ * Kommentaren beider Dateien, und ein Waechter, der ihn verbietet, würde
+ * die Begründung seiner eigenen Regel loeschen lassen.
  * ------------------------------------------------------------------------ */
 
 const ROOT = join(HIER, '..', 'app', 'root.jsx');
 const FOOTER = join(HIER, '..', 'app', 'components', 'Footer.jsx');
 
-test('das Label haengt NICHT im globalen Seitengeruest', () => {
+test('das Label hängt NICHT im globalen Seitengeruest', () => {
   const roh = readFileSync(ROOT, 'utf8');
 
   assert.equal(
@@ -367,7 +367,7 @@ test('der Footer-Baustein ist zurueckgestellt, nicht heimlich wieder montiert', 
   assert.equal(
     roh.includes('<EuGewaehrleistungsLink'),
     false,
-    'Footer.jsx montiert Punkt 4 wieder (Elina: "bewusst weglassen und fuer spaeter zurueckstellen")',
+    'Footer.jsx montiert Punkt 4 wieder (Elina: "bewusst weglassen und für spaeter zurueckstellen")',
   );
   assert.match(
     roh,
@@ -376,10 +376,10 @@ test('der Footer-Baustein ist zurueckgestellt, nicht heimlich wieder montiert', 
   );
 });
 
-test('beide oeffentlichen Bausteine bringen ihr Overlay SELBST mit', () => {
+test('beide öffentlichen Bausteine bringen ihr Overlay SELBST mit', () => {
   const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
 
-  // Das ist der Kern des Zuschnitts. Frueher hing GENAU EIN Provider im
+  // Das ist der Kern des Zuschnitts. früher hing GENAU EIN Provider im
   // Seitengeruest; faellt der weg, ohne dass die Bausteine ihn selbst
   // mitbringen, liefert `EuGewaehrleistungsHinweis` STILL `null` -- die
   // Seite antwortet weiter HTTP 200, sieht vollstaendig aus, und die
@@ -390,16 +390,16 @@ test('beide oeffentlichen Bausteine bringen ihr Overlay SELBST mit', () => {
   ]) {
     const ab = code.indexOf(`export function ${name}(`);
     assert.ok(ab >= 0, `${name} fehlt`);
-    const koerper = code.slice(ab, ab + 500);
+    const Körper = code.slice(ab, ab + 500);
 
     assert.match(
-      koerper,
+      Körper,
       /<EuLabelProvider>/,
       `${name} montiert keinen eigenen EuLabelProvider -- ohne Kontext rendert die Pflichtmitteilung still nichts bzw. wirft`,
     );
     assert.ok(
-      koerper.includes(marke),
-      `${name} rendert seinen Inhalt (${marke}) nicht mehr -- der Provider waere dann leer`,
+      Körper.includes(marke),
+      `${name} rendert seinen Inhalt (${marke}) nicht mehr -- der Provider wäre dann leer`,
     );
   }
 

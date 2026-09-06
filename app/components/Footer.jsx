@@ -242,8 +242,8 @@ function FooterDisclaimer() {
         {/*
           Punkt 4 (Gesetzliche Gewaehrleistung) ist ZURUECKGESTELLT, nicht
           entfernt: Elina EL-20260901-3fb38a2a ("den Footer-Teil jetzt
-          bewusst weglassen und fuer spaeter zurueckstellen"). Der Baustein
-          EuGewaehrleistungsLink bleibt dafuer in
+          bewusst weglassen und für spaeter zurueckstellen"). Der Baustein
+          EuGewaehrleistungsLink bleibt dafür in
           EuGewaehrleistungsLabel.jsx erhalten und bringt sein Overlay
           selbst mit -- er kann hier wieder eingehaengt werden, ohne dass
           irgendwo sonst etwas nachgezogen werden muss.
