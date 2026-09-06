@@ -76,36 +76,62 @@ const PAYPAL_IMG =
 /*
  * BILD-LEITERN (Job 20260906-lp-erzeugt-den-naechsten-klick-…-prio20, s02).
  *
- * Je Bild aus der GEMESSENEN Anzeigegroesse am gerenderten DOM abgeleitet
- * (2026-09-06, Viewports 390x844 und 1440x900), plus eine Stufe DPR-2-Reserve.
- * KEIN pauschaler Wert: derselbe Wert ueber alle Bilder macht die kleinen
- * groesser (s01: `width=600` trieb das Klarna-Badge von 17 auf 28 KB).
+ * Je Bild aus der GEMESSENEN Anzeigegroesse am gerenderten DOM abgeleitet,
+ * plus eine Stufe DPR-2-Reserve. KEIN pauschaler Wert: derselbe Wert ueber
+ * alle Bilder macht die kleinen groesser (s01: `width=600` trieb das
+ * Klarna-Badge von 17 auf 28 KB).
  *
- *   Hero/Final-CTA  342 px mobil · 423 px desktop -> 400/600/800
- *   Produktkarten   200 px auf beiden Viewports   -> 200/400
- *   Klarna-Badge     48 px                        -> 100/150
- *   PayPal-Badge     52 px                        -> 110/160
+ * GEMESSEN WIRD UEBER DIE GANZE FORMAT-MATRIX, NICHT UEBER ZWEI VIEWPORTS —
+ * und das ist hier teuer gelernt: die erste Fassung leitete die Leitern aus
+ * 390 und 1440 px ab und deckelte den Hero bei 800. Das Alle-Formate-Gate
+ * (hb-formate, Gate 12) fand darauf prompt Upscaling im Format `mobil-600`.
+ * Grund: die Seite ist bis 767 px EINSPALTIG, der Hero waechst dort MIT dem
+ * Viewport und erreicht bei 600 px Breite 552 CSS-px — mehr als auf jedem
+ * Desktop (423). Das Maximum liegt also MITTEN in der Matrix, nicht an ihren
+ * Raendern; wer nur Telefon und Desktop misst, sieht es baulich nie.
+ *
+ * Anzeigebreiten, ueber 11 Formate von 360 bis 1440 px gemessen (Maximum):
+ *   Hero/Final-CTA  552 px (bei vp 600)  -> 400/600/800/900/1200
+ *   Mechanismus     550 px (bei vp 600)  -> 340/680/1100
+ *   Produktkarten   200 px               -> 200/400
+ *   Klarna-Badge     48 px               -> 100/150
+ *   PayPal-Badge     52 px               -> 110/160
  *
  * Gemessene Wirkung je Datei (Original -> 1x-Stufe): QiBracelet1 6.266.409 ->
  * 50.342 B, QiOne1 4.650.395 -> 175.547 B, QiHome1 734.866 -> 6.795 B,
  * paypal 75.518 -> 5.176 B, klarna 17.675 -> 4.866 B.
  *
- * Die 800er-Stufe ist die bewusste OBERGRENZE des Heros: 2x der 423-px-
- * Desktopbreite waeren 846 px, und oberhalb von 800 kostet jede weitere Stufe
- * mehr, als sie bei dieser Anzeigegroesse sichtbar bringt (800 -> 699.240 B,
- * 900 -> 891.880 B).
+ * Die oberen Stufen kosten und werden nur dort geholt, wo sie noetig sind:
+ * QiOne1 900 -> 891.880 B, 1200 -> 1.628.653 B. Ein Telefon mit 390 px holt
+ * weiterhin die 800er-Stufe; die 1200er trifft allein den 2x-Schirm bei rund
+ * 600 px Breite, der sonst sichtbar unscharf waere.
+ *
+ * `sizes` MUSS die Layoutbreite ehrlich nennen und darf sie nie
+ * UNTERschaetzen: eine zu kleine Angabe laesst den Browser eine zu kleine
+ * Stufe waehlen, und genau das ist der Unschaerfe-Befund oben. Zu grosse
+ * Angaben kosten nur Bytes. Die Formeln bilden deshalb die einspaltige
+ * Phase (bis 767 px) und die zweispaltige darueber getrennt ab.
  */
-const LEITER_HERO = [400, 600, 800];
-/* Mechanismus-Kacheln: 340 px mobil, 342 px desktop -> 340/680.
+const LEITER_HERO = [400, 600, 800, 900, 1200];
+/* Mechanismus-Kacheln, Maximum 550 px bei vp 600 -> 340/680/1100.
    Gemessen (Original -> 340): milva 362.301 -> 20.606 B, bali 124.283 ->
-   22.480 B, kitzbuehel 76.698 -> 29.400 B. Kitzbuehel ist natuerlich nur
-   668 px breit und wird von Shopify auf der 680er-Stufe still gedeckelt. */
-const LEITER_MECH = [340, 680];
+   22.480 B, kitzbuehel 76.698 -> 29.400 B.
+   KITZBUEHEL BLEIBT EIN BEFUND, UND ZWAR EIN GEERBTER: die Quelldatei ist
+   natuerlich nur 668 px breit und kann eine 2x-Flaeche von 1100 px baulich
+   nicht bedienen — Shopify deckelt still auf 668. Das Alle-Formate-Gate hat
+   genau das schon am 2026-09-05 gemeldet, also VOR diesem Bau (Archiv-Beleg
+   20260905T204918Z). Behebbar ist es nur durch ein groesseres Original, nicht
+   durch eine Leiter; deshalb steht die 1100er-Stufe hier fuer milva und bali,
+   die sie bedienen koennen, und der Kitzbuehel-Befund bleibt sichtbar stehen
+   statt durch eine kuenstlich kleine `sizes`-Angabe weggerechnet zu werden. */
+const LEITER_MECH = [340, 680, 1100];
 const LEITER_KARTE = [200, 400];
 const LEITER_KLARNA = [100, 150];
 const LEITER_PAYPAL = [110, 160];
 /* `sizes` gehoert an die Aufrufstelle: nur sie kennt die Layoutbreite. */
-const SIZES_HERO = '(min-width: 900px) 423px, 342px';
+const SIZES_HERO =
+  '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
+const SIZES_MECH = '(max-width: 767px) calc(100vw - 50px), min(30vw, 342px)';
 
 /* ───────── Hero (Drei-Ebenen-Versprechen) ───────── */
 function Hero() {
@@ -243,7 +269,7 @@ function MechanismSection() {
             <figure className="lp-a-mech__media">
               <img
                 {...cdnBild(thema.bild, LEITER_MECH)}
-                sizes="340px"
+                sizes={SIZES_MECH}
                 alt={thema.alt}
                 loading="lazy"
               />

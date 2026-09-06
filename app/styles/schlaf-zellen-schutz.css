@@ -891,7 +891,14 @@ body:has(.lp-a3) .Header-AnnouncementBanner a { background: var(--a-dunkel); }
 /* Flyout und Warenkorb-Aside tragen ihre Farbe mit !important (app.css bzw.
    reset.css) — sie sind im Normalblick unsichtbar, die Rubrik misst sie
    trotzdem. Gleiche Waffe, gleicher Token. */
-body:has(.lp-a3) .submenu { background: var(--a-flaeche) !important; }
+/* AUSDRUECKLICH NICHT eingefaerbt: das Navigations-Flyout (.submenu). Es
+   traegt mit rgb(247,241,232) eine sechste Hintergrund-Welt und waere ein
+   billiger Rubrik-Punkt — aber es ist GETEILTE Navigations-Chrome, im
+   Normalblick dieser Seite gar nicht sichtbar, und das Alle-Formate-Gate hat
+   die Aenderung prompt als Pixel-Regression von 31,2 % in den Menue-Zustaenden
+   gemeldet. Eine sichtbare Aenderung an der Navigation ist kein Nebenprodukt
+   einer Bildgroessen-Korrektur. Der Punkt bleibt liegen, der Bestand bleibt
+   stehen. */
 body:has(.lp-a3) .aside--cart,
 body:has(.lp-a3) .aside--search,
 body:has(.lp-a3) .predictive-search-form,
@@ -932,8 +939,6 @@ body:has(.lp-a3) .qb-sterne { color: var(--a-akzent) !important; }
 .lp-a3 figure img,
 .lp-a3 .snap-start img,
 body:has(.lp-a3) header img,
-body:has(.lp-a3) .submenu img,
-body:has(.lp-a3) .nav-styling-wrapper img,
 body:has(.lp-a3) .footer-study img { border-radius: var(--a-r1) !important; }
 .lp-a3 .lp-a-mech__media img,
 .lp-a3 .lp-a-yt img { border-radius: 0 !important; }
@@ -952,7 +957,6 @@ body:has(.lp-a3) .google-rating-badge__number { font-size: var(--a-fs-xl) !impor
 body:has(.lp-a3) .google-rating-badge__powered,
 body:has(.lp-a3) .ReviewCount,
 body:has(.lp-a3) .cart-count { font-size: var(--a-fs-xs) !important; }
-body:has(.lp-a3) .header-submenu-item { font-size: var(--a-fs-base) !important; }
 body:has(.lp-a3) .menu-toggle-mobile { font-size: var(--a-fs-md) !important; }
 body:has(.lp-a3) aside h3 { font-size: var(--a-fs-xl) !important; }
 .lp-a3 .snap-start,

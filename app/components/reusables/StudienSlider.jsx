@@ -95,7 +95,7 @@ const ZIEL_FLAECHE = 0.93; // Content-Fläche in (Bühnenbreite)²
  * 680er-Stufe ist deshalb für die kleineren Montagen gefahrlos.
  */
 const LEITER_COVER = [340, 680];
-const SIZES_COVER = '(min-width: 900px) 340px, 300px';
+const SIZES_COVER = '(max-width: 767px) 74vw, 328px';
 
 /**
  * Liefert die CSS-Variablen der Flächen-Norm -- oder null, wenn die Studie
