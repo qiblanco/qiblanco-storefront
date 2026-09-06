@@ -20,7 +20,14 @@ export const meta = ({data, location}) => {
   return blogMeta({
     pfad: location?.pathname ?? '/blogs',
     titel: data?.article?.seo?.title || data?.article?.title,
-    beschreibung: data?.article?.seo?.description,
+    // DER EXCERPT IST DIE AUFFANGLINIE, UND ER IST REDAKTIONELL GESCHRIEBEN:
+    // am 2026-09-06 gegen die Storefront-API gemessen trägt KEINER der sieben
+    // Artikel ein gepflegtes `seo.description`, aber JEDER einen `excerpt` von
+    // 140–157 Zeichen — also bereits in Meta-Länge und vom Inhalt des Artikels
+    // abgeleitet. Nichts zu erfinden, nichts zu kürzen. Shopify-`seo` schlägt
+    // ihn weiterhin, falls das Feld eines Tages gepflegt wird.
+    beschreibung:
+      data?.article?.seo?.description?.trim() || data?.article?.excerpt,
     bildUrl: data?.article?.image?.url,
     typ: 'article',
   });
@@ -215,6 +222,7 @@ const ARTICLE_QUERY = `#graphql
           width
           height
         }
+        excerpt
         seo {
           description
           title

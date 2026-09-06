@@ -102,6 +102,24 @@ export const meta = ({matches}) => {
       property: 'og:image:alt',
       content: 'QiOne® 2 Pro von Qi Blanco – das Gerät für den Alltag',
     },
+    // Twitter-Karte (PR-#103-Restposten, 2026-09-05). Live gemessen trug am
+    // 2026-09-05 nur die Studien-Familie ein `twitter:card`; die Startseite
+    // hatte einen vollständigen og-Satz INKLUSIVE Bild und trotzdem keine
+    // Kartenangabe — beim Teilen entschied X/Twitter deshalb selbst, ob
+    // überhaupt eine Karte entsteht.
+    //
+    // Deckung: `summary_large_image` ist hier zulässig, weil das og:image
+    // direkt darüber unbedingt gesetzt ist (OG_BILD, 1024x1024, Begründung
+    // oben) — die Zusage „großes Bild" hat also einen Träger. Titel und
+    // Beschreibung kommen über den og-Fallback; eigene twitter:title/
+    // twitter:description entstehen bewusst NICHT (zwei Quellen für denselben
+    // Text driften auseinander).
+    //
+    // Bauform pro Route, NICHT site-weit in app/root.jsx wie in PR #103
+    // entworfen: der Bestand setzt OG je Route (#187/#189), und ein zweiter
+    // Emitter daneben erzeugt Duplikate — siehe den Absatz unter dieser Liste
+    // über die beiden og:image aus #197/#198.
+    {name: 'twitter:card', content: 'summary_large_image'},
     // Entitäts-Graph. react-router 7 rendert diesen Descriptor nativ als
     // <script type="application/ld+json"> und maskiert den Inhalt selbst.
     {'script:ld+json': entityGraph({logoUrl})},

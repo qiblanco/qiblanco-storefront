@@ -329,24 +329,51 @@ test('produktMeta mit `produkt` hängt genau EINEN Product-Knoten an', () => {
       },
     },
   });
-  const knoten = d.filter((x) => x['script:ld+json']);
-  assert.equal(knoten.length, 1, 'genau ein Knoten, nicht null und nicht zwei');
-  const s = knoten[0]['script:ld+json'];
+  // GEZÄHLT WIRD JETZT NACH @type, NICHT ÜBER ALLE ld+json-Knoten (2026-09-05).
+  // Dieser Test heißt „genau EINEN Product-Knoten" und hat das bis hierher
+  // über einen Stellvertreter gemessen: „genau ein ld+json-Knoten". Der
+  // Stellvertreter galt nur, solange Product der EINZIGE Knoten war. Seit dem
+  // Restposten-Nachzug aus PR #100 hängt produktMeta() zusätzlich eine
+  // BreadcrumbList an — die Zusage des Tests ist unverändert wahr, sein
+  // Messweg war es nicht mehr. Nach @type gezählt ist er strenger als vorher:
+  // er pinnt jetzt BEIDE Knotenzahlen UND die Gesamtzahl.
+  const knoten = d.filter((x) => x['script:ld+json']).map((x) => x['script:ld+json']);
+  const produkte = knoten.filter((k) => k['@type'] === 'Product');
+  const krumen = knoten.filter((k) => k['@type'] === 'BreadcrumbList');
+  assert.equal(produkte.length, 1, 'genau ein Product-Knoten, nicht null und nicht zwei');
+  assert.equal(krumen.length, 1, 'genau eine BreadcrumbList, nicht null und nicht zwei');
+  assert.equal(knoten.length, 2, 'kein dritter, unerwarteter ld+json-Knoten');
+  const s = produkte[0];
   assert.equal(s['@type'], 'Product');
   // BRUTTO, nicht der Netto-Betrag der API (Korrektur 2026-08-15):
   // 1290,00 x 1,19 = 1535,1 -> 1535. Siehe Kopf von produkt-schema.js.
   assert.equal(s.offers.price, '1535');
 });
 
-// Ein Produkt ohne Preis darf die Seite NICHT mit einem kaputten Knoten
-// belasten — lieber gar keine Auszeichnung.
-test('produktMeta mit preislosem Produkt hängt KEINEN Knoten an', () => {
+// Ein Produkt ohne Preis darf die Seite NICHT mit einem kaputten PRODUCT-Knoten
+// belasten — lieber gar keine Preis-Auszeichnung.
+//
+// PRÄZISIERT 2026-09-05, gleicher Grund wie oben: der Test mass „null ld+json"
+// als Stellvertreter für „null Product". Eine BreadcrumbList entsteht hier
+// jetzt AUCH ohne Preis, und das ist Absicht — sie sagt über den Preis nichts
+// aus und kann deshalb nicht unvollständig werden (Begründung an
+// brotkrumeSchema() in app/lib/produkt-schema.js). Der Preis-Vorbehalt selbst
+// bleibt unangetastet und wird hier weiter gemessen, nur nicht mehr über den
+// Stellvertreter.
+test('produktMeta mit preislosem Produkt hängt KEINEN Product-Knoten an', () => {
   const d = produktMeta({
     pfad: '/products/qione-2-pro',
     titel: 'T',
     produkt: {handle: 'x', title: 'X', selectedOrFirstAvailableVariant: {}},
   });
-  assert.equal(d.filter((x) => x['script:ld+json']).length, 0);
+  const knoten = d.filter((x) => x['script:ld+json']).map((x) => x['script:ld+json']);
+  assert.equal(
+    knoten.filter((k) => k['@type'] === 'Product').length,
+    0,
+    'Product-Knoten ohne Preis entstanden — genau das soll nie passieren',
+  );
+  assert.equal(knoten.filter((k) => k['@type'] === 'BreadcrumbList').length, 1);
+  assert.equal(knoten.length, 1, 'kein weiterer, unerwarteter ld+json-Knoten');
 });
 
 // --- Marken-Titel-Hygiene (Nachtrag 2026-08-15) -----------------------------

@@ -2,10 +2,12 @@ import {useLoaderData} from 'react-router';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 
 export const meta = ({data}) => {
   return [
     {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    ...beschreibungTags('/pages/das-beispiel', data?.page?.seo?.description),
     canonicalLink('/pages/das-beispiel'),
   ];
 };

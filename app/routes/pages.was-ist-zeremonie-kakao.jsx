@@ -1,5 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {loadCourseProducts} from '~/lib/course-products';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -12,6 +13,7 @@ export function links() {
 export const meta = ({data}) => {
   return [
     {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    ...beschreibungTags('/pages/was-ist-zeremonie-kakao', data?.page?.seo?.description),
     canonicalLink('/pages/was-ist-zeremonie-kakao'),
   ];
 };

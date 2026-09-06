@@ -3,6 +3,7 @@ import {Image, getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
+import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
 import blogStyles from '~/styles/blog.css?url';
 
@@ -17,13 +18,18 @@ export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({data, location}) => {
+export const meta = ({data, location, params}) => {
   return blogMeta({
     pfad: location?.pathname ?? '/blogs',
     titel: data?.blog?.seo?.title || data?.blog?.title,
     // Nur was Shopify wirklich pflegt — ein erfundener Fuelltext wäre hier
     // schlechter als gar keiner (er stuende auf JEDER Blog-Uebersicht gleich).
-    beschreibung: data?.blog?.seo?.description,
+    // `blog.seo.description` ist am 2026-09-06 leer und der Blog hat keinen
+    // excerpt — Auffanglinie aus ~/lib/seiten-beschreibung, eigener
+    // Schlüsselraum, damit ein Blog-Handle nie mit einem Seiten-Handle kollidiert.
+    beschreibung:
+      data?.blog?.seo?.description?.trim() ||
+      BESCHREIBUNGEN[`/blogs/${params?.blogHandle}`],
   });
 };
 

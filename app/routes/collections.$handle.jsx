@@ -13,6 +13,7 @@ import {
   noindexHeader,
   noindexMeta,
 } from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -45,6 +46,22 @@ export const meta = ({data, params}) => {
   // fast gleiche URLs in den Index einladen — genau der Fall, für den es
   // canonical gibt.
   if (params?.handle) tags.push(canonicalLink(`/collections/${params.handle}`));
+
+  // SNIPPET-VORGABE. Diese Route gab bis hierher gar keine `description` aus.
+  // Gemessen am 2026-09-06 gegen die Storefront-API führen von den vier
+  // indexierbaren Kollektionen DREI — `blackfriday-sale-artikel`,
+  // `digitale-kurse`, `valentinstag-angebote` — NULL Produkte und haben weder
+  // `seo.description` noch einen `description`-Body. Für eine leere Seite lässt
+  // sich keine Beschreibung schreiben, die ihren Inhalt trifft; sie bekommen
+  // deshalb bewusst keine (Begründung an KOLLEKTION_BESCHREIBUNGEN). Der
+  // eigentliche Befund dort ist die leere, indexierbare Seite — er gehört in
+  // einen eigenen Vorgang und wird nicht mit einem Text zugedeckt.
+  tags.push(
+    ...beschreibungTags(
+      params?.handle ? `/collections/${params.handle}` : '',
+      data?.collection?.seo?.description || data?.collection?.description,
+    ),
+  );
   return tags;
 };
 
@@ -210,6 +227,9 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      seo {
+        description
+      }
       products(
         first: $first,
         last: $last,

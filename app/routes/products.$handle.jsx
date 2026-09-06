@@ -27,8 +27,8 @@ import {
   istNichtIndexierbaresProdukt,
   noindexMeta,
 } from '~/lib/seo';
-import {produktSchema} from '~/lib/produkt-schema';
-import {MARKE} from '~/lib/produkt-seo';
+import {brotkrumeSchema, produktSchema} from '~/lib/produkt-schema';
+import {MARKE, produktBeschreibung} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
 export function links() {
@@ -80,15 +80,30 @@ export const meta = ({data}) => {
   const bildUrl =
     data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
     data?.product?.images?.nodes?.[0]?.url;
-  if (bildUrl) descriptoren.push({property: 'og:image', content: bildUrl});
+  if (bildUrl) {
+    descriptoren.push({property: 'og:image', content: bildUrl});
+    // Twitter-Karte in derselben Bedingung wie das og:image und in derselben
+    // Form wie in produktMeta() (app/lib/produkt-seo.js) — Begründung dort.
+    // Die Sammelroute muss sie eigenständig setzen: sie baut ihre
+    // Descriptor-Liste selbst und läuft nicht durch produktMeta().
+    descriptoren.push({name: 'twitter:card', content: 'summary_large_image'});
+  }
 
   // Snippet-Vorgabe. Gemessen am 2026-08-15 trug KEINE der 17 DACH-Produkt-
   // URLs eine meta description — Google reimt sich das Snippet dann aus dem
   // Seitentext zusammen, ausgerechnet auf den Umsatzseiten. Der Text kommt
   // aus dem in Shopify gepflegten Beschreibungsfeld: dieselbe Aussage, die
   // im Backend steht, ohne eine Wirkzusage dazuzuerfinden.
+  // DRITTE STUFE (2026-09-06): die vier Bundle-Handles führen in Shopify
+  // WEDER `seo.description` NOCH einen `description`-Body — gegen die
+  // Storefront-API gemessen, nicht vermutet. Für sie greift die kuratierte
+  // Auffanglinie; sie beschreibt nur, WAS im Bundle ist und WOHER der Kakao
+  // kommt (beides an anderer Stelle des Shops belegt), ohne Wirkzusage.
+  // Das gepflegte Shopify-Feld schlägt sie unverändert.
   const beschreibung = kuerzeBeschreibung(
-    data?.product?.seo?.description || data?.product?.description,
+    data?.product?.seo?.description ||
+      data?.product?.description ||
+      produktBeschreibung(`/products/${data?.product?.handle}`),
   );
   if (beschreibung) {
     descriptoren.push({name: 'description', content: beschreibung});
@@ -100,6 +115,17 @@ export const meta = ({data}) => {
   // sie kann Google Preis und Verfügbarkeit nicht als Rich Result zeigen.
   const schema = produktSchema(data?.product);
   if (schema) descriptoren.push({'script:ld+json': schema});
+
+  // Brotkrume (PR-#100-Restposten, 2026-09-05). Eigener Knoten neben dem
+  // Product-Knoten, und bewusst NICHT an `schema` gekoppelt: die fünf
+  // Handles aus OHNE_PREIS_NACHWEIS laufen alle durch DIESE Route und
+  // bekommen kein Product-JSON-LD — eine Brotkrume aber schon, weil sie über
+  // den Preis nichts aussagt. Begründung an brotkrumeSchema().
+  //
+  // Die noindex-Handles sind hier nicht mehr im Rennen: der Zweig
+  // `istNichtIndexierbaresProdukt` oben kehrt vor dieser Stelle um.
+  const brotkrume = brotkrumeSchema(data?.product);
+  if (brotkrume) descriptoren.push({'script:ld+json': brotkrume});
 
   return descriptoren;
 };
