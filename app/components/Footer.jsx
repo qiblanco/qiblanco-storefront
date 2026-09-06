@@ -96,6 +96,38 @@ function FooterTop() {
   );
 }
 
+/**
+ * CSS-Overrides fuer das ActiveCampaign-Embed.
+ *
+ * WARUM dangerouslySetInnerHTML statt <style>{`...`}</style> (2026-08-24, Job
+ * 20260824-storefront-hydration-418-und-csp-bunny): Als React-CHILDREN uebergeben
+ * escapt der SSR-Renderer die Apostrophe im CSS zu &#x27;. <style> ist im HTML
+ * jedoch ein RAW-TEXT-Element -- der Browser dekodiert Character-References darin
+ * NICHT. Im DOM stand deshalb literal input[type=&#x27;text&#x27;], waehrend der
+ * Client-Render input[type='text'] erzeugte: "Text content did not match" ->
+ * React 418, in der Folge 422/423/425. Da der Footer auf JEDER Route rendert, war
+ * das ein SHOPWEITER Hydration-Bruch (dokumentiert als F-015 seit 2026-07-26).
+ * dangerouslySetInnerHTML schreibt den String unescaped -- Server und Client sind
+ * damit zeichengleich. Gleiches Idiom wie ExclusiveSolutions.jsx / ShopSwitch.jsx.
+ *
+ * REGEL fuer kuenftige Aenderungen: CSS mit ' " & < > NIE als <style>-children.
+ */
+const NEWSLETTER_STYLE = `
+        .footer #qi-newsletter form._form_15 {
+          background: transparent !important;
+          padding: 0 !important;
+          border: 0 !important;
+          box-shadow: none !important;
+        }
+        .footer #qi-newsletter input[type='text'],
+        .footer #qi-newsletter input[type='email'],
+        .footer #qi-newsletter button,
+        .footer #qi-newsletter ._submit {
+          font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+          border-radius: 10px !important;
+        }
+      `;
+
 function NewsletterForm() {
   useEffect(() => {
     const id = 'ac-embed-15';
@@ -116,21 +148,7 @@ function NewsletterForm() {
           ankern ueber die stabile Wrapper-ID #qi-newsletter, um diese mit
           hoeherer Spezifitaet zu ueberschreiben (transparenter Kasten,
           Open-Sans-Felder/Button, abgerundete Ecken). */}
-      <style>{`
-        .footer #qi-newsletter form._form_15 {
-          background: transparent !important;
-          padding: 0 !important;
-          border: 0 !important;
-          box-shadow: none !important;
-        }
-        .footer #qi-newsletter input[type='text'],
-        .footer #qi-newsletter input[type='email'],
-        .footer #qi-newsletter button,
-        .footer #qi-newsletter ._submit {
-          font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
-          border-radius: 10px !important;
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{__html: NEWSLETTER_STYLE}} />
       <div className="_form_15" id="qi-newsletter" />
     </>
   );
