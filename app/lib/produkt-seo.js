@@ -102,6 +102,28 @@ export const PRODUKT_BESCHREIBUNGEN = {
   '/products/crystal-cacao-create':
     'Crystal Cacao® Create: Zeremonie-Kakao in Bio-Qualität (DE-ÖKO-006) mit dem ' +
     'kräftigsten Sortenprofil — intensiv und vollmundig im Geschmack.',
+  // DIE VIER BUNDLES (2026-09-06). Sie laufen NICHT über produktMeta(), sondern
+  // über die Sammelroute products.$handle.jsx — die Karte ist trotzdem hier
+  // richtig und nicht in einem zweiten Modul: sie ist die eine Stelle, an der
+  // eine Produktbeschreibung je Pfad steht, und ein zweiter Ort dafür wäre
+  // genau die Zweiteilung, die bei der Product-Auszeichnung schon einmal die
+  // sechs wichtigsten Seiten übersprungen hat (PR #217).
+  // Gegen die Storefront-API gemessen führen alle vier weder `seo.description`
+  // noch einen `description`-Body. Beschrieben wird nur, WAS im Bundle ist und
+  // WOHER der Kakao kommt (belegt auf /pages/was-ist-zeremonie-kakao) — keine
+  // Wirkzusage, wie bei den sechs Einträgen darüber auch.
+  '/products/bundle-2x-awake':
+    'Crystal Cacao® Awake – Bio im 2er-Bundle: Zeremonie-Kakao aus dem Piura-Tal ' +
+    'in Peru, schonend kalt verarbeitet.',
+  '/products/bundle-3x-awake':
+    'Crystal Cacao® Awake – Bio im 3er-Bundle: Zeremonie-Kakao aus dem Piura-Tal ' +
+    'in Peru, schonend kalt verarbeitet.',
+  '/products/mengenrabatt-2x':
+    'Crystal Cacao® Create – Bio im 2er-Bundle: Zeremonie-Kakao aus dem Piura-Tal ' +
+    'in Peru, schonend kalt verarbeitet.',
+  '/products/mengenrabatt-3x-create':
+    'Crystal Cacao® Create – Bio im 3er-Bundle: Zeremonie-Kakao aus dem Piura-Tal ' +
+    'in Peru, schonend kalt verarbeitet.',
 };
 
 /**

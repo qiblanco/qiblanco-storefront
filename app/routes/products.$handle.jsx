@@ -28,7 +28,7 @@ import {
   noindexMeta,
 } from '~/lib/seo';
 import {brotkrumeSchema, produktSchema} from '~/lib/produkt-schema';
-import {MARKE} from '~/lib/produkt-seo';
+import {MARKE, produktBeschreibung} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
 export function links() {
@@ -94,8 +94,16 @@ export const meta = ({data}) => {
   // Seitentext zusammen, ausgerechnet auf den Umsatzseiten. Der Text kommt
   // aus dem in Shopify gepflegten Beschreibungsfeld: dieselbe Aussage, die
   // im Backend steht, ohne eine Wirkzusage dazuzuerfinden.
+  // DRITTE STUFE (2026-09-06): die vier Bundle-Handles führen in Shopify
+  // WEDER `seo.description` NOCH einen `description`-Body — gegen die
+  // Storefront-API gemessen, nicht vermutet. Für sie greift die kuratierte
+  // Auffanglinie; sie beschreibt nur, WAS im Bundle ist und WOHER der Kakao
+  // kommt (beides an anderer Stelle des Shops belegt), ohne Wirkzusage.
+  // Das gepflegte Shopify-Feld schlägt sie unverändert.
   const beschreibung = kuerzeBeschreibung(
-    data?.product?.seo?.description || data?.product?.description,
+    data?.product?.seo?.description ||
+      data?.product?.description ||
+      produktBeschreibung(`/products/${data?.product?.handle}`),
   );
   if (beschreibung) {
     descriptoren.push({name: 'description', content: beschreibung});

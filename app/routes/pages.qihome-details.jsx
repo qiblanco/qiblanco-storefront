@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {QiHomeLanding} from '~/components/index-components/detailseiten/QiHomeLanding';
 import {canonicalLink} from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 
 /*
  * /pages/qihome-details — oeffentliche Detailseite QiHome Air
@@ -21,9 +22,10 @@ import {canonicalLink} from '~/lib/seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = () => {
+export const meta = ({data}) => {
   return [
     {title: 'QiHome\u00AE Air im Detail | Qi Blanco'},
+    ...beschreibungTags('/pages/qihome-details', data?.page?.seo?.description),
     canonicalLink('/pages/qihome-details'),
   ];
 };

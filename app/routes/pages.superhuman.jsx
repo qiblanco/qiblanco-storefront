@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import {Superhuman} from '~/components/kurse/Superhuman';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -25,6 +26,7 @@ export const meta = ({data}) => {
   const roh = data?.page?.seo?.title || data?.page?.title || '';
   return [
     {title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'},
+    ...beschreibungTags('/pages/superhuman', data?.page?.seo?.description),
     canonicalLink('/pages/superhuman'),
   ];
 };

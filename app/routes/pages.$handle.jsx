@@ -9,6 +9,7 @@ import {
   noindexHeader,
   noindexMeta,
 } from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -19,6 +20,16 @@ export const meta = ({data, params}) => {
   // das gepflegte Feld, sonst der Seitentitel, immer mit der Marke dahinter.
   const roh = data?.page?.seo?.title || data?.page?.title || '';
   const tags = [{title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'}];
+  // DIE BESCHREIBUNG WURDE GEHOLT UND NIE AUSGEGEBEN — das ist der Befund des
+  // Papiers vom 2026-08-15: `PAGE_QUERY` unten holt `seo { title description }`,
+  // benutzt wurde bis hierher nur der Titel. Rangfolge und der Grund, warum die
+  // Verdrahtung allein nicht reicht, stehen im Kopf von ~/lib/seiten-beschreibung.
+  tags.push(
+    ...beschreibungTags(
+      params?.handle ? `/pages/${params.handle}` : '',
+      data?.page?.seo?.description,
+    ),
+  );
   // Stufe S0 (Index-Hygiene): Entwicklungs-/Restseiten gehören nicht in den
   // Index. Die Liste steht in ~/lib/seo, weil die Sitemap-Route sie ebenfalls
   // liest — eine zweite Liste hier würde früher oder später abweichen.

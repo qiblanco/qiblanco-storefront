@@ -1,5 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {KakaoKurs} from '~/components/kurse/KakaoKurs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
@@ -9,6 +10,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 export const meta = ({data}) => {
   return [
     {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    ...beschreibungTags('/pages/zeremonie-kakao-kurs', data?.page?.seo?.description),
     canonicalLink('/pages/zeremonie-kakao-kurs'),
   ];
 };
