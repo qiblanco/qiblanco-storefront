@@ -65,6 +65,20 @@ export function blogMeta({pfad, titel, beschreibung, bildUrl, typ}) {
   }
   if (bildUrl) {
     descriptoren.push({property: 'og:image', content: bildUrl});
+    // TWITTER-KARTE IN DERSELBEN BEDINGUNG WIE DAS BILD, und aus demselben
+    // Grund wie in produkt-seo.js und products.$handle.jsx (2026-09-05):
+    // `summary_large_image` sagt ein großes Bild ZU — ohne og:image wäre
+    // das eine Zusage ohne Deckung. Deshalb hier drin und nicht daneben.
+    //
+    // WARUM DAS NACHGEZOGEN WURDE (2026-09-06): der Restposten-Bau vom
+    // 2026-09-05 hat die Karte auf Startseite und Produktseiten gebracht und
+    // die Blog-Familie ausgelassen — begründet mit „/blogs/wissen trägt
+    // og:title, aber kein og:image". Das stimmt für die UEBERSICHT und war
+    // für die ARTIKEL falsch: alle sieben tragen ein og:image (live gemessen
+    // 2026-09-06, probe_dach_restposten_live.py), also genau die Bedingung,
+    // unter der die Karte gesetzt gehört. Die Regel galt schon, ihre
+    // Reichweite nicht.
+    descriptoren.push({name: 'twitter:card', content: 'summary_large_image'});
   }
   return descriptoren;
 }

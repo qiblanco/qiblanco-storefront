@@ -88,3 +88,40 @@ test('KEINE Blog-Route trägt noch den Scaffold-Titel', () => {
     assert.ok(quelle.includes('blogMeta'), `${f}: nicht an blogMeta verdrahtet`);
   }
 });
+
+test('TW1 die Twitter-Karte kommt NUR mit einem og:image', () => {
+  // `summary_large_image` sagt ein großes Bild zu — ohne Bild wäre das eine
+  // Zusage ohne Deckung. Dieselbe Regel wie in produkt-seo.js.
+  const mit = blogMeta({pfad: '/blogs/wissen/x', titel: 'X', bildUrl: 'https://x/y.jpg'});
+  const karten = mit.filter((d) => d.name === 'twitter:card');
+  assert.equal(karten.length, 1, 'genau EINE Karte erwartet');
+  assert.equal(karten[0].content, 'summary_large_image');
+
+  const ohne = blogMeta({pfad: '/blogs/wissen', titel: 'Wissen'});
+  assert.equal(
+    ohne.filter((d) => d.name === 'twitter:card').length,
+    0,
+    'ohne og:image darf keine Karte entstehen',
+  );
+});
+
+test('TW2 die Karte wird genau EINMAL gesetzt, nicht doppelt', () => {
+  // Gemessen wird die KARDINALITÄT, nicht die Anwesenheit: eine Anwesenheits-
+  // probe übersieht die Doppelausspielung, und genau die hatte auf der
+  // Storefront schon einmal ein og:image doppelt live gestellt (#197/#198).
+  const d = blogMeta({
+    pfad: '/blogs/wissen/x',
+    titel: 'X',
+    beschreibung: 'Y',
+    bildUrl: 'https://x/y.jpg',
+    typ: 'article',
+  });
+  for (const schluessel of ['twitter:card']) {
+    assert.equal(
+      d.filter((x) => x.name === schluessel).length,
+      1,
+      `${schluessel} nicht genau einmal`,
+    );
+  }
+  assert.equal(d.filter((x) => x.property === 'og:image').length, 1);
+});
