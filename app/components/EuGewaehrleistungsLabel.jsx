@@ -223,12 +223,12 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
 /**
  * Der gemeinsame Ausloeser. Produktseite und Footer unterscheiden sich seit
  * dem 2026-09-06 nur noch in der Messmarke -- die Beschriftung ist auf
- * beiden Flaechen dieselbe (Elina EL-20260906-0380455b: der Zusatz
+ * beiden Flächen dieselbe (Elina EL-20260906-0380455b: der Zusatz
  * "amtliche Mitteilung ansehen" auf der Produktseite wurde gestrichen).
- * Die Kuerzung beruehrt die Pflicht nicht: verlangt ist ein SATZ, der ueber
- * das Gewaehrleistungsrecht informiert ("Your legal guarantee rights",
+ * Die Kürzung berührt die Pflicht nicht: verlangt ist ein SATZ, der über
+ * das Gewährleistungsrecht informiert ("Your legal guarantee rights",
  * Leitlinien Abschnitt 2.3, Zitat im Kopf dieser Datei) -- nicht die
- * Ankuendigung des Klick-Ziels. Der Footer trug den kurzen Text von Anfang an.
+ * Ankündigung des Klick-Ziels. Der Footer trug den kurzen Text von Anfang an.
  */
 function EuLabelAusloeser({flaeche, beschriftung}) {
   const kontext = useEuLabel();
