@@ -73,6 +73,46 @@ const KLARNA_IMG =
 const PAYPAL_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082';
 
+/*
+ * BILD-LEITERN UND `sizes` (Job 20260906-lp-erzeugt-den-naechsten-klick-…
+ * -prio20, s02).
+ *
+ * ANLASS: die Seite lieferte 14 Shopify-CDN-Bilder als UNSKALIERTE ORIGINALE
+ * aus — zusammen 16,88 MB, gemessen am 2026-09-06 am Live-Dokument. Allein
+ * QiBracelet1.webp 6.266.409 B bei einer Anzeigebreite von 200 px.
+ * Die Mechanismus-Kacheln sind hier BEWUSST NICHT aufgefuehrt: sie haben ihre
+ * Leiter bereits (#316), samt einer aus den CSS-Tokens hergeleiteten
+ * `sizes`-Angabe und der Wache bin/probe_mech_sizes_naht.py.
+ *
+ * GEBAUT WIRD MIT DEM BESTAND: `bildSrcSet` aus shopifyBildQuellen ist die
+ * EINE Stelle, an der eine Shopify-Leiter entsteht (P10) — hier kommen nur
+ * je Bild passende Sprossen und die Layoutbreite dazu.
+ *
+ * `sizes` MUSS die Layoutbreite ehrlich nennen und darf sie nie
+ * UNTERschaetzen: eine zu kleine Angabe laesst den Browser eine zu kleine
+ * Sprosse waehlen — sichtbare Unschaerfe, und genau das meldet das
+ * Alle-Formate-Gate als `bild-aufloesung`. Zu grosse Angaben kosten nur Bytes.
+ *
+ * DIE ANZEIGEBREITEN SIND UEBER DIE GANZE FORMAT-MATRIX GEMESSEN, NICHT UEBER
+ * ZWEI VIEWPORTS — und das Maximum liegt MITTEN darin, nicht an den Raendern:
+ * die Seite ist bis 767 px einspaltig, das Hero-Bild waechst dort MIT dem
+ * Viewport und erreicht bei 600 px Breite 552 CSS-px, mehr als auf jedem
+ * Desktop (423). Gemessen ueber 11 Formate von 360 bis 1440 px:
+ *   Hero/Final-CTA  312 · 366 · 552 · 273 · … · 423  -> Maximum 552
+ *   Produktkarten   konstant 200 (158 bei 768)
+ *   Zahlarten-Logos konstant 48 (Klarna) bzw. 52 (PayPal)
+ * Wer nur Telefon und Desktop misst, sieht das 552er-Maximum baulich nie.
+ */
+const SIZES_HERO =
+  '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
+/* Die Zahlarten-Logos bekommen eine EIGENE, kurze Leiter: die Standard-Leiter
+   beginnt bei 320 px und wuerde fuer eine 48-px-Flaeche mehr Bytes holen als
+   das Original hat. Gemessen: klarna 17.675 B im Original, 4.866 B bei 100 px;
+   paypal 75.518 B im Original, 5.176 B bei 110 px. Genau das meint die
+   s01-Falle „kein pauschaler Wert" — sie verbietet nicht das Skalieren,
+   sondern das UNGEMESSENE Skalieren. */
+const LEITER_LOGO = [100, 150, 220];
+
 /* ───────── Hero (Drei-Ebenen-Versprechen) ───────── */
 function Hero() {
   const {data} = useLp();
@@ -139,6 +179,8 @@ function Hero() {
         <figure className="lp-a-hero__visual">
           <img
             src={heroImg}
+            srcSet={bildSrcSet(heroImg)}
+            sizes={SIZES_HERO}
             alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
             loading="eager"
           />
@@ -291,6 +333,11 @@ function ScienceSection() {
       {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
           Karte, gleiche Botschaften — Job 20260716-bauer-scroll-down-
           animationen-capability; SHOW IT statt Behauptung) */}
+      {/* Das Scroll-Scrub-Video belegt bauartbedingt mehrere Bildschirmhoehen
+          und war nach dem ersten Einbau die laengste verbliebene Durststrecke.
+          Der Knopf steht deshalb DAVOR, solange der Beweis aus den Zahlen
+          darueber noch frisch ist. */}
+      <WeiterCta nr={6} label="20 Nächte risikofrei testen" imBlock />
       <ScrollScrubVideo
         dataSection="lp-a-mikroskop-video"
         srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
@@ -311,6 +358,9 @@ function ScienceSection() {
         ]}
         fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
       />
+      {/* Zweiter Knopf im Wissenschafts-Block: zwischen Video und Studien-
+          Slider liegt sonst erneut eine volle Bildschirmhoehe ohne Weg. */}
+      <WeiterCta nr={5} label="QiOne® 2 Pro ansehen" imBlock />
       <LpStudien headline="" />
     </section>
   );
@@ -462,7 +512,13 @@ function PricingSection() {
             {c.featured && <span className="lp-a-product__badge">Bestseller</span>}
             <div className="lp-a-product__image">
               {c.p?.featuredImage?.url ? (
-                <img src={c.p.featuredImage.url} alt={c.name} loading="lazy" />
+                <img
+                  src={c.p.featuredImage.url}
+                  srcSet={bildSrcSet(c.p.featuredImage.url)}
+                  sizes="200px"
+                  alt={c.name}
+                  loading="lazy"
+                />
               ) : (
                 <span className="lp-a-product__ph">{c.name}</span>
               )}
@@ -526,7 +582,13 @@ function FinalCTA() {
     <section className="lp-vp-final-cta" data-section="lp-a-final">
       <div className="lp-vp-final-cta__inner">
         <div className="lp-vp-final-cta__media">
-          <img src={image} alt="QiOne® 2 Pro" loading="lazy" />
+          <img
+            src={image}
+            srcSet={bildSrcSet(image)}
+            sizes={SIZES_HERO}
+            alt="QiOne® 2 Pro"
+            loading="lazy"
+          />
           <div className="lp-vp-final-cta__stamp" aria-hidden="true">
             <svg viewBox="0 0 120 120">
               <defs>
@@ -563,8 +625,18 @@ function FinalCTA() {
               </div>
               <span className="lp-vp-final-cta__price-meta">einmalig · inkl. MwSt.</span>
               <div className="lp-vp-final-cta__pay">
-                <img src={KLARNA_IMG} alt="Klarna" />
-                <img src={PAYPAL_IMG} alt="PayPal" />
+                <img
+                  src={KLARNA_IMG}
+                  srcSet={bildSrcSet(KLARNA_IMG, LEITER_LOGO)}
+                  sizes="48px"
+                  alt="Klarna"
+                />
+                <img
+                  src={PAYPAL_IMG}
+                  srcSet={bildSrcSet(PAYPAL_IMG, LEITER_LOGO)}
+                  sizes="52px"
+                  alt="PayPal"
+                />
               </div>
             </div>
           )}
@@ -582,6 +654,41 @@ function FinalCTA() {
   );
 }
 
+/* ───────── Weiter-Knopf (schliesst die Knopf-Luecke) ─────────
+   Job 20260906-lp-erzeugt-den-naechsten-klick-…-prio20, Segment s02.
+
+   GEMESSEN, NICHT VERMUTET (Hit-Test am gerenderten DOM,
+   bin/lp-falz-hittest.py): zwischen dem Hero-CTA bei Falz 0,71 und dem
+   naechsten klickbaren Kaufweg-Knopf bei Falz 18,70 lagen 15.181 px = 18,0
+   Falzen mobil (12.625 px = 14,0 desktop) OHNE einen einzigen Weg zum
+   Produkt. Wer Mechanismus, Wissenschaft, Bewertungen und Video liest, hatte
+   dazwischen keinen naechsten Klick.
+
+   Diese Landingpage wird am NAECHSTEN KLICK gemessen, nicht an der Bestellung
+   (qi-brain brain/Marketing/landingpage-trichter-und-messregel-2026-08-26.md) —
+   eine solche Durststrecke ist damit kein Schoenheitsfehler, sondern der
+   Defekt. Deshalb steht hier ein KNOPF und kein neuer Fliesstext: die Luecke
+   war das Problem, nicht die Textmenge.
+
+   BEWUSST NICHTS NEUES: Ziel, Klassen und Farbe kommen aus dem Bestand
+   (`lp-vp-btn lp-vp-btn--primary` -> /pages/qione-2-pro, derselbe Knopf wie im
+   Hero). Kein zweiter Gold-Ton, keine neue Schriftgroesse, kein Preis. Auch
+   der ABSTAND ist geerbt: zwischen zwei <section> tragen die 96 px
+   Sektions-Polsterung den Knopf, er bringt keinen eigenen Rhythmus mit.
+   `imBlock` gilt nur INNERHALB einer Sektion, wo diese Polsterung fehlt. */
+function WeiterCta({nr, label, imBlock = false}) {
+  return (
+    <div
+      className={`lp-a-weiter${imBlock ? ' lp-a-weiter--im-block' : ''}`}
+      data-section={`lp-a-weiter-${nr}`}
+    >
+      <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
+        {label}
+      </a>
+    </div>
+  );
+}
+
 /* ───────── Root ───────── */
 export function SchlafZellenSchutz({products}) {
   const data = {products: products || []};
@@ -593,7 +700,9 @@ export function SchlafZellenSchutz({products}) {
         <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
         <IntroSection />
         <MechanismSection />
+        <WeiterCta nr={1} label="QiOne® 2 Pro ansehen" />
         <ScienceSection />
+        <WeiterCta nr={2} label="20 Nächte risikofrei testen" />
         <div data-section="lp-a-google-reviews">
           <LpGoogleReviews />
         </div>
@@ -601,7 +710,9 @@ export function SchlafZellenSchutz({products}) {
         <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
           <ReputonWidget />
         </div>
+        <WeiterCta nr={3} label="QiOne® 2 Pro ansehen" />
         <VideoSection />
+        <WeiterCta nr={4} label="20 Nächte risikofrei testen" />
         <GuaranteeSection />
         <PricingSection />
         <SignatureSection />

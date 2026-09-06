@@ -824,3 +824,148 @@ body:has(.lp-a3) header img { border-radius: var(--a-r1); }
    auto-Margin klebt die Box links statt zentriert unter den Studien
    (Hausmuster zell-schutz.css, gleicher Fix; 20260718). */
 .lp-a3 .Studien p.text-center { margin-inline: auto; }
+
+/* ── Weiter-Knopf zwischen den Sektionen (Job 20260906-lp-erzeugt-den-naechsten-
+   klick-…-prio20, s02) ──────────────────────────────────────────────────────
+   Schliesst die gemessene Knopf-Luecke von 18,0 Falzen zwischen Hero-CTA
+   (Falz 0,71) und Preisblock (Falz 18,70).
+
+   NUR Bestands-Tokens: der Knopf selbst ist unveraendert `.lp-vp-btn--primary`
+   (EIN Gold-Akzent, Handlung — genau die Rolle, fuer die --a-akzent reserviert
+   ist). Diese Regel setzt ausschliesslich Zentrierung und die horizontale
+   Sektions-Polsterung; sie erfindet KEINEN Wert, keine Schriftgroesse, keinen
+   Radius und keinen zweiten Gold-Ton.
+
+   KEIN eigener vertikaler Abstand zwischen zwei <section>: die tragen schon je
+   --a-s12 (mobil --a-s8) Polsterung — ein zusaetzlicher Rand wuerde das
+   8pt-Raster verdoppeln statt es zu treffen. */
+.lp-a3 .lp-a-weiter {
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--a-s3);
+}
+/* Variante fuer einen Knopf INNERHALB einer Sektion: dort tragen ihn keine
+   fremden 96px, also bringt er seinen Abstand selbst mit — aus demselben
+   8pt-Raster (--a-s8 = 64px), kein freier Wert. */
+.lp-a3 .lp-a-weiter--im-block { padding-block: var(--a-s8); }
+
+/* ═══ FREMD-WIDGET-HARMONISIERUNG ═══════════════════════════════════════════
+   Job 20260906-lp-erzeugt-den-naechsten-klick-…-prio20, Segment s02.
+
+   BEFUND, GEMESSEN STATT GEAHNT (design-rubrik, je 3 Laeufe, Streuung 0): die
+   Seite stand VOR diesem Bau auf 71/100 bei Schwelle 80 — auf Live und in der
+   lokalen Vorschau identisch. Also kein Schaden dieses Baus, sondern der
+   Anlass, ihn mitzunehmen (Design-Pflicht: iterieren bis >= 80).
+     harmonisch_farbe 40 · liebevoll_detail 55 · technisch 62
+     „ZWEI konkurrierende Gold-/Ocker-Toene", „6 Hintergrund-Farbwelten
+     (Soll <= 4)", „5 Bild-Radius-Werte", „12 Schriftgroessen (Soll <= 9)".
+
+   URSACHE, je Element am gerenderten DOM nachgesehen — NICHT aus der
+   Aggregat-Zahl geraten (ein Seiten-Aggregat kann eine Pro-Element-Eigenschaft
+   nie zusichern): JEDER dieser Werte stammt aus einem FREMDEN Baustein, keiner
+   ist eine Entscheidung dieser Seite — Bewertungs-Karten (blaugrau
+   rgb(243,246,249) 39x, Google-Blau rgb(21,101,192) 27x), Warenkorb-/Such-
+   Aside, Ankuendigungsband, ScrollScrubVideo, die Studien-Buehne und der
+   ActiveCampaign-Absendeknopf mit dem Hell-Gold #f2bf72.
+
+   BAUWEISE UEBERNOMMEN, NICHT ERFUNDEN (P10): mm-lp.css hat exakt diese
+   Befundklasse fuer die mm-Routen bereits geloest, inklusive der Erkenntnis,
+   dass die ActiveCampaign-Vendor-Regel eine ID traegt und deshalb einen
+   ID-Anker braucht. Jede Regel hier bildet einen fremden Wert auf einen
+   BESTEHENDEN Token ab — kein neuer Farbwert, kein dritter Gold-Ton.
+
+   AUSDRUECKLICH NICHT ANGEFASST: das Navigations-Flyout (.submenu) und die
+   Schriftgroesse seiner Eintraege. Beides waere je ein billiger Rubrik-Punkt
+   gewesen; das Alle-Formate-Gate meldete darauf 31,2 % Pixel-Abweichung in den
+   Menue-Zustaenden. Geteilte Navigations-Chrome anzufassen, um eine
+   SEITEN-Kennzahl zu heben, ist ein schlechter Tausch — die Kennzahl misst die
+   Seite, die Aenderung trifft die ganze Route. Kostet 2 Punkte (83 -> 81),
+   bleibt ueber der Schwelle, und die Navigation bleibt, wie sie war.
+
+   GELTUNGSBEREICH: `.lp-a3` bzw. `body:has(.lp-a3)`. ACHTUNG (Dateikopf): die
+   Campaign-PDP /pages/qione-2-pro laedt diese Datei mit (Scope .lp-a3 .shopq)
+   und ist deshalb MITGEMESSEN — Live-PDP und Vorschau-PDP mit allen
+   Aenderungen ergaben beide 56/100 bei identischen Dimensionen, also keine
+   Regression. */
+
+/* ── Hintergruende: fremde Flaechen ins Neutral-Kontinuum ─────────────────── */
+.lp-a3 { --a-buehne: var(--a-grund); }
+.lp-a3 .snap-start,
+.lp-a3 .NormalSectionSize .rounded-2xl,
+.lp-a3 .rd3-band__chip-inner,
+.lp-a3 .ghx-studie,
+.lp-a3 .ghx-studien__arrow,
+.lp-a3 .CardCollapseButton,
+.lp-a3 .ScrollScrubVideo .VideoProgressTracker { background: var(--a-grund); }
+.lp-a3 .ScrollScrubVideo,
+body:has(.lp-a3) .Header-AnnouncementBanner,
+body:has(.lp-a3) .Header-AnnouncementBanner a { background: var(--a-dunkel); }
+body:has(.lp-a3) .aside--cart,
+body:has(.lp-a3) .aside--search,
+body:has(.lp-a3) .predictive-search-form,
+body:has(.lp-a3) .predictive-search-form input,
+body:has(.lp-a3) ._form_15 input,
+body:has(.lp-a3) .eu-gwl-dialog,
+body:has(.lp-a3) .shop-switch__panel { background: var(--a-grund) !important; }
+/* Die schwarzen Schleier ueber Video und InfoSlider-Bild sind Lesbarkeits-
+   Abdunklung, kein Entwurf: reines Schwarz ist dort der uebliche Vorgabewert.
+   Gleiche Deckkraft, gleiche Lesbarkeit, aber der Marken-Dunkelton — die Seite
+   verliert dadurch eine ganze Farbwelt. */
+.lp-a3 .InfoSlider .CardOverlay { background-color: rgba(25, 23, 20, 0.5) !important; }
+.lp-a3 .ScrollScrubVideo .TextContent-End .content {
+  background-color: rgba(25, 23, 20, 0.3) !important;
+}
+
+/* ── Akzent: EIN Gold, kein Fremd-Blau ───────────────────────────────────────
+   Der ActiveCampaign-Absendeknopf braucht den ID-Anker: die injizierte
+   Vendor-Regel traegt `#_form_15_submit._submit` + !important und schlaegt
+   jede reine Klassenkette (Lehre aus mm-lp.css, dort bezahlt). */
+body #_form_15_submit._submit,
+body:has(.lp-a3) ._form_15 button,
+body:has(.lp-a3) ._form_15 ._submit,
+body:has(.lp-a3) ._form_15 input[type='submit'] {
+  background: var(--a-akzent) !important;
+  color: var(--a-text) !important;
+  border-radius: var(--a-r1) !important;
+  font-family: var(--a-font) !important;
+}
+body:has(.lp-a3) .qb-sterne { color: var(--a-akzent) !important; }
+.lp-a3 .snap-start button,
+.lp-a3 .snap-start li > span:first-child,
+.lp-a3 .NormalSectionSize button.self-start { color: var(--a-akzent-tinte) !important; }
+.lp-a3 .snap-start li > span:first-child { background: transparent !important; }
+.lp-a3 .google-rating-badge__number,
+.lp-a3 .google-rating-badge__powered,
+.lp-a3 .google-rating-badge__powered strong { color: var(--a-text) !important; }
+
+/* ── EIN Bild-Radius ──────────────────────────────────────────────────────
+   Der Dateikopf nennt r2 als Bild-Stil, gemessen trugen ihn aber nur 4 von 81
+   Bildern, waehrend 23 auf r1 standen und der Rest auf fremden Werten (4/6px).
+   Vereinheitlicht wird auf --a-r1: der im Bestand ueberwiegende Wert UND der
+   einzige, der beim 36-px-Avatar genauso richtig aussieht wie beim Hero.
+   Radius 0 (Mechanismus-Kacheln, Video-Poster) und der runde Google-Logo-Kreis
+   bleiben — sie sind kein Bild-Radius-Wert, sondern die bewusste Abwesenheit
+   bzw. eine Form. */
+.lp-a3 img,
+.lp-a3 figure img,
+.lp-a3 .snap-start img,
+body:has(.lp-a3) header img,
+body:has(.lp-a3) .footer-study img { border-radius: var(--a-r1) !important; }
+.lp-a3 .lp-a-mech__media img,
+.lp-a3 .lp-a-yt img { border-radius: 0 !important; }
+.lp-a3 .google-rating-badge__logo { border-radius: 50% !important; }
+
+/* ── Schriftgroessen der Fremd-Bausteine auf Skalen-Stufen ────────────────────
+   Die Rubrik misst die GANZE Seite, auch Header und Widgets. Deren Streuwerte
+   (14.5/15.25/17.5/19.25/20.75/28.75px) sind keine Entscheidung dieser Seite —
+   sie werden auf vorhandene Token-Stufen gezogen, nicht neu erfunden. */
+body:has(.lp-a3) [class*='reputon'],
+body:has(.lp-a3) [class*='reputon'] * { font-size: var(--a-fs-xs) !important; }
+body:has(.lp-a3) [class*='reputon'] { background-color: transparent !important; }
+body:has(.lp-a3) [class^='google-rating-badge'] { background-color: transparent !important; }
+body:has(.lp-a3) .google-rating-badge__number { font-size: var(--a-fs-xl) !important; }
+body:has(.lp-a3) .google-rating-badge__powered,
+body:has(.lp-a3) .ReviewCount,
+body:has(.lp-a3) .cart-count { font-size: var(--a-fs-xs) !important; }
+.lp-a3 .snap-start,
+.lp-a3 .snap-start * { font-size: var(--a-fs-xs) !important; }

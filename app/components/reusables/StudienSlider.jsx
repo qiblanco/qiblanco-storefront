@@ -2,6 +2,7 @@ import {useRef} from 'react';
 import {Link} from 'react-router';
 import {useDragSwipe} from './useDragSwipe';
 import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
+import {bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 
 /*
  * StudienSlider -- die EINE Definition der Studien-KACHEL-Ansicht (Elina-Layout:
@@ -67,6 +68,27 @@ import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
  * Beide Zahlen unten sind Design-Tokens, keine Naturkonstanten -- sie stehen
  * hier an EINER Stelle, damit eine spätere Studie sie nicht einzeln aufweicht.
  */
+/*
+ * `sizes` DER TITELBILDER (Job 20260906-lp-erzeugt-den-naechsten-klick-…
+ * -prio20, s02).
+ *
+ * Die fünf Cover kamen bis hier als UNSKALIERTE ORIGINALE über die Leitung:
+ * gemessen am 2026-09-06 zusammen 5.392.089 B, allein
+ * Cell_Biology_Cover_Remake_Seite_3.png 2.717.627 B (natürlich 2480x3508) —
+ * bei einer Anzeigebreite von 232 px mobil und 264 px auf dem Desktop. Weil
+ * ALLE fünf an diesem EINEN <img> hängen, deckt ein Eingriff hier sie alle,
+ * und mit ihnen die 26 Seiten, die diesen geteilten Baustein einbinden
+ * (`hb-formate reichweite`).
+ *
+ * Die Leiter selbst kommt aus dem Bestand (`bildSrcSet`, P10). Hier steht nur
+ * die Layoutbreite, und sie ist an der BREITESTEN gemessenen Kachel
+ * ausgerichtet (328 px, ab 600 px Viewport konstant) — bewusst nicht an der
+ * schmalsten: `sizes` gilt für ALLE Konsumenten dieses Bausteins, und zu klein
+ * geraten hieße hier, auf einer fremden Seite ein unscharfes Belegbild
+ * auszuliefern. Zu groß geraten kostet nur Bytes.
+ */
+const SIZES_COVER = '(max-width: 767px) 74vw, 328px';
+
 const BUEHNE_HOEHE = 1.25; // Bühnenhöhe in Bühnenbreiten
 const ZIEL_FLAECHE = 0.93; // Content-Fläche in (Bühnenbreite)²
 
@@ -156,6 +178,8 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
                 >
                   <img
                     src={e.coverUrl}
+                    srcSet={bildSrcSet(e.coverUrl)}
+                    sizes={SIZES_COVER}
                     alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
                     loading="lazy"
                   />
