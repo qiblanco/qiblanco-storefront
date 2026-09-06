@@ -38,7 +38,6 @@ import rechtstextStyles from '~/styles/rechtstext.css?url';
 import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
-import {EuLabelProvider} from './components/EuGewaehrleistungsLabel';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
@@ -474,14 +473,17 @@ export function Layout({children}) {
           >
             {/*
               EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
-              27.09.2026). Der Provider hält GENAU EIN Overlay je Seite --
-              Produktseite und Footer teilen es sich. Er steht hier und nicht
-              in den einzelnen Bausteinen, damit nicht jede Naht ein eigenes
-              Overlay in den Baum hängt.
+              27.09.2026): HIER STEHT BEWUSST NICHTS MEHR.
+              Elina EL-20260901-3fb38a2a: der Overlay-Baustein und der
+              Trigger-Link duerfen NICHT im globalen Seitengeruest und nicht
+              in der Footer-Komponente liegen, sondern ausschließlich dort,
+              wo ein Produkt gekauft werden kann. Das Overlay bringt seit dem
+              2026-09-06 die Mitteilung SELBST mit
+              (EuGewaehrleistungsHinweis in EuGewaehrleistungsLabel.jsx) --
+              es gibt darum keine Stelle mehr, an der es global montiert
+              werden müsste, und keine Route, die man vergessen kann.
             */}
-            <EuLabelProvider>
-              <PageLayout {...data}>{children}</PageLayout>
-            </EuLabelProvider>
+            <PageLayout {...data}>{children}</PageLayout>
             {(data.isProductionHost || data.enableTrackingInPreview) && (
               <>
                 <MetaPixel />

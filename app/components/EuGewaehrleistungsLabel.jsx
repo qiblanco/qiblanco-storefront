@@ -94,6 +94,33 @@ const EuLabelKontext = createContext(null);
  * Hält genau EINEN <dialog> für die ganze Seite. Gehört in root.jsx um
  * <PageLayout> -- dann teilen Produktseite und Footer dasselbe Overlay,
  * statt jeweils ein eigenes mitzubringen.
+ *
+ * DAS GILT SEIT DEM 2026-09-06 NICHT MEHR, und zwar auf Anweisung:
+ * Elina EL-20260901-3fb38a2a verbietet die Montage im globalen
+ * Seitengeruest und in der Footer-Komponente ausdrücklich -- die
+ * Mitteilung gehört ausschließlich dorthin, wo ein Produkt gekauft
+ * werden kann. Der Provider wird deshalb NICHT MEHR VON AUSSEN montiert;
+ * die beiden öffentlichen Bausteine (EuGewaehrleistungsHinweis,
+ * EuGewaehrleistungsLink) bringen ihn selbst mit.
+ *
+ * WARUM AM BAUSTEIN UND NICHT JE ROUTE: der Hinweis sitzt bewusst in
+ * ProductForm/CacaoProductForm/TenYearsDealPage und nicht in den einzelnen
+ * Seiten-Komponenten, weil die meisten Kaufflaechen über veroeffentlichte
+ * Shopify-Produkte OHNE eigene Route-Datei laufen (Catch-all
+ * products.$handle) -- die Begründung steht woertlich an der Naht in
+ * ProductForm.jsx. Eine Bindung je Route würde genau die stillschweigend
+ * auslassen und müsste von Hand nachgepflegt werden. Am Baustein montiert
+ * ist die Kopplung strukturell: wo die Mitteilung steht, steht auch ihr
+ * Overlay.
+ *
+ * PREIS DIESER BAUFORM, offen benannt: eine Seite mit ZWEI Kaufflaechen
+ * bekommt ZWEI Overlays statt einem (gemessen: app/routes/
+ * products.zeremonie-kakao.jsx rendert <ProductForm> zweimal als
+ * Geschwister). Das ist bewusst in Kauf genommen und nicht kaputt: jeder
+ * Ausloeser öffnet über seinen eigenen Kontext seinen eigenen Dialog,
+ * <dialog>.showModal() hebt ihn in den Top-Layer, und beide tragen
+ * denselben Inhalt. Eine Verschachtelungs-Sperre würde hier nichts
+ * helfen -- Geschwister sehen einander baulich nicht.
  */
 export function EuLabelProvider({children}) {
   const dialogRef = useRef(null);
@@ -252,6 +279,22 @@ function EuLabelAusloeser({flaeche, beschriftung}) {
  * (Leitlinien der Kommission, Abschnitt 2.3; siehe Kopf dieser Datei).
  */
 export function EuGewaehrleistungsHinweis() {
+  return (
+    <EuLabelProvider>
+      <EuLabelHinweisFlaeche />
+    </EuLabelProvider>
+  );
+}
+
+/**
+ * Die eigentliche Flaeche. Sie liegt IMMER unter dem Provider oben -- der
+ * `null`-Zweig ist damit baulich unerreichbar und bleibt nur als Riegel
+ * stehen. Genau dieser Zweig war die Gefahr an der Vorgaenger-Bauform: ohne
+ * Kontext rendert die Pflichtmitteilung STILL nichts, die Seite antwortet
+ * weiter HTTP 200 und sieht vollstaendig aus. Erreichbarkeit ist nicht
+ * Inhalt; deshalb wird der Kontext jetzt mitgeliefert statt vorausgesetzt.
+ */
+function EuLabelHinweisFlaeche() {
   const kontext = useEuLabel();
   if (!kontext) return null;
 
@@ -270,12 +313,29 @@ export function EuGewaehrleistungsHinweis() {
 }
 
 /**
- * FOOTER. Punkt 4 unter "3. Bezahlmethoden" -- reiner Textlink, gleiches
- * Overlay, kein zweiter Dialog. Baulich unveraendert gegenueber der
- * Vorfassung (Elina: "Footer-Umsetzung bleibt wie sie ist").
+ * FOOTER. Punkt 4 unter "3. Bezahlmethoden" -- reiner Textlink.
+ *
+ * DERZEIT NIRGENDS MONTIERT: Elina EL-20260901-3fb38a2a stellt den
+ * Footer-Teil ausdrücklich zurück ("jetzt bewusst weglassen und für
+ * spaeter zurueckstellen"). Der Baustein bleibt deshalb erhalten -- er ist
+ * zurueckgestellt, nicht entfernt.
+ *
+ * GEAENDERT gegenueber der Vorfassung, und das ist kein Schoenheitsfehler:
+ * früher stand hier "gleiches Overlay, kein zweiter Dialog", weil ein
+ * globaler Provider im Seitengeruest hing. Den gibt es nicht mehr. Ohne
+ * eigenen Provider würde `useEuLabel()` hier `null` liefern und der
+ * Ausloeser beim ersten Rendern an `kontext.open` WERFEN -- ein Fehler, der
+ * erst auftritt, wenn jemand den Baustein spaeter wieder einhaengt, also
+ * genau dann, wenn niemand mehr mit ihm rechnet. Der Provider steht deshalb
+ * hier drin.
  */
 export function EuGewaehrleistungsLink() {
   return (
-    <EuLabelAusloeser flaeche="footer" beschriftung="Gesetzliche Gewährleistung" />
+    <EuLabelProvider>
+      <EuLabelAusloeser
+        flaeche="footer"
+        beschriftung="Gesetzliche Gewährleistung"
+      />
+    </EuLabelProvider>
   );
 }
