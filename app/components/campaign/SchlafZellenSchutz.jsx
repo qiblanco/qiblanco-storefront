@@ -74,8 +74,7 @@ const PAYPAL_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082';
 
 /*
- * BILD-LEITERN UND `sizes` (Job 20260906-lp-erzeugt-den-naechsten-klick-…
- * -prio20, s02).
+ * BILD-LEITERN UND `sizes` (Job 20260906-…-prio20, s02).
  *
  * ANLASS: die Seite lieferte 14 Shopify-CDN-Bilder als UNSKALIERTE ORIGINALE
  * aus — zusammen 16,88 MB, gemessen am 2026-09-06 am Live-Dokument. Allein
@@ -89,15 +88,15 @@ const PAYPAL_IMG =
  * je Bild passende Sprossen und die Layoutbreite dazu.
  *
  * `sizes` MUSS die Layoutbreite ehrlich nennen und darf sie nie
- * UNTERschaetzen: eine zu kleine Angabe laesst den Browser eine zu kleine
- * Sprosse waehlen — sichtbare Unschaerfe, und genau das meldet das
- * Alle-Formate-Gate als `bild-aufloesung`. Zu grosse Angaben kosten nur Bytes.
+ * UNTERschaetzen: eine zu kleine Angabe lässt den Browser eine zu kleine
+ * Sprosse wählen — sichtbare Unschaerfe, und genau das meldet das
+ * Alle-Formate-Gate als `bild-aufloesung`. Zu große Angaben kosten nur Bytes.
  *
- * DIE ANZEIGEBREITEN SIND UEBER DIE GANZE FORMAT-MATRIX GEMESSEN, NICHT UEBER
+ * DIE ANZEIGEBREITEN SIND ÜBER DIE GANZE FORMAT-MATRIX GEMESSEN, NICHT ÜBER
  * ZWEI VIEWPORTS — und das Maximum liegt MITTEN darin, nicht an den Raendern:
  * die Seite ist bis 767 px einspaltig, das Hero-Bild waechst dort MIT dem
  * Viewport und erreicht bei 600 px Breite 552 CSS-px, mehr als auf jedem
- * Desktop (423). Gemessen ueber 11 Formate von 360 bis 1440 px:
+ * Desktop (423). Gemessen über 11 Formate von 360 bis 1440 px:
  *   Hero/Final-CTA  312 · 366 · 552 · 273 · … · 423  -> Maximum 552
  *   Produktkarten   konstant 200 (158 bei 768)
  *   Zahlarten-Logos konstant 48 (Klarna) bzw. 52 (PayPal)
@@ -106,7 +105,7 @@ const PAYPAL_IMG =
 const SIZES_HERO =
   '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
 /* Die Zahlarten-Logos bekommen eine EIGENE, kurze Leiter: die Standard-Leiter
-   beginnt bei 320 px und wuerde fuer eine 48-px-Flaeche mehr Bytes holen als
+   beginnt bei 320 px und würde für eine 48-px-Flaeche mehr Bytes holen als
    das Original hat. Gemessen: klarna 17.675 B im Original, 4.866 B bei 100 px;
    paypal 75.518 B im Original, 5.176 B bei 110 px. Genau das meint die
    s01-Falle „kein pauschaler Wert" — sie verbietet nicht das Skalieren,
@@ -336,7 +335,7 @@ function ScienceSection() {
       {/* Das Scroll-Scrub-Video belegt bauartbedingt mehrere Bildschirmhoehen
           und war nach dem ersten Einbau die laengste verbliebene Durststrecke.
           Der Knopf steht deshalb DAVOR, solange der Beweis aus den Zahlen
-          darueber noch frisch ist. */}
+          darüber noch frisch ist. */}
       <WeiterCta nr={6} label="20 Nächte risikofrei testen" imBlock />
       <ScrollScrubVideo
         dataSection="lp-a-mikroskop-video"
@@ -654,20 +653,20 @@ function FinalCTA() {
   );
 }
 
-/* ───────── Weiter-Knopf (schliesst die Knopf-Luecke) ─────────
-   Job 20260906-lp-erzeugt-den-naechsten-klick-…-prio20, Segment s02.
+/* ───────── Weiter-Knopf (schließt die Knopf-Luecke) ─────────
+   Job 20260906-…-prio20, Segment s02.
 
    GEMESSEN, NICHT VERMUTET (Hit-Test am gerenderten DOM,
    bin/lp-falz-hittest.py): zwischen dem Hero-CTA bei Falz 0,71 und dem
-   naechsten klickbaren Kaufweg-Knopf bei Falz 18,70 lagen 15.181 px = 18,0
+   nächsten klickbaren Kaufweg-Knopf bei Falz 18,70 lagen 15.181 px = 18,0
    Falzen mobil (12.625 px = 14,0 desktop) OHNE einen einzigen Weg zum
    Produkt. Wer Mechanismus, Wissenschaft, Bewertungen und Video liest, hatte
-   dazwischen keinen naechsten Klick.
+   dazwischen keinen nächsten Klick.
 
-   Diese Landingpage wird am NAECHSTEN KLICK gemessen, nicht an der Bestellung
+   Diese Landingpage wird am NÄCHSTEN KLICK gemessen, nicht an der Bestellung
    (qi-brain brain/Marketing/landingpage-trichter-und-messregel-2026-08-26.md) —
    eine solche Durststrecke ist damit kein Schoenheitsfehler, sondern der
-   Defekt. Deshalb steht hier ein KNOPF und kein neuer Fliesstext: die Luecke
+   Defekt. Deshalb steht hier ein KNOPF und kein neuer Fließtext: die Luecke
    war das Problem, nicht die Textmenge.
 
    BEWUSST NICHTS NEUES: Ziel, Klassen und Farbe kommen aus dem Bestand

@@ -69,8 +69,7 @@ import {bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
  * hier an EINER Stelle, damit eine spätere Studie sie nicht einzeln aufweicht.
  */
 /*
- * `sizes` DER TITELBILDER (Job 20260906-lp-erzeugt-den-naechsten-klick-…
- * -prio20, s02).
+ * `sizes` DER TITELBILDER (Job 20260906-…-prio20, s02).
  *
  * Die fünf Cover kamen bis hier als UNSKALIERTE ORIGINALE über die Leitung:
  * gemessen am 2026-09-06 zusammen 5.392.089 B, allein
