@@ -221,9 +221,14 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
 });
 
 /**
- * Der gemeinsame Ausloeser. Produktseite und Footer unterscheiden sich nur
- * noch in Beschriftung und Messmarke -- seit die Grafik auf beiden Flaechen
- * hinter dem Klick liegt, gibt es keinen baulichen Unterschied mehr.
+ * Der gemeinsame Ausloeser. Produktseite und Footer unterscheiden sich seit
+ * dem 2026-09-06 nur noch in der Messmarke -- die Beschriftung ist auf
+ * beiden Flächen dieselbe (Elina EL-20260906-0380455b: der Zusatz
+ * "amtliche Mitteilung ansehen" auf der Produktseite wurde gestrichen).
+ * Die Kürzung berührt die Pflicht nicht: verlangt ist ein SATZ, der über
+ * das Gewährleistungsrecht informiert ("Your legal guarantee rights",
+ * Leitlinien Abschnitt 2.3, Zitat im Kopf dieser Datei) -- nicht die
+ * Ankündigung des Klick-Ziels. Der Footer trug den kurzen Text von Anfang an.
  */
 function EuLabelAusloeser({flaeche, beschriftung}) {
   const kontext = useEuLabel();
@@ -258,7 +263,7 @@ export function EuGewaehrleistungsHinweis() {
     >
       <EuLabelAusloeser
         flaeche="pdp"
-        beschriftung="Gesetzliche Gewährleistung: amtliche Mitteilung ansehen"
+        beschriftung="Gesetzliche Gewährleistung"
       />
     </section>
   );
