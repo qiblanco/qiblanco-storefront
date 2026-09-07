@@ -13,8 +13,8 @@
  *  - Keine Dublette gegen die Produktliste des Footers: derselbe Link zweimal
  *    im selben Footer verwaessert den Ankertext, statt ihn zu schaerfen.
  *  - Jeder Pfad ist ein absoluter /pages/-Pfad. Ein relativer oder externer
- *    Eintrag wuerde als Hub-Signal nichts beitragen.
- *  - Der Ankertext traegt ECHTE Umlaute (kundensichtbarer Text) und ist kurz
+ *    Eintrag würde als Hub-Signal nichts beitragen.
+ *  - Der Ankertext trägt ECHTE Umlaute (kundensichtbarer Text) und ist kurz
  *    genug, um als Sitelink-Titel zu taugen.
  *  - Die Titel-Hygiene-Flanke WAECHST NICHT unbemerkt: Seiten mit
  *    Scaffold-Titel sind namentlich bekannt und begrenzt.
@@ -71,10 +71,10 @@ test('jeder Eintrag ist ein absoluter /pages/-Pfad mit Ankertext', () => {
   assert.ok(HUB_LINKS.length >= 4, 'weniger als 4 Hub-Seiten ist kein Hub');
   for (const {to, label} of HUB_LINKS) {
     assert.match(to, /^\/pages\/[a-z0-9-]+$/, `kein sauberer Pfad: ${to}`);
-    assert.ok(label && label.trim().length > 0, `kein Ankertext fuer ${to}`);
+    assert.ok(label && label.trim().length > 0, `kein Ankertext für ${to}`);
     // Sitelink-Titel werden abgeschnitten; ein Ankertext, der nicht als
     // Sitelink-Titel taugt, verschenkt genau die Flaeche, um die es geht.
-    assert.ok(label.length <= 32, `Ankertext zu lang fuer ${to}: ${label}`);
+    assert.ok(label.length <= 32, `Ankertext zu lang für ${to}: ${label}`);
   }
 });
 
@@ -94,18 +94,18 @@ test('keine Dublette gegen die Produktliste des Footers', () => {
   );
 });
 
-test('Ankertext traegt echte Umlaute (kundensichtbarer Text)', () => {
+test('Ankertext trägt echte Umlaute (kundensichtbarer Text)', () => {
   // Aus Escapes gebaut, siehe Kopf: 'ue', 'oe', 'ae', 'ss' als Digraph-Fahndung.
   const u = 'ue';
   const o = 'oe';
   const a = 'ae';
   const digraph = new RegExp(`(${u}|${o}|${a})`, 'i');
   for (const {label, to} of HUB_LINKS) {
-    // Bekannte echte Woerter mit diesen Buchstabenfolgen ausnehmen waere hier
-    // unnoetig: keiner der Ankertexte enthaelt legitim 'ue'/'oe'/'ae'.
+    // Bekannte echte Wörter mit diesen Buchstabenfolgen ausnehmen wäre hier
+    // unnötig: keiner der Ankertexte enthält legitim 'ue'/'oe'/'ae'.
     assert.ok(
       !digraph.test(label),
-      `Ankertext von ${to} enthaelt eine ASCII-Transliteration: ${label}`,
+      `Ankertext von ${to} enthält eine ASCII-Transliteration: ${label}`,
     );
   }
 });
@@ -132,7 +132,7 @@ test('die Titel-Hygiene-Flanke ist benannt und waechst nicht unbemerkt', () => {
   }
 });
 
-test('der Hygiene-Melder ist lebendig, nicht bloss gerade still', () => {
+test('der Hygiene-Melder ist lebendig, nicht bloß gerade still', () => {
   // WARUM DIESER ARM SEIT 2026-09-07 EXISTIERT: solange zwei Faelle offen
   // waren, bewies der Test darueber nebenbei, dass pruefe_titel_hygiene()
   // ueberhaupt etwas findet. Seit die Menge leer ist, ist genau dieser
@@ -155,13 +155,13 @@ test('die gemessenen Ankertexte stehen wirklich in der Liste', () => {
   // Zwei am 2026-09-07 live nachgemessene Werte, die dieser Bau geaendert
   // hat. Sie stehen hier, damit ein spaeterer Ruecksetzer laut wird statt
   // still: '/pages/support' hiess bis dahin 'Support & FAQ', obwohl die
-  // Seite den Titel 'Kontakt & Hilfe' traegt und der Fussbereich daneben
-  // bereits 'Haeufige Fragen' fuer die ANDERE Seite /pages/faq fuehrt.
+  // Seite den Titel 'Kontakt & Hilfe' trägt und der Fußbereich daneben
+  // bereits 'Häufige Fragen' für die ANDERE Seite /pages/faq führt.
   const nach = Object.fromEntries(HUB_LINKS.map((h) => [h.to, h.label]));
   assert.equal(nach['/pages/support'], 'Kontakt & Hilfe');
-  // Kein Ankertext darf 'FAQ' tragen: der Fussbereich fuehrt diesen Begriff
-  // bereits ausgeschrieben fuer /pages/faq, zwei Etiketten fuer zwei
-  // verschiedene Seiten sind fuer den Besucher verwechselbar.
+  // Kein Ankertext darf 'FAQ' tragen: der Fußbereich führt diesen Begriff
+  // bereits ausgeschrieben für /pages/faq, zwei Etiketten für zwei
+  // verschiedene Seiten sind für den Besucher verwechselbar.
   for (const {to, label} of HUB_LINKS) {
     assert.ok(
       !/\bFAQ\b/i.test(label),

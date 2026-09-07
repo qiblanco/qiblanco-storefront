@@ -1,7 +1,7 @@
 import {Suspense, useState, useEffect} from 'react';
 import {EuGewaehrleistungsLink} from './EuGewaehrleistungsLabel';
 import {Await, NavLink, Link} from 'react-router';
-// Hub-Seiten-Liste + Begruendung: app/lib/hub-seiten.js (SEO-Stufe S5).
+// Hub-Seiten-Liste + Begründung: app/lib/hub-seiten.js (SEO-Stufe S5).
 import {HUB_LINKS} from '~/lib/hub-seiten';
 
 const PRODUCT_LINKS = [
