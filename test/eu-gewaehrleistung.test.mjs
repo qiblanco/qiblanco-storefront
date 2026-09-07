@@ -409,3 +409,42 @@ test('beide öffentlichen Bausteine bringen ihr Overlay SELBST mit', () => {
     'Kommentar-Strippen hat den Code mit entfernt -- die Zusagen oben sagen nichts',
   );
 });
+
+/* ---------------------------------------------------------------------------
+ * WARENKORB (Elina EL-20260907-14710d1d, gebaut 2026-09-07).
+ *
+ * DER DEFEKT, DEN DIESER WÄCHTER FESTHÄLT: /cart ist eine Kauffläche
+ * (probe_live_pdp.py, ZUSATZ_PFADE), trug die Pflichtmitteilung aber nie
+ * selbst — sie kam über den Footer-Link im globalen Seitengerüst. Als der
+ * am 2026-09-06 zurückgestellt wurde, verlor /cart sie ERSATZLOS und STILL:
+ * HTTP 200 blieb, 13 Produktseiten blieben grün, nur der Warenkorb war leer.
+ * Kein Test hat das gesehen, weil die Deckung von /cart nirgends zugesagt
+ * war — sie war ein Nebeneffekt eines Bausteins an ganz anderer Stelle.
+ *
+ * Deshalb steht die Zusage jetzt hier, an der Route, wo sie hingehört.
+ * ------------------------------------------------------------------------ */
+
+const CART_ROUTE = join(HIER, '..', 'app', 'routes', 'cart.jsx');
+
+test('der Warenkorb montiert die Pflichtmitteilung selbst', () => {
+  const code = ohneKommentare(readFileSync(CART_ROUTE, 'utf8'));
+
+  assert.match(
+    code,
+    /<EuGewaehrleistungsHinweis\s*\/>/,
+    '/cart rendert die Pflichtmitteilung nicht mehr -- die Kauffläche Warenkorb wäre wieder ohne Mitteilung, bei weiterhin HTTP 200',
+  );
+  assert.match(
+    code,
+    /import\s*\{\s*EuGewaehrleistungsHinweis\s*\}/,
+    '/cart rendert die Mitteilung, importiert sie aber nicht -- das baut nicht',
+  );
+
+  // Positiv-Kontrolle gegen zu gieriges Strippen: bliebe von der Datei nur
+  // Prosa übrig, wären die beiden Zusagen oben wertlos.
+  assert.match(
+    code,
+    /<CartMain\s/,
+    'Positiv-Kontrolle: <CartMain> fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
