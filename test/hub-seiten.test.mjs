@@ -112,19 +112,60 @@ test('Ankertext traegt echte Umlaute (kundensichtbarer Text)', () => {
 
 test('die Titel-Hygiene-Flanke ist benannt und waechst nicht unbemerkt', () => {
   const offen = pruefe_titel_hygiene();
-  // Stand 2026-08-14 live gemessen: genau diese zwei tragen "Hydrogen | ...".
   // Der Test pinnt bewusst die MENGE der bekannten Faelle, nicht eine Zahl:
   // wird eine geheilt, darf er nicht rot werden; kommt eine NEUE Hub-Seite
   // mit Scaffold-Titel dazu, muss er rot werden.
-  const bekannt = new Set([
-    '/pages/superhuman',
-    '/pages/zeremonie-kakao-kurs',
-  ]);
+  //
+  // Stand 2026-08-14 standen hier '/pages/superhuman' und
+  // '/pages/zeremonie-kakao-kurs'. Am 2026-09-07 am ausgelieferten HTML
+  // nachgemessen (Titel gelesen, nicht Statuscode): beide tragen einen
+  // echten Titel, die Menge ist LEER. Die Schutzrichtung bleibt damit
+  // unveraendert und wird sogar schaerfer — jeder Eintrag in `offen` ist
+  // jetzt ein Befund.
+  const bekannt = new Set([]);
   for (const pfad of offen) {
     assert.ok(
       bekannt.has(pfad),
       `neue Hub-Seite mit Scaffold-Titel: ${pfad} — erst S0-Titelfix, ` +
         'dann als Hub bewerben',
+    );
+  }
+});
+
+test('der Hygiene-Melder ist lebendig, nicht bloss gerade still', () => {
+  // WARUM DIESER ARM SEIT 2026-09-07 EXISTIERT: solange zwei Faelle offen
+  // waren, bewies der Test darueber nebenbei, dass pruefe_titel_hygiene()
+  // ueberhaupt etwas findet. Seit die Menge leer ist, ist genau dieser
+  // Beweis weg: eine kaputte Filter-Bedingung liefert dieselbe leere Liste
+  // wie ein gesunder Bestand, und der Test darueber bliebe gruen. Also wird
+  // die MECHANIK an einer eigenen Liste geprueft, nicht am Bestand.
+  const gefunden = pruefe_titel_hygiene([
+    {to: '/pages/heil', titel_ok: true},
+    {to: '/pages/kaputt', titel_ok: false},
+  ]);
+  assert.deepEqual(
+    gefunden,
+    ['/pages/kaputt'],
+    'pruefe_titel_hygiene() meldet eine Seite mit titel_ok:false nicht mehr ' +
+      '— der Melder ist tot, nicht der Bestand sauber',
+  );
+});
+
+test('die gemessenen Ankertexte stehen wirklich in der Liste', () => {
+  // Zwei am 2026-09-07 live nachgemessene Werte, die dieser Bau geaendert
+  // hat. Sie stehen hier, damit ein spaeterer Ruecksetzer laut wird statt
+  // still: '/pages/support' hiess bis dahin 'Support & FAQ', obwohl die
+  // Seite den Titel 'Kontakt & Hilfe' traegt und der Fussbereich daneben
+  // bereits 'Haeufige Fragen' fuer die ANDERE Seite /pages/faq fuehrt.
+  const nach = Object.fromEntries(HUB_LINKS.map((h) => [h.to, h.label]));
+  assert.equal(nach['/pages/support'], 'Kontakt & Hilfe');
+  // Kein Ankertext darf 'FAQ' tragen: der Fussbereich fuehrt diesen Begriff
+  // bereits ausgeschrieben fuer /pages/faq, zwei Etiketten fuer zwei
+  // verschiedene Seiten sind fuer den Besucher verwechselbar.
+  for (const {to, label} of HUB_LINKS) {
+    assert.ok(
+      !/\bFAQ\b/i.test(label),
+      `Ankertext von ${to} greift den FAQ-Begriff auf: ${label}`,
     );
   }
 });
