@@ -361,18 +361,39 @@ test('das Label hängt NICHT im globalen Seitengeruest', () => {
   );
 });
 
-test('der Footer-Baustein ist zurueckgestellt, nicht heimlich wieder montiert', () => {
+/*
+ * ZURÜCKGENOMMEN am 2026-09-07 (Elina EL-20260907-cda3d376). Der Vorgänger
+ * dieses Wächters hielt die Anweisung vom 2026-09-01 fest: "den Footer-Teil
+ * bewusst weglassen und für später zurückstellen". Ihre Begründung war die
+ * seitenweite Format-Prüfung, die "wegen fremder Bilder auf 5 anderen Seiten
+ * rot" sei. Gemessen am 2026-09-07 trägt diese Begründung nicht: die
+ * Bild-Befunde sind seit dem Regressions-Urteil (s05) durchgängig als
+ * VORBESTEHEND erlassen und haben den Footer-Link nie blockiert -- er ging am
+ * 2026-09-04 mit #301 an genau dieser Bildschuld vorbei live.
+ *
+ * Deshalb kehrt die Zusage hier ihre Richtung um: der Footer TRÄGT Punkt 4.
+ * Die beiden Nachbar-Wächter (kein Provider im globalen Seitengerüst, der
+ * Warenkorb montiert selbst) bleiben unverändert -- der Zuschnitt "jeder
+ * Baustein bringt sein Overlay selbst mit" ist von der Rücknahme nicht
+ * betroffen und bleibt scharf.
+ */
+test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
   const roh = readFileSync(FOOTER, 'utf8');
 
-  assert.equal(
-    roh.includes('<EuGewaehrleistungsLink'),
-    false,
-    'Footer.jsx montiert Punkt 4 wieder (Elina: "bewusst weglassen und für spaeter zurueckstellen")',
+  assert.match(
+    roh,
+    /<EuGewaehrleistungsLink\s*\/>/,
+    'Footer.jsx montiert Punkt 4 nicht mehr -- die Pflichtmitteilung fällt auf jeder Seite weg, die keinen eigenen Träger hat',
+  );
+  assert.match(
+    roh,
+    /from '\.\/EuGewaehrleistungsLabel'/,
+    'der Import fehlt -- der Baustein oben wäre dann undefiniert und die Seite bräche beim Rendern',
   );
   assert.match(
     roh,
     /<PaymentIcons\s*\/>/,
-    'Positiv-Kontrolle: der Nachbar-Baustein <PaymentIcons /> fehlt -- die Abwesenheit oben sagt dann nichts',
+    'Positiv-Kontrolle: der Nachbar-Baustein <PaymentIcons /> fehlt -- die Datei wurde nicht gelesen wie erwartet',
   );
 });
 
