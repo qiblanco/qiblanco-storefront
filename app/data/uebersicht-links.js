@@ -107,7 +107,7 @@ export const UEBERSICHT_BEREICHE = [
     "eintraege": [
       {"pfad": "/pages/E-Smog-Schutz", "url": "https://qiblanco.com/pages/E-Smog-Schutz", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/chat-bot", "url": "https://qiblanco.com/pages/chat-bot", "titel": "", "crawlbar": false, "herkunft": "code"},
-      {"pfad": "/pages/crystal-cacao", "url": "https://qiblanco.com/pages/crystal-cacao", "titel": "Kristall Kakao", "crawlbar": true, "herkunft": "code+shopify", "ads": "aktiv"},
+      {"pfad": "/pages/crystal-cacao", "url": "https://qiblanco.com/pages/crystal-cacao", "titel": "Kristall Kakao", "crawlbar": true, "herkunft": "code+shopify", "ads": "pausiert"},
       {"pfad": "/pages/das-20-tage-versprechen", "url": "https://qiblanco.com/pages/das-20-tage-versprechen", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/haelt-das-mein-leben-aus", "url": "https://qiblanco.com/pages/haelt-das-mein-leben-aus", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/kette-oder-armband", "url": "https://qiblanco.com/pages/kette-oder-armband", "titel": "", "crawlbar": false, "herkunft": "code"},
