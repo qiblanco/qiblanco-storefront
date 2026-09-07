@@ -241,12 +241,43 @@
     return '';
   }
 
+  // Die im _fbc steckende fbclid. Format ist fb.1.<ts_ms>.<fbclid> — die
+  // fbclid steht in Feld [3]; Feld [1] ist die FORMAT-VERSION und wird hier
+  // bewusst nicht angefasst (ein Griff auf [1] liest "1" als Zeitstempel).
+  function fbclidAusFbc(fbc) {
+    var p = String(fbc || '').split('.');
+    return p.length >= 4 ? p[3] : '';
+  }
+
   function persistClickCookies() {
     try {
-      if (readCookie('_fbc')) return;
-      var fbclid =
-        new URLSearchParams(window.location.search).get('fbclid') ||
-        bufferedFbclid();
+      // Job 20260907-fbc-klick-id-... (s02): hier stand nur
+      // `if (readCookie('_fbc')) return;`. Ein SPAETERER Ad-Klick mit neuer
+      // fbclid frischte das _fbc damit 90 Tage lang nicht auf.
+      //
+      // GEMESSEN, nicht vermutet (events.db, ganze Historie, 179495 fbclid-
+      // Events mit gesetztem _fbc): 10083 = 5,62 % trugen ein _fbc, dessen
+      // fbclid nicht die aktuelle war; 8837 davon eine FRUEHERE fbclid
+      // DESSELBEN Besuchers, also genau dieser Frueh-Ausstieg. Und die Quote
+      // WAECHST entlang des Trichters, weil tiefe Stufen aus wiederkehrenden
+      // Besuchern bestehen: behavior 4,68 % -> page_view 9,93 % ->
+      // view_content 16,49 % -> add_to_cart 38,64 % -> initiate_checkout
+      // 42,31 %. An der Stufe, die für Attribution zählt, trug fast jedes
+      // zweite Event eine veraltete Klick-Identitaet.
+      //
+      // NEU: ein FRISCHES fbclid AUS DER AKTUELLEN URL ueberschreibt ein
+      // veraltetes _fbc — dasselbe Verhalten, das fbevents.js selbst zeigt.
+      // Die Richtung ist bewusst eng: der GEPUFFERTE fbclid darf NIE
+      // ueberschreiben (er kann aelter sein als das, was der Meta-Pixel
+      // gerade geschrieben hat), und bei gleicher fbclid wird nichts
+      // angefasst — sonst wanderte der Zeitstempel bei jedem Seitenaufruf
+      // neu und das Lookback-Fenster liesse sich nie schließen.
+      var urlFbclid = new URLSearchParams(window.location.search).get('fbclid');
+      var vorhanden = readCookie('_fbc');
+      if (vorhanden) {
+        if (!urlFbclid || fbclidAusFbc(vorhanden) === urlFbclid) return;
+      }
+      var fbclid = urlFbclid || bufferedFbclid();
       if (!fbclid) return;
       var value = 'fb.1.' + Date.now() + '.' + fbclid;
       var suffix =
@@ -258,7 +289,11 @@
       if (/(^|\.)qiblanco\.com$/.test(host)) {
         document.cookie = '_fbc=' + value + suffix + '; Domain=.qiblanco.com';
       }
-      if (!readCookie('_fbc')) {
+      // Zweiter Schreibversuch ohne Domain-Attribut. Bedingung ist bewusst
+      // NICHT mehr `if (!readCookie('_fbc'))`: beim AUFFRISCHEN existiert der
+      // Cookie ja gerade — die Auffrischung wäre sonst still wirkungslos,
+      // sobald der Domain-Schreibversuch nicht greift (Nicht-qiblanco-Host).
+      if (fbclidAusFbc(readCookie('_fbc')) !== fbclid) {
         document.cookie = '_fbc=' + value + suffix;
       }
     } catch {

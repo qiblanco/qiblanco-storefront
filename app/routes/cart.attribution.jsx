@@ -1,6 +1,7 @@
 import {redirect} from '@shopify/remix-oxygen';
 import {
   getAttributionCartAttributes,
+  getOriginCartAttributes,
   getTrackedCheckoutUrl,
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
@@ -19,17 +20,24 @@ export async function action({request, context}) {
 
   let checkoutCart = cartResult;
 
-  if (hasAttributionConsent(request, env)) {
-    const attributionAttributes = getAttributionCartAttributes(request);
-    const {attributes, changed} = mergeCartAttributes(
-      cartResult.attributes,
-      attributionAttributes,
-    );
+  // Job 20260907-fbc-klick-id-... (s02): der gesamte Block stand unter
+  // `if (hasAttributionConsent(request, env)) { ... }` — ohne Consent wurde am
+  // Kassen-Knopf KEIN einziges Attribut gesetzt, auch nicht der Herkunfts-Marker.
+  // Jetzt: Herkunfts-Marker IMMER, personenbezogene Attribute NUR mit Consent.
+  const cartAttributes = [
+    ...getOriginCartAttributes(request),
+    ...(hasAttributionConsent(request, env)
+      ? getAttributionCartAttributes(request)
+      : []),
+  ];
+  const {attributes, changed} = mergeCartAttributes(
+    cartResult.attributes,
+    cartAttributes,
+  );
 
-    if (changed) {
-      const updatedResult = await cart.updateAttributes(attributes);
-      checkoutCart = updatedResult?.cart ?? cartResult;
-    }
+  if (changed) {
+    const updatedResult = await cart.updateAttributes(attributes);
+    checkoutCart = updatedResult?.cart ?? cartResult;
   }
 
   const headers = checkoutCart?.id ? cart.setCartId(checkoutCart.id) : undefined;
