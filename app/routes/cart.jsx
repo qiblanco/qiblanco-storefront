@@ -3,6 +3,7 @@ import {CartForm} from '@shopify/hydrogen';
 import {data} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
 import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
 import {noindexMeta} from '~/lib/seo';
@@ -173,6 +174,26 @@ export default function Cart() {
             h1-Skala des Shops; der Drawer nutzt <h3>, weil er ein Dialog ist. */}
         <h1>Warenkorb</h1>
         <CartMain layout="page" cart={cart} />
+        {/*
+          GESETZLICHE GEWÄHRLEISTUNG — Pflichtmitteilung nach Anhang I
+          VO (EU) 2025/1960 (anwendbar ab 27.09.2026).
+
+          WARUM SIE HIER STEHT UND SEIT WANN SIE FEHLTE: der Warenkorb ist
+          eine Kauffläche (probe_live_pdp.py, ZUSATZ_PFADE), trug die
+          Mitteilung aber nie selbst — sie kam über den Footer-Link, der im
+          globalen Seitengerüst hing. Mit dessen Rückstellung am 2026-09-06
+          (Elina EL-20260901-3fb38a2a) verlor /cart die Mitteilung ersatzlos
+          und STILL: die Seite antwortet weiter HTTP 200. Gemessen am
+          2026-09-07: 13 Produktseiten trugen sie, /cart als einzige nicht.
+
+          WARUM IN DER ROUTE UND NICHT IN CartMain: dieselbe Begründung wie
+          bei ZweifelBeleg zwei Zeilen tiefer — CartMain rendert auch den
+          Drawer. Und eine gemeinsam genutzte Komponente zöge über die
+          globale Kette fremde Formate-Bestandsschuld in den Deploy; genau
+          das war Elinas ausdrückliche Auflage am 2026-09-01. Eine Route ist
+          der einzige Ort, der beides erfüllt.
+        */}
+        <EuGewaehrleistungsHinweis />
         {/* Der zweite Zweifelort, und der späteste: hier entscheidet er sich.
             Die Zeile steht in der Route und NICHT in CartMain, weil CartMain
             auch den Drawer rendert — dort wäre sie ein Ausgang aus einem
