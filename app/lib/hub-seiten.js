@@ -58,18 +58,44 @@
  * Scaffold-Titel arbeitet also gegen genau die Wirkung, die diese Stufe
  * sucht. Der Titel-Fix gehört in die Hygiene-Stufe S0 und wird von
  * `pruefe_titel_hygiene()` als offene Flanke gemeldet statt vergessen.
+ *
+ * STAND 2026-09-07: DIESE FLANKE IST LEER — GEMESSEN, NICHT ÜBERNOMMEN.
+ * Beim Erstbau am 2026-08-14 trugen `/pages/superhuman` und
+ * `/pages/zeremonie-kakao-kurs` den Scaffold-Titel und standen deshalb auf
+ * `titel_ok: false`. Am 2026-09-07 selbst abgerufen (Hydrogen-DACH-Shop
+ * über `storefront_messung.url('dach', …)`, Browser-User-Agent,
+ * `data-qb-region` im Rumpf belegt, also nachweislich NICHT der fremde
+ * Liquid-Store `qi-blanco.com`) und den `<title>` gelesen statt den
+ * Statuscode:
+ *   /pages/superhuman            -> "Superhuman | Qi Blanco"
+ *   /pages/zeremonie-kakao-kurs  -> "Qi Blanco | Zeremonie Kakao Kurs"
+ *   /pages/support               -> "Kontakt & Hilfe | Qi Blanco"
+ * Kein Scaffold-Titel mehr; die S0-Flanke ist von fremder Hand geschlossen
+ * worden. Beide Flags stehen deshalb auf `true`. Wäre `false` stehen
+ * geblieben, meldete `pruefe_titel_hygiene()` dauerhaft eine längst
+ * erledigte Flanke — eine Wache, die sicher nie mehr recht hat.
+ *
+ * WER DIESE WERTE ÄNDERT, MISST SIE VORHER. Sie sind eine Aussage über die
+ * LIVE-Seite, nicht über dieses Repo: der Titel wird im Shopify-Admin
+ * gepflegt und kann sich ohne einen einzigen Commit hier bewegen. Ein aus
+ * einem älteren Stand abgeschriebener Wert ist keine Messung.
  */
 export const HUB_LINKS = [
   {to: '/pages/technologie', label: 'Technologie', titel_ok: true},
   {to: '/pages/studien', label: 'Wissenschaftliche Studien', titel_ok: true},
   {to: '/pages/crystal-cacao', label: 'Crystal Cacao®', titel_ok: true},
-  {to: '/pages/superhuman', label: 'Superhuman Videokurs', titel_ok: false},
+  {to: '/pages/superhuman', label: 'Superhuman Videokurs', titel_ok: true},
   {
     to: '/pages/zeremonie-kakao-kurs',
     label: 'Zeremonie Kakao Kurs',
-    titel_ok: false,
+    titel_ok: true,
   },
-  {to: '/pages/support', label: 'Support & FAQ', titel_ok: true},
+  // Ankertext "Kontakt & Hilfe" statt "Support & FAQ": das ist der
+  // Seitentitel, den die Seite am 2026-09-07 wirklich trägt (siehe
+  // Messung oben). "Support & FAQ" wäre zusätzlich verwechselbar — der
+  // Fußbereich führt seit dem 2026-09-02 einen eigenen Punkt
+  // "Häufige Fragen", der auf die ANDERE Seite /pages/faq zeigt.
+  {to: '/pages/support', label: 'Kontakt & Hilfe', titel_ok: true},
 ];
 
 /**
@@ -86,8 +112,19 @@ export function hubPfade() {
  * Bewusst eine eigene Funktion und kein Kommentar: ein Hinweis ohne Leser ist
  * Deko. Der Test liest sie und schlägt Alarm, wenn diese Menge WÄCHST — eine
  * neue Hub-Seite mit kaputtem Titel soll nicht unbemerkt dazukommen.
+ *
+ * WARUM DIE LISTE SEIT 2026-09-07 ÜBERGEBEN WERDEN KANN: seit die beiden
+ * bekannten Fälle geheilt sind, ist die Antwort auf dem Echtbestand die
+ * leere Liste. Eine Prüfung, die nur diese Leere sieht, bliebe auch dann
+ * grün, wenn jemand die Filter-Bedingung hier kaputt macht — die Wache wäre
+ * still tot und von "alles in Ordnung" nicht zu unterscheiden. Der Test
+ * füttert deshalb eine eigene Liste mit einem kaputten Eintrag und prüft
+ * damit die MECHANIK, nicht bloß den heutigen Bestand.
+ *
+ * @param {{to: string, titel_ok?: boolean}[]} [liste] Zu prüfende Liste;
+ *   ohne Angabe der Echtbestand `HUB_LINKS`.
  * @returns {string[]}
  */
-export function pruefe_titel_hygiene() {
-  return HUB_LINKS.filter((h) => h.titel_ok === false).map((h) => h.to);
+export function pruefe_titel_hygiene(liste = HUB_LINKS) {
+  return liste.filter((h) => h.titel_ok === false).map((h) => h.to);
 }
