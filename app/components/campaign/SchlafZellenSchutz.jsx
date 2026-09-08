@@ -6,7 +6,7 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
-import {bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
+import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
@@ -73,6 +73,53 @@ const KLARNA_IMG =
 const PAYPAL_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082';
 
+/*
+ * BILD-LEITERN (Job 20260906-lp-erzeugt-den-…-prio20, s02).
+ *
+ * Je Bild aus der GEMESSENEN Anzeigegroesse am gerenderten DOM abgeleitet,
+ * plus eine Stufe DPR-2-Reserve. KEIN pauschaler Wert: derselbe Wert über
+ * alle Bilder macht die kleinen größer (s01: `width=600` trieb das
+ * Klarna-Badge von 17 auf 28 KB).
+ *
+ * GEMESSEN WIRD ÜBER DIE GANZE FORMAT-MATRIX, NICHT ÜBER ZWEI VIEWPORTS —
+ * und das ist hier teuer gelernt: die erste Fassung leitete die Leitern aus
+ * 390 und 1440 px ab und deckelte den Hero bei 800. Das Alle-Formate-Gate
+ * (hb-formate, Gate 12) fand darauf prompt Upscaling im Format `mobil-600`.
+ * Grund: die Seite ist bis 767 px EINSPALTIG, der Hero waechst dort MIT dem
+ * Viewport und erreicht bei 600 px Breite 552 CSS-px — mehr als auf jedem
+ * Desktop (423). Das Maximum liegt also MITTEN in der Matrix, nicht an ihren
+ * Raendern; wer nur Telefon und Desktop misst, sieht es baulich nie.
+ *
+ * Anzeigebreiten, über 11 Formate von 360 bis 1440 px gemessen (Maximum):
+ *   Hero/Final-CTA  552 px (bei vp 600)  -> 400/600/800/900/1200
+ *   Mechanismus     550 px (bei vp 600)  -> 340/680/1100
+ *   Produktkarten   200 px               -> 200/400
+ *   Klarna-Badge     48 px               -> 100/150
+ *   PayPal-Badge     52 px               -> 110/160
+ *
+ * Gemessene Wirkung je Datei (Original -> 1x-Stufe): QiBracelet1 6.266.409 ->
+ * 50.342 B, QiOne1 4.650.395 -> 175.547 B, QiHome1 734.866 -> 6.795 B,
+ * paypal 75.518 -> 5.176 B, klarna 17.675 -> 4.866 B.
+ *
+ * Die oberen Stufen kosten und werden nur dort geholt, wo sie nötig sind:
+ * QiOne1 900 -> 891.880 B, 1200 -> 1.628.653 B. Ein Telefon mit 390 px holt
+ * weiterhin die 800er-Stufe; die 1200er trifft allein den 2x-Schirm bei rund
+ * 600 px Breite, der sonst sichtbar unscharf wäre.
+ *
+ * `sizes` MUSS die Layoutbreite ehrlich nennen und darf sie nie
+ * UNTERschaetzen: eine zu kleine Angabe lässt den Browser eine zu kleine
+ * Stufe wählen, und genau das ist der Unschaerfe-Befund oben. Zu große
+ * Angaben kosten nur Bytes. Die Formeln bilden deshalb die einspaltige
+ * Phase (bis 767 px) und die zweispaltige darueber getrennt ab.
+ */
+const LEITER_HERO = [400, 600, 800, 900, 1200];
+const LEITER_KARTE = [200, 400];
+const LEITER_KLARNA = [100, 150];
+const LEITER_PAYPAL = [110, 160];
+/* `sizes` gehört an die Aufrufstelle: nur sie kennt die Layoutbreite. */
+const SIZES_HERO =
+  '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
+
 /* ───────── Hero (Drei-Ebenen-Versprechen) ───────── */
 function Hero() {
   const {data} = useLp();
@@ -138,7 +185,8 @@ function Hero() {
         </div>
         <figure className="lp-a-hero__visual">
           <img
-            src={heroImg}
+            {...bildQuelle(heroImg, LEITER_HERO)}
+            sizes={SIZES_HERO}
             alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
             loading="eager"
           />
@@ -288,6 +336,11 @@ function ScienceSection() {
           </div>
         ))}
       </div>
+      {/* Das Scroll-Scrub-Video belegt bauartbedingt mehrere Bildschirmhoehen —
+          es war nach dem ersten Einbau die letzte verbliebene Durststrecke
+          (Falz 5,9 bis 11,8). Der Knopf steht deshalb VOR dem Video, solange
+          der Beweis aus den Zahlen darueber noch frisch ist. */}
+      <WeiterCta nr={6} label="20 Nächte risikofrei testen" imBlock />
       {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
           Karte, gleiche Botschaften — Job 20260716-bauer-scroll-down-
           animationen-capability; SHOW IT statt Behauptung) */}
@@ -311,6 +364,12 @@ function ScienceSection() {
         ]}
         fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
       />
+      {/* Der Wissenschafts-Block ist die laengste zusammenhaengende Strecke der
+          Seite: nach dem Einbau der Sektions-Knoepfe blieb hier die groesste
+          verbliebene Luecke (Falz 5,9 bis 12,8 = 6,9 Falzen, gemessen). Dieser
+          Knopf sitzt INNERHALB der Sektion und bringt darum als einziger seinen
+          eigenen vertikalen Abstand mit (`--im-block`). */}
+      <WeiterCta nr={5} label="QiOne® 2 Pro ansehen" imBlock />
       <LpStudien headline="" />
     </section>
   );
@@ -462,7 +521,12 @@ function PricingSection() {
             {c.featured && <span className="lp-a-product__badge">Bestseller</span>}
             <div className="lp-a-product__image">
               {c.p?.featuredImage?.url ? (
-                <img src={c.p.featuredImage.url} alt={c.name} loading="lazy" />
+                <img
+                  {...bildQuelle(c.p.featuredImage.url, LEITER_KARTE)}
+                  sizes="200px"
+                  alt={c.name}
+                  loading="lazy"
+                />
               ) : (
                 <span className="lp-a-product__ph">{c.name}</span>
               )}
@@ -526,7 +590,12 @@ function FinalCTA() {
     <section className="lp-vp-final-cta" data-section="lp-a-final">
       <div className="lp-vp-final-cta__inner">
         <div className="lp-vp-final-cta__media">
-          <img src={image} alt="QiOne® 2 Pro" loading="lazy" />
+          <img
+            {...bildQuelle(image, LEITER_HERO)}
+            sizes={SIZES_HERO}
+            alt="QiOne® 2 Pro"
+            loading="lazy"
+          />
           <div className="lp-vp-final-cta__stamp" aria-hidden="true">
             <svg viewBox="0 0 120 120">
               <defs>
@@ -563,8 +632,16 @@ function FinalCTA() {
               </div>
               <span className="lp-vp-final-cta__price-meta">einmalig · inkl. MwSt.</span>
               <div className="lp-vp-final-cta__pay">
-                <img src={KLARNA_IMG} alt="Klarna" />
-                <img src={PAYPAL_IMG} alt="PayPal" />
+                <img
+                  {...bildQuelle(KLARNA_IMG, LEITER_KLARNA)}
+                  sizes="48px"
+                  alt="Klarna"
+                />
+                <img
+                  {...bildQuelle(PAYPAL_IMG, LEITER_PAYPAL)}
+                  sizes="52px"
+                  alt="PayPal"
+                />
               </div>
             </div>
           )}
@@ -582,6 +659,40 @@ function FinalCTA() {
   );
 }
 
+/* ───────── Weiter-Knopf (schließt die Knopf-Luecke) ─────────
+   Job 20260906-lp-erzeugt-den-…-prio20, Segment s02.
+
+   GEMESSEN, NICHT VERMUTET (2026-09-06, Hit-Test am gerenderten DOM,
+   bin/lp-falz-hittest.py): zwischen dem Hero-CTA bei Falz 0,71 und dem
+   nächsten klickbaren Kaufweg-Knopf bei Falz 18,70 lagen 15.181 px = 18,0
+   Falzen mobil (12.625 px = 14,0 desktop) OHNE einen einzigen Weg zum
+   Produkt. Wer Mechanismus, Wissenschaft, Bewertungen und Video liest, hatte
+   dazwischen keinen nächsten Klick.
+
+   Diese Landingpage wird am NÄCHSTEN KLICK gemessen, nicht an der Bestellung
+   (Kanon „Die Landingpage verkauft nicht — sie erzeugt den nächsten Klick",
+   brain/Marketing/landingpage-trichter-und-messregel-2026-08-26.md). Deshalb
+   steht hier ein KNOPF und kein neuer Fliesstext: die Luecke war das Problem,
+   nicht die Textmenge.
+
+   BEWUSST NICHTS NEUES: Ziel, Klassen und Farbe kommen aus dem Bestand
+   (`lp-vp-btn lp-vp-btn--primary` -> /pages/qione-2-pro, derselbe Knopf wie im
+   Hero). Kein zweiter Gold-Ton, keine neue Schriftgroesse, kein Preis. Auch
+   der ABSTAND ist geerbt: die 96 px Sektions-Polsterung ober- und unterhalb
+   tragen den Knopf, er bringt keinen eigenen Rhythmus mit. */
+function WeiterCta({nr, label, imBlock = false}) {
+  return (
+    <div
+      className={`lp-a-weiter${imBlock ? ' lp-a-weiter--im-block' : ''}`}
+      data-section={`lp-a-weiter-${nr}`}
+    >
+      <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
+        {label}
+      </a>
+    </div>
+  );
+}
+
 /* ───────── Root ───────── */
 export function SchlafZellenSchutz({products}) {
   const data = {products: products || []};
@@ -593,7 +704,9 @@ export function SchlafZellenSchutz({products}) {
         <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
         <IntroSection />
         <MechanismSection />
+        <WeiterCta nr={1} label="QiOne® 2 Pro ansehen" />
         <ScienceSection />
+        <WeiterCta nr={2} label="20 Nächte risikofrei testen" />
         <div data-section="lp-a-google-reviews">
           <LpGoogleReviews />
         </div>
@@ -601,7 +714,9 @@ export function SchlafZellenSchutz({products}) {
         <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
           <ReputonWidget />
         </div>
+        <WeiterCta nr={3} label="QiOne® 2 Pro ansehen" />
         <VideoSection />
+        <WeiterCta nr={4} label="20 Nächte risikofrei testen" />
         <GuaranteeSection />
         <PricingSection />
         <SignatureSection />

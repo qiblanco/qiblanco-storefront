@@ -2,6 +2,7 @@ import {useRef} from 'react';
 import {Link} from 'react-router';
 import {useDragSwipe} from './useDragSwipe';
 import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
+import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
 
 /*
  * StudienSlider -- die EINE Definition der Studien-KACHEL-Ansicht (Elina-Layout:
@@ -69,6 +70,32 @@ import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
  */
 const BUEHNE_HOEHE = 1.25; // Bühnenhöhe in Bühnenbreiten
 const ZIEL_FLAECHE = 0.93; // Content-Fläche in (Bühnenbreite)²
+
+/*
+ * BILD-LEITER DER TITELBILDER (Job 20260906-lp-erzeugt-den-…
+ * -prio20, s02).
+ *
+ * Die fünf Cover kamen bis hier als UNSKALIERTE ORIGINALE über die Leitung:
+ * gemessen am 2026-09-06 zusammen 5.392.089 B, allein
+ * Cell_Biology_Cover_Remake_Seite_3.png 2.717.627 B (natürlich 2480x3508) —
+ * bei einer Anzeigebreite von 232 px mobil und 264 px auf dem Desktop. Weil
+ * ALLE fünf an diesem EINEN <img> hängen, deckt ein Aufruf hier sie alle, und
+ * mit ihnen die 14 Seiten, die diesen Block einbinden.
+ *
+ * Die Leiter ist an der breitesten gemessenen Kachel ausgerichtet (328 px auf
+ * 1440 px Viewport) plus eine Stufe DPR-2-Reserve — bewusst nicht an der
+ * schmalsten: `sizes` gilt für ALLE Konsumenten dieses geteilten Bausteins,
+ * und zu klein geraten hieße hier, auf einer fremden Seite ein unscharfes
+ * Belegbild auszuliefern. Zu groß geraten kostet nur Bytes auf genau dieser
+ * einen Stufe.
+ *
+ * Oberhalb der natürlichen Breite deckelt Shopify von selbst und gibt das
+ * Original byte-identisch zurück (gemessen an Cell-Biology-Seite-4, natürlich
+ * 620 px: width=680 und width=800 liefern beide exakt 348.188 B). Die
+ * 680er-Stufe ist deshalb für die kleineren Montagen gefahrlos.
+ */
+const LEITER_COVER = [340, 680];
+const SIZES_COVER = '(max-width: 767px) 74vw, 328px';
 
 /**
  * Liefert die CSS-Variablen der Flächen-Norm -- oder null, wenn die Studie
@@ -155,7 +182,8 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
                   style={norm || undefined}
                 >
                   <img
-                    src={e.coverUrl}
+                    {...bildQuelle(e.coverUrl, LEITER_COVER)}
+                    sizes={SIZES_COVER}
                     alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
                     loading="lazy"
                   />
