@@ -3,7 +3,7 @@
  *
  * HERKUNFT (nicht hier erhoben, sondern uebernommen): Segment s02 des Grossjobs
  * 20260907-GROSSJOB-erfahrungen-und-kritik-…-prio6 hat den eigenen YouTube-Kanal
- * ueber die Data API v3 geerntet, die Untertitelspuren gezogen und je Beitrag
+ * über die Data API v3 geerntet, die Untertitelspuren gezogen und je Beitrag
  * eine von Hand geschriebene, treue Zusammenfassung angelegt.
  * SSoT: homepage-bauer/data/erfahrungen/{vorrat,zusammenfassungen}.json.
  *
@@ -13,20 +13,20 @@
  *    (maschinell). Sie tragen belegte Hoerfehler — "QiOne" erscheint als "the G1",
  *    "Qi Blanco" als "CH Blanco" —, und zwei Spuren DESSELBEN Testimonials
  *    (Patrick Thiele) geben dieselbe gesundheitsnahe Stelle WIDERSPRUECHLICH
- *    wieder. Ein Satz in Anfuehrungszeichen aus dieser Quelle waere ein Satz, den
- *    der Mensch so nie gesagt hat. Deshalb steht hier ausschliesslich
+ *    wieder. Ein Satz in Anfuehrungszeichen aus dieser Quelle wäre ein Satz, den
+ *    der Mensch so nie gesagt hat. Deshalb steht hier ausschließlich
  *    zusammenfassende Rede ("er berichtet", "sie sagt") und nie eine Zeile
- *    Wortlaut. Das gilt AUCH fuer `titel`: der ist vom Haus geschrieben, nicht
+ *    Wortlaut. Das gilt AUCH für `titel`: der ist vom Haus geschrieben, nicht
  *    vom Sprecher — er wird als Videotitel gezeigt und NIE als Aeusserung
  *    zugeschrieben.
  *
  * 2. NUR VORVEROEFFENTLICHTE SPRECHER. Jeder Sprecher hier steht mit vollem Namen
  *    bereits auf einer Verkaufsflaeche des Hauses (Fundstellen je Beitrag in
- *    vorrat.json). Das ist eine bereits getroffene Hausentscheidung ueber die
- *    Veroeffentlichung — ausdruecklich KEIN Einwilligungsbeleg. Neun weitere
+ *    vorrat.json). Das ist eine bereits getroffene Hausentscheidung über die
+ *    Veroeffentlichung — ausdrücklich KEIN Einwilligungsbeleg. Neun weitere
  *    gemessene Sprecher stehen dort NICHT und fehlen deshalb hier; sie liegen als
  *    offener Punkt bei Christian (forschungs-meister qione-testimonial-gastfreigabe).
- *    Wer einen Beitrag ergaenzt, prueft zuerst dieses Feld.
+ *    Wer einen Beitrag ergänzt, prueft zuerst dieses Feld.
  *
  * 3. KEINE DOPPELUNG. Vier der 21 verwendbaren Beitraege sind inhaltsgleiche
  *    Zweitveroeffentlichungen (gr2KTESB3JM, EJEgM1KmGBc, MM2a5poXxhA, ll887l8_sBQ)
@@ -34,8 +34,8 @@
  *    hier, wenn sie inhaltlich verschieden sind (Scott Schwenk).
  *
  * Umlaute: der Bestand in data/erfahrungen ist ASCII-transliteriert (Server-
- * Konvention fuer interne Dateien). Kundensichtbarer Text braucht echte Umlaute
- * (Hausregel, live gegated) — die Rueckwandlung lief wortweise ueber eine
+ * Konvention für interne Dateien). Kundensichtbarer Text braucht echte Umlaute
+ * (Hausregel, live gegated) — die Rueckwandlung lief wortweise über eine
  * Entscheidungstabelle, nicht per Muster: "Bauer", "Zuschauer", "gedauert" und
  * "spirituellen" tragen dieselbe Buchstabenfolge OHNE Umlaut.
  */

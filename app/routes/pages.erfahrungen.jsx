@@ -11,10 +11,10 @@ import {noindexMeta, noindexHeader} from '~/lib/seo';
  * nicht live und noch nicht verlinkt auf der Frontseite — einfach, dass es
  * existiert, sodass ich es anschauen kann."
  *
- * DAS HEISST TECHNISCH DREIERLEI, und alle drei sind hier bewusst gesetzt:
+ * DAS BEDEUTET TECHNISCH DREIERLEI, und alle drei sind hier bewusst gesetzt:
  *
  * (1) NICHT INDEXIERBAR — `noindex,nofollow` im HTML-head UND als X-Robots-Tag
- *     (Hausmuster D-006 „Gurt und Hosentraeger"): die zweite Sperre greift auch
+ *     (Hausmuster D-006 „Gurt und Hosenträger"): die zweite Sperre greift auch
  *     bei einem Bot, der den head nicht parst. BEWUSST KEIN canonical: entweder
  *     noindex ODER canonical, nie beides (Hausregel, wortgleich in
  *     pages.uebersicht.jsx und pages.wirkt-das.jsx) — ein Bot, der dem Canonical
@@ -22,17 +22,17 @@ import {noindexMeta, noindexHeader} from '~/lib/seo';
  *
  * (2) NICHT IN DER SITEMAP — und zwar durch die WAHL DES TRAEGERS, nicht durch
  *     eine Ausschlussliste. Das ist die eine Entscheidung dieses Baus, die man
- *     ausdruecklich treffen muss statt sie geschehen zu lassen:
+ *     ausdrücklich treffen muss statt sie geschehen zu lassen:
  *
  *       Eine reine Hydrogen-Route liefert HTTP 200 und kommt NIE in die Sitemap.
- *       Die Sitemap entsteht in sitemap.$type.$page[.xml].jsx ueber getSitemap()
+ *       Die Sitemap entsteht in sitemap.$type.$page[.xml].jsx über getSitemap()
  *       aus der SHOPIFY-Page-Liste und kennt nur eine Ausschluss-, keine
  *       Einschlussliste. Ein Shopify-Page-Objekt mit dem Handle `erfahrungen`
- *       waere der zweite moegliche Traeger — es traegt Sitemap-Eintrag und
+ *       wäre der zweite mögliche Traeger — es trägt Sitemap-Eintrag und
  *       Menue-Ziel.
  *
- *     Fuer /pages/studie-qihome-air war genau das am 2026-08-15 ein DEFEKT: die
- *     Seite sollte gefunden werden und war fuer Suchmaschinen unsichtbar. Hier
+ *     Für /pages/studie-qihome-air war genau das am 2026-08-15 ein DEFEKT: die
+ *     Seite sollte gefunden werden und war für Suchmaschinen unsichtbar. Hier
  *     ist es die GEWOLLTE Richtung. Deshalb: NUR diese Route, KEIN Page-Objekt
  *     im Shopify-Admin. Gegenprobe im Bestand — /pages/zellstudien-ehrlich,
  *     /pages/das-20-tage-versprechen und /pages/so-wirkt-kohaerentes-wasser
@@ -48,13 +48,13 @@ import {noindexMeta, noindexHeader} from '~/lib/seo';
  *     angefasst; im Repo entsteht kein Link auf diesen Pfad. Christian bekommt
  *     die Adresse und entscheidet die Freigabe — nicht wir.
  *
- * TRACKING-NAHT: diese Seite setzt KEINE Cookies, fuehrt KEINEN neuen
- * Identitaets- oder Tracking-Key ein und enthaelt keinen eigenen Pixel. Die
- * R1/R2/R3-Kette haengt pfad-agnostisch im root-Layout (Hausmuster D-006);
+ * TRACKING-NAHT: diese Seite setzt KEINE Cookies, führt KEINEN neuen
+ * Identitaets- oder Tracking-Key ein und enthält keinen eigenen Pixel. Die
+ * R1/R2/R3-Kette hängt pfad-agnostisch im root-Layout (Hausmuster D-006);
  * TRACKING_COOKIE_NAMES bleibt unangetastet. Es gibt an dieser Route keine
- * Bereichsgrenze, ueber die ein Key verloren gehen koennte.
+ * Bereichsgrenze, über die ein Key verloren gehen könnte.
  *
- * KEIN LOADER: der Inhalt ist ein committetes Datenmodul. Oxygen laeuft am Edge
+ * KEIN LOADER: der Inhalt ist ein committetes Datenmodul. Oxygen läuft am Edge
  * und kann shared-state zur Laufzeit nicht lesen — dieselbe Bauform wie
  * /pages/uebersicht.
  *

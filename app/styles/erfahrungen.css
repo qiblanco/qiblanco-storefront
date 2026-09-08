@@ -7,14 +7,14 @@
    EIN Gold-Akzent nur auf Handlung/Beweis, Weissraum gruppiert statt Boxen,
    8pt-Grid, Sektions-Takt 96/64.
 
-   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   REGEL DIESES FILES: alle Größen, Farben, Radien und Schatten kommen aus dem
    :root-Block unten. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
    Scope: .erf — self-contained, die Seite verlaesst sich auf kein anderes
    Designsystem.
 
    WARUM EIGENE DATEI UND NICHT .lp-a3 MITBENUTZT: schlaf-zellen-schutz.css ist
    seit 2026-07-16 an die Campaign-PDP /pages/qione-2-pro gekoppelt (styles/
-   qione-2-pro-shop.css laedt sie als geteilte Token-Quelle). Eine Aenderung dort
+   qione-2-pro-shop.css lädt sie als geteilte Token-Quelle). Eine Aenderung dort
    wirkt auf eine KAUFSEITE. Diese Seite darf den Kaufweg nicht beruehren — sie
    kopiert die Token-WERTE und teilt sich die DATEI nicht.
    ========================================================================== */
@@ -68,13 +68,17 @@
 }
 
 .erf__mitte {
-  width: min(100% - var(--erf-s4), var(--erf-breite));
+  width: 100%;
+  max-width: var(--erf-breite);
   margin-inline: auto;
+  padding-inline: var(--erf-s2);
 }
 
 .erf__schmal {
-  width: min(100% - var(--erf-s4), var(--erf-breite-schmal));
+  width: 100%;
+  max-width: var(--erf-breite-schmal);
   margin-inline: auto;
+  padding-inline: var(--erf-s2);
 }
 
 .erf section { padding-block: var(--erf-s8); }
@@ -157,7 +161,18 @@
   .erf__raster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.erf__beitrag { display: flex; flex-direction: column; gap: var(--erf-s2); }
+/* Zeilenlaenge und Innenabstand stehen bewusst HIER und nicht nur am aeusseren
+   Container: zwischen 700 und 900 px ist das Raster einspaltig, die Karte waere
+   dann bis 1088 px breit — rund 120 Zeichen je Zeile. Die Gestaltungs-Pruefliste
+   (src/seiten_pruefliste.py) misst genau diesen Textcontainer, und sie hat den
+   Fall gefunden, den die Desktop-Ansicht nicht zeigt. */
+.erf__beitrag {
+  display: flex;
+  flex-direction: column;
+  gap: var(--erf-s2);
+  max-width: 640px;
+  padding-inline: var(--erf-s2);
+}
 
 .erf__name {
   font-size: var(--erf-fs-lg);
@@ -255,7 +270,7 @@ body:has(.erf) {
 }
 
 /* EIN Bild-Radius auf dieser Route: das Chrome bringt 4px, 6px, 10px und 20px
-   mit. Ein Bild-Stil-Token heisst EIN Wert — auch fuer die Bilder, die nicht aus
+   mit. Ein Bild-Stil-Token heißt EIN Wert — auch für die Bilder, die nicht aus
    dieser Seite kommen. */
 body:has(.erf) img,
 body:has(.erf) picture,

@@ -6,21 +6,21 @@ import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
  *
  * ABGRENZUNG (festgelegt VOR dem Bau, homepage-bauer/konzepte/
  * ABGRENZUNG-ERFAHRUNGEN-KRITIK.md, SSoT abgrenzung-flaechen.json):
- * Diese Seite traegt ERLEBNISSE. Sie beantwortet KEINEN Vorwurf und nennt KEINE
+ * Diese Seite trägt ERLEBNISSE. Sie beantwortet KEINEN Vorwurf und nennt KEINE
  * Studienzahl — das ist der Gegenstand der Kritik-Flaeche. Die Erkennungsfrage
  * im Zweifel: beginnt diese Seite, einen Vorwurf zu beantworten, ist sie die
  * falsche Seite geworden.
  *
  * VIDEO-LADESTRATEGIE (SKILL-VIDEO-LADESTRATEGIE.md, Stufe 0 und 3): 17 Videos
  * als Fassade. Beim Seitenaufbau entsteht KEIN Player und KEINE Verbindung zu
- * YouTube — nur das Vorschaubild, `loading="lazy"`. Erst der Klick laedt den
- * Player. Der alte, eager ladende `YoutubeIframe` waere hier ein Befund: bei 17
+ * YouTube — nur das Vorschaubild, `loading="lazy"`. Erst der Klick lädt den
+ * Player. Der alte, eager ladende `YoutubeIframe` wäre hier ein Befund: bei 17
  * Einbettungen kostete er rund 6,8 MB Player-Infrastruktur auf JEDEM Aufruf.
  *
  * SPRACHE: der Shop duzt — durchgehend, kein Anrede-Mix (Abnahme-Checkliste
  * Punkt 1; genau daran ist /pages/wirkt-das gescheitert). Eingestiegen wird mit
  * dem Kundenwort (Schlaf, Energie, Schutz, Ruhe), nicht mit dem Hauswort
- * "kohaerentes Wasser" — das sagen Kunden gemessen fast nie von sich aus.
+ * "kohärentes Wasser" — das sagen Kunden gemessen fast nie von sich aus.
  */
 export function ErfahrungenSeite() {
   const deutsch = ERFAHRUNGS_BEITRAEGE.filter((b) => b.sprache === 'de');
