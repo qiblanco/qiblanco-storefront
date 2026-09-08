@@ -109,13 +109,15 @@ export function canonicalLink(pathname) {
  * Was hier NICHT passieren darf, ist eine ZWEITE Liste: die beiden Sichten
  * unten werden aus DIESER einen Definition abgeleitet, können also nicht
  * auseinanderdriften.
- * @type {Array<{handle: string, ausSitemap: boolean, grund: string}>}
+ * @type {Array<{handle: string, ausSitemap: boolean, grund: string,
+ *               seit: string}>}
  */
 export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'development-nicht-loschen',
     ausSitemap: true,
     grund: 'Entwicklungsseite; Sitemap war ihr einziger Discovery-Pfad (2026-08-14)',
+    seit: '2026-08-14',
   },
   // Neu 2026-08-23 (s05). Jeder Handle live gemessen: HTTP 200, KEIN
   // robots-meta, in `sitemap/pages/1.xml` geführt. Die ersten sechs tragen
@@ -125,56 +127,67 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     handle: 'pre-access',
     ausSitemap: false,
     grund: 'leere Kampagnen-Restseite, stand auf Platz 2 der Suche nach "QiOne 2 Pro"',
+    seit: '2026-08-24',
   },
   {
     handle: 'qibracelet_',
     ausSitemap: false,
     grund: 'leerer Handle-Vertipper zu /pages/qibracelet',
+    seit: '2026-08-24',
   },
   {
     handle: 'qiblanco-qibracelet',
     ausSitemap: false,
     grund: 'leere Dublette zu /pages/qibracelet',
+    seit: '2026-08-24',
   },
   {
     handle: 'kakao-anwendung-de',
     ausSitemap: false,
     grund: 'leere Sprachvariante zu /pages/kakao-anwendung',
+    seit: '2026-08-24',
   },
   {
     handle: 'kakao-anwendung-us',
     ausSitemap: false,
     grund: 'leere Sprachvariante, rankte auf der DACH-Markensuche',
+    seit: '2026-08-24',
   },
   {
     handle: 'zeremonie-kakao-language-select',
     ausSitemap: false,
     grund: 'leere Sprachweiche ohne Inhalt',
+    seit: '2026-08-24',
   },
   {
     handle: 'anmeldung-erfolgreich',
     ausSitemap: false,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
   },
   {
     handle: 'kw-anmeldung-erfolgreich',
     ausSitemap: false,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
   },
   {
     handle: 'superhuman-anmeldung-erfolgreich',
     ausSitemap: false,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
   },
   {
     handle: 'erinnerung-erfolgreich',
     ausSitemap: false,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
   },
   {
     handle: 'superhuman-kurs-bestatigung',
     ausSitemap: false,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-08-24',
   },
   // Neu 2026-08-26 (s04 des Grossjobs …seo-rest-kanonisierung…). Diese fünf
   // sind derselbe Fall wie `pre-access` oben, nur später gefunden: sie waren
@@ -193,26 +206,31 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     handle: 'qiblanco',
     ausSitemap: false,
     grund: 'leere Restseite unter dem Markennamen; konkurriert mit der Startseite',
+    seit: '2026-08-27',
   },
   {
     handle: 'linkseite',
     ausSitemap: false,
     grund: 'leere Link-in-Bio-Restseite ohne eigenen Inhalt',
+    seit: '2026-08-27',
   },
   {
     handle: 'one-inch',
     ausSitemap: false,
     grund: 'leere Kampagnen-Restseite (One Inch Club), laut Grossjob depubliziert',
+    seit: '2026-08-27',
   },
   {
     handle: 'ketogenes-wochenende',
     ausSitemap: false,
     grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+    seit: '2026-08-27',
   },
   {
     handle: 'superhuman-kurs',
     ausSitemap: false,
     grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+    seit: '2026-08-27',
   },
   // Neu 2026-08-29 (Job 20260829-ads-ziel-url-verstoss-...). Achse B der
   // landing-bereich-Wache: beide Handles standen in `sitemap/pages/1.xml`,
@@ -239,6 +257,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     grund:
       'noindex-LP im Landing-Bereich (Partner-Funnel); stand trotz noindex in ' +
       'der Sitemap — Achse B der landing-bereich-Wache, gemessen 2026-08-29',
+    seit: '2026-08-29',
   },
   {
     handle: 'qibracelet',
@@ -247,6 +266,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'noindex-LP-Shopseite im Landing-Bereich; stand trotz noindex in der ' +
       'Sitemap. Der öffentliche Zwilling ist /pages/qibracelet-details und ' +
       'bleibt indexierbar — Achse B, gemessen 2026-08-29',
+    seit: '2026-08-29',
   },
   // Neu 2026-08-31 (Vollzugsauftrag Christian, direkt). DIESER EINTRAG BRICHT
   // DAS AUFNAHME-KRITERIUM OBEN, UND ZWAR ABSICHTLICH — hier steht warum, damit
@@ -292,6 +312,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     ausSitemap: true,
     grund:
       'am 2026-08-31 von Christian wegen Textqualität zurückgezogen; URL bleibt 200, noindex in der eigenen Route',
+    seit: '2026-08-31',
   },
 ];
 
@@ -493,15 +514,108 @@ export function istNichtIndexierbaresProdukt(handle) {
  * andere URL sind widersprüchliche Signale. Für `frontpage`/`products` wäre
  * ein canonical auf `/collections/all` fachlich naheliegend und trotzdem
  * falsch: es machte die Dublette wieder crawlbar.
+ * @type {Array<{handle: string, ausSitemap: boolean, grund: string,
+ *               seit: string}>}
+ */
+export const NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF = [
+  {
+    handle: 'frontpage',
+    ausSitemap: false,
+    grund:
+      'von Shopify selbst angelegte "Home page"-Kollektion, englischer Titel ' +
+      'auf der deutschen Storefront, dieselben Produkte wie /collections/all',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'products',
+    ausSitemap: false,
+    grund:
+      'von Shopify selbst angelegte "Products"-Kollektion, Dublette der ' +
+      'Kategorieübersicht',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'slider',
+    ausSitemap: false,
+    grund:
+      'Startseiten-Konfiguration ("Artikel, die im Slider angezeigt werden ' +
+      'sollen"), die versehentlich eine öffentliche URL bekommen hat',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'cross-selling',
+    ausSitemap: false,
+    grund: 'Merchandising-Quelle für Produktempfehlungen, 0 eigene Produkte',
+    seit: '2026-08-27',
+  },
+  {
+    handle: 'digital-goods-vat-tax',
+    ausSitemap: false,
+    grund:
+      'steuerliche Gruppierung für die Umsatzsteuer digitaler Güter, ' +
+      '0 eigene Produkte',
+    seit: '2026-08-27',
+  },
+];
+
+/**
+ * Sicht 1 — alle Kollektions-Handles, die ein `noindex` bekommen.
+ * Leser: `collections.$handle.jsx` und `collections.all.jsx`. Form und
+ * Semantik unverändert (string[]), damit kein Aufrufer nachgezogen werden
+ * muss.
  * @type {string[]}
  */
-export const NICHT_INDEXIERBARE_KOLLEKTIONEN = [
-  'frontpage',
-  'products',
-  'slider',
-  'cross-selling',
-  'digital-goods-vat-tax',
-];
+export const NICHT_INDEXIERBARE_KOLLEKTIONEN =
+  NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF.map((e) => e.handle);
+
+/**
+ * Sicht 2 — die TEILMENGE, die zusätzlich aus der Sitemap fliegt.
+ * Leser: die Sitemap-Route. Abgeleitet aus DERSELBEN einen Definition wie
+ * Sicht 1 — die beiden können also nicht auseinanderdriften.
+ *
+ * WARUM FUNKTION UND NICHT KONSTANTE, anders als beim Seiten-Zwilling
+ * `AUS_SITEMAP_ENTFERNTE_SEITEN`: dieses Modul wird von 36 Seiten gelesen,
+ * und der Render-Neutralitäts-Beweis von Gate 12 (homepage-bauer
+ * src/render_neutral.py, Teil 2) ist fail-closed gegenüber jeder NEUEN
+ * Top-Level-Deklaration, die beim Modul-Laden AUSGEFÜHRT wird — ein
+ * `const X = […].filter(…)` fällt darunter. Gemessen am 2026-09-08: mit
+ * einer solchen Konstante werden 0 von 36 Seiten befreit und der Deploy
+ * blockt an vorbestehender Bild-Schuld auf sechs fremden Produktseiten, die
+ * diese Änderung weder verursacht noch beheben kann. Als Pfeil-Funktion
+ * läuft beim Laden nichts, die Ableitung bleibt an genau EINER Stelle, und
+ * der Beweis geht durch. Der Seiten-Zwilling darf Konstante bleiben: er ist
+ * kein NEUER Name mehr.
+ *
+ * WARUM SIE HEUTE LEER IST, UND WARUM DAS DER RICHTIGE ZUSTAND IST
+ * (2026-09-08, Discovery-Kette Glied für Glied nachgemessen): für alle fünf
+ * Kollektionen ist die Sitemap der EINZIGE Weg, auf dem Google sie noch
+ * besucht. Ihr einziger eingehender Link kommt von `/pages/uebersicht`, und
+ * die trägt selbst `noindex,nofollow` — Google folgt ihren Links also nicht.
+ * Der zweite Kandidat `/collections` ist zwar follow-bar, hat aber selbst
+ * keinen Sitemap-Eintrag und ebenfalls nur `/pages/uebersicht` als Zugang;
+ * die Kette endet dort. Wer sie jetzt aus der Sitemap nimmt, sorgt dafür,
+ * dass das `noindex` NIE gelesen wird und die Seiten mit ihrem letzten Stand
+ * im Index bleiben.
+ *
+ * DIE ZAHL `links_rein` AUS EINEM CRAWL-ZENSUS TÄUSCHT HIER: sie meldet 1
+ * bis 2 eingehende Links und liest sich wie „es gibt einen Weg". Ein Link von
+ * einer `nofollow`-Seite ist keiner. Wer `links_rein > 0` als Discovery-Beleg
+ * nimmt, hält genau die Seiten für sicher entfernbar, bei denen das Gegenteil
+ * gilt.
+ *
+ * BIS HIERHER GAB ES DIESE SICHT GAR NICHT — `VERSTECKTE_HANDLES` in der
+ * Sitemap-Route kannte nur `products` und `pages`. Der Widerspruch „noindex
+ * UND in der Sitemap" konnte für Kollektionen deshalb baulich nie enden.
+ * Jetzt kann er es: ein Eintrag kippt auf `ausSitemap: true`, sobald das
+ * Signal nachweislich gewirkt hat. Wann das ist, entscheidet ein Mensch —
+ * die Frage stellt homepage-bauer/pruefungen/probe_uebergangsstufe_ohne_ende.py
+ * (Adressat AI-CEO), und sie kippt bewusst nichts selbst.
+ * @returns {string[]}
+ */
+export const ausSitemapEntfernteKollektionen = () =>
+  NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF.filter((e) => e.ausSitemap).map(
+    (e) => e.handle,
+  );
 
 /**
  * Gehört dieser Kollektions-Handle aus dem Index?

@@ -4,6 +4,7 @@ import {
   NICHT_INDEXIERBARE_PRODUKTE,
   NUR_ROUTE_SEITEN,
   absoluteCanonical,
+  ausSitemapEntfernteKollektionen,
 } from '~/lib/seo';
 import {BLOG_BESTAND_FRAGMENT, leereHandles} from '~/lib/blog-bestand';
 import {
@@ -39,10 +40,23 @@ import {
  * noch nicht aufgelöst. Jetzt liest auch sie ~/lib/seo. Produkte tragen
  * bewusst keine Übergangsstufe: dort war der Discovery-Pfad nicht das
  * Problem.
+ *
+ * `collections` kam am 2026-09-08 dazu und schließt eine Lücke, die bis
+ * dahin baulich UNAUFLÖSBAR war: fünf Kollektionen tragen seit dem
+ * 2026-08-27 ein `noindex` UND stehen weiter in der Sitemap — genau der
+ * Widerspruch, den der erste Absatz für `pages` beschreibt. Für sie gab es
+ * hier aber gar keine zweite Sicht; der Zustand konnte also nie enden.
+ *
+ * ER ENDET AUCH HEUTE NOCH NICHT, UND DAS IST ABSICHT:
+ * `ausSitemapEntfernteKollektionen()` ist leer, alle fünf stehen auf
+ * `ausSitemap: false`. Die Begründung steht an der Definition in `~/lib/seo`
+ * — für diese fünf ist die Sitemap nachgemessen der EINZIGE verbleibende
+ * Discovery-Pfad. Gebaut ist damit die MÖGLICHKEIT, nicht der Vollzug.
  */
 const VERSTECKTE_HANDLES = {
   products: NICHT_INDEXIERBARE_PRODUKTE,
   pages: AUS_SITEMAP_ENTFERNTE_SEITEN,
+  collections: ausSitemapEntfernteKollektionen(),
 };
 
 /**
