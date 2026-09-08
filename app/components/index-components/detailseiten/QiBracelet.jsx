@@ -27,6 +27,7 @@ export function QiBracelet() {
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha-1024x1024.png_1.webp?v=1670806857'
         }
+        imgAlt={'QiBracelet® aus gebürstetem Edelstahl, geöffneter Reif mit goldfarbenem Gitterchip™'}
         link={'/products/qibracelet'}
         linkStyle={'secondary'}
         linkText={"Hol' dir jetzt deinen QiBracelet®"}
@@ -57,6 +58,7 @@ export function QiBracelet() {
       </div>
         <CallToAction
           img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351"}
+          imgAlt={'Der Videokurs „In 5 Stufen zum Superhuman“ auf Laptop und Smartphone'}
           text={
           <>
             <h2>DER KOSTENLOSE VIDEO-KURS</h2>
@@ -87,7 +89,7 @@ function Expertenmeinungen() {
           <div className="Expertenmeinung-Bild">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/85M0173-new_63389798-effc-45f5-abd5-d2eb0ea2484d.jpg?v=1674072788"
-              alt=""
+              alt="Patrick Thiele"
             />
           </div>
           <div className="Expertenmeinung-Text">
@@ -109,7 +111,7 @@ function Expertenmeinungen() {
           <div className="Expertenmeinung-Bild">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image1_1.jpg?v=1707860985"
-              alt=""
+              alt="Dr. Andreas Kramer und Mindy Sahagun"
             />
           </div>
           <div className="Expertenmeinung-Text">
@@ -239,11 +241,11 @@ function TechnologieQiBlanco() {
             <div className="Flex-Image mt-2">
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-e1668521164461_1_21efb1fc-4b64-469f-96d2-33dcf70d6506.jpg?v=1670809038"
-          alt=""
+          alt="Gitterchip™: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster"
         />
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px.jpg_1_f94bd190-0e41-40bc-aa0c-e94cf253f975.webp?v=1670809046"
-          alt=""
+          alt="Ende des QiBracelet® in Nahaufnahme, mit eingelassenem goldfarbenem Gitterchip™"
         />
       </div>
     </div>
@@ -296,10 +298,10 @@ function LeistungsstarkeUnterstutzung(){
       <div>
         <h3>Leistungsstarke Unterstützung. <br />
 Edel & dezent für jede Situation</h3>
-<img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010752-min-1024x683.jpg_1_e739e5cc-e928-44d4-ad81-09dc74e31110.webp?v=1670807064" alt="" />
+<img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010752-min-1024x683.jpg_1_e739e5cc-e928-44d4-ad81-09dc74e31110.webp?v=1670807064" alt="Drei QiBracelet® aus gebürstetem Edelstahl, ineinandergelegt auf dunklem Untergrund" />
       </div>
       <div>
-        <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010743-min-1025x1536.jpg_1_2f956128-37b9-4c16-a535-dd4c9eabe6d4.webp?v=1670807053" alt="" />
+        <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010743-min-1025x1536.jpg_1_2f956128-37b9-4c16-a535-dd4c9eabe6d4.webp?v=1670807053" alt="QiBracelet® auf einer goldfarbenen Scheibe vor der Qi-Blanco-Verpackung" />
       </div>
     </div>
   )
@@ -308,10 +310,10 @@ function LeistungsstarkeUnterstutzungReverse(){
   return(
     <div className="LeistungsstarkeUnterstutzung reverse NormalSectionSize">
       <div>
-      <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010701-min-1-973x1024.jpg_1_9996827d-05d7-4796-884d-6d651e7214b0.webp?v=1670807590" alt="" />
+      <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010701-min-1-973x1024.jpg_1_9996827d-05d7-4796-884d-6d651e7214b0.webp?v=1670807590" alt="Mehrere QiBracelet® aufgereiht auf weißen Schmuckschachteln" />
       </div>
       <div>
-        <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp?v=1670807595" alt="" />
+        <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp?v=1670807595" alt="QiBracelet® in Nahaufnahme, der goldfarbene Gitterchip™ am geöffneten Ende" />
       </div>
     </div>
   )
@@ -325,13 +327,13 @@ function Superzustand() {
     </h2>
     <div className="NormalSectionSize">
       <div className="Superzustand">
-        <div className='mt-2 mb-2'><img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/InkohaerentesWasser-2_transparent.png?v=1670949073" alt="" /></div>
+        <div className='mt-2 mb-2'><img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/InkohaerentesWasser-2_transparent.png?v=1670949073" alt="Schaubild inkohärentes Wasser: ungeordnete Wassermoleküle, dazwischen Wellenlinien als Störfrequenzen" /></div>
         <div className="text-content"><h3>Inkohärentes Wasser</h3>
         <p>Die Wassermoleküle stoßen gelegentlich aneinander und erzeugen ein thermisches Rauschen. Das Rauschen sind Störfrequenzen, da sie die positiven Frequenzen überlagern und damit die Kommunikation beeinflussen.</p>
         </div>
       </div>
       <div className="Superzustand">
-        <div className='mt-2 mb-2'><img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/KohaerentesWasser-2_transparent.png?v=1670949081" alt="" /></div>
+        <div className='mt-2 mb-2'><img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/KohaerentesWasser-2_transparent.png?v=1670949081" alt="Schaubild kohärentes Wasser: Wassermoleküle in gleichmäßiger, kristalliner Anordnung" /></div>
         <div className="text-content"><h3>Kohärentes Wasser</h3>
         <p>Zusätzliche Wasserstoffbrücken führen dazu, dass sich die Wassermoleküle in einer kristallinen Struktur anordnen und sich stoßfrei zueinander bewegen. Somit kommen alle Signale optimal bei dir an.</p>
         </div>
