@@ -1,0 +1,252 @@
+/* ============================================================================
+   Quellenuebersicht — /pages/quellen
+
+   Token-System uebernommen aus dem 94/100-Rezept .lp-a3
+   (app/styles/schlaf-zellen-schutz.css) ueber das Studien-Blatt
+   (app/styles/studien.css): dieselbe modulare Typo-Skala, dasselbe
+   8pt-Spacing-Grid, dasselbe warme Neutral-Kontinuum, DERSELBE EINE
+   Gold-Akzent. Keine zweite Gold-Familie, keine zweite Skala — der
+   Live-Befund vom 2026-07-24 (15 Schriftgroessen, 2 konkurrierende Goldtoene)
+   war genau die Ursache des "von AI gemacht"-Eindrucks.
+
+   EIGENER SCOPE `.qb-qu` statt Anhaengen an `.qb-st`: das Studien-Blatt ist
+   mit den vier Studien-Einzelseiten gekoppelt (Kommentar dort). Wer sich hier
+   anhaengt, aendert beim naechsten Quellen-Feinschliff still die
+   Studienseiten mit. Die WERTE sind identisch, die KOPPLUNG ist es nicht —
+   dieselbe Begruendung, mit der studien.css sich von .lp-a3 geloest hat.
+
+   LEITIDEE: Das hier ist eine Nachschlage-Flaeche, keine Verkaufsflaeche.
+   Der Leser kommt mit EINER Absicht — eine Angabe pruefen. Alles, was ihn
+   davon abhaelt, ist Stoerung: kein Druck, kein Angebot, keine Kachel. Der
+   Gold-Akzent liegt ausschließlich auf dem Weg zurück in den Artikel.
+   ========================================================================== */
+
+.qb-qu {
+  /* Typo-Skala (modulare Skala ~1.25; 5 Stufen — nicht erweitern) */
+  --qu-fs-xs: 0.8125rem;
+  --qu-fs-base: 1rem;
+  --qu-fs-md: 1.125rem;
+  --qu-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --qu-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --qu-s1: 8px;
+  --qu-s2: 16px;
+  --qu-s3: 24px;
+  --qu-s4: 32px;
+  --qu-s6: 48px;
+  --qu-s8: 64px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --qu-grund: #faf9f5;
+  --qu-flaeche: #f4f0e9;
+  --qu-text: #2c2a26;
+  --qu-muted: #6b665d;
+  --qu-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
+  --qu-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radius: EIN Wert */
+  --qu-r1: 8px;
+
+  /* Layout */
+  --qu-mass: 68ch;
+  --qu-breite: 940px;
+
+  background: var(--qu-grund);
+  color: var(--qu-text);
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: var(--qu-fs-base);
+  line-height: 1.7;
+  padding: var(--qu-s8) 0;
+}
+
+/* DER TEXTCONTAINER, und sein Name ist Absicht: die stehende
+   Gestaltungs-Pruefliste (homepage-bauer/src/seiten_pruefliste.py) erkennt
+   Fliesstext-Container an einem Wort im Klassennamen ("inhalt", "content",
+   "artikel", …). Das Layout-`<main>` traegt keine Klasse und wird von ihr
+   uebersprungen; hiess dieser Kasten weiter `__inhalt`, mass die Pruefliste
+   auf DIESER Seite den Warenkorb (`cart-main`) statt die Seite und meldete
+   Zeilenlaenge und Innenabstaende als fehlend, obwohl beide hier stehen.
+   Ein Container, den die Wache nicht findet, ist ein Container, der nie
+   wieder gemessen wird — der Name ist deshalb Teil der Messbarkeit.
+   Er traegt BEIDE Groessen: die Zeilenlaenge (max-width) und den seitlichen
+   Innenabstand, damit sie an einem Ort stehen und nicht auseinanderlaufen. */
+.qb-qu__inhalt {
+  margin: 0 auto;
+  max-width: var(--qu-breite);
+  padding: 0 var(--qu-s3);
+}
+
+.qb-qu h1 {
+  color: var(--qu-text);
+  font-size: var(--qu-fs-h1);
+  line-height: 1.15;
+  margin: 0 0 var(--qu-s3);
+}
+
+/* EIN H2-Stil, ueberall gleich. */
+.qb-qu h2 {
+  border-top: 1px solid var(--qu-linie);
+  color: var(--qu-text);
+  font-size: var(--qu-fs-h2);
+  line-height: 1.25;
+  margin: var(--qu-s8) 0 var(--qu-s3);
+  padding-top: var(--qu-s4);
+}
+
+.qb-qu__vorspann {
+  color: var(--qu-text);
+  font-size: var(--qu-fs-md);
+  margin: 0 0 var(--qu-s6);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__liste {
+  display: grid;
+  gap: var(--qu-s2);
+  list-style: none;
+  margin: 0;
+  /* DAS LESEMASS GEHOERT AN DIE LISTE, NICHT NUR AN DIE EINZELNEN ZEILEN:
+     eine Karte ueber die volle Blattbreite reisst die 75-Zeichen-Grenze in
+     JEDER Zeile darin, auch wenn jede Zeile fuer sich ein max-width traegt
+     (gemessen 2026-09-08: 37 % der Textbloecke ueber 75 Zeichen gegen 21 %
+     auf der Bestandsseite /pages/studien mit demselben Token-Rezept). */
+  max-width: var(--qu-mass);
+  padding: 0;
+}
+
+.qb-qu__eintrag {
+  background: var(--qu-flaeche);
+  border-radius: var(--qu-r1);
+  padding: var(--qu-s3);
+}
+
+.qb-qu__titel {
+  display: block;
+  font-size: var(--qu-fs-md);
+  font-weight: 600;
+  margin-bottom: var(--qu-s1);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__angabe {
+  color: var(--qu-muted);
+  display: block;
+  font-size: var(--qu-fs-base);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__doi {
+  color: var(--qu-akzent-tinte);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.qb-qu__doi:hover,
+.qb-qu__doi:focus-visible {
+  text-decoration: underline;
+}
+
+.qb-qu__belegt {
+  color: var(--qu-muted);
+  display: block;
+  font-size: var(--qu-fs-base);
+  margin-top: var(--qu-s2);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__belegt a {
+  color: var(--qu-akzent-tinte);
+  text-decoration: none;
+}
+
+.qb-qu__belegt a:hover,
+.qb-qu__belegt a:focus-visible {
+  text-decoration: underline;
+}
+
+.qb-qu__zu-den-artikeln {
+  display: block;
+  font-size: var(--qu-fs-md);
+  margin-top: var(--qu-s8);
+}
+
+.qb-qu__zu-den-artikeln a {
+  color: var(--qu-akzent-tinte);
+  text-decoration: none;
+}
+
+.qb-qu__zu-den-artikeln a:hover,
+.qb-qu__zu-den-artikeln a:focus-visible {
+  text-decoration: underline;
+}
+
+/* ============================================================================
+   CHROME-ANGLEICHUNG — der Teil des 94/100-Rezepts, den der erste Wurf
+   ausgelassen hatte.
+
+   Es genügt NICHT, im eigenen Scope EIN Gold und EINEN Radius zu führen: die
+   Rubrik misst die AUSGELIEFERTE Seite, und Kopf, Fuß und Fremd-Widgets
+   bringen ihre eigenen mit. Gemessen an genau dieser Seite (design-rubrik,
+   Branch-Build): zwei warme Akzent-Cluster — unser #856828 und das alte
+   Hell-Gold #f2bf72 aus app.css/redesign-3themen.css — sowie drei
+   Bild-Radien (4px, 6px, 20px), von denen KEINER aus diesem Blatt stammt.
+   Der Befund war also echt und trotzdem nicht im eigenen Scope zu beheben.
+
+   Hausmuster, dem das hier folgt: app/styles/schlaf-zellen-schutz.css
+   (Kopf: "Der body:has()-Layer hebt die fremden Gold-Toene auf den EINEN
+   Akzent") und app/styles/erfahrungen.css, die damit 92/100 mit NULL
+   Befunden zu Skala/Farbe/Radien erreicht.
+
+   WARUM HIER #856828 UND NICHT DAS MARKEN-GOLD #c9a14b: auf dieser Route
+   trägt das Gold ausschließlich SCHRIFT (die DOI-Links und der Weg zurück in
+   den Artikel). #c9a14b erreicht als Text auf hellem Grund keine 4,5:1 —
+   #856828 ist genau dafür da und steht als `--st-akzent-tinte` schon im
+   Studien-Blatt. Ein zweites Gold nur für das Chrome einzuführen hieße, den
+   gemessenen Befund gegen einen Kontrast-Fehler zu tauschen.
+   ========================================================================== */
+body:has(.qb-qu) {
+  --color-accent-primary: var(--qu-akzent-tinte);
+  --rd3-gold: var(--qu-akzent-tinte);
+  --qb-sterne-gold: var(--qu-akzent-tinte);
+  /* Der Shop-Umschalter im Kopf legt eine 18-%-Lasur desselben Fremd-Ockers
+     an — blass, aber für die Messung ein zweiter Ton. */
+  --shop-switch-active: rgba(133, 104, 40, 0.18);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch für die Bilder, die nicht aus
+   dieser Seite kommen (Logo im Kopf, Siegel im Fuß). */
+body:has(.qb-qu) img,
+body:has(.qb-qu) picture,
+body:has(.qb-qu) video {
+  border-radius: var(--qu-r1);
+}
+
+/* NEWSLETTER-BUTTON = der zweite Goldton, und er ist das EINZIGE Element mit
+   rgb(242,191,114) auf dieser Seite (gemessen: audit.json -> buttons, Eintrag
+   „Jetzt anmelden" im Footer-Newsletter). Gesetzt wird er von einer
+   INJIZIERTEN Vendor-Regel `#_form_<zufalls-id> ._submit { background:#f2bf72
+   !important }` — die trägt eine ID, also verliert jede reine Klassen-Regel
+   dagegen, auch mit !important. Deshalb derselbe Weg wie in den Schwester-
+   Blättern (uebersicht.css, partner.css): über die STABILE ID #qi-newsletter
+   gehen (gleiche ID-Gewichtung, eine Klasse mehr => gewinnt). Die Form-ID
+   selbst ist bei jedem Render neu und darf NICHT adressiert werden.
+
+   WARUM HIER #856828 UND NICHT #c9a14b WIE IN uebersicht.css: dort trägt das
+   Gold keine Schrift, hier schon (91 gemessene Textvorkommen: DOI-Links und
+   der Weg zurück in den Artikel). Zwei Töne wären wieder zwei Cluster — und
+   von den beiden ist #c9a14b als Text auf hellem Grund nicht AA-fähig.
+   Der Knopf bekommt deshalb WEISSE Schrift: 5,2:1 auf #856828, geprüft.
+   Dunkle Schrift wäre hier der Fehler (auf #856828 nur 2,8:1) — genau
+   umgekehrt zum helleren #c9a14b, wo die dunkle Schrift richtig ist. */
+body:has(.qb-qu) #qi-newsletter ._submit,
+body:has(.qb-qu) #qi-newsletter button,
+body:has(.qb-qu) #qi-newsletter input[type='submit'],
+body:has(.qb-qu) ._form_15 button,
+body:has(.qb-qu) ._form_15 ._submit,
+body:has(.qb-qu) ._form_15 input[type='submit'] {
+  background: var(--qu-akzent-tinte) !important;
+  color: #ffffff !important;
+  border-radius: var(--qu-r1) !important;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+}

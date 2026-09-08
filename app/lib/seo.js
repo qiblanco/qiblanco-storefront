@@ -316,6 +316,21 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
  */
 export const NUR_ROUTE_SEITEN = [
   {
+    pfad: '/pages/quellen',
+    grund:
+      'Quellenübersicht des Wissensforums (Grossjob 20260908-KONZEPT-' +
+      'fachartikel-…, Segment s05). Sie besteht allein aus der Route ' +
+      'pages.quellen.jsx und hat KEIN Shopify-Seitenobjekt — ohne diesen ' +
+      'Eintrag liefert sie HTTP 200 mit voller Liste und steht in keiner ' +
+      'Sitemap. Sie beantwortet einen gemessenen Kundeneinwand wörtlich ' +
+      '("Warum nicht einfach einen Link zu den Studien bereitstellen?"). ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_quellen_seite_live.py — prüft INHALT (≥ 10 Quellen-Einträge ' +
+      'mit verschiedenen Jahren, Rückweg in einen Artikel), nicht den ' +
+      'Statuscode, und zusätzlich probe_werk_snapshot_frisch.py gegen das ' +
+      'Veralten des eingebackenen Auszugs.',
+  },
+  {
     pfad: '/pages/affiliate-partnerprogramm',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
