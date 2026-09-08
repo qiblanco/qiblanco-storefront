@@ -6,7 +6,7 @@
 //
 // BELEGT die Wurzel des Falls: qiblanco.com ist eine Hydrogen-SPA. boot() läuft
 // genau einmal, also lebten pv_id und der Sektions-Akkumulator bis 2026-08-09 an
-// der Lebensdauer des JS-MODULS statt an der Route — eine pv_id ueberlebte jeden
+// der Lebensdauer des JS-MODULS statt an der Route — eine pv_id überlebte jeden
 // Client-Routenwechsel und sammelte die Sektionen MEHRERER Seiten unter sich
 // (gemessen: 438 von 11735 Pageviews auf qiblanco.com trugen eine fremde Sektion).
 // Diese Tests sind gegen den Stand VOR dem Fix rot (Positivkontrolle im RESULT).
@@ -22,7 +22,8 @@ function bootPixel(startPath = '/pages/schlaf-zellen-schutz') {
   const sent = [];
   const winListeners = new Map();
   const docListeners = new Map();
-  let ioCallback = null;
+  const ioCallbacks = [];
+  const moCallbacks = [];
   let nodes = [];
 
   const location = {
@@ -73,9 +74,25 @@ function bootPixel(startPath = '/pages/schlaf-zellen-schutz') {
       if (!winListeners.has(t)) winListeners.set(t, []);
       winListeners.get(t).push(fn);
     },
+    // ALLE IntersectionObserver sammeln, nicht nur den zuletzt gebauten: der
+    // Pixel baut zwei (Sektionen und Medien). Ein einzelner Slot hält je nach
+    // Bau-Reihenfolge den FALSCHEN, und die Sektionsmessung wäre im Stub tot.
     IntersectionObserver: class {
       constructor(cb) {
-        ioCallback = cb;
+        ioCallbacks.push(cb);
+      }
+      observe() {}
+    },
+    // Die Produktion registriert SPAET gemountete Anker über den
+    // MutationObserver nach (observeSections() steigt bei 0 Knoten frueh aus,
+    // und beim boot ist die Seite im Stub leer). Ohne diesen Pfad wird die
+    // Sektion der ERSTEN Seite nie erfasst -- dann ist im Akkumulator nichts,
+    // was über die Routengrenze bluten könnte, und die Anti-Bleeding-
+    // Zusicherung in 'Sektionen der Altseite bluten NICHT' ist strukturell
+    // unerreichbar. Genau so war sie es von 2026-08-09 bis 2026-09-08.
+    MutationObserver: class {
+      constructor(cb) {
+        moCallbacks.push(cb);
       }
       observe() {}
     },
@@ -126,11 +143,14 @@ function bootPixel(startPath = '/pages/schlaf-zellen-schutz') {
       const node = {attrs: {'data-section': id}, isConnected: true,
                     getAttribute: (k) => node.attrs[k] || null};
       nodes.push(node);
-      // Nachregistrierung anstoßen (MutationObserver ist im Stub nicht aktiv):
-      if (ioCallback) {
-        ioCallback([{target: node, isIntersecting: true, intersectionRatio: 1,
-                     intersectionRect: {height: 800}, rootBounds: {height: 800}}]);
-      }
+      // Nachregistrierung anstoßen (wie in der Produktion über den
+      // MutationObserver; requestAnimationFrame ist im Stub synchron):
+      moCallbacks.forEach((fn) => fn([]));
+      // Danach Sichtbarkeit melden. Der Medien-Observer verwirft den Eintrag
+      // selbst (kein __qpxMed am Knoten), der Sektions-Observer nimmt ihn.
+      ioCallbacks.forEach((fn) =>
+        fn([{target: node, isIntersecting: true, intersectionRatio: 1,
+             intersectionRect: {height: 800}, rootBounds: {height: 800}}]));
     },
     /** Erzwingt einen Flush über den visibilitychange-Pfad (setzt kein unloading). */
     flush() {
@@ -140,6 +160,10 @@ function bootPixel(startPath = '/pages/schlaf-zellen-schutz') {
     },
     navigate(path) {
       window.history.pushState({}, '', path);
+    },
+    /** Medien-Ereignis über die öffentliche Pixel-API melden. */
+    melde(e) {
+      return window.qpx.medien(e);
     },
     behaviors: () => sent.filter((e) => e.event_name === 'behavior'),
     pageViews: () => sent.filter((e) => e.event_name === 'page_view'),
@@ -197,4 +221,24 @@ test('Reiner Query-/Hash-Wechsel ist KEIN neuer Pageview', () => {
   px.navigate('/pages/schlaf-zellen-schutz?lp_ab=b');
   assert.equal(px.pageViews().length, 1,
     'gleicher Pfad mit anderer Query darf keinen zweiten Pageview erzeugen');
+});
+
+test('Medien der Altseite bluten NICHT in den neuen Pageview', () => {
+  const px = bootPixel('/pages/schlaf-zellen-schutz');
+  assert.equal(px.melde({art: 'bild_gesehen', obj: 'alt-bild', wert: 1200}), true,
+    'die Medien-API muss das Ereignis der ALTEN Seite annehmen');
+  px.seeSection('lp-a-hero');
+  px.flush();
+
+  px.navigate('/pages/schlaf-zellen-schutz-v2-18ef');
+  assert.equal(px.melde({art: 'bild_gesehen', obj: 'neu-bild', wert: 900}), true,
+    'die Medien-API muss auch nach dem Routenwechsel annehmen');
+  px.seeSection('lp-v2-hero');
+  px.flush();
+
+  const letzte = px.behaviors().pop();
+  const objs = (letzte.medien || []).map((m) => m.obj);
+  assert.ok(objs.includes('neu-bild'), `das Medium der NEUEN Seite fehlt (${objs.join(',')})`);
+  assert.ok(!objs.includes('alt-bild'),
+    `Medien-Überlappung: alt-bild hängt noch am neuen Pageview (${objs.join(',')})`);
 });
