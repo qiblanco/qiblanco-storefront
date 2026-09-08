@@ -19,7 +19,7 @@
 /* ─── Akt-Hintergründe ───────────────────────────────────────────────────── */
 .lp-a3 [data-section='lp-pp-vorteile'],
 .lp-a3 [data-section='lp-pp-bedingungen'] {
-  background: var(--a-fläche);
+  background: var(--a-flaeche);
 }
 
 /* Karten auf Flächen-Akten wechseln auf den Grund-Ton, damit sie sich ruhig
@@ -43,7 +43,7 @@
   height: auto;
   border-radius: var(--a-r2);
   box-shadow: var(--a-shadow-md);
-  background: var(--a-fläche);
+  background: var(--a-flaeche);
 }
 .lp-a3 .lp-pp-hero__visual figcaption {
   margin-top: var(--a-s2);
@@ -170,6 +170,32 @@
 }
 .lp-a3 [data-section='lp-pp-cta'] .lp-vp-final-cta__lede {
   margin-bottom: var(--a-s4);
+}
+
+/* ─── Rückweg für bestehende Partner: Link ins Partnerkonto ───────────────── */
+/* Sekundär gehalten — der Hero-Knopf gehört der Anmeldung (EIN Goldakzent auf
+   der Handlung). Diese Zeile ist der leise zweite Weg für die bereits
+   angemeldeten Partner; alle Werte aus den :root-Tokens. */
+.lp-a3 .lp-pp-konto {
+  margin: var(--a-s3) 0 0;
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pp-konto a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.lp-a3 .lp-pp-konto a:hover {
+  color: var(--a-text);
+}
+/* Auf dem dunklen Schluss-Akt trägt der Text die helle Skala. */
+.lp-a3 .lp-pp-konto--dunkel {
+  margin-top: var(--a-s4);
+  color: var(--a-muted-hell);
+}
+.lp-a3 .lp-pp-konto--dunkel a:hover {
+  color: var(--a-text-hell);
 }
 
 /* ─── Responsive: eine Spalte ─────────────────────────────────────────────── */
