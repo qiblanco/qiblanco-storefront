@@ -2,6 +2,7 @@ import {Link, useLoaderData} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
+import {artikelHreflangLinks} from '~/lib/hreflang';
 import {artikelInhaltAufraeumen} from '~/lib/blog-inhalt';
 import {autorenkastenSichtbarkeit} from '~/lib/autorenkasten';
 import {Autorenkasten} from '~/components/Autorenkasten';
@@ -39,9 +40,33 @@ export const meta = ({data, location}) => {
   // die Design-Rubrik ihn scoren kann) -- nicht, damit eine zweite Fassung
   // derselben Seite in den Index gerät. Ohne diese Zeile wäre der Parameter
   // ein stiller Duplicate-Content-Erzeuger.
+  // DIE hreflang-GEGENRICHTUNG DER ARTIKEL-NAHT (2026-09-08).
+  //
+  // WARUM HIER UND NICHT IN app/root.jsx, wo die SEITEN-Naht steht: die
+  // Seiten-Naht ist eine reine Funktion des PFADES und kennt deshalb im
+  // Layout alles, was sie braucht. Die Artikel-Naht hängt an einem
+  // Metafeld, also an LOADER-DATEN dieser Route — root.jsx kaeme nur über
+  // useMatches daran, und das wäre ein Layout, das den Aufbau einer
+  // einzelnen Route kennt. Der Descriptor-Weg leistet dasselbe: react-router
+  // rendert `tagName: 'link'` als echtes <link> in denselben <head>.
+  //
+  // KEINE DOPPELUNG MIT DER SEITEN-NAHT: hreflangLinks() in root.jsx schlaegt
+  // Artikelpfade in HREFLANG_PAARE nach und findet sie dort nie (der SSoT
+  // führt Seiten, keine Artikel) -> leere Liste. Beide Naehte können auf
+  // derselben Seite baulich nicht zugleich sprechen. Genau das hält
+  // test/hreflang-artikel.test.mjs (Arm C) fest, weil eine zweite,
+  // abweichende Gruppe schlechter wäre als gar keine.
+  //
+  // KEIN RUECKFALL: fehlt das Metafeld, kommt eine leere Liste und es steht
+  // nichts im Kopf. Begründung in app/lib/hreflang.js.
+  const hreflang = artikelHreflangLinks(
+    location?.pathname ?? '',
+    data?.article?.hreflangEn?.value,
+  );
+
   return data?.autorenkasten?.vorschau
-    ? [...basis, {name: 'robots', content: 'noindex, nofollow'}]
-    : basis;
+    ? [...basis, ...hreflang, {name: 'robots', content: 'noindex, nofollow'}]
+    : [...basis, ...hreflang];
 };
 
 /**
@@ -249,6 +274,18 @@ const ARTICLE_QUERY = `#graphql
         seo {
           description
           title
+        }
+        # DER ARTIKEL trägt SEINEN hreflang-PARTNER SELBST (2026-09-08).
+        # Namensraum 'custom' und nicht 'qb': Shopify lehnt 'qb' hart ab
+        # ("Namespace is too short (minimum is 3 characters)", live gemessen
+        # auf articleUpdate UND metafieldsSet). Sichtbar ist das Feld hier nur,
+        # weil es eine Definition mit access.storefront=PUBLIC_READ hat
+        # (MetafieldDefinition/167767179532) — ohne Definition gibt die
+        # Storefront-API null zurück, obwohl der Wert im Admin steht.
+        # Geschrieben von blog-redaktion/src/publizier.py, und zwar erst, wenn
+        # BEIDE Fassungen veroeffentlicht sind: hreflang wirkt nur reziprok.
+        hreflangEn: metafield(namespace: "custom", key: "hreflang_en") {
+          value
         }
       }
     }
