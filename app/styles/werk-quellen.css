@@ -1,0 +1,170 @@
+/* ============================================================================
+   Quellenuebersicht — /pages/quellen
+
+   Token-System uebernommen aus dem 94/100-Rezept .lp-a3
+   (app/styles/schlaf-zellen-schutz.css) ueber das Studien-Blatt
+   (app/styles/studien.css): dieselbe modulare Typo-Skala, dasselbe
+   8pt-Spacing-Grid, dasselbe warme Neutral-Kontinuum, DERSELBE EINE
+   Gold-Akzent. Keine zweite Gold-Familie, keine zweite Skala — der
+   Live-Befund vom 2026-07-24 (15 Schriftgroessen, 2 konkurrierende Goldtoene)
+   war genau die Ursache des "von AI gemacht"-Eindrucks.
+
+   EIGENER SCOPE `.qb-qu` statt Anhaengen an `.qb-st`: das Studien-Blatt ist
+   mit den vier Studien-Einzelseiten gekoppelt (Kommentar dort). Wer sich hier
+   anhaengt, aendert beim naechsten Quellen-Feinschliff still die
+   Studienseiten mit. Die WERTE sind identisch, die KOPPLUNG ist es nicht —
+   dieselbe Begruendung, mit der studien.css sich von .lp-a3 geloest hat.
+
+   LEITIDEE: Das hier ist eine Nachschlage-Flaeche, keine Verkaufsflaeche.
+   Der Leser kommt mit EINER Absicht — eine Angabe pruefen. Alles, was ihn
+   davon abhaelt, ist Stoerung: kein Druck, kein Angebot, keine Kachel. Der
+   Gold-Akzent liegt ausschliesslich auf dem Weg zurueck in den Artikel.
+   ========================================================================== */
+
+.qb-qu {
+  /* Typo-Skala (modulare Skala ~1.25; 5 Stufen — nicht erweitern) */
+  --qu-fs-xs: 0.8125rem;
+  --qu-fs-base: 1rem;
+  --qu-fs-md: 1.125rem;
+  --qu-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --qu-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --qu-s1: 8px;
+  --qu-s2: 16px;
+  --qu-s3: 24px;
+  --qu-s4: 32px;
+  --qu-s6: 48px;
+  --qu-s8: 64px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --qu-grund: #faf9f5;
+  --qu-flaeche: #f4f0e9;
+  --qu-text: #2c2a26;
+  --qu-muted: #6b665d;
+  --qu-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
+  --qu-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radius: EIN Wert */
+  --qu-r1: 8px;
+
+  /* Layout */
+  --qu-mass: 68ch;
+  --qu-breite: 940px;
+
+  background: var(--qu-grund);
+  color: var(--qu-text);
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: var(--qu-fs-base);
+  line-height: 1.7;
+  padding: var(--qu-s8) var(--qu-s3);
+}
+
+.qb-qu__innen {
+  margin: 0 auto;
+  max-width: var(--qu-breite);
+}
+
+.qb-qu h1 {
+  color: var(--qu-text);
+  font-size: var(--qu-fs-h1);
+  line-height: 1.15;
+  margin: 0 0 var(--qu-s3);
+}
+
+/* EIN H2-Stil, ueberall gleich. */
+.qb-qu h2 {
+  border-top: 1px solid var(--qu-linie);
+  color: var(--qu-text);
+  font-size: var(--qu-fs-h2);
+  line-height: 1.25;
+  margin: var(--qu-s8) 0 var(--qu-s3);
+  padding-top: var(--qu-s4);
+}
+
+.qb-qu__vorspann {
+  color: var(--qu-text);
+  font-size: var(--qu-fs-md);
+  margin: 0 0 var(--qu-s6);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__liste {
+  display: grid;
+  gap: var(--qu-s2);
+  list-style: none;
+  margin: 0;
+  /* DAS LESEMASS GEHOERT AN DIE LISTE, NICHT NUR AN DIE EINZELNEN ZEILEN:
+     eine Karte ueber die volle Blattbreite reisst die 75-Zeichen-Grenze in
+     JEDER Zeile darin, auch wenn jede Zeile fuer sich ein max-width traegt
+     (gemessen 2026-09-08: 37 % der Textbloecke ueber 75 Zeichen gegen 21 %
+     auf der Bestandsseite /pages/studien mit demselben Token-Rezept). */
+  max-width: var(--qu-mass);
+  padding: 0;
+}
+
+.qb-qu__eintrag {
+  background: var(--qu-flaeche);
+  border-radius: var(--qu-r1);
+  padding: var(--qu-s3);
+}
+
+.qb-qu__titel {
+  display: block;
+  font-size: var(--qu-fs-md);
+  font-weight: 600;
+  margin-bottom: var(--qu-s1);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__angabe {
+  color: var(--qu-muted);
+  display: block;
+  font-size: var(--qu-fs-base);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__doi {
+  color: var(--qu-akzent-tinte);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.qb-qu__doi:hover,
+.qb-qu__doi:focus-visible {
+  text-decoration: underline;
+}
+
+.qb-qu__belegt {
+  color: var(--qu-muted);
+  display: block;
+  font-size: var(--qu-fs-base);
+  margin-top: var(--qu-s2);
+  max-width: var(--qu-mass);
+}
+
+.qb-qu__belegt a {
+  color: var(--qu-akzent-tinte);
+  text-decoration: none;
+}
+
+.qb-qu__belegt a:hover,
+.qb-qu__belegt a:focus-visible {
+  text-decoration: underline;
+}
+
+.qb-qu__zurueck {
+  display: block;
+  font-size: var(--qu-fs-md);
+  margin-top: var(--qu-s8);
+}
+
+.qb-qu__zurueck a {
+  color: var(--qu-akzent-tinte);
+  text-decoration: none;
+}
+
+.qb-qu__zurueck a:hover,
+.qb-qu__zurueck a:focus-visible {
+  text-decoration: underline;
+}

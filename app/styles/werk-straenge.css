@@ -1,0 +1,46 @@
+/* ============================================================================
+   Themenstraenge auf /blogs/wissen — die Gruppierung der Artikelkacheln.
+
+   WARUM EIN EIGENES BLATT UND NICHT blog.css: dieselbe Begruendung, mit der
+   die Blog-Regeln am 2026-09-04 aus app.css herausgeloest wurden (Kopf von
+   app/routes/blogs.$blogHandle._index.jsx) — eine Zeile im gemeinsamen Blatt
+   ist eine Aenderung an allem, was daran haengt. Hier kommt ein zweiter,
+   konkreter Grund dazu: an blog.css arbeitet zur selben Zeit ein anderer
+   Auftrag (Autorenkasten). Getrennte Dateien halten die beiden Mutations-
+   gebiete disjunkt, statt sich auf Hunk-Glueck zu verlassen.
+
+   KEIN EINZIGER FREIER WERT. Alle Groessen, Farben, Abstaende und Radien
+   kommen aus den `--bw-*`-Tokens, die blog.css auf `.blog-wissen` definiert
+   und die hierher vererben. Diese Datei fuehrt bewusst KEINE eigenen Tokens:
+   eine zweite Skala neben der bestehenden waere genau der Befund vom
+   2026-07-24 (15 Schriftgroessen, 2 konkurrierende Goldtoene).
+
+   EIN H2-STIL: `--bw-fs-h2` traegt den Kommentar "EIN H2-Stil" in blog.css.
+   Die Strang-Frage benutzt ihn unveraendert.
+   ========================================================================== */
+
+.blog-strang {
+  margin: 0 0 var(--bw-s8);
+}
+
+/* Der Trennstrich steht am Anfang JEDES Strangs ausser dem ersten: er trennt,
+   er dekoriert nicht. Ein Strich ueber dem ersten Strang wuerde ihn von der
+   Einleitung abschneiden, zu der er gehoert. */
+.blog-strang + .blog-strang {
+  border-top: 1px solid var(--bw-linie);
+  padding-top: var(--bw-s6);
+}
+
+.blog-strang-frage {
+  font-size: var(--bw-fs-h2);
+  line-height: 1.25;
+  margin: 0 0 var(--bw-s2);
+  max-width: var(--bw-breite-text);
+}
+
+.blog-strang-kurz {
+  color: var(--bw-muted);
+  font-size: var(--bw-fs-md);
+  margin: 0 0 var(--bw-s4);
+  max-width: var(--bw-breite-text);
+}

@@ -5,7 +5,9 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
 import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
+import {STRAENGE_LIVE, gruppiereNachStraengen} from '~/lib/werk';
 import blogStyles from '~/styles/blog.css?url';
+import straengeStyles from '~/styles/werk-straenge.css?url';
 
 // EIGENES STYLESHEET STATT app/styles/app.css: die Blog-Regeln lagen bis zum
 // 2026-09-04 im globalen Blatt. Dort ist jede Zeile eine Änderung an ALLEN 43
@@ -13,7 +15,12 @@ import blogStyles from '~/styles/blog.css?url';
 // das ein Risiko ohne Not. Hausmuster: app/routes/pages.faq.jsx,
 // pages.studien.jsx. Die Zeilenlänge kommt weiterhin aus dem globalen Token
 // --measure-text, das in app.css auf :root steht.
-export const links = () => [{rel: 'stylesheet', href: blogStyles}];
+export const links = () => [
+  {rel: 'stylesheet', href: blogStyles},
+  // Eigenes Blatt fuer die Strang-Gruppierung: siehe Kopf dort. Es traegt
+  // keine eigenen Tokens, sondern erbt die `--bw-*` aus blog.css.
+  {rel: 'stylesheet', href: straengeStyles},
+];
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -149,7 +156,13 @@ export default function Blog() {
       <div className="blog">
         <h1>{blog.title}</h1>
         <p className="blog-einleitung">{einleitung}</p>
-        <PaginatedResourceSection connection={articles} resourcesClassName="blog-grid">
+        {STRAENGE_LIVE ? (
+          <StraengeAnsicht articles={articles} />
+        ) : (
+          <PaginatedResourceSection
+            connection={articles}
+            resourcesClassName="blog-grid"
+          >
             {({node: article, index}) => (
               <ArticleItem
                 article={article}
@@ -157,9 +170,72 @@ export default function Blog() {
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
             )}
-        </PaginatedResourceSection>
+          </PaginatedResourceSection>
+        )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Die Uebersicht nach Themenstraengen statt chronologisch.
+ *
+ * WARUM SIE HINTER `STRAENGE_LIVE` STEHT: die BENENNUNG der Straenge ist eine
+ * inhaltliche Entscheidung und liegt als Vorlage bei Christian (Begruendung
+ * und Item-Schluessel im Kopf von ~/lib/werk). Der Mechanismus ist gebaut und
+ * hermetisch geprueft; ein `Ja` legt eine Zeile um und braucht keinen zweiten
+ * Bau. Bis dahin liefert die Seite unveraendert die chronologische Liste —
+ * NICHT eine halbe Neuerung.
+ *
+ * KEINE PAGINIERUNG IN DIESER ANSICHT, und das ist eine Entscheidung, keine
+ * Auslassung: eine Ordnung, die auf Seite 2 weitergeht, ist keine Ordnung
+ * mehr — der Leser saehe einen Strang, dessen Artikel teils hinter einem
+ * "Mehr laden" liegen. Die Zahl der Artikel ist menschlich gegated
+ * (blog-redaktion veroeffentlicht nicht selbst) und liegt bei 8; die
+ * Kachelzahl bleibt durch `pageBy: 50` gedeckelt. Waechst der Bestand
+ * darueber, meldet das die stehende Wache
+ * blog-redaktion/pruefungen/probe_blog_index_vollstaendig.py.
+ *
+ * @param {{articles: {nodes: Array<ArticleItemFragment>}}}
+ */
+function StraengeAnsicht({articles}) {
+  const {gruppen, rest} = gruppiereNachStraengen(articles?.nodes ?? []);
+
+  return (
+    <>
+      {gruppen.map((strang) => (
+        <section className="blog-strang" key={strang.id}>
+          <h2 className="blog-strang-frage">{strang.frage}</h2>
+          {strang.kurz ? (
+            <p className="blog-strang-kurz">{strang.kurz}</p>
+          ) : null}
+          <div className="blog-grid">
+            {strang.artikel.map((article, index) => (
+              <ArticleItem
+                article={article}
+                key={article.id}
+                loading={index < 2 ? 'eager' : 'lazy'}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+      {/* FAIL-SOFT UND SICHTBAR: ein Artikel, den der Auszug noch nicht kennt
+          (frisch veroeffentlicht, Snapshot noch nicht nachgezogen), faellt
+          NICHT aus der Uebersicht. Ein stiller Verlust saehe hier aus wie eine
+          redaktionelle Auswahl — genau die Klasse, die der Blog mit
+          `pageBy: 4` schon einmal bezahlt hat. */}
+      {rest.length ? (
+        <section className="blog-strang" key="rest">
+          <h2 className="blog-strang-frage">Zuletzt erschienen</h2>
+          <div className="blog-grid">
+            {rest.map((article) => (
+              <ArticleItem article={article} key={article.id} loading="lazy" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </>
   );
 }
 
