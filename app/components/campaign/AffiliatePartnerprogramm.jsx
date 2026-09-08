@@ -28,6 +28,11 @@
  */
 
 const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
+/* Das Login desselben Partnerportals. Gemessen 2026-09-08: HTTP 200, Titel
+   "Qi Blanco® UG (haftungsbeschränkt) | Login", kein Redirect. Die nahe-
+   liegenden Nachbarpfade sind TOT und dürfen hier nie stehen: /account,
+   /dashboard und /signin geben je 410, /affiliate/login gibt 403. */
+const PARTNERKONTO = 'https://aff.revolution.qiblanco.com/login';
 
 // Bestands-Asset vom Shopify-CDN (dieselbe Datei, die /pages/partner als
 // Hero-Rückfall nutzt) — GL-PRO-0015: Medien liegen auf dem CDN, nie im Repo.
@@ -210,6 +215,14 @@ function Hero() {
             <li>Keine Mindestlaufzeit</li>
             <li>Anmeldung in wenigen Minuten</li>
           </ul>
+          <p className="lp-pp-konto">
+            Schon Partner?{' '}
+            <a href={PARTNERKONTO} rel="noopener">
+              Zum Partnerkonto
+            </a>{' '}
+            — dort liegen dein Tracking-Link, dein Gutscheincode und deine
+            Zahlen.
+          </p>
         </div>
         <figure className="lp-pp-hero__visual">
           <img
@@ -368,6 +381,12 @@ function Abschluss() {
           <li>30 Tage Zuordnung</li>
           <li>Jederzeit kündbar</li>
         </ul>
+        <p className="lp-pp-konto lp-pp-konto--dunkel">
+          Schon angemeldet?{' '}
+          <a href={PARTNERKONTO} rel="noopener">
+            Zum Partnerkonto
+          </a>
+        </p>
       </div>
     </section>
   );
