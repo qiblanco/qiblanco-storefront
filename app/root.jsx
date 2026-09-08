@@ -5,6 +5,7 @@ import {
   isRouteErrorResponse,
   useRouteLoaderData,
   useMatches,
+  useLocation,
   Links,
   Meta,
   Scripts,
@@ -27,6 +28,7 @@ import rechtstextStyles from '~/styles/rechtstext.css?url';
 // Global geladen wie qb-swipetab: ein Route-eigenes links() zoege jede
 // nutzende Route in den Design-Gate-Diff. Alles ist auf .eu-gwl gescopt.
 import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
+import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import {EuLabelProvider} from './components/EuGewaehrleistungsLabel';
 import '@fontsource-variable/open-sans';
@@ -219,6 +221,7 @@ function loadDeferredData({context}) {
  */
 export function Layout({children}) {
   const nonce = useNonce();
+  const {pathname} = useLocation();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
   const shouldLoadThirdPartyScripts =
@@ -290,6 +293,36 @@ export function Layout({children}) {
           und ließe sich ohne Oxygen-Preview nicht verifizieren.
         */}
         <meta name="tdm-reservation" content="1" />
+        {/*
+          hreflang-Naht DACH <-> USA — ZENTRAL HIER UND NICHT JE ROUTE.
+
+          WARUM ZENTRAL: die Gegenseite (us-qiblanco-2024,
+          snippets/qb-seo-hreflang.liquid) ist EIN Snippet im <head> ihres
+          Layouts, das für JEDE Seite dieselbe Tabelle befragt. Läge unsere
+          Hälfte in zwanzig einzelnen Routen, wäre die Menge der ausgezeichneten
+          Seiten auf beiden Seiten nur so lange gleich, wie niemand eine Route
+          vergisst — und ein hreflang, das nur eine Seite ausspricht, wird von
+          Google vollständig verworfen. Hier ist die Deckungsgleichheit BAULICH,
+          nicht durch Sorgfalt hergestellt: beide Seiten fragen dieselbe Tabelle,
+          jede auf ihrer Plattform, an genau einer Stelle.
+
+          Die Tabelle selbst steht in keiner der beiden: sie ist generiert aus
+          homepage-bauer/shop-switch/shop-mapping.yaml (SSoT). Kennt sie den
+          Pfad nicht, kommt eine leere Liste — dann steht hier nichts, und das
+          ist die richtige Antwort. Eine geratene Zuordnung wäre schlechter als
+          keine (Begründung im Kopf von app/lib/hreflang.js).
+
+          Vorbild für die Platzierung ist das tdm-reservation-meta darüber:
+          eine sitewide Kopfzeile gehört in dieses Layout, nicht in jede Route.
+        */}
+        {hreflangLinks(pathname).map((l) => (
+          <link
+            key={l.hrefLang}
+            rel={l.rel}
+            hrefLang={l.hrefLang}
+            href={l.href}
+          />
+        ))}
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>

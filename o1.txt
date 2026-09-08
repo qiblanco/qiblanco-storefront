@@ -1,0 +1,18 @@
+U3-ZIELWERT IST STRITTIG - die Auftragszahl deckt sich nicht mit dem
+DACH-Warenkorb, und beide Lesarten sind vertretbar. Gemessen 2026-08-21:
+- Auftrag U3 sagt Ziel rgb(44,42,38) = #2c2a26.
+- Der DACH-KAUFBUTTON benutzt aber #4A4741 = rgb(74,71,65):
+  qiblanco-storefront app/styles/app.css:106 .btn--primary{color:var(--color-dark)!important}
+  mit app.css:14 --color-dark: #4A4741.
+- #2c2a26 existiert im DACH sehr wohl, aber AUSSCHLIESSLICH in
+  Landingpage-Token-CSS: mm-lp.css:47 --mm-text, zell-schutz.css:44 --a-text,
+  schlaf-zellen-schutz-v3-67a7.css:49 --v3-text, exclusive-solutions.css:106
+  und qione-zellschutz.css:106 --lp-vp-ink-soft.
+  Also: das warme Neutral der LP-REFERENZREZEPTE (tiefer-schlaf-v3, 94/100),
+  nicht die Schriftfarbe des DACH-Warenkorb-Buttons.
+DER GEMEINSAME KERN, der unstrittig ist: US benutzt #3d3d3d = rgb(61,61,61),
+ein NEUTRALGRAU (r=g=b, null Waerme). Beide DACH-Kandidaten sind warm
+(#4A4741 und #2c2a26 haben beide r>g>b). Der Defekt "kalt statt warm" ist
+also real, nur die Zielzahl ist offen.
+ZU ENTSCHEIDEN vom Design-Meister (PFLICHT-Rolle, wird jetzt konsultiert):
+#4A4741 (Shop-Massstab, DACH-Warenkorb) oder #2c2a26 (Referenzrezept-Massstab).

@@ -1,0 +1,9 @@
+IN DEN PAPIERKORB VERSCHOBEN (reversibel)
+Original: /srv/openclaw/shared-state/homepage-bauer/werkbank/qiblanco-storefront/app/lib/blog-artikel-pfad.js
+Wann: 2026-09-05T06:05:23
+Grund: Arbeitskopie aus dem gemeinsamen Hauptbaum; der Inhalt ist ueber PR #308 in origin/main gemergt (Job 20260904-repair-blog-artikel-sitemap-liefert-sechs-404). Die Kopie hier ist die Fassung VOR der Umlaut-Umstellung und damit ueberholt.
+Von: claude-admin
+Papierkorb-ID: 20260905T060521__blog-artikel-pfad.js__b4a3da38
+Papierkorb: /mnt/HC_Volume_106066469/_papierkorb
+Zurueckholen: papierkorb restore 20260905T060521__blog-artikel-pfad.js__b4a3da38
+Auto-Hardloeschung fruehestens nach 30 Tagen (nur wenn scharfgeschaltet).

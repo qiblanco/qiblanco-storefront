@@ -1,0 +1,28 @@
+U2 IST HOECHSTWAHRSCHEINLICH EIN MESSARTEFAKT, KEIN DEFEKT - statisch hergeleitet,
+Live-Gegenprobe steht aus (Cloudflare-Sperre).
+DIE RECHNUNG, die es zeigt:
+- settings_data.json:19 color_button = "#f2bf72" = rgb(242,191,114)
+  -> das ist EXAKT der U2-ZIELWERT. Der Marken-Akzent ist auf US gesetzt.
+- css-variables.liquid:24 --color-btn-primary = #f2bf72
+- custom.css:941 .cart-btn-primary{background: var(--color-btn-primary)}
+  => RUHEZUSTAND des Kaufbuttons ist bereits rgb(242,191,114).
+- custom.css:949 .cart-btn-primary:hover{background: var(--color-btn-primary-focus)}
+- css-variables.liquid:35 --color-btn-primary-focus = adaptive-color(#f2bf72)
+- snippets/adaptive-color.liquid: color_brightness(#f2bf72) =
+  (242*299 + 191*587 + 114*114)/1000 = 197,5. Das ist >= 64, und
+  is_background_color ist beim Aufruf NICHT gesetzt (falsy)
+  -> Zweig color_darken: 10 -> #eeaa43 = rgb(238,170,67)
+  => rgb(238,170,67) IST DIE HOVER-FARBE DES KAUFBUTTONS, exakt der im
+     Auftrag als "Ist" genannte Wert.
+GEGENPROBE, dass es NICHT der darker-Token ist: --color-btn-primary-darker
+(ebenfalls rgb(238,170,67), weil color_darken:10 dieselbe Rechnung ist) wird im
+ganzen Theme an GENAU EINER Stelle benutzt - theme.css:6508
+.search-form__connected-submit:focus/:hover. Das ist der Suchfeld-Knopf, nicht
+der Warenkorb. Der Kaufbutton beruehrt diesen Token nie.
+SCHLUSS: die U2-Messung des Konzepts hat den Knopf im HOVER-/Fokuszustand
+erwischt. Im Ruhezustand stimmt die Farbe bereits.
+HANDLUNG: U2 wird NICHT geaendert, sondern live im RUHEZUSTAND (Maus bewusst
+weit weg positioniert) nachgemessen und dann mit Begruendung als "verworfen -
+kein Defekt" gebucht. Aendern waere hier aktiv schaedlich: es wuerde den
+korrekten Marken-Akzent gegen seinen eigenen Hover-Wert tauschen und den
+Hover-Kontrast zerstoeren.

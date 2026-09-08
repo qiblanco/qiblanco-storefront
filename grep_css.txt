@@ -1,0 +1,7 @@
+app/styles/mm-lp.css:762:/* Cookie-Banner (Cookiebot-Custom #cookiebanner) auf mm-Routen in die
+app/styles/mm-lp.css:768:body:has(.mm-lp) #cookiebanner { font-family: var(--mm-font) !important; }
+app/styles/mm-lp.css:769:body:has(.mm-lp) #cookiebanner h2 {
+app/styles/mm-lp.css:775:body:has(.mm-lp) #cookiebanner h3 { font-size: var(--mm-fs-xs) !important; }
+app/styles/mm-lp.css:776:body:has(.mm-lp) #cookiebanner a { font-size: var(--mm-fs-base) !important; }
+app/styles/mm-lp.css:777:body:has(.mm-lp) #cookiebanner .cookie-banner-button {
+app/styles/mm-lp.css:781:body:has(.mm-lp) #cookiebanner .cookie-banner-button.accept {

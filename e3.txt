@@ -1,0 +1,33 @@
+U2 UND U3 ENTSCHIEDEN - die Design-Meister-Lernkarte, die der Auftrag selbst
+zitiert, beantwortet beide und widerspricht dabei EINER Zahl des Auftrags.
+Quelle: design-meister/db/lernkarten/
+        web-us-shop-laeuft-auf-nicht-gesetzten-tokens-nicht-falschen-20260820.yaml
+        (Playwright-Messung beider Storefronts, Desktop 1440 + Mobil 390)
+
+U2 -> VERWORFEN, KEIN DEFEKT. Die Lernkarte woertlich: "Der Gold-Akzent
+rgb(242,191,114) ist auf DACH und USA IDENTISCH". Das bestaetigt UNABHAENGIG
+meine statische Herleitung (settings color_button=#f2bf72 = genau dieser Wert,
+und rgb(238,170,67) ist der adaptive-color-HOVER-Wert). Zwei Wege, ein Ergebnis:
+der Ruhezustand stimmt bereits. Aendern waere schaedlich.
+
+U3 -> ZIEL KORRIGIERT AUF rgb(74,71,65) = #4A4741, NICHT rgb(44,42,38).
+Begruendung, zwei unabhaengige Quellen gegen die Auftragszahl:
+ (a) Die Lernkarte benennt den DACH-Wert woertlich: "Ueberschriften-Ton DACH
+     rgb(74,71,65) warmes Neutral gegen US rgb(61,61,61) kalt".
+ (b) Der DACH-KAUFBUTTON selbst traegt ihn: app.css:106
+     .btn--primary{color:var(--color-dark)!important}, app.css:14
+     --color-dark:#4A4741.
+ rgb(44,42,38)=#2c2a26 ist dagegen der Tinten-Token der LANDINGPAGE-Rezepte
+ (mm-lp.css --mm-text, zell-schutz.css --a-text, v3 --v3-text) - ein anderes
+ Teilsystem als der Shop-Warenkorb.
+ Der DEFEKT bleibt in beiden Lesarten derselbe und ist real: US faehrt
+ #3d3d3d, ein Neutralgrau mit r=g=b und null Waerme. Erkennungsmerkmal der
+ Lernkarte: "warm heisst r > b". #4A4741 erfuellt das (74>65), #3d3d3d nicht.
+ Ich folge der zitierten Quelle statt der Auftragszahl und weise das im RESULT
+ offen aus - die Zahl im Auftrag ist eine Hypothese, keine Konstante.
+
+WEITERE BESTAETIGUNGEN aus derselben Lernkarte: Button-Radius 10 gegen 5 (U1
+bestaetigt), Grundschrift 16 gegen 20 (U5 bestaetigt). Und der Satz, der
+Stufe 3 traegt: design_gate_seiten.yaml fuehrte am 2026-08-20 43 Seiten,
+42 DACH und 1 US - "ein Token-Nachzug ohne Watch-Deckung driftet binnen
+Wochen zurueck, ohne dass jemand es sieht".

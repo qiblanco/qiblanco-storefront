@@ -1,6 +1,7 @@
 import {redirect} from '@shopify/remix-oxygen';
 import {
   getAttributionCartAttributes,
+  getOriginCartAttributes,
   getTrackedCheckoutUrl,
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
@@ -44,9 +45,15 @@ export async function loader({request, context, params}) {
   const discount = searchParams.get('discount');
   const discountArray = discount ? [discount] : [];
   const hasMarketingConsent = hasAttributionConsent(request, env);
-  const attributionAttributes = hasMarketingConsent
-    ? getAttributionCartAttributes(request)
-    : [];
+  // Job 20260907-fbc-klick-id-... (s02): hier stand `hasMarketingConsent ? ... : []`
+  // fuer die GESAMTE Attributsliste — ein Direkt-zur-Kasse-Link ohne Consent
+  // erzeugte einen Cart ganz ohne Attribute, und die Order war spaeter nicht
+  // von einem Cart-Bypass zu unterscheiden. Herkunfts-Marker jetzt IMMER,
+  // personenbezogene Attribute weiterhin NUR mit Consent.
+  const attributionAttributes = [
+    ...getOriginCartAttributes(request),
+    ...(hasMarketingConsent ? getAttributionCartAttributes(request) : []),
+  ];
 
   // create a cart
   const result = await cart.create({
