@@ -18,7 +18,7 @@
    LEITIDEE: Das hier ist eine Nachschlage-Flaeche, keine Verkaufsflaeche.
    Der Leser kommt mit EINER Absicht — eine Angabe pruefen. Alles, was ihn
    davon abhaelt, ist Stoerung: kein Druck, kein Angebot, keine Kachel. Der
-   Gold-Akzent liegt ausschliesslich auf dem Weg zurueck in den Artikel.
+   Gold-Akzent liegt ausschließlich auf dem Weg zurück in den Artikel.
    ========================================================================== */
 
 .qb-qu {
@@ -57,12 +57,24 @@
   font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
   font-size: var(--qu-fs-base);
   line-height: 1.7;
-  padding: var(--qu-s8) var(--qu-s3);
+  padding: var(--qu-s8) 0;
 }
 
-.qb-qu__innen {
+/* DER TEXTCONTAINER, und sein Name ist Absicht: die stehende
+   Gestaltungs-Pruefliste (homepage-bauer/src/seiten_pruefliste.py) erkennt
+   Fliesstext-Container an einem Wort im Klassennamen ("inhalt", "content",
+   "artikel", …). Das Layout-`<main>` traegt keine Klasse und wird von ihr
+   uebersprungen; hiess dieser Kasten weiter `__inhalt`, mass die Pruefliste
+   auf DIESER Seite den Warenkorb (`cart-main`) statt die Seite und meldete
+   Zeilenlaenge und Innenabstaende als fehlend, obwohl beide hier stehen.
+   Ein Container, den die Wache nicht findet, ist ein Container, der nie
+   wieder gemessen wird — der Name ist deshalb Teil der Messbarkeit.
+   Er traegt BEIDE Groessen: die Zeilenlaenge (max-width) und den seitlichen
+   Innenabstand, damit sie an einem Ort stehen und nicht auseinanderlaufen. */
+.qb-qu__inhalt {
   margin: 0 auto;
   max-width: var(--qu-breite);
+  padding: 0 var(--qu-s3);
 }
 
 .qb-qu h1 {
@@ -153,18 +165,18 @@
   text-decoration: underline;
 }
 
-.qb-qu__zurueck {
+.qb-qu__zu-den-artikeln {
   display: block;
   font-size: var(--qu-fs-md);
   margin-top: var(--qu-s8);
 }
 
-.qb-qu__zurueck a {
+.qb-qu__zu-den-artikeln a {
   color: var(--qu-akzent-tinte);
   text-decoration: none;
 }
 
-.qb-qu__zurueck a:hover,
-.qb-qu__zurueck a:focus-visible {
+.qb-qu__zu-den-artikeln a:hover,
+.qb-qu__zu-den-artikeln a:focus-visible {
   text-decoration: underline;
 }

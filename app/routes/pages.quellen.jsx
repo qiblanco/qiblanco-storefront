@@ -15,14 +15,14 @@ const PFAD = '/pages/quellen';
  * wer eine Angabe nachschlagen will, musste sie im Fliesstext suchen.
  *
  * DIE DATEN KOMMEN AUS `app/data/werk.js` UND WERDEN HIER NICHT GEPFLEGT.
- * Erzeuger ist homepage-bauer/bin/werk-snapshot aus der taeglichen Ableitung
+ * Erzeuger ist homepage-bauer/bin/werk-snapshot aus der täglichen Ableitung
  * von blog-redaktion. Es gibt deshalb keine Liste, die jemand nachtragen
- * muesste, und keine, die veralten kann, ohne dass es auffaellt
+ * müsste, und keine, die veralten kann, ohne dass es auffaellt
  * (Frische-Traeger: pruefungen/probe_werk_snapshot_frisch.py).
  *
  * ZWEI ZAEUNE STEHEN SCHON IM ERZEUGER, nicht hier: aufgenommen ist
- * ausschliesslich, was ein VEROEFFENTLICHTER Artikel zitiert, und nichts mit
- * totem DOI. Die Begruendung fuer beide steht im Kopf von bin/werk-snapshot.
+ * ausschließlich, was ein VEROEFFENTLICHTER Artikel zitiert, und nichts mit
+ * totem DOI. Die Begründung für beide steht im Kopf von bin/werk-snapshot.
  *
  * WAS HIER BEWUSST NICHT STEHT: keine Wirkungsaussage, keine Deutung, kein
  * Angebot. Eine Nachschlage-Flaeche, auf der verkauft wird, ist als Beleg
@@ -46,7 +46,7 @@ export const meta = () => [
   {
     // CollectionPage statt ItemList mit 56 Eintraegen: die strukturierten
     // Daten sollen beschreiben, WAS die Seite ist. Jede einzelne Quelle als
-    // Entitaet auszuzeichnen waere eine Aussage ueber fremde Arbeiten, die
+    // Entitaet auszuzeichnen wäre eine Aussage über fremde Arbeiten, die
     // wir nicht verantworten — und Google zeigt sie ohnehin nicht an.
     'script:ld+json': {
       '@context': 'https://schema.org',
@@ -68,7 +68,7 @@ export function loader() {
 /**
  * Eine vollstaendige Angabe, so wie sie ein Leser braucht: wer, wann, was,
  * und wo er es findet. Fehlt ein Teil, faellt genau dieser Teil weg — nie ein
- * Platzhalter und nie eine erfundene Ergaenzung.
+ * Platzhalter und nie eine erfundene Ergänzung.
  */
 function Angabe({quelle}) {
   const teile = [quelle.autoren, quelle.jahr && String(quelle.jahr)].filter(
@@ -111,7 +111,7 @@ function Angabe({quelle}) {
 export default function QuellenSeite() {
   return (
     <div className="qb-qu">
-      <div className="qb-qu__innen">
+      <div className="qb-qu__inhalt">
         <h1>Quellen</h1>
         <p className="qb-qu__vorspann">
           Wenn in einem unserer Artikel eine Zahl oder eine Studie vorkommt,
@@ -127,7 +127,7 @@ export default function QuellenSeite() {
           ))}
         </ul>
 
-        <p className="qb-qu__zurueck">
+        <p className="qb-qu__zu-den-artikeln">
           <Link to="/blogs/wissen">Zurück zu den Fachartikeln</Link>
         </p>
       </div>

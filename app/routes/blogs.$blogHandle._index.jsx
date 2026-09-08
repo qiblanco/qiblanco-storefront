@@ -17,7 +17,7 @@ import straengeStyles from '~/styles/werk-straenge.css?url';
 // --measure-text, das in app.css auf :root steht.
 export const links = () => [
   {rel: 'stylesheet', href: blogStyles},
-  // Eigenes Blatt fuer die Strang-Gruppierung: siehe Kopf dort. Es traegt
+  // Eigenes Blatt für die Strang-Gruppierung: siehe Kopf dort. Es trägt
   // keine eigenen Tokens, sondern erbt die `--bw-*` aus blog.css.
   {rel: 'stylesheet', href: straengeStyles},
 ];
@@ -181,7 +181,7 @@ export default function Blog() {
  * Die Uebersicht nach Themenstraengen statt chronologisch.
  *
  * WARUM SIE HINTER `STRAENGE_LIVE` STEHT: die BENENNUNG der Straenge ist eine
- * inhaltliche Entscheidung und liegt als Vorlage bei Christian (Begruendung
+ * inhaltliche Entscheidung und liegt als Vorlage bei Christian (Begründung
  * und Item-Schluessel im Kopf von ~/lib/werk). Der Mechanismus ist gebaut und
  * hermetisch geprueft; ein `Ja` legt eine Zeile um und braucht keinen zweiten
  * Bau. Bis dahin liefert die Seite unveraendert die chronologische Liste —
