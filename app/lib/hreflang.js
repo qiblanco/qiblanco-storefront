@@ -124,7 +124,102 @@ export function hreflangLinks(dachPfad) {
   const pfad = normalisiere(dachPfad);
   const usPfad = SEITEN_PAARE[pfad];
   if (!usPfad) return [];
-  const de = `${DACH_ORIGIN}${pfad}`;
+  return paarLinks(pfad, usPfad);
+}
+
+/**
+ * hreflang-Descriptoren für einen BLOGARTIKEL.
+ *
+ * ===========================================================================
+ * ERWEITERUNG 2026-09-08 — Job 20260908-BAU-hreflang-gegenrichtung-hydrogen-
+ * artikel-metafeld. DIE GEGENRICHTUNG DER ARTIKEL-NAHT.
+ * ===========================================================================
+ *
+ * WARUM DAS NICHT über SEITEN_PAARE läuft: Artikel sind eine WACHSENDE
+ * Menge (Takt seit 2026-09-08: zwei je Woche, blog-redaktion.conf
+ * BR_ARTIKEL_PRO_WOCHE=2). Eine Aufzaehlung im SSoT shop-mapping.yaml wäre ab
+ * dem nächsten Artikel unvollstaendig, ohne dass irgendwo etwas rot wird —
+ * und jeder neue braeuchte Generatorlauf, Hydrogen-Deploy UND Theme-Push.
+ * Der Artikel trägt seinen Partner deshalb SELBST, in einem Metafeld, das
+ * blog-redaktion/src/publizier.py in derselben articleCreate/articleUpdate-
+ * Mutation mitschreibt. Die Menge waechst MIT dem Bestand statt hinter ihm her.
+ *
+ * DIE GEGENSEITE ist us-qiblanco-2024/snippets/qb-seo-hreflang-artikel.liquid
+ * und liest custom.hreflang_de auf dem englischen Artikel. hreflang wirkt
+ * ausschließlich reziprok — fehlt eine Haelfte, verwirft Google die GANZE
+ * Gruppe. Beide Haelften speisen sich darum aus derselben Quelle, und beide
+ * bauen dieselben drei Links: `paarLinks` unten ist der EINE Bauer für Seiten
+ * UND Artikel. Eine abweichende Angabe innerhalb einer hreflang-Gruppe ist
+ * schlechter als gar keine; hier ist die Gleichheit BAULICH statt sorgfaeltig.
+ *
+ * NAMENSRAUM 'custom', NICHT 'qb' (live gemessen 2026-09-08, beide Wege):
+ * Shopify lehnt 'qb' hart ab — "Namespace is too short (minimum is 3
+ * characters)", gemessen auf articleUpdate UND auf metafieldsSet. Ein Metafeld
+ * 'qb.hreflang_en' kann also nie geschrieben werden, und ein Leser darauf
+ * wäre Deko.
+ *
+ * UND ES BRAUCHT EINE DEFINITION MIT access.storefront=PUBLIC_READ (ebenfalls
+ * live gemessen 2026-09-08, beide Arme in EINEM Storefront-API-Aufruf):
+ * ein Artikel-Metafeld OHNE Definition ist im Admin da und gibt über die
+ * Storefront-API NULL zurück — der Hydrogen-Leser saehe es baulich nie, ohne
+ * dass irgendwo etwas rot wird. Angelegt ist
+ * MetafieldDefinition/167767179532 (ARTICLE, custom.hreflang_en, PUBLIC_READ).
+ *
+ * KEIN RUECKFALL UND KEIN GERATENER PFAD: fehlt das Metafeld, ist es leer oder
+ * trägt es keinen sauberen absoluten Pfad, kommt eine LEERE Liste. Ein
+ * Rueckfall auf '/' hiesse als hreflang gelesen "die englische Fassung dieses
+ * Artikels ist die Startseite" — eine Falschaussage auf jedem noch nicht
+ * zugeordneten Artikel. Lieber keine Auszeichnung als eine falsche.
+ *
+ * WARUM DIE Prüfung SO ENG IST: ein voller URL ("https://qi-blanco.com/...")
+ * oder ein protokoll-relativer Wert ("//fremde.example/x") würde beim
+ * Zusammensetzen mit US_ORIGIN eine kaputte bzw. eine FREMDE Adresse ergeben.
+ * Beides faellt still heraus, statt eine falsche Gruppe aufzumachen.
+ *
+ * @param {string} dachPfad  Pfad des deutschen Artikels auf qiblanco.com
+ * @param {string|null|undefined} usPfad  Wert von custom.hreflang_en
+ * @returns {Array<{tagName: 'link', rel: 'alternate', hrefLang: string, href: string}>}
+ */
+export function artikelHreflangLinks(dachPfad, usPfad) {
+  if (!istPartnerPfad(usPfad)) return [];
+  return paarLinks(normalisiere(dachPfad), normalisiere(usPfad));
+}
+
+/**
+ * trägt der Metafeld-Wert einen benutzbaren Pfad auf der Partner-Domain?
+ *
+ * Genau ein fuehrender Slash, kein zweiter (protokoll-relativ), kein Schema,
+ * kein Leerzeichen. Alles andere ist kein Pfad, sondern eine Vermutung.
+ * @param {unknown} wert
+ * @returns {boolean}
+ */
+export function istPartnerPfad(wert) {
+  if (typeof wert !== 'string') return false;
+  const w = wert.trim();
+  if (w.length < 2) return false;
+  if (!w.startsWith('/')) return false;
+  if (w.startsWith('//')) return false;
+  if (/\s/.test(w)) return false;
+  return true;
+}
+
+/**
+ * Der EINE Bauer der drei Descriptoren — von Seiten- UND Artikel-Naht benutzt.
+ *
+ * Rendert echte `<link rel="alternate" hreflang="..." href="...">`-Elemente:
+ * react-router 7 macht aus einem meta-Descriptor OHNE `tagName` ein
+ * `<meta ...>` mit allen Keys als Attribute — für Suchmaschinen wirkungslos
+ * und im Quelltext kaum zu unterscheiden. `isValidMetaTag` des Routers
+ * akzeptiert genau /^(meta|link)$/. Dieselbe Falle ist in app/lib/seo.js
+ * für den Canonical dokumentiert.
+ *
+ * Reihenfolge und x-default-Wahl spiegeln woertlich, was die US-Seite bereits
+ * erklärt (Begründung im Kopf dieser Datei).
+ * @param {string} dePfad
+ * @param {string} usPfad
+ */
+function paarLinks(dePfad, usPfad) {
+  const de = `${DACH_ORIGIN}${dePfad}`;
   const en = `${US_ORIGIN}${usPfad}`;
   return [
     {tagName: 'link', rel: 'alternate', hrefLang: 'en', href: en},
