@@ -151,7 +151,29 @@ function FooterStudies() {
   return (
     <div className="footer-studies">
       <div className="footer-inner">
-        <h3>Das &ldquo;International EMF Project&rdquo; der Weltgesundheitsorganisation [WHO]:</h3>
+        {/* H2 STATT H3 (Job 20260908-seo-rest-repo-alttexte-und-ueberschriften).
+            DIES IST DER KLASSEN-FIXORT FÜR DEN BEFUND `ueberschriften_sprung`.
+            Gemessen an s03s Vollerhebung (127 Seiten, 122 messbar): ALLE 32
+            Seiten mit Stufensprung tragen dieselbe Signatur h1 -> h3 -> h4 und
+            KEINE h2 - die fehlende h2 kam nie von der einzelnen Seite, sondern
+            immer von hier (die 5 h3 sind 4x Chrome + diese eine, das h4 ist der
+            Untertitel darunter). Der Auftrag nannte /pages/teilnahmebedingungen
+            als Repo-Fall; die Seite selbst hat gar keine eigene Überschrift
+            ausser ihrer h1, an ihr ist nichts zu reparieren.
+            GEGEN DIE GESAMTE GRUNDMENGE GERECHNET, nicht gegen den Anlassfall:
+            nur diese eine Stufe -> Sprung 32 auf 0, null neue Fälle. Die
+            naheliegende Variante "auch das h4 eine Stufe hoch" fällt damit
+            AUS: sie heilt 31 und erzeugt 5 NEUE Sprünge, weil auf fünf
+            Produktseiten dieses h4 die einzige Brücke zu einem vorhandenen h5
+            ist. Wer nur die Anlass-Seite betrachtet, sieht diesen Unterschied
+            nicht - beide Varianten heilen sie.
+            KLASSE STATT ELEMENTSELEKTOR: `body:has(.qb-st) .footer h2` in
+            studien.css (0,2,2) wäre spezifischer als `.footer-studies h2`
+            (0,1,1) und haette die Größe auf den Studienseiten still auf
+            1.25rem gezogen. Die eigene Klasse mit !important hält das
+            gerenderte Bild überall gleich - die Stufe ist ein Struktur-Fix,
+            kein Gestaltungsauftrag. */}
+        <h2 className="footer-studies__titel">Das &ldquo;International EMF Project&rdquo; der Weltgesundheitsorganisation [WHO]:</h2>
         <p>
           &ldquo;Mögliche gesundheitliche Auswirkungen der Exposition gegenüber
           statischen und zeitveränderlichen elektrischen und magnetischen
