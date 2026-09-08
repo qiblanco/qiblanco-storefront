@@ -793,6 +793,105 @@
       try { medTabWechsel(); } catch (e) {}
       try { flush(true); } catch (e) {}
     });
+
+    // ---- v2.4: SPA-Routenwechsel - pv_id lebt je SEITE, nicht je JS-Modul ---
+    // qiblanco.com ist eine Hydrogen-SPA. Ohne diesen Hook läuft boot() genau
+    // einmal, und EINE pv_id überlebt jeden Client-Routenwechsel: die Sektionen
+    // MEHRERER Seiten landen unter derselben pv_id, während behavior_page nur
+    // EINEN url_path je pv_id führt. Gemessen 2026-08-09 auf qiblanco.com:
+    // 438 von 11735 Pageviews (3,7 %) trugen eine seiten-fremde Sektion.
+    // Bei ECHTEM Pfadwechsel: laufenden Pageview flushen, dann pv_id und alle
+    // Akkumulatoren neu setzen und den neuen Pageview zählen. Reine Query-/
+    // Hash-Wechsel (?variant=, #anker) sind KEIN neuer Pageview.
+    //
+    // WIEDERHERGESTELLT 2026-09-08: dieser Block ging in #296 (Video-Watchtime,
+    // 288bc05) verloren - die Neufassung von qiblanco-qpx.js liess routeChanged,
+    // den History-Patch und den popstate-Listener ersatzlos weg. Vom 2026-09-03
+    // bis 2026-09-08 fiel der Anteil der Sessions mit >=2 Pageviews auf
+    // qiblanco.com von 21,8 % auf 13,5 %. test/qpx-spa-pageview.test.mjs war in
+    // dieser Zeit auf main mit 3 von 4 Armen rot und hat den Verlust gemeldet.
+    function medienRouteReset() {
+      // Der Medien-Akkumulator gehört zum PAGEVIEW, nicht zum JS-Modul - sonst
+      // erbt der neue Pageview die Videos und Bilder der Altseite, also genau
+      // die Bleeding-Klasse, gegen die dieser Block gebaut ist.
+      // REIHENFOLGE IST TRAGEND: ein Knoten, den wir aus `medien` löschen, muss
+      // im selben Zug sein __qpxMed verlieren - medRegistriere() steigt bei
+      // gesetztem __qpxMed sofort wieder aus, der Knoten wäre sonst dauerhaft
+      // unregistrierbar statt neu registriert.
+      var now = Date.now(), id, i, keep = [];
+      for (id in medien) {
+        if (!Object.prototype.hasOwnProperty.call(medien, id)) continue;
+        var k = medien[id], tot = false;
+        try { tot = !!(k.el && k.el.isConnected === false); } catch (e) {}
+        if (tot) {
+          try { k.el.__qpxMed = null; } catch (e) {}
+          delete medien[id];
+          if (k.art === "bild") { if (medBildN > 0) medBildN--; }
+          else if (medN > 0) medN--;
+          continue;
+        }
+        // Überlebender Knoten: Registrierung behalten, Zähler auf null.
+        k.konten = {}; k.q = {}; k.mrc = 0; k.start = 0; k.startOff = 0;
+        k.sichtSeit = k.vis ? now : 0;
+        k.dwell = 0; k.dwellSeit = (k.art === "bild" && k.vis && tabSichtbar()) ? now : 0;
+        k.scrubMax = 0; k.scrubUmkehr = 0; k.scrubN = 0;
+        k.seit = k.spielt ? now : 0; k.letztP = 0;
+      }
+      for (i = 0; i < medObserved.length; i++) {
+        var n = medObserved[i];
+        if (n && n.isConnected !== false) keep.push(n);
+      }
+      medObserved = keep;
+      medExtern = []; medExternVerworfen = 0;
+      scrollPct = 0; scrollWende = null; scrollUmkehrN = 0; scrollUmkehrListe = [];
+      letzterAnker = ""; ausstiegAn = 0;
+      MED_T0 = now;                       // toff misst ab dem NEUEN Pageview
+    }
+    var lastPath = w.location.pathname;
+    function routeChanged() {
+      try {
+        var p = w.location.pathname;
+        if (p === lastPath) return;
+        lastPath = p;
+        try { flush(true); } catch (e) {}   // alten Pageview mit ALTER pv_id abschliessen
+        // v2.5-NAHT: BEIDE Dedup-Zustände zurücksetzen, nicht nur einen. Der
+        // neue Pageview startet mit leeren Akkumulatoren; bliebe lastKey auf dem
+        // Stand der Altseite, würde der erste Timer-Flush der NEUEN Seite gegen
+        // einen fremden Schlüssel verglichen -- und bei zufaelliger Gleichheit
+        // still unterdrückt, obwohl er eine neue pv_id trägt. hiddenUnterdrueckt
+        // ist eine Je-Pageview-Diagnose und darf nicht über die Grenze lecken.
+        PV_ID = uuid(); seq = 0; lastKey = ""; lastVoll = ""; hiddenUnterdrueckt = 0;
+        scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
+        sections = {}; frust = []; lastClick = null;
+        rageChain = []; rageEmitted = false;
+        var keep = [];                      // abgeraeumte Knoten der Altseite vergessen
+        for (var i = 0; i < secObserved.length; i++) {
+          var n = secObserved[i];
+          if (n && n.isConnected !== false) keep.push(n);
+        }
+        secObserved = keep;
+        try { medienRouteReset(); } catch (e) {}
+        track("page_view");                 // base() liest w.location.href -> neuer Pfad
+        try { observeSections(); } catch (e) {}
+        try { medObserve(); } catch (e) {}
+      } catch (e) {}
+    }
+    // History-API patchen (SPA-Navigation feuert kein eigenes Event) + Zurück/Vor.
+    var histM = ["pushState", "replaceState"];
+    for (var hm = 0; hm < histM.length; hm++) {
+      (function (m) {
+        try {
+          var orig = w.history && w.history[m];
+          if (typeof orig !== "function") return;
+          w.history[m] = function () {
+            var r = orig.apply(this, arguments);
+            try { routeChanged(); } catch (e) {}
+            return r;
+          };
+        } catch (e) {}
+      })(histM[hm]);
+    }
+    w.addEventListener("popstate", function () { routeChanged(); });
     try { w.qpx.medien = medienExtern; } catch (e) {}
   }
 
