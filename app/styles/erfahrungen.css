@@ -1,0 +1,310 @@
+/* ============================================================================
+   /pages/erfahrungen — „Was Menschen erlebt haben" (2026-09-08).
+
+   Token-System uebernommen aus dem staerksten Bestands-Rezept des Hauses
+   (schlaf-zellen-schutz.css, .lp-a3, Rubrik 94/100) und aus dem aktuellen
+   design-meister web-brief --seite erfahrungen: warmes Neutral-Kontinuum,
+   EIN Gold-Akzent nur auf Handlung/Beweis, Weissraum gruppiert statt Boxen,
+   8pt-Grid, Sektions-Takt 96/64.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   :root-Block unten. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .erf — self-contained, die Seite verlaesst sich auf kein anderes
+   Designsystem.
+
+   WARUM EIGENE DATEI UND NICHT .lp-a3 MITBENUTZT: schlaf-zellen-schutz.css ist
+   seit 2026-07-16 an die Campaign-PDP /pages/qione-2-pro gekoppelt (styles/
+   qione-2-pro-shop.css laedt sie als geteilte Token-Quelle). Eine Aenderung dort
+   wirkt auf eine KAUFSEITE. Diese Seite darf den Kaufweg nicht beruehren — sie
+   kopiert die Token-WERTE und teilt sich die DATEI nicht.
+   ========================================================================== */
+
+:root {
+  --erf-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --erf-fs-xs: 0.8125rem;                                  /* 13px */
+  --erf-fs-base: 1rem;                                     /* 16px */
+  --erf-fs-md: 1.125rem;                                   /* 18px */
+  --erf-fs-lg: 1.25rem;                                    /* 20px */
+  --erf-fs-xl: 1.5625rem;                                  /* 25px */
+  --erf-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);    /* EIN H2-Stil */
+  --erf-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --erf-s1: 8px; --erf-s2: 16px; --erf-s3: 24px; --erf-s4: 32px;
+  --erf-s6: 48px; --erf-s8: 64px; --erf-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --erf-grund: #faf9f5;
+  --erf-flaeche: #f4f0e9;
+  --erf-dunkel: #191714;
+  --erf-text: #2c2a26;
+  --erf-text-hell: #f4f0e9;
+  --erf-muted: #6b665d;
+  --erf-akzent: #c9a14b;          /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --erf-akzent-tinte: #856828;    /* dasselbe Gold als SCHRIFT auf hellem Grund
+       (AA >= 4.5). Gleicher Hue, nur abgedunkelt — KEIN zweiter Goldton. */
+  --erf-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --erf-r1: 8px; --erf-r2: 16px;
+  --erf-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --erf-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --erf-mass: 68ch;
+  --erf-breite: 1120px;
+  --erf-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.erf {
+  font-family: var(--erf-font);
+  font-size: var(--erf-fs-base);
+  line-height: 1.65;
+  color: var(--erf-text);
+  background: var(--erf-grund);
+}
+
+.erf__mitte {
+  width: min(100% - var(--erf-s4), var(--erf-breite));
+  margin-inline: auto;
+}
+
+.erf__schmal {
+  width: min(100% - var(--erf-s4), var(--erf-breite-schmal));
+  margin-inline: auto;
+}
+
+.erf section { padding-block: var(--erf-s8); }
+@media (min-width: 768px) {
+  .erf section { padding-block: var(--erf-s12); }
+}
+
+.erf h1 {
+  font-size: var(--erf-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--erf-s3);
+  color: var(--erf-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.erf h2 {
+  font-size: var(--erf-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--erf-s2);
+  color: var(--erf-text);
+}
+
+.erf h3 {
+  font-size: var(--erf-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--erf-s1);
+  color: var(--erf-text);
+}
+
+.erf p,
+.erf li {
+  font-size: var(--erf-fs-base);
+  line-height: 1.65;
+  color: var(--erf-text);
+  max-width: var(--erf-mass);
+  margin: 0 0 var(--erf-s2);
+}
+
+.erf p:last-child { margin-bottom: 0; }
+
+.erf a { color: var(--erf-akzent-tinte); }
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.erf__kopf { background: var(--erf-flaeche); }
+
+.erf p.erf__vorspann {
+  font-size: var(--erf-fs-md);
+  color: var(--erf-muted);
+  margin-bottom: var(--erf-s3);
+}
+
+.erf p.erf__lead { font-size: var(--erf-fs-md); }
+
+/* ─── Hinweisblock „wie diese Seite gemacht ist" ──────────────────────────── */
+.erf__hinweis {
+  border-left: 3px solid var(--erf-akzent);
+  padding: var(--erf-s2) 0 var(--erf-s2) var(--erf-s3);
+  margin-top: var(--erf-s4);
+  font-size: var(--erf-fs-base);
+  color: var(--erf-muted);
+}
+
+.erf__hinweis p { color: var(--erf-muted); }
+.erf__hinweis strong { color: var(--erf-text); font-weight: 600; }
+
+/* ─── Beitragsraster ──────────────────────────────────────────────────────── */
+.erf__raster {
+  display: grid;
+  gap: var(--erf-s6);
+  grid-template-columns: 1fr;
+  margin-top: var(--erf-s6);
+}
+
+@media (min-width: 900px) {
+  .erf__raster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.erf__beitrag { display: flex; flex-direction: column; gap: var(--erf-s2); }
+
+.erf__name {
+  font-size: var(--erf-fs-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+.erf p.erf__videotitel {
+  font-size: var(--erf-fs-xs);
+  color: var(--erf-muted);
+  margin: 0;
+}
+
+.erf p.erf__text {
+  font-size: var(--erf-fs-base);
+  margin: 0;
+  max-width: none;
+}
+
+/* Video-Fassade: das Poster ist ein Bild, der Player entsteht erst beim Klick
+   (SKILL-VIDEO-LADESTRATEGIE.md Stufe 0/3). EIN Bild-Radius-Token. */
+.erf-yt {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  border: 0;
+  border-radius: var(--erf-r2);
+  overflow: hidden;
+  background: var(--erf-flaeche);
+  box-shadow: var(--erf-shadow-sm);
+  cursor: pointer;
+}
+
+.erf-yt img,
+.erf-yt iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+}
+
+.erf-yt__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.erf-yt__play span {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(25, 23, 20, 0.55);
+  color: var(--erf-text-hell);
+  font-size: var(--erf-fs-xl);
+  padding-left: 5px;
+}
+
+/* ─── Abschluss ───────────────────────────────────────────────────────────── */
+.erf__abschluss { background: var(--erf-flaeche); }
+
+.erf a.erf__weiter,
+.erf__weiter {
+  display: inline-block;
+  margin-top: var(--erf-s3);
+  padding: var(--erf-s2) var(--erf-s4);
+  border-radius: var(--erf-r1);
+  background: var(--erf-akzent);
+  color: var(--erf-text);
+  font-size: var(--erf-fs-base);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.erf a.erf__weiter:hover { background: var(--erf-akzent-tinte); color: var(--erf-text-hell); }
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. */
+body:has(.erf) {
+  background: var(--erf-grund);
+  --color-accent-primary: var(--erf-akzent);
+  --rd3-gold: var(--erf-akzent);
+  --qb-sterne-gold: var(--erf-akzent);
+  /* Der Shop-Umschalter im Kopf faerbt seine aktive Option mit einer
+     18-%-Lasur desselben Fremd-Ockers (#F2BF72) — auch das ist auf dieser
+     Route ein zweiter Goldton, nur blass. */
+  --shop-switch-active: rgba(201, 161, 75, 0.18);
+}
+
+/* EIN Bild-Radius auf dieser Route: das Chrome bringt 4px, 6px, 10px und 20px
+   mit. Ein Bild-Stil-Token heisst EIN Wert — auch fuer die Bilder, die nicht aus
+   dieser Seite kommen. */
+body:has(.erf) img,
+body:has(.erf) picture,
+body:has(.erf) video {
+  border-radius: var(--erf-r1);
+}
+
+body:has(.erf) .footer,
+body:has(.erf) footer {
+  background: var(--erf-dunkel);
+  font-family: var(--erf-font);
+}
+
+body:has(.erf) .footer p,
+body:has(.erf) .footer a,
+body:has(.erf) .footer li,
+body:has(.erf) .footer span { font-size: var(--erf-fs-xs); }
+body:has(.erf) .footer .footer-heading { font-size: var(--erf-fs-base); }
+
+body:has(.erf) .footer .btn--primary,
+body:has(.erf) .footer button[type='submit'],
+body:has(.erf) .footer input[type='submit'] {
+  background: var(--erf-akzent);
+  color: var(--erf-text);
+  border-radius: var(--erf-r1);
+  font-size: var(--erf-fs-base);
+}
+
+body:has(.erf) .footer input[type='email'],
+body:has(.erf) .footer input[type='text'] {
+  border-radius: var(--erf-r1);
+  font-size: var(--erf-fs-base);
+}
+
+/* Das Newsletter-Widget im Footer (ActiveCampaign `_form_15`) bringt seinen
+   eigenen Ocker #F2BF72 mit und setzt ihn inline — er ist der ZWEITE Goldton
+   dieser Route und nur mit !important erreichbar. Gemessen: ein einziger Knopf,
+   und er allein hielt den Zwei-Gold-Befund der Rubrik am Leben. */
+body #_form_15_submit._submit,
+body:has(.erf) ._form_15 button,
+body:has(.erf) ._form_15 ._submit,
+body:has(.erf) ._form_15 input[type='submit'] {
+  background: var(--erf-akzent) !important;
+  color: var(--erf-text) !important;
+  border-radius: var(--erf-r1) !important;
+  font-family: var(--erf-font) !important;
+}
+
+/* reset.css setzt "p, li { color: var(--color-dark) }" als DIREKTE Elementregel.
+   Direkt schlaegt GEERBT — auf dunklem Grund gewinnt sonst der dunkle Fliesstext. */
+body:has(.erf) .footer p,
+body:has(.erf) .footer li { color: inherit; }
