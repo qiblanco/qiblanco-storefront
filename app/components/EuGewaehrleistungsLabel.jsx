@@ -7,8 +7,12 @@ import {
   useRef,
 } from 'react';
 import {useRouteLoaderData} from 'react-router';
+import {bildQuellen} from '~/components/reusables/shopifyBildQuellen';
 import {
   labelFuerSprache,
+  AUSLOESER_TEXT_FOOTER,
+  AUSLOESER_TEXT_PDP,
+  AUSLOESER_ZEICHEN,
   LABEL_ALT_DE,
   RECHTE_LINK_TEXT,
 } from '~/lib/eu-gewaehrleistungslabel';
@@ -20,11 +24,20 @@ import {
  *
  * Diese Datei enthält DREI Bausteine und EIN Overlay:
  *   <EuLabelProvider>            -- hält genau EINEN <dialog> je Seite
- *   <EuGewaehrleistungsHinweis>  -- Produktseite: NUR der Text-Link
+ *   <EuGewaehrleistungsHinweis>  -- Produktseite: Zeichen + Text-Link
  *   <EuGewaehrleistungsLink>     -- Footer: NUR der Text-Link
  *
- * Beide Ausloeser öffnen dasselbe Overlay. Die amtliche Grafik erscheint
- * NUR dort -- nirgends offen im Seitenfluss.
+ * Beide Ausloeser öffnen dasselbe Overlay. DIE AMTLICHE GRAFIK ERSCHEINT
+ * NUR DORT -- nirgends offen im Seitenfluss.
+ *
+ * SEIT DEM 2026-09-08 STEHT AUF DER PRODUKTSEITE EIN BILD IM SEITENFLUSS
+ * (Elina EL-20260908-d8349a01), und der Satz darueber gilt trotzdem
+ * unveraendert. Das Zeichen ist ein Schild mit EU-Sternenkranz und weissem
+ * G -- Schmuck neben dem Link, ohne QR-Code, ohne Verordnungstext, ohne
+ * eine einzige Zusage. Die Unterscheidung "Zeichen ja, amtliche Grafik
+ * nein" ist der Kern des Zuschnitts und wird im Test an der QUELLE gemessen
+ * (AUSLOESER_ZEICHEN vs. LABEL_ASSETS), nicht an der Zahl der <img>: eine
+ * blosse Zaehlung haette einen Tausch der beiden Quellen nie bemerkt.
  *
  * ====================================================================
  * WARUM DIE GRAFIK HINTER DEM KLICK LIEGT -- und nicht offen auf der Seite
@@ -248,20 +261,35 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
 });
 
 /**
- * Der gemeinsame Ausloeser. Produktseite und Footer unterscheiden sich seit
- * dem 2026-09-06 nur noch in der Messmarke -- die Beschriftung ist auf
- * beiden Flächen dieselbe (Elina EL-20260906-0380455b: der Zusatz
- * "amtliche Mitteilung ansehen" auf der Produktseite wurde gestrichen).
- * Die Kürzung berührt die Pflicht nicht: verlangt ist ein SATZ, der über
- * das Gewährleistungsrecht informiert ("Your legal guarantee rights",
- * Leitlinien Abschnitt 2.3, Zitat im Kopf dieser Datei) -- nicht die
- * Ankündigung des Klick-Ziels. Der Footer trug den kurzen Text von Anfang an.
+ * Der gemeinsame Ausloeser.
+ *
+ * BIS ZUM 2026-09-08 trugen Produktseite und Footer denselben Text und
+ * unterschieden sich nur in der Messmarke (Elina EL-20260906-0380455b: der
+ * Zusatz "amtliche Mitteilung ansehen" auf der Produktseite war gestrichen).
+ * SEITDEM gehen sie wieder auseinander (Elina EL-20260908-d8349a01): die
+ * Produktseite bekommt ein Zeichen davor und den laengeren Text, der Footer
+ * bleibt ausdrücklich unveraendert.
+ *
+ * DIE PFLICHT BERUEHRT DAS NICHT -- in keine der beiden Richtungen. Verlangt
+ * ist ein SATZ, der über das Gewaehrleistungsrecht informiert ("Your legal
+ * guarantee rights", Leitlinien Abschnitt 2.3, Zitat im Kopf dieser Datei),
+ * und die Mitteilung auf den ersten Klick. Beides bleibt.
+ *
+ * DAS ZEICHEN IST EIN OPTIONALER SLOT, KEIN FLAECHEN-IF: `flaeche` ist die
+ * Messmarke fuers Live-HTML, nicht die Gestaltungsregel. Wer die beiden
+ * koppelt, kann eine Flaeche nicht mehr umgestalten, ohne die Messmarke
+ * anzufassen -- und die Live-Probe misst genau sie.
+ *
+ * DAS ZEICHEN IST NICHT KLICKBAR, und das ist bestellt so: "Klick auf den
+ * Text öffnet weiterhin dasselbe Overlay wie bisher". Es liegt deshalb
+ * AUSSERHALB des <button> und ist für Screenreader unsichtbar (alt="",
+ * aria-hidden) -- der Knopf daneben sagt bereits, was es zeigt.
  */
-function EuLabelAusloeser({flaeche, beschriftung}) {
+function EuLabelAusloeser({flaeche, beschriftung, zeichen = null}) {
   const kontext = useEuLabel();
   if (!kontext) return null;
 
-  return (
+  const knopf = (
     <button
       type="button"
       className="eu-gwl__link"
@@ -271,12 +299,51 @@ function EuLabelAusloeser({flaeche, beschriftung}) {
       {beschriftung}
     </button>
   );
+
+  if (!zeichen) return knopf;
+
+  // Über die Hausleiter, nicht als nackte CDN-URL: ohne `width=` liefert
+  // das Shopify-CDN die Masterdatei und verhandelt das Format nicht
+  // (Messbefund in shopifyBildQuellen.js). Der Riegel LABEL_MINDESTBREITE_PX
+  // gilt hier ausdrücklich NICHT -- er schuetzt den QR-Code der amtlichen
+  // Grafik, und den trägt dieses Zeichen nicht.
+  const quellen = bildQuellen(zeichen.url, {
+    anzeigeBreite: zeichen.anzeigeBreite,
+    masterBreite: zeichen.breite,
+  });
+
+  return (
+    <span className="eu-gwl__zeile">
+      <img
+        className="eu-gwl__zeichen"
+        src={quellen.src}
+        srcSet={quellen.srcSet}
+        sizes={quellen.sizes}
+        alt=""
+        aria-hidden="true"
+        width={zeichen.breite}
+        height={zeichen.hoehe}
+        loading="lazy"
+        decoding="async"
+      />
+      {knopf}
+    </span>
+  );
 }
 
 /**
- * PRODUKTSEITE. NUR der Text-Link -- keine offen sichtbare Grafik im
- * Seitenfluss. Die Mitteilung erscheint auf den ersten Klick im Overlay
- * (Leitlinien der Kommission, Abschnitt 2.3; siehe Kopf dieser Datei).
+ * PRODUKTSEITE. Zeichen + Text-Link -- die AMTLICHE Grafik steht weiterhin
+ * nicht offen im Seitenfluss. Die Mitteilung erscheint auf den ersten Klick
+ * im Overlay (Leitlinien der Kommission, Abschnitt 2.3; siehe Kopf dieser
+ * Datei).
+ *
+ * WO DIESER BAUSTEIN AUF DER SEITE HÄNGT, ENTSCHEIDET DER AUFRUFER -- und
+ * seit dem 2026-09-08 nicht mehr ueberall gleich: auf /products/qione-2-pro
+ * montiert ihn die Route selbst unter der Nutzen-Liste (Elina
+ * EL-20260908-d8349a01), auf jeder anderen Kaufflaeche hängt er wie bisher
+ * an ProductForm unmittelbar unter dem Kauf-Knopf. Der Baustein weiss davon
+ * nichts und soll es nicht wissen: die Naht gegen doppelte Montage sitzt in
+ * ProductForm (Prop `gewaehrleistungsHinweis`), nicht hier.
  */
 export function EuGewaehrleistungsHinweis() {
   return (
@@ -306,7 +373,8 @@ function EuLabelHinweisFlaeche() {
     >
       <EuLabelAusloeser
         flaeche="pdp"
-        beschriftung="Gesetzliche Gewährleistung"
+        beschriftung={AUSLOESER_TEXT_PDP}
+        zeichen={AUSLOESER_ZEICHEN}
       />
     </section>
   );
@@ -334,7 +402,7 @@ export function EuGewaehrleistungsLink() {
     <EuLabelProvider>
       <EuLabelAusloeser
         flaeche="footer"
-        beschriftung="Gesetzliche Gewährleistung"
+        beschriftung={AUSLOESER_TEXT_FOOTER}
       />
     </EuLabelProvider>
   );

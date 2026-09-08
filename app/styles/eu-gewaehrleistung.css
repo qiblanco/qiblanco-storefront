@@ -17,18 +17,59 @@
  * (das verzerrt oder schneidet). Nur die BREITE wird gesteuert, das
  * Seitenverhaeltnis laeuft ueber height: auto mit.
  *
- * DIE GRAFIK KOMMT IN DIESER FASSUNG NUR IM OVERLAY VOR. Auf der
- * Produktseite steht ausschliesslich der Text-Link. Es gibt deshalb keinen
- * .eu-gwl__bild-Block mehr -- wer ihn wieder einfuehrt, baut die offen
- * sichtbare Grafik zurueck, die hier ausdruecklich nicht gewollt ist.
+ * DIE AMTLICHE GRAFIK KOMMT IN DIESER FASSUNG NUR IM OVERLAY VOR. Es gibt
+ * deshalb keinen .eu-gwl__bild-Block mehr -- wer ihn wieder einfuehrt, baut
+ * die offen sichtbare Grafik zurueck, die hier ausdruecklich nicht gewollt
+ * ist.
+ *
+ * NICHT ZU VERWECHSELN mit .eu-gwl__zeichen (seit 2026-09-08): das ist das
+ * Schmuck-Schild neben dem Link auf der Produktseite. Es traegt keinen
+ * QR-Code und keinen Verordnungstext, faellt also unter keine der Auflagen
+ * unten. Die beiden Klassen heissen bewusst verschieden -- ein gemeinsamer
+ * Name haette die Auflagen still auf ein Bild ausgedehnt, fuer das sie nicht
+ * gelten, oder von einem abgezogen, fuer das sie gelten.
  */
 
 /* ------------------------------------------------------------------ */
-/* Produktseite: NUR der Text-Link, kein Bild                          */
+/* Produktseite: Zeichen links, Text-Link rechts                       */
 /* ------------------------------------------------------------------ */
 
 .eu-gwl--pdp {
   margin: 1rem 0 0;
+}
+
+/*
+ * Die Zeile aus Zeichen und Link (Elina EL-20260908-d8349a01).
+ *
+ * `align-items: center` und nicht `baseline`: das Zeichen ist rund 2,5 Zeilen
+ * hoch: an der Schriftlinie ausgerichtet haenge es unten aus der Zeile
+ * heraus. Umbruch ist ausdruecklich erlaubt (flex-wrap) -- der Linktext ist
+ * seit dem 2026-09-08 laenger, und auf einem 320-px-Telefon in der
+ * schmalsten Spalte darf er unter das Zeichen rutschen, statt es zu
+ * quetschen.
+ */
+.eu-gwl__zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/*
+ * Das Zeichen. KEINE amtliche Grafik -- die Auflagen aus Anhang I Nr. 1 und
+ * Nr. 5 (kein filter, kein Radius, kein Beschnitt) gelten fuer
+ * .eu-gwl-dialog__bild und NICHT hier; dieses Bild traegt keinen Inhalt.
+ *
+ * `flex: 0 0 auto` haelt es bei knappem Platz auf seiner Breite, statt es
+ * vom laengeren Text zusammendruecken zu lassen. Die 36 px stehen ausserdem
+ * in AUSLOESER_ZEICHEN.anzeigeBreite -- dort rechnet die srcset-Leiter
+ * damit. Wer die Zahl hier aendert, aendert sie dort mit; der Test haelt
+ * beide Stellen zusammen.
+ */
+.eu-gwl__zeichen {
+  flex: 0 0 auto;
+  width: 36px;
+  height: auto;
 }
 
 /* ------------------------------------------------------------------ */

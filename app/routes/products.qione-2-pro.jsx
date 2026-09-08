@@ -6,18 +6,22 @@ import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuy
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
-import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
-import zweifelStyles from '~/styles/zweifel-beleg.css?url';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
-/**
- * Route-gebundenes Stylesheet (Muster mm-lp.css) — Begründung siehe
- * app/styles/zweifel-beleg.css: die globale app.css hätte 45 Seiten erreicht.
+/*
+ * KEIN links()-EXPORT MEHR (2026-09-08, Elina EL-20260908-d8349a01).
+ *
+ * Hier hing zweifel-beleg.css als route-gebundenes Stylesheet, weil diese
+ * Seite den <ZweifelBeleg> trug. Der ist entfallen (siehe unten). Ein
+ * Stylesheet für eine Klasse, die auf dieser Seite nicht mehr vorkommt,
+ * wäre ein Netz-Abruf ohne Wirkung -- und schlimmer: er würde beim
+ * nächsten Leser den Eindruck erwecken, die Zeile sei noch da.
+ *
+ * Die Datei selbst BLEIBT: /cart trägt seine eigene Zweifel-Zeile und lädt
+ * sie über sein eigenes links().
  */
-export function links() {
-  return [{rel: 'stylesheet', href: zweifelStyles}];
-}
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -93,6 +97,13 @@ export default function Product() {
     <>
       <QiOneBuyBox
         product={product}
+        /* Die Pflichtmitteilung hängt auf dieser Seite NICHT mehr unter dem
+           Kauf-Knopf, sondern weiter unten im benefitList-Slot (Elina
+           EL-20260908-d8349a01). Sie ist damit verschoben, nicht entfernt —
+           und dieser Schalter ist die einzige Stelle, die verhindert, dass
+           sie zweimal auf der Seite steht. Jede andere Kaufflaeche behaelt
+           den Default (siehe ProductForm.jsx). */
+        gewaehrleistungsHinweis={false}
         socialProof={
           <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         }
@@ -111,15 +122,23 @@ export default function Product() {
         benefitList={
           <>
             <QiOneBenefitList />
-            {/* Beleg-Ort GENAU HIER: unter der Nutzen-Liste und damit direkt
-                neben Preis und Kaufknopf — das ist die Stelle, an der der
-                Zweifel VOR dem Kauf entsteht. Bewusst NICHT im Fußbereich
-                (dort liest ihn niemand, der gerade abwägt) und bewusst NICHT
-                als zweiter Knopf (er würde mit dem Kaufknopf um dieselbe
-                Handlung konkurrieren). Slot statt eigener Sektion, damit die
-                Anker-frei-Regel dieser PDP unberührt bleibt: ein neues
-                data-section hätte den Design-Rubrik-Collector verschoben. */}
-            <ZweifelBeleg />
+            {/* HIER STAND BIS ZUM 2026-09-08 DIE ZWEIFEL-ZEILE ("Wirkt das
+                überhaupt? …"). Elina EL-20260908-d8349a01 nimmt sie
+                ERSATZLOS heraus — ausdrücklich ohne Ersatzformulierung —
+                und setzt an genau diese Stelle den Gewährleistungs-Trigger,
+                der vorher weiter oben unter dem Kauf-Knopf hing.
+
+                DIE ORTSBEGRÜNDUNG VON DAMALS TRÄGT DEN NEUEN INHALT MIT:
+                unter der Nutzen-Liste, direkt neben Preis und Kaufknopf —
+                die Stelle, an der VOR dem Kauf abgewogen wird. Für eine
+                Pflichtmitteilung ist das sogar der schärfere Ort: Art. 6
+                Abs. 1 lit. l RL 2011/83/EU verlangt sie "in hervorgehobener
+                Weise", BEVOR der Verbraucher gebunden ist.
+
+                Slot statt eigener Sektion, damit die Anker-frei-Regel dieser
+                PDP unberührt bleibt: ein neues data-section hätte den
+                Design-Rubrik-Collector verschoben. */}
+            <EuGewaehrleistungsHinweis />
           </>
         }
       />

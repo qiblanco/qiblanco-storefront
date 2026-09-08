@@ -57,7 +57,15 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   benefitList?: import('react').ReactNode,
  *   quantity?: number,
  *   ctaLabel?: string,
+ *   gewaehrleistungsHinweis?: boolean,
  * }} props
+ *
+ * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
+ * bleibt byte-identisch). Die Buy-Box entscheidet nichts darueber -- sie
+ * trägt die Prop nur an ProductForm weiter, weil die Route sonst gar nicht
+ * an das ProductForm herankommt, das sie meint. Wer sie auf false setzt,
+ * muss die Mitteilung selbst montieren; die Begründung dazu steht in
+ * ProductForm.jsx.
  */
 export function QiOneBuyBox({
   product,
@@ -68,6 +76,7 @@ export function QiOneBuyBox({
   benefitList = null,
   quantity = 1,
   ctaLabel,
+  gewaehrleistungsHinweis = true,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -122,6 +131,7 @@ export function QiOneBuyBox({
           selectedVariant={selectedVariant}
           quantity={quantity}
           ctaLabel={ctaLabel}
+          gewaehrleistungsHinweis={gewaehrleistungsHinweis}
         />
         {benefitList}
       </div>
