@@ -1409,6 +1409,26 @@ ul.submenu li a {
   margin-bottom: 0.75rem;
 }
 
+/* Die WHO-Überschrift ist seit dem Job
+   20260908-seo-rest-repo-alttexte-und-ueberschriften eine h2
+   (Klassen-Fix für den Befund `ueberschriften_sprung`,
+   Herleitung im Footer.jsx). Sie behält EXAKT das Bild der früheren h3:
+   dieselbe Größe, dasselbe Gewicht, derselbe Abstand, dieselbe Grundlinie.
+   Die vier Angaben stehen ausgeschrieben statt geerbt, weil h2 und h3 in
+   reset.css verschiedene Grundwerte haben (2.2rem/1.4 gegen 1.4rem/1.2) und
+   ein geerbter Wert hier lautlos das Layout des Fußzeilenblocks ändern
+   würde. !important, weil `body:has(.qb-st) .footer h2` in studien.css
+   spezifischer ist als jeder Selektor, den dieses Bauteil sinnvoll führen
+   kann - ohne das wäre die Überschrift auf den Studienseiten 1.25rem groß
+   geworden, auf allen anderen 1rem. */
+.footer-studies h2.footer-studies__titel {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.75rem !important;
+}
+
 .footer-studies p,
 .footer-studies h4 {
   font-size: 0.9rem;
