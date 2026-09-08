@@ -6,13 +6,12 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
-import {bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
+import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
-import {cdnBild} from '~/lib/cdn-bild';
 
 /*
  * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
@@ -114,25 +113,12 @@ const PAYPAL_IMG =
  * Phase (bis 767 px) und die zweispaltige darueber getrennt ab.
  */
 const LEITER_HERO = [400, 600, 800, 900, 1200];
-/* Mechanismus-Kacheln, Maximum 550 px bei vp 600 -> 340/680/1100.
-   Gemessen (Original -> 340): milva 362.301 -> 20.606 B, bali 124.283 ->
-   22.480 B, kitzbuehel 76.698 -> 29.400 B.
-   KITZBUEHEL BLEIBT EIN BEFUND, UND ZWAR EIN GEERBTER: die Quelldatei ist
-   natuerlich nur 668 px breit und kann eine 2x-Flaeche von 1100 px baulich
-   nicht bedienen — Shopify deckelt still auf 668. Das Alle-Formate-Gate hat
-   genau das schon am 2026-09-05 gemeldet, also VOR diesem Bau (Archiv-Beleg
-   20260905T204918Z). Behebbar ist es nur durch ein groesseres Original, nicht
-   durch eine Leiter; deshalb steht die 1100er-Stufe hier fuer milva und bali,
-   die sie bedienen koennen, und der Kitzbuehel-Befund bleibt sichtbar stehen
-   statt durch eine kuenstlich kleine `sizes`-Angabe weggerechnet zu werden. */
-const LEITER_MECH = [340, 680, 1100];
 const LEITER_KARTE = [200, 400];
 const LEITER_KLARNA = [100, 150];
 const LEITER_PAYPAL = [110, 160];
 /* `sizes` gehoert an die Aufrufstelle: nur sie kennt die Layoutbreite. */
 const SIZES_HERO =
   '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
-const SIZES_MECH = '(max-width: 767px) calc(100vw - 50px), min(30vw, 342px)';
 
 /* ───────── Hero (Drei-Ebenen-Versprechen) ───────── */
 function Hero() {
@@ -199,7 +185,7 @@ function Hero() {
         </div>
         <figure className="lp-a-hero__visual">
           <img
-            {...cdnBild(heroImg, LEITER_HERO)}
+            {...bildQuelle(heroImg, LEITER_HERO)}
             sizes={SIZES_HERO}
             alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
             loading="eager"
@@ -536,7 +522,7 @@ function PricingSection() {
             <div className="lp-a-product__image">
               {c.p?.featuredImage?.url ? (
                 <img
-                  {...cdnBild(c.p.featuredImage.url, LEITER_KARTE)}
+                  {...bildQuelle(c.p.featuredImage.url, LEITER_KARTE)}
                   sizes="200px"
                   alt={c.name}
                   loading="lazy"
@@ -605,7 +591,7 @@ function FinalCTA() {
       <div className="lp-vp-final-cta__inner">
         <div className="lp-vp-final-cta__media">
           <img
-            {...cdnBild(image, LEITER_HERO)}
+            {...bildQuelle(image, LEITER_HERO)}
             sizes={SIZES_HERO}
             alt="QiOne® 2 Pro"
             loading="lazy"
@@ -647,12 +633,12 @@ function FinalCTA() {
               <span className="lp-vp-final-cta__price-meta">einmalig · inkl. MwSt.</span>
               <div className="lp-vp-final-cta__pay">
                 <img
-                  {...cdnBild(KLARNA_IMG, LEITER_KLARNA)}
+                  {...bildQuelle(KLARNA_IMG, LEITER_KLARNA)}
                   sizes="48px"
                   alt="Klarna"
                 />
                 <img
-                  {...cdnBild(PAYPAL_IMG, LEITER_PAYPAL)}
+                  {...bildQuelle(PAYPAL_IMG, LEITER_PAYPAL)}
                   sizes="52px"
                   alt="PayPal"
                 />

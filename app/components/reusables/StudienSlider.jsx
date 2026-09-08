@@ -2,7 +2,7 @@ import {useRef} from 'react';
 import {Link} from 'react-router';
 import {useDragSwipe} from './useDragSwipe';
 import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
-import {cdnBild} from '~/lib/cdn-bild';
+import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
 
 /*
  * StudienSlider -- die EINE Definition der Studien-KACHEL-Ansicht (Elina-Layout:
@@ -182,7 +182,7 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
                   style={norm || undefined}
                 >
                   <img
-                    {...cdnBild(e.coverUrl, LEITER_COVER)}
+                    {...bildQuelle(e.coverUrl, LEITER_COVER)}
                     sizes={SIZES_COVER}
                     alt={`Titelseite der Publikation „${e.titelOriginal}“ im ${e.journal}`}
                     loading="lazy"

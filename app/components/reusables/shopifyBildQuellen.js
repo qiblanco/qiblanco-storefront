@@ -47,7 +47,53 @@ const CDN_RX = /^https?:\/\/cdn\.shopify\.com\//i;
  * @returns {string|undefined}
  */
 export function bildSrcSet(url, leiter = BILD_LEITER) {
-  if (!url || !CDN_RX.test(url)) return undefined;
+  if (!url || !CDN_RX.test(url) || hatBreite(url)) return undefined;
   const trenner = url.includes('?') ? '&' : '?';
   return leiter.map((w) => `${url}${trenner}width=${w} ${w}w`).join(', ');
+}
+
+/**
+ * Trägt die URL bereits einen eigenen Breitenparameter? (Query, nicht Pfad.)
+ *
+ * Eine URL, die `width=` schon mitbringt, wird NICHT angefasst: ein zweites
+ * `&width=` daneben ist eine Angabe, über deren Auflösung wir nichts zugesagt
+ * bekommen — und der Aufrufer, der die erste gesetzt hat, wusste mehr über das
+ * Bild als diese Funktion. Bestandsverhalten ist hier der sichere Ausgang.
+ */
+function hatBreite(url) {
+  const frage = url.includes('?') ? url.slice(url.indexOf('?') + 1) : '';
+  return /(^|&)width=/.test(frage);
+}
+
+/**
+ * `src` + `srcSet` für ein Shopify-CDN-Bild, als Spread ins <img>.
+ *
+ *   <img {...bildQuelle(url, [200, 400])} sizes="200px" alt="…" loading="lazy" />
+ *
+ * UNTERSCHIED ZU bildSrcSet, UND WARUM ES IHN BRAUCHT: `bildSrcSet` lässt das
+ * `src`-Attribut in Ruhe, dort bleibt also die MASTERDATEI stehen. Das ist
+ * folgenlos, solange `sizes` und `srcSet` greifen — aber genau dann nicht mehr,
+ * wenn sie es nicht tun: ein Vorschau-Renderer, ein Crawler oder ein Bild, das
+ * ohne `sizes` eingebunden wird, holt dann wieder das Original. Gemessen am
+ * 2026-09-08 auf /pages/schlaf-zellen-schutz sind das im Extremfall 6.266.409 B
+ * für eine Fläche von 200 px. `src` trägt deshalb hier die KLEINSTE Sprosse:
+ * ein zu kleines Bild ist der billigere Fehler als ein 6-MB-Original.
+ *
+ * Nicht-CDN-URLs und URLs mit eigenem `width=` gehen unverändert durch — ein
+ * falsch umgeschriebener Fremd-Host wäre ein 404 statt eines nicht optimierten
+ * Bildes.
+ *
+ * @param {string} url
+ * @param {number[]} [leiter=BILD_LEITER]  aufsteigende Zielbreiten in px, aus
+ *   der GEMESSENEN Anzeigegröße abgeleitet (1x … DPR-Reserve) — nie pauschal:
+ *   ein fester Wert über alle Bilder macht die kleinen größer (gemessen bei
+ *   `width=600`: Klarna-Badge 17 -> 28 KB).
+ * @returns {{src: string, srcSet?: string}}
+ */
+export function bildQuelle(url, leiter = BILD_LEITER) {
+  const srcSet = bildSrcSet(url, leiter);
+  if (!srcSet) return {src: url};
+  const kleinste = [...new Set(leiter)].sort((a, b) => a - b)[0];
+  const trenner = url.includes('?') ? '&' : '?';
+  return {src: `${url}${trenner}width=${kleinste}`, srcSet};
 }
