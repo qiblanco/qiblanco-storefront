@@ -97,3 +97,87 @@ export function bildQuelle(url, leiter = BILD_LEITER) {
   const trenner = url.includes('?') ? '&' : '?';
   return {src: `${url}${trenner}width=${kleinste}`, srcSet};
 }
+/* ====================================================================
+ * ANZEIGEGROESSEN-LEITER  (Job 20260908-REPAIR-eu-gewaehrleistungslabel)
+ * ====================================================================
+ *
+ * WARUM ES DIE ZWEITE FUNKTION BRAUCHT UND `bildSrcSet` NICHT REICHT
+ * `bildSrcSet` hängt eine feste Leiter an, lässt aber `src` unangetastet.
+ * Ein Bild ohne srcset-faehigen Kontext -- und vor allem der `src` selbst --
+ * zieht damit weiter die Masterdatei. Gemessen am 2026-09-08 am Kopf-Logo:
+ * Master 2048x720, angezeigt auf hoechstens 150 CSS-px, uebertragen 44 877 B
+ * als PNG. Das sind 13,6-fach zu viele Pixel auf JEDER Seite des Shops.
+ *
+ * DER ENTSCHEIDENDE MESSBEFUND (2026-09-08, curl gegen das Shopify-CDN):
+ * Ohne Größen-Parameter liefert das CDN die Masterdatei und konvertiert ein
+ * PNG NICHT -- auch dann nicht, wenn der Browser `image/avif,image/webp`
+ * anbietet:
+ *     .../01_Logo_2020_Qi_Blanco-black.png            -> 44 877 B  image/png
+ *     .../01_Logo_2020_Qi_Blanco-black.png&width=150  ->  5 000 B  image/webp
+ *     .../01_Logo_2020_Qi_Blanco-black.png&width=300  -> 10 694 B  image/avif
+ * Erst der Größen-Parameter schaltet die Transformations-Pipeline ein, und
+ * erst die verhandelt das Format. Ein JPEG wird auch ohne Parameter zu WebP
+ * (dort wirkt die Verhandlung), ein PNG nicht. Wer also nur auf "das CDN macht
+ * doch Content-Negotiation" vertraut, lässt bei jedem PNG den ganzen Gewinn
+ * liegen -- und die Marken-Assets des Shops sind ueberwiegend PNG.
+ *
+ * DESHALB SETZT `bildQuellen` AUCH DEN `src`, nicht nur das srcset.
+ */
+
+/**
+ * Breiten-Leiter für eine bekannte Anzeigebreite.
+ *
+ * @param {number} anzeigeBreite  Breite der Flaeche in CSS-Pixeln
+ * @param {{dprStufen?: number[], mindestBreite?: number, masterBreite?: number|null}} [opt]
+ * @returns {number[]} aufsteigend, ohne Dubletten
+ */
+export function bildLeiterFuer(anzeigeBreite, opt = {}) {
+  const {dprStufen = [1, 2, 3], mindestBreite = 0, masterBreite = null} = opt;
+  const roh = dprStufen.map((d) => Math.ceil(anzeigeBreite * d));
+  const geklemmt = roh.map((w) => {
+    let x = Math.max(w, mindestBreite);
+    // Shopify skaliert nie hoch; eine Sprosse über dem Master wäre eine
+    // Dublette der Master-Sprosse und würde den w-Deskriptor ueberzeichnen.
+    if (masterBreite) x = Math.min(x, masterBreite);
+    return x;
+  });
+  return [...new Set(geklemmt)].sort((a, b) => a - b);
+}
+
+/**
+ * Vollstaendiger Satz Bildquellen für eine Shopify-CDN-URL.
+ *
+ * FAIL-SOFT (wie `bildSrcSet`): bei einer Nicht-CDN-URL kommt die Quelle
+ * unveraendert zurück, srcSet/sizes bleiben `undefined`. React rendert die
+ * Attribute dann gar nicht -- das Bild verhaelt sich exakt wie vorher. Ein
+ * falsch umgeschriebener Fremd-Host wäre ein 404 statt eines nur nicht
+ * optimierten Bildes.
+ *
+ * `mindestBreite` ist der Riegel für Bilder, deren AUFLOESUNG inhaltlich
+ * trägt (amtliche Grafiken mit QR-Code). Sie ist bewusst ein Parameter und
+ * kein Sonderfall im Code: wer ein solches Bild einbaut, muss die Zahl
+ * nennen, statt sich auf einen Vorgabewert zu verlassen.
+ *
+ * @param {string} url
+ * @param {{anzeigeBreite: number, dprStufen?: number[], mindestBreite?: number,
+ *          masterBreite?: number|null, sizes?: string}} opt
+ * @returns {{src: string, srcSet: string|undefined, sizes: string|undefined}}
+ */
+export function bildQuellen(url, opt) {
+  const {anzeigeBreite, sizes} = opt || {};
+  if (!url || !CDN_RX.test(url) || !anzeigeBreite) {
+    return {src: url, srcSet: undefined, sizes: undefined};
+  }
+  const leiter = bildLeiterFuer(anzeigeBreite, opt);
+  const trenner = url.includes('?') ? '&' : '?';
+  const mitBreite = (w) => `${url}${trenner}width=${w}`;
+
+  return {
+    // Der `src` ist die UNTERSTE Sprosse, nicht die Masterdatei: er ist das,
+    // was ein Browser ohne srcset-Auswertung zieht -- und was in den
+    // Ladeplan der Seite eingeht, bevor srcset ausgewertet ist.
+    src: mitBreite(leiter[0]),
+    srcSet: leiter.map((w) => `${mitBreite(w)} ${w}w`).join(', '),
+    sizes: sizes || `${anzeigeBreite}px`,
+  };
+}
