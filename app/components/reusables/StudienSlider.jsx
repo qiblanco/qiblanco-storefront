@@ -72,7 +72,7 @@ const BUEHNE_HOEHE = 1.25; // Bühnenhöhe in Bühnenbreiten
 const ZIEL_FLAECHE = 0.93; // Content-Fläche in (Bühnenbreite)²
 
 /*
- * BILD-LEITER DER TITELBILDER (Job 20260906-lp-erzeugt-den-naechsten-klick-…
+ * BILD-LEITER DER TITELBILDER (Job 20260906-lp-erzeugt-den-…
  * -prio20, s02).
  *
  * Die fünf Cover kamen bis hier als UNSKALIERTE ORIGINALE über die Leitung:

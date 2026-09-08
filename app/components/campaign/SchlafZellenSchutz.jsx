@@ -74,14 +74,14 @@ const PAYPAL_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082';
 
 /*
- * BILD-LEITERN (Job 20260906-lp-erzeugt-den-naechsten-klick-…-prio20, s02).
+ * BILD-LEITERN (Job 20260906-lp-erzeugt-den-…-prio20, s02).
  *
  * Je Bild aus der GEMESSENEN Anzeigegroesse am gerenderten DOM abgeleitet,
- * plus eine Stufe DPR-2-Reserve. KEIN pauschaler Wert: derselbe Wert ueber
- * alle Bilder macht die kleinen groesser (s01: `width=600` trieb das
+ * plus eine Stufe DPR-2-Reserve. KEIN pauschaler Wert: derselbe Wert über
+ * alle Bilder macht die kleinen größer (s01: `width=600` trieb das
  * Klarna-Badge von 17 auf 28 KB).
  *
- * GEMESSEN WIRD UEBER DIE GANZE FORMAT-MATRIX, NICHT UEBER ZWEI VIEWPORTS —
+ * GEMESSEN WIRD ÜBER DIE GANZE FORMAT-MATRIX, NICHT ÜBER ZWEI VIEWPORTS —
  * und das ist hier teuer gelernt: die erste Fassung leitete die Leitern aus
  * 390 und 1440 px ab und deckelte den Hero bei 800. Das Alle-Formate-Gate
  * (hb-formate, Gate 12) fand darauf prompt Upscaling im Format `mobil-600`.
@@ -90,7 +90,7 @@ const PAYPAL_IMG =
  * Desktop (423). Das Maximum liegt also MITTEN in der Matrix, nicht an ihren
  * Raendern; wer nur Telefon und Desktop misst, sieht es baulich nie.
  *
- * Anzeigebreiten, ueber 11 Formate von 360 bis 1440 px gemessen (Maximum):
+ * Anzeigebreiten, über 11 Formate von 360 bis 1440 px gemessen (Maximum):
  *   Hero/Final-CTA  552 px (bei vp 600)  -> 400/600/800/900/1200
  *   Mechanismus     550 px (bei vp 600)  -> 340/680/1100
  *   Produktkarten   200 px               -> 200/400
@@ -101,14 +101,14 @@ const PAYPAL_IMG =
  * 50.342 B, QiOne1 4.650.395 -> 175.547 B, QiHome1 734.866 -> 6.795 B,
  * paypal 75.518 -> 5.176 B, klarna 17.675 -> 4.866 B.
  *
- * Die oberen Stufen kosten und werden nur dort geholt, wo sie noetig sind:
+ * Die oberen Stufen kosten und werden nur dort geholt, wo sie nötig sind:
  * QiOne1 900 -> 891.880 B, 1200 -> 1.628.653 B. Ein Telefon mit 390 px holt
  * weiterhin die 800er-Stufe; die 1200er trifft allein den 2x-Schirm bei rund
- * 600 px Breite, der sonst sichtbar unscharf waere.
+ * 600 px Breite, der sonst sichtbar unscharf wäre.
  *
  * `sizes` MUSS die Layoutbreite ehrlich nennen und darf sie nie
- * UNTERschaetzen: eine zu kleine Angabe laesst den Browser eine zu kleine
- * Stufe waehlen, und genau das ist der Unschaerfe-Befund oben. Zu grosse
+ * UNTERschaetzen: eine zu kleine Angabe lässt den Browser eine zu kleine
+ * Stufe wählen, und genau das ist der Unschaerfe-Befund oben. Zu große
  * Angaben kosten nur Bytes. Die Formeln bilden deshalb die einspaltige
  * Phase (bis 767 px) und die zweispaltige darueber getrennt ab.
  */
@@ -116,7 +116,7 @@ const LEITER_HERO = [400, 600, 800, 900, 1200];
 const LEITER_KARTE = [200, 400];
 const LEITER_KLARNA = [100, 150];
 const LEITER_PAYPAL = [110, 160];
-/* `sizes` gehoert an die Aufrufstelle: nur sie kennt die Layoutbreite. */
+/* `sizes` gehört an die Aufrufstelle: nur sie kennt die Layoutbreite. */
 const SIZES_HERO =
   '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
 
@@ -659,18 +659,18 @@ function FinalCTA() {
   );
 }
 
-/* ───────── Weiter-Knopf (schliesst die Knopf-Luecke) ─────────
-   Job 20260906-lp-erzeugt-den-naechsten-klick-…-prio20, Segment s02.
+/* ───────── Weiter-Knopf (schließt die Knopf-Luecke) ─────────
+   Job 20260906-lp-erzeugt-den-…-prio20, Segment s02.
 
    GEMESSEN, NICHT VERMUTET (2026-09-06, Hit-Test am gerenderten DOM,
    bin/lp-falz-hittest.py): zwischen dem Hero-CTA bei Falz 0,71 und dem
-   naechsten klickbaren Kaufweg-Knopf bei Falz 18,70 lagen 15.181 px = 18,0
+   nächsten klickbaren Kaufweg-Knopf bei Falz 18,70 lagen 15.181 px = 18,0
    Falzen mobil (12.625 px = 14,0 desktop) OHNE einen einzigen Weg zum
    Produkt. Wer Mechanismus, Wissenschaft, Bewertungen und Video liest, hatte
-   dazwischen keinen naechsten Klick.
+   dazwischen keinen nächsten Klick.
 
-   Diese Landingpage wird am NAECHSTEN KLICK gemessen, nicht an der Bestellung
-   (Kanon „Die Landingpage verkauft nicht — sie erzeugt den naechsten Klick",
+   Diese Landingpage wird am NÄCHSTEN KLICK gemessen, nicht an der Bestellung
+   (Kanon „Die Landingpage verkauft nicht — sie erzeugt den nächsten Klick",
    brain/Marketing/landingpage-trichter-und-messregel-2026-08-26.md). Deshalb
    steht hier ein KNOPF und kein neuer Fliesstext: die Luecke war das Problem,
    nicht die Textmenge.
