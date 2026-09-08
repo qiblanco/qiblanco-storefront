@@ -12,7 +12,19 @@ export function QiOne() {
     <div className="Detailseite">
       <div className="QiOne-Herobanner-Detailseite mt-[-75px]!">
         <div className='max-w-[450px]! flex flex-col items-start justify-start gap-3 py-[85px]! px-[10px]! md:px-0!'>
-          <h2 className='mb-0!'>Der QiOne® 2 Pro</h2>
+          {/* H1 STATT H2 (Job 20260908-seo-rest-repo-alttexte-und-ueberschriften,
+            Befund `keine_h1` für /pages/qione-2-pro-details): die Seite hatte
+            im ausgelieferten HTML KEINE h1 - die oberste Überschrift war diese
+            hier, nur eine Stufe zu tief. Kein neuer Text, nur die Stufe.
+            DIE GRÖSSE BLEIBT DIE ALTE: reset.css gibt h1 2.5rem + 2rem
+            Außenabstand oben, h2 2.2rem ohne. `text-[2.2rem]! mt-0!` hält das
+            gerenderte Bild pixelgleich - der Befund ist ein Struktur-Befund,
+            kein Gestaltungsauftrag, und ein stiller Umbau des Herobanners wäre
+            eine Änderung, die niemand bestellt hat.
+            EINZIGER AUFRUFER ist app/routes/pages.qione-2-pro-details.jsx
+            (nachgemessen: `grep -rn "detailseiten/QiOne'" app/` = 1 Treffer),
+            es entsteht also nirgends eine zweite h1. */}
+          <h1 className='mb-0! mt-0! text-[2.2rem]!'>Der QiOne® 2 Pro</h1>
           <h3 className='mt-0!'>Messbare Effekte auf Zellebene</h3>
             <ImgixVideo className='w-full overflow-hidden rounded-2xl' videoPath="VIDEO-QiOne60s-DE-2021.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/fallback-image-qione-detail.webp?v=1747735933" />
 
@@ -31,6 +43,7 @@ export function QiOne() {
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476'
         }
+        imgAlt={'QiOne® 2 Pro'}
         link={'/products/qione-2-pro'}
         linkStyle={'secondary'}
         linkText={"Hol' dir jetzt deinen QiOne® 2 pro"}
@@ -65,6 +78,7 @@ export function QiOne() {
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476'
         }
+        imgAlt={'QiOne® 2 Pro'}
         link={'/products/qione-2-pro'}
         linkStyle={'secondary'}
         linkText={"Hol' dir jetzt deinen QiOne® 2 pro"}
@@ -99,7 +113,7 @@ function Expertenmeinungen() {
           <div className="Expertenmeinung-Bild">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Design-ohne-Titel_1.webp?v=1669011413"
-              alt=""
+              alt="Kurt Tepperwein und Nada Breidenbach"
             />
           </div>
           <div className="Expertenmeinung-Text">
@@ -133,7 +147,7 @@ function Expertenmeinungen() {
           <div className="Expertenmeinung-Bild">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cebula.webp?v=1675246618"
-              alt=""
+              alt="Matthias und Daniela Cebula"
             />
           </div>
           <div className="Expertenmeinung-Text">
@@ -180,7 +194,7 @@ function Expertenmeinungen() {
           <div className="Expertenmeinung-Bild">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image1_1.jpg?v=1707860985"
-              alt=""
+              alt="Dr. Andreas Kramer und Mindy Sahagun"
             />
           </div>
           <div className="Expertenmeinung-Text">
@@ -223,7 +237,7 @@ function Expertenmeinungen() {
           <div className="Expertenmeinung-Bild">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Screenshot_2024-02-19_at_12.32.50.webp?v=1736366546"
-              alt=""
+              alt="Patrick Thiele"
             />
           </div>
           <div className="Expertenmeinung-Text">
@@ -279,7 +293,7 @@ function HerzQiOne() {
       <div className="Flex-Image mt-2">
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-e1668521164461_1_21efb1fc-4b64-469f-96d2-33dcf70d6506.jpg?v=1670809038"
-          alt=""
+          alt="Gitterchip™ des QiOne® 2 Pro: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster"
         />
       </div>
       <div className="Flex-Content mt-2">

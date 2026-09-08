@@ -15,6 +15,7 @@ export function Kakao() {
       <HerobannerWithText
         text="Wach. Klar. Im Flow."
         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06610.jpg?v=1763050714"
+        imgAlt="Zwei Menschen an einem Cafétisch, sie mit einem Tablet, er am Laptop, daneben zwei Tassen"
       />
       <div className="flex flex-col NormalSectionSize gap-3 items-center justify-center">
         <h2 className="text-2xl">Unser Versprechen an dich</h2>
@@ -36,6 +37,7 @@ export function Kakao() {
       <HerobannerWithText
         text="100% naturrein"
         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/DSC00308_Kopie.webp?v=1763062180"
+        imgAlt="Hände schneiden eine reife Kakaofrucht mit einer Gartenschere direkt vom Baum"
       />
       <SparSection />
       <MusterSection />
@@ -346,7 +348,7 @@ function SideToSideWithTable() {
         <img
           className="block sm:hidden! mb-4"
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/chart-kakao.webp?v=1763974217"
-          alt=""
+          alt="Diagramm Fokus und Energie über die Wirkdauer: Kaffee und Energy-Drinks steigen steil an und fallen schnell wieder ab, Crystal Cacao® steigt flacher an und hält lange"
         />
         <p>
           Die Wirkung von <b>Kaffee &amp; Energy-Drinks</b> beruht fast
@@ -366,17 +368,28 @@ function SideToSideWithTable() {
         <img
           className="w-full"
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/chart-kakao.webp?v=1763974217"
-          alt=""
+          alt="Diagramm Fokus und Energie über die Wirkdauer: Kaffee und Energy-Drinks steigen steil an und fallen schnell wieder ab, Crystal Cacao® steigt flacher an und hält lange"
         />
       </div>
     </div>
   );
 }
 
-function HerobannerWithText({src, text}) {
+/*
+ * HerobannerWithText — Bild mit einer darübergelegten Überschrift.
+ *
+ * DER alt-TEXT IST EIN PARAMETER (Job 20260908-seo-rest-repo-alttexte-und-
+ * überschriften). Das feste alt="" wäre richtig, wenn das Bild nur Kulisse
+ * für die Überschrift wäre. Hier ist es das nicht: die Überschriften sind
+ * Schlagworte ("Wach. Klar. Im Flow.", "100% naturrein"), das Bild zeigt
+ * etwas anderes als sie sagen - ohne alt fällt genau dieser Teil weg.
+ * Default '' bleibt, damit künftige Aufrufe mit echter Kulisse nichts
+ * erfinden müssen.
+ */
+function HerobannerWithText({src, text, imgAlt = ''}) {
   return (
     <div className="my-[10vh]! relative">
-      <img className="w-full h-auto rounded-xl block" src={src} alt="" />
+      <img className="w-full h-auto rounded-xl block" src={src} alt={imgAlt} />
       <h2 className="absolute top-10 left-0 right-0 text-center text-white! text-5xl!">
         {text}
       </h2>
@@ -403,7 +416,7 @@ function SparSection() {
         <img
           className="w-full h-full object-cover"
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-image.webp?v=1759153567"
-          alt=""
+          alt="Kakaobäuerin in einer Baumschule, in den Händen einen jungen Kakaosetzling"
         />
       </div>
     </div>
@@ -448,7 +461,7 @@ function MusterSection() {
         <img
           className="w-full h-auto rounded-xl sm:mt-2"
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-muster.webp?v=1759179332"
-          alt=""
+          alt="Nahaufnahme der Kakaomasse: dicht an dicht liegende, hell umrandete Kristallstrukturen"
         />
       </div>
     </div>
@@ -473,7 +486,7 @@ function WurzelnSection() {
           <img
             className="w-full h-full object-cover"
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/DSC01510_Kopie.webp?v=1759179020"
-            alt=""
+            alt="Kakaobauer mit Machete im Kakaowald, in der Hand eine geerntete Kakaofrucht"
           />
         </div>
       </div>
@@ -482,7 +495,7 @@ function WurzelnSection() {
           <img
             className="w-full h-full object-cover bottom-[20px]!"
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/DSC01925.jpg?v=1764116026"
-            alt=""
+            alt="Kakaobauer trägt eine große Erntetonne auf der Schulter durch die Plantage"
           />
         </div>
         <div className="flex flex-col justify-center">
@@ -654,7 +667,7 @@ function RitualSection() {
             <img
               className="w-full h-full object-cover"
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06493-1x1.webp?v=1764201756"
-              alt=""
+              alt="Lächelnde Frau im weißen Hemd, am Handgelenk das QiBracelet®"
             />
           </div>
           <p>
@@ -671,7 +684,7 @@ function RitualSection() {
           <img
             className="w-full h-full object-cover"
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06493.webp?v=1764201756"
-            alt=""
+            alt="Lächelnde Frau im weißen Hemd, am Handgelenk das QiBracelet®"
           />
         </div>
       </div>
