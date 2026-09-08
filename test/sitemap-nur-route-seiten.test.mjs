@@ -17,6 +17,18 @@
  * homepage-bauer/pruefungen/probe_partnerseite_naht_sitemap_route.py am
  * echten Shop; dieser Test prueft die Mechanik ohne Netz.
  *
+ * SEIT 2026-09-08 STEHT HIER AUCH DIE KOLLEKTIONS-ZWEITSICHT. Sie ist der
+ * schwierige Fall, weil ihre Liste HEUTE ABSICHTLICH LEER ist: alle fünf
+ * noindex-Kollektionen bleiben in der Sitemap, weil sie sonst nie wieder
+ * gecrawlt und ihr `noindex` nie gelesen würde. Ein Test, der nur „steht
+ * frontpage noch drin?" fragt, wäre damit grün aus ABWESENHEIT — er würde
+ * auch dann bestehen, wenn `collections` gar nicht verdrahtet wäre. Der
+ * Nachweis läuft deshalb als ZWEIARMIGE MUTATION an der Route selbst
+ * (`ladeRoute` mit `wandle`): mit einer künstlich gefüllten Liste MUSS der
+ * Handle verschwinden, ohne sie MUSS er stehenbleiben. Erst beide Arme
+ * zusammen belegen, dass die Möglichkeit gebaut ist und der Vollzug bewusst
+ * aussteht.
+ *
  * Wie sitemap-artikel.test.mjs: die Route wird als Datei gelesen und nur die
  * `~/`-Import-Spezifizierer werden aufgeloest — kein Nachbau, kein zweites
  * Testobjekt.
@@ -30,12 +42,18 @@ const hier = dirname(fileURLToPath(import.meta.url));
 const appDir = join(hier, '..', 'app');
 const routePfad = join(appDir, 'routes', 'sitemap.$type.$page[.xml].jsx');
 
-async function ladeRoute() {
-  const quelle = readFileSync(routePfad, 'utf8').replace(
-    /from '~\/([^']+)'/g,
-    (_, rest) => `from '${pathToFileURL(join(appDir, rest)).href}.js'`,
+async function ladeRoute(wandle = (q) => q) {
+  const quelle = wandle(
+    readFileSync(routePfad, 'utf8').replace(
+      /from '~\/([^']+)'/g,
+      (_, rest) => `from '${pathToFileURL(join(appDir, rest)).href}.js'`,
+    ),
   );
-  const ziel = join(hier, '..', `.sitemap-nurroute-test-${process.pid}.mjs`);
+  const ziel = join(
+    hier,
+    '..',
+    `.sitemap-nurroute-test-${process.pid}-${lfd++}.mjs`,
+  );
   writeFileSync(ziel, quelle);
   try {
     return await import(pathToFileURL(ziel).href);
@@ -44,9 +62,14 @@ async function ladeRoute() {
   }
 }
 
-const {NUR_ROUTE_SEITEN, AUS_SITEMAP_ENTFERNTE_SEITEN} = await import(
-  pathToFileURL(join(appDir, 'lib', 'seo.js')).href
-);
+let lfd = 0;
+
+const {
+  NUR_ROUTE_SEITEN,
+  AUS_SITEMAP_ENTFERNTE_SEITEN,
+  ausSitemapEntfernteKollektionen,
+  NICHT_INDEXIERBARE_KOLLEKTIONEN,
+} = await import(pathToFileURL(join(appDir, 'lib', 'seo.js')).href);
 
 /** Storefront-Attrappe: liefert die genannten Handles als Sitemap-Ressourcen. */
 function storefrontAttrappe(handles) {
@@ -66,8 +89,8 @@ function storefrontAttrappe(handles) {
   };
 }
 
-async function sitemapXml(typ, handles) {
-  const {loader} = await ladeRoute();
+async function sitemapXml(typ, handles, wandle) {
+  const {loader} = await ladeRoute(wandle);
   const antwort = await loader({
     request: new Request(`https://qiblanco.com/sitemap/${typ}/1.xml`),
     params: {type: typ, page: '1'},
@@ -143,6 +166,93 @@ await pruefe('die ergaenzte URL ist absolut und auf der Produktions-Domain', asy
   const xml = await sitemapXml('pages', ['studien']);
   const treffer = locs(xml).find((u) => u.endsWith(NUR_ROUTE_SEITEN[0].pfad));
   assert.equal(treffer, `https://qiblanco.com${NUR_ROUTE_SEITEN[0].pfad}`);
+});
+
+// ---------------------------------------------------------------------------
+// KOLLEKTIONS-ZWEITSICHT (2026-09-08). Herleitung im Kopf dieser Datei.
+// ---------------------------------------------------------------------------
+
+assert.ok(
+  NICHT_INDEXIERBARE_KOLLEKTIONEN.length > 0,
+  'Keine noindex-Kollektion im Bestand — die vier Prüfungen unten hätten ' +
+    'dann keinen Gegenstand und wären strukturell nie rot. MESSAUSFALL.',
+);
+
+await pruefe('Zweitsicht ist eine TEILMENGE der noindex-Liste', async () => {
+  // Der ganze Zweck der Trennung: aus der Sitemap fliegt nur, was ohnehin
+  // schon noindex trägt — nie umgekehrt. Die Prüfung ist richtungsagnostisch
+  // und bleibt gültig, wenn später ein Eintrag auf `ausSitemap: true` kippt.
+  for (const handle of ausSitemapEntfernteKollektionen()) {
+    assert.ok(
+      NICHT_INDEXIERBARE_KOLLEKTIONEN.includes(handle),
+      `${handle} fliegt aus der Sitemap, trägt aber kein noindex`,
+    );
+  }
+});
+
+await pruefe('was NICHT auf ausSitemap steht, bleibt in der Sitemap', async () => {
+  // Der gewollte Zustand, nicht als Zahl festgenagelt: geprüft wird das
+  // PRÄDIKAT (`ausSitemap`), nicht die heutige Liste. Kippt jemand einen
+  // Eintrag, wandert er von dieser Prüfung in die nächste — der Test muss
+  // dafür nicht angefasst werden.
+  const xml = await sitemapXml('collections', NICHT_INDEXIERBARE_KOLLEKTIONEN);
+  for (const handle of NICHT_INDEXIERBARE_KOLLEKTIONEN) {
+    if (ausSitemapEntfernteKollektionen().includes(handle)) continue;
+    assert.equal(
+      zaehle(xml, `/collections/${handle}`),
+      1,
+      `${handle} ist aus der Sitemap verschwunden, ohne dass jemand das ` +
+        'entschieden hätte — für diese Handles ist die Sitemap der einzige ' +
+        'Weg, auf dem Google ihr noindex noch liest',
+    );
+  }
+});
+
+await pruefe('MUTATIONSARM: eine gefüllte Zweitsicht entfernt wirklich', async () => {
+  // OHNE diesen Arm wäre die Prüfung darüber grün aus Abwesenheit: sie wäre
+  // auch dann bestanden, wenn `collections` in VERSTECKTE_HANDLES gar nicht
+  // stünde. Hier wird die Route mit einer künstlich gefüllten Liste geladen —
+  // erst das belegt, dass der Schlüssel gelesen und der Handle am
+  // `</loc>`-Anker getroffen wird.
+  const [opfer, ...rest] = NICHT_INDEXIERBARE_KOLLEKTIONEN;
+  assert.ok(rest.length > 0, 'braucht mindestens zwei Handles');
+  const xml = await sitemapXml(
+    'collections',
+    NICHT_INDEXIERBARE_KOLLEKTIONEN,
+    (quelle) => {
+      const neu = quelle.replace(
+        'collections: ausSitemapEntfernteKollektionen(),',
+        `collections: ['${opfer}'],`,
+      );
+      assert.notEqual(
+        neu,
+        quelle,
+        'Die Zeile `collections: ausSitemapEntfernteKollektionen(),` steht ' +
+          'nicht mehr in der Route — die Mutation hat ins Leere gegriffen ' +
+          'und der Arm wäre falsch grün.',
+      );
+      return neu;
+    },
+  );
+  assert.equal(
+    zaehle(xml, `/collections/${opfer}`),
+    0,
+    `${opfer} steht trotz gefüllter Zweitsicht in der Sitemap`,
+  );
+  for (const handle of rest) {
+    assert.equal(
+      zaehle(xml, `/collections/${handle}`),
+      1,
+      `${handle} wurde mitgerissen — der Filter schneidet zu breit`,
+    );
+  }
+});
+
+await pruefe('die Kollektions-Sitemap wird NICHT um Seiten ergänzt', async () => {
+  const xml = await sitemapXml('collections', NICHT_INDEXIERBARE_KOLLEKTIONEN);
+  for (const s of NUR_ROUTE_SEITEN) {
+    assert.equal(zaehle(xml, s.pfad), 0, `${s.pfad} in der Kollektions-Sitemap`);
+  }
 });
 
 console.log(`\nsitemap-nur-route-seiten: ${grün} Prüfungen grün`);
