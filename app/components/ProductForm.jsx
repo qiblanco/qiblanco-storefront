@@ -9,6 +9,7 @@ import {useAside} from './Aside';
  *   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
  *   quantity?: number;
  *   ctaLabel?: string;
+ *   gewaehrleistungsHinweis?: boolean;
  * }}
  *
  * `quantity` (Default 1) legt die Stückzahl der EINEN Add-to-Cart-Zeile fest.
@@ -18,12 +19,27 @@ import {useAside} from './Aside';
  * (Konzept „Shopseite nach LP" Kap. 5: ein Produkt referenziert, kein Preis-
  * Klon-Produkt). `ctaLabel` erlaubt der Kampagne einen eigenen Button-Text,
  * ohne eine zweite Kauflogik zu bauen.
+ *
+ * `gewaehrleistungsHinweis` (Default TRUE, und der Default ist die eigentliche
+ * Aussage) steuert, ob die EU-Pflichtmitteilung hier unter dem Kauf-Knopf
+ * hängt. Elina EL-20260908-d8349a01 hat sie auf /products/qione-2-pro weiter
+ * nach unten verschoben; dort schaltet die Route sie hier ab und montiert sie
+ * selbst. Jede ANDERE Kaufflaeche behaelt sie an dieser Stelle.
+ *
+ * WARUM EIN ABSCHALTER UND NICHT EIN AUSBAU: die Naht sitzt hier, weil die
+ * meisten Kaufflaechen über veroeffentlichte Shopify-Produkte OHNE eigene
+ * Route-Datei laufen (Catch-all products.$handle). Wer sie hier herausnimmt,
+ * um sie auf EINER Seite zu verschieben, nimmt sie damit still von ALLEN
+ * uebrigen -- die Seiten antworten weiter HTTP 200 und sehen vollstaendig
+ * aus. Ein Default-true-Schalter verschiebt genau eine Seite und lässt den
+ * Rest, wo er ist.
  */
 export function ProductForm({
   productOptions,
   selectedVariant,
   quantity = 1,
   ctaLabel,
+  gewaehrleistungsHinweis = true,
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -147,8 +163,13 @@ export function ProductForm({
         veroeffentlichte Shopify-Produkte, von denen ein Grossteil ohne
         eigene Route-Datei über den Catch-all läuft. Eine Naht je Seite
         würde genau die stillschweigend auslassen.
+
+        AUSNAHME SEIT 2026-09-08: eine Seite DARF die Mitteilung selbst
+        montieren und schaltet sie dann hier ab (Prop oben). Das ist kein
+        Rueckfall in die Naht-je-Seite -- der Default bleibt hier, und wer
+        nichts sagt, bekommt sie hier.
       */}
-      <EuGewaehrleistungsHinweis />
+      {gewaehrleistungsHinweis ? <EuGewaehrleistungsHinweis /> : null}
     </div>
   );
 }

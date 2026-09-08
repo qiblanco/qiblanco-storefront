@@ -6,9 +6,12 @@
  * einer Datei NICHT ansieht, werden am Quelltext bewacht -- denn genau sie
  * gehen bei einer spaeteren, gut gemeinten Aenderung als Erstes verloren:
  *
- *   1. Auf der Produktseite steht NUR der Text-Link. Wer die Grafik eines
- *      Tages "der Sichtbarkeit zuliebe" offen daneben stellt, baut genau die
- *      Abweichung zurück, die am 2026-08-25 ausdrücklich kassiert wurde.
+ *   1. Im Seitenfluss steht kein Bild, das die AMTLICHE Grafik ist. Wer sie
+ *      eines Tages "der Sichtbarkeit zuliebe" offen daneben stellt, baut
+ *      genau die Abweichung zurück, die am 2026-08-25 kassiert wurde. Seit
+ *      dem 2026-09-08 steht dort ein Schmuck-Schild (Elina
+ *      EL-20260908-d8349a01) — die Zusage misst deshalb die QUELLE je Bild,
+ *      nicht mehr die Zahl der <img>.
  *   2. Die Grafik im Overlay muss GENÜGEND groß bleiben, damit der QR-Code
  *      scanbar ist. Seit sie nur noch dort vorkommt, hängt die Scanbarkeit
  *      allein an dieser einen Zahl -- und eine CSS-Zahl aendert man schnell.
@@ -22,6 +25,9 @@ import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 
 import {
+  AUSLOESER_TEXT_FOOTER,
+  AUSLOESER_TEXT_PDP,
+  AUSLOESER_ZEICHEN,
   EU_SPRACHEN,
   LABEL_ASSETS,
   QR_DEFEKT,
@@ -47,12 +53,32 @@ const CSS = join(HIER, '..', 'app', 'styles', 'eu-gewaehrleistung.css');
  * die Sache, misst die Dokumentation mit und schlaegt genau dann Alarm, wenn
  * jemand gut kommentiert. Das gilt hier doppelt: der Dateikopf ZITIERT die
  * alte, offene Darstellung, um zu erklären, warum es sie nicht mehr gibt.
+ *
+ * REIHENFOLGE KORRIGIERT AM 2026-09-08 -- das hier war ein stiller Frass.
+ * Die erste Regel lautete `\{\s*\/\*[\s\S]*?\*\/\s*\}` und sollte den
+ * JSX-Kommentar `{/* … *​/}` treffen. Sie traf aber auch die oeffnende
+ * Klammer eines FUNKTIONSKOERPERS, wenn direkt darauf ein JSDoc folgt:
+ *
+ *     export default function Product() {
+ *       /** @type {LoaderReturnData} *​/          <-- Start des Frasses
+ *       …
+ *       {/* … *​/}                                <-- Ende des Frasses
+ *
+ * Alles dazwischen verschwand. An app/routes/products.qione-2-pro.jsx
+ * gemessen: 4,7 kB Quelltext weg, darunter der komplette Rumpf. Eine
+ * ABWESENHEITS-Zusage auf so vorbehandeltem Text kann strukturell nie
+ * ausschlagen -- sie wäre für immer gruen gewesen.
+ *
+ * Jetzt werden Blockkommentare ZUERST entfernt (nicht-gierig, also je
+ * Kommentar einzeln); vom JSX-Kommentar bleibt danach die leere Klammer
+ * `{}` uebrig, die zuletzt faellt. Dass dabei auch ein echtes leeres
+ * Objektliteral verschwindet, ist für eine Textsuche folgenlos.
  */
 function ohneKommentare(quelle) {
   return quelle
-    .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
     .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/^\s*\/\/.*$/gm, '');
+    .replace(/^\s*\/\/.*$/gm, '')
+    .replace(/\{\s*\}/g, '');
 }
 
 function cssBlock(css, selektor) {
@@ -97,27 +123,95 @@ test('Rueckfall ist Englisch -- nie ein fehlendes Bild', () => {
 /* Der Kern der Korrektur vom 2026-08-25                               */
 /* ------------------------------------------------------------------ */
 
-test('auf der Produktseite steht NUR der Text-Link -- keine offene Grafik', () => {
+/*
+ * DIESE ZUSAGE HAT AM 2026-09-08 IHRE MESSGROESSE GEWECHSELT, NICHT IHREN
+ * SINN -- und der Unterschied ist wichtig genug, um ihn hier auszuschreiben.
+ *
+ * VORHER stand hier "der Produktseiten-Baustein enthält kein <img>". Das
+ * war eine Naeherung: gemeint war immer die AMTLICHE GRAFIK (Anhang I,
+ * QR-Code, Verordnungstext), gemessen wurde aber die Bauart <img>. Solange
+ * es nur ein einziges Bild in der Datei gab, fielen beide zusammen.
+ *
+ * Elina EL-20260908-d8349a01 stellt ein Schmuck-Schild neben den Link. Damit
+ * fallen sie auseinander, und die alte Zaehlung wäre ab jetzt in BEIDE
+ * Richtungen falsch:
+ *   - falsch ROT, weil ein harmloses Zeichen sie ausloest;
+ *   - falsch GRUEN wäre sie geworden, wenn man sie einfach auf "zwei <img>"
+ *     hochgezaehlt haette -- ein Tausch von AUSLOESER_ZEICHEN gegen
+ *     LABEL_ASSETS.de haette die Zahl nicht verändert und die amtliche
+ *     Grafik still offen in den Seitenfluss gestellt.
+ * Gemessen wird deshalb jetzt die QUELLE je Bild, nicht ihre Anzahl.
+ */
+test('die AMTLICHE Grafik steht nur im Overlay -- nie offen im Seitenfluss', () => {
   const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
 
-  const ab = code.indexOf('export function EuGewaehrleistungsHinweis');
-  assert.ok(ab >= 0, 'der Produktseiten-Baustein fehlt');
-  const pdp = code.slice(ab);
-  const pdpKoerper = pdp.slice(0, pdp.indexOf('export function EuGewaehrleistungsLink'));
+  const dialogAb = code.indexOf('<dialog');
+  const dialogBis = code.indexOf('</dialog>');
+  assert.ok(dialogAb >= 0 && dialogBis > dialogAb, 'kein <dialog> gefunden');
 
-  assert.doesNotMatch(
-    pdpKoerper,
-    /<img\b/,
-    'Der Produktseiten-Baustein rendert wieder ein <img>. Bestellt ist: NUR ' +
-      'der Text-Link im Seitenfluss, die Grafik ausschließlich im Overlay ' +
-      'nach Klick.',
+  // Jedes <img> der Datei mit seiner Quelle und seiner Lage einsammeln.
+  const bilder = [];
+  for (const m of code.matchAll(/<img\b[\s\S]*?\/>/g)) {
+    bilder.push({
+      markup: m[0],
+      imOverlay: m.index > dialogAb && m.index < dialogBis,
+    });
+  }
+  assert.ok(bilder.length >= 1, 'kein einziges <img> in der Komponente');
+
+  const amtliche = bilder.filter((b) => /src=\{label\.url\}/.test(b.markup));
+  assert.equal(
+    amtliche.length,
+    1,
+    `die amtliche Grafik muss genau EINMAL vorkommen, gefunden: ${amtliche.length}`,
   );
+  assert.ok(
+    amtliche[0].imOverlay,
+    'Die amtliche Grafik steht ausserhalb des Overlays -- das ist genau die ' +
+      'Abweichung, die am 2026-08-25 kassiert wurde.',
+  );
+
+  for (const b of bilder.filter((x) => !x.imOverlay)) {
+    assert.match(
+      b.markup,
+      /src=\{quellen\.src\}/,
+      'Ein Bild im Seitenfluss zieht seine Quelle nicht aus AUSLOESER_ZEICHEN. ' +
+        'Erlaubt ist dort NUR das Schmuck-Schild -- kein LABEL_ASSETS-Bild, ' +
+        'keine hart geschriebene CDN-URL.',
+    );
+    assert.match(
+      b.markup,
+      /alt=""/,
+      'Das Zeichen im Seitenfluss trägt einen alt-Text. Es ist Schmuck neben ' +
+        'einem Link, der dasselbe sagt -- ein alt-Text macht daraus eine ' +
+        'zweite, konkurrierende Ansage.',
+    );
+  }
+});
+
+test('auf der Produktseite hängt der Ausloeser MIT Zeichen, im Footer OHNE', () => {
+  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+
+  const ab = code.indexOf('function EuLabelHinweisFlaeche');
+  assert.ok(ab >= 0, 'der Produktseiten-Baustein fehlt');
+  const pdpKoerper = code.slice(ab, code.indexOf('export function EuGewaehrleistungsLink'));
 
   assert.match(
     pdpKoerper,
     /<EuLabelAusloeser\b/,
     'Der Produktseiten-Baustein rendert keinen Ausloeser mehr -- dann gibt ' +
       'es auf der Kaufflaeche gar keinen Hinweis.',
+  );
+  assert.match(
+    pdpKoerper,
+    /zeichen=\{AUSLOESER_ZEICHEN\}/,
+    'Das Zeichen fehlt auf der Produktseite (Elina EL-20260908-d8349a01).',
+  );
+  assert.match(
+    pdpKoerper,
+    /beschriftung=\{AUSLOESER_TEXT_PDP\}/,
+    'Die Produktseite beschriftet den Ausloeser nicht mehr aus der Konstante ' +
+      '-- dann laufen Text und Test auseinander.',
   );
 
   // Positiv-Kontrolle: ohne sie wäre ein leerer Ausschnitt (z.B. weil sich
@@ -126,26 +220,68 @@ test('auf der Produktseite steht NUR der Text-Link -- keine offene Grafik', () =
     pdpKoerper.includes('eu-gwl--pdp'),
     'Ausschnitt leer oder verrutscht -- die Aussage oben trägt dann nichts.',
   );
+
+  // Der Footer bleibt auf Anweisung unveraendert: kein Zeichen, kurzer Text.
+  const footer = code.slice(code.indexOf('export function EuGewaehrleistungsLink'));
+  assert.doesNotMatch(
+    footer,
+    /zeichen=/,
+    'Der Footer hat ein Zeichen bekommen. Bestellt war ausdrücklich: ' +
+      '"Footer-Version bleibt unveraendert".',
+  );
+  assert.match(
+    footer,
+    /beschriftung=\{AUSLOESER_TEXT_FOOTER\}/,
+    'Der Footer beschriftet den Ausloeser nicht mehr aus seiner eigenen Konstante.',
+  );
 });
 
-test('genau EIN <img> in der ganzen Komponente, und es sitzt im Overlay', () => {
-  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+test('die beiden Beschriftungen sind wirklich verschieden -- und die richtige ist wo', () => {
+  // Der Sinn: eine spaetere "Vereinheitlichung" würde beide Konstanten auf
+  // denselben Wert ziehen und dabei genau die Unterscheidung loeschen, die
+  // am 2026-09-08 bestellt wurde. Zwei gleiche Werte faellt sonst niemandem
+  // auf -- die Seiten sehen beide vollstaendig aus.
+  assert.equal(AUSLOESER_TEXT_PDP, 'Garantierte gesetzliche Gewährleistung');
+  assert.equal(AUSLOESER_TEXT_FOOTER, 'Gesetzliche Gewährleistung');
+  assert.notEqual(
+    AUSLOESER_TEXT_PDP,
+    AUSLOESER_TEXT_FOOTER,
+    'Produktseite und Footer tragen wieder denselben Text -- eine der beiden ' +
+      'Anweisungen ist damit still zurueckgenommen.',
+  );
+});
 
-  const bilder = code.match(/<img\b/g) ?? [];
-  assert.equal(
-    bilder.length,
-    1,
-    `es darf genau ein <img> geben (im Overlay), gefunden: ${bilder.length}`,
+test('das Zeichen ist NICHT die amtliche Grafik -- und geht über die Bildleiter', () => {
+  // Drei Eigenschaften, jede mit einem eigenen Schadensbild:
+  //   1. eigene Quelle  -> sonst stuende die Mitteilung offen im Seitenfluss
+  //   2. Masse gesetzt  -> sonst springt das Layout beim Nachladen (CLS)
+  //   3. anzeigeBreite  -> ohne sie liefert bildQuellen die Masterdatei
+  const alleLabelUrls = Object.values(LABEL_ASSETS).map((a) => a.url);
+  assert.ok(
+    !alleLabelUrls.includes(AUSLOESER_ZEICHEN.url),
+    'Das Zeichen zeigt auf eine der 24 amtlichen Sprachfassungen.',
+  );
+  assert.match(AUSLOESER_ZEICHEN.url, /^https:\/\/cdn\.shopify\.com\//);
+  assert.ok(
+    AUSLOESER_ZEICHEN.breite > 0 && AUSLOESER_ZEICHEN.hoehe > 0,
+    'ohne Masse rechnet der Browser kein Seitenverhaeltnis -- das Layout springt',
+  );
+  assert.ok(
+    AUSLOESER_ZEICHEN.anzeigeBreite > 0 &&
+      AUSLOESER_ZEICHEN.anzeigeBreite <= AUSLOESER_ZEICHEN.breite,
+    'die Anzeigebreite muss gesetzt sein und darf die Masterbreite nicht ueberzeichnen',
   );
 
-  // Und es muss INNERHALB des Dialogs stehen, nicht irgendwo sonst.
-  const dialogAb = code.indexOf('<dialog');
-  const dialogBis = code.indexOf('</dialog>');
-  assert.ok(dialogAb >= 0 && dialogBis > dialogAb, 'kein <dialog> gefunden');
-  const imgPos = code.indexOf('<img');
-  assert.ok(
-    imgPos > dialogAb && imgPos < dialogBis,
-    'Das einzige <img> steht ausserhalb des Overlays.',
+  // Und die Zahl muss zur Gestaltung passen: steht in der CSS eine andere
+  // Breite, rechnet die srcset-Leiter an der Flaeche vorbei.
+  const css = readFileSync(CSS, 'utf8');
+  const block = cssBlock(css, '.eu-gwl__zeichen');
+  const m = block.match(/width:\s*(\d+(?:\.\d+)?)px/);
+  assert.ok(m, '.eu-gwl__zeichen setzt keine Breite in px -- die Leiter hängt in der Luft');
+  assert.equal(
+    Number(m[1]),
+    AUSLOESER_ZEICHEN.anzeigeBreite,
+    'CSS-Breite und AUSLOESER_ZEICHEN.anzeigeBreite sind auseinandergelaufen',
   );
 });
 
@@ -467,5 +603,124 @@ test('der Warenkorb montiert die Pflichtmitteilung selbst', () => {
     code,
     /<CartMain\s/,
     'Positiv-Kontrolle: <CartMain> fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+/* ---------------------------------------------------------------------------
+ * DIE VERSCHIEBUNG (Elina EL-20260908-d8349a01, gebaut 2026-09-08).
+ *
+ * BESTELLT: auf der Produktseite faellt der Satz "Wirkt das ueberhaupt? …"
+ * ersatzlos weg, und an genau seine Stelle rueckt der Gewaehrleistungs-
+ * Trigger, der bisher weiter oben unter dem Kauf-Knopf hing.
+ *
+ * DIE GEFAHR, DIE DIESE DREI WAECHTER HALTEN, ist nicht die Verschiebung
+ * selbst -- die sieht man auf der Seite. Es ist ihr Nebeneffekt: die Naht
+ * unter dem Kauf-Knopf sitzt in ProductForm und trägt damit JEDE
+ * Kaufflaeche, auch die Dutzenden ohne eigene Route-Datei (Catch-all
+ * products.$handle). Wer sie dort herausnimmt statt sie für EINE Seite
+ * abzuschalten, nimmt die gesetzliche Pflichtmitteilung still von allen
+ * anderen -- bei weiterhin HTTP 200 und vollstaendig aussehender Seite.
+ *
+ * Der dritte Waechter (Durchreichung) ist der unscheinbarste und der
+ * wichtigste: faellt die Prop in der Buy-Box weg, wird das `false` der Route
+ * lautlos verschluckt und die Mitteilung steht ZWEIMAL auf der Seite. Auch
+ * das sieht man an keinem Exit-Code.
+ * ------------------------------------------------------------------------ */
+
+const PDP_ROUTE = join(HIER, '..', 'app', 'routes', 'products.qione-2-pro.jsx');
+const PRODUCT_FORM = join(HIER, '..', 'app', 'components', 'ProductForm.jsx');
+const BUY_BOX = join(
+  HIER, '..', 'app', 'components', 'product-pages', 'QiOneBuyBox.jsx',
+);
+
+test('die PDP montiert die Mitteilung selbst -- und der Zweifel-Satz ist weg', () => {
+  const code = ohneKommentare(readFileSync(PDP_ROUTE, 'utf8'));
+
+  assert.match(
+    code,
+    /<EuGewaehrleistungsHinweis\s*\/>/,
+    '/products/qione-2-pro montiert die Mitteilung nicht selbst -- zusammen ' +
+      'mit dem abgeschalteten Default unten faellt sie auf dieser Kaufflaeche ' +
+      'ersatzlos weg.',
+  );
+  assert.match(
+    code,
+    /import\s*\{\s*EuGewaehrleistungsHinweis\s*\}/,
+    'die Route rendert die Mitteilung, importiert sie aber nicht -- das baut nicht',
+  );
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis=\{false\}/,
+    'die Route montiert die Mitteilung selbst, schaltet den Default in ' +
+      'ProductForm aber nicht ab -- sie stuende dann zweimal auf der Seite',
+  );
+
+  // Ersatzlos heißt ersatzlos: weder die Zeile noch ihr Stylesheet.
+  assert.doesNotMatch(
+    code,
+    /<ZweifelBeleg\b/,
+    'Die Zweifel-Zeile ist zurück. Bestellt war: ersatzlos vollstaendig ' +
+      'entfernen, keine Ersatzformulierung.',
+  );
+  assert.doesNotMatch(
+    code,
+    /zweifel-beleg\.css/,
+    'Das Stylesheet der entfernten Zeile wird noch geladen -- ein Abruf ohne ' +
+      'Wirkung, der beim nächsten Leser wie ein Beleg für ihre Anwesenheit aussieht',
+  );
+
+  // Positiv-Kontrolle gegen zu gieriges Strippen: bliebe von der Datei nur
+  // Prosa uebrig, wären die beiden Abwesenheits-Zusagen oben wertlos.
+  assert.match(
+    code,
+    /<QiOneBuyBox\b/,
+    'Positiv-Kontrolle: <QiOneBuyBox> fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+test('JEDE andere Kaufflaeche behaelt die Mitteilung unter dem Kauf-Knopf', () => {
+  const code = ohneKommentare(readFileSync(PRODUCT_FORM, 'utf8'));
+
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis\s*=\s*true/,
+    'Der Default in ProductForm ist nicht mehr true. Damit verlieren alle ' +
+      'Kaufflaechen ohne eigene Route-Datei (Catch-all products.$handle) die ' +
+      'Pflichtmitteilung -- still, bei weiterhin HTTP 200.',
+  );
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis\s*\?\s*<EuGewaehrleistungsHinweis\s*\/>/,
+    'ProductForm rendert die Mitteilung nicht mehr -- der Default oben wäre ' +
+      'dann eine Prop ohne Wirkung',
+  );
+
+  assert.match(
+    code,
+    /<AddToCartButton/,
+    'Positiv-Kontrolle: der Kauf-Knopf fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+test('die Buy-Box reicht den Schalter durch, statt ihn zu schlucken', () => {
+  const code = ohneKommentare(readFileSync(BUY_BOX, 'utf8'));
+
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis\s*=\s*true/,
+    'QiOneBuyBox kennt die Prop nicht mehr -- das `false` der PDP kommt nie an',
+  );
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis=\{gewaehrleistungsHinweis\}/,
+    'QiOneBuyBox nimmt die Prop entgegen, gibt sie aber nicht an ProductForm ' +
+      'weiter. Das `false` der Route wird dann lautlos verschluckt und die ' +
+      'Mitteilung steht ZWEIMAL auf der Seite.',
+  );
+
+  assert.match(
+    code,
+    /<ProductForm/,
+    'Positiv-Kontrolle: <ProductForm> fehlt -- die Datei wurde nicht gelesen wie erwartet',
   );
 });
