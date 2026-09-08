@@ -180,3 +180,73 @@
 .qb-qu__zu-den-artikeln a:focus-visible {
   text-decoration: underline;
 }
+
+/* ============================================================================
+   CHROME-ANGLEICHUNG — der Teil des 94/100-Rezepts, den der erste Wurf
+   ausgelassen hatte.
+
+   Es genügt NICHT, im eigenen Scope EIN Gold und EINEN Radius zu führen: die
+   Rubrik misst die AUSGELIEFERTE Seite, und Kopf, Fuß und Fremd-Widgets
+   bringen ihre eigenen mit. Gemessen an genau dieser Seite (design-rubrik,
+   Branch-Build): zwei warme Akzent-Cluster — unser #856828 und das alte
+   Hell-Gold #f2bf72 aus app.css/redesign-3themen.css — sowie drei
+   Bild-Radien (4px, 6px, 20px), von denen KEINER aus diesem Blatt stammt.
+   Der Befund war also echt und trotzdem nicht im eigenen Scope zu beheben.
+
+   Hausmuster, dem das hier folgt: app/styles/schlaf-zellen-schutz.css
+   (Kopf: "Der body:has()-Layer hebt die fremden Gold-Toene auf den EINEN
+   Akzent") und app/styles/erfahrungen.css, die damit 92/100 mit NULL
+   Befunden zu Skala/Farbe/Radien erreicht.
+
+   WARUM HIER #856828 UND NICHT DAS MARKEN-GOLD #c9a14b: auf dieser Route
+   trägt das Gold ausschließlich SCHRIFT (die DOI-Links und der Weg zurück in
+   den Artikel). #c9a14b erreicht als Text auf hellem Grund keine 4,5:1 —
+   #856828 ist genau dafür da und steht als `--st-akzent-tinte` schon im
+   Studien-Blatt. Ein zweites Gold nur für das Chrome einzuführen hieße, den
+   gemessenen Befund gegen einen Kontrast-Fehler zu tauschen.
+   ========================================================================== */
+body:has(.qb-qu) {
+  --color-accent-primary: var(--qu-akzent-tinte);
+  --rd3-gold: var(--qu-akzent-tinte);
+  --qb-sterne-gold: var(--qu-akzent-tinte);
+  /* Der Shop-Umschalter im Kopf legt eine 18-%-Lasur desselben Fremd-Ockers
+     an — blass, aber für die Messung ein zweiter Ton. */
+  --shop-switch-active: rgba(133, 104, 40, 0.18);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch für die Bilder, die nicht aus
+   dieser Seite kommen (Logo im Kopf, Siegel im Fuß). */
+body:has(.qb-qu) img,
+body:has(.qb-qu) picture,
+body:has(.qb-qu) video {
+  border-radius: var(--qu-r1);
+}
+
+/* NEWSLETTER-BUTTON = der zweite Goldton, und er ist das EINZIGE Element mit
+   rgb(242,191,114) auf dieser Seite (gemessen: audit.json -> buttons, Eintrag
+   „Jetzt anmelden" im Footer-Newsletter). Gesetzt wird er von einer
+   INJIZIERTEN Vendor-Regel `#_form_<zufalls-id> ._submit { background:#f2bf72
+   !important }` — die trägt eine ID, also verliert jede reine Klassen-Regel
+   dagegen, auch mit !important. Deshalb derselbe Weg wie in den Schwester-
+   Blättern (uebersicht.css, partner.css): über die STABILE ID #qi-newsletter
+   gehen (gleiche ID-Gewichtung, eine Klasse mehr => gewinnt). Die Form-ID
+   selbst ist bei jedem Render neu und darf NICHT adressiert werden.
+
+   WARUM HIER #856828 UND NICHT #c9a14b WIE IN uebersicht.css: dort trägt das
+   Gold keine Schrift, hier schon (91 gemessene Textvorkommen: DOI-Links und
+   der Weg zurück in den Artikel). Zwei Töne wären wieder zwei Cluster — und
+   von den beiden ist #c9a14b als Text auf hellem Grund nicht AA-fähig.
+   Der Knopf bekommt deshalb WEISSE Schrift: 5,2:1 auf #856828, geprüft.
+   Dunkle Schrift wäre hier der Fehler (auf #856828 nur 2,8:1) — genau
+   umgekehrt zum helleren #c9a14b, wo die dunkle Schrift richtig ist. */
+body:has(.qb-qu) #qi-newsletter ._submit,
+body:has(.qb-qu) #qi-newsletter button,
+body:has(.qb-qu) #qi-newsletter input[type='submit'],
+body:has(.qb-qu) ._form_15 button,
+body:has(.qb-qu) ._form_15 ._submit,
+body:has(.qb-qu) ._form_15 input[type='submit'] {
+  background: var(--qu-akzent-tinte) !important;
+  color: #ffffff !important;
+  border-radius: var(--qu-r1) !important;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+}
