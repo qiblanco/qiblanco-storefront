@@ -3,6 +3,8 @@ import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
 import {artikelInhaltAufraeumen} from '~/lib/blog-inhalt';
+import {autorenkastenSichtbarkeit} from '~/lib/autorenkasten';
+import {Autorenkasten} from '~/components/Autorenkasten';
 import blogStyles from '~/styles/blog.css?url';
 
 // EIGENES STYLESHEET STATT app/styles/app.css: die Blog-Regeln lagen bis zum
@@ -17,7 +19,7 @@ export const links = () => [{rel: 'stylesheet', href: blogStyles}];
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data, location}) => {
-  return blogMeta({
+  const basis = blogMeta({
     pfad: location?.pathname ?? '/blogs',
     titel: data?.article?.seo?.title || data?.article?.title,
     // DER EXCERPT IST DIE AUFFANGLINIE, UND ER IST REDAKTIONELL GESCHRIEBEN:
@@ -31,6 +33,15 @@ export const meta = ({data, location}) => {
     bildUrl: data?.article?.image?.url,
     typ: 'article',
   });
+
+  // VORSCHAU WIRD NICHT INDEXIERT. Der Vorschauweg existiert, damit ein Mensch
+  // den noch nicht freigegebenen Autorenkasten als SEITE lesen kann (und damit
+  // die Design-Rubrik ihn scoren kann) -- nicht, damit eine zweite Fassung
+  // derselben Seite in den Index gerät. Ohne diese Zeile wäre der Parameter
+  // ein stiller Duplicate-Content-Erzeuger.
+  return data?.autorenkasten?.vorschau
+    ? [...basis, {name: 'robots', content: 'noindex, nofollow'}]
+    : basis;
 };
 
 /**
@@ -90,7 +101,13 @@ async function loadCriticalData({context, request, params}) {
     .filter((a) => a?.handle && a.handle !== articleHandle)
     .slice(0, 3);
 
-  return {article, blogHandle, weitere};
+  // DER AUTORENKASTEN WIRD HIER ENTSCHIEDEN, NICHT IN DER KOMPONENTE.
+  // Die Sichtbarkeit hängt an der angefragten URL (Vorschau-Parameter), und
+  // die kennt nur der Server. Entschiede die Komponente selbst, wären
+  // Server-Render und Hydration zwei Antworten auf dieselbe Frage.
+  const autorenkasten = autorenkastenSichtbarkeit(request.url);
+
+  return {article, blogHandle, weitere, autorenkasten};
 }
 
 /**
@@ -105,7 +122,7 @@ function loadDeferredData({context}) {
 
 export default function Article() {
   /** @type {LoaderReturnData} */
-  const {article, blogHandle, weitere} = useLoaderData();
+  const {article, blogHandle, weitere, autorenkasten} = useLoaderData();
   const {title, image, contentHtml, author} = article;
 
   // de-DE statt en-US: das Hausmuster steht in app/lib/withdrawal.js. Auf einem
@@ -182,6 +199,12 @@ export default function Article() {
             </Link>
           </p>
         </aside>
+
+        {/* GANZ AM ENDE, "wie in einem guten Buch" (Christian). Oben am Artikel
+          bleibt es knapp: Datum und Name. Wer bis hierher gelesen hat, darf
+          wissen, wer da geschrieben hat -- vorher wäre es eine Behauptung
+          über Autoritaet, hier ist es eine Auskunft. */}
+        <Autorenkasten sichtbar={autorenkasten?.sichtbar} />
       </div>
     </div>
   );
