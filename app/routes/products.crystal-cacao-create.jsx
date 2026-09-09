@@ -11,6 +11,7 @@ import {
 import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/components/CacaoProductForm';
 import {CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {useState} from 'react';
@@ -163,6 +164,10 @@ export default function Product() {
             handle={product.handle}
             quantity={quantity}
             onQuantityChange={setQuantity}
+            /* Elina EL-20260909-8c4001d1: die Mitteilung hängt auf dieser
+               Kaufflaeche IN der Nutzen-Liste darunter. Hier abgeschaltet --
+               sonst stuende sie zweimal auf der Seite. */
+            gewaehrleistungsHinweis={false}
           />
           <CacaoBenefitList />
         </div>
@@ -196,6 +201,17 @@ function CacaoBenefitList() {
         <li>🔄 100 % Geld-zurück-Garantie bei Unzufriedenheit</li>
         <li>🔬 Laboranalytisch geprüft (Dartsch Institut)</li>
         <li>🌿 Bio-zertifiziert nach DE-ÖKO-006</li>
+        {/* Elina EL-20260909-8c4001d1: die Pflichtmitteilung ist hier der
+            SECHSTE Punkt derselben Liste, nicht mehr ein Block unter dem
+            Kauf-Knopf. Bestellt war "Abstand/Icon-Groesse/Schrift/Hover
+            identisch zu den anderen 5 Zeilen dieser Liste" -- alle vier
+            Werte sind deshalb GEERBT: der Abstand aus `.CacaoBenefitList ul
+            { gap: 0.6rem }`, Schrift und Zeilenhoehe aus
+            `.CacaoBenefitList li`, die Zeichen-Hoehe aus der `1em`-Regel
+            daneben (app.css). Nachgebaute Zahlen laufen still auseinander.
+            Der Default in CacaoProductForm ist oben abgeschaltet; ohne das
+            stuende die Mitteilung zweimal auf der Seite. */}
+        <EuGewaehrleistungsListenpunkt />
       </ul>
     </div>
   );

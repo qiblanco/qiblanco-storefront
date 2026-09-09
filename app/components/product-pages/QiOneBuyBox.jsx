@@ -165,11 +165,28 @@ export function QiOneBuyBox({
  * es nicht selbst: nur so kann der Aufrufer mitgeben, was IN der Zeile steht
  * (beim Gewaehrleistungs-Punkt gehört das Overlay mit hinein).
  *
- * WARUM SLOT UND NICHT EIN FUENFTER FESTER PUNKT: die Liste läuft auf drei
- * Kaufflaechen (products.qione-2-pro, QiOne2ProShop, QiOne2Pro2xShop). Nur
- * die erste trägt den Gewaehrleistungs-Hinweis IN der Liste; auf den beiden
- * anderen hängt er weiter unter dem Kauf-Knopf. Ein fester Punkt haette ihn
- * dort verdoppelt. Default `null` heißt: nichts aendert sich für sie.
+ * WARUM SLOT UND NICHT EIN FUENFTER FESTER PUNKT: die Liste läuft in drei
+ * Bausteinen (products.qione-2-pro, QiOne2ProShop, QiOne2Pro2xShop), und seit
+ * Elina EL-20260909-8c4001d1 füllen alle drei den Slot.
+ *
+ * DAVON SIND HEUTE ZWEI ERREICHBAR, und das gehört hierher, weil der Satz
+ * darueber sonst mehr verspricht als er hält: /products/qione-2-pro und
+ * /pages/qione-2-pro. Die zweite ist `shop-spiegel` der ersten (Design-QA,
+ * Referenz /products/qione-2-pro) -- ein Punkt, den das Original in der Liste
+ * trägt und der Spiegel als Block daneben, ist genau die Abweichung, gegen
+ * die diese Klasse gebaut ist. QiOne2Pro2xShop dagegen ist am 2026-09-09
+ * gemessen NICHT MONTIERT: /pages/qione-2-pro-2x rendert seit Elina
+ * EL-20260724-9b18d2ba <TenYearsDealPage> und antwortet obendrein 404 (live
+ * wie im Dev-Lauf; der Existenz-Guard ihres Loaders greift). Der Baustein ist
+ * trotzdem mitgezogen worden: eine Bauform, die als einzige zurueckbleibt,
+ * ist die Falle für den, der die Seite eines Tages wieder einhaengt.
+ *
+ * Der Slot BLEIBT trotzdem ein Slot und wird kein fester fünfter Punkt: die
+ * Mitteilung bringt ihr eigenes Overlay mit, und ein fester Punkt haette sie
+ * auf jeder künftigen Wiederverwendung dieser Liste mitgeschleppt -- auch
+ * dort, wo daneben schon ein ProductForm mit dem Default true steht. Dann
+ * stuende sie zweimal auf der Seite. Default `null` heißt weiterhin: wer
+ * nichts sagt, bekommt nichts.
  *
  * @param {{zusatzPunkt?: React.ReactNode}} props  zusatzPunkt MUSS ein <li>
  *   liefern -- alles andere wäre ein ungueltiges Kind einer <ul>.

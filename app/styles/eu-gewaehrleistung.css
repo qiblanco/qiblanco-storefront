@@ -67,8 +67,10 @@
  * beide Stellen zusammen.
  *
  * DIE 36 PX GELTEN FUER DIE BLOCK-BAUFORM. In der Listen-Bauform (seit
- * Elina EL-20260909-395f848c) ueberschreibt `.BenefitList .eu-gwl__zeichen`
- * sie mit `1em` -- rund 19 px, weil die Nachbar-Icons genau so gross sind.
+ * Elina EL-20260909-395f848c) ueberschreiben `.BenefitList .eu-gwl__zeichen`
+ * und `.CacaoBenefitList .eu-gwl__zeichen` sie mit `1em` -- rund 19 px bzw.
+ * rund 14 px, weil die Nachbar-Icons bzw. die Emoji daneben genau so gross
+ * sind.
  * Die srcset-Leiter rechnet dort also mit MEHR, als die Flaeche braucht:
  * das Bild kommt schaerfer als noetig herein, nicht unschaerfer. Bewusst
  * hingenommen, weil eine zweite Anzeigebreite eine zweite Zahl waere, die
@@ -88,7 +90,12 @@
 /*
  * Elina EL-20260909-395f848c: der Hinweis soll "optisch wie ein weiterer,
  * fuenfter Punkt der bestehenden Icon-Liste wirken, nicht wie ein separater
- * Block darunter".
+ * Block darunter". EL-20260909-8c4001d1 hat denselben Zuschnitt auf jede
+ * Kaufflaeche mit eigener Nutzen-Liste gezogen; je nach Liste ist er dort
+ * der 4., 5. oder 6. Punkt. DIESE DATEI MUSSTE DAFUER NICHT ANGEFASST
+ * WERDEN, und das ist der Beleg fuer den Zuschnitt: was hier steht, sagt
+ * nichts ueber die Liste aus, in der der Punkt haengt -- es nimmt ihm nur
+ * die Gestaltung der Block-Bauform ab und gibt ihm den Zeiger-Zustand.
  *
  * DER GROESSTE TEIL DAVON STEHT ABSICHTLICH NIRGENDS.
  * Zeilenabstand (`li { margin-bottom: 0.5rem }`) sowie Schriftart, -groesse,

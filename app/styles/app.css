@@ -2090,11 +2090,20 @@ ul.submenu li a {
 /*
  * ICON-SPALTE DER NUTZEN-LISTE -- EINE Regel fuer alle Punkte.
  *
- * Seit Elina EL-20260909-395f848c traegt die Liste einen fuenften Punkt
+ * Seit Elina EL-20260909-395f848c traegt die Liste einen weiteren Punkt
  * (gesetzliche Gewaehrleistung), und dessen Icon ist ein BILD, kein <svg>.
+ * Seit EL-20260909-8c4001d1 gilt das fuer JEDE .BenefitList im Shop -- die
+ * Klasse traegt acht Kaufflaechen (QiOne 2 Pro + seine beiden /pages-
+ * Spiegel, QiHome Air und QiBracelet je organisch + Spiegel, QiOne-Kette).
+ * Genau deshalb steht die Regel hier an der KLASSE und nicht je Seite: sonst
+ * waere sie achtmal nachzuziehen und beim naechsten Mal siebenmal.
+ * Die Kakao-Liste (.CacaoBenefitList) hat keine <svg>-Spalte und regelt ihr
+ * Zeichen darum bei sich selbst, weiter unten in dieser Datei.
  * Bestellt ist "gleiches Groessenformat des Icons wie die anderen Icons in
  * der Liste" -- der Abstand steht deshalb EINMAL fuer beide Bauarten. Wer
- * ihn kuenftig anfasst, fasst alle fuenf Zeilen an.
+ * ihn kuenftig anfasst, fasst ALLE Zeilen JEDER dieser Listen an (sie sind
+ * verschieden lang: vier Punkte bei QiHome Air, QiBracelet und der Kette,
+ * fuenf bei QiOne 2 Pro).
  *
  * `display: inline-block` ist hier nicht Kosmetik: die Preflight-Basis
  * stellt <img> UND <svg> auf `display: block`. Ohne diese Zeile rutscht das
@@ -2480,6 +2489,51 @@ ul.submenu li a {
 .CacaoBenefitList li {
   font-size: 0.9rem;
   line-height: 1.5;
+}
+/*
+ * DAS ZEICHEN DES SECHSTEN PUNKTES (Elina EL-20260909-8c4001d1).
+ *
+ * Diese Liste hat keine <svg>-Spalte: ihre fuenf Zeilen tragen ein EMOJI im
+ * Fliesstext, gefolgt von einem Leerzeichen. Der Gewaehrleistungs-Punkt
+ * bringt stattdessen ein <img> mit -- die einzige Stelle, an der er sich
+ * baulich von seinen Nachbarn unterscheidet, und deshalb die einzige, an der
+ * hier ueberhaupt CSS steht. Abstand, Schrift und Zeilenhoehe kommen aus den
+ * beiden Regeln darueber und werden bewusst NICHT wiederholt.
+ *
+ * `display: inline-block` ist keine Kosmetik: die Preflight-Basis stellt
+ * <img> auf `display: block`. Ohne diese Zeile rutscht das Zeichen auf eine
+ * eigene Zeile ueber seinen Text -- und dann steht der Punkt zweizeilig
+ * zwischen fuenf einzeiligen.
+ *
+ * `height: 1em` und keine px-Zahl: 1em IST die Schriftgroesse dieser Zeile
+ * (0,9rem), also genau die Groesse, in der die Emoji daneben gesetzt werden.
+ * Wandert die Listenschrift einmal, wandert das Zeichen mit; eine px-Zahl
+ * waere ab diesem Tag daneben, ohne dass es jemand bemerkt. `width: auto`
+ * laesst die Breite aus dem echten Seitenverhaeltnis des Bildes folgen
+ * (240 x 251) -- kein Beschnitt, keine Verzerrung.
+ *
+ * `margin-right` ersetzt das LEERZEICHEN, das in den fuenf Nachbarzeilen
+ * hinter dem Emoji steht. Ohne es klebte der Text am Zeichen, waehrend er
+ * darueber fuenfmal abgesetzt ist.
+ *
+ * DIE 0,3em SIND NACHGEMESSEN, NICHT GESCHAETZT (Chromium, 1440 px,
+ * 2026-09-09). Verglichen wurde, wo das erste BUCHSTABEN-Zeichen der Zeile
+ * beginnt -- der naive Vergleich "Beginn des ersten Textknotens" waere hier
+ * falsch gewesen, weil das Emoji in den Bestandszeilen TEIL dieses Knotens
+ * ist und in der neuen Zeile nicht:
+ *     Zeile 1/2/4/5 (Emoji): Zeichen ab 792,38 px, 14,00 px breit,
+ *                            Luecke 3,98 px, Wort ab 810,36 px
+ *     Zeile 6 (Bild):        Zeichen ab 792,38 px, 13,63 px breit,
+ *                            Luecke 4,31 px, Wort ab 810,31 px
+ * Unterschied im Wortbeginn: 0,05 px. Die groessere Luecke gleicht genau die
+ * geringere Breite des Zeichens aus -- es ist kein Quadrat wie ein Emoji,
+ * sondern 240 x 251.
+ */
+.CacaoBenefitList .eu-gwl__zeichen {
+  display: inline-block;
+  height: 1em;
+  width: auto;
+  margin-right: 0.3em;
 }
 
 .LogoBar {

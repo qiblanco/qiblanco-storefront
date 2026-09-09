@@ -687,7 +687,14 @@ test('die PDP montiert die Mitteilung selbst -- und der Zweifel-Satz ist weg', (
   );
 });
 
-test('JEDE andere Kaufflaeche behaelt die Mitteilung unter dem Kauf-Knopf', () => {
+test('der Default in ProductForm trägt die Flaechen ohne eigene Nutzen-Liste', () => {
+  // BIS ZUM 2026-09-09 HIESS DIESE ZUSAGE "JEDE ANDERE KAUFFLAECHE" -- das ist
+  // seit Elina EL-20260909-8c4001d1 falsch: acht Kaufflaechen montieren die
+  // Mitteilung inzwischen selbst. Gemessen hat der Test das nie; er misst den
+  // DEFAULT, und der trägt weiterhin genau die Gruppe, um die es hier geht:
+  // die Kaufflaechen OHNE eigene Nutzen-Liste, allen voran die vielen über
+  // den Catch-all products.$handle. Ein Titel, der mehr verspricht als die
+  // Zusage darunter hält, ist im nächsten Befund die falsche Faehrte.
   const code = ohneKommentare(readFileSync(PRODUCT_FORM, 'utf8'));
 
   assert.match(
@@ -955,5 +962,235 @@ test('das Zeichen im Listenpunkt ist so groß wie die Nachbar-Icons', () => {
     `Die Bildleiter rechnet mit ${AUSLOESER_ZEICHEN.anzeigeBreite} px, der ` +
       `Listenpunkt zeigt das Zeichen aber ${zeichenBreitePx.toFixed(1)} px ` +
       'breit. Das Zeichen wird damit sichtbar unscharf ausgeliefert.',
+  );
+});
+
+/* ---------------------------------------------------------------------------
+ * DIE AUSWEITUNG (Elina EL-20260909-8c4001d1, gebaut 2026-09-09).
+ *
+ * BESTELLT WAR EINE REGEL, KEINE SEITENLISTE. Elinas Auftrag zählt zwar
+ * Seiten auf ("QiHome Air, QiBracelet und die Necklace-Seiten … die
+ * Crystal-Cacao-Kakao-Produktseiten"), schließt aber mit dem Satz, der die
+ * eigentliche Trennlinie zieht: "auf allen anderen Produktseiten OHNE solche
+ * Icon-Liste bleibt der Hinweis unveraendert wie bisher unter dem
+ * Kauf-Button". Die Frage ist also nicht, welche Seite gemeint war, sondern
+ * ob eine Kaufflaeche eine eigene Nutzen-Liste hat.
+ *
+ * DER WAECHTER SUCHT DIE FLAECHEN DESHALB, STATT SIE ZU KENNEN. Eine
+ * hart notierte Liste wäre ab der nächsten neuen Kaufflaeche unvollstaendig,
+ * ohne dass es jemandem auffaellt -- und genau dort faellt die
+ * Pflichtmitteilung dann still zwischen die beiden Bauformen: der Default ist
+ * abgeschaltet, der Listenpunkt fehlt, die Seite antwortet weiter HTTP 200.
+ *
+ * ZWEI RICHTUNGEN, weil eine allein nichts wert wäre:
+ *   - Flaeche MIT Liste  -> Punkt IN der Liste UND Default abgeschaltet.
+ *   - Flaeche OHNE Liste -> Default NICHT abgeschaltet (Elinas Schlusssatz).
+ * ------------------------------------------------------------------------ */
+
+import {readdirSync} from 'node:fs';
+
+/** Rendert die Datei eine Nutzen-Liste? (Die Definition der geteilten Liste in
+ *  QiOneBuyBox.jsx zählt NICHT -- sie rendert sich nicht selbst.) */
+const LISTE_GERENDERT = /<(?:QiOne|Cacao)?BenefitList[\s/>]/;
+/** Rendert die Datei ueberhaupt einen Kauf-Knopf-Traeger? */
+const KAUFFLAECHE = /<(?:Cacao)?ProductForm[\s/>]|<QiOneBuyBox[\s/>]/;
+
+function jsxDateien(...verzeichnisse) {
+  const treffer = [];
+  for (const v of verzeichnisse) {
+    const abs = join(HIER, '..', ...v);
+    for (const name of readdirSync(abs)) {
+      if (!name.endsWith('.jsx')) continue;
+      treffer.push({
+        pfad: [...v, name].join('/'),
+        code: ohneKommentare(readFileSync(join(abs, name), 'utf8')),
+      });
+    }
+  }
+  return treffer;
+}
+
+const ALLE_FLAECHEN = jsxDateien(
+  ['app', 'routes'],
+  ['app', 'components', 'product-pages'],
+  ['app', 'components', 'campaign'],
+);
+
+test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
+  const mitListe = ALLE_FLAECHEN.filter(
+    (d) => LISTE_GERENDERT.test(d.code) && KAUFFLAECHE.test(d.code),
+  );
+
+  // POSITIV-KONTROLLE ZUERST. Ohne sie wäre ein zu enger Sucher nicht rot,
+  // sondern GRUEN über der leeren Menge -- und das sieht aus wie ein
+  // bestandener Lauf. Die acht Flaechen sind am 2026-09-09 gemessen; kommt
+  // eine dazu, faellt sie in die Zusagen darunter, nicht hier heraus.
+  const gefunden = mitListe.map((d) => d.pfad).sort();
+  for (const pflicht of [
+    'app/components/product-pages/QiBraceletShop.jsx',
+    'app/components/product-pages/QiHomeAirShop.jsx',
+    'app/components/product-pages/QiOne2Pro2xShop.jsx',
+    'app/components/product-pages/QiOne2ProShop.jsx',
+    'app/routes/products.crystal-cacao-awake.jsx',
+    'app/routes/products.crystal-cacao-create.jsx',
+    'app/routes/products.qibracelet.jsx',
+    'app/routes/products.qihome-air.jsx',
+    'app/routes/products.qione-2-pro.jsx',
+    'app/routes/products.qione-kette.jsx',
+  ]) {
+    assert.ok(
+      gefunden.includes(pflicht),
+      `Positiv-Kontrolle: ${pflicht} wird vom Sucher nicht mehr als ` +
+        'Kaufflaeche-mit-Nutzen-Liste erkannt. Die Zusagen unten laufen dann ' +
+        `über einer zu kleinen Menge (gefunden: ${gefunden.join(', ')}).`,
+    );
+  }
+
+  for (const {pfad, code} of mitListe) {
+    // GEMESSEN WIRD DIE MONTAGE, NICHT DER NAME. Eine blosse Namenssuche war
+    // der erste Anlauf und ueberlebte die Mutationsprobe: der Name steht auch
+    // in der import-Zeile, also blieb die Zusage gruen, nachdem der Punkt aus
+    // der Liste GELOESCHT war. Ein Waechter, der den Namen einer Sache zählt
+    // statt die Sache, misst hier die Einfuhr und nicht die Montage.
+    const montiert = /<EuGewaehrleistungsListenpunkt\s*\/>/;
+    assert.match(
+      code,
+      montiert,
+      `${pfad} hat eine eigene Nutzen-Liste, hängt die Pflichtmitteilung aber ` +
+        'nicht hinein. Bestellt (Elina EL-20260909-8c4001d1): wo eine solche ' +
+        'Liste steht, ist der Hinweis ihr letzter Punkt.',
+    );
+    assert.match(
+      code,
+      /import\s*\{[^}]*EuGewaehrleistungsListenpunkt/,
+      `${pfad} rendert den Listenpunkt, führt ihn aber nicht ein -- das baut nicht.`,
+    );
+    // UND ER MUSS IN DER LISTE STEHEN, nicht daneben. Sonst ist er wieder
+    // genau der Block, der weg sollte -- nur mit einer <li>-Huelle, die
+    // ausserhalb einer <ul> ungueltiges HTML ist. Zwei erlaubte Orte: direkt
+    // zwischen <ul> und </ul> der eigenen Liste, oder als `zusatzPunkt` an
+    // die geteilte QiOneBenefitList uebergeben (die ihn INNERHALB ihrer <ul>
+    // einsetzt -- das prueft die Zusage weiter oben an QiOneBuyBox.jsx).
+    const stelle = code.search(montiert);
+    const alsSlot = /zusatzPunkt=\{<EuGewaehrleistungsListenpunkt \/>\}/.test(code);
+    const inListe = [...code.matchAll(/<ul[\s>]/g)].some((auf) => {
+      const zu = code.indexOf('</ul>', auf.index);
+      return zu > auf.index && stelle > auf.index && stelle < zu;
+    });
+    assert.ok(
+      alsSlot || inListe,
+      `${pfad} montiert den Listenpunkt AUSSERHALB der Nutzen-Liste. Dann ist ` +
+        'er wieder ein Block daneben -- und eine <li> ausserhalb einer <ul> ' +
+        'ist ausserdem ungueltiges HTML.',
+    );
+    assert.match(
+      code,
+      /gewaehrleistungsHinweis=\{false\}/,
+      `${pfad} montiert den Listenpunkt, schaltet den Default unter dem ` +
+        'Kauf-Knopf aber nicht ab -- die Mitteilung stuende zweimal auf der Seite.',
+    );
+  }
+});
+
+test('jede Kaufflaeche OHNE Nutzen-Liste behaelt ihn unter dem Kauf-Knopf', () => {
+  const ohneListe = ALLE_FLAECHEN.filter(
+    (d) => KAUFFLAECHE.test(d.code) && !LISTE_GERENDERT.test(d.code),
+  );
+
+  // Wieder zuerst die Positiv-Kontrolle: die Gegenrichtung wäre sonst eine
+  // Zusage über der leeren Menge. products.$handle ist der Catch-all, über
+  // den die MEISTEN Kaufflaechen des Shops laufen; zeremonie-kakao ist die
+  // Kakao-Seite, die als einzige keine Nutzen-Liste hat.
+  const gefunden = ohneListe.map((d) => d.pfad).sort();
+  for (const pflicht of [
+    'app/routes/products.$handle.jsx',
+    'app/routes/products.zeremonie-kakao.jsx',
+  ]) {
+    assert.ok(
+      gefunden.includes(pflicht),
+      `Positiv-Kontrolle: ${pflicht} steht nicht mehr in der Gegenprobe ` +
+        `(gefunden: ${gefunden.join(', ')}).`,
+    );
+  }
+
+  for (const {pfad, code} of ohneListe) {
+    assert.doesNotMatch(
+      code,
+      /gewaehrleistungsHinweis=\{false\}/,
+      `${pfad} schaltet die Pflichtmitteilung unter dem Kauf-Knopf ab, hat ` +
+        'aber keine Nutzen-Liste, in der sie stattdessen stuende. Sie faellt ' +
+        'auf dieser Flaeche ersatzlos weg -- bei weiterhin HTTP 200.',
+    );
+  }
+});
+
+test('die Kakao-Naht reicht den Schalter durch, statt ihn zu schlucken', () => {
+  const code = ohneKommentare(
+    readFileSync(join(HIER, '..', 'app', 'components', 'CacaoProductForm.jsx'), 'utf8'),
+  );
+
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis\s*=\s*true/,
+    'CacaoProductForm kennt die Prop nicht (mehr) -- dann verlieren alle ' +
+      'Kakao-Flaechen ohne eigene Liste die Pflichtmitteilung oder tragen sie ' +
+      'doppelt.',
+  );
+  assert.match(
+    code,
+    /gewaehrleistungsHinweis\s*\?\s*<EuGewaehrleistungsHinweis\s*\/>/,
+    'CacaoProductForm nimmt die Prop entgegen, rendert die Mitteilung aber ' +
+      'unabhängig davon -- der Schalter wäre eine Prop ohne Wirkung.',
+  );
+  assert.match(
+    code,
+    /<AddToCartButton/,
+    'Positiv-Kontrolle: der Kauf-Knopf fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+test('das Zeichen in der Kakao-Liste ist so groß wie die Emoji daneben', () => {
+  const appCss = ohneCssKommentare(readFileSync(APP_CSS, 'utf8'));
+
+  const bloecke = [
+    ...appCss.matchAll(/\.CacaoBenefitList \.eu-gwl__zeichen\s*\{([^}]*)\}/g),
+  ].map((m) => m[1]);
+  assert.ok(bloecke.length > 0, 'die Kakao-Liste regelt ihr Zeichen nicht');
+
+  // 1. Hoehe in em, nicht in px. Diese Liste setzt ihre Schrift SELBST
+  //    (.CacaoBenefitList li { font-size: 0.9rem }) und damit anders als jede
+  //    andere -- eine px-Zahl wäre hier von vornherein die falsche.
+  assert.ok(
+    bloecke.some((b) => /height:\s*1em/.test(b) && /width:\s*auto/.test(b)),
+    'Das Zeichen wird nicht auf Zeilenhoehe (1em) gebracht -- es bliebe auf ' +
+      'den 36 px der Block-Bauform und wäre zweieinhalbmal so hoch wie die ' +
+      'fünf Emoji darueber.',
+  );
+
+  // 2. Ohne display: inline-block rutscht das Bild auf eine eigene Zeile
+  //    (Preflight stellt <img> auf display: block). Der Punkt stuende dann
+  //    zweizeilig zwischen fünf einzeiligen -- sichtbar, aber niemand
+  //    vermutet die Ursache in einer Basisregel.
+  assert.ok(
+    bloecke.some((b) => /display:\s*inline-block/.test(b)),
+    'Das Zeichen bleibt display: block und bricht die Zeile auf.',
+  );
+
+  // 3. RICHTUNGS-ZUSAGE für DIE BILDLEITER, wie bei der .BenefitList: die
+  //    Anzeigebreite darf die tatsaechliche Flaeche nie UNTERschreiten, sonst
+  //    liefert die srcset-Leiter zu wenig Pixel und das Zeichen wird unscharf.
+  const cacaoLi = appCss.match(/\.CacaoBenefitList li\s*\{([^}]*)\}/);
+  assert.ok(cacaoLi, 'die Kakao-Liste führt keine eigene Schriftgroesse mehr');
+  const rem = cacaoLi[1].match(/font-size:\s*([\d.]+)rem/);
+  assert.ok(rem, '.CacaoBenefitList li führt keine Schriftgroesse in rem');
+
+  const WURZEL_PX = 16;
+  const breitePx =
+    ((Number(rem[1]) * WURZEL_PX) * AUSLOESER_ZEICHEN.breite) /
+    AUSLOESER_ZEICHEN.hoehe;
+  assert.ok(
+    AUSLOESER_ZEICHEN.anzeigeBreite >= breitePx,
+    `Die Bildleiter rechnet mit ${AUSLOESER_ZEICHEN.anzeigeBreite} px, die ` +
+      `Kakao-Liste zeigt das Zeichen aber ${breitePx.toFixed(1)} px breit.`,
   );
 });

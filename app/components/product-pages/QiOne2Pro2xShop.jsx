@@ -6,6 +6,7 @@ import {
   QiOneBenefitList,
 } from '~/components/product-pages/QiOneBuyBox';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
@@ -85,7 +86,19 @@ export function QiOne2Pro2xShop({product}) {
           priceLabel={
             <div className="BestsellerLabel">2er-Set — Set-Vorteil im Warenkorb</div>
           }
-          benefitList={<QiOneBenefitList />}
+          /* Elina EL-20260909-8c4001d1: der Gewaehrleistungs-Punkt hängt
+             jetzt IN der Liste statt als Block unter dem Kauf-Knopf --
+             derselbe Slot, den EL-20260909-395f848c für die organische PDP
+             gebaut hat. Diese Seite ist deren `shop-spiegel` (Design-QA,
+             Referenz /products/qione-2-pro); haette sie den Punkt weiter
+             daneben stehen, wäre das eine Abweichung vom Original, die
+             genau diese Klasse verhindern soll.
+             `gewaehrleistungsHinweis={false}` schaltet den Default in
+             ProductForm ab -- ohne ihn stuende die Mitteilung zweimal da. */
+          benefitList={
+            <QiOneBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
+          }
+          gewaehrleistungsHinweis={false}
         />
       </section>
       {/* Scent-Anker der 4 LP-Herkünfte (global gestylt, shop-kompatibel) */}

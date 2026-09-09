@@ -24,7 +24,15 @@ import {useAside} from './Aside';
  * Aussage) steuert, ob die EU-Pflichtmitteilung hier unter dem Kauf-Knopf
  * hängt. Elina EL-20260908-d8349a01 hat sie auf /products/qione-2-pro weiter
  * nach unten verschoben; dort schaltet die Route sie hier ab und montiert sie
- * selbst. Jede ANDERE Kaufflaeche behaelt sie an dieser Stelle.
+ * selbst.
+ *
+ * SEIT ELINA EL-20260909-8c4001d1 IST DAS NICHT MEHR DIE AUSNAHME EINER
+ * SEITE, SONDERN EINE REGEL: jede Kaufflaeche MIT eigener Nutzen-Liste
+ * schaltet hier ab und hängt den Punkt in ihre Liste; jede Kaufflaeche OHNE
+ * solche Liste behaelt ihn an dieser Stelle. Der Default trägt weiterhin
+ * die zweite Gruppe -- und zwar die groessere: die meisten Kaufflaechen
+ * entstehen über veroeffentlichte Shopify-Produkte ohne eigene Route-Datei
+ * (Catch-all products.$handle) und können gar nichts abschalten.
  *
  * WARUM EIN ABSCHALTER UND NICHT EIN AUSBAU: die Naht sitzt hier, weil die
  * meisten Kaufflaechen über veroeffentlichte Shopify-Produkte OHNE eigene
