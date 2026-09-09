@@ -122,6 +122,96 @@ function kachelVars(studie, i) {
   };
 }
 
+/**
+ * WEITERFÜHRENDE FACHARTIKEL — die fehlende Richtung der internen Verlinkung.
+ *
+ * WARUM ES DIESEN BLOCK GIBT (Befund 2026-09-09, am ausgelieferten Rand
+ * gemessen): die acht Fachartikel unter /blogs/wissen/ verlinken diese Seite
+ * sehr wohl, diese Seite verlinkte sie NICHT — 0 Vorkommen von
+ * "/blogs/wissen/" im ausgelieferten HTML. Schlimmer: gezaehlt über die
+ * gerenderten Anker verlinkt GAR KEINE indexierte Seite den Blog
+ * (Startseite 0/35, diese Seite 0/50); der Blog-Index verweist nur auf sich
+ * selbst. Die Artikel hängen damit allein an der Sitemap und haben null
+ * internes Gewicht — gemessen: `site:qiblanco.com/blogs/wissen` liefert
+ * Googles wörtliche Null-Treffer-Seite, waehrend `site:qiblanco.com`
+ * zehn Treffer gibt. Dieser Block ist die erste Verbindung aus dem
+ * indexierten Teil der Domain in den Blog.
+ *
+ * WARUM ALS KARTEN UND NICHT ALS LINKLISTE: /pages/studien ist eine
+ * Beweis-Flaeche; ihre Aufgabe ist der NÄCHSTE KLICK, nicht der Kauf
+ * (Kaufüberzeugungs-Kanon). Jeder Eintrag ist deshalb als Zustand des
+ * Lesers formuliert ("Was Ihr Körper nachts an Zellschutz leistet"), nicht
+ * als Produktmerkmal und nicht als "weitere Artikel". Der Kicker nimmt die
+ * Frage auf, mit der der Leser hier steht — die Wirksamkeits-Skepsis ist
+ * der mit Abstand häufigste Einwand im Bestand.
+ *
+ * KUNDENSPRACHE VOR FACHWORT: Kunden schreiben Schutz, Wirkung, Schlaf,
+ * Ruhe — fast nie "kohärentes Wasser". Der Fachbegriff steht deshalb
+ * nirgends am Anfang eines Eintrags, sondern hoechstens als Erklaerung.
+ *
+ * BEWUSST OHNE GRUPPEN-UEBERSCHRIFTEN: app/data/werk.js gruppiert dieselben
+ * acht Artikel bereits in drei Stränge. Deren BENENNUNG ist eine
+ * unentschiedene Vorlage bei Christian (review.db,
+ * blog-redaktion:entscheidung:werk-straenge-benennung-20260908) und
+ * app/lib/werk.js hält sie ausdrücklich per STRAENGE_LIVE=false zurück.
+ * Eine eigene Gruppen-Benennung hier wäre eine zweite Stelle, die dieselbe
+ * offene Entscheidung führt — deshalb flach.
+ *
+ * REIHENFOLGE: erst die Wirksamkeitsfrage (der Einwand, der blockt), dann
+ * Mechanismus, dann Schlaf. Das folgt der gemessenen Einwandslage, nicht
+ * der Sortierung im Shop.
+ */
+const WEITERFUEHREND = [
+  {
+    pfad: '/blogs/wissen/strukturiertes-wasser-trend-was-gemessen-ist',
+    frage: 'Wirkt das überhaupt?',
+    titel: 'Strukturiertes Wasser: was davon wirklich gemessen ist',
+    text: 'Der Trend ist überall. Hier steht, welcher Teil davon im Labor nachweisbar ist — und welcher nicht.',
+  },
+  {
+    pfad: '/blogs/wissen/kohaerentes-wasser-was-die-forschung-misst',
+    frage: 'Wirkt das überhaupt?',
+    titel: 'Was die Forschung an diesem Wasser wirklich misst',
+    text: 'Die Messgrößen hinter dem Begriff „kohärentes Wasser“ — in Größenordnungen statt in Versprechen.',
+  },
+  {
+    pfad: '/blogs/wissen/zellulaere-hydration-biophysik',
+    frage: 'Wie wirkt das im Körper?',
+    titel: 'Was Wasser in Ihren Zellen tut',
+    text: 'Warum es für den Körper einen Unterschied macht, in welcher Form Wasser in der Zelle vorliegt.',
+  },
+  {
+    pfad: '/blogs/wissen/blutfluss-vierte-phase-wasser-pollack',
+    frage: 'Wie wirkt das im Körper?',
+    titel: 'Wie Ihr Blut durch die feinsten Gefäße kommt',
+    text: 'Die vierte Phase des Wassers nach Gerald Pollack — und was sie mit dem Blutfluss zu tun hat.',
+  },
+  {
+    pfad: '/blogs/wissen/schlaf-zellschutz-mechanismen-der-nacht',
+    frage: 'Was passiert nachts?',
+    titel: 'Was Ihr Körper nachts an Zellschutz leistet',
+    text: 'Die Mechanismen, die im Schlaf anlaufen — und welcher Teil davon messbar ist.',
+  },
+  {
+    pfad: '/blogs/wissen/schlafqualitaet-wasser-drei-studien',
+    frage: 'Schlafen Sie schlecht?',
+    titel: 'Schlafqualität und Trinkmenge: drei Studien nachgerechnet',
+    text: 'Drei Arbeiten, die den Zusammenhang untersucht haben — mit ihren Grenzen offen benannt.',
+  },
+  {
+    pfad: '/blogs/wissen/schlaf-vermessen-trend-optimierte-nacht',
+    frage: 'Lohnt sich das Messen?',
+    titel: 'Ihre Schlafdaten: was die Zahlen hergeben',
+    text: 'Ring, Uhr, Matte — was die vermessene Nacht wirklich zeigt und wo sie sich irrt.',
+  },
+  {
+    pfad: '/blogs/wissen/nervensystem-regulieren-trend-innere-ruhe',
+    frage: 'Kommen Sie nicht zur Ruhe?',
+    titel: 'Nervensystem regulieren: was hinter dem Trend steckt',
+    text: 'Was an der inneren Ruhe messbar ist — und was davon Marketing bleibt.',
+  },
+];
+
 export function StudienUebersicht() {
   const produkte = untersuchteProdukte();
   const anzahl = zahlwort(STUDIEN.length);
@@ -256,6 +346,29 @@ export function StudienUebersicht() {
         </section>
 
         <HrvMessreihe />
+
+        <section
+          className="qb-st-sektion"
+          id="weiterfuehrend"
+          aria-labelledby="weiterfuehrend-titel"
+        >
+          <h2 id="weiterfuehrend-titel">Bleibt eine Frage offen?</h2>
+          <p className="qb-st-sektion-intro">
+            Die {anzahl} Arbeiten oben prüfen unsere Geräte. Die Fragen
+            dahinter — was Wasser im Körper tut, was nachts messbar passiert,
+            was an den bekannten Trends dran ist — behandeln wir ausführlich im
+            Wissensteil. Dort steht jeweils, was gemessen ist und was nicht.
+          </p>
+          <div className="qb-st-verwandt-grid">
+            {WEITERFUEHREND.map((a) => (
+              <Link key={a.pfad} to={a.pfad} className="qb-st-verwandt-karte">
+                <span className="qb-st-verwandt-kicker">{a.frage}</span>
+                <strong>{a.titel}</strong>
+                <span className="qb-st-verwandt-text">{a.text}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         <section className="qb-st-sektion" aria-labelledby="produkte-titel">
           <h2 id="produkte-titel">Die untersuchten Produkte</h2>
