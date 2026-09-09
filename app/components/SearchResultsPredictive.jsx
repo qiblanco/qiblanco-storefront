@@ -1,11 +1,12 @@
 import {Link, useFetcher} from 'react-router';
-import {Image, Money} from '@shopify/hydrogen';
+import {Image} from '@shopify/hydrogen';
 import React, {useRef, useEffect} from 'react';
 import {
   getEmptyPredictiveSearchResult,
   urlWithTrackingParams,
 } from '~/lib/search';
 import {useAside} from './Aside';
+import {KachelPreis} from '~/components/KachelPreis';
 
 /**
  * Component that renders predictive search results
@@ -195,7 +196,11 @@ function SearchResultsPredictiveProducts({term, products, closeSearch}) {
                 )}
                 <div>
                   <p>{product.title}</p>
-                  <small>{price && <Money data={price} />}</small>
+                  <small>
+                    {price && (
+                      <KachelPreis money={price} handle={product.handle} />
+                    )}
+                  </small>
                 </div>
               </Link>
             </li>

@@ -116,6 +116,7 @@ export function QiOneBuyBox({
 
         <div className="Bestseller-Price">
           <ProductPrice
+            handle={product?.handle}
             price={selectedVariant?.price}
             compareAtPrice={mitStreichpreisFallback(
               selectedVariant?.compareAtPrice,

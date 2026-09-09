@@ -1,6 +1,7 @@
 import {Link} from 'react-router';
-import {Image, Money, Pagination} from '@shopify/hydrogen';
+import {Image, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams} from '~/lib/search';
+import {KachelPreis} from '~/components/KachelPreis';
 
 /**
  * @param {Omit<SearchResultsProps, 'error' | 'type'>}
@@ -115,7 +116,11 @@ function SearchResultsProducts({term, products}) {
                   )}
                   <div>
                     <p>{product.title}</p>
-                    <small>{price && <Money data={price} />}</small>
+                    <small>
+                      {price && (
+                        <KachelPreis money={price} handle={product.handle} />
+                      )}
+                    </small>
                   </div>
                 </Link>
               </div>
