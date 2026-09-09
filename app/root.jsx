@@ -37,7 +37,7 @@ import rechtstextStyles from '~/styles/rechtstext.css?url';
 // nutzende Route in den Design-Gate-Diff. Alles ist auf .eu-gwl gescopt.
 import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
 // Typo-Tokens der zwei Kakao-Kaufseiten (/products/crystal-cacao-awake|-create).
-// Global geladen wie qb-swipetab/rechtstext/eu-gewaehrleistung und ausschliesslich
+// Global geladen wie qb-swipetab/rechtstext/eu-gewaehrleistung und ausschließlich
 // auf .kk-*-Klassen wirksam — eine Seite ohne diese Klassen sieht davon nichts.
 import kakaoKaufseiteStyles from '~/styles/kakao-kaufseite.css?url';
 import {hreflangLinks} from '~/lib/hreflang';

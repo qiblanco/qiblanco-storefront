@@ -380,12 +380,12 @@ function Ursprung() {
 }
 
 function HerobannerWithText({src, text}) {
-  // Die Ueberschrift wird nur gerendert, wenn es eine GIBT. Beide Kakao-Seiten
+  // Die Überschrift wird nur gerendert, wenn es eine GIBT. Beide Kakao-Seiten
   // rufen dieses Bauteil heute mit text="" auf — daraus wurde eine LEERE h2 im
-  // Dokument: fuer Vorleseprogramme und fuer die Ueberschriften-Gliederung eine
-  // Ueberschrift ohne Inhalt, und fuer die Design-Rubrik ein ZWEITER H2-Stil
+  // Dokument: für Vorleseprogramme und für die Überschriften-Gliederung eine
+  // Überschrift ohne Inhalt, und für die Design-Rubrik ein ZWEITER H2-Stil
   // (48px/600 neben den 35,2px/600 der Sektionen), der die Seite unter die
-  // Schwelle zog. Ein Bildbanner ohne Text ist ein Bild, keine Ueberschrift.
+  // Schwelle zog. Ein Bildbanner ohne Text ist ein Bild, keine Überschrift.
   const hatText = typeof text === 'string' ? text.trim() !== '' : Boolean(text);
   return (
     <div className="my-[10vh]! relative">
