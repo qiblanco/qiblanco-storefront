@@ -36,6 +36,10 @@ import rechtstextStyles from '~/styles/rechtstext.css?url';
 // Global geladen wie qb-swipetab: ein Route-eigenes links() zoege jede
 // nutzende Route in den Design-Gate-Diff. Alles ist auf .eu-gwl gescopt.
 import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
+// Typo-Tokens der zwei Kakao-Kaufseiten (/products/crystal-cacao-awake|-create).
+// Global geladen wie qb-swipetab/rechtstext/eu-gewaehrleistung und ausschliesslich
+// auf .kk-*-Klassen wirksam — eine Seite ohne diese Klassen sieht davon nichts.
+import kakaoKaufseiteStyles from '~/styles/kakao-kaufseite.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
@@ -339,6 +343,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={qbSwipetabStyles}></link>
         <link rel="stylesheet" href={rechtstextStyles}></link>
         <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
+        <link rel="stylesheet" href={kakaoKaufseiteStyles}></link>
         {shouldLoadThirdPartyScripts && (
           <script
             id="Cookiebot"

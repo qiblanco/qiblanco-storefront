@@ -1,0 +1,67 @@
+/* KAKAO-KAUFSEITEN — Typo-Token-Satz fuer /products/crystal-cacao-awake und
+ * /products/crystal-cacao-create.
+ *
+ * ANLASS (gemessen, nicht vermutet): beide Kaufseiten lagen live bei
+ * design-rubrik 78 gegen Schwelle 80, Treiber war stimmig_typo 48. Die 52
+ * Punkte Abzug kamen aus genau zwei Stellen:
+ *   -40  DREI H2-Stil-Kombis statt einer: 6x 35,2px/600 (Hausgroesse aus
+ *        reset.css), 2x 48px/600 (Hero-Ueberschrift mit style={{fontSize:'3em'}}
+ *        und eine LEERE Ueberschrift im Bildbanner), 1x 16px/700 (der Studien-
+ *        Titel im GEMEINSAMEN Footer, seit 2026-09-08 bewusst ein h2).
+ *   -12  Skalen-Fit: die Nachbarverhaeltnisse der Schriftgroessen lagen nur zu
+ *        50 % im modularen Band, weil zwischen Fliesstext 19,2px und
+ *        Ueberschrift 35,2px NICHTS lag (Sprung 1,83) — die Zwischengroesse
+ *        28,8px war zwar da (Preis), aber zu selten, um als Stufe zu zaehlen.
+ *
+ * WAS DIESE DATEI TUT: sie gibt den drei bis dahin FREI GETIPPTEN Werten der
+ * Seite (3em, 2em, 1.8rem an drei Stellen) EINEN Namen und EINE Quelle. Sie
+ * fuehrt KEINE neue Groesse ein — jeder Token unten ist eine Stufe, die der
+ * Shop schon hat (design-meister markt_tokens web-tokens v1: 12 / 14 / 14,4 /
+ * 16 / 17,6 / 19,2 / 22,4 / 35,2 / 40, dazu die 28,8 des Kakao-Preises, die
+ * jene Messung an /products/qione-2-pro nicht sehen konnte).
+ *
+ * WARUM GLOBAL GELADEN UND NICHT PER links() JE ROUTE: dasselbe Muster wie
+ * qb-swipetab.css, rechtstext.css und eu-gewaehrleistung.css in root.jsx — ein
+ * Route-eigenes links() zoege jede nutzende Route in den Design-Gate-Diff, und
+ * das "daran denken muessen" ist genau der Weg, auf dem die ungestalteten
+ * Rechtsseiten entstanden sind. Wirkung gibt es nur ueber die kk-*-Klassen;
+ * eine Seite, die keine davon traegt, sieht von dieser Datei baulich nichts.
+ *
+ * WARUM DIE KLASSEN DIE GROESSE AUSSCHREIBEN, statt sie von reset.css zu erben:
+ * Tailwind laedt seine Utilities in @layer utilities, reset.css steht
+ * ungelayert — deshalb gewinnt reset.css HEUTE gegen jedes text-*-Utility,
+ * unabhaengig von der Spezifitaet. Die Seite trug darum Klassen wie
+ * `text-2xl font-bold` an h2, die nichts bewirkten und trotzdem eine Groesse
+ * BEHAUPTETEN. Ein ausgeschriebener Token haengt nicht an dieser Reihenfolge.
+ */
+
+:root {
+  /* Typo-Stufen der Kakao-Kaufseite. Werte in rem gegen die 16px-Basis. */
+  --kk-fs-h2: 2.2rem;     /* 35,2 px — Haus-h2 (reset.css), EIN H2-Stil je Seite */
+  --kk-fs-lead: 1.8rem;   /* 28,8 px — Zwischenstufe: Hero-Unterzeile UND Preis */
+  --kk-fs-mikro: 0.85rem; /* 13,6 px — Kleinsttext (Preis je 100 g) */
+
+  /* Abstand der Hero-Ueberschrift. Ersetzt marginTop:'50px' — 48 px liegt auf
+     dem 8pt-Grid der Design-SSoT (tokens.spacing_grid_px), 50 lag daneben. */
+  --kk-space-hero-top: 3rem;
+}
+
+/* EIN H2-Stil je Seite. Gewicht und Groesse ausgeschrieben, damit die
+   Ueberschrift nicht von der Ladereihenfolge zweier Stylesheets abhaengt. */
+.kk-h2 {
+  font-size: var(--kk-fs-h2);
+  font-weight: 600;
+}
+
+/* Die Hero-Ueberschrift ist derselbe H2-Stil — sie unterscheidet sich NUR im
+   Abstand nach oben, nicht in Groesse oder Gewicht. Genau darin lag der Fehler:
+   sie war ueber einen freien Wert 3em (48 px) zu einem zweiten H2-Stil geworden. */
+.kk-h2--hero {
+  margin-top: var(--kk-space-hero-top);
+}
+
+/* Unterzeile der Hero-Ueberschrift ("High Performance Cacao"). Teilt sich den
+   Token mit dem Preis: dieselbe Stufe, eine Quelle. */
+.kk-lead {
+  font-size: var(--kk-fs-lead);
+}

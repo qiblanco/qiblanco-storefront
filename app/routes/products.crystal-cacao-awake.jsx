@@ -110,8 +110,8 @@ export default function Product() {
           <LazyImage highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug.webp?v=1766482188"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug_small.webp?v=1766482188" />
         </div>
-        <h2 style={{fontSize: '3em', marginTop: '50px'}}>Wach. Mutig. Kraftvoll.</h2>
-        <h3 style={{fontSize: '2em'}}>High Performance Cacao</h3>
+        <h2 className="kk-h2 kk-h2--hero">Wach. Mutig. Kraftvoll.</h2>
+        <h3 className="kk-lead">High Performance Cacao</h3>
       </div>
       <div className="product">
         <div className="ProductImages">
