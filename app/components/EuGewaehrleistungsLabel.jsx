@@ -22,10 +22,18 @@ import {
  * (Anhang I der Durchfuehrungsverordnung (EU) 2025/1960, Pflicht ab
  * 27.09.2026).
  *
- * Diese Datei enthält DREI Bausteine und EIN Overlay:
- *   <EuLabelProvider>            -- hält genau EINEN <dialog> je Seite
- *   <EuGewaehrleistungsHinweis>  -- Produktseite: Zeichen + Text-Link
- *   <EuGewaehrleistungsLink>     -- Footer: NUR der Text-Link
+ * Diese Datei enthält VIER Bausteine und EIN Overlay:
+ *   <EuLabelProvider>              -- hält genau EINEN <dialog> je Seite
+ *   <EuGewaehrleistungsHinweis>    -- Produktseite: Zeichen + Text-Link,
+ *                                     als eigener Block (Kauf-Knopf, Korb)
+ *   <EuGewaehrleistungsListenpunkt>-- Produktseite: derselbe Inhalt als
+ *                                     <li> INNERHALB der Nutzen-Liste
+ *                                     (Elina EL-20260909-395f848c)
+ *   <EuGewaehrleistungsLink>       -- Footer: NUR der Text-Link
+ *
+ * Die beiden Produktseiten-Bauformen unterscheiden sich NUR in ihrer
+ * Hülle. Text, Zeichen, Messmarke und Overlay sind dieselben -- wer
+ * am Inhalt etwas aendert, aendert ihn für beide.
  *
  * Beide Ausloeser öffnen dasselbe Overlay. DIE AMTLICHE GRAFIK ERSCHEINT
  * NUR DORT -- nirgends offen im Seitenfluss.
@@ -285,7 +293,12 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
  * AUSSERHALB des <button> und ist für Screenreader unsichtbar (alt="",
  * aria-hidden) -- der Knopf daneben sagt bereits, was es zeigt.
  */
-function EuLabelAusloeser({flaeche, beschriftung, zeichen = null}) {
+function EuLabelAusloeser({
+  flaeche,
+  beschriftung,
+  zeichen = null,
+  eigeneZeile = true,
+}) {
   const kontext = useEuLabel();
   if (!kontext) return null;
 
@@ -312,20 +325,43 @@ function EuLabelAusloeser({flaeche, beschriftung, zeichen = null}) {
     masterBreite: zeichen.breite,
   });
 
+  const bild = (
+    <img
+      className="eu-gwl__zeichen"
+      src={quellen.src}
+      srcSet={quellen.srcSet}
+      sizes={quellen.sizes}
+      alt=""
+      aria-hidden="true"
+      width={zeichen.breite}
+      height={zeichen.hoehe}
+      loading="lazy"
+      decoding="async"
+    />
+  );
+
+  /*
+   * `eigeneZeile={false}` gibt Zeichen und Knopf NACKT zurück, ohne den
+   * Flex-Kasten. Das ist kein Gestaltungsgeschmack, sondern die Bedingung
+   * dafür, dass der Ausloeser in einer fremden Zeile mitlaufen kann: als
+   * fuenfter <li> der Nutzen-Liste MUSS er im normalen Inline-Fluss stehen,
+   * sonst richtet `align-items: center` das Zeichen anders aus als die vier
+   * Geschwister-Icons darueber (die hängen an der Schriftlinie) -- und
+   * genau der halbe Pixel Versatz ist es, den man als "gehört nicht dazu"
+   * sieht, ohne ihn benennen zu können.
+   */
+  if (!eigeneZeile) {
+    return (
+      <>
+        {bild}
+        {knopf}
+      </>
+    );
+  }
+
   return (
     <span className="eu-gwl__zeile">
-      <img
-        className="eu-gwl__zeichen"
-        src={quellen.src}
-        srcSet={quellen.srcSet}
-        sizes={quellen.sizes}
-        alt=""
-        aria-hidden="true"
-        width={zeichen.breite}
-        height={zeichen.hoehe}
-        loading="lazy"
-        decoding="async"
-      />
+      {bild}
       {knopf}
     </span>
   );
@@ -377,6 +413,75 @@ function EuLabelHinweisFlaeche() {
         zeichen={AUSLOESER_ZEICHEN}
       />
     </section>
+  );
+}
+
+/**
+ * PRODUKTSEITE, ZWEITE BAUFORM: derselbe Hinweis als LISTENPUNKT.
+ *
+ * Elina EL-20260909-395f848c: auf /products/qione-2-pro soll der Hinweis
+ * "optisch wie ein weiterer, fuenfter Punkt der bestehenden Icon-Liste
+ * wirken, nicht wie ein separater Block darunter".
+ *
+ * WARUM DAS EINE EIGENE BAUFORM IST UND KEINE CSS-ZEILE
+ * Die drei bestellten Angleichungen (Zeilenabstand, Icon-Groesse, Schrift)
+ * sind alle drei Werte, die die Nutzen-Liste bereits FÜHRT -- als <li> in
+ * ihrem eigenen <ul>. Der <section>-Bau von gestern kann sie nur NACHBAUEN:
+ *   - `section { padding: 1rem 0 }` (reset.css) plus `.eu-gwl--pdp
+ *     { margin: 1rem 0 0 }` sind zusammen der zu große Abstand oben. Ein
+ *     <li> erbt stattdessen `li { margin-bottom: 0.5rem }` -- denselben
+ *     Wert wie die vier Geschwister.
+ *   - `p, li { font-size: 1.2rem; line-height: 1.4; color: … }` greift auf
+ *     einer <section> gar nicht. Der Knopf steht deshalb heute in der
+ *     Grundschrift des <body>, nicht in der Listenschrift.
+ * Nachgebaute Werte laufen beim nächsten Anfassen der Liste auseinander,
+ * und zwar STILL: die Seite sieht weiter vollstaendig aus. Geerbte nicht.
+ *
+ * DIE <li> LIEGT AUSSERHALB DES PROVIDERS, und das ist der Kern:
+ * EuLabelProvider rendert {children} UND den <dialog> als Geschwister. Stuende
+ * die <li> innen, wäre der <dialog> ein direktes Kind des <ul> -- ungueltiges
+ * HTML. Der Browser-Parser hebt ihn dann beim Einlesen aus der Liste heraus,
+ * der Serverbau hat ihn drin, und React findet beim Hydrieren einen anderen
+ * Baum vor als es geschrieben hat. Solche Naehte fallen nicht im Build auf,
+ * sondern beim Kunden.
+ *
+ * Die Sprachmarke wird hier ein zweites Mal aufgeloest (der Provider tut es
+ * für das Overlay). Auseinanderlaufen können die beiden nicht:
+ * labelFuerSprache ist eine reine Funktion auf demselben Loader-Wert.
+ */
+export function EuGewaehrleistungsListenpunkt() {
+  const label = useEuLabelAsset();
+
+  return (
+    <li className="eu-gwl eu-gwl--listenpunkt" data-eu-label-iso={label.iso}>
+      <EuLabelProvider>
+        <EuLabelListenpunktFlaeche />
+      </EuLabelProvider>
+    </li>
+  );
+}
+
+/**
+ * Der Inhalt des Listenpunkts. Kein eigenes Huellelement mehr -- die <li>
+ * oben IST die Zeile, und `eigeneZeile={false}` hält Zeichen und Knopf im
+ * normalen Inline-Fluss, genau wie <svg> + Text in den vier Punkten darueber.
+ *
+ * Die MESSMARKE bleibt `pdp`. Sie benennt die FLAECHE (Kaufseite), nicht die
+ * Bauform -- probe_eulabel_live_kaufseite.py misst an ihr, dass der Kunde die
+ * Pflichtmitteilung sieht. Eine dritte Marke hier haette diese Probe still
+ * blind gemacht, obwohl sich nur die Gestaltung geaendert hat.
+ */
+function EuLabelListenpunktFlaeche() {
+  const kontext = useEuLabel();
+  if (!kontext) return null;
+
+  return (
+    <EuLabelAusloeser
+      flaeche="pdp"
+      beschriftung={AUSLOESER_TEXT_PDP}
+      zeichen={AUSLOESER_ZEICHEN}
+      eigeneZeile={false}
+    />
   );
 }
 
