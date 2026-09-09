@@ -28,7 +28,9 @@ import {
  *                                     als eigener Block (Kauf-Knopf, Korb)
  *   <EuGewaehrleistungsListenpunkt>-- Produktseite: derselbe Inhalt als
  *                                     <li> INNERHALB der Nutzen-Liste
- *                                     (Elina EL-20260909-395f848c)
+ *                                     (Elina EL-20260909-395f848c, seit
+ *                                     EL-20260909-8c4001d1 auf JEDER
+ *                                     Kaufflaeche mit eigener Nutzen-Liste)
  *   <EuGewaehrleistungsLink>       -- Footer: NUR der Text-Link
  *
  * Die beiden Produktseiten-Bauformen unterscheiden sich NUR in ihrer
@@ -374,12 +376,22 @@ function EuLabelAusloeser({
  * Datei).
  *
  * WO DIESER BAUSTEIN AUF DER SEITE HÄNGT, ENTSCHEIDET DER AUFRUFER -- und
- * seit dem 2026-09-08 nicht mehr ueberall gleich: auf /products/qione-2-pro
- * montiert ihn die Route selbst unter der Nutzen-Liste (Elina
- * EL-20260908-d8349a01), auf jeder anderen Kaufflaeche hängt er wie bisher
- * an ProductForm unmittelbar unter dem Kauf-Knopf. Der Baustein weiss davon
- * nichts und soll es nicht wissen: die Naht gegen doppelte Montage sitzt in
- * ProductForm (Prop `gewaehrleistungsHinweis`), nicht hier.
+ * seit dem 2026-09-08 nicht mehr ueberall gleich.
+ *
+ * DIE TRENNLINIE IST SEIT ELINA EL-20260909-8c4001d1 EINE EINZIGE FRAGE:
+ * hat die Kaufflaeche eine eigene Nutzen-Liste (<ul> neben dem Kauf-Knopf)?
+ *   ja   -> sie montiert <EuGewaehrleistungsListenpunkt> IN diese Liste und
+ *           schaltet den Default in ProductForm/CacaoProductForm ab.
+ *   nein -> sie lässt den Default stehen; dieser Baustein hier hängt dann
+ *           wie bisher unmittelbar unter dem Kauf-Knopf.
+ * Das ist bewusst KEINE Seitenliste: eine Aufzaehlung wäre ab der nächsten
+ * neuen Kaufflaeche unvollstaendig, ohne dass es jemandem auffaellt. Die
+ * Regel steht als Waechter im Test (test/eu-gewaehrleistung.test.mjs), der
+ * die Flaechen SUCHT statt sie zu kennen.
+ *
+ * Der Baustein weiss von alldem nichts und soll es nicht wissen: die Naht
+ * gegen doppelte Montage sitzt in ProductForm/CacaoProductForm (Prop
+ * `gewaehrleistungsHinweis`), nicht hier.
  */
 export function EuGewaehrleistungsHinweis() {
   return (
@@ -421,7 +433,11 @@ function EuLabelHinweisFlaeche() {
  *
  * Elina EL-20260909-395f848c: auf /products/qione-2-pro soll der Hinweis
  * "optisch wie ein weiterer, fuenfter Punkt der bestehenden Icon-Liste
- * wirken, nicht wie ein separater Block darunter".
+ * wirken, nicht wie ein separater Block darunter". EL-20260909-8c4001d1 hat
+ * denselben Zuschnitt auf JEDE Kaufflaeche mit eigener Nutzen-Liste gezogen
+ * -- der Baustein bleibt dabei unveraendert, genau weil er nichts über die
+ * Liste voraussetzt, in der er hängt (4., 5. oder 6. Punkt, <svg>-Spalte
+ * oder Emoji-Zeilen: die Masse kommen alle aus der Liste).
  *
  * WARUM DAS EINE EIGENE BAUFORM IST UND KEINE CSS-ZEILE
  * Die drei bestellten Angleichungen (Zeilenabstand, Icon-Groesse, Schrift)

@@ -104,9 +104,30 @@ export function cacaoSizeOptions(selectedVariant, handle) {
  * No Shopify variants — the dropdown controls the quantity
  * of the single product variant added to the cart.
  *
- * @param {{ selectedVariant: object, handle?: string, quantity: string, onQuantityChange: (val: string) => void }} props
+ * @param {{ selectedVariant: object, handle?: string, quantity: string,
+ *   onQuantityChange: (val: string) => void,
+ *   gewaehrleistungsHinweis?: boolean }} props
+ *
+ * `gewaehrleistungsHinweis` (Default TRUE, und der Default ist die
+ * eigentliche Aussage) steuert, ob die EU-Pflichtmitteilung hier unter dem
+ * Kauf-Knopf hängt -- wortgleich zur Prop in ProductForm, damit die beiden
+ * Nahtstellen nicht zwei Bedeutungen desselben Namens tragen.
+ *
+ * Seit Elina EL-20260909-8c4001d1 montieren die beiden Kakao-Kaufflaechen
+ * die Mitteilung selbst -- als sechsten Punkt ihrer Nutzen-Liste -- und
+ * schalten sie deshalb hier ab. WARUM EIN ABSCHALTER UND KEIN AUSBAU: der
+ * Default trägt jede kuenftige Kakao-Kaufflaeche, die ohne Nutzen-Liste
+ * gebaut wird. Wer die Naht hier herausnimmt, um sie auf zwei Seiten zu
+ * verschieben, nimmt sie damit still von allen uebrigen; die antworten
+ * weiter HTTP 200 und sehen vollstaendig aus.
  */
-export function CacaoProductForm({selectedVariant, handle, quantity, onQuantityChange}) {
+export function CacaoProductForm({
+  selectedVariant,
+  handle,
+  quantity,
+  onQuantityChange,
+  gewaehrleistungsHinweis = true,
+}) {
   const {open} = useAside();
 
   return (
@@ -162,7 +183,7 @@ export function CacaoProductForm({selectedVariant, handle, quantity, onQuantityC
         eigene Route-Datei über den Catch-all läuft. Eine Naht je Seite
         würde genau die stillschweigend auslassen.
       */}
-      <EuGewaehrleistungsHinweis />
+      {gewaehrleistungsHinweis ? <EuGewaehrleistungsHinweis /> : null}
     </div>
   );
 }

@@ -21,6 +21,7 @@ import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -130,6 +131,12 @@ export default function Product() {
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
+          /* Elina EL-20260909-8c4001d1: die Mitteilung hängt auf dieser
+             Kaufflaeche IN der Nutzen-Liste darunter. Hier abgeschaltet --
+             sonst stuende sie zweimal auf der Seite. Der Default bleibt
+             true; jede Flaeche OHNE eigene Nutzen-Liste behaelt sie an
+             dieser Stelle (Begründung in ProductForm.jsx). */
+          gewaehrleistungsHinweis={false}
         />
         <BenefitList />
       </div>
@@ -212,6 +219,17 @@ function BenefitList() {
           </svg>
           100% Versicherter Versand
         </li>
+        {/* Elina EL-20260909-8c4001d1: die Pflichtmitteilung ist hier der
+            4. Punkt DERSELBEN Liste -- nicht mehr ein eigener Block unter
+            dem Kauf-Knopf. Bestellt war "exakt gleiches Design": Abstand,
+            Schrift und Icon-Hoehe sind deshalb GEERBT (eine <li> in dieser
+            <ul>), nicht nachgebaut. Nachgebaute Zahlen sehen am Tag des Baus
+            gleich aus und laufen danach still auseinander.
+            Bauform + Begründung stehen EINMAL in EuGewaehrleistungsLabel.jsx
+            (EuGewaehrleistungsListenpunkt), damit alle Kaufflaechen sie
+            teilen. Der Default in ProductForm ist oben abgeschaltet; ohne das
+            stuende die Mitteilung zweimal auf der Seite. */}
+        <EuGewaehrleistungsListenpunkt />
       </ul>
     </div>
   );
