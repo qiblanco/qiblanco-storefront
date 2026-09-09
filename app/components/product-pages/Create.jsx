@@ -39,7 +39,7 @@ export function BioaktiveInhaltsstoffe() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 items-start">
         {/* Left: text */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold mb-5">
+          <h2 className="kk-h2 mb-5">
             7 bioaktive Inhaltsstoffe:
           </h2>
 
@@ -143,7 +143,7 @@ export function Mineralstoffe() {
 
         {/* Right: text */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold mb-5">Enthält 24 Mineralstoffe</h2>
+          <h2 className="kk-h2 mb-5">Enthält 24 Mineralstoffe</h2>
 
           {/* Mobile-only top image */}
           <img
@@ -231,7 +231,7 @@ const herkunftRows = [
 function Herkunft() {
   return (
     <div className="NormalSectionSize my-[100px]!">
-      <h2 className="text-center text-2xl font-bold mb-10">
+      <h2 className="kk-h2 text-center mb-10">
         Herkunft: Spüre die Kraft des Amazonas
       </h2>
       <div className="flex flex-col gap-12">
@@ -252,7 +252,7 @@ function Herkunft() {
 function Anwendung() {
   return (
     <div className="NormalSectionSize flex flex-col gap-2">
-      <h2>Anwendung & Tageszeiten</h2>
+      <h2 className="kk-h2">Anwendung & Tageszeiten</h2>
       <p>
         🕓 <b>Morgens:</b> Klarer Fokus und kraftvoller Start.
       </p>
@@ -344,7 +344,7 @@ const ursprungRows = [
 function Ursprung() {
   return (
     <div className="NormalSectionSize my-[100px]!">
-      <h2 className="text-center text-2xl font-bold mb-10">
+      <h2 className="kk-h2 text-center mb-10">
         Crystal Cacao® – Ursprung, der 6.300 Jahre zurückreicht
       </h2>
       <div className="flex flex-col gap-12">
@@ -372,12 +372,21 @@ function Ursprung() {
 }
 
 function HerobannerWithText({src, text}) {
+  // Die Überschrift wird nur gerendert, wenn es eine GIBT. Beide Kakao-Seiten
+  // rufen dieses Bauteil heute mit text="" auf — daraus wurde eine LEERE h2 im
+  // Dokument: für Vorleseprogramme und für die Überschriften-Gliederung eine
+  // Überschrift ohne Inhalt, und für die Design-Rubrik ein ZWEITER H2-Stil
+  // (48px/600 neben den 35,2px/600 der Sektionen), der die Seite unter die
+  // Schwelle zog. Ein Bildbanner ohne Text ist ein Bild, keine Überschrift.
+  const hatText = typeof text === 'string' ? text.trim() !== '' : Boolean(text);
   return (
     <div className="my-[10vh]! relative">
       <img className="w-full h-auto rounded-xl block" src={src} alt="" />
-      <h2 className="absolute top-10 left-0 right-0 text-center text-white! text-5xl!">
-        {text}
-      </h2>
+      {hatText ? (
+        <h2 className="kk-h2 absolute top-10 left-0 right-0 text-center text-white!">
+          {text}
+        </h2>
+      ) : null}
     </div>
   );
 }

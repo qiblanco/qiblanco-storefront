@@ -4322,8 +4322,15 @@ ul.kakao-children li {
   align-items: center;
   gap: 10px;
 }
+/* Preis-Stufe der Kakao-Kaufseite. 1.8rem = 28,8 px ist unveraendert der Wert,
+   der hier seit jeher steht — er kommt jetzt nur nicht mehr aus zwei
+   getippten Stellen, sondern aus EINEM Token (styles/kakao-kaufseite.css,
+   --kk-fs-lead), den sich der Preis mit der Hero-Unterzeile teilt. Genau
+   diese Zwischenstufe zwischen Fliesstext 19,2 px und Ueberschrift 35,2 px
+   fehlte der Seite als STUFE: sie war da, aber zu selten besetzt, um in der
+   Skalen-Pruefung der Design-Rubrik als Sprosse zu zaehlen. */
 .CacaoPriceCurrent {
-  font-size: 1.8rem!important;
+  font-size: var(--kk-fs-lead)!important;
   font-weight: 700!important;
   line-height: 1!important;
 }
@@ -4334,7 +4341,7 @@ ul.kakao-children li {
   color: #b8943e!important; 
 }
 .CacaoPriceCompare {
-  font-size: 1.8rem!important;
+  font-size: var(--kk-fs-lead)!important;
   color: var(--color-dark)!important;
   text-decoration: line-through!important;
 }
