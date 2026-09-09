@@ -2087,11 +2087,51 @@ ul.submenu li a {
 .BenefitList {
   margin-top: 40px;
 }
-.BenefitList svg{
+/*
+ * ICON-SPALTE DER NUTZEN-LISTE -- EINE Regel fuer alle Punkte.
+ *
+ * Seit Elina EL-20260909-395f848c traegt die Liste einen fuenften Punkt
+ * (gesetzliche Gewaehrleistung), und dessen Icon ist ein BILD, kein <svg>.
+ * Bestellt ist "gleiches Groessenformat des Icons wie die anderen Icons in
+ * der Liste" -- der Abstand steht deshalb EINMAL fuer beide Bauarten. Wer
+ * ihn kuenftig anfasst, fasst alle fuenf Zeilen an.
+ *
+ * `display: inline-block` ist hier nicht Kosmetik: die Preflight-Basis
+ * stellt <img> UND <svg> auf `display: block`. Ohne diese Zeile rutscht das
+ * Icon auf eine eigene Zeile ueber seinen Text.
+ */
+.BenefitList svg,
+.BenefitList .eu-gwl__zeichen {
   display: inline-block;
-  vertical-align: -.25;
   margin-right: 20px;
+}
+/*
+ * Was NUR fuer die vier Linien-Icons gilt: sie sind einfarbig und ziehen
+ * ihre Farbe ueber `fill="currentColor"` aus dieser Regel. Das
+ * EU-Sternenkranz-Zeichen steht hier ausdruecklich NICHT mit drin -- es
+ * bleibt das Originalbild in Blau (Elina EL-20260909-395f848c: "wird nicht
+ * wie die anderen einfarbig/als Linien-Icon nachgebaut"). Auf ein Rasterbild
+ * wirkt `color` ohnehin nicht; die Trennung steht trotzdem hier, damit
+ * niemand sie spaeter fuer eine Nachlaessigkeit haelt und "aufraeumt".
+ */
+.BenefitList svg{
+  vertical-align: -.25;
   color: var(--color-accent-primary);
+}
+/*
+ * Das Zeichen des fuenften Punkts auf Icon-Hoehe. Die vier <svg> tragen ihre
+ * `height="1em"` als Attribut; ein <img> kann das nicht, also steht es hier.
+ *
+ * `1em` und keine px-Zahl: em ist die Schriftgroesse DIESER Zeile. Damit
+ * bleibt das Zeichen genau so hoch wie die Nachbar-Icons, auch wenn die
+ * Listenschrift einmal wandert -- eine px-Zahl waere ab dem Tag daneben und
+ * es faellt niemandem auf. `width: auto` laesst die Breite aus den
+ * width/height-Attributen des Bildes folgen: kein Beschnitt, keine
+ * Verzerrung, kein zweites Seitenverhaeltnis neben dem echten.
+ */
+.BenefitList .eu-gwl__zeichen {
+  height: 1em;
+  width: auto;
 }
 .movedup-small{
   font-size: .7em;

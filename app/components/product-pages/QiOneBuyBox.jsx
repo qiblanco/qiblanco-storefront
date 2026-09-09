@@ -159,8 +159,22 @@ export function QiOneBuyBox({
  * Text lebt EINMAL hier; beide Seiten reusen dieselbe Komponente (Konzept
  * Kap. 3: „geteilte Komponente, Text lebt einmal"). Rein präsentational,
  * markup-identisch zur ursprünglichen PDP-BenefitList.
+ *
+ * `zusatzPunkt` (Elina EL-20260909-395f848c) hängt einen WEITEREN Punkt in
+ * DIESELBE <ul>. Der Slot nimmt bewusst ein fertiges <li> entgegen und baut
+ * es nicht selbst: nur so kann der Aufrufer mitgeben, was IN der Zeile steht
+ * (beim Gewaehrleistungs-Punkt gehört das Overlay mit hinein).
+ *
+ * WARUM SLOT UND NICHT EIN FUENFTER FESTER PUNKT: die Liste läuft auf drei
+ * Kaufflaechen (products.qione-2-pro, QiOne2ProShop, QiOne2Pro2xShop). Nur
+ * die erste trägt den Gewaehrleistungs-Hinweis IN der Liste; auf den beiden
+ * anderen hängt er weiter unter dem Kauf-Knopf. Ein fester Punkt haette ihn
+ * dort verdoppelt. Default `null` heißt: nichts aendert sich für sie.
+ *
+ * @param {{zusatzPunkt?: React.ReactNode}} props  zusatzPunkt MUSS ein <li>
+ *   liefern -- alles andere wäre ein ungueltiges Kind einer <ul>.
  */
-export function QiOneBenefitList() {
+export function QiOneBenefitList({zusatzPunkt = null}) {
   return (
     <div className="BenefitList">
       <ul>
@@ -220,6 +234,7 @@ export function QiOneBenefitList() {
           </svg>
           Inklusive Baumwollband | Sofort umhängen!
         </li>
+        {zusatzPunkt}
       </ul>
     </div>
   );

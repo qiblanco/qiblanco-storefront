@@ -393,7 +393,11 @@ test('der Ausloeser ist ein echtes button-Element -- auf beiden Flaechen', () =>
 
   // Beide Flaechen müssen ihn auch benutzen -- sonst wäre der Test oben
   // eine Aussage über toten Code.
-  for (const baustein of ['EuGewaehrleistungsHinweis', 'EuGewaehrleistungsLink']) {
+  for (const baustein of [
+    'EuGewaehrleistungsHinweis',
+    'EuGewaehrleistungsListenpunkt',
+    'EuGewaehrleistungsLink',
+  ]) {
     const von = code.indexOf(`export function ${baustein}`);
     assert.ok(von >= 0, `${baustein} fehlt`);
     assert.match(
@@ -543,6 +547,7 @@ test('beide öffentlichen Bausteine bringen ihr Overlay SELBST mit', () => {
   // gesetzliche Pflichtmitteilung fehlt. Erreichbarkeit ist nicht Inhalt.
   for (const [name, marke] of [
     ['EuGewaehrleistungsHinweis', '<EuLabelHinweisFlaeche'],
+    ['EuGewaehrleistungsListenpunkt', '<EuLabelListenpunktFlaeche'],
     ['EuGewaehrleistungsLink', '<EuLabelAusloeser'],
   ]) {
     const ab = code.indexOf(`export function ${name}(`);
@@ -636,16 +641,20 @@ const BUY_BOX = join(
 test('die PDP montiert die Mitteilung selbst -- und der Zweifel-Satz ist weg', () => {
   const code = ohneKommentare(readFileSync(PDP_ROUTE, 'utf8'));
 
+  // SEIT ELINA EL-20260909-395f848c IST DIE BAUFORM EINE ANDERE (Listenpunkt
+  // statt Block), die Zusage aber dieselbe: die Route montiert die Mitteilung
+  // SELBST. Nur der Name des Bausteins hat gewechselt -- wer hier den alten
+  // erwartet, misst ab jetzt eine Bauform, die es nicht mehr gibt.
   assert.match(
     code,
-    /<EuGewaehrleistungsHinweis\s*\/>/,
+    /<EuGewaehrleistungsListenpunkt\s*\/>/,
     '/products/qione-2-pro montiert die Mitteilung nicht selbst -- zusammen ' +
       'mit dem abgeschalteten Default unten faellt sie auf dieser Kaufflaeche ' +
       'ersatzlos weg.',
   );
   assert.match(
     code,
-    /import\s*\{\s*EuGewaehrleistungsHinweis\s*\}/,
+    /import\s*\{\s*EuGewaehrleistungsListenpunkt\s*\}/,
     'die Route rendert die Mitteilung, importiert sie aber nicht -- das baut nicht',
   );
   assert.match(
@@ -722,5 +731,229 @@ test('die Buy-Box reicht den Schalter durch, statt ihn zu schlucken', () => {
     code,
     /<ProductForm/,
     'Positiv-Kontrolle: <ProductForm> fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+/* ---------------------------------------------------------------------------
+ * DER FÜNFTE LISTENPUNKT (Elina EL-20260909-395f848c, gebaut 2026-09-09).
+ *
+ * BESTELLT WAR EIN EINDRUCK: der Gewaehrleistungs-Hinweis soll "optisch wie
+ * ein weiterer, fuenfter Punkt der bestehenden Icon-Liste wirken, nicht wie
+ * ein separater Block darunter" -- gleicher Zeilenabstand, gleiche
+ * Icon-Groesse, gleiche Schrift, und trotzdem ein erkennbarer Link.
+ *
+ * GEMESSEN WIRD DIE BAUFORM, NICHT DER EINDRUCK, und das ist Absicht: Abstand,
+ * Schriftgroesse und Icon-Hoehe sind genau dann dauerhaft gleich, wenn sie
+ * GEERBT sind (<li> in derselben <ul>). Ein Nachbau derselben Zahlen sieht am
+ * Tag des Baus identisch aus und läuft danach still auseinander -- niemand
+ * sieht es, weil die Seite vollstaendig aussieht. Die vier Waechter unten
+ * halten deshalb die Vererbung fest, nicht die Zahlen.
+ * ------------------------------------------------------------------------ */
+
+const APP_CSS = join(HIER, '..', 'app', 'styles', 'app.css');
+const RESET_CSS = join(HIER, '..', 'app', 'styles', 'reset.css');
+
+/** CSS-Kommentare weg, BEVOR nach Regelbloecken gesucht wird. */
+function ohneCssKommentare(css) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '');
+}
+
+test('der Gewaehrleistungs-Punkt hängt IN der Nutzen-Liste -- und sein Overlay mit ihm', () => {
+  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+
+  const ab = code.indexOf('export function EuGewaehrleistungsListenpunkt');
+  assert.ok(ab >= 0, 'die Listen-Bauform fehlt');
+  const Körper = code.slice(ab, code.indexOf('function EuLabelListenpunktFlaeche'));
+
+  const liAuf = Körper.indexOf('<li ');
+  const liZu = Körper.indexOf('</li>');
+  assert.ok(liAuf >= 0 && liZu > liAuf, 'die Bauform liefert kein <li>');
+
+  // DER KERN: der Provider -- und mit ihm der <dialog> -- muss INNERHALB der
+  // <li> liegen. Stuende er aussen, wäre der <dialog> ein direktes Kind der
+  // <ul> und damit ungueltiges HTML: der Browser-Parser hebt ihn beim Einlesen
+  // aus der Liste heraus, der Serverbau hat ihn drin, und React hydriert gegen
+  // einen anderen Baum als es geschrieben hat. Das faellt in keinem Build auf,
+  // sondern beim Kunden -- und dann ist die Pflichtmitteilung nicht zu öffnen.
+  assert.match(
+    Körper.slice(liAuf, liZu),
+    /<EuLabelProvider>/,
+    'Der Provider steht ausserhalb der <li>. Dann hängt der <dialog> als ' +
+      'direktes Kind in der <ul> -- ungueltiges HTML und ein Hydrierungsbruch.',
+  );
+
+  // Die Liste muss den Punkt auch aufnehmen, und zwar INNERHALB ihrer <ul>.
+  const liste = ohneKommentare(readFileSync(BUY_BOX, 'utf8'));
+  const ulAuf = liste.indexOf('<ul>');
+  const ulZu = liste.indexOf('</ul>');
+  assert.ok(ulAuf >= 0 && ulZu > ulAuf, 'die Nutzen-Liste hat keine <ul> mehr');
+  assert.match(
+    liste.slice(ulAuf, ulZu),
+    /\{zusatzPunkt\}/,
+    'Der Slot steht nicht innerhalb der <ul>. Ausserhalb wäre der Punkt ' +
+      'wieder ein Block neben der Liste -- genau der Zustand, der weg sollte.',
+  );
+
+  // Und die Route muss ihn benutzen -- sonst wäre alles oben toter Code.
+  const route = ohneKommentare(readFileSync(PDP_ROUTE, 'utf8'));
+  assert.match(
+    route,
+    /zusatzPunkt=\{<EuGewaehrleistungsListenpunkt \/>\}/,
+    'Die Kaufseite hängt den Punkt nicht in die Liste.',
+  );
+});
+
+test('der Listenpunkt ERBT Abstand und Schrift der Liste, statt sie nachzubauen', () => {
+  const css = ohneCssKommentare(readFileSync(CSS, 'utf8'));
+
+  // 1. Kein eigener Kasten. Ein `margin`/`padding` auf .eu-gwl--listenpunkt
+  //    schlaegt `li { margin-bottom: 0.5rem }` aus reset.css (hoehere
+  //    Spezifitaet) -- ausgerechnet den Zeilenabstand, der hergestellt werden
+  //    soll. Ein "Reset" wäre hier also das Gegenteil eines Resets.
+  for (const m of css.matchAll(/\.eu-gwl--listenpunkt\s*\{([^}]*)\}/g)) {
+    assert.doesNotMatch(
+      m[1],
+      /(^|[\s;])(margin|padding)\s*:/,
+      'Der Listenpunkt setzt einen eigenen Aussen-/Innenabstand und ' +
+        'ueberschreibt damit den Zeilenabstand der Liste, den er teilen soll.',
+    );
+  }
+
+  // 2. Schrift: geerbt, nicht neu gesetzt.
+  //
+  // DER SELEKTOR MUSS EIN KIND-SELEKTOR SEIN. In dieser Bauform liegt der
+  // <dialog> INNERHALB der <li>, und im Overlay steht ein ZWEITER
+  // .eu-gwl__link (der Verweis aufs amtliche Portal). Ein Nachfahren-
+  // Selektor greift auf ihn mit durch und nimmt ihm Goldton und Fettung --
+  // am Overlay sollte aber nichts geaendert werden. Gemessen am 2026-09-09.
+  const link = css.match(/\.eu-gwl--listenpunkt > \.eu-gwl__link\s*\{([^}]*)\}/);
+  assert.ok(
+    link,
+    'der Listenpunkt gestaltet seinen Link nicht als DIREKTES Kind -- ohne ' +
+      '">" faerbt die Regel den Portal-Link im Overlay mit um.',
+  );
+  assert.match(
+    link[1],
+    /font-weight:\s*inherit/,
+    'Der Link behaelt font-weight: 600 aus der Block-Bauform -- bestellt war ' +
+      'das gleiche Schriftgewicht wie bei den vier Nachbarpunkten.',
+  );
+  assert.match(
+    link[1],
+    /color:\s*inherit/,
+    'Der Link behaelt die Goldschrift der Block-Bauform statt der Listenfarbe.',
+  );
+  assert.doesNotMatch(
+    link[1],
+    /font-size:/,
+    'Der Link setzt eine eigene Schriftgroesse. Sie muss aus der Liste kommen ' +
+      '(p, li in reset.css), sonst ist sie ab der nächsten Aenderung dort ' +
+      'eine andere als bei den vier Nachbarn.',
+  );
+});
+
+test('der Listenpunkt bleibt als Link erkennbar -- Maus UND Tastatur', () => {
+  const css = ohneCssKommentare(readFileSync(CSS, 'utf8'));
+
+  // Er sieht jetzt aus wie Text. Ohne Zeiger-Zustand wäre nicht mehr zu
+  // sehen, dass dahinter die Pflichtmitteilung liegt -- ausdrücklich
+  // bestellt: "damit klar bleibt dass er anklickbar ist".
+  const ab = css.indexOf('.eu-gwl--listenpunkt > .eu-gwl__link:hover');
+  assert.ok(
+    ab >= 0,
+    'der Listenpunkt hat keinen Hover-Zustand als direktes Kind (siehe ' +
+      'Kind-Selektor-Begründung im Test darueber)',
+  );
+  const selektor = css.slice(ab, css.indexOf('{', ab));
+  const regel = css.slice(css.indexOf('{', ab), css.indexOf('}', ab));
+
+  assert.match(regel, /text-decoration:\s*underline/, 'Hover unterstreicht nicht');
+  assert.match(regel, /color:/, 'Hover aendert die Farbe nicht');
+  assert.match(
+    selektor,
+    /:focus-visible/,
+    'Nur die Maus bekommt den Hinweis. Wer mit der Tastatur navigiert, sieht ' +
+      'denselben Link dann als blossen Text.',
+  );
+});
+
+test('das Overlay hängt seine Schrift nicht an den Ort, an dem es montiert ist', () => {
+  const css = ohneCssKommentare(readFileSync(CSS, 'utf8'));
+  const block = css.slice(
+    css.indexOf('.eu-gwl-dialog {'),
+    css.indexOf('}', css.indexOf('.eu-gwl-dialog {')),
+  );
+
+  // In der Listen-Bauform liegt der <dialog> INNERHALB der <li> (er muss
+  // dort liegen, sonst ist die <ul> ungueltig) und erbt damit deren
+  // 1.2rem/1.4 -- auf jeder anderen Kaufflaeche erbt er 1rem/normal vom
+  // <body>. Sichtbar ist das heute nicht: jeder Texttraeger im Overlay setzt
+  // seine Groesse selbst. Genau deshalb steht die Zusage hier -- ein
+  // Unterschied, den man nicht sieht, wird beim nächsten Zusatz im Overlay
+  // zu einem, den man sieht, und dann sucht ihn niemand an der Stelle, an
+  // der das Fenster HÄNGT.
+  assert.match(
+    block,
+    /font-size:\s*1rem/,
+    'Das Overlay setzt seine Schriftgroesse nicht selbst. Es erbt sie dann ' +
+      'von seinem Montageort -- und der ist seit dem 2026-09-09 nicht mehr ' +
+      'auf allen Kaufflaechen derselbe.',
+  );
+  assert.match(
+    block,
+    /line-height:\s*normal/,
+    'Das Overlay setzt seine Zeilenhoehe nicht selbst -- gleiche Begründung ' +
+      'wie bei der Schriftgroesse; halb gesetzt ist hier schlechter als gar ' +
+      'nicht, weil es wie geloest aussieht.',
+  );
+});
+
+test('das Zeichen im Listenpunkt ist so groß wie die Nachbar-Icons', () => {
+  const appCss = ohneCssKommentare(readFileSync(APP_CSS, 'utf8'));
+
+  // 1. EIN Abstand für alle fünf Icons -- als gemeinsame Regel, nicht als
+  //    zweite Zahl daneben, die beim nächsten Mal nur halb nachgezogen wird.
+  assert.match(
+    appCss,
+    /\.BenefitList svg,\s*\.BenefitList \.eu-gwl__zeichen\s*\{[^}]*margin-right:/,
+    'Der Icon-Abstand der Liste gilt nicht für das Zeichen des fünften ' +
+      'Punktes -- dann beginnt sein Text auf einer anderen Kante als die vier ' +
+      'darueber.',
+  );
+
+  // 2. Hoehe wie die vier <svg> (die tragen height="1em" als Attribut),
+  //    Breite aus dem Seitenverhaeltnis. Eine px-Zahl wäre ab der nächsten
+  //    Aenderung der Listenschrift daneben, ohne dass es jemand sieht.
+  const bloecke = [
+    ...appCss.matchAll(/\.BenefitList \.eu-gwl__zeichen\s*\{([^}]*)\}/g),
+  ].map((m) => m[1]);
+  assert.ok(
+    bloecke.some((b) => /height:\s*1em/.test(b) && /width:\s*auto/.test(b)),
+    'Das Zeichen wird nicht auf Icon-Hoehe (1em) gebracht -- es bleibt auf ' +
+      'den 36 px der Block-Bauform und ueberragt die vier Nachbar-Icons.',
+  );
+
+  // 3. RICHTUNGS-ZUSAGE FÜR DIE BILDLEITER. In der Liste ist die Flaeche
+  //    kleiner als AUSLOESER_ZEICHEN.anzeigeBreite; das ist hingenommen (das
+  //    Bild kommt schaerfer herein als nötig, ein paar hundert Byte).
+  //    Der umgekehrte Fall darf NICHT eintreten: waechst die Listenschrift
+  //    über die Anzeigebreite hinaus, liefert die Leiter zu wenig Pixel und
+  //    das Zeichen wird sichtbar unscharf. Genau diese Richtung steht hier.
+  const reset = ohneCssKommentare(readFileSync(RESET_CSS, 'utf8'));
+  const pLi = reset.match(/p,\s*li\s*\{([^}]*)\}/);
+  assert.ok(pLi, 'die Schriftgroesse der Liste steht nicht mehr in reset.css');
+  const rem = pLi[1].match(/font-size:\s*([\d.]+)rem/);
+  assert.ok(rem, 'p, li führt keine Schriftgroesse in rem');
+
+  const WURZEL_PX = 16; // Browser-Vorgabe; die Storefront setzt kein html{font-size}
+  const zeichenHoehePx = Number(rem[1]) * WURZEL_PX;
+  const zeichenBreitePx =
+    (zeichenHoehePx * AUSLOESER_ZEICHEN.breite) / AUSLOESER_ZEICHEN.hoehe;
+
+  assert.ok(
+    AUSLOESER_ZEICHEN.anzeigeBreite >= zeichenBreitePx,
+    `Die Bildleiter rechnet mit ${AUSLOESER_ZEICHEN.anzeigeBreite} px, der ` +
+      `Listenpunkt zeigt das Zeichen aber ${zeichenBreitePx.toFixed(1)} px ` +
+      'breit. Das Zeichen wird damit sichtbar unscharf ausgeliefert.',
   );
 });

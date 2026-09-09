@@ -6,7 +6,7 @@ import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuy
 import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
-import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
@@ -119,27 +119,30 @@ export default function Product() {
           </p>
         }
         priceLabel={<div className="BestsellerLabel">Bestseller Angebot</div>}
+        /* HIER STAND BIS ZUM 2026-09-08 DIE ZWEIFEL-ZEILE ("Wirkt das
+           überhaupt? …"). Elina EL-20260908-d8349a01 nimmt sie ERSATZLOS
+           heraus — ausdrücklich ohne Ersatzformulierung — und setzt an genau
+           diese Stelle den Gewährleistungs-Trigger, der vorher weiter oben
+           unter dem Kauf-Knopf hing.
+
+           DIE ORTSBEGRÜNDUNG VON DAMALS TRÄGT DEN NEUEN INHALT MIT: unter der
+           Nutzen-Liste, direkt neben Preis und Kaufknopf — die Stelle, an der
+           VOR dem Kauf abgewogen wird. Für eine Pflichtmitteilung ist das
+           sogar der schärfere Ort: Art. 6 Abs. 1 lit. l RL 2011/83/EU verlangt
+           sie "in hervorgehobener Weise", BEVOR der Verbraucher gebunden ist.
+
+           SEIT ELINA EL-20260909-395f848c STEHT ER NICHT MEHR NEBEN DER LISTE,
+           SONDERN IN IHR — als fünfter Punkt derselben <ul>. Bestellt war der
+           Eindruck ("wie ein weiterer Punkt, nicht wie ein separater Block
+           darunter"); die Bauform ist der Weg dorthin, weil Zeilenabstand,
+           Icon-Größe und Schrift dann GEERBT statt nachgebaut sind. Der Ort
+           bleibt derselbe, die Begründung darüber gilt unverändert.
+
+           Weiterhin Slot statt eigener Sektion, damit die Anker-frei-Regel
+           dieser PDP unberührt bleibt: ein neues data-section hätte den
+           Design-Rubrik-Collector verschoben. */
         benefitList={
-          <>
-            <QiOneBenefitList />
-            {/* HIER STAND BIS ZUM 2026-09-08 DIE ZWEIFEL-ZEILE ("Wirkt das
-                überhaupt? …"). Elina EL-20260908-d8349a01 nimmt sie
-                ERSATZLOS heraus — ausdrücklich ohne Ersatzformulierung —
-                und setzt an genau diese Stelle den Gewährleistungs-Trigger,
-                der vorher weiter oben unter dem Kauf-Knopf hing.
-
-                DIE ORTSBEGRÜNDUNG VON DAMALS TRÄGT DEN NEUEN INHALT MIT:
-                unter der Nutzen-Liste, direkt neben Preis und Kaufknopf —
-                die Stelle, an der VOR dem Kauf abgewogen wird. Für eine
-                Pflichtmitteilung ist das sogar der schärfere Ort: Art. 6
-                Abs. 1 lit. l RL 2011/83/EU verlangt sie "in hervorgehobener
-                Weise", BEVOR der Verbraucher gebunden ist.
-
-                Slot statt eigener Sektion, damit die Anker-frei-Regel dieser
-                PDP unberührt bleibt: ein neues data-section hätte den
-                Design-Rubrik-Collector verschoben. */}
-            <EuGewaehrleistungsHinweis />
-          </>
+          <QiOneBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
         }
       />
       {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
