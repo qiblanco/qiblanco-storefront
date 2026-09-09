@@ -184,10 +184,11 @@ const DE_VERSANDFREI_AB_EUR = 99;
 
 /**
  * Lieferzeit in Tagen [min, max] — NUR für Handles, deren Seite selbst eine
- * nennt. An allen 13 DACH-Produktseiten live abgezählt (2026-09-01):
+ * nennt. An allen 13 DACH-Produktseiten live abgezählt (2026-09-01; die
+ * Kakao-Seiten am 2026-09-09 auf die Hausform nachgezogen):
  *   „In 2-3 Tagen bei Dir"      → qione-2-pro, qibracelet, qihome-air,
  *                                  qione-kette
- *   „Lieferung in 1–3 Werktagen" → crystal-cacao-awake, crystal-cacao-create
+ *   „In 1-3 Tagen bei Dir"       → crystal-cacao-awake, crystal-cacao-create
  *   keine Aussage                → die übrigen sieben
  *
  * ES GIBT ALSO KEINE EINE LIEFERZEIT, DIE MAN GLOBAL EINTRAGEN KÖNNTE. Der
