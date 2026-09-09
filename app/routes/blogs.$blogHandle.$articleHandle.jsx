@@ -4,6 +4,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
 import {artikelHreflangLinks} from '~/lib/hreflang';
 import {artikelInhaltAufraeumen} from '~/lib/blog-inhalt';
+import {artikelSchema} from '~/lib/blog-schema';
 import {autorenkastenSichtbarkeit} from '~/lib/autorenkasten';
 import {Autorenkasten} from '~/components/Autorenkasten';
 import blogStyles from '~/styles/blog.css?url';
@@ -64,9 +65,26 @@ export const meta = ({data, location}) => {
     data?.article?.hreflangEn?.value,
   );
 
+  // DAS STRUKTURIERTE DATENOBJEKT (2026-09-09). Bis hierher trugen alle acht
+  // Artikel NULL ld+json -- gemessen am ausgelieferten HTML, nicht im Repo.
+  // Der Descriptor-Weg ist das Hausmuster (app/routes/pages.studien.jsx:44);
+  // react-router rendert `script:ld+json` als echtes <script> in denselben
+  // <head>. Die Datenfabrik liegt in app/lib/blog-schema.js und gibt null
+  // zurück, wenn Titel oder Datum fehlen -- dann steht hier kein leerer
+  // Block, sondern gar keiner.
+  const schema = artikelSchema({
+    pfad: location?.pathname ?? '',
+    artikel: data?.article,
+  });
+  const ldJson = schema ? [{'script:ld+json': schema}] : [];
+
+  // IN DER VORSCHAU BEWUSST OHNE ld+json: die Vorschau trägt eine Zeile
+  // hoeher `noindex, nofollow`. Ein strukturiertes Datenobjekt auf einer
+  // Seite, die ausdrücklich nicht in den Index soll, wäre ein Signal an
+  // genau die Systeme, die dort nichts lesen sollen.
   return data?.autorenkasten?.vorschau
     ? [...basis, ...hreflang, {name: 'robots', content: 'noindex, nofollow'}]
-    : [...basis, ...hreflang];
+    : [...basis, ...hreflang, ...ldJson];
 };
 
 /**
