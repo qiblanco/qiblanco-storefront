@@ -471,7 +471,11 @@ function MenuItem({item, url, isExternal, hasChildren, viewport, close}) {
  * - triggerRef: ref to the trigger element to align horizontally
  */
 function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout}) {
-  const containerRef = useRef(null);
+  // `container` ist bewusst State und kein Ref (2026-09-09, Job
+  // 20260909-blog-navigation-nicht-gerendert-checkout-domain-prio25).
+  // Ein Ref, der im useEffect gesetzt wird, löst kein Re-Rendering aus —
+  // das Portal erschien deshalb erst beim nächsten Eltern-Rendering.
+  const [container, setContainer] = useState(null);
   const [hoverItem, setHoverItem] = useState("QiOne® 2 Pro");
   const [expandedKakao, setExpandedKakao] = useState(false);
 
@@ -479,11 +483,12 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
     const el = document.createElement('div');
     el.className = 'submenu-portal';
     document.body.appendChild(el);
-    containerRef.current = el;
-    return () => el.remove();
+    setContainer(el);
+    return () => {
+      el.remove();
+      setContainer(null);
+    };
   }, []);
-
-  if (!containerRef.current) return null;
 
   const onSubmenuEnter = () => {
     clearTimeout(hoverTimeout.current);
@@ -709,7 +714,37 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
     </div>
   );
 
-  return createPortal(submenu, containerRef.current);
+  // SOLANGE ES DAS PORTAL-ZIEL NICHT GIBT, WIRD INLINE GERENDERT — DAS IST DER
+  // GANZE FIX (2026-09-09, Job 20260909-blog-navigation-nicht-gerendert-
+  // checkout-domain-prio25). Das Portal-Ziel entsteht in einem useEffect, also
+  // NIE beim serverseitigen Rendern; die Vorfassung gab dort `return null`
+  // zurück. Folge, am 2026-09-09 am ausgelieferten HTML von qiblanco.com
+  // gemessen: 'header-submenu-item' kam 0-mal vor, 'Fachartikel' genau einmal
+  // (im Loader-Datenblob, nicht als Anker). Der GESAMTE Inhalt aller vier
+  // Dropdowns war für jeden Konsumenten ohne JS unsichtbar — deshalb war der
+  // /blogs/-Baum ein Waisenkind und nicht indexiert.
+  //
+  // Inline und im Portal steht DERSELBE Elementbaum, und er wird in der ersten
+  // Client-Rendering-Runde ebenfalls inline gerendert (container ist dann noch
+  // null) — die Hydration ist damit deckungsgleich. Erst der useEffect setzt
+  // den Container; React unmountet den Inline-Baum dann einmalig und mountet
+  // ihn im Portal (Remount, kein Verschieben — der Zustand hoverItem/
+  // expandedKakao liegt in DIESER Komponente und überlebt).
+  //
+  // SICHTBAR ÄNDERT SICH NICHTS: `submenu` trägt inline
+  // position:fixed/top:0/left:0 und transform: translateY(-300%), nimmt also
+  // nicht am Fluss teil und steht ausserhalb des Sichtfelds. Im Inline-Zustand
+  // ist sein Containing Block der Kopf (div.header trägt dauerhaft
+  // backdrop-filter, und jeder Wert ausser `none` erzeugt einen) statt des
+  // Viewports — bei -300% ohne sichtbare Folge. GEPRUEFT: app/styles/app.css
+  // gibt `.submenu` weder `transform` noch `overflow`, die den Inline-Zustand
+  // sichtbar machen könnten.
+  //
+  // DAS PORTAL BLEIBT UND WIRD NICHT ABGEBAUT: .header-wrapper.header--hidden
+  // setzt beim Wegscrollen `transform`, und ein transform-Vorfahr bindet
+  // position:fixed an sich selbst statt an den Viewport. Genau dafür ist das
+  // Portal da (siehe Kopfkommentar dieser Funktion).
+  return container ? createPortal(submenu, container) : submenu;
 }
 
 /**
