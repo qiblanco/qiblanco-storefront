@@ -404,16 +404,29 @@ export function Layout({children}) {
               PUBLIC_SALESBOT_WIDGET_ORIGIN=off schaltet AI-Anna ab, bringt den
               Gorgias-Chat NICHT zurück (entfernt). Der separate US-/englische
               Store (us-qiblanco-2024) behält seinen Gorgias-Chat — anderes Repo.
-              Die Gorgias mailto-replace-/convert-Loader unten sind KEIN Chat und
-              bleiben unverändert.
+              Der Gorgias CONVERT-Loader unten ist KEIN Chat und bleibt.
             */}
-            <script
-              src="https://config.gorgias.help/api/contact-forms/replace-mailto-script.js?shopName=qi-blanco"
-              data-gorgias-loader-mailto-replace=""
-              nonce={nonce}
-              defer
-              suppressHydrationWarning
-            />
+            {/*
+              GORGIAS-MAILTO-REPLACE ENTFERNT (2026-09-09, Job
+              20260909-storefront-hydrationsfehler...-prio25). Der Loader
+              ersetzte mailto:-Links durch ein Gorgias-Kontaktformular. Beides
+              spricht dagegen, ihn hier zu halten:
+              (1) Auf DACH ist der Gorgias-Chat seit 2026-07-31 entfernt
+                  (Kommentar oben) — dieser Loader ist ein Rest dieses Stacks.
+              (2) Die EINZIGEN mailto:-Links dieses Shops stehen auf
+                  Pflichtangaben-Seiten (Impressum, AGB, Datenschutz,
+                  Widerruf). Die "Adresse der elektronischen Post" (§ 5 DDG)
+                  durch ein Dritt-Webformular zu ersetzen, ist dort nicht
+                  gewollt — der mailto:-Link IST die geschuldete Angabe.
+              Messbar war er außerdem tot: der Abruf endet in einem
+              Cloudflare-Challenge (403, cross-origin-resource-policy:
+              same-origin) und damit in
+              net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin. ACHTUNG, ehrlich:
+              dieser 403 gilt für die bot-geprüfte Server-IP; für echte
+              Besucher ist er NICHT belegt. Der Ausbau steht deshalb auf (1)
+              und (2), nicht auf der Messung.
+              Rückweg: git revert dieses Commits.
+            */}
             <script
               src="https://content.9gtb.com/loader.js"
               data-gorgias-loader-convert=""
