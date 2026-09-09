@@ -225,7 +225,7 @@ const SHIPPING_HTML =
   '<p><strong>Kostenloser Versand</strong> innerhalb Deutschlands</p><p>In 2-3 Tagen bei Dir</p><p>100% Versicherter Versand</p>';
 
 const CACAO_SHIPPING_HTML =
-  '<p>✅ Kostenloser Versand ab 99 € innerhalb Deutschlands<br/>🚚 Lieferung in 1-3 Werktagen<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
+  '<p>✅ Kostenloser Versand ab 99 € innerhalb Deutschlands<br/>🚚 In 1-3 Tagen bei Dir<br/>🔄 100% Geld-zurück-Garantie bei Unzufriedenheit<br/>🔬 Laboranalytisch geprüft (Dartsch Institut)<br/>🌿 Bio-zertifiziert nach DE-ÖKO-006</p>';
 
 function toGrossPrice(value, deal) {
   const numberValue = Number(value);

@@ -294,13 +294,14 @@ export const FAQ_KAUF = [
       'Innerhalb Deutschlands 5,90 €, ab 99 € Warenwert versandkostenfrei. QiOne® 2 Pro, ' +
       'QiBracelet®, QiHome® Air und das Necklace liegen über dieser Schwelle und gehen damit ' +
       'versandkostenfrei raus. Nach Österreich kostet der Versand 6,90 €, in die Schweiz 21,00 €. ' +
-      'Die Lieferzeit steht auf jeder Produktseite; für QiOne® 2 Pro, QiBracelet®, QiHome® Air und ' +
-      'das Necklace sind es 2 bis 3 Tage, für die Crystal Cacao®-Sorten 1 bis 3 Werktage.',
+      'Die Lieferzeit steht auf jeder Produktseite: QiOne® 2 Pro, QiBracelet®, QiHome® Air und ' +
+      'das Necklace sind in 2 bis 3 Tagen bei Dir, die Crystal Cacao®-Sorten in 1 bis 3 Tagen.',
     quelle:
       '/policies/shipping-policy, wörtlich „Deutschland 5,90 € (Versandkostenfrei ab 99€)", ' +
       '„Österreich 6,90 €", „Schweiz 21,00 €". Lieferzeiten aus der Messreihe von Segment s03 über ' +
-      'alle 13 DACH-Produktseiten (2026-09-01): „In 2-3 Tagen bei Dir" auf den vier Geräteseiten, ' +
-      '„Lieferung in 1–3 Werktagen" auf den Kakao-Seiten. Bewusst KEINE pauschale Zahl für „den ' +
+      'alle 13 DACH-Produktseiten (2026-09-01; die Kakao-Seiten am 2026-09-09 auf die Hausform ' +
+      'nachgezogen): „In 2-3 Tagen bei Dir" auf den vier Geräteseiten, „In 1-3 Tagen bei Dir" ' +
+      'auf den Kakao-Seiten. Bewusst KEINE pauschale Zahl für „den ' +
       'Shop" — sieben der dreizehn Seiten nennen gar keine.',
   },
 ];
