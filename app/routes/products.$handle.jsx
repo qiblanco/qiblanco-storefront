@@ -309,6 +309,7 @@ function StandardProduct({product}) {
 
         <div data-section="pdp-buybox">
           <ProductPrice
+            handle={product.handle}
             price={selectedVariant?.price}
             compareAtPrice={selectedVariant?.compareAtPrice}
           />

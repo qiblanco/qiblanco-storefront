@@ -102,6 +102,7 @@ export function QiHomeAirShop({product}) {
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
         <ProductPrice
+          handle={product?.handle}
           price={selectedVariant?.price}
           compareAtPrice={selectedVariant?.compareAtPrice}
         />

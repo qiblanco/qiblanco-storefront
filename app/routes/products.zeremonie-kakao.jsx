@@ -195,6 +195,7 @@ export default function Product() {
 6.300 Jahre alte Kakaolinie aus Peru.</p>
 
           <ProductPrice
+            handle={product.handle}
             price={selectedVariant?.price}
             compareAtPrice={selectedVariant?.compareAtPrice}
           />
@@ -477,6 +478,7 @@ export default function Product() {
               <b>Mehr als {KAKAO_KENNZAHLEN.nutzer}+ aktive Nutzer</b>
             </p>
             <ProductPrice
+              handle={product.handle}
               price={selectedVariant?.price}
               compareAtPrice={selectedVariant?.compareAtPrice}
             />
