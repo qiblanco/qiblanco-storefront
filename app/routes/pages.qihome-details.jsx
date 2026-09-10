@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import {QiHomeLanding} from '~/components/index-components/detailseiten/QiHomeLanding';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import qihomeStyles from '~/styles/qihome.css?url';
 
 /*
  * /pages/qihome-details — oeffentliche Detailseite QiHome Air
@@ -18,6 +19,17 @@ import {beschreibungTags} from '~/lib/seiten-beschreibung';
  * BEWUSST KEIN redirectIfHandleIsLocalized (wuerde den -details-Pfad
  * verstuemmeln; qione-2-pro-Praezedenz).
  */
+
+/**
+ * Token-Schicht dieser Route (Design-Score 53 -> >= 80, Job
+ * 20260910-designschuld-...-s03). Sie hängt NUR hier und trägt
+ * deshalb auf keiner anderen Seite - app.css bleibt unangetastet. Der Scope
+ * ist die Klasse `QiHomeLanding` am Wurzel-Element der Komponente.
+ * Rueckweg: diesen links()-Export entfernen.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: qihomeStyles}];
+}
 
 /**
  * @type {MetaFunction<typeof loader>}
