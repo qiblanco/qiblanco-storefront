@@ -47,7 +47,7 @@ export const FAQ_QIONE_2_PRO = [
  * 20260910-BAU-qi-master-produkt-und-shopseite-…, Christian-Auftrag
  * CW-20260910-0e45045b). Nur Fragen, deren Antwort heute belegt ist:
  * Gitterchip (Herstellerangaben wie bei FAQ_QIONE_2_PRO), Kette/Verschluss
- * (Festlegungen Christian 2026-09-10), Seriennummer, Rueckgabe (Haus-Regel).
+ * (Festlegungen Christian 2026-09-10), Seriennummer, Rückgabe (Haus-Regel).
  * Bewusst NICHT: Lieferzeit, Diamant-Karat/-Anzahl, Ratenzahlung — nicht belegt.
  */
 export const FAQ_QI_MASTER = [
@@ -66,7 +66,7 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Schützt der QiMaster vor 6G?',
-    a: 'Der Gitterchip ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg). Für die Frequenzen künftiger 6G-Netze liegt keine Messung vor. Das sagen wir auf der Seite so und nicht größer.',
+    a: 'Der Gitterchip ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg). Für die Frequenzen künftiger 6G-Netze liegt keine Messung vor.',
   },
   {
     q: 'Darf der QiMaster in die Sauna oder ins Wasser?',

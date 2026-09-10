@@ -4,20 +4,20 @@
  * shopseite-diamant-6g-und-persoenlichkeitsentwicklung (Christian-Auftrag
  * CW-20260910-0e45045b, 2026-09-10).
  *
- * WARUM DIE TEXTE HIER LIEGEN UND NICHT IM MARKUP: jede Aussage traegt ihre
+ * WARUM DIE TEXTE HIER LIEGEN UND NICHT IM MARKUP: jede Aussage trägt ihre
  * Quelle mit Jahr und Seite, und die Grenze zwischen „steht bei diesem Autor",
  * „haben wir gemessen" und „ist unsere Deutung" ist der Inhalt der Seite —
- * nicht ihr Schmuck. Ohne Markup laesst sich das pruefen (grep auf „Unsere
+ * nicht ihr Schmuck. Ohne Markup lässt sich das prüfen (grep auf „Unsere
  * Deutung", auf Jahreszahlen, auf Seitenangaben), und ein Lektor kann den
  * Text lesen, ohne JSX zu lesen.
  *
  * BELEGLAGE (Bibliothek wissens-bibliothek-rag, Volltexte am 2026-09-10
  * gegen die PDFs geprueft; Yogananda: Project Gutenberg #7452, Erstausgabe
  * 1946, Kopie im Jobordner):
- *  - Koenig 2011: S. 169-175 (Diamant = Kohlenstoff, Energieluecke, kohaerentes
+ *  - Koenig 2011: S. 169-175 (Diamant = Kohlenstoff, Energieluecke, kohärentes
  *    UV, „richtige Frequenzen", Rohdiamant-Produkte, „zu frueh" S. 174).
- *  - Del Giudice et al. 2015: S. 96-101 (Kohaerenz, Diamant 3545 °C, CD 0,1 µm).
- *  - Preparata 1995 (Datei traegt „2011", Impressum 1995): S. 215-216.
+ *  - Del Giudice et al. 2015: S. 96-101 (Kohärenz, Diamant 3545 °C, CD 0,1 µm).
+ *  - Preparata 1995 (Datei trägt „2011", Impressum 1995): S. 215-216.
  *  - Popp 2006 (3. Aufl.): S. 37-38, 51-54, 229.
  *  - Pollack 2013 Kap. 6; Wang & Pollack 2021 (EZ x1,41 nach 5 min IR).
  *  - Warnke 2019: S. 13, 113, 307, 338-341; Warnke 2013: S. 55, 321.
@@ -28,13 +28,13 @@
  *    Science of Kriya Yoga"); deutsche Fassung hier = eigene Uebersetzung.
  *
  * WAS KEIN AUTOR SAGT und deshalb unter „Unsere Deutung" steht: dass ein
- * geschliffener Diamant in einem Schmuckstueck am Koerper Frequenzen erzeugt,
+ * geschliffener Diamant in einem Schmuckstück am Körper Frequenzen erzeugt,
  * die dem Schwingungsbereich menschlicher Zellen naeher liegen; dass ein
  * Gitterchip die Vorbereitung meint, von der Yogananda spricht. Beides ist
  * die Ueberlegung, aus der der QiMaster entstanden ist — und beides ist nicht
  * gemessen. Der Text sagt das an genau der Stelle, an der es gilt.
  *
- * KEINE Gesundheits-, Heil- oder Wirkungsaussage ueber das Belegte hinaus.
+ * KEINE Gesundheits-, Heil- oder Wirkungsaussage über das Belegte hinaus.
  * Fremde Autoren werden zitiert, nicht zu Befuerwortern gemacht.
  * Kundensichtbar: echte Umlaute.
  */
@@ -72,7 +72,7 @@ export const QIMASTER_DIAMANT = {
         'Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 169–172. – Das ist Königs Modell, und er sagt selbst, wo es endet: „Zwar ist es für medizinisch relevante Aussagen noch zu früh“ (S. 174). Wir zitieren ihn; wir beanspruchen ihn nicht.',
     },
     {
-      id: 'kohaerenz',
+      id: 'Kohärenz',
       titel: 'Kohärenz – was Physiker damit meinen',
       label: 'In der Literatur',
       beleg: false,

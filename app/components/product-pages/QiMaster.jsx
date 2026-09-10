@@ -24,18 +24,18 @@ import {
  * mit der QiOne-2-Pro-Seite identisch bleiben. NEU sind allein die drei
  * Inhalts-Bausteine des QiMaster (Diamant, 6G, Persoenlichkeitsentwicklung);
  * ihre Texte leben in app/data/qi-master-texte.js, weil dort jede Aussage
- * ihre Quelle traegt und der Text ohne Markup pruefbar bleibt.
+ * ihre Quelle trägt und der Text ohne Markup pruefbar bleibt.
  *
  * WAS BEWUSST FEHLT (jede Auslassung eine Entscheidung, kein Vergessen):
  *  - Ratenzahlungs-Bausteine (RatenzahlungHerobanner, „0 % Finanzierung",
  *    Klarna/PayPal-Raten): die Ratenangebote der Zahlungsdienste sind
- *    betragsgedeckelt (PayPal-Ratenzahlung bis 5.000 EUR); fuer 10.639 EUR
+ *    betragsgedeckelt (PayPal-Ratenzahlung bis 5.000 EUR); für 10.639 EUR
  *    ist die Zusage nicht belegt -> offene Flanke an Christian, nicht auf
  *    die Seite.
- *  - Sternzeile/„Ueber 14.000 Nutzer"/„Bestseller": Bestandszahlen des
+ *  - Sternzeile/„Über 14.000 Nutzer"/„Bestseller": Bestandszahlen des
  *    QiOne 2 Pro, die dieses Produkt nicht hat.
- *  - „8x staerker", „22,61 mm³", „100 % in Bayern gefertigt", „RJC-Gold":
- *    Angaben des QiOne 2 Pro, fuer den QiMaster nicht bestaetigt.
+ *  - „8x stärker", „22,61 mm³", „100 % in Bayern gefertigt", „RJC-Gold":
+ *    Angaben des QiOne 2 Pro, für den QiMaster nicht bestaetigt.
  *  - Produktbilder: es gibt noch keine. Die Buy-Box zieht sie aus Shopify,
  *    sobald sie dort liegen — hier wird kein QiOne-Bild als QiMaster gezeigt.
  *
@@ -77,7 +77,7 @@ export default function QiMaster({block = undefined}) {
 
 /**
  * Nutzenliste der Buy-Box — markup-identisch zur QiOneBenefitList (dieselben
- * vier Icons, dieselbe .BenefitList), mit den Zeilen, die fuer den QiMaster
+ * vier Icons, dieselbe .BenefitList), mit den Zeilen, die für den QiMaster
  * belegt sind. „In 2-3 Tagen bei Dir" und „Inklusive Baumwollband" der
  * QiOne-Liste sind hier bewusst NICHT uebernommen: Lieferzeit eines
  * nummerierten Einzelstuecks und Lieferumfang (Goldkette statt Band) sind
