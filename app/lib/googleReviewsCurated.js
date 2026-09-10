@@ -20,12 +20,21 @@ export const GOOGLE_REVIEWS_CURATED = [
     "id": "253716832",
     "name": "Mirko Naber",
     "foto": "https://lh3.googleusercontent.com/a-/ALV-UjVI7w98Hi-syQKYTer5tXBdFtVf_QbPM031WB80KZy5CT6X3gk=s120-c-rp-mo-br100",
-    "bilder": [
-      {
-        "url": "https://lh3.googleusercontent.com/grass-cs/ACvplmPv-1ZZclP4Zr7kkTx07S0WNxARvJtSjldFFxhHcpkQs_JAgeG9edXabdk7eA__Bj1vJ9OR-m2nTqsemcLyfYe4myRw9jwAoF8KOG9g2zGl4stZ7TRTOhPCAwu8zp01pZeo2-YJFGVD8lXQ=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/ACvplmPv-1ZZclP4Zr7kkTx07S0WNxARvJtSjldFFxhHcpkQs_JAgeG9edXabdk7eA__Bj1vJ9OR-m2nTqsemcLyfYe4myRw9jwAoF8KOG9g2zGl4stZ7TRTOhPCAwu8zp01pZeo2-YJFGVD8lXQ=k-no"
-      }
-    ],
+    // FOTO ENTFERNT 2026-09-10, weil die Adresse TOT ist — nicht das Foto.
+    // Gemessen (GET, User-Agent gesetzt): diese grass-cs-URL antwortet mit
+    // HTTP 403, die des Nachbareintrags mit 200 image/jpeg. Es ist also kein
+    // gelöschtes Kundenfoto, sondern eine von Google ROTIERTE Adresse — die
+    // Klasse ist im Kopf von ReviewKarte (ReputonWidget.jsx) beschrieben und
+    // trifft jede fest hinterlegte Google-Bild-URL.
+    // SICHTBAR ÄNDERT SICH NICHTS: ReviewKarte blendet ein fehlgeschlagenes
+    // Foto ohnehin aus. Was wegfällt, ist der fehlgeschlagene REQUEST — er
+    // kostete 10 Hygiene-Punkte in der Design-Rubrik, ohne dem Kunden je ein
+    // Bild zu zeigen. Der Bewertungstext bleibt vollständig stehen.
+    // OFFEN und bewusst NICHT hier entschieden: die Reihenfolge dieser Liste
+    // ist kuratiert (Foto-Einträge zuerst, siehe Kopf). Mirko Naber steht
+    // weiter vorn, hat aber jetzt kein Bild mehr. Umsortiert wird NICHT — der
+    // Dateikopf warnt ausdrücklich davor; das gehört dem Kuratierungs-Job.
+    "bilder": [],
     "rating": 5,
     "text": "Als Sportler und Trainer hatte ich schon sehr intensive Zeiten erlebt und bin im Nachhinein sehr, sehr dankbar, QiOne und das gesamte Umfeld sowie die Thematik kennengelernt zu haben. Themen wie Zellenschutz und Verbesserungen interessierten mich natürlich schon, doch die eigene Intuition nochmal zu schärfen und der neue, gesunde Weg, die eigene Zukunft noch bewusster zu gehen und es täglich zu spüren, ist der absolute positive Wahnsinn.\nDanke an das gesamte QiBlanco Team und besonders an Anna und Christian. Ich bin sehr glücklich damit.\nLiebe Grüße\nMirko",
     "datum": "2026-04-03"

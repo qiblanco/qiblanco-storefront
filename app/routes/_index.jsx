@@ -2,6 +2,28 @@ import {HomepageSections} from '~/components/homepage/HomepageSections';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {entityGraph} from '~/lib/entity-schema';
+import startseiteStyles from '~/styles/startseite.css?url';
+
+/**
+ * Die beiden Scope-CSS-Dateien dieser Route — EINE links()-Ausfuhr, weil ein
+ * Modul nur eine haben darf. Bis 2026-09-10 standen hier zwei getrennte
+ * `export function links()`: die Token-Schicht (PR #281, gebaut am 01.09.) und
+ * das Abschnitts-CSS „Externe Stimmen" (später auf main entstanden). Beide
+ * für sich richtig, zusammen ein doppelter Export — der Dev-Server gab darauf
+ * HTTP 500 bei jedem Aufruf. Ein Rebase, der sauber durchläuft, heißt nicht,
+ * dass die Datei danach gültig ist.
+ *
+ * Bewusst NUR hier geladen und auf .home gescoped — app.css ist global und
+ * trägt jede Änderung auf alle Routen mit. Begründung im Kopf der CSS-Datei.
+ * REIHENFOLGE: die Token-Schicht steht ZULETZT, damit sie bei gleicher
+ * Spezifität gewinnt — sie ist die vereinheitlichende Ebene der Seite.
+ */
+export function links() {
+  return [
+    {rel: 'stylesheet', href: externeStimmenStyles},
+    {rel: 'stylesheet', href: startseiteStyles},
+  ];
+}
 
 /**
  * Titel der Startseite — der wichtigste einzelne Titel der Domain, weil er
@@ -192,15 +214,6 @@ function loadDeferredData({context}) {
   return {
     recommendedProducts,
   };
-}
-
-/* Scope-CSS des Abschnitts „Externe Stimmen".
-   Bewusst eine eigene Datei statt app/styles/app.css: app.css hängt an
-   app/root.jsx und ist damit die GLOBALE CSS-Kette — jede Änderung dort
-   zieht im Alle-Formate-Gate sämtliche Seiten mit hinein, auch solche mit
-   fremder, vorbestehender Format-Schuld. */
-export function links() {
-  return [{rel: 'stylesheet', href: externeStimmenStyles}];
 }
 
 export default function Homepage() {
