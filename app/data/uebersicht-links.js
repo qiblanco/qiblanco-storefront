@@ -96,7 +96,6 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/products/qione-1", "url": "https://qiblanco.com/products/qione-1", "titel": "QiOne® 1", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/products/qione-2-pro", "url": "https://qiblanco.com/products/qione-2-pro", "titel": "QiOne® 2 Pro", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/products/qione-kette", "url": "https://qiblanco.com/products/qione-kette", "titel": "Necklace für QiOne®", "crawlbar": true, "herkunft": "code+shopify"},
-      {"pfad": "/products/test-page-crystal-cacao®-create-spater-wieder-loschen", "url": "https://qiblanco.com/products/test-page-crystal-cacao®-create-spater-wieder-loschen", "titel": "Test Page - Crystal Cacao® Create später wieder löschen", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/products/zeremonie-kakao", "url": "https://qiblanco.com/products/zeremonie-kakao", "titel": "", "crawlbar": true, "herkunft": "code"},
       {"pfad": "/qione", "url": "https://qiblanco.com/qione", "titel": "", "crawlbar": true, "herkunft": "code"}
     ]
@@ -120,7 +119,7 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/pages/qione-2-pro-2x", "url": "https://qiblanco.com/pages/qione-2-pro-2x", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/qione-zellschutz", "url": "https://qiblanco.com/pages/qione-zellschutz", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "pausiert"},
       {"pfad": "/pages/schlaf-zellen-schutz", "url": "https://qiblanco.com/pages/schlaf-zellen-schutz", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "pausiert"},
-      {"pfad": "/pages/so-funktioniert-der-qione", "url": "https://qiblanco.com/pages/so-funktioniert-der-qione", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "aktiv"},
+      {"pfad": "/pages/so-funktioniert-der-qione", "url": "https://qiblanco.com/pages/so-funktioniert-der-qione", "titel": "", "crawlbar": false, "herkunft": "code", "ads": "pausiert"},
       {"pfad": "/pages/so-wirkt-kohaerentes-wasser", "url": "https://qiblanco.com/pages/so-wirkt-kohaerentes-wasser", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/studien", "url": "https://qiblanco.com/pages/studien", "titel": "Studien", "crawlbar": true, "herkunft": "code+shopify", "ads": "pausiert"},
       {"pfad": "/pages/tiefer-schlaf", "url": "https://qiblanco.com/pages/tiefer-schlaf", "titel": "", "crawlbar": false, "herkunft": "code"},
