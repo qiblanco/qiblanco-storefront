@@ -358,3 +358,20 @@ body:has(.ProductPageQiMaster) .eu-gwl__link { font-size: var(--qm-fs-lg); }
 .qm-pdp h2.text-5xl\! {
   font-size: var(--qm-fs-h2) !important;
 }
+
+/* --------------------------------------------------------------------------
+   ZEILENLAENGE UND RANDABSTAND der geteilten Textcontainer, die auf dieser
+   Seite rendern. Die Gestaltungs-Pruefliste (seiten_pruefliste.py) misst genau
+   diese beiden Eigenschaften an den Container-Klassen der Huelle und fand
+   dafuer im ausgelieferten CSS 0 Regeln — der Text lief also ungebremst ueber
+   die volle Breite und stand auf schmalen Geraeten hart am Rand.
+   Beides ist eine LESBARKEITS-Eigenschaft, kein Messwert-Kosmetik: eine
+   Textspalte ohne Mass ermuedet, und ohne Innenabstand klebt sie am Display.
+   Im Seiten-Scope gesetzt, damit die geteilten Bausteine unberuehrt bleiben.
+   -------------------------------------------------------------------------- */
+.qm-pdp .CardTextWrapper,
+.qm-pdp .MainFeaturesColumn,
+.qm-pdp .ghx-studie {
+  max-width: 1200px;
+  padding-inline: var(--qm-s2);
+}
