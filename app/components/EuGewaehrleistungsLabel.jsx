@@ -504,27 +504,55 @@ function EuLabelListenpunktFlaeche() {
 /**
  * FOOTER. Punkt 4 unter "3. Bezahlmethoden" -- reiner Textlink.
  *
- * DERZEIT NIRGENDS MONTIERT: Elina EL-20260901-3fb38a2a stellt den
- * Footer-Teil ausdrücklich zurück ("jetzt bewusst weglassen und für
- * spaeter zurueckstellen"). Der Baustein bleibt deshalb erhalten -- er ist
- * zurueckgestellt, nicht entfernt.
+ * MONTIERT IN app/components/Footer.jsx (FooterDisclaimer). Hier stand bis
+ * zum 2026-09-10 "DERZEIT NIRGENDS MONTIERT" mit Verweis auf Elina
+ * EL-20260901-3fb38a2a -- das war ein DATIERTER Befund und ist seit dem
+ * 2026-09-07 falsch: EL-20260907-116263e5 hat den Footer-Punkt ausdrücklich
+ * zurückgeholt (Commit 9f28119, PR #327). Der Satz blieb dabei stehen. Wer
+ * ihn liest, hält eine gewollte Montage für einen Versehen -- deshalb steht
+ * er jetzt richtig da.
  *
- * GEAENDERT gegenueber der Vorfassung, und das ist kein Schoenheitsfehler:
- * früher stand hier "gleiches Overlay, kein zweiter Dialog", weil ein
- * globaler Provider im Seitengeruest hing. Den gibt es nicht mehr. Ohne
- * eigenen Provider würde `useEuLabel()` hier `null` liefern und der
- * Ausloeser beim ersten Rendern an `kontext.open` WERFEN -- ein Fehler, der
- * erst auftritt, wenn jemand den Baustein spaeter wieder einhaengt, also
- * genau dann, wenn niemand mehr mit ihm rechnet. Der Provider steht deshalb
- * hier drin.
+ * DER BAUSTEIN BRINGT SEINE EIGENE HÜLLE MIT, und das ist der Kern:
+ * EuLabelProvider rendert {children} UND den <dialog> als Geschwister.
+ * Der Aufrufer darf den Baustein deshalb NICHT in ein <p> setzen -- <p>
+ * nimmt baulich nur Phrasing-Content, ein <dialog> mit <div>-Kindern ist
+ * Flow-Content. Der Browser-Parser schließt das <p> beim <dialog> von
+ * selbst (dieselbe Regel wie bei div/ul/section), hebt ihn heraus und hängt
+ * ein leeres <p> hinterher; der Serverbau hat ihn drin, und React findet
+ * beim Hydrieren einen anderen Baum vor als es geschrieben hat. Genau das
+ * war bis zum 2026-09-10 der Zustand -- auf JEDER Route, weil der Footer
+ * überall rendert.
+ *
+ * Die Hülle ist deshalb hier drin und ist ein <p>, das INNERHALB des
+ * Providers steht: der <dialog> wird damit sein GESCHWISTER statt sein Kind
+ * und landet im umgebenden <div class="footer-inner"> -- gültiges HTML, und
+ * genau der Baum, den der Parser ohnehin schon erzeugt hat. Die Gestaltung
+ * bleibt unverändert, weil `.footer-disclaimer p` weiter greift.
+ *
+ * SPIEGELBILD zu EuGewaehrleistungsListenpunkt: dort steht die <li>
+ * AUSSERHALB des Providers, weil ein <ul> keinen <dialog> als direktes Kind
+ * tragen darf. Hier darf die Hülle innen stehen, weil der Elternknoten ein
+ * <div> ist. Beide Male ist die Frage dieselbe: welcher Knoten hält den
+ * <dialog>, und darf er das?
+ *
+ * `vorspann` traegt die Fußnoten-Nummer des Aufrufers ("4. "). Sie gehört
+ * ihm und nicht diesem Baustein -- er nummeriert seine Fußnotenreihe selbst.
+ *
+ * Der Provider steht hier drin und nicht im Seitengerüst: ohne ihn würde
+ * `useEuLabel()` `null` liefern und der Ausloeser beim ersten Rendern an
+ * `kontext.open` WERFEN. Ein globaler Provider ist zudem durch Elina
+ * EL-20260901-3fb38a2a ausdrücklich ausgeschlossen.
  */
-export function EuGewaehrleistungsLink() {
+export function EuGewaehrleistungsLink({vorspann = null}) {
   return (
     <EuLabelProvider>
-      <EuLabelAusloeser
-        flaeche="footer"
-        beschriftung={AUSLOESER_TEXT_FOOTER}
-      />
+      <p className="eu-gwl eu-gwl--fussnote">
+        {vorspann}
+        <EuLabelAusloeser
+          flaeche="footer"
+          beschriftung={AUSLOESER_TEXT_FOOTER}
+        />
+      </p>
     </EuLabelProvider>
   );
 }

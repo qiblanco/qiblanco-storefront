@@ -520,10 +520,24 @@ test('das Label hängt NICHT im globalen Seitengeruest', () => {
 test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
   const roh = readFileSync(FOOTER, 'utf8');
 
+  // GEWEITET am 2026-09-10: die Vorfassung pinnte die AUFRUFFORM
+  // `<EuGewaehrleistungsLink />` (selbstschliessend, ohne Prop) statt der
+  // Zusage "der Footer montiert Punkt 4". Damit faerbte sie jede additive
+  // Weiterentwicklung des Bausteins rot -- konkret den Umbau, der die
+  // Fussnoten-Nummer als Prop uebergibt, weil der Baustein seine <p>-Huelle
+  // seither selbst mitbringt (siehe Wächter darunter). Gemessen wird jetzt
+  // die MONTAGE; verschwindet sie, ist der Wächter unverändert rot.
   assert.match(
     roh,
-    /<EuGewaehrleistungsLink\s*\/>/,
+    /<EuGewaehrleistungsLink[\s/]/,
     'Footer.jsx montiert Punkt 4 nicht mehr -- die Pflichtmitteilung fällt auf jeder Seite weg, die keinen eigenen Träger hat',
+  );
+  // Die Nummer der Fussnotenreihe gehört dem Footer, nicht dem Baustein --
+  // ohne sie stünde der Link ohne Bezug unter "3. Bezahlmethoden".
+  assert.match(
+    roh,
+    /<EuGewaehrleistungsLink\s+vorspann="4\.\s*"/,
+    'Der Footer übergibt die Fussnoten-Nummer nicht mehr -- Punkt 4 verlöre seine Nummer in der Reihe 1.-4.',
   );
   assert.match(
     roh,
@@ -534,6 +548,66 @@ test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
     roh,
     /<PaymentIcons\s*\/>/,
     'Positiv-Kontrolle: der Nachbar-Baustein <PaymentIcons /> fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+/*
+ * REGRESSIONS-WÄCHTER zum shopweiten Hydration-Bruch vom 2026-09-10.
+ *
+ * LAGE, am ausgelieferten HTML gemessen (nicht geschlossen): Footer.jsx
+ * setzte den Baustein in ein <p>. EuLabelProvider rendert {children} UND
+ * den <dialog> als Geschwister, der <dialog> trägt <div>-Kinder -- damit
+ * stand Flow-Content in einem <p>, das baulich nur Phrasing-Content nimmt.
+ * Der HTML-Parser schließt ein offenes <p> beim <dialog> von selbst
+ * (dieselbe Regel wie bei div/ul/section), hebt ihn heraus und hängt ein
+ * leeres <p> hinterher. Der Serverbau hat ihn drin, der geparste DOM nicht:
+ * React #418 auf JEDER Route, weil der Footer überall rendert.
+ *
+ * WARUM ZWEI ARME UND NICHT EINER: der Fehler kann von BEIDEN Seiten
+ * zurückkommen -- der Aufrufer wickelt den Baustein wieder ein, ODER der
+ * Baustein verliert seine eigene Hülle und der Aufrufer muss wieder eine
+ * bauen. Ein Arm allein liesse die jeweils andere Richtung offen.
+ *
+ * Der Wächter misst die QUELLE. Die WIRKUNG misst
+ * homepage-bauer/pruefungen/probe_footer_dialog_im_p.py am ausgelieferten
+ * HTML -- ein grüner Repo-Stand ist keine Aussage über die Auslieferung.
+ */
+test('der Gewährleistungs-Baustein steht in keinem <p> (Hydration)', () => {
+  const roh = readFileSync(FOOTER, 'utf8');
+
+  // Arm 1: der Aufrufer wickelt ihn nicht ein. Nur ein NOCH OFFENES <p>
+  // zaehlt -- die Lookahead-Klammer verbietet ein `</p>` zwischen Oeffnung
+  // und Aufruf. Ohne sie trifft schon die Nachbar-Fussnote "3. Bezahlmethoden"
+  // und der Waechter waere rot-by-construction.
+  assert.doesNotMatch(
+    roh,
+    /<p[^>]*>(?:(?!<\/p>)[\s\S])*?<EuGewaehrleistungsLink/,
+    'Footer.jsx setzt <EuGewaehrleistungsLink> wieder in ein <p>. Der <dialog> ' +
+      'des Providers ist Flow-Content; der Parser hebt ihn aus dem <p> heraus ' +
+      'und React bricht beim Hydrieren auf JEDER Route (#418).',
+  );
+
+  // Positiv-Kontrolle: ohne sie wäre eine leer gelesene Datei von "sauber"
+  // nicht zu unterscheiden -- die Abwesenheit oben sagte dann nichts.
+  assert.match(
+    roh,
+    /<p>\s*3\. Bezahlmethoden<\/p>/,
+    'Positiv-Kontrolle: die Nachbar-Fussnote "3. Bezahlmethoden" fehlt -- die ' +
+      'Datei wurde nicht gelesen wie erwartet',
+  );
+
+  // Arm 2: der Baustein bringt seine eigene, gültige Hülle mit. Ohne sie
+  // müsste der Aufrufer wieder eine bauen -- und das war der Fehler.
+  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+  const ab = code.indexOf('export function EuGewaehrleistungsLink(');
+  assert.ok(ab >= 0, 'EuGewaehrleistungsLink fehlt');
+  const körper = code.slice(ab, ab + 500);
+  assert.match(
+    körper,
+    /<EuLabelProvider>\s*<p[\s>]/,
+    'EuGewaehrleistungsLink bringt seine <p>-Hülle nicht mehr selbst mit -- ' +
+      'dann baut der Aufrufer wieder eine um den Provider herum, und der ' +
+      '<dialog> steht erneut im <p>.',
   );
 });
 
