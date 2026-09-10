@@ -95,7 +95,7 @@ export const VORWUERFE = [
     urteil: 'falsch',
     antwort: [
       'Das haben wir nicht gesagt. Kein Text von uns verspricht das, und du wirst es auf keiner unserer Seiten finden. Der Satz übertreibt ein Versprechen ins Lächerliche, das in dieser Form nie gegeben wurde, und widerlegt danach die Übertreibung.',
-      'Was wir tatsächlich sagen, steht ein paar Zeilen weiter unten in seiner ganzen Nüchternheit: Es gibt keinen Wirknachweis am Menschen. Wir behaupten keinen Heileffekt, wir versprechen keine Heilung und wir raten niemandem, wegen uns eine Behandlung zu ändern. Wer das Gegenteil von uns zitiert, zitiert nicht uns.',
+      'Ein Wirknachweis am Menschen liegt nicht vor. Wir behaupten keinen Heileffekt, versprechen keine Heilung und raten niemandem, wegen uns eine Behandlung zu ändern. Untersucht sind Zellkulturen und eine Sammlung von Erfahrungsberichten — mehr steht in keinem unserer Texte.',
     ],
   },
   {
