@@ -1,0 +1,405 @@
+/* ============================================================================
+   /pages/kritik — „Was an Qi Blanco kritisiert wird – und was davon stimmt"
+   (2026-09-10).
+
+   Token-System wortgleich zur Schwesterseite erfahrungen.css (Rubrik 92/100)
+   und damit zum staerksten Bestands-Rezept des Hauses (schlaf-zellen-schutz.css,
+   .lp-a3, 94/100) sowie zum design-meister web-brief --seite kritik: warmes
+   Neutral-Kontinuum, EIN Gold-Akzent nur auf Handlung/Beweis, Weissraum
+   gruppiert statt Boxen, 8pt-Grid, Sektions-Takt 96/64, Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .krit — self-contained.
+
+   WARUM EIGENE DATEI UND NICHT erfahrungen.css MITBENUTZT: die beiden Flaechen
+   sind in der Abgrenzungs-SSoT bewusst getrennt (Erlebnis gegen Beweis), und
+   eine geteilte Datei zoege jeden Format-/Design-Beleg der einen Seite auf die
+   andere (Gate 12 loest geteilte Dateien auf ALLE importierenden Routen auf).
+   Die WERTE sind kopiert, die DATEI nicht geteilt — dieselbe Entscheidung, die
+   erfahrungen.css gegenueber schlaf-zellen-schutz.css getroffen hat.
+
+   DER EINE AKZENT SITZT AUF DEM BEWEIS: die Urteilszeile („Das stimmt." /
+   „Das stimmt zum Teil." / „Das stimmt nicht.") traegt das Gold als Linie und
+   als Tinte. Die drei Urteile werden NICHT farblich unterschieden — ein Rot/
+   Gruen/Gelb waeren drei weitere Farben auf einer Seite, deren Brief genau
+   EINEN Akzent erlaubt. Der Text traegt das Urteil, nicht die Farbe.
+   ========================================================================== */
+
+:root {
+  --krit-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --krit-fs-xs: 0.8125rem; /* 13px, nur Fuss */
+  --krit-fs-base: 1rem; /* 16px */
+  --krit-fs-md: 1.125rem; /* 18px */
+  --krit-fs-lg: 1.25rem; /* 20px */
+  --krit-fs-xl: 1.5625rem; /* 25px */
+  --krit-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --krit-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --krit-s1: 8px;
+  --krit-s2: 16px;
+  --krit-s3: 24px;
+  --krit-s4: 32px;
+  --krit-s6: 48px;
+  --krit-s8: 64px;
+  --krit-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --krit-grund: #faf9f5;
+  --krit-flaeche: #f4f0e9;
+  --krit-dunkel: #191714;
+  --krit-text: #2c2a26;
+  --krit-text-hell: #f4f0e9;
+  --krit-muted: #6b665d;
+  --krit-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
+       Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1). Gemessen
+       2026-09-10: eine abgedunkelte Gold-TINTE fuer Fliesstext-Links waere auf
+       dieser Route der ZWEITE Goldton neben den Fusszeilen-Links (harmonisch
+       85 statt 100). Der Text bleibt dunkel, das Gold traegt die Linie. */
+  --krit-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --krit-r1: 8px;
+  --krit-r2: 16px;
+  --krit-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --krit-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
+  --krit-mass: 68ch;
+  --krit-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.krit {
+  font-family: var(--krit-font);
+  font-size: var(--krit-fs-base);
+  line-height: 1.65;
+  color: var(--krit-text);
+  background: var(--krit-grund);
+}
+
+/* NAME MIT ABSICHT: der Gestaltungs-Pruefliste (homepage-bauer/src/
+   seiten_pruefliste.py) faellt ein Textcontainer nur auf, wenn sein Klassenname
+   eines der Woerter aus _CONTAINER_WOERTER traegt (inhalt/content/article/
+   text/...). Die Punkte P1 Zeilenlaenge und P2 Innenabstaende werden sonst
+   nicht ROT, sondern gar nicht erst GEMESSEN -- gemessen 2026-09-10 mit dem
+   frueheren Namen `krit__schmal`: 0 erkannte Regeln, obwohl max-width 760px
+   und padding-inline 16px die ganze Zeit dastanden. Wer diese Klasse umbenennt,
+   nimmt der Seite ihre Messbarkeit, ohne dass sich am Aussehen etwas aendert. */
+.krit__inhalt {
+  width: 100%;
+  max-width: var(--krit-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--krit-s2);
+}
+
+.krit section {
+  padding-block: var(--krit-s8);
+}
+@media (min-width: 768px) {
+  .krit section {
+    padding-block: var(--krit-s12);
+  }
+}
+
+.krit h1 {
+  font-size: var(--krit-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--krit-s3);
+  color: var(--krit-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.krit h2 {
+  font-size: var(--krit-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--krit-s2);
+  color: var(--krit-text);
+}
+
+.krit h3 {
+  font-size: var(--krit-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--krit-s2);
+  color: var(--krit-text);
+}
+
+.krit p,
+.krit li {
+  font-size: var(--krit-fs-base);
+  line-height: 1.65;
+  color: var(--krit-text);
+  max-width: var(--krit-mass);
+  margin: 0 0 var(--krit-s2);
+}
+
+.krit p:last-child {
+  margin-bottom: 0;
+}
+
+.krit a {
+  color: var(--krit-text);
+  text-decoration: underline;
+  text-decoration-color: var(--krit-akzent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.krit a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.krit ol,
+.krit ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.krit__kopf {
+  background: var(--krit-flaeche);
+}
+
+.krit p.krit__vorspann {
+  font-size: var(--krit-fs-base);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--krit-muted);
+  margin-bottom: var(--krit-s2);
+}
+
+.krit p.krit__lead {
+  font-size: var(--krit-fs-md);
+}
+
+.krit p.krit__einleitung {
+  font-size: var(--krit-fs-md);
+  color: var(--krit-muted);
+  margin-bottom: var(--krit-s4);
+}
+
+/* ─── Hinweisblock „wie diese Seite gemacht ist" ──────────────────────────── */
+.krit__hinweis {
+  border-left: 3px solid var(--krit-akzent);
+  padding: var(--krit-s2) 0 var(--krit-s2) var(--krit-s3);
+  margin-top: var(--krit-s4);
+  color: var(--krit-muted);
+}
+
+.krit__hinweis p {
+  color: var(--krit-muted);
+}
+.krit__hinweis strong {
+  color: var(--krit-text);
+  font-weight: 600;
+}
+
+/* ─── Die Vorwuerfe ───────────────────────────────────────────────────────── */
+.krit__liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--krit-s8);
+}
+
+.krit li.krit__vorwurf {
+  max-width: none;
+  margin: 0;
+  padding-top: var(--krit-s4);
+  border-top: 1px solid var(--krit-linie);
+}
+
+.krit p.krit__nummer {
+  font-size: var(--krit-fs-lg);
+  font-weight: 600;
+  color: var(--krit-muted);
+  margin: 0 0 var(--krit-s1);
+}
+
+.krit__zitat {
+  margin: 0 0 var(--krit-s3);
+  padding: var(--krit-s3);
+  background: var(--krit-flaeche);
+  border-radius: var(--krit-r2);
+  box-shadow: var(--krit-shadow-sm);
+}
+
+.krit__zitat p {
+  font-size: var(--krit-fs-md);
+  line-height: 1.55;
+  font-style: italic;
+  margin: 0 0 var(--krit-s1);
+}
+
+.krit__zitat cite {
+  display: block;
+  font-size: var(--krit-fs-base);
+  font-style: normal;
+  color: var(--krit-muted);
+}
+
+/* Der Beweis-Akzent: EIN Gold, als Linie. Alle drei Urteile tragen denselben
+   Stil — der Text unterscheidet, nicht die Farbe. */
+.krit p.krit__urteil {
+  font-size: var(--krit-fs-lg);
+  font-weight: 600;
+  color: var(--krit-text);
+  border-left: 3px solid var(--krit-akzent);
+  padding-left: var(--krit-s2);
+  margin: 0 0 var(--krit-s2);
+}
+
+.krit__antwort p {
+  margin-bottom: var(--krit-s2);
+}
+.krit__antwort p:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── Einraeumungen ───────────────────────────────────────────────────────── */
+.krit__einraeumen {
+  background: var(--krit-flaeche);
+}
+
+.krit__einraeumungen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--krit-s4);
+  counter-reset: einraeumung;
+}
+
+.krit__einraeumungen li {
+  max-width: none;
+  margin: 0;
+  padding-left: var(--krit-s6);
+  position: relative;
+  counter-increment: einraeumung;
+}
+
+.krit__einraeumungen li::before {
+  content: counter(einraeumung);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--krit-fs-lg);
+  font-weight: 600;
+  color: var(--krit-muted);
+  line-height: 1.35;
+}
+
+.krit__einraeumungen h3 {
+  margin-bottom: var(--krit-s1);
+}
+
+/* ─── Befunde ─────────────────────────────────────────────────────────────── */
+.krit__befunde {
+  display: flex;
+  flex-direction: column;
+  gap: var(--krit-s6);
+}
+
+.krit li.krit__befund {
+  max-width: none;
+  margin: 0;
+  padding-top: var(--krit-s4);
+  border-top: 1px solid var(--krit-linie);
+}
+
+.krit p.krit__quelle {
+  color: var(--krit-muted);
+  margin-bottom: var(--krit-s2);
+}
+
+.krit p.krit__grenze strong {
+  font-weight: 600;
+}
+
+.krit a.krit__link {
+  display: inline-block;
+  margin-top: var(--krit-s1);
+  font-weight: 600;
+}
+
+/* ─── Abschluss ───────────────────────────────────────────────────────────── */
+.krit__abschluss {
+  background: var(--krit-flaeche);
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. Wortgleich zu erfahrungen.css,
+   weil Kopf und Fuss dieselben sind. */
+body:has(.krit) {
+  background: var(--krit-grund);
+  --color-accent-primary: var(--krit-akzent);
+  --rd3-gold: var(--krit-akzent);
+  --qb-sterne-gold: var(--krit-akzent);
+  --shop-switch-active: rgba(201, 161, 75, 0.18);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss. */
+body:has(.krit) img,
+body:has(.krit) picture,
+body:has(.krit) video {
+  border-radius: var(--krit-r1);
+}
+
+body:has(.krit) .footer,
+body:has(.krit) footer {
+  background: var(--krit-dunkel);
+  font-family: var(--krit-font);
+}
+
+body:has(.krit) .footer p,
+body:has(.krit) .footer a,
+body:has(.krit) .footer li,
+body:has(.krit) .footer span {
+  font-size: var(--krit-fs-xs);
+}
+body:has(.krit) .footer .footer-heading {
+  font-size: var(--krit-fs-base);
+}
+
+body:has(.krit) .footer .btn--primary,
+body:has(.krit) .footer button[type='submit'],
+body:has(.krit) .footer input[type='submit'] {
+  background: var(--krit-akzent);
+  color: var(--krit-text);
+  border-radius: var(--krit-r1);
+  font-size: var(--krit-fs-base);
+}
+
+body:has(.krit) .footer input[type='email'],
+body:has(.krit) .footer input[type='text'] {
+  border-radius: var(--krit-r1);
+  font-size: var(--krit-fs-base);
+}
+
+/* Das Newsletter-Widget im Footer (ActiveCampaign `_form_15`) setzt seinen
+   Ocker #F2BF72 inline — der ZWEITE Goldton der Route, nur mit !important
+   erreichbar (gemessen an erfahrungen: ein Knopf hielt den Zwei-Gold-Befund). */
+body #_form_15_submit._submit,
+body:has(.krit) ._form_15 button,
+body:has(.krit) ._form_15 ._submit,
+body:has(.krit) ._form_15 input[type='submit'] {
+  background: var(--krit-akzent) !important;
+  color: var(--krit-text) !important;
+  border-radius: var(--krit-r1) !important;
+  font-family: var(--krit-font) !important;
+}
+
+/* reset.css setzt "p, li { color: var(--color-dark) }" als DIREKTE Elementregel.
+   Direkt schlaegt GEERBT — auf dunklem Grund gewinnt sonst der dunkle Fliesstext. */
+body:has(.krit) .footer p,
+body:has(.krit) .footer li {
+  color: inherit;
+}
