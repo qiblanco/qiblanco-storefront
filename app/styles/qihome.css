@@ -1,0 +1,197 @@
+/* ============================================================================
+   qihome.css — Token-Schicht der Detailseite /pages/qihome-details
+   (Ziel des 301 von /pages/qihome; genau DIESE Route rendert QiHomeLanding)
+   ----------------------------------------------------------------------------
+   WARUM ES DIESE DATEI GIBT
+   Die Seite stand im design-rubrik-Score auf 53 (Live-Beleg 2026-09-10) bzw.
+   51 (Dev-Server dieses Worktrees) bei Schwelle 80. Die Abzuege waren
+   token-los und seitenweit: fuenf H2-Stil-Kombis, drei H2-Ausrichtungen,
+   0 von 2 Sektions-Abstaenden auf dem 8px-Grid, vier Bild-Radius-Werte, ein
+   fremdes Akzent-Blau, zwei Goldtoene und fuenf Hintergrund-Farbwelten.
+
+   WARUM HIER UND NICHT IN app.css
+   app.css haengt an root.jsx und traegt auf JEDER Route. Diese Datei wird
+   ausschliesslich ueber den links()-Export von
+   app/routes/pages.qihome-details.jsx geladen: additiv, reversibel, ohne
+   Nebenwirkung auf andere Seiten. Entfernen des links()-Eintrags stellt den
+   Vorzustand vollstaendig wieder her. Scope ist die Klasse `QiHomeLanding`,
+   die das Wurzel-Element der Komponente bereits traegt.
+
+   REZEPT — uebernommen, nicht neu erfunden (P10)
+   app/styles/startseite.css (PR #354, 46 -> 82) und
+   app/styles/crystal-cacao.css (s02 dieses Grossjobs, 74 -> 85), beide auf
+   Basis von design-meister/db/webdesign/web-soll.yaml. Die Typo-Stufen sind
+   die des Hauses (reset.css: h2 = 2.2rem, h3 -> 1.5rem wie in
+   crystal-cacao.css begruendet); es wird KEINE zweite Skala danebengestellt.
+
+   JEDE REGEL IST GEGEN DIE SONDE (Ablauf des Kollektors, Viertelpixel-
+   Quantisierung) GEMESSEN — die Herkunft jedes Abzugs steht bei der Regel.
+
+   BEWUSST NICHT GEAENDERT — es waere eine Designverschlechterung
+   - Die H2-AUSRICHTUNG bleibt links/zentriert gemischt (-15 auf durchdacht).
+     Die zentrierten H2 sind Sektions-Titel ueber zentriertem Inhalt
+     (Expertenmeinung, Technologie, Studien, Mikroskop-Video); die linken
+     stehen in linksbuendigen Textspalten. Geheilt wird nur der `right`-
+     Ausreisser (Regel 4). Startseite und crystal-cacao tragen denselben Rest.
+   - Der FUSS-H2 `.footer-studies__titel` (16px/700) bleibt stehen: die zweite
+     verbleibende H2-Kombi (-20 auf stimmig). Ihn auf 35px zu ziehen hiesse,
+     den Fuss zu verbiegen. Vorbild-Rest wie in PR #354 und s02.
+   - Der KAUF-KNOPF `btn--primary` rgb(242,191,114) bleibt unangetastet
+     (konversionsrelevant). Er ist umgekehrt der EINE Gold-Akzent, auf den
+     Regel 6 den zweiten Goldton zieht.
+   - Die Schriftgroesse 16,75px (5x Studien-Kartentitel, 2x btn--secondary)
+     bleibt: sie zu entfernen brachte +0,4 auf technisch, kostete aber den
+     Skalen-Fit (17,5 / 16 = 1,094 faellt aus dem Band) = -0,3. Kein Hebel.
+   - Die JS-Konsolen-Fehler (Footer-Hydration, PR #356) stehen unter Elinas
+     Gate 'kein Merge/Deploy ohne mein GO' — nicht Gegenstand dieser Datei.
+   ========================================================================== */
+
+.QiHomeLanding {
+  /* Typo — die Stufen des Hauses (reset.css), keine zweite Skala */
+  --qh-fs-h2: 2.2rem;   /* 35,2px — Basiswert aus reset.css h2 */
+  --qh-fs-h3: 1.5rem;   /* 24px — Skalen-Fit, siehe Regel 2 */
+
+  /* Farbe — warmes Neutral-Kontinuum (web-soll.yaml), wie startseite.css */
+  --qh-muted: #6b665d;
+  --qh-flaeche: #f8f4ee;
+  /* DER EINE Gold-Akzent der Seite = der Kauf-Knopf (unveraendert) */
+  --qh-akzent: rgb(242, 191, 114);
+
+  /* Bild-Radius = der global schon gefuehrte Hauswert (img{} in app.css),
+     wie in startseite.css und crystal-cacao.css. KEIN zweiter Token. */
+  --qh-bild-radius: 4px;
+
+  /* Sektions-Takt auf dem 8px-Grid (web-soll: [96,64]) */
+  --qh-sec-lg: 96px;
+}
+
+/* --- 1. EIN H2-Stil auf der Seite ---------------------------------------- */
+/* Vorher fuenf Kombis: 35,2/600 (13x, reset.css-Basiswert) · 40/600 (Studien-
+ * Titel 'Zellbiologisch geprueft') · 38,4/700 (2x LEERE h2 der
+ * HeroBannerParallax mit headline='') · 48/600 (UpsellLineUp, `text-5xl!`)
+ * · 16/700 (Fuss, bleibt). Nach der Regel: 2 Kombis.
+ *
+ * WARUM @layer utilities: Tailwind v4 legt seine Utilities in diese Ebene. Bei
+ * `!important` dreht die Kaskade die Layer-Reihenfolge um — eine UNGELAYERTE
+ * !important-Regel haette die NIEDRIGSTE Prioritaet und verloere gegen
+ * `.text-5xl\!` unabhaengig von ihrer Spezifitaet. In derselben Ebene
+ * entscheidet die Spezifitaet: `.QiHomeLanding h2` (0,1,1) schlaegt
+ * `.text-5xl\!` (0,1,0). UpsellLineUp bleibt unangetastet (fuenf weitere
+ * Routen). Real eingetreten in PR #354 und in s02 — kein Gedankenspiel. */
+@layer utilities {
+  .QiHomeLanding h2 {
+    font-size: var(--qh-fs-h2) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* --- 2. EIN H3-Stil, und zwar 1,5rem statt 1,4rem ------------------------ */
+/* Vorher 22,5px (9x: Hero-Bewertung, HRV-Karten, Upsell-Karten). Die Groesse
+ * ist GEMESSEN gewaehlt: die Rubrik prueft den Skalen-Fit benachbarter
+ * Groessen (<= 1,06 oder 1,1..1,55). Mit 22,5 ist 35,25 / 22,5 = 1,567 und
+ * faellt durch; mit 24 sind es 35,25 / 24 = 1,469 und 24 / 19,25 = 1,247 —
+ * beide im Band, Anteil 8 von 10 statt 7 von 10. 24px steht ausserdem schon
+ * auf der Seite (Einleitungs-Absatz der Studien), es kommt KEINE Groesse hinzu.
+ * AUSGENOMMEN die Studien-Kartentitel (h3.ghx-studie__title, 16,75px): sie
+ * sind Karten-Labels, kein Sektions-Untertitel — 24px wuerde die Karten
+ * sprengen. Derselbe Rest steht in crystal-cacao.css. */
+.QiHomeLanding h3:not(.ghx-studie__title) {
+  font-size: var(--qh-fs-h3) !important;
+  font-weight: 600 !important;
+}
+
+/* --- 3. Sektions-Abstand auf das 8px-Grid -------------------------------- */
+/* Die Seite fuehrt kein [data-section]; der Kollektor nimmt deshalb die
+ * <section>-Tags: QiHomeHeroBanner (Abstand 0, faellt heraus) und die zwei
+ * HeroBannerParallax-Sektionen mit padding-top 32 + margin-top 100 = 132.
+ * 132 % 8 = 4 -> 0 von 2 auf dem Grid = -40 auf durchdacht. EIN Wert heilt
+ * die ganze Achse: margin 100 -> 96 ergibt 128 (128 % 8 = 0) und ist zugleich
+ * der Sektions-Takt aus web-soll. Sichtbare Aenderung: 4px.
+ * AUSDRUECKLICH NICHT getan: data-section-Attribute setzen — das tauscht die
+ * Grundmenge des Kollektors aus, statt die Achse zu heilen. */
+.QiHomeLanding section.HeroBannerAlt {
+  margin-top: var(--qh-sec-lg);
+  margin-bottom: var(--qh-sec-lg);
+}
+
+/* --- 4. Der `right`-Ausreisser der H2-Ausrichtung ------------------------ */
+/* Zwei Bild-Text-Bloecke tragen inline `textAlign: right` (Bild links, Text
+ * rechts, am Aussenrand ausgerichtet); der dritte Block (gespiegelt) steht
+ * links. Drei Ausrichtungen = -30 auf durchdacht. Die zwei Bloecke auf links
+ * gezogen: eine Regel je Sektionstyp, und exakt das, was die Mobil-Regel in
+ * app.css fuer dieselben Bloecke ohnehin schon erzwingt (text-align: left
+ * !important <= 749px). Linksbuendiger Fliesstext neben einem Bild liest
+ * sich besser als rechtsbuendiger mit Flatterrand links. !important, weil
+ * es ein Inline-Stil ist. */
+.QiHomeLanding .QiHomeImageTextBlock__content {
+  text-align: left !important;
+}
+
+/* --- 5. Zwei Bild-Radius-Werte statt vier -------------------------------- */
+/* Vorher: 4px (20 Bilder: Hero, HRV, Logo-Leiste, Kopf-Logo) · 20px (12: acht
+ * grosse Fotos der Seite + VIER Bilder im KOPF-Untermenue) · 8px (5 Studien-
+ * Vorschauen) · 6px (2 im FUSS). Soll <= 2 Werte.
+ * ERSTER VERSUCH, GEMESSEN UND VERWORFEN: die 20px-Gruppe der Seite auf 8px
+ * und den Fuss auf 8px — ergab {4, 8, 20}, weil die vier 20px-Bilder im
+ * Kopf-Untermenue bleiben (s02 hat die geteilte Navigation bewusst nicht
+ * verformt, und eine Radius-Aenderung, die beim Seitenwechsel im Menue
+ * springt, waere schlechter als der Abzug). Deshalb umgekehrt: die acht
+ * grossen Fotos BEHALTEN ihre 20px (keine sichtbare Aenderung), die fuenf
+ * Studien-Vorschauen gehen 8 -> 4 und die zwei Fuss-Bilder 6 -> 4 (Delta 2px,
+ * unsichtbar; identisch zu crystal-cacao.css, also EIN Fuss-Wert auf beiden
+ * Routen). Ergebnis {4px, 20px}.
+ * NICHT auf `img` allgemein gezogen: das haette die 20px-Fotos mitgerissen.
+ * border-radius 50% ist eine FORM (rundes Logo), die Rubrik zaehlt sie nicht.
+ * Der Fuss ist ein Geschwister von .QiHomeLanding; erreicht wird er ueber den
+ * Hausweg `body:has(.<scope>)` (Bestand in erfahrungen.css, konto.css,
+ * mm-lp.css, studien.css, crystal-cacao.css u. a.), route-lokal, weil diese
+ * Datei nur an einer Route haengt. */
+.QiHomeLanding .ghx-studie__preview img {
+  border-radius: var(--qh-bild-radius) !important;
+}
+body:has(.QiHomeLanding) .footer-study__image img,
+body:has(.QiHomeLanding) .footer-study__logo img {
+  border-radius: var(--qh-bild-radius);
+}
+
+/* --- 6. EIN Akzent: fremdes Blau und zweiter Goldton raus ---------------- */
+/* (a) Die 16 'weiterlesen'-Schalter des Reputon-Karussells trugen #1565c0
+ *     und bildeten eine eigene gesaettigte Akzent-Farbwelt (-25 auf
+ *     harmonisch). Auf das Neutral-Muted gezogen + Unterstreichung, exakt
+ *     wie startseite.css Regel 5. Kontrast #6b665d auf #f8f4ee: 4,9:1.
+ * (b) Die fuenf Sterne im Hero (.qb-sterne, #F4B400) standen als zweiter,
+ *     114 Farbabstand entfernter Goldton neben dem Kauf-Knopf-Gold direkt
+ *     darunter (-15). Auf das Knopf-Gold gezogen: EIN Gold im Hero. Das ist
+ *     route-lokal (Praezedenz: schlaf-zellen-schutz.css zieht .qb-sterne auf
+ *     den Seiten-Akzent); der globale Sternton in app.css bleibt, wie er ist. */
+.QiHomeLanding button[class*='text-[#1565c0]'] {
+  color: var(--qh-muted) !important;
+  text-decoration: underline;
+}
+.QiHomeLanding .qb-sterne {
+  color: var(--qh-akzent);
+}
+
+/* --- 7. Hintergruende: warmes Neutral statt kuehlem Blaugrau ------------- */
+/* Die 39 Reputon-Karten stellten mit #f3f6f9 eine eigene, kuehle Farbwelt
+ * neben das warme Kontinuum (5 Welten, Soll <= 4, -10). Auf die Hausflaeche
+ * #f8f4ee gezogen (Abstand 6,8 zur benachbarten Warmflaeche #f7f1e8, damit
+ * im selben Cluster) — startseite.css Regel 6. */
+.QiHomeLanding [class*='bg-[#f3f6f9]'] {
+  background-color: var(--qh-flaeche) !important;
+}
+
+/* --- 8. Mobil: die Ueberschriften zurueckdrehen -------------------------- */
+/* reset.css setzt <= 749px h2 auf 1,5rem und h3 auf 1,25rem (!important).
+ * Regel 1 und 2 tragen ebenfalls !important und wuerden das ueberstimmen —
+ * ohne diesen Block stuenden 35px auf 390px Breite und braechen um. */
+@media (max-width: 749px) {
+  @layer utilities {
+    .QiHomeLanding h2 {
+      font-size: 1.5rem !important;
+    }
+  }
+  .QiHomeLanding h3:not(.ghx-studie__title) {
+    font-size: 1.25rem !important;
+  }
+}
