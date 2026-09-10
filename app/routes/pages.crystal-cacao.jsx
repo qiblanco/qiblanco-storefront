@@ -1,7 +1,17 @@
 import {useLoaderData} from 'react-router';
 import {Kakao} from '~/components/product-pages/Kakao';
+import crystalCacaoStyles from '~/styles/crystal-cacao.css?url';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
+
+/**
+ * Token-Schicht dieser Route. Sie haengt AUSSCHLIESSLICH hier und traegt
+ * deshalb auf keiner anderen Seite - app.css bleibt unangetastet. Der Scope
+ * ist die Klasse `cc` am Wurzel-Element der Kakao-Komponente.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: crystalCacaoStyles}];
+}
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -47,7 +57,7 @@ function loadDeferredData() {
 }
 
 export default function CrystalCacaoPage() {
-  return <Kakao />;
+  return <Kakao scope="cc" />;
 }
 
 const PAGE_QUERY = `#graphql

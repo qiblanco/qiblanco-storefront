@@ -1,0 +1,164 @@
+/* ============================================================================
+   crystal-cacao.css — Token-Schicht der Landingpage /pages/crystal-cacao
+   ----------------------------------------------------------------------------
+   WARUM ES DIESE DATEI GIBT
+   Die Seite stand im design-rubrik-Score auf 75 (Live-Beleg 2026-09-09) bzw. 74
+   (selbst gemessen auf dem Dev-Server dieses Worktrees) bei Schwelle 80. Die
+   Abzuege waren token-los und seitenweit: drei H2-Stil-Kombis, drei
+   Bild-Radius-Werte, ein Sektions-Abstand neben dem 8px-Grid und acht
+   Textbloecke mit 132 Zeichen Zeilenlaenge.
+
+   WARUM HIER UND NICHT IN app.css
+   app.css haengt an root.jsx und traegt auf JEDER Route. Diese Datei wird
+   ausschliesslich ueber den links()-Export von app/routes/pages.crystal-cacao.jsx
+   geladen: additiv, reversibel, ohne Nebenwirkung auf andere Seiten. Entfernen
+   des links()-Eintrags stellt den Vorzustand vollstaendig wieder her.
+
+   REZEPT — uebernommen, nicht neu erfunden (P10)
+   app/styles/startseite.css (PR #354, Merge fb3e6fcd, 46 -> 82) und
+   design-meister/db/webdesign/web-soll.yaml. Die Typo-Stufen sind die des
+   Hauses (reset.css: h2 = 2.2rem, h3 = 1.4rem); es wird KEINE zweite Skala
+   danebengestellt.
+
+   DIE HAELFTE DER ABZUEGE LIEGT IM GETEILTEN KOPF UND FUSS
+   Am DOM nachgemessen (Sonde mit dem Ablauf des Kollektors, Viertelpixel-
+   Quantisierung): der dritte Bild-Radius (6px) sind zwei Bilder im FUSS, der
+   vierte (20px) vier Bilder im KOPF-Untermenue, und der einzige off-grid
+   Sektions-Abstand ist `footer { padding: 50px 0 0 0 }` aus app.css:85. Eine
+   auf .cc gescopte Regel im <main> erreicht davon nichts. Der Hausweg dafuer
+   ist Bestand und kein Neubau: `body:has(.<scope>) .footer ...` steht bereits
+   in erfahrungen.css, konto.css, mm-lp.css, studien.css, tiefer-schlaf.css,
+   zell-schutz.css, esmog-schutz.css und chat-bot.css. Weil die Datei am
+   links() genau einer Route haengt, ist die Wirkung route-lokal.
+
+   BEWUSST NICHT GEAENDERT — beides waere eine Designverschlechterung
+   - Die H2-AUSRICHTUNG bleibt gemischt (18x links, 4x zentriert). Die Rubrik
+     zieht dafuer 15 Punkte. Die vier zentrierten sind die Hero-Zeile unter der
+     zentrierten H1 und zwei weisse Ueberschriften, die MITTIG auf einem Bild
+     liegen; sie linksbuendig zu machen bricht echtes Layout. Die 18 linken auf
+     zentriert zu ziehen wuerde 18 Textspalten brechen. Derselbe Abzug wurde im
+     Startseiten-Vorbild aus demselben Grund getragen.
+   - Der FUSS-H2 `.footer-studies__titel` (16px/700, WHO-Zitat-Titel) bleibt
+     stehen. Er ist die zweite verbleibende H2-Kombi und kostet 20 Punkte auf
+     `stimmig`. Ihn auf den Seiten-Token zu ziehen hiesse, einen 16px-Titel im
+     Fuss auf 35px aufzublasen. Das Startseiten-Vorbild hat denselben Rest und
+     erreicht damit 82; die saubere Loesung ist ein shopweiter Typo-Job, nicht
+     eine Einzelseite, die den Fuss verbiegt.
+   ========================================================================== */
+
+.cc {
+  /* Typo — die Stufen des Hauses (reset.css), nicht eine zweite Skala */
+  --cc-fs-h2: 2.2rem;   /* 35,2px — Basiswert aus reset.css h2 */
+  --cc-fs-h3: 1.5rem;   /* 24px — siehe Block 2, Begruendung dort */
+  --cc-fs-base: 1rem;   /* 16px */
+
+  /* Lesebreite — web-soll.yaml: zeilenlaenge_ch_max 75 */
+  --cc-lesebreite: 72ch;
+
+  /* Bild-Radius = der global schon gefuehrte Hauswert. KEIN zweiter Token. */
+  --cc-bild-radius: 4px;
+
+  /* Sektions-Takt auf dem 8px-Grid */
+  --cc-sec-fuss: 48px;
+}
+
+/* --- 1. EIN H2-Stil auf der Seite ---------------------------------------- */
+/* Vorher zwei Kombis im <main>: 35,2/600 (18x, der reset.css-Basiswert) und
+ * 48/600 (3x). Die drei Ausreisser tragen die Tailwind-Klasse `text-5xl!`.
+ *
+ * WARUM @layer utilities: Tailwind v4 legt seine Utilities in diese Ebene. Bei
+ * `!important` dreht die Kaskade die Layer-Reihenfolge um — eine UNGELAYERTE
+ * !important-Regel haette dann die NIEDRIGSTE Prioritaet und verloere gegen
+ * `.text-5xl\!` unabhaengig von ihrer Spezifitaet. In derselben Ebene
+ * entscheidet wieder die Spezifitaet, und `.cc h2` (0,1,1) schlaegt
+ * `.text-5xl\!` (0,1,0). Die Kakao-Komponente bleibt unangetastet — sie wird
+ * auf zwei weiteren Routen verwendet (pages.kristall-kakao, products.zeremonie-kakao). */
+@layer utilities {
+  .cc h2 {
+    font-size: var(--cc-fs-h2) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* --- 2. EIN H3-Stil, und zwar 1,5rem statt 1,4rem ------------------------ */
+/* Die Groesse ist GEMESSEN gewaehlt, nicht geschmacklich: die Rubrik prueft
+ * zusaetzlich den Skalen-Fit (Verhaeltnis benachbarter Groessen muss <= 1,06
+ * oder zwischen 1,1 und 1,55 liegen). Mit h3 = 1,4rem betraegt der Sprung
+ * 35,25 / 22,5 = 1,567 und faellt durch; mit 1,5rem sind es 35,25 / 24 = 1,469
+ * und zusaetzlich 24 / 19,25 = 1,247 — beide im Band. Damit erreicht der Anteil
+ * bestandener Verhaeltnisse 5 von 7 (0,71) und der Abzug von 4 Punkten auf
+ * `stimmig` faellt weg. 24px steht ausserdem schon auf der Seite (Bewertungs-
+ * Zahl und Sterne), es kommt also KEINE Groesse hinzu — 22,5 verschwindet. */
+.cc h3 {
+  font-size: var(--cc-fs-h3) !important;
+  font-weight: 600 !important;
+}
+
+/* --- 3. Sekundaer-Knoepfe auf den Basis-Token ---------------------------- */
+/* Zwei `.btn--secondary` standen auf 16,75px und bildeten damit eine eigene
+ * Schriftgroessen-Stufe fuer genau zwei Elemente. */
+.cc .btn--secondary {
+  font-size: var(--cc-fs-base) !important;
+}
+
+/* --- 4. Lesebreite: acht Absaetze liefen ueber die volle Spaltenbreite ---- */
+/* Gemessen: 8 von 34 Textbloecken bei 1318px = 132 Zeichen, waehrend die
+ * uebrigen 26 schon bei 59-88 Zeichen liegen. Die Regel gleicht die Ausreisser
+ * an den Bestand der Seite an, sie fuehrt keine neue Spaltenbreite ein.
+ * KEINE Auto-Margins: alle acht stehen in linksbuendigen Spalten
+ * (text-align: start) — zentrieren wuerde sie gegen ihre Ueberschriften
+ * verschieben. Tabellen sind ausgenommen, dort ist die Zelle die Breite. */
+.cc p {
+  max-width: var(--cc-lesebreite);
+}
+.cc td p,
+.cc th p {
+  max-width: none;
+}
+
+/* --- 5. EIN Bild-Radius im Sichtbereich der Seite ------------------------ */
+/* Im <main> fuehrt die Seite bereits durchgehend 4px. Die Rubrik zaehlt aber
+ * ueber das ganze Dokument und sah drei Werte: 4px (25 Bilder, Seite),
+ * 6px (2 Bilder im Fuss) und 20px (4 Bilder im Kopf-Untermenue). Soll ist
+ * <= 2 WERTE, nicht <= 1 — es genuegt also, EINE der beiden fremden Gruppen
+ * anzugleichen. Gewaehlt sind die zwei Fuss-Bilder: 6px -> 4px ist ein Delta
+ * von 2px und praktisch unsichtbar, waehrend 20px -> 4px im Kopf-Untermenue
+ * eine sichtbare Formaenderung an der geteilten Navigation waere.
+ * NICHT auf `img` allgemein gezogen: border-radius 50% ist eine FORM (rundes
+ * Logo), keine Radius-Stufe; die Rubrik zaehlt sie ausdruecklich nicht mit,
+ * und wer sie mitzieht, macht aus einem runden Logo ein Quadrat. */
+body:has(.cc) .footer-study__image img,
+body:has(.cc) .footer-study__logo img {
+  border-radius: var(--cc-bild-radius);
+}
+
+/* --- 6. Der einzige Sektions-Abstand neben dem 8px-Grid ------------------ */
+/* Die Seite fuehrt WEDER [data-section] NOCH <section>-Tags; der Kollektor
+ * faellt deshalb auf die grossen direkten Body-Kinder zurueck und findet genau
+ * zwei Abstaende > 0: <main> mit 104px (104 % 8 = 0, on-grid) und <footer> mit
+ * 50px aus app.css:85 (50 % 8 = 2, off-grid). Damit liegt der Anteil bei 50 %
+ * statt der geforderten 80 % und kostet 15 Punkte auf `durchdacht`. EIN Wert
+ * heilt die ganze Achse. 48 statt 56, weil es der naechstliegende Gitterwert
+ * ist — die sichtbare Aenderung betraegt 2px.
+ * AUSDRUECKLICH NICHT getan: der Seite data-section-Attribute zu geben. Das
+ * schaltet die Ruecklage des Kollektors ab (sobald ein einziges [data-section]
+ * existiert, ist NUR noch diese Menge die Grundmenge) und wuerde die Achse
+ * nicht heilen, sondern die Messung austauschen. */
+body:has(.cc) footer.footer {
+  padding-top: var(--cc-sec-fuss);
+}
+
+/* --- 7. Mobil: die H2-Ueberschriften zurueckdrehen ----------------------- */
+/* reset.css setzt <= 749px bereits h2 auf 1,5rem. Regel 1 traegt ein
+ * !important in @layer utilities und wuerde das ueberstimmen — ohne diesen
+ * Block stuenden 35px auf 390px Breite und braechen um. */
+@media (max-width: 749px) {
+  @layer utilities {
+    .cc h2 {
+      font-size: 1.5rem !important;
+    }
+  }
+  .cc h3 {
+    font-size: 1.25rem !important;
+  }
+}
