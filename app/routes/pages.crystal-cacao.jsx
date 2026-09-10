@@ -5,7 +5,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 
 /**
- * Token-Schicht dieser Route. Sie haengt AUSSCHLIESSLICH hier und traegt
+ * Token-Schicht dieser Route. Sie hängt NUR hier und trägt
  * deshalb auf keiner anderen Seite - app.css bleibt unangetastet. Der Scope
  * ist die Klasse `cc` am Wurzel-Element der Kakao-Komponente.
  */

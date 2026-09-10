@@ -22,7 +22,7 @@ import qihomeStyles from '~/styles/qihome.css?url';
 
 /**
  * Token-Schicht dieser Route (Design-Score 53 -> >= 80, Job
- * 20260910-designschuld-...-s03). Sie haengt AUSSCHLIESSLICH hier und traegt
+ * 20260910-designschuld-...-s03). Sie hängt NUR hier und trägt
  * deshalb auf keiner anderen Seite - app.css bleibt unangetastet. Der Scope
  * ist die Klasse `QiHomeLanding` am Wurzel-Element der Komponente.
  * Rueckweg: diesen links()-Export entfernen.

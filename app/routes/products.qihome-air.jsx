@@ -23,7 +23,7 @@ import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabe
 import qihomeAirStyles from '~/styles/qihome-air.css?url';
 /**
  * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
- * 20260910-designschuld-...-s04). Sie hängt AUSSCHLIESSLICH hier und trägt
+ * 20260910-designschuld-...-s04). Sie hängt NUR hier und trägt
  * deshalb auf keiner anderen Seite - app.css bleibt unangetastet. Der Scope
  * ist die Klasse `ProductQiHomeAir` am Wrapper unten; der Kaufweg (Preis,
  * Varianten, Warenkorb-Knopf) wird von der Datei nicht berührt.
