@@ -33,14 +33,14 @@ export function KritikSeite() {
   return (
     <div className="krit">
       <section className="krit__kopf">
-        <div className="krit__schmal">
+        <div className="krit__inhalt">
           <p className="krit__vorspann">Qi Blanco Kritik</p>
           <h1>Was an Qi Blanco kritisiert wird – und was davon stimmt</h1>
           <p className="krit__lead">
             Wer nach Kritik an Qi Blanco sucht, findet einen Beitrag des
             Wissenschaftsmagazins Quarks und eine Podcast-Folge dazu. Die
-            Vorwürfe daraus stehen hier wörtlich, mit Fundstelle. Zu jedem sagen
-            wir, ob er stimmt, zum Teil stimmt oder nicht stimmt – und warum.
+            Vorwürfe daraus stehen hier wörtlich, mit Fundstelle. Von den sieben
+            stimmen zwei, drei stimmen zum Teil, zwei stimmen nicht.
           </p>
 
           <div className="krit__hinweis">
@@ -62,7 +62,7 @@ export function KritikSeite() {
       </section>
 
       <section>
-        <div className="krit__schmal">
+        <div className="krit__inhalt">
           <h2>Die Vorwürfe, Punkt für Punkt</h2>
           <p className="krit__einleitung">
             Sortiert nach Gewicht: zuerst der Sachvorwurf, der am meisten
@@ -95,7 +95,7 @@ export function KritikSeite() {
       </section>
 
       <section className="krit__einraeumen">
-        <div className="krit__schmal">
+        <div className="krit__inhalt">
           <h2>Was wir selbst einräumen</h2>
           <p className="krit__einleitung">
             Vier Dinge, die jede Kritik zu Recht sagen darf. Sie stehen so auch
@@ -113,7 +113,7 @@ export function KritikSeite() {
       </section>
 
       <section>
-        <div className="krit__schmal">
+        <div className="krit__inhalt">
           <h2>Was in den Studien wirklich steht</h2>
           <p className="krit__einleitung">
             Fünf Arbeiten, je mit dem, was gemessen wurde – und mit der Grenze,
@@ -138,14 +138,14 @@ export function KritikSeite() {
       </section>
 
       <section className="krit__abschluss">
-        <div className="krit__schmal">
+        <div className="krit__inhalt">
           <h2>Du musst uns nichts glauben</h2>
           <p>
-            Die Kritik stellt eine berechtigte Frage: Ist das plausibel? Wir
-            haben darauf kein Argument, das die Frage erledigt – nur die
-            Möglichkeit, es selbst zu prüfen. 20 Tage tragen, und wenn es nichts
-            für dich ist, ohne Angabe von Gründen zurück. Wenn nichts passiert,
-            hast du deine Antwort, und sie gilt mehr als unsere.
+            Die Kritik stellt eine berechtigte Frage: Ist das plausibel? Ein
+            klinischer Wirknachweis am Menschen, der sie entscheiden würde,
+            liegt nicht vor. Was es gibt, ist die Prüfung an dir selbst: 20 Tage
+            tragen, und wenn es nichts für dich ist, ohne Angabe von Gründen
+            zurück. Wenn nichts passiert, hast du deine Antwort.
           </p>
           <p>
             Alle fünf Arbeiten mit Methode, Zahlen und Original-PDF findest du

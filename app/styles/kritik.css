@@ -81,7 +81,15 @@
   background: var(--krit-grund);
 }
 
-.krit__schmal {
+/* NAME MIT ABSICHT: der Gestaltungs-Pruefliste (homepage-bauer/src/
+   seiten_pruefliste.py) faellt ein Textcontainer nur auf, wenn sein Klassenname
+   eines der Woerter aus _CONTAINER_WOERTER traegt (inhalt/content/article/
+   text/...). Die Punkte P1 Zeilenlaenge und P2 Innenabstaende werden sonst
+   nicht ROT, sondern gar nicht erst GEMESSEN -- gemessen 2026-09-10 mit dem
+   frueheren Namen `krit__schmal`: 0 erkannte Regeln, obwohl max-width 760px
+   und padding-inline 16px die ganze Zeit dastanden. Wer diese Klasse umbenennt,
+   nimmt der Seite ihre Messbarkeit, ohne dass sich am Aussehen etwas aendert. */
+.krit__inhalt {
   width: 100%;
   max-width: var(--krit-breite-schmal);
   margin-inline: auto;

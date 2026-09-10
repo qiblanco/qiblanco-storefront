@@ -18,8 +18,9 @@
  *
  * WAS HIER BEWUSST FEHLT (benannt, nicht beispielhaft):
  *  · K7 aus der Erhebung — die Anführungszeichen um „Informationsseite" zu
- *    kohaerentes-wasser.de. Das ist eine Tatsachenfrage über eine FREMDE
- *    Domain, für die im Haus KEIN Beleg der Betreiberschaft vorliegt. Eine
+ *    der in der Kritik verlinkten Fremddomäne zum Thema kohärentes Wasser.
+ *    Das ist eine Tatsachenfrage über eine FREMDE Domain, für die im Haus
+ *    KEIN Beleg der Betreiberschaft vorliegt. Eine
  *    Antwort in die eine oder andere Richtung wäre hier eine Behauptung ohne
  *    Grundlage. Der Punkt liegt als Entscheidung bei Christian, nicht auf
  *    dieser Seite.
@@ -58,7 +59,7 @@ export const VORWUERFE = [
     urteil: 'stimmt',
     antwort: [
       'Das ist der härteste Satz der ganzen Kritik, und er trifft. Das Modell, mit dem unsere Publikationen ihre Messwerte erklären — geordnetes Wasser — ist in der etablierten Wissenschaft nicht anerkannt. Die Arbeiten selbst führen es als Hypothese, nicht als gesicherte Erkenntnis. Wir bestreiten das nicht und haben es nie bestritten.',
-      'Was wir dagegenhalten, ist kein Gegenargument, sondern eine Unterscheidung: Die Erklärung ist offen. Die Messung ist es nicht. Was in den Zellschalen passiert ist, wurde gemessen und veröffentlicht — warum es passiert ist, weiß niemand sicher, wir eingeschlossen. Beides auseinanderzuhalten ist der ehrlichste Umgang mit dieser Datenlage. Wer daraus schliesst, dass deshalb auch die Messwerte nicht existieren, macht einen anderen Fehler als der, den er uns vorwirft.',
+      'Was wir dagegenhalten, ist kein Gegenargument, sondern eine Unterscheidung: Die Erklärung ist offen. Die Messung ist es nicht. Was in den Zellschalen passiert ist, wurde gemessen und veröffentlicht — warum es passiert ist, weiß niemand sicher, wir eingeschlossen. Beides auseinanderzuhalten ist der ehrlichste Umgang mit dieser Datenlage. Wer daraus schließt, dass deshalb auch die Messwerte nicht existieren, macht einen anderen Fehler als der, den er uns vorwirft.',
     ],
   },
   {
@@ -106,7 +107,7 @@ export const VORWUERFE = [
     urteil: 'stimmt',
     antwort: [
       'Der Preis stimmt, und wir reden ihn nicht klein. Was du bezahlst, ist nicht das Gehäuse: Im Inneren sitzt der GitterChip aus einer eigens entwickelten 750er Goldlegierung, und die fünf Publikationen, um die hier gestritten wird, haben wir bezahlt. Ob dir das den Preis wert ist, entscheidest du und niemand sonst.',
-      'Deshalb hängt an dieser Seite kein Kaufknopf, sondern ein Rückgaberecht: 20 Tage tragen, und wenn es nichts für dich ist, ohne Angabe von Gründen zurück. Das ist die einzige Antwort auf eine Preisfrage, die nicht auch nur wieder Werbung wäre.',
+      'Deshalb hängt an dieser Seite kein Kaufknopf, sondern ein Rückgaberecht: 20 Tage tragen, und wenn es nichts für dich ist, ohne Angabe von Gründen zurück.',
     ],
   },
   {
@@ -118,7 +119,7 @@ export const VORWUERFE = [
     urteil: 'teilweise',
     antwort: [
       'Das ist keine Messfrage, sondern ein Bauchgefühl in Frageform — und wir halten das Bauchgefühl für berechtigt. Es klingt unwahrscheinlich. Es klang für uns auch unwahrscheinlich.',
-      'Dagegen anzuargumentieren würde die Frage nur bestätigen, deshalb lassen wir es. Die einzige Antwort, die wir für ehrlich halten, ist keine Antwort, sondern ein Angebot: Du musst uns nicht glauben und du musst dich nicht überzeugen lassen. Du kannst es 20 Tage lang an dir selbst prüfen und danach ohne Angabe von Gründen zurückschicken. Wenn nichts passiert, hast du deine Antwort — und sie gilt mehr als unsere.',
+      'Ein klinischer Wirknachweis am Menschen, der die Frage entscheiden würde, liegt nicht vor. Was es gibt, sind fünf Zellstudien und 171 Erfahrungsberichte — und die Prüfung an dir selbst: 20 Tage tragen, danach ohne Angabe von Gründen zurückschicken. Wenn nichts passiert, hast du deine Antwort.',
     ],
   },
   {

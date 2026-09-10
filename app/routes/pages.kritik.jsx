@@ -9,7 +9,7 @@ import {noindexMeta, noindexHeader} from '~/lib/seo';
  * (Christian, 2026-09-10, Eintrag 7 der High-Hanging-Fruits-Liste, wörtlich:
  * „liveschalten und mergen, aber noch nicht crawlbar und noch nicht ins drop
  * down einbetten, d.h. erstmal nur bauen und live schalten sodass wir es
- * kontrollieren koennen").
+ * kontrollieren können").
  *
  * WARUM EINE NEUE ROUTE UND NICHT /pages/wirkt-das UMGEBAUT: die Vorlage aus
  * s04 des Grossjobs 20260907-…-prio6 empfahl die Überarbeitung von

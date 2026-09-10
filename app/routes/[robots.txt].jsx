@@ -127,12 +127,12 @@ Crawl-delay: 1
 /**
  * ZWEIFELSSEITEN, DUNKEL AUF ANORDNUNG (Job 20260910-BAU-zweifelsseiten-live-
  * aber-noindex-und-nicht-im-menue, Christian 2026-09-10): `/pages/erfahrungen`
- * und `/pages/kritik` sind live und noindex, sollen aber ZUSAETZLICH nicht
- * gecrawlt werden — Christian: Beides, nicht eines von beiden. Fuer Seiten, die
+ * und `/pages/kritik` sind live und noindex, sollen aber ZUSÄTZLICH nicht
+ * gecrawlt werden — Christian: Beides, nicht eines von beiden. Für Seiten, die
  * NIE im Index waren, ist Disallow + noindex kein Widerspruch (die Hygiene-Regel
- * „Disallow blockiert das Lesen des noindex“ gilt fuer Seiten, die schon DRIN
+ * „Disallow blockiert das Lesen des noindex“ gilt für Seiten, die schon DRIN
  * sind). WER EINE DER BEIDEN FREISCHALTET: zuerst hier das Disallow raus, dann
- * das noindex in der Route — sonst bleibt die Seite unsichtbar, waehrend sie
+ * das noindex in der Route — sonst bleibt die Seite unsichtbar, während sie
  * indexierbar aussieht. Wache: homepage-bauer/pruefungen/
  * probe_zweifelsseite_dunkel.py (Arm A2-ROBOTS).
  *
