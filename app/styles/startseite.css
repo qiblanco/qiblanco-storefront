@@ -52,6 +52,8 @@
   --st-flaeche: #f8f4ee;
 
   --st-radius: 8px;
+  /* Bild-Radius = der global schon gefuehrte Hauswert, siehe Regel 9. */
+  --st-bild-radius: 4px;
 }
 
 /* --- 1. EIN H2-Stil (Groesse x Gewicht) ---------------------------------- */
@@ -172,4 +174,56 @@
   .home h3 {
     font-size: var(--st-fs-5) !important;
   }
+}
+
+/* ==========================================================================
+   NACHTRAG 2026-09-10 — Job 20260910-designschuld-startseite-score-46-...
+   --------------------------------------------------------------------------
+   Der Block oben stammt aus PR #281 (gebaut 2026-09-01) und hat dort 82
+   erreicht. Er lag neun Tage ungeliefert am Wirkgrenze-Riegel; in der Zeit ist
+   die Seite weitergewachsen. Gegen den Stand von heute (origin/main 7bcbe35)
+   traegt er 46 -> 78. Die folgenden drei Regeln schliessen die Luecke zur
+   Schwelle 80.
+
+   WAS HIER BEWUSST NICHT STEHT — und warum es keine Nachlaessigkeit ist:
+   Die restlichen Schriftgroessen-Ausreisser liegen NICHT auf dieser Seite,
+   sondern im GETEILTEN Kopf und Fuss. Am Live-DOM nachgemessen (Sonde mit der
+   Quantisierungsregel des Kollektors, Viertelpixel):
+     17,5px (= 17,6) -> 16x .header-submenu-item          (Header)
+     13,5px (= 13,6) ->  2x .footer-heading               (Footer)
+     14,5px (= 14,4) ->  7x .footer-products a, 4x Header-Banner, 5x InfoSlider
+     15,25px(= 15,2) ->  2x .shop-switch__label (Header),  2x google-rating-badge
+   Eine auf .home gescopte Datei erreicht Kopf und Fuss baulich nicht — sie
+   sind Geschwister von .home, keine Kinder. Und sie dort anzufassen hiesse,
+   von der Startseite aus das Aussehen ALLER Routen zu aendern. Die Groessen
+   bleiben deshalb stehen; der Score traegt den Abzug (technisch s_sizes 85
+   statt 100). Wer das schliessen will, braucht einen shopweiten Typo-Job.
+   ========================================================================== */
+
+/* --- 9. EIN Bild-Radius auf der Seite ------------------------------------ */
+/* Vorher in .home drei Werte: 4px (83 Bilder, globales img{}), 20px (7 YouTube-
+   Vorschauen) und 8px (5 Studien-Vorschauen). Vereinheitlicht auf 4px — den
+   Wert, den der Shop global schon fuehrt (P10: kein zweiter, konkurrierender
+   Radius-Token neben dem bestehenden Hauswert).
+   AUSGENOMMEN ist das kreisrunde Google-Badge-Logo: border-radius 50% ist
+   keine Radius-STUFE, sondern eine Form. Die Rubrik zaehlt 50% ausdruecklich
+   nicht mit (dim_liebevoll ueberspringt "0px" und "50%") — wer es mitzieht,
+   macht aus einem runden Logo ein Quadrat und gewinnt dabei keinen Punkt. */
+.home img:not(.google-rating-badge__logo) {
+  border-radius: var(--st-bild-radius) !important;
+}
+
+/* --- 10. EIN dunkler Akt statt zwei -------------------------------------- */
+/* Die Seite fuehrte fuenf Hintergrund-Farbwelten (Soll <= 4): das warme
+   Neutral-Kontinuum, reines Weiss, den Gold-Akzent, Schwarz (YouTube-Facades)
+   — und als fuenfte rgb(8,9,24), den Grund der beiden Scroll-Videos. Der
+   Abstand zu Schwarz betraegt 26,9 und liegt damit ueber der Cluster-Grenze
+   von 12, zaehlt also als eigene Welt.
+   Auf Schwarz gezogen: der Unterschied ist hinter einem formatfuellenden Video
+   praktisch unsichtbar, und "geplante dunkle Akte" (web-soll.yaml) meint EINEN
+   dunklen Grund, nicht zwei fast gleiche. Bewusst NICHT gewaehlt: das reine
+   Weiss der InfoSlider-Karten einzufaerben — das waere sichtbar, und die
+   Gold-Flaeche des Kaufknopfes anzufassen verbietet sich ohnehin. */
+.home .ScrollMikroskopvideo {
+  background-color: #000 !important;
 }
