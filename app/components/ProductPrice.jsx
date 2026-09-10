@@ -31,9 +31,14 @@ import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
  * 7 % ein zweites Mal aufgeschlagen. `taxRate` sticht deshalb den Handle —
  * aber nur, wenn er ausdrücklich gesetzt ist.
  *
- * @param {{price?: any, compareAtPrice?: any, handle?: string, taxRate?: number}} props
+ * DIE PROP `centGenau` (aiceo:digest54:p3, 2026-09-10): der Warenkorb
+ * bekommt den bereits cent-genauen Betrag aus getCartLinePriceDisplayExact
+ * (taxRate dabei 0, satzFuer() also 0) — hier wird NICHT zweimal versteuert,
+ * nur noch auf Cent statt auf ganze Euro gerundet und entsprechend formatiert.
+ *
+ * @param {{price?: any, compareAtPrice?: any, handle?: string, taxRate?: number, centGenau?: boolean}} props
  */
-export function ProductPrice({price, compareAtPrice, handle, taxRate}) {
+export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau = false}) {
   const satzFuer = (money) => {
     if (taxRate != null) {
       // Ausdrueckliche Ausnahme (Warenkorb: Betrag ist schon brutto).
@@ -50,7 +55,8 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate}) {
     if (!Number.isFinite(numericAmount)) return null;
     // Warenkorb-Kanon (cart-display-pricing: Math.round) — ceil zeigte
     // 1.088 statt offiziell 1.087 bei netto 913,45 (QiOne 2 Pro).
-    const amount = Math.round(numericAmount * (1 + satzFuer(money)));
+    const roh = numericAmount * (1 + satzFuer(money));
+    const amount = centGenau ? Math.round(roh * 100) / 100 : Math.round(roh);
     return {...money, amount};
   };
 
@@ -58,6 +64,9 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate}) {
     if (!money) return null;
     const amount = Number(money.amount);
     if (!Number.isFinite(amount)) return null;
+    if (centGenau) {
+      return formatPreis(amount, money.currencyCode || 'EUR', 'cart-cent');
+    }
     return formatPreis(Math.round(amount), money.currencyCode || 'EUR', 'pdp');
   };
 

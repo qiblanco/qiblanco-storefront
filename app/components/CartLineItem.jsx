@@ -3,7 +3,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
-import {getCartLinePriceDisplay} from '~/lib/cart-display-pricing';
+import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -17,7 +17,9 @@ export function CartLineItem({layout, line}) {
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
-  const displayPrice = getCartLinePriceDisplay(line);
+  // Cent-genau statt Ganz-Euro-Rundung (aiceo:digest54:p3, Option c,
+  // 2026-09-10): der Warenkorb zeigte 53,- bei 53,21 Kassenbelastung.
+  const displayPrice = getCartLinePriceDisplayExact(line);
 
   return (
     <li
@@ -53,6 +55,7 @@ export function CartLineItem({layout, line}) {
         <ProductPrice
           price={displayPrice.price}
           taxRate={displayPrice.taxRate}
+          centGenau
         />
         <ul>
           {selectedOptions.map((option) =>

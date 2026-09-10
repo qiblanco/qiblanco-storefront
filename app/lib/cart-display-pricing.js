@@ -74,20 +74,66 @@ export function getCartLinePriceDisplay(line) {
   };
 }
 
-export function getCartLineGrossDisplayTotal(line) {
+/**
+ * DER UNGERUNDETE BRUTTO-ZEILENBETRAG — die EINZIGE Stelle, an der in dieser
+ * Datei gerechnet wird. Alle öffentlichen Funktionen unten runden nur noch;
+ * keine von ihnen rechnet ein zweites Mal. Uebernommen 2026-09-10 (Job
+ * 20260910-VOLLZUG-cent-anzeige-warenkorb-beide-laeden) aus
+ * crystal-cacao-node/repo/app/lib/cart-display-pricing.js (dort seit
+ * 2026-09-09 Rot-vor-Gruen belegt) — bewusst Bestand uebernommen statt
+ * ein zweites Mal hergeleitet, siehe RESULT.md §2 jenes Jobs.
+ * @param {object} line Cart-Zeile
+ * @returns {number} Brutto, UNGERUNDET (EUR) bzw. Endbetrag (andere Waehrung)
+ */
+function bruttoZeileRoh(line) {
   // M3: Nicht-EUR-Maerkte (Shopify Markets, CHF/USD/GBP): der Cart-Betrag
   // IST der Endbetrag (belegt: Cart-API == @inContext, keine Steuer-Zeile)
-  // — keine deutsche MwSt aufschlagen, nur Warenkorb-Kanon-Rundung.
+  // — keine deutsche MwSt aufschlagen.
   const net = parseFloat(line?.cost?.totalAmount?.amount ?? '0');
   if (!Number.isFinite(net)) return 0;
 
   if (getCurrencyCode(line) !== 'EUR') {
-    return Math.round(net);
+    return net;
   }
 
   if (SALE_CACAO_HANDLES.has(getProductHandle(line))) {
     return SALE_CACAO_UNIT_GROSS_PRICE * getLineQuantity(line);
   }
 
-  return Math.round(net * (1 + getCartLineTaxRate(line)));
+  return net * (1 + getCartLineTaxRate(line));
+}
+
+/**
+ * Cent-genauer Brutto-Zeilenbetrag — der Betrag, den die Kasse belastet.
+ * @param {object} line
+ * @returns {number}
+ */
+export function getCartLineGrossDisplayTotalExact(line) {
+  return Math.round(bruttoZeileRoh(line) * 100) / 100;
+}
+
+/**
+ * Cent-genaue Preis-Anzeige einer Cart-Zeile (Aufrufform wie
+ * getCartLinePriceDisplay, nur ohne die Ganz-Euro-Rundung).
+ * @param {object} line
+ */
+export function getCartLinePriceDisplayExact(line) {
+  return {
+    price: {
+      amount: getCartLineGrossDisplayTotalExact(line).toFixed(2),
+      currencyCode: getCurrencyCode(line),
+    },
+    taxRate: 0,
+  };
+}
+
+/**
+ * BESTAND, unveraendert im Verhalten: Brutto-Zeilenbetrag auf ganze Euro
+ * gerundet. Rundet nur — gerechnet wird ausschließlich in bruttoZeileRoh(),
+ * damit die beiden Fassungen nicht auseinanderlaufen können.
+ * @param {object} line
+ * @returns {number}
+ */
+export function getCartLineGrossDisplayTotal(line) {
+  return Math.round(bruttoZeileRoh(line));
 }
