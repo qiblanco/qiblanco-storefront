@@ -3,6 +3,7 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
+import {ohneAusgeschlossene} from '~/lib/such-ausschluss';
 
 /**
  * @type {MetaFunction}
@@ -84,6 +85,7 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
     handle
     id
     publishedAt
+    tags
     title
     trackingParameters
     vendor
@@ -222,13 +224,24 @@ async function regularSearch({request, context}) {
   const term = String(url.searchParams.get('q') || '');
 
   // Search articles, pages, and products for the `q` term
-  const {errors, ...items} = await storefront.query(SEARCH_QUERY, {
+  const {errors, ...rohItems} = await storefront.query(SEARCH_QUERY, {
     variables: {...variables, term},
   });
 
-  if (!items) {
+  if (!rohItems) {
     throw new Error('No search data returned from Shopify API');
   }
+
+  // Such-Ausschluss: kaufbar bleiben, aber nicht mehr gefunden werden.
+  // Muss VOR der total-Berechnung greifen, sonst zählt die Seite Treffer,
+  // die sie gar nicht zeigt (und der Leerzustand kippt nie).
+  const items = {
+    ...rohItems,
+    products: {
+      ...rohItems.products,
+      nodes: ohneAusgeschlossene(rohItems.products?.nodes),
+    },
+  };
 
   const total = Object.values(items).reduce(
     (acc, {nodes}) => acc + nodes.length,
@@ -297,6 +310,7 @@ const PREDICTIVE_SEARCH_PRODUCT_FRAGMENT = `#graphql
     id
     title
     handle
+    tags
     trackingParameters
     selectedOrFirstAvailableVariant(
       selectedOptions: []
@@ -385,7 +399,7 @@ async function predictiveSearch({request, context}) {
   if (!term) return {type, term, result: getEmptyPredictiveSearchResult()};
 
   // Predictively search articles, collections, pages, products, and queries (suggestions)
-  const {predictiveSearch: items, errors} = await storefront.query(
+  const {predictiveSearch: rohItems, errors} = await storefront.query(
     PREDICTIVE_SEARCH_QUERY,
     {
       variables: {
@@ -403,9 +417,16 @@ async function predictiveSearch({request, context}) {
     );
   }
 
-  if (!items) {
+  if (!rohItems) {
     throw new Error('No predictive search data returned from Shopify API');
   }
+
+  // Derselbe Ausschluss wie in regularSearch — wer nur die Ergebnisseite
+  // filtert, lässt die Dublette in der Vorschlagsliste stehen.
+  const items = {
+    ...rohItems,
+    products: ohneAusgeschlossene(rohItems.products),
+  };
 
   const total = Object.values(items).reduce(
     (acc, item) => acc + item.length,
