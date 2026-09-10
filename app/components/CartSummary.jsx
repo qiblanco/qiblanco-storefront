@@ -1,5 +1,5 @@
 import {Form} from 'react-router';
-import {getCartLineGrossDisplayTotal} from '~/lib/cart-display-pricing';
+import {getCartLineGrossDisplayTotalExact} from '~/lib/cart-display-pricing';
 import {formatPreis} from '~/lib/markt-pricing';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
@@ -11,16 +11,19 @@ export function CartSummary({cart, layout}) {
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
-  // Format as 1.087,- € / 1.048,- CHF / $1,383 (M3: Waehrung des Carts)
+  // Cent-genau statt "1.087,- €" (aiceo:digest54:p3, Option c, 2026-09-10):
+  // die Kasse belastet den Cent-Betrag, die Zwischensumme muss ihn zeigen.
+  // Format als "159,63 €" / "1.048,00 CHF" / "$1,383.00".
   const formatEuroPrice = (money) => {
     if (!money?.amount) return '';
-    const amount = Math.floor(parseFloat(money.amount));
-    return formatPreis(amount, money.currencyCode || 'EUR', 'pdp') || '';
+    const amount = parseFloat(money.amount);
+    if (!Number.isFinite(amount)) return '';
+    return formatPreis(amount, money.currencyCode || 'EUR', 'cart-cent') || '';
   };
 
   const lines = cart?.lines?.nodes ?? [];
   const correctedTotal = lines.reduce(
-    (total, line) => total + getCartLineGrossDisplayTotal(line),
+    (total, line) => total + getCartLineGrossDisplayTotalExact(line),
     0,
   );
 
