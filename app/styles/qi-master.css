@@ -1,0 +1,360 @@
+/* ============================================================================
+   /products/qi-master — QiMaster (der QiOne mit Diamant), 2026-09-10,
+   Job 20260910-BAU-qi-master-produkt-und-shopseite-diamant-6g-und-
+   persoenlichkeitsentwicklung (Christian-Auftrag CW-20260910-0e45045b).
+
+   WAS DIESE DATEI IST: die route-gebundene Token-Schicht der QiMaster-
+   Produktseite. Die Seite ist ANALOG zur organischen QiOne-2-Pro-PDP gebaut —
+   dieselben Bausteine (QiOneBuyBox, LogoBar, InfoSlider, StudienCards,
+   Gitterchip-Sektion, HeroBannerParallax, CallToAction, UpsellLineUp,
+   ProductFAQ), dieselben Sektionsklassen aus app.css (.NormalSectionSize,
+   .OneTimeInvestment, .MainFeatures, .RisikofreiErleben,
+   .MassgeschneiderteTechnologie). Diese Datei ERFINDET keine Bausteine; sie
+   legt ueber den Bestand die Token-Disziplin des Design-Meisters
+   (db/webdesign/web-soll.yaml: Typo-Skala <= 9 Stufen, EIN H2-Stil,
+   8pt-Grid, ZWEI Radien, EIN Gold-Akzent, <= 4 Hintergrund-Welten).
+
+   WARUM ROUTE-GEBUNDEN und nicht in app.css (Muster zweifel-beleg.css /
+   qione-2-pro-shop.css): app.css laedt auf jeder Seite; eine Aenderung dort
+   zoege 45 Seiten in die Gate-12-Pruefmenge. Der Scope .ProductPageQiMaster
+   liegt am Wrapper der Route; die Buy-Box traegt .qm-pdp (Geschwister, nicht
+   Kind — deshalb zwei Scope-Selektoren, F-009-Lehre).
+
+   GEMESSENER AUSGANGSPUNKT (2026-09-10, Dev-Server, design-rubrik): die
+   Schwesterseite /products/qione-2-pro liegt bei 56/100 — 16 Schriftgroessen,
+   5 H2-Stil-Kombis, 4 Bild-Radien, 6 Hintergrund-Welten, 50 % der Abstaende
+   neben dem 8px-Grid. Genau diese fuenf Befunde behebt die Token-Schicht
+   hier, OHNE die Bausteine zu tauschen.
+
+   REGEL DIESES FILES: ausserhalb des :root-Blocks keine freien Werte.
+   ========================================================================== */
+
+:root {
+  --qm-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala (modulare Skala ~1.25; 7 Stufen) */
+  --qm-fs-xs: 0.8125rem;                                   /* 13px */
+  --qm-fs-base: 1rem;                                      /* 16px */
+  --qm-fs-md: 1.125rem;                                    /* 18px */
+  --qm-fs-lg: 1.25rem;                                     /* 20px */
+  --qm-fs-xl: 1.5625rem;                                   /* 25px */
+  --qm-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);     /* EIN H2-Stil */
+  --qm-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --qm-s1: 8px; --qm-s2: 16px; --qm-s3: 24px; --qm-s4: 32px;
+  --qm-s6: 48px; --qm-s8: 64px; --qm-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Gold-Akzent (Shop-Gold, app.css) */
+  --qm-grund: #ffffff;
+  --qm-flaeche: #f8f4ee;
+  --qm-dunkel: #1a1a1a;
+  --qm-text: #2c2a26;
+  --qm-muted: #6b665d;
+  --qm-akzent: #f2bf72;              /* = --color-accent-primary (Flaeche) */
+  --qm-akzent-tinte: #856828;        /* = --color-accent-ink (Schrift, AA)  */
+  --qm-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien: genau ZWEI */
+  --qm-r1: 8px; --qm-r2: 16px;
+
+  /* Layout */
+  --qm-mass: 70ch;
+  --qm-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.ProductPageQiMaster,
+.qm-pdp {
+  font-family: var(--qm-font);
+  font-size: var(--qm-fs-base);
+  line-height: 1.65;
+  color: var(--qm-text);
+}
+.ProductPageQiMaster { padding: var(--qm-s6) 0 0; }
+
+/* Sektions-Takt: JEDE Sektion 96px Desktop / 64px Mobil — app.css setzt hier
+   100/150/50px-Werte, die Token-Schicht zieht sie auf das Grid. */
+.ProductPageQiMaster > .NormalSectionSize,
+.ProductPageQiMaster > .MainFeaturesWrapper,
+.ProductPageQiMaster > .qm-sektion,
+.ProductPageQiMaster .LogoBar {
+  margin-top: var(--qm-s12);
+  margin-bottom: var(--qm-s12);
+}
+.ProductPageQiMaster > .NormalSectionSize.OneTimeInvestment { margin-top: var(--qm-s8); }
+.ProductPageQiMaster .MainFeatures { margin: var(--qm-s4) auto; gap: var(--qm-s3); }
+.ProductPageQiMaster .RisikofreiErleben,
+.ProductPageQiMaster .MassgeschneiderteTechnologie,
+.ProductPageQiMaster .Gitterchip { margin: var(--qm-s12) auto; }
+.ProductPageQiMaster .MassgeschneidertWrapper { margin-top: var(--qm-s4); }
+.ProductPageQiMaster .mt-1 { margin-top: var(--qm-s2) !important; }
+.ProductPageQiMaster .mt-2 { margin-top: var(--qm-s3) !important; }
+.ProductPageQiMaster .mt-3 { margin-top: var(--qm-s4) !important; }
+.ProductPageQiMaster .mb-3 { margin-bottom: var(--qm-s4) !important; }
+@media (max-width: 749px) {
+  .ProductPageQiMaster > .NormalSectionSize,
+  .ProductPageQiMaster > .MainFeaturesWrapper,
+  .ProductPageQiMaster > .qm-sektion,
+  .ProductPageQiMaster .LogoBar,
+  .ProductPageQiMaster .RisikofreiErleben,
+  .ProductPageQiMaster .MassgeschneiderteTechnologie,
+  .ProductPageQiMaster .Gitterchip {
+    margin-top: var(--qm-s8);
+    margin-bottom: var(--qm-s8);
+  }
+}
+
+/* ─── Typo-Hierarchie: EIN H2-Stil, EIN H3-Stil, Body EINE Groesse ────────── */
+.ProductPageQiMaster h2 {
+  font-family: var(--qm-font);
+  font-size: var(--qm-fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  color: inherit;
+  max-width: var(--qm-breite-schmal);
+  margin: 0 auto var(--qm-s3);
+}
+.ProductPageQiMaster h3 {
+  font-family: var(--qm-font);
+  font-size: var(--qm-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 var(--qm-s1);
+}
+.ProductPageQiMaster p,
+.ProductPageQiMaster li {
+  font-size: var(--qm-fs-base);
+  line-height: 1.65;
+  max-width: var(--qm-mass);
+}
+.ProductPageQiMaster .text-center p { margin-left: auto; margin-right: auto; }
+.ProductPageQiMaster small { font-size: var(--qm-fs-xs); }
+.ProductPageQiMaster ul,
+.ProductPageQiMaster ol { margin: var(--qm-s3) 0 var(--qm-s3) var(--qm-s3); }
+
+/* Buy-Box (Geschwister-Scope): H1 und Nutzenliste auf die Skala */
+.qm-pdp .product-main h1 { font-size: var(--qm-fs-h1); line-height: 1.1; }
+.qm-pdp .ProductDescription p,
+.qm-pdp .ProductDescription li,
+.qm-pdp .BenefitList li { font-size: var(--qm-fs-base); }
+.qm-pdp .qm-preishinweis {
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+  margin-top: var(--qm-s1);
+}
+
+/* ─── Bild-Radius: EIN Token fuer alle Bilder der Seite ──────────────────── */
+.ProductPageQiMaster img,
+.ProductPageQiMaster .Gitterchip .GitterchipImageWrapper img,
+.qm-pdp .product-image img,
+.qm-pdp .thumb-image { border-radius: var(--qm-r2); }
+.qm-pdp .btn--primary,
+.ProductPageQiMaster .btn--primary,
+.ProductPageQiMaster .btn--secondary { border-radius: var(--qm-r1); }
+
+/* ─── Die drei neuen Inhalts-Bausteine ───────────────────────────────────── */
+/* Gemeinsame Sektionsform: schmale Lesespalte, EIN Rhythmus */
+.ProductPageQiMaster .qm-sektion { padding: 0 var(--qm-s3); }
+.ProductPageQiMaster .qm-sektion__inner {
+  max-width: var(--qm-breite-schmal);
+  margin: 0 auto;
+}
+.ProductPageQiMaster .qm-sektion__inner > p + p { margin-top: var(--qm-s2); }
+.ProductPageQiMaster .qm-sektion__inner > h3 { margin-top: var(--qm-s4); }
+
+/* Quelle unter einem Zitat/Befund: kleiner, gedaempft, KEIN Link-Gold */
+.ProductPageQiMaster .qm-quelle {
+  display: block;
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+  margin-top: var(--qm-s1);
+}
+
+/* Wiedergabe fremder Rede: Zitatblock mit Linie, ohne Farbe */
+.ProductPageQiMaster .qm-zitat {
+  border-left: 2px solid var(--qm-linie);
+  padding: var(--qm-s1) 0 var(--qm-s1) var(--qm-s3);
+  margin: var(--qm-s3) 0;
+}
+.ProductPageQiMaster .qm-zitat p { font-size: var(--qm-fs-md); font-style: italic; }
+
+/* Kennzeichnung der Sprechhaltung: „Ueberlieferung" | „Gemessen" | „Unsere
+   Deutung" — Kapitaelchen-Label, EIN Stil. Gold nur auf „Gemessen"
+   (Beweis), die anderen beiden bleiben gedaempft: der Akzent markiert das,
+   was belegt ist — nie das, was wir vermuten. */
+.ProductPageQiMaster .qm-label {
+  display: inline-block;
+  font-size: var(--qm-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--qm-muted);
+  margin-bottom: var(--qm-s1);
+}
+.ProductPageQiMaster .qm-label--beleg {
+  color: var(--qm-text);
+  background: var(--qm-akzent);
+  padding: 2px var(--qm-s1);
+  border-radius: var(--qm-r1);
+}
+
+/* Zweispalt: Ueberlieferung neben Fundament (Persoenlichkeitsentwicklung) */
+.ProductPageQiMaster .qm-zweispalt {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--qm-s4);
+  max-width: 1080px;
+  margin: var(--qm-s4) auto 0;
+}
+@media (min-width: 750px) {
+  .ProductPageQiMaster .qm-zweispalt { grid-template-columns: 1fr 1fr; gap: var(--qm-s6); }
+}
+.ProductPageQiMaster .qm-spalte {
+  background: var(--qm-flaeche);
+  border-radius: var(--qm-r2);
+  padding: var(--qm-s4);
+}
+.ProductPageQiMaster .qm-spalte p { max-width: none; }
+.ProductPageQiMaster .qm-spalte h3 { margin-top: 0; }
+
+/* Der Deutungs-Satz: steht frei, ohne Flaeche, ohne Akzent — er ist die Stelle,
+   an der der Text ehrlich wird, und darf nicht wie eine Zusage aussehen. */
+.ProductPageQiMaster .qm-deutung {
+  max-width: var(--qm-breite-schmal);
+  margin: var(--qm-s4) auto 0;
+  padding-top: var(--qm-s3);
+  border-top: 1px solid var(--qm-linie);
+}
+
+/* Quellenliste am Ende des Diamant-Abschnitts */
+.ProductPageQiMaster .qm-quellen {
+  list-style: none;
+  margin: var(--qm-s3) 0 0;
+  padding: 0;
+}
+.ProductPageQiMaster .qm-quellen li {
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+  padding-left: var(--qm-s3);
+  text-indent: calc(-1 * var(--qm-s3));
+  list-style: none !important;
+  margin-bottom: var(--qm-s1);
+}
+
+/* Hintergrund-Dramaturgie: geplante Akte (Grund / Flaeche / Dunkel = 3) */
+.ProductPageQiMaster .qm-sektion--flaeche {
+  background: var(--qm-flaeche);
+  padding-top: var(--qm-s12);
+  padding-bottom: var(--qm-s12);
+}
+@media (max-width: 749px) {
+  .ProductPageQiMaster .qm-sektion--flaeche {
+    padding-top: var(--qm-s8);
+    padding-bottom: var(--qm-s8);
+  }
+}
+
+/* ─── Route-Chrome-Harmonisierung (gilt NUR auf dieser Route) ─────────────
+   Muster schlaf-zellen-schutz.css (94/100): die geteilten Bausteine
+   (InfoSlider, Google-Rezensionen, Studien-Slider, Upsell, FAQ, Footer)
+   tragen eigene Groessen und Farben aus app.css bzw. Tailwind-Klassen. Auf
+   dieser Route erben sie die Skala. AUSDRUECKLICH NICHT angefasst: Farbe und
+   Layout des Navigations-Flyouts (.submenu) — geteilte Chrome, Gate-12-Lehre
+   (Pixel-Regression in Menue-Zustaenden); nur seine Schriftgroesse rueckt
+   von 17,6 auf 18 px, unsichtbar, aber auf der Skala. */
+body:has(.ProductPageQiMaster) .header-submenu-item { font-size: var(--qm-fs-md); }
+body:has(.ProductPageQiMaster) .Header-AnnouncementBanner p,
+body:has(.ProductPageQiMaster) .Header-AnnouncementBanner span { font-size: var(--qm-fs-xs); }
+body:has(.ProductPageQiMaster) .shop-switch__label { font-size: var(--qm-fs-base); }
+body:has(.ProductPageQiMaster) header img { border-radius: var(--qm-r1); }
+body:has(.ProductPageQiMaster) .qb-sterne { color: var(--qm-akzent) !important; }
+
+body:has(.ProductPageQiMaster) .footer p,
+body:has(.ProductPageQiMaster) .footer a,
+body:has(.ProductPageQiMaster) .footer li,
+body:has(.ProductPageQiMaster) .footer span,
+body:has(.ProductPageQiMaster) .footer cite { font-size: var(--qm-fs-xs); }
+body:has(.ProductPageQiMaster) .footer .footer-heading { font-size: var(--qm-fs-base); }
+body:has(.ProductPageQiMaster) .eu-gwl-dialog__zu { font-size: var(--qm-fs-xl); }
+body:has(.ProductPageQiMaster) .eu-gwl__link { font-size: var(--qm-fs-lg); }
+
+/* Buy-Box-Knopf und alle CTAs: EINE Groesse */
+.qm-pdp .btn--primary,
+.qm-pdp .btn--secondary,
+.ProductPageQiMaster .btn--primary,
+.ProductPageQiMaster .btn--secondary { font-size: var(--qm-fs-md); }
+.ProductPageQiMaster .ghx-studien__arrow { font-size: var(--qm-fs-md); }
+.ProductPageQiMaster .ghx-studie__source { font-size: var(--qm-fs-xs); }
+.ProductPageQiMaster .HeroBannerContent p { font-size: var(--qm-fs-lg); }
+
+/* InfoSlider: Kartentitel auf xl, Label auf xs */
+.ProductPageQiMaster .InfoSliderCard .CardTitle h3 { font-size: var(--qm-fs-xl); }
+.ProductPageQiMaster .InfoSliderCard .CardLabel p { font-size: var(--qm-fs-xs); }
+
+/* Upsell: H2 auf DEN H2-Stil, Link auf lg */
+.ProductPageQiMaster .UpsellLineUp h2 { font-size: var(--qm-fs-h2) !important; }
+.ProductPageQiMaster .UpsellLink { font-size: var(--qm-fs-lg); }
+
+/* Google-Rezensionen (Tailwind-Utilities des Widgets): Text auf die Skala,
+   Kartenflaeche in die Token-Welt, Fremd-Blau auf den Textton — der Akzent
+   bleibt der Handlung vorbehalten. */
+.ProductPageQiMaster .GoogleRezensionenBereich .text-xs,
+.ProductPageQiMaster .GoogleRezensionenBereich button.self-start { font-size: var(--qm-fs-xs) !important; }
+.ProductPageQiMaster .GoogleRezensionenBereich .text-sm { font-size: var(--qm-fs-base) !important; }
+.ProductPageQiMaster .google-rating-badge__powered,
+.ProductPageQiMaster .google-rating-badge__powered strong { font-size: var(--qm-fs-xs); color: var(--qm-text) !important; }
+.ProductPageQiMaster .google-rating-badge__number { color: var(--qm-text) !important; }
+.ProductPageQiMaster .GoogleRezensionenBereich .snap-start,
+.ProductPageQiMaster .GoogleRezensionenBereich .rounded-2xl { background: var(--qm-flaeche) !important; }
+.ProductPageQiMaster .GoogleRezensionenBereich a,
+.ProductPageQiMaster .GoogleRezensionenBereich button.self-start,
+.ProductPageQiMaster .GoogleRezensionenBereich li > span:first-child { color: var(--qm-text) !important; }
+.ProductPageQiMaster .GoogleRezensionenBereich li > span:first-child { background: transparent !important; }
+
+/* Bild-Radius: EIN Token, auch fuer die Bausteine mit eigener Regel */
+.ProductPageQiMaster img,
+.ProductPageQiMaster .UpsellItem img,
+.ProductPageQiMaster .InfoSliderCard img,
+.qm-pdp .product-image img { border-radius: var(--qm-r2) !important; }
+
+/* --------------------------------------------------------------------------
+   HUELLEN-NORMALISIERUNG (Fortsetzung von oben, Zeilen 269-307).
+   Geteilte Bausteine, die INNERHALB dieser Seite rendern, bringen freie Werte
+   aus ihrer eigenen Herkunft mit. Sie werden hier auf die Token-Skala geholt —
+   im Scope der Seite, ohne den geteilten Baustein selbst anzufassen (an den
+   Produktseiten laufen parallel Reparaturen; ein Fork waere teurer als eine
+   Zuweisung).
+   -------------------------------------------------------------------------- */
+
+/* Die Kaufknoepfe standen auf einem freien 1.1rem (= 17.6px) und waren damit
+   die einzige Groesse der Seite ausserhalb der Skala. Auf die md-Stufe geholt:
+   eine Stufe weniger im Seiten-Inventar, und der Knopf wird groesser, nicht
+   kleiner. */
+.qm-pdp .btn--primary,
+.qm-pdp a.btn--primary,
+.qm-pdp button.btn--primary {
+  /* app.css:159 setzt .btn--primary auf ein freies `1.1rem !important` (17,6 px)
+     — die einzige Groesse dieser Seite ausserhalb der Skala. Nur mit !important
+     zu holen; der Sprung auf die md-Stufe betraegt 0,4 px, ist also unsichtbar,
+     und macht die Skala trotzdem geschlossen. Bewusst NUR im Seiten-Scope: die
+     1.1rem sind eine Hausentscheidung fuer den Haupt-CTA (app.css:208). */
+  font-size: var(--qm-fs-md) !important;
+}
+
+/* Ein einzelnes Bild trug 4px Radius und war damit der einzige Ausreisser
+   unter den Bild-Radien dieser Seite (sonst nur r1/r2). */
+.qm-pdp img[class*='rounded-'],
+.qm-pdp .google-rating-badge img {
+  border-radius: var(--qm-r1);
+}
+
+/* Der Community-Baustein (UpsellLineUp) bringt seinen H2 als `text-5xl!`
+   (48 px) mit und ist damit der einzige H2 der Seite ausserhalb des H2-Tokens.
+   Auf den einen H2-Stil geholt — im Seiten-Scope, ohne den geteilten Baustein
+   zu forken. (Der H2 im FOOTER bleibt davon unberuehrt: er liegt ausserhalb
+   von .qm-pdp, steht auf JEDER Seite des Shops und gehoert nicht diesem Bau.) */
+.qm-pdp h2.text-5xl\! {
+  font-size: var(--qm-fs-h2) !important;
+}

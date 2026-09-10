@@ -93,6 +93,13 @@ export const PRODUKT_BESCHREIBUNGEN = {
   '/products/qihome-air':
     'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air deckt bis zu 300 m² ab ' +
     'und schafft eine harmonische Atmosphäre — ideal für Schlafzimmer und Büro.',
+  // QiMaster (2026-09-10, Job 20260910-BAU-qi-master-…, Christian-Auftrag
+  // CW-20260910-0e45045b): Produkt liegt als DRAFT in Shopify; die Zeile
+  // wirkt erst, wenn Christian es aktiviert. Nur Beschaffenheit, keine
+  // Wirkzusage — derselbe Korridor wie die sechs Eintraege darueber.
+  '/products/qi-master':
+    'QiMaster: der QiOne mit Diamanten. Gitterchip der zweiten Generation, Kette ' +
+    'und Verschluss aus 750er Gold, nummeriertes Einzelstück. 20 Tage risikofrei.',
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
     'angenehm zu tragen, damit dein Anhänger überall dabei ist.',

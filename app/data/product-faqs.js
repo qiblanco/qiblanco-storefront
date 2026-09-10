@@ -42,6 +42,42 @@ export const FAQ_QIONE_2_PRO = [
   },
 ];
 
+/*
+ * FAQ /products/qi-master — QiMaster, der QiOne mit Diamant (Job
+ * 20260910-BAU-qi-master-produkt-und-shopseite-…, Christian-Auftrag
+ * CW-20260910-0e45045b). Nur Fragen, deren Antwort heute belegt ist:
+ * Gitterchip (Herstellerangaben wie bei FAQ_QIONE_2_PRO), Kette/Verschluss
+ * (Festlegungen Christian 2026-09-10), Seriennummer, Rueckgabe (Haus-Regel).
+ * Bewusst NICHT: Lieferzeit, Diamant-Karat/-Anzahl, Ratenzahlung — nicht belegt.
+ */
+export const FAQ_QI_MASTER = [
+  {
+    q: 'Was unterscheidet den QiMaster vom QiOne® 2 Pro?',
+    a: 'Der QiMaster ist der QiOne mit Diamanten: Er trägt denselben Gitterchip der zweiten Generation wie der QiOne® 2 Pro – dazu echte Diamanten, eine Iris mit 108 Strichen rund um das Auge und eine Kette samt Verschluss aus 750er Gold, beides mit Qi-Blanco-Logo. Jeder QiMaster ist nummeriert.',
+  },
+  {
+    q: 'Wie funktioniert der Gitterchip?',
+    a: 'Der Gitterchip enthält keinerlei elektronische Bauteile. Maßgeblich ist sein statisches Feld, das durch die spezifische Anordnung von Goldatomen in einer maßgeschneiderten 750er Goldlegierung entsteht. Es prägt Wassermoleküle in seiner Umgebung: Die Wahrscheinlichkeit steigt, dass Wasser Wasserstoffbrücken ausbaut – der Zustand, der als kohärente Wasserstruktur, EZ-Wasser oder kohärente Domäne beschrieben wird.',
+    flag: 'eso-buzzword',
+  },
+  {
+    q: 'Warum sind Diamanten im QiMaster?',
+    a: 'Ein Diamant ist reiner Kohlenstoff – dasselbe Element, das jede Zelle deines Körpers aufbaut. In der Literatur wird dieser Zusammenhang beschrieben (Michael König, 2011); dass sich damit im Schmuckstück Frequenzen erzeugen lassen, die dem Schwingungsbereich menschlicher Zellen näher liegen, ist unsere Deutung – sie ist nicht gemessen. Der Abschnitt „Der Diamant“ auf dieser Seite trennt beides ausdrücklich.',
+  },
+  {
+    q: 'Schützt der QiMaster vor 6G?',
+    a: 'Der Gitterchip ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg). Für die Frequenzen künftiger 6G-Netze liegt keine Messung vor. Das sagen wir auf der Seite so und nicht größer.',
+  },
+  {
+    q: 'Darf der QiMaster in die Sauna oder ins Wasser?',
+    a: 'Der Gitterchip ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und Hitze. Für die Goldkette gilt, was für jedes Goldschmuckstück gilt: Sie ist beständig, sollte aber nicht dauerhaft Chlorwasser ausgesetzt werden.',
+  },
+  {
+    q: 'Kann ich den QiMaster zurückgeben?',
+    a: 'Ja. Wie jedes Stück aus unserem Haus kannst du den QiMaster 20 Tage lang erleben und innerhalb dieser Frist zurückgeben – du erhältst den vollen Kaufpreis zurück.',
+  },
+];
+
 export const FAQ_QIBRACELET = [
   {
     q: 'Was ist der Unterschied zwischen dem QiOne® 2 Pro und dem QiBracelet®?',
