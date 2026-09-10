@@ -20,6 +20,19 @@ import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import qihomeAirStyles from '~/styles/qihome-air.css?url';
+/**
+ * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
+ * 20260910-designschuld-...-s04). Sie hängt AUSSCHLIESSLICH hier und trägt
+ * deshalb auf keiner anderen Seite - app.css bleibt unangetastet. Der Scope
+ * ist die Klasse `ProductQiHomeAir` am Wrapper unten; der Kaufweg (Preis,
+ * Varianten, Warenkorb-Knopf) wird von der Datei nicht berührt.
+ * Rückweg: diesen links()-Export und den Wrapper entfernen.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: qihomeAirStyles}];
+}
+
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -106,7 +119,7 @@ export default function Product() {
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
 
   return (
-    <>
+    <div className="ProductQiHomeAir">
     <div className="product-360-hero">
       <div className="product-360-hero__text">
         <h2>QiHome® Air</h2>
@@ -174,7 +187,7 @@ export default function Product() {
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
-    </>
+    </div>
   );
 }
 
