@@ -64,8 +64,9 @@ export function HypothesenSeite() {
             Das hier ist das Modell, nach dem wir bauen: sechs Annahmen, die
             aufeinander aufbauen. Zu jeder steht, was dafür spricht, was dagegen
             spricht und was sie für unser Produkt bedeutet – und was
-            ausdrücklich nicht. Die schwächste Stelle sitzt in der Mitte der
-            Kette, und wir zeigen sie, statt sie zu umgehen.
+            ausdrücklich nicht. Die schwächste Stelle ist der Schritt vom Chip
+            zum Wasser: dafür haben wir keine eigene Messung, und die einzige
+            Arbeit zu unserem Material spricht dagegen.
           </p>
 
           <ul className="hyp__abgrenzung">
@@ -117,13 +118,15 @@ export function HypothesenSeite() {
                   Hypothese {i + 1} · {h.kurz}
                 </p>
                 <h3>{h.satz}</h3>
-                <p className={`hyp__stand hyp__stand--${STAND[h.stand].kuerzel}`}>
+                <p
+                  className={`hyp__stand hyp__stand--${STAND[h.stand].kuerzel}`}
+                >
                   {STAND[h.stand].text}
                 </p>
 
                 <div className="hyp__feld">
                   <h4>Was dafür spricht</h4>
-                  {h.dafuer.map((b) => (
+                  {h.pro.map((b) => (
                     <p key={b.text.slice(0, 48)}>
                       {b.text} <Belege ids={b.quellen} />
                     </p>
@@ -132,7 +135,7 @@ export function HypothesenSeite() {
 
                 <div className="hyp__feld hyp__feld--dagegen">
                   <h4>Was dagegen spricht oder offen ist</h4>
-                  {h.dagegen.map((b) => (
+                  {h.contra.map((b) => (
                     <p key={b.text.slice(0, 48)}>
                       {b.text} <Belege ids={b.quellen} />
                     </p>
@@ -184,13 +187,37 @@ export function HypothesenSeite() {
           <ul className="hyp__videoliste">
             {VIDEOS.map((v) => (
               <li key={v.videoId} className="hyp__video">
-                <div className="hyp__videorahmen">
-                  <YoutubeTimestamp videoId={v.videoId} titel={v.titel} />
-                </div>
+                {v.einbetten ? (
+                  <div className="hyp__videorahmen">
+                    <YoutubeTimestamp
+                      videoId={v.videoId}
+                      titel={v.titel}
+                      thumbnail={v.poster}
+                    />
+                  </div>
+                ) : (
+                  <p className="hyp__videolink">
+                    <a
+                      className="hyp__link"
+                      href={`https://www.youtube.com/watch?v=${v.videoId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Vortrag auf YouTube ansehen ({v.dauerText})
+                    </a>
+                    <span className="hyp__sagtnichts">
+                      {' '}
+                      Nicht als Kachel eingebettet: von diesem Vortrag von 2009
+                      gibt es nur ein 480 Pixel breites Standbild, und das wäre
+                      auf dieser Fläche sichtbar unscharf.
+                    </span>
+                  </p>
+                )}
                 <div className="hyp__videotext">
                   <h3>{v.titel}</h3>
                   <p className="hyp__videometa">
-                    {v.kanal} · {v.dauerText} · {v.sprache === 'en' ? 'englisch' : 'deutsch'}
+                    {v.kanal} · {v.dauerText} ·{' '}
+                    {v.sprache === 'en' ? 'englisch' : 'deutsch'}
                   </p>
                   <p>
                     <strong>Was er zeigt.</strong> {v.zeigt}
@@ -298,22 +325,32 @@ export function HypothesenSeite() {
  * erfundener Beleg genau der Fehler, den diese Seite vermeiden soll.
  */
 const NAMENSPARTIKEL = new Set([
-  'del', 'de', 'della', 'van', 'von', 'di', 'da', 'le', 'la', 'der', 'den',
+  'del',
+  'de',
+  'della',
+  'van',
+  'von',
+  'di',
+  'da',
+  'le',
+  'la',
+  'der',
+  'den',
 ]);
 
 /**
- * Nachname des Erstautors fuer den Beleg-Verweis („Pollack 2013").
+ * Nachname des Erstautors für den Beleg-Verweis („Pollack 2013").
  *
  * ZWEI FALLEN, BEIDE AM ECHTEN BESTAND AUFGEFALLEN UND NICHT VERMUTET — das
- * naheliegende „letztes Wort vor dem Komma" ist fuer 6 der 23 Quellen falsch:
+ * naheliegende „letztes Wort vor dem Komma" ist für 6 der 23 Quellen falsch:
  *
  *  (a) KLAMMERZUSATZ: „Peter C. Dartsch (Dartsch Scientific GmbH)" ergibt
- *      „GmbH)" — betrifft alle fuenf Dartsch-Arbeiten, also genau unsere
+ *      „GmbH)" — betrifft alle fünf Dartsch-Arbeiten, also genau unsere
  *      eigenen Studien. „Arbeitsgruppe … (Schweiz)" ergibt „(Schweiz)".
- *      Klammerinhalt ist Zugehoerigkeit, nie Name: er faellt zuerst weg.
+ *      Klammerinhalt ist Zugehörigkeit, nie Name: er fällt zuerst weg.
  *
  *  (b) NAMENSPARTIKEL: „Emilio Del Giudice" ergibt „Giudice" — einen Namen,
- *      den es nicht gibt. Das Partikel gehoert zum Nachnamen.
+ *      den es nicht gibt. Das Partikel gehört zum Nachnamen.
  *
  * Ein falsch geschriebener Autorenname ist auf einer Quellenseite kein
  * Schoenheitsfehler: er ist genau die Sorte Fehler, die einem Leser zeigt,

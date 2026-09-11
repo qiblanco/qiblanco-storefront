@@ -92,13 +92,15 @@ export const QUELLEN = [
     zitatOrt: 'S. 27',
     link: 'https://doi.org/10.2495/DNE-V5-N1-27-29',
     linkText: 'DOI 10.2495/DNE-V5-N1-27-29',
-    bibliothek: 'paper-water-energy-and-life-fresh-views-from-the-water-s-edge-2010',
+    bibliothek:
+      'paper-water-energy-and-life-fresh-views-from-the-water-s-edge-2010',
   },
   {
     id: 'wang-pollack-2021',
     autor: 'Anqi Wang, Gerald H. Pollack',
     jahr: '2021',
-    titel: 'Effect of infrared radiation on interfacial water at hydrophilic surfaces',
+    titel:
+      'Effect of infrared radiation on interfacial water at hydrophilic surfaces',
     wo: 'Colloid and Interface Science Communications 42, 100397',
     art: 'messung',
     untersucht:
@@ -109,7 +111,8 @@ export const QUELLEN = [
       'Die Energiequelle ist hier eine Infrarotlampe. Unser Chip strahlt nichts ab und wird nicht bestrahlt; ob Körperwärme dieselbe Rolle spielt, wurde nicht untersucht.',
     link: 'https://doi.org/10.1016/j.colcom.2021.100397',
     linkText: 'DOI 10.1016/j.colcom.2021.100397',
-    bibliothek: 'paper-effect-of-infrared-radiation-on-interfacial-water-at-hydroph-2021',
+    bibliothek:
+      'paper-effect-of-infrared-radiation-on-interfacial-water-at-hydroph-2021',
   },
   {
     id: 'nhan-pollack-2011',
@@ -141,7 +144,8 @@ export const QUELLEN = [
       'Beim Schmelzen tritt vorübergehend die 270-nm-Absorption auf und verschwindet dann wieder — im Einklang mit der Annahme, dass Eis nicht direkt zu gewöhnlichem Wasser wird, sondern über die geordnete Zwischenphase.',
     nichtUeberUns:
       'Eine Arbeit über Eis. Sie stützt die Idee einer geordneten Wasserphase, nicht die Idee, dass ein Gegenstand sie im Körper erzeugt.',
-    bibliothek: 'paper-exclusion-zone-as-intermediate-between-ice-and-water-2011',
+    bibliothek:
+      'paper-exclusion-zone-as-intermediate-between-ice-and-water-2011',
   },
 
   /* --------------------------------------------------------------- Theorie */
@@ -164,9 +168,11 @@ export const QUELLEN = [
   },
   {
     id: 'delgiudice-2015',
-    autor: 'Emilio Del Giudice, Vladimir Voeikov, Alberto Tedeschi, Giuseppe Vitiello',
+    autor:
+      'Emilio Del Giudice, Vladimir Voeikov, Alberto Tedeschi, Giuseppe Vitiello',
     jahr: '2015',
-    titel: 'The origin and the special role of coherent water in living systems',
+    titel:
+      'The origin and the special role of coherent water in living systems',
     wo: 'In: D. Fels, M. Cifra, F. Scholkmann (Hg.), Fields of the Cell, Research Signpost, S. 95–111',
     art: 'theorie',
     untersucht:
@@ -200,7 +206,8 @@ export const QUELLEN = [
     zitatOrt: 'S. 1, Abstract',
     link: 'https://doi.org/10.7251/COM1201001C',
     linkText: 'DOI 10.7251/COM1201001C',
-    bibliothek: 'paper-unexpected-presence-of-solute-free-zones-at-metal-water-inte-2012',
+    bibliothek:
+      'paper-unexpected-presence-of-solute-free-zones-at-metal-water-inte-2012',
   },
   {
     id: 'shalatonin-pollack-2022',
@@ -223,7 +230,8 @@ export const QUELLEN = [
     id: 'rad-pollack-2021',
     autor: 'Iman Rad, Rainer Stahlberg, Kurt Kung, Gerald H. Pollack',
     jahr: '2021',
-    titel: 'Low frequency weak electric fields can induce structural changes in water',
+    titel:
+      'Low frequency weak electric fields can induce structural changes in water',
     wo: 'PLOS ONE 16(12), e0260967',
     art: 'messung',
     untersucht:
@@ -234,7 +242,8 @@ export const QUELLEN = [
       'Die Felder kamen aus einer Spannungsquelle. Ob ein passiver Gegenstand ohne Stromversorgung ein vergleichbares Feld erzeugt, wurde nicht untersucht.',
     link: 'https://doi.org/10.1371/journal.pone.0260967',
     linkText: 'DOI 10.1371/journal.pone.0260967',
-    bibliothek: 'paper-low-frequency-weak-electric-fields-can-induce-structural-cha-2021',
+    bibliothek:
+      'paper-low-frequency-weak-electric-fields-can-induce-structural-cha-2021',
   },
 
   /* ------------------------------------------------------ Wasser in der Zelle */
@@ -257,7 +266,8 @@ export const QUELLEN = [
   },
   {
     id: 'sharma-pollack-2018',
-    autor: 'Abha Sharma, Daniel Toso, Kurt Kung, Gun-Woong Bahng, Gerald H. Pollack',
+    autor:
+      'Abha Sharma, Daniel Toso, Kurt Kung, Gun-Woong Bahng, Gerald H. Pollack',
     jahr: '2018',
     titel: 'Effect of Health-Promoting Agents on Exclusion-Zone Size',
     wo: 'Dose-Response 16(3)',
@@ -270,7 +280,8 @@ export const QUELLEN = [
       'Getestet wurden gelöste Stoffe in einem Laboraufbau. Kein Gegenstand, kein Körper. Und die Verbindung zur Gesundheit ist hier ausdrücklich eine Hypothese der Autoren.',
     link: 'https://doi.org/10.1177/1559325818796937',
     linkText: 'DOI 10.1177/1559325818796937',
-    bibliothek: 'paper-effect-of-health-promoting-agents-on-exclusion-zone-size-2018',
+    bibliothek:
+      'paper-effect-of-health-promoting-agents-on-exclusion-zone-size-2018',
   },
   {
     id: 'pollack-2024',
@@ -293,9 +304,11 @@ export const QUELLEN = [
   /* ---------------------------------------------- Strahlung und Zellstress */
   {
     id: 'berenis-2021',
-    autor: 'Meike Mevissen, David Schürmann (BERENIS — Beratende Expertengruppe nichtionisierende Strahlung, Schweiz)',
+    autor:
+      'Meike Mevissen, David Schürmann (BERENIS — Beratende Expertengruppe nichtionisierende Strahlung, Schweiz)',
     jahr: '2021',
-    titel: 'Is there evidence for oxidative stress caused by electromagnetic fields?',
+    titel:
+      'Is there evidence for oxidative stress caused by electromagnetic fields?',
     wo: 'BERENIS-Newsletter, Sonderausgabe Januar 2021 (Bundesamt für Umwelt BAFU)',
     art: 'uebersicht',
     untersucht:
@@ -313,7 +326,8 @@ export const QUELLEN = [
   },
   {
     id: 'uvek-2019',
-    autor: 'Arbeitsgruppe Mobilfunk und Strahlung im Auftrag des UVEK (Schweiz)',
+    autor:
+      'Arbeitsgruppe Mobilfunk und Strahlung im Auftrag des UVEK (Schweiz)',
     jahr: '2019',
     titel: 'Bericht Mobilfunk und Strahlung',
     wo: 'Eidgenössisches Departement für Umwelt, Verkehr, Energie und Kommunikation, 18. November 2019',
@@ -332,7 +346,8 @@ export const QUELLEN = [
     id: 'kim-2019',
     autor: 'Ju Hwan Kim, Jin-Koo Lee, Hyung-Gun Kim, Kyu-Bong Kim, Hak Rim Kim',
     jahr: '2019',
-    titel: 'Possible Effects of Radiofrequency Electromagnetic Field Exposure on Central Nerve System',
+    titel:
+      'Possible Effects of Radiofrequency Electromagnetic Field Exposure on Central Nerve System',
     wo: 'Biomolecules & Therapeutics 27(3), S. 265–275',
     art: 'uebersicht',
     untersucht:
@@ -340,7 +355,7 @@ export const QUELLEN = [
     gezeigt:
       'Mobilfunkfelder können in Modellen Nervenzellen verändern und als Stressquelle wirken; die Autoren halten zugleich fest, dass die biologischen Effekte am Menschen nicht bewiesen sind und die Daten für eine klare Risikoaussage nicht reichen.',
     nichtUeberUns:
-      'Kein Bezug zu einem Produkt. Wir nennen die Arbeit, weil sie beide Seiten in einem Satz trägt: mögliche Wirkung und fehlender Beweis.',
+      'Kein Bezug zu einem Produkt und keine Messung am Menschen: die Arbeit fasst Zell- und Tierstudien zusammen und hält ausdrücklich fest, dass die Datenlage für eine Risikoaussage nicht reicht.',
     link: 'https://doi.org/10.4062/biomolther.2019.152',
     linkText: 'DOI 10.4062/biomolther.2019.152',
     bibliothek: 'emf-possible-effects-rf',
@@ -351,7 +366,8 @@ export const QUELLEN = [
     id: 'dartsch-2021a',
     autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
     jahr: '2021',
-    titel: 'QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation',
+    titel:
+      'QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation',
     wo: 'Japan Journal of Medicine 4(1), S. 484–488',
     art: 'eigene',
     untersucht:
@@ -371,7 +387,8 @@ export const QUELLEN = [
     id: 'dartsch-2021b',
     autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
     jahr: '2021',
-    titel: 'Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation',
+    titel:
+      'Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation',
     wo: 'Applied Cell Biology 9(3), S. 69–74',
     art: 'eigene',
     untersucht:
@@ -405,7 +422,8 @@ export const QUELLEN = [
     id: 'dartsch-2024b',
     autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
     jahr: '2024',
-    titel: 'QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data',
+    titel:
+      'QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data',
     wo: 'Advances in Bioengineering & Biomedical Science Research 7(3), S. 1–4',
     art: 'eigene',
     untersucht:
@@ -422,7 +440,8 @@ export const QUELLEN = [
     id: 'dartsch-2026',
     autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
     jahr: '2026',
-    titel: 'Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells',
+    titel:
+      'Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells',
     wo: 'Neurodegenerative Diseases: Current Research 6(1), S. 1–8',
     art: 'eigene',
     untersucht:
@@ -472,7 +491,9 @@ export const QUELLEN = [
   },
 ];
 
-export const QUELLEN_NACH_ID = Object.fromEntries(QUELLEN.map((q) => [q.id, q]));
+export const QUELLEN_NACH_ID = Object.fromEntries(
+  QUELLEN.map((q) => [q.id, q]),
+);
 
 /**
  * Die Videos — ausgezeichnet als VideoObject (Teil D des Auftrags), jedes mit
@@ -491,9 +512,36 @@ export const QUELLEN_NACH_ID = Object.fromEntries(QUELLEN.map((q) => [q.id, q]))
  * auf Pollacks gleichnamigen Aufsatz von 2010, der im Volltext gelesen wurde.
  * Das steht so auf der Seite.
  */
+/*
+ * POSTER UND EINBETTUNG SIND GEMESSEN, NICHT GERATEN.
+ *
+ * Die Facade `YoutubeTimestamp` faehrt sonst eine maxres-Kette mit Abstieg bei
+ * `onError`. Der Abstieg greift bei YouTube NIE: fehlt `maxresdefault.jpg`,
+ * antwortet i.ytimg.com mit HTTP 404 UND einem gueltigen 120x90-Graubild im
+ * Rumpf — der Browser dekodiert es erfolgreich und feuert kein `error`. Der
+ * Poster stand damit als Graukachel auf der Seite.
+ *
+ * Deshalb traegt jeder Eintrag seine Poster-Datei samt gemessener Breite. Am
+ * 2026-09-11 je Stufe abgerufen und die Breite aus dem JPEG-Kopf gelesen:
+ *   i-T7tCMUDXU   maxresdefault 1280x720
+ *   p9UC0chfXcg   maxresdefault 1280x720
+ *   XVBEwn6iWOo   maxres/sd/hq720 je 404 (120x90) -> bestes vorhandenes
+ *                 Standbild ist hqdefault 480x360
+ *
+ * `einbetten: false` FOLGT AUS DER MESSUNG, nicht aus Geschmack: das Gate
+ * `bild-aufloesung` verlangt Quellbreite >= Anzeigebreite * dpr * 0.9, auf
+ * mobil-360 also 312*2*0.9 = 562 px. 480 px reissen das, und 480 ist fuer
+ * dieses Video das Maximum, das ueberhaupt existiert — mit keiner Dateiwahl
+ * heilbar. Eine sichtbar unscharfe Kachel auf einer Seite, deren Gegenstand
+ * Nachpruefbarkeit ist, waere der teurere Fehler als ein Link. Der Vortrag
+ * bleibt mit Einordnung und als VideoObject auf der Seite, nur ohne Kachel.
+ */
 export const VIDEOS = [
   {
     videoId: 'i-T7tCMUDXU',
+    poster: 'https://i.ytimg.com/vi/i-T7tCMUDXU/maxresdefault.jpg',
+    posterBreite: 1280,
+    einbetten: true,
     titel: 'The Fourth Phase of Water: Dr. Gerald Pollack at TEDxGuelphU',
     kanal: 'TEDx Talks',
     veroeffentlicht: '2013-09-06',
@@ -508,6 +556,9 @@ export const VIDEOS = [
   },
   {
     videoId: 'p9UC0chfXcg',
+    poster: 'https://i.ytimg.com/vi/p9UC0chfXcg/maxresdefault.jpg',
+    posterBreite: 1280,
+    einbetten: true,
     titel: 'Water, Cells, and Life | Dr. Gerald Pollack | TEDxNewYorkSalon',
     kanal: 'TEDx Talks',
     veroeffentlicht: '2016-11-21',
@@ -522,6 +573,9 @@ export const VIDEOS = [
   },
   {
     videoId: 'XVBEwn6iWOo',
+    poster: 'https://i.ytimg.com/vi/XVBEwn6iWOo/hqdefault.jpg',
+    posterBreite: 480,
+    einbetten: false,
     titel: 'Water, Energy and Life: Fresh Views From the Water’s Edge',
     kanal: 'UW Video (University of Washington)',
     veroeffentlicht: '2009-04-29',

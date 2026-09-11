@@ -16,8 +16,8 @@
  * DER AUFBAU IST DIE TRAGENDE ENTSCHEIDUNG DES AUFTRAGS: jede Hypothese trägt
  * DIESELBEN VIER FELDER, damit man sie vergleichen kann —
  *   (1) `satz`          die Hypothese in einem Satz, ohne Fachwort;
- *   (2) `dafuer[]`      was dafür spricht, je mit Quellen statt Adjektiven;
- *   (3) `dagegen[]`     was dagegen spricht oder offen ist — ZUERST benannt,
+ *   (2) `pro[]`         was dafür spricht, je mit Quellen statt Adjektiven;
+ *   (3) `contra[]`      was dagegen spricht oder offen ist — ZUERST benannt,
  *                       nicht ans Ende gedrängt;
  *   (4) `bedeutet` / `bedeutetNicht`  was das für unser Produkt heißt — und
  *                       was ausdrücklich nicht.
@@ -105,7 +105,7 @@ export const HYPOTHESEN = [
     kurz: 'Wasser an Grenzflächen',
     satz: 'Direkt an einer Oberfläche verhält sich Wasser anders als ein paar Millimeter weiter weg – es ordnet sich dort.',
     stand: 'tragfaehig',
-    dafuer: [
+    pro: [
       {
         text: 'Pollacks Labor hat an hydrophilen Oberflächen eine Zone gefunden, aus der Mikrokügelchen und gelöste Stoffe verdrängt werden. Sie ist bis zu mehrere hundert Mikrometer breit – für Wasser eine enorme Reichweite – und ihre Eigenschaften unterscheiden sich messbar vom übrigen Wasser: anderes elektrisches Potential, anderer pH-Wert am Rand, anderes Verhalten im Infrarot.',
         quellen: ['pollack-2013', 'pollack-2010', 'pollack-2001'],
@@ -119,7 +119,7 @@ export const HYPOTHESEN = [
         quellen: ['wang-pollack-2021', 'so-pollack-2011'],
       },
     ],
-    dagegen: [
+    contra: [
       {
         text: 'Wie breit die Zone wirklich ist und wodurch sie zustande kommt, ist in der Fachwelt nicht entschieden. Es gibt gut begründete Gegenvorschläge, die ohne eine eigene „vierte Phase" auskommen und die Beobachtungen über bekannte Effekte an Grenzflächen erklären. Pollacks Deutung ist eine Deutung, kein Konsens.',
         quellen: ['pollack-2013'],
@@ -135,11 +135,11 @@ export const HYPOTHESEN = [
       'Es sagt nichts über Gesundheit, nichts über den Körper und nichts über unseren Chip. Gemessen wurde in einer Küvette, an einem Gel oder an einer Metallprobe – nicht an einem Menschen und nicht mit einem getragenen Anhänger.',
   },
   {
-    id: 'h2-kohaerenz-theorie',
+    id: 'h2-ordnung-theorie',
     kurz: 'Warum Ordnung entstehen kann',
     satz: 'Es gibt eine physikalische Theorie, die erklärt, wieso sich sehr viele Wassermoleküle überhaupt gemeinsam ordnen können, statt jedes für sich zu zappeln.',
     stand: 'offen',
-    dafuer: [
+    pro: [
       {
         text: 'Die Quantenelektrodynamik des kondensierten Zustands beschreibt sogenannte kohärente Domänen: Bereiche, in denen sehr viele Moleküle im Takt mit dem elektromagnetischen Feld schwingen. Preparata hat das Modell ausgearbeitet, Del Giudice und Kollegen haben es auf Wasser in lebenden Systemen angewandt.',
         quellen: ['preparata-1995', 'delgiudice-2015'],
@@ -149,7 +149,7 @@ export const HYPOTHESEN = [
         quellen: ['delgiudice-2015', 'pollack-2013'],
       },
     ],
-    dagegen: [
+    contra: [
       {
         text: 'Das ist Theorie, keine Messung. Die Herleitung ist in sich schlüssig, aber eine schlüssige Herleitung ist kein Experiment. Ein direkter Nachweis kohärenter Domänen in Wasser bei Körpertemperatur steht aus.',
         quellen: ['preparata-1995', 'delgiudice-2015'],
@@ -173,7 +173,7 @@ export const HYPOTHESEN = [
     kurz: 'Der Chip als Vorlage',
     satz: 'Ein festes, präzise geschnittenes Gitter kann für benachbartes Wasser als Vorlage wirken, an der es sich ausrichtet – ohne Strom, allein durch seine Struktur.',
     stand: 'schwach',
-    dafuer: [
+    pro: [
       {
         text: 'Dass die Oberfläche selbst entscheidet, was daneben passiert, ist der Kern von Hypothese 1: an unterschiedlichen Materialien entstehen unterschiedlich große Zonen. Damit ist die Materialwahl grundsätzlich ein Hebel und nicht beliebig.',
         quellen: ['chai-pollack-2012', 'pollack-2013'],
@@ -187,7 +187,7 @@ export const HYPOTHESEN = [
         quellen: ['sharma-pollack-2018'],
       },
     ],
-    dagegen: [
+    contra: [
       {
         text: 'Die stärkste Arbeit gegen diese Hypothese kommt aus Pollacks eigenem Labor, und wir stellen sie deshalb an den Anfang: Chai, Mahtani und Pollack haben 2012 sieben Metalle verglichen. Neben Zink entstand eine Zone von rund 200 Mikrometern, neben Aluminium, Zinn, Blei und Wolfram kleinere – „while precious metals such as platinum and gold did not produce any". Neben Gold entstand keine. Unser Gitter ist aus 750er Gold.',
         quellen: ['chai-pollack-2012'],
@@ -211,7 +211,7 @@ export const HYPOTHESEN = [
     kurz: 'Wasser in der Zelle',
     satz: 'Auch das Wasser in unseren Zellen liegt größtenteils an Oberflächen – deshalb könnte seine Ordnung für die Zelle eine Rolle spielen.',
     stand: 'teilweise',
-    dafuer: [
+    pro: [
       {
         text: 'In einer Zelle ist praktisch jedes Wassermolekül nah an einer Oberfläche: an Eiweißen, an Membranen, am Zellskelett. Freies Wasser wie im Glas gibt es dort kaum. Wenn Grenzflächenwasser besondere Eigenschaften hat, dann ist das in der Zelle der Normalfall und nicht die Ausnahme.',
         quellen: ['pollack-2001', 'delgiudice-2015'],
@@ -221,7 +221,7 @@ export const HYPOTHESEN = [
         quellen: ['pollack-2001'],
       },
     ],
-    dagegen: [
+    contra: [
       {
         text: 'Dass Zellwasser strukturiert vorliegt, ist gut begründet. Dass seine Ordnung ein Stellhebel für Gesundheit ist, ist der Sprung – und der ist nicht belegt. Zwischen „das Wasser ist geordnet" und „mehr Ordnung ist besser" liegt eine Annahme, die niemand gemessen hat.',
         quellen: ['pollack-2001'],
@@ -241,7 +241,7 @@ export const HYPOTHESEN = [
     kurz: 'Strahlung und Zellstress',
     satz: 'Elektromagnetische Felder können in Zellen oxidativen Stress auslösen – das ist der Belastungsfall, für den wir gebaut haben.',
     stand: 'teilweise',
-    dafuer: [
+    pro: [
       {
         text: 'Die Schweizer Beratende Expertengruppe BERENIS hat die Literatur gesichtet und kommt zu einem klaren Zwischenstand: „the majority of the animal and more than half of the cell studies provided evidence of increased oxidative stress caused by RF-EMF or ELF-MF". Das ist keine Randmeinung, sondern ein Behördenbericht.',
         quellen: ['berenis-2021'],
@@ -251,7 +251,7 @@ export const HYPOTHESEN = [
         quellen: ['berenis-2021', 'kim-2019'],
       },
     ],
-    dagegen: [
+    contra: [
       {
         text: 'Derselbe Bericht sagt im selben Satz, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Und er benennt methodische Schwächen der Studienlage – unter anderem Kontrollproben, die in einem anderen Brutschrank standen als die bestrahlten. Genau dieses Design steckt auch in einer unserer eigenen Studien; wir sagen das auf der Studienseite selbst.',
         quellen: ['berenis-2021', 'dartsch-2021a'],
@@ -275,7 +275,7 @@ export const HYPOTHESEN = [
     kurz: 'Was wir selbst gemessen haben',
     satz: 'In Zellkulturen unter Belastung haben unabhängig beauftragte Labore einen Unterschied zwischen Proben mit und ohne unser Produkt gefunden.',
     stand: 'teilweise',
-    dafuer: [
+    pro: [
       {
         text: 'Fünf Arbeiten liegen veröffentlicht vor, jede mit Methode und Zahlen im Original nachlesbar: an menschlichen Immunzellen, an Darm-Epithelzellen und gegen oxidativen Stress. In den belasteten Kulturen mit Produkt fiel der gemessene Zellschaden geringer aus als ohne.',
         quellen: ['dartsch-2021a', 'dartsch-2021b', 'dartsch-2024a'],
@@ -285,7 +285,7 @@ export const HYPOTHESEN = [
         quellen: ['dartsch-2024b', 'dartsch-2026'],
       },
     ],
-    dagegen: [
+    contra: [
       {
         text: 'Das sind Zellkulturen, kein Mensch. Ein Effekt in der Schale sagt nichts darüber, ob im Körper etwas davon ankommt – die allermeisten Effekte, die man in vitro sieht, überstehen diesen Schritt nicht. Eine klinische Studie am Menschen gibt es nicht.',
         quellen: ['dartsch-2021a', 'dartsch-2021b'],

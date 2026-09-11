@@ -6,8 +6,7 @@ import {VIDEOS} from '~/data/hypothesen-quellen';
 /**
  * /pages/hypothesen — ERREICHBAR, ABER DUNKEL.
  *
- * Auftrag: 20260911-BAU-pages-hypothesen-das-wirkmodell-mit-staerken-und-
- * schwaechen (Christian, 2026-09-11, wörtlich: „Sowas wie ‚Qi Blanco – unsere
+ * Auftrag: 20260911-BAU-pages-hypothesen (Christian, 2026-09-11, wörtlich: „Sowas wie ‚Qi Blanco – unsere
  * Hypothesen‘ und dann das ganze Wirkmodell von Qi Blanco einstellen, so wie
  * wir es erarbeitet haben, mit Stärken und Schwächen. Aber noch nicht crawlbar
  * machen — mir zeigen, wenn es live ist. Und sehr viele Quellen einstellen.

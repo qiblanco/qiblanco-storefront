@@ -38,12 +38,17 @@
 :root {
   --hyp-font: 'Open Sans Variable', 'Open Sans', sans-serif;
 
-  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  /* Typo: EINE Familie, modulare Skala ~1.25, 6 Stufen (Deckel des Briefs: 9).
+     GEMESSEN, NICHT GEWAEHLT: die geteilte Huelle (Kopf/Fuss/Warenkorb) bringt
+     acht eigene Groessen mit, die keine Seite abstellen kann — /pages/kritik
+     misst dieselben acht. Jede Stufe, die diese Datei zusaetzlich aufmacht,
+     zaehlt also gegen den Deckel von neun. Eine siebte Stufe (25px zwischen
+     Hypothesen-Titel und H2) war der Grund fuer den Befund 'zehn Groessen';
+     der Titel traegt jetzt --hyp-fs-lg und die Abstufung h1/h2/h3 bleibt. */
   --hyp-fs-xs: 0.8125rem; /* 13px, nur Fuss/Meta */
   --hyp-fs-base: 1rem; /* 16px */
   --hyp-fs-md: 1.125rem; /* 18px */
   --hyp-fs-lg: 1.25rem; /* 20px */
-  --hyp-fs-xl: 1.5625rem; /* 25px */
   --hyp-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
   --hyp-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
 
@@ -89,12 +94,28 @@
 }
 
 .hyp section {
-  padding: var(--hyp-s8) var(--hyp-s3);
+  padding: var(--hyp-s8) var(--hyp-s1);
 }
 
 .hyp__inhalt {
   max-width: var(--hyp-breite-schmal);
   margin: 0 auto;
+  /* Der horizontale Innenabstand sitzt HIER und nicht auf der Section: der
+     Textcontainer ist das, was am Viewport-Rand klebt, und die Gestaltungs-
+     Pruefliste misst genau ihn (wie .krit__inhalt auf der Schwesterseite). */
+  padding-inline: var(--hyp-s2);
+}
+
+/* Die Textgroessen werden AUSDRUECKLICH gesetzt, nicht geerbt. Die globale
+   Huelle (app.css) traegt eigene Regeln auf p/h1, die eine blosse Vererbung
+   vom .hyp-Container schlagen — gemessen: der Fliesstext kam als 19,25 px
+   heraus statt als die 16 px des Tokens, und dieselbe Mechanik hatte vorher
+   schon die Schriftfarbe im Kopf gekapert. Wer hier nur den Container setzt,
+   glaubt an eine Skala, die die Seite gar nicht benutzt. */
+.hyp p,
+.hyp li,
+.hyp dd {
+  font-size: var(--hyp-fs-base);
 }
 
 .hyp p {
@@ -233,7 +254,7 @@
 }
 
 .hyp__these h3 {
-  font-size: var(--hyp-fs-xl);
+  font-size: var(--hyp-fs-lg);
   line-height: 1.3;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -318,6 +339,12 @@
   overflow: hidden;
   box-shadow: var(--hyp-shadow-md);
   margin-bottom: var(--hyp-s3);
+}
+
+/* Ein Eintrag ohne Kachel (Poster zu klein, siehe hypothesen-quellen.js) steht
+   einspaltig — sonst liesse die Zwei-Spalten-Ansicht eine leere Haelfte. */
+.hyp__videolink {
+  margin: 0 0 var(--hyp-s2);
 }
 
 .hyp__videometa {
@@ -434,6 +461,23 @@
   margin-bottom: var(--hyp-s4);
 }
 
+/* --- Route-Chrome: gilt NUR auf dieser Route ----------------------------- */
+
+/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf, Fuss und
+   Warenkorb. Wortgleich zur Schwesterseite (kritik.css), und aus demselben
+   GEMESSENEN Grund: app.css traegt VIER konkurrierende globale img-Regeln
+   (border-radius 4px, 6px, 3px, 20px). Ohne diese Zeile erbt die Seite drei
+   davon — nachgemessen im selben Produktions-Build zur selben Minute:
+   /pages/hypothesen kam auf {4px, 6px, 20px}, /pages/kritik mit dieser Zeile
+   auf {8px, 20px}. Die Ursache sitzt in der geteilten Huelle und wird hier
+   NICHT repariert (P10, fremdes Mutationsgebiet) — sie wird auf dieser Route
+   ueberschrieben, so wie die Schwesterseite es vormacht. */
+body:has(.hyp) img,
+body:has(.hyp) picture,
+body:has(.hyp) video {
+  border-radius: var(--hyp-r1);
+}
+
 /* --- Breite Ansicht ----------------------------------------------------- */
 
 @media (min-width: 900px) {
@@ -442,7 +486,7 @@
     padding-right: var(--hyp-s6);
   }
 
-  .hyp__video {
+  .hyp__video:has(.hyp__videorahmen) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--hyp-s4);
