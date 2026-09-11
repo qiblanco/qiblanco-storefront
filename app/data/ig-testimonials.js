@@ -9,15 +9,15 @@
  * ==================== WARUM DER KORPUS SO AUSSIEHT ====================
  *
  * Die Quelle ist eine Liste von 71 Zeilen aus einem Google Doc. Daraus wurden
- * 67 distinkte Reels; hier stehen 66 PRODUKT-SLOTS ueber 65 distinkte Codes.
+ * 67 distinkte Reels; hier stehen 66 PRODUKT-SLOTS über 65 distinkte Codes.
  * Die Differenz ist gemessen und KEIN Versehen:
  *
  *  - EIN Code faellt raus: DV1iezlChh0 (ein /p/-Post unter "isabellegloria",
- *    QiOne). Er gibt an der Plattform alle og-Felder leer zurueck, genau wie
+ *    QiOne). Er gibt an der Plattform alle og-Felder leer zurück, genau wie
  *    ein frei erfundener Code — also geloescht oder privat. Ein toter Link ist
  *    kein Material.
  *  - EIN WEITERER Code faellt raus: DK2UrxwKRf2 (@vanessastehler). Er ist
- *    OEFFENTLICH -- die og-Messung liefert Konto, Datum und Bildtext --, aber
+ *    ÖFFENTLICH -- die og-Messung liefert Konto, Datum und Bildtext --, aber
  *    NICHT EINBETTBAR: der /embed/-Pfad antwortet im echten Browser byte-gleich
  *    wie ein erfundener Code, dreimal gemessen, waehrend eine Positiv-Kontrolle
  *    vom SELBEN Konto jedes Mal ein Video lieferte. "Gibt es den Post?"
@@ -31,15 +31,15 @@
  *
  * ==================== DIE DREI STUFEN ====================
  *
- * `stufe` sagt, WEM das Video gehoert — gemessen am og:url der Plattform,
+ * `stufe` sagt, WEM das Video gehört — gemessen am og:url der Plattform,
  * nicht geraten:
  *
  *  T1  Das Reel liegt auf einem PERSOENLICHEN Konto. Der Profil-Klick trifft
  *      die Person. 25 Codes.
  *  T2  Unser eigener qiblanco-Post, der die Person per @handle NENNT, UND das
  *      genannte Konto existiert (im Browser geprueft). Das Video ist unseres,
- *      der Klick fuehrt auf ihr Profil. 6 Codes.
- *  T3  Unser eigener qiblanco-Post ohne nennbare Person. Der Klick fuehrt auf
+ *      der Klick führt auf ihr Profil. 6 Codes.
+ *  T3  Unser eigener qiblanco-Post ohne nennbare Person. Der Klick führt auf
  *      UNSER Profil. 35 Codes.
  *
  *      EINER DAVON WAR BIS ZUM 2026-09-11 EIN T2: C0mSOn3sdCQ nennt im
@@ -51,7 +51,7 @@
  *      Christian echtes Fremdmaterial fehlt; es ist keine Bauluecke.
  *
  * DASS T3 UEBERHAUPT DRINSTEHT, IST EINE ENTSCHEIDUNG, KEIN VERSEHEN.
- * Segment s01 hatte T3 weggelassen, mit guter Begruendung: 61,2 % der Reels
+ * Segment s01 hatte T3 weggelassen, mit guter Begründung: 61,2 % der Reels
  * liegen auf unserem eigenen Konto, und ein Profil-Klick auf uns selbst belegt
  * nichts. Christian hat diesen Befund gesehen und am 2026-09-11 anders
  * entschieden, woertlich: "Trotzdem einen tollen Slider machen mit dem ganzen
@@ -59,7 +59,7 @@
  * als erstes einreihen — und wir dann dahinter."
  *
  * Wer hier also 34 "schwache" Eintraege sieht: sie sind NICHT versehentlich
- * hier, und sie gehoeren NICHT geloescht. Die Ordnung traegt die Aussage —
+ * hier, und sie gehoeren NICHT geloescht. Die Ordnung trägt die Aussage —
  * das Array ist je Produkt nach T1 → T2 → T3 sortiert, innerhalb der Stufe das
  * juengste zuerst.
  *
@@ -67,13 +67,13 @@
  *
  * KEIN T3-EINTRAG BEKOMMT EINE NAMENSZEILE. Wo keine Person dahintersteht,
  * steht keine da — ein Reel ohne Namen ist erlaubt, ein Reel mit falschem
- * Namen nicht. Deshalb traegt T3 `profil: "qiblanco"` und sonst nichts.
+ * Namen nicht. Deshalb trägt T3 `profil: "qiblanco"` und sonst nichts.
  *
  * 12 der T3-Bildtexte nennen eine Person beim VORNAMEN ohne Handle (Scott,
  * Joshua, Ezgi, Natalie, Constantin, Dominic, Yann, Gerome, Allesandro, Glen
  * und Jasmin, Dr. Manuel Burzler, Yves). Drei dieser Vornamen haben im selben
  * Korpus ein bekanntes Konto (thescottschwenk, joshuajholland, yvesunser).
- * Die Zuordnung Vorname → Handle ist trotzdem NICHT gemacht worden: sie waere
+ * Die Zuordnung Vorname → Handle ist trotzdem NICHT gemacht worden: sie wäre
  * geraten, und ein falsch zugeordnetes Testimonial ist schlimmer als gar
  * keines. Bestaetigt Christian einen dieser Namen, wandert der Eintrag nach
  * T2 und rutscht nach vorn — das ist der billigste Weg, die Flaeche zu
@@ -101,9 +101,9 @@
  *               gehalten: es sind genau drei.
  *  sprache      "de" | "en" | "beide" | "keine" — aus dem Bildtext gemessen.
  *               Die Sprach-Ordnung (deutsch zuerst auf der deutschen Seite)
- *               haengt an der SEITE, nicht am Korpus, und ist hier deshalb
+ *               hängt an der SEITE, nicht am Korpus, und ist hier deshalb
  *               bewusst NICHT einsortiert. Die Komponente sortiert stabil
- *               INNERHALB der Stufe nach — nie ueber Stufengrenzen hinweg.
+ *               INNERHALB der Stufe nach — nie über Stufengrenzen hinweg.
  *  datum        ISO. Steht heute bei ALLEN 66 Eintraegen (s04, 2026-09-11).
  *               Bis dahin fehlte es bei 11 -- nicht weil die Plattform
  *               keines nennt, sondern weil das Messmuster den Praefix
@@ -112,15 +112,20 @@
  *               gemessenen Beschreibung geborgen, und der Treffer gilt nur,
  *               wenn das darin gefangene Konto dem autoritativen Konto aus
  *               og:url entspricht: ein im Bildtext ZITIERTES Fremdkonto
- *               darf kein Datum liefern. Pflichtfeld fuer VideoObject.
+ *               darf kein Datum liefern. Pflichtfeld für VideoObject.
  *  posterPfad   Standbild auf UNSEREM CDN. Niemals ein cdninstagram-Link:
  *               video.poster ist eine SIGNIERTE URL mit ?st=/&oe= und
- *               verfaellt — ein Hotlink waere eine Flaeche, die in Wochen
+ *               verfaellt — ein Hotlink wäre eine Flaeche, die in Wochen
  *               leer ist. Die Poster sind geerntet und selbst gehostet.
  *
- * Umlaute: diese Datei traegt keinen kundensichtbaren Fliesstext. Was der
- * Kunde liest, entsteht in der Komponente (s03) und braucht dort echte
- * Umlaute (Hausregel, live gegated).
+ * Umlaute: diese Datei trägt keinen kundensichtbaren Fliesstext -- was der
+ * Kunde liest, entsteht in der Komponente (s03). Die Kommentare hier tragen
+ * trotzdem echte Umlaute, und zwar nicht aus Geschmack: das Umlaut-Gate des
+ * Deploys (homepage-bauer/src/umlaut_gate.py, Gate 7b) scannt JEDE
+ * hinzugefuegte Zeile einer .js-Datei gegen sein Lexikon und unterscheidet
+ * Kommentar nicht von Kundentext. Gemessen 2026-09-11 in s05: 16 Zeilen
+ * dieser Datei blockten den Merge. Ausgenommen bleiben Pfade und Bezeichner
+ * (jobdaten/gross/...) -- dort ist der Digraph der WAHRE Name.
  */
 export const IG_TESTIMONIALS = [
   {

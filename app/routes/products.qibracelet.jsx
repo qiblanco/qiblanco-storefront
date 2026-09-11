@@ -28,7 +28,7 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
  * in products.qione-2-pro.jsx). NICHT in app.css: die globale Datei erreicht
  * 45 Seiten, die Slideshow steht auf vieren. Das Token-CSS setzt seine Werte
  * bewusst auf `.qb-igt` statt auf `:root` — ein Route-Stylesheet mit
- * :root-Token waere auf jeder anderen Route undefiniert, und `var(--x)` ohne
+ * :root-Token wäre auf jeder anderen Route undefiniert, und `var(--x)` ohne
  * Rueckfall kippt dort still in Vererbung.
  */
 export function links() {
@@ -49,7 +49,7 @@ export const meta = ({data}) => {
       data?.product?.images?.nodes?.[0]?.url,
   });
   // VideoObject je Instagram-Beitrag MIT Video. Ein Knoten auf einem Eintrag
-  // OHNE Video waere eine Luege, und ein Knoten ohne Pflichtfeld (name,
+  // OHNE Video wäre eine Luege, und ein Knoten ohne Pflichtfeld (name,
   // thumbnailUrl, uploadDate) steht dauerhaft als Fehler in der Search
   // Console — beides faellt in ig-video-schema.js baulich aus.
   const videos = igVideoDescriptor({
@@ -201,10 +201,10 @@ export default function Product() {
         (Bilder, Preis, Varianten, Kaufknopf) und VOR dem langen Inhaltsteil.
         Das ist die Stelle, an der der Zweifel vor dem Kauf entsteht.
 
-        BEWUSST OHNE dataSection: diese PDP fuehrt heute kein einziges
-        data-section. Das erste wuerde den Design-Rubrik-Collector auf genau
-        eine Sektion einengen (Watch-Regression) — dieselbe Begruendung, mit
-        der products.qione-2-pro.jsx seine Anker-frei-Regel fuehrt.
+        BEWUSST OHNE dataSection: diese PDP führt heute kein einziges
+        data-section. Das erste würde den Design-Rubrik-Collector auf genau
+        eine Sektion einengen (Watch-Regression) — dieselbe Begründung, mit
+        der products.qione-2-pro.jsx seine Anker-frei-Regel führt.
       */}
       <IgTestimonialSlideshow produkt="QiBracelet" />
       <QiBracelet /> 

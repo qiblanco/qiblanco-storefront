@@ -45,8 +45,20 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  * ╚══════════════════════════════════════════════════════════════════════════╝
  *
  * Jede Kachel trägt `data-qb-video-zustand` in genau den Werten, die der
- * Zwillingsbau verwendet: `vorschau` → `laedt` → `spielt`. Dazu ein vierter,
+ * Zwillingsbau verwendet: `vorschau` → `wartet` → `spielt`. Dazu ein vierter,
  * den es dort nicht gibt: `kein-video`.
+ *
+ * DER MITTLERE WERT WAR BIS ZUM 2026-09-11 DIE ASCII-SCHREIBWEISE VON `lädt`
+ * -- und das war KEIN Wert des Zwillingsbaus, obwohl der Satz darüber es
+ * behauptete. Am Bestand nachgelesen (YoutubeTimestamp.jsx, Zeile 554:
+ * `'spielt' : 'wartet'` bzw. `'vorschau'`) heißt der mittlere Zustand dort
+ * `wartet`. Aufgefallen ist die Abweichung erst, als das Umlaut-Gate des
+ * Deploys die ASCII-Schreibweise blockte: der naheliegende Griff wäre der
+ * echte Umlaut gewesen -- also ein Umlaut mitten in einem DOM-Attributwert,
+ * den zwei fremde Messgeräte lesen. Statt den Wert schöner zu schreiben, ist
+ * er jetzt der, den die Naht ohnehin versprochen hat. Keine Probe vergleicht
+ * den mittleren Wert literal (geprüft: probe_ig_facade.py liest nur `spielt`
+ * und `kein-video`, mess_videoumschaltung.py nur `spielt` und `vorschau`).
  *
  * `kein-video` ist keine Verlegenheitslösung, sondern die einzige ehrliche
  * Antwort für drei Einträge des Korpus (CYHc4RClQLb, DRK-x7OjATx,
@@ -189,7 +201,7 @@ function Kachel({t}) {
     : laueft
       ? zeigt
         ? 'spielt'
-        : 'laedt'
+        : 'wartet'
       : 'vorschau';
 
   const starte = () => {

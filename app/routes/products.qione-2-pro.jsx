@@ -17,20 +17,20 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
  * Hier hing zweifel-beleg.css als route-gebundenes Stylesheet, weil diese
- * Seite den <ZweifelBeleg> trug. Der ist entfallen -- sein Stylesheet laedt
- * diese Route deshalb NICHT mehr. Die Datei selbst BLEIBT: /cart traegt seine
- * eigene Zweifel-Zeile und laedt sie ueber sein eigenes links().
+ * Seite den <ZweifelBeleg> trug. Der ist entfallen -- sein Stylesheet lädt
+ * diese Route deshalb NICHT mehr. Die Datei selbst BLEIBT: /cart trägt seine
+ * eigene Zweifel-Zeile und lädt sie über sein eigenes links().
  *
- * Das links() unten kam am 2026-09-11 zurueck, aber fuer eine ANDERE Datei
+ * Das links() unten kam am 2026-09-11 zurück, aber für eine ANDERE Datei
  * (ig-testimonials.css) -- der alte Satz "kein links()-Export mehr" stand hier
- * bis dahin woertlich und waere ab dieser Zeile eine falsche Selbstauskunft.
+ * bis dahin woertlich und wäre ab dieser Zeile eine falsche Selbstauskunft.
  */
 export function links() {
   // ig-testimonials.css ist ROUTE-gebunden aus demselben Grund, aus dem es
   // zweifel-beleg.css war: die globale app.css erreicht 45 Seiten, die
   // Slideshow steht auf vieren. Die Datei setzt ihre Token bewusst auf
   // `.qb-igt` und nicht auf `:root` -- ein Route-Stylesheet mit :root-Token
-  // waere auf jeder anderen Route undefiniert, und `var(--x)` ohne Rueckfall
+  // wäre auf jeder anderen Route undefiniert, und `var(--x)` ohne Rueckfall
   // kippt dort still in Vererbung.
   return [{rel: 'stylesheet', href: igStyles}];
 }
