@@ -106,6 +106,23 @@
 }
 
 /* ─── Typo-Hierarchie: EIN H2-Stil, EIN H3-Stil, Body EINE Groesse ────────── */
+/* .UpsellLineUp h2 traegt in der geteilten Komponente `text-5xl!` (Tailwind-
+   important, 48px) — der einzige zweite H2-Stil der Seite (gemessen
+   2026-09-11: 2 H2-Kombis, stimmig 75). Auf dieser Route zieht ihn die
+   Skala auf den EINEN H2-Stil; das !important ist noetig, weil die
+   Utility-Klasse selbst eines traegt. */
+@layer utilities {
+  /* WARUM @layer utilities (Muster crystal-cacao.css): Tailwind v4 legt seine
+     Utilities in diese Ebene, und bei !important dreht die Kaskade die Layer-
+     Reihenfolge um — eine UNGELAYERTE !important-Regel verliert gegen
+     `.text-5xl\!`. In derselben Ebene entscheidet wieder die Spezifitaet. */
+  .ProductPageQiMaster .UpsellLineUp h2 { font-size: var(--qm-fs-h2) !important; }
+  /* Die Google-Rezensionskarten (ReputonWidget, `text-sm!`, 14 px) waren mit
+     36 von 113 Textbloecken die zweitgroesste Body-Groesse der Seite
+     (haeufigste Groesse nur 42 %, gemessen 2026-09-11). Auf dieser Route
+     lesen sie sich in der Grundgroesse; der Zeilen-Clamp der Karte bleibt. */
+  .ProductPageQiMaster .GoogleRezensionenBereich .text-sm\! { font-size: var(--qm-fs-base) !important; }
+}
 .ProductPageQiMaster h2 {
   font-family: var(--qm-font);
   font-size: var(--qm-fs-h2);
@@ -269,7 +286,32 @@ body:has(.ProductPageQiMaster) .Header-AnnouncementBanner p,
 body:has(.ProductPageQiMaster) .Header-AnnouncementBanner span { font-size: var(--qm-fs-xs); }
 body:has(.ProductPageQiMaster) .shop-switch__label { font-size: var(--qm-fs-base); }
 body:has(.ProductPageQiMaster) header img { border-radius: var(--qm-r1); }
+/* Bild-Radien auf die ZWEI Token ziehen — auch in den geteilten Flaechen, die
+   auf dieser Route mitrendern (Menue-Icons 4px, Menue-Bilder 20px, Fuss-
+   Studienbilder 6px, EU-Label-Zeichen 4px). Gemessen 2026-09-11 am
+   Produktions-Build: 5 Radius-Werte im Dokument, davon 3 nicht aus dieser
+   Seite; die Rubrik zaehlt das Dokument (liebevoll 55). Gleiches Muster wie
+   die Logo-Zeile darueber: nur Radius, keine Farbe, kein Layout. */
+body:has(.ProductPageQiMaster) .header-submenu-item img,
+body:has(.ProductPageQiMaster) .eu-gwl__zeichen { border-radius: var(--qm-r1); }
+body:has(.ProductPageQiMaster) .footer-study img { border-radius: var(--qm-r2); }
+/* Die Mega-Menue-Bilder tragen ihre 20px INLINE (Header.jsx style=...); eine
+   Klassenregel erreicht sie nicht, nur !important (Muster chat-bot.css). */
+body:has(.ProductPageQiMaster) .submenu .nav-styling-wrapper img {
+  border-radius: var(--qm-r2) !important;
+}
 body:has(.ProductPageQiMaster) .qb-sterne { color: var(--qm-akzent) !important; }
+/* EIN Gold als SCHRIFT: der Gewaehrleistungs-Link (eu-gewaehrleistung.css)
+   schreibt in --color-accent-ink (#856828), die Sterne im Kopf in #f2bf72 —
+   die Rubrik zaehlt zwei Goldtoene (gemessen 2026-09-11). Der Link wird hier
+   in der Textfarbe gesetzt und bleibt als Link erkennbar: Unterstrich in der
+   Akzentfarbe (der Unterstrich ist keine Schriftfarbe). Nur diese Route. */
+body:has(.ProductPageQiMaster) .eu-gwl__link {
+  color: var(--qm-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qm-akzent);
+  text-underline-offset: 0.15em;
+}
 
 body:has(.ProductPageQiMaster) .footer p,
 body:has(.ProductPageQiMaster) .footer a,
@@ -350,14 +392,11 @@ body:has(.ProductPageQiMaster) .eu-gwl__link { font-size: var(--qm-fs-lg); }
   border-radius: var(--qm-r1);
 }
 
-/* Der Community-Baustein (UpsellLineUp) bringt seinen H2 als `text-5xl!`
-   (48 px) mit und ist damit der einzige H2 der Seite ausserhalb des H2-Tokens.
-   Auf den einen H2-Stil geholt — im Seiten-Scope, ohne den geteilten Baustein
-   zu forken. (Der H2 im FOOTER bleibt davon unberuehrt: er liegt ausserhalb
-   von .qm-pdp, steht auf JEDER Seite des Shops und gehoert nicht diesem Bau.) */
-.qm-pdp h2.text-5xl\! {
-  font-size: var(--qm-fs-h2) !important;
-}
+/* Der Upsell-H2 (`text-5xl!`, 48 px) wird oben im Abschnitt Typo-Hierarchie
+   in @layer utilities auf den einen H2-Stil geholt. Hier stand bis 2026-09-11
+   eine Regel `.qm-pdp h2.text-5xl\!` — sie war doppelt wirkungslos: .qm-pdp
+   ist die Buy-Box (Geschwister, nicht Vorfahr des Bausteins), und ungelayert
+   verliert !important gegen die gelayerte Utility. Gemessen: 48 px blieben. */
 
 /* --------------------------------------------------------------------------
    ZEILENLAENGE UND RANDABSTAND der geteilten Textcontainer, die auf dieser
