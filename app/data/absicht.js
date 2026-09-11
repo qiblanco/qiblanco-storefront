@@ -135,7 +135,7 @@ export const ABSICHT = {
     absaetze: [
       'Es ist mir ein Herzensanliegen, hier eine gleichmäßige Sprache zu etablieren. Nicht, um jemandem seine eigene wegzunehmen — sondern damit die Effekte, um die es geht, überhaupt besprochen werden können, ohne dass das Gespräch nach drei Sätzen am Vokabular scheitert.',
       'Eine gemeinsame Sprache tut zwei Dinge. Sie macht die Sache PRÜFBAR: Wer denselben Begriff benutzt, kann widersprochen werden, und das ist ein Fortschritt — solange jeder seine eigenen Wörter hat, kann niemand dem anderen nachweisen, dass er sich irrt. Und sie macht die Sache BRAUCHBAR: Was man benennen kann, kann man in den Alltag holen. Was nur als Ahnung existiert, bleibt eine Ahnung.',
-      'Zu jeder Annahme, nach der wir bauen, steht deshalb auch das, was gegen sie spricht — mit Quelle, Jahr und Fundstelle, und an der schwächsten Stelle der Kette zuerst. Ein Modell, dessen schwache Stellen niemand kennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
+      'Prüfbar heißt: Eine Annahme muss so formuliert sein, dass man ihr widersprechen kann. Deshalb steht zu jeder Annahme, nach der wir bauen, auch das Gegenargument — mit Quelle, Jahr und Fundstelle, damit jeder selbst nachsehen kann. Ein Modell, dessen Gegenargumente niemand kennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
     ],
   },
 

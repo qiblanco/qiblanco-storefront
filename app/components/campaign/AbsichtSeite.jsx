@@ -49,14 +49,14 @@ export function AbsichtSeite() {
   return (
     <div className="ab">
       <section className="ab-bahn ab-kopf">
-        <div className="ab-innen">
+        <div className="ab-inhalt">
           <p className="ab-vorspann">{ABSICHT.vorspann}</p>
           <h1 className="ab-h1">{ABSICHT.titel}</h1>
           <p className="ab-lead">{ABSICHT.lead}</p>
         </div>
       </section>
 
-      <div className="ab-innen">
+      <div className="ab-inhalt">
         <AbsichtText ebene={2} />
 
         <div className="ab-teil">
