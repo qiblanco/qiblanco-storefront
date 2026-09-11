@@ -106,6 +106,19 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  /* DIESE EINE ZEILE IST KEIN FEINSCHLIFF, SIE HAELT DIE LCP-MESSUNG DER SEITE
+     AM LEBEN (gemessen 2026-09-11, s04, A/B auf zwei Servern):
+     die Bahn traegt links `padding: var(--igt-s1)`, die Kachel
+     `scroll-snap-align: start`. Ohne scroll-padding liegt die Snap-Position
+     der ERSTEN Kachel damit bei scrollLeft 8 statt 0 -- der Browser korrigiert
+     das beim ersten Layout selbst und erzeugt dabei ein scroll-Ereignis.
+     UND CHROME BEENDET DIE LCP-BERICHTERSTATTUNG BEIM ERSTEN scroll: die
+     Seite meldet danach GAR KEINEN LCP-Kandidaten mehr, wenn der Scroll vor
+     dem ersten Kandidaten liegt. Gemessen an /products/qione-2-pro: ohne
+     diese Zeile 0 LCP-Eintraege in 15 s (5 von 5 Laeufen), mit ihr wieder
+     Eintraege wie vor dem Einbau. Der Nutzer sieht davon nichts -- die
+     Feldmessung (CrUX) verliert die Seite trotzdem. */
+  scroll-padding-inline-start: var(--igt-s1);
   /* Die Bildlaufleiste ist hier Rauschen: die Bahn sagt über Pfeile und
      Wisch-Hinweis selbst, dass sie sich bewegen lässt. */
   scrollbar-width: none;
