@@ -371,6 +371,22 @@ export const NUR_ROUTE_SEITEN = [
       'dunkel.py ab, deren Aussage mit der Freigabe überholt ist.',
   },
   {
+    pfad: '/pages/warum-qi-blanco',
+    grund:
+      'Die Absicht — warum es Qi Blanco gibt, in der ersten Person und mit ' +
+      'Autor und Datum ausgezeichnet (Auftrag 20260911-BAU-die-absicht-…). ' +
+      'Sie besteht allein aus der Route pages.warum-qi-blanco.jsx und hat ' +
+      'KEIN Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, was von aussen nicht ' +
+      'davon zu unterscheiden ist, dass alles stimmt. Sie ist der einzige ' +
+      'Text der Domain, der ZURECHENBAR beantwortet, warum es dieses ' +
+      'Unternehmen gibt — der gemessene Anlass ist, dass Googles KI-Antwort ' +
+      'zu uns null eigene Quellen von sechs zitiert. Wache (Arm E): ' +
+      'homepage-bauer/pruefungen/probe_absicht_am_kundenrand.py — prueft ' +
+      'den Sitemap-Eintrag zusammen mit Autor, Datum und der ' +
+      'Verkaufstext-Freiheit am ausgelieferten HTML, nicht den Statuscode.',
+  },
+  {
     pfad: '/pages/affiliate-partnerprogramm',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +

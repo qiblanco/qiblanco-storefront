@@ -1,3 +1,4 @@
+import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
 import {gruppenNachSprache} from '~/lib/erfahrungen-gruppen';
@@ -88,6 +89,14 @@ export function ErfahrungenSeite() {
             Zusammenfassung daneben ist auf Deutsch.
           </p>
           <BeitragsRaster gruppen={englisch} />
+        </div>
+      </section>
+
+      {/* Der Verweis auf die Absicht — nach den Erfahrungen anderer die
+          Frage, warum es das Ganze überhaupt gibt. */}
+      <section>
+        <div className="erf__schmal">
+          <AbsichtHinweis einleitung="Und warum es das alles gibt:" />
         </div>
       </section>
 

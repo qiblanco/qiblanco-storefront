@@ -1,3 +1,4 @@
+import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {
   BEFUNDE,
   EINRAEUMUNGEN,
@@ -134,6 +135,15 @@ export function KritikSeite() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* Der Verweis auf die Absicht. Er steht auf DIESER Seite, weil hier
+          die Zweifel stehen: wer wissen will, warum jemand das trotzdem
+          macht, findet die Antwort einen Klick weiter. */}
+      <section>
+        <div className="krit__inhalt">
+          <AbsichtHinweis einleitung="Warum wir trotz dieser offenen Fragen weitermachen:" />
         </div>
       </section>
 

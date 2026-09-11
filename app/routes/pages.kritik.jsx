@@ -1,5 +1,6 @@
 import {KritikSeite} from '~/components/campaign/KritikSeite';
 import kritikStyles from '~/styles/kritik.css?url';
+import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 
 const PFAD = '/pages/kritik';
@@ -71,7 +72,10 @@ const PFAD = '/pages/kritik';
  * dreht dann von selbst mit, und es ist kein Code zu ändern.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: kritikStyles}];
+  return [
+    {rel: 'stylesheet', href: kritikStyles},
+    {rel: 'stylesheet', href: absichtHinweisStyles},
+  ];
 }
 
 const TITEL = 'Qi Blanco Kritik – was stimmt davon? | Qi Blanco';
