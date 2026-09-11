@@ -159,6 +159,7 @@ Disallow: /products/bundle-erholungs-residenz
 Disallow: /pages/schlaf-zellen-schutz-v3-67a7
 Disallow: /pages/erfahrungen
 Disallow: /pages/kritik
+Disallow: /pages/hypothesen
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*
