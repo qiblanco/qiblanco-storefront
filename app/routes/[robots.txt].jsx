@@ -129,8 +129,7 @@ Crawl-delay: 1
  * `/pages/erfahrungen` und `/pages/kritik` SIND FREI und stehen hier nicht mehr.
  * Die Liste ist NICHT leer: seit PR #370 steht `/pages/hypothesen` darin.
  *
- * /pages/hypothesen (Job 20260911-BAU-pages-hypothesen-das-wirkmodell-mit-
- * staerken-und-schwaechen) ist auf Christians ausdrückliche Anweisung dunkel
+ * /pages/hypothesen (Job 20260911-BAU-pages-hypothesen, PR #370) ist auf Christians ausdrückliche Anweisung dunkel
  * gebaut — wörtlich: „Aber noch nicht crawlbar machen — mir zeigen, wenn es
  * live ist." Die Seite trägt deshalb alle vier Sperren zugleich (meta robots
  * noindex,nofollow + X-Robots-Tag + dieses Disallow + kein Sitemap-Eintrag) und
