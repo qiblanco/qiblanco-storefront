@@ -163,8 +163,8 @@ const STAPEL_STYLE = {
    *
    * Poster und Player liegen absolut und damit ausserhalb des Flusses; das
    * einzige Flusskind ist das Abzeichen. `place-items: center` setzt es in die
-   * Mitte -- fuer Scopes OHNE eigene Regel (.v2-yt, .v3-yt) ist das die ganze
-   * Positionierung, und fuer Scopes MIT eigener Regel (.qbp__knopf setzt sich
+   * Mitte -- für Scopes OHNE eigene Regel (.v2-yt, .v3-yt) ist das die ganze
+   * Positionierung, und für Scopes MIT eigener Regel (.qbp__knopf setzt sich
    * absolut, .ExterneStimmen__yt__play deckt die Flaeche) aendert es nichts.
    * Die Komponente gibt damit die Geometrie vor, ohne das Aussehen anzufassen.
    */
