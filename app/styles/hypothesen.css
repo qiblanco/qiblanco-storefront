@@ -1,0 +1,515 @@
+/* ==========================================================================
+   /pages/hypothesen — Token-CSS der Modell-Fläche.
+   Scope: .hyp — self-contained. Jeder Wert dieser Datei kommt aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+
+   WARUM EIGENE DATEI UND NICHT kritik.css MITBENUTZT: die beiden Flaechen
+   sind bewusst getrennt (Beweis gegen Modell), und eine geteilte Datei zoege
+   jeden Design-/Format-Beleg der einen Seite auf die andere (Deploy-Gate 12
+   loest geteilte Dateien auf ALLE importierenden Routen auf). Die WERTE sind
+   aus kritik.css kopiert, die DATEI nicht geteilt — dieselbe Entscheidung,
+   die kritik.css gegenueber erfahrungen.css getroffen hat.
+
+   DIE DREI FARB-AKTE (geplant, nicht entstanden):
+     Akt 1  warme Flaeche      — Eintritt und Einordnung: Kopf, Geschichte,
+                                 Kette, Bewusstsein.
+     Akt 2  heller Grund       — die Arbeit: Hypothesen, Videos, Quellen.
+     Akt 3  Gold als Linie     — allein auf dem Nachpruefbaren (Belege, Links,
+                                 Stand-Marke, Quellen-Nummer).
+   Mehr Akte gibt es nicht, und kein Abschnitt erfindet einen vierten.
+
+   WARUM DER KOPF HELL IST UND NICHT DUNKEL (gemessen, nicht gewaehlt): der
+   erste Entwurf setzte ihn auf --hyp-dunkel mit --hyp-text-hell. Im Screenshot
+   stand die H1 fast schwarz auf fast schwarz — die globale Huelle setzt eine
+   eigene Textfarbe auf h1/p, die das geerbte Hell schlaegt. /pages/kritik hat
+   dieselbe Stelle mit `background: var(--krit-flaeche)` geloest, also hell.
+   Diese Seite folgt der Schwesterseite: bewaehrte Bauform statt eigener
+   Sonderweg, und die Farbe der Schrift bleibt damit ueberall dieselbe.
+
+   DER EINE AKZENT SITZT AUF DEM BELEG: Gold traegt die Quellen-Verweise, die
+   Quellen-Links und die Linie der Stand-Marke — also genau das, was ein Leser
+   nachpruefen kann. Die vier `stand`-Werte (tragfaehig/teilweise/offen/
+   schwach) werden NICHT farblich unterschieden: vier Farben fuer vier Urteile
+   waeren vier weitere Farben auf einer Seite, deren Brief genau EINEN Akzent
+   erlaubt. DER TEXT TRAEGT DAS URTEIL, NICHT DIE FARBE — dieselbe Entscheidung
+   wie bei den drei Urteilen auf /pages/kritik.
+   ========================================================================== */
+
+:root {
+  --hyp-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 6 Stufen (Deckel des Briefs: 9).
+     GEMESSEN, NICHT GEWAEHLT: die geteilte Huelle (Kopf/Fuss/Warenkorb) bringt
+     acht eigene Groessen mit, die keine Seite abstellen kann — /pages/kritik
+     misst dieselben acht. Jede Stufe, die diese Datei zusaetzlich aufmacht,
+     zaehlt also gegen den Deckel von neun. Eine siebte Stufe (25px zwischen
+     Hypothesen-Titel und H2) war der Grund fuer den Befund 'zehn Groessen';
+     der Titel traegt jetzt --hyp-fs-lg und die Abstufung h1/h2/h3 bleibt. */
+  --hyp-fs-xs: 0.8125rem; /* 13px, nur Fuss/Meta */
+  --hyp-fs-base: 1rem; /* 16px */
+  --hyp-fs-md: 1.125rem; /* 18px */
+  --hyp-fs-lg: 1.25rem; /* 20px */
+  --hyp-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --hyp-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --hyp-s1: 8px;
+  --hyp-s2: 16px;
+  --hyp-s3: 24px;
+  --hyp-s4: 32px;
+  --hyp-s6: 48px;
+  --hyp-s8: 64px;
+  --hyp-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --hyp-grund: #faf9f5;
+  --hyp-flaeche: #f4f0e9;
+  --hyp-text: #2c2a26;
+  --hyp-muted: #6b665d;
+  --hyp-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Beleg/Handlung, und NUR als
+       Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1 reicht
+       fuer Text nicht). Der Text bleibt dunkel, das Gold traegt die Linie. */
+  --hyp-linie: rgba(44, 42, 38, 0.12);
+  --hyp-linie-stark: rgba(44, 42, 38, 0.26);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --hyp-r1: 8px;
+  --hyp-r2: 16px;
+  --hyp-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --hyp-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
+  --hyp-mass: 68ch;
+  --hyp-breite-schmal: 760px;
+  /* DECKEL DER VIDEO-KACHEL, AUS DER QUELLE GERECHNET UND NICHT GEWAEHLT:
+     das groesste Standbild, das YouTube fuer diese Vortraege hat, ist 1280 px
+     breit (maxresdefault, je Video nachgemessen). Das Format-Gate verlangt
+     Quellbreite >= Anzeigebreite * dpr * 0.9; bei dpr 2 traegt eine 1280er
+     Quelle also hoechstens 1280 / 1.8 = 711 CSS-Pixel. Ohne diesen Deckel
+     stand die Kachel auf Tablet-Breiten ueber die volle Lesespalte (728 px)
+     und war dort messbar unscharf — gemessen in tablet-768, tablet-820 und
+     mobil-quer-883. 700 statt 711, damit ein paar Pixel Luft bleiben. */
+  --hyp-videobreite: 700px;
+}
+
+/* --- Grundgeruest ------------------------------------------------------- */
+
+.hyp {
+  background: var(--hyp-grund);
+  color: var(--hyp-text);
+  font-family: var(--hyp-font);
+  font-size: var(--hyp-fs-base);
+  line-height: 1.65;
+}
+
+.hyp section {
+  padding: var(--hyp-s8) var(--hyp-s1);
+}
+
+.hyp__inhalt {
+  max-width: var(--hyp-breite-schmal);
+  margin: 0 auto;
+  /* Der horizontale Innenabstand sitzt HIER und nicht auf der Section: der
+     Textcontainer ist das, was am Viewport-Rand klebt, und die Gestaltungs-
+     Pruefliste misst genau ihn (wie .krit__inhalt auf der Schwesterseite). */
+  padding-inline: var(--hyp-s2);
+}
+
+/* Die Textgroessen werden AUSDRUECKLICH gesetzt, nicht geerbt. Die globale
+   Huelle (app.css) traegt eigene Regeln auf p/h1, die eine blosse Vererbung
+   vom .hyp-Container schlagen — gemessen: der Fliesstext kam als 19,25 px
+   heraus statt als die 16 px des Tokens, und dieselbe Mechanik hatte vorher
+   schon die Schriftfarbe im Kopf gekapert. Wer hier nur den Container setzt,
+   glaubt an eine Skala, die die Seite gar nicht benutzt. */
+.hyp p,
+.hyp li,
+.hyp dd {
+  font-size: var(--hyp-fs-base);
+}
+
+.hyp p {
+  max-width: var(--hyp-mass);
+  margin: 0 0 var(--hyp-s2);
+}
+
+.hyp h1 {
+  font-size: var(--hyp-fs-h1);
+  line-height: 1.14;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--hyp-s3);
+}
+
+/* EIN H2-Stil — ueberall derselbe, ohne Ausnahme. */
+.hyp h2 {
+  font-size: var(--hyp-fs-h2);
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--hyp-s3);
+}
+
+.hyp h3 {
+  font-size: var(--hyp-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--hyp-s2);
+}
+
+.hyp h4 {
+  font-size: var(--hyp-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--hyp-muted);
+  margin: 0 0 var(--hyp-s1);
+}
+
+.hyp__vorspann {
+  font-size: var(--hyp-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--hyp-muted);
+  margin: 0 0 var(--hyp-s2);
+}
+
+.hyp__lead {
+  font-size: var(--hyp-fs-md);
+  line-height: 1.6;
+}
+
+.hyp__einleitung {
+  color: var(--hyp-muted);
+  margin-bottom: var(--hyp-s4);
+}
+
+/* --- Akt 1: Kopf (dunkel) ----------------------------------------------- */
+
+.hyp__kopf {
+  background: var(--hyp-flaeche);
+  padding-top: var(--hyp-s12);
+  padding-bottom: var(--hyp-s12);
+}
+
+.hyp__abgrenzung {
+  list-style: none;
+  margin: var(--hyp-s6) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--hyp-s2);
+}
+
+.hyp__abgrenzung li {
+  max-width: var(--hyp-mass);
+  padding-left: var(--hyp-s3);
+  border-left: 2px solid var(--hyp-akzent);
+  font-size: var(--hyp-fs-base);
+  opacity: 0.92;
+}
+
+/* --- Akt 3: warme Flaechen (Geschichte, Kette, Bewusstsein) -------------- */
+
+.hyp__geschichte,
+.hyp__kette,
+.hyp__bewusstsein {
+  background: var(--hyp-flaeche);
+}
+
+.hyp__zitat {
+  margin: var(--hyp-s4) 0;
+  padding: var(--hyp-s4);
+  background: var(--hyp-grund);
+  border-radius: var(--hyp-r2);
+  box-shadow: var(--hyp-shadow-sm);
+}
+
+.hyp__zitat p {
+  font-size: var(--hyp-fs-md);
+  line-height: 1.6;
+}
+
+.hyp__zitat cite {
+  display: block;
+  margin-top: var(--hyp-s2);
+  font-size: var(--hyp-fs-xs);
+  font-style: normal;
+  color: var(--hyp-muted);
+}
+
+/* --- Akt 2: die Hypothesen ---------------------------------------------- */
+
+.hyp__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--hyp-s6);
+}
+
+.hyp__these {
+  padding: var(--hyp-s6) 0 0;
+  border-top: 1px solid var(--hyp-linie);
+  scroll-margin-top: var(--hyp-s6);
+}
+
+.hyp__nummer {
+  font-size: var(--hyp-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--hyp-muted);
+  margin: 0 0 var(--hyp-s2);
+}
+
+.hyp__these h3 {
+  font-size: var(--hyp-fs-lg);
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Stand-Marke: EINE Gestalt fuer alle vier Werte. Die Modifier existieren als
+   Anker fuer Proben und kuenftige Bedeutung, tragen aber bewusst KEINE eigene
+   Farbe — siehe Kopf dieser Datei. */
+.hyp__stand {
+  display: inline-block;
+  margin: 0 0 var(--hyp-s3);
+  padding-bottom: var(--hyp-s1);
+  border-bottom: 2px solid var(--hyp-akzent);
+  font-size: var(--hyp-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--hyp-text);
+}
+
+.hyp__feld {
+  margin: 0 0 var(--hyp-s4);
+}
+
+/* Die Gegen-Seite bekommt eine Kante, damit sie beim Ueberfliegen nicht
+   untergeht — neutral, nicht rot: sie ist kein Alarm, sondern ein Teil des
+   Arguments. */
+.hyp__feld--dagegen {
+  padding-left: var(--hyp-s3);
+  border-left: 3px solid var(--hyp-linie-stark);
+}
+
+.hyp__folgt {
+  margin-top: var(--hyp-s3);
+  padding: var(--hyp-s3);
+  background: var(--hyp-flaeche);
+  border-radius: var(--hyp-r1);
+}
+
+.hyp__folgt p:last-child {
+  margin-bottom: 0;
+}
+
+.hyp__folgt-nicht {
+  color: var(--hyp-muted);
+}
+
+/* Beleg-Verweise — hier sitzt das Gold, als Linie unter dem Nachpruefbaren. */
+.hyp__belege a,
+.hyp__link,
+.hyp p a {
+  color: var(--hyp-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hyp-akzent);
+  padding-bottom: 1px;
+}
+
+.hyp__belege a:hover,
+.hyp__link:hover,
+.hyp p a:hover {
+  border-bottom-width: 2px;
+}
+
+.hyp__belege {
+  font-size: var(--hyp-fs-xs);
+  color: var(--hyp-muted);
+  white-space: nowrap;
+}
+
+/* --- Videos -------------------------------------------------------------- */
+
+.hyp__videoliste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--hyp-s8);
+}
+
+.hyp__videorahmen {
+  max-width: var(--hyp-videobreite);
+  border-radius: var(--hyp-r2); /* EIN Bild-Radius-Token, ueberall derselbe */
+  overflow: hidden;
+  box-shadow: var(--hyp-shadow-md);
+  margin-bottom: var(--hyp-s3);
+}
+
+/* Ein Eintrag ohne Kachel (Poster zu klein, siehe hypothesen-quellen.js) steht
+   einspaltig — sonst liesse die Zwei-Spalten-Ansicht eine leere Haelfte. */
+.hyp__videolink {
+  margin: 0 0 var(--hyp-s2);
+}
+
+.hyp__videometa {
+  font-size: var(--hyp-fs-xs);
+  color: var(--hyp-muted);
+  margin-bottom: var(--hyp-s2);
+}
+
+.hyp__sagtnichts {
+  color: var(--hyp-muted);
+}
+
+.hyp__videoquellen {
+  font-size: var(--hyp-fs-xs);
+  color: var(--hyp-muted);
+}
+
+/* --- Quellen ------------------------------------------------------------- */
+
+.hyp__quellenliste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: quelle;
+  display: grid;
+  gap: var(--hyp-s6);
+}
+
+.hyp__quelle {
+  counter-increment: quelle;
+  padding: var(--hyp-s4);
+  background: var(--hyp-grund);
+  border: 1px solid var(--hyp-linie);
+  border-radius: var(--hyp-r2);
+  box-shadow: var(--hyp-shadow-sm);
+  scroll-margin-top: var(--hyp-s4);
+}
+
+.hyp__quelle h3 {
+  font-size: var(--hyp-fs-md);
+  line-height: 1.4;
+}
+
+.hyp__quellenart {
+  font-size: var(--hyp-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--hyp-muted);
+  margin-bottom: var(--hyp-s1);
+}
+
+.hyp__quellenart::before {
+  content: '[' counter(quelle) '] ';
+  color: var(--hyp-akzent);
+}
+
+.hyp__quellenort {
+  font-size: var(--hyp-fs-xs);
+  color: var(--hyp-muted);
+  margin-bottom: var(--hyp-s3);
+}
+
+.hyp__reichweite {
+  margin: 0 0 var(--hyp-s3);
+}
+
+.hyp__reichweite dt {
+  font-size: var(--hyp-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--hyp-muted);
+  margin-top: var(--hyp-s2);
+}
+
+.hyp__reichweite dd {
+  margin: var(--hyp-s1) 0 0;
+  max-width: var(--hyp-mass);
+}
+
+/* Der Satz, auf den es ankommt — er bekommt die Kante, nicht die Farbe. */
+.hyp__nichtueberuns {
+  padding-left: var(--hyp-s2);
+  border-left: 3px solid var(--hyp-linie-stark);
+}
+
+.hyp__quellenzitat {
+  margin: var(--hyp-s3) 0;
+  padding: var(--hyp-s3);
+  background: var(--hyp-flaeche);
+  border-radius: var(--hyp-r1);
+}
+
+.hyp__quellenzitat p {
+  font-size: var(--hyp-fs-base);
+  font-style: italic;
+  margin-bottom: var(--hyp-s1);
+}
+
+.hyp__quellenzitat cite {
+  font-size: var(--hyp-fs-xs);
+  font-style: normal;
+  color: var(--hyp-muted);
+}
+
+/* --- Bewusstsein: der abgetrennte Teil ---------------------------------- */
+
+.hyp__hinweis {
+  padding: var(--hyp-s3);
+  background: var(--hyp-grund);
+  border-left: 3px solid var(--hyp-akzent);
+  border-radius: var(--hyp-r1);
+  margin-bottom: var(--hyp-s4);
+}
+
+/* --- Route-Chrome: gilt NUR auf dieser Route ----------------------------- */
+
+/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf, Fuss und
+   Warenkorb. Wortgleich zur Schwesterseite (kritik.css), und aus demselben
+   GEMESSENEN Grund: app.css traegt VIER konkurrierende globale img-Regeln
+   (border-radius 4px, 6px, 3px, 20px). Ohne diese Zeile erbt die Seite drei
+   davon — nachgemessen im selben Produktions-Build zur selben Minute:
+   /pages/hypothesen kam auf {4px, 6px, 20px}, /pages/kritik mit dieser Zeile
+   auf {8px, 20px}. Die Ursache sitzt in der geteilten Huelle und wird hier
+   NICHT repariert (P10, fremdes Mutationsgebiet) — sie wird auf dieser Route
+   ueberschrieben, so wie die Schwesterseite es vormacht. */
+body:has(.hyp) img,
+body:has(.hyp) picture,
+body:has(.hyp) video {
+  border-radius: var(--hyp-r1);
+}
+
+/* --- Breite Ansicht ----------------------------------------------------- */
+
+@media (min-width: 900px) {
+  .hyp section {
+    padding-left: var(--hyp-s6);
+    padding-right: var(--hyp-s6);
+  }
+
+  .hyp__video:has(.hyp__videorahmen) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--hyp-s4);
+    align-items: start;
+  }
+
+  .hyp__videorahmen {
+    margin-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hyp * {
+    transition: none !important;
+  }
+}
