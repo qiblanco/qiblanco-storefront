@@ -74,7 +74,7 @@ export function isSchemaSafe(item) {
  * sauberen Items. Gibt `null` zurück, wenn kein sauberes Item uebrig bleibt
  * (dann emittiert die Komponente bewusst KEIN leeres Schema).
  *
- * ZUSATZFELDER (optional, seit 2026-09-11 fuer /pages/kritik): `author`,
+ * ZUSATZFELDER (optional, seit 2026-09-11 für /pages/kritik): `author`,
  * `datePublished` und `dateModified` werden NUR gesetzt, wenn der Aufrufer sie
  * uebergibt. Bestandsaufrufer (ProductFAQ, pages.faq) uebergeben sie nicht und
  * erhalten damit byte-identisch dasselbe Schema wie vorher — die Erweiterung

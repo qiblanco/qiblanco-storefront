@@ -1,4 +1,4 @@
-import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, STAERKEN} from '~/data/kritik-vorwuerfe';
+import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, PLUSPUNKTE} from '~/data/kritik-vorwuerfe';
 
 /**
  * /pages/kritik — die Beweis-Fläche.
@@ -44,7 +44,7 @@ import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, STAERKEN} from '~/data/kritik-vorwuerfe'
  *
  * ABGRENZUNG (SSoT homepage-bauer/konzepte/abgrenzung-flaechen.json, Fläche
  * `kritik`): diese Seite trägt BEWEISFÜHRUNG, /pages/erfahrungen trägt
- * ERLEBNISSE. Der Verweis auf die Erfahrungen in STAERKEN sagt ausdrücklich
+ * ERLEBNISSE. Der Verweis auf die Erfahrungen in PLUSPUNKTE sagt ausdrücklich
  * dazu, dass er KEIN Wirkungsbeweis ist — sobald hier ein Erlebnis überzeugen
  * soll statt eines Belegs, ist die Abgrenzung gebrochen.
  *
@@ -156,16 +156,16 @@ export function KritikSeite() {
         </div>
       </section>
 
-      <section className="krit__staerken">
+      <section className="krit__plusbereich">
         <div className="krit__inhalt">
           <h2>Was für uns spricht</h2>
           <p className="krit__einleitung">
             Die offenen Punkte stehen oben, ungekürzt. Das hier steht daneben –
             jeder Punkt so, dass du ihn nachprüfen kannst.
           </p>
-          <ul className="krit__staerkenliste">
-            {STAERKEN.map((s) => (
-              <li key={s.titel} className="krit__staerke">
+          <ul className="krit__plusliste">
+            {PLUSPUNKTE.map((s) => (
+              <li key={s.titel} className="krit__plus">
                 <h3>{s.titel}</h3>
                 <p>{s.text}</p>
                 {s.pfad ? (

@@ -341,20 +341,20 @@
    saehen aus wie einer. Getrennt wird deshalb ueber den Sektions-Takt und die
    Haarlinie, wortgleich zur Befunde-Rubrik, nicht ueber eine neue Farbe.
    KEIN neuer Token, kein zweiter Goldton, kein freier Wert. */
-.krit__staerkenliste {
+.krit__plusliste {
   display: flex;
   flex-direction: column;
   gap: var(--krit-s4);
 }
 
-.krit li.krit__staerke {
+.krit li.krit__plus {
   max-width: none;
   margin: 0;
   padding-top: var(--krit-s3);
   border-top: 1px solid var(--krit-linie);
 }
 
-.krit__staerke h3 {
+.krit__plus h3 {
   margin-bottom: var(--krit-s1);
 }
 

@@ -15,7 +15,7 @@
  * Reihenfolge nach Gewicht. Weggefallen sind allein die fremden FORMULIERUNGEN
  * und ihre Fundstellen. Es fehlt kein Thema; es fehlt fremde Rede.
  *
- * DESHALB HEISST DAS FELD JETZT `kurz` UND NICHT MEHR `urteil`: ein Urteil
+ * DAS FELD TRÄGT DESHALB DEN NAMEN `kurz` UND NICHT MEHR `urteil`: ein Urteil
  * („Das stimmt zum Teil.") beurteilt eine fremde Aussage und setzt sie damit
  * voraus. Eine Seite ohne fremde Aussage beantwortet stattdessen die FRAGE —
  * mit Ja, Nein oder Offen. Wer hier ein Urteilsfeld wiedereinführt, holt die
@@ -52,7 +52,7 @@
  * TEXTSORTE (Abgrenzungs-SSoT `konzepte/abgrenzung-flaechen.json`, Fläche
  * `kritik`): diese Seite trägt BEWEISFÜHRUNG. Keine Kundenstimme wird hier als
  * Beweis benutzt — das ist der Gegenstand von /pages/erfahrungen. Der Verweis
- * dorthin in STAERKEN sagt das ausdrücklich mit („Kein Beweis für eine
+ * dorthin in PLUSPUNKTE sagt das ausdrücklich mit („Kein Beweis für eine
  * Wirkung"); sobald hier ein Erlebnis überzeugen soll statt eines Belegs, ist
  * die Abgrenzung gebrochen.
  */
@@ -264,11 +264,11 @@ export const BEFUNDE = [
  * @type {Array<{titel: string, text: string, beleg: string,
  *   pfad?: string, link?: string}>}
  */
-export const STAERKEN = [
+export const PLUSPUNKTE = [
   {
-    titel: 'Wir nennen unsere Grenzen selbst.',
-    text: 'Alles, was auf dieser Seite gegen uns spricht, hat uns niemand abgerungen. Es steht hier, weil du es wissen sollst, bevor du dich entscheidest — und es steht wortgleich auf unseren Studienseiten.',
-    beleg: 'Die vier Einräumungen auf dieser Seite, wortgleich auf /pages/studien.',
+    titel: 'Zu jeder Arbeit steht, was sie nicht zeigt.',
+    text: 'Bei allen fünf Studien steht die Grenze direkt daneben: in vitro, welche Zelllinie, welche Fallzahl, was daraus NICHT folgt. Die vier offenen Punkte weiter oben stehen wortgleich auf unseren Studienseiten.',
+    beleg: 'Die Grenzen-Zeile bei jeder der fünf Arbeiten auf dieser Seite und auf /pages/studien.',
   },
   {
     titel: '20 Tage auf unsere Rechnung prüfen.',
