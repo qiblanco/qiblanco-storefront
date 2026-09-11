@@ -23,6 +23,16 @@ import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
  *   videoId       Pflicht — YouTube-Video-ID (z.B. 'BQxzbXqREWE')
  *   startSeconds  Startpunkt in Sekunden, PRO EINSATZORT (default 0 = Anfang)
  *   titel         Pflicht — a11y (iframe-title + aria-label des Posters)
+ *   posterAlt     Optional, Vorgabe '' — Alternativtext des Vorschaubildes.
+ *                 VORGABE IST BEWUSST DIE LEERE ZEICHENKETTE und aendert für
+ *                 alle bisherigen Aufrufer NICHTS: das Poster steckt in einem
+ *                 Knopf, der bereits `aria-label="Video abspielen: <titel>"`
+ *                 trägt — ein zweiter Text daneben ist für den Screenreader
+ *                 Doppelung, nicht Gewinn (das `aria-label` des Knopfes sticht
+ *                 den Bildtext ohnehin). Wer ihn SETZT, tut das für die
+ *                 BILDERSUCHE: dort ist das Standbild eine eigene Ressource mit
+ *                 eigenem Text. Gesetzt wird er deshalb dort, wo das Motiv
+ *                 etwas aussagt (ein Mensch mit Namen), nicht pauschal.
  *   thumbnail     optionale eigene Poster-URL, PRO EINSATZORT — ersetzt die
  *                 YouTube-Kette komplett (kein srcset/kein Abstieg)
  *   dataSection   optionaler Watch-/Heatmap-Anker
@@ -165,6 +175,7 @@ export function YoutubeTimestamp({
   videoId,
   startSeconds = 0,
   titel,
+  posterAlt = '',
   thumbnail,
   dataSection,
   sizes = '100vw',
@@ -265,7 +276,7 @@ export function YoutubeTimestamp({
     >
       <img
         {...posterProps}
-        alt=""
+        alt={posterAlt}
         loading="lazy"
         style={eigenesKleid ? undefined : FILL_STYLE}
       />
@@ -310,9 +321,15 @@ export function YoutubeTimestamp({
     (start > 0 ? `&t=${start}s` : '');
   const posterUrl =
     thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
-  const titelText = String(titel || '').replace(/[<>&"]/g, (c) =>
-    ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),
-  );
+  const escape = (wert) =>
+    String(wert || '').replace(/[<>&"]/g, (c) =>
+      ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),
+    );
+  const titelText = escape(titel);
+  // Derselbe Alternativtext wie am Knopf-Poster. Ginge er hier verloren, haette
+  // die Seite OHNE Skript wieder ein Bild ohne Beschreibung — und genau diese
+  // Fassung ist die, die ein Crawler ohne JavaScript sieht.
+  const posterAltText = escape(posterAlt);
 
   return (
     <span style={{display: 'contents'}} data-qb-video-fallback="">
@@ -335,7 +352,7 @@ export function YoutubeTimestamp({
             `<a class="${eigenesKleid ? className : 'YoutubeTimestamp'}" ` +
             `href="${watchUrl}" target="_blank" rel="noopener noreferrer" ` +
             `aria-label="Video auf YouTube ansehen: ${titelText}">` +
-            `<img src="${posterUrl}" alt="" width="480" height="360" ` +
+            `<img src="${posterUrl}" alt="${posterAltText}" width="480" height="360" ` +
             `style="width:100%;height:100%;object-fit:cover" /></a>`,
         }}
       />

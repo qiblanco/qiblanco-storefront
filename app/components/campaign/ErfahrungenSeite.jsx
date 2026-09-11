@@ -1,5 +1,6 @@
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
+import {gruppenNachSprache} from '~/lib/erfahrungen-gruppen';
 
 /**
  * /pages/erfahrungen — die Erlebnis-Flaeche.
@@ -17,14 +18,22 @@ import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
  * Player. Der alte, eager ladende `YoutubeIframe` wäre hier ein Befund: bei 17
  * Einbettungen kostete er rund 6,8 MB Player-Infrastruktur auf JEDEM Aufruf.
  *
+ * EIN MENSCH, EIN EINTRAG (Christian 2026-09-11): gerendert wird eine Gruppe je
+ * SPRECHER, nicht je Video. Wer zwei oder drei Videos hat, steht einmal da und
+ * trägt sie alle. Die Gruppierung selbst liegt in app/lib/erfahrungen-gruppen.js
+ * — hier steht nur ihre Darstellung. Der Grund, warum das keine Kosmetik ist,
+ * steht im Kopf jenes Moduls: zwei Abschnitte zu derselben Person lesen sich wie
+ * zwei Stimmen und sind eine.
+ *
  * SPRACHE: der Shop duzt — durchgehend, kein Anrede-Mix (Abnahme-Checkliste
  * Punkt 1; genau daran ist /pages/wirkt-das gescheitert). Eingestiegen wird mit
  * dem Kundenwort (Schlaf, Energie, Schutz, Ruhe), nicht mit dem Hauswort
  * "kohärentes Wasser" — das sagen Kunden gemessen fast nie von sich aus.
  */
 export function ErfahrungenSeite() {
-  const deutsch = ERFAHRUNGS_BEITRAEGE.filter((b) => b.sprache === 'de');
-  const englisch = ERFAHRUNGS_BEITRAEGE.filter((b) => b.sprache === 'en');
+  const deutsch = gruppenNachSprache('de');
+  const englisch = gruppenNachSprache('en');
+  const menschen = deutsch.length + englisch.length;
 
   return (
     <div className="erf">
@@ -32,10 +41,11 @@ export function ErfahrungenSeite() {
         <div className="erf__schmal">
           <h1>Was Menschen mit Qi Blanco erlebt haben</h1>
           <p className="erf__lead">
-            Hier sprechen {ERFAHRUNGS_BEITRAEGE.length} Menschen selbst – über
-            Schlaf, Energie, Ruhe im Alltag und darüber, was sich für sie
-            verändert hat. Jedes Video ist das Original. Der Text daneben fasst
-            zusammen, was darin gesagt wird.
+            Hier sprechen {menschen} Menschen selbst – in{' '}
+            {ERFAHRUNGS_BEITRAEGE.length} Videos über Schlaf, Energie, Ruhe im
+            Alltag und darüber, was sich für sie verändert hat. Jedes Video ist
+            das Original. Der Text daneben fasst zusammen, was darin gesagt
+            wird.
           </p>
 
           <div className="erf__hinweis">
@@ -63,9 +73,10 @@ export function ErfahrungenSeite() {
         <div className="erf__mitte">
           <h2>Auf Deutsch</h2>
           <p>
-            {deutsch.length} Beiträge, nach Reichweite geordnet.
+            {deutsch.length} Menschen, nach Reichweite geordnet. Wer mehr als
+            ein Video aufgenommen hat, steht einmal hier – mit allen.
           </p>
-          <BeitragsRaster beitraege={deutsch} />
+          <BeitragsRaster gruppen={deutsch} />
         </div>
       </section>
 
@@ -73,10 +84,10 @@ export function ErfahrungenSeite() {
         <div className="erf__mitte">
           <h2>In English</h2>
           <p>
-            {englisch.length} Beiträge sind auf Englisch aufgenommen – die
+            {englisch.length} Menschen haben auf Englisch aufgenommen – die
             Zusammenfassung daneben ist auf Deutsch.
           </p>
-          <BeitragsRaster beitraege={englisch} />
+          <BeitragsRaster gruppen={englisch} />
         </div>
       </section>
 
@@ -101,26 +112,36 @@ export function ErfahrungenSeite() {
  * Das Raster. Reihenfolge und Inhalt kommen vollstaendig aus dem Datenmodul —
  * hier steht KEIN Beitragstext, damit die Herkunftsregeln (nur vorveroeffent-
  * lichte Sprecher, kein Wortlaut, keine Doppelung) an EINER Stelle gelten.
+ *
+ * EIN `<article>` JE MENSCH, darin ein Block je Video. Der Name steht als
+ * einziges `h3` GANZ OBEN in der Gruppe und genau einmal — daran ist die
+ * Dublettenfreiheit am ausgelieferten HTML nachzaehlbar (`h3.erf__name` muss
+ * die Zahl der Menschen ergeben, nicht die der Videos).
  */
-function BeitragsRaster({beitraege}) {
+function BeitragsRaster({gruppen}) {
   return (
     <div className="erf__raster">
-      {beitraege.map((b) => (
-        <article className="erf__beitrag" key={b.videoId}>
-          <YoutubeTimestamp
-            videoId={b.videoId}
-            titel={b.titel}
-            className="erf-yt"
-            playClassName="erf-yt__play"
-            sizes="(min-width: 900px) 540px, 100vw"
-            noscriptFallback
-          />
-          <h3 className="erf__name">{b.sprecher}</h3>
-          {/* Der Videotitel ist vom Haus geschrieben, NICHT vom Sprecher
-              gesagt — er steht deshalb als Titel da und nie in
-              Anfuehrungszeichen als Aeusserung. */}
-          <p className="erf__videotitel">{b.titel}</p>
-          <p className="erf__text">{b.zusammenfassung}</p>
+      {gruppen.map((g) => (
+        <article className="erf__beitrag" key={g.slug} id={g.slug}>
+          <h3 className="erf__name">{g.sprecher}</h3>
+          {g.videos.map((b) => (
+            <div className="erf__video" key={b.videoId}>
+              <YoutubeTimestamp
+                videoId={b.videoId}
+                titel={b.titel}
+                posterAlt={`Videostandbild: ${g.sprecher} erzählt von seiner Erfahrung mit Qi Blanco`}
+                className="erf-yt"
+                playClassName="erf-yt__play"
+                sizes="(min-width: 900px) 540px, 100vw"
+                noscriptFallback
+              />
+              {/* Der Videotitel ist vom Haus geschrieben, NICHT vom Sprecher
+                  gesagt — er steht deshalb als Titel da und nie in
+                  Anfuehrungszeichen als Aeusserung. */}
+              <p className="erf__videotitel">{b.titel}</p>
+              <p className="erf__text">{b.zusammenfassung}</p>
+            </div>
+          ))}
         </article>
       ))}
     </div>
