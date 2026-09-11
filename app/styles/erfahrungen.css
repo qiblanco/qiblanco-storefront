@@ -180,6 +180,23 @@
   margin: 0;
 }
 
+/* EIN MENSCH, EIN EINTRAG (Christian 2026-09-11): der Name steht einmal oben,
+   darunter ein Block je Video. Der zweite und jeder weitere Block bekommt eine
+   Haarlinie und mehr Luft — das sagt „derselbe Mensch, noch ein Video" ohne ein
+   zusaetzliches Wort und ohne ein neues Token: Abstand aus dem 8pt-Grid,
+   Linienfarbe aus dem bestehenden --erf-linie. */
+.erf__video {
+  display: flex;
+  flex-direction: column;
+  gap: var(--erf-s2);
+}
+
+.erf__video + .erf__video {
+  margin-top: var(--erf-s1);
+  padding-top: var(--erf-s3);
+  border-top: 1px solid var(--erf-linie);
+}
+
 .erf p.erf__videotitel {
   font-size: var(--erf-fs-base);
   color: var(--erf-muted);

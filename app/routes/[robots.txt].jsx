@@ -125,29 +125,40 @@ Crawl-delay: 1
 }
 
 /**
- * ZWEIFELSSEITEN (Job 20260910-BAU-zweifelsseiten-live-aber-noindex-und-nicht-
- * im-menue, Christian 2026-09-10): `/pages/erfahrungen` und `/pages/kritik`
- * wurden live, aber dunkel gebaut — noindex UND hier zusätzlich gesperrt
- * (Christian: Beides, nicht eines von beiden). Für Seiten, die NIE im Index
- * waren, ist Disallow + noindex kein Widerspruch; die Hygiene-Regel „Disallow
- * blockiert das Lesen des noindex“ gilt für Seiten, die schon DRIN sind.
+ * ZWEIFELSSEITEN — STAND 2026-09-11: BEIDE SIND FREI, DIESE LISTE IST LEER.
  *
- * `/pages/kritik` IST SEIT 2026-09-11 FREIGESCHALTET (Christian nach dem Lesen
- * der Seite: „Live schalten und bei ‚Mehr' einbinden") und steht deshalb NICHT
- * MEHR in dieser Liste. `/pages/erfahrungen` bleibt vorerst gesperrt.
+ * URSPRUNG (Job 20260910-BAU-zweifelsseiten-live-aber-noindex-und-nicht-im-
+ * menue, Christian 2026-09-10): `/pages/erfahrungen` und `/pages/kritik` wurden
+ * live, aber dunkel gebaut — noindex UND hier zusätzlich gesperrt (Christian:
+ * Beides, nicht eines von beiden). Für Seiten, die NIE im Index waren, ist
+ * Disallow + noindex kein Widerspruch; die Hygiene-Regel „Disallow blockiert das
+ * Lesen des noindex" gilt für Seiten, die schon DRIN sind.
  *
- * WER EINE SEITE FREISCHALTET: zuerst hier das Disallow raus, dann das noindex
- * in der Route — sonst bleibt die Seite unsichtbar, während sie indexierbar
- * aussieht. Fallen beide im SELBEN Deploy, ist die Reihenfolge gegenstandslos;
- * getrennt deployt gilt sie strikt.
+ * CHRISTIAN HAT AM 2026-09-11 BEIDE GELESEN UND BEIDE FREIGEGEBEN, in zwei
+ * getrennten Aufträgen und deshalb in zwei getrennten Deploys:
+ *   /pages/kritik      ausgetragen mit PR #366 („Live schalten und bei ‚Mehr'
+ *                      einbinden")
+ *   /pages/erfahrungen ausgetragen mit PR #367 („Aber ja, können wir auch
+ *                      freischalten … live schalten und crawlbar machen")
+ * Die zweite Zeile fiel im Rebase gegen die erste — beide Aufträge hatten je
+ * IHRE Zeile entfernt, und die richtige Auflösung war, KEINE von beiden zu
+ * behalten. Wer hier eine „wieder herstellen" will, liest zuerst beide Aufträge.
+ *
+ * WER EINE SEITE WIEDER SPERRT: zuerst hier das Disallow rein UND das noindex in
+ * der Route, und den Canonical raus (nie noindex und canonical zugleich). Wer
+ * eine neue Seite freischaltet, geht den Weg rückwärts: zuerst hier das Disallow
+ * raus, dann das noindex — sonst bleibt die Seite unsichtbar, während sie
+ * indexierbar aussieht. Fallen beide im SELBEN Deploy, ist die Reihenfolge
+ * gegenstandslos; getrennt deployt gilt sie strikt.
  *
  * ACHTUNG BEIM GEGENMESSEN: diese Funktion wird aus VIER User-agent-Gruppen
  * gerufen. Eine Quellzeile hier ist vier Zeilen in der ausgelieferten
  * robots.txt — wer live „beide Vorkommen" sucht und entfernt, lässt zwei
  * stehen. Gemessen wird auf 0 von 4.
  *
- * Wache: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py (Arm
- * A2-ROBOTS für dunkle, Arm H2-ROBOTS für freigeschaltete Flächen).
+ * Wachen: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py (Arm
+ * A2-ROBOTS für dunkle, H2-ROBOTS für freigeschaltete Flächen) und
+ * pruefungen/probe_erfahrungen_hell.py (Arm A3-ROBOTS).
  *
  * This function generates disallow rules that generally follow what Shopify's
  * Online Store has as defaults for their robots.txt
@@ -170,7 +181,6 @@ Disallow: /products/bundle-fundament
 Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
 Disallow: /pages/schlaf-zellen-schutz-v3-67a7
-Disallow: /pages/erfahrungen
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*

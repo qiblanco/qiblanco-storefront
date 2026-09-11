@@ -352,6 +352,25 @@ export const NUR_ROUTE_SEITEN = [
       'Veralten des eingebackenen Auszugs.',
   },
   {
+    pfad: '/pages/erfahrungen',
+    grund:
+      'Am 2026-09-11 von Christian freigegeben („Aber ja, können wir auch ' +
+      'freischalten … live schalten und crawlbar machen"), nachdem die Seite ' +
+      'seit dem 2026-09-08 als Freigabe-Ansicht dunkel lag. Sie besteht allein ' +
+      'aus der Route pages.erfahrungen.jsx und hat KEIN Shopify-Seitenobjekt — ' +
+      'ohne diesen Eintrag liefert sie HTTP 200 mit 13 Menschen in 17 Videos ' +
+      'und steht in keiner Sitemap. Ein Seitenobjekt anzulegen wäre der zweite ' +
+      'mögliche Träger und ist bewusst NICHT gewählt: er läge im Fremdsystem, ' +
+      'während dieser hier im Repo sichtbar ist. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_erfahrungen_hell.py — prüft am ausgelieferten HTML INHALT ' +
+      '(Beitragstexte, nicht den Statuscode), Freischaltung (kein noindex, ' +
+      'kein Disallow, Sitemap-Eintrag, Menü-Link), die strukturierten Daten ' +
+      '(VideoObject je Video, Person je Mensch) und die Dublettenfreiheit ' +
+      '(h3.erf__name eindeutig). Sie löst probe_erfahrungen_erreichbar_aber_' +
+      'dunkel.py ab, deren Aussage mit der Freigabe überholt ist.',
+  },
+  {
     pfad: '/pages/affiliate-partnerprogramm',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
