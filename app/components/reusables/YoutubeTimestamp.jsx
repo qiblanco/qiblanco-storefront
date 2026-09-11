@@ -153,7 +153,23 @@ const PLAY_STYLE = {
  */
 const STAPEL_STYLE = {
   position: 'relative',
-  display: 'block',
+  /*
+   * GRID, UND DAS ZENTRIERT DAS ABZEICHEN -- ohne dass das Abzeichen dafür
+   * selbst einen Stil braucht. Genau darin liegt der Unterschied zur ersten
+   * Fassung dieses Baus: die legte dem Abzeichen Position UND Aussehen inline
+   * auf und stach damit den Goldakzent der Startseite aus (live gemessen:
+   * color rgb(255,255,255) statt des Seitentons, obwohl externe-stimmen.css
+   * über genau dieses Element sagt "Der EINE Goldakzent des Abschnitts").
+   *
+   * Poster und Player liegen absolut und damit ausserhalb des Flusses; das
+   * einzige Flusskind ist das Abzeichen. `place-items: center` setzt es in die
+   * Mitte -- fuer Scopes OHNE eigene Regel (.v2-yt, .v3-yt) ist das die ganze
+   * Positionierung, und fuer Scopes MIT eigener Regel (.qbp__knopf setzt sich
+   * absolut, .ExterneStimmen__yt__play deckt die Flaeche) aendert es nichts.
+   * Die Komponente gibt damit die Geometrie vor, ohne das Aussehen anzufassen.
+   */
+  display: 'grid',
+  placeItems: 'center',
   width: '100%',
   /*
    * `max-width: none` ist KEINE Vorsichtsmassnahme, sondern ein gemessener
@@ -458,7 +474,7 @@ export function YoutubeTimestamp({
         <span
           className={
             eigenesKleid
-              ? `${playClassName || `${className}__play`} qb-video-play`
+              ? playClassName || `${className}__play`
               : 'YoutubeTimestamp__play'
           }
           aria-hidden="true"
@@ -497,10 +513,7 @@ export function YoutubeTimestamp({
             deshalb auch in solchen Scopes gezeichnet.
           */}
           {laueft || playInhalt ? (
-            <span
-              className={eigenesKleid ? 'qb-video-badge' : undefined}
-              style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}
-            >
+            <span style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}>
               {laueft ? <span className="qb-video-spinner" /> : playInhalt}
             </span>
           ) : null}
