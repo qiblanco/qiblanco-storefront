@@ -209,6 +209,34 @@ export const FAQ_BELEGE = [
       'app/components/campaign/MmWirktDas.jsx, Konstanten STUDIEN/GRENZEN (ihrerseits aus der ' +
       'faktengegateten Registry app/data/studien/e0001…e0005.json). Inhaltsgrenze wie dort: ' +
       'wörtlich „in vitro", ausdrücklich kein klinischer Wirknachweis am Menschen.',
+    // Die Vertiefung GENAU DIESER Antwort, und die Stelle ist mit Absicht
+    // gewählt: der Absatz darüber räumt ein „Ob und wie du selbst etwas
+    // merkst, folgt daraus nicht". Das ist die ehrliche Grenze der Studien —
+    // und der Punkt, an dem einzelne Menschen weiterhelfen, wo Zellstudien es
+    // nicht können. Gemessene Grundlage: „Wirkt das überhaupt?" ist mit 3758
+    // Nennungen der häufigste Einwand, und sozialer Beweis zieht dort, wo
+    // Wissenschafts-Beweis erst beim Zweifel wirkt (Kaufüberzeugungs-Kanon:
+    // „Menschen ziehen, Studien überzeugen").
+    //
+    // DER LINKTEXT NENNT KEINE ZAHL. Naheliegend wäre „13 Menschen" gewesen —
+    // aber die Zahl wächst mit dem Datenmodul, und ein Zähler in einer
+    // fremden Datei veraltet still. Die Seite selbst nennt sie und rechnet
+    // sie aus ihren Daten aus.
+    //
+    // ARBEITSTEILUNG wie im Abgrenzungs-SSoT (konzepte/abgrenzung-flaechen.json):
+    // die FAQ antwortet in EINEM Absatz und verlinkt in die Tiefe. Begehbar ist
+    // dieser Weg erst seit der Freischaltung von /pages/erfahrungen am
+    // 2026-09-11 — vorher wäre es ein Link auf eine per robots.txt gesperrte
+    // Seite gewesen. Zweiter Nutzen: /pages/erfahrungen hat damit einen
+    // server-gerenderten eingehenden Link von einer indexierten Seite. Der
+    // Menü-Eintrag unter „Mehr" allein reicht dafür nicht — dessen Kinder
+    // rendert Shopify clientseitig per Portal, im Server-HTML stehen sie nicht.
+    weiter: {
+      pfad: '/pages/erfahrungen',
+      text:
+        'Menschen, die selbst erzählen, was sie gemerkt haben — ihre ' +
+        'Beobachtungen, nicht unsere Behauptung',
+    },
   },
   {
     q: 'Es gibt öffentliche Kritik an Qi Blanco, auch Videos von Wissenschaftlern. Was sagt ihr dazu?',
