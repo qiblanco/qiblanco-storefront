@@ -49,6 +49,7 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/pages/ketogenes-wochenende", "url": "https://qiblanco.com/pages/ketogenes-wochenende", "titel": "Ketogenes Wochenende", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/pages/kohaerentes-wasser", "url": "https://qiblanco.com/pages/kohaerentes-wasser", "titel": "Tag 5: Kohärente Wasserstrukturen", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/kristall-kakao", "url": "https://qiblanco.com/pages/kristall-kakao", "titel": "", "crawlbar": true, "herkunft": "code"},
+      {"pfad": "/pages/kritik", "url": "https://qiblanco.com/pages/kritik", "titel": "", "crawlbar": true, "herkunft": "code"},
       {"pfad": "/pages/linkseite", "url": "https://qiblanco.com/pages/linkseite", "titel": "Linkseite", "crawlbar": true, "herkunft": "shopify"},
       {"pfad": "/pages/meditieren-mit-zeremonie-kakao", "url": "https://qiblanco.com/pages/meditieren-mit-zeremonie-kakao", "titel": "Teil 4: Einen Schritt tiefer – mit Zeremonie-Kakao meditieren – 4 min", "crawlbar": true, "herkunft": "code+shopify"},
       {"pfad": "/pages/mentales-setting", "url": "https://qiblanco.com/pages/mentales-setting", "titel": "Tag 2: Mentales Setting", "crawlbar": true, "herkunft": "code+shopify"},
