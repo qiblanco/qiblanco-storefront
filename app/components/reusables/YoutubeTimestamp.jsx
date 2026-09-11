@@ -309,6 +309,13 @@ export function YoutubeTimestamp({
    * einer Seite, die er gar nicht anfassen wollte.
    */
   zusatzParameter = '',
+  /*
+   * Was IM Abzeichen steht. Vorgabe ist das Play-Dreieck; `null` laesst es
+   * leer -- fuer Scopes, die ihr Dreieck selbst zeichnen (podcasts.css malt es
+   * als `::after` auf einen Goldkreis). Ohne diese Moeglichkeit stuenden dort
+   * ZWEI Dreiecke uebereinander.
+   */
+  playInhalt = '\u25B6',
 }) {
   const [laueft, setLaueft] = useState(false);
   /* `zeigt` ist NICHT „der Player existiert", sondern „der Player hat Bild".
@@ -451,15 +458,52 @@ export function YoutubeTimestamp({
         <span
           className={
             eigenesKleid
-              ? playClassName || `${className}__play`
+              ? `${playClassName || `${className}__play`} qb-video-play`
               : 'YoutubeTimestamp__play'
           }
           aria-hidden="true"
-          style={PLAY_STYLE}
+          /*
+           * IM className-MODUS KEIN INLINE-STIL — und das ist eine Korrektur
+           * am eigenen Bau vom selben Tag.
+           *
+           * Die erste Fassung setzte PLAY_STYLE und PLAY_BADGE_STYLE
+           * UNBEDINGT, also auch dort, wo eine Seite ihr Abzeichen selbst
+           * gestaltet. Ein Inline-Stil sticht jede Seitenregel: gemessen live
+           * am 2026-09-11 war das Abzeichen der Startseite danach
+           * `color: rgb(255,255,255)` statt des Seiten-Goldtons — die Seite
+           * sagt über genau dieses Element „Der EINE Goldakzent des
+           * Abschnitts, und er sitzt auf der Handlung". Der Bau hatte ihn
+           * überschrieben.
+           *
+           * Richtig ist die Arbeitsteilung, die dieser Job ohnehin zieht:
+           * GEOMETRIE gehört der Komponente, AUSSEHEN dem Seiten-CSS. Die
+           * Geometrie kommt deshalb über die Klassen `qb-video-play` /
+           * `qb-video-badge` (EIN Klassen-Selektor, niedrigste Spezifität) —
+           * jede Seitenregel mit zwei Selektoren gewinnt darüber, und Scopes
+           * ohne eigene Regel bekommen trotzdem ein mittiges Abzeichen statt
+           * einer Zeile unter dem Video.
+           */
+          style={eigenesKleid ? undefined : PLAY_STYLE}
         >
-          <span style={PLAY_BADGE_STYLE}>
-            {laueft ? <span className="qb-video-spinner" /> : '\u25B6'}
-          </span>
+          {/*
+            Das Abzeichen wird NUR gezeichnet, wenn es etwas zu zeigen hat.
+            Ein Scope, der sein Zeichen selbst malt (podcasts.css: Goldkreis
+            plus ::after-Dreieck), uebergibt `playInhalt={null}` — dann legte
+            eine leere Scheibe sich sonst als schwarzer Fleck genau ueber den
+            Goldkreis, den sie freilassen soll. Gemessen beim Bau: innen
+            64x64 mit rgba(0,0,0,.55) mitten auf rgb(201,161,75).
+            Waehrend des Ladens gibt es IMMER etwas zu zeigen — das
+            Ladezeichen ist Christians ausdrueckliche Bedingung und wird
+            deshalb auch in solchen Scopes gezeichnet.
+          */}
+          {laueft || playInhalt ? (
+            <span
+              className={eigenesKleid ? 'qb-video-badge' : undefined}
+              style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}
+            >
+              {laueft ? <span className="qb-video-spinner" /> : playInhalt}
+            </span>
+          ) : null}
         </span>
       )}
     </span>

@@ -6134,6 +6134,42 @@ html.qb-chat-docked .GoogleRezensionenPopup {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   GEOMETRIE DES PLAY-ABZEICHENS (nicht sein Aussehen)
+   Job 20260911-BAU-videoumschaltung-seite-bricht-beim-play-klick-zusammen.
+
+   EIN Klassen-Selektor, also die niedrigste Spezifitaet, die eine Regel haben
+   kann. Das ist Absicht und der ganze Zweck: jede Seitenregel mit zwei
+   Selektoren (.ExterneStimmen__yt__play > span, .lp-ts3 .lp-ts3-yt__play span,
+   .lp-a3 .qbp__knopf) gewinnt muehelos darueber und behaelt ihr Aussehen --
+   ihren Goldton, ihre Groesse, ihre Form. Was diese Regeln hier beitragen, ist
+   nur das, was KEINE Seite mitbringen muss: dass das Abzeichen mittig IM
+   Videokasten liegt statt als Zeile darunter.
+
+   Vorgeschichte, damit niemand es wieder als Inline-Stil schreibt: die erste
+   Fassung dieses Baus setzte beides inline und stach damit den Goldakzent der
+   Startseite aus (live gemessen: rgb(255,255,255) statt des Seitentons).
+   ───────────────────────────────────────────────────────────────────────── */
+.qb-video-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.qb-video-badge {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 55%);
+  color: #fff;
+  font-size: 1.6rem;
+  padding-left: 5px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    LADEZEICHEN DER VIDEO-EINBETTUNG
    Job 20260911-BAU-videoumschaltung-seite-bricht-beim-play-klick-zusammen.
 
