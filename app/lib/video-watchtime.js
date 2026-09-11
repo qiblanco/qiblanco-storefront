@@ -206,6 +206,19 @@ function aufNachricht(ev) {
   } else {
     buche(konto);
   }
+
+  /* Einmalig, und der Fehler des Empfaengers darf die Erfassung nie reissen:
+   * dies ist ein Nebenausgang der Messung, nicht ihr Zweck. */
+  if (neuerLauf && !konto.spieltGemeldet) {
+    konto.spieltGemeldet = 1;
+    if (konto.onSpielt) {
+      try {
+        konto.onSpielt();
+      } catch {
+        /* bewusst stumm */
+      }
+    }
+  }
   pruefeStart(konto);
   pruefeQuartile(konto);
   if (konto.gestartet) meldeStand(konto);
@@ -236,7 +249,10 @@ function empfaengerStarten() {
  *        Anker und ein Notbehelf dürfen in der Auswertung nicht gleich wiegen.
  * @returns {() => void} Abmelder
  */
-export function youtubeWatchtimeAnbinden(iframe, {objekt, objektQuelle = 'anker'} = {}) {
+export function youtubeWatchtimeAnbinden(
+  iframe,
+  {objekt, objektQuelle = 'anker', onSpielt} = {},
+) {
   if (typeof window === 'undefined' || !iframe || !objekt) return () => {};
   const konto = {
     objekt,
@@ -258,6 +274,22 @@ export function youtubeWatchtimeAnbinden(iframe, {objekt, objektQuelle = 'anker'
     sichtbarSeit: 0,
     bereit: 0,
     gestartet: 0,
+    /*
+     * ZEIGT DER PLAYER SCHON BILD? (Job 20260911-BAU-videoumschaltung)
+     *
+     * Die Umschaltung Vorschau -> Player braucht genau eine Auskunft, die ein
+     * `<iframe>` von aussen nicht hergibt: laeuft er WIRKLICH, oder steht da
+     * nur ein schwarzer Rahmen? Das `load`-Ereignis beantwortet das NICHT --
+     * es feuert, wenn das Player-DOKUMENT da ist, nicht wenn Bild da ist.
+     *
+     * Genau diese Auskunft liegt hier bereits auf dem Tisch: die Watchtime-
+     * Erfassung hoert ohnehin auf `onStateChange`/`infoDelivery` und weiss
+     * als erste, wann `playerState === 1` wird. Sie wird deshalb
+     * DURCHGEREICHT statt ein zweites Mal erhoben -- kein zweiter Handshake,
+     * kein zweiter Listener, null zusaetzliche Bytes.
+     */
+    onSpielt: typeof onSpielt === 'function' ? onSpielt : null,
+    spieltGemeldet: 0,
   };
   const eintrag = {fenster: null, konto};
   spieler.push(eintrag);
