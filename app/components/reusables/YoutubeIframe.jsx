@@ -50,7 +50,7 @@ export function ausLink(link) {
     const zeit = text.match(/[?&](?:start|t)=(\d+)/);
     /* Alles, was NICHT Kennung oder Startzeit ist, gehört dem Einsatzort und
      * wird mitgenommen -- `controls=0` etwa ist eine Gestaltungsentscheidung
-     * der jeweiligen Seite. `si=` faellt raus: das ist der Sitzungs-Zeiger aus
+     * der jeweiligen Seite. `si=` fällt raus: das ist der Sitzungs-Zeiger aus
      * dem YouTube-Teilen-Dialog, er gehört einer fremden Sitzung und hat auf
      * unseren Seiten nichts zu suchen. */
     const frage = text.indexOf('?');

@@ -283,10 +283,10 @@ export function youtubeWatchtimeAnbinden(
      * es feuert, wenn das Player-DOKUMENT da ist, nicht wenn Bild da ist.
      *
      * Genau diese Auskunft liegt hier bereits auf dem Tisch: die Watchtime-
-     * Erfassung hoert ohnehin auf `onStateChange`/`infoDelivery` und weiss
+     * Erfassung hoert ohnehin auf `onStateChange`/`infoDelivery` und weiß
      * als erste, wann `playerState === 1` wird. Sie wird deshalb
      * DURCHGEREICHT statt ein zweites Mal erhoben -- kein zweiter Handshake,
-     * kein zweiter Listener, null zusaetzliche Bytes.
+     * kein zweiter Listener, null zusätzliche Bytes.
      */
     onSpielt: typeof onSpielt === 'function' ? onSpielt : null,
     spieltGemeldet: 0,
@@ -332,7 +332,7 @@ export function youtubeWatchtimeAnbinden(
    * bleibt es, kommt genau EIN Ereignis und danach nie wieder eines. Ein
    * einzelner Timer, der 2 s nach dem Einhaengen läuft, findet ein Video
    * unterhalb des Falzes deshalb noch unsichtbar vor — und die Schwelle wird
-   * NIE erreicht. Das haette ausgerechnet die drei Startseiten-Testimonials
+   * NIE erreicht. Das hätte ausgerechnet die drei Startseiten-Testimonials
    * getroffen (sie liegen unterhalb des Falzes) und still gar nichts gemessen.
    * Also: Uhr beim Sichtbarwerden stellen, beim Verschwinden loeschen. */
   let mrcUhr = 0;

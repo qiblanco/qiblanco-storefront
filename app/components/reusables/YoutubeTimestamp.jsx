@@ -24,7 +24,7 @@ import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
  *   startSeconds  Startpunkt in Sekunden, PRO EINSATZORT (default 0 = Anfang)
  *   titel         Pflicht — a11y (iframe-title + aria-label des Posters)
  *   posterAlt     Optional, Vorgabe '' — Alternativtext des Vorschaubildes.
- *                 VORGABE IST BEWUSST DIE LEERE ZEICHENKETTE und aendert für
+ *                 VORGABE IST BEWUSST DIE LEERE ZEICHENKETTE und ändert für
  *                 alle bisherigen Aufrufer NICHTS: das Poster steckt in einem
  *                 Knopf, der bereits `aria-label="Video abspielen: <titel>"`
  *                 trägt — ein zweiter Text daneben ist für den Screenreader
@@ -146,10 +146,10 @@ const PLAY_STYLE = {
 /*
  * DER STAPEL: ein 16:9-Kasten, in dem Poster, Player und Abzeichen
  * uebereinanderliegen. In der Flussrichtung (kein `position: absolute`), damit
- * er in BEIDEN Stapel-Regimen des Baums dieselbe Hoehe ergibt -- in einem
+ * er in BEIDEN Stapel-Regimen des Baums dieselbe Höhe ergibt -- in einem
  * absolut gefuellten Container (.ExterneStimmen__yt) genauso wie in einem
  * voellig ungestylten <button> (.v2-yt). Gemessen ergibt er dort exakt die
- * Hoehe, die das Poster vorher hatte (760 x 427,5 statt 760 x 453,9).
+ * Höhe, die das Poster vorher hatte (760 x 427,5 statt 760 x 453,9).
  */
 const STAPEL_STYLE = {
   position: 'relative',
@@ -305,7 +305,7 @@ export function YoutubeTimestamp({
    * Sie stehen NICHT zur Disposition: `controls=0` ist eine Gestaltungs-
    * entscheidung der jeweiligen Seite (TenYearsDealPage zeigt vier Videos
    * bewusst ohne Bedienleiste). Wer beim Umbau die Einbettungs-URL neu baut
-   * und diese Parameter dabei verliert, aendert stillschweigend das Aussehen
+   * und diese Parameter dabei verliert, ändert stillschweigend das Aussehen
    * einer Seite, die er gar nicht anfassen wollte.
    */
   zusatzParameter = '',
@@ -396,15 +396,15 @@ export function YoutubeTimestamp({
    *
    * Vorher gab es hier ZWEI Teilbaeume, und der Wechsel zwischen ihnen WAR der
    * Defekt. Jetzt gibt es einen: dieselben Schichten, in derselben Reihenfolge,
-   * vor und nach dem Klick. Was sich aendert, ist ausschließlich die
+   * vor und nach dem Klick. Was sich ändert, ist ausschließlich die
    * Deckkraft des Players und das Zeichen in der Mitte.
    */
   const stapel = (
     <span style={{...STAPEL_STYLE, aspectRatio: seitenverhaeltnis}}>
       {/* SCHICHT 1 — die Vorschau. Sie wird NIE entfernt.
-          Sie bleibt auch nach dem Umblenden liegen: ein Player, der spaeter
-          Vollbild verlaesst oder neu puffert, faellt damit auf ein Bild
-          zurueck statt auf Schwarz. Sie kostet nichts, sie ist laengst da. */}
+          Sie bleibt auch nach dem Umblenden liegen: ein Player, der später
+          Vollbild verlässt oder neu puffert, fällt damit auf ein Bild
+          zurück statt auf Schwarz. Sie kostet nichts, sie ist längst da. */}
       <img
         {...posterProps}
         alt={posterAlt}
@@ -435,7 +435,7 @@ export function YoutubeTimestamp({
             transition: 'opacity 240ms ease-out',
           }}
           onLoad={() => {
-            /* Der Player ist DA. Ob er ZEIGT, weiss nur er selbst — deshalb
+            /* Der Player ist DA. Ob er ZEIGT, weiß nur er selbst — deshalb
                noch eine Gnadenfrist auf seine Auskunft, dann ohne sie. */
             setTimeout(() => setZeigt(true), GNADENFRIST_MS);
           }}
@@ -444,7 +444,7 @@ export function YoutubeTimestamp({
         />
       ) : null}
 
-      {/* SCHICHT 3 — das Zeichen. Vor dem Klick das Play-Symbol, waehrend des
+      {/* SCHICHT 3 — das Zeichen. Vor dem Klick das Play-Symbol, während des
           Ladens ein Ladezeichen: „Wer klickt und eine Sekunde nichts sieht,
           klickt nochmal" (Christian). Nach dem Umblenden ist es weg. */}
       {zeigt ? null : (
@@ -484,7 +484,7 @@ export function YoutubeTimestamp({
      * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Größe".
      *
      * Es steht hier und nicht im Seiten-CSS, weil GENAU DAS der Fehler war,
-     * den dieser Job aufloest: sechs der acht Scopes deklarieren
+     * den dieser Job auflöst: sechs der acht Scopes deklarieren
      * `display: block; width: 100%` selbst, zwei (.v2-yt, .v3-yt) haben
      * überhaupt keine Regel. Die sechs bekommen hier BYTEGLEICH, was sie
      * ohnehin sagen -- nachgemessen, nicht vermutet; für die zwei ist es der
@@ -544,7 +544,7 @@ export function YoutubeTimestamp({
       ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),
     );
   const titelText = escape(titel);
-  // Derselbe Alternativtext wie am Knopf-Poster. Ginge er hier verloren, haette
+  // Derselbe Alternativtext wie am Knopf-Poster. Ginge er hier verloren, hätte
   // die Seite OHNE Skript wieder ein Bild ohne Beschreibung — und genau diese
   // Fassung ist die, die ein Crawler ohne JavaScript sieht.
   const posterAltText = escape(posterAlt);
