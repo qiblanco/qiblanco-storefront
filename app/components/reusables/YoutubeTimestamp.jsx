@@ -310,10 +310,10 @@ export function YoutubeTimestamp({
    */
   zusatzParameter = '',
   /*
-   * Was IM Abzeichen steht. Vorgabe ist das Play-Dreieck; `null` laesst es
-   * leer -- fuer Scopes, die ihr Dreieck selbst zeichnen (podcasts.css malt es
-   * als `::after` auf einen Goldkreis). Ohne diese Moeglichkeit stuenden dort
-   * ZWEI Dreiecke uebereinander.
+   * Was IM Abzeichen steht. Vorgabe ist das Play-Dreieck; `null` lässt es
+   * leer -- für Scopes, die ihr Dreieck selbst zeichnen (podcasts.css malt es
+   * als `::after` auf einen Goldkreis). Ohne diese Möglichkeit stünden dort
+   * ZWEI Dreiecke übereinander.
    */
   playInhalt = '\u25B6',
 }) {
@@ -489,7 +489,7 @@ export function YoutubeTimestamp({
             Das Abzeichen wird NUR gezeichnet, wenn es etwas zu zeigen hat.
             Ein Scope, der sein Zeichen selbst malt (podcasts.css: Goldkreis
             plus ::after-Dreieck), uebergibt `playInhalt={null}` — dann legte
-            eine leere Scheibe sich sonst als schwarzer Fleck genau ueber den
+            eine leere Scheibe sich sonst als schwarzer Fleck genau über den
             Goldkreis, den sie freilassen soll. Gemessen beim Bau: innen
             64x64 mit rgba(0,0,0,.55) mitten auf rgb(201,161,75).
             Waehrend des Ladens gibt es IMMER etwas zu zeigen — das
