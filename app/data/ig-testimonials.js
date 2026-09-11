@@ -1,9 +1,9 @@
 /**
  * IG-Testimonial-Korpus der Produktseiten — Datenquelle, kein Layout.
  *
- * NICHT VON HAND PFLEGEN. Erzeugt von
- * jobdaten/gross/<job>/baue_datenschicht.py aus den Messdaten des Segments s01
- * (claude-jobs/20260911-GROSSJOB-ig-testimonial-slideshow-…/reels-gemessen.json).
+ * NICHT VON HAND PFLEGEN. Erzeugt von baue_datenschicht.py aus den Messdaten
+ * des Segments s01; beide liegen im Job-Verzeichnis
+ * claude-jobs/20260911-GROSSJOB-ig-testimonial-slideshow-… (reels-gemessen.json).
  * Kommt Nachschub, wird neu erzeugt statt nachgetippt.
  *
  * ==================== WARUM DER KORPUS SO AUSSIEHT ====================
@@ -124,8 +124,13 @@
  * Deploys (homepage-bauer/src/umlaut_gate.py, Gate 7b) scannt JEDE
  * hinzugefuegte Zeile einer .js-Datei gegen sein Lexikon und unterscheidet
  * Kommentar nicht von Kundentext. Gemessen 2026-09-11 in s05: 16 Zeilen
- * dieser Datei blockten den Merge. Ausgenommen bleiben Pfade und Bezeichner
- * (jobdaten/gross/...) -- dort ist der Digraph der WAHRE Name.
+ * dieser Datei blockten den Merge. WAS DAS GATE NICHT KANN und was hier zwei
+ * Zeilen gekostet hat: es maskiert URL-, Slug- und Import-Segmente, aber
+ * KEINE Dateipfade im Fliesstext -- ein Verzeichnisname mit ASCII-Digraph ist
+ * dort ununterscheidbar von einem falsch geschriebenen Wort, und eine
+ * Ersetzung macht aus dem wahren Namen einen falschen. Solche Pfade gehoeren
+ * deshalb nicht in den Kommentar einer .js-Datei (als offene Flanke an
+ * homepage-bauer gemeldet, nicht hier repariert).
  */
 export const IG_TESTIMONIALS = [
   {
