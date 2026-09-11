@@ -135,7 +135,7 @@ export const ABSICHT = {
     absaetze: [
       'Es ist mir ein Herzensanliegen, hier eine gleichmäßige Sprache zu etablieren. Nicht, um jemandem seine eigene wegzunehmen — sondern damit die Effekte, um die es geht, überhaupt besprochen werden können, ohne dass das Gespräch nach drei Sätzen am Vokabular scheitert.',
       'Eine gemeinsame Sprache tut zwei Dinge. Sie macht die Sache PRÜFBAR: Wer denselben Begriff benutzt, kann widersprochen werden, und das ist ein Fortschritt — solange jeder seine eigenen Wörter hat, kann niemand dem anderen nachweisen, dass er sich irrt. Und sie macht die Sache BRAUCHBAR: Was man benennen kann, kann man in den Alltag holen. Was nur als Ahnung existiert, bleibt eine Ahnung.',
-      'Das ist der Grund, warum wir unsere Annahmen offenlegen, statt sie als Gewissheiten zu verkaufen — mit dem, was dafür spricht, und mit dem, was dagegen spricht. Ein Modell, das seine eigenen schwachen Stellen nicht nennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
+      'Prüfbar heißt: Eine Annahme muss so formuliert sein, dass man ihr widersprechen kann. Deshalb steht zu jeder Annahme, nach der wir bauen, auch das Gegenargument — mit Quelle, Jahr und Fundstelle, damit jeder selbst nachsehen kann. Ein Modell, dessen Gegenargumente niemand kennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
     ],
   },
 
@@ -154,9 +154,13 @@ export const ABSICHT = {
    * nicht beim nächsten gutgemeinten Textumbau still verschwindet: ohne sie
    * liest sich die Seite als Wirkbehauptung, und genau das ist sie nicht.
    */
+  // HIER STAND EIN DRITTER SATZ, DER DIE SEITE ÜBER SICH SELBST SPRECHEN LIESS.
+  // Das Haltungs-Gate (src/haltung.py) hat ihn beanstandet, und es hatte recht.
+  // Die Probe am Streichen entscheidet: weggefallen ist nur eine Note auf das
+  // eigene Material, keine pruefbare Angabe. Stehen bleibt, was pruefbar ist —
+  // dass hier keine Wirkaussage steht, und wo die belegten Aussagen liegen.
   grenze:
     'Was auf dieser Seite steht, ist eine Absicht und eine Sicht — keine ' +
-    'Wirkaussage und kein Beleg. Sie sagt, warum ich an dieser Frage arbeite. ' +
-    'Was wir konkret annehmen und wie gut es belegt ist, steht getrennt davon ' +
-    'und mit Quelle, Jahr und Fundstelle.',
+    'Wirkaussage und kein Beleg. Was wir konkret annehmen und wie gut es ' +
+    'belegt ist, steht getrennt davon und mit Quelle, Jahr und Fundstelle.',
 };

@@ -9,10 +9,9 @@ import {AbsichtText} from '~/components/campaign/AbsichtText';
  * auch der Abschnitt auf /pages/hypothesen rendert. Diese Datei steuert nur
  * das, was die SEITE zusätzlich hat: Kopf, Unterschrift, Weiterlesen.
  *
- * DIE UNTERSCHRIFT IST KEIN SCHMUCK. Sie ist der Grund, warum dieser Text
- * zitierfähig ist: Name, Rolle und Datum sichtbar im Text, nicht nur im
- * Markup. Eine Maschine liest beides, ein Mensch nur das eine — und wer die
- * Angabe nur ins JSON-LD schreibt, hat sie für die Hälfte der Leser nicht
+ * DIE UNTERSCHRIFT STEHT IM TEXT, NICHT NUR IM MARKUP: Name, Rolle und Datum
+ * sind sichtbar. Eine Maschine liest beides, ein Mensch nur das eine — wer die
+ * Angabe allein ins JSON-LD schreibt, hat sie für die Hälfte der Leser nicht
  * gemacht. Das <time>-Element trägt das maschinenlesbare Datum.
  *
  * „WEITERLESEN" FÜHRT AUSDRÜCKLICH NICHT ZUM PRODUKT. Diese Seite hat keinen
@@ -50,14 +49,14 @@ export function AbsichtSeite() {
   return (
     <div className="ab">
       <section className="ab-bahn ab-kopf">
-        <div className="ab-innen">
+        <div className="ab-inhalt">
           <p className="ab-vorspann">{ABSICHT.vorspann}</p>
           <h1 className="ab-h1">{ABSICHT.titel}</h1>
           <p className="ab-lead">{ABSICHT.lead}</p>
         </div>
       </section>
 
-      <div className="ab-innen">
+      <div className="ab-inhalt">
         <AbsichtText ebene={2} />
 
         <div className="ab-teil">
