@@ -178,6 +178,34 @@ export function produktBeschreibung(pfad) {
  */
 export const PRODUKT_TITEL = {
   '/products/qione-2-pro': `QiOne® 2 Pro kaufen — 20 Tage risikofrei | ${MARKE}`,
+  // QiBracelet, ergänzt 2026-09-11 (Segment s03 des Großjobs
+  // 20260911-BAU-produktnamen-bespielen-…): DIESELBE Mechanik wie eine Zeile
+  // darüber, an derselben Stelle gemessen. Search Console, Fenster
+  // 2026-06-13..2026-09-10: „qi bracelet" 45 Impressionen, 3 Klicks,
+  // Position 8,8 — und der bisherige Titel „QiBracelet® | Qi Blanco" ist
+  // 24 Zeichen lang, wiederholt nur die Suchanfrage und lässt die übrigen
+  // rund 36 sichtbaren Zeichen leer. Wer diesen Namen tippt, kennt das
+  // Produkt und sucht eine Bezugsquelle, der er trauen kann.
+  //
+  // BEIDE ZUSÄTZE SIND FÜR DIESES PRODUKT EINZELN NACHGEMESSEN, nicht aus
+  // der Schwesterzeile übernommen (2026-09-11 am ausgelieferten HTML von
+  // /products/qibracelet): „20 Tage" steht dort fünfmal, darunter als eigene
+  // H2 „QiBracelet® – 20 Tage erleben. Ohne Risiko, mit vollem
+  // Tragekomfort!" und im Fließtext „innerhalb von 20 Tagen unkompliziert
+  // zurückgeben und erhältst den vollen Kaufpreis zurück". Eine
+  // Bestands-Zusage gilt je PRODUKT, nicht je Shop — sie ungeprüft
+  // mitzunehmen war der Fehler des Kakao-Versandzusagen-Falls.
+  //
+  // KEINE Wirkzusage, der Claim-Korridor des Dateikopfs bleibt unberührt:
+  // „kaufen" ist die Suchabsicht, „20 Tage risikofrei" die Risikoumkehr —
+  // das für DACH gemessene Closer-Thema (SSoT kaufueberzeugung/kanon,
+  // Rückgabe/20-Tage-Test/Garantie, n=22).
+  //
+  // SCHREIBWEISE: sichtbar bleibt die Marken-Schreibung „QiBracelet®". Die
+  // real gesuchte Getrenntschreibung „Qi Bracelet" gehört NICHT in einen
+  // kundensichtbaren Titel, sondern in `alternateName` des Produktknotens —
+  // siehe `suchformen()` in app/lib/produkt-schema.js.
+  '/products/qibracelet': `QiBracelet® kaufen — 20 Tage risikofrei | ${MARKE}`,
 };
 
 /**

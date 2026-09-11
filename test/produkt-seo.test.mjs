@@ -289,8 +289,22 @@ test('der Titel-Überschreiber gewinnt, und og:title folgt ihm', () => {
 test('ein Pfad OHNE Überschreiber behält den Titel der Route', () => {
   // Gegenrichtung, sonst wäre ein Überschreiber, der IMMER greift, von
   // einem korrekten nicht zu unterscheiden.
-  const pfad = '/products/qibracelet';
-  assert.equal(PRODUKT_TITEL[pfad], undefined, 'Testannahme veraltet');
+  //
+  // DIE FIXTURE NENNT IHREN FALL NICHT MEHR, SIE MISST IHN (2026-09-11, s03):
+  // hier stand fest '/products/qibracelet' mit der Zusicherung
+  // „Testannahme veraltet". Genau das trat ein — dieses Segment hat dem Pfad
+  // einen Überschreiber gegeben, und der Test klagte einen gesunden Bau an.
+  // Ein gepinnter Negativfall verfällt zwangsläufig, sobald jemand die Menge
+  // erweitert, die er ausschließen soll. Jetzt wird der Pfad zur Laufzeit aus
+  // dem echten Bestand gewählt; findet sich keiner mehr, sagt der Test das
+  // laut, statt stillschweigend nichts zu prüfen.
+  const pfad = PFADE.find((x) => PRODUKT_TITEL[x] === undefined);
+  assert.ok(
+    pfad,
+    'kein einziger Produktpfad ohne Überschreiber — die Gegenrichtung ist ' +
+      'nicht mehr prüfbar; dieser Test braucht eine neue Bauform, keine ' +
+      'gelockerte Zusage',
+  );
   const d = produktMeta({pfad, titel: 'ROH'});
   assert.equal(d.find((x) => x.title)?.title, 'ROH');
   assert.equal(d.find((x) => x.property === 'og:title')?.content, 'ROH');

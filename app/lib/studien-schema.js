@@ -42,6 +42,51 @@ const AUTOR = {
  * ScholarlyArticle-Graph EINER Studie, inkl. Abbildungen als ImageObject und
  * FAQPage, wenn die Studie Laien-Fragen mitbringt.
  */
+/**
+ * `about`-Wert der Übersicht: die untersuchten Produkte als
+ * ENTITÄTS-REFERENZ, dahinter das Sachthema als Text.
+ *
+ * WARUM NICHT WEITER NUR FREIER TEXT (Search Console, Fenster
+ * 2026-08-12..09-10): auf der Query „qione 2 pro" ranken /pages/studien
+ * (Position 2,7, 177 Impressionen) und /products/qione-2-pro (5,5, 4
+ * Impressionen) — Google wählt also die Studienseite als DIE Antwort der
+ * Domain auf einen PRODUKTNAMEN. Das ist zugleich der Trichter-Fehler aus
+ * dem Kaufüberzeugungs-Kanon: eine /pages/-Seite erzeugt den nächsten Klick,
+ * die Bestellung entsteht auf der /products/-Seite.
+ *
+ * Im maschinenlesbaren Teil stand nichts, was die beiden Seiten
+ * unterscheidet. `about` war ein Satz („Zellbiologische In-vitro-
+ * Untersuchungen zu Qi Blanco Produkten") — für eine Maschine ist das kein
+ * Bezug auf ein Produkt, sondern eine Zeichenkette. Eine `@id`-Referenz auf
+ * den Produktknoten sagt genau das, was diese Seite ist: ein Dokument ÜBER
+ * das Produkt, nicht das Produkt. Die Gegenrichtung (`subjectOf` am
+ * Produktknoten) steht in app/lib/produkt-schema.js — eine Naht hat zwei
+ * Richtungen.
+ *
+ * WARUM DIE PFADE HEREINGEREICHT WERDEN UND NICHT IMPORTIERT (am eigenen Bau
+ * gemessen 2026-09-11): die Zuordnung Produkt → Kaufseite liegt in
+ * `app/data/studien/index.js`, und diese Datei importiert ihre fünf JSONs
+ * per `import ... from './e0001.json'` — eine Form, die `node --test` ohne
+ * Import-Attribut ablehnt. Ein Import von dort hätte diese Bibliothek für
+ * jeden Bordmittel-Test unladbar gemacht und `test/entitaet-eeat.test.mjs`
+ * mitgerissen. Die Route hat die Daten ohnehin; sie reicht sie durch, so wie
+ * sie `studien` selbst durchreicht. Ohne Angabe entstehen KEINE Referenzen —
+ * dann bleibt es beim bisherigen Verhalten, statt eine `@id` zu raten.
+ *
+ * @param {Array<{name: string, pfad: string}>} produkte aus `untersuchteProdukte()`
+ * @param {string[]} themen Sachthemen als Text
+ * @returns {Array<object|string>}
+ */
+export function ueberEntitaeten(produkte, themen) {
+  const knoten = [];
+  for (const p of produkte || []) {
+    if (!p?.pfad) continue;
+    const id = `${absoluteCanonical(p.pfad)}#product`;
+    if (!knoten.some((k) => k['@id'] === id)) knoten.push({'@id': id});
+  }
+  return [...knoten, ...themen.filter(Boolean)];
+}
+
 export function studieSchema(studie) {
   const url = absoluteCanonical(`/pages/${studie.slug}`);
   const e = studie.eckdaten;
@@ -206,7 +251,7 @@ function produktAufzaehlung(studien) {
  * `dateModified` kommt aus app/data/redaktionsstand.js — einem gemessenen
  * Datum, nicht aus `new Date()`. Begründung im Kopf jener Datei.
  */
-export function übersichtSchema(studien) {
+export function übersichtSchema(studien, produkte = []) {
   const url = absoluteCanonical('/pages/studien');
   return {
     '@context': 'https://schema.org',
@@ -227,7 +272,9 @@ export function übersichtSchema(studien) {
           'deutschem Volltext, Abbildungen und Original-PDF.',
         inLanguage: 'de',
         isPartOf: {'@type': 'WebSite', '@id': `${CANONICAL_ORIGIN}/#website`},
-        about: 'Zellbiologische In-vitro-Untersuchungen zu Qi Blanco Produkten',
+        about: ueberEntitaeten(produkte, [
+          'Zellbiologische In-vitro-Untersuchungen zu Qi Blanco Produkten',
+        ]),
       },
       {
         '@type': 'ItemList',

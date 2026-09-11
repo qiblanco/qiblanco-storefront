@@ -1,5 +1,5 @@
 import {StudienUebersicht} from '~/components/studien/StudienUebersicht';
-import {STUDIEN, zahlwort} from '~/data/studien';
+import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
 import {übersichtSchema} from '~/lib/studien-schema';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
@@ -41,7 +41,7 @@ export const meta = () => [
       'QiHome® Air — mit Zusammenfassung, deutschem Volltext und Original-PDF.',
   },
   {property: 'og:url', content: absoluteCanonical(PFAD)},
-  {'script:ld+json': übersichtSchema(STUDIEN)},
+  {'script:ld+json': übersichtSchema(STUDIEN, untersuchteProdukte())},
 ];
 
 export function loader() {
