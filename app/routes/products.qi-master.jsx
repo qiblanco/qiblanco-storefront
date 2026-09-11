@@ -115,11 +115,11 @@ async function loadCriticalData({context, request}, handle) {
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
-  // VORVERKAUFSTREPPE — hier und nicht in der Komponente. Welche Stufe laeuft,
-  // haengt am Datum; im Browser berechnet stuende sie NICHT im ausgelieferten
-  // HTML (die Abnahme-Probe misst genau dieses HTML) und wuerde am
-  // Stufenwechsel zwischen Server- und Browserdatum auseinanderlaufen.
-  // Quelle ist app/data/qi-master-preisstufen.json — Prozentsaetze, keine
+  // VORVERKAUFSTREPPE — hier und nicht in der Komponente. Welche Stufe gilt,
+  // entscheidet das Datum; im Browser berechnet stünde sie NICHT im
+  // ausgelieferten HTML (die Abnahme-Probe misst genau dieses HTML) und liefe
+  // am Stufenwechsel zwischen Server- und Browserdatum auseinander.
+  // Quelle ist app/data/qi-master-preisstufen.json — Prozentsätze, keine
   // ausgerechneten Preise; gerechnet wird EINMAL in ~/lib/qi-master-preisstufen.
   return {product, treppe: treppeRechnen(preisstufen)};
 }

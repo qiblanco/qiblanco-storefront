@@ -264,9 +264,9 @@
 
 /* Die laufende Stufe: der EINE Gold-Akzent der Seite, als Flaeche. Kein
    zweiter Ton, kein Rahmen, kein Schatten. */
-.qm-treppe__zeile--laeuft { background: var(--qm-akzent); }
-.qm-treppe__zeile--laeuft th,
-.qm-treppe__zeile--laeuft td { color: var(--qm-dunkel); }
+.qm-treppe__zeile--aktiv { background: var(--qm-akzent); }
+.qm-treppe__zeile--aktiv th,
+.qm-treppe__zeile--aktiv td { color: var(--qm-dunkel); }
 /* Eigene Zeile: als Anhaengsel hinter dem Zeitraum verbreitert die Marke die
    erste Spalte und quetscht die Zahlenspalten. */
 .qm-treppe__marke {
@@ -276,7 +276,7 @@
   color: var(--qm-akzent-tinte);
   white-space: nowrap;
 }
-.qm-treppe__zeile--laeuft .qm-treppe__marke { color: var(--qm-dunkel); }
+.qm-treppe__zeile--aktiv .qm-treppe__marke { color: var(--qm-dunkel); }
 
 .qm-treppe__fazit strong,
 .qm-treppe__ende strong { color: var(--qm-dunkel); }
@@ -316,7 +316,7 @@
     color: var(--qm-muted);
     font-size: var(--qm-fs-xs);
   }
-  .qm-treppe__zeile--laeuft {
+  .qm-treppe__zeile--aktiv {
     background: var(--qm-akzent);
     border-radius: var(--qm-r1);
     padding: var(--qm-s2) 0;

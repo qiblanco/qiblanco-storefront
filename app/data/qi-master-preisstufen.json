@@ -3,7 +3,7 @@
   "_herkunft_regulaerpreis": "Shopify-Variante 62077673767180 des Produkts qi-master: 8940.34 EUR netto x 1.19 = 10639.00 EUR brutto. Live gemessen am 2026-09-11 auf https://qiblanco.com/products/qi-master (Anzeige '10.639,- EUR').",
   "_aenderung": "Wer hier etwas aendert, aendert damit die Produktseite /products/qi-master UND die Landingpage /pages/qi-master-vorverkauf zugleich. Die Sperre-Zusage in shop-manager/AKTIONSSPERRE.yaml zeigt auf genau diese Datei.",
   "handle": "qi-master",
-  "regulaer_brutto_eur": "10639.00",
+  "listenpreis_brutto_eur": "10639.00",
   "waehrung": "EUR",
   "zeitzone": "Europe/Berlin",
   "nie_rabatt_ab": "2027-01-01",

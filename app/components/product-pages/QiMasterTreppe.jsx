@@ -1,22 +1,22 @@
 /**
  * QiMasterTreppe — die Vorverkaufstreppe als EIN Baustein.
  *
- * Steht auf ZWEI Flaechen: im `priceLabel`-Slot der Produktseite
+ * Steht auf ZWEI Flächen: im `priceLabel`-Slot der Produktseite
  * /products/qi-master (zwischen Preiszeile und Kaufknopf) und auf der
  * Landingpage /pages/qi-master-vorverkauf. Beide bekommen dieselben Zahlen aus
  * demselben Aufruf — `treppe()` aus ~/lib/qi-master-preisstufen, gespeist aus
  * app/data/qi-master-preisstufen.json.
  *
  * RECHNET NICHTS. Die Komponente bekommt fertige Zeilen und stellt sie dar.
- * Wer hier anfaengt zu rechnen, hat die zweite Wahrheit gebaut.
+ * Wer hier anfängt zu rechnen, hat die zweite Wahrheit gebaut.
  *
  * WIRD SERVERSEITIG GERENDERT: die Zeilen kommen aus dem Loader, nicht aus
  * einem Effekt. Nur so steht die laufende Stufe im ausgelieferten HTML — und
- * nur so kann die Abnahme-Probe sie am Rand ueberhaupt sehen.
+ * nur so kann die Abnahme-Probe sie am Rand überhaupt sehen.
  *
- * WAS HIER AUSDRUECKLICH NICHT STEHT (Auftrag, woertlich): keine Countdown-Uhr,
+ * WAS HIER AUSDRÜCKLICH NICHT STEHT (Auftrag, wörtlich): keine Countdown-Uhr,
  * keine Restmenge, kein „nur noch heute", kein Ausrufezeichen in der
- * Ueberschrift. Der Negativ-Arm A7 der Abnahme-Probe wird rot, wenn es doch
+ * Überschrift. Der Negativ-Arm A7 der Abnahme-Probe wird rot, wenn es doch
  * jemand einbaut.
  */
 
@@ -25,7 +25,7 @@
  *   treppe: {
  *     zeilen: Array<{id: string, prozent: number, zeitraum: string,
  *                    preisText: string, ersparnisText: string,
- *                    satzText: string, laeuft: boolean}>,
+ *                    satzText: string, aktiv: boolean}>,
  *     aktivId: string|null,
  *     vorlaufHinweis: string,
  *     spannweiteText: string,
@@ -35,8 +35,8 @@
  * }} props
  *
  * `kompakt` schaltet nur die Dichte um (Produktseite: neben dem Kaufknopf,
- * wenig Platz; Landingpage: eigener Abschnitt). Es aendert KEINE Zahl und
- * KEINEN Satz — sonst truege die Flaeche eine eigene Aussage.
+ * wenig Platz; Landingpage: eigener Abschnitt). Es ändert KEINE Zahl und
+ * KEINEN Satz — sonst trüge die Fläche eine eigene Aussage.
  */
 export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = false}) {
   const {zeilen, vorlaufHinweis, spannweiteText} = treppe;
@@ -83,11 +83,15 @@ export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = f
           {zeilen.map((z) => (
             <tr
               key={z.id}
-              className={z.laeuft ? 'qm-treppe__zeile qm-treppe__zeile--laeuft' : 'qm-treppe__zeile'}
+              className={
+                z.aktiv
+                  ? 'qm-treppe__zeile qm-treppe__zeile--aktiv'
+                  : 'qm-treppe__zeile'
+              }
             >
               <th scope="row" data-spalte="Zeitraum">
                 {z.zeitraum}
-                {z.laeuft ? (
+                {z.aktiv ? (
                   <span className="qm-treppe__marke">läuft jetzt</span>
                 ) : null}
               </th>
