@@ -81,6 +81,15 @@
   /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
   --hyp-mass: 68ch;
   --hyp-breite-schmal: 760px;
+  /* DECKEL DER VIDEO-KACHEL, AUS DER QUELLE GERECHNET UND NICHT GEWAEHLT:
+     das groesste Standbild, das YouTube fuer diese Vortraege hat, ist 1280 px
+     breit (maxresdefault, je Video nachgemessen). Das Format-Gate verlangt
+     Quellbreite >= Anzeigebreite * dpr * 0.9; bei dpr 2 traegt eine 1280er
+     Quelle also hoechstens 1280 / 1.8 = 711 CSS-Pixel. Ohne diesen Deckel
+     stand die Kachel auf Tablet-Breiten ueber die volle Lesespalte (728 px)
+     und war dort messbar unscharf — gemessen in tablet-768, tablet-820 und
+     mobil-quer-883. 700 statt 711, damit ein paar Pixel Luft bleiben. */
+  --hyp-videobreite: 700px;
 }
 
 /* --- Grundgeruest ------------------------------------------------------- */
@@ -335,6 +344,7 @@
 }
 
 .hyp__videorahmen {
+  max-width: var(--hyp-videobreite);
   border-radius: var(--hyp-r2); /* EIN Bild-Radius-Token, ueberall derselbe */
   overflow: hidden;
   box-shadow: var(--hyp-shadow-md);
