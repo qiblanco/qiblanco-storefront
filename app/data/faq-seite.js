@@ -229,11 +229,11 @@ export const FAQ_BELEGE = [
       'NAMEN BEWUSST NICHT GENANNT (Entscheid s04, Begründung im RESULT): die namentliche Fassung ' +
       'liegt Christian als Vorlage vor.',
     // Die Vertiefung dieser Antwort. Der Abgrenzungs-SSoT (konzepte/
-    // abgrenzung-flaechen.json, Flaeche `faq`) legt genau diese Arbeitsteilung
-    // fest: „Die FAQ beantwortet … in je EINEM Absatz. Eine Kritik-Flaeche darf
-    // diese zwei Antworten nicht laenger wiederholen, sondern muss sie
+    // abgrenzung-flaechen.json, Fläche `faq`) legt genau diese Arbeitsteilung
+    // fest: „Die FAQ beantwortet … in je EINEM Absatz. Eine Kritik-Fläche darf
+    // diese zwei Antworten nicht länger wiederholen, sondern muss sie
     // VERTIEFEN … Die FAQ verlinkt dorthin." Seit der Freischaltung von
-    // /pages/kritik am 2026-09-11 ist dieser Weg begehbar; vorher waere er ein
+    // /pages/kritik am 2026-09-11 ist dieser Weg begehbar; vorher wäre er ein
     // Link auf eine per robots.txt gesperrte Seite gewesen.
     weiter: {
       pfad: '/pages/kritik',
