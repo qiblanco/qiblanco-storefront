@@ -1,3 +1,4 @@
+import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, PLUSPUNKTE} from '~/data/kritik-vorwuerfe';
 
 /**
@@ -153,6 +154,20 @@ export function KritikSeite() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* Der Verweis auf die Absicht. Er steht auf DIESER Seite, weil hier
+          die Zweifel stehen: wer wissen will, warum jemand das trotzdem
+          macht, findet die Antwort einen Klick weiter.
+          NACH DEM ZUSAMMENFUEHREN MIT PR #373 (2026-09-11) steht er als eigene
+          Section VOR dem Plusbereich, nicht mehr in ihm: der Plusbereich
+          beantwortet "was spricht dafür", der Verweis beantwortet "warum
+          macht das ueberhaupt jemand". Zwei Fragen, zwei Flaechen — sie
+          ineinanderzuschieben haette beide unscharf gemacht. */}
+      <section>
+        <div className="krit__inhalt">
+          <AbsichtHinweis einleitung="Warum wir trotz dieser offenen Fragen weitermachen:" />
         </div>
       </section>
 

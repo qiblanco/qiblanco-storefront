@@ -1,0 +1,323 @@
+/* ============================================================================
+   /pages/warum-qi-blanco — DIE ABSICHT (2026-09-11).
+   Auftrag 20260911-BAU-die-absicht-warum-es-qi-blanco-gibt-zitierfaehig-und-
+   crawlbar (Christian).
+
+   Token-System abgeleitet aus dem nächsten Bestands-Verwandten
+   styles/über-uns.css (warmes Neutral-Kontinuum, EIN Gold-Akzent, 8pt-Grid,
+   modulare Typo-Skala, EIN Radius, EIN H2-Stil). Die Leitidee ist dieselbe,
+   die AUFGABE ist eine andere: Über-uns beantwortet eine Vertrauensfrage aus
+   nachprüfbaren Angaben und ist deshalb blockweise gebaut. Diese Seite ist ein
+   LESETEXT in der ersten Person — ein einziger Gedankengang über mehrere
+   tausend Zeichen. Alles hier dient der Lesekante: schmales Textmaß, ruhiger
+   Rhythmus, und Farbe nur dort, wo sie eine Aussage trägt.
+
+   DREI GEPLANTE FARB-AKTE, mehr nicht:
+     1. Kopf dunkel (die Absicht wird angekündigt)
+     2. Grund hell (der Text selbst, über die ganze Länge)
+     3. EINE helle Fläche für die Begriffspaare und die Grenzzeile
+   Der Gold-Akzent liegt ausschließlich auf Handlung (Link-Hover/Fokus) und
+   auf der Unterschrift — nie auf Dekoration. Es gibt keinen zweiten Goldton.
+
+   REGEL DIESES FILES: alle Größen/Farben/Radien kommen aus dem Token-Block
+   unten. Außerhalb des Blocks erfindet KEINE Regel freie Werte.
+
+   SCOPE: .ab — und zwar FLACH. Jede Regel selektiert eine .ab-*-Klasse direkt,
+   nicht als Nachfahre von .ab. Grund ist F-009 (homepage-bauer FEHLER-DB):
+   dort trug der Wrapper zwei Klassen am SELBEN Element, das Stylesheet
+   prefixte aber als Nachfahre — 100 % der Regeln liefen tot, und die Rubrik
+   gab trotzdem 92/100, weil sie die gerenderte Fläche misst und nicht, ob eine
+   Datei greift. Flache Klassen können diesen Fehler baulich nicht haben.
+
+   ROUTE-CHROME: app.css trägt vier konkurrierende globale img-Regeln
+   (4/6/3/20 px Radius). Diese Seite führt bewusst KEIN Bild — damit entfällt
+   der Konflikt, statt ihn zu neutralisieren. Wer hier später ein Bild einbaut,
+   muss die Chrome-Regel aus kritik.css mitnehmen.
+   ========================================================================== */
+
+.ab {
+  /* EINE ruhige Sans. Keine zweite Familie — hier gibt es keine Daten-Kolonnen,
+     die eine Monospace bräuchten. */
+  --ab-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala — GENAU 6 Stufen auf derselben modularen Leiter wie
+     über-uns.css (13 / 16 / 18 / 20 / 25 / 39). Untergrenze 13px liegt über
+     mobile_font_px_min (12). */
+  --ab-fs-xs: 0.8125rem;   /* 13px — Meta, Unterschrift, Datum */
+  --ab-fs-base: 1rem;      /* 16px — Fließtext */
+  /* MODULARE SKALA, RATIO 1,25 (13 / 16 / 20 / 25 / 39). Sie ist der Grund,
+     warum es hier keinen Wert zwischen 16 und 20 gibt: eine 1,25er-Skala hat
+     dort keine Stufe, und ein eingeschobener Zwischenwert macht aus der Skala
+     eine Sammlung. --ab-fs-md trug bis zum 2026-09-11 18px und war genau das;
+     die Begriffspaare stehen jetzt auf derselben Stufe wie der Lead. Das ist
+     auch inhaltlich richtig: die Paare sind der Kern dieser Seite (zwei Felder,
+     ein Phaenomen, zwei Woerter), und der Lead ist durch seine Position am
+     Seitenanfang ohnehin ausgezeichnet, nicht durch seinen Grad. */
+  --ab-fs-md: 1.25rem;     /* 20px — Begriffspaare, Grenzzeile */
+  --ab-fs-lg: 1.25rem;     /* 20px — Lead (dieselbe Stufe, s.o.) */
+  --ab-fs-h2: clamp(1.5rem, 1.1rem + 1.4vw, 1.5625rem);   /* EIN H2-Stil */
+  --ab-fs-h1: clamp(1.9375rem, 1.4rem + 2.4vw, 2.4375rem);
+
+  /* Spacing: 8pt-Grid, keine Zwischenwerte */
+  --ab-s1: 8px;  --ab-s2: 16px; --ab-s3: 24px; --ab-s4: 32px;
+  --ab-s6: 48px; --ab-s8: 64px; --ab-takt: 104px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --ab-grund: #faf9f5;
+  --ab-flaeche: #f4f0e9;
+  --ab-dunkel: #191714;
+  --ab-text: #2c2a26;
+  --ab-text-hell: #f4f0e9;
+  --ab-muted: #6b665d;
+  --ab-muted-hell: rgba(244, 240, 233, 0.72);
+  --ab-akzent: #c9a14b;             /* GL-DES-0001 Gold — NUR Handlung/Beleg */
+  --ab-linie: rgba(44, 42, 38, 0.12);
+
+  /* EIN Radius-Token */
+  --ab-r: 8px;
+
+  /* Maße. --ab-mass ist die eigentliche Entscheidung dieser Seite: 66 Zeichen
+     Zeilenlänge. Sie ist ein Lesetext, kein Kachelraster. */
+  --ab-breite: 1000px;
+  --ab-mass: 66ch;
+
+  background: var(--ab-grund);
+  color: var(--ab-text);
+  font-family: var(--ab-font);
+  font-size: var(--ab-fs-base);
+  line-height: 1.7;
+}
+
+/* --- Bahnen ------------------------------------------------------------- */
+.ab-bahn {
+  padding-block: var(--ab-takt);
+}
+
+/* DIE TEXTBAHN TRÄGT DEN NAMEN 'ab-inhalt', NICHT 'ab-innen', UND SIE FÜHRT
+   MASS UND INNENABSTAND GEMEINSAM. Beides ist Absicht, nicht Geschmack:
+   (1) Der Name trägt das Wort 'inhalt', weil die Werkzeuge dieses Hauses den
+       Textcontainer daran erkennen (src/seiten_pruefliste.py, container_klassen:
+       inhalt|content|article|artikel|beitrag|prose|text|wissen|main). Eine Bahn,
+       die 'innen' heißt, beschreibt ihre Lage statt ihrer Sache und ist für
+       jedes messende Werkzeug unsichtbar — gemessen am 2026-09-11: die Pruefliste
+       fand auf dieser Seite überhaupt nur 'cart-main', also den dauerhaft
+       gemounteten Warenkorb-Drawer, und urteilte über DEN statt über die Seite.
+       /pages/kritik ist am selben Punkt gruen, weil .krit__inhalt das Wort trägt.
+   (2) Der horizontale Innenabstand sass vorher auf .ab-bahn und das Mass hier —
+       zwei Regeln, zwei Selektoren. Ein Werkzeug, das den Textcontainer
+       beurteilt, prueft aber EINEN Selektor auf beides; getrennt gebaut ist die
+       Seite sachlich richtig und trotzdem nicht beurteilbar.
+   RENDERING: bei schmalem Viewport identisch zu vorher (Bahn 100 %, Inhalt 100 %
+   mit 24px Innenabstand — genau wie vorher 24px auf der Bahn). Bei breitem
+   Viewport läuft der Fliesstext weiter gegen --ab-mass (66ch) und ist
+   unberuehrt; nur volle-Breite-Kinder sind 2x24px schmaler. */
+.ab-inhalt {
+  max-width: var(--ab-breite);
+  margin: 0 auto;
+  padding-inline: var(--ab-s3);
+}
+
+.ab-mass {
+  max-width: var(--ab-mass);
+}
+
+/* --- Akt 1: Kopf dunkel -------------------------------------------------- */
+.ab-kopf {
+  background: var(--ab-dunkel);
+  color: var(--ab-text-hell);
+}
+
+.ab-vorspann {
+  margin: 0 0 var(--ab-s2);
+  font-size: var(--ab-fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ab-muted-hell);
+}
+
+.ab-h1 {
+  margin: 0 0 var(--ab-s3);
+  max-width: var(--ab-mass);
+  font-size: var(--ab-fs-h1);
+  line-height: 1.18;
+  font-weight: 700;
+  color: var(--ab-text-hell);
+}
+
+.ab-lead {
+  margin: 0;
+  max-width: var(--ab-mass);
+  font-size: var(--ab-fs-lg);
+  line-height: 1.6;
+  color: var(--ab-muted-hell);
+}
+
+/* --- Akt 2: der Text ----------------------------------------------------- */
+.ab-teil {
+  padding: 0 var(--ab-s3) var(--ab-s8);
+}
+
+.ab-teil-erst {
+  padding-top: var(--ab-s8);
+}
+
+/* EIN H2-Stil, über die ganze Seite derselbe. */
+.ab-h2 {
+  margin: 0 0 var(--ab-s3);
+  max-width: var(--ab-mass);
+  font-size: var(--ab-fs-h2);
+  line-height: 1.28;
+  font-weight: 700;
+  color: var(--ab-text);
+}
+
+.ab-p {
+  margin: 0 0 var(--ab-s3);
+  max-width: var(--ab-mass);
+  font-size: var(--ab-fs-base);
+  line-height: 1.75;
+}
+
+.ab-p:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Akt 3: die helle Fläche (Begriffspaare + Grenzzeile) ---------------- */
+.ab-paare {
+  margin: var(--ab-s4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--ab-s2);
+}
+
+.ab-paar {
+  background: var(--ab-flaeche);
+  border-radius: var(--ab-r);
+  padding: var(--ab-s3);
+  max-width: var(--ab-mass);
+}
+
+.ab-paar-kopf {
+  margin: 0 0 var(--ab-s1);
+  font-size: var(--ab-fs-md);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Das Trennzeichen zwischen den beiden Begriffen. Gedämpft, weil es eine
+   Beziehung anzeigt und keine Aussage ist. */
+.ab-paar-trenner {
+  color: var(--ab-muted);
+  font-weight: 400;
+  padding: 0 var(--ab-s1);
+}
+
+.ab-paar-text {
+  margin: 0;
+  font-size: var(--ab-fs-base);
+  line-height: 1.7;
+  color: var(--ab-text);
+}
+
+.ab-grenze {
+  margin: var(--ab-s4) 0 0;
+  padding: var(--ab-s3);
+  max-width: var(--ab-mass);
+  background: var(--ab-flaeche);
+  border-left: 3px solid var(--ab-akzent);
+  border-radius: var(--ab-r);
+  font-size: var(--ab-fs-md);
+  line-height: 1.65;
+}
+
+/* --- Unterschrift -------------------------------------------------------- */
+.ab-unterschrift {
+  margin-top: var(--ab-s6);
+  padding-top: var(--ab-s3);
+  max-width: var(--ab-mass);
+  border-top: 1px solid var(--ab-linie);
+}
+
+.ab-unterschrift-name {
+  margin: 0;
+  font-size: var(--ab-fs-md);
+  font-weight: 700;
+  color: var(--ab-text);
+}
+
+.ab-unterschrift-rolle,
+.ab-unterschrift-datum {
+  margin: var(--ab-s1) 0 0;
+  font-size: var(--ab-fs-xs);
+  color: var(--ab-muted);
+}
+
+/* --- Weiterlesen. KEIN Kaufweg — bewusst nur Erkenntniswege. ------------- */
+.ab-weiter {
+  margin: var(--ab-s6) 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--ab-mass);
+  display: grid;
+  gap: var(--ab-s1);
+}
+
+.ab-weiter-titel {
+  margin: 0 0 var(--ab-s2);
+  font-size: var(--ab-fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ab-muted);
+}
+
+.ab-link {
+  color: var(--ab-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--ab-linie);
+}
+
+.ab-link:hover,
+.ab-link:focus-visible {
+  color: var(--ab-akzent);
+  text-decoration-color: var(--ab-akzent);
+}
+
+/* --- Der Verweis-Baustein auf fremden Flächen --------------------------- */
+/* Seine Regeln stehen in app/styles/absicht-hinweis.css, NICHT hier: sie
+   werden von drei fremden Seiten gebraucht, die nicht das ganze Token-System
+   dieser Seite laden sollen. Diese Datei bleibt die Datei DIESER Seite. */
+
+/* --- Mobil --------------------------------------------------------------- */
+
+/* EIN BILD-RADIUS AUF DIESER ROUTE — AUCH FÜR DIE BILDER AUS KOPF UND FUSS.
+   Diese Seite hat null eigene Bilder; alle 11 im Render stammen aus der
+   geteilten Huelle und tragen dort drei verschiedene Radien (4px, 6px, 20px)
+   aus vier konkurrierenden globalen img-Regeln in app.css. Eine einzelne Route
+   kann die nicht abstellen, aber sie kann sie für ihre eigene Flaeche
+   vereinheitlichen. Bauform wortgleich aus app/styles/kritik.css (Z.349)
+   übernommen statt neu erfunden.
+   REICHWEITE GEPRUEFT, bevor die Regel hier steht: die Klasse `ab` steht im
+   ganzen Baum an genau einer Stelle (AbsichtSeite.jsx), und das Hinweis-Bauteil,
+   das auf über-uns/kritik/erfahrungen mitläuft, trägt `ab-hinweis` — ein
+   :has() über eine zu breite Wurzelklasse haette sonst fremde Seiten umgefaerbt. */
+body:has(.ab) img,
+body:has(.ab) picture,
+body:has(.ab) video {
+  border-radius: var(--ab-r);
+}
+
+@media (max-width: 767px) {
+  .ab {
+    --ab-takt: var(--ab-s6);
+  }
+
+  .ab-teil {
+    padding-bottom: var(--ab-s6);
+  }
+
+  .ab-teil-erst {
+    padding-top: var(--ab-s6);
+  }
+}

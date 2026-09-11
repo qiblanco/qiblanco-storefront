@@ -4,6 +4,8 @@ import {ORGANISATION, ORG_ID, SITE_ID} from '~/lib/entity-schema';
 import {STUDIEN, UEBERSICHT_PFAD} from '~/data/studien';
 import {STAND_ISO} from '~/data/redaktionsstand';
 import ueberUnsStyles from '~/styles/ueber-uns.css?url';
+import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
+import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 
 /**
  * /pages/ueber-uns — WER HINTER QI BLANCO STEHT.
@@ -121,7 +123,10 @@ const PRUEFINSTITUT = {
 const GOOGLE_QUELLENWAHL = 'https://www.google.com/preferences/source?q=qiblanco.com';
 
 export function links() {
-  return [{rel: 'stylesheet', href: ueberUnsStyles}];
+  return [
+    {rel: 'stylesheet', href: ueberUnsStyles},
+    {rel: 'stylesheet', href: absichtHinweisStyles},
+  ];
 }
 
 /**
@@ -298,6 +303,15 @@ export default function UeberUns() {
               </a>
             </dd>
           </dl>
+        </div>
+      </section>
+
+      {/* Der Verweis auf die Absicht. Er steht HIER, weil diese Seite die
+          Frage „wer" beantwortet und die Absicht die Frage „warum" — die
+          eine ist die natürliche Fortsetzung der anderen. */}
+      <section className="uu-abschnitt">
+        <div className="uu-innen">
+          <AbsichtHinweis einleitung="Wer hier steht, ist das eine — woran er arbeitet, das andere." />
         </div>
       </section>
 

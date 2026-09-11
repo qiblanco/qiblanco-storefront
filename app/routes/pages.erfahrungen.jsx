@@ -1,5 +1,6 @@
 import {ErfahrungenSeite} from '~/components/campaign/ErfahrungenSeite';
 import erfahrungenStyles from '~/styles/erfahrungen.css?url';
+import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {absoluteCanonical, canonicalLink} from '~/lib/seo';
 import {erfahrungenSchema} from '~/lib/erfahrungen-schema';
 
@@ -93,7 +94,10 @@ const PFAD = '/pages/erfahrungen';
 const OG_BILD = 'https://i.ytimg.com/vi/CkHjy2lU0IM/maxresdefault.jpg';
 
 export function links() {
-  return [{rel: 'stylesheet', href: erfahrungenStyles}];
+  return [
+    {rel: 'stylesheet', href: erfahrungenStyles},
+    {rel: 'stylesheet', href: absichtHinweisStyles},
+  ];
 }
 
 /** @type {MetaFunction} */
