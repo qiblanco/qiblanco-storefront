@@ -78,6 +78,12 @@ function urheber(t) {
   return t.stufe === 'T3' ? 'Qi Blanco' : `@${t.profil}`;
 }
 
+/** ISO-Datum als deutsches Datum. Reine Umformung, kein Kalenderwissen. */
+function deutschesDatum(iso) {
+  const [j, m, tg] = iso.split('-');
+  return `${tg}.${m}.${j}`;
+}
+
 /**
  * Die VideoObject-Knoten einer Produktseite — einer je Eintrag MIT Video.
  *
@@ -87,7 +93,15 @@ function urheber(t) {
  */
 export function igVideoKnoten({produkt, pfad, produktTitel, eintraege = IG_TESTIMONIALS}) {
   const url = absoluteCanonical(pfad);
-  const zu = produktTitel ? ` zu ${produktTitel}` : '';
+  // „auf der Seite zu X" und NICHT „zu X" — der Unterschied ist gemessen, nicht
+  // stilistisch: die Produktzuordnung des Korpus stammt aus Christians Liste,
+  // der BILDTEXT eines Beitrags handelt aber nicht zwingend vom Produkt dieser
+  // Seite. Von den vier Kakao-Beiträgen nennt genau EINER den Kakao; einer
+  // spricht ausdrücklich über einen QiOne-Anhänger (am gemessenen Bildtext in
+  // reels-gemessen.json nachgelesen, 2026-09-11). „Beitrag zu X" wäre damit
+  // für drei von vier eine Behauptung, die der Inhalt nicht deckt. Wo der
+  // Beitrag STEHT, wissen wir dagegen sicher — und genau das steht hier.
+  const aufSeite = produktTitel ? ` auf der Seite zu ${produktTitel}` : ' auf dieser Seite';
   return eintraege
     .filter((t) => t.produkt === produkt)
     .filter((t) => t.video !== false && t.datum && t.posterPfad)
@@ -96,10 +110,13 @@ export function igVideoKnoten({produkt, pfad, produktTitel, eintraege = IG_TESTI
       // Eigene @id mit Fragment, damit der Knoten neben Product und
       // BreadcrumbList derselben Seite eindeutig bleibt (Muster produkt-schema.js).
       '@id': `${url}#ig-video-${t.code}`,
-      name: `Instagram-Beitrag von ${urheber(t)}${zu}`,
+      // Das Datum steht im Namen, damit die Knoten UNTERSCHEIDBAR sind: auf
+      // /products/qione-2-pro tragen 26 Beiträge denselben Urheber (uns), und
+      // 26-mal derselbe Name wäre eine Liste, die nichts benennt.
+      name: `Instagram-Beitrag von ${urheber(t)} vom ${deutschesDatum(t.datum)}`,
       description:
-        `Instagram-Beitrag von ${urheber(t)}${zu}, veröffentlicht am ` +
-        `${t.datum}. Gezeigt in der Instagram-Reihe auf dieser Seite.`,
+        `Instagram-Beitrag von ${urheber(t)} vom ${deutschesDatum(t.datum)}, ` +
+        `gezeigt in der Instagram-Reihe${aufSeite}.`,
       thumbnailUrl: t.posterPfad,
       uploadDate: t.datum,
       embedUrl: einbettung(t),
