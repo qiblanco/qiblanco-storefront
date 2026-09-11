@@ -362,6 +362,26 @@ export const NUR_ROUTE_SEITEN = [
       'probe_partnerseite_naht_sitemap_route.py (Sitemap-Eintrag UND ' +
       'Routen-Marker live) sowie probe_partnerseite_inhalt_live.py.',
   },
+  {
+    pfad: '/pages/kritik',
+    grund:
+      'Eigene indexierbare Antwort auf "Qi Blanco Kritik" (Job 20260911-BAU-' +
+      'kritikseite-freischalten-…-s02; Christian 2026-09-11 nach dem Lesen ' +
+      'der Seite: "Live schalten und bei Mehr einbinden"). Sie besteht allein ' +
+      'aus der Route pages.kritik.jsx und hat KEIN Shopify-Seitenobjekt — ein ' +
+      'zweiter Träger für dieselbe Seite ist bewusst NICHT angelegt. Ohne ' +
+      'diesen Eintrag liefert sie HTTP 200 mit voller Beweisführung und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfüllt: das noindex ist im ' +
+      'selben Commit aus pages.kritik.jsx entfernt und durch canonicalLink() ' +
+      'ersetzt. WACHE (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_zweifelsseite_dunkel.py --flaeche kritik, hängt als ' +
+      'nachbau-audit h1afce75b. Sie verzweigt am Feld `status` der SSoT ' +
+      'konzepte/abgrenzung-flaechen.json und prüft für `live_indexiert` die ' +
+      'HELL-Arme: H1-INHALT (die zugesagten Randmarker, nicht der ' +
+      'Statuscode), H2-ROBOTS (kein Disallow), H2-NOINDEX (kein noindex, ' +
+      'aber Canonical), H2-SITEMAP (steht in einer real AUSGELIEFERTEN ' +
+      'Sitemap — nicht nur in dieser Liste) und H3-VERLINKT.',
+  },
 ];
 
 /**

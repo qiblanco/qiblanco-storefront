@@ -1,51 +1,56 @@
 import {KritikSeite} from '~/components/campaign/KritikSeite';
 import kritikStyles from '~/styles/kritik.css?url';
-import {noindexMeta, noindexHeader} from '~/lib/seo';
+import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+
+const PFAD = '/pages/kritik';
 
 /**
- * /pages/kritik — ERREICHBAR, ABER DUNKEL.
+ * /pages/kritik — FREIGESCHALTET, INDEXIERBAR.
  *
- * Auftrag: 20260910-BAU-zweifelsseiten-live-aber-noindex-und-nicht-im-menue
- * (Christian, 2026-09-10, Eintrag 7 der High-Hanging-Fruits-Liste, wörtlich:
- * „liveschalten und mergen, aber noch nicht crawlbar und noch nicht ins drop
- * down einbetten, d.h. erstmal nur bauen und live schalten sodass wir es
- * kontrollieren können").
+ * Gebaut als dunkle Freigabe-Ansicht von 20260910-BAU-zweifelsseiten-live-aber-
+ * noindex-und-nicht-im-menue („erstmal nur bauen und live schalten sodass wir
+ * es kontrollieren können"). Christian hat sie am 2026-09-11 gelesen und
+ * entschieden: „ist schon sehr gut. Live schalten und bei ‚Mehr' einbinden."
+ * Freigeschaltet von 20260911-BAU-kritikseite-freischalten-…-s02.
  *
- * WARUM EINE NEUE ROUTE UND NICHT /pages/wirkt-das UMGEBAUT: die Vorlage aus
- * s04 des Grossjobs 20260907-…-prio6 empfahl die Überarbeitung von
- * /pages/wirkt-das. Christians Entscheidung vom 2026-09-10 lautet „eine eigene
- * Seite JE Zweifelsfrage" — für „Qi Blanco Kritik" also eine Seite, die diese
- * Frage im Namen trägt. /pages/wirkt-das bleibt unangetastet (zurückgezogen,
- * noindex, Rückweg dokumentiert im Job 20260831-vollzug-wirkt-das-…).
+ * WARUM EINE NEUE ROUTE UND NICHT /pages/wirkt-das UMGEBAUT: Christians
+ * Entscheidung vom 2026-09-10 lautet „eine eigene Seite JE Zweifelsfrage" —
+ * für „Qi Blanco Kritik" also eine Seite, die diese Frage im Namen trägt.
+ * /pages/wirkt-das bleibt unangetastet (zurückgezogen, noindex).
  *
- * DAS DUNKEL HAT HIER VIER SPERREN, und alle vier sind angeordnet („Beides,
- * nicht eines von beiden"):
+ * DIE VIER SPERREN UND WIE SIE GEFALLEN SIND — in dieser Reihenfolge gebaut,
+ * weil sie einander bedingen:
  *
- * (1) NOINDEX im HTML-head UND als X-Robots-Tag (Hausmuster „Gurt und
- *     Hosenträger", wortgleich zu pages.erfahrungen.jsx). BEWUSST KEIN
- *     canonical: entweder noindex ODER canonical, nie beides.
+ * (1) ROBOTS.TXT: `Disallow: /pages/kritik` ist aus generalDisallowRules in
+ *     [robots.txt].jsx ENTFERNT. Diese Sperre muss ZUERST fallen: solange sie
+ *     steht, kann Google die Seite nicht abrufen und damit auch kein noindex
+ *     lesen — eine Seite, die indexierbar aussieht und unsichtbar bleibt.
+ *     Im Quelltext stand die Zeile genau EINMAL, in der Auslieferung viermal
+ *     (generalDisallowRules wird aus vier User-agent-Gruppen gerufen). Wer sie
+ *     live sucht und „beide Vorkommen" entfernt, lässt zwei stehen.
  *
- * (2) ROBOTS.TXT: `Disallow: /pages/kritik` in der `User-agent: *`-Gruppe
- *     ([robots.txt].jsx, generalDisallowRules). Die Index-Hygiene des Hauses
- *     lehnt Disallow für Seiten ab, die im Index STEHEN — Google könnte das
- *     noindex dann nicht mehr lesen. Diese Seite war nie im Index: Disallow
- *     verhindert den Erstbesuch, noindex ist der Gurt für den Bot, der über
- *     einen fremden Link trotzdem kommt. WER DIE SEITE FREISCHALTET, NIMMT
- *     ZUERST DAS DISALLOW RAUS, DANN DAS NOINDEX — in dieser Reihenfolge.
+ * (2) NOINDEX RAUS, CANONICAL REIN — im selben Zug, nie einzeln. Die alte
+ *     Fassung trug `noindexMeta()` + `noindexHeader()` und BEWUSST keinen
+ *     Canonical („entweder noindex ODER canonical, nie beides"). Die Umkehrung
+ *     gilt genauso: eine indexierbare Seite ohne Canonical ist der nächste
+ *     Befund. `canonicalLink()` rendert ein echtes `<link rel="canonical">`;
+ *     ein `{rel:'canonical'}` ohne `tagName` ergäbe `<meta rel="canonical">`
+ *     und wäre wirkungslos (Befund L11, siehe pages.studien.jsx).
  *
- * (3) NICHT IN DER SITEMAP — durch die Wahl des Trägers: reine Hydrogen-Route,
- *     KEIN Shopify-Page-Objekt. Die Sitemap entsteht aus der Shopify-Page-
- *     Liste; eine Code-Route kommt dort baulich nie hinein (Begründung und
- *     Gegenprobe im Bestand: pages.erfahrungen.jsx, Punkt 2).
+ * (3) SITEMAP — ÜBER DEN BESTAND, NICHT ÜBER EIN SHOPIFY-PAGE-OBJEKT. Der
+ *     frühere Satz an dieser Stelle („die Sitemap entsteht aus der Shopify-
+ *     Page-Liste; eine Code-Route kommt dort baulich nie hinein") war zum
+ *     Zeitpunkt seines Schreibens richtig und ist es SEITHER NICHT MEHR:
+ *     app/lib/seo.js führt `NUR_ROUTE_SEITEN`, und die Sitemap-Route
+ *     `sitemap.$type.$page[.xml].jsx` trägt diese Einträge nach. Diese Seite
+ *     steht dort. Ein zusätzliches Shopify-Page-Objekt wäre ein ZWEITER Träger
+ *     für dieselbe Seite und ist deshalb bewusst nicht angelegt.
  *
- * (4) NICHT VERLINKT — kein Eintrag in Navigation, Footer, Übersicht oder auf
- *     einer indexierten Seite. Ausgehende Links (auf /pages/studien, die fünf
- *     Studienseiten und die FAQ) sind erlaubt und gewollt.
- *
- * WER DIESE SEITE SPÄTER LIVE NIMMT, MUSS VIER DINGE TUN: Disallow raus,
- * noindex raus (dann canonical setzen), Shopify-Page-Objekt `kritik` anlegen
- * (Sitemap + Menü-Ziel), Verlinkung setzen (FAQ-Antwort zur Kritik verweist
- * laut Abgrenzungs-SSoT hierher). Das ist Christians Entscheidung, nicht unsere.
+ * (4) VERLINKT von einer indexierten Seite: die FAQ-Antwort zur öffentlichen
+ *     Kritik verweist hierher (app/data/faq-seite.js, Feld `weiter`) — genau
+ *     der Weg, den der Abgrenzungs-SSoT für die FAQ vorsieht. Der Eintrag im
+ *     Menü „Mehr" ist ein Shopify-Admin-Schreibvorgang und kommt aus dem
+ *     Folgesegment s03; die Verlinkung hängt nicht daran.
  *
  * TRACKING-NAHT: keine Cookies, kein neuer Identitäts- oder Tracking-Key, kein
  * eigener Pixel. Die R1/R2/R3-Kette hängt pfad-agnostisch im root-Layout;
@@ -56,30 +61,36 @@ import {noindexMeta, noindexHeader} from '~/lib/seo';
  * vorwuerfe.js). Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
  * lesen — dieselbe Bauform wie /pages/erfahrungen und /pages/uebersicht.
  *
- * WACHE: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py --flaeche kritik
- * misst Inhalt UND alle vier Sperren am Live-Rand (nachbau-audit h1afce75b).
+ * WACHE: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py --flaeche
+ * kritik (nachbau-audit h1afce75b). Sie misst am Live-Rand und verzweigt am
+ * Feld `status` der SSoT konzepte/abgrenzung-flaechen.json: für diese Flaeche
+ * steht dort seit der Freischaltung `live_indexiert`, und die Probe prüft
+ * damit die HELL-Arme (Inhalt unverändert, kein Disallow, kein noindex,
+ * Canonical vorhanden, in einer Sitemap, verlinkt) statt der Dunkel-Arme.
+ * WER DIESE SEITE WIEDER ZURÜCKZIEHT, setzt den Status zurück — die Wache
+ * dreht dann von selbst mit, und es ist kein Code zu ändern.
  */
 export function links() {
   return [{rel: 'stylesheet', href: kritikStyles}];
 }
 
+const TITEL = 'Qi Blanco Kritik – was stimmt davon? | Qi Blanco';
+const BESCHREIBUNG =
+  'Die Kritik an Qi Blanco, wörtlich zitiert und Punkt für Punkt beantwortet: Was stimmt, was stimmt zum Teil, was stimmt nicht – mit Fundstelle, Belegen und den Grenzen unserer Studien.';
+
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Blanco Kritik – was stimmt davon? | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Die Kritik an Qi Blanco, wörtlich zitiert und Punkt für Punkt beantwortet: Was stimmt, was stimmt zum Teil, was stimmt nicht – mit Fundstelle, Belegen und den Grenzen unserer Studien.',
-  },
-  noindexMeta(),
+  {title: TITEL},
+  {name: 'description', content: BESCHREIBUNG},
+  canonicalLink(PFAD),
+  {property: 'og:type', content: 'website'},
+  {property: 'og:title', content: TITEL},
+  {property: 'og:description', content: BESCHREIBUNG},
+  {property: 'og:url', content: absoluteCanonical(PFAD)},
 ];
-
-/** @type {HeadersFunction} */
-export const headers = () => noindexHeader();
 
 export default function KritikRoute() {
   return <KritikSeite />;
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('react-router').HeadersFunction} HeadersFunction */

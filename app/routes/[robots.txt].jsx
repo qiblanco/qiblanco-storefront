@@ -125,16 +125,29 @@ Crawl-delay: 1
 }
 
 /**
- * ZWEIFELSSEITEN, DUNKEL AUF ANORDNUNG (Job 20260910-BAU-zweifelsseiten-live-
- * aber-noindex-und-nicht-im-menue, Christian 2026-09-10): `/pages/erfahrungen`
- * und `/pages/kritik` sind live und noindex, sollen aber ZUSÄTZLICH nicht
- * gecrawlt werden — Christian: Beides, nicht eines von beiden. Für Seiten, die
- * NIE im Index waren, ist Disallow + noindex kein Widerspruch (die Hygiene-Regel
- * „Disallow blockiert das Lesen des noindex“ gilt für Seiten, die schon DRIN
- * sind). WER EINE DER BEIDEN FREISCHALTET: zuerst hier das Disallow raus, dann
- * das noindex in der Route — sonst bleibt die Seite unsichtbar, während sie
- * indexierbar aussieht. Wache: homepage-bauer/pruefungen/
- * probe_zweifelsseite_dunkel.py (Arm A2-ROBOTS).
+ * ZWEIFELSSEITEN (Job 20260910-BAU-zweifelsseiten-live-aber-noindex-und-nicht-
+ * im-menue, Christian 2026-09-10): `/pages/erfahrungen` und `/pages/kritik`
+ * wurden live, aber dunkel gebaut — noindex UND hier zusätzlich gesperrt
+ * (Christian: Beides, nicht eines von beiden). Für Seiten, die NIE im Index
+ * waren, ist Disallow + noindex kein Widerspruch; die Hygiene-Regel „Disallow
+ * blockiert das Lesen des noindex“ gilt für Seiten, die schon DRIN sind.
+ *
+ * `/pages/kritik` IST SEIT 2026-09-11 FREIGESCHALTET (Christian nach dem Lesen
+ * der Seite: „Live schalten und bei ‚Mehr' einbinden") und steht deshalb NICHT
+ * MEHR in dieser Liste. `/pages/erfahrungen` bleibt vorerst gesperrt.
+ *
+ * WER EINE SEITE FREISCHALTET: zuerst hier das Disallow raus, dann das noindex
+ * in der Route — sonst bleibt die Seite unsichtbar, während sie indexierbar
+ * aussieht. Fallen beide im SELBEN Deploy, ist die Reihenfolge gegenstandslos;
+ * getrennt deployt gilt sie strikt.
+ *
+ * ACHTUNG BEIM GEGENMESSEN: diese Funktion wird aus VIER User-agent-Gruppen
+ * gerufen. Eine Quellzeile hier ist vier Zeilen in der ausgelieferten
+ * robots.txt — wer live „beide Vorkommen" sucht und entfernt, lässt zwei
+ * stehen. Gemessen wird auf 0 von 4.
+ *
+ * Wache: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py (Arm
+ * A2-ROBOTS für dunkle, Arm H2-ROBOTS für freigeschaltete Flächen).
  *
  * This function generates disallow rules that generally follow what Shopify's
  * Online Store has as defaults for their robots.txt
@@ -158,7 +171,6 @@ Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
 Disallow: /pages/schlaf-zellen-schutz-v3-67a7
 Disallow: /pages/erfahrungen
-Disallow: /pages/kritik
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*

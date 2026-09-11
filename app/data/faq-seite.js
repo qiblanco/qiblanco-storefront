@@ -97,7 +97,11 @@ export const FAQ_ALLTAG = [
       caption:
         'Handgelenksbreite (nicht Umfang!) — gemessen an der breitesten Stelle. ' +
         'Quelle: Größentabelle der QiBracelet®-Produktseite.',
-      kopf: ['Deine Handgelenksbreite', 'Locker (bewegt sich)', 'Anliegend (liegt an)'],
+      kopf: [
+        'Deine Handgelenksbreite',
+        'Locker (bewegt sich)',
+        'Anliegend (liegt an)',
+      ],
       zeilen: [
         ['4,5 cm', 'S', '—'],
         ['5 cm', 'S', 'S, verengt'],
@@ -224,6 +228,17 @@ export const FAQ_BELEGE = [
       'eine Hypothese") + ZWEIFEL-Item „Und wenn mich das alles nicht überzeugt?". ' +
       'NAMEN BEWUSST NICHT GENANNT (Entscheid s04, Begründung im RESULT): die namentliche Fassung ' +
       'liegt Christian als Vorlage vor.',
+    // Die Vertiefung dieser Antwort. Der Abgrenzungs-SSoT (konzepte/
+    // abgrenzung-flaechen.json, Fläche `faq`) legt genau diese Arbeitsteilung
+    // fest: „Die FAQ beantwortet … in je EINEM Absatz. Eine Kritik-Fläche darf
+    // diese zwei Antworten nicht länger wiederholen, sondern muss sie
+    // VERTIEFEN … Die FAQ verlinkt dorthin." Seit der Freischaltung von
+    // /pages/kritik am 2026-09-11 ist dieser Weg begehbar; vorher wäre er ein
+    // Link auf eine per robots.txt gesperrte Seite gewesen.
+    weiter: {
+      pfad: '/pages/kritik',
+      text: 'Jeden Vorwurf einzeln nachlesen — mit Fundstelle und Antwort',
+    },
   },
   {
     q: 'Wie funktioniert das eigentlich — ganz ohne Elektronik?',
@@ -317,7 +332,8 @@ export const FAQ_BLOECKE = [
   {
     id: 'alltag',
     titel: 'Im Alltag',
-    intro: 'Größe, Wasser, Tragen, Haltbarkeit — die Fragen, die am häufigsten gestellt werden.',
+    intro:
+      'Größe, Wasser, Tragen, Haltbarkeit — die Fragen, die am häufigsten gestellt werden.',
     items: FAQ_ALLTAG,
   },
   {
@@ -329,7 +345,8 @@ export const FAQ_BLOECKE = [
   {
     id: 'belege',
     titel: 'Belege und Kritik',
-    intro: 'Was gemessen ist, was nicht — und wie wir mit der Kritik daran umgehen.',
+    intro:
+      'Was gemessen ist, was nicht — und wie wir mit der Kritik daran umgehen.',
     items: FAQ_BELEGE,
   },
   {

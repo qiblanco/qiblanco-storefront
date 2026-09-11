@@ -95,6 +95,19 @@ function FaqEintrag({item, id, offen, onToggle}) {
       <div className="faq-antwort" id={antwortId} role="region" hidden={!offen}>
         <p>{item.a}</p>
         {item.tabelle ? <FaqTabelle tabelle={item.tabelle} /> : null}
+        {/* Optionale Vertiefung. Das Antwortfeld ist bewusst reiner Text
+            (<p>{item.a}</p>) — ein Link gehört deshalb in ein eigenes Feld
+            und nicht als HTML in die Antwort.
+            BEWUSST OHNE EIGENE CSS-REGEL: `.faq-a1 p` (Mass und Abstand) und
+            `.faq-a1 a` (Akzentfarbe, Unterstreichungs-Abstand) greifen bereits.
+            Eine neue Regel wäre ein freier Wert ausserhalb des Token-Blocks —
+            und app/styles/* zu berühren zöge eine zweite Design-Beleg-Pflicht
+            nach sich (Gate 9, _VISUELL_GLOBS), ohne dass sich etwas ansieht. */}
+        {item.weiter ? (
+          <p className="faq-vertiefung">
+            <Link to={item.weiter.pfad}>{item.weiter.text}</Link>
+          </p>
+        ) : null}
       </div>
     </div>
   );
