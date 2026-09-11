@@ -154,9 +154,15 @@ export const ABSICHT = {
    * nicht beim nächsten gutgemeinten Textumbau still verschwindet: ohne sie
    * liest sich die Seite als Wirkbehauptung, und genau das ist sie nicht.
    */
+  // DER SATZ 'Sie sagt, warum ich an dieser Frage arbeite.' STAND HIER UND IST
+  // GESTRICHEN — das Haltungs-Gate (src/haltung.py) hat ihn als Meta-Kommentar
+  // ueber die eigene Darstellung beanstandet, und es hatte recht: er beschrieb,
+  // was diese Seite aussagt, statt dem Leser die Sache zu sagen. Die Probe am
+  // Streichen entscheidet es: weg faellt nur eine Note auf unser eigenes
+  // Material, keine pruefbare Angabe. Was pruefbar ist, steht weiter da —
+  // dass hier keine Wirkaussage steht, und wo die belegten Aussagen liegen.
   grenze:
     'Was auf dieser Seite steht, ist eine Absicht und eine Sicht — keine ' +
-    'Wirkaussage und kein Beleg. Sie sagt, warum ich an dieser Frage arbeite. ' +
-    'Was wir konkret annehmen und wie gut es belegt ist, steht getrennt davon ' +
-    'und mit Quelle, Jahr und Fundstelle.',
+    'Wirkaussage und kein Beleg. Was wir konkret annehmen und wie gut es ' +
+    'belegt ist, steht getrennt davon und mit Quelle, Jahr und Fundstelle.',
 };
