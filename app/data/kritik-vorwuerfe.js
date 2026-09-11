@@ -1,122 +1,136 @@
 /**
- * INHALTS-SSoT der Kritik-Fläche `/pages/kritik`.
+ * INHALTS-SSoT der Fläche `/pages/kritik`.
  *
- * HERKUNFT DER VORWÜRFE — erhoben, nicht formuliert: die wörtlichen Zitate
- * stammen aus `shared-state/ads-manager/state/welle-f/KRITIK-BEHAUPTUNGEN.md`
- * (eigene Abrufe 2026-09-07, HTTP 200, Rohdokumente daneben abgelegt), von
- * Segment s04 des Grossjobs 20260907-GROSSJOB-erfahrungen-und-kritik-… gegen
- * die Rohabrufe nachgeprüft. DIESELBE Erhebung trägt die Einwandbehandlung der
- * Anzeigen. Wer hier einen Vorwurf umformuliert, ändert ihn für beide —
- * abweichende Antworten auf denselben Vorwurf wären schlimmer als keine.
+ * UMGEBAUT 2026-09-11 (Job 20260911-BAU-kritikseite-antwortet-in-unseren-worten-
+ * statt-fremde-vorwuerfe-abzudrucken). Christian, nachdem er die Seite gesehen
+ * hat: „Es wirkt so, als wäre die Kritik so groß — ist sie aber nicht." Und:
+ * „Wir müssen uns ja nicht verstecken. Aber wir sollten nicht so tun, als wäre
+ * sich die Wissenschaft einig über uns."
  *
- * HERKUNFT DER ANTWORTEN — faktengegatet, nicht neu erfunden: jede Zahl kommt
- * aus `app/data/studien/e0001…e0005.json` (Feld `factGate` hält fest, welche
+ * WAS SICH GEÄNDERT HAT — und was ausdrücklich NICHT:
+ * Die Seite trug sieben Vorwürfe als WÖRTLICHE Zitate mit Fundstelle. Damit
+ * stand die Anklage einer einzelnen Redaktion wörtlich und crawlbar auf unserer
+ * eigenen Domain: wir haben ihre Verbreitungsarbeit mit unserer Reichweite
+ * erledigt. Die sieben THEMEN sind vollständig geblieben, in derselben
+ * Reihenfolge nach Gewicht. Weggefallen sind allein die fremden FORMULIERUNGEN
+ * und ihre Fundstellen. Es fehlt kein Thema; es fehlt fremde Rede.
+ *
+ * DESHALB HEISST DAS FELD JETZT `kurz` UND NICHT MEHR `urteil`: ein Urteil
+ * („Das stimmt zum Teil.") beurteilt eine fremde Aussage und setzt sie damit
+ * voraus. Eine Seite ohne fremde Aussage beantwortet stattdessen die FRAGE —
+ * mit Ja, Nein oder Offen. Wer hier ein Urteilsfeld wiedereinführt, holt die
+ * fremde Aussage durch die Hintertür zurück.
+ *
+ * HERKUNFT DER THEMEN — erhoben, nicht erfunden: die sieben Fragen decken
+ * dieselben Sachverhalte ab wie die Erhebung in
+ * `shared-state/ads-manager/state/welle-f/KRITIK-BEHAUPTUNGEN.md` (IDs K1-K6,
+ * K8), auf der auch die Einwandbehandlung der Anzeigen steht. Die IDs bleiben
+ * deshalb erhalten: sie sind die Brücke zu jener Erhebung. Wer ein Thema
+ * streicht, streicht es für beide.
+ *
+ * HERKUNFT DER ANTWORTEN — faktengegatet: jede Zahl kommt aus
+ * `app/data/studien/e0001…e0005.json` (Feld `factGate` hält fest, welche
  * kursierenden Zahlen in der Primärquelle NICHT stehen; solche Zahlen sind hier
  * nicht verbaut). Die vier Einräumungen sind wortgleich zu
  * `MmWirktDas.jsx GRENZEN 1–4` und zu `faq-seite.js FAQ_BELEGE` — eine zweite
  * Fassung wäre eine zweite Wahrheit.
  *
  * WAS HIER BEWUSST FEHLT (benannt, nicht beispielhaft):
- *  · K7 aus der Erhebung — die Anführungszeichen um „Informationsseite" zu
- *    der in der Kritik verlinkten Fremddomäne zum Thema kohärentes Wasser.
- *    Das ist eine Tatsachenfrage über eine FREMDE Domain, für die im Haus
- *    KEIN Beleg der Betreiberschaft vorliegt. Eine
- *    Antwort in die eine oder andere Richtung wäre hier eine Behauptung ohne
- *    Grundlage. Der Punkt liegt als Entscheidung bei Christian, nicht auf
- *    dieser Seite.
- *  · Die 90-Minuten-Podcastfolge und das Video sind NICHT ausgewertet (der Ton
- *    ist aus diesem Rechenzentrum maschinell nicht abrufbar). Beantwortet wird
- *    ausschließlich, was auf den ABGERUFENEN Seiten steht — also das, was der
- *    Suchende gelesen hat.
+ *  · JEDER Redaktions-, Sendungs- und Domainname, jedes Datum eines fremden
+ *    Beitrags, jede Zählung fremder Vorwürfe und jeder Satz der Form „es gibt
+ *    Kritik". Die kleinste ehrliche Darstellung einer Sache, die klein ist,
+ *    ist keine Erwähnung. Das ist keine Verheimlichung — inhaltlich fehlt
+ *    nichts, alle sieben Themen sind beantwortet.
+ *  · K7 aus der Erhebung — eine Tatsachenfrage über eine FREMDE Domain, für
+ *    die im Haus KEIN Beleg der Betreiberschaft vorliegt. Eine Antwort in die
+ *    eine oder andere Richtung wäre eine Behauptung ohne Grundlage.
+ *  · Jede Zahl, die wir nicht selbst nachgemessen haben — auch dann, wenn sie
+ *    anderswo im Shop steht (Kundenzahl, Sternebewertung). Auf dieser Seite
+ *    liest jemand misstrauisch; eine unbelegte Zahl kostet hier mehr, als sie
+ *    bringt.
  *
  * TEXTSORTE (Abgrenzungs-SSoT `konzepte/abgrenzung-flaechen.json`, Fläche
  * `kritik`): diese Seite trägt BEWEISFÜHRUNG. Keine Kundenstimme wird hier als
- * Beweis benutzt — das ist der Gegenstand von /pages/erfahrungen. Sobald hier
- * ein Erlebnis überzeugen soll statt eines Belegs, ist die Abgrenzung gebrochen.
+ * Beweis benutzt — das ist der Gegenstand von /pages/erfahrungen. Der Verweis
+ * dorthin in STAERKEN sagt das ausdrücklich mit („Kein Beweis für eine
+ * Wirkung"); sobald hier ein Erlebnis überzeugen soll statt eines Belegs, ist
+ * die Abgrenzung gebrochen.
  */
 
-/** Die drei Urteilsstufen. Mehr gibt es nicht — ein Vorwurf, der keine dieser
- *  drei Antworten verträgt, gehört nicht auf diese Seite. */
-export const URTEIL = {
-  stimmt: {kuerzel: 'stimmt', text: 'Das stimmt.'},
-  teilweise: {kuerzel: 'teilweise', text: 'Das stimmt zum Teil.'},
-  falsch: {kuerzel: 'falsch', text: 'Das stimmt nicht.'},
+/**
+ * Die drei Antwortstufen. Mehr gibt es nicht — eine Frage, die keine dieser
+ * drei Antworten verträgt, ist auf dieser Seite nicht ehrlich zu beantworten.
+ * `ton` steuert allein die Farbgebung, nie den Inhalt.
+ */
+export const TON = {
+  ja: 'ja',
+  nein: 'nein',
+  offen: 'offen',
 };
 
 /**
- * Die Vorwürfe in der Reihenfolge, in der ein Zweifelnder sie sortiert:
- * zuerst der harte Sachvorwurf, zuletzt der Ton.
- * @type {Array<{id: string, frage: string, woertlich: string, fundstelle: string,
- *   urteil: keyof typeof URTEIL, antwort: string[]}>}
+ * Die sieben Fragen in der Reihenfolge, in der ein Zweifelnder sie sortiert:
+ * zuerst die Frage, die am schwersten wiegt, zuletzt die, die am wenigsten mit
+ * Messwerten zu tun hat.
+ * @type {Array<{id: string, frage: string, kurz: string,
+ *   ton: keyof typeof TON, antwort: string[]}>}
  */
-export const VORWUERFE = [
+export const FRAGEN = [
   {
     id: 'K2',
-    frage: 'Gibt es für das Erklärungsmodell wissenschaftliche Belege?',
-    woertlich:
-      'Wissenschaftlich gibt es jedoch weder für die Struktur noch für eine Wirkung von hexagonalem Wasser irgendwelche haltbaren Belege.',
-    fundstelle: 'quarks.de, Beitrag vom 27. Juni 2026',
-    urteil: 'stimmt',
+    frage: 'Ist das Erklärungsmodell wissenschaftlich belegt?',
+    kurz: 'Nein.',
+    ton: 'nein',
     antwort: [
-      'Das ist der härteste Satz der ganzen Kritik, und er trifft. Das Modell, mit dem unsere Publikationen ihre Messwerte erklären — geordnetes Wasser — ist in der etablierten Wissenschaft nicht anerkannt. Die Arbeiten selbst führen es als Hypothese, nicht als gesicherte Erkenntnis. Wir bestreiten das nicht und haben es nie bestritten.',
-      'Was wir dagegenhalten, ist kein Gegenargument, sondern eine Unterscheidung: Die Erklärung ist offen. Die Messung ist es nicht. Was in den Zellschalen passiert ist, wurde gemessen und veröffentlicht — warum es passiert ist, weiß niemand sicher, wir eingeschlossen. Beides auseinanderzuhalten ist der ehrlichste Umgang mit dieser Datenlage. Wer daraus schließt, dass deshalb auch die Messwerte nicht existieren, macht einen anderen Fehler als der, den er uns vorwirft.',
+      'Das ist der härteste Punkt auf dieser Seite, und wir stellen ihn nach vorn. Das Modell, mit dem unsere Publikationen ihre Messwerte erklären — geordnetes Wasser — ist in der etablierten Wissenschaft nicht anerkannt. Die Arbeiten selbst führen es als Hypothese, nicht als gesicherte Erkenntnis. Wir bestreiten das nicht und haben es nie bestritten.',
+      'Was wir dem entgegensetzen, ist kein Gegenargument, sondern eine Unterscheidung: Die Erklärung ist offen. Die Messung ist es nicht. Was in den Zellschalen passiert ist, wurde gemessen und veröffentlicht — warum es passiert ist, weiß niemand sicher, wir eingeschlossen. Beides auseinanderzuhalten ist der ehrlichste Umgang mit dieser Datenlage.',
     ],
   },
   {
     id: 'K3',
-    frage: 'Wurde das wirklich untersucht — oder nur „angeblich"?',
-    woertlich:
-      'Und trotzdem wurde die Wirkung des teuren Schmucks angeblich wissenschaftlich getestet und in Fachpublikationen bestätigt.',
-    fundstelle: 'quarks.de, Beitrag vom 27. Juni 2026',
-    urteil: 'falsch',
+    frage: 'Wurde die Wirkung überhaupt je untersucht?',
+    kurz: 'Ja, fünf Mal — veröffentlicht und im Original nachlesbar.',
+    ton: 'ja',
     antwort: [
-      'Das Wort „angeblich" trägt hier den ganzen Vorwurf, und es ist das einzige, was daran nicht stimmt. Fünf Arbeiten sind erschienen, jede mit Fachzeitschrift, Datum und Seitenzahl; vier davon liegen bei uns im Original als PDF, und dieselbe Kritik verlinkt sie in ihrer eigenen Quellenliste. Die Studien werden dort also nicht übersehen — sie werden bestritten. Das ist ein Unterschied.',
-      'Wie weit diese fünf Arbeiten tragen, steht weiter unten – mit ihren Grenzen, Punkt für Punkt. Aber „es gibt sie nicht" ist keine der Möglichkeiten. Du kannst sie im Original lesen, ohne uns ein Wort zu glauben.',
+      'Fünf Arbeiten sind erschienen, jede mit Fachzeitschrift, Datum und Seitenzahl; vier davon liegen bei uns im Original als PDF. Du kannst sie lesen, ohne uns ein Wort zu glauben.',
+      'Wie weit diese fünf Arbeiten tragen, steht weiter unten — mit ihren Grenzen, Punkt für Punkt. Untersucht wurden Zellkulturen, nicht Menschen. Das ist der Unterschied, auf den es ankommt, und wir schreiben ihn hin, statt ihn zu überspringen.',
     ],
   },
   {
     id: 'K1',
-    frage: 'Behauptet ihr, Strahlung abzuwehren?',
-    woertlich:
-      'Die Firma Qi Blanco behauptet, mit ihrem Schmuck könne man Strahlung abwehren und die Zellgesundheit fördern.',
-    fundstelle: 'quarks.de, Beitrag vom 27. Juni 2026',
-    urteil: 'teilweise',
+    frage: 'Wehrt der Schmuck Strahlung ab?',
+    kurz: 'Nein — gemessen wurden Zellen, nicht Strahlung.',
+    ton: 'nein',
     antwort: [
-      'Der Satz gibt unsere Aussage verkürzt wieder, und der verkürzte Teil ist der wichtige. In unseren Produkten steckt keine Elektronik, kein Akku, keine Batterie. Es wird nichts gesendet und nichts abgeschirmt. Wer ein Messgerät danebenlegt, misst dieselbe Strahlung wie vorher — das haben wir nie anders gesagt.',
+      'In unseren Produkten steckt keine Elektronik, kein Akku, keine Batterie. Es wird nichts gesendet und nichts abgeschirmt. Wer ein Messgerät danebenlegt, misst dieselbe Strahlung wie vorher — das haben wir nie anders gesagt.',
       'Untersucht wurde etwas anderes: nicht die Strahlung, sondern was Zellen unter Strahlung tun. In den Zellstudien lagen Zellkulturen vier Stunden unter Mobilfunkbelastung, einmal mit und einmal ohne Gerät daneben. Gemessen wurden die Zellen, nicht das Feld. „Strahlung abwehren" beschreibt das falsch, auch wenn es kürzer klingt.',
     ],
   },
   {
     id: 'K6',
-    frage: 'Versprecht ihr, dass man damit zum „Superhuman" wird?',
-    woertlich:
-      'verwandelt gewöhnliches Wasser in angeblich kohärentes Wasser und macht euch damit zu nichts Geringerem als einem Superhuman',
-    fundstelle: 'Podcast-Seite zur Folge vom 25. Januar 2025',
-    urteil: 'falsch',
+    frage: 'Versprecht ihr übermenschliche Fähigkeiten?',
+    kurz: 'Nein.',
+    ton: 'nein',
     antwort: [
-      'Das haben wir nicht gesagt. Kein Text von uns verspricht das, und du wirst es auf keiner unserer Seiten finden. Der Satz übertreibt ein Versprechen ins Lächerliche, das in dieser Form nie gegeben wurde, und widerlegt danach die Übertreibung.',
+      'Kein Text von uns verspricht das, und du wirst es auf keiner unserer Seiten finden.',
       'Ein Wirknachweis am Menschen liegt nicht vor. Wir behaupten keinen Heileffekt, versprechen keine Heilung und raten niemandem, wegen uns eine Behandlung zu ändern. Untersucht sind Zellkulturen und eine Sammlung von Erfahrungsberichten — mehr steht in keinem unserer Texte.',
     ],
   },
   {
     id: 'K5',
-    frage: 'Über 1000 Euro für ein Stück Edelstahl?',
-    woertlich: 'der Schmuck für über 1000 Euro',
-    fundstelle:
-      'Podcast-Seite zur Folge vom 25. Januar 2025; die Materialfrage stammt aus einem Leserkommentar unter dem Beitrag',
-    urteil: 'stimmt',
+    frage: 'Über 1000 Euro — wofür eigentlich?',
+    kurz: 'Der Preis stimmt. Hier steht, was drinsteckt.',
+    ton: 'ja',
     antwort: [
-      'Der Preis stimmt, und wir reden ihn nicht klein. Was du bezahlst, ist nicht das Gehäuse: Im Inneren sitzt der GitterChip aus einer eigens entwickelten 750er Goldlegierung, und die fünf Publikationen, um die hier gestritten wird, haben wir bezahlt. Ob dir das den Preis wert ist, entscheidest du und niemand sonst.',
+      'Wir reden den Preis nicht klein. Was du bezahlst, ist nicht das Gehäuse: Im Inneren sitzt der GitterChip aus einer eigens entwickelten 750er Goldlegierung, und die fünf Publikationen haben wir bezahlt. Ob dir das den Preis wert ist, entscheidest du und niemand sonst.',
       'Deshalb hängt an dieser Seite kein Kaufknopf, sondern ein Rückgaberecht: 20 Tage tragen, und wenn es nichts für dich ist, ohne Angabe von Gründen zurück.',
     ],
   },
   {
     id: 'K4',
     frage: 'Kann so etwas überhaupt plausibel sein?',
-    woertlich:
-      'Kann es überhaupt plausibel sein, dass das Tragen eines kleinen Schmuckstücks weitreichende Auswirkungen auf die Gesundheit hat?',
-    fundstelle: 'quarks.de, Beitrag vom 27. Juni 2026',
-    urteil: 'teilweise',
+    kurz: 'Offen — und die Frage ist berechtigt.',
+    ton: 'offen',
     antwort: [
       'Das ist keine Messfrage, sondern ein Bauchgefühl in Frageform — und wir halten das Bauchgefühl für berechtigt. Es klingt unwahrscheinlich. Es klang für uns auch unwahrscheinlich.',
       'Ein klinischer Wirknachweis am Menschen, der die Frage entscheiden würde, liegt nicht vor. Was es gibt, sind fünf Zellstudien und 171 Erfahrungsberichte — und die Prüfung an dir selbst: 20 Tage tragen, danach ohne Angabe von Gründen zurückschicken. Wenn nichts passiert, hast du deine Antwort.',
@@ -124,14 +138,12 @@ export const VORWUERFE = [
   },
   {
     id: 'K8',
-    frage: 'Sind das nicht einfach von euch gekaufte Studien?',
-    woertlich:
-      'Die zwei studien die sie selbst finanziert haben sind aussagelos und unwissenschaftlich ausgeführt.',
-    fundstelle: 'öffentliche Bewertung, Wortlaut unverändert',
-    urteil: 'teilweise',
+    frage: 'Sind das von euch bezahlte Studien?',
+    kurz: 'Ja. Wir haben sie finanziert und die Geräte gestellt.',
+    ton: 'ja',
     antwort: [
-      'Der erste Teil stimmt und steht auch in den Publikationen selbst: Wir haben die Untersuchungen finanziert und die Geräte gestellt. Es sind fünf, nicht zwei, und alle fünf stammen von demselben Labor — dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. Das ist bei Produktforschung üblich und macht Ergebnisse nicht falsch. Es heißt aber, dass eine unabhängige Wiederholung durch ein zweites Labor aussteht, und das ist die größte offene Stelle unserer Datenlage. Sie liegt bei uns.',
-      'Was wir belegen können, ist Offenlegung: Auftraggeber, Labor, Methode, Fallzahlen und die Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Was wir nicht belegen können, ist Unabhängigkeit — deshalb steht das Wort „unabhängig getestet" bei uns nirgends. „Aussagelos" ist dagegen ein Urteil, kein Befund: Was gemessen wurde, ist nachlesbar; wie weit es trägt, siehst du unten.',
+      'Das steht auch in den Publikationen selbst. Es sind fünf, und alle fünf stammen von demselben Labor — dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. Das ist bei Produktforschung üblich und macht Ergebnisse nicht falsch. Es heißt aber, dass eine unabhängige Wiederholung durch ein zweites Labor aussteht, und das ist die größte offene Stelle unserer Datenlage. Sie liegt bei uns.',
+      'Was wir belegen können, ist Offenlegung: Auftraggeber, Labor, Methode, Fallzahlen und die Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Was wir nicht belegen können, ist Unabhängigkeit — deshalb steht das Wort „unabhängig getestet" bei uns nirgends.',
     ],
   },
 ];
@@ -139,6 +151,8 @@ export const VORWUERFE = [
 /**
  * Die vier Einräumungen. WORTGLEICH zu MmWirktDas.jsx GRENZEN 1–4 und zu
  * faq-seite.js — sie sind die Inhaltsgrenze dieser Seite, nicht ihre Rhetorik.
+ * SIE WERDEN NICHT GEKÜRZT: beim Aufräumen der fremden Zitate darf die
+ * Ehrlichkeit nicht mit verschwinden, das wäre der schlimmere Schaden.
  * @type {Array<{titel: string, text: string}>}
  */
 export const EINRAEUMUNGEN = [
@@ -220,5 +234,73 @@ export const BEFUNDE = [
     grenze:
       'In vitro. Keine klinische Untersuchung am Menschen. Das verwendete Regenerationsmodell bildet nach Angabe der Publikation ausschließlich das periphere Nervensystem ab.',
     slug: 'studie-qihome-air',
+  },
+];
+
+/**
+ * WAS FÜR UNS SPRICHT — die zweite Hälfte der Seite (Christian 2026-09-11:
+ * „wirklich unsere eigenen Stärken auch auf der Kritik ausbauen — also nicht
+ * nur defensiv, man kann da ja auch proaktiv vorgehen").
+ *
+ * DIE REIHENFOLGE IST BINDEND und steht in der Komponente, nicht hier: erst die
+ * offenen Punkte, dann die Stärken. Wer mit den Stärken anfängt, wirkt
+ * ausweichend; wer mit ihnen aufhört, wirkt souverän.
+ *
+ * AUFNAHMEREGEL — jede Zeile mit Beleg oder sie fällt weg. `beleg` nennt, WORAN
+ * die Aussage nachprüfbar ist; ein Eintrag ohne Beleg gehört nicht in diese
+ * Liste, auch wenn er stimmt. `pfad`/`link` nur auf Seiten, die ausgeliefert
+ * werden — ein Verweis ins Leere ist auf DIESER Seite teurer als anderswo.
+ *
+ * WAS MANGELS BELEG NICHT AUFGENOMMEN IST (benannt, nicht beispielhaft):
+ *  · „Eine unabhängige Wiederholung ist in Arbeit." Dafür liegt kein Beleg vor.
+ *    Ein erfundenes Vorhaben wäre schlimmer als eine eingestandene Lücke — und
+ *    das ist die eine Stelle dieser Seite, an der nichts geschönt werden darf.
+ *  · Kundenzahl und Sternebewertung aus dem Kopfbereich des Shops: auf dieser
+ *    Seite nicht nachgemessen, also hier nicht behauptet.
+ *  · „Warum es Qi Blanco gibt" (/pages/warum-qi-blanco): am 2026-09-11 mit
+ *    HTTP 404 gemessen, also noch nicht ausgeliefert. SOBALD SIE LIVE IST,
+ *    gehört sie als achter Eintrag hierher — ihr Fehlen war kein Grund zu warten.
+ *
+ * @type {Array<{titel: string, text: string, beleg: string,
+ *   pfad?: string, link?: string}>}
+ */
+export const STAERKEN = [
+  {
+    titel: 'Wir nennen unsere Grenzen selbst.',
+    text: 'Alles, was auf dieser Seite gegen uns spricht, hat uns niemand abgerungen. Es steht hier, weil du es wissen sollst, bevor du dich entscheidest — und es steht wortgleich auf unseren Studienseiten.',
+    beleg: 'Die vier Einräumungen auf dieser Seite, wortgleich auf /pages/studien.',
+  },
+  {
+    titel: '20 Tage auf unsere Rechnung prüfen.',
+    text: 'Trag es 20 Tage. Wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen zurück. Das Risiko liegt bei uns, nicht bei dir.',
+    beleg: 'Rückgaberecht, öffentlich nachlesbar.',
+    pfad: '/pages/das-20-tage-versprechen',
+    link: 'Wie die 20 Tage laufen',
+  },
+  {
+    titel: 'Fünf veröffentlichte Arbeiten, im Original nachlesbar.',
+    text: 'Jede mit Fachzeitschrift, Datum und Seitenzahl; vier davon liegen bei uns als Original-PDF. Dass alle fünf aus demselben Labor stammen, steht weiter oben — beides gehört nebeneinander, nicht nur das eine.',
+    beleg: 'Die fünf Arbeiten mit Methode, Zahlen und PDF.',
+    pfad: '/pages/studien',
+    link: 'Alle fünf Arbeiten ansehen',
+  },
+  {
+    titel: 'Ein benanntes Institut, ein benannter Wissenschaftler.',
+    text: 'Prof. Dr. Peter C. Dartsch, Dartsch Scientific Institut. Kein anonymes Gutachten, kein Prüfsiegel ohne Absender — du kannst nachsehen, wer gemessen hat.',
+    beleg: 'Autor und Institut stehen in jeder der fünf Publikationen.',
+  },
+  {
+    titel: 'Ein eingetragenes Unternehmen mit Anschrift.',
+    text: 'Handelsregister, ladungsfähige Anschrift, Menschen, die mit ihrem Namen dafür einstehen. Alles im Impressum, ohne Umweg und ohne Formular.',
+    beleg: 'Impressum mit Handelsregisternummer und Anschrift.',
+    pfad: '/pages/impressum',
+    link: 'Impressum ansehen',
+  },
+  {
+    titel: 'Erfahrungen, die du selbst nachprüfen kannst.',
+    text: 'Menschen berichten unter eigenem Namen auf ihren eigenen Konten — nicht auf unseren. Das ist kein Beweis für eine Wirkung, und wir führen es auch nicht als einen. Es ist nachprüfbar, und das ist mehr, als eine anonyme Bewertung dir bietet.',
+    beleg: 'Berichte auf den öffentlichen Konten der Menschen selbst.',
+    pfad: '/pages/erfahrungen',
+    link: 'Erfahrungen nachsehen',
   },
 ];
