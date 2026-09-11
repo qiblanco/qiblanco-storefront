@@ -104,7 +104,15 @@
  *               haengt an der SEITE, nicht am Korpus, und ist hier deshalb
  *               bewusst NICHT einsortiert. Die Komponente sortiert stabil
  *               INNERHALB der Stufe nach — nie ueber Stufengrenzen hinweg.
- *  datum        ISO, oder null wenn die Plattform keines nennt
+ *  datum        ISO. Steht heute bei ALLEN 66 Eintraegen (s04, 2026-09-11).
+ *               Bis dahin fehlte es bei 11 -- nicht weil die Plattform
+ *               keines nennt, sondern weil das Messmuster den Praefix
+ *               "- " verlangte, den Instagram nur setzt, wenn es Like-
+ *               und Kommentarzahlen rendert. Das Datum wird aus derselben
+ *               gemessenen Beschreibung geborgen, und der Treffer gilt nur,
+ *               wenn das darin gefangene Konto dem autoritativen Konto aus
+ *               og:url entspricht: ein im Bildtext ZITIERTES Fremdkonto
+ *               darf kein Datum liefern. Pflichtfeld fuer VideoObject.
  *  posterPfad   Standbild auf UNSEREM CDN. Niemals ein cdninstagram-Link:
  *               video.poster ist eine SIGNIERTE URL mit ?st=/&oe= und
  *               verfaellt — ein Hotlink waere eine Flaeche, die in Wochen
@@ -115,6 +123,36 @@
  * Umlaute (Hausregel, live gegated).
  */
 export const IG_TESTIMONIALS = [
+  {
+    code: "DZcBRn9tKn4",
+    produkt: "Kakao",
+    stufe: "T1",
+    typ: "reel",
+    konto: "maxinfreiheit",
+    profil: "maxinfreiheit",
+    profilUrl: "https://www.instagram.com/maxinfreiheit/",
+    verifiziert: true,
+    video: true,
+    datum: "2026-06-11",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzcbrn9tkn4--3755578bda65.jpg?v=1789161035",
+  },
+  {
+    code: "DW59RV8Db8k",
+    produkt: "Kakao",
+    stufe: "T1",
+    typ: "p",
+    konto: "maxinfreiheit",
+    profil: "maxinfreiheit",
+    profilUrl: "https://www.instagram.com/maxinfreiheit/",
+    verifiziert: true,
+    video: false,
+    datum: "2026-04-09",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dw59rv8db8k--9c18e689fa30.jpg?v=1789161080",
+  },
   {
     code: "DUY4iOojqSh",
     produkt: "Kakao",
@@ -146,36 +184,6 @@ export const IG_TESTIMONIALS = [
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-drk-x7ojatx--b4d0b04d774b.jpg?v=1789161076",
   },
   {
-    code: "DW59RV8Db8k",
-    produkt: "Kakao",
-    stufe: "T1",
-    typ: "p",
-    konto: "maxinfreiheit",
-    profil: "maxinfreiheit",
-    profilUrl: "https://www.instagram.com/maxinfreiheit/",
-    verifiziert: true,
-    video: false,
-    datum: null,
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dw59rv8db8k--9c18e689fa30.jpg?v=1789161080",
-  },
-  {
-    code: "DZcBRn9tKn4",
-    produkt: "Kakao",
-    stufe: "T1",
-    typ: "reel",
-    konto: "maxinfreiheit",
-    profil: "maxinfreiheit",
-    profilUrl: "https://www.instagram.com/maxinfreiheit/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzcbrn9tkn4--3755578bda65.jpg?v=1789161035",
-  },
-  {
     code: "DZz7q6JSvfX",
     produkt: "QiBracelet",
     stufe: "T1",
@@ -189,6 +197,21 @@ export const IG_TESTIMONIALS = [
     sprache: "de",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzz7q6jsvfx--8ad46211f05b.jpg?v=1789161040",
+  },
+  {
+    code: "DZcBRn9tKn4",
+    produkt: "QiBracelet",
+    stufe: "T1",
+    typ: "reel",
+    konto: "maxinfreiheit",
+    profil: "maxinfreiheit",
+    profilUrl: "https://www.instagram.com/maxinfreiheit/",
+    verifiziert: true,
+    video: true,
+    datum: "2026-06-11",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzcbrn9tkn4--3755578bda65.jpg?v=1789161035",
   },
   {
     code: "DZPDuPBu_i-",
@@ -206,6 +229,21 @@ export const IG_TESTIMONIALS = [
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzpdupbu-i--dd93ce088f50.jpg?v=1789161030",
   },
   {
+    code: "DYY-_BhOmHy",
+    produkt: "QiBracelet",
+    stufe: "T1",
+    typ: "reel",
+    konto: "desiree_witschel",
+    profil: "desiree_witschel",
+    profilUrl: "https://www.instagram.com/desiree_witschel/",
+    verifiziert: true,
+    video: true,
+    datum: "2026-05-15",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dyy-bhomhy--b339a6110a4f.jpg?v=1789161024",
+  },
+  {
     code: "DXxEwcUM2tv",
     produkt: "QiBracelet",
     stufe: "T1",
@@ -219,6 +257,21 @@ export const IG_TESTIMONIALS = [
     sprache: "de",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dxxewcum2tv--be1a963d268d.jpg?v=1789161020",
+  },
+  {
+    code: "DWWikE-jUwA",
+    produkt: "QiBracelet",
+    stufe: "T1",
+    typ: "reel",
+    konto: "maxinfreiheit",
+    profil: "maxinfreiheit",
+    profilUrl: "https://www.instagram.com/maxinfreiheit/",
+    verifiziert: true,
+    video: true,
+    datum: "2026-03-26",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dwwike-juwa--a35c813a87d8.jpg?v=1789161015",
   },
   {
     code: "DWRvSt1DfRD",
@@ -264,51 +317,6 @@ export const IG_TESTIMONIALS = [
     sprache: "en",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c0cpj-upklx--a9516081a431.jpg?v=1789160783",
-  },
-  {
-    code: "DWWikE-jUwA",
-    produkt: "QiBracelet",
-    stufe: "T1",
-    typ: "reel",
-    konto: "maxinfreiheit",
-    profil: "maxinfreiheit",
-    profilUrl: "https://www.instagram.com/maxinfreiheit/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dwwike-juwa--a35c813a87d8.jpg?v=1789161015",
-  },
-  {
-    code: "DYY-_BhOmHy",
-    produkt: "QiBracelet",
-    stufe: "T1",
-    typ: "reel",
-    konto: "desiree_witschel",
-    profil: "desiree_witschel",
-    profilUrl: "https://www.instagram.com/desiree_witschel/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dyy-bhomhy--b339a6110a4f.jpg?v=1789161024",
-  },
-  {
-    code: "DZcBRn9tKn4",
-    produkt: "QiBracelet",
-    stufe: "T1",
-    typ: "reel",
-    konto: "maxinfreiheit",
-    profil: "maxinfreiheit",
-    profilUrl: "https://www.instagram.com/maxinfreiheit/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzcbrn9tkn4--3755578bda65.jpg?v=1789161035",
   },
   {
     code: "DOVx7GLCnaQ",
@@ -536,6 +544,36 @@ export const IG_TESTIMONIALS = [
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-di-3mrai-5y--2cffdbc2a4f2.jpg?v=1789160965",
   },
   {
+    code: "C-juBxzN_Jw",
+    produkt: "QiOne 2 Pro",
+    stufe: "T1",
+    typ: "reel",
+    konto: "_kate_chernyak_",
+    profil: "_kate_chernyak_",
+    profilUrl: "https://www.instagram.com/_kate_chernyak_/",
+    verifiziert: true,
+    video: true,
+    datum: "2024-08-11",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c-jubxzn-jw--8beebaa116df.jpg?v=1789160767",
+  },
+  {
+    code: "C-RtRpsthAL",
+    produkt: "QiOne 2 Pro",
+    stufe: "T1",
+    typ: "reel",
+    konto: "_kate_chernyak_",
+    profil: "_kate_chernyak_",
+    profilUrl: "https://www.instagram.com/_kate_chernyak_/",
+    verifiziert: true,
+    video: true,
+    datum: "2024-08-04",
+    sprache: "en",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c-rtrpsthal--9aab811aebdd.jpg?v=1789160763",
+  },
+  {
     code: "C0Yc_9ROt61",
     produkt: "QiOne 2 Pro",
     stufe: "T1",
@@ -549,6 +587,21 @@ export const IG_TESTIMONIALS = [
     sprache: "en",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c0yc-9rot61--9d8aa621185b.jpg?v=1789160776",
+  },
+  {
+    code: "CyGnSmVu4h0",
+    produkt: "QiOne 2 Pro",
+    stufe: "T1",
+    typ: "reel",
+    konto: "stevefitatx",
+    profil: "stevefitatx",
+    profilUrl: "https://www.instagram.com/stevefitatx/",
+    verifiziert: true,
+    video: true,
+    datum: "2023-10-07",
+    sprache: "en",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-cygnsmvu4h0--b8c7cbff33ec.jpg?v=1789160920",
   },
   {
     code: "CbTJ_kChUQe",
@@ -579,51 +632,6 @@ export const IG_TESTIMONIALS = [
     sprache: "en",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-cyhc4rclqlb--a5c2bdb4f86c.jpg?v=1789161067",
-  },
-  {
-    code: "C-RtRpsthAL",
-    produkt: "QiOne 2 Pro",
-    stufe: "T1",
-    typ: "reel",
-    konto: "_kate_chernyak_",
-    profil: "_kate_chernyak_",
-    profilUrl: "https://www.instagram.com/_kate_chernyak_/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "en",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c-rtrpsthal--9aab811aebdd.jpg?v=1789160763",
-  },
-  {
-    code: "C-juBxzN_Jw",
-    produkt: "QiOne 2 Pro",
-    stufe: "T1",
-    typ: "reel",
-    konto: "_kate_chernyak_",
-    profil: "_kate_chernyak_",
-    profilUrl: "https://www.instagram.com/_kate_chernyak_/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c-jubxzn-jw--8beebaa116df.jpg?v=1789160767",
-  },
-  {
-    code: "CyGnSmVu4h0",
-    produkt: "QiOne 2 Pro",
-    stufe: "T1",
-    typ: "reel",
-    konto: "stevefitatx",
-    profil: "stevefitatx",
-    profilUrl: "https://www.instagram.com/stevefitatx/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "en",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-cygnsmvu4h0--b8c7cbff33ec.jpg?v=1789160920",
   },
   {
     code: "DJb-pzBMjHs",
@@ -776,6 +784,21 @@ export const IG_TESTIMONIALS = [
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c-o4vqqsv1h--be051bda5347.jpg?v=1789160771",
   },
   {
+    code: "C84UEDMMLjC",
+    produkt: "QiOne 2 Pro",
+    stufe: "T3",
+    typ: "reel",
+    konto: "qiblanco",
+    profil: "qiblanco",
+    profilUrl: "https://www.instagram.com/qiblanco/",
+    verifiziert: true,
+    video: true,
+    datum: "2024-07-01",
+    sprache: "beide",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c84uedmmljc--0bc1072ef69a.jpg?v=1789160805",
+  },
+  {
     code: "C8KC-Nusajm",
     produkt: "QiOne 2 Pro",
     stufe: "T3",
@@ -819,6 +842,51 @@ export const IG_TESTIMONIALS = [
     sprache: "beide",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c68wiccmcll--655a982cde77.jpg?v=1789160797",
+  },
+  {
+    code: "C42-tl-sEyt",
+    produkt: "QiOne 2 Pro",
+    stufe: "T3",
+    typ: "reel",
+    konto: "qiblanco",
+    profil: "qiblanco",
+    profilUrl: "https://www.instagram.com/qiblanco/",
+    verifiziert: true,
+    video: true,
+    datum: "2024-03-23",
+    sprache: "beide",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c42-tl-seyt--2ccd5ab38933.jpg?v=1789160793",
+  },
+  {
+    code: "C32DCyNMD4V",
+    produkt: "QiOne 2 Pro",
+    stufe: "T3",
+    typ: "reel",
+    konto: "qiblanco",
+    profil: "qiblanco",
+    profilUrl: "https://www.instagram.com/qiblanco/",
+    verifiziert: true,
+    video: true,
+    datum: "2024-02-27",
+    sprache: "beide",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-probelauf--0028ab410579.jpg?v=1789160327",
+  },
+  {
+    code: "CyxwpFAMfoi",
+    produkt: "QiOne 2 Pro",
+    stufe: "T3",
+    typ: "reel",
+    konto: "qiblanco",
+    profil: "qiblanco",
+    profilUrl: "https://www.instagram.com/qiblanco/",
+    verifiziert: true,
+    video: true,
+    datum: "2023-10-24",
+    sprache: "beide",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-cyxwpfamfoi--f0f6b0975400.jpg?v=1789160924",
   },
   {
     code: "CxXeQFXs_I2",
@@ -1044,65 +1112,5 @@ export const IG_TESTIMONIALS = [
     sprache: "keine",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-cws-70umhqe--7aca8f5d6e27.jpg?v=1789160815",
-  },
-  {
-    code: "C32DCyNMD4V",
-    produkt: "QiOne 2 Pro",
-    stufe: "T3",
-    typ: "reel",
-    konto: "qiblanco",
-    profil: "qiblanco",
-    profilUrl: "https://www.instagram.com/qiblanco/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "beide",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-probelauf--0028ab410579.jpg?v=1789160327",
-  },
-  {
-    code: "C42-tl-sEyt",
-    produkt: "QiOne 2 Pro",
-    stufe: "T3",
-    typ: "reel",
-    konto: "qiblanco",
-    profil: "qiblanco",
-    profilUrl: "https://www.instagram.com/qiblanco/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "beide",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c42-tl-seyt--2ccd5ab38933.jpg?v=1789160793",
-  },
-  {
-    code: "C84UEDMMLjC",
-    produkt: "QiOne 2 Pro",
-    stufe: "T3",
-    typ: "reel",
-    konto: "qiblanco",
-    profil: "qiblanco",
-    profilUrl: "https://www.instagram.com/qiblanco/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "beide",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c84uedmmljc--0bc1072ef69a.jpg?v=1789160805",
-  },
-  {
-    code: "CyxwpFAMfoi",
-    produkt: "QiOne 2 Pro",
-    stufe: "T3",
-    typ: "reel",
-    konto: "qiblanco",
-    profil: "qiblanco",
-    profilUrl: "https://www.instagram.com/qiblanco/",
-    verifiziert: true,
-    video: true,
-    datum: null,
-    sprache: "beide",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-cyxwpfamfoi--f0f6b0975400.jpg?v=1789160924",
   },
 ];

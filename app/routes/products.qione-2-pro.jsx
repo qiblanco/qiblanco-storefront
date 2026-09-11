@@ -7,26 +7,38 @@ import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
+import igStyles from '~/styles/ig-testimonials.css?url';
+import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 
 /*
- * KEIN links()-EXPORT MEHR (2026-09-08, Elina EL-20260908-d8349a01).
+ * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
  * Hier hing zweifel-beleg.css als route-gebundenes Stylesheet, weil diese
- * Seite den <ZweifelBeleg> trug. Der ist entfallen (siehe unten). Ein
- * Stylesheet für eine Klasse, die auf dieser Seite nicht mehr vorkommt,
- * wäre ein Netz-Abruf ohne Wirkung -- und schlimmer: er würde beim
- * nächsten Leser den Eindruck erwecken, die Zeile sei noch da.
+ * Seite den <ZweifelBeleg> trug. Der ist entfallen -- sein Stylesheet laedt
+ * diese Route deshalb NICHT mehr. Die Datei selbst BLEIBT: /cart traegt seine
+ * eigene Zweifel-Zeile und laedt sie ueber sein eigenes links().
  *
- * Die Datei selbst BLEIBT: /cart trägt seine eigene Zweifel-Zeile und lädt
- * sie über sein eigenes links().
+ * Das links() unten kam am 2026-09-11 zurueck, aber fuer eine ANDERE Datei
+ * (ig-testimonials.css) -- der alte Satz "kein links()-Export mehr" stand hier
+ * bis dahin woertlich und waere ab dieser Zeile eine falsche Selbstauskunft.
  */
+export function links() {
+  // ig-testimonials.css ist ROUTE-gebunden aus demselben Grund, aus dem es
+  // zweifel-beleg.css war: die globale app.css erreicht 45 Seiten, die
+  // Slideshow steht auf vieren. Die Datei setzt ihre Token bewusst auf
+  // `.qb-igt` und nicht auf `:root` -- ein Route-Stylesheet mit :root-Token
+  // waere auf jeder anderen Route undefiniert, und `var(--x)` ohne Rueckfall
+  // kippt dort still in Vererbung.
+  return [{rel: 'stylesheet', href: igStyles}];
+}
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return produktMeta({
+  const basis = produktMeta({
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
     pfad: '/products/qione-2-pro',
@@ -35,6 +47,16 @@ export const meta = ({data}) => {
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
   });
+  // VideoObject je Instagram-Beitrag MIT Video (43 von 44 Kacheln dieser
+  // Seite — CYHc4RClQLb ist ein Bild-Post und bekommt deshalb keinen Knoten).
+  // Der Descriptor ist null, wenn es nichts zu sagen gibt; dann wird bewusst
+  // nichts angehängt statt ein leerer Container ausgeliefert.
+  const videos = igVideoDescriptor({
+    produkt: 'QiOne 2 Pro',
+    pfad: '/products/qione-2-pro',
+    produktTitel: data?.product?.title,
+  });
+  return videos ? [...basis, videos] : basis;
 };
 
 /**
@@ -145,6 +167,30 @@ export default function Product() {
           <QiOneBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
         }
       />
+      {/*
+        DIE INSTAGRAM-STIMMEN — WEIT OBEN, und zwar hier und nicht tiefer:
+        unmittelbar nach dem Kaufblock (QiOneBuyBox trägt Bilder, Preis,
+        Varianten, Kaufknopf) und VOR dem langen Inhaltsteil. Das ist die
+        Stelle, an der der Zweifel vor dem Kauf entsteht — dieselbe
+        Begründung, aus der hier bis zum 2026-09-08 der ZweifelBeleg stand.
+
+        BEWUSST OHNE dataSection: diese PDP ist anker-frei. Ein erstes
+        data-section würde den Design-Rubrik-Collector auf genau eine Sektion
+        einengen (Watch-Regression) — dieselbe Begründung wie bei
+        GitterchipMoleculesScrub und GoogleRezensionenBereich darunter.
+
+        BEKANNTE NEBENWIRKUNG, gemeldet und nicht hier repariert: die Fläche
+        steht damit im DOM ÜBER dem YouTube-Kasten des Inhaltsteils. Das
+        fremde Messgerät homepage-bauer/bin/mess_videoumschaltung.py liest
+        seine Spur über document.querySelector('[data-qb-video-zustand]'),
+        also global statt am gemessenen Kasten, und zeigt dann den Zustand
+        UNSERER ersten Kachel. Das verfälscht kein Verdikt (der Wahl-Schritt
+        verwirft unsere Kacheln ohnehin, weil ihre Vorschau kein ytimg-Bild
+        ist), aber es verfälscht jede Spur, die ein Mensch danach liest.
+        Befund beim Eigentümer: review
+        20260911-GROSSJOB-ig-testimonial-slideshow-auf-die-produktseiten-weit-oben-s03:software:h:09efed4e1f
+      */}
+      <IgTestimonialSlideshow produkt="QiOne 2 Pro" />
       {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
           von Christian 2026-07-17 ausdruecklich fuer die organische PDP
           freigegeben (Job 20260717-gitterchip-animation-3seiten-rollout).
