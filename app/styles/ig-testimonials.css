@@ -130,12 +130,20 @@
      `scroll-snap-align: start`. Ohne scroll-padding liegt die Snap-Position
      der ERSTEN Kachel damit bei scrollLeft 8 statt 0 -- der Browser korrigiert
      das beim ersten Layout selbst und erzeugt dabei ein scroll-Ereignis.
-     UND CHROME BEENDET DIE LCP-BERICHTERSTATTUNG BEIM ERSTEN scroll: die
-     Seite meldet danach GAR KEINEN LCP-Kandidaten mehr, wenn der Scroll vor
-     dem ersten Kandidaten liegt. Gemessen an /products/qione-2-pro: ohne
-     diese Zeile 0 LCP-Eintraege in 15 s (5 von 5 Laeufen), mit ihr wieder
-     Eintraege wie vor dem Einbau. Der Nutzer sieht davon nichts -- die
-     Feldmessung (CrUX) verliert die Seite trotzdem. */
+     GEMESSEN an /products/qione-2-pro: MIT diesem Scroll meldete die Seite
+     GAR KEINEN LCP-Kandidaten (0 Eintraege, 5 von 5 Laeufen, auch nach 15 s),
+     OHNE ihn wieder zwei bei ~300 ms; die unveraenderte Kontrollseite
+     /products/qihome-air meldete in beiden Armen durchgehend.
+     DIE NAHELIEGENDE ERKLAERUNG ("ein Scroll beendet die LCP-Meldung") IST
+     NACHGEBAUT UND HAELT NICHT: eine hermetische Fixture mit genau dieser Bahn
+     erzeugt den Scroll bei 22 ms und bekommt trotzdem einen Kandidaten bei
+     36 ms. Der Zusammenhang an der echten Seite ist belegt, der Mechanismus
+     nicht -- was dort zusaetzlich dazukommt (130 statt 86 Bilder), ist nicht
+     auseinandergerechnet. Die Zeile bleibt: sie beseitigt das Scroll-Ereignis
+     nachweislich, und ein Scroll vor dem ersten Kandidaten ist nach dieser
+     Messlage ein Risiko. Der Nutzer sieht davon nichts -- die Feldmessung
+     (CrUX) verliert die Seite trotzdem.
+     Stehende Messung dazu: homepage-bauer/pruefungen/probe_lcp_meldet.py */
   scroll-padding-inline-start: var(--igt-s1);
   /* Die Bildlaufleiste ist hier Rauschen: die Bahn sagt über Pfeile und
      Wisch-Hinweis selbst, dass sie sich bewegen lässt. */
