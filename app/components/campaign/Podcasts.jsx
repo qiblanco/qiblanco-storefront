@@ -7,6 +7,9 @@
  * ZWEI ENTSCHEIDUNGEN, die den Aufbau erklären:
  *
  * 1. LITE-EMBED statt iframe: der YouTube-Player wird erst nach Klick geladen.
+ *    Seit 2026-09-11 über den gemeinsamen Baustein YoutubeTimestamp statt über
+ *    einen eigenen Zustands-Tausch — die Vorschau bleibt dabei liegen, bis der
+ *    Player Bild hat.
  *    Vorher steht nur das echte Poster (i.ytimg.com) im Markup. Das hält die
  *    Seite schnell und lässt keine YouTube-Cookies vor einer Nutzerhandlung
  *    zu. Der Text der Folge steht IMMER im HTML — er ist der Grund, warum es
@@ -16,7 +19,7 @@
  *    normaler Fliesstext im Dokument, nicht hinter einem Umschalter. Was ein
  *    Crawler nur nach einem Klick saehe, zählt für die Auffindbarkeit nicht.
  */
-import {useState} from 'react';
+import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 
 /** Ein Kapitel-Zeitstempel als 1:02:33 bzw. 2:33. */
 function zeitText(s) {
@@ -28,38 +31,43 @@ function zeitText(s) {
 }
 
 function Player({folge}) {
-  const [an, setAn] = useState(false);
   if (!folge.id) return null;
-  if (an) {
-    return (
-      <div className="qbp__buehne">
-        <iframe
-          className="qbp__iframe"
-          src={`https://www.youtube-nocookie.com/embed/${folge.id}?autoplay=1&rel=0`}
-          title={folge.t}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
+  /*
+   * ÄNDERUNG 2026-09-11 (Job 20260911-BAU-videoumschaltung-seite-bricht-beim-
+   * play-klick-zusammen): eigener Zustands-Tausch ersetzt durch den EINEN
+   * Baustein.
+   *
+   * Hier stand dieselbe Bauform, die Christian an den anderen Videos
+   * beanstandet hat: `if (an) return <div><iframe/></div>` — beim Klick flog
+   * der Knopf mitsamt Poster aus dem Baum und ein leerer Rahmen kam hinein.
+   * Die Vorschau war weg, bevor der Ersatz Bild hatte.
+   *
+   * Diese Stelle ist im ersten Durchgang des Jobs ÜBERSEHEN worden: die
+   * Bestandsaufnahme suchte nach den bekannten Bausteinnamen, und dieser
+   * Player trug keinen davon. Gefunden hat sie erst
+   * pruefungen/probe_videoeinbettung_einheitlich.py — die Probe, die nach der
+   * EIGENSCHAFT sucht ("ein YouTube-iframe am Baustein vorbei") statt nach
+   * Namen. Genau dafür gibt es sie.
+   *
+   * `thumbnail` ist gesetzt, weil diese Seite ihre Poster-URL mitbringt
+   * (folge.thumb) — die YouTube-Posterkette des Bausteins wird dadurch
+   * bewusst nicht benutzt, das Bild bleibt exakt dasselbe wie vorher.
+   */
   return (
-    <button
-      type="button"
+    <YoutubeTimestamp
+      videoId={folge.id}
+      titel={folge.t}
+      thumbnail={folge.thumb}
       className="qbp__buehne qbp__start"
-      onClick={() => setAn(true)}
-      aria-label={`Folge abspielen: ${folge.t}`}
-    >
-      <img
-        className="qbp__poster"
-        src={folge.thumb}
-        alt=""
-        width="1280"
-        height="720"
-        loading="lazy"
-      />
-      <span className="qbp__knopf" aria-hidden="true" />
-    </button>
+      /* Das Abzeichen behält den Goldkreis dieser Seite: podcasts.css malt
+       * ihn auf .qbp__knopf und zeichnet das Dreieck selbst als ::after —
+       * deshalb bleibt der Inhalt des Abzeichens hier LEER, sonst stünden
+       * zwei Dreiecke übereinander. */
+      playClassName="qbp__knopf"
+      playInhalt={null}
+      zusatzParameter="rel=0"
+      noscriptFallback
+    />
   );
 }
 

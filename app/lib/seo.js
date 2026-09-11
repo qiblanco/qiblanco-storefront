@@ -352,6 +352,41 @@ export const NUR_ROUTE_SEITEN = [
       'Veralten des eingebackenen Auszugs.',
   },
   {
+    pfad: '/pages/erfahrungen',
+    grund:
+      'Am 2026-09-11 von Christian freigegeben („Aber ja, können wir auch ' +
+      'freischalten … live schalten und crawlbar machen"), nachdem die Seite ' +
+      'seit dem 2026-09-08 als Freigabe-Ansicht dunkel lag. Sie besteht allein ' +
+      'aus der Route pages.erfahrungen.jsx und hat KEIN Shopify-Seitenobjekt — ' +
+      'ohne diesen Eintrag liefert sie HTTP 200 mit 13 Menschen in 17 Videos ' +
+      'und steht in keiner Sitemap. Ein Seitenobjekt anzulegen wäre der zweite ' +
+      'mögliche Träger und ist bewusst NICHT gewählt: er läge im Fremdsystem, ' +
+      'während dieser hier im Repo sichtbar ist. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_erfahrungen_hell.py — prüft am ausgelieferten HTML INHALT ' +
+      '(Beitragstexte, nicht den Statuscode), Freischaltung (kein noindex, ' +
+      'kein Disallow, Sitemap-Eintrag, Menü-Link), die strukturierten Daten ' +
+      '(VideoObject je Video, Person je Mensch) und die Dublettenfreiheit ' +
+      '(h3.erf__name eindeutig). Sie löst probe_erfahrungen_erreichbar_aber_' +
+      'dunkel.py ab, deren Aussage mit der Freigabe überholt ist.',
+  },
+  {
+    pfad: '/pages/warum-qi-blanco',
+    grund:
+      'Die Absicht — warum es Qi Blanco gibt, in der ersten Person und mit ' +
+      'Autor und Datum ausgezeichnet (Auftrag 20260911-BAU-die-absicht-…). ' +
+      'Sie besteht allein aus der Route pages.warum-qi-blanco.jsx und hat ' +
+      'KEIN Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, was von aussen nicht ' +
+      'davon zu unterscheiden ist, dass alles stimmt. Sie ist der einzige ' +
+      'Text der Domain, der ZURECHENBAR beantwortet, warum es dieses ' +
+      'Unternehmen gibt — der gemessene Anlass ist, dass Googles KI-Antwort ' +
+      'zu uns null eigene Quellen von sechs zitiert. Wache (Arm E): ' +
+      'homepage-bauer/pruefungen/probe_absicht_am_kundenrand.py — prueft ' +
+      'den Sitemap-Eintrag zusammen mit Autor, Datum und der ' +
+      'Verkaufstext-Freiheit am ausgelieferten HTML, nicht den Statuscode.',
+  },
+  {
     pfad: '/pages/affiliate-partnerprogramm',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
@@ -361,6 +396,26 @@ export const NUR_ROUTE_SEITEN = [
       'faellt. Wache: homepage-bauer/pruefungen/' +
       'probe_partnerseite_naht_sitemap_route.py (Sitemap-Eintrag UND ' +
       'Routen-Marker live) sowie probe_partnerseite_inhalt_live.py.',
+  },
+  {
+    pfad: '/pages/kritik',
+    grund:
+      'Eigene indexierbare Antwort auf "Qi Blanco Kritik" (Job 20260911-BAU-' +
+      'kritikseite-freischalten-…-s02; Christian 2026-09-11 nach dem Lesen ' +
+      'der Seite: "Live schalten und bei Mehr einbinden"). Sie besteht allein ' +
+      'aus der Route pages.kritik.jsx und hat KEIN Shopify-Seitenobjekt — ein ' +
+      'zweiter Träger für dieselbe Seite ist bewusst NICHT angelegt. Ohne ' +
+      'diesen Eintrag liefert sie HTTP 200 mit voller Beweisführung und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfüllt: das noindex ist im ' +
+      'selben Commit aus pages.kritik.jsx entfernt und durch canonicalLink() ' +
+      'ersetzt. WACHE (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_zweifelsseite_dunkel.py --flaeche kritik, hängt als ' +
+      'nachbau-audit h1afce75b. Sie verzweigt am Feld `status` der SSoT ' +
+      'konzepte/abgrenzung-flaechen.json und prüft für `live_indexiert` die ' +
+      'HELL-Arme: H1-INHALT (die zugesagten Randmarker, nicht der ' +
+      'Statuscode), H2-ROBOTS (kein Disallow), H2-NOINDEX (kein noindex, ' +
+      'aber Canonical), H2-SITEMAP (steht in einer real AUSGELIEFERTEN ' +
+      'Sitemap — nicht nur in dieser Liste) und H3-VERLINKT.',
   },
 ];
 
