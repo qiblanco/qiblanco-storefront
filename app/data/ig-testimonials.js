@@ -9,13 +9,20 @@
  * ==================== WARUM DER KORPUS SO AUSSIEHT ====================
  *
  * Die Quelle ist eine Liste von 71 Zeilen aus einem Google Doc. Daraus wurden
- * 67 distinkte Reels; hier stehen 67 PRODUKT-SLOTS ueber 66 distinkte Codes.
+ * 67 distinkte Reels; hier stehen 66 PRODUKT-SLOTS ueber 65 distinkte Codes.
  * Die Differenz ist gemessen und KEIN Versehen:
  *
  *  - EIN Code faellt raus: DV1iezlChh0 (ein /p/-Post unter "isabellegloria",
  *    QiOne). Er gibt an der Plattform alle og-Felder leer zurueck, genau wie
  *    ein frei erfundener Code — also geloescht oder privat. Ein toter Link ist
  *    kein Material.
+ *  - EIN WEITERER Code faellt raus: DK2UrxwKRf2 (@vanessastehler). Er ist
+ *    OEFFENTLICH -- die og-Messung liefert Konto, Datum und Bildtext --, aber
+ *    NICHT EINBETTBAR: der /embed/-Pfad antwortet im echten Browser byte-gleich
+ *    wie ein erfundener Code, dreimal gemessen, waehrend eine Positiv-Kontrolle
+ *    vom SELBEN Konto jedes Mal ein Video lieferte. "Gibt es den Post?"
+ *    beantwortet nicht "darf ich ihn zeigen?". (Dieser Posten stand bis
+ *    2026-09-11 nicht im Kopf, und genau deshalb zaehlte er 67 statt 66.)
  *  - EIN Slot faellt raus: Cl8-fEsMJfr stand im Doc unter QiOne UND unter
  *    QiHome. Am Reel selbst gemessen ist es ein QiHome-Post ("When arranging
  *    our home…"); die QiOne-Zeile ist der Zuordnungsfehler.
@@ -29,10 +36,19 @@
  *
  *  T1  Das Reel liegt auf einem PERSOENLICHEN Konto. Der Profil-Klick trifft
  *      die Person. 25 Codes.
- *  T2  Unser eigener qiblanco-Post, der die Person per @handle NENNT. Das
- *      Video ist unseres, der Klick fuehrt auf ihr Profil. 7 Codes.
- *  T3  Unser eigener qiblanco-Post OHNE Personennennung. Der Klick fuehrt auf
- *      UNSER Profil. 34 Codes.
+ *  T2  Unser eigener qiblanco-Post, der die Person per @handle NENNT, UND das
+ *      genannte Konto existiert (im Browser geprueft). Das Video ist unseres,
+ *      der Klick fuehrt auf ihr Profil. 6 Codes.
+ *  T3  Unser eigener qiblanco-Post ohne nennbare Person. Der Klick fuehrt auf
+ *      UNSER Profil. 35 Codes.
+ *
+ *      EINER DAVON WAR BIS ZUM 2026-09-11 EIN T2: C0mSOn3sdCQ nennt im
+ *      Bildtext @_kamyata_, und dieses Konto gibt es nicht mehr (3 von 3
+ *      Browser-Laeufen "Seite wurde entfernt", Positiv-Kontrolle jedes Mal
+ *      sauber). Ein Profil-Klick ins Leere ist schlechter als keiner.
+ *      FOLGE, die niemand uebersehen soll: QiHome hat damit NULL fremde
+ *      Konten im Korpus -- 3 Kacheln, alle von uns. Das ist die Stelle, an der
+ *      Christian echtes Fremdmaterial fehlt; es ist keine Bauluecke.
  *
  * DASS T3 UEBERHAUPT DRINSTEHT, IST EINE ENTSCHEIDUNG, KEIN VERSEHEN.
  * Segment s01 hatte T3 weggelassen, mit guter Begruendung: 61,2 % der Reels
@@ -70,11 +86,19 @@
  *  konto        Konto, auf dem der Post LIEGT (Messung, og:url der Plattform)
  *  profil       Konto, auf das der Klick ZEIGT (T1/T3: = konto, T2: der Credit)
  *  profilUrl    daraus gebaut, Ziel des Profil-Klicks (target="_blank")
- *  verifiziert  false NUR bei T2: diese sieben Handles stammen aus UNSEREM
- *               eigenen Bildtext, nicht von der Plattform. Serverseitig sind
- *               sie nicht pruefbar — ein erfundenes IG-Konto antwortet
- *               genauso wie ein echtes (s01, mit Negativ-Kontrolle gemessen).
- *               Die Pruefung gehoert in den Browser (s03).
+ *  verifiziert  Das Profil, auf das `profil` zeigt, ist als existierend
+ *               BELEGT. Bei T1/T3 gilt das von der Messung her (das Konto
+ *               kommt aus dem og:url der Plattform bzw. ist unser eigenes).
+ *               Bei T2 kam der Handle aus UNSEREM Bildtext und wurde von s03
+ *               im BROWSER nachgeprueft: instagram.com/<handle>/embed/, mit
+ *               Positiv- UND Negativ-Kontrolle in jedem Lauf. Wer nicht
+ *               bestand, ist gar nicht mehr T2 -- das Feld steht deshalb heute
+ *               ueberall auf true und ist ein ZUSTAND, kein Vorbehalt.
+ *  video        false = Bild-/Karussell-Post, kein Video. Die Komponente zeigt
+ *               darauf KEINEN Play-Knopf: ein Knopf, der ein Video verspricht,
+ *               das es nicht gibt, ist eine Luege. 65 von 65 Codes im Browser
+ *               gemessen (nicht nur die verdaechtigen drei), Negativ-Kontrolle
+ *               gehalten: es sind genau drei.
  *  sprache      "de" | "en" | "beide" | "keine" — aus dem Bildtext gemessen.
  *               Die Sprach-Ordnung (deutsch zuerst auf der deutschen Seite)
  *               haengt an der SEITE, nicht am Korpus, und ist hier deshalb
@@ -100,6 +124,7 @@ export const IG_TESTIMONIALS = [
     profil: "vanessastehler",
     profilUrl: "https://www.instagram.com/vanessastehler/",
     verifiziert: true,
+    video: true,
     datum: "2026-02-05",
     sprache: "de",
     posterPfad:
@@ -114,6 +139,7 @@ export const IG_TESTIMONIALS = [
     profil: "gesunde.psyche",
     profilUrl: "https://www.instagram.com/gesunde.psyche/",
     verifiziert: true,
+    video: false,
     datum: "2025-11-17",
     sprache: "de",
     posterPfad:
@@ -128,6 +154,7 @@ export const IG_TESTIMONIALS = [
     profil: "maxinfreiheit",
     profilUrl: "https://www.instagram.com/maxinfreiheit/",
     verifiziert: true,
+    video: false,
     datum: null,
     sprache: "de",
     posterPfad:
@@ -142,6 +169,7 @@ export const IG_TESTIMONIALS = [
     profil: "maxinfreiheit",
     profilUrl: "https://www.instagram.com/maxinfreiheit/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "de",
     posterPfad:
@@ -156,6 +184,7 @@ export const IG_TESTIMONIALS = [
     profil: "naehrstoffwissen",
     profilUrl: "https://www.instagram.com/naehrstoffwissen/",
     verifiziert: true,
+    video: true,
     datum: "2026-06-20",
     sprache: "de",
     posterPfad:
@@ -170,6 +199,7 @@ export const IG_TESTIMONIALS = [
     profil: "desiree_witschel",
     profilUrl: "https://www.instagram.com/desiree_witschel/",
     verifiziert: true,
+    video: true,
     datum: "2026-05-26",
     sprache: "de",
     posterPfad:
@@ -184,6 +214,7 @@ export const IG_TESTIMONIALS = [
     profil: "naehrstoffwissen",
     profilUrl: "https://www.instagram.com/naehrstoffwissen/",
     verifiziert: true,
+    video: true,
     datum: "2026-04-30",
     sprache: "de",
     posterPfad:
@@ -198,6 +229,7 @@ export const IG_TESTIMONIALS = [
     profil: "xcreatorslife",
     profilUrl: "https://www.instagram.com/xcreatorslife/",
     verifiziert: true,
+    video: true,
     datum: "2026-03-24",
     sprache: "de",
     posterPfad:
@@ -212,6 +244,7 @@ export const IG_TESTIMONIALS = [
     profil: "gianky261",
     profilUrl: "https://www.instagram.com/gianky261/",
     verifiziert: true,
+    video: true,
     datum: "2026-02-24",
     sprache: "de",
     posterPfad:
@@ -226,6 +259,7 @@ export const IG_TESTIMONIALS = [
     profil: "thescottschwenk",
     profilUrl: "https://www.instagram.com/thescottschwenk/",
     verifiziert: true,
+    video: true,
     datum: "2023-12-04",
     sprache: "en",
     posterPfad:
@@ -240,6 +274,7 @@ export const IG_TESTIMONIALS = [
     profil: "maxinfreiheit",
     profilUrl: "https://www.instagram.com/maxinfreiheit/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "de",
     posterPfad:
@@ -254,6 +289,7 @@ export const IG_TESTIMONIALS = [
     profil: "desiree_witschel",
     profilUrl: "https://www.instagram.com/desiree_witschel/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "de",
     posterPfad:
@@ -268,6 +304,7 @@ export const IG_TESTIMONIALS = [
     profil: "maxinfreiheit",
     profilUrl: "https://www.instagram.com/maxinfreiheit/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "de",
     posterPfad:
@@ -282,6 +319,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-09-08",
     sprache: "beide",
     posterPfad:
@@ -296,6 +334,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-08-19",
     sprache: "beide",
     posterPfad:
@@ -310,6 +349,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-02-10",
     sprache: "beide",
     posterPfad:
@@ -324,6 +364,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-02-03",
     sprache: "beide",
     posterPfad:
@@ -338,6 +379,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-01-17",
     sprache: "beide",
     posterPfad:
@@ -352,24 +394,11 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-01-14",
     sprache: "beide",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dezqzkzrq-q--12819327466d.jpg?v=1789160953",
-  },
-  {
-    code: "C0mSOn3sdCQ",
-    produkt: "QiHome",
-    stufe: "T2",
-    typ: "reel",
-    konto: "qiblanco",
-    profil: "_kamyata_",
-    profilUrl: "https://www.instagram.com/_kamyata_/",
-    verifiziert: false,
-    datum: "2023-12-08",
-    sprache: "beide",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c0mson3sdcq--95442d638403.jpg?v=1789160788",
   },
   {
     code: "DEpsd2OseT5",
@@ -380,10 +409,26 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2025-01-10",
     sprache: "beide",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-depsd2oset5--a423adbea0ec.jpg?v=1789160947",
+  },
+  {
+    code: "C0mSOn3sdCQ",
+    produkt: "QiHome",
+    stufe: "T3",
+    typ: "reel",
+    konto: "qiblanco",
+    profil: "qiblanco",
+    profilUrl: "https://www.instagram.com/qiblanco/",
+    verifiziert: true,
+    video: true,
+    datum: "2023-12-08",
+    sprache: "beide",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c0mson3sdcq--95442d638403.jpg?v=1789160788",
   },
   {
     code: "Cl8-fEsMJfr",
@@ -394,6 +439,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2022-12-09",
     sprache: "beide",
     posterPfad:
@@ -408,6 +454,7 @@ export const IG_TESTIMONIALS = [
     profil: "morerawfood",
     profilUrl: "https://www.instagram.com/morerawfood/",
     verifiziert: true,
+    video: true,
     datum: "2026-03-03",
     sprache: "de",
     posterPfad:
@@ -422,6 +469,7 @@ export const IG_TESTIMONIALS = [
     profil: "gianky261",
     profilUrl: "https://www.instagram.com/gianky261/",
     verifiziert: true,
+    video: true,
     datum: "2025-11-10",
     sprache: "de",
     posterPfad:
@@ -436,6 +484,7 @@ export const IG_TESTIMONIALS = [
     profil: "xcreatorslife",
     profilUrl: "https://www.instagram.com/xcreatorslife/",
     verifiziert: true,
+    video: true,
     datum: "2025-10-30",
     sprache: "de",
     posterPfad:
@@ -450,6 +499,7 @@ export const IG_TESTIMONIALS = [
     profil: "gianky261",
     profilUrl: "https://www.instagram.com/gianky261/",
     verifiziert: true,
+    video: true,
     datum: "2025-10-20",
     sprache: "de",
     posterPfad:
@@ -464,6 +514,7 @@ export const IG_TESTIMONIALS = [
     profil: "gianky261",
     profilUrl: "https://www.instagram.com/gianky261/",
     verifiziert: true,
+    video: true,
     datum: "2025-07-20",
     sprache: "de",
     posterPfad:
@@ -478,6 +529,7 @@ export const IG_TESTIMONIALS = [
     profil: "gianky261",
     profilUrl: "https://www.instagram.com/gianky261/",
     verifiziert: true,
+    video: true,
     datum: "2025-04-28",
     sprache: "de",
     posterPfad:
@@ -492,6 +544,7 @@ export const IG_TESTIMONIALS = [
     profil: "andi.lew",
     profilUrl: "https://www.instagram.com/andi.lew/",
     verifiziert: true,
+    video: true,
     datum: "2023-12-02",
     sprache: "en",
     posterPfad:
@@ -506,6 +559,7 @@ export const IG_TESTIMONIALS = [
     profil: "andi.lew",
     profilUrl: "https://www.instagram.com/andi.lew/",
     verifiziert: true,
+    video: true,
     datum: "2022-03-19",
     sprache: "en",
     posterPfad:
@@ -520,6 +574,7 @@ export const IG_TESTIMONIALS = [
     profil: "vanessastehler",
     profilUrl: "https://www.instagram.com/vanessastehler/",
     verifiziert: true,
+    video: false,
     datum: "2021-12-30",
     sprache: "en",
     posterPfad:
@@ -534,6 +589,7 @@ export const IG_TESTIMONIALS = [
     profil: "_kate_chernyak_",
     profilUrl: "https://www.instagram.com/_kate_chernyak_/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "en",
     posterPfad:
@@ -548,6 +604,7 @@ export const IG_TESTIMONIALS = [
     profil: "_kate_chernyak_",
     profilUrl: "https://www.instagram.com/_kate_chernyak_/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "de",
     posterPfad:
@@ -562,6 +619,7 @@ export const IG_TESTIMONIALS = [
     profil: "stevefitatx",
     profilUrl: "https://www.instagram.com/stevefitatx/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "en",
     posterPfad:
@@ -575,7 +633,8 @@ export const IG_TESTIMONIALS = [
     konto: "qiblanco",
     profil: "yvesunser",
     profilUrl: "https://www.instagram.com/yvesunser/",
-    verifiziert: false,
+    verifiziert: true,
+    video: true,
     datum: "2025-05-09",
     sprache: "de",
     posterPfad:
@@ -589,7 +648,8 @@ export const IG_TESTIMONIALS = [
     konto: "qiblanco",
     profil: "social._verena",
     profilUrl: "https://www.instagram.com/social._verena/",
-    verifiziert: false,
+    verifiziert: true,
+    video: true,
     datum: "2024-09-27",
     sprache: "beide",
     posterPfad:
@@ -603,7 +663,8 @@ export const IG_TESTIMONIALS = [
     konto: "qiblanco",
     profil: "joshuajholland",
     profilUrl: "https://www.instagram.com/joshuajholland/",
-    verifiziert: false,
+    verifiziert: true,
+    video: true,
     datum: "2022-04-01",
     sprache: "beide",
     posterPfad:
@@ -617,7 +678,8 @@ export const IG_TESTIMONIALS = [
     konto: "qiblanco",
     profil: "joshuajholland",
     profilUrl: "https://www.instagram.com/joshuajholland/",
-    verifiziert: false,
+    verifiziert: true,
+    video: true,
     datum: "2022-03-24",
     sprache: "beide",
     posterPfad:
@@ -631,7 +693,8 @@ export const IG_TESTIMONIALS = [
     konto: "qiblanco",
     profil: "mario.prawira",
     profilUrl: "https://www.instagram.com/mario.prawira/",
-    verifiziert: false,
+    verifiziert: true,
+    video: true,
     datum: "2021-11-26",
     sprache: "beide",
     posterPfad:
@@ -645,7 +708,8 @@ export const IG_TESTIMONIALS = [
     konto: "qiblanco",
     profil: "mario.prawira",
     profilUrl: "https://www.instagram.com/mario.prawira/",
-    verifiziert: false,
+    verifiziert: true,
+    video: true,
     datum: "2021-11-19",
     sprache: "beide",
     posterPfad:
@@ -660,6 +724,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-12-23",
     sprache: "beide",
     posterPfad:
@@ -674,6 +739,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-12-13",
     sprache: "beide",
     posterPfad:
@@ -688,6 +754,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-11-14",
     sprache: "beide",
     posterPfad:
@@ -702,6 +769,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-08-13",
     sprache: "beide",
     posterPfad:
@@ -716,6 +784,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-06-13",
     sprache: "beide",
     posterPfad:
@@ -730,6 +799,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-06-07",
     sprache: "beide",
     posterPfad:
@@ -744,6 +814,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2024-05-14",
     sprache: "beide",
     posterPfad:
@@ -758,6 +829,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-09-19",
     sprache: "beide",
     posterPfad:
@@ -772,6 +844,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-08-28",
     sprache: "beide",
     posterPfad:
@@ -786,6 +859,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-04-25",
     sprache: "beide",
     posterPfad:
@@ -800,6 +874,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-03-03",
     sprache: "beide",
     posterPfad:
@@ -814,6 +889,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-02-16",
     sprache: "beide",
     posterPfad:
@@ -828,6 +904,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-02-10",
     sprache: "beide",
     posterPfad:
@@ -842,6 +919,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2023-02-03",
     sprache: "beide",
     posterPfad:
@@ -856,6 +934,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2022-12-02",
     sprache: "beide",
     posterPfad:
@@ -870,6 +949,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2022-04-08",
     sprache: "keine",
     posterPfad:
@@ -884,6 +964,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2022-03-18",
     sprache: "beide",
     posterPfad:
@@ -898,6 +979,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2022-02-25",
     sprache: "beide",
     posterPfad:
@@ -912,6 +994,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2022-01-28",
     sprache: "beide",
     posterPfad:
@@ -926,6 +1009,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2021-12-18",
     sprache: "keine",
     posterPfad:
@@ -940,6 +1024,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2021-12-10",
     sprache: "keine",
     posterPfad:
@@ -954,6 +1039,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: "2021-11-15",
     sprache: "keine",
     posterPfad:
@@ -968,6 +1054,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "beide",
     posterPfad:
@@ -982,6 +1069,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "beide",
     posterPfad:
@@ -996,6 +1084,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "beide",
     posterPfad:
@@ -1010,6 +1099,7 @@ export const IG_TESTIMONIALS = [
     profil: "qiblanco",
     profilUrl: "https://www.instagram.com/qiblanco/",
     verifiziert: true,
+    video: true,
     datum: null,
     sprache: "beide",
     posterPfad:
