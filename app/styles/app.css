@@ -6132,3 +6132,49 @@ html.qb-chat-docked .GoogleRezensionenPopup {
     transform: none;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LADEZEICHEN DER VIDEO-EINBETTUNG
+   Job 20260911-BAU-videoumschaltung-seite-bricht-beim-play-klick-zusammen.
+
+   Christians dritte Bedingung: „Ein sichtbares Zeichen, dass etwas passiert.
+   Wer klickt und eine Sekunde nichts sieht, klickt nochmal."
+
+   Es sitzt an der Stelle, an der vorher das Play-Symbol stand — also genau
+   dort, wo der Zeiger beim Klick war. Bewusst KEIN eigener Kasten und KEINE
+   eigene Farbe: es erbt `color` vom Abzeichen, das der jeweilige Seiten-Scope
+   ohnehin einfaerbt (ein Gold-Akzent bleibt ein Gold-Akzent).
+
+   Die Groesse haengt an `1em`, also an der Schriftgroesse des Abzeichens —
+   dadurch skaliert es in jedem Scope mit, ohne dort eine Regel zu brauchen.
+   ───────────────────────────────────────────────────────────────────────── */
+.qb-video-spinner {
+  display: block;
+  width: 1em;
+  height: 1em;
+  border: 0.14em solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.9;
+  animation: qb-video-dreh 720ms linear infinite;
+}
+
+@keyframes qb-video-dreh {
+  to { transform: rotate(360deg); }
+}
+
+/* Eine Deckkraft- oder Drehbewegung IST Bewegung im Sinne der Einstellung.
+   Wer sie abbestellt hat, bekommt ein ruhendes Zeichen — sichtbar bleibt es,
+   denn seine AUFGABE ist die Sichtbarkeit, nicht die Animation. Und die
+   Einblendung des Players wird im selben Zug abgeschaltet: sie wuerde sonst
+   als einzige Bewegung uebrigbleiben. */
+@media (prefers-reduced-motion: reduce) {
+  .qb-video-spinner {
+    animation: none;
+    border-top-color: currentColor;
+    opacity: 0.55;
+  }
+  [data-qb-video-zustand] iframe {
+    transition: none !important;
+  }
+}
