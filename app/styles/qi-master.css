@@ -156,10 +156,158 @@
 .qm-pdp .ProductDescription p,
 .qm-pdp .ProductDescription li,
 .qm-pdp .BenefitList li { font-size: var(--qm-fs-base); }
-.qm-pdp .qm-preishinweis {
+.qm-pdp .qm-preishinweis,
+.qm-treppe .qm-preishinweis {
   font-size: var(--qm-fs-xs);
   color: var(--qm-muted);
   margin-top: var(--qm-s1);
+}
+
+/* ─── Vorverkaufstreppe (QiMasterTreppe.jsx) ─────────────────────────────────
+   Sitzt im priceLabel-Slot der Buy-Box, also ZWISCHEN Preiszeile und
+   Kaufknopf, und auf der Landingpage als eigener Abschnitt. EIN Bauteil, zwei
+   Orte — deshalb steht die Gestaltung hier im Seiten-Scope und nicht in
+   app.css: die Treppe gehoert zum QiMaster, nicht zum Shop.
+
+   GESTALTUNGS-ENTSCHEIDUNG, die der Kaufueberzeugungs-Kanon vorgibt: der
+   Abschluss-Block braucht visuelle RUHE und lesbare Zahlen, keine Reizdichte.
+   Deshalb kein zweiter Farbton, keine Rahmenkaskade, keine Signalfarbe auf dem
+   Rabatt — die laufende Zeile traegt den EINEN Gold-Akzent der Seite
+   (--qm-akzent als Flaeche, --qm-akzent-tinte als Schrift), alles andere liegt
+   im warmen Neutral-Kontinuum. Freie Werte gibt es hier nicht; jede Groesse,
+   jeder Abstand, jeder Radius kommt aus dem :root-Block oben.
+   -------------------------------------------------------------------------- */
+.qm-treppe {
+  margin-top: var(--qm-s3);
+  padding: var(--qm-s3);
+  background: var(--qm-flaeche);
+  border-radius: var(--qm-r2);
+  color: var(--qm-text);
+}
+.qm-treppe--kompakt { padding: var(--qm-s2); }
+
+.qm-treppe__titel {
+  font-size: var(--qm-fs-lg);
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0 0 var(--qm-s1);
+  color: var(--qm-dunkel);
+}
+.qm-treppe__grund,
+.qm-treppe__ausnahme,
+.qm-treppe__vorlauf,
+.qm-treppe__fazit,
+.qm-treppe__ende {
+  font-size: var(--qm-fs-base);
+  line-height: 1.6;
+  max-width: var(--qm-mass);
+  margin: 0 0 var(--qm-s2);
+}
+.qm-treppe__grund { color: var(--qm-muted); }
+.qm-treppe__ausnahme { font-weight: 700; }
+
+/* Die Vorlauf-Zeile ist eine Terminangabe, kein Druckmittel: dieselbe
+   Schriftgroesse wie der Fliesstext, nur abgesetzt — keine Farbe, kein Blinken,
+   keine Uhr. */
+.qm-treppe__vorlauf {
+  border-left: 2px solid var(--qm-akzent);
+  padding-left: var(--qm-s2);
+  color: var(--qm-akzent-tinte);
+  font-weight: 600;
+}
+
+.qm-treppe__tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--qm-s2) 0;
+  font-size: var(--qm-fs-base);
+  /* Ziffern gleicher Breite: die vier Preise stehen untereinander und sollen
+     sich auf den Cent vergleichen lassen. */
+  font-variant-numeric: tabular-nums;
+}
+.qm-treppe__caption {
+  /* Fuer Screenreader und als Tabellen-Ueberschrift vorhanden, visuell
+     zurueckgenommen — der Satz darueber sagt dasselbe bereits. */
+  caption-side: top;
+  text-align: left;
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+  padding-bottom: var(--qm-s1);
+}
+.qm-treppe__tabelle th,
+.qm-treppe__tabelle td {
+  padding: var(--qm-s1) var(--qm-s2);
+  border-bottom: 1px solid var(--qm-linie);
+  text-align: right;
+  vertical-align: top;
+}
+.qm-treppe__tabelle thead th {
+  font-size: var(--qm-fs-xs);
+  font-weight: 600;
+  color: var(--qm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.qm-treppe__tabelle th:first-child,
+.qm-treppe__tabelle td:first-child { text-align: left; }
+.qm-treppe__tabelle tbody th {
+  font-weight: 400;
+  color: var(--qm-text);
+}
+.qm-treppe__preis { font-weight: 700; }
+
+/* Die laufende Stufe: der EINE Gold-Akzent der Seite, als Flaeche. Kein
+   zweiter Ton, kein Rahmen, kein Schatten. */
+.qm-treppe__zeile--laeuft { background: var(--qm-akzent); }
+.qm-treppe__zeile--laeuft th,
+.qm-treppe__zeile--laeuft td { color: var(--qm-dunkel); }
+.qm-treppe__marke {
+  font-size: var(--qm-fs-xs);
+  font-weight: 700;
+  color: var(--qm-akzent-tinte);
+  white-space: nowrap;
+}
+.qm-treppe__zeile--laeuft .qm-treppe__marke { color: var(--qm-dunkel); }
+
+.qm-treppe__fazit strong,
+.qm-treppe__ende strong { color: var(--qm-dunkel); }
+.qm-treppe__ende { margin-bottom: var(--qm-s1); }
+
+/* Schmale Geraete: eine vierspaltige Tabelle mit vierstelligen Eurobetraegen
+   bricht dort unleserlich um. Statt Querscrollen (der Kunde findet die Spalte
+   nicht wieder) wird jede Zeile zu einem Block mit beschrifteten Werten — die
+   Beschriftung kommt aus data-spalte, steht also nur EINMAL im Markup. */
+@media (max-width: 560px) {
+  .qm-treppe__tabelle thead { display: none; }
+  .qm-treppe__tabelle,
+  .qm-treppe__tabelle tbody,
+  .qm-treppe__tabelle tr,
+  .qm-treppe__tabelle th,
+  .qm-treppe__tabelle td { display: block; width: 100%; }
+  .qm-treppe__zeile {
+    border-bottom: 1px solid var(--qm-linie);
+    padding: var(--qm-s1) 0;
+  }
+  .qm-treppe__tabelle th,
+  .qm-treppe__tabelle td {
+    border-bottom: 0;
+    padding: 0 var(--qm-s1);
+    text-align: left;
+  }
+  .qm-treppe__tabelle tbody th {
+    font-weight: 700;
+    padding-bottom: var(--qm-s1);
+  }
+  .qm-treppe__tabelle td::before {
+    content: attr(data-spalte) ': ';
+    color: var(--qm-muted);
+    font-size: var(--qm-fs-xs);
+  }
+  .qm-treppe__zeile--laeuft {
+    background: var(--qm-akzent);
+    border-radius: var(--qm-r1);
+    padding: var(--qm-s2) 0;
+  }
 }
 
 /* ─── Bild-Radius: EIN Token fuer alle Bilder der Seite ──────────────────── */
