@@ -9,6 +9,7 @@ import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionen
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import pdpQiStyles from '~/styles/pdp-qi.css?url';
 
 /*
  * KEIN links()-EXPORT MEHR (2026-09-08, Elina EL-20260908-d8349a01).
@@ -22,6 +23,22 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
  * Die Datei selbst BLEIBT: /cart trägt seine eigene Zweifel-Zeile und lädt
  * sie über sein eigenes links().
  */
+/*
+ * Route-gebundenes Stylesheet der Token-Schicht dieser Kaufseite
+ * (Muster: startseite.css an _index.jsx, qihome-air.css an
+ * products.qihome-air.jsx). NICHT in app.css: die globale Datei erreicht
+ * 45 Routen; diese Datei gilt genau fuer die zwei Flaggschiff-Kaufseiten
+ * und ist innen zusaetzlich auf `main` gescoped.
+ *
+ * Zum Kommentar oben ("KEIN links()-EXPORT MEHR"): dessen Grund war ein
+ * Stylesheet fuer eine Klasse, die auf dieser Seite nicht mehr vorkommt.
+ * Jeder Selektor von pdp-qi.css trifft hier gemessen (h2, .NormalSectionSize,
+ * .snap-start, .HeroBannerAlt, main img) — die Begruendung von damals
+ * spricht also nicht gegen diese Zeile, sondern verlangt genau diese Pruefung.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: pdpQiStyles}];
+}
 /**
  * @type {MetaFunction<typeof loader>}
  */
