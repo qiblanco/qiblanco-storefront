@@ -153,7 +153,23 @@ const PLAY_STYLE = {
  */
 const STAPEL_STYLE = {
   position: 'relative',
-  display: 'block',
+  /*
+   * GRID, UND DAS ZENTRIERT DAS ABZEICHEN -- ohne dass das Abzeichen dafür
+   * selbst einen Stil braucht. Genau darin liegt der Unterschied zur ersten
+   * Fassung dieses Baus: die legte dem Abzeichen Position UND Aussehen inline
+   * auf und stach damit den Goldakzent der Startseite aus (live gemessen:
+   * color rgb(255,255,255) statt des Seitentons, obwohl externe-stimmen.css
+   * über genau dieses Element sagt "Der EINE Goldakzent des Abschnitts").
+   *
+   * Poster und Player liegen absolut und damit ausserhalb des Flusses; das
+   * einzige Flusskind ist das Abzeichen. `place-items: center` setzt es in die
+   * Mitte -- für Scopes OHNE eigene Regel (.v2-yt, .v3-yt) ist das die ganze
+   * Positionierung, und für Scopes MIT eigener Regel (.qbp__knopf setzt sich
+   * absolut, .ExterneStimmen__yt__play deckt die Flaeche) aendert es nichts.
+   * Die Komponente gibt damit die Geometrie vor, ohne das Aussehen anzufassen.
+   */
+  display: 'grid',
+  placeItems: 'center',
   width: '100%',
   /*
    * `max-width: none` ist KEINE Vorsichtsmassnahme, sondern ein gemessener
@@ -309,6 +325,13 @@ export function YoutubeTimestamp({
    * einer Seite, die er gar nicht anfassen wollte.
    */
   zusatzParameter = '',
+  /*
+   * Was IM Abzeichen steht. Vorgabe ist das Play-Dreieck; `null` lässt es
+   * leer -- für Scopes, die ihr Dreieck selbst zeichnen (podcasts.css malt es
+   * als `::after` auf einen Goldkreis). Ohne diese Möglichkeit stünden dort
+   * ZWEI Dreiecke übereinander.
+   */
+  playInhalt = '\u25B6',
 }) {
   const [laueft, setLaueft] = useState(false);
   /* `zeigt` ist NICHT „der Player existiert", sondern „der Player hat Bild".
@@ -455,11 +478,45 @@ export function YoutubeTimestamp({
               : 'YoutubeTimestamp__play'
           }
           aria-hidden="true"
-          style={PLAY_STYLE}
+          /*
+           * IM className-MODUS KEIN INLINE-STIL — und das ist eine Korrektur
+           * am eigenen Bau vom selben Tag.
+           *
+           * Die erste Fassung setzte PLAY_STYLE und PLAY_BADGE_STYLE
+           * UNBEDINGT, also auch dort, wo eine Seite ihr Abzeichen selbst
+           * gestaltet. Ein Inline-Stil sticht jede Seitenregel: gemessen live
+           * am 2026-09-11 war das Abzeichen der Startseite danach
+           * `color: rgb(255,255,255)` statt des Seiten-Goldtons — die Seite
+           * sagt über genau dieses Element „Der EINE Goldakzent des
+           * Abschnitts, und er sitzt auf der Handlung". Der Bau hatte ihn
+           * überschrieben.
+           *
+           * Richtig ist die Arbeitsteilung, die dieser Job ohnehin zieht:
+           * GEOMETRIE gehört der Komponente, AUSSEHEN dem Seiten-CSS. Die
+           * Geometrie kommt deshalb über die Klassen `qb-video-play` /
+           * `qb-video-badge` (EIN Klassen-Selektor, niedrigste Spezifität) —
+           * jede Seitenregel mit zwei Selektoren gewinnt darüber, und Scopes
+           * ohne eigene Regel bekommen trotzdem ein mittiges Abzeichen statt
+           * einer Zeile unter dem Video.
+           */
+          style={eigenesKleid ? undefined : PLAY_STYLE}
         >
-          <span style={PLAY_BADGE_STYLE}>
-            {laueft ? <span className="qb-video-spinner" /> : '\u25B6'}
-          </span>
+          {/*
+            Das Abzeichen wird NUR gezeichnet, wenn es etwas zu zeigen hat.
+            Ein Scope, der sein Zeichen selbst malt (podcasts.css: Goldkreis
+            plus ::after-Dreieck), uebergibt `playInhalt={null}` — dann legte
+            eine leere Scheibe sich sonst als schwarzer Fleck genau über den
+            Goldkreis, den sie freilassen soll. Gemessen beim Bau: innen
+            64x64 mit rgba(0,0,0,.55) mitten auf rgb(201,161,75).
+            Waehrend des Ladens gibt es IMMER etwas zu zeigen — das
+            Ladezeichen ist Christians ausdrueckliche Bedingung und wird
+            deshalb auch in solchen Scopes gezeichnet.
+          */}
+          {laueft || playInhalt ? (
+            <span style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}>
+              {laueft ? <span className="qb-video-spinner" /> : playInhalt}
+            </span>
+          ) : null}
         </span>
       )}
     </span>
