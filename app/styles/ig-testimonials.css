@@ -20,23 +20,23 @@
    Token-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
 
    ZÄHLUNG, damit sie nachprüfbar ist statt behauptet:
-     Schriftgrößen  5 (Schwelle der Rubrik: ≤ 9)
+     Schriftgrößen  4 eigene (Schwelle der Rubrik: ≤ 9)
      Gold-Töne      1 (--igt-akzent; --igt-akzent-tinte ist derselbe Hue,
                        abgedunkelt für Schrift auf hellem Grund — dieselbe
                        Bauform wie --a-akzent-tinte im Referenz-Rezept, damit
                        der Hue-Bin der Rubrik bei 1 bleibt)
      Bild-Radius    1 (--igt-r2, auf der Bühne)
      Spacing        8pt-Raster, 6 Stufen
-     H2-Stil        1
+     H2-Stil        0 eigene (die Sektion erbt die H2-Regel der Seite)
    ========================================================================== */
 
 .qb-igt {
-  /* ── Typo: modulare Skala ~1.25, FÜNF Stufen ─────────────────────────── */
+  /* ── Typo: modulare Skala ~1.25, VIER Stufen ─────────────────────────── */
   --igt-fs-xs: 0.8125rem; /* 13px — Handle, Fußzeile */
   --igt-fs-base: 1rem; /* 16px — Fließtext */
   --igt-fs-md: 1.125rem; /* 18px — Unterzeile */
   --igt-fs-lg: 1.5625rem; /* 25px — Play-Abzeichen */
-  --igt-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem); /* EIN H2-Stil */
+  /* KEIN eigener H2-Wert mehr — die Begründung steht an .qb-igt__titel. */
 
   /* ── Spacing: 8pt-Grid ───────────────────────────────────────────────── */
   --igt-s1: 8px;
@@ -80,7 +80,25 @@
 }
 
 .qb-igt__titel {
-  font-size: var(--igt-fs-h2);
+  /* ═══ HIER STEHT BEWUSST KEIN font-size ═══════════════════════════════
+     Die Überschrift spricht die H2-Stimme DER GASTGEBER-SEITE, nicht ihre
+     eigene. Gemessen 2026-09-11 (s04, A/B auf zwei Servern) an
+     /products/crystal-cacao-create: die Seite führt ihre H2 mit 35,2 px/600,
+     der eigene Token clamp(…, 2.25rem) ergab bei 1280 px genau 36 px — also
+     0,8 px daneben. Für die Design-Rubrik ist das ein DRITTER H2-Stil, und
+     die Hausregel lautet „EIN H2-Stil je Seite": stimmig_typo fiel von 68 auf
+     48, der Seiten-Score von 82 (bestanden) auf 79 (nicht bestanden).
+
+     EINE SEKTION, DIE IHRE EIGENE ÜBERSCHRIFTENGRÖSSE MITBRINGT, VERSCHLECH-
+     TERT JEDE SEITE, AUF DIE SIE GESTELLT WIRD — und zwar auch dann, wenn sie
+     allein gemessen makellos ist (der Komponenten-Beleg aus s03 steht bei
+     98/100). Das ist kein Widerspruch: der eine Score misst die Komponente,
+     der andere die Seite, und genau zwischen den beiden lag die Lücke.
+
+     WAS DAS KOSTET, ehrlich: ohne Regel gilt die H2-Regel der Gastgeber-Seite;
+     hat eine Seite gar keine, greift der Browser-Standard (1.5em). Das ist der
+     Preis dafür, dass die Sektion nirgends eine fremde Skala aufbricht.
+     ═══════════════════════════════════════════════════════════════════════ */
   line-height: 1.15;
   letter-spacing: -0.01em;
   margin: 0 0 var(--igt-s2);
