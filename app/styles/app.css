@@ -4448,10 +4448,55 @@ ul.kakao-children li {
 .BestsellerLabel--gradient {
   background: linear-gradient(90deg, #f30, #ff6f82) !important;
 }
+/* --- Kakao-Titel: fluide Schriftgrade statt fester 60/48 px (2026-09-10) ---
+   Grund, live gemessen (responsive-lesbarkeit-wache, Anlassfall der Wache):
+   bei 320 px Viewport war das Wort "Performance" in text-6xl (60 px) allein
+   378 px breit und unteilbar - das DOKUMENT war 378 px breit statt 320, die
+   Seite liess sich um 58 px nach rechts schieben, bei 375 px noch um 3 px.
+   clamp() haelt den Desktop-Grad EXAKT (9vw erreicht die Obergrenze 3.75rem
+   schon ab 667 px) und schrumpft nur dort, wo es sonst rechts hinauslaeuft.
+   Das h2 zieht mit, sonst waere die Unterzeile auf dem Handy groesser als
+   die Ueberschrift.
+   WARUM HIER UND NICHT IN Kakao.jsx: die Komponente wurde zeitgleich vom
+   Strang feat/designschuld-drei-seiten-20260910 angefasst (scope-Prop; seit
+   2026-09-10 als #358 auf main). Ein Edit an den direkt anschliessenden
+   h1/h2-Zeilen ergab im merge-tree einen CONFLICT. Die Naht laeuft deshalb
+   entlang der Artefakte: jener Strang die Komponente, dieser das Stylesheet.
+   NAHT ZU #358, nach dessen Merge nachgemessen: crystal-cacao.css setzt
+   `.cc h2` EBENFALLS in @layer utilities und mit derselben Spezifitaet
+   (0,1,1) wie `.ProductPageKakao > h2`. Auf der cc-Route entscheidet damit
+   die Ladereihenfolge, und die Routen-Schicht laedt spaeter - ihr 2,2rem
+   gewinnt dort also, wie unten schon beschrieben. Das ist gewollt: der
+   H2-Stil dieser Seite ist deren Design-Entscheid. Die H1 fasst #358 NICHT
+   an (sie traegt weiter text-6xl!), und die beiden anderen Routen
+   (pages.kristall-kakao, products.zeremonie-kakao) tragen kein `cc` - dort
+   traegt diese Regel h1 UND h2.
+   WARUM @layer utilities + !important: die Klassen text-6xl!/text-5xl! sind
+   layered-important; eine UNGELAYERTE important-Regel verloere gegen sie
+   (Kaskade dreht die Layer-Ordnung fuer !important um - deshalb greift auch
+   reset.css `h1 {1.75rem !important}` dort nicht). In derselben Ebene
+   entscheidet die Spezifitaet: (0,1,1) schlaegt (0,1,0). Eine spaeter
+   geladene Routen-Schicht gleicher Spezifitaet (crystal-cacao.css `.cc h2`)
+   gewinnt weiterhin per Reihenfolge - gewollt, das ist deren Design-Entscheid. */
+@layer utilities {
+  .ProductPageKakao > h1 {
+    font-size: clamp(2rem, 9vw, 3.75rem) !important;
+    line-height: 1.05;
+  }
+  .ProductPageKakao > h2 {
+    font-size: clamp(1.5rem, 7vw, 3rem) !important;
+    line-height: 1.1;
+  }
+}
 .CacaoPricePer100g {
   width: 100%;
   font-size: 0.85rem;
-  color: #888;
+  /* #888 auf Weiss ergab 3.54:1 und lag damit unter WCAG 2.1 AA (4.5:1) -
+     die responsive-lesbarkeit-wache meldete die Grundpreis-Zeile taeglich auf
+     beiden Kakao-Produktseiten. #767676 ist der hellste neutrale Grauton, der
+     die Schwelle auf Weiss haelt (4.54:1); die Zeile bleibt damit optisch
+     zurueckgenommen, ohne unlesbar zu sein. Kein Markenton beruehrt. */
+  color: #767676;
   margin-top: 2px;
 }
 

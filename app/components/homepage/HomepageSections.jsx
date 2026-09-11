@@ -194,6 +194,7 @@ export function HomepageSections({overrides = {}}) {
         />
       <UpsellLineUp dataSection="upsell-lineup" />
       <WeiterlesenHubs />
+      <WissensMagazin />
     </div>
   );
 }
@@ -257,6 +258,105 @@ function WeiterlesenHubs() {
           <p>
             Name, Anschrift, Handelsregister — und das Institut, das unsere
             Produkte zellbiologisch untersucht hat.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * DER WEG VON DER STARTSEITE IN DIE FACHARTIKEL.
+ *
+ * WARUM ES DIESEN BLOCK GIBT (gemessen 2026-09-10, am ausgelieferten HTML —
+ * keine Schätzung): die Startseite trägt 77 gerenderte Anker, davon führt
+ * GENAU EINER in den Wissens-Blog — und der steht im Header-Dropdown, das
+ * inline `position:fixed; transform: translateY(-300%)` trägt, also dauerhaft
+ * ausserhalb des Sichtfelds. Im Fliesstext der Startseite: null. Die stärkste
+ * und täglich gecrawlte Seite der Domain (Search Console: „Gesendet und
+ * indexiert", letzter Crawl 2026-09-10T13:30:02Z) hatte damit keinen
+ * sichtbaren Weg in die acht Fachartikel.
+ *
+ * FOLGE, an der Quelle abgelesen statt vermutet: urlInspection meldet für alle
+ * acht Artikel `referringUrls` = nichts; für die Hälfte ist die Sitemap die
+ * EINZIGE Entdeckungsquelle, die andere Hälfte ist Google gar nicht bekannt.
+ * Eine Seite, die nur in der Sitemap steht, ist entdeckt und nicht gewichtet —
+ * genau das sagt der Status „Gefunden – zurzeit nicht indexiert".
+ *
+ * WARUM HIER UNTEN UND NICHT WEITER OBEN: dieselbe Begründung wie bei
+ * WeiterlesenHubs direkt darüber — die Startseite verkauft oben. Wer bis
+ * hierher gelesen hat, sucht Beleg statt Angebot. Weiter oben wäre es ein
+ * Ausgang aus dem Kaufweg.
+ *
+ * WARUM EIN ZWEITER BLOCK UND KEINE VIERTE KACHEL IN WeiterlesenHubs:
+ * `.PeerReviewResults` ist ein flex-Container, dessen Kinder `flex: 0 0 30%`
+ * tragen (app/styles/app.css) — eine vierte Kachel ergäbe 120 % und liefe
+ * über; die Trennlinien-Regel greift ausserdem auf `:first-child` und
+ * `:nth-child(2)`, setzt also genau drei voraus. Drei Kacheln in einer
+ * eigenen Reihe passen ohne EINE Zeile neues CSS. Das ist kein Schönheits-
+ * argument: app/styles/app.css steht wegen veralteter Pixel-Solls derzeit
+ * unter einer Gate-12-Sperre (FEHLER-DB F-2314), ein neuer Token wäre hier
+ * ein zweites, fremdes Risiko.
+ *
+ * AUSWAHL DER DREI: nach der gemessenen Einwands- und Neugierlage des
+ * Kaufüberzeugungs-Kanons, nicht nach Sortierung im Blog. Zuerst der Einwand,
+ * der blockt („Wirkt das überhaupt?", häufigster Einwand im Bestand), dann die
+ * Frage, wie es im Körper wirkt (Mechanismus, 9,8 % der DACH-Einstiege), dann
+ * Schlaf. Die übrigen fünf Artikel hängen einen Klick weiter am Magazin selbst
+ * — eine Startseite ist kein Inhaltsverzeichnis.
+ *
+ * KUNDENSPRACHE VOR FACHWORT: Kunden schreiben Schutz, Wirkung, Schlaf,
+ * Strahlung — fast nie „kohärentes Wasser". Der Fachbegriff steht deshalb in
+ * keiner Überschrift dieses Blocks.
+ *
+ * KEIN NEUES VOKABULAR: `NormalSectionSize text-center`, `PeerReviewResults`,
+ * `PeerReviewResult` sind exakt die Klassen, die die Startseite zwei
+ * Sektionen weiter oben schon trägt.
+ */
+function WissensMagazin() {
+  return (
+    <div
+      className="NormalSectionSize text-center"
+      data-section="wissens-magazin"
+    >
+      <h2 className="text-center">Nachlesen, was gemessen ist</h2>
+      <p>
+        Im <a href="/blogs/wissen">Wissens-Magazin</a> steht, was zu diesen
+        Fragen tatsächlich untersucht wurde — mit den Grenzen jeder Studie
+        offen dabei.
+      </p>
+      <div className="PeerReviewResults">
+        <div className="PeerReviewResult">
+          <h3>
+            <a href="/blogs/wissen/strukturiertes-wasser-trend-was-gemessen-ist">
+              Wirkt das überhaupt?
+            </a>
+          </h3>
+          <p>
+            Strukturiertes Wasser ist überall zu lesen. Welcher Teil davon im
+            Labor nachweisbar ist — und welcher nicht.
+          </p>
+        </div>
+        <div className="PeerReviewResult">
+          <h3>
+            <a href="/blogs/wissen/zellulaere-hydration-biophysik">
+              Was Wasser in Ihren Zellen tut
+            </a>
+          </h3>
+          <p>
+            Warum es für den Körper einen Unterschied macht, in welcher Form
+            Wasser in der Zelle vorliegt.
+          </p>
+        </div>
+        <div className="PeerReviewResult">
+          <h3>
+            <a href="/blogs/wissen/schlafqualitaet-wasser-drei-studien">
+              Warum Sie nachts schlecht zur Ruhe kommen
+            </a>
+          </h3>
+          <p>
+            Drei Arbeiten zu Schlafqualität und Trinkmenge, nachgerechnet und
+            mit ihren Grenzen benannt.
           </p>
         </div>
       </div>

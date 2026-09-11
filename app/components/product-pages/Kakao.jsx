@@ -3,9 +3,16 @@ import {KAKAO_KENNZAHLEN} from '~/lib/kakao-zone';
 import {ActiveCampaignForm} from '../reusables/ActiveCampaignForm';
 import {SwipeTable} from '../reusables/SwipeTable';
 
-export function Kakao() {
+/**
+ * `scope` ist eine OPTIONALE zusaetzliche Klasse am Wurzel-Element. Sie
+ * existiert, damit eine einzelne Route eine eigene Token-Schicht per links()
+ * laden kann, ohne die Komponente zu forken - die Komponente wird von drei
+ * Routen benutzt (pages.crystal-cacao, pages.kristall-kakao,
+ * products.zeremonie-kakao). Ohne den Wert bleibt das Markup byte-gleich.
+ */
+export function Kakao({scope = ''}) {
   return (
-    <div className="ProductPageKakao">
+    <div className={`ProductPageKakao ${scope}`.trim()}>
       <h1 className="text-6xl! text-center mb-[0px]!">High Performance Cacao</h1>
       <h2 className="text-5xl! text-center mt-5!">Wach. Klar. Mineralisiert.</h2>
       <Hero />

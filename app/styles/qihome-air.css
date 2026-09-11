@@ -1,0 +1,204 @@
+/* ============================================================================
+   qihome-air.css — Token-Schicht der KAUFSEITE /products/qihome-air
+   ----------------------------------------------------------------------------
+   WARUM ES DIESE DATEI GIBT
+   Die Seite stand im design-rubrik-Score auf 59 (Dev-Server dieses Worktrees,
+   2026-09-10; der aeltere Live-Beleg 60 war ein Vor-Deploy-Wert) bei
+   Schwelle 80. Die Abzuege waren token-los und seitenweit: fuenf H2-Stil-
+   Kombis, drei H2-Ausrichtungen, 1 von 2 Sektions-Abstaenden auf dem
+   8px-Grid, 14 von 84 Textbloecken mit 132 Zeichen Zeilenlaenge, vier
+   Bild-Radius-Werte und ein fremdes Akzent-Blau.
+
+   DAS IST EINE KAUFSEITE, KEINE LANDINGPAGE
+   Sie wird an der Bestellung gemessen. Der Kaufweg ist deshalb tabu und
+   bleibt byte-gleich: Preis (.product-price), Varianten-Auswahl, der
+   Warenkorb-Knopf und seine Farbe rgb(242,191,114). Keine Regel dieser
+   Datei fasst .product, .product-main, .ProductForm oder .btn--primary an.
+
+   WARUM HIER UND NICHT IN app.css
+   app.css haengt an root.jsx und traegt auf JEDER Route. Diese Datei wird
+   ausschliesslich ueber den links()-Export von
+   app/routes/products.qihome-air.jsx geladen: additiv, reversibel, ohne
+   Nebenwirkung auf andere Seiten. Entfernen des links()-Eintrags stellt den
+   Vorzustand vollstaendig wieder her. Scope ist die Klasse
+   `ProductQiHomeAir` am Wrapper-Element der Route (die Route rendert ein
+   Fragment aus vier Bloecken; die Komponente QiHome wird zusaetzlich von
+   pages.qihome-air.jsx benutzt und traegt deshalb keinen Scope).
+
+   REZEPT — uebernommen, nicht neu erfunden (P10)
+   app/styles/startseite.css (PR #354, 46 -> 82), crystal-cacao.css (s02,
+   74 -> 85) und qihome.css (s03, 51 -> 84), alle auf Basis von
+   design-meister/db/webdesign/web-soll.yaml. Die Typo-Stufen sind die des
+   Hauses (reset.css: h2 = 2.2rem, h3 -> 1.5rem); KEINE zweite Skala.
+
+   JEDE REGEL IST GEGEN DIE SONDE (Ablauf des Kollektors, Viertelpixel-
+   Quantisierung) GEMESSEN — die Herkunft jedes Abzugs steht bei der Regel.
+
+   BEWUSST NICHT GEAENDERT — es waere eine Designverschlechterung
+   - Die H2-AUSRICHTUNG bleibt links/zentriert gemischt (-15 auf durchdacht):
+     zentrierte H2 stehen ueber zentriertem Inhalt (Main Features, Videos,
+     Studien, Technologie, Rezensionen), linke in linksbuendigen Textspalten.
+     Geheilt wird nur der `right`-Ausreisser (Regel 4). Startseite, s02 und
+     s03 tragen denselben Rest.
+   - Der FUSS-H2 `.footer-studies__titel` (16px/700) bleibt: die zweite
+     verbleibende H2-Kombi (-20 auf stimmig). Vorbild-Rest wie PR #354/s02/s03.
+   - Die Fuss-Schriftgroessen (footer-heading 13,5px u. a.) bleiben wie auf
+     den Schwesterrouten — EIN Fuss auf allen drei Seiten dieses Baus.
+   - Die Schriftgroesse 16,75px (5x Studien-Kartentitel, 1x btn--secondary)
+     bleibt (s03: kein Hebel, kostet den Skalen-Fit).
+   - Die JS-Konsolen-Fehler (Footer-Hydration, PR #356) stehen unter Elinas
+     Gate 'kein Merge/Deploy ohne mein GO' — nicht Gegenstand dieser Datei.
+   ========================================================================== */
+
+.ProductQiHomeAir {
+  /* Typo — die Stufen des Hauses (reset.css), keine zweite Skala */
+  --qa-fs-h2: 2.2rem;   /* 35,2px — Basiswert aus reset.css h2 */
+  --qa-fs-h3: 1.5rem;   /* 24px — Skalen-Fit, siehe Regel 2 */
+  --qa-zeile: 70ch;     /* Zeilenlaenge, web-soll: <= 75ch */
+
+  /* Farbe — warmes Neutral-Kontinuum (web-soll.yaml), wie startseite.css */
+  --qa-muted: #6b665d;
+  --qa-flaeche: #f8f4ee;
+
+  /* Bild-Radius = der global schon gefuehrte Hauswert (img{} in app.css),
+     wie in startseite.css, crystal-cacao.css, qihome.css. KEIN zweiter Token. */
+  --qa-bild-radius: 4px;
+
+  /* Sektions-Takt auf dem 8px-Grid (web-soll: [96,64]) */
+  --qa-sec-lg: 96px;
+}
+
+/* --- 1. EIN H2-Stil auf der Seite ---------------------------------------- */
+/* Vorher fuenf Kombis: 40/700 (Hero .product-360-hero__text h2, 2.5rem/700
+ * in app.css) · 35,2/600 (12x, reset.css-Basiswert) · 38,4/700 (HeroBanner-
+ * Parallax 'Entspannt zuruecklehnen', .HeroBannerContent h2 2.4rem/700)
+ * · 48/600 (UpsellLineUp, `text-5xl!`) · 16/700 (Fuss, bleibt).
+ * Nach der Regel: 2 Kombis.
+ *
+ * WARUM @layer utilities: Tailwind v4 legt seine Utilities in diese Ebene. Bei
+ * `!important` dreht die Kaskade die Layer-Reihenfolge um — eine UNGELAYERTE
+ * !important-Regel haette die NIEDRIGSTE Prioritaet und verloere gegen
+ * `.text-5xl\!` unabhaengig von ihrer Spezifitaet. In derselben Ebene
+ * entscheidet die Spezifitaet: `.ProductQiHomeAir h2` (0,1,1) schlaegt
+ * `.text-5xl\!` (0,1,0). Real eingetreten in PR #354, s02 und s03. */
+@layer utilities {
+  .ProductQiHomeAir h2 {
+    font-size: var(--qa-fs-h2) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* --- 2. EIN H3-Stil, und zwar 1,5rem statt 1,4rem ------------------------ */
+/* Vorher 22,5px (14x: DasQiHome, MainFeatures, Technologie-Spalten, Upsell-
+ * Karten). Die Rubrik prueft den Skalen-Fit benachbarter Groessen (<= 1,06
+ * oder 1,1..1,55): mit 22,5 ist 35,25 / 22,5 = 1,567 und faellt durch; mit
+ * 24 sind es 35,25 / 24 = 1,469 und 24 / 19,25 = 1,247 — beide im Band,
+ * Anteil 8 von 10 statt 7 von 10. 24px steht ausserdem schon auf der Seite
+ * (Sterne-Sprung), es kommt KEINE Groesse hinzu.
+ * AUSGENOMMEN die Studien-Kartentitel (h3.ghx-studie__title, 16,75px) wie in
+ * crystal-cacao.css und qihome.css begruendet. */
+.ProductQiHomeAir h3:not(.ghx-studie__title) {
+  font-size: var(--qa-fs-h3) !important;
+  font-weight: 600 !important;
+}
+
+/* --- 3. Sektions-Abstand auf das 8px-Grid -------------------------------- */
+/* Die Seite fuehrt kein [data-section]; der Kollektor nimmt die <section>-
+ * Tags: HeroBannerParallax mit padding-top 32 + margin-top 100 = 132
+ * (132 % 8 = 4, off-grid) und GoogleRezensionenBereich mit 48 (on-grid) ->
+ * 1 von 2 = 50 % = -15 auf durchdacht. margin 100 -> 96 ergibt 128
+ * (128 % 8 = 0) und ist zugleich der Sektions-Takt aus web-soll. Sichtbare
+ * Aenderung: 4px. Identisch zu qihome.css Regel 3. */
+.ProductQiHomeAir section.HeroBannerAlt {
+  margin-top: var(--qa-sec-lg);
+  margin-bottom: var(--qa-sec-lg);
+}
+
+/* --- 4. Der `right`-Ausreisser der H2-Ausrichtung ------------------------ */
+/* Der HeroBannerParallax steht mit reverse={true}: sein Inhaltsblock sitzt
+ * am rechten Rand (justify-content: flex-end, bleibt) und app.css setzt
+ * dort `.HeroBannerAlt.reverse .HeroBannerContent { text-align: right }`
+ * plus `a { margin-left: auto }`. Drei Ausrichtungen = -30 auf durchdacht.
+ * Der Block bleibt rechts im Banner, sein Text wird linksbuendig — ein
+ * Textblock mit Flatterrand rechts liest sich besser als einer mit
+ * Flatterrand links; der Knopf folgt dem Text (margin-left 0). Zwei
+ * Ausrichtungen statt drei: -15. */
+.ProductQiHomeAir .HeroBannerAlt.reverse .HeroBannerContent {
+  text-align: left;
+}
+.ProductQiHomeAir .HeroBannerAlt.reverse .HeroBannerContent a {
+  margin-left: 0 !important;
+}
+
+/* --- 5. Zeilenlaenge: 132 Zeichen sind kein Lesemass --------------------- */
+/* 14 von 84 Textbloecken (17 %, Soll <= 15 %) liefen ueber die volle
+ * Containerbreite (1318 bzw. 1238px bei 19,2px = 132 ch): die Absaetze und
+ * Listenpunkte in .DasQiHome und .RisikofreiErleben sowie die zwei Absaetze
+ * unter dem Bild-Text-Block 'Schutz vor geopathogener Strahlung' (Geschwister
+ * von .SchutzGeopathogeneStrahlung, sonst klassenlos). Alle vierzehn sind
+ * linksbuendiger Fliesstext; max-width 70ch (~740px) ist die Lesebreite aus
+ * web-soll. Die zentrierte Studien-Einleitung und die zweispaltigen Bloecke
+ * (MainFeatures, TextContent) sind NICHT betroffen. -7 -> 0 auf durchdacht. */
+.ProductQiHomeAir .DasQiHome > p,
+.ProductQiHomeAir .DasQiHome li,
+.ProductQiHomeAir .RisikofreiErleben > p,
+.ProductQiHomeAir .SchutzGeopathogeneStrahlung ~ p {
+  max-width: var(--qa-zeile);
+}
+
+/* --- 6. Zwei Bild-Radius-Werte statt vier -------------------------------- */
+/* Vorher: 4px (23 Bilder: Produktbilder, Logo-Leiste, Klarna/PayPal, Kopf)
+ * · 20px (8: 1 Foto Technologie + 3 Upsell-Karten der Seite + VIER Bilder im
+ * KOPF-Untermenue, AUS) · 8px (5 Studien-Vorschauen) · 6px (2 im FUSS).
+ * Soll <= 2 Werte. Wie in qihome.css gemessen: die 20px-Gruppe der Seite
+ * auf 4 zu ziehen liesse {4, 8, 20} stehen, weil das Kopf-Untermenue bleibt.
+ * Deshalb: die grossen Fotos BEHALTEN 20px, die fuenf Studien-Vorschauen
+ * gehen 8 -> 4 und die zwei Fuss-Bilder 6 -> 4 (Delta 2px, unsichtbar;
+ * identisch zu crystal-cacao.css und qihome.css, also EIN Fuss-Wert auf
+ * allen drei Routen). Ergebnis {4px, 20px}. Der Fuss ist ein Geschwister
+ * des Scopes; erreicht ueber den Hausweg `body:has(.<scope>)`, route-lokal,
+ * weil diese Datei nur an einer Route haengt. */
+.ProductQiHomeAir .ghx-studie__preview img {
+  border-radius: var(--qa-bild-radius) !important;
+}
+body:has(.ProductQiHomeAir) .footer-study__image img,
+body:has(.ProductQiHomeAir) .footer-study__logo img {
+  border-radius: var(--qa-bild-radius);
+}
+
+/* --- 7. EIN Akzent: fremdes Blau raus ------------------------------------ */
+/* Die 16 'weiterlesen'-Schalter des Reputon-Karussells trugen #1565c0 und
+ * bildeten eine eigene gesaettigte Akzent-Farbwelt neben dem Kauf-Knopf-Gold
+ * (-25 auf harmonisch). Auf das Neutral-Muted gezogen + Unterstreichung,
+ * exakt wie startseite.css Regel 5 und qihome.css Regel 6. Kontrast #6b665d
+ * auf #f8f4ee: 4,9:1. Das Gold selbst (Kauf-Knopf, CTAs, Sterne) ist auf
+ * dieser Seite bereits EIN Ton — nichts anzufassen. */
+.ProductQiHomeAir button[class*='text-[#1565c0]'] {
+  color: var(--qa-muted) !important;
+  text-decoration: underline;
+}
+
+/* --- 8. Hintergruende: warmes Neutral statt kuehlem Blaugrau ------------- */
+/* Die 39 Reputon-Karten stellten mit #f3f6f9 eine eigene, kuehle Farbwelt
+ * neben das warme Kontinuum (4 Welten, Soll <= 4: heute gerade noch kein
+ * Abzug, aber die Kante). Auf die Hausflaeche #f8f4ee gezogen (Abstand 6,8
+ * zur Warmflaeche #f7f1e8, gleicher Cluster) — startseite.css Regel 6,
+ * qihome.css Regel 7: dieselbe Karte sieht auf allen drei Seiten gleich aus. */
+.ProductQiHomeAir [class*='bg-[#f3f6f9]'] {
+  background-color: var(--qa-flaeche) !important;
+}
+
+/* --- 9. Mobil: die Ueberschriften zurueckdrehen -------------------------- */
+/* reset.css setzt <= 749px h2 auf 1,5rem und h3 auf 1,25rem (!important).
+ * Regel 1 und 2 tragen ebenfalls !important und wuerden das ueberstimmen —
+ * ohne diesen Block stuenden 35px auf 390px Breite und braechen um. */
+@media (max-width: 749px) {
+  @layer utilities {
+    .ProductQiHomeAir h2 {
+      font-size: 1.5rem !important;
+    }
+  }
+  .ProductQiHomeAir h3:not(.ghx-studie__title) {
+    font-size: 1.25rem !important;
+  }
+}
