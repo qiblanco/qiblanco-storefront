@@ -162,7 +162,7 @@ export function KritikSeite() {
           macht, findet die Antwort einen Klick weiter.
           NACH DEM ZUSAMMENFUEHREN MIT PR #373 (2026-09-11) steht er als eigene
           Section VOR dem Plusbereich, nicht mehr in ihm: der Plusbereich
-          beantwortet "was spricht dafuer", der Verweis beantwortet "warum
+          beantwortet "was spricht dafür", der Verweis beantwortet "warum
           macht das ueberhaupt jemand". Zwei Fragen, zwei Flaechen — sie
           ineinanderzuschieben haette beide unscharf gemacht. */}
       <section>
