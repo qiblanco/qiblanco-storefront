@@ -278,7 +278,7 @@ export function youtubeWatchtimeAnbinden(
      * ZEIGT DER PLAYER SCHON BILD? (Job 20260911-BAU-videoumschaltung)
      *
      * Die Umschaltung Vorschau -> Player braucht genau eine Auskunft, die ein
-     * `<iframe>` von aussen nicht hergibt: laeuft er WIRKLICH, oder steht da
+     * `<iframe>` von aussen nicht hergibt: läuft er WIRKLICH, oder steht da
      * nur ein schwarzer Rahmen? Das `load`-Ereignis beantwortet das NICHT --
      * es feuert, wenn das Player-DOKUMENT da ist, nicht wenn Bild da ist.
      *

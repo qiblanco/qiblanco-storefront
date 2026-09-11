@@ -48,10 +48,10 @@ export function ausLink(link) {
     const text = String(link || '');
     const kennung = text.match(/\/embed\/([A-Za-z0-9_-]{6,})/);
     const zeit = text.match(/[?&](?:start|t)=(\d+)/);
-    /* Alles, was NICHT Kennung oder Startzeit ist, gehoert dem Einsatzort und
+    /* Alles, was NICHT Kennung oder Startzeit ist, gehört dem Einsatzort und
      * wird mitgenommen -- `controls=0` etwa ist eine Gestaltungsentscheidung
      * der jeweiligen Seite. `si=` faellt raus: das ist der Sitzungs-Zeiger aus
-     * dem YouTube-Teilen-Dialog, er gehoert einer fremden Sitzung und hat auf
+     * dem YouTube-Teilen-Dialog, er gehört einer fremden Sitzung und hat auf
      * unseren Seiten nichts zu suchen. */
     const frage = text.indexOf('?');
     const rest = frage < 0

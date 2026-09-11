@@ -157,16 +157,16 @@ const STAPEL_STYLE = {
   width: '100%',
   /*
    * `max-width: none` ist KEINE Vorsichtsmassnahme, sondern ein gemessener
-   * Befund: die V2-Seite traegt eine Typografie-Regel
+   * Befund: die V2-Seite trägt eine Typografie-Regel
    * `.lp-v2 span, .lp-v2 dd { max-width: var(--v2-mass) }` -- eine
-   * Zeilenlaengen-Begrenzung (65ch) fuer LESBAREN TEXT. Sie trifft JEDES
+   * Zeilenlaengen-Begrenzung (65ch) für LESBAREN TEXT. Sie trifft JEDES
    * <span> der Seite und damit auch diesen Stapel: gemessen am 2026-09-11
    * schrumpfte die Kachel dadurch von 760 auf 585 px Breite, das Video wurde
    * also KLEINER als vorher.
    *
    * Der Stapel ist ein Layout-Kasten, kein Fliesstext. Er nimmt deshalb
-   * ausdruecklich keine Zeilenlaengen-Vorgabe an -- und genau das ist die
-   * Trennung, um die es in diesem Job geht: die GEOMETRIE gehoert der
+   * ausdrücklich keine Zeilenlaengen-Vorgabe an -- und genau das ist die
+   * Trennung, um die es in diesem Job geht: die GEOMETRIE gehört der
    * Komponente, das AUSSEHEN dem Seiten-CSS.
    */
   maxWidth: 'none',
@@ -186,7 +186,7 @@ const SCHICHT_STYLE = {
 /*
  * Wie lange nach `onLoad` noch auf die Auskunft des Players gewartet wird,
  * bevor ohne sie umgeblendet wird. Kurz genug, dass niemand ein Standbild
- * ueber einem laufenden Video sieht; lang genug, dass die Auskunft im
+ * über einem laufenden Video sieht; lang genug, dass die Auskunft im
  * Normalfall zuerst da ist.
  */
 const GNADENFRIST_MS = 900;
@@ -335,9 +335,9 @@ export function YoutubeTimestamp({
 
   /*
    * DIE FRIST, DIE NICHT AUSFALLEN KANN.
-   * Sie haengt ausdruecklich NICHT an `objekt`: ohne Anker gibt es keine
-   * Watchtime-Anbindung und damit auch kein `onSpielt` -- genau dort waere
-   * eine Vorschau sonst fuer immer liegengeblieben.
+   * Sie hängt ausdrücklich NICHT an `objekt`: ohne Anker gibt es keine
+   * Watchtime-Anbindung und damit auch kein `onSpielt` -- genau dort wäre
+   * eine Vorschau sonst für immer liegengeblieben.
    */
   useEffect(() => {
     if (!laueft || zeigt) return undefined;
@@ -392,11 +392,11 @@ export function YoutubeTimestamp({
       };
 
   /*
-   * DER STAPEL — ein einziger Bauplan fuer beide Zustaende.
+   * DER STAPEL — ein einziger Bauplan für beide Zustaende.
    *
    * Vorher gab es hier ZWEI Teilbaeume, und der Wechsel zwischen ihnen WAR der
    * Defekt. Jetzt gibt es einen: dieselben Schichten, in derselben Reihenfolge,
-   * vor und nach dem Klick. Was sich aendert, ist ausschliesslich die
+   * vor und nach dem Klick. Was sich aendert, ist ausschließlich die
    * Deckkraft des Players und das Zeichen in der Mitte.
    */
   const stapel = (
@@ -409,8 +409,8 @@ export function YoutubeTimestamp({
         {...posterProps}
         alt={posterAlt}
         loading="lazy"
-        /* Sobald der Player laeuft, ist die Vorschau nur noch UNTERLAGE und
-         * traegt keine eigene Aussage mehr -- fuer die Vorlesehilfe waere sie
+        /* Sobald der Player läuft, ist die Vorschau nur noch UNTERLAGE und
+         * trägt keine eigene Aussage mehr -- für die Vorlesehilfe wäre sie
          * dann ein zweiter Text neben einem laufenden Video. */
         aria-hidden={laueft ? 'true' : undefined}
         style={SCHICHT_STYLE}
@@ -429,7 +429,7 @@ export function YoutubeTimestamp({
           style={{
             ...SCHICHT_STYLE,
             opacity: zeigt ? 1 : 0,
-            /* Die Blende ist kurz und laeuft nur in EINE Richtung. Wer
+            /* Die Blende ist kurz und läuft nur in EINE Richtung. Wer
                `prefers-reduced-motion` gesetzt hat, bekommt sie nicht --
                eine Deckkraft-Animation ist Bewegung im Sinne der Einstellung. */
             transition: 'opacity 240ms ease-out',
@@ -457,7 +457,7 @@ export function YoutubeTimestamp({
           aria-hidden="true"
           style={PLAY_STYLE}
         >
-          <span style={PLAY_BADGE_STYLE} data-qb-video-laedt={laueft ? '' : undefined}>
+          <span style={PLAY_BADGE_STYLE}>
             {laueft ? <span className="qb-video-spinner" /> : '\u25B6'}
           </span>
         </span>
@@ -481,20 +481,20 @@ export function YoutubeTimestamp({
      * Inhalt. Der Stapel darin hat `width: 100%` -- das ergibt in einem
      * schrumpfenden Elternteil eine Breite von NULL, und die Kachel
      * verschwindet. Gemessen beim Bau am 2026-09-11 auf
-     * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Groesse".
+     * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Größe".
      *
      * Es steht hier und nicht im Seiten-CSS, weil GENAU DAS der Fehler war,
      * den dieser Job aufloest: sechs der acht Scopes deklarieren
      * `display: block; width: 100%` selbst, zwei (.v2-yt, .v3-yt) haben
-     * ueberhaupt keine Regel. Die sechs bekommen hier BYTEGLEICH, was sie
-     * ohnehin sagen -- nachgemessen, nicht vermutet; fuer die zwei ist es der
+     * überhaupt keine Regel. Die sechs bekommen hier BYTEGLEICH, was sie
+     * ohnehin sagen -- nachgemessen, nicht vermutet; für die zwei ist es der
      * Unterschied zwischen Kachel und Nichts. Alles Weitere (Radius, Schatten,
      * Farbe, Filter) bleibt beim Seiten-CSS.
      */
     'data-section': dataSection || undefined,
     'data-video': objekt || undefined,
     'data-video-familie': 'youtube',
-    'data-qb-video-zustand': laueft ? (zeigt ? 'spielt' : 'laedt') : 'vorschau',
+    'data-qb-video-zustand': laueft ? (zeigt ? 'spielt' : 'wartet') : 'vorschau',
     style: eigenesKleid
       ? {display: 'block', width: '100%'}
       : FRAME_STYLE,
