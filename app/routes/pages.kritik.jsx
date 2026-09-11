@@ -2,6 +2,8 @@ import {KritikSeite} from '~/components/campaign/KritikSeite';
 import kritikStyles from '~/styles/kritik.css?url';
 import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {buildFaqPageJsonLd} from '~/lib/faq-schema';
+import {FRAGEN} from '~/data/kritik-vorwuerfe';
 
 const PFAD = '/pages/kritik';
 
@@ -78,20 +80,61 @@ export function links() {
   ];
 }
 
+/**
+ * DER TITEL BLEIBT, WIE ER IST — er bedient die Suche „Qi Blanco Kritik" und
+ * stellt genau die Frage, die der Suchende hat. Das Wort trägt hier und in der
+ * H1; im Fließtext der Seite steht es bewusst NICHT mehr (siehe KritikSeite.jsx).
+ */
 const TITEL = 'Qi Blanco Kritik – was stimmt davon? | Qi Blanco';
 const BESCHREIBUNG =
-  'Die Kritik an Qi Blanco, wörtlich zitiert und Punkt für Punkt beantwortet: Was stimmt, was stimmt zum Teil, was stimmt nicht – mit Fundstelle, Belegen und den Grenzen unserer Studien.';
+  'Die sieben härtesten Fragen zu Qi Blanco, gerade beantwortet: was gemessen ist, was offen ist – und was du in 20 Tagen selbst prüfen kannst.';
+
+/**
+ * SCHEMA-DATEN. `datePublished` ist der Tag der Freischaltung dieser Seite,
+ * `dateModified` der Tag ihrer letzten inhaltlichen Änderung — BEIDE sind
+ * Konstanten und KEINE Laufzeit-Uhr: ein `dateModified`, das sich bei jedem
+ * Abruf bewegt, behauptet eine Pflege, die nicht stattfindet. WER DEN INHALT
+ * DIESER SEITE ÄNDERT, ZIEHT `KRITIK_GEAENDERT` IM SELBEN COMMIT NACH.
+ */
+const KRITIK_VEROEFFENTLICHT = '2026-09-11';
+const KRITIK_GEAENDERT = '2026-09-11';
+
+/**
+ * DAS FAQPage-SCHEMA kommt aus app/lib/faq-schema.js (P10: die Fabrik
+ * existiert samt Deny-Netz) und wird AUS DEM SICHTBAREN TEXT gebaut — Frage und
+ * Antwort sind dieselben Strings, die die Komponente rendert. Eine Frage im
+ * Schema, die auf der Seite nicht steht, wäre ein Regelverstoß; deshalb gibt es
+ * hier keine eigene Schema-Textfassung.
+ *
+ * DER STILLE VERLUST IST DER TEURE FALL: `buildFaqPageJsonLd` wirft Items aus,
+ * die das Deny-Netz treffen (z. B. das Wort „kohärent"), und liefert dann
+ * einfach ein kürzeres Schema — die Seite bliebe sichtbar und würde nur für
+ * Google ärmer, ohne Fehlermeldung. Am 2026-09-11 passieren alle 7 Fragen das
+ * Netz; homepage-bauer/bin/probe_kritik_eigene_worte.py hält mit einem
+ * Soll-Zähler von 7 Question-Einträgen dagegen.
+ */
+const schemaItems = () =>
+  FRAGEN.map((f) => ({q: f.frage, a: [f.kurz, ...f.antwort].join(' ')}));
 
 /** @type {MetaFunction} */
-export const meta = () => [
-  {title: TITEL},
-  {name: 'description', content: BESCHREIBUNG},
-  canonicalLink(PFAD),
-  {property: 'og:type', content: 'website'},
-  {property: 'og:title', content: TITEL},
-  {property: 'og:description', content: BESCHREIBUNG},
-  {property: 'og:url', content: absoluteCanonical(PFAD)},
-];
+export const meta = () => {
+  const schema = buildFaqPageJsonLd(schemaItems(), {
+    inLanguage: 'de-DE',
+    author: 'Qi Blanco',
+    datePublished: KRITIK_VEROEFFENTLICHT,
+    dateModified: KRITIK_GEAENDERT,
+  });
+  return [
+    {title: TITEL},
+    {name: 'description', content: BESCHREIBUNG},
+    canonicalLink(PFAD),
+    {property: 'og:type', content: 'website'},
+    {property: 'og:title', content: TITEL},
+    {property: 'og:description', content: BESCHREIBUNG},
+    {property: 'og:url', content: absoluteCanonical(PFAD)},
+    ...(schema ? [{'script:ld+json': schema}] : []),
+  ];
+};
 
 export default function KritikRoute() {
   return <KritikSeite />;

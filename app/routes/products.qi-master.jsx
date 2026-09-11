@@ -8,6 +8,9 @@ import QiMaster, {
 } from '~/components/product-pages/QiMaster';
 import qiMasterStyles from '~/styles/qi-master.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+import {QiMasterTreppe} from '~/components/product-pages/QiMasterTreppe';
+import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
+import preisstufen from '~/data/qi-master-preisstufen.json';
 
 /*
  * Organische Produktseite /products/qi-master — QiMaster, „der QiOne mit
@@ -112,7 +115,13 @@ async function loadCriticalData({context, request}, handle) {
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
-  return {product};
+  // VORVERKAUFSTREPPE — hier und nicht in der Komponente. Welche Stufe gilt,
+  // entscheidet das Datum; im Browser berechnet stünde sie NICHT im
+  // ausgelieferten HTML (die Abnahme-Probe misst genau dieses HTML) und liefe
+  // am Stufenwechsel zwischen Server- und Browserdatum auseinander.
+  // Quelle ist app/data/qi-master-preisstufen.json — Prozentsätze, keine
+  // ausgerechneten Preise; gerechnet wird EINMAL in ~/lib/qi-master-preisstufen.
+  return {product, treppe: treppeRechnen(preisstufen)};
 }
 
 function loadDeferredData() {
@@ -121,7 +130,7 @@ function loadDeferredData() {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, treppe} = useLoaderData();
   const {descriptionHtml} = product;
 
   return (
@@ -134,11 +143,7 @@ export default function Product() {
             dangerouslySetInnerHTML={{__html: descriptionHtml}}
           />
         }
-        priceLabel={
-          <p className="qm-preishinweis">
-            Preis inkl. 19 % MwSt., Versand innerhalb Deutschlands kostenlos.
-          </p>
-        }
+        priceLabel={<QiMasterTreppe treppe={treppe} kompakt />}
         benefitList={<QiMasterBenefitList />}
       />
       <QiMaster />
