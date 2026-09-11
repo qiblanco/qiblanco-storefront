@@ -25,14 +25,14 @@ import pdpQiStyles from '~/styles/pdp-qi.css?url';
  * Route-gebundenes Stylesheet der Token-Schicht dieser Kaufseite
  * (Muster: startseite.css an _index.jsx, qihome-air.css an
  * products.qihome-air.jsx). NICHT in app.css: die globale Datei erreicht
- * 45 Routen; diese Datei gilt genau fuer die zwei Flaggschiff-Kaufseiten
- * und ist innen zusaetzlich auf `main` gescoped.
+ * 45 Routen; diese Datei gilt genau für die zwei Flaggschiff-Kaufseiten
+ * und ist innen zusätzlich auf `main` gescoped.
  *
  * Zum Kommentar oben ("KEIN links()-EXPORT MEHR"): dessen Grund war ein
- * Stylesheet fuer eine Klasse, die auf dieser Seite nicht mehr vorkommt.
+ * Stylesheet für eine Klasse, die auf dieser Seite nicht mehr vorkommt.
  * Jeder Selektor von pdp-qi.css trifft hier gemessen (h2, .NormalSectionSize,
- * .snap-start, .HeroBannerAlt, main img) — die Begruendung von damals
- * spricht also nicht gegen diese Zeile, sondern verlangt genau diese Pruefung.
+ * .snap-start, .HeroBannerAlt, main img) — die Begründung von damals
+ * spricht also nicht gegen diese Zeile, sondern verlangt genau diese Prüfung.
  */
 export function links() {
   return [{rel: 'stylesheet', href: pdpQiStyles}];
