@@ -97,7 +97,11 @@ export const FAQ_ALLTAG = [
       caption:
         'Handgelenksbreite (nicht Umfang!) — gemessen an der breitesten Stelle. ' +
         'Quelle: Größentabelle der QiBracelet®-Produktseite.',
-      kopf: ['Deine Handgelenksbreite', 'Locker (bewegt sich)', 'Anliegend (liegt an)'],
+      kopf: [
+        'Deine Handgelenksbreite',
+        'Locker (bewegt sich)',
+        'Anliegend (liegt an)',
+      ],
       zeilen: [
         ['4,5 cm', 'S', '—'],
         ['5 cm', 'S', 'S, verengt'],
@@ -205,6 +209,34 @@ export const FAQ_BELEGE = [
       'app/components/campaign/MmWirktDas.jsx, Konstanten STUDIEN/GRENZEN (ihrerseits aus der ' +
       'faktengegateten Registry app/data/studien/e0001…e0005.json). Inhaltsgrenze wie dort: ' +
       'wörtlich „in vitro", ausdrücklich kein klinischer Wirknachweis am Menschen.',
+    // Die Vertiefung GENAU DIESER Antwort, und die Stelle ist mit Absicht
+    // gewählt: der Absatz darüber räumt ein „Ob und wie du selbst etwas
+    // merkst, folgt daraus nicht". Das ist die ehrliche Grenze der Studien —
+    // und der Punkt, an dem einzelne Menschen weiterhelfen, wo Zellstudien es
+    // nicht können. Gemessene Grundlage: „Wirkt das überhaupt?" ist mit 3758
+    // Nennungen der häufigste Einwand, und sozialer Beweis zieht dort, wo
+    // Wissenschafts-Beweis erst beim Zweifel wirkt (Kaufüberzeugungs-Kanon:
+    // „Menschen ziehen, Studien überzeugen").
+    //
+    // DER LINKTEXT NENNT KEINE ZAHL. Naheliegend wäre „13 Menschen" gewesen —
+    // aber die Zahl wächst mit dem Datenmodul, und ein Zähler in einer
+    // fremden Datei veraltet still. Die Seite selbst nennt sie und rechnet
+    // sie aus ihren Daten aus.
+    //
+    // ARBEITSTEILUNG wie im Abgrenzungs-SSoT (konzepte/abgrenzung-flaechen.json):
+    // die FAQ antwortet in EINEM Absatz und verlinkt in die Tiefe. Begehbar ist
+    // dieser Weg erst seit der Freischaltung von /pages/erfahrungen am
+    // 2026-09-11 — vorher wäre es ein Link auf eine per robots.txt gesperrte
+    // Seite gewesen. Zweiter Nutzen: /pages/erfahrungen hat damit einen
+    // server-gerenderten eingehenden Link von einer indexierten Seite. Der
+    // Menü-Eintrag unter „Mehr" allein reicht dafür nicht — dessen Kinder
+    // rendert Shopify clientseitig per Portal, im Server-HTML stehen sie nicht.
+    weiter: {
+      pfad: '/pages/erfahrungen',
+      text:
+        'Menschen, die selbst erzählen, was sie gemerkt haben — ihre ' +
+        'Beobachtungen, nicht unsere Behauptung',
+    },
   },
   {
     q: 'Es gibt öffentliche Kritik an Qi Blanco, auch Videos von Wissenschaftlern. Was sagt ihr dazu?',
@@ -224,6 +256,17 @@ export const FAQ_BELEGE = [
       'eine Hypothese") + ZWEIFEL-Item „Und wenn mich das alles nicht überzeugt?". ' +
       'NAMEN BEWUSST NICHT GENANNT (Entscheid s04, Begründung im RESULT): die namentliche Fassung ' +
       'liegt Christian als Vorlage vor.',
+    // Die Vertiefung dieser Antwort. Der Abgrenzungs-SSoT (konzepte/
+    // abgrenzung-flaechen.json, Fläche `faq`) legt genau diese Arbeitsteilung
+    // fest: „Die FAQ beantwortet … in je EINEM Absatz. Eine Kritik-Fläche darf
+    // diese zwei Antworten nicht länger wiederholen, sondern muss sie
+    // VERTIEFEN … Die FAQ verlinkt dorthin." Seit der Freischaltung von
+    // /pages/kritik am 2026-09-11 ist dieser Weg begehbar; vorher wäre er ein
+    // Link auf eine per robots.txt gesperrte Seite gewesen.
+    weiter: {
+      pfad: '/pages/kritik',
+      text: 'Jeden Vorwurf einzeln nachlesen — mit Fundstelle und Antwort',
+    },
   },
   {
     q: 'Wie funktioniert das eigentlich — ganz ohne Elektronik?',
@@ -317,7 +360,8 @@ export const FAQ_BLOECKE = [
   {
     id: 'alltag',
     titel: 'Im Alltag',
-    intro: 'Größe, Wasser, Tragen, Haltbarkeit — die Fragen, die am häufigsten gestellt werden.',
+    intro:
+      'Größe, Wasser, Tragen, Haltbarkeit — die Fragen, die am häufigsten gestellt werden.',
     items: FAQ_ALLTAG,
   },
   {
@@ -329,7 +373,8 @@ export const FAQ_BLOECKE = [
   {
     id: 'belege',
     titel: 'Belege und Kritik',
-    intro: 'Was gemessen ist, was nicht — und wie wir mit der Kritik daran umgehen.',
+    intro:
+      'Was gemessen ist, was nicht — und wie wir mit der Kritik daran umgehen.',
     items: FAQ_BELEGE,
   },
   {

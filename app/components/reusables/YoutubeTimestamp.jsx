@@ -23,6 +23,16 @@ import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
  *   videoId       Pflicht — YouTube-Video-ID (z.B. 'BQxzbXqREWE')
  *   startSeconds  Startpunkt in Sekunden, PRO EINSATZORT (default 0 = Anfang)
  *   titel         Pflicht — a11y (iframe-title + aria-label des Posters)
+ *   posterAlt     Optional, Vorgabe '' — Alternativtext des Vorschaubildes.
+ *                 VORGABE IST BEWUSST DIE LEERE ZEICHENKETTE und ändert für
+ *                 alle bisherigen Aufrufer NICHTS: das Poster steckt in einem
+ *                 Knopf, der bereits `aria-label="Video abspielen: <titel>"`
+ *                 trägt — ein zweiter Text daneben ist für den Screenreader
+ *                 Doppelung, nicht Gewinn (das `aria-label` des Knopfes sticht
+ *                 den Bildtext ohnehin). Wer ihn SETZT, tut das für die
+ *                 BILDERSUCHE: dort ist das Standbild eine eigene Ressource mit
+ *                 eigenem Text. Gesetzt wird er deshalb dort, wo das Motiv
+ *                 etwas aussagt (ein Mensch mit Namen), nicht pauschal.
  *   thumbnail     optionale eigene Poster-URL, PRO EINSATZORT — ersetzt die
  *                 YouTube-Kette komplett (kein srcset/kein Abstieg)
  *   dataSection   optionaler Watch-/Heatmap-Anker
@@ -46,6 +56,67 @@ import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
  * Selbsttragend: 16:9-Rahmen über Inline-aspect-ratio, funktioniert damit auf
  * jeder Route ohne seitenspezifisches CSS; Feinschliff je Seite über die
  * .YoutubeTimestamp-Klasse im jeweiligen Token-Scope.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ÄNDERUNG 2026-09-11 (Job 20260911-BAU-videoumschaltung-seite-bricht-beim-
+ * play-klick-zusammen, Christian): DIE UMSCHALTUNG IST EIN ÜBERBLENDEN
+ * GEWORDEN, KEIN ELEMENT-TAUSCH MEHR.
+ *
+ * Christian: „wenn man auf Play drückt, verschwindet zuerst alles Sichtbare,
+ * dann kommt was Schwarzes, und dann wird das Video geladen. Das war nicht die
+ * Idee hinter Fast Loading."
+ *
+ * WAS VORHER GESCHAH — und warum es wie ein Ladeproblem aussah, aber keins war:
+ * Der Zustandswechsel gab einen KOMPLETT ANDEREN Teilbaum zurück
+ * (`if (laueft) return <div><iframe/></div>`). React hat damit den `<button>`
+ * mitsamt Vorschau-`<img>` ausgehängt und im selben Bildaufbau ein leeres
+ * `<iframe>` eingehängt. Die Vorschau war weg, BEVOR der Ersatz Bild hatte —
+ * sichtbar blieb der schwarze Hintergrund des Rahmens. Nicht das Video war
+ * langsam, die Vorschau war zu früh weg.
+ *
+ * GEMESSEN VOR DEM UMBAU (bin/mess_videoumschaltung.py, live, 2026-09-11):
+ *   qiblanco.com Startseite   vorschau_sichtbar_ms = 0, schwarz 3937 ms
+ *   /pages/tiefer-schlaf      vorschau_sichtbar_ms = 0, schwarz 3460 ms
+ *   crystal-cacao.com         vorschau_sichtbar_ms = 0, schwarz  195 ms
+ *
+ * WIE ES JETZT GEBAUT IST (dasselbe Muster wie lite-youtube-embed von Paul
+ * Irish, der De-facto-Standard für Facade-Einbettungen): die Vorschau wird
+ * NICHT MEHR ENTFERNT. Sie bleibt als unterste Schicht liegen, der Player legt
+ * sich darüber und wird erst SICHTBAR GEBLENDET, wenn er wirklich zeigt.
+ * Zwischen Klick und Bild sieht der Besucher durchgehend die Vorschau — plus
+ * ein Ladezeichen, damit erkennbar ist, dass etwas passiert.
+ *
+ * „WENN ER WIRKLICH ZEIGT" — die Auskunft, die ein iframe von aussen nicht gibt:
+ * `onLoad` feuert, sobald das Player-DOKUMENT geladen ist, und sagt NICHTS
+ * darüber, ob Bild da ist. Gefragt wird deshalb der Player selbst über das
+ * `postMessage`-Protokoll der YouTube-IFrame-API (`playerState === 1`). Diese
+ * Verbindung besteht in diesem Haus bereits für die Watchtime-Erfassung und
+ * wird DURCHGEREICHT (`onSpielt` in app/lib/video-watchtime.js) — kein zweiter
+ * Handshake, kein zweites Skript, null zusätzliche Bytes.
+ *
+ * FEHLERRICHTUNG, und sie ist der wichtigste Teil: bliebe die Vorschau liegen,
+ * WEIL die Auskunft nie kommt (Einwilligung fehlt, Player meldet nichts,
+ * Netzfehler), stünde ein Standbild über einem laufenden Video — schlimmer als
+ * der Zustand, der hier behoben wird. Es gibt deshalb DREI Auslöser, und der
+ * letzte kann nicht ausfallen:
+ *   1. der Player meldet „spielt"            (der richtige Fall)
+ *   2. `onLoad` + GNADENFRIST_MS             (Player da, Auskunft blieb aus)
+ *   3. HARTE_FRIST_MS nach dem Klick         (kann nicht ausfallen)
+ * Im schlechtesten Fall ist das Verhalten das von vorher — nie ein schlechteres.
+ *
+ * DER STAPEL (`STAPEL_STYLE`) — warum es ihn geben MUSS und er nicht dem
+ * Seiten-CSS überlassen wird: im Baum existierten ZWEI Stapel-Regime. Die
+ * meisten Scopes (.ExterneStimmen__yt, .lp-ts3-yt, .YoutubeIframe--facade)
+ * positionieren Poster und Player absolut übereinander. Zwei Scopes (.v2-yt,
+ * .v3-yt) hatten dafür ÜBERHAUPT KEINE Regeln: dort stand das Play-Abzeichen
+ * als Zeile UNTER dem Video, und sein Verschwinden beim Klick hat die Seite um
+ * gemessene 26,4 px nach oben gerissen (CLS 0,00315 auf
+ * /pages/schlaf-zellen-schutz-v2-18ef, 2026-09-11). Genau das ist Christians
+ * „fünf Einbettungen mit fünf Verhaltensweisen". Der Stapel gehört deshalb
+ * jetzt der Komponente: EIN in sich stehender 16:9-Kasten, in dem Poster,
+ * Player und Abzeichen übereinanderliegen. Das Seiten-CSS behält, was ihm
+ * zusteht (Radius, Schatten, Farbe, Filter) — die GEOMETRIE nicht mehr.
+ * ═══════════════════════════════════════════════════════════════════════════
  */
 const FRAME_STYLE = {
   position: 'relative',
@@ -72,6 +143,77 @@ const PLAY_STYLE = {
   display: 'grid',
   placeItems: 'center',
 };
+/*
+ * DER STAPEL: ein 16:9-Kasten, in dem Poster, Player und Abzeichen
+ * uebereinanderliegen. In der Flussrichtung (kein `position: absolute`), damit
+ * er in BEIDEN Stapel-Regimen des Baums dieselbe Höhe ergibt -- in einem
+ * absolut gefuellten Container (.ExterneStimmen__yt) genauso wie in einem
+ * voellig ungestylten <button> (.v2-yt). Gemessen ergibt er dort exakt die
+ * Höhe, die das Poster vorher hatte (760 x 427,5 statt 760 x 453,9).
+ */
+const STAPEL_STYLE = {
+  position: 'relative',
+  /*
+   * GRID, UND DAS ZENTRIERT DAS ABZEICHEN -- ohne dass das Abzeichen dafür
+   * selbst einen Stil braucht. Genau darin liegt der Unterschied zur ersten
+   * Fassung dieses Baus: die legte dem Abzeichen Position UND Aussehen inline
+   * auf und stach damit den Goldakzent der Startseite aus (live gemessen:
+   * color rgb(255,255,255) statt des Seitentons, obwohl externe-stimmen.css
+   * über genau dieses Element sagt "Der EINE Goldakzent des Abschnitts").
+   *
+   * Poster und Player liegen absolut und damit ausserhalb des Flusses; das
+   * einzige Flusskind ist das Abzeichen. `place-items: center` setzt es in die
+   * Mitte -- für Scopes OHNE eigene Regel (.v2-yt, .v3-yt) ist das die ganze
+   * Positionierung, und für Scopes MIT eigener Regel (.qbp__knopf setzt sich
+   * absolut, .ExterneStimmen__yt__play deckt die Flaeche) aendert es nichts.
+   * Die Komponente gibt damit die Geometrie vor, ohne das Aussehen anzufassen.
+   */
+  display: 'grid',
+  placeItems: 'center',
+  width: '100%',
+  /*
+   * `max-width: none` ist KEINE Vorsichtsmassnahme, sondern ein gemessener
+   * Befund: die V2-Seite trägt eine Typografie-Regel
+   * `.lp-v2 span, .lp-v2 dd { max-width: var(--v2-mass) }` -- eine
+   * Zeilenlaengen-Begrenzung (65ch) für LESBAREN TEXT. Sie trifft JEDES
+   * <span> der Seite und damit auch diesen Stapel: gemessen am 2026-09-11
+   * schrumpfte die Kachel dadurch von 760 auf 585 px Breite, das Video wurde
+   * also KLEINER als vorher.
+   *
+   * Der Stapel ist ein Layout-Kasten, kein Fliesstext. Er nimmt deshalb
+   * ausdrücklich keine Zeilenlaengen-Vorgabe an -- und genau das ist die
+   * Trennung, um die es in diesem Job geht: die GEOMETRIE gehört der
+   * Komponente, das AUSSEHEN dem Seiten-CSS.
+   */
+  maxWidth: 'none',
+  overflow: 'hidden',
+};
+/* Die Schichten sitzen deckungsgleich aufeinander -- das ist der ganze Trick. */
+const SCHICHT_STYLE = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  border: 0,
+  margin: 0,
+  display: 'block',
+};
+/*
+ * Wie lange nach `onLoad` noch auf die Auskunft des Players gewartet wird,
+ * bevor ohne sie umgeblendet wird. Kurz genug, dass niemand ein Standbild
+ * über einem laufenden Video sieht; lang genug, dass die Auskunft im
+ * Normalfall zuerst da ist.
+ */
+const GNADENFRIST_MS = 900;
+/*
+ * Die Frist, die NICHT ausfallen kann. Nach ihr wird umgeblendet, egal was der
+ * Player gemeldet hat -- notfalls ist das Ergebnis das Verhalten von vorher.
+ * Ein Beschleuniger, der im Fehlerfall den normalen Weg kaputt macht, ist
+ * schlimmer als keiner.
+ */
+const HARTE_FRIST_MS = 4000;
+
 const PLAY_BADGE_STYLE = {
   display: 'grid',
   placeItems: 'center',
@@ -165,6 +307,7 @@ export function YoutubeTimestamp({
   videoId,
   startSeconds = 0,
   titel,
+  posterAlt = '',
   thumbnail,
   dataSection,
   sizes = '100vw',
@@ -172,8 +315,29 @@ export function YoutubeTimestamp({
   playClassName,
   vorwaermen = false, // gemessen wirkungslos für kreuz-seitige iframes, s.o.
   noscriptFallback = false,
+  seitenverhaeltnis = '16 / 9',
+  /*
+   * Zusaetzliche Player-Parameter des Einsatzortes, z.B. `controls=0`.
+   * Sie stehen NICHT zur Disposition: `controls=0` ist eine Gestaltungs-
+   * entscheidung der jeweiligen Seite (TenYearsDealPage zeigt vier Videos
+   * bewusst ohne Bedienleiste). Wer beim Umbau die Einbettungs-URL neu baut
+   * und diese Parameter dabei verliert, ändert stillschweigend das Aussehen
+   * einer Seite, die er gar nicht anfassen wollte.
+   */
+  zusatzParameter = '',
+  /*
+   * Was IM Abzeichen steht. Vorgabe ist das Play-Dreieck; `null` lässt es
+   * leer -- für Scopes, die ihr Dreieck selbst zeichnen (podcasts.css malt es
+   * als `::after` auf einen Goldkreis). Ohne diese Möglichkeit stünden dort
+   * ZWEI Dreiecke übereinander.
+   */
+  playInhalt = '\u25B6',
 }) {
   const [laueft, setLaueft] = useState(false);
+  /* `zeigt` ist NICHT „der Player existiert", sondern „der Player hat Bild".
+   * Der Unterschied zwischen den beiden ist genau das Schwarz, um das es
+   * in diesem Job geht. */
+  const [zeigt, setZeigt] = useState(false);
   const [posterStufe, setPosterStufe] = useState(0);
   const rahmen = useRef(null);
   const schonGewaermt = useRef(false);
@@ -185,8 +349,24 @@ export function YoutubeTimestamp({
   const objektQuelle = dataSection ? 'anker' : 'quelle';
   useEffect(() => {
     if (!laueft || !rahmen.current || !objekt) return undefined;
-    return youtubeWatchtimeAnbinden(rahmen.current, {objekt, objektQuelle});
+    return youtubeWatchtimeAnbinden(rahmen.current, {
+      objekt,
+      objektQuelle,
+      onSpielt: () => setZeigt(true),
+    });
   }, [laueft, objekt, objektQuelle]);
+
+  /*
+   * DIE FRIST, DIE NICHT AUSFALLEN KANN.
+   * Sie hängt ausdrücklich NICHT an `objekt`: ohne Anker gibt es keine
+   * Watchtime-Anbindung und damit auch kein `onSpielt` -- genau dort wäre
+   * eine Vorschau sonst für immer liegengeblieben.
+   */
+  useEffect(() => {
+    if (!laueft || zeigt) return undefined;
+    const t = setTimeout(() => setZeigt(true), HARTE_FRIST_MS);
+    return () => clearTimeout(t);
+  }, [laueft, zeigt]);
 
   /*
    * FEHLERFALL-ZUSAGE: Das Vorwärmen ist ein HINWEIS an den Browser, kein
@@ -217,28 +397,8 @@ export function YoutubeTimestamp({
     onTouchStart: waermeVor,
     onFocus: waermeVor,
   };
-  if (laueft) {
-    return (
-      <div
-        className={eigenesKleid ? className : 'YoutubeTimestamp'}
-        data-section={dataSection || undefined}
-        data-video={objekt || undefined}
-        data-video-familie="youtube"
-        style={eigenesKleid ? undefined : FRAME_STYLE}
-      >
-        <iframe
-          ref={rahmen}
-          src={mitJsApi(
-            `https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1`,
-          )}
-          title={titel}
-          style={eigenesKleid ? undefined : {...FILL_STYLE, border: 0}}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
+  /* Die Poster-Stufen werden in BEIDEN Zustaenden gebraucht: die Vorschau
+   * bleibt nach dem Klick als unterste Schicht liegen. */
   const [stufenDatei, stufenBreite, stufenHoehe] = POSTER_STUFEN[posterStufe];
   const posterProps = thumbnail
     ? {src: thumbnail, width: 1280, height: 720}
@@ -253,33 +413,159 @@ export function YoutubeTimestamp({
         onError: () =>
           setPosterStufe((s) => Math.min(s + 1, POSTER_STUFEN.length - 1)),
       };
-  const knopf = (
-    <button
-      type="button"
-      className={eigenesKleid ? className : 'YoutubeTimestamp'}
-      data-section={dataSection || undefined}
-      onClick={() => setLaueft(true)}
-      {...absichtsSignale}
-      aria-label={`Video abspielen: ${titel}`}
-      style={eigenesKleid ? undefined : FRAME_STYLE}
-    >
+
+  /*
+   * DER STAPEL — ein einziger Bauplan für beide Zustaende.
+   *
+   * Vorher gab es hier ZWEI Teilbaeume, und der Wechsel zwischen ihnen WAR der
+   * Defekt. Jetzt gibt es einen: dieselben Schichten, in derselben Reihenfolge,
+   * vor und nach dem Klick. Was sich ändert, ist ausschließlich die
+   * Deckkraft des Players und das Zeichen in der Mitte.
+   */
+  const stapel = (
+    <span style={{...STAPEL_STYLE, aspectRatio: seitenverhaeltnis}}>
+      {/* SCHICHT 1 — die Vorschau. Sie wird NIE entfernt.
+          Sie bleibt auch nach dem Umblenden liegen: ein Player, der später
+          Vollbild verlässt oder neu puffert, fällt damit auf ein Bild
+          zurück statt auf Schwarz. Sie kostet nichts, sie ist längst da. */}
       <img
         {...posterProps}
-        alt=""
+        alt={posterAlt}
         loading="lazy"
-        style={eigenesKleid ? undefined : FILL_STYLE}
+        /* Sobald der Player läuft, ist die Vorschau nur noch UNTERLAGE und
+         * trägt keine eigene Aussage mehr -- für die Vorlesehilfe wäre sie
+         * dann ein zweiter Text neben einem laufenden Video. */
+        aria-hidden={laueft ? 'true' : undefined}
+        style={SCHICHT_STYLE}
       />
-      <span
-        className={
-          eigenesKleid
-            ? playClassName || `${className}__play`
-            : 'YoutubeTimestamp__play'
-        }
-        aria-hidden="true"
-        style={eigenesKleid ? undefined : PLAY_STYLE}
-      >
-        <span style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}>▶</span>
-      </span>
+
+      {/* SCHICHT 2 — der Player. Erst ab dem Klick im Dokument (das ist die
+          Ladeweise, die bleibt), und sichtbar erst, wenn er Bild hat. */}
+      {laueft ? (
+        <iframe
+          ref={rahmen}
+          src={mitJsApi(
+            `https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1` +
+              (zusatzParameter ? `&${zusatzParameter}` : ''),
+          )}
+          title={titel}
+          style={{
+            ...SCHICHT_STYLE,
+            opacity: zeigt ? 1 : 0,
+            /* Die Blende ist kurz und läuft nur in EINE Richtung. Wer
+               `prefers-reduced-motion` gesetzt hat, bekommt sie nicht --
+               eine Deckkraft-Animation ist Bewegung im Sinne der Einstellung. */
+            transition: 'opacity 240ms ease-out',
+          }}
+          onLoad={() => {
+            /* Der Player ist DA. Ob er ZEIGT, weiß nur er selbst — deshalb
+               noch eine Gnadenfrist auf seine Auskunft, dann ohne sie. */
+            setTimeout(() => setZeigt(true), GNADENFRIST_MS);
+          }}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+      ) : null}
+
+      {/* SCHICHT 3 — das Zeichen. Vor dem Klick das Play-Symbol, während des
+          Ladens ein Ladezeichen: „Wer klickt und eine Sekunde nichts sieht,
+          klickt nochmal" (Christian). Nach dem Umblenden ist es weg. */}
+      {zeigt ? null : (
+        <span
+          className={
+            eigenesKleid
+              ? playClassName || `${className}__play`
+              : 'YoutubeTimestamp__play'
+          }
+          aria-hidden="true"
+          /*
+           * IM className-MODUS KEIN INLINE-STIL — und das ist eine Korrektur
+           * am eigenen Bau vom selben Tag.
+           *
+           * Die erste Fassung setzte PLAY_STYLE und PLAY_BADGE_STYLE
+           * UNBEDINGT, also auch dort, wo eine Seite ihr Abzeichen selbst
+           * gestaltet. Ein Inline-Stil sticht jede Seitenregel: gemessen live
+           * am 2026-09-11 war das Abzeichen der Startseite danach
+           * `color: rgb(255,255,255)` statt des Seiten-Goldtons — die Seite
+           * sagt über genau dieses Element „Der EINE Goldakzent des
+           * Abschnitts, und er sitzt auf der Handlung". Der Bau hatte ihn
+           * überschrieben.
+           *
+           * Richtig ist die Arbeitsteilung, die dieser Job ohnehin zieht:
+           * GEOMETRIE gehört der Komponente, AUSSEHEN dem Seiten-CSS. Die
+           * Geometrie kommt deshalb über die Klassen `qb-video-play` /
+           * `qb-video-badge` (EIN Klassen-Selektor, niedrigste Spezifität) —
+           * jede Seitenregel mit zwei Selektoren gewinnt darüber, und Scopes
+           * ohne eigene Regel bekommen trotzdem ein mittiges Abzeichen statt
+           * einer Zeile unter dem Video.
+           */
+          style={eigenesKleid ? undefined : PLAY_STYLE}
+        >
+          {/*
+            Das Abzeichen wird NUR gezeichnet, wenn es etwas zu zeigen hat.
+            Ein Scope, der sein Zeichen selbst malt (podcasts.css: Goldkreis
+            plus ::after-Dreieck), uebergibt `playInhalt={null}` — dann legte
+            eine leere Scheibe sich sonst als schwarzer Fleck genau über den
+            Goldkreis, den sie freilassen soll. Gemessen beim Bau: innen
+            64x64 mit rgba(0,0,0,.55) mitten auf rgb(201,161,75).
+            Waehrend des Ladens gibt es IMMER etwas zu zeigen — das
+            Ladezeichen ist Christians ausdrueckliche Bedingung und wird
+            deshalb auch in solchen Scopes gezeichnet.
+          */}
+          {laueft || playInhalt ? (
+            <span style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}>
+              {laueft ? <span className="qb-video-spinner" /> : playInhalt}
+            </span>
+          ) : null}
+        </span>
+      )}
+    </span>
+  );
+
+  /*
+   * DIE HUELLE. Vor dem Klick ein <button> (bedienbar, fokussierbar), danach
+   * ein <div> — ein <iframe> ist interaktiver Inhalt und darf baulich nicht in
+   * einem <button> stehen. Das ist der EINZIGE verbliebene Element-Wechsel,
+   * und er ist jetzt folgenlos: Klasse, Stil und Inhalt sind in beiden
+   * Zustaenden dieselben, die Geometrie kommt aus dem Stapel darin.
+   */
+  const huellenProps = {
+    className: eigenesKleid ? className : 'YoutubeTimestamp',
+    /*
+     * DIE ZWEI EIGENSCHAFTEN, DIE DIE HUELLE IMMER BRAUCHT.
+     *
+     * Ein <button> ist von Haus aus `inline-block` und schrumpft auf seinen
+     * Inhalt. Der Stapel darin hat `width: 100%` -- das ergibt in einem
+     * schrumpfenden Elternteil eine Breite von NULL, und die Kachel
+     * verschwindet. Gemessen beim Bau am 2026-09-11 auf
+     * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Größe".
+     *
+     * Es steht hier und nicht im Seiten-CSS, weil GENAU DAS der Fehler war,
+     * den dieser Job auflöst: sechs der acht Scopes deklarieren
+     * `display: block; width: 100%` selbst, zwei (.v2-yt, .v3-yt) haben
+     * überhaupt keine Regel. Die sechs bekommen hier BYTEGLEICH, was sie
+     * ohnehin sagen -- nachgemessen, nicht vermutet; für die zwei ist es der
+     * Unterschied zwischen Kachel und Nichts. Alles Weitere (Radius, Schatten,
+     * Farbe, Filter) bleibt beim Seiten-CSS.
+     */
+    'data-section': dataSection || undefined,
+    'data-video': objekt || undefined,
+    'data-video-familie': 'youtube',
+    'data-qb-video-zustand': laueft ? (zeigt ? 'spielt' : 'wartet') : 'vorschau',
+    style: eigenesKleid
+      ? {display: 'block', width: '100%'}
+      : FRAME_STYLE,
+  };
+
+  if (laueft) {
+    return <div {...huellenProps}>{stapel}</div>;
+  }
+
+  const knopf = (
+    <button type="button" {...huellenProps} onClick={() => setLaueft(true)} {...absichtsSignale}
+      aria-label={`Video abspielen: ${titel}`}
+    >
+      {stapel}
     </button>
   );
 
@@ -310,9 +596,15 @@ export function YoutubeTimestamp({
     (start > 0 ? `&t=${start}s` : '');
   const posterUrl =
     thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
-  const titelText = String(titel || '').replace(/[<>&"]/g, (c) =>
-    ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),
-  );
+  const escape = (wert) =>
+    String(wert || '').replace(/[<>&"]/g, (c) =>
+      ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),
+    );
+  const titelText = escape(titel);
+  // Derselbe Alternativtext wie am Knopf-Poster. Ginge er hier verloren, hätte
+  // die Seite OHNE Skript wieder ein Bild ohne Beschreibung — und genau diese
+  // Fassung ist die, die ein Crawler ohne JavaScript sieht.
+  const posterAltText = escape(posterAlt);
 
   return (
     <span style={{display: 'contents'}} data-qb-video-fallback="">
@@ -335,7 +627,7 @@ export function YoutubeTimestamp({
             `<a class="${eigenesKleid ? className : 'YoutubeTimestamp'}" ` +
             `href="${watchUrl}" target="_blank" rel="noopener noreferrer" ` +
             `aria-label="Video auf YouTube ansehen: ${titelText}">` +
-            `<img src="${posterUrl}" alt="" width="480" height="360" ` +
+            `<img src="${posterUrl}" alt="${posterAltText}" width="480" height="360" ` +
             `style="width:100%;height:100%;object-fit:cover" /></a>`,
         }}
       />

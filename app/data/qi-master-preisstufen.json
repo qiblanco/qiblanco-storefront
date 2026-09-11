@@ -1,0 +1,26 @@
+{
+  "_zweck": "EINE Quelle fuer die QiMaster-Vorverkaufstreppe. Sie traegt PROZENTSAETZE, nie ausgerechnete Preise - eine hingeschriebene 7989.89 waere die zweite Wahrheit. Gerechnet wird in app/lib/qi-master-preisstufen.js (Anzeige) und proben/qm_stufen.py (Kontrolle); beide Wege vergleicht die Naht-Probe probe_rechenweg_naht.py ueber ALLE Stufen.",
+  "_herkunft_regulaerpreis": "Shopify-Variante 62077673767180 des Produkts qi-master: 8940.34 EUR netto x 1.19 = 10639.00 EUR brutto. Live gemessen am 2026-09-11 auf https://qiblanco.com/products/qi-master (Anzeige '10.639,- EUR').",
+  "_aenderung": "Wer hier etwas aendert, aendert damit die Produktseite /products/qi-master UND die Landingpage /pages/qi-master-vorverkauf zugleich. Die Sperre-Zusage in shop-manager/AKTIONSSPERRE.yaml zeigt auf genau diese Datei.",
+  "handle": "qi-master",
+  "listenpreis_brutto_eur": "10639.00",
+  "waehrung": "EUR",
+  "zeitzone": "Europe/Berlin",
+  "nie_rabatt_ab": "2027-01-01",
+  "stufen": [
+    {
+      "id": "vorlauf",
+      "von": null,
+      "bis": "2026-09-17",
+      "prozent": 0,
+      "in_tabelle": false,
+      "hinweis": "Der Vorverkauf startet am Freitag, 18.09.2026.",
+      "_grund": "Die Seite geht vor dem 18.09. live. Ohne diese Stufe stuende vom Tag des Deploys bis zum 17.09. ein Rabattversprechen auf der Seite, das der Warenkorb nicht einloest. Sie ist KEINE Tabellenzeile (in_tabelle=false), sie entscheidet nur, welche Zeile als laufend markiert ist."
+    },
+    {"id": "september", "von": "2026-09-18", "bis": "2026-09-30", "prozent": 24.9, "zeitraum": "18.09. – 30.09.2026"},
+    {"id": "oktober",   "von": "2026-10-01", "bis": "2026-10-31", "prozent": 20,   "zeitraum": "01.10. – 31.10.2026"},
+    {"id": "november",  "von": "2026-11-01", "bis": "2026-11-30", "prozent": 15,   "zeitraum": "01.11. – 30.11.2026"},
+    {"id": "dezember",  "von": "2026-12-01", "bis": "2026-12-31", "prozent": 10,   "zeitraum": "01.12. – 31.12.2026"},
+    {"id": "regulaer",  "von": "2027-01-01", "bis": null,         "prozent": 0,    "zeitraum": "ab 01.01.2027"}
+  ]
+}

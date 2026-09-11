@@ -19,11 +19,14 @@
    Die WERTE sind kopiert, die DATEI nicht geteilt — dieselbe Entscheidung, die
    erfahrungen.css gegenueber schlaf-zellen-schutz.css getroffen hat.
 
-   DER EINE AKZENT SITZT AUF DEM BEWEIS: die Urteilszeile („Das stimmt." /
-   „Das stimmt zum Teil." / „Das stimmt nicht.") traegt das Gold als Linie und
-   als Tinte. Die drei Urteile werden NICHT farblich unterschieden — ein Rot/
-   Gruen/Gelb waeren drei weitere Farben auf einer Seite, deren Brief genau
-   EINEN Akzent erlaubt. Der Text traegt das Urteil, nicht die Farbe.
+   DER EINE AKZENT SITZT AUF DEM BEWEIS: die Antwortzeile (seit 2026-09-11 die
+   direkte Antwort auf die Frage — „Nein." / „Ja, fuenf Mal ..." / „Offen ...")
+   traegt das Gold als Linie und als Tinte. Die drei Toene ja/nein/offen werden
+   NICHT farblich unterschieden — ein Rot/Gruen/Gelb waeren drei weitere Farben
+   auf einer Seite, deren Brief genau EINEN Akzent erlaubt. Der Text traegt die
+   Antwort, nicht die Farbe. DESHALB BRAUCHEN `.krit__urteil--ja|nein|offen`
+   KEINE eigenen Regeln: sie erben `.krit p.krit__urteil` und sind allein
+   Haken fuer den Fall, dass der Brief das eines Tages anders entscheidet.
    ========================================================================== */
 
 :root {
@@ -327,6 +330,32 @@
   display: inline-block;
   margin-top: var(--krit-s1);
   font-weight: 600;
+}
+
+/* ─── Staerken (2026-09-11) ───────────────────────────────────────────────────
+   „Was fuer uns spricht" — die zweite Haelfte der Seite, NACH den offenen
+   Punkten. BEWUSST OHNE EIGENEN FLAECHEN-HINTERGRUND: der Brief erlaubt drei
+   geplante Farb-Akte (Kopf, Einraeumungen, Abschluss). Ein vierter waere ein
+   Akt zu viel, und ein flaechiger Staerken-Block direkt VOR dem ebenfalls
+   flaechigen Abschluss wuerde optisch mit ihm verschmelzen — zwei Abschnitte
+   saehen aus wie einer. Getrennt wird deshalb ueber den Sektions-Takt und die
+   Haarlinie, wortgleich zur Befunde-Rubrik, nicht ueber eine neue Farbe.
+   KEIN neuer Token, kein zweiter Goldton, kein freier Wert. */
+.krit__plusliste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--krit-s4);
+}
+
+.krit li.krit__plus {
+  max-width: none;
+  margin: 0;
+  padding-top: var(--krit-s3);
+  border-top: 1px solid var(--krit-linie);
+}
+
+.krit__plus h3 {
+  margin-bottom: var(--krit-s1);
 }
 
 /* ─── Abschluss ───────────────────────────────────────────────────────────── */

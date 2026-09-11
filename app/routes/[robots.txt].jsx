@@ -125,16 +125,55 @@ Crawl-delay: 1
 }
 
 /**
- * ZWEIFELSSEITEN, DUNKEL AUF ANORDNUNG (Job 20260910-BAU-zweifelsseiten-live-
- * aber-noindex-und-nicht-im-menue, Christian 2026-09-10): `/pages/erfahrungen`
- * und `/pages/kritik` sind live und noindex, sollen aber ZUSÄTZLICH nicht
- * gecrawlt werden — Christian: Beides, nicht eines von beiden. Für Seiten, die
- * NIE im Index waren, ist Disallow + noindex kein Widerspruch (die Hygiene-Regel
- * „Disallow blockiert das Lesen des noindex“ gilt für Seiten, die schon DRIN
- * sind). WER EINE DER BEIDEN FREISCHALTET: zuerst hier das Disallow raus, dann
- * das noindex in der Route — sonst bleibt die Seite unsichtbar, während sie
- * indexierbar aussieht. Wache: homepage-bauer/pruefungen/
- * probe_zweifelsseite_dunkel.py (Arm A2-ROBOTS).
+ * ZWEIFELSSEITEN — STAND 2026-09-11 (zweiter Eintrag desselben Tages):
+ * `/pages/erfahrungen` und `/pages/kritik` SIND FREI und stehen hier nicht mehr.
+ * Die Liste ist NICHT leer: seit PR #370 steht `/pages/hypothesen` darin.
+ *
+ * /pages/hypothesen (Job 20260911-BAU-pages-hypothesen-das-wirkmodell-mit-
+ * staerken-und-schwaechen) ist auf Christians ausdrückliche Anweisung dunkel
+ * gebaut — wörtlich: „Aber noch nicht crawlbar machen — mir zeigen, wenn es
+ * live ist." Die Seite trägt deshalb alle vier Sperren zugleich (meta robots
+ * noindex,nofollow + X-Robots-Tag + dieses Disallow + kein Sitemap-Eintrag) und
+ * ist über keinen internen Link erreichbar. WER SIE FREISCHALTET, braucht dafür
+ * Christians Entscheidung und geht denselben Weg wie kritik/erfahrungen unten.
+ *
+ * Dieser Eintrag entstand im Merge-Konflikt gegen PR #366/#367 und ist die
+ * bewusste Auflösung: ihre beiden Zeilen bleiben ausgetragen, meine kommt hinzu.
+ * Beides sind verschiedene Seiten und verschiedene Entscheidungen Christians;
+ * wer eine davon mit der anderen begründet, hat die falsche Zeile vor sich.
+ *
+ * URSPRUNG (Job 20260910-BAU-zweifelsseiten-live-aber-noindex-und-nicht-im-
+ * menue, Christian 2026-09-10): `/pages/erfahrungen` und `/pages/kritik` wurden
+ * live, aber dunkel gebaut — noindex UND hier zusätzlich gesperrt (Christian:
+ * Beides, nicht eines von beiden). Für Seiten, die NIE im Index waren, ist
+ * Disallow + noindex kein Widerspruch; die Hygiene-Regel „Disallow blockiert das
+ * Lesen des noindex" gilt für Seiten, die schon DRIN sind.
+ *
+ * CHRISTIAN HAT AM 2026-09-11 BEIDE GELESEN UND BEIDE FREIGEGEBEN, in zwei
+ * getrennten Aufträgen und deshalb in zwei getrennten Deploys:
+ *   /pages/kritik      ausgetragen mit PR #366 („Live schalten und bei ‚Mehr'
+ *                      einbinden")
+ *   /pages/erfahrungen ausgetragen mit PR #367 („Aber ja, können wir auch
+ *                      freischalten … live schalten und crawlbar machen")
+ * Die zweite Zeile fiel im Rebase gegen die erste — beide Aufträge hatten je
+ * IHRE Zeile entfernt, und die richtige Auflösung war, KEINE von beiden zu
+ * behalten. Wer hier eine „wieder herstellen" will, liest zuerst beide Aufträge.
+ *
+ * WER EINE SEITE WIEDER SPERRT: zuerst hier das Disallow rein UND das noindex in
+ * der Route, und den Canonical raus (nie noindex und canonical zugleich). Wer
+ * eine neue Seite freischaltet, geht den Weg rückwärts: zuerst hier das Disallow
+ * raus, dann das noindex — sonst bleibt die Seite unsichtbar, während sie
+ * indexierbar aussieht. Fallen beide im SELBEN Deploy, ist die Reihenfolge
+ * gegenstandslos; getrennt deployt gilt sie strikt.
+ *
+ * ACHTUNG BEIM GEGENMESSEN: diese Funktion wird aus VIER User-agent-Gruppen
+ * gerufen. Eine Quellzeile hier ist vier Zeilen in der ausgelieferten
+ * robots.txt — wer live „beide Vorkommen" sucht und entfernt, lässt zwei
+ * stehen. Gemessen wird auf 0 von 4.
+ *
+ * Wachen: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py (Arm
+ * A2-ROBOTS für dunkle, H2-ROBOTS für freigeschaltete Flächen) und
+ * pruefungen/probe_erfahrungen_hell.py (Arm A3-ROBOTS).
  *
  * This function generates disallow rules that generally follow what Shopify's
  * Online Store has as defaults for their robots.txt
@@ -157,8 +196,6 @@ Disallow: /products/bundle-fundament
 Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
 Disallow: /pages/schlaf-zellen-schutz-v3-67a7
-Disallow: /pages/erfahrungen
-Disallow: /pages/kritik
 Disallow: /pages/hypothesen
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
