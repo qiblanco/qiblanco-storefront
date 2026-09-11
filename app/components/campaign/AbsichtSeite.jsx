@@ -9,10 +9,9 @@ import {AbsichtText} from '~/components/campaign/AbsichtText';
  * auch der Abschnitt auf /pages/hypothesen rendert. Diese Datei steuert nur
  * das, was die SEITE zusätzlich hat: Kopf, Unterschrift, Weiterlesen.
  *
- * DIE UNTERSCHRIFT IST KEIN SCHMUCK. Sie ist der Grund, warum dieser Text
- * zitierfähig ist: Name, Rolle und Datum sichtbar im Text, nicht nur im
- * Markup. Eine Maschine liest beides, ein Mensch nur das eine — und wer die
- * Angabe nur ins JSON-LD schreibt, hat sie für die Hälfte der Leser nicht
+ * DIE UNTERSCHRIFT STEHT IM TEXT, NICHT NUR IM MARKUP: Name, Rolle und Datum
+ * sind sichtbar. Eine Maschine liest beides, ein Mensch nur das eine — wer die
+ * Angabe allein ins JSON-LD schreibt, hat sie für die Hälfte der Leser nicht
  * gemacht. Das <time>-Element trägt das maschinenlesbare Datum.
  *
  * „WEITERLESEN" FÜHRT AUSDRÜCKLICH NICHT ZUM PRODUKT. Diese Seite hat keinen

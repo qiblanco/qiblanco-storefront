@@ -135,7 +135,7 @@ export const ABSICHT = {
     absaetze: [
       'Es ist mir ein Herzensanliegen, hier eine gleichmäßige Sprache zu etablieren. Nicht, um jemandem seine eigene wegzunehmen — sondern damit die Effekte, um die es geht, überhaupt besprochen werden können, ohne dass das Gespräch nach drei Sätzen am Vokabular scheitert.',
       'Eine gemeinsame Sprache tut zwei Dinge. Sie macht die Sache PRÜFBAR: Wer denselben Begriff benutzt, kann widersprochen werden, und das ist ein Fortschritt — solange jeder seine eigenen Wörter hat, kann niemand dem anderen nachweisen, dass er sich irrt. Und sie macht die Sache BRAUCHBAR: Was man benennen kann, kann man in den Alltag holen. Was nur als Ahnung existiert, bleibt eine Ahnung.',
-      'Das ist der Grund, warum wir unsere Annahmen offenlegen, statt sie als Gewissheiten zu verkaufen — mit dem, was dafür spricht, und mit dem, was dagegen spricht. Ein Modell, das seine eigenen schwachen Stellen nicht nennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
+      'Zu jeder Annahme, nach der wir bauen, steht deshalb auch das, was gegen sie spricht — mit Quelle, Jahr und Fundstelle, und an der schwächsten Stelle der Kette zuerst. Ein Modell, dessen schwache Stellen niemand kennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
     ],
   },
 
@@ -154,12 +154,10 @@ export const ABSICHT = {
    * nicht beim nächsten gutgemeinten Textumbau still verschwindet: ohne sie
    * liest sich die Seite als Wirkbehauptung, und genau das ist sie nicht.
    */
-  // DER SATZ 'Sie sagt, warum ich an dieser Frage arbeite.' STAND HIER UND IST
-  // GESTRICHEN — das Haltungs-Gate (src/haltung.py) hat ihn als Meta-Kommentar
-  // ueber die eigene Darstellung beanstandet, und es hatte recht: er beschrieb,
-  // was diese Seite aussagt, statt dem Leser die Sache zu sagen. Die Probe am
-  // Streichen entscheidet es: weg faellt nur eine Note auf unser eigenes
-  // Material, keine pruefbare Angabe. Was pruefbar ist, steht weiter da —
+  // HIER STAND EIN DRITTER SATZ, DER DIE SEITE ÜBER SICH SELBST SPRECHEN LIESS.
+  // Das Haltungs-Gate (src/haltung.py) hat ihn beanstandet, und es hatte recht.
+  // Die Probe am Streichen entscheidet: weggefallen ist nur eine Note auf das
+  // eigene Material, keine pruefbare Angabe. Stehen bleibt, was pruefbar ist —
   // dass hier keine Wirkaussage steht, und wo die belegten Aussagen liegen.
   grenze:
     'Was auf dieser Seite steht, ist eine Absicht und eine Sicht — keine ' +
