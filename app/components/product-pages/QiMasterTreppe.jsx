@@ -88,7 +88,7 @@ export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = f
               <th scope="row" data-spalte="Zeitraum">
                 {z.zeitraum}
                 {z.laeuft ? (
-                  <span className="qm-treppe__marke"> — läuft jetzt</span>
+                  <span className="qm-treppe__marke">läuft jetzt</span>
                 ) : null}
               </th>
               <td data-spalte="Rabatt">

@@ -255,13 +255,22 @@
   color: var(--qm-text);
 }
 .qm-treppe__preis { font-weight: 700; }
+/* Eine Eurozahl darf nie von ihrer Waehrung getrennt umbrechen: in der engen
+   Buy-Box-Spalte rutschte das „€" sonst allein in die naechste Zeile, sobald
+   die erste Spalte breiter wird (gemessen ab dem 18.09., wenn die Marke
+   „laeuft jetzt" dazukommt). Betrifft nur die Zahlenspalten; der Zeitraum
+   darf umbrechen. */
+.qm-treppe__tabelle td { white-space: nowrap; }
 
 /* Die laufende Stufe: der EINE Gold-Akzent der Seite, als Flaeche. Kein
    zweiter Ton, kein Rahmen, kein Schatten. */
 .qm-treppe__zeile--laeuft { background: var(--qm-akzent); }
 .qm-treppe__zeile--laeuft th,
 .qm-treppe__zeile--laeuft td { color: var(--qm-dunkel); }
+/* Eigene Zeile: als Anhaengsel hinter dem Zeitraum verbreitert die Marke die
+   erste Spalte und quetscht die Zahlenspalten. */
 .qm-treppe__marke {
+  display: block;
   font-size: var(--qm-fs-xs);
   font-weight: 700;
   color: var(--qm-akzent-tinte);
@@ -279,6 +288,10 @@
    Beschriftung kommt aus data-spalte, steht also nur EINMAL im Markup. */
 @media (max-width: 560px) {
   .qm-treppe__tabelle thead { display: none; }
+  /* Eine `display: block`-Tabelle laesst ihre caption als `table-caption`
+     stehen — die schrumpft dann auf ihre Mindestbreite und bricht in eine
+     Spalte von vier Woertern um (gemessen am 390px-Viewport). */
+  .qm-treppe__caption { display: block; }
   .qm-treppe__tabelle,
   .qm-treppe__tabelle tbody,
   .qm-treppe__tabelle tr,
