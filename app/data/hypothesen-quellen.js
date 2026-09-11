@@ -521,7 +521,7 @@ export const QUELLEN_NACH_ID = Object.fromEntries(
  * Rumpf — der Browser dekodiert es erfolgreich und feuert kein `error`. Der
  * Poster stand damit als Graukachel auf der Seite.
  *
- * Deshalb traegt jeder Eintrag seine Poster-Datei samt gemessener Breite. Am
+ * Deshalb trägt jeder Eintrag seine Poster-Datei samt gemessener Breite. Am
  * 2026-09-11 je Stufe abgerufen und die Breite aus dem JPEG-Kopf gelesen:
  *   i-T7tCMUDXU   maxresdefault 1280x720
  *   p9UC0chfXcg   maxresdefault 1280x720
@@ -530,10 +530,10 @@ export const QUELLEN_NACH_ID = Object.fromEntries(
  *
  * `einbetten: false` FOLGT AUS DER MESSUNG, nicht aus Geschmack: das Gate
  * `bild-aufloesung` verlangt Quellbreite >= Anzeigebreite * dpr * 0.9, auf
- * mobil-360 also 312*2*0.9 = 562 px. 480 px reissen das, und 480 ist fuer
+ * mobil-360 also 312*2*0.9 = 562 px. 480 px reissen das, und 480 ist für
  * dieses Video das Maximum, das ueberhaupt existiert — mit keiner Dateiwahl
  * heilbar. Eine sichtbar unscharfe Kachel auf einer Seite, deren Gegenstand
- * Nachpruefbarkeit ist, waere der teurere Fehler als ein Link. Der Vortrag
+ * Nachpruefbarkeit ist, wäre der teurere Fehler als ein Link. Der Vortrag
  * bleibt mit Einordnung und als VideoObject auf der Seite, nur ohne Kachel.
  */
 export const VIDEOS = [
