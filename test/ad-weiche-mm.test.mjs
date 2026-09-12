@@ -117,9 +117,9 @@ test('ARM-SCHLEIFE: Ziel == aktueller Pfad => kein Redirect', () => {
   // Der Fall ist nicht theoretisch: die Weiche feuert auf JEDER Dokument-Route,
   // auch auf der Zielseite selbst. Ohne diesen Schutz leitete eine zugeordnete
   // Anzeige, deren Klick auf ihrer eigenen Seite ankommt, endlos auf sich selbst.
-  assert.equal(mmZielPfad('/pages/hält-das-mein-leben-aus', AD_B3, sp('lp_mm=an'), true), null);
+  assert.equal(mmZielPfad('/pages/haelt-das-mein-leben-aus', AD_B3, sp('lp_mm=an'), true), null);
   // Gegenprobe: von woanders aus greift dieselbe Zuordnung sehr wohl.
-  assert.equal(mmZielPfad('/', AD_B3, sp('lp_mm=an'), true), '/pages/hält-das-mein-leben-aus');
+  assert.equal(mmZielPfad('/', AD_B3, sp('lp_mm=an'), true), '/pages/haelt-das-mein-leben-aus');
 });
 
 test('ARM-SCHLEIFE: greift für JEDES Kartenziel, nicht nur für TOF-C', () => {
@@ -139,7 +139,7 @@ test('ARM-PIN: lp_mm=an erzwingt den MM-Arm, lp_mm=aus den Kontrollarm', () => {
   const immerMmArm = () => 0.0;
   assert.equal(
     mmZielPfad('/', AD_B3, sp('lp_mm=an'), true, immerKontrollarm),
-    '/pages/hält-das-mein-leben-aus',
+    '/pages/haelt-das-mein-leben-aus',
     'Pin muss den Wuerfel ueberstimmen',
   );
   assert.equal(
@@ -163,7 +163,7 @@ test('ARM-PIN: der Wuerfel trennt wirklich zwei Arme (kein toter Split)', () => 
 test('ARM-QUERY: der komplette Original-Query kommt byte-identisch auf dem MM-Ziel an', async () => {
   const query = `${PAID}&utm_content=${AD_B3}&utm_term=120251810451890704&gclid=Cj0KCQ&_qpx_anon=abc123`;
   const ziel = await pruefeAdWeiche(req('/', `${query}&lp_mm=an`), fetchAttrappe(AN));
-  assert.ok(ziel.startsWith('/pages/hält-das-mein-leben-aus?'), `MM-Ziel erwartet, war: ${ziel}`);
+  assert.ok(ziel.startsWith('/pages/haelt-das-mein-leben-aus?'), `MM-Ziel erwartet, war: ${ziel}`);
   const zielQuery = new URL(`${BASIS}${ziel}`).searchParams;
   // JEDER ankommende Schluessel muss unveraendert wieder herauskommen.
   for (const [k, v] of new URL(`${BASIS}/?${query}`).searchParams) {
@@ -191,7 +191,7 @@ test('ARM-RABATT: der ad-scharfe Code setzt AUF dem MM-Ziel auf, nicht auf LP A'
     req('/', `${PAID}&utm_content=${AD_B3}&lp_mm=an`),
     fetchAttrappe(AN, codes),
   );
-  assert.ok(ziel.startsWith('/discount/QB5K2YM?redirect=/pages/hält-das-mein-leben-aus'), ziel);
+  assert.ok(ziel.startsWith('/discount/QB5K2YM?redirect=/pages/haelt-das-mein-leben-aus'), ziel);
   assert.ok(!ziel.includes(`redirect=${LP_A_PFAD}`), 'der Rabattweg darf nicht auf LP A zurueckfallen');
 });
 

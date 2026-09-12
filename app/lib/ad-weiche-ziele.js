@@ -17,7 +17,7 @@
  * Familie, die das hauseigene Beauty-Gate NICHT besteht (Schwelle 80).
  * Gelesen aus homepage-bauer/exports/design-reviews/audits/<seite>/
  * design-review.json am 2026-09-12:
- *   /pages/hält-das-mein-leben-aus  84 bestanden
+ *   /pages/haelt-das-mein-leben-aus  84 bestanden
  *   /pages/wir-machen-ihn-auf        83 bestanden
  *   /pages/zellstudien-ehrlich       80 bestanden
  *   /pages/zell-schutz               80 bestanden
@@ -42,7 +42,7 @@
  * (src/zuteilung.py baue_inhalt) und ist KEIN Hand-Feld — ein Eintrag von
  * Hand wäre am nächsten Morgen um 05:35 weg; (2) ihre Werte stammen aus
  * lp-rotation/konstanten LP_PFAD und kennen nur die vier Rotations-LPs
- * A/B/C/D — /pages/hält-das-mein-leben-aus kann sie gar nicht ausdruecken.
+ * A/B/C/D — /pages/haelt-das-mein-leben-aus kann sie gar nicht ausdruecken.
  * Die Karte ist deshalb Programmtext: git-versioniert, im Review sichtbar,
  * hermetisch testbar, ohne zusaetzlichen Netz-Hop im Hot-Path. Der
  * KILL-Schalter dagegen muss ohne Deploy wirken und liegt darum weiterhin in
@@ -90,9 +90,9 @@ export const MM_ZIELE = Object.freeze({
   //     Versprechen: Duschen, Sport, Sauna, Schlafen — er bleibt dran.
   //     Seite: MmHaeltDasAus.jsx, Score 84 (Beleg 2026-09-08). Ihr eigener
   //     Routen-Kommentar nennt die Ad-Welle namentlich ("Ad-Welle B: qb45-b3").
-  '120251810451900704': '/pages/hält-das-mein-leben-aus', // B3 Hook1 Wasser
-  '120251810453940704': '/pages/hält-das-mein-leben-aus', // B3 Hook2 Fragespiegel
-  '120251810454960704': '/pages/hält-das-mein-leben-aus', // B3 Hook3 Material
+  '120251810451900704': '/pages/haelt-das-mein-leben-aus', // B3 Hook1 Wasser
+  '120251810453940704': '/pages/haelt-das-mein-leben-aus', // B3 Hook2 Fragespiegel
+  '120251810454960704': '/pages/haelt-das-mein-leben-aus', // B3 Hook3 Material
 
   // --- Welle C1 "Aufmachen", headline "Jetzt weißt du, was du trägst"
   //     Versprechen: "Ist das nicht ein Scam? Faire Frage — also machen wir
