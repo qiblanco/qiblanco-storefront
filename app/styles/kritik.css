@@ -432,3 +432,42 @@ body:has(.krit) .footer p,
 body:has(.krit) .footer li {
   color: inherit;
 }
+
+/* ─── Belegbild ───────────────────────────────────────────────────────────────
+   Ein Bild ist auf dieser Seite ein Beweisstueck. Es bekommt deshalb KEINEN
+   eigenen Rahmen, keinen Schatten und keine Hervorhebung: es liegt im Lesefluss
+   wie ein Absatz, nur breiter. Jede Zutat, die es „schoen" macht, macht es
+   unglaubwuerdiger.
+
+   ALLE WERTE AUS DEM :root-BLOCK (Regel dieser Datei). Kein neuer Radius, kein
+   zweiter Goldton, keine achte Schriftgroesse — die Bildunterschrift benutzt
+   --krit-fs-base in --krit-muted, genau wie .krit__quelle darueber. Die
+   kleinste Stufe --krit-fs-xs bleibt dem Fuss vorbehalten, wie im Kopf gesagt.
+
+   DIE LUFT IST DER ZWECK: --krit-s8 ueber und unter dem Bild (auf dem 8pt-Grid,
+   derselbe Wert wie der Sektions-Takt). Genau deshalb steht je Abschnitt nur
+   EIN Bild und nicht zwei — zwei Bilder in einem Abschnitt waeren wieder eine
+   Wand, nur eine andere. */
+.krit__beleg {
+  margin: var(--krit-s8) 0;
+}
+
+.krit__beleg-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--krit-r2);
+}
+
+.krit__beleg-text {
+  margin-top: var(--krit-s2);
+  font-size: var(--krit-fs-base);
+  color: var(--krit-muted);
+}
+
+/* Die Fundstelle steht auf einer eigenen Zeile, damit sie beim Ueberfliegen
+   als Quelle lesbar ist und nicht als Fortsetzung des Satzes. */
+.krit__beleg-quelle {
+  display: block;
+  margin-top: var(--krit-s1);
+}

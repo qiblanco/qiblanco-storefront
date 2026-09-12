@@ -1,5 +1,12 @@
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
-import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, PLUSPUNKTE} from '~/data/kritik-vorwuerfe';
+import {
+  BEFUNDE,
+  EINRAEUMUNGEN,
+  FRAGEN,
+  PLUSPUNKTE,
+} from '~/data/kritik-vorwuerfe';
+import e0001 from '~/data/studien/e0001.json';
+import e0003 from '~/data/studien/e0003.json';
 
 /**
  * /pages/kritik — die Beweis-Fläche.
@@ -53,6 +60,86 @@ import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, PLUSPUNKTE} from '~/data/kritik-vorwuerf
  * Kein Satz über unser eigenes Material, der nur Haltung trägt und keine
  * prüfbare Angabe.
  */
+/**
+ * BELEGBILD — ein Bild auf dieser Seite ist ein BEWEISSTUECK, keine Auflockerung.
+ *
+ * WARUM UEBERHAUPT BILDER, UND WARUM AUSGERECHNET DIESE. Die Seite war eine
+ * reine Textwand; Christian wollte Bilder und „Luft im Satzbild". Der
+ * naheliegende Griff wäre Lifestyle-Material gewesen — und er wäre auf
+ * GENAU DIESER Fläche falsch: eine Seite, deren ganze Kraft die
+ * Überprüfbarkeit ist, verliert sie in dem Moment, in dem sie anfängt zu
+ * werben. Gewählt sind deshalb die zwei Fotos des tatsächlichen
+ * VERSUCHSAUFBAUS aus den Originalarbeiten. Sie machen nicht die Behauptung
+ * anschaulich, sondern die EINRAEUMUNG: wer die vier Kulturflaschen um ein
+ * Handy herum sieht, versteht ohne einen weiteren Satz, was „in vitro, nicht
+ * am Menschen" bedeutet. Das Bild arbeitet hier für die Ehrlichkeit der
+ * Seite, nicht gegen sie.
+ *
+ * DIE DATEN KOMMEN AUS DER STUDIEN-SSoT (app/data/studien/e*.json), nicht aus
+ * einer Kopie: URL, Alternativtext, Abbildungsnummer und die echten Maße
+ * stehen dort bereits. Eine zweite Liste daneben wäre ein zweiter Träger für
+ * dieselbe Angabe — wird ein Bild neu hochgeladen, lieferte die Kritikseite
+ * still eine tote CDN-URL aus, und beide Hälften sähen für sich richtig aus.
+ *
+ * PREIS DIESER ENTSCHEIDUNG — GEMESSEN, NICHT GESCHÄTZT, und er ist kleiner
+ * als erwartet: zwei Builds im selben Worktree, nur diese Datei und kritik.css
+ * getauscht (2026-09-12), ergaben für den Client-Chunk der Route
+ * 16052 B -> 17052 B, also +1000 B (+6,2 %). Die beiden Studien-JSON
+ * (~60 KB Artikel-Volltext) landen NICHT im Client-Bundle: diese Komponente
+ * rendert serverseitig, im Chunk steht nur das gerenderte Ergebnis. Die
+ * Befürchtung, hier 60 KB für zwei Bilder zu bezahlen, war falsch — wer sie
+ * nachrechnet, misst die ROUTE, nicht die Gesamt-Bytezahl (im Server-Bundle
+ * sind die JSON weiterhin zu sehen, und dort gehören sie hin).
+ *
+ * NICHT ZU VERWECHSELN MIT DEM FALL IN Header.jsx: der hängt am root-Chunk und
+ * läuft auf JEDER Seite — dort wäre derselbe Import teuer, und deshalb steht
+ * dort ein Literal. Hier ist es eine einzelne Route, und genau so machen es die
+ * fünf Studien-Einzelseiten und /pages/studien auch.
+ *
+ * width/height stehen als ECHTE Maße aus der SSoT und werden nicht
+ * beschnitten: sie reservieren den Platz vor dem Laden (kein Layout-Sprung).
+ * `loading="lazy"` hält beide Bilder aus dem ersten Rendern heraus — die
+ * Abnahme dieses Baus ist ausdrücklich zweiseitig, das Bild darf die Seite
+ * nicht langsamer machen.
+ *
+ * FREIGABE (Herkunft, an der Stelle, an der man sie beim Aendern sieht):
+ * Beide Abbildungen stammen aus den Publikationen von Prof. Dr. Peter C.
+ * Dartsch, die dieses Haus in Auftrag gegeben und finanziert hat — dieselben
+ * Arbeiten, deren Abbildungen seit 2026 auf unseren eigenen Studienseiten
+ * (/pages/studie-immunzellen, /pages/studie-oxidativer-stress) stehen und aus
+ * denselben Dateien auf unserem eigenen CDN geladen werden. Es entsteht hier
+ * also kein neues Material und keine neue Nutzung, sondern eine zweite
+ * Platzierung bereits veröffentlichten eigenen Materials. Die Quelle steht
+ * sichtbar unter jedem Bild (Abbildungsnummer + Journal + Band) — auf dieser
+ * Seite ist das Pflicht und nicht Kür: ein Beweisstück ohne Fundstelle ist
+ * genau das, was die Seite anderen vorwirft.
+ */
+function Belegbild({studie, bildKey, einordnung}) {
+  const g = (studie.grafiken || []).find((x) => x.key === bildKey);
+  if (!g) return null;
+  const e = studie.eckdaten || {};
+  return (
+    <figure className="krit__beleg">
+      <img
+        className="krit__beleg-bild"
+        src={g.url}
+        alt={g.alt}
+        width={g.breite}
+        height={g.hoehe}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption className="krit__beleg-text">
+        {einordnung}
+        <span className="krit__beleg-quelle">
+          {g.nummer} aus: {e.journal}{' '}
+          {String(e.veroeffentlicht || '').slice(0, 4)}, {e.band}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export function KritikSeite() {
   return (
     <div className="krit">
@@ -121,6 +208,11 @@ export function KritikSeite() {
             Vier Punkte, die gegen uns sprechen. Sie stehen so auch auf unseren
             Studienseiten.
           </p>
+          <Belegbild
+            studie={e0001}
+            bildKey="abb1"
+            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen, oben und unten je zwei, dazwischen das Gerät. Das sendende Mobiltelefon liegt zwischen den beiden Ebenen. Keine Menschen — Zellen in Kunststoffflaschen."
+          />
           <ol className="krit__einraeumungen">
             {EINRAEUMUNGEN.map((e) => (
               <li key={e.titel}>
@@ -139,6 +231,11 @@ export function KritikSeite() {
             Fünf Arbeiten, je mit dem, was gemessen wurde – und mit der Grenze,
             die die Arbeit selbst nennt. Jede ist im Original nachlesbar.
           </p>
+          <Belegbild
+            studie={e0003}
+            bildKey="abb1"
+            einordnung="Und so bei der Arbeit zum oxidativen Stress: eine 96-Well-Platte im Mini-Inkubator, das QiBracelet obenauf. Auch hier ist das der ganze Aufbau — eine Platte, ein Gerät, ein Inkubator."
+          />
           <ul className="krit__befunde">
             {BEFUNDE.map((b) => (
               <li key={b.id} className="krit__befund">
