@@ -1,0 +1,231 @@
+/* ============================================================================
+   pdp-qi.css — Token-Schicht der zwei Flaggschiff-KAUFSEITEN
+   /products/qione-2-pro und /products/qibracelet
+   ----------------------------------------------------------------------------
+   WARUM ES DIESE DATEI GIBT
+   Beide Seiten standen im design-rubrik-Score unter der Schwelle 80: gegen
+   origin/main 1b7a683 gemessen (Branch-Build, eigener Worktree) qione-2-pro
+   59 und qibracelet 56. Es sind die zwei Umsatzseiten des Shops, und
+   hb-deploy Gate 9 blockt sie nicht ("Bestands-ROT ... Sache von
+   Watch/Upgrade-Job") — dieser Upgrade-Job hat gefehlt. Fuer die zwei
+   Kakao-Kaufseiten gab es ihn am 2026-09-09, sie stehen seither ueber 80.
+
+   WARUM HIER UND NICHT IN app.css
+   app.css wird ueber root.jsx auf JEDER Route geladen (152 KB, 45 Seiten).
+   Diese Datei haengt an den `links()` genau der zwei Routen und ist zusaetzlich
+   auf `body > main` gescoped: Kopf, Fuss und das Navigations-Flyout sind
+   Geschwister von `main` und werden baulich nicht erreicht. Entfernen der zwei
+   Import-Zeilen stellt den Vorzustand vollstaendig wieder her.
+
+   WARUM `body > main` UND NICHT `main`: die Seite hat VIER main-Elemente.
+   Drei davon stecken in den Schubladen der geteilten Huelle
+   (body>div.overlay>aside.aside--cart|--search|--mobile>main), eines ist die
+   Seite selbst (body>main). Gemessen am 2026-09-12 tragen die drei Schubladen
+   zusammen 0 h2, 0 Bilder und 0 .NormalSectionSize — die Verengung aendert
+   heute also NICHTS (main h2 = body>main h2 = 19, main img = body>main img =
+   96). Sie schliesst eine LATENTE Falle: bekaeme der Warenkorb je eine
+   Ueberschrift oder ein Bild, wuerde eine Produktseiten-Regel still das
+   Aussehen der Schublade mitbestimmen — und zwar nur auf diesen zwei Routen.
+   Der Preis der Verengung ist eine Spezifitaets-Stelle mehr, die beim
+   H2-Selektor unten mitgedacht ist.
+
+   REZEPT — uebernommen aus dem Bestand, nichts neu erfunden:
+   - app/styles/schlaf-zellen-schutz.css (.lp-a3, 94/100) — Lesemass 68ch,
+     Neutralisierung der Reputon-Karten, EIN dunkler Grund, EIN Bild-Radius.
+   - app/styles/startseite.css (46 -> 78 -> 82) — @layer utilities gegen
+     `text-5xl!`, fremdes Akzent-Blau auf --muted, Bild-Radius auf den
+     global schon gefuehrten Hauswert.
+   - design-meister/db/webdesign/web-soll.yaml — Palette, 8pt-Takt, EIN Akzent.
+   KEIN neuer Farbwert, KEINE neue Schriftgroesse, KEIN zweiter Gold-Ton.
+
+   BEWUSST NICHT GEAENDERT — jede Zeile hier mit Messung, nicht mit Gefuehl:
+
+   (1) DIE H2-AUSRICHTUNG bleibt gemischt (qione 8x links / 15x zentriert,
+       qibracelet 7x / 11x). Die Rubrik zieht dafuer 15 Punkte in
+       durchdacht_layout. Die linken H2 stehen in linksbuendigen Textspalten
+       (OneTimeInvestment, RisikofreiErleben, FAQ, CallToAction), die
+       zentrierten ueber zentrierten Sektionsinhalten — jede Vereinheitlichung
+       bricht echtes Layout. Identische Entscheidung und identische Begruendung
+       wie startseite.css. Der Score traegt den Abzug; beide Seiten liegen
+       trotzdem ueber der Schwelle.
+
+   (2) DER GOLD-DOPPELTON. #F2BF72 (Akzent-FLAECHE, Kaufknopf) gegen #856828
+       (Gold als SCHRIFT auf hellem Grund) ist die Kontrast-Entscheidung vom
+       2026-08-12: die Flaeche reisst als Schrift WCAG AA (1,68:1). Auf diesen
+       zwei Seiten schlaegt der Zwei-Gold-Detektor ohnehin nicht an, weil
+       #856828 nur EINMAL in colorsText steht (Zaehlschwelle ist 2). Genau
+       deshalb faerbt Regel 4 unten das Fremd-Blau auf --pdpqi-muted und
+       NICHT auf die Gold-Tinte: 16 weitere #856828-Elemente haetten den
+       Detektor erst ausgeloest (-15) und damit die Haelfte des
+       Akzent-Gewinns (+25) wieder aufgefressen.
+
+   (3) DER BILD-RADIUS DES NAVIGATIONS-FLYOUTS (20px, 4 Bilder in
+       div.submenu-portal) und DER FUSS-STUDIENBILDER (6px, 2 Bilder in
+       footer.footer). Beide liegen AUSSERHALB von `main` — geteilte Chrome,
+       auf allen 45 Routen identisch. Sie hier anzufassen hiesse, das
+       Aussehen der Navigation von zwei Produktseiten aus zu aendern; im
+       .lp-a3-Bestand ist genau dieser Griff schon einmal gemessen und
+       verworfen worden (Alle-Formate-Gate meldete 31,2 % Pixel-Regression in
+       den Menue-Zustaenden). Es bleiben damit DREI Radius-Werte statt der
+       vom Soll erlaubten zwei: -15 in liebevoll_detail. Wer das schliessen
+       will, braucht einen shopweiten Radius-Token — nicht diese Datei.
+
+   (4) DIE HYDRATION-FEHLER (3 verschiedene je Viewport, macht 6 in der
+       Zaehlung). Sie kosten in technisch 15 Punkte je Fehler, die Hygiene
+       liegt damit bei 100-90-10 = -10 und wird auf 0 GEKLAMMERT. Solange die
+       Summe unter 0 bleibt, bringt jeder einzeln behobene Fehler NULL Punkte
+       — es waere alles oder nichts, und "alles" ist eine Server/Client-
+       Ursache im Datenpfad, kein Gestaltungsbefund. Gemeldet, nicht hier
+       behoben.
+   ========================================================================== */
+
+body > main {
+  /* Typo — der Hauswert aus reset.css (h2: 2.2rem/600). KEINE neue Stufe. */
+  --pdpqi-fs-h2: 2.2rem;
+  --pdpqi-gewicht-h2: 600;
+
+  /* Lesemass — derselbe Wert wie .lp-a3 --a-mass */
+  --pdpqi-mass: 68ch;
+
+  /* Farbe. ACHTUNG, hier weicht diese Seite vom Haus-Default ab, und zwar
+     GEMESSEN: der Grund von `main` ist auf den zwei PDPs rgb(245,253,255)
+     (#F5FDFF, ein kuehles Zart-Cyan aus app.css), NICHT das warme #faf9f5
+     der web-soll-Palette. Die Karten-Flaeche, die diese Seite selbst schon
+     fuehrt, ist WEISS (article.ghx-studie, 8 Studien-Karten). Deshalb ist
+     der Kartengrund unten #fff und nicht das warme #f8f4ee von
+     startseite.css: auf einem kuehlen Grund waere die warme Creme-Flaeche
+     eine VIERTE Oberflaeche neben Grund, Weiss und dem fremden Blaugrau —
+     der Rubrik-Punkt waere derselbe, das Bild aber schlechter. Hier wird
+     eine fremde Flaeche in das System DIESER Seite eingemeindet, nicht ein
+     fremdes System importiert. */
+  --pdpqi-karte: #fff;
+  --pdpqi-dunkel: #000;     /* EIN dunkler Akt, nicht zwei fast gleiche */
+  --pdpqi-text: #2c2a26;
+  --pdpqi-muted: #6b665d;   /* steht auf diesen Seiten bereits 6x im DOM */
+
+  /* Bild-Radius = der global in app.css schon gefuehrte Hauswert */
+  --pdpqi-bild-radius: 4px;
+
+  /* Sektions-Takt auf dem 8px-Grid */
+  --pdpqi-sec: 96px;
+}
+
+/* --- 1. EIN H2-Stil (Groesse x Gewicht) ------------------------------------
+   Vorher vier Kombis je Seite:
+     qione      35,2/600 (x19) · 40/600 (x2) · 38,4/700 · 48/600
+     qibracelet 35,2/600 (x16) · 40/700     · 38,4/700 · 48/600
+   Alle vier Ausreisser sitzen in GETEILTEN Bausteinen, die auf weiteren
+   Seiten laufen (HeroBannerParallax, UpsellLineUp, ScrollMikroskopVideo,
+   product-360-hero) — deshalb die Kaskade hier und kein Eingriff dort.
+
+   WARUM @layer utilities: die UpsellLineUp-Ueberschrift traegt die Tailwind-
+   Klasse `text-5xl!`, also ein !important INNERHALB von @layer utilities
+   (Tailwind v4). Bei !important dreht die Kaskade die Layer-Reihenfolge um —
+   eine ungelayerte Regel haette die NIEDRIGSTE Prioritaet und verloere
+   unabhaengig von ihrer Spezifitaet; genau diese eine H2 blieb sonst auf 48px
+   stehen. In derselben Ebene entscheidet wieder die Spezifitaet, und
+   `body > main h2` (0,0,3) schlaegt `.text-5xl\!` (0,1,0) NICHT — bei gleichem
+   !important und gleicher Ebene entscheidet die Spezifitaet, und eine
+   Klasse (0,1,0) steht ueber zwei Typen (0,0,2). GEMESSEN, nicht vermutet:
+   ohne den Klassen-Selektor blieb genau diese eine Ueberschrift auf 48px
+   stehen und die Seite meldete weiter "2 H2-Stil-Kombis" (Score 81/80 statt
+   84/83). Der zweite Selektor `body > main h2[class]` (0,1,3) schlaegt sie; er greift nur dort, wo die
+   Ueberschrift ueberhaupt Klassen traegt, und laesst die uebrigen 21 der
+   ersten Regel. Die geteilte Huelle bleibt aussen vor: der Fuss-H2
+   (.footer-studies__titel, 16px/700) ist kein Kind von `main`, und die Rubrik
+   zaehlt ihn seit 2026-09-10 ohnehin als `shell` nicht mit. */
+@layer utilities {
+  body > main h2,
+  body > main h2[class] {
+    font-size: var(--pdpqi-fs-h2) !important;
+    font-weight: var(--pdpqi-gewicht-h2) !important;
+  }
+}
+
+/* --- 2. Lesemass: kein Absatz breiter als 68 Zeichen ----------------------
+   Gemessen trugen 21 von 91 Textbloecken (23 %) 124-132 Zeichen Zeilenlaenge:
+   die direkten p/ul/ol-Kinder der 1350px breiten .NormalSectionSize-Spalten.
+   Absichtlich OHNE margin-inline:auto — 12 von 15 dieser Spalten sind
+   linksbuendig (text-align:start), eine zentrierte Textsaeule wuerde dort
+   unter ihrer eigenen, weiter links stehenden Ueberschrift weglaufen. */
+body > main .NormalSectionSize > p,
+body > main .NormalSectionSize > ul,
+body > main .NormalSectionSize > ol,
+body > main .ghx-studien > .ghx-studien__footnote {
+  max-width: var(--pdpqi-mass);
+}
+/* Die drei zentrierten Spalten behalten ihre Mitte. */
+body > main .NormalSectionSize.text-center > p,
+body > main .NormalSectionSize.geopathogen > p {
+  margin-inline: auto;
+}
+
+/* --- 3. Hintergruende: eine Flaeche weniger ------------------------------
+   Die 39 Reputon-Bewertungskarten stellten mit rgb(243,246,249) eine eigene
+   Farbwelt zwischen den Grund (#F5FDFF) und die weissen Karten der Seite.
+   Auf die weisse Karten-Flaeche gezogen, die die Seite schon fuehrt —
+   dieselbe Stelle, an der .lp-a3 (`.lp-a3 .snap-start`) und startseite.css
+   ansetzen, nur mit dem Ziel-Token DIESER Seite. Gemessen: alle 39
+   .snap-start liegen ausschliesslich in section.GoogleRezensionenBereich,
+   die Regel greift also nirgends sonst. */
+body > main .snap-start,
+body > main .NormalSectionSize .rounded-2xl {
+  background-color: var(--pdpqi-karte) !important;
+}
+
+/* EIN dunkler Grund statt zwei fast gleichen: rgb(8,9,24) (Scroll-Videos)
+   liegt 26,9 von Schwarz entfernt und damit ueber der Cluster-Grenze 12 —
+   es zaehlte als eigene Hintergrund-Welt. Hinter einem formatfuellenden
+   Video ist der Unterschied unsichtbar. Identisch zu startseite.css Regel 10.
+   (Nur qione traegt diese Bloecke; auf qibracelet ist die Regel wirkungslos
+   und steht hier, weil beide Routen dieselbe Datei laden.) */
+body > main .ScrollScrubVideo,
+body > main .ScrollMikroskopvideo {
+  background-color: var(--pdpqi-dunkel) !important;
+}
+
+/* --- 4. EIN Akzent: fremdes Blau und fremdes Gruen raus -------------------
+   #1565c0 (16 'weiterlesen'-Schalter der Reputon-Karten) bildete eine eigene
+   Akzent-Farbwelt im Hue-Bin 210-240. Auf --pdpqi-muted: 5,70:1 auf dem
+   weissen Kartengrund (vorher 5,30:1), also weiter WCAG AA, und die
+   Unterstreichung haelt den Schalter als Schalter erkennbar. Warum nicht die Gold-Tinte: siehe
+   Dateikopf (2). */
+body > main .snap-start button[class*='text-[#1565c0]'],
+body > main .NormalSectionSize button.self-start {
+  color: var(--pdpqi-muted) !important;
+  text-decoration: underline;
+}
+
+/* #729f49 (qibracelet, 'Wirkung in Zellstudien bestaetigt' in der Buy-Box)
+   war die dritte Akzent-Farbwelt. Der Akzent gehoert laut web-soll NUR auf
+   HANDLUNG — ein Produkt-Claim ist keine Handlung (dieselbe Begruendung wie
+   startseite.css Regel 5). Nebenbei ein echter Kontrast-Gewinn: das Gruen
+   stand mit 3,10:1 auf Weiss unter WCAG AA, --pdpqi-text steht bei 14,32:1. */
+body > main .qi-status {
+  color: var(--pdpqi-text) !important;
+}
+
+/* --- 5. Sektions-Takt auf dem 8px-Grid -----------------------------------
+   Von den zwei <section>-Elementen der Seite lag eines daneben: HeroBanner
+   mit padTop 32 + marTop 100 = 132 (132 % 8 = 4). Mit 96 statt 100 sind es
+   128 und damit beide Sektionen auf dem Grid. 4px Unterschied an einem
+   600px hohen Banner. */
+body > main .HeroBannerAlt {
+  margin-top: var(--pdpqi-sec);
+  margin-bottom: var(--pdpqi-sec);
+}
+
+/* --- 6. EIN Bild-Radius innerhalb der Seite ------------------------------
+   Vorher in `main` drei Werte: 4px (63 bzw. 65 Bilder, globales img{} aus
+   app.css), 20px (.NormalSectionSize .SingleImageCentered + Gitterchip-
+   Bilder) und 8px (5 Studien-Vorschauen). Vereinheitlicht auf 4px — den
+   Wert, den der Shop global schon fuehrt (P10: kein zweiter, konkurrierender
+   Radius-Token neben dem bestehenden Hauswert).
+   AUSGENOMMEN das kreisrunde Google-Badge-Logo: border-radius 50% ist keine
+   Radius-STUFE, sondern eine Form, und die Rubrik zaehlt "0px"/"50%"
+   ausdruecklich nicht mit — wer es mitzieht, macht aus einem runden Logo ein
+   Quadrat und gewinnt dabei keinen Punkt. Es ist auf diesen zwei Seiten das
+   EINZIGE Bild mit 50% (gemessen, nicht angenommen). */
+body > main img:not(.google-rating-badge__logo) {
+  border-radius: var(--pdpqi-bild-radius) !important;
+}

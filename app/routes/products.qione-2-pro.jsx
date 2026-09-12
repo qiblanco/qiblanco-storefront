@@ -12,6 +12,7 @@ import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import pdpQiStyles from '~/styles/pdp-qi.css?url';
 
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
@@ -25,14 +26,38 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
  * (ig-testimonials.css) -- der alte Satz "kein links()-Export mehr" stand hier
  * bis dahin woertlich und wäre ab dieser Zeile eine falsche Selbstauskunft.
  */
+/*
+ * ZWEI route-gebundene Stylesheets — zwei Gründe, keines ersetzt das andere.
+ *
+ * MERGE-NOTIZ (2026-09-12): dieser Block war ein echter Konflikt. PR #376
+ * (IG-Testimonial-Slideshow) und PR #377 (Token-Schicht pdp-qi) haben
+ * unabhängig voneinander je einen links()-Export an genau diese Stelle
+ * geschrieben; aufgelöst wird additiv.
+ *
+ * - ig-testimonials.css (PR #376): Slideshow-Fläche, steht auf vier
+ *   Kaufseiten. Setzt ihre Token bewusst auf `.qb-igt` statt auf `:root` —
+ *   ein Route-Stylesheet mit :root-Token wäre auf jeder anderen Route
+ *   undefiniert, und `var(--x)` ohne Rückfall kippt dort still in Vererbung.
+ * - pdp-qi.css (PR #377): Token-Schicht genau der zwei Flaggschiff-
+ *   Kaufseiten (Score 59 -> 84 bzw. 56 -> 83), innen zusätzlich auf `main`
+ *   gescoped. Jeder ihrer Selektoren trifft hier gemessen (h2,
+ *   .NormalSectionSize, .snap-start, .HeroBannerAlt, main img) — der
+ *   Entfall-Grund von zweifel-beleg.css oben ("Stylesheet für eine Klasse,
+ *   die es hier nicht mehr gibt") spricht also nicht gegen diese Zeile,
+ *   sondern verlangt genau diese Prüfung.
+ *
+ * REIHENFOLGE IST TRAGEND: pdp-qi.css steht HINTER ig-testimonials.css.
+ * Beide sind ungelayert; bei gleicher Spezifität gewinnt die später
+ * geladene. pdp-qi.css setzt den EINEN H2-Stil dieser Seite und braucht
+ * deshalb die letzte Stimme — die Slideshow-Überschrift ist genau der Fall,
+ * den Commit 765faef schon einmal auf die H2-Regel der Gastgeber-Seite
+ * zurückgeholt hat.
+ */
 export function links() {
-  // ig-testimonials.css ist ROUTE-gebunden aus demselben Grund, aus dem es
-  // zweifel-beleg.css war: die globale app.css erreicht 45 Seiten, die
-  // Slideshow steht auf vieren. Die Datei setzt ihre Token bewusst auf
-  // `.qb-igt` und nicht auf `:root` -- ein Route-Stylesheet mit :root-Token
-  // wäre auf jeder anderen Route undefiniert, und `var(--x)` ohne Rueckfall
-  // kippt dort still in Vererbung.
-  return [{rel: 'stylesheet', href: igStyles}];
+  return [
+    {rel: 'stylesheet', href: igStyles},
+    {rel: 'stylesheet', href: pdpQiStyles},
+  ];
 }
 /**
  * @type {MetaFunction<typeof loader>}
