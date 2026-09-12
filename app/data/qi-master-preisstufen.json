@@ -3,6 +3,8 @@
   "_herkunft_regulaerpreis": "Shopify-Variante 62077673767180 des Produkts qi-master: 8940.34 EUR netto x 1.19 = 10639.00 EUR brutto. Live gemessen am 2026-09-11 auf https://qiblanco.com/products/qi-master (Anzeige '10.639,- EUR').",
   "_aenderung": "Wer hier etwas aendert, aendert damit die Produktseite /products/qi-master UND die Landingpage /pages/qi-master-vorverkauf zugleich. Die Sperre-Zusage in shop-manager/AKTIONSSPERRE.yaml zeigt auf genau diese Datei.",
   "handle": "qi-master",
+  "_rundung": "DIE RUNDUNGSREGEL, UND SIE IST DER SCHALTER FUER ALLE RECHENWEGE. abrunden_ganze_euro = abwaerts auf den vollen Euro (Christians Vorgabe: der Kunde zahlt nie mehr, als die Prozentrechnung ergaebe). Gelesen von app/lib/qi-master-preisstufen.js, shop-manager/src/qm_quelle.py und qm_stufen.py - die Regel steht damit EINMAL. Bis zum 2026-09-12 stand sie dreimal als Code da und lief auseinander: der Shop zeigte 7.989,89, die Mailkette 7.989. Fehlt das Feld, gilt die alte kaufmaennische Cent-Rundung; ein unbekannter Wert ist ein Fehler, nie ein stiller Rueckfall.",
+  "rundung": "abrunden_ganze_euro",
   "listenpreis_brutto_eur": "10639.00",
   "waehrung": "EUR",
   "zeitzone": "Europe/Berlin",

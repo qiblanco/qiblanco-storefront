@@ -102,7 +102,7 @@ export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = f
                 <span className="qm-treppe__preis">{`${z.preisText} €`}</span>
               </td>
               <td data-spalte="Ersparnis">
-                {z.ersparnisText === '0,00' ? '—' : `${z.ersparnisText} €`}
+                {z.ersparnisCent === 0 ? '—' : `${z.ersparnisText} €`}
               </td>
             </tr>
           ))}
