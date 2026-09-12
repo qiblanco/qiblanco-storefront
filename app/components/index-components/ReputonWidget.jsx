@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {StarRating} from '~/components/reusables/StarRating';
 import {useGoogleRating, useGoogleReviews, bildThumbUrl} from '~/lib/googleRating';
+import {zufriedenheitJsonLdString} from '~/lib/zufriedenheit-schema';
 import {useDragSwipe} from '~/components/reusables/useDragSwipe';
 
 /**
@@ -553,6 +554,34 @@ function GoogleIcon() {
 function GoogleRatingBadge() {
   const g = useGoogleRating();
   /*
+   * DIE MASCHINENLESBARE HÄLFTE DESSELBEN SATZES (Job 20260912-GROSSJOB-
+   * googles-ki-antwort-raet-vom-kauf-ab, Segment s04).
+   *
+   * Bis hierher stand die Zufriedenheit NUR sichtbar da: live gemessen trugen
+   * die fünf DACH-Produktseiten vier ld+json-Bloecke und darin keine einzige
+   * Bewertungsangabe, waehrend daneben „4,8 aus 440 Google-Rezensionen von Qi
+   * Blanco" zu lesen war. Der Knoten daneben sagt einer Maschine dasselbe.
+   *
+   * WARUM GENAU HIER UND NIRGENDWO SONST — das ist der ganze Punkt der
+   * Platzierung: der ausgezeichnete Wert MUSS dem angezeigten entsprechen,
+   * sonst ist er ein Richtlinienverstoss. Hier entstehen beide aus derselben
+   * Variablen `g`, es gibt also nur EINEN Wert und damit nichts, was
+   * auseinanderlaufen könnte. Eine Emission über den meta-Export haette
+   * denselben Wert ein zweites Mal beschaffen müssen — und genau dort wäre
+   * die Naht.
+   *
+   * DER AUSSCHLUSS FOLGT AUS DER SICHTBARKEIT, NICHT AUS EINER LISTE: Seiten
+   * ohne dieses Badge — die Kakao-Seiten etwa, deren 4,9 eine redaktionelle
+   * Angabe ohne zaehlbare Grundlage ist — bekommen dadurch von selbst kein
+   * Markup. Es gibt keine Handle-Liste, die veralten könnte.
+   *
+   * SUBJEKT UND GATTUNG: der Knoten ist eine `Organization`, nie ein
+   * `Product`. Begründung ausfuehrlich im Kopf von
+   * app/lib/zufriedenheit-schema.js — dort steht auch, was er ehrlicherweise
+   * NICHT bringt (keine Sternchen im Suchergebnis, und das ist erwartet).
+   */
+  const zufriedenheitLd = zufriedenheitJsonLdString(g);
+  /*
    * KLASSE G — die AUSNAHME vom Standard, und sie gilt nur als Paar mit ihm:
    * die GESAMTbewertung INNERHALB des Bewertungsbereichs verlinkt auf Google,
    * weil ein Sprung dorthin, wo man schon steht, sinnlos wäre. Erwartet wird
@@ -574,6 +603,12 @@ function GoogleRatingBadge() {
       data-qb-rating="g"
       aria-label={`${g.komma} von 5 Sternen aus ${g.total} Google-Rezensionen von Qi Blanco ansehen`}
     >
+      {zufriedenheitLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{__html: zufriedenheitLd}}
+        />
+      ) : null}
       <img
         className="google-rating-badge__logo"
         src="https://lh3.googleusercontent.com/a-/ALV-UjXLeredYrnnfrvaFQ0ffKGgx-Ardf6CLqWTy4t4Tt7pn50g4MI"
