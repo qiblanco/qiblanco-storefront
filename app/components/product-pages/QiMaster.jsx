@@ -82,8 +82,24 @@ export default function QiMaster({block = undefined}) {
  * QiOne-Liste sind hier bewusst NICHT uebernommen: Lieferzeit eines
  * nummerierten Einzelstuecks und Lieferumfang (Goldkette statt Band) sind
  * andere Tatsachen.
+ *
+ * `zusatzPunkt` hängt einen WEITEREN <li> ans Ende — dieselbe Naht wie bei
+ * QiOneBenefitList (QiOneBuyBox.jsx:195). Er trägt den Gewährleistungs-
+ * Listenpunkt, und der Knoten MUSS ein <li> sein, weil er direkt im <ul>
+ * landet.
+ *
+ * WARUM DIESE LISTE IHN BRAUCHT UND ES BIS ZUM 2026-09-12 NICHT TAT: die
+ * Hausregel (ProductForm.jsx, `gewaehrleistungsHinweis`, Elina
+ * EL-20260909-8c4001d1) lautet „Fläche MIT Nutzen-Liste hängt den Punkt in
+ * ihre Liste, Fläche OHNE behält den eigenständigen Block". Der Default
+ * ist der Block und fail-closed TRUE — richtig so, denn die meisten
+ * Kaufflächen laufen über den Catch-all products.$handle und können gar
+ * nichts abschalten. Der Preis dieses Defaults ist, dass eine NEUE Seite mit
+ * eigener Liste ihn aktiv abschalten muss; vergisst man das, steht das Siegel
+ * angeklebt über der Liste statt in ihr. Genau das war hier der Fall, vom
+ * ersten Tag der Seite an (e3560a1) bis zu diesem Commit.
  */
-export function QiMasterBenefitList() {
+export function QiMasterBenefitList({zusatzPunkt = null}) {
   return (
     <div className="BenefitList">
       <ul>
@@ -111,6 +127,7 @@ export function QiMasterBenefitList() {
           </svg>
           20 Tage erleben – volle Rückgabe, wenn er nicht der Richtige ist
         </li>
+        {zusatzPunkt}
       </ul>
     </div>
   );

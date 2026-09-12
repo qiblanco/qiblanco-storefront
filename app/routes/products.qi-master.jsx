@@ -6,6 +6,7 @@ import {QiOneBuyBox} from '~/components/product-pages/QiOneBuyBox';
 import QiMaster, {
   QiMasterBenefitList,
 } from '~/components/product-pages/QiMaster';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qiMasterStyles from '~/styles/qi-master.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {QiMasterTreppe} from '~/components/product-pages/QiMasterTreppe';
@@ -137,6 +138,21 @@ export default function Product() {
     <div className="qm-pdp">
       <QiOneBuyBox
         product={product}
+        /* Die Pflichtmitteilung hängt auf dieser Seite NICHT unter dem
+           Kauf-Knopf, sondern als letzter Punkt der Nutzen-Liste darunter —
+           dieselbe Bauform wie auf qione-2-pro, qibracelet, qihome-air und
+           qione-kette (Hausregel: ProductForm.jsx, `gewaehrleistungsHinweis`,
+           Elina EL-20260909-8c4001d1). Dieser Schalter ist die einzige
+           Stelle, die verhindert, dass sie zweimal auf der Seite steht.
+
+           BIS ZUM 2026-09-12 FEHLTE ER HIER, und die Seite war damit die
+           einzige im Laden, die eine eigene Liste hatte UND das Siegel
+           daneben klebte (Christian: „So soll das aussehen bei der
+           garantierten gesetzlichen Leistung", mit Bildschirmfoto der
+           qione-2-pro-Liste). Der Default ist bewusst true — er trägt die
+           Mehrheit der Kaufflächen, die über products.$handle laufen und
+           gar keine Liste haben. */
+        gewaehrleistungsHinweis={false}
         description={
           <div
             className="ProductDescription"
@@ -144,7 +160,9 @@ export default function Product() {
           />
         }
         priceLabel={<QiMasterTreppe treppe={treppe} kompakt />}
-        benefitList={<QiMasterBenefitList />}
+        benefitList={
+          <QiMasterBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
+        }
       />
       <QiMaster />
     </div>
