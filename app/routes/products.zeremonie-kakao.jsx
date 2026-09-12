@@ -20,6 +20,7 @@ import { UpsellLineUp } from '~/components/UpsellLineUp';
 
 import {canonicalLink} from '~/lib/seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /*
  * MERGE 2026-08-30 (Job 20260830-sterne-s05-...): die Sterne-ZAHL wird aus der
@@ -188,7 +189,7 @@ export default function Product() {
           </SterneSprung>
           <div
             className="ProductDescription mt-2 mb-2"
-            dangerouslySetInnerHTML={{__html: descriptionHtml}}
+            dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
           />
 
           <p className='mt-2 mb-2'>Premium - Kristall Kakao® in 420 g Blöcken, genug für 28 Tage. <br />
@@ -472,7 +473,7 @@ export default function Product() {
             </SterneSprung>
             <div
               className="ProductDescription"
-              dangerouslySetInnerHTML={{__html: descriptionHtml}}
+              dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
             />
             <p className="mt-2">
               <b>Mehr als {KAKAO_KENNZAHLEN.nutzer}+ aktive Nutzer</b>

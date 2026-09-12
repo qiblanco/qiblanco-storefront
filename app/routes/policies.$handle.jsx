@@ -1,6 +1,7 @@
 import {Link, useLoaderData} from 'react-router';
 import {policyTitelDe} from '~/lib/policy-titel';
 import {canonicalLink} from '~/lib/seo';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -66,7 +67,7 @@ export default function Policy() {
           durch Eingriff in den Text. */}
       <div
         className="rs-doc__rumpf"
-        dangerouslySetInnerHTML={{__html: policy.body}}
+        dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(policy.body)}}
       />
     </article>
   );

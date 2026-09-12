@@ -38,8 +38,14 @@ export function HerobannerFeatured({dataSection}){
                         <Link prefetch="intent" to="/pages/qione-2-pro-details" className="btn--secondary">Mehr erfahren</Link>
                     </div>
                     <p className="micro-text mt-1"><strong> 20 Tage risikofrei - Jetzt mit 0% Finanzierung & Käuferschutz </strong></p>
-                    <img style={{margin: "20px 20px 20px 0"}} width={75} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816" alt="" />
-                    <img style={{margin: "20px 20px 20px 0"}} width={75} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082" alt="" />
+                    {/* Markenname statt alt="": der Begleittext nennt nur "0 % Finanzierung",
+                        WELCHE Zahlungsart gemeint ist steht nirgends als Text — die Logos sind
+                        der einzige Träger dieser Auskunft. Dieselbe Begründung wie in
+                        reusables/RatenzahlungHerobanner.jsx; bis 2026-09-12 waren diese zwei
+                        die letzten Zahlungslogos des Ladens mit alt="" (22 mit Namen, 2 ohne),
+                        gefunden von der unabhängigen Gegenprüfung zu s07. */}
+                    <img style={{margin: "20px 20px 20px 0"}} width={75} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816" alt="Klarna" />
+                    <img style={{margin: "20px 20px 20px 0"}} width={75} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082" alt="PayPal" />
                 </div>
                 <div className="featured-image hide-mobile">
                     <LazyImage 

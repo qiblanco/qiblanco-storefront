@@ -79,6 +79,51 @@ test('ARM-FORM: Attribut-Reihenfolge und selbstschließende Form ändern nichts'
   }
 });
 
+test('ARM-FREMDATTRIBUT: data-alt zählt NICHT als vorhandenes alt', () => {
+  // Gegenpruefung 2026-09-12: /\balt\s*=/ trifft auch `data-alt=`, weil `-`
+  // eine Wortgrenze ist. Das Bild blieb dann still ohne alt.
+  const roh = `<img data-alt="x" src="${CDN}/WIFI_ICON_a_16x16.webp">`;
+  const {html, gesetzt} = bilderAuszeichnen(roh);
+  assert.equal(gesetzt.length, 1, 'data-alt wurde als echtes alt gelesen');
+  assert.match(html, /<img alt="" data-alt="x"/);
+});
+
+test('ARM-FREMDATTRIBUT: ?alt= IN der Bild-URL zählt NICHT als alt', () => {
+  const roh = `<img src="${CDN}/WIFI_ICON_a.webp?alt=de">`;
+  const {gesetzt} = bilderAuszeichnen(roh);
+  assert.equal(gesetzt.length, 1, 'alt= aus der Query wurde als Attribut gelesen');
+});
+
+test('ARM-FREMDATTRIBUT: die Gegenrichtung bleibt heil (echtes alt wird erkannt)', () => {
+  // Positiv-Kontrolle zur Verschärfung: sie darf nicht so streng werden, dass
+  // ein ECHTES alt durchrutscht und doppelt gesetzt wird.
+  for (const roh of [
+    `<img alt="" src="${CDN}/WIFI_ICON_a.webp">`,
+    `<img\talt="Text" src="${CDN}/WIFI_ICON_a.webp">`,
+    `<img\n  alt="Text" src="${CDN}/WIFI_ICON_a.webp">`,
+  ]) {
+    const {gesetzt, html} = bilderAuszeichnen(roh);
+    assert.deepEqual(gesetzt, [], `echtes alt übersehen: ${roh}`);
+    assert.equal(html, roh);
+  }
+});
+
+test('ARM-TAGENDE: ein > im Attributwert beendet das Tag nicht', () => {
+  // Gegenpruefung 2026-09-12: <img[^>]*> bricht am > im title ab.
+  const roh = `<img title="a > b" src="${CDN}/Green_Checkmark_480x480.webp">`;
+  const {html, gesetzt, offen} = bilderAuszeichnen(roh);
+  assert.equal(gesetzt.length, 1, 'Tag am > im Attributwert abgeschnitten');
+  assert.deepEqual(offen, []);
+  assert.match(html, /<img alt="" title="a > b"/);
+});
+
+test('ARM-TAGENDE: ein unabgeschlossenes Tag wird übersprungen, nicht geraten', () => {
+  const roh = `<p>davor</p><img src="${CDN}/WIFI_ICON_a.webp"`;
+  const {html, gesetzt} = bilderAuszeichnen(roh);
+  assert.equal(html, roh, 'am unabgeschlossenen Tag verändert');
+  assert.deepEqual(gesetzt, []);
+});
+
 test('ARM-STILLE: leere und fehlende Eingabe werfen nicht', () => {
   assert.equal(fremdHtmlMitBildAuszeichnung(''), '');
   assert.equal(fremdHtmlMitBildAuszeichnung(undefined), '');
