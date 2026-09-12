@@ -264,6 +264,64 @@ test('unvollstaendige Artikel fliegen raus, statt halbe Knoten zu bauen', () => 
   assert.equal(blog.blogPost[0].headline, 'gut');
 });
 
+test('auf einer Cursor-Folgeseite entsteht KEIN Teilbild', () => {
+  // Befund einer unabhaengigen Gegenpruefung (2026-09-12): die erste Fassung
+  // band die ItemList an `ersteSeite`, das BILD aber nicht. Weil das Teilbild
+  // aus dem ersten Produkt DER SEITE stammt, lieferte
+  // /collections/all?direction=next ein anderes og:image als
+  // /collections/all — bei identischem canonical.
+  const s = kollektionSignale({
+    pfad: '/collections/all',
+    eintraege: [{url: 'u', name: 'A'}],
+    bild: {url: 'seite2.webp', breite: 1200, hoehe: 1200, alt: 'x'},
+    ersteSeite: false,
+  });
+  assert.equal(
+    s.some((d) => d.property === 'og:image'),
+    false,
+    'Folgeseite emittiert ein og:image',
+  );
+  // ...und ohne Bild auch keine Karte, die eines zusagt.
+  assert.equal(s.some((d) => d.name === 'twitter:card'), false);
+  assert.equal(finde(s, 'CollectionPage').primaryImageOfPage, undefined);
+  // Gegenprobe: auf der ersten Seite steht beides.
+  const e = kollektionSignale({
+    pfad: '/collections/all',
+    eintraege: [{url: 'u', name: 'A'}],
+    bild: {url: 'seite1.webp', breite: 1200, hoehe: 1200, alt: 'x'},
+  });
+  assert.equal(
+    e.filter((d) => d.property === 'og:image').length,
+    1,
+    'erste Seite ohne og:image',
+  );
+  assert.ok(finde(e, 'CollectionPage').primaryImageOfPage);
+});
+
+test('die ItemList nennt kein nicht-indexierbares Produkt', () => {
+  // DER FEHLER, DEN DIESER TEST FESTNAGELT (Befund einer unabhaengigen
+  // Gegenpruefung, 2026-09-12): /collections/all nannte pjdz538hgs0 und
+  // 8kendiw34hd — beide live `noindex,nofollow`, beide in
+  // NICHT_INDEXIERBARE_PRODUKTE. Der Filter für KOLLEKTIONEN war gebaut, der
+  // für PRODUKTE nicht — dieselbe Regel, andere Achse.
+  for (const datei of [
+    'app/routes/collections.$handle.jsx',
+    'app/routes/collections.all.jsx',
+  ]) {
+    const quelle = readFileSync(new URL('../' + datei, import.meta.url), 'utf8');
+    // AUF DEN AUFRUF, NICHT AUF DAS WORT: die erste Fassung dieses Tests
+    // suchte nur `/istNichtIndexierbaresProdukt/` — und blieb im
+    // Mutationstest gruen, weil der Name auch im ERKLAERENDEN KOMMENTAR
+    // darueber steht. Ein Zaun, den ein Kommentar erfuellt, misst die
+    // Wortwahl und nicht den Code.
+    assert.match(
+      quelle,
+      /\.filter\(\s*\(\w+\)\s*=>\s*!istNichtIndexierbaresProdukt\(/,
+      `${datei} filtert nicht-indexierbare Produkte nicht aus der ItemList`,
+    );
+  }
+});
+
 test('jede Kollektions-Route ruft die Hilfe auch auf', () => {
   for (const datei of [
     'app/routes/collections.$handle.jsx',

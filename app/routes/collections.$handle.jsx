@@ -11,6 +11,7 @@ import {
   absoluteCanonical,
   canonicalLink,
   istNichtIndexierbareKollektion,
+  istNichtIndexierbaresProdukt,
   noindexHeader,
   noindexMeta,
 } from '~/lib/seo';
@@ -89,10 +90,35 @@ export const meta = ({data, params}) => {
         erstesProdukt: produkte[0],
         name: data?.collection?.title,
       }),
-      eintraege: produkte.map((p) => ({
-        url: absoluteCanonical(`/products/${p.handle}`),
-        name: p.title,
-      })),
+      // KEIN AUSGESCHLOSSENES PRODUKT IN DER ItemList (Befund einer
+      // unabhaengigen Gegenpruefung, 2026-09-12): /collections/all nannte auf
+      // Position 7 und 8 die Handles pjdz538hgs0 und 8kendiw34hd — beide
+      // tragen live `noindex,nofollow`, haben keinen canonical und stehen in
+      // keiner Sitemap. Das neue Markup fuehrte Crawler also aktiv auf Seiten,
+      // die wir gerade ausgeschlossen haben.
+      //
+      // DER FEHLER WAR EINE ASYMMETRIE, KEIN UEBERSEHENES DETAIL: für
+      // KOLLEKTIONEN war derselbe Filter erkannt, begründet und gebaut
+      // (collections._index.jsx); für PRODUKTE wurde der Gedanke nicht zu
+      // Ende geführt, obwohl ~/lib/seo `istNichtIndexierbaresProdukt` fertig
+      // exportiert. Wer eine Regel an einer Achse anwendet, wendet sie an
+      // JEDER Achse derselben Liste an.
+      //
+      // WARUM HIER NUR DIE ItemList GEFILTERT WIRD UND NICHT AUCH DIE
+      // GERENDERTE LISTE — anders als bei den Kollektionen auf
+      // collections._index.jsx: dort waren die Ausgeschlossenen
+      // Shopify-Verwaltungskollektionen ohne Kundennutzen, hier sind es echte
+      // Angebots-Bundles, die ein Kunde über einen Direktlink kaufen können
+      // soll. Sie aus dem Raster zu nehmen, wäre eine Produktentscheidung und
+      // nicht Sache dieses Baus. Eine ItemList darf eine TEILMENGE des
+      // Sichtbaren nennen — sie darf nur nichts nennen, was es nicht gibt oder
+      // was ausgeschlossen ist.
+      eintraege: produkte
+        .filter((p) => !istNichtIndexierbaresProdukt(p.handle))
+        .map((p) => ({
+          url: absoluteCanonical(`/products/${p.handle}`),
+          name: p.title,
+        })),
       ersteSeite: !data?.collection?.products?.pageInfo?.hasPreviousPage,
     }),
   );
