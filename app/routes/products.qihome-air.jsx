@@ -21,6 +21,9 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qihomeAirStyles from '~/styles/qihome-air.css?url';
+import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
+import igStyles from '~/styles/ig-testimonials.css?url';
+import {igVideoDescriptor} from '~/lib/ig-video-schema';
 /**
  * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
  * 20260910-designschuld-...-s04). Sie hängt NUR hier und trägt
@@ -30,14 +33,17 @@ import qihomeAirStyles from '~/styles/qihome-air.css?url';
  * Rückweg: diesen links()-Export und den Wrapper entfernen.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: qihomeAirStyles}];
+  return [
+    {rel: 'stylesheet', href: qihomeAirStyles},
+    {rel: 'stylesheet', href: igStyles},
+  ];
 }
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return produktMeta({
+  const basis = produktMeta({
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
     pfad: '/products/qihome-air',
@@ -46,6 +52,16 @@ export const meta = ({data}) => {
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
   });
+  // VideoObject je Instagram-Beitrag MIT Video. Ein Knoten auf einem Eintrag
+  // OHNE Video wäre eine Lüge, und ein Knoten ohne Pflichtfeld (name,
+  // thumbnailUrl, uploadDate) steht dauerhaft als Fehler in der Search
+  // Console — beides faellt in ig-video-schema.js baulich aus.
+  const videos = igVideoDescriptor({
+    produkt: 'QiHome',
+    pfad: '/products/qihome-air',
+    produktTitel: data?.product?.title,
+  });
+  return videos ? [...basis, videos] : basis;
 };
 
 /**
@@ -183,6 +199,34 @@ export default function Product() {
         }}
       />
     </div>
+      {/*
+        DIE INSTAGRAM-STIMMEN — WEIT OBEN, wie auf den drei Schwesterseiten:
+        unmittelbar nach dem Kaufblock und VOR dem langen Inhaltsteil.
+
+        EIGENE UEBERSCHRIFT, und das ist der Punkt dieser Sektion:
+        die Komponente heißt per Default "Echte Stimmen auf Instagram".
+        Für QiHome deckt das Material diese Zusage NICHT — der Korpus trägt
+        hier drei Beitraege, alle drei von unserem eigenen Konto, kein einziges
+        fremdes. (Christians Nachtrag rechnete mit einem persoenlichen: das war
+        @_kamyata_, und dieses Konto ist seit der Browser-Messung in s03 des
+        Vorgaengerjobs als geloescht belegt — 3 von 3 Laeufen "Seite wurde
+        entfernt", Positiv-Kontrolle jedes Mal sauber.)
+
+        "Echte Stimmen" über drei eigenen Beiträgen wäre eine Behauptung, die
+        das Material nicht trägt. Die Flaeche steht trotzdem — Christian
+        2026-09-11: "Trotzdem einen tollen Slider machen mit dem ganzen
+        Material", "Nichts fliegt raus" — aber sie sagt, was sie ist.
+        Kommt fremdes Material nach, gehört die Default-Überschrift zurück.
+
+        BEWUSST OHNE dataSection: diese PDP führt heute kein einziges
+        data-section; das erste würde den Design-Rubrik-Collector auf genau
+        eine Sektion einengen (Watch-Regression) — dieselbe Begründung wie auf
+        products.qibracelet.jsx und products.qione-2-pro.jsx.
+      */}
+      <IgTestimonialSlideshow
+        produkt="QiHome"
+        ueberschrift="QiHome® Air auf Instagram"
+      />
       <QiHome /> 
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
