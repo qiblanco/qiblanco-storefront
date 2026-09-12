@@ -330,3 +330,45 @@
 .nog__frage dd {
   margin-inline: 0;
 }
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. Wortgleich zu kritik.css,
+   weil Kopf und Fuss dieselben sind. */
+body:has(.nog) {
+  background: var(--nog-grund);
+  --color-accent-primary: var(--nog-akzent);
+  --rd3-gold: var(--nog-akzent);
+  --qb-sterne-gold: var(--nog-akzent);
+  --shop-switch-active: rgba(201, 161, 75, 0.18);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss.
+   GEMESSEN, NICHT UEBERNOMMEN: ohne diese Regel liefert die Rubrik hier drei
+   Bild-Radius-Werte (4px, 6px, 20px), und zwar aus der GETEILTEN Huelle — die
+   Seite selbst traegt kein einziges eigenes Bild. Die Schwesterseite /pages/
+   kritik misst am selben Build 8px auf allen Huellen-Bildern, weil sie genau
+   diese Regel fuehrt. Der Befund ist damit keine Eigenschaft der Huelle,
+   sondern die Abwesenheit ihres Remaps. */
+body:has(.nog) img,
+body:has(.nog) picture,
+body:has(.nog) video {
+  border-radius: var(--nog-r1);
+}
+
+/* Das Newsletter-Widget im Fuss (ActiveCampaign `_form_15`) setzt seinen Ocker
+   #F2BF72 inline — der ZWEITE Goldton der Route, nur mit !important
+   erreichbar. GEMESSEN: ohne diese Regel meldet die Rubrik hier "ZWEI
+   konkurrierende Gold-/Ocker-Toene", waehrend /pages/kritik am selben Build
+   harmonisch 100 misst; der Unterschied ist genau dieser Block. Anders als in
+   kritik.css steht hier KEINE unscoped Regel: eine Datei, die nur auf dieser
+   Route geladen wird, soll auch nur auf dieser Route wirken. */
+body:has(.nog) #_form_15_submit._submit,
+body:has(.nog) ._form_15 button,
+body:has(.nog) ._form_15 ._submit,
+body:has(.nog) ._form_15 input[type='submit'] {
+  background: var(--nog-akzent) !important;
+  color: var(--nog-text) !important;
+  border-radius: var(--nog-r1) !important;
+  font-family: var(--nog-font) !important;
+}
