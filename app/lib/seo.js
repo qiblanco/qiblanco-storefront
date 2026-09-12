@@ -106,6 +106,54 @@ export function canonicalLink(pathname) {
  * Aufgelöst wird er, wenn das noindex nachweislich gewirkt hat; dann kippt
  * der Eintrag auf `ausSitemap: true`.
  *
+ * WANN „NACHWEISLICH GEWIRKT"? DIE FRAGE WURDE 13 TAGE LANG NICHT GESTELLT,
+ * UND SIE IST MESSBAR (2026-09-12, Job 20260912-siebzehn-von-52-pages-urls-…).
+ * Der Satz darüber nennt die Auflösungsbedingung richtig, aber niemand hat sie
+ * je gemessen: am 2026-09-12 standen ALLE 16 Übergangs-Einträge noch auf
+ * `false` — also 16 der 52 URLs (30,8 %) der ausgelieferten `sitemap/pages/1.xml`
+ * trugen live `noindex, nofollow` in HTML UND X-Robots-Tag. Der Zustand, den
+ * der Absatz als „gewollt und endlich" beschreibt, war unbefristet geworden.
+ *
+ * DIE BEDINGUNG IST NICHT EIN DATUM, SONDERN EIN ZUSTAND BEI GOOGLE — und der
+ * Unterschied ist entscheidend: die Übergangsstufe hat NUR dann noch einen
+ * Zweck, wenn die Seite HEUTE IM INDEX STEHT. Nur dann gibt es etwas zu
+ * entfernen, für das Google das noindex erst lesen muss. Steht sie nicht (mehr)
+ * im Index, ist die Stufe gegenstandslos und erzeugt nur noch den Widerspruch
+ * „noindex UND in der Sitemap", vor dem der Absatz oben warnt.
+ *
+ * GEMESSEN WIRD MIT DEM BESTAND, NICHT NEU GEBAUT (P10):
+ *   homepage-bauer/bin/gsc-seitenstand --url https://qiblanco.com/pages/<handle>
+ * bzw. `urlInspection` -> `coverageState`. Die Lesart, am 2026-09-12 an allen
+ * 16 Einträgen durchgeführt:
+ *
+ *   „Gesendet und indexiert"            -> Google hat das noindex NOCH NICHT
+ *                                          gelesen, die Seite steht im Index.
+ *                                          Stufe 1 LÄUFT. Eintrag bleibt `false`.
+ *   „Durch noindex-Tag ausgeschlossen"  -> Stufe 1 ERFÜLLT  -> `true`
+ *   „Gecrawlt – zurzeit nicht indexiert" -> nicht im Index  -> `true`
+ *   „Gefunden – zurzeit nicht indexiert" -> nicht im Index  -> `true`
+ *   „URL ist Google nicht bekannt"      -> Google kennt die URL nicht und wird
+ *                                          das noindex auf ihr NIE lesen; die
+ *                                          Stufe wartet auf ein Ereignis, das
+ *                                          baulich nicht eintreten kann -> `true`
+ *
+ * ERGEBNIS 2026-09-12: 14 Einträge auf `true`, 2 bleiben `false` — `linkseite`
+ * und `ketogenes-wochenende` sind als EINZIGE „Gesendet und indexiert" (letzter
+ * Crawl je 2026-08-26, das noindex steht seit 2026-08-23/29). Für genau diese
+ * beiden tut die Übergangsstufe, wofür sie gebaut wurde. Wer sie später kippt,
+ * MISST vorher erneut — ein Datum ist hier nie der Beleg.
+ *
+ * DIE GEGENRICHTUNG, damit daraus keine Räumungslizenz wird: „nicht im Index"
+ * ist KEIN Grund, eine Seite noindex zu setzen. Diese Lesart entscheidet
+ * ausschliesslich über den SITEMAP-Eintrag eines bereits entschiedenen
+ * noindex — das Aufnahme-Kriterium oben („nur Handles ohne Zweck für Kunden")
+ * bleibt unberührt und wird von ihr nicht aufgeweicht.
+ *
+ * WACHE: pruefungen/probe_sitemap_noindex_naht.py — sie misst die Naht
+ * zweiseitig (kein noindex in der ausgelieferten Sitemap AUSSER den namentlich
+ * als laufende Übergangsstufe belegten) und kann deshalb nicht dadurch grün
+ * werden, dass jemand Einträge löscht.
+ *
  * Was hier NICHT passieren darf, ist eine ZWEITE Liste: die beiden Sichten
  * unten werden aus DIESER einen Definition abgeleitet, können also nicht
  * auseinanderdriften.
@@ -116,7 +164,8 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'development-nicht-loschen',
     ausSitemap: true,
-    grund: 'Entwicklungsseite; Sitemap war ihr einziger Discovery-Pfad (2026-08-14)',
+    grund:
+      'Entwicklungsseite; Sitemap war ihr einziger Discovery-Pfad (2026-08-14)',
     seit: '2026-08-14',
   },
   // Neu 2026-08-23 (s05). Jeder Handle live gemessen: HTTP 200, KEIN
@@ -125,67 +174,68 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   // exakt 424), die Funnel-Seiten wenige Zeilen.
   {
     handle: 'pre-access',
-    ausSitemap: false,
-    grund: 'leere Kampagnen-Restseite, stand auf Platz 2 der Suche nach "QiOne 2 Pro"',
+    ausSitemap: true,
+    grund:
+      'leere Kampagnen-Restseite, stand auf Platz 2 der Suche nach "QiOne 2 Pro"',
     seit: '2026-08-24',
   },
   {
     handle: 'qibracelet_',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'leerer Handle-Vertipper zu /pages/qibracelet',
     seit: '2026-08-24',
   },
   {
     handle: 'qiblanco-qibracelet',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'leere Dublette zu /pages/qibracelet',
     seit: '2026-08-24',
   },
   {
     handle: 'kakao-anwendung-de',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'leere Sprachvariante zu /pages/kakao-anwendung',
     seit: '2026-08-24',
   },
   {
     handle: 'kakao-anwendung-us',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'leere Sprachvariante, rankte auf der DACH-Markensuche',
     seit: '2026-08-24',
   },
   {
     handle: 'zeremonie-kakao-language-select',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'leere Sprachweiche ohne Inhalt',
     seit: '2026-08-24',
   },
   {
     handle: 'anmeldung-erfolgreich',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'kw-anmeldung-erfolgreich',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'superhuman-anmeldung-erfolgreich',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'erinnerung-erfolgreich',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'superhuman-kurs-bestatigung',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
@@ -204,8 +254,9 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   // der Suche nach QiOne 2 Pro"), nur eine Ebene wichtiger.
   {
     handle: 'qiblanco',
-    ausSitemap: false,
-    grund: 'leere Restseite unter dem Markennamen; konkurriert mit der Startseite',
+    ausSitemap: true,
+    grund:
+      'leere Restseite unter dem Markennamen; konkurriert mit der Startseite',
     seit: '2026-08-27',
   },
   {
@@ -216,20 +267,23 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   },
   {
     handle: 'one-inch',
-    ausSitemap: false,
-    grund: 'leere Kampagnen-Restseite (One Inch Club), laut Grossjob depubliziert',
+    ausSitemap: true,
+    grund:
+      'leere Kampagnen-Restseite (One Inch Club), laut Grossjob depubliziert',
     seit: '2026-08-27',
   },
   {
     handle: 'ketogenes-wochenende',
     ausSitemap: false,
-    grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+    grund:
+      'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
     seit: '2026-08-27',
   },
   {
     handle: 'superhuman-kurs',
-    ausSitemap: false,
-    grund: 'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
+    ausSitemap: true,
+    grund:
+      'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
     seit: '2026-08-27',
   },
   // Neu 2026-08-29 (Job 20260829-ads-ziel-url-verstoss-...). Achse B der
@@ -437,6 +491,72 @@ export const NUR_ROUTE_SEITEN = [
       'probe_partnerseite_naht_sitemap_route.py (Sitemap-Eintrag UND ' +
       'Routen-Marker live) sowie probe_partnerseite_inhalt_live.py.',
   },
+  // Neu 2026-09-12 (Job 20260912-siebzehn-von-52-pages-urls-sind-google-
+  // unbekannt-…). VIER EINTRAEGE AUS EINER VOLLERHEBUNG, NICHT AUS EINEM
+  // EINZELFALL: gemessen wurden ALLE 67 `pages.*`-Routen in origin/main gegen
+  // die ausgelieferte `sitemap/pages/1.xml`. 33 stehen dort nicht; 28 davon
+  // zu Recht (404 oder live `noindex`), fuenf nicht — und eine der fuenf
+  // (`kristall-kakao`) ist eine Weiterleitung und gehoert ebenfalls nicht
+  // hinein. Bleiben diese vier. Der Restbericht ist Pflicht, nicht Kuer: ein
+  // Einschluss-Selektor sagt nur, was er NIMMT, und seine ausgelassene Menge
+  // ist sonst nicht pruefbar (Hausregel „Waechter-Zaun an der Eigenschaft").
+  //
+  // DREI DER VIER SIND CANONICAL-ZIELE VON SEITEN, DIE SELBST IN DER SITEMAP
+  // STEHEN — das ist der teurere Teil und war unsichtbar, weil beide Seiten
+  // fuer sich richtig aussehen: `/pages/qione` und `/pages/qihome` stehen in
+  // der Sitemap und erklaeren per `<link rel="canonical">` eine ANDERE URL zur
+  // kanonischen. Google bestaetigt das am 2026-09-12 woertlich mit
+  // coverageState „Seite mit Weiterleitung" und googleCanonical
+  // `/pages/qione-2-pro-details` bzw. `/pages/qihome-details`. Die Sitemap
+  // nannte damit zwei URLs, die sofort weiterzeigen, waehrend ihre Ziele in
+  // KEINER Sitemap standen. Eine Sitemap fuehrt kanonische URLs, nie deren
+  // Vorstufen.
+  //
+  // `/pages/ueber-uns` ist der vierte und der einzige echte Neuzugang: live
+  // HTTP 200, 98 KB, self-canonical, kein noindex — und am 2026-09-12 von
+  // Google mit „URL ist Google nicht bekannt", `sitemap: None`,
+  // `referringUrls: 0` gemessen. Gebaut und fuer die Suche unsichtbar, genau
+  // der Fall, fuer den diese Liste existiert.
+  //
+  // WACHE FUER ALLE VIER (Aufnahme-Kriterium 3, eine Wache statt vier):
+  // pruefungen/probe_sitemap_noindex_naht.py prueft je Eintrag dieser Liste
+  // live HTTP 200 + kein noindex + `<loc>` in der ausgelieferten Sitemap, und
+  // zusaetzlich klassenweit, dass das Canonical-Ziel jeder Sitemap-URL selbst
+  // in der Sitemap steht. Ein Eintrag, der zur 404-URL verkommt, wird dadurch
+  // rot, statt still in der Sitemap zu stehen.
+  {
+    pfad: '/pages/ueber-uns',
+    grund:
+      'Live 200/98 KB, indexierbar, self-canonical — und am 2026-09-12 von ' +
+      'Google als "URL ist Google nicht bekannt" gemessen (sitemap: None, ' +
+      'referringUrls: 0). Sie hat KEIN Shopify-Seitenobjekt und stand damit ' +
+      'in keiner Sitemap. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/qione-2-pro-details',
+    grund:
+      'Canonical-Ziel von /pages/qione, das selbst in der Sitemap steht. ' +
+      'Google 2026-09-12: /pages/qione = "Seite mit Weiterleitung", ' +
+      'googleCanonical = diese URL; diese URL "Gesendet und indexiert", aber ' +
+      'sitemap: None. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/qihome-details',
+    grund:
+      'Canonical-Ziel von /pages/qihome, das selbst in der Sitemap steht. ' +
+      'Google 2026-09-12: /pages/qihome = "Seite mit Weiterleitung", ' +
+      'googleCanonical = diese URL; diese URL "Gesendet und indexiert", aber ' +
+      'sitemap: None. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
+  {
+    pfad: '/pages/qibracelet-details',
+    grund:
+      'Oeffentlicher Zwilling zu /pages/qibracelet (das seit 2026-08-29 ' +
+      'noindex + ausSitemap: true traegt und im Kommentar dort ausdruecklich ' +
+      'als "unberuehrt" benannt ist). Google 2026-09-12: "Gesendet und ' +
+      'indexiert", sitemap: None — indexiert, aber von keiner Sitemap ' +
+      'getragen. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
+  },
   {
     pfad: '/pages/kritik',
     grund:
@@ -474,9 +594,10 @@ export const NICHT_INDEXIERBARE_SEITEN = NICHT_INDEXIERBARE_SEITEN_DEF.map(
  * was ohnehin schon `noindex` trägt — nie umgekehrt.
  * @type {string[]}
  */
-export const AUS_SITEMAP_ENTFERNTE_SEITEN = NICHT_INDEXIERBARE_SEITEN_DEF.filter(
-  (e) => e.ausSitemap,
-).map((e) => e.handle);
+export const AUS_SITEMAP_ENTFERNTE_SEITEN =
+  NICHT_INDEXIERBARE_SEITEN_DEF.filter((e) => e.ausSitemap).map(
+    (e) => e.handle,
+  );
 
 /**
  * Gehört dieser Page-Handle aus dem Index?
@@ -604,6 +725,23 @@ export function istNichtIndexierbaresProdukt(handle) {
  *     Umsatzsteuer digitaler Güter, `cross-selling` eine Merchandising-Quelle
  *     für Produktempfehlungen. Beide messen 0 eigene Produkte.
  *
+ * VOLLZUG 2026-09-12 (Job 20260912-siebzehn-von-52-pages-urls-…): alle fuenf
+ * standen seit dem 2026-08-27 auf `ausSitemap: false`, und die Sitemap-Route
+ * nannte das ausdruecklich „die MOEGLICHKEIT, nicht der Vollzug". Was fehlte,
+ * war die MESSUNG der Aufloesungsbedingung — dieselbe wie bei den Seiten:
+ * die Uebergangsstufe hat nur dann noch einen Zweck, wenn die URL HEUTE im
+ * Index steht. urlInspection am 2026-09-12 fuer alle fuenf:
+ *   frontpage              -> „URL ist Google nicht bekannt"
+ *   products               -> „Gefunden – zurzeit nicht indexiert"
+ *   slider                 -> „Gefunden – zurzeit nicht indexiert"
+ *   cross-selling          -> „URL ist Google nicht bekannt"
+ *   digital-goods-vat-tax  -> „Durch noindex-Tag ausgeschlossen"
+ * KEINE steht im Index, es gibt also bei keiner etwas zu entfernen, wofuer
+ * Google das noindex erst lesen muesste. Alle fuenf kippen auf `true`. Zum
+ * Vergleich im selben Lauf: `zeremonie-kakao` ist „Gesendet und indexiert" —
+ * eine ECHTE Kundenkategorie, die hier korrekt nie gefuehrt wurde. Die
+ * Lesart je Zustand steht ausfuehrlich an NICHT_INDEXIERBARE_SEITEN_DEF.
+ *
  * WARUM noindex UND KEIN canonical: dieselbe Regel, die schon
  * `pages.uebersicht.jsx` trägt — noindex neben einem canonical auf eine
  * andere URL sind widersprüchliche Signale. Für `frontpage`/`products` wäre
@@ -615,7 +753,7 @@ export function istNichtIndexierbaresProdukt(handle) {
 export const NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF = [
   {
     handle: 'frontpage',
-    ausSitemap: false,
+    ausSitemap: true,
     grund:
       'von Shopify selbst angelegte "Home page"-Kollektion, englischer Titel ' +
       'auf der deutschen Storefront, dieselben Produkte wie /collections/all',
@@ -623,7 +761,7 @@ export const NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF = [
   },
   {
     handle: 'products',
-    ausSitemap: false,
+    ausSitemap: true,
     grund:
       'von Shopify selbst angelegte "Products"-Kollektion, Dublette der ' +
       'Kategorieübersicht',
@@ -631,7 +769,7 @@ export const NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF = [
   },
   {
     handle: 'slider',
-    ausSitemap: false,
+    ausSitemap: true,
     grund:
       'Startseiten-Konfiguration ("Artikel, die im Slider angezeigt werden ' +
       'sollen"), die versehentlich eine öffentliche URL bekommen hat',
@@ -639,13 +777,13 @@ export const NICHT_INDEXIERBARE_KOLLEKTIONEN_DEF = [
   },
   {
     handle: 'cross-selling',
-    ausSitemap: false,
+    ausSitemap: true,
     grund: 'Merchandising-Quelle für Produktempfehlungen, 0 eigene Produkte',
     seit: '2026-08-27',
   },
   {
     handle: 'digital-goods-vat-tax',
-    ausSitemap: false,
+    ausSitemap: true,
     grund:
       'steuerliche Gruppierung für die Umsatzsteuer digitaler Güter, ' +
       '0 eigene Produkte',
