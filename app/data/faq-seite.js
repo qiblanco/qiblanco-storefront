@@ -74,16 +74,16 @@
 
 export const FAQ_ALLTAG = [
   {
-    q: 'Ich habe ein schmales Handgelenk — welche Größe brauche ich beim QiBracelet®?',
+    q: 'Ich habe ein schmales Handgelenk. Welche Größe brauche ich beim QiBracelet®?',
     a:
       'Miss die BREITE deines Handgelenks, nicht den Umfang. Das ist der häufigste Grund für eine ' +
       'Fehlbestellung: Die meisten geben uns einen Umfang in Zentimetern an, unsere Tabelle rechnet ' +
-      'aber mit der Breite. Leg ein Lineal an die breiteste Stelle deines Handgelenks — dort, wo du ' +
-      'an beiden Seiten die Knochen fühlst —, schließ ein Auge und lies den Wert ab. ' +
-      'Danach gilt: 4,5 cm und 5 cm brauchen S. 5,5 cm ist der Grenzfall — locker M, anliegend S. ' +
+      'aber mit der Breite. Leg ein Lineal an die breiteste Stelle deines Handgelenks, dort, wo du ' +
+      'an beiden Seiten die Knochen fühlst. Schließ ein Auge und lies den Wert ab. ' +
+      'Danach gilt: 4,5 cm und 5 cm brauchen S. 5,5 cm ist der Grenzfall: locker M, anliegend S. ' +
       '6 cm ist M. 6,5 cm ist locker L und anliegend M. 7 cm und 7,5 cm brauchen L. ' +
-      'Das QiBracelet® lässt sich vorsichtig dehnen und wieder verengen, deshalb passen die meisten ' +
-      'Handgelenke in zwei Größen — je nachdem, ob es locker mitlaufen oder anliegen soll. ' +
+      'Das QiBracelet® lässt sich vorsichtig dehnen und wieder verengen. Deshalb passen die meisten ' +
+      'Handgelenke in zwei Größen, je nachdem, ob es locker mitlaufen oder anliegen soll. ' +
       'Wenn du unsicher bist, schreib uns die gemessene Breite, dann sagen wir dir die Größe.',
     /*
      * Zusätzliche SICHTBARE Lesehilfe — bewusst KEIN Ersatz für den Fliesstext
@@ -95,7 +95,7 @@ export const FAQ_ALLTAG = [
      */
     tabelle: {
       caption:
-        'Handgelenksbreite (nicht Umfang!) — gemessen an der breitesten Stelle. ' +
+        'Handgelenksbreite (nicht Umfang!), gemessen an der breitesten Stelle. ' +
         'Quelle: Größentabelle der QiBracelet®-Produktseite.',
       kopf: [
         'Deine Handgelenksbreite',
@@ -103,7 +103,7 @@ export const FAQ_ALLTAG = [
         'Anliegend (liegt an)',
       ],
       zeilen: [
-        ['4,5 cm', 'S', '—'],
+        ['4,5 cm', 'S', 'keine'],
         ['5 cm', 'S', 'S, verengt'],
         ['5,5 cm', 'M', 'S'],
         ['6 cm', 'M', 'M, verengt'],
@@ -119,7 +119,7 @@ export const FAQ_ALLTAG = [
       'in Umfang („mein Armumfang ist 16,5cm brauche ich S oder M"), geantwortet wird in Breite.',
   },
   {
-    q: 'Darf der QiOne® 2 Pro nass werden — Dusche, Meer, Sauna?',
+    q: 'Darf der QiOne® 2 Pro nass werden: Dusche, Meer, Sauna?',
     a:
       'Ja. Die Technik ist unempfindlich gegenüber Wasser. QiOne® 2 Pro und QiBracelet® sind ' +
       'resistent gegen Chlor- und Meerwasser, Schweiß, Sonneneinstrahlung und Hitze. Du kannst sie ' +
@@ -131,11 +131,11 @@ export const FAQ_ALLTAG = [
   {
     q: 'Wo und wie trage ich den QiOne® 2 Pro?',
     a:
-      'An jeder Stelle am Körper, die dir passt — eine vorgeschriebene Position gibt es nicht. ' +
+      'An jeder Stelle am Körper, die dir passt. Eine vorgeschriebene Position gibt es nicht. ' +
       'Für eine Kette hat er eine Bohrung von 2,5 mm Durchmesser. Das mitgelieferte Baumwollbändchen ' +
       'ist ein Geschenk, damit du ihn sofort tragen kannst; du darfst es jederzeit durch deine ' +
       'Lieblingskette ersetzen. Ein praktischer Hinweis dazu: Ketten aus (Edel-)Metall sind härter ' +
-      'als das Gehäuse und können es verkratzen — für diesen Fall gibt es unser Necklace aus ' +
+      'als das Gehäuse und können es verkratzen. Für diesen Fall gibt es unser Necklace aus ' +
       'Edelstahl. Und wenn du gar nichts um den Hals tragen möchtest, geht auch die Hosentasche.',
     quelle:
       'app/data/product-faqs.js, Items „Wie sollte ich den QiOne® tragen?" und „Kann ich den QiOne® ' +
@@ -146,7 +146,7 @@ export const FAQ_ALLTAG = [
   {
     q: 'Muss ich den QiOne® 2 Pro laden, warten oder irgendwann austauschen?',
     a:
-      'Nein. Im QiOne® 2 Pro steckt keine Elektronik, kein Akku und keine Batterie — es gibt nichts ' +
+      'Nein. Im QiOne® 2 Pro steckt keine Elektronik, kein Akku und keine Batterie. Es gibt nichts ' +
       'zu laden, nichts nachzufüllen und keine Verschleißteile. Das Gehäuse ist aus Chirurgenstahl, ' +
       'der GitterChip™ aus einer maßgeschneiderten 750er Goldlegierung, von Hand fertiggestellt. ' +
       'Du kaufst ihn einmal, danach entstehen keine Folgekosten.',
@@ -160,15 +160,15 @@ export const FAQ_ALLTAG = [
 
 export const FAQ_QIHOME = [
   {
-    q: 'Wie weit reicht ein QiHome® Air — reicht ein Gerät für meine Wohnung?',
+    q: 'Wie weit reicht ein QiHome® Air, und reicht ein Gerät für meine Wohnung?',
     a:
       'Das QiHome® Air ist auf einen Einsatzbereich von bis zu 160 m Radius ausgelegt ' +
       '(Herstellerangabe). Damit ist eine Wohnung, ein Einfamilienhaus und auch eine Büro- oder ' +
-      'Praxisfläche abgedeckt — für die allermeisten Haushalte reicht ein einziges Gerät, auch über ' +
-      'mehrere Stockwerke oder Wände hinweg. Zwei Einschränkungen, die dazugehören: Wie stark das im ' +
+      'Praxisfläche abgedeckt. Für die allermeisten Haushalte reicht ein einziges Gerät, auch über ' +
+      'mehrere Stockwerke oder Wände hinweg. Zwei Einschränkungen gehören dazu: Wie stark das im ' +
       'Alltag ankommt, hängt vom Umfeld ab, und in technisch stark belasteten Umgebungen ordnen wir ' +
-      'es vorsichtiger ein. Eine Angabe in Quadratmetern wirst du bei uns bewusst nicht finden: ' +
-      'Eine früher kursierende Zahl von 300 m² war schlicht falsch, und wir verwenden sie nicht ' +
+      'es vorsichtiger ein. Eine Angabe in Quadratmetern wirst du bei uns nicht finden. ' +
+      'Eine früher kursierende Zahl von 300 m² war falsch, und wir verwenden sie nicht ' +
       'mehr.',
     quelle:
       'qi-salesbot/src/server/chat-skills.ts, Skill QiHome (Prio 940), Evidenz-Zeile wörtlich: ' +
@@ -177,13 +177,13 @@ export const FAQ_QIHOME = [
       'AUSLEGUNG und als RADIUS, nie in Quadratmetern, nie als sichere Eignungszusage.',
   },
   {
-    q: 'Wo stelle ich das QiHome® Air am besten hin — und muss es in die Steckdose?',
+    q: 'Wo stelle ich das QiHome® Air am besten hin, und muss es in die Steckdose?',
     a:
-      'In die Steckdose muss es nicht. Das QiHome® Air arbeitet ohne Stromanschluss; es lässt sich ' +
-      'zwar in eine europäische Schuko-Steckdose stecken, für die Funktion nötig ist das aber nicht. ' +
-      'Stell es dorthin, wo du dich viel aufhältst — bewährt haben sich das Schlafzimmer und ein ' +
+      'Das QiHome® Air arbeitet ohne Stromanschluss. In eine europäische Schuko-Steckdose lässt ' +
+      'es sich zwar stecken, nötig ist das für die Funktion nicht. ' +
+      'Stell es dorthin, wo du dich viel aufhältst; bewährt haben sich das Schlafzimmer und ein ' +
       'zentral genutzter Raum. Halte im Umkreis von etwa 0,5 m leistungsstarke Elektrogeräte fern: ' +
-      'Mikrowelle, PC oder WLAN-Router können den Aufbau stören. Gib ihm außerdem Zeit — nach dem ' +
+      'Mikrowelle, PC oder WLAN-Router können den Aufbau stören. Gib ihm außerdem Zeit. Nach dem ' +
       'Aufstellen baut sich das Feld über mehrere Stunden auf und nach dem Wegnehmen über Stunden ' +
       'wieder ab. Kurzes Umstellen oder ein Steckdosenwechsel ist deshalb unkritisch.',
     quelle:
@@ -196,15 +196,15 @@ export const FAQ_QIHOME = [
 
 export const FAQ_BELEGE = [
   {
-    q: 'Wirkt das überhaupt? Was ist wirklich belegt — und was nicht?',
+    q: 'Wirkt das überhaupt? Was ist wirklich belegt, und was nicht?',
     a:
       'Fünf Arbeiten sind veröffentlicht, und wie stark sie sind, sagen wir dir gleich mit: Vier ' +
       'davon sind Zellstudien im Labor, also in vitro. Die fünfte wertet 171 freiwillige ' +
       'Erfahrungsberichte aus und hat weder Kontrollgruppe noch Verblindung. Eine kontrollierte ' +
-      'Studie am Menschen gibt es nicht — keine einzige. Das heißt: Was im Labor an Zellen messbar ' +
+      'Studie am Menschen gibt es nicht, keine einzige. Das heißt: Was im Labor an Zellen messbar ' +
       'war, ist gemessen worden. Ob und wie du selbst etwas merkst, folgt daraus nicht. Alle fünf ' +
       'Publikationen liegen bei uns offen als PDF, mit Methode, Zahlen und den Grenzen, die die ' +
-      'Autoren selbst benennen — du kannst sie im Original nachlesen, ohne uns etwas zu glauben.',
+      'Autoren selbst benennen. Du kannst sie im Original nachlesen, ohne uns etwas zu glauben.',
     quelle:
       'app/components/campaign/MmWirktDas.jsx, Konstanten STUDIEN/GRENZEN (ihrerseits aus der ' +
       'faktengegateten Registry app/data/studien/e0001…e0005.json). Inhaltsgrenze wie dort: ' +
@@ -234,19 +234,19 @@ export const FAQ_BELEGE = [
     weiter: {
       pfad: '/pages/erfahrungen',
       text:
-        'Menschen, die selbst erzählen, was sie gemerkt haben — ihre ' +
+        'Menschen, die selbst erzählen, was sie gemerkt haben: ihre ' +
         'Beobachtungen, nicht unsere Behauptung',
     },
   },
   {
     q: 'Es gibt öffentliche Kritik an Qi Blanco, auch Videos von Wissenschaftlern. Was sagt ihr dazu?',
     a:
-      'Ja, die gibt es — und der härteste Punkt darin ist berechtigt: Für unsere Produkte liegt kein ' +
-      'Wirknachweis am Menschen vor. Drei weitere Punkte, die wir nicht bestreiten: Alle fünf Arbeiten ' +
+      'Ja, die gibt es, und der härteste Punkt darin ist berechtigt: Für unsere Produkte liegt kein ' +
+      'Wirknachweis am Menschen vor. Drei weitere Punkte bestreiten wir ebenfalls nicht. Alle fünf Arbeiten ' +
       'stammen von demselben Labor, dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. ' +
-      'Wir haben sie bezahlt und die Geräte gestellt — das ist bei Produktforschung üblich und macht ' +
-      'Ergebnisse nicht falsch, aber es heißt, dass eine unabhängige Wiederholung durch ein zweites ' +
-      'Labor aussteht. Und das Erklärungsmodell dahinter ist in der etablierten Wissenschaft nicht ' +
+      'Wir haben sie bezahlt und die Geräte gestellt. Das ist bei Produktforschung üblich und macht ' +
+      'Ergebnisse nicht falsch, aber eine unabhängige Wiederholung durch ein zweites ' +
+      'Labor steht damit aus. Und das Erklärungsmodell dahinter ist in der etablierten Wissenschaft nicht ' +
       'anerkannt; die Publikationen führen es selbst als Hypothese. Was wir dem entgegensetzen, ist ' +
       'kein Gegenargument, sondern ein Angebot: Du musst uns nichts glauben. Du kannst es 20 Tage ' +
       'lang an dir selbst prüfen und ohne Angabe von Gründen zurückgeben.',
@@ -265,19 +265,19 @@ export const FAQ_BELEGE = [
     // Link auf eine per robots.txt gesperrte Seite gewesen.
     weiter: {
       pfad: '/pages/kritik',
-      text: 'Jeden Vorwurf einzeln nachlesen — mit Fundstelle und Antwort',
+      text: 'Jeden Vorwurf einzeln nachlesen, mit Fundstelle und Antwort',
     },
   },
   {
-    q: 'Wie funktioniert das eigentlich — ganz ohne Elektronik?',
+    q: 'Wie funktioniert das eigentlich, ganz ohne Elektronik?',
     a:
       'Im Inneren sitzt der GitterChip™ aus einer eigens entwickelten 750er Goldlegierung. ' +
       'Elektronik, Akku oder Batterie gibt es nicht, es wird nichts gesendet und nichts abgeschirmt. ' +
-      'Zum Erklärungsmodell dahinter sind wir lieber ehrlich als eindrucksvoll: Es dreht sich um die ' +
+      'Zum Erklärungsmodell dahinter sind wir lieber ehrlich als eindrucksvoll. Es dreht sich um die ' +
       'Ordnung von Wasser, es ist in der etablierten Wissenschaft nicht anerkannt, und unsere ' +
       'Publikationen kennzeichnen es selbst als Hypothese. Das ist weniger schlimm, als es klingt, ' +
       'und wichtiger, als es aussieht: Die Messwerte hängen nicht von der Erklärung ab. Was in den ' +
-      'Zellschalen passiert ist, wurde gemessen — warum es passiert ist, ist offen.',
+      'Zellschalen passiert ist, wurde gemessen. Warum es passiert ist, ist offen.',
     quelle:
       'MmWirktDas.jsx GRENZE 4 (wörtlich übernommen, Anrede angepasst) + product-faqs.js ' +
       'Material-Item (ungeflaggt). BEWUSST WEGGELASSEN: die Mechanismus-Erklärung aus ' +
@@ -287,13 +287,13 @@ export const FAQ_BELEGE = [
 
 export const FAQ_KAUF = [
   {
-    q: 'Wie läuft der 20-Tage-Test — und was, wenn ich nichts merke?',
+    q: 'Wie läuft der 20-Tage-Test, und was, wenn ich nichts merke?',
     a:
       'Zusätzlich zum gesetzlichen Widerrufsrecht von 14 Tagen kannst du bei uns 20 Tage ab Erhalt ' +
       'der Ware zurückgeben, ohne einen Grund zu nennen. Du darfst das Produkt in dieser Zeit tragen ' +
-      'und benutzen — genau dafür ist die Frist da. Der Ablauf: Melde dich bei uns, sende zurück, du ' +
+      'und benutzen. Genau dafür ist die Frist da. Der Ablauf: Melde dich bei uns, sende zurück, du ' +
       'bekommst den Kaufpreis erstattet. Die unmittelbaren Kosten der Rücksendung trägst du. Und ja: ' +
-      '„Ich merke nichts" ist ein völlig ausreichender Grund — du musst ohnehin keinen angeben.',
+      '„Ich merke nichts" ist ein völlig ausreichender Grund. Angeben musst du ohnehin keinen.',
     quelle:
       'Kopfleiste jeder Seite („Jetzt 20 Tage risikofrei erleben!"), Bedingungen im Repo ' +
       '(„Frist: 20 Tage ab Erhalt · Grund: keiner nötig"), /policies/refund-policy für die ' +
@@ -304,11 +304,12 @@ export const FAQ_KAUF = [
   {
     q: 'Kann ich in Raten zahlen?',
     a:
-      'Ja, über Klarna. Leg dein Produkt in den Warenkorb, geh zur Kasse und wähle „Klarna — Sofort ' +
-      'oder später bezahlen". Im Klarna-Fenster wählst du dann „Ratenzahlung" und deine Laufzeit. ' +
+      'Ja, über Klarna. Leg dein Produkt in den Warenkorb, geh zur Kasse und wähle Klarna als ' +
+      'Zahlart („Sofort oder später bezahlen"). Im Klarna-Fenster wählst du dann „Ratenzahlung" ' +
+      'und deine Laufzeit. ' +
       'Ab 25 € Warenwert sind 6 Monatsraten möglich, ab 500 € sind es 12 und ab 1.000 € bis zu 24. ' +
-      'Zwei Dinge solltest du vorher wissen: Die Ratenzahlung wird von Klarna beziehungsweise PayPal ' +
-      'selbst geprüft und ist nicht garantiert, und sie steht derzeit nur Kundinnen und Kunden mit ' +
+      'Zwei Dinge solltest du vorher wissen. Klarna beziehungsweise PayPal prüft die Ratenzahlung ' +
+      'selbst, garantiert ist sie nicht. Und sie steht derzeit nur Kundinnen und Kunden mit ' +
       'deutschem Wohnsitz offen.',
     quelle:
       'app/data/product-faqs.js, Klarna-Item (ungeflaggt) für die Staffel 25/500/1.000 €; ' +
@@ -320,12 +321,12 @@ export const FAQ_KAUF = [
   {
     q: 'Warum kostet das so viel?',
     a:
-      'Der Preis kommt aus dem Stück selbst: Gehäuse aus Chirurgenstahl, der GitterChip™ aus einer ' +
-      'maßgeschneiderten 750er Goldlegierung, von Oberflächenveredlern und Goldschmieden in ' +
-      'Handarbeit fertiggestellt. Es gibt keine Batterie, kein Abo und keinen Nachkauf — du zahlst ' +
-      'einmal, danach kostet es nichts mehr. Was der Preis ausdrücklich nicht kauft, ist ein ' +
-      'bewiesener Effekt beim Menschen; wie unsere Belege stehen, liest du weiter oben nach. Ob es ' +
-      'dir das wert ist, musst du nicht vorher entscheiden — dafür sind die 20 Tage da.',
+      'Weil in dem Stück teure Dinge stecken und du nur einmal zahlst. ' +
+      'Entscheiden musst du dich heute noch nicht: 20 Tage ab Erhalt kannst du es tragen, ' +
+      'benutzen und ohne Angabe von Gründen zurückgeben. ' +
+      'Das Gehäuse ist aus Chirurgenstahl, der GitterChip™ aus einer maßgeschneiderten 750er ' +
+      'Goldlegierung; Oberflächenveredler und Goldschmiede stellen ihn in Handarbeit fertig. ' +
+      'Nach dem Kauf kommt nichts mehr dazu: keine Batterie, kein Abo, kein Nachkauf.',
     quelle:
       'app/data/product-faqs.js Material-Item (ungeflaggt) für Chirurgenstahl/750er Goldlegierung/ ' +
       'Handarbeit; „keine Elektronik" ebenda. Der Evidenz-Satz ist derselbe wie oben und wird ' +
@@ -337,8 +338,8 @@ export const FAQ_KAUF = [
       'Innerhalb Deutschlands 5,90 €, ab 99 € Warenwert versandkostenfrei. QiOne® 2 Pro, ' +
       'QiBracelet®, QiHome® Air und das Necklace liegen über dieser Schwelle und gehen damit ' +
       'versandkostenfrei raus. Nach Österreich kostet der Versand 6,90 €, in die Schweiz 21,00 €. ' +
-      'Die Lieferzeit steht auf jeder Produktseite: QiOne® 2 Pro, QiBracelet®, QiHome® Air und ' +
-      'das Necklace sind in 2 bis 3 Tagen bei Dir, die Crystal Cacao®-Sorten in 1 bis 3 Tagen.',
+      'Die Lieferzeit steht auf jeder Produktseite. QiOne® 2 Pro, QiBracelet®, QiHome® Air und ' +
+      'das Necklace sind in 2 bis 3 Tagen bei dir, die Crystal Cacao®-Sorten in 1 bis 3 Tagen.',
     quelle:
       '/policies/shipping-policy, wörtlich „Deutschland 5,90 € (Versandkostenfrei ab 99€)", ' +
       '„Österreich 6,90 €", „Schweiz 21,00 €". Lieferzeiten aus der Messreihe von Segment s03 über ' +
@@ -361,7 +362,7 @@ export const FAQ_BLOECKE = [
     id: 'alltag',
     titel: 'Im Alltag',
     intro:
-      'Größe, Wasser, Tragen, Haltbarkeit — die Fragen, die am häufigsten gestellt werden.',
+      'Größe, Wasser, Tragen, Haltbarkeit: die Fragen, die am häufigsten gestellt werden.',
     items: FAQ_ALLTAG,
   },
   {
@@ -374,7 +375,7 @@ export const FAQ_BLOECKE = [
     id: 'belege',
     titel: 'Belege und Kritik',
     intro:
-      'Was gemessen ist, was nicht — und wie wir mit der Kritik daran umgehen.',
+      'Was gemessen ist, was nicht, und wie wir mit der Kritik daran umgehen.',
     items: FAQ_BELEGE,
   },
   {
