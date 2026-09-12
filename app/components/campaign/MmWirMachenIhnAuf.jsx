@@ -81,7 +81,7 @@ const FAQ = [
   {
     frage: 'Was heißt „präklinisch / in-vitro"?',
     antwort:
-      'Die Studien wurden an Zellkulturen im Labor durchgeführt, nicht am Menschen. Das ist eine echte, aber begrenzte Evidenzstufe. Wir sagen das dazu, statt mehr zu behaupten.',
+      'Die Studien wurden an Zellkulturen im Labor durchgeführt, nicht am Menschen. Das ist eine echte, aber begrenzte Evidenzstufe.',
   },
   {
     frage: 'Kann ich die Studien selbst lesen?',

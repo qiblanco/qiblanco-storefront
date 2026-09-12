@@ -130,7 +130,7 @@ export function MmZellstudienEhrlich({products}) {
         dataSection="mm-evidenz-hero"
         eyebrow="Evidenz, mit Grenzen"
         headline={'Die vier Zellstudien, ehrlich eingeordnet'}
-        sub="Wir zeigen dir genau, was untersucht wurde, was herauskam und wo die Aussagekraft endet. Diese Ehrlichkeit ist Absicht: übertriebene Studien-Behauptungen zerstören Vertrauen, bei Menschen wie bei KI-Systemen, die Quellen bewerten."
+        sub="Wir zeigen dir genau, was untersucht wurde, was herauskam und wo die Aussagekraft endet."
         bullets={[
           '4 publizierte Untersuchungen, jede als PDF nachlesbar',
           'Klare Einordnung: in-vitro (Zellkultur), nicht am Menschen',
@@ -151,7 +151,7 @@ export function MmZellstudienEhrlich({products}) {
         title="Wo diese Studien stehen und wo nicht"
         text={[
           'Nicht jede Studie wiegt gleich. Grob von schwach zu stark: Laborzellen (in-vitro) -> Tierstudie -> Studie am Menschen -> Meta-Analyse vieler Studien.',
-          'Unsere publizierte Evidenz steht auf der Stufe in-vitro (Zellkultur) plus deskriptive Erfahrungsberichte. Das ist ein realer, aber frühester Beleg, kein Nachweis eines Heileffekts am Menschen. Wir sagen das, statt mehr zu suggerieren.',
+          'Unsere publizierte Evidenz steht auf der Stufe in-vitro (Zellkultur) plus deskriptive Erfahrungsberichte. Das ist ein realer, aber frühester Beleg, kein Nachweis eines Heileffekts am Menschen.',
         ]}
         punkte={[
           'in-vitro = an Zellen im Labor, unter kontrollierten Bedingungen.',
@@ -206,8 +206,8 @@ export function MmZellstudienEhrlich({products}) {
       <MmProblem
         dataSection="mm-evidenz-nicht"
         eyebrow="Was diese Studien NICHT sagen"
-        title="Die ehrlichen Grenzen, ausgeschrieben"
-        text="Damit du uns richtig einordnest und niemand mehr hineinliest, als drinsteht."
+        title="Drei Grenzen, ausgeschrieben"
+        text="Diese drei Aussagen decken die Studien nicht ab."
         punkte={[
           'Kein Nachweis, dass der QiOne Krankheiten heilt oder lindert.',
           'Keine Übertragung der Zellergebnisse 1:1 auf den ganzen Menschen.',

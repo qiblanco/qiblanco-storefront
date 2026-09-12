@@ -160,7 +160,7 @@ export function MmSoWirktWasser({products}) {
         dataSection="mm-mechanismus-kette"
         eyebrow="Die Wirkkette"
         title="Von der Gitterstruktur bis zur Zelle"
-        intro="Vier Schritte, vom Chip zum gemessenen Effekt. Jeder Schritt ist so weit belegt, wie wir es offenlegen, nicht weiter."
+        intro="Vier Schritte, vom Chip zum gemessenen Effekt."
         schritte={[
           {
             titel: '1. Wasser ist strukturierbar',
