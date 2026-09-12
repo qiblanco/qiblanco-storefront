@@ -81,12 +81,20 @@ import e0003 from '~/data/studien/e0003.json';
  * dieselbe Angabe — wird ein Bild neu hochgeladen, lieferte die Kritikseite
  * still eine tote CDN-URL aus, und beide Haelften saehen fuer sich richtig aus.
  *
- * PREIS DIESER ENTSCHEIDUNG, offen benannt: der Import zieht die beiden
- * Studien-JSON (~60 KB, ueberwiegend Artikel-Volltext) in den Chunk DIESER
- * Route. Das ist bewusst in Kauf genommen und NICHT dasselbe wie der Fall in
- * Header.jsx: der Header haengt am root-Chunk und laeuft auf JEDER Seite (dort
- * wurde deshalb ein Literal gewaehlt). Hier ist es eine einzelne Route, und
- * genau so machen es die fuenf Studien-Einzelseiten und /pages/studien auch.
+ * PREIS DIESER ENTSCHEIDUNG — GEMESSEN, NICHT GESCHAETZT, und er ist kleiner
+ * als erwartet: zwei Builds im selben Worktree, nur diese Datei und kritik.css
+ * getauscht (2026-09-12), ergaben fuer den Client-Chunk der Route
+ * 16052 B -> 17052 B, also +1000 B (+6,2 %). Die beiden Studien-JSON
+ * (~60 KB Artikel-Volltext) landen NICHT im Client-Bundle: diese Komponente
+ * rendert serverseitig, im Chunk steht nur das gerenderte Ergebnis. Die
+ * Befuerchtung, hier 60 KB fuer zwei Bilder zu bezahlen, war falsch — wer sie
+ * nachrechnet, misst die ROUTE, nicht die Gesamt-Bytezahl (im Server-Bundle
+ * sind die JSON weiterhin zu sehen, und dort gehoeren sie hin).
+ *
+ * NICHT ZU VERWECHSELN MIT DEM FALL IN Header.jsx: der haengt am root-Chunk und
+ * laeuft auf JEDER Seite — dort waere derselbe Import teuer, und deshalb steht
+ * dort ein Literal. Hier ist es eine einzelne Route, und genau so machen es die
+ * fuenf Studien-Einzelseiten und /pages/studien auch.
  *
  * width/height stehen als ECHTE Masse aus der SSoT und werden nicht
  * beschnitten: sie reservieren den Platz vor dem Laden (kein Layout-Sprung).
@@ -124,7 +132,8 @@ function Belegbild({studie, bildKey, einordnung}) {
       <figcaption className="krit__beleg-text">
         {einordnung}
         <span className="krit__beleg-quelle">
-          {g.nummer} aus: {e.journal} {e.band}
+          {g.nummer} aus: {e.journal}{' '}
+          {String(e.veroeffentlicht || '').slice(0, 4)}, {e.band}
         </span>
       </figcaption>
     </figure>
@@ -202,7 +211,7 @@ export function KritikSeite() {
           <Belegbild
             studie={e0001}
             bildKey="abb1"
-            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen rund um ein sendendes Mobiltelefon, das Gerät dazwischen. Keine Menschen — Zellen in Kunststoffflaschen."
+            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen, oben und unten je zwei, dazwischen das Gerät. Das sendende Mobiltelefon liegt zwischen den beiden Ebenen. Keine Menschen — Zellen in Kunststoffflaschen."
           />
           <ol className="krit__einraeumungen">
             {EINRAEUMUNGEN.map((e) => (
@@ -225,7 +234,7 @@ export function KritikSeite() {
           <Belegbild
             studie={e0003}
             bildKey="abb1"
-            einordnung="Und so bei der Arbeit zum oxidativen Stress: eine 96-Well-Platte im Mini-Inkubator, das QiBracelet obenauf. Auch das ist der ganze Aufbau — mehr steckt hinter dem Wort „Zellstudie“ nicht."
+            einordnung="Und so bei der Arbeit zum oxidativen Stress: eine 96-Well-Platte im Mini-Inkubator, das QiBracelet obenauf. Auch hier ist das der ganze Aufbau — eine Platte, ein Gerät, ein Inkubator."
           />
           <ul className="krit__befunde">
             {BEFUNDE.map((b) => (
