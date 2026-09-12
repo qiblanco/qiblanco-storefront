@@ -18,6 +18,21 @@
  * nur die 3 Bullet-Texte sind neu. Styling kommt weiter komplett aus den
  * globalen Shop-Stylesheets (.ProductDescription ul / ul li img in app.css).
  *
+ * ALT-ATTRIBUT (2026-09-12, s07 des Grossjobs 20260911-...-technische-
+ * auffindbarkeit): bis dahin stand hier, das Live-Original trage kein alt und
+ * „DOM-Parität geht vor a11y-Regel". Diese Begründung ist ZURÜCKGEZOGEN — nicht
+ * weil die a11y-Regel schwerer wöge, sondern weil sie den Vertrag dieser Datei
+ * falsch zitierte. Der Vertrag oben ist OPTISCH („der Block darf sich optisch
+ * NICHT unterscheiden"), und genau danach entscheidet diese Datei schon immer:
+ * data-mce-fragment wird weggelassen, weil es kein CSS trägt. Für alt gilt
+ * dasselbe, nachgemessen statt vermutet — im ganzen Repo gibt es KEINEN
+ * CSS-Attributselektor auf alt, das ausgelieferte Bild ändert sich um kein
+ * Pixel. Die drei Bullet-Icons und der Checkmark sind dekorativ (ihre Bedeutung
+ * steht als Text unmittelbar daneben), also ist alt="" die fachlich richtige
+ * Angabe und kein erfundener Text. Schwesterkomponente QiBraceletHeroBullets
+ * führt seit je alt="" auf allen vier Icons — dieselbe Bauform, und sie war die
+ * saubere Hälfte.
+ *
  * BEWUSSTE, UNSICHTBARE ABWEICHUNGEN: data-mce-fragment wird NICHT gefälscht
  * (RTE-Provenienz-Signatur, trägt kein CSS); stattdessen markiert
  * data-qi-hero-bullets="pages" den Block als Code-Eigenbau (Testbarkeit).
@@ -55,7 +70,7 @@ export const HERO_BULLETS_PAGES = [
     text: 'E-Smog Schutz',
     img: {
       src: `${CDN}/WIFI_ICON_09426b68-adde-48d2-8fa4-2e1d5e43591d_16x16.webp?v=1676668860`,
-      alt: undefined,
+      alt: '',
       width: 23,
       height: 17,
       float: true,
@@ -68,7 +83,7 @@ export const HERO_BULLETS_PAGES = [
     text: 'Zellgesundheit',
     img: {
       src: `${CDN}/Molecule_Icon_1930bc3d-20ef-4d76-a729-d9b6a19cc772_16x16.webp?v=1676669033`,
-      alt: undefined,
+      alt: '',
       width: 23,
       height: 23,
       float: true,
@@ -137,11 +152,11 @@ export function QiOneHeroBulletsPages() {
         <p className="p1 mb-3">
           <span style={{color: '#39682c'}}>
             <strong>
-              {/* 1:1-Vertrag: Live-Original traegt KEIN alt-Attribut — DOM-
-                  Parität geht hier vor a11y-Regel (bewusst, siehe Kopf). */}
-              {/* eslint-disable-next-line jsx-a11y/alt-text */}
+              {/* 1:1-Vertrag: siehe ALT-ATTRIBUT im Kopf. Der Vertrag ist
+                  OPTISCH; alt trägt kein CSS und ist deshalb ausgenommen. */}
               <img
                 src={CHECKMARK_ICON}
+                alt=""
                 width={21}
                 height={21}
                 style={{float: 'none'}}

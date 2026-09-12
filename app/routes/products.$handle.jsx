@@ -30,6 +30,7 @@ import {
 import {brotkrumeSchema, produktSchema} from '~/lib/produkt-schema';
 import {MARKE, produktBeschreibung} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -303,7 +304,7 @@ function StandardProduct({product}) {
       <div className="product-main">
         <h1>{title}</h1>
         <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
-        <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 

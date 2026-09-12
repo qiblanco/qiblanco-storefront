@@ -24,6 +24,7 @@ import qihomeAirStyles from '~/styles/qihome-air.css?url';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 /**
  * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
  * 20260910-designschuld-...-s04). Sie hängt NUR hier und trägt
@@ -162,7 +163,7 @@ export default function Product() {
       <div className="product-main">
         <h1>{title}</h1>
         <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
-        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 

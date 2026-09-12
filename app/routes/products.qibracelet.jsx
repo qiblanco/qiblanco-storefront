@@ -24,6 +24,7 @@ import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlides
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 /*
  * ZWEI route-gebundene Stylesheets — zwei Gründe, keines ersetzt das andere.
  *
@@ -182,7 +183,7 @@ export default function Product() {
       <div className="product-main">
         <h1>{title}</h1>
         <SterneSprung className="product-rating"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
-        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
