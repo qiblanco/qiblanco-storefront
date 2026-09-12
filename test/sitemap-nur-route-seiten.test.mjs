@@ -34,35 +34,16 @@
  * Testobjekt.
  */
 import assert from 'node:assert/strict';
-import {readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {ladeMitAufgeloestenImporten} from './route-import-aufloesung.mjs';
 
 const hier = dirname(fileURLToPath(import.meta.url));
 const appDir = join(hier, '..', 'app');
 const routePfad = join(appDir, 'routes', 'sitemap.$type.$page[.xml].jsx');
 
-async function ladeRoute(wandle = (q) => q) {
-  const quelle = wandle(
-    readFileSync(routePfad, 'utf8').replace(
-      /from '~\/([^']+)'/g,
-      (_, rest) => `from '${pathToFileURL(join(appDir, rest)).href}.js'`,
-    ),
-  );
-  const ziel = join(
-    hier,
-    '..',
-    `.sitemap-nurroute-test-${process.pid}-${lfd++}.mjs`,
-  );
-  writeFileSync(ziel, quelle);
-  try {
-    return await import(pathToFileURL(ziel).href);
-  } finally {
-    rmSync(ziel, {force: true});
-  }
-}
-
-let lfd = 0;
+const ladeRoute = (wandle) =>
+  ladeMitAufgeloestenImporten(routePfad, 'sitemap-nurroute-test', wandle);
 
 const {
   NUR_ROUTE_SEITEN,
