@@ -39,10 +39,10 @@ export function links() {
 export const meta = ({data}) => {
   const d = data?.daten;
   if (!d) return [{title: 'Podcasts von Qi Blanco'}];
-  const titel = `Podcasts von Qi Blanco — Seite ${d.nr} von ${d.seitenZahl}`;
+  const titel = `Podcasts von Qi Blanco, Seite ${d.nr} von ${d.seitenZahl}`;
   const beschreibung =
     `Podcast-Folgen von Qi Blanco, Seite ${d.nr}: lange Gespräche über Wasser, ` +
-    'Frequenzen und den Alltag mit Technologie — mit Beschreibung und Kapiteln.';
+    'Frequenzen und den Alltag mit Technologie, mit Beschreibung und Kapiteln.';
   const eintraege = [
     {title: titel},
     {name: 'description', content: beschreibung},

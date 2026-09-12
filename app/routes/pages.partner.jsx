@@ -37,7 +37,7 @@ export function links() {
  * @type {MetaFunction}
  */
 export const meta = () => [
-  {title: 'Auf Empfehlung hier — kohärentes Wasser verstehen | Qi Blanco'},
+  {title: 'Auf Empfehlung hier: kohärentes Wasser verstehen | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 

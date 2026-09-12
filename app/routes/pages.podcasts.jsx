@@ -37,10 +37,10 @@ export function links() {
   ];
 }
 
-const TITEL = 'Podcasts von Qi Blanco — alle Folgen mit Beschreibung';
+const TITEL = 'Podcasts von Qi Blanco: alle Folgen mit Beschreibung';
 const BESCHREIBUNG =
   'Alle Podcast-Folgen von Qi Blanco: lange Gespräche über Wasser, ' +
-  'Frequenzen und den Alltag mit Technologie — jede Folge mit Beschreibung, ' +
+  'Frequenzen und den Alltag mit Technologie. Jede Folge mit Beschreibung, ' +
   'Kapiteln und Video.';
 
 /**

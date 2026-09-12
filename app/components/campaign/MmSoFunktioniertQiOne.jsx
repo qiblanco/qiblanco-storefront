@@ -54,10 +54,10 @@ const EFFEKTE = [
     eyebrow: 'Wirkung 1',
     titel: 'Tieferer Schlaf',
     bild: BILD_SCHLAF,
-    alt: 'Ein Paar liegt entspannt und ruht — zur Ruhe kommen',
-    text: 'Nachts soll dein Körper runterfahren. Ist das Wasser in deinen Zellen geordnet, kommt dein Nervensystem leichter aus dem Dauer-Alarm — und du schläfst ruhiger. Die meisten merken zuerst genau das.',
+    alt: 'Ein Paar liegt entspannt und ruht, zur Ruhe kommen',
+    text: 'Nachts soll dein Körper runterfahren. Ist das Wasser in deinen Zellen geordnet, kommt dein Nervensystem leichter aus dem Dauer-Alarm, und du schläfst ruhiger. Die meisten merken zuerst genau das.',
     zahl: '~20 %',
-    label: 'nannten besseren, tieferen Schlaf als häufigstes Erlebnis — von 171 ausgewerteten Erfahrungsberichten (deskriptiv, kein Beweis).',
+    label: 'nannten besseren, tieferen Schlaf als häufigstes Erlebnis, von 171 ausgewerteten Erfahrungsberichten (deskriptiv, kein Beweis).',
   },
   {
     eyebrow: 'Wirkung 2',
@@ -65,16 +65,16 @@ const EFFEKTE = [
     bild: BILD_ZELLE,
     alt: 'Mann trägt den QiOne im Alltag, ruhiger Moment bei Kaffee',
     gewendet: true,
-    text: 'Jeden Tag setzt Stress deinen Zellen zu — Fachleute nennen das „oxidativen Stress“. Stell es dir wie leichtes Rosten vor, nur in der Zelle. Geordnetes Wasser an der Zellhülle federt das ab. In Zellstudien blieben geschützte Zellen deutlich stabiler.',
+    text: 'Jeden Tag setzt Stress deinen Zellen zu. Fachleute nennen das „oxidativen Stress“. Stell es dir wie leichtes Rosten vor, nur in der Zelle. Geordnetes Wasser an der Zellhülle federt das ab. In Zellstudien blieben geschützte Zellen deutlich stabiler.',
     zahl: '75,0 %',
-    label: 'weniger oxidativer Zellstress in Zellstudien (in vitro, an Zellkulturen — nicht am Menschen).',
+    label: 'weniger oxidativer Zellstress in Zellstudien (in vitro, an Zellkulturen, nicht am Menschen).',
   },
   {
     eyebrow: 'Wirkung 3',
     titel: 'E-Smog-Schutz',
     bild: BILD_ESMOG,
-    alt: 'Frau am Laptop — Alltag zwischen WLAN und Bildschirm',
-    text: 'Handy, WLAN, Bildschirm — den ganzen Tag umgibt uns Funk. Diese Strahlung stört die feine Hülle deiner Zellen. Die geordnete Wasserschicht wirkt wie ein Puffer und hält die Zellhülle stabiler.',
+    alt: 'Frau am Laptop, Alltag zwischen WLAN und Bildschirm',
+    text: 'Handy, WLAN, Bildschirm: den ganzen Tag umgibt uns Funk. Diese Strahlung stört die feine Hülle deiner Zellen. Die geordnete Wasserschicht wirkt wie ein Puffer und hält die Zellhülle stabiler.',
     zahl: '87,1 %',
     label: 'geringere Zellschädigung unter Mobilfunk-Stress in Zellstudien (in vitro).',
   },
@@ -84,16 +84,16 @@ const SCHNELL = [
   {
     num: '1',
     titel: 'Fast alles in dir ist Wasser',
-    text: 'Über 70 % deines Körpers bestehen aus Wasser — in den Zellen, im Blut, überall. Ist dieses Wasser geordnet, läuft vieles ruhiger.',
+    text: 'Über 70 % deines Körpers bestehen aus Wasser, in den Zellen, im Blut, überall. Ist dieses Wasser geordnet, läuft vieles ruhiger.',
   },
   {
     num: '2',
     titel: 'Ein Gitter aus Gold ordnet es',
-    text: 'Im QiOne sitzt ein winziges Gitter aus 750er Gold. Wie eine Stimmgabel einen Ton vorgibt, gibt es dem Wasser drumherum eine feine Ordnung — ganz ohne Batterie.',
+    text: 'Im QiOne sitzt ein winziges Gitter aus 750er Gold. Wie eine Stimmgabel einen Ton vorgibt, gibt es dem Wasser drumherum eine feine Ordnung, ganz ohne Batterie.',
   },
   {
     num: '3',
-    titel: 'Du trägst ihn — fertig',
+    titel: 'Du trägst ihn, fertig',
     text: 'Kette umhängen, das war’s. Er wirkt Tag und Nacht, ob du daran denkst oder nicht. Nichts einstellen, nichts laden, keine App.',
   },
 ];
@@ -102,12 +102,12 @@ const FAQ = [
   {
     frage: 'Ist das ein Medizinprodukt?',
     antwort:
-      'Nein. Der QiOne 2 Pro ist kein Medizinprodukt, und wir machen keine Heilversprechen. Wir erklären nur, was passiert — und sagen dazu, was belegt ist und was ein Modell ist.',
+      'Nein. Der QiOne 2 Pro ist kein Medizinprodukt, und wir machen keine Heilversprechen. Wir erklären nur, was passiert, und sagen dazu, was belegt ist und was ein Modell ist.',
   },
   {
     frage: 'Muss ich etwas spüren, damit es wirkt?',
     antwort:
-      'Nein. Der Effekt hängt nicht daran, ob du etwas spürst. Manche merken eine Veränderung, andere nicht — beides ist normal. Die 20-Tage-Rückgabe hängt an deiner Überzeugung und der Frist, nie am Spüren.',
+      'Nein. Der Effekt hängt nicht daran, ob du etwas spürst. Manche merken eine Veränderung, andere nicht. Beides ist normal. Die 20-Tage-Rückgabe hängt an deiner Überzeugung und der Frist, nie am Spüren.',
   },
   {
     frage: 'Was heißt „in vitro“ / „Zellstudie“?',
@@ -117,14 +117,14 @@ const FAQ = [
   {
     frage: 'Braucht der QiOne Strom oder Pflege?',
     antwort:
-      'Nein. Kein Akku, keine Elektronik, keine App. Das Gold-Gitter ist fest und passiv — du trägst ihn einfach, über Jahre.',
+      'Nein. Kein Akku, keine Elektronik, keine App. Das Gold-Gitter ist fest und passiv. Du trägst ihn einfach, über Jahre.',
   },
 ];
 
 const FUNNEL = [
   {
     titel: 'So wirkt kohärentes Wasser',
-    text: 'Der Mechanismus in Ruhe erklärt — von der Gitterstruktur bis zur Zelle.',
+    text: 'Der Mechanismus in Ruhe erklärt, von der Gitterstruktur bis zur Zelle.',
     href: '/pages/so-wirkt-kohaerentes-wasser',
     cta: 'Mechanismus',
   },
@@ -136,7 +136,7 @@ const FUNNEL = [
   },
   {
     titel: 'Das 20-Tage-Versprechen',
-    text: 'Wie die Rückgabe wirklich abläuft — ohne Kleingedrucktes.',
+    text: 'Wie die Rückgabe wirklich abläuft, ohne Kleingedrucktes.',
     href: '/pages/das-20-tage-versprechen',
     cta: 'Garantie',
   },
@@ -152,8 +152,8 @@ const BADGES = [
 ];
 
 const PICK = [
-  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — nah am Körper, unsichtbar', cta: 'Zum QiOne 2 Pro'},
-  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — sichtbar getragen', cta: 'Zum QiBracelet'},
+  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette, nah am Körper und unsichtbar', cta: 'Zum QiOne 2 Pro'},
+  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband, sichtbar getragen', cta: 'Zum QiBracelet'},
   {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum, in dem du schläfst', cta: 'Zum QiHome Air'},
 ];
 
@@ -163,7 +163,7 @@ function MalibuHero() {
       <figure className="mm-mal-hero__media">
         <img
           src={HERO_BILD}
-          alt="Zwei Menschen, entspannt und leicht im warmen Licht — kalifornisches Lebensgefühl"
+          alt="Zwei Menschen, entspannt und leicht im warmen Licht, kalifornisches Lebensgefühl"
           loading="eager"
           width="1200"
           height="800"
@@ -174,7 +174,7 @@ function MalibuHero() {
         <span className="mm-eyebrow">So funktioniert der QiOne 2 Pro</span>
         <h1>Dein Körper ist zu 70 % Wasser. Der QiOne bringt es in Ordnung.</h1>
         <p className="mm-mal-hero__sub">
-          Kein Strom, kein Aufladen, keine App. Du trägst ihn — mehr nicht. Hier erklären wir in einfachen
+          Kein Strom, kein Aufladen, keine App. Du trägst ihn, mehr nicht. Hier erklären wir in einfachen
           Worten, was dabei passiert. Ehrlich, mit klaren Grenzen.
         </p>
         <div className="mm-mal-hero__actions">
@@ -219,7 +219,7 @@ export function MmSoFunktioniertQiOne({products}) {
         dataSection="mm-malibu-schnell"
         eyebrow="In 20 Sekunden"
         title="Ganz einfach erklärt"
-        text="Du musst kein Physiker sein. Der QiOne macht im Grunde nur eine Sache — und die kannst du in drei Bildern verstehen."
+        text="Du musst kein Physiker sein. Der QiOne macht im Grunde nur eine Sache, und die kannst du in drei Bildern verstehen."
       />
       <div className="mm-lp mm-malibu">
         <div className="mm-bahn" style={{paddingTop: 0}}>
@@ -240,7 +240,7 @@ export function MmSoFunktioniertQiOne({products}) {
         <span className="mm-eyebrow">Die 3 Wirkungen</span>
         <h2>Was der QiOne für dich tun soll</h2>
         <p className="mm-lede" style={{marginBottom: 'var(--mm-s8)'}}>
-          Ein einziges Prinzip — geordnetes Wasser — zeigt sich auf drei Ebenen. Jede erklären wir simpel,
+          Ein einziges Prinzip, geordnetes Wasser, zeigt sich auf drei Ebenen. Jede erklären wir simpel,
           jede mit einer ehrlichen Zahl aus den Studien.
         </p>
         <div className="mm-mal-effekte">
@@ -253,12 +253,12 @@ export function MmSoFunktioniertQiOne({products}) {
       <MmMechanism
         dataSection="mm-malibu-mechanismus"
         eyebrow="Und was passiert da genau?"
-        title="Von der Kette bis zur Zelle — in drei Schritten"
+        title="Von der Kette bis zur Zelle, in drei Schritten"
         intro="Etwas genauer, aber immer noch einfach. Der QiOne trägt ein festes Gitter aus 750er Gold, eingefasst in Chirurgenstahl. Keine Elektronik, kein Akku."
         schritte={[
-          {titel: 'Das Gold-Gitter gibt den Takt', text: 'Eine feste, präzise Gitterstruktur — wie eine Stimmgabel. Sie beeinflusst das Wasser direkt daneben.'},
+          {titel: 'Das Gold-Gitter gibt den Takt', text: 'Eine feste, präzise Gitterstruktur, wie eine Stimmgabel. Sie beeinflusst das Wasser direkt daneben.'},
           {titel: 'Wasser ordnet sich', text: 'Die Wassermoleküle an biologischen Grenzflächen gehen in einen geordneteren, „kohärenten“ Zustand über. Genau das haben die Zellstudien untersucht.'},
-          {titel: 'Die Zelle arbeitet ruhiger', text: 'Eine geordnete Wasserschicht stabilisiert die Zellhülle, puffert E-Smog ab und senkt Stress — der Körper ist weniger im Abwehrmodus.'},
+          {titel: 'Die Zelle arbeitet ruhiger', text: 'Eine geordnete Wasserschicht stabilisiert die Zellhülle, puffert E-Smog ab und senkt Stress. Der Körper ist weniger im Abwehrmodus.'},
         ]}
         kinder={
           <>
@@ -266,7 +266,7 @@ export function MmSoFunktioniertQiOne({products}) {
             <MmDiagramWasser caption="Modell: von ungeordneten zu geordneten Wassermolekülen entlang der Gitterstruktur." />
           </>
         }
-        note="Ehrliche Grenze: „Kohärentes Wasser“ ist ein Modell aus der Grenzforschung, keine etablierte Medizin. Belegt sind Effekte in Zellkulturen (in vitro) — kein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
+        note="Ehrliche Grenze: „Kohärentes Wasser“ ist ein Modell aus der Grenzforschung, keine etablierte Medizin. Belegt sind Effekte in Zellkulturen (in vitro), kein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
       />
 
       <MmStatBand
@@ -286,7 +286,7 @@ export function MmSoFunktioniertQiOne({products}) {
         variante="flaeche"
         dataSection="mm-malibu-reviews-intro"
         title="Über 14.000 zufriedene Kunden – entscheide dich jetzt!"
-        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
+        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden, Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
       />
       <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
@@ -299,14 +299,14 @@ export function MmSoFunktioniertQiOne({products}) {
 
       <MmFaq dataSection="mm-malibu-faq" title="Kurze, ehrliche Antworten" items={FAQ} />
 
-      <MmFunnel dataSection="mm-malibu-funnel" title="Tiefer einsteigen — die ganze Kette" links={FUNNEL} />
+      <MmFunnel dataSection="mm-malibu-funnel" title="Tiefer einsteigen: die ganze Kette" links={FUNNEL} />
 
       <MmPick dataSection="mm-malibu-pick" title="Ein Prinzip, drei Wege es zu tragen" products={products} handles={PICK} variante="flaeche" />
 
       <MmFinal
         dataSection="mm-malibu-final"
         title="Am einfachsten verstehst du ihn, wenn du ihn trägst."
-        text="20 Tage selbst prüfen. Überzeugt dich nichts, schickst du ihn zurück — Geld zurück, ohne Wenn und Aber."
+        text="20 Tage selbst prüfen. Überzeugt dich nichts, schickst du ihn zurück. Geld zurück, ohne Wenn und Aber."
         cta={{href: KAUF, label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/schlaf-zellen-schutz', label: 'Schlaf, Zellen & E-Smog im Detail'}}
       />
