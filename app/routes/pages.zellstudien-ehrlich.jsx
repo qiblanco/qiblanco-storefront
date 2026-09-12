@@ -22,7 +22,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Die Zellstudien, ehrlich eingeordnet — was sie zeigen und was nicht | Qi Blanco'},
+  {title: 'Die Zellstudien, ehrlich eingeordnet: was sie zeigen und was nicht | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 

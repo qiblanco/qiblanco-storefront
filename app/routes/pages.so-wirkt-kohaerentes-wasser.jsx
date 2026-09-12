@@ -20,7 +20,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'So wirkt kohärentes Wasser — der Mechanismus, ehrlich erklärt | Qi Blanco'},
+  {title: 'So wirkt kohärentes Wasser: der Mechanismus, ehrlich erklärt | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 

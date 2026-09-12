@@ -22,7 +22,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: '„Ist das Einbildung?" Wir machen ihn auf — QiOne® 2 Pro | Qi Blanco'},
+  {title: '„Ist das Einbildung?" Wir machen ihn auf. QiOne® 2 Pro | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
