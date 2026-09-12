@@ -20,11 +20,26 @@ import LazyImage from '~/components/reusables/LazyImage';
 
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
+import igStyles from '~/styles/ig-testimonials.css?url';
+import {igVideoDescriptor} from '~/lib/ig-video-schema';
+/**
+ * Route-gebundenes Stylesheet der Instagram-Stimmen (Muster: zweifel-beleg.css
+ * in products.qione-2-pro.jsx). NICHT in app.css: die globale Datei erreicht
+ * 45 Seiten, die Slideshow steht auf vieren. Das Token-CSS setzt seine Werte
+ * bewusst auf `.qb-igt` statt auf `:root` — ein Route-Stylesheet mit
+ * :root-Token wäre auf jeder anderen Route undefiniert, und `var(--x)` ohne
+ * Rueckfall kippt dort still in Vererbung.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: igStyles}];
+}
+
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return produktMeta({
+  const basis = produktMeta({
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
     pfad: '/products/crystal-cacao-create',
@@ -33,6 +48,16 @@ export const meta = ({data}) => {
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
   });
+  // VideoObject je Instagram-Beitrag MIT Video. Ein Knoten auf einem Eintrag
+  // OHNE Video wäre eine Luege, und ein Knoten ohne Pflichtfeld (name,
+  // thumbnailUrl, uploadDate) steht dauerhaft als Fehler in der Search
+  // Console — beides faellt in ig-video-schema.js baulich aus.
+  const videos = igVideoDescriptor({
+    produkt: 'Kakao',
+    pfad: '/products/crystal-cacao-create',
+    produktTitel: data?.product?.title,
+  });
+  return videos ? [...basis, videos] : basis;
 };
 
 /**
@@ -187,6 +212,23 @@ export default function Product() {
           }}
         />
       </div>
+      {/*
+        DIE INSTAGRAM-STIMMEN — WEIT OBEN: unmittelbar nach dem Kaufblock
+        (Bilder, Preis, Varianten, Kaufknopf) und VOR dem langen Inhaltsteil.
+        Das ist die Stelle, an der der Zweifel vor dem Kauf entsteht.
+
+        BEWUSST OHNE dataSection: diese PDP führt heute kein einziges
+        data-section. Das erste würde den Design-Rubrik-Collector auf genau
+        eine Sektion einengen (Watch-Regression) — dieselbe Begründung, mit
+        der products.qione-2-pro.jsx seine Anker-frei-Regel führt.
+
+        WARUM DIE KAKAO-FLAECHE HIER STEHT UND NICHT AUF
+        /products/zeremonie-kakao: dieser Pfad antwortet live mit 301 auf
+        genau diese Seite (2026-09-11 mit curl ohne Redirect-Folge gemessen,
+        Location https://qiblanco.com/products/crystal-cacao-create). Eine
+        Flaeche dort wäre eine Flaeche, die kein Mensch je sieht.
+      */}
+      <IgTestimonialSlideshow produkt="Kakao" />
       <Create />
     </>
   );

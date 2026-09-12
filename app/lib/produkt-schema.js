@@ -134,6 +134,72 @@ export function suchform(titel) {
 }
 
 /**
+ * ALLE Schreibweisen, unter denen dieses Produkt real gesucht wird — als
+ * Liste für `alternateName`.
+ *
+ * WARUM ZUSÄTZLICH ZU `suchform()` (an der Search Console gemessen
+ * 2026-09-11, Property sc-domain:qiblanco.com, Fenster 2026-06-13..09-10,
+ * 176 Queries): UNSERE KUNDEN TRENNEN „Qi" VOM REST DES MARKENNAMENS, und
+ * zwar bei vier von vier Markenkomposita.
+ *
+ *   „qi one"      245 Impressionen,  32 Klicks, Pos 2,9
+ *   „qione"       292 Impressionen,  18 Klicks, Pos 7,1
+ *   „qi bracelet"  45 Impressionen,   3 Klicks, Pos 8,8
+ *   „qibracelet"    0 Impressionen — die zusammengeschriebene Form wird NICHT gesucht
+ *   „qi home"      34 Impressionen,   2 Klicks, Pos 15,2
+ *   „qihome"        9 Impressionen,   2 Klicks, Pos 7,8
+ *   „qi blanco"  1240 Impressionen, 261 Klicks — der größte Begriff der Property
+ *
+ * Die getrennte Form bringt bei „qi one" weniger Impressionen und trotzdem
+ * MEHR Klicks als die zusammengeschriebene. Auf /products/qibracelet kam die
+ * Zeichenfolge „Qi Bracelet" (mit Leerzeichen) im ausgelieferten HTML am
+ * selben Tag NULL mal vor — die Form, die real gesucht wird, stand baulich
+ * nirgends auf der Seite.
+ *
+ * ABGELEITET STATT GEPFLEGT — dieselbe Regel wie bei `suchform()` und aus
+ * demselben Grund: getrennt wird an der Wortfuge Kleinbuchstabe/Ziffer →
+ * Großbuchstabe, nicht über eine Liste. „QiBracelet" → „Qi Bracelet",
+ * „QiOne 2 Pro" → „Qi One 2 Pro", „QiHome Air" → „Qi Home Air". Ein Titel
+ * ohne solche Fuge („Crystal Cacao Awake") bleibt unverändert und erzeugt
+ * keinen zweiten Eintrag. Eine gepflegte Liste getrennter Schreibweisen wäre
+ * genau der Bau, den der Kopf dieser Datei verbietet — sie driftet von der
+ * Shopify-Quelle weg, sobald dort jemand den Titel ändert.
+ *
+ * DIE MARKEN-SCHREIBUNG BLEIBT UNBERÜHRT: `alternateName` ist kein sichtbarer
+ * Fließtext, sondern ein maschinenlesbares Feld für alternative Namen. Der
+ * sichtbare Text und `name` tragen weiter „QiOne® 2 Pro" bzw. „QiBracelet®".
+ *
+ * @param {string} titel
+ * @returns {string[]} distinkte Suchformen, ohne den Titel selbst
+ */
+export function suchformen(titel) {
+  const original = String(titel || '').trim();
+  const ohneZeichen = suchform(original);
+  const getrennt = ohneZeichen.replace(/([\p{Ll}\d])(\p{Lu})/gu, '$1 $2');
+  const formen = [];
+  for (const f of [ohneZeichen, getrennt]) {
+    if (f && f !== original && !formen.includes(f)) formen.push(f);
+  }
+  return formen;
+}
+
+/**
+ * Handles der Produkte, zu denen es zellbiologische Untersuchungen gibt.
+ *
+ * WARUM DIESE DREI HANDLES HIER STEHEN UND NICHT IMPORTIERT WERDEN: die
+ * Zuordnung Produkt → Studie liegt in `app/data/studien/index.js`, und diese
+ * Datei importiert die fünf Studien-JSONs — 169 452 Byte, gemessen
+ * 2026-09-11. Ein Import von dort würde die kompletten Studientexte in das
+ * Bundle JEDER Produktseite ziehen, für eine Information von drei Wörtern.
+ *
+ * DASS ES ZWEI STELLEN SIND, IST DESHALB BEWUSST — UND GENAU DARUM STEHT EIN
+ * DURCHSETZER DANEBEN: `test/produkt-schema.test.mjs` importiert BEIDE Seiten
+ * und schlägt fehl, sobald sie auseinanderlaufen. Ohne ihn wäre das eine
+ * zweite Wahrheit, die beim Ergänzen einer sechsten Studie still falsch wird.
+ */
+export const STUDIERTE_HANDLES = ['qione-2-pro', 'qibracelet', 'qihome-air'];
+
+/**
  * schema.org-Verfügbarkeit aus dem Shopify-Flag.
  * @param {boolean|undefined} verfuegbar
  * @returns {string}
@@ -351,8 +417,9 @@ export function produktSchema(produkt) {
   // wäre `alternateName` eine wortgleiche Wiederholung von `name` und damit
   // reines Rauschen — ein Feld, das nichts hinzufügt, ist kein neutraler
   // Zusatz, sondern eine Aussage ohne Inhalt.
-  const suchname = suchform(produkt.title);
-  if (suchname && suchname !== produkt.title) knoten.alternateName = suchname;
+  const suchnamen = suchformen(produkt.title);
+  if (suchnamen.length === 1) knoten.alternateName = suchnamen[0];
+  else if (suchnamen.length > 1) knoten.alternateName = suchnamen;
 
   const versand = versandDetails(produkt.handle, preis, waehrung);
   if (versand) knoten.offers.shippingDetails = versand;
@@ -366,6 +433,26 @@ export function produktSchema(produkt) {
 
   if (bilder.length) knoten.image = bilder;
   if (variante?.sku) knoten.sku = variante.sku;
+
+  // DIE ZWEITE RICHTUNG DER STUDIEN-NAHT. /pages/studien sagt seit
+  // 2026-09-11 `about` → diesen Produktknoten; `subjectOf` ist die
+  // Gegenrichtung und sagt: zu DIESEM Produkt gibt es ein Dokument. Eine
+  // Naht hat zwei Richtungen — steht nur eine davon da, zeigt sie auf eine
+  // `@id`, die die Gegenseite nicht bestätigt.
+  //
+  // WOZU (Search Console, Fenster 2026-08-12..09-10): auf der Query
+  // „qione 2 pro" ranken BEIDE eigenen Seiten, aber in der falschen
+  // Reihenfolge — /pages/studien auf Position 2,7 mit 177 Impressionen,
+  // /products/qione-2-pro auf 5,5 mit 4. Google wählt die Studienseite als
+  // DIE Antwort der Domain auf einen Produktnamen. Im maschinenlesbaren Teil
+  // stand bis dahin nichts, was die beiden Seiten unterscheidet: das `about`
+  // der Studienseite war freier Text, für eine Maschine also kein Bezug auf
+  // ein Produkt. Diese beiden Kanten sagen die Hierarchie aus, die vorher nur
+  // ein Mensch aus dem Text erschließen konnte — hier ist das Produkt, dort
+  // ist ein Dokument darüber.
+  if (STUDIERTE_HANDLES.includes(produkt.handle)) {
+    knoten.subjectOf = {'@id': `${CANONICAL_ORIGIN}/pages/studien#sammlung`};
+  }
 
   return knoten;
 }
