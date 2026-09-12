@@ -226,3 +226,46 @@ test('das Schema kanonisiert auf die uebergebene Basis, nie auf den Preview-Host
   const g = schemaGraph(seite(1), BASIS);
   assert.equal(g['@graph'][0]['@id'], `${BASIS}/pages/podcasts`);
 });
+
+// --- Herkunfts-Marke (R5) --------------------------------------------------
+// Sie ist die Voraussetzung dafür, dass der Hausstimme-Detektor den
+// eingefrorenen YouTube-Schnappschuss überspringen kann, OHNE unseren eigenen
+// Text mitzunehmen. Ohne sie wäre die Auszeichnung in Podcasts.jsx eine
+// Vermutung über die Herkunft eines Absatzes.
+
+test('jede Folge sagt, ab welchem Absatz ihr Text von UNS stammt', () => {
+  for (const f of FOLGEN) {
+    assert.equal(
+      typeof f.eigen_ab,
+      'number',
+      `Folge ${f.id} ohne eigen_ab — die Herkunft wäre nicht bestimmbar`,
+    );
+    assert.ok(
+      Number.isInteger(f.eigen_ab) &&
+        f.eigen_ab >= 0 &&
+        f.eigen_ab <= f.txt.length,
+      `Folge ${f.id}: eigen_ab ${f.eigen_ab} liegt ausserhalb 0..${f.txt.length}`,
+    );
+  }
+});
+
+test('die Marke hat einen Gegenstand: mindestens eine Folge trägt eigenen Text', () => {
+  const mitEigenem = FOLGEN.filter((f) => f.eigen_ab < f.txt.length);
+  assert.ok(
+    mitEigenem.length > 0,
+    'KEINE Folge trägt mehr eigenen Text (Generator-Regel R4). Das ist kein ' +
+      'Defekt dieser Marke, sondern ein Hinweis: wird R4 nicht mehr benutzt, ' +
+      'ist die Unterscheidung gegenstandslos und gehört neu gefasst.',
+  );
+  // Was wir selbst geschrieben haben, darf NIE als Fremdtext gelten — sonst
+  // wäre der Detektor auf genau dem Text blind, den ein Mensch hier ändern
+  // kann. Geprüft wird der Inhalt, nicht eine ID-Liste.
+  for (const f of mitEigenem) {
+    for (let i = f.eigen_ab; i < f.txt.length; i += 1) {
+      assert.ok(
+        f.txt[i] && f.txt[i].trim().length > 0,
+        `Folge ${f.id}: leerer Eigen-Absatz an ${i}`,
+      );
+    }
+  }
+});
