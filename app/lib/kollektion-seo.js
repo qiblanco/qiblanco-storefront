@@ -185,6 +185,19 @@ export function brotkrume({url, name}) {
  * dort nicht gilt — sie wäre schlicht falsch. Auf Folgeseiten entstehen
  * deshalb CollectionPage und Brotkrume, aber keine ItemList.
  *
+ * WARUM AUCH DAS TEILBILD AN `ersteSeite` hängt — eine im Nachgang von einer
+ * unabhaengigen Gegenpruefung gefundene Luecke der ersten Fassung (2026-09-12):
+ * dort hing die ItemList an `ersteSeite`, das BILD aber nicht. Weil das
+ * Teilbild aus dem ERSTEN PRODUKT DER SEITE stammt, lieferte
+ * `/collections/all?direction=next&cursor=…` ein ANDERES og:image als
+ * `/collections/all` — bei IDENTISCHEM canonical. Derselbe canonical bewarb
+ * damit je nach getroffener URL zwei verschiedene Vorschaubilder.
+ * Auf Folgeseiten entsteht deshalb GAR KEIN Teilbild (und folglich auch keine
+ * twitter:card, die sonst ein Bild ohne Deckung zusagte). Das ist die richtige
+ * Antwort und keine Notloesung: eine Cursor-URL ist kein teilbarer Gegenstand,
+ * sie wird auf die Kollektion kanonisiert. Ein FALSCHES Bild ist dort
+ * schlechter als gar keines.
+ *
  * WARUM EINE LEERE ItemList TROTZDEM AUSGEGEBEN WIRD: drei der vier
  * indexierbaren Kollektionen führen am 2026-09-12 null Produkte.
  * `numberOfItems: 0` ist darüber eine WAHRE Aussage und keine Zusage ohne
@@ -223,18 +236,22 @@ export function kollektionSignale({
     // zeigt ein geteilter Link etwas anderes als das Suchergebnis.
     {property: 'og:title', content: vollerTitel},
     {property: 'og:url', content: url},
-    {property: 'og:image', content: b.url},
-    {property: 'og:image:width', content: String(b.breite)},
-    {property: 'og:image:height', content: String(b.hoehe)},
-    {property: 'og:image:alt', content: b.alt},
-    // Die Kartenangabe steht in derselben Liste wie das Bild und ist von ihm
-    // gedeckt. Kein eigenes og:image:type: der Content-Type folgt bei Shopify
-    // NICHT der Dateiendung (`.webp` kommt als image/png oder image/jpeg
-    // zurück, ausgehandelt über den Accept-Header, am 2026-09-12 gemessen) —
-    // ein Feld, das sich nicht zuverlässig vorhersagen lässt, ist als Zusage
-    // schlechter als sein Fehlen.
-    {name: 'twitter:card', content: 'summary_large_image'},
   ];
+  if (ersteSeite) {
+    descriptoren.push(
+      {property: 'og:image', content: b.url},
+      {property: 'og:image:width', content: String(b.breite)},
+      {property: 'og:image:height', content: String(b.hoehe)},
+      {property: 'og:image:alt', content: b.alt},
+      // Die Kartenangabe steht in derselben Bedingung wie das Bild und ist von
+      // ihm gedeckt. Kein eigenes og:image:type: der Content-Type folgt bei
+      // Shopify NICHT der Dateiendung (`.webp` kommt als image/png oder
+      // image/jpeg zurück, ausgehandelt über den Accept-Header, am 2026-09-12
+      // gemessen) — ein Feld, das sich nicht zuverlässig vorhersagen lässt,
+      // ist als Zusage schlechter als sein Fehlen.
+      {name: 'twitter:card', content: 'summary_large_image'},
+    );
+  }
   if (text) {
     descriptoren.push({property: 'og:description', content: text});
   }
@@ -250,13 +267,17 @@ export function kollektionSignale({
     inLanguage: 'de-DE',
     isPartOf: {'@id': SITE_ID},
     publisher: {'@id': ORG_ID},
-    primaryImageOfPage: {
+  };
+  // Aus demselben Grund wie das og:image oben: auf einer Cursor-Folgeseite
+  // wäre das „Hauptbild dieser Seite" ein anderes als auf der kanonischen.
+  if (ersteSeite) {
+    knoten.primaryImageOfPage = {
       '@type': 'ImageObject',
       url: b.url,
       width: b.breite,
       height: b.hoehe,
-    },
-  };
+    };
+  }
   if (text) knoten.description = text;
   if (ersteSeite) knoten.mainEntity = {'@id': `${url}#liste`};
   // react-router 7 rendert diesen Descriptor nativ als
