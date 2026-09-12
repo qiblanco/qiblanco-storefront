@@ -154,6 +154,22 @@
   display: none;
 }
 
+/* EINE EINZIGE KACHEL STEHT IN DER MITTE, NICHT AM RAND.
+   Zwei der fünf Flächen tragen nach der Auswahl vom 2026-09-12 genau eine
+   Kachel (Kakao, QiHome). Linksbündig ist für eine Bahn richtig, die nach
+   rechts weiterläuft; unter einer zentrierten Überschrift sieht eine einzelne
+   Karte am linken Rand dagegen aus wie ein Rest — und die Designsprache
+   verlangt für eine Reihe eine gemeinsame optische Mitte.
+   NUR in diesem einen Fall: bei mehreren Kacheln würde `center` die
+   Scroll-Position der ersten Kachel verschieben und damit genau die
+   Snap-Rechnung stören, an der die LCP-Meldung der Seite hängt (siehe
+   scroll-padding-inline-start oben). Die Klasse setzt deshalb die Komponente,
+   und nur wenn die Liste genau einen Eintrag hat. Kein neuer Wert, kein neues
+   Token. */
+.qb-igt__bahn.is-eine {
+  justify-content: center;
+}
+
 /* Während eines echten Maus-Drags darf der Browser nicht zusätzlich seine
    eigene Trägheit fahren — sonst ruckelt die Bahn gegen den Zeiger. */
 .qb-igt__bahn.is-dragging {

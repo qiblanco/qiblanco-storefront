@@ -624,7 +624,16 @@ export function IgTestimonialSlideshow({
       </div>
 
       <div
-        className={`qb-igt__bahn${isDragging ? ' is-dragging' : ''}`}
+        /* `is-eine` trägt KEINE Geometrie und keinen Wert — sie sagt dem
+           Seiten-CSS nur, dass hier genau EINE Kachel steht. Die Bahn ist
+           sonst linksbuendig, was bei zehn Kacheln richtig ist (sie laufen
+           nach rechts weiter) und bei einer einzigen wie ein Rest aussieht:
+           eine Karte am linken Rand unter einer zentrierten Ueberschrift.
+           Die Trennung folgt der Hausregel des Zwillingsbaus — GEOMETRIE
+           gehört der Komponente, AUSSEHEN dem CSS. */
+        className={`qb-igt__bahn${isDragging ? ' is-dragging' : ''}${
+          eine ? ' is-eine' : ''
+        }`}
         ref={bahnRef}
         role="group"
         aria-label={
