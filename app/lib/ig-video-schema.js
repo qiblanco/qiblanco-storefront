@@ -5,11 +5,10 @@
  * app/lib/produkt-seo.js und app/lib/produkt-schema.js, damit sie unter
  * `node --test` ohne Bundler ladbar bleibt.
  *
- * WARUM ES DIESE DATEI GIBT: die Slideshow bringt bis zu 43 Videos auf eine
+ * WARUM ES DIESE DATEI GIBT: die Slideshow bringt bis zu zehn Videos auf eine
  * Produktseite. Ohne Auszeichnung sieht eine Suchmaschine dort gar kein Video —
- * sie kann den Inhalt eines <iframe> eines Drittanbieters nicht als Video der
- * Seite werten, und in der Fassaden-Bauform entsteht dieser <iframe> ohnehin
- * erst nach dem Klick. Die Auszeichnung ist damit die EINZIGE Stelle, an der
+ * in der Fassaden-Bauform entsteht das <video> erst nach dem Klick, vorher steht
+ * dort nur ein Standbild. Die Auszeichnung ist damit die EINZIGE Stelle, an der
  * die Seite maschinenlesbar sagt, dass hier Videos stehen.
  *
  * ═════════════════════════════════════════════════════════════════════════
@@ -18,7 +17,9 @@
  *
  * EIN VideoObject AUF EINEM EINTRAG OHNE VIDEO WÄRE EINE LÜGE. Drei Einträge
  * des Korpus sind Bild-/Karussell-Posts (`video: false`, über die GANZE
- * Grundmenge von 65 Codes im Browser gemessen, nicht über die Verdächtigen).
+ * Grundmenge von 65 Codes im Browser gemessen, nicht über die Verdächtigen),
+ * und sechs weitere tragen auf BEIDEN Embed-Varianten gepaart gegengeprüft kein
+ * <video>, sind also nicht beschaffbar (`videoUrl: null`).
  * Sie bekommen in der Fläche keinen Play-Knopf — und hier keinen Knoten.
  *
  * Dieselbe Linie gilt für die PFLICHTFELDER. Google verlangt für ein
@@ -40,8 +41,18 @@
  * WAS BEWUSST NICHT DRINSTEHT
  * ═════════════════════════════════════════════════════════════════════════
  *
- * `contentUrl` — wir haben keine direkte Videodatei. Der Weg zum Video führt
- * über die Einbettung; `embedUrl` sagt genau das und behauptet nichts anderes.
+ * `embedUrl` — bis zum 2026-09-12 stand hier statt `contentUrl` genau dieses
+ * Feld, mit der Begründung „wir haben keine direkte Videodatei. Der Weg zum
+ * Video führt über die Einbettung; `embedUrl` sagt genau das und behauptet
+ * nichts anderes." Der letzte Halbsatz war das Problem: es behauptete einen Weg
+ * zum Video, den ein AUSGELOGGTER Besucher nicht gehen kann — der Abruf von
+ * instagram.com/reel/<code>/embed/ liefert ihm HTTP 200 mit 261 KB Anmeldewand
+ * (live gemessen). Die Datei liegt inzwischen auf unserem CDN, die Seite spielt
+ * sie von dort, und genau sie steht jetzt als `contentUrl`. `embedUrl` fällt
+ * weg, nicht aus Sparsamkeit: eine Seite, die die eigene Datei UND einen fremden
+ * Player nennt, behauptet zwei Wege und liefert einen. Der Weg zum Beitrag auf
+ * Instagram bleibt auf der Fläche — als Profil-Klick für einen Menschen, nicht
+ * als Player-Zusage an eine Maschine.
  *
  * `duration`, `interactionStatistic`, `aggregateRating` — nicht gemessen.
  * Eine geschätzte Laufzeit ist eine erfundene Zahl in strukturierten Daten,
@@ -62,11 +73,6 @@
  */
 import {absoluteCanonical} from './seo.js';
 import {IG_TESTIMONIALS} from '../data/ig-testimonials.js';
-
-/** Einbettungs-URL — dieselbe Form wie in der Komponente (`typ` trennt /reel/ von /p/). */
-function einbettung(t) {
-  return `https://www.instagram.com/${t.typ}/${t.code}/embed/`;
-}
 
 /**
  * Wer spricht. T3 sind unsere EIGENEN Beiträge ohne nennbare Person; sie
@@ -104,22 +110,34 @@ export function igVideoKnoten({produkt, pfad, produktTitel, eintraege = IG_TESTI
   const aufSeite = produktTitel ? ` auf der Seite zu ${produktTitel}` : ' auf dieser Seite';
   return eintraege
     .filter((t) => t.produkt === produkt)
-    .filter((t) => t.video !== false && t.datum && t.posterPfad)
+    /*
+     * DIESELBE BEDINGUNG WIE IN DER KOMPONENTE, und das ist keine Doppelung,
+     * sondern eine Pflicht: ein VideoObject für eine Kachel, die auf der Seite
+     * NICHT steht, verspricht einer Suchmaschine ein Video, das kein Mensch
+     * findet — genau das prüft [V-ZAHL] der stehenden Probe
+     * probe_ig_videoobject.py am gerenderten Dokument, seitenscharf. Fiele
+     * `inDerReihe` hier weg, stünden auf /products/qione-2-pro 39 Knoten über
+     * 10 Kacheln.
+     */
+    .filter((t) => t.inDerReihe === true)
+    .filter((t) => t.video !== false && t.videoUrl && t.datum && t.posterPfad)
     .map((t) => ({
       '@type': 'VideoObject',
       // Eigene @id mit Fragment, damit der Knoten neben Product und
       // BreadcrumbList derselben Seite eindeutig bleibt (Muster produkt-schema.js).
       '@id': `${url}#ig-video-${t.code}`,
-      // Das Datum steht im Namen, damit die Knoten UNTERSCHEIDBAR sind: auf
-      // /products/qione-2-pro tragen 26 Beiträge denselben Urheber (uns), und
-      // 26-mal derselbe Name wäre eine Liste, die nichts benennt.
+      // Das Datum steht im Namen, damit die Knoten UNTERSCHEIDBAR sind. Der
+      // Anlass ist mit der Auswahl vom 2026-09-12 kleiner geworden, aber nicht
+      // verschwunden: derselbe Urheber kann weiterhin auf ZWEI Produktseiten
+      // stehen (dieselbe Person zu zwei Produkten ist keine Dublette), und ein
+      // Name ohne Datum wäre dort zweimal derselbe.
       name: `Instagram-Beitrag von ${urheber(t)} vom ${deutschesDatum(t.datum)}`,
       description:
         `Instagram-Beitrag von ${urheber(t)} vom ${deutschesDatum(t.datum)}, ` +
         `gezeigt in der Instagram-Reihe${aufSeite}.`,
       thumbnailUrl: t.posterPfad,
       uploadDate: t.datum,
-      embedUrl: einbettung(t),
+      contentUrl: t.videoUrl,
       inLanguage: t.sprache === 'en' ? 'en' : 'de',
       isPartOf: {'@id': `${url}#product`},
     }));

@@ -25,20 +25,83 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  * mit fünf Verhaltensweisen" ist der Zustand, der repariert wurde. Eine sechste
  * wäre der Rückfall.
  *
- * EIN UNTERSCHIED, UND ER IST GEMESSEN, NICHT ÜBERSEHEN: die YouTube-Fassade
- * kennt DREI Auslöser zum Umblenden — (1) der Player MELDET „spielt"
- * (postMessage, playerState 1), (2) onLoad + Gnadenfrist, (3) harte Frist.
- * Auslöser 1 gibt es hier NICHT: die Instagram-Einbettung hat kein
- * postMessage-Protokoll, das einen Abspielzustand meldet. Es bleiben (2) und
- * (3) — also genau die beiden, die im YouTube-Bau als Rückfallebene gebaut
- * wurden. Das ist eine ABWEICHUNG, keine Nachlässigkeit: sie steht hier, damit
- * niemand später die fehlende Meldung für einen Defekt hält und einen
- * Handshake sucht, den es nicht gibt.
+ * SEIT DEM 2026-09-12 SIND ES WIEDER DREI AUSLÖSER — und das ist die Folge
+ * des Quellenwechsels, nicht eine eigene Erfindung. Hier stand bis dahin:
+ * „Auslöser 1 gibt es hier NICHT: die Instagram-Einbettung hat kein
+ * postMessage-Protokoll, das einen Abspielzustand meldet." Das war für ein
+ * <iframe> richtig und ist mit einem <video> gegenstandslos: ein
+ * Medienelement MELDET seinen Abspielzustand selbst (`playing`). Die Fassade
+ * hat damit genau den Handshake, den der YouTube-Bau hat:
+ *   (1) das Video meldet `playing`          → sofort umblenden
+ *   (2) `loadeddata` + Gnadenfrist          → Rückfallebene
+ *   (3) harte Frist                         → kann nicht ausfallen
+ * (2) und (3) BLEIBEN. Ein Beschleuniger, der im Fehlerfall den normalen Weg
+ * kaputt macht, ist schlimmer als keiner — und (1) fällt aus, sobald der
+ * Browser das Abspielen verweigert (Autoplay-Regel), also in genau dem Fall,
+ * in dem der Mensch die Bedienelemente sehen MUSS.
  *
  * DIE FEHLERRICHTUNG IST DIESELBE WIE DORT: bliebe die Vorschau liegen, WEIL
  * die Auskunft nie kommt, stünde ein Standbild über einem laufenden Video —
  * schlimmer als der Zustand, der behoben wird. Die harte Frist kann deshalb
  * nicht ausfallen. Im schlechtesten Fall ist das Verhalten das von vorher.
+ *
+ * ╔══════════════════════════════════════════════════════════════════════════╗
+ * ║ DIE ZWEITE SCHICHT IST UNSERE EIGENE mp4 — NICHT MEHR DER IG-EMBED       ║
+ * ╚══════════════════════════════════════════════════════════════════════════╝
+ *
+ * Christian am 2026-09-12, mit Bildschirmfoto: „Krasser Fehler, bitte mit
+ * Prio 1 beheben lassen: die IG-Videos können wir nicht abspielen, warum?"
+ *
+ * GEMESSEN, nicht vermutet: der Abruf von instagram.com/reel/<code>/embed/
+ * liefert HTTP 200 mit 261 KB — und darin eine ANMELDEWAND. Für einen
+ * ausgeloggten Besucher, also für praktisch jeden Kunden, spielte hier nie
+ * etwas. 43 von 43 Kacheln hatten als einzige Videoquelle diesen Embed.
+ *
+ * Die Videos liegen deshalb jetzt auf UNSEREM CDN und werden von dort
+ * abgespielt (`videoUrl` der Datenschicht). Das ist dieselbe Linie, die für
+ * die Poster schon galt, und sie gilt aus demselben Grund: die signierten
+ * Instagram-Quellen tragen ihren Ablauf im Klartext, und keine der 56 hielt
+ * länger als vier Tage. Wer verlinkt statt zu spiegeln, baut eine Fläche, die
+ * ein paar Tage läuft und dann still stirbt — und jede Probe, die vorher
+ * läuft, wäre grün.
+ *
+ * DER PROFIL-KLICK BLEIBT DER WEG ZUM ORIGINAL. Die Einbettung ist hier
+ * ersetzt, nicht Instagram: wer den Beitrag dort sehen will, kommt über die
+ * Namenszeile hin (T1/T2).
+ *
+ * ╔══════════════════════════════════════════════════════════════════════════╗
+ * ║ WELCHE KACHELN STEHEN: `inDerReihe`, und zwar FAIL-CLOSED                ║
+ * ╚══════════════════════════════════════════════════════════════════════════╝
+ *
+ * Christian am 2026-09-12, zweiter Befund: „Hier sind oft ganz viele Videos
+ * vom gleichen Künstler, das kommt nicht gut. Hier sollte jeder Künstler nur
+ * einmal gezeigt werden, das beste Video."
+ *
+ * WELCHE das sind, entscheidet nicht diese Komponente — es steht als Feld
+ * `inDerReihe` in der Datenschicht, begründet je Kachel in auswahl.json des
+ * Reparatur-Jobs (Rang aus views → likes → Datum → Code, mit benannter
+ * Ersatzordnung, weil es Abrufzahlen nachweislich nicht gibt). Eine zweite
+ * Auswahl HIER wäre eine zweite Wahrheit.
+ *
+ * DER FELDNAME IST NICHT FREI GEWÄHLT, und das ist eine Falle für den nächsten:
+ * das naheliegende Wort steht im Lexikon des Umlaut-Gates (Gate 7b des Deploys,
+ * homepage-bauer/src/umlaut_gate.py). Es scannt JEDE hinzugefügte Zeile einer
+ * .js-Datei und unterscheidet Programmtext nicht von Kundentext — ein Feldname
+ * in Digraph-Form blockt damit jeden Merge, und der echte Umlaut mitten in
+ * einem Bezeichner wäre die schlechtere Antwort. `inDerReihe` sagt ohnehin
+ * genauer, was gemeint ist: diese Kachel steht in der Reihe, die der Kunde sieht.
+ *
+ * GEFILTERT WIRD AUF `=== true`, NICHT AUF `!== false`. Fehlt das Feld — alte
+ * Datenschicht, fremder Zwilling —, rendert diese Fläche NICHTS und
+ * verschwindet; die Positiv-Kontrolle der Live-Probe schlägt darauf an. Ein
+ * `!== false` hätte in demselben Fall still alle 66 Slots zurückgebracht, also
+ * genau den Zustand, der hier behoben wird. Die Fehlerrichtung ist eine
+ * Entscheidung, keine Schreibweise.
+ *
+ * UND WAS DER KUNDE NICHT SIEHT: keine Like-Zahl und nirgends das Wort
+ * „beste". Die Zahl war unser Auswahlwerkzeug; sie ist keine Empfehlung für
+ * ihn, und eine Kachel, die sich selbst zur besten erklärt, sagt über die
+ * anderen etwas aus, das wir nicht gemessen haben.
  *
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║ DIE MESS-NAHT: data-qb-video-zustand                                    ║
@@ -80,7 +143,10 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  *
  * Das Attribut bleibt trotzdem, aus zwei Gründen: es kostet nichts, und es ist
  * die richtige Naht — sobald der ytimg-Riegel beim Eigentümer fällt, misst das
- * Gerät hier ohne eine einzige Änderung mit. Bis dahin misst die eigene Probe
+ * Gerät hier ohne eine einzige Änderung mit. (Sein zweiter Riegel greift
+ * seither ebenfalls: er sucht im Kasten ein `iframe`. Hier steht jetzt ein
+ * `video` — dieselbe Naht, dieselbe Meldung an den Eigentümer, nicht hier
+ * repariert.) Bis dahin misst die eigene Probe
  * `pruefungen/probe_ig_facade.py` dieselbe Zusage im selben Regime. Der Befund
  * am fremden Gerät ist an dessen Eigentümer gemeldet, nicht hier repariert:
  * `bin/` ist Nachbargebiet.
@@ -120,7 +186,30 @@ const STUFEN_RANG = {T1: 0, T2: 1, T3: 2};
  */
 const SPRACH_RANG_DE = {de: 0, beide: 1, keine: 2, en: 3};
 
-/* Wie lange nach `onLoad` noch gewartet wird, bevor der Player eingeblendet
+/*
+ * DIE ÜBERSCHRIFT FOLGT DER KACHELZAHL, NICHT EINER PROP JE ROUTE.
+ *
+ * Zwei der fünf Flächen tragen nach der Auswahl genau EINE Kachel (Kakao,
+ * QiHome): von vier Kakao-Beiträgen ist nur einer überhaupt abspielbar, und
+ * QiHomes Korpus besteht aus drei eigenen Posts, die auf eine zusammenfallen.
+ * „Echte Stimmen" über einer einzigen Stimme verspricht Vielstimmigkeit und
+ * liefert eine — das ist dieselbe Art Unwahrheit wie ein Play-Knopf ohne Video.
+ *
+ * WARUM HIER UND NICHT JE ROUTE: eine handgesetzte Prop wäre eine zweite
+ * Stelle, die dieselbe Aussage führt, und sie veraltet stumm beim ersten
+ * Nachschub — käme ein zweites Kakao-Video, stünde dort weiter der Singular.
+ * Die Kachelzahl ist die einzige Quelle, die nicht driften kann.
+ *
+ * EINE AUSDRÜCKLICHE `ueberschrift` STICHT WEITER. /products/qihome-air trägt
+ * „QiHome® Air auf Instagram" (Commit d3f81bb, aus demselben Grund gewählt:
+ * das Material dort trägt die Zusage „echte Stimmen" nicht, weil alle
+ * Beiträge auf unserem eigenen Konto liegen). Ein Mensch hat diesen Text
+ * entschieden; er wird nicht maschinell überstimmt.
+ */
+const UEBERSCHRIFT_MEHRERE = 'Echte Stimmen auf Instagram';
+const UEBERSCHRIFT_EINE = 'Eine echte Stimme auf Instagram';
+
+/* Wie lange nach `loadeddata` noch gewartet wird, bevor der Player eingeblendet
  * wird. Dieselbe Zahl wie im YouTube-Bau — dort begründet als „kurz genug,
  * dass niemand ein Standbild über einem laufenden Video sieht; lang genug,
  * dass die Auskunft im Normalfall zuerst da ist". Hier gibt es die Auskunft
@@ -174,10 +263,11 @@ const SCHICHT_STYLE = {
   display: 'block',
 };
 
-/** Einbettungs-URL. `typ` unterscheidet /reel/ von /p/ — EIN Eintrag ist /p/. */
-function einbettung(t) {
-  return `https://www.instagram.com/${t.typ}/${t.code}/embed/`;
-}
+/* Die frühere Hilfsfunktion `einbettung(t)` ist hier ENTFERNT und nicht bloß
+ * unbenutzt stehengelassen: sie baute die instagram.com/…/embed/-URL, und genau
+ * die ist der behobene Fehler. Eine ungenutzte Funktion, die den alten Weg noch
+ * kennt, ist die Einladung, ihn wieder anzuschliessen. `app/lib/ig-video-schema.js`
+ * trägt seine eigene Fassung für den strukturierten Datensatz. */
 
 /**
  * Eine Kachel. Eigene Komponente, weil jede ihren EIGENEN Zustand hat: in
@@ -191,11 +281,44 @@ function Kachel({t}) {
    * diesem Bau geht. */
   const [zeigt, setZeigt] = useState(false);
   const fristen = useRef([]);
+  const spielerRef = useRef(null);
   /* Beim Aushaengen alle offenen Fristen loeschen: sonst setzt ein Timer
    * Zustand auf einer Kachel, die es nicht mehr gibt (Routenwechsel). */
   useEffect(() => () => fristen.current.forEach(clearTimeout), []);
 
-  const hatVideo = t.video !== false;
+  /*
+   * DER KNOPF SAGT DIE WAHRHEIT — und zwar als BEDINGUNG, nicht als Zusage.
+   * Hier stand `t.video !== false`, also allein das Korpus-Flag. Das war die
+   * Frage „gibt es an der Plattform ein Video?" und nicht die Frage, die den
+   * Kunden angeht: „kann ICH es hier abspielen?". Beide müssen gelten. Fehlt
+   * die eigene Datei, gibt es keinen Play-Knopf — auch dann nicht, wenn die
+   * Plattform ein Video hat, das wir nicht ausliefern können.
+   */
+  const hatVideo = t.video !== false && Boolean(t.videoUrl);
+
+  /*
+   * ABSPIELEN NACH DEM MONTIEREN, nicht per `autoPlay`-Attribut.
+   *
+   * Der Klick IST die Nutzergeste, die der Browser für Ton verlangt — aber das
+   * <video> entsteht erst im Render DANACH. `autoPlay` an einem frisch
+   * montierten Element ist dem Browser gegenueber kein Geste-Ergebnis, sondern
+   * Autoplay, und Autoplay MIT Ton wird verweigert. Ein `.play()` im selben
+   * Aktivierungsfenster wird erlaubt.
+   *
+   * DIE FEHLERRICHTUNG IST AUSDRÜCKLICH GEWÄHLT: verweigert der Browser
+   * trotzdem, wird NICHT stumm nachgeladen, sondern umgeblendet. Dann sieht der
+   * Mensch die Bedienelemente und drueckt selbst — ein stummes Testimonial wäre
+   * schlechter als ein Klick mehr, denn hier spricht jemand.
+   */
+  useEffect(() => {
+    if (!laueft) return;
+    const el = spielerRef.current;
+    if (!el) return;
+    const versuch = el.play();
+    if (versuch && typeof versuch.catch === 'function') {
+      versuch.catch(() => setZeigt(true));
+    }
+  }, [laueft]);
   const zustand = !hatVideo
     ? 'kein-video'
     : laueft
@@ -208,8 +331,8 @@ function Kachel({t}) {
     if (laueft) return;
     setLaueft(true);
     /* Die Frist, die nicht ausfallen kann — sie hängt an NICHTS ausser der
-     * Uhr. Hinge sie an `onLoad`, wäre sie bei blockiertem Drittinhalt
-     * genauso weg wie die Auskunft, auf die sie antworten soll. */
+     * Uhr. Hinge sie an `loadeddata`, wäre sie bei einem Netzfehler genauso
+     * weg wie die Auskunft, auf die sie antworten soll. */
     fristen.current.push(
       setTimeout(() => setZeigt(true), HARTE_FRIST_MS),
     );
@@ -238,15 +361,34 @@ function Kachel({t}) {
         style={SCHICHT_STYLE}
       />
 
-      {/* SCHICHT 2 — die Einbettung. Erst ab dem Klick im Dokument (das ist
-          die Ladeweise, die bleibt: 45 Kacheln eager zu laden wäre die
-          Ladezeit, die dieser Bau gerade nicht kosten darf), und sichtbar
-          erst, wenn sie Bild haben KANN. */}
+      {/* SCHICHT 2 — der Spieler. Erst ab dem Klick im Dokument (das ist die
+          Ladeweise, die bleibt: 18 Videos eager zu laden wäre die Ladezeit,
+          die dieser Bau gerade nicht kosten darf), und sichtbar erst, wenn er
+          Bild haben KANN.
+
+          `poster` trägt dieselbe Datei wie SCHICHT 1 — kein zweiter Abruf, sie
+          liegt bereits im Zwischenspeicher. Sie steht hier trotzdem, weil ein
+          <video> ohne Poster im Moment des Einblendens ein SCHWARZES Feld
+          zeigt, und Schwarz beim Play ist genau der Zustand, gegen den das
+          Fassaden-Regime gebaut wurde.
+
+          `controls`: keine eigenen Bedienelemente und kein eigener Ton-Schalter.
+          Die Haus-Regel zum Ton-Umschalter gilt für AUTOPLAY-STUMME Videos —
+          sie schaltet `.muted` an einem bereits laufenden, weil stummen Video
+          um. Hier gibt es die Nutzergeste, also darf der Ton von Anfang an an
+          sein, und der Mensch braucht kein nachgebautes Bedienfeld: er bekommt
+          das des Browsers, das er kennt und das barrierefrei ist. Ein eigener
+          Schalter wäre eine sechste Bauform. */}
       {laueft ? (
-        <iframe
+        <video
           className="qb-igt__player"
-          src={einbettung(t)}
-          title={
+          ref={spielerRef}
+          src={t.videoUrl}
+          poster={t.posterPfad}
+          controls
+          playsInline
+          preload="none"
+          aria-label={
             t.stufe === 'T3'
               ? 'Instagram-Beitrag von Qi Blanco'
               : `Instagram-Beitrag von @${t.profil}`
@@ -259,14 +401,18 @@ function Kachel({t}) {
                im Sinne der Einstellung. */
             transition: 'opacity 240ms ease-out',
           }}
-          onLoad={() => {
+          /* AUSLÖSER 1 — der Handshake, den es mit dem <iframe> nicht gab. */
+          onPlaying={() => setZeigt(true)}
+          /* AUSLÖSER 2 — Rückfallebene: Bild ist da, Abspielen (noch) nicht. */
+          onLoadedData={() => {
             fristen.current.push(
               setTimeout(() => setZeigt(true), GNADENFRIST_MS),
             );
           }}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-          scrolling="no"
+          /* Bricht die Datei, ist die Vorschau mit Ladezeichen die falsche
+             Anzeige: sie verspricht weiter, dass gleich etwas kommt. Der Spieler
+             sagt es selbst — dieselbe Richtung wie die harte Frist, nur früher. */
+          onError={() => setZeigt(true)}
         />
       ) : null}
 
@@ -326,13 +472,42 @@ function Kachel({t}) {
   );
 
   return (
+    /*
+     * `data-ig-video` trägt die Zusage „hier spielt eine eigene Datei" AM
+     * DOKUMENT — nicht nur im strukturierten Datensatz. Das sind zwei
+     * verschiedene Zeugen: der Datensatz entsteht in app/lib/ig-video-schema.js,
+     * dieses Attribut auf DEM Renderpfad, der auch die Quelle des <video>
+     * setzt. Stimmen die beiden nicht zusammen, ist das der Befund — eine
+     * Zusage, die nur ihre eigene Quelle bezeugt, bezeugt nichts.
+     * Die Reihenfolge der Attribute ist dabei nicht beliebig: das fremde
+     * Messgeraet pruefeungen/probe_ig_videoobject.py erwartet data-ig-reel VOR
+     * data-qb-video-zustand im selben <article>.
+     */
     <article
       className="qb-igt__kachel"
       data-ig-reel={t.code}
+      data-ig-video={hatVideo ? t.videoUrl : undefined}
       data-ig-profil={t.profil}
       data-qb-video-zustand={zustand}
     >
       {buehne}
+      {/*
+        OHNE JAVASCRIPT. Eine Fassade ist ein <button> — ohne JavaScript
+        passiert beim Klick NICHTS, und das ist die eine echte Schwäche dieser
+        Bauform (Zusage G der Haus-Ladestrategie). Der Vorgängerbau liess sie
+        offen, weil sein Weg zum Video eine fremde Einbettung war, die einem
+        ausgeloggten Besucher ohnehin nur eine Anmeldewand zeigte. Mit der
+        eigenen Datei gibt es jetzt einen ehrlichen Weg: ein Link auf genau die
+        mp4, die der Knopf abspielen würde. Poster und Namenszeile stehen
+        ohnehin ohne JavaScript.
+      */}
+      {hatVideo ? (
+        <noscript>
+          <a className="qb-igt__ohnejs" href={t.videoUrl}>
+            Video ansehen
+          </a>
+        </noscript>
+      ) : null}
       {/*
         DIE NAMENSZEILE — und die eine Grenze, die Christians Nachtrag
         ausdrücklich stehen lässt: KEINE BEI T3.
@@ -366,7 +541,7 @@ function Kachel({t}) {
 /**
  * @param {{
  *   produkt: string,
- *   ueberschrift?: string,
+ *   ueberschrift?: string,  // ohne Angabe: Numerus nach Kachelzahl
  *   unterzeile?: string,
  *   eintraege?: Array<object>,
  *   sprachRang?: Record<string, number>,
@@ -375,7 +550,7 @@ function Kachel({t}) {
  */
 export function IgTestimonialSlideshow({
   produkt,
-  ueberschrift = 'Echte Stimmen auf Instagram',
+  ueberschrift,
   unterzeile,
   eintraege = IG_TESTIMONIALS,
   sprachRang = SPRACH_RANG_DE,
@@ -386,9 +561,22 @@ export function IgTestimonialSlideshow({
   const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef: bahnRef});
 
   const liste = useMemo(() => {
-    const meine = eintraege.filter((t) => t.produkt === produkt);
-    /* Stabil nach (Stufe, Sprache) — die Datums-Ordnung der Datenschicht
-     * bleibt innerhalb jeder Gruppe erhalten (ES2019: sort ist stabil). */
+    const meine = eintraege.filter(
+      /* FAIL-CLOSED, und die Reihenfolge der beiden Bedingungen ist Absicht:
+       * erst das Produkt, dann `inDerReihe === true`. Ein Eintrag ohne das Feld
+       * ist KEINE Kachel — siehe Kopf, Abschnitt „WELCHE KACHELN STEHEN". */
+      (t) => t.produkt === produkt && t.inDerReihe === true,
+    );
+    /* Stabil nach (Stufe, Sprache) — die Rang-Ordnung der Datenschicht
+     * bleibt innerhalb jeder Gruppe erhalten (ES2019: sort ist stabil).
+     *
+     * DIESER BLOCK IST UNANGETASTET GEBLIEBEN, und das ist kein Zufall: der
+     * Erzeuger der Datenschicht sortiert die Kacheln nach genau demselben
+     * Schluessel vor (Stufe, Sprache, dann Ersatzordnung), damit diese
+     * Nachsortierung ein NO-OP ist. Wer hier etwas aendert — etwa `sprachRang`
+     * je Markt —, zieht auswahl.json und den Erzeuger im SELBEN Schritt mit;
+     * der Detektor dafür ist `pruefe_auswahl.py --nur-naht` im Job-Ordner des
+     * Reparatur-Grossjobs, und er muss exit 0 bleiben. */
     return [...meine].sort((a, b) => {
       const s = (STUFEN_RANG[a.stufe] ?? 9) - (STUFEN_RANG[b.stufe] ?? 9);
       if (s !== 0) return s;
@@ -397,6 +585,11 @@ export function IgTestimonialSlideshow({
   }, [eintraege, produkt, sprachRang]);
 
   if (liste.length === 0) return null;
+
+  /* Eine Kachel ist eine Stimme, mehrere sind Stimmen. Die Begründung steht
+   * oben an den zwei Konstanten; eine ausdrueckliche Prop sticht. */
+  const eine = liste.length === 1;
+  const titel = ueberschrift ?? (eine ? UEBERSCHRIFT_EINE : UEBERSCHRIFT_MEHRERE);
 
   const blaettere = (richtung) => {
     const bahn = bahnRef.current;
@@ -425,7 +618,7 @@ export function IgTestimonialSlideshow({
     >
       <div className="qb-igt__kopf">
         <h2 className="qb-igt__titel" id={titelId}>
-          {ueberschrift}
+          {titel}
         </h2>
         {unterzeile ? <p className="qb-igt__unter">{unterzeile}</p> : null}
       </div>
@@ -434,7 +627,11 @@ export function IgTestimonialSlideshow({
         className={`qb-igt__bahn${isDragging ? ' is-dragging' : ''}`}
         ref={bahnRef}
         role="group"
-        aria-label={`Instagram-Beiträge zu ${produkt} — horizontal scrollbar`}
+        aria-label={
+          eine
+            ? `Instagram-Beitrag zu ${produkt}`
+            : `Instagram-Beiträge zu ${produkt} — horizontal scrollbar`
+        }
         tabIndex={0}
         onKeyDown={beiTaste}
         {...handlers}
@@ -444,27 +641,35 @@ export function IgTestimonialSlideshow({
         ))}
       </div>
 
-      <div className="qb-igt__nav">
-        <button
-          type="button"
-          className="qb-igt__pfeil"
-          onClick={() => blaettere(-1)}
-          aria-label="Vorheriger Beitrag"
-        >
-          {'←'}
-        </button>
-        <span className="qb-igt__wisch" aria-hidden="true">
-          weiterwischen {'→'}
-        </span>
-        <button
-          type="button"
-          className="qb-igt__pfeil"
-          onClick={() => blaettere(1)}
-          aria-label="Nächster Beitrag"
-        >
-          {'→'}
-        </button>
-      </div>
+      {/*
+        BEI GENAU EINER KACHEL GIBT ES NICHTS ZU BLAETTERN. Zwei Pfeile und ein
+        „weiterwischen" über einer einzigen Kachel sind dieselbe Unwahrheit wie
+        die Plural-Ueberschrift darueber: sie versprechen mehr, als da ist, und
+        der Pfeil führt ins Leere. Kakao und QiHome tragen heute je eine.
+      */}
+      {eine ? null : (
+        <div className="qb-igt__nav">
+          <button
+            type="button"
+            className="qb-igt__pfeil"
+            onClick={() => blaettere(-1)}
+            aria-label="Vorheriger Beitrag"
+          >
+            {'←'}
+          </button>
+          <span className="qb-igt__wisch" aria-hidden="true">
+            weiterwischen {'→'}
+          </span>
+          <button
+            type="button"
+            className="qb-igt__pfeil"
+            onClick={() => blaettere(1)}
+            aria-label="Nächster Beitrag"
+          >
+            {'→'}
+          </button>
+        </div>
+      )}
     </section>
   );
 }
