@@ -23,7 +23,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Hält das mein Leben aus? Dusche, Sport, Sauna — QiOne® 2 Pro | Qi Blanco'},
+  {title: 'Hält das mein Leben aus? Dusche, Sport, Sauna: QiOne® 2 Pro | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
