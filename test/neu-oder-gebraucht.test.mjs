@@ -30,11 +30,11 @@ const lies = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
  * DER CODE OHNE SEINE PROSA.
  *
  * Eigener Befund beim Bau dieser Datei, und er ist eine bekannte Klasse: drei
- * Pruefungen schlugen an, weil die Begruendung im Dateikopf die verbotenen
+ * Pruefungen schlugen an, weil die Begründung im Dateikopf die verbotenen
  * Woerter NENNT — `noindex`, `{rel:'canonical'}` und die Zahl 440 stehen dort
  * als Erklaerung, warum sie NICHT im Code stehen. Ein Zensus, der Prosa
- * mitliest, misst den Kommentar und nicht den Gegenstand; die Folge waere ein
- * Dauer-Rot, das man nur durch Loeschen der Begruendung heilt. Gemessen wird
+ * mitliest, misst den Kommentar und nicht den Gegenstand; die Folge wäre ein
+ * Dauer-Rot, das man nur durch Loeschen der Begründung heilt. Gemessen wird
  * deshalb der Programmtext.
  */
 const ohneProsa = (t) =>
@@ -52,23 +52,23 @@ const PFAD = '/pages/neu-oder-gebraucht';
 // Die haerteste Bedingung: die Seite muss abrufbar UND indexierbar sein.
 // ---------------------------------------------------------------------------
 
-test('die Route traegt KEIN noindex und KEINEN X-Robots-Tag', () => {
+test('die Route trägt KEIN noindex und KEINEN X-Robots-Tag', () => {
   // Eine Seite auf noindex kann in einer KI-Antwort baulich nie zitiert
   // werden. Das ist der Grund dieses Segments, nicht eine Formalie.
   assert.ok(!/noindex/i.test(ROUTE), 'noindex im Programmtext der Route');
   assert.ok(!/headers\s*=/.test(ROUTE), 'die Route exportiert headers()');
 });
 
-test('die Route setzt ein echtes canonical ueber canonicalLink()', () => {
+test('die Route setzt ein echtes canonical über canonicalLink()', () => {
   assert.match(ROUTE, /canonicalLink\(PFAD\)/);
-  // Ein {rel:'canonical'} ohne tagName waere ein <meta rel="canonical"> und
+  // Ein {rel:'canonical'} ohne tagName wäre ein <meta rel="canonical"> und
   // damit wirkungslos (Befund L11).
   assert.ok(!/\{rel:\s*'canonical'/.test(ROUTE));
 });
 
 test('die Seite steht in NUR_ROUTE_SEITEN und nennt dort ihre Wache', () => {
   // Ohne den Eintrag liefert sie HTTP 200 und steht in keiner Sitemap:
-  // gebaut und fuer die Suche unsichtbar.
+  // gebaut und für die Suche unsichtbar.
   const e = NUR_ROUTE_SEITEN.find((s) => s.pfad === PFAD);
   assert.ok(e, 'kein NUR_ROUTE_SEITEN-Eintrag');
   assert.match(e.grund, /probe_neu_oder_gebraucht_hell\.py/);
@@ -79,12 +79,12 @@ test('robots.txt sperrt diesen Pfad nicht', () => {
   const robots = lies('../app/routes/[robots.txt].jsx');
   assert.ok(
     !robots.includes(`Disallow: ${PFAD}`),
-    'robots.txt traegt eine Disallow-Zeile fuer diese Seite',
+    'robots.txt trägt eine Disallow-Zeile für diese Seite',
   );
 });
 
 test('eine indexierte Nachbarseite verlinkt hierher', () => {
-  // Der Menue-Eintrag traegt das nicht: Shopify rendert die Kinder
+  // Der Menue-Eintrag trägt das nicht: Shopify rendert die Kinder
   // clientseitig, im Server-HTML stehen sie nicht.
   const treffer = FAQ_ALLE.filter((i) => i.weiter?.pfad === PFAD);
   assert.equal(treffer.length, 1);
@@ -95,7 +95,7 @@ test('eine indexierte Nachbarseite verlinkt hierher', () => {
 // Das Schema entsteht AUS dem sichtbaren Text — nicht daneben.
 // ---------------------------------------------------------------------------
 
-test('alle fuenf Fragen passieren das Deny-Netz', () => {
+test('alle fünf Fragen passieren das Deny-Netz', () => {
   // Der stille Verlust ist der teure Fall: buildFaqPageJsonLd wirft Items aus
   // und liefert ein kuerzeres Schema, ohne Fehlermeldung.
   const schema = buildFaqPageJsonLd(FRAGEN, {inLanguage: 'de-DE'});
@@ -106,14 +106,14 @@ test('alle fuenf Fragen passieren das Deny-Netz', () => {
 
 test('jede Schema-Frage steht auch sichtbar auf der Seite', () => {
   // Die Komponente rendert {f.q} und {f.a} aus derselben Liste. Faellt der
-  // Abschnitt weg, ist das Schema eine Auszeichnung fuer unsichtbaren Text.
+  // Abschnitt weg, ist das Schema eine Auszeichnung für unsichtbaren Text.
   assert.match(KOMPONENTE, /FRAGEN\.map/);
   assert.match(KOMPONENTE, /\{f\.q\}/);
   assert.match(KOMPONENTE, /\{f\.a\}/);
   assert.match(ROUTE, /buildFaqPageJsonLd\(FRAGEN/);
 });
 
-test('das Schema traegt Autor und Datum als Konstanten, nicht als Uhr', () => {
+test('das Schema trägt Autor und Datum als Konstanten, nicht als Uhr', () => {
   assert.match(ROUTE, /const NOG_VEROEFFENTLICHT = '\d{4}-\d{2}-\d{2}'/);
   assert.match(ROUTE, /const NOG_GEAENDERT = '\d{4}-\d{2}-\d{2}'/);
   assert.ok(!/new Date\(\)/.test(ROUTE), 'Laufzeit-Uhr im dateModified');
@@ -123,7 +123,7 @@ test('das Schema traegt Autor und Datum als Konstanten, nicht als Uhr', () => {
 // Jede Angabe nennt ihre Quelle.
 // ---------------------------------------------------------------------------
 
-test('jede Frist und jeder Preisposten traegt einen Beleg', () => {
+test('jede Frist und jeder Preisposten trägt einen Beleg', () => {
   for (const f of FRISTEN) {
     assert.ok(f.beleg && f.beleg.length > 5, `Frist ohne Beleg: ${f.id}`);
   }
@@ -136,7 +136,7 @@ test('jede Frist und jeder Preisposten traegt einen Beleg', () => {
 });
 
 test('die Zufriedenheitszahl ist kein Literal', () => {
-  // Sie bewegt sich real (438 -> 439 -> 440 an einem Tag). Ein Literal waere
+  // Sie bewegt sich real (438 -> 439 -> 440 an einem Tag). Ein Literal wäre
   // am Tag seiner Niederschrift richtig und danach falsch.
   assert.match(KOMPONENTE, /useGoogleRating\(\)/);
   assert.match(KOMPONENTE, /\{g\.total\}/);
@@ -147,7 +147,7 @@ test('die Zufriedenheitszahl ist kein Literal', () => {
 });
 
 test('die Zahl sagt, was sie ist: eine Bewertung des Unternehmens', () => {
-  // Ohne diesen Halbsatz waere sie eine Produktbewertung mit falschem
+  // Ohne diesen Halbsatz wäre sie eine Produktbewertung mit falschem
   // Subjekt — genau der Verstoss, den s04 vermieden hat.
   assert.match(KOMPONENTE, /nicht ein\s+einzelnes Produkt/);
 });
@@ -185,7 +185,7 @@ test('kein Vorwurf wird wiederholt und kein Kritiker genannt', () => {
     'Betrug',
     'Abzocke',
     'Placebo',
-    'unserioes',
+    'unseriös',
   ]) {
     assert.ok(
       !new RegExp(wort, 'i').test(sichtbar),
@@ -223,10 +223,10 @@ test('keine Rueckgabequote — auch nicht geschaetzt', () => {
   assert.ok(!/%/.test(alles), 'Prozentzahl ohne Quelle auf der Seite');
 });
 
-test('der Gebrauchtmarkt-Abschnitt urteilt ueber UNSER Angebot', () => {
-  // Keine Bewertung fremder Verkaeufer, keine Rechtsauslegung fuer deren
+test('der Gebrauchtmarkt-Abschnitt urteilt über UNSER Angebot', () => {
+  // Keine Bewertung fremder Verkaeufer, keine Rechtsauslegung für deren
   // Geschaefte. Jede Zeile ist eine Aussage darueber, wogegen der Kaeufer
-  // Ansprueche hat — und das koennen wir nur fuer uns beantworten.
+  // Ansprueche hat — und das können wir nur für uns beantworten.
   assert.equal(NICHT_ENTHALTEN.length, 4);
   for (const wort of ['Betrüger', 'Fälschung', 'gefälscht', 'illegal']) {
     const t = NICHT_ENTHALTEN.map((n) => n.text).join(' ');
@@ -241,7 +241,7 @@ test('der Gebrauchtmarkt-Abschnitt urteilt ueber UNSER Angebot', () => {
 
 test('die CSS erfindet ausserhalb von :root keinen freien Wert', () => {
   const rumpf = CSS.slice(CSS.indexOf('.nog {'));
-  // Farb-Literale ausserhalb des Token-Blocks waeren der zweite Goldton.
+  // Farb-Literale ausserhalb des Token-Blocks wären der zweite Goldton.
   assert.ok(!/#[0-9a-f]{3,8}\b/i.test(rumpf), 'Farb-Literal im CSS-Rumpf');
 });
 
@@ -253,9 +253,9 @@ test('genau EIN Akzent-Token und hoechstens neun Schriftgroessen', () => {
   assert.ok(stufen.length <= 9, `${stufen.length} Schriftgroessen`);
 });
 
-test('der Messcontainer heisst so, dass die Pruefliste ihn findet', () => {
+test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
   // Der Gestaltungs-Pruefliste faellt ein Textcontainer nur auf, wenn sein
-  // Klassenname ein Container-Wort traegt. Ohne das werden Zeilenlaenge und
+  // Klassenname ein Container-Wort trägt. Ohne das werden Zeilenlaenge und
   // Innenabstaende nicht rot, sondern gar nicht erst gemessen.
   assert.match(CSS, /\.nog__inhalt\s*\{/);
   assert.match(KOMPONENTE, /className="nog__inhalt"/);

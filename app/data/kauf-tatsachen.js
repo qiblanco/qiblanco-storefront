@@ -169,7 +169,7 @@ export const RUECKWEG = [
  * DIESE LISTE IST DER TRÄGER DES FAQPage-SCHEMAS, und sie wird SICHTBAR
  * gerendert. Googles Richtlinien für strukturierte Daten verlangen, dass
  * ausgezeichneter Inhalt auf der Seite steht; ein Schema aus Sätzen, die ein
- * Leser nicht findet, wäre ein Verstoß und nicht bloss unsauber. Frage und
+ * Leser nicht findet, wäre ein Verstoß und nicht bloß unsauber. Frage und
  * Antwort sind deshalb dieselben Strings, die die Komponente ausgibt.
  *
  * SIE WIEDERHOLEN DEN FLIESSTEXT ABSICHTLICH IN KÜRZE: ein Antwortsystem

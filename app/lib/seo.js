@@ -464,14 +464,14 @@ export const NUR_ROUTE_SEITEN = [
       'Die nachpruefbaren Tatsachen des Kaufs als Fliesstext (Grossjob ' +
       '20260912-…-googles-ki-antwort-raet-vom-kauf-ab, Segment s05). Anlass ' +
       'ist gemessen: Googles KI-Antwort empfiehlt den Gebrauchtmarkt und ' +
-      'nennt fuer uns 14 statt 20 Tage Ruecknahme, obwohl ' +
+      'nennt für uns 14 statt 20 Tage Ruecknahme, obwohl ' +
       '`merchantReturnDays: 20` seit langem korrekt im Produkt-Markup steht — ' +
       'Strukturdaten allein haben das nicht gedreht. Die Seite besteht allein ' +
       'aus der Route pages.neu-oder-gebraucht.jsx und hat KEIN ' +
       'Shopify-Seitenobjekt; ohne diesen Eintrag liefert sie HTTP 200 mit ' +
-      'vollem Text und steht in keiner Sitemap. Ein Seitenobjekt waere der ' +
-      'zweite moegliche Traeger und ist bewusst NICHT gewaehlt (Fremdsystem) ' +
-      '— dieselbe Begruendung wie bei /pages/kritik und /pages/hypothesen. ' +
+      'vollem Text und steht in keiner Sitemap. Ein Seitenobjekt wäre der ' +
+      'zweite mögliche Traeger und ist bewusst NICHT gewählt (Fremdsystem) ' +
+      '— dieselbe Begründung wie bei /pages/kritik und /pages/hypothesen. ' +
       'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
       'probe_neu_oder_gebraucht_hell.py — prueft am ausgelieferten HTML den ' +
       'INHALT (Rand-Marker), kein noindex, kein Disallow, Canonical, den ' +
