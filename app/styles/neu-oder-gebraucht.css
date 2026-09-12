@@ -1,0 +1,332 @@
+/* ============================================================================
+   /pages/neu-oder-gebraucht — „Neu oder gebraucht: was du beim Kauf bei uns
+   bekommst" (2026-09-12).
+
+   Token-System wortgleich zur Schwesterseite kritik.css (Rubrik 92/100) und
+   damit zum staerksten Bestands-Rezept des Hauses (schlaf-zellen-schutz.css,
+   .lp-a3, 94/100) sowie zum design-meister web-brief: warmes Neutral-
+   Kontinuum, EIN Gold-Akzent nur auf Handlung/Beweis, Weissraum gruppiert
+   statt Boxen, 8pt-Grid, Sektions-Takt 96/64, Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus
+   dem :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .nog — self-contained.
+
+   WARUM EIGENE DATEI UND NICHT kritik.css MITBENUTZT: Gate 12 loest geteilte
+   Dateien auf ALLE importierenden Routen auf — eine geteilte CSS zoege jeden
+   Format- und Design-Beleg der einen Seite auf die andere. Die WERTE sind
+   kopiert, die DATEI nicht geteilt; dieselbe Entscheidung, die kritik.css
+   gegenueber erfahrungen.css getroffen hat.
+
+   DER EINE AKZENT SITZT AUF DEM BEWEIS: die Quellenzeile unter jeder Angabe
+   traegt das Gold als Unterstreichung ihres Links, die Fristen-Begriffe als
+   Linie. Nichts sonst auf dieser Seite ist gold. Der Text traegt die Aussage,
+   nicht die Farbe.
+   ========================================================================== */
+
+:root {
+  --nog-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --nog-fs-xs: 0.8125rem; /* 13px, nur Fuss */
+  --nog-fs-base: 1rem; /* 16px */
+  --nog-fs-md: 1.125rem; /* 18px */
+  --nog-fs-lg: 1.25rem; /* 20px */
+  --nog-fs-xl: 1.5625rem; /* 25px */
+  --nog-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --nog-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --nog-s1: 8px;
+  --nog-s2: 16px;
+  --nog-s3: 24px;
+  --nog-s4: 32px;
+  --nog-s6: 48px;
+  --nog-s8: 64px;
+  --nog-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --nog-grund: #faf9f5;
+  --nog-flaeche: #f4f0e9;
+  --nog-text: #2c2a26;
+  --nog-muted: #6b665d;
+  --nog-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
+       Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1). */
+  --nog-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --nog-r1: 8px;
+  --nog-r2: 16px;
+  --nog-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --nog-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
+  --nog-mass: 68ch;
+  --nog-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.nog {
+  font-family: var(--nog-font);
+  font-size: var(--nog-fs-base);
+  line-height: 1.65;
+  color: var(--nog-text);
+  background: var(--nog-grund);
+}
+
+/* NAME MIT ABSICHT: der Gestaltungs-Pruefliste (homepage-bauer/src/
+   seiten_pruefliste.py) faellt ein Textcontainer nur auf, wenn sein
+   Klassenname eines der Woerter aus _CONTAINER_WOERTER traegt (inhalt/content/
+   article/text/...). Die Punkte P1 Zeilenlaenge und P2 Innenabstaende werden
+   sonst nicht ROT, sondern gar nicht erst GEMESSEN. Wer diese Klasse
+   umbenennt, nimmt der Seite ihre Messbarkeit, ohne dass sich am Aussehen
+   etwas aendert. */
+.nog__inhalt {
+  width: 100%;
+  max-width: var(--nog-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--nog-s2);
+}
+
+.nog section {
+  padding-block: var(--nog-s8);
+}
+@media (min-width: 768px) {
+  .nog section {
+    padding-block: var(--nog-s12);
+  }
+}
+
+.nog h1 {
+  font-size: var(--nog-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--nog-s3);
+  color: var(--nog-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.nog h2 {
+  font-size: var(--nog-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--nog-s2);
+  color: var(--nog-text);
+}
+
+.nog h3 {
+  font-size: var(--nog-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--nog-s1);
+  color: var(--nog-text);
+}
+
+.nog p,
+.nog li,
+.nog dd {
+  font-size: var(--nog-fs-base);
+  line-height: 1.65;
+  color: var(--nog-text);
+  max-width: var(--nog-mass);
+  margin: 0 0 var(--nog-s2);
+}
+
+.nog p:last-child,
+.nog dd:last-child {
+  margin-bottom: 0;
+}
+
+.nog a {
+  color: var(--nog-text);
+  text-decoration: underline;
+  text-decoration-color: var(--nog-akzent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.nog a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.nog ol,
+.nog ul,
+.nog dl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.nog__kopf {
+  background: var(--nog-flaeche);
+}
+
+.nog p.nog__vorspann {
+  font-size: var(--nog-fs-base);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--nog-muted);
+  margin-bottom: var(--nog-s2);
+}
+
+.nog p.nog__lead {
+  font-size: var(--nog-fs-md);
+}
+
+.nog p.nog__einleitung {
+  font-size: var(--nog-fs-md);
+  color: var(--nog-muted);
+  margin-bottom: var(--nog-s4);
+}
+
+/* Die Quellenzeile — die kleinste Schrift der Seite und ihr wichtigstes
+   Bauteil: eine Zahl ohne Herkunft ist von einer erfundenen nicht zu
+   unterscheiden. */
+.nog p.nog__quelle {
+  font-size: var(--nog-fs-xs);
+  color: var(--nog-muted);
+  margin-top: var(--nog-s1);
+  margin-bottom: 0;
+}
+
+/* ─── Die zwei Fristen ────────────────────────────────────────────────────── */
+.nog__fristen {
+  background: var(--nog-flaeche);
+}
+
+.nog__fristenliste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nog-s6);
+}
+
+.nog__frist {
+  padding-top: var(--nog-s3);
+  border-top: 1px solid var(--nog-linie);
+}
+
+/* Der Beweis-Akzent: EIN Gold, als Linie. */
+.nog__frist dt {
+  font-size: var(--nog-fs-lg);
+  font-weight: 600;
+  color: var(--nog-text);
+  border-left: 3px solid var(--nog-akzent);
+  padding-left: var(--nog-s2);
+  margin: 0 0 var(--nog-s2);
+}
+
+.nog__frist dd {
+  margin-inline: 0;
+}
+
+/* ─── Was im Preis enthalten ist ──────────────────────────────────────────── */
+.nog__preisliste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nog-s4);
+}
+
+.nog li.nog__posten {
+  max-width: none;
+  margin: 0;
+  padding-top: var(--nog-s3);
+  border-top: 1px solid var(--nog-linie);
+}
+
+/* ─── Was ein Kauf von privat nicht enthaelt ──────────────────────────────── */
+.nog__gebrauchtliste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nog-s4);
+  counter-reset: fehlt;
+}
+
+.nog li.nog__fehlt {
+  max-width: none;
+  margin: 0;
+  padding-left: var(--nog-s6);
+  position: relative;
+  counter-increment: fehlt;
+}
+
+.nog li.nog__fehlt::before {
+  content: counter(fehlt);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--nog-fs-lg);
+  font-weight: 600;
+  color: var(--nog-muted);
+  line-height: 1.35;
+}
+
+.nog p.nog__preishinweis {
+  margin-top: var(--nog-s6);
+  padding: var(--nog-s3);
+  background: var(--nog-grund);
+  border-radius: var(--nog-r2);
+  box-shadow: var(--nog-shadow-sm);
+  font-size: var(--nog-fs-md);
+  max-width: none;
+}
+
+/* ─── Rueckweg ────────────────────────────────────────────────────────────── */
+.nog__rueckweg {
+  background: var(--nog-flaeche);
+}
+
+.nog__schritte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nog-s2);
+  counter-reset: schritt;
+  margin-bottom: var(--nog-s4);
+}
+
+.nog__schritte li {
+  margin: 0;
+  padding-left: var(--nog-s4);
+  position: relative;
+  counter-increment: schritt;
+}
+
+.nog__schritte li::before {
+  content: counter(schritt) '.';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 600;
+  color: var(--nog-muted);
+}
+
+.nog p.nog__weiter {
+  margin-top: var(--nog-s4);
+  color: var(--nog-muted);
+}
+
+/* ─── Kurz gefragt ────────────────────────────────────────────────────────── */
+.nog__fragen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nog-s4);
+}
+
+.nog__frage {
+  padding-top: var(--nog-s3);
+  border-top: 1px solid var(--nog-linie);
+}
+
+.nog__frage dt {
+  font-size: var(--nog-fs-lg);
+  font-weight: 600;
+  color: var(--nog-text);
+  margin: 0 0 var(--nog-s1);
+}
+
+.nog__frage dd {
+  margin-inline: 0;
+}
