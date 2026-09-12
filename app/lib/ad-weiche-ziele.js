@@ -173,8 +173,8 @@ export const MM_ZIELPFADE = Object.freeze([...new Set(Object.values(MM_ZIELE))])
  * Steht dieser Klick BEREITS auf der Message-Match-Seite SEINER Anzeige?
  *
  * WARUM DIESE FUNKTION UND NICHT EIN EINTRAG IN AUSSCHLUSS_SEGMENTE: ein
- * dortiger Eintrag schaltete die Weiche auf den MM-Seiten fuer ALLE Anzeigen
- * ab, auch fuer die NICHT zugeordneten — genau das wollte der Schleifenschutz
+ * dortiger Eintrag schaltete die Weiche auf den MM-Seiten für ALLE Anzeigen
+ * ab, auch für die NICHT zugeordneten — genau das wollte der Schleifenschutz
  * unten bewusst vermeiden, und diese Absicht bleibt unangetastet. Geprueft
  * wird ad-scharf: nur der Klick, der schon auf SEINEM eigenen Ziel steht.
  *

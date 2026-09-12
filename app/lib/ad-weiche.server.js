@@ -352,17 +352,17 @@ export async function pruefeAdWeiche(request, fetchImpl) {
 
   // DER KLICK IST SCHON DA, WO ER HINSOLL — dann feuert hier gar nichts mehr.
   // Ohne diese Zeile unterdrueckt der Schleifenschutz in mmZielPfad() zwar das
-  // MM-Ziel, der Rest dieser Funktion laeuft aber weiter, findet die
+  // MM-Ziel, der Rest dieser Funktion läuft aber weiter, findet die
   // Paid-Marker noch im Query und wirft den Besucher mit dem Default-Ziel auf
   // LP A. Am Rand gemessen 2026-09-12 mit ad_weiche_mm='an':
   //   / -> /discount -> /pages/haelt-das-mein-leben-aus -> /discount -> LP A
   // Der Arm war damit wirkungslos, obwohl Schalter, Zielkarte und Pfadliterale
-  // stimmten. Geprueft wird AD-SCHARF (stehtAufEigenemMmZiel), nicht ueber
+  // stimmten. Geprueft wird AD-SCHARF (stehtAufEigenemMmZiel), nicht über
   // AUSSCHLUSS_SEGMENTE: ein Eintrag dort schaltete die Weiche auf den
-  // MM-Seiten fuer ALLE Anzeigen ab, auch fuer die nicht zugeordneten — das
+  // MM-Seiten für ALLE Anzeigen ab, auch für die nicht zugeordneten — das
   // wollte der Schleifenschutz bewusst vermeiden, und daran aendert sich
   // nichts. Und NUR wenn der Arm aktiv ist: steht der Schalter aus, bleibt es
-  // beim dekretierten Zustand vom 2026-07-24 (alles auf LP A), auch fuer eine
+  // beim dekretierten Zustand vom 2026-07-24 (alles auf LP A), auch für eine
   // zugeordnete Anzeige, die direkt auf ihrer MM-Seite landet.
   const angefragt = new URL(request.url);
   if (

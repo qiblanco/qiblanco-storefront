@@ -232,7 +232,7 @@ test('ARM-NAHT: auf der eigenen MM-Seite feuert die Weiche NICHT mehr', async ()
   assert.equal(ziel, null, `erwartet: stehenbleiben, war: ${ziel}`);
 });
 
-test('ARM-NAHT: das gilt fuer JEDES Ziel der Karte, nicht nur fuer B3', async () => {
+test('ARM-NAHT: das gilt für JEDES Ziel der Karte, nicht nur für B3', async () => {
   for (const [adId, pfad] of Object.entries(MM_ZIELE)) {
     const ziel = await pruefeAdWeiche(
       req(pfad, `${PAID}&utm_content=${adId}&lp_mm=an`),
@@ -242,12 +242,12 @@ test('ARM-NAHT: das gilt fuer JEDES Ziel der Karte, nicht nur fuer B3', async ()
   }
 });
 
-// --- Die drei Gegenproben. Ohne sie waere der Fix eine Entwaffnung ----------
+// --- Die drei Gegenproben. Ohne sie wäre der Fix eine Entwaffnung ----------
 
 test('ARM-NAHT-GEGENPROBE: eine NICHT zugeordnete Anzeige geht von einer MM-Seite weiter auf LP A', async () => {
-  // Das ist die Absicht, die der Schleifenschutz ausdruecklich schuetzen wollte
-  // ("ein Eintrag in AUSSCHLUSS_SEGMENTE wuerde die Weiche auf diesen Seiten
-  // fuer ALLE Anzeigen abschalten"). Genau deshalb prueft der Fix AD-SCHARF.
+  // Das ist die Absicht, die der Schleifenschutz ausdrücklich schuetzen wollte
+  // ("ein Eintrag in AUSSCHLUSS_SEGMENTE würde die Weiche auf diesen Seiten
+  // für ALLE Anzeigen abschalten"). Genau deshalb prueft der Fix AD-SCHARF.
   const ziel = await pruefeAdWeiche(
     req('/pages/haelt-das-mein-leben-aus', `${PAID}&utm_content=${AD_TOFA}`),
     fetchAttrappe(AN),
