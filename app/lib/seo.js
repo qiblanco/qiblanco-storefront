@@ -145,7 +145,7 @@ export function canonicalLink(pathname) {
  *
  * DIE GEGENRICHTUNG, damit daraus keine Räumungslizenz wird: „nicht im Index"
  * ist KEIN Grund, eine Seite noindex zu setzen. Diese Lesart entscheidet
- * ausschliesslich über den SITEMAP-Eintrag eines bereits entschiedenen
+ * ausschließlich über den SITEMAP-Eintrag eines bereits entschiedenen
  * noindex — das Aufnahme-Kriterium oben („nur Handles ohne Zweck für Kunden")
  * bleibt unberührt und wird von ihr nicht aufgeweicht.
  *
@@ -495,30 +495,30 @@ export const NUR_ROUTE_SEITEN = [
   // unbekannt-…). VIER EINTRAEGE AUS EINER VOLLERHEBUNG, NICHT AUS EINEM
   // EINZELFALL: gemessen wurden ALLE 67 `pages.*`-Routen in origin/main gegen
   // die ausgelieferte `sitemap/pages/1.xml`. 33 stehen dort nicht; 28 davon
-  // zu Recht (404 oder live `noindex`), fuenf nicht — und eine der fuenf
-  // (`kristall-kakao`) ist eine Weiterleitung und gehoert ebenfalls nicht
+  // zu Recht (404 oder live `noindex`), fünf nicht — und eine der fünf
+  // (`kristall-kakao`) ist eine Weiterleitung und gehört ebenfalls nicht
   // hinein. Bleiben diese vier. Der Restbericht ist Pflicht, nicht Kuer: ein
   // Einschluss-Selektor sagt nur, was er NIMMT, und seine ausgelassene Menge
   // ist sonst nicht pruefbar (Hausregel „Waechter-Zaun an der Eigenschaft").
   //
   // DREI DER VIER SIND CANONICAL-ZIELE VON SEITEN, DIE SELBST IN DER SITEMAP
   // STEHEN — das ist der teurere Teil und war unsichtbar, weil beide Seiten
-  // fuer sich richtig aussehen: `/pages/qione` und `/pages/qihome` stehen in
-  // der Sitemap und erklaeren per `<link rel="canonical">` eine ANDERE URL zur
+  // für sich richtig aussehen: `/pages/qione` und `/pages/qihome` stehen in
+  // der Sitemap und erklären per `<link rel="canonical">` eine ANDERE URL zur
   // kanonischen. Google bestaetigt das am 2026-09-12 woertlich mit
   // coverageState „Seite mit Weiterleitung" und googleCanonical
   // `/pages/qione-2-pro-details` bzw. `/pages/qihome-details`. Die Sitemap
   // nannte damit zwei URLs, die sofort weiterzeigen, waehrend ihre Ziele in
-  // KEINER Sitemap standen. Eine Sitemap fuehrt kanonische URLs, nie deren
+  // KEINER Sitemap standen. Eine Sitemap führt kanonische URLs, nie deren
   // Vorstufen.
   //
   // `/pages/ueber-uns` ist der vierte und der einzige echte Neuzugang: live
   // HTTP 200, 98 KB, self-canonical, kein noindex — und am 2026-09-12 von
   // Google mit „URL ist Google nicht bekannt", `sitemap: None`,
-  // `referringUrls: 0` gemessen. Gebaut und fuer die Suche unsichtbar, genau
-  // der Fall, fuer den diese Liste existiert.
+  // `referringUrls: 0` gemessen. Gebaut und für die Suche unsichtbar, genau
+  // der Fall, für den diese Liste existiert.
   //
-  // WACHE FUER ALLE VIER (Aufnahme-Kriterium 3, eine Wache statt vier):
+  // WACHE FÜR ALLE VIER (Aufnahme-Kriterium 3, eine Wache statt vier):
   // pruefungen/probe_sitemap_noindex_naht.py prueft je Eintrag dieser Liste
   // live HTTP 200 + kein noindex + `<loc>` in der ausgelieferten Sitemap, und
   // zusaetzlich klassenweit, dass das Canonical-Ziel jeder Sitemap-URL selbst
@@ -552,7 +552,7 @@ export const NUR_ROUTE_SEITEN = [
     pfad: '/pages/qibracelet-details',
     grund:
       'Oeffentlicher Zwilling zu /pages/qibracelet (das seit 2026-08-29 ' +
-      'noindex + ausSitemap: true traegt und im Kommentar dort ausdruecklich ' +
+      'noindex + ausSitemap: true trägt und im Kommentar dort ausdrücklich ' +
       'als "unberuehrt" benannt ist). Google 2026-09-12: "Gesendet und ' +
       'indexiert", sitemap: None — indexiert, aber von keiner Sitemap ' +
       'getragen. Wache: pruefungen/probe_sitemap_noindex_naht.py.',
@@ -725,21 +725,21 @@ export function istNichtIndexierbaresProdukt(handle) {
  *     Umsatzsteuer digitaler Güter, `cross-selling` eine Merchandising-Quelle
  *     für Produktempfehlungen. Beide messen 0 eigene Produkte.
  *
- * VOLLZUG 2026-09-12 (Job 20260912-siebzehn-von-52-pages-urls-…): alle fuenf
+ * VOLLZUG 2026-09-12 (Job 20260912-siebzehn-von-52-pages-urls-…): alle fünf
  * standen seit dem 2026-08-27 auf `ausSitemap: false`, und die Sitemap-Route
- * nannte das ausdruecklich „die MOEGLICHKEIT, nicht der Vollzug". Was fehlte,
+ * nannte das ausdrücklich „die MÖGLICHKEIT, nicht der Vollzug". Was fehlte,
  * war die MESSUNG der Aufloesungsbedingung — dieselbe wie bei den Seiten:
  * die Uebergangsstufe hat nur dann noch einen Zweck, wenn die URL HEUTE im
- * Index steht. urlInspection am 2026-09-12 fuer alle fuenf:
+ * Index steht. urlInspection am 2026-09-12 für alle fünf:
  *   frontpage              -> „URL ist Google nicht bekannt"
  *   products               -> „Gefunden – zurzeit nicht indexiert"
  *   slider                 -> „Gefunden – zurzeit nicht indexiert"
  *   cross-selling          -> „URL ist Google nicht bekannt"
  *   digital-goods-vat-tax  -> „Durch noindex-Tag ausgeschlossen"
  * KEINE steht im Index, es gibt also bei keiner etwas zu entfernen, wofuer
- * Google das noindex erst lesen muesste. Alle fuenf kippen auf `true`. Zum
+ * Google das noindex erst lesen müsste. Alle fünf kippen auf `true`. Zum
  * Vergleich im selben Lauf: `zeremonie-kakao` ist „Gesendet und indexiert" —
- * eine ECHTE Kundenkategorie, die hier korrekt nie gefuehrt wurde. Die
+ * eine ECHTE Kundenkategorie, die hier korrekt nie geführt wurde. Die
  * Lesart je Zustand steht ausfuehrlich an NICHT_INDEXIERBARE_SEITEN_DEF.
  *
  * WARUM noindex UND KEIN canonical: dieselbe Regel, die schon
