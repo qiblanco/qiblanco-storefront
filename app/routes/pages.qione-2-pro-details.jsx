@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {QiOne} from '~/components/index-components/detailseiten/QiOne';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /*
  * /pages/qione-2-pro-details — oeffentliche Detailseite QiOne 2 Pro
@@ -62,10 +63,15 @@ export const meta = () => {
   const BESCHREIBUNG =
     'QiOne\u00AE 2 Pro im Detail: Gitterchip\u2122, Zelluntersuchungen und ' +
     'Expertenmeinungen zum Nachlesen. Bestellen kannst du ihn auf der Produktseite.';
+  const titel = 'QiOne\u00AE 2 Pro im Detail | Qi Blanco';
   return [
-    {title: 'QiOne\u00AE 2 Pro im Detail | Qi Blanco'},
+    {title: titel},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink('/pages/qione-2-pro-details'),
+    ...seitenSignale({
+      pfad: '/pages/qione-2-pro-details',
+      titel,
+    }),
     // Identisch zur description \u2014 ein Netzwerk, das beim Teilen etwas
     // anderes zeigt als die Suchmaschine, erzeugt zwei Versprechen.
     {property: 'og:description', content: BESCHREIBUNG},

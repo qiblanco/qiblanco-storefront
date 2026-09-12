@@ -3,6 +3,7 @@ import {Superhuman} from '~/components/kurse/Superhuman';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -24,10 +25,16 @@ export const meta = ({data}) => {
   // Import-Closure der importierenden Seite in die Gate-12-Prüfmenge zieht.
   // `pages.$handle.jsx` schreibt aus demselben Grund ebenfalls das Literal.
   const roh = data?.page?.seo?.title || data?.page?.title || '';
+  const titel = roh ? `${roh} | Qi Blanco` : 'Qi Blanco';
   return [
-    {title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'},
+    {title: titel},
     ...beschreibungTags('/pages/superhuman', data?.page?.seo?.description),
     canonicalLink('/pages/superhuman'),
+    ...seitenSignale({
+      pfad: '/pages/superhuman',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

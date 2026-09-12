@@ -1,15 +1,23 @@
 import {canonicalLink} from '~/lib/seo';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {seitenSignale} from '~/lib/seiten-seo';
 
-export const meta = () => [
-  {title: 'Allgemeine Geschäftsbedingungen | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Allgemeine Geschäftsbedingungen der Qi Blanco UG (haftungsbeschränkt)',
-  },
-  canonicalLink('/pages/agb'),
-];
+export const meta = () => {
+  const titel = 'Allgemeine Geschäftsbedingungen | Qi Blanco';
+  return [
+    {title: titel},
+    {
+      name: 'description',
+      content:
+        'Allgemeine Geschäftsbedingungen der Qi Blanco UG (haftungsbeschränkt)',
+    },
+    canonicalLink('/pages/agb'),
+    ...seitenSignale({
+      pfad: '/pages/agb',
+      titel,
+    }),
+  ];
+};
 
 export function loader() {
   return {};

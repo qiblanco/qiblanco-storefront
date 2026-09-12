@@ -4,6 +4,7 @@ import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {FRAGEN} from '~/data/kritik-vorwuerfe';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/kritik';
 
@@ -128,6 +129,7 @@ export const meta = () => {
     {title: TITEL},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink(PFAD),
+    ...teilbildTags(PFAD),
     {property: 'og:type', content: 'website'},
     {property: 'og:title', content: TITEL},
     {property: 'og:description', content: BESCHREIBUNG},

@@ -3,6 +3,7 @@ import {Kakao} from '~/components/product-pages/Kakao';
 import crystalCacaoStyles from '~/styles/crystal-cacao.css?url';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
  * Token-Schicht dieser Route. Sie hängt NUR hier und trägt
@@ -17,14 +18,19 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  const titel = `Crystal Cacao® | Qi Blanco`;
   return [
-    {title: `Crystal Cacao® | Qi Blanco`},
+    {title: titel},
     {
       name: 'description',
       content:
         'Crystal Cacao® – High Performance Cacao. Wach. Klar. Mineralisiert. 100 % reiner Premium-Naturkakao aus Peru.',
     },
     canonicalLink('/pages/crystal-cacao'),
+    ...seitenSignale({
+      pfad: '/pages/crystal-cacao',
+      titel,
+    }),
   ];
 };
 

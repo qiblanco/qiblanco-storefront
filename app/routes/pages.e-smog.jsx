@@ -3,12 +3,19 @@ import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 export const meta = ({data}) => {
+  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
   return [
-    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    {title: titel},
     ...beschreibungTags('/pages/e-smog', data?.page?.seo?.description),
     canonicalLink('/pages/e-smog'),
+    ...seitenSignale({
+      pfad: '/pages/e-smog',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

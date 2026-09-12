@@ -5,6 +5,7 @@ import {ladeSeite, nummerAusSegment, SEITEN_ZAHL} from '~/lib/podcast-daten.serv
 import {CANONICAL_ORIGIN, canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import podcastStyles from '~/styles/podcasts.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 /**
  * /pages/podcasts/seite-2 … seite-N — die Folgeseiten des Podcast-Index.
@@ -46,6 +47,7 @@ export const meta = ({data}) => {
     {title: titel},
     {name: 'description', content: beschreibung},
     canonicalLink(data.pfad),
+    ...teilbildTags(data.pfad),
     {property: 'og:title', content: titel},
     {property: 'og:description', content: beschreibung},
     {property: 'og:type', content: 'website'},

@@ -5,16 +5,23 @@ import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {loadCourseProducts} from '~/lib/course-products';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import qioneZellschutzStyles from '~/styles/qione-zellschutz.css?url';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 export function links() {
   return [{rel: 'stylesheet', href: qioneZellschutzStyles}];
 }
 
 export const meta = ({data}) => {
+  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
   return [
-    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    {title: titel},
     ...beschreibungTags('/pages/was-ist-zeremonie-kakao', data?.page?.seo?.description),
     canonicalLink('/pages/was-ist-zeremonie-kakao'),
+    ...seitenSignale({
+      pfad: '/pages/was-ist-zeremonie-kakao',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

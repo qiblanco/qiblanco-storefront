@@ -5,6 +5,7 @@ import {
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import ppStyles from '~/styles/affiliate-partnerprogramm.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/affiliate-partnerprogramm';
 const TITEL = 'Partnerprogramm: 10 % Provision auf deine Empfehlung | Qi Blanco';
@@ -84,6 +85,7 @@ export const meta = () => [
   {title: TITEL},
   {name: 'description', content: BESCHREIBUNG},
   canonicalLink(PFAD),
+  ...teilbildTags(PFAD),
   {property: 'og:type', content: 'website'},
   {property: 'og:title', content: TITEL},
   {property: 'og:description', content: BESCHREIBUNG},

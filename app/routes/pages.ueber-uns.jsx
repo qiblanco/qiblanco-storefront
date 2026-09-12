@@ -6,6 +6,7 @@ import {STAND_ISO} from '~/data/redaktionsstand';
 import ueberUnsStyles from '~/styles/ueber-uns.css?url';
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 /**
  * /pages/ueber-uns — WER HINTER QI BLANCO STEHT.
@@ -201,6 +202,7 @@ export const meta = () => [
   {title: TITEL},
   {name: 'description', content: BESCHREIBUNG},
   canonicalLink(PFAD),
+  ...teilbildTags(PFAD),
   {property: 'og:type', content: 'website'},
   {property: 'og:site_name', content: 'Qi Blanco'},
   {property: 'og:locale', content: 'de_DE'},

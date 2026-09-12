@@ -3,6 +3,7 @@ import {QiHomeLanding} from '~/components/index-components/detailseiten/QiHomeLa
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import qihomeStyles from '~/styles/qihome.css?url';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /*
  * /pages/qihome-details — oeffentliche Detailseite QiHome Air
@@ -35,10 +36,17 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  const titel = 'QiHome\u00AE Air im Detail | Qi Blanco';
   return [
-    {title: 'QiHome\u00AE Air im Detail | Qi Blanco'},
+    {title: titel},
     ...beschreibungTags('/pages/qihome-details', data?.page?.seo?.description),
     canonicalLink('/pages/qihome-details'),
+    ...seitenSignale({
+      pfad: '/pages/qihome-details',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+      hauptknoten: false,
+    }),
   ];
 };
 

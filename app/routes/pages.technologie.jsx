@@ -1,20 +1,28 @@
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import technologieStyles from '~/styles/technologie.css?url';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 export function links() {
   return [{rel: 'stylesheet', href: technologieStyles}];
 }
 
-export const meta = () => [
-  {title: 'Technologie | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Die Technologie hinter den Qi Blanco® Systemen – kohärentes Wasser, Frequenzkommunikation und das Leiternetzwerk des Körpers.',
-  },
-  canonicalLink('/pages/technologie'),
-];
+export const meta = () => {
+  const titel = 'Technologie | Qi Blanco';
+  return [
+    {title: titel},
+    {
+      name: 'description',
+      content:
+        'Die Technologie hinter den Qi Blanco® Systemen – kohärentes Wasser, Frequenzkommunikation und das Leiternetzwerk des Körpers.',
+    },
+    canonicalLink('/pages/technologie'),
+    ...seitenSignale({
+      pfad: '/pages/technologie',
+      titel,
+    }),
+  ];
+};
 
 export function loader() {
   return {};
