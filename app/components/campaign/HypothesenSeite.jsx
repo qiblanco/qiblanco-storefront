@@ -1,3 +1,5 @@
+import {AbsichtText} from '~/components/campaign/AbsichtText';
+import {ABSENDER} from '~/data/absicht';
 import {
   ABGRENZUNG,
   BEWUSSTSEIN,
@@ -76,6 +78,46 @@ export function HypothesenSeite() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ Absicht */}
+      {/* WER UND WARUM — vor allem anderen.
+          Christian, 2026-09-11: eine Hypothese ohne Absender liest sich wie
+          eine Behauptung; mit Absender liest sie sich wie eine offene Frage,
+          an der jemand seit zwanzig Jahren arbeitet. Deshalb steht dieser
+          Abschnitt in der ERSTEN Hälfte und vor den einzelnen Hypothesen:
+          erst wer und warum, dann was wir annehmen, dann was dafür und was
+          dagegen spricht.
+
+          DER TEXT IST NICHT DOPPELT: <AbsichtText/> ist dasselbe Bauteil, das
+          /pages/warum-qi-blanco rendert. Zwei Fassungen würden ab dem Tag
+          auseinanderlaufen, an dem jemand eine davon anfasst.
+
+          UEBERSCHRIFTENEBENE 3, weil die h2 hier dem Abschnitt selbst gehört.
+
+          ER SCHWAECHT DIE Schwächen NICHT AB. Das persönliche Wort steht
+          NEBEN der Gegen-Seite, nicht vor ihr: wer zwanzig Jahre an einer
+          Brücke baut, weiß, wo sie noch nicht trägt. */}
+      <section className="hyp__absicht">
+        <div className="hyp__inhalt">
+          <p className="hyp__vorspann">Die Absicht dahinter</p>
+          <h2>Warum ich an dieser Frage arbeite</h2>
+          <p className="hyp__einleitung">
+            Bevor die einzelnen Annahmen kommen, gehört hierher, wer sie
+            aufstellt und warum. Der folgende Text ist von{' '}
+            {ABSENDER.name} und steht in der ersten Person — hier spricht
+            kein Unternehmen, sondern ein Mensch.
+          </p>
+
+          <div className="ab">
+            <AbsichtText ebene={3} />
+          </div>
+
+          <p className="hyp__absicht-weiter">
+            Dieser Text steht auch für sich:{' '}
+            <a href="/pages/warum-qi-blanco">Warum es Qi Blanco gibt</a>.
+          </p>
         </div>
       </section>
 

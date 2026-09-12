@@ -71,7 +71,13 @@ export const STAND = {
  * Frage, warum jemand sich das antut.
  */
 export const GESCHICHTE = {
-  vorspann: 'Warum es Qi Blanco gibt',
+  // Hieß bis 2026-09-11 'Warum es Qi Blanco gibt'. Geändert, weil der
+  // Abschnitt darüber jetzt genau diese Frage trägt (und die eigene Seite
+  // /pages/warum-qi-blanco ebenso) — zwei Abschnitte mit derselben
+  // Überschrift auf einer Seite lesen sich wie ein Fehler, und eine Maschine
+  // kann sie nicht auseinanderhalten. Dieser hier ist die persönliche
+  // Herkunft, der andere die Absicht.
+  vorspann: 'Woher es kommt',
   titel: 'Die Geschichte fängt mit einem Problem an, nicht mit einem Produkt',
   absaetze: [
     'Qi Blanco ist nicht aus einer Marktlücke entstanden, sondern aus einer Notlage. Christian Bernd Bauer, der Gründer, hat das Unternehmen nicht gegründet, weil er etwas verkaufen wollte, sondern weil er für sich selbst eine Antwort gesucht hat. Was er dazu sagt, steht hier unverändert so, wie er es seit Jahren in seinem Kurs erzählt.',

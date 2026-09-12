@@ -513,3 +513,43 @@ body:has(.hyp) video {
     transition: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   DER ABSICHTS-ABSCHNITT (2026-09-11, Auftrag 20260911-BAU-die-absicht-…).
+
+   Er rendert das Bauteil <AbsichtText/> und damit den Scope `.ab` aus
+   app/styles/absicht.css — dieselbe Datei, die die eigene Seite
+   /pages/warum-qi-blanco benutzt. Der Text ist so an beiden Orten baulich
+   derselbe und kann nicht auseinanderlaufen.
+
+   DIESE DREI REGELN SIND DIE NAHT zwischen den zwei Token-Systemen, und sie
+   nehmen dem Gast GENAU DAS WEG, was einer ganzen SEITE gehört: die
+   Hintergrundfarbe, die Grundschriftfarbe und die Außenpolsterung. Alles
+   andere — Typo-Skala, Abstände, die Begriffspaar-Flaechen, der Gold-Akzent —
+   bleibt und ist mit dem Rezept dieser Seite ohnehin identisch (beide stammen
+   vom selben Referenz-Rezept ab).
+
+   OHNE SIE sähe der Abschnitt wie ein hineinkopierter Fremdkörper aus: eine
+   eigene Flaeche mitten im Lesefluss, mit eigener Randbreite. Umgesetzt per
+   Spezifität (0-2-1 gegen 0-1-0), NICHT mit !important — ein !important
+   gewönne auch gegen jede spätere, absichtliche Regel.
+   ------------------------------------------------------------------------- */
+.hyp__absicht .ab {
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
+.hyp__absicht .ab-teil,
+.hyp__absicht .ab-teil-erst {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.hyp__absicht .ab-teil-erst {
+  padding-top: 0;
+}
+
+.hyp__absicht-weiter {
+  margin-top: 32px;
+}

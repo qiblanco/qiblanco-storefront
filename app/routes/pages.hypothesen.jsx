@@ -1,7 +1,9 @@
 import {HypothesenSeite} from '~/components/campaign/HypothesenSeite';
 import hypothesenStyles from '~/styles/hypothesen.css?url';
+import absichtStyles from '~/styles/absicht.css?url';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import {VIDEOS} from '~/data/hypothesen-quellen';
+import {ABSENDER} from '~/data/absicht';
 
 /**
  * /pages/hypothesen — ERREICHBAR, ABER DUNKEL.
@@ -56,7 +58,13 @@ import {VIDEOS} from '~/data/hypothesen-quellen';
  * zur Laufzeit nicht lesen — dieselbe Bauform wie /pages/kritik.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: hypothesenStyles}];
+  // absicht.css liefert das Token-System des Absichts-Abschnitts (Scope .ab).
+  // Es wird mitgeladen statt kopiert, damit Abschnitt und eigene Seite
+  // baulich dieselbe Gestalt haben und nicht auseinanderlaufen.
+  return [
+    {rel: 'stylesheet', href: hypothesenStyles},
+    {rel: 'stylesheet', href: absichtStyles},
+  ];
 }
 
 /** @type {MetaFunction} */
@@ -67,6 +75,12 @@ export const meta = () => [
     content:
       'Das Wirkmodell hinter Qi Blanco, offen gelegt: sechs Hypothesen, je mit dem, was dafür spricht, was dagegen spricht und was sie für unser Produkt nicht bedeuten – mit allen Quellen und ihrer Reichweite.',
   },
+  // Die Autorenangabe. Sie steht hier, OBWOHL die Seite auf noindex steht:
+  // sie ist am Tag der Freischaltung fertig und muss nicht nachgezogen werden
+  // — dieselbe Begründung, mit der die Seite ihr VideoObject-@graph schon
+  // heute trägt. Ein Text mit Autor ist eine Quelle, einer ohne ist
+  // Werbematerial; genau daran scheitert unsere heutige Sichtbarkeit.
+  {name: 'author', content: ABSENDER.name},
   noindexMeta(),
 ];
 
