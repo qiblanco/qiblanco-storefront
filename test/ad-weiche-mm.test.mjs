@@ -11,6 +11,8 @@
 //   ARM-PIN         lp_mm=an/aus               -> deterministisch beide Arme
 //   ARM-QUERY       Original-Query byte-identisch auf dem MM-Ziel
 //   ARM-RABATT      Rabattcode setzt AUF dem MM-Ziel auf, nicht auf LP A
+//   ARM-NAHT        der ZWEITE Request, auf der MM-Seite selbst: die Weiche
+//                   feuert dort NICHT noch einmal (Job 20260912-pixelsoll-...)
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -20,6 +22,7 @@ import {
   MM_ZIELE,
   MM_ZIELPFADE,
   mmZielPfad,
+  stehtAufEigenemMmZiel,
 } from '../app/lib/ad-weiche-ziele.js';
 
 const BASIS = 'https://qiblanco.com';
@@ -208,4 +211,76 @@ test('ARM-RABATT: ohne MM-Arm bleibt der Rabattweg wie bisher auf LP A', async (
 
 test('MM_ZIELPFADE ist die entdoppelte Zielmenge der Karte', () => {
   assert.deepEqual([...MM_ZIELPFADE].sort(), [...new Set(Object.values(MM_ZIELE))].sort());
+});
+
+// --- ARM-NAHT: der zweite Request, den diese Suite baulich nie gesehen hat ---
+//
+// WARUM DIESER ARM NACHTRAEGLICH DAZUKAM: ARM-SCHLEIFE oben prueft mmZielPfad()
+// als REINE FUNKTION und ist gruen — der Schleifenschutz greift dort korrekt.
+// Wirkungslos war der Arm trotzdem, weil pruefeAdWeiche() nach dem
+// unterdrueckten MM-Ziel WEITERLIEF und mit seinem Default-Ziel auf LP A warf.
+// Am Rand gemessen 2026-09-12 mit ad_weiche_mm='an', volle Kette:
+//   / -> /discount -> /pages/haelt-das-mein-leben-aus -> /discount -> LP A
+// Zwei gruene Seiten, tote Naht. Geprueft wird hier deshalb die GANZE Weiche
+// auf der MM-Seite, nicht die Entscheidungsfunktion darunter.
+
+test('ARM-NAHT: auf der eigenen MM-Seite feuert die Weiche NICHT mehr', async () => {
+  const ziel = await pruefeAdWeiche(
+    req('/pages/haelt-das-mein-leben-aus', `${PAID}&utm_content=${AD_B3}&lp_mm=an`),
+    fetchAttrappe(AN),
+  );
+  assert.equal(ziel, null, `erwartet: stehenbleiben, war: ${ziel}`);
+});
+
+test('ARM-NAHT: das gilt fuer JEDES Ziel der Karte, nicht nur fuer B3', async () => {
+  for (const [adId, pfad] of Object.entries(MM_ZIELE)) {
+    const ziel = await pruefeAdWeiche(
+      req(pfad, `${PAID}&utm_content=${adId}&lp_mm=an`),
+      fetchAttrappe(AN),
+    );
+    assert.equal(ziel, null, `${adId} auf ${pfad} wurde weitergeleitet: ${ziel}`);
+  }
+});
+
+// --- Die drei Gegenproben. Ohne sie waere der Fix eine Entwaffnung ----------
+
+test('ARM-NAHT-GEGENPROBE: eine NICHT zugeordnete Anzeige geht von einer MM-Seite weiter auf LP A', async () => {
+  // Das ist die Absicht, die der Schleifenschutz ausdruecklich schuetzen wollte
+  // ("ein Eintrag in AUSSCHLUSS_SEGMENTE wuerde die Weiche auf diesen Seiten
+  // fuer ALLE Anzeigen abschalten"). Genau deshalb prueft der Fix AD-SCHARF.
+  const ziel = await pruefeAdWeiche(
+    req('/pages/haelt-das-mein-leben-aus', `${PAID}&utm_content=${AD_TOFA}`),
+    fetchAttrappe(AN),
+  );
+  assert.ok(ziel && ziel.startsWith(LP_A_PFAD), `erwartet LP A, war: ${ziel}`);
+});
+
+test('ARM-NAHT-GEGENPROBE: mit ausgeschaltetem Arm bleibt es beim Dekret vom 2026-07-24', async () => {
+  const ziel = await pruefeAdWeiche(
+    req('/pages/haelt-das-mein-leben-aus', `${PAID}&utm_content=${AD_B3}`),
+    fetchAttrappe({ad_weiche_mm: 'aus-defekt-irgendwas'}),
+  );
+  assert.ok(ziel && ziel.startsWith(LP_A_PFAD), `erwartet LP A, war: ${ziel}`);
+});
+
+test('ARM-NAHT-GEGENPROBE: auf einer FREMDEN MM-Seite greift die Zuordnung weiter', async () => {
+  // B3 steht auf der Seite einer anderen Welle: das ist nicht "schon da", die
+  // Weiche muss ihn auf SEIN Ziel holen. Sonst haette der Fix zu breit gegriffen.
+  const fremd = MM_ZIELPFADE.find((p) => p !== MM_ZIELE[AD_B3]);
+  assert.ok(fremd, 'die Karte braucht mindestens zwei verschiedene Ziele');
+  const ziel = await pruefeAdWeiche(
+    req(fremd, `${PAID}&utm_content=${AD_B3}&lp_mm=an`),
+    fetchAttrappe(AN),
+  );
+  assert.ok(
+    ziel && ziel.startsWith(MM_ZIELE[AD_B3]),
+    `erwartet ${MM_ZIELE[AD_B3]}, war: ${ziel}`,
+  );
+});
+
+test('ARM-NAHT: die Hilfsfunktion selbst ist ad-scharf', () => {
+  assert.equal(stehtAufEigenemMmZiel('/pages/haelt-das-mein-leben-aus', AD_B3), true);
+  assert.equal(stehtAufEigenemMmZiel('/pages/haelt-das-mein-leben-aus', AD_TOFA), false);
+  assert.equal(stehtAufEigenemMmZiel('/', AD_B3), false);
+  assert.equal(stehtAufEigenemMmZiel('/pages/haelt-das-mein-leben-aus', null), false);
 });

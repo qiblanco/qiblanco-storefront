@@ -170,6 +170,35 @@ export const MM_ZIELE = Object.freeze({
 export const MM_ZIELPFADE = Object.freeze([...new Set(Object.values(MM_ZIELE))]);
 
 /**
+ * Steht dieser Klick BEREITS auf der Message-Match-Seite SEINER Anzeige?
+ *
+ * WARUM DIESE FUNKTION UND NICHT EIN EINTRAG IN AUSSCHLUSS_SEGMENTE: ein
+ * dortiger Eintrag schaltete die Weiche auf den MM-Seiten fuer ALLE Anzeigen
+ * ab, auch fuer die NICHT zugeordneten — genau das wollte der Schleifenschutz
+ * unten bewusst vermeiden, und diese Absicht bleibt unangetastet. Geprueft
+ * wird ad-scharf: nur der Klick, der schon auf SEINEM eigenen Ziel steht.
+ *
+ * WARUM ES SIE BRAUCHT (am Rand gemessen 2026-09-12, ad_weiche_mm='an'):
+ * der Schleifenschutz in mmZielPfad() unterdrueckt korrekt das MM-Ziel,
+ * sobald der Klick dort angekommen ist — aber pruefeAdWeiche() lief danach
+ * WEITER, fand die Paid-Marker noch im Query und warf den Besucher mit dem
+ * Default-Ziel auf LP A. Die volle Kette war
+ *   / -> /discount -> /pages/haelt-das-mein-leben-aus -> /discount -> LP A
+ * Der Besucher war also zwei Hops lang auf der richtigen Seite und wurde
+ * dann wieder heruntergeholt; der Arm war damit wirkungslos, obwohl Schalter,
+ * Karte und Pfadliterale stimmten. Die hermetische Suite konnte das baulich
+ * nicht sehen: sie prueft mmZielPfad als reine Funktion, und den ZWEITEN
+ * Request auf der MM-Seite gibt es dort nicht.
+ *
+ * @param {string} aktuellerPfad
+ * @param {string | null} adId
+ * @returns {boolean}
+ */
+export function stehtAufEigenemMmZiel(aktuellerPfad, adId) {
+  return Boolean(adId) && MM_ZIELE[adId] === aktuellerPfad;
+}
+
+/**
  * Reine Entscheidungsfunktion: welcher LP-Pfad gilt für diese Anzeige?
  * Liefert null, wenn die Anzeige nicht zugeordnet ist, der Schalter aus ist,
  * der Wuerfel in den Kontrollarm faellt — oder wenn das Ziel der Pfad ist,
