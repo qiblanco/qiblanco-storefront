@@ -8,6 +8,7 @@ import {artikelSchema} from '~/lib/blog-schema';
 import {autorenkastenSichtbarkeit} from '~/lib/autorenkasten';
 import {Autorenkasten} from '~/components/Autorenkasten';
 import blogStyles from '~/styles/blog.css?url';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 // EIGENES STYLESHEET STATT app/styles/app.css: die Blog-Regeln lagen bis zum
 // 2026-09-04 im globalen Blatt. Dort ist jede Zeile eine Änderung an ALLEN 43
@@ -209,7 +210,7 @@ export default function Article() {
           </div>
         )}
         <div
-          dangerouslySetInnerHTML={{__html: inhaltHtml}}
+          dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(inhaltHtml)}}
           className="article-inhalt"
         />
 

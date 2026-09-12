@@ -23,6 +23,7 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 /**
  * Route-gebundenes Stylesheet der Instagram-Stimmen (Muster: zweifel-beleg.css
  * in products.qione-2-pro.jsx). NICHT in app.css: die globale Datei erreicht
@@ -171,7 +172,7 @@ export default function Product() {
           </SterneSprung>
           <div
             className="ProductDescription"
-            dangerouslySetInnerHTML={{__html: descriptionHtml}}
+            dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
           />
 
           <p className="mt-2">

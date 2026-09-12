@@ -12,6 +12,7 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {QiMasterTreppe} from '~/components/product-pages/QiMasterTreppe';
 import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
 import preisstufen from '~/data/qi-master-preisstufen.json';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /*
  * Organische Produktseite /products/qi-master — QiMaster, „der QiOne mit
@@ -156,7 +157,7 @@ export default function Product() {
         description={
           <div
             className="ProductDescription"
-            dangerouslySetInnerHTML={{__html: descriptionHtml}}
+            dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
           />
         }
         priceLabel={<QiMasterTreppe treppe={treppe} kompakt />}

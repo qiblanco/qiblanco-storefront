@@ -30,12 +30,20 @@
  * vollstaendigen URL -- dieselbe Datei existiert in mehreren Größenvarianten
  * (_16x16, _480x480), und ein URL-Literal würde die nächste Variante verfehlen.
  *
- * JEDES ANDERE alt-lose Bild bleibt UNBERUEHRT und wird GEZAEHLT UND BENANNT
- * (`bilderAuszeichnen().offen`). Das ist Absicht: ein Einschluss-Selektor sagt
- * nur, was er NIMMT, und schuldet deshalb einen Restbericht über das, was er
- * liegen lässt. Der stehende Arm [ALT] der auffindbarkeits_wache wird bei so
- * einem Bild rot -- und dann entscheidet ein Mensch über sein Motiv, statt dass
- * eine Maschine es raet.
+ * JEDES ANDERE alt-lose Bild bleibt UNBERÜHRT. Das ist Absicht: ein
+ * Einschluss-Selektor sagt nur, was er NIMMT, und schuldet deshalb einen
+ * Restbericht über das, was er liegen lässt.
+ *
+ * WER DIESEN RESTBERICHT WIRKLICH FÜHRT — hier stand bis zum 2026-09-12 eine
+ * Zusage, die im Betrieb niemand einlöste: `bilderAuszeichnen().offen` gibt die
+ * Liste zurück, aber der Render-Pfad ruft `fremdHtmlMitBildAuszeichnung()` und
+ * VERWIRFT sie; gelesen wurde `offen` allein im Test. Eine Zusage ohne Leser ist
+ * keine. Der echte, stehende Leser ist die Live-Messung
+ * `seo-manager/pruefungen/probe_alt_attribut_vollstaendig.py` und über sie der
+ * tägliche Arm [ALT] der auffindbarkeits_wache (Soll 0): ein unbekanntes
+ * alt-loses Bild wird DORT rot, und dann entscheidet ein MENSCH über sein Motiv.
+ * `offen` bleibt das Prüffeld für Tests und für Aufrufer, die es auswerten
+ * WOLLEN — es ist ausdrücklich NICHT der Melder.
  */
 
 /**
@@ -52,9 +60,53 @@ export const DEKORATIVE_ICONS = [
   'Green_Checkmark',
 ];
 
-const IMG_TAG = /<img\b[^>]*>/gi;
-const HAT_ALT = /\balt\s*=/i;
-const SRC = /\bsrc\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i;
+/*
+ * DIE MUSTER, UND WARUM SIE NICHT EINFACHER SIND. Die drei Verschärfungen
+ * stammen aus einer unabhängigen Gegenprüfung am 2026-09-12, die je eine
+ * Eingabe vorführte, an der die naive Fassung still danebenlag. Alle drei
+ * Fehler fielen fail-open aus (das Bild blieb ohne alt, es entstand NIE ein
+ * falsches alt) — sie waren also nicht gefährlich, aber unsichtbar.
+ *
+ * Tag-Scanner: `<img[^>]*>` bricht an einem `>` INNERHALB eines Attributwerts
+ *   ab (`<img title="a > b" src="…">`). Gescannt wird deshalb quote-treu.
+ * HAT_ALT: `\balt\s*=` trifft auch `data-alt=`, weil `-` eine Wortgrenze ist.
+ *   Verlangt wird deshalb ein echter Attribut-Anfang: Tag-Beginn oder Leerraum.
+ * SRC: dieselbe Wurzel in der Gegenrichtung — ein `?alt=de` IN der Bild-URL
+ *   darf nicht als vorhandenes alt gelesen werden; das erledigt HAT_ALT mit.
+ */
+const HAT_ALT = /(?:^<img|\s)alt\s*=/i;
+const SRC = /(?:^<img|\s)src\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i;
+
+/**
+ * Alle <img>-Tags quote-treu einsammeln. Ein `>` in einem Attributwert beendet
+ * das Tag NICHT. Ein unabgeschlossenes Tag wird übersprungen statt geraten.
+ * @param {string} html
+ * @returns {Array<{tag: string, start: number, ende: number}>}
+ */
+function imgTags(html) {
+  const raus = [];
+  const anfang = /<img\b/gi;
+  let m;
+  while ((m = anfang.exec(html)) !== null) {
+    let i = m.index + m[0].length;
+    let quote = null;
+    while (i < html.length) {
+      const c = html[i];
+      if (quote) {
+        if (c === quote) quote = null;
+      } else if (c === '"' || c === "'") {
+        quote = c;
+      } else if (c === '>') {
+        break;
+      }
+      i += 1;
+    }
+    if (i >= html.length) break;
+    raus.push({tag: html.slice(m.index, i + 1), start: m.index, ende: i + 1});
+    anfang.lastIndex = i + 1;
+  }
+  return raus;
+}
 
 function quelleVon(tag) {
   const m = tag.match(SRC);
@@ -78,19 +130,28 @@ export function bilderAuszeichnen(html) {
   if (typeof html !== 'string' || html === '') {
     return {html: typeof html === 'string' ? html : '', gesetzt, offen};
   }
-  const neu = html.replace(IMG_TAG, (tag) => {
-    if (HAT_ALT.test(tag)) return tag;
+  let neu = '';
+  let zuletzt = 0;
+  for (const {tag, start, ende} of imgTags(html)) {
+    neu += html.slice(zuletzt, start);
+    zuletzt = ende;
+    if (HAT_ALT.test(tag)) {
+      neu += tag;
+      continue;
+    }
     const quelle = quelleVon(tag);
     const bekannt = DEKORATIVE_ICONS.some((n) => quelle.includes(n));
     if (!bekannt) {
       offen.push(quelle);
-      return tag;
+      neu += tag;
+      continue;
     }
     gesetzt.push(quelle);
-    // Direkt hinter "<img" einsetzen: das ist die einzige Stelle, die
-    // unabhängig von der Attribut-Reihenfolge und von "/>" gegen ">" ist.
-    return tag.replace(/^<img\b/i, '<img alt=""');
-  });
+    // Direkt hinter "<img" einsetzen: die einzige Stelle, die unabhängig von
+    // der Attribut-Reihenfolge und von "/>" gegen ">" ist.
+    neu += tag.replace(/^<img\b/i, '<img alt=""');
+  }
+  neu += html.slice(zuletzt);
   return {html: neu, gesetzt, offen};
 }
 

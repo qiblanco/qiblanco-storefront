@@ -22,6 +22,7 @@ import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 /**
  * @type {MetaFunction<typeof loader>}
  */
@@ -120,7 +121,7 @@ export default function Product() {
       <div className="product-main">
         <h1>{title}</h1>
         <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
-        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 

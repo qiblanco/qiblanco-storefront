@@ -11,6 +11,7 @@ import {
 } from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -218,7 +219,7 @@ export default function Page() {
           (components/PageLayout.jsx), das hier war ein zweites, verschachteltes. */}
       <div
         className="rs-doc__rumpf"
-        dangerouslySetInnerHTML={{__html: page.body}}
+        dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(page.body)}}
       />
     </Rechtsseite>
   );
