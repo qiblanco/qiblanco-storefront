@@ -95,10 +95,10 @@ function Hero() {
             ))}
           </ul>
           <p className="lp-a-hero__subline">
-            Jemand, dem du vertraust, hat dir Qi Blanco empfohlen. Schön, dass
-            du hier bist. Du bekommst das Wichtigste kompakt: was kohärentes
-            Wasser ist, was Zellstudien dazu messen und wie du deinen
-            Empfehlungs-Code einlöst. Kein Druck. Lies in Ruhe.
+            Jemand, dem du vertraust, hat dir Qi Blanco empfohlen — schön, dass
+            du hier bist. Auf dieser Seite bekommst du das Wichtigste kompakt:
+            was kohärentes Wasser ist, was Zellstudien dazu messen und wie du
+            deinen Empfehlungs-Code einlöst. Kein Druck — lies in Ruhe.
           </p>
           <div className="lp-a-hero__cta-row">
             <a className="lp-vp-btn lp-vp-btn--primary" href="#produkte">
@@ -117,11 +117,11 @@ function Hero() {
         <figure className="lp-a-hero__visual">
           <img
             src={heroImg}
-            alt="QiOne® 2 Pro: kohärentes Wasser auf Zellebene"
+            alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
             loading="eager"
           />
           <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro, der Allrounder. Getragen Tag und Nacht.
+            QiOne<sup>®</sup>&nbsp;2 Pro — der Allrounder, getragen Tag und Nacht.
           </figcaption>
         </figure>
       </div>
@@ -134,17 +134,17 @@ function CodeSection() {
   const wege = [
     {
       title: 'Mit Empfehlungs-Code',
-      body: 'Lege dein Produkt in den Warenkorb und trage den Code beim Bezahlen in das Feld für Rabatt- bzw. Gutscheincodes ein. Dein Vorteil wird direkt abgezogen, und deine Bestellung wird deinem Empfehler zugeordnet.',
+      body: 'Lege dein Produkt in den Warenkorb und trage den Code beim Bezahlen in das Feld für Rabatt- bzw. Gutscheincodes ein. Dein Vorteil wird direkt abgezogen — und deine Bestellung wird deinem Empfehler zugeordnet.',
     },
     {
       title: 'Über einen persönlichen Link',
-      body: 'Bist du über den Empfehlungs-Link hierher gekommen? Dann ist dein Besuch bereits zugeordnet. Du musst nichts weiter tun. Hast du zusätzlich einen Code, kannst du ihn beim Bezahlen ganz normal einlösen.',
+      body: 'Bist du über den Empfehlungs-Link hierher gekommen? Dann ist dein Besuch bereits zugeordnet — du musst nichts weiter tun. Hast du zusätzlich einen Code, kannst du ihn beim Bezahlen ganz normal einlösen.',
     },
   ];
   return (
     <section className="lp-vp-section" data-section="lp-pt-code" id="code">
       <span className="eyebrow">Empfehlungs-Code</span>
-      <h2>Dein Code, dein Vorteil. So einfach geht es.</h2>
+      <h2>Dein Code, dein Vorteil — so einfach geht es.</h2>
       <p className="lp-vp-section__lede">
         Dein Empfehler hat einen persönlichen Code oder Link für dich. Beides
         führt zum selben Ziel: Du bekommst deinen Vorteil, und die Empfehlung
@@ -187,11 +187,11 @@ function MechanismSection() {
   return (
     <section className="lp-vp-section" data-section="lp-pt-mechanismus">
       <span className="eyebrow">Was dahintersteckt</span>
-      <h2>Kohärentes Wasser: ein Prinzip, drei Ebenen.</h2>
+      <h2>Kohärentes Wasser — ein Prinzip, drei Ebenen.</h2>
       <p className="lp-vp-section__lede">
         Dein Körper besteht zu über 70&nbsp;% aus Wasser, und fast alle
         biologischen Prozesse laufen an wasserumhüllten Grenzflächen ab. Ist
-        dieses Wasser geordnet, also kohärent, arbeiten Zellen, Membranen und
+        dieses Wasser geordnet — kohärent —, arbeiten Zellen, Membranen und
         Nervensystem ruhiger. Genau da setzt die GitterChip™-Technologie an.
         Jede Ebene hat ihre eigene Seite, wenn du tiefer einsteigen willst.
       </p>
@@ -230,7 +230,7 @@ function MechanismSection() {
       </div>
       <p className="lp-a-note">
         Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die
-        genannten Zellstudien sind in vitro (an Zellkulturen) durchgeführt. Sie
+        genannten Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie
         erklären den Mechanismus, sie sind keine Heilaussage.
       </p>
     </section>
@@ -255,19 +255,19 @@ function ScienceSection() {
     {
       value: '5 / 5',
       label: 'Zelltypen geschützt',
-      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen, von Leber bis Lunge.',
+      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
       cite: 'Applied Cell Biology, 2024 · in vitro',
     },
   ];
   return (
     <section className="lp-vp-section" data-section="lp-pt-wissenschaft">
       <span className="eyebrow">Wissenschaft</span>
-      <h2>Nicht nur empfohlen. An Zellen gemessen.</h2>
+      <h2>Nicht nur empfohlen — an Zellen gemessen.</h2>
       <p className="lp-vp-section__lede">
         Vier peer-review-publizierte Zellstudien (Dartsch Scientific,
         unabhängiges Labor) belegen die Wirkung der Qi-Blanco-Technologie
-        experimentell. Alle Studien in vitro, mit messbaren und
-        reproduzierbaren Effekten auf lebende Zellen. Du kannst jede Publikation selbst lesen.
+        experimentell. Alle Studien in vitro — messbare, reproduzierbare
+        Effekte auf lebende Zellen. Du kannst jede Publikation selbst lesen.
       </p>
       <div className="lp-vp-peer-stats">
         {stats.map((s) => (
@@ -296,7 +296,7 @@ function ErfahrungenSection() {
     {
       value: '~17 %',
       label: 'Energie & Vitalität',
-      desc: 'Zweithäufigste Nennung: mehr Energie im Alltag.',
+      desc: 'Zweithäufigste Nennung — mehr Energie im Alltag.',
       cite: 'Deskriptive Auswertung, 2024',
     },
     {
@@ -313,7 +313,7 @@ function ErfahrungenSection() {
       <p className="lp-vp-section__lede">
         171 Erfahrungsberichte wurden 2024 als deskriptive Auswertung
         publiziert. Am häufigsten genannt: Ruhe und tieferer Schlaf, danach
-        mehr Energie. Das ist kein Kausal-Beweis, aber ein ehrliches Bild
+        mehr Energie. Das ist kein Kausal-Beweis — aber ein ehrliches Bild
         dessen, was Menschen erleben. Berichte einzelner Nutzer, deskriptiv.
       </p>
       <div className="lp-vp-peer-stats">
@@ -338,19 +338,19 @@ function PasstSection() {
     'du abends schwer abschaltest oder unruhig schläfst',
     'du viel zwischen WLAN, Handy und Bildschirm lebst',
     'du Grenzforschung offen gegenüberstehst, wenn Labor-Daten dahinterstehen',
-    'du einen passiven Begleiter willst, ohne App, Akku oder neue Routine',
+    'du einen passiven Begleiter willst — ohne App, Akku oder neue Routine',
   ];
   const nein = [
-    'du ein Medizinprodukt oder ein Heilversprechen erwartest: beides sind wir nicht',
-    'du eine Wirkung erwartest, die du garantiert sofort spürst: wir binden dein Urteil an 20 Nächte, nicht an ein Gefühl',
-    'du nur gelten lässt, was etablierte Schulmedizin ist: kohärentes Wasser ist Grenzforschung',
+    'du ein Medizinprodukt oder ein Heilversprechen erwartest — beides sind wir nicht',
+    'du eine Wirkung erwartest, die du garantiert sofort spürst — wir binden dein Urteil an 20 Nächte, nicht an ein Gefühl',
+    'du nur gelten lässt, was etablierte Schulmedizin ist — kohärentes Wasser ist Grenzforschung',
   ];
   return (
     <section className="lp-vp-section" data-section="lp-pt-passt">
       <span className="eyebrow">Ehrliche Einordnung</span>
       <h2>Passt Qi Blanco zu dir?</h2>
       <p className="lp-vp-section__lede">
-        Eine gute Empfehlung verdient eine ehrliche Antwort, in beide
+        Eine gute Empfehlung verdient eine ehrliche Antwort — in beide
         Richtungen. Deshalb sagen wir dir auch, wann Qi Blanco nichts für dich
         ist.
       </p>
@@ -381,11 +381,11 @@ function GarantieSection() {
   const items = [
     {
       title: '20 Nächte, dein Alltag',
-      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.',
+      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
     },
     {
       title: 'In Raten, wenn du willst',
-      body: 'Über Klarna oder PayPal in bequemen Monatsraten, mit 0 % Finanzierung. Du entscheidest, wie du zahlst.',
+      body: 'Über Klarna oder PayPal in bequemen Monatsraten — 0 % Finanzierung. Du entscheidest, wie du zahlst.',
     },
     {
       title: 'Made in Germany',
@@ -395,7 +395,7 @@ function GarantieSection() {
   return (
     <section className="lp-vp-section" data-section="lp-pt-garantie">
       <span className="eyebrow">Dein Risiko: keins</span>
-      <h2>Überzeugt es dich, oder du bekommst dein Geld zurück.</h2>
+      <h2>Überzeugt es dich — oder du bekommst dein Geld zurück.</h2>
       <p className="lp-vp-section__lede">
         Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort
         bewusst wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl,
@@ -441,7 +441,7 @@ function ProdukteSection() {
       p: qione,
       name: 'QiOne® 2 Pro',
       handle: 'qione-2-pro',
-      tagline: 'Der Allrounder für Tag und Nacht',
+      tagline: 'Der Allrounder — Tag und Nacht',
       features: [
         'Wirkt auf allen drei Ebenen',
         'Tragbar als Anhänger',
@@ -520,7 +520,7 @@ function SignatureSection() {
       <span className="eyebrow">Unsere Sichtweise</span>
       <h2>Wir verkaufen dir keinen Schmuck.</h2>
       <p className="lp-a-signature__body">
-        Der QiOne<sup>®</sup> ist schön, aber das ist nicht der Punkt. Der
+        Der QiOne<sup>®</sup> ist schön — aber das ist nicht der Punkt. Der
         eigentliche Wert ist unsichtbar: kohärentes Wasser in deinem Körper,
         Zellen, die besser geschützt sind, ein Nervensystem, das abends
         herunterfahren darf. Der Schmuck ist nur das Vehikel. Was du wirklich
@@ -541,9 +541,9 @@ function FinalCTA() {
   const compare = compareLabelVon(product);
   const image = product?.featuredImage?.url || QIONE_FALLBACK_IMG;
   const schritte = [
-    'Produkt wählen: der QiOne® 2 Pro ist der Allrounder für Tag und Nacht.',
+    'Produkt wählen — der QiOne® 2 Pro ist der Allrounder für Tag und Nacht.',
     'Empfehlungs-Code beim Bezahlen einlösen, falls du einen hast.',
-    'Das Produkt 20 Nächte im echten Alltag testen. Nicht überzeugt heißt: voller Kaufpreis zurück.',
+    'Das Produkt 20 Nächte im echten Alltag testen — nicht überzeugt heißt: voller Kaufpreis zurück.',
   ];
   return (
     <section className="lp-vp-final-cta" data-section="lp-pt-final">

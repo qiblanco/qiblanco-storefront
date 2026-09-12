@@ -70,14 +70,14 @@ export const FRAGEN = [
     frage: 'Was kostet die Teilnahme?',
     antwort:
       'Nichts. Die Teilnahme am Partnerprogramm ist kostenlos, und du gehst ' +
-      'keine Mindestlaufzeit ein. Beide Seiten können jederzeit ohne Angabe ' +
+      'keine Mindestlaufzeit ein — beide Seiten können jederzeit ohne Angabe ' +
       'von Gründen kündigen.',
   },
   {
     frage: 'Wie lange wird ein Klick mir zugeordnet?',
     antwort:
       'Dein Tracking-Link setzt ein Cookie mit 30 Tagen Laufzeit. Kauft ' +
-      'jemand innerhalb dieser 30 Tage, wird der Verkauf dir zugeordnet, ' +
+      'jemand innerhalb dieser 30 Tage, wird der Verkauf dir zugeordnet — ' +
       'auch dann, wenn er erst ein paar Tage später bestellt. Käufe nach ' +
       'Ablauf der Cookie-Laufzeit können nicht mehr zugeordnet werden.',
   },
@@ -87,8 +87,8 @@ export const FRAGEN = [
       'Nein. Provision gibt es ausschließlich für Empfehlungen an Dritte. ' +
       'Eigenkäufe, Bestellungen deiner eigenen Firma oder verbundener ' +
       'Unternehmen und die systematische Eigennutzung deines Codes sind ' +
-      'ausgeschlossen. Der Rabatt aus deinem Code greift dabei weiterhin. ' +
-      'Nur eine Provision entsteht daraus nicht.',
+      'ausgeschlossen. Der Rabatt aus deinem Code greift dabei weiterhin — ' +
+      'nur eine Provision entsteht daraus nicht.',
   },
   {
     frage: 'Wann wird ausgezahlt?',
@@ -119,14 +119,14 @@ const VORTEILE = [
     titel: 'Dein eigener 5-%-Code',
     text:
       'Du bekommst einen persönlichen Gutscheincode, den du selbst benennen ' +
-      'kannst. Wer ihn nutzt, spart 5 %. Du empfiehlst also nicht mit leeren ' +
+      'kannst. Wer ihn nutzt, spart 5 % — du empfiehlst also nicht mit leeren ' +
       'Händen, sondern gibst deiner Community etwas mit.',
   },
   {
     titel: '30 Tage Zuordnung',
     text:
       'Dein Tracking-Link zieht den Rabatt automatisch. Wer darüber kommt, ' +
-      'bleibt dir 30 Tage lang zugeordnet, auch wenn er erst ein paar Tage ' +
+      'bleibt dir 30 Tage lang zugeordnet — auch wenn er erst ein paar Tage ' +
       'später bestellt.',
   },
 ];
@@ -143,7 +143,7 @@ const SCHRITTE = [
     titel: 'Freigabe abwarten',
     text:
       'Wir sehen uns jede Anmeldung an. Nach der Prüfung schalten wir dein ' +
-      'Partnerkonto frei oder sagen dir, dass es diesmal nicht passt.',
+      'Partnerkonto frei — oder sagen dir, dass es diesmal nicht passt.',
   },
   {
     titel: 'Link und Code teilen',
@@ -163,13 +163,13 @@ const PASST = [
   'Du benutzt Qi Blanco selbst und wirst ohnehin danach gefragt.',
   'Du hast eine Community, der ein 5-%-Code echten Nutzen bringt.',
   'Du empfiehlst gern in eigenen Worten, statt Werbetexte zu kopieren.',
-  'Du willst nachlesen können, woran du bist: Zahlen, Bedingungen, Kündigung.',
+  'Du willst nachlesen können, woran du bist — Zahlen, Bedingungen, Kündigung.',
 ];
 
 const PASST_NICHT = [
-  'Du möchtest den Code vor allem für eigene Einkäufe nutzen. Dafür gibt es keine Provision.',
+  'Du möchtest den Code vor allem für eigene Einkäufe nutzen — dafür gibt es keine Provision.',
   'Du willst mit fremden Marken- oder Wirkversprechen werben, die wir nicht belegen können.',
-  'Du erwartest eine garantierte Zulassung. Jede Anmeldung wird geprüft.',
+  'Du erwartest eine garantierte Zulassung — jede Anmeldung wird geprüft.',
 ];
 
 /* ───────── Hero: die Zahl zuerst, das Versprechen danach ───────── */
@@ -193,10 +193,10 @@ function Hero() {
           </ul>
           <p className="lp-a-hero__subline">
             Du empfiehlst Qi Blanco ohnehin weiter? Dann bekommst du dafür
-            10&nbsp;% Provision auf den Netto-Warenwert, und deine Community
-            bekommt über deinen Code 5&nbsp;% Rabatt. In zwei Minuten steht
-            hier alles, was du vorher wissen willst: die Zahlen, der Ablauf
-            und die Fälle, in denen es keine Provision gibt.
+            10&nbsp;% Provision auf den Netto-Warenwert — und deine Community
+            bekommt über deinen Code 5&nbsp;% Rabatt. Auf dieser Seite steht
+            in zwei Minuten alles, was du vorher wissen willst: die Zahlen,
+            der Ablauf und die Fälle, in denen es keine Provision gibt.
           </p>
           <div className="lp-a-hero__cta-row">
             <a
@@ -216,11 +216,12 @@ function Hero() {
             <li>Anmeldung in wenigen Minuten</li>
           </ul>
           <p className="lp-pp-konto">
-            Schon Partner? Im{' '}
+            Schon Partner?{' '}
             <a href={PARTNERKONTO} rel="noopener">
-              Partnerkonto
+              Zum Partnerkonto
             </a>{' '}
-            liegen dein Tracking-Link, dein Gutscheincode und deine Zahlen.
+            — dort liegen dein Tracking-Link, dein Gutscheincode und deine
+            Zahlen.
           </p>
         </div>
         <figure className="lp-pp-hero__visual">
@@ -228,7 +229,7 @@ function Hero() {
             src={HERO_IMG}
             srcSet={HERO_SRCSET}
             sizes="440px"
-            alt="QiOne® 2 Pro, eines der Produkte, die du als Partner empfiehlst"
+            alt="QiOne® 2 Pro — eines der Produkte, die du als Partner empfiehlst"
             width="880"
             height="880"
             loading="eager"
@@ -250,8 +251,8 @@ function Vorteile() {
       <span className="eyebrow">Deine Konditionen</span>
       <h2 id="lp-pp-vorteile-title">Das bekommst du als Partner</h2>
       <p className="lp-vp-section__lede">
-        Ein Satz für alle, ohne Staffel und ohne Mindestumsatz. Damit kannst
-        du vorher ausrechnen, was eine Empfehlung dir bringt.
+        Ein Satz für alle, ohne Staffel und ohne Mindestumsatz — damit du
+        vorher ausrechnen kannst, was eine Empfehlung dir bringt.
       </p>
       <div className="lp-vp-benefits-grid">
         {VORTEILE.map((v) => (
@@ -300,7 +301,7 @@ function Bedingungen() {
       data-section="lp-pp-bedingungen"
     >
       <span className="eyebrow">Klarheit vorab</span>
-      <h2 id="lp-pp-bedingungen-title">Für wen das passt und für wen nicht</h2>
+      <h2 id="lp-pp-bedingungen-title">Für wen das passt — und für wen nicht</h2>
       <p className="lp-vp-section__lede">
         Provision entsteht nur für Empfehlungen an Dritte, und jede Anmeldung
         wird vor der Freischaltung geprüft. Was das konkret bedeutet, steht
@@ -326,7 +327,7 @@ function Bedingungen() {
       </div>
       <p className="lp-a-note">
         Die vollständigen Teilnahmebedingungen liegen im Anmeldeformular unter
-        {'„AGBs“'}. Dort steht auch, wie Prüfung, Stornierung und Kündigung
+        {'„AGBs“'} — dort steht auch, wie Prüfung, Stornierung und Kündigung
         geregelt sind. Womit du wirbst, kannst du dir hier ansehen:{' '}
         <a href="/products/qione-2-pro">QiOne® 2 Pro</a>,{' '}
         <a href="/products/qibracelet">QiBracelet</a>,{' '}
@@ -368,7 +369,7 @@ function Abschluss() {
         <h2 id="lp-pp-cta-title">Werde Partner</h2>
         <p className="lp-vp-final-cta__lede">
           Die Anmeldung läuft über unser Partnerportal. Du hinterlegst dort
-          deine Daten und den Wunschnamen für deinen Gutscheincode. Danach
+          deine Daten und den Wunschnamen für deinen Gutscheincode — danach
           prüfen wir und schalten dein Partnerkonto frei.
         </p>
         <a className="lp-vp-btn lp-vp-btn--lg" href={FORMULAR} rel="noopener">

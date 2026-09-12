@@ -30,7 +30,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'So funktioniert der QiOne® 2 Pro, einfach erklärt | Qi Blanco'},
+  {title: 'So funktioniert der QiOne® 2 Pro — einfach erklärt | Qi Blanco'},
   {
     name: 'description',
     content:
