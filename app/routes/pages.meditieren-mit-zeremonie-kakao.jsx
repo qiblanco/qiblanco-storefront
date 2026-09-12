@@ -6,6 +6,7 @@ import {loadCourseProducts} from '~/lib/course-products';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import qioneZellschutzStyles from '~/styles/qione-zellschutz.css?url';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {kursVideoSignale} from '~/lib/kurs-video-schema';
 
 export function links() {
   return [{rel: 'stylesheet', href: qioneZellschutzStyles}];
@@ -20,6 +21,15 @@ export const meta = ({data}) => {
     ...seitenSignale({
       pfad: '/pages/meditieren-mit-zeremonie-kakao',
       titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
+    // Das Lektionsvideo als VideoObject. Die Einbettungs-URL kommt aus
+    // app/lib/kurs-video-schema.js und ist DIESELBE, die unten an
+    // <CourseLesson videoEmbed=...> steht — dass die beiden nie
+    // auseinanderlaufen, prüft test/kurs-video-schema.test.mjs Zeichen um
+    // Zeichen, nicht diese Konvention.
+    ...kursVideoSignale({
+      pfad: '/pages/meditieren-mit-zeremonie-kakao',
       beschreibung: data?.page?.seo?.description,
     }),
   ];
