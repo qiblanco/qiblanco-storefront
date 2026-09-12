@@ -4,6 +4,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {kursVideoSignale} from '~/lib/kurs-video-schema';
 
 export const meta = ({data}) => {
   const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
@@ -14,6 +15,15 @@ export const meta = ({data}) => {
     ...seitenSignale({
       pfad: '/pages/vitamine-mineralien',
       titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
+    // Das Lektionsvideo als VideoObject. Die Einbettungs-URL kommt aus
+    // app/lib/kurs-video-schema.js und ist DIESELBE, die unten an
+    // <CourseLesson videoEmbed=...> steht — dass die beiden nie
+    // auseinanderlaufen, prüft test/kurs-video-schema.test.mjs Zeichen um
+    // Zeichen, nicht diese Konvention.
+    ...kursVideoSignale({
+      pfad: '/pages/vitamine-mineralien',
       beschreibung: data?.page?.seo?.description,
     }),
   ];
