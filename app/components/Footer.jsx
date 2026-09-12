@@ -68,6 +68,7 @@ function FooterContent() {
       <FooterTop />
       <FooterStudies />
       <FooterDisclaimer />
+      <FooterInhalt />
       <FooterMenu />
     </footer>
   );
@@ -348,6 +349,64 @@ function PaymentIcons() {
         </svg>
       </li>
     </ul>
+  );
+}
+
+/**
+ * Inhaltliche Wege in die Domain — die zweite, obere Zeile im dunklen Bereich.
+ *
+ * WARUM SIE HIER STEHT (Christian, 2026-09-11): auf der Startseite standen bis
+ * heute zwei Kachel-Blöcke („Wenn du es genauer wissen willst" aus eb67a10 vom
+ * 2026-08-24 und „Nachlesen, was gemessen ist" aus 5d7123f vom 2026-09-10), die
+ * genau diese Ziele verlinkten. Christian wollte, dass die Startseite wieder
+ * nach dem Produktblock endet — „Ja, unten in den schwarzen Bereich könnte man
+ * solche Links noch einfügen." Ein Link, den es nicht mehr gibt, überträgt
+ * nichts; der Fußbereich ist die einzige Navigation, die auf JEDER Seite liegt.
+ *
+ * WARUM GENAU DIESE DREI UND NICHT SECHS: `/pages/ueber-uns` steht bereits in
+ * LEGAL_LINKS darunter — zwei Links auf dasselbe Ziel im selben Fuß sind kein
+ * stärkeres Signal, sondern Unordnung. Die drei einzelnen Magazinbeiträge
+ * bleiben bewusst draußen: sie veralten, sobald ein neuer Beitrag erscheint,
+ * und ein Fuß mit drei Artikelüberschriften ist in vier Wochen falsch. Der
+ * Weg zu ihnen führt über `/blogs/wissen` selbst.
+ *
+ * WARUM EINE ZWEITE `nav.footer-menu` UND KEIN NEUER BLOCK: die Klasse trägt
+ * Schrift, Farbe, Abstände und die `border-top`-Trennlinie bereits (app.css
+ * `.footer-menu`), und `flex-wrap: wrap` lässt sie auf dem Telefon sauber
+ * umbrechen. Eine eigene Klasse hätte neues CSS in app/styles/app.css
+ * gebraucht — die Datei steht wegen veralteter Pixel-Solls unter einer
+ * Gate-12-Sperre (FEHLER-DB F-2314). So kostet die Gruppe KEINE Zeile CSS.
+ *
+ * WARUM OHNE ÜBERSCHRIFT: der dunkle Bereich trägt unter den Produkten keine
+ * Rubriken-Titel; eine Überschrift über drei Links wäre der erste und damit
+ * ein Stilbruch. Getrennt wird über die vorhandene Trennlinie, nicht über Text.
+ *
+ * WARUM NICHT IN DIE BESTEHENDE ZEILE: die ist rechtlich und dienstlich
+ * (Impressum, Datenschutz, AGB, Widerruf). Drei Inhaltsverweise dazwischen
+ * wären ein Stilbruch — und aus sechs Einträgen würden neun in EINER Zeile,
+ * die auf dem Telefon zur Treppe wird.
+ */
+const INHALT_LINKS = [
+  {to: '/pages/technologie', label: 'Die Technologie dahinter'},
+  {to: '/pages/crystal-cacao', label: 'Crystal Cacao®'},
+  {to: '/blogs/wissen', label: 'Wissens-Magazin'},
+];
+
+function FooterInhalt() {
+  return (
+    <nav className="footer-menu" role="navigation" aria-label="Mehr über Qi Blanco">
+      {INHALT_LINKS.map(({to, label}) => (
+        <NavLink
+          end
+          key={to}
+          prefetch="intent"
+          style={activeLinkStyle}
+          to={to}
+        >
+          {label}
+        </NavLink>
+      ))}
+    </nav>
   );
 }
 
