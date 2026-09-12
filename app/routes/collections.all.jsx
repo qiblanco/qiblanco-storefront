@@ -2,12 +2,13 @@ import {useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
-import {canonicalLink} from '~/lib/seo';
+import {absoluteCanonical, canonicalLink} from '~/lib/seo';
+import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = () => {
+export const meta = ({data}) => {
   // Stand vorher: `Hydrogen | Products` — der Vorgabewert des Hydrogen-Starters,
   // englisch UND mit dem Namen des Frameworks im Browser-Tab der deutschen
   // Storefront (live nachgemessen 2026-08-22: <title>Hydrogen | Products</title>).
@@ -23,9 +24,29 @@ export const meta = () => {
   // Wie in `collections.$handle.jsx` sammelt der canonical die cursor-basierte
   // Paginierung bewusst ein — die Cursor-Parameter sind opake, alternde Zeiger
   // auf dieselbe Produktmenge, keine eigenständigen Seiten.
+  //
+  // OG UND STRUKTURIERTE DATEN (s04 des Grossjobs 20260911-…-auffindbarkeit):
+  // diese Seite ist die echte Kategorieuebersicht des Shops und trug bis
+  // hierher weder Teilen-Bild noch strukturierte Daten. Sie ist eine
+  // CollectionPage wie jede andere — nur ohne Shopify-Kollektion dahinter,
+  // weshalb es hier kein `collection.image` gibt und das Teilbild aus dem
+  // ersten Produkt kommt.
+  const produkte = data?.products?.nodes ?? [];
+  const titel = 'Alle Produkte | Qi Blanco';
   return [
-    {title: 'Alle Produkte | Qi Blanco'},
+    {title: titel},
     canonicalLink('/collections/all'),
+    ...kollektionSignale({
+      pfad: '/collections/all',
+      titel,
+      name: 'Alle Produkte',
+      bild: teilbild({erstesProdukt: produkte[0], name: 'Alle Produkte'}),
+      eintraege: produkte.map((p) => ({
+        url: absoluteCanonical(`/products/${p.handle}`),
+        name: p.title,
+      })),
+      ersteSeite: !data?.products?.pageInfo?.hasPreviousPage,
+    }),
   ];
 };
 

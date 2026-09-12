@@ -2,7 +2,7 @@ import {Link, useLoaderData} from 'react-router';
 import {Image, getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {blogMeta} from '~/lib/blog-seo';
+import {blogIndexSignale, blogMeta} from '~/lib/blog-seo';
 import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
 import {STRAENGE_LIVE, gruppiereNachStraengen} from '~/lib/werk';
@@ -26,18 +26,44 @@ export const links = () => [
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data, location, params}) => {
+  const pfad = location?.pathname ?? '/blogs';
+  // Nur was Shopify wirklich pflegt — ein erfundener Fuelltext wäre hier
+  // schlechter als gar keiner (er stuende auf JEDER Blog-Uebersicht gleich).
+  // `blog.seo.description` ist am 2026-09-06 leer und der Blog hat keinen
+  // excerpt — Auffanglinie aus ~/lib/seiten-beschreibung, eigener
+  // Schlüsselraum, damit ein Blog-Handle nie mit einem Seiten-Handle kollidiert.
+  const beschreibung =
+    data?.blog?.seo?.description?.trim() ||
+    BESCHREIBUNGEN[`/blogs/${params?.blogHandle}`];
+  const artikel = data?.blog?.articles?.nodes ?? [];
+
+  // DAS TEILEN-BILD KOMMT AUS DEM NEUESTEN ARTIKEL MIT BILD (s04 des Grossjobs
+  // 20260911-…-auffindbarkeit). `nodes` ist absteigend nach publishedAt
+  // sortiert, der erste Treffer ist also der juengste. Es wird KEIN Bild
+  // erfunden und keines hochskaliert: hat kein Artikel ein Aufmacherbild,
+  // bleibt og:image weg — und mit ihm die twitter:card, die sonst ein grosses
+  // Bild ZUSAGEN wuerde, das es nicht gibt (blogMeta setzt beide in derselben
+  // Bedingung).
+  const bildUrl = artikel.find((a) => a?.image?.url)?.image?.url;
+
   return blogMeta({
-    pfad: location?.pathname ?? '/blogs',
+    pfad,
     titel: data?.blog?.seo?.title || data?.blog?.title,
-    // Nur was Shopify wirklich pflegt — ein erfundener Fuelltext wäre hier
-    // schlechter als gar keiner (er stuende auf JEDER Blog-Uebersicht gleich).
-    // `blog.seo.description` ist am 2026-09-06 leer und der Blog hat keinen
-    // excerpt — Auffanglinie aus ~/lib/seiten-beschreibung, eigener
-    // Schlüsselraum, damit ein Blog-Handle nie mit einem Seiten-Handle kollidiert.
-    beschreibung:
-      data?.blog?.seo?.description?.trim() ||
-      BESCHREIBUNGEN[`/blogs/${params?.blogHandle}`],
-  });
+    beschreibung,
+    bildUrl,
+  }).concat(
+    // STRUKTURIERTE DATEN DER INDEX-SEITE. Die ARTIKEL tragen seit dem
+    // 2026-09-09 BlogPosting+Person+ImageObject; ohne Auszeichnung war
+    // ausschliesslich diese Uebersicht — sie ist der Knoten, der die neun
+    // Beitraege zu EINEM Publikationsorgan verbindet.
+    blogIndexSignale({
+      pfad,
+      name: data?.blog?.title || 'Wissen',
+      beschreibung,
+      artikel,
+      ersteSeite: !data?.blog?.articles?.pageInfo?.hasPreviousPage,
+    }),
+  );
 };
 
 /**
