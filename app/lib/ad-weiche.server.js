@@ -50,7 +50,7 @@ import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
 import {LP_V2_PFAD} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
-import {MM_MARKER, mmZielPfad} from './ad-weiche-ziele.js';
+import {MM_MARKER, mmZielPfad, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
 const FETCH_TIMEOUT_MS = 1500;
@@ -349,6 +349,28 @@ export async function pruefeAdWeiche(request, fetchImpl) {
   // Momentaufnahmen derselben Datei und könnten sich widersprechen.
   const zuteilungRoh = await holeZuteilungRoh(fetchImpl);
   if (!adWeicheAktivAusRoh(zuteilungRoh)) return null;
+
+  // DER KLICK IST SCHON DA, WO ER HINSOLL — dann feuert hier gar nichts mehr.
+  // Ohne diese Zeile unterdrueckt der Schleifenschutz in mmZielPfad() zwar das
+  // MM-Ziel, der Rest dieser Funktion läuft aber weiter, findet die
+  // Paid-Marker noch im Query und wirft den Besucher mit dem Default-Ziel auf
+  // LP A. Am Rand gemessen 2026-09-12 mit ad_weiche_mm='an':
+  //   / -> /discount -> /pages/haelt-das-mein-leben-aus -> /discount -> LP A
+  // Der Arm war damit wirkungslos, obwohl Schalter, Zielkarte und Pfadliterale
+  // stimmten. Geprueft wird AD-SCHARF (stehtAufEigenemMmZiel), nicht über
+  // AUSSCHLUSS_SEGMENTE: ein Eintrag dort schaltete die Weiche auf den
+  // MM-Seiten für ALLE Anzeigen ab, auch für die nicht zugeordneten — das
+  // wollte der Schleifenschutz bewusst vermeiden, und daran aendert sich
+  // nichts. Und NUR wenn der Arm aktiv ist: steht der Schalter aus, bleibt es
+  // beim dekretierten Zustand vom 2026-07-24 (alles auf LP A), auch für eine
+  // zugeordnete Anzeige, die direkt auf ihrer MM-Seite landet.
+  const angefragt = new URL(request.url);
+  if (
+    mmAktivAusRoh(zuteilungRoh) &&
+    stehtAufEigenemMmZiel(angefragt.pathname, adIdAusQuery(angefragt.searchParams))
+  ) {
+    return null;
+  }
 
   let ziel = entscheidung.ziel;
   let mm_pfad = null;
