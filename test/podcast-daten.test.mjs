@@ -25,12 +25,20 @@ import {
 
 const BASIS = 'https://qiblanco.com';
 
-// Folgen, deren YouTube-Beschreibung real KEINEN Fliesstext hergibt (hier: sie
-// bestand nur aus einem Link). Nichts wird erfunden — die Folge läuft mit
-// Titel und Video, die Schema-Beschreibung fällt auf den Titel zurück.
-// Die Liste ist SELBSTAUFLOESEND: bekommt die Folge doch Text, wird der Test
+// Folgen, deren YouTube-Beschreibung real KEINEN Fließtext hergibt. Nichts
+// wird erfunden — eine solche Folge läuft mit Titel und Video, die
+// Schema-Beschreibung fällt auf den Titel zurück.
+// Die Liste ist SELBSTAUFLÖSEND: bekommt die Folge doch Text, wird der Test
 // rot und verlangt, den Eintrag zu streichen. So bleibt keine stille Ausnahme.
-const OHNE_ORIGINALTEXT = new Set(['rMuIWLlI-9Y']);
+// SIE HAT SICH AUFGELÖST — und genau so war sie gemeint. `rMuIWLlI-9Y` stand
+// hier, weil seine YouTube-Beschreibung nur aus zwei Shop-Links bestand. Seit
+// dem 2026-09-12 trägt die Folge sechs Absätze aus dem EIGENEN Transkript
+// (Generator-Regel R4, quelle/podcast-eigentext-20260912.json); der Test hat
+// das beim ersten Lauf danach angeschlagen und den Eintrag eingefordert.
+// Der leere Satz bleibt stehen: er ist jetzt die Zusicherung, dass KEINE Folge
+// ohne Text ausgeliefert wird — wer eine neue Ausnahme braucht, muss sie hier
+// eintragen und begründen, statt sie irgendwo still zu dulden.
+const OHNE_ORIGINALTEXT = new Set([]);
 
 // --- Bestand ---------------------------------------------------------------
 
