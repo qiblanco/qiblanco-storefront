@@ -50,7 +50,7 @@ import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
  *        diesem Vorfall entstanden ist. Fassung 1 gab dort exit 2 (status
  *        abweichend, 106 Sätze, 7 Kandidaten): drei Sätze verurteilt, ein
  *        vierter auf `nicht_pruefbar` wegen eines Parse-Fehlers des Richters —
- *        und `nicht_pruefbar` heisst KEINE AUSSAGE, nie bestanden. Fassung 2
+ *        und `nicht_pruefbar` heißt KEINE AUSSAGE, nie bestanden. Fassung 2
  *        gibt exit 0, status konform. Alle vier Sätze sind ersetzt, KEINE
  *        prüfbare Angabe ist dabei weggefallen; die Gegenrichtung ist der
  *        teurere Fehler (Brain: ehrlich-oder-selbstabwertend-am-streichen-

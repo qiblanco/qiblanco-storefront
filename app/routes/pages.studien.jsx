@@ -1,11 +1,11 @@
-import {StudienUebersicht} from '~/components/studien/StudienUebersicht';
 import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
 import {übersichtSchema} from '~/lib/studien-schema';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {
+  StudienUebersicht,
   EVIDENZSTUFE_SOLL,
   evidenzstufeSchemaItems,
-} from '~/data/studien-evidenzstufe';
+} from '~/components/studien/StudienUebersicht';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
 
@@ -51,7 +51,7 @@ export const meta = () => [
 ];
 
 /** Genau EIN Aufbau des Schemas je Aufruf — sonst baut die Meta-Liste dasselbe
- *  Objekt zweimal (einmal fuer die Bedingung, einmal fuer den Wert). */
+ *  Objekt zweimal (einmal für die Bedingung, einmal für den Wert). */
 function faqEintrag() {
   const schema = evidenzstufeSchema();
   return schema ? [{'script:ld+json': schema}] : [];
