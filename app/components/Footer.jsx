@@ -96,6 +96,40 @@ function FooterTop() {
   );
 }
 
+/*
+ * WARUM dangerouslySetInnerHTML UND NICHT `<style>{`...`}</style>`:
+ * Gibt man CSS als React-CHILDREN in ein <style>, escapt der SSR-Renderer den
+ * Inhalt -- aus dem Apostroph wird `&#x27;`. <style> ist im HTML aber ein
+ * RAW-TEXT-ELEMENT: der Browser dekodiert Character-References darin NICHT.
+ * Im DOM steht dann literal `input[type=&#x27;text&#x27;]`, waehrend der
+ * Client-Render `input[type='text']` erzeugt -- Text-Mismatch, React #418,
+ * in der Folge 422/423/425. Weil der Footer auf JEDER Route rendert, ist der
+ * Bruch shopweit und nicht seitenspezifisch.
+ *
+ * Der CSS-INHALT ist gegenueber der Vorfassung unveraendert; nur der Weg ins
+ * Dokument ist ein anderer. Dasselbe Idiom nutzen ExclusiveSolutions.jsx und
+ * ShopSwitch.jsx im Bestand bereits.
+ *
+ * Waechter: homepage-bauer/pruefungen/probe_style_children_escaping.py
+ * (statisch, findet die Klasse vor dem Deploy) und
+ * probe_newsletter_style_naht.py (liest das ausgelieferte HTML).
+ */
+const NEWSLETTER_STYLE = `
+        .footer #qi-newsletter form._form_15 {
+          background: transparent !important;
+          padding: 0 !important;
+          border: 0 !important;
+          box-shadow: none !important;
+        }
+        .footer #qi-newsletter input[type='text'],
+        .footer #qi-newsletter input[type='email'],
+        .footer #qi-newsletter button,
+        .footer #qi-newsletter ._submit {
+          font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+          border-radius: 10px !important;
+        }
+`;
+
 function NewsletterForm() {
   useEffect(() => {
     const id = 'ac-embed-15';
@@ -116,21 +150,7 @@ function NewsletterForm() {
           ankern ueber die stabile Wrapper-ID #qi-newsletter, um diese mit
           hoeherer Spezifitaet zu ueberschreiben (transparenter Kasten,
           Open-Sans-Felder/Button, abgerundete Ecken). */}
-      <style>{`
-        .footer #qi-newsletter form._form_15 {
-          background: transparent !important;
-          padding: 0 !important;
-          border: 0 !important;
-          box-shadow: none !important;
-        }
-        .footer #qi-newsletter input[type='text'],
-        .footer #qi-newsletter input[type='email'],
-        .footer #qi-newsletter button,
-        .footer #qi-newsletter ._submit {
-          font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
-          border-radius: 10px !important;
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{__html: NEWSLETTER_STYLE}} />
       <div className="_form_15" id="qi-newsletter" />
     </>
   );
@@ -262,9 +282,7 @@ function FooterDisclaimer() {
         </p>
         <p>3. Bezahlmethoden</p>
         <PaymentIcons />
-        <p>
-          4. <EuGewaehrleistungsLink />
-        </p>
+        <EuGewaehrleistungsLink vorspann="4. " />
       </div>
     </div>
   );
