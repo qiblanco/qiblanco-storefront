@@ -1120,7 +1120,7 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
 
 /* DIE NAHT, DIE DER SLOT-WEG AUFMACHT (nachgetragen 2026-09-12).
  *
- * Die Zusage oben laesst zwei Montage-Orte zu: der Punkt steht direkt in der
+ * Die Zusage oben lässt zwei Montage-Orte zu: der Punkt steht direkt in der
  * <ul> der Datei -- oder er wird als `zusatzPunkt` an eine Liste UEBERGEBEN.
  * Der zweite Weg ist nur so viel wert wie die Liste, die ihn entgegennimmt:
  * setzt sie den Slot ausserhalb ihrer <ul> ein, steht der Punkt wieder als
@@ -1130,13 +1130,13 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
  * Bis heute war diese Gegenprobe an EINE Datei genagelt (QiOneBuyBox.jsx, die
  * Zusage weiter oben). Das trug genau so lange, wie es nur eine solche Liste
  * gab. Mit products.qi-master kam die zweite (QiMasterBenefitList) -- und sie
- * waere ueber den Slot-Weg gruen durchgelaufen, ohne dass irgendwer ihre <ul>
+ * wäre über den Slot-Weg gruen durchgelaufen, ohne dass irgendwer ihre <ul>
  * geprueft haette. Gemessen wird deshalb auch hier die Eigenschaft: JEDE
  * Datei, die einen zusatzPunkt-Slot ANBIETET, setzt ihn in ihre eigene <ul>. */
 test('jede Liste, die einen zusatzPunkt annimmt, setzt ihn IN ihre <ul>', () => {
   const anbieter = ALLE_FLAECHEN.filter((d) => /\{zusatzPunkt\}/.test(d.code));
 
-  // Positiv-Kontrolle: ohne sie waere die Zusage ueber der leeren Menge gruen.
+  // Positiv-Kontrolle: ohne sie wäre die Zusage über der leeren Menge gruen.
   const gefunden = anbieter.map((d) => d.pfad).sort();
   for (const pflicht of [
     'app/components/product-pages/QiMaster.jsx',
@@ -1198,11 +1198,11 @@ test('jede Kaufflaeche OHNE Nutzen-Liste behaelt ihn unter dem Kauf-Knopf', () =
         '<…BenefitList>, in der die Pflichtmitteilung stattdessen stuende. ' +
         'GEMESSEN IST DIE BAUFORM, NICHT DIE AUSGELIEFERTE SEITE: dieser Arm ' +
         'liest Quelltext, kein HTML. Er sagt, dass die Datei keinen zweiten ' +
-        'Ort fuer die Mitteilung vorsieht -- nicht, dass am Kundenrand nichts ' +
+        'Ort für die Mitteilung vorsieht -- nicht, dass am Kundenrand nichts ' +
         'ankommt. Den Rand misst homepage-bauer/pruefungen/' +
         'probe_gewaehrleistung_naht.py am gerenderten HTML; wer diesen Arm rot ' +
         'sieht, prueft dort nach, bevor er eine Wirkung behauptet. Zwei Wege ' +
-        'zurueck ins Gruene, je nachdem was gewollt war: den Default stehen ' +
+        'zurück ins Gruene, je nachdem was gewollt war: den Default stehen ' +
         'lassen, oder eine <…BenefitList> mit ' +
         '<EuGewaehrleistungsListenpunkt /> darin bauen.',
     );
