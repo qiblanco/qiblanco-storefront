@@ -153,7 +153,7 @@ function brotkrume({url, name}) {
  * kein Blog, kein Autor, kein Datum" auf. Der Vollzensus vom 2026-09-11 hat
  * das WIDERLEGT: alle neun ARTIKEL tragen seit dem 2026-09-09 BlogPosting,
  * Person, ImageObject und og:image (app/lib/blog-schema.js). Ohne Auszeichnung
- * war ausschliesslich die INDEX-Seite selbst. Genau sie schliesst diese
+ * war ausschließlich die INDEX-Seite selbst. Genau sie schließt diese
  * Funktion — nicht mehr.
  *
  * WARUM DAS TROTZDEM ZÄHLT: die einzelnen Artikel sagen einer Maschine „hier

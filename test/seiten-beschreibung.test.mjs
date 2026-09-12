@@ -200,7 +200,7 @@ test('D5 Kollektionen und Bundle-Produkte hängen an ihrer Quelle', () => {
   // darauf geschrieben. Seit s04 des Grossjobs 20260911-…-auffindbarkeit hat
   // der Pfad ZWEI Leser — die Beschreibung und die og-/JSON-LD-Signale —, und
   // er wird einmal an `pfad` gebunden, GERADE DAMIT die beiden nicht
-  // auseinanderlaufen koennen. Geprueft wird deshalb die HERKUNFT des Pfades
+  // auseinanderlaufen können. Geprueft wird deshalb die HERKUNFT des Pfades
   // und seine Weitergabe statt der Schreibweise an der Aufrufstelle: die
   // Zusicherung ist damit nicht schwaecher, sondern trifft die Sache genauer
   // (eine Bindung an einen FALSCHEN Pfad faellt weiterhin durch).

@@ -41,7 +41,7 @@ export const meta = ({data, location}) => {
     // STRUKTURIERTE DATEN (s04 des Grossjobs 20260911-…-auffindbarkeit): diese
     // Seite trug bis hierher weder og:image noch JSON-LD. Sie ist KEIN `Blog`,
     // sondern eine CollectionPage mit einer ItemList der Blogs — die
-    // Begruendung dieser Typwahl steht an blogUebersichtSignale().
+    // Begründung dieser Typwahl steht an blogUebersichtSignale().
     blogUebersichtSignale({
       pfad,
       name: titel,

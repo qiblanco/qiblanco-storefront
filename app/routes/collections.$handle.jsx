@@ -260,8 +260,8 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
-      # BEWUSST GEHOLT, OBWOHL ES HEUTE IMMER null IST: am 2026-09-12 ueber die
-      # Storefront-API gemessen fuehrt KEINE der neun Kollektionen ein eigenes
+      # BEWUSST GEHOLT, OBWOHL ES HEUTE IMMER null IST: am 2026-09-12 über die
+      # Storefront-API gemessen führt KEINE der neun Kollektionen ein eigenes
       # Bild. Ohne dieses Feld bliebe die erste Stufe von teilbild() dauerhaft
       # tot; mit ihm wirkt ein in Shopify hinterlegtes Kollektionsbild ohne
       # Code-Aenderung.

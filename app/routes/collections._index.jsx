@@ -12,7 +12,7 @@ export const meta = ({data}) => {
   // DIESE ROUTE HATTE BIS HIERHER GAR KEINEN meta-EXPORT: kein eigener Titel,
   // KEIN canonical, kein og, keine strukturierten Daten (live gemessen
   // 2026-09-12). Sie ist damit die einzige indexierbare Kollektions-URL ohne
-  // canonical gewesen — die uebrigen fuenf ohne canonical tragen noindex und
+  // canonical gewesen — die uebrigen fünf ohne canonical tragen noindex und
   // sollen korrekt keinen haben.
   //
   // Wie in `collections.$handle.jsx` sammelt der canonical die cursor-basierte
@@ -28,9 +28,9 @@ export const meta = ({data}) => {
       titel,
       name: 'Kollektionen',
       uebersicht: true,
-      // KEIN Kollektionsbild als Quelle: am 2026-09-12 fuehrt keine der neun
+      // KEIN Kollektionsbild als Quelle: am 2026-09-12 führt keine der neun
       // Kollektionen eines. teilbild() faellt hier ohne Umweg auf das
-      // Markenbild zurueck, deshalb steht hier gar kein `bild`.
+      // Markenbild zurück, deshalb steht hier gar kein `bild`.
       eintraege: kollektionen.map((k) => ({
         url: absoluteCanonical(`/collections/${k.handle}`),
         name: k.title,
@@ -67,7 +67,7 @@ async function loadCriticalData({context, request}) {
   // also DREI, die `noindex,nofollow` tragen, und keine der drei Kollektionen
   // mit echtem Inhalt. Die lagen hinter „Mehr laden".
   //
-  // Die Paginierung BLEIBT (sie ist cursor-basiert und traegt jede kuenftige
+  // Die Paginierung BLEIBT (sie ist cursor-basiert und trägt jede kuenftige
   // Menge); 50 ist eine HYPOTHESE, keine Konstante: neun Kollektionen wachsen
   // menschlich gegated, und eine Kachel wiegt Titel und ein Bild.
   const paginationVariables = getPaginationVariables(request, {
@@ -90,8 +90,8 @@ async function loadCriticalData({context, request}) {
   // Liste und ItemList kommen deshalb aus EINER Quelle — diesem `nodes`.
   //
   // Gefiltert wird der ANGEZEIGTE Knoten-Satz, die Cursor bleiben unangetastet:
-  // `pageInfo` gehoert der echten Verbindung, und eine gefaelschte Seiten-Info
-  // waere schlimmer als eine kuerzere Seite. Hausmuster: blogs._index.jsx.
+  // `pageInfo` gehört der echten Verbindung, und eine gefaelschte Seiten-Info
+  // wäre schlimmer als eine kuerzere Seite. Hausmuster: blogs._index.jsx.
   return {
     collections: {
       ...collections,

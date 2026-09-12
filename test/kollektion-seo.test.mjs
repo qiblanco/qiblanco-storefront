@@ -56,7 +56,7 @@ const ld = (liste) =>
 const typen = (liste) => ld(liste).map((k) => k['@type']);
 const finde = (liste, typ) => ld(liste).find((k) => k['@type'] === typ);
 
-test('Entitaets-Anker stimmen ueber alle vier Quellen ueberein', () => {
+test('Entitaets-Anker stimmen über alle vier Quellen überein', () => {
   for (const [wo, org, site] of [
     ['seiten-seo', seiten.ORG_ID, seiten.SITE_ID],
     ['entity-schema', entitaet.ORG_ID, entitaet.SITE_ID],
@@ -70,7 +70,7 @@ test('Entitaets-Anker stimmen ueber alle vier Quellen ueberein', () => {
 
 test('Markenbild ist byte-identisch zu dem in seiten-seo.js', () => {
   assert.deepEqual(MARKEN_TEILBILD, seiten.MARKEN_TEILBILD);
-  // blog-seo.js fuehrt nur die URL (blogMeta nimmt eine URL, kein Bildobjekt) —
+  // blog-seo.js führt nur die URL (blogMeta nimmt eine URL, kein Bildobjekt) —
   // sie muss dieselbe sein, sonst teilt /blogs ein anderes Bild als der Rest
   // des Ladens.
   assert.equal(MARKEN_TEILBILD_URL, MARKEN_TEILBILD.url);
@@ -90,7 +90,7 @@ test('bildAus verwirft ein Bild ohne Masse, statt sie zu raten', () => {
 
 test('bildAus erfindet keinen alt-Text, sondern nimmt den Ersatznamen', () => {
   assert.equal(bildAus({url: 'u', width: 1, height: 1}, 'Kakao').alt, 'Kakao');
-  // Leerer altText von Shopify zaehlt wie keiner — am 2026-09-12 ist er auf
+  // Leerer altText von Shopify zählt wie keiner — am 2026-09-12 ist er auf
   // JEDEM Produktbild leer.
   assert.equal(
     bildAus({url: 'u', width: 1, height: 1, altText: '  '}, 'Kakao').alt,
@@ -98,7 +98,7 @@ test('bildAus erfindet keinen alt-Text, sondern nimmt den Ersatznamen', () => {
   );
 });
 
-test('teilbild faellt in der belegten Rangfolge zurueck', () => {
+test('teilbild faellt in der belegten Rangfolge zurück', () => {
   const koll = {url: 'k', width: 2, height: 2};
   const prod = {title: 'P', featuredImage: {url: 'p', width: 3, height: 3}};
   assert.equal(teilbild({kollektionsBild: koll, erstesProdukt: prod}).url, 'k');
@@ -220,7 +220,7 @@ test('Blog-Index ist ein Blog, die Blog-Uebersicht ist es NICHT', () => {
   ]);
 });
 
-test('blogPost traegt DIESELBE @id wie die Artikelseite (blog-schema.js)', () => {
+test('blogPost trägt DIESELBE @id wie die Artikelseite (blog-schema.js)', () => {
   const blog = finde(
     blogIndexSignale({
       pfad: '/blogs/wissen',

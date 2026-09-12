@@ -41,8 +41,8 @@ export const meta = ({data, location, params}) => {
   // 20260911-…-auffindbarkeit). `nodes` ist absteigend nach publishedAt
   // sortiert, der erste Treffer ist also der juengste. Es wird KEIN Bild
   // erfunden und keines hochskaliert: hat kein Artikel ein Aufmacherbild,
-  // bleibt og:image weg — und mit ihm die twitter:card, die sonst ein grosses
-  // Bild ZUSAGEN wuerde, das es nicht gibt (blogMeta setzt beide in derselben
+  // bleibt og:image weg — und mit ihm die twitter:card, die sonst ein großes
+  // Bild ZUSAGEN würde, das es nicht gibt (blogMeta setzt beide in derselben
   // Bedingung).
   const bildUrl = artikel.find((a) => a?.image?.url)?.image?.url;
 
@@ -54,7 +54,7 @@ export const meta = ({data, location, params}) => {
   }).concat(
     // STRUKTURIERTE DATEN DER INDEX-SEITE. Die ARTIKEL tragen seit dem
     // 2026-09-09 BlogPosting+Person+ImageObject; ohne Auszeichnung war
-    // ausschliesslich diese Uebersicht — sie ist der Knoten, der die neun
+    // ausschließlich diese Uebersicht — sie ist der Knoten, der die neun
     // Beitraege zu EINEM Publikationsorgan verbindet.
     blogIndexSignale({
       pfad,

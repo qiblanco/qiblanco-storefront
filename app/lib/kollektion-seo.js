@@ -16,11 +16,11 @@
  * seo.js wird von 36 Routen importiert, und hb-deploy Gate 12 löst eine
  * geänderte geteilte Datei über die Import-Closure auf. Eine Änderung dort
  * zöge fremde, unbeteiligte Seiten in die Prüfmenge. Diese Datei wird
- * ausschliesslich von den drei /collections-Routen importiert.
+ * ausschließlich von den drei /collections-Routen importiert.
  *
  * WARUM NICHT seiten-seo.js MITBENUTZT, obwohl sie fast dasselbe tut — die
  * Antwort steht in seiten-seo.js selbst und ist der Grund, warum hier eine
- * eigene Brotkrume gebaut wird statt ihrer: dort heisst es wörtlich „Zwei
+ * eigene Brotkrume gebaut wird statt ihrer: dort heißt es wörtlich „Zwei
  * Stufen, weil es zwischen der Startseite und einer /pages-Seite keine echte
  * dritte gibt: eine erfundene Zwischenstufe entspricht keinem Link, den ein
  * Besucher je sieht". Für Kollektionen ist genau diese Bedingung UMGEKEHRT
