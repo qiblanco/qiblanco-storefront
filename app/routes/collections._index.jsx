@@ -1,6 +1,44 @@
 import {useLoaderData, Link} from 'react-router';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {absoluteCanonical, canonicalLink, istNichtIndexierbareKollektion}
+  from '~/lib/seo';
+import {kollektionSignale} from '~/lib/kollektion-seo';
+
+/**
+ * @type {MetaFunction<typeof loader>}
+ */
+export const meta = ({data}) => {
+  // DIESE ROUTE HATTE BIS HIERHER GAR KEINEN meta-EXPORT: kein eigener Titel,
+  // KEIN canonical, kein og, keine strukturierten Daten (live gemessen
+  // 2026-09-12). Sie ist damit die einzige indexierbare Kollektions-URL ohne
+  // canonical gewesen — die uebrigen fünf ohne canonical tragen noindex und
+  // sollen korrekt keinen haben.
+  //
+  // Wie in `collections.$handle.jsx` sammelt der canonical die cursor-basierte
+  // Paginierung bewusst ein: die Cursor sind opake, alternde Zeiger auf
+  // dieselbe Menge, keine eigenstaendigen Seiten.
+  const kollektionen = data?.collections?.nodes ?? [];
+  const titel = 'Kollektionen | Qi Blanco';
+  return [
+    {title: titel},
+    canonicalLink('/collections'),
+    ...kollektionSignale({
+      pfad: '/collections',
+      titel,
+      name: 'Kollektionen',
+      uebersicht: true,
+      // KEIN Kollektionsbild als Quelle: am 2026-09-12 führt keine der neun
+      // Kollektionen eines. teilbild() faellt hier ohne Umweg auf das
+      // Markenbild zurück, deshalb steht hier gar kein `bild`.
+      eintraege: kollektionen.map((k) => ({
+        url: absoluteCanonical(`/collections/${k.handle}`),
+        name: k.title,
+      })),
+      ersteSeite: !data?.collections?.pageInfo?.hasPreviousPage,
+    }),
+  ];
+};
 
 /**
  * @param {LoaderFunctionArgs} args
@@ -21,8 +59,19 @@ export async function loader(args) {
  * @param {LoaderFunctionArgs}
  */
 async function loadCriticalData({context, request}) {
+  // WARUM 50 UND NICHT 4 — derselbe Scaffold-Wert und derselbe Schaden wie im
+  // Blog (blogs.$blogHandle._index.jsx, dort am 2026-09-03 behoben): `4` stammt
+  // unveraendert aus dem Hydrogen-Skelett und war nie eine Entscheidung. Bei
+  // neun Kollektionen zeigte die Uebersicht am 2026-09-12 live genau vier
+  // Kacheln — digitale-kurse, digital-goods-vat-tax, frontpage, products —,
+  // also DREI, die `noindex,nofollow` tragen, und keine der drei Kollektionen
+  // mit echtem Inhalt. Die lagen hinter „Mehr laden".
+  //
+  // Die Paginierung BLEIBT (sie ist cursor-basiert und trägt jede kuenftige
+  // Menge); 50 ist eine HYPOTHESE, keine Konstante: neun Kollektionen wachsen
+  // menschlich gegated, und eine Kachel wiegt Titel und ein Bild.
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 50,
   });
 
   const [{collections}] = await Promise.all([
@@ -32,7 +81,25 @@ async function loadCriticalData({context, request}) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  return {collections};
+  // NICHT-INDEXIERBARE KOLLEKTIONEN WERDEN HIER NICHT VERLINKT.
+  //
+  // Das ist kein kosmetischer Nachzug, sondern die Vorbedingung des
+  // ItemList-Markups oben: eine ItemList darf nur enthalten, was die Seite
+  // auch ZEIGT, und sie darf einer Suchmaschine keine Seiten anbieten, denen
+  // wir per `noindex` gerade gesagt haben, sie moege sie ignorieren. Gerenderte
+  // Liste und ItemList kommen deshalb aus EINER Quelle — diesem `nodes`.
+  //
+  // Gefiltert wird der ANGEZEIGTE Knoten-Satz, die Cursor bleiben unangetastet:
+  // `pageInfo` gehört der echten Verbindung, und eine gefaelschte Seiten-Info
+  // wäre schlimmer als eine kuerzere Seite. Hausmuster: blogs._index.jsx.
+  return {
+    collections: {
+      ...collections,
+      nodes: (collections?.nodes ?? []).filter(
+        (k) => !istNichtIndexierbareKollektion(k.handle),
+      ),
+    },
+  };
 }
 
 /**
@@ -137,5 +204,6 @@ const COLLECTIONS_QUERY = `#graphql
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('storefrontapi.generated').CollectionFragment} CollectionFragment */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */

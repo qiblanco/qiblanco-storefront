@@ -1,7 +1,11 @@
 import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {blogMeta} from '~/lib/blog-seo';
+import {
+  MARKEN_TEILBILD_URL,
+  blogMeta,
+  blogUebersichtSignale,
+} from '~/lib/blog-seo';
 import {BLOG_BESTAND_FRAGMENT, hatArtikel} from '~/lib/blog-bestand';
 import blogStyles from '~/styles/blog.css?url';
 
@@ -12,9 +16,14 @@ import blogStyles from '~/styles/blog.css?url';
 export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 
 /**
- * @type {MetaFunction}
+ * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({location}) => {
+export const meta = ({data, location}) => {
+  const pfad = location?.pathname ?? '/blogs';
+  const titel = 'Wissen — Übersicht';
+  const beschreibung =
+    'Beiträge von Qi Blanco zu Schutz, Schlaf, Energie und Strahlung im ' +
+    'Alltag: was gemessen ist — und wo die Messung aufhört.';
   return blogMeta({
     pfad: location?.pathname ?? '/blogs',
     // „Magazin" war der Vorgabetitel des Hydrogen-Skeletons und stand nie in
@@ -22,10 +31,28 @@ export const meta = ({location}) => {
     // Seitentitel bleibt vom Blog selbst unterscheidbar (/blogs listet die
     // Blogs, /blogs/wissen die Beiträge), sonst tragen beide dieselbe Zeile.
     titel: 'Wissen — Übersicht',
-    beschreibung:
-      'Beiträge von Qi Blanco zu Schutz, Schlaf, Energie und Strahlung im ' +
-      'Alltag: was gemessen ist — und wo die Messung aufhört.',
-  });
+    beschreibung,
+    // DAS MARKENBILD, weil diese Übersicht kein eigenes hat: sie zeigt nur
+    // Titel-Kacheln. Der Rückfall ist derselbe wie auf jeder /pages-Seite
+    // ohne eigenes Bild — Begründung an MARKEN_TEILBILD_URL. blogMeta setzt
+    // die twitter:card in derselben Bedingung, die Zusage ist also gedeckt.
+    bildUrl: MARKEN_TEILBILD_URL,
+  }).concat(
+    // STRUKTURIERTE DATEN (s04 des Grossjobs 20260911-…-auffindbarkeit): diese
+    // Seite trug bis hierher weder og:image noch JSON-LD. Sie ist KEIN `Blog`,
+    // sondern eine CollectionPage mit einer ItemList der Blogs — die
+    // Begründung dieser Typwahl steht an blogUebersichtSignale().
+    blogUebersichtSignale({
+      pfad,
+      name: titel,
+      beschreibung,
+      // Dieselbe, bereits gefilterte Menge, die die Seite auch rendert
+      // (Blogs ohne Artikel fliegen im Loader raus) — eine ItemList darf nur
+      // nennen, was sichtbar ist.
+      blogs: data?.blogs?.nodes ?? [],
+      ersteSeite: !data?.blogs?.pageInfo?.hasPreviousPage,
+    }),
+  );
 };
 
 /**

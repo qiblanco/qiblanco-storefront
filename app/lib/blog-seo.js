@@ -27,7 +27,7 @@
 
 // Bewusst RELATIV statt über den '~'-Alias: der Alias wird nur von Vite
 // aufgelöst, nicht von Node — sonst wäre diese Datei nicht hermetisch testbar.
-import {absoluteCanonical} from './seo.js';
+import {CANONICAL_ORIGIN, absoluteCanonical} from './seo.js';
 
 /** Marken-Suffix — identisch zu den Produktrouten, damit die Marke im
  * Suchergebnis nicht je Bereich anders heißt. Die Rechtsform ist hier am
@@ -80,5 +80,217 @@ export function blogMeta({pfad, titel, beschreibung, bildUrl, typ}) {
     // Reichweite nicht.
     descriptoren.push({name: 'twitter:card', content: 'summary_large_image'});
   }
+  return descriptoren;
+}
+
+
+/**
+ * Anker des Entitäts-Graphen — identisch zu entity-schema.js, seiten-seo.js
+ * und kollektion-seo.js. Bewusst als eigene Konstanten und NICHT als Import
+ * aus entity-schema.js: die wird heute nur von der Startseite importiert
+ * (und, für die ARTIKEL-Route, von blog-schema.js); ein Import HIER zöge sie
+ * zusätzlich in die Closure der beiden Index-Routen. Die Drift ist
+ * zugenagelt — test/kollektion-seo.test.mjs vergleicht alle vier Quellen.
+ */
+export const ORG_ID = `${CANONICAL_ORIGIN}/#organization`;
+export const SITE_ID = `${CANONICAL_ORIGIN}/#website`;
+
+/**
+ * Das Standard-Teilbild der Marke — die letzte Auffanglinie, wenn eine
+ * Blog-Fläche kein eigenes Bild hat.
+ *
+ * IDENTISCH zu MARKEN_TEILBILD in seiten-seo.js und kollektion-seo.js und zu
+ * OG_BILD in app/routes/_index.jsx; die Drift ist in
+ * test/kollektion-seo.test.mjs zugenagelt.
+ *
+ * WARUM ES DAS HIER BRAUCHT — eine im Bau selbst korrigierte Fehlentscheidung
+ * (s04, 2026-09-12): die Blog-Übersicht /blogs sollte zunächst BEWUSST ohne
+ * og:image bleiben, begründet damit, dass sie selbst keine Beitragsbilder
+ * zeigt. Die lokale Messung hat gezeigt, dass das eine Sonderregel gewesen
+ * wäre, die dem Haus widerspricht: seiten-seo.js gibt JEDER /pages-Seite ein
+ * Teilbild und fällt dafür auf genau dieses Markenbild zurück — auch auf
+ * Seiten ohne eigene Bilder. Der einzige dokumentierte Verzicht im Haus
+ * (crystal-cacao, app/routes/_index.jsx) ist anders begründet: dort gibt es
+ * ÜBERHAUPT kein gepflegtes Teilen-Bild. Hier gibt es eines. Ein geteilter
+ * /blogs-Link ohne Bild wäre also keine Zurückhaltung, sondern eine Lücke.
+ */
+export const MARKEN_TEILBILD_URL =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
+  'qiblanco-com-qione-2-pro-transparent_1.webp?width=1024';
+
+/**
+ * Brotkrume Startseite -> diese Seite.
+ *
+ * ZWEI STUFEN, nicht drei: zwischen der Startseite und einer Blog-Übersicht
+ * gibt es keinen Zwischenschritt, den ein Besucher je anklickt. Dieselbe
+ * Begründung wie in seiten-seo.js — und der ausdrückliche Unterschied zu
+ * kollektion-seo.js, wo /collections als reale Zwischenstufe existiert.
+ * @param {{url: string, name: string}} args
+ */
+function brotkrume({url, name}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    '@id': `${url}#brotkrume`,
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Startseite',
+        item: `${CANONICAL_ORIGIN}/`,
+      },
+      {'@type': 'ListItem', position: 2, name, item: url},
+    ],
+  };
+}
+
+/**
+ * Strukturierte Daten der Beitrags-Übersicht EINES Blogs (/blogs/<handle>).
+ *
+ * WARUM ES DIESE FUNKTION GIBT — und warum sie kleiner ist als der
+ * Ursprungsauftrag des Grossjobs annahm: jener nannte „/blogs/wissen hat
+ * keinerlei Auszeichnung" den grössten Einzelposten und führte „kein Article,
+ * kein Blog, kein Autor, kein Datum" auf. Der Vollzensus vom 2026-09-11 hat
+ * das WIDERLEGT: alle neun ARTIKEL tragen seit dem 2026-09-09 BlogPosting,
+ * Person, ImageObject und og:image (app/lib/blog-schema.js). Ohne Auszeichnung
+ * war ausschließlich die INDEX-Seite selbst. Genau sie schließt diese
+ * Funktion — nicht mehr.
+ *
+ * WARUM DAS TROTZDEM ZÄHLT: die einzelnen Artikel sagen einer Maschine „hier
+ * ist ein Beitrag". Erst der `Blog`-Knoten mit seinen `blogPost`-Einträgen
+ * sagt ihr, dass sie zusammen EIN Publikationsorgan sind — das ist die
+ * Aussage, über die eine KI den Bestand als Ganzes erfasst statt als neun
+ * unverbundene Texte.
+ *
+ * DIE `blogPost`-EINTRÄGE TRAGEN DIESELBE `@id` WIE DIE ARTIKELSEITEN
+ * (`<artikel-url>#artikel`, vergeben in blog-schema.js). Das ist Absicht und
+ * der eigentliche Zweck: Index und Artikelseite beschreiben damit DIESELBE
+ * Entität aus zwei Richtungen, statt zwei Entitäten mit gleichem Inhalt zu
+ * behaupten. Ein abweichendes Fragment hier hätte den Graphen verdoppelt.
+ *
+ * ES WIRD NICHTS ERFUNDEN: Autor und Bild entstehen nur, wenn Shopify sie
+ * führt — dieselbe Regel und dieselben Felder wie in blog-schema.js.
+ *
+ * @param {{pfad: string, name: string, beschreibung?: string,
+ *          artikel?: Array<object>, ersteSeite?: boolean}} args
+ * @returns {Array<object>} meta-Descriptoren für react-router 7
+ */
+export function blogIndexSignale({
+  pfad,
+  name,
+  beschreibung,
+  artikel = [],
+  ersteSeite = true,
+}) {
+  const url = absoluteCanonical(pfad);
+  const knoten = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    '@id': `${url}#blog`,
+    url,
+    name,
+    inLanguage: 'de-DE',
+    isPartOf: {'@id': SITE_ID},
+    publisher: {'@id': ORG_ID},
+  };
+  if (beschreibung) knoten.description = beschreibung;
+
+  // NUR AUF DER ERSTEN SEITE: die Übersicht paginiert cursor-basiert und
+  // kanonisiert jede Cursor-URL auf sich selbst. Eine Beitragsliste auf einer
+  // Folgeseite behauptete unter der kanonischen URL einen Bestand, der dort
+  // nicht steht.
+  if (ersteSeite) {
+    const beitraege = artikel
+      .filter((a) => a?.title && a?.publishedAt && a?.handle)
+      .map((a) => {
+        const aUrl = absoluteCanonical(
+          `/blogs/${a.blog?.handle ?? ''}/${a.handle}`,
+        );
+        const eintrag = {
+          '@type': 'BlogPosting',
+          '@id': `${aUrl}#artikel`,
+          headline: a.title,
+          name: a.title,
+          url: aUrl,
+          datePublished: a.publishedAt,
+          inLanguage: 'de',
+        };
+        if (a.author?.name) {
+          eintrag.author = {'@type': 'Person', name: a.author.name};
+        }
+        if (a.image?.url) {
+          const bild = {'@type': 'ImageObject', url: a.image.url};
+          if (a.image.width) bild.width = a.image.width;
+          if (a.image.height) bild.height = a.image.height;
+          if (a.image.altText) bild.caption = a.image.altText;
+          eintrag.image = bild;
+        }
+        return eintrag;
+      });
+    if (beitraege.length) knoten.blogPost = beitraege;
+  }
+
+  return [{'script:ld+json': knoten}, {'script:ld+json': brotkrume({url, name})}];
+}
+
+/**
+ * Strukturierte Daten der BLOG-ÜBERSICHT /blogs — der Liste der Blogs.
+ *
+ * SIE IST KEIN `Blog`, UND DAS IST DER GANZE UNTERSCHIED ZU blogIndexSignale:
+ * /blogs listet Blogs auf, /blogs/wissen listet Beiträge auf. Ihr den
+ * `Blog`-Typ zu geben, hiesse zu behaupten, die Übersicht SEI das
+ * Publikationsorgan — dann gäbe es zwei davon. Richtig ist eine
+ * `CollectionPage` mit einer `ItemList` der Blogs.
+ *
+ * @param {{pfad: string, name: string, beschreibung?: string,
+ *          blogs?: Array<{handle: string, title: string}>,
+ *          ersteSeite?: boolean}} args
+ * @returns {Array<object>} meta-Descriptoren für react-router 7
+ */
+export function blogUebersichtSignale({
+  pfad,
+  name,
+  beschreibung,
+  blogs = [],
+  ersteSeite = true,
+}) {
+  const url = absoluteCanonical(pfad);
+  const seite = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${url}#collection`,
+    url,
+    name,
+    inLanguage: 'de-DE',
+    isPartOf: {'@id': SITE_ID},
+    publisher: {'@id': ORG_ID},
+  };
+  if (beschreibung) seite.description = beschreibung;
+  const descriptoren = [];
+  if (ersteSeite) {
+    seite.mainEntity = {'@id': `${url}#liste`};
+    descriptoren.push({'script:ld+json': seite});
+    descriptoren.push({
+      'script:ld+json': {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        '@id': `${url}#liste`,
+        name,
+        itemListOrder: 'https://schema.org/ItemListOrderAscending',
+        numberOfItems: blogs.length,
+        itemListElement: blogs.map((b, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: b.title,
+          // DIESELBE `@id` WIE DER BLOG-INDEX SIE SICH SELBST GIBT — Übersicht
+          // und Blog beschreiben dieselbe Entität, nicht zwei.
+          url: absoluteCanonical(`/blogs/${b.handle}`),
+        })),
+      },
+    });
+  } else {
+    descriptoren.push({'script:ld+json': seite});
+  }
+  descriptoren.push({'script:ld+json': brotkrume({url, name})});
   return descriptoren;
 }

@@ -194,7 +194,22 @@ test('D5 Kollektionen und Bundle-Produkte hängen an ihrer Quelle', () => {
   const k = lies('app/routes/collections.$handle.jsx');
   const kAufruf = aufrufVon(k);
   assert.ok(kAufruf, 'kein beschreibungTags-Aufruf in der Kollektionsroute');
-  assert.match(kAufruf, /`\/collections\/\$\{params\.handle\}`/, 'Aufruf baut den Pfad nicht');
+  // DER PFAD DARF GEBUNDEN SEIN, ABER ER MUSS AUS params.handle ENTSTEHEN UND
+  // AN beschreibungTags ANKOMMEN. Bis zum 2026-09-12 stand das Template
+  // unmittelbar im Aufruf, und die Zusicherung war deshalb als Textvergleich
+  // darauf geschrieben. Seit s04 des Grossjobs 20260911-…-auffindbarkeit hat
+  // der Pfad ZWEI Leser — die Beschreibung und die og-/JSON-LD-Signale —, und
+  // er wird einmal an `pfad` gebunden, GERADE DAMIT die beiden nicht
+  // auseinanderlaufen können. Geprueft wird deshalb die HERKUNFT des Pfades
+  // und seine Weitergabe statt der Schreibweise an der Aufrufstelle: die
+  // Zusicherung ist damit nicht schwaecher, sondern trifft die Sache genauer
+  // (eine Bindung an einen FALSCHEN Pfad faellt weiterhin durch).
+  const gebunden = /const pfad = `\/collections\/\$\{params\.handle\}`;/.test(k);
+  const inline = /`\/collections\/\$\{params\.handle\}`/.test(kAufruf);
+  assert.ok(gebunden || inline, 'Pfad entsteht nicht aus params.handle');
+  if (!inline) {
+    assert.match(kAufruf, /\bpfad\b/, 'der gebundene Pfad kommt nicht an');
+  }
   assert.match(k, /seo \{\s*description\s*\}/s, 'Collection-Query holt seo.description nicht');
   const pr = lies('app/routes/products.$handle.jsx');
   assert.match(pr, /produktBeschreibung\(`\/products\/\$\{data\?\.product\?\.handle\}`\)/);

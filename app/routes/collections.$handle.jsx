@@ -8,12 +8,14 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
 import {
+  absoluteCanonical,
   canonicalLink,
   istNichtIndexierbareKollektion,
   noindexHeader,
   noindexMeta,
 } from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -56,13 +58,44 @@ export const meta = ({data, params}) => {
   // deshalb bewusst keine (Begründung an KOLLEKTION_BESCHREIBUNGEN). Der
   // eigentliche Befund dort ist die leere, indexierbare Seite — er gehört in
   // einen eigenen Vorgang und wird nicht mit einem Text zugedeckt.
-  tags.push(
-    ...beschreibungTags(
-      params?.handle ? `/collections/${params.handle}` : '',
-      data?.collection?.seo?.description || data?.collection?.description,
-    ),
+  const pfad = `/collections/${params.handle}`;
+  const roh =
+    data?.collection?.seo?.description || data?.collection?.description;
+  tags.push(...beschreibungTags(pfad, roh));
+
+  // OG UND STRUKTURIERTE DATEN (s04 des Grossjobs 20260911-…-auffindbarkeit).
+  // Vollzensus am 2026-09-12: ALLE elf Kollektions-URLs trugen kein og:image
+  // und keine strukturierten Daten — die einzige Routenklasse des Shops ohne
+  // jedes Signal. Steht bewusst NACH dem noindex-Ausstieg oben: eine Seite,
+  // die nicht in den Index soll, braucht kein Teilen-Bild (Regel ENTWEDER
+  // noindex ODER Sichtbarkeits-Signale).
+  //
+  // DIE ItemList FÜHRT DIE PRODUKTE DIESER SEITE, nicht die der Kollektion:
+  // `nodes` ist der cursor-paginierte Ausschnitt, den die Seite auch rendert.
+  // Auf Folgeseiten entsteht deshalb keine Liste — Begründung an
+  // kollektionSignale().
+  const produkte = data?.collection?.products?.nodes ?? [];
+  return tags.concat(
+    kollektionSignale({
+      pfad,
+      titel: tags[0]?.title,
+      name: data?.collection?.title,
+      // DERSELBE TEXT WIE IN `name=description`, aus DERSELBEN Funktion:
+      // stünden hier zwei Wege zum selben Text, zeigte ein geteilter Link
+      // früher oder später etwas anderes als das Suchergebnis.
+      beschreibung: beschreibungTags(pfad, roh)[0]?.content,
+      bild: teilbild({
+        kollektionsBild: data?.collection?.image,
+        erstesProdukt: produkte[0],
+        name: data?.collection?.title,
+      }),
+      eintraege: produkte.map((p) => ({
+        url: absoluteCanonical(`/products/${p.handle}`),
+        name: p.title,
+      })),
+      ersteSeite: !data?.collection?.products?.pageInfo?.hasPreviousPage,
+    }),
   );
-  return tags;
 };
 
 /**
@@ -227,6 +260,18 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      # BEWUSST GEHOLT, OBWOHL ES HEUTE IMMER null IST: am 2026-09-12 über die
+      # Storefront-API gemessen führt KEINE der neun Kollektionen ein eigenes
+      # Bild. Ohne dieses Feld bliebe die erste Stufe von teilbild() dauerhaft
+      # tot; mit ihm wirkt ein in Shopify hinterlegtes Kollektionsbild ohne
+      # Code-Aenderung.
+      image {
+        id
+        url
+        altText
+        width
+        height
+      }
       seo {
         description
       }
