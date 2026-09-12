@@ -191,21 +191,11 @@
   margin-bottom: var(--krit-s4);
 }
 
-/* ─── Hinweisblock „wie diese Seite gemacht ist" ──────────────────────────── */
-.krit__hinweis {
-  border-left: 3px solid var(--krit-akzent);
-  padding: var(--krit-s2) 0 var(--krit-s2) var(--krit-s3);
-  margin-top: var(--krit-s4);
-  color: var(--krit-muted);
-}
-
-.krit__hinweis p {
-  color: var(--krit-muted);
-}
-.krit__hinweis strong {
-  color: var(--krit-text);
-  font-weight: 600;
-}
+/* Der Hinweisblock .krit__hinweis ist am 2026-09-12 ERSATZLOS entfernt
+   (Christian: "den Bereich hier ersatzlos streichen, das braucht niemand" —
+   siehe Kopf der zugehoerigen Komponente). Die Regeln stehen nicht als
+   toter Vorrat hier: eine Klasse ohne Traeger im Markup ist von einer
+   versehentlich abgehaengten nicht zu unterscheiden. */
 
 /* ─── Die Vorwuerfe ───────────────────────────────────────────────────────── */
 .krit__liste {
@@ -356,6 +346,22 @@
 
 .krit__plus h3 {
   margin-bottom: var(--krit-s1);
+}
+
+/* ─── Warum wir weitermachen ──────────────────────────────────────────────── */
+/* Der Abschnitt bekam am 2026-09-12 Kopf und Einleitung (Christian: „Der
+   Bereich wirkt optisch komisch") — er war der einzige der Seite ohne h2 und
+   sah deshalb aus wie ein Rest zwischen zwei Bloecken. Kopf, Einleitung und
+   Bahnabstand kommen damit schon aus `.krit section`, `.krit h2` und
+   `.krit p.krit__einleitung`; hier steht nur, was daraus NICHT folgt:
+
+   Der Kasten `.ab-hinweis` bringt aus seiner eigenen Datei `margin: 32px 0`
+   mit. Direkt unter einer Einleitung, die bereits `margin-bottom: --krit-s4`
+   traegt, stuenden 32 px auf 32 px — eine Luecke, die wie ein vergessener
+   Block aussieht. Der obere Rand faellt deshalb hier weg; der untere bleibt,
+   weil darunter die naechste Bahn beginnt. Kein neuer Wert, kein neues Token. */
+.krit__weitermachen .ab-hinweis {
+  margin-top: 0;
 }
 
 /* ─── Abschluss ───────────────────────────────────────────────────────────── */

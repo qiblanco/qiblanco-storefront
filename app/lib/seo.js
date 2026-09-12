@@ -511,6 +511,27 @@ export const NUR_ROUTE_SEITEN = [
       'Verkaufstext-Freiheit am ausgelieferten HTML, nicht den Statuscode.',
   },
   {
+    pfad: '/pages/hypothesen',
+    lastmod: '2026-09-12T18:00:00Z',
+    grund:
+      'Am 2026-09-12 von Christian freigegeben („Ja, ansonsten kannst du das ' +
+      'hier veröffentlichen, das liest sich gut"), nachdem die Seite seit dem ' +
+      '2026-09-11 als Freigabe-Ansicht dunkel lag (noindex + X-Robots-Tag + ' +
+      'Disallow + unverlinkt). Sie besteht allein aus der Route ' +
+      'pages.hypothesen.jsx und hat KEIN Shopify-Seitenobjekt — ohne diesen ' +
+      'Eintrag liefert sie HTTP 200 mit sechs Hypothesen und ihren Quellen ' +
+      'und steht in keiner Sitemap. Ein Seitenobjekt anzulegen wäre der ' +
+      'zweite mögliche Träger und ist bewusst NICHT gewählt (Fremdsystem); ' +
+      'dieselbe Begründung wie bei /pages/erfahrungen und /pages/kritik. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_zweifelsseite_dunkel.py --flaeche hypothesen — sie verzweigt am ' +
+      'Feld `status` in konzepte/abgrenzung-flaechen.json und misst seit der ' +
+      'Umstellung auf `live_indexiert` die HELL-Arme (H1 Inhalt am Rand-' +
+      'Marker, H2 Sitemap-<loc> in der ausgelieferten Antwort, H3 mindestens ' +
+      'eine indexierte Nachbarseite verlinkt den Pfad, robots.txt frei). ' +
+      'Zusätzlich probe_sitemap_noindex_naht.py klassenweit über diese Liste.',
+  },
+  {
     pfad: '/pages/affiliate-partnerprogramm',
     lastmod: '2026-09-05T14:39:23Z',
     grund:
