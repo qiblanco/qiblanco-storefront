@@ -121,8 +121,8 @@ export default function QiMasterVorverkaufRoute() {
 
   return (
     <div className="qm-lp">
-      <header className="qm-lp__sektion qm-lp__kopf">
-        <div className="qm-lp__kopf-innen">
+      <header className="qm-lp__inhalt qm-lp__kopf">
+        <div className="qm-lp__kopf-inhalt">
           <span className="qm-lp__auge">Vorverkauf</span>
           <h1 className="qm-lp__titel">
             Du warst schon da. Deshalb bekommst du den QiMaster zuerst – und zum
@@ -135,7 +135,7 @@ export default function QiMasterVorverkaufRoute() {
         </div>
       </header>
 
-      <section className="qm-lp__sektion" aria-labelledby="qm-lp-warum">
+      <section className="qm-lp__inhalt" aria-labelledby="qm-lp-warum">
         <h2 id="qm-lp-warum">Warum es diese Seite gibt</h2>
         <p>
           Das hier ist kein Abverkauf. Die Fertigung läuft ohnehin, kein Stück
@@ -150,11 +150,11 @@ export default function QiMasterVorverkaufRoute() {
         </p>
       </section>
 
-      <section className="qm-lp__sektion" aria-labelledby="qm-lp-treppe-titel">
+      <section className="qm-lp__inhalt" aria-labelledby="qm-lp-treppe-titel">
         <QiMasterTreppe treppe={treppe} titelId="qm-lp-treppe-titel" />
       </section>
 
-      <section className="qm-lp__sektion" aria-labelledby="qm-lp-gerät">
+      <section className="qm-lp__inhalt" aria-labelledby="qm-lp-gerät">
         <h2 id="qm-lp-gerät">Warum es den QiMaster überhaupt gibt</h2>
         <p>
           Ein Diamant ist reiner Kohlenstoff – dasselbe Element, aus dem jede
@@ -184,7 +184,7 @@ export default function QiMasterVorverkaufRoute() {
       </section>
 
       <section
-        className="qm-lp__sektion qm-lp__grenzen"
+        className="qm-lp__inhalt qm-lp__grenzen"
         aria-labelledby="qm-lp-grenzen"
       >
         <h2 id="qm-lp-grenzen">Was er kann – und was er nicht kann</h2>
@@ -200,7 +200,7 @@ export default function QiMasterVorverkaufRoute() {
         </p>
       </section>
 
-      <section className="qm-lp__sektion qm-lp__handlung">
+      <section className="qm-lp__inhalt qm-lp__handlung">
         <a className="qm-lp__knopf" href="/products/qi-master">
           Zum QiMaster
         </a>
@@ -211,10 +211,10 @@ export default function QiMasterVorverkaufRoute() {
       </section>
 
       <section
-        className="qm-lp__sektion qm-lp__zusage"
+        className="qm-lp__inhalt qm-lp__zusage"
         aria-labelledby="qm-lp-zusage"
       >
-        <div className="qm-lp__zusage-innen">
+        <div className="qm-lp__zusage-inhalt">
           <h2 id="qm-lp-zusage">Die Zusage</h2>
           <p>
             Ab dem 01.01.2027 gilt dauerhaft der reguläre Preis. Kein Black

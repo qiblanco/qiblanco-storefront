@@ -38,11 +38,11 @@
    Treppen-Zeile, gesetzt in qi-master.css).
 
    GEMESSEN NACHGEZOGEN (design-rubrik, 2026-09-12): die erste Fassung setzte
-   Gold zusaetzlich auf das Auge ueber der Ueberschrift und auf den
+   Gold zusaetzlich auf das Auge über der Ueberschrift und auf den
    Knopf-Hover. Die Rubrik meldete daraufhin „ZWEI konkurrierende
    Gold-/Ocker-Toene" — zu Recht: --qm-akzent (Flaeche) und --qm-akzent-tinte
    (Schrift) sind zwei Toene, und ein Auge ist weder Handlung noch Beweis. Es
-   traegt jetzt --qm-muted, der Hover den dunklen Ton. In dieser Datei kommt
+   trägt jetzt --qm-muted, der Hover den dunklen Ton. In dieser Datei kommt
    Gold damit an GENAU EINER Stelle vor: dem Knopf.
    ========================================================================== */
 
@@ -55,17 +55,17 @@
 }
 
 /* Ein Takt, zwei Werte (web-soll: Sektions-Takt [96, 64]) */
-.qm-lp__sektion {
+.qm-lp__inhalt {
   max-width: 720px; /* ~70ch bei 16px — Soll <= 75ch */
   margin: 0 auto;
   padding: var(--qm-s12) var(--qm-s3);
 }
-.qm-lp__sektion + .qm-lp__sektion {
+.qm-lp__inhalt + .qm-lp__inhalt {
   padding-top: 0;
 }
 
 @media (max-width: 767px) {
-  .qm-lp__sektion {
+  .qm-lp__inhalt {
     padding: var(--qm-s8) var(--qm-s2);
   }
 }
@@ -77,7 +77,7 @@
   padding-bottom: var(--qm-s8);
   max-width: none;
 }
-.qm-lp__kopf-innen {
+.qm-lp__kopf-inhalt {
   max-width: 720px;
   margin: 0 auto;
   padding: 0 var(--qm-s3);
@@ -87,7 +87,7 @@
     padding-top: var(--qm-s8);
     padding-bottom: var(--qm-s6);
   }
-  .qm-lp__kopf-innen {
+  .qm-lp__kopf-inhalt {
     padding: 0 var(--qm-s2);
   }
 }
@@ -133,7 +133,16 @@
   margin: var(--qm-s4) 0 var(--qm-s1);
 }
 
-.qm-lp p {
+/* DIE GROESSE STEHT HIER EXPLIZIT, und das ist kein Versehen: `.qm-lp`
+   setzt zwar --qm-fs-base, aber Vererbung verliert gegen JEDE direkte Regel —
+   und app.css setzt `p` shopweit auf 1.2rem. GEMESSEN am eigenen Preview
+   (2026-09-12, audit.json textBlocks): acht eigene Absaetze rendern mit
+   19.2px statt der 16px, die diese Datei behauptet. Das war ein echter
+   Defekt, kein Messartefakt — die Seite trug eine Skala, auf der ihr eigener
+   Fliesstext nicht lag. */
+.qm-lp p,
+.qm-lp li {
+  font-size: var(--qm-fs-base);
   margin: 0 0 var(--qm-s2);
 }
 .qm-lp p:last-child {
@@ -200,7 +209,7 @@
   padding-top: var(--qm-s8);
   padding-bottom: var(--qm-s12);
 }
-.qm-lp__zusage-innen {
+.qm-lp__zusage-inhalt {
   max-width: 720px;
   margin: 0 auto;
   padding: 0 var(--qm-s3);
@@ -216,7 +225,61 @@
     padding-top: var(--qm-s6);
     padding-bottom: var(--qm-s8);
   }
-  .qm-lp__zusage-innen {
+  .qm-lp__zusage-inhalt {
     padding: 0 var(--qm-s2);
   }
+}
+
+/* ─── Huellen-Normalisierung (gilt NUR auf dieser Route) ──────────────────────
+   P10, KEIN EIGENER EINFALL: das ist wörtlich das Rezept, das
+   `qi-master.css` für die Produktseite führt (Block
+   „Route-Chrome-Harmonisierung", `body:has(.ProductPageQiMaster) …`), auf
+   diese Route übertragen. Der Anlass ist derselbe und wurde hier erneut
+   gemessen statt uebernommen.
+
+   GEMESSEN 2026-09-12 am eigenen Preview: die Rubrik meldete „3
+   Bild-Radius-Werte (4px, 6px, 20px)" — und diese Seite hat NULL eigene
+   Bilder. Alle 11 gezaehlten Bilder kommen aus Kopf, Mega-Menü und Fuß:
+   Menü-Icons 4px, Menü-Bilder 20px, Fuß-Studienbilder 6px. Die Rubrik
+   zählt das DOKUMENT, nicht die Route — auf einer Seite ohne eigene Bilder
+   misst die Bild-Achse deshalb ausschließlich die geteilte Huelle.
+   Gegenprobe am Nachbarn auf demselben Server: /products/qi-master zählt 28
+   Bilder mit genau zwei Radien (8px, 16px) — dort ist derselbe Griff schon
+   getan.
+
+   WAS HIER NICHT PASSIERT: die geteilten Bausteine selbst werden NICHT
+   angefasst (app.css bliebe sonst mit 45 Seiten in der Gate-12-Pruefmenge),
+   und Farbe und Layout des Navigations-Flyouts bleiben unberuehrt — nur
+   Radius und Schriftgroesse, und nur solange diese Route rendert.
+   -------------------------------------------------------------------------- */
+body:has(.qm-lp) header img {
+  border-radius: var(--qm-r1);
+}
+body:has(.qm-lp) .header-submenu-item img,
+body:has(.qm-lp) .eu-gwl__zeichen {
+  border-radius: var(--qm-r1);
+}
+body:has(.qm-lp) .footer-study img {
+  border-radius: var(--qm-r2);
+}
+/* Die Mega-Menü-Bilder tragen ihre 20px INLINE (Header.jsx style=...); eine
+   Klassenregel erreicht sie nicht, nur !important — dieselbe Begründung wie
+   an der Schwesterseite. */
+body:has(.qm-lp) .submenu .nav-styling-wrapper img {
+  border-radius: var(--qm-r2) !important;
+}
+
+/* Schriftgrößen der Huelle auf dieselbe Skala. Auf einer kurzen Seite wiegt
+   die Huelle im Histogramm schwer: die Rubrik meldete „Body-Größe
+   uneinheitlich (häufigste Größe trägt nur 42%)" und „wilde
+   Zwischenwerte" — Werte wie 17,6px stammen aus app.css, nicht von hier. */
+body:has(.qm-lp) .header-submenu-item {
+  font-size: var(--qm-fs-md);
+}
+body:has(.qm-lp) .Header-AnnouncementBanner p,
+body:has(.qm-lp) .Header-AnnouncementBanner span {
+  font-size: var(--qm-fs-xs);
+}
+body:has(.qm-lp) .shop-switch__label {
+  font-size: var(--qm-fs-base);
 }
