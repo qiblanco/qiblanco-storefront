@@ -157,20 +157,6 @@ export function KritikSeite() {
             Antwort: was gemessen ist, was offen ist, und was du selbst
             nachprüfen kannst.
           </p>
-
-          <div className="krit__hinweis">
-            <p>
-              <strong>Wie diese Seite gemacht ist.</strong> Jede Zahl stammt aus
-              den veröffentlichten Arbeiten selbst; Zahlen, die dort nicht
-              stehen, stehen auch hier nicht. Was wir nicht belegen können,
-              nennen wir als offene Frage und nicht als Befund.
-            </p>
-            <p>
-              <strong>Was hier fehlt, mit Absicht.</strong> Keine Kundenstimme
-              als Beweis, kein Produktbild, kein Kaufknopf. Du sollst prüfen
-              können – nicht überredet werden.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -255,16 +241,46 @@ export function KritikSeite() {
       </section>
 
       {/* Der Verweis auf die Absicht. Er steht auf DIESER Seite, weil hier
-          die Zweifel stehen: wer wissen will, warum jemand das trotzdem
+          die Zweifel stehen: wer wissen will, warum jemand das ueberhaupt
           macht, findet die Antwort einen Klick weiter.
           NACH DEM ZUSAMMENFUEHREN MIT PR #373 (2026-09-11) steht er als eigene
           Section VOR dem Plusbereich, nicht mehr in ihm: der Plusbereich
           beantwortet "was spricht dafür", der Verweis beantwortet "warum
           macht das ueberhaupt jemand". Zwei Fragen, zwei Flaechen — sie
-          ineinanderzuschieben haette beide unscharf gemacht. */}
-      <section>
+          ineinanderzuschieben haette beide unscharf gemacht.
+
+          UMGEBAUT AM 2026-09-12 (Christian, zwei getrennte Beanstandungen an
+          demselben Bereich):
+
+          (1) DER TEXT. Die Ueberleitung lautete „Warum wir TROTZ dieser
+              offenen Fragen weitermachen" — Christian: „klingt, als haetten
+              wir etwas falsch gemacht." Das Wort `trotz` macht die offenen
+              Fragen zum Hindernis, das wir ueberwinden muessen, und uns damit
+              zum Angeklagten auf unserer eigenen Seite. Offene Fragen sind der
+              Normalzustand von allem, was neu ist; die Leistung ist, dass sie
+              hier STEHEN. Die Ueberleitung ist deshalb ersatzlos entfallen und
+              durch den Abschnittskopf ersetzt — vorwaerts statt verteidigend,
+              und ohne eine einzige neue Wirkaussage.
+
+          (2) DIE OPTIK. Christian: „Der Bereich wirkt optisch komisch." Der
+              Grund war strukturell und nicht Geschmack: dieser Abschnitt war
+              der EINZIGE der Seite ohne h2 — ein kahler Kasten zwischen zwei
+              ueberschriebenen Bloecken, der wie ein Rest aussah. Er bekommt
+              jetzt Kopf und Einleitung wie jeder andere Abschnitt auch. Der
+              Kasten selbst (`AbsichtHinweis`) ist UNANGETASTET: er steht
+              wortgleich auch auf /pages/ueber-uns und /pages/erfahrungen, und
+              ihn fuer diese eine Seite umzubauen haette zwei weitere
+              mitgeaendert, ohne dass jemand das beauftragt haette. */}
+      <section className="krit__weitermachen">
         <div className="krit__inhalt">
-          <AbsichtHinweis einleitung="Warum wir trotz dieser offenen Fragen weitermachen:" />
+          <h2>Warum wir weitermachen</h2>
+          <p className="krit__einleitung">
+            Offene Fragen sind der normale Zustand von allem, was neu ist. Uns
+            trägt, was oben nachprüfbar steht – und die Fragen, die noch offen
+            sind, sind unsere Arbeitsliste und nicht unser Kleingedrucktes.
+            Deshalb findest du sie hier und nicht zwischen den Zeilen.
+          </p>
+          <AbsichtHinweis />
         </div>
       </section>
 

@@ -64,6 +64,48 @@ export const ABSENDER = {
   stand: '2026-09-11',
 };
 
+/**
+ * DAS PORTRAIT ZUR UNTERSCHRIFT — neu am 2026-09-12.
+ *
+ * Christian am 2026-09-12 zu dieser Seite: „es fehlt ein Foto von mir, koennte
+ * das gleiche nehmen wie auf den Blogs." Es ist deshalb WOERTLICH dieselbe
+ * Datei wie im Autorenkasten der Fachartikel (app/lib/autorenkasten.js) und
+ * wie in app/components/kurse/Superhuman.jsx — ein Gesicht, drei Orte, keine
+ * zweite Wahrheit darueber, wie er aussieht.
+ *
+ * WARUM DIE ANGABEN HIER UND NICHT IM AUTORENKASTEN MITBENUTZT WERDEN: der
+ * Autorenkasten liefert seine 96 CSS-px als Quadrat aus (`object-fit: cover`
+ * auf ein 1:1-Feld, Zuschnitt im blog.css). Diese Seite braucht eine
+ * SEITENFLAECHE, kein Listen-Miniaturbild. Die 96er Angaben hochzuskalieren
+ * hiesse, dem Browser eine falsche Flaeche zu nennen und dieselbe Sprosse zu
+ * ziehen — sichtbar unscharf. Geteilt wird deshalb die DATEI, nicht ihre
+ * Darstellung; das ist die Grenze zwischen Wiederverwendung und Kopie.
+ *
+ * DIE ZAHLEN SIND GEMESSEN, NICHT GESCHAETZT (2026-09-12, gegen dasselbe CDN,
+ * `Accept: image/avif,image/webp,*`, je ein eigener Abruf):
+ *     ohne width   90 438 B
+ *     &width=220    9 030 B (avif)
+ *     &width=440   22 788 B (webp)   <- dpr 2, die teuerste gezogene Sprosse
+ *     &width=640   37 954 B
+ * Die Leiter traegt hier also deutlich (Master 1200x1535, knapp 4-fach ueber
+ * der Flaeche) — der Fall, fuer den `CdnBild` gebaut ist.
+ *
+ * `breite`/`hoehe` nennen, was WIRKLICH gerendert wird: 220 x 281 ist das
+ * Seitenverhaeltnis der Masterdatei (1200x1535, gerundet), also wird NICHTS
+ * beschnitten und nichts verzerrt. Stuende hier ein Quadrat, muesste das CSS
+ * schneiden, und der Zuschnitt eines Gesichts ist eine Entscheidung, die kein
+ * Datenmodul treffen sollte.
+ */
+export const ABSENDER_FOTO = {
+  bild_id:
+    'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845',
+  alt: 'Christian Bernd Bauer, Gründer von Qi Blanco',
+  anzeigeBreite: 220,
+  breite: 220,
+  hoehe: 281,
+  masterBreite: 1200,
+};
+
 export const ABSICHT = {
   vorspann: 'Die Absicht',
   titel: 'Warum es Qi Blanco gibt',
@@ -150,17 +192,35 @@ export const ABSICHT = {
   },
 
   /**
-   * DIE EHRLICHKEITSZEILE. Sie ist ein eigenes Pruefmerkmal (Arm C), damit sie
-   * nicht beim nächsten gutgemeinten Textumbau still verschwindet: ohne sie
-   * liest sich die Seite als Wirkbehauptung, und genau das ist sie nicht.
+   * HIER STAND DIE GRENZZEILE — ERSATZLOS ENTFERNT AM 2026-09-12.
+   *
+   * Sie lautete: „Was auf dieser Seite steht, ist eine Absicht und eine Sicht
+   * — keine Wirkaussage und kein Beleg. Was wir konkret annehmen und wie gut
+   * es belegt ist, steht getrennt davon und mit Quelle, Jahr und Fundstelle."
+   *
+   * Christian am 2026-09-12, woertlich und ueber die Klasse, nicht ueber den
+   * einen Satz: „sowas brauchen wir in Zukunft auch nicht mehr, also diese
+   * Gedanken des Redakteurs, das ist sehr komisch." Es war der fuenfte von
+   * fuenf Absaetzen, in denen der Erbauer dem Leser erklaert, WIE er die Seite
+   * gebaut hat — Selbstgespraech auf einer Verkaufsflaeche.
+   *
+   * WAS DABEI NICHT VERLORENGEHT, und das ist der Grund, warum das Streichen
+   * hier zulaessig ist: die Ehrlichkeit stand nie allein in dieser Zeile. Sie
+   * steht im Text selbst, in der ersten Person und damit staerker —
+   * `einordnung.absaetze[0]`: „Das ist der groesste Satz auf dieser Seite, und
+   * ich schreibe ihn bewusst in der ersten Person: Es ist meine Sicht. Sie ist
+   * nicht bewiesen, und ich stelle sie auch nicht als bewiesen dar."
+   * Weggefallen ist eine NOTE ueber die Seite, keine pruefbare Angabe
+   * (Brain-Regel `ehrlich-oder-selbstabwertend-entscheidet-sich-am-streichen`).
+   *
+   * DIE WACHE IST MITGEDREHT, NICHT ABGESCHAFFT: Arm C von
+   * homepage-bauer/pruefungen/probe_absicht_am_kundenrand.py hat die
+   * Grenzzeile als Pflichtmerkmal gefuehrt. Er misst seit demselben Commit den
+   * Satz oben — dieselbe Zusage, anderer Traeger. Wer diese Zeile
+   * wiederherstellt, dreht Christians Entscheidung um.
+   *
+   * SIE STAND AN ZWEI ORTEN: `AbsichtText` rendert denselben Text auf
+   * /pages/warum-qi-blanco UND als Abschnitt auf /pages/hypothesen. Dass sie
+   * hier faellt, nimmt sie an beiden Orten weg — genau das ist gemeint.
    */
-  // HIER STAND EIN DRITTER SATZ, DER DIE SEITE ÜBER SICH SELBST SPRECHEN LIESS.
-  // Das Haltungs-Gate (src/haltung.py) hat ihn beanstandet, und es hatte recht.
-  // Die Probe am Streichen entscheidet: weggefallen ist nur eine Note auf das
-  // eigene Material, keine pruefbare Angabe. Stehen bleibt, was pruefbar ist —
-  // dass hier keine Wirkaussage steht, und wo die belegten Aussagen liegen.
-  grenze:
-    'Was auf dieser Seite steht, ist eine Absicht und eine Sicht — keine ' +
-    'Wirkaussage und kein Beleg. Was wir konkret annehmen und wie gut es ' +
-    'belegt ist, steht getrennt davon und mit Quelle, Jahr und Fundstelle.',
 };

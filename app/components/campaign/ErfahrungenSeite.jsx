@@ -48,25 +48,6 @@ export function ErfahrungenSeite() {
             das Original. Der Text daneben fasst zusammen, was darin gesagt
             wird.
           </p>
-
-          <div className="erf__hinweis">
-            <p>
-              <strong>Warum hier niemand wörtlich zitiert wird.</strong> Die
-              Untertitel unserer Videos entstehen maschinell und geben Namen und
-              einzelne Sätze nachweislich falsch wieder – aus „QiOne“ wird dort
-              schon mal „the G1“. Ein Satz in Anführungszeichen aus dieser Quelle
-              wäre ein Satz, den der Mensch so nie gesagt hat. Deshalb steht
-              neben jedem Video eine Zusammenfassung in indirekter Rede. Den
-              Wortlaut hörst du im Video.
-            </p>
-            <p>
-              <strong>Was du hier liest.</strong> Persönliche Erfahrungen
-              einzelner Menschen, wiedergegeben so, wie sie erzählt wurden – auch
-              dort, wo jemand von einem schwierigen Anfang berichtet. Es sind
-              ihre Beobachtungen, nicht unsere Behauptungen, und sie sagen nichts
-              darüber, wie es bei dir sein wird.
-            </p>
-          </div>
         </div>
       </section>
 

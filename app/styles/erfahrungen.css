@@ -137,17 +137,11 @@
 
 .erf p.erf__lead { font-size: var(--erf-fs-md); }
 
-/* ─── Hinweisblock „wie diese Seite gemacht ist" ──────────────────────────── */
-.erf__hinweis {
-  border-left: 3px solid var(--erf-akzent);
-  padding: var(--erf-s2) 0 var(--erf-s2) var(--erf-s3);
-  margin-top: var(--erf-s4);
-  font-size: var(--erf-fs-base);
-  color: var(--erf-muted);
-}
-
-.erf__hinweis p { color: var(--erf-muted); }
-.erf__hinweis strong { color: var(--erf-text); font-weight: 600; }
+/* Der Hinweisblock .erf__hinweis ist am 2026-09-12 ERSATZLOS entfernt
+   (Christian: "den Bereich hier ersatzlos streichen, das braucht niemand" —
+   siehe Kopf der zugehoerigen Komponente). Die Regeln stehen nicht als
+   toter Vorrat hier: eine Klasse ohne Traeger im Markup ist von einer
+   versehentlich abgehaengten nicht zu unterscheiden. */
 
 /* ─── Beitragsraster ──────────────────────────────────────────────────────── */
 .erf__raster {

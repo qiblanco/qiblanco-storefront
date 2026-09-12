@@ -24,7 +24,7 @@ import {ABSICHT} from '~/data/absicht';
  */
 export function AbsichtText({ebene = 2}) {
   const H = ebene === 3 ? 'h3' : 'h2';
-  const {bruecke, sprachen, anliegen, einordnung, grenze} = ABSICHT;
+  const {bruecke, sprachen, anliegen, einordnung} = ABSICHT;
 
   return (
     <>
@@ -87,11 +87,6 @@ export function AbsichtText({ebene = 2}) {
             {p}
           </p>
         ))}
-
-        {/* Die Grenzzeile steht bewusst HIER und nicht am Seitenende: sie
-            gehört zu dem größten Satz der Seite, nicht in einen Fußbereich,
-            den man überliest. */}
-        <p className="ab-grenze">{grenze}</p>
       </div>
     </>
   );

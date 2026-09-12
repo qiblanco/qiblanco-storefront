@@ -125,19 +125,27 @@ Crawl-delay: 1
 }
 
 /**
- * ZWEIFELSSEITEN — STAND 2026-09-11 (zweiter Eintrag desselben Tages):
- * `/pages/erfahrungen` und `/pages/kritik` SIND FREI und stehen hier nicht mehr.
- * Die Liste ist NICHT leer: seit PR #370 steht `/pages/hypothesen` darin.
+ * ZWEIFELSSEITEN — STAND 2026-09-12: ALLE DREI SIND FREI.
+ * `/pages/erfahrungen`, `/pages/kritik` und seit heute auch
+ * `/pages/hypothesen` stehen hier nicht mehr. Die Zweifelsseiten-Liste ist
+ * damit LEER — das ist ein Zustand, kein Versehen, und wer hier eine Zeile
+ * vermisst, liest die drei Freigaben unten.
  *
- * /pages/hypothesen (Job 20260911-BAU-pages-hypothesen, PR #370) ist auf Christians ausdrückliche Anweisung dunkel
- * gebaut — wörtlich: „Aber noch nicht crawlbar machen — mir zeigen, wenn es
- * live ist." Die Seite trägt deshalb alle vier Sperren zugleich (meta robots
- * noindex,nofollow + X-Robots-Tag + dieses Disallow + kein Sitemap-Eintrag) und
- * ist über keinen internen Link erreichbar. WER SIE FREISCHALTET, braucht dafür
- * Christians Entscheidung und geht denselben Weg wie kritik/erfahrungen unten.
+ * /pages/hypothesen war auf Christians ausdrückliche Anweisung dunkel gebaut
+ * (Job 20260911-BAU-pages-hypothesen, PR #370) — wörtlich: „Aber noch nicht
+ * crawlbar machen — mir zeigen, wenn es live ist." Die Seite trug deshalb alle
+ * vier Sperren zugleich (meta robots noindex,nofollow + X-Robots-Tag + dieses
+ * Disallow + kein Sitemap-Eintrag) und war über keinen internen Link
+ * erreichbar.
  *
- * Dieser Eintrag entstand im Merge-Konflikt gegen PR #366/#367 und ist die
- * bewusste Auflösung: ihre beiden Zeilen bleiben ausgetragen, meine kommt hinzu.
+ * ER HAT SIE GELESEN UND AM 2026-09-12 FREIGEGEBEN, wörtlich: „Ja, ansonsten
+ * kannst du das hier veröffentlichen, das liest sich gut." Damit ist die
+ * verabredete Reihenfolge — erst live, dann prüfen, dann freigeben — zu Ende
+ * gegangen, und alle vier Sperren fallen im selben Deploy (Job
+ * 20260912-BAU-redakteursgedanken-…-und-hypothesen-freigeben).
+ *
+ * Der Eintrag war im Merge-Konflikt gegen PR #366/#367 entstanden und war die
+ * bewusste Auflösung: ihre beiden Zeilen ausgetragen, meine hinzu.
  * Beides sind verschiedene Seiten und verschiedene Entscheidungen Christians;
  * wer eine davon mit der anderen begründet, hat die falsche Zeile vor sich.
  *
@@ -195,7 +203,6 @@ Disallow: /products/bundle-fundament
 Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
 Disallow: /pages/schlaf-zellen-schutz-v3-67a7
-Disallow: /pages/hypothesen
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*

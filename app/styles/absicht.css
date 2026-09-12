@@ -15,7 +15,8 @@
    DREI GEPLANTE FARB-AKTE, mehr nicht:
      1. Kopf dunkel (die Absicht wird angekündigt)
      2. Grund hell (der Text selbst, über die ganze Länge)
-     3. EINE helle Fläche für die Begriffspaare und die Grenzzeile
+     3. EINE helle Fläche für die Begriffspaare (bis 2026-09-12 auch für die
+        Grenzzeile — sie ist mit den Redakteursgedanken ersatzlos entfallen)
    Der Gold-Akzent liegt ausschließlich auf Handlung (Link-Hover/Fokus) und
    auf der Unterschrift — nie auf Dekoration. Es gibt keinen zweiten Goldton.
 
@@ -30,9 +31,12 @@
    Datei greift. Flache Klassen können diesen Fehler baulich nicht haben.
 
    ROUTE-CHROME: app.css trägt vier konkurrierende globale img-Regeln
-   (4/6/3/20 px Radius). Diese Seite führt bewusst KEIN Bild — damit entfällt
-   der Konflikt, statt ihn zu neutralisieren. Wer hier später ein Bild einbaut,
-   muss die Chrome-Regel aus kritik.css mitnehmen.
+   (4/6/3/20 px Radius). Bis zum 2026-09-12 führte diese Seite bewusst KEIN
+   Bild, und der Konflikt entfiel. SEITDEM TRÄGT SIE EINES — das Portrait an
+   der Unterschrift (Christian: „es fehlt ein Foto von mir") —, und die
+   angekündigte Chrome-Regel aus kritik.css steht jetzt unten in dieser Datei.
+   Wer das Bild je wieder entfernt, nimmt sie mit: eine Chrome-Regel ohne Bild
+   ist toter Vorrat.
    ========================================================================== */
 
 .ab {
@@ -53,7 +57,7 @@
      auch inhaltlich richtig: die Paare sind der Kern dieser Seite (zwei Felder,
      ein Phaenomen, zwei Woerter), und der Lead ist durch seine Position am
      Seitenanfang ohnehin ausgezeichnet, nicht durch seinen Grad. */
-  --ab-fs-md: 1.25rem;     /* 20px — Begriffspaare, Grenzzeile */
+  --ab-fs-md: 1.25rem;     /* 20px — Begriffspaare, Unterschrifts-Name */
   --ab-fs-lg: 1.25rem;     /* 20px — Lead (dieselbe Stufe, s.o.) */
   --ab-fs-h2: clamp(1.5rem, 1.1rem + 1.4vw, 1.5625rem);   /* EIN H2-Stil */
   --ab-fs-h1: clamp(1.9375rem, 1.4rem + 2.4vw, 2.4375rem);
@@ -220,16 +224,11 @@
   color: var(--ab-text);
 }
 
-.ab-grenze {
-  margin: var(--ab-s4) 0 0;
-  padding: var(--ab-s3);
-  max-width: var(--ab-mass);
-  background: var(--ab-flaeche);
-  border-left: 3px solid var(--ab-akzent);
-  border-radius: var(--ab-r);
-  font-size: var(--ab-fs-md);
-  line-height: 1.65;
-}
+/* .ab-grenze ist am 2026-09-12 mit ihrem Traeger entfernt (Christian:
+   "diese Gedanken des Redakteurs ... brauchen wir in Zukunft auch nicht
+   mehr"). Begruendung im Kopf von app/data/absicht.js. Kein toter
+   Vorrat: eine Klasse ohne Markup ist von einer versehentlich
+   abgehaengten nicht zu unterscheiden. */
 
 /* --- Unterschrift -------------------------------------------------------- */
 .ab-unterschrift {
@@ -237,6 +236,43 @@
   padding-top: var(--ab-s3);
   max-width: var(--ab-mass);
   border-top: 1px solid var(--ab-linie);
+}
+
+/* DAS PORTRAIT (2026-09-12). Es steht NEBEN Name/Rolle/Datum, nicht darueber:
+   Bild und Angabe sind EINE Aussage („wer sagt das"), und nebeneinander liest
+   man sie als eine. Untereinander waeren es zwei Bloecke, und das Bild waere
+   Schmuck.
+
+   KEINE NEUEN TOKEN: Abstand aus dem 8pt-Grid (--ab-s3), Radius aus dem EINEN
+   Radius-Token (--ab-r), Linie aus --ab-linie. Es entsteht keine neue Groesse
+   und kein zweiter Goldton.
+
+   `flex-wrap` statt Media Query: auf schmalen Flaechen rutscht das Bild von
+   selbst ueber den Text, ohne dass eine Pixelgrenze geraten werden muss.
+   Die 220px sind dabei die Obergrenze, nicht die Zusage — `max-width: 100%`
+   laesst es auf sehr schmalen Geraeten mitschrumpfen, und weil die HOEHE
+   `auto` ist, bleibt das Seitenverhaeltnis der Masterdatei erhalten. */
+.ab-unterschrift-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--ab-s3);
+}
+
+.ab-portrait {
+  flex: 0 0 auto;
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--ab-r);
+  border: 1px solid var(--ab-linie);
+}
+
+.ab-unterschrift-text {
+  flex: 1 1 260px;
+  /* Die Angabe sitzt optisch auf der Oberkante des Bildes, nicht auf seiner
+     Mitte — der Name gehoert zum Gesicht, nicht neben den Bauchnabel. */
+  padding-top: var(--ab-s1);
 }
 
 .ab-unterschrift-name {
@@ -251,6 +287,24 @@
   margin: var(--ab-s1) 0 0;
   font-size: var(--ab-fs-xs);
   color: var(--ab-muted);
+}
+
+/* --- Route-Chrome (gilt NUR auf dieser Route) ---------------------------- */
+/* DIESE REGEL IST MIT DEM PORTRAIT ENTSTANDEN UND WAR IM KOPF DIESER DATEI
+   ANGEKUENDIGT: „Diese Seite fuehrt bewusst KEIN Bild — damit entfaellt der
+   Konflikt. Wer hier spaeter ein Bild einbaut, muss die Chrome-Regel aus
+   kritik.css mitnehmen." Am 2026-09-12 ist genau das eingetreten.
+
+   Der Grund, wortgleich zu kritik.css und erfahrungen.css: app.css traegt vier
+   konkurrierende globale img-Radien (4/6/3/20 px). Ohne dieses Remap hinge der
+   Radius des Portraits davon ab, welche dieser Regeln zuletzt gewinnt — und
+   die Rubrik meldet „mehrere Bild-Radien" auf einer Seite, die genau EINEN
+   Radius-Token fuehrt. Gesetzt wird deshalb der EINE Radius dieser Seite, fuer
+   alle Bilder der Route einschliesslich Kopf und Fuss. */
+body:has(.ab) img,
+body:has(.ab) picture,
+body:has(.ab) video {
+  border-radius: var(--ab-r);
 }
 
 /* --- Weiterlesen. KEIN Kaufweg — bewusst nur Erkenntniswege. ------------- */

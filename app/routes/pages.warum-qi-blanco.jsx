@@ -1,5 +1,5 @@
 import {AbsichtSeite} from '~/components/campaign/AbsichtSeite';
-import {ABSICHT, ABSENDER} from '~/data/absicht';
+import {ABSICHT, ABSENDER, ABSENDER_FOTO} from '~/data/absicht';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {ORGANISATION, ORG_ID, SITE_ID, MARKEN_PROFILE} from '~/lib/entity-schema';
 import absichtStyles from '~/styles/absicht.css?url';
@@ -134,6 +134,17 @@ function absichtSchema() {
         name: ABSENDER.name,
         jobTitle: 'Geschäftsführer',
         worksFor: {'@id': ORG_ID},
+        // Das Portrait — dieselbe Datei, die die Seite sichtbar zeigt
+        // (app/data/absicht.js, ABSENDER_FOTO). Bewusst die MASTER-URL ohne
+        // Groessen-Parameter: das JSON-LD nennt die Quelle, nicht die
+        // Sprosse, die der Browser fuer eine 220px-Flaeche zieht. Eine
+        // Maschine, die das Bild holt, soll das Original bekommen.
+        //
+        // Es steht an der PERSON und nicht am Artikel: es zeigt den AUTOR,
+        // nicht den Gegenstand des Textes. Ein `image` am Article waere ein
+        // Teilbild fuer die Seite — das hat sie ueber teilbildTags(), und
+        // beides zu vermischen erzeugt zwei Aussagen ueber dasselbe Feld.
+        image: ABSENDER_FOTO.bild_id,
         // Anschrift der Gesellschaft — dieselbe Quelle wie /pages/ueber-uns
         // (§ 18 Abs. 2 MStV nennt genau sie). Eine Privatanschrift stünde
         // hier nicht und wäre auch nicht belegt.
