@@ -38,7 +38,7 @@ const STUDIEN = [
     tag: 'In-vitro · Darmzellen',
     titel: 'Schutzeffekt an Darmzellen',
     meta: 'Applied Cell Biology Journal · 2021',
-    body: 'Protective effect an kultivierten intestinalen Epithelzellen — Zellkultur, nicht Mensch.',
+    body: 'Protective effect an kultivierten intestinalen Epithelzellen. Zellkultur, nicht Mensch.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1667513844',
   },
   {
@@ -52,7 +52,7 @@ const STUDIEN = [
     tag: 'Nutzererfahrung',
     titel: 'Forschungsartikel zur Nutzererfahrung',
     meta: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    body: 'Auswertung berichteter Nutzererfahrungen — deskriptiv, ohne Kontrollgruppe.',
+    body: 'Auswertung berichteter Nutzererfahrungen, deskriptiv und ohne Kontrollgruppe.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
   },
 ];
@@ -77,17 +77,17 @@ const FAQ = [
   },
   {
     frage: 'Muss ich ihn laden oder pflegen?',
-    antwort: 'Nein. Der Chip ist passiv — kein Laden, keine App, kein Pflegeaufwand. Anlegen und vergessen.',
+    antwort: 'Nein. Der Chip ist passiv: kein Laden, keine App, kein Pflegeaufwand. Anlegen und vergessen.',
   },
   {
     frage: 'Hält er wirklich Jahrzehnte?',
     antwort:
-      'Das Herstellungsverfahren ist auf sehr lange Lebensdauer ausgelegt und bewusst vererbbar gedacht. Verschleißteile gibt es keine.',
+      'Das Herstellungsverfahren ist auf sehr lange Lebensdauer ausgelegt und als vererbbares Stück gedacht. Verschleißteile gibt es keine.',
   },
   {
     frage: 'Und die gesundheitliche Wirkung?',
     antwort:
-      'Dazu gibt es vier publizierte Zellstudien (in-vitro, präklinisch) und deskriptive Erfahrungsberichte. Wir machen kein Heilversprechen — teste selbst in 20 Tagen.',
+      'Dazu gibt es vier publizierte Zellstudien (in-vitro, präklinisch) und deskriptive Erfahrungsberichte. Wir machen kein Heilversprechen. Teste selbst in 20 Tagen.',
   },
 ];
 
@@ -100,7 +100,7 @@ const FUNNEL = [
   },
   {
     titel: 'Ist das Einbildung? Wir machen ihn auf',
-    text: 'Der Chip geöffnet — Aufbau, Messung, Erfahrung.',
+    text: 'Der Chip geöffnet: Aufbau, Messung, Erfahrung.',
     href: '/pages/wir-machen-ihn-auf',
     cta: 'Für Skeptiker',
   },
@@ -113,8 +113,8 @@ const FUNNEL = [
 ];
 
 const PICK = [
-  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — unsichtbar unter der Kleidung', cta: 'Zum QiOne 2 Pro'},
-  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — robust am Handgelenk', cta: 'Zum QiBracelet'},
+  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette, unsichtbar unter der Kleidung', cta: 'Zum QiOne 2 Pro'},
+  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband, robust am Handgelenk', cta: 'Zum QiBracelet'},
   {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum daheim', cta: 'Zum QiHome Air'},
 ];
 
@@ -128,10 +128,10 @@ export function MmHaeltDasAus({products}) {
       <MmHero
         dataSection="mm-alltag-hero"
         eyebrow="Alltag, ehrlich getestet"
-        headline={'„Hält das mein Leben aus?" Dusche, Sport, Sauna — er bleibt dran.'}
-        sub="Ein Premium-Schmuckstück, das man schont, wäre kein Alltagsbegleiter. Der QiOne 2 Pro ist bewusst so gebaut, dass ihm Wasser, Hitze, Schweiß und Chlor nichts anhaben — weil er passiv ist und keine Elektronik enthält."
+        headline={'„Hält das mein Leben aus?" Dusche, Sport, Sauna. Er bleibt dran.'}
+        sub="Ein Premium-Schmuckstück, das man schont, wäre kein Alltagsbegleiter. Der QiOne 2 Pro ist so gebaut, dass ihm Wasser, Hitze, Schweiß und Chlor nichts anhaben. Er ist passiv und enthält keine Elektronik."
         bullets={[
-          'Hitze-, Chlor- und schweißbeständig — Sauna und Schwimmbad inklusive',
+          'Hitze-, Chlor- und schweißbeständig, Sauna und Schwimmbad inklusive',
           'Kein Akku, kein Laden, keine Wartung',
           '20 Tage selbst testen, sonst Geld zurück',
         ]}
@@ -140,7 +140,7 @@ export function MmHaeltDasAus({products}) {
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
           alt: 'Frontansicht des QiOne 2 Pro mit dem Gold-Gitter',
-          hint: 'Chirurgenstahl-Körper, 750er Gold-Gitter — robust im Alltag.',
+          hint: 'Chirurgenstahl-Körper, 750er Gold-Gitter, robust im Alltag.',
         }}
       />
 
@@ -149,13 +149,13 @@ export function MmHaeltDasAus({products}) {
         eyebrow="Die Sorge"
         title="Muss ich ihn abnehmen, wenn es drauf ankommt?"
         text={[
-          'Bei einem teuren Schmuckstück denkt man sofort: bloß nicht beim Duschen, beim Sport, in der Sauna. Genau dann würde man den größten Nutzen verlieren — die Wirkung soll ja durchgehend laufen.',
+          'Bei einem teuren Schmuckstück denkt man sofort: bloß nicht beim Duschen, beim Sport, in der Sauna. Genau dann würde man den größten Nutzen verlieren. Die Wirkung soll ja durchgehend laufen.',
           'Der QiOne 2 Pro ist deshalb kein empfindliches Schmuckstück, sondern ein robuster Alltagsbegleiter. Du sollst ihn tragen und vergessen können.',
         ]}
         punkte={[
           'Kein Akku, der leer wird.',
           'Keine Elektronik, die Wasser scheut.',
-          'Kein Pflegeaufwand — anlegen und vergessen.',
+          'Kein Pflegeaufwand. Anlegen und vergessen.',
         ]}
       />
 
@@ -163,15 +163,15 @@ export function MmHaeltDasAus({products}) {
       <MmMechanism
         dataSection="mm-alltag-mechanismus"
         eyebrow="Warum das geht"
-        title="Was ihm nichts anhaben kann — und warum"
+        title="Was ihm nichts anhaben kann, und warum"
         intro="Der Grund ist simpel: Was nicht elektronisch ist, kann nicht durch Wasser oder Hitze ausfallen. Der Chip ist eine feste, passive Gitterstruktur aus 750er Gold in einem Körper aus Chirurgenstahl."
         schritte={[
-          {titel: 'Dusche & Alltag', text: 'Wasser macht ihm nichts — es gibt keine Batterie und keine Kontakte, die korrodieren könnten.'},
+          {titel: 'Dusche & Alltag', text: 'Wasser macht ihm nichts. Es gibt keine Batterie und keine Kontakte, die korrodieren könnten.'},
           {titel: 'Sport & Schweiß', text: 'Schweiß ist kein Problem. Chirurgenstahl ist korrosionsbeständig, das Gold-Gitter ohnehin.'},
           {titel: 'Sauna & Schwimmbad', text: 'Beständig gegen Hitze und Chlor. Du kannst ihn anbehalten, wo du ihn sonst abnehmen würdest.'},
-          {titel: 'Über Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig — bewusst vererbbar gedacht, nicht als Wegwerfprodukt.'},
+          {titel: 'Über Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig. Er ist als vererbbares Stück gedacht, nicht als Wegwerfprodukt.'},
         ]}
-        note="Ehrliche Grenze: Robustheit ist eine Materialeigenschaft — sie sagt nichts über eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, steht weiter unten (präklinisch)."
+        note="Ehrliche Grenze: Robustheit ist eine Materialeigenschaft. Sie sagt nichts über eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, ist präklinisch."
       />
 
       <MmStatBand
@@ -187,19 +187,19 @@ export function MmHaeltDasAus({products}) {
       <MmEvidenz
         dataSection="mm-alltag-evidenz"
         eyebrow="Und die Wirkung?"
-        title="Was gemessen wurde — kurz und ehrlich"
+        title="Was gemessen wurde, kurz und ehrlich"
         intro="Robustheit ist das eine. Die eigentliche Frage ist die Wirkung. Vier publizierte In-vitro-Studien (Zellkultur, nicht Mensch) zeigen einen messbaren Schutzeffekt unter Stress. Kein Heilversprechen."
         studien={STUDIEN}
         mehrHref="/pages/zellstudien-ehrlich"
-        mehrLabel="Die Studien im Detail — mit Grenzen"
+        mehrLabel="Die Studien im Detail, mit Grenzen"
       />
 
-      <MmProblem variante="flaeche" dataSection="mm-alltag-reviews-intro" title="Stimmen aus der Praxis" text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`} />
+      <MmProblem variante="flaeche" dataSection="mm-alltag-reviews-intro" title="Stimmen aus der Praxis" text={`Echte Google-Bewertungen unserer Kundinnen und Kunden. Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`} />
       <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-alltag-trust"
-        eyebrow="Kuratiert — die 6 Signale, die zählen"
+        eyebrow="Kuratiert: die 6 Signale, die zählen"
         title="Woran du dich festhalten kannst"
         badges={badges}
       />
@@ -208,7 +208,7 @@ export function MmHaeltDasAus({products}) {
         dataSection="mm-alltag-risk"
         ring="20"
         title="20 Tage im echten Alltag testen"
-        text={'Trag ihn 20 Tage durch deinen Alltag — Dusche, Sport, Sauna. Bist du nicht überzeugt, schickst du ihn zurück und bekommst dein Geld. Die Rückgabe hängt an deiner Überzeugung und der Frist, nicht am „Spüren".'}
+        text={'Trag ihn 20 Tage durch deinen Alltag: Dusche, Sport, Sauna. Bist du nicht überzeugt, schickst du ihn zurück und bekommst dein Geld. Die Rückgabe hängt an deiner Überzeugung und der Frist, nicht am „Spüren".'}
         punkte={['Frist: 20 Tage ab Erhalt', 'Grund: keiner nötig', 'Ablauf: melden, zurücksenden, Erstattung']}
       />
 
@@ -221,7 +221,7 @@ export function MmHaeltDasAus({products}) {
       <MmFinal
         dataSection="mm-alltag-final"
         title="Anlegen. Vergessen. 20 Tage testen."
-        text="Robust genug für deinen ganzen Alltag — mit Rückgabe ohne Kleingedrucktes."
+        text="Robust genug für deinen ganzen Alltag, mit Rückgabe ohne Kleingedrucktes."
         cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/das-20-tage-versprechen', label: 'So läuft die Rückgabe'}}
       />

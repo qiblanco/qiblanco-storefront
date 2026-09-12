@@ -21,7 +21,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Das 20-Tage-Versprechen — kein Kleingedrucktes, kein „nur wenn“ | Qi Blanco'},
+  {title: 'Das 20-Tage-Versprechen: kein Kleingedrucktes, kein „nur wenn“ | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 

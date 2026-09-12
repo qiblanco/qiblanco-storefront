@@ -162,7 +162,7 @@ function Hero() {
         </ul>
         <p className="v3-hero__subline">
           Dein Körper besteht zu über 70&nbsp;% aus Wasser. Der QiOne<sup>®</sup>&nbsp;2
-          Pro bringt es in kohärente Ordnung — er stabilisiert deine Zellen, puffert
+          Pro bringt es in kohärente Ordnung. Er stabilisiert deine Zellen, puffert
           eingestrahlten E-Smog ab und hilft dem Nervensystem, nachts herunterzufahren.
         </p>
         <div className="v3-hero__cta-row">
@@ -184,7 +184,7 @@ function Hero() {
           loading="eager"
         />
         <figcaption>
-          QiOne<sup>®</sup>&nbsp;2 Pro — getragen, Tag und Nacht.
+          QiOne<sup>®</sup>&nbsp;2 Pro, getragen Tag und Nacht.
         </figcaption>
       </figure>
     </section>
@@ -196,7 +196,7 @@ const HIGHLIGHTS = [
   {wert: '14.000+', label: 'Träger im Alltag'},
   {wert: '4 Zellstudien', label: 'peer-reviewed publiziert (in vitro)'},
   {wert: 'Made in Germany', label: 'entwickelt und gefertigt'},
-  {wert: '20 Nächte', label: 'risikofrei testen — volle Erstattung'},
+  {wert: '20 Nächte', label: 'risikofrei testen, volle Erstattung'},
 ];
 
 function HighlightsSection() {
@@ -233,8 +233,8 @@ function EbenenSection() {
         <h2>Wie dein Smartphone: ein Gerät, das mehrere ersetzt.</h2>
         <p className="v3-lede">
           Dein Smartphone hat Kamera, Navi und Telefon in einem Gerät gebündelt. Der
-          QiOne<sup>®</sup>&nbsp;2 Pro bündelt drei Wirkungen in einem Begleiter —
-          wähle die Ebene, die dich am meisten betrifft. Du bleibst auf dieser Seite.
+          QiOne<sup>®</sup>&nbsp;2 Pro bündelt drei Wirkungen in einem Begleiter. Wähle
+          die Ebene, die dich am meisten betrifft.
         </p>
       </div>
       <div className="v3-ebenen">
@@ -269,7 +269,7 @@ function MechanismusSection() {
         <h2>Kein Wunder. Ein Prinzip mit drei Wirkungen.</h2>
         <p className="v3-lede">
           Fast alle biologischen Prozesse laufen an wasserumhüllten Grenzflächen ab. Ist
-          dieses Wasser geordnet — kohärent —, arbeiten Zellen, Membranen und Nervensystem
+          dieses Wasser geordnet, also kohärent, arbeiten Zellen, Membranen und Nervensystem
           ruhiger.
         </p>
       </div>
@@ -282,7 +282,7 @@ function MechanismusSection() {
           loading="lazy"
         />
         <figcaption>
-          Schema: links ungeordnetes Wasser, rechts kohärent geordnet — der
+          Schema: links ungeordnetes Wasser, rechts kohärent geordnet. Der
           GitterChip™ gibt die Ordnung vor.
         </figcaption>
       </figure>
@@ -318,7 +318,7 @@ function MechanismusSection() {
       </div>
       <p className="v3-note">
         Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten
-        Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie erklären den
+        Zellstudien sind in vitro (an Zellkulturen) durchgeführt. Sie erklären den
         Mechanismus, sie sind keine Heilaussage.
       </p>
     </section>
@@ -342,7 +342,7 @@ const STATS = [
   {
     value: '5 / 5',
     label: 'Zelltypen geschützt',
-    desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
+    desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen, von Leber bis Lunge.',
     cite: 'Applied Cell Biology, 2024 · in vitro',
   },
 ];
@@ -368,10 +368,10 @@ function BeweisSection() {
     <section data-section="lp-v3-beweis">
       <div data-reveal>
         <span className="v3-eyebrow">Beweis</span>
-        <h2>Nicht nur gefühlt — an Zellen gemessen.</h2>
+        <h2>Nicht nur gefühlt. An Zellen gemessen.</h2>
         <p className="v3-lede">
           Vier peer-review-publizierte Zellstudien belegen die Wirkung der
-          Qi-Blanco-Technologie experimentell — alle in vitro, also an lebenden
+          Qi-Blanco-Technologie experimentell. Alle in vitro, also an lebenden
           Zellkulturen im Labor. Dazu eine deskriptive Auswertung von 171
           Erfahrungsberichten und über 14.000 Menschen, die den QiOne<sup>®</sup> täglich
           tragen.
@@ -395,7 +395,7 @@ function BeweisSection() {
         <h3>Geprüft von einem unabhängigen Labor</h3>
         <p className="v3-autoritaet__zitat">
           Alle Zelluntersuchungen wurden von der Dartsch Scientific GmbH unter Leitung
-          von Prof. Dr. P. C. Dartsch durchgeführt — an kultivierten menschlichen und
+          von Prof. Dr. P. C. Dartsch durchgeführt, an kultivierten menschlichen und
           tierischen Zellen, mit Kontrollgruppen und mehrfach wiederholten Messreihen.
         </p>
         <p className="v3-autoritaet__quelle">
@@ -407,11 +407,11 @@ function BeweisSection() {
       <div className="v3-video-solo" data-reveal>
         <YoutubeTimestamp
           videoId="jyLyXZqHxaw"
-          titel="Constantin Preis — getrackter Tiefschlaf"
+          titel="Constantin Preis: getrackter Tiefschlaf"
           className="v3-yt"
         />
         <span className="v3-video__tag">Deutscher Leichtathletik-Meister</span>
-        <h3>Constantin Preis — getrackter Tiefschlaf</h3>
+        <h3>Constantin Preis: getrackter Tiefschlaf</h3>
         <p className="v3-video__zitat">
           „Meine Tiefschlafphase hat sich deutlich verbessert — das habe ich getrackt.“
         </p>
@@ -460,7 +460,7 @@ function ProdukteSection() {
       name: 'QiOne® 2 Pro',
       handle: 'qione-2-pro',
       ziel: KAUF_ZIEL,
-      tagline: 'Der Allrounder — Tag und Nacht',
+      tagline: 'Der Allrounder für Tag und Nacht',
       features: [
         'Wirkt auf allen drei Ebenen',
         'Tragbar als Anhänger',
@@ -485,7 +485,7 @@ function ProdukteSection() {
         <span className="v3-eyebrow">Deine Entscheidung</span>
         <h2>Finde deinen Begleiter für kohärentes Wasser.</h2>
         <p className="v3-lede">
-          Drei Wege zum selben Prinzip — jede Karte führt auf die Detailseite mit
+          Drei Wege zum selben Prinzip. Jede Karte führt auf die Detailseite mit
           allen Fakten, Studien und Größen.
         </p>
       </div>
@@ -539,7 +539,7 @@ function ProdukteSection() {
         <details>
           <summary>Was genau heißt das?</summary>
           <p>
-            20 Nächte, dein Alltag: keine Bedingung, keine Begründung — du schickst das
+            20 Nächte, dein Alltag: keine Bedingung, keine Begründung. Du schickst das
             Produkt zurück und bekommst den vollen Kaufpreis erstattet. Zahlen kannst du
             in Raten über Klarna oder PayPal mit 0&nbsp;% Finanzierung. Entwickelt und
             gefertigt in Deutschland, inklusive Käuferschutz und kostenlosem Versand innerhalb Deutschlands.
@@ -578,7 +578,7 @@ function MikroskopSection() {
           text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
         },
       ]}
-      fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
+      fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
     />
   );
 }
@@ -594,7 +594,7 @@ function KopfkissenSection() {
         <h2>Das Kopfkissen-Experiment.</h2>
         <p className="v3-lede">
           Das Kopfkissen-Experiment: Was dein Handy nachts mit deinem Schlaf zu tun
-          hat — Christian erzählt es im Geldhelden-Podcast. Das Video startet direkt
+          hat. Christian erzählt es im Geldhelden-Podcast. Das Video startet direkt
           an der Stelle.
         </p>
       </div>
@@ -602,7 +602,7 @@ function KopfkissenSection() {
         <YoutubeTimestamp
           videoId="BQxzbXqREWE"
           startSeconds={817}
-          titel="Das Kopfkissen-Experiment: Handy und Schlaf — Christian Bauer im Geldhelden-Podcast"
+          titel="Das Kopfkissen-Experiment: Handy und Schlaf, Christian Bauer im Geldhelden-Podcast"
           className="v3-yt"
         />
       </div>
@@ -628,7 +628,7 @@ const VIDEOS = [
   {
     id: 'zIfDQ1N60fI',
     tag: 'Erste Tage mit dem QiOne®',
-    title: 'Michelle Christin Guse — „wie ein kleines Wunder“',
+    title: 'Michelle Christin Guse: „wie ein kleines Wunder“',
     quote: 'Was für eine Energie — als würde sich mein Körper einmal neu strukturieren.',
   },
 ];
@@ -640,7 +640,7 @@ function StimmenSection() {
         <span className="v3-eyebrow">Video-Erfahrungen</span>
         <h2>Echte Menschen. Echte Erfahrungen.</h2>
         <p className="v3-lede">
-          Berichte einzelner Nutzer, deskriptiv wiedergegeben — keine Heilaussage und kein
+          Berichte einzelner Nutzer, deskriptiv wiedergegeben. Keine Heilaussage und kein
           garantiertes Ergebnis.
         </p>
       </div>

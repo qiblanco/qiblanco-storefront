@@ -524,7 +524,7 @@ export function MmFunnel({title, links, variante, dataSection}) {
   return (
     <MmBahn variante={variante || 'flaeche'}>
       <div className="mm-funnel" data-section={dataSection}>
-        <h2>{title || 'Weiterlesen — die ganze Kette'}</h2>
+        <h2>{title || 'Weiterlesen: die ganze Kette'}</h2>
         <div className="mm-funnel__grid">
           {(links || []).map((l, i) => (
             <Link className="mm-funnel__karte" to={l.href} key={i} prefetch="intent">

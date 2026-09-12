@@ -123,7 +123,7 @@ function Hero() {
           </ul>
           <p className="v2-hero__subline">
             Dein Körper besteht zu über 70&nbsp;% aus Wasser. Der QiOne<sup>®</sup>&nbsp;2
-            Pro bringt es in kohärente Ordnung — er stabilisiert deine Zellen, puffert
+            Pro bringt es in kohärente Ordnung. Er stabilisiert deine Zellen, puffert
             eingestrahlten E-Smog ab und hilft dem Nervensystem, nachts herunterzufahren.
             In Zellstudien gemessen, von 14.000+ Trägern getragen.
           </p>
@@ -151,7 +151,7 @@ function Hero() {
             loading="eager"
           />
           <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro — getragen, Tag und Nacht.
+            QiOne<sup>®</sup>&nbsp;2 Pro, getragen Tag und Nacht.
           </figcaption>
         </figure>
       </div>
@@ -177,8 +177,7 @@ function EbenenSection() {
       <span className="v2-eyebrow">Drei Ebenen</span>
       <h2>Was betrifft dich gerade am meisten?</h2>
       <p className="v2-lede">
-        Ein Wirkprinzip, drei Wirkungen. Wähle die Ebene, die dich am meisten betrifft —
-        du bleibst dabei auf dieser Seite.
+        Ein Wirkprinzip, drei Wirkungen. Wähle die Ebene, die dich am meisten betrifft.
       </p>
       <div className="v2-ebenen">
         {karten.map(({thema, ebene, anker}) => (
@@ -220,7 +219,7 @@ function MechanismusSection() {
       <h2>Kein Wunder. Ein Prinzip mit drei Wirkungen.</h2>
       <p className="v2-lede">
         Fast alle biologischen Prozesse laufen an wasserumhüllten Grenzflächen ab. Ist
-        dieses Wasser geordnet — kohärent —, arbeiten Zellen, Membranen und Nervensystem
+        dieses Wasser geordnet, also kohärent, arbeiten Zellen, Membranen und Nervensystem
         ruhiger.
       </p>
       <div className="v2-mechs">
@@ -241,7 +240,7 @@ function MechanismusSection() {
       </div>
       <p className="v2-note">
         Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten
-        Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie erklären den
+        Zellstudien sind in vitro (an Zellkulturen) durchgeführt. Sie erklären den
         Mechanismus, sie sind keine Heilaussage.
       </p>
     </section>
@@ -272,7 +271,7 @@ const STATS = [
   {
     value: '5 / 5',
     label: 'Zelltypen geschützt',
-    desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
+    desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen, von Leber bis Lunge.',
     cite: 'Applied Cell Biology, 2024 · in vitro',
   },
 ];
@@ -299,10 +298,10 @@ function BeweisSection() {
   return (
     <section data-section="lp-v2-beweis">
       <span className="v2-eyebrow">Beweis</span>
-      <h2>Nicht nur gefühlt — an Zellen gemessen.</h2>
+      <h2>Nicht nur gefühlt. An Zellen gemessen.</h2>
       <p className="v2-lede">
         Vier peer-review-publizierte Zellstudien belegen die Wirkung der
-        Qi-Blanco-Technologie experimentell — alle in vitro, also an lebenden
+        Qi-Blanco-Technologie experimentell. Alle in vitro, also an lebenden
         Zellkulturen im Labor. Dazu eine deskriptive Auswertung von 171
         Erfahrungsberichten und über 14.000 Menschen, die den QiOne<sup>®</sup> täglich
         tragen.
@@ -327,7 +326,7 @@ function BeweisSection() {
         <h3>Geprüft von einem unabhängigen Labor</h3>
         <p className="v2-autoritaet__zitat">
           Alle Zelluntersuchungen wurden von der Dartsch Scientific GmbH unter Leitung
-          von Prof. Dr. P. C. Dartsch durchgeführt — an kultivierten menschlichen und
+          von Prof. Dr. P. C. Dartsch durchgeführt, an kultivierten menschlichen und
           tierischen Zellen, mit Kontrollgruppen und mehrfach wiederholten Messreihen.
         </p>
         <p className="v2-autoritaet__quelle">
@@ -339,11 +338,11 @@ function BeweisSection() {
       <div className="v2-video-solo">
         <YoutubeTimestamp
           videoId="jyLyXZqHxaw"
-          titel="Constantin Preis — getrackter Tiefschlaf"
+          titel="Constantin Preis: getrackter Tiefschlaf"
           className="v2-yt"
         />
         <span className="v2-video__tag">Deutscher Leichtathletik-Meister</span>
-        <h3>Constantin Preis — getrackter Tiefschlaf</h3>
+        <h3>Constantin Preis: getrackter Tiefschlaf</h3>
         <p className="v2-video__zitat">
           „Meine Tiefschlafphase hat sich deutlich verbessert — das habe ich getrackt."
         </p>
@@ -398,7 +397,7 @@ function KaufblockSection() {
       name: 'QiOne® 2 Pro',
       handle: 'qione-2-pro',
       ziel: KAUF_ZIEL,
-      tagline: 'Der Allrounder — Tag und Nacht',
+      tagline: 'Der Allrounder für Tag und Nacht',
       features: [
         'Wirkt auf allen drei Ebenen',
         'Tragbar als Anhänger',
@@ -469,7 +468,7 @@ function KaufblockSection() {
         <details>
           <summary>Was genau heißt das?</summary>
           <p>
-            20 Nächte, dein Alltag: keine Bedingung, keine Begründung — du schickst das
+            20 Nächte, dein Alltag: keine Bedingung, keine Begründung. Du schickst das
             Produkt zurück und bekommst den vollen Kaufpreis erstattet. Zahlen kannst du
             in Raten über Klarna oder PayPal mit 0&nbsp;% Finanzierung. Entwickelt und
             gefertigt in Deutschland, inklusive Käuferschutz und kostenlosem Versand innerhalb Deutschlands.
@@ -513,7 +512,7 @@ function MikroskopSection() {
           text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
         },
       ]}
-      fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
+      fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
     />
   );
 }
@@ -532,7 +531,7 @@ const VIDEOS = [
   {
     id: 'zIfDQ1N60fI',
     tag: 'Erste Tage mit dem QiOne®',
-    title: 'Michelle Christin Guse — „wie ein kleines Wunder"',
+    title: 'Michelle Christin Guse: „wie ein kleines Wunder"',
     quote: 'Was für eine Energie — als würde sich mein Körper einmal neu strukturieren.',
   },
 ];
@@ -543,7 +542,7 @@ function StimmenSection() {
       <span className="v2-eyebrow">Video-Erfahrungen</span>
       <h2>Echte Menschen. Echte Erfahrungen.</h2>
       <p className="v2-lede">
-        Berichte einzelner Nutzer, deskriptiv wiedergegeben — keine Heilaussage und kein
+        Berichte einzelner Nutzer, deskriptiv wiedergegeben. Keine Heilaussage und kein
         garantiertes Ergebnis.
       </p>
       <div className="v2-videos">
@@ -571,7 +570,7 @@ function HaltungSection() {
       <span className="v2-eyebrow">Unsere Sichtweise</span>
       <h2>Wir verkaufen dir keinen Schmuck.</h2>
       <p className="v2-haltung__body">
-        Der QiOne<sup>®</sup> ist schön — aber das ist nicht der Punkt. Der eigentliche
+        Der QiOne<sup>®</sup> ist schön, aber das ist nicht der Punkt. Der eigentliche
         Wert ist unsichtbar: kohärentes Wasser in deinem Körper, Zellen, die besser
         geschützt sind, ein Nervensystem, das abends herunterfahren darf. Der Schmuck ist
         nur das Vehikel.

@@ -40,7 +40,7 @@ export function links() {
  * @type {MetaFunction}
  */
 export const meta = () => [
-  {title: 'Wirkt auf drei Ebenen — QiOne® 2 Pro | Qi Blanco'},
+  {title: 'Wirkt auf drei Ebenen: QiOne® 2 Pro | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
