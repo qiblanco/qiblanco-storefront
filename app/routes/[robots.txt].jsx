@@ -125,7 +125,21 @@ Crawl-delay: 1
 }
 
 /**
- * ZWEIFELSSEITEN — STAND 2026-09-11: BEIDE SIND FREI, DIESE LISTE IST LEER.
+ * ZWEIFELSSEITEN — STAND 2026-09-11 (zweiter Eintrag desselben Tages):
+ * `/pages/erfahrungen` und `/pages/kritik` SIND FREI und stehen hier nicht mehr.
+ * Die Liste ist NICHT leer: seit PR #370 steht `/pages/hypothesen` darin.
+ *
+ * /pages/hypothesen (Job 20260911-BAU-pages-hypothesen, PR #370) ist auf Christians ausdrückliche Anweisung dunkel
+ * gebaut — wörtlich: „Aber noch nicht crawlbar machen — mir zeigen, wenn es
+ * live ist." Die Seite trägt deshalb alle vier Sperren zugleich (meta robots
+ * noindex,nofollow + X-Robots-Tag + dieses Disallow + kein Sitemap-Eintrag) und
+ * ist über keinen internen Link erreichbar. WER SIE FREISCHALTET, braucht dafür
+ * Christians Entscheidung und geht denselben Weg wie kritik/erfahrungen unten.
+ *
+ * Dieser Eintrag entstand im Merge-Konflikt gegen PR #366/#367 und ist die
+ * bewusste Auflösung: ihre beiden Zeilen bleiben ausgetragen, meine kommt hinzu.
+ * Beides sind verschiedene Seiten und verschiedene Entscheidungen Christians;
+ * wer eine davon mit der anderen begründet, hat die falsche Zeile vor sich.
  *
  * URSPRUNG (Job 20260910-BAU-zweifelsseiten-live-aber-noindex-und-nicht-im-
  * menue, Christian 2026-09-10): `/pages/erfahrungen` und `/pages/kritik` wurden
@@ -181,6 +195,7 @@ Disallow: /products/bundle-fundament
 Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
 Disallow: /pages/schlaf-zellen-schutz-v3-67a7
+Disallow: /pages/hypothesen
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*

@@ -20,28 +20,49 @@ import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
+import igStyles from '~/styles/ig-testimonials.css?url';
+import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
 /*
- * Route-gebundenes Stylesheet der Token-Schicht dieser Kaufseite
- * (Muster: startseite.css an _index.jsx, qihome-air.css an
- * products.qihome-air.jsx). NICHT in app.css: die globale Datei erreicht
- * 45 Routen; diese Datei gilt genau für die zwei Flaggschiff-Kaufseiten
- * und ist innen zusätzlich auf `main` gescoped.
+ * ZWEI route-gebundene Stylesheets — zwei Gründe, keines ersetzt das andere.
  *
- * Zum Kommentar oben ("KEIN links()-EXPORT MEHR"): dessen Grund war ein
- * Stylesheet für eine Klasse, die auf dieser Seite nicht mehr vorkommt.
- * Jeder Selektor von pdp-qi.css trifft hier gemessen (h2, .NormalSectionSize,
- * .snap-start, .HeroBannerAlt, main img) — die Begründung von damals
- * spricht also nicht gegen diese Zeile, sondern verlangt genau diese Prüfung.
+ * MERGE-NOTIZ (2026-09-12): dieser Block war ein echter Konflikt. PR #376
+ * (IG-Testimonial-Slideshow) und PR #377 (Token-Schicht pdp-qi) haben
+ * unabhängig voneinander je einen links()-Export an genau diese Stelle
+ * geschrieben; aufgelöst wird additiv.
+ *
+ * - ig-testimonials.css (PR #376): Slideshow-Fläche, steht auf vier
+ *   Kaufseiten. Setzt ihre Token bewusst auf `.qb-igt` statt auf `:root` —
+ *   ein Route-Stylesheet mit :root-Token wäre auf jeder anderen Route
+ *   undefiniert, und `var(--x)` ohne Rückfall kippt dort still in Vererbung.
+ * - pdp-qi.css (PR #377): Token-Schicht genau der zwei Flaggschiff-
+ *   Kaufseiten (Score 59 -> 84 bzw. 56 -> 83), innen zusätzlich auf `main`
+ *   gescoped. Jeder ihrer Selektoren trifft hier gemessen (h2,
+ *   .NormalSectionSize, .snap-start, .HeroBannerAlt, main img) — der
+ *   Entfall-Grund von zweifel-beleg.css oben ("Stylesheet für eine Klasse,
+ *   die es hier nicht mehr gibt") spricht also nicht gegen diese Zeile,
+ *   sondern verlangt genau diese Prüfung.
+ *
+ * REIHENFOLGE IST TRAGEND: pdp-qi.css steht HINTER ig-testimonials.css.
+ * Beide sind ungelayert; bei gleicher Spezifität gewinnt die später
+ * geladene. pdp-qi.css setzt den EINEN H2-Stil dieser Seite und braucht
+ * deshalb die letzte Stimme — die Slideshow-Überschrift ist genau der Fall,
+ * den Commit 765faef schon einmal auf die H2-Regel der Gastgeber-Seite
+ * zurückgeholt hat.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: pdpQiStyles}];
+  return [
+    {rel: 'stylesheet', href: igStyles},
+    {rel: 'stylesheet', href: pdpQiStyles},
+  ];
 }
+
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return produktMeta({
+  const basis = produktMeta({
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
     pfad: '/products/qibracelet',
@@ -50,6 +71,16 @@ export const meta = ({data}) => {
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
   });
+  // VideoObject je Instagram-Beitrag MIT Video. Ein Knoten auf einem Eintrag
+  // OHNE Video wäre eine Luege, und ein Knoten ohne Pflichtfeld (name,
+  // thumbnailUrl, uploadDate) steht dauerhaft als Fehler in der Search
+  // Console — beides faellt in ig-video-schema.js baulich aus.
+  const videos = igVideoDescriptor({
+    produkt: 'QiBracelet',
+    pfad: '/products/qibracelet',
+    produktTitel: data?.product?.title,
+  });
+  return videos ? [...basis, videos] : basis;
 };
 
 /**
@@ -188,6 +219,17 @@ export default function Product() {
         }}
       />
     </div>
+      {/*
+        DIE INSTAGRAM-STIMMEN — WEIT OBEN: unmittelbar nach dem Kaufblock
+        (Bilder, Preis, Varianten, Kaufknopf) und VOR dem langen Inhaltsteil.
+        Das ist die Stelle, an der der Zweifel vor dem Kauf entsteht.
+
+        BEWUSST OHNE dataSection: diese PDP führt heute kein einziges
+        data-section. Das erste würde den Design-Rubrik-Collector auf genau
+        eine Sektion einengen (Watch-Regression) — dieselbe Begründung, mit
+        der products.qione-2-pro.jsx seine Anker-frei-Regel führt.
+      */}
+      <IgTestimonialSlideshow produkt="QiBracelet" />
       <QiBracelet /> 
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
