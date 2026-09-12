@@ -314,6 +314,46 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'am 2026-08-31 von Christian wegen Textqualität zurückgezogen; URL bleibt 200, noindex in der eigenen Route',
     seit: '2026-08-31',
   },
+  // Neu 2026-09-12 (s04 des Grossjobs 20260911-BAU-qi-master-einmalig-aussage-
+  // auf-die-shopseite-und-eigene-landingpage). Die einzige Seite dieser Liste,
+  // die von Anfang an unsichtbar gebaut wurde statt nachtraeglich zurueckgezogen
+  // zu werden — sie wird ausschließlich über die Adresse in der Mailkette an
+  // den Bestand erreicht.
+  //
+  // AUFNAHME-KRITERIUM OBEN, ausdrücklich geprüft statt übergangen: die Liste
+  // ist für Seiten „ohne Zweck für Kunden", und diese hier hat einen. Sie fällt
+  // unter den dort benannten Grenzfall der Funnel-Seiten — Kunden SEHEN sie (aus
+  // der Mail), aber niemand SUCHT nach ihr: sie ist Ziel eines Klicks, nie eines
+  // Treffers. Die Regel „bei schlechtem Inhalt ist besserer Inhalt die Antwort,
+  // nicht Unsichtbarkeit" greift hier nicht — der Inhalt ist gewollt, nur sein
+  // Publikum ist es, das begrenzt ist.
+  //
+  // KEINE ÜBERGANGSSTUFE `ausSitemap: false`, und das ist eine Herleitung, kein
+  // kopierter Vorgaenger: die Stufe existiert, damit Google eine BEREITS
+  // INDEXIERTE Seite noch einmal besucht und ihr frisches `noindex` liest. Diese
+  // Seite ist neu, war nie im Index und in keiner Sitemap — Stufe 1 hat kein
+  // Objekt (dieselbe Lage wie bei `wirkt-das`, anders als bei `pre-access`).
+  // Entscheidend ist die Gegenrichtung: sie hat ausdrücklich KEINE interne
+  // Verlinkung, die Sitemap wäre also ihr EINZIGER Discovery-Pfad — genau der
+  // Weg, über den `development-nicht-loschen` ohne einen einzigen internen Link
+  // auf Platz 4 der Suche landete.
+  //
+  // WIRKUNG HEUTE: keine, und zwar messbar — am 2026-09-12 führt
+  // sitemap/pages/1.xml 52 URLs, davon 0 mit `qi-master`; es gibt kein
+  // Shopify-Seitenobjekt mit diesem Handle, und in `NUR_ROUTE_SEITEN` gehört
+  // die Seite nicht (dessen Kriterium verlangt „indexierbar gewollt"). Der
+  // Eintrag ist die Sperre für den Tag, an dem jemand im Shopify-Admin eine
+  // CMS-Seite mit diesem Handle anlegt. Das noindex selbst steht in der eigenen
+  // Route `pages.qi-master-vorverkauf.jsx` (meta + X-Robots-Tag), die den
+  // Katchall sticht; fällt die Route je weg, trägt der Katchall es über
+  // diesen Eintrag weiter.
+  {
+    handle: 'qi-master-vorverkauf',
+    ausSitemap: true,
+    grund:
+      'Vorverkaufs-Landingpage, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-09-12',
+  },
 ];
 
 /**
