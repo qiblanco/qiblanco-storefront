@@ -65,41 +65,41 @@ import e0003 from '~/data/studien/e0003.json';
  *
  * WARUM UEBERHAUPT BILDER, UND WARUM AUSGERECHNET DIESE. Die Seite war eine
  * reine Textwand; Christian wollte Bilder und „Luft im Satzbild". Der
- * naheliegende Griff waere Lifestyle-Material gewesen — und er waere auf
- * GENAU DIESER Flaeche falsch: eine Seite, deren ganze Kraft die
- * Ueberpruefbarkeit ist, verliert sie in dem Moment, in dem sie anfaengt zu
- * werben. Gewaehlt sind deshalb die zwei Fotos des tatsaechlichen
+ * naheliegende Griff wäre Lifestyle-Material gewesen — und er wäre auf
+ * GENAU DIESER Fläche falsch: eine Seite, deren ganze Kraft die
+ * Überprüfbarkeit ist, verliert sie in dem Moment, in dem sie anfängt zu
+ * werben. Gewählt sind deshalb die zwei Fotos des tatsächlichen
  * VERSUCHSAUFBAUS aus den Originalarbeiten. Sie machen nicht die Behauptung
  * anschaulich, sondern die EINRAEUMUNG: wer die vier Kulturflaschen um ein
  * Handy herum sieht, versteht ohne einen weiteren Satz, was „in vitro, nicht
- * am Menschen" bedeutet. Das Bild arbeitet hier fuer die Ehrlichkeit der
+ * am Menschen" bedeutet. Das Bild arbeitet hier für die Ehrlichkeit der
  * Seite, nicht gegen sie.
  *
  * DIE DATEN KOMMEN AUS DER STUDIEN-SSoT (app/data/studien/e*.json), nicht aus
- * einer Kopie: URL, Alternativtext, Abbildungsnummer und die echten Masse
- * stehen dort bereits. Eine zweite Liste daneben waere ein zweiter Traeger fuer
+ * einer Kopie: URL, Alternativtext, Abbildungsnummer und die echten Maße
+ * stehen dort bereits. Eine zweite Liste daneben wäre ein zweiter Träger für
  * dieselbe Angabe — wird ein Bild neu hochgeladen, lieferte die Kritikseite
- * still eine tote CDN-URL aus, und beide Haelften saehen fuer sich richtig aus.
+ * still eine tote CDN-URL aus, und beide Hälften sähen für sich richtig aus.
  *
- * PREIS DIESER ENTSCHEIDUNG — GEMESSEN, NICHT GESCHAETZT, und er ist kleiner
+ * PREIS DIESER ENTSCHEIDUNG — GEMESSEN, NICHT GESCHÄTZT, und er ist kleiner
  * als erwartet: zwei Builds im selben Worktree, nur diese Datei und kritik.css
- * getauscht (2026-09-12), ergaben fuer den Client-Chunk der Route
+ * getauscht (2026-09-12), ergaben für den Client-Chunk der Route
  * 16052 B -> 17052 B, also +1000 B (+6,2 %). Die beiden Studien-JSON
  * (~60 KB Artikel-Volltext) landen NICHT im Client-Bundle: diese Komponente
  * rendert serverseitig, im Chunk steht nur das gerenderte Ergebnis. Die
- * Befuerchtung, hier 60 KB fuer zwei Bilder zu bezahlen, war falsch — wer sie
+ * Befürchtung, hier 60 KB für zwei Bilder zu bezahlen, war falsch — wer sie
  * nachrechnet, misst die ROUTE, nicht die Gesamt-Bytezahl (im Server-Bundle
- * sind die JSON weiterhin zu sehen, und dort gehoeren sie hin).
+ * sind die JSON weiterhin zu sehen, und dort gehören sie hin).
  *
- * NICHT ZU VERWECHSELN MIT DEM FALL IN Header.jsx: der haengt am root-Chunk und
- * laeuft auf JEDER Seite — dort waere derselbe Import teuer, und deshalb steht
+ * NICHT ZU VERWECHSELN MIT DEM FALL IN Header.jsx: der hängt am root-Chunk und
+ * läuft auf JEDER Seite — dort wäre derselbe Import teuer, und deshalb steht
  * dort ein Literal. Hier ist es eine einzelne Route, und genau so machen es die
- * fuenf Studien-Einzelseiten und /pages/studien auch.
+ * fünf Studien-Einzelseiten und /pages/studien auch.
  *
- * width/height stehen als ECHTE Masse aus der SSoT und werden nicht
+ * width/height stehen als ECHTE Maße aus der SSoT und werden nicht
  * beschnitten: sie reservieren den Platz vor dem Laden (kein Layout-Sprung).
- * `loading="lazy"` haelt beide Bilder aus dem ersten Rendern heraus — die
- * Abnahme dieses Baus ist ausdruecklich zweiseitig, das Bild darf die Seite
+ * `loading="lazy"` hält beide Bilder aus dem ersten Rendern heraus — die
+ * Abnahme dieses Baus ist ausdrücklich zweiseitig, das Bild darf die Seite
  * nicht langsamer machen.
  *
  * FREIGABE (Herkunft, an der Stelle, an der man sie beim Aendern sieht):
@@ -109,9 +109,9 @@ import e0003 from '~/data/studien/e0003.json';
  * (/pages/studie-immunzellen, /pages/studie-oxidativer-stress) stehen und aus
  * denselben Dateien auf unserem eigenen CDN geladen werden. Es entsteht hier
  * also kein neues Material und keine neue Nutzung, sondern eine zweite
- * Platzierung bereits veroeffentlichten eigenen Materials. Die Quelle steht
+ * Platzierung bereits veröffentlichten eigenen Materials. Die Quelle steht
  * sichtbar unter jedem Bild (Abbildungsnummer + Journal + Band) — auf dieser
- * Seite ist das Pflicht und nicht Kuer: ein Beweisstueck ohne Fundstelle ist
+ * Seite ist das Pflicht und nicht Kür: ein Beweisstück ohne Fundstelle ist
  * genau das, was die Seite anderen vorwirft.
  */
 function Belegbild({studie, bildKey, einordnung}) {
