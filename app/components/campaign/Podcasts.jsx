@@ -4,7 +4,7 @@
  * Beide Routen (Seite 1 und Seite N) rendern DIESE Komponente, damit die
  * Seiten nachweislich denselben Aufbau haben und nicht auseinanderlaufen.
  *
- * ZWEI ENTSCHEIDUNGEN, die den Aufbau erklären:
+ * DREI ENTSCHEIDUNGEN, die den Aufbau erklären:
  *
  * 1. LITE-EMBED statt iframe: der YouTube-Player wird erst nach Klick geladen.
  *    Seit 2026-09-11 über den gemeinsamen Baustein YoutubeTimestamp statt über
@@ -18,6 +18,19 @@
  * 2. DER TEXT IST KEIN KLAPPINHALT: Beschreibung und Kapitel stehen als
  *    normaler Fliesstext im Dokument, nicht hinter einem Umschalter. Was ein
  *    Crawler nur nach einem Klick saehe, zählt für die Auffindbarkeit nicht.
+ *
+ * 3. HERKUNFT STEHT IM MARKUP: was aus dem eingefrorenen YouTube-Schnappschuss
+ *    kommt, trägt `data-fremdtext`. Diese Seite gibt den Schnappschuss wieder,
+ *    sie verfasst ihn nicht — auf qiblanco.com ist er nicht redigierbar, denn
+ *    die Datenquelle ist generiert und das Original liegt auf YouTube. Der
+ *    Hausstimme-Detektor (homepage-bauer/src/stil_marotten.py) schneidet genau
+ *    diese Bereiche heraus, bevor er zählt, und berichtet sie getrennt.
+ *    UNSER EIGENER Text auf derselben Seite bleibt MESSBAR: Überschrift,
+ *    Einleitung, Zähler, Beschriftungen, die Gast-Titel — und die Absätze ab
+ *    `folge.eigen_ab`, die wir für diese Seite geschrieben haben
+ *    (Generator-Regel R4, heute drei Folgen auf Seite 4). Fehlt das Feld,
+ *    fällt die Marke zur messenden Seite hin aus: dann wird kein einziger
+ *    Absatz ausgenommen.
  */
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 
@@ -76,7 +89,9 @@ function Folge({folge}) {
     <article className="qbp__folge" id={`folge-${folge.slug}`}>
       <Player folge={folge} />
       <div className="qbp__inhalt">
-        <h2 className="qbp__titel">{folge.t}</h2>
+        <h2 className="qbp__titel" data-fremdtext="youtube-snapshot">
+          {folge.t}
+        </h2>
         <p className="qbp__meta">
           <time dateTime={folge.d}>{folge.datum}</time>
           <span className="qbp__punkt" aria-hidden="true">·</span>
@@ -84,7 +99,19 @@ function Folge({folge}) {
         </p>
         <div className="qbp__text" lang={folge.lang}>
           {folge.txt.map((absatz, i) => (
-            <p key={i}>{absatz}</p>
+            <p
+              key={i}
+              /* Absätze VOR `eigen_ab` stammen aus der YouTube-Beschreibung,
+               * die dahinter haben wir selbst geschrieben (R4/R5). Fehlt das
+               * Feld, ist `eigen_ab` null und KEIN Absatz wird ausgezeichnet —
+               * die Marke fällt dann zur messenden Seite hin aus, nie zur
+               * stummen. */
+              data-fremdtext={
+                i < (folge.eigen_ab ?? 0) ? 'youtube-snapshot' : undefined
+              }
+            >
+              {absatz}
+            </p>
           ))}
         </div>
         {folge.kap.length > 0 && (
@@ -98,7 +125,7 @@ function Folge({folge}) {
                     rel="noopener"
                   >
                     <span className="qbp__zeit">{zeitText(sek)}</span>
-                    {titel}
+                    <span data-fremdtext="youtube-snapshot">{titel}</span>
                   </a>
                 </li>
               ))}
@@ -126,7 +153,11 @@ function Gast({gast}) {
       <h3 className="qbp__titel qbp__titel--klein">{gast.t}</h3>
       {gast.id && <Player folge={gast} />}
       <div className="qbp__text">
-        <p>{gast.txt}</p>
+        {/* Der Titel darüber ist die Überschrift UNSERER früheren DACH-Seite
+         * und bleibt gemessen. Der Text hier ist das Zitat des fremden
+         * Gastgebers, wörtlich samt Nennung — ihn zu glätten wäre eine
+         * Fälschung. */}
+        <p data-fremdtext="gastzitat">{gast.txt}</p>
       </div>
     </article>
   );
