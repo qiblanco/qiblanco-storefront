@@ -1,0 +1,285 @@
+/* ============================================================================
+   /pages/qi-master-vorverkauf — Landingpage zum QiMaster-Vorverkauf,
+   2026-09-12, Segment s04 des Grossjobs
+   20260911-BAU-qi-master-einmalig-aussage-auf-die-shopseite-und-eigene-
+   landingpage.
+
+   WAS DIESE DATEI IST — UND WAS SIE AUSDRÜCKLICH NICHT IST: sie ist die
+   route-gebundene Schicht der Landingpage und enthält NUR das, was es auf der
+   Produktseite nicht gibt (Kopfbereich, Textspalte, Handlungsknopf,
+   Abschluss). Die Gestaltungs-TOKEN und die Vorverkaufstreppe kommen aus
+   `app/styles/qi-master.css`, die diese Route zusätzlich lädt.
+
+   WARUM NICHT KOPIEREN: die Treppe ist EIN Bauteil auf ZWEI Flächen
+   (QiMasterTreppe.jsx), und der Kopfkommentar von `qi-master.css` sagt das an
+   ihrer Gestaltung wörtlich vorher („Sitzt im priceLabel-Slot der Buy-Box …
+   und auf der Landingpage als eigener Abschnitt"). Zwei Kopien derselben
+   Tabelle wären dieselbe Klasse Fehler wie zwei Preisquellen: sie sehen am
+   Tag des Baus gleich aus und driften danach. Deshalb lädt die Route beide
+   Dateien, statt eine dritte Wahrheit anzulegen.
+
+   FOLGE FÜR DIESE DATEI: hier steht KEIN eigener :root-Block. Jede Größe,
+   jeder Abstand, jede Farbe und jeder Radius kommt aus den `--qm-*`-Token von
+   `qi-master.css` — dieselbe Typo-Skala (7 Stufen), dasselbe 8pt-Raster,
+   derselbe EINE Gold-Akzent (--qm-akzent / --qm-akzent-tinte), dieselben zwei
+   Radien. Eine zweite Skala hier wäre ein zweiter Goldton und eine zehnte
+   Schriftgröße — genau die zwei Befunde, an denen die Live-LPs 2026-07-24 bei
+   65–78/100 lagen.
+
+   SCOPE: `.qm-lp` liegt am Wurzel-Element der Route. Nichts hier greift
+   ausserhalb; `app.css` wird nicht angefasst (eine Änderung dort zöge 45
+   Seiten in die Gate-12-Prüfmenge).
+
+   RUHE VOR REIZDICHTE (Kaufüberzeugungs-Kanon, Abschnitt „für dich: design"):
+   der Abschluss-Block braucht Lesbarkeit von Zahlen und visuelle Ruhe. Es gibt
+   deshalb genau drei Hintergrund-Welten auf dieser Seite (Grund, Fläche,
+   Dunkel im Abschluss) und keine Signalfarbe ausser dem einen Gold-Akzent —
+   und der sitzt nur auf der Handlung (Knopf) und auf dem Beweis (laufende
+   Treppen-Zeile, gesetzt in qi-master.css).
+
+   GEMESSEN NACHGEZOGEN (design-rubrik, 2026-09-12): die erste Fassung setzte
+   Gold zusaetzlich auf das Auge über der Ueberschrift und auf den
+   Knopf-Hover. Die Rubrik meldete daraufhin „ZWEI konkurrierende
+   Gold-/Ocker-Toene" — zu Recht: --qm-akzent (Flaeche) und --qm-akzent-tinte
+   (Schrift) sind zwei Toene, und ein Auge ist weder Handlung noch Beweis. Es
+   trägt jetzt --qm-muted, der Hover den dunklen Ton. In dieser Datei kommt
+   Gold damit an GENAU EINER Stelle vor: dem Knopf.
+   ========================================================================== */
+
+.qm-lp {
+  font-family: var(--qm-font);
+  color: var(--qm-text);
+  background: var(--qm-grund);
+  font-size: var(--qm-fs-base);
+  line-height: 1.6;
+}
+
+/* Ein Takt, zwei Werte (web-soll: Sektions-Takt [96, 64]) */
+.qm-lp__inhalt {
+  max-width: 720px; /* ~70ch bei 16px — Soll <= 75ch */
+  margin: 0 auto;
+  padding: var(--qm-s12) var(--qm-s3);
+}
+.qm-lp__inhalt + .qm-lp__inhalt {
+  padding-top: 0;
+}
+
+@media (max-width: 767px) {
+  .qm-lp__inhalt {
+    padding: var(--qm-s8) var(--qm-s2);
+  }
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.qm-lp__kopf {
+  background: var(--qm-flaeche);
+  padding-top: var(--qm-s12);
+  padding-bottom: var(--qm-s8);
+  max-width: none;
+}
+.qm-lp__kopf-inhalt {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--qm-s3);
+}
+@media (max-width: 767px) {
+  .qm-lp__kopf {
+    padding-top: var(--qm-s8);
+    padding-bottom: var(--qm-s6);
+  }
+  .qm-lp__kopf-inhalt {
+    padding: 0 var(--qm-s2);
+  }
+}
+
+.qm-lp__auge {
+  display: block;
+  font-size: var(--qm-fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--qm-muted);
+  margin-bottom: var(--qm-s2);
+}
+
+.qm-lp__titel {
+  font-size: var(--qm-fs-h1);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--qm-dunkel);
+  margin: 0 0 var(--qm-s3);
+}
+
+.qm-lp__vorspann {
+  font-size: var(--qm-fs-md);
+  color: var(--qm-text);
+  margin: 0;
+}
+
+/* ─── EIN H2-Stil, ausnahmslos linksbündig ────────────────────────────────── */
+.qm-lp h2 {
+  font-size: var(--qm-fs-h2);
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: left;
+  color: var(--qm-dunkel);
+  margin: 0 0 var(--qm-s3);
+}
+
+.qm-lp h3 {
+  font-size: var(--qm-fs-md);
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--qm-dunkel);
+  margin: var(--qm-s4) 0 var(--qm-s1);
+}
+
+/* DIE GROESSE STEHT HIER EXPLIZIT, und das ist kein Versehen: `.qm-lp`
+   setzt zwar --qm-fs-base, aber Vererbung verliert gegen JEDE direkte Regel —
+   und app.css setzt `p` shopweit auf 1.2rem. GEMESSEN am eigenen Preview
+   (2026-09-12, audit.json textBlocks): acht eigene Absaetze rendern mit
+   19.2px statt der 16px, die diese Datei behauptet. Das war ein echter
+   Defekt, kein Messartefakt — die Seite trug eine Skala, auf der ihr eigener
+   Fliesstext nicht lag. */
+.qm-lp p,
+.qm-lp li {
+  font-size: var(--qm-fs-base);
+  margin: 0 0 var(--qm-s2);
+}
+.qm-lp p:last-child {
+  margin-bottom: 0;
+}
+
+.qm-lp__liste {
+  margin: 0 0 var(--qm-s2);
+  padding-left: var(--qm-s3);
+}
+.qm-lp__liste li {
+  margin-bottom: var(--qm-s1);
+}
+
+/* ─── Grenzen-Block: dieselbe Fläche wie die Treppe, kein Warnton ─────────── */
+.qm-lp__grenzen {
+  background: var(--qm-flaeche);
+  border-radius: var(--qm-r2);
+  padding: var(--qm-s3);
+}
+.qm-lp__grenzen h2 {
+  margin-bottom: var(--qm-s2);
+}
+
+/* ─── Handlung: der EINE Knopf, der EINE Gold-Akzent ─────────────────────── */
+.qm-lp__handlung {
+  text-align: center;
+}
+
+.qm-lp__knopf {
+  display: inline-block;
+  background: var(--qm-akzent);
+  color: var(--qm-dunkel);
+  font-size: var(--qm-fs-md);
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  padding: var(--qm-s2) var(--qm-s4);
+  border-radius: var(--qm-r1);
+  min-height: 48px; /* Touch-Ziel, 8pt-Raster */
+  box-sizing: border-box;
+}
+.qm-lp__knopf:hover,
+.qm-lp__knopf:focus-visible {
+  background: var(--qm-dunkel);
+  color: var(--qm-grund);
+}
+.qm-lp__knopf:focus-visible {
+  outline: 2px solid var(--qm-dunkel);
+  outline-offset: 2px;
+}
+
+.qm-lp__knopf-hinweis {
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+  margin-top: var(--qm-s2);
+}
+
+/* ─── Abschluss ───────────────────────────────────────────────────────────── */
+.qm-lp__zusage {
+  background: var(--qm-dunkel);
+  color: var(--qm-grund);
+  max-width: none;
+  padding-top: var(--qm-s8);
+  padding-bottom: var(--qm-s12);
+}
+.qm-lp__zusage-inhalt {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--qm-s3);
+}
+.qm-lp__zusage h2 {
+  color: var(--qm-grund);
+}
+.qm-lp__zusage p {
+  color: var(--qm-grund);
+}
+@media (max-width: 767px) {
+  .qm-lp__zusage {
+    padding-top: var(--qm-s6);
+    padding-bottom: var(--qm-s8);
+  }
+  .qm-lp__zusage-inhalt {
+    padding: 0 var(--qm-s2);
+  }
+}
+
+/* ─── Huellen-Normalisierung (gilt NUR auf dieser Route) ──────────────────────
+   P10, KEIN EIGENER EINFALL: das ist wörtlich das Rezept, das
+   `qi-master.css` für die Produktseite führt (Block
+   „Route-Chrome-Harmonisierung", `body:has(.ProductPageQiMaster) …`), auf
+   diese Route übertragen. Der Anlass ist derselbe und wurde hier erneut
+   gemessen statt uebernommen.
+
+   GEMESSEN 2026-09-12 am eigenen Preview: die Rubrik meldete „3
+   Bild-Radius-Werte (4px, 6px, 20px)" — und diese Seite hat NULL eigene
+   Bilder. Alle 11 gezaehlten Bilder kommen aus Kopf, Mega-Menü und Fuß:
+   Menü-Icons 4px, Menü-Bilder 20px, Fuß-Studienbilder 6px. Die Rubrik
+   zählt das DOKUMENT, nicht die Route — auf einer Seite ohne eigene Bilder
+   misst die Bild-Achse deshalb ausschließlich die geteilte Huelle.
+   Gegenprobe am Nachbarn auf demselben Server: /products/qi-master zählt 28
+   Bilder mit genau zwei Radien (8px, 16px) — dort ist derselbe Griff schon
+   getan.
+
+   WAS HIER NICHT PASSIERT: die geteilten Bausteine selbst werden NICHT
+   angefasst (app.css bliebe sonst mit 45 Seiten in der Gate-12-Pruefmenge),
+   und Farbe und Layout des Navigations-Flyouts bleiben unberuehrt — nur
+   Radius und Schriftgroesse, und nur solange diese Route rendert.
+   -------------------------------------------------------------------------- */
+body:has(.qm-lp) header img {
+  border-radius: var(--qm-r1);
+}
+body:has(.qm-lp) .header-submenu-item img,
+body:has(.qm-lp) .eu-gwl__zeichen {
+  border-radius: var(--qm-r1);
+}
+body:has(.qm-lp) .footer-study img {
+  border-radius: var(--qm-r2);
+}
+/* Die Mega-Menü-Bilder tragen ihre 20px INLINE (Header.jsx style=...); eine
+   Klassenregel erreicht sie nicht, nur !important — dieselbe Begründung wie
+   an der Schwesterseite. */
+body:has(.qm-lp) .submenu .nav-styling-wrapper img {
+  border-radius: var(--qm-r2) !important;
+}
+
+/* Schriftgrößen der Huelle auf dieselbe Skala. Auf einer kurzen Seite wiegt
+   die Huelle im Histogramm schwer: die Rubrik meldete „Body-Größe
+   uneinheitlich (häufigste Größe trägt nur 42%)" und „wilde
+   Zwischenwerte" — Werte wie 17,6px stammen aus app.css, nicht von hier. */
+body:has(.qm-lp) .header-submenu-item {
+  font-size: var(--qm-fs-md);
+}
+body:has(.qm-lp) .Header-AnnouncementBanner p,
+body:has(.qm-lp) .Header-AnnouncementBanner span {
+  font-size: var(--qm-fs-xs);
+}
+body:has(.qm-lp) .shop-switch__label {
+  font-size: var(--qm-fs-base);
+}
