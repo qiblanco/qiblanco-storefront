@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
-import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
+import {formatPreis} from '~/lib/markt-pricing';
+import {paketBetraege} from '~/lib/paket-preis';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
@@ -643,19 +644,12 @@ function paketPreisLines(p, productsByHandle, sizes) {
 
 function paketAnzeige(p, productsByHandle, sizes) {
   const lines = paketPreisLines(p, productsByHandle, sizes);
-  if (!lines || lines.length === 0) return null;
-  const waehrung = lines[0].waehrung;
-  let compare = 0;
-  let preis = 0;
-  for (const line of lines) {
-    const satz = anzeigeSatz(line.handle, line.waehrung);
-    const rabattProEinheit =
-      Math.floor(line.einzelNetto * p.rabatt * 100) / 100;
-    compare += Math.round(line.einzelNetto * line.quantity * (1 + satz));
-    preis += Math.round(
-      (line.einzelNetto - rabattProEinheit) * line.quantity * (1 + satz),
-    );
-  }
+  // Die Rechnung selbst steht in app/lib/paket-preis.js — dort ist sie ohne
+  // React pruefbar (`node --test`), und dort steht auch, WARUM nur einmal
+  // gerundet wird und warum der Festbetrag-Pfad an EUR hängt.
+  const betraege = paketBetraege(lines, p);
+  if (!betraege) return null;
+  const {compare, preis, waehrung} = betraege;
   return {
     compare: formatPreis(compare, waehrung),
     price: formatPreis(preis, waehrung),
@@ -813,10 +807,13 @@ function GeldheldenPakete({products}) {
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "50 cm" },
       ],
       rabatt: 0.08,
+      // Festbetrag des Rabattcodes PAKET-FUNDAMENT (EUR, netto). Er erzeugt an
+      // der Kasse 6.756,00 — genau den Betrag, den die Karte nennt.
+      rabattFest: 494.97,
       fallback: {
         compare: "7.345 €",
-        price: "6.757 €",
-        save: "Du sparst 588 €",
+        price: "6.756 €",
+        save: "Du sparst 589 €",
         fine: "oder ab 563 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       },
       cta: "Dieses Paket wählen",
@@ -838,11 +835,16 @@ function GeldheldenPakete({products}) {
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "50 cm" },
       ],
       rabatt: 0.12,
+      // Festbetrag des Rabattcodes dieses Pakets (EUR, netto) -> Kasse
+      // 9.236,00. Der früher beworbene Betrag 9.242 war mit KEINEM Festbetrag
+      // herstellbar; 9.236 ist der nächste erreichbare Wert ZUGUNSTEN des
+      // Kunden (die Gegenrichtung wäre 9.244 gewesen, also teurer).
+      rabattFest: 1063.04,
       fallback: {
         compare: "10.501 €",
-        price: "9.241 €",
-        save: "Du sparst 1.260 €",
-        fine: "oder ab 774 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+        price: "9.236 €",
+        save: "Du sparst 1.265 €",
+        fine: "oder ab 770 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       },
       cta: "Dieses Paket wählen",
       featured: true,
@@ -865,11 +867,15 @@ function GeldheldenPakete({products}) {
         { label: "1 × Kette für den QiOne®", kind: "kette", defaultSize: "50 cm" },
       ],
       rabatt: 0.15,
+      // Festbetrag des Rabattcodes PAKET-RESIDENZ (EUR, netto) -> Kasse
+      // 17.390,00. 17.397 war mit keinem Festbetrag herstellbar; 17.390 ist der
+      // nächste erreichbare Wert zugunsten des Kunden (Gegenrichtung 17.399).
+      rabattFest: 2585.73,
       fallback: {
         compare: "20.467 €",
-        price: "17.397 €",
-        save: "Du sparst 3.070 €",
-        fine: "oder ab 1.450 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
+        price: "17.390 €",
+        save: "Du sparst 3.077 €",
+        fine: "oder ab 1.449 €/Mon. · Klarna & Paypal · 100% Versicherter Versand",
       },
       cta: "Dieses Paket wählen",
       featured: false,
