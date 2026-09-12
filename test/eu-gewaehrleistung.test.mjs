@@ -39,6 +39,8 @@ import {
   labelFuerSprache,
   LABEL_ALT_DE,
   RECHTE_LINK,
+  EIGENE_WORTE,
+  eigeneWorteFuerSprache,
 } from '../app/lib/eu-gewaehrleistungslabel.js';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -1193,4 +1195,155 @@ test('das Zeichen in der Kakao-Liste ist so groß wie die Emoji daneben', () => 
     `Die Bildleiter rechnet mit ${AUSLOESER_ZEICHEN.anzeigeBreite} px, die ` +
       `Kakao-Liste zeigt das Zeichen aber ${breitePx.toFixed(1)} px breit.`,
   );
+});
+
+/* ==================================================================== */
+/* UNSERE EIGENEN WORTE VOR DER AMTLICHEN MITTEILUNG                    */
+/*                                                                      */
+/* Job 20260912-BAU-gewaehrleistung-in-eigenen-worten-statt-amtsblatt-  */
+/* als-bild. Christian: "dieses Pop-up wirkt sehr befremdlich und nicht */
+/* nett ... ein Statement von uns, dass wir dem folgen und Teil davon   */
+/* sind, und was der Kunde davon hat."                                  */
+/*                                                                      */
+/* EHRLICH ZUR TRENNSCHAERFE DIESER ARME: die Arme 1 und 2 prüfen die  */
+/* BAUFORM und wären ohne diesen Bau rot, weil das Gepruefte fehlt --  */
+/* sie halten die Form, sie beweisen sie nicht. Die Arme 3, 4 und 5     */
+/* sind die scharfen: sie messen den TEXT und schlagen bei jedem        */
+/* kuenftigen Umschreiben aus, das die Grenze reißt (Rueckfall auf     */
+/* Englisch, UGP-Anhang-I-Nr.-10-Satz weg, Hausstimme gebrochen).       */
+/* ==================================================================== */
+
+test('Arm 1: unsere Worte stehen VOR der amtlichen Grafik, nie an ihrer Stelle', () => {
+  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+
+  const wort = code.indexOf('eu-gwl-dialog__wort');
+  const amtstitel = code.indexOf('eu-gwl-dialog__amtstitel');
+  const img = code.indexOf('<img');
+  assert.ok(wort >= 0, 'der Block mit unseren eigenen Worten fehlt');
+  assert.ok(amtstitel >= 0, 'die Ueberschrift über der amtlichen Grafik fehlt');
+  assert.ok(
+    wort < amtstitel && amtstitel < img,
+    'Reihenfolge verletzt: unsere Worte, dann die Ueberschrift, dann die ' +
+      'Grafik. Steht die Grafik davor, ist genau das wieder da, was ' +
+      'Christian beanstandet hat.',
+  );
+
+  // Und die Grafik ist weiterhin genau EINE und unveraendert -- das prüfen
+  // die Bestandstests oben; hier nur, dass unser Block sie nicht ersetzt hat.
+  assert.match(code, /src=\{label\.url\}/, 'die amtliche Grafik ist weg');
+});
+
+test('Arm 2: der Text ist optional -- ohne gepflegte Sprache bleibt der alte Dialog', () => {
+  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+  const treffer = code.match(/\{label\.eigeneWorte \?/g) ?? [];
+  assert.equal(
+    treffer.length,
+    2,
+    'Text und Ueberschrift müssen BEIDE am eigeneWorte-Zweig hängen. ' +
+      `Gefunden: ${treffer.length}. Hängt die Ueberschrift frei, steht sie ` +
+      'in einer Sprachfassung ohne unseren Text allein da.',
+  );
+});
+
+test('Arm 3: eine ungepflegte Sprache faellt NICHT auf Englisch zurück', () => {
+  // Die GRAFIK faellt zurück (Pflicht), unser ZUSATZ nicht (Hoeflichkeit).
+  assert.equal(eigeneWorteFuerSprache('pl'), null, 'pl darf keinen Text bekommen');
+  assert.equal(eigeneWorteFuerSprache(''), null);
+  assert.equal(eigeneWorteFuerSprache(null), null);
+  assert.equal(eigeneWorteFuerSprache(undefined), null);
+
+  // Gegenprobe: die Grafik faellt sehr wohl zurück -- sonst wäre die
+  // Pflichtmitteilung für pl weg, und dieser Arm haette das Falsche belegt.
+  assert.ok(labelFuerSprache('pl').url, 'die pl-Grafik muss es weiter geben');
+
+  assert.equal(eigeneWorteFuerSprache('de').titel, EIGENE_WORTE.de.titel);
+  assert.equal(eigeneWorteFuerSprache('DE').titel, EIGENE_WORTE.de.titel);
+  assert.ok(eigeneWorteFuerSprache('en'), 'der Rueckfall-Eintrag en fehlt');
+});
+
+test('Arm 4: der Text gibt das gesetzliche Recht nicht als unser Angebot aus', () => {
+  /*
+   * Anhang I Nr. 10 der UGP-Richtlinie 2005/29/EG (Deutschland: Par. 3
+   * Abs. 3 UWG) verbietet PER SE, gesetzliche Rechte als Besonderheit des
+   * eigenen Angebots darzustellen -- schwarze Liste, ohne
+   * Spuerbarkeitsschwelle. Der Text trägt deshalb ausdrücklich den Satz,
+   * dass das Recht kraft Gesetzes und bei JEDEM Haendler gilt.
+   *
+   * GEMESSEN WIRD DIE AUSSAGE, NICHT DIE WORTWAHL: geprueft ist, dass der
+   * Text sowohl den gesetzlichen Ursprung als auch die Allgemeingueltigkeit
+   * nennt. Wer ihn umschreibt und dabei einen der beiden streicht, faellt
+   * hier auf -- und genau dann wird er gebraucht.
+   */
+  const marker = {
+    de: [/kraft Gesetzes|gesetzlich/i, /jedem Händler|jeder Händler|in der EU/i],
+    en: [/granted by law|by law/i, /every seller|all sellers/i],
+  };
+  for (const [iso, muster] of Object.entries(marker)) {
+    const w = eigeneWorteFuerSprache(iso);
+    assert.ok(w, `Sprachfassung ${iso} fehlt`);
+    const text = w.absaetze.join(' ');
+    for (const m of muster) {
+      assert.match(
+        text,
+        m,
+        `${iso}: der Text nennt nicht mehr, dass dieses Recht kraft Gesetzes ` +
+          'ueberall gilt. So gelesen ist die Gewaehrleistung unsere ' +
+          'Besonderheit -- und das ist nach UGP-RL Anhang I Nr. 10 verboten.',
+      );
+    }
+  }
+});
+
+test('Arm 5: jede gepflegte Sprachfassung hält die Hausstimme und trägt Substanz', () => {
+  /*
+   * Schwellen aus qi-brain/brain/writing-rules.md Abschnitt 1.2 (Hausstimme,
+   * Christian 2026-09-12). Die Detektoren sind dieselben wie in
+   * homepage-bauer/bin/probe_stil_kundentext.py -- dort gegen /pages/faq,
+   * hier gegen die Quelle. Doppelt gemessen ist Absicht: die Live-Probe
+   * sieht diesen Text nie, weil er hinter einem Klick liegt.
+   *
+   * MIND_EIGEN spiegelt die Schwelle der Live-Probe
+   * homepage-bauer/bin/probe_gewaehrleistung_eigene_worte.py. Faellt der
+   * Text unter 200 Zeichen, wird die Live-Probe rot -- dann soll dieser
+   * Test es schon vorher sagen.
+   */
+  const MIND_EIGEN = 200;
+  for (const iso of Object.keys(EIGENE_WORTE)) {
+    const w = EIGENE_WORTE[iso];
+    assert.ok(w.titel && w.amtstitel, `${iso}: Titel oder Amtstitel fehlt`);
+    assert.ok(Array.isArray(w.absaetze) && w.absaetze.length >= 3, `${iso}: zu wenig Absaetze`);
+
+    const text = [w.titel, ...w.absaetze].join(' ');
+    assert.ok(
+      text.length >= MIND_EIGEN,
+      `${iso}: nur ${text.length} Zeichen eigener Prosa, verlangt ${MIND_EIGEN}`,
+    );
+
+    const worte = text.split(/\s+/).filter(Boolean).length;
+    const je1000 = (n) => (n * 1000) / worte;
+
+    const striche = (text.match(/—/g) ?? []).length;
+    assert.ok(je1000(striche) <= 4.0, `${iso}: ${je1000(striche).toFixed(1)} Gedankenstriche je 1000`);
+
+    const verl = (text.match(/\b(ausdrücklich|bewusst|durchaus|mitnichten|gleichwohl)\b/gi) ?? []).length;
+    assert.ok(je1000(verl) <= 1.0, `${iso}: ${verl} Verlegenheitswoerter`);
+
+    assert.equal(
+      (text.match(/Was [^.?!]{5,90}?(?:nicht|kein)[^.?!]{0,60}?, ist /g) ?? []).length,
+      0,
+      `${iso}: Negations-Inversion`,
+    );
+    assert.equal(
+      (text.match(/weiter oben|weiter unten|auf dieser Seite|hier liest du|diese Seite ist/gi) ?? []).length,
+      0,
+      `${iso}: der Text spricht über sich selbst`,
+    );
+
+    const saetze = text.split(/(?<=[.!?])\s+/).filter((x) => x.split(/\s+/).length >= 3);
+    const lang = saetze.filter((x) => x.split(/\s+/).length > 30);
+    assert.ok(
+      lang.length / saetze.length <= 0.06,
+      `${iso}: ${lang.length} von ${saetze.length} Saetzen über 30 Woerter`,
+    );
+  }
 });
