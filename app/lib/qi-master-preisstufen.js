@@ -19,13 +19,36 @@
  * auf Euro-Ebene rundet, sammelt den Fehler ein. Gerechnet wird deshalb auf
  * ganzen Cent, gerundet genau einmal.
  *
- * RUNDUNGS-NAHT (festgehalten, weil sie heute NICHT weh tut und später schon):
+ * DIE RUNDUNGSREGEL IST EINE EINGABE, KEIN CODE (seit 2026-09-12): sie steht im
+ * Feld `rundung` der Quelle, und ALLE Rechenwege lesen sie von dort — dieser
+ * hier, die stehende Wache shop-manager/src/qm_quelle.py und die
+ * Python-Kontrollrechnung qm_stufen.py. Vorher stand dieselbe Regel dreimal als
+ * Code da, und genau das ist schiefgegangen: der Shop rundete kaufmännisch auf
+ * Cent (7.989,89), die Mailkette abwärts auf volle Euro (7.989) — zwei
+ * Kundenflächen, zwei Preise für dasselbe Stück.
+ *
+ * WARUM DAS FELD UND NICHT VIER EDITS: die Python-Seiten lesen die Quelle per
+ * `git show origin/main:…`. Solange das Feld dort nicht steht, verhalten sie
+ * sich unverändert; in dem Moment, in dem es landet, kippen alle Rechenwege
+ * ZUGLEICH. Ohne diesen Schalter gäbe es ein Fenster, in dem die eine Seite
+ * schon abwärts und die andere noch kaufmännisch rundet — und die Naht-Probe
+ * meldete einen Widerspruch, den niemand gebaut hat.
+ *
+ * FEHLT das Feld, gilt die alte kaufmännische Cent-Rundung (rückwärtskompatibel
+ * für einen älteren Stand der Quelle). Ein UNBEKANNTER Wert ist ein Fehler und
+ * nie stillschweigend die alte Regel: eine Rundungsregel, die man errät, ist
+ * genau die zweite Wahrheit, die dieses Modul verhindern soll.
+ *
+ * RUNDUNGS-NAHT (sie besteht weiter, sie hat nur eine zweite Stufe bekommen):
  * `Math.round` rundet den halben Cent nach OBEN, Pythons eingebautes `round()`
- * auf GERADE. Bei den vier heutigen Sätzen entsteht kein halber Cent
- * (798988,9 / 851120,0 / 904315,0 / 957510,0) — bei einem künftigen Satz wie
- * 12,5 % schon (930912,5). Die Python-Kontrollseite rechnet darum mit
- * Decimal+ROUND_HALF_UP, und die Naht-Probe vergleicht beide Wege über ALLE
- * Stufen, nicht über eine. Wer hier `Math.round` ersetzt, bricht diese Naht.
+ * auf GERADE — die Python-Kontrollseite rechnet darum mit Decimal+ROUND_HALF_UP.
+ * Unter `abrunden_ganze_euro` kommt ein zweiter Schritt dazu, und der ist der
+ * heiklere: vor dem Abschneiden auf ganze Euro wird das IEEE-754-Rauschen auf
+ * Milli-Cent weggeschnappt. Ohne das macht ein Satz, der rechnerisch GENAU auf
+ * einem Euro landet, aus 900000,0000000001 bzw. 899999,9999999999 einmal 9000
+ * und einmal 8999 — ein Ein-Euro-Sprung aus reiner Gleitkomma-Laune, und er
+ * träfe nur eine der beiden Seiten. Die Naht-Probe vergleicht beide Wege über
+ * ALLE Stufen, nicht über eine.
  *
  * NAMEN OHNE UMLAUT-DIGRAPHEN: der Listenpreis heißt im JSON und hier
  * `listenpreis`, die laufende Stufe heißt `aktiv`. Grund ist kein Geschmack,
@@ -40,12 +63,48 @@ export function listenpreisCent(quelle) {
   return Math.round(Number(quelle.listenpreis_brutto_eur) * 100);
 }
 
+/** Die beiden Rundungsregeln, die die Quelle nennen darf. */
+export const RUNDUNG_CENT = 'kaufmaennisch_cent';
+export const RUNDUNG_EURO = 'abrunden_ganze_euro';
+
+/**
+ * Die Rundungsregel der Quelle — gelesen, nicht geraten.
+ * Fehlt `rundung`, gilt die alte kaufmännische Cent-Rundung (ein älterer Stand
+ * der Quelle rechnet damit unverändert weiter). Ein unbekannter Wert wirft:
+ * ohne gültige Regel gibt es keinen Preis, und ein stiller Rückfall auf die
+ * alte Regel wäre von einer richtigen Rechnung nicht zu unterscheiden.
+ */
+export function rundungsregel(quelle) {
+  const r = quelle?.rundung ?? RUNDUNG_CENT;
+  if (r !== RUNDUNG_CENT && r !== RUNDUNG_EURO) {
+    throw new Error(
+      `qi-master-preisstufen: unbekannte Rundungsregel ${JSON.stringify(r)} — ` +
+        `erlaubt sind '${RUNDUNG_CENT}' und '${RUNDUNG_EURO}'`,
+    );
+  }
+  return r;
+}
+
 /**
  * Preis einer Stufe in ganzen Cent.
- * Genau EINE Rundung, am Ende, auf Cent. Siehe Rundungs-Naht im Kopf.
+ *
+ * `kaufmaennisch_cent`: genau EINE Rundung, am Ende, auf Cent.
+ * `abrunden_ganze_euro`: danach ABWÄRTS auf den vollen Euro. Die Richtung ist
+ * tragend und Christians Vorgabe — der Kunde zahlt nie mehr, als die
+ * Prozentrechnung ergäbe; der genannte Satz ist die Überschrift, der genannte
+ * PREIS ist der verbindliche, und der tatsächliche Nachlass liegt dadurch
+ * minimal über dem Satz.
+ *
+ * Das `* 1000` vor dem Abschneiden ist kein Zierrat: es schnappt das
+ * IEEE-754-Rauschen auf Milli-Cent weg, bevor `Math.floor` urteilt. Siehe
+ * Rundungs-Naht im Kopf.
  */
-export function preisCent(basisCent, prozent) {
-  return Math.round(basisCent * (1 - Number(prozent) / 100));
+export function preisCent(basisCent, prozent, rundung = RUNDUNG_CENT) {
+  const roh = basisCent * (1 - Number(prozent) / 100);
+  if (rundung === RUNDUNG_EURO) {
+    return Math.floor(Math.round(roh * 1000) / 1000 / 100) * 100;
+  }
+  return Math.round(roh);
 }
 
 /** 798989 -> '7.989,89' (deutsche Schreibweise, genau so steht sie im HTML). */
@@ -56,6 +115,25 @@ export function centText(cent) {
   const nach = s.slice(-2);
   const mitPunkt = ganz.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   return `${negativ ? '-' : ''}${mitPunkt},${nach}`;
+}
+
+/**
+ * 798900 -> '7.989' unter `abrunden_ganze_euro`, sonst '7.989,00'.
+ *
+ * DIE NACHKOMMASTELLEN FOLGEN DER REGEL, NICHT DEM WERT. Das ist der
+ * Unterschied, an dem man sich hier vertut: ein wertgetriebenes „lass ',00'
+ * weg, wenn der Betrag glatt ist" schriebe unter der CENT-Regel aus dem
+ * Listenpreis 10.639,00 ein '10.639' — und das ist genau die Zeile, die heute
+ * live mit Nachkommastellen dasteht. Gefragt ist die Regel der Quelle.
+ *
+ * Christians Vorgabe für die Euro-Regel lautet ausdrücklich „keine
+ * Nachkommastellen"; ein '7.989,00' wäre rechnerisch richtig und trotzdem die
+ * falsche Zeile, weil die Mail '7.989' schreibt.
+ */
+export function betragText(cent, rundung = RUNDUNG_CENT) {
+  if (rundung !== RUNDUNG_EURO) return centText(cent);
+  const euro = Math.round(cent / 100);
+  return String(euro).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 /**
@@ -106,19 +184,20 @@ export function aktiveStufe(quelle, jetzt = new Date()) {
  */
 export function tabellenZeilen(quelle, jetzt = new Date()) {
   const basis = listenpreisCent(quelle);
+  const regel = rundungsregel(quelle);
   const laufende = aktiveStufe(quelle, jetzt);
   return quelle.stufen
     .filter((s) => s.in_tabelle !== false)
     .map((s) => {
-      const cent = preisCent(basis, s.prozent);
+      const cent = preisCent(basis, s.prozent, regel);
       return {
         id: s.id,
         prozent: Number(s.prozent),
         zeitraum: s.zeitraum ?? '',
         preisCent: cent,
         ersparnisCent: basis - cent,
-        preisText: centText(cent),
-        ersparnisText: centText(basis - cent),
+        preisText: betragText(cent, regel),
+        ersparnisText: betragText(basis - cent, regel),
         satzText: satzText(s.prozent),
         aktiv: Boolean(laufende) && laufende.id === s.id,
       };
@@ -135,6 +214,7 @@ export function tabellenZeilen(quelle, jetzt = new Date()) {
  */
 export function treppe(quelle, jetzt = new Date()) {
   const laufende = aktiveStufe(quelle, jetzt);
+  const regel = rundungsregel(quelle);
   const zeilen = tabellenZeilen(quelle, jetzt);
   const groesste = zeilen.reduce(
     (a, z) => (z.ersparnisCent > a ? z.ersparnisCent : a),
@@ -145,7 +225,7 @@ export function treppe(quelle, jetzt = new Date()) {
     .reduce((a, z) => (z.ersparnisCent < a ? z.ersparnisCent : a), Infinity);
   return {
     zeilen,
-    listenpreisText: centText(listenpreisCent(quelle)),
+    listenpreisText: betragText(listenpreisCent(quelle), regel),
     aktivId: laufende?.id ?? null,
     vorlaufHinweis:
       laufende && laufende.in_tabelle === false ? (laufende.hinweis ?? '') : '',
@@ -153,7 +233,7 @@ export function treppe(quelle, jetzt = new Date()) {
     /** Was Warten kostet: beste minus schwächste Rabattstufe. */
     spannweiteText:
       Number.isFinite(kleinste) && groesste > kleinste
-        ? centText(groesste - kleinste)
+        ? betragText(groesste - kleinste, regel)
         : '',
   };
 }
