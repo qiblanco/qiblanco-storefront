@@ -300,6 +300,23 @@ export const FAQ_KAUF = [
       'gesetzliche 14-Tage-Frist und den Satz „Sie tragen die unmittelbaren Kosten der Rücksendung". ' +
       'Beide Fristen stehen NEBENEINANDER, weil sie zwei verschiedene Instrumente sind — genau die ' +
       'Lesart, die Segment s03 am 2026-09-01 für merchantReturnDays = 20 begründet hat.',
+    // DIE VERTIEFUNG DIESER ANTWORT, und zugleich der eingehende Link, den
+    // /pages/neu-oder-gebraucht braucht: eine Seite ohne Verweis von einer
+    // indexierten Nachbarseite ist entdeckt und nicht gewichtet (Feld
+    // `referringUrls` der Search Console). Der Menü-Eintrag allein trägt das
+    // nicht — dessen Kinder rendert Shopify clientseitig per Portal, im
+    // Server-HTML stehen sie nicht.
+    //
+    // ARBEITSTEILUNG wie im Abgrenzungs-SSoT: die FAQ antwortet in EINEM
+    // Absatz und verlinkt in die Tiefe. Dort stehen beide Fristen mit ihrer
+    // Quelle nebeneinander, dazu was im Preis enthalten ist und was ein Kauf
+    // von privat nicht enthält.
+    weiter: {
+      pfad: '/pages/neu-oder-gebraucht',
+      text:
+        'Rücknahme, Widerruf, Gewährleistung und Versand mit Quelle — und ' +
+        'was ein Kauf von privat nicht enthält',
+    },
   },
   {
     q: 'Kann ich in Raten zahlen?',
