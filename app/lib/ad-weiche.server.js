@@ -316,7 +316,7 @@ export async function adWeicheAktiv(fetchImpl) {
 /**
  * Kill-Schalter des MESSAGE-MATCH-ARMS (s04), Feld `ad_weiche_mm`.
  * NUR der explizite Wert 'an' aktiviert; Abwesenheit, Fetch-Fehler, Timeout
- * und kaputtes JSON bedeuten AUS — und "aus" heisst hier exakt das am
+ * und kaputtes JSON bedeuten AUS — und "aus" heißt hier exakt das am
  * 2026-07-24 dekretierte Verhalten: alles auf LP A. Die Fail-Richtung zeigt
  * damit auf den menschlich entschiedenen Zustand, nie in das Experiment
  * hinein (Muster splitAktiv / adWeicheAktivAusRoh).
@@ -324,8 +324,8 @@ export async function adWeicheAktiv(fetchImpl) {
  * DER FELDZUGRIFF STEHT BEWUSST IN DIESER DATEI und nicht in
  * ad-weiche-ziele.js: lp-rotation/pruefungen/probe_handfelder_ueberleben_tick.py
  * (ARM-NAHT) erzwingt, dass jedes ROH gelesene Feld drueben in HAND_FELDER
- * steht — sonst raeumt der taegliche Tick es um 05:35 weg. Ihr Detektor
- * durchsucht nur Dateien mit ZUTEILUNG_URL. Anderswo waere das Feld
+ * steht — sonst raeumt der tägliche Tick es um 05:35 weg. Ihr Detektor
+ * durchsucht nur Dateien mit ZUTEILUNG_URL. Anderswo wäre das Feld
  * ungeschuetzt UND die Schutzluecke unsichtbar.
  * @param {unknown} roh
  */
@@ -344,9 +344,9 @@ export async function pruefeAdWeiche(request, fetchImpl) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return null;
   const entscheidung = entscheideAdWeiche(request.url);
   if (!entscheidung) return null;
-  // EIN Fetch fuer BEIDE Schalter der Zuteilung (ad_weiche = Kill der Weiche,
-  // ad_weiche_mm = Kill des Message-Match-Arms). Zwei Fetches waeren zwei
-  // Momentaufnahmen derselben Datei und koennten sich widersprechen.
+  // EIN Fetch für BEIDE Schalter der Zuteilung (ad_weiche = Kill der Weiche,
+  // ad_weiche_mm = Kill des Message-Match-Arms). Zwei Fetches wären zwei
+  // Momentaufnahmen derselben Datei und könnten sich widersprechen.
   const zuteilungRoh = await holeZuteilungRoh(fetchImpl);
   if (!adWeicheAktivAusRoh(zuteilungRoh)) return null;
 
@@ -366,7 +366,7 @@ export async function pruefeAdWeiche(request, fetchImpl) {
 
       // Ad-scharfer Rabattcode (s03): NUR ein anderes Ziel derselben Weiche.
       // Er setzt bewusst AUF dem bereits gewaehlten Ziel auf — der Rabatt
-      // gehoert zur Anzeige, nicht zur Landeflaeche, und muss deshalb auch
+      // gehört zur Anzeige, nicht zur Landeflaeche, und muss deshalb auch
       // auf der Message-Match-Seite ankommen.
       code_ziel = rabattZiel(ziel, adId, await holeAdCodes(fetchImpl));
       if (code_ziel) ziel = code_ziel;

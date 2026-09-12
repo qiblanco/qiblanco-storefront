@@ -3,7 +3,7 @@
 // Bordmittel wie ad-weiche.test.mjs: node:test/node:assert, KEIN Netz.
 // Ausfuehren: node --test test/ad-weiche-mm.test.mjs
 //
-// WELCHE ARME HIER BELEGT WERDEN (Hausregel: wer einen Rot-Nachweis fuehrt,
+// WELCHE ARME HIER BELEGT WERDEN (Hausregel: wer einen Rot-Nachweis führt,
 // nennt den Arm — ein Exit-Code allein unterscheidet Geschwisterarme nicht):
 //   ARM-SCHALTER    ad_weiche_mm fehlt/falsch  -> LP A (die dekretierte Lage)
 //   ARM-KARTE       Ad nicht zugeordnet        -> LP A
@@ -105,7 +105,7 @@ test('ARM-KARTE: jedes Kartenziel ist ein absoluter Pfad ohne Query und ohne //'
   for (const [adId, pfad] of Object.entries(MM_ZIELE)) {
     assert.match(adId, /^[0-9]{10,20}$/, `Ad-ID ${adId} ist keine Plattform-ID`);
     assert.ok(pfad.startsWith('/'), `${pfad} ist kein absoluter Pfad`);
-    assert.ok(!pfad.includes('//'), `${pfad} wuerde die Phishing-Bremse der Rabatt-Route ausloesen`);
+    assert.ok(!pfad.includes('//'), `${pfad} würde die Phishing-Bremse der Rabatt-Route ausloesen`);
     assert.ok(!pfad.includes('?'), `${pfad} darf keinen Query tragen`);
     assert.notEqual(pfad, LP_A_PFAD, 'LP A ist der Kontrollarm, nie ein Kartenziel');
   }
@@ -117,12 +117,12 @@ test('ARM-SCHLEIFE: Ziel == aktueller Pfad => kein Redirect', () => {
   // Der Fall ist nicht theoretisch: die Weiche feuert auf JEDER Dokument-Route,
   // auch auf der Zielseite selbst. Ohne diesen Schutz leitete eine zugeordnete
   // Anzeige, deren Klick auf ihrer eigenen Seite ankommt, endlos auf sich selbst.
-  assert.equal(mmZielPfad('/pages/haelt-das-mein-leben-aus', AD_B3, sp('lp_mm=an'), true), null);
+  assert.equal(mmZielPfad('/pages/hält-das-mein-leben-aus', AD_B3, sp('lp_mm=an'), true), null);
   // Gegenprobe: von woanders aus greift dieselbe Zuordnung sehr wohl.
-  assert.equal(mmZielPfad('/', AD_B3, sp('lp_mm=an'), true), '/pages/haelt-das-mein-leben-aus');
+  assert.equal(mmZielPfad('/', AD_B3, sp('lp_mm=an'), true), '/pages/hält-das-mein-leben-aus');
 });
 
-test('ARM-SCHLEIFE: greift fuer JEDES Kartenziel, nicht nur fuer TOF-C', () => {
+test('ARM-SCHLEIFE: greift für JEDES Kartenziel, nicht nur für TOF-C', () => {
   for (const [adId, pfad] of Object.entries(MM_ZIELE)) {
     assert.equal(
       mmZielPfad(pfad, adId, sp('lp_mm=an'), true),
@@ -139,7 +139,7 @@ test('ARM-PIN: lp_mm=an erzwingt den MM-Arm, lp_mm=aus den Kontrollarm', () => {
   const immerMmArm = () => 0.0;
   assert.equal(
     mmZielPfad('/', AD_B3, sp('lp_mm=an'), true, immerKontrollarm),
-    '/pages/haelt-das-mein-leben-aus',
+    '/pages/hält-das-mein-leben-aus',
     'Pin muss den Wuerfel ueberstimmen',
   );
   assert.equal(
@@ -163,16 +163,16 @@ test('ARM-PIN: der Wuerfel trennt wirklich zwei Arme (kein toter Split)', () => 
 test('ARM-QUERY: der komplette Original-Query kommt byte-identisch auf dem MM-Ziel an', async () => {
   const query = `${PAID}&utm_content=${AD_B3}&utm_term=120251810451890704&gclid=Cj0KCQ&_qpx_anon=abc123`;
   const ziel = await pruefeAdWeiche(req('/', `${query}&lp_mm=an`), fetchAttrappe(AN));
-  assert.ok(ziel.startsWith('/pages/haelt-das-mein-leben-aus?'), `MM-Ziel erwartet, war: ${ziel}`);
+  assert.ok(ziel.startsWith('/pages/hält-das-mein-leben-aus?'), `MM-Ziel erwartet, war: ${ziel}`);
   const zielQuery = new URL(`${BASIS}${ziel}`).searchParams;
   // JEDER ankommende Schluessel muss unveraendert wieder herauskommen.
   for (const [k, v] of new URL(`${BASIS}/?${query}`).searchParams) {
-    assert.equal(zielQuery.get(k), v, `Schluessel ${k} ging ueber die Weiche verloren`);
+    assert.equal(zielQuery.get(k), v, `Schluessel ${k} ging über die Weiche verloren`);
   }
   assert.equal(zielQuery.get('lp_m'), 'm', 'Message-Match-Marker erwartet');
 });
 
-test('ARM-QUERY: die Weiche fuehrt keinen NEUEN Identitaets-Key ein', async () => {
+test('ARM-QUERY: die Weiche führt keinen NEUEN Identitaets-Key ein', async () => {
   const ziel = await pruefeAdWeiche(
     req('/', `${PAID}&utm_content=${AD_B3}&lp_mm=an`),
     fetchAttrappe(AN),
@@ -191,7 +191,7 @@ test('ARM-RABATT: der ad-scharfe Code setzt AUF dem MM-Ziel auf, nicht auf LP A'
     req('/', `${PAID}&utm_content=${AD_B3}&lp_mm=an`),
     fetchAttrappe(AN, codes),
   );
-  assert.ok(ziel.startsWith('/discount/QB5K2YM?redirect=/pages/haelt-das-mein-leben-aus'), ziel);
+  assert.ok(ziel.startsWith('/discount/QB5K2YM?redirect=/pages/hält-das-mein-leben-aus'), ziel);
   assert.ok(!ziel.includes(`redirect=${LP_A_PFAD}`), 'der Rabattweg darf nicht auf LP A zurueckfallen');
 });
 
