@@ -50,6 +50,7 @@ import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
 import {LP_V2_PFAD} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
+import {MM_MARKER, mmZielPfad} from './ad-weiche-ziele.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
 const FETCH_TIMEOUT_MS = 1500;
@@ -280,7 +281,7 @@ export function entscheideAdWeiche(requestUrl) {
  * Wert 'aus' deaktiviert; Abwesenheit/Fehler/Timeout = aktiv (fail-soft
  * Richtung dekretiertes Standard-Ziel LP A, Muster lpTestPausiert).
  */
-export async function adWeicheAktiv(fetchImpl) {
+export async function holeZuteilungRoh(fetchImpl) {
   try {
     const signal =
       typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
@@ -292,10 +293,44 @@ export async function adWeicheAktiv(fetchImpl) {
     });
     if (!res || !res.ok) throw new Error(`zuteilung-fetch status ${res && res.status}`);
     const roh = await res.json();
-    return !(roh && roh.ad_weiche === 'aus');
+    return roh && typeof roh === 'object' ? roh : null;
   } catch {
-    return true;
+    return null;
   }
+}
+
+/**
+ * Kill-Schalter der Weiche selbst. Nur 'aus' deaktiviert; null (Fehler,
+ * Timeout, kaputtes JSON) bedeutet AKTIV — unveraendert fail-soft in Richtung
+ * des dekretierten Ziels LP A.
+ * @param {unknown} roh
+ */
+export function adWeicheAktivAusRoh(roh) {
+  return !(roh && roh.ad_weiche === 'aus');
+}
+
+export async function adWeicheAktiv(fetchImpl) {
+  return adWeicheAktivAusRoh(await holeZuteilungRoh(fetchImpl));
+}
+
+/**
+ * Kill-Schalter des MESSAGE-MATCH-ARMS (s04), Feld `ad_weiche_mm`.
+ * NUR der explizite Wert 'an' aktiviert; Abwesenheit, Fetch-Fehler, Timeout
+ * und kaputtes JSON bedeuten AUS — und "aus" heißt hier exakt das am
+ * 2026-07-24 dekretierte Verhalten: alles auf LP A. Die Fail-Richtung zeigt
+ * damit auf den menschlich entschiedenen Zustand, nie in das Experiment
+ * hinein (Muster splitAktiv / adWeicheAktivAusRoh).
+ *
+ * DER FELDZUGRIFF STEHT BEWUSST IN DIESER DATEI und nicht in
+ * ad-weiche-ziele.js: lp-rotation/pruefungen/probe_handfelder_ueberleben_tick.py
+ * (ARM-NAHT) erzwingt, dass jedes ROH gelesene Feld drueben in HAND_FELDER
+ * steht — sonst raeumt der tägliche Tick es um 05:35 weg. Ihr Detektor
+ * durchsucht nur Dateien mit ZUTEILUNG_URL. Anderswo wäre das Feld
+ * ungeschuetzt UND die Schutzluecke unsichtbar.
+ * @param {unknown} roh
+ */
+export function mmAktivAusRoh(roh) {
+  return Boolean(roh) && roh.ad_weiche_mm === 'an';
 }
 
 /**
@@ -309,22 +344,36 @@ export async function pruefeAdWeiche(request, fetchImpl) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return null;
   const entscheidung = entscheideAdWeiche(request.url);
   if (!entscheidung) return null;
-  if (!(await adWeicheAktiv(fetchImpl))) return null;
+  // EIN Fetch für BEIDE Schalter der Zuteilung (ad_weiche = Kill der Weiche,
+  // ad_weiche_mm = Kill des Message-Match-Arms). Zwei Fetches wären zwei
+  // Momentaufnahmen derselben Datei und könnten sich widersprechen.
+  const zuteilungRoh = await holeZuteilungRoh(fetchImpl);
+  if (!adWeicheAktivAusRoh(zuteilungRoh)) return null;
 
-  // Ad-scharfer Rabattcode (s03): NUR ein anderes Ziel derselben Weiche.
-  // Ohne Karte, ohne Schalter, ohne bekannte Ad-ID bleibt alles wie bisher —
-  // der zusaetzliche Fetch läuft erst hier, also nie für organischen
-  // Traffic und nie für einen Klick ohne Ad-ID im Query.
   let ziel = entscheidung.ziel;
+  let mm_pfad = null;
   let code_ziel = null;
   try {
-    const adId = adIdAusQuery(new URL(request.url).searchParams);
+    const url = new URL(request.url);
+    const adId = adIdAusQuery(url.searchParams);
     if (adId) {
-      code_ziel = rabattZiel(entscheidung.ziel, adId, await holeAdCodes(fetchImpl));
+      // MESSAGE-MATCH (s04): dieselbe Ad-ID, dieselbe Weiche, anderes ZIEL.
+      // Steht die Anzeige in keiner Karte, ist der Schalter nicht 'an' oder
+      // faellt der Wuerfel in den Kontrollarm, bleibt es bei LP A — also bei
+      // exakt dem heutigen, dekretierten Verhalten.
+      mm_pfad = mmZielPfad(url.pathname, adId, url.searchParams, mmAktivAusRoh(zuteilungRoh));
+      if (mm_pfad) ziel = zielUrl(mm_pfad, url.search, MM_MARKER);
+
+      // Ad-scharfer Rabattcode (s03): NUR ein anderes Ziel derselben Weiche.
+      // Er setzt bewusst AUF dem bereits gewaehlten Ziel auf — der Rabatt
+      // gehört zur Anzeige, nicht zur Landeflaeche, und muss deshalb auch
+      // auf der Message-Match-Seite ankommen.
+      code_ziel = rabattZiel(ziel, adId, await holeAdCodes(fetchImpl));
       if (code_ziel) ziel = code_ziel;
     }
   } catch {
-    // Der Rabattweg darf die Weiche nie brechen: im Zweifel LP A wie bisher.
+    // Weder Message-Match noch Rabattweg duerfen die Weiche brechen:
+    // im Zweifel LP A wie bisher.
     ziel = entscheidung.ziel;
   }
 
@@ -334,6 +383,7 @@ export async function pruefeAdWeiche(request, fetchImpl) {
         typ: 'ad-weiche',
         erkennung: entscheidung.erkennung,
         pfad: new URL(request.url).pathname,
+        mm: mm_pfad || 'nein',
         rabatt: code_ziel ? 'ja' : 'nein',
       }),
     );
