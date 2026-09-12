@@ -13,6 +13,7 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
@@ -157,7 +158,7 @@ export default function Product() {
         description={
           <div
             className="ProductDescription"
-            dangerouslySetInnerHTML={{__html: descriptionHtml}}
+            dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
           />
         }
         topBadge={
