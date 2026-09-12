@@ -6,13 +6,12 @@ import {
   absoluteCanonical,
   ausSitemapEntfernteKollektionen,
 } from '~/lib/seo';
-import {BLOG_BESTAND_FRAGMENT, leereHandles} from '~/lib/blog-bestand';
+import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {
-  ARTIKEL_PFAD_FRAGMENT,
-  artikelBlogKarte,
-  artikelKarteUnvollstaendig,
-  artikelPfad,
-} from '~/lib/blog-artikel-pfad';
+  OHNE_BLOG,
+  artikelKarte,
+  leereBlogHandles,
+} from '~/lib/sitemap-bestand';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -72,71 +71,11 @@ const VERSTECKTE_HANDLES = {
  * Seite CRAWLEN muss, um ihr `noindex` ueberhaupt zu lesen. Einen 301 sieht
  * Google bei jedem Crawl der URL, ob sie in der Sitemap steht oder nicht.
  *
- * @param {{query: Function}} storefront
- * @returns {Promise<string[]>} Handles, die aus der Blog-Sitemap fliegen
+ * Die Abfrage selbst steht seit 2026-09-12 in ~/lib/sitemap-bestand:
+ * der Sitemap-INDEX braucht dieselbe Menge für sein `<lastmod>`, und
+ * zwei Kopien derselben Liste wären genau die Drift, gegen die die
+ * SSoT-Bauweise hier gebaut ist.
  */
-async function leereBlogHandles(storefront) {
-  try {
-    const {blogs} = await storefront.query(BLOG_BESTAND_QUERY);
-    // hasNextPage wird protokolliert, nicht geworfen: entfernt wird
-    // ausschließlich, was positiv als leer GEMESSEN wurde. Eine
-    // unvollstaendige Antwort entfernt dann weniger — nie mehr, nie das
-    // Falsche.
-    if (blogs?.pageInfo?.hasNextPage) {
-      console.warn(
-        '[sitemap/blogs] mehr Blogs als abgefragt — Filter bleibt Teilmenge',
-      );
-    }
-    return leereHandles(blogs);
-  } catch (fehler) {
-    // Fail-open, aber LAUT: eine ungefilterte Sitemap ist unsauber, eine
-    // Sitemap mit 500 nimmt dem ganzen Shop die Auffindbarkeit.
-    console.error('[sitemap/blogs] Bestands-Abfrage fehlgeschlagen', fehler);
-    return [];
-  }
-}
-
-/**
- * Marke für einen Artikel ohne bekannten Blog.
- *
- * `getLink` ist synchron und kann keinen Eintrag ueberspringen — es MUSS eine
- * Zeichenkette liefern. Der so markierte `<url>`-Block wird unten entfernt.
- * Die Marke trägt bewusst ein Zeichen, das in keinem Shopify-Handle
- * vorkommen kann, damit sie nie einen echten Pfad trifft.
- */
-const OHNE_BLOG = '#kein-blog-bekannt';
-
-/**
- * lädt die Zuordnung Artikel -> Blog.
- *
- * Fehlerfall gibt `null` statt einer leeren Karte zurück, und der
- * Unterschied ist tragend: eine LEERE Karte hiesse "gemessen, kein Artikel
- * hat einen Blog" und würde die Sitemap für 24 h leer einfrieren. `null`
- * heißt "nicht gemessen" — der Aufrufer verkuerzt dann die Cache-Dauer,
- * damit der nächste Abruf es erneut versucht.
- *
- * @param {LoaderFunctionArgs['context']['storefront']} storefront
- * @returns {Promise<Map<string, string> | null>}
- */
-async function artikelKarte(storefront) {
-  try {
-    const {blogs} = await storefront.query(ARTIKEL_PFAD_QUERY);
-    if (artikelKarteUnvollstaendig(blogs)) {
-      console.warn(
-        '[sitemap/articles] mehr Artikel je Blog als abgefragt — die Karte ist eine Teilmenge, ueberzaehlige Artikel fehlen in der Sitemap',
-      );
-    }
-    if (blogs?.pageInfo?.hasNextPage) {
-      console.warn(
-        '[sitemap/articles] mehr Blogs als abgefragt — die Karte ist eine Teilmenge',
-      );
-    }
-    return artikelBlogKarte(blogs);
-  } catch (fehler) {
-    console.error('[sitemap/articles] Zuordnungs-Abfrage fehlgeschlagen', fehler);
-    return null;
-  }
-}
 
 /**
  * @param {LoaderFunctionArgs}
@@ -263,6 +202,7 @@ function mitNurRouteSeiten(body, seiten) {
     .map(
       (s) =>
         `<url>\n  <loc>${absoluteCanonical(s.pfad)}</loc>\n` +
+        (s.lastmod ? `  <lastmod>${s.lastmod}</lastmod>\n` : '') +
         `  <changefreq>weekly</changefreq>\n</url>\n`,
     )
     .join('');
@@ -270,41 +210,7 @@ function mitNurRouteSeiten(body, seiten) {
   return body.replace('</urlset>', `${neu}</urlset>`);
 }
 
-// 50 statt eines Defaults: der Shop hat heute 3 Blogs, und ein Seitenlimit,
-// das die zuletzt angelegten Objekte hinter den Rand schiebt, hat auf diesem
-// Shop schon einmal ein "0 gefunden" für real existierende Datensaetze
-// erzeugt. hasNextPage wird oben ausgewertet.
-const BLOG_BESTAND_QUERY = `#graphql
-  query SitemapBlogBestand($language: LanguageCode) @inContext(language: $language) {
-    blogs(first: 50) {
-      pageInfo {
-        hasNextPage
-      }
-      nodes {
-        handle
-        ...BlogBestand
-      }
-    }
-  }
-  ${BLOG_BESTAND_FRAGMENT}
-`;
 
-// Dieselbe Blog-Obergrenze wie oben und aus demselben Grund: der Shop hat
-// heute 3 Blogs, und ein Seitenlimit, das die zuletzt angelegten Objekte
-// hinter den Rand schiebt, faellt genau bei neuen Inhalten auf.
-const ARTIKEL_PFAD_QUERY = `#graphql
-  query SitemapArtikelPfade($language: LanguageCode) @inContext(language: $language) {
-    blogs(first: 50) {
-      pageInfo {
-        hasNextPage
-      }
-      nodes {
-        ...BlogArtikelPfad
-      }
-    }
-  }
-  ${ARTIKEL_PFAD_FRAGMENT}
-`;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */

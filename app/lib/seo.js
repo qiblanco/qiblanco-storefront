@@ -429,9 +429,37 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
  * Seiten, deren Träger sichtbar im Repo stehen soll.
  * @type {Array<{pfad: string, grund: string}>}
  */
+/**
+ * DAS FELD `lastmod` (neu 2026-09-12, Job 20260912-sitemap-index-ohne-lastmod-…):
+ *
+ * Diese Seiten haben kein Shopify-Seitenobjekt, also auch kein `updatedAt`,
+ * aus dem `getSitemap` ein `<lastmod>` bilden könnte — sie standen bis dahin
+ * als EINZIGE Eintraege der ausgelieferten `sitemap/pages/1.xml` voellig ohne
+ * Datum (gemessen 2026-09-12: 9 von 42). Ausgerechnet die juengsten Seiten
+ * gaben Google damit kein Frischesignal, und über das Maximum ihrer Daten
+ * bildet der Sitemap-INDEX sein eigenes `<lastmod>` mit.
+ *
+ * DER WERT IST BELEGBAR, NICHT GESCHAETZT: er ist der Commit-Zeitpunkt der
+ * LETZTEN Aenderung an `app/routes/pages.<slug>.jsx` in `main` (UTC), also
+ * dieselbe Groesse, die homepage-bauer/pruefungen/probe_sitemap_lastmod_
+ * wahrhaftig.py für alle uebrigen Sitemap-Seiten als Wahrheitsmassstab
+ * heranzieht. Er ist bewusst eine UNTERGRENZE: rendert die Route Komponenten,
+ * die spaeter geaendert wurden, ohne dass die Routendatei mitging, ist das
+ * echte Datum juenger. Untertreiben ist die sichere Richtung — ein zu junges
+ * Datum wäre eine Luege gegenüber Google.
+ *
+ * WER DIE ROUTE AENDERT, ZIEHT DAS DATUM NACH. Das ist keine Bitte: sobald
+ * ein Eintrag ein `lastmod` trägt, wird er zum Kandidaten von
+ * probe_sitemap_lastmod_wahrhaftig.py, und die Probe wird ROT, sobald die
+ * letzte inhaltliche Aenderung der Routendatei juenger ist als das hier
+ * genannte Datum. Ein vergessenes Nachziehen ist damit laut, nicht still.
+ * Ohne Feld = kein `<lastmod>` — das ist erlaubt und ehrlicher als ein
+ * geratenes Datum.
+ */
 export const NUR_ROUTE_SEITEN = [
   {
     pfad: '/pages/quellen',
+    lastmod: '2026-09-08T18:49:16Z',
     grund:
       'Quellenübersicht des Wissensforums (Grossjob 20260908-KONZEPT-' +
       'fachartikel-…, Segment s05). Sie besteht allein aus der Route ' +
@@ -447,6 +475,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/erfahrungen',
+    lastmod: '2026-09-11T23:11:54Z',
     grund:
       'Am 2026-09-11 von Christian freigegeben („Aber ja, können wir auch ' +
       'freischalten … live schalten und crawlbar machen"), nachdem die Seite ' +
@@ -466,6 +495,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/warum-qi-blanco',
+    lastmod: '2026-09-11T23:11:54Z',
     grund:
       'Die Absicht — warum es Qi Blanco gibt, in der ersten Person und mit ' +
       'Autor und Datum ausgezeichnet (Auftrag 20260911-BAU-die-absicht-…). ' +
@@ -482,6 +512,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/affiliate-partnerprogramm',
+    lastmod: '2026-09-05T14:39:23Z',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
       '20260905-eigene-indexierbare-partnerseite-...-prio25). Sie ersetzt die ' +
@@ -512,7 +543,7 @@ export const NUR_ROUTE_SEITEN = [
   // KEINER Sitemap standen. Eine Sitemap führt kanonische URLs, nie deren
   // Vorstufen.
   //
-  // `/pages/ueber-uns` ist der vierte und der einzige echte Neuzugang: live
+  // `/pages/über-uns` ist der vierte und der einzige echte Neuzugang: live
   // HTTP 200, 98 KB, self-canonical, kein noindex — und am 2026-09-12 von
   // Google mit „URL ist Google nicht bekannt", `sitemap: None`,
   // `referringUrls: 0` gemessen. Gebaut und für die Suche unsichtbar, genau
@@ -526,6 +557,7 @@ export const NUR_ROUTE_SEITEN = [
   // rot, statt still in der Sitemap zu stehen.
   {
     pfad: '/pages/ueber-uns',
+    lastmod: '2026-09-11T23:11:54Z',
     grund:
       'Live 200/98 KB, indexierbar, self-canonical — und am 2026-09-12 von ' +
       'Google als "URL ist Google nicht bekannt" gemessen (sitemap: None, ' +
@@ -534,6 +566,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/qione-2-pro-details',
+    lastmod: '2026-08-31T19:11:51Z',
     grund:
       'Canonical-Ziel von /pages/qione, das selbst in der Sitemap steht. ' +
       'Google 2026-09-12: /pages/qione = "Seite mit Weiterleitung", ' +
@@ -542,6 +575,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/qihome-details',
+    lastmod: '2026-09-10T19:29:21Z',
     grund:
       'Canonical-Ziel von /pages/qihome, das selbst in der Sitemap steht. ' +
       'Google 2026-09-12: /pages/qihome = "Seite mit Weiterleitung", ' +
@@ -550,6 +584,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/qibracelet-details',
+    lastmod: '2026-08-31T19:11:51Z',
     grund:
       'Oeffentlicher Zwilling zu /pages/qibracelet (das seit 2026-08-29 ' +
       'noindex + ausSitemap: true trägt und im Kommentar dort ausdrücklich ' +
@@ -559,6 +594,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/kritik',
+    lastmod: '2026-09-11T23:11:54Z',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Kritik" (Job 20260911-BAU-' +
       'kritikseite-freischalten-…-s02; Christian 2026-09-11 nach dem Lesen ' +
@@ -623,7 +659,7 @@ export function noindexMeta() {
  * Die ZWEITE, vom HTML unabhängige Sperre desselben Signals (Hausmuster
  * D-006, „Gurt und Hosenträger"): greift auch bei einem Bot, der den
  * HTML-head nicht parst. Bewusst wortgleich zu dem, was die eigenen Routen
- * mit eigener Datei setzen (z. B. `pages.uebersicht.jsx`) — ein zweiter
+ * mit eigener Datei setzen (z. B. `pages.übersicht.jsx`) — ein zweiter
  * Wortlaut wäre ein zweiter Wartungspunkt ohne Nutzen.
  * @returns {{'X-Robots-Tag': string}}
  */
@@ -736,14 +772,14 @@ export function istNichtIndexierbaresProdukt(handle) {
  *   slider                 -> „Gefunden – zurzeit nicht indexiert"
  *   cross-selling          -> „URL ist Google nicht bekannt"
  *   digital-goods-vat-tax  -> „Durch noindex-Tag ausgeschlossen"
- * KEINE steht im Index, es gibt also bei keiner etwas zu entfernen, wofuer
+ * KEINE steht im Index, es gibt also bei keiner etwas zu entfernen, wofür
  * Google das noindex erst lesen müsste. Alle fünf kippen auf `true`. Zum
  * Vergleich im selben Lauf: `zeremonie-kakao` ist „Gesendet und indexiert" —
  * eine ECHTE Kundenkategorie, die hier korrekt nie geführt wurde. Die
  * Lesart je Zustand steht ausfuehrlich an NICHT_INDEXIERBARE_SEITEN_DEF.
  *
  * WARUM noindex UND KEIN canonical: dieselbe Regel, die schon
- * `pages.uebersicht.jsx` trägt — noindex neben einem canonical auf eine
+ * `pages.übersicht.jsx` trägt — noindex neben einem canonical auf eine
  * andere URL sind widersprüchliche Signale. Für `frontpage`/`products` wäre
  * ein canonical auf `/collections/all` fachlich naheliegend und trotzdem
  * falsch: es machte die Dublette wieder crawlbar.
@@ -822,10 +858,10 @@ export const NICHT_INDEXIERBARE_KOLLEKTIONEN =
  * WARUM SIE HEUTE LEER IST, UND WARUM DAS DER RICHTIGE ZUSTAND IST
  * (2026-09-08, Discovery-Kette Glied für Glied nachgemessen): für alle fünf
  * Kollektionen ist die Sitemap der EINZIGE Weg, auf dem Google sie noch
- * besucht. Ihr einziger eingehender Link kommt von `/pages/uebersicht`, und
+ * besucht. Ihr einziger eingehender Link kommt von `/pages/übersicht`, und
  * die trägt selbst `noindex,nofollow` — Google folgt ihren Links also nicht.
  * Der zweite Kandidat `/collections` ist zwar follow-bar, hat aber selbst
- * keinen Sitemap-Eintrag und ebenfalls nur `/pages/uebersicht` als Zugang;
+ * keinen Sitemap-Eintrag und ebenfalls nur `/pages/übersicht` als Zugang;
  * die Kette endet dort. Wer sie jetzt aus der Sitemap nimmt, sorgt dafür,
  * dass das `noindex` NIE gelesen wird und die Seiten mit ihrem letzten Stand
  * im Index bleiben.
@@ -841,7 +877,7 @@ export const NICHT_INDEXIERBARE_KOLLEKTIONEN =
  * UND in der Sitemap" konnte für Kollektionen deshalb baulich nie enden.
  * Jetzt kann er es: ein Eintrag kippt auf `ausSitemap: true`, sobald das
  * Signal nachweislich gewirkt hat. Wann das ist, entscheidet ein Mensch —
- * die Frage stellt homepage-bauer/pruefungen/probe_uebergangsstufe_ohne_ende.py
+ * die Frage stellt homepage-bauer/pruefungen/probe_übergangsstufe_ohne_ende.py
  * (Adressat AI-CEO), und sie kippt bewusst nichts selbst.
  * @returns {string[]}
  */

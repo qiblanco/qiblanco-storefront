@@ -13,38 +13,26 @@
  * importierbar. Der Test LIEST deshalb die echte Datei und ersetzt
  * ausschließlich die `~/`-Import-Spezifizierer durch Dateipfade — kein
  * Nachbau, keine zweite Kopie im Repo: aendert sich die Route, aendert sich
- * das Testobjekt mit.
+ * das Testobjekt mit. Die Auflösung steht seit 2026-09-12 in
+ * test/route-import-aufloesung.mjs und läuft TRANSITIV; die frühere
+ * Ein-Ebenen-Fassung hier scheiterte, sobald eine geladene Bibliothek selbst
+ * einen `~/`-Import trug.
  */
 import assert from 'node:assert/strict';
-import {readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {join, dirname} from 'node:path';
-import {fileURLToPath, pathToFileURL} from 'node:url';
+import {fileURLToPath} from 'node:url';
+import {ladeMitAufgeloestenImporten} from './route-import-aufloesung.mjs';
 
 const hier = dirname(fileURLToPath(import.meta.url));
 const appDir = join(hier, '..', 'app');
 const routePfad = join(appDir, 'routes', 'sitemap.$type.$page[.xml].jsx');
 
 /**
- * lädt die echte Route, nur mit aufgeloesten `~/`-Importen.
- *
- * Die Ablage liegt bewusst IM Repo und nicht in /tmp: `@shopify/hydrogen`
- * wird über `node_modules` aufgeloest, und ausserhalb des Baums findet node
- * das Paket nicht (`ERR_MODULE_NOT_FOUND`). Die Datei wird sofort nach dem
- * Import wieder entfernt.
+ * lädt die echte Route, nur mit aufgeloesten `~/`-Importen (transitiv, siehe
+ * test/route-import-aufloesung.mjs).
  */
-async function ladeRoute() {
-  const quelle = readFileSync(routePfad, 'utf8').replace(
-    /from '~\/([^']+)'/g,
-    (_, rest) => `from '${pathToFileURL(join(appDir, rest)).href}.js'`,
-  );
-  const ziel = join(hier, '..', `.sitemap-route-test-${process.pid}.mjs`);
-  writeFileSync(ziel, quelle);
-  try {
-    return await import(pathToFileURL(ziel).href);
-  } finally {
-    rmSync(ziel, {force: true});
-  }
-}
+const ladeRoute = () =>
+  ladeMitAufgeloestenImporten(routePfad, 'sitemap-route-test');
 
 /**
  * Die sechs am 2026-09-05 live gemessenen Artikel, in der Adressform, unter
