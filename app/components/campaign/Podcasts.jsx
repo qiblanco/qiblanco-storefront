@@ -179,7 +179,7 @@ export function Podcasts({daten, pfade, gaeste}) {
           <h1 className="qbp__h1">Podcasts von Qi Blanco</h1>
           <p className="qbp__intro">
             Lange Gespräche über Wasser, Frequenzen und den Alltag mit
-            Technologie — mit Gründer Christian Bauer und seinen Gästen. Jede
+            Technologie, mit Gründer Christian Bauer und seinen Gästen. Jede
             Folge steht hier mit Beschreibung und Kapiteln, damit du vor dem
             Abspielen weißt, worum es geht.
           </p>
