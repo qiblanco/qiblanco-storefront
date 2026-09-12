@@ -37,7 +37,7 @@ const STUDIEN = [
     tag: 'In-vitro · Darmzellen',
     titel: 'Schutzeffekt an Darmzellen',
     meta: 'Applied Cell Biology Journal · 2021',
-    body: 'Protective effect an kultivierten intestinalen Epithelzellen — Zellkultur, nicht Mensch.',
+    body: 'Protective effect an kultivierten intestinalen Epithelzellen. Zellkultur, nicht Mensch.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1667513844',
   },
   {
@@ -51,7 +51,7 @@ const STUDIEN = [
     tag: 'Nutzererfahrung',
     titel: 'Forschungsartikel zur Nutzererfahrung',
     meta: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    body: 'Auswertung berichteter Nutzererfahrungen — deskriptiv, ohne Kontrollgruppe.',
+    body: 'Auswertung berichteter Nutzererfahrungen, deskriptiv und ohne Kontrollgruppe.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
   },
 ];
@@ -69,12 +69,12 @@ const FAQ = [
   {
     frage: 'Ist „kohärentes Wasser" wissenschaftlich anerkannt?',
     antwort:
-      'Die Strukturierbarkeit von Wasser ist Gegenstand der physikalischen Chemie. Ein gesundheitlicher Nutzen daraus ist nicht anerkannt — belegt sind bislang Effekte in Zellkulturen (präklinisch), nicht am Menschen. Das sagen wir offen.',
+      'Die Strukturierbarkeit von Wasser ist Gegenstand der physikalischen Chemie. Ein gesundheitlicher Nutzen daraus ist nicht anerkannt. Belegt sind bislang Effekte in Zellkulturen (präklinisch), nicht am Menschen. Das sagen wir offen.',
   },
   {
     frage: 'Wie kann ein Chip ohne Strom wirken?',
     antwort:
-      'Die Idee ist passiv: Die feste Gitterstruktur dient als Vorlage, an der sich benachbartes Wasser ausrichten soll — dafür ist keine Energiezufuhr nötig. Ob und wie stark das im Körper wirkt, untersuchen die Studien.',
+      'Die Idee ist passiv: Die feste Gitterstruktur dient als Vorlage, an der sich benachbartes Wasser ausrichten soll. Dafür ist keine Energiezufuhr nötig. Ob und wie stark das im Körper wirkt, untersuchen die Studien.',
   },
   {
     frage: 'Muss ich daran glauben, damit es wirkt?',
@@ -96,7 +96,7 @@ const FUNNEL = [
   },
   {
     titel: 'Ist das Einbildung? Wir machen ihn auf',
-    text: 'Der Chip geöffnet — für Skeptiker.',
+    text: 'Der Chip geöffnet, für Skeptiker.',
     href: '/pages/wir-machen-ihn-auf',
     cta: 'Aufbau',
   },
@@ -109,8 +109,8 @@ const FUNNEL = [
 ];
 
 const PICK = [
-  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — nah am Körper', cta: 'Zum QiOne 2 Pro'},
-  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — sichtbar getragen', cta: 'Zum QiBracelet'},
+  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette, nah am Körper', cta: 'Zum QiOne 2 Pro'},
+  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband, sichtbar getragen', cta: 'Zum QiBracelet'},
   {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum', cta: 'Zum QiHome Air'},
 ];
 
@@ -124,10 +124,10 @@ export function MmSoWirktWasser({products}) {
       <MmHero
         dataSection="mm-mechanismus-hero"
         eyebrow="Der Mechanismus, in Ruhe erklärt"
-        headline={'So soll kohärentes Wasser wirken — Schritt für Schritt'}
-        sub="Bevor du irgendetwas kaufst: verstehe den Gedanken dahinter. Kein Wunder, kein Heilstrahl — ein physikalisches Ordnungs-Modell, das wir offen erklären und ehrlich begrenzen."
+        headline={'So soll kohärentes Wasser wirken, Schritt für Schritt'}
+        sub="Bevor du irgendetwas kaufst: verstehe den Gedanken dahinter. Kein Wunder, kein Heilstrahl. Ein physikalisches Ordnungs-Modell, das wir offen erklären und ehrlich begrenzen."
         bullets={[
-          'Was „Kohärenz" konkret meint — in einfachen Worten',
+          'Was „Kohärenz" konkret meint, in einfachen Worten',
           'Welche Rolle der Gitterchip spielt',
           'Wo das Modell endet und die Evidenz beginnt',
         ]}
@@ -135,18 +135,18 @@ export function MmSoWirktWasser({products}) {
         ctaSekundaer={{href: '/pages/zellstudien-ehrlich', label: 'Direkt zur Evidenz'}}
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
-          alt: 'Frontansicht des Gitterchips — die 750er-Gold-Gitterstruktur',
-          hint: 'Der Gitterchip — Ausgangspunkt des Modells.',
+          alt: 'Frontansicht des Gitterchips mit der 750er-Gold-Gitterstruktur',
+          hint: 'Der Gitterchip ist der Ausgangspunkt des Modells.',
         }}
       />
 
       <MmProblem
         dataSection="mm-mechanismus-problem"
         eyebrow="Ehrlicher Rahmen"
-        title="Was wir behaupten — und was nicht"
+        title="Was wir behaupten und was nicht"
         text={[
           'Rund um „strukturiertes" oder „kohärentes" Wasser kursiert viel Überzogenes. Wir wollen das Gegenteil: nüchtern erklären, was gemeint ist, und klar sagen, wo das Modell aufhört.',
-          'Der Körper besteht zu rund zwei Dritteln aus Wasser. Die Idee: eine feste Gitterstruktur beeinflusst, wie sich benachbarte Wassermoleküle anordnen. Ob und wie stark das im Körper wirkt, ist genau die Frage, die die Zellstudien anfassen — präklinisch.',
+          'Der Körper besteht zu rund zwei Dritteln aus Wasser. Die Idee: eine feste Gitterstruktur beeinflusst, wie sich benachbarte Wassermoleküle anordnen. Ob und wie stark das im Körper wirkt, ist genau die Frage, die die Zellstudien anfassen, präklinisch.',
         ]}
         punkte={[
           'KEIN Perpetuum mobile, kein „Energiefeld".',
@@ -160,7 +160,7 @@ export function MmSoWirktWasser({products}) {
         dataSection="mm-mechanismus-kette"
         eyebrow="Die Wirkkette"
         title="Von der Gitterstruktur bis zur Zelle"
-        intro="Vier Schritte, vom Chip zum gemessenen Effekt. Jeder Schritt ist so weit belegt, wie wir es unten offenlegen — nicht weiter."
+        intro="Vier Schritte, vom Chip zum gemessenen Effekt. Jeder Schritt ist so weit belegt, wie wir es offenlegen, nicht weiter."
         schritte={[
           {
             titel: '1. Wasser ist strukturierbar',
@@ -168,11 +168,11 @@ export function MmSoWirktWasser({products}) {
           },
           {
             titel: '2. Der Gitterchip als Vorlage',
-            text: 'Ein präzises 750er-Gold-Gitter (22,61 mm3 Wirkvolumen) dient als feste Struktur, an der sich benachbartes Wasser geordneter ausrichten soll — passiv, ohne Energiezufuhr.',
+            text: 'Ein präzises 750er-Gold-Gitter (22,61 mm3 Wirkvolumen) dient als feste Struktur, an der sich benachbartes Wasser geordneter ausrichten soll, passiv und ohne Energiezufuhr.',
           },
           {
             titel: '3. Kohärenz = geordnete Anordnung',
-            text: 'Gemeint ist eine regelmäßigere, „aufgeräumtere" Anordnung der Moleküle im Kontaktbereich. Das ist das Modell — messbar wird es erst an Zellen.',
+            text: 'Gemeint ist eine regelmäßigere, „aufgeräumtere" Anordnung der Moleküle im Kontaktbereich. Das ist das Modell. Messbar wird es erst an Zellen.',
           },
           {
             titel: '4. Was das in Zellen bewirken soll',
@@ -185,7 +185,7 @@ export function MmSoWirktWasser({products}) {
             <MmDiagramWasser caption="Modell: von ungeordneten zu geordneten Wassermolekülen entlang der Gitterstruktur." />
           </>
         }
-        note="Ehrliche Grenze: Die Schritte 1-3 sind ein Modell. Belegt (präklinisch) ist Schritt 4 in Zellkulturen — nicht ein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
+        note="Ehrliche Grenze: Die Schritte 1-3 sind ein Modell. Belegt (präklinisch) ist Schritt 4 in Zellkulturen, nicht ein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
       />
 
       <MmStatBand
@@ -205,7 +205,7 @@ export function MmSoWirktWasser({products}) {
         intro="Hier endet das Modell und beginnt die Evidenz. Vier publizierte In-vitro-Studien (Zellkultur, nicht Mensch) zeigen einen messbaren Schutzeffekt unter Stress. Kein Heilversprechen."
         studien={STUDIEN}
         mehrHref="/pages/zellstudien-ehrlich"
-        mehrLabel="Die Studien im Detail — mit Grenzen"
+        mehrLabel="Die Studien im Detail, mit Grenzen"
       />
 
       <MmProblem
@@ -213,11 +213,11 @@ export function MmSoWirktWasser({products}) {
         dataSection="mm-mechanismus-nicht"
         eyebrow="Was Kohärenz NICHT ist"
         title="Damit keine falschen Erwartungen entstehen"
-        text="Wir grenzen bewusst ab, weil übertriebene Versprechen Vertrauen zerstören — bei Menschen wie bei KI-Systemen, die Quellen bewerten."
+        text="Wir grenzen ab, weil übertriebene Versprechen Vertrauen zerstören, bei Menschen wie bei KI-Systemen, die Quellen bewerten."
         punkte={[
           'Es „lädt" dich nicht auf und ersetzt keinen Schlaf.',
           'Es ist keine anerkannte medizinische Diagnose oder Therapie.',
-          'Es wirkt nicht „stärker", je mehr du daran glaubst — die Wirkung ist wahrnehmungs-unabhängig.',
+          'Es wirkt nicht „stärker", je mehr du daran glaubst. Die Wirkung ist wahrnehmungs-unabhängig.',
         ]}
       />
 
@@ -228,13 +228,13 @@ export function MmSoWirktWasser({products}) {
         variante="flaeche"
         dataSection="mm-mechanismus-reviews-intro"
         title="Über 14.000 zufriedene Kunden – entscheide dich jetzt!"
-        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
+        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden, Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
       />
       <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-mechanismus-trust"
-        eyebrow="Kuratiert — worauf das Modell fußt"
+        eyebrow="Kuratiert: worauf das Modell fußt"
         title="Woran du dich festhalten kannst"
         badges={badges}
       />
@@ -242,15 +242,15 @@ export function MmSoWirktWasser({products}) {
       <MmRisk
         dataSection="mm-mechanismus-risk"
         ring="20"
-        title="Verstehen ist der Anfang — prüfen der Beweis."
-        text={'Kein Modell ersetzt die eigene Erfahrung. Trag ihn 20 Tage und prüf es an dir. Bist du nicht überzeugt, geht alles zurück — die Rückgabe hängt an Frist und Überzeugung, nicht am „Spüren".'}
+        title="Verstehen ist der Anfang, prüfen der Beweis."
+        text={'Kein Modell ersetzt die eigene Erfahrung. Trag ihn 20 Tage und prüf es an dir. Bist du nicht überzeugt, geht alles zurück. Die Rückgabe hängt an Frist und Überzeugung, nicht am „Spüren".'}
         punkte={['Frist: 20 Tage ab Erhalt', 'Grund: keiner nötig', 'Ablauf: melden, zurücksenden, Erstattung']}
       />
 
       <MmPick
         dataSection="mm-mechanismus-pick"
         variante="flaeche"
-        title="Der Chip — in drei Formen"
+        title="Der Chip in drei Formen"
         products={products}
         handles={PICK}
       />

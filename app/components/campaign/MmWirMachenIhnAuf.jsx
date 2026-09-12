@@ -39,7 +39,7 @@ const STUDIEN = [
     tag: 'In-vitro · Darmzellen',
     titel: 'Schutzeffekt an Darmzellen',
     meta: 'Applied Cell Biology Journal · 2021',
-    body: 'Protective effect an kultivierten intestinalen Epithelzellen — Zellkultur, nicht Mensch.',
+    body: 'Protective effect an kultivierten intestinalen Epithelzellen. Zellkultur, nicht Mensch.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1667513844',
   },
   {
@@ -53,7 +53,7 @@ const STUDIEN = [
     tag: 'Nutzererfahrung',
     titel: 'Forschungsartikel zur Nutzererfahrung',
     meta: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    body: 'Auswertung berichteter Nutzererfahrungen — deskriptiv, ohne Kontrollgruppe.',
+    body: 'Auswertung berichteter Nutzererfahrungen, deskriptiv und ohne Kontrollgruppe.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
   },
 ];
@@ -76,16 +76,16 @@ const FAQ = [
   {
     frage: 'Muss ich etwas spüren, damit es wirkt?',
     antwort:
-      'Nein. Der Effekt, den die Studien beschreiben, ist nicht an eine bewusste Wahrnehmung gekoppelt. Manche Menschen spüren eine Veränderung, andere nicht — beides ist normal. Die Rückgabe hängt an deiner Überzeugung und der Frist, nie am Spüren.',
+      'Nein. Der Effekt, den die Studien beschreiben, ist nicht an eine bewusste Wahrnehmung gekoppelt. Manche Menschen spüren eine Veränderung, andere nicht. Beides ist normal. Die Rückgabe hängt an deiner Überzeugung und der Frist, nie am Spüren.',
   },
   {
     frage: 'Was heißt „präklinisch / in-vitro"?',
     antwort:
-      'Die Studien wurden an Zellkulturen im Labor durchgeführt, nicht am Menschen. Das ist eine echte, aber begrenzte Evidenzstufe. Wir sagen das bewusst dazu, statt mehr zu behaupten.',
+      'Die Studien wurden an Zellkulturen im Labor durchgeführt, nicht am Menschen. Das ist eine echte, aber begrenzte Evidenzstufe. Wir sagen das dazu, statt mehr zu behaupten.',
   },
   {
     frage: 'Kann ich die Studien selbst lesen?',
-    antwort: 'Ja. Jede der vier Publikationen ist oben direkt als PDF verlinkt — nachlesbar, mit Journal und Datum.',
+    antwort: 'Ja. Jede der vier Publikationen ist direkt als PDF verlinkt, nachlesbar, mit Journal und Datum.',
   },
   {
     frage: 'Was ist, wenn es bei mir nichts bringt?',
@@ -96,7 +96,7 @@ const FAQ = [
 const FUNNEL = [
   {
     titel: 'So wirkt kohärentes Wasser',
-    text: 'Der Mechanismus in Ruhe erklärt — von der Gitterstruktur bis zur Zelle.',
+    text: 'Der Mechanismus in Ruhe erklärt, von der Gitterstruktur bis zur Zelle.',
     href: '/pages/so-wirkt-kohaerentes-wasser',
     cta: 'Mechanismus',
   },
@@ -108,15 +108,15 @@ const FUNNEL = [
   },
   {
     titel: 'Das 20-Tage-Versprechen',
-    text: 'Wie die Rückgabe wirklich abläuft — ohne Kleingedrucktes.',
+    text: 'Wie die Rückgabe wirklich abläuft, ohne Kleingedrucktes.',
     href: '/pages/das-20-tage-versprechen',
     cta: 'Garantie',
   },
 ];
 
 const PICK = [
-  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette — nah am Körper, unsichtbar', cta: 'Zum QiOne 2 Pro'},
-  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — sichtbar getragen', cta: 'Zum QiBracelet'},
+  {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette, nah am Körper und unsichtbar', cta: 'Zum QiOne 2 Pro'},
+  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband, sichtbar getragen', cta: 'Zum QiBracelet'},
   {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum, in dem du schläfst', cta: 'Zum QiHome Air'},
 ];
 
@@ -129,12 +129,12 @@ export function MmWirMachenIhnAuf({products}) {
     <MmPage scope="mm-messbar">
       <MmHero
         dataSection="mm-messbar-hero"
-        eyebrow="Für Skeptiker — ohne Vorschuss-Vertrauen"
+        eyebrow="Für Skeptiker, ohne Vorschuss-Vertrauen"
         headline={'„Ist das Einbildung?" Gute Frage. Machen wir ihn auf.'}
-        sub="Kein Vertrauen im Voraus nötig. Wir zeigen dir, was physisch im QiOne 2 Pro steckt, was in Zellkulturen gemessen wurde und was Menschen berichten — mit Quellen und mit Grenzen."
+        sub="Kein Vertrauen im Voraus nötig. Wir zeigen dir, was physisch im QiOne 2 Pro steckt, was in Zellkulturen gemessen wurde und was Menschen berichten. Mit Quellen und mit Grenzen."
         bullets={[
           'Sichtbarer Aufbau: 750er Gold-Gitter, kein Akku, keine App',
-          '4 publizierte Zellstudien — als PDF nachlesbar (präklinisch)',
+          '4 publizierte Zellstudien, als PDF nachlesbar (präklinisch)',
           '20 Tage selbst testen, sonst Geld zurück',
         ]}
         cta={{href: '#mechanismus', label: 'So ist er aufgebaut'}}
@@ -142,7 +142,7 @@ export function MmWirMachenIhnAuf({products}) {
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919',
           alt: 'Querschnitt des QiOne 2 Pro mit sichtbarem Gold-Gitterchip',
-          hint: 'Querschnitt: das Gold-Gitter im Inneren — nichts Verstecktes.',
+          hint: 'Querschnitt: das Gold-Gitter im Inneren, nichts Verstecktes.',
         }}
       />
 
@@ -151,7 +151,7 @@ export function MmWirMachenIhnAuf({products}) {
         eyebrow="Haltung"
         title="Skepsis ist gesund. Wir rechnen mit ihr."
         text={[
-          'Die meisten, die den QiOne kaufen, waren erst skeptisch — manche haben ihn ausdrücklich gekauft, um zu beweisen, dass er nichts bringt. Diese Haltung ist uns lieber als blinder Glaube.',
+          'Die meisten, die den QiOne kaufen, waren erst skeptisch. Manche haben ihn gerade deshalb gekauft, um zu beweisen, dass er nichts bringt. Diese Haltung ist uns lieber als blinder Glaube.',
           'Deshalb reden wir nicht über Wunder, sondern über drei prüfbare Ebenen: Aufbau, Messung, Erfahrung. Danach entscheidest du.',
         ]}
         punkte={[
@@ -164,13 +164,13 @@ export function MmWirMachenIhnAuf({products}) {
       <span id="mechanismus" />
       <MmMechanism
         dataSection="mm-messbar-mechanismus"
-        eyebrow="Ebene 1 — Aufbau"
+        eyebrow="Ebene 1: Aufbau"
         title="Was physisch im Chip steckt"
-        intro="Der QiOne 2 Pro trägt einen strukturierten Gitterchip aus 750er Gold, eingefasst in einen Körper aus Chirurgenstahl. Kein Akku, keine Elektronik, keine App. Die Idee: eine feste, präzise Gitterstruktur, die die Ordnung von Wasser beeinflussen soll — dem Stoff, aus dem dein Körper zu rund zwei Dritteln besteht."
+        intro="Der QiOne 2 Pro trägt einen strukturierten Gitterchip aus 750er Gold, eingefasst in einen Körper aus Chirurgenstahl. Kein Akku, keine Elektronik, keine App. Die Idee: eine feste, präzise Gitterstruktur, die die Ordnung von Wasser beeinflussen soll, dem Stoff, aus dem dein Körper zu rund zwei Dritteln besteht."
         schritte={[
           {titel: 'Präzises Gold-Gitter', text: 'Ein neues Herstellungsverfahren erzeugt eine definierte Gitterstruktur mit 22,61 mm3 Wirkvolumen. Fest, passiv, über Jahrzehnte stabil.'},
           {titel: 'Kontakt mit Wasser', text: 'Die Struktur soll benachbarte Wassermoleküle in eine geordnetere (kohärentere) Anordnung bringen. Genau diesen Punkt haben die Zellstudien untersucht.'},
-          {titel: 'Passiv, immer an', text: 'Du trägst ihn — mehr ist nicht nötig. Keine Ladezyklen, kein Bedienen. Er wirkt, ob du daran denkst oder nicht.'},
+          {titel: 'Passiv, immer an', text: 'Du trägst ihn, mehr ist nicht nötig. Keine Ladezyklen, kein Bedienen. Er wirkt, ob du daran denkst oder nicht.'},
           {titel: 'Nachprüfbar statt behauptet', text: 'Wir stellen die Publikationen offen als PDF bereit und benennen die Grenzen: Zellkultur ist keine Studie am Menschen.'},
         ]}
         kinder={
@@ -194,19 +194,19 @@ export function MmWirMachenIhnAuf({products}) {
 
       <MmEvidenz
         dataSection="mm-messbar-evidenz"
-        eyebrow="Ebene 2 — Messung"
+        eyebrow="Ebene 2: Messung"
         title="Was in Zellkulturen gemessen wurde"
-        intro="Vier unabhängig publizierte Untersuchungen. Wichtig und ehrlich: Das sind präklinische In-vitro-Studien — an Zellen im Labor, nicht am Menschen. Sie zeigen einen messbaren Schutzeffekt unter Stress, kein Heilversprechen."
+        intro="Vier unabhängig publizierte Untersuchungen. Wichtig und ehrlich: Das sind präklinische In-vitro-Studien an Zellen im Labor, nicht am Menschen. Sie zeigen einen messbaren Schutzeffekt unter Stress, kein Heilversprechen."
         studien={STUDIEN}
         mehrHref="/pages/zellstudien-ehrlich"
-        mehrLabel="Die Studien im Detail — mit Grenzen"
+        mehrLabel="Die Studien im Detail, mit Grenzen"
       />
 
       <MmReports
         dataSection="mm-messbar-berichte"
-        eyebrow="Ebene 3 — Erfahrung"
+        eyebrow="Ebene 3: Erfahrung"
         title="Was 171 Menschen berichtet haben"
-        text="Wir haben 171 öffentliche Erfahrungsberichte ausgewertet. Das ist deskriptiv — ohne Kontrollgruppe, also kein wissenschaftlicher Beweis. Und ehrlich: Manche berichten gar nichts. Trotzdem zeigt sich ein wiederkehrendes Muster."
+        text="Wir haben 171 öffentliche Erfahrungsberichte ausgewertet. Das ist deskriptiv, ohne Kontrollgruppe und damit kein wissenschaftlicher Beweis. Und ehrlich: Manche berichten gar nichts. Trotzdem zeigt sich ein wiederkehrendes Muster."
         balken={[
           {label: 'Ruhe, Gelassenheit & besserer Schlaf', wert: '~20 %', prozent: '20%'},
           {label: 'mehr Energie & Vitalität', wert: '~17 %', prozent: '17%'},
@@ -218,12 +218,12 @@ export function MmWirMachenIhnAuf({products}) {
         note="Quelle: P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte). Die vier unteren Kategorien nennt die Studie gebündelt als „unter 10 %“. Deshalb der 20-Tage-Test: Statt uns zu glauben, prüfst du es an dir selbst."
       />
 
-      <MmProblem variante="flaeche" dataSection="mm-messbar-reviews-intro" title="Stimmen aus der Praxis" text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`} />
+      <MmProblem variante="flaeche" dataSection="mm-messbar-reviews-intro" title="Stimmen aus der Praxis" text={`Echte Google-Bewertungen unserer Kundinnen und Kunden, Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`} />
       <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
       <MmTrust
         dataSection="mm-messbar-trust"
-        eyebrow="Kuratiert — die 6 Signale, die zählen"
+        eyebrow="Kuratiert: die 6 Signale, die zählen"
         title="Woran du dich festhalten kannst"
         badges={badges}
       />
@@ -232,7 +232,7 @@ export function MmWirMachenIhnAuf({products}) {
         dataSection="mm-messbar-risk"
         ring="20"
         title="20 Tage. Deine Prüfung, nicht unser Versprechen."
-        text={'Trag ihn 20 Tage. Bist du nicht überzeugt, schickst du ihn zurück und bekommst dein Geld — unkompliziert. Die Rückgabe hängt an deiner Überzeugung und der Frist, nicht daran, ob du etwas „spürst".'}
+        text={'Trag ihn 20 Tage. Bist du nicht überzeugt, schickst du ihn zurück und bekommst dein Geld, unkompliziert. Die Rückgabe hängt an deiner Überzeugung und der Frist, nicht daran, ob du etwas „spürst".'}
         punkte={['Frist: 20 Tage ab Erhalt', 'Grund: keiner nötig', 'Ablauf: melden, zurücksenden, Erstattung']}
       />
 
@@ -244,7 +244,7 @@ export function MmWirMachenIhnAuf({products}) {
 
       <MmFinal
         dataSection="mm-messbar-final"
-        title="Prüf es an dir selbst — 20 Tage."
+        title="Prüf es an dir selbst, 20 Tage."
         text="Kein Vorschuss-Vertrauen nötig. Aufbau sichtbar, Studien offen, Rückgabe klar."
         cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/so-wirkt-kohaerentes-wasser', label: 'Erst den Mechanismus verstehen'}}

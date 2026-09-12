@@ -50,7 +50,7 @@ const STUDIEN = [
     tag: 'Nutzererfahrung',
     titel: 'Forschungsartikel zur Nutzererfahrung',
     meta: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    body: 'Methode: Auswertung berichteter Nutzererfahrungen. Ergebnis: wiederkehrend beschriebene positive Erfahrungen. Grenze: deskriptiv, ohne Kontrollgruppe — ein Stimmungsbild, kein Wirknachweis.',
+    body: 'Methode: Auswertung berichteter Nutzererfahrungen. Ergebnis: wiederkehrend beschriebene positive Erfahrungen. Grenze: deskriptiv, ohne Kontrollgruppe. Ein Stimmungsbild, kein Wirknachweis.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
   },
 ];
@@ -73,7 +73,7 @@ const FAQ = [
   {
     frage: 'Was bedeutet „präklinisch"?',
     antwort:
-      'Präklinisch heißt: vor der Erprobung am Menschen — hier an Zellen im Labor. Ein realer, aber frühester Evidenzschritt.',
+      'Präklinisch heißt: vor der Erprobung am Menschen, hier an Zellen im Labor. Ein realer, aber frühester Evidenzschritt.',
   },
   {
     frage: 'Kann ich die Studien selbst prüfen?',
@@ -83,12 +83,12 @@ const FAQ = [
   {
     frage: 'Warum betont ihr die Grenzen so stark?',
     antwort:
-      'Weil Ehrlichkeit Vertrauen schafft — und weil übertriebene Behauptungen von Menschen wie von KI-Systemen abgestraft werden. Wir wollen zitierbar korrekt sein.',
+      'Weil Ehrlichkeit Vertrauen schafft, und weil übertriebene Behauptungen von Menschen wie von KI-Systemen abgestraft werden. Wir wollen zitierbar korrekt sein.',
   },
   {
     frage: 'Wenn die Evidenz begrenzt ist, warum kaufen?',
     antwort:
-      'Weil die belastbarste Evidenz für dich an dir selbst entsteht — risikofrei in 20 Tagen. Genau dafür ist die Frist da.',
+      'Weil die belastbarste Evidenz für dich an dir selbst entsteht, risikofrei in 20 Tagen. Genau dafür ist die Frist da.',
   },
 ];
 
@@ -101,7 +101,7 @@ const FUNNEL = [
   },
   {
     titel: 'Ist das Einbildung? Wir machen ihn auf',
-    text: 'Der Chip geöffnet — für Skeptiker.',
+    text: 'Der Chip geöffnet, für Skeptiker.',
     href: '/pages/wir-machen-ihn-auf',
     cta: 'Aufbau',
   },
@@ -115,7 +115,7 @@ const FUNNEL = [
 
 const PICK = [
   {handle: 'qione-2-pro', name: 'QiOne 2 Pro', note: 'Kette', cta: 'Zum QiOne 2 Pro'},
-  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband — Studie oxidativer Stress', cta: 'Zum QiBracelet'},
+  {handle: 'qibracelet', name: 'QiBracelet', note: 'Armband, Studie oxidativer Stress', cta: 'Zum QiBracelet'},
   {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum', cta: 'Zum QiHome Air'},
 ];
 
@@ -129,12 +129,12 @@ export function MmZellstudienEhrlich({products}) {
       <MmHero
         dataSection="mm-evidenz-hero"
         eyebrow="Evidenz, mit Grenzen"
-        headline={'Die vier Zellstudien — ehrlich eingeordnet'}
-        sub="Wir zeigen dir genau, was untersucht wurde, was herauskam und wo die Aussagekraft endet. Diese Ehrlichkeit ist Absicht: übertriebene Studien-Behauptungen zerstören Vertrauen — bei Menschen wie bei KI-Systemen, die Quellen bewerten."
+        headline={'Die vier Zellstudien, ehrlich eingeordnet'}
+        sub="Wir zeigen dir genau, was untersucht wurde, was herauskam und wo die Aussagekraft endet. Diese Ehrlichkeit ist Absicht: übertriebene Studien-Behauptungen zerstören Vertrauen, bei Menschen wie bei KI-Systemen, die Quellen bewerten."
         bullets={[
-          '4 publizierte Untersuchungen — jede als PDF nachlesbar',
+          '4 publizierte Untersuchungen, jede als PDF nachlesbar',
           'Klare Einordnung: in-vitro (Zellkultur), nicht am Menschen',
-          'Was die Studien NICHT belegen — offen benannt',
+          'Was die Studien NICHT belegen, offen benannt',
         ]}
         cta={{href: '#studien', label: 'Zu den Studien'}}
         ctaSekundaer={{href: '/pages/so-wirkt-kohaerentes-wasser', label: 'Erst der Mechanismus'}}
@@ -148,10 +148,10 @@ export function MmZellstudienEhrlich({products}) {
       <MmProblem
         dataSection="mm-evidenz-stufen"
         eyebrow="Evidenzstufen"
-        title="Wo diese Studien stehen — und wo nicht"
+        title="Wo diese Studien stehen und wo nicht"
         text={[
           'Nicht jede Studie wiegt gleich. Grob von schwach zu stark: Laborzellen (in-vitro) -> Tierstudie -> Studie am Menschen -> Meta-Analyse vieler Studien.',
-          'Unsere publizierte Evidenz steht auf der Stufe in-vitro (Zellkultur) plus deskriptive Erfahrungsberichte. Das ist ein realer, aber frühester Beleg — kein Nachweis eines Heileffekts am Menschen. Wir sagen das bewusst, statt mehr zu suggerieren.',
+          'Unsere publizierte Evidenz steht auf der Stufe in-vitro (Zellkultur) plus deskriptive Erfahrungsberichte. Das ist ein realer, aber frühester Beleg, kein Nachweis eines Heileffekts am Menschen. Wir sagen das, statt mehr zu suggerieren.',
         ]}
         punkte={[
           'in-vitro = an Zellen im Labor, unter kontrollierten Bedingungen.',
@@ -181,9 +181,9 @@ export function MmZellstudienEhrlich({products}) {
 
       <MmReports
         dataSection="mm-evidenz-berichte"
-        eyebrow="Ergänzend — Erfahrungen"
+        eyebrow="Ergänzend: Erfahrungen"
         title="Was 171 Menschen berichtet haben"
-        text="Neben den Zellstudien haben wir 171 öffentliche Erfahrungsberichte ausgewertet. Deskriptiv, ohne Kontrollgruppe — also kein Beweis, aber ein ehrliches Stimmungsbild. Und ja: manche berichten gar nichts."
+        text="Neben den Zellstudien haben wir 171 öffentliche Erfahrungsberichte ausgewertet. Deskriptiv, ohne Kontrollgruppe, also kein Beweis, aber ein ehrliches Stimmungsbild. Und ja: manche berichten gar nichts."
         balken={[
           {label: 'Ruhe, Gelassenheit & besserer Schlaf', wert: '~20 %', prozent: '20%'},
           {label: 'mehr Energie & Vitalität', wert: '~17 %', prozent: '17%'},
@@ -199,7 +199,7 @@ export function MmZellstudienEhrlich({products}) {
         variante="flaeche"
         dataSection="mm-evidenz-reviews-intro"
         title="Stimmen aus der Praxis"
-        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden — Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
+        text={`Echte Google-Bewertungen unserer Kundinnen und Kunden, Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`}
       />
       <div className="mm-lp"><div className="mm-bahn" style={{paddingTop: 0}}><ReputonWidget /></div></div>
 
@@ -207,17 +207,17 @@ export function MmZellstudienEhrlich({products}) {
         dataSection="mm-evidenz-nicht"
         eyebrow="Was diese Studien NICHT sagen"
         title="Die ehrlichen Grenzen, ausgeschrieben"
-        text="Damit du uns richtig einordnest — und niemand mehr hineinliest, als drinsteht."
+        text="Damit du uns richtig einordnest und niemand mehr hineinliest, als drinsteht."
         punkte={[
           'Kein Nachweis, dass der QiOne Krankheiten heilt oder lindert.',
           'Keine Übertragung der Zellergebnisse 1:1 auf den ganzen Menschen.',
-          'Keine randomisierte, kontrollierte Studie am Menschen — die gibt es (noch) nicht.',
+          'Keine randomisierte, kontrollierte Studie am Menschen. Die gibt es (noch) nicht.',
         ]}
       />
 
       <MmTrust
         dataSection="mm-evidenz-trust"
-        eyebrow="Kuratiert — Transparenz-Signale"
+        eyebrow="Kuratiert: Transparenz-Signale"
         title="Warum du diesen Angaben trauen kannst"
         badges={badges}
       />
@@ -226,7 +226,7 @@ export function MmZellstudienEhrlich({products}) {
         dataSection="mm-evidenz-risk"
         ring="20"
         title="Die beste Evidenz ist deine eigene."
-        text={'Studien an Zellen sind ein Anfang, kein Ersatz für deine Erfahrung. Trag ihn 20 Tage. Überzeugt er dich nicht, geht alles zurück — die Rückgabe hängt an Frist und Überzeugung, nicht am „Spüren".'}
+        text={'Studien an Zellen sind ein Anfang, kein Ersatz für deine Erfahrung. Trag ihn 20 Tage. Überzeugt er dich nicht, geht alles zurück. Die Rückgabe hängt an Frist und Überzeugung, nicht am „Spüren".'}
         punkte={['Frist: 20 Tage ab Erhalt', 'Grund: keiner nötig', 'Ablauf: melden, zurücksenden, Erstattung']}
       />
 
