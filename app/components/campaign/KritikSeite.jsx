@@ -1,5 +1,12 @@
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
-import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, PLUSPUNKTE} from '~/data/kritik-vorwuerfe';
+import {
+  BEFUNDE,
+  EINRAEUMUNGEN,
+  FRAGEN,
+  PLUSPUNKTE,
+} from '~/data/kritik-vorwuerfe';
+import e0001 from '~/data/studien/e0001.json';
+import e0003 from '~/data/studien/e0003.json';
 
 /**
  * /pages/kritik — die Beweis-Fläche.
@@ -53,6 +60,77 @@ import {BEFUNDE, EINRAEUMUNGEN, FRAGEN, PLUSPUNKTE} from '~/data/kritik-vorwuerf
  * Kein Satz über unser eigenes Material, der nur Haltung trägt und keine
  * prüfbare Angabe.
  */
+/**
+ * BELEGBILD — ein Bild auf dieser Seite ist ein BEWEISSTUECK, keine Auflockerung.
+ *
+ * WARUM UEBERHAUPT BILDER, UND WARUM AUSGERECHNET DIESE. Die Seite war eine
+ * reine Textwand; Christian wollte Bilder und „Luft im Satzbild". Der
+ * naheliegende Griff waere Lifestyle-Material gewesen — und er waere auf
+ * GENAU DIESER Flaeche falsch: eine Seite, deren ganze Kraft die
+ * Ueberpruefbarkeit ist, verliert sie in dem Moment, in dem sie anfaengt zu
+ * werben. Gewaehlt sind deshalb die zwei Fotos des tatsaechlichen
+ * VERSUCHSAUFBAUS aus den Originalarbeiten. Sie machen nicht die Behauptung
+ * anschaulich, sondern die EINRAEUMUNG: wer die vier Kulturflaschen um ein
+ * Handy herum sieht, versteht ohne einen weiteren Satz, was „in vitro, nicht
+ * am Menschen" bedeutet. Das Bild arbeitet hier fuer die Ehrlichkeit der
+ * Seite, nicht gegen sie.
+ *
+ * DIE DATEN KOMMEN AUS DER STUDIEN-SSoT (app/data/studien/e*.json), nicht aus
+ * einer Kopie: URL, Alternativtext, Abbildungsnummer und die echten Masse
+ * stehen dort bereits. Eine zweite Liste daneben waere ein zweiter Traeger fuer
+ * dieselbe Angabe — wird ein Bild neu hochgeladen, lieferte die Kritikseite
+ * still eine tote CDN-URL aus, und beide Haelften saehen fuer sich richtig aus.
+ *
+ * PREIS DIESER ENTSCHEIDUNG, offen benannt: der Import zieht die beiden
+ * Studien-JSON (~60 KB, ueberwiegend Artikel-Volltext) in den Chunk DIESER
+ * Route. Das ist bewusst in Kauf genommen und NICHT dasselbe wie der Fall in
+ * Header.jsx: der Header haengt am root-Chunk und laeuft auf JEDER Seite (dort
+ * wurde deshalb ein Literal gewaehlt). Hier ist es eine einzelne Route, und
+ * genau so machen es die fuenf Studien-Einzelseiten und /pages/studien auch.
+ *
+ * width/height stehen als ECHTE Masse aus der SSoT und werden nicht
+ * beschnitten: sie reservieren den Platz vor dem Laden (kein Layout-Sprung).
+ * `loading="lazy"` haelt beide Bilder aus dem ersten Rendern heraus — die
+ * Abnahme dieses Baus ist ausdruecklich zweiseitig, das Bild darf die Seite
+ * nicht langsamer machen.
+ *
+ * FREIGABE (Herkunft, an der Stelle, an der man sie beim Aendern sieht):
+ * Beide Abbildungen stammen aus den Publikationen von Prof. Dr. Peter C.
+ * Dartsch, die dieses Haus in Auftrag gegeben und finanziert hat — dieselben
+ * Arbeiten, deren Abbildungen seit 2026 auf unseren eigenen Studienseiten
+ * (/pages/studie-immunzellen, /pages/studie-oxidativer-stress) stehen und aus
+ * denselben Dateien auf unserem eigenen CDN geladen werden. Es entsteht hier
+ * also kein neues Material und keine neue Nutzung, sondern eine zweite
+ * Platzierung bereits veroeffentlichten eigenen Materials. Die Quelle steht
+ * sichtbar unter jedem Bild (Abbildungsnummer + Journal + Band) — auf dieser
+ * Seite ist das Pflicht und nicht Kuer: ein Beweisstueck ohne Fundstelle ist
+ * genau das, was die Seite anderen vorwirft.
+ */
+function Belegbild({studie, bildKey, einordnung}) {
+  const g = (studie.grafiken || []).find((x) => x.key === bildKey);
+  if (!g) return null;
+  const e = studie.eckdaten || {};
+  return (
+    <figure className="krit__beleg">
+      <img
+        className="krit__beleg-bild"
+        src={g.url}
+        alt={g.alt}
+        width={g.breite}
+        height={g.hoehe}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption className="krit__beleg-text">
+        {einordnung}
+        <span className="krit__beleg-quelle">
+          {g.nummer} aus: {e.journal} {e.band}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export function KritikSeite() {
   return (
     <div className="krit">
@@ -121,6 +199,11 @@ export function KritikSeite() {
             Vier Punkte, die gegen uns sprechen. Sie stehen so auch auf unseren
             Studienseiten.
           </p>
+          <Belegbild
+            studie={e0001}
+            bildKey="abb1"
+            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen rund um ein sendendes Mobiltelefon, das Gerät dazwischen. Keine Menschen — Zellen in Kunststoffflaschen."
+          />
           <ol className="krit__einraeumungen">
             {EINRAEUMUNGEN.map((e) => (
               <li key={e.titel}>
@@ -139,6 +222,11 @@ export function KritikSeite() {
             Fünf Arbeiten, je mit dem, was gemessen wurde – und mit der Grenze,
             die die Arbeit selbst nennt. Jede ist im Original nachlesbar.
           </p>
+          <Belegbild
+            studie={e0003}
+            bildKey="abb1"
+            einordnung="Und so bei der Arbeit zum oxidativen Stress: eine 96-Well-Platte im Mini-Inkubator, das QiBracelet obenauf. Auch das ist der ganze Aufbau — mehr steckt hinter dem Wort „Zellstudie“ nicht."
+          />
           <ul className="krit__befunde">
             {BEFUNDE.map((b) => (
               <li key={b.id} className="krit__befund">
