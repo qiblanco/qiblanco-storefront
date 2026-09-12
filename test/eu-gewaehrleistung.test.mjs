@@ -991,9 +991,29 @@ test('das Zeichen im Listenpunkt ist so groß wie die Nachbar-Icons', () => {
 
 import {readdirSync} from 'node:fs';
 
-/** Rendert die Datei eine Nutzen-Liste? (Die Definition der geteilten Liste in
- *  QiOneBuyBox.jsx zählt NICHT -- sie rendert sich nicht selbst.) */
-const LISTE_GERENDERT = /<(?:QiOne|Cacao)?BenefitList[\s/>]/;
+/** Rendert die Datei eine Nutzen-Liste?
+ *
+ *  GEMESSEN WIRD DIE EIGENSCHAFT DES NAMENS, NICHT EINE LISTE BEKANNTER
+ *  PRAEFIXE. Die erste Fassung zählte die drei Namen auf, die es am
+ *  2026-09-09 gab (`<(?:QiOne|Cacao)?BenefitList`). Am 2026-09-12 montierte
+ *  `products.qi-master.jsx` eine `<QiMasterBenefitList>` -- ein vierter Name,
+ *  der in der Aufzählung fehlte. Die Seite fiel damit in den Zweig "ohne
+ *  Nutzen-Liste" und wurde angeklagt, obwohl sie den Listenpunkt IN ihrer
+ *  Liste trägt (am gerenderten HTML nachgemessen: 2 Dialoge, 821 Zeichen
+ *  eigene Prosa, wie auf den Geschwisterseiten). Ein Zaun aus Literalen
+ *  erreicht den nächsten Namen nicht. Gemessen wird deshalb das Suffix: wer
+ *  eine Nutzen-Liste baut, nennt sie `…BenefitList`.
+ *
+ *  WARUM NICHT DIE MONTAGE DES LISTENPUNKTS ALS ANKER, obwohl sie der
+ *  direktere Beleg wäre: die Zusage unmittelbar darunter WÄHLT über diesen
+ *  Ausdruck aus und BEHAUPTET dann, dass der Listenpunkt montiert ist. Wäre er
+ *  zugleich das Auswahl-Merkmal, könnte sie strukturell nie rot werden -- eine
+ *  Wache, die auf dem Feld auswählt, das ihr Prüfgegenstand bei Erfolg setzt,
+ *  misst am Ende nur noch sich selbst.
+ *
+ *  Die DEFINITION der geteilten Liste zählt weiterhin NICHT: `export function
+ *  QiOneBenefitList` trägt kein `<`, sie rendert sich nicht selbst. */
+const LISTE_GERENDERT = /<[A-Z][A-Za-z0-9]*BenefitList[\s/>]|<BenefitList[\s/>]/;
 /** Rendert die Datei ueberhaupt einen Kauf-Knopf-Traeger? */
 const KAUFFLAECHE = /<(?:Cacao)?ProductForm[\s/>]|<QiOneBuyBox[\s/>]/;
 
@@ -1025,8 +1045,11 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
 
   // POSITIV-KONTROLLE ZUERST. Ohne sie wäre ein zu enger Sucher nicht rot,
   // sondern GRUEN über der leeren Menge -- und das sieht aus wie ein
-  // bestandener Lauf. Die acht Flaechen sind am 2026-09-09 gemessen; kommt
-  // eine dazu, faellt sie in die Zusagen darunter, nicht hier heraus.
+  // bestandener Lauf. Die Flaechen unten sind am 2026-09-09 gemessen,
+  // products.qi-master am 2026-09-12 nachgetragen (sie stand bis dahin
+  // faelschlich in der Gegenprobe, weil der Sucher ihren Listen-Namen nicht
+  // kannte). Die ZAHL der Flaechen steht bewusst nirgends: kommt eine dazu,
+  // faellt sie in die Zusagen darunter, nicht hier heraus.
   const gefunden = mitListe.map((d) => d.pfad).sort();
   for (const pflicht of [
     'app/components/product-pages/QiBraceletShop.jsx',
@@ -1035,6 +1058,7 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
     'app/components/product-pages/QiOne2ProShop.jsx',
     'app/routes/products.crystal-cacao-awake.jsx',
     'app/routes/products.crystal-cacao-create.jsx',
+    'app/routes/products.qi-master.jsx',
     'app/routes/products.qibracelet.jsx',
     'app/routes/products.qihome-air.jsx',
     'app/routes/products.qione-2-pro.jsx',
@@ -1094,6 +1118,56 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
   }
 });
 
+/* DIE NAHT, DIE DER SLOT-WEG AUFMACHT (nachgetragen 2026-09-12).
+ *
+ * Die Zusage oben lässt zwei Montage-Orte zu: der Punkt steht direkt in der
+ * <ul> der Datei -- oder er wird als `zusatzPunkt` an eine Liste UEBERGEBEN.
+ * Der zweite Weg ist nur so viel wert wie die Liste, die ihn entgegennimmt:
+ * setzt sie den Slot ausserhalb ihrer <ul> ein, steht der Punkt wieder als
+ * Block daneben, und die Zusage oben sieht es nicht -- sie liest nur die
+ * aufrufende Datei.
+ *
+ * Bis heute war diese Gegenprobe an EINE Datei genagelt (QiOneBuyBox.jsx, die
+ * Zusage weiter oben). Das trug genau so lange, wie es nur eine solche Liste
+ * gab. Mit products.qi-master kam die zweite (QiMasterBenefitList) -- und sie
+ * wäre über den Slot-Weg gruen durchgelaufen, ohne dass irgendwer ihre <ul>
+ * geprueft haette. Gemessen wird deshalb auch hier die Eigenschaft: JEDE
+ * Datei, die einen zusatzPunkt-Slot ANBIETET, setzt ihn in ihre eigene <ul>. */
+test('jede Liste, die einen zusatzPunkt annimmt, setzt ihn IN ihre <ul>', () => {
+  const anbieter = ALLE_FLAECHEN.filter((d) => /\{zusatzPunkt\}/.test(d.code));
+
+  // Positiv-Kontrolle: ohne sie wäre die Zusage über der leeren Menge gruen.
+  const gefunden = anbieter.map((d) => d.pfad).sort();
+  for (const pflicht of [
+    'app/components/product-pages/QiMaster.jsx',
+    'app/components/product-pages/QiOneBuyBox.jsx',
+  ]) {
+    assert.ok(
+      gefunden.includes(pflicht),
+      `Positiv-Kontrolle: ${pflicht} bietet keinen zusatzPunkt-Slot mehr an ` +
+        `(gefunden: ${gefunden.join(', ')}). Entweder ist die Naht umgebaut ` +
+        'worden, oder der Sucher findet sie nicht mehr.',
+    );
+  }
+
+  for (const {pfad, code} of anbieter) {
+    for (const treffer of code.matchAll(/\{zusatzPunkt\}/g)) {
+      const stelle = treffer.index;
+      const inListe = [...code.matchAll(/<ul[\s>]/g)].some((auf) => {
+        const zu = code.indexOf('</ul>', auf.index);
+        return zu > auf.index && stelle > auf.index && stelle < zu;
+      });
+      assert.ok(
+        inListe,
+        `${pfad} setzt seinen zusatzPunkt-Slot ausserhalb der eigenen <ul> ` +
+          'ein. Dann steht der uebergebene Listenpunkt als Block neben der ' +
+          'Liste -- und eine <li> ausserhalb einer <ul> ist ausserdem ' +
+          'ungueltiges HTML.',
+      );
+    }
+  }
+});
+
 test('jede Kaufflaeche OHNE Nutzen-Liste behaelt ihn unter dem Kauf-Knopf', () => {
   const ohneListe = ALLE_FLAECHEN.filter(
     (d) => KAUFFLAECHE.test(d.code) && !LISTE_GERENDERT.test(d.code),
@@ -1119,9 +1193,18 @@ test('jede Kaufflaeche OHNE Nutzen-Liste behaelt ihn unter dem Kauf-Knopf', () =
     assert.doesNotMatch(
       code,
       /gewaehrleistungsHinweis=\{false\}/,
-      `${pfad} schaltet die Pflichtmitteilung unter dem Kauf-Knopf ab, hat ` +
-        'aber keine Nutzen-Liste, in der sie stattdessen stuende. Sie faellt ' +
-        'auf dieser Flaeche ersatzlos weg -- bei weiterhin HTTP 200.',
+      `${pfad} schaltet den Default unter dem Kauf-Knopf ab ` +
+        '(gewaehrleistungsHinweis={false}), montiert aber keine ' +
+        '<…BenefitList>, in der die Pflichtmitteilung stattdessen stuende. ' +
+        'GEMESSEN IST DIE BAUFORM, NICHT DIE AUSGELIEFERTE SEITE: dieser Arm ' +
+        'liest Quelltext, kein HTML. Er sagt, dass die Datei keinen zweiten ' +
+        'Ort für die Mitteilung vorsieht -- nicht, dass am Kundenrand nichts ' +
+        'ankommt. Den Rand misst homepage-bauer/pruefungen/' +
+        'probe_gewaehrleistung_naht.py am gerenderten HTML; wer diesen Arm rot ' +
+        'sieht, prueft dort nach, bevor er eine Wirkung behauptet. Zwei Wege ' +
+        'zurück ins Gruene, je nachdem was gewollt war: den Default stehen ' +
+        'lassen, oder eine <…BenefitList> mit ' +
+        '<EuGewaehrleistungsListenpunkt /> darin bauen.',
     );
   }
 });
