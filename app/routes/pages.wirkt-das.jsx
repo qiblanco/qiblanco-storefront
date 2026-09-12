@@ -1,6 +1,10 @@
-import {MmWirktDas} from '~/components/campaign/MmWirktDas';
+import {
+  MmWirktDas,
+  WIRKT_DAS_SCHEMA_ITEMS,
+} from '~/components/campaign/MmWirktDas';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
+import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 
 /**
  * /pages/wirkt-das — Antwort auf den größten Einwand des Bestands
@@ -62,16 +66,66 @@ export function links() {
   return [{rel: 'stylesheet', href: mmStyles}];
 }
 
+/**
+ * DATUMSFELDER DES SCHEMAS SIND KONSTANTEN, KEINE LAUFZEIT-UHR (Hausmuster aus
+ * `pages.kritik.jsx`): ein `dateModified`, das sich bei jedem Abruf bewegt,
+ * behauptet eine Pflege, die nicht stattfindet. WER DEN SICHTBAREN TEXT DIESER
+ * SEITE ÄNDERT, ZIEHT `GEAENDERT` IM SELBEN COMMIT NACH.
+ */
+const VEROEFFENTLICHT = '2026-08-26';
+const GEAENDERT = '2026-09-12';
+
+/**
+ * DAS FAQPage-SCHEMA KOMMT AUS DEM SICHTBAREN TEXT (P10: die Fabrik existiert
+ * samt Deny-Netz in app/lib/faq-schema.js). Frage und Antwort sind dieselben
+ * Strings, die `MmFaq` rendert — `WIRKT_DAS_SCHEMA_ITEMS()` leitet sie aus der
+ * einen Konstante `ZWEIFEL` ab. Eine Frage im Schema, die auf der Seite nicht
+ * steht, wäre ein Regelverstoß; deshalb gibt es hier keine zweite Textfassung.
+ *
+ * WARUM DAS SCHEMA AUF EINER noindex-SEITE TROTZDEM RICHTIG IST: es ist der
+ * Teil der Arbeit, der bei einer Freigabe NICHT nachgeholt werden muss. Die
+ * Seite ist seit dem 2026-08-31 auf Christians Entscheidung zurückgezogen
+ * (siehe Kopf); Fassung 2 stellt sie freigabereif her, sie schaltet sie nicht
+ * frei. Ein `noindex` unterdrückt die Indexierung, nicht das Parsen.
+ *
+ * DER STILLE VERLUST IST DER TEURE FALL: `buildFaqPageJsonLd` wirft Items aus,
+ * die das Deny-Netz treffen (etwa das Wort „kohärent"), und liefert dann
+ * einfach ein kürzeres Schema — die Seite bliebe sichtbar und würde nur für
+ * eine Maschine ärmer, ohne Fehlermeldung. Deshalb steht hier ein SOLL-ZÄHLER:
+ * fällt auch nur ein Paar durch, wird GAR KEIN Schema ausgegeben, statt ein
+ * unvollständiges auszuliefern, das wie ein vollständiges aussieht.
+ * Gegenprobe: homepage-bauer/pruefungen/probe_zitierfaehig_wirkt_das.py.
+ */
+const ZWEIFEL_SOLL = 9;
+
+function faqSchema() {
+  const items = WIRKT_DAS_SCHEMA_ITEMS();
+  const schema = buildFaqPageJsonLd(items, {
+    inLanguage: 'de-DE',
+    author: 'Qi Blanco',
+    datePublished: VEROEFFENTLICHT,
+    dateModified: GEAENDERT,
+  });
+  if (!schema) return null;
+  if (items.length !== ZWEIFEL_SOLL) return null;
+  if (schema.mainEntity.length !== ZWEIFEL_SOLL) return null;
+  return schema;
+}
+
 /** @type {MetaFunction} */
-export const meta = () => [
-  {title: 'Wirkt das überhaupt? Was gemessen ist – und was nicht | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Fünf Zellstudien, ein Labor, klare Grenzen: was bei Qi Blanco im Labor gemessen wurde, was daraus folgt und was ausdrücklich nicht. Zum Selbstnachlesen.',
-  },
-  noindexMeta(),
-];
+export const meta = () => {
+  const schema = faqSchema();
+  return [
+    {title: 'Wirkt das überhaupt? Was gemessen ist – und was nicht | Qi Blanco'},
+    {
+      name: 'description',
+      content:
+        'Fünf Zellstudien, ein Labor, klare Grenzen: was bei Qi Blanco im Labor gemessen wurde, was daraus folgt und was ausdrücklich nicht. Zum Selbstnachlesen.',
+    },
+    noindexMeta(),
+    ...(schema ? [{'script:ld+json': schema}] : []),
+  ];
+};
 
 /**
  * Die ZWEITE, vom HTML unabhängige Sperre desselben Signals (Hausmuster D-006,

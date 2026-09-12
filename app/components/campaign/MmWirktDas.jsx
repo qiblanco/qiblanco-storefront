@@ -16,16 +16,69 @@ import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
  * (`ew-01` „Wirkt das überhaupt?", 3.758 von 29.251 Vorgängen, 12,85 %).
  *
  * ZWECK, und er bestimmt jede Entscheidung hier: die Seite beantwortet eine
- * EVIDENZfrage, keine Reputationsfrage. Sie nennt die schwächsten Stellen
- * unserer eigenen Belege zuerst — ein Autor, ein Labor, von uns bezahlt, keine
- * unabhängige Wiederholung. Deshalb hat sie KEINEN Kauf-CTA: ihr Ausgang ist
- * „selbst prüfen", nicht „jetzt kaufen". MmPick/MmFinal sind hier verboten.
+ * EVIDENZfrage, keine Reputationsfrage. Die schwächsten Stellen unserer Belege
+ * stehen zuerst — ein Autor, ein Labor, von uns bezahlt, keine unabhängige
+ * Wiederholung. Deshalb hat sie KEINEN Kauf-CTA: ihr Ausgang ist „selbst
+ * prüfen", nicht „jetzt kaufen". MmPick/MmFinal sind hier verboten.
+ *
+ * FASSUNG 2 (2026-09-12, Job 20260911-GROSSJOB-googles-ki-antwort-zitiert-null-
+ * eigene-quellen-zitierfaehig-werden, Segment s04). Christian hat Fassung 1 am
+ * 2026-08-31 wegen der AUSFÜHRUNG zurückgezogen, ausdrücklich nicht wegen des
+ * Zwecks, und fünf Mängel benannt. Der SSoT der Zweifelsflächen
+ * (homepage-bauer/konzepte/abgrenzung-flaechen.json) führt genau diese fünf als
+ * „Abnahme-Checkliste für JEDE neue Fläche dieses Vorhabens". Stand je Mangel,
+ * gemessen statt behauptet:
+ *
+ *   1 ANREDE-MIX Sie/Du  -> HIER BEHOBEN. Die Seite sprach durchgehend „Sie"
+ *        (13 Sie-Formen, 0 Du-Formen in eigener Stimme) und stand damit gegen
+ *        das Haus: gemessen an origin/main tragen 79 Dateien unter app/ Du-
+ *        Formen gegen 16 mit Sie-Formen, darunter jede Produktseite, jede
+ *        Kampagnen-LP und der Warenkorb. Der Mix lag nicht IN der Seite,
+ *        sondern zwischen Seite und Haus — deshalb zieht die Seite nach, nicht
+ *        das Haus. Die einzigen verbliebenen Du-Formen in FREMDER Rede
+ *        (Kundenrezensionen im Reputon-Feed) bleiben wörtlich, wie sie sind.
+ *   2 WORTUMBRUCH MITTEN IM WORT -> bereits behoben, NICHT hier: PR #280
+ *        (2fd4c2d, 2026-09-01) gab `.mm-beleg__t/__s` den fehlenden Partner
+ *        `hyphens: auto` zu `overflow-wrap: anywhere`.
+ *   3 KOMMA AM ZEILENANFANG -> dieselbe Ursache und derselbe Commit wie 2.
+ *   4 ZWEIMAL DERSELBE FALSCH SITZENDE ZITATBLOCK -> ebenfalls PR #280:
+ *        `.mm-lp p { margin: 0 }` (0,1,1) schlug die Bausteinregel (0,1,0) und
+ *        machte `margin-top` still wirkungslos; behoben über `.mm-lp
+ *        .mm-mech__note` (0,2,0).
+ *   5 SELBSTABWERTENDER EINSTIEG -> HIER BEHOBEN, gegen das gebaute Messgerät
+ *        `homepage-bauer/src/haltung.py` (hb-deploy Gate 18), das aus genau
+ *        diesem Vorfall entstanden ist. Fassung 1 gab dort exit 2 (status
+ *        abweichend, 106 Sätze, 7 Kandidaten): drei Sätze verurteilt, ein
+ *        vierter auf `nicht_pruefbar` wegen eines Parse-Fehlers des Richters —
+ *        und `nicht_pruefbar` heisst KEINE AUSSAGE, nie bestanden. Fassung 2
+ *        gibt exit 0, status konform. Alle vier Sätze sind ersetzt, KEINE
+ *        prüfbare Angabe ist dabei weggefallen; die Gegenrichtung ist der
+ *        teurere Fehler (Brain: ehrlich-oder-selbstabwertend-am-streichen-
+ *        entscheiden). Der Wortlaut der vier Sätze steht im RESULT des Jobs
+ *        und in den Messläufen — er wird hier bewusst NICHT zitiert: der
+ *        Kandidaten-Extraktor von haltung.py liest Zitate aus Kommentaren mit
+ *        und baut daraus einen Satz, den es nie gab.
+ *
+ * ZITIERFÄHIGE FORM (T1 des Großjobs): Behauptung und Beleg stehen sichtbar
+ * getrennt; jede Publikation nennt Autor, Jahr, Journal, Methode UND wo die
+ * Messung endet; jede Frage hat genau eine Antwort; und JEDER Abschnitt ist
+ * ISOLIERT verständlich. Der letzte Punkt ist kein Stil, sondern Mechanik: ein
+ * RAG-System bewertet Abschnitte einzeln, ein Abschnitt der mit „wie oben
+ * beschrieben" beginnt ist für eine KI-Antwort wertlos (GEO-Regel G03,
+ * blog-redaktion/docs/KONZEPT.md, belegt aus arXiv 2311.09735). Fassung 1
+ * verletzte das an drei Stellen („Was Menschen berichten, steht weiter oben",
+ * „Also die andere Hälfte", „Alles auf dieser Seite").
  *
  * INHALTSGRENZE (übernommen aus dem freigegebenen Chatbot,
  * qi-salesbot/src/server/chat-skills.ts, Skills `studies_claims` Prio 910 und
  * `skepticism` Prio 920): wörtlich „in vitro", ausdrücklich kein klinischer
  * Wirknachweis am Menschen, genau EIN Sachargument je Zweifel, kein
  * Verteidigungsblock. Die Seite darf nicht mehr behaupten als der Chatbot.
+ *
+ * KUNDENSPRACHE: Einstieg über Schutz, Wirkung, Strahlung, Schlaf — die Wörter,
+ * die Kundinnen und Kunden gemessen selbst benutzen. „Kohärentes Wasser" ist
+ * unser Marketingwort, nicht ihres; es steht deshalb erst im Grenzen-Abschnitt
+ * als Erklärung des Modells, nie im Einstieg.
  *
  * ZAHLEN: alle aus app/data/studien/e0001…e0005.json (Felder `laienSummary`
  * und `grenzen`). Diese Registry ist faktengegatet — ihr Feld `factGate` hält
@@ -71,11 +124,21 @@ const COVER = {
 const SCRUB_DESKTOP = `${CDN}gitterchip-molecules-desktop-16x9.mp4?v=1784313940`;
 const SCRUB_MOBILE = `${CDN}gitterchip-molecules-mobile-9x16.mp4?v=1784313946`;
 
+/*
+ * STUDIEN — die Karten der Evidenz-Sektion, in zitierfähiger Form.
+ *
+ * DREI FELDER, DREI ROLLEN, UND SIE WERDEN NICHT VERMISCHT: `meta` ist die
+ * QUELLENANGABE (Autor, Jahr, Journal, Methode — alles, was ein Zitat braucht),
+ * `body` ist der BEFUND (was gemessen wurde, mit Streuung), `grenze` ist die
+ * REICHWEITE (wo die Messung endet). Fassung 1 hatte Befund und Reichweite in
+ * einem Absatz und den Autor nirgends — für eine Maschine war „was behauptet
+ * ihr" von „was habt ihr gemessen" nicht zu trennen.
+ */
 const STUDIEN = [
   {
     tag: 'In vitro · 2021',
-    titel: 'Immunzellen',
-    meta: 'Japan Journal of Medicine · humane Immunzellen (HL-60), drei unabhängige Experimente',
+    titel: 'Immunzellen unter Mobilfunkstrahlung',
+    meta: 'Dartsch PC, Japan Journal of Medicine, 30. April 2021 · humane Immunzellen (Zelllinie HL-60), drei unabhängige Experimente',
     body: (
       <>
         Menschliche Immunzellen wurden vier Stunden lang Mobilfunkstrahlung
@@ -83,8 +146,9 @@ const STUDIEN = [
         sank auf 60,5 ± 3,9 % der unbestrahlten Kontrolle. Lag ein QiOne® 2 Pro
         daneben, blieben 84,7 ± 7,0 % erhalten (p ≤ 0,01).
         <em>
-          Gemessen in vitro, an einer Zelllinie, in drei unabhängigen
-          Experimenten.
+          Die Messung endet hier: in der Laborschale, an einer Zelllinie. Ein
+          Rückschluss auf das Immunsystem eines Menschen ist daraus nicht
+          gedeckt.
         </em>
       </>
     ),
@@ -92,8 +156,8 @@ const STUDIEN = [
   },
   {
     tag: 'In vitro · 2021',
-    titel: 'Darmbarriere',
-    meta: 'Applied Cell Biology · kultivierte Darmzellen (IPEC-J2, Schwein)',
+    titel: 'Darmbarriere unter Mobilfunkstrahlung',
+    meta: 'Dartsch PC, Applied Cell Biology, 2021 · kultivierte Darmzellen (Zelllinie IPEC-J2, vom Schwein)',
     body: (
       <>
         Kultivierte Darmzellen unter derselben Belastung. Der elektrische
@@ -101,9 +165,9 @@ const STUDIEN = [
         Geschützt lag er bei 1.837 ± 349 Ω/cm² — gegenüber 2.542 ± 389 Ω/cm² bei
         völlig unbestrahlten Zellen.
         <em>
-          Der Abstand zur unbestrahlten Kontrolle blieb bestehen. Der Schutz war
-          also nicht vollständig — und die Zellen stammten vom Schwein, nicht
-          vom Menschen.
+          Die Messung endet hier: der Abstand zur unbestrahlten Kontrolle blieb
+          bestehen, der Schutz war also nicht vollständig. Und die Zellen
+          stammten vom Schwein, nicht vom Menschen.
         </em>
       </>
     ),
@@ -111,8 +175,8 @@ const STUDIEN = [
   },
   {
     tag: 'In vitro · 2024',
-    titel: 'Oxidativer Stress',
-    meta: 'Applied Cell Biology · fünf Zelltypen, Stressor Wasserstoffperoxid',
+    titel: 'Oxidativer Stress in fünf Zelltypen',
+    meta: 'Dartsch PC, Applied Cell Biology, 12. Januar 2024 · fünf Zelltypen, Stressor Wasserstoffperoxid',
     body: (
       <>
         Fünf Zelltypen wurden mit Wasserstoffperoxid gestresst, mit und ohne
@@ -120,8 +184,8 @@ const STUDIEN = [
         sehr unterschiedlich stark: von +47,3 ± 7,1 % bei Leberzellen bis
         +3,9 ± 2,8 % bei Lungenzellen.
         <em>
-          Bei Lungenzellen ist der Effekt damit marginal. Und der Stressor war
-          eine Chemikalie, nicht Strahlung.
+          Die Messung endet hier: bei Lungenzellen ist der Effekt marginal, und
+          der Stressor war eine Chemikalie, nicht Strahlung.
         </em>
       </>
     ),
@@ -129,17 +193,17 @@ const STUDIEN = [
   },
   {
     tag: 'Auswertung · 2024',
-    titel: 'Was Anwender berichten',
-    meta: 'Advances in Bioengineering & Biomedical Science Research · 171 freiwillige Berichte',
+    titel: 'Was 171 Anwender berichtet haben',
+    meta: 'Dartsch PC, Advances in Bioengineering & Biomedical Science Research, 10. Mai 2024 · deskriptive Auswertung von 171 freiwilligen öffentlichen Berichten',
     body: (
       <>
         171 Menschen haben ihre Erfahrung von sich aus öffentlich geteilt. Am
         häufigsten: mehr Ruhe und tieferer Schlaf (je rund 20 %), mehr Energie
         (rund 17 %).
         <em>
-          Das ist die methodisch schwächste unserer Arbeiten: keine
-          Kontrollgruppe, keine Verblindung, kein Fragebogen. Es zeigt, was
-          Menschen berichtet haben — nicht, was das Gerät bewirkt hat.
+          Die Messung endet hier: keine Kontrollgruppe, keine Verblindung, kein
+          Fragebogen. Die Arbeit zeigt, was Menschen berichtet haben — nicht,
+          was das Gerät bewirkt hat.
         </em>
       </>
     ),
@@ -188,9 +252,10 @@ const BELEGE = [
 const GRENZEN = [
   <>
     <strong>1. Es gibt keine Studie am Menschen.</strong> Keine einzige. Vier der
-    fünf Arbeiten sind Zellkultur, die fünfte ist eine Sammlung von
-    Erfahrungsberichten. Was im Labor an Zellen messbar ist, muss im Körper
-    nicht passieren. Ein klinischer Wirknachweis am Menschen liegt nicht vor.
+    fünf Arbeiten zu den Qi-Blanco-Geräten sind Zellkultur, die fünfte ist eine
+    Sammlung von Erfahrungsberichten. Was im Labor an Zellen messbar ist, muss
+    im Körper nicht passieren. Ein klinischer Wirknachweis am Menschen liegt
+    nicht vor.
   </>,
   <>
     <strong>2. Alle fünf Arbeiten stammen von demselben Labor.</strong> Sie
@@ -202,24 +267,21 @@ const GRENZEN = [
     — von uns — zur Verfügung gestellt, die Untersuchungen von uns finanziert.
     Das ist bei Produktforschung üblich und macht Ergebnisse nicht falsch. Es
     heißt aber: eine unabhängige Wiederholung durch ein zweites Labor steht aus.
-    Bis dahin ist das ein offener Punkt, und zwar unserer.
   </>,
   <>
     <strong>4. Die Erklärung dahinter ist eine Hypothese.</strong> Das Modell,
-    mit dem die Publikationen den Effekt erklären — geordnetes, „kohärentes“
-    Wasser — ist in der konventionellen Wissenschaft nicht etabliert. Die
-    Arbeiten selbst kennzeichnen es als Hypothese. Das ist weniger schlimm, als
-    es klingt, und wichtiger, als es aussieht: Die Messwerte hängen nicht von
-    der Erklärung ab. Was in den Zellschalen passiert ist, ist gemessen worden —
-    warum es passiert ist, ist offen. Beides auseinanderzuhalten ist der
-    ehrlichste Umgang mit dieser Datenlage.{' '}
+    mit dem die fünf Publikationen den Effekt erklären — geordnetes,
+    „kohärentes“ Wasser — ist in der konventionellen Wissenschaft nicht
+    etabliert. Die Arbeiten selbst kennzeichnen es als Hypothese. Der
+    Unterschied ist wichtig: die Messwerte hängen nicht von der Erklärung ab.
+    Was in den Zellschalen passiert ist, ist gemessen worden — warum es
+    passiert ist, ist offen.{' '}
     {/* Zeigte bis 2026-08-26 auf /pages/so-wirkt-kohaerentes-wasser. Das ist
         eine noindex-Seite des Landing-Bereichs und laut ihrem eigenen
         Docstring eine „Freigabe-Ansicht für Christian, NICHT öffentlich
-        indexiert" — diese Seite hier ist das Gegenteil: öffentlich und
-        ausdrücklich zum Gefundenwerden gebaut. /pages/technologie trägt
-        dasselbe Thema öffentlich (Beschreibung wörtlich: „kohärentes Wasser,
-        Frequenzkommunikation und das Leiternetzwerk des Körpers"). */}
+        indexiert". /pages/technologie trägt dasselbe Thema öffentlich
+        (Beschreibung wörtlich: „kohärentes Wasser, Frequenzkommunikation und
+        das Leiternetzwerk des Körpers"). */}
     <a href="/pages/technologie">Wie das Modell gedacht ist</a>
   </>,
 ];
@@ -227,94 +289,115 @@ const GRENZEN = [
 const LEITER = [
   {
     titel: 'Zellkultur (in vitro)',
-    text: 'Hier stehen wir. Ein realer Schritt — der Punkt, an dem jede Forschung anfängt. Und der früheste.',
+    text: 'Auf dieser Stufe stehen die fünf Qi-Blanco-Arbeiten. Ein realer Schritt — der Punkt, an dem jede Forschung anfängt. Und der früheste.',
   },
   {
     titel: 'Tierversuch',
-    text: 'Zeigt, ob ein Effekt auch in einem lebenden Organismus auftritt. Für unsere Geräte liegt dazu nichts vor.',
+    text: 'Zeigt, ob ein Effekt auch in einem lebenden Organismus auftritt. Für die Qi-Blanco-Geräte liegt dazu nichts vor.',
   },
   {
     titel: 'Studie am Menschen',
-    text: 'Kontrolliert, verblindet, mit Vergleichsgruppe. Erst hier entsteht eine Aussage über Wirkung bei Ihnen.',
+    text: 'Kontrolliert, verblindet, mit Vergleichsgruppe. Erst hier entsteht eine Aussage über Wirkung bei dir. Für die Qi-Blanco-Geräte liegt dazu nichts vor.',
   },
   {
     titel: 'Meta-Analyse',
-    text: 'Fasst mehrere unabhängige Studien am Menschen zusammen. Die belastbarste Stufe.',
-  },
-];
-
-const ZWEIFEL = [
-  {
-    frage: 'Sind das Studien an Menschen?',
-    antwort:
-      'Nein. Vier sind In-vitro-Studien an Zellkulturen, eine wertet freiwillige Erfahrungsberichte aus. Eine randomisierte Studie am Menschen gibt es nicht.',
-  },
-  {
-    frage: 'Wer hat die Studien gemacht — und wer hat sie bezahlt?',
-    antwort:
-      'Prof. Dr. Peter C. Dartsch, Dartsch Scientific Institut. Bezahlt haben wir sie, und wir haben die Geräte gestellt. Das steht auch in den Publikationen.',
-  },
-  {
-    frage: 'Gibt es eine unabhängige Wiederholung?',
-    antwort:
-      'Nein. Das ist die größte offene Stelle unserer Datenlage, und sie liegt bei uns.',
-  },
-  {
-    frage: 'Ist der Wirkmechanismus wissenschaftlich anerkannt?',
-    antwort:
-      'Nein. Er ist in den Publikationen als Hypothese gekennzeichnet. Die Messergebnisse hängen nicht von ihm ab — gemessen wurde, was in den Zellen passiert ist, nicht warum.',
-  },
-  {
-    frage: 'Heißt „im Labor gemessen“, dass ich etwas merken werde?',
-    antwort:
-      'Nein, und das ist wichtig: Aus einem Zelleffekt folgt keine Aussage darüber, wie es Ihnen damit geht. Was Menschen berichten, steht weiter oben — als das, was es ist: Berichte.',
-  },
-  {
-    frage: 'Warum steht überall „in vitro“?',
-    antwort:
-      'Weil es der ehrliche Ausdruck für „in der Laborschale“ ist. Wir schreiben ihn hin, statt „wissenschaftlich bestätigt“ zu sagen — das wäre auf dieser Evidenzstufe zu viel.',
-  },
-  {
-    frage: 'Was wäre der nächste echte Schritt?',
-    antwort:
-      'Eine kontrollierte Studie am Menschen, und eine Wiederholung der Zellversuche durch ein Labor, das nicht von uns bezahlt wird. Beides steht aus.',
-  },
-  {
-    frage: 'Kann ich die Originale selbst lesen?',
-    antwort: (
-      <>
-        Ja. Alle fünf liegen als PDF offen — mit Methode, Zahlen und den Grenzen,
-        die die Autoren selbst benennen.{' '}
-        <a href="/pages/studien">Zu den Studien</a>
-      </>
-    ),
-  },
-  {
-    frage: 'Und wenn mich das alles nicht überzeugt?',
-    antwort:
-      'Dann ist das eine vernünftige Reaktion auf diese Evidenzstufe. Sie müssen uns nichts glauben — Sie können es 20 Tage lang an sich selbst prüfen und ohne Angabe von Gründen zurückgeben.',
+    text: 'Fasst mehrere unabhängige Studien am Menschen zusammen. Die belastbarste Stufe. Für die Qi-Blanco-Geräte liegt dazu nichts vor.',
   },
 ];
 
 /*
- * JEDES ZIEL HIER MUSS ÖFFENTLICH SEIN — diese Seite ist indexierbar und
- * bekommt organischen Verkehr. Drei der ursprünglich vier Karten zeigten in
- * den noindex-Landing-Bereich (/pages/das-20-tage-versprechen,
+ * ZWEIFEL — eine Frage, eine Antwort, jede Antwort ISOLIERT verständlich.
+ *
+ * Diese Liste ist zugleich die Quelle des FAQPage-Schemas in
+ * app/routes/pages.wirkt-das.jsx: Frage und Antwort sind dieselben Strings,
+ * die hier gerendert werden. Eine Frage im Schema, die auf der Seite nicht
+ * steht, wäre ein Regelverstoß — deshalb gibt es keine zweite Textfassung.
+ *
+ * `schemaAntwort` ist deshalb KEINE Zweitfassung, sondern die Reinschrift der
+ * Antworten, die im sichtbaren Text JSX enthalten (Links). Sie trägt dieselben
+ * Sätze ohne Markup. Wer den sichtbaren Text ändert, zieht sie im selben
+ * Commit nach.
+ */
+const ZWEIFEL = [
+  {
+    frage: 'Sind die Qi-Blanco-Studien Studien an Menschen?',
+    antwort:
+      'Nein. Vier der fünf Arbeiten sind In-vitro-Studien an Zellkulturen, die fünfte wertet freiwillige Erfahrungsberichte aus. Eine randomisierte Studie am Menschen gibt es zu den Qi-Blanco-Geräten nicht.',
+  },
+  {
+    frage: 'Wer hat die Qi-Blanco-Studien gemacht — und wer hat sie bezahlt?',
+    antwort:
+      'Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut hat alle fünf Arbeiten durchgeführt. Bezahlt hat sie Qi Blanco, und Qi Blanco hat die Geräte gestellt. Das steht auch in den Publikationen.',
+  },
+  {
+    frage: 'Gibt es eine unabhängige Wiederholung der Qi-Blanco-Studien?',
+    antwort:
+      'Nein. Ein zweites, nicht von uns bezahltes Labor hat die Zellversuche bisher nicht wiederholt. Das ist die größte offene Stelle der Datenlage, und sie liegt bei uns.',
+  },
+  {
+    frage: 'Ist der Wirkmechanismus wissenschaftlich anerkannt?',
+    antwort:
+      'Nein. Die fünf Publikationen kennzeichnen ihre Erklärung selbst als Hypothese. Die Messergebnisse hängen nicht von ihr ab: gemessen wurde, was in den Zellen passiert ist, nicht warum.',
+  },
+  {
+    frage: 'Heißt „im Labor gemessen“, dass ich etwas merken werde?',
+    antwort:
+      'Nein. Aus einem Effekt an Zellen in der Laborschale folgt keine Aussage darüber, wie es dir mit dem Gerät geht. Die einzige Arbeit mit Menschen ist eine Auswertung von 171 freiwilligen Berichten — ohne Kontrollgruppe, ohne Verblindung.',
+  },
+  {
+    frage: 'Warum steht bei Qi Blanco überall „in vitro“?',
+    antwort:
+      '„In vitro“ ist der Fachausdruck für „in der Laborschale“. Er bezeichnet die Evidenzstufe der fünf Arbeiten genau: gemessen an Zellen, nicht an Menschen.',
+  },
+  {
+    frage: 'Was wäre der nächste echte Schritt für den Beleg?',
+    antwort:
+      'Eine kontrollierte Studie am Menschen, und eine Wiederholung der Zellversuche durch ein Labor, das nicht von Qi Blanco bezahlt wird. Beides steht aus.',
+  },
+  {
+    frage: 'Kann ich die Original-Publikationen selbst lesen?',
+    antwort: (
+      <>
+        Ja. Alle fünf Arbeiten liegen als PDF offen — mit Methode, Zahlen und
+        den Grenzen, die die Autoren selbst benennen.{' '}
+        <a href="/pages/studien">Zu den Studien</a>
+      </>
+    ),
+    schemaAntwort:
+      'Ja. Alle fünf Arbeiten liegen als PDF offen — mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen. Sie stehen auf der Seite /pages/studien.',
+  },
+  {
+    frage: 'Und wenn mich das alles nicht überzeugt?',
+    antwort:
+      'Dann ist das eine vernünftige Reaktion auf diese Evidenzstufe. Du musst uns nichts glauben — du kannst das Gerät 20 Tage lang an dir selbst prüfen und ohne Angabe von Gründen zurückgeben.',
+  },
+];
+
+/** Die Q&A-Paare in der Form, die app/lib/faq-schema.js erwartet. Quelle ist
+ *  ausschließlich ZWEIFEL — keine eigene Textfassung. */
+export const WIRKT_DAS_SCHEMA_ITEMS = () =>
+  ZWEIFEL.map((z) => ({
+    q: z.frage,
+    a: z.schemaAntwort ?? z.antwort,
+  }));
+
+/*
+ * JEDES ZIEL HIER MUSS ÖFFENTLICH SEIN — die Karten führen aus einer Seite
+ * heraus, deren Zweck „selbst prüfen" ist. Drei der ursprünglich vier Karten
+ * zeigten in den noindex-Landing-Bereich (/pages/das-20-tage-versprechen,
  * /pages/zellstudien-ehrlich, /pages/so-wirkt-kohaerentes-wasser). Diese
  * Fläche trägt ihre Aussagekraft aus genau einer Bedingung: dorthin führt
  * kein öffentlicher Link, deshalb IST Bewegung dort Ads-Verkehr. Ein Link
  * kostet nicht die verlinkte Seite, sondern die Zahlen der ganzen Fläche —
  * live gemessen am 2026-08-26, drei von damals 17 Verweisen.
  *
- * ZWEI KARTEN SIND DESHALB WEGGEFALLEN, und beide waren mit dem eigenen
- * Seiteninhalt ohnehin doppelt:
- *   „So funktionieren die 20 Tage" — die Zusage steht wörtlich im FAQ dieser
- *       Seite („20 Tage lang an sich selbst prüfen und ohne Angabe von
- *       Gründen zurückgeben").
- *   „Jede Studie mit ihrer Grenze" — die Einschränkungen stehen als eigener
- *       Abschnitt („Vier Dinge, die dagegen sprechen") auf dieser Seite.
- * Die dritte ist umgebogen auf die öffentliche Themenseite. Der Ausgang der
- * Seite bleibt damit „selbst prüfen", nur ohne Tür in den Paid-Funnel.
+ * DIE DRITTE KARTE IST IN FASSUNG 2 DAZUGEKOMMEN und ist eine eigene
+ * QUELLENKLASSE, kein weiterer eigener Text: /pages/erfahrungen trägt seit dem
+ * 2026-09-11 dreizehn namentliche Menschen mit eigenem Video, maschinenlesbar
+ * ausgezeichnet (app/lib/erfahrungen-schema.js: VideoObject je Video, Person
+ * je Mensch). Eine Praxisstimme belegt etwas anderes als eine Produktseite,
+ * und genau das muss auch eine Maschine unterscheiden können. Die Seite ist
+ * öffentlich und indexiert; die Bedingung oben ist damit gewahrt.
  */
 const WEITER = [
   {
@@ -322,6 +405,12 @@ const WEITER = [
     text: 'Jede Publikation mit Eckdaten, Zahlen und PDF zum Nachlesen.',
     href: '/pages/studien',
     cta: 'Zu den Studien',
+  },
+  {
+    titel: 'Menschen, die es benutzen',
+    text: 'Dreizehn namentliche Erfahrungsberichte im eigenen Video — Einzelstimmen, keine Studie.',
+    href: '/pages/erfahrungen',
+    cta: 'Erfahrungen ansehen',
   },
   {
     titel: 'Das Modell dahinter',
@@ -340,14 +429,13 @@ export function MmWirktDas() {
         headline="Wirkt das überhaupt?"
         sub={
           <>
-            Häufiger als jede Frage nach Größe, Preis oder Versand. Sie verdient
-            keine Broschüre, sondern eine Antwort.{' '}
+            Häufiger als jede Frage nach Größe, Preis oder Versand.{' '}
             <strong>
-              Die kurze Fassung: Ja, es ist etwas gemessen worden — im Labor, an
+              Die kurze Antwort: Ja, es ist etwas gemessen worden — im Labor, an
               Zellkulturen. Nein, es gibt keinen Nachweis am Menschen.
             </strong>{' '}
-            Alles Weitere auf dieser Seite ist die lange Fassung davon, mit
-            Zahlen und mit den Stellen, an denen unsere Belege schwach sind.
+            Darunter stehen die Zahlen dazu, die vier Grenzen dieser Datenlage
+            und die Original-Publikationen zum Nachlesen.
           </>
         }
         media={{
@@ -361,7 +449,7 @@ export function MmWirktDas() {
         dataSection="gemessen"
         eyebrow="Abschnitt 1"
         title="Was tatsächlich gemessen wurde"
-        intro="Es gibt fünf veröffentlichte Arbeiten zu unseren Geräten. Vier davon sind In-vitro-Studien: Zellen in einer Laborschale, nicht im Körper. Die fünfte wertet aus, was Anwender von sich aus berichtet haben. Vier Beispiele, so genau, wie die Originale es hergeben:"
+        intro="Zu den Qi-Blanco-Geräten gibt es fünf veröffentlichte Arbeiten. Vier davon sind In-vitro-Studien: Zellen in einer Laborschale, nicht im Körper. Die fünfte wertet aus, was Anwender von sich aus berichtet haben. Vier Beispiele, so genau, wie die Originale es hergeben — je mit Quelle, Befund und der Stelle, an der die Messung endet:"
         studien={STUDIEN}
         mehrHref="/pages/studien"
         mehrLabel="Die Studien im Überblick"
@@ -372,7 +460,7 @@ export function MmWirktDas() {
         variante="flaeche"
         eyebrow="Zum Selbstnachlesen"
         title="Die fünf Arbeiten im Original"
-        intro="Alle fünf sind veröffentlicht und liegen als PDF frei zugänglich. Jede Titelseite führt direkt zur Publikation — mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen."
+        intro="Alle fünf Publikationen zu den Qi-Blanco-Geräten sind veröffentlicht und liegen als PDF frei zugänglich. Jede Titelseite führt direkt zur Publikation — mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen."
         belege={BELEGE}
         note="Die Deckblätter sind eigene Montagen aus Journal-Titel und einer Seite der jeweiligen Arbeit — keine Scans der Originalhefte. Die verlinkten PDFs sind die Publikationen selbst."
       />
@@ -380,8 +468,8 @@ export function MmWirktDas() {
       <MmProblem
         dataSection="grenzen"
         eyebrow="Abschnitt 2"
-        title="Und was wir nicht wissen"
-        text="Diese Seite wäre wertlos, wenn sie hier aufhörte. Also die andere Hälfte — vier Punkte, die jeder findet, der genau hinsieht. Wir nennen sie lieber selbst:"
+        title="Was diese Belege nicht zeigen"
+        text="Vier Punkte schränken die fünf Arbeiten ein. Jeder davon ist in den Publikationen nachlesbar:"
         punkte={GRENZEN}
       />
 
@@ -393,7 +481,7 @@ export function MmWirktDas() {
         heightVhMobile={160}
         overlayStart={{
           titel: 'So ist es gedacht',
-          text: 'Scrollen Sie: der Aufbau im Inneren.',
+          text: 'Scroll weiter: der Aufbau im Inneren.',
         }}
         overlayEnd={[
           {
@@ -408,15 +496,15 @@ export function MmWirktDas() {
         dataSection="leiter"
         variante="flaeche"
         eyebrow="Abschnitt 3"
-        title="Wo das auf der Beweisleiter steht"
-        intro="Forschung läuft in Stufen. Es hilft zu wissen, auf welcher wir stehen — von der Laborschale bis zur Zusammenfassung mehrerer unabhängiger Studien am Menschen."
+        title="Wo die Qi-Blanco-Studien auf der Beweisleiter stehen"
+        intro="Forschung läuft in Stufen — von der Laborschale bis zur Zusammenfassung mehrerer unabhängiger Studien am Menschen. Die fünf Arbeiten zu den Qi-Blanco-Geräten stehen auf der ersten:"
         schritte={LEITER}
-        note="Wir stehen auf der ersten Stufe. Das ist mehr als nichts — und es ist der früheste Punkt der Kette. Niemand sollte ihn als Beleg für eine Wirkung an Ihnen lesen."
+        note="Stufe 1 von 4 ist mehr als nichts — und es ist der früheste Punkt der Kette. Ein Beleg für eine Wirkung bei dir ist sie nicht."
       />
 
       <MmFaq
         dataSection="zweifel"
-        title="Was Sie sich jetzt vermutlich fragen"
+        title="Neun Fragen zur Beleglage, einzeln beantwortet"
         items={ZWEIFEL}
       />
 
@@ -424,18 +512,18 @@ export function MmWirktDas() {
         dataSection="risiko"
         variante="dunkel"
         ring="20"
-        title="Der einzige Beleg, der für Sie zählt"
-        text="Alles auf dieser Seite ist im Labor entstanden. Der einzige Beleg, der Ihre Frage wirklich beantwortet, entsteht woanders — bei Ihnen. Deshalb haben Sie 20 Tage ab Erhalt."
+        title="Der einzige Beleg, der für dich zählt"
+        text="Die fünf Arbeiten sind im Labor entstanden. Der Beleg, der deine Frage wirklich beantwortet, entsteht woanders — bei dir. Deshalb hast du 20 Tage ab Erhalt."
         punkte={[
           'Kein Grund nötig, keine Bedingung, die am Spüren hängt.',
-          'Überzeugt es Sie nicht, bekommen Sie Ihr Geld zurück.',
-          'Solange die Belege dort stehen, wo sie stehen, tragen wir das Risiko — nicht Sie.',
+          'Überzeugt es dich nicht, bekommst du dein Geld zurück.',
+          'Solange die Belege dort stehen, wo sie stehen, tragen wir das Risiko — nicht du.',
         ]}
       />
 
       <MmFunnel
         dataSection="weiter"
-        title="Wenn Sie selbst nachsehen wollen"
+        title="Wenn du selbst nachsehen willst"
         links={WEITER}
       />
     </MmPage>

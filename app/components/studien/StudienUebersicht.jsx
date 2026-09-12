@@ -33,6 +33,12 @@ import {
   untersuchteProdukte,
   zahlwort,
 } from '~/data/studien';
+import {
+  EVIDENZSTUFE_TITEL,
+  EVIDENZSTUFE_ANTWORT,
+  EVIDENZSTUFE_ECKDATEN,
+  EVIDENZSTUFE_FRAGEN,
+} from '~/data/studien-evidenzstufe';
 
 /** Bestands-Idiom (reusables/useDragSwipe.js, campaign/SchlafZellenSchutzV3.jsx,
  * index-components/ReputonWidget.jsx) — hier wiederverwendet, nicht neu erfunden. */
@@ -330,6 +336,8 @@ export function StudienUebersicht() {
           </div>
         </header>
 
+        <Evidenzstufe />
+
         <section className="qb-st-sektion" id="studien" aria-labelledby="studien-titel">
           <h2 id="studien-titel">Die {anzahl} Publikationen</h2>
           <p className="qb-st-sektion-intro">
@@ -476,6 +484,62 @@ export function StudienUebersicht() {
         </div>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * EVIDENZSTUFE — der Abschnitt, der diese Seite zitierfähig macht.
+ *
+ * WARUM ER HIER STEHT UND NICHT AUF EINER EIGENEN SEITE: über alle je
+ * gemessenen Läufe zitiert Googles KI-Antwort 43 eigene Quellen, und ALLE 43
+ * zeigen auf /pages/studien oder /pages/studie-* (Segment s03 des Großjobs
+ * 20260911-GROSSJOB-googles-ki-antwort-zitiert-null-eigene-quellen). Das ist
+ * die eine Fläche, auf der Google uns liest — und sie nannte ihre Evidenzstufe
+ * bis hierher null mal, während die Detailseiten sie 5–14x nennen.
+ *
+ * ADDITIV UND SONST NICHTS: Titel, Beschreibung, H1 und URL dieser Seite
+ * bleiben unverändert (Platz 1 für „Qi Blanco Studien", seo.db 2026-W33).
+ *
+ * AUSSCHLIESSLICH BESTANDS-KLASSEN, KEINE NEUE CSS-ZEILE: qb-st-sektion,
+ * qb-st-antwort-text, qb-st-eckdaten/-eckdatum und qb-st-liste existieren
+ * sämtlich in app/styles/studien.css und tragen dort die Typo-, Abstands- und
+ * Farbtokens der Seite. Ein eigener Block hätte einen zweiten Satz Werte
+ * eingeführt, und genau das ist der Fehler, gegen den die Design-Pflicht
+ * gebaut ist.
+ *
+ * DER TEXT STEHT IN app/data/studien-evidenzstufe.js, WEIL IHN ZWEI STELLEN
+ * BRAUCHEN: diese Komponente rendert ihn, und app/routes/pages.studien.jsx
+ * baut daraus das FAQPage-Schema. Zwei Textfassungen wären zwei Stellen, die
+ * denselben Zustand führen.
+ */
+function Evidenzstufe() {
+  return (
+    <section
+      className="qb-st-sektion"
+      id="evidenzstufe"
+      aria-labelledby="evidenzstufe-titel"
+    >
+      <h2 id="evidenzstufe-titel">{EVIDENZSTUFE_TITEL}</h2>
+      <p className="qb-st-antwort-text">{EVIDENZSTUFE_ANTWORT}</p>
+
+      <dl className="qb-st-eckdaten">
+        {EVIDENZSTUFE_ECKDATEN.map((e) => (
+          <div className="qb-st-eckdatum" key={e.label}>
+            <dt>{e.label}</dt>
+            <dd>{e.text}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="qb-st-liste">
+        {EVIDENZSTUFE_FRAGEN.map((f) => (
+          <div key={f.frage}>
+            <h3>{f.frage}</h3>
+            <p className="qb-st-karte-text">{f.antwort}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
