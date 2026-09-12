@@ -1,11 +1,19 @@
 import {canonicalLink} from '~/lib/seo';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {seitenSignale} from '~/lib/seiten-seo';
 
-export const meta = () => [
-  {title: 'Datenschutzerklärung | Qi Blanco'},
-  {name: 'description', content: 'Datenschutzerklärung der Qi Blanco UG (haftungsbeschränkt)'},
-  canonicalLink('/pages/datenschutz'),
-];
+export const meta = () => {
+  const titel = 'Datenschutzerklärung | Qi Blanco';
+  return [
+    {title: titel},
+    {name: 'description', content: 'Datenschutzerklärung der Qi Blanco UG (haftungsbeschränkt)'},
+    canonicalLink('/pages/datenschutz'),
+    ...seitenSignale({
+      pfad: '/pages/datenschutz',
+      titel,
+    }),
+  ];
+};
 
 export function loader() {
   return {};

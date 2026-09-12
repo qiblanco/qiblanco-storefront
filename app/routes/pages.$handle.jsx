@@ -10,6 +10,7 @@ import {
   noindexMeta,
 } from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -52,10 +53,31 @@ export const meta = ({data, params}) => {
   // sein. `params.handle` ist der Wert, unter dem Shopify die Seite führt —
   // damit zeigt der canonical immer auf die eine kanonische Fassung, auch wenn
   // die Seite über einen Alias erreicht wurde.
+  //
+  // OPEN GRAPH UND STRUKTURIERTE DATEN STEHEN IM SELBEN `else`-ZWEIG WIE DER
+  // CANONICAL, UND ZWAR AUS DEMSELBEN GRUND: eine Seite, die nicht in den
+  // Index soll, braucht kein Werbematerial für das Teilen. Ein og:image auf
+  // einer noindex-Seite ist kein Schaden, aber es ist eine Zusage über eine
+  // Seite, die wir gerade unsichtbar machen wollen — und ein `twitter:card`
+  // daneben lädt genau dazu ein, sie doch zu verbreiten. Die Regel ist
+  // dieselbe wie oben: ENTWEDER noindex ODER Sichtbarkeits-Signale.
+  //
+  // Die Beschreibung wird dem Helfer ROH übergeben (derselbe Shopify-Wert
+  // wie oben an `beschreibungTags`), nicht der bereits aufgelöste Text: der
+  // Helfer wendet DIESELBE Funktion an und kann damit gar nicht auf einen
+  // anderen Text kommen als das `name=description` darüber.
   if (istNichtIndexierbar(params?.handle)) {
     tags.push(noindexMeta());
   } else if (params?.handle) {
-    tags.push(canonicalLink(`/pages/${params.handle}`));
+    const pfad = `/pages/${params.handle}`;
+    tags.push(canonicalLink(pfad));
+    tags.push(
+      ...seitenSignale({
+        pfad,
+        titel: tags[0]?.title,
+        beschreibung: data?.page?.seo?.description,
+      }),
+    );
   }
   return tags;
 };

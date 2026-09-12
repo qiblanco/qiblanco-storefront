@@ -3,15 +3,22 @@ import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {KakaoKurs} from '~/components/kurse/KakaoKurs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
   return [
-    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    {title: titel},
     ...beschreibungTags('/pages/zeremonie-kakao-kurs', data?.page?.seo?.description),
     canonicalLink('/pages/zeremonie-kakao-kurs'),
+    ...seitenSignale({
+      pfad: '/pages/zeremonie-kakao-kurs',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

@@ -4,6 +4,7 @@ import {ladeSeite} from '~/lib/podcast-daten.server';
 import {CANONICAL_ORIGIN, canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import podcastStyles from '~/styles/podcasts.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 /**
  * /pages/podcasts — Seite 1 des Podcast-Index (Job 20260814-podcast-sektion-
@@ -58,6 +59,7 @@ export const meta = ({data}) => {
     {title: TITEL},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink('/pages/podcasts'),
+    ...teilbildTags('/pages/podcasts'),
     {property: 'og:title', content: TITEL},
     {property: 'og:description', content: BESCHREIBUNG},
     {property: 'og:type', content: 'website'},

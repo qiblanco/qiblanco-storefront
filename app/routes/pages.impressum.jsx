@@ -1,11 +1,19 @@
 import {canonicalLink} from '~/lib/seo';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {seitenSignale} from '~/lib/seiten-seo';
 
-export const meta = () => [
-  {title: 'Impressum | Qi Blanco'},
-  {name: 'description', content: 'Impressum der Qi Blanco UG (haftungsbeschränkt)'},
-  canonicalLink('/pages/impressum'),
-];
+export const meta = () => {
+  const titel = 'Impressum | Qi Blanco';
+  return [
+    {title: titel},
+    {name: 'description', content: 'Impressum der Qi Blanco UG (haftungsbeschränkt)'},
+    canonicalLink('/pages/impressum'),
+    ...seitenSignale({
+      pfad: '/pages/impressum',
+      titel,
+    }),
+  ];
+};
 
 export function loader() {
   return {};

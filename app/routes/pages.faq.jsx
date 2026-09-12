@@ -3,6 +3,7 @@ import {FAQ_ALLE} from '~/data/faq-seite';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import faqStyles from '~/styles/faq.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/faq';
 
@@ -59,6 +60,7 @@ export const meta = () => {
     {title: `${TITEL} | Qi Blanco`},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink(PFAD),
+    ...teilbildTags(PFAD),
     {property: 'og:type', content: 'website'},
     {property: 'og:title', content: TITEL},
     {property: 'og:description', content: BESCHREIBUNG},

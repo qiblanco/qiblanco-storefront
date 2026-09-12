@@ -3,6 +3,7 @@ import {ABSICHT, ABSENDER} from '~/data/absicht';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {ORGANISATION, ORG_ID, SITE_ID, MARKEN_PROFILE} from '~/lib/entity-schema';
 import absichtStyles from '~/styles/absicht.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 /**
  * /pages/warum-qi-blanco — DIE ABSICHT. LIVE UND AUSDRÜCKLICH CRAWLBAR.
@@ -174,6 +175,7 @@ export const meta = () => [
   // zitiert, wertet JSON-LD aus.
   {name: 'author', content: ABSENDER.name},
   canonicalLink(PFAD),
+  ...teilbildTags(PFAD),
   {property: 'og:type', content: 'article'},
   {property: 'og:site_name', content: 'Qi Blanco'},
   {property: 'og:locale', content: 'de_DE'},

@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {QiBracelet} from '~/components/index-components/detailseiten/QiBracelet';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /*
  * /pages/qibracelet-details — oeffentliche Detailseite QiBracelet
@@ -24,9 +25,14 @@ import {canonicalLink} from '~/lib/seo';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = () => {
+  const titel = 'QiBracelet\u00AE im Detail | Qi Blanco';
   return [
-    {title: 'QiBracelet\u00AE im Detail | Qi Blanco'},
+    {title: titel},
     canonicalLink('/pages/qibracelet-details'),
+    ...seitenSignale({
+      pfad: '/pages/qibracelet-details',
+      titel,
+    }),
   ];
 };
 

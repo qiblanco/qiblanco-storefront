@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import { Kakao } from '~/components/product-pages/Kakao';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -30,9 +31,19 @@ export const meta = ({data}) => {
   // ausgeliefert und der Descriptor bleibt folgenlos, und fällt sie weg, ist
   // die Seite wieder ihre eigene kanonische Fassung.
   const roh = data?.page?.seo?.title || data?.page?.title || '';
+  const titel = roh ? `${roh} | Qi Blanco` : 'Qi Blanco';
   return [
-    {title: roh ? `${roh} | Qi Blanco` : 'Qi Blanco'},
+    {title: titel},
     canonicalLink('/pages/kristall-kakao'),
+    // MIT DEMSELBEN ARGUMENT WIE DER CANONICAL DARUEBER: solange die 301
+    // steht, wird hier nichts ausgeliefert und die Signale bleiben folgenlos
+    // — fällt sie weg, ist die Seite sofort wieder live, und dann wäre sie
+    // ohne Teilbild wieder genau der Zustand, den dieser Bau beseitigt.
+    ...seitenSignale({
+      pfad: '/pages/kristall-kakao',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

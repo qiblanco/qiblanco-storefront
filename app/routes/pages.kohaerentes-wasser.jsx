@@ -3,12 +3,19 @@ import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 export const meta = ({data}) => {
+  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
   return [
-    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    {title: titel},
     ...beschreibungTags('/pages/kohaerentes-wasser', data?.page?.seo?.description),
     canonicalLink('/pages/kohaerentes-wasser'),
+    ...seitenSignale({
+      pfad: '/pages/kohaerentes-wasser',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

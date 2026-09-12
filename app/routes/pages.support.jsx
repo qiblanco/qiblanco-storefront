@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {data} from '@shopify/remix-oxygen';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
  * TITEL UND BESCHREIBUNG GESCHÄRFT AM 2026-09-02 (Grossjob-Segment s04) — und
@@ -24,17 +25,24 @@ import {canonicalLink} from '~/lib/seo';
  * Flanken"). Sie hier im Vorbeigehen zu heilen wäre bequem und nicht meine
  * Entscheidung.
  */
-export const meta = () => [
-  {title: 'Kontakt & Hilfe | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Schreib uns direkt — wir antworten dir persönlich. Kontaktformular für Fragen zu ' +
-      'Bestellung, Größe und Rückgabe. Die häufigsten Fragen beantworten wir gebündelt ' +
-      'unter „Häufige Fragen".',
-  },
-  canonicalLink('/pages/support'),
-];
+export const meta = () => {
+  const titel = 'Kontakt & Hilfe | Qi Blanco';
+  return [
+    {title: titel},
+    {
+      name: 'description',
+      content:
+        'Schreib uns direkt — wir antworten dir persönlich. Kontaktformular für Fragen zu ' +
+        'Bestellung, Größe und Rückgabe. Die häufigsten Fragen beantworten wir gebündelt ' +
+        'unter „Häufige Fragen".',
+    },
+    canonicalLink('/pages/support'),
+    ...seitenSignale({
+      pfad: '/pages/support',
+      titel,
+    }),
+  ];
+};
 
 export function loader() {
   return {};

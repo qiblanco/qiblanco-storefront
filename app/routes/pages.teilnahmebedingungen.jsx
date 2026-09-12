@@ -1,15 +1,23 @@
 import {canonicalLink} from '~/lib/seo';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {seitenSignale} from '~/lib/seiten-seo';
 
-export const meta = () => [
-  {title: 'Teilnahmebedingungen | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Teilnahmebedingungen für die Gewinnspiele der Qi Blanco UG (haftungsbeschränkt)',
-  },
-  canonicalLink('/pages/teilnahmebedingungen'),
-];
+export const meta = () => {
+  const titel = 'Teilnahmebedingungen | Qi Blanco';
+  return [
+    {title: titel},
+    {
+      name: 'description',
+      content:
+        'Teilnahmebedingungen für die Gewinnspiele der Qi Blanco UG (haftungsbeschränkt)',
+    },
+    canonicalLink('/pages/teilnahmebedingungen'),
+    ...seitenSignale({
+      pfad: '/pages/teilnahmebedingungen',
+      titel,
+    }),
+  ];
+};
 
 export function loader() {
   return {};

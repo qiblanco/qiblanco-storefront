@@ -5,16 +5,23 @@ import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {loadCourseProducts} from '~/lib/course-products';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import qioneZellschutzStyles from '~/styles/qione-zellschutz.css?url';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 export function links() {
   return [{rel: 'stylesheet', href: qioneZellschutzStyles}];
 }
 
 export const meta = ({data}) => {
+  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
   return [
-    {title: `Qi Blanco | ${data?.page.title ?? ''}`},
+    {title: titel},
     ...beschreibungTags('/pages/intuition-erfahren', data?.page?.seo?.description),
     canonicalLink('/pages/intuition-erfahren'),
+    ...seitenSignale({
+      pfad: '/pages/intuition-erfahren',
+      titel,
+      beschreibung: data?.page?.seo?.description,
+    }),
   ];
 };
 

@@ -8,6 +8,7 @@ import {
 } from '~/components/studien/StudienUebersicht';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
+import {teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/studien';
 
@@ -36,6 +37,7 @@ export const meta = () => [
       'Wissenschaftlich getestet und in Fachpublikationen bestätigt. Zellstudien zur Wirkung des QiOne® 2 Pro auf Immunzellen, Darmzellen und oxidativen Stress.',
   },
   canonicalLink(PFAD),
+  ...teilbildTags(PFAD),
   {property: 'og:type', content: 'website'},
   {property: 'og:title', content: 'Wissenschaftliche Studien | Qi Blanco'},
   {
