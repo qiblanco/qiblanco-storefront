@@ -102,7 +102,7 @@ const FAQ = [
   {
     frage: 'Ist das ein Medizinprodukt?',
     antwort:
-      'Nein. Der QiOne 2 Pro ist kein Medizinprodukt, und wir machen keine Heilversprechen. Wir erklären nur, was passiert, und sagen dazu, was belegt ist und was ein Modell ist.',
+      'Nein. Der QiOne 2 Pro ist kein Medizinprodukt, und wir machen keine Heilversprechen. Belegt sind Effekte in Zellkulturen; alles darüber hinaus ist ein Modell.',
   },
   {
     frage: 'Muss ich etwas spüren, damit es wirkt?',
