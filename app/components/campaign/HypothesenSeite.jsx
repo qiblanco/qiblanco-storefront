@@ -58,7 +58,7 @@ export function HypothesenSeite() {
   return (
     <div className="hyp">
       {/* ---------------------------------------------------------------- 1 */}
-      <section className="hyp__kopf">
+      <section className="hyp__kopf" data-section="hyp-kopf">
         <div className="hyp__inhalt">
           <p className="hyp__vorspann">Qi Blanco – unsere Hypothesen</p>
           <h1>Unser Wirkmodell, mit Stärken und Schwächen</h1>
@@ -99,7 +99,7 @@ export function HypothesenSeite() {
           ER SCHWAECHT DIE Schwächen NICHT AB. Das persönliche Wort steht
           NEBEN der Gegen-Seite, nicht vor ihr: wer zwanzig Jahre an einer
           Brücke baut, weiß, wo sie noch nicht trägt. */}
-      <section className="hyp__absicht">
+      <section className="hyp__absicht" data-section="hyp-absicht">
         <div className="hyp__inhalt">
           <p className="hyp__vorspann">Die Absicht dahinter</p>
           <h2>Warum ich an dieser Frage arbeite</h2>
@@ -122,7 +122,7 @@ export function HypothesenSeite() {
       </section>
 
       {/* -------------------------------------------------------- Geschichte */}
-      <section className="hyp__geschichte">
+      <section className="hyp__geschichte" data-section="hyp-geschichte">
         <div className="hyp__inhalt">
           <p className="hyp__vorspann">{GESCHICHTE.vorspann}</p>
           <h2>{GESCHICHTE.titel}</h2>
@@ -144,7 +144,7 @@ export function HypothesenSeite() {
       </section>
 
       {/* --------------------------------------------------------- Hypothesen */}
-      <section>
+      <section data-section="hyp-hypothesen">
         <div className="hyp__inhalt">
           <h2>Die sechs Hypothesen</h2>
           <p className="hyp__einleitung">
@@ -200,7 +200,7 @@ export function HypothesenSeite() {
       </section>
 
       {/* -------------------------------------------------------------- Kette */}
-      <section className="hyp__kette">
+      <section className="hyp__kette" data-section="hyp-kette">
         <div className="hyp__inhalt">
           <h2>{KETTE.titel}</h2>
           {KETTE.absaetze.map((p) => (
@@ -216,7 +216,7 @@ export function HypothesenSeite() {
       </section>
 
       {/* ------------------------------------------------------------- Videos */}
-      <section className="hyp__videos">
+      <section className="hyp__videos" data-section="hyp-videos">
         <div className="hyp__inhalt">
           <h2>Die Vorträge dazu, im Original</h2>
           <p className="hyp__einleitung">
@@ -280,7 +280,7 @@ export function HypothesenSeite() {
       </section>
 
       {/* ------------------------------------------------------------ Quellen */}
-      <section className="hyp__quellen" id="quellen">
+      <section className="hyp__quellen" id="quellen" data-section="hyp-quellen">
         <div className="hyp__inhalt">
           <h2>Alle Quellen, je mit ihrer Reichweite</h2>
           <p className="hyp__einleitung">
@@ -335,7 +335,7 @@ export function HypothesenSeite() {
       </section>
 
       {/* -------------------------------------------------------- Bewusstsein */}
-      <section className="hyp__bewusstsein">
+      <section className="hyp__bewusstsein" data-section="hyp-bewusstsein">
         <div className="hyp__inhalt">
           <p className="hyp__vorspann">{BEWUSSTSEIN.vorspann}</p>
           <h2>{BEWUSSTSEIN.titel}</h2>

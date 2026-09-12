@@ -48,7 +48,7 @@ const WEITERLESEN = [
 export function AbsichtSeite() {
   return (
     <div className="ab">
-      <section className="ab-bahn ab-kopf">
+      <section className="ab-bahn ab-kopf" data-section="ab-kopf">
         <div className="ab-inhalt">
           <p className="ab-vorspann">{ABSICHT.vorspann}</p>
           <h1 className="ab-h1">{ABSICHT.titel}</h1>
@@ -56,10 +56,10 @@ export function AbsichtSeite() {
         </div>
       </section>
 
-      <div className="ab-inhalt">
+      <div className="ab-inhalt" data-section="ab-text">
         <AbsichtText ebene={2} />
 
-        <div className="ab-teil">
+        <div className="ab-teil" data-section="ab-weiter">
           <div className="ab-unterschrift">
             <p className="ab-unterschrift-name">{ABSENDER.name}</p>
             <p className="ab-unterschrift-rolle">{ABSENDER.rolle}</p>

@@ -38,7 +38,7 @@ export function ErfahrungenSeite() {
 
   return (
     <div className="erf">
-      <section className="erf__kopf">
+      <section className="erf__kopf" data-section="erf-kopf">
         <div className="erf__schmal">
           <h1>Was Menschen mit Qi Blanco erlebt haben</h1>
           <p className="erf__lead">
@@ -70,7 +70,7 @@ export function ErfahrungenSeite() {
         </div>
       </section>
 
-      <section>
+      <section data-section="erf-deutsch">
         <div className="erf__mitte">
           <h2>Auf Deutsch</h2>
           <p>
@@ -81,7 +81,7 @@ export function ErfahrungenSeite() {
         </div>
       </section>
 
-      <section>
+      <section data-section="erf-english">
         <div className="erf__mitte">
           <h2>In English</h2>
           <p>
@@ -94,13 +94,13 @@ export function ErfahrungenSeite() {
 
       {/* Der Verweis auf die Absicht — nach den Erfahrungen anderer die
           Frage, warum es das Ganze überhaupt gibt. */}
-      <section>
+      <section data-section="erf-absicht">
         <div className="erf__schmal">
           <AbsichtHinweis einleitung="Und warum es das alles gibt:" />
         </div>
       </section>
 
-      <section className="erf__abschluss">
+      <section className="erf__abschluss" data-section="erf-abschluss">
         <div className="erf__schmal">
           <h2>Worum es geht</h2>
           <p>

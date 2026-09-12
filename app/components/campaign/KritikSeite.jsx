@@ -143,7 +143,7 @@ function Belegbild({studie, bildKey, einordnung}) {
 export function KritikSeite() {
   return (
     <div className="krit">
-      <section className="krit__kopf">
+      <section className="krit__kopf" data-section="krit-kopf">
         <div className="krit__inhalt">
           <p className="krit__vorspann">Belege und offene Fragen</p>
           <h1>
@@ -174,7 +174,7 @@ export function KritikSeite() {
         </div>
       </section>
 
-      <section>
+      <section data-section="krit-fragen">
         <div className="krit__inhalt">
           <h2>Die sieben Fragen, der Reihe nach</h2>
           <p className="krit__einleitung">
@@ -201,7 +201,7 @@ export function KritikSeite() {
         </div>
       </section>
 
-      <section className="krit__einraeumen">
+      <section className="krit__einraeumen" data-section="krit-einraeumen">
         <div className="krit__inhalt">
           <h2>Was wir selbst einräumen</h2>
           <p className="krit__einleitung">
@@ -224,7 +224,7 @@ export function KritikSeite() {
         </div>
       </section>
 
-      <section>
+      <section data-section="krit-studien">
         <div className="krit__inhalt">
           <h2>Was in den Studien wirklich steht</h2>
           <p className="krit__einleitung">
@@ -262,13 +262,13 @@ export function KritikSeite() {
           beantwortet "was spricht dafür", der Verweis beantwortet "warum
           macht das ueberhaupt jemand". Zwei Fragen, zwei Flaechen — sie
           ineinanderzuschieben haette beide unscharf gemacht. */}
-      <section>
+      <section data-section="krit-absicht">
         <div className="krit__inhalt">
           <AbsichtHinweis einleitung="Warum wir trotz dieser offenen Fragen weitermachen:" />
         </div>
       </section>
 
-      <section className="krit__plusbereich">
+      <section className="krit__plusbereich" data-section="krit-plus">
         <div className="krit__inhalt">
           <h2>Was für uns spricht</h2>
           <p className="krit__einleitung">
@@ -291,7 +291,7 @@ export function KritikSeite() {
         </div>
       </section>
 
-      <section className="krit__abschluss">
+      <section className="krit__abschluss" data-section="krit-abschluss">
         <div className="krit__inhalt">
           <h2>Du musst uns nichts glauben</h2>
           <p>
