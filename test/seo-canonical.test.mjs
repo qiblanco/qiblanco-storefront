@@ -424,7 +424,7 @@ test('s04 NAHT: Kategorie- und Rechtstext-Routen setzen einen Selbst-canonical',
   // bis hierher stand hier EIN Regex auf den genauen Aufruf
   // `canonicalLink(\`/policies/${params.handle}\`)`. Die Route baut den Pfad
   // jetzt in eine Konstante, weil ihn seit diesem Job ZWEI Aufrufer brauchen
-  // (canonicalLink und seitenSignale) — derselbe Pfad zweimal getippt waere die
+  // (canonicalLink und seitenSignale) — derselbe Pfad zweimal getippt wäre die
   // Drift, gegen die dieser Test antritt. Der alte Regex war damit rot, obwohl
   // der Canonical unveraendert gesetzt wird: ein gepinnter WORTLAUT misst die
   // Schreibweise, nicht die Zusage. Gepruefert wird deshalb beides einzeln —

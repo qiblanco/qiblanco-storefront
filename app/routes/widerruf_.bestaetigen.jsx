@@ -18,23 +18,23 @@ const BESCHREIBUNG = 'Bestätigungsseite für den Online-Widerruf bei Qi Blanco.
  *
  * OFFENE FRAGE, DIE DIESER JOB BEWUSST NICHT ENTSCHEIDET: diese Seite ist eine
  * Formular-Bestaetigung, also nach dem Aufnahme-Kriterium in app/lib/seo.js
- * ("Klickziel, kein Suchziel") ein Kandidat fuer `noindex` -- dort stehen
- * bereits fuenf `*-anmeldung-erfolgreich`-Handles mit genau dieser Begruendung.
+ * ("Klickziel, kein Suchziel") ein Kandidat für `noindex` -- dort stehen
+ * bereits fünf `*-anmeldung-erfolgreich`-Handles mit genau dieser Begründung.
  * Der Unterschied ist, dass jene Shopify-Handles sind und diese eine eigene
  * Code-Route ist, die der Katchall nie erreicht. Die Entscheidung ist eine
- * Index-Hygiene-Frage mit Sitemap-Seite und gehoert nicht in einen Auftrag
- * ueber Auszeichnung; sie ist als eigener Befund gemeldet. Solange die Seite
- * indexierbar ist und einen Canonical traegt, ist die Auszeichnung die
- * konsistente Antwort -- eine halb ausgezeichnete indexierbare Seite waere in
+ * Index-Hygiene-Frage mit Sitemap-Seite und gehört nicht in einen Auftrag
+ * über Auszeichnung; sie ist als eigener Befund gemeldet. Solange die Seite
+ * indexierbar ist und einen Canonical trägt, ist die Auszeichnung die
+ * konsistente Antwort -- eine halb ausgezeichnete indexierbare Seite wäre in
  * keiner der beiden Welten richtig. *
  * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
- * Der Kopf jener Datei sagt, sie werde "ausschliesslich von den /pages-Routen"
+ * Der Kopf jener Datei sagt, sie werde "ausschließlich von den /pages-Routen"
  * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
- * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei ueber
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei über
  * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
- * fuer diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * für diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
  * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
- * alle 31 /pages-Routen in dieselbe Pruefung, also genau den Preis, vor dem der
+ * alle 31 /pages-Routen in dieselbe Prüfung, also genau den Preis, vor dem der
  * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
  */
 export const meta = () => [

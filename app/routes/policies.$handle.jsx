@@ -7,13 +7,13 @@ import {seitenSignale} from '~/lib/seiten-seo';
 /**
  * @type {MetaFunction<typeof loader>} *
  * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
- * Der Kopf jener Datei sagt, sie werde "ausschliesslich von den /pages-Routen"
+ * Der Kopf jener Datei sagt, sie werde "ausschließlich von den /pages-Routen"
  * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
- * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei ueber
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei über
  * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
- * fuer diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * für diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
  * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
- * alle 31 /pages-Routen in dieselbe Pruefung, also genau den Preis, vor dem der
+ * alle 31 /pages-Routen in dieselbe Prüfung, also genau den Preis, vor dem der
  * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
  */
 export const meta = ({data, params}) => {
@@ -40,7 +40,7 @@ export const meta = ({data, params}) => {
   // kanonisiert und geteilt werden. Bleibt die Shopify-Abfrage leer, wirft der
   // Loader 404 und es gibt ohnehin nichts zu indexieren.
   //
-  // DER RECHTSTEXT SELBST BLEIBT UNBERUEHRT -- hier wird der <head> ergaenzt.
+  // DER RECHTSTEXT SELBST BLEIBT UNBERUEHRT -- hier wird der <head> ergänzt.
   if (params?.handle) {
     const pfad = `/policies/${params.handle}`;
     tags.push(canonicalLink(pfad), ...seitenSignale({pfad, titel: vollerTitel}));

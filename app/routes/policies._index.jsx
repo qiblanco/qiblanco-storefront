@@ -13,24 +13,24 @@ const BESCHREIBUNG =
  * indexierbare-seiten-ohne-sitemap-und-ohne-auszeichnung-prio22).
  *
  * DIESE UEBERSICHT STAND IN KEINER SITEMAP und trug trotzdem kein `noindex` --
- * ein Crawler erreicht sie ueber die Fusszeile. Sie SOLL auffindbar sein: wer
+ * ein Crawler erreicht sie über die Fusszeile. Sie SOLL auffindbar sein: wer
  * den Widerruf sucht, soll die Uebersicht finden. Darum Canonical statt
  * noindex. Am 2026-09-12 fehlten ihr alle drei Signale, und zwar auf BEIDEN
  * Laeden gleich -- es war nie ein Einzelfall, sondern eine Luecke der
  * geteilten Routenklasse.
  *
  * Die Beschreibung stand schon hier und ist jetzt eine Konstante: sie versorgt
- * `name=description` und `og:description` aus EINER Quelle. Zwei Quellen fuer
+ * `name=description` und `og:description` aus EINER Quelle. Zwei Quellen für
  * denselben Text laufen auseinander, und dann zeigt ein geteilter Link etwas
  * anderes als das Suchergebnis. *
  * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
- * Der Kopf jener Datei sagt, sie werde "ausschliesslich von den /pages-Routen"
+ * Der Kopf jener Datei sagt, sie werde "ausschließlich von den /pages-Routen"
  * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
- * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei ueber
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei über
  * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
- * fuer diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * für diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
  * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
- * alle 31 /pages-Routen in dieselbe Pruefung, also genau den Preis, vor dem der
+ * alle 31 /pages-Routen in dieselbe Prüfung, also genau den Preis, vor dem der
  * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
  */
 export const meta = () => [
