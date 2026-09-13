@@ -305,14 +305,14 @@
 
 .eu-gwl-dialog__titel {
   margin: 0 0 0.75rem;
-  font-size: 1.25rem;
+  font-size: var(--qs-t-gross);
   line-height: 1.3;
   color: #2c2a26;
 }
 
 .eu-gwl-dialog__absatz {
   margin: 0 0 0.75rem;
-  font-size: 0.95rem;
+  font-size: var(--qs-t-fein);
   line-height: 1.55;
   color: #2c2a26;
 
@@ -339,7 +339,7 @@
   padding-top: 1.25rem;
   border-top: 1px solid rgba(44, 42, 38, 0.15);
 
-  font-size: 0.85rem;
+  font-size: var(--qs-t-fein);
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1.4;
