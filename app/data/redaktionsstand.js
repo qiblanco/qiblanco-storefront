@@ -78,7 +78,7 @@ export const STAND_ISO = standFuer('/pages/ueber-uns');
  * `dateModified`. Ein Fehler beim Bauen ist billiger als eine Fläche, die
  * monatelang halb ausgezeichnet ausgeliefert wird.
  *
- * WARUM DIE RUECKGABE EINEN ZEITSTEMPEL TRAEGT UND DIE TABELLE OBEN NICHT
+ * WARUM DIE RÜCKGABE EINEN ZEITSTEMPEL TRÄGT UND DIE TABELLE OBEN NICHT
  * (Job 20260913-REPAIR-uploaddate-ohne-uhrzeit-und-zeitzone, Segment s02): die
  * Tabelle ist die REDAKTIONELLE Angabe und bleibt ein Kalendertag — so wird sie
  * gepflegt, so wird sie gemessen (`git log -1 --format=%cs`), so prüft sie der
