@@ -40,6 +40,8 @@
  * Defekt hat dieses Segment an einer anderen Stelle schon einmal gekostet.
  */
 
+import {isoMitZone} from '../lib/datum.js';
+
 /**
  * Pfad -> Datum der letzten inhaltlichen Änderung (ISO-8601, `YYYY-MM-DD`).
  * @type {Record<string, string>}
@@ -61,8 +63,11 @@ export const REDAKTIONSSTAND = {
   '/pages/studie-qihome-air': '2026-08-18',
 };
 
-/** Bequemer Zugriff für die Über-uns-Seite. */
-export const STAND_ISO = REDAKTIONSSTAND['/pages/ueber-uns'];
+/**
+ * Bequemer Zugriff für die Über-uns-Seite — MIT Zone, wie `standFuer()`.
+ * Ihr einziger Verwender ist das `dateModified` im JSON-LD dieser Seite.
+ */
+export const STAND_ISO = standFuer('/pages/ueber-uns');
 
 /**
  * Stand einer Fläche.
@@ -73,8 +78,21 @@ export const STAND_ISO = REDAKTIONSSTAND['/pages/ueber-uns'];
  * `dateModified`. Ein Fehler beim Bauen ist billiger als eine Fläche, die
  * monatelang halb ausgezeichnet ausgeliefert wird.
  *
+ * WARUM DIE RUECKGABE EINEN ZEITSTEMPEL TRAEGT UND DIE TABELLE OBEN NICHT
+ * (Job 20260913-REPAIR-uploaddate-ohne-uhrzeit-und-zeitzone, Segment s02): die
+ * Tabelle ist die REDAKTIONELLE Angabe und bleibt ein Kalendertag — so wird sie
+ * gepflegt, so wird sie gemessen (`git log -1 --format=%cs`), so prüft sie der
+ * Enforcer. Der Verwender ist dagegen ausnahmslos ein `dateModified` im
+ * JSON-LD, und dort ist ein Zeitpunkt mit Zone die bessere Angabe: ohne Zone
+ * legt Google den Kalendertag nach dem Standort seines eigenen Crawlers aus.
+ * Deshalb wird die Zone GENAU HIER angelegt, an der einen Stelle, durch die
+ * jeder Verwender geht — nicht in jeder Fundstelle einzeln. Ein
+ * Erscheinungsdatum ist ein Kalendertag; `isoMitZone` setzt dessen Anfang in
+ * der Hauszone und behauptet damit keine Uhrzeit, die wir nicht kennen.
+ *
  * @param {string} pfad
- * @returns {string} ISO-Datum `YYYY-MM-DD`
+ * @returns {string} ISO-8601-Zeitstempel mit Zone, z. B.
+ *   `2026-08-18T00:00:00+02:00`
  */
 export function standFuer(pfad) {
   const wert = REDAKTIONSSTAND[pfad];
@@ -85,5 +103,5 @@ export function standFuer(pfad) {
         '`git log -1 --format=%cs -- <inhaltsdatei>`).',
     );
   }
-  return wert;
+  return isoMitZone(wert);
 }
