@@ -522,9 +522,14 @@ test('das Label hängt NICHT im globalen Seitengeruest', () => {
 test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
   const roh = readFileSync(FOOTER, 'utf8');
 
+  // Die Form ist bewusst OFFEN für Attribute (`vorsatz="4. "` seit dem
+  // 2026-09-13). Die Vorfassung verlangte woertlich `<EuGewaehrleistungsLink />`
+  // und haette damit jede kuenftige Prop als "Baustein fehlt" gemeldet -- ein
+  // Vertrag, der die SCHREIBWEISE pinnt statt die Zusage (der Fuß trägt
+  // Punkt 4). Gemessen wird die Montage, nicht die Argumentliste.
   assert.match(
     roh,
-    /<EuGewaehrleistungsLink\s*\/>/,
+    /<EuGewaehrleistungsLink(\s[^>]*)?\s*\/>/,
     'Footer.jsx montiert Punkt 4 nicht mehr -- die Pflichtmitteilung fällt auf jeder Seite weg, die keinen eigenen Träger hat',
   );
   assert.match(
@@ -536,6 +541,65 @@ test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
     roh,
     /<PaymentIcons\s*\/>/,
     'Positiv-Kontrolle: der Nachbar-Baustein <PaymentIcons /> fehlt -- die Datei wurde nicht gelesen wie erwartet',
+  );
+});
+
+/*
+ * DIE NAHT, DIE EINEN MONAT LANG AUF JEDER SEITE HYDRATIONS-FEHLER ERZEUGT HAT
+ * (gemessen 2026-09-13 an qiblanco.com/search: 15x React #418 + 1x #423 je
+ * Viewport; Job 20260913-huelle-hydration-...-prio30).
+ *
+ * EuLabelProvider rendert {children} UND den <dialog> als GESCHWISTER. Stand
+ * der Aufruf in einem <p> --
+ *     <p>4. <EuGewaehrleistungsLink /></p>
+ * -- dann lag der <dialog> IM <p>. <dialog> ist dort nicht erlaubt; der
+ * HTML-Parser schließt das <p> davor und hebt ihn heraus. Der Server schreibt
+ * den einen Baum, der Browser liest den anderen, React hydriert gegen einen
+ * verschobenen Baum.
+ *
+ * WARUM DIESER WAECHTER AM AUFRUFER MISST UND NICHT AM BAUSTEIN: der Baustein
+ * ist heute richtig gebaut (er bringt sein <p> selbst mit). Zurueckbauen kann
+ * den Fehler nur, wer ihn ERNEUT umwickelt -- und das passiert im Footer, nicht
+ * in der Komponente. Ein Wächter auf die Komponente wäre gruen, waehrend der
+ * Fehler wieder live ist.
+ *
+ * KEIN <p>-ZAEHLER, SONDERN DIE UMSCHLIESSUNG: gemessen wird, ob zwischen einem
+ * offenen <p> und seinem </p> ein dialog-tragender Baustein steht. Ein reiner
+ * Treffer-Zaehler auf "<p>" wäre bei jedem Umbau des Fußes rot und würde
+ * weggeklickt.
+ */
+test('kein dialog-tragender Baustein steht im Footer innerhalb eines <p>', () => {
+  const code = ohneKommentare(readFileSync(FOOTER, 'utf8'));
+
+  // Bausteine, die ihr Overlay selbst mitbringen -- also einen <dialog> in
+  // den Baum stellen. Waechst die Liste, waechst die Zusage mit.
+  const DIALOG_TRAEGER = ['EuGewaehrleistungsLink', 'EuGewaehrleistungsHinweis'];
+
+  const treffer = [];
+  for (const [ganz] of code.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)) {
+    for (const baustein of DIALOG_TRAEGER) {
+      if (ganz.includes(`<${baustein}`)) treffer.push({baustein, ganz});
+    }
+  }
+
+  assert.deepEqual(
+    treffer.map((t) => t.baustein),
+    [],
+    `<${treffer[0]?.baustein}> steht in Footer.jsx innerhalb eines <p>. Der ` +
+      'Provider setzt seinen <dialog> als Geschwister von {children} -- der ' +
+      'landet damit im <p>, der HTML-Parser hebt ihn heraus, und React ' +
+      'hydriert auf JEDER Seite gegen einen verschobenen Baum. Der Baustein ' +
+      'bringt sein <p> selbst mit; der Aufrufer uebergibt den Vorsatz als Prop.',
+  );
+
+  // POSITIV-KONTROLLE: die Suchmechanik findet einen <p>-Block ueberhaupt.
+  // Ohne sie wäre der Test auch dann gruen, wenn die Regex nie greift --
+  // also gruen by construction.
+  const alleP = [...code.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)];
+  assert.ok(
+    alleP.length >= 3,
+    `Positiv-Kontrolle: nur ${alleP.length} <p>-Bloecke in Footer.jsx gefunden -- ` +
+      'die Suchmechanik greift nicht mehr, der Wächter wäre wirkungslos',
   );
 });
 

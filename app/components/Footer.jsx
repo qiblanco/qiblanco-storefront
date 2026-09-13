@@ -109,32 +109,15 @@ function NewsletterForm() {
     document.body.appendChild(script);
   }, []);
 
-  return (
-    <>
-      {/* Overrides fuer das ActiveCampaign-Embed. Das Embed vergibt eine
-          dynamische Form-ID (#_form_XXXX_) und setzt darauf per !important
-          background:white + padding sowie einen Serifen-Font-Fallback. Wir
-          ankern ueber die stabile Wrapper-ID #qi-newsletter, um diese mit
-          hoeherer Spezifitaet zu ueberschreiben (transparenter Kasten,
-          Open-Sans-Felder/Button, abgerundete Ecken). */}
-      <style>{`
-        .footer #qi-newsletter form._form_15 {
-          background: transparent !important;
-          padding: 0 !important;
-          border: 0 !important;
-          box-shadow: none !important;
-        }
-        .footer #qi-newsletter input[type='text'],
-        .footer #qi-newsletter input[type='email'],
-        .footer #qi-newsletter button,
-        .footer #qi-newsletter ._submit {
-          font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
-          border-radius: 10px !important;
-        }
-      `}</style>
-      <div className="_form_15" id="qi-newsletter" />
-    </>
-  );
+  // Die Overrides für das ActiveCampaign-Embed stehen in app/styles/app.css
+  // (Block "Footer-Newsletter, Anker #qi-newsletter"). Sie standen bis zum
+  // 2026-09-13 als <style>{`...`}</style> genau hier -- das brach auf JEDER
+  // Seite die Hydration (React maskiert den Textinhalt beim Serverrendern,
+  // im SSR-HTML stand input[type=&#x27;text&#x27;]) UND machte die Regeln
+  // serverseitig wirkungslos, weil <style> ein Raw-Text-Element ist und der
+  // Parser die Maskierung darin nicht auflöst. Begründung vollstaendig an
+  // der Regel in app.css. Kein <style> mehr in diesem Baum.
+  return <div className="_form_15" id="qi-newsletter" />;
 }
 
 function FooterStudies() {
@@ -263,9 +246,7 @@ function FooterDisclaimer() {
         </p>
         <p>3. Bezahlmethoden</p>
         <PaymentIcons />
-        <p>
-          4. <EuGewaehrleistungsLink />
-        </p>
+        <EuGewaehrleistungsLink vorsatz="4. " />
       </div>
     </div>
   );

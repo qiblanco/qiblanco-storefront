@@ -5205,6 +5205,47 @@ ul.kakao-children li {
     border: 0 !important;
 }
 
+/* Footer-Newsletter, Anker #qi-newsletter (hierher verlegt 2026-09-13, Job
+   20260913-huelle-hydration-...-prio30).
+
+   VORHER standen diese Regeln als <style>{`...`}</style> DIREKT IN
+   Footer.jsx (NewsletterForm). Das war aus zwei Gruenden falsch, und der
+   zweite ist der teurere:
+
+   1. HYDRATIONS-BRUCH AUF JEDER SEITE. React maskiert den Textinhalt beim
+      Serverrendern; im SSR-HTML stand deshalb input[type=&#x27;text&#x27;],
+      im Client-Baum input[type='text']. React meldete dafuer "Text content
+      does not match server-rendered HTML" (#425) und riss die umgebende
+      Suspense-Grenze mit (#418/#422) -- gemessen am 2026-09-13 im Dev-Build
+      mit Komponentenstapel bis "at style / at NewsletterForm".
+
+   2. DIE REGELN WAREN SERVERSEITIG SCHLICHT TOT. <style> ist ein
+      Raw-Text-Element: der HTML-Parser dekodiert &#x27; darin NICHT. Der
+      Browser las also woertlich input[type=&#x27;text&#x27;] -- ein
+      ungueltiger Selektor, der nie greift. Bis React den Knoten beim
+      Hydrieren ersetzte, standen Schrift und Radius der Newsletter-Felder
+      auf den AC-Vorgaben.
+
+   WARUM HIER UND NICHT dangerouslySetInnerHTML: eine echte Stylesheet-Datei
+   braucht gar keine Maskierung, ist zwischenspeicherbar und steht neben den
+   Nachbarregeln fuer dasselbe Formular (Block darueber). Der Anker
+   #qi-newsletter ist der stabile Wrapper aus Footer.jsx -- die dynamische
+   AC-Form-ID (#_form_6A57722DAE755_ oben) wandert, dieser Anker nicht. */
+.footer #qi-newsletter form._form_15 {
+    background: transparent !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.footer #qi-newsletter input[type='text'],
+.footer #qi-newsletter input[type='email'],
+.footer #qi-newsletter button,
+.footer #qi-newsletter ._submit {
+    font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
+    border-radius: 10px !important;
+}
+
 /* ============================================================================
    ScrollScrubVideo — generalisierte Scroll-Down-Animation (2026-07-17).
    Spiegel des bewaehrten .ScrollMikroskopvideo-Blocks, parametrisiert ueber
