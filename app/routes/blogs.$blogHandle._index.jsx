@@ -5,6 +5,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogIndexSignale, blogMeta} from '~/lib/blog-seo';
 import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
+import {tagLang} from '~/lib/datum';
 import {STRAENGE_LIVE, gruppiereNachStraengen} from '~/lib/werk';
 import blogStyles from '~/styles/blog.css?url';
 import straengeStyles from '~/styles/werk-straenge.css?url';
@@ -273,13 +274,11 @@ function StraengeAnsicht({articles}) {
  */
 function ArticleItem({article, loading}) {
   // de-DE statt en-US: „August 31, 2026" ist auf einem deutschsprachigen Blog
-  // kein Stilfehler, sondern ein sichtbar falscher Ort. Hausmuster:
-  // app/lib/withdrawal.js.
-  const publishedAt = new Intl.DateTimeFormat('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(article.publishedAt));
+  // kein Stilfehler, sondern ein sichtbar falscher Ort.
+  // Die Zone kommt seit 2026-09-13 aus app/lib/datum.js MIT — ohne sie rendert
+  // der Server in UTC, der Kunde in Europe/Berlin, und React bricht beim
+  // Hydrieren. Die Begründung steht dort.
+  const publishedAt = tagLang(article.publishedAt);
 
   // ANRISS, und warum er aus `excerpt` kommt und NICHT aus dem Artikeltext:
   // `contentHtml` wurde am 2026-09-03 bewusst aus diesem Fragment entfernt —
