@@ -99,7 +99,7 @@ function sichtbareEintraege(typ, items, bestand) {
     case 'pages':
       // Dieselbe Vereinigung wie in der Kind-Route: nennt der Index ein
       // `lastmod` aus einem Eintrag, den das Kind gar nicht ausliefert, ist
-      // das Datum eine Aussage ueber eine URL, die es dort nicht gibt.
+      // das Datum eine Aussage über eine URL, die es dort nicht gibt.
       return items.filter(
         (i) =>
           !AUS_SITEMAP_ENTFERNTE_SEITEN.includes(i.handle) &&

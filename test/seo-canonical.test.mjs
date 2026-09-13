@@ -170,7 +170,7 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
   // /AUS_SITEMAP_ENTFERNTE_SEITEN/ trifft auch die Import-Zeile und bliebe
   // gruen, wenn jemand die Liste importiert und trotzdem ein eigenes Array
   // einhaengt (im Mutationstest genau so passiert).
-  // NACHGEZOGEN AM 2026-09-13, NICHT AUFGEWEICHT: `pages` haengt jetzt an
+  // NACHGEZOGEN AM 2026-09-13, NICHT AUFGEWEICHT: `pages` hängt jetzt an
   // `NICHT_IN_PAGES_SITEMAP` — der Vereinigung aus der noindex-Teilmenge und
   // den WEITERGELEITETEN Handles (~/lib/sitemap-weiterleitungen). Zwei Klassen
   // fliegen aus derselben Sitemap, und sie sind nicht dasselbe: ein `noindex`
@@ -185,7 +185,7 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
     'pages muss AN die EINE vereinigte Sicht gehaengt sein, nicht an ein eigenes Array',
   );
   // Die Vereinigung selbst darf nur aus den beiden abgeleiteten Quellen
-  // bestehen — sonst waere sie das zweite Array durch die Hintertuer.
+  // bestehen — sonst wäre sie das zweite Array durch die Hintertür.
   assert.match(
     quelle,
     /const NICHT_IN_PAGES_SITEMAP = \[\s*\.\.\.AUS_SITEMAP_ENTFERNTE_SEITEN,\s*\.\.\.WEITERGELEITETE_PAGES_HANDLES,\s*\]/,
@@ -561,27 +561,27 @@ test('NAHT: weitergeleitete Handles sind eine EIGENE Klasse, nicht noindex', asy
   const {WEITERGELEITETE_PAGES_DEF, WEITERGELEITETE_PAGES_HANDLES} =
     await import('../app/lib/sitemap-weiterleitungen.js');
 
-  // Die Richtung ist tragend und der Grund fuer die eigene Datei: eine
+  // Die Richtung ist tragend und der Grund für die eigene Datei: eine
   // 301-Antwort hat keinen Rumpf und kann gar kein `noindex` tragen. Stuende
-  // ein Handle in beiden Listen, waere eine der beiden Begruendungen falsch.
+  // ein Handle in beiden Listen, wäre eine der beiden Begründungen falsch.
   for (const handle of WEITERGELEITETE_PAGES_HANDLES) {
     assert.equal(
       NICHT_INDEXIERBARE_SEITEN.includes(handle),
       false,
-      `${handle} ist weitergeleitet UND als noindex gefuehrt — eine der beiden Begruendungen stimmt nicht`,
+      `${handle} ist weitergeleitet UND als noindex geführt — eine der beiden Begruendungen stimmt nicht`,
     );
   }
 
   // Jeder Eintrag muss seinen Grund und sein Ziel nennen: eine Liste ohne
-  // Begruendung ist in einem Jahr nicht mehr entscheidbar.
+  // Begründung ist in einem Jahr nicht mehr entscheidbar.
   for (const e of WEITERGELEITETE_PAGES_DEF) {
     assert.ok(e.handle && !e.handle.startsWith('/'), 'handle ist ein Handle, kein Pfad');
     assert.match(e.ziel, /^\//, `${e.handle}: ziel muss ein Pfad sein`);
-    assert.ok(e.grund && e.grund.length > 40, `${e.handle}: grund fehlt oder ist zu duenn`);
+    assert.ok(e.grund && e.grund.length > 40, `${e.handle}: grund fehlt oder ist zu dünn`);
     assert.match(e.seit, /^\d{4}-\d{2}-\d{2}$/, `${e.handle}: seit fehlt`);
   }
 
   // Leer-Kontrolle: eine versehentlich geleerte Liste bliebe sonst unbemerkt,
-  // und alle Zusagen darueber blieben gruen.
+  // und alle Zusagen darüber blieben grün.
   assert.ok(WEITERGELEITETE_PAGES_HANDLES.length >= 1);
 });

@@ -58,7 +58,7 @@ import {
  * Seiten mit `noindex` (dort ist der Sitemap-Eintrag der Widerspruch zum
  * Ausschluss-Signal) und Handles, deren URL nur noch WEITERLEITET (dort ist er
  * der Widerspruch zur eigenen Antwort). Jede Klasse hat ihre eigene Quelle mit
- * eigener Begruendung; hier werden sie EINMAL vereinigt, damit beide Leser
+ * eigener Begründung; hier werden sie EINMAL vereinigt, damit beide Leser
  * dieser Route und `~/lib/sitemap-lastmod` dieselbe Menge sehen.
  */
 const NICHT_IN_PAGES_SITEMAP = [
