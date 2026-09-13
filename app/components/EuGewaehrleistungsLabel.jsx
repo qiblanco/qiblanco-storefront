@@ -559,10 +559,37 @@ function EuLabelListenpunktFlaeche() {
 /**
  * FOOTER. Punkt 4 unter "3. Bezahlmethoden" -- reiner Textlink.
  *
- * DERZEIT NIRGENDS MONTIERT: Elina EL-20260901-3fb38a2a stellt den
- * Footer-Teil ausdrücklich zurück ("jetzt bewusst weglassen und für
- * spaeter zurueckstellen"). Der Baustein bleibt deshalb erhalten -- er ist
- * zurueckgestellt, nicht entfernt.
+ * MONTIERT IN Footer.jsx. Bis zum 2026-09-13 stand hier "DERZEIT NIRGENDS
+ * MONTIERT" mit Verweis auf Elina EL-20260901-3fb38a2a. Das war seit dem
+ * Wiedereinhaengen falsch und hat den Fehler unten gedeckt: wer den Kopf
+ * liest, prueft den Baustein nicht weiter, weil er ihn fuer totes Holz haelt.
+ *
+ * DIE ZEILE <p> GEHOERT HIERHER UND NICHT ZUM AUFRUFER -- das ist die
+ * eigentliche Lehre dieses Bausteins, und sie hat uns einen Monat
+ * Hydrations-Fehler auf JEDER Seite gekostet.
+ *
+ * EuLabelProvider rendert {children} UND den <dialog> als GESCHWISTER (der
+ * Kontext-Provider selbst erzeugt kein DOM-Element). Stand der Aufrufer also
+ * so da --
+ *     <p>4. <EuGewaehrleistungsLink /></p>
+ * -- dann landete der <dialog> INNERHALB des <p>. Ein <dialog> ist
+ * Flow-Content und in <p> nicht erlaubt; der HTML-Parser schliesst das <p>
+ * davor selbsttaetig und hebt den Dialog heraus. Der Server schrieb den einen
+ * Baum, der Browser las den anderen, und React fand beim Hydrieren ab dieser
+ * Stelle alles verschoben: gemessen am 2026-09-13 auf qiblanco.com/search
+ * 15x "Minified React error #418" plus 1x #423 an der Suspense-Grenze, je
+ * Viewport -- und weil der Fuss auf jeder Seite steht, auf JEDER Seite.
+ *
+ * Das ist DIESELBE Naht, die bei EuGewaehrleistungsListenpunkt schon
+ * beschrieben ist (dort: <dialog> als direktes Kind von <ul>). Dort wurde sie
+ * geschlossen, indem die <li> AUSSERHALB des Providers steht. Hier geht das
+ * nicht -- <p> darf den Dialog ueberhaupt nicht enthalten, auch nicht als
+ * letztes Kind. Der Provider muss also UM das <p> herum stehen, damit
+ * <p> und <dialog> Geschwister werden:
+ *     <p>4. <button/></p><dialog>...</dialog>
+ * Deshalb bringt dieser Baustein sein <p> selbst mit und nimmt den Vorsatz
+ * ("4. ") als Text entgegen, statt ihn sich vom Aufrufer umwickeln zu lassen.
+ * Ein Aufrufer, der das <p> wieder selbst setzt, baut den Fehler zurueck.
  *
  * GEAENDERT gegenueber der Vorfassung, und das ist kein Schoenheitsfehler:
  * früher stand hier "gleiches Overlay, kein zweiter Dialog", weil ein
@@ -573,13 +600,16 @@ function EuLabelListenpunktFlaeche() {
  * genau dann, wenn niemand mehr mit ihm rechnet. Der Provider steht deshalb
  * hier drin.
  */
-export function EuGewaehrleistungsLink() {
+export function EuGewaehrleistungsLink({vorsatz = null}) {
   return (
     <EuLabelProvider>
-      <EuLabelAusloeser
-        flaeche="footer"
-        beschriftung={AUSLOESER_TEXT_FOOTER}
-      />
+      <p>
+        {vorsatz}
+        <EuLabelAusloeser
+          flaeche="footer"
+          beschriftung={AUSLOESER_TEXT_FOOTER}
+        />
+      </p>
     </EuLabelProvider>
   );
 }
