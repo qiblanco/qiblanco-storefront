@@ -54,15 +54,39 @@
 */
 
 .blog-wissen {
-  /* Typo — EINE Familie, modulare Skala ~1.25, 8 Stufen (Höchstwert 9). */
-  --bw-fs-xs: 0.8125rem; /* 13px */
-  --bw-fs-sm: 0.9375rem; /* 15px */
-  --bw-fs-base: 1rem; /* 16px */
-  --bw-fs-md: 1.125rem; /* 18px — Fließtext */
-  --bw-fs-lg: 1.25rem; /* 20px */
-  --bw-fs-xl: 1.5625rem; /* 25px */
-  --bw-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem); /* EIN H2-Stil */
-  --bw-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+  /* Typo — EINE Familie, EINE Leiter, sechs Sprossen. Verhältnis 1,2 bis 1,25
+     (Haus-Soll: design-meister web-soll.yaml typo_skala_ratio 1.25).
+
+       13 → 16 → 20 → 24 → 30 → 38 px
+          1,231 1,25  1,2  1,25 1,267
+
+     DREI DINGE ENTSCHEIDEN DIESE WERTE, und keines davon ist Geschmack:
+
+     1. DIE SPROSSEN 13/16/20 SIND DIE DER GETEILTEN HÜLLE (#430, --qs-t-fein/
+        basis/gross). Kopf, Fuß und Navigation stehen auf jeder Seite mit; wer
+        hier eigene Nachbarwerte setzt, verbraucht von den neun erlaubten
+        Stufen zwei für denselben optischen Schritt. Geteilte Sprossen kosten
+        null.
+     2. JEDE SEITE BENUTZT BENACHBARTE SPROSSEN, keine übersprungenen. Die
+        Rubrik misst das Verhältnis je Paar und lässt 1,1 bis 1,55 gelten —
+        ein übersprungener Schritt (1,5625) fällt durch. Übersicht: 13/16/20.
+        Beitrag: 16/20/24/30.
+     3. KEINE FLUIDEN ÜBERSCHRIFTEN MEHR. Die alten clamp()-Werte hatten unter
+        750px eine tote untere Hälfte: reset.css setzt dort h1/h2/h3 mit
+        `!important` auf 1.75/1.5/1.25rem und gewinnt. Geliefert wurde immer
+        nur der clamp-MAXIMALWERT — ein fester Wert sagt dasselbe und macht
+        die Leiter ablesbar.
+
+     ABGELÖST: --bw-fs-sm (15px) lag 1,067 neben 16px — zwei Sprossen für
+     einen Schritt, den niemand sieht. --bw-fs-xl (25px) lag 1,5625 über 16px,
+     also genau im Loch zwischen zwei Sprossen. Beide waren der gemessene
+     Befund „Schriftgrößen folgen keiner modularen Skala". */
+  --bw-fs-xs: 0.8125rem; /* 13px — Datum, Etikett */
+  --bw-fs-base: 1rem; /* 16px — Anriss, Nebentext */
+  --bw-fs-md: 1.25rem; /* 20px — Fließtext, Kacheltitel */
+  --bw-fs-lg: 1.5rem; /* 24px — h3 */
+  --bw-fs-h2: 1.875rem; /* 30px — EIN H2-Stil */
+  --bw-fs-h1: 2.375rem; /* 38px */
 
   /* Abstände — 8pt-Grid, keine Zwischenwerte. */
   --bw-s1: 8px;
@@ -192,7 +216,7 @@
 }
 
 .blog-wissen .blog-article h3 {
-  font-size: var(--bw-fs-xl);
+  font-size: var(--bw-fs-md);
   font-weight: 600;
   line-height: 1.25;
   margin: 0;
@@ -207,7 +231,7 @@
 .blog-wissen .blog-article small,
 .blog-wissen .blog-article time {
   color: var(--bw-muted);
-  font-size: var(--bw-fs-sm);
+  font-size: var(--bw-fs-xs);
   letter-spacing: 0.02em;
 }
 
@@ -236,7 +260,7 @@
    Anklickbar ist ohnehin die ganze Kachel. */
 .blog-wissen .blog-article-mehr {
   color: var(--bw-muted);
-  font-size: var(--bw-fs-sm);
+  font-size: var(--bw-fs-xs);
   font-weight: 600;
   margin-top: auto;
   padding-top: var(--bw-s1);
@@ -269,7 +293,7 @@
    untereinander, weil <address> ein Block-Element ist und im <h1> stand. */
 .blog-wissen .article-meta {
   color: var(--bw-muted);
-  font-size: var(--bw-fs-sm);
+  font-size: var(--bw-fs-base);
   margin: 0 0 var(--bw-s4);
 }
 
@@ -303,12 +327,34 @@
   width: 100%;
 }
 
-/* Die wirkungsvollste einzelne Maßnahme für einen langen Text: begrenzte
-   Zeilenlänge. Der Wert ist NICHT hier erfunden, sondern das Haus-Token
-   --measure-text (75ch). Bei 18px Fließtext liegt die Zeile damit im Bereich,
-   den die Leseforschung als Optimum führt (50–75 Zeichen). */
+/* DIE GRÖSSE STEHT AM ELEMENT, NICHT NUR AM CONTAINER — und das ist der
+   eigentliche Befund dieser Datei, nicht eine Verdopplung.
+
+   reset.css setzt shopweit `p, li { font-size: 1.2rem; line-height: 1.4 }`.
+   Eine Größe, die auf dem ELEMENT steht, schlägt jede Größe, die der Container
+   nur VERERBT — `.article-inhalt { font-size }` hat den Fließtext deshalb nie
+   erreicht. Geliefert wurden 19,2px (gemessen 2026-09-13 an 77 Knoten), also
+   ein Wert, der in keinem Token dieser Datei steht und der genau zwischen zwei
+   Sprossen der Leiter liegt (18 → 19,2 = 1,069). Die Datei behauptete im
+   Kommentar „18px Fließtext" und meinte es ernst; der Leser sah 19,2.
+
+   ZWEI NACHBARN IM SELBEN BLATT, AUS DERSELBEN URSACHE UND DESHALB HIER MIT:
+   `.article-inhalt { line-height: 1.72 }` wird von `p, li { line-height: 1.4 }`
+   geschlagen, und `.article { color: var(--bw-text) }` von
+   `p, li { color: var(--color-dark) }`. Geliefert wurde also ein Langtext mit
+   1,4 Zeilenabstand in #4A4741 statt 1,72 in #2c2a26 — enger und blasser als
+   jede Zeile dieser Datei sagt. Wer nur die Größe am Element setzt und die
+   beiden stehen lässt, behebt ein Drittel und lässt zwei Drittel unter einem
+   grünen Haken stehen.
+
+   Die wirkungsvollste einzelne Maßnahme für einen langen Text bleibt die
+   begrenzte Zeilenlänge. Der Wert ist NICHT hier erfunden, sondern das
+   Haus-Token --measure-text (75ch). */
 .blog-wissen .article-inhalt p,
 .blog-wissen .article-inhalt li {
+  color: var(--bw-text);
+  font-size: var(--bw-fs-md);
+  line-height: 1.72;
   max-width: var(--measure-text);
 }
 
@@ -457,7 +503,7 @@
 
 .blog-wissen .article-weiter-fuss a {
   display: inline;
-  font-size: var(--bw-fs-sm);
+  font-size: var(--bw-fs-base);
   padding: 0;
 }
 
@@ -545,7 +591,7 @@
 
 .blog-wissen .article-autor__satz {
   color: var(--bw-muted);
-  font-size: var(--bw-fs-sm);
+  font-size: var(--bw-fs-base);
   line-height: 1.6;
   margin: 0 0 var(--bw-s1);
 }
@@ -569,9 +615,14 @@
     grid-template-columns: 1fr;
   }
 
-  .blog-wissen .article-inhalt {
-    font-size: var(--bw-fs-base);
-  }
+  /* HIER STAND EIN SCHRUMPF-SCHRITT AUF 16px, UND ER WAR NIE IN KRAFT: er
+     saß auf dem Container und wurde vom `p, li` aus reset.css geschlagen —
+     auf dem Telefon lieferte die Seite dieselben 19,2px wie am Schreibtisch
+     (gemessen 2026-09-13, 56 Textblöcke im Mobil-Viewport). Ihn jetzt
+     nachzuziehen wäre keine Reparatur, sondern eine neue Entscheidung:
+     17 Prozent weniger Schriftgröße auf der Fläche, auf der dieser Blog
+     gelesen wird. Der Fließtext steht deshalb auf beiden Breiten auf
+     derselben Sprosse (20px ≈ die 19,2px von heute). */
 
   /* Auf dem Telefon steht das Foto ueber dem Text statt daneben: bei 96px
      Bild und darunter 30ch Restbreite waere der Werdegang eine Wortschlange. */
