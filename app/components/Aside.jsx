@@ -1,4 +1,11 @@
-import {createContext, useContext, useEffect, useState} from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 /**
  * A side bar component with Overlay
@@ -69,16 +76,40 @@ const AsideContext = createContext(null);
 Aside.Provider = function AsideProvider({children}) {
   const [type, setType] = useState('closed');
 
+  // Der Kontextwert wird gemerkt statt bei jedem Rendern neu gebaut, und zwar
+  // aus einem gemessenen Grund (Job 20260913-react421-..., Befund s03 des
+  // Grossjobs ...-restbruch-hydration-standardseiten): unter diesem Provider
+  // liegen ALLE VIER <Suspense>-Grenzen der App (Footer, Warenkorb-Drawer,
+  // Konto-Link, Warenkorb-Zaehler). Ein Inline-Literal ist bei jedem Rendern
+  // ein anderes Objekt; React startet darauf `propagateContextChange`,
+  // und eine noch nicht hydrierte Grenze, in deren Teilbaum dadurch etwas
+  // eingeplant wird, gibt ihr Server-HTML auf und rendert im Client neu
+  // (React #421, react-dom.development.js:20712 --
+  // `includesSomeLane(renderLanes, current.childLanes)`).
+  //
+  // WAS DAS HEILT UND WAS NICHT -- die Unterscheidung ist der ganze Punkt:
+  // Gerendert wird dieser Provider auch dann neu, wenn ein VORFAHRE rendert
+  // (PageLayout baut seine Kinder neu). Dann hat sich `type` nicht bewegt und
+  // es gibt sachlich keine Kontextaenderung -- ohne Memo entstand trotzdem
+  // eine. Genau dieser Fall faellt weg. Der Fall "jemand macht wirklich einen
+  // Drawer auf" aendert `type` und damit weiterhin den Kontextwert; das ist
+  // richtig so (ohne diese Meldung bliebe der Drawer zu) und durch ein Memo
+  // baulich nicht heilbar -- dagegen hilft nur `startTransition` um das
+  // ausloesende Update.
+  //
+  // `close` braucht sein eigenes useCallback: als Inline-Pfeil ist es bei
+  // jedem Rendern neu und entwertet das Memo jedes Mal. Es steht ausserdem
+  // in der Abhaengigkeitsliste des Escape-Handlers in `Aside`
+  // ([close, expanded]) -- stabil gehalten wird der Handler dort jetzt nicht
+  // mehr bei jedem Rendern ab- und wieder angemeldet.
+  const close = useCallback(() => setType('closed'), []);
+  const wert = useMemo(
+    () => ({type, open: setType, close}),
+    [type, close],
+  );
+
   return (
-    <AsideContext.Provider
-      value={{
-        type,
-        open: setType,
-        close: () => setType('closed'),
-      }}
-    >
-      {children}
-    </AsideContext.Provider>
+    <AsideContext.Provider value={wert}>{children}</AsideContext.Provider>
   );
 };
 
