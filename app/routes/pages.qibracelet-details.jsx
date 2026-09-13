@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import {QiBracelet} from '~/components/index-components/detailseiten/QiBracelet';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {beschreibungTags} from '~/lib/seiten-beschreibung';
 
 /*
  * /pages/qibracelet-details — oeffentliche Detailseite QiBracelet
@@ -24,14 +25,28 @@ import {seitenSignale} from '~/lib/seiten-seo';
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = () => {
+export const meta = ({data}) => {
+  // Die Seite stand seit 4ae2729 ohne Meta-Beschreibung live und fiel erst
+  // auf, als #383 sie am 2026-09-12 in die Sitemap nachtrug — bis dahin war
+  // sie nicht Teil der Grundmenge, die das misst. Rangfolge wie ueberall: ein
+  // gepflegtes `seo.description` aus Shopify schlägt die kuratierte Karte,
+  // die Karte fängt nur auf. Das PAGE_QUERY läuft hier auf dem ALTEN
+  // CMS-Handle `qibracelet` — dasselbe Shopify-Objekt trägt also die
+  // noindex-LP /pages/qibracelet; ein dort gepflegtes Feld fände beide.
+  //
+  // `beschreibung` geht zusätzlich an seitenSignale, damit og:description
+  // und JSON-LD denselben Satz tragen wie die meta description. Ein Netzwerk,
+  // das beim Teilen etwas anderes zeigt als die Suchmaschine, erzeugt zwei
+  // Versprechen (qione-2-pro-Präzedenz).
   const titel = 'QiBracelet\u00AE im Detail | Qi Blanco';
   return [
     {title: titel},
+    ...beschreibungTags('/pages/qibracelet-details', data?.page?.seo?.description),
     canonicalLink('/pages/qibracelet-details'),
     ...seitenSignale({
       pfad: '/pages/qibracelet-details',
       titel,
+      beschreibung: data?.page?.seo?.description,
     }),
   ];
 };
