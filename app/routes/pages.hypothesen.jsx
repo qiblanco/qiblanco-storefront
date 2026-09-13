@@ -4,6 +4,7 @@ import absichtStyles from '~/styles/absicht.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {teilbildTags} from '~/lib/seiten-seo';
 import {VIDEOS} from '~/data/hypothesen-quellen';
+import {isoMitZone} from '~/lib/datum';
 import {ABSENDER} from '~/data/absicht';
 
 /**
@@ -138,7 +139,8 @@ function videoJsonLd() {
     '@type': 'VideoObject',
     name: v.titel,
     description: v.zeigt,
-    uploadDate: v.veroeffentlicht,
+    // Kalendertag von YouTube -> ISO 8601 mit Zone (app/lib/datum.js).
+    uploadDate: isoMitZone(v.veroeffentlicht),
     duration: v.dauerIso,
     inLanguage: v.sprache,
     thumbnailUrl: [`https://i.ytimg.com/vi/${v.videoId}/maxresdefault.jpg`],

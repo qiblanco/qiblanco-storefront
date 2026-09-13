@@ -4,6 +4,7 @@ import {
 } from '~/components/campaign/MmWirktDas';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
+import {isoMitZone} from '~/lib/datum';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 
 /**
@@ -103,8 +104,8 @@ function faqSchema() {
   const schema = buildFaqPageJsonLd(items, {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
-    datePublished: VEROEFFENTLICHT,
-    dateModified: GEAENDERT,
+    datePublished: isoMitZone(VEROEFFENTLICHT),
+    dateModified: isoMitZone(GEAENDERT),
   });
   if (!schema) return null;
   if (items.length !== ZWEIFEL_SOLL) return null;

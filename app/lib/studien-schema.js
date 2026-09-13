@@ -22,6 +22,7 @@
 import {CANONICAL_ORIGIN, absoluteCanonical} from './seo.js';
 import {ORG_ID} from './entity-schema.js';
 import {standFuer} from '../data/redaktionsstand.js';
+import {isoMitZone} from './datum.js';
 
 const VERLAG = {
   '@type': 'Organization',
@@ -125,7 +126,12 @@ export function studieSchema(studie) {
   // nie etwas), `dateModified` ist der Stand UNSERER Wiedergabe. Am 2026-08-24
   // gemessen fehlte das zweite auf allen fünf Blättern; das Backlog nahm an,
   // die Blätter trügen es bereits und nur der Hub nicht. Sie trugen es nicht.
-  artikel.dateModified = standFuer(`/pages/${studie.slug}`);
+  // Unser Redaktionsstand (ein Kalendertag aus dem Commit-Datum) -> ISO 8601
+  // mit Zone. `datePublished`/`dateCreated` daruerber bleiben ABSICHTLICH roh:
+  // das sind Erscheinungs- und Einreichungsdatum der fremden Arbeit, teils nur
+  // als Jahr bekannt. Dort eine Uhrzeit zu setzen waere eine erfundene
+  // Genauigkeit ueber die Publikation eines Dritten.
+  artikel.dateModified = isoMitZone(standFuer(`/pages/${studie.slug}`));
   if (e.lizenz) artikel.license = e.lizenz;
   if (e.doi) {
     // identifier ist eine KENNUNG — wahr, unabhängig davon, ob ein Resolver sie
@@ -263,7 +269,7 @@ export function übersichtSchema(studien, produkte = []) {
         name: 'Wissenschaftliche Studien zu Qi Blanco',
         author: {'@id': ORG_ID},
         publisher: {'@id': ORG_ID},
-        dateModified: standFuer('/pages/studien'),
+        dateModified: isoMitZone(standFuer('/pages/studien')),
         // Anzahl und Produktliste kommen aus den Daten: eine feste Zahl hier war
         // schon einmal die Naht, die beim Ergänzen der fuenften Studie riss.
         description:
