@@ -189,6 +189,22 @@ test('kundensichtbarer Text trägt echte Umlaute, keine Transliteration', () => 
   }
 });
 
+/**
+ * Blockkommentare und Zeilenkommentare entfernen.
+ *
+ * Bewusst textuell und bewusst KONSERVATIV: ein `//` in einem String-Literal
+ * (etwa in einer URL) wuerde den Rest der Zeile mit abschneiden. Fuer die
+ * Frage „ruft diese Datei eine Funktion auf?" ist das unschaedlich — der
+ * Aufruf steht nie hinter einer URL in derselben Zeile —, und ein echter
+ * Parser waere fuer einen Zaun dieser Groesse der teurere Weg.
+ * @param {string} quelle
+ */
+function ohneKommentare(quelle) {
+  return quelle
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/.*$/gm, '$1');
+}
+
 test('jede /pages-Route mit og-Bedarf ruft die gemeinsame Hilfe auf', () => {
   // DER ZAUN FOLGT DER EIGENSCHAFT, NICHT EINER LISTE: geprüfte Menge sind
   // ALLE Routendateien app/routes/pages.*, die ein `meta` exportieren und
@@ -207,7 +223,17 @@ test('jede /pages-Route mit og-Bedarf ruft die gemeinsame Hilfe auf', () => {
   const ohne = [];
   let geprueft = 0;
   for (const f of dateien) {
-    const quelle = readFileSync(new URL(f, dir), 'utf8');
+    // NUR CODE, NIE KOMMENTARE: der Test greift auf den Dateitext zu, und ein
+    // Vorkommen ist kein Aufrufer. Gemessen am 2026-09-13 im origin/main-
+    // Zwilling: entfernt man den einzigen echten `teilbildTags(PFAD)`-Aufruf
+    // aus pages.hypothesen.jsx, blieb dieser Arm GRUEN — gehalten von der
+    // Kommentarzeile „nicht seitenSignale()." in derselben Datei, also von dem
+    // Satz, der die NICHT-Benutzung dokumentiert. Der Arm haette damit genau
+    // die Regression nicht gefangen, fuer die er gebaut wurde, und zwar an der
+    // Route, die ihn ausgeloest hat. Das Strippen aendert am heutigen Urteil
+    // nichts (34 geprueft, 0 Routen haengen an einem Kommentar) — es macht den
+    // Rot-Arm ueberhaupt erst belegbar.
+    const quelle = ohneKommentare(readFileSync(new URL(f, dir), 'utf8'));
     if (!/export (const|function|async function) meta\b/.test(quelle)) continue;
     if (!/canonicalLink\(/.test(quelle)) continue;
     // Routen, die sich selbst auf noindex setzen, brauchen kein Teilbild.
