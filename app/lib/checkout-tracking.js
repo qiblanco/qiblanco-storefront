@@ -1,3 +1,5 @@
+import {istInternerUserAgent} from './interner-verkehr.js';
+
 export const ATTRIBUTION_STORAGE_KEY = 'qiblanco_checkout_attribution';
 export const ATTRIBUTION_COOKIE_NAME = ATTRIBUTION_STORAGE_KEY;
 
@@ -597,12 +599,37 @@ function safeDecode(value) {
  * `null` tragen (mergeCartAttributes verwirft leere Werte still), deshalb hier
  * der explizite String.
  *
+ * SECHSTER WERT `intern` seit Job 20260913-GROSSJOB-eigener-messverkehr...,
+ * Segment s02. Bis dahin fiel JEDER Zugriff unserer eigenen Wachen in
+ * `browser` — derselbe Wert wie bei einem Kunden. `kaufweg-nachlauf` legt 72x
+ * am Tag über beide Storefronts einen Warenkorb an; diese Koerbe waren von
+ * echten baulich nicht zu unterscheiden.
+ *
+ * ER STEHT ZUERST, und das ist keine Reihenfolge-Geschmacksfrage: unsere
+ * Wachen tragen einen Nicht-Browser-UA, faenden also ohnehin keinen
+ * Webview-Marker und landeten in `browser`. Stuende die Frage weiter unten,
+ * könnte ein interner Client mit einem webview-ähnlichen Zweck-String
+ * vorher in eine Webview-Klasse fallen und die Vergleichsgruppe verwässern,
+ * gegen die der Meta-Webview gemessen wird.
+ *
+ * DIE ERKENNUNG IST EIN SPIEGEL DER SSoT (app/lib/interner-verkehr.js), keine
+ * zweite Liste — Begründung und täglicher Drift-Waechter stehen dort.
+ *
+ * `intern` IST KEIN VERDIKT ÜBER DEN KUNDEN und darf nie eines werden: er
+ * sagt "das waren wir", und die Unsicherheit fällt immer auf EXTERN.
+ *
  * @param {string | null | undefined} userAgent
- * @returns {'webview_meta'|'webview_andere'|'webview_vermutet'|'browser'|'unbekannt'}
+ * @param {{intern?: boolean}} [optionen] `intern: true` erzwingt die Klasse —
+ *   dafür gibt es genau einen Aufrufer, den Serverpfad in
+ *   cart-attribution.server.js, wo zusaetzlich die Client-IP vorliegt. Der UA
+ *   allein kann die IP-Achse nicht sehen.
+ * @returns {'intern'|'webview_meta'|'webview_andere'|'webview_vermutet'|'browser'|'unbekannt'}
  */
-export function classifyUserAgent(userAgent) {
+export function classifyUserAgent(userAgent, {intern = false} = {}) {
+  if (intern === true) return 'intern';
   const u = (userAgent || '').trim().toLowerCase();
   if (!u) return 'unbekannt';
+  if (istInternerUserAgent(u)) return 'intern';
   if (WEBVIEW_META_MARKERS.some((m) => u.includes(m))) return 'webview_meta';
   if (WEBVIEW_ANDERE_MARKERS.some((m) => u.includes(m))) return 'webview_andere';
   // WKWebView-Abdruck: iOS-WebKit, aber kein Safari-Token. Ein echter mobiler
@@ -679,10 +706,21 @@ export function consentStateFromCookies(cookieHeader) {
  * Marketing-Consent. Alle drei Werte sind immer nicht-leer, damit
  * `mergeCartAttributes` keinen davon still verwirft.
  *
- * @param {{userAgent?: string | null, cookieHeader?: string | null}} options
+ * KEIN NEUER SCHLUESSEL seit s02 — nur ein neuer WERT in `ua_class`. Ein
+ * neuer Identitaets-Key müsste in TRACKING_COOKIE_NAMES nachgetragen werden
+ * und fiele sonst an der Checkout-Domaingrenze weg (der `_qpx_anon`-Bug,
+ * 90,6 % falsch `direct`). Ein Wert in einem bestehenden Schlüssel kann diese
+ * Fehlerklasse baulich nicht haben: der Schlüssel reist schon.
+ *
+ * @param {{userAgent?: string | null, cookieHeader?: string | null,
+ *          intern?: boolean}} options
  * @returns {Array<{key: string, value: string}>}
  */
-export function buildOriginCartAttributes({userAgent, cookieHeader} = {}) {
+export function buildOriginCartAttributes({
+  userAgent,
+  cookieHeader,
+  intern = false,
+} = {}) {
   const attributes = [];
   addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
   addCartAttribute(
@@ -690,6 +728,6 @@ export function buildOriginCartAttributes({userAgent, cookieHeader} = {}) {
     'consent_state',
     consentStateFromCookies(cookieHeader ?? null),
   );
-  addCartAttribute(attributes, 'ua_class', classifyUserAgent(userAgent));
+  addCartAttribute(attributes, 'ua_class', classifyUserAgent(userAgent, {intern}));
   return attributes;
 }

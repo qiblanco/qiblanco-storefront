@@ -1,6 +1,6 @@
 // Regressionstest zu den consent-FREIEN Herkunfts-Markern an den drei
 // Cart-Eintrittspunkten
-// (Job 20260907-fbc-klick-id-ueberlebt-checkout-grenze-nicht-ads-unbewertbar-prio8, s02).
+// (Job 20260907-fbc-klick-id-überlebt-checkout-grenze-nicht-ads-unbewertbar-prio8, s02).
 // Stil wie test/checkout-tracking-signallos.test.mjs: node:test/node:assert als
 // Bordmittel, KEIN Netz, kein neuer Runner.
 // Ausfuehren: node --test test/cart-herkunfts-marker.test.mjs
@@ -15,7 +15,7 @@
 //
 // Der Fix vom 2026-08-09 machte den Marker INNEN unbedingt
 // (buildAttributionCartAttributes). Der Frueh-Ausstieg eine Ebene HOEHER stand
-// unveraendert: ohne Consent lief die innere Funktion gar nicht erst an.
+// unverändert: ohne Consent lief die innere Funktion gar nicht erst an.
 //
 // WARUM DIESE DATEI DIE ROUTEN WIRKLICH AUSFUEHRT statt ihren Quelltext zu
 // lesen: eine Quelltext-Zusicherung ist gegen genau diesen Defekt blind — der
@@ -67,6 +67,12 @@ const {loader: linesLoader} = await import('../app/routes/cart.$lines.jsx');
 const {classifyUserAgent, consentStateFromCookies} = await import(
   '../app/lib/checkout-tracking.js'
 );
+const {
+  INTERN_NETZE,
+  INTERN_UA_MARKER,
+  istInterneIp,
+  istInternerUserAgent,
+} = await import('../app/lib/interner-verkehr.js');
 
 // --- Sprachgebrauch -------------------------------------------------------
 // HERKUNFT = die drei consent-freien Marker. PERSONENBEZOGEN = alles, was an
@@ -96,10 +102,13 @@ const COOKIES_PERSONENBEZOGEN = '_fbp=fb.1.1000.222; _qpx_anon=anon-abc-123';
 const URL_MIT_KLICK =
   'https://qiblanco.com/cart?fbclid=IwZXh0bgNhZW0BMABhTESTKLICK';
 
-function anfrage({url = URL_MIT_KLICK, cookie = '', ua = UA_META} = {}) {
+function anfrage({url = URL_MIT_KLICK, cookie = '', ua = UA_META, ip = ''} = {}) {
   const kopf = new Headers();
   if (cookie) kopf.set('Cookie', cookie);
   if (ua) kopf.set('User-Agent', ua);
+  // `oxygen-buyer-ip` ist der einzige auf Oxygen belegte Traeger der Buyer-IP
+  // (Begründung im Kopf von app/routes/collect.jsx).
+  if (ip) kopf.set('oxygen-buyer-ip', ip);
   return new Request(url, {headers: kopf});
 }
 
@@ -282,7 +291,7 @@ test('ARM-D1 ua_class: zeichengleich mit dem Bestands-Klassifikator (hyros-eigen
   // P10: die Erwartungswerte sind die Ausgaben von
   // hyros-eigenbau/receiver/src/basis.py::ua_klasse für dieselben Eingaben
   // (Paritaet 18/18 gemessen 2026-09-07). Ein zweiter, abweichender
-  // Klassifikator wäre in der spaeteren Auswertung nicht mehr zu trennen.
+  // Klassifikator wäre in der späteren Auswertung nicht mehr zu trennen.
   const faelle = [
     [UA_META, 'webview_meta'],
     ['Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 Instagram 302.0.0.23.113', 'webview_meta'],
@@ -338,7 +347,7 @@ function trackerLaufen({search, cookiesVorher, gepuffertesFbclid = ''}) {
   const jar = new Map(Object.entries(cookiesVorher));
   // Der sessionStorage-Puffer ist NICHT Beiwerk: ohne ihn kann ARM-E3 gar nicht
   // rot werden (gemessen — die Mutation "gepufferter fbclid darf
-  // ueberschreiben" liess den Arm gruen, weil die Attrappe nie einen Puffer
+  // überschreiben" liess den Arm gruen, weil die Attrappe nie einen Puffer
   // hatte). Eine Prüfung, die nicht rot werden kann, belegt nichts.
   const puffer = new Map();
   if (gepuffertesFbclid) {
@@ -405,7 +414,7 @@ const fbclidAus = (fbc) => (String(fbc).split('.')[3] ?? ''); // Feld [3]! [1] i
 test('ARM-E1 DER FIX: neuer Ad-Klick frischt ein veraltetes _fbc auf', () => {
   // Gemessen (events.db, ganze Historie): 10083 von 179495 fbclid-Events mit
   // _fbc trugen eine veraltete Klick-ID, 8837 davon eine fruehere fbclid
-  // DESSELBEN Besuchers. Die Quote waechst entlang des Trichters bis
+  // DESSELBEN Besuchers. Die Quote wächst entlang des Trichters bis
   // 42,31 % bei initiate_checkout.
   const fbc = trackerLaufen({
     search: `?fbclid=${FBCLID_NEU}`,
@@ -431,7 +440,7 @@ test('ARM-E2 GEGENRICHTUNG: gleiche fbclid wird NICHT neu gestempelt', () => {
 
 test('ARM-E3 GEGENRICHTUNG: ein GEPUFFERTER fbclid darf ein vorhandenes _fbc NIE ueberschreiben', () => {
   // Der Puffer kann aelter sein als das, was fbevents.js gerade geschrieben
-  // hat — ueberschreiben hiesse, eine frische Klick-Identitaet durch eine
+  // hat — überschreiben hiesse, eine frische Klick-Identitaet durch eine
   // aeltere zu ersetzen. Der Puffer ist hier ECHT bestueckt und trägt eine
   // ANDERE fbclid als das Cookie; ohne beides wäre der Arm gruen by
   // construction und würde nichts belegen.
@@ -452,4 +461,150 @@ test('ARM-E4 Bestand: ohne vorhandenes _fbc wird aus der fbclid eines gebaut', (
   const fbc = trackerLaufen({search: `?fbclid=${FBCLID_NEU}`, cookiesVorher: {}});
   assert.equal(fbclidAus(fbc), FBCLID_NEU, 'ARM-E4');
   assert.match(fbc, /^fb\.1\.\d+\./, 'ARM-E4: Meta-Format fb.1.<ts>.<fbclid> verletzt');
+});
+
+
+// ===========================================================================
+// ARM F — `intern`: unser EIGENER Messverkehr ist vom Kunden unterscheidbar
+// (Job 20260913-GROSSJOB-eigener-messverkehr..., Segment s02)
+//
+// WARUM: `kaufweg-nachlauf` legt 72x am Tag über beide Storefronts einen
+// Warenkorb an. Bis hierher trug der `ua_class` dieser Koerbe den Wert
+// `browser` — denselben wie ein Kunde.
+//
+// DIE TEURERE RICHTUNG IST DIE ÜBERSPERRUNG, und sie fällt STILL aus: ein
+// Kunde, der fälschlich `intern` trägt, verschwindet aus genau den Zahlen,
+// die dieser Bau sauber machen soll, und die Zahl sieht danach nur kleiner
+// aus. F3 bis F6 sind deshalb Negativ-Kontrollen, nicht Beiwerk.
+// ===========================================================================
+
+const UA_INTERN =
+  'QiBlancoInternal/1.0 (kaufweg-nachlauf) (+https://qiblanco.com; interner Server-Zugriff, nicht tracken)';
+const UA_ECHT_DESKTOP =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+const IP_INTERN_V4 = '65.108.150.121';
+const IP_INTERN_V6 = '2a01:4f9:c014:781e::2';
+
+test('ARM-F1 der Marker-UA ergibt ua_class=intern', () => {
+  assert.equal(classifyUserAgent(UA_INTERN), 'intern', 'ARM-F1');
+  assert.equal(
+    classifyUserAgent('qiblanco-monitoring-leitstand/2'),
+    'intern',
+    'ARM-F1 zweiter SSoT-Marker',
+  );
+});
+
+test('ARM-F2 die IP-Achse trägt AUCH bei echtem Browser-UA (zwei Achsen)', async () => {
+  const {spur, cart} = cartAttrappe();
+  await persistAttributionOnCartResult({
+    cart,
+    request: anfrage({ua: UA_ECHT_DESKTOP, ip: IP_INTERN_V4}),
+    env: {},
+    result: {cart: {id: 'gid://cart/1', attributes: []}},
+  });
+  assert.equal(
+    alsMap(spur.updateAttributes).get('ua_class'),
+    'intern',
+    'ARM-F2: eine Wache, die ihren Marker-UA vergisst, muss an der IP erkannt werden',
+  );
+});
+
+test('ARM-F2b und die UA-Achse trägt OHNE jede IP (Shopify-Liquid hat keine)', async () => {
+  const {spur, cart} = cartAttrappe();
+  await persistAttributionOnCartResult({
+    cart,
+    request: anfrage({ua: UA_INTERN}),
+    env: {},
+    result: {cart: {id: 'gid://cart/1', attributes: []}},
+  });
+  assert.equal(alsMap(spur.updateAttributes).get('ua_class'), 'intern', 'ARM-F2b');
+});
+
+test('ARM-F2c IPv6 aus unserem /64 zählt ebenfalls', () => {
+  assert.equal(istInterneIp(IP_INTERN_V6), true, 'ARM-F2c');
+  assert.equal(istInterneIp('2a01:4f9:c014:781e:1:2:3:4'), true, 'ARM-F2c voll');
+});
+
+test('ARM-F3 ÜBERSPERRUNG: echte Kunden-UAs sind NIE intern', () => {
+  const echte = [
+    UA_ECHT_DESKTOP,
+    UA_META,
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
+    'Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
+  ];
+  for (const ua of echte) {
+    assert.notEqual(classifyUserAgent(ua), 'intern', `ARM-F3: "${ua}"`);
+  }
+  // Die Marke allein reicht NICHT — "qiblanco" ist kein SSoT-Marker, und ein
+  // Kunde könnte sie in einem Zweck-String tragen.
+  assert.equal(istInternerUserAgent('qiblanco'), false, 'ARM-F3 Marke allein');
+  assert.equal(istInternerUserAgent(''), false, 'ARM-F3 leer');
+  assert.equal(istInternerUserAgent(null), false, 'ARM-F3 null');
+});
+
+test('ARM-F4 ÜBERSPERRUNG: Nachbar-IPs und Unsinn sind NIE intern', () => {
+  const fremde = [
+    '65.108.150.120', // direkt daneben, /32 heißt /32
+    '65.108.150.122',
+    '65.108.151.121',
+    '65.108.0.0',
+    '2a01:4f9:c014:781f::1', // Nachbar-/64
+    '2a01:4f9:c014:781::1',
+    '::1',
+    '', 'kaputt', '999.1.1.1', '65.108.150', '::ffff:65.108.150.121',
+  ];
+  for (const ip of fremde) {
+    assert.equal(istInterneIp(ip), false, `ARM-F4: "${ip}" darf NICHT intern sein`);
+  }
+  assert.equal(istInterneIp(undefined), false, 'ARM-F4 undefined');
+});
+
+test('ARM-F5 ein Kunde mit Kunden-IP behält seine echte Klasse', async () => {
+  const {spur, cart} = cartAttrappe();
+  await persistAttributionOnCartResult({
+    cart,
+    request: anfrage({ua: UA_META, ip: '203.0.113.7'}),
+    env: {},
+    result: {cart: {id: 'gid://cart/1', attributes: []}},
+  });
+  assert.equal(
+    alsMap(spur.updateAttributes).get('ua_class'),
+    'webview_meta',
+    'ARM-F5: der Meta-Webview darf durch den neuen Wert nicht verlorengehen',
+  );
+});
+
+test('ARM-F6 `intern` ist ein WERT, kein neuer Schlüssel (Checkout-Grenze)', async () => {
+  const {spur, cart} = cartAttrappe();
+  await persistAttributionOnCartResult({
+    cart,
+    request: anfrage({ua: UA_INTERN, ip: IP_INTERN_V4}),
+    env: {},
+    result: {cart: {id: 'gid://cart/1', attributes: []}},
+  });
+  const keys = (spur.updateAttributes ?? []).map((a) => a.key).sort();
+  // Ein NEUER Schlüssel müsste in TRACKING_COOKIE_NAMES nachgetragen werden
+  // und fiele sonst an der Domaingrenze weg (der `_qpx_anon`-Bug).
+  assert.deepEqual(
+    keys,
+    [...HERKUNFT].sort(),
+    'ARM-F6: es darf KEIN zusaetzlicher Schlüssel entstehen',
+  );
+  pruefeKeinPersonenbezug(spur.updateAttributes, 'ARM-F6');
+});
+
+test('ARM-F7 der SSoT-Spiegel ist nicht leer (Deko-Schutz)', () => {
+  assert.ok(INTERN_UA_MARKER.length >= 1, 'ARM-F7 UA-Marker');
+  assert.ok(INTERN_NETZE.length >= 1, 'ARM-F7 Netze');
+  // Ein Marker, der in einem echten Browser-UA vorkaeme, würde Kunden
+  // aussperren — dieselbe Sperre hat die SSoT im Loader.
+  for (const m of INTERN_UA_MARKER) {
+    assert.ok(m.length >= 8, `ARM-F7: Marker "${m}" ist zu unspezifisch`);
+    assert.equal(
+      UA_ECHT_DESKTOP.toLowerCase().includes(m.toLowerCase()),
+      false,
+      `ARM-F7: Marker "${m}" kommt in einem echten Browser-UA vor`,
+    );
+  }
 });
