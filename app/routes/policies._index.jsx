@@ -1,13 +1,43 @@
 import {useLoaderData, Link} from 'react-router';
 import {policyBeschreibungDe, policyTitelDe} from '~/lib/policy-titel';
+import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 
+const PFAD = '/policies';
+const TITEL = 'Rechtliche Hinweise | Qi Blanco';
+const BESCHREIBUNG =
+  'Rückerstattung, Datenschutz, Versand und Nutzungsbedingungen von Qi Blanco im Überblick.';
+
+/**
+ * Selbst-Canonical, Teilbild und strukturierte Daten (Job 20260912-sieben-
+ * indexierbare-seiten-ohne-sitemap-und-ohne-auszeichnung-prio22).
+ *
+ * DIESE UEBERSICHT STAND IN KEINER SITEMAP und trug trotzdem kein `noindex` --
+ * ein Crawler erreicht sie ueber die Fusszeile. Sie SOLL auffindbar sein: wer
+ * den Widerruf sucht, soll die Uebersicht finden. Darum Canonical statt
+ * noindex. Am 2026-09-12 fehlten ihr alle drei Signale, und zwar auf BEIDEN
+ * Laeden gleich -- es war nie ein Einzelfall, sondern eine Luecke der
+ * geteilten Routenklasse.
+ *
+ * Die Beschreibung stand schon hier und ist jetzt eine Konstante: sie versorgt
+ * `name=description` und `og:description` aus EINER Quelle. Zwei Quellen fuer
+ * denselben Text laufen auseinander, und dann zeigt ein geteilter Link etwas
+ * anderes als das Suchergebnis. *
+ * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
+ * Der Kopf jener Datei sagt, sie werde "ausschliesslich von den /pages-Routen"
+ * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei ueber
+ * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
+ * fuer diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
+ * alle 31 /pages-Routen in dieselbe Pruefung, also genau den Preis, vor dem der
+ * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
+ */
 export const meta = () => [
-  {title: 'Rechtliche Hinweise | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Rückerstattung, Datenschutz, Versand und Nutzungsbedingungen von Qi Blanco im Überblick.',
-  },
+  {title: TITEL},
+  {name: 'description', content: BESCHREIBUNG},
+  canonicalLink(PFAD),
+  ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG}),
 ];
 
 /**

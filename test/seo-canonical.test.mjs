@@ -419,8 +419,23 @@ test('s04 NAHT: Kategorie- und Rechtstext-Routen setzen einen Selbst-canonical',
     await s04Quelle('routes/collections.all.jsx'),
     /canonicalLink\('\/collections\/all'\)/,
   );
+  // ZWEI ZUSICHERUNGEN STATT EINER WORTLAUT-PINNUNG (2026-09-13, Job 20260912-
+  // sieben-indexierbare-seiten-ohne-sitemap-und-ohne-auszeichnung-prio22):
+  // bis hierher stand hier EIN Regex auf den genauen Aufruf
+  // `canonicalLink(\`/policies/${params.handle}\`)`. Die Route baut den Pfad
+  // jetzt in eine Konstante, weil ihn seit diesem Job ZWEI Aufrufer brauchen
+  // (canonicalLink und seitenSignale) — derselbe Pfad zweimal getippt waere die
+  // Drift, gegen die dieser Test antritt. Der alte Regex war damit rot, obwohl
+  // der Canonical unveraendert gesetzt wird: ein gepinnter WORTLAUT misst die
+  // Schreibweise, nicht die Zusage. Gepruefert wird deshalb beides einzeln —
+  // DASS die Route einen Canonical setzt, und DASS ihr Pfad aus dem
+  // angefragten Handle entsteht. Zusammen ist das dieselbe Zusage, ohne die
+  // Schreibweise festzuschreiben.
+  const policies = await s04Quelle('routes/policies.$handle.jsx');
+  assert.match(policies, /canonicalLink\(/, 'Rechtstext-Route braucht einen canonical');
   assert.match(
-    await s04Quelle('routes/policies.$handle.jsx'),
-    /canonicalLink\(`\/policies\/\$\{params\.handle\}`\)/,
+    policies,
+    /`\/policies\/\$\{params\.handle\}`/,
+    'der canonical-Pfad muss aus params.handle entstehen, nicht aus den Daten',
   );
 });

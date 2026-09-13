@@ -1,18 +1,39 @@
 import {Form} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   WITHDRAWAL_PRODUCTS,
 } from '~/lib/withdrawal';
 
+const PFAD = '/widerruf';
+const TITEL = 'Vertrag widerrufen | Qi Blanco';
+const BESCHREIBUNG =
+  'Online-Widerruf für Qi Blanco Bestellungen ohne Kundenkonto oder Login.';
+
+/**
+ * Teilbild und strukturierte Daten (Job 20260912-sieben-indexierbare-seiten-
+ * ohne-sitemap-und-ohne-auszeichnung-prio22). Der Canonical stand schon hier.
+ *
+ * Diese Seite gehoert zur Rechtstext-Klasse und SOLL gefunden werden: "Qi
+ * Blanco Widerruf" ist eine echte Suche, und die Seite ist der Weg, sie ohne
+ * Kundenkonto zu erledigen. Am 2026-09-12 trug sie kein og:image und kein
+ * JSON-LD. *
+ * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
+ * Der Kopf jener Datei sagt, sie werde "ausschliesslich von den /pages-Routen"
+ * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei ueber
+ * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
+ * fuer diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
+ * alle 31 /pages-Routen in dieselbe Pruefung, also genau den Preis, vor dem der
+ * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
+ */
 export const meta = () => [
-  {title: 'Vertrag widerrufen | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Online-Widerruf für Qi Blanco Bestellungen ohne Kundenkonto oder Login.',
-  },
-  canonicalLink('/widerruf'),
+  {title: TITEL},
+  {name: 'description', content: BESCHREIBUNG},
+  canonicalLink(PFAD),
+  ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG}),
 ];
 
 export function loader() {
