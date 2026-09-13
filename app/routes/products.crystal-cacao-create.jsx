@@ -100,7 +100,7 @@ async function loadCriticalData({context, request}, handle) {
 
   return {
     product,
-    // Markt-Land fuer die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
+    // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
     // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
     // kasse-nimmt-20-prio8.

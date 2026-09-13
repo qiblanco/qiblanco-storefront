@@ -18,7 +18,7 @@ const findLp = (data, handle) => data?.products?.find((product) => product?.hand
 // (Warenkorb-Kanon), andere Waehrungen = Markets-Endbetrag. Satz/Rundung/
 // Format kommen aus markt-pricing (die EINE Stelle, kein Doppelbau).
 // Der Helferblock, der bis zum 2026-09-13 hier und in sieben Schwesterdateien
-// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begruendung dort.
+// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begründung dort.
 // `useLpPreis()` bindet ihn an das aufgeloeste Markt-Land (AT: 20 statt 19 %).
 
 /* ───────── Hero ───────── */

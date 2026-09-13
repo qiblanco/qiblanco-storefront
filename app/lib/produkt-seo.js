@@ -301,7 +301,7 @@ export function produktMeta({pfad, titel, bildUrl, produkt, marktLand}) {
   // entsteht bewusst KEIN Knoten: ein unvollständiges Element steht dauerhaft
   // als Fehler in der Search Console, ein fehlendes bewirkt nur nichts.
   // DER MARKT MUSS MIT: produktSchema rechnet den Bruttopreis, und der Satz
-  // haengt am Markt (AT 20 statt 19 %). Ohne diesen Parameter zeichnete diese
+  // hängt am Markt (AT 20 statt 19 %). Ohne diesen Parameter zeichnete diese
   // Datei am 2026-09-13 auf allen sieben Flaggschiff-Routen den deutschen
   // Preis aus, waehrend die Seite darunter den oesterreichischen zeigte --
   // dieselbe Klasse wie der Anlassfall selbst, nur einen Aufrufer weiter.

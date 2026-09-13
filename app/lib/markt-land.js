@@ -16,13 +16,13 @@ import {STEUER_LAND_DEFAULT} from './cart-display-pricing.js';
  *
  * WARUM EIGENE DATEI UND NICHT markt-pricing.js: markt-pricing.js ist bewusst
  * frei von Framework-Importen, damit jede reine Datenfabrik, die den
- * Preis-Kanon benutzt, mit `node --test` pruefbar bleibt (Begruendung im Kopf
+ * Preis-Kanon benutzt, mit `node --test` pruefbar bleibt (Begründung im Kopf
  * jener Datei und in produkt-seo.js). Ein `react-router`-Import dort haette
- * genau diese Eigenschaft zerstoert. Hier ist er richtig, weil diese Datei
+ * genau diese Eigenschaft zerstört. Hier ist er richtig, weil diese Datei
  * NUR von Komponenten benutzt wird.
  *
- * WARUM UEBER DIE ROOT-LOADERDATEN: `useRouteLoaderData('root')` ist im Haus
- * der bestehende Weg fuer sitewide Loader-Werte (EuGewaehrleistungsLabel,
+ * WARUM ÜBER DIE ROOT-LOADERDATEN: `useRouteLoaderData('root')` ist im Haus
+ * der bestehende Weg für sitewide Loader-Werte (EuGewaehrleistungsLabel,
  * lib/googleRating.js) — kein neuer Mechanismus, sondern derselbe.
  */
 
@@ -34,8 +34,8 @@ export {STEUER_LAND_DEFAULT as MARKT_LAND_DEFAULT};
  *
  * FAIL-CLOSED, ABSICHTLICH STILL: fehlt der Wert (Route ausserhalb von root,
  * Loader-Fehler, alter Client-Bundle), gilt DE — also der Zustand vor dieser
- * Aenderung. Eine leere Preisanzeige waere die schlechtere Antwort; ein
- * Ausrufezeichen an dieser Stelle wuerde bei JEDEM Fehler die Kaufseite
+ * Aenderung. Eine leere Preisanzeige wäre die schlechtere Antwort; ein
+ * Ausrufezeichen an dieser Stelle würde bei JEDEM Fehler die Kaufseite
  * roeten. Dass der Wert wirklich ankommt, ist deshalb NICHT hier geprueft,
  * sondern am Kundenrand: `abnahme_karte_gegen_korb.py --markt AT` und die
  * Wache `preiswatch` (live_maerkte) messen die Zahl, die der Kunde sieht.

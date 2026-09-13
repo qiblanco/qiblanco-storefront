@@ -10,7 +10,7 @@ import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
  */
 export function CartSummary({cart, layout}) {
   // Der Warenkorb rechnet den Bruttobetrag selbst (Netto-Shop) und braucht
-  // dafuer den Satz des aufgeloesten Marktes -- in AT 20 statt 19 Prozent.
+  // dafür den Satz des aufgeloesten Marktes -- in AT 20 statt 19 Prozent.
   const marktLand = useMarktLand();
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';

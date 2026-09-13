@@ -33,8 +33,8 @@ import {useMarktLand} from '~/lib/markt-land';
  * aber nur, wenn er ausdrücklich gesetzt ist.
  *
  * DAS MARKT-LAND KOMMT NICHT ALS PROP, SONDERN AUS DEM KONTEXT (2026-09-13):
- * der Satz haengt nicht nur an der Ware, sondern am aufgeloesten Markt -- AT
- * fuehrt 20 statt 19 Prozent und 10 statt 7. Eine Prop haette wieder verlangt,
+ * der Satz hängt nicht nur an der Ware, sondern am aufgeloesten Markt -- AT
+ * führt 20 statt 19 Prozent und 10 statt 7. Eine Prop haette wieder verlangt,
  * dass 13 Aufrufer daran denken; genau daran ist der 19-Prozent-Vorgabewert
  * oben schon einmal gescheitert. `useMarktLand()` holt ihn aus denselben
  * root-Loaderdaten, aus denen ihn jede andere Preisanzeige holt.

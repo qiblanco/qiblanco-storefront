@@ -55,7 +55,7 @@ const themaById = (id) => THEMEN.find((t) => t.id === id);
 // gestuft): EUR = netto*(1+Satz) aus markt-pricing, andere Waehrungen =
 // Markets-Endbetrag. KEINE Hartpreise — Preis-SSoT ist Shopify.
 // Der Helferblock, der bis zum 2026-09-13 hier und in sieben Schwesterdateien
-// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begruendung dort.
+// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begründung dort.
 // `useLpPreis()` bindet ihn an das aufgeloeste Markt-Land (AT: 20 statt 19 %).
 
 // Kuratiertes ECHTES Shooting-Foto (bilder_kuratiert.jsonl: „QiOne2Pro-Anhaenger

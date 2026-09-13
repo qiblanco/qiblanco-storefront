@@ -36,7 +36,7 @@ import {taxRateForHandle} from './cart-display-pricing.js';
  * @param {string} handle Produkt-Handle
  * @param {string} [currencyCode] Waehrung des API-Preises (Default EUR)
  * @param {string} [land] ISO-Land des aufgeloesten Marktes (Default DE)
- * @returns {number} Satz des Landes fuer EUR-Netto-Maerkte, 0 sonst (Endbetrag)
+ * @returns {number} Satz des Landes für EUR-Netto-Maerkte, 0 sonst (Endbetrag)
  */
 export function anzeigeSatz(handle, currencyCode, land) {
   if ((currencyCode || 'EUR') !== 'EUR') return 0;

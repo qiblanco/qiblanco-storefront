@@ -76,15 +76,15 @@ function getCurrencyCode(line) {
  *     AT  crystal-cacao-awake  netto   71,03  Steuer   7,10  ->  9,996 % (10 %)
  *
  * Also BEIDE Klassen unterscheiden sich, nicht nur der Regelsatz -- ein Fix,
- * der nur 19 auf 20 gehoben haette, waere beim Kakao falsch geblieben.
+ * der nur 19 auf 20 gehoben haette, wäre beim Kakao falsch geblieben.
  * Was der Kunde vorher zahlte, aendert sich durch diese Tabelle NICHT: die
  * Kasse verlangte in AT schon immer 20 bzw. 10 %. Korrigiert wird allein die
  * ANZEIGE, die zu wenig nannte (Paketkarte: 58,24 bis 146,22 EUR je Paket).
  *
- * WARUM EINE TABELLE UND NICHT GELESEN: der naheliegende Weg waere, Shopify
+ * WARUM EINE TABELLE UND NICHT GELESEN: der naheliegende Weg wäre, Shopify
  * nach dem Betrag zu fragen. Gemessen am 2026-09-13 gibt die Storefront-API
  * ihn nicht her -- `cart.cost.totalTaxAmount` kam in allen vier gemessenen
- * Faellen als `null` zurueck (Beleg: mess/satz_de_at.json im Jobordner).
+ * Faellen als `null` zurück (Beleg: mess/satz_de_at.json im Jobordner).
  * Der Satz ist an dieser Schnittstelle nicht lesbar, also muss er hier stehen.
  *
  * WARUM SIE HIER UNTEN STEHT UND NICHT IM DATEIKOPF: der Preis-Waechter
@@ -94,9 +94,9 @@ function getCurrencyCode(line) {
  * haette Phantom-Handles erzeugt. Derselbe Waechter liest die Saetze aus
  * GENAU dieser Tabelle -- wer sie umbenennt, zieht `kanon_saetze` im selben
  * Commit nach, sonst faellt der Waechter still auf seine Konfig-Vorgabe
- * zurueck und misst AT wieder mit 19 %.
+ * zurück und misst AT wieder mit 19 %.
  *
- * DIE GRENZE, DIE BLEIBT: der Steuersatz haengt an der LIEFERADRESSE, und die
+ * DIE GRENZE, DIE BLEIBT: der Steuersatz hängt an der LIEFERADRESSE, und die
  * kennt niemand, bevor der Kunde sie eingibt. Diese Tabelle nennt den Satz des
  * aufgeloesten MARKTES -- die beste verfuegbare Schaetzung, nicht die Wahrheit
  * der Bestellung. Wer aus DE nach AT liefert, sieht weiter 19 % und zahlt
@@ -111,7 +111,7 @@ const SATZ_JE_LAND = {
 /** Markt-Land, das gilt, wenn keines durchgereicht wurde (fail-closed: Status quo). */
 export const STEUER_LAND_DEFAULT = 'DE';
 
-/** Laender, fuer die ein Satz GEMESSEN vorliegt. */
+/** Laender, für die ein Satz GEMESSEN vorliegt. */
 export const STEUER_LAENDER = Object.keys(SATZ_JE_LAND);
 
 /**

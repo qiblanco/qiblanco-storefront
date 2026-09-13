@@ -9,18 +9,18 @@ import {useMarktLand} from './markt-land.js';
  * kasse-nimmt-20-prio8). Bis zum 2026-09-13 stand derselbe Helferblock
  * BYTE-IDENTISCH in acht Landingpage-Komponenten (SchlafZellenSchutz, V2, V3,
  * TieferSchlaf, ESmogSchutz, ZellSchutz, Partner, QiOneZellschutz --
- * md5 6cfefd8c7bb63a1329edc82a4f45f9f0 in allen acht). Achtfache Kopie heisst:
+ * md5 6cfefd8c7bb63a1329edc82a4f45f9f0 in allen acht). Achtfache Kopie heißt:
  * jede Preis-Lehre muss achtmal nachgezogen werden, und genau dieses Nachziehen
  * ist in diesem Haus schon zweimal ausgeblieben. Der Kopf von
  * components/ProductPrice.jsx protokolliert den ersten Fall (Kakaosatz nur im
  * Warenkorb-Konsumenten gefixt, die Kaufseite daneben rechnete weiter 19 %);
  * der zweite ist der Anlass dieser Datei (Markt-Steuersatz).
  *
- * WARUM EIN HOOK UND KEINE FREIEN FUNKTIONEN: der Steuersatz haengt jetzt am
- * aufgeloesten MARKT, nicht nur an der Waehrung -- AT fuehrt 20 statt 19
+ * WARUM EIN HOOK UND KEINE FREIEN FUNKTIONEN: der Steuersatz hängt jetzt am
+ * aufgeloesten MARKT, nicht nur an der Waehrung -- AT führt 20 statt 19
  * Prozent. Der Markt steht in den root-Loaderdaten, und die sind nur aus einer
- * Komponente erreichbar. Ein Modul-Helfer koennte ihn baulich nicht sehen und
- * muesste ihn wieder aus der Waehrung raten; genau dieses Raten war der Defekt.
+ * Komponente erreichbar. Ein Modul-Helfer könnte ihn baulich nicht sehen und
+ * müsste ihn wieder aus der Waehrung raten; genau dieses Raten war der Defekt.
  *
  * `waehrungVon` bleibt eine freie Funktion: sie liest ein Feld und braucht
  * keinen Markt.

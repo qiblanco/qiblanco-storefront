@@ -8,9 +8,13 @@
  * Gemessen am Kundenrand am 2026-09-13 (`runningTotal` der Kassenseite gegen
  * die Netto-Zwischensumme, je Fall zwei Zeugen):
  *
- *     AT  PAKET-FUNDAMENT     Karte  6.756   Kasse  6.814,24   +58,24
- *     AT  PAKET-UNABHAENGIG   Karte  9.242   Kasse  9.318,60   +76,60
- *     AT  PAKET-RESIDENZ      Karte 17.397   Kasse 17.543,22  +146,22
+ *     AT  Fundament     Karte  6.756   Kasse  6.814,24   +58,24
+ *     AT  Unabhängig    Karte  9.242   Kasse  9.318,60   +76,60
+ *     AT  Residenz      Karte 17.397   Kasse 17.543,22  +146,22
+ *
+ * (Die Rabattcodes zu diesen drei Paketen stehen in app/lib/markt-pricing.js;
+ * hier stehen die Paketnamen, damit die Tabelle ohne einen zweiten Blick
+ * lesbar ist.)
  *
  * Ursache war eine Achse zu wenig: `anzeigeSatz` entschied den Satz allein an
  * der WAEHRUNG, und AT ist ein EUR-Markt. Der Kunde zahlte nicht zu viel --
@@ -23,9 +27,9 @@
  *
  * (C) ist die Achse, die hier den Schaden getragen hat, und sie ist die
  * einzige, die ein Vorgabewert unsichtbar machen kann: `taxRateForHandle`
- * faellt ohne Land fail-closed auf DE zurueck. Das ist richtig gebaut (eine
- * leere Preisanzeige waere schlimmer) und genau deshalb von einem Defekt
- * nicht zu unterscheiden, solange niemand die Aufrufer zaehlt. Die Bauform
+ * faellt ohne Land fail-closed auf DE zurück. Das ist richtig gebaut (eine
+ * leere Preisanzeige wäre schlimmer) und genau deshalb von einem Defekt
+ * nicht zu unterscheiden, solange niemand die Aufrufer zählt. Die Bauform
  * ist aus test/preis-eine-quelle.test.mjs (B) uebernommen, nicht neu erfunden
  * -- dort hat dieselbe Frage schon einmal einen Preisfehler gefangen.
  */
@@ -84,7 +88,7 @@ test('(A) beide Steuerklassen haben je Markt ihren gemessenen Satz', () => {
   assert.equal(taxRateForHandle('crystal-cacao-awake', 'AT'), 0.1);
 });
 
-test('(A) fehlendes oder unbekanntes Land faellt auf den Status quo zurueck', () => {
+test('(A) fehlendes oder unbekanntes Land faellt auf den Status quo zurück', () => {
   for (const land of [undefined, null, '', 'XX', 'ZZ']) {
     assert.equal(
       taxRateForHandle('qione-2-pro', land),
@@ -132,12 +136,12 @@ test('(A) der Warenkorb rechnet denselben Satz wie die Seite davor', () => {
 });
 
 /* ─────────────────────────────────────────────────────────────────────────
-   (B) NEGATIV-KONTROLLE: der Test muss ROT werden koennen.
+   (B) NEGATIV-KONTROLLE: der Test muss ROT werden können.
 
    Ein Test, der nur bestaetigt, dass 20 % gerechnet wird, bleibt auch dann
    gruen, wenn jemand DE ebenfalls auf 20 % stellt -- dann ist der Defekt
-   zurueck, nur in die andere Richtung. Geprueft wird deshalb der
-   UNTERSCHIED: zwei EUR-Maerkte muessen fuer dieselbe Ware und denselben
+   zurück, nur in die andere Richtung. Geprueft wird deshalb der
+   UNTERSCHIED: zwei EUR-Maerkte müssen für dieselbe Ware und denselben
    Nettobetrag verschiedene Zahlen ergeben. Faellt die Markt-Achse weg (jemand
    entfernt den Parameter, benennt das Feld um, oder `anzeigeSatz` ignoriert
    ihn wieder), wird genau dieser Arm rot -- und zwar als einziger.
@@ -153,14 +157,14 @@ test('(B) zwei EUR-Maerkte duerfen nicht dieselbe Zahl ergeben', () => {
   // Und der Anlassfall namentlich: 6.756 war die Zahl, die AT NIE haette
   // zeigen duerfen (die Kasse verlangte 6.814,24).
   assert.notEqual(at, 6756, 'AT zeigt wieder den deutschen Paketpreis');
-  assert.ok(at > de, 'AT fuehrt den hoeheren Satz, also die hoehere Anzeige');
+  assert.ok(at > de, 'AT führt den hoeheren Satz, also die hoehere Anzeige');
 });
 
 /* ─────────────────────────────────────────────────────────────────────────
    (C) AUFRUFER-DECKUNG: jeder Aufruf des Kanons nennt sein Markt-Land.
 
    Gemessen wird die EIGENSCHAFT (Aufruf einer Kanon-Funktion mit zu wenigen
-   Argumenten), nicht eine Datei-Liste: eine Liste waere ein zweiter,
+   Argumenten), nicht eine Datei-Liste: eine Liste wäre ein zweiter,
    unbewachter Enforcer und genau die Bauform, an der diese Klasse hier schon
    durchgerutscht ist.
 
@@ -169,7 +173,7 @@ test('(B) zwei EUR-Maerkte duerfen nicht dieselbe Zahl ergeben', () => {
    NICHT. Dass der Wert wirklich ankommt, misst allein der Kundenrand
    (werkzeug/abnahme_karte_gegen_korb.py --markt AT und die preiswatch-Wache).
    Jeder Lauf druckt, was er NICHT beurteilt hat -- ohne diesen Restbericht
-   waere die Auswahl eine stille Behauptung ueber Vollstaendigkeit.
+   wäre die Auswahl eine stille Behauptung über Vollstaendigkeit.
    ────────────────────────────────────────────────────────────────────── */
 
 // Kanon-Funktion -> Zahl der Argumente, ab der ein Markt dabei ist.
@@ -184,7 +188,7 @@ const MINDEST_ARGUMENTE = {
   getCartLinePriceDisplayExact: 2,
   // MITTELBARER KONSUMENT, und er ist der Grund, warum diese Liste nicht bei
   // den vier Kanon-Funktionen endet: `produktSchema` rechnet den Bruttopreis
-  // ueber `bruttoAnzeige`, gibt also einen Markt weiter, den es selbst
+  // über `bruttoAnzeige`, gibt also einen Markt weiter, den es selbst
   // bekommen muss. Am 2026-09-13 war genau dieser Aufrufer der eine, den die
   // erste Fassung dieses Arms nicht sah -- die Produkt-Auszeichnung zeichnete
   // in AT den deutschen Preis aus, waehrend die Seite darunter schon den
@@ -212,7 +216,7 @@ function quellDateien(wurzel) {
   return raus;
 }
 
-/** Argumente eines Aufrufs -- klammerbalanciert, damit `f(g(a,b), c)` als 2 zaehlt. */
+/** Argumente eines Aufrufs -- klammerbalanciert, damit `f(g(a,b), c)` als 2 zählt. */
 function argumente(quelle, ab) {
   let tiefe = 0;
   let puffer = '';
