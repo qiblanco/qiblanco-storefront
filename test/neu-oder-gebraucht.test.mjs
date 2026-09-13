@@ -12,6 +12,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
+import {ohneProsa} from './_quelltext.mjs';
+
 import {
   FRAGEN,
   FRISTEN,
@@ -27,25 +29,30 @@ import {FAQ_ALLE} from '../app/data/faq-seite.js';
 const lies = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 
 /**
- * DER CODE OHNE SEINE PROSA.
+ * DER CODE OHNE SEINE PROSA — der Helfer steht seit 2026-09-13 in
+ * `./_quelltext.mjs`, weil dieselbe Klasse eine zweite Datei traf.
  *
- * Eigener Befund beim Bau dieser Datei, und er ist eine bekannte Klasse: drei
- * Pruefungen schlugen an, weil die Begründung im Dateikopf die verbotenen
- * Woerter NENNT — `noindex`, `{rel:'canonical'}` und die Zahl 440 stehen dort
- * als Erklaerung, warum sie NICHT im Code stehen. Ein Zensus, der Prosa
- * mitliest, misst den Kommentar und nicht den Gegenstand; die Folge wäre ein
- * Dauer-Rot, das man nur durch Loeschen der Begründung heilt. Gemessen wird
- * deshalb der Programmtext.
+ * Eigener Befund beim Bau dieser Datei: drei Pruefungen schlugen an, weil die
+ * Begründung im Dateikopf die verbotenen Woerter NENNT — `noindex`,
+ * `{rel:'canonical'}` und die Zahl 440 stehen dort als Erklaerung, warum sie
+ * NICHT im Code stehen. Ein Zensus, der Prosa mitliest, misst den Kommentar
+ * und nicht den Gegenstand; die Folge ist ein Dauer-Rot, das man nur durch
+ * Loeschen der Begründung heilt. Gemessen wird deshalb der Programmtext.
  */
-const ohneProsa = (t) =>
-  t.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
 
 const ROUTE_MIT_PROSA = lies('../app/routes/pages.neu-oder-gebraucht.jsx');
 const ROUTE = ohneProsa(ROUTE_MIT_PROSA);
 const KOMPONENTE = ohneProsa(
   lies('../app/components/campaign/NeuOderGebrauchtSeite.jsx'),
 );
-const CSS = lies('../app/styles/neu-oder-gebraucht.css');
+// DIE AUSGELASSENE DRITTE QUELLE. ROUTE und KOMPONENTE gingen von Anfang an
+// durch `ohneProsa`, die CSS nicht — und nur sie trug einen Arm, der deshalb
+// seit dem Geburts-Commit 408c0fd (#414) NIE gruen war. Das einzige
+// Farb-Literal im Rumpf ist `#F2BF72` in einem Kommentar; es beschreibt den
+// fremden ActiveCampaign-Ocker, den der Block darunter gerade ueberschreibt.
+// Der Kommentar war also der BELEG fuer die Einhaltung der Regel und wurde
+// als ihr Bruch gemessen.
+const CSS = ohneProsa(lies('../app/styles/neu-oder-gebraucht.css'));
 const PFAD = '/pages/neu-oder-gebraucht';
 
 // ---------------------------------------------------------------------------
