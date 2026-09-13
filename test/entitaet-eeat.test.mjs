@@ -14,6 +14,14 @@ import {
 import {übersichtSchema, studieSchema} from '../app/lib/studien-schema.js';
 import {ORG_ID} from '../app/lib/entity-schema.js';
 
+/**
+ * Die Form, die Google für ein Datums-/Uhrzeit-Attribut sehen will.
+ * `standFuer()` liefert seit dem 2026-09-13 einen Zeitstempel MIT Zone; die
+ * Tabelle REDAKTIONSSTAND bleibt bewusst ein blosser Kalendertag (sie ist die
+ * redaktionelle Angabe, die gepflegt und gemessen wird).
+ */
+const MIT_ZONE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/;
+
 // Die Studien-Registry app/data/studien/index.js importiert ihre fuenf
 // JSON-Dateien per `import ... from './e0001.json'` — eine Form, die Vite
 // aufloest und `node --test` ohne Import-Attribut ablehnt. Statt die
@@ -81,7 +89,14 @@ test('Studien-Hub trägt author UND dateModified', () => {
   const sammlung = graph.find((n) => n['@type'] === 'CollectionPage');
   assert.ok(sammlung, 'CollectionPage fehlt im Hub-Graphen');
   assert.deepEqual(sammlung.author, {'@id': ORG_ID});
-  assert.equal(sammlung.dateModified, REDAKTIONSSTAND['/pages/studien']);
+  assert.equal(sammlung.dateModified, standFuer('/pages/studien'));
+  // DIE ZONE IST DER PUNKT, nicht nur der Tag: ohne sie legt Google den
+  // Kalendertag nach dem Standort seines eigenen Crawlers aus.
+  assert.ok(
+    sammlung.dateModified.startsWith(REDAKTIONSSTAND['/pages/studien']),
+    'der redaktionelle Kalendertag darf sich nicht verschieben',
+  );
+  assert.match(sammlung.dateModified, MIT_ZONE);
 });
 
 test('der Hub referenziert die Organisation, statt sie zu doppeln', () => {
@@ -123,7 +138,12 @@ test('jedes Studien-Blatt trägt dateModified NEBEN datePublished', () => {
     const artikel = studieSchema(s)['@graph'].find(
       (n) => n['@type'] === 'ScholarlyArticle',
     );
-    assert.equal(artikel.dateModified, REDAKTIONSSTAND[`/pages/${s.slug}`]);
+    assert.equal(artikel.dateModified, standFuer(`/pages/${s.slug}`));
+    assert.ok(
+      artikel.dateModified.startsWith(REDAKTIONSSTAND[`/pages/${s.slug}`]),
+      `${s.slug}: der redaktionelle Kalendertag darf sich nicht verschieben`,
+    );
+    assert.match(artikel.dateModified, MIT_ZONE);
     if (s.eckdaten.veroeffentlicht) {
       assert.notEqual(
         artikel.dateModified,
@@ -137,6 +157,9 @@ test('jedes Studien-Blatt trägt dateModified NEBEN datePublished', () => {
 // ── B-10(a): die Über-uns-Seite nennt einen ECHTEN Menschen ──────────────
 
 test('der Stand der Über-uns-Seite ist geführt', () => {
-  assert.equal(STAND_ISO, REDAKTIONSSTAND['/pages/ueber-uns']);
-  assert.match(STAND_ISO, /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(
+    STAND_ISO.startsWith(REDAKTIONSSTAND['/pages/ueber-uns']),
+    'STAND_ISO muss den gefuehrten Kalendertag tragen',
+  );
+  assert.match(STAND_ISO, MIT_ZONE);
 });

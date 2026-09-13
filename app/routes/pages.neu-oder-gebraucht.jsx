@@ -4,6 +4,7 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {FRAGEN} from '~/data/kauf-tatsachen';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/neu-oder-gebraucht';
 
@@ -107,8 +108,8 @@ export const meta = () => {
   const schema = buildFaqPageJsonLd(FRAGEN, {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
-    datePublished: NOG_VEROEFFENTLICHT,
-    dateModified: NOG_GEAENDERT,
+    datePublished: isoMitZone(NOG_VEROEFFENTLICHT),
+    dateModified: isoMitZone(NOG_GEAENDERT),
   });
   return [
     {title: TITEL},

@@ -5,6 +5,7 @@ import {
 import mmStyles from '~/styles/mm-lp.css?url';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
+import {isoMitZone} from '~/lib/datum';
 
 /**
  * /pages/wirkt-das — Antwort auf den größten Einwand des Bestands
@@ -103,8 +104,8 @@ function faqSchema() {
   const schema = buildFaqPageJsonLd(items, {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
-    datePublished: VEROEFFENTLICHT,
-    dateModified: GEAENDERT,
+    datePublished: isoMitZone(VEROEFFENTLICHT),
+    dateModified: isoMitZone(GEAENDERT),
   });
   if (!schema) return null;
   if (items.length !== ZWEIFEL_SOLL) return null;

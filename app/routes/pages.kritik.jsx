@@ -5,6 +5,7 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {FRAGEN} from '~/data/kritik-vorwuerfe';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/kritik';
 
@@ -122,8 +123,8 @@ export const meta = () => {
   const schema = buildFaqPageJsonLd(schemaItems(), {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
-    datePublished: KRITIK_VEROEFFENTLICHT,
-    dateModified: KRITIK_GEAENDERT,
+    datePublished: isoMitZone(KRITIK_VEROEFFENTLICHT),
+    dateModified: isoMitZone(KRITIK_GEAENDERT),
   });
   return [
     {title: TITEL},
