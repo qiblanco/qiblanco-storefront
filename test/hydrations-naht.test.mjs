@@ -14,6 +14,16 @@
  *   2. <style>{`... input[type='text'] ...`}</style> im React-Baum (dieser
  *      Wächter). Das ist der Fall unten.
  *
+ *   3. Ein von React gerendertes <script> im <head> (Job 20260913-head-ohne-
+ *      react-scripts-...-prio22). Hier schreibt der Server nichts falsch --
+ *      ein FREMDER hängt zur Laufzeit dazwischen. Cookiebot sucht
+ *      `document.getElementsByTagName("script")[0]` und fuegt seine zwei
+ *      eigenen Skripte davor in DESSEN Elternknoten ein. Ist dieses erste
+ *      Skript ein React-Knoten im <head>, verschieben sich alle Geschwister
+ *      dahinter und React hydriert gegen einen verschobenen Baum -- dieselbe
+ *      Folge wie bei 1., anderer Weg dorthin. Die Wächter dafür stehen
+ *      ebenfalls unten.
+ *
  * WARUM EIN <style> MIT TEXTKIND BRICHT, und warum es zugleich still kaputt ist:
  * React MASKIERT Textkinder beim Serverrendern. Aus input[type='text'] wird im
  * SSR-HTML input[type=&#x27;text&#x27;]. <style> ist aber ein RAW-TEXT-Element --
@@ -49,7 +59,8 @@ const APP = join(HIER, '..', 'app');
 const MASKIERT = /['"&<>]/;
 
 /** <style ...>{`...`}</style> bzw. <style>{'...'}</style> mit Textkind. */
-const STYLE_MIT_TEXTKIND = /<style(?![^>]*dangerouslySetInnerHTML)[^>]*>\s*\{\s*([`'"])([\s\S]*?)\1\s*\}\s*<\/style>/g;
+const STYLE_MIT_TEXTKIND =
+  /<style(?![^>]*dangerouslySetInnerHTML)[^>]*>\s*\{\s*([`'"])([\s\S]*?)\1\s*\}\s*<\/style>/g;
 
 function dateien(verzeichnis) {
   const raus = [];
@@ -94,5 +105,81 @@ test('kein <style> im React-Baum, dessen CSS von React maskiert wird', () => {
       'nicht greift. Weg damit nach app/styles/*.css, oder (wenn es wirklich ' +
       'in die Komponente muss) dangerouslySetInnerHTML wie in ShopSwitch.jsx.\n' +
       `Treffer:\n  ${treffer.join('\n  ')}`,
+  );
+});
+
+// ── URSACHE 3: von React gerendertes <script> im <head> ────────────────────
+// Die WIRKUNG misst homepage-bauer/pruefungen/probe_head_ohne_react_skript.py
+// am echten Browser (zwei Arme, Positiv-Kontrolle je Arm). Die Wächter hier
+// sind der billige Vorposten: sie fallen schon im PR.
+
+const QUELLE = new URL('../app/root.jsx', import.meta.url);
+
+/** Der <head>-Abschnitt des JSX aus root.jsx. */
+function kopfAbschnitt(text) {
+  const a = text.indexOf('\n      <head>');
+  const e = text.indexOf('\n      </head>');
+  assert.ok(a >= 0, 'oeffnendes <head> im JSX nicht gefunden');
+  assert.ok(e > a, 'schliessendes </head> im JSX nicht gefunden');
+  return text.slice(a, e);
+}
+
+test('im <head> von root.jsx steht kein von React gerendertes <script>', () => {
+  const kopf = kopfAbschnitt(readFileSync(QUELLE, 'utf8'));
+  const treffer = kopf.match(/<script\b/g) || [];
+  assert.deepEqual(
+    treffer,
+    [],
+    'Ein <script> im <head> macht Cookiebots Einschub wieder zum ' +
+      'Hydrationsbruch. Es gehört in den <body> — siehe den Kommentarblock ' +
+      'am Anfang des <body> in app/root.jsx.',
+  );
+});
+
+test('<Meta /> wird im <head> nicht direkt gerendert, sondern aufgeteilt', () => {
+  const text = readFileSync(QUELLE, 'utf8');
+  const kopf = kopfAbschnitt(text);
+  assert.ok(
+    !/<Meta\s*\/>/.test(kopf),
+    '<Meta /> rendert die JSON-LD-Descriptoren als <script> in den <head>. ' +
+      'Im <head> gehört {metaKopf} zu stehen.',
+  );
+  assert.ok(kopf.includes('{metaKopf}'), '{metaKopf} fehlt im <head>');
+  assert.ok(
+    text.includes('{metaRumpf}'),
+    '{metaRumpf} fehlt — die JSON-LD-Bloecke würden dann gar nicht mehr ' +
+      'ausgeliefert (SEO-Verlust statt Hydrationsfix)',
+  );
+});
+
+test('metaAufteilen wird unbedingt aufgerufen (Hook-Reihenfolge)', () => {
+  const text = readFileSync(QUELLE, 'utf8');
+  const zeile = text
+    .split('\n')
+    .find((z) => z.includes('metaAufteilen(Meta())'));
+  assert.ok(zeile, 'der Aufruf metaAufteilen(Meta()) fehlt');
+  // Ein `&&`, `?` oder `if` auf derselben Zeile wäre eine bedingte
+  // Ausfuehrung — die Hooks von Meta() laufen im Slot der aufrufenden
+  // Komponente, ihre Reihenfolge darf zwischen zwei Renderdurchlaeufen nicht
+  // wandern.
+  assert.ok(
+    !/[?&]|\bif\b/.test(zeile),
+    `metaAufteilen(Meta()) steht bedingt: ${zeile.trim()}`,
+  );
+});
+
+test('ROT-VOR-GRUEN: der Waechter erkennt ein zurueckgeschriebenes head-Skript', () => {
+  const text = readFileSync(QUELLE, 'utf8');
+  // Den Defekt hermetisch nachbauen statt ihn zu behaupten.
+  const kaputt = text.replace(
+    '\n      </head>',
+    '\n        <script src="/rueckfall.js" />\n      </head>',
+  );
+  assert.notEqual(kaputt, text, 'Mutant liess sich nicht bauen');
+  const treffer = kopfAbschnitt(kaputt).match(/<script\b/g) || [];
+  assert.equal(
+    treffer.length,
+    1,
+    'Der Waechter sieht sein eigenes Gegenbeispiel nicht — er ist blind.',
   );
 });

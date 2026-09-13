@@ -1,3 +1,4 @@
+import {Children, isValidElement} from 'react';
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
   Outlet,
@@ -52,7 +53,10 @@ import {strictRegions} from '~/lib/consent-policy';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
-import {salesbotWidgetOrigin, istSalesbotDeutscherShop} from '~/lib/salesbot-widget';
+import {
+  salesbotWidgetOrigin,
+  istSalesbotDeutscherShop,
+} from '~/lib/salesbot-widget';
 import {SalesbotWidget} from './components/SalesbotWidget';
 import {DialogSignal} from './components/DialogSignal';
 /**
@@ -128,9 +132,9 @@ export async function loader(args) {
     // (Fix v2 Punkt 5; Repair 2026-07-31): fail-safe, 6h gecacht (Reputon-
     // Feed, kein Key nötig), fällt auf 4,8/437-Schnappschuss zurück (nie
     // 500en/erfinden).
-    googleRating: await ladeGoogleRating(args.context).catch(
-      () => ({...GOOGLE_RATING_FALLBACK}),
-    ),
+    googleRating: await ladeGoogleRating(args.context).catch(() => ({
+      ...GOOGLE_RATING_FALLBACK,
+    })),
     isProductionHost: isQiblancoProductionHost(args.request.url),
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
@@ -303,6 +307,66 @@ function cookiebotBootstrap(nonce) {
 }
 
 /**
+ * Teilt die Ausgabe von react-routers <Meta /> in "gehört in den <head>" und
+ * "gehört in den <body>".
+ *
+ * WARUM ES DAS GIBT: unter den meta-Descriptoren einer Route ist
+ * `{'script:ld+json': schema}` — react-router rendert daraus ein
+ * <script type="application/ld+json">. Auf der Produktseite sind das drei
+ * Stück, und sie waren nach dem Vorlauf-Fix das ERSTE <script> des Dokuments.
+ * Genau davor hängt Cookiebot seine zwei eigenen Skripte ein (Begründung und
+ * Herstellerquelle stehen im <body>-Kommentar unten), und alles dahinter
+ * verschiebt sich — Reacts Hydration bricht auf jeder Seite.
+ *
+ * WIE: <Meta /> ist eine schlichte Funktionskomponente, die ein Fragment
+ * zurueckgibt, dessen children genau die gerenderten Descriptoren sind
+ * (Renderschleife: tagName -> title -> charset -> script:ld+json -> Fallback
+ * `createElement('meta', ...)`, nachgelesen in den dist-Chunks von
+ * node_modules/react-router). Sie wird hier DIREKT aufgerufen statt als
+ * Element gerendert; ihre Hooks sind reine Context-Lesezugriffe und laufen
+ * dabei im Slot der aufrufenden Komponente. Der Aufruf steht deshalb
+ * UNBEDINGT und an fester Stelle — eine bedingte Ausfuehrung würde die
+ * Hook-Reihenfolge zwischen zwei Renderdurchlaeufen verschieben.
+ *
+ * TITEL, BESCHREIBUNG, CANONICAL UND OG BLEIBEN IM <head>. Verlegt wird
+ * ausschließlich, was als <script> herauskommt. JSON-LD im <body> ist für
+ * Google gültig (die Auszeichnung wird im ganzen Dokument gelesen).
+ *
+ * FAIL-SAFE AUF DIE FORM, NICHT AUF DEN AUFRUF: geprueft wird der
+ * Rueckgabewert. Liefert ein kuenftiges react-router kein Element mit
+ * `props.children` mehr, faellt die Funktion auf das heutige Verhalten
+ * zurück — <Meta /> komplett im <head>, also hoechstens der alte Defekt,
+ * nie eine fehlende Auszeichnung. Ein try/catch um den AUFRUF wäre hier
+ * falsch: braeche Meta() mitten in seinen Hooks ab, wäre die Hook-Reihenfolge
+ * dieses Durchlaufs bereits zerstört, und der Fang würde den Schaden
+ * verdecken statt ihn zu verhindern.
+ *
+ * Der Rueckfall ist KEIN theoretischer Zweig: `react-router` steht in
+ * package.json mit Caret (^7.9.2), package*.json liegt im Hard-Deny des
+ * Deploy-Wegs und kann von hier aus nicht gepinnt werden. Die Absicherung
+ * gegen ein Upgrade ist deshalb dieser Rueckfall plus
+ * homepage-bauer/pruefungen/probe_head_ohne_react_skript.py.
+ *
+ * @param {React.ReactElement} metaElement Ausgabe von Meta()
+ * @returns {{kopf: React.ReactNode, körper: React.ReactNode}}
+ */
+function metaAufteilen(metaElement) {
+  const kinder =
+    metaElement && metaElement.props && 'children' in metaElement.props
+      ? Children.toArray(metaElement.props.children)
+      : null;
+  if (!kinder) return {kopf: <Meta />, körper: null};
+
+  const kopf = [];
+  const körper = [];
+  for (const kind of kinder) {
+    if (isValidElement(kind) && kind.type === 'script') körper.push(kind);
+    else kopf.push(kind);
+  }
+  return {kopf, körper};
+}
+
+/**
  * @param {{children?: React.ReactNode}}
  */
 export function Layout({children}) {
@@ -337,6 +401,11 @@ export function Layout({children}) {
   const salesbotSeite = (matches || []).some(
     (match) => match?.handle?.salesbotWidget === true,
   );
+
+  // UNBEDINGT und an fester Stelle — die Hooks von Meta() laufen im Slot
+  // dieser Komponente, ihre Reihenfolge darf zwischen zwei Renderdurchlaeufen
+  // nicht wandern. Begründung vollstaendig über `metaAufteilen`.
+  const {kopf: metaKopf, körper: metaRumpf} = metaAufteilen(Meta());
   // STORE-WEITER GO-LIVE DACH (Christian-Freigabe 2026-07-31): in DE/AT/CH
   // rendert der Assistent auf JEDER Seite und verdrängt dort Gorgias; USA und
   // alle Nicht-DACH-Regionen bleiben unverändert auf Gorgias (istSalesbotDach-
@@ -348,7 +417,9 @@ export function Layout({children}) {
   //
   // Die Testseite /pages/chat-bot (handle.salesbotWidget) bleibt ZUSÄTZLICH
   // erhalten, damit Christians Prüf-Route regionsunabhängig funktioniert.
-  const salesbotDeutscherShop = istSalesbotDeutscherShop(data?.storefrontSprache);
+  const salesbotDeutscherShop = istSalesbotDeutscherShop(
+    data?.storefrontSprache,
+  );
   const salesbotAktiv =
     Boolean(data?.salesbotWidgetOrigin) &&
     (salesbotSeite || salesbotDeutscherShop);
@@ -418,8 +489,55 @@ export function Layout({children}) {
         <link rel="stylesheet" href={rechtstextStyles}></link>
         <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
         <link rel="stylesheet" href={kakaoKaufseiteStyles}></link>
-        <Meta />
+        {metaKopf}
         <Links />
+      </head>
+      <body>
+        {/*
+          HIER STEHT ALLES, WAS REACT ALS <script> RENDERT — UND ZWAR BEWUSST
+          IM <body> UND NICHT IM <head>.
+
+          Cookiebot lädt seine zwei eigenen Skripte (configuration.js und
+          uc.js?...&init=false) zur Laufzeit nach und hängt sie so ein
+          (Herstellerquelle uc.js, am 2026-09-13 gelesen):
+
+              var h = document.getElementsByTagName("script")[0];
+              h && h.parentNode ? h.parentNode.insertBefore(s, h)
+                                : document.head.appendChild(s);
+
+          Ziel ist also das ERSTE <script> des GANZEN DOKUMENTS, und eingefuegt
+          wird in DESSEN Elternknoten. Steht dort ein von React gerenderter
+          Knoten, verschieben sich alle Geschwister dahinter — und genau die
+          hydriert React. Ergebnis: "Minified React error #418" vielfach plus
+          #423, auf jeder Seite des Ladens (live gemessen 2026-09-13: 6 von 9
+          Browserlaeufen, /search und Produktseite je 3 von 3).
+
+          Der Vorlauf-Job hat den Cookiebot-Loader aus Reacts Baum genommen
+          (cookiebotBootstrap oben). Das senkte die Rate, beseitigte sie aber
+          nicht: das erste head-Skript war danach ein von React gerendertes
+          JSON-LD, und der Bootstrap selbst war ebenfalls ein React-<script>
+          im <head>. Erst wenn im <head> KEIN von React gerendertes <script>
+          mehr steht, ist Cookiebots eigener, per DOM ans head-Ende
+          angehaengter Tag das erste Skript des Dokuments — dann landet der
+          Einschub am head-ENDE und es verschiebt sich nichts mehr.
+
+          WARUM DAS AN DER AUSFUEHRUNGSREIHENFOLGE NICHTS AENDERT: alle Loader
+          sind `defer`. Ein defer-Skript läuft nach dem Parsen in
+          Dokumentreihenfolge, unabhängig davon, ob es im <head> oder im
+          <body> steht. Die Reihenfolge UNTEREINANDER ist hier unveraendert,
+          und der Block steht weiterhin VOR <Scripts /> — also vor dem
+          react-router-Bundle, genau wie vorher.
+
+          WARUM AM ANFANG DES <body> UND NICHT AM ENDE: der Cookiebot-Bootstrap
+          ist ein INLINE-Skript und läuft beim Parsen. An dieser Stelle wird
+          er unmittelbar nach dem </head> ausgefuehrt — praktisch derselbe
+          Zeitpunkt wie vorher als letztes head-Kind. Am Seitenende stuende die
+          Einwilligung sichtbar spaeter zur Verfuegung.
+
+          Vor jeder Aenderung hier messen:
+          homepage-bauer/pruefungen/probe_hydration_cookiebot_naht.py
+          homepage-bauer/pruefungen/probe_head_ohne_react_skript.py
+        */}
         {shouldLoadThirdPartyScripts && (
           <>
             <script
@@ -549,8 +667,7 @@ export function Layout({children}) {
             dangerouslySetInnerHTML={{__html: cookiebotBootstrap(nonce)}}
           />
         )}
-      </head>
-      <body>
+        {metaRumpf}
         {/* Setzt `data-dialog-offen` am <html>, solange eine modale Flaeche
             offen ist. Daran hängt die Unterdrueckung des Chat-Widgets in
             app.css — die Naht zwischen Storefront und qi-salesbot. Rendert
@@ -561,9 +678,9 @@ export function Layout({children}) {
         <LoadingBar />
         {data ? (
           <Analytics.Provider
-          cart={data.cart}
-          shop={data.shop}
-          consent={data.consent}
+            cart={data.cart}
+            shop={data.shop}
+            consent={data.consent}
           >
             {/*
               EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
@@ -626,9 +743,7 @@ export function ErrorBoundary() {
     return (
       <div className="route-error">
         <h1>Seite nicht gefunden</h1>
-        <p>
-          Diese Seite existiert leider nicht oder ist umgezogen.
-        </p>
+        <p>Diese Seite existiert leider nicht oder ist umgezogen.</p>
         <p>
           <a href="/">Zur Startseite</a>
         </p>
