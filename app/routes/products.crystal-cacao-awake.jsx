@@ -43,6 +43,7 @@ export const meta = ({data}) => {
   const basis = produktMeta({
     // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
     produkt: data?.product,
+    marktLand: data?.marktLand,
     pfad: '/products/crystal-cacao-awake',
     titel: `${data?.product?.title ?? ''} | ${MARKE}`,
     bildUrl:
@@ -97,7 +98,14 @@ async function loadCriticalData({context, request}, handle) {
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
-  return {product};
+  return {
+    product,
+    // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
+    // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
+    // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
+    // kasse-nimmt-20-prio8.
+    marktLand: storefront.i18n.country,
+  };
 }
 
 /**

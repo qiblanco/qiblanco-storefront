@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
+import {useMarktLand} from '~/lib/markt-land';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -13,13 +14,14 @@ import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
  * }}
  */
 export function CartLineItem({layout, line}) {
+  const marktLand = useMarktLand();
   const {id, merchandise, isOptimistic} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
   // Cent-genau statt Ganz-Euro-Rundung (aiceo:digest54:p3, Option c,
   // 2026-09-10): der Warenkorb zeigte 53,- bei 53,21 Kassenbelastung.
-  const displayPrice = getCartLinePriceDisplayExact(line);
+  const displayPrice = getCartLinePriceDisplayExact(line, marktLand);
 
   return (
     <li

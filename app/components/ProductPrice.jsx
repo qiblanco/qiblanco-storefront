@@ -1,4 +1,5 @@
 import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
+import {useMarktLand} from '~/lib/markt-land';
 
 /**
  * Der Preisblock der Kaufseiten.
@@ -31,6 +32,13 @@ import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
  * 7 % ein zweites Mal aufgeschlagen. `taxRate` sticht deshalb den Handle —
  * aber nur, wenn er ausdrücklich gesetzt ist.
  *
+ * DAS MARKT-LAND KOMMT NICHT ALS PROP, SONDERN AUS DEM KONTEXT (2026-09-13):
+ * der Satz hängt nicht nur an der Ware, sondern am aufgeloesten Markt -- AT
+ * führt 20 statt 19 Prozent und 10 statt 7. Eine Prop haette wieder verlangt,
+ * dass 13 Aufrufer daran denken; genau daran ist der 19-Prozent-Vorgabewert
+ * oben schon einmal gescheitert. `useMarktLand()` holt ihn aus denselben
+ * root-Loaderdaten, aus denen ihn jede andere Preisanzeige holt.
+ *
  * DIE PROP `centGenau` (aiceo:digest54:p3, 2026-09-10): der Warenkorb
  * bekommt den bereits cent-genauen Betrag aus getCartLinePriceDisplayExact
  * (taxRate dabei 0, satzFuer() also 0) — hier wird NICHT zweimal versteuert,
@@ -39,6 +47,7 @@ import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
  * @param {{price?: any, compareAtPrice?: any, handle?: string, taxRate?: number, centGenau?: boolean}} props
  */
 export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau = false}) {
+  const marktLand = useMarktLand();
   const satzFuer = (money) => {
     if (taxRate != null) {
       // Ausdrueckliche Ausnahme (Warenkorb: Betrag ist schon brutto).
@@ -46,7 +55,7 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
       // aus markt-pricing.js und gilt für beide Wege gleich.
       return (money.currencyCode || 'EUR') === 'EUR' ? taxRate : 0;
     }
-    return anzeigeSatz(handle, money.currencyCode);
+    return anzeigeSatz(handle, money.currencyCode, marktLand);
   };
 
   const applyTax = (money) => {

@@ -1,6 +1,7 @@
 import {PRODUKT_TRIO, PRODUKT_TRIO_TITEL} from '~/lib/redesign3themen';
 import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
+import {useMarktLand} from '~/lib/markt-land';
 
 /**
  * ProduktTrio (Konzept B3, Pos 24): Standard-Closer mit Kurz-Vorstellung aller
@@ -22,6 +23,7 @@ import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
  * Default BLOCK_PUBLIC = fail-safe.
  */
 export function ProduktTrio({dataSection, products, block = BLOCK_PUBLIC}) {
+  const marktLand = useMarktLand();
   // Brutto-Anzeigepreis DELEGIERT an den Markt-Preis-Kanon (markt-pricing.js:
   // bruttoAnzeige + formatPreis) — identisch zu TieferSchlaf/QiOneZellschutz.
   // KEINE eigene Rechenlogik, KEIN fester Steuersatz (der Kanon setzt 0 fuer
@@ -34,7 +36,12 @@ export function ProduktTrio({dataSection, products, block = BLOCK_PUBLIC}) {
     const p = products.find((x) => x?.handle === handle);
     const waehrung = p?.priceRange?.minVariantPrice?.currencyCode || 'EUR';
     return formatPreis(
-      bruttoAnzeige(p?.priceRange?.minVariantPrice?.amount, handle, waehrung),
+      bruttoAnzeige(
+        p?.priceRange?.minVariantPrice?.amount,
+        handle,
+        waehrung,
+        marktLand,
+      ),
       waehrung,
     );
   };

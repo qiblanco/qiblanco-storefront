@@ -162,6 +162,14 @@ export async function loader(args) {
     // DACH-Storefront). Steuert die store-weite Chat-Weiche AI-Anna vs Gorgias
     // nach dem SHOP, NICHT nach der Besucher-IP (Weichen-Korrektur 2026-07-31).
     storefrontSprache: storefront.i18n.language,
+    // DAS AUFGELOESTE MARKT-LAND, EINMAL UND FÜR ALLE ANZEIGEN (Job
+    // 20260913-at-paketkarte-rechnet-19-prozent-kasse-nimmt-20-prio8).
+    // `resolveCountry` läuft in lib/context.js und war danach nur im
+    // Hydrogen-Kontext sichtbar; jede Preisanzeige hat den Markt aus der
+    // WAEHRUNG geraten und lag in AT deshalb um einen Prozentpunkt zu
+    // niedrig. Hier steht derselbe Wert, den auch `consent.country` und die
+    // @inContext-Queries benutzen -- eine Quelle, kein zweiter Schluss.
+    marktLand: storefront.i18n.country,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
