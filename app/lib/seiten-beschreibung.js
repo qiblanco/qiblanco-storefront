@@ -82,13 +82,24 @@ export const BESCHREIBUNGEN = {
   '/pages/zeremonie-kakao-kurs':
     'Der Zeremonie-Kakao-Kurs in vier Videos: Intuition, Herkunft und Inhaltsstoffe, die Kur in der Anwendung und Meditation mit Kakao.',
 
-  // --- Produkt-Detailseite -------------------------------------------------
+  // --- Produkt-Detailseiten -------------------------------------------------
   // Quelle: app/components/index-components/detailseiten/QiHomeLanding.jsx.
   // Die Nutzerzahl steht dort als Auszeichnung der Seite selbst; die
   // Superlative des Marketing-Textes („der ultimative Schutz") bleiben
   // bewusst draußen — eine Meta-Beschreibung ist kein Werbeplatz.
   '/pages/qihome-details':
     'QiHome® Air im Detail: wie das Gerät dein Zuhause abdeckt, welche Technologie dahintersteckt und was über 14.000 Nutzer daran schätzen.',
+
+  // Quelle: app/components/index-components/detailseiten/QiBracelet.jsx
+  // („Molekularer E-Smog Schutz“, „Gitterchip™ aus eigens entwickelter
+  // Goldlegierung“, „Wirkung in Zellstudien bestätigt“). Der Satz zur
+  // Produktseite steht hier aus demselben Grund wie bei
+  // /pages/qione-2-pro-details: die Detailseite und /products/qibracelet
+  // konkurrieren in der Suche um denselben Namen, und nichts sagte bisher,
+  // welche von beiden die Kaufseite ist. Eine Landingpage wird am nächsten
+  // Klick gemessen, eine Kaufseite an der Bestellung.
+  '/pages/qibracelet-details':
+    'QiBracelet® im Detail: wie der Gitterchip™ dich vor Strahlung im Alltag schützt und was Zellstudien dazu zeigen. Kaufen kannst du es auf der Produktseite.',
 
   // --- Service -------------------------------------------------------------
   // Quelle: Shopify-`body` von /pages/support-1 (Rückmeldeformular).

@@ -106,20 +106,24 @@ test('B3 die drei LEEREN Kollektionen bekommen bewusst KEINE Beschreibung', () =
   assert.ok(BESCHREIBUNGEN['/collections/zeremonie-kakao'], 'die gefüllte Kollektion fehlt');
 });
 
+// Unabhängiges Literal, BEWUSST nicht aus der Karte abgeleitet: sonst
+// verglichen sich Karte und Erwartung mit sich selbst und der Arm könnte
+// strukturell nie rot werden. Es steht auf Modulebene, weil ZWEI Arme es
+// brauchen — B4 für die Deckung, D1 für die erwartete Zahl eigener Routen.
+// Wer die Karte ergänzt, ergänzt GENAU HIER, an einer Stelle.
+const ERWARTETE_PFADE = [
+  '/pages/das-beispiel', '/pages/e-smog', '/pages/entgiftung',
+  '/pages/intuition-erfahren', '/pages/kakao-anwendung',
+  '/pages/kohaerentes-wasser', '/pages/meditieren-mit-zeremonie-kakao',
+  '/pages/mentales-setting', '/pages/qibracelet-details',
+  '/pages/qihome-details', '/pages/superhuman',
+  '/pages/support-1', '/pages/vitamine-mineralien',
+  '/pages/was-ist-zeremonie-kakao', '/pages/zeremonie-kakao-kurs',
+  '/blogs/wissen', '/collections/zeremonie-kakao',
+];
+
 test('B4 die Karte deckt genau die gemessenen Lücken — kein Pfad zu viel', () => {
-  // Unabhängiges Literal, BEWUSST nicht aus der Karte abgeleitet: sonst
-  // verglichen sich Karte und Erwartung mit sich selbst und der Arm könnte
-  // strukturell nie rot werden.
-  const erwartet = [
-    '/pages/das-beispiel', '/pages/e-smog', '/pages/entgiftung',
-    '/pages/intuition-erfahren', '/pages/kakao-anwendung',
-    '/pages/kohaerentes-wasser', '/pages/meditieren-mit-zeremonie-kakao',
-    '/pages/mentales-setting', '/pages/qihome-details', '/pages/superhuman',
-    '/pages/support-1', '/pages/vitamine-mineralien',
-    '/pages/was-ist-zeremonie-kakao', '/pages/zeremonie-kakao-kurs',
-    '/blogs/wissen', '/collections/zeremonie-kakao',
-  ];
-  assert.deepEqual(Object.keys(BESCHREIBUNGEN).sort(), erwartet.sort());
+  assert.deepEqual(Object.keys(BESCHREIBUNGEN).sort(), [...ERWARTETE_PFADE].sort());
 });
 
 test('B5 die vier Bundles liegen im BESTAND, nicht in einer zweiten Karte', () => {
@@ -154,7 +158,19 @@ const SEITEN_ROUTEN = Object.keys(BESCHREIBUNGEN)
   .map((p) => p.slice('/pages/'.length));
 
 test('D1 jede eigene Seitenroute reicht ihren Pfad und das Shopify-Feld durch', () => {
-  assert.equal(SEITEN_ROUTEN.length, 13, 'unerwartete Zahl eigener Seitenrouten');
+  // KEIN GEPINNTER ZAEHLER. Bis zum 2026-09-13 stand hier die Zahl 13, und sie
+  // wurde mit dem Karteneintrag fuer /pages/qibracelet-details falsch — sie auf
+  // 14 zu setzen waere derselbe Fehler eine Runde spaeter. Die Zahl wird
+  // deshalb aus dem unabhaengigen Erwartungs-Literal ABGELEITET, mit demselben
+  // Filter wie SEITEN_ROUTEN. Was dieser Arm damit noch traegt: er haelt die
+  // Schleife darunter davon ab, LEER zu laufen — eine Schleife ueber null
+  // Routen ist gruen, ohne etwas geprueft zu haben. WELCHE Pfade es sein
+  // muessen, misst B4; hier geht es nur darum, dass ueberhaupt gemessen wird.
+  const erwarteteRouten = ERWARTETE_PFADE.filter(
+    (p) => p.startsWith('/pages/') && p !== '/pages/support-1',
+  ).length;
+  assert.ok(erwarteteRouten > 0, 'das Erwartungs-Literal nennt keine eigene Seitenroute');
+  assert.equal(SEITEN_ROUTEN.length, erwarteteRouten, 'unerwartete Zahl eigener Seitenrouten');
   for (const h of SEITEN_ROUTEN) {
     const q = lies(`app/routes/pages.${h}.jsx`);
     assert.match(q, /import \{beschreibungTags\} from '~\/lib\/seiten-beschreibung';/, `${h}: Import fehlt`);
