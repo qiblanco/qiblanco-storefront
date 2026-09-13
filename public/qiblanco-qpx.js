@@ -38,6 +38,23 @@
   function sessionStorageGet(k){ try { return w.sessionStorage.getItem(k);}catch(e){return null;} }
   function sessionStorageSet(k,v){ try { w.sessionStorage.setItem(k,v);}catch(e){} }
 
+  // Opaker Mail-Zeiger aus dem AC-Link (Job 20260914-mailnaht). Der Link trägt
+  // ?qpx_eh=<hash_email(mail)> — denselben gesalzenen Receiver-Hash [:16], über
+  // den OS_STITCH_EMAIL16 später die Bestellung bindet. Bewusst sessionStorage
+  // statt Cookie: kein neuer dauerhafter Identitäts-Träger, keine Änderung an
+  // TRACKING_COOKIE_NAMES nötig. Läuft nur mit Consent, weil der Loader qpx.js
+  // ohne Consent gar nicht erst lädt. Form wird geprüft, nicht vertraut.
+  var EH = "_qpx_eh";
+  var EH_RX = /^[0-9a-f]{16}$/;
+  function mailZeiger() {
+    try {
+      var roh = String(params()["qpx_eh"] || "").toLowerCase();
+      if (EH_RX.test(roh)) { sessionStorageSet(EH, roh); return roh; }
+    } catch (e) {}
+    var gespeichert = String(sessionStorageGet(EH) || "").toLowerCase();
+    return EH_RX.test(gespeichert) ? gespeichert : "";
+  }
+
   function params() {
     var q = {}, s = w.location.search.replace(/^\?/, "");
     if (s) s.split("&").forEach(function (p) { var kv = p.split("="); if (kv[0]) q[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || ""); });
@@ -148,6 +165,8 @@
     if (rg) ev.region = rg;
     var fps = fpSignals();
     if (fps) ev.fp = fps;
+    var eh = mailZeiger();
+    if (eh) ev.email_hash = eh;
     for (var k in props) { if (Object.prototype.hasOwnProperty.call(props, k)) ev[k] = props[k]; }
     return ev;
   }
