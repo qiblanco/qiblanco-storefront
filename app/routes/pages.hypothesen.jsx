@@ -2,6 +2,7 @@ import {HypothesenSeite} from '~/components/campaign/HypothesenSeite';
 import hypothesenStyles from '~/styles/hypothesen.css?url';
 import absichtStyles from '~/styles/absicht.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {teilbildTags} from '~/lib/seiten-seo';
 import {VIDEOS} from '~/data/hypothesen-quellen';
 import {ABSENDER} from '~/data/absicht';
 
@@ -112,6 +113,12 @@ export const meta = () => [
   {property: 'og:site_name', content: 'Qi Blanco'},
   {property: 'og:locale', content: 'de_DE'},
   {property: 'og:url', content: absoluteCanonical(PFAD)},
+  // NUR das Teilbild und die Twitter-Karte — nicht seitenSignale().
+  // Diese Route setzt ihren og-Satz handverlesen und trägt bewusst
+  // `og:type: article` statt `website`; die große Funktion hätte genau
+  // diesen Unterschied still eingeebnet. Ihr fehlte am 2026-09-12 und
+  // erneut am 2026-09-13 gemessen nur EINES: das Bild.
+  ...teilbildTags(PFAD),
 ];
 
 // KEIN `headers`-Export mehr: er trug ausschließlich den X-Robots-Tag

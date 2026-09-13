@@ -1,48 +1,79 @@
 import {data} from '@shopify/remix-oxygen';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
-import {canonicalLink} from '~/lib/seo';
-import {seitenSignale} from '~/lib/seiten-seo';
+import {noindexMeta, noindexHeader} from '~/lib/seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   getWithdrawalProductLabel,
   validateWithdrawalFormData,
 } from '~/lib/withdrawal';
 
-const PFAD = '/widerruf/bestaetigen';
 const TITEL = 'Widerruf bestätigen | Qi Blanco';
 const BESCHREIBUNG = 'Bestätigungsseite für den Online-Widerruf bei Qi Blanco.';
 
 /**
- * Teilbild und strukturierte Daten (Job 20260912-sieben-indexierbare-seiten-
- * ohne-sitemap-und-ohne-auszeichnung-prio22). Der Canonical stand schon hier.
+ * DIESE SEITE GEHÖRT NICHT IN DEN INDEX — die Frage, die der Vorgängerjob
+ * ausdrücklich offen gelassen hat, ist hier entschieden (Job 20260913-
+ * auffindbarkeits-wache-dach-rest-og-h1-und-die-noindex-frage-prio30).
  *
- * OFFENE FRAGE, DIE DIESER JOB BEWUSST NICHT ENTSCHEIDET: diese Seite ist eine
- * Formular-Bestaetigung, also nach dem Aufnahme-Kriterium in app/lib/seo.js
- * ("Klickziel, kein Suchziel") ein Kandidat für `noindex` -- dort stehen
- * bereits fünf `*-anmeldung-erfolgreich`-Handles mit genau dieser Begründung.
- * Der Unterschied ist, dass jene Shopify-Handles sind und diese eine eigene
- * Code-Route ist, die der Katchall nie erreicht. Die Entscheidung ist eine
- * Index-Hygiene-Frage mit Sitemap-Seite und gehört nicht in einen Auftrag
- * über Auszeichnung; sie ist als eigener Befund gemeldet. Solange die Seite
- * indexierbar ist und einen Canonical trägt, ist die Auszeichnung die
- * konsistente Antwort -- eine halb ausgezeichnete indexierbare Seite wäre in
- * keiner der beiden Welten richtig. *
- * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
- * Der Kopf jener Datei sagt, sie werde "ausschließlich von den /pages-Routen"
- * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
- * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei über
- * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
- * für diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
- * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
- * alle 31 /pages-Routen in dieselbe Prüfung, also genau den Preis, vor dem der
- * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
+ * ENTSCHIEDEN WURDE AN EINER MESSUNG, NICHT AN EINER MEINUNG. Ein GET auf
+ * diese URL liefert live den Satz „Bitte fülle zuerst das Widerrufsformular
+ * aus. Danach kannst du den Widerruf hier bestätigen." Die Seite ist ein
+ * reines POST-Ziel; wer sie aus einem Suchergebnis betritt, bekommt keine
+ * Antwort auf seine Suche, sondern eine Sackgasse mit Rückverweis. Genau
+ * diesen Fall nennt das Aufnahme-Kriterium in app/lib/seo.js wörtlich:
+ * „Funnel-Bestätigungsseiten sind der Grenzfall, der trotzdem hierher
+ * gehört: Kunden SEHEN sie (nach dem Absenden eines Formulars), aber niemand
+ * SUCHT nach ihnen — sie sind Ziel eines Klicks, nie eines Treffers."
+ *
+ * DER CANONICAL IST WEG, UND ZWAR ZWINGEND: noindex und canonical sind
+ * widersprüchliche Signale (Regel im Kopf von app/lib/seo.js). Ein Bot, der
+ * einem Canonical folgt, kann das noindex der Zielseite zuordnen. Deshalb
+ * steht hier ab jetzt das eine und nicht mehr das andere.
+ *
+ * DIE AUSZEICHNUNG DES VORGÄNGERJOBS WIRD DAMIT GEGENSTANDSLOS, NICHT
+ * FALSCH: `seitenSignale()` hing hier, um eine indexierbare Seite nicht halb
+ * ausgezeichnet zu lassen — die richtige Antwort, solange die Index-Frage
+ * offen war. Mit der Entscheidung entfällt ihre Voraussetzung. Der Import
+ * geht mit, und das ist der eigentliche Gewinn: die Import-Closure von
+ * app/lib/seiten-seo.js schrumpft wieder auf die /pages-Routen, für die sie
+ * gebaut ist. Der Warnsatz, den der Vorgängerjob hier hinterlassen hat
+ * („wer seiten-seo.js ändert, braucht ab jetzt auch für diese Seite einen
+ * gültigen Formate-Nachweis"), ist damit erledigt und fällt mit ihm weg.
+ *
+ * WARUM DIE LISTE NICHT_INDEXIERBARE_SEITEN_DEF NICHT DER ORT IST: sie wirkt,
+ * weil GENAU EINE Route (pages.$handle.jsx) alle ihre Mitglieder rendert —
+ * sie ist ein Verteiler. Eine Code-Route hat keinen Verteiler, sie ist ein
+ * eigenes Blatt. Ein Pfad in jener Liste änderte hier nichts, solange diese
+ * Datei die Liste nicht selbst liest; der nächste Funnel-Bestätiger bräuchte
+ * so oder so seine eine Zeile in seiner eigenen Datei. Der Bestand löst es
+ * genauso: pages.anmeldung-erfolgreich-pre-access.jsx ist ebenfalls eine
+ * Code-Route und setzt ihr robots-meta route-lokal.
+ *
+ * KEIN SITEMAP-EINTRAG ZU ENTFERNEN, gemessen am 2026-09-13: diese URL steht
+ * in keiner der fünf ausgelieferten Sitemaps. Der Zustand „noindex UND in der
+ * Sitemap", vor dem app/lib/seo.js warnt und den
+ * pruefungen/probe_sitemap_noindex_naht.py bewacht, entsteht hier nicht.
+ *
+ * WER SIE WIEDER ÖFFNET, geht den Weg rückwärts: noindexMeta/noindexHeader
+ * raus, canonicalLink('/widerruf/bestaetigen') rein, und dann auch die Auszeichnung wieder dazu
+ * — eine indexierbare Seite ohne og:image und ohne strukturierte Daten wäre
+ * der halbe Zustand, den der Vorgängerjob zu Recht vermieden hat.
+ *
+ * @type {MetaFunction}
  */
 export const meta = () => [
   {title: TITEL},
   {name: 'description', content: BESCHREIBUNG},
-  canonicalLink(PFAD),
-  ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG}),
+  noindexMeta(),
 ];
+
+/**
+ * Die zweite, vom HTML unabhängige Sperre desselben Signals („Gurt und
+ * Hosenträger", Hausmuster D-006): sie greift auch bei einem Bot, der den
+ * head nicht parst. Wortgleich zu search.jsx und pages.wirkt-das.jsx, weil
+ * alle drei ihn aus `noindexHeader()` beziehen.
+ */
+export const headers = () => noindexHeader();
 
 export function loader() {
   return {};

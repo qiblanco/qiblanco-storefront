@@ -12,6 +12,7 @@ import {
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import {fremdHtmlMitUeberschriftenRang} from '~/lib/fremd-html-ueberschriften';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -211,15 +212,26 @@ export default function Page() {
   //
   // Wer hier kuenftig eine reiche Seite braucht, legt ihr eine eigene Route an
   // (das etablierte Muster) — statt den Default für alle aufzuweichen.
+  // Rechtsseite rendert ihre <h1> NUR bei nichtleerem Titel. Genau diese
+  // Bedingung entscheidet unten, ob eine h1 im fremden Rumpf eine ZWEITE ist
+  // — deshalb steht sie hier einmal und wird zweimal gelesen, statt an zwei
+  // Stellen unabhängig hergeleitet zu werden.
+  const titel = (page.title || '').trim();
+
   return (
-    <Rechtsseite titel={page.title}>
+    <Rechtsseite titel={titel}>
       {/* Inhalt unveraendert aus dem Shopify-Admin. Gestaltet wird er
           ausschließlich über die .rs-doc-Tokens, nie durch Eingriff in den
           Text. Kein <main> mehr: PageLayout liefert bereits eines
           (components/PageLayout.jsx), das hier war ein zweites, verschachteltes. */}
       <div
         className="rs-doc__rumpf"
-        dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(page.body)}}
+        dangerouslySetInnerHTML={{
+          __html: fremdHtmlMitUeberschriftenRang(
+            fremdHtmlMitBildAuszeichnung(page.body),
+            Boolean(titel),
+          ),
+        }}
       />
     </Rechtsseite>
   );
