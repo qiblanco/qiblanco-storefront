@@ -193,10 +193,10 @@ test('kundensichtbarer Text trägt echte Umlaute, keine Transliteration', () => 
  * Blockkommentare und Zeilenkommentare entfernen.
  *
  * Bewusst textuell und bewusst KONSERVATIV: ein `//` in einem String-Literal
- * (etwa in einer URL) wuerde den Rest der Zeile mit abschneiden. Fuer die
- * Frage „ruft diese Datei eine Funktion auf?" ist das unschaedlich — der
+ * (etwa in einer URL) würde den Rest der Zeile mit abschneiden. Für die
+ * Frage „ruft diese Datei eine Funktion auf?" ist das unschädlich — der
  * Aufruf steht nie hinter einer URL in derselben Zeile —, und ein echter
- * Parser waere fuer einen Zaun dieser Groesse der teurere Weg.
+ * Parser wäre für einen Zaun dieser Größe der teurere Weg.
  * @param {string} quelle
  */
 function ohneKommentare(quelle) {
@@ -226,13 +226,13 @@ test('jede /pages-Route mit og-Bedarf ruft die gemeinsame Hilfe auf', () => {
     // NUR CODE, NIE KOMMENTARE: der Test greift auf den Dateitext zu, und ein
     // Vorkommen ist kein Aufrufer. Gemessen am 2026-09-13 im origin/main-
     // Zwilling: entfernt man den einzigen echten `teilbildTags(PFAD)`-Aufruf
-    // aus pages.hypothesen.jsx, blieb dieser Arm GRUEN — gehalten von der
+    // aus pages.hypothesen.jsx, blieb dieser Arm GRÜN — gehalten von der
     // Kommentarzeile „nicht seitenSignale()." in derselben Datei, also von dem
-    // Satz, der die NICHT-Benutzung dokumentiert. Der Arm haette damit genau
-    // die Regression nicht gefangen, fuer die er gebaut wurde, und zwar an der
-    // Route, die ihn ausgeloest hat. Das Strippen aendert am heutigen Urteil
-    // nichts (34 geprueft, 0 Routen haengen an einem Kommentar) — es macht den
-    // Rot-Arm ueberhaupt erst belegbar.
+    // Satz, der die NICHT-Benutzung dokumentiert. Der Arm hätte damit genau
+    // die Regression nicht gefangen, für die er gebaut wurde, und zwar an der
+    // Route, die ihn ausgelöst hat. Das Strippen ändert am heutigen Urteil
+    // nichts (34 geprüft, 0 Routen hängen an einem Kommentar) — es macht den
+    // Rot-Arm überhaupt erst belegbar.
     const quelle = ohneKommentare(readFileSync(new URL(f, dir), 'utf8'));
     if (!/export (const|function|async function) meta\b/.test(quelle)) continue;
     if (!/canonicalLink\(/.test(quelle)) continue;
