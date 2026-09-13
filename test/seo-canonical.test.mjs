@@ -170,10 +170,26 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
   // /AUS_SITEMAP_ENTFERNTE_SEITEN/ trifft auch die Import-Zeile und bliebe
   // gruen, wenn jemand die Liste importiert und trotzdem ein eigenes Array
   // einhaengt (im Mutationstest genau so passiert).
+  // NACHGEZOGEN AM 2026-09-13, NICHT AUFGEWEICHT: `pages` haengt jetzt an
+  // `NICHT_IN_PAGES_SITEMAP` — der Vereinigung aus der noindex-Teilmenge und
+  // den WEITERGELEITETEN Handles (~/lib/sitemap-weiterleitungen). Zwei Klassen
+  // fliegen aus derselben Sitemap, und sie sind nicht dasselbe: ein `noindex`
+  // widerspricht dem Sitemap-Eintrag, ein 301 widerspricht ihm aus einem
+  // anderen Grund. Was dieser Test schuetzt, ist unveraendert (EIN Name in der
+  // Verdrahtung, kein Handle-Literal in der Route); was er pinnt, ist die neue
+  // Zusage — dieselbe Bewegung wie am 2026-08-23, als er von der Identitaet
+  // auf die Teilmenge umgestellt wurde.
   assert.match(
     quelle,
-    /pages:\s*AUS_SITEMAP_ENTFERNTE_SEITEN/,
-    'pages muss AN die abgeleitete Sitemap-Sicht gehaengt sein, nicht an ein eigenes Array',
+    /pages:\s*NICHT_IN_PAGES_SITEMAP/,
+    'pages muss AN die EINE vereinigte Sicht gehaengt sein, nicht an ein eigenes Array',
+  );
+  // Die Vereinigung selbst darf nur aus den beiden abgeleiteten Quellen
+  // bestehen — sonst waere sie das zweite Array durch die Hintertuer.
+  assert.match(
+    quelle,
+    /const NICHT_IN_PAGES_SITEMAP = \[\s*\.\.\.AUS_SITEMAP_ENTFERNTE_SEITEN,\s*\.\.\.WEITERGELEITETE_PAGES_HANDLES,\s*\]/,
+    'die Vereinigung muss aus genau den beiden Quellen gebildet sein',
   );
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'Import muss aus ~/lib/seo kommen');
   for (const handle of NICHT_INDEXIERBARE_SEITEN) {
@@ -533,4 +549,39 @@ test('s04 NAHT: Kategorie- und Rechtstext-Routen setzen einen Selbst-canonical',
     /`\/policies\/\$\{params\.handle\}`/,
     'der canonical-Pfad muss aus params.handle entstehen, nicht aus den Daten',
   );
+});
+
+
+// --- Die zweite Klasse: WEITERGELEITETE Handles (neu 2026-09-13) ---
+// Gemessen an diesem Tag: 2 von 44 URLs der ausgelieferten `sitemap/pages/1.xml`
+// antworteten mit 301. Die Sitemap sagt dann „das ist die kanonische URL", die
+// Antwort sagt „nein, eine andere".
+
+test('NAHT: weitergeleitete Handles sind eine EIGENE Klasse, nicht noindex', async () => {
+  const {WEITERGELEITETE_PAGES_DEF, WEITERGELEITETE_PAGES_HANDLES} =
+    await import('../app/lib/sitemap-weiterleitungen.js');
+
+  // Die Richtung ist tragend und der Grund fuer die eigene Datei: eine
+  // 301-Antwort hat keinen Rumpf und kann gar kein `noindex` tragen. Stuende
+  // ein Handle in beiden Listen, waere eine der beiden Begruendungen falsch.
+  for (const handle of WEITERGELEITETE_PAGES_HANDLES) {
+    assert.equal(
+      NICHT_INDEXIERBARE_SEITEN.includes(handle),
+      false,
+      `${handle} ist weitergeleitet UND als noindex gefuehrt — eine der beiden Begruendungen stimmt nicht`,
+    );
+  }
+
+  // Jeder Eintrag muss seinen Grund und sein Ziel nennen: eine Liste ohne
+  // Begruendung ist in einem Jahr nicht mehr entscheidbar.
+  for (const e of WEITERGELEITETE_PAGES_DEF) {
+    assert.ok(e.handle && !e.handle.startsWith('/'), 'handle ist ein Handle, kein Pfad');
+    assert.match(e.ziel, /^\//, `${e.handle}: ziel muss ein Pfad sein`);
+    assert.ok(e.grund && e.grund.length > 40, `${e.handle}: grund fehlt oder ist zu duenn`);
+    assert.match(e.seit, /^\d{4}-\d{2}-\d{2}$/, `${e.handle}: seit fehlt`);
+  }
+
+  // Leer-Kontrolle: eine versehentlich geleerte Liste bliebe sonst unbemerkt,
+  // und alle Zusagen darueber blieben gruen.
+  assert.ok(WEITERGELEITETE_PAGES_HANDLES.length >= 1);
 });

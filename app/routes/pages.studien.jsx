@@ -8,7 +8,7 @@ import {
 } from '~/components/studien/StudienUebersicht';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
-import {teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/studien';
 
@@ -48,6 +48,7 @@ export const meta = () => [
       'QiHome® Air — mit Zusammenfassung, deutschem Volltext und Original-PDF.',
   },
   {property: 'og:url', content: absoluteCanonical(PFAD)},
+  {property: 'og:site_name', content: MARKE},
   {'script:ld+json': übersichtSchema(STUDIEN, untersuchteProdukte())},
   ...faqEintrag(),
 ];

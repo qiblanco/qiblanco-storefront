@@ -7,6 +7,7 @@ import {
   ausSitemapEntfernteKollektionen,
 } from '~/lib/seo';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
+import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 import {
   OHNE_BLOG,
   artikelKarte,
@@ -52,9 +53,22 @@ import {
  * — für diese fünf ist die Sitemap nachgemessen der EINZIGE verbleibende
  * Discovery-Pfad. Gebaut ist damit die MÖGLICHKEIT, nicht der Vollzug.
  */
+/**
+ * Aus der `pages`-Sitemap fliegen ZWEI Klassen, und sie sind nicht dasselbe:
+ * Seiten mit `noindex` (dort ist der Sitemap-Eintrag der Widerspruch zum
+ * Ausschluss-Signal) und Handles, deren URL nur noch WEITERLEITET (dort ist er
+ * der Widerspruch zur eigenen Antwort). Jede Klasse hat ihre eigene Quelle mit
+ * eigener Begruendung; hier werden sie EINMAL vereinigt, damit beide Leser
+ * dieser Route und `~/lib/sitemap-lastmod` dieselbe Menge sehen.
+ */
+const NICHT_IN_PAGES_SITEMAP = [
+  ...AUS_SITEMAP_ENTFERNTE_SEITEN,
+  ...WEITERGELEITETE_PAGES_HANDLES,
+];
+
 const VERSTECKTE_HANDLES = {
   products: NICHT_INDEXIERBARE_PRODUKTE,
-  pages: AUS_SITEMAP_ENTFERNTE_SEITEN,
+  pages: NICHT_IN_PAGES_SITEMAP,
   collections: ausSitemapEntfernteKollektionen(),
 };
 
