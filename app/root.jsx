@@ -50,6 +50,7 @@ import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
+import {einschubWeicheQuelle} from '~/lib/einschub-weiche';
 import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
@@ -284,11 +285,25 @@ const COOKIEBOT_CBID = '66dc4c98-f24c-4dfe-a18b-ac77444136c5';
  * läuft beim Parsen des <head>, alle Drittanbieter-Skripte sind `defer` und
  * laufen erst nach dem vollständigen Parsen.
  *
+ * DER REST, DEN DIESER FIX NICHT ERWISCHT HAT (gemessen 2026-09-13, Job
+ * 20260913-restbruch-hydration-standardseiten-ursache-unbekannt): der head-Fix
+ * hat den Einschubort nicht beseitigt, sondern VERLEGT. Cookiebots eigene
+ * Skripte landen heute per appendChild am head-ENDE — dieser Weg ist zu. Der
+ * BANNER ist aber ein anderer Knoten auf einem anderen Weg: er kommt aus
+ * cc.js und geht nach body-Index 0, in 178 von 178 beobachteten Einschueben.
+ * Dagegen hängt dieser Bootstrap jetzt zusaetzlich die EINSCHUB-WEICHE ein
+ * (app/lib/einschub-weiche.js), die den Banner ans body-ENDE umlenkt.
+ *
  * Vor jeder Änderung hier messen:
  * homepage-bauer/pruefungen/probe_hydration_cookiebot_naht.py
  */
 function cookiebotBootstrap(nonce) {
   return (
+    // ZUERST die Weiche, DANN der Loader — und zwar in dieser Reihenfolge in
+    // EINEM Skript. Nur so steht beweisbar fest, dass die Weiche hängt, bevor
+    // uc.js ueberhaupt angefordert ist. Begründung vollstaendig in
+    // app/lib/einschub-weiche.js.
+    einschubWeicheQuelle() +
     '(function(){var s=document.createElement("script");' +
     's.id="Cookiebot";s.src="https://consent.cookiebot.com/uc.js";' +
     's.type="text/javascript";' +

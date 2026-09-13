@@ -380,3 +380,204 @@ test('tagLang rendert denselben Tag, egal in welcher Zone die Umgebung läuft', 
       'Erwartet ist ueberall der Berliner Kalendertag.',
   );
 });
+
+// ── URSACHE 5: fremder Einschub VOR Reacts erstem body-Kind ────────────────
+// Ursache 3 oben schloss den Einschub im <head>. Er war damit nicht weg,
+// sondern VERLEGT: Cookiebots Banner kommt aus cc.js und geht nach
+// body-Index 0 (gemessen 178 von 178 Einschueben, Job 20260913-restbruch-
+// hydration-standardseiten-ursache-unbekannt). Landet er vor Reacts
+// Hydration-Commit, rueckt jedes von React gehaltene body-Kind um eins --
+// #418 vielfach plus #423, und React raeumt den Banner wieder weg.
+//
+// DIE GEGENMASSNAHME ist app/lib/einschub-weiche.js: derselbe Knoten, ans
+// body-ENDE umgelenkt. A/B mit einer Variablen (Ort), Zeit festgehalten:
+// Anfang 8 von 8 rot und 1 von 8 ueberlebt, Ende 0 von 8 rot und 8 von 8
+// ueberlebt.
+//
+// DIE WIRKUNG misst homepage-bauer/pruefungen/_diag_hydration_einschub.py am
+// echten Browser (--weiche-aus-repo zieht GENAU diese Datei). Die Waechter
+// hier sind der billige Vorposten: sie fallen schon im PR.
+
+const WEICHE_QUELLE = new URL('../app/lib/einschub-weiche.js', import.meta.url);
+
+/**
+ * Der kleinste Baum, an dem sich die Frage entscheidet: ein Elternknoten mit
+ * insertBefore/appendChild/firstChild und ein querySelector, der genau den
+ * Selektor kann, den die Weiche benutzt.
+ *
+ * BEWUSST KEIN jsdom: die Weiche hängt sich an EINE Methode EINES Knotens,
+ * und genau das soll gemessen werden. Ein vollstaendiges DOM würde die Frage
+ * nicht schaerfer machen, aber eine Abhaengigkeit einführen.
+ */
+class Kn {
+  constructor(tag, id) {
+    this.tagName = String(tag).toUpperCase();
+    this.nodeType = 1;
+    this.id = id || '';
+    this.childNodes = [];
+  }
+  get firstChild() {
+    return this.childNodes[0] || null;
+  }
+  appendChild(n) {
+    this.childNodes.push(n);
+    return n;
+  }
+  insertBefore(n, ref) {
+    const i = ref ? this.childNodes.indexOf(ref) : -1;
+    if (i < 0) this.childNodes.push(n);
+    else this.childNodes.splice(i, 0, n);
+    return n;
+  }
+  querySelector(sel) {
+    const m = /^\[id\^="([^"]+)"\]$/.exec(sel);
+    assert.ok(
+      m,
+      `Der Nachbau kennt nur [id^="..."], die Weiche fragt nach ${sel}. ` +
+        'Wenn die Weiche ihren Selektor aendert, gehört der Nachbau mit.',
+    );
+    const suche = (k) => {
+      for (const kind of k.childNodes) {
+        if (kind.id && kind.id.startsWith(m[1])) return kind;
+        const tief = suche(kind);
+        if (tief) return tief;
+      }
+      return null;
+    };
+    return suche(this);
+  }
+}
+
+/** Ein body wie unserer: erstes Kind ist ein von React gehaltenes <script>. */
+function bauBody() {
+  const body = new Kn('body');
+  const skript = new Kn('script');
+  skript['__reactFiber$924ze5tvaok'] = {}; // live so vorgefunden
+  body.appendChild(skript);
+  body.appendChild(new Kn('div'));
+  return body;
+}
+
+/** Cookiebots Banner: <div id="cookiebanner"> mit einem Cybot-Nachkommen. */
+function bauBanner() {
+  const banner = new Kn('div', 'cookiebanner');
+  banner.appendChild(new Kn('a', 'CybotCookiebotDialogBodyButtonDecline'));
+  return banner;
+}
+
+/** Genau der Einschub aus cc.js 2.135.0, displaydialog(). */
+function wieCookiebot(body, knoten) {
+  return body.firstChild
+    ? body.insertBefore(knoten, body.firstChild)
+    : body.appendChild(knoten);
+}
+
+/** Lädt den ausgelieferten Quelltext und hängt ihn an `body`. */
+async function weicheEinhaengen(body, quelltext) {
+  const src =
+    quelltext ?? (await import(WEICHE_QUELLE.href)).einschubWeicheQuelle();
+  const doc = {getElementsByTagName: (t) => (t === 'body' ? [body] : [])};
+  new Function('document', src)(doc);
+  return body;
+}
+
+test('ROT-VOR-GRUEN: ohne Weiche landet der Banner auf body-Index 0', () => {
+  const body = bauBody();
+  wieCookiebot(body, bauBanner());
+  assert.equal(
+    body.childNodes.indexOf(body.childNodes.find((k) => k.id === 'cookiebanner')),
+    0,
+    'MESSAUSFALL: der Nachbau erzeugt den Defekt nicht. Dann belegt der ' +
+      'Test darunter nichts.',
+  );
+});
+
+test('mit Weiche landet derselbe Banner am body-ENDE -- und bleibt drin', async () => {
+  const body = await weicheEinhaengen(bauBody());
+  const banner = bauBanner();
+  const zurück = wieCookiebot(body, banner);
+
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    body.childNodes.length - 1,
+    'Der Banner steht nicht am Ende. Auf body-Index 0 verschiebt er jedes ' +
+      'von React gehaltene Geschwister -- #418 plus #423.',
+  );
+  assert.equal(
+    zurück,
+    banner,
+    'insertBefore gibt den eingefuegten Knoten zurück, und Cookiebot ' +
+      'rechnet damit (this.DOM = bodyObj.insertBefore(...)). Die Weiche darf ' +
+      'diesen Vertrag nicht brechen.',
+  );
+});
+
+test('die Weiche lässt alles andere unangetastet (fail-safe nach aussen)', async () => {
+  // 1. Ein fremder Knoten OHNE Einwilligungs-Merkmal bleibt, wo er hin soll.
+  const a = await weicheEinhaengen(bauBody());
+  const fremd = new Kn('div', 'irgendwas');
+  a.insertBefore(fremd, a.firstChild);
+  assert.equal(a.childNodes.indexOf(fremd), 0, 'fremder Knoten wurde umgelenkt');
+
+  // 2. Ein Knoten, den REACT einfuegt, bleibt unangetastet -- auch wenn er
+  //    nach Einwilligung aussieht. React soll seinen eigenen Baum bauen.
+  const b = await weicheEinhaengen(bauBody());
+  const reactKnoten = bauBanner();
+  reactKnoten['__reactFiber$abc'] = {};
+  b.insertBefore(reactKnoten, b.firstChild);
+  assert.equal(
+    b.childNodes.indexOf(reactKnoten),
+    0,
+    'Ein React-eigener Knoten wurde umgelenkt -- das bricht Reacts Baum.',
+  );
+
+  // 3. Ein Einschub, der NICHT vor das erste Kind geht, bleibt an Ort und
+  //    Stelle. Umgelenkt wird nur die eine gemessene Bauform.
+  const c = await weicheEinhaengen(bauBody());
+  const banner = bauBanner();
+  c.insertBefore(banner, c.childNodes[1]);
+  assert.equal(c.childNodes.indexOf(banner), 1, 'Einschub in der Mitte wurde verschoben');
+});
+
+test('die Weiche hängt sich genau einmal ein', async () => {
+  const body = bauBody();
+  await weicheEinhaengen(body);
+  const nachEinmal = body.insertBefore;
+  await weicheEinhaengen(body);
+  assert.equal(
+    body.insertBefore,
+    nachEinmal,
+    'Zweiter Durchlauf hängt erneut ein. Jede Schicht ruft die darunter ' +
+      'auf -- aus einem Einschub würden mehrere.',
+  );
+});
+
+test('die Weiche steht im Bootstrap VOR dem Cookiebot-Loader', () => {
+  const text = readFileSync(QUELLE, 'utf8');
+  const a = text.indexOf('einschubWeicheQuelle()');
+  const e = text.indexOf('var s=document.createElement("script")');
+  assert.ok(a > 0, 'cookiebotBootstrap ruft einschubWeicheQuelle() nicht auf');
+  assert.ok(e > 0, 'der Cookiebot-Loader im Bootstrap wurde nicht gefunden');
+  assert.ok(
+    a < e,
+    'Die Weiche steht NACH dem Loader. Dann kann uc.js schon angefordert ' +
+      'sein, bevor sie hängt -- und der Einschub geht an ihr vorbei.',
+  );
+});
+
+test('ROT-VOR-GRUEN: der Waechter erkennt eine ausgebaute Weiche', async () => {
+  const quelle = (await import(WEICHE_QUELLE.href)).einschubWeicheQuelle();
+  // Mutant: die Bedingung wird unerfuellbar, die Weiche reicht alles durch.
+  const kaputt = quelle.replace('bezug===this.firstChild', 'false');
+  assert.notEqual(kaputt, quelle, 'Mutant liess sich nicht bauen');
+
+  const body = await weicheEinhaengen(bauBody(), kaputt);
+  const banner = bauBanner();
+  wieCookiebot(body, banner);
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    0,
+    'Der Mutant lenkt immer noch um. Dann misst der Test oben nicht die ' +
+      'Weiche, sondern irgendetwas anderes.',
+  );
+});
