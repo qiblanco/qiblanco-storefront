@@ -1132,9 +1132,29 @@ ul.submenu li a {
 * --------------------------------------------------
 */
 .withdrawal-page {
+  /* TYPO-TOKENS: modulare Skala 1.25 ab 16px (design-meister web-soll.yaml,
+     "keine freien Werte"). Bis 2026-09-13 standen hier drei ad-hoc-Groessen
+     (0.78rem / 0.9rem / clamp(2rem, 4vw, 3.5rem)); die fluide Obergrenze
+     erzeugte je Viewportbreite einen eigenen Zwischenwert. Dieselbe Skala
+     benutzt app/styles/suche.css -- die drei Widerrufs-/Suchflaechen tragen
+     damit EINEN Satz Schriftgroessen. */
+  --qw-t-50: 0.8rem;      /* 12.8 */
+  --qw-t-100: 1rem;       /* 16   */
+  --qw-t-200: 1.25rem;    /* 20   */
+  --qw-t-300: 1.5625rem;  /* 25   */
+  --qw-t-400: 1.9531rem;  /* 31.25 */
+  --qw-t-500: 2.4414rem;  /* 39   */
+
   color: var(--color-dark);
   margin: 0 auto;
   max-width: 880px;
+  /* Die Inhaltsflaeche fuellt mindestens einen Bildschirm (Job 20260913-
+     designschuld-search-und-widerruf-bestaetigen-unter-schwelle-prio35).
+     /widerruf/bestaetigen zeigt beim direkten Aufruf nur einen kurzen
+     Hinweis-Block; ohne diese Zeile beginnt der geteilte Fuss unmittelbar
+     darunter und die Bestaetigungsseite wirkt abgebrochen. Reines Layout --
+     am Wortlaut der Widerrufs-Zusage aendert das nichts. */
+  min-height: calc(100svh - var(--header-height));
   min-width: 0;
   padding: 4rem 1.5rem 5rem;
   width: 100%;
@@ -1146,7 +1166,7 @@ ul.submenu li a {
 
 .withdrawal-hero h1,
 .withdrawal-panel h1 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(var(--qw-t-400), 4vw, var(--qw-t-500));
   line-height: 1.05;
   margin-bottom: 1rem;
   overflow-wrap: break-word;
@@ -1161,7 +1181,7 @@ ul.submenu li a {
 
 .withdrawal-kicker {
   color: var(--color-accent-primary);
-  font-size: 0.78rem;
+  font-size: var(--qw-t-50);
   font-weight: 700;
   letter-spacing: 0.08em;
   margin-bottom: 0.75rem;
@@ -1194,7 +1214,7 @@ ul.submenu li a {
 }
 
 .withdrawal-form span {
-  font-size: 0.9rem;
+  font-size: var(--qw-t-100);
   font-weight: 700;
 }
 
@@ -1322,7 +1342,7 @@ ul.submenu li a {
 
   .withdrawal-hero h1,
   .withdrawal-panel h1 {
-    font-size: clamp(1.8rem, 9vw, 2.25rem);
+    font-size: clamp(var(--qw-t-300), 9vw, var(--qw-t-400));
     line-height: 1.12;
   }
 

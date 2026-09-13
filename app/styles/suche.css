@@ -1,0 +1,226 @@
+/* SUCHE (/search) — Token-CSS im Scope `.search`.
+ *
+ * ANLASS: Job 20260913-designschuld-search-und-widerruf-bestaetigen-unter-
+ * schwelle-prio35. Die Route war unveraenderte Hydrogen-Boilerplate: ein
+ * <h1> und ein rohes input/button, zu `.search` existierte KEINE einzige
+ * Regel. Die Ueberschrift stand live bei x=0 ohne Container.
+ *
+ * WARUM DIE FARBEN NICHT AUS DEM DESIGN-BRIEF KOMMEN (bewusste Abweichung,
+ * P10 Bestand vor Neubau): `design-rubrik brief` nennt als Akzent #c9a14b.
+ * Die Storefront fuehrt ihren Goldton aber seit langem als
+ * --color-accent-primary (#F2BF72) mit den Rollen --color-accent-ink und
+ * --color-on-accent (app.css :root, Kontrast-Konzept 2026-08-12). Ein
+ * dritter Goldton auf dieser Seite waere genau der Zwei-Gold-Befund, den die
+ * Rubrik selbst ahndet (webdesign.py dim_harmonisch, Zwei-Gold-Detektor).
+ * Diese Datei erfindet deshalb KEINE Farbe; sie benutzt die vorhandenen
+ * Rollen und legt nur Typo, Abstand und Radius als Tokens fest.
+ *
+ * TOKENS: Typo modulare Skala 1.25 (6 Stufen, Soll <= 9) · Spacing 8pt-Grid ·
+ * genau ZWEI Radien (8/16px) · EIN H2-Stil · Buttons aus einem Token-Satz.
+ */
+
+.search {
+  /* --- Typo: modulare Skala, Ratio 1.25, Basis 16px --- */
+  --qs-t-50: 0.8rem;      /* 12.8 — Kicker/Meta */
+  --qs-t-100: 1rem;       /* 16    — Body */
+  --qs-t-200: 1.25rem;    /* 20    — Lead */
+  --qs-t-300: 1.5625rem;  /* 25    — H2 */
+  --qs-t-400: 1.9531rem;  /* 31.25 */
+  --qs-t-500: 2.4414rem;  /* 39    — H1 */
+
+  /* --- Spacing: 8pt-Grid, drei Sektions-Stufen --- */
+  --qs-s-1: 8px;
+  --qs-s-2: 16px;
+  --qs-s-3: 24px;
+  --qs-s-4: 32px;
+  --qs-s-6: 48px;
+  --qs-s-8: 64px;
+  --qs-s-12: 96px;
+
+  /* --- Radius: genau zwei Werte --- */
+  --qs-r-1: 8px;
+  --qs-r-2: 16px;
+
+  /* --- Flaeche/Schrift: Rollen aus dem Bestand, keine neue Farbe --- */
+  --qs-grund: #faf9f5;
+  --qs-flaeche: #ffffff;
+  --qs-text: var(--color-dark);
+  --qs-muted: #6b665d;
+  --qs-linie: rgba(74, 71, 65, 0.16);
+
+  background: var(--qs-grund);
+  color: var(--qs-text);
+  /* Die Inhaltsflaeche fuellt mindestens einen Bildschirm. Ohne das rutscht
+     der geteilte Fuss bei einem leeren Ergebnis bis unter das Suchfeld — die
+     Seite sieht dann aus, als sei sie abgebrochen. */
+  min-height: calc(100svh - var(--header-height));
+}
+
+.search__innen {
+  margin: 0 auto;
+  max-width: 880px;
+  padding: var(--qs-s-12) var(--qs-s-3) var(--qs-s-12);
+  width: 100%;
+}
+
+.search__kicker {
+  color: var(--qs-muted);
+  font-size: var(--qs-t-50);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--qs-s-1);
+  text-transform: uppercase;
+}
+
+.search h1 {
+  font-size: var(--qs-t-500);
+  line-height: 1.15;
+  margin-bottom: var(--qs-s-2);
+}
+
+.search__lead {
+  color: var(--qs-muted);
+  font-size: var(--qs-t-200);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* --- Suchfeld --- */
+.search__form {
+  display: grid;
+  gap: var(--qs-s-1);
+  margin-top: var(--qs-s-6);
+  max-width: 560px;
+}
+
+.search__label {
+  font-size: var(--qs-t-100);
+  font-weight: 700;
+}
+
+.search__zeile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--qs-s-1);
+}
+
+.search__feld {
+  background: var(--qs-flaeche);
+  border: 1px solid var(--qs-linie);
+  border-radius: var(--qs-r-1);
+  color: var(--qs-text);
+  flex: 1 1 240px;
+  font-size: var(--qs-t-100);
+  min-width: 0;
+  padding: var(--qs-s-2);
+}
+
+.search__feld:focus-visible {
+  border-color: var(--color-accent-ink);
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: 2px;
+}
+
+.search__knopf {
+  background: var(--color-accent-primary);
+  border: 0;
+  border-radius: var(--qs-r-1);
+  color: var(--color-on-accent);
+  cursor: pointer;
+  font-size: var(--qs-t-100);
+  font-weight: 700;
+  padding: var(--qs-s-2) var(--qs-s-4);
+}
+
+.search__knopf:hover {
+  filter: brightness(0.96);
+}
+
+.search__fehler {
+  border-left: 3px solid var(--color-accent-ink);
+  color: var(--qs-text);
+  font-size: var(--qs-t-100);
+  margin-top: var(--qs-s-3);
+  padding-left: var(--qs-s-2);
+}
+
+/* --- Leerer Zustand --- */
+.search__leer {
+  margin-top: var(--qs-s-8);
+}
+
+.search__leer p {
+  font-size: var(--qs-t-200);
+  line-height: 1.6;
+  margin-bottom: var(--qs-s-3);
+  max-width: 60ch;
+}
+
+.search__wege {
+  border-top: 1px solid var(--qs-linie);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--qs-s-1);
+  padding-top: var(--qs-s-3);
+}
+
+.search__weg {
+  background: var(--qs-flaeche);
+  border: 1px solid var(--qs-linie);
+  border-radius: var(--qs-r-1);
+  color: var(--qs-text);
+  display: inline-block;
+  font-size: var(--qs-t-100);
+  padding: var(--qs-s-1) var(--qs-s-2);
+  text-decoration: none;
+}
+
+.search__weg:hover {
+  border-color: var(--color-accent-ink);
+}
+
+/* --- Trefferliste --- */
+.search__treffer {
+  margin-top: var(--qs-s-8);
+}
+
+.search__treffer h2 {
+  font-size: var(--qs-t-300);
+  line-height: 1.25;
+  margin-bottom: var(--qs-s-2);
+  text-align: left;
+}
+
+.search .search-result {
+  margin-bottom: var(--qs-s-6);
+}
+
+.search .search-results-item {
+  border-bottom: 1px solid var(--qs-linie);
+  margin-bottom: 0;
+  padding: var(--qs-s-2) 0;
+}
+
+.search .search-results-item a {
+  color: var(--qs-text);
+  gap: var(--qs-s-2);
+  text-decoration: none;
+}
+
+.search .search-results-item a:hover {
+  color: var(--color-accent-ink);
+}
+
+.search .search-results-item img {
+  border-radius: var(--qs-r-1);
+}
+
+@media (max-width: 640px) {
+  .search__innen {
+    padding: var(--qs-s-8) var(--qs-s-2);
+  }
+
+  .search h1 {
+    font-size: var(--qs-t-400);
+  }
+}

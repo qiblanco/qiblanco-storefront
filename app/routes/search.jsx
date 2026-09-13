@@ -5,6 +5,16 @@ import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {ohneAusgeschlossene} from '~/lib/such-ausschluss';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
+import sucheStyles from '~/styles/suche.css?url';
+
+/**
+ * Scope-CSS der Suchflaeche (Token-Satz: Typo-Skala 1.25, 8pt-Grid,
+ * zwei Radien, Button-Token). Bis zum 2026-09-13 hatte `.search` keine
+ * einzige Regel -- die Ueberschrift stand ohne Container bei x=0.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: sucheStyles}];
+}
 
 /**
  * DIESE SEITE GEHÖRT NICHT IN DEN INDEX (Job 20260912-sieben-indexierbare-
@@ -70,36 +80,59 @@ export default function SearchPage() {
 
   return (
     <div className="search">
-      <h1>Suche</h1>
-      <SearchForm>
-        {({inputRef}) => (
-          <>
-            <input
-              defaultValue={term}
-              name="q"
-              placeholder="Suchen…"
-              ref={inputRef}
-              type="search"
-            />
-            &nbsp;
-            <button type="submit">Suchen</button>
-          </>
-        )}
-      </SearchForm>
-      {error && <p style={{color: 'red'}}>{error}</p>}
-      {!term || !result?.total ? (
-        <SearchResults.Empty />
-      ) : (
-        <SearchResults result={result} term={term}>
-          {({articles, pages, products, term}) => (
-            <div>
-              <SearchResults.Products products={products} term={term} />
-              <SearchResults.Pages pages={pages} term={term} />
-              <SearchResults.Articles articles={articles} term={term} />
-            </div>
+      <section className="search__innen" aria-labelledby="suche-titel">
+        <p className="search__kicker">Shop durchsuchen</p>
+        <h1 id="suche-titel">Suche</h1>
+        <p className="search__lead">
+          Ein Wort genügt: Produkt, Thema oder Beschwerde.
+        </p>
+
+        <SearchForm className="search__form">
+          {({inputRef}) => (
+            <>
+              <label className="search__label" htmlFor="suche-feld">
+                Suchbegriff
+              </label>
+              <div className="search__zeile">
+                <input
+                  className="search__feld"
+                  defaultValue={term}
+                  id="suche-feld"
+                  name="q"
+                  placeholder="Zum Beispiel: Schlaf"
+                  ref={inputRef}
+                  type="search"
+                />
+                <button className="search__knopf" type="submit">
+                  Suchen
+                </button>
+              </div>
+            </>
           )}
-        </SearchResults>
-      )}
+        </SearchForm>
+
+        {error ? (
+          <p className="search__fehler" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        {!term || !result?.total ? (
+          <SearchResults.Empty term={term} />
+        ) : (
+          <div className="search__treffer">
+            <SearchResults result={result} term={term}>
+              {({articles, pages, products, term}) => (
+                <div>
+                  <SearchResults.Products products={products} term={term} />
+                  <SearchResults.Pages pages={pages} term={term} />
+                  <SearchResults.Articles articles={articles} term={term} />
+                </div>
+              )}
+            </SearchResults>
+          </div>
+        )}
+      </section>
       <Analytics.SearchView data={{searchTerm: term, searchResults: result}} />
     </div>
   );
