@@ -160,7 +160,7 @@ export function istInterneIp(ip, netze = INTERN_NETZE) {
       // `>>> 0` hält das Ergebnis vorzeichenlos; ein Shift um 32 ist in JS
       // ein Shift um 0 und würde /0 zu "alles trifft" machen — deshalb der
       // Sonderfall, nicht die Maske.
-      if (praefix === 0) continue; // /0 waere Uebersperrung, nie gemeint
+      if (praefix === 0) continue; // /0 wäre Übersperrung, nie gemeint
       const maske = praefix === 32 ? 0xffffffff : (~0 << (32 - praefix)) >>> 0;
       if (((v4 & maske) >>> 0) === ((netz & maske) >>> 0)) return true;
       continue;

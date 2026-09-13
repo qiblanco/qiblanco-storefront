@@ -602,25 +602,25 @@ function safeDecode(value) {
  * SECHSTER WERT `intern` seit Job 20260913-GROSSJOB-eigener-messverkehr...,
  * Segment s02. Bis dahin fiel JEDER Zugriff unserer eigenen Wachen in
  * `browser` — derselbe Wert wie bei einem Kunden. `kaufweg-nachlauf` legt 72x
- * am Tag ueber beide Storefronts einen Warenkorb an; diese Koerbe waren von
+ * am Tag über beide Storefronts einen Warenkorb an; diese Koerbe waren von
  * echten baulich nicht zu unterscheiden.
  *
  * ER STEHT ZUERST, und das ist keine Reihenfolge-Geschmacksfrage: unsere
  * Wachen tragen einen Nicht-Browser-UA, faenden also ohnehin keinen
  * Webview-Marker und landeten in `browser`. Stuende die Frage weiter unten,
- * koennte ein interner Client mit einem webview-aehnlichen Zweck-String
- * vorher in eine Webview-Klasse fallen und die Vergleichsgruppe verwaessern,
+ * könnte ein interner Client mit einem webview-ähnlichen Zweck-String
+ * vorher in eine Webview-Klasse fallen und die Vergleichsgruppe verwässern,
  * gegen die der Meta-Webview gemessen wird.
  *
  * DIE ERKENNUNG IST EIN SPIEGEL DER SSoT (app/lib/interner-verkehr.js), keine
- * zweite Liste — Begruendung und taeglicher Drift-Waechter stehen dort.
+ * zweite Liste — Begründung und täglicher Drift-Waechter stehen dort.
  *
- * `intern` IST KEIN VERDIKT UEBER DEN KUNDEN und darf nie eines werden: er
- * sagt "das waren wir", und die Unsicherheit faellt immer auf EXTERN.
+ * `intern` IST KEIN VERDIKT ÜBER DEN KUNDEN und darf nie eines werden: er
+ * sagt "das waren wir", und die Unsicherheit fällt immer auf EXTERN.
  *
  * @param {string | null | undefined} userAgent
  * @param {{intern?: boolean}} [optionen] `intern: true` erzwingt die Klasse —
- *   dafuer gibt es genau einen Aufrufer, den Serverpfad in
+ *   dafür gibt es genau einen Aufrufer, den Serverpfad in
  *   cart-attribution.server.js, wo zusaetzlich die Client-IP vorliegt. Der UA
  *   allein kann die IP-Achse nicht sehen.
  * @returns {'intern'|'webview_meta'|'webview_andere'|'webview_vermutet'|'browser'|'unbekannt'}
@@ -707,10 +707,10 @@ export function consentStateFromCookies(cookieHeader) {
  * `mergeCartAttributes` keinen davon still verwirft.
  *
  * KEIN NEUER SCHLUESSEL seit s02 — nur ein neuer WERT in `ua_class`. Ein
- * neuer Identitaets-Key muesste in TRACKING_COOKIE_NAMES nachgetragen werden
+ * neuer Identitaets-Key müsste in TRACKING_COOKIE_NAMES nachgetragen werden
  * und fiele sonst an der Checkout-Domaingrenze weg (der `_qpx_anon`-Bug,
- * 90,6 % falsch `direct`). Ein Wert in einem bestehenden Schluessel kann diese
- * Fehlerklasse baulich nicht haben: der Schluessel reist schon.
+ * 90,6 % falsch `direct`). Ein Wert in einem bestehenden Schlüssel kann diese
+ * Fehlerklasse baulich nicht haben: der Schlüssel reist schon.
  *
  * @param {{userAgent?: string | null, cookieHeader?: string | null,
  *          intern?: boolean}} options

@@ -96,7 +96,7 @@ export function getOriginCartAttributes(request) {
     // Request, nicht im User-Agent. Deshalb wird die SSoT SERVERSEITIG
     // ausgewertet — eine Wache, die ihren Marker-UA vergisst, wird an der IP
     // trotzdem erkannt, und ein Client ohne IP-Traeger am Marker. Zwei Achsen,
-    // die VERSCHIEDENE Groessen lesen: genau das macht sie unabhaengig.
+    // die VERSCHIEDENE Größen lesen: genau das macht sie unabhängig.
     intern: istInternerZugriff({
       userAgent,
       ip: buyerIpAusRequest(request),

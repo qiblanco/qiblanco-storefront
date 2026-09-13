@@ -545,7 +545,7 @@ test('ARM-F3 ÜBERSPERRUNG: echte Kunden-UAs sind NIE intern', () => {
 
 test('ARM-F4 ÜBERSPERRUNG: Nachbar-IPs und Unsinn sind NIE intern', () => {
   const fremde = [
-    '65.108.150.120', // direkt daneben, /32 heisst /32
+    '65.108.150.120', // direkt daneben, /32 heißt /32
     '65.108.150.122',
     '65.108.151.121',
     '65.108.0.0',
