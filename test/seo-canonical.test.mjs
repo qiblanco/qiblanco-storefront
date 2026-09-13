@@ -152,7 +152,7 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
   // Der Sinn der geteilten Quelle ist, dass "noindex gesetzt" und "aus der
   // Sitemap raus" nicht auseinanderlaufen können. Genau das prueft dieser
   // Test — er wird rot, sobald jemand in der Sitemap-Route wieder ein eigenes
-  // Handle-Literal einfuehrt.
+  // Handle-Literal einführt.
   //
   // UMGEDREHT AM 2026-08-23 (s05), NICHT GELOESCHT: bis dahin pinnte er
   // `pages: NICHT_INDEXIERBARE_SEITEN`, also die IDENTITAET beider Listen.
@@ -209,37 +209,37 @@ test('NAHT: die Sitemap-Sicht ist eine echte TEILMENGE der noindex-Sicht', () =>
 });
 
 // ABGEBAUT 2026-09-13: „NAHT: pre-access trägt noindex und bleibt VORERST in
-// der Sitemap" — die Zusage wurde EINGELOEST, nicht gebrochen.
+// der Sitemap" — die Zusage wurde EINGELÖST, nicht gebrochen.
 //
 // Der Arm war eine Stolperdraht-Zusicherung auf einen HANDGEPFLEGTEN Wert:
 // `pre-access` sollte `ausSitemap: false` behalten, bis das noindex gewirkt
 // hat. Er sollte laut eigenem Kommentar „die Stelle sein, an der man ihn
 // spaeter bewusst umdreht". Genau das ist passiert: PR #383 (75e7517,
-// 2026-09-12) hat die Uebergangsstufe aufgeloest und 19 Eintraege auf
+// 2026-09-12) hat die Übergangsstufe aufgelöst und 19 Einträge auf
 // `ausSitemap: true` gekippt, `pre-access` als ersten — gemessen mit
-// `gsc-seitenstand` an allen 16 damaligen Eintraegen, Lesart je
+// `gsc-seitenstand` an allen 16 damaligen Einträgen, Lesart je
 // `coverageState` im Kopf von ~/lib/seo.js. Der Draht ist also gerissen, wie
-// vorgesehen; zurueckgesetzt hat ihn niemand. Er stand von 75e7517 bis
+// vorgesehen; zurückgesetzt hat ihn niemand. Er stand von 75e7517 bis
 // 2026-09-13 rot (Job 20260913-drei-rote-testarme-…).
 //
 // WARUM HIER KEIN ERSATZ-ARM STEHT, sondern nur diese Notiz:
-//  (a) Eine allgemeine Fassung („wer ausSitemap:false traegt, steht nicht in
-//      AUS_SITEMAP_ENTFERNTE_SEITEN") waere GRUEN AUS KONSTRUKTION.
+//  (a) Eine allgemeine Fassung („wer ausSitemap:false trägt, steht nicht in
+//      AUS_SITEMAP_ENTFERNTE_SEITEN") wäre GRUEN AUS KONSTRUKTION.
 //      `AUS_SITEMAP_ENTFERNTE_SEITEN` ist `…_DEF.filter((e) => e.ausSitemap)`
 //      — beide Seiten der Gleichung kommen aus demselben Feld, die Aussage
-//      kann gar nicht falsch werden. Dasselbe gilt fuer `istNichtIndexierbar`.
+//      kann gar nicht falsch werden. Dasselbe gilt für `istNichtIndexierbar`.
 //      Ein Arm, der nicht rot werden kann, ist kein Schutz, sondern ein
 //      Platzhalter, der wie einer aussieht.
 //  (b) Die Frage, die WIRKLICH etwas beweist — hält der SITEMAP-LESER sich an
 //      die Liste? — ist bereits gebaut und nicht konstruktionsgruen:
 //      `test/sitemap-nur-route-seiten.test.mjs` faehrt die echte Route gegen
 //      eine Storefront-Attrappe, entfernt `AUS_SITEMAP_ENTFERNTE_SEITEN[0]`
-//      (zur Laufzeit gewaehlt, nicht als Handle benannt) und prueft in der
+//      (zur Laufzeit gewählt, nicht als Handle benannt) und prueft in der
 //      Gegenrichtung, dass ein NICHT versteckter Handle stehenbleibt. Beides
-//      hier zu doppeln waere P10-Bruch.
+//      hier zu doppeln wäre P10-Bruch.
 //
-// Wer die Uebergangsstufe fuer einen neuen Handle wieder braucht, findet ihre
-// Begruendung und die Aufloesungsbedingung im Kopf von ~/lib/seo.js — nicht in
+// Wer die Übergangsstufe für einen neuen Handle wieder braucht, findet ihre
+// Begründung und die Auflösungsbedingung im Kopf von ~/lib/seo.js — nicht in
 // einem Arm, der eine Jahreszahl alt wird.
 
 test('NAHT: development-nicht-loschen bleibt in BEIDEN Sichten (kein Rueckschritt)', () => {
@@ -336,8 +336,8 @@ test('NAHT: die Page-Route verdrahtet den noindex wirklich in ihr meta()', async
 // ein späterer Lauf sie nicht als vermeintliche Lücke wieder aufmacht.
 // ===========================================================================
 
-// GEMESSEN WIRD DER PROGRAMMTEXT, NICHT DIE BEGRUENDUNG. Die Routen dieses
-// Repos erklaeren ihre SEO-Regeln ausfuehrlich im Kommentar — `pages.$handle`
+// GEMESSEN WIRD DER PROGRAMMTEXT, NICHT DIE BEGRÜNDUNG. Die Routen dieses
+// Repos erklären ihre SEO-Regeln ausfuehrlich im Kommentar — `pages.$handle`
 // zitiert die Regel „noindex plus canonical sind widersprüchliche Signale"
 // woertlich. Ein Muster, das in dieser Prosa Halt findet, misst die Erklaerung
 // statt den Code; dieselbe Klasse hielt `test/neu-oder-gebraucht.test.mjs`
@@ -362,7 +362,7 @@ const s04Quelle = async (datei) => {
  * und ein Template-Literal bringt eine schliessende Klammer mit: seit
  * 388fa8c (#388) steht im else-Zweig `const pfad = \`/pages/${params.handle}\`;`
  * — das `}` von `${…}` beendete die Zeichenklasse, und der Arm stand rot,
- * obwohl die zugesicherte STRUKTUR unveraendert da war. Gezaehlt werden
+ * obwohl die zugesicherte STRUKTUR unveraendert da war. Gezählt werden
  * deshalb Klammern.
  */
 const zweigeNach = (quelle, wachter) => {
@@ -454,21 +454,21 @@ test('s04 NAHT: die Page-Route setzt den canonical im else-Zweig des noindex', a
   const quelle = await s04Quelle('routes/pages.$handle.jsx');
   const {wenn, sonst} = zweigeNach(quelle, 'istNichtIndexierbar');
 
-  // Die noindex-Haelfte steht im if — und der canonical steht dort NICHT.
+  // Die noindex-Hälfte steht im if — und der canonical steht dort NICHT.
   assert.match(wenn, /noindexMeta\(\)/, 'der if-Zweig muss noindex setzen');
   assert.ok(
     !/canonicalLink\(/.test(wenn),
     'canonical im noindex-Zweig — genau das widersprüchliche Signalpaar',
   );
 
-  // …und die canonical-Haelfte steht im else if, also unerreichbar fuer eine
+  // …und die canonical-Hälfte steht im else if, also unerreichbar für eine
   // Seite, die gerade auf noindex gesetzt wird.
   assert.ok(sonst, 'dem noindex-Zweig muss ein `else if` folgen');
   assert.match(sonst, /canonicalLink\(/, 'canonical muss im else-Zweig stehen');
 
-  // Der canonical zeigt auf den Handle, unter dem Shopify die Seite fuehrt.
+  // Der canonical zeigt auf den Handle, unter dem Shopify die Seite führt.
   // Gemessen wird das ZIEL, nicht die Schreibweise: seit 388fa8c (#388) geht
-  // der Pfad ueber eine Zwischenvariable, weil `seitenSignale` denselben Wert
+  // der Pfad über eine Zwischenvariable, weil `seitenSignale` denselben Wert
   // braucht — `canonicalLink(`/pages/${params.handle}`)` als Literal zu
   // verlangen hiesse, diese Zusammenfuehrung zu verbieten.
   assert.match(
