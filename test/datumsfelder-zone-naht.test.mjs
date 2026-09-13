@@ -20,13 +20,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 import {ohneProsa} from './_quelltext.mjs';
-import {REDAKTIONSSTAND, STAND_ISO, standFür} from '../app/data/redaktionsstand.js';
+import {REDAKTIONSSTAND, STAND_ISO, standFuer} from '../app/data/redaktionsstand.js';
 
 const lies = (p) => ohneProsa(readFileSync(new URL(p, import.meta.url), 'utf8'));
 const MIT_ZONE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/;
 
 // Die vier Routen, deren Datumswerte als DATEI-LOKALE Konstanten dastehen und
-// die deshalb nicht über `standFür()` geheilt werden können.
+// die deshalb nicht über `standFuer()` geheilt werden können.
 const ROUTEN = [
   '../app/routes/pages.kritik.jsx',
   '../app/routes/pages.neu-oder-gebraucht.jsx',
@@ -48,17 +48,17 @@ test('jede Route reicht ihr Datum durch isoMitZone, statt es roh zu setzen', () 
   }
 });
 
-test('standFür liefert den Zeitstempel — und verschiebt den Kalendertag nicht', () => {
+test('standFuer liefert den Zeitstempel — und verschiebt den Kalendertag nicht', () => {
   // Die Tabelle bleibt die redaktionelle Angabe in Kalendertagen; die Zone
   // entsteht erst im Zugriff. Beides zugleich ist der Punkt: eine Zone, die den
   // Tag verschiebt, wäre schlimmer als gar keine.
   for (const [pfad, tag] of Object.entries(REDAKTIONSSTAND)) {
-    const v = standFür(pfad);
+    const v = standFuer(pfad);
     assert.match(v, MIT_ZONE, `${pfad} -> ${v}`);
     assert.ok(v.startsWith(tag), `${pfad}: ${tag} wurde zu ${v} verschoben`);
     assert.match(tag, /^\d{4}-\d{2}-\d{2}$/, `${pfad}: die Tabelle soll ein Kalendertag bleiben`);
   }
-  assert.equal(STAND_ISO, standFür('/pages/über-uns'));
+  assert.equal(STAND_ISO, standFuer('/pages/ueber-uns'));
 });
 
 test('KEINE ERFUNDENE GENAUIGKEIT: fremde Publikationsdaten bleiben unberührt', () => {

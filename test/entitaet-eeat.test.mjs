@@ -16,7 +16,7 @@ import {ORG_ID} from '../app/lib/entity-schema.js';
 
 /**
  * Die Form, die Google für ein Datums-/Uhrzeit-Attribut sehen will.
- * `standFür()` liefert seit dem 2026-09-13 einen Zeitstempel MIT Zone; die
+ * `standFuer()` liefert seit dem 2026-09-13 einen Zeitstempel MIT Zone; die
  * Tabelle REDAKTIONSSTAND bleibt bewusst ein blosser Kalendertag (sie ist die
  * redaktionelle Angabe, die gepflegt und gemessen wird).
  */
