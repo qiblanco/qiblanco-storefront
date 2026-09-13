@@ -1,7 +1,6 @@
 import {NeuOderGebrauchtSeite} from '~/components/campaign/NeuOderGebrauchtSeite';
 import nogStyles from '~/styles/neu-oder-gebraucht.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {isoMitZone} from '~/lib/datum';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {FRAGEN} from '~/data/kauf-tatsachen';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
@@ -108,8 +107,8 @@ export const meta = () => {
   const schema = buildFaqPageJsonLd(FRAGEN, {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
-    datePublished: isoMitZone(NOG_VEROEFFENTLICHT),
-    dateModified: isoMitZone(NOG_GEAENDERT),
+    datePublished: NOG_VEROEFFENTLICHT,
+    dateModified: NOG_GEAENDERT,
   });
   return [
     {title: TITEL},

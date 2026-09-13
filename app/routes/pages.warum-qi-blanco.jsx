@@ -1,7 +1,6 @@
 import {AbsichtSeite} from '~/components/campaign/AbsichtSeite';
 import {ABSICHT, ABSENDER, ABSENDER_FOTO} from '~/data/absicht';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
-import {isoMitZone} from '~/lib/datum';
 import {ORGANISATION, ORG_ID, SITE_ID, MARKEN_PROFILE} from '~/lib/entity-schema';
 import absichtStyles from '~/styles/absicht.css?url';
 import {teilbildTags} from '~/lib/seiten-seo';
@@ -125,8 +124,8 @@ function absichtSchema() {
         isPartOf: {'@id': SITE_ID},
         author: {'@id': personId},
         publisher: {'@id': ORG_ID},
-        datePublished: isoMitZone(ABSENDER.stand),
-        dateModified: isoMitZone(ABSENDER.stand),
+        datePublished: ABSENDER.stand,
+        dateModified: ABSENDER.stand,
         about: {'@id': ORG_ID},
       },
       {

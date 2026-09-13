@@ -2,7 +2,6 @@ import {KritikSeite} from '~/components/campaign/KritikSeite';
 import kritikStyles from '~/styles/kritik.css?url';
 import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {isoMitZone} from '~/lib/datum';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {FRAGEN} from '~/data/kritik-vorwuerfe';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
@@ -123,8 +122,8 @@ export const meta = () => {
   const schema = buildFaqPageJsonLd(schemaItems(), {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
-    datePublished: isoMitZone(KRITIK_VEROEFFENTLICHT),
-    dateModified: isoMitZone(KRITIK_GEAENDERT),
+    datePublished: KRITIK_VEROEFFENTLICHT,
+    dateModified: KRITIK_GEAENDERT,
   });
   return [
     {title: TITEL},
