@@ -215,7 +215,7 @@ function quellDateien(wurzel) {
 /** Argumente eines Aufrufs -- klammerbalanciert, damit `f(g(a,b), c)` als 2 zaehlt. */
 function argumente(quelle, ab) {
   let tiefe = 0;
-  let stueck = '';
+  let puffer = '';
   const teile = [];
   for (let i = ab; i < quelle.length; i += 1) {
     const z = quelle[i];
@@ -223,16 +223,16 @@ function argumente(quelle, ab) {
     if (z === ')' || z === ']' || z === '}') {
       tiefe -= 1;
       if (tiefe === 0) {
-        if (stueck.trim()) teile.push(stueck.trim());
+        if (puffer.trim()) teile.push(puffer.trim());
         return teile;
       }
     }
     if (z === ',' && tiefe === 1) {
-      teile.push(stueck.trim());
-      stueck = '';
+      teile.push(puffer.trim());
+      puffer = '';
       continue;
     }
-    if (tiefe >= 1 && !(tiefe === 1 && z === '(' && i === ab)) stueck += z;
+    if (tiefe >= 1 && !(tiefe === 1 && z === '(' && i === ab)) puffer += z;
   }
   return null; // unbalanciert -> kein Urteil
 }
@@ -280,9 +280,9 @@ test('(C) jeder Aufruf des Steuer-Kanons gibt ein Markt-Land mit', () => {
   // Aufruf mehr, ist er blind geworden und nicht der Baum sauber.
   //
   // Die Zahl ist eine UNTERGRENZE und bewusst KEINE Zaehlung des Bestands: am
-  // 2026-09-13 waren es 9 Aufrufe, und ein Vertrag auf 9 waere beim naechsten
+  // 2026-09-13 waren es 9 Aufrufe, und ein Vertrag auf 9 wäre beim nächsten
   // Preisbaustein falsch-rot (Hausregel: ein Verify-Vertrag pinnt nie einen
-  // wachsenden Zaehler). 6 liegt deutlich unter dem Bestand und deutlich ueber
+  // wachsenden Zaehler). 6 liegt deutlich unter dem Bestand und deutlich über
   // dem Zustand, den dieser Arm fangen soll -- naemlich dass das Suchmuster
   // ins Leere greift, weil jemand die Kanon-Funktionen umbenannt hat.
   assert.ok(
@@ -303,7 +303,7 @@ test('(C) der Markt kommt aus einer Quelle, nicht aus einem zweiten Schluss', ()
   );
   const land = readFileSync(join(repo, 'app/lib/markt-land.js'), 'utf8');
   assert.match(land, /useRouteLoaderData\('root'\)/, 'der Hook liest die root-Daten');
-  // Kein Framework-Import im node-pruefbaren Kanon (Begruendung im Kopf von
+  // Kein Framework-Import im node-pruefbaren Kanon (Begründung im Kopf von
   // markt-pricing.js): sonst ist genau dieser Test nicht mehr fahrbar.
   const kanon = readFileSync(join(repo, 'app/lib/markt-pricing.js'), 'utf8');
   assert.ok(
@@ -313,7 +313,7 @@ test('(C) der Markt kommt aus einer Quelle, nicht aus einem zweiten Schluss', ()
 });
 
 test('(C) jeder produktMeta-Aufruf nennt sein Markt-Land', () => {
-  // `produktMeta` nimmt EIN Objekt, also zaehlt der Argument-Arm oben hier
+  // `produktMeta` nimmt EIN Objekt, also zählt der Argument-Arm oben hier
   // nicht. Geprueft wird deshalb das Feld. Sieben Flaggschiff-Routen laufen
   // hierueber und tragen die Produkt-Auszeichnung -- dieselbe Zahl, die Google
   // mit der sichtbaren Seite vergleicht.
