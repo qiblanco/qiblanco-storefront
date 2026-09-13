@@ -152,8 +152,38 @@ function SearchResultsProducts({term, products}) {
   );
 }
 
-function SearchResultsEmpty() {
-  return <p>Keine Treffer. Versuche eine andere Suche.</p>;
+/**
+ * Der leere Zustand der Suche -- BENUTZBAR, nicht nur wahr.
+ *
+ * Vorher stand hier ein einziger Satz ("Keine Treffer. Versuche eine andere
+ * Suche.") und sonst nichts: eine Sackgasse ohne Weg zurück in den Shop.
+ * Die drei Wege unten sind Navigation, kein Seiteninhalt -- /search trägt
+ * `noindex` (siehe Kopf von app/routes/search.jsx) und soll nicht gefunden,
+ * sondern bedient werden.
+ *
+ * @param {{term?: string}}
+ */
+function SearchResultsEmpty({term}) {
+  return (
+    <div className="search__leer">
+      <p>
+        {term
+          ? `Zu „${term}“ gibt es hier nichts.`
+          : 'Gib einen Suchbegriff ein.'}
+      </p>
+      <nav className="search__wege" aria-label="Weiter im Shop">
+        <Link className="search__weg" to="/collections/all">
+          Alle Produkte
+        </Link>
+        <Link className="search__weg" to="/pages/faq">
+          Häufige Fragen
+        </Link>
+        <Link className="search__weg" to="/">
+          Zur Startseite
+        </Link>
+      </nav>
+    </div>
+  );
 }
 
 /** @typedef {RegularSearchReturn['result']['items']} SearchItems */
