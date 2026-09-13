@@ -3,7 +3,7 @@ import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {formatPreis} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
-import {paketBetraege} from '~/lib/paket-preis';
+import {paketBetraege, rabattCodeFuer} from '~/lib/paket-preis';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
@@ -661,8 +661,11 @@ function paketAnzeige(p, productsByHandle, sizes, land) {
   // eine Rechnung, also gehört es an EINE Stelle.
   const betraege = paketBetraege(lines, p, land);
   if (!betraege) return null;
-  const {compare, preis, waehrung} = betraege;
+  const {compare, preis, waehrung, rabattart} = betraege;
   return {
+    // Die Rabattart reist mit den Labels, weil der Knopf darunter GENAU den Code
+    // einloesen muss, dessen Art diese Zahlen unterstellen (siehe rabattCodeFuer).
+    rabattart,
     compare: formatPreis(compare, waehrung),
     price: formatPreis(preis, waehrung),
     save: `Du sparst ${formatPreis(compare - preis, waehrung)}`,
@@ -718,6 +721,14 @@ function Pak({ p, productsByHandle, onChoose }) {
     [p, productsByHandle, sizes, marktLand],
   );
   const labels = anzeige || paketFallback(p);
+  // DER CODE FOLGT DER GERECHNETEN ART, NICHT DEM PAKET. Ohne diese Zeile legt die
+  // Karte in CHF/USD einen Festbetrag-Code in einen Warenkorb, dessen Preis sie
+  // mit einem Prozentsatz beworben hat -- der Fremdmarkt-Schaden vom 2026-09-13.
+  // FALLBACK-RICHTUNG BEWUSST 'prozent': greift paketFallback (API-Preise fehlen),
+  // ist die Waehrung unbekannt. Ein Prozentsatz gilt dann in JEDEM Markt, ein
+  // EUR-Festbetrag nur in einem -- die sichere Seite ist also der Prozent-Code.
+  const rabattart = anzeige?.rabattart ?? 'prozent';
+  const discountCode = rabattCodeFuer(p, rabattart);
 
   const onClick = () => {
     onChoose(p, cartState.selections, cartState, labels);
@@ -768,7 +779,7 @@ function Pak({ p, productsByHandle, onChoose }) {
       <div className="ghx-pak__cta-form">
         <CartForm
           route="/cart"
-          inputs={{lines: cartState.lines, discountCode: p.discountCode}}
+          inputs={{lines: cartState.lines, discountCode}}
           action={CartForm.ACTIONS.LinesAdd}
         >
           {(fetcher) => (
@@ -778,7 +789,7 @@ function Pak({ p, productsByHandle, onChoose }) {
                 type="hidden"
                 value={JSON.stringify({
                   package: p.title,
-                  discountCode: p.discountCode,
+                  discountCode,
                   products: cartState.lines.map((line) => ({
                     id: line.merchandiseId,
                     quantity: line.quantity,

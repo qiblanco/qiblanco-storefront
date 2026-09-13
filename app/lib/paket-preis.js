@@ -43,6 +43,13 @@
  * `shop-manager/pruefungen/probe_rundung_kundenrand.py` liest den Kartenpreis
  * LIVE aus `ghx-pak__price` und stellt ihn gegen den `runningTotal` der Kasse.
  *
+ * FREMDWAEHRUNG -- GELOEST AM 2026-09-13. Neu gilt: in CHF/USD/GBP rechnet die
+ * Karte weiter mit dem Prozentsatz UND legt jetzt auch den PROZENT-Code in den
+ * Warenkorb (`rabattCodeFuer`, unten). Damit ist die Rechnung dieser Datei in
+ * jeder Waehrung die, die die Kasse einloest -- ohne dass hier ein Wechselkurs
+ * stehen muss. Der folgende Absatz ist die HISTORIE: er beschreibt den Zustand,
+ * der den Fremdmarkt-Schaden erzeugt hat, und bleibt als Beleg stehen.
+ *
  * FREMDWAEHRUNG, AUSDRÜCKLICH BENANNT STATT STILL UEBERGANGEN: `rabattFest` ist
  * ein EUR-Betrag. In CHF/USD/GBP (Shopify Markets, FREIGESCHALTETE_MAERKTE in
  * markt-pricing.js) ist der Markets-Preis bereits der Endbetrag (anzeigeSatz
@@ -124,5 +131,64 @@ export function paketBetraege(lines, paket, land) {
     compare: Math.round(compareRoh),
     preis: Math.round(preisRoh),
     waehrung,
+    // WELCHE RABATTART DIESE ZAHL UNTERSTELLT. Sie wird zurueckgegeben, weil der
+    // Warenkorb GENAU den Rabattcode bekommen muss, dessen Art hier gerechnet
+    // wurde -- siehe rabattCodeFuer(). Vorher war das eine stille Annahme, und
+    // sie ist am 2026-09-13 in CHF/USD gebrochen.
+    rabattart: festGilt ? 'fest' : 'prozent',
   };
+}
+
+/**
+ * Suffix des PROZENT-Codes eines Pakets. Der Code in Shopify lautet
+ * `<discountCode><PROZENT_SUFFIX>`, also z. B. `PAKET-FUNDAMENT-INTL`.
+ *
+ * WARUM ABGELEITET UND NICHT HINGESCHRIEBEN: so kann der Prozent-Code nicht vom
+ * Festbetrag-Code abwandern -- ein Paket hat genau EINEN Namensstamm, und die
+ * beiden Arten sind zwei Auspraegungen davon. Wer hier den Stamm aendert, aendert
+ * beide zugleich.
+ */
+export const PROZENT_SUFFIX = '-INTL';
+
+/**
+ * DER RABATTCODE, DER ZU DER GERECHNETEN ZAHL PASST -- die eigentliche Lehre des
+ * 2026-09-13.
+ *
+ * WAS AN DIESEM TAG PASSIERT IST. Die Karte rechnete den Preis mit dem
+ * PROZENTSATZ und legte gleichzeitig einen Code in den Warenkorb, der einen
+ * FESTBETRAG in EUR hat. In DE stimmte das Ergebnis ungefaehr; in CHF und USD
+ * rechnet Shopify den Festbetrag mit einem eigenen Wechselkurs um, und der Kunde
+ * zahlte mehr, als die Karte nannte -- gemessen CH +77,26 bzw. +155,58 CHF und
+ * US +282,19 bzw. +663,51 USD je Bestellung.
+ *
+ * WARUM HIER KEIN KURS STEHT. Der naheliegende Weg -- den Festbetrag selbst
+ * umrechnen -- braucht Shopifys Marktkurs. Der ist von diesem Haus aus NICHT
+ * lesbar (kein App-Token hat `read_markets`), also nur schaetzbar; eine
+ * geschaetzte Konstante im Quelltext ist morgen falsch, ohne dass es auffaellt.
+ * Ein PROZENTSATZ dagegen ist waehrungsblind: er trifft in jeder Waehrung
+ * dieselbe Zahl, die diese Datei ausrechnet. Also wird nicht der Betrag
+ * uebersetzt, sondern die RABATTART gewechselt.
+ *
+ * DIE KOPPLUNG IST DER PUNKT, nicht die Fallunterscheidung: die Art kommt aus
+ * `paketBetraege()`, also aus derselben Rechnung, die den angezeigten Preis
+ * erzeugt hat. Damit kann die Anzeige nicht mehr eine Art zeigen und eine andere
+ * einloesen -- der Fehler dieses Tages ist baulich nicht mehr formulierbar.
+ *
+ * ABGRENZUNG ZUM NACHBARFALL (P10, Naht klar benannt): die Kakao-Staffel
+ * hat am 2026-09-12 dieselbe Wurzel anders geloest -- ausserhalb des EUR-Markts
+ * nennt sie den LISTENPREIS und verspricht keinen Staffelpreis
+ * (app/components/CacaoProductForm.jsx). Das ist kein Widerspruch, sondern eine
+ * andere Ausgangslage: dort ist der Rabatt ein AUTOMATIK-Rabatt ohne Code, es
+ * gibt also keinen zweiten Code zur Auswahl. Hier gibt es ihn, und
+ * die Paketkarte lebt von der genannten Ersparnis -- ein Paket ohne Preisvorteil
+ * zu bewerben ist die schlechtere Antwort.
+ *
+ * @param {{discountCode: string}} paket Paket-Definition
+ * @param {'fest'|'prozent'} rabattart Art, die `paketBetraege` gerechnet hat
+ * @returns {string} der Code, den der Warenkorb bekommen muss
+ */
+export function rabattCodeFuer(paket, rabattart) {
+  const stamm = paket?.discountCode;
+  if (!stamm) return stamm;
+  return rabattart === 'fest' ? stamm : `${stamm}${PROZENT_SUFFIX}`;
 }

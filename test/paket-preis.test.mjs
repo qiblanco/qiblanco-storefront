@@ -23,7 +23,7 @@
  */
 import {describe, it} from 'node:test';
 import assert from 'node:assert/strict';
-import {paketBetraege} from '../app/lib/paket-preis.js';
+import {paketBetraege, rabattCodeFuer} from '../app/lib/paket-preis.js';
 
 // Netto-Einzelpreise, Storefront-API am 2026-09-12 (mess/preise.json).
 const NETTO = {
@@ -163,5 +163,81 @@ describe('fail-closed', () => {
   it('unbrauchbarer Preis -> null', () => {
     const lines = [{handle: 'qihome-air', quantity: 1, einzelNetto: NaN, waehrung: 'EUR'}];
     assert.equal(paketBetraege(lines, PAKETE.Fundament), null);
+  });
+});
+
+/* ───────────────────────────────────────────────────────────────────────────
+   NACHTRAG 2026-09-13 (Job 20260913-paketkarte-fremdmarkt-festbetragspfad-
+   dann-umstellung): DIE RABATTART UND DER RABATTCODE SIND EINE ENTSCHEIDUNG.
+
+   WAS AM KUNDENRAND GEMESSEN WURDE. Die Karte rechnete in CHF/USD mit dem
+   PROZENTSATZ und legte gleichzeitig den FESTBETRAG-Code in den Warenkorb.
+   Shopify rechnet einen EUR-Festbetrag an der Kasse mit einem eigenen
+   Wechselkurs um -- empirisch aus zwei Codes uebereinstimmend auf fuenf Stellen:
+   CHF/EUR 0,96586 und USD/EUR 1,18322. Ergebnis: CH +77,26 und +155,58 CHF,
+   US +282,19 und +663,51 USD zulasten des Kunden.
+
+   Die Kopplung ist der Punkt: `paketBetraege` sagt jetzt, welche Art es
+   gerechnet hat, und `rabattCodeFuer` loest genau die ein.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+// CHF-Listenpreise, Storefront-API live gelesen 2026-09-13 (mess/markt_preise.json).
+const NETTO_CHF = {
+  'qihome-air': 4247,
+  'qione-2-pro': 1048,
+  'qione-kette': 81,
+  qibracelet: 1345,
+};
+
+/** Dieselbe Zeilenstruktur, aber mit den echten CHF-Preisen des Markts. */
+const nachChf = (lines) =>
+  lines.map((l) => ({...l, waehrung: 'CHF', einzelNetto: NETTO_CHF[l.handle]}));
+
+describe('Rabattart und Rabattcode sind EINE Entscheidung', () => {
+  for (const [name, p] of Object.entries(PAKETE)) {
+    it(`${name}: EUR rechnet fest -> Festbetrag-Code`, () => {
+      const b = paketBetraege(strukturen(p)[0], p);
+      assert.equal(b.rabattart, 'fest');
+      assert.equal(rabattCodeFuer({discountCode: 'PAKET-X'}, b.rabattart),
+                   'PAKET-X');
+    });
+
+    it(`${name}: CHF rechnet prozent -> Prozent-Code`, () => {
+      const b = paketBetraege(nachChf(strukturen(p)[0]), p);
+      assert.equal(b.rabattart, 'prozent');
+      assert.equal(rabattCodeFuer({discountCode: 'PAKET-X'}, b.rabattart),
+                   'PAKET-X-INTL');
+    });
+  }
+
+  // ROT VOR GRUEN AM SCHADEN, nicht am Code: der alte Bau nahm IMMER
+  // p.discountCode. Dieser Arm rechnet nach, was das den CHF-Kunden kostet, und
+  // MUSS den Schaden finden -- sonst beweisen die gruenen Arme oben nichts.
+  const KURS_CHF_JE_EUR = 0.96586;
+  for (const [name, p] of Object.entries(PAKETE)) {
+    it(`ROT VOR GRUEN ${name}: der alte Bau kostet den CHF-Kunden Geld`, () => {
+      const lines = nachChf(strukturen(p)[0]);
+      const b = paketBetraege(lines, p);
+      const listeChf = lines.reduce(
+        (sum, l) => sum + l.einzelNetto * l.quantity, 0,
+      );
+      // So haette die Kasse gerechnet, wenn der EUR-Festbetrag-Code gegolten
+      // haette: Shopify zieht den UMGERECHNETEN Festbetrag ab.
+      const kasseMitFestCode = listeChf - p.rabattFest * KURS_CHF_JE_EUR;
+      const schaden = kasseMitFestCode - b.preis;
+      assert.ok(
+        schaden > 35,
+        `der alte Bau muss den CHF-Kunden messbar mehr kosten (gemessen wurden ` +
+          `+41,93 bis +155,58 CHF); hier ${schaden.toFixed(2)}`,
+      );
+      // Der neue Bau loest genau den Code ein, der diesen Schaden vermeidet.
+      assert.equal(rabattCodeFuer({discountCode: 'PAKET-X'}, b.rabattart),
+                   'PAKET-X-INTL');
+    });
+  }
+
+  it('fail-closed: ohne Namensstamm wird kein Code erfunden', () => {
+    assert.equal(rabattCodeFuer({}, 'prozent'), undefined);
+    assert.equal(rabattCodeFuer(null, 'fest'), undefined);
   });
 });
