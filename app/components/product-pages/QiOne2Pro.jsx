@@ -86,7 +86,7 @@ export default function QiOne2Pro({
      />
 		<div className="NormalSectionSize" style={{marginTop: "100px", marginBottom: "100px"}}>
       <h2 className="text-center">Gründerinterview zum QiOne® 2 Pro</h2>
-      <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} />
+      <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} titel="Qi Blanco® | Gründer Interview QiOne® 2 Pro | Anna & Christian Bernd Bauer" />
     </div>
       <StudienCards />
       <ScrollMikroskopVideo />
@@ -182,7 +182,7 @@ export default function QiOne2Pro({
           Dreifacher Weltrekordhalter
           <br /> Frank Delventhal sagt Danke
         </h2>
-        <YoutubeIframe link={'https://www.youtube.com/embed/ugzSE3UXno4'} />
+        <YoutubeIframe link={'https://www.youtube.com/embed/ugzSE3UXno4'} titel="Dreifacher Weltrekordhalter Frank Delventhal spricht über seine Erfahrungen mit QiOne" />
       </div>
       <UpsellLineUp block={block} />
       <ProductFAQ items={FAQ_QIONE_2_PRO} />

@@ -54,7 +54,7 @@ export function QiBracelet({block = undefined}) {
       />
       <StressfreiBezahlen />
       <h2 className="text-center">Gründerinterview zum QiBracelet®</h2>
-      <YoutubeIframe link={'https://www.youtube.com/embed/9BmJ_pjlFMQ'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/9BmJ_pjlFMQ'} titel="Qi Blanco® | Gründer Interview QiHome® Air | Anna & Christian Bernd Bauer" />
       <MassgeschneiderteTechnologie />
       <BraceletYT />
       <ImageDivider />
@@ -518,15 +518,15 @@ function BraceletYT() {
       <h2 className="text-center">Die Kraft des QiBracelet®</h2>
       <h3 className="mt-2">- Dr. Andreas Kramer -</h3>
       <h4>Los Angeles Real Estate</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/tLETuX9bJoU'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/tLETuX9bJoU'} titel="I Feel Better, Sleep Better! | Dr. Andreas Kramer | Sleep Effects Health | QiBracelet®, QiOne® 2 Pro" />
 
       <h3 className="mt-2">- Julie Christin Boeng -</h3>
       <h4>Holistic Detox Coach</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/V2mKebzHwCM'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/V2mKebzHwCM'} titel="Endlich kann ich elektronische Geräte wieder nutzen – Julie Christin Boenig | QiBracelet®" />
 
       <h3 className="mt-2">- Scott Schwenk -</h3>
       <h4>Meditation Master</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/I-4r69GwmZ8'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/I-4r69GwmZ8'} titel="Now I've found the ultimate EMF solution! | Scott Schwenk | QiBracelet® | QiOne® 2 Pro | QiHome® Air" />
     </div>
   );
 }
