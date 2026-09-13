@@ -51,8 +51,48 @@
  * raeumt am body-ENDE nicht auf, am Anfang schon.
  *
  * AM AUSSEHEN AENDERT SICH NICHTS: der Banner ist `position: fixed`, seine Lage
- * auf dem Bildschirm hängt nicht an seiner Stelle im Baum. Am Seitenende steht
- * er zudem spaeter im Stapel, liegt also eher oben als unten.
+ * auf dem Bildschirm hängt nicht an seiner Stelle im Baum.
+ *
+ * AN DER BEDIENBARKEIT SCHON - UND DARAN IST DIE ERSTE FASSUNG GESCHEITERT.
+ * "position: fixed, also ist die Baumstelle egal" gilt für das AUSSEHEN und
+ * nur dafür. Die TAB-REIHENFOLGE folgt der Dokumentreihenfolge. Am body-Ende
+ * gemessen (echter Tab-Weg über `document.activeElement`, eine Variable,
+ * sonst alles gleich):
+ *
+ *     Banner auf Index 0   Tab 1 Akzeptieren · 2 Cookies verwalten
+ *                          Tab 3 Alles ablehnen · 5 Alle akzeptieren
+ *     Banner am Ende       in 60 Tabs KEIN Treffer im Banner
+ *
+ * Cookiebot fängt den Fokus NICHT selbst (`autofokus_im_banner` ist in beiden
+ * Armen false), obwohl `bannerFirstFocusElement` in cc.js steht. Eine
+ * Einwilligungs-Abfrage, die man mit der Tastatur nicht erreicht, wäre keine
+ * Verbesserung gewesen.
+ *
+ * DESHALB IST DIE UMLENKUNG BEFRISTET, NICHT DAUERHAFT: geparkt wird nur,
+ * solange React noch nicht hydriert hat - also genau im gefährlichen Fenster.
+ * Sobald `Layout` seinen Effekt fährt (das IST der Commit), feuert
+ * `qb:hydriert`; die Weiche hängt sich aus und schiebt den Banner an seinen
+ * angestammten Platz auf body-Index 0. Danach ist der Zustand derselbe wie
+ * heute, samt Tab-Reihenfolge.
+ *
+ * EIN BILD ABSTAND ZUR SICHERHEIT: die Rückkehr läuft nicht im Effekt selbst,
+ * sondern im nächsten `requestAnimationFrame`. Der Effekt liegt bereits nach
+ * dem Commit; das Bild kostet nichts und hält die Rückkehr auch dann hinter
+ * Reacts Arbeit, wenn im selben Durchlauf noch etwas nachlaeuft. Gemessen hat
+ * eine SIMULATION des Signals, die zu frueh feuerte (sie las `__react*` am
+ * ersten body-Kind, also die Hydrations-Phase statt den Commit), in 1 von 4
+ * Laeufen 62 eigene Fehler erzeugt — das Verschieben zur falschen Zeit ist
+ * derselbe Defekt wie der Einschub zur falschen Zeit. Der Ausloeser muss
+ * deshalb der Effekt sein und nicht ein Merkmal aus Reacts Innenleben.
+ *
+ * WARUM DAS NACH DEM COMMIT GEFAHRLOS IST: s01 hat 160 natürliche Läufe
+ * gemessen, in denen der Banner NACH dem Commit auf Index 0 landete - alle
+ * grün. Gefährlich ist nicht der Ort, sondern der Ort ZUR FALSCHEN ZEIT.
+ *
+ * IST DER COMMIT NIE GEKOMMEN (JS-Fehler, abgebrochener Ladevorgang), bleibt
+ * der Banner am Ende: sichtbar, mit der Maus bedienbar, mit der Tastatur
+ * schlechter erreichbar. Das ist die schlechtere von zwei Lagen - und immer
+ * noch besser als die heutige, in der React ihn in diesem Fall löscht.
  *
  * WARUM DIE WEICHE HIER UND NICHT IN public/cookiebot-shopify-consent-sync.js:
  * jene Datei ist ein `defer`-Skript und läuft erst nach dem Parsen. Der
@@ -60,7 +100,7 @@
  * gehört damit in denselben Inline-Bootstrap, der den Loader erzeugt - dann
  * steht sie beweisbar vor ihm.
  *
- * ZWEI BEDINGUNGEN, UND BEIDE MÜSSEN ZUTREFFEN, damit umgelenkt wird. Das ist
+ * DREI BEDINGUNGEN, UND ALLE MÜSSEN ZUTREFFEN, damit umgelenkt wird. Das ist
  * die fail-safe Richtung: trifft eine nicht zu, passiert genau das, was heute
  * passiert.
  *   1. Der Knoten ist ein Einwilligungs-Knoten (id `cookiebanner`, id beginnt
@@ -70,6 +110,9 @@
  *   2. Der Knoten gehört NICHT React (kein `__react*`). Live geprueft: der
  *      Banner hat keine solche Eigenschaft, das verdraengte <script> hat zwei.
  *      React soll seine eigenen Einschuebe unveraendert machen duerfen.
+ *   3. React hat noch nicht hydriert (`window.__qbHydriert` ist nicht gesetzt).
+ *      Nach dem Commit ist der Einschub harmlos - dann wird nichts mehr
+ *      umgelenkt und Geparktes kehrt zurück.
  *
  * DIE KLASSE "fremder Einschub vor Reacts erstem body-Kind" ist damit NICHT
  * abschliessend geschlossen - geschlossen ist der eine gemessene Weg dorthin.
@@ -98,6 +141,7 @@ export function einschubWeicheQuelle() {
     'if(!b||b.__qbEinschubWeiche)return;' +
     'b.__qbEinschubWeiche=true;' +
     'var echt=b.insertBefore;' +
+    'var geparkt=[];' +
     'function consent(n){' +
     'if(!n||n.nodeType!==1)return false;' +
     'var id=n.id||"";' +
@@ -111,11 +155,25 @@ export function einschubWeicheQuelle() {
     'return false;' +
     '}' +
     'b.insertBefore=function(neu,bezug){' +
-    'if(bezug&&bezug===this.firstChild&&consent(neu)&&!reactEigen(neu)){' +
+    'if(!window.__qbHydriert&&bezug&&bezug===this.firstChild' +
+    '&&consent(neu)&&!reactEigen(neu)){' +
+    'geparkt.push(neu);' +
     'return this.appendChild(neu);' +
     '}' +
     'return echt.call(this,neu,bezug);' +
     '};' +
+    'function heimholen(){' +
+    'b.insertBefore=echt;' +
+    'for(var i=geparkt.length-1;i>=0;i--){' +
+    'var k=geparkt[i];' +
+    'if(k&&k.parentNode===b&&b.firstChild!==k){echt.call(b,k,b.firstChild);}' +
+    '}' +
+    'geparkt.length=0;' +
+    '}' +
+    'document.addEventListener("qb:hydriert",function(){' +
+    'var raf=window.requestAnimationFrame;' +
+    'if(typeof raf==="function")raf(heimholen);else setTimeout(heimholen,0);' +
+    '});' +
     '})();'
   );
 }
