@@ -7,6 +7,10 @@ import {
   mergeCartAttributes,
 } from '~/lib/checkout-tracking';
 import {hasRegionAwareTrackingPermission} from '~/lib/consent-policy';
+import {
+  buyerIpAusRequest,
+  istInternerZugriff,
+} from '~/lib/interner-verkehr';
 
 /**
  * Persists ad click IDs on the Shopify cart so they become order note_attributes.
@@ -84,9 +88,19 @@ export function hasAttributionConsent(request, env) {
  * @param {Request} request
  */
 export function getOriginCartAttributes(request) {
+  const userAgent = request.headers.get('User-Agent');
   return buildOriginCartAttributes({
-    userAgent: request.headers.get('User-Agent'),
+    userAgent,
     cookieHeader: request.headers.get('Cookie'),
+    // ZWEITE ACHSE, und sie ist NUR HIER verfuegbar: die Client-IP steht im
+    // Request, nicht im User-Agent. Deshalb wird die SSoT SERVERSEITIG
+    // ausgewertet — eine Wache, die ihren Marker-UA vergisst, wird an der IP
+    // trotzdem erkannt, und ein Client ohne IP-Traeger am Marker. Zwei Achsen,
+    // die VERSCHIEDENE Groessen lesen: genau das macht sie unabhaengig.
+    intern: istInternerZugriff({
+      userAgent,
+      ip: buyerIpAusRequest(request),
+    }),
   });
 }
 
