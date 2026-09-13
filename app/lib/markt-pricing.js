@@ -23,14 +23,24 @@
 import {taxRateForHandle} from './cart-display-pricing.js';
 
 /**
- * Anzeige-Steuersatz eines Produkts im Waehrungs-Kontext.
+ * Anzeige-Steuersatz eines Produkts im Markt-Kontext.
+ *
+ * ZWEI ACHSEN, NICHT EINE (Job 20260913-at-paketkarte-rechnet-19-prozent-
+ * kasse-nimmt-20-prio8). Die WAEHRUNG entscheidet, OB hier ueberhaupt Steuer
+ * aufzuschlagen ist: in CHF/USD/GBP ist der Markets-Preis schon der Endbetrag.
+ * Das LAND entscheidet, WELCHER Satz das ist -- und zwei EUR-Laender haben
+ * verschiedene. Bis zum 2026-09-13 stand hier nur die erste Achse, und
+ * Oesterreich bekam deshalb den deutschen Satz: die Karte nannte 6.756 EUR,
+ * die Kasse verlangte 6.814,24 EUR.
+ *
  * @param {string} handle Produkt-Handle
  * @param {string} [currencyCode] Waehrung des API-Preises (Default EUR)
- * @returns {number} 0.19 / 0.07 fuer EUR-Netto-Maerkte, 0 sonst (Endbetrag)
+ * @param {string} [land] ISO-Land des aufgeloesten Marktes (Default DE)
+ * @returns {number} Satz des Landes fuer EUR-Netto-Maerkte, 0 sonst (Endbetrag)
  */
-export function anzeigeSatz(handle, currencyCode) {
+export function anzeigeSatz(handle, currencyCode, land) {
   if ((currencyCode || 'EUR') !== 'EUR') return 0;
-  return taxRateForHandle(handle);
+  return taxRateForHandle(handle, land);
 }
 
 /**
@@ -38,12 +48,13 @@ export function anzeigeSatz(handle, currencyCode) {
  * @param {string|number} amount API-Betrag (Netto bei EUR, Endbetrag sonst)
  * @param {string} handle Produkt-Handle (Steuersatz-Zuordnung)
  * @param {string} [currencyCode]
+ * @param {string} [land] ISO-Land des aufgeloesten Marktes (Default DE)
  * @returns {number|null} gerundeter Anzeigewert oder null (Betrag fehlt)
  */
-export function bruttoAnzeige(amount, handle, currencyCode) {
+export function bruttoAnzeige(amount, handle, currencyCode, land) {
   const zahl = Number.parseFloat(amount);
   if (!Number.isFinite(zahl)) return null;
-  return Math.round(zahl * (1 + anzeigeSatz(handle, currencyCode)));
+  return Math.round(zahl * (1 + anzeigeSatz(handle, currencyCode, land)));
 }
 
 /**

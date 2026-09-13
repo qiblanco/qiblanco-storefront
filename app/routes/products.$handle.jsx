@@ -114,7 +114,7 @@ export const meta = ({data}) => {
   // Produkt-Auszeichnung. Gemessen am 2026-08-15: 0 von 17 DACH-Produktseiten
   // trugen Product-Schema, während alle 6 US-Produktseiten es tragen. Ohne
   // sie kann Google Preis und Verfügbarkeit nicht als Rich Result zeigen.
-  const schema = produktSchema(data?.product);
+  const schema = produktSchema(data?.product, data?.marktLand);
   if (schema) descriptoren.push({'script:ld+json': schema});
 
   // Brotkrume (PR-#100-Restposten, 2026-09-05). Eigener Knoten neben dem
@@ -227,6 +227,11 @@ async function loadCriticalData({context, params, request}) {
 
   return {
     product,
+    // Markt-Land in die Routendaten, weil `meta()` keinen Kontext hat: die
+    // Produkt-Auszeichnung muss denselben Steuersatz rechnen wie die Seite
+    // darunter (AT 20 statt 19 %, Job 20260913-at-paketkarte-rechnet-19-
+    // prozent-kasse-nimmt-20-prio8).
+    marktLand: storefront.i18n.country,
   };
 }
 

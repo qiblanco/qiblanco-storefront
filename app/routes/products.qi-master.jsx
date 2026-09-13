@@ -68,6 +68,7 @@ export function links() {
 export const meta = ({data}) => {
   return produktMeta({
     produkt: data?.product,
+    marktLand: data?.marktLand,
     pfad: '/products/qi-master',
     titel: `${data?.product?.title ?? 'QiMaster'} | ${MARKE}`,
     bildUrl:
@@ -123,7 +124,15 @@ async function loadCriticalData({context, request}, handle) {
   // am Stufenwechsel zwischen Server- und Browserdatum auseinander.
   // Quelle ist app/data/qi-master-preisstufen.json — Prozentsätze, keine
   // ausgerechneten Preise; gerechnet wird EINMAL in ~/lib/qi-master-preisstufen.
-  return {product, treppe: treppeRechnen(preisstufen)};
+  return {
+    product,
+    treppe: treppeRechnen(preisstufen),
+    // Markt-Land fuer die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
+    // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
+    // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
+    // kasse-nimmt-20-prio8.
+    marktLand: storefront.i18n.country,
+  };
 }
 
 function loadDeferredData() {

@@ -4,8 +4,7 @@ import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {THEMEN} from '~/lib/redesign3themen';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
-import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
-import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
+import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 import {useGoogleRating} from '~/lib/googleRating';
 
 /*
@@ -53,20 +52,9 @@ const themaById = (id) => THEMEN.find((t) => t.id === id);
 
 /* Preis-Helfer identisch zu V2/LP A: EUR = netto*(1+Satz) aus markt-pricing,
    andere Waehrungen = Markets-Endbetrag. KEINE Hartpreise — SSoT Shopify. */
-const waehrungVon = (p) => p?.priceRange?.minVariantPrice?.currencyCode || 'EUR';
-const preisWert = (p) =>
-  bruttoAnzeige(p?.priceRange?.minVariantPrice?.amount, p?.handle, waehrungVon(p));
-const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
-const getCompareAtMoney = (p) => {
-  const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
-};
-const compareLabelVon = (p) => {
-  const money = getCompareAtMoney(p);
-  const n = Number.parseFloat(money?.amount);
-  if (!Number.isFinite(n)) return null;
-  return formatPreis(Math.round(n), money.currencyCode || waehrungVon(p));
-};
+// Der Helferblock, der bis zum 2026-09-13 hier und in sieben Schwesterdateien
+// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begruendung dort.
+// `useLpPreis()` bindet ihn an das aufgeloeste Markt-Land (AT: 20 statt 19 %).
 
 /* Kuratiertes ECHTES Shooting-Foto (bilder_kuratiert.jsonl, V2-Erbe) —
    kein generiertes Gesicht (BAU-PROFIL C.13, F-006/F-007). */
@@ -138,6 +126,7 @@ const stagger = (i) => ({'--rv-d': `${Math.min(i, 4) * 90}ms`});
 
 /* ───────── 1 HERO (M1, ohne Reveal — LCP-Schutz) ────────────────────────── */
 function Hero() {
+  const {preisWert, preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
@@ -440,6 +429,7 @@ function BeweisSection() {
 
 /* ───────── 6 PRODUKTE (M6) + GARANTIE (eigener Anker, Mess-Disziplin) ───── */
 function ProdukteSection() {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const bracelet = findLp(data, 'qibracelet');
   const qione = findLp(data, 'qione-2-pro');
@@ -660,6 +650,7 @@ function StimmenSection() {
 
 /* ───────── 10 FINAL (Apple-Finale, HELL) ────────────────────────────────── */
 function FinalSection() {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const price = preisLabelVon(product);

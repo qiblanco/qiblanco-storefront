@@ -10,8 +10,7 @@ import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen'
 import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
-import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
-import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
+import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 
 /*
  * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
@@ -50,21 +49,9 @@ const themaById = (id) => THEMEN.find((t) => t.id === id);
 // Markt-Kontext des Loaders (@inContext-Query) — EUR = netto*(1+Satz)
 // (Warenkorb-Kanon), andere Waehrungen = Markets-Endbetrag. Satz/Rundung/
 // Format kommen aus markt-pricing (die EINE Stelle, kein Doppelbau).
-const waehrungVon = (p) => p?.priceRange?.minVariantPrice?.currencyCode || 'EUR';
-const preisWert = (p) =>
-  bruttoAnzeige(p?.priceRange?.minVariantPrice?.amount, p?.handle, waehrungVon(p));
-const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
-const getCompareAtMoney = (p) => {
-  const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
-};
-// Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag)
-const compareLabelVon = (p) => {
-  const money = getCompareAtMoney(p);
-  const n = Number.parseFloat(money?.amount);
-  if (!Number.isFinite(n)) return null;
-  return formatPreis(Math.round(n), money.currencyCode || waehrungVon(p));
-};
+// Der Helferblock, der bis zum 2026-09-13 hier und in sieben Schwesterdateien
+// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begruendung dort.
+// `useLpPreis()` bindet ihn an das aufgeloeste Markt-Land (AT: 20 statt 19 %).
 
 const QIONE_FALLBACK_IMG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196';
@@ -122,6 +109,7 @@ const SIZES_HERO =
 
 /* ───────── Hero (Drei-Ebenen-Versprechen) ───────── */
 function Hero() {
+  const {preisWert, preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const heroImg = product?.featuredImage?.url || QIONE_FALLBACK_IMG;
@@ -471,6 +459,7 @@ export function GuaranteeSection() {
 
 /* ───────── Pricing (Live-Preise, QiOne 2 Pro als Held) ───────── */
 function PricingSection() {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const bracelet = findLp(data, 'qibracelet');
   const qione = findLp(data, 'qione-2-pro');
@@ -580,6 +569,7 @@ function SignatureSection() {
 
 /* ───────── Final CTA ───────── */
 function FinalCTA() {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;

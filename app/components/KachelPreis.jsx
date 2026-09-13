@@ -1,4 +1,5 @@
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
+import {useMarktLand} from '~/lib/markt-land';
 
 /**
  * Der Preis auf einer KACHEL — Kollektionsseite, Suchergebnis, Vorschlagsliste.
@@ -41,8 +42,13 @@ import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
  *          handle?: string, stil?: 'lp'|'pdp'}} props
  */
 export function KachelPreis({money, handle, stil = 'lp'}) {
+  const marktLand = useMarktLand();
   if (!money) return null;
   const waehrung = money.currencyCode || 'EUR';
-  const text = formatPreis(bruttoAnzeige(money.amount, handle, waehrung), waehrung, stil);
+  const text = formatPreis(
+    bruttoAnzeige(money.amount, handle, waehrung, marktLand),
+    waehrung,
+    stil,
+  );
   return text ? <span className="kachel-preis">{text}</span> : null;
 }

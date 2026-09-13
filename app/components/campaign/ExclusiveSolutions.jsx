@@ -2,6 +2,7 @@ import * as React from 'react';
 import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
+import {useMarktLand} from '~/lib/markt-land';
 import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
@@ -641,14 +642,21 @@ function paketPreisLines(p, productsByHandle, sizes) {
   return [...byVariant.values()];
 }
 
-function paketAnzeige(p, productsByHandle, sizes) {
+/* DAS MARKT-LAND IST EIN PARAMETER UND KEIN SCHLUSS AUS DER WAEHRUNG
+   (Job 20260913-at-paketkarte-rechnet-19-prozent-kasse-nimmt-20-prio8).
+   Gemessen am Kundenrand am 2026-09-13: diese Karte nannte in AT dieselbe
+   Zahl wie in DE (6.756 / 9.242 / 17.397 EUR), die AT-Kasse verlangte
+   6.814,24 / 9.318,60 / 17.543,22 -- also 58,24 bis 146,22 EUR mehr, als die
+   Karte versprach. Ursache war nicht die Rabatt-Rechnung hier, sondern der
+   Steuersatz: `anzeigeSatz` kannte nur die Waehrung, und AT ist EUR. */
+function paketAnzeige(p, productsByHandle, sizes, land) {
   const lines = paketPreisLines(p, productsByHandle, sizes);
   if (!lines || lines.length === 0) return null;
   const waehrung = lines[0].waehrung;
   let compare = 0;
   let preis = 0;
   for (const line of lines) {
-    const satz = anzeigeSatz(line.handle, line.waehrung);
+    const satz = anzeigeSatz(line.handle, line.waehrung, land);
     const rabattProEinheit =
       Math.floor(line.einzelNetto * p.rabatt * 100) / 100;
     compare += Math.round(line.einzelNetto * line.quantity * (1 + satz));
@@ -677,6 +685,7 @@ function paketFallback(p) {
 
 function Pak({ p, productsByHandle, onChoose }) {
   const {open} = useAside();
+  const marktLand = useMarktLand();
   const [sizes, setSizes] = React.useState(() =>
     computeInitialSizes(p, productsByHandle),
   );
@@ -707,8 +716,8 @@ function Pak({ p, productsByHandle, onChoose }) {
   // M2: Anzeige-Preise dynamisch aus den API-Preisen der aktuellen Auswahl;
   // fail-closed auf den letzten bekannten guten Stand (p.fallback).
   const anzeige = React.useMemo(
-    () => paketAnzeige(p, productsByHandle, sizes),
-    [p, productsByHandle, sizes],
+    () => paketAnzeige(p, productsByHandle, sizes, marktLand),
+    [p, productsByHandle, sizes, marktLand],
   );
   const labels = anzeige || paketFallback(p);
 

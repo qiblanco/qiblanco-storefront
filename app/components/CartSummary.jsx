@@ -1,6 +1,7 @@
 import {Form} from 'react-router';
 import {getCartLineGrossDisplayTotalExact} from '~/lib/cart-display-pricing';
 import {formatPreis} from '~/lib/markt-pricing';
+import {useMarktLand} from '~/lib/markt-land';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
 
@@ -8,6 +9,9 @@ import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
  * @param {CartSummaryProps}
  */
 export function CartSummary({cart, layout}) {
+  // Der Warenkorb rechnet den Bruttobetrag selbst (Netto-Shop) und braucht
+  // dafuer den Satz des aufgeloesten Marktes -- in AT 20 statt 19 Prozent.
+  const marktLand = useMarktLand();
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
@@ -23,7 +27,7 @@ export function CartSummary({cart, layout}) {
 
   const lines = cart?.lines?.nodes ?? [];
   const correctedTotal = lines.reduce(
-    (total, line) => total + getCartLineGrossDisplayTotalExact(line),
+    (total, line) => total + getCartLineGrossDisplayTotalExact(line, marktLand),
     0,
   );
 

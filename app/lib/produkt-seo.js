@@ -241,7 +241,7 @@ export function produktTitel(pfad) {
  * @param {{pfad: string, titel: string, bildUrl?: string, produkt?: object}} args
  * @returns {Array<object>} meta-Descriptoren für react-router 7
  */
-export function produktMeta({pfad, titel, bildUrl, produkt}) {
+export function produktMeta({pfad, titel, bildUrl, produkt, marktLand}) {
   const beschreibung = produktBeschreibung(pfad);
   // Der Überschreiber gewinnt, wenn es einen gibt — sonst bleibt es exakt
   // beim Titel der Route. Bewusst hier und nicht in der Route: sonst trägt
@@ -300,7 +300,12 @@ export function produktMeta({pfad, titel, bildUrl, produkt}) {
   // produktSchema() gibt null zurück, wenn Preis oder Titel fehlen — dann
   // entsteht bewusst KEIN Knoten: ein unvollständiges Element steht dauerhaft
   // als Fehler in der Search Console, ein fehlendes bewirkt nur nichts.
-  const schema = produkt ? produktSchema(produkt) : null;
+  // DER MARKT MUSS MIT: produktSchema rechnet den Bruttopreis, und der Satz
+  // haengt am Markt (AT 20 statt 19 %). Ohne diesen Parameter zeichnete diese
+  // Datei am 2026-09-13 auf allen sieben Flaggschiff-Routen den deutschen
+  // Preis aus, waehrend die Seite darunter den oesterreichischen zeigte --
+  // dieselbe Klasse wie der Anlassfall selbst, nur einen Aufrufer weiter.
+  const schema = produkt ? produktSchema(produkt, marktLand) : null;
   if (schema) {
     descriptoren.push({'script:ld+json': schema});
   }

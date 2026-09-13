@@ -4,8 +4,7 @@ import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {THEMEN} from '~/lib/redesign3themen';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
-import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
-import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
+import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 import {useGoogleRating} from '~/lib/googleRating';
 
 /*
@@ -55,20 +54,9 @@ const themaById = (id) => THEMEN.find((t) => t.id === id);
 // Preis-Helfer identisch zu LP A (Auftrag 20260718-lp-preise-dynamisch-binden-
 // gestuft): EUR = netto*(1+Satz) aus markt-pricing, andere Waehrungen =
 // Markets-Endbetrag. KEINE Hartpreise — Preis-SSoT ist Shopify.
-const waehrungVon = (p) => p?.priceRange?.minVariantPrice?.currencyCode || 'EUR';
-const preisWert = (p) =>
-  bruttoAnzeige(p?.priceRange?.minVariantPrice?.amount, p?.handle, waehrungVon(p));
-const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
-const getCompareAtMoney = (p) => {
-  const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-  return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
-};
-const compareLabelVon = (p) => {
-  const money = getCompareAtMoney(p);
-  const n = Number.parseFloat(money?.amount);
-  if (!Number.isFinite(n)) return null;
-  return formatPreis(Math.round(n), money.currencyCode || waehrungVon(p));
-};
+// Der Helferblock, der bis zum 2026-09-13 hier und in sieben Schwesterdateien
+// byte-identisch stand, liegt jetzt in lib/lp-preis.js -- Begruendung dort.
+// `useLpPreis()` bindet ihn an das aufgeloeste Markt-Land (AT: 20 statt 19 %).
 
 // Kuratiertes ECHTES Shooting-Foto (bilder_kuratiert.jsonl: „QiOne2Pro-Anhaenger
 // an Kette am Hals der Frau, klar erkennbar", visuell verifiziert 2026-07-14).
@@ -92,6 +80,7 @@ const KAUF_ZIEL = '/pages/qione-2-pro';
    Ad-Nutzen stand auf LP A gar nicht im Sichtfeld. E-Smog wandert in die
    Subline. Preis + Raten stehen ab Position 1 (R2). */
 function Hero() {
+  const {preisWert, preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
@@ -377,6 +366,7 @@ function BeweisSection() {
    Der Garantie-Aufklapper hängt in einem EIGENEN data-section-Anker, damit
    die Klickzahl dieser Sektion CTA-rein bleibt (Mess-Disziplin oben). */
 function KaufblockSection() {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const bracelet = findLp(data, 'qibracelet');
   const qione = findLp(data, 'qione-2-pro');
@@ -587,6 +577,7 @@ function HaltungSection() {
 
 /* ───────── 9 FINAL ───────────────────────────────────────────────────────── */
 function FinalSection() {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
   const price = preisLabelVon(product);
