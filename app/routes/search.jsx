@@ -80,7 +80,7 @@ export default function SearchPage() {
 
   return (
     <div className="search">
-      <section className="search__innen" aria-labelledby="suche-titel">
+      <section className="search__inhalt" aria-labelledby="suche-titel">
         <p className="search__kicker">Shop durchsuchen</p>
         <h1 id="suche-titel">Suche</h1>
         <p className="search__lead">

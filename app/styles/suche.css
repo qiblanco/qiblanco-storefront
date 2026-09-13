@@ -56,7 +56,7 @@
   min-height: calc(100svh - var(--header-height));
 }
 
-.search__innen {
+.search__inhalt {
   margin: 0 auto;
   max-width: 880px;
   padding: var(--qs-s-12) var(--qs-s-3) var(--qs-s-12);
@@ -216,7 +216,7 @@
 }
 
 @media (max-width: 640px) {
-  .search__innen {
+  .search__inhalt {
     padding: var(--qs-s-8) var(--qs-s-2);
   }
 
