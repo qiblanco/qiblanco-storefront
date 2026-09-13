@@ -419,14 +419,32 @@ class Kn {
   get firstChild() {
     return this.childNodes[0] || null;
   }
+  // Beide Methoden LOESEN den Knoten zuerst von seinem alten Platz. Das ist
+  // echtes DOM-Verhalten (ein bereits eingehaengter Knoten wird VERSCHOBEN,
+  // nicht gedoppelt) und hier tragend: die Weiche schiebt den geparkten Banner
+  // nach dem Commit von hinten nach vorn. Ein Nachbau ohne dieses Loesen wäre
+  // nachsichtiger als die Wirklichkeit -- und ein Gruen daran hiesse nichts.
+  #loesen(n) {
+    const i = this.childNodes.indexOf(n);
+    if (i >= 0) this.childNodes.splice(i, 1);
+  }
+  // `parentNode` wird mitgefuehrt, weil die Weiche es LIEST: sie schiebt nach
+  // dem Commit nur zurück, was noch im body hängt. Ein Nachbau ohne dieses
+  // Feld lässt die Bedingung still fehlschlagen -- der Test wäre dann rot,
+  // obwohl der Quelltext stimmt, und man sucht den Fehler an der falschen
+  // Stelle (genau so passiert).
   appendChild(n) {
+    this.#loesen(n);
     this.childNodes.push(n);
+    n.parentNode = this;
     return n;
   }
   insertBefore(n, ref) {
+    this.#loesen(n);
     const i = ref ? this.childNodes.indexOf(ref) : -1;
     if (i < 0) this.childNodes.push(n);
     else this.childNodes.splice(i, 0, n);
+    n.parentNode = this;
     return n;
   }
   querySelector(sel) {
@@ -472,13 +490,33 @@ function wieCookiebot(body, knoten) {
     : body.appendChild(knoten);
 }
 
-/** Lädt den ausgelieferten Quelltext und hängt ihn an `body`. */
-async function weicheEinhaengen(body, quelltext) {
+/**
+ * Lädt den ausgelieferten Quelltext und hängt ihn an `body`.
+ *
+ * Gibt ein `hydriert()` mit zurück: die Weiche parkt nur, SOLANGE React nicht
+ * hydriert hat, und schiebt Geparktes danach zurück. Beide Phasen gehören
+ * gemessen -- die zweite ist die, an der die erste Fix-Fassung gescheitert ist
+ * (am body-Ende war der Dialog mit der Tastatur nicht mehr erreichbar).
+ */
+async function weicheStarten(body, quelltext) {
   const src =
     quelltext ?? (await import(WEICHE_QUELLE.href)).einschubWeicheQuelle();
-  const doc = {getElementsByTagName: (t) => (t === 'body' ? [body] : [])};
-  new Function('document', src)(doc);
-  return body;
+  const hörer = [];
+  const doc = {
+    getElementsByTagName: (t) => (t === 'body' ? [body] : []),
+    addEventListener: (typ, fn) => hörer.push([typ, fn]),
+  };
+  // requestAnimationFrame wird SYNCHRON ausgefuehrt: der Nachbau misst, WAS
+  // zurueckgeschoben wird, nicht WANN der Browser das Bild zeichnet.
+  const win = {requestAnimationFrame: (fn) => fn()};
+  new Function('document', 'window', src)(doc, win);
+  return {
+    body,
+    hydriert() {
+      win.__qbHydriert = true;
+      for (const [typ, fn] of hörer) if (typ === 'qb:hydriert') fn();
+    },
+  };
 }
 
 test('ROT-VOR-GRUEN: ohne Weiche landet der Banner auf body-Index 0', () => {
@@ -493,7 +531,7 @@ test('ROT-VOR-GRUEN: ohne Weiche landet der Banner auf body-Index 0', () => {
 });
 
 test('mit Weiche landet derselbe Banner am body-ENDE -- und bleibt drin', async () => {
-  const body = await weicheEinhaengen(bauBody());
+  const {body} = await weicheStarten(bauBody());
   const banner = bauBanner();
   const zurück = wieCookiebot(body, banner);
 
@@ -514,14 +552,14 @@ test('mit Weiche landet derselbe Banner am body-ENDE -- und bleibt drin', async 
 
 test('die Weiche lässt alles andere unangetastet (fail-safe nach aussen)', async () => {
   // 1. Ein fremder Knoten OHNE Einwilligungs-Merkmal bleibt, wo er hin soll.
-  const a = await weicheEinhaengen(bauBody());
+  const {body: a} = await weicheStarten(bauBody());
   const fremd = new Kn('div', 'irgendwas');
   a.insertBefore(fremd, a.firstChild);
   assert.equal(a.childNodes.indexOf(fremd), 0, 'fremder Knoten wurde umgelenkt');
 
   // 2. Ein Knoten, den REACT einfuegt, bleibt unangetastet -- auch wenn er
   //    nach Einwilligung aussieht. React soll seinen eigenen Baum bauen.
-  const b = await weicheEinhaengen(bauBody());
+  const {body: b} = await weicheStarten(bauBody());
   const reactKnoten = bauBanner();
   reactKnoten['__reactFiber$abc'] = {};
   b.insertBefore(reactKnoten, b.firstChild);
@@ -533,17 +571,54 @@ test('die Weiche lässt alles andere unangetastet (fail-safe nach aussen)', asyn
 
   // 3. Ein Einschub, der NICHT vor das erste Kind geht, bleibt an Ort und
   //    Stelle. Umgelenkt wird nur die eine gemessene Bauform.
-  const c = await weicheEinhaengen(bauBody());
+  const {body: c} = await weicheStarten(bauBody());
   const banner = bauBanner();
   c.insertBefore(banner, c.childNodes[1]);
   assert.equal(c.childNodes.indexOf(banner), 1, 'Einschub in der Mitte wurde verschoben');
 });
 
+test('nach dem Hydrations-Signal kehrt der Banner auf body-Index 0 zurück', async () => {
+  // DIE ZWEITE HÄLFTE DES BAUS, und die teurere: am body-Ende ist der
+  // Einwilligungs-Dialog mit der Tastatur nicht mehr erreichbar (gemessen:
+  // Tab 1/2/3/5 auf Index 0 gegen KEINEN Treffer in 60 Tabs am Ende). Geparkt
+  // wird deshalb nur bis zum Commit.
+  const {body, hydriert} = await weicheStarten(bauBody());
+  const banner = bauBanner();
+  wieCookiebot(body, banner);
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    body.childNodes.length - 1,
+    'Vorbedingung: im Fenster vor dem Commit steht der Banner am Ende.',
+  );
+
+  hydriert();
+
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    0,
+    'Der Banner ist nach dem Commit nicht auf Index 0 zurück. Dann bleibt die ' +
+      'Einwilligung für Tastatur-Bedienung am Seitenende liegen.',
+  );
+});
+
+test('nach dem Hydrations-Signal wird nicht mehr umgelenkt', async () => {
+  const {body, hydriert} = await weicheStarten(bauBody());
+  hydriert();
+  const banner = bauBanner();
+  wieCookiebot(body, banner);
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    0,
+    'Nach dem Commit ist der Einschub auf Index 0 harmlos (s01: 160 Läufe, ' +
+      'alle grün). Dann soll die Weiche nichts mehr tun.',
+  );
+});
+
 test('die Weiche hängt sich genau einmal ein', async () => {
   const body = bauBody();
-  await weicheEinhaengen(body);
+  await weicheStarten(body);
   const nachEinmal = body.insertBefore;
-  await weicheEinhaengen(body);
+  await weicheStarten(body);
   assert.equal(
     body.insertBefore,
     nachEinmal,
@@ -571,7 +646,7 @@ test('ROT-VOR-GRUEN: der Waechter erkennt eine ausgebaute Weiche', async () => {
   const kaputt = quelle.replace('bezug===this.firstChild', 'false');
   assert.notEqual(kaputt, quelle, 'Mutant liess sich nicht bauen');
 
-  const body = await weicheEinhaengen(bauBody(), kaputt);
+  const {body} = await weicheStarten(bauBody(), kaputt);
   const banner = bauBanner();
   wieCookiebot(body, banner);
   assert.equal(

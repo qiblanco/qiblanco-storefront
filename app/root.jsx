@@ -1,4 +1,4 @@
-import {Children, isValidElement} from 'react';
+import {Children, isValidElement, useEffect} from 'react';
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
   Outlet,
@@ -416,6 +416,24 @@ export function Layout({children}) {
   const salesbotSeite = (matches || []).some(
     (match) => match?.handle?.salesbotWidget === true,
   );
+
+  // ── HYDRATIONS-SIGNAL ────────────────────────────────────────────────────
+  // Dieser Effekt läuft NACH dem Hydration-Commit — das ist seine Definition,
+  // und deshalb ist er hier das Messgerät und keine Schätzung. Die
+  // Einschub-Weiche (app/lib/einschub-weiche.js) parkt Cookiebots Banner nur
+  // bis zu diesem Moment am body-Ende und schiebt ihn danach auf body-Index 0
+  // zurück, wo er hingehört: die Tab-Reihenfolge folgt der Dokumentreihenfolge,
+  // am Ende wäre die Einwilligung mit der Tastatur nicht mehr erreichbar
+  // (gemessen: Tab 1/2/3/5 gegen keinen Treffer in 60 Tabs).
+  //
+  // UNBEDINGT und an fester Stelle, wie metaAufteilen weiter unten: die
+  // Hook-Reihenfolge darf zwischen zwei Renderdurchläufen nicht wandern.
+  // Leere Abhängigkeitsliste — das Signal gilt dem ERSTEN Commit, nicht jedem
+  // Rerender; bei Client-Navigation ist längst hydriert.
+  useEffect(() => {
+    window.__qbHydriert = true;
+    document.dispatchEvent(new Event('qb:hydriert'));
+  }, []);
 
   // UNBEDINGT und an fester Stelle — die Hooks von Meta() laufen im Slot
   // dieser Komponente, ihre Reihenfolge darf zwischen zwei Renderdurchlaeufen
