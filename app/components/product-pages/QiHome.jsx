@@ -15,8 +15,8 @@ export function QiHome({block = undefined}) {
       <LogoBar />
       <DasQiHome />
       <MainFeatures />
-      <YoutubeIframe link={"https://www.youtube.com/embed/gr2KTESB3JM"} />
-      <YoutubeIframe link={"https://www.youtube.com/embed/gcml34L0TF0"} />
+      <YoutubeIframe link={"https://www.youtube.com/embed/gr2KTESB3JM"} titel="Der Unterschied in meinem Wohlbefinden ist enorm! | Yann Sura | QiHome® Air | Gitterchip™" />
+      <YoutubeIframe link={"https://www.youtube.com/embed/gcml34L0TF0"} titel="QiHome® Air auf 1590m | Schweizer Alpen Berggasthaus | Dominik & Christian" />
       <RisikofreiErleben />
       <HeroBannerParallax
         headline={
@@ -48,11 +48,11 @@ export function QiHome({block = undefined}) {
       <h2 className="mt-3 text-center">
         Gründerinterview zum QiHome®
       </h2>
-      <YoutubeIframe link={"https://www.youtube.com/embed/9BmJ_pjlFMQ"}/>
+      <YoutubeIframe link={"https://www.youtube.com/embed/9BmJ_pjlFMQ"} titel="Qi Blanco® | Gründer Interview QiHome® Air | Anna & Christian Bernd Bauer" />
       <h2 className='mt-3 text-center'>
         "QiHome® und die Vorteile für Kinder"
       </h2>
-      <YoutubeIframe link={"https://www.youtube.com/embed/mH0vaUEeFqg"} />
+      <YoutubeIframe link={"https://www.youtube.com/embed/mH0vaUEeFqg"} titel="5G & E-Smog | Welche Optionen bleiben uns? Dr. Klinghardt Therapeut & Heilpraktiker Matthias Cebula" />
       <Studien headline={"Wirkung an menschlichen Zellen bestätigt!"} />
       <SchutzVorGeopathogenerStrahlung />
       <MassgeschneiderteTechnologie />

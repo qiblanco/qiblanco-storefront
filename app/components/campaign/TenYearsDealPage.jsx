@@ -742,13 +742,13 @@ function FrequencyVideoScience() {
     <section className="j-sale-deal__legacy-video-grid">
       <div>
         <h3>Superwasser <br />die Grundlage unserer Evolution</h3>
-        <YoutubeIframe link="https://www.youtube.com/embed/6rNuQoIrdZQ?controls=0" />
-        <YoutubeIframe link="https://www.youtube.com/embed/aG36zJKxDzg?controls=0" />
+        <YoutubeIframe link="https://www.youtube.com/embed/6rNuQoIrdZQ?controls=0" titel="Superwasser: Die kohärente Struktur - Grundlage unserer Evolution" />
+        <YoutubeIframe link="https://www.youtube.com/embed/aG36zJKxDzg?controls=0" titel="Man spürt die Aktivierung der Seele in den Zellen – Nada & Kurt Tepperwein | QiOne®2Pro |Gitterchip™" />
       </div>
       <div>
         <h3>Schutz vor E-Smog: <br />kohärente Wasserstruktur</h3>
-        <YoutubeIframe link="https://www.youtube.com/embed/C3gd-ldFh-M?controls=0" />
-        <YoutubeIframe link="https://www.youtube.com/embed/jyLyXZqHxaw?controls=0" />
+        <YoutubeIframe link="https://www.youtube.com/embed/C3gd-ldFh-M?controls=0" titel="QiOne® - E-Smog Schutz durch Aufbau von kohärentem Wasser im Körper - Dipl.-Ing. Christian Bauer" />
+        <YoutubeIframe link="https://www.youtube.com/embed/jyLyXZqHxaw?controls=0" titel={"Deutscher Meister: \"Ich kann meine Freizeit wieder voll nutzen!\" – Constantin Preis | QiOne® 2 Pro"} />
       </div>
     </section>
   );

@@ -349,15 +349,15 @@ function BraceletYT() {
       <h2 className="text-center">Die Kraft des QiBracelet® <br /> Der erprobte Gitterchip™</h2>
       <h3 className="mt-2">- Yann Sura -</h3>
       <h4>Mental Coach</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/EjXTIldVrk4'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/EjXTIldVrk4'} titel={"\"Ich war sehr skeptisch, nun absoluter Fan!\" – Yann Sura | QiOne® 2 Pro | Gitterchip™"} />
 
       <h3 className="mt-2">- Julie Christin Boeng -</h3>
       <h4>Holistic Detox Coach</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/V2mKebzHwCM'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/V2mKebzHwCM'} titel="Endlich kann ich elektronische Geräte wieder nutzen – Julie Christin Boenig | QiBracelet®" />
 
       <h3 className="mt-2">- Frank Delventhal -</h3>
       <h4>Dreifacher Weltrekordhalter</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/ugzSE3UXno4'} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/ugzSE3UXno4'} titel="Dreifacher Weltrekordhalter Frank Delventhal spricht über seine Erfahrungen mit QiOne" />
     </div>
   );
 }

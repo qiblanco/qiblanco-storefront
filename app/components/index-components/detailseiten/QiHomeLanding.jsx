@@ -21,7 +21,7 @@ export function QiHomeLanding() {
         Matthias Cebula – Dr. Klinghardt Therapeut <br /> spricht über das QiHome® und
         die Vorteile für Kinder
       </h2>
-      <YoutubeIframe link="https://www.youtube.com/embed/mH0vaUEeFqg?start=3463" />
+      <YoutubeIframe link="https://www.youtube.com/embed/mH0vaUEeFqg?start=3463" titel="5G & E-Smog | Welche Optionen bleiben uns? Dr. Klinghardt Therapeut & Heilpraktiker Matthias Cebula" />
       <ImgixVideo
         className="w-full QiHomeVideo my-[150px]!"
         videoPath="240417_QIHome_Wohlfuehloase_16x9_EN.mov"
@@ -39,7 +39,7 @@ export function QiHomeLanding() {
         parallax={true}
       />
       <h1 className="text-center mt-3">Erschaffe dir deine Wohlfühloase</h1>
-      <YoutubeIframe link="https://www.youtube.com/embed/9BmJ_pjlFMQ" />
+      <YoutubeIframe link="https://www.youtube.com/embed/9BmJ_pjlFMQ" titel="Qi Blanco® | Gründer Interview QiHome® Air | Anna & Christian Bernd Bauer" />
       <TechnologieSection />
       <ImageTextBlocks />
       <GeopathogeneStrahlung />
@@ -356,7 +356,7 @@ function ReviewSection() {
       <h2>Mehr als 14.000 zufriedene Kunden</h2>
       <div className="mt-2">
         <h3>Deutscher Leichtathlet-Meister erleichtert</h3>
-        <YoutubeIframe link="https://www.youtube.com/embed/jyLyXZqHxaw" />
+        <YoutubeIframe link="https://www.youtube.com/embed/jyLyXZqHxaw" titel={"Deutscher Meister: \"Ich kann meine Freizeit wieder voll nutzen!\" – Constantin Preis | QiOne® 2 Pro"} />
       </div>
     </section>
   );
