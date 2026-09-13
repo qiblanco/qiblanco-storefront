@@ -82,9 +82,9 @@ test('Studien-Hub trägt author UND dateModified', () => {
   const sammlung = graph.find((n) => n['@type'] === 'CollectionPage');
   assert.ok(sammlung, 'CollectionPage fehlt im Hub-Graphen');
   assert.deepEqual(sammlung.author, {'@id': ORG_ID});
-  // Seit 2026-09-13 ein vollstaendiger ISO-8601-Zeitstempel mit Zone
+  // Seit 2026-09-13 ein vollständiger ISO-8601-Zeitstempel mit Zone
   // (Search-Console-Befund zu uploadDate, dieselbe Klasse): der
-  // Redaktionsstand ist ein Kalendertag, `isoMitZone` haengt Anfang des Tages
+  // Redaktionsstand ist ein Kalendertag, `isoMitZone` hängt Anfang des Tages
   // und Hauszone an. Der Kalendertag selbst darf sich dabei NICHT verschieben.
   assert.equal(sammlung.dateModified, isoMitZone(REDAKTIONSSTAND['/pages/studien']));
   assert.match(sammlung.dateModified, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/);
@@ -132,8 +132,8 @@ test('jedes Studien-Blatt trägt dateModified NEBEN datePublished', () => {
     );
     assert.equal(artikel.dateModified, isoMitZone(REDAKTIONSSTAND[`/pages/${s.slug}`]));
     // datePublished/dateCreated der fremden Arbeit bleiben ABSICHTLICH roh --
-    // teils ist nur das Jahr bekannt, und eine gesetzte Uhrzeit waere dort
-    // erfundene Genauigkeit ueber die Publikation eines Dritten.
+    // teils ist nur das Jahr bekannt, und eine gesetzte Uhrzeit wäre dort
+    // erfundene Genauigkeit über die Publikation eines Dritten.
     if (s.eckdaten.veroeffentlicht) {
       assert.notEqual(
         artikel.dateModified,

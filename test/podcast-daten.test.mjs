@@ -49,13 +49,13 @@ test('jede Folge trägt die Felder, die Markup und Schema brauchen', () => {
     assert.ok(f.t && f.t.trim().length > 5, `Titel fehlt: ${f.id}`);
     // VOLLER ISO-8601-ZEITSTEMPEL MIT ZONE, nicht nur der Tag. Bis 2026-09-13
     // schnitt der Generator die Uhrzeit weg (`[:10]`), obwohl die YouTube-API
-    // sie liefert -- `uploadDate` trug danach ein blosses Datum, und genau das
+    // sie liefert -- `uploadDate` trug danach ein bloßes Datum, und genau das
     // hat die Search Console zweimal beanstandet. Diese Zeile ist der Grund,
-    // warum der Schnitt nicht zurueckkommen kann.
+    // warum der Schnitt nicht zurückkommen kann.
     assert.match(
       f.d,
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/,
-      `Veroeffentlichung ohne Uhrzeit/Zone: ${f.id} -> ${f.d}`,
+      `Veröffentlichung ohne Uhrzeit/Zone: ${f.id} -> ${f.d}`,
     );
     assert.match(f.iso, /^PT/, `ISO-Dauer unplausibel: ${f.id}`);
     assert.ok(f.thumb.startsWith('https://i.ytimg.com/'), `kein echtes Poster: ${f.id}`);

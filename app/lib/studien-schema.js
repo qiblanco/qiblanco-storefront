@@ -127,10 +127,10 @@ export function studieSchema(studie) {
   // gemessen fehlte das zweite auf allen fünf Blättern; das Backlog nahm an,
   // die Blätter trügen es bereits und nur der Hub nicht. Sie trugen es nicht.
   // Unser Redaktionsstand (ein Kalendertag aus dem Commit-Datum) -> ISO 8601
-  // mit Zone. `datePublished`/`dateCreated` daruerber bleiben ABSICHTLICH roh:
+  // mit Zone. `datePublished`/`dateCreated` darüber bleiben ABSICHTLICH roh:
   // das sind Erscheinungs- und Einreichungsdatum der fremden Arbeit, teils nur
-  // als Jahr bekannt. Dort eine Uhrzeit zu setzen waere eine erfundene
-  // Genauigkeit ueber die Publikation eines Dritten.
+  // als Jahr bekannt. Dort eine Uhrzeit zu setzen wäre eine erfundene
+  // Genauigkeit über die Publikation eines Dritten.
   artikel.dateModified = isoMitZone(standFuer(`/pages/${studie.slug}`));
   if (e.lizenz) artikel.license = e.lizenz;
   if (e.doi) {

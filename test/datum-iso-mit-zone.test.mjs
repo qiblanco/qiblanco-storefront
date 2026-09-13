@@ -2,7 +2,7 @@
  * isoMitZone(): Kalendertag -> ISO 8601 mit Zone.
  *
  * Anlass: Search Console 2026-09-13, "Zeitzone in Datum/Uhrzeit-Attribut
- * `uploadDate` fehlt" + "ungueltiger Datum/Uhrzeit-Wert". Die Faelle hier sind
+ * `uploadDate` fehlt" + "ungültiger Datum/Uhrzeit-Wert". Die Fälle hier sind
  * nicht ausgedacht, sondern die Werte, die am selben Tag live auf
  * qiblanco.com standen, plus die beiden Umstellungstage, an denen ein
  * einmalig berechneter Offset den falschen Kalendertag ergibt.
@@ -11,7 +11,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {isoMitZone, HAUS_ZEITZONE} from '../app/lib/datum.js';
 
-/** Die Form, die Google fuer uploadDate verlangt. */
+/** Die Form, die Google für uploadDate verlangt. */
 const ISO_MIT_ZONE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/;
 
 test('die live beanstandeten Werte bekommen Uhrzeit UND Zone', () => {
@@ -27,7 +27,7 @@ test('der Offset folgt der Sommerzeit, er ist nicht getippt', () => {
   assert.equal(isoMitZone('2026-02-05'), '2026-02-05T00:00:00+01:00');
 });
 
-test('die zwei Umstellungstage: Mitternacht traegt noch den ALTEN Offset', () => {
+test('die zwei Umstellungstage: Mitternacht trägt noch den ALTEN Offset', () => {
   // Sommerzeit endet am 2025-10-26 um 03:00 MESZ -> 00:00 ist noch +02:00.
   assert.equal(isoMitZone('2025-10-26'), '2025-10-26T00:00:00+02:00');
   // Sommerzeit beginnt am 2025-03-30 um 02:00 MEZ -> 00:00 ist noch +01:00.
@@ -35,8 +35,8 @@ test('die zwei Umstellungstage: Mitternacht traegt noch den ALTEN Offset', () =>
 });
 
 test('GEGENPROBE AN DER UHR: der Zeitstempel ist wirklich Mitternacht in Berlin', () => {
-  // Ohne diese Probe wuerde ein falscher Offset nur "irgendwie plausibel"
-  // aussehen. Hier wird er zurueckgerechnet.
+  // Ohne diese Probe würde ein falscher Offset nur "irgendwie plausibel"
+  // aussehen. Hier wird er zurückgerechnet.
   for (const tag of ['2025-10-20', '2026-02-05', '2025-10-26', '2025-03-30', '2026-06-01']) {
     const d = new Date(isoMitZone(tag));
     const w = new Intl.DateTimeFormat('en-CA', {
@@ -48,14 +48,14 @@ test('GEGENPROBE AN DER UHR: der Zeitstempel ist wirklich Mitternacht in Berlin'
   }
 });
 
-test('IDEMPOTENT: ein schon vollstaendiger Wert wird nicht vergroebert', () => {
+test('IDEMPOTENT: ein schon vollständiger Wert wird nicht vergröbert', () => {
   // Genau diese Werte stehen in app/data/erfahrungen-beitraege.js.
   assert.equal(isoMitZone('2021-02-12T03:23:31Z'), '2021-02-12T03:23:31Z');
   assert.equal(isoMitZone('2025-10-20T00:00:00+02:00'), '2025-10-20T00:00:00+02:00');
   assert.equal(isoMitZone(isoMitZone('2024-08-11')), isoMitZone('2024-08-11'));
 });
 
-test('KEINE ERFUNDENE GENAUIGKEIT: ein blosses Jahr bleibt ein blosses Jahr', () => {
+test('KEINE ERFUNDENE GENAUIGKEIT: ein bloßes Jahr bleibt ein bloßes Jahr', () => {
   // Das Erscheinungsjahr einer Studie (datePublished "2021" auf
   // /pages/studie-darmbarriere) ist genau so genau, wie wir es wissen.
   assert.equal(isoMitZone('2021'), '2021');

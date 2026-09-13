@@ -137,10 +137,10 @@ export function igVideoKnoten({produkt, pfad, produktTitel, eintraege = IG_TESTI
         `Instagram-Beitrag von ${urheber(t)} vom ${deutschesDatum(t.datum)}, ` +
         `gezeigt in der Instagram-Reihe${aufSeite}.`,
       thumbnailUrl: t.posterPfad,
-      // `t.datum` ist ein blosser Kalendertag — die Plattform nennt keine
+      // `t.datum` ist ein bloßer Kalendertag — die Plattform nennt keine
       // Uhrzeit (0 von 67 gemessenen Beschreibungen tragen eine). isoMitZone()
       // setzt den Anfang dieses Tages in der Hauszone und macht daraus den
-      // ISO-8601-Wert mit Zone, den Google fuer `uploadDate` verlangt.
+      // ISO-8601-Wert mit Zone, den Google für `uploadDate` verlangt.
       uploadDate: isoMitZone(t.datum),
       contentUrl: t.videoUrl,
       inLanguage: t.sprache === 'en' ? 'en' : 'de',

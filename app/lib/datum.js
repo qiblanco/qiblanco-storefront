@@ -80,17 +80,17 @@ function zuDatum(wert) {
 }
 
 /**
- * Kalendertag -> vollstaendiger ISO-8601-Zeitstempel MIT Zonenangabe.
+ * Kalendertag -> vollständiger ISO-8601-Zeitstempel MIT Zonenangabe.
  *
  * WARUM ES DIESE FUNKTION GIBT (Job 20260913-REPAIR-uploaddate-ohne-uhrzeit-
  * und-zeitzone): die Search Console meldete am 2026-09-13 zwei Probleme vom Typ
- * "Videos fuer strukturierte Daten" -- "Zeitzone in Datum/Uhrzeit-Attribut
- * `uploadDate` fehlt" und "ungueltiger Datum/Uhrzeit-Wert fuer `uploadDate`".
+ * "Videos für strukturierte Daten" -- "Zeitzone in Datum/Uhrzeit-Attribut
+ * `uploadDate` fehlt" und "ungültiger Datum/Uhrzeit-Wert für `uploadDate`".
  * Es sind nicht zwei Fehler, sondern derselbe Wert zweimal beurteilt: unsere
- * VideoObject-Knoten trugen ein blosses `"2025-10-20"`. Google verlangt fuer
- * `uploadDate` ISO 8601 und sagt woertlich: "We recommend that you provide
+ * VideoObject-Knoten trugen ein bloßes `"2025-10-20"`. Google verlangt für
+ * `uploadDate` ISO 8601 und sagt wörtlich: "We recommend that you provide
  * timezone information; otherwise, we will default to the timezone used by
- * Googlebot." Ein Datum ohne Zone ueberlaesst den Kalendertag also dem
+ * Googlebot." Ein Datum ohne Zone überlässt den Kalendertag also dem
  * Standort eines fremden Crawlers.
  *
  * DIE UHRZEIT IST GESETZT, NICHT GEMESSEN -- und das ist der ehrliche Teil.
@@ -98,7 +98,7 @@ function zuDatum(wert) {
  * Muster hh:mm kommt in 0 von 67 Instagram-Beschreibungen vor. Die Plattform
  * nennt dort nur einen Kalendertag ("qiblanco on August 13, 2024"); dieselbe
  * Lage bei den YouTube-Daten der Podcast- und Hypothesen-Seiten. Wir haben
- * also keine Veroeffentlichungszeit und erfinden auch keine: gesetzt wird der
+ * also keine Veröffentlichungszeit und erfinden auch keine: gesetzt wird der
  * ANFANG dieses Kalendertages in der Hauszone. Das behauptet keine Genauigkeit,
  * die wir nicht haben -- es sagt "an diesem Tag, nach unserer Zeitrechnung".
  *
@@ -108,20 +108,20 @@ function zuDatum(wert) {
  * Winter-Beitrag den falschen Kalendertag. Und die Umstellungstage selbst sind
  * der Grenzfall, an dem eine einmalige Berechnung noch nicht reicht: am
  * 2025-10-26 gilt um 00:00 Ortszeit noch +02:00, um 12:00 UTC schon +01:00.
- * Deshalb wird der Kandidat gegengeprueft und der Offset notfalls ein zweites
+ * Deshalb wird der Kandidat gegengeprüft und der Offset notfalls ein zweites
  * Mal bestimmt -- die Gegenprobe ist die Wanduhr in der Zielzone selbst.
  *
  * IDEMPOTENT UND FAIL-SOFT, beides absichtlich: ein Wert, der schon eine
- * Uhrzeit traegt (`2021-02-12T03:23:31Z` aus erfahrungen-beitraege.js), kommt
- * unveraendert zurueck -- diese Funktion darf einen genaueren Wert nie
- * vergroebern. Und ein Wert, der KEIN reiner Kalendertag ist (etwa das blosse
- * Publikationsjahr "2021" einer Studie), kommt ebenfalls unveraendert zurueck:
- * dort waere ein erfundener Tag samt Uhrzeit eine Praezision, die es nicht
+ * Uhrzeit trägt (`2021-02-12T03:23:31Z` aus erfahrungen-beitraege.js), kommt
+ * unverändert zurück -- diese Funktion darf einen genaueren Wert nie
+ * vergröbern. Und ein Wert, der KEIN reiner Kalendertag ist (etwa das bloße
+ * Publikationsjahr "2021" einer Studie), kommt ebenfalls unverändert zurück:
+ * dort wäre ein erfundener Tag samt Uhrzeit eine Präzision, die es nicht
  * gibt. Wer Genauigkeit hinzufuegt, die die Quelle nicht hergibt, hat das
- * Problem nicht geloest, sondern versteckt.
+ * Problem nicht gelöst, sondern versteckt.
  *
  * @param {string|null|undefined} wert Kalendertag "YYYY-MM-DD" (alles andere
- *   kommt unveraendert zurueck)
+ *   kommt unverändert zurück)
  * @param {{zeitzone?: string}} [optionen]
  * @returns {string} z. B. "2025-10-20T00:00:00+02:00"
  */
@@ -129,7 +129,7 @@ export function isoMitZone(wert, {zeitzone = HAUS_ZEITZONE} = {}) {
   if (typeof wert !== 'string') return wert === null || wert === undefined ? '' : wert;
   const tag = wert.trim();
   // NUR der reine Kalendertag wird angefasst. Alles andere -- schon fertige
-  // Zeitstempel, blosse Jahre, Unfug -- bleibt, wie es ist.
+  // Zeitstempel, bloße Jahre, Unfug -- bleibt, wie es ist.
   if (!/^\d{4}-\d{2}-\d{2}$/.test(tag)) return wert;
 
   let offset = zonenOffset(new Date(`${tag}T12:00:00Z`), zeitzone);
@@ -148,7 +148,7 @@ function zonenOffset(zeitpunkt, zeitzone) {
   const teil = new Intl.DateTimeFormat('en-US', {timeZone: zeitzone, timeZoneName: 'longOffset'})
     .formatToParts(zeitpunkt)
     .find((p) => p.type === 'timeZoneName');
-  // "GMT" ohne Zusatz heisst exakt UTC — dort ist die ISO-Form "+00:00".
+  // "GMT" ohne Zusatz heißt exakt UTC — dort ist die ISO-Form "+00:00".
   const m = /^GMT([+-])(\d{2}):(\d{2})$/.exec(teil ? teil.value : '');
   return m ? `${m[1]}${m[2]}:${m[3]}` : '+00:00';
 }
