@@ -4,6 +4,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogMeta} from '~/lib/blog-seo';
 import {artikelHreflangLinks} from '~/lib/hreflang';
 import {artikelInhaltAufraeumen} from '~/lib/blog-inhalt';
+import {tagLang} from '~/lib/datum';
 import {artikelSchema} from '~/lib/blog-schema';
 import {autorenkastenSichtbarkeit} from '~/lib/autorenkasten';
 import {Autorenkasten} from '~/components/Autorenkasten';
@@ -169,14 +170,12 @@ export default function Article() {
   const {article, blogHandle, weitere, autorenkasten} = useLoaderData();
   const {title, image, contentHtml, author} = article;
 
-  // de-DE statt en-US: das Hausmuster steht in app/lib/withdrawal.js. Auf einem
-  // deutschsprachigen Blog ist "August 31, 2026" kein Stilfehler, sondern ein
-  // sichtbar falscher Ort.
-  const publishedDate = new Intl.DateTimeFormat('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(article.publishedAt));
+  // de-DE statt en-US: auf einem deutschsprachigen Blog ist "August 31, 2026"
+  // kein Stilfehler, sondern ein sichtbar falscher Ort. Die Zone kommt seit
+  // 2026-09-13 aus app/lib/datum.js MIT — ohne sie rendert der Server in UTC,
+  // der Kunde in Europe/Berlin, und React bricht beim Hydrieren (#418/#423/
+  // #425 auf JEDEM Aufruf jeder Blog-Seite). Die Begründung steht dort.
+  const publishedDate = tagLang(article.publishedAt);
 
   // Siehe app/lib/blog-inhalt.js: der Artikelkörper aus Shopify trägt den
   // Titel ein zweites Mal und die wörtlichen Markdown-Trenner.

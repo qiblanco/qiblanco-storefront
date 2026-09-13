@@ -13,6 +13,8 @@
  * anzeigt". Wer hier ein englisches Wort sieht, hat einen Befund, keinen Bug.
  */
 
+import {tagLangZweistellig} from './datum';
+
 const ZAHLUNG = {
   PENDING: 'Zahlung ausstehend',
   AUTHORIZED: 'Zahlung autorisiert',
@@ -50,12 +52,16 @@ export function versandText(wert) {
   return VERSAND[wert] ?? wert;
 }
 
-/** Datum einheitlich deutsch — ein Ort statt drei Aufrufe im Baum. */
+/**
+ * Datum einheitlich deutsch — ein Ort statt drei Aufrufe im Baum.
+ *
+ * Die Zone kommt seit 2026-09-13 aus app/lib/datum.js. Ohne sie rechnete der
+ * Server in UTC und der Browser in der Zone des Kunden; bei einem Bestelldatum
+ * kurz vor Mitternacht war das ein anderer Tag, und React brach beim Hydrieren.
+ * Auf dem Blog war derselbe Fehler laut sichtbar (jede Seite, jeder
+ * DACH-Aufruf), hier liegt er hinter dem Login und ist deshalb nie jemandem
+ * aufgefallen — dieselbe Klasse, nur leiser.
+ */
 export function datumText(iso) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleDateString('de-DE', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
+  return tagLangZweistellig(iso);
 }

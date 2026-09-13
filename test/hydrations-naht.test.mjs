@@ -24,6 +24,15 @@
  *      Folge wie bei 1., anderer Weg dorthin. Die Wächter dafür stehen
  *      ebenfalls unten.
  *
+ *   4. Ein Datum, das OHNE `timeZone` formatiert wird (Job 20260913-blog-
+ *      hydration-...-zeitzonen-datum). `Intl.DateTimeFormat` und
+ *      `toLocaleDateString` nehmen ohne diese Angabe die Zone der UMGEBUNG:
+ *      auf dem Server UTC, im Browser die des Kunden. Faellt der Zeitstempel
+ *      zwischen beide Zonen, schreibt der Server einen anderen Tag als der
+ *      Client liest -- derselbe Textknoten-Bruch wie bei 2., anderer Weg.
+ *      Gemessen am 2026-09-13 auf /blogs/wissen, Zone als einzige Variable:
+ *      UTC 0 Fehler, Europe/Berlin 41. Der Wächter dafür steht unten.
+ *
  * WARUM EIN <style> MIT TEXTKIND BRICHT, und warum es zugleich still kaputt ist:
  * React MASKIERT Textkinder beim Serverrendern. Aus input[type='text'] wird im
  * SSR-HTML input[type=&#x27;text&#x27;]. <style> ist aber ein RAW-TEXT-Element --
@@ -51,6 +60,7 @@ import assert from 'node:assert/strict';
 import {readdirSync, readFileSync, statSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join, relative} from 'node:path';
+import {tagLang} from '../app/lib/datum.js';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const APP = join(HIER, '..', 'app');
@@ -168,7 +178,7 @@ test('metaAufteilen wird unbedingt aufgerufen (Hook-Reihenfolge)', () => {
   );
 });
 
-test('ROT-VOR-GRUEN: der Waechter erkennt ein zurueckgeschriebenes head-Skript', () => {
+test('ROT-VOR-GRUEN: der Wächter erkennt ein zurueckgeschriebenes head-Skript', () => {
   const text = readFileSync(QUELLE, 'utf8');
   // Den Defekt hermetisch nachbauen statt ihn zu behaupten.
   const kaputt = text.replace(
@@ -180,6 +190,193 @@ test('ROT-VOR-GRUEN: der Waechter erkennt ein zurueckgeschriebenes head-Skript',
   assert.equal(
     treffer.length,
     1,
-    'Der Waechter sieht sein eigenes Gegenbeispiel nicht — er ist blind.',
+    'Der Wächter sieht sein eigenes Gegenbeispiel nicht — er ist blind.',
+  );
+});
+
+// ── URSACHE 4: Datum ohne Zeitzone ─────────────────────────────────────────
+// DIE EIGENSCHAFT, NICHT DER ORT: gemessen wird nicht "liegt die Datei unter
+// app/routes/blogs*", sondern "formatiert dieser Aufruf ein Datum, ohne die
+// Zone zu nennen". Ein Zaun aus zwei Dateinamen hätte den nächsten Fall
+// (app/lib/konto-texte.js, hinter dem Login und deshalb leiser) nicht gesehen
+// -- er war am selben Tag schon da.
+//
+// KALIBRIERT AM ECHTBESTAND, bevor dieser Wächter scharf wurde: 6 Aufrufe im
+// app/-Baum, davon 4 ohne Zone (2x Blog, 1x konto-texte, und die beiden
+// Währungs-Formatierer zählen nicht mit, s.u.). Nach dem Fix: 0. Kein
+// Fluter, deshalb ein hartes Urteil und keine blosse Markierung.
+//
+// WAS AUSDRÜCKLICH NICHT MITGEMESSEN WIRD: `toLocaleString` auf ZAHLEN
+// (Preise in CacaoProductForm.jsx und markt-pricing.js). Die haben keine Zone,
+// können diesen Bruch baulich nicht auslösen, und wer sie mitmeldet, erzieht
+// zum Wegklicken des Waechters.
+
+/**
+ * Datums-Formatierungen samt ihrem Argument-Block. Erfasst beide Bauformen --
+ * `new Intl.DateTimeFormat(...)` und `.toLocaleDateString(...)` /
+ * `.toLocaleTimeString(...)` -- und liest den Block bis zur passenden
+ * schließenden Klammer, damit ein mehrzeiliges Options-Objekt ganz drin ist.
+ */
+const DATUMS_AUFRUF =
+  /(?:new\s+Intl\.DateTimeFormat|\.toLocale(?:Date|Time)String)\s*\(/g;
+
+/** Ab `von` (Index der oeffnenden Klammer) bis zur passenden schließenden. */
+function klammerBlock(code, von) {
+  let tiefe = 0;
+  for (let i = von; i < code.length; i++) {
+    if (code[i] === '(') tiefe++;
+    else if (code[i] === ')') {
+      tiefe--;
+      if (tiefe === 0) return code.slice(von, i + 1);
+    }
+  }
+  return code.slice(von);
+}
+
+/** Alle Datums-Aufrufe einer Datei als {zeile, block}. */
+function datumsAufrufe(code) {
+  const raus = [];
+  for (const m of code.matchAll(DATUMS_AUFRUF)) {
+    const klammer = m.index + m[0].length - 1;
+    raus.push({
+      zeile: code.slice(0, m.index).split('\n').length,
+      block: klammerBlock(code, klammer),
+    });
+  }
+  return raus;
+}
+
+test('kein Datum wird ohne timeZone formatiert (SSR und Client würden driften)', () => {
+  const alle = dateien(APP);
+  assert.ok(
+    alle.length > 50,
+    `Positiv-Kontrolle: nur ${alle.length} Dateien unter app/ gefunden -- ` +
+      'die Suchmechanik greift nicht mehr, der Wächter wäre wirkungslos',
+  );
+
+  let gesehen = 0;
+  const treffer = [];
+  for (const datei of alle) {
+    const code = readFileSync(datei, 'utf8');
+    for (const {zeile, block} of datumsAufrufe(code)) {
+      gesehen++;
+      if (!/\btimeZone\s*:/.test(block)) {
+        treffer.push(`${relative(APP, datei)}:${zeile}`);
+      }
+    }
+  }
+
+  // ZWEITE POSITIV-KONTROLLE: findet der Wächter ueberhaupt noch Aufrufe?
+  // Sinkt das auf 0, misst er nichts mehr und wäre gruen by construction --
+  // von einem echten Freispruch nicht zu unterscheiden.
+  assert.ok(
+    gesehen >= 4,
+    `Positiv-Kontrolle: nur ${gesehen} Datums-Formatierungen gefunden ` +
+      '(erwartet mindestens 4) -- das Suchmuster greift nicht mehr',
+  );
+
+  assert.deepEqual(
+    treffer,
+    [],
+    'Diese Aufrufe formatieren ein Datum ohne `timeZone` und nehmen damit die ' +
+      'Zone der Umgebung: auf dem Server UTC, im Browser die des Kunden. ' +
+      'Faellt der Zeitstempel zwischen beide, rendert der Server einen anderen ' +
+      'Tag als der Client liest -- React bricht beim Hydrieren (#418/#423/#425) ' +
+      'auf jeder Seite, die das Datum zeigt. Nimm die Helfer aus ' +
+      'app/lib/datum.js (tagLang / tagLangZweistellig); sie tragen die Zone ' +
+      'mit. Soll die Zone wirklich vom Leser abhaengen, gehört sie hinter die ' +
+      'Hydration (useEffect), nie in den SSR-Pfad.\n' +
+      `Treffer:\n  ${treffer.join('\n  ')}`,
+  );
+});
+
+test('ROT-VOR-GRUEN: der Wächter erkennt ein zonenloses Datum', () => {
+  // Der Rot-Zustand wird HERGESTELLT, nicht behauptet -- und zwar an genau der
+  // Mechanik, die der Echtlauf oben benutzt. Wäre der Wächter blind, bliebe
+  // dieser Arm gruen und das Gruen daneben würde nichts bedeuten.
+  const kaputt = `
+    const d = new Intl.DateTimeFormat('de-DE', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(new Date(article.publishedAt));
+  `;
+  const heil = `
+    const d = new Intl.DateTimeFormat('de-DE', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'Europe/Berlin',
+    }).format(new Date(article.publishedAt));
+  `;
+  const ohneZone = (code) =>
+    datumsAufrufe(code).filter(({block}) => !/\btimeZone\s*:/.test(block));
+
+  assert.equal(
+    ohneZone(kaputt).length,
+    1,
+    'Der Wächter sieht die zonenlose Fassung NICHT -- sein Gruen im Test ' +
+      'darueber belegt damit nichts.',
+  );
+  assert.equal(
+    ohneZone(heil).length,
+    0,
+    'Der Wächter meldet die HEILE Fassung -- er würde den richtigen Bau ' +
+      'bestrafen und zum Wegklicken erziehen.',
+  );
+});
+
+test('tagLang rendert denselben Tag, egal in welcher Zone die Umgebung läuft', () => {
+  // Das ist die eigentliche Zusage an den Kunden, und sie wird am VERHALTEN
+  // gemessen, nicht am Quelltext: ein Artikel erscheint an EINEM Tag -- nicht
+  // an einem anderen, nur weil jemand ihn aus Honolulu liest.
+  //
+  // 2026-08-31T22:30:00Z ist der Zeitstempel aus dem Anlassfall: in UTC noch
+  // der 31. August, in Europe/Berlin schon der 1. September. Genau dieses
+  // Paar stand am 2026-09-13 im Diff zwischen SSR-HTML und hydriertem DOM.
+  const ISO = '2026-08-31T22:30:00Z';
+  const zonen = ['UTC', 'America/New_York', 'Pacific/Honolulu',
+                 'Europe/Berlin', 'Pacific/Kiritimati'];
+
+  /** Formatierung OHNE Zone -- der Zustand vor dem Fix, als Kontrollgruppe. */
+  const ohneZone = (iso) =>
+    new Intl.DateTimeFormat('de-DE', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(new Date(iso));
+
+  const alt = process.env.TZ;
+  const gesehen = new Set();
+  const kontrolle = new Set();
+  try {
+    for (const zone of zonen) {
+      process.env.TZ = zone;
+      gesehen.add(tagLang(ISO));
+      kontrolle.add(ohneZone(ISO));
+    }
+  } finally {
+    if (alt === undefined) delete process.env.TZ;
+    else process.env.TZ = alt;
+  }
+
+  // KONTROLLGRUPPE ZUERST, sonst ist die Zusage gruen by construction: wenn
+  // das Umstellen von process.env.TZ in dieser Node-Fassung gar nicht wirkt,
+  // sieht eine wirkungslose Messung genauso aus wie ein geheilter Bau. Die
+  // zonenlose Fassung MUSS über dieselben Zonen auseinanderlaufen.
+  assert.ok(
+    kontrolle.size > 1,
+    'MESSAUSFALL: die zonenlose Kontrollfassung liefert über ' +
+      `${zonen.length} Zonen nur ${kontrolle.size} verschiedenen Tag ` +
+      `(${[...kontrolle].join(' | ')}). Dann wirkt das Umstellen der ` +
+      'Umgebungszone hier nicht, und der Test unten belegt nichts.',
+  );
+
+  assert.deepEqual(
+    [...gesehen],
+    ['1. September 2026'],
+    'tagLang liefert je nach Umgebungszone verschiedene Tage ' +
+      `(${[...gesehen].join(' | ')}) -- genau daran bricht die Hydration. ` +
+      'Erwartet ist ueberall der Berliner Kalendertag.',
   );
 });
