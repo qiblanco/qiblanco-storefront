@@ -31,8 +31,17 @@ const ROUTEN = [
   '../app/routes/pages.kritik.jsx',
   '../app/routes/pages.neu-oder-gebraucht.jsx',
   '../app/routes/pages.wirkt-das.jsx',
-  '../app/routes/pages.warum-qi-blanco.jsx',
 ];
+
+// NICHT IN DER LISTE, UND DAS IST KEIN VERSEHEN: `pages.warum-qi-blanco.jsx`
+// gehört sachlich dazu und ist trotzdem draußen. Die Seite hängt am
+// 2026-09-13 an einem FREMDEN Pixel-Soll-Rückstand (PR #400 änderte die Route
+// und ließ keinen Design-Beleg zurück; `hb-pixelsoll nachzug` verweigert die
+// Ablösung). Ein Fix wäre gebaut und nicht deploybar — der Eintrag hier würde
+// dann eine Zusage prüfen, die niemand einlösen darf. Sobald die Sperre fällt,
+// gehört die Route in diese Liste; die offene Flanke steht im jobmem des
+// Großjobs 20260913-REPAIR-uploaddate-ohne-uhrzeit-und-zeitzone.
+
 
 test('jede Route reicht ihr Datum durch isoMitZone, statt es roh zu setzen', () => {
   for (const r of ROUTEN) {
