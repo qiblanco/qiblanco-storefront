@@ -3,7 +3,7 @@ import nogStyles from '~/styles/neu-oder-gebraucht.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {FRAGEN} from '~/data/kauf-tatsachen';
-import {teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/neu-oder-gebraucht';
 
@@ -119,6 +119,7 @@ export const meta = () => {
     {property: 'og:title', content: TITEL},
     {property: 'og:description', content: BESCHREIBUNG},
     {property: 'og:url', content: absoluteCanonical(PFAD)},
+    {property: 'og:site_name', content: MARKE},
     ...(schema ? [{'script:ld+json': schema}] : []),
   ];
 };

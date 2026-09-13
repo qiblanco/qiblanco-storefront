@@ -2,7 +2,7 @@ import {Link} from 'react-router';
 import {QUELLEN} from '~/data/werk';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import quellenStyles from '~/styles/werk-quellen.css?url';
-import {teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/quellen';
 
@@ -45,6 +45,7 @@ export const meta = () => [
   {property: 'og:title', content: TITEL},
   {property: 'og:description', content: BESCHREIBUNG},
   {property: 'og:url', content: absoluteCanonical(PFAD)},
+  {property: 'og:site_name', content: MARKE},
   {
     // CollectionPage statt ItemList mit 56 Eintraegen: die strukturierten
     // Daten sollen beschreiben, WAS die Seite ist. Jede einzelne Quelle als

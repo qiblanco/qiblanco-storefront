@@ -3,7 +3,7 @@ import {FAQ_ALLE} from '~/data/faq-seite';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import faqStyles from '~/styles/faq.css?url';
-import {teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/faq';
 
@@ -65,6 +65,7 @@ export const meta = () => {
     {property: 'og:title', content: TITEL},
     {property: 'og:description', content: BESCHREIBUNG},
     {property: 'og:url', content: absoluteCanonical(PFAD)},
+    {property: 'og:site_name', content: MARKE},
     ...(schema ? [{'script:ld+json': schema}] : []),
   ];
 };

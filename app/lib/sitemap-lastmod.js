@@ -44,6 +44,7 @@ import {
 } from '~/lib/seo';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {artikelKarte, leereBlogHandles} from '~/lib/sitemap-bestand';
+import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 
 /**
  * Kind-Typ im URL-Pfad -> Enum-Wert der Storefront-API.
@@ -96,7 +97,14 @@ function sichtbareEintraege(typ, items, bestand) {
     case 'products':
       return items.filter((i) => !NICHT_INDEXIERBARE_PRODUKTE.includes(i.handle));
     case 'pages':
-      return items.filter((i) => !AUS_SITEMAP_ENTFERNTE_SEITEN.includes(i.handle));
+      // Dieselbe Vereinigung wie in der Kind-Route: nennt der Index ein
+      // `lastmod` aus einem Eintrag, den das Kind gar nicht ausliefert, ist
+      // das Datum eine Aussage über eine URL, die es dort nicht gibt.
+      return items.filter(
+        (i) =>
+          !AUS_SITEMAP_ENTFERNTE_SEITEN.includes(i.handle) &&
+          !WEITERGELEITETE_PAGES_HANDLES.includes(i.handle),
+      );
     case 'collections':
       return items.filter(
         (i) => !ausSitemapEntfernteKollektionen().includes(i.handle),

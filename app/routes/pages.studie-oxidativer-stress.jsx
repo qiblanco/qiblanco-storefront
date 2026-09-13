@@ -19,6 +19,7 @@ export const meta = () => [
   {property: 'og:title', content: STUDIE.seo.titel},
   {property: 'og:description', content: STUDIE.seo.beschreibung},
   {property: 'og:url', content: absoluteCanonical(PFAD)},
+  {property: 'og:site_name', content: 'Qi Blanco'},
   {property: 'og:image', content: STUDIE.eckdaten.coverUrl},
   {name: 'twitter:card', content: 'summary_large_image'},
   {'script:ld+json': studieSchema(STUDIE)},
