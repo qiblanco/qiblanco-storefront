@@ -158,14 +158,14 @@ const SEITEN_ROUTEN = Object.keys(BESCHREIBUNGEN)
   .map((p) => p.slice('/pages/'.length));
 
 test('D1 jede eigene Seitenroute reicht ihren Pfad und das Shopify-Feld durch', () => {
-  // KEIN GEPINNTER ZAEHLER. Bis zum 2026-09-13 stand hier die Zahl 13, und sie
-  // wurde mit dem Karteneintrag fuer /pages/qibracelet-details falsch — sie auf
-  // 14 zu setzen waere derselbe Fehler eine Runde spaeter. Die Zahl wird
-  // deshalb aus dem unabhaengigen Erwartungs-Literal ABGELEITET, mit demselben
-  // Filter wie SEITEN_ROUTEN. Was dieser Arm damit noch traegt: er haelt die
-  // Schleife darunter davon ab, LEER zu laufen — eine Schleife ueber null
-  // Routen ist gruen, ohne etwas geprueft zu haben. WELCHE Pfade es sein
-  // muessen, misst B4; hier geht es nur darum, dass ueberhaupt gemessen wird.
+  // KEIN GEPINNTER ZÄHLER. Bis zum 2026-09-13 stand hier die Zahl 13, und sie
+  // wurde mit dem Karteneintrag für /pages/qibracelet-details falsch — sie auf
+  // 14 zu setzen wäre derselbe Fehler eine Runde später. Die Zahl wird
+  // deshalb aus dem unabhängigen Erwartungs-Literal ABGELEITET, mit demselben
+  // Filter wie SEITEN_ROUTEN. Was dieser Arm damit noch trägt: er hält die
+  // Schleife darunter davon ab, LEER zu laufen — eine Schleife über null
+  // Routen ist grün, ohne etwas geprüft zu haben. WELCHE Pfade es sein
+  // müssen, misst B4; hier geht es nur darum, dass überhaupt gemessen wird.
   const erwarteteRouten = ERWARTETE_PFADE.filter(
     (p) => p.startsWith('/pages/') && p !== '/pages/support-1',
   ).length;

@@ -27,17 +27,17 @@ import {beschreibungTags} from '~/lib/seiten-beschreibung';
  */
 export const meta = ({data}) => {
   // Die Seite stand seit 4ae2729 ohne Meta-Beschreibung live und fiel erst
-  // auf, als #383 sie am 2026-09-12 in die Sitemap nachtrug -- bis dahin war
+  // auf, als #383 sie am 2026-09-12 in die Sitemap nachtrug — bis dahin war
   // sie nicht Teil der Grundmenge, die das misst. Rangfolge wie ueberall: ein
-  // gepflegtes `seo.description` aus Shopify schlaegt die kuratierte Karte,
-  // die Karte faengt nur auf. Das PAGE_QUERY laeuft hier auf dem ALTEN
-  // CMS-Handle `qibracelet` -- dasselbe Shopify-Objekt traegt also die
-  // noindex-LP /pages/qibracelet; ein dort gepflegtes Feld faende beide.
+  // gepflegtes `seo.description` aus Shopify schlägt die kuratierte Karte,
+  // die Karte fängt nur auf. Das PAGE_QUERY läuft hier auf dem ALTEN
+  // CMS-Handle `qibracelet` — dasselbe Shopify-Objekt trägt also die
+  // noindex-LP /pages/qibracelet; ein dort gepflegtes Feld fände beide.
   //
-  // `beschreibung` geht zusaetzlich an seitenSignale, damit og:description
+  // `beschreibung` geht zusätzlich an seitenSignale, damit og:description
   // und JSON-LD denselben Satz tragen wie die meta description. Ein Netzwerk,
   // das beim Teilen etwas anderes zeigt als die Suchmaschine, erzeugt zwei
-  // Versprechen (qione-2-pro-Praezedenz).
+  // Versprechen (qione-2-pro-Präzedenz).
   const titel = 'QiBracelet\u00AE im Detail | Qi Blanco';
   return [
     {title: titel},
