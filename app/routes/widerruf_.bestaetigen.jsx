@@ -1,19 +1,47 @@
 import {data} from '@shopify/remix-oxygen';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   getWithdrawalProductLabel,
   validateWithdrawalFormData,
 } from '~/lib/withdrawal';
 
+const PFAD = '/widerruf/bestaetigen';
+const TITEL = 'Widerruf bestätigen | Qi Blanco';
+const BESCHREIBUNG = 'Bestätigungsseite für den Online-Widerruf bei Qi Blanco.';
+
+/**
+ * Teilbild und strukturierte Daten (Job 20260912-sieben-indexierbare-seiten-
+ * ohne-sitemap-und-ohne-auszeichnung-prio22). Der Canonical stand schon hier.
+ *
+ * OFFENE FRAGE, DIE DIESER JOB BEWUSST NICHT ENTSCHEIDET: diese Seite ist eine
+ * Formular-Bestaetigung, also nach dem Aufnahme-Kriterium in app/lib/seo.js
+ * ("Klickziel, kein Suchziel") ein Kandidat für `noindex` -- dort stehen
+ * bereits fünf `*-anmeldung-erfolgreich`-Handles mit genau dieser Begründung.
+ * Der Unterschied ist, dass jene Shopify-Handles sind und diese eine eigene
+ * Code-Route ist, die der Katchall nie erreicht. Die Entscheidung ist eine
+ * Index-Hygiene-Frage mit Sitemap-Seite und gehört nicht in einen Auftrag
+ * über Auszeichnung; sie ist als eigener Befund gemeldet. Solange die Seite
+ * indexierbar ist und einen Canonical trägt, ist die Auszeichnung die
+ * konsistente Antwort -- eine halb ausgezeichnete indexierbare Seite wäre in
+ * keiner der beiden Welten richtig. *
+ * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
+ * Der Kopf jener Datei sagt, sie werde "ausschließlich von den /pages-Routen"
+ * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei über
+ * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
+ * für diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
+ * alle 31 /pages-Routen in dieselbe Prüfung, also genau den Preis, vor dem der
+ * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
+ */
 export const meta = () => [
-  {title: 'Widerruf bestätigen | Qi Blanco'},
-  {
-    name: 'description',
-    content: 'Bestätigungsseite für den Online-Widerruf bei Qi Blanco.',
-  },
-  canonicalLink('/widerruf/bestaetigen'),
+  {title: TITEL},
+  {name: 'description', content: BESCHREIBUNG},
+  canonicalLink(PFAD),
+  ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG}),
 ];
 
 export function loader() {

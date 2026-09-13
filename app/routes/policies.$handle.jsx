@@ -2,19 +2,49 @@ import {Link, useLoaderData} from 'react-router';
 import {policyTitelDe} from '~/lib/policy-titel';
 import {canonicalLink} from '~/lib/seo';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import {seitenSignale} from '~/lib/seiten-seo';
 
 /**
- * @type {MetaFunction<typeof loader>}
+ * @type {MetaFunction<typeof loader>} *
+ * DIESE ROUTE LIEGT AB HIER IN DER IMPORT-CLOSURE VON app/lib/seiten-seo.js.
+ * Der Kopf jener Datei sagt, sie werde "ausschließlich von den /pages-Routen"
+ * importiert -- das gilt seit diesem Commit nicht mehr, und das ist keine
+ * Nebenbemerkung: hb-deploy Gate 12 loest eine geaenderte geteilte Datei über
+ * ihre Import-Closure auf. Wer seiten-seo.js aendert, braucht ab jetzt auch
+ * für diese Seite einen gueltigen Formate-Nachweis. Der Satz dort wird bewusst
+ * NICHT nachgezogen: eine Kommentar-Aenderung an seiten-seo.js zieht ihrerseits
+ * alle 31 /pages-Routen in dieselbe Prüfung, also genau den Preis, vor dem der
+ * Satz warnt. Der Hinweis steht deshalb hier, beim neuen Importeur.
  */
 export const meta = ({data, params}) => {
   const titel = policyTitelDe(params?.handle, data?.policy?.title);
-  const tags = [{title: titel ? `${titel} | Qi Blanco` : 'Qi Blanco'}];
+  const vollerTitel = titel ? `${titel} | Qi Blanco` : 'Qi Blanco';
+  const tags = [{title: vollerTitel}];
   // Selbst-canonical (s04, 2026-08-26). Die Rechtstexte (Versand, Widerruf,
   // Datenschutz, AGB) sind eigenständige, indexierbare Seiten mit echtem
   // Inhalt — `/policies/shipping-policy` misst 475 eigene Wörter gegen ein
   // nachweislich leeres Gerüst. Sie bleiben im Index; ihnen fehlte nur der
   // canonical, weil diese Route nie einen setzte.
-  if (params?.handle) tags.push(canonicalLink(`/policies/${params.handle}`));
+  //
+  // TEILBILD UND STRUKTURIERTE DATEN kamen am 2026-09-13 dazu (Job 20260912-
+  // sieben-indexierbare-seiten-ohne-sitemap-und-ohne-auszeichnung-prio22).
+  // s04 hat den Canonical gesetzt und die beiden anderen Signale offen
+  // gelassen; gemessen am 2026-09-12 trugen alle vier Rechtstexte weiterhin
+  // kein og:image und kein JSON-LD -- ein geteilter Link auf den Widerruf
+  // zeigte ein nacktes Feld, und eine Suchmaschine sah einen Textblock, dem
+  // niemand sagt, was er ist. Derselbe Zustand auf crystal-cacao.com: es ist
+  // eine Luecke der GETEILTEN Routenklasse, nicht eines Ladens.
+  //
+  // DER PFAD KOMMT AUS `params`, NICHT AUS DEN GELADENEN DATEN: `params.handle`
+  // ist die Adresse, die der Besucher aufgerufen hat, und genau die soll
+  // kanonisiert und geteilt werden. Bleibt die Shopify-Abfrage leer, wirft der
+  // Loader 404 und es gibt ohnehin nichts zu indexieren.
+  //
+  // DER RECHTSTEXT SELBST BLEIBT UNBERUEHRT -- hier wird der <head> ergänzt.
+  if (params?.handle) {
+    const pfad = `/policies/${params.handle}`;
+    tags.push(canonicalLink(pfad), ...seitenSignale({pfad, titel: vollerTitel}));
+  }
   return tags;
 };
 

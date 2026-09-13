@@ -4,13 +4,43 @@ import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {ohneAusgeschlossene} from '~/lib/such-ausschluss';
+import {noindexMeta, noindexHeader} from '~/lib/seo';
 
 /**
+ * DIESE SEITE GEHÖRT NICHT IN DEN INDEX (Job 20260912-sieben-indexierbare-
+ * seiten-ohne-sitemap-und-ohne-auszeichnung-prio22).
+ *
+ * Die Frage stand VOR dem Markup und ist gegen die Auszeichnung entschieden:
+ * eine interne Suchergebnisseite ist der Lehrbuchfall für duennen und
+ * doppelten Inhalt. Jede Anfrage ist eine eigene URL (`?q=...`), der URL-Raum
+ * ist damit unbegrenzt, und eigenen Inhalt hat die Seite keinen -- sie zeigt
+ * ein Formular und eine Trefferliste, die woanders steht. Ihr ein Teilbild zu
+ * geben haette sie erst recht indexierbar gemacht.
+ *
+ * GEMESSEN am 2026-09-12: /search lieferte auf BEIDEN Laeden HTTP 200 ohne
+ * robots-meta, ohne Canonical, ohne og:image und ohne strukturierte Daten --
+ * und stand in keiner Sitemap. Der Crawler erreicht sie über die Kopfzeile.
+ *
+ * KEIN CANONICAL DANEBEN: `noindex` und ein Canonical sind widersprueckliche
+ * Signale. Die Regel steht wortgleich im Kopf von app/lib/seo.js
+ * (NICHT_INDEXIERBARE_KOLLEKTIONEN, "WARUM noindex UND KEIN canonical").
+ *
+ * ZWEI LAGEN, HAUSMUSTER "Gurt und Hosenträger": `noindexMeta()` im
+ * HTML-head und `noindexHeader()` als X-Robots-Tag -- der zweite greift auch
+ * bei einem Bot, der den head nicht parst.
+ *
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Qi Blanco | Suche`}];
+  return [{title: `Qi Blanco | Suche`}, noindexMeta()];
 };
+
+/**
+ * Die ZWEITE, vom HTML unabhaengige Sperre desselben Signals. Wortgleich aus
+ * `noindexHeader()` -- ein zweiter Wortlaut wäre ein zweiter Wartungspunkt
+ * ohne Nutzen.
+ */
+export const headers = () => noindexHeader();
 
 /**
  * @param {LoaderFunctionArgs}
