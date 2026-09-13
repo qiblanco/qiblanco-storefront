@@ -189,7 +189,18 @@ export default function Article() {
           Der Kopf trägt jetzt nur noch den Titel; die Angaben stehen als
           eigene Zeile darunter. */}
         <h1 className="article-titel">{title}</h1>
-        <p className="article-meta">
+        {/* <div> UND NICHT <p>, und das ist kein Geschmack: <address> ist
+          Flow-Content und in einem <p> nicht erlaubt. Der HTML-Parser
+          schließt das <p> davor und hebt die Zeile heraus — der Server
+          liefert dann `<p>…</p><address>…</address><p></p>`, waehrend Reacts
+          Client-Baum das <address> INNEN erwartet. Folge war ein
+          Hydrationsbruch (#418/#423) auf JEDER Artikelseite mit Autor, in
+          JEDER Zeitzone (gemessen 2026-09-13: UTC, Europe/Berlin und
+          Pacific/Kiritimati je 2 von 2 Laeufen). Das ist dieselbe Klasse wie
+          <dialog> in <p> — siehe test/hydrations-naht.test.mjs, Ursache 1.
+          Die Gestaltung hängt an der KLASSE (.blog-wissen .article-meta),
+          nicht am Element; der Wechsel kostet sie nichts. */}
+        <div className="article-meta">
           <time dateTime={article.publishedAt}>{publishedDate}</time>
           {author?.name ? (
             <>
@@ -197,7 +208,7 @@ export default function Article() {
               &middot; <address>{author.name}</address>
             </>
           ) : null}
-        </p>
+        </div>
 
         {image && (
           <div className="article-bild">
