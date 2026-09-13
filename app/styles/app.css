@@ -66,6 +66,36 @@
      mentales-setting bei gleichem Footer nur 6/48 = 12 %.
      WER DIESEN WERT AENDERT, AENDERT DAS TEXTMASS JEDER SEITE DER STOREFRONT. */
   --measure-text: 75ch;
+
+  /* TYPO-SKALA DER GETEILTEN HUELLE — DIE EINE QUELLE
+     (Job 20260913-huellen-typoskala-elf-groessen-auf-token-prio30).
+
+     WAS DIE HUELLE IST: Kopf, Fuss, Navigation und die per React-Portal am
+     Body haengenden Menue-Schichten. Sie steht auf JEDER der 45 Routen
+     identisch, und KEINE einzelne Seite kann sie setzen oder abstellen.
+
+     WARUM ES DIESE DREI ZEILEN GIBT — GEMESSEN, NICHT GEFUEHLT: am 2026-09-13
+     setzte die Huelle gegen Oxygen-Auslieferung 4446398 ELF verschiedene
+     Schriftgroessen (12.5, 13, 13.5, 14, 14.5, 15.25, 16, 17.5, 19.25, 20,
+     20.75 px), auf /search, /, /products/qione-2-pro und /pages/tiefer-schlaf
+     byte-identisch. SECHS davon trugen je mindestens zwei Knoten und belegten
+     damit sechs der NEUN Stufen, die design-meister `typo_stufen_max` einer
+     Seite insgesamt zugesteht — eine Seite hatte drei eigene uebrig und
+     brauchte mindestens h1, h2, h3, Fliesstext, Bildunterschrift und Preis.
+     Die Seiten fielen also an fremdem Wildwuchs durch, nicht an eigenem.
+
+     DIE SKALA IST NICHT NEU ERFUNDEN: 0.8125 / 1 / 1.25 rem ist der
+     xs/base/lg-Dreiklang, den das 94/100-Rezept der Tiefschlaf-v3 und jedes
+     davon abgeleitete LP-Token-System schon fuehrt (--a-fs-xs, --ts3-fs-base
+     ...). Verhaeltnisse 1.231 und 1.25 — modular im Sinne des Soll-Werts
+     `typo_skala_ratio: 1.25`; der Anker 16px ist `body_px_min`.
+
+     WER HIER EINE VIERTE STUFE EINFUEGT, NIMMT SIE JEDER SEITE DES LADENS WEG.
+     Die Wache dazu ist design-meister
+     pruefungen/probe_huellen_typoskala.py (Arm H4, Deckel 4 Stufen). */
+  --qs-t-fein: 0.8125rem;   /* 13 px — Kleingedrucktes: Fussnoten, Zitat, Label */
+  --qs-t-basis: 1rem;       /* 16 px — Anker: Navigation, Fuss-Links, Fuss-Text */
+  --qs-t-gross: 1.25rem;    /* 20 px — Abschnittstitel der Huelle */
 }
 main {
   padding-top: calc(var(--header-height) + 40px);
@@ -838,7 +868,7 @@ aside h3 {
   font-weight: 600;
 }
 .shop-switch__label {
-  font-size: 0.95rem;
+  font-size: var(--qs-t-basis);
   line-height: 1;
 }
 
@@ -912,7 +942,7 @@ aside h3 {
 }
 .Header-AnnouncementBanner a p {
   color: var(--color-light);
-  font-size: 0.9rem;
+  font-size: var(--qs-t-basis);
   font-weight: 600;
 }
 .Header-AnnouncementBanner .ReviewCount{
@@ -970,7 +1000,7 @@ p.header-menu-item {
   text-decoration: none;
   padding: 0.5rem 0 !important;
   display: inline-block;
-  font-size: 1rem !important;
+  font-size: var(--qs-t-basis) !important;
 }
 
 /* Touch target minimums (44x44px) — WCAG 2.5.5 Target Size (Enhanced, AAA),
@@ -1035,7 +1065,7 @@ button[aria-label="Close" i],
   }
   .header-menu-desktop a,
   .header-menu-desktop button {
-    font-size: 0.85rem;
+    font-size: var(--qs-t-fein);
     padding-left: 0.4rem;
     padding-right: 0.4rem;
     min-height: 44px;
@@ -1099,7 +1129,7 @@ button[aria-label="Close" i],
   justify-content: flex-start;
   gap: 20px;
   padding: 0 0 0.5em 0;
-  font-size: 1.1rem;
+  font-size: var(--qs-t-basis);
   font-weight: 500;
   color: var(--color-dark) !important;
   text-decoration: none !important;
@@ -1391,7 +1421,7 @@ ul.submenu li a {
   color: var(--color-accent-primary);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 0.85rem;
+  font-size: var(--qs-t-fein);
   letter-spacing: 0.08em;
   margin-bottom: 1.2rem;
   max-width: var(--measure-text);
@@ -1409,7 +1439,7 @@ ul.submenu li a {
 .footer-products a {
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--qs-t-basis);
   transition: color 0.15s;
 }
 
@@ -1423,26 +1453,29 @@ ul.submenu li a {
   padding: 50px 0;
 }
 
-.footer-studies h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-}
-
 /* Die WHO-Überschrift ist seit dem Job
    20260908-seo-rest-repo-alttexte-und-ueberschriften eine h2
    (Klassen-Fix für den Befund `ueberschriften_sprung`,
-   Herleitung im Footer.jsx). Sie behält EXAKT das Bild der früheren h3:
-   dieselbe Größe, dasselbe Gewicht, derselbe Abstand, dieselbe Grundlinie.
-   Die vier Angaben stehen ausgeschrieben statt geerbt, weil h2 und h3 in
-   reset.css verschiedene Grundwerte haben (2.2rem/1.4 gegen 1.4rem/1.2) und
-   ein geerbter Wert hier lautlos das Layout des Fußzeilenblocks ändern
-   würde. !important, weil `body:has(.qb-st) .footer h2` in studien.css
-   spezifischer ist als jeder Selektor, den dieses Bauteil sinnvoll führen
-   kann - ohne das wäre die Überschrift auf den Studienseiten 1.25rem groß
-   geworden, auf allen anderen 1rem. */
+   Herleitung im Footer.jsx). Der h3-Selektor steht daneben, weil dieselbe
+   Stelle bis dahin eine h3 war und beide dasselbe Bild tragen müssen -- zwei
+   Regeln für eine Überschrift wären zwei Wahrheiten.
+   Die Angaben stehen ausgeschrieben statt geerbt, weil h2 und h3 in reset.css
+   verschiedene Grundwerte haben (2.2rem/1.4 gegen 1.4rem/1.2) und ein
+   geerbter Wert hier lautlos das Layout des Fußzeilenblocks ändern würde.
+   !important, weil `body:has(.qb-st) .footer h2` in studien.css spezifischer
+   ist als jeder Selektor, den dieses Bauteil sinnvoll führen kann.
+
+   GRÖSSE GEÄNDERT 2026-09-13 (Job
+   20260913-huellen-typoskala-elf-groessen-auf-token-prio30), 1rem -> groß:
+   der Satz "sie behält EXAKT das Bild der früheren h3" stand hier, solange
+   das Bild der früheren h3 der Maßstab war. Auf der Token-Skala ist der
+   Maßstab die ROLLE: das hier ist der Abschnittstitel des Fußzeilenblocks
+   und stand auf derselben Stufe wie sein eigener Fließtext. Nebenbei
+   verschwindet ein Widerspruch: studien.css wollte für genau diese
+   Überschrift schon immer 1.25rem -- Basis und Seite sagen jetzt dasselbe. */
+.footer-studies h3,
 .footer-studies h2.footer-studies__titel {
-  font-size: 1rem !important;
+  font-size: var(--qs-t-gross) !important;
   font-weight: 700 !important;
   line-height: 1.2 !important;
   margin-top: 0 !important;
@@ -1451,7 +1484,7 @@ ul.submenu li a {
 
 .footer-studies p,
 .footer-studies h4 {
-  font-size: 0.9rem;
+  font-size: var(--qs-t-basis);
   line-height: 1.65;
   max-width: var(--measure-text);
 }
@@ -1463,7 +1496,7 @@ ul.submenu li a {
 .footer-studies__subtitle {
   margin-top: 2rem;
   margin-bottom: 1.5rem;
-  font-size: 1rem !important;
+  font-size: var(--qs-t-gross) !important;
   font-weight: 700;
 }
 
@@ -1482,7 +1515,7 @@ ul.submenu li a {
 .footer-study__cite {
   display: block;
   margin-top: 1rem;
-  font-size: 0.78rem;
+  font-size: var(--qs-t-fein);
   opacity: 0.6;
   font-style: italic;
   line-height: 1.5;
@@ -1539,7 +1572,7 @@ ul.submenu li a {
 }
 
 .footer-disclaimer p {
-  font-size: 0.82rem;
+  font-size: var(--qs-t-fein);
   opacity: 0.7;
   line-height: 1.65;
   margin-top: 0.75rem;
@@ -3574,7 +3607,7 @@ ul.submenu li a {
   max-width: calc(100% - 30px);
   text-align: right;
   overflow-wrap: break-word;
-  font-size: 1.3rem;
+  font-size: var(--qs-t-gross);
   font-weight: 600;
   color: var(--color-light);
 }
@@ -3916,7 +3949,7 @@ ul.submenu li a {
   color: var(--color-dark) !important;
 }
 .header-menu-item {
-  font-size: 1.2em;
+  font-size: var(--qs-t-basis);
 }
 .header-submenu-item {
   color: var(--color-dark) !important;
@@ -3937,6 +3970,7 @@ button.header-submenu-item.kakao-toggle {
   width: 100%;
   text-align: left;
   font: inherit;
+  font-size: var(--qs-t-basis);
 }
 /* Children list — horizontal row, overrides .submenu ul flex grid */
 ul.kakao-children {
@@ -5244,6 +5278,15 @@ ul.kakao-children li {
 .footer #qi-newsletter ._submit {
     font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
     border-radius: 10px !important;
+    /* Das Embed setzt auf seiner dynamischen Form-ID `font-size: 14px` -- eine
+       Groesse, die sonst niemand im Laden setzt und die als eigene Stufe gegen
+       jede Seite zaehlte (gemessen 2026-09-13 live: `#_form_<id>_ ._submit`,
+       n=1, auf allen gemessenen Seiten). Ein Fremd-Widget wird in die
+       Seiten-Tokens eingefaerbt, nicht geduldet (web-soll.yaml: "Fremd-Widgets
+       in Seiten-Tokens einfaerben oder ersetzen").
+       `!important` ist hier noetig und nicht bequem: die Regel des Embeds
+       haengt an einer ID (1,1,0) und schlaegt unseren Selektor (0,3,0) sonst. */
+    font-size: var(--qs-t-basis) !important;
 }
 
 /* ============================================================================
