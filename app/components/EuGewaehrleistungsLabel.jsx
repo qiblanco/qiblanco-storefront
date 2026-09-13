@@ -562,9 +562,9 @@ function EuLabelListenpunktFlaeche() {
  * MONTIERT IN Footer.jsx. Bis zum 2026-09-13 stand hier "DERZEIT NIRGENDS
  * MONTIERT" mit Verweis auf Elina EL-20260901-3fb38a2a. Das war seit dem
  * Wiedereinhaengen falsch und hat den Fehler unten gedeckt: wer den Kopf
- * liest, prueft den Baustein nicht weiter, weil er ihn fuer totes Holz haelt.
+ * liest, prueft den Baustein nicht weiter, weil er ihn für totes Holz hält.
  *
- * DIE ZEILE <p> GEHOERT HIERHER UND NICHT ZUM AUFRUFER -- das ist die
+ * DIE ZEILE <p> GEHÖRT HIERHER UND NICHT ZUM AUFRUFER -- das ist die
  * eigentliche Lehre dieses Bausteins, und sie hat uns einen Monat
  * Hydrations-Fehler auf JEDER Seite gekostet.
  *
@@ -573,12 +573,12 @@ function EuLabelListenpunktFlaeche() {
  * so da --
  *     <p>4. <EuGewaehrleistungsLink /></p>
  * -- dann landete der <dialog> INNERHALB des <p>. Ein <dialog> ist
- * Flow-Content und in <p> nicht erlaubt; der HTML-Parser schliesst das <p>
+ * Flow-Content und in <p> nicht erlaubt; der HTML-Parser schließt das <p>
  * davor selbsttaetig und hebt den Dialog heraus. Der Server schrieb den einen
  * Baum, der Browser las den anderen, und React fand beim Hydrieren ab dieser
  * Stelle alles verschoben: gemessen am 2026-09-13 auf qiblanco.com/search
  * 15x "Minified React error #418" plus 1x #423 an der Suspense-Grenze, je
- * Viewport -- und weil der Fuss auf jeder Seite steht, auf JEDER Seite.
+ * Viewport -- und weil der Fuß auf jeder Seite steht, auf JEDER Seite.
  *
  * Das ist DIESELBE Naht, die bei EuGewaehrleistungsListenpunkt schon
  * beschrieben ist (dort: <dialog> als direktes Kind von <ul>). Dort wurde sie
@@ -589,7 +589,7 @@ function EuLabelListenpunktFlaeche() {
  *     <p>4. <button/></p><dialog>...</dialog>
  * Deshalb bringt dieser Baustein sein <p> selbst mit und nimmt den Vorsatz
  * ("4. ") als Text entgegen, statt ihn sich vom Aufrufer umwickeln zu lassen.
- * Ein Aufrufer, der das <p> wieder selbst setzt, baut den Fehler zurueck.
+ * Ein Aufrufer, der das <p> wieder selbst setzt, baut den Fehler zurück.
  *
  * GEAENDERT gegenueber der Vorfassung, und das ist kein Schoenheitsfehler:
  * früher stand hier "gleiches Overlay, kein zweiter Dialog", weil ein

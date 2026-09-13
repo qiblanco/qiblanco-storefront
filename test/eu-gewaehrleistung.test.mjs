@@ -522,10 +522,10 @@ test('das Label hängt NICHT im globalen Seitengeruest', () => {
 test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
   const roh = readFileSync(FOOTER, 'utf8');
 
-  // Die Form ist bewusst OFFEN fuer Attribute (`vorsatz="4. "` seit dem
+  // Die Form ist bewusst OFFEN für Attribute (`vorsatz="4. "` seit dem
   // 2026-09-13). Die Vorfassung verlangte woertlich `<EuGewaehrleistungsLink />`
   // und haette damit jede kuenftige Prop als "Baustein fehlt" gemeldet -- ein
-  // Vertrag, der die SCHREIBWEISE pinnt statt die Zusage (der Fuss traegt
+  // Vertrag, der die SCHREIBWEISE pinnt statt die Zusage (der Fuß trägt
   // Punkt 4). Gemessen wird die Montage, nicht die Argumentliste.
   assert.match(
     roh,
@@ -553,19 +553,19 @@ test('der Footer trägt Punkt 4 (Gesetzliche Gewährleistung) wieder', () => {
  * der Aufruf in einem <p> --
  *     <p>4. <EuGewaehrleistungsLink /></p>
  * -- dann lag der <dialog> IM <p>. <dialog> ist dort nicht erlaubt; der
- * HTML-Parser schliesst das <p> davor und hebt ihn heraus. Der Server schreibt
+ * HTML-Parser schließt das <p> davor und hebt ihn heraus. Der Server schreibt
  * den einen Baum, der Browser liest den anderen, React hydriert gegen einen
  * verschobenen Baum.
  *
  * WARUM DIESER WAECHTER AM AUFRUFER MISST UND NICHT AM BAUSTEIN: der Baustein
  * ist heute richtig gebaut (er bringt sein <p> selbst mit). Zurueckbauen kann
  * den Fehler nur, wer ihn ERNEUT umwickelt -- und das passiert im Footer, nicht
- * in der Komponente. Ein Waechter auf die Komponente waere gruen, waehrend der
+ * in der Komponente. Ein Wächter auf die Komponente wäre gruen, waehrend der
  * Fehler wieder live ist.
  *
  * KEIN <p>-ZAEHLER, SONDERN DIE UMSCHLIESSUNG: gemessen wird, ob zwischen einem
  * offenen <p> und seinem </p> ein dialog-tragender Baustein steht. Ein reiner
- * Treffer-Zaehler auf "<p>" waere bei jedem Umbau des Fusses rot und wuerde
+ * Treffer-Zaehler auf "<p>" wäre bei jedem Umbau des Fußes rot und würde
  * weggeklickt.
  */
 test('kein dialog-tragender Baustein steht im Footer innerhalb eines <p>', () => {
@@ -593,13 +593,13 @@ test('kein dialog-tragender Baustein steht im Footer innerhalb eines <p>', () =>
   );
 
   // POSITIV-KONTROLLE: die Suchmechanik findet einen <p>-Block ueberhaupt.
-  // Ohne sie waere der Test auch dann gruen, wenn die Regex nie greift --
+  // Ohne sie wäre der Test auch dann gruen, wenn die Regex nie greift --
   // also gruen by construction.
   const alleP = [...code.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)];
   assert.ok(
     alleP.length >= 3,
     `Positiv-Kontrolle: nur ${alleP.length} <p>-Bloecke in Footer.jsx gefunden -- ` +
-      'die Suchmechanik greift nicht mehr, der Waechter waere wirkungslos',
+      'die Suchmechanik greift nicht mehr, der Wächter wäre wirkungslos',
   );
 });
 

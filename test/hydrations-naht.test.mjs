@@ -4,35 +4,35 @@
  * ANLASS (Job 20260913-huelle-hydration-...-prio30). Auf JEDER Seite von
  * qiblanco.com meldete React beim Hydrieren Fehler in Serie -- gemessen am
  * 2026-09-13 auf /search 15x #418 + 1x #423 je Viewport. Die Design-Rubrik zog
- * dafuer 60 der 100 Hygiene-Punkte ab. Es waren ZWEI voneinander unabhaengige
+ * dafür 60 der 100 Hygiene-Punkte ab. Es waren ZWEI voneinander unabhaengige
  * Ursachen, und beide sind am Quelltext erkennbar:
  *
- *   1. <dialog> in einem <p> (Fuss). Der HTML-Parser schliesst das <p> davor
+ *   1. <dialog> in einem <p> (Fuß). Der HTML-Parser schließt das <p> davor
  *      und hebt den Dialog heraus -> ab da hydriert React gegen einen
- *      verschobenen Baum. Waechter dafuer: test/eu-gewaehrleistung.test.mjs.
+ *      verschobenen Baum. Wächter dafür: test/eu-gewaehrleistung.test.mjs.
  *
  *   2. <style>{`... input[type='text'] ...`}</style> im React-Baum (dieser
- *      Waechter). Das ist der Fall unten.
+ *      Wächter). Das ist der Fall unten.
  *
  * WARUM EIN <style> MIT TEXTKIND BRICHT, und warum es zugleich still kaputt ist:
  * React MASKIERT Textkinder beim Serverrendern. Aus input[type='text'] wird im
  * SSR-HTML input[type=&#x27;text&#x27;]. <style> ist aber ein RAW-TEXT-Element --
- * der HTML-Parser loest Maskierungen darin NICHT auf. Also gilt beides:
- *   - der Client-Baum traegt ', der Server-Baum &#x27;  -> Hydrations-Bruch (#425),
+ * der HTML-Parser löst Maskierungen darin NICHT auf. Also gilt beides:
+ *   - der Client-Baum trägt ', der Server-Baum &#x27;  -> Hydrations-Bruch (#425),
  *   - und der ausgelieferte Selektor ist UNGUELTIG      -> die Regel greift nicht.
  * Der zweite Schaden ist der groessere: die Regeln sind bis zur Hydration tot,
  * und das sieht man der Seite nicht an.
  *
  * DIE EIGENSCHAFT, NICHT DER ORT: gemessen wird nicht "gibt es ein <style>",
- * sondern "enthaelt sein Textkind ein Zeichen, das React maskiert". Ein
- * <style>{`.a .b{margin-top:30px;}`}</style> ist voellig in Ordnung und bleibt
+ * sondern "enthält sein Textkind ein Zeichen, das React maskiert". Ein
+ * <style>{`.a .b{margin-top:30px;}`}</style> ist völlig in Ordnung und bleibt
  * es -- app/components/product-pages/QiOne2Pro.jsx tut genau das.
  *
  * DER RICHTIGE WEG, wenn CSS wirklich in die Komponente muss, ist
  * dangerouslySetInnerHTML (app/components/ShopSwitch.jsx macht es vor): dort
  * maskiert React nicht. Besser ist eine Datei unter app/styles/.
  *
- * KALIBRIERT AM ECHTBESTAND, bevor dieser Waechter scharf wurde: im ganzen
+ * KALIBRIERT AM ECHTBESTAND, bevor dieser Wächter scharf wurde: im ganzen
  * app/-Baum gab es GENAU EINEN Treffer -- den behobenen Fall in Footer.jsx.
  * Kein Fluter, deshalb ein hartes Urteil und keine blosse Markierung.
  */
@@ -65,12 +65,12 @@ test('kein <style> im React-Baum, dessen CSS von React maskiert wird', () => {
   const alle = dateien(APP);
 
   // POSITIV-KONTROLLE zuerst: findet die Mechanik ueberhaupt Dateien? Ohne sie
-  // waere der Waechter gruen, sobald der Pfad nicht mehr stimmt -- also gruen
+  // wäre der Wächter gruen, sobald der Pfad nicht mehr stimmt -- also gruen
   // by construction und von einem echten Freispruch nicht zu unterscheiden.
   assert.ok(
     alle.length > 50,
     `Positiv-Kontrolle: nur ${alle.length} Dateien unter app/ gefunden -- ` +
-      'die Suchmechanik greift nicht mehr, der Waechter waere wirkungslos',
+      'die Suchmechanik greift nicht mehr, der Wächter wäre wirkungslos',
   );
 
   const treffer = [];
@@ -88,9 +88,9 @@ test('kein <style> im React-Baum, dessen CSS von React maskiert wird', () => {
     treffer,
     [],
     'Diese <style>-Bloecke tragen Zeichen, die React beim Serverrendern ' +
-      'maskiert. <style> ist ein Raw-Text-Element -- der Parser loest die ' +
+      'maskiert. <style> ist ein Raw-Text-Element -- der Parser löst die ' +
       'Maskierung nicht auf. Folge: Hydrations-Bruch auf jeder Seite, die den ' +
-      'Baustein rendert, UND ein serverseitig ungueltiger Selektor, der still ' +
+      'Baustein rendert, UND ein serverseitig ungültiger Selektor, der still ' +
       'nicht greift. Weg damit nach app/styles/*.css, oder (wenn es wirklich ' +
       'in die Komponente muss) dangerouslySetInnerHTML wie in ShopSwitch.jsx.\n' +
       `Treffer:\n  ${treffer.join('\n  ')}`,

@@ -109,13 +109,13 @@ function NewsletterForm() {
     document.body.appendChild(script);
   }, []);
 
-  // Die Overrides fuer das ActiveCampaign-Embed stehen in app/styles/app.css
+  // Die Overrides für das ActiveCampaign-Embed stehen in app/styles/app.css
   // (Block "Footer-Newsletter, Anker #qi-newsletter"). Sie standen bis zum
   // 2026-09-13 als <style>{`...`}</style> genau hier -- das brach auf JEDER
   // Seite die Hydration (React maskiert den Textinhalt beim Serverrendern,
   // im SSR-HTML stand input[type=&#x27;text&#x27;]) UND machte die Regeln
   // serverseitig wirkungslos, weil <style> ein Raw-Text-Element ist und der
-  // Parser die Maskierung darin nicht aufloest. Begruendung vollstaendig an
+  // Parser die Maskierung darin nicht auflöst. Begründung vollstaendig an
   // der Regel in app.css. Kein <style> mehr in diesem Baum.
   return <div className="_form_15" id="qi-newsletter" />;
 }
