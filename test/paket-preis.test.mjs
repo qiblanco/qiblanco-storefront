@@ -173,7 +173,7 @@ describe('fail-closed', () => {
    WAS AM KUNDENRAND GEMESSEN WURDE. Die Karte rechnete in CHF/USD mit dem
    PROZENTSATZ und legte gleichzeitig den FESTBETRAG-Code in den Warenkorb.
    Shopify rechnet einen EUR-Festbetrag an der Kasse mit einem eigenen
-   Wechselkurs um -- empirisch aus zwei Codes uebereinstimmend auf fuenf Stellen:
+   Wechselkurs um -- empirisch aus zwei Codes uebereinstimmend auf fünf Stellen:
    CHF/EUR 0,96586 und USD/EUR 1,18322. Ergebnis: CH +77,26 und +155,58 CHF,
    US +282,19 und +663,51 USD zulasten des Kunden.
 
