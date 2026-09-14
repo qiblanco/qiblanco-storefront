@@ -248,15 +248,15 @@ describe('Rabattart und Rabattcode sind EINE Entscheidung', () => {
    DIESELBE DATEI TEILEN.
 
    Zwischen dem Bau dieser Datei und ihrem Deploy ist auf main ein zweiter Fix
-   gelandet: der Steuersatz folgt seither dem MARKT statt der Waehrung (PR #422,
+   gelandet: der Steuersatz folgt seither dem MARKT statt der Währung (PR #422,
    AT 20 % gegen DE 19 %). Beide Fixe fassen `paketAnzeige` an, und der Rebase
    hat an genau dieser Stelle einen Konflikt geworfen.
 
-   DIE NAHEGELEGENE, LAUTLOS FALSCHE AUFLOESUNG waere gewesen, die eigene Seite
-   zu nehmen: dann rechnet die Rechnung wieder ohne `land`, Oesterreich bekommt
-   wieder 19 %, und der fremde Fix ist rueckgaengig gemacht, ohne dass irgendwo
-   etwas rot wird -- die 22 Faelle oben laufen alle mit `land === undefined` und
-   koennen das baulich nicht sehen.
+   DIE NAHEGELEGENE, LAUTLOS FALSCHE AUFLÖSUNG wäre gewesen, die eigene Seite
+   zu nehmen: dann rechnet die Rechnung wieder ohne `land`, Österreich bekommt
+   wieder 19 %, und der fremde Fix ist rückgängig gemacht, ohne dass irgendwo
+   etwas rot wird -- die 22 Fälle oben laufen alle mit `land === undefined` und
+   können das baulich nicht sehen.
 
    Dieser Arm ist die Negativ-Kontrolle dazu. Er ist ROT, sobald `land` auf dem
    Weg ExclusiveSolutions -> paketBetraege -> anzeigeSatz verlorengeht.
@@ -267,17 +267,17 @@ describe('Der Steuersatz folgt dem Markt -- auch durch paketBetraege hindurch', 
       const lines = strukturen(p)[0];
       const de = paketBetraege(lines, p, 'DE');
       const at = paketBetraege(lines, p, 'AT');
-      assert.ok(at && de, 'beide Maerkte muessen eine Zahl liefern');
+      assert.ok(at && de, 'beide Märkte müssen eine Zahl liefern');
       assert.notEqual(
         at.preis, de.preis,
-        `AT (20 %) und DE (19 %) duerfen nie denselben Bruttopreis ergeben -- ` +
+        `AT (20 %) und DE (19 %) dürfen nie denselben Bruttopreis ergeben -- ` +
           `steht hier dieselbe Zahl, ist 'land' auf dem Weg verlorengegangen ` +
-          `und der AT-Fix aus PR #422 ist still rueckgaengig gemacht`,
+          `und der AT-Fix aus PR #422 ist still rückgängig gemacht`,
       );
-      // Die Richtung ist nicht egal: der hoehere Satz ergibt den hoeheren Preis.
+      // Die Richtung ist nicht egal: der höhere Satz ergibt den höheren Preis.
       assert.ok(at.preis > de.preis,
                 `AT muss teurer sein als DE (${at.preis} vs ${de.preis})`);
-      // Und die GROESSE stimmt: das Verhaeltnis der Steuerfaktoren.
+      // Und die GRÖSSE stimmt: das Verhältnis der Steuerfaktoren.
       const netto = (de.preis / 1.19);
       assert.ok(Math.abs(at.preis - netto * 1.20) <= 1,
                 `AT-Brutto muss das Netto mal 1,20 sein (erwartet ~` +
