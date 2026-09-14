@@ -39,7 +39,24 @@
   }
 
   window.upTag('config', 'myshopify_domain', 'qi-blanco.myshopify.com');
-  // Beide Domains gehören in die Linker-Liste: die Referenz wird beim Übergang
-  // Storefront -> Checkout weitergereicht UND zurück.
-  window.upTag('config', 'linker', ['checkout.qiblanco.com', 'qiblanco.com']);
+  // Alle vier Höfe gehören in die Linker-Liste: die Referenz wird beim Übergang
+  // Storefront -> Checkout weitergereicht UND zurück. Die beiden Kakao-Höfe
+  // müssen mit, weil die Kakao-Ware auf ZWEI Flächen verkauft wird
+  // (crystal-cacao.com und qiblanco.com/pages/crystal-cacao) und beide in
+  // denselben Checkout münden. Ein Partner, der auf die eine Fläche verlinkt,
+  // während der Kunde auf der anderen kauft, verlöre seine Provision sonst
+  // beim Domainwechsel — still, ohne Fehler. BEIDE Kakao-Fassungen:
+  // crystal-cacao.com liefert 301 auf www.crystal-cacao.com, www ist die
+  // primäre Fassung.
+  //
+  // ZWEITER TRÄGER: dieselbe Liste steht in app/components/UpPromoteTracking.jsx
+  // (UPPROMOTE_LINKER_DOMAINS) als Notnagel für den Fall, dass dieses Skript
+  // nicht lief. Die beiden dürfen nicht auseinanderlaufen; gemessen wird das
+  // von homepage-bauer/pruefungen/probe_uppromote_linker_naht.py.
+  window.upTag('config', 'linker', [
+    'checkout.qiblanco.com',
+    'qiblanco.com',
+    'crystal-cacao.com',
+    'www.crystal-cacao.com',
+  ]);
 })();
