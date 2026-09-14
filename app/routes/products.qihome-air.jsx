@@ -25,6 +25,18 @@ import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlides
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
+import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
+// DATENSPARSAM AN DER GRENZE: benannte Importe statt des ganzen Artefakts.
+// Der Baustein braucht genau diese drei Felder; `stand`/`quelle`/`k` sagen
+// etwas über den Datensatz und haben im Browser nichts zu suchen. Vite
+// gibt JSON unter 10 KB benannte Exporte, unbenutzte fallen im Produktions-
+// bau weg -- am gebauten Bundle nachgemessen (s04), nicht angenommen.
+import {
+  geraete_gesamt as einsatzkarteGesamt,
+  km_pro_einheit as einsatzkarteKmProEinheit,
+  punkte as einsatzkartePunkte,
+} from '~/data/qihome-einsatzkarte.json';
 /**
  * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
  * 20260910-designschuld-...-s04). Sie hängt NUR hier und trägt
@@ -37,6 +49,10 @@ export function links() {
   return [
     {rel: 'stylesheet', href: qihomeAirStyles},
     {rel: 'stylesheet', href: igStyles},
+    // Scope-CSS der Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte, s04).
+    // Eigene Datei, Scope `.qh-karte`: eine Seite ohne diese Klasse sieht von
+    // ihr baulich nichts.
+    {rel: 'stylesheet', href: einsatzkarteStyles},
   ];
 }
 
@@ -240,6 +256,20 @@ export default function Product() {
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
+    {/* QiHome-Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte-deutschland-
+        live-auf-der-produktseite, s04): letztes Element der Route und damit
+        der Abschluss der Seite unmittelbar oberhalb des Footers -- der Footer
+        liegt im Layout, nicht hier. `daten` sind BEREITS projizierte
+        SVG-Punkte aus s02; diese Route rechnet nichts und reicht nur durch.
+        Rueckweg: VITE_EINSATZKARTE=off lässt den Baustein `null` rendern und
+        die Seite bleibt vollstaendig. */}
+    <Einsatzkarte
+      daten={{
+        geraete_gesamt: einsatzkarteGesamt,
+        km_pro_einheit: einsatzkarteKmProEinheit,
+        punkte: einsatzkartePunkte,
+      }}
+    />
     </div>
   );
 }
