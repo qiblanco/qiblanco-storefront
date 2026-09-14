@@ -90,6 +90,12 @@ export const CLAIMS = {
     produkt: ['qione', 'qibracelet', 'qihomeair'],
     kanal: ['homepage', 'lp'],
   },
+  'WM-maxim-australia-nennung': {
+    aussage: 'MAXIM Australia nennt das QiOne®',
+    status: 'legitimiert',
+    produkt: ['qione'],
+    kanal: ['homepage', 'lp'],
+  },
   'IB-qione-14000': {
     aussage: 'mehr als 14.000 QiOnes im Einsatz',
     status: 'legitimiert',

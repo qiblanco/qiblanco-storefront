@@ -1,11 +1,53 @@
+/*
+ * Maxim — die Nennung in MAXIM Australia, auf ihren Beleg zurückgeführt.
+ *
+ * Job 20260911-grossjob-googles-ki-antwort-zitiert-null-eigene-que-vollzug-
+ * ov588e9b1144-w1 (offener Vollzug ov588e9b1144, Entscheidung 1).
+ *
+ * WAS HIER VORHER STAND UND WARUM ES WEG IST. Der Text sagte „Ausgezeichnet von
+ * Maxim: Das beste EMF-Tool", „als eines der heißesten Wellbeing-Gadgets
+ * ausgezeichnet", „zu ihrem Favoriten erklärt" und führte „Das beste Produkt
+ * zum Schutz vor EMF" als Titel in Anführungszeichen. Eine Fundstelle fehlte:
+ * Ausgabe, Datum und Link standen nirgends, nur ein CDN-Bild.
+ *
+ * DIE FUNDSTELLE IST AM 2026-09-14 BESCHAFFT UND IM VOLLTEXT GELESEN:
+ * MAXIM Australia, „Wellbeing 2022", Autorin Andi Lew, Ausgabe März 2022.
+ * maxim.com.au/archives/17224 gibt heute HTTP 404 (die Domain ist 2026 geparkt);
+ * lesbar ist der Archivstand
+ * web.archive.org/web/20221029050232/https://www.maxim.com.au/archives/17224
+ * (Kopie im Job: nachbau-audit/state/offene-vollzuege/belege-ov588e9b1144/).
+ *
+ * SIE TRÄGT DIE NENNUNG, NICHT DIE AUSZEICHNUNG — gemessen am Volltext:
+ *   1. Der Artikel ist eine Trendvorhersage („her predictions for the hottest
+ *      trends in wellness"). Punkt 4 der Liste ist der TREND „EMF", nicht das
+ *      Produkt.
+ *   2. „ausgezeichnet" / „award" kommt nicht vor.
+ *   3. „best" kommt in Bezug auf uns nicht vor.
+ *   4. Der bei uns zitierte Titel „Das beste Produkt zum Schutz vor EMF" steht
+ *      nicht im Artikel.
+ *   5. Genannt ist das „Qi One necklace", nicht das QiOne(R) 2 Pro.
+ * Wörtlich: „However, German company Qi Blanco is changing the way we adapt to
+ * this with a Qi One necklace."
+ *
+ * SUCHRAUM-GRENZE, ehrlich: die Online-Fassung endet mit „For the full article
+ * grab the March 2022 issue of MAXIM Australia". Eine Print-Ausgabe kann mehr
+ * enthalten; der EMF-Punkt selbst ist online vollständig und liest sich als
+ * Nennung. Kommt eine Print-Fundstelle mit einer Auszeichnung nach, gehört sie
+ * hierher — dann mit Ausgabe und Seite.
+ *
+ * WER DIESEN TEXT ÄNDERT, ÄNDERT ZWEI WEITERE STELLEN MIT: die Kartenkopie in
+ * ExterneStimmen.jsx und das Hero-Abzeichen in campaign/QiOneZellschutz.jsx.
+ * Der Claim steht seit dem 2026-09-14 auch im governten SSoT
+ * (fakten-basis.yaml claims[] id WM-maxim-australia-nennung).
+ */
 export function Maxim({dataSection}){
     return (
         <div className="Maxim NormalSectionSize" data-section={dataSection}>
-            <img width={500} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="" />
+            <img width={500} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="Doppelseite aus MAXIM Australia mit dem Beitrag „Wellbeing 2022“ von Andi Lew" />
             <div className="MaximText">
-                <h2>Ausgezeichnet von Maxim: Das beste EMF-Tool – QiOne® 2 Pro</h2>
-                <p>Unser QiOne® 2 Pro wurde von Maxim als eines der heißesten Wellbeing-Gadgets ausgezeichnet! Die renommierte Lifestyle-Expertin und Autorin Andi Lew (@andi.lew) hat das QiOne® 2 Pro zu ihrem Favoriten erklärt, wenn es um den Schutz vor elektromagnetischer Strahlung geht.</p>
-                <p>„Das beste Produkt zum Schutz vor EMF“ – ein Titel, der uns ehrt und unsere Mission bestätigt, die Lebensqualität nachhaltig zu verbessern.</p>
+                <h2>MAXIM Australia nennt das QiOne®</h2>
+                <p>Die Wellness-Expertin und Autorin Andi Lew (@andi.lew) stellt in MAXIM Australia ihre Wellness-Trends für 2022 vor. Unter dem Punkt „EMF“ nennt sie das QiOne® von Qi Blanco als ihre Antwort auf elektromagnetische Strahlung.</p>
+                <p className="MaximQuelle">Quelle: <a href="https://web.archive.org/web/20221029050232/https://www.maxim.com.au/archives/17224" rel="nofollow noopener" target="_blank">MAXIM Australia, „Wellbeing 2022“ von Andi Lew, Ausgabe März 2022</a></p>
             </div>
         </div>
     )
