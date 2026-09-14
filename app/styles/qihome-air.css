@@ -44,8 +44,12 @@
      verbleibende H2-Kombi (-20 auf stimmig). Vorbild-Rest wie PR #354/s02/s03.
    - Die Fuss-Schriftgroessen (footer-heading 13,5px u. a.) bleiben wie auf
      den Schwesterrouten — EIN Fuss auf allen drei Seiten dieses Baus.
-   - Die Schriftgroesse 16,75px (5x Studien-Kartentitel, 1x btn--secondary)
-     bleibt (s03: kein Hebel, kostet den Skalen-Fit).
+   - Die Kaufweg-Groesse 17,5px (Warenkorb-Knopf und die drei CTA-Schalter,
+     .btn--primary) bleibt: der Kaufweg ist tabu. Sie ist damit die einzige
+     Stufe der Seite, die keiner Haus-Stufe entspricht und nicht wegkann.
+   - Die 32px des PREISES (.product-price) bleiben — ebenfalls Kaufweg.
+   - Die 13px der geteilten HUELLE (Fuss, Navigation, Fuss-Dialog) bleiben:
+     kein Fuss, der nur auf dieser einen Route anders aussieht.
    - Die JS-Konsolen-Fehler (Footer-Hydration, PR #356) stehen unter Elinas
      Gate 'kein Merge/Deploy ohne mein GO' — nicht Gegenstand dieser Datei.
    ========================================================================== */
@@ -54,6 +58,8 @@
   /* Typo — die Stufen des Hauses (reset.css), keine zweite Skala */
   --qa-fs-h2: 2.2rem;   /* 35,2px — Basiswert aus reset.css h2 */
   --qa-fs-h3: 1.5rem;   /* 24px — Skalen-Fit, siehe Regel 2 */
+  --qa-fs-base: 1rem;   /* 16px — Haus-Grundstufe (reset.css) */
+  --qa-fs-klein: 0.875rem; /* 14px — die kleine Haus-Stufe, 86x auf der Seite */
   --qa-zeile: 70ch;     /* Zeilenlaenge, web-soll: <= 75ch */
 
   /* Farbe — warmes Neutral-Kontinuum (web-soll.yaml), wie startseite.css */
@@ -95,8 +101,8 @@
  * 24 sind es 35,25 / 24 = 1,469 und 24 / 19,25 = 1,247 — beide im Band,
  * Anteil 8 von 10 statt 7 von 10. 24px steht ausserdem schon auf der Seite
  * (Sterne-Sprung), es kommt KEINE Groesse hinzu.
- * AUSGENOMMEN die Studien-Kartentitel (h3.ghx-studie__title, 16,75px) wie in
- * crystal-cacao.css und qihome.css begruendet. */
+ * AUSGENOMMEN die Studien-Kartentitel (h3.ghx-studie__title): sie tragen
+ * NICHT die H3-Stufe, sondern die Grundstufe — siehe Regel 10. */
 .ProductQiHomeAir h3:not(.ghx-studie__title) {
   font-size: var(--qa-fs-h3) !important;
   font-weight: 600 !important;
@@ -201,4 +207,85 @@ body:has(.ProductQiHomeAir) .footer-study__logo img {
   .ProductQiHomeAir h3:not(.ghx-studie__title) {
     font-size: 1.25rem !important;
   }
+}
+
+/* --- 10. Die drei freien Zwischenwerte auf die Haus-Stufen ---------------- */
+/* NACHTRAG 2026-09-14, Job 20260914-qihome-air-zwoelf-schriftgroessen-auf-
+ * typo-skala-prio35. Der Vorgaengerbau hob den Score (59 -> 85 live), liess
+ * die Zahl der Schriftgroessen aber als benannten Rest stehen. Gemessen am
+ * Branch-Build: ZWOELF gezaehlte Stufen (Soll <= 9). Die Rubrik zaehlt jede
+ * Groesse, die mindestens zweimal einen eigenen Textknoten traegt, ueber das
+ * ganze Dokument und auf Viertelpixel gerundet (web_collect.py AUDIT_JS,
+ * webdesign.py dim_technisch) — nur der Desktop-Viewport, mobil sind es 10.
+ *
+ * Drei der zwoelf sind FREIE WERTE geteilter Bausteine, die ihre Herkunft
+ * mitbringen; genau die holt dieser Block in den Seiten-Scope. Bauform
+ * uebernommen aus qi-master.css (Abschnitt HUELLEN-NORMALISIERUNG), der
+ * dieselben zwei Google-Bausteine schon so normalisiert — kein zweites
+ * Rezept, keine neue Skala, keine neue Groesse: 14, 16 und 35,25px stehen
+ * alle drei bereits auf der Seite.
+ *
+ * WAS BEWUSST STEHEN BLEIBT, weil es der Auftrag verbietet oder niemand es
+ * je route-lokal loesen sollte:
+ *   17,5px  — .btn--primary: Warenkorb-Knopf und die drei Kauf-CTAs. KAUFWEG.
+ *   32px    — .product-price. KAUFWEG. Nur der Bewertungs-Zaehler daneben
+ *             wandert, und damit faellt 32 unter die Zaehlschwelle (2).
+ *   13/16/20px der HUELLE — Kopf, Fuss, Navigation. Ein route-lokaler Griff
+ *             dorthin (body:has) ergaebe einen Fuss, der nur auf dieser
+ *             Seite anders aussieht.
+ * Rechnung: 12 - 3 = 9. Das ist das Soll und kein Kopfraum — eine vierte
+ * freie Groesse auf dieser Seite reisst den Punkt sofort wieder auf. */
+
+/* 10a. Google-Bewertungs-Plakette: 0,95rem (15,2px) ist ein freier Wert. */
+.ProductQiHomeAir .google-rating-badge__powered,
+.ProductQiHomeAir .google-rating-badge__powered strong {
+  font-size: var(--qa-fs-klein);
+}
+/* 10b. Der Bewertungs-Zaehler steht auf 2rem (32px) und damit auf derselben
+ * Stufe wie der Preis. Auf den H2-Wert der Seite gezogen (2,2rem): die Zahl
+ * waechst um 3,2px, bleibt die groesste Angabe der Plakette — und 32px hat
+ * danach nur noch EINEN Traeger, den Preis, und faellt aus der Zaehlung.
+ * Kleiner statt groesser (24px) waere die sichtbare Aenderung gewesen. */
+.ProductQiHomeAir .google-rating-badge__number {
+  font-size: var(--qa-fs-h2);
+}
+/* 10c. Studien-Kartentitel: 1,05rem (16,8px) ist ein freier Wert; die
+ * Grundstufe der Seite ist 16px. Delta 0,8px. Der Schalter daneben
+ * (.btn--secondary) traegt denselben freien Wert und geht mit — bliebe er
+ * allein, stuende ein Ein-Element-Zwischenwert auf der Seite, den die Rubrik
+ * zwar nicht mehr zaehlt, der aber genau das waere, wogegen diese Datei
+ * gebaut ist. Der Kaufweg ist .btn--primary und bleibt unberuehrt. */
+.ProductQiHomeAir h3.ghx-studie__title,
+.ProductQiHomeAir .Studien a.btn--secondary {
+  font-size: var(--qa-fs-base);
+}
+
+/* --- 11. Die seiten-eigenen 13px auf die kleine Haus-Stufe ---------------- */
+/* DIESE REGEL IST DER GRUND, WARUM REGEL 10 UEBERHAUPT WIRKT — ohne sie
+ * bleibt die Pruefliste rot, nur mit einer anderen Meldung.
+ *
+ * dim_stimmig prueft zusaetzlich den Abstand BENACHBARTER Stufen (<= 1,06
+ * oder 1,1..1,55) auf den seiten-EIGENEN Groessen ab drei Traegern. Faellt
+ * 16,75 weg, steht 17,5 direkt neben 16: 17,5/16 = 1,094 und liegt in der
+ * Luecke zwischen beiden Baendern. Gerechnet: mit 13 in der Menge
+ * [12, 13, 14, 16, 17,5, 19,25, 24, 35,25] passen 4 von 7 Abstaenden
+ * (0,571 < 0,7) -> Befund 'folgen keiner modularen Skala' und -8 auf
+ * stimmig. Ohne 13: [12, 14, 16, 17,5, 19,25, 24, 35,25], 5 von 6 (0,833)
+ * -> kein Befund. Der Fix der einen Achse macht die andere rot, wenn man
+ * ihn allein baut.
+ *
+ * Es sind genau fuenf eigene Traeger. Die vier Absaetze sind die
+ * SEITEN-EIGENE Instanz des Gewaehrleistungs-Dialogs (in der BenefitList,
+ * innerhalb dieses Scopes); die zweite, gleichlautende Instanz im Fuss liegt
+ * ausserhalb und bleibt bei 13px — der Fuss ist geteilt.
+ *
+ * EHRLICH GESAGT: dieser Dialog ist im Ruhezustand geschlossen. Die Rubrik
+ * zaehlt seine Absaetze trotzdem, weil sie `display` je Element liest und ein
+ * Kind eines geschlossenen <dialog> `display: block` behaelt. Die Aenderung
+ * ist deshalb erst sichtbar, wenn jemand den Dialog oeffnet — dann liest er
+ * einen Rechtshinweis auf 14 statt 13px. Kein Wort daran wird angefasst.
+ * 0,8125rem -> 0,875rem ist dieselbe Richtung wie ueberall sonst hier. */
+.ProductQiHomeAir .eu-gwl-dialog__absatz,
+.ProductQiHomeAir .ghx-studien__wischhinweis {
+  font-size: var(--qa-fs-klein);
 }
