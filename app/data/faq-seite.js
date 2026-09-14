@@ -239,6 +239,29 @@ export const FAQ_BELEGE = [
     },
   },
   {
+    q: 'Gibt es unabhängige Studien — und wo kann ich sie nachlesen?',
+    a:
+      'Unabhängig sind sie nicht, und das sagen wir dir lieber selbst: Alle fünf veröffentlichten ' +
+      'Arbeiten stammen aus demselben Labor, dem Dartsch Scientific Institut. Wir haben sie ' +
+      'beauftragt und bezahlt und die Geräte gestellt. Das ist bei Produktforschung üblich und macht ' +
+      'die Messwerte nicht falsch, aber eine Wiederholung durch ein zweites, unbeteiligtes Labor ' +
+      'steht damit aus. Vier der fünf Arbeiten sind Zellstudien im Labor, die fünfte wertet 171 ' +
+      'freiwillige Erfahrungsberichte ohne Kontrollgruppe und ohne Verblindung aus. Eine ' +
+      'kontrollierte Studie am Menschen gibt es nicht. Nachlesen kannst du alle fünf im Original, ' +
+      'vollständig als PDF, mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen: ' +
+      'qiblanco.com/pages/studien. Du musst uns dafür nichts glauben — du kannst es prüfen.',
+    quelle:
+      'Dieselbe Tatsachengrundlage wie die beiden Nachbar-Items dieses Blocks: MmWirktDas.jsx ' +
+      'STUDIEN/GRENZEN 1–4, ihrerseits aus der faktengegateten Registry ' +
+      'app/data/studien/e0001…e0005.json. KEINE neue Aussage, KEINE neue Zahl — neu ist allein der ' +
+      'FRAGEWORTLAUT „unabhängige Studien" und der genannte Beleg-Ort /pages/studien. Begründung: ' +
+      'Einwand ew-05 des Kaufüberzeugungs-Kanons, wörtliches Kundenzitat „WARUM NICHT EINFACH EINEN ' +
+      'LINK ZU DEN STUDIEN BEREITSTELLEN?", Gegenmittel dort „erreichbarer Beleg-Ort". Gemessen ' +
+      '2026-09-14 (Job 20260914-ki-sichtbarkeit-…): das ausgelieferte FAQPage-Schema führte 13 ' +
+      'Fragen, keine davon mit diesem Fragewortlaut — die Antwort stand nur unter „Wirkt das ' +
+      'überhaupt?" und war für diese Frage damit nicht auffindbar.',
+  },
+  {
     q: 'Es gibt öffentliche Kritik an Qi Blanco, auch Videos von Wissenschaftlern. Was sagt ihr dazu?',
     a:
       'Ja, die gibt es, und der härteste Punkt darin ist berechtigt: Für unsere Produkte liegt kein ' +
