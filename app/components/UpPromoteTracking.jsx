@@ -32,7 +32,19 @@ import {trackingAllowed, subscribeConsentChanges} from './MetaPixel';
 const UPPROMOTE_PIXEL_SRC =
   'https://static-pixel.uppromote.com/collect/v1/collect.js';
 const UPPROMOTE_MYSHOPIFY_DOMAIN = 'qi-blanco.myshopify.com';
-const UPPROMOTE_LINKER_DOMAINS = ['checkout.qiblanco.com', 'qiblanco.com'];
+// Vier Höfe, identisch zu public/qiblanco-uppromote-tracker.js und zur
+// Gegenseite in crystal-cacao-storefront. Die Kakao-Ware wird auf ZWEI
+// Flächen verkauft (crystal-cacao.com und qiblanco.com/pages/crystal-cacao),
+// beide münden in denselben Checkout. Fehlt ein Hof, fällt die
+// Affiliate-Referenz beim Domainwechsel still weg. crystal-cacao.com liefert
+// 301 auf www.crystal-cacao.com — www ist die primäre Fassung, der Apex
+// allein deckt den Hof nicht ab, auf dem der Kauf beginnt.
+const UPPROMOTE_LINKER_DOMAINS = [
+  'checkout.qiblanco.com',
+  'qiblanco.com',
+  'crystal-cacao.com',
+  'www.crystal-cacao.com',
+];
 
 /**
  * Notnagel für den Fall, dass der defer-Tag aus root.jsx nicht gelaufen ist
