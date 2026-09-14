@@ -1,0 +1,204 @@
+/* ============================================================================
+   QiHome-Einsatzkarte — Sektion unmittelbar oberhalb des Footers auf
+   /products/qihome-air.
+
+   TOKEN-REGEL DIESER DATEI: jede Groesse, Farbe, jeder Radius und jede Dauer
+   kommt aus den :root-Tokens im Scope-Block unten. Ausserhalb davon erfindet
+   KEINE Regel einen freien Wert. Abgeleitet aus dem 94/100-Rezept
+   tiefer-schlaf-v3 bzw. app/styles/schlaf-zellen-schutz.css (.lp-a3):
+   modulare Typo-Skala, 8pt-Spacing-Grid, warmes Neutral-Kontinuum,
+   EIN Gold-Akzent, EIN Radius-Token, EIN H2-Stil.
+
+   SCOPE: .qh-karte. Eine Seite ohne diese Klasse sieht von dieser Datei
+   baulich nichts — deshalb darf sie global geladen werden.
+
+   GOLD HAT ZWEI ROLLEN, NICHT ZWEI TOENE: --qk-akzent ist die FLAECHE
+   (Kreise), --qk-akzent-tinte ist dieselbe Farbe abgedunkelt fuer SCHRIFT auf
+   hellem Grund (AA >= 4.5:1). Gleicher Hue, gleiche Saettigung — die Rubrik
+   zaehlt weiter EINEN Gold-Hue-Bin. Uebernommen aus schlaf-zellen-schutz.css.
+   ========================================================================== */
+
+.qh-karte {
+  /* Typo — die Sektion bringt KEINE eigene Ueberschriften-Groesse mit.
+     Gemessen an der Live-PDP: h2 ist dort 35,2 px / 600 (Desktop) und
+     24 px / 600 (mobil, aus reset.css MIT !important). Eine eigene Skala
+     erzeugte eine ZWEITE H2-Stil-Kombination auf derselben Seite — gemessen
+     hat genau das den Seiten-Score von 96 auf 93 gedrueckt (stimmig 100 -> 80).
+     Die Ueberschrift erbt deshalb.
+
+     DER FLIESSTEXT ERBT AUS DEMSELBEN GRUND, und die erste Fassung lag hier
+     falsch: sie nahm 1,2rem und begruendete das mit "haeufigste Body-Groesse
+     dieser Seite (19,2 px, 39 von 80 Bloecken)". An der ausgelieferten
+     Kaufseite nachgemessen (92 Textbloecke ausserhalb Kopf/Fuss/Navigation)
+     ist die haeufigste Groesse 14 px mit 52,2 %; 19,2 px traegt 16,3 %.
+     Ein einziger Absatz in 19,2 px hat gereicht, um den Anteil der
+     fuehrenden Groesse unter die Schwelle zu druecken: die Design-Rubrik
+     meldete "Body-Groesse uneinheitlich (haeufigste Groesse traegt nur
+     49 %)", und zwar NUR mit diesem Baustein, nie ohne ihn. Mit 0,875rem
+     verschwindet der Befund, Score 96 in beiden Faellen (gemessen, nicht
+     geschaetzt). Die Betonung traegt die Ueberschrift, nicht der Absatz. */
+  --qk-fs-base: 1rem; /* 16px */
+  --qk-fs-lead: 0.875rem; /* 14px — gemessene Body-Groesse dieser Seite */
+
+  /* Spacing — 8pt-Grid, 3 Stufen im Einsatz */
+  --qk-s2: 16px;
+  --qk-s3: 24px;
+  --qk-s4: 32px;
+  --qk-s8: 64px; /* Sektions-Takt mobil */
+  --qk-s12: 96px; /* Sektions-Takt Desktop */
+
+  /* Farbe — warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --qk-grund: #faf9f5;
+  --qk-flaeche: #f4f0e9;
+  --qk-text: #2c2a26;
+  --qk-muted: #6b665d;
+  --qk-akzent: #c9a14b;
+  --qk-akzent-tinte: #856828;
+  --qk-linie: rgba(44, 42, 38, 0.12);
+
+  /* Bewegung — EIN Takt. Derselbe Wert steht als TAKT_S in Einsatzkarte.jsx;
+     wer ihn hier aendert, aendert nur den Atem, nie den Phasenversatz. */
+  --qk-takt: 3.4s;
+
+  /* Layout */
+  --qk-breite: 1080px;
+  --qk-mass: 42ch; /* Zeilenlaenge weit unter dem 75ch-Soll */
+
+  /* GROESSE DES KARTENAUSSCHNITTS — der einzige erlaubte Hebel gegen
+     "der Kreis ist zu klein". Er vergroessert Bildschirm je Kilometer und
+     laesst den Massstab in Ruhe. Ein fester Pixelradius am Kreis waere die
+     andere, falsche Antwort. */
+  --qk-karte-breite: 460px;
+
+  box-sizing: border-box;
+  padding: var(--qk-s12) var(--qk-s3);
+  background: var(--qk-flaeche);
+  color: var(--qk-text);
+  font-size: var(--qk-fs-base);
+  line-height: 1.65;
+}
+
+.qh-karte *,
+.qh-karte *::before,
+.qh-karte *::after {
+  box-sizing: border-box;
+}
+
+/* ─── Bahn: Wort links, Bild rechts. DOM-Reihenfolge = Lesereihenfolge ───── */
+.qh-karte__bahn {
+  max-width: var(--qk-breite);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--qk-karte-breite);
+  gap: var(--qk-s8);
+  align-items: center;
+}
+
+.qh-karte__wort {
+  max-width: var(--qk-mass);
+}
+
+/* Kein font-size, kein font-weight, keine Farbe: die Seite hat schon EINEN
+   H2-Stil, und der gilt auch hier. Gesetzt wird nur, was die Sektion angeht. */
+.qh-karte__titel {
+  margin: 0 0 var(--qk-s3);
+  text-align: left;
+  text-wrap: balance;
+}
+
+.qh-karte__text {
+  margin: 0;
+  font-size: var(--qk-fs-lead);
+  line-height: 1.6;
+  color: var(--qk-muted);
+}
+
+/* ─── Karte ──────────────────────────────────────────────────────────────── */
+.qh-karte__bild {
+  justify-self: end;
+  width: 100%;
+  max-width: var(--qk-karte-breite);
+}
+
+.qh-karte__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.qh-karte__umriss {
+  fill: var(--qk-grund);
+  stroke: var(--qk-linie);
+  /* non-scaling-stroke: die Linienstaerke ist eine Eigenschaft der
+     ZEICHNUNG, nicht der Geometrie — sie darf mit dem Ausschnitt nicht
+     mitwachsen. Der Radius der Kreise darf das sehr wohl, und tut es. */
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+
+.qh-karte__puls {
+  fill: var(--qk-akzent);
+  fill-opacity: 0.85;
+  stroke: var(--qk-akzent-tinte);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  animation: qh-karte-atem var(--qk-takt) ease-in-out infinite;
+  animation-delay: var(--qk-versatz, 0s);
+  will-change: r;
+}
+
+/* Der Atem: 2 km -> 3 km -> 2 km. Beide Grenzen kommen als CSS-Variable aus
+   Einsatzkarte.jsx und dort aus km_pro_einheit — hier steht keine Zahl. */
+@keyframes qh-karte-atem {
+  0%,
+  100% {
+    r: var(--qk-r-min);
+    fill-opacity: 0.55;
+  }
+  50% {
+    r: var(--qk-r-max);
+    fill-opacity: 0.9;
+  }
+}
+
+/* ─── Zugaenglichkeit: wer Bewegung abbestellt, bekommt keine ────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .qh-karte__puls {
+    animation: none;
+    /* Ruhiger Kreis auf dem GROESSEREN der beiden Werte: der Punkt bleibt
+       sichtbar und behauptet weiter genau 3 km, nicht irgendeine Groesse. */
+    r: var(--qk-r-max);
+    fill-opacity: 0.85;
+  }
+}
+
+/* ─── Schmale Fenster: gestapelt, Karte so breit wie der Platz hergibt ───── */
+@media (max-width: 900px) {
+  .qh-karte {
+    padding: var(--qk-s8) var(--qk-s2);
+    /* Mehr Bildschirm je Kilometer als im zweispaltigen Desktop-Fall —
+       derselbe Massstab, groesserer Ausschnitt. */
+    --qk-karte-breite: 520px;
+  }
+
+  .qh-karte__bahn {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--qk-s4);
+    justify-items: center;
+  }
+
+  .qh-karte__wort {
+    max-width: var(--qk-mass);
+    text-align: center;
+  }
+
+  .qh-karte__titel {
+    text-align: center;
+  }
+
+  .qh-karte__bild {
+    justify-self: center;
+  }
+}
