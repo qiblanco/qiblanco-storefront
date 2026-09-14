@@ -30,11 +30,17 @@ import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
  * bestehenden <YoutubeIframe>-Testimonials, die ungefragt laden). Baseline und
  * Nachmessung im RESULT des Jobs.
  *
- * MAXIM WIRD EINGEORDNET, NICHT NEU GEBAUT: <Maxim /> ist unverändert dieselbe
- * Komponente mit demselben Text und demselben Bild (die Datei liegt bewusst
- * außerhalb der Deploy-Allowlist — die Nicht-Änderung ist maschinell erzwungen).
+ * MAXIM WURDE AM 2026-09-03 NUR EINGEORDNET, NICHT NEU GEBAUT: <Maxim /> war
+ * damals unverändert dieselbe Komponente mit demselben Text und demselben Bild.
  * Ihr Aussehen wird ausschließlich über den CSS-Scope .ExterneStimmen an die
  * Kachelform angeglichen.
+ *
+ * NACHTRAG 2026-09-14 (offener Vollzug ov588e9b1144): der Maxim-Text IST
+ * seither geändert, der Satz „unverändert" gilt nicht mehr. Die Fundstelle ist
+ * beschafft und im Volltext gelesen — sie trägt die Nennung, nicht die
+ * Auszeichnung. Begründung, Zitat und Archivstand stehen im Kopf von
+ * small-components/Maxim.jsx. Die Kartenkopie hier ist im selben Zug
+ * nachgezogen; wer eine der beiden ändert, ändert beide.
  */
 
 /* Startzeit des Geldhelden-Videos: 817 s = 13:37, das Kopfkissen-Experiment.
@@ -83,13 +89,13 @@ export function ExterneStimmen({dataSection}) {
             <Maxim />
           </div>
           <div className="ExterneStimmen__text">
-            <p className="ExterneStimmen__quelle">Maxim</p>
+            <p className="ExterneStimmen__quelle">MAXIM Australia</p>
             <h3 className="ExterneStimmen__karteTitel">
-              Ausgezeichnet von Maxim: Das beste EMF-Tool – QiOne® 2 Pro
+              MAXIM Australia nennt das QiOne®
             </h3>
             <p className="ExterneStimmen__lede">
-              Die Lifestyle-Expertin und Autorin Andi Lew erklärt das QiOne® 2 Pro
-              zu ihrem Favoriten beim Schutz vor elektromagnetischer Strahlung.
+              Andi Lew nennt das QiOne® in ihren Wellness-Trends für 2022 als ihre
+              Antwort auf elektromagnetische Strahlung.
             </p>
           </div>
         </article>

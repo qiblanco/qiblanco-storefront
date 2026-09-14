@@ -44,7 +44,7 @@ function Hero() {
     <section className="lp-vp-hero" aria-labelledby="lp-vp-hero-title">
       <div className="lp-vp-hero__inner">
         <div className="lp-vp-hero__copy">
-          <span className="lp-vp-hero__badge">🏆 Von Maxim als bestes EMF-Tool ausgezeichnet</span>
+          <span className="lp-vp-hero__badge">In MAXIM Australia genannt: Wellness-Trends 2022</span>
           <h1 id="lp-vp-hero-title">
             Schlafe tiefer.<br />
             Fühle dich klarer.<br />
