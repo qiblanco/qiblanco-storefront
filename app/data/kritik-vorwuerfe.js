@@ -274,7 +274,20 @@ export const PLUSPUNKTE = [
     titel: '20 Tage auf unsere Rechnung prüfen.',
     text: 'Trag es 20 Tage. Wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen zurück. Das Risiko liegt bei uns, nicht bei dir.',
     beleg: 'Rückgaberecht, öffentlich nachlesbar.',
-    pfad: '/pages/das-20-tage-versprechen',
+    // ZIEL UMGEBOGEN AM 2026-09-14 (offener Vollzug ov90ac04c6c8). Vorher
+    // /pages/das-20-tage-versprechen — und das ist eine Landingpage des
+    // geschlossenen Paid-Funnels (noindex, Kanon des Landing-Bereichs).
+    // /pages/kritik ist crawlbar; ein Link von hier hinein kostet nicht diese
+    // eine Seite, sondern die Aussagekraft der Ads-Zuordnung der GANZEN
+    // Landing-Fläche: „wer sich dort bewegt, ist Ads-Verkehr" gilt nur,
+    // solange niemand aus dem offenen Shop hineinstolpert.
+    // WARUM die FAQ und nicht /policies/refund-policy: der Beleg daneben sagt
+    // „Rückgaberecht, öffentlich nachlesbar", und die Beschriftung verspricht
+    // den ABLAUF der 20 Tage. Den beschreibt FAQ_KAUF Frage 1 vollständig
+    // (Frist, kein Grund nötig, Rücksendekosten); die Policy-Seite trägt nur
+    // die gesetzlichen 14 Tage, also eine andere Frist. Der Anker faq-kauf
+    // kommt aus ankerId() in FaqSeite.jsx — dieselbe ID trägt dort die H2.
+    pfad: '/pages/faq#faq-kauf',
     link: 'Wie die 20 Tage laufen',
   },
   {

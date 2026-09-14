@@ -89,7 +89,17 @@ export function ErfahrungenSeite() {
             Pro, das QiBracelet® oder den QiHome® Air. Wenn du wissen willst, was
             das ist und wie es getragen wird, fängst du am besten hier an.
           </p>
-          <a className="erf__weiter" href="/pages/qione-2-pro">
+          {/* ZIEL UMGEBOGEN AM 2026-09-14 (offener Vollzug ov90ac04c6c8).
+              Vorher /pages/qione-2-pro — die Landingpage-Fassung aus dem
+              noindex-Paid-Funnel. Diese Seite hier ist crawlbar, der Link war
+              damit ein Eingang in den Landing-Bereich und hat dessen
+              Ads-Zuordnung als Ganze entwertet.
+              Das Ziel ist NICHT frei gewählt: blockLinks.js führt für
+              BLOCK_PUBLIC genau zwei Gegenstücke je Produkt, kauf =
+              /products/<handle> und detail = /pages/<handle>-details. Der Satz
+              darüber sagt „wenn du wissen willst, was das ist und wie es
+              getragen wird" — das ist detail, nicht kauf. */}
+          <a className="erf__weiter" href="/pages/qione-2-pro-details">
             Den QiOne® 2 Pro ansehen
           </a>
         </div>
