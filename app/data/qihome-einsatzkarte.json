@@ -1,7 +1,4 @@
 {
-  "stand": "2026-09-14",
-  "quelle": "shopify-customers + ac-kaufhistorie, nur real gekaufte Ware; z = Geraete, Schwelle k auf Menschen; Punkte aus Postleitzahl-Mittelpunkten (geonames.org, CC BY 4.0); Projektion: kunden-db/exports/QIHOME-KARTE-PROJEKTION.md",
-  "k": 3,
   "geraete_gesamt": 124,
   "geraete_auf_karte": 124,
   "km_pro_einheit": 0.670338,
