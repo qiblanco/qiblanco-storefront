@@ -292,7 +292,7 @@ export function StudienUebersicht() {
         <header className="qb-st-hero">
           <div className="qb-st-hero-text">
             <p className="qb-st-kicker">Belege statt Behauptungen</p>
-            <h1>Wissenschaftlich getestet und in Fachpublikationen bestätigt</h1>
+            <h1>Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht</h1>
             <p>
               {initialCap(anzahl)} zellbiologische Untersuchungen zu{' '}
               {aufzaehlung(produkte.map((p) => p.name))}, durchgeführt am
@@ -509,12 +509,23 @@ export function StudienUebersicht() {
  * in jeder Antwort „Qi Blanco" bzw. „die fünf Arbeiten" ausgeschrieben, statt
  * auf den Seitenkontext zu verweisen.
  *
- * WAS DIESES MODUL AUSDRÜCKLICH NICHT TUT: es ändert weder Titel noch
- * Beschreibung noch H1 noch URL von /pages/studien. Diese Seite stand am
- * 2026-08-14 auf Platz 1 für „Qi Blanco Studien" (seo.db, Lauf 2026-W33), und
- * der SSoT der Zweifelsflächen (homepage-bauer/konzepte/abgrenzung-flaechen.json)
- * führt sie als „HÄLT PLATZ 1 … wird durch das Vorhaben NICHT umgebaut". Der
- * Zuwachs ist rein additiv.
+ * WAS DIESES MODUL NICHT ANGETASTET HAT: Titel, Beschreibung, H1 und URL von
+ * /pages/studien. Diese Seite stand am 2026-08-14 auf Platz 1 für „Qi Blanco
+ * Studien" (seo.db, Lauf 2026-W33), und der SSoT der Zweifelsflächen
+ * (homepage-bauer/konzepte/abgrenzung-flaechen.json) führte sie als „HÄLT
+ * PLATZ 1 … wird durch das Vorhaben NICHT umgebaut". Der Zuwachs war rein
+ * additiv.
+ *
+ * SEIT DEM 2026-09-14 GILT DAS FÜR DIE H1 NICHT MEHR (Job 20260914-studien-h1-
+ * sagt-was-die-eigene-antwortseite-verbietet-prio12). Sie lautete
+ * „Wissenschaftlich getestet und in Fachpublikationen bestätigt" und sagte
+ * damit genau das, was der Abschnitt `Evidenzstufe` zwei Bildschirme weiter
+ * unten verneint. Eine Überschrift, die ihrem eigenen Inhalt widerspricht,
+ * macht den Inhalt unglaubwürdig, nicht die Überschrift glaubhaft. Sie lautet
+ * jetzt „Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht" —
+ * dieselbe Evidenzstufe, die der Abschnitt unten ausführt. Der `title`
+ * („Wissenschaftliche Studien | Qi Blanco") trägt die gemessenen
+ * SERP-Positionen und ist unverändert.
  *
  * ZAHLEN UND METHODEN sind 1:1 aus app/data/studien/e0001…e0005.json
  * übernommen; hier steht keine Zahl, die dort nicht steht.
