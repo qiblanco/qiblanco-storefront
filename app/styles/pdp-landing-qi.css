@@ -100,8 +100,11 @@
    ========================================================================== */
 
 body > main {
-  /* Typo — der Hauswert aus reset.css (h2: 2.2rem/600). KEINE neue Stufe. */
+  /* Typo — BEIDE Hauswerte aus reset.css, KEINE neue Stufe:
+     h2 { font-size: 2.2rem; font-weight: 600 } und, unter 750px,
+     @media { h2 { font-size: 1.5rem !important } }. */
   --pdplp-fs-h2: 2.2rem;
+  --pdplp-fs-h2-mobil: 1.5rem;
   --pdplp-gewicht-h2: 600;
 
   /* Farbe. Wie auf den Kaufseiten ist der Grund von `main` hier das kuehle
@@ -149,6 +152,34 @@ body > main {
   body > main h2[class] {
     font-size: var(--pdplp-fs-h2) !important;
     font-weight: var(--pdplp-gewicht-h2) !important;
+  }
+}
+
+/* DER BREAKPOINT IST PFLICHT, UND ZWAR GEMESSEN — nicht aus Vorsicht.
+   reset.css fuehrt unter 750px `h2 { font-size: 1.5rem !important }` (24px).
+   Die Regel darueber steht in @layer utilities und traegt selbst !important;
+   bei !important dreht die Kaskade die Layer-Reihenfolge um, also schlaegt
+   die GELAYERTE Regel die ungelayerte des reset — auch auf dem Handy. Ohne
+   diesen Block setzt die Seite mobil 35,2px statt 24px.
+
+   GEMESSEN am Preview-Build, mobil-600, qibracelet-details:
+     ohne Block   {35.2/600: 15}      <- 47 % groessere Ueberschriften
+     mit Block    {24/600: 15}        <- Hauswert, eine Stimme
+   Und in der Pixel-Regression gegen das Soll (erlaubt 20 % der Bildzeilen):
+     mobil-360  2,292 % -> 24,62 %,  mobil-414  2,269 % -> 32,92 %,
+     mobil-600  2,396 % -> 58,39 %   — alle drei ohne diesen Block KAPUTT.
+
+   WARUM DAS SONST NIEMAND SIEHT: `dim_stimmig` der design-rubrik liest
+   ausschliesslich `viewports["desktop"]`. Der Score war ohne diesen Block
+   93 bzw. 96 und damit gruen, waehrend das Handy-Layout brach. Der einzige
+   Melder war das Pixel-Soll dieser zwei Seiten. */
+@media (max-width: 749px) {
+  @layer utilities {
+    body > main h2,
+    body > main h2[class] {
+      font-size: var(--pdplp-fs-h2-mobil) !important;
+      font-weight: var(--pdplp-gewicht-h2) !important;
+    }
   }
 }
 
