@@ -80,8 +80,11 @@
    ========================================================================== */
 
 body > main {
-  /* Typo — der Hauswert aus reset.css (h2: 2.2rem/600). KEINE neue Stufe. */
+  /* Typo — BEIDE Hauswerte aus reset.css, KEINE neue Stufe:
+     h2 { font-size: 2.2rem; font-weight: 600 } und, unter 750px,
+     @media { h2 { font-size: 1.5rem !important } }. */
   --pdpqi-fs-h2: 2.2rem;
+  --pdpqi-fs-h2-mobil: 1.5rem;
   --pdpqi-gewicht-h2: 600;
 
   /* Lesemass — derselbe Wert wie .lp-a3 --a-mass */
@@ -139,6 +142,43 @@ body > main {
   body > main h2[class] {
     font-size: var(--pdpqi-fs-h2) !important;
     font-weight: var(--pdpqi-gewicht-h2) !important;
+  }
+}
+
+/* DER BREAKPOINT IST PFLICHT, UND ZWAR GEMESSEN — nicht aus Vorsicht.
+   reset.css fuehrt unter 750px `h2 { font-size: 1.5rem !important }` (24px).
+   Die Regel darueber steht in @layer utilities und traegt selbst !important;
+   bei !important dreht die Kaskade die Layer-Reihenfolge um, also schlaegt die
+   GELAYERTE Regel die ungelayerte des reset — auch auf dem Handy. Ohne diesen
+   Block setzen beide Seiten mobil 35,2px statt 24px, also 47 % zu gross.
+
+   DAS WAR HIER KEIN RISIKO, SONDERN DER ZUSTAND: seit dem 2026-09-12 stand es
+   so live. GEMESSEN am 2026-09-15 gegen qiblanco.com, 600x900, h2 im
+   Hauptbereich (pruefungen/probe_h2_mobil_hauswert.py):
+     /products/qibracelet    20 von 20 h2 auf 35,2px   <- kaputt
+     /products/qione-2-pro   24 von 24 h2 auf 35,2px   <- kaputt
+     /products/qihome-air    groesste 24,0px           <- Kontrolle, ohne diese
+                                                          Datei, unveraendert gut
+
+   WARUM DAS SONST NIEMAND SIEHT — die Luecke ist benannt, nicht vermutet:
+   `dim_stimmig` der design-rubrik liest ausschliesslich `viewports["desktop"]`,
+   der Score dieser zwei Seiten war mit dem Fehler 83/81 und damit gruen. Der
+   einzige andere Melder waere das Pixel-Soll, und unter exports/pixel-baselines/
+   gibt es kein `products-*` (gemessen: 0 Dateien fuer beide Seiten). Gefunden
+   wurde es nur, weil derselbe Griff auf den zwei /pages/-Fassungen gebaut wurde
+   und die ein Pixel-Soll HABEN: dort schlug er mit 24,62 / 32,92 / 58,39 %
+   Bildzeilen-Differenz aus (erlaubt 20 %).
+
+   Bauform woertlich wie app/styles/pdp-landing-qi.css (Commit a7c5c8f) — die
+   Verschachtelung @media > @layer ist Absicht: sie haelt die Ruecknahme in
+   DERSELBEN Ebene wie den Token darueber, sonst verloere sie gegen ihn. */
+@media (max-width: 749px) {
+  @layer utilities {
+    body > main h2,
+    body > main h2[class] {
+      font-size: var(--pdpqi-fs-h2-mobil) !important;
+      font-weight: var(--pdpqi-gewicht-h2) !important;
+    }
   }
 }
 
