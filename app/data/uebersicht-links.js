@@ -119,7 +119,7 @@ export const UEBERSICHT_BEREICHE = [
       {"pfad": "/pages/kette-oder-armband", "url": "https://qiblanco.com/pages/kette-oder-armband", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/partner", "url": "https://qiblanco.com/pages/partner", "titel": "Partner", "crawlbar": false, "herkunft": "code+shopify"},
       {"pfad": "/pages/qiblanco-qibracelet", "url": "https://qiblanco.com/pages/qiblanco-qibracelet", "titel": "qiblanco-qibracelet", "crawlbar": true, "herkunft": "shopify", "ads": "pausiert"},
-      {"pfad": "/pages/qibracelet", "url": "https://qiblanco.com/pages/qibracelet", "titel": "QiBracelet", "crawlbar": false, "herkunft": "code+shopify", "ads": "aktiv"},
+      {"pfad": "/pages/qibracelet", "url": "https://qiblanco.com/pages/qibracelet", "titel": "QiBracelet", "crawlbar": false, "herkunft": "code+shopify", "ads": "pausiert"},
       {"pfad": "/pages/qihome-air", "url": "https://qiblanco.com/pages/qihome-air", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/qione-2-pro", "url": "https://qiblanco.com/pages/qione-2-pro", "titel": "", "crawlbar": false, "herkunft": "code"},
       {"pfad": "/pages/qione-2-pro-2x", "url": "https://qiblanco.com/pages/qione-2-pro-2x", "titel": "", "crawlbar": false, "herkunft": "code"},
