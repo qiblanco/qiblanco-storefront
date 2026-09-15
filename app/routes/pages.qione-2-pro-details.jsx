@@ -2,6 +2,27 @@ import {useLoaderData} from 'react-router';
 import {QiOne} from '~/components/index-components/detailseiten/QiOne';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
+import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
+
+/*
+ * EIN route-gebundenes Stylesheet: pdp-landing-qi.css.
+ *
+ * Diese Seite stand mit Score 79 unter der Design-Schwelle 80 und hat sie
+ * nie bestanden. Das war nicht bloss haesslich, es war baulich sperrend: ein
+ * Pixel-Soll ist nur ueber `hb-pixelsoll` abloesbar, beide Tueren dorthin
+ * verlangen einen Design-Beleg mit `bestanden=true`, und `pixel-regression`
+ * ist im Gate `formate` von der Regressions-Milde ausgenommen. Solange diese
+ * Seite rot war, blockte JEDER Diff an app/root.jsx oder app/styles/app.css.
+ *
+ * NICHT pdp-qi.css (die Token-Schicht der zwei KAUFSEITEN): ein Drittel ihrer
+ * Regeln trifft hier gemessen nichts, diese Seite hat eigene Befunde, und
+ * `format_reichweite` Regel R2 wuerde beim Anfassen jener Datei die zwei
+ * Umsatz-Kaufseiten in die Belegpflicht ziehen. Begruendung samt Messung im
+ * Kopf von app/styles/pdp-landing-qi.css.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: pdpLandingStyles}];
+}
 
 /*
  * /pages/qione-2-pro-details — oeffentliche Detailseite QiOne 2 Pro
@@ -53,13 +74,19 @@ export const meta = () => {
   // Inhalte sind verschieden; ein Cross-Canonical zwischen ungleichen Seiten
   // wird von Google ignoriert oder falsch aufgel\u00F6st).
   //
-  // ALLES HIER STEHT INNERHALB von meta() und nicht auf Modulebene: das
-  // render-neutral-Gate von hb-deploy befreit eine Bestandsseite nur dann von
-  // der Formate-/Design-Belegpflicht, wenn die \u00C4nderung VOLLST\u00C4NDIG
-  // in meta/Imports liegt. Schon ein Kommentar oder eine Konstante daneben
-  // zieht die Seite in die volle Messpflicht, und die ist hier aus
-  // Bestandsgr\u00FCnden rot (bild-aufloesung, 5 Formate; Design-Score 69) --
-  // an einem Defekt, den dieser Bau weder verursacht noch ber\u00FChrt.
+  // DIESER ABSATZ GALT BIS ZUM 2026-09-15 UND GILT NICHT MEHR. Er sagte:
+  // alles steht innerhalb von meta() und nicht auf Modulebene, weil das
+  // render-neutral-Gate eine Bestandsseite nur dann von der Formate-/
+  // Design-Belegpflicht befreit, wenn die \u00C4nderung VOLLST\u00C4NDIG in
+  // meta/Imports liegt -- und die Messpflicht sei hier aus Bestandsgr\u00FCnden
+  // rot (Design-Score 69). Das Ausweichen war richtig, solange niemand den
+  // Bestandsdefekt behob; es hat ihn aber auch konserviert.
+  //
+  // Der Job 20260915-pdp-landingfassungen-designschuld-... hat ihn behoben:
+  // die Seite traegt jetzt ein eigenes links() auf MODULEBENE (siehe oben),
+  // steht damit bewusst in der vollen Messpflicht und besteht sie. Wer hier
+  // k\u00FCnftig etwas \u00E4ndert, braucht also einen frischen Design-Beleg --
+  // das ist kein Hindernis mehr, sondern der Normalfall.
   const BESCHREIBUNG =
     'QiOne\u00AE 2 Pro im Detail: Gitterchip\u2122, Zelluntersuchungen und ' +
     'Expertenmeinungen zum Nachlesen. Bestellen kannst du ihn auf der Produktseite.';

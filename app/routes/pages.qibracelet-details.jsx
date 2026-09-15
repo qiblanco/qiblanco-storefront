@@ -3,6 +3,27 @@ import {QiBracelet} from '~/components/index-components/detailseiten/QiBracelet'
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
+
+/*
+ * EIN route-gebundenes Stylesheet: pdp-landing-qi.css.
+ *
+ * Diese Seite stand mit Score 77 unter der Design-Schwelle 80 und hat sie
+ * nie bestanden. Das war nicht bloss haesslich, es war baulich sperrend: ein
+ * Pixel-Soll ist nur ueber `hb-pixelsoll` abloesbar, beide Tueren dorthin
+ * verlangen einen Design-Beleg mit `bestanden=true`, und `pixel-regression`
+ * ist im Gate `formate` von der Regressions-Milde ausgenommen. Solange diese
+ * Seite rot war, blockte JEDER Diff an app/root.jsx oder app/styles/app.css.
+ *
+ * NICHT pdp-qi.css (die Token-Schicht der zwei KAUFSEITEN): ein Drittel ihrer
+ * Regeln trifft hier gemessen nichts, diese Seite hat eigene Befunde, und
+ * `format_reichweite` Regel R2 wuerde beim Anfassen jener Datei die zwei
+ * Umsatz-Kaufseiten in die Belegpflicht ziehen. Begruendung samt Messung im
+ * Kopf von app/styles/pdp-landing-qi.css.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: pdpLandingStyles}];
+}
 
 /*
  * /pages/qibracelet-details — oeffentliche Detailseite QiBracelet

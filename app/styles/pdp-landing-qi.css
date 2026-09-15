@@ -1,0 +1,213 @@
+/* ============================================================================
+   pdp-landing-qi.css — Token-Schicht der zwei /pages/-LANDINGFASSUNGEN
+   /pages/qibracelet-details und /pages/qione-2-pro-details
+   ----------------------------------------------------------------------------
+   WARUM ES DIESE DATEI GIBT
+   Beide Seiten standen im design-rubrik-Score unter der Schwelle 80 (live
+   2026-09-15: qibracelet-details 77, qione-2-pro-details 79) und haben sie
+   NIE bestanden. Das ist Altlast, keine Regression: PR #430 hat sie sogar
+   messbar verbessert (+11 / +10 gegenueber dem 2026-08-26).
+
+   Die Folge war baulich und nicht seitenspezifisch: ein Pixel-Soll laesst
+   sich nur ueber `hb-pixelsoll` abloesen, beide Tueren dorthin verlangen
+   einen Design-Beleg mit `bestanden=true`, und `pixel-regression` ist im
+   Gate `formate` von der Regressions-Milde ausgenommen. Eine Seite unter der
+   Schwelle sperrt damit DAUERHAFT jeden Diff, der eine geteilte Datei
+   (app/root.jsx, app/styles/app.css) beruehrt — ein unerfuellbares
+   Kriterium, kein strenges.
+
+   WARUM NICHT EINFACH pdp-qi.css AN DIESE ZWEI ROUTEN
+   Das war die erste gepruefte Option (P10: das Rezept existiert und hat an
+   denselben zwei PRODUKTEN gewirkt, Job 20260912, /products/qione-2-pro
+   57 -> 83 und /products/qibracelet 57 -> 81). Drei Messungen sprechen
+   dagegen, alle am 2026-09-15 am Live-DOM erhoben (1440x900, Huellen-
+   Definition woertlich aus design-meister/src/web_collect.py):
+
+   (a) EIN DRITTEL DER DATEI WAERE HIER EIN NO-OP. Die Landingfassungen
+       rendern `index-components/detailseiten/*`, die Kaufseiten
+       `product-pages/*`. Gemessene Treffer im Hauptbereich:
+         .NormalSectionSize > p/ul/ol   pages 0 / 0   products 30 / 25
+         .qi-status                     pages 0 / 0   products  7 /  0
+       Die Lesemass-Regel (68ch) und die Zellstudien-Regel haetten hier
+       nichts zu fassen. Der Rubrik gibt das recht: `durchdacht` rechnet auf
+       beiden Seiten exakt ohne Zeilenlaengen-Abzug auf (85 = 100-15,
+       70 = 100-15-15).
+
+   (b) DIESE SEITEN HABEN BEFUNDE, DIE DIE KAUFSEITEN NICHT HABEN:
+       qione-2-pro-details 50 % der Sektions-Abstaende neben dem 8px-Grid
+       und Saettigung 0,24 ueber Soll 0,2; qibracelet-details einen dritten
+       Bild-Radius (8px, 5 Studien-Vorschauen).
+
+   (c) RISIKO-ASYMMETRIE, UND SIE IST DER AUSSCHLAG. `format_reichweite.py`
+       loest `app/styles/<name>.css` ueber ihre IMPORTEURE auf (Regel R2).
+       Diese neue Datei bindet das Gate damit auf genau die zwei Slugs, die
+       dieser Job heilt. pdp-qi.css ANZUFASSEN — und sei es nur ihr
+       Kopfkommentar, der sonst zur falschen Selbstauskunft wuerde — zieht
+       ueber dieselbe Regel `products-qibracelet` und `products-qione-2-pro`
+       in die Belegpflicht. Das sind die zwei Umsatzseiten des Shops, sie
+       stehen mit 81/83 nur 1-3 Punkte ueber der Schwelle, und ihr LIVE-Score
+       streut gemessen um 2-3 Punkte (die Streuung sitzt in `technisch`, weil
+       die Zahl der fremden JS-Konsolenfehler schwankt und jeder 15 Punkte
+       kostet). Ein Bau, der zwei gesunde Umsatzseiten in ein Gate zieht, das
+       er nicht braucht, hat sich sein eigenes Risiko gemacht.
+
+   SEAM ZU pdp-qi.css (P10, Teil-Ueberlappung deklariert): fuenf Regeln sind
+   WERTGLEICH uebernommen — gleiche Selektoren, gleiche Token-Werte, gleiche
+   Begruendung. KEIN neuer Farbwert, KEINE neue Schriftgroesse, KEIN zweiter
+   Gold-Ton. Faellt dort eine dieser Regeln, gehoert sie hier mitgeprueft;
+   die Proben beider Jobs messen dieselben Groessen.
+
+   WARUM `body > main` UND NICHT `main`: die Seite hat VIER main-Elemente
+   (gemessen). Drei stecken in den Schubladen der geteilten Huelle, eines ist
+   die Seite selbst. Die Rubrik nimmt das GROESSTE nicht verschachtelte —
+   auf beiden Seiten ist das ein direktes Kind von `body` (gemessen
+   `hauptIstBodyKind: true`). Scope und Messbereich decken sich damit.
+
+   KEIN EINGRIFF in app.css (laedt ueber root.jsx auf 45 Routen) und keiner
+   in die geteilten Bausteine (HeroBannerParallax, UpsellLineUp,
+   ScrollMikroskopVideo, GoogleRezensionenBereich, Studien) — sie laufen auf
+   weiteren Seiten. Entfernen der zwei links()-Zeilen stellt den Vorzustand
+   vollstaendig wieder her.
+
+   BEWUSST NICHT GEAENDERT — je mit Messung, nicht mit Gefuehl:
+
+   (1) DIE H2-AUSRICHTUNG bleibt gemischt (-15 in durchdacht_layout auf
+       beiden Seiten). Die linken H2 stehen in linksbuendigen Textspalten,
+       die zentrierten ueber zentrierten Sektionsinhalten; jede
+       Vereinheitlichung bricht echtes Layout. Identische Entscheidung und
+       identische Begruendung wie pdp-qi.css und startseite.css.
+
+   (2) DER GOLD-DOPPELTON AUF qibracelet-details (-15 in harmonisch_farbe).
+       Gemessen stehen dort ZWEI warme Tinten auf je 2 Textelementen:
+       #856828 (.color-accent-main, "Mehr als 14.000 zufriedene Kunden" und
+       die 4,8-Bewertung) und #c9a14b (.ghx-studien__arrow, die zwei
+       Pfeile des Studien-Sliders). Der Detektor clustert im warmen Bin mit
+       dist=40; dazu kommt #F2BF72 als Akzent-FLAECHE des Kaufknopfes, die
+       `_akzent_hues` mit Gewicht 3 mitzaehlt. Die drei liegen 64, 95 und 158
+       Einheiten auseinander — es sind DREI Cluster. Der Abzug faellt also
+       erst, wenn BEIDE Tinten unter die Zaehlschwelle 2 gehen, nicht wenn
+       man sie aufeinander vereinheitlicht. Beides waere falsch: die
+       Studien-Pfeile gehoeren zu einem Baustein, der auch auf anderen Seiten
+       steht — sie hier umzufaerben machte den Slider auf zwei Seiten anders
+       als ueberall sonst, und das ist ein schlechteres Bild fuer null
+       Punkte. Als Befund an den Design-Meister gemeldet, nicht hier geflickt.
+       (Der Kontrast der Pfeile, #c9a14b auf Weiss, ist eigenstaendig
+       duenn — er steht mit in der Meldung.)
+
+   (3) DIE HYDRATION-FEHLER. `technisch` steht bereits bei 95/98; die
+       Klammerung der Hygiene macht Einzelbehebungen hier wertlos. Kein
+       Gestaltungsbefund.
+   ========================================================================== */
+
+body > main {
+  /* Typo — der Hauswert aus reset.css (h2: 2.2rem/600). KEINE neue Stufe. */
+  --pdplp-fs-h2: 2.2rem;
+  --pdplp-gewicht-h2: 600;
+
+  /* Farbe. Wie auf den Kaufseiten ist der Grund von `main` hier das kuehle
+     rgb(245,253,255) aus app.css, NICHT das warme #faf9f5 der web-soll-
+     Palette. Der Kartengrund ist deshalb WEISS und nicht die warme Creme
+     von startseite.css — auf kuehlem Grund waere sie eine vierte Oberflaeche.
+     Gleiche Entscheidung, gleiche Begruendung wie pdp-qi.css. */
+  --pdplp-karte: #fff;
+  --pdplp-muted: #6b665d;   /* steht auf diesen Seiten bereits im DOM */
+
+  /* Bild-Radius = der global in app.css schon gefuehrte Hauswert */
+  --pdplp-bild-radius: 4px;
+
+  /* Sektions-Takt auf dem 8px-Grid */
+  --pdplp-sec: 96px;
+}
+
+/* --- 1. EIN H2-Stil (Groesse x Gewicht) ------------------------------------
+   DER TRAGENDE GRIFF. `dim_stimmig` rechnet 100 - 20*(Kombis-1); vier Kombis
+   ergeben exakt die 40, die beide Belege zeigen. Gemessen am Live-DOM tragen
+   beide Landingfassungen DIESELBEN vier Kombis, die die Kaufseiten VOR ihrem
+   Fix trugen — und die Kaufseiten zeigen heute EINE (35,2/600, 19 bzw. 23
+   Ueberschriften). Die Ausreisser kommen aus denselben geteilten Bausteinen:
+     40/600    ScrollMikroskopvideo > VideoOverlay ("Zellbiologisch geprueft")
+     38,4/700  section.HeroBanner > HeroBannerContent
+     48/600    UpsellLineUp > h2.text-5xl!.text-center
+   Deshalb die Kaskade hier und kein Eingriff dort.
+
+   WARUM @layer utilities: die UpsellLineUp-Ueberschrift traegt die Tailwind-
+   Klasse `text-5xl!`, also ein !important INNERHALB von @layer utilities
+   (Tailwind v4). Bei !important dreht die Kaskade die Layer-Reihenfolge um —
+   eine ungelayerte Regel haette die NIEDRIGSTE Prioritaet und verloere
+   unabhaengig von ihrer Spezifitaet. In derselben Ebene entscheidet wieder
+   die Spezifitaet, und `body > main h2` (0,0,3) schlaegt `.text-5xl\!`
+   (0,1,0) NICHT: eine Klasse steht ueber zwei Typen. Der zweite Selektor
+   `body > main h2[class]` (0,1,3) schlaegt sie und greift nur dort, wo die
+   Ueberschrift ueberhaupt Klassen traegt (gemessen 7 von 15 bzw. 4 von 11).
+   Genau diese Stelle ist beim Vorgaengerbau gemessen worden: ohne den
+   Klassen-Selektor blieb die eine Ueberschrift auf 48px stehen.
+
+   Die geteilte Huelle bleibt aussen vor — sie ist kein Kind von `main`, und
+   die Rubrik zaehlt ihre H2 seit 2026-09-10 ohnehin als `shell` nicht mit. */
+@layer utilities {
+  body > main h2,
+  body > main h2[class] {
+    font-size: var(--pdplp-fs-h2) !important;
+    font-weight: var(--pdplp-gewicht-h2) !important;
+  }
+}
+
+/* --- 2. Hintergruende: eine Flaeche weniger ------------------------------
+   Die 39 Reputon-Bewertungskarten stellten mit rgb(243,246,249) eine eigene
+   Farbwelt zwischen den Grund (#F5FDFF) und die weissen Karten der Seite.
+   Auf die weisse Flaeche gezogen, die die Seite schon fuehrt. Gemessen: 39
+   .snap-start und 42 .NormalSectionSize .rounded-2xl auf BEIDEN Seiten, alle
+   in section.GoogleRezensionenBereich — die Regel greift nirgends sonst.
+   Senkt zugleich die Flaechen-Saettigung, die auf qione-2-pro-details mit
+   0,24 ueber dem Soll 0,2 liegt. */
+body > main .snap-start,
+body > main .NormalSectionSize .rounded-2xl {
+  background-color: var(--pdplp-karte) !important;
+}
+
+/* --- 3. EIN Akzent: das fremde Blau raus ---------------------------------
+   #1565c0 (15 'weiterlesen'-Schalter der Reputon-Karten, auf beiden Seiten
+   gemessen) bildete eine zweite gesaettigte Akzent-Farbwelt im Hue-Bin 7
+   neben dem warmen Gold-Bin 1. `dim_harmonisch` zieht dafuer 25 Punkte —
+   der zweitgroesste Hebel dieses Baus. Auf --pdplp-muted: 5,70:1 auf dem
+   weissen Kartengrund (vorher 5,30:1), also weiter WCAG AA und nebenbei
+   besser; die Unterstreichung haelt den Schalter als Schalter erkennbar.
+   Warum nicht die Gold-Tinte: siehe Dateikopf (2). */
+body > main .snap-start button[class*='text-[#1565c0]'],
+body > main .NormalSectionSize button.self-start {
+  color: var(--pdplp-muted) !important;
+  text-decoration: underline;
+}
+
+/* --- 4. Sektions-Takt auf dem 8px-Grid -----------------------------------
+   NUR qione-2-pro-details: von seinen zwei <section> lag eine daneben —
+   HeroBannerAlt mit padTop 32 + marTop 100 = 132 (132 % 8 = 4), waehrend die
+   zweite mit 48 auf dem Grid liegt. Das sind die gemeldeten "50 % der
+   Sektions-Abstaende". Mit 96 statt 100 sind es 128 und damit beide Sektionen
+   auf dem Takt: 4px Unterschied an einem 600px hohen Banner.
+   Auf qibracelet-details ist die Regel wirkungslos (dort traegt die
+   HeroBanner-Sektion kein HeroBannerAlt und steht mit 32+0 schon auf dem
+   Grid, gemessen 100 %) — sie steht hier, weil beide Routen dieselbe Datei
+   laden. */
+body > main .HeroBannerAlt {
+  margin-top: var(--pdplp-sec);
+  margin-bottom: var(--pdplp-sec);
+}
+
+/* --- 5. EIN Bild-Radius innerhalb der Seite ------------------------------
+   qibracelet-details fuehrte in `main` drei Werte: 4px (60 Bilder, globales
+   img{} aus app.css), 20px (14: Expertenmeinungs-Portraits, Gitterchip- und
+   Upsell-Bilder) und 8px (5 Studien-Vorschauen) — `dim_liebevoll` zieht 15
+   Punkte ab dem dritten Wert. Vereinheitlicht auf 4px, den Wert, den der
+   Shop global schon fuehrt (P10: kein zweiter, konkurrierender Radius-Token
+   neben dem bestehenden Hauswert). qione-2-pro-details fuehrt zwei Werte und
+   liegt damit schon im Soll; dort ist die Regel eine Vereinheitlichung ohne
+   Punktgewinn.
+   AUSGENOMMEN das kreisrunde Google-Badge-Logo: border-radius 50% ist keine
+   Radius-STUFE, sondern eine Form, und die Rubrik zaehlt "0px"/"50%"
+   ausdruecklich nicht mit — wer es mitzieht, macht aus einem runden Logo ein
+   Quadrat und gewinnt dabei keinen Punkt. Es ist auf beiden Seiten das
+   EINZIGE Bild mit 50% (gemessen, nicht angenommen). */
+body > main img:not(.google-rating-badge__logo) {
+  border-radius: var(--pdplp-bild-radius) !important;
+}
