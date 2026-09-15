@@ -655,6 +655,239 @@ export const NUR_ROUTE_SEITEN = [
       'aber Canonical), H2-SITEMAP (steht in einer real AUSGELIEFERTEN ' +
       'Sitemap — nicht nur in dieser Liste) und H3-VERLINKT.',
   },
+  {
+    pfad: '/pages/lexikon',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Der Hub des Lexikons (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Christian 2026-09-15: "Ein Lexikon, das von der ' +
+      'AI akzeptiert wird"). Er besteht allein aus der Route ' +
+      'pages.lexikon.jsx und hat KEIN Shopify-Seitenobjekt — ohne ' +
+      'diesen Eintrag liefert er HTTP 200 mit neun verlinkten ' +
+      'Begriffen und steht in keiner Sitemap, also erreichbar und ' +
+      'trotzdem unauffindbar. Ein Seitenobjekt wäre der zweite ' +
+      'mögliche Träger und ist bewusst NICHT gewählt (Fremdsystem) — ' +
+      'dieselbe Begründung wie bei /pages/kritik, /pages/hypothesen ' +
+      'und /pages/erfahrungen. KEIN MENÜ-EINTRAG, und das ist kein ' +
+      'Versteck: die Route hängt nicht am Shopify-Menü-Objekt, ist ' +
+      'aber öffentlich, indexierbar und verlinkt. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py, ' +
+      'deklariert als nachbau-audit h5f5ad493. Sie misst den INHALT, ' +
+      'nicht den Statuscode: die vier namentlich genannten ' +
+      'Grundbegriffe im sichtbaren Hub-Text, je Eintragsseite den ' +
+      'Abschnitt data-geo="grenze" und eine H1, und für jede Seite ' +
+      'den Vergleich des SICHTBAREN Textes zwischen Mensch, Googlebot ' +
+      'und OAI-SearchBot (Roh-Bytes taugen dafür nicht: Cookiebot ' +
+      'setzt je Abruf eine Zufalls-Nonce und React-Streaming liefert ' +
+      'dem Browser zusätzliche Hydrations-Zeilen). Sie pinnt keine ' +
+      'Eintragszahl, sondern verlangt einen Boden und entdeckt den ' +
+      'Rest aus dem Hub.',
+  },
+  {
+    pfad: '/pages/lexikon-hohe-frequenz-schwingen',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „auf einer hohen Frequenz schwingen“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-hohe-frequenz-schwingen.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-high-vibe',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „High Vibe“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route pages.lexikon-high-vibe.jsx ' +
+      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
+      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
+      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
+      'der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-low-vibe',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „Low Vibe“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route pages.lexikon-low-vibe.jsx ' +
+      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
+      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
+      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
+      'der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-spirituell-angebunden-sein',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „spirituell angebunden sein“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-spirituell-angebunden-sein.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-kohaerentes-wasser',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „kohärentes Wasser“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-kohaerentes-wasser.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-elektrosmog',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „Elektrosmog“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-elektrosmog.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-frequenz',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „Frequenz“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route pages.lexikon-frequenz.jsx ' +
+      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
+      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
+      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
+      'der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-energie',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „Energie“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route pages.lexikon-energie.jsx ' +
+      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
+      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
+      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
+      'der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
+  {
+    pfad: '/pages/lexikon-ordnung',
+    lastmod: '2026-09-15T23:23:23Z',
+    grund:
+      'Lexikon-Eintrag „Ordnung“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route pages.lexikon-ordnung.jsx ' +
+      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
+      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
+      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
+      'der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre.',
+  },
 ];
 
 /**
