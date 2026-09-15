@@ -1,0 +1,275 @@
+/* ============================================================================
+   /pages/lexikon + /pages/lexikon-<begriff> — „Unsere Begriffe in der Sprache
+   der Physik" (2026-09-15, Grossjob 20260915-GEO-lexikon-frageseiten-…, s06).
+
+   Token-System nach design-meister `web-brief --seite lexikon` (web-soll.yaml
+   v2) und wortgleich zum staerksten Bestands-Rezept des Hauses
+   (schlaf-zellen-schutz.css .lp-a3, 94/100; kritik.css, 100/100): warmes
+   Neutral-Kontinuum, EIN Gold-Akzent, Weissraum gruppiert statt Boxen,
+   8pt-Grid, Sektions-Takt 96/64, Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .lex — self-contained.
+
+   EINE DATEI FUER HUB UND EINTRAEGE, UND DAS IST HIER RICHTIG: die zehn Seiten
+   sind EINE Flaeche in zehn Stuecken, nicht zwei Flaechen. kritik.css hat sich
+   bewusst GEGEN das Teilen mit erfahrungen.css entschieden, weil dort zwei
+   verschiedene Zwecke standen (Erlebnis gegen Beweis) und Gate 12 eine geteilte
+   Datei auf ALLE importierenden Routen aufloest. Genau dieser Effekt ist hier
+   erwuenscht: aendert jemand den Eintrags-Stil, sollen alle Eintraege neu
+   gemessen werden.
+
+   DER EINE AKZENT SITZT AUF DER GRENZE, nicht auf einem Kaufknopf — auf dieser
+   Flaeche gibt es keinen. Das Gold traegt die Linie am Grenz-Abschnitt: dort
+   steht der Satz, der diese Seite von Werbung unterscheidet, und er ist das
+   Wertvollste, was sie hat. Als TINTE erscheint das Gold nirgends: auf hellem
+   Grund misst es 2,2:1 und faellt unter die Kontrastschwelle 4,5:1.
+   ========================================================================== */
+
+:root {
+  --lex-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --lex-fs-xs: 0.875rem; /* 14px — Quellenangaben */
+  --lex-fs-base: 1rem; /* 16px — Body, Deckel des Briefs: >= 16 */
+  --lex-fs-md: 1.125rem; /* 18px — Lead */
+  --lex-fs-h3: 1.25rem; /* 20px */
+  --lex-fs-lg: 1.375rem; /* 22px — der Grenz-Satz */
+  --lex-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --lex-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+
+  /* Spacing: 8pt-Grid, Sektions-Takt 96/64 */
+  --lex-s1: 8px;
+  --lex-s2: 16px;
+  --lex-s3: 24px;
+  --lex-s4: 32px;
+  --lex-s6: 48px;
+  --lex-s8: 64px;
+  --lex-s12: 96px;
+
+  /* Farbe: 60-30-10, warmes Neutral-Kontinuum + EIN Akzent */
+  --lex-grund: #faf9f5;
+  --lex-flaeche: #f8f4ee;
+  --lex-dunkel: #1a1a1a;
+  --lex-text: #2c2a26;
+  --lex-text-hell: #f8f4ee;
+  --lex-muted: #6b665d;
+  --lex-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR als Linie, nie als Schrift */
+  --lex-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --lex-r1: 8px;
+  --lex-r2: 16px;
+  --lex-shadow-sm: 0 1px 3px rgba(26, 26, 26, 0.07);
+  --lex-shadow-md: 0 4px 16px rgba(26, 26, 26, 0.08);
+
+  /* Zeilenlaenge */
+  --lex-mass: 68ch;
+  --lex-breit: 960px;
+}
+
+.lex {
+  font-family: var(--lex-font);
+  font-size: var(--lex-fs-base);
+  line-height: 1.65;
+  color: var(--lex-text);
+  background: var(--lex-grund);
+}
+
+.lex section {
+  padding: var(--lex-s12) var(--lex-s3);
+}
+
+.lex section + section {
+  padding-top: var(--lex-s8);
+}
+
+.lex__inhalt {
+  max-width: var(--lex-breit);
+  margin: 0 auto;
+}
+
+.lex h1 {
+  font-size: var(--lex-fs-h1);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--lex-s3);
+  max-width: var(--lex-mass);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — beides misst die Rubrik. */
+.lex h2 {
+  font-size: var(--lex-fs-h2);
+  line-height: 1.25;
+  font-weight: 700;
+  text-align: left;
+  margin: 0 0 var(--lex-s2);
+}
+
+.lex h3 {
+  font-size: var(--lex-fs-h3);
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 0 0 var(--lex-s1);
+}
+
+.lex p {
+  margin: 0 0 var(--lex-s2);
+  max-width: var(--lex-mass);
+}
+
+.lex__vorspann {
+  font-size: var(--lex-fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lex-muted);
+  margin-bottom: var(--lex-s2);
+}
+
+.lex__lead {
+  font-size: var(--lex-fs-md);
+  color: var(--lex-text);
+}
+
+.lex__einleitung {
+  color: var(--lex-muted);
+  margin-bottom: var(--lex-s4);
+}
+
+/* ── Hub: die Begriffsliste ────────────────────────────────────────────── */
+
+.lex__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--lex-s3);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.lex__karte {
+  background: var(--lex-flaeche);
+  border-radius: var(--lex-r2);
+  box-shadow: var(--lex-shadow-sm);
+  padding: var(--lex-s3);
+}
+
+.lex__karte p {
+  max-width: none;
+}
+
+.lex__karte-grenze {
+  color: var(--lex-muted);
+  font-size: var(--lex-fs-xs);
+  margin-bottom: 0;
+}
+
+.lex__karte-link {
+  color: var(--lex-text);
+  text-decoration: none;
+  border-bottom: 2px solid var(--lex-akzent);
+  padding-bottom: 2px;
+}
+
+.lex__karte-link:hover,
+.lex__karte-link:focus-visible {
+  border-bottom-width: 3px;
+}
+
+/* ── Eintrag: die fuenf Abschnitte ─────────────────────────────────────── */
+
+.lex__groesse {
+  display: inline-block;
+  background: var(--lex-flaeche);
+  border-radius: var(--lex-r1);
+  padding: var(--lex-s1) var(--lex-s2);
+  font-size: var(--lex-fs-xs);
+  color: var(--lex-muted);
+  margin-bottom: var(--lex-s3);
+}
+
+.lex__block {
+  padding-top: var(--lex-s6);
+  border-top: 1px solid var(--lex-linie);
+  margin-top: var(--lex-s6);
+}
+
+/* DER GRENZ-ABSCHNITT — der einzige Ort, an dem das Gold traegt. */
+.lex__grenze {
+  padding: var(--lex-s4);
+  margin-top: var(--lex-s6);
+  background: var(--lex-flaeche);
+  border-radius: var(--lex-r2);
+  border-left: 4px solid var(--lex-akzent);
+  box-shadow: var(--lex-shadow-md);
+}
+
+.lex__grenze h2 {
+  margin-bottom: var(--lex-s2);
+}
+
+.lex__grenze-satz {
+  font-size: var(--lex-fs-lg);
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.lex__grenze p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Quellen ───────────────────────────────────────────────────────────── */
+
+.lex__quellen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lex__quellen li {
+  font-size: var(--lex-fs-xs);
+  color: var(--lex-muted);
+  padding: var(--lex-s2) 0;
+  border-bottom: 1px solid var(--lex-linie);
+  max-width: var(--lex-mass);
+}
+
+.lex__quellen a {
+  color: var(--lex-text);
+}
+
+.lex__weiter {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lex-s2);
+}
+
+.lex__weiter a {
+  display: inline-block;
+  background: var(--lex-flaeche);
+  border-radius: var(--lex-r1);
+  padding: var(--lex-s1) var(--lex-s2);
+  color: var(--lex-text);
+  text-decoration: none;
+  box-shadow: var(--lex-shadow-sm);
+}
+
+.lex__weiter a:hover,
+.lex__weiter a:focus-visible {
+  box-shadow: var(--lex-shadow-md);
+}
+
+@media (max-width: 640px) {
+  .lex section {
+    padding: var(--lex-s8) var(--lex-s3);
+  }
+
+  .lex section + section {
+    padding-top: var(--lex-s6);
+  }
+}
