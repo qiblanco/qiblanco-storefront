@@ -8,16 +8,16 @@ import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
  * EIN route-gebundenes Stylesheet: pdp-landing-qi.css.
  *
  * Diese Seite stand mit Score 79 unter der Design-Schwelle 80 und hat sie
- * nie bestanden. Das war nicht bloss haesslich, es war baulich sperrend: ein
- * Pixel-Soll ist nur ueber `hb-pixelsoll` abloesbar, beide Tueren dorthin
+ * nie bestanden. Das war nicht nur hässlich, es war baulich sperrend: ein
+ * Pixel-Soll ist nur über `hb-pixelsoll` ablösbar, beide Türen dorthin
  * verlangen einen Design-Beleg mit `bestanden=true`, und `pixel-regression`
  * ist im Gate `formate` von der Regressions-Milde ausgenommen. Solange diese
  * Seite rot war, blockte JEDER Diff an app/root.jsx oder app/styles/app.css.
  *
  * NICHT pdp-qi.css (die Token-Schicht der zwei KAUFSEITEN): ein Drittel ihrer
  * Regeln trifft hier gemessen nichts, diese Seite hat eigene Befunde, und
- * `format_reichweite` Regel R2 wuerde beim Anfassen jener Datei die zwei
- * Umsatz-Kaufseiten in die Belegpflicht ziehen. Begruendung samt Messung im
+ * `format_reichweite` Regel R2 würde beim Anfassen jener Datei die zwei
+ * Umsatz-Kaufseiten in die Belegpflicht ziehen. Begründung samt Messung im
  * Kopf von app/styles/pdp-landing-qi.css.
  */
 export function links() {
@@ -83,7 +83,7 @@ export const meta = () => {
   // Bestandsdefekt behob; es hat ihn aber auch konserviert.
   //
   // Der Job 20260915-pdp-landingfassungen-designschuld-... hat ihn behoben:
-  // die Seite traegt jetzt ein eigenes links() auf MODULEBENE (siehe oben),
+  // die Seite trägt jetzt ein eigenes links() auf MODULEBENE (siehe oben),
   // steht damit bewusst in der vollen Messpflicht und besteht sie. Wer hier
   // k\u00FCnftig etwas \u00E4ndert, braucht also einen frischen Design-Beleg --
   // das ist kein Hindernis mehr, sondern der Normalfall.
