@@ -12,6 +12,37 @@ import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 
+/* ───────── EINE Beschriftung je Ziel — SSoT ─────────
+   Job 20260916-zwoelf-kaufknoepfe-und-neun-sagen-dasselbe, Segment s03.
+
+   ANLASS, wörtlich von Christian: zwölf Handlungsknöpfe, und neun davon
+   zeigten auf dasselbe Ziel /pages/qione-2-pro — in FÜNF Formulierungen
+   („QiOne® 2 Pro ansehen", „20 Nächte risikofrei testen", „Jetzt 20 Nächte
+   risikofrei testen", „Jetzt risikofrei testen", „Jetzt QiOne® 2 Pro
+   sichern"). Ein Ziel, fünf Versprechen: das liest sich als Drängeln, nicht
+   als Einladung.
+
+   WARUM „ansehen" UND NICHT „sichern"/„testen" — der Klick soll halten, was
+   der Knopf zusagt: /pages/qione-2-pro ist die LANDINGPAGE-Fassung, nicht die
+   Kaufseite /products/qione-2-pro (blockLinks.jsx, BLOCK_LP). Der Klick führt
+   auf eine weitere Seite, nicht in die Kasse — „sichern" und „testen" sagen
+   einen Vollzug zu, den er nicht einlöst (Kanon „Die Landingpage verkauft
+   nicht — sie erzeugt den nächsten Klick",
+   brain/Marketing/landingpage-trichter-und-messregel-2026-08-26.md).
+   Die 20-Nächte-Zusage ist damit NICHT verschwunden: sie steht unverändert in
+   der Hero-Subline, im Garantieblock, in der Final-CTA-Überschrift und im
+   Kleingedruckten des Preisblocks. Sie wandert vom Knopf in den Text, wo ein
+   Closer hingehört.
+
+   WER DIESEN WERT ÄNDERT, ändert ihn hier einmal — jeder Knopf auf
+   /pages/qione-2-pro liest ihn. Genau das ist der Punkt: die fünf
+   Formulierungen konnten nur entstehen, weil der Text an fünf Stellen getrennt
+   stand. Bewacht von
+   homepage-bauer/pruefungen/probe_lp_cta_einstimmig.py --formulierungen
+   (rt-Task lp-cta-einstimmig, täglich). */
+const QIONE_ZIEL = produktLink('qione-2-pro', BLOCK_LP, 'kauf');
+const QIONE_CTA = 'QiOne® 2 Pro ansehen';
+
 /*
  * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
  *
@@ -157,8 +188,8 @@ function Hero() {
             nachts herunterzufahren. In Zellstudien gemessen, von 14.000+ Trägern getragen.
           </p>
           <div className="lp-a-hero__cta-row">
-            <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
-              Jetzt 20 Nächte risikofrei testen
+            <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
+              {QIONE_CTA}
             </a>
             <span className="lp-a-hero__price">
               {compareLabel && <s>{compareLabel}</s>} {priceLabel}
@@ -328,7 +359,7 @@ function ScienceSection() {
           es war nach dem ersten Einbau die letzte verbliebene Durststrecke
           (Falz 5,9 bis 11,8). Der Knopf steht deshalb VOR dem Video, solange
           der Beweis aus den Zahlen darueber noch frisch ist. */}
-      <WeiterCta nr={6} label="20 Nächte risikofrei testen" imBlock />
+      <WeiterCta nr={6} imBlock />
       {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
           Karte, gleiche Botschaften — Job 20260716-bauer-scroll-down-
           animationen-capability; SHOW IT statt Behauptung) */}
@@ -352,12 +383,13 @@ function ScienceSection() {
         ]}
         fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
       />
-      {/* Der Wissenschafts-Block ist die laengste zusammenhaengende Strecke der
-          Seite: nach dem Einbau der Sektions-Knoepfe blieb hier die groesste
-          verbliebene Luecke (Falz 5,9 bis 12,8 = 6,9 Falzen, gemessen). Dieser
-          Knopf sitzt INNERHALB der Sektion und bringt darum als einziger seinen
-          eigenen vertikalen Abstand mit (`--im-block`). */}
-      <WeiterCta nr={5} label="QiOne® 2 Pro ansehen" imBlock />
+      {/* lp-a-weiter-5 stand hier bis zum 2026-09-16 (Job 20260916-zwoelf-
+          kaufknoepfe-und-neun-sagen-dasselbe, s03) und ist ENTFERNT: er war der
+          ZWEITE Knopf derselben Sektion — der Wissenschafts-Block trägt seinen
+          Weg zum Produkt schon oberhalb des Videos (lp-a-weiter-6, direkt unter
+          den Studienzahlen, wo der Beweis frisch ist). Höchstens EIN Hauptknopf
+          je Abschnitt. Was er gekostet hat, steht im RESULT und ist gemessen,
+          nicht geschätzt: 13 von 471 Weiter-Klicks. */}
       <LpStudien headline="" />
     </section>
   );
@@ -537,7 +569,7 @@ function PricingSection() {
               className={`lp-vp-btn ${c.featured ? 'lp-vp-btn--primary' : 'lp-vp-btn--secondary'} lp-a-product__cta`}
               href={produktLink(c.handle, BLOCK_LP, c.featured ? 'kauf' : 'detail')}
             >
-              {c.featured ? 'Jetzt risikofrei testen' : 'Mehr erfahren'}
+              {c.featured ? QIONE_CTA : 'Mehr erfahren'}
             </a>
           </article>
         ))}
@@ -635,8 +667,8 @@ function FinalCTA() {
               </div>
             </div>
           )}
-          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/pages/qione-2-pro">
-            Jetzt QiOne® 2 Pro sichern
+          <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href={QIONE_ZIEL}>
+            {QIONE_CTA}
           </a>
           <ul className="lp-vp-final-cta__trust">
             <li>0 % Finanzierung über Klarna und PayPal</li>
@@ -670,14 +702,14 @@ function FinalCTA() {
    Hero). Kein zweiter Gold-Ton, keine neue Schriftgroesse, kein Preis. Auch
    der ABSTAND ist geerbt: die 96 px Sektions-Polsterung ober- und unterhalb
    tragen den Knopf, er bringt keinen eigenen Rhythmus mit. */
-function WeiterCta({nr, label, imBlock = false}) {
+function WeiterCta({nr, imBlock = false}) {
   return (
     <div
       className={`lp-a-weiter${imBlock ? ' lp-a-weiter--im-block' : ''}`}
       data-section={`lp-a-weiter-${nr}`}
     >
-      <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
-        {label}
+      <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
+        {QIONE_CTA}
       </a>
     </div>
   );
@@ -694,9 +726,20 @@ export function SchlafZellenSchutz({products}) {
         <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
         <IntroSection />
         <MechanismSection />
-        <WeiterCta nr={1} label="QiOne® 2 Pro ansehen" />
+        <WeiterCta nr={1} />
         <ScienceSection />
-        <WeiterCta nr={2} label="20 Nächte risikofrei testen" />
+        {/* lp-a-weiter-2 teilt die zweite Seitenhälfte. Von den vier schwach
+            gesehenen Weiter-Knöpfen (-2/-3/-4/-5) überlebt genau dieser, und
+            die Wahl ist geometrisch: live gemessen lagen die Knöpfe bei Falz
+            7,71 (w6) und 19,50 (Preisblock), dazwischen 11,8 Falzen. Fielen
+            ALLE vier, wäre genau die Durststrecke zurück, gegen die der Bau
+            vom 2026-09-06 angetreten ist (damals 18,0 Falzen mobil). w2 liegt
+            mit Falz 13,30 fast auf der Mitte und halbiert sie; w3 hätte sie
+            unwuchtig geteilt (7,9 gegen 3,9). Die Nummer bleibt die alte,
+            obwohl er jetzt der dritte ist: `data-section` ist der Schlüssel in
+            verhaltens-schicht/data/verhalten.db — eine Umnummerierung hängte
+            seine Historie an einen neuen Namen. */}
+        <WeiterCta nr={2} />
         <div data-section="lp-a-google-reviews">
           <LpGoogleReviews />
         </div>
@@ -704,9 +747,7 @@ export function SchlafZellenSchutz({products}) {
         <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
           <ReputonWidget />
         </div>
-        <WeiterCta nr={3} label="QiOne® 2 Pro ansehen" />
         <VideoSection />
-        <WeiterCta nr={4} label="20 Nächte risikofrei testen" />
         <GuaranteeSection />
         <PricingSection />
         <SignatureSection />
