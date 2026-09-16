@@ -155,12 +155,11 @@
 .qm-pdp .ProductDescription p,
 .qm-pdp .ProductDescription li,
 .qm-pdp .BenefitList li { font-size: var(--qm-fs-base); }
-.qm-pdp .qm-preishinweis,
-.qm-treppe .qm-preishinweis {
-  font-size: var(--qm-fs-xs);
-  color: var(--qm-muted);
-  margin-top: var(--qm-s1);
-}
+/* .qm-preishinweis trug bis zum 2026-09-16 den Sammelsatz „Alle Preise inkl.
+   19 % MwSt., inklusive versichertem weltweitem Versand mit UPS." unter der
+   Tabelle. Christian hat die Steuerangabe an den grossen Preis verlegt
+   (.qm-steuerhinweis, weiter unten); der Versandhinweis steht jetzt in
+   .qm-treppe__versand. Die Klasse hat kein Element mehr. */
 
 /* ─── Vorverkaufstreppe (QiMasterTreppe.jsx) ─────────────────────────────────
    Sitzt im priceLabel-Slot der Buy-Box, also ZWISCHEN Preiszeile und
@@ -193,17 +192,29 @@
   color: var(--qm-dunkel);
 }
 .qm-treppe__grund,
-.qm-treppe__ausnahme,
-.qm-treppe__vorlauf,
-.qm-treppe__fazit,
-.qm-treppe__ende {
+.qm-treppe__herkunft,
+.qm-treppe__angebot,
+.qm-treppe__versand,
+.qm-treppe__vorlauf {
   font-size: var(--qm-fs-base);
   line-height: 1.6;
   max-width: var(--qm-mass);
   margin: 0 0 var(--qm-s2);
 }
 .qm-treppe__grund { color: var(--qm-muted); }
-.qm-treppe__ausnahme { font-weight: 700; }
+
+/* „Designed in Germany. Made in Germany." schliesst die Herkunftskette des
+   Absatzes darueber ab — abgesetzt durch Gewicht, nicht durch eine zweite
+   Groesse und nicht durch eine zweite Farbe. */
+.qm-treppe__herkunft { font-weight: 700; color: var(--qm-dunkel); }
+
+/* Der Angebotssatz ist der Abschluss (Kaufueberzeugungs-Kanon: der Beweis
+   entscheidet, nicht der Reiz) — er traegt Gewicht, aber keine Signalfarbe.
+   Die Zahlen darin kommen aus derselben Quelle wie die Tabelle. */
+.qm-treppe__angebot { font-weight: 700; color: var(--qm-dunkel); }
+
+/* Der Versandsatz ist eine Auskunft, keine Werbung: ruhigste Stufe im Block. */
+.qm-treppe__versand { color: var(--qm-muted); }
 
 /* Die Vorlauf-Zeile ist eine Terminangabe, kein Druckmittel: dieselbe
    Schriftgroesse wie der Fliesstext, nur abgesetzt — keine Farbe, kein Blinken,
@@ -214,6 +225,51 @@
   color: var(--qm-akzent-tinte);
   font-weight: 600;
 }
+
+
+/* ─── Der zugaengliche Name der Tabelle ──────────────────────────────────────
+   Seit 2026-09-16 steht ueber der Tabelle Christians Fassung; die Beschriftung
+   bleibt als Name der Tabelle erhalten, aber nur noch fuer Screenreader.
+   Bewusst KEIN display:none — das naehme sie auch der Vorlesesoftware weg. */
+.qm-treppe__caption--nur-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── „inkl. 19 % MwSt." hinter dem grossen Kaufpreis ────────────────────────
+   Christian am 2026-09-16, woertlich: „Das inkl. 19 % MwSt. muss in klein
+   hinter den grossen Kaufpreis von: 10.639,- €".
+
+   ZWEI ANFORDERUNGEN, beide woertlich zu nehmen — „hinter" (dieselbe Zeile)
+   und „in klein" (kleiner als der Preis). Der Preis steht in .product-price
+   mit 2rem (app.css); dieser Hinweis traegt --qm-fs-xs (13px) und ist damit
+   messbar kleiner, nicht nur gefuehlt.
+
+   WARUM .product-price hier inline-flex wird: es ist im Bestand ein
+   display:flex-Block und schoebe den Hinweis sonst in die naechste Zeile. Die
+   Regel haengt am Seiten-Scope .qm-pdp UND am Eltern-Element .Bestseller-Price
+   — sie kann keine andere Kaufseite erreichen. Die Treppe darunter bleibt ein
+   eigener Block und rutscht nicht daneben. */
+.qm-pdp .Bestseller-Price > .product-price {
+  display: inline-flex;
+  vertical-align: baseline;
+}
+.qm-pdp .qm-steuerhinweis {
+  display: inline-block;
+  margin: 0 0 0 var(--qm-s1);
+  font-size: var(--qm-fs-xs);
+  line-height: 1.4;
+  color: var(--qm-muted);
+  white-space: nowrap;
+}
+.qm-pdp .Bestseller-Price > .qm-treppe { display: block; }
 
 .qm-treppe__tabelle {
   width: 100%;
@@ -277,9 +333,10 @@
 }
 .qm-treppe__zeile--aktiv .qm-treppe__marke { color: var(--qm-dunkel); }
 
-.qm-treppe__fazit strong,
-.qm-treppe__ende strong { color: var(--qm-dunkel); }
-.qm-treppe__ende { margin-bottom: var(--qm-s1); }
+/* .qm-treppe__fazit / .qm-treppe__ende / .qm-treppe__ausnahme sind am
+   2026-09-16 mit ihren Saetzen entfallen (Christians Fassung). Ihre Regeln
+   stehen nicht mehr hier: eine Regel ohne Element ist kein Bestand, sondern
+   der naechste Irrtum beim Lesen. */
 
 /* Schmale Geraete: eine vierspaltige Tabelle mit vierstelligen Eurobetraegen
    bricht dort unleserlich um. Statt Querscrollen (der Kunde findet die Spalte

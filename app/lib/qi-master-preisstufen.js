@@ -223,6 +223,13 @@ export function treppe(quelle, jetzt = new Date()) {
   const kleinste = zeilen
     .filter((z) => z.ersparnisCent > 0)
     .reduce((a, z) => (z.ersparnisCent < a ? z.ersparnisCent : a), Infinity);
+  // Siehe `angebot` unten: laufende Rabattstufe, im Vorlauf die erste.
+  const laufendeRabattZeile = zeilen.find((z) => z.aktiv && z.prozent > 0);
+  const ersteRabattZeile = zeilen.find((z) => z.prozent > 0);
+  const angebotZeile =
+    laufendeRabattZeile ??
+    (laufende && laufende.in_tabelle === false ? ersteRabattZeile : null) ??
+    null;
   return {
     zeilen,
     listenpreisText: betragText(listenpreisCent(quelle), regel),
@@ -230,6 +237,31 @@ export function treppe(quelle, jetzt = new Date()) {
     vorlaufHinweis:
       laufende && laufende.in_tabelle === false ? (laufende.hinweis ?? '') : '',
     nieRabattAb: quelle.nie_rabatt_ab,
+    /**
+     * DIE STUFE, ÜBER DIE CHRISTIANS ANGEBOTSSATZ SPRICHT (2026-09-16).
+     *
+     * Sein Satz lautet „spare 2.650 € bei einem Rabatt von 24,9 %" — das sind
+     * exakt die Zahlen der ersten Vorverkaufsstufe. Sie stehen hier NICHT als
+     * Literal im Satz, sondern kommen aus derselben Quelle wie die Tabelle:
+     * eine hingeschriebene 2.650 wäre die zweite Wahrheit und liefe beim
+     * nächsten Prozent-Wechsel gegen die Zeile darunter.
+     *
+     * WELCHE Stufe: die laufende, solange sie rabattiert ist. Im Vorlauf (die
+     * Seite steht vor dem 18.09. schon live) gibt es noch keine laufende
+     * Rabattstufe — dann spricht der Satz von der ERSTEN, also genau der, die
+     * der Kunde als naechstes bekommt. Läuft gar keine Rabattstufe mehr (ab
+     * 2027-01-01 trägt die reguläre Zeile), ist das Feld null und die Flaeche
+     * lässt den Satz weg, statt einen Rabatt zu versprechen, den es nicht
+     * mehr gibt.
+     */
+    angebot: angebotZeile
+      ? {
+          id: angebotZeile.id,
+          satzText: angebotZeile.satzText,
+          ersparnisText: angebotZeile.ersparnisText,
+          preisText: angebotZeile.preisText,
+        }
+      : null,
     /** Was Warten kostet: beste minus schwächste Rabattstufe. */
     spannweiteText:
       Number.isFinite(kleinste) && groesste > kleinste

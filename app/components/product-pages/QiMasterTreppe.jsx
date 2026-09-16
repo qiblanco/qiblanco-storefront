@@ -15,9 +15,21 @@
  * nur so kann die Abnahme-Probe sie am Rand überhaupt sehen.
  *
  * WAS HIER AUSDRÜCKLICH NICHT STEHT (Auftrag, wörtlich): keine Countdown-Uhr,
- * keine Restmenge, kein „nur noch heute", kein Ausrufezeichen in der
- * Überschrift. Der Negativ-Arm A7 der Abnahme-Probe wird rot, wenn es doch
- * jemand einbaut.
+ * keine Restmenge, kein „nur noch heute". Der Negativ-Arm A7 der Abnahme-Probe
+ * wird rot, wenn es doch jemand einbaut.
+ *
+ * NACHTRAG 2026-09-16 — DER TEXT IST JETZT CHRISTIANS FASSUNG, und eine Zeile
+ * dieses Kommentars war vorher weiter als der Code: hier stand zusätzlich
+ * „kein Ausrufezeichen in der Überschrift". Nachgemessen am Arm selbst
+ * (probe_produktseite_live.py, VERBOTEN) prüft A7 ausschließlich die vier
+ * Verknappungsmuster oben — ein Ausrufezeichen fällt durch keines davon. Die
+ * Überschrift trägt seit heute Christians Ausrufezeichen; A7 bleibt grün. Wer
+ * den alten Satz liest und daraus eine Sperre ableitet, sperrt etwas, das nie
+ * gesperrt war.
+ *
+ * DIE ZAHLEN IM ANGEBOTSSATZ RECHNET DIESE DATEI WEITERHIN NICHT: „spare
+ * 2.650 € bei einem Rabatt von 24,9 %" kommt als `treppe.angebot` aus
+ * ~/lib/qi-master-preisstufen — dieselbe Quelle wie die Tabelle darunter.
  */
 
 /**
@@ -28,7 +40,8 @@
  *                    satzText: string, aktiv: boolean}>,
  *     aktivId: string|null,
  *     vorlaufHinweis: string,
- *     spannweiteText: string,
+ *     angebot: {id: string, satzText: string, ersparnisText: string,
+ *               preisText: string}|null,
  *   },
  *   titelId?: string,
  *   kompakt?: boolean,
@@ -39,7 +52,7 @@
  * KEINEN Satz — sonst trüge die Fläche eine eigene Aussage.
  */
 export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = false}) {
-  const {zeilen, vorlaufHinweis, spannweiteText} = treppe;
+  const {zeilen, vorlaufHinweis, angebot} = treppe;
 
   return (
     <section
@@ -47,27 +60,33 @@ export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = f
       aria-labelledby={titelId}
     >
       <h3 id={titelId} className="qm-treppe__titel">
-        Der QiMaster geht nie in eine Rabattaktion.
+        Hole dir jetzt ein einmaliges Angebot, das es danach nie wieder geben
+        wird!
       </h3>
 
       <p className="qm-treppe__grund">
-        Kein Black Friday, keine Aktion, keine Ausnahme. Ein von Hand
-        gefertigtes, nummeriertes Einzelstück hat einen Preis, keinen
-        Aktionspreis — wer später kauft, soll nicht das Gefühl haben, zu früh
-        gekauft zu haben.
+        Den Qi Master® wird es nie in einem Sale geben wie Black Friday, Sommer
+        Sale oder ähnliches. Durch seine sehr aufwendige Herstellung ist der
+        Preis fixiert. Jeder Qi Master® wird von Spezialisten mit
+        jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung
+        begleitet. Die finale Politur wird per Hand von Goldschmieden mit
+        meisterhafter Genauigkeit durchgeführt. Dadurch können wir stolz von
+        einer Herstellqualität sprechen, die weltweit den höchsten Standard
+        übertrifft.
       </p>
 
-      <p className="qm-treppe__ausnahme">
-        Bis Ende des Jahres gibt es eine Ausnahme, und sie wird jeden Monat
-        kleiner.
-      </p>
+      <p className="qm-treppe__herkunft">Designed in Germany. Made in Germany.</p>
 
       {vorlaufHinweis ? (
         <p className="qm-treppe__vorlauf">{vorlaufHinweis}</p>
       ) : null}
 
       <table className="qm-treppe__tabelle">
-        <caption className="qm-treppe__caption">
+        {/* Die Beschriftung bleibt der zugängliche Name der Tabelle, steht
+            aber nicht mehr als sichtbarer Satz über ihr: der sichtbare Text
+            über der Tabelle ist seit 2026-09-16 Christians Fassung. Löschen
+            wäre kein Textumbau, sondern ein Rückschritt für Screenreader. */}
+        <caption className="qm-treppe__caption qm-treppe__caption--nur-sr">
           Die Vorverkaufstreppe des QiMaster — alle vier Stufen und der
           reguläre Preis danach.
         </caption>
@@ -109,21 +128,18 @@ export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = f
         </tbody>
       </table>
 
-      {spannweiteText ? (
-        <p className="qm-treppe__fazit">
-          Wer im September kauft, zahlt{' '}
-          <strong>{`${spannweiteText} € weniger`}</strong> als im Dezember.
+      {angebot ? (
+        <p className="qm-treppe__angebot">
+          Sichere dir jetzt dieses einmalige Angebot zum Spitzenpreis und spare{' '}
+          {`${angebot.ersparnisText} €`} bei einem Rabatt von{' '}
+          {`${angebot.satzText} %`}. Unser höchster Rabatt, den wir jemals
+          gegeben haben. Exklusiv für unsere treuesten Kunden.
         </p>
       ) : null}
 
-      <p className="qm-treppe__ende">
-        <strong>Ab dem 01.01.2027 gilt dauerhaft der reguläre Preis</strong> —
-        und danach gibt es keine Aktion mehr.
-      </p>
-
-      <p className="qm-preishinweis">
-        Alle Preise inkl. 19 % MwSt., inklusive versichertem weltweitem Versand
-        mit UPS.
+      <p className="qm-treppe__versand">
+        Inklusive zu 100 % versichertem weltweitem Versand. Versand startet ab
+        Mitte Januar 2027.
       </p>
     </section>
   );
