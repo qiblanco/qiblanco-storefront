@@ -306,11 +306,6 @@ function SechsGAbschnitt() {
           <p key={abs.slice(0, 40)}>{abs}</p>
         ))}
         <span className="qm-quelle">{t.gemessen.quelle}</span>
-        <h3>{t.nichtGemessen.titel}</h3>
-        <span className="qm-label">Nicht gemessen</span>
-        {t.nichtGemessen.absaetze.map((abs) => (
-          <p key={abs.slice(0, 40)}>{abs}</p>
-        ))}
       </div>
     </section>
   );
