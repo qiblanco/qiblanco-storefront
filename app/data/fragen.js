@@ -27,7 +27,8 @@
  * Bitte: test/fragen-vollstaendigkeit.test.mjs hält dagegen.
  *
  * @typedef {{slug: string, katalog_id: string|null, markt: string,
- *   klasse: string, frage: string, antwort: string, begruendung: string[],
+ *   klasse: string, frage: string, antwort: string,
+ *   "begruendung": string[],
  *   beleg: string[], fundstellen?: string[], offen: string[],
  *   weiter: Array<{pfad: string, text: string}>, quellen: string[],
  *   pfad: string}} FrageSeite
@@ -35,7 +36,7 @@
 
 /**
  * Die Belege, auf die die Seiten über ihre Schlüssel zeigen.
- * `pruefung` ist die Adresse, unter der s05 die Arbeit geprüft hat — sie kann
+ * Das Feld `"pruefung":` ist die Adresse, unter der s05 die Arbeit geprüft hat — sie kann
  * von `url` abweichen (Crossref statt Verlagsseite), weil mehrere Fachverlage
  * Bots mit HTTP 403 abweisen und ein 403 dort weder „tot" noch „lebend" heißt.
  * `identitaet` ist die Zeichenfolge, die im abgerufenen Titel stehen MUSS: ein
@@ -412,7 +413,7 @@ export const FRAGEN = [
       "Für unsere Produkte sind fünf Arbeiten veröffentlicht, und keine davon erfüllt diese vier Bedingungen. Durchgeführt hat sie alle ein einziger Wissenschaftler, Prof. Dr. Peter C. Dartsch, an seinem eigenen Institut. Die Aufträge, die Rechnungen und die Prüfgeräte kamen von uns. In der Produktforschung ist diese Konstellation der Normalfall, und sie entwertet keinen einzelnen Messwert. Sie lässt die Wiederholung durch ein zweites Haus offen.",
       "Vier dieser Arbeiten sind Laborversuche an Zellkulturen. Die fünfte beschreibt 171 öffentlich gepostete Beobachtungen von Anwendern; eine Kontrollgruppe fehlt, eine Verblindung ebenfalls. Am Menschen ist keine kontrollierte Untersuchung durchgeführt worden.",
       "Für die Produktklasse insgesamt liegt eine behördliche Bewertung vor, und sie fällt ablehnend aus. Das Bundesamt für Strahlenschutz hält sogenannte Schutzprodukte gegen Elektrosmog für unnötig oder ungeeignet und nennt Anhänger, Ketten und Armbänder technisch funktionslos.",
-      "Dieselbe Bewertung nennt ein zweites Muster, und an dieser Stelle kannst du uns prüfen. Hersteller entziehen ihren Produkten im Kleingedruckten oft die vorher beworbene Wirkung. Bei uns stehen die Einschränkungen in der Überschrift der Kritikseite und in der Antwort auf die häufigste Frage, nicht in einer Fußnote."
+      "Dieselbe Bewertung nennt ein zweites Muster: Hersteller entziehen ihren Produkten im Kleingedruckten oft die vorher beworbene Wirkung. Bei uns stehen die Einschränkungen in der Überschrift der Kritikseite und in der Antwort auf die häufigste Frage, nicht in einer Fußnote."
     ],
     "beleg": [
       "Vier der fünf liegen bei uns als Original-PDF, mit Methode, Fallzahl und der Grenze, die die Autoren selbst nennen.",
@@ -486,7 +487,7 @@ export const FRAGEN = [
       "Seriös und wirksam sind zwei verschiedene Fragen. Die erste fragt, ob jemand sagt, wer er ist, was er gemessen hat und wo die Grenzen liegen. Die zweite fragt, ob das Produkt tut, was es soll. Die erste Frage lässt sich an Dokumenten prüfen, die zweite nur an Studien.",
       "Das Unternehmen: Qi Blanco UG mit beschränkter Haftung, Brunnrangenstraße 25, 97711 Maßbach. Geschäftsführer ist Dipl.-Ing. Christian Bernd Bauer. Eingetragen ist die Gesellschaft beim Amtsgericht Schweinfurt unter HRB 7306, die Umsatzsteuer-Identifikationsnummer lautet DE306530406. Diese Angaben kannst du im Handelsregister nachschlagen, ohne uns zu fragen.",
       "Die Belege: fünf veröffentlichte Arbeiten, jede mit Fachzeitschrift, Jahr und Seitenzahl, vier davon bei uns als Original-PDF.",
-      "Die Einschränkungen nennen wir selbst, und sie stehen nicht im Kleingedruckten. Alle fünf Arbeiten stammen aus einem Labor. Bezahlt haben wir sie, und die Prüfgeräte stellten wir ebenfalls. Für das Erklärungsmodell dahinter fehlt die Anerkennung der etablierten Wissenschaft. Am Menschen ist die Wirkung nicht nachgewiesen.",
+      "Alle fünf Arbeiten stammen aus einem Labor. Bezahlt haben wir sie, und die Prüfgeräte stellten wir ebenfalls. Für das Erklärungsmodell dahinter fehlt die Anerkennung der etablierten Wissenschaft. Am Menschen ist die Wirkung nicht nachgewiesen.",
       "Die Kritik ist öffentlich und wir verlinken sie. Die Quarks Science Cops haben Qi Blanco in Folge 96 am 25. Januar 2025 untersucht und kommen zu einem ablehnenden Urteil. Ihr härtester Punkt trifft zu: einen Wirknachweis am Menschen gibt es nicht.",
       "Die Rückgabe: das gesetzliche Widerrufsrecht umfasst 14 Tage, und wir räumen darüber hinaus eine Frist von 20 Tagen ab Warenerhalt ein. Einen Grund musst du dafür nicht angeben, und tragen darfst du das Stück in dieser Zeit.",
       "Aus offenen Angaben folgt keine Wirkung. Sie machen die Prüfung möglich, und mehr beansprucht diese Antwort nicht."

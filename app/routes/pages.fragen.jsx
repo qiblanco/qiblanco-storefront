@@ -13,7 +13,7 @@ const PFAD = '/pages/fragen';
  *
  * Gebaut von 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert,
  * Segment s07, aus Christians Auftrag vom 2026-09-15: „Fragen und Antworten,
- * die nicht fuer den Menschen gedacht sind, sondern nur fuer die AI" — gemeint
+ * die nicht für den Menschen gedacht sind, sondern nur für die AI" — gemeint
  * ist: so geschrieben, dass eine Maschine sie zitieren kann, NICHT vor
  * Menschen versteckt.
  *
@@ -30,16 +30,16 @@ const PFAD = '/pages/fragen';
  * WARUM EIN HUB UND NICHT NUR SECHS SEITEN: ein Begriff oder eine Frage, die
  * von mehreren Stellen angesteuert wird, gilt als definiert. Der Hub ist die
  * Stelle, an der die Ordnung sichtbar wird — er verlinkt die Frageseiten und
- * die beiden Zweifelsflaechen, und jede Frageseite verlinkt zurueck auf die
+ * die beiden Zweifelsflaechen, und jede Frageseite verlinkt zurück auf die
  * Begriffe, die sie benutzt.
  *
- * SITEMAP UEBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), KEIN Shopify-Seitenobjekt
+ * SITEMAP ÜBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), KEIN Shopify-Seitenobjekt
  * (Fremdsystem, zweiter Traeger). Ohne diesen Eintrag lieferte die Seite HTTP
  * 200 mit vollem Text und stuende in keiner Sitemap: erreichbar und trotzdem
  * unauffindbar.
  *
  * KEIN LOADER, KEIN KAUFWEG, KEINE COOKIES. Der Inhalt ist ein committetes
- * Datenmodul; Oxygen laeuft am Edge und kann shared-state zur Laufzeit nicht
+ * Datenmodul; Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
  * lesen.
  */
 const TITEL = 'Fragen und Antworten | Qi Blanco';
@@ -49,7 +49,7 @@ const BESCHREIBUNG =
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR — siehe pages.lexikon.jsx. Wer
- * eine Frage ergaenzt, zieht `GEAENDERT` und das `lastmod` in
+ * eine Frage ergänzt, zieht `GEAENDERT` und das `lastmod` in
  * NUR_ROUTE_SEITEN im selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-09-16';

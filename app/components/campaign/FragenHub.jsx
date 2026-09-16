@@ -86,7 +86,7 @@ export function FragenHub() {
             </li>
             <li>
               <a href="/pages/hypothesen">
-                Unser Wirkmodell, mit Stärken und Schwächen
+                Unser Wirkmodell: sechs Hypothesen mit ihren Quellen
               </a>
             </li>
             <li>
@@ -100,18 +100,17 @@ export function FragenHub() {
 
       <section data-section="frg-hub-haltung">
         <div className="frg__inhalt">
-          <h2>Warum hier auch steht, was wir nicht wissen</h2>
+          <h2>Erfahrung und Messung sind zwei verschiedene Fragen</h2>
           <p>
-            Zwischen Erfahrung und Messung liegt kein Widerspruch, sondern ein
-            Übersetzungsproblem. Menschen berichten uns Wirkungen, und
-            gleichzeitig gibt es Fragen, auf die wir keine Messung haben. Beides
-            aufzuschreiben kostet uns jedes Mal ein Stück Behauptung und ist es
-            wert.
+            Ob jemand eine Wirkung spürt, und ob ein Messgerät sie zeigt, sind
+            zwei Fragen mit zwei Antworten. Die erste beantwortet jeder für
+            sich, die zweite ein Versuchsaufbau. Beide Antworten stehen auf
+            diesen Seiten nebeneinander, mit Zahl und Fundstelle, wo es eine
+            gibt.
           </p>
           <p>
-            Wer nur sagt, was für ihn spricht, ist nicht zu widerlegen und
-            deshalb auch nicht zu glauben. Du sollst bei uns sehen, woran du
-            bist.
+            Damit kannst du entscheiden, ohne uns glauben zu müssen: jede Zahl
+            hier lässt sich nachschlagen, und wo eine fehlt, steht es da.
           </p>
         </div>
       </section>

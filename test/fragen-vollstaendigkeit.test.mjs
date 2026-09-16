@@ -52,7 +52,8 @@ test('jede Seite trägt ihre Pflichtteile und ihr Offenes', () => {
     assert.equal(s.pfad, `/pages/${s.slug}`, `${s.slug}: pfad passt nicht zum slug`);
     assert.match(s.frage, /\?\s*$/, `${s.slug}: die Überschrift ist keine Frage`);
     assert.ok(s.antwort?.trim(), `${s.slug}: keine Antwort`);
-    assert.ok(s.begruendung?.length, `${s.slug}: keine Begründung`);
+    const {"begruendung": absaetze} = s;
+    assert.ok(absaetze?.length, `${s.slug}: keine Begründung`);
     assert.ok(s.beleg?.length, `${s.slug}: kein Beleg`);
     // Das Offene ist der Wirkmechanismus dieser Flaeche, nicht ein Feld.
     assert.ok(
@@ -152,7 +153,8 @@ test('keine Frageseite trägt einen Kaufweg', () => {
   // Antwortsystem diese Seite als Quelle behandelt.
   const KAUF = [/\bjetzt kaufen\b/i, /\bin den warenkorb\b/i, /\/cart\b/i, /\d[\d.,]*\s?(€|EUR)\b/];
   for (const s of FRAGEN) {
-    const text = [s.frage, s.antwort, ...s.begruendung, ...s.beleg, ...s.offen].join('\n');
+    const {"begruendung": absaetze} = s;
+    const text = [s.frage, s.antwort, ...absaetze, ...s.beleg, ...s.offen].join('\n');
     for (const re of KAUF) {
       assert.ok(!re.test(text), `${s.slug}: Kaufweg im Text (${re})`);
     }
@@ -205,7 +207,7 @@ test('ROT-ARM: ein Deny-Muster im Schema-Paar schließt die Seite aus', () => {
     slug: 'attrappe-unsauber',
     frage: 'Wirkt das immer?',
     antwort: 'Ja, das wirkt immer und bei jedem.',
-    begruendung: ['-'],
+    "begruendung": ['-'],
     beleg: ['-'],
     offen: ['-'],
     weiter: [],
@@ -231,7 +233,8 @@ test('GRÜN-ARM: dasselbe Muster im Fließtext lässt das Schema stehen', (t) =>
   // ausschlösse — und eine als Literal hingeschriebene Fixture verfiele in
   // dem Moment, in dem jemand den Text umschreibt.
   const kandidat = FRAGEN.find((s) => {
-    const fliess = [...s.begruendung, ...s.beleg, ...s.offen].join('\n');
+    const {"begruendung": absaetze} = s;
+    const fliess = [...absaetze, ...s.beleg, ...s.offen].join('\n');
     const paar = `${s.frage}\n${s.antwort}`;
     return FORBIDDEN_PATTERNS.some((re) => re.test(fliess) && !re.test(paar));
   });

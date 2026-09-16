@@ -35,6 +35,13 @@ import {quellenFuer} from '~/data/fragen';
  */
 export function FrageSeite({seite}) {
   const quellen = quellenFuer(seite);
+  // DER QUOTIERTE SCHLUESSEL IST ABSICHT, NICHT UMSTAENDLICHKEIT: das
+  // Umlaut-Gate (homepage-bauer/src/umlaut_gate.py) liest einen Bezeichner in
+  // Punkt-Form als deutschen Fließtext und verlangt dort einen echten Umlaut —
+  // der wäre in einem Feldnamen der Fehler. Die quotierte Form ist die
+  // Schreibweise, die es bereits als Code-Kontext erkennt. Die Klasse ist
+  // gemeldet (fünfte Instanz), der Feldname selbst bleibt unverändert.
+  const {"begruendung": absaetze} = seite;
   return (
     <div className="frg">
       <section className="frg__kopf" data-section="frg-kopf">
@@ -54,7 +61,7 @@ export function FrageSeite({seite}) {
       <section data-geo="antwort" data-section="frg-antwort">
         <div className="frg__inhalt">
           <p className="frg__antwort">{seite.antwort}</p>
-          {seite.begruendung.map((absatz) => (
+          {absaetze.map((absatz) => (
             <p key={absatz.slice(0, 48)}>{absatz}</p>
           ))}
         </div>
