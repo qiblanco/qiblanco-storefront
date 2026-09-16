@@ -131,7 +131,12 @@ test('GEGENKONTROLLE: der Maßstab weist eine Strichzeichnung und eine feste Far
 test('jede Symbol-Datei hält die Machart der Vorlage', () => {
   const machart = vorlageMachart();
   const dateien = svgDateien();
-  assert.ok(dateien.length >= 5, `nur ${dateien.length} Symbol-Dateien, erwartet mindestens 5`);
+  assert.equal(
+    dateien.length,
+    5,
+    `${dateien.length} Symbol-Dateien statt 5 — hier liegen nur die ausgelieferten. ` +
+      `Die Gegenentwürfe gehören in den Postausgang, nicht in ein Produktionsverzeichnis.`,
+  );
   for (const f of dateien) {
     const roh = readFileSync(join(SYMBOL_DIR, f), 'utf8');
     assert.deepEqual(stilkonform(roh, machart), [], `${f} hält die Machart nicht`);
