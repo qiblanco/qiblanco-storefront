@@ -143,7 +143,7 @@ const FUNNEL = [
 ];
 
 const BADGES = [
-  {mark: '✦', titel: '750er Gold', sub: 'im Gitterchip'},
+  {mark: '✦', titel: '750er Gold', sub: 'im Gitterchip™'},
   {mark: '⚑', titel: 'Fertigung in Bayern', sub: 'Deutschland'},
   {mark: '▤', titel: '4 Publikationen', sub: 'präklinisch, als PDF'},
   {mark: '↺', titel: '20 Tage', sub: 'Geld-zurück'},

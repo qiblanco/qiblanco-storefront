@@ -87,7 +87,7 @@ export function QiMasterTreppe({treppe, titelId = 'qm-treppe-titel', kompakt = f
             über der Tabelle ist seit 2026-09-16 Christians Fassung. Löschen
             wäre kein Textumbau, sondern ein Rückschritt für Screenreader. */}
         <caption className="qm-treppe__caption qm-treppe__caption--nur-sr">
-          Die Vorverkaufstreppe des QiMaster — alle vier Stufen und der
+          Die Vorverkaufstreppe des Qi Master® — alle vier Stufen und der
           reguläre Preis danach.
         </caption>
         <thead>

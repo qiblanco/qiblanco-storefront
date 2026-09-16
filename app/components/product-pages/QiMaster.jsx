@@ -65,13 +65,13 @@ export default function QiMaster({block = undefined}) {
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
         }
-        headline={<>Dein QiMaster begleitet dich<br />Tag und Nacht.</>}
+        headline={<>Dein Qi Master® begleitet dich<br />Tag und Nacht.</>}
         subheadline={'Ein Stück, das du nicht ablegen musst.'}
         parallax={true}
         size={850}
         link={'#qm-buybox'}
         linkStyling={'primary'}
-        linkText={'Hole dir deinen QiMaster'}
+        linkText={'Hole dir deinen Qi Master®'}
       />
       {/* Die Überschrift sagt, WAS die Studien sind — veröffentlicht —, statt
           vorwegzunehmen, woran sie gemessen wurden (Christian 2026-09-16,
@@ -213,7 +213,7 @@ function MainFeatures() {
         <div className="MainFeaturesColumn">
           <h3>Vorbereitet auf das, was kommt</h3>
           <p>
-            Durch dieses einmalige Duett des Gitterchips™ und "The One Eye" ist
+            Durch dieses einmalige Duett des Gitterchip™s™ und "The One Eye" ist
             der Qi Master® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob
             sie 7G oder Umweltgifte lautet. Der Qi Master® leistet auf jeder
             Ebene das erdenkliche Maximum.
@@ -373,7 +373,7 @@ function PersoenlichkeitAbschnitt() {
 function GitterchipQiMaster() {
   return (
     <div className="Gitterchip NormalSectionSize">
-      <h2 className="text-center">Der Gitterchip™ im QiMaster</h2>
+      <h2 className="text-center">Der Gitterchip™ im Qi Master®</h2>
       <div className="GitterchipImageWrapper mt-2">
         <img
           width={300}
@@ -382,18 +382,18 @@ function GitterchipQiMaster() {
         />
       </div>
       <div className="mb-3 mt-2 text-center">
-        <small><strong>Der Gitterchip™ – Aufnahme aus dem QiOne® 2 Pro; der QiMaster trägt denselben Chip.</strong></small>
+        <small><strong>Der Gitterchip™ – Aufnahme aus dem QiOne® 2 Pro; der Qi Master® trägt denselben Chip.</strong></small>
       </div>
       <h3>Ohne Elektronik</h3>
       <p>
-        Der Gitterchip enthält keine elektronischen Bauteile und keine
+        Der Gitterchip™ enthält keine elektronischen Bauteile und keine
         Batterie. Maßgeblich ist die Anordnung der Goldatome in einer
         maßgeschneiderten 750er Goldlegierung – sie erzeugt ein statisches Feld,
         das Wassermoleküle in seiner Umgebung prägt.
       </p>
       <h3 className="mt-3">Für jeden Einsatzort</h3>
       <p>
-        Sauna, Meer, Schwimmbad, Sport: Der Gitterchip ist beständig gegen
+        Sauna, Meer, Schwimmbad, Sport: Der Gitterchip™ ist beständig gegen
         Hitze, Chlor, Salzwasser und Schweiß. Ein Stück, das du nicht ablegen
         musst.
       </p>
@@ -411,7 +411,7 @@ function Fertigung() {
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 17h3l-4 4l-4-4h3V3h2zM9 13H7c-1.1 0-2 .9-2 2v1a2 2 0 0 0 2 2h2v1H5v2h4c1.11 0 2-.89 2-2v-4a2 2 0 0 0-2-2m0 3H7v-1h2zM9 3H7c-1.1 0-2 .9-2 2v4a2 2 0 0 0 2 2h2c1.11 0 2-.89 2-2V5a2 2 0 0 0-2-2m0 6H7V5h2z"></path></svg>{' '}
             Eigene Seriennummer
           </h3>
-          <p>Jeder QiMaster ist nummeriert – ein Stück, das es nur einmal gibt.</p>
+          <p>Jeder Qi Master® ist nummeriert – ein Stück, das es nur einmal gibt.</p>
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m1 22l1.5-5h7l1.5 5zm12 0l1.5-5h7l1.5 5zm-7-7l1.5-5h7l1.5 5zm17-8.95l-3.86 1.09L18.05 11l-1.09-3.86l-3.86-1.09l3.86-1.09l1.09-3.86l1.09 3.86z"></path></svg>{' '}
             750er Gold
@@ -423,13 +423,13 @@ function Fertigung() {
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21L2 9l3-6h14l3 6zM9.625 8h4.75l-1.5-3h-1.75zM11 16.675V10H5.45zm2 0L18.55 10H13zM16.6 8h2.65l-1.5-3H15.1zM4.75 8H7.4l1.5-3H6.25z"></path></svg>{' '}
             Diamanten
           </h3>
-          <p>Echte Diamanten – reiner Kohlenstoff, gefasst am Gitterchip.</p>
+          <p>Echte Diamanten – reiner Kohlenstoff, gefasst am Gitterchip™.</p>
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-8a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"></path></svg>{' '}
             Die Iris: 108 Striche
           </h3>
           <p>
-            Rund um das Auge des QiMaster laufen 108 Striche – die Zahl, die in
+            Rund um das Auge des Qi Master® laufen 108 Striche – die Zahl, die in
             der Yoga-Überlieferung für Vollständigkeit steht.
           </p>
         </div>

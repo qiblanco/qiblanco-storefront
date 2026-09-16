@@ -98,7 +98,7 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // wirkt erst, wenn Christian es aktiviert. Nur Beschaffenheit, keine
   // Wirkzusage — derselbe Korridor wie die sechs Eintraege darueber.
   '/products/qi-master':
-    'QiMaster: der QiOne mit Diamanten. Gitterchip der zweiten Generation, Kette ' +
+    'Qi Master®: der QiOne mit Diamanten. Gitterchip™ der zweiten Generation, Kette ' +
     'und Verschluss aus 750er Gold, nummeriertes Einzelstück. 20 Tage risikofrei.',
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +

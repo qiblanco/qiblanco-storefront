@@ -128,15 +128,15 @@ export function MmSoWirktWasser({products}) {
         sub="Bevor du irgendetwas kaufst: verstehe den Gedanken dahinter. Kein Wunder, kein Heilstrahl. Ein physikalisches Ordnungs-Modell, das wir offen erklären und ehrlich begrenzen."
         bullets={[
           'Was „Kohärenz" konkret meint, in einfachen Worten',
-          'Welche Rolle der Gitterchip spielt',
+          'Welche Rolle der Gitterchip™ spielt',
           'Wo das Modell endet und die Evidenz beginnt',
         ]}
         cta={{href: '#kette', label: 'Die Wirkkette ansehen'}}
         ctaSekundaer={{href: '/pages/zellstudien-ehrlich', label: 'Direkt zur Evidenz'}}
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861',
-          alt: 'Frontansicht des Gitterchips mit der 750er-Gold-Gitterstruktur',
-          hint: 'Der Gitterchip ist der Ausgangspunkt des Modells.',
+          alt: 'Frontansicht des Gitterchip™s mit der 750er-Gold-Gitterstruktur',
+          hint: 'Der Gitterchip™ ist der Ausgangspunkt des Modells.',
         }}
       />
 
@@ -167,7 +167,7 @@ export function MmSoWirktWasser({products}) {
             text: 'Wassermoleküle ordnen sich je nach Umgebung unterschiedlich an. Diese Anordnung („Ordnung" oder „Kohärenz") ist keine Esoterik, sondern Gegenstand der physikalischen Chemie.',
           },
           {
-            titel: '2. Der Gitterchip als Vorlage',
+            titel: '2. Der Gitterchip™ als Vorlage',
             text: 'Ein präzises 750er-Gold-Gitter (22,61 mm3 Wirkvolumen) dient als feste Struktur, an der sich benachbartes Wasser geordneter ausrichten soll, passiv und ohne Energiezufuhr.',
           },
           {
@@ -192,7 +192,7 @@ export function MmSoWirktWasser({products}) {
         dataSection="mm-mechanismus-stats"
         stats={[
           {zahl: '~66 %', label: 'Wasseranteil im Körper'},
-          {zahl: '22,61 mm³', label: 'Wirkvolumen Gitterchip'},
+          {zahl: '22,61 mm³', label: 'Wirkvolumen Gitterchip™'},
           {zahl: '750er', label: 'Gold im Gitter'},
           {zahl: '4', label: 'In-vitro-Studien dazu'},
         ]}

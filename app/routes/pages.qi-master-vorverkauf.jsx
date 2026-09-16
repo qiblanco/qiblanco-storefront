@@ -97,11 +97,11 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'QiMaster Vorverkauf – die Treppe bis Ende des Jahres | Qi Blanco'},
+  {title: 'Qi Master® Vorverkauf – die Treppe bis Ende des Jahres | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Der QiMaster geht nie in eine Rabattaktion. Bis zum 31.12.2026 gibt es eine Ausnahme, und sie wird jeden Monat kleiner.',
+      'Der Qi Master® geht nie in eine Rabattaktion. Bis zum 31.12.2026 gibt es eine Ausnahme, und sie wird jeden Monat kleiner.',
   },
   noindexMeta(),
 ];
@@ -125,7 +125,7 @@ export default function QiMasterVorverkaufRoute() {
         <div className="qm-lp__kopf-inhalt">
           <span className="qm-lp__auge">Vorverkauf</span>
           <h1 className="qm-lp__titel">
-            Du warst schon da. Deshalb bekommst du den QiMaster zuerst – und zum
+            Du warst schon da. Deshalb bekommst du den Qi Master® zuerst – und zum
             besten Preis, den es je für ihn geben wird.
           </h1>
           <p className="qm-lp__vorspann">
@@ -155,24 +155,24 @@ export default function QiMasterVorverkaufRoute() {
       </section>
 
       <section className="qm-lp__inhalt" aria-labelledby="qm-lp-gerät">
-        <h2 id="qm-lp-gerät">Warum es den QiMaster überhaupt gibt</h2>
+        <h2 id="qm-lp-gerät">Warum es den Qi Master® überhaupt gibt</h2>
         <p>
           Ein Diamant ist reiner Kohlenstoff – dasselbe Element, aus dem jede
           Zelle deines Körpers gebaut ist. Das ist der Gedanke, aus dem der
-          QiMaster entstanden ist: nicht ein Stein als Schmuck, sondern derselbe
-          Grundstoff, gefasst am Gitterchip.
+          Qi Master® entstanden ist: nicht ein Stein als Schmuck, sondern derselbe
+          Grundstoff, gefasst am Gitterchip™.
         </p>
 
-        <h3>Der Gitterchip der zweiten Generation</h3>
+        <h3>Der Gitterchip™ der zweiten Generation</h3>
         <p>
-          Der Kern ist derselbe Gitterchip, den auch der QiOne® 2 Pro trägt:
+          Der Kern ist derselbe Gitterchip™, den auch der QiOne® 2 Pro trägt:
           eine 750er Goldlegierung, deren Atome in einer festgelegten Ordnung
           stehen. Ohne Elektronik, ohne Batterie, ohne Verschleiß.
         </p>
 
         <h3>Ein Stück, das es nur einmal gibt</h3>
         <ul className="qm-lp__liste">
-          <li>Echte Diamanten, gefasst am Gitterchip.</li>
+          <li>Echte Diamanten, gefasst am Gitterchip™.</li>
           <li>
             Kette und Verschluss aus 750er Gold, beides mit Qi-Blanco-Logo.
           </li>
@@ -189,7 +189,7 @@ export default function QiMasterVorverkaufRoute() {
       >
         <h2 id="qm-lp-grenzen">Was er kann – und was er nicht kann</h2>
         <p>
-          Untersucht wurde der Gitterchip, nicht das Schmuckstück: die
+          Untersucht wurde der Gitterchip™, nicht das Schmuckstück: die
           Zellstudien sind am QiOne® 2 Pro in vitro durchgeführt worden, also
           an Zellen im Labor. Sie belegen keinen Heileffekt am Menschen.
         </p>
@@ -202,7 +202,7 @@ export default function QiMasterVorverkaufRoute() {
 
       <section className="qm-lp__inhalt qm-lp__handlung">
         <a className="qm-lp__knopf" href="/products/qi-master">
-          Zum QiMaster
+          Zum Qi Master®
         </a>
         <p className="qm-lp__knopf-hinweis">
           Der Preis deiner Stufe steht auf der Produktseite – dort kaufst du
@@ -223,7 +223,7 @@ export default function QiMasterVorverkaufRoute() {
           </p>
           <p>
             Wir schreiben das hier auf, damit es nachlesbar ist: wer den
-            QiMaster später kauft, soll nicht das Gefühl haben, zu früh gekauft
+            Qi Master® später kauft, soll nicht das Gefühl haben, zu früh gekauft
             zu haben.
           </p>
         </div>

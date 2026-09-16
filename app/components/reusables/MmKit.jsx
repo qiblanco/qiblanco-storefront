@@ -296,7 +296,7 @@ export function MmDiagramWasser({caption}) {
 export function MmDiagramChip({caption}) {
   return (
     <figure className="mm-diagramm">
-      <div className="mm-diagramm__einzel" role="img" aria-label="Aufbau des Gitterchips im Querschnitt">
+      <div className="mm-diagramm__einzel" role="img" aria-label="Aufbau des Gitterchip™s im Querschnitt">
         <svg viewBox="0 0 320 168" aria-hidden="true">
           <rect x="40" y="28" width="240" height="104" rx="8" className="mm-dia-flaeche" />
           <rect x="40" y="28" width="240" height="104" rx="8" className="mm-dia-kontur" />

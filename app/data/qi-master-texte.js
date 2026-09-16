@@ -42,7 +42,7 @@
 export const QIMASTER_DIAMANT = {
   titel: 'Warum ein Diamant',
   einstieg: [
-    'Ein Diamant ist reiner Kohlenstoff – nichts anderes. Und Kohlenstoff ist das Element, auf dem alles Leben aufbaut, das wir kennen: Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Gerüst aus Kohlenstoffatomen. Das ist der Gedanke, mit dem der Diamant in den QiMaster gekommen ist.',
+    'Ein Diamant ist reiner Kohlenstoff – nichts anderes. Und Kohlenstoff ist das Element, auf dem alles Leben aufbaut, das wir kennen: Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Gerüst aus Kohlenstoffatomen. Das ist der Gedanke, mit dem der Diamant in den Qi Master® gekommen ist.',
     'Was daran in der Literatur steht, was gemessen ist und was unsere Deutung bleibt, trennen wir hier auf – Satz für Satz. Nicht, weil der Gedanke schwach wäre, sondern weil er so stärker ist.',
   ],
   befunde: [
@@ -77,7 +77,7 @@ export const QIMASTER_DIAMANT = {
       label: 'In der Literatur',
       beleg: false,
       absaetze: [
-        'Kohärenz heißt: viele Teilchen schwingen im Gleichtakt. Kristalle sind das alltäglichste Beispiel dafür – der Physiker Emilio Del Giudice und seine Kollegen nennen den Diamanten, der seine Kohärenz erst bei rund 3.545 °C verliert, wenn er schmilzt. Dieselbe Arbeitsgruppe hat beschrieben, dass auch flüssiges Wasser kohärente Bereiche bildet: Domänen von etwa einem Zehntel Mikrometer, in denen Millionen Moleküle im Takt schwingen. Von dieser Ordnung im Wasser her denken wir auch den Gitterchip.',
+        'Kohärenz heißt: viele Teilchen schwingen im Gleichtakt. Kristalle sind das alltäglichste Beispiel dafür – der Physiker Emilio Del Giudice und seine Kollegen nennen den Diamanten, der seine Kohärenz erst bei rund 3.545 °C verliert, wenn er schmilzt. Dieselbe Arbeitsgruppe hat beschrieben, dass auch flüssiges Wasser kohärente Bereiche bildet: Domänen von etwa einem Zehntel Mikrometer, in denen Millionen Moleküle im Takt schwingen. Von dieser Ordnung im Wasser her denken wir auch den Gitterchip™.',
       ],
       zitat: null,
       quelle:
@@ -98,7 +98,7 @@ export const QIMASTER_DIAMANT = {
   ],
   deutung: [
     'Was keiner dieser Autoren schreibt – und was deshalb allein auf unsere Rechnung geht: dass ein geschliffener Diamant in einem Schmuckstück am Körper Frequenzen erzeugt, die dem Schwingungsbereich menschlicher Zellen näher liegen. König hat mit ungeschliffenen Rohdiamanten gearbeitet, nicht mit Schmucksteinen. Del Giudice und Popp haben über Diamanten am Körper nie geschrieben, Pollack nicht über Diamanten. Die Verbindung zwischen ihren Befunden ist unsere Deutung.',
-    'Sie lautet: Ein Diamant ist Kohlenstoff, unsere Zellen sind Kohlenstoff, und was der Diamant an Licht ordnet, liegt näher an dem, was Kohlenstoff im Körper aufnehmen kann, als alles andere, was wir in einen Anhänger fassen könnten. So haben wir den QiMaster gebaut: einen Diamanten, der Licht ordnet, neben einem Gitterchip, der Wasser ordnet. Ob beides einander verstärkt, haben wir nicht gemessen. Wenn wir es messen, steht es hier.',
+    'Sie lautet: Ein Diamant ist Kohlenstoff, unsere Zellen sind Kohlenstoff, und was der Diamant an Licht ordnet, liegt näher an dem, was Kohlenstoff im Körper aufnehmen kann, als alles andere, was wir in einen Anhänger fassen könnten. So haben wir den Qi Master® gebaut: einen Diamanten, der Licht ordnet, neben einem Gitterchip™, der Wasser ordnet. Ob beides einander verstärkt, haben wir nicht gemessen. Wenn wir es messen, steht es hier.',
   ],
   quellen: [
     'Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 144–145, 168–175.',
@@ -114,12 +114,12 @@ export const QIMASTER_DIAMANT = {
 export const QIMASTER_SECHS_G = {
   titel: '6G-Protection: nicht auf eine Frequenz gebaut',
   absaetze: [
-    'Der Gitterchip ist kein Abschirmprodukt. Er enthält keine Elektronik, er filtert kein Frequenzband, und er sitzt nicht am Sender, sondern bei dir: Sein statisches Feld prägt das Wasser um deine Zellen. Deshalb ist er nicht auf eine Mobilfunkgeneration gebaut – nicht auf 4G, nicht auf 5G und auch nicht auf 6G. Das ist eine Aussage über die Bauweise. Was wir gemessen haben und was nicht, steht darunter.',
+    'Der Gitterchip™ ist kein Abschirmprodukt. Er enthält keine Elektronik, er filtert kein Frequenzband, und er sitzt nicht am Sender, sondern bei dir: Sein statisches Feld prägt das Wasser um deine Zellen. Deshalb ist er nicht auf eine Mobilfunkgeneration gebaut – nicht auf 4G, nicht auf 5G und auch nicht auf 6G. Das ist eine Aussage über die Bauweise. Was wir gemessen haben und was nicht, steht darunter.',
   ],
   gemessen: {
     titel: 'Was gemessen ist',
     absaetze: [
-      'In zwei begutachteten Zellstudien (Dartsch, 2021) lagen menschliche Immunzellen und Darmepithelzellen vier Stunden lang auf einem sendenden Smartphone mit aktivem WLAN (SAR 0,76 W/kg). Mit dem QiOne® 2 Pro – demselben Gitterchip, den der QiMaster trägt – behielten die Darmzellen ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen (TEER 1.837 gegenüber 152 Ω·cm²), und die Immunzellen ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts.',
+      'In zwei begutachteten Zellstudien (Dartsch, 2021) lagen menschliche Immunzellen und Darmepithelzellen vier Stunden lang auf einem sendenden Smartphone mit aktivem WLAN (SAR 0,76 W/kg). Mit dem QiOne® 2 Pro – demselben Gitterchip™, den der Qi Master® trägt – behielten die Darmzellen ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen (TEER 1.837 gegenüber 152 Ω·cm²), und die Immunzellen ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts.',
       'Das sind Zellkulturen, keine Menschen. Und auch die geschützten Zellen erreichten das Niveau unbestrahlter Kontrollen nicht ganz. Beides steht so in den Studien – du kannst sie im Volltext lesen.',
     ],
     quelle:
@@ -130,7 +130,7 @@ export const QIMASTER_SECHS_G = {
 export const QIMASTER_PERSOENLICHKEIT = {
   titel: 'Persönlichkeitsentwicklung durch erhöhte Zellschwingung – was wir damit meinen',
   einstieg: [
-    'Der QiMaster ist für Menschen gebaut, die an sich arbeiten. Der Satz „Persönlichkeitsentwicklung durch erhöhte Zellschwingung“ kommt aus einer Überlieferung, die älter ist als jede Messung – und er steht auf einem Fundament, das wir messen können. Beides gehört auf diese Seite. Damit du es unterscheiden kannst, steht es nebeneinander.',
+    'Der Qi Master® ist für Menschen gebaut, die an sich arbeiten. Der Satz „Persönlichkeitsentwicklung durch erhöhte Zellschwingung“ kommt aus einer Überlieferung, die älter ist als jede Messung – und er steht auf einem Fundament, das wir messen können. Beides gehört auf diese Seite. Damit du es unterscheiden kannst, steht es nebeneinander.',
   ],
   ueberlieferung: {
     label: 'Überlieferung',
@@ -159,8 +159,8 @@ export const QIMASTER_PERSOENLICHKEIT = {
     label: 'Gebaut und gemessen',
     titel: 'Das technische Fundament',
     absaetze: [
-      'Gebaut: Der Gitterchip im QiMaster ist ein Bauteil ohne Elektronik – eine 750er Goldlegierung, deren Atome in einer festgelegten Ordnung stehen. Diese Ordnung prägt Wasser in seiner Umgebung: Die Moleküle bilden mehr Wasserstoffbrücken aus, ein Zustand, den die Physik kohärent nennt.',
-      'Gemessen: In begutachteten Zellstudien (Dartsch, 2021) behielten Zellen unter der Strahlung eines sendenden Smartphones mit dem QiOne® 2 Pro – demselben Gitterchip – ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen, und Immunzellen ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts. Das sind Zellkulturen. Es sind keine Menschen, und es ist keine Aussage über Persönlichkeit.',
+      'Gebaut: Der Gitterchip™ im Qi Master® ist ein Bauteil ohne Elektronik – eine 750er Goldlegierung, deren Atome in einer festgelegten Ordnung stehen. Diese Ordnung prägt Wasser in seiner Umgebung: Die Moleküle bilden mehr Wasserstoffbrücken aus, ein Zustand, den die Physik kohärent nennt.',
+      'Gemessen: In begutachteten Zellstudien (Dartsch, 2021) behielten Zellen unter der Strahlung eines sendenden Smartphones mit dem QiOne® 2 Pro – demselben Gitterchip™ – ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen, und Immunzellen ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts. Das sind Zellkulturen. Es sind keine Menschen, und es ist keine Aussage über Persönlichkeit.',
       'Dazu ein Modell, das wir nicht gemessen haben: Ulrich Warnke beschreibt, dass jede Zellmembran bei jeder Erregung eine kohärente elektromagnetische Welle im fernen Infrarot abstrahlt – bei einer Frequenz, die überraschend nah an einer Eigenfrequenz des Wassers liegt. Wenn das stimmt, sind Wasser und Zelle aufeinander abgestimmt, und Ordnung im Wasser wäre Ordnung, mit der die Zelle etwas anfangen kann. Das ist Warnkes Beschreibung; sie handelt von Zellen und Wasser, nicht von uns.',
     ],
     quelle:
@@ -168,6 +168,6 @@ export const QIMASTER_PERSOENLICHKEIT = {
   },
   deutung: [
     'Zwischen der Überlieferung und dem Fundament liegt ein Sprung, und den machen wir – nicht Yogananda, nicht Warnke, nicht Dartsch. Er lautet: Wer an sich arbeitet, arbeitet auch an seinem Gefäß. Ein Körper, dessen Wasser geordneter ist, ist – in unserer Deutung – ein Körper, der feinere Schwingung leichter trägt. Das ist der Gedanke hinter „erhöhte Zellschwingung“, und er ist genau das: ein Gedanke, der auf einem gemessenen Fundament steht und über es hinausgeht.',
-    'Der QiMaster ersetzt keine Übung, keine Meditation und keinen Lehrer. Er begleitet den, der sie hat.',
+    'Der Qi Master® ersetzt keine Übung, keine Meditation und keinen Lehrer. Er begleitet den, der sie hat.',
   ],
 };
