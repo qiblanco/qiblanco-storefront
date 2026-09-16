@@ -210,6 +210,40 @@ export const AUSSCHLUSS_SEGMENTE = [
   // ohne Ausschluss wuerfe die Weiche den Betrachter auf LP A und die
   // Review-URL saehe „kaputt" aus. Genau die DEV-DB-Regel oben.
   LP_V3_PFAD,
+  // DIE FÜNF ZIELE DES KRITIK-SUCHERS (Grossjob 20260916-wer-kritik-sucht-
+  // soll-uns-zuerst-finden, Segment s04; Christian-Auftrag 2026-09-16).
+  //
+  // GEMESSEN, NICHT VERMUTET (2026-09-16T12:37Z, erster Hop je Pfad mit
+  // ?utm_medium=paid&utm_source=google&gclid=TESTS04): alle fünf gaben 302
+  // auf LP A mit lp_m=w, waehrend LP A selbst im selben Lauf 200 gab. Die
+  // Ausschluss-Mechanik war also gesund — diese Pfade standen nur nicht drin.
+  //
+  // WARUM SIE HIER HINEINGEHOEREN, und warum das KEINE Aufweichung des
+  // Dekrets vom 2026-07-24 ist: Christians juengere Anweisung vom 2026-09-16
+  // baut ausdrücklich eine Anzeige für den Suchbegriff "Qi Blanco Kritik"
+  // und begründet sie woertlich damit, dass "eine Anzeige, die auf Qi Blanco
+  // Kritik mit einem Kaufversprechen antwortet, genau den Verdacht bestaetigt,
+  // den der Sucher hat". LP A IST das Kaufversprechen. Die Weiche haette diese
+  // Anzeige und die vier Sitelinks daneben also in ihr Gegenteil verkehrt —
+  // der Sucher tippt "Kritik" und landet auf der Kaufseite. Das ist derselbe
+  // Fall wie die vier Anzeigen vom 2026-08-27, die "Vier Studien offen
+  // einsehbar" versprachen und auf LP A landeten, eine Klasse hoeher: dort
+  // brach eine Anzeige ihr Versprechen, hier haette sie den Verdacht bestaetigt.
+  //
+  // REICHWEITE EHRLICH BENANNT: die drei unteren Pfade sind ZUSAETZLICH
+  // Sitelink-Ziele der Marken-Kampagne 8925560332. Für deren bezahlte Klicks
+  // aendert sich das Verhalten damit ebenfalls — sie landen kuenftig auf der
+  // Seite, die der Sitelink verspricht, statt auf LP A. Das ist gewollt und
+  // gemessen (Vorher-Stand je Asset im RESULT des Segments), kein Nebeneffekt.
+  //
+  // NICHT in dieser Liste: /pages/wirkt-das. Es ist die staerkste Skeptiker-
+  // Seite des Bestands, aber kein Ziel dieses Auftrags und kein Sitelink —
+  // es ohne Anlass mitzunehmen wäre ein Zaun ohne Gegenstand.
+  '/pages/kritik',
+  '/blogs/wissen',
+  '/pages/studien',
+  '/pages/erfahrungen',
+  '/pages/technologie',
   '/go',
   '/collect',
   '/b',
