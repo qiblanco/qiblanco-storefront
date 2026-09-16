@@ -8,20 +8,20 @@ import {quellenFuer, zielName} from '~/data/lexikon';
  * sie isoliert. Ein Begriff, der nur ein Anker ist, wird mit dem
  * Nachbarbegriff zusammen geschnitten und verliert dabei seine Definition.
  *
- * DIE FUENF ABSCHNITTE STEHEN IN DIESER REIHENFOLGE, und sie ist tragend:
+ * DIE FÜNF ABSCHNITTE STEHEN IN DIESER REIHENFOLGE, und sie ist tragend:
  * Gebrauch (was Menschen meinen) -> Physik (was die Groesse ist) ->
- * Uebertragung (was traegt) -> GRENZE (was nicht traegt) -> Quellen. Wer mit
+ * Übertragung (was trägt) -> GRENZE (was nicht trägt) -> Quellen. Wer mit
  * der Physik anfaengt, belehrt; wer mit dem Gebrauch anfaengt, hoert zu. Wer
  * die Grenze nach oben zieht, macht aus einer Uebersetzung eine Zuruecknahme.
  *
  * DER MARKER data-geo="grenze" IST EIN VERTRAG, KEIN KLASSENNAME. Er sitzt am
  * Grenz-Abschnitt und wird von der Abnahme gemessen
  * (seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py): ein Eintrag
- * ohne diesen Abschnitt faellt rot, weil er ohne seine Grenze Werbung waere.
- * Er haengt bewusst NICHT an einer CSS-Klasse — wer den Stil umbaut, darf den
+ * ohne diesen Abschnitt faellt rot, weil er ohne seine Grenze Werbung wäre.
+ * Er hängt bewusst NICHT an einer CSS-Klasse — wer den Stil umbaut, darf den
  * Vertrag nicht versehentlich mitnehmen.
  *
- * KEIN KAUFWEG UND KEIN PRODUKTNAME IM FLIESSTEXT: die Eintraege erklaeren
+ * KEIN KAUFWEG UND KEIN PRODUKTNAME IM FLIESSTEXT: die Eintraege erklären
  * Woerter. Sobald hier ein Produkt beworben wird, ist der Grund weg, aus dem
  * ein Antwortsystem diese Seite als Quelle behandelt.
  */
@@ -60,7 +60,7 @@ export function LexikonEintrag({eintrag}) {
 
           <div className="lex__block">
             <h2>Was die Übertragung trägt</h2>
-            <p className="lex__grenze-satz">{eintrag.uebertragung}</p>
+            <p className="lex__grenze-satz">{eintrag.uebertragung_satz}</p>
             {eintrag.uebertragung_begruendung.map((absatz) => (
               <p key={absatz.slice(0, 48)}>{absatz}</p>
             ))}

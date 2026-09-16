@@ -77,8 +77,13 @@
   background: var(--lex-grund);
 }
 
+/* DER HORIZONTALE INNENABSTAND SITZT AM TEXTCONTAINER, NICHT AN DER SEKTION.
+   Optisch dasselbe, messbar nicht: seiten_pruefliste.py P2 fragt, ob der
+   Container, der den Text traegt, einen Abstand zum Viewport-Rand hat -- eine
+   Sektion darum herum beantwortet das nicht, und der Befund "der Inhalt steht
+   hart am Rand" waere fuer einen Menschen am Handy die richtige Frage. */
 .lex section {
-  padding: var(--lex-s12) var(--lex-s3);
+  padding: var(--lex-s12) 0;
 }
 
 .lex section + section {
@@ -88,6 +93,7 @@
 .lex__inhalt {
   max-width: var(--lex-breit);
   margin: 0 auto;
+  padding-inline: var(--lex-s3);
 }
 
 .lex h1 {
@@ -266,7 +272,7 @@
 
 @media (max-width: 640px) {
   .lex section {
-    padding: var(--lex-s8) var(--lex-s3);
+    padding: var(--lex-s8) 0;
   }
 
   .lex section + section {

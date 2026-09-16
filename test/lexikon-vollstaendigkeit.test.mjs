@@ -7,12 +7,12 @@
  * kleinere, in sich stimmige Welt und bleibt gruen. Genauso still ist der
  * Ausschluss aus dem Schema: `hubSchema` filtert Eintraege, die ihr
  * Deny-Muster nicht in ihrer Grenze einfangen, und liefert dann einfach ein
- * kuerzeres JSON-LD. Die Seite bliebe sichtbar und wuerde nur fuer Maschinen
+ * kuerzeres JSON-LD. Die Seite bliebe sichtbar und würde nur für Maschinen
  * aermer, ohne eine einzige Fehlermeldung.
  *
  * KEINE GEPINNTE ZAHL. Jeder Sollwert hier kommt aus `LEXIKON.length`.
  * Waechst das Lexikon, waechst der Sollwert mit; ein Verify-Vertrag, der eine
- * wachsende Zahl festschreibt, ist rot-by-construction beim naechsten Eintrag.
+ * wachsende Zahl festschreibt, ist rot-by-construction beim nächsten Eintrag.
  *
  * ROT VOR GRUEN: die Arme `deny-netz greift` und `eintrag ohne grenze` fahren
  * den Ausschluss mit einer eigens gebauten Attrappe wirklich vor. Ein Gate,
@@ -35,7 +35,7 @@ import {
 const WURZEL = path.resolve(import.meta.dirname, '..');
 const DATUM = {datePublished: '2026-09-15T00:00:00+02:00', dateModified: '2026-09-15T00:00:00+02:00'};
 
-test('jeder Eintrag traegt die fuenf Pflichtteile und seine Grenze', () => {
+test('jeder Eintrag trägt die fünf Pflichtteile und seine Grenze', () => {
   assert.ok(LEXIKON.length > 0, 'LEXIKON ist leer');
   for (const e of LEXIKON) {
     assert.ok(e.slug && e.begriff, `Eintrag ohne slug/begriff: ${JSON.stringify(e).slice(0, 80)}`);
@@ -43,9 +43,9 @@ test('jeder Eintrag traegt die fuenf Pflichtteile und seine Grenze', () => {
     assert.ok(e.definition?.trim(), `${e.slug}: keine Definition`);
     assert.ok(e.gebrauch?.length, `${e.slug}: kein Gebrauch`);
     assert.ok(e.physik?.length, `${e.slug}: keine Physik`);
-    assert.ok(e.uebertragung?.trim(), `${e.slug}: keine Uebertragung`);
+    assert.ok(e.uebertragung_satz?.trim(), `${e.slug}: keine Übertragung`);
     // Die Grenze ist der Wirkmechanismus dieser Flaeche, nicht ein Feld.
-    assert.ok(e.grenze?.trim(), `${e.slug}: KEINE GRENZE — ein Eintrag ohne sie waere Werbung`);
+    assert.ok(e.grenze?.trim(), `${e.slug}: KEINE GRENZE — ein Eintrag ohne sie wäre Werbung`);
   }
 });
 
@@ -108,9 +108,9 @@ test('das Hub-Schema verliert keinen Eintrag (Sollwert aus den Daten)', () => {
   }
 });
 
-test('jede DefinedTerm-Beschreibung traegt ihre Grenze mit', () => {
+test('jede DefinedTerm-Beschreibung trägt ihre Grenze mit', () => {
   // Ein Antwortsystem uebernimmt oft genau dieses eine Feld. Stuende die
-  // Grenze nur daneben, koennte die Behauptung ohne ihre Reichweite zitiert
+  // Grenze nur daneben, könnte die Behauptung ohne ihre Reichweite zitiert
   // werden — also genau das, was dieses Lexikon verhindern soll.
   const set = hubSchema(LEXIKON, DATUM)['@graph'].find((n) => n['@type'] === 'DefinedTermSet');
   for (const t of set.hasDefinedTerm) {
@@ -119,7 +119,7 @@ test('jede DefinedTerm-Beschreibung traegt ihre Grenze mit', () => {
   }
 });
 
-test('ROT-ARM: ein ungedecktes Deny-Muster schliesst den Eintrag aus', () => {
+test('ROT-ARM: ein ungedecktes Deny-Muster schließt den Eintrag aus', () => {
   // Attrappe, hermetisch: sie nennt ein Muster des geerbten Netzes im
   // Anspruchstext und schweigt in ihrer Grenze dazu.
   const attrappe = {
@@ -128,7 +128,7 @@ test('ROT-ARM: ein ungedecktes Deny-Muster schliesst den Eintrag aus', () => {
     definition: 'Dieses Mittel wirkt immer und bei jedem.',
     gebrauch: ['-'],
     physik: ['-'],
-    uebertragung: '-',
+    uebertragung_satz: '-',
     uebertragung_begruendung: [],
     grenze: 'Eine Grenze, die von der Behauptung nichts zuruecknimmt.',
     grenze_begruendung: [],
@@ -147,9 +147,9 @@ test('ROT-ARM: ein ungedecktes Deny-Muster schliesst den Eintrag aus', () => {
 });
 
 test('GRUEN-ARM: dasselbe Muster, in der Grenze eingefangen, geht durch', () => {
-  // Die Gegenprobe zum Rot-Arm und der eigentliche Grund fuer die Schaerfung:
+  // Die Gegenprobe zum Rot-Arm und der eigentliche Grund für die Schaerfung:
   // ein umstrittenes Wort DARF genannt werden, wenn im selben Eintrag steht,
-  // wo es aufhoert. Ohne diesen Arm waere der Rot-Arm auch dann gruen, wenn
+  // wo es aufhört. Ohne diesen Arm wäre der Rot-Arm auch dann gruen, wenn
   // das Gate schlicht alles ausschliesst.
   const gedeckt = {
     slug: 'attrappe-gedeckt',
@@ -157,7 +157,7 @@ test('GRUEN-ARM: dasselbe Muster, in der Grenze eingefangen, geht durch', () => 
     definition: 'Manche sagen, das wirkt immer.',
     gebrauch: ['-'],
     physik: ['-'],
-    uebertragung: '-',
+    uebertragung_satz: '-',
     uebertragung_begruendung: [],
     grenze: 'Nichts wirkt immer, und dieser Satz ist keine Ausnahme.',
     grenze_begruendung: [],

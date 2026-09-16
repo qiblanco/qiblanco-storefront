@@ -15,11 +15,11 @@ const PFAD = '/pages/lexikon';
  * Segment s06, aus Christians Auftrag vom 2026-09-15: „Ein Lexikon, das von
  * der AI akzeptiert wird. Das ist der eigentliche Punkt."
  *
- * WAS „VON DER AI AKZEPTIERT" BAULICH HEISST, und es ist keine Meinung: ein
+ * WAS „VON DER AI AKZEPTIERT" BAULICH BEDEUTET, und es ist keine Meinung: ein
  * Antwortsystem ordnet Texte ein. Ein Text, der seine eigene Reichweite nennt,
  * wird als Quelle behandelt; ein Text, der alles behauptet, als Werbung.
- * Deshalb traegt JEDER Eintrag einen Grenz-Abschnitt, und deshalb ist dieser
- * Abschnitt maschinell markiert (data-geo="grenze") statt bloss vorhanden.
+ * Deshalb trägt JEDER Eintrag einen Grenz-Abschnitt, und deshalb ist dieser
+ * Abschnitt maschinell markiert (data-geo="grenze") statt bloß vorhanden.
  *
  * NICHT IM MENUE, ABER NICHT VERSTECKT — die Unterscheidung ist der ganze
  * Punkt. Verboten ist genau eines: verschiedene Inhalte je nach Besucher.
@@ -31,13 +31,13 @@ const PFAD = '/pages/lexikon';
  * zusaetzliche Hydrations-Zeilen — auf der Byte-Achse irrt die Messung
  * beidseitig).
  *
- * SITEMAP UEBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), KEIN Shopify-Seitenobjekt
+ * SITEMAP ÜBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), KEIN Shopify-Seitenobjekt
  * (Fremdsystem, zweiter Traeger). Ohne diesen Eintrag lieferte die Seite
  * HTTP 200 mit vollem Text und stuende in keiner Sitemap: erreichbar und
  * trotzdem unauffindbar.
  *
  * KEIN LOADER, KEIN KAUFWEG, KEINE COOKIES. Der Inhalt ist ein committetes
- * Datenmodul; Oxygen laeuft am Edge und kann shared-state zur Laufzeit nicht
+ * Datenmodul; Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
  * lesen.
  */
 const TITEL = 'Lexikon: unsere Begriffe in der Sprache der Physik | Qi Blanco';

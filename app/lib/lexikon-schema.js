@@ -25,7 +25,7 @@
  * (2026-09-15, alle neun Einträge gegen alle zehn Muster): acht Einträge sind
  * frei. Genau EINER trifft, auf genau EINEM Muster — `/koh(ä|ae)rent/` bei
  * „kohärentes Wasser" — und er trifft dort in `begriff`, `definition`,
- * `gebrauch`, `uebertragung` UND in `grenze`. Der Treffer sitzt also auch in
+ * `gebrauch`, `uebertragung_satz` UND in `grenze`. Der Treffer sitzt also auch in
  * dem Satz, der die Reichweite begrenzt: „«Kohärentes Wasser» trägt nicht als
  * dauerhafter Zustand und nicht als Speicher für Information."
  *
@@ -64,7 +64,7 @@ function anspruchstext(e) {
     e.definition,
     ...(e.gebrauch || []),
     ...(e.physik || []),
-    e.uebertragung,
+    e.uebertragung_satz,
     ...(e.uebertragung_begruendung || []),
   ]
     .filter(Boolean)

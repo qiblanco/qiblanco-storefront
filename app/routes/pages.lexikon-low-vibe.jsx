@@ -6,8 +6,10 @@ import {eintragSchema} from '~/lib/lexikon-schema';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
-const SLUG = 'lexikon-low-vibe';
 const PFAD = '/pages/lexikon-low-vibe';
+// EIN Traeger für die Adresse: der Slug wird abgeleitet, nicht
+// danebengeschrieben.
+const SLUG = PFAD.slice('/pages/'.length);
 
 /**
  * /pages/lexikon-low-vibe — Lexikon-Eintrag „Low Vibe".
@@ -15,39 +17,39 @@ const PFAD = '/pages/lexikon-low-vibe';
  * Gebaut von 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert,
  * Segment s06. Die Inhalte schrieb Segment s04; sie stehen committet in
  * app/data/lexikon.js, die Darstellung in
- * app/components/campaign/LexikonEintrag.jsx. DIESE DATEI TRAEGT KEINEN
+ * app/components/campaign/LexikonEintrag.jsx. DIESE DATEI TRÄGT KEINEN
  * INHALT — wer den Text aendert, aendert das Datenmodul, nicht die Route.
  *
  * EIGENE ROUTE STATT ANKER AUF DEM HUB: ein Antwortsystem schneidet Texte in
  * Abschnitte und bewertet sie isoliert; ein Begriff als blosser Anker wird mit
  * dem Nachbarbegriff zusammen geschnitten und verliert seine Definition. Die
  * Datei sticht ausserdem den Katchall pages.$handle.jsx, der sonst ein
- * Shopify-Seitenobjekt dieses Handles suchen und 404 liefern wuerde.
+ * Shopify-Seitenobjekt dieses Handles suchen und 404 liefern würde.
  *
- * SITEMAP UEBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), NICHT ueber ein
+ * SITEMAP ÜBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), NICHT über ein
  * Shopify-Seitenobjekt: die Shopify-Sitemap entsteht aus Seitenobjekten, eine
- * reine Route kaeme dort baulich nie hinein und waere erreichbar UND
- * unauffindbar. Ein Seitenobjekt waere der zweite moegliche Traeger und ist
- * bewusst nicht gewaehlt (Fremdsystem) — dieselbe Begruendung wie bei
+ * reine Route kaeme dort baulich nie hinein und wäre erreichbar UND
+ * unauffindbar. Ein Seitenobjekt wäre der zweite mögliche Traeger und ist
+ * bewusst nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei
  * /pages/kritik, /pages/hypothesen und /pages/erfahrungen.
  *
- * NICHT IM MENUE, UND DAS IST KEIN VERSTECK: die Route haengt nicht am
- * Shopify-Menue-Objekt, also gibt es keinen Dropdown-Eintrag. Oeffentlich,
+ * NICHT IM MENUE, UND DAS IST KEIN VERSTECK: die Route hängt nicht am
+ * Shopify-Menue-Objekt, also gibt es keinen Dropdown-Eintrag. Öffentlich,
  * indexierbar, in der Sitemap, vom Hub verlinkt — nur eben nicht im
  * Navigationsband. Jeder Besucher bekommt denselben Text, Mensch wie Crawler;
  * das misst die Abnahme und nicht dieser Kommentar.
  *
  * TRACKING-NAHT: keine Cookies, kein neuer Identitaets- oder Tracking-Key,
- * kein eigener Pixel, kein Kaufknopf. Die R1/R2/R3-Kette haengt pfad-agnostisch
+ * kein eigener Pixel, kein Kaufknopf. Die R1/R2/R3-Kette hängt pfad-agnostisch
  * im root-Layout; TRACKING_COOKIE_NAMES bleibt unangetastet.
  *
- * KEIN LOADER: Oxygen laeuft am Edge und kann shared-state zur Laufzeit nicht
+ * KEIN LOADER: Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
  * lesen.
  */
 const EINTRAG = eintragFuer(SLUG);
 if (!EINTRAG) {
   // FAIL-LOUD AN DER RICHTIGEN STELLE. Faehrt jemand einen Eintrag aus
-  // app/data/lexikon.js heraus, waere die stille Variante eine leere Seite mit
+  // app/data/lexikon.js heraus, wäre die stille Variante eine leere Seite mit
   // HTTP 200 — erreichbar und inhaltslos, also genau der Zustand, den der
   // Wissens-Blog monatelang hatte. Ein Fehler beim Rendern ist laut und trifft
   // nur diese eine Route.

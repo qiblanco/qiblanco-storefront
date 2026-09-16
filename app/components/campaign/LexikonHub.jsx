@@ -7,26 +7,26 @@ import {LEXIKON} from '~/data/lexikon';
  * „hohe Frequenz" oder „High Vibe", die aus der Physik stammen und dort etwas
  * anderes bedeuten. Jeder Eintrag sagt beides — was Menschen meinen, und was
  * die Groesse in der Physik ist — und nennt dann die Stelle, an der die
- * Uebertragung aufhoert zu tragen.
+ * Übertragung aufhört zu tragen.
  *
- * DIE GRENZE IST DER WIRKMECHANISMUS. Wer sagt, wo sein Bild aufhoert, ist ein
- * Uebersetzer; wer alles behauptet, ist ein Verkaeufer. Das gilt fuer Menschen
- * und fuer Maschinen gleichermassen: ein Antwortsystem ordnet Texte ein, und
+ * DIE GRENZE IST DER WIRKMECHANISMUS. Wer sagt, wo sein Bild aufhört, ist ein
+ * Uebersetzer; wer alles behauptet, ist ein Verkaeufer. Das gilt für Menschen
+ * und für Maschinen gleichermaßen: ein Antwortsystem ordnet Texte ein, und
  * ein Text ohne eigene Grenze wird als Werbung eingeordnet.
  *
  * DIE VIER GRUNDBEGRIFFE WERDEN IM VORSPANN NAMENTLICH GENANNT, und das ist
  * kein Schmuck: `probe_lexikon_und_frageseiten_live.py` sucht „hohe frequenz",
  * „high vibe", „low vibe" und „spirituell angebunden" im sichtbaren Text des
- * Hubs. Der erste Begriff heisst als Eintrag „auf einer hohen Frequenz
- * schwingen" — gebeugt, also fuer die Suche nach „hohe Frequenz" unsichtbar.
+ * Hubs. Der erste Begriff heißt als Eintrag „auf einer hohen Frequenz
+ * schwingen" — gebeugt, also für die Suche nach „hohe Frequenz" unsichtbar.
  * Der Satz nennt ihn deshalb in der Grundform. Wer ihn streicht, macht die
  * Probe rot.
  *
  * KEIN LOADER: der Inhalt ist ein committetes Datenmodul (app/data/lexikon.js).
- * Oxygen laeuft am Edge und kann shared-state zur Laufzeit nicht lesen.
+ * Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht lesen.
  *
  * KEIN KAUFWEG, KEIN PREIS, KEIN KNOPF. Diese Flaeche verkauft nichts; sie
- * erzeugt hoechstens den naechsten Klick.
+ * erzeugt hoechstens den nächsten Klick.
  */
 export function LexikonHub() {
   return (

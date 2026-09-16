@@ -2,14 +2,14 @@
  * LEXIKON — die Begriffe, die wir benutzen, in der Sprache der Physik.
  *
  * HERKUNFT: Grossjob 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert.
- * Die Inhalte schrieb Segment s04 (je Eintrag Gebrauch, Physik, Uebertragung,
+ * Die Inhalte schrieb Segment s04 (je Eintrag Gebrauch, Physik, Übertragung,
  * Grenze, Quellen, mit Quellen-Existenzpruefung); dieses Modul ist ihr
  * committeter Traeger im Repo. Erzeugt aus inhalte/lexikon/lexikon.json —
  * DIE SCHLUESSELNAMEN SIND ABSICHTLICH UNVERAENDERT UEBERNOMMEN. Jede
- * Umbenennung waere eine Stelle, an der zwischen geschriebenem Inhalt und
+ * Umbenennung wäre eine Stelle, an der zwischen geschriebenem Inhalt und
  * ausgelieferter Seite etwas still verlorengeht.
  *
- * KEIN LOADER, KEIN FREMDER PFAD: Oxygen laeuft am Edge und kann
+ * KEIN LOADER, KEIN FREMDER PFAD: Oxygen läuft am Edge und kann
  * shared-state zur Laufzeit NICHT lesen. Dieselbe Bauform wie
  * app/data/kritik-vorwuerfe.js und app/data/hypothesen.js.
  *
@@ -18,21 +18,21 @@
  * Antwortsystem als Quelle behandelt; ein Text, der alles behauptet, als
  * Werbung. Die Eintragsseite rendert diesen Satz unter dem Marker
  * data-geo="grenze"; ein Eintrag ohne ihn faellt in der Abnahme rot.
- * WER EINEN EINTRAG ERGAENZT, GIBT IHM EINE `grenze`. Das ist keine Bitte:
- * test/lexikon-vollstaendigkeit.test.mjs haelt dagegen, und
+ * WER EINEN EINTRAG ERGÄNZT, GIBT IHM EINE `grenze`. Das ist keine Bitte:
+ * test/lexikon-vollstaendigkeit.test.mjs hält dagegen, und
  * lexikonSchema() nimmt einen Eintrag ohne Grenze nicht in die
  * strukturierten Daten auf.
  *
  * @typedef {{slug: string, begriff: string, definition: string,
  *   gebrauch: string[], physik_groesse: string, physik: string[],
- *   uebertragung: string, uebertragung_begruendung: string[],
+ *   uebertragung_satz: string, uebertragung_begruendung: string[],
  *   grenze: string, grenze_begruendung: string[], quellen: string[],
  *   verlinkt_auf: string[], pfad: string}} LexikonEintrag
  */
 
 /**
- * Die Belege, auf die die Eintraege ueber ihre Schluessel zeigen.
- * `pruefung` ist die Adresse, unter der s04 die Existenz der Arbeit geprueft
+ * Die Belege, auf die die Eintraege über ihre Schluessel zeigen.
+ * `prüfung` ist die Adresse, unter der s04 die Existenz der Arbeit geprueft
  * hat — sie kann von `url` abweichen (Crossref statt Verlagsseite), weil
  * mehrere Fachverlage Bots mit HTTP 403 abweisen und ein 403 dort weder
  * "tot" noch "lebend" bedeutet.
@@ -42,193 +42,193 @@ export const QUELLEN = {
     "art": "norm",
     "zitat": "Bureau International des Poids et Mesures: The International System of Units (SI), 9. Auflage",
     "url": "https://www.bipm.org/en/publications/si-brochure",
-    "pruefung": "https://www.bipm.org/en/publications/si-brochure"
+    "prüfung": "https://www.bipm.org/en/publications/si-brochure"
   },
   "nist_sekunde": {
     "art": "norm",
     "zitat": "National Institute of Standards and Technology: SI Units, Time",
     "url": "https://www.nist.gov/pml/owm/si-units-time",
-    "pruefung": "https://www.nist.gov/pml/owm/si-units-time"
+    "prüfung": "https://www.nist.gov/pml/owm/si-units-time"
   },
   "codata_hz": {
     "art": "norm",
     "zitat": "CODATA, NIST: Umrechnungsbeziehungen der Einheit Hertz",
     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?hz",
-    "pruefung": "https://physics.nist.gov/cgi-bin/cuu/Value?hz"
+    "prüfung": "https://physics.nist.gov/cgi-bin/cuu/Value?hz"
   },
   "bimschv26": {
     "art": "norm",
     "zitat": "26. Verordnung zur Durchführung des Bundes-Immissionsschutzgesetzes (26. BImSchV)",
     "url": "https://www.gesetze-im-internet.de/bimschv_26/",
-    "pruefung": "https://www.gesetze-im-internet.de/bimschv_26/"
+    "prüfung": "https://www.gesetze-im-internet.de/bimschv_26/"
   },
   "icnirp2020": {
     "art": "norm",
     "zitat": "ICNIRP: Guidelines for Limiting Exposure to Electromagnetic Fields (100 kHz to 300 GHz), Health Physics 118(5), 2020, doi:10.1097/HP.0000000000001210",
     "url": "https://www.icnirp.org/en/publications/article/rf-guidelines-2020.html",
-    "pruefung": "https://api.crossref.org/works/10.1097/HP.0000000000001210"
+    "prüfung": "https://api.crossref.org/works/10.1097/HP.0000000000001210"
   },
   "bfs_emf": {
     "art": "behoerde",
     "zitat": "Bundesamt für Strahlenschutz: Elektromagnetische Felder",
     "url": "https://www.bfs.de/DE/themen/emf/emf_node.html",
-    "pruefung": "https://www.bfs.de/DE/themen/emf/emf_node.html"
+    "prüfung": "https://www.bfs.de/DE/themen/emf/emf_node.html"
   },
   "iarc102": {
     "art": "behoerde",
     "zitat": "IARC Monographs Volume 102: Non-ionizing Radiation, Part 2: Radiofrequency Electromagnetic Fields",
     "url": "https://publications.iarc.fr/126",
-    "pruefung": "https://publications.iarc.fr/126"
+    "prüfung": "https://publications.iarc.fr/126"
   },
   "who_emf": {
     "art": "behoerde",
     "zitat": "World Health Organization: Radiation and health, non-ionizing radiation (EMF)",
     "url": "https://www.who.int/teams/environment-climate-change-and-health/radiation-and-health/non-ionizing/emf",
-    "pruefung": "https://www.who.int/teams/environment-climate-change-and-health/radiation-and-health/non-ionizing/emf"
+    "prüfung": "https://www.who.int/teams/environment-climate-change-and-health/radiation-and-health/non-ionizing/emf"
   },
   "emf_portal": {
     "art": "fachliteratur",
     "zitat": "EMF-Portal der RWTH Aachen: Literaturdatenbank zu elektromagnetischen Feldern",
     "url": "https://www.emf-portal.org/de",
-    "pruefung": "https://www.emf-portal.org/de"
+    "prüfung": "https://www.emf-portal.org/de"
   },
   "openstax_energie": {
     "art": "fachliteratur",
     "zitat": "OpenStax, University Physics Volume 1, Kapitel 8.3: Conservation of Energy",
     "url": "https://openstax.org/books/university-physics-volume-1/pages/8-3-conservation-of-energy",
-    "pruefung": "https://openstax.org/books/university-physics-volume-1/pages/8-3-conservation-of-energy"
+    "prüfung": "https://openstax.org/books/university-physics-volume-1/pages/8-3-conservation-of-energy"
   },
   "openstax_em": {
     "art": "fachliteratur",
     "zitat": "OpenStax, University Physics Volume 2, Kapitel 16.1: Maxwell's Equations and Electromagnetic Waves",
     "url": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves",
-    "pruefung": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves"
+    "prüfung": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves"
   },
   "openstax_entropie": {
     "art": "fachliteratur",
     "zitat": "OpenStax, University Physics Volume 2, Kapitel 4.6: Entropy",
     "url": "https://openstax.org/books/university-physics-volume-2/pages/4-6-entropy",
-    "pruefung": "https://openstax.org/books/university-physics-volume-2/pages/4-6-entropy"
+    "prüfung": "https://openstax.org/books/university-physics-volume-2/pages/4-6-entropy"
   },
   "gallo2016": {
     "art": "fachliteratur",
     "zitat": "Gallo et al.: Water: A Tale of Two Liquids, Chemical Reviews 116, 2016, doi:10.1021/acs.chemrev.5b00750",
     "url": "https://doi.org/10.1021/acs.chemrev.5b00750",
-    "pruefung": "https://api.crossref.org/works/10.1021/acs.chemrev.5b00750"
+    "prüfung": "https://api.crossref.org/works/10.1021/acs.chemrev.5b00750"
   },
   "bakker2009": {
     "art": "fachliteratur",
     "zitat": "Bakker und Skinner: Vibrational Spectroscopy as a Probe of Structure and Dynamics in Liquid Water, Chemical Reviews 110, 2009, doi:10.1021/cr9001879",
     "url": "https://doi.org/10.1021/cr9001879",
-    "pruefung": "https://api.crossref.org/works/10.1021/cr9001879"
+    "prüfung": "https://api.crossref.org/works/10.1021/cr9001879"
   },
   "cowan2005": {
     "art": "fachliteratur",
     "zitat": "Cowan et al.: Ultrafast memory loss and energy redistribution in the hydrogen bond network of liquid H2O, Nature 434, 2005, doi:10.1038/nature03383",
     "url": "https://doi.org/10.1038/nature03383",
-    "pruefung": "https://api.crossref.org/works/10.1038/nature03383"
+    "prüfung": "https://api.crossref.org/works/10.1038/nature03383"
   },
   "soper2013": {
     "art": "fachliteratur",
     "zitat": "Soper: The Radial Distribution Functions of Water as Derived from Radiation Total Scattering Experiments, Is There Anything We Can Say for Sure? ISRN Physical Chemistry, 2013, doi:10.1155/2013/279463",
     "url": "https://doi.org/10.1155/2013/279463",
-    "pruefung": "https://api.crossref.org/works/10.1155/2013/279463"
+    "prüfung": "https://api.crossref.org/works/10.1155/2013/279463"
   },
   "skinner2013": {
     "art": "fachliteratur",
     "zitat": "Skinner et al.: Benchmark oxygen-oxygen pair-distribution function of ambient water from x-ray diffraction measurements with a wide Q-range, Journal of Chemical Physics 138, 2013, doi:10.1063/1.4790861",
     "url": "https://doi.org/10.1063/1.4790861",
-    "pruefung": "https://api.crossref.org/works/10.1063/1.4790861"
+    "prüfung": "https://api.crossref.org/works/10.1063/1.4790861"
   },
   "wernet2004": {
     "art": "fachliteratur",
     "zitat": "Wernet et al.: The Structure of the First Coordination Shell in Liquid Water, Science 304, 2004, doi:10.1126/science.1096205",
     "url": "https://doi.org/10.1126/science.1096205",
-    "pruefung": "https://api.crossref.org/works/10.1126/science.1096205"
+    "prüfung": "https://api.crossref.org/works/10.1126/science.1096205"
   },
   "huang1991": {
     "art": "fachliteratur",
     "zitat": "Huang et al.: Optical Coherence Tomography, Science 254, 1991, doi:10.1126/science.1957169",
     "url": "https://doi.org/10.1126/science.1957169",
-    "pruefung": "https://api.crossref.org/works/10.1126/science.1957169"
+    "prüfung": "https://api.crossref.org/works/10.1126/science.1957169"
   },
   "delgiudice1988": {
     "art": "fachliteratur_hypothese",
     "zitat": "Del Giudice, Preparata und Vitiello: Water as a Free Electric Dipole Laser, Physical Review Letters 61, 1988, doi:10.1103/PhysRevLett.61.1085",
     "url": "https://doi.org/10.1103/PhysRevLett.61.1085",
-    "pruefung": "https://api.crossref.org/works/10.1103/PhysRevLett.61.1085"
+    "prüfung": "https://api.crossref.org/works/10.1103/PhysRevLett.61.1085"
   },
   "pollack2006": {
     "art": "fachliteratur_hypothese",
     "zitat": "Zheng, Chai und Pollack: Surfaces and interfacial water, evidence that hydrophilic surfaces have long-range impact, Advances in Colloid and Interface Science 127, 2006, doi:10.1016/j.cis.2006.07.002",
     "url": "https://doi.org/10.1016/j.cis.2006.07.002",
-    "pruefung": "https://api.crossref.org/works/10.1016/j.cis.2006.07.002"
+    "prüfung": "https://api.crossref.org/works/10.1016/j.cis.2006.07.002"
   },
   "davenas1988": {
     "art": "fachliteratur",
     "zitat": "Davenas et al.: Human basophil degranulation triggered by very dilute antiserum against IgE, Nature 333, 1988, doi:10.1038/333816a0",
     "url": "https://doi.org/10.1038/333816a0",
-    "pruefung": "https://api.crossref.org/works/10.1038/333816a0"
+    "prüfung": "https://api.crossref.org/works/10.1038/333816a0"
   },
   "maddox1988": {
     "art": "fachliteratur",
     "zitat": "Maddox, Randi und Stewart: High-dilution experiments a delusion, Nature 334, 1988, doi:10.1038/334287a0",
     "url": "https://doi.org/10.1038/334287a0",
-    "pruefung": "https://api.crossref.org/works/10.1038/334287a0"
+    "prüfung": "https://api.crossref.org/works/10.1038/334287a0"
   },
   "underwood2002": {
     "art": "fachliteratur",
     "zitat": "Underwood und Teresi: The Daily Spiritual Experience Scale, Annals of Behavioral Medicine 24, 2002, doi:10.1207/S15324796ABM2401_04",
     "url": "https://doi.org/10.1207/S15324796ABM2401_04",
-    "pruefung": "https://api.crossref.org/works/10.1207/S15324796ABM2401_04"
+    "prüfung": "https://api.crossref.org/works/10.1207/S15324796ABM2401_04"
   },
   "kybalion": {
     "art": "tradition",
     "zitat": "Three Initiates: The Kybalion, 1908, Kapitel zum Prinzip der Schwingung",
     "url": "https://www.gutenberg.org/ebooks/14209",
-    "pruefung": "https://www.gutenberg.org/ebooks/14209"
+    "prüfung": "https://www.gutenberg.org/ebooks/14209"
   },
   "thoughtforms": {
     "art": "tradition",
     "zitat": "Besant und Leadbeater: Thought-Forms, 1901, theosophische Schwingungslehre",
     "url": "https://www.gutenberg.org/ebooks/16269",
-    "pruefung": "https://www.gutenberg.org/ebooks/16269"
+    "prüfung": "https://www.gutenberg.org/ebooks/16269"
   },
   "james1902": {
     "art": "tradition",
     "zitat": "William James: The Varieties of Religious Experience, 1902",
     "url": "https://www.gutenberg.org/ebooks/621",
-    "pruefung": "https://www.gutenberg.org/ebooks/621"
+    "prüfung": "https://www.gutenberg.org/ebooks/621"
   },
   "hawkins1995": {
     "art": "tradition",
     "zitat": "David R. Hawkins: Power vs. Force, 1995, die Kalibrierungsskala der Bewusstseinsstufen",
     "url": "https://openlibrary.org/search.json?q=hawkins+power+vs+force",
-    "pruefung": "https://openlibrary.org/search.json?q=hawkins+power+vs+force"
+    "prüfung": "https://openlibrary.org/search.json?q=hawkins+power+vs+force"
   },
   "emoto2004": {
     "art": "tradition",
     "zitat": "Masaru Emoto: The Hidden Messages in Water, 2004, die populäre Quelle des Bildes vom geordneten Wasser",
     "url": "https://openlibrary.org/search.json?q=hidden+messages+in+water",
-    "pruefung": "https://openlibrary.org/search.json?q=hidden+messages+in+water"
+    "prüfung": "https://openlibrary.org/search.json?q=hidden+messages+in+water"
   },
   "pohl1932": {
     "art": "tradition",
     "zitat": "Gustav Freiherr von Pohl: Erdstrahlen als Krankheitserreger, 1932, Ausgangspunkt der deutschsprachigen Radiästhesie",
     "url": "https://openlibrary.org/search.json?q=pohl+erdstrahlen",
-    "pruefung": "https://openlibrary.org/search.json?q=pohl+erdstrahlen"
+    "prüfung": "https://openlibrary.org/search.json?q=pohl+erdstrahlen"
   },
   "neijing": {
     "art": "tradition",
     "zitat": "Huangdi Neijing, Der Innere Klassiker des Gelben Kaisers, übersetzt von Ilza Veith; die Quelle des Qi-Begriffs",
     "url": "https://openlibrary.org/search.json?q=yellow+emperor+classic+internal+medicine",
-    "pruefung": "https://openlibrary.org/search.json?q=yellow+emperor+classic+internal+medicine"
+    "prüfung": "https://openlibrary.org/search.json?q=yellow+emperor+classic+internal+medicine"
   },
   "timaios": {
     "art": "tradition",
     "zitat": "Platon: Timaios, um 360 v. Chr., die älteste ausgearbeitete Lehre von der Ordnung des Kosmos",
     "url": "https://www.gutenberg.org/ebooks/1572",
-    "pruefung": "https://www.gutenberg.org/ebooks/1572"
+    "prüfung": "https://www.gutenberg.org/ebooks/1572"
   }
 };
 
@@ -248,7 +248,7 @@ export const LEXIKON = [
       "An einem Menschen sind Frequenzen messbar, nur andere als gemeint. Der Herzschlag liegt bei etwa 1 Hz. Die Hirnströme im EEG liegen zwischen 0,5 und 40 Hz. Die Wärmestrahlung der Haut liegt im Infrarot bei etwa 3·10^13 Hz.",
       "Eine Gesamtfrequenz eines Menschen kennt die Physik nicht. Hoch und tief tragen dort auch keine Wertung: sichtbares Licht schwingt mehr als hunderttausendmal schneller als Mobilfunk, ohne dass eines von beiden besser wäre."
     ],
-    "uebertragung": "«Auf einer hohen Frequenz schwingen» trägt als Bild für einen Zustand, den Menschen an sich wiedererkennen und den die Messtechnik in einzelnen Größen wiederfindet.",
+    "uebertragung_satz": "«Auf einer hohen Frequenz schwingen» trägt als Bild für einen Zustand, den Menschen an sich wiedererkennen und den die Messtechnik in einzelnen Größen wiederfindet.",
     "uebertragung_begruendung": [
       "Das EEG eines ruhigen Menschen hat ein anderes Frequenzspektrum als das eines angespannten. Wer «hoch schwingen» als Kurzwort für einen Zustand benutzt, beschreibt damit etwas, das sich in Messwerten niederschlägt."
     ],
@@ -284,7 +284,7 @@ export const LEXIKON = [
       "«High Vibe» hat keine physikalische Größe. Die Physik kennt Schwingung mit einer Frequenz in Hertz und einer Amplitude, die je nach Art der Schwingung in Metern, Pascal oder Volt je Meter gemessen wird. Beide Größen tragen keine Wertung.",
       "Die Größe, die dem Gemeinten am nächsten kommt, stammt aus der Psychologie und nicht aus der Physik: Stimmung und Befinden werden über Fragebogenskalen erhoben und als dimensionslose Punktwerte ausgewertet. Für spirituelle Erfahrung gibt es dafür eine geprüfte Skala mit 16 Fragen."
     ],
-    "uebertragung": "«High Vibe» trägt als kurzes Wort für einen Zustand, den Menschen zuverlässig wiedererkennen und über Skalen auch vergleichbar angeben können.",
+    "uebertragung_satz": "«High Vibe» trägt als kurzes Wort für einen Zustand, den Menschen zuverlässig wiedererkennen und über Skalen auch vergleichbar angeben können.",
     "uebertragung_begruendung": [
       "Zwei Menschen meinen mit «High Vibe» meist dasselbe, und Fragebogenverfahren messen genau diese Selbstauskunft. Als Selbstbeschreibung ist der Ausdruck brauchbar."
     ],
@@ -319,7 +319,7 @@ export const LEXIKON = [
       "«Low Vibe» hat keine physikalische Größe. In der Physik heißt eine niedrige Frequenz allein, dass es wenige Schwingungen je Sekunde sind: Netzstrom hat 50 Hz, der Alpha-Rhythmus im EEG liegt bei 8 bis 12 Hz.",
       "Niedrig ist dabei keine Abwertung. Ein 50-Hz-Feld ist nicht schlechter als ein 2,4-GHz-Feld, es ist langsamer."
     ],
-    "uebertragung": "«Low Vibe» trägt als Selbstbeschreibung für einen Zustand, den andere Menschen ohne Erklärung verstehen.",
+    "uebertragung_satz": "«Low Vibe» trägt als Selbstbeschreibung für einen Zustand, den andere Menschen ohne Erklärung verstehen.",
     "uebertragung_begruendung": [
       "Ein Wort für einen schweren Tag zu haben, hilft beim Sprechen darüber. Diesen Dienst leistet der Ausdruck."
     ],
@@ -353,7 +353,7 @@ export const LEXIKON = [
       "Messbar ist die Selbstauskunft. Die Daily Spiritual Experience Scale von Underwood und Teresi erhebt sie seit 2002 mit 16 Fragen und gibt sie als dimensionslosen Punktwert aus. Gemessen wird damit, was ein Mensch über seine Erfahrung berichtet, und nicht ein Feld.",
       "Systematisch gesammelt werden solche Berichte seit über hundert Jahren. William James hat 1902 hunderte davon nebeneinandergelegt und verglichen."
     ],
-    "uebertragung": "«Spirituell angebunden sein» trägt als Beschreibung einer Erfahrung, die viele Menschen unabhängig voneinander sehr ähnlich schildern.",
+    "uebertragung_satz": "«Spirituell angebunden sein» trägt als Beschreibung einer Erfahrung, die viele Menschen unabhängig voneinander sehr ähnlich schildern.",
     "uebertragung_begruendung": [
       "Die Ähnlichkeit der Berichte ist der belegte Teil. Sie ist der Grund, warum die Forschung dafür Skalen gebaut hat."
     ],
@@ -388,7 +388,7 @@ export const LEXIKON = [
       "Flüssiges Wasser hat eine gemessene Nahordnung. Jedes Molekül hat im Mittel etwa vier Nachbarn über Wasserstoffbrücken, und diese Anordnung wird mit Röntgen- und Neutronenstreuung als Paarverteilungsfunktion bestimmt.",
       "Die Ordnung ist kurzlebig. Wasserstoffbrücken brechen und bilden sich im Bereich von Pikosekunden neu, und die Erinnerung des Netzwerks an seinen eigenen Zustand ist nach etwa 50 Femtosekunden verloren. Diese Zahl ist gemessen und nicht geschätzt."
     ],
-    "uebertragung": "«Kohärentes Wasser» trägt als Bild für eine Ordnung, die es wirklich gibt und die wirklich gemessen wird.",
+    "uebertragung_satz": "«Kohärentes Wasser» trägt als Bild für eine Ordnung, die es wirklich gibt und die wirklich gemessen wird.",
     "uebertragung_begruendung": [
       "Wasser ist keine beliebige Ansammlung von Molekülen. Die Nahordnung im Wasserstoffbrücken-Netzwerk ist seit Jahrzehnten Gegenstand von Streuexperimenten und Schwingungsspektroskopie."
     ],
@@ -434,7 +434,7 @@ export const LEXIKON = [
       "Im Hochfrequenzbereich, etwa bei Mobilfunk zwischen 0,7 und 3,8 GHz oder WLAN bei 2,4 und 5 GHz, misst man die Leistungsflussdichte in Watt je Quadratmeter. Für die Aufnahme im Körper gilt zusätzlich die spezifische Absorptionsrate in Watt je Kilogramm.",
       "Zwischen 50 Hz und 2,4 GHz liegt ein Faktor von rund 50 Millionen. Grenzwerte gelten in Deutschland über die 26. BImSchV, die sich auf die Empfehlungen der ICNIRP stützt."
     ],
-    "uebertragung": "«Elektrosmog» trägt als Alltagsname für etwas, das wirklich vorhanden und mit geeichten Geräten messbar ist.",
+    "uebertragung_satz": "«Elektrosmog» trägt als Alltagsname für etwas, das wirklich vorhanden und mit geeichten Geräten messbar ist.",
     "uebertragung_begruendung": [
       "Feldstärken sind messbar, und für sie gelten gesetzliche Grenzwerte. Wer von Elektrosmog spricht, meint einen realen Gegenstand."
     ],
@@ -474,7 +474,7 @@ export const LEXIKON = [
       "Zahlen zum Einordnen: Netzstrom schwingt mit 50 Hz. Der Hörbereich des Menschen reicht von etwa 20 Hz bis 20 000 Hz. WLAN arbeitet bei 2,4 Milliarden Hz. Sichtbares Licht liegt zwischen 400 und 750 Billionen Hz.",
       "Gemessen wird Frequenz mit Standardgeräten, und das Ergebnis ist überall auf der Welt dasselbe. Für die Umrechnung zwischen Hertz und anderen Größen führt das NIST eine amtliche Tabelle."
     ],
-    "uebertragung": "Frequenz trägt als Größe überall dort, wo wirklich etwas schwingt und die Schwingungen je Sekunde gezählt werden können.",
+    "uebertragung_satz": "Frequenz trägt als Größe überall dort, wo wirklich etwas schwingt und die Schwingungen je Sekunde gezählt werden können.",
     "uebertragung_begruendung": [
       "Licht, Schall, Wechselstrom und Funkwellen sind Schwingungen und haben eine Frequenz. Für sie ist der Begriff genau und nachprüfbar."
     ],
@@ -510,7 +510,7 @@ export const LEXIKON = [
       "Zahlen zum Einordnen: ein erwachsener Mensch setzt am Tag etwa 8 000 bis 10 000 Kilojoule um. Eine Tafel Schokolade enthält rund 2 200 Kilojoule. Ein einzelnes Photon sichtbaren Lichts trägt etwa 3·10^-19 Joule.",
       "Der Energieumsatz des Körpers ist messbar, über den Sauerstoffverbrauch oder über die Wärmeabgabe. Das Ergebnis ist eine Zahl in Joule oder in Kilokalorien."
     ],
-    "uebertragung": "Energie trägt als Wort für beide Seiten so weit, wie der Körper wirklich Energie umsetzt.",
+    "uebertragung_satz": "Energie trägt als Wort für beide Seiten so weit, wie der Körper wirklich Energie umsetzt.",
     "uebertragung_begruendung": [
       "Nahrung, Wärme und Bewegung sind in Joule angebbar. Wer sagt, ihm fehle Energie, spricht über einen Zustand, dessen körperliche Seite tatsächlich in Joule messbar ist."
     ],
@@ -545,7 +545,7 @@ export const LEXIKON = [
       "In Flüssigkeiten wird Ordnung als Nahordnung gemessen. Die Paarverteilungsfunktion gibt an, wie wahrscheinlich ein zweites Molekül in einem bestimmten Abstand sitzt. Bestimmt wird sie mit Röntgen- und Neutronenstreuung.",
       "Bei Licht heißt dieselbe Frage Kohärenz. Der Laser ist geordnet, die Glühbirne nicht, und der Unterschied ist als Kohärenzlänge in Metern messbar."
     ],
-    "uebertragung": "Ordnung trägt als Begriff, weil beide Sprachen damit dieselbe Frage stellen: wie stark hängen die Teile zusammen.",
+    "uebertragung_satz": "Ordnung trägt als Begriff, weil beide Sprachen damit dieselbe Frage stellen: wie stark hängen die Teile zusammen.",
     "uebertragung_begruendung": [
       "Die Frage nach dem Zusammenhang der Teile ist in der Physik und in der spirituellen Überlieferung dieselbe. Nur die Messgeräte unterscheiden sich."
     ],
@@ -592,14 +592,14 @@ export function quellenFuer(eintrag) {
 }
 
 /**
- * Beschriftungen fuer die Ziele ausserhalb des Lexikons.
+ * Beschriftungen für die Ziele ausserhalb des Lexikons.
  *
  * WIE EIN LINK BESCHRIFTET IST, LEHRT DIE SUCHMASCHINE, WORUM ES BEIM ZIEL
- * GEHT — der Slug als Beschriftung („kohaerentes wasser") waere eine
- * Adresse, kein Wort. Lexikon-Ziele holen ihren Namen aus den Daten; fuer
+ * GEHT — der Slug als Beschriftung („kohärentes wasser") wäre eine
+ * Adresse, kein Wort. Lexikon-Ziele holen ihren Namen aus den Daten; für
  * fremde Ziele steht er hier. EIN ZIEL OHNE BESCHRIFTUNG WIRD NICHT GERATEN,
- * SONDERN WEGGELASSEN: eine erfundene Beschriftung waere eine Aussage ueber
- * eine Seite, die dieses Modul nicht kennt. Der Test haelt dagegen und macht
+ * SONDERN WEGGELASSEN: eine erfundene Beschriftung wäre eine Aussage über
+ * eine Seite, die dieses Modul nicht kennt. Der Test hält dagegen und macht
  * eine fehlende Beschriftung laut statt still.
  */
 const FREMDE_ZIELE = {

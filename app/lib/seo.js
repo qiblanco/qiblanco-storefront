@@ -787,7 +787,7 @@ export const NUR_ROUTE_SEITEN = [
       'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
       'zusammen geschnitten und verliert dabei seine Definition. Die ' +
       'Seite besteht allein aus der Route ' +
-      'pages.lexikon-kohaerentes-wasser.jsx und hat KEIN ' +
+      'pages.lexikon-kohärentes-wasser.jsx und hat KEIN ' +
       'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
       '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
       'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
