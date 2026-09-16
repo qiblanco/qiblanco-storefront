@@ -207,7 +207,7 @@ const FAQ_ITEMS = [
   {
     question: 'Wie funktioniert der QiOne®?',
     answer:
-      'Der QiOne® enthält keinerlei elektronische Bauteile. Er nutzt einen proprietären Gitterchip, der durch die spezifische Positionierung von Goldatomen ein statisches Feld erzeugt. Dieses Feld fördert die Selbstorganisation von Wassermolekülen zu kohärenten Strukturen – ein Zustand, der die zelluläre Kommunikation im Körper verbessert.',
+      'Der QiOne® enthält keinerlei elektronische Bauteile. Er nutzt einen proprietären Gitterchip™, der durch die spezifische Positionierung von Goldatomen ein statisches Feld erzeugt. Dieses Feld fördert die Selbstorganisation von Wassermolekülen zu kohärenten Strukturen – ein Zustand, der die zelluläre Kommunikation im Körper verbessert.',
   },
   {
     question: 'Ist die kohärente Wasserstruktur messbar?',

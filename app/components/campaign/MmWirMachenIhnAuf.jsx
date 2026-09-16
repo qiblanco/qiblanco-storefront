@@ -59,7 +59,7 @@ const STUDIEN = [
 ];
 
 const BADGES = [
-  {mark: '✦', titel: '750er Gold', sub: 'im Gitterchip'},
+  {mark: '✦', titel: '750er Gold', sub: 'im Gitterchip™'},
   {mark: '⚑', titel: 'Fertigung in Bayern', sub: 'Deutschland'},
   {mark: '▤', titel: '4 Publikationen', sub: 'präklinisch, als PDF'},
   {mark: '↺', titel: '20 Tage', sub: 'Geld-zurück'},
@@ -141,7 +141,7 @@ export function MmWirMachenIhnAuf({products}) {
         ctaSekundaer={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Direkt zum QiOne 2 Pro'}}
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919',
-          alt: 'Querschnitt des QiOne 2 Pro mit sichtbarem Gold-Gitterchip',
+          alt: 'Querschnitt des QiOne 2 Pro mit sichtbarem Gold-Gitterchip™',
           hint: 'Querschnitt: das Gold-Gitter im Inneren, nichts Verstecktes.',
         }}
       />
@@ -166,7 +166,7 @@ export function MmWirMachenIhnAuf({products}) {
         dataSection="mm-messbar-mechanismus"
         eyebrow="Ebene 1: Aufbau"
         title="Was physisch im Chip steckt"
-        intro="Der QiOne 2 Pro trägt einen strukturierten Gitterchip aus 750er Gold, eingefasst in einen Körper aus Chirurgenstahl. Kein Akku, keine Elektronik, keine App. Die Idee: eine feste, präzise Gitterstruktur, die die Ordnung von Wasser beeinflussen soll, dem Stoff, aus dem dein Körper zu rund zwei Dritteln besteht."
+        intro="Der QiOne 2 Pro trägt einen strukturierten Gitterchip™ aus 750er Gold, eingefasst in einen Körper aus Chirurgenstahl. Kein Akku, keine Elektronik, keine App. Die Idee: eine feste, präzise Gitterstruktur, die die Ordnung von Wasser beeinflussen soll, dem Stoff, aus dem dein Körper zu rund zwei Dritteln besteht."
         schritte={[
           {titel: 'Präzises Gold-Gitter', text: 'Ein neues Herstellungsverfahren erzeugt eine definierte Gitterstruktur mit 22,61 mm3 Wirkvolumen. Fest, passiv, über Jahrzehnte stabil.'},
           {titel: 'Kontakt mit Wasser', text: 'Die Struktur soll benachbarte Wassermoleküle in eine geordnetere (kohärentere) Anordnung bringen. Genau diesen Punkt haben die Zellstudien untersucht.'},
@@ -185,7 +185,7 @@ export function MmWirMachenIhnAuf({products}) {
       <MmStatBand
         dataSection="mm-messbar-stats"
         stats={[
-          {zahl: '22,61 mm³', label: 'Wirkvolumen Gitterchip'},
+          {zahl: '22,61 mm³', label: 'Wirkvolumen Gitterchip™'},
           {zahl: '750er', label: 'Gold im Gitter'},
           {zahl: '4', label: 'publizierte Zellstudien'},
           {zahl: '0', label: 'Akku · Elektronik · App'},

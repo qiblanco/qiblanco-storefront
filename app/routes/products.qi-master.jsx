@@ -70,7 +70,7 @@ export const meta = ({data}) => {
     produkt: data?.product,
     marktLand: data?.marktLand,
     pfad: '/products/qi-master',
-    titel: `${data?.product?.title ?? 'QiMaster'} | ${MARKE}`,
+    titel: `${data?.product?.title ?? 'Qi Master®'} | ${MARKE}`,
     bildUrl:
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,

@@ -31,7 +31,7 @@ const PICK = [
 ];
 
 const BADGES = [
-  {mark: '✦', titel: '750er Gold', sub: 'gleicher Gitterchip'},
+  {mark: '✦', titel: '750er Gold', sub: 'gleicher Gitterchip™'},
   {mark: '∞', titel: 'Kein Akku', sub: 'passiv, wartungsfrei'},
   {mark: '♨', titel: 'Alltagsfest', sub: 'Hitze, Chlor, Schweiß'},
   {mark: '↺', titel: '20 Tage', sub: 'Geld-zurück'},
@@ -43,7 +43,7 @@ const FAQ = [
   {
     frage: 'Wirkt die Kette stärker als das Armband?',
     antwort:
-      'Nein. Beide enthalten denselben 750er-Gold-Gitterchip mit identischer Technik. Es gibt keinen Unterschied in der Wirkung, nur in der Trageweise.',
+      'Nein. Beide enthalten denselben 750er-Gold-Gitterchip™ mit identischer Technik. Es gibt keinen Unterschied in der Wirkung, nur in der Trageweise.',
   },
   {
     frage: 'Wann ist die Kette die bessere Wahl?',
@@ -97,7 +97,7 @@ export function MmKetteOderArmband({products}) {
         dataSection="mm-wahl-hero"
         eyebrow="Entscheidungshilfe"
         headline={'Kette oder Armband? Gleiche Technik, deine Trageform.'}
-        sub="Die häufigste Frage kurz vor der Bestellung. Die gute Nachricht: Du kannst nichts falsch machen. Beide tragen denselben 750er-Gold-Gitterchip. Der Unterschied ist nur, wie du ihn trägst."
+        sub="Die häufigste Frage kurz vor der Bestellung. Die gute Nachricht: Du kannst nichts falsch machen. Beide tragen denselben 750er-Gold-Gitterchip™. Der Unterschied ist nur, wie du ihn trägst."
         bullets={[
           'Identische Technik in beiden, gleiche Wirkung',
           'Kette: unsichtbar unter der Kleidung. Armband: sichtbar getragen.',
@@ -121,7 +121,7 @@ export function MmKetteOderArmband({products}) {
           'Die einzige echte Frage: Soll er unsichtbar unter der Kleidung mitlaufen (Kette) oder sichtbar am Handgelenk getragen werden (Armband)? Das entscheidest du nach deinem Alltag und Stil.',
         ]}
         punkte={[
-          'Gleicher 750er-Gold-Gitterchip in beiden.',
+          'Gleicher 750er-Gold-Gitterchip™ in beiden.',
           'Gleiche 20-Tage-Rückgabe.',
           'Kein Unterschied in der Wirkung, nur im Tragen.',
         ]}
@@ -132,7 +132,7 @@ export function MmKetteOderArmband({products}) {
         dataSection="mm-wahl-mechanismus"
         eyebrow="Der direkte Vergleich"
         title="Kette oder Armband, nebeneinander"
-        intro="Beide enthalten dieselbe Gitterchip-Technik. Wähle nach Sichtbarkeit und Trageweise, nicht nach vermeintlicher Stärke."
+        intro="Beide enthalten dieselbe Gitterchip™-Technik. Wähle nach Sichtbarkeit und Trageweise, nicht nach vermeintlicher Stärke."
         schritte={[
           {titel: 'QiOne 2 Pro, die Kette', text: 'Wird nah am Körper getragen, unsichtbar unter der Kleidung. Ideal, wenn du ihn diskret und durchgehend tragen willst.'},
           {titel: 'QiBracelet, das Armband', text: 'Sichtbar am Handgelenk getragen. Ideal, wenn du ihn offen tragen und im Blick haben möchtest.'},
