@@ -808,3 +808,87 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visibl
   max-width: 1200px;
   padding-inline: var(--qm-s2);
 }
+
+/* ─── Rohdiamant und Brillant: das Bildpaar an der Stelle des Karussells ───
+   Christian am 2026-09-16: „Diesen Bereich hier ersatzlos streichen, dafür
+   zwei Bilder einfügen ... Die Gestaltung folgt dem Abschnitt darüber:
+   dieselbe Breite, mittig, die Unterschriften unter dem jeweiligen Bild.
+   Kein Karussell, keine Aufklapper — zwei Bilder, zwei Zeilen."
+
+   KEIN NEUER WERT, KEIN ZWEITES TOKEN-SYSTEM: jede Größe hier kommt aus dem
+   :root-Satz dieser Datei — Abstände auf dem 8pt-Raster (--qm-s2/s3/s4),
+   Schrift aus der Sieben-Stufen-Skala (--qm-fs-base/--qm-fs-xs), Farben aus
+   dem warmen Neutral-Kontinuum (--qm-text/--qm-muted). Der Bildradius steht
+   bewusst NICHT hier: `.ProductPageQiMaster img` (Z. 470 und 715) setzt ihn
+   seitenweit auf --qm-r2, und ein eigener Radius wäre der zweite. AM
+   AUSGELIEFERTEN DOM NACHGEMESSEN, weil der erste Entwurf dieses Kommentars
+   „4px" behauptete: der berechnete Wert ist 16px. Die 4px aus Zeile 124
+   gelten der Vertrauensleiste (dort beschnitten 16px die fremden Wortmarken),
+   nicht den Inhaltsbildern. Ein Kommentar, der das Gegenteil des Falls
+   behauptet, ist teurer als gar keiner.
+
+   960px IST DIE GRENZE DES PAARES, NICHT DER SEKTION. Die Hülle trägt
+   `NormalSectionSize` (max-width 1350px, mittig) und steht damit in der
+   Breite ihrer Nachbarn. Das Paar selbst ist schmaler: bei 1350px wäre jeder
+   Stein 660px breit, und aus einer 1024px-Quelle käme dann weniger als die
+   doppelte Pixeldichte. Bei 960px sitzt jedes Bild bei rund 464px — über dem
+   Doppelten, also scharf auf jedem Display.
+
+   GLEICHE FLÄCHE FÜR BEIDE, UND ZWAR ERZWUNGEN: `1fr 1fr` plus
+   `aspect-ratio: 1` heißt, dass die beiden Kästen identisch sind, egal was
+   die Dateien mitbringen. Das ist Christians Auflage („zwei Diamanten
+   nebeneinander, von denen einer größer wirkt, erzählen eine Rangfolge, die
+   nicht gemeint ist") auf der Layout-Ebene — die Bilddateien selbst sind
+   zusätzlich auf gleiche Motivfläche normalisiert.
+
+   AUF DEM TELEFON WIRD AUS LINKS/RECHTS OBEN/UNTEN, in derselben Reihenfolge:
+   Rohdiamant zuerst. Der Breakpoint ist der dieser Datei (749/750px), kein
+   neuer.
+   -------------------------------------------------------------------------- */
+.qm-diamantbilder__paar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--qm-s4);
+  max-width: 960px;
+  margin: 0 auto;
+}
+.qm-diamantbild {
+  margin: 0;
+}
+.qm-diamantbild__bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.qm-diamantbild__unterschrift {
+  margin-top: var(--qm-s2);
+  text-align: center;
+  font-size: var(--qm-fs-base);
+  line-height: 1.5;
+  color: var(--qm-text);
+}
+/* IM SEITEN-SCOPE, UND DAS IST KEINE KOSMETIK: die Zeile ist ein <p>, und
+   `.ProductPageQiMaster p` (Z. 198) traegt die Spezifitaet 0,1,1 gegen die
+   0,1,0 einer blossen Klasse — der erste Entwurf verlor dagegen und rendert
+   mit 16px und 630px Mass statt 13px und 960px (am DOM gemessen, nicht
+   vermutet). Mit dem Seiten-Scope steht sie bei 0,2,0 und gewinnt.
+   WARUM SIE NICHT DAS HAUS-TEXTMASS (--qm-mass, 70ch) NIMMT: sie ist die
+   Beschriftung des Bildpaares, keine Textspalte. Ihr Mass ist deshalb die
+   Breite des Paares — so steht sie auf einer Zeile und bricht nicht mitten
+   im Satz. */
+.ProductPageQiMaster .qm-diamantbilder__herkunft {
+  max-width: 960px;
+  margin: var(--qm-s4) auto 0;
+  text-align: center;
+  font-size: var(--qm-fs-xs);
+  line-height: 1.5;
+  color: var(--qm-muted);
+}
+@media (max-width: 749px) {
+  .qm-diamantbilder__paar {
+    grid-template-columns: 1fr;
+    gap: var(--qm-s3);
+  }
+}
