@@ -166,33 +166,45 @@ export function QiMasterBenefitList({zusatzPunkt = null}) {
 function MainFeatures() {
   return (
     <div className="MainFeaturesWrapper">
-      <h2 className="text-center">Was den QiMaster ausmacht</h2>
+      {/* Christians Fassung vom 2026-09-16, Wort für Wort (Job
+          20260916-was-den-qimaster-ausmacht-wird-eine-bisher-unerreichte-liga).
+          Übernommen ist die Schreibweise, die er selbst tippte: gerade
+          Anführungszeichen um "The One Eye" und schlichte Bindestriche - genau
+          so trägt der Kopf derselben Seite seine Fassung bereits. Korrigiert
+          wurde nur Eindeutiges (Rechtschreibung, ® und ™), Ton und Aussage
+          blieben unberührt. Das König-Zitat steht hier ohne Fußnote; seine
+          ausführliche Quelle trägt der Abschnitt „Warum ein Diamant“ weiter
+          unten (app/data/qi-master-texte.js) - die wird nie angetastet. */}
+      <h2 className="text-center">Qi Master® - Eine bisher unerreichte Liga</h2>
       <div className="MainFeatures NormalSectionSize">
         <div className="MainFeaturesColumn">
-          <h3>Der Gitterchip der zweiten Generation</h3>
+          <h3>Der Gitterchip™ der ultimativen Generation</h3>
           <p>
-            Der Kern des QiMaster ist der Gitterchip, den auch der QiOne® 2 Pro
-            trägt: eine 750er Goldlegierung, deren Atome in einer festgelegten
-            Ordnung stehen. Dieses Gitter ist es, was wir in Zellstudien haben
-            untersuchen lassen – ohne Elektronik, ohne Batterie, ohne
-            Verschleiß.
+            Der Kern des Qi Master® ist ein zweiteiliger Gitterchip™, definiert
+            durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das
+            Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung,
+            deren Atome in einer einmalig definierten Ordnung stehen. Kohärent
+            wirkend und ihre Umgebung aktiv prägend.
           </p>
         </div>
         <div className="MainFeaturesColumn">
-          <h3>Der Diamant</h3>
+          <h3>"The One Eye" - Hochreiner Natur Diamant</h3>
           <p>
-            Ein Diamant ist reiner Kohlenstoff – dasselbe Element, aus dem
-            jede Zelle deines Körpers gebaut ist. Das ist der Grund, warum er
-            im QiMaster sitzt. Was daran belegt ist und was unsere Deutung
-            bleibt, trennen wir weiter unten sauber auf.
+            Ein Diamant ist reiner Kohlenstoff – dasselbe Element, aus dem jede
+            Zelle deines Körpers gebaut ist. Alles Leben, so wie wir es auf der
+            Erde kennen, basiert auf Kohlenstoff. „Die Kohlenstoffatome im
+            Diamanten senden also auf den richtigen Frequenzen, die die
+            Kohlenstoffatome in biologischem Material empfangen können.“ -
+            Dr. Michael König
           </p>
         </div>
         <div className="MainFeaturesColumn">
           <h3>Vorbereitet auf das, was kommt</h3>
           <p>
-            Der Gitterchip ist nicht auf eine Frequenz gebaut. Was das für
-            5G heute und 6G morgen heißt – und was wir dazu gemessen haben und
-            was nicht –, steht im Abschnitt „6G“.
+            Durch dieses einmalige Duett des Gitterchips™ und "The One Eye" ist
+            der Qi Master® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob
+            sie 7G oder Umweltgifte lautet. Der Qi Master® leistet auf jeder
+            Ebene das erdenkliche Maximum.
           </p>
         </div>
       </div>
