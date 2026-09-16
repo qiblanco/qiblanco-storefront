@@ -169,7 +169,25 @@ export default function Product() {
             dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
           />
         }
-        priceLabel={<QiMasterTreppe treppe={treppe} kompakt />}
+        /* DIE STEUERANGABE HÄNGT AM PREIS, NICHT UNTER DER TABELLE
+           (Christian am 2026-09-16, woertlich: „Das inkl. 19 % MwSt. muss in
+           klein hinter den großen Kaufpreis von: 10.639,- €").
+
+           WARUM HIER UND NICHT IN ProductPrice.jsx: die Komponente trägt
+           JEDE Kaufseite des Ladens. Ein Zusatz dort hätte 45 Seiten
+           verändert, um eine zu bedienen. Der `priceLabel`-Slot steht im
+           ausgelieferten HTML unmittelbar hinter <div class="product-price">
+           — genau die Stelle, die Christian benennt — und gehört allein
+           dieser Route. Dass „hinter" auch optisch „in derselben Zeile"
+           heißt, macht die Regel .qm-pdp .Bestseller-Price in
+           app/styles/qi-master.css; „in klein" ist dort --qm-fs-xs, also
+           kleiner als die 2rem des Preises. */
+        priceLabel={
+          <>
+            <p className="qm-steuerhinweis">inkl. 19 % MwSt.</p>
+            <QiMasterTreppe treppe={treppe} kompakt />
+          </>
+        }
         benefitList={
           <QiMasterBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
         }
