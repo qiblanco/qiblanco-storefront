@@ -9,14 +9,24 @@ import {FRAGEN} from '~/data/fragen';
  * weiß. Der Hub zeigt beides auf einmal: die Frage und den Satz, der sie
  * beantwortet.
  *
- * DIE FRAGELISTE IST MASCHINELL ABGEGRENZT (data-geo="frageliste"), und das
- * ist kein Klassenname. Die Abnahme
- * (seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py) folgt den
- * Links dieses Hubs und verlangt von jedem Ziel den Marker data-geo="frage".
- * Ohne die Abgrenzung wäre JEDER Link dieser Seite eine Frageseite — auch
- * /pages/kritik und /pages/hypothesen, die keine sind. Die Trennung steht
- * deshalb im Markup und nicht in einer Ausnahmeliste der Probe: eine
- * Ausnahmeliste wächst mit jedem Querverweis, eine Abgrenzung nicht.
+ * ZWEI MARKER GRENZEN AB, WAS DIE ABNAHME HIER MESSEN DARF, und beide sind
+ * Verträge, keine Klassennamen:
+ *   data-geo="frageliste"  die Liste der Frageseiten. Jedes Ziel darin muss
+ *                          den Marker data-geo="frage" tragen.
+ *   data-geo="hub-inhalt"  jede eigene Inhalts-Sektion dieser Seite. Links
+ *                          darin sind Querverweise und werden auf
+ *                          Erreichbarkeit geprüft, nicht auf den Frage-Marker.
+ *
+ * WARUM DIE ZWEITE ABGRENZUNG NÖTIG IST, und das ist gemessen: am gerenderten
+ * Hub stehen 26 /pages/-Links, davon 6 in der Frageliste und 3 als eigene
+ * Querverweise — die übrigen 17 kommen aus Kopf und Fuß der Storefront (AGB,
+ * Impressum, Podcasts, die fünf Studienseiten …). Ohne diese Grenze würde die
+ * Abnahme fremde Seiten mitmessen und wäre aus Gründen rot, die mit dieser
+ * Fläche nichts zu tun haben. Eine Wache, die aus fremden Gründen rot steht,
+ * kann die Frage „hält DIESE Fläche?" nicht mehr beantworten.
+ *
+ * Die Trennung steht im Markup und nicht in einer Ausnahmeliste der Probe:
+ * eine Ausnahmeliste wächst mit jedem Querverweis, eine Abgrenzung nicht.
  *
  * DIE ZWEIFELSFLÄCHEN GEHÖREN DAZU UND STEHEN TROTZDEM NICHT IN DER LISTE.
  * /pages/kritik und /pages/hypothesen beantworten keine einzelne Frage, sie
@@ -33,7 +43,7 @@ import {FRAGEN} from '~/data/fragen';
 export function FragenHub() {
   return (
     <div className="frg">
-      <section className="frg__kopf" data-section="frg-hub-kopf">
+      <section className="frg__kopf" data-geo="hub-inhalt" data-section="frg-hub-kopf">
         <div className="frg__inhalt">
           <p className="frg__vorspann">Fragen und Antworten</p>
           <h1>Die Fragen, die uns gestellt werden</h1>
@@ -70,7 +80,7 @@ export function FragenHub() {
         </div>
       </section>
 
-      <section data-section="frg-hub-zweifel">
+      <section data-geo="hub-inhalt" data-section="frg-hub-zweifel">
         <div className="frg__inhalt">
           <h2>Wo wir uns prüfen lassen</h2>
           <p>
@@ -98,7 +108,7 @@ export function FragenHub() {
         </div>
       </section>
 
-      <section data-section="frg-hub-haltung">
+      <section data-geo="hub-inhalt" data-section="frg-hub-haltung">
         <div className="frg__inhalt">
           <h2>Erfahrung und Messung sind zwei verschiedene Fragen</h2>
           <p>
