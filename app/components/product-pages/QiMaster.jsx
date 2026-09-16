@@ -39,8 +39,16 @@ import {
  *  - Produktbilder: es gibt noch keine. Die Buy-Box zieht sie aus Shopify,
  *    sobald sie dort liegen — hier wird kein QiOne-Bild als QiMaster gezeigt.
  *
- * CTA-Ziel: #qm-buybox (die Buy-Box dieser Seite; ein echtes Ziel statt des
- * toten '#product'-Ankers der QiOne-PDP).
+ * CTA-Ziel: #qm-buybox — die Buy-Box dieser Seite, seit 2026-09-16 wirklich.
+ *
+ * DIESER SATZ WAR BIS DAHIN FALSCH, UND ZWAR IN BEIDE RICHTUNGEN: er nannte
+ * '#qm-buybox' "ein echtes Ziel" (die Id existierte in KEINER Datei des Ladens,
+ * der Knopf tat beim Klick nichts) und '#product' der QiOne-PDP "tot" (dort war
+ * er es tatsaechlich, auf qibracelet/qihome-air/zeremonie-kakao dagegen nie).
+ * Ein Kommentar, der das Gegenteil dessen behauptet, was der Fall ist, ist
+ * teurer als gar keiner: er beantwortet die Frage, bevor jemand sie stellt.
+ * Beide Ziele hängen jetzt an der Buy-Box ihrer Route (`ankerId`), beide
+ * gemessen am ausgelieferten DOM.
  */
 export default function QiMaster({block = undefined}) {
   return (

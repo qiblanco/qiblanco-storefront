@@ -148,6 +148,21 @@ export default function Product() {
     <div className="qm-pdp">
       <QiOneBuyBox
         product={product}
+        /* SPRUNGZIEL DES PARALLAX-KNOPFES "Hole dir deinen QiMaster" weiter
+           unten auf der Seite (product-pages/QiMaster.jsx, link={'#qm-buybox'}).
+           BIS ZUM 2026-09-16 GAB ES DIESE ID IM GANZEN LADEN NICHT: der Knopf
+           stand seit dem ersten Tag der Seite da und tat beim Klick nichts —
+           gemessen 2026-09-16T20:24Z im Browser, ein einziger seiteninterner
+           Sprungziel-Link auf der Seite, und der war tot. Der Kopfkommentar in
+           QiMaster.jsx nannte ihn ausdrücklich "ein echtes Ziel"; genau diese
+           Behauptung ist der Grund, warum es niemandem auffiel.
+
+           Die Id hängt an der Buy-Box und nicht an einem neuen Wrapper: sie
+           IST das Ziel, das der Knopf verspricht. Dieselbe Hausform wie
+           products.qibracelet.jsx / products.qihome-air.jsx / products.
+           zeremonie-kakao.jsx (`<div className="product" id="product">`), hier
+           nur über die geteilte Komponente statt von Hand. */
+        ankerId="qm-buybox"
         /* Die Pflichtmitteilung hängt auf dieser Seite NICHT unter dem
            Kauf-Knopf, sondern als letzter Punkt der Nutzen-Liste darunter —
            dieselbe Bauform wie auf qione-2-pro, qibracelet, qihome-air und
