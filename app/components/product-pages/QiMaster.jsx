@@ -48,7 +48,6 @@ export default function QiMaster({block = undefined}) {
       <LogoBar />
       <MainFeatures />
       <InfoSlider />
-      <GoogleRezensionenBereich />
       <RisikofreiErleben />
       <DiamantAbschnitt />
       <SechsGAbschnitt />
@@ -68,6 +67,30 @@ export default function QiMaster({block = undefined}) {
       />
       <StudienCards headline="Die Zellstudien zum Gitterchip – durchgeführt am QiOne® 2 Pro" />
       <Fertigung />
+      {/* Der Google-Bewertungsbereich steht hier unten, unmittelbar oberhalb
+          des Upsell-Blocks (Christian 2026-09-16, Auftrag 20260916-
+          bewertungsblock-wandert-ans-ende: "Diesen Bereich ganz nach unten
+          schieben, oberhalb von 'Über 300 neue Nutzer jeden Monat'").
+          Bis dahin stand er zwischen InfoSlider und dem 20-Tage-Block.
+
+          ES IST EIN UMZUG, KEIN UMBAU: die Komponente ist unverändert, also
+          auch ihre Überschrift, die KI-Zusammenfassung, alle Karten, der
+          Schieberegler und das Abzeichen mit der Bewertungszahl. Es sind
+          fremde Aussagen über uns — sie werden bewegt, nicht bearbeitet.
+
+          DER ANKER ZIEHT MIT: `#google-rezensionen` hängt an der Sektion
+          selbst (GoogleRezensionenBereich.jsx), nicht an dieser Stelle. Der
+          4,8-Klick im Kopf-Banner fährt über findeRezensionsZiel() auf
+          genau diese Id und findet sie weiterhin — nur eben weiter unten.
+          Gemessen nach dem Bau: `pruefungen/probe_bewertungsblock_position.py`,
+          Arm `anker` (kein NEU toter Anker; `#qm-buybox` bleibt der bekannte,
+          von diesem Bau unberührte Bestandsbefund).
+
+          WARUM DIE STELLE INHALTLICH TRÄGT: sozialer Beweis zieht
+          Aufmerksamkeit, entscheidet aber nicht allein den Kauf — er steht
+          jetzt am Ende der Argumentationskette und direkt vor dem Upsell,
+          statt den Lesefluss nach dem zweiten Abschnitt zu unterbrechen. */}
+      <GoogleRezensionenBereich />
       <UpsellLineUp block={block} />
       <ProductFAQ items={FAQ_QI_MASTER} />
     </div>
