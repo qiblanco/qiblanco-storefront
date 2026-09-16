@@ -103,39 +103,36 @@
    Zahlen zusammenbleiben, misst die Probe laufend an der Startseite.
 
    (2) DER RANDBESCHNITT auf schmalen Geraeten, beim Nachmessen gefunden: die
-   vier Logos brauchen 628 px, die Zeile bricht nicht (`flex-wrap: nowrap`),
-   und `.LogoBar` traegt `overflow: hidden`. Bei 390 px Breite steht
-   BRAINEFFECT dadurch VOLLSTAENDIG ausserhalb (rechte Kante bei -5 px) und
-   DNX ragt 238 px hinaus. Die Zeile bricht jetzt, statt zu schneiden — die
-   Logos behalten ihre 40 px, sie werden NICHT kleiner gezogen. `max-height`
-   muss dafuer weichen: 15vh sind bei 844 px Hoehe 127 px und wuerden die
-   zweite Reihe genauso abschneiden, wie es der Rand vorher seitlich tat.
+   vier Logos brauchen 628 px, die Zeile brach nicht, und `.LogoBar` traegt
+   `overflow: hidden`. Dieser zweite Befund war NIE eine Eigenschaft dieser
+   Seite — er stand auf der Startseite und den drei anderen Produktseiten
+   genauso, weil alle fuenf dieselbe Komponente und dieselbe Regel benutzen.
+   Am 2026-09-16 wurde er hier trotzdem zuerst behoben, weil der Auftrag die
+   Startseite ausdruecklich nicht anfassen durfte.
+
+   DIESER TEIL STEHT SEIT DEM 2026-09-17 NICHT MEHR HIER, SONDERN IN app.css
+   (Job 20260917-logoleiste-bricht-nur-auf-qimaster-geteilte-regel-nachziehen).
+   Wer ihn sucht: `.LogoBar` / `.LogoBar-ImgWrapper` dort, samt der Herleitung
+   der Zahlen. Ein Sonderfall, der genau das tut, was die geteilte Regel
+   ohnehin tut, ist keine Absicherung — er ist die zweite Stelle, an der
+   dieselbe Frage beantwortet wird, und die falsche gewinnt still.
+
+   WAS HIER BLEIBT, IST BEFUND (1) — UND ZWAR NOTWENDIG: der Radius ist kein
+   geteilter Defekt, sondern die Wirkung der SEITENREGEL
+   `.ProductPageQiMaster img { border-radius: var(--qm-r2) !important }`. Eine
+   geteilte Regel koennte sie gar nicht schlagen: sie traegt dieselbe
+   Spezifitaet (0,1,1) und ein !important. Die Ausnahme muss deshalb im
+   Seiten-Scope stehen und bleibt.
 
    NICHT GEAENDERT: die Logos selbst (fremde Marken — ihre Darstellung wird
-   wiederhergestellt, nicht gestaltet), ihre Reihenfolge, ihre Groesse, und
-   die Startseite. Befund (2) besteht dort und auf den drei anderen PDPs
-   unveraendert fort; er gehoert in die geteilte Regel und ist als eigener
-   Auftrag vermerkt (RESULT des Jobs). ---------------------------------- */
+   wiederhergestellt, nicht gestaltet), ihre Reihenfolge und ihre Groesse.
+   ---------------------------------------------------------------------- */
 .ProductPageQiMaster .LogoBar img {
   /* Hauswert aus app/styles/app.css (`img { border-radius: 4px }`). Steht hier
      als Zahl, weil app.css keinen Token dafuer fuehrt; die Probe
      probe_logoleiste_marken_unbeschnitten.py misst den Abstand zur Startseite
      und wird rot, wenn die beiden Werte auseinanderlaufen. */
   border-radius: 4px !important;
-}
-.ProductPageQiMaster .LogoBar {
-  max-height: none;
-  padding-inline: 8px;
-}
-.ProductPageQiMaster .LogoBar .LogoBar-ImgWrapper {
-  flex-wrap: wrap;
-  column-gap: 12px;
-  row-gap: 16px;
-}
-/* Ab der Breite, ab der alle vier nebeneinander passen, bleibt der Abstand der
-   Startseite (30 px) — gebrochen wird nur, wo sonst geschnitten wuerde. */
-@media (min-width: 750px) {
-  .ProductPageQiMaster .LogoBar .LogoBar-ImgWrapper { column-gap: 30px; }
 }
 
 .ProductPageQiMaster .MainFeatures { margin: var(--qm-s4) auto; gap: var(--qm-s3); }
