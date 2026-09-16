@@ -73,7 +73,19 @@ export default function QiMaster({block = undefined}) {
         linkStyling={'primary'}
         linkText={'Hole dir deinen QiMaster'}
       />
-      <StudienCards headline="Die Zellstudien zum Gitterchip – durchgeführt am QiOne® 2 Pro" />
+      {/* Die Überschrift sagt, WAS die Studien sind — veröffentlicht —, statt
+          vorwegzunehmen, woran sie gemessen wurden (Christian 2026-09-16,
+          Auftrag 20260916-publizierte-zellstudien-und-eine-mittige-zeile).
+          Bis dahin: "Die Zellstudien zum Gitterchip – durchgeführt am
+          QiOne® 2 Pro".
+
+          DER GERÄTE-HINWEIS IST NICHT WEG, ER STEHT NUR WOANDERS: in den
+          Studientexten dieser Seite (6G-Abschnitt, Diamant-Abschnitt, FAQ)
+          bleibt "QiOne® 2 Pro" samt Dartsch-Quellen und "in vitro" stehen —
+          dort gehört er hin. Gemessen:
+          pruefungen/probe_publizierte_zellstudien.py, Arm `ueberschrift`
+          prüft die Überschrift, ausdrücklich nicht die Seite. */}
+      <StudienCards headline="Publizierte Zellstudien zum Gitterchip™" />
       <Fertigung />
       {/* Der Google-Bewertungsbereich steht hier unten, unmittelbar oberhalb
           des Upsell-Blocks (Christian 2026-09-16, Auftrag 20260916-
