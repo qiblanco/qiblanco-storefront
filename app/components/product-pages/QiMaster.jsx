@@ -193,25 +193,34 @@ function MainFeatures() {
 }
 
 function RisikofreiErleben() {
+  /*
+   * Der 20-Tage-Block in Christians Fassung (Auftrag CW-20260916-454dda42,
+   * Job 20260916-zwanzig-tage-block-wird-vier-zeilen-mittig): vier Saetze,
+   * vier Zeilen, mittig ausgerichtet.
+   *
+   * WAS HIER BEWUSST ANDERS IST ALS AUF DEN SCHWESTERSEITEN: QiOne2Pro,
+   * QiBracelet und QiHome tragen in derselben .RisikofreiErleben weiter den
+   * erzaehlenden Block mit Rueckgabeweg. Diese Seite nicht mehr — Christian
+   * hat den Text fuer den QiMaster ersetzt. Die Klasse bleibt, damit Abstaende
+   * und Sektionstakt der Seite unveraendert sitzen; die Mitte kommt aus
+   * app/styles/qi-master.css (.qm-garantie), also aus der route-gebundenen
+   * Token-Schicht und NICHT aus app.css — eine Mitte in app.css haette alle
+   * vier Geraeteseiten zentriert.
+   *
+   * ZEILE 1 BLEIBT EIN h2: der Abschnitt behaelt damit seine Ueberschrift
+   * (Dokument-Gliederung, EIN H2-Stil der Seite). Die drei Zusagen darunter
+   * sind eigene Elemente, damit jede Zeile ihre Ausrichtung einzeln belegt.
+   *
+   * DER RUECKGABEWEG IST NICHT VERSCHWUNDEN, er steht weiter unten im
+   * Gewaehrleistungstext (Weg, Adresse info@qiblanco.com, volle Erstattung) —
+   * dieser Block nennt die Zusage, jener das Verfahren.
+   */
   return (
-    <div className="RisikofreiErleben NormalSectionSize">
-      <h2>Erlebe den QiMaster – 20 Tage ohne Risiko</h2>
-      <p>
-        Wir sind überzeugt von unserer Technologie – und möchten, dass du es
-        auch bist. Deshalb kannst du den QiMaster 20 Tage lang in deinen
-        Alltag nehmen und dich selbst entscheiden.
-      </p>
-      <p className="mt-1">
-        So einfach geht’s: <br />✅ Bestelle deinen QiMaster und trage ihn.{' '}
-        <br />✅ Nimm dir Zeit – Tag und Nacht, Sauna, Sport, Meer.{' '}
-        <br />✅ Solltest du ihn nicht behalten wollen, gibst du ihn innerhalb
-        von 20 Tagen zurück und erhältst den vollen Kaufpreis.
-      </p>
-      <p className="mt-1">
-        <strong>
-          Das gilt für jedes Stück aus unserem Haus – auch für dieses.
-        </strong>
-      </p>
+    <div className="RisikofreiErleben NormalSectionSize qm-garantie">
+      <h2 className="qm-garantie__zeile">Lass dich vom Qi Master® tragen.</h2>
+      <p className="qm-garantie__zeile">100% Zufriedenheitsgarantie.</p>
+      <p className="qm-garantie__zeile">20 Tage nach Erhalt testen.</p>
+      <p className="qm-garantie__zeile">100% Geld-zurück-Garantie.</p>
     </div>
   );
 }

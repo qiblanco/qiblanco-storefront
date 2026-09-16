@@ -146,6 +146,37 @@
   max-width: var(--qm-mass);
 }
 .ProductPageQiMaster .text-center p { margin-left: auto; margin-right: auto; }
+
+/* ─── Der 20-Tage-Block: vier Zeilen, mittig ─────────────────────────────────
+   Christians Fassung (Auftrag CW-20260916-454dda42). „Zentriert mittig
+   gestaltet" heisst hier AUSRICHTUNG, nicht ein schmalerer Textkasten: die
+   Blockbreite bleibt, wie sie war.
+
+   WARUM HIER UND NICHT IN app.css: .RisikofreiErleben tragen auch
+   /products/qione-2-pro, /products/qibracelet und /products/qihome-air mit
+   ihrem erzaehlenden Text. Eine Mitte in app.css haette alle vier zentriert.
+   Der Scope .ProductPageQiMaster liegt am Wrapper dieser Route — genau eine
+   Seite, genau dieser Block.
+
+   WARUM max-width AUF none: .ProductPageQiMaster p deckelt Fliesstext auf
+   --qm-mass (70ch) OHNE auto-Raender. Ein zentrierter Text in einer links
+   haengenden 70ch-Box steht nicht in der Mitte des Blocks, sondern in der
+   Mitte seines Kastens — also sichtbar links. Die vier Zeilen spannen deshalb
+   die volle Blockbreite und zentrieren darin; der Deckel bleibt fuer jeden
+   anderen Absatz der Seite unangetastet. */
+.ProductPageQiMaster .qm-garantie { text-align: center; }
+.ProductPageQiMaster .qm-garantie__zeile {
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Die drei Zusagen lesen sich als ein Zug unter der Ueberschrift, nicht als
+   drei Absaetze — der Abstand der Ueberschrift nach unten bleibt der der
+   Seite (h2-Regel oben, --qm-s3). */
+.ProductPageQiMaster p.qm-garantie__zeile { margin-top: 0; margin-bottom: 0; }
+.ProductPageQiMaster p.qm-garantie__zeile + p.qm-garantie__zeile {
+  margin-top: var(--qm-s1);
+}
 .ProductPageQiMaster small { font-size: var(--qm-fs-xs); }
 .ProductPageQiMaster ul,
 .ProductPageQiMaster ol { margin: var(--qm-s3) 0 var(--qm-s3) var(--qm-s3); }
