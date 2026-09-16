@@ -58,6 +58,7 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   quantity?: number,
  *   ctaLabel?: string,
  *   gewaehrleistungsHinweis?: boolean,
+ *   ankerId?: string,
  * }} props
  *
  * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
@@ -66,6 +67,22 @@ import {ProductImageList} from '~/components/ProductImageList';
  * an das ProductForm herankommt, das sie meint. Wer sie auf false setzt,
  * muss die Mitteilung selbst montieren; die Begründung dazu steht in
  * ProductForm.jsx.
+ *
+ * ANKER-ZIEL (`ankerId`, additiv, Default undefined): gibt dem umschliessenden
+ * `.product`-Knoten eine Id, damit ein CTA weiter unten auf der Seite ZU DIESER
+ * BUY-BOX springen kann. React lässt `id={undefined}` weg -- jede Seite, die
+ * die Prop nicht übergibt, rendert byte-identisch weiter; der
+ * Markup-Identitäts-Vertrag oben bleibt damit unberührt.
+ *
+ * WARUM DIE PROP UND NICHT EIN FESTES `id="product"` HIER: die Buy-Box trägt
+ * MEHRERE Seiten zugleich (organische PDP, Campaign-PDP, 2er-Set, QiMaster).
+ * Eine feste Id wäre auf jeder von ihnen dieselbe -- die Campaign-PDP hat mit
+ * `#shopq-buybox` bereits ein eigenes Ziel, und zwei Knoten mit derselben Id in
+ * einem Dokument sind kein Anker mehr, sondern ein Münzwurf. Die Route benennt
+ * ihr Ziel deshalb selbst, genau wie es products.qibracelet.jsx,
+ * products.qihome-air.jsx und products.zeremonie-kakao.jsx von Hand tun
+ * (`<div className="product" id="product">`) -- dieselbe Hausform, nur über
+ * die geteilte Komponente erreichbar.
  */
 export function QiOneBuyBox({
   product,
@@ -77,6 +94,7 @@ export function QiOneBuyBox({
   quantity = 1,
   ctaLabel,
   gewaehrleistungsHinweis = true,
+  ankerId = undefined,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -97,7 +115,7 @@ export function QiOneBuyBox({
   const {title} = product;
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
   return (
-    <div className="product">
+    <div className="product" id={ankerId}>
       <div className="ProductImages">
         <div className="ProductImageWrapperSticky">
         <ProductImage image={featuredImage} />

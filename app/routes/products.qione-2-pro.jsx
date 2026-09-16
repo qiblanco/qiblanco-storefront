@@ -152,6 +152,22 @@ export default function Product() {
   return (
     <>
       <QiOneBuyBox
+        /* SPRUNGZIEL DER BEIDEN "#product"-CTAs im Inhalt darunter
+           (product-pages/QiOne2Pro.jsx, ctaAnchor-Default). Der Kopfkommentar
+           dort fuehrte sie seit der Extraktion als "toter Anker — bleibt dort
+           unveraendert (Byte-Identität)": der Bau, der das schrieb, wollte die
+           organische PDP nicht anfassen und hat den Schaden deshalb ehrlich
+           stehen lassen statt ihn zu verschweigen. Er war real — am
+           2026-09-16 zeigten 2 der 3 toten Sprungziele des ganzen Ladens
+           hierher (Zensus über 102 ausgelieferte Seiten).
+
+           `id="product"` ist dabei kein neuer Name, sondern der, den
+           products.qibracelet.jsx, products.qihome-air.jsx und
+           products.zeremonie-kakao.jsx für dieselbe Stelle schon tragen. Die
+           Campaign-PDP /pages/qione-2-pro bleibt unberührt: sie übergibt
+           ctaAnchor='#shopq-buybox' und bekommt diese Prop nicht — zwei
+           gleiche Ids in einem Dokument wären kein Anker mehr. */
+        ankerId="product"
         product={product}
         /* Die Pflichtmitteilung hängt auf dieser Seite NICHT mehr unter dem
            Kauf-Knopf, sondern weiter unten im benefitList-Slot (Elina

@@ -21,9 +21,12 @@ import {StudienCards} from './StudienCards';
  * Props parametrisiert; die DEFAULTS sind byte-identisch zum PDP-Bestand
  * (organische PDP rendert unverändert — Markup-Identitäts-Vertrag wie
  * QiOneBuyBox). Die Campaign-PDP übergibt '#shopq-buybox' (eine Kauflogik
- * auf der Seite, kein Funnel-Bounce zur SEO-PDP). Hinweis Vorbestand:
- * '#product' existiert als id auf der PDP nicht (toter Anker) — bleibt dort
- * unverändert (Byte-Identität), nur die Campaign-Seite bekommt ein echtes Ziel.
+ * auf der Seite, kein Funnel-Bounce zur SEO-PDP). ERLEDIGT 2026-09-16: der
+ * hier früher vermerkte Vorbestand — "'#product' existiert als id auf der PDP
+ * nicht (toter Anker)" — ist behoben. Die organische Route übergibt der
+ * geteilten Buy-Box jetzt ankerId="product" (products.qione-2-pro.jsx); die
+ * Byte-Identität dieser Komponente bleibt davon unberührt, weil die Id an der
+ * ROUTE hängt und nicht hier. Die Campaign-Seite behält '#shopq-buybox'.
  * gitterchipAnimation (Default null = organische PDP unverändert): optionaler
  * Scroll-Scrub-Block direkt nach dem Gitterchip-Erklärblock — die Campaign-PDP
  * übergibt hier die GitterChip-Molecules-Animation (ScrollScrubVideo).
