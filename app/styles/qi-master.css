@@ -203,6 +203,44 @@
 }
 .ProductPageQiMaster .text-center p { margin-left: auto; margin-right: auto; }
 
+/* ─── Die Studien-Zeile: mittig, und nur sie ────────────────────────────────
+   Christians Auftrag 20260916-publizierte-zellstudien-und-eine-mittige-zeile:
+   „Das hier mittig zentrieren: Wissenschaftlich getestet und in
+   internationalen Fachpublikationen bestätigt."
+
+   WARUM DAS NICHT SCHON ERLEDIGT WAR, OBWOHL text-align: center DASTAND:
+   die Regel `.ghx-studien__footnote { text-align: center }` in app.css galt
+   bereits — sie zentriert den Text aber INNERHALB seines Kastens, und der
+   Kasten hing links. Ursache ist die Regel sechs Zeilen weiter oben:
+   `.ProductPageQiMaster p` deckelt jeden Absatz dieser Seite auf --qm-mass
+   (70ch) OHNE auto-Ränder. Gemessen 2026-09-16 bei Viewport 1280:
+
+       Studienbereich   x= 16  w=1233  Mitte 633
+       Überschrift      x=253  w= 760  Mitte 633
+       Knopf            x=483  w= 300  Mitte 633
+       diese Zeile      x= 16  w= 630  Mitte 331   ← 302 px daneben
+
+   Dieselbe Falle und dieselbe Antwort wie beim 20-Tage-Block weiter unten
+   (Auftrag CW-20260916-454dda42): max-width auf none, auto-Ränder dazu. Der
+   Deckel bleibt für jeden anderen Absatz der Seite unangetastet.
+
+   WARUM SEITENLOKAL UND NICHT IN app.css: die Zeile kommt aus der GETEILTEN
+   Komponente reusables/StudienSlider.jsx, die auch /products/qione-2-pro und
+   /pages/exclusive-solutions rendern. Eine Regel in app.css wäre dort erstens
+   mitgekommen — Christian hat zur QiMaster-Seite gesprochen — und zweitens
+   wirkungslos: `.ProductPageQiMaster p` hat Spezifität (0,1,1),
+   `.ghx-studien__footnote` nur (0,1,0). Die Naht ist gemessen:
+   pruefungen/probe_naht_studienzeile_nachbarseiten.py.
+
+   NUR DIESE ZEILE: der Bereich selbst bleibt auf text-align start, die
+   Kacheln behalten ihre linksbündigen Titel- und Quellzeilen. Wer das ändert,
+   färbt probe_publizierte_zellstudien.py Arm `nur_diese_zeile` rot. */
+.ProductPageQiMaster .ghx-studien__footnote {
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ─── Der 20-Tage-Block: vier Zeilen, mittig ─────────────────────────────────
    Christians Fassung (Auftrag CW-20260916-454dda42). „Zentriert mittig
    gestaltet" heisst hier AUSRICHTUNG, nicht ein schmalerer Textkasten: die
