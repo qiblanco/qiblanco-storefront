@@ -1,0 +1,95 @@
+/* cart-seite.css — Desktop-Layout der Warenkorb-SEITE (/cart).
+ *
+ * WARUM EINE ROUTENGEBUNDENE DATEI UND NICHT app/styles/app.css:
+ * app.css ist global; an ihr hängen über 40 Seiten, viele davon mit offenen
+ * Pixel- und Formate-Befunden aus fremder Arbeit. Der Deploy-Gate hat den
+ * ersten Versuch dieses Baus deshalb zu Recht geblockt — vier Regeln für EINE
+ * Seite hätten elf fremde Messschulden zur Vorbedingung dieser Reparatur
+ * gemacht. Eine route-gebundene Datei hat die Reichweite, die die Änderung
+ * wirklich braucht: genau eine Route (Muster mm-lp.css, zweifel-beleg.css —
+ * letztere hängt bereits an dieser Route).
+ *
+ * Alle Werte sind gemessen, nicht gewählt: 1350 px Shop-Rahmen (`.cart` in
+ * app.css), 468 px Drawer-Innenbreite (aside.aside--cart ist live 500 px breit,
+ * 16 px Innenabstand je Seite).
+ */
+
+/* ===================================================================
+ * WARENKORB-SEITE auf DESKTOP: zwei Spalten im vorhandenen Shop-Rahmen
+ * Vorgang EL-20260901-72b39956 (Meldung Elina Gerlinger, 2026-09-01:
+ * "/cart rendert auf Desktop im schmalen/mobilen Layout").
+ *
+ * WAS HIER REPARIERT WIRD, UND WARUM ES KEIN GESCHMACK IST: der Auftrag vom
+ * 2026-08-21 (Christian Bauer) zählt sieben Mängel der Seite auf. Punkt 7
+ * lautet wörtlich "Rechts bleibt der weit überwiegende Teil der Fläche
+ * komplett leer", und die Soll-Vorgabe lautet "Container mit max-width und
+ * Seitenabstand, an der Breite ausgerichtet, die der Rest des Shops
+ * verwendet. Miss diese Breite, rate sie nicht" -- gemessen: 1350 px.
+ * Die zusätzliche 468-px-Innenspalte darunter war die Ableitung des
+ * ausführenden Jobs, ausdrücklich als Abweichung protokolliert ("BEWUSST
+ * NICHT auf die vollen 1350 px aufgezogen"). Sie hält zwar Label und Betrag
+ * zusammen (Punkt 3), lässt aber die rechte Hälfte leer -- also genau
+ * Punkt 7. Zwei Bestellungen desselben Auftrags standen damit gegeneinander.
+ *
+ * DER ZIELKONFLIKT IST BAULICH AUFLÖSBAR, sobald die Annahme "einspaltig"
+ * fällt: die Produktzeilen nehmen die Shop-Breite (Punkt 7), der Summen- und
+ * Kaufblock bleibt eine eigene, 468 px schmale Spalte rechts -- also in der
+ * GEMESSENEN Drawer-Innenbreite. Dadurch bleibt der Abstand Label/Betrag
+ * exakt bei den 320 px des Drawers (Punkt 3 bleibt behoben) und die
+ * Drawer-Parität der Summenzeile messbar gegen den Drawer statt gegen
+ * Geschmack. Es ist zugleich der übliche E-Commerce-Aufbau ab Tablet-Breite.
+ *
+ * REICHWEITE, BEWUSST ENG GEHALTEN:
+ *   - ab 1024 px. Darunter (Handy, 768er-Tablet) bleibt alles, wie es ist --
+ *     dort ist die einspaltige Drawer-Geometrie richtig und live abgenommen.
+ *   - nur die SEITE: alle Regeln hängen an `.cart-page-inner`, das der Drawer
+ *     nicht hat. Der Drawer ist Soll-Zustand und wird nicht angefasst.
+ *   - nur der GEFÜLLTE Warenkorb: `:has(.cart-summary-page)`. Der leere
+ *     Warenkorb hat weder Summe noch Versandbanner; ein zweispaltiges Raster
+ *     für einen einzigen Satz Text wäre ein leeres Raster.
+ *   - die gemeinsame Basis `.cart-summary-page, .cart-summary-aside` oben
+ *     bleibt unberührt -- wer die Trennlinie ändert, ändert sie weiterhin
+ *     zwangsläufig für beide Ansichten.
+ * ------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  /* Der Seitenrahmen `.cart` (1350 px) ist ab hier die einzige Breitenquelle. */
+  .cart-page-inner:has(.cart-summary-page) {
+    max-width: none;
+  }
+
+  /* Fließtext erbt die Spaltenbreite NICHT: ohne diesen Deckel liefe die
+   * Pflichtmitteilung und die Zweifel-Zeile über die vollen ~1318 px, und die
+   * Zeilenlänge (Haus-Token --measure-text, 75ch) wäre gerissen. Der <dialog>
+   * des EU-Labels ist bewusst NICHT mitgefasst: er liegt als Geschwister
+   * daneben und trägt seine eigene Geometrie. */
+  .cart-page-inner:has(.cart-summary-page) > :is(h1, section, p) {
+    max-width: var(--measure-text);
+  }
+
+  .cart-page-inner:has(.cart-summary-page) .cart-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 468px;
+    grid-template-rows: auto 1fr;
+    column-gap: 64px;
+    align-items: start;
+  }
+
+  /* Linke Spalte, in Lesereihenfolge: Versandbanner über den Produktzeilen.
+   * Beide werden automatisch untereinander platziert -- das Banner kann
+   * fehlen (Nicht-EUR-Markt oder Schwelle erreicht), dann rücken die Zeilen
+   * nach oben, ohne dass eine Lücke stehen bleibt. */
+  .cart-page-inner .cart-main > .free-shipping-wrapper,
+  .cart-page-inner .cart-main > .cart-details {
+    grid-column: 1;
+  }
+
+  /* Rechte Spalte: Summe, Vertrauenshinweise, Kaufknopf als ein Block.
+   * `sticky` hält den Kaufweg bei vielen Positionen im Blick, ohne einen
+   * Scroll-Container einzubauen (die Seite scrollt weiterhin als Seite). */
+  .cart-page-inner .cart-main > .cart-summary-page {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: 24px;
+  }
+}

@@ -5,6 +5,7 @@ import {CartMain} from '~/components/CartMain';
 import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import zweifelStyles from '~/styles/zweifel-beleg.css?url';
+import cartSeiteStyles from '~/styles/cart-seite.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
 import {noindexMeta} from '~/lib/seo';
 
@@ -15,7 +16,16 @@ import {noindexMeta} from '~/lib/seo';
  * Änderung wäre an eine fremde Bestandsschuld gekettet gewesen.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: zweifelStyles}];
+  return [
+    {rel: 'stylesheet', href: zweifelStyles},
+    // Desktop-Layout der SEITE (zwei Spalten ab 1024 px, Vorgang
+    // EL-20260901-72b39956). Aus demselben Grund route-gebunden wie die Zeile
+    // darüber: die Regeln gelten für genau diese Route, und app.css hätte
+    // über 40 fremde Seiten samt ihrer offenen Messschuld mit in den Deploy
+    // gezogen. Der Drawer erbt daraus nichts — alle Regeln hängen an
+    // `.cart-page-inner`, das nur die Seite trägt.
+    {rel: 'stylesheet', href: cartSeiteStyles},
+  ];
 }
 
 /**
