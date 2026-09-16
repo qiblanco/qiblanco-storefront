@@ -898,7 +898,7 @@ export const NUR_ROUTE_SEITEN = [
   // AUFNAHME-KRITERIUM 2 (indexierbar gewollt) IST JE SEITE GEPRUEFT: keine der
   // sieben Routen setzt `noindex`, jede setzt `canonicalLink()` auf sich selbst.
   //
-  // WACHE FUER ALLE SIEBEN (Kriterium 3, eine Wache statt sieben):
+  // WACHE FÜR ALLE SIEBEN (Kriterium 3, eine Wache statt sieben):
   // seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py
   // (nachbau-audit h5f5ad493) folgt den Links des Fragen-Hubs innerhalb des
   // Abschnitts data-geo="frageliste" und prueft je Frageseite den Marker
@@ -907,14 +907,14 @@ export const NUR_ROUTE_SEITEN = [
   // Flaeche) und klassenweit probe_sitemap_noindex_naht.py.
   //
   // WAS HIER BEWUSST NICHT STEHT — und es ist der Eintrag, den der
-  // Segment-Auftrag ausdruecklich verlangt hat: /pages/wirkt-das. Am
-  // 2026-09-16 selbst nachgemessen liefert die Seite HTTP 200 und traegt
+  // Segment-Auftrag ausdrücklich verlangt hat: /pages/wirkt-das. Am
+  // 2026-09-16 selbst nachgemessen liefert die Seite HTTP 200 und trägt
   // `meta robots="noindex,nofollow"` UND den Header `x-robots-tag: noindex,
   // nofollow`; Christian hat sie am 2026-08-31 wegen Textqualitaet
-  // zurueckgezogen. Ein Eintrag hier traegt sie in die Sitemap — also eine
-  // Sitemap-Zeile fuer eine noindex-Seite, und damit genau der Widerspruch,
+  // zurueckgezogen. Ein Eintrag hier trägt sie in die Sitemap — also eine
+  // Sitemap-Zeile für eine noindex-Seite, und damit genau der Widerspruch,
   // vor dem der Kopf dieser Datei warnt, gegen eine Menschen-Entscheidung.
-  // Dasselbe gilt fuer /pages/haelt-das-mein-leben-aus und
+  // Dasselbe gilt für /pages/haelt-das-mein-leben-aus und
   // /pages/kette-oder-armband (beide ebenfalls live noindex,nofollow). Der
   // richtige Weg ist der Text, nicht die Sitemap — siehe RESULT s07.
   {
@@ -928,8 +928,8 @@ export const NUR_ROUTE_SEITEN = [
       'Lexikon. Die Seite besteht allein aus der Route pages.fragen.jsx und ' +
       'hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
       '200 mit voller Liste und steht in keiner Sitemap. Ein Seitenobjekt ' +
-      'waere der zweite moegliche Traeger und ist bewusst NICHT gewaehlt ' +
-      '(Fremdsystem) — dieselbe Begruendung wie bei /pages/lexikon, ' +
+      'wäre der zweite mögliche Traeger und ist bewusst NICHT gewählt ' +
+      '(Fremdsystem) — dieselbe Begründung wie bei /pages/lexikon, ' +
       '/pages/kritik und /pages/hypothesen. Kriterium 2 erfuellt: kein ' +
       'noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
       'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +

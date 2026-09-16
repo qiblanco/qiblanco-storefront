@@ -104,13 +104,13 @@ export function FragenHub() {
           <p>
             Ob jemand eine Wirkung spürt, und ob ein Messgerät sie zeigt, sind
             zwei Fragen mit zwei Antworten. Die erste beantwortet jeder für
-            sich, die zweite ein Versuchsaufbau. Beide Antworten stehen auf
-            diesen Seiten nebeneinander, mit Zahl und Fundstelle, wo es eine
-            gibt.
+            sich, die zweite ein Versuchsaufbau. Sie können verschieden
+            ausfallen, ohne dass eine von beiden falsch wird.
           </p>
           <p>
-            Damit kannst du entscheiden, ohne uns glauben zu müssen: jede Zahl
-            hier lässt sich nachschlagen, und wo eine fehlt, steht es da.
+            Für die eigene Lage heißt das zweierlei. Was du spürst, bleibt deine
+            Erfahrung, auch wenn ein Messgerät nichts anzeigt. Und was ein
+            Messgerät anzeigt, bleibt messbar, auch wenn du nichts davon spürst.
           </p>
         </div>
       </section>
