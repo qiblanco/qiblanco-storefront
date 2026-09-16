@@ -125,13 +125,6 @@ export const QIMASTER_SECHS_G = {
     quelle:
       'Peter C. Dartsch: Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Applied Cell Biology 9(3), 2021, S. 69–74. Ders.: QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japanese Journal of Medicine 4(1), 2021, S. 484–488.',
   },
-  nichtGemessen: {
-    titel: 'Was nicht gemessen ist',
-    absaetze: [
-      'Welche Trägerfrequenz das Telefon in den Studien nutzte, ist nicht dokumentiert. Für die Frequenzen künftiger 6G-Netze – oberhalb von 100 Gigahertz – liegt keine Messung vor: nicht für den Gitterchip, und nach den Behördenberichten, die uns vorliegen, auch nicht für die biologische Wirkung dieser Frequenzen selbst.',
-      'Wir sagen deshalb: Der QiMaster ist nicht auf eine Frequenz gebaut, und was wir gemessen haben, haben wir an heutigem Mobilfunk gemessen. Mehr behaupten wir nicht.',
-    ],
-  },
 };
 
 export const QIMASTER_PERSOENLICHKEIT = {
