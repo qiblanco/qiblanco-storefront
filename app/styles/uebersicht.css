@@ -119,6 +119,17 @@
   line-height: 1.55;
   color: var(--ue-muted-hell);
 }
+/* Legende: benennt die beiden Angaben, die jede Zeile trägt. Sie sitzt auf der
+   Body-Stufe und NICHT auf der Lead-Stufe — der Lead sagt, worum es geht, die
+   Legende sagt, wie die Zeilen zu lesen sind. Zwei Rollen, zwei Größen, beide
+   aus der bestehenden Skala; eine dritte Stufe wäre ein Skalen-Ausreißer. */
+.ue-legende {
+  margin: var(--ue-s2) 0 0;
+  max-width: var(--ue-mass);
+  font-size: var(--ue-fs-base);
+  line-height: 1.55;
+  color: var(--ue-muted-hell);
+}
 .ue-stand {
   margin: var(--ue-s3) 0 0;
   max-width: var(--ue-mass);        /* gemessen: ohne Maß 148 Zeichen je Zeile */
@@ -253,6 +264,36 @@
 .ue-marker--aktiv {
   border-color: var(--ue-akzent);
   color: var(--ue-akzent);
+}
+/* Abweichender Zustand (unfertig/archiviert/ersetzt). BEWUSST KEIN zweiter
+   Akzentton und KEIN Rot: die Liste soll das Auffällige zeigen, nicht bewerten —
+   unfertig ist kein Fehler, sondern ein Stand. Getragen wird der Unterschied von
+   der Fläche, nicht von einer neuen Farbe. */
+.ue-marker--zustand {
+  background: var(--ue-flaeche);
+  border-color: transparent;
+  color: var(--ue-text);
+}
+
+/* ─── Der Zweck: die Antwort auf „warum gibt es diese Seite" ──────────────── */
+.ue-zweck {
+  /* Eingerückt auf die Pfad-Kante (.ue-link trägt s1 Padding), damit Pfad und
+     Zweck EINE Einheit bilden statt zwei Spalten. Das Maß deckelt die Zeile auf
+     Lesebreite — ohne Deckel liefen die Sätze über die volle 1000px-Spalte und
+     damit weit über die ~75 Zeichen, ab denen das Auge die Zeile verliert. */
+  margin: 0 0 var(--ue-s1);
+  padding: 0 var(--ue-s1);
+  max-width: var(--ue-mass);
+  font-size: var(--ue-fs-xs);
+  line-height: 1.55;
+  color: var(--ue-muted);
+}
+/* Kein festgestellter Zweck: als solcher ERKENNBAR, nicht versteckt. Kursiv
+   statt Farbe — eine eigene Farbe wäre ein vierter Farbakt für eine Aussage,
+   die keine Warnung ist. */
+.ue-zweck--offen {
+  font-style: italic;
+  color: var(--ue-muted);
 }
 
 .ue-fuss {

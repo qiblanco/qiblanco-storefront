@@ -26,6 +26,27 @@ import uebersichtStyles from '~/styles/uebersicht.css?url';
  * (u. a. /pages/schlaf-zellen-schutz, /pages/tiefer-schlaf) fehlen dort,
  * obwohl sie HTTP 200 liefern. Eine Einzelquelle übersieht je eine Hälfte.
  *
+ * ZWECK UND ZUSTAND (Auftrag 20260916-162-seiten-und-bei-keiner-steht-warum,
+ * Christian: „162 Seiten, und bei keiner steht, warum"): jede Zeile trägt den
+ * Zweck der Seite. Er kommt aus demselben Datenmodul und stammt aus der
+ * kuratierten Quelle shared-state/homepage-bauer/data/seitenzweck/<shop>.yaml,
+ * aufgelöst über exports/seitenregister.json. `unklar` ist dort ein gültiger
+ * Wert — ein leeres Feld wird als „noch nicht festgestellt" gezeigt und NICHT
+ * mit einem plausiblen Satz gefüllt.
+ *
+ * DIE LEGENDE IM KOPF IST TRAGEND, NICHT SCHMUCK: die Abnahme-Probe
+ * homepage-bauer/pruefungen/probe_seitenregister.py (Arm D) misst, ob die
+ * Wörter „Zweck" und „Zustand" im SICHTBAREN Text stehen. Wer sie umformuliert,
+ * färbt Arm D rot — das ist gewollt und der Grund, warum die Zusage eine
+ * gemessene ist und keine behauptete.
+ *
+ * BEIDE LÄDEN AUF EINER FLÄCHE: qi-blanco.com ist ein fremder Liquid-Store, den
+ * dieses Repo nicht deployt; ein eigenes Seiten-Objekt gibt es dort nicht (live
+ * gemessen 2026-09-16: /pages/uebersicht, /pages/overview, /pages/bf-uebersicht,
+ * /pages/site-overview je HTTP 404, und `shopify-write check` führt kein Token
+ * für den US-Shop). Der US-Laden steht deshalb als eigener Bereich HIER — eine
+ * Arbeitsfläche, nicht zwei Wahrheiten.
+ *
  * DESIGN: eigenes Token-System `styles/uebersicht.css` (Scope .ue) nach dem
  * Referenz-Rezept der LP A — modulare Typo-Skala, 8pt-Grid, warmes Neutral,
  * EIN Gold-Akzent nur auf Handlung/Beweis, EIN Radius, EIN H2-Stil.
@@ -69,30 +90,67 @@ export const meta = () => [
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
 /**
- * Ein Eintrag = eine Zeile. Der Pfad ist die Hauptinformation (Monospace), der
- * Shop-Titel die Beifügung. Marker sind dezent und tragen nur, was gemessen
- * ist: `noindex` aus dem Routen-Code, der Ads-Status aus der Ads-Steuerung.
+ * `zustand` kommt als MASCHINENWERT aus dem Register und kann eine Adresse
+ * tragen: `ersetzt-durch:/pages/qihome-details`. Ungefiltert stünde ein
+ * Doppelpunkt-Schlüssel auf der Seite. Hier wird genau dieser eine Fall
+ * aufgelöst — alle übrigen Werte (live, unfertig, archiviert) gehen unverändert
+ * durch, damit ein künftiger Zustand nicht stillschweigend verschluckt wird.
+ */
+function zustandText(zustand) {
+  const marke = 'ersetzt-durch:';
+  return zustand.startsWith(marke)
+    ? `ersetzt durch ${zustand.slice(marke.length)}`
+    : zustand;
+}
+
+/**
+ * Ein Eintrag = eine Zeile MIT ihrem Zweck darunter. Der Pfad ist die
+ * Hauptinformation (Monospace), der Shop-Titel die Beifügung, der Zweck die
+ * Antwort auf die Frage, warum es die Seite gibt.
+ *
+ * WARUM DER ZWECK AUSSERHALB DES <a> STEHT: ein ganzer Satz im Linktext macht
+ * die Vorlesereihenfolge unbrauchbar und die Trefferfläche über die halbe
+ * Zeilenhöhe. Der Link bleibt der Pfad; der Zweck ist Text daneben.
+ *
+ * MARKER TRAGEN NUR, WAS GEMESSEN IST: `noindex` aus dem Routen-Code (deshalb
+ * `crawlbar === false` und nicht `!crawlbar` — für den US-Laden erhebt dieses
+ * Repo kein noindex, dort FEHLT das Feld, und ein fehlender Wert ist keine
+ * Aussage), der Ads-Status aus der Ads-Steuerung, der Zustand aus dem Register.
+ *
+ * `live` bekommt bewusst KEINEN Marker: er trifft auf die große Mehrheit zu und
+ * würde die Liste zupflastern, statt das Auffällige zu zeigen. Sichtbar ist,
+ * was vom Normalfall abweicht.
  */
 function Eintrag({eintrag}) {
-  const {pfad, url, titel, crawlbar, ads} = eintrag;
+  const {pfad, url, titel, crawlbar, ads, zweck, zustand, saison} = eintrag;
   return (
     <li className="ue-zeile">
       <a className="ue-link" href={url}>
         <span className="ue-pfad">{pfad}</span>
         {titel ? <span className="ue-titel">{titel}</span> : null}
-        {crawlbar ? null : <span className="ue-marker">noindex</span>}
+        {crawlbar === false ? <span className="ue-marker">noindex</span> : null}
+        {zustand && zustand !== 'live' ? (
+          <span className="ue-marker ue-marker--zustand">{zustandText(zustand)}</span>
+        ) : null}
+        {saison ? <span className="ue-marker">{saison}</span> : null}
         {ads ? (
           <span className={ads === 'aktiv' ? 'ue-marker ue-marker--aktiv' : 'ue-marker'}>
             {ads === 'aktiv' ? 'Ads aktiv' : `Ads ${ads}`}
           </span>
         ) : null}
       </a>
+      <p className={zweck ? 'ue-zweck' : 'ue-zweck ue-zweck--offen'}>
+        {zweck || 'Zweck noch nicht festgestellt.'}
+      </p>
     </li>
   );
 }
 
 export default function Uebersicht() {
-  const gesamt = UEBERSICHT_BEREICHE.reduce((n, b) => n + b.eintraege.length, 0);
+  const alle = UEBERSICHT_BEREICHE.flatMap((b) => b.eintraege);
+  const gesamt = alle.length;
+  const live = alle.filter((e) => e.zustand === 'live').length;
+  const offen = alle.filter((e) => !e.zweck).length;
 
   return (
     <div className="ue">
@@ -100,14 +158,19 @@ export default function Uebersicht() {
         <div className="ue-innen">
           <h1>Übersicht — alle Seiten</h1>
           <p className="ue-lead">
-            Jede Seite des Shops, nach Bereichen geordnet: die öffentliche Seite,
-            die Landingpages im Einsatz und im Bau, Sales-, Rechts- und
-            Systemseiten. Diese Übersicht ist eine Arbeitsfläche und selbst nicht
-            für Suchmaschinen freigegeben.
+            Jede Seite beider Läden, nach Bereichen geordnet: die öffentliche
+            Seite, die Landingpages im Einsatz und im Bau, Sales-, Rechts- und
+            Systemseiten, dazu der US-Laden. Diese Übersicht ist eine
+            Arbeitsfläche und selbst nicht für Suchmaschinen freigegeben.
+          </p>
+          <p className="ue-legende">
+            Zweck heißt: was die Seite dem Besucher bringt. Zustand heißt: live,
+            unfertig, archiviert oder ersetzt — angezeigt wird er nur, wo er von
+            live abweicht.
           </p>
           <p className="ue-stand">
-            {gesamt} Einträge in {UEBERSICHT_BEREICHE.length} Bereichen · erzeugt
-            aus Code-Kartographie und Shop-Katalog, nicht von Hand gepflegt
+            {gesamt} Einträge in {UEBERSICHT_BEREICHE.length} Bereichen · {live}{' '}
+            live, {gesamt - live} abweichend · {offen} ohne festgestellten Zweck
           </p>
         </div>
       </section>
