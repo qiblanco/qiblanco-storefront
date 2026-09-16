@@ -227,3 +227,51 @@
 .home .ScrollMikroskopvideo {
   background-color: #000 !important;
 }
+
+/* --- 11. Die Ueberschrift bricht, statt die Seite breit zu machen --------- */
+/* Die responsive-lesbarkeit-wache meldete ueber BEIDE Shops genau EINEN
+   overflow-Fund (128 Fundstellen, davon overflow=1) — und er sass hier. Am
+   gerenderten Rand gemessen (Chromium, Live-Seite, Open Sans Variable 32px,
+   Viewport 320):
+     H2 #kundenerfahrungen: links 16, verfuegbar 288, scrollWidth 311
+     -> 16 + 311 = 327 = document.documentElement.scrollWidth
+   Die Startseite war also 7 px breiter als das Geraet und liess sich auf einem
+   schmalen Handy seitlich wegschieben.
+
+   URSACHE IST EIN EINZIGES WORT: "Kundenerfahrungen" ist bei 32 px 311 px
+   breit und damit allein schon breiter als die Spalte. Es hat keine
+   Umbruchstelle, und overflow-wrap:normal + hyphens:manual (beides
+   Vorgabewert) lassen ein Wort lieber ueberlaufen als es zu trennen.
+
+   WARUM TRENNEN UND NICHT VERKLEINERN: die Schriftgroesse ist eine
+   Design-Entscheidung und gehoert dem Design-Meister, ein Trennstrich nicht.
+   Das <html> traegt lang="de" (app/root.jsx), Chromium trennt damit nach
+   deutschen Regeln. overflow-wrap:break-word steht als harter Rueckhalt
+   daneben: es greift NUR, wenn selbst die Trennung nicht reicht, und aendert
+   sonst kein Pixel.
+
+   WARUM HIER UND NICHT IN app.css — derselbe Grund wie im Kopf dieser Datei:
+   app.css ist global und laeuft in die Gate-12-Reichweiten-Achse. Ein
+   Versuch dort wurde vom formate-Gate geblockt, und zwar an FREMDER,
+   vorbestehender Messschuld (faq, support: "0 neu, 0 verschlechtert" — die
+   Zurechnung nennt PR #424/#449). Eine Regel fuer EINE Sektion auf EINER
+   Seite gehoert ohnehin in die seiten-gescopte Datei.
+
+   ROT-VOR-GRUEN an derselben Live-Seite, mit derselben Schrift, mit GENAU
+   dieser Regel per add_style_tag:
+     ROT   doc.scrollWidth=327 vw=320  h2 288->311  => OVERFLOW
+     GRUEN doc.scrollWidth=320 vw=320  h2 288->288  => kein Overflow
+
+   REICHWEITE EHRLICH: dieselbe Sektion steht auch auf /pages/tiefer-schlaf
+   und /pages/schlaf-zellen-schutz. Dort ist die Ueberschrift 24 px und laeuft
+   nur INNERHALB ihres Kastens ueber (client 224, scroll 229), OHNE das
+   Dokument zu verbreitern (doc=320=vw) — kein seitliches Wegschieben, andere
+   Schadensklasse, eigene gescopte CSS-Dateien. Gemessen, nicht vermutet, und
+   als offener Rest benannt statt im Vorbeigehen mitgeaendert.
+   Die Schwester-Ueberschrift mit identischen Klassen ("Alle Google
+   Bewertungen") wurde mitgemessen und laeuft nicht ueber.
+   RUECKWEG: diesen Block loeschen (reine Ergaenzung, kein Zustand). */
+.home .GoogleKundenerfahrungen > h2 {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
