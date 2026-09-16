@@ -195,24 +195,24 @@ function MainFeatures() {
 function RisikofreiErleben() {
   /*
    * Der 20-Tage-Block in Christians Fassung (Auftrag CW-20260916-454dda42,
-   * Job 20260916-zwanzig-tage-block-wird-vier-zeilen-mittig): vier Saetze,
+   * Job 20260916-zwanzig-tage-block-wird-vier-zeilen-mittig): vier Sätze,
    * vier Zeilen, mittig ausgerichtet.
    *
    * WAS HIER BEWUSST ANDERS IST ALS AUF DEN SCHWESTERSEITEN: QiOne2Pro,
    * QiBracelet und QiHome tragen in derselben .RisikofreiErleben weiter den
-   * erzaehlenden Block mit Rueckgabeweg. Diese Seite nicht mehr — Christian
-   * hat den Text fuer den QiMaster ersetzt. Die Klasse bleibt, damit Abstaende
-   * und Sektionstakt der Seite unveraendert sitzen; die Mitte kommt aus
+   * erzählenden Block mit Rückgabeweg. Diese Seite nicht mehr — Christian
+   * hat den Text für den QiMaster ersetzt. Die Klasse bleibt, damit Abstände
+   * und Sektionstakt der Seite unverändert sitzen; die Mitte kommt aus
    * app/styles/qi-master.css (.qm-garantie), also aus der route-gebundenen
-   * Token-Schicht und NICHT aus app.css — eine Mitte in app.css haette alle
-   * vier Geraeteseiten zentriert.
+   * Token-Schicht und NICHT aus app.css — eine Mitte in app.css hätte alle
+   * vier Geräteseiten zentriert.
    *
-   * ZEILE 1 BLEIBT EIN h2: der Abschnitt behaelt damit seine Ueberschrift
+   * ZEILE 1 BLEIBT EIN h2: der Abschnitt behält damit seine Überschrift
    * (Dokument-Gliederung, EIN H2-Stil der Seite). Die drei Zusagen darunter
    * sind eigene Elemente, damit jede Zeile ihre Ausrichtung einzeln belegt.
    *
-   * DER RUECKGABEWEG IST NICHT VERSCHWUNDEN, er steht weiter unten im
-   * Gewaehrleistungstext (Weg, Adresse info@qiblanco.com, volle Erstattung) —
+   * DER RÜCKGABEWEG IST NICHT VERSCHWUNDEN, er steht weiter unten im
+   * Gewährleistungstext (Weg, Adresse info@qiblanco.com, volle Erstattung) —
    * dieser Block nennt die Zusage, jener das Verfahren.
    */
   return (
