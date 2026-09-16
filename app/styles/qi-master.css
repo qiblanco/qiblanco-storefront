@@ -82,6 +82,62 @@
   margin-top: var(--qm-s12);
   margin-bottom: var(--qm-s12);
 }
+/* ─── Vertrauensleiste: fremde Wortmarken bleiben unbeschnitten ──────────
+   Zwei Befunde von Christian am 2026-09-16, beide an derselben Leiste.
+
+   (1) DER ECK-BESCHNITT, und er war der gemeldete: „die Namen sind rund
+   abgeschnitten in den Ecken, ist aber nur auf dieser Seite so." Ursache ist
+   die Sammelregel dieser Seite — `.ProductPageQiMaster img { border-radius:
+   var(--qm-r2) }` (weiter unten zweimal, einmal mit !important). Sie meint die
+   Produkt- und Inhaltsbilder und trifft die vier Logos mit; 16 px Radius auf
+   einem 40 px hohen Schriftzug sind 40 % der Hoehe. Gemessen am
+   ausgelieferten Stand (Originaldatei auf Rendergroesse skaliert, sichtbare
+   Pixel im weggerundeten Eck-Segment gezaehlt): BRAINEFFECT verliert links
+   oben und links unten je 51 Pixel, DNX rechts 37 und 40 — genau die beiden
+   aeusseren Marken, die Christian nennt. MAXIM verliert 22 je Ecke, „find
+   your flow!" nichts. Der Hauswert ist `img { border-radius: 4px }`
+   (app.css, SSoT) und kostet dieselben Schriftzuege 0 bis 3 Pixel; das ist
+   der Zustand der Startseite, also der Zustand, den Christian als in Ordnung
+   beschreibt. Die Leiste wird deshalb auf den HAUSWERT zurueckgeholt, nicht
+   auf null — die Startseite ist die Referenz, nicht die Null. Dass die beiden
+   Zahlen zusammenbleiben, misst die Probe laufend an der Startseite.
+
+   (2) DER RANDBESCHNITT auf schmalen Geraeten, beim Nachmessen gefunden: die
+   vier Logos brauchen 628 px, die Zeile bricht nicht (`flex-wrap: nowrap`),
+   und `.LogoBar` traegt `overflow: hidden`. Bei 390 px Breite steht
+   BRAINEFFECT dadurch VOLLSTAENDIG ausserhalb (rechte Kante bei -5 px) und
+   DNX ragt 238 px hinaus. Die Zeile bricht jetzt, statt zu schneiden — die
+   Logos behalten ihre 40 px, sie werden NICHT kleiner gezogen. `max-height`
+   muss dafuer weichen: 15vh sind bei 844 px Hoehe 127 px und wuerden die
+   zweite Reihe genauso abschneiden, wie es der Rand vorher seitlich tat.
+
+   NICHT GEAENDERT: die Logos selbst (fremde Marken — ihre Darstellung wird
+   wiederhergestellt, nicht gestaltet), ihre Reihenfolge, ihre Groesse, und
+   die Startseite. Befund (2) besteht dort und auf den drei anderen PDPs
+   unveraendert fort; er gehoert in die geteilte Regel und ist als eigener
+   Auftrag vermerkt (RESULT des Jobs). ---------------------------------- */
+.ProductPageQiMaster .LogoBar img {
+  /* Hauswert aus app/styles/app.css (`img { border-radius: 4px }`). Steht hier
+     als Zahl, weil app.css keinen Token dafuer fuehrt; die Probe
+     probe_logoleiste_marken_unbeschnitten.py misst den Abstand zur Startseite
+     und wird rot, wenn die beiden Werte auseinanderlaufen. */
+  border-radius: 4px !important;
+}
+.ProductPageQiMaster .LogoBar {
+  max-height: none;
+  padding-inline: 8px;
+}
+.ProductPageQiMaster .LogoBar .LogoBar-ImgWrapper {
+  flex-wrap: wrap;
+  column-gap: 12px;
+  row-gap: 16px;
+}
+/* Ab der Breite, ab der alle vier nebeneinander passen, bleibt der Abstand der
+   Startseite (30 px) — gebrochen wird nur, wo sonst geschnitten wuerde. */
+@media (min-width: 750px) {
+  .ProductPageQiMaster .LogoBar .LogoBar-ImgWrapper { column-gap: 30px; }
+}
+
 .ProductPageQiMaster .MainFeatures { margin: var(--qm-s4) auto; gap: var(--qm-s3); }
 .ProductPageQiMaster .RisikofreiErleben,
 .ProductPageQiMaster .MassgeschneiderteTechnologie,
