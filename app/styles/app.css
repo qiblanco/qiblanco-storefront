@@ -3904,9 +3904,27 @@ ul.submenu li a {
 .RisikofreiErleben {
   margin: 100px auto;
 }
+/* z-index 0 statt -1 (2026-09-16, Job 20260917-hole-dir-deinen-qimaster-
+   springt-ins-leere). Ein positioniertes Element mit NEGATIVEM z-index wird
+   hinter dem Elternknoten gezeichnet — damit lag das ganze Banner samt seinem
+   Kaufweg-CTA hinter `div.ProductPage*`, und der Treffertest am Mittelpunkt
+   des Links landete auf dem Elterncontainer statt auf dem Link. Gemessen am
+   2026-09-16 live: VIER sichtbare Kaufweg-Knoepfe, keiner klickbar
+   (qi-master, qibracelet, qihome-air, qione-2-pro). Sichtbarkeit und
+   Klickbarkeit sind zwei Groessen: im HTML war alles in Ordnung, und
+   probe_tote_sprungziele war zur selben Zeit gruen.
+   WARUM 0 UND NICHT ERSATZLOS: die 0 haelt den Stacking Context der Sektion
+   aufrecht, den die -1 auch schon aufmachte. Die innere Schichtung bleibt
+   damit unveraendert (.overlay z 1 unter .HeroBannerContent z 2); geaendert
+   wird ausschliesslich die Lage der Sektion gegenueber ihrem Elternknoten.
+   Der feste Kopf (z-index 100) bleibt darueber.
+   HERKUNFT DER -1: Agentur-Sammelcommit d2559eb vom 2026-03-31 ("All
+   changes"), keine gezielte Entscheidung — und die zweite `.HeroBanner`-Regel
+   dieser Datei (oben, ohne z-index) widersprach ihr ohnehin.
+   Gemessen: pruefungen/probe_cta_klickbar.py (Arm `klick`). */
 .HeroBanner {
   position: relative;
-  z-index: -1;
+  z-index: 0;
 }
 .HeroBanner .overlay {
   width: 100%;
