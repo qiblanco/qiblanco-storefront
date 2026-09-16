@@ -1,11 +1,14 @@
 import {LogoBar} from '../reusables/LogoBar';
-import {InfoSlider} from '../index-components/InfoSlider';
 import {HeroBannerParallax} from '../reusables/HeroBannerParallaxButton';
 import {GoogleRezensionenBereich} from '../reusables/GoogleRezensionenBereich';
 import {UpsellLineUp} from '../UpsellLineUp';
 import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QI_MASTER} from '~/data/product-faqs';
 import {StudienCards} from './StudienCards';
+import {
+  QIMASTER_DIAMANTBILDER,
+  QIMASTER_DIAMANTBILDER_HERKUNFT,
+} from '~/data/qi-master-diamantbilder';
 import {
   QIMASTER_DIAMANT,
   QIMASTER_SECHS_G,
@@ -18,7 +21,7 @@ import {
  * persoenlichkeitsentwicklung, Christian-Auftrag CW-20260910-0e45045b).
  *
  * BAUFORM: derselbe Aufbau wie product-pages/QiOne2Pro.jsx — LogoBar,
- * Investment-Block, Main Features, InfoSlider, Google-Rezensionen, 20-Tage-
+ * Investment-Block, Main Features, Google-Rezensionen, 20-Tage-
  * Block, Gitterchip, Parallax-Hero, Studien, Technologie/Fertigung, Upsell,
  * FAQ — dieselben Sektionsklassen aus app.css, damit Abstaende und Bausteine
  * mit der QiOne-2-Pro-Seite identisch bleiben. NEU sind allein die drei
@@ -55,7 +58,7 @@ export default function QiMaster({block = undefined}) {
     <div className="ProductPageQiMaster">
       <LogoBar />
       <MainFeatures />
-      <InfoSlider />
+      <DiamantBilder />
       <RisikofreiErleben />
       <DiamantAbschnitt />
       <SechsGAbschnitt />
@@ -91,7 +94,8 @@ export default function QiMaster({block = undefined}) {
           des Upsell-Blocks (Christian 2026-09-16, Auftrag 20260916-
           bewertungsblock-wandert-ans-ende: "Diesen Bereich ganz nach unten
           schieben, oberhalb von 'Über 300 neue Nutzer jeden Monat'").
-          Bis dahin stand er zwischen InfoSlider und dem 20-Tage-Block.
+          Bis dahin stand er zwischen dem Fünf-Karten-Karussell (seit dem
+          2026-09-16 ersatzlos gestrichen) und dem 20-Tage-Block.
 
           ES IST EIN UMZUG, KEIN UMBAU: die Komponente ist unverändert, also
           auch ihre Überschrift, die KI-Zusammenfassung, alle Karten, der
@@ -114,6 +118,80 @@ export default function QiMaster({block = undefined}) {
       <UpsellLineUp block={block} />
       <ProductFAQ items={FAQ_QI_MASTER} />
     </div>
+  );
+}
+
+/* ─────────────────── Rohdiamant und Brillant ───────────────────
+ * Zwei Bilder, zwei Unterschriften — an der Stelle, an der bis zum 2026-09-16
+ * das Fünf-Karten-Karussell stand.
+ *
+ * WAS HIER WEG IST UND WARUM (Christian, 2026-09-16): „Diesen Bereich hier
+ * ersatzlos streichen." Der Bereich war der geteilte `InfoSlider` mit fünf
+ * Karten — Erholsame Nächte, Starkes Wohlbefinden, Klarer Kopf, Klarer Fokus,
+ * Mehr Energie. KEINER dieser fünf Texte sprach vom Qi Master®: alle fünf
+ * verkaufen den QiOne® 2 Pro oder das QiBracelet®, auf der Kaufseite eines
+ * Stücks für 10.639 €. Es war übernommenes Material anderer Produktseiten.
+ * Die Texte wandern deshalb NIRGENDWOHIN — sie stehen auf den Seiten, zu
+ * denen sie gehören, ohnehin bereits.
+ *
+ * DIE GETEILTE VORLAGE BLEIBT UNBERÜHRT. `InfoSlider` trägt dieselben fünf
+ * Karten auf sieben weiteren Flächen (Startseite, /products/qione-2-pro,
+ * /pages/exclusive-solutions und vier Kampagnenseiten). Entfernt ist allein
+ * die VERWENDUNG auf dieser Seite; an der Vorlage ist keine Zeile geändert.
+ * Die Hausfalle dazu ist gemessen und benannt („eine geteilte Vorlage kann
+ * keine Teilmenge liefern", areas.yaml/ads, 2026-07-29): wer an der Vorlage
+ * schneidet, schneidet für alle. Gemessen wird die Nachbarschaft von
+ * homepage-bauer/pruefungen/probe_infoslider_nachbarflaechen.py.
+ *
+ * WARUM KEINE ÜBERSCHRIFT: der Auftrag sagt „zwei Bilder, zwei Zeilen" und
+ * nichts von einer Überschrift. Eine zu erfinden wäre neuer Inhalt, nicht der
+ * bestellte Tausch.
+ *
+ * WARUM DAS PAAR SCHMALER IST ALS DIE SEKTION: die Hülle trägt
+ * `NormalSectionSize` und damit exakt die Breite und Mitte der Nachbar-
+ * abschnitte („dieselbe Breite, mittig"). Das Bildpaar selbst ist auf 960 px
+ * gedeckelt — bei 1350 px wären zwei Steine je 660 px breit und würden die
+ * Seite beherrschen, und aus einer 1024-px-Quelle käme dabei weniger als
+ * doppelte Pixeldichte. So sitzt jedes Bild bei rund 464 px, also über dem
+ * Doppelten seiner Anzeigekante.
+ *
+ * DIE SEITIGKEIT IST VORGEGEBEN: links Rohdiamant, rechts Brillantschliff.
+ * Auf dem Telefon wird daraus die Leserichtung von oben nach unten, in
+ * derselben Reihenfolge.
+ *
+ * FIGURE/FIGCAPTION IST DIE RICHTIGE FORM, nicht eine <p> unter einem <img>:
+ * die Unterschrift GEHÖRT zum Bild, und ein Screenreader liest sie dann als
+ * dessen Beschriftung statt als losen Absatz.
+ */
+function DiamantBilder() {
+  return (
+    <section
+      className="qm-diamantbilder NormalSectionSize"
+      data-section="qm-diamantbilder"
+    >
+      <div className="qm-diamantbilder__paar">
+        {QIMASTER_DIAMANTBILDER.map((bild) => (
+          <figure className="qm-diamantbild" key={bild.id}>
+            <img
+              className="qm-diamantbild__bild"
+              src={bild.src}
+              width={bild.breite}
+              height={bild.hoehe}
+              alt={bild.alt}
+              data-herkunft={bild.herkunft}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption className="qm-diamantbild__unterschrift">
+              {bild.unterschrift}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <p className="qm-diamantbilder__herkunft">
+        {QIMASTER_DIAMANTBILDER_HERKUNFT}
+      </p>
+    </section>
   );
 }
 
