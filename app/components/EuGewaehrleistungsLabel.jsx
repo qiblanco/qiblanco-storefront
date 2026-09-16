@@ -331,9 +331,13 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
  * BIS ZUM 2026-09-08 trugen Produktseite und Footer denselben Text und
  * unterschieden sich nur in der Messmarke (Elina EL-20260906-0380455b: der
  * Zusatz "amtliche Mitteilung ansehen" auf der Produktseite war gestrichen).
- * SEITDEM gehen sie wieder auseinander (Elina EL-20260908-d8349a01): die
- * Produktseite bekommt ein Zeichen davor und den laengeren Text, der Footer
- * bleibt ausdrücklich unveraendert.
+ * Vom 2026-09-08 bis zum 2026-09-16 gingen sie auseinander (Elina
+ * EL-20260908-d8349a01: laengerer Text auf der Produktseite).
+ * SEIT DEM 2026-09-16 TRAGEN SIE WIEDER DENSELBEN TEXT, und der Unterschied
+ * ist nur noch das Zeichen davor: Elina EL-20260906-0380455b hat den Zusatz
+ * auf der Produktseite erneut gestrichen, der Footer bleibt ausdrücklich
+ * unveraendert. Warum der laengere Text nicht blosser Geschmack war, steht bei
+ * den Konstanten in app/lib/eu-gewaehrleistungslabel.js (UWG Par. 3 Abs. 3).
  *
  * DIE PFLICHT BERUEHRT DAS NICHT -- in keine der beiden Richtungen. Verlangt
  * ist ein SATZ, der über das Gewaehrleistungsrecht informiert ("Your legal

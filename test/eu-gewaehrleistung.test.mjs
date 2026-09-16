@@ -238,19 +238,44 @@ test('auf der Produktseite hängt der Ausloeser MIT Zeichen, im Footer OHNE', ()
   );
 });
 
-test('die beiden Beschriftungen sind wirklich verschieden -- und die richtige ist wo', () => {
-  // Der Sinn: eine spaetere "Vereinheitlichung" würde beide Konstanten auf
-  // denselben Wert ziehen und dabei genau die Unterscheidung loeschen, die
-  // am 2026-09-08 bestellt wurde. Zwei gleiche Werte faellt sonst niemandem
-  // auf -- die Seiten sehen beide vollstaendig aus.
-  assert.equal(AUSLOESER_TEXT_PDP, 'Garantierte gesetzliche Gewährleistung');
+test('keine Beschriftung gibt die Rechtslage als Leistung aus', () => {
+  // WAS HIER FRÜHER STAND, und warum es weg ist: bis zum 2026-09-16 hielt
+  // dieser Test fest, dass die beiden Beschriftungen VERSCHIEDEN sind
+  // ('Garantierte gesetzliche Gewährleistung' auf der Produktseite, kurz im
+  // Footer). Der Unterschied war eine Textentscheidung, die Invariante
+  // darunter war keine -- sie hat den eigentlichen Defekt sogar festgehalten.
+  //
+  // DIE INVARIANTE, DIE TRÄGT, ist die rechtliche: Anhang I Nr. 10 der
+  // RL 2005/29/EG (Par. 3 Abs. 3 UWG) verbietet PER SE, gesetzliche Rechte
+  // als Besonderheit des eigenen Angebots darzustellen. Keine Abwägung,
+  // keine Spürbarkeitsschwelle. Ein Wortlaut, der das tut, ist auf JEDER
+  // Flaeche falsch -- deshalb prueft der Test jetzt beide gegen dieselbe
+  // Liste statt sie gegeneinander.
+  //
+  // Die Liste stammt aus der Bewertung EL-20260909-dc1ffd5a: 'garantiert'
+  // ist nicht das einzige Problemwort, 'inklusive' und 'volle' tragen
+  // dieselbe Aussage ("2 Jahre Gewährleistung garantiert", "Volle
+  // Gewährleistung", "Gewährleistung inklusive").
+  const verboten = [/garantie/i, /inklusive/i, /\bvolle\b/i, /\bgratis\b/i];
+
+  for (const [name, text] of [
+    ['AUSLOESER_TEXT_PDP', AUSLOESER_TEXT_PDP],
+    ['AUSLOESER_TEXT_FOOTER', AUSLOESER_TEXT_FOOTER],
+  ]) {
+    for (const muster of verboten) {
+      assert.ok(
+        !muster.test(text),
+        `${name} = "${text}" enthält ${muster} -- das stellt ein ` +
+          'gesetzliches Recht als Angebot dar (UWG Par. 3 Abs. 3 i.V.m. ' +
+          'Anhang I Nr. 10 RL 2005/29/EG, Verbot ohne Abwägung).',
+      );
+    }
+  }
+
+  // Der rechtliche Begriff selbst muss dastehen -- sonst wäre ein leerer
+  // String der bequemste Weg, diesen Test grün zu bekommen.
+  assert.equal(AUSLOESER_TEXT_PDP, 'Gesetzliche Gewährleistung');
   assert.equal(AUSLOESER_TEXT_FOOTER, 'Gesetzliche Gewährleistung');
-  assert.notEqual(
-    AUSLOESER_TEXT_PDP,
-    AUSLOESER_TEXT_FOOTER,
-    'Produktseite und Footer tragen wieder denselben Text -- eine der beiden ' +
-      'Anweisungen ist damit still zurueckgenommen.',
-  );
 });
 
 test('das Zeichen ist NICHT die amtliche Grafik -- und geht über die Bildleiter', () => {
