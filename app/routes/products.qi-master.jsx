@@ -13,6 +13,7 @@ import {QiMasterTreppe} from '~/components/product-pages/QiMasterTreppe';
 import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
 import preisstufen from '~/data/qi-master-preisstufen.json';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
 
 /*
  * Organische Produktseite /products/qi-master — QiMaster, „der QiOne mit
@@ -181,7 +182,16 @@ export default function Product() {
         description={
           <div
             className="ProductDescription"
-            dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}}
+            /* ZWEI Durchlaeufe über dasselbe fremde HTML, und die Reihenfolge ist
+               beliebig: der eine zeichnet Bilder aus (alt), der andere setzt die
+               Symbole vor die vier Zeilen des Kopfblocks (Christian am 2026-09-16).
+               Sie fassen disjunkte Knoten an -- <img> gegen <li> --, können sich
+               also nicht ueberschreiben. */
+            dangerouslySetInnerHTML={{
+              __html: fremdHtmlMitKopfsymbolen(
+                fremdHtmlMitBildAuszeichnung(descriptionHtml),
+              ),
+            }}
           />
         }
         /* DIE STEUERANGABE HÄNGT AM PREIS, NICHT UNTER DER TABELLE

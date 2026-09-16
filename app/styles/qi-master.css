@@ -280,6 +280,43 @@
 .qm-pdp .ProductDescription p,
 .qm-pdp .ProductDescription li,
 .qm-pdp .BenefitList li { font-size: var(--qm-fs-base); }
+
+/* ─── Symbole vor den vier Zeilen des Kopfblocks ─────────────────────────────
+   Christian am 2026-09-16: „Fuer diese 4 noch eigene kleine Grafiken
+   entwickeln ... Farbe und Stil wie unten bei ‚Ein Stueck, kein Serienteil'."
+
+   DIE FARBE STEHT HIER UND NICHT IN DEN SVG-DATEIEN. Die Symbole tragen
+   `fill="currentColor"` und keinen eigenen Farbwert -- genau wie die acht
+   Symbole, die die Seite schon hat. Wechselt das Haus seinen Akzent, wechseln
+   sie mit; ein Hexwert in der Zeichnung waere ab diesem Tag falsch und es
+   faellt niemandem auf. `--color-accent-primary` ist derselbe Wert, den
+   `.BenefitList svg` in app.css zieht, also dasselbe Gold wie eine Zeile
+   weiter unten.
+
+   ZWINGEND UNTER `.qm-pdp` GESCHACHTELT: `.qi-de` ist der allgemeine Wrapper
+   der Shopify-Beschreibung und traegt auch QiBraceletHeroBullets.jsx und
+   QiOneHeroBulletsPages.jsx. Ohne diesen Scope waeren zwei fremde Kaufflaechen
+   mitverstellt.
+
+   `display: flex` statt `inline-block` wie in der Nutzenliste, und der Grund
+   ist die LAENGE der Zeilen: „Hochreiner Natur Diamant eingelassen in den
+   Gitterchip™" passt am Schreibtisch in eine Zeile und bricht auf dem Telefon.
+   Bei `inline-block` laeuft die zweite Zeile unter das Symbol; mit flex bleibt
+   das Symbol seine eigene Spalte und der Text haengt sauber ein. Die Zeilen der
+   Nutzenliste brechen nicht, darum genuegt ihr die einfachere Bauart -- die
+   Regel dort bleibt unberuehrt.
+
+   `height`/`width` auf die Zeilenhoehe: damit steht das quadratische
+   24x24-Feld genau so hoch wie die erste Textzeile und das Symbol sitzt auf
+   ihrer Mitte. `align-items: flex-start` haelt es bei umgebrochenem Text oben,
+   statt es gegen den ganzen Block zu zentrieren. */
+.qm-pdp .qi-de li { display: flex; align-items: flex-start; gap: 10px; }
+.qm-pdp .qi-de li .qm-kopfsymbol {
+  flex: 0 0 auto;
+  height: 1.4em;
+  width: 1.4em;
+  color: var(--color-accent-primary);
+}
 /* .qm-preishinweis trug bis zum 2026-09-16 den Sammelsatz „Alle Preise inkl.
    19 % MwSt., inklusive versichertem weltweitem Versand mit UPS." unter der
    Tabelle. Christian hat die Steuerangabe an den grossen Preis verlegt

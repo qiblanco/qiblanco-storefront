@@ -5,6 +5,7 @@ import {UpsellLineUp} from '../UpsellLineUp';
 import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QI_MASTER} from '~/data/product-faqs';
 import {StudienCards} from './StudienCards';
+import {QIMASTER_SYMBOL_PFADE} from '~/lib/qi-master-symbole.generated';
 import {
   QIMASTER_DIAMANTBILDER,
   QIMASTER_DIAMANTBILDER_HERKUNFT,
@@ -248,6 +249,35 @@ export function QiMasterBenefitList({zusatzPunkt = null}) {
           <b>20 Tage volles Rückgabe recht</b> nach erhalt der Ware
         </li>
         {zusatzPunkt}
+        {/* SECHSTE ZEILE, Christian am 2026-09-16 woertlich: „Und bei denen noch
+            eins einfuegen: 0% Finanzierung (in Fett) mit PayPal und Klarna
+            (Gimmick davor kreieren), als letzten Punkt."
+
+            SIE STEHT HINTER {zusatzPunkt} und damit hinter der Gewaehrleistung --
+            „als letzten Punkt" ist wortwoertlich zu nehmen, und die Gewaehrleistung
+            kommt über den Slot von aussen herein.
+
+            Fett ist NUR „0% Finanzierung", wie bei den fünf Zeilen darueber auch.
+            Schriftgroesse und Auszeichnung sind dieselben: genau das war Christians
+            urspruengliche Beanstandung an diesem Block, und sie gilt für die neue
+            Zeile genauso -- kein Element ist wichtiger als seine Nachbarn.
+
+            KEINE Konditionen, keine Laufzeit, keine Beispielrechnung. Das ist eine
+            Zeile, kein Finanzierungsrechner. Ob die Finanzierung im Einzelfall
+            gewaehrt wird, entscheidet das Institut und nicht wir (Christians eigene
+            Sprachregelung für AI Anna vom selben Tag) -- die Zeile behauptet
+            deshalb ein ANGEBOT, keine Zusage.
+
+            Das Symbol ist selbst gezeichnet wie die vier des Kopfblocks:
+            app/assets/qi-master-symbole/finanzierung-null.svg, Herkunft in
+            HERKUNFT.md daneben. Kartenrahmen mit drei gleich großen Feldern --
+            die Teilung, nicht das Geld. */}
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d={QIMASTER_SYMBOL_PFADE['finanzierung-null']} />
+          </svg>
+          <b>0% Finanzierung</b> mit PayPal und Klarna
+        </li>
       </ul>
     </div>
   );
