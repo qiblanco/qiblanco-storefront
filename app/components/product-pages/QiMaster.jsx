@@ -46,7 +46,6 @@ export default function QiMaster({block = undefined}) {
   return (
     <div className="ProductPageQiMaster">
       <LogoBar />
-      <EinmalInvestieren />
       <MainFeatures />
       <InfoSlider />
       <GoogleRezensionenBereich />
@@ -129,41 +128,6 @@ export function QiMasterBenefitList({zusatzPunkt = null}) {
         </li>
         {zusatzPunkt}
       </ul>
-    </div>
-  );
-}
-
-function EinmalInvestieren() {
-  return (
-    <div className="OneTimeInvestment NormalSectionSize">
-      <h2>Einmal entscheiden – ein Stück für Jahrzehnte</h2>
-      <p>
-        Der QiMaster ist der QiOne mit Diamanten: derselbe Gitterchip der
-        zweiten Generation, gefasst in ein Schmuckstück, das für ein ganzes
-        Leben gedacht ist – und darüber hinaus.
-      </p>
-      <ol>
-        <li>
-          <strong>Diamanten und Gitterchip in einem Anhänger.</strong> Der
-          Gitterchip prägt durch sein statisches Feld die Struktur des Wassers
-          in seiner Umgebung – so, wie er es im QiOne® 2 Pro tut. Warum wir
-          Diamanten dazugenommen haben, steht weiter unten – mit Quellen.
-        </li>
-        <li>
-          <strong>750er Gold – Kette und Verschluss.</strong> Die Goldkette
-          des QiMaster ist aus 750er Gold gefertigt, der Verschluss ebenfalls,
-          beides mit Qi-Blanco-Logo.
-        </li>
-        <li>
-          <strong>Nummeriertes Einzelstück.</strong> Jeder QiMaster trägt seine
-          eigene Seriennummer. Es gibt ihn nicht zweimal.
-        </li>
-      </ol>
-      <h3>Zusätzliche Services:</h3>
-      <p>
-        ✔ Premium-Kundenservice: Wir stehen dir 7 Tage die Woche per E-Mail
-        zur Seite.
-      </p>
     </div>
   );
 }

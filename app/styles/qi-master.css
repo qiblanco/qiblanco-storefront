@@ -8,7 +8,7 @@
    dieselben Bausteine (QiOneBuyBox, LogoBar, InfoSlider, StudienCards,
    Gitterchip-Sektion, HeroBannerParallax, CallToAction, UpsellLineUp,
    ProductFAQ), dieselben Sektionsklassen aus app.css (.NormalSectionSize,
-   .OneTimeInvestment, .MainFeatures, .RisikofreiErleben,
+   .MainFeatures, .RisikofreiErleben,
    .MassgeschneiderteTechnologie). Diese Datei ERFINDET keine Bausteine; sie
    legt ueber den Bestand die Token-Disziplin des Design-Meisters
    (db/webdesign/web-soll.yaml: Typo-Skala <= 9 Stufen, EIN H2-Stil,
@@ -82,7 +82,6 @@
   margin-top: var(--qm-s12);
   margin-bottom: var(--qm-s12);
 }
-.ProductPageQiMaster > .NormalSectionSize.OneTimeInvestment { margin-top: var(--qm-s8); }
 .ProductPageQiMaster .MainFeatures { margin: var(--qm-s4) auto; gap: var(--qm-s3); }
 .ProductPageQiMaster .RisikofreiErleben,
 .ProductPageQiMaster .MassgeschneiderteTechnologie,
