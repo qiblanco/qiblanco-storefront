@@ -657,7 +657,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -688,7 +688,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-hohe-frequenz-schwingen',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „auf einer hohen Frequenz schwingen“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -711,7 +711,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-high-vibe',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „High Vibe“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -733,7 +733,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-low-vibe',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „Low Vibe“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -755,7 +755,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-spirituell-angebunden-sein',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „spirituell angebunden sein“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -778,7 +778,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-kohaerentes-wasser',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „kohärentes Wasser“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -801,7 +801,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-elektrosmog',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „Elektrosmog“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -824,7 +824,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-frequenz',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „Frequenz“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -846,7 +846,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-energie',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „Energie“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -868,7 +868,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-ordnung',
-    lastmod: '2026-09-15T23:23:23Z',
+    lastmod: '2026-09-16T00:08:30Z',
     grund:
       'Lexikon-Eintrag „Ordnung“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
