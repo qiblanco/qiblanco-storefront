@@ -1,0 +1,273 @@
+/* ============================================================================
+   /pages/fragen + /pages/<frage-slug> — „Die Fragen, die uns gestellt werden"
+   (2026-09-16, Grossjob 20260915-GEO-lexikon-frageseiten-…, Segment s07).
+
+   Token-System nach design-meister `web-brief` (web-soll.yaml v2) und
+   wortgleich zum staerksten Bestands-Rezept des Hauses
+   (schlaf-zellen-schutz.css .lp-a3, 94/100; kritik.css und lexikon.css,
+   100/100): warmes Neutral-Kontinuum, EIN Gold-Akzent, Weissraum gruppiert
+   statt Boxen, 8pt-Grid, Sektions-Takt 96/64, Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .frg — self-contained.
+
+   EIGENE DATEI STATT lexikon.css MITZUBENUTZEN, und das ist eine Entscheidung
+   mit Grund: hb-deploy Gate 12 loest eine GETEILTE Stil-Datei auf ALLE
+   importierenden Routen auf. Fuer die zehn Lexikon-Seiten ist das erwuenscht
+   (eine Flaeche in zehn Stuecken). Lexikon und Fragen sind aber zwei Flaechen
+   mit zwei Zwecken — Begriff erklaeren gegen Frage beantworten —, und ein
+   Stil-Umbau an der einen soll nicht die andere neu messen lassen. Dieselbe
+   Begruendung, mit der kritik.css sich gegen das Teilen mit erfahrungen.css
+   entschieden hat.
+
+   DER EINE AKZENT SITZT AUF DER ANTWORT UND AUF DEM OFFENEN, nicht auf einem
+   Kaufknopf — auf dieser Flaeche gibt es keinen. Das Gold traegt die Linie am
+   Antwort-Satz (der Satz, wegen dem jemand die Seite aufgerufen hat) und am
+   Abschnitt „Was wir nicht wissen" (der Satz, der diese Seite von Werbung
+   unterscheidet). Als TINTE erscheint das Gold nirgends: auf hellem Grund misst
+   es 2,2:1 und faellt unter die Kontrastschwelle 4,5:1.
+   ========================================================================== */
+
+:root {
+  --frg-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --frg-fs-xs: 0.875rem; /* 14px — Quellen, Fundstellen */
+  --frg-fs-base: 1rem; /* 16px — Body, Deckel des Briefs: >= 16 */
+  --frg-fs-md: 1.125rem; /* 18px — Lead */
+  --frg-fs-h3: 1.25rem; /* 20px */
+  --frg-fs-lg: 1.375rem; /* 22px — der Antwort-Satz */
+  --frg-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --frg-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+
+  /* Spacing: 8pt-Grid, Sektions-Takt 96/64 */
+  --frg-s1: 8px;
+  --frg-s2: 16px;
+  --frg-s3: 24px;
+  --frg-s4: 32px;
+  --frg-s6: 48px;
+  --frg-s8: 64px;
+  --frg-s12: 96px;
+
+  /* Farbe: 60-30-10, warmes Neutral-Kontinuum + EIN Akzent */
+  --frg-grund: #faf9f5;
+  --frg-flaeche: #f8f4ee;
+  --frg-text: #2c2a26;
+  --frg-muted: #6b665d;
+  --frg-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR als Linie, nie als Schrift */
+  --frg-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --frg-r1: 8px;
+  --frg-r2: 16px;
+  --frg-shadow-sm: 0 1px 3px rgba(26, 26, 26, 0.07);
+  --frg-shadow-md: 0 4px 16px rgba(26, 26, 26, 0.08);
+
+  /* Zeilenlaenge */
+  --frg-mass: 68ch;
+  --frg-breit: 960px;
+}
+
+.frg {
+  font-family: var(--frg-font);
+  font-size: var(--frg-fs-base);
+  line-height: 1.65;
+  color: var(--frg-text);
+  background: var(--frg-grund);
+}
+
+/* DER HORIZONTALE INNENABSTAND SITZT AM TEXTCONTAINER, NICHT AN DER SEKTION.
+   Optisch dasselbe, messbar nicht: seiten_pruefliste.py P2 fragt, ob der
+   Container, der den Text traegt, einen Abstand zum Viewport-Rand hat — eine
+   Sektion darum herum beantwortet das nicht, und der Befund „der Inhalt steht
+   hart am Rand" waere fuer einen Menschen am Handy die richtige Frage. */
+.frg section {
+  padding: var(--frg-s12) 0;
+}
+
+.frg section + section {
+  padding-top: var(--frg-s8);
+}
+
+.frg__inhalt {
+  max-width: var(--frg-breit);
+  margin: 0 auto;
+  padding-inline: var(--frg-s3);
+}
+
+.frg h1 {
+  font-size: var(--frg-fs-h1);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--frg-s3);
+  max-width: var(--frg-mass);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — beides misst die Rubrik. */
+.frg h2 {
+  font-size: var(--frg-fs-h2);
+  line-height: 1.25;
+  font-weight: 700;
+  text-align: left;
+  margin: 0 0 var(--frg-s2);
+}
+
+.frg h3 {
+  font-size: var(--frg-fs-h3);
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 0 0 var(--frg-s1);
+}
+
+.frg p {
+  margin: 0 0 var(--frg-s2);
+  max-width: var(--frg-mass);
+}
+
+.frg__vorspann {
+  font-size: var(--frg-fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frg-muted);
+  margin-bottom: var(--frg-s2);
+}
+
+.frg__vorspann-link {
+  color: var(--frg-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--frg-linie);
+}
+
+.frg__vorspann-link:hover,
+.frg__vorspann-link:focus-visible {
+  color: var(--frg-text);
+}
+
+.frg__lead {
+  font-size: var(--frg-fs-md);
+  color: var(--frg-text);
+}
+
+/* ── Der Antwort-Satz: der eine Satz, wegen dem jemand hier ist ─────────── */
+
+.frg__antwort {
+  font-size: var(--frg-fs-lg);
+  line-height: 1.4;
+  font-weight: 600;
+  padding-left: var(--frg-s3);
+  border-left: 4px solid var(--frg-akzent);
+  margin-bottom: var(--frg-s4);
+}
+
+/* ── „Was wir nicht wissen" — der zweite Ort des Akzents ────────────────── */
+
+.frg__offen .frg__inhalt {
+  background: var(--frg-flaeche);
+  border-radius: var(--frg-r2);
+  border-left: 4px solid var(--frg-akzent);
+  box-shadow: var(--frg-shadow-md);
+  padding: var(--frg-s4);
+  max-width: var(--frg-breit);
+}
+
+.frg__offen p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Hub: die Frageliste ───────────────────────────────────────────────── */
+
+.frg__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--frg-s3);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.frg__karte {
+  background: var(--frg-flaeche);
+  border-radius: var(--frg-r2);
+  box-shadow: var(--frg-shadow-sm);
+  padding: var(--frg-s3);
+}
+
+.frg__karte p {
+  max-width: none;
+}
+
+.frg__karte-antwort {
+  color: var(--frg-muted);
+  font-size: var(--frg-fs-xs);
+  margin-bottom: 0;
+}
+
+.frg__karte-link {
+  color: var(--frg-text);
+  text-decoration: none;
+  border-bottom: 2px solid var(--frg-akzent);
+  padding-bottom: 2px;
+}
+
+.frg__karte-link:hover,
+.frg__karte-link:focus-visible {
+  border-bottom-width: 3px;
+}
+
+/* ── Fundstellen, Quellen, Weiterlesen ─────────────────────────────────── */
+
+.frg__fundstellen,
+.frg__quellen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.frg__fundstellen li,
+.frg__quellen li {
+  font-size: var(--frg-fs-xs);
+  color: var(--frg-muted);
+  padding: var(--frg-s2) 0;
+  border-bottom: 1px solid var(--frg-linie);
+  max-width: var(--frg-mass);
+}
+
+.frg__quellen a {
+  color: var(--frg-text);
+}
+
+.frg__weiter {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--frg-s2);
+}
+
+.frg__weiter a {
+  display: inline-block;
+  background: var(--frg-flaeche);
+  border-radius: var(--frg-r1);
+  padding: var(--frg-s1) var(--frg-s2);
+  color: var(--frg-text);
+  text-decoration: none;
+  box-shadow: var(--frg-shadow-sm);
+}
+
+.frg__weiter a:hover,
+.frg__weiter a:focus-visible {
+  box-shadow: var(--frg-shadow-md);
+}
+
+@media (max-width: 640px) {
+  .frg section {
+    padding: var(--frg-s8) 0;
+  }
+
+  .frg section + section {
+    padding-top: var(--frg-s6);
+  }
+}

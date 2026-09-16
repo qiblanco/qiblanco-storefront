@@ -413,6 +413,10 @@ export const LEXIKON = [
       "maddox1988"
     ],
     "verlinkt_auf": [
+      "/pages/wie-funktioniert-schutz-vor-elektrosmog",
+      "/pages/gibt-es-studien-zu-elektrosmog-schutz",
+      "/pages/ist-qi-blanco-serioes",
+      "/pages/was-sagen-die-quarks-science-cops",
       "/pages/kohaerentes-wasser",
       "/pages/lexikon-ordnung",
       "/pages/hypothesen"
@@ -455,6 +459,10 @@ export const LEXIKON = [
       "openstax_em"
     ],
     "verlinkt_auf": [
+      "/pages/kann-elektrosmog-den-schlaf-stoeren",
+      "/pages/wie-funktioniert-schutz-vor-elektrosmog",
+      "/pages/gibt-es-studien-zu-elektrosmog-schutz",
+      "/pages/wie-weit-reicht-elektrosmog-schutz",
       "/pages/e-smog",
       "/pages/lexikon-frequenz"
     ],
@@ -491,6 +499,9 @@ export const LEXIKON = [
       "openstax_em"
     ],
     "verlinkt_auf": [
+      "/pages/kann-elektrosmog-den-schlaf-stoeren",
+      "/pages/wie-funktioniert-schutz-vor-elektrosmog",
+      "/pages/wie-weit-reicht-elektrosmog-schutz",
       "/pages/lexikon-hohe-frequenz-schwingen",
       "/pages/lexikon-elektrosmog"
     ],
@@ -526,6 +537,9 @@ export const LEXIKON = [
       "openstax_entropie"
     ],
     "verlinkt_auf": [
+      "/pages/kann-elektrosmog-den-schlaf-stoeren",
+      "/pages/wie-weit-reicht-elektrosmog-schutz",
+      "/pages/was-sagen-die-quarks-science-cops",
       "/pages/lexikon-frequenz",
       "/pages/lexikon-ordnung"
     ],
@@ -564,6 +578,9 @@ export const LEXIKON = [
       "si"
     ],
     "verlinkt_auf": [
+      "/pages/wie-funktioniert-schutz-vor-elektrosmog",
+      "/pages/gibt-es-studien-zu-elektrosmog-schutz",
+      "/pages/was-sagen-die-quarks-science-cops",
       "/pages/lexikon-kohaerentes-wasser",
       "/pages/hypothesen",
       "/pages/warum-qi-blanco"
@@ -603,6 +620,21 @@ export function quellenFuer(eintrag) {
  * eine fehlende Beschriftung laut statt still.
  */
 const FREMDE_ZIELE = {
+  // Die sechs Frageseiten (Segment s07). DIE BESCHRIFTUNG IST DIE FRAGE
+  // SELBST: wie ein Link beschriftet ist, lehrt die Suchmaschine, worum es
+  // beim Ziel geht — und beim Ziel geht es um genau diese Frage.
+  '/pages/kann-elektrosmog-den-schlaf-stoeren':
+    'Kann Elektrosmog den Schlaf stören?',
+  '/pages/wie-funktioniert-schutz-vor-elektrosmog':
+    'Wie funktioniert ein Schutz gegen Elektrosmog am Körper?',
+  '/pages/gibt-es-studien-zu-elektrosmog-schutz':
+    'Gibt es unabhängige Studien zu Elektrosmog-Schutzprodukten?',
+  '/pages/ist-qi-blanco-serioes':
+    'Ist Qi Blanco seriös?',
+  '/pages/wie-weit-reicht-elektrosmog-schutz':
+    'Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?',
+  '/pages/was-sagen-die-quarks-science-cops':
+    'Was sagen die Quarks Science Cops zu Elektrosmog-Schmuck?',
   '/pages/hypothesen': 'Woran wir arbeiten und was offen ist',
   '/pages/kritik': 'Belege und offene Fragen',
   '/pages/e-smog': 'Elektrosmog im Alltag',
