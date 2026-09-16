@@ -5,31 +5,31 @@
  * WAS HIER GEMESSEN WIRD UND WARUM GERADE DAS:
  *
  *  1. DIE SOLL-MACHART WIRD AUS DER VORLAGE GERECHNET, NICHT HINGESCHRIEBEN.
- *     Christians Anweisung lautet „Farbe und Stil wie unten bei ‚Ein Stueck, kein
- *     Serienteil'" -- also ist die VORLAGE der Massstab, nicht ein Literal in
+ *     Christians Anweisung lautet „Farbe und Stil wie unten bei ‚Ein Stück, kein
+ *     Serienteil'" -- also ist die VORLAGE der Maßstab, nicht ein Literal in
  *     dieser Datei. Der Test liest die Symbole des Fertigung-Abschnitts aus
- *     QiMaster.jsx und leitet daraus ab, was stilkonform heisst.
+ *     QiMaster.jsx und leitet daraus ab, was stilkonform heißt.
  *     Das ist zugleich die POSITIVKONTROLLE, die der Auftrag verlangt: erkennt
- *     der Massstab die Vorlage nicht als stilkonform, misst er den falschen Ort
+ *     der Maßstab die Vorlage nicht als stilkonform, misst er den falschen Ort
  *     und der Test faellt -- statt die neuen Symbole falsch freizusprechen.
  *     UND ES IST DER GRUND, WARUM DER AUFTRAGSTEXT HIER NICHT WOERTLICH GILT:
  *     er nennt `fill="none"`, `stroke="currentColor"`, `stroke-width="2"`. Die
  *     Seite hat davon nichts, auf 8 von 8 Symbolen, und hatte es nie. Ein
- *     Literal-Massstab aus dem Auftragstext waere an der Vorlage selbst rot.
+ *     Literal-Maßstab aus dem Auftragstext wäre an der Vorlage selbst rot.
  *
  *  2. KEINE FESTE FARBE. Ein Hexwert in der Zeichnung ist ab dem Tag falsch, an
  *     dem das Haus seinen Akzent wechselt, und es faellt niemandem auf.
  *
  *  3. DIE GENERIERTE DATEI DARF NICHT DRIFTEN. Die .svg sind die Quelle,
  *     app/lib/qi-master-symbole.generated.js ist abgeleitet. Ohne diesen Arm
- *     koennte die Seite etwas anderes zeigen als die Datei, die Christian
- *     ansieht -- und beide Seiten waeren fuer sich stimmig.
+ *     könnte die Seite etwas anderes zeigen als die Datei, die Christian
+ *     ansieht -- und beide Seiten wären für sich stimmig.
  *
  *  4. DIE ZUORDNUNG TRIFFT ALLE VIER ZEILEN, UND ZWAR AN CHRISTIANS ECHTEM
  *     WORTLAUT. Der Restbericht `offen` ist die Zusage aus
- *     qi-master-kopfsymbole.js; hier wird sie gelesen. Ohne Leser waere sie keine.
+ *     qi-master-kopfsymbole.js; hier wird sie gelesen. Ohne Leser wäre sie keine.
  *
- *  5. TRENNSCHAERFE. Die Diamant-Zeile traegt das Wort „Gitterchip™" ebenfalls.
+ *  5. TRENNSCHAERFE. Die Diamant-Zeile trägt das Wort „Gitterchip™" ebenfalls.
  *     Dass keine Regel die falsche Zeile greift, ist der Arm, der bei einer
  *     spaeteren Umformulierung als Erstes faellt.
  */
@@ -67,7 +67,7 @@ const svgDateien = () =>
 
 /**
  * Die Machart der VORLAGE, zur Laufzeit aus QiMaster.jsx erhoben.
- * Bewusst nicht als Literal: waechst die Vorlage weiter, wandert der Massstab mit.
+ * Bewusst nicht als Literal: waechst die Vorlage weiter, wandert der Maßstab mit.
  */
 function vorlageMachart() {
   const quelle = readFileSync(QIMASTER_JSX, 'utf8');
@@ -77,7 +77,7 @@ function vorlageMachart() {
   const svgs = abschnitt.match(/<svg[\s\S]*?<\/svg>/g) || [];
   assert.ok(
     svgs.length >= 4,
-    `Vorlage-Abschnitt traegt nur ${svgs.length} Symbole -- erwartet mindestens 4`,
+    `Vorlage-Abschnitt trägt nur ${svgs.length} Symbole -- erwartet mindestens 4`,
   );
   return {
     svgs,
@@ -86,7 +86,7 @@ function vorlageMachart() {
   };
 }
 
-/** Der Massstab selbst: traegt dieses SVG-Markup die Machart der Vorlage? */
+/** Der Maßstab selbst: trägt dieses SVG-Markup die Machart der Vorlage? */
 function stilkonform(markup, machart) {
   const fehler = [];
   if (!new RegExp(`viewBox="${machart.viewBox}"`).test(markup))
@@ -95,46 +95,46 @@ function stilkonform(markup, machart) {
   if (fills.length !== 1) fehler.push(`${fills.length} fill-Attribute, erwartet 1`);
   else if (fills[0] !== `fill="${machart.fuellung}"`)
     fehler.push(`${fills[0]} statt fill="${machart.fuellung}"`);
-  if (/\sstroke[a-z-]*=/.test(markup)) fehler.push('traegt ein stroke-Attribut');
+  if (/\sstroke[a-z-]*=/.test(markup)) fehler.push('trägt ein stroke-Attribut');
   if ((markup.match(/<path/g) || []).length !== 1) fehler.push('nicht genau ein <path>');
-  if (/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/.test(markup)) fehler.push('traegt eine feste Farbe');
+  if (/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/.test(markup)) fehler.push('trägt eine feste Farbe');
   return fehler;
 }
 
-test('POSITIVKONTROLLE: der Massstab erkennt die Symbole der Vorlage als stilkonform', () => {
+test('POSITIVKONTROLLE: der Maßstab erkennt die Symbole der Vorlage als stilkonform', () => {
   const machart = vorlageMachart();
   for (const [i, svg] of machart.svgs.entries()) {
     assert.deepEqual(
       stilkonform(svg, machart),
       [],
-      `Vorlage-Symbol ${i + 1} gilt dem Massstab als NICHT stilkonform -- dann misst ` +
-        `der Massstab den falschen Ort, nicht das Symbol`,
+      `Vorlage-Symbol ${i + 1} gilt dem Maßstab als NICHT stilkonform -- dann misst ` +
+        `der Maßstab den falschen Ort, nicht das Symbol`,
     );
   }
 });
 
-test('GEGENKONTROLLE: der Massstab weist eine Strichzeichnung und eine feste Farbe ab', () => {
+test('GEGENKONTROLLE: der Maßstab weist eine Strichzeichnung und eine feste Farbe ab', () => {
   const machart = vorlageMachart();
   // Genau die Machart, die der Auftragstext verlangt -- sie ist hier der ROT-Fall.
   const strich =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
     'stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16"/></svg>';
-  assert.notDeepEqual(stilkonform(strich, machart), [], 'Strichzeichnung muesste auffallen');
+  assert.notDeepEqual(stilkonform(strich, machart), [], 'Strichzeichnung müsste auffallen');
 
   const hart = '<svg viewBox="0 0 24 24"><path fill="#f2bf72" d="M4 4h16Z"/></svg>';
-  assert.notDeepEqual(stilkonform(hart, machart), [], 'feste Farbe muesste auffallen');
+  assert.notDeepEqual(stilkonform(hart, machart), [], 'feste Farbe müsste auffallen');
 
   const falscherRahmen = '<svg viewBox="0 0 48 48"><path fill="currentColor" d="M4 4h16Z"/></svg>';
-  assert.notDeepEqual(stilkonform(falscherRahmen, machart), [], 'fremde viewBox muesste auffallen');
+  assert.notDeepEqual(stilkonform(falscherRahmen, machart), [], 'fremde viewBox müsste auffallen');
 });
 
-test('jede Symbol-Datei haelt die Machart der Vorlage', () => {
+test('jede Symbol-Datei hält die Machart der Vorlage', () => {
   const machart = vorlageMachart();
   const dateien = svgDateien();
   assert.ok(dateien.length >= 5, `nur ${dateien.length} Symbol-Dateien, erwartet mindestens 5`);
   for (const f of dateien) {
     const roh = readFileSync(join(SYMBOL_DIR, f), 'utf8');
-    assert.deepEqual(stilkonform(roh, machart), [], `${f} haelt die Machart nicht`);
+    assert.deepEqual(stilkonform(roh, machart), [], `${f} hält die Machart nicht`);
   }
 });
 
@@ -147,14 +147,14 @@ test('die vier Zeilen des Kopfblocks haben je ein eigenes Symbol', () => {
   );
   assert.deepEqual(offen, [], `Zeilen ohne Symbol: ${offen.join(' | ')}`);
   assert.equal((html.match(/<svg/g) || []).length, 4, 'nicht genau vier Symbole gesetzt');
-  // Der Text bleibt Wort fuer Wort unberuehrt -- er gehoert einem anderen Auftrag.
+  // Der Text bleibt Wort für Wort unberuehrt -- er gehört einem anderen Auftrag.
   for (const zeile of [
     '"The One Eye" - Look',
     'Zweiteiliger Gitterchip™',
     'Hochreiner Natur Diamant eingelassen in den Gitterchip™',
     'Alpha Charge - Limitiert auf 100 Stück',
   ]) {
-    assert.ok(html.includes(zeile), `Zeile veraendert: ${zeile}`);
+    assert.ok(html.includes(zeile), `Zeile verändert: ${zeile}`);
   }
 });
 
@@ -194,7 +194,7 @@ test('FAIL-SOFT: fremdes HTML bleibt unveraendert, und ein zweiter Lauf verdoppe
   }
 });
 
-test('das ausgelieferte Markup traegt keine feste Farbe und die Machart der Vorlage', () => {
+test('das ausgelieferte Markup trägt keine feste Farbe und die Machart der Vorlage', () => {
   const machart = vorlageMachart();
   for (const name of Object.keys(QIMASTER_SYMBOL_PFADE)) {
     const markup = symbolMarkup(name);
@@ -232,7 +232,7 @@ test('die sechste Zeile der Nutzenliste steht zuletzt und ist wie ihre Nachbarn 
   // Gleiche Auszeichnung wie die Nachbarn: <b> um den vorderen Teil, kein eigener Stil.
   assert.ok(
     !/0% Finanzierung[\s\S]{0,80}(style=|className=)/.test(liste),
-    'die neue Zeile traegt eigenen Stil -- kein Element ist wichtiger als seine Nachbarn',
+    'die neue Zeile trägt eigenen Stil -- kein Element ist wichtiger als seine Nachbarn',
   );
   assert.ok(
     liste.includes("QIMASTER_SYMBOL_PFADE['finanzierung-null']"),

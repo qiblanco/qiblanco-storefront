@@ -3,16 +3,16 @@
  * qimaster-symbole-gen — erzeugt app/lib/qi-master-symbole.generated.js aus den
  * SVG-Dateien in app/assets/qi-master-symbole/.
  *
- * WARUM ES DIESEN SCHRITT GIBT: die Symbole muessen INLINE in die Seite, weil der
+ * WARUM ES DIESEN SCHRITT GIBT: die Symbole müssen INLINE in die Seite, weil der
  * Kopfblock aus dem Shopify-Feld `descriptionHtml` kommt und per
- * dangerouslySetInnerHTML gerendert wird -- ein <img>-Verweis waere ein zweiter
- * Request je Zeile und wuerde `currentColor` verlieren, also genau die Eigenschaft,
+ * dangerouslySetInnerHTML gerendert wird -- ein <img>-Verweis wäre ein zweiter
+ * Request je Zeile und würde `currentColor` verlieren, also genau die Eigenschaft,
  * die der Auftrag verlangt. Gleichzeitig soll die ZEICHNUNG eine echte .svg-Datei
- * bleiben: Christian kann sie oeffnen, und der Auftrag prueft sie als Datei.
+ * bleiben: Christian kann sie öffnen, und der Auftrag prueft sie als Datei.
  *
  * Die .svg-Dateien sind die SSoT, die generierte Datei ist abgeleitet und mit
- * eingecheckt. Dass sie nicht driften koennen, prueft test/qi-master-kopfsymbole.test.mjs
- * -- die Gleichheit ist damit nicht zugesagt, sondern gemessen, und sie laeuft in der
+ * eingecheckt. Dass sie nicht driften können, prueft test/qi-master-kopfsymbole.test.mjs
+ * -- die Gleichheit ist damit nicht zugesagt, sondern gemessen, und sie läuft in der
  * Suite mit, die es schon gibt (kein zweiter Traeger).
  *
  * Aufruf:  node bin/qimaster-symbole-gen.mjs [--pruefe]
@@ -27,7 +27,7 @@ const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const SYMBOL_DIR = join(WURZEL, 'app/assets/qi-master-symbole');
 export const ZIEL = join(WURZEL, 'app/lib/qi-master-symbole.generated.js');
 
-/** Genau die Attribute, die die Vorlage traegt (gemessen, siehe HERKUNFT.md). */
+/** Genau die Attribute, die die Vorlage trägt (gemessen, siehe HERKUNFT.md). */
 const PFAD_RX = /<path\s+fill="currentColor"\s+d="([^"]+)"\s*\/>/;
 
 export function lesePfade(dir = SYMBOL_DIR) {

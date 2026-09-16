@@ -99,14 +99,35 @@ open(p,'w',encoding='utf-8').write(s)
 PY
 }
 
+# DIE ARM-NAMEN SIND EINE KOPPLUNG AN DIE TEST-DATEI, und sie ist am 2026-09-16
+# schon einmal gerissen: das Umlaut-Gate hat "haelt" zu "hält" gemacht, und die
+# Matrix suchte danach nach einem Arm, den es nicht mehr gab. Ein Arm-Name ohne
+# Gegenstueck ist deshalb MESSAUSFALL -- nie ein bestandenes Rot.
+arm_pruefen() {
+  local fehlend=0 a
+  for a in "$@"; do
+    grep -qF "test('$a'" "$QUELLE/test/qi-master-kopfsymbole.test.mjs" || {
+      echo "MESSAUSFALL: der Test kennt keinen Arm namens: $a"; fehlend=1; }
+  done
+  [ "$fehlend" -eq 0 ] || exit 4
+}
+arm_pruefen \
+  "jede Symbol-Datei hält die Machart der Vorlage" \
+  "die generierte Datei stimmt mit den SVG-Dateien ueberein" \
+  "TRENNSCHAERFE: keine Regel greift die Zeile einer anderen" \
+  "die vier Zeilen des Kopfblocks haben je ein eigenes Symbol" \
+  "FAIL-SOFT: fremdes HTML bleibt unveraendert, und ein zweiter Lauf verdoppelt nichts" \
+  "POSITIVKONTROLLE: der Maßstab erkennt die Symbole der Vorlage als stilkonform" \
+  "die sechste Zeile der Nutzenliste steht zuletzt und ist wie ihre Nachbarn gesetzt"
+
 echo "ROT-VOR-GRUEN: Mutationsmatrix zu test/qi-master-kopfsymbole.test.mjs"
-mutant "strichzeichnung-statt-flaeche" "jede Symbol-Datei haelt die Machart der Vorlage" m_strichzeichnung
-mutant "feste-farbe-im-symbol"         "jede Symbol-Datei haelt die Machart der Vorlage" m_feste_farbe
+mutant "strichzeichnung-statt-flaeche" "jede Symbol-Datei hält die Machart der Vorlage" m_strichzeichnung
+mutant "feste-farbe-im-symbol"         "jede Symbol-Datei hält die Machart der Vorlage" m_feste_farbe
 mutant "generierte-datei-driftet"      "die generierte Datei stimmt mit den SVG-Dateien ueberein" m_generiert_driftet
 mutant "regel-nicht-trennscharf"       "TRENNSCHAERFE: keine Regel greift die Zeile einer anderen" m_regel_unscharf
 mutant "eine-zeile-ohne-symbol"        "die vier Zeilen des Kopfblocks haben je ein eigenes Symbol" m_zeile_fehlt
 mutant "doppelschutz-entfernt"         "FAIL-SOFT: fremdes HTML bleibt unveraendert, und ein zweiter Lauf verdoppelt nichts" m_doppelt
-mutant "vorlage-wird-strichzeichnung"  "POSITIVKONTROLLE: der Massstab erkennt die Symbole der Vorlage als stilkonform" m_vorlage_strich
+mutant "vorlage-wird-strichzeichnung"  "POSITIVKONTROLLE: der Maßstab erkennt die Symbole der Vorlage als stilkonform" m_vorlage_strich
 mutant "sechste-zeile-vor-gewaehrleistung" "die sechste Zeile der Nutzenliste steht zuletzt und ist wie ihre Nachbarn gesetzt" m_sechste_vorn
 
 if [ "$FEHLER" -eq 0 ]; then echo "ROT-VOR-GRUEN vollstaendig: jeder Arm einzeln belegt"; else echo "ROT-VOR-GRUEN UNVOLLSTAENDIG"; fi

@@ -1,23 +1,23 @@
 /*
  * qi-master-kopfsymbole — setzt je ein eigenes Symbol vor die vier Zeilen des
  * Qi-Master-Kopfblocks. Schwesterdatei zu `fremd-html-bilder.js` und mit derselben
- * Begruendung gebaut.
+ * Begründung gebaut.
  *
- * ANLASS (Christian am 2026-09-16): „Fuer diese 4 noch eigene kleine Grafiken
- * entwickeln ... Farbe und Stil wie unten bei ‚Ein Stueck, kein Serienteil'."
+ * ANLASS (Christian am 2026-09-16): „Für diese 4 noch eigene kleine Grafiken
+ * entwickeln ... Farbe und Stil wie unten bei ‚Ein Stück, kein Serienteil'."
  * Nachtrag desselben Tages: „direkt einbauen, braucht keine Freigabe".
  *
  * WARUM DER EINBAU HIER STEHT UND NICHT IN DEN SHOPIFY-DATEN -- das ist der Kern
- * dieser Datei, und die Begruendung ist die des Hauses, nicht eine neue:
+ * dieser Datei, und die Begründung ist die des Hauses, nicht eine neue:
  * Die vier Zeilen stehen im Shopify-Feld `descriptionHtml` (<div class="qi-de">),
- * nicht im Repo. Man KOENNTE die <svg> dort hineinschreiben. Zwei Gruende dagegen,
+ * nicht im Repo. Man KÖNNTE die <svg> dort hineinschreiben. Zwei Gründe dagegen,
  * beide bereits in fremd-html-bilder.js belegt:
  *   1. Das Feld wird im Rich-Text-Editor von Menschen bearbeitet. Eine einmalige
- *      Korrektur der Daten haelt nur bis zur naechsten Bearbeitung und hat keinen
- *      Waechter -- der RTE wirft Inline-SVG beim naechsten Speichern heraus.
+ *      Korrektur der Daten hält nur bis zur nächsten Bearbeitung und hat keinen
+ *      Waechter -- der RTE wirft Inline-SVG beim nächsten Speichern heraus.
  *      Hausregel: wird eine Dateiklasse nicht ausgeliefert, ist der Fix-Ort die
  *      VORLAGE.
- *   2. Der TEXT der vier Zeilen gehoert einem anderen Auftrag
+ *   2. Der TEXT der vier Zeilen gehört einem anderen Auftrag
  *      (20260916-qi-master-kopf-tauschen-und-die-schreibweise-durchziehen), der ihn
  *      am 2026-09-16 per productUpdate gesetzt hat. Wer die Symbole in dasselbe Feld
  *      schreibt, teilt sich mit ihm eine Schreibstelle. Hier ist die Naht entlang der
@@ -25,20 +25,20 @@
  *      Keiner der beiden kann den anderen ueberschreiben.
  *
  * DIE ZUORDNUNG IST EIN EINSCHLUSS-SELEKTOR und schuldet deshalb einen Restbericht.
- * `kopfsymboleEinsetzen()` gibt `offen` zurueck: jede Zeile des Blocks, die KEIN
+ * `kopfsymboleEinsetzen()` gibt `offen` zurück: jede Zeile des Blocks, die KEIN
  * Symbol bekommen hat. Der Leser dieser Zusage ist
  * test/qi-master-kopfsymbole.test.mjs (Arm „alle vier Zeilen getroffen") und am
  * Kundenrand homepage-bauer/pruefungen/probe_qimaster_kopfsymbole.py. Eine Zusage
  * ohne Leser ist keine -- darum stehen beide hier namentlich.
  *
  * ERKANNT WIRD AM STABILEN WORT, NICHT AM GANZEN SATZ. Die Zeilen sind Christians
- * Wortlaut und koennen sich in Anfuehrungszeichen, ™ und Bindestrichen aendern (genau
- * das hat der Schwester-Auftrag an diesem Tag getan). Ein Literal-Vergleich waere beim
- * naechsten Feinschliff still wirkungslos; „one eye", „zweiteilig", „diamant",
+ * Wortlaut und können sich in Anfuehrungszeichen, ™ und Bindestrichen aendern (genau
+ * das hat der Schwester-Auftrag an diesem Tag getan). Ein Literal-Vergleich wäre beim
+ * nächsten Feinschliff still wirkungslos; „one eye", „zweiteilig", „diamant",
  * „alpha charge" ueberleben ihn.
  *
  * FAIL-SOFT: passt nichts, bleibt das HTML unveraendert. Der Kopfblock ohne Symbole
- * ist der Zustand von gestern und kein Schaden; ein Fehler beim Einsetzen waere einer.
+ * ist der Zustand von gestern und kein Schaden; ein Fehler beim Einsetzen wäre einer.
  */
 import {QIMASTER_SYMBOL_PFADE} from './qi-master-symbole.generated.js';
 
@@ -47,7 +47,7 @@ import {QIMASTER_SYMBOL_PFADE} from './qi-master-symbole.generated.js';
  * und jedes Symbol wird hoechstens einmal gesetzt.
  *
  * `/diamant/` steht NACH `/zweiteilig/`, weil die Diamant-Zeile „... eingelassen in
- * den Gitterchip™" ebenfalls das Wort Gitterchip traegt. Umgekehrt matcht
+ * den Gitterchip™" ebenfalls das Wort Gitterchip trägt. Umgekehrt matcht
  * „Zweiteiliger Gitterchip™" kein „diamant" -- die vier Regeln sind auf Christians
  * Fassung paarweise trennscharf, und der Test prueft genau das.
  */
@@ -60,11 +60,11 @@ export const ZUORDNUNG = [
 
 /**
  * Das Markup eines Symbols. EINE Stelle, an der viewBox, fill und Groesse stehen --
- * damit koennen die Symbole untereinander nicht auseinanderlaufen.
+ * damit können die Symbole untereinander nicht auseinanderlaufen.
  *
  * `width/height="1em"` wie im Bestand: die Groesse macht CSS, nicht das Markup.
  * `aria-hidden`, weil die Bedeutung als Text unmittelbar daneben steht; ein
- * erfundener Alternativtext waere schlechter als keiner (dieselbe Entscheidung wie
+ * erfundener Alternativtext wäre schlechter als keiner (dieselbe Entscheidung wie
  * bei den Beschriftungs-Icons in fremd-html-bilder.js).
  * KEINE feste Farbe: `currentColor` holt sie aus dem Stylesheet.
  */
@@ -92,7 +92,7 @@ export function kopfsymboleEinsetzen(html) {
   const gesetzt = [];
   const offen = [];
   const neu = html.replace(LI_RX, (ganz, attrs, inhalt) => {
-    // Eine Zeile, die schon ein Symbol traegt, wird nicht angefasst: sonst
+    // Eine Zeile, die schon ein Symbol trägt, wird nicht angefasst: sonst
     // verdoppelt ein zweiter Durchlauf das Symbol.
     if (/<svg\b/i.test(inhalt)) return ganz;
     const text = inhalt.replace(/<[^>]*>/g, ' ');
@@ -110,7 +110,7 @@ export function kopfsymboleEinsetzen(html) {
   return {html: neu, gesetzt, offen};
 }
 
-/** Bequemer Aufruf fuer den Render-Pfad -- verwirft den Restbericht bewusst. */
+/** Bequemer Aufruf für den Render-Pfad -- verwirft den Restbericht bewusst. */
 export function fremdHtmlMitKopfsymbolen(html) {
   return kopfsymboleEinsetzen(html).html;
 }

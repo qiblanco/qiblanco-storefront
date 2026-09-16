@@ -182,10 +182,10 @@ export default function Product() {
         description={
           <div
             className="ProductDescription"
-            /* ZWEI Durchlaeufe ueber dasselbe fremde HTML, und die Reihenfolge ist
+            /* ZWEI Durchlaeufe über dasselbe fremde HTML, und die Reihenfolge ist
                beliebig: der eine zeichnet Bilder aus (alt), der andere setzt die
                Symbole vor die vier Zeilen des Kopfblocks (Christian am 2026-09-16).
-               Sie fassen disjunkte Knoten an -- <img> gegen <li> --, koennen sich
+               Sie fassen disjunkte Knoten an -- <img> gegen <li> --, können sich
                also nicht ueberschreiben. */
             dangerouslySetInnerHTML={{
               __html: fremdHtmlMitKopfsymbolen(

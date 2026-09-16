@@ -255,22 +255,22 @@ export function QiMasterBenefitList({zusatzPunkt = null}) {
 
             SIE STEHT HINTER {zusatzPunkt} und damit hinter der Gewaehrleistung --
             „als letzten Punkt" ist wortwoertlich zu nehmen, und die Gewaehrleistung
-            kommt ueber den Slot von aussen herein.
+            kommt über den Slot von aussen herein.
 
-            Fett ist NUR „0% Finanzierung", wie bei den fuenf Zeilen darueber auch.
+            Fett ist NUR „0% Finanzierung", wie bei den fünf Zeilen darueber auch.
             Schriftgroesse und Auszeichnung sind dieselben: genau das war Christians
-            urspruengliche Beanstandung an diesem Block, und sie gilt fuer die neue
+            urspruengliche Beanstandung an diesem Block, und sie gilt für die neue
             Zeile genauso -- kein Element ist wichtiger als seine Nachbarn.
 
             KEINE Konditionen, keine Laufzeit, keine Beispielrechnung. Das ist eine
             Zeile, kein Finanzierungsrechner. Ob die Finanzierung im Einzelfall
             gewaehrt wird, entscheidet das Institut und nicht wir (Christians eigene
-            Sprachregelung fuer AI Anna vom selben Tag) -- die Zeile behauptet
+            Sprachregelung für AI Anna vom selben Tag) -- die Zeile behauptet
             deshalb ein ANGEBOT, keine Zusage.
 
             Das Symbol ist selbst gezeichnet wie die vier des Kopfblocks:
             app/assets/qi-master-symbole/finanzierung-null.svg, Herkunft in
-            HERKUNFT.md daneben. Kartenrahmen mit drei gleich grossen Feldern --
+            HERKUNFT.md daneben. Kartenrahmen mit drei gleich großen Feldern --
             die Teilung, nicht das Geld. */}
         <li>
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
