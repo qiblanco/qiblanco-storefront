@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
+import {warenkorbTitel} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
 /**
  * A single line item in the cart. It displays the product image, title, price.
@@ -51,7 +52,11 @@ export function CartLineItem({layout, line}) {
           }}
         >
           <p>
-            <strong>{product.title}</strong>
+            {/* Vorbestellungen tragen im Warenkorb ihren eigenen Titel,
+                alles andere den Produkttitel. Quelle ist ~/lib/vorbestellung —
+                dieselbe, aus der CartSummary den Lieferhinweis zieht; der
+                Wortlaut steht dort und bewusst nicht hier. */}
+            <strong>{warenkorbTitel(line)}</strong>
           </p>
         </Link>
         <ProductPrice

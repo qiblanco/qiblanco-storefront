@@ -4,6 +4,7 @@ import {formatPreis} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
+import {versandhinweisFürLinien} from '~/lib/vorbestellung';
 
 /**
  * @param {CartSummaryProps}
@@ -47,8 +48,13 @@ export function CartSummary({cart, layout}) {
           "versichterter" war ein Tippfehler und stand damit auf jeder Seite des
           Shops direkt über dem Kaufbutton. */}
       <div className="cart-delivery-notes">
+        {/* Die Lieferzusage hängt am Inhalt des Warenkorbs, nicht an einer
+            festen Zeile: liegt eine Vorbestellung darin, nennt sie deren
+            Termin, sonst bleibt es beim Standard. Beide Wortlaute stehen in
+            ~/lib/vorbestellung — derselben Quelle, aus der CartLineItem den
+            Zeilentitel zieht, und bewusst nicht hier. */}
         <small className="additional-delivery-notice">
-          In 2 bis 3 Tagen bei dir!
+          {versandhinweisFürLinien(lines)}
         </small>
         <small className="additional-delivery-notice">
           100&nbsp;% versicherter Versand!
@@ -75,7 +81,7 @@ function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
   // geladen ist. Die Form submittet normal weiter — Tracking darf den
   // Checkout nie blockieren.
   // content_ids/content_type spiegeln ViewContent/AddToCart (MetaPixel.jsx),
-  // damit die Event-Kette dieselben Produkt-IDs traegt (Meta-Match-Qualitaet).
+  // damit die Event-Kette dieselben Produkt-IDs trägt (Meta-Match-Qualitaet).
   const trackInitiateCheckout = () => {
     try {
       if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
