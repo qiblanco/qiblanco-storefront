@@ -125,6 +125,36 @@
  * Kachel vor, und keine Like-Zahl steht dort. Die Zahl war unser Werkzeug, sie
  * ist keine Empfehlung für den Kunden.
  *
+ * ==================== DAS GEDICHT, UND WARUM ES ZULETZT STEHT ====================
+ *
+ * Christian am 2026-09-16, wörtlich: „Der Auftrag war, eins von beiden zu
+ * entfernen, weil es derselbe Autor ist, und das andere auf den Schluss zu
+ * setzen, weil es ein Gedicht ist."
+ *
+ * Gemeint sind die zwei QiOne-Kacheln DQCe9F3jP00 (@gianky261) und
+ * DQcS62ljf9c (@xcreatorslife). Dass es DERSELBE Autor ist, obwohl die Konten
+ * verschieden heißen, steht nicht nur in Christians Satz: die Quellzeile führt
+ * beide Codes unter person „xcreatorslife / gianky261" (reels-roh.json des
+ * Slideshow-Grossjobs).
+ *
+ * WELCHES DER BEIDEN DAS GEDICHT IST, WURDE NACHGELESEN, NICHT GERATEN. Keine
+ * der zwei Bildunterschriften trägt das Wort; entschieden haben die Untertitel
+ * der Videos selbst. DQCe9F3jP00 beginnt unpersönlich als Vers — „Es gibt Tage,
+ * da trägt dich das Leben wie eine Welle, und andere, da fühlst du nur den
+ * Druck der Strömung" —, führt das Trikolon „die Stimmen, die Strahlen, die
+ * Geschwindigkeit der Welt" und die Anapher „Wir sind Energie, wir sind
+ * Schwingung, wir sind Teil eines unsichtbaren Feldes". DQcS62ljf9c ist
+ * dagegen ein Ich-Bericht: „Ich glaube …", „Mein Körper reagiert feiner, mein
+ * Geist ist klarer, mein Schlaf tiefer, meine Seele geerdeter".
+ *
+ * WARUM AM ENDE: an erster Stelle ist ein Gedicht ein Rateseil — der Besucher
+ * weiß noch nicht, worum es geht, und bekommt etwas Kunstvolles statt einer
+ * Erfahrung. Am Ende, nach acht Stimmen, ist es das Schlusswort.
+ *
+ * DAS ANDERE IST NICHT GELÖSCHT. DQcS62ljf9c steht weiter im Korpus und trägt
+ * nur `inDerReihe: false` — will Christian es zurück, ist es da. Das ist
+ * derselbe Weg, auf dem am 2026-09-12 aus 66 Slots 18 Kacheln wurden.
+ *
  * ==================== DIE EINE GRENZE, DIE BLEIBT ====================
  *
  * KEIN T3-EINTRAG BEKOMMT EINE NAMENSZEILE. Wo keine Person dahintersteht,
@@ -179,6 +209,13 @@
  *               video.poster ist eine SIGNIERTE URL mit ?st=/&oe= und
  *               verfaellt — ein Hotlink wäre eine Flaeche, die in Wochen
  *               leer ist. Die Poster sind geerntet und selbst gehostet.
+ *  ansEnde      true = diese Kachel steht am ENDE der Reihe, unabhängig von
+ *               ihrer Stufe. Die Komponente sortiert sie als ERSTE Stufe, vor
+ *               (stufe, sprache); fehlt das Feld, ändert sich nichts. Heute
+ *               trägt sie genau EIN Eintrag: das Gedicht von @gianky261
+ *               (DQCe9F3jP00, QiOne 2 Pro). Sie ist die einzige Ordnungs-
+ *               angabe in dieser Datei, die nicht aus einer Messung stammt,
+ *               sondern aus einer Weisung — siehe Abschnitt „DAS GEDICHT".
  *  inDerReihe   true = diese Kachel steht auf der Fläche. Die Komponente
  *               rendert FAIL-CLOSED nur `inDerReihe === true`: fehlt das Feld,
  *               steht gar keine Kachel und die Sektion verschwindet — laut.
@@ -603,24 +640,6 @@ export const IG_TESTIMONIALS = [
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c0mson3sdcq--f21b551fc938.mp4?v=1789239156",
   },
   {
-    code: "DQCe9F3jP00",
-    produkt: "QiOne 2 Pro",
-    stufe: "T1",
-    typ: "reel",
-    konto: "gianky261",
-    profil: "gianky261",
-    profilUrl: "https://www.instagram.com/gianky261/",
-    verifiziert: true,
-    video: true,
-    datum: "2025-10-20",
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dqce9f3jp00--df321f359483.jpg?v=1789160989",
-    inDerReihe: true,
-    videoUrl:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dqce9f3jp00--79c96d98c6bc.mp4?v=1789239621",
-  },
-  {
     code: "DQcS62ljf9c",
     produkt: "QiOne 2 Pro",
     stufe: "T1",
@@ -634,7 +653,7 @@ export const IG_TESTIMONIALS = [
     sprache: "de",
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dqcs62ljf9c--74328077871d.jpg?v=1789160994",
-    inDerReihe: true,
+    inDerReihe: false,
     videoUrl:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dqcs62ljf9c--404107a78858.mp4?v=1789239628",
   },
@@ -781,6 +800,25 @@ export const IG_TESTIMONIALS = [
     inDerReihe: true,
     videoUrl:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c-o4vqqsv1h--2a1d0674cd5c.mp4?v=1789239075",
+  },
+  {
+    code: "DQCe9F3jP00",
+    produkt: "QiOne 2 Pro",
+    stufe: "T1",
+    typ: "reel",
+    konto: "gianky261",
+    profil: "gianky261",
+    profilUrl: "https://www.instagram.com/gianky261/",
+    verifiziert: true,
+    video: true,
+    datum: "2025-10-20",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dqce9f3jp00--df321f359483.jpg?v=1789160989",
+    inDerReihe: true,
+    ansEnde: true,
+    videoUrl:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dqce9f3jp00--79c96d98c6bc.mp4?v=1789239621",
   },
   {
     code: "DVgJM1bAs5m",

@@ -567,17 +567,29 @@ export function IgTestimonialSlideshow({
        * ist KEINE Kachel — siehe Kopf, Abschnitt „WELCHE KACHELN STEHEN". */
       (t) => t.produkt === produkt && t.inDerReihe === true,
     );
-    /* Stabil nach (Stufe, Sprache) — die Rang-Ordnung der Datenschicht
+    /* Stabil nach (ansEnde, Stufe, Sprache) — die Rang-Ordnung der Datenschicht
      * bleibt innerhalb jeder Gruppe erhalten (ES2019: sort ist stabil).
      *
-     * DIESER BLOCK IST UNANGETASTET GEBLIEBEN, und das ist kein Zufall: der
-     * Erzeuger der Datenschicht sortiert die Kacheln nach genau demselben
-     * Schluessel vor (Stufe, Sprache, dann Ersatzordnung), damit diese
-     * Nachsortierung ein NO-OP ist. Wer hier etwas aendert — etwa `sprachRang`
-     * je Markt —, zieht auswahl.json und den Erzeuger im SELBEN Schritt mit;
-     * der Detektor dafür ist `pruefe_auswahl.py --nur-naht` im Job-Ordner des
-     * Reparatur-Grossjobs, und er muss exit 0 bleiben. */
+     * Der Erzeuger der Datenschicht sortiert die Kacheln nach genau demselben
+     * Schluessel vor, damit diese Nachsortierung ein NO-OP ist. Wer hier etwas
+     * aendert — etwa `sprachRang` je Markt —, zieht auswahl.json und den
+     * Erzeuger im SELBEN Schritt mit; der Detektor dafür ist
+     * `pruefe_auswahl.py --nur-naht` im Job-Ordner des Reparatur-Grossjobs,
+     * und er muss exit 0 bleiben.
+     *
+     * `ansEnde` IST DIE ERSTE STUFE UND DAMIT DIE STAERKSTE, und das ist der
+     * Zweck: eine so markierte Kachel steht am Flaechen-ENDE, auch wenn ihre
+     * Stufe sie sonst nach vorn zoege. Sie ist die einzige Ordnungsangabe, die
+     * NICHT aus einer Messung kommt, sondern aus einer Weisung — Christian am
+     * 2026-09-16 zum Gedicht von @gianky261: es soll den Schluss bilden, weil
+     * ein Gedicht am Anfang ein Rateseil ist und am Ende ein Schlusswort.
+     * Ohne das Feld ändert sich NICHTS: `!== true` heißt 0, und damit ist
+     * diese Stufe für jede Kachel ohne Marke ein No-Op (drei der vier
+     * Produktreihen tragen sie nicht). */
+    const ansEndeRang = (t) => (t.ansEnde === true ? 1 : 0);
     return [...meine].sort((a, b) => {
+      const e = ansEndeRang(a) - ansEndeRang(b);
+      if (e !== 0) return e;
       const s = (STUFEN_RANG[a.stufe] ?? 9) - (STUFEN_RANG[b.stufe] ?? 9);
       if (s !== 0) return s;
       return (sprachRang[a.sprache] ?? 9) - (sprachRang[b.sprache] ?? 9);
