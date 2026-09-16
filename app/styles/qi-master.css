@@ -482,6 +482,58 @@ body:has(.ProductPageQiMaster) .footer .footer-heading { font-size: var(--qm-fs-
 body:has(.ProductPageQiMaster) .eu-gwl-dialog__zu { font-size: var(--qm-fs-xl); }
 body:has(.ProductPageQiMaster) .eu-gwl__link { font-size: var(--qm-fs-lg); }
 
+/*
+ * ... ABER NICHT FUER DEN PUNKT IN DER NUTZEN-LISTE (Christian 2026-09-16:
+ * "Er ist nicht wichtiger als die anderen 4 Punkte. Bitte identisch
+ * anpassen.").
+ *
+ * Die beiden Regeln darueber sind fuer den Link UNTER dem Kaufknopf und fuer
+ * den Verweis IM Overlay richtig und bleiben. In der <ul> haben sie den
+ * fuenften Punkt ein Viertel groesser und unterstrichen gemacht als seine
+ * vier Geschwister -- gemessen am Kundenrand 20px/28px/rgb(44,42,38)/
+ * underline gegen 16px/22.4px/rgb(74,71,65)/none.
+ *
+ * `inherit` statt eigener Zahlen: der Sollzustand IST die Liste. Wer hier
+ * 16px hinschreibt, fuehrt eine zweite Meinung ueber die Typo-Skala ein, die
+ * beim naechsten Umbau still auseinanderlaeuft.
+ *
+ * DAS `>` IST PFLICHT, NICHT GESCHMACK -- gleiche Begruendung wie in
+ * eu-gewaehrleistung.css: im <dialog> INNERHALB der <li> steht ein zweiter
+ * `.eu-gwl__link` (der Verweis auf das amtliche Portal). Ein
+ * Nachfahren-Selektor wuerde den mitentwerten, und am Overlay soll
+ * ausdruecklich nichts geaendert werden.
+ */
+body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  /* Fett wie der ausgezeichnete Teil der vier Nachbarzeilen (<b>). */
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/*
+ * Der Ruhezustand verliert die Unterstreichung -- die Klickbarkeit darf sie
+ * NICHT mitverlieren. Die Hover-Regel in eu-gewaehrleistung.css traegt sie
+ * sonst nicht mehr: dieser Selektor hier ist spezifischer (0,3,1 gegen 0,3,0)
+ * und wuerde sie ueberschreiben. Sie wird deshalb auf gleicher Hoehe
+ * wiederholt, statt sich auf die Kaskade zu verlassen.
+ *
+ * DIE FARBE STEHT HIER AUS DEMSELBEN GRUND MIT, und sie ist kein Beiwerk:
+ * eu-gewaehrleistung.css setzt im Hover ausdruecklich BEIDES (Unterstrich
+ * UND Goldton), weil ein Unterstrich unter dem eigenen Mauszeiger leicht
+ * uebersehen wird und eine Farbe allein einem farbfehlsichtigen Leser nichts
+ * sagt. Ohne diese Zeile faellt der Goldton weg -- hermetisch gemessen
+ * (A/B gegen den Vorstand): Hover rgb(44,42,38) statt rgb(133,104,40).
+ * Geaendert werden soll der RUHEZUSTAND, nicht der Hover.
+ */
+body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:hover,
+body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visible {
+  color: var(--color-accent-ink, #856828);
+  text-decoration: underline;
+}
+
+
 /* Buy-Box-Knopf und alle CTAs: EINE Groesse */
 .qm-pdp .btn--primary,
 .qm-pdp .btn--secondary,
