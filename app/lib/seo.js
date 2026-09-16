@@ -888,6 +888,185 @@ export const NUR_ROUTE_SEITEN = [
       'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
       'weil er ohne sie Werbung wäre.',
   },
+  // Neu 2026-09-16 (Grossjob 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-
+  // uns-zitiert, Segment s07). SIEBEN EINTRAEGE AUS EINEM BAU: der Fragen-Hub
+  // und sechs Frageseiten. Alle sieben bestehen allein aus ihrer Route und
+  // haben KEIN Shopify-Seitenobjekt — ohne diese Eintraege liefern sie HTTP 200
+  // mit vollem Text und stehen in keiner Sitemap, was von aussen nicht davon zu
+  // unterscheiden ist, dass alles stimmt.
+  //
+  // AUFNAHME-KRITERIUM 2 (indexierbar gewollt) IST JE SEITE GEPRUEFT: keine der
+  // sieben Routen setzt `noindex`, jede setzt `canonicalLink()` auf sich selbst.
+  //
+  // WACHE FUER ALLE SIEBEN (Kriterium 3, eine Wache statt sieben):
+  // seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py
+  // (nachbau-audit h5f5ad493) folgt den Links des Fragen-Hubs innerhalb des
+  // Abschnitts data-geo="frageliste" und prueft je Frageseite den Marker
+  // data-geo="frage" und die gleiche Auslieferung an Mensch, Googlebot und
+  // OAI-SearchBot; dazu probe_geo_flaechen_in_sitemap.py (Sitemap-<loc> je
+  // Flaeche) und klassenweit probe_sitemap_noindex_naht.py.
+  //
+  // WAS HIER BEWUSST NICHT STEHT — und es ist der Eintrag, den der
+  // Segment-Auftrag ausdruecklich verlangt hat: /pages/wirkt-das. Am
+  // 2026-09-16 selbst nachgemessen liefert die Seite HTTP 200 und traegt
+  // `meta robots="noindex,nofollow"` UND den Header `x-robots-tag: noindex,
+  // nofollow`; Christian hat sie am 2026-08-31 wegen Textqualitaet
+  // zurueckgezogen. Ein Eintrag hier traegt sie in die Sitemap — also eine
+  // Sitemap-Zeile fuer eine noindex-Seite, und damit genau der Widerspruch,
+  // vor dem der Kopf dieser Datei warnt, gegen eine Menschen-Entscheidung.
+  // Dasselbe gilt fuer /pages/haelt-das-mein-leben-aus und
+  // /pages/kette-oder-armband (beide ebenfalls live noindex,nofollow). Der
+  // richtige Weg ist der Text, nicht die Sitemap — siehe RESULT s07.
+  {
+    pfad: '/pages/fragen',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Der Hub der Frageseiten (Grossjob 20260915-GEO-lexikon-frageseiten-' +
+      'und-ob-die-ki-uns-zitiert, Segment s07). Er zeigt je Frage die Frage ' +
+      'und den einen Satz, der sie beantwortet, und verlinkt daneben die ' +
+      'beiden Zweifelsflaechen /pages/kritik und /pages/hypothesen sowie das ' +
+      'Lexikon. Die Seite besteht allein aus der Route pages.fragen.jsx und ' +
+      'hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit voller Liste und steht in keiner Sitemap. Ein Seitenobjekt ' +
+      'waere der zweite moegliche Traeger und ist bewusst NICHT gewaehlt ' +
+      '(Fremdsystem) — dieselbe Begruendung wie bei /pages/lexikon, ' +
+      '/pages/kritik und /pages/hypothesen. Kriterium 2 erfuellt: kein ' +
+      'noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links der Frageliste und ' +
+      'prueft je Ziel den Marker data-geo="frage", HTTP 200 und die gleiche ' +
+      'Auslieferung an Mensch, Googlebot und OAI-SearchBot.',
+  },
+  {
+    pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Frageseite „Kann Elektrosmog den Schlaf stören?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.kann-elektrosmog-den-schlaf-stoeren.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  {
+    pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Frageseite „Wie funktioniert ein Schutz gegen Elektrosmog am ' +
+      'Körper?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.wie-funktioniert-schutz-vor-elektrosmog.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  {
+    pfad: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Frageseite „Gibt es unabhängige Studien zu ' +
+      'Elektrosmog-Schutzprodukten?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.gibt-es-studien-zu-elektrosmog-schutz.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  {
+    pfad: '/pages/ist-qi-blanco-serioes',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Frageseite „Ist Qi Blanco seriös?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.ist-qi-blanco-serioes.jsx und hat KEIN Shopify-Seitenobjekt ' +
+      '— ohne diesen Eintrag liefert sie HTTP 200 mit vollem Text und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfuellt: kein noindex, ' +
+      'canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  {
+    pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
+      'Elektrosmog-Schutzes?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.wie-weit-reicht-elektrosmog-schutz.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
+  {
+    pfad: '/pages/was-sagen-die-quarks-science-cops',
+    lastmod: '2026-09-16T01:15:00Z',
+    grund:
+      'Frageseite „Was sagen die Quarks Science Cops zu ' +
+      'Elektrosmog-Schmuck?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.was-sagen-die-quarks-science-cops.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents.',
+  },
 ];
 
 /**
