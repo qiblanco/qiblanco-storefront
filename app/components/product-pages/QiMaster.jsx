@@ -1,4 +1,3 @@
-import {LogoBar} from '../reusables/LogoBar';
 import {HeroBannerParallax} from '../reusables/HeroBannerParallaxButton';
 import {GoogleRezensionenBereich} from '../reusables/GoogleRezensionenBereich';
 import {UpsellLineUp} from '../UpsellLineUp';
@@ -23,7 +22,7 @@ import {
  * (Job 20260910-BAU-qi-master-produkt-und-shopseite-diamant-6g-und-
  * persoenlichkeitsentwicklung, Christian-Auftrag CW-20260910-0e45045b).
  *
- * BAUFORM: derselbe Aufbau wie product-pages/QiOne2Pro.jsx — LogoBar,
+ * BAUFORM: derselbe Aufbau wie product-pages/QiOne2Pro.jsx —
  * Investment-Block, Main Features, Google-Rezensionen, 20-Tage-
  * Block, Gitterchip, Parallax-Hero, Studien, Technologie/Fertigung, Upsell,
  * FAQ — dieselben Sektionsklassen aus app.css, damit Abstaende und Bausteine
@@ -42,6 +41,14 @@ import {
  *    QiOne 2 Pro, die dieses Produkt nicht hat.
  *  - „8x stärker", „22,61 mm³", „100 % in Bayern gefertigt", „RJC-Gold":
  *    Angaben des QiOne 2 Pro, für den QiMaster nicht bestaetigt.
+ *  - DIE VERTRAUENSLEISTE (`reusables/LogoBar.jsx`, die vier fremden
+ *    Wortmarken BRAINEFFECT / MAXIM / „find your flow!" / DNX): am
+ *    2026-09-17 von Christian ersatzlos gestrichen — „Ersatzlos streichen."
+ *    NUR für DIESE Seite. Die Komponente bleibt und trägt unverändert die
+ *    Startseite sowie die Produkt- und Detailseiten von QiOne 2 Pro,
+ *    QiBracelet und QiHome Air; die geteilte Geometrie-Regel in app.css
+ *    (D-2712) wird deshalb NICHT angefasst. Wer die Leiste hier
+ *    wieder einbaut, hebt eine Christian-Entscheidung auf.
  *  - Produktbilder: es gibt noch keine. Die Buy-Box zieht sie aus Shopify,
  *    sobald sie dort liegen — hier wird kein QiOne-Bild als QiMaster gezeigt.
  *
@@ -59,7 +66,6 @@ import {
 export default function QiMaster({block = undefined}) {
   return (
     <div className="ProductPageQiMaster">
-      <LogoBar />
       <MainFeatures />
       <Guetezeichen />
       <DiamantBilder />
