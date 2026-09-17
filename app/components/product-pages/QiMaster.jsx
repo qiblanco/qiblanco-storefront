@@ -455,15 +455,29 @@ function DiamantAbschnitt() {
   return (
     <section className="qm-sektion" id="diamant" data-section="qm-diamant">
       <div className="qm-sektion__inner">
-        {/* KEINE <h2> MEHR: sie steht seit dem 2026-09-17 über dem Bildpaar
-            direkt darüber (DiamantBilder, qi-master-diamantbilder.js). Der
-            Abschnitt hat seinen Text behalten und nur seinen Titel verloren -
-            Christians Auftrag war ein Umzug, keine Streichung.
+        {/* „Literatur" — Christians Auftrag vom 2026-09-17, abends. Die <h2>
+            ist ZURÜCK, aber sie ist nicht dieselbe: „The One Eye" ist mittags
+            hinauf über das Bildpaar gewandert und bleibt dort (DiamantBilder,
+            qi-master-diamantbilder.js). „Literatur" füllt die Stelle, die der
+            Umzug hier frei gelassen hat.
 
-            DIE GLIEDERUNG BLEIBT HEIL: die h2 steht unmittelbar vor dieser
-            Sektion, die h3 darunter hängen weiter an ihr. Es entsteht keine
-            h3 ohne h2 darüber - nur eine, die eine Sektionsgrenze weiter oben
-            sitzt. */}
+            SIE ERÖFFNET DIE HERLEITUNG, sie etikettiert nicht den ersten
+            Absatz: Kohlenstoff-Einstieg, Königs Zitat, Kristallgitter,
+            Kohärenz, Popp und Pollack stehen alle unter ihr. Deshalb <h2> wie
+            die übrigen Abschnittsüberschriften der Seite (SechsGAbschnitt,
+            PersoenlichkeitAbschnitt) und keine kleine Zwischenzeile — und
+            deshalb KEIN eigenes CSS: `.ProductPageQiMaster h2` ist der eine
+            h2-Stil dieser Seite, die Überschrift erbt ihn.
+
+            DIE GLIEDERUNG WIRD DAMIT WIEDER GERADE: die vier h3 dieses
+            Abschnitts hingen seit dem Umzug an einer h2 eine Sektionsgrenze
+            weiter oben. Jetzt hängen sie wieder an der h2 ihrer eigenen
+            Sektion.
+
+            NICHT ZU VERWECHSELN mit dem Label „In der Literatur" weiter
+            unten: das bleibt, wo es ist. Der Wortstamm steht ab hier zweimal
+            auf der Seite — eine Ebene höher und in anderer Schreibung. */}
+        <h2>{t.titel}</h2>
         {t.einstieg.map((abs) => (
           <p key={abs.slice(0, 40)}>{abs}</p>
         ))}
