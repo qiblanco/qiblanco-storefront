@@ -46,7 +46,7 @@ export const QIMASTER_DIAMANT = {
   //
   // DER ABSCHNITT HATTE SEINE ÜBERSCHRIFT AM SELBEN TAG VERLOREN: „The One
   // Eye" ist mittags hinauf über die Diamantfotos gewandert (Auftrag
-  // 20260917-the-one-eye-wandert-ueber-die-diamantfotos) und wohnt seither
+  // 20260917-the-one-eye-wandert-…) und wohnt seither
   // bei den Bildern, die sie überschreibt: qi-master-diamantbilder.js,
   // QIMASTER_DIAMANTBILDER_TITEL. Der Text stand danach ohne Titel da.
   // „Literatur" füllt genau diese Stelle — der `titel` kehrt zurück, mit
@@ -63,8 +63,8 @@ export const QIMASTER_DIAMANT = {
   // NICHT ZU VERWECHSELN MIT DEM LABEL „In der Literatur", das die Blöcke
   // `gitter`, `Kohärenz` und `licht` beim Bau dieser Zeile noch tragen.
   // Christian hat es am selben Abend zum Streichen bestellt (Auftrag
-  // 20260917-in-der-literatur-raus-quelle-kuerzen-luecke-schliessen, beim
-  // Schreiben dieses Kommentars noch am Laufen) — die Überschrift hier macht
+  // 20260917-in-der-literatur-raus-…, beim Schreiben dieses Kommentars noch
+  // am Laufen) — die Überschrift hier macht
   // es ohnehin überflüssig. WER DIESE DATEI LIEST, PRÜFT ALSO NACH, ob die
   // Labels noch da sind; dieser Kommentar sagt, wie es AM 2026-09-17 stand,
   // nicht wie es heute ist.
