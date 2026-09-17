@@ -219,7 +219,7 @@ function EbenenSection() {
     <section data-section="lp-v3-ebenen">
       <div data-reveal>
         <span className="v3-eyebrow">Ein Begleiter, drei Wirkungen</span>
-        <h2>Wie dein Smartphone: ein Gerät, das mehrere ersetzt.</h2>
+        <h2>Wie dein Smartphone: ein Gerät, das mehrere Geräte ersetzt.</h2>
         <p className="v3-lede">
           Dein Smartphone hat Kamera, Navi und Telefon in einem Gerät gebündelt. Der
           QiOne<sup>®</sup>&nbsp;2 Pro bündelt drei Wirkungen in einem Begleiter. Wähle
