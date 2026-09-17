@@ -40,23 +40,47 @@
  */
 
 export const QIMASTER_DIAMANT = {
-  // KEIN `titel` MEHR, UND DAS IST DER GANZE AUFTRAG VOM 2026-09-17.
-  // Christian:
-  // „Das hier ‚The One Eye - Ein Diamant‘ oberhalb der Diamantfotos setzen
-  // und zu ‚The One Eye‘ machen." Die Überschrift titelt seither die beiden
-  // Bilder und wohnt bei ihnen: qi-master-diamantbilder.js,
-  // QIMASTER_DIAMANTBILDER_TITEL.
+  // „LITERATUR" — CHRISTIANS AUFTRAG VOM 2026-09-17, ABENDS:
+  // „Oberhalb von diesem Text ‚Diamant ist reiner Kohlenstoff …‘ schreiben
+  //  wir als Überschrift ‚Literatur‘."
   //
-  // WARUM SIE NICHT HIER BLEIBT UND VON DORT GELESEN WIRD: eine Überschrift
-  // gehört zu dem, was sie überschreibt. Bliebe der Text hier, stünde der
-  // Titel des Bildpaares in der Datei des Fliesstextes — und der nächste,
-  // der den Abschnitt umbaut, fände ihn dort und hielte ihn für dessen
-  // Überschrift.
+  // DER ABSCHNITT HATTE SEINE ÜBERSCHRIFT AM SELBEN TAG VERLOREN: „The One
+  // Eye" ist mittags hinauf über die Diamantfotos gewandert (Auftrag
+  // 20260917-the-one-eye-wandert-…) und wohnt seither
+  // bei den Bildern, die sie überschreibt: qi-master-diamantbilder.js,
+  // QIMASTER_DIAMANTBILDER_TITEL. Der Text stand danach ohne Titel da.
+  // „Literatur" füllt genau diese Stelle — der `titel` kehrt zurück, mit
+  // einem anderen Wort und einer anderen Aufgabe.
   //
-  // DER ABSCHNITT VERLIERT NUR SEINE ÜBERSCHRIFT, NICHT SEINEN TEXT: der
-  // Einstieg „Diamant ist reiner Kohlenstoff …" bleibt Wort für Wort, wo er
-  // ist (Auftrag: „Verschoben wird eine Zeile, kein Kapitel."). Gemessen von
-  // homepage-bauer/pruefungen/probe_one_eye_ueber_bildern.py.
+  // ES IST EINE ABSCHNITTSÜBERSCHRIFT, KEIN ETIKETT FÜR DEN ERSTEN ABSATZ.
+  // Was darunter folgt — der Kohlenstoff-Einstieg, „Diamant = Kohlenstoff"
+  // mit Königs Zitat, das Kristallgitter, die Kohärenz, Popp und Pollack —
+  // ist die Herleitung aus der Literatur. Die Überschrift eröffnet sie.
+  // Deshalb rendert QiMaster.jsx sie als <h2>, in derselben Ebene wie die
+  // übrigen Abschnittsüberschriften der Seite, nicht als kleine
+  // Zwischenzeile.
+  //
+  // NICHT ZU VERWECHSELN MIT DEM LABEL „In der Literatur", das die Blöcke
+  // `gitter`, `Kohärenz` und `licht` beim Bau dieser Zeile noch tragen.
+  // Christian hat es am selben Abend zum Streichen bestellt (Auftrag
+  // 20260917-in-der-literatur-raus-…, beim Schreiben dieses Kommentars noch
+  // am Laufen) — die Überschrift hier macht
+  // es ohnehin überflüssig. WER DIESE DATEI LIEST, PRÜFT ALSO NACH, ob die
+  // Labels noch da sind; dieser Kommentar sagt, wie es AM 2026-09-17 stand,
+  // nicht wie es heute ist.
+  //
+  // DIE LEHRE DARAUS ÜBERLEBT DEN LABEL-STRICH: Wortstamm „Literatur" stand
+  // auf dieser Seite schon, bevor diese Überschrift existierte. Wer die
+  // Überschrift messen will, vergleicht die h2 deshalb auf GLEICHHEIT und
+  // mit Beachtung der Groß-/Kleinschreibung — ein Enthaltensein-Test wäre
+  // durch die Labels schon vor dem Bau grün gewesen
+  // (pruefungen/probe_literatur_ueberschrift.py, Arm `ueberschrift`).
+  //
+  // NUR DIE ÜBERSCHRIFT KOMMT DAZU: der Einstieg „Diamant ist reiner
+  // Kohlenstoff …" bleibt Wort für Wort, „Diamant = Kohlenstoff" bleibt, wo
+  // es ist, und die Quellen bleiben vollständig (Auftrag: „Es kommt eine
+  // Zeile hinzu, es geht keine weg.").
+  titel: 'Literatur',
   einstieg: [
     'Diamant ist reiner Kohlenstoff. Die Grundlage unseres Lebens. Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Skelett aus Kohlenstoffatomen. Hier nutzen wir Kohlenstoff in seiner edelsten Form.',
   ],
