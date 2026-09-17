@@ -2589,21 +2589,57 @@ ul.submenu li a {
   margin-right: 0.3em;
 }
 
+/* ─── Vertrauensleiste: die Zeile bricht, statt zu schneiden ───────────────
+   Die vier fremden Wortmarken brauchen nebeneinander 628 px. Auf einem Telefon
+   mit 390 px Breite passte das nie — die Zeile brach nicht (`flex-wrap:
+   nowrap` als Flex-Voreinstellung), und `overflow: hidden` schnitt weg, was
+   nicht hineinpasste. Am ausgelieferten Stand gemessen (2026-09-16, 390x844,
+   auf der Startseite und auf /products/qione-2-pro, /products/qibracelet,
+   /products/qihome-air identisch): BRAINEFFECT stand 237,53 px ausserhalb der
+   linken Innenkante und damit VOLLSTAENDIG unsichtbar, DNX ragte 237,55 px
+   nach rechts hinaus, „find your flow!" 18,58 px — dem fehlte das Ausrufe-
+   zeichen. Von vier Marken, die Vertrauen borgen sollen, stand eine ganz da.
+
+   DIE LOGOS BLEIBEN 40 px HOCH. Wer den Beschnitt durch Verkleinern wegbekommt,
+   hat die Leiste geschrumpft statt repariert; `probe_logoleiste_marken_
+   unbeschnitten.py` faellt mit Arm D genau darauf.
+
+   `max-height` MUSSTE DAFUER WEICHEN: 15vh sind bei 844 px Hoehe 127 px und
+   haetten die zweite Reihe genauso abgeschnitten, wie es der Rand vorher
+   seitlich tat. Auf dem Desktop war der Deckel nie bindend (eine Reihe misst
+   104 px), er kostet also nichts.
+
+   DER ABSTAND DER STARTSEITE BLEIBT, WO ER PASST: ab 750 px stehen wieder
+   30 px zwischen den Marken. Gebrochen wird nur dort, wo sonst geschnitten
+   wuerde. Zwischen 750 und rund 865 px entstehen dadurch zwei Reihen mit dem
+   gewohnten Abstand — das ist gewollt, denn die Alternative waere wieder ein
+   Schnitt.
+
+   HERKUNFT: die Bauform stand seit dem 2026-09-16 seitengenau in
+   qi-master.css und ist mit dem Job 20260917-logoleiste-bricht-nur-auf-
+   qimaster-geteilte-regel-nachziehen hierher gehoben worden — eine Leiste aus
+   EINER Komponente gehoert in EINE Regel, nicht auf vier Seiten kaputt und auf
+   einer repariert. Der Sonderfall dort ist im selben Zug entfallen.
+   ------------------------------------------------------------------------ */
 .LogoBar {
   width: 100%;
-  max-height: 15vh;
   overflow: hidden;
   margin: 100px 0;
-  padding: 2rem 0;
+  padding: 2rem 8px;
   background: url('https://cdn.shopify.com/s/files/1/0279/3095/1750/files/flyerbg_highres_cropped_1.webp?v=1681466840')
     no-repeat;
   background-size: cover;
 }
 .LogoBar .LogoBar-ImgWrapper {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  column-gap: 12px;
+  row-gap: 16px;
+}
+@media (min-width: 750px) {
+  .LogoBar .LogoBar-ImgWrapper { column-gap: 30px; }
 }
 .LogoBar .LogoBar-ImgWrapper img {
   height: 40px;
