@@ -332,13 +332,49 @@ function MainFeatures() {
             Dr. Michael König
           </p>
         </div>
+        {/* Christians Fassung vom 2026-09-17, Wort für Wort (Job
+            20260917-pure-leistung-pure-entspannung). Drei Änderungen in einem
+            Block, und keine davon ist Redaktion:
+
+            ÜBERSCHRIFT: die alte kündigte an ("vorbereitet auf das, was
+            kommt"), die neue nennt zwei Zustände, die der Kunde bekommt.
+
+            SCHREIBWEISE: der Markenname stand gebeugt mit dem Zeichen hinter
+            dem Wortstamm und einem zweiten am Ende - ein Artefakt der
+            hausweiten ™-Regel, die die gebeugte Form nicht erkannt hat.
+            Richtig ist das Zeichen hinter dem VOLLSTÄNDIGEN gebeugten Wort.
+            Nachgemessen über vier Seiten beider Shops war es ein Einzelfall
+            und kein Muster - deshalb hier mitrepariert statt als eigener
+            Auftrag. Die bestehende Schreibwache
+            pruefungen/probe_qimaster_schreibweise_naht.py findet diesen Fall
+            baulich NICHT: ihr OHNE_TM fragt nach "Gitterchip ohne
+            Markenzeichen", und das Zeichen war ja da - nur an der falschen
+            Stelle. Die Lücke ist gemessen, nicht vermutet. Seit heute misst
+            sie pruefungen/probe_pure_leistung.py, Arm `schreibweise`, als
+            MUSTER (Markenname + Zeichen + Buchstabe) und nicht als der eine
+            kaputte String - ein Arm auf die Instanz wäre beim nächsten
+            gebeugten Fall wieder blind. Der Absatz zitiert die falsche Form
+            deshalb auch nicht: ein Kommentar, der sie wörtlich trägt, zwingt
+            jede künftige Rohtext-Probe zu einer Ausnahme.
+
+            AUFZÄHLUNG: die genannte Mobilfunkgeneration ist jetzt die
+            nächste echte, nicht eine erfundene - eine erfundene Zahl macht
+            die echten Punkte daneben unglaubwürdiger. "Schicksalsschläge"
+            weitet die Aussage vom Technischen ins Persönliche; das ist eine
+            Herstellerangabe über die Reichweite des eigenen Produkts
+            (GL-SPR-0008) und steht ohne Distanzformel.
+
+            NICHT ANGETASTET: der 6G-Abschnitt weiter unten und die FAQ-Frage
+            "Schützt der Qi Master® vor 6G?" - über beide ist nichts
+            entschieden. Die geraden Anführungszeichen um "The One Eye"
+            bleiben, wie Christian sie setzt. */}
         <div className="MainFeaturesColumn">
-          <h3>Vorbereitet auf das, was kommt</h3>
+          <h3>Pure Leistung. Pure Entspannung.</h3>
           <p>
-            Durch dieses einmalige Duett des Gitterchip™s™ und "The One Eye" ist
+            Durch dieses einmalige Duett des Gitterchips™ und "The One Eye" ist
             der Qi Master® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob
-            sie 7G oder Umweltgifte lautet. Der Qi Master® leistet auf jeder
-            Ebene das erdenkliche Maximum.
+            sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Master®
+            leistet auf jeder Ebene das erdenkliche Maximum.
           </p>
         </div>
       </div>
