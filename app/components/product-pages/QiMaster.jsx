@@ -523,10 +523,26 @@ function DiamantAbschnitt() {
           <div key={b.id}>
             <h3>{`${i + 1}. ${b.titel}`}</h3>
             {/* label: null heißt KEINE Zwischenüberschrift, nicht eine leere.
-                Christian hat sie am 2026-09-17 über dem Kohlenstoff-Block
-                gestrichen; ohne diese Bedingung bliebe eine leere Hülle mit
-                ihrem Abstand stehen. Die übrigen Blöcke tragen ihr Label
-                weiter - das entscheidet allein das Datenmodul. */}
+                Christian hat „In der Literatur“ am 2026-09-17 zuerst über dem
+                Kohlenstoff-Block und am Abend desselben Tages SEITENWEIT und
+                ersatzlos gestrichen (Auftrag 20260917-in-der-literatur-raus-…).
+                Alle vier Blöcke dieses Abschnitts stehen jetzt auf
+                `label: null`; ohne diese Bedingung bliebe viermal eine leere
+                Hülle mit ihrem Abstand stehen.
+
+                DIE BEDINGUNG BLEIBT, OBWOHL SIE HEUTE IMMER FALSCH IST — und
+                das ist kein toter Code, sondern die Naht: ob ein Block eine
+                Zwischenüberschrift trägt, entscheidet allein das Datenmodul
+                (app/data/qi-master-texte.js). Wer sie hier herausnimmt,
+                verlegt diese Entscheidung ins Markup und macht aus einem
+                Datenfeld eine Codeänderung. Die übrigen Abschnitte der Seite
+                rendern ihre Labels ohnehin über eigene Stellen weiter
+                (PersoenlichkeitAbschnitt: „Überlieferung“, „Zeitgenössisch
+                interpretiert“, „Unsere Deutung“) — gestrichen ist der
+                Wortlaut „In der Literatur“, nicht die Bauform. KEINE
+                ZEILENNUMMERN hier: dieselbe Seite wurde am 2026-09-17 von
+                sieben Aufträgen angefasst, und eine gepinnte Nummer zeigt
+                nach dem nächsten Merge auf die falsche Zeile. */}
             {b.label ? (
               <span className={`qm-label${b.beleg ? ' qm-label--beleg' : ''}`}>
                 {b.label}
