@@ -188,20 +188,53 @@ export const QIMASTER_DIAMANT = {
   ],
 };
 
+/* Der 6G-Abschnitt trägt seit dem 2026-09-17 CHRISTIANS FASSUNG, Wort für Wort.
+   Was hier vorher stand (»6G-Protection: nicht auf eine Frequenz gebaut«, der
+   Absatz zur Bauweise, »Was gemessen ist« samt TEER-Wert), ist ersetzt — nicht
+   umgeschrieben. Geglättet wurde nichts, kein Vorbehalt kam dazu; korrigiert
+   sind allein Rechtschreibung und Zeichensetzung, also die echten Umlaute, die
+   der kundensichtbare Text verlangt.
+
+   DIE ZIFFERN SIND KEIN SCHMUCK, SIE SIND DIE ZUORDNUNG: Christian hat Absatz
+   für Absatz geliefert, welche Quelle welche Aussage trägt. Die Marken stehen
+   deshalb an der Aussage, nicht am Absatzende. Die Zuordnungstabelle selbst
+   gehört NICHT auf die Seite — sie war die Bauanweisung.
+
+   WARUM DIE QUELLEN ÜBERHAUPT DA SEIN MÜSSEN: der Text beruft sich selbst
+   darauf, keine Verschwörungstheorie zu sein, und nennt ETSI, ITU und 3GPP als
+   Beleg. Eine solche Berufung ohne auffindbaren Beleg ist angreifbar — sie
+   macht genau die Angriffsfläche auf, die der Satz bestreiten will. Zuvor stand
+   an dieser Stelle das Wort »telecomtv«: ein Kopierartefakt, keine Quelle.
+
+   DIE OPTIK IST GEERBT, NICHT GEBAUT (Christian: »optisch so darstellen wie im
+   Literaturbereich«): die Liste trägt .qm-quellen aus qi-master.css — dieselbe
+   Schriftgröße (--qm-fs-xs) und dieselbe Dämpfung (--qm-muted) wie jede andere
+   Quellenangabe dieser Seite, dazu den Hängeeinzug für die Ziffer. Die Klasse
+   war seit dem Wegfall des Diamant-Quellenblocks (Commit 2261217, am selben
+   Tag) ohne Nutzer; sie wird wiederverwendet, statt eine zweite Quellen-Optik
+   neben die erste zu stellen. Wer die eine Größe ändert, ändert beide — das
+   ist hier Absicht.
+
+   [8] UND [9] SIND DIE DARTSCH-STUDIEN. Die Studienlage bleibt damit in diesem
+   Abschnitt — nur nicht mehr als ausgebreiteter Text, sondern als Beleg. */
 export const QIMASTER_SECHS_G = {
-  titel: '6G-Protection: nicht auf eine Frequenz gebaut',
+  titel: '6G-Protection: Die Zukunft kommt.',
   absaetze: [
-    'Der Gitterchip™ ist kein Abschirmprodukt. Er enthält keine Elektronik, er filtert kein Frequenzband, und er sitzt nicht am Sender, sondern bei dir: Sein statisches Feld prägt das Wasser um deine Zellen. Deshalb ist er nicht auf eine Mobilfunkgeneration gebaut – nicht auf 4G, nicht auf 5G und auch nicht auf 6G. Das ist eine Aussage über die Bauweise. Was wir gemessen haben und was nicht, steht darunter.',
+    '6G steht vor der Tür, und die Debatte darüber wird bisher völlig falsch geführt. Wer glaubt, es gehe wieder nur um höhere Datenraten und ein stärkeres Signal, hat den entscheidenden Punkt nicht verstanden. 6G ist keine Verstärkung dessen, was wir kennen — es ist ein Bruch mit der bisherigen Funktechnik. [1][2]',
+    'Der Grund heißt Integrated Sensing and Communication, kurz ISAC. Das Netz sendet nicht mehr nur, es misst. Jede Basisstation, jedes Endgerät wird gleichzeitig zum Radar. Das Netz erfasst Entfernung, Geschwindigkeit, Position, Ausrichtung, Größe, Form, Abbild und sogar Materialien von Objekten in seiner Umgebung [1][2][3][4] — und rekonstruiert daraus die physische Welt, in der es arbeitet. [4][5] Räume, Wände, Möbel, Bewegungen, Gesten, Atmung: alles wird zur auswertbaren Größe. Das ist keine Verschwörungstheorie, das ist der erklärte Zweck der Technologie, nachzulesen in den Papieren von ETSI, ITU und 3GPP.',
+    'Und genau hier liegt das Problem. Wir bekommen eine Infrastruktur, die permanent, flächendeckend und unsichtbar den Raum abtastet, in dem wir leben [3][6] — ohne dass jemand die gesundheitliche Wirkung dieser neuen Signalform ernsthaft untersucht hätte. [8][9] Die Grenzwerte, auf die man sich beruft, stammen aus einer Zeit, in der Funk Sprache übertrug und nicht Räume vermaß. [7] Die Beweislast wird umgedreht: Ausgerollt wird zuerst, geprüft wird — vielleicht — später. Wer Bedenken anmeldet, gilt als fortschrittsfeindlich. Das ist die eigentliche Zumutung.',
   ],
-  gemessen: {
-    titel: 'Was gemessen ist',
-    absaetze: [
-      'In zwei begutachteten Zellstudien (Dartsch, 2021) lagen menschliche Immunzellen und Darmepithelzellen vier Stunden lang auf einem sendenden Smartphone mit aktivem WLAN (SAR 0,76 W/kg). Mit dem QiOne® 2 Pro – demselben Gitterchip™, den der Qi Master® trägt – behielten die Darmzellen ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen (TEER 1.837 gegenüber 152 Ω·cm²), und die Immunzellen ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts.',
-      'Das sind Zellkulturen, keine Menschen. Und auch die geschützten Zellen erreichten das Niveau unbestrahlter Kontrollen nicht ganz. Beides steht so in den Studien – du kannst sie im Volltext lesen.',
-    ],
-    quelle:
-      'Peter C. Dartsch: Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Applied Cell Biology 9(3), 2021, S. 69–74. Ders.: QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japanese Journal of Medicine 4(1), 2021, S. 484–488.',
-  },
+  quellen: [
+    '[1] International Telecommunication Union: Framework and Overall Objectives of the Future Development of IMT for 2030 and Beyond. Recommendation ITU-R M.2160-0, Genf, November 2023. Definiert ISAC als eines von sechs Nutzungsszenarien für IMT-2030.',
+    '[2] 3rd Generation Partnership Project: Feasibility Study on Integrated Sensing and Communication. 3GPP TR 22.837, Release 19, V19.4.0, Juni 2024. Ders.: Service Requirements for Integrated Sensing and Communication; Stage 1. 3GPP TS 22.137, Release 19.',
+    '[3] European Telecommunications Standards Institute: ETSI Launches a New Group for Integrated Sensing and Communications, a Candidate Technology for 6G. Pressemitteilung, Sophia Antipolis, 21. November 2023.',
+    '[4] Thorsten Wild, Artjom Grudnitsky, Silvio Mandelli, Marcus Henninger, Junqing Guan, Frank Schaich: 6G Integrated Sensing and Communication – From Vision to Realization. Nokia Bell Labs, Stuttgart 2023. Proof-of-Concept mit gleichzeitiger Datenübertragung und Umgebungserfassung.',
+    '[5] Yameng Liu, Jianhua Zhang, Yuxiang Zhang u. a.: A Novel Multi-Reference-Point Modeling Framework for Monostatic Background Channel – Toward 3GPP ISAC Standardization. 2025.',
+    '[6] Elmehdi Illi, Marwa Qaraqe u. a.: Integrating Sensing and Communications in 6G? Not Until It Is Secure to Do So. 2025.',
+    '[7] International Commission on Non-Ionizing Radiation Protection: Guidelines for Limiting Exposure to Electromagnetic Fields (100 kHz to 300 GHz). Health Physics 118(5), 2020, S. 483–524.',
+    '[8] Peter C. Dartsch: Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Applied Cell Biology 9(3), 2021, S. 69–74.',
+    '[9] Ders.: QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japanese Journal of Medicine 4(1), 2021, S. 484–488.',
+  ],
 };
 
 export const QIMASTER_PERSOENLICHKEIT = {
