@@ -643,6 +643,54 @@
 .ProductPageQiMaster .qm-sektion__inner > p + p { margin-top: var(--qm-s2); }
 .ProductPageQiMaster .qm-sektion__inner > h3 { margin-top: var(--qm-s4); }
 
+/* DER ABSTAND ZWISCHEN DEN LITERATUR-BLOECKEN — Christians dritte Anweisung
+   vom 2026-09-17: „Oberhalb von ‚Zellen und Licht‘ fehlt ein Absatz.“
+
+   ES FEHLT EIN ABSTAND, KEIN TEXT. Gemessen, nicht geraten: `zitat: null`
+   steht fuer die Bloecke `Kohaerenz` und `licht` seit dem ersten Commit der
+   Seite (e3560a1, 2026-09-11), und keine der Streichungen des 2026-09-17
+   betraf einen Absatz aus `befunde`. Verlorengegangen ist nichts.
+
+   DIE ZEILE DARUEBER WOLLTE GENAU DAS SETZEN UND ERREICHT ES NICHT: sie ist
+   ein KINDselektor, die vier Befund-h3 stecken aber im Wrapper-div
+   `<div key={b.id}>` und sind ENKEL. Vollerhebung am 2026-09-17: KEIN
+   EINZIGES der zehn h3 dieser Seite ist direktes Kind von
+   `.qm-sektion__inner` — die Regel hat seit ihrer Entstehung nichts
+   getroffen. Sie bleibt trotzdem stehen: sie ist der Beleg, welcher Wert
+   hier beabsichtigt war. `--qm-s4` ist deshalb eine WIEDERHERSTELLUNG und
+   keine Erfindung.
+
+   WAS DEN NEBENEFFEKT GESCHLUCKT HAT, DER DIE LUECKE BIS DAHIN HALB DECKTE:
+   bis zum 2026-09-17 kam der Abstand unter einem Block aus
+   `.qm-zitat { margin: var(--qm-s3) 0 }` — also nur unter den zwei Bloecken
+   MIT Zitat (24px), unter den zitatlosen 0px. Seit jeder Block ein
+   `.qm-literaturbild` ans Ende haengt und dessen `margin: var(--qm-s3) auto 0`
+   oben statt unten sitzt, endet JEDER Block ohne Randabstand. Gemessen am
+   gerenderten Dokument: vorher 24/24/0px, danach 0/0/0px.
+
+   AM BLOCK STATT AN DER UEBERSCHRIFT, damit der Selektor greift. Durch
+   Margin-Collapsing werden daraus gleichmaessig 32px ueber jedem Block; ein
+   Zitat-Abstand von 24px kollabiert dagegen weg (max(24,32)).
+   `.qm-schluss` traegt `margin: var(--qm-s4) auto 0` schon selbst — der Wert
+   ist identisch, dieser Selektor gewinnt dort nur per Spezifitaet (0,3,1
+   gegen 0,2,0) und aendert optisch nichts.
+
+   KEINE EIGENE KLASSE AM WRAPPER-DIV, und das ist eine Entscheidung gegen
+   die naheliegende Variante: am 2026-09-17 bauten sechs parallele Auftraege
+   an dieser Seite, einer davon genau an diesem Render-Block. Eine Klasse
+   `qm-befund` haette er still verlieren koennen — dann waere diese Regel
+   tot, die Luecke zurueck, und alles saehe gruen aus. Dieser Selektor
+   trifft die BESTEHENDE Struktur und braucht am JSX nichts.
+
+   RUECKWEG: diese Regel entfernen. Der gemessene Zustand davor ist
+   0/0/0px; die stehende Wache darauf ist der Arm `abstand` in
+   pruefungen/probe_literatur_label_und_koenig_quelle.py (Gruppe
+   qi-master-schreibweise), der auf GLEICHHEIT der Abstaende urteilt und
+   keine Pixelzahl pinnt. */
+.ProductPageQiMaster [data-section="qm-diamant"] .qm-sektion__inner > div {
+  margin-top: var(--qm-s4);
+}
+
 /* Quelle unter einem Zitat/Befund: kleiner, gedaempft, KEIN Link-Gold */
 .ProductPageQiMaster .qm-quelle {
   display: block;

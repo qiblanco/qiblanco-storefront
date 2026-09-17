@@ -102,8 +102,19 @@ export const QIMASTER_DIAMANT = {
       // Christians Fassung vom 2026-09-17. Drei Dinge fallen hier weg und
       // eines kommt dazu:
       //  - die Zwischenüberschrift „In der Literatur“ (label: null). Sie
-      //    fällt NUR über diesem Block; die drei Blöcke darunter behalten
-      //    sie. Das Zitat steht für sich, mit seiner Quelle darunter.
+      //    fällt SEITENWEIT und ersatzlos – Christian am Abend desselben
+      //    Tages, nachdem sie hier zuerst nur über diesem einen Block
+      //    gefallen war. Alle vier Blöcke dieses Abschnitts stehen jetzt
+      //    auf `label: null`; das Zitat steht für sich, mit seiner Quelle
+      //    darunter.
+      //
+      //    `label: null` BLEIBT ALS MECHANIK, obwohl es im Moment kein
+      //    Block mehr anders hält: das Feld ist die Stelle, an der ein
+      //    späterer Auftrag eine Zwischenüberschrift wieder einsetzen
+      //    kann, ohne QiMaster.jsx anzufassen. Die übrigen Abschnitte der
+      //    Seite tragen weiter Labels („Überlieferung“,
+      //    „Zeitgenössisch interpretiert“) – gestrichen ist der Wortlaut
+      //    „In der Literatur“, nicht die Bauform.
       //  - die Jahreszahl im Einleitungssatz. Sie geht nicht verloren,
       //    sondern steht in der Quellenangabe, wo sie ohnehin hingehört.
       //  - „Sein erster Grund ist der Kohlenstoff:“. Das Zitat sagt es selbst.
@@ -123,15 +134,14 @@ export const QIMASTER_DIAMANT = {
     {
       id: 'gitter',
       titel: 'Licht im Kristallgitter',
-      label: 'In der Literatur',
+      label: null,
       beleg: false,
       absaetze: [
         'Sein zweiter Gedanke betrifft das Gitter selbst. Ein reiner Diamant lässt sichtbares Licht ungehindert durch; erst im ultravioletten Bereich, bei Wellenlängen unter etwa 200 Nanometern, beginnt er Licht aufzunehmen. König beschreibt, dass zwischen den Atomlagen des Gitters stehende Lichtwellen entstehen und ein Teil des ungeordneten Umgebungslichts geordnet – kohärent – wieder abgegeben wird. Und weil die Kohlenstoffatome im Diamanten dieselben Anregungsstufen haben wie die Kohlenstoffatome in organischen Molekülen, folgert er:',
       ],
       zitat:
         '„Die Kohlenstoffatome im Diamanten senden also auf den richtigen Frequenzen, die die Kohlenstoffatome in biologischem Material empfangen können.“',
-      quelle:
-        'Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 169–172. – Das ist Königs Modell, und er sagt selbst, wo es endet: „Zwar ist es für medizinisch relevante Aussagen noch zu früh“ (S. 174). Wir zitieren ihn; wir beanspruchen ihn nicht.',
+      quelle: 'Dr. Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 169–172.',
     },
     {
       id: 'Kohärenz',
@@ -151,7 +161,7 @@ export const QIMASTER_DIAMANT = {
       // Schlüssel, über den qi-master-literaturbilder.js das Bild zu
       // diesem Block findet.
       titel: 'Kohärenz',
-      label: 'In der Literatur',
+      label: null,
       beleg: false,
       absaetze: [
         'Kohärenz heißt: viele Teilchen schwingen im Gleichtakt. Kristalle sind das alltäglichste Beispiel dafür – der Physiker Emilio Del Giudice und seine Kollegen nennen den Diamanten, der seine Kohärenz erst bei rund 3.545 °C verliert, wenn er schmilzt. Dieselbe Arbeitsgruppe hat beschrieben, dass auch flüssiges Wasser kohärente Bereiche bildet: Domänen von etwa einem Zehntel Mikrometer, in denen Millionen Moleküle im Takt schwingen. Von dieser Ordnung im Wasser her denken wir auch den Gitterchip™.',
@@ -163,7 +173,7 @@ export const QIMASTER_DIAMANT = {
     {
       id: 'licht',
       titel: 'Zellen und Licht',
-      label: 'In der Literatur',
+      label: null,
       beleg: false,
       absaetze: [
         'Dass lebende Zellen Licht abgeben, hat der Biophysiker Fritz-Albert Popp über Jahrzehnte gemessen: sehr schwaches, geordnetes Licht zwischen 200 und 800 Nanometern, als dessen Quelle er die DNA vermutet. Der Bereich, in dem Königs Diamant Licht aufnimmt, und der Bereich, in dem Popps Zellen Licht abgeben, überlappen am ultravioletten Ende. Und der Bioingenieur Gerald Pollack hat gezeigt, dass die geordnete Wasserschicht an wasserliebenden Oberflächen mit Licht wächst – vor allem mit Infrarot: fünf Minuten mittleres Infrarot, und die Schicht war um 41 Prozent breiter.',
