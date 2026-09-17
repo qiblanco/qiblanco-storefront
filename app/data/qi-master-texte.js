@@ -34,6 +34,18 @@
  * die Ueberlegung, aus der der QiMaster entstanden ist — und beides ist nicht
  * gemessen. Der Text sagt das an genau der Stelle, an der es gilt.
  *
+ * NACHTRAG 2026-09-17 ZUR BELEGLAGE: der Block `fundament` des Abschnitts
+ * Persönlichkeitsentwicklung trägt seit diesem Tag Christians Fassung
+ * („Zeitgenössisch interpretiert“) und damit KEINE Dartsch-Werte und KEINE
+ * Warnke-Beschreibung mehr. Die Beleglage oben bleibt vollständig stehen —
+ * sie dokumentiert, woraus dieser Text entstanden ist, und das ändert eine
+ * spätere Streichung nicht. Was auf der Seite noch aus ihr zitiert wird:
+ * Dartsch über die ISAC-Quellen [8] und [9], Del Giudice/König/Popp/Pollack
+ * über den Diamant-Abschnitt, Warnke namentlich im Absatz „Unsere Deutung“.
+ * Die Zahlen 84,7/60,5 und TEER 1.837 stehen auf dieser Seite nicht mehr;
+ * sie tragen /pages/studie-darmbarriere, /pages/studie-immunzellen und
+ * /pages/studien.
+ *
  * KEINE Gesundheits-, Heil- oder Wirkungsaussage über das Belegte hinaus.
  * Fremde Autoren werden zitiert, nicht zu Befuerwortern gemacht.
  * Kundensichtbar: echte Umlaute.
@@ -261,20 +273,25 @@ export const QIMASTER_PERSOENLICHKEIT = {
     label: 'Überlieferung',
     titel: 'Das Bild von der Glühbirne',
     absaetze: [
-      'Paramahansa Yogananda erzählt in seiner „Autobiographie eines Yogi“ (1946) zweimal dasselbe Bild. Als junger Mann bittet er einen Heiligen um die Erfahrung des Samadhi, und der lehnt ab:',
+      // CHRISTIANS FASSUNG (2026-09-17), orthografisch korrigiert nach der
+      // stehenden Erlaubnis und nur Eindeutiges: „metaphysikalischen
+      // Weltklassiger“ -> „metaphysischen Weltklassiker“, „Extase“ ->
+      // „Ekstase“, und das Komma nach „als junger Mann“ entfällt. Ton und
+      // Wortwahl sind unangetastet.
+      'Paramahansa Yogananda – ein Yogi der Neuzeit – erzählt in seinem metaphysischen Weltklassiker „Autobiographie eines Yogi“, wie er als junger Mann einen Heiligen um die Erfahrung der ultimativen Ekstase (Samadhi) bittet, und dieser lehnt begründet ab:',
     ],
     zitate: [
       {
         text:
           '„Dein Körper ist noch nicht darauf gestimmt. So wie eine kleine Lampe eine zu hohe elektrische Spannung nicht aushält, sind deine Nerven für den kosmischen Strom noch nicht bereit. Gäbe ich dir jetzt die unendliche Ekstase, würdest du brennen, als stünde jede Zelle in Flammen.“',
         quelle:
-          'Paramahansa Yogananda: Autobiography of a Yogi. 1946, Kapitel 13 („The Sleepless Saint“). Eigene Übersetzung.',
+          'Paramahansa Yogananda: Autobiography of a Yogi. 1946, Kapitel 13 („The Sleepless Saint“).',
       },
       {
         text:
           '„Der Körper des Durchschnittsmenschen gleicht einer Fünfzig-Watt-Lampe, die die Milliarden Watt an Kraft nicht fassen kann, die eine übermäßige Praxis des Kriya weckt. Durch die allmähliche und regelmäßige Steigerung der einfachen und „narrensicheren“ Methoden des Kriya wird der Körper Tag für Tag astral verwandelt und schließlich fähig, die unendlichen Möglichkeiten kosmischer Energie auszudrücken – des ersten materiell wirksamen Ausdrucks des Geistes.“',
         quelle:
-          'Ebd., Kapitel 26 („The Science of Kriya Yoga“). Eigene Übersetzung.',
+          'Ebd., Kapitel 26 („The Science of Kriya Yoga“).',
       },
     ],
     // KEIN NACHSATZ MEHR. Christian am 2026-09-17: der Deutungsabsatz unter den
@@ -283,19 +300,43 @@ export const QIMASTER_PERSOENLICHKEIT = {
     // Zitate stehen für sich, mit Quelle und Kapitel; die Deutung steht unten
     // unter „Unsere Deutung“, wo sie hingehört.
   },
+  // DAS FUNDAMENT IST CHRISTIANS FASSUNG (2026-09-17). Der ganze Block wurde
+  // ersetzt: Label „Gebaut und gemessen“, Überschrift „Das technische
+  // Fundament“, der Gebaut-Absatz, der Gemessen-Absatz mit den
+  // Dartsch-Werten, der Warnke-Absatz und die Quellenzeile.
+  //
+  // WAS DAMIT VON DER SEITE VERSCHWINDET, und es gehört aufgeschrieben: die
+  // Werte 84,7/60,5 Prozent, „zwölfmal besser“, „Barrierefunktion“ und die
+  // Zeitschriftennamen stehen danach auf dieser Seite nirgends mehr. Die
+  // beiden Zeitschriften kommen über den ISAC-Abschnitt als Quelle [8] und
+  // [9] zurück, die Zahlen nicht. Die Studien selbst tragen weiterhin
+  // /pages/studie-darmbarriere, /pages/studie-immunzellen und /pages/studien.
+  //
+  // Orthografisch korrigiert nach der stehenden Erlaubnis, nur Eindeutiges:
+  // „Zeitgenössischen Interpretiert“ -> „Zeitgenössisch interpretiert“,
+  // Komma vor „um … auszudrücken“, Komma vor dem Infinitiv, „bildete“ ->
+  // „bildet“ (Gegenwart wie der Rest), „die … beschriebene Einklang“ ->
+  // „den … beschriebenen Einklang“, „Molekularer“ -> „molekularer“.
+  // Ton und Wortwahl sind unangetastet.
+  //
+  // DAS FELD `quelle` ENTFÄLLT: Christians Fassung zitiert niemanden. Der
+  // <span className="qm-quelle"> in QiMaster.jsx (PersoenlichkeitAbschnitt)
+  // geht im selben Commit mit — er renderte sonst `undefined` als leeres
+  // Element mit dem Abstand der Quellenzeile.
   fundament: {
-    label: 'Gebaut und gemessen',
-    titel: 'Das technische Fundament',
+    label: 'Zeitgenössisch interpretiert',
+    titel: 'Das Fundament:',
     absaetze: [
-      'Gebaut: Der Gitterchip™ im Qi Master® ist ein Bauteil ohne Elektronik – eine 750er Goldlegierung, deren Atome in einer festgelegten Ordnung stehen. Diese Ordnung prägt Wasser in seiner Umgebung: Die Moleküle bilden mehr Wasserstoffbrücken aus, ein Zustand, den die Physik kohärent nennt.',
-      'Gemessen: In begutachteten Zellstudien (Dartsch, 2021) behielten Zellen unter der Strahlung eines sendenden Smartphones mit dem QiOne® 2 Pro – demselben Gitterchip™ – ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen, und Immunzellen ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts. Das sind Zellkulturen. Es sind keine Menschen, und es ist keine Aussage über Persönlichkeit.',
-      'Dazu ein Modell, das wir nicht gemessen haben: Ulrich Warnke beschreibt, dass jede Zellmembran bei jeder Erregung eine kohärente elektromagnetische Welle im fernen Infrarot abstrahlt – bei einer Frequenz, die überraschend nah an einer Eigenfrequenz des Wassers liegt. Wenn das stimmt, sind Wasser und Zelle aufeinander abgestimmt, und Ordnung im Wasser wäre Ordnung, mit der die Zelle etwas anfangen kann. Das ist Warnkes Beschreibung; sie handelt von Zellen und Wasser, nicht von uns.',
+      'Der menschliche Körper muss in eine erhöhte Ordnung kommen, um die unendliche Energie des Universums ausdrücken zu können. Der Qi Master® hilft, auf den beiden wichtigsten Bestandteilen Ordnung zu schaffen – Licht und Wasser.',
+      'Dies bildet die ideale Voraussetzung, den in der Philosophie beschriebenen Einklang zwischen Körper, Geist und Seele zu erzeugen. Kohärenz auf molekularer Ebene.',
     ],
-    quelle:
-      'Peter C. Dartsch: Applied Cell Biology 9(3), 2021, S. 69–74; Japanese Journal of Medicine 4(1), 2021, S. 484–488. Ulrich Warnke: Bionisches Wasser. Arkana, 2019, S. 338–341. Emilio Del Giudice u. a.: Fields of the Cell, 2015, S. 100–101.',
   },
+  // ERSATZLOS GESTRICHEN (Christian, 2026-09-17): „Der Qi Master® ersetzt
+  // keine Übung, keine Meditation und keinen Lehrer. Er begleitet den, der
+  // sie hat.“ Dieselbe Form wie „Wir zitieren ihn; wir beanspruchen ihn
+  // nicht“ und „Sie ist kein Schmuckstück, und wir machen sie nicht dazu“,
+  // beide am selben Tag aus demselben Abschnitt gestrichen.
   deutung: [
     'Zwischen der Überlieferung und dem Fundament liegt ein Sprung, und den machen wir – nicht Yogananda, nicht Warnke, nicht Dartsch. Er lautet: Wer an sich arbeitet, arbeitet auch an seinem Gefäß. Ein Körper, dessen Wasser geordneter ist, ist – in unserer Deutung – ein Körper, der feinere Schwingung leichter trägt. Das ist der Gedanke hinter „erhöhte Zellschwingung“, und er ist genau das: ein Gedanke, der auf einem gemessenen Fundament steht und über es hinausgeht.',
-    'Der Qi Master® ersetzt keine Übung, keine Meditation und keinen Lehrer. Er begleitet den, der sie hat.',
   ],
 };

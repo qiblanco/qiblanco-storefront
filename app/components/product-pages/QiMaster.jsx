@@ -660,7 +660,13 @@ function PersoenlichkeitAbschnitt() {
           {t.fundament.absaetze.map((abs) => (
             <p key={abs.slice(0, 40)}>{abs}</p>
           ))}
-          <span className="qm-quelle">{t.fundament.quelle}</span>
+          {/* KEINE QUELLENZEILE. Christian am 2026-09-17: der ganze
+              Fundament-Block wird „Zeitgenössisch interpretiert“, samt der
+              Quellenzeile darunter. Der Block trägt keine fremde Angabe mehr,
+              die zu belegen wäre — ein leerer <span className="qm-quelle">
+              wäre ein Rest mit Abstand, kein Bau. Das Feld `quelle` ist in
+              app/data/qi-master-texte.js entfallen; bliebe der span stehen,
+              renderte er `undefined` als leeres Element. */}
         </div>
       </div>
       <div className="qm-sektion__inner">
