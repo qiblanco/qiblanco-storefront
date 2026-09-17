@@ -288,8 +288,9 @@ function MainFeatures() {
           so trägt der Kopf derselben Seite seine Fassung bereits. Korrigiert
           wurde nur Eindeutiges (Rechtschreibung, ® und ™), Ton und Aussage
           blieben unberührt. Das König-Zitat steht hier ohne Fußnote; seine
-          ausführliche Quelle trägt der Abschnitt „Warum ein Diamant“ weiter
-          unten (app/data/qi-master-texte.js) - die wird nie angetastet. */}
+          ausführliche Quelle trägt der Abschnitt „The One Eye - Ein Diamant“
+          weiter unten (app/data/qi-master-texte.js; bis zum 2026-09-17 hiess
+          er „Warum ein Diamant“) - die wird nie angetastet. */}
       <h2 className="text-center">Qi Master® - Eine bisher unerreichte Liga</h2>
       <div className="MainFeatures NormalSectionSize">
         <div className="MainFeaturesColumn">
@@ -405,9 +406,16 @@ function DiamantAbschnitt() {
         {t.befunde.map((b) => (
           <div key={b.id}>
             <h3>{b.titel}</h3>
-            <span className={`qm-label${b.beleg ? ' qm-label--beleg' : ''}`}>
-              {b.label}
-            </span>
+            {/* label: null heißt KEINE Zwischenüberschrift, nicht eine leere.
+                Christian hat sie am 2026-09-17 über dem Kohlenstoff-Block
+                gestrichen; ohne diese Bedingung bliebe eine leere Hülle mit
+                ihrem Abstand stehen. Die übrigen Blöcke tragen ihr Label
+                weiter - das entscheidet allein das Datenmodul. */}
+            {b.label ? (
+              <span className={`qm-label${b.beleg ? ' qm-label--beleg' : ''}`}>
+                {b.label}
+              </span>
+            ) : null}
             {b.absaetze.map((abs) => (
               <p key={abs.slice(0, 40)}>{abs}</p>
             ))}

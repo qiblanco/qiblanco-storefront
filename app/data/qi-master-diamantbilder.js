@@ -16,7 +16,8 @@
  * „Roh Diamant" und „Hochreiner Diamant in Brilljant Schliff"; korrigiert ist
  * allein die Rechtschreibung (stehende Erlaubnis vom 2026-09-16). „Rohdiamant"
  * ist dabei keine Erfindung, sondern die Schreibweise, die dieselbe Seite
- * bereits trägt (qi-master-texte.js, Abschnitt „Warum ein Diamant").
+ * bereits trägt (qi-master-texte.js, Abschnitt „The One Eye - Ein Diamant";
+ * bis zum 2026-09-17 hiess er „Warum ein Diamant").
  *
  * HERKUNFT IST DOKUMENTIERT, NICHT AUSGESTELLT — und das ist seit dem
  * 2026-09-17 eine Korrektur, keine Nachlässigkeit. Sie steht in `herkunft` je
