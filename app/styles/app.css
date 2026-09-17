@@ -5625,6 +5625,12 @@ ul.kakao-children li {
 }
 .ghx-studien__arrow:hover { background: #f5f5f4; }
 .ghx-studien__footnote { text-align: center; margin: 18px 0 10px; }
+/* Seit 2026-09-17 steht zwischen Pfeilreihe und Knopf keine Schlusszeile mehr
+   (StudienSlider.jsx, Grossjob 20260914-studien-h1-... s03). Ihre 18+10 px
+   Rand plus eine Textzeile trugen den Abstand; ohne sie sass der Knopf direkt
+   auf den Pfeilen (gemessen 54 -> 0 px). Ein Schritt des 8-pt-Rasters. Die
+   Regel darueber bleibt, weil qi-master.css und pdp-qi.css sie noch nennen. */
+.ghx-studien__nav + .btn--secondary { margin-top: 32px; }
 
 /* Slider-Interaktions-Standard (GL-DES-0012): Desktop-Maus-Drag am
    Studien-Track (Touch scrollt weiterhin nativ ueber overflow-x). */
