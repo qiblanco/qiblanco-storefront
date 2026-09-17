@@ -286,6 +286,79 @@
 .ProductPageQiMaster ul,
 .ProductPageQiMaster ol { margin: var(--qm-s3) 0 var(--qm-s3) var(--qm-s3); }
 
+/* ─── Der Kaufknopf im Parallax-Banner: klickbar, und seine Landung ──────────
+   Christian am 2026-09-17, woertlich: „Der Knopf geht nicht, das muss ein
+   Scroll up zum Kaufbereich sein. Oberkante startet mit einem Abstand, dann
+   ‚Qi Master®'." Gemeint ist „Hole dir deinen Qi Master®" weiter unten.
+
+   ZWEI URSACHEN, EINE HINTER DER ANDEREN.
+
+   (1) DER KNOPF WAR NICHT TREFFERBAR. `.HeroBanner` traegt in app.css
+   `z-index: -1` (Agentur-Sammelcommit d2559eb vom 2026-03-31, keine gezielte
+   Entscheidung). Ein POSITIONIERTES Element mit NEGATIVEM z-index wird hinter
+   dem Elternknoten gezeichnet — das ganze Banner samt Kaufknopf lag hinter
+   `div.ProductPageQiMaster`, und der Treffertest am Mittelpunkt des Links
+   landete auf dem Elterncontainer. Live gemessen am 2026-09-17: trefferbar
+   = false, Playwright-Klick laeuft in den Timeout.
+
+   WARUM DIE KORREKTUR HIER STEHT UND NICHT AN DER URSACHE IN app.css: der
+   sitewide Fix EXISTIERT und ist richtig — er liegt seit dem 2026-09-16 als
+   Commit 5a74054 auf `feat/cta-herobanner-klickbar-20260916` (PR #472) und
+   heilt alle vier betroffenen Produktseiten. Er kommt seit zwei Merge-
+   Versuchen nicht durch Gate 12: `app/styles/app.css` ist eine geteilte Datei,
+   und acht FREMDE Seiten (crystal-cacao, e-smog, partner, qibracelet-details,
+   qihome-details, qione-2-pro-details, schlaf-zellen-schutz, superhuman)
+   tragen offene `bild-aufloesung=kaputt`-Befunde. Ihre Belege sind FRISCH
+   (gemessen 2026-09-17T20:36Z), die Schuld ist also echt und nicht abgelaufen;
+   alle drei Erlassfaelle des Gates verlangen in V1 die EIGENE Route der Seite
+   im Diff und greifen deshalb nicht. Ein Einzeiler haengt damit an
+   Bildschuld, die ihn nicht betrifft.
+
+   DIESE REGEL WARTET NICHT DARAUF. Sie hebt die Schichtung fuer GENAU DIESE
+   SEITE (`.ProductPageQiMaster .HeroBanner`, Spezifitaet 0-2-0 gegen 0-1-0)
+   und aendert an den anderen drei Seiten nichts — dort bleibt der Knopf tot,
+   bis der sitewide Fix durch ist. Das ist eine offene Flanke und im RESULT als
+   solche benannt, keine Heilung.
+   z-index 0 UND NICHT ERSATZLOS: die 0 haelt den Stacking Context aufrecht,
+   den die -1 auch schon aufmachte. Die innere Schichtung bleibt unveraendert
+   (`.overlay` z 1 unter `.HeroBannerContent` z 2), der feste Kopf (z 100)
+   bleibt darueber. Wird 5a74054 gemergt, wird diese Regel redundant — nicht
+   falsch: beide setzen denselben Wert.
+
+   (2) DIE LANDUNG KLEBTE AN DER OBERKANTE. Das Sprungziel `#qm-buybox` gibt
+   es seit dem 2026-09-16 (`ankerId` in products.qi-master.jsx); was fehlte,
+   war der Offset. Gemessen: `scroll-margin-top: 0px`, Landung bei
+   rect.top = 0 — buendig am Fensterrand und hinter dem festen Kopf, sobald
+   der wieder ausfaehrt.
+
+   DER WERT IST ABGELEITET, NICHT GEWAEHLT: `--qb-kopf-hoehe` traegt die zur
+   Laufzeit GEMESSENE Ruhelage des festen Kopfes (useKopfHoeheVariable in
+   GoogleRezensionenBereich.jsx, aufgerufen aus Header.jsx — auf jeder Seite
+   gesetzt); die 150px sind ausschliesslich der No-JS-Rueckfall. Dieselbe
+   Bauform tragen die beiden Bestands-Anker `.GoogleRezensionenBereich` und
+   `.GoogleKundenerfahrungen` in app.css. Die RUHELAGE und nicht die momentane
+   Unterkante, weil der Kopf nach der Landung `header--hidden` traegt und seine
+   Unterkante dann 0 ist — ein Offset gegen diesen Zustand liesse die
+   Ueberschrift verschwinden, sobald der Kopf wieder ausfaehrt (Belegfall
+   probe_sterne_kopf_zustaende, Versatz -71/-90/-82).
+   Dazu `--qm-s3` (24px) als sichtbare Luft: die Haus-Luft des JS-Pfades ist
+   12px (SCROLL_LUFT_PX, ebenda) und meint „nicht kleben", Christian verlangt
+   einen SICHTBAREN Abstand — deshalb die naechste Stufe des 8pt-Grids statt
+   eines freien Wertes (Regel dieses Files). Gemessen ergibt das eine Landung
+   bei rund 119px, bei einer Kopf-Ruhelage von 95px im Landezustand.
+
+   Gemessen: pruefungen/probe_qm_sprungziel_landung.py — Arme `klick`,
+   `abstand`, `zeile`. Der Arm `abstand` liest diesen Wert NICHT nach; er misst
+   die Kopfhoehe im Browser selbst und leitet die Schwelle daraus ab, sonst
+   waere er gruen by construction. Stehender Traeger: rt-Task
+   `homepage-live-wache`, Detektor 15. */
+.ProductPageQiMaster .HeroBanner {
+  z-index: 0;
+}
+.qm-pdp #qm-buybox {
+  scroll-margin-top: calc(var(--qb-kopf-hoehe, 150px) + var(--qm-s3));
+}
+
 /* Buy-Box (Geschwister-Scope): H1 und Nutzenliste auf die Skala */
 .qm-pdp .product-main h1 { font-size: var(--qm-fs-h1); line-height: 1.1; }
 .qm-pdp .ProductDescription p,
