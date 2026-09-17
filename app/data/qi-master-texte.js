@@ -123,7 +123,22 @@ export const QIMASTER_DIAMANT = {
     },
     {
       id: 'Kohärenz',
-      titel: 'Kohärenz – was Physiker damit meinen',
+      // GEKÜRZT am 2026-09-17 auf Christians Auftrag: „Kohärenz – was
+      // Physiker damit meinen" -> „Kohärenz".
+      //
+      // DER ZUSATZ ERKLÄRTE, DASS GLEICH EINE ERKLÄRUNG KOMMT — und der
+      // erste Satz des Absatzes darunter gibt sie: „Kohärenz heißt: viele
+      // Teilchen schwingen im Gleichtakt." Eine Überschrift, die eine
+      // Erklärung ankündigt, kostet die Zeile und liefert nichts; der
+      // Leser hat die Antwort eine Zeile später ohnehin.
+      //
+      // ABSATZ, ZITATE UND QUELLE DIESES BLOCKS BLEIBEN WORT FÜR WORT.
+      // Geändert ist genau der Titel (Auftrag: „Die Texte der vier
+      // Abschnitte bleiben unverändert, ebenso die Zitate und
+      // Quellenangaben"). Die `id` bleibt ebenfalls — sie ist der
+      // Schlüssel, über den qi-master-literaturbilder.js das Bild zu
+      // diesem Block findet.
+      titel: 'Kohärenz',
       label: 'In der Literatur',
       beleg: false,
       absaetze: [

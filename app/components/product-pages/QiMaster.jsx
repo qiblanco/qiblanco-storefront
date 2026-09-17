@@ -10,6 +10,7 @@ import {
   QIMASTER_DIAMANTBILDER,
   QIMASTER_DIAMANTBILDER_TITEL,
 } from '~/data/qi-master-diamantbilder';
+import {QIMASTER_LITERATURBILDER} from '~/data/qi-master-literaturbilder';
 import {QIMASTER_GUETEZEICHEN} from '~/data/qi-master-guetezeichen';
 import {
   QIMASTER_DIAMANT,
@@ -485,9 +486,26 @@ function DiamantAbschnitt() {
         {t.einstieg.map((abs) => (
           <p key={abs.slice(0, 40)}>{abs}</p>
         ))}
-        {t.befunde.map((b) => (
+        {/* DIE NUMMERN 1 BIS 4 — Christians Auftrag vom 2026-09-17: „Und
+            jedem einen Aufzählungspunkt geben, also von 1. bis 4."
+
+            SIE ENTSTEHEN AUS DER REIHENFOLGE, SIE STEHEN NICHT IM TEXT. Eine
+            Nummer, die in `titel` mitgeschrieben wäre, ist eine zweite
+            Buchführung derselben Reihenfolge: wer einen Block umstellt oder
+            einfügt, müsste zwei Stellen nachziehen, und die falsche gewinnt
+            still. Hier gibt es nur eine Quelle — die Position in
+            `befunde[]`.
+
+            DIE NUMMER GEHÖRT IN DIE ÜBERSCHRIFT, nicht daneben: sie ist Teil
+            dessen, was der Leser als Überschrift liest, und ein Screenreader
+            liest sie dann mit. Ein eigenes Element davor wäre eine zweite
+            Zeile und eine lose Ziffer.
+
+            ES IST EINE REIHENFOLGE, KEINE RANGFOLGE (Auftrag). Sie folgt dem
+            Aufbau der Herleitung: Kohlenstoff, Gitter, Kohärenz, Zelle. */}
+        {t.befunde.map((b, i) => (
           <div key={b.id}>
-            <h3>{b.titel}</h3>
+            <h3>{`${i + 1}. ${b.titel}`}</h3>
             {/* label: null heißt KEINE Zwischenüberschrift, nicht eine leere.
                 Christian hat sie am 2026-09-17 über dem Kohlenstoff-Block
                 gestrichen; ohne diese Bedingung bliebe eine leere Hülle mit
@@ -508,6 +526,36 @@ function DiamantAbschnitt() {
               </blockquote>
             ) : b.quelle ? (
               <span className="qm-quelle">{b.quelle}</span>
+            ) : null}
+            {/* DIE ILLUSTRATION ZU DIESEM BLOCK — steht UNTER dem Zitat und
+                seiner Quelle, nicht dazwischen. Der Grund ist derselbe, aus
+                dem diese Bilder Zeichnungen sind: ein erzeugtes Bild
+                unmittelbar neben einer echten Quellenangabe liest sich als
+                deren Abbildung. Unter der abgeschlossenen Quelle ist es, was
+                es ist — eine Illustration zum Gedanken.
+
+                KEINE UNTERSCHRIFT, und das ist der Unterschied zum Bildpaar
+                weiter oben: dort benennt die figcaption den Steintyp, hier
+                steht die Überschrift des Blocks schon darüber. Eine
+                Bildunterschrift wäre an dieser Stelle genau die Form, die
+                der Auftrag ausschließt („Bildunterschriften im Stil einer
+                Abbildungslegende"). Was das Bild zeigt, sagt das
+                alt-Attribut — dem, der es braucht.
+
+                `bild` FEHLT NICHT STILL: ohne Eintrag rendert der Block wie
+                zuvor. Ein Block ohne Bild ist damit ein sichtbarer Zustand
+                und kein Absturz — die Probe misst, dass es vier sind. */}
+            {QIMASTER_LITERATURBILDER[b.id] ? (
+              <img
+                className="qm-literaturbild"
+                src={QIMASTER_LITERATURBILDER[b.id].src}
+                width={QIMASTER_LITERATURBILDER[b.id].breite}
+                height={QIMASTER_LITERATURBILDER[b.id].hoehe}
+                alt={QIMASTER_LITERATURBILDER[b.id].alt}
+                data-herkunft={QIMASTER_LITERATURBILDER[b.id].herkunft}
+                loading="lazy"
+                decoding="async"
+              />
             ) : null}
           </div>
         ))}
