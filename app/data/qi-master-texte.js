@@ -40,12 +40,23 @@
  */
 
 export const QIMASTER_DIAMANT = {
-  // Christians Fassung vom 2026-09-17, Wort für Wort (Job
-  // 20260917-diamant-abschnitte-werden-christians-fassung). Übernommen ist die
-  // Schreibweise, die er selbst tippte: schlichter Bindestrich in der
-  // Überschrift — genau so trägt der Kopf derselben Seite seine Fassung
-  // bereits ("The One Eye" - Hochreiner Natur Diamant).
-  titel: 'The One Eye - Ein Diamant',
+  // KEIN `titel` MEHR, UND DAS IST DER GANZE AUFTRAG VOM 2026-09-17.
+  // Christian:
+  // „Das hier ‚The One Eye - Ein Diamant‘ oberhalb der Diamantfotos setzen
+  // und zu ‚The One Eye‘ machen." Die Überschrift titelt seither die beiden
+  // Bilder und wohnt bei ihnen: qi-master-diamantbilder.js,
+  // QIMASTER_DIAMANTBILDER_TITEL.
+  //
+  // WARUM SIE NICHT HIER BLEIBT UND VON DORT GELESEN WIRD: eine Überschrift
+  // gehört zu dem, was sie überschreibt. Bliebe der Text hier, stünde der
+  // Titel des Bildpaares in der Datei des Fliesstextes — und der nächste,
+  // der den Abschnitt umbaut, fände ihn dort und hielte ihn für dessen
+  // Überschrift.
+  //
+  // DER ABSCHNITT VERLIERT NUR SEINE ÜBERSCHRIFT, NICHT SEINEN TEXT: der
+  // Einstieg „Diamant ist reiner Kohlenstoff …" bleibt Wort für Wort, wo er
+  // ist (Auftrag: „Verschoben wird eine Zeile, kein Kapitel."). Gemessen von
+  // homepage-bauer/pruefungen/probe_one_eye_ueber_bildern.py.
   einstieg: [
     'Diamant ist reiner Kohlenstoff. Die Grundlage unseres Lebens. Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Skelett aus Kohlenstoffatomen. Hier nutzen wir Kohlenstoff in seiner edelsten Form.',
   ],

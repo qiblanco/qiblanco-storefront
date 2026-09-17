@@ -6,7 +6,10 @@ import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QI_MASTER} from '~/data/product-faqs';
 import {StudienCards} from './StudienCards';
 import {QIMASTER_SYMBOL_PFADE} from '~/lib/qi-master-symbole.generated';
-import {QIMASTER_DIAMANTBILDER} from '~/data/qi-master-diamantbilder';
+import {
+  QIMASTER_DIAMANTBILDER,
+  QIMASTER_DIAMANTBILDER_TITEL,
+} from '~/data/qi-master-diamantbilder';
 import {QIMASTER_GUETEZEICHEN} from '~/data/qi-master-guetezeichen';
 import {
   QIMASTER_DIAMANT,
@@ -142,9 +145,19 @@ export default function QiMaster({block = undefined}) {
  * schneidet, schneidet für alle. Gemessen wird die Nachbarschaft von
  * homepage-bauer/pruefungen/probe_infoslider_nachbarflaechen.py.
  *
- * WARUM KEINE ÜBERSCHRIFT: der Auftrag sagt „zwei Bilder, zwei Zeilen" und
- * nichts von einer Überschrift. Eine zu erfinden wäre neuer Inhalt, nicht der
- * bestellte Tausch.
+ * DIE ÜBERSCHRIFT „The One Eye" STEHT SEIT DEM 2026-09-17 HIER, und dieser
+ * Absatz sagte bis dahin das Gegenteil: „der Auftrag sagt ‚zwei Bilder, zwei
+ * Zeilen‘ und nichts von einer Überschrift; eine zu erfinden wäre neuer
+ * Inhalt". Das war richtig — für den Auftrag vom 2026-09-16. Christian hat am
+ * 2026-09-17 eine bestellt und gesagt, welche: die des Abschnitts darunter,
+ * ohne ihren Zusatz („The One Eye - Ein Diamant" -> „The One Eye"). Erfunden
+ * ist daran nichts; verschoben ist eine Zeile. Gemessen von
+ * homepage-bauer/pruefungen/probe_one_eye_ueber_bildern.py.
+ *
+ * SIE STEHT IN DIESER SEKTION UND NICHT ZWISCHEN DEN SEKTIONEN: eine
+ * Überschrift gehört an das, was sie überschreibt. Der Gütezeichen-Block
+ * darüber ist nicht gemeint — stünde er zwischen ihr und den Bildern, titelte
+ * sie ins Leere. Reihenfolge deshalb: Gütezeichen, „The One Eye", Bildpaar.
  *
  * WARUM DAS PAAR SCHMALER IST ALS DIE SEKTION: die Hülle trägt
  * `NormalSectionSize` und damit exakt die Breite und Mitte der Nachbar-
@@ -168,6 +181,7 @@ function DiamantBilder() {
       className="qm-diamantbilder NormalSectionSize"
       data-section="qm-diamantbilder"
     >
+      <h2>{QIMASTER_DIAMANTBILDER_TITEL}</h2>
       <div className="qm-diamantbilder__paar">
         {QIMASTER_DIAMANTBILDER.map((bild) => (
           <figure className="qm-diamantbild" key={bild.id}>
@@ -288,9 +302,13 @@ function MainFeatures() {
           so trägt der Kopf derselben Seite seine Fassung bereits. Korrigiert
           wurde nur Eindeutiges (Rechtschreibung, ® und ™), Ton und Aussage
           blieben unberührt. Das König-Zitat steht hier ohne Fußnote; seine
-          ausführliche Quelle trägt der Abschnitt „The One Eye - Ein Diamant“
-          weiter unten (app/data/qi-master-texte.js; bis zum 2026-09-17 hiess
-          er „Warum ein Diamant“) - die wird nie angetastet. */}
+          ausführliche Quelle trägt der Diamant-Abschnitt weiter unten
+          (app/data/qi-master-texte.js, QIMASTER_DIAMANT) - die wird nie
+          angetastet. Der Abschnitt wird hier bewusst NICHT mehr bei seiner
+          Überschrift genannt: er hiess „Warum ein Diamant", dann „The One Eye
+          - Ein Diamant", und seit dem 2026-09-17 trägt er gar keine mehr (sie
+          steht jetzt über dem Bildpaar). Ein Verweis auf eine Prosa-Zeile
+          altert mit ihr. */}
       <h2 className="text-center">Qi Master® - Eine bisher unerreichte Liga</h2>
       <div className="MainFeatures NormalSectionSize">
         <div className="MainFeaturesColumn">
@@ -359,7 +377,9 @@ function MainFeatures() {
  * KEIN <h2>: der Block hat keine Überschrift mehr, weil Christian sie
  * gestrichen hat. Eine erfundene Ersatz-Überschrift wäre genau der Text, den er
  * nicht wollte — und die Dokument-Gliederung der Seite trägt weiter über die
- * H2 der Abschnitte darunter.
+ * H2 der Abschnitte darunter. Die nächste davon ist seit dem 2026-09-17
+ * „The One Eye" über dem Bildpaar; sie folgt unmittelbar auf diesen Block und
+ * gehört den Bildern, nicht ihm.
  */
 function Guetezeichen() {
   return (
@@ -399,7 +419,15 @@ function DiamantAbschnitt() {
   return (
     <section className="qm-sektion" id="diamant" data-section="qm-diamant">
       <div className="qm-sektion__inner">
-        <h2>{t.titel}</h2>
+        {/* KEINE <h2> MEHR: sie steht seit dem 2026-09-17 über dem Bildpaar
+            direkt darüber (DiamantBilder, qi-master-diamantbilder.js). Der
+            Abschnitt hat seinen Text behalten und nur seinen Titel verloren -
+            Christians Auftrag war ein Umzug, keine Streichung.
+
+            DIE GLIEDERUNG BLEIBT HEIL: die h2 steht unmittelbar vor dieser
+            Sektion, die h3 darunter hängen weiter an ihr. Es entsteht keine
+            h3 ohne h2 darüber - nur eine, die eine Sektionsgrenze weiter oben
+            sitzt. */}
         {t.einstieg.map((abs) => (
           <p key={abs.slice(0, 40)}>{abs}</p>
         ))}
