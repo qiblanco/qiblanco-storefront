@@ -262,8 +262,11 @@ export const QIMASTER_PERSOENLICHKEIT = {
           'Ebd., Kapitel 26 („The Science of Kriya Yoga“). Eigene Übersetzung.',
       },
     ],
-    nachsatz:
-      'Das Bild ist einfach: Feinere Energie verlangt ein Gefäß, das sie tragen kann. Der Mensch bereitet sich vor – durch Übung, über Zeit –, damit er aufnehmen kann, was ihn sonst überfordern würde. Diese Vorbereitung ist bei Yogananda Yoga. Sie ist kein Schmuckstück, und wir machen sie nicht dazu.',
+    // KEIN NACHSATZ MEHR. Christian am 2026-09-17: der Deutungsabsatz unter den
+    // beiden Zitaten („Das Bild ist einfach: …“) fällt ersatzlos weg — sein
+    // letzter Satz nahm zurück, was der Abschnitt gerade aufgebaut hatte. Die
+    // Zitate stehen für sich, mit Quelle und Kapitel; die Deutung steht unten
+    // unter „Unsere Deutung“, wo sie hingehört.
   },
   fundament: {
     label: 'Gebaut und gemessen',

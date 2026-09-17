@@ -637,7 +637,6 @@ function PersoenlichkeitAbschnitt() {
               <span className="qm-quelle">{z.quelle}</span>
             </blockquote>
           ))}
-          <p>{t.ueberlieferung.nachsatz}</p>
         </div>
         <div className="qm-spalte">
           <span className="qm-label qm-label--beleg">{t.fundament.label}</span>
