@@ -546,12 +546,20 @@ function SechsGAbschnitt() {
         {t.absaetze.map((abs) => (
           <p key={abs.slice(0, 40)}>{abs}</p>
         ))}
-        <h3>{t.gemessen.titel}</h3>
-        <span className="qm-label qm-label--beleg">Gemessen</span>
-        {t.gemessen.absaetze.map((abs) => (
-          <p key={abs.slice(0, 40)}>{abs}</p>
-        ))}
-        <span className="qm-quelle">{t.gemessen.quelle}</span>
+        {/* Das Quellenverzeichnis. KEIN eigenes CSS und kein Kasten: .qm-quellen
+            steht seit dem Diamant-Abschnitt in qi-master.css und trägt genau
+            die Optik des Literaturbereichs — --qm-fs-xs, --qm-muted, Hängeeinzug
+            für die Ziffer. Christians Vorgabe war ausdrücklich optisch, deshalb
+            wird die Größe geerbt und nicht nachgebaut.
+
+            <ol> wäre hier falsch: die Ziffern stehen als [1]..[9] IM Text, weil
+            sie dieselben Marken sind wie oben in den Absätzen. Eine
+            Browser-Nummerierung liefe daneben, sobald ein Eintrag wegfällt. */}
+        <ul className="qm-quellen">
+          {t.quellen.map((q) => (
+            <li key={q.slice(0, 3)}>{q}</li>
+          ))}
+        </ul>
       </div>
     </section>
   );
