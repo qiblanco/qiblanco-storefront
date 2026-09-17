@@ -6,7 +6,7 @@
    WAS DIESE DATEI IST: die route-gebundene Token-Schicht der QiMaster-
    Produktseite. Die Seite ist ANALOG zur organischen QiOne-2-Pro-PDP gebaut —
    dieselben Bausteine (QiOneBuyBox, InfoSlider, StudienCards,
-   Gitterchip-Sektion, HeroBannerParallax, CallToAction, UpsellLineUp,
+   HeroBannerParallax, CallToAction, UpsellLineUp,
    ProductFAQ), dieselben Sektionsklassen aus app.css (.NormalSectionSize,
    .MainFeatures, .RisikofreiErleben,
    .MassgeschneiderteTechnologie). Diese Datei ERFINDET keine Bausteine; sie
@@ -110,8 +110,7 @@
 
 .ProductPageQiMaster .MainFeatures { margin: var(--qm-s4) auto; gap: var(--qm-s3); }
 .ProductPageQiMaster .RisikofreiErleben,
-.ProductPageQiMaster .MassgeschneiderteTechnologie,
-.ProductPageQiMaster .Gitterchip { margin: var(--qm-s12) auto; }
+.ProductPageQiMaster .MassgeschneiderteTechnologie { margin: var(--qm-s12) auto; }
 .ProductPageQiMaster .MassgeschneidertWrapper { margin-top: var(--qm-s4); }
 .ProductPageQiMaster .mt-1 { margin-top: var(--qm-s2) !important; }
 .ProductPageQiMaster .mt-2 { margin-top: var(--qm-s3) !important; }
@@ -122,8 +121,7 @@
   .ProductPageQiMaster > .MainFeaturesWrapper,
   .ProductPageQiMaster > .qm-sektion,
   .ProductPageQiMaster .RisikofreiErleben,
-  .ProductPageQiMaster .MassgeschneiderteTechnologie,
-  .ProductPageQiMaster .Gitterchip {
+  .ProductPageQiMaster .MassgeschneiderteTechnologie {
     margin-top: var(--qm-s8);
     margin-bottom: var(--qm-s8);
   }
@@ -556,7 +554,6 @@
 
 /* ─── Bild-Radius: EIN Token fuer alle Bilder der Seite ──────────────────── */
 .ProductPageQiMaster img,
-.ProductPageQiMaster .Gitterchip .GitterchipImageWrapper img,
 .qm-pdp .product-image img,
 .qm-pdp .thumb-image { border-radius: var(--qm-r2); }
 .qm-pdp .btn--primary,

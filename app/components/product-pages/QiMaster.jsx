@@ -24,7 +24,7 @@ import {
  *
  * BAUFORM: derselbe Aufbau wie product-pages/QiOne2Pro.jsx —
  * Investment-Block, Main Features, Google-Rezensionen, 20-Tage-
- * Block, Gitterchip, Parallax-Hero, Studien, Technologie/Fertigung, Upsell,
+ * Block, Parallax-Hero, Studien, Technologie/Fertigung, Upsell,
  * FAQ — dieselben Sektionsklassen aus app.css, damit Abstaende und Bausteine
  * mit der QiOne-2-Pro-Seite identisch bleiben. NEU sind allein die drei
  * Inhalts-Bausteine des QiMaster (Diamant, 6G, Persoenlichkeitsentwicklung);
@@ -32,6 +32,17 @@ import {
  * ihre Quelle trägt und der Text ohne Markup pruefbar bleibt.
  *
  * WAS BEWUSST FEHLT (jede Auslassung eine Entscheidung, kein Vergessen):
+ *  - Der Gitterchip-Abschnitt ("Der Gitterchip™ im Qi Master®", "Ohne
+ *    Elektronik", "Für jeden Einsatzort") samt der Chip-Aufnahme aus dem
+ *    QiOne® 2 Pro: ersatzlos gestrichen (Christian 2026-09-17, Auftrag
+ *    20260917-gitterchip-block-samt-bild-ersatzlos-streichen, "inklusive
+ *    Bild"). NICHT NEU BAUEN. Die Angaben leben weiter, nur woanders:
+ *    Beständigkeit gegen Sauna/Chlor/Salzwasser/Schweiß steht in der
+ *    Fragenliste (app/data/product-faqs.js), die 750er Goldlegierung samt
+ *    "ohne Elektronik" im Abschnitt "Das technische Fundament". EINE Angabe
+ *    ist mit dem Block wirklich weg: "keine Batterie". Sie wurde bewusst
+ *    NICHT woandershin gerettet — das entscheidet Christian, nicht der Bau.
+ *    Gemessen: pruefungen/probe_gitterchip_block_gestrichen.py.
  *  - Ratenzahlungs-Bausteine (RatenzahlungHerobanner, „0 % Finanzierung",
  *    Klarna/PayPal-Raten): die Ratenangebote der Zahlungsdienste sind
  *    betragsgedeckelt (PayPal-Ratenzahlung bis 5.000 EUR); für 10.639 EUR
@@ -72,7 +83,6 @@ export default function QiMaster({block = undefined}) {
       <DiamantAbschnitt />
       <SechsGAbschnitt />
       <PersoenlichkeitAbschnitt />
-      <GitterchipQiMaster />
       <HeroBannerParallax
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
@@ -662,37 +672,6 @@ function PersoenlichkeitAbschnitt() {
         </div>
       </div>
     </section>
-  );
-}
-
-function GitterchipQiMaster() {
-  return (
-    <div className="Gitterchip NormalSectionSize">
-      <h2 className="text-center">Der Gitterchip™ im Qi Master®</h2>
-      <div className="GitterchipImageWrapper mt-2">
-        <img
-          width={300}
-          src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861"
-          alt="Gitterchip™ – Aufnahme aus dem QiOne® 2 Pro"
-        />
-      </div>
-      <div className="mb-3 mt-2 text-center">
-        <small><strong>Der Gitterchip™ – Aufnahme aus dem QiOne® 2 Pro; der Qi Master® trägt denselben Chip.</strong></small>
-      </div>
-      <h3>Ohne Elektronik</h3>
-      <p>
-        Der Gitterchip™ enthält keine elektronischen Bauteile und keine
-        Batterie. Maßgeblich ist die Anordnung der Goldatome in einer
-        maßgeschneiderten 750er Goldlegierung – sie erzeugt ein statisches Feld,
-        das Wassermoleküle in seiner Umgebung prägt.
-      </p>
-      <h3 className="mt-3">Für jeden Einsatzort</h3>
-      <p>
-        Sauna, Meer, Schwimmbad, Sport: Der Gitterchip™ ist beständig gegen
-        Hitze, Chlor, Salzwasser und Schweiß. Ein Stück, das du nicht ablegen
-        musst.
-      </p>
-    </div>
   );
 }
 
