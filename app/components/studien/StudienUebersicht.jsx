@@ -618,8 +618,7 @@ export const EVIDENZSTUFE_FRAGEN = [
       'Alle fünf Arbeiten hat Prof. Dr. Peter C. Dartsch am Dartsch ' +
       'Scientific Institut durchgeführt — ein einzelnes Labor, ein einzelner ' +
       'Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
-      'Untersuchungen finanziert; das steht auch in den Publikationen. Eine ' +
-      'unabhängige Wiederholung durch ein zweites Labor steht aus.',
+      'Untersuchungen finanziert; das steht auch in den Publikationen.',
   },
 ];
 
