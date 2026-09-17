@@ -15,10 +15,11 @@ import {StudienSlider} from '~/components/reusables/StudienSlider';
  * Registry alle 14 Konsumenten dieser Komponente, ohne dass eine einzige
  * Konsumenten-Datei angefasst werden muss.
  *
- * WAS BEWUSST ERHALTEN BLEIBT (steckt jetzt im Slider):
- *   - die Schlusszeile "Wissenschaftlich getestet und in internationalen
- *     Fachpublikationen bestaetigt."
+ * WAS BEWUSST ERHALTEN BLIEB (steckt seitdem im Slider):
  *   - der Button "Zelluntersuchungen ansehen" -> /pages/studien
+ *   - die fette Schlusszeile "Wissenschaftlich getestet und in internationalen
+ *     Fachpublikationen bestaetigt." wurde beim Umzug mitgenommen und ist seit
+ *     2026-09-17 ersatzlos gestrichen (Begruendung im Slider selbst).
  *
  * `data-section` bleibt AUF DIESEM aeusseren Element, exakt dort, wo es vorher
  * stand — der Watch-/Heatmap-Anker von HomepageSections (`dataSection="studien"`)

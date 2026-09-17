@@ -215,9 +215,16 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
           →
         </button>
       </div>
-      <p className="ghx-studien__footnote">
-        <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
-      </p>
+      {/*
+        Bis 2026-09-17 stand hier eine fette Schlusszeile: "Wissenschaftlich
+        getestet und in internationalen Fachpublikationen bestätigt." Sie ist
+        ersatzlos gestrichen (Grossjob 20260914-studien-h1-..., Segment s03):
+        die fünf Kacheln nennen je Studie bereits Gegenstand und Journal, die
+        Überschrift trägt die Aussage, der Knopf nennt die Evidenzstufe. Der
+        Rest der Zeile war "bestätigt", und genau das Wort führt /pages/kritik
+        als Bauverbot — eine Publikation bestätigt nichts. Kein Ersatzsatz:
+        der stünde auf neun Seiten direkt unter einer H2, die dasselbe sagt.
+      */}
       <Link prefetch="intent" to="/pages/studien" className="btn--secondary m-center">
         Zelluntersuchungen ansehen
       </Link>
