@@ -146,18 +146,30 @@ export const QIMASTER_DIAMANT = {
         'Fritz-Albert Popp: Biophotonen – Neue Horizonte in der Medizin. 3. Auflage, Haug, 2006, S. 51–54 und 229. Gerald H. Pollack: The Fourth Phase of Water. Ebner & Sons, 2013, Kap. 6. Anqi Wang, Gerald H. Pollack: Effect of infrared radiation on interfacial water at hydrophilic surfaces. Colloid and Interface Science Communications 42, 2021.',
     },
   ],
-  deutung: [
-    'Was keiner dieser Autoren schreibt – und was deshalb allein auf unsere Rechnung geht: dass ein geschliffener Diamant in einem Schmuckstück am Körper Frequenzen erzeugt, die dem Schwingungsbereich menschlicher Zellen näher liegen. König hat mit ungeschliffenen Rohdiamanten gearbeitet, nicht mit Schmucksteinen. Del Giudice und Popp haben über Diamanten am Körper nie geschrieben, Pollack nicht über Diamanten. Die Verbindung zwischen ihren Befunden ist unsere Deutung.',
-    'Sie lautet: Ein Diamant ist Kohlenstoff, unsere Zellen sind Kohlenstoff, und was der Diamant an Licht ordnet, liegt näher an dem, was Kohlenstoff im Körper aufnehmen kann, als alles andere, was wir in einen Anhänger fassen könnten. So haben wir den Qi Master® gebaut: einen Diamanten, der Licht ordnet, neben einem Gitterchip™, der Wasser ordnet. Ob beides einander verstärkt, haben wir nicht gemessen. Wenn wir es messen, steht es hier.',
-  ],
-  quellen: [
-    'Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 144–145, 168–175.',
-    'Emilio Del Giudice, Vladimir Voeikov, Alberto Tedeschi, Giuseppe Vitiello: The origin and the special role of coherent water in living systems. In: Daniel Fels, Michal Cifra, Felix Scholkmann (Hg.): Fields of the Cell. Research Signpost, 2015, S. 95–110.',
-    'Giuliano Preparata: QED Coherence in Matter. World Scientific, 1995.',
-    'Fritz-Albert Popp: Biophotonen – Neue Horizonte in der Medizin. Von den Grundlagen zur Biophotonik. 3. Auflage, Karl F. Haug, 2006.',
-    'Gerald H. Pollack: The Fourth Phase of Water. Beyond Solid, Liquid, and Vapor. Ebner & Sons, 2013.',
-    'Anqi Wang, Gerald H. Pollack: Effect of infrared radiation on interfacial water at hydrophilic surfaces. Colloid and Interface Science Communications 42, 2021, 100397.',
-    'Ulrich Warnke: Bionisches Wasser. Arkana, 2019.',
+  /* DER SCHLUSS DES ABSCHNITTS — Christian am 2026-09-17.
+     Hier standen zwei Absaetze „Unsere Deutung" und darunter ein
+     siebenzeiliger Quellenblock. Beide sind weg, ersetzt durch drei Zeilen.
+
+     WAS BLEIBT, IST DER GEDANKE, NUR OHNE DIE EINSCHRAENKUNGEN: der zweite
+     Absatz endete auf „einen Diamanten, der Licht ordnet, neben einem
+     Gitterchip™, der Wasser ordnet" — genau das sagen die drei Zeilen,
+     behauptet statt relativiert. Gestrichen ist die Rechtfertigung darum
+     herum („allein auf unsere Rechnung", „haben wir nicht gemessen").
+
+     DER QUELLENBLOCK WAR EINE WIEDERHOLUNG, KEIN ALLEINBELEG. Jede seiner
+     sieben Quellen steht weiterhin oben bei der Aussage, die sie trägt —
+     nachgezaehlt am 2026-09-17 am ausgelieferten Rumpf. Zwei seiner
+     Zeichenfolgen („Arkana, 2019", „World Scientific, 1995") standen
+     doppelt auf der Seite; sie fallen deshalb von zwei auf EINS, nicht auf
+     null. Die Probe misst genau das, statt auf Abwesenheit zu prüfen.
+
+     DIE DREI ZEILEN SIND DATEN UND KEIN MARKUP: Ausrichtung und Groesse
+     stehen in qi-master.css (.qm-schluss), die Groesse kommt aus dem
+     gemeinsamen Token --qm-fs-guete, das auch die Guetezeilen tragen. */
+  schluss: [
+    'Qi Master®',
+    'The One Eye - ordnet Licht',
+    'Gitterchip™ - ordnet Wasser',
   ],
 };
 

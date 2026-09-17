@@ -511,17 +511,26 @@ function DiamantAbschnitt() {
             ) : null}
           </div>
         ))}
-        <div className="qm-deutung">
-          <span className="qm-label">Unsere Deutung</span>
-          {t.deutung.map((abs) => (
-            <p key={abs.slice(0, 40)}>{abs}</p>
+        {/* Der Schluss des Abschnitts — Christian am 2026-09-17: drei Zeilen
+            Aussage statt zwei Absaetzen „Unsere Deutung" und dem
+            siebenzeiligen Quellenblock, der hier stand.
+
+            DIE UEBERSCHRIFT „Unsere Deutung" FAELLT MIT WEG, aber nur DIESE:
+            der Abschnitt „Persoenlichkeitsentwicklung" trägt eine zweite
+            gleichen Namens, und die bleibt, solange Christian nichts anderes
+            sagt. Deshalb steht hier ein eigener Block und kein geaenderter
+            qm-deutung — .qm-deutung wird von der anderen Stelle weiter
+            gebraucht.
+
+            Ausrichtung und Groesse kommen aus qi-master.css (.qm-schluss);
+            die Groesse teilt sich das Token --qm-fs-guete mit den drei
+            Guetezeilen, damit beide Bloecke auch dann gleich bleiben, wenn
+            einer spaeter geaendert wird. */}
+        <div className="qm-schluss">
+          {t.schluss.map((zeile) => (
+            <p key={zeile}>{zeile}</p>
           ))}
         </div>
-        <ul className="qm-quellen">
-          {t.quellen.map((q) => (
-            <li key={q.slice(0, 40)}>{q}</li>
-          ))}
-        </ul>
       </div>
     </section>
   );
