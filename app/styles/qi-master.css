@@ -1007,3 +1007,42 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visibl
     gap: var(--qm-s3);
   }
 }
+
+/* ── Illustrationen der Literaturblöcke ────────────────────────────────────
+   Christian am 2026-09-17: „Gleiche Größe und gleicher Zuschnitt für alle
+   vier. Vier Bilder verschiedener Größe erzählen eine Gewichtung, die nicht
+   gemeint ist."
+
+   DIE GLEICHHEIT WIRD HIER ERZWUNGEN, NICHT VON DEN DATEIEN ERHOFFT: feste
+   Breite, `aspect-ratio: 1`, derselbe `max-width`. Die vier Quelldateien
+   sind zwar alle 1024×1024 — aber eine Gleichheit, die an der Zulieferung
+   hängt, bricht beim ersten ausgetauschten Bild, und zwar leise. So bricht
+   sie gar nicht.
+
+   `object-fit: contain` UND NICHT `cover` — hier ist der Unterschied zum
+   Bildpaar darüber (`.qm-diamantbild__bild`, Z. 973). Dort füllt ein Stein
+   das Quadrat, und ein Beschnitt kostet nichts. Diese vier sind Zeichnungen
+   mit weitem Rand um das Motiv; `cover` schnitte bei einem Rahmen, der nicht
+   exakt quadratisch aufgeht, genau diesen Rand weg und damit das Auslaufen
+   der Wellen und den Lichtsaum um die Zelle — also das, was das Bild sagt.
+   Bei 1:1-Quellen in einem 1:1-Rahmen tun beide heute dasselbe; `contain`
+   ist die Fassung, die es auch beim nächsten Bild noch tut.
+
+   SCHMALER ALS DER TEXT, UND DAS IST ABSICHT: der Block ist Fließtext mit
+   Zitat und Quelle, das Bild ist die Beigabe. Auf voller Textbreite würde es
+   den Abschnitt beherrschen, den es illustrieren soll. */
+.qm-literaturbild {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  margin: var(--qm-s3) auto 0;
+}
+@media (max-width: 767px) {
+  .qm-literaturbild {
+    max-width: 100%;
+    margin-top: var(--qm-s2);
+  }
+}
