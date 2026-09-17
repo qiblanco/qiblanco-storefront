@@ -19,7 +19,7 @@ import {StudienSlider} from '~/components/reusables/StudienSlider';
  *   - der Button "Zelluntersuchungen ansehen" -> /pages/studien
  *   - die fette Schlusszeile "Wissenschaftlich getestet und in internationalen
  *     Fachpublikationen bestaetigt." wurde beim Umzug mitgenommen und ist seit
- *     2026-09-17 ersatzlos gestrichen (Begruendung im Slider selbst).
+ *     2026-09-17 ersatzlos gestrichen (Begründung im Slider selbst).
  *
  * `data-section` bleibt AUF DIESEM aeusseren Element, exakt dort, wo es vorher
  * stand — der Watch-/Heatmap-Anker von HomepageSections (`dataSection="studien"`)
