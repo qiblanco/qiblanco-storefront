@@ -16,8 +16,14 @@
  * „Roh Diamant" und „Hochreiner Diamant in Brilljant Schliff"; korrigiert ist
  * allein die Rechtschreibung (stehende Erlaubnis vom 2026-09-16). „Rohdiamant"
  * ist dabei keine Erfindung, sondern die Schreibweise, die dieselbe Seite
- * bereits trägt (qi-master-texte.js, Abschnitt „The One Eye - Ein Diamant";
- * bis zum 2026-09-17 hiess er „Warum ein Diamant").
+ * bereits trägt — im Diamant-Abschnitt direkt unter diesem Bildpaar
+ * (qi-master-texte.js, QIMASTER_DIAMANT).
+ *
+ * WARUM HIER KEIN ABSCHNITTS-NAME MEHR STEHT: bis zum 2026-09-17 nannte diese
+ * Zeile ihn beim Titel, erst „Warum ein Diamant", dann „The One Eye - Ein
+ * Diamant". Zweimal in zwei Tagen hat Christian ihn umbenannt, und jedes Mal
+ * wurde dieser Kommentar dabei falsch. Ein Verweis auf eine Prosa-Überschrift
+ * altert mit ihr; der Verweis auf das Datenmodul tut es nicht.
  *
  * HERKUNFT IST DOKUMENTIERT, NICHT AUSGESTELLT — und das ist seit dem
  * 2026-09-17 eine Korrektur, keine Nachlässigkeit. Sie steht in `herkunft` je
@@ -64,6 +70,36 @@
  * Skript dazu liegt beim Auftrag (bildaufbereitung.py) und ist Teil der
  * Herkunft, nicht ein stiller Nachgriff.
  */
+
+/**
+ * Die Überschrift ÜBER dem Bildpaar — Christian am 2026-09-17: „Das hier ‚The
+ * One Eye - Ein Diamant‘ oberhalb der Diamantfotos setzen und zu ‚The One Eye‘
+ * machen." (Auftrag vom 2026-09-17; gemessen von
+ * homepage-bauer/pruefungen/probe_one_eye_ueber_bildern.py).
+ *
+ * ZWEI ÄNDERUNGEN IN EINER: der Zusatz „- Ein Diamant" fällt weg, und die
+ * Überschrift wechselt ihren Platz. Sie stand bis dahin über dem Diamant-
+ * Abschnitt UNTER den Bildern (qi-master-texte.js, QIMASTER_DIAMANT.titel);
+ * dieser Abschnitt behält seinen Text und verliert nur seinen Titel.
+ *
+ * WARUM SIE HIER WOHNT UND NICHT IN qi-master-texte.js: sie überschreibt die
+ * beiden Bilder, also steht sie bei den beiden Bildern. Dieselbe Trennung,
+ * die diese Datei ohnehin trägt.
+ *
+ * KEIN EIGENER CSS-HAKEN, UND DAS IST ABSICHT: `.ProductPageQiMaster h2`
+ * (app/styles/qi-master.css) ist der EINE H2-Stil dieser Seite — mittig,
+ * `--qm-fs-h2`, schmales Maß. Eine eigene Klasse hier hieße, denselben Stil
+ * ein zweites Mal zu führen; beim nächsten Wechsel des Haus-H2 zöge genau
+ * diese eine Überschrift nicht mit.
+ *
+ * DIE SEITE TRÄGT „The One Eye" DANACH AN ZWEI STELLEN, und beide sind
+ * gewollt: hier als Titel des Bildpaares, und im Kopfblock als
+ * '"The One Eye" - Hochreiner Natur Diamant' (Christians Fassung vom
+ * 2026-09-16, MainFeatures). Wer die Überschrift prüfen will, misst deshalb
+ * die h2 DIESER Sektion, nie ein Vorkommen irgendwo auf der Seite — ein
+ * seitenweiter Treffer ist grün, bevor jemand etwas gebaut hat.
+ */
+export const QIMASTER_DIAMANTBILDER_TITEL = 'The One Eye';
 
 export const QIMASTER_DIAMANTBILDER = [
   {
