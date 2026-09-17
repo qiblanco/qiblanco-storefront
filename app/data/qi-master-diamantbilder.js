@@ -18,12 +18,23 @@
  * ist dabei keine Erfindung, sondern die Schreibweise, die dieselbe Seite
  * bereits trägt (qi-master-texte.js, Abschnitt „Warum ein Diamant").
  *
- * HERKUNFT IST PFLICHT UND STEHT AM KUNDENRAND (Erfüllungskriterium des
- * Auftrags: „Zu jedem Bild ist die Herkunft geschrieben. Fehlt sie, ist die
- * Probe rot."). Sie wandert deshalb in ein `data-herkunft` an JEDEM <img> UND
- * in eine sichtbare Zeile unter dem Paar — ein Eintrag, den nur diese Datei
- * kennt, wäre die Quelle, aber kein Beleg: er kann dastehen, während die Seite
- * ihn nie ausliefert.
+ * HERKUNFT IST DOKUMENTIERT, NICHT AUSGESTELLT — und das ist seit dem
+ * 2026-09-17 eine Korrektur, keine Nachlässigkeit. Sie steht in `herkunft` je
+ * Bild und in einem `data-herkunft` an JEDEM <img>, also dort, wo ein Prüfer
+ * sie findet. Die SICHTBARE Zeile unter dem Paar ist weg.
+ *
+ * WARUM SIE WEG IST, in Christians Worten: „Ich hatte eine Herkunftsangabe
+ * verlangt; daraus ist ein Satz geworden, der dem Kunden erklärt, was er NICHT
+ * sieht." Der Satz lautete „Beide Bilder sind erzeugte Illustrationen vom
+ * 16. September 2026 und zeigen nicht den Stein des Qi Master®." — eine
+ * Distanzformel, die den Leser vom Bild wegführt, statt ihm etwas zu geben.
+ * GL-SPR-0007 und GL-SPR-0008.
+ *
+ * WAS DAS ATTRIBUT VON DER ZEILE UNTERSCHEIDET: das Attribut stellt nichts
+ * aus. Es beantwortet die Frage eines Prüfers, der sie stellt; die Zeile
+ * beantwortete sie einem Kunden, der sie nie gestellt hat. Gestrichen ist
+ * deshalb genau die Zeile — `data-herkunft` bleibt, und mit ihm der Arm
+ * `herkunft` in pruefungen/probe_diamantbilder_statt_slider.py.
  *
  * WAS DIE BILDER SIND UND WAS NICHT: erzeugte Illustrationen, keine
  * Produktfotos. Christian hat genau diesen Weg gewählt („erzeugtes Bild —
@@ -83,12 +94,3 @@ export const QIMASTER_DIAMANTBILDER = [
     hoehe: 1024,
   },
 ];
-
-/**
- * Die sichtbare Herkunfts-Zeile unter dem Paar. Ein Satz, ein Gedanke, Antwort
- * zuerst (Hausstimme). Sie sagt dem Kunden zwei Dinge, die er sonst nicht
- * wissen kann: dass die Bilder erzeugt sind, und dass sie nicht sein Stück
- * zeigen.
- */
-export const QIMASTER_DIAMANTBILDER_HERKUNFT =
-  'Beide Bilder sind erzeugte Illustrationen vom 16. September 2026 und zeigen nicht den Stein des Qi Master®.';

@@ -255,18 +255,62 @@
    Mitte seines Kastens — also sichtbar links. Die vier Zeilen spannen deshalb
    die volle Blockbreite und zentrieren darin; der Deckel bleibt fuer jeden
    anderen Absatz der Seite unangetastet. */
-.ProductPageQiMaster .qm-garantie { text-align: center; }
-.ProductPageQiMaster .qm-garantie__zeile {
-  max-width: none;
-  margin-left: auto;
-  margin-right: auto;
+/* ─── Guetezeichen ueber den Diamantbildern (Guetezeichen in QiMaster.jsx) ──
+   Christian am 2026-09-17: „Optisch groesser machen — also 3 zentrale
+   Qualitaetselemente, wieder goldene Gimmicks dazu entwerfen. Und oberhalb der
+   Diamantenbilder anbringen."
+
+   DIE SCHRIFTGROESSE IST DIE ANWEISUNG, nicht Geschmack. Der Vorgaengerblock
+   (.qm-garantie__zeile) rechnete live am 2026-09-17 auf 16.0 px — dieselbe
+   Groesse wie jeder Absatz der Seite. Er war damit optisch eine Fusszeile. Die
+   clamp() hier beginnt bei 20 px und endet bei 25 px, liegt also an JEDER
+   Fensterbreite ueber dem gemessenen Ausgangswert. Das ist der Wert, den
+   pruefungen/probe_gueteblock.py am gerenderten DOM nachmisst; wer die Zahl
+   hier senkt, roetet sie.
+
+   DIE FARBE DER SYMBOLE STEHT HIER UND NICHT IN DER ZEICHNUNG. Die Pfade
+   tragen `stroke="currentColor"` und keinen eigenen Farbwert —
+   `--color-accent-primary` ist derselbe Wert, den `.BenefitList svg` und
+   `.qm-kopfsymbol` ziehen, also dasselbe Gold. Wechselt das Haus seinen
+   Akzent, wechseln die drei Zeichen mit; ein Hexwert in der Zeichnung waere ab
+   diesem Tag falsch, und es fiele niemandem auf.
+
+   WARUM flex-start UND NICHT center AN DER ZEILE: „100% Zufriedenheits-
+   garantie." bricht auf dem Telefon um. Bei zentrierter Ausrichtung rutscht
+   das Symbol dann auf die Mitte des ZWEIZEILIGEN Blocks; so bleibt es auf
+   Hoehe der ersten Zeile stehen.
+
+   WARUM DIE LISTE AUF DEM SCHREIBTISCH EINE REIHE IST UND AUF DEM TELEFON EINE
+   SPALTE: drei Zusagen nebeneinander lesen sich als ein Siegel, drei
+   untereinander als eine Aufzaehlung. Auf 360 px passt die Reihe nicht, ohne
+   dass jede Zeile dreifach bricht — dort ist die Spalte die ehrlichere Form.
+   `flex-wrap` macht den Uebergang von selbst, ohne zweite Bruchstelle. */
+.ProductPageQiMaster .qm-guete { text-align: left; }
+.ProductPageQiMaster .qm-guete__liste {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--qm-s2) var(--qm-s4);
+  margin: 0;
+  padding: 0;
 }
-/* Die drei Zusagen lesen sich als ein Zug unter der Ueberschrift, nicht als
-   drei Absaetze — der Abstand der Ueberschrift nach unten bleibt der der
-   Seite (h2-Regel oben, --qm-s3). */
-.ProductPageQiMaster p.qm-garantie__zeile { margin-top: 0; margin-bottom: 0; }
-.ProductPageQiMaster p.qm-garantie__zeile + p.qm-garantie__zeile {
-  margin-top: var(--qm-s1);
+.ProductPageQiMaster .qm-guete__punkt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  margin: 0;
+  font-size: clamp(1.25rem, 1rem + 1.1vw, 1.5625rem);
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--qm-dunkel);
+}
+.ProductPageQiMaster .qm-guete__symbol {
+  flex: 0 0 auto;
+  width: 1.3em;
+  height: 1.3em;
+  color: var(--color-accent-primary);
 }
 .ProductPageQiMaster small { font-size: var(--qm-fs-xs); }
 .ProductPageQiMaster ul,

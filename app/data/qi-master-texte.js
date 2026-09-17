@@ -43,7 +43,6 @@ export const QIMASTER_DIAMANT = {
   titel: 'Warum ein Diamant',
   einstieg: [
     'Ein Diamant ist reiner Kohlenstoff – nichts anderes. Und Kohlenstoff ist das Element, auf dem alles Leben aufbaut, das wir kennen: Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Gerüst aus Kohlenstoffatomen. Das ist der Gedanke, mit dem der Diamant in den Qi Master® gekommen ist.',
-    'Was daran in der Literatur steht, was gemessen ist und was unsere Deutung bleibt, trennen wir hier auf – Satz für Satz. Nicht, weil der Gedanke schwach wäre, sondern weil er so stärker ist.',
   ],
   befunde: [
     {
