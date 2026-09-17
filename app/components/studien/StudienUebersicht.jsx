@@ -581,11 +581,16 @@ export const EVIDENZSTUFE_ECKDATEN = [
   },
   {
     label: 'Finanzierung',
+    // Die Selbstnote zur ausstehenden Wiederholung steht hier NICHT, und das ist
+    // eine menschliche Entscheidung, kein Versehen: Christian liess sie am
+    // 2026-08-15 ersatzlos streichen (Auftrag studien-selbstkritik-streichung-w33,
+    // PR #214 da1058b). PR #385 brachte sie am 2026-09-12 maschinell und ohne
+    // Auftrag zurück, in einer umformulierten Fassung, die den Substring-Vergleich
+    // der Wache nicht auslöste. Wer sie wieder aufnehmen will, braucht dafür den
+    // jüngeren Auftrag eines Menschen. Die zwei PRÜFBAREN Angaben bleiben.
     text:
       'Die untersuchten Geräte wurden von Qi Blanco zur Verfügung gestellt, ' +
-      'die Untersuchungen von Qi Blanco finanziert. Eine unabhängige ' +
-      'Wiederholung durch ein zweites, nicht von Qi Blanco bezahltes Labor ' +
-      'steht aus.',
+      'die Untersuchungen von Qi Blanco finanziert.',
   },
   {
     label: 'Wo die Messung endet',
