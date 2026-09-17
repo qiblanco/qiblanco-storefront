@@ -269,3 +269,50 @@ body > main .HeroBannerAlt {
 body > main img:not(.google-rating-badge__logo) {
   border-radius: var(--pdpqi-bild-radius) !important;
 }
+
+/* --- 7. DER KAUFWEG-CTA IM HEROBANNER IST TREFFERBAR ---------------------
+   Job 20260917-drei-kaufknoepfe-tot-und-gate12-nimmt-den-einzeiler-in-
+   geiselhaft. Live gemessen am 2026-09-17 (pruefungen/probe_cta_klickbar.py,
+   exit 1): der sichtbare Kaufknopf dieser beiden Seiten liess sich nicht
+   druecken. Der Treffertest am Mittelpunkt des Links landete auf
+   DIV.ProductPageQiBracelet bzw. DIV.ProductPageQiOne, nie auf dem Link.
+
+   URSACHE: `.HeroBanner` traegt in app.css `z-index: -1` (Agentur-
+   Sammelcommit d2559eb vom 2026-03-31, keine gezielte Entscheidung). Ein
+   POSITIONIERTES Element mit NEGATIVEM z-index wird hinter dem Elternknoten
+   gezeichnet — das ganze Banner samt Kaufknopf lag hinter dem Wrapper.
+
+   DAS IST DER TEUERSTE ZUSTAND EINER VERKAUFSSEITE: er sieht in jedem
+   Screenshot, jedem Pixel-Vergleich und jeder Sichtbarkeits-Pruefung heil
+   aus. Der Kunde klickt, nichts passiert, und er haelt es fuer seine eigene
+   Schuld. Sichtbarkeit und Klickbarkeit sind zwei Groessen: im ausgelieferten
+   HTML war alles in Ordnung, probe_tote_sprungziele war zur selben Zeit gruen.
+
+   WARUM HIER UND NICHT IN app.css — GEMESSEN, NICHT VERMUTET. Der richtige
+   Ort ist app.css, und der Fix dafuer ist gebaut und korrekt (Commit 5a74054
+   auf feat/cta-herobanner-klickbar-20260916, PR #472: eine Zeile -1 -> 0).
+   Er kommt seit dem 2026-09-16 nicht durch hb-deploy Gate 12, und zwar aus
+   einem Grund, der vollstaendig ausserhalb des Diffs liegt: app.css loest
+   ueber die Reichweiten-Achse auf acht FREMDE Seiten auf (crystal-cacao,
+   e-smog, partner, qibracelet-details, qihome-details, qione-2-pro-details,
+   schlaf-zellen-schutz, superhuman), die offene `bild-aufloesung=kaputt`-
+   Befunde tragen. Nachgemessen am 2026-09-17 gegen origin/main d69f87a:
+   8 BLOCK, rc 10. Die Schuld ist echt und nicht abgelaufen.
+
+   DIESE REGEL WARTET NICHT DARAUF. Sie hebt die Schichtung fuer GENAU DIESE
+   ZWEI KAUFSEITEN — pdp-qi.css wird ausschliesslich von
+   app/routes/products.qibracelet.jsx und app/routes/products.qione-2-pro.jsx
+   importiert — und aendert an keiner anderen Seite etwas. Spezifitaet 0-2-0
+   gegen 0-1-0; z-index 0 UND NICHT ersatzlos, denn die 0 haelt den Stacking
+   Context aufrecht, den die -1 auch schon aufmachte. Die innere Schichtung
+   des Banners bleibt damit unveraendert.
+
+   DER PREIS IST BENANNT, ER IST KEINE HEILUNG: die Ursache steht weiter in
+   app.css und wirkt auf jede Seite mit einem .HeroBanner, die keinen eigenen
+   Ueberschreiber hat. Wird 5a74054 gemergt, wird diese Regel redundant —
+   nicht falsch: beide setzen denselben Wert. Dasselbe Muster steht seit dem
+   2026-09-17 in qi-master.css und in qihome-air.css. */
+.ProductPageQiBracelet .HeroBanner,
+.ProductPageQiOne .HeroBanner {
+  z-index: 0;
+}

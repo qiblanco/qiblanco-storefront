@@ -289,3 +289,37 @@ body:has(.ProductQiHomeAir) .footer-study__logo img {
 .ProductQiHomeAir .ghx-studien__wischhinweis {
   font-size: var(--qa-fs-klein);
 }
+
+/* DER KAUFWEG-CTA IM HEROBANNER IST TREFFERBAR
+   Job 20260917-drei-kaufknoepfe-tot-und-gate12-nimmt-den-einzeiler-in-
+   geiselhaft. Live gemessen am 2026-09-17 (pruefungen/probe_cta_klickbar.py,
+   exit 1): "Hol' dir jetzt dein QiHome(R) Air" war sichtbar und nicht
+   druckbar — der Treffertest am Mittelpunkt des Links landete auf
+   DIV.ProductPageQiHome.
+
+   URSACHE: `.HeroBanner` traegt in app.css `z-index: -1` (Agentur-
+   Sammelcommit d2559eb vom 2026-03-31). Ein positioniertes Element mit
+   negativem z-index wird hinter dem Elternknoten gezeichnet; das Banner samt
+   Kaufknopf lag hinter dem Wrapper. Sichtbar ist nicht klickbar — im
+   ausgelieferten HTML war alles in Ordnung.
+
+   WARUM HIER UND NICHT IN app.css: der sitewide Fix ist gebaut und korrekt
+   (5a74054, PR #472), haengt aber an hb-deploy Gate 12 — app.css loest ueber
+   die Reichweiten-Achse auf acht fremde Seiten mit offener
+   `bild-aufloesung`-Schuld auf (nachgemessen 2026-09-17 gegen origin/main
+   d69f87a: 8 BLOCK, rc 10). Die Herleitung in voller Laenge steht in
+   pdp-qi.css Abschnitt 7; sie wird hier nicht gedoppelt.
+
+   Diese Datei wird ausschliesslich von app/routes/products.qihome-air.jsx
+   importiert, die Regel wirkt also auf genau eine Seite. `.ProductPageQiHome`
+   ist der Wrapper aus components/product-pages/QiHome.jsx und ist ueber
+   pages.qihome.jsx auch anderswo im Markup — ohne DIESE Datei laedt dort
+   aber niemand diese Regel. Spezifitaet 0-2-0 gegen 0-1-0. z-index 0 und
+   nicht ersatzlos: die 0 haelt den Stacking Context aufrecht, den die -1
+   auch schon aufmachte.
+
+   OFFENE FLANKE, benannt: die Ursache steht weiter in app.css. Wird 5a74054
+   gemergt, wird diese Regel redundant — nicht falsch. */
+.ProductPageQiHome .HeroBanner {
+  z-index: 0;
+}
