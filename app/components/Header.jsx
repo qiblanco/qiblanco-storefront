@@ -1,6 +1,7 @@
 "use client"; // required for Hydrogen client components
 
 import {Suspense, useState, useEffect, useRef, useCallback} from 'react';
+import {CdnBild} from './reusables/CdnBild';
 import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
@@ -233,10 +234,15 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         }}
       >
         <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-          <img
+          <CdnBild
             className="NavLink-logo"
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_Logo_2020_Qi_Blanco-black.png?v=1637014505"
             alt="Qi Blanco Logo"
+            anzeigeBreite={150}
+            masterBreite={2048}
+            breite={2048}
+            hoehe={720}
+            loading="eager"
             style={{
               transition: 'filter 0.3s ease',
             }}
@@ -550,7 +556,10 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
           )}
           {hoverItem === "QiOne® 2 Pro" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiOne® 2 Pro im Alltag am Strand" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
+              <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={217} loading="lazy"
+                alt="QiOne® 2 Pro im Alltag am Strand"
+                anzeigeBreite={325} sizes="(min-width: 1000px) 325px, 80px"
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
               <div className="nav-styling-overlay">QiOne 2 Pro®</div>
             </div>
           )}
@@ -586,7 +595,10 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
 
       {item.title === "Mehr" && (
         <div className="nav-styling-wrapper">
-          <img style={{borderRadius: '20px'}} width={325} height={170} loading="lazy" alt="Qi Blanco in den Bergen bei Kitzbühel" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
+          <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={170} loading="lazy"
+                alt="Qi Blanco in den Bergen bei Kitzbühel"
+                anzeigeBreite={325} sizes="(min-width: 1000px) 325px, 80px"
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
         </div>
       )}
 

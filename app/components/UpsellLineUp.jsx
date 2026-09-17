@@ -1,3 +1,4 @@
+import {CdnBild} from './reusables/CdnBild';
 import {Link} from 'react-router';
 import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 import {ChevronRight} from 'lucide-react';
@@ -117,7 +118,9 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
           {ITEMS.map((item, i) => (
             <div className="UpsellItem" key={i}>
               <div className="UpsellImage">
-                <img src={item.image} alt={item.title} />
+                <CdnBild src={item.image} alt={item.title} anzeigeBreite={426}
+                  breite={426} hoehe={426}
+                  sizes="(min-width: 1000px) 426px, 92vw" loading="lazy" />
               </div>
               <div className="UpsellLabel mt-3 mb-1">{item.label}</div>
               <h3>{item.title}</h3>
