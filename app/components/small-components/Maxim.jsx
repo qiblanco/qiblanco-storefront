@@ -1,3 +1,4 @@
+import {CdnBild} from '../reusables/CdnBild';
 /*
  * Maxim — die Nennung in MAXIM Australia, auf ihren Beleg zurückgeführt.
  *
@@ -43,7 +44,9 @@
 export function Maxim({dataSection}){
     return (
         <div className="Maxim NormalSectionSize" data-section={dataSection}>
-            <img width={500} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="Doppelseite aus MAXIM Australia mit dem Beitrag „Wellbeing 2022“ von Andi Lew" />
+            <CdnBild width={500} anzeigeBreite={418} loading="lazy"
+                sizes="(min-width: 1000px) 418px, 92vw"
+                src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="Doppelseite aus MAXIM Australia mit dem Beitrag „Wellbeing 2022“ von Andi Lew" />
             <div className="MaximText">
                 <h2>MAXIM Australia nennt das QiOne®</h2>
                 <p>Die Wellness-Expertin und Autorin Andi Lew (@andi.lew) stellt in MAXIM Australia ihre Wellness-Trends für 2022 vor. Unter dem Punkt „EMF“ nennt sie das QiOne® von Qi Blanco als ihre Antwort auf elektromagnetische Strahlung.</p>
