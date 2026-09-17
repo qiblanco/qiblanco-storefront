@@ -40,22 +40,38 @@
  */
 
 export const QIMASTER_DIAMANT = {
-  titel: 'Warum ein Diamant',
+  // Christians Fassung vom 2026-09-17, Wort für Wort (Job
+  // 20260917-diamant-abschnitte-werden-christians-fassung). Übernommen ist die
+  // Schreibweise, die er selbst tippte: schlichter Bindestrich in der
+  // Überschrift — genau so trägt der Kopf derselben Seite seine Fassung
+  // bereits ("The One Eye" - Hochreiner Natur Diamant).
+  titel: 'The One Eye - Ein Diamant',
   einstieg: [
-    'Ein Diamant ist reiner Kohlenstoff – nichts anderes. Und Kohlenstoff ist das Element, auf dem alles Leben aufbaut, das wir kennen: Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Gerüst aus Kohlenstoffatomen. Das ist der Gedanke, mit dem der Diamant in den Qi Master® gekommen ist.',
+    'Diamant ist reiner Kohlenstoff. Die Grundlage unseres Lebens. Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Skelett aus Kohlenstoffatomen. Hier nutzen wir Kohlenstoff in seiner edelsten Form.',
   ],
   befunde: [
     {
       id: 'kohlenstoff',
-      titel: 'Kohlenstoff und Diamant',
-      label: 'In der Literatur',
+      // Christians Fassung vom 2026-09-17. Drei Dinge fallen hier weg und
+      // eines kommt dazu:
+      //  - die Zwischenüberschrift „In der Literatur“ (label: null). Sie
+      //    fällt NUR über diesem Block; die drei Blöcke darunter behalten
+      //    sie. Das Zitat steht für sich, mit seiner Quelle darunter.
+      //  - die Jahreszahl im Einleitungssatz. Sie geht nicht verloren,
+      //    sondern steht in der Quellenangabe, wo sie ohnehin hingehört.
+      //  - „Sein erster Grund ist der Kohlenstoff:“. Das Zitat sagt es selbst.
+      //  + der Autor trägt „Dr.“, im Einleitungssatz und in der Quelle.
+      // Das wörtliche Zitat bleibt unverändert, samt Auslassungszeichen: es
+      // ist fremder Text und wird nicht angefasst.
+      titel: 'Diamant = Kohlenstoff',
+      label: null,
       beleg: false,
       absaetze: [
-        'Der Physiker Michael König beschreibt in „Das Urwort – Die Physik Gottes“ (2011), warum er unter allen Kristallen den Diamanten für den interessantesten hält, wenn es um lebende Organismen geht. Sein erster Grund ist der Kohlenstoff:',
+        'Der Physiker Dr. Michael König beschreibt in „Das Urwort – Die Physik Gottes“, warum er unter allen Kristallen den Diamanten für den interessantesten hält, wenn es um lebende Organismen geht.',
       ],
       zitat:
         '„Zum einen besteht der Diamant zu hundert Prozent aus Kohlenstoff. Das chemische Element Kohlenstoff spielt ja gerade in biologischen Systemen eine bedeutende Rolle. […] Alles Leben, so wie wir es auf der Erde kennen, basiert auf Kohlenstoff.“',
-      quelle: 'Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 171–172.',
+      quelle: 'Dr. Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011, S. 171–172.',
     },
     {
       id: 'gitter',
