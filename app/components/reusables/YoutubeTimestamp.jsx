@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
+import {VIDEO_LQIP} from '~/data/video-lqip';
 
 /*
  * YoutubeTimestamp — das wiederverwendbare Muster „YouTube-Video als
@@ -199,6 +200,50 @@ const SCHICHT_STYLE = {
   margin: 0,
   display: 'block',
 };
+/*
+ * DIE VORSTUFE — „erst unscharf, dann scharf" (Christian, 2026-09-17).
+ *
+ * WAS SIE LÖST: das YouTube-Poster ist ein BASELINE-JPEG (maxresdefault.jpg,
+ * SOF0 — an allen fünf Startseiten-Videos nachgemessen). Ein Baseline-JPEG
+ * zeichnet der Browser ZEILENWEISE VON OBEN. Bis die unteren Zeilen da sind,
+ * steht dort der schwarze Rahmen offen: der Kunde sieht ein halbes Bild über
+ * einem schwarzen Band. Gemessen am 2026-09-17 auf einer gedrosselten
+ * Mobilverbindung (1,6 Mbit/s, 150 ms): rund 74 % der Kachelhöhe schwarz,
+ * über 1,5 s lang — und zwar GENAU BEIM SCROLLEN, weil das Poster
+ * `loading="lazy"` trägt und erst dann anfängt.
+ *
+ * WIE: eine winzige, VOLLFLÄCHIGE Vorstufe des gleichen Bildes liegt als
+ * unterste Schicht. Sie steckt als data-URI im HTML — keine eigene Anfrage,
+ * kein Rundweg, kein JavaScript — und ist deshalb mit dem ersten Bildaufbau
+ * da. Das scharfe Poster zeichnet sich darüber; wo es noch fehlt, steht
+ * nicht mehr Schwarz, sondern dasselbe Motiv in grob.
+ *
+ * WARUM KEIN ThumbHash/BlurHash: beide brauchen einen Decoder im Browser
+ * (~1,2–2 kB) UND aktives JavaScript. Ein 20x11-WebP kostet hier 225 B je
+ * Video und braucht beides nicht. Bei der Handvoll Videos dieses Shops ist
+ * der Decoder teurer als die Nutzlast, die er einspart.
+ *
+ * WARUM KEIN SELBST GEHOSTETES PROGRESSIVES JPEG: ein progressives JPEG fängt
+ * ebenfalls erst nach seinem ersten Rundweg an zu zeichnen — auf 150 ms
+ * Latenz bleibt die Fläche solange leer. Die Vorstufe im HTML hat diesen
+ * Rundweg nicht. Dazu käme die Pflicht, fünf fremde Standbilder selbst zu
+ * hosten und nachzuführen.
+ *
+ * KEINE `filter: blur()`-Schicht: eine 20x11-Fläche auf Kachelgröße gezogen
+ * ist durch die Glättung des Browsers ohnehin weich. Ein Filter kostete je
+ * Kachel eine eigene Compositing-Ebene und öffnete einen eigenen Stacking
+ * Context — für nichts, was man sieht.
+ */
+const VORSTUFE_STYLE = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  display: 'block',
+};
+
 /*
  * Wie lange nach `onLoad` noch auf die Auskunft des Players gewartet wird,
  * bevor ohne sie umgeblendet wird. Kurz genug, dass niemand ein Standbild
@@ -400,6 +445,10 @@ export function YoutubeTimestamp({
   /* Die Poster-Stufen werden in BEIDEN Zustaenden gebraucht: die Vorschau
    * bleibt nach dem Klick als unterste Schicht liegen. */
   const [stufenDatei, stufenBreite, stufenHoehe] = POSTER_STUFEN[posterStufe];
+  /* Eigenes Standbild (`thumbnail`) bringt seine eigene Kette mit und hat
+   * keine erzeugte Vorstufe — dann bleibt es beim bisherigen Verhalten.
+   * Eine fehlende Vorstufe ist kein Fehler, sondern der Stand von vorher. */
+  const vorstufe = thumbnail ? null : VIDEO_LQIP[videoId];
   const posterProps = thumbnail
     ? {src: thumbnail, width: 1280, height: 720}
     : {
@@ -424,6 +473,17 @@ export function YoutubeTimestamp({
    */
   const stapel = (
     <span style={{...STAPEL_STYLE, aspectRatio: seitenverhaeltnis}}>
+      {/* SCHICHT 0 — die Vorstufe. Grob, vollflaechig, sofort da.
+          Sie liegt VOR dem Poster im Baum und damit darunter: beide sind
+          absolut und ohne z-index, gezeichnet wird in Baumreihenfolge. */}
+      {vorstufe ? (
+        <span
+          aria-hidden="true"
+          data-qb-video-vorstufe=""
+          style={{...VORSTUFE_STYLE, backgroundImage: `url(${vorstufe})`}}
+        />
+      ) : null}
+
       {/* SCHICHT 1 — die Vorschau. Sie wird NIE entfernt.
           Sie bleibt auch nach dem Umblenden liegen: ein Player, der später
           Vollbild verlässt oder neu puffert, fällt damit auf ein Bild
