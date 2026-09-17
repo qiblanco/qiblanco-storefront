@@ -6,10 +6,8 @@ import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QI_MASTER} from '~/data/product-faqs';
 import {StudienCards} from './StudienCards';
 import {QIMASTER_SYMBOL_PFADE} from '~/lib/qi-master-symbole.generated';
-import {
-  QIMASTER_DIAMANTBILDER,
-  QIMASTER_DIAMANTBILDER_HERKUNFT,
-} from '~/data/qi-master-diamantbilder';
+import {QIMASTER_DIAMANTBILDER} from '~/data/qi-master-diamantbilder';
+import {QIMASTER_GUETEZEICHEN} from '~/data/qi-master-guetezeichen';
 import {
   QIMASTER_DIAMANT,
   QIMASTER_SECHS_G,
@@ -59,8 +57,8 @@ export default function QiMaster({block = undefined}) {
     <div className="ProductPageQiMaster">
       <LogoBar />
       <MainFeatures />
+      <Guetezeichen />
       <DiamantBilder />
-      <RisikofreiErleben />
       <DiamantAbschnitt />
       <SechsGAbschnitt />
       <PersoenlichkeitAbschnitt />
@@ -189,9 +187,6 @@ function DiamantBilder() {
           </figure>
         ))}
       </div>
-      <p className="qm-diamantbilder__herkunft">
-        {QIMASTER_DIAMANTBILDER_HERKUNFT}
-      </p>
     </section>
   );
 }
@@ -332,36 +327,68 @@ function MainFeatures() {
   );
 }
 
-function RisikofreiErleben() {
-  /*
-   * Der 20-Tage-Block in Christians Fassung (Auftrag CW-20260916-454dda42,
-   * Job 20260916-zwanzig-tage-block-wird-vier-zeilen-mittig): vier Sätze,
-   * vier Zeilen, mittig ausgerichtet.
-   *
-   * WAS HIER BEWUSST ANDERS IST ALS AUF DEN SCHWESTERSEITEN: QiOne2Pro,
-   * QiBracelet und QiHome tragen in derselben .RisikofreiErleben weiter den
-   * erzählenden Block mit Rückgabeweg. Diese Seite nicht mehr — Christian
-   * hat den Text für den QiMaster ersetzt. Die Klasse bleibt, damit Abstände
-   * und Sektionstakt der Seite unverändert sitzen; die Mitte kommt aus
-   * app/styles/qi-master.css (.qm-garantie), also aus der route-gebundenen
-   * Token-Schicht und NICHT aus app.css — eine Mitte in app.css hätte alle
-   * vier Geräteseiten zentriert.
-   *
-   * ZEILE 1 BLEIBT EIN h2: der Abschnitt behält damit seine Überschrift
-   * (Dokument-Gliederung, EIN H2-Stil der Seite). Die drei Zusagen darunter
-   * sind eigene Elemente, damit jede Zeile ihre Ausrichtung einzeln belegt.
-   *
-   * DER RÜCKGABEWEG IST NICHT VERSCHWUNDEN, er steht weiter unten im
-   * Gewährleistungstext (Weg, Adresse info@qiblanco.com, volle Erstattung) —
-   * dieser Block nennt die Zusage, jener das Verfahren.
-   */
+/**
+ * Die drei Gütezeichen über den Diamantbildern (Christian am 2026-09-17:
+ * „Optisch grösser machen — also 3 zentrale Qualitätselemente, wieder goldene
+ * Gimmicks dazu entwerfen. Und oberhalb der Diamantenbilder anbringen.").
+ *
+ * VORGESCHICHTE IN EINEM SATZ, weil sonst niemand versteht, warum hier eine
+ * Funktion verschwunden ist: bis zum 2026-09-17 stand an dieser Stelle
+ * `RisikofreiErleben` mit vier mittigen Zeilen UNTER dem Bildpaar, angeführt
+ * von der Überschrift „Lass dich vom Qi Master® tragen." Christian hat die
+ * Überschrift gestrichen und die drei Zusagen nach oben geholt.
+ *
+ * WAS DIE SCHWESTERSEITEN WEITER TRAGEN: QiOne2Pro, QiBracelet und QiHome
+ * haben in ihrer `.RisikofreiErleben` unverändert den erzählenden Block mit
+ * Rückgabeweg. Diese Seite hat ihn seit dem 2026-09-16 nicht mehr, und die
+ * Klasse ist jetzt ganz weg — der Abschnitt ist keine Erzählung mehr, sondern
+ * ein Zeichenblock. Der Sektionstakt kommt deshalb aus `NormalSectionSize`,
+ * genau wie beim Bildpaar direkt darunter.
+ *
+ * DER RÜCKGABEWEG IST NICHT VERSCHWUNDEN: er steht weiter unten im
+ * Gewährleistungstext (Weg, Adresse info@qiblanco.com, volle Erstattung).
+ * Dieser Block nennt die Zusage, jener das Verfahren.
+ *
+ * EINE LISTE, KEINE DREI ABSÄTZE: die drei Zeilen sind gleichrangige Zusagen,
+ * und ein Screenreader soll sie als solche ansagen („Liste mit 3 Einträgen").
+ * Die Symbole tragen `aria-hidden` — ihre Bedeutung steht als Text unmittelbar
+ * daneben, ein erfundener Alternativtext wäre schlechter als keiner (dieselbe
+ * Entscheidung wie bei den Kopfsymbolen, qi-master-kopfsymbole.js).
+ *
+ * KEIN <h2>: der Block hat keine Überschrift mehr, weil Christian sie
+ * gestrichen hat. Eine erfundene Ersatz-Überschrift wäre genau der Text, den er
+ * nicht wollte — und die Dokument-Gliederung der Seite trägt weiter über die
+ * H2 der Abschnitte darunter.
+ */
+function Guetezeichen() {
   return (
-    <div className="RisikofreiErleben NormalSectionSize qm-garantie">
-      <h2 className="qm-garantie__zeile">Lass dich vom Qi Master® tragen.</h2>
-      <p className="qm-garantie__zeile">100% Zufriedenheitsgarantie.</p>
-      <p className="qm-garantie__zeile">20 Tage nach Erhalt testen.</p>
-      <p className="qm-garantie__zeile">100% Geld-zurück-Garantie.</p>
-    </div>
+    <section className="qm-guete NormalSectionSize" data-section="qm-guete">
+      <ul className="qm-guete__liste">
+        {QIMASTER_GUETEZEICHEN.map((zeichen) => (
+          <li className="qm-guete__punkt" key={zeichen.id}>
+            <svg
+              className="qm-guete__symbol"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="1em"
+              height="1em"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              {zeichen.pfade.map((d) => (
+                <path d={d} key={d} />
+              ))}
+            </svg>
+            <span className="qm-guete__text">{zeichen.text}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
