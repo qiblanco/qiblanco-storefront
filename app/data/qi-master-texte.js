@@ -60,11 +60,20 @@ export const QIMASTER_DIAMANT = {
   // übrigen Abschnittsüberschriften der Seite, nicht als kleine
   // Zwischenzeile.
   //
-  // NICHT ZU VERWECHSELN MIT DEM LABEL „In der Literatur": das tragen die
-  // Blöcke `gitter`, `Kohärenz` und `licht` weiter, und es bleibt. Der
-  // Wortstamm steht damit zweimal auf der Seite, in zwei Ebenen und zwei
-  // Schreibungen. Wer das messen will, vergleicht die h2 auf GLEICHHEIT —
-  // ein Enthaltensein-Test wäre durch die Labels schon vorher grün
+  // NICHT ZU VERWECHSELN MIT DEM LABEL „In der Literatur", das die Blöcke
+  // `gitter`, `Kohärenz` und `licht` beim Bau dieser Zeile noch tragen.
+  // Christian hat es am selben Abend zum Streichen bestellt (Auftrag
+  // 20260917-in-der-literatur-raus-quelle-kuerzen-luecke-schliessen, beim
+  // Schreiben dieses Kommentars noch am Laufen) — die Überschrift hier macht
+  // es ohnehin überflüssig. WER DIESE DATEI LIEST, PRÜFT ALSO NACH, ob die
+  // Labels noch da sind; dieser Kommentar sagt, wie es AM 2026-09-17 stand,
+  // nicht wie es heute ist.
+  //
+  // DIE LEHRE DARAUS ÜBERLEBT DEN LABEL-STRICH: Wortstamm „Literatur" stand
+  // auf dieser Seite schon, bevor diese Überschrift existierte. Wer die
+  // Überschrift messen will, vergleicht die h2 deshalb auf GLEICHHEIT und
+  // mit Beachtung der Groß-/Kleinschreibung — ein Enthaltensein-Test wäre
+  // durch die Labels schon vor dem Bau grün gewesen
   // (pruefungen/probe_literatur_ueberschrift.py, Arm `ueberschrift`).
   //
   // NUR DIE ÜBERSCHRIFT KOMMT DAZU: der Einstieg „Diamant ist reiner

@@ -475,8 +475,12 @@ function DiamantAbschnitt() {
             Sektion.
 
             NICHT ZU VERWECHSELN mit dem Label „In der Literatur" weiter
-            unten: das bleibt, wo es ist. Der Wortstamm steht ab hier zweimal
-            auf der Seite — eine Ebene höher und in anderer Schreibung. */}
+            unten, das die Blöcke beim Bau dieser Zeile noch tragen. Es ist
+            am selben Abend zum Streichen bestellt (Auftrag
+            20260917-in-der-literatur-raus-…) — diese Überschrift macht es
+            ohnehin überflüssig. Der Wortstamm stand also schon auf der
+            Seite, bevor es diese h2 gab; das ist der Grund, warum die Probe
+            sie auf Gleichheit vergleicht und nicht auf Enthaltensein. */}
         <h2>{t.titel}</h2>
         {t.einstieg.map((abs) => (
           <p key={abs.slice(0, 40)}>{abs}</p>
