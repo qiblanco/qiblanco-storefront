@@ -238,9 +238,24 @@ export const QIMASTER_SECHS_G = {
 };
 
 export const QIMASTER_PERSOENLICHKEIT = {
-  titel: 'Persönlichkeitsentwicklung durch erhöhte Zellschwingung – was wir damit meinen',
+  // ÜBERSCHRIFT UND EINSTIEG SIND CHRISTIANS FASSUNG (2026-09-17). Zwei
+  // Änderungen gegenüber dem Vorstand, beide von ihm:
+  //  - Der Zusatz „– was wir damit meinen“ fällt aus der Überschrift. Er
+  //    kündigte an, was der Abschnitt ohnehin liefert.
+  //  - Der Satz über die Machart („Beides gehört auf diese Seite. Damit du
+  //    es unterscheiden kannst, steht es nebeneinander.“) fällt weg. Die
+  //    Gliederung bleibt — Überlieferung, Gebautes und Gemessenes stehen
+  //    weiter nebeneinander; nur der Hinweis darauf ist weg. Was gut gebaut
+  //    ist, muss sich nicht ansagen.
+  // Zwei Rechtschreibkorrekturen an Christians Wortlaut, nach der stehenden
+  // Erlaubnis vom 16.09. und nur Eindeutiges: „exklusive für Menschen“ ->
+  // „exklusiv für Menschen“ (Adverb) und „Jahrtausende altes Wissen“ ->
+  // „Jahrtausendealtes Wissen“ (Zusammenschreibung). Ton, Wortwahl und
+  // Satzbau sind unangetastet.
+  titel: 'Persönlichkeitsentwicklung durch erhöhte Zellschwingung',
   einstieg: [
-    'Der Qi Master® ist für Menschen gebaut, die an sich arbeiten. Der Satz „Persönlichkeitsentwicklung durch erhöhte Zellschwingung“ kommt aus einer Überlieferung, die älter ist als jede Messung – und er steht auf einem Fundament, das wir messen können. Beides gehört auf diese Seite. Damit du es unterscheiden kannst, steht es nebeneinander.',
+    'Der Qi Master® wurde exklusiv für Menschen entwickelt, die neue Ebenen erreichen wollen.',
+    'Jahrtausendealtes Wissen der Menschheit am Puls der Zeit interpretiert.',
   ],
   ueberlieferung: {
     label: 'Überlieferung',
