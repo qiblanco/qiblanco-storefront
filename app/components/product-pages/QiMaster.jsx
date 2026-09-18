@@ -595,12 +595,18 @@ function DiamantAbschnitt() {
             Aussage statt zwei Absaetzen „Unsere Deutung" und dem
             siebenzeiligen Quellenblock, der hier stand.
 
-            DIE UEBERSCHRIFT „Unsere Deutung" FAELLT MIT WEG, aber nur DIESE:
-            der Abschnitt „Persoenlichkeitsentwicklung" trägt eine zweite
-            gleichen Namens, und die bleibt, solange Christian nichts anderes
-            sagt. Deshalb steht hier ein eigener Block und kein geaenderter
-            qm-deutung — .qm-deutung wird von der anderen Stelle weiter
-            gebraucht.
+            DIE UEBERSCHRIFT „Unsere Deutung" FIEL MIT WEG, aber damals nur
+            DIESE: der Abschnitt „Persönlichkeitsentwicklung" trug am
+            2026-09-17 eine zweite gleichen Namens. Deshalb steht hier ein
+            eigener Block und kein geänderter qm-deutung.
+
+            NACHZUG 2026-09-18: die zweite ist inzwischen ebenfalls ersatzlos
+            gestrichen (Christian). Der Satz „.qm-deutung wird von der anderen
+            Stelle weiter gebraucht", der hier stand, gilt seitdem nicht mehr —
+            die Klasse hat auf der Seite keinen Träger mehr. Die Regel in
+            app/styles/qi-master.css bleibt bewusst stehen: sie zu entfernen
+            wäre eine zweite Änderung an einer geteilten Datei, und der
+            Auftrag lautete ausdrücklich, nur den Block zu streichen.
 
             Ausrichtung und Groesse kommen aus qi-master.css (.qm-schluss);
             die Groesse teilt sich das Token --qm-fs-guete mit den drei
@@ -685,14 +691,22 @@ function PersoenlichkeitAbschnitt() {
               renderte er `undefined` als leeres Element. */}
         </div>
       </div>
-      <div className="qm-sektion__inner">
-        <div className="qm-deutung">
-          <span className="qm-label">Unsere Deutung</span>
-          {t.deutung.map((abs) => (
-            <p key={abs.slice(0, 40)}>{abs}</p>
-          ))}
-        </div>
-      </div>
+      {/* ERSATZLOS GESTRICHEN (Christian, 2026-09-18): der Deutungs-Block
+          „Unsere Deutung / Zwischen der Überlieferung und dem Fundament liegt
+          ein Sprung …“. Ersatzlos heißt ersatzlos — hier rückt nichts nach,
+          hier steht kein Füllsatz, und die Abschnitte davor und danach
+          behalten ihre Reihenfolge.
+
+          DER ÄUSSERE <div className="qm-sektion__inner"> GEHT MIT:
+          er trug nur diesen einen Block. Bliebe er stehen, stünde ein leeres
+          Element mit dem Abstand des Satzspiegels an der Stelle — dieselbe
+          Begründung, aus der der leere <span className="qm-quelle"> im
+          Fundament-Block am 2026-09-17 nicht stehenblieb.
+
+          Das Feld `deutung` ist in app/data/qi-master-texte.js entfallen; es
+          hatte nach dieser Streichung keinen Leser mehr. Beides gehört in
+          EINEN Commit: bliebe der Renderer stehen, liefe t.deutung.map auf
+          undefined. */}
     </section>
   );
 }
