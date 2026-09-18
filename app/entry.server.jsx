@@ -280,8 +280,13 @@ export default async function handleRequest(
       'https://otlp-http-production.shopifysvc.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',
       'https://*.reputon.com',
-      'https://qiblanco-video.imgix.video',
-      'https://*.imgix.video',
+      // Video-Auslieferung, seit 2026-09-18 auf imgix.net (Vorgang
+      // EL-20260814-9a7f9a50). Der Wildcard *.imgix.video stand hier für den
+      // 302 auf stream.media.imgix.video, den der .video-Weg für HLS machte.
+      // Auf .net gibt es diesen Sprung nicht: Manifest UND Segmente liegen auf
+      // qiblanco-video.imgix.net und werden relativ referenziert (gemessen
+      // 2026-09-18). Ein Host genügt, der Wildcard entfällt.
+      'https://qiblanco-video.imgix.net',
       'https://qiblanco.activehosted.com',
       'https://*.myshopify.dev',
       'https://*.vimeo.com',
@@ -473,7 +478,10 @@ export default async function handleRequest(
       "'self'",
       'blob:',
       'https://cdn.shopify.com',
-      'https://*.imgix.video',
+      // Safari spielt HLS nativ über video.src — das faellt auf mediaSrc,
+      // nicht auf connectSrc. Beide Listen müssen denselben Host tragen,
+      // sonst läuft das Video in genau einem Browser nicht.
+      'https://qiblanco-video.imgix.net',
     ],
     fontSrc: [
       /*
