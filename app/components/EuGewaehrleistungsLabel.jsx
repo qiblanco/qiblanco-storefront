@@ -300,12 +300,45 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
           geschoben wird.
         */}
         <div className="eu-gwl-dialog__buehne">
+          {/*
+            `loading="lazy"` IST HIER KEINE FEINOPTIMIERUNG, SONDERN DER
+            GRÖSSTE EINZELPOSTEN DER GANZEN HÜLLE -- und der Dialog ist der
+            Grund, warum das so lange niemandem auffiel.
+
+            Gemessen am 2026-09-18 im echten Browser (mobil 390x844 DPR2,
+            live qiblanco.com): dieses Bild liegt in einem GESCHLOSSENEN
+            <dialog>, seine Box misst 0x0 Pixel -- und es wurde trotzdem
+            vollständig geladen, 259 314 Byte, responseEnd bei t=383 ms.
+            Ein Bild ohne `loading` wird geholt, sobald der Vorlade-Scanner
+            es im HTML sieht; ob es je ein Layout bekommt, fragt niemand.
+
+            Größenordnung: die Hülle lädt 659 287 Byte Bild. Dieses eine
+            unsichtbare Bild ist davon 39,3 Prozent, auf einer gedrosselten
+            Mobilleitung rund 1,3 Sekunden reine Bandbreite -- abgezogen vom
+            ANFANG, also genau dort, wo das LCP-Element sie braucht. Und
+            weil der Fuss auf JEDER Seite steht, wurde das auf JEDEM
+            Seitenaufruf des Ladens bezahlt.
+
+            Ein geschlossener <dialog> ist `display: none`. Ein lazy-Bild
+            darin bekommt nie einen Schnittbereich und wird deshalb NICHT
+            geholt; erst `showModal()` gibt ihm eine Box, und dann lädt es.
+            Genau diese Kette ist der Gewinn -- und genau sie ist auch die
+            Gefahr, deshalb steht die Vorwärmung unten am Auslöser.
+
+            AUSDRÜCKLICH NICHT GEBAUT: eine Bildleiter oder ein
+            `width=`-Parameter an dieser Grafik. LABEL_MINDESTBREITE_PX
+            schützt die Ablesbarkeit des QR-Codes (Anhang I Nr. 3); die
+            Datei wird unverändert ausgeliefert, nur später. Die Auflagen
+            aus Anhang I Nr. 1 und Nr. 5 bleiben damit unberührt.
+          */}
           <img
             className="eu-gwl-dialog__bild"
             src={label.url}
             alt={LABEL_ALT_DE}
             width={label.breite}
             height={label.hoehe}
+            loading="lazy"
+            decoding="async"
             data-eu-label-iso={label.iso}
           />
         </div>
@@ -354,6 +387,49 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
  * AUSSERHALB des <button> und ist für Screenreader unsichtbar (alt="",
  * aria-hidden) -- der Knopf daneben sagt bereits, was es zeigt.
  */
+/*
+ * DIE ZWEITE HÄLFTE DES `loading="lazy"` OBEN -- ohne sie wäre der Bau ein
+ * Tausch von Ladezeit gegen Wartezeit an genau der Stelle, an der die
+ * Verordnung eine Zusage macht.
+ *
+ * Die Pflicht ist ein SATZ auf der Seite und die Mitteilung "on the first
+ * mouse click" (Leitlinien der Kommission, Abschnitt 2.3, wörtlich zitiert
+ * im Kopf dieser Datei). Ein lazy geladenes Bild beginnt seinen Abruf erst,
+ * wenn der Dialog öffnet -- auf einer gedrosselten Mobilleitung sind das
+ * für 259 kB rund 1,3 Sekunden, in denen der Kasten leer steht.
+ *
+ * Deshalb wird die Grafik geholt, sobald der Mensch ABSICHT zeigt, und
+ * nicht erst, wenn er sie schon sehen will: Zeigerkontakt, Tastaturfokus
+ * oder der erste Fingerkontakt. Zwischen diesem Moment und dem Klick liegen
+ * erfahrungsgemäss einige hundert Millisekunden -- der Abruf läuft dann
+ * bereits, und im Regelfall steht das Bild beim Öffnen im Cache.
+ *
+ * WARUM `new Image()` UND KEIN ZUSTANDSWECHSEL AM <img>: ein nachträglich
+ * von `lazy` auf `eager` gedrehtes `loading`-Attribut ist kein verlässlicher
+ * Auslöser -- der Browser hat die Entscheidung für dieses Element dann
+ * schon getroffen. Ein eigener Abruf füllt dagegen den HTTP-Cache, und das
+ * <img> im Dialog bedient sich beim Öffnen daraus. Es ist derselbe URL,
+ * also derselbe Cache-Eintrag.
+ *
+ * Mehr als einmal je URL muss das nicht geschehen; `vorgewaermt` hält das
+ * fest. Ein Fehlschlag ist bewusst folgenlos: gelingt die Vorwärmung nicht,
+ * lädt das <img> beim Öffnen ganz normal selbst. Die Vorwärmung ist eine
+ * Beschleunigung, nie die Bedingung dafür, dass die Mitteilung erscheint.
+ */
+const vorgewaermt = new Set();
+
+function grafikVorwaermen(url) {
+  if (typeof window === 'undefined' || !url || vorgewaermt.has(url)) return;
+  vorgewaermt.add(url);
+  try {
+    const img = new window.Image();
+    img.decoding = 'async';
+    img.src = url;
+  } catch {
+    // Folgenlos: das <img> im Dialog lädt beim Öffnen weiterhin selbst.
+  }
+}
+
 function EuLabelAusloeser({
   flaeche,
   beschriftung,
@@ -363,12 +439,21 @@ function EuLabelAusloeser({
   const kontext = useEuLabel();
   if (!kontext) return null;
 
+  // Absicht statt Klick: siehe grafikVorwaermen() oben. Bewusst KEIN
+  // useCallback -- oberhalb steht ein `if (!kontext) return null`, ein Hook
+  // an dieser Stelle wäre ein bedingter Hook. Für drei DOM-Handler an einem
+  // Knopf ist die Neuerzeugung je Rendern ohnehin ohne Belang.
+  const vorwaermen = () => grafikVorwaermen(kontext.label?.url);
+
   const knopf = (
     <button
       type="button"
       className="eu-gwl__link"
       data-eu-gewaehrleistungslabel={flaeche}
       onClick={kontext.open}
+      onPointerEnter={vorwaermen}
+      onFocus={vorwaermen}
+      onTouchStart={vorwaermen}
     >
       {beschriftung}
     </button>
