@@ -1,6 +1,11 @@
 import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
 import {übersichtSchema} from '~/lib/studien-schema';
-import {StudienUebersicht} from '~/components/studien/StudienUebersicht';
+import {buildFaqPageJsonLd} from '~/lib/faq-schema';
+import {
+  StudienUebersicht,
+  EVIDENZSTUFE_SOLL,
+  evidenzstufeSchemaItems,
+} from '~/components/studien/StudienUebersicht';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
@@ -65,7 +70,43 @@ export const meta = () => [
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:site_name', content: MARKE},
   {'script:ld+json': übersichtSchema(STUDIEN, untersuchteProdukte())},
+  ...faqEintrag(),
 ];
+
+/** Genau EIN Aufbau des Schemas je Aufruf — sonst baut die Meta-Liste dasselbe
+ *  Objekt zweimal (einmal für die Bedingung, einmal für den Wert). */
+function faqEintrag() {
+  const schema = evidenzstufeSchema();
+  return schema ? [{'script:ld+json': schema}] : [];
+}
+
+/**
+ * DAS ZWEITE ld+json DIESER SEITE: die Evidenzstufe als FAQPage, gebaut aus
+ * DEMSELBEN Text, den `Evidenzstufe` in StudienUebersicht.jsx rendert. Eine
+ * Frage im Schema, die auf der Seite nicht steht, wäre ein Regelverstoß —
+ * deshalb gibt es keine zweite Textfassung, sondern nur die Konstanten dort.
+ * Der Auftrag vom 2026-09-18 sagt es als Grenze: die Strukturdaten führen nur,
+ * was sichtbar ist, und in derselben Fassung.
+ *
+ * DER STILLE VERLUST IST DER TEURE FALL: `buildFaqPageJsonLd` wirft Items aus,
+ * die sein Deny-Netz treffen (etwa das Wort „kohärent"), und liefert dann
+ * einfach ein kürzeres Schema — die Seite bliebe sichtbar und würde nur für
+ * eine Maschine ärmer, ohne Fehlermeldung. Deshalb der SOLL-ZÄHLER: fällt auch
+ * nur ein Paar durch, wird GAR KEIN FAQ-Schema ausgegeben, statt ein
+ * unvollständiges auszuliefern, das wie ein vollständiges aussieht. Gegenprobe
+ * am Live-Rand: homepage-bauer/pruefungen/probe_zitierfaehige_evidenzstufe.py
+ * (Arm A2 verlangt genau EVIDENZ_SOLL=3 Fragen, jede auch sichtbar).
+ */
+function evidenzstufeSchema() {
+  const items = evidenzstufeSchemaItems();
+  if (items.length !== EVIDENZSTUFE_SOLL) return null;
+  const schema = buildFaqPageJsonLd(items, {
+    inLanguage: 'de-DE',
+    author: 'Qi Blanco',
+  });
+  if (!schema || schema.mainEntity.length !== EVIDENZSTUFE_SOLL) return null;
+  return schema;
+}
 
 export function loader() {
   return {};

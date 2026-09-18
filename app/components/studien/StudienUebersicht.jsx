@@ -345,6 +345,8 @@ export function StudienUebersicht() {
           </div>
         </section>
 
+        <Evidenzstufe />
+
         <HrvMessreihe />
 
         <section
@@ -457,6 +459,205 @@ export function StudienUebersicht() {
         </div>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * DIE EVIDENZSTUFE DER STUDIEN — GEKÜRZT, WÄRMER, UND DIREKT UNTER DEN STUDIEN.
+ *
+ * HERKUNFT: Christians Durchgang am Abend des 2026-09-18, woertlich: „Diesen
+ * Bereich hängen wir doch als Text direkt unter die Studien, glaube der kommt
+ * bei GEO sehr gut an." Und: „Könnte man das noch etwas freundlicher für uns
+ * formulieren? Das wirkt so kalt und abwertend unserer Leistung gegenueber. Und
+ * es bitte unterhalb der 5 Studien, direkt oberhalb der HRV-Messung einpflegen."
+ * (Job 20260918-evidenzblock-gekürzt-unter-die-studien-setzen.)
+ *
+ * WARUM ER AM SELBEN TAG ERST FORT WAR: Job 20260918-studienseite-vier-
+ * änderungen-aus-christians-durchgang (PR #510) hat ihn ersatzlos gestrichen.
+ * Christian hat die Entscheidung danach revidiert und die Stelle neu bestimmt.
+ * Die jüngere Anweisung gilt — das ist keine Rücknahme jenes Jobs, seine drei
+ * anderen Aenderungen stehen unverändert.
+ *
+ * WARUM ALS TEXT UND NICHT ALS AUFKLAPPELEMENT: was zugeklappt ist, wird von
+ * generativen Suchsystemen schlechter zitiert. Genau darum geht es hier.
+ *
+ * WARUM AN DIESER STELLE: unterhalb der fünf Publikationen und unmittelbar
+ * oberhalb von „HRV-Messungen". Der Leser hat die Belege gesehen, bevor er ihre
+ * Einordnung liest.
+ *
+ * WAS „freundlicher“ BEDEUTET UND WAS NICHT. Die alte Fassung zog fünfmal
+ * dieselbe Grenze (nicht an Menschen · ohne Kontrollgruppe · ohne Verblindung ·
+ * keine Aussage · muss nicht passieren). Umgeschrieben ist die BLICKRICHTUNG,
+ * nicht der Inhalt: zuerst steht, was gemessen wurde, dann wer es finanziert
+ * hat, zuletzt in EINEM Satz, wo die Messung endet. Drei Sätze sind gestrichen,
+ * weil sie dasselbe sagen wie die Antwort auf „Gibt es eine Studie am
+ * Menschen?" — sie fielen als Wiederholung, nicht als Aussage:
+ *   1. „Eine kontrollierte klinische Studie am Menschen gibt es zu den
+ *      Qi-Blanco-Geräten nicht." (Ende der Antwort)
+ *   2. „Ein klinischer Wirknachweis am Menschen liegt für die Qi-Blanco-
+ *      Geräte nicht vor." (Ende von „Wo die Messung endet")
+ *   3. „Was im Labor an Zellen messbar ist, muss im Körper nicht passieren."
+ *      (Ende der ersten Frage)
+ * KEINE TATSACHE IST HINZUGEKOMMEN, WEGGEFALLEN ODER ABGESCHWÄCHT. Präklinisch
+ * bleibt präklinisch, in vitro bleibt in vitro, 171 bleiben 171, „ohne
+ * Kontrollgruppe" bleibt, „ein einzelnes Labor mit einem einzelnen Autor" bleibt,
+ * und das „Nein." auf die Menschenstudien-Frage steht wortgleich am Anfang.
+ * Die Finanzierung steht offen und ohne Beiwort — sie ist hier die Stärke.
+ *
+ * JEDER EINTRAG IST ISOLIERT VERSTÄNDLICH. Das ist kein Stil, sondern Mechanik:
+ * ein RAG-System bewertet Abschnitte einzeln; ein Abschnitt, der mit „wie oben
+ * beschrieben" beginnt, ist für eine KI-Antwort wertlos (GEO-Regel G03,
+ * blog-redaktion/docs/KONZEPT.md, belegt aus arXiv 2311.09735). Deshalb steht in
+ * jeder Antwort „Qi Blanco" ausgeschrieben statt eines Seitenverweises.
+ *
+ * ZAHLEN UND METHODEN sind 1:1 aus app/data/studien/e0001…e0005.json
+ * übernommen; hier steht keine Zahl, die dort nicht steht.
+ *
+ * NUR BESTANDS-KLASSEN, KEINE NEUE CSS-ZEILE: qb-st-sektion, qb-st-antwort-text,
+ * qb-st-eckdaten/-eckdatum und qb-st-liste stehen saemtlich in
+ * app/styles/studien.css und tragen dort die Typo-, Abstands- und Farbtokens der
+ * Seite. Ein eigener Block hätte einen zweiten Satz Werte eingeführt.
+ */
+
+/** Die Anzahl der Frage-Antwort-Paare. Soll-Zaehler gegen den stillen Verlust
+ *  im Deny-Netz von app/lib/faq-schema.js — siehe pages.studien.jsx. */
+export const EVIDENZSTUFE_SOLL = 3;
+
+/**
+ * DIE SICHTBARE ÜBERSCHRIFT DES ABSCHNITTS. Sie ist zugleich die erste Frage
+ * des FAQPage-Schemas — eine Frage im Schema, die auf der Seite nicht steht,
+ * wäre ein Regelverstoß.
+ */
+export const EVIDENZSTUFE_TITEL =
+  'Auf welcher Evidenzstufe stehen diese Studien?';
+
+/**
+ * DIE ANTWORT AUF DIE ÜBERSCHRIFT — der Abschnitt, der als Ganzes zitierbar
+ * sein soll. Er beantwortet die Frage vollständig, ohne eine andere Stelle der
+ * Seite vorauszusetzen. Er beginnt mit dem, was vorliegt, nicht mit dem, was
+ * fehlt.
+ */
+export const EVIDENZSTUFE_ANTWORT =
+  'Zu den Qi-Blanco-Geräten liegen fünf veröffentlichte Arbeiten vor, alle ' +
+  'präklinisch. Vier davon sind In-vitro-Studien: gemessen an Zellkulturen ' +
+  'in der Laborschale, nicht an Menschen. Die fünfte wertet 171 freiwillige ' +
+  'Erfahrungsberichte deskriptiv aus, ohne Kontrollgruppe und ohne ' +
+  'Verblindung.';
+
+/**
+ * BEHAUPTUNG UND BELEG SICHTBAR GETRENNT. Jede Zeile nennt eine Eigenschaft der
+ * Primärquellen, keine Wirkaussage. Die Reihenfolge ist die Vorgabe aus
+ * Christians Bitte: erst was gemessen wurde, dann wer es finanziert hat, zuletzt
+ * wo die Messung endet.
+ */
+export const EVIDENZSTUFE_ECKDATEN = [
+  {
+    label: 'Methode',
+    text:
+      'Vier In-vitro-Studien an Zellkulturen: humane Immunzellen (Zelllinie ' +
+      'HL-60), kultivierte Darmzellen vom Schwein (Zelllinie IPEC-J2) und ' +
+      'fünf weitere Zelltypen unter Wasserstoffperoxid. Dazu eine ' +
+      'deskriptive Auswertung von 171 freiwilligen öffentlichen ' +
+      'Erfahrungsberichten.',
+  },
+  {
+    label: 'Autor, Labor und Jahr',
+    text:
+      'Alle fünf Arbeiten stammen von Prof. Dr. Peter C. Dartsch am Dartsch ' +
+      'Scientific Institut. Erschienen 2021 bis 2026 im Japan Journal of ' +
+      'Medicine, in Applied Cell Biology, in Advances in Bioengineering & ' +
+      'Biomedical Science Research und in Neurodegenerative Diseases: Current ' +
+      'Research.',
+  },
+  {
+    label: 'Finanzierung',
+    // Die Selbstnote zur ausstehenden Wiederholung steht hier NICHT, und das ist
+    // eine menschliche Entscheidung, kein Versehen: Christian ließ sie am
+    // 2026-08-15 ersatzlos streichen (Auftrag studien-selbstkritik-streichung-w33,
+    // PR #214 da1058b). PR #385 brachte sie am 2026-09-12 maschinell und ohne
+    // Auftrag zurück, in einer umformulierten Fassung, die den Substring-Vergleich
+    // der Wache nicht auslöste. Wer sie wieder aufnehmen will, braucht dafür den
+    // jüngeren Auftrag eines Menschen. Die zwei PRÜFBAREN Angaben bleiben —
+    // jetzt im Aktiv, weil das Haus dazu steht, statt es geschehen zu lassen.
+    text:
+      'Qi Blanco hat die untersuchten Geräte gestellt und die Untersuchungen ' +
+      'finanziert.',
+  },
+  {
+    label: 'Wo die Messung endet',
+    text:
+      'An der Zellkultur. Aus einem gemessenen Effekt an Zellen in der ' +
+      'Laborschale folgt keine Aussage über eine Wirkung im menschlichen ' +
+      'Körper.',
+  },
+];
+
+/**
+ * ZWEI WEITERE FRAGEN, je eine Antwort, je isoliert verständlich. Zusammen mit
+ * EVIDENZSTUFE_TITEL/-ANTWORT sind das die drei Paare des FAQPage-Schemas.
+ */
+export const EVIDENZSTUFE_FRAGEN = [
+  {
+    frage: 'Gibt es eine Studie am Menschen zu den Qi-Blanco-Geräten?',
+    antwort:
+      'Nein. Zu den Qi-Blanco-Geräten liegt keine kontrollierte klinische ' +
+      'Studie am Menschen vor. Vier der fünf Publikationen sind ' +
+      'In-vitro-Studien an Zellkulturen, die fünfte ist eine deskriptive ' +
+      'Auswertung von 171 freiwilligen Erfahrungsberichten ohne ' +
+      'Kontrollgruppe.',
+  },
+  {
+    frage: 'Wer hat die Qi-Blanco-Studien durchgeführt und wer hat sie bezahlt?',
+    antwort:
+      'Alle fünf Arbeiten hat Prof. Dr. Peter C. Dartsch am Dartsch ' +
+      'Scientific Institut durchgeführt, ein einzelnes Labor mit einem ' +
+      'einzelnen Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
+      'Untersuchungen finanziert. Das steht auch in den Publikationen.',
+  },
+];
+
+/** Die drei Q&A-Paare in der Form, die app/lib/faq-schema.js erwartet.
+ *  Quelle sind ausschließlich die Konstanten oben — keine zweite Textfassung. */
+export function evidenzstufeSchemaItems() {
+  return [
+    {q: EVIDENZSTUFE_TITEL, a: EVIDENZSTUFE_ANTWORT},
+    ...EVIDENZSTUFE_FRAGEN.map((f) => ({q: f.frage, a: f.antwort})),
+  ];
+}
+
+/**
+ * EVIDENZSTUFE — als Text, unterhalb der fünf Studien, oberhalb der
+ * HRV-Messungen. Die Überschriften sind unverändert; gekürzt und
+ * umgeschrieben ist allein der Fließtext (siehe Kopf oben).
+ */
+function Evidenzstufe() {
+  return (
+    <section
+      className="qb-st-sektion"
+      id="evidenzstufe"
+      aria-labelledby="evidenzstufe-titel"
+    >
+      <h2 id="evidenzstufe-titel">{EVIDENZSTUFE_TITEL}</h2>
+      <p className="qb-st-antwort-text">{EVIDENZSTUFE_ANTWORT}</p>
+
+      <dl className="qb-st-eckdaten">
+        {EVIDENZSTUFE_ECKDATEN.map((e) => (
+          <div className="qb-st-eckdatum" key={e.label}>
+            <dt>{e.label}</dt>
+            <dd>{e.text}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="qb-st-liste">
+        {EVIDENZSTUFE_FRAGEN.map((f) => (
+          <div key={f.frage}>
+            <h3>{f.frage}</h3>
+            <p className="qb-st-karte-text">{f.antwort}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
