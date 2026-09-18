@@ -32,6 +32,113 @@ function qpxConnectSrc(env) {
   return [...new Set(origins)];
 }
 
+/*
+ * ================================================================
+ * CSP-MELDEWEG (2026-09-18) — REPORT-ONLY, DER NICHTS DURCHSETZT.
+ * ================================================================
+ * Die Richtlinie oben ist über Monate gewachsen, und JEDE Zeile
+ * darin ist entstanden, nachdem etwas STILL kaputt war: der
+ * UpPromote-Sende-Host stand nur im Skript selbst und nirgends in
+ * der Einbau-Anleitung; der Salesbot lädt sein Loader-Skript und
+ * zeigt ein leeres iframe, wenn nur eine der zwei Stellen fehlt.
+ * Beide Male antwortete die Seite HTTP 200, beide Male war das
+ * Markup vollständig, beide Male war jede Probe auf das Markup
+ * grün. DAS IST DIE FEHLERFORM DIESES KOPFES: er blockiert leise,
+ * und nichts im Haus sagt es. Gefunden wurde es jedes Mal dadurch,
+ * dass ein Mensch zufällig eine Browser-Konsole offen hatte.
+ *
+ * Der Report-Only-Kopf dreht genau das um. Er trägt DIESELBE
+ * Richtlinie wie der scharfe Kopf und setzt NICHTS durch — er ist
+ * per Definition wirkungslos für den Besucher. Sein einziger Zweck
+ * ist, dass der Browser jede Blockade, die der scharfe Kopf
+ * ohnehin ausführt, zusätzlich MELDET. Der Rückweg ist deshalb
+ * trivial: ein Kopf, der nichts erzwingt, kann nichts brechen.
+ *
+ * WARUM NICHT STRENGER ALS DER SCHARFE KOPF: die übliche Bauform
+ * stellt Report-Only strenger, um eine geplante Verschärfung
+ * vorzuwarnen. Hier ist die Frage die andere — was wird HEUTE
+ * blockiert, ohne dass es jemand erfährt. Dafür muss die gemeldete
+ * Richtlinie die DURCHGESETZTE sein, nicht eine zweite.
+ *
+ * WARUM EIN AUFRUF UND EIN STRING-ANHANG, obwohl
+ * createContentSecurityPolicy Zusatz-Direktiven annehmen würde:
+ * das Modul erzeugt bei JEDEM Aufruf ein NEUES nonce (2026-09-17
+ * am installierten Modul gemessen, sechs Varianten). Ein zweiter
+ * Aufruf für den Report-Only-Kopf hätte ein nonce genannt, das die
+ * gerenderte Seite nicht trägt — der Browser hätte JEDES legitime
+ * Inline-Skript der eigenen Seite gemeldet. Darum: EIN Aufruf, der
+ * scharfe Kopf bekommt seinen `header` UNVERÄNDERT, der
+ * Report-Only-Kopf ist derselbe String plus eine Direktive.
+ *
+ * WARUM NUR `report-uri` UND KEIN `report-to` — DAS WIDERSPRICHT
+ * DEM URSPRÜNGLICHEN AUFTRAG UND IST GEMESSEN. Die naheliegende
+ * Bauform ist "beide setzen, doppelt hält besser". Hermetisch
+ * gemessen am Schwester-Laden (2026-09-17, echter headless
+ * Chromium, echte Verletzung, derselbe Empfänger, drei Arme mit
+ * derselben Verletzung):
+ *   report-uri ALLEIN                       -> 1 Zeile abgelegt
+ *   report-to ALLEIN + Reporting-Endpoints  -> 0 Zeilen nach 40 s
+ *   BEIDE zusammen                          -> 0 Zeilen nach 70 s
+ * Die dritte Zeile ist der Befund: `report-to` macht den
+ * funktionierenden Weg KAPUTT. Der Browser lässt `report-uri`
+ * fallen, sobald `report-to` dasteht — so sieht es die
+ * Spezifikation vor —, und liefert die Reporting-API-Meldung dann
+ * selbst nicht aus. Wer beide setzt, hat NULL Meldewege statt
+ * zwei, und zwar STILL. Das ist exakt die Fehlerform, gegen die
+ * dieser Bau gerichtet ist, eine Ebene höher. Wer `report-to`
+ * später doch will, braucht ZUERST den positiven Zustellnachweis
+ * gegen genau diesen Empfänger. Herleitung: devlog F-041 des
+ * Kakao-Ladens.
+ *
+ * WAS BEWUSST NICHT GESETZT WURDE:
+ *   - `report-to` (siehe oben).
+ *   - Der Antwort-Kopf `Reporting-Endpoints`. Er bildet den
+ *     Gruppennamen von `report-to` auf eine URL ab und ist ohne
+ *     diese Direktive ein Kopf ohne Leser. Er fällt mit ihr.
+ *   - Der alte `Report-To`-Kopf. Durch `Reporting-Endpoints`
+ *     abgelöst und aus demselben Grund gegenstandslos.
+ *
+ * KOSTEN, BEZIFFERT STATT VERSCHWIEGEN: die Richtlinie steht damit
+ * zweimal in jeder Antwort. Gemessen am Kundenrand 2026-09-18:
+ * scharfer Kopf 3667 B bei 427 KB Seite, also +0,86 %. Das ist
+ * rund das Zehnfache des Schwester-Ladens, weil DIESE Richtlinie
+ * zehn Direktiven und ~25 Fremd-Ursprünge führt. Erwähnt, weil es
+ * NICHT null ist.
+ *
+ * RÜCKWEG — UND HIER IST DIESER LADEN ANDERS ALS DER SCHWESTER-
+ * LADEN, DESHALB STEHT ES HIER UND NICHT NUR IM RESULT: der
+ * Schwester-Laden ist ein Node-Dienst auf unserem Server, dort ist
+ * `<VAR>=off` in der .env plus Neustart ein echter Rückweg OHNE
+ * Neubau. Hier läuft der Laden auf Oxygen, und sein Laufzeit-env
+ * entsteht ausschließlich im `--env-file` des Deploy-Workflows:
+ * was dort nicht steht, ist zur Laufzeit WEG (der Workflow sagt
+ * das selbst, teuer bezahlt an PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID
+ * und einer 500 auf /account/login).
+ * DER SCHALTER UNTEN IST DESHALB EIN ERWEITERUNGSPUNKT, KEIN
+ * NOTAUSGANG: solange `QIBLANCO_CSP_REPORT` nicht in BEIDEN
+ * Stellen des Workflows steht (`env:`-Block UND printf-Zeile), ist
+ * er zur Laufzeit undefined und der Default trägt. Wer ihn scharf
+ * will, trägt ihn dort nach — und braucht dafür den SSH-Deploy-Key,
+ * weil die Workflow-Scope-Sperre jeden PAT-Push auf
+ * .github/workflows/ ablehnt (also NICHT über hb-deploy).
+ * DER ECHTE RÜCKWEG DIESES BAUS IST DESHALB:
+ *   hb-deploy revert --sha <commit> --auftrag <job-id>
+ * Er kostet genau so viel wie eine Workflow-Zeile zu ändern — auf
+ * Oxygen ist beides ein Commit auf main und derselbe Deploy.
+ */
+const CSP_BERICHT_ZIEL_DEFAULT = 'https://qpx.65-108-150-121.sslip.io/csp-report';
+
+/**
+ * Meldeziel auflösen. Leer oder 'off' = kein Report-Only-Kopf.
+ * @param {Record<string, string|undefined>} env
+ * @returns {string|null}
+ */
+function berichtsziel(env) {
+  const roh = (env?.QIBLANCO_CSP_REPORT ?? CSP_BERICHT_ZIEL_DEFAULT).trim();
+  if (!roh || roh.toLowerCase() === 'off') return null;
+  return roh;
+}
+
 /**
  * @param {Request} request
  * @param {number} responseStatusCode
@@ -263,6 +370,17 @@ export default async function handleRequest(
 
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);
+
+  // Meldeweg: siehe den Block CSP-MELDEWEG am Kopf dieser Datei.
+  // `header` geht UNVERÄNDERT in den scharfen Kopf darüber — dieser
+  // Zweig liest ihn nur, er schreibt ihn nie um.
+  const berichtZiel = berichtsziel(context.env);
+  if (berichtZiel) {
+    responseHeaders.set(
+      'Content-Security-Policy-Report-Only',
+      `${header}; report-uri ${berichtZiel}`,
+    );
+  }
 
   return new Response(body, {
     headers: responseHeaders,
