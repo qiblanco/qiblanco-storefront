@@ -227,9 +227,48 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           background: scrolled
             ? 'rgba(74, 71, 65, 0.1)'
             : 'transparent',
+          // `none` UND NICHT `blur(0px)` — der Unterschied ist unsichtbar
+          // und trotzdem der ganze Punkt (2026-09-18, Job 20260918-vier-
+          // seiten-fremde-formate-schuld). Jeder backdrop-filter-Wert außer
+          // `none` öffnet einen Stacking Context, `blur(0px)` also auch; der
+          // Kopf trug ihn dadurch DAUERHAFT, obwohl er ungescrollt gar nichts
+          // weichzeichnet.
+          //
+          // WAS DAS GEKOSTET HAT, gemessen statt vermutet: `SubmenuPortal`
+          // rendert INLINE, solange sein Portal-Ziel fehlt — also beim
+          // serverseitigen Rendern und in der ersten Client-Runde (siehe die
+          // Herleitung weiter unten an `createPortal`). In diesem Zustand
+          // saß `div.submenu` (z-index 99 = calc(var(--z-kopf) - 1)) IM Kopf,
+          // und sein z-index war wirkungslos, ohne dass das irgendwo im Code
+          // stand. Gate 12 meldete daraus auf /pages/studien und
+          // /pages/affiliate-partnerprogramm `overlay-ueberstand-stacking =
+          // kaputt` (4x z-gefangen bei tablet-768) und sperrte damit JEDEN
+          // Merge, der die Seiten über eine geteilte Datei erreicht.
+          //
+          // BEIDE ARME GEMESSEN (ausgeliefertes HTML ohne JavaScript, also im
+          // Zustand, den jeder Besucher zuerst bekommt; 768x1024, dpr 2):
+          // https://qiblanco.com lieferte auf /pages/studien,
+          // /pages/affiliate-partnerprogramm UND /pages/qibracelet-details je
+          // 4 entwertete z-index, ein Dev-Server ab origin/main 406bc7c mit
+          // dieser Zeile je 0. Der Befund war also keine Eigenschaft
+          // einzelner Seiten, sondern des Kopfes — und damit jeder Seite.
+          // Gate 12 hat ihn nur dort gesehen, wo seine Messung den
+          // Vorhydrations-Zustand erwischt hat.
+          //
+          // OHNE den Context steigt die Kette einen Schritt weiter hoch bis
+          // `.header-wrapper` (position:fixed + z-index: var(--z-kopf)) — ein
+          // Stacking Context, der über einen EIGENEN z-index entsteht und
+          // deshalb eine ABSICHT ist, keine Nebenwirkung. Genau diese
+          // Unterscheidung trifft der Prüfpunkt (src/format_pruefer.py,
+          // `durchZIndex`), und genau sie stand hier bisher nicht im Code.
+          //
+          // DIE ÜBERBLENDUNG BLEIBT: die CSS-Filter-Interpolation ersetzt
+          // eine `none`-Seite durch die Identitätswerte der anderen Seite,
+          // `none -> blur(32px)` läuft also weiter über
+          // `transition: backdrop-filter 0.3s` (app/styles/app.css).
           backdropFilter: scrolled
             ? 'blur(32px)'
-            : 'blur(0px)',
+            : 'none',
         }}
       >
         <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
