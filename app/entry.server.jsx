@@ -225,6 +225,25 @@ export default async function handleRequest(
       'https://qiblanco.activehosted.com',
       'https://consentcdn.cookiebot.com',
       'https://fonts.googleapis.com',
+      /*
+       * fonts.bunny.net STEHT HIER BEWUSST NICHT, und das ist seit dem
+       * 2026-08-24 entschieden (Job 20260824-storefront-hydration-418-und-
+       * csp-bunny-prio15, RESULT Entscheidung 2). Verursacher ist NICHT
+       * eine Browser-Erweiterung, sondern unser eigenes ActiveCampaign-
+       * Embed (embed.php Z. 166), das aus seiner Formular-Font-Einstellung
+       * einen bunny-<link> baut — samt defekter Query.
+       * Vier Gründe, die unverändert gelten: der Block ist der Status quo
+       * und nicht der Schaden (Erlauben würde einen Dritt-Font NEU
+       * einführen, nicht etwas wiederherstellen); es ist nicht unser Font;
+       * ein Dritt-Font-CDN sähe die Kunden-IP jedes Seitenaufrufs auf einem
+       * Cookiebot-geführten Shop; und die kosmetischen Kosten treffen nur
+       * Labels im Newsletter-Formular, weil unsere eigene Regel font-family
+       * für input/button/._submit ohnehin per !important gewinnt.
+       * Behebung gehört an die QUELLE (Font-Einstellung des AC-Formulars
+       * id=15 im ActiveCampaign-Konto), nicht in diese Liste.
+       * Am 2026-09-18 wieder gemeldet (3 Meldungen, /pages/crystal-cacao) —
+       * die Entscheidung wurde geprüft und bestätigt, nicht übersehen.
+       */
       'https://assets.gorgias.chat',
       'https://client.gorgias.chat',
     ],
@@ -457,6 +476,19 @@ export default async function handleRequest(
       'https://*.imgix.video',
     ],
     fontSrc: [
+      /*
+       * images.simplycodes.com steht hier bewusst NICHT. Anders als bunny
+       * daneben ist das wirklich eine Browser-Erweiterung des Besuchers
+       * (SimplyCodes, ein Gutschein-Add-on): 0 Treffer in 866 KB über
+       * unsere 65 eigenen Assets, und das Meldemuster ist der Beweis —
+       * 27 Schriftdateien in EINER Sekunde (2026-09-18T03:44:10Z, zuerst
+       * und zuletzt identisch) aus einer einzigen Sitzung, danach nie
+       * wieder. Ein Anbieter, den wir einbinden, meldet sich über den Tag
+       * verteilt; eine Erweiterung feuert einmal beim Aufklappen.
+       * Wir weiten die Richtlinie nicht für Software, die der Kunde
+       * installiert hat: sie gehört ihm, nicht uns, und ihr Ausfall ist
+       * für seinen Kauf folgenlos.
+       */
       "'self'",
       'data:',
       'https://cdn.shopify.com',
