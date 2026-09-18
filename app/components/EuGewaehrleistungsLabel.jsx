@@ -5,6 +5,7 @@ import {
   useContext,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import {useRouteLoaderData} from 'react-router';
 import {bildQuellen} from '~/components/reusables/shopifyBildQuellen';
@@ -149,8 +150,19 @@ const EuLabelKontext = createContext(null);
 export function EuLabelProvider({children}) {
   const dialogRef = useRef(null);
   const label = useEuLabelAsset();
+  /*
+   * EINWEG-SCHALTER: einmal true, bleibt true. Er entscheidet, ob die
+   * amtliche Grafik ueberhaupt im DOM steht (Begruendung am <img> im Dialog).
+   * Er wird beim Oeffnen gesetzt und nie zurueckgenommen -- ein zweites
+   * Oeffnen soll das Bild nicht noch einmal aus dem Netz holen muessen.
+   */
+  const [grafikGebraucht, setGrafikGebraucht] = useState(false);
 
   const open = useCallback(() => {
+    // Der Zustand zuerst: showModal() laeuft synchron, das Bild montiert im
+    // unmittelbar folgenden Rendern. Weil grafikVorwaermen() die Datei bei
+    // der ersten Absichtsgeste geholt hat, kommt sie dabei aus dem Cache.
+    setGrafikGebraucht(true);
     // showModal() wirft, wenn der Dialog bereits offen ist (z.B. Doppelklick
     // oder zweiter Ausloeser). Ohne den Schutz reißt das die Seite ab.
     const d = dialogRef.current;
@@ -167,7 +179,12 @@ export function EuLabelProvider({children}) {
   return (
     <EuLabelKontext.Provider value={wert}>
       {children}
-      <EuLabelDialog ref={dialogRef} label={label} onClose={close} />
+      <EuLabelDialog
+        ref={dialogRef}
+        label={label}
+        onClose={close}
+        grafikGebraucht={grafikGebraucht}
+      />
     </EuLabelKontext.Provider>
   );
 }
@@ -215,7 +232,10 @@ function useEuLabelAsset() {
 // (package.json). Die React-19-Schreibweise "ref als normales Prop" wäre
 // hier still `undefined` -- showModal() liefe nie, das Overlay bliebe tot,
 // und der Fehler zeigte sich erst im Browser.
-const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
+const EuLabelDialog = forwardRef(function EuLabelDialog(
+  {label, onClose, grafikGebraucht},
+  ref,
+) {
   // Klick auf den dunklen Rand schließt. Der <dialog> selbst IST der
   // zentrierte Kasten (der Rand ist ::backdrop), deshalb lässt sich der Rand
   // nicht direkt beklicken -- die Trefferpruefung läuft über die Geometrie
@@ -301,46 +321,56 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
         */}
         <div className="eu-gwl-dialog__buehne">
           {/*
-            `loading="lazy"` IST HIER KEINE FEINOPTIMIERUNG, SONDERN DER
-            GRÖSSTE EINZELPOSTEN DER GANZEN HÜLLE -- und der Dialog ist der
-            Grund, warum das so lange niemandem auffiel.
+            DIE GRAFIK STEHT ERST IM DOM, WENN DER DIALOG ZUM ERSTEN MAL
+            GEOEFFNET WURDE -- und der Umweg dorthin ist die eigentliche
+            Lehre dieser Stelle.
 
-            Gemessen am 2026-09-18 im echten Browser (mobil 390x844 DPR2,
-            live qiblanco.com): dieses Bild liegt in einem GESCHLOSSENEN
-            <dialog>, seine Box misst 0x0 Pixel -- und es wurde trotzdem
-            vollständig geladen, 259 314 Byte, responseEnd bei t=383 ms.
-            Ein Bild ohne `loading` wird geholt, sobald der Vorlade-Scanner
-            es im HTML sieht; ob es je ein Layout bekommt, fragt niemand.
-
-            Größenordnung: die Hülle lädt 659 287 Byte Bild. Dieses eine
-            unsichtbare Bild ist davon 39,3 Prozent, auf einer gedrosselten
-            Mobilleitung rund 1,3 Sekunden reine Bandbreite -- abgezogen vom
-            ANFANG, also genau dort, wo das LCP-Element sie braucht. Und
+            BEFUND (2026-09-18, live, mobil 390x844 DPR2): dieses Bild lag in
+            einem GESCHLOSSENEN <dialog>, seine Box misst 0x0 Pixel -- und es
+            wurde trotzdem vollständig geholt: 259 314 Byte, responseEnd bei
+            t=267 ms. Das sind 39,3 Prozent aller Bildbytes der Hülle, und
             weil der Fuss auf JEDER Seite steht, wurde das auf JEDEM
             Seitenaufruf des Ladens bezahlt.
 
-            Ein geschlossener <dialog> ist `display: none`. Ein lazy-Bild
-            darin bekommt nie einen Schnittbereich und wird deshalb NICHT
-            geholt; erst `showModal()` gibt ihm eine Box, und dann lädt es.
-            Genau diese Kette ist der Gewinn -- und genau sie ist auch die
-            Gefahr, deshalb steht die Vorwärmung unten am Auslöser.
+            DER ERSTE VERSUCH WAR `loading="lazy"`, UND ER IST GEMESSEN
+            GESCHEITERT. Die Begründung dafür klang zwingend: ein
+            geschlossener <dialog> ist `display: none`, ein lazy-Bild darin
+            bekommt nie einen Schnittbereich, also wird es nicht geholt.
+            A/B an zwei Dev-Servern derselben Anwendung mit genau diesem
+            einen Unterschied sagt etwas anderes -- A (ohne Attribut)
+            259 314 Byte bei t=215 ms, B (mit `lazy`) DIESELBEN 259 314 Byte
+            bei t=798 ms. Verschoben, nicht vermieden. Für ein Element ohne
+            Layout-Box kann der Browser nicht entscheiden, ob es je in den
+            Blick kommt, und lädt im Zweifel. `loading` ist eine Bitte über
+            die Reihenfolge, kein Riegel gegen den Abruf.
+
+            Ein Riegel über Bytes muss deshalb am DOM ansetzen: kein <img>,
+            keine Anfrage. Sobald es gebraucht wird, soll es dagegen sofort
+            laden -- es steht dann im Blick, ein `lazy` wäre hier genau
+            falsch herum.
+
+            DASS DER KASTEN NICHT LEER BLEIBT, TRAEGT NICHT DIESE ZEILE sondern
+            grafikVorwaermen() weiter unten: die Datei wird bei Zeigerkontakt,
+            Fokus oder erstem Fingerkontakt geholt, also bevor der Klick
+            überhaupt fällt. Beim Öffnen kommt sie aus dem Cache.
 
             AUSDRÜCKLICH NICHT GEBAUT: eine Bildleiter oder ein
             `width=`-Parameter an dieser Grafik. LABEL_MINDESTBREITE_PX
-            schützt die Ablesbarkeit des QR-Codes (Anhang I Nr. 3); die
-            Datei wird unverändert ausgeliefert, nur später. Die Auflagen
-            aus Anhang I Nr. 1 und Nr. 5 bleiben damit unberührt.
+            schützt die Ablesbarkeit des QR-Codes (Anhang I Nr. 3); die Datei
+            geht unverändert raus, nur später. Die Auflagen aus Anhang I
+            Nr. 1 und Nr. 5 bleiben unberührt.
           */}
-          <img
-            className="eu-gwl-dialog__bild"
-            src={label.url}
-            alt={LABEL_ALT_DE}
-            width={label.breite}
-            height={label.hoehe}
-            loading="lazy"
-            decoding="async"
-            data-eu-label-iso={label.iso}
-          />
+          {grafikGebraucht ? (
+            <img
+              className="eu-gwl-dialog__bild"
+              src={label.url}
+              alt={LABEL_ALT_DE}
+              width={label.breite}
+              height={label.hoehe}
+              decoding="async"
+              data-eu-label-iso={label.iso}
+            />
+          ) : null}
         </div>
 
         <p className="eu-gwl-dialog__fuss">
