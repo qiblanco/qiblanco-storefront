@@ -225,6 +225,25 @@ export default async function handleRequest(
       'https://qiblanco.activehosted.com',
       'https://consentcdn.cookiebot.com',
       'https://fonts.googleapis.com',
+      /*
+       * fonts.bunny.net STEHT HIER BEWUSST NICHT, und das ist seit dem
+       * 2026-08-24 entschieden (Job 20260824-storefront-hydration-418-und-
+       * csp-bunny-prio15, RESULT Entscheidung 2). Verursacher ist NICHT
+       * eine Browser-Erweiterung, sondern unser eigenes ActiveCampaign-
+       * Embed (embed.php Z. 166), das aus seiner Formular-Font-Einstellung
+       * einen bunny-<link> baut — samt defekter Query.
+       * Vier Gründe, die unverändert gelten: der Block ist der Status quo
+       * und nicht der Schaden (Erlauben würde einen Dritt-Font NEU
+       * einführen, nicht etwas wiederherstellen); es ist nicht unser Font;
+       * ein Dritt-Font-CDN sähe die Kunden-IP jedes Seitenaufrufs auf einem
+       * Cookiebot-geführten Shop; und die kosmetischen Kosten treffen nur
+       * Labels im Newsletter-Formular, weil unsere eigene Regel font-family
+       * für input/button/._submit ohnehin per !important gewinnt.
+       * Behebung gehört an die QUELLE (Font-Einstellung des AC-Formulars
+       * id=15 im ActiveCampaign-Konto), nicht in diese Liste.
+       * Am 2026-09-18 wieder gemeldet (3 Meldungen, /pages/crystal-cacao) —
+       * die Entscheidung wurde geprüft und bestätigt, nicht übersehen.
+       */
       'https://assets.gorgias.chat',
       'https://client.gorgias.chat',
     ],
@@ -237,6 +256,11 @@ export default async function handleRequest(
       'https://consentcdn.cookiebot.com',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
+      // Meta-Pixel, STELLE 3 VON 3. www.facebook.com steht seit dem
+      // Altbestands-Nachzug in connect-src UND img-src — der Cookie-Sync
+      // öffnet zusätzlich ein iframe, und das fällt hier heraus. Gemessen
+      // 2026-09-18 auf /products/qihome-air (2 Meldungen).
+      'https://www.facebook.com',
       // Eigener Sales-Chat-Assistent (s05): das iframe, das der Loader auf
       // <origin>/widget/embed öffnet. STELLE 2 VON 2 — ohne diese Zeile lädt
       // das Loader-Skript, das iframe bleibt aber leer, und zwar STILL.
@@ -245,6 +269,15 @@ export default async function handleRequest(
     connectSrc: [
       "'self'",
       'https://monorail-edge.shopifysvc.com',
+      // Shopify-eigene Telemetrie (OpenTelemetry-Kollektor). GLEICHE
+      // REGISTRIERBARE DOMAIN wie monorail-edge daneben, also derselbe
+      // Anbieter — und dieser Anbieter ist die Plattform, die den ganzen
+      // Laden ausliefert. Gemessen 2026-09-18 mit 63 Meldungen die größte
+      // Klasse des Tages, durchgehend von 03:44Z bis 07:03Z. Der Host kommt
+      // NICHT aus unseren Bundles (0 Treffer in 866 KB über 65 eigene
+      // Assets) — er wird von Shopifys eigener Laufzeit gebildet, die wir
+      // über cdn.shopify.com in script-src ohnehin tragen.
+      'https://otlp-http-production.shopifysvc.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',
       'https://*.reputon.com',
       'https://qiblanco-video.imgix.video',
@@ -335,15 +368,72 @@ export default async function handleRequest(
        * die zweimal je Antwort ausgeht: rund 16,7 KB auf eine 427-KB-Seite
        * (+3,9 %). Dafür ist ein Remarketing-Ping aus rund 180 seltenen
        * Ländern zu wenig. Aufgenommen wird deshalb NUR, was gemessen ist.
-       * Auf connect-src ist das genau ein Host: www.google.com (7
-       * Meldungen). Die ccTLD-Varianten kamen ausschließlich auf img-src —
-       * siehe dort.
-       * NICHT ERLAUBT und damit weiter blockiert: jede andere Google-ccTLD
-       * (google.at, google.fr, google.pl, google.co.uk ...). Das ist eine
-       * offene Flanke mit Melder, keine verdeckte: jede neue ccTLD taucht
-       * als neue Klasse in csp.db auf und der csp-aufloeser reiht sie ein.
+       * WAS SICH AM 2026-09-18 GEÄNDERT HAT, und zwar nicht die Meinung,
+       * sondern die Datenlage: der Absatz darüber hielt die ccTLD-Frage
+       * für eine img-src-Frage und nannte die übrigen ccTLDs eine "offene
+       * Flanke mit Melder". Der Melder hat geliefert. Fünf Stunden später
+       * standen ZEHN weitere ccTLDs in csp.db (at, cm, co.id, co.jp, co.th,
+       * co.uk, gr, nl, rs — und at zusätzlich auf connect-src, wo laut
+       * jenem Absatz "genau ein Host" liegen sollte).
+       *
+       * DAMIT IST DIE REGEL "NUR WAS GEMESSEN IST" WIDERLEGT — nicht als
+       * Nachlässigkeit, sondern rechnerisch: sie erzeugt je neuem
+       * Besucherland eine neue Klasse, einen neuen Vorgang und einen neuen
+       * Nachtrag, und der Tagesdeckel des Auflösers liegt bei zwei
+       * Meldungen. Eine Menge, die schneller wächst, als man sie abträgt,
+       * ist keine Liste, sondern ein Laufband.
+       *
+       * DIE MENGE WIRD DESHALB AB HIER ABGELEITET STATT GEMESSEN, und die
+       * Ableitung hat eine Quelle im Haus: MARKT_LAENDER in
+       * app/lib/markt-pricing.js — DE, AT, CH, LI, US, GB. Das ist die
+       * Länderliste, für die dieser Laden überhaupt gebaut ist (Preis,
+       * Steuersatz, Währung). Ein Remarketing-Ping ist genau dort etwas
+       * wert, wo wir auch liefern und abrechnen können.
+       *
+       * Aufgenommen ist damit VOLLSTÄNDIG und im Voraus:
+       *   DE -> google.de · AT -> google.at · CH -> google.ch
+       *   LI -> google.li · US -> google.com · GB -> google.co.uk
+       * google.li und google.co.uk stehen hier, BEVOR eine Meldung sie
+       * verlangt — das ist der Unterschied zwischen einer abgeleiteten und
+       * einer nachgetragenen Liste. Kosten: 6 Hosts je Direktive, rund
+       * 150 Byte, gegen die 4,2 KB einer Vollaufzählung aller ~190.
+       *
+       * NICHT ERLAUBT UND BEWUSST WEITER BLOCKIERT: jede ccTLD ausserhalb
+       * MARKT_LAENDER — gemessen sind das heute google.gr (3), google.nl,
+       * google.cm, google.co.id, google.co.jp, google.co.th, google.rs (je
+       * 1). Diese Besucher kaufen nicht bei uns; ihr Audience-Ping ist
+       * nichts wert. Der csp-auflöser wird sie weiter melden, und nach
+       * sieben Tagen als [BEFUND:ALTBESTAND-OFFEN] — DAS IST DIE RICHTIGE
+       * ANTWORT UND KEIN UNERLEDIGTER REST. Wer sie einzeln nachträgt,
+       * stellt das Laufband wieder an.
+       * DER EINZIGE ANLASS, hier eine Zeile zu ergänzen, ist ein neues
+       * MARKT_LAND. Bewacht: probe_csp_richtlinie_trägt_marktlaender.py
+       * liest MARKT_LAENDER aus markt-pricing.js und fällt rot, sobald ein
+       * Marktland hier keinen Host hat.
+       *
+       * ZWEI ZEILEN IN img-src STEHEN AUSSERHALB DIESER ABLEITUNG, und sie
+       * sind kein Gegenbeispiel: google.cz ist ein gemessener Nachtrag vom
+       * selben Morgen (#502) aus der Zeit vor der Regel und bleibt stehen,
+       * weil Entfernen einen Deploy kostet und nichts bringt. google.fi ist
+       * die ccTLD unseres eigenen MESSPLATZES und trägt dort eine eigene,
+       * weiterhin gültige Begründung — siehe img-src.
        */
       'https://www.google.com',
+      'https://www.google.de',
+      'https://www.google.at',
+      'https://www.google.ch',
+      'https://www.google.li',
+      'https://www.google.co.uk',
+      // Google Tag Manager, STELLE 3 VON 3. gtm.js wird von script-src
+      // geladen und von img-src gepingt — beides steht seit jeher. Der
+      // Container sendet zusätzlich per fetch/beacon zurück, und das
+      // fällt hier heraus. Gemessen 2026-09-18, 4 Meldungen.
+      'https://www.googletagmanager.com',
+      // Google Ads Conversion Linker. Nachbar von doubleclick und
+      // googletagmanager, die beide schon stehen; dieser Host stand auf
+      // KEINER Direktive. Gemessen 2026-09-18 auf /products/qibracelet,
+      // 3 Meldungen auf connect-src und 3 auf img-src — also beide Stellen.
+      'https://www.googleadservices.com',
       'https://*.clarity.ms',
       'https://consent.cookiebot.com',
       'https://consentcdn.cookiebot.com',
@@ -386,6 +476,19 @@ export default async function handleRequest(
       'https://*.imgix.video',
     ],
     fontSrc: [
+      /*
+       * images.simplycodes.com steht hier bewusst NICHT. Anders als bunny
+       * daneben ist das wirklich eine Browser-Erweiterung des Besuchers
+       * (SimplyCodes, ein Gutschein-Add-on): 0 Treffer in 866 KB über
+       * unsere 65 eigenen Assets, und das Meldemuster ist der Beweis —
+       * 27 Schriftdateien in EINER Sekunde (2026-09-18T03:44:10Z, zuerst
+       * und zuletzt identisch) aus einer einzigen Sitzung, danach nie
+       * wieder. Ein Anbieter, den wir einbinden, meldet sich über den Tag
+       * verteilt; eine Erweiterung feuert einmal beim Aufklappen.
+       * Wir weiten die Richtlinie nicht für Software, die der Kunde
+       * installiert hat: sie gehört ihm, nicht uns, und ihr Ausfall ist
+       * für seinen Kauf folgenlos.
+       */
       "'self'",
       'data:',
       'https://cdn.shopify.com',
@@ -423,19 +526,37 @@ export default async function handleRequest(
       'https://cm.g.doubleclick.net',
       'https://*.tiktok.com',
       'https://*.tiktokw.us',
-      // Google-ccTLD-Matching aus gtm.js:422. NUR GEMESSENE ccTLDs, und
-      // die Liste ist absichtlich kurz — Begründung bei connect-src oben.
-      // .com/.de/.ch/.cz stammen aus echtem Besucherverkehr (csp.db; unsere
-      // eigenen Abrufe wirft intern_filter vorher weg).
-      // .fi steht in csp.db NIE und gehört trotzdem hierher: es ist die
-      // ccTLD, die GOOGLE UNSEREM MESSPLATZ zuweist. Wer künftig vom Server
-      // aus am Kundenrand misst, sieht sie — ohne diese Zeile liest er den
-      // Standort des Servers als Misserfolg des Baus.
+      // Google-ccTLD-Matching aus gtm.js:422. Die Liste ist seit dem
+      // 2026-09-18 ABGELEITET statt gemessen: sie ist genau MARKT_LAENDER
+      // aus app/lib/markt-pricing.js. Herleitung, Kostenrechnung und die
+      // Liste der bewusst WEITER blockierten ccTLDs stehen einmal bei
+      // connect-src oben — hier nicht wiederholt, damit sie nicht
+      // auseinanderlaufen können.
       'https://www.google.com',
       'https://www.google.de',
+      'https://www.google.at',
       'https://www.google.ch',
+      'https://www.google.li',
+      'https://www.google.co.uk',
+      // ZWEI ZEILEN AUSSERHALB DER ABLEITUNG, und beide bleiben mit Grund:
+      // .cz ist ein gemessener Nachtrag vom selben Morgen (#502) aus der
+      // Zeit vor der Regel — entfernen kostet einen Deploy und bringt
+      // nichts. .fi steht in csp.db NIE und gehört trotzdem hierher: es
+      // ist die ccTLD, die GOOGLE UNSEREM MESSPLATZ zuweist. Wer künftig
+      // vom Server aus am Kundenrand misst, sieht sie — ohne diese Zeile
+      // liest er den Standort des Servers als Misserfolg des Baus.
       'https://www.google.cz',
       'https://www.google.fi',
+      // Google Ads Conversion Linker — STELLE 2 VON 2 zu connect-src oben.
+      // Gemessen 2026-09-18 auf BEIDEN Direktiven mit je 3 Meldungen; wer
+      // nur eine schreibt, heilt die Hälfte.
+      'https://www.googleadservices.com',
+      // Meta-Pixel: connect.facebook.net steht in script-src UND
+      // connect-src, www.facebook.com daneben in img-src — der Pixel lädt
+      // sein Zählbild aber von connect.facebook.net. Ein
+      // Namens-Beinahetreffer ist keine Deckung. Gemessen 2026-09-18 auf
+      // /products/qione-kette, 2 Meldungen.
+      'https://connect.facebook.net',
       'https://assets.gorgias.chat',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
