@@ -293,10 +293,11 @@ const EuLabelDialog = forwardRef(function EuLabelDialog(
         {/*
           WARUM <h3> UND NICHT <h2> -- ZWEI GRUENDE, DER ZWEITE IST GEMESSEN.
 
-          (1) SEMANTISCH: der Amtstitel direkt darunter ist ein <h3>, und der
-          Kommentar dort nennt ihn eine TRENNLINIE zwischen unserer Rede und
-          der der Kommission. Eine Trennlinie hat zwei GLEICHRANGIGE Seiten --
-          Geschwister druecken das richtiger aus als eine Unterordnung.
+          (1) SEMANTISCH: der Amtstitel 14 Zeilen weiter unten traegt h3, und
+          beide Ueberschriften haengen am selben Zweig (`label.eigeneWorte`).
+          Zwei Ueberschriften, die gemeinsam erscheinen und gemeinsam
+          verschwinden, stehen auf derselben Ebene -- nicht die eine unter
+          der anderen.
 
           (2) DER DIALOG IST ZU, UND DIE SEITE ZAHLT TROTZDEM. `showModal()`
           haengt am Klick, der <dialog> steht aber dauerhaft gemountet im
