@@ -346,7 +346,16 @@ export const QIMASTER_PERSOENLICHKEIT = {
   // sie hat.“ Dieselbe Form wie „Wir zitieren ihn; wir beanspruchen ihn
   // nicht“ und „Sie ist kein Schmuckstück, und wir machen sie nicht dazu“,
   // beide am selben Tag aus demselben Abschnitt gestrichen.
-  deutung: [
-    'Zwischen der Überlieferung und dem Fundament liegt ein Sprung, und den machen wir – nicht Yogananda, nicht Warnke, nicht Dartsch. Er lautet: Wer an sich arbeitet, arbeitet auch an seinem Gefäß. Ein Körper, dessen Wasser geordneter ist, ist – in unserer Deutung – ein Körper, der feinere Schwingung leichter trägt. Das ist der Gedanke hinter „erhöhte Zellschwingung“, und er ist genau das: ein Gedanke, der auf einem gemessenen Fundament steht und über es hinausgeht.',
-  ],
+  // ERSATZLOS GESTRICHEN (Christian, 2026-09-18): der Deutungs-Absatz
+  // „Zwischen der Überlieferung und dem Fundament liegt ein Sprung …“ samt
+  // seiner Überschrift „Unsere Deutung“. Das Feld `deutung` ist mit ihm
+  // entfallen und nicht auf eine leere Liste gesetzt: ein leeres Feld hätte
+  // einen Leser behalten, der nichts mehr rendert, und der nächste Bauer
+  // hätte es für einen Rest gehalten, der zu füllen ist.
+  //
+  // WAS DIE STREICHUNG MITNIMMT, und es steht hier, weil es sonst niemandem
+  // auffällt: der Name Warnke kam auf /products/qi-master ausschließlich in
+  // diesem Satz vor (am Live-Stand gemessen, 2026-09-18). Er steht damit
+  // nicht mehr auf der Seite. Yogananda (Überlieferungs-Block) und Dartsch
+  // (Quellenverzeichnis des 6G-Abschnitts) bleiben, wo sie stehen.
 };
