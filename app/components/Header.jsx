@@ -58,18 +58,18 @@ const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
  * nur das echte Verhältnis, damit der Platz vor dem Laden feststeht.
  */
 /*
- * BILDLEITER IM MEGA-MENUE — die beiden `sizes`-Werte sind GEMESSEN, nicht
- * geschaetzt, und das ist hier der ganze Punkt.
+ * BILDLEITER IM MEGA-MENÜ — die beiden `sizes`-Werte sind GEMESSEN, nicht
+ * geschätzt, und das ist hier der ganze Punkt.
  *
- * Ein `sizes` ist eine BEHAUPTUNG UEBER DIE FLAECHE, keine Einstellung. Ist
- * es zu klein, spart es kein Byte — der Browser waehlt eine zu kleine Sprosse
- * und das Bild kommt UNSCHARF an. Genau daran ist der Vorgaenger-Bau (#499)
+ * Ein `sizes` ist eine BEHAUPTUNG ÜBER DIE FLÄCHE, keine Einstellung. Ist
+ * es zu klein, spart es kein Byte — der Browser wählt eine zu kleine Sprosse
+ * und das Bild kommt UNSCHARF an. Genau daran ist der Vorgänger-Bau (#499)
  * gescheitert: sein `sizes` hatte zwei Zweige ("(min-width: 1000px) 325px,
- * 80px"), waehrend die Kacheln STETIG mit dem Fenster wachsen. Alles zwischen
+ * 80px"), während die Kacheln STETIG mit dem Fenster wachsen. Alles zwischen
  * 600 und 1000 fiel in den Telefon-Zweig, Gate 12 meldete `bild-aufloesung=
- * kaputt` auf ACHT Seiten, und Header.jsx musste vollstaendig zurueck.
+ * kaputt` auf ACHT Seiten, und Header.jsx musste vollständig zurück.
  *
- * ES GIBT ZWEI WERTE, WEIL ES ZWEI FLAECHEN GIBT. Am 2026-09-18 ueber ALLE
+ * ES GIBT ZWEI WERTE, WEIL ES ZWEI FLÄCHEN GIBT. Am 2026-09-18 über ALLE
  * elf Gate-12-Haltepunkte abgetastet (Playwright, eigener Dev-Server,
  * Box-Breite in CSS-px, gemessen an der gelieferten Datei statt am
  * `width=`-Parameter der URL):
@@ -81,20 +81,20 @@ const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
  *   Online Kurse      120,2  142,3  215,3  263,0  263,0  263,0  263,0   325
  *
  * Die ersten drei deckt MENUE_SIZES ab (Obergrenze ist "Mehr"). Die vierte
- * NICHT: auf schmalen Fenstern ist sie GROESSER als die anderen — 120,2 gegen
- * 89,6 bei 360 —, und `27vw` gaebe dort nur 97,2 px. Das waere derselbe
- * Unschaerfe-Fehler wie oben, nur an einer anderen Kachel. Sie bekommt
+ * NICHT: auf schmalen Fenstern ist sie GRÖSSER als die anderen — 120,2 gegen
+ * 89,6 bei 360 —, und `27vw` gäbe dort nur 97,2 px. Das wäre derselbe
+ * Unschärfe-Fehler wie oben, nur an einer anderen Kachel. Sie bekommt
  * deshalb MENUE_SIZES_KURSE.
  *
  * Ihr Deckel steht in app/styles/app.css (`.nav-styling-wrapper--kurse img`,
  * `max-width: min(100%, 263px)`) und greift NUR ab dpr 2 — daher die 263 bei
  * 768..900 und die 325 bei desktop-1000/1280/1440 (dpr 1). Ein `sizes` kennt
- * die Geraetedichte nicht, deshalb deckt MENUE_SIZES_KURSE den groesseren der
- * beiden Faelle ab.
+ * die Gerätedichte nicht, deshalb deckt MENUE_SIZES_KURSE den größeren der
+ * beiden Fälle ab.
  *
  * `masterBreite` an jeder Kachel ist die ECHTE Breite der Masterdatei (am
  * 2026-09-18 am CDN nachgemessen). Ohne sie verspricht die Leiter Sprossen,
- * die es nicht gibt, und das CDN gibt dafuer nur den Master zurueck.
+ * die es nicht gibt, und das CDN gibt dafür nur den Master zurück.
  */
 const MENUE_SIZES = '(min-width: 1000px) 325px, (min-width: 768px) 34vw, 27vw';
 const MENUE_SIZES_KURSE = '(min-width: 1000px) 325px, (min-width: 768px) 35vw, 36vw';
