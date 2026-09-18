@@ -261,6 +261,109 @@ export default async function handleRequest(
       'https://region1.google-analytics.com',
       'https://analytics.google.com',
       'https://stats.g.doubleclick.net',
+      /*
+       * ================================================================
+       * BELEGTE TRACKING-URSPRÜNGE (2026-09-18, Großjob-Segment s03).
+       * ================================================================
+       * Jede Zeile bis zum Ende dieses Blocks ist am Kundenrand GEMESSEN,
+       * nicht vermutet: sauberer Chromium ohne Erweiterungen, live auf
+       * qiblanco.com, Einwilligung angenommen, Initiator-Kette je Ursprung
+       * aus CDP-Stackframes. Jede Kette endet in UNSERER eigenen Datei —
+       * app/root.jsx:556 -> public/qiblanco-google-tracking.js ->
+       * gtm.js?id=GTM-N7DRSN5 —, und jeder Anbieter trägt UNSERE Konto-ID
+       * (Hotjar 1218483, Taboola 1695700, TikTok CDLS75JC77U4R0MG10QG und
+       * CIE7FTBC77U6OH8ULQ20). Die Gegenhypothese "das sind Erweiterungen
+       * der Besucher" ist widerlegt: derselbe Browser OHNE Einwilligung
+       * erzeugt 0 Verletzungen bei 163 Requests, MIT Einwilligung 114 bei
+       * 242.
+       *
+       * WAS OHNE DIESE ZEILEN PASSIERT, und es ist nicht das, wonach es
+       * aussieht: die DURCHGESETZTE Richtlinie ist byte-identisch mit der
+       * Report-Only-Richtlinie (einziger Unterschied: report-uri). Das ist
+       * also kein Report-Only-Befund. Diese Messpunkte sterben JETZT bei
+       * jedem eingewilligten Besucher — GA4-Hauptmesspunkt
+       * region1.analytics.google.com mit 43 Meldungen, TikTok mit 105.
+       *
+       * WILDCARD ODER EXAKTER HOST — die Entscheidung steht je Anbieter:
+       * bei TikTok, Taboola und Hotjar wächst die HOST-Menge (16 -> 22 ->
+       * 23 gemeldete Klassen binnen 30 Minuten), die ANBIETER-Menge nicht.
+       * Dort steht die Wildcard auf der Anbieter-Domain, und sie ist
+       * ausdrücklich BREITER als der gemessene Host: *.tiktok.com erlaubt
+       * jeden TikTok-Host, nicht nur analytics.tiktok.com. Das ist gewollt
+       * und kostet, was ein Anbieter kostet, dem wir ohnehin ein Konto und
+       * ein Skript im eigenen GTM anvertrauen. Bei Bing, GA4 und
+       * DoubleClick bleibt es beim exakten Host: dort ist die Hausform
+       * schon exakt (stats.g.doubleclick.net, region1.google-analytics.com)
+       * und die Menge wächst nicht.
+       */
+      // GA4-Regionalendpunkt. Der Nachbar region1.google-analytics.com steht
+      // seit jeher oben — dies ist der neue Hostname derselben Sache, und ein
+      // Namens-Beinahetreffer ist keine Deckung.
+      'https://region1.analytics.google.com',
+      // Bing UET (bat.js aus dem eigenen GTM). bat.bing.com steht schon in
+      // img-src: das ist die Hausform STELLE 1 VON 2 — das Bild lädt, der
+      // Beacon stirbt. bat.bing.net ist der Geschwisterhost derselben Kette.
+      'https://bat.bing.com',
+      // Belegte Tracking-Urspruenge (2026-09-18, s03) — Herleitung, Messung
+      // und die Wildcard-Entscheidung stehen einmal bei connect-src oben.
+      // Hier stehen nur die Ursprünge, die als img-src gemeldet wurden.
+      'https://ad.doubleclick.net',
+      'https://cm.g.doubleclick.net',
+      'https://*.tiktok.com',
+      'https://*.tiktokw.us',
+      // Google-ccTLD-Matching aus gtm.js:422. NUR GEMESSENE ccTLDs, und
+      // die Liste ist absichtlich kurz — Begründung bei connect-src oben.
+      // .com/.de/.ch/.cz stammen aus echtem Besucherverkehr (csp.db; unsere
+      // eigenen Abrufe wirft intern_filter vorher weg).
+      // .fi steht in csp.db NIE und gehört trotzdem hierher: es ist die
+      // ccTLD, die GOOGLE UNSEREM MESSPLATZ zuweist. Wer künftig vom Server
+      // aus am Kundenrand misst, sieht sie — ohne diese Zeile liest er den
+      // Standort des Servers als Misserfolg des Baus.
+      'https://www.google.com',
+      'https://www.google.de',
+      'https://www.google.ch',
+      'https://www.google.cz',
+      'https://www.google.fi',
+      'https://bat.bing.net',
+      // Google Ads / DoubleClick aus gtm.js:422. stats.g.doubleclick.net
+      // steht oben, ad.doubleclick.net und cm.g.doubleclick.net nicht.
+      'https://ad.doubleclick.net',
+      'https://cm.g.doubleclick.net',
+      // TikTok, zwei eigene Pixel-IDs. Zwei Domains, nicht eine:
+      // analytics.tiktok.com und analytics-ipv6.tiktokw.us.
+      'https://*.tiktok.com',
+      'https://*.tiktokw.us',
+      // Taboola (Konto 1695700). Gemessen: trc-events, cds, pips, psb —
+      // vier Hosts in einer halben Stunde, deshalb die Anbieter-Domain.
+      'https://*.taboola.com',
+      // Hotjar (Site 1218483). ZWEI Domains und zwei Schemata: die
+      // Messpunkte liegen auf *.hotjar.io, der Sitzungs-Socket auf
+      // wss://ws.hotjar.com. Wer nur eine davon schreibt, heilt die Hälfte.
+      'https://*.hotjar.io',
+      'wss://*.hotjar.com',
+      /*
+       * GOOGLE-CCTLD-MATCHING — HIER IST WILDCARD BAULICH KEINE OPTION.
+       * CSP kennt keine TLD-Wildcard: 'https://www.google.*' ist keine
+       * gültige Quelle (der Stern ist nur als Host-PRÄFIX erlaubt), und
+       * 'https://*.google.com' deckt google.de nicht. Wer "Wildcard auf die
+       * Anbieter-Domain" hier wörtlich nimmt, schreibt eine Zeile, die der
+       * Browser verwirft — die Klasse bleibt blockiert, und die Datei sieht
+       * geheilt aus.
+       * Google wählt den Cookie-Matching-Host nach dem Standort des
+       * Abrufenden; es gibt über 190 davon. Alle aufzuzählen kostet rund
+       * 4,2 KB je Direktive, in zwei Direktiven und bei einer Richtlinie,
+       * die zweimal je Antwort ausgeht: rund 16,7 KB auf eine 427-KB-Seite
+       * (+3,9 %). Dafür ist ein Remarketing-Ping aus rund 180 seltenen
+       * Ländern zu wenig. Aufgenommen wird deshalb NUR, was gemessen ist.
+       * Auf connect-src ist das genau ein Host: www.google.com (7
+       * Meldungen). Die ccTLD-Varianten kamen ausschließlich auf img-src —
+       * siehe dort.
+       * NICHT ERLAUBT und damit weiter blockiert: jede andere Google-ccTLD
+       * (google.at, google.fr, google.pl, google.co.uk ...). Das ist eine
+       * offene Flanke mit Melder, keine verdeckte: jede neue ccTLD taucht
+       * als neue Klasse in csp.db auf und der csp-aufloeser reiht sie ein.
+       */
+      'https://www.google.com',
       'https://*.clarity.ms',
       'https://consent.cookiebot.com',
       'https://consentcdn.cookiebot.com',

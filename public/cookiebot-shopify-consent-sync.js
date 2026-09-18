@@ -251,6 +251,52 @@
         }
       }, true);
     }
+
+    // (3) Tote inline-onclick am Cookiebot-Markup abräumen — LÄRM, NICHT
+    //     REPARATUR.
+    //
+    // Die Cookiebot-Vorlage hängt an ihre eigenen Knöpfe
+    // onclick="hideCookieBanner()" bzw. onclick="changeConsentToAll()".
+    // Unter dieser CSP feuert davon nichts: script-src trägt nonce und
+    // 'strict-dynamic', damit ist 'unsafe-inline' für Attribut-Handler
+    // wirkungslos, und der Browser meldet es als script-src-attr. Gemessen
+    // 2026-09-18 am Kundenrand: 5 Meldungen der Klasse "script-src-attr
+    // inline", Quelle ist Zeile 278 der gerenderten Seite, also dieses
+    // Banner-Markup.
+    //
+    // DIE CSP WIRD DAFÜR NICHT GELOCKERT. Die Entscheidung von oben
+    // ("WARUM NICHT DIE CSP LOCKERN") steht unverändert: script-src-attr
+    // freizugeben machte jedes inline onclick der Seite wieder ausführbar.
+    // Sie steht hier sogar auf besserem Grund als damals — 2026-09-18 ist
+    // unabhängig nachgemessen, dass Cookiebot seinen Dialog über die eigene
+    // ID-Bindung selbst schließt: Klick auf "Alle erlauben", Einwilligung
+    // griff (114 Verletzungen statt 0, alle Tags luden), OHNE dass
+    // hideCookieBanner() je lief.
+    //
+    // WAS ES BRINGT UND WAS NICHT: die Meldung verschwindet aus der Ablage.
+    // Das ist Messrauschen, keine Kundenwirkung. Der Kunde merkt hiervon
+    // nichts, und wer es als Kundenwirkung ausweist, überzeichnet.
+    //
+    // DER ZAUN IST ENG: entfernt wird ein onclick nur, wenn sein Wortlaut
+    // GENAU einer unserer beiden toten Aufrufe ist. Hängt Cookiebot dort
+    // später einen fremden Handler ein, bleibt er stehen — sonst räumte
+    // diese Schleife eine Vorlagenänderung weg, die wir nicht kennen, und
+    // zwar still.
+    var TOTE_AUFRUFE = ['hideCookieBanner()', 'changeConsentToAll()'];
+    var TOTE_KNOEPFE = [
+      'CybotCookiebotDialogBodyButtonDecline',
+      'CybotCookiebotDialogBodyButtonAccept',
+      'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll',
+      'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection',
+      'CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll',
+    ];
+    for (var t = 0; t < TOTE_KNOEPFE.length; t++) {
+      var knopf = document.getElementById(TOTE_KNOEPFE[t]);
+      if (!knopf) continue;
+      var ruf = (knopf.getAttribute('onclick') || '').replace(/\s+/g, '');
+      if (TOTE_AUFRUFE.indexOf(ruf) === -1) continue;
+      knopf.removeAttribute('onclick');
+    }
   }
 
   function belebeBanner() {
