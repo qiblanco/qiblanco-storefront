@@ -16,6 +16,11 @@
  *  - CACHE = „periodischer Refresh": Ergebnis wird 6 h im Oxygen-Cache
  *    (caches.open('hydrogen')) gehalten → max. 4 Abrufe/Tag/Edge, KEIN
  *    Abruf je Seitenaufruf (schnelles Seitenladen bleibt).
+ *  - AUSSCHLUSS (Job 20260918-…-review-ist-satire): namentlich benannte
+ *    Einzelfälle aus googleReviewsAusschluss.js fallen hier raus — der
+ *    Rahmen „nur 5 Sterne" lässt Satire durch, weil Satire gern 5 Sterne
+ *    gibt. Die Kuration des oberen Widgets (googleReviewsCurated.js) trug
+ *    diese Regel seit 2026-08-01, dieser Kanal kannte sie nicht.
  *  - REVIEWS-RAHMEN (Christian 2026-07-31): nur 5-Sterne-Rezensionen,
  *    sortiert nach NEUESTE zuerst (Googles Relativzeit-Angabe, nicht die
  *    „bedeutendste"-Relevanzordnung des Roh-Feeds); der Rest ist per Klick
@@ -33,6 +38,7 @@
 
 import {useRouteLoaderData} from 'react-router';
 import {GOOGLE_REVIEWS_FALLBACK, GOOGLE_AI_SUMMARY_FALLBACK} from '~/lib/googleReviewsFallback';
+import {wendeAusschlussAn} from '~/lib/googleReviewsAusschluss';
 
 // Place-ID identisch zu StarRating.GOOGLE_REVIEWS_URL (Business-Profil „Qi Blanco")
 export const GOOGLE_PLACE_ID = 'ChIJafc6o-z3okcRPlf__D3fDBM';
@@ -64,8 +70,10 @@ export const GOOGLE_RATING_FALLBACK = {
 const CACHE_TTL_S = 21600; // 6 h — „periodischer Refresh", nie je Seitenaufruf
 const MAX_REVIEWS = 50; // Deckel: die NEUESTEN 50 Fünf-Sterne-Reviews
 // (Christian 2026-08-01). Hinweis: der Reputon-Storefront-Feed liefert
-// real nur 37 Fünf-Sterne-Reviews (keine Pagination) — mehr gibt die
-// Quelle derzeit nicht her; NICHT auffüllen/erfinden.
+// real nur wenige Dutzend Fünf-Sterne-Reviews (keine Pagination; gemessen
+// 2026-09-18: 38 vor Ausschluss, 37 danach) — mehr gibt die Quelle derzeit
+// nicht her; NICHT auffüllen/erfinden. Die Zahl ist eine Messung, keine
+// Konstante: sie wächst mit jeder neuen Google-Rezension.
 
 function istPlausibel(v) {
   return (
@@ -149,7 +157,7 @@ export function normalisiereReputonAntwort(data) {
   const b = data?.business?.[0];
   const r = b?.rating;
   if (typeof r !== 'number' || r < 1 || r > 5) return null;
-  const reviews = (Array.isArray(b.reviews) ? b.reviews : [])
+  const sortiert = (Array.isArray(b.reviews) ? b.reviews : [])
     .filter(
       (rv) =>
         rv &&
@@ -178,8 +186,15 @@ export function normalisiereReputonAntwort(data) {
       alterTage: relativZeitInTagen(rv.relativeTimeDescription, rv.time),
       zeit: typeof rv.time === 'number' ? rv.time : 0,
     }))
-    .sort((a, c) => a.alterTage - c.alterTage || c.zeit - a.zeit)
-    .slice(0, MAX_REVIEWS);
+    .sort((a, c) => a.alterTage - c.alterTage || c.zeit - a.zeit);
+  // AUSSCHLUSS vor dem Deckel, nie danach: eine ausgeschlossene Rezension
+  // darf keinen der MAX_REVIEWS Plätze verbrauchen, sonst zeigt das Widget
+  // je Ausschluss eine Karte weniger, obwohl der Feed sie hätte.
+  // Die Trefferzahlen wandern nach außen; wer 0 liest, hat einen Eintrag,
+  // der sein Objekt nicht mehr findet (googleReviewsAusschluss.js).
+  const {reviews: sichtbar, treffer: ausschlussTreffer} =
+    wendeAusschlussAn(sortiert);
+  const reviews = sichtbar.slice(0, MAX_REVIEWS);
   // Fix #1: Googles KI-Zusammenfassung der Rezensionen (business.summary.items)
   const aiSummary = Array.isArray(b?.summary?.items)
     ? b.summary.items
@@ -194,6 +209,7 @@ export function normalisiereReputonAntwort(data) {
         : GOOGLE_RATING_FALLBACK.total,
     source: 'reputon',
     reviews: reviews.length > 0 ? reviews : GOOGLE_REVIEWS_FALLBACK,
+    ausschlussTreffer,
     aiSummary: aiSummary.length > 0 ? aiSummary : GOOGLE_AI_SUMMARY_FALLBACK,
   };
 }
