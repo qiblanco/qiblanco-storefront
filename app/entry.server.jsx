@@ -304,26 +304,6 @@ export default async function handleRequest(
       // img-src: das ist die Hausform STELLE 1 VON 2 — das Bild lädt, der
       // Beacon stirbt. bat.bing.net ist der Geschwisterhost derselben Kette.
       'https://bat.bing.com',
-      // Belegte Tracking-Urspruenge (2026-09-18, s03) — Herleitung, Messung
-      // und die Wildcard-Entscheidung stehen einmal bei connect-src oben.
-      // Hier stehen nur die Ursprünge, die als img-src gemeldet wurden.
-      'https://ad.doubleclick.net',
-      'https://cm.g.doubleclick.net',
-      'https://*.tiktok.com',
-      'https://*.tiktokw.us',
-      // Google-ccTLD-Matching aus gtm.js:422. NUR GEMESSENE ccTLDs, und
-      // die Liste ist absichtlich kurz — Begründung bei connect-src oben.
-      // .com/.de/.ch/.cz stammen aus echtem Besucherverkehr (csp.db; unsere
-      // eigenen Abrufe wirft intern_filter vorher weg).
-      // .fi steht in csp.db NIE und gehört trotzdem hierher: es ist die
-      // ccTLD, die GOOGLE UNSEREM MESSPLATZ zuweist. Wer künftig vom Server
-      // aus am Kundenrand misst, sieht sie — ohne diese Zeile liest er den
-      // Standort des Servers als Misserfolg des Baus.
-      'https://www.google.com',
-      'https://www.google.de',
-      'https://www.google.ch',
-      'https://www.google.cz',
-      'https://www.google.fi',
       'https://bat.bing.net',
       // Google Ads / DoubleClick aus gtm.js:422. stats.g.doubleclick.net
       // steht oben, ad.doubleclick.net und cm.g.doubleclick.net nicht.
@@ -436,6 +416,26 @@ export default async function handleRequest(
       'https://*.clarity.ms',
       'https://c.bing.com',
       'https://bat.bing.com',
+      // Belegte Tracking-Urspruenge (2026-09-18, s03) — Herleitung, Messung
+      // und die Wildcard-Entscheidung stehen einmal bei connect-src oben.
+      // Hier stehen nur die Ursprünge, die als img-src gemeldet wurden.
+      'https://ad.doubleclick.net',
+      'https://cm.g.doubleclick.net',
+      'https://*.tiktok.com',
+      'https://*.tiktokw.us',
+      // Google-ccTLD-Matching aus gtm.js:422. NUR GEMESSENE ccTLDs, und
+      // die Liste ist absichtlich kurz — Begründung bei connect-src oben.
+      // .com/.de/.ch/.cz stammen aus echtem Besucherverkehr (csp.db; unsere
+      // eigenen Abrufe wirft intern_filter vorher weg).
+      // .fi steht in csp.db NIE und gehört trotzdem hierher: es ist die
+      // ccTLD, die GOOGLE UNSEREM MESSPLATZ zuweist. Wer künftig vom Server
+      // aus am Kundenrand misst, sieht sie — ohne diese Zeile liest er den
+      // Standort des Servers als Misserfolg des Baus.
+      'https://www.google.com',
+      'https://www.google.de',
+      'https://www.google.ch',
+      'https://www.google.cz',
+      'https://www.google.fi',
       'https://assets.gorgias.chat',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
