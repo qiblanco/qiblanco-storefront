@@ -39,8 +39,17 @@ function anfangsZustandStumm(videoPath) {
 
 export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
   const videoRef = useRef(null);
-  const hlsUrl = `https://qiblanco-video.imgix.video/${videoPath}?fm=hls`;
-  const mp4Url = `https://qiblanco-video.imgix.video/${videoPath}?fm=mp4`;
+  // DOMAIN-WECHSEL 2026-09-18 (Vorgang EL-20260814-9a7f9a50, Elina).
+  // imgix führt die Video-Auslieferung auf imgix.net zusammen; die eigene
+  // Anleitung sagt wörtlich, .imgix.video-URLs hören nach dem Sunset auf
+  // aufzulösen. Ein Abschaltdatum nennt imgix nirgends — deshalb jetzt.
+  // Pfad und Parameter bleiben identisch, fm=hls ist auf .net voll
+  // unterstützt (gemessen: 3 bis 5 Bitraten-Stufen je Asset). Der Weg über
+  // .net liefert außerdem OHNE Redirect und aus Frankfurt statt aus
+  // us-east1 — ein Grund mehr, hls.js und den Sound-Toggle unangetastet zu
+  // lassen: dieser Wechsel ist ein Domaintausch, kein Formatwechsel.
+  const hlsUrl = `https://qiblanco-video.imgix.net/${videoPath}?fm=hls`;
+  const mp4Url = `https://qiblanco-video.imgix.net/${videoPath}?fm=mp4`;
 
   // Gemessene Ton-Wahrheit (SSoT app/lib/video-ton.js). Konstant je
   // videoPath, daher kein State und kein Effekt — das Video rendert

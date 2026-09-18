@@ -49,6 +49,11 @@ export const HOERBAR_SCHWELLE_DBFS = -60;
  * Gemessen 2026-08-15 gegen https://qiblanco-video.imgix.video/<pfad>?fm=mp4
  * (erste 60 s, `ffmpeg -af volumedetect`). `hoerbar: false` heißt: das
  * Video läuft als stummes Hintergrund-/Produktvideo OHNE Audio-UI.
+ *
+ * Die Video-Domain liegt seit dem 2026-09-18 auf imgix.net. Die Messwerte
+ * bleiben gültig: gleiche Assets, gleiche Tonspur, nur ein anderer
+ * Auslieferungsweg. Die Zeile oben nennt bewusst weiter die Domain, gegen
+ * die damals gemessen wurde.
  */
 export const VIDEO_TON = {
   'VIDEO-QiOne60s-DE-2021.mov': {
