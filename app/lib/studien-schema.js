@@ -142,9 +142,12 @@ export function studieSchema(studie) {
   }
   // Loest der DOI nicht auf, ist die Artikelseite des Journals der einzige
   // maschinenlesbare Weg zur Originalquelle.
-  if (e.artikelUrl) artikel.isBasedOn = [e.pdfUrl, e.artikelUrl].filter(Boolean);
-  if (e.issn) artikel.isPartOf = {'@type': 'Periodical', name: e.journal, issn: e.issn};
-  else if (e.journal) artikel.isPartOf = {'@type': 'Periodical', name: e.journal};
+  if (e.artikelUrl)
+    artikel.isBasedOn = [e.pdfUrl, e.artikelUrl].filter(Boolean);
+  if (e.issn)
+    artikel.isPartOf = {'@type': 'Periodical', name: e.journal, issn: e.issn};
+  else if (e.journal)
+    artikel.isPartOf = {'@type': 'Periodical', name: e.journal};
   if (e.band) artikel.pagination = e.band;
   if (studie.zitation?.text) artikel.citation = studie.zitation.text;
 
@@ -175,7 +178,12 @@ function brotkrume(studie) {
     '@type': 'BreadcrumbList',
     '@id': `${url}#brotkrume`,
     itemListElement: [
-      {'@type': 'ListItem', position: 1, name: 'Startseite', item: `${CANONICAL_ORIGIN}/`},
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Startseite',
+        item: `${CANONICAL_ORIGIN}/`,
+      },
       {
         '@type': 'ListItem',
         position: 2,
@@ -206,7 +214,17 @@ function faqSchema(studie, url) {
  * dieses Modul ist eine reine Datenfabrik ohne Registry-Abhaengigkeit und soll
  * mit einer beliebigen Studien-Liste als Argument testbar bleiben.
  */
-const ZAHLWORTE_CAP = ['Null', 'Eine', 'Zwei', 'Drei', 'Vier', 'Fünf', 'Sechs', 'Sieben', 'Acht'];
+const ZAHLWORTE_CAP = [
+  'Null',
+  'Eine',
+  'Zwei',
+  'Drei',
+  'Vier',
+  'Fünf',
+  'Sechs',
+  'Sieben',
+  'Acht',
+];
 
 function zahlwortCap(n) {
   return ZAHLWORTE_CAP[n] || String(n);
@@ -225,6 +243,49 @@ function produktAufzaehlung(studien) {
     .map(([n]) => n);
   if (namen.length <= 1) return namen[0] || '';
   return `${namen.slice(0, -1).join(', ')} und ${namen[namen.length - 1]}`;
+}
+
+/** Zahlwort in Kleinschreibung — aus derselben Tabelle wie `zahlwortCap`,
+ *  damit die beiden nie auseinanderlaufen. */
+function zahlwortKlein(n) {
+  return zahlwortCap(n).toLowerCase();
+}
+
+/** Anzahl der Arbeiten einer Bauart im übergebenen Bestand (Feld `art`). */
+function anzahlArt(studien, art) {
+  return studien.filter((s) => s.art === art).length;
+}
+
+/**
+ * Die `description` der CollectionPage — die Fassung, die Google liest.
+ * Sie nennt die zellbiologischen Arbeiten und die deskriptive Auswertung
+ * GETRENNT, und beide Zahlen kommen aus `art`. Eine Bauart ohne Vertreter
+ * wird weggelassen statt mit „null" genannt; eine künftige dritte Bauart
+ * bleibt ungenannt, statt still unter eine der beiden gezählt zu werden.
+ */
+function übersichtBeschreibung(studien) {
+  const zell = anzahlArt(studien, 'in-vitro');
+  const desk = anzahlArt(studien, 'deskriptiv');
+  const teile = [];
+  if (zell) {
+    teile.push(
+      `${zahlwortKlein(zell)} zellbiologische ` +
+        `${zell === 1 ? 'In-vitro-Untersuchung' : 'In-vitro-Untersuchungen'}`,
+    );
+  }
+  if (desk) {
+    teile.push(
+      `${zahlwortKlein(desk)} deskriptive ` +
+        `${desk === 1 ? 'Auswertung' : 'Auswertungen'} von Anwenderberichten`,
+    );
+  }
+  const kopf = teile.length
+    ? `${teile.join(' und ')} zu ${produktAufzaehlung(studien)}`
+    : `Publikationen zu ${produktAufzaehlung(studien)}`;
+  return (
+    `${kopf.charAt(0).toUpperCase()}${kopf.slice(1)} — je mit Zusammenfassung ` +
+    'in Normalsprache, deutschem Volltext, Abbildungen und Original-PDF.'
+  );
 }
 
 /**
@@ -266,10 +327,16 @@ export function übersichtSchema(studien, produkte = []) {
         dateModified: standFuer('/pages/studien'),
         // Anzahl und Produktliste kommen aus den Daten: eine feste Zahl hier war
         // schon einmal die Naht, die beim Ergänzen der fuenften Studie riss.
-        description:
-          `${zahlwortCap(studien.length)} zellbiologische Fachpublikationen zu ` +
-          `${produktAufzaehlung(studien)} — je mit Zusammenfassung in Normalsprache, ` +
-          'deutschem Volltext, Abbildungen und Original-PDF.',
+        // DASSELBE GILT FÜR DIE BAUART (ergänzt 2026-09-18): `zellbiologische
+        // Fachpublikationen` über ALLE Arbeiten war für e0004 falsch — das ist
+        // eine deskriptive Auswertung von Anwenderberichten, keine Zellstudie,
+        // und das Feld `art` sagt das je Studie. Gezählt wird deshalb je Bauart,
+        // AUS DEM ÜBERGEBENEN ARGUMENT: dieses Modul importiert bewusst nichts
+        // aus app/data/studien/index.js (Begründung im Dateikopf — der Import
+        // machte es für `node --test` unladbar und riss test/entitaet-eeat.test.mjs
+        // mit). `anzahlNachArt` dort und dieser Filter hier sind dieselbe Regel
+        // auf zwei Datenwegen, nicht zwei Wahrheiten.
+        description: übersichtBeschreibung(studien),
         inLanguage: 'de',
         isPartOf: {'@type': 'WebSite', '@id': `${CANONICAL_ORIGIN}/#website`},
         about: ueberEntitaeten(produkte, [
@@ -293,7 +360,12 @@ export function übersichtSchema(studien, produkte = []) {
         '@type': 'BreadcrumbList',
         '@id': `${url}#brotkrume`,
         itemListElement: [
-          {'@type': 'ListItem', position: 1, name: 'Startseite', item: `${CANONICAL_ORIGIN}/`},
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Startseite',
+            item: `${CANONICAL_ORIGIN}/`,
+          },
           {'@type': 'ListItem', position: 2, name: 'Studien', item: url},
         ],
       },

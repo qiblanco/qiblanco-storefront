@@ -1,7 +1,12 @@
 import {Link} from 'react-router';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {ORGANISATION, ORG_ID, SITE_ID} from '~/lib/entity-schema';
-import {STUDIEN, UEBERSICHT_PFAD} from '~/data/studien';
+import {
+  anzahlNachArt,
+  STUDIEN,
+  UEBERSICHT_PFAD,
+  zahlwort,
+} from '~/data/studien';
 import {STAND_ISO} from '~/data/redaktionsstand';
 import ueberUnsStyles from '~/styles/ueber-uns.css?url';
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
@@ -97,7 +102,8 @@ const VERANTWORTLICH = {
 /** Aus app/data/studien/*.json, Feld eckdaten.autor / eckdaten.institut. */
 const PRUEFINSTITUT = {
   autor: 'Prof. Dr. Peter C. Dartsch',
-  institut: 'Dartsch Scientific GmbH, Institute for Cell Biological Test Systems',
+  institut:
+    'Dartsch Scientific GmbH, Institute for Cell Biological Test Systems',
   ort: 'Wagenfeld',
 };
 
@@ -121,7 +127,8 @@ const PRUEFINSTITUT = {
  * ist beim forschungs-meister als datiertes Item registriert; sie versandet
  * nicht in diesem Kommentar.
  */
-const GOOGLE_QUELLENWAHL = 'https://www.google.com/preferences/source?q=qiblanco.com';
+const GOOGLE_QUELLENWAHL =
+  'https://www.google.com/preferences/source?q=qiblanco.com';
 
 export function links() {
   return [
@@ -249,12 +256,24 @@ export default function UeberUns() {
       <section className="uu-abschnitt uu-abschnitt-flaeche">
         <div className="uu-innen">
           <h2 className="uu-h2">Worauf wir uns stützen</h2>
+          {/* Die Bauart kommt aus dem Feld `art` der Studien-Registry, nicht
+              aus dem Satz: vier Arbeiten messen an Zellkulturen, die fünfte
+              wertet Anwenderberichte deskriptiv aus. „Fünf zellbiologische
+              Fachpublikationen" war für eine davon falsch, und eine getippte
+              „Vier" wäre bei der sechsten Studie wieder falsch. */}
           <p className="uu-text">
-            {STUDIEN.length} zellbiologische Fachpublikationen zu unseren
-            Produkten stammen von {PRUEFINSTITUT.autor},{' '}
-            {PRUEFINSTITUT.institut} in {PRUEFINSTITUT.ort}. Wir veröffentlichen
-            sie vollständig: deutsche Fassung, Abbildungen, Original-PDF. Du
-            musst uns nicht glauben — du kannst nachlesen.
+            Zu unseren Produkten liegen {zahlwort(anzahlNachArt('in-vitro'))}{' '}
+            zellbiologische{' '}
+            {anzahlNachArt('in-vitro') === 1
+              ? 'Untersuchung'
+              : 'Untersuchungen'}{' '}
+            und {zahlwort(anzahlNachArt('deskriptiv'))} deskriptive{' '}
+            {anzahlNachArt('deskriptiv') === 1 ? 'Auswertung' : 'Auswertungen'}{' '}
+            von Anwenderberichten vor. Alle {zahlwort(STUDIEN.length)} Arbeiten
+            stammen von {PRUEFINSTITUT.autor}, {PRUEFINSTITUT.institut} in{' '}
+            {PRUEFINSTITUT.ort}. Wir veröffentlichen sie vollständig: deutsche
+            Fassung, Abbildungen, Original-PDF. Du musst uns nicht glauben — du
+            kannst nachlesen.
           </p>
           <ul className="uu-belege">
             {STUDIEN.map((s) => (

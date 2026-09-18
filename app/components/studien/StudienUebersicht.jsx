@@ -28,6 +28,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {
+  anzahlNachArt,
   STUDIEN,
   studienPfad,
   untersuchteProdukte,
@@ -215,6 +216,18 @@ const WEITERFUEHREND = [
 export function StudienUebersicht() {
   const produkte = untersuchteProdukte();
   const anzahl = zahlwort(STUDIEN.length);
+  /**
+   * DIE BAUART KOMMT AUS DEN DATEN, NICHT AUS DEM SATZ. Die Unterzeile nannte
+   * bis zum 2026-09-18 alle fünf Arbeiten „zellbiologische Untersuchungen".
+   * Vier sind es (`art: 'in-vitro'`), die fünfte wertet Anwenderberichte
+   * deskriptiv aus (`art: 'deskriptiv'`) — der Abschnitt `Evidenzstufe` zwei
+   * Bildschirme weiter unten sagt das seit jeher. Eine Unterzeile, die ihrem
+   * eigenen Inhalt widerspricht, macht den Inhalt unglaubwürdig.
+   * `anzahlNachArt` statt einer getippten „Vier": eine sechste Studie jeder
+   * Art zählt sich damit selbst richtig — dieselbe Regel wie bei `zahlwort`.
+   */
+  const zellArbeiten = anzahlNachArt('in-vitro');
+  const deskriptiveArbeiten = anzahlNachArt('deskriptiv');
 
   /**
    * KLICKVERHALTEN (Teil B2/B3): Klick/Enter/Space auf eine Titelseite im
@@ -292,14 +305,25 @@ export function StudienUebersicht() {
         <header className="qb-st-hero">
           <div className="qb-st-hero-text">
             <p className="qb-st-kicker">Belege statt Behauptungen</p>
-            <h1>Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht</h1>
+            <h1>
+              Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht
+            </h1>
             <p>
-              {initialCap(anzahl)} zellbiologische Untersuchungen zu{' '}
-              {aufzaehlung(produkte.map((p) => p.name))}, durchgeführt am
-              Institut für zellbiologische Testsysteme von Prof. Dr. Peter C.
-              Dartsch und in Fachjournalen veröffentlicht. Jede Studie finden
-              Sie hier in verständlicher Zusammenfassung, im vollständigen
-              deutschen Text und als englisches Original-PDF.
+              {initialCap(zahlwort(zellArbeiten))} zellbiologische{' '}
+              {zellArbeiten === 1
+                ? 'Untersuchung misst'
+                : 'Untersuchungen messen'}{' '}
+              die Wirkung an Zellkulturen.{' '}
+              {initialCap(zahlwort(deskriptiveArbeiten))} deskriptive{' '}
+              {deskriptiveArbeiten === 1
+                ? 'Auswertung stützt sich'
+                : 'Auswertungen stützen sich'}{' '}
+              auf veröffentlichte Anwenderberichte. Geprüft wurden{' '}
+              {aufzaehlung(produkte.map((p) => p.name))}. Alle {anzahl} Arbeiten
+              entstanden am Institut für zellbiologische Testsysteme von Prof.
+              Dr. Peter C. Dartsch und erschienen in Fachjournalen. Jede Studie
+              finden Sie hier in verständlicher Zusammenfassung, im
+              vollständigen deutschen Text und als englisches Original-PDF.
             </p>
           </div>
           <div className="qb-st-hero-bild">
@@ -332,7 +356,11 @@ export function StudienUebersicht() {
 
         <Evidenzstufe />
 
-        <section className="qb-st-sektion" id="studien" aria-labelledby="studien-titel">
+        <section
+          className="qb-st-sektion"
+          id="studien"
+          aria-labelledby="studien-titel"
+        >
           <h2 id="studien-titel">Die {anzahl} Publikationen</h2>
           <p className="qb-st-sektion-intro">
             Klicken Sie auf die Titelseite, um das Original-PDF zu öffnen, oder
@@ -356,9 +384,9 @@ export function StudienUebersicht() {
         >
           <h2 id="weiterfuehrend-titel">Bleibt eine Frage offen?</h2>
           <p className="qb-st-sektion-intro">
-            Die {anzahl} Arbeiten oben prüfen unsere Geräte. Die Fragen
-            dahinter — was Wasser im Körper tut, was nachts messbar passiert,
-            was an den bekannten Trends dran ist — behandeln wir ausführlich im
+            Die {anzahl} Arbeiten oben prüfen unsere Geräte. Die Fragen dahinter
+            — was Wasser im Körper tut, was nachts messbar passiert, was an den
+            bekannten Trends dran ist — behandeln wir ausführlich im
             Wissensteil. Dort steht jeweils, was gemessen ist und was nicht.
           </p>
           <div className="qb-st-verwandt-grid">
@@ -381,7 +409,9 @@ export function StudienUebersicht() {
               produkte.map(
                 (p) =>
                   `${initialCap(zahlwort(p.anzahl))} ${
-                    p.anzahl === 1 ? 'Arbeit untersucht' : 'Arbeiten untersuchen'
+                    p.anzahl === 1
+                      ? 'Arbeit untersucht'
+                      : 'Arbeiten untersuchen'
                   } den ${p.name}`,
               ),
             )}
@@ -391,7 +421,8 @@ export function StudienUebersicht() {
             {produkte.map((p) => (
               <Link key={p.name} to={p.pfad} className="qb-st-verwandt-karte">
                 <span className="qb-st-verwandt-kicker">
-                  Untersucht in {p.anzahl} {p.anzahl === 1 ? 'Studie' : 'Studien'}
+                  Untersucht in {p.anzahl}{' '}
+                  {p.anzahl === 1 ? 'Studie' : 'Studien'}
                 </span>
                 <strong>{p.name}</strong>
                 <span className="qb-st-verwandt-text">{p.text}</span>
@@ -618,7 +649,8 @@ export const EVIDENZSTUFE_FRAGEN = [
       'nicht passieren.',
   },
   {
-    frage: 'Wer hat die Qi-Blanco-Studien durchgeführt und wer hat sie bezahlt?',
+    frage:
+      'Wer hat die Qi-Blanco-Studien durchgeführt und wer hat sie bezahlt?',
     antwort:
       'Alle fünf Arbeiten hat Prof. Dr. Peter C. Dartsch am Dartsch ' +
       'Scientific Institut durchgeführt — ein einzelnes Labor, ein einzelner ' +
@@ -772,19 +804,31 @@ function StudienKarte({studie}) {
 function HrvMessreihe() {
   const rang = [
     {
-      lage: ['Messung 1 – Start', 'Stressor – inaktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: [
+        'Messung 1 – Start',
+        'Stressor – inaktiv',
+        'Qi Blanco Systeme – inaktiv',
+      ],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/diagram_1-1-1024x883.jpg_1.webp?v=1667543752',
       alt: 'Rangdiagramm der HRV-Messung 1 ohne Stressor und ohne Qi Blanco System',
       bild: 'biol. HRV-Alter (Kurzzeit-HRV): 56 Jahre',
     },
     {
-      lage: ['Messung 2 – nach 13 min', 'Stressor – aktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: [
+        'Messung 2 – nach 13 min',
+        'Stressor – aktiv',
+        'Qi Blanco Systeme – inaktiv',
+      ],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/diagram_2-1-1024x883.jpg_1.webp?v=1667543774',
       alt: 'Rangdiagramm der HRV-Messung 2 mit aktivem WLAN-Stressor, ohne Qi Blanco System',
       bild: 'biol. HRV-Alter (Kurzzeit-HRV): 61 Jahre',
     },
     {
-      lage: ['Messung 7 – nach 60 min', 'Stressor – aktiv', 'Qi Blanco Systeme – aktiv'],
+      lage: [
+        'Messung 7 – nach 60 min',
+        'Stressor – aktiv',
+        'Qi Blanco Systeme – aktiv',
+      ],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/diagram_3-1-1024x883.jpg_1.webp?v=1667543810',
       alt: 'Rangdiagramm der HRV-Messung 7 mit aktivem Stressor und aktivem Qi Blanco System',
       bild: 'biol. HRV-Alter (Kurzzeit-HRV): 47 Jahre',
@@ -792,17 +836,29 @@ function HrvMessreihe() {
   ];
   const ans = [
     {
-      lage: ['Messung 1 – Start', 'Stressor – inaktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: [
+        'Messung 1 – Start',
+        'Stressor – inaktiv',
+        'Qi Blanco Systeme – inaktiv',
+      ],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ANS_1.png_1.webp?v=1667543906',
       alt: 'ANS-Status der Messung 1 ohne Stressor',
     },
     {
-      lage: ['Messung 2 – nach 13 min', 'Stressor – aktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: [
+        'Messung 2 – nach 13 min',
+        'Stressor – aktiv',
+        'Qi Blanco Systeme – inaktiv',
+      ],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ANS_2.png_1.webp?v=1667543930',
       alt: 'ANS-Status der Messung 2 mit aktivem Stressor',
     },
     {
-      lage: ['Messung 7 – nach 60 min', 'Stressor – aktiv', 'Qi Blanco Systeme – aktiv'],
+      lage: [
+        'Messung 7 – nach 60 min',
+        'Stressor – aktiv',
+        'Qi Blanco Systeme – aktiv',
+      ],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ANS_3.png_1.webp?v=1667543973',
       alt: 'ANS-Status der Messung 7 mit aktivem Stressor und aktivem Qi Blanco System',
     },
@@ -820,10 +876,10 @@ function HrvMessreihe() {
 
       <div className="qb-st-volltext">
         <p>
-          Nachfolgend ist eine Versuchsreihe bzgl. der Einwirkungen von Qi Blanco
-          Systemen auf Probanden dargestellt. Die Auswirkungen auf das vegetative
-          Nervensystem sind durch die Herzratenvariabilitätsmessungen [HRV], ein
-          hochauflösendes Elektrokardiogramm [EKG], dargestellt.
+          Nachfolgend ist eine Versuchsreihe bzgl. der Einwirkungen von Qi
+          Blanco Systemen auf Probanden dargestellt. Die Auswirkungen auf das
+          vegetative Nervensystem sind durch die Herzratenvariabilitätsmessungen
+          [HRV], ein hochauflösendes Elektrokardiogramm [EKG], dargestellt.
         </p>
         <p>
           Die HRV-Messung gibt ein „biologisches HRV-Alter“ aus, das das Alter
@@ -836,7 +892,9 @@ function HrvMessreihe() {
             1. Messung: Verhalten des Körpers ohne zusätzlichen Stressor oder Qi
             Blanco Systemen
           </li>
-          <li>2. Messung: Verhalten des Körpers mit einem zusätzlichen Stressor</li>
+          <li>
+            2. Messung: Verhalten des Körpers mit einem zusätzlichen Stressor
+          </li>
           <li>
             7. Messung: Verhalten des Körpers nach 1 Stunde Einwirkung durch den
             Stressor; Qi Blanco Systeme sind aktiv
@@ -907,9 +965,9 @@ function HrvMessreihe() {
         <p>
           <strong>3.3 Stressor:</strong>
           <br />
-          WLAN-Router: NETGEAR WG602 – 54 Mbps / IEEE 802.11b/g / 2,412–2,472 GHz
-          | Strahlungsintensität: &gt;20,00 µW/m² – befindet sich ca. 1 m Abstand
-          auf Herzhöhe des Probanden.
+          WLAN-Router: NETGEAR WG602 – 54 Mbps / IEEE 802.11b/g / 2,412–2,472
+          GHz | Strahlungsintensität: &gt;20,00 µW/m² – befindet sich ca. 1 m
+          Abstand auf Herzhöhe des Probanden.
         </p>
 
         <h3>4. Versuchsablauf</h3>
@@ -927,8 +985,8 @@ function HrvMessreihe() {
         <p>
           Während der 1. Messung waren weder der Stressor noch die Qi Blanco
           Systeme im Einsatz. Der Stressor wurde ab der 2. Messung angeschaltet
-          und kontinuierlich bis zur 7. Messung eingesetzt. Die Qi Blanco Systeme
-          wurden während der 3., 4., 5. und 7. Messung eingesetzt.
+          und kontinuierlich bis zur 7. Messung eingesetzt. Die Qi Blanco
+          Systeme wurden während der 3., 4., 5. und 7. Messung eingesetzt.
         </p>
 
         <h3>5. Validierung</h3>
@@ -976,14 +1034,15 @@ function HrvMessreihe() {
         <h3>Anmerkung zu den Versuchen</h3>
         <p>
           Für weitere Fragen stehen wir unter{' '}
-          <a href="mailto:info@qiblanco.com">info@qiblanco.com</a> zur Verfügung.
+          <a href="mailto:info@qiblanco.com">info@qiblanco.com</a> zur
+          Verfügung.
         </p>
         <p>
           Wir möchten darauf hinweisen, dass es sich hierbei um Einzelnachweise
           handelt. Jeder Mensch ist unterschiedlich und die jeweiligen
           Auswirkungen dadurch individuell. Die hier dargestellten Versuche
-          dienen der Möglichkeit, die Auswirkungen der Qi Blanco® Systeme auf den
-          menschlichen Körper qualitativ einstufen zu können.
+          dienen der Möglichkeit, die Auswirkungen der Qi Blanco® Systeme auf
+          den menschlichen Körper qualitativ einstufen zu können.
         </p>
       </div>
     </section>

@@ -1,4 +1,9 @@
-import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
+import {
+  anzahlNachArt,
+  STUDIEN,
+  zahlwort,
+  untersuchteProdukte,
+} from '~/data/studien';
 import {übersichtSchema} from '~/lib/studien-schema';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {
@@ -49,6 +54,34 @@ export function links() {
  * `canonical_meta_kaputt: true`). `canonicalLink()` liefert das korrekte
  * `<link rel="canonical">` mit absoluter URL.
  */
+/**
+ * Die Bauart-Phrase der og:description — plural-fest, weil die Zahlen aus den
+ * Daten kommen: eine sechste Arbeit jeder Art trägt den Satz unverändert.
+ */
+function ogBeschreibung() {
+  const zell = anzahlNachArt('in-vitro');
+  const desk = anzahlNachArt('deskriptiv');
+  const teile = [];
+  if (zell) {
+    teile.push(
+      `${zahlwort(zell)} zellbiologische ` +
+        `${zell === 1 ? 'Untersuchung' : 'Untersuchungen'}`,
+    );
+  }
+  if (desk) {
+    teile.push(
+      `${zahlwort(desk)} deskriptive ` +
+        `${desk === 1 ? 'Auswertung' : 'Auswertungen'} von Anwenderberichten`,
+    );
+  }
+  const kopf = teile.join(' und ') || `${zahlwort(STUDIEN.length)} Arbeiten`;
+  return (
+    `${kopf.charAt(0).toUpperCase()}${kopf.slice(1)} zu QiOne® 2 Pro, ` +
+    'QiBracelet® und QiHome® Air — mit Zusammenfassung, deutschem Volltext ' +
+    'und Original-PDF.'
+  );
+}
+
 export const meta = () => [
   {title: 'Wissenschaftliche Studien | Qi Blanco'},
   {
@@ -62,10 +95,12 @@ export const meta = () => [
   {property: 'og:title', content: 'Wissenschaftliche Studien | Qi Blanco'},
   {
     property: 'og:description',
-    content:
-      `${zahlwort(STUDIEN.length).replace(/^./, (c) => c.toUpperCase())} ` +
-      'zellbiologische Fachpublikationen zu QiOne® 2 Pro, QiBracelet® und ' +
-      'QiHome® Air — mit Zusammenfassung, deutschem Volltext und Original-PDF.',
+    // DIESELBE KORREKTUR WIE IN H1-UNTERZEILE UND JSON-LD (2026-09-18): nicht
+    // alle Arbeiten sind zellbiologisch. Diese Zeile stand NICHT im Auftrag
+    // und ist trotzdem mitgezogen — drei von vier Fundstellen derselben
+    // Aussage zu heilen hätte die falsche Fassung an genau der Stelle live
+    // gelassen, die eine Maschine liest. Die Bauart kommt aus `art`.
+    content: ogBeschreibung(),
   },
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:site_name', content: MARKE},
