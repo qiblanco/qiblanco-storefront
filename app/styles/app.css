@@ -3940,9 +3940,39 @@ ul.submenu li a {
 .RisikofreiErleben {
   margin: 100px auto;
 }
+/* z-index 0 statt -1 (2026-09-18, Job 20260918-verwaister-cta-zweig-wartet-
+   auf-merge-den-es-nicht-braucht). Ein POSITIONIERTES Element mit NEGATIVEM
+   z-index wird hinter dem Elternknoten gezeichnet. Damit lag die ganze
+   Sektion samt ihrem Kaufweg-CTA hinter dem Seitencontainer, und der
+   Treffertest am Mittelpunkt des Links landete auf dem Container statt auf
+   dem Link: der Knopf ist sichtbar und tut nichts.
+
+   WARUM GLOBAL UND NICHT JE SEITE: genau diese Reparatur gab es seit dem
+   2026-09-17 schon dreimal je Seite (qi-master.css .ProductPageQiMaster,
+   pdp-qi.css .ProductPageQiBracelet/.ProductPageQiOne, qihome-air.css
+   .ProductPageQiHome, Spezifitaet 0-2-0 gegen 0-1-0 hier). Diese Regeln
+   liegen in ROUTEN-GEBUNDENEN Stylesheets, und dieselbe Markup-Struktur
+   wird von weiteren Routen OHNE das jeweilige Stylesheet gerendert.
+   Am 2026-09-18 live nachgemessen: /pages/qione, /pages/qione-2-pro-details
+   und /pages/qihome-air lieferten je einen sichtbaren, NICHT klickbaren
+   Kaufweg-CTA mit z=-1 aus. /pages/qihome-air traegt sogar den Container
+   .ProductPageQiHome, laedt aber qihome-air.css nicht: das Stylesheet haengt
+   allein an app/routes/products.qihome-air.jsx. Eine Instanz-Reparatur kann
+   diese Klasse baulich nicht schliessen.
+
+   WARUM 0 UND NICHT ERSATZLOS: die 0 haelt den Stacking Context der Sektion
+   aufrecht, den die -1 auch schon aufmachte. Die innere Schichtung bleibt
+   unveraendert (.overlay z 1 unter .HeroBannerContent z 2), der feste Kopf
+   (z 100) bleibt darueber. Geaendert wird ausschliesslich die Lage der
+   Sektion gegenueber ihrem Elternknoten.
+
+   HERKUNFT DER -1: Agentur-Sammelcommit d2559eb vom 2026-03-31 ("All
+   changes"), keine gezielte Entscheidung. Die erste .HeroBanner-Regel
+   dieser Datei (oben, ohne z-index) widersprach ihr ohnehin.
+   Gemessen: homepage-bauer/pruefungen/probe_cta_klickbar.py. */
 .HeroBanner {
   position: relative;
-  z-index: -1;
+  z-index: 0;
 }
 .HeroBanner .overlay {
   width: 100%;
