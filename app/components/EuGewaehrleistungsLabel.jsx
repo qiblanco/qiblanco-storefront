@@ -152,14 +152,14 @@ export function EuLabelProvider({children}) {
   const label = useEuLabelAsset();
   /*
    * EINWEG-SCHALTER: einmal true, bleibt true. Er entscheidet, ob die
-   * amtliche Grafik ueberhaupt im DOM steht (Begruendung am <img> im Dialog).
-   * Er wird beim Oeffnen gesetzt und nie zurueckgenommen -- ein zweites
-   * Oeffnen soll das Bild nicht noch einmal aus dem Netz holen muessen.
+   * amtliche Grafik ueberhaupt im DOM steht (Begründung am <img> im Dialog).
+   * Er wird beim Öffnen gesetzt und nie zurueckgenommen -- ein zweites
+   * Öffnen soll das Bild nicht noch einmal aus dem Netz holen müssen.
    */
   const [grafikGebraucht, setGrafikGebraucht] = useState(false);
 
   const open = useCallback(() => {
-    // Der Zustand zuerst: showModal() laeuft synchron, das Bild montiert im
+    // Der Zustand zuerst: showModal() läuft synchron, das Bild montiert im
     // unmittelbar folgenden Rendern. Weil grafikVorwaermen() die Datei bei
     // der ersten Absichtsgeste geholt hat, kommt sie dabei aus dem Cache.
     setGrafikGebraucht(true);
@@ -322,7 +322,7 @@ const EuLabelDialog = forwardRef(function EuLabelDialog(
         <div className="eu-gwl-dialog__buehne">
           {/*
             DIE GRAFIK STEHT ERST IM DOM, WENN DER DIALOG ZUM ERSTEN MAL
-            GEOEFFNET WURDE -- und der Umweg dorthin ist die eigentliche
+            GEÖFFNET WURDE -- und der Umweg dorthin ist die eigentliche
             Lehre dieser Stelle.
 
             BEFUND (2026-09-18, live, mobil 390x844 DPR2): dieses Bild lag in
@@ -349,7 +349,7 @@ const EuLabelDialog = forwardRef(function EuLabelDialog(
             laden -- es steht dann im Blick, ein `lazy` wäre hier genau
             falsch herum.
 
-            DASS DER KASTEN NICHT LEER BLEIBT, TRAEGT NICHT DIESE ZEILE sondern
+            DASS DER KASTEN NICHT LEER BLEIBT, TRÄGT NICHT DIESE ZEILE sondern
             grafikVorwaermen() weiter unten: die Datei wird bei Zeigerkontakt,
             Fokus oder erstem Fingerkontakt geholt, also bevor der Klick
             überhaupt fällt. Beim Öffnen kommt sie aus dem Cache.
