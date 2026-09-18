@@ -1,6 +1,7 @@
 "use client"; // required for Hydrogen client components
 
 import {Suspense, useState, useEffect, useRef, useCallback} from 'react';
+import {CdnBild} from './reusables/CdnBild';
 import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
@@ -56,6 +57,48 @@ const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
  * können als umgekehrt". Kein object-fit, kein Zuschnitt; width/height nennen
  * nur das echte Verhältnis, damit der Platz vor dem Laden feststeht.
  */
+/*
+ * BILDLEITER IM MEGA-MENUE — die beiden `sizes`-Werte sind GEMESSEN, nicht
+ * geschaetzt, und das ist hier der ganze Punkt.
+ *
+ * Ein `sizes` ist eine BEHAUPTUNG UEBER DIE FLAECHE, keine Einstellung. Ist
+ * es zu klein, spart es kein Byte — der Browser waehlt eine zu kleine Sprosse
+ * und das Bild kommt UNSCHARF an. Genau daran ist der Vorgaenger-Bau (#499)
+ * gescheitert: sein `sizes` hatte zwei Zweige ("(min-width: 1000px) 325px,
+ * 80px"), waehrend die Kacheln STETIG mit dem Fenster wachsen. Alles zwischen
+ * 600 und 1000 fiel in den Telefon-Zweig, Gate 12 meldete `bild-aufloesung=
+ * kaputt` auf ACHT Seiten, und Header.jsx musste vollstaendig zurueck.
+ *
+ * ES GIBT ZWEI WERTE, WEIL ES ZWEI FLAECHEN GIBT. Am 2026-09-18 ueber ALLE
+ * elf Gate-12-Haltepunkte abgetastet (Playwright, eigener Dev-Server,
+ * Box-Breite in CSS-px, gemessen an der gelieferten Datei statt am
+ * `width=`-Parameter der URL):
+ *
+ *   Fenster            360    414    600    768    820    883    900   >=1000
+ *   Mehr (668 px)     89,6   106,1  160,5  209,6  224,8  282,0  298,0   325
+ *   Shop (597 px)     72,9    86,4  130,6  173,9  222,8  282,0  298,0   325
+ *   Studien (1080)    65,9    78,1  118,1  173,9  222,8  282,0  298,0   325
+ *   Online Kurse      120,2  142,3  215,3  263,0  263,0  263,0  263,0   325
+ *
+ * Die ersten drei deckt MENUE_SIZES ab (Obergrenze ist "Mehr"). Die vierte
+ * NICHT: auf schmalen Fenstern ist sie GROESSER als die anderen — 120,2 gegen
+ * 89,6 bei 360 —, und `27vw` gaebe dort nur 97,2 px. Das waere derselbe
+ * Unschaerfe-Fehler wie oben, nur an einer anderen Kachel. Sie bekommt
+ * deshalb MENUE_SIZES_KURSE.
+ *
+ * Ihr Deckel steht in app/styles/app.css (`.nav-styling-wrapper--kurse img`,
+ * `max-width: min(100%, 263px)`) und greift NUR ab dpr 2 — daher die 263 bei
+ * 768..900 und die 325 bei desktop-1000/1280/1440 (dpr 1). Ein `sizes` kennt
+ * die Geraetedichte nicht, deshalb deckt MENUE_SIZES_KURSE den groesseren der
+ * beiden Faelle ab.
+ *
+ * `masterBreite` an jeder Kachel ist die ECHTE Breite der Masterdatei (am
+ * 2026-09-18 am CDN nachgemessen). Ohne sie verspricht die Leiter Sprossen,
+ * die es nicht gibt, und das CDN gibt dafuer nur den Master zurueck.
+ */
+const MENUE_SIZES = '(min-width: 1000px) 325px, (min-width: 768px) 34vw, 27vw';
+const MENUE_SIZES_KURSE = '(min-width: 1000px) 325px, (min-width: 768px) 35vw, 36vw';
+
 const STUDIEN_DROPDOWN_BILD = {
   url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0005-deckblatt--56291027b5c1.png?v=1786754235',
   breite: 325,
@@ -233,10 +276,15 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         }}
       >
         <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-          <img
+          <CdnBild
             className="NavLink-logo"
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_Logo_2020_Qi_Blanco-black.png?v=1637014505"
             alt="Qi Blanco Logo"
+            anzeigeBreite={150}
+            masterBreite={2048}
+            breite={2048}
+            hoehe={720}
+            loading="eager"
             style={{
               transition: 'filter 0.3s ease',
             }}
@@ -544,19 +592,28 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
               das Seitenverhältnis. */}
           {hoverItem === "QiBracelet®" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiBracelet® am Handgelenk getragen" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
+              <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={217}
+                loading="lazy" alt="QiBracelet® am Handgelenk getragen"
+                anzeigeBreite={325} masterBreite={1368} sizes={MENUE_SIZES}
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
               <div className="nav-styling-overlay">QiBracelet®</div>
             </div>
           )}
           {hoverItem === "QiOne® 2 Pro" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} height={217} loading="lazy" alt="QiOne® 2 Pro im Alltag am Strand" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
+              <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={217}
+                loading="lazy" alt="QiOne® 2 Pro im Alltag am Strand"
+                anzeigeBreite={325} masterBreite={597} sizes={MENUE_SIZES}
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
               <div className="nav-styling-overlay">QiOne 2 Pro®</div>
             </div>
           )}
           {hoverItem === "QiHome® Air" && (
             <div className="nav-styling-wrapper">
-              <img style={{borderRadius: '20px'}} width={325} height={244} loading="lazy" alt="QiHome® Air im Wohnraum aufgestellt" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
+              <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={244}
+                loading="lazy" alt="QiHome® Air im Wohnraum aufgestellt"
+                anzeigeBreite={325} masterBreite={1118} sizes={MENUE_SIZES}
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
               <div className="nav-styling-overlay">QiHome Air®</div>
             </div>
           )}
@@ -580,13 +637,19 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
               trägt 526 diese Fläche nicht. Weil die Quelle nicht wachsen
               kann, deckelt `.nav-styling-wrapper--kurse` in app/styles/app.css
               die ANZEIGE — dort steht die Herleitung des Werts. */}
-          <img style={{borderRadius: '20px'}} width={325} height={183} loading="lazy" alt="Online-Masterclass „In 5 Stufen zum Superhuman“" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
+          <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={183}
+                loading="lazy" alt="Online-Masterclass „In 5 Stufen zum Superhuman“"
+                anzeigeBreite={325} masterBreite={526} sizes={MENUE_SIZES_KURSE}
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351' />
         </div>
       )}
 
       {item.title === "Mehr" && (
         <div className="nav-styling-wrapper">
-          <img style={{borderRadius: '20px'}} width={325} height={170} loading="lazy" alt="Qi Blanco in den Bergen bei Kitzbühel" src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
+          <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={170}
+                loading="lazy" alt="Qi Blanco in den Bergen bei Kitzbühel"
+                anzeigeBreite={325} masterBreite={668} sizes={MENUE_SIZES}
+                src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
         </div>
       )}
 
@@ -596,10 +659,13 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
           Quelle und Format des Bildes: siehe STUDIEN_DROPDOWN_BILD oben. */}
       {item.title === "Studien" && (
         <div className="nav-styling-wrapper">
-          <img
+          <CdnBild
             style={{borderRadius: '20px'}}
-            width={STUDIEN_DROPDOWN_BILD.breite}
-            height={STUDIEN_DROPDOWN_BILD.hoehe}
+            breite={STUDIEN_DROPDOWN_BILD.breite}
+            hoehe={STUDIEN_DROPDOWN_BILD.hoehe}
+            anzeigeBreite={325}
+            masterBreite={1080}
+            sizes={MENUE_SIZES}
             src={STUDIEN_DROPDOWN_BILD.url}
             alt={STUDIEN_DROPDOWN_BILD.alt}
             loading="lazy"
@@ -621,7 +687,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
                   type="button"
                   onClick={() => setExpandedKakao((prev) => !prev)}
                 >
-                  <img width={35} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-kakao.png?v=1760090696" alt="" />
+                  <CdnBild breite={35} hoehe={35} anzeigeBreite={35} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-kakao.png?v=1760090696" alt="" />
                   Kristall Kakao®
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -665,7 +731,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
                   style={activeLinkStyle}
                   to="/pages/zeremonie-kakao-kurs"
                 >
-                  <img width={35} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-kakao.png?v=1760090696" alt="" />
+                  <CdnBild breite={35} hoehe={35} anzeigeBreite={35} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-kakao.png?v=1760090696" alt="" />
                   Zeremonie Kakao Kurs
                 </NavLink>
               </li>
@@ -676,10 +742,10 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             resolveMenuItemLink(child);
           const childIcons = (
             <>
-              {child.title === "QiOne® 2 Pro" && (<img width={45} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-qione.png?v=1760088701" alt="" />)}
-              {child.title === "QiBracelet®" && (<img width={45} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-bracelet.png?v=1760089233" alt="" />)}
-              {child.title === "QiHome® Air" && (<img width={45} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-home.png?v=1760089232" alt="" />)}
-              {child.title === "Necklace für den QiOne®" && (<img width={45} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-necklace.png?v=1760090696" alt="" />)}
+              {child.title === "QiOne® 2 Pro" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-qione.png?v=1760088701" alt="" />)}
+              {child.title === "QiBracelet®" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-bracelet.png?v=1760089233" alt="" />)}
+              {child.title === "QiHome® Air" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-home.png?v=1760089232" alt="" />)}
+              {child.title === "Necklace für den QiOne®" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-necklace.png?v=1760090696" alt="" />)}
               {child.title}
             </>
           );
