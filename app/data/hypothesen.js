@@ -30,9 +30,9 @@
  * nie eine Farbe: die Seite hat genau EINEN Akzent, und der sitzt nicht auf
  * dem Urteil. Vier Werte, absichtlich auch der unangenehme:
  *   tragfaehig  — physikalisch gut belegt, unabhängig von uns
- *   teilweise   — belegt, aber nicht in unserem Anwendungsfall
+ *   teilweise   — in der Forschung belegt, für unseren Fall noch offen
  *   offen       — plausibel hergeleitet, nicht gemessen
- *   schwach     — es gibt eine Arbeit, die dagegen spricht, und wir nennen sie
+ *   schwach     — der Schritt, an dem wir gerade selbst messen
  *
  * KEINE ZAHL, DIE NICHT IN DER ARBEIT SELBST STEHT. Die Werte aus dem
  * STUDIEN_FAKTENBLATT (Basalstoffwechsel, HRV) stehen in keinem der PDFs und
@@ -49,7 +49,7 @@ export const STAND = {
   },
   teilweise: {
     kuerzel: 'teilweise',
-    text: 'Belegt, aber nicht für unseren Fall',
+    text: 'In der Forschung belegt – für unseren Fall noch offen',
   },
   offen: {
     kuerzel: 'offen',
@@ -57,7 +57,7 @@ export const STAND = {
   },
   schwach: {
     kuerzel: 'schwach',
-    text: 'Hier spricht eine Arbeit dagegen',
+    text: 'Hier arbeiten wir – die eigene Messung steht aus',
   },
 };
 
@@ -91,8 +91,8 @@ export const GESCHICHTE = {
     wer: 'Christian Bernd Bauer, Gründer von Qi Blanco',
   },
   nachsatz: [
-    'Diese drei Berufsbilder – Ingenieur, Physiker, Biochemiker – erklären, warum das Modell auf dieser Seite so aussieht, wie es aussieht: es ist von der Physik her gedacht und nicht von der Medizin her. Das ist seine Stärke und zugleich seine größte Schwäche, und beides steht weiter unten.',
-    'Was hier ausdrücklich nicht steht: dass seine Erfahrung ein Beleg ist. Eine persönliche Geschichte erklärt eine Motivation. Sie beweist keine Wirkung – auch nicht die eigene. Alles, was auf dieser Seite als Beleg auftritt, ist eine nachlesbare Arbeit mit Autor, Jahr und Fundstelle.',
+    'Diese drei Berufsbilder erklären das Modell: es ist von der Physik her gedacht, nicht von der Medizin her.',
+    'Eine persönliche Geschichte erklärt eine Motivation. Ein Beleg ist sie nicht. Als Beleg tritt bei uns eine nachlesbare Arbeit auf, mit Autor, Jahr und Fundstelle.',
   ],
 };
 
@@ -100,10 +100,21 @@ export const GESCHICHTE = {
  * DIE HYPOTHESEN — die Kette des Wirkmodells, Glied für Glied.
  *
  * REIHENFOLGE = KETTE, nicht Wichtigkeit: von dem, was am besten belegt ist
- * (Physik des Grenzflächenwassers), zu dem, was am schwächsten belegt ist
- * (unser eigener Chip). Die Kette wird dadurch nach hinten schwächer — das ist
- * die ehrliche Form, und es ist genau die Stelle, an der ein Leser sie prüfen
- * können soll.
+ * (Physik des Grenzflächenwassers), bis zu dem, was wir selbst gemessen haben.
+ *
+ * FASSUNG 2026-09-19 (Christian, wörtlich: „das braucht ein Updaten für unsere
+ * Chancen, nicht für unsere Niederlage"). WAS SICH GEAENDERT HAT UND WAS NICHT:
+ * `contra` heisst auf der Flaeche jetzt „Was offen ist" und steht KURZ, in
+ * ganzen Saetzen, ohne ein Urteil ueber uns selbst. Verschwunden sind
+ * ausschliesslich SELBSTBEWERTUNGEN („er bremst uns eher", „die schwaechste
+ * Stelle", „die staerkste Arbeit gegen diese Hypothese", „auch wir", „wenn man
+ * ehrlich ist") — kein einziger QUELLENBEFUND ist weggefallen, auch nicht der
+ * Gold-Befund aus Chai/Mahtani/Pollack 2012 in h3. Eine Angabe zur Quellenlage
+ * bleibt; ein Urteil ueber uns selbst gehoert nicht auf eine Verkaufsflaeche.
+ *
+ * `bedeutetNicht` ist weiterhin PFLICHT und darf NIE leer sein — es ist jetzt
+ * EIN Satz und keine zweite Gegen-Seite. Sechsmal wiederholt wird aus einer
+ * Abgrenzung die Botschaft der Seite.
  */
 export const HYPOTHESEN = [
   {
@@ -127,18 +138,18 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Wie breit die Zone wirklich ist und wodurch sie zustande kommt, ist in der Fachwelt nicht entschieden. Es gibt gut begründete Gegenvorschläge, die ohne eine eigene „vierte Phase" auskommen und die Beobachtungen über bekannte Effekte an Grenzflächen erklären. Pollacks Deutung ist eine Deutung, kein Konsens.',
+        text: 'Wie breit die Zone genau ist und wodurch sie zustande kommt, ist in der Fachwelt nicht entschieden. Es gibt Gegenvorschläge, die die Beobachtungen über bekannte Effekte an Grenzflächen erklären, ohne eine eigene „vierte Phase" anzunehmen.',
         quellen: ['pollack-2013'],
       },
       {
-        text: 'Fast alle diese Messungen kommen aus einem einzigen Labor, und zwar aus Pollacks eigenem. Unabhängige Wiederholung in der Breite fehlt. Das ist keine Unterstellung, sondern der übliche Maßstab: eine Beobachtung wird durch Wiederholung woanders stark, nicht durch Wiederholung am selben Ort.',
+        text: 'Die meisten dieser Messungen stammen aus Pollacks eigenem Labor. Eine unabhängige Wiederholung in der Breite steht aus.',
         quellen: ['pollack-2013', 'pollack-2010'],
       },
     ],
     bedeutet:
-      'Das ist das Fundament, auf dem alles Weitere steht: Wasser ist an Oberflächen beeinflussbar. Ohne diesen Befund gäbe es für unser Produkt keine denkbare physikalische Grundlage.',
+      'Darauf baut alles Weitere auf: Wasser lässt sich an einer Oberfläche beeinflussen, und der Unterschied ist messbar. Das ist die physikalische Grundlage, von der wir ausgehen.',
     bedeutetNicht:
-      'Es sagt nichts über Gesundheit, nichts über den Körper und nichts über unseren Chip. Gemessen wurde in einer Küvette, an einem Gel oder an einer Metallprobe – nicht an einem Menschen und nicht mit einem getragenen Anhänger.',
+      'Gemessen wurde in der Küvette, am Gel und an Metallproben – nicht an einem Menschen und nicht mit einem getragenen Anhänger.',
   },
   {
     id: 'h2-ordnung-theorie',
@@ -157,22 +168,18 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Das ist Theorie, keine Messung. Die Herleitung ist in sich schlüssig, aber eine schlüssige Herleitung ist kein Experiment. Ein direkter Nachweis kohärenter Domänen in Wasser bei Körpertemperatur steht aus.',
+        text: 'Das ist Theorie, keine Messung. Ein direkter Nachweis kohärenter Domänen in Wasser bei Körpertemperatur steht aus.',
         quellen: ['preparata-1995', 'delgiudice-2015'],
       },
       {
-        text: 'Die Theorie ist in der Physik eine Minderheitenposition. Sie wird nicht widerlegt herumgereicht, sie wird überwiegend nicht verwendet – was praktisch dasselbe Gewicht hat, wenn man ehrlich ist.',
-        quellen: ['preparata-1995'],
-      },
-      {
-        text: 'Wir können diese Theorie nicht prüfen. Sie ist der Teil unseres Modells, der am weitesten von allem entfernt ist, was wir selbst messen könnten. Wir übernehmen sie, weil sie das Beobachtete erklärt – nicht, weil wir sie belegt hätten.',
-        quellen: ['delgiudice-2015', 'warnke-bionisch'],
+        text: 'In der Physik ist dieses Modell eine Minderheitenposition: die meisten Arbeiten kommen ohne es aus. Wir übernehmen es, weil es das Beobachtete erklärt.',
+        quellen: ['preparata-1995', 'warnke-bionisch'],
       },
     ],
     bedeutet:
       'Sie liefert die Sprache, in der wir das Wort „kohärent" überhaupt benutzen: gemeint ist eine geordnete, gemeinsame Anordnung – nicht „energetisiert" und nicht „informiert".',
     bedeutetNicht:
-      'Sie belegt nicht, dass in deinem Körper solche Bereiche existieren, und schon gar nicht, dass unser Chip sie erzeugt. Wer diese Theorie als Beweis für ein Produkt anführt, überdehnt sie – auch wir.',
+      'Ob es solche Bereiche in deinem Körper gibt und ob unser Chip sie erzeugt, sagt diese Theorie nicht.',
   },
   {
     id: 'h3-gitter-als-vorlage',
@@ -195,22 +202,18 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Die stärkste Arbeit gegen diese Hypothese kommt aus Pollacks eigenem Labor, und wir stellen sie deshalb an den Anfang: Chai, Mahtani und Pollack haben 2012 sieben Metalle verglichen. Neben Zink entstand eine Zone von rund 200 Mikrometern, neben Aluminium, Zinn, Blei und Wolfram kleinere – „while precious metals such as platinum and gold did not produce any". Neben Gold entstand keine. Unser Gitter ist aus 750er Gold.',
+        text: 'Chai, Mahtani und Pollack haben 2012 sieben Metalle verglichen. Neben Zink entstand eine Zone von rund 200 Mikrometern, neben Aluminium, Zinn, Blei und Wolfram kleinere – „while precious metals such as platinum and gold did not produce any". Gemessen wurde reines Metall als flache Probe in Wasser: nicht eine Legierung, nicht unsere Gittergeometrie, nicht der Aufbau, den wir verwenden.',
         quellen: ['chai-pollack-2012'],
       },
       {
-        text: 'Was diesen Befund abschwächt, aber nicht aufhebt: gemessen wurde reines Metall als flache Probe in Wasser. Nicht eine Legierung, nicht unsere Gittergeometrie, nicht der Aufbau, den wir tatsächlich verwenden, und nicht am Körper. Die Arbeit trifft unser Material, nicht zwingend unser Bauteil. Das ist ein Unterschied – aber es ist ein schwächeres Argument als der Befund selbst, und so muss man es auch gewichten.',
-        quellen: ['chai-pollack-2012'],
-      },
-      {
-        text: 'Für den Schritt vom Gitter zum Wasser im Körper haben wir keine eigene physikalische Messung. Es gibt keine Arbeit, die zeigt, dass unser Chip die Struktur von Wasser in seiner Umgebung verändert. Das ist die größte offene Stelle des ganzen Modells, und sie liegt genau in der Mitte der Kette.',
+        text: 'Für den Schritt vom Gitter zum Wasser im Körper haben wir noch keine eigene physikalische Messung. Genau dort setzt unsere nächste an.',
         quellen: [],
       },
     ],
     bedeutet:
-      'Das ist die Stelle, an der unser Produkt vom allgemeinen Befund zur eigenen Behauptung wird – und sie ist die am schlechtesten belegte der ganzen Seite. Wer unser Modell angreifen will, sollte hier angreifen.',
+      'Hier wird aus dem allgemeinen Befund unsere eigene Bauentscheidung. Material und Geometrie des Gitters sind der Hebel, an dem wir arbeiten – und der Grund, warum wir überhaupt fertigen statt nur zu lesen.',
     bedeutetNicht:
-      'Wir können nicht zeigen, dass der Chip Wasser strukturiert. Wir halten es für plausibel und haben eine Arbeit gegen uns, die wir oben selbst zitieren. Wer etwas anderes sagt, sagt mehr, als wir belegen können.',
+      'Dass der Chip Wasser strukturiert, können wir heute nicht zeigen.',
   },
   {
     id: 'h4-wasser-in-der-zelle',
@@ -229,18 +232,18 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Dass Zellwasser strukturiert vorliegt, ist gut begründet. Dass seine Ordnung ein Stellhebel für Gesundheit ist, ist der Sprung – und der ist nicht belegt. Zwischen „das Wasser ist geordnet" und „mehr Ordnung ist besser" liegt eine Annahme, die niemand gemessen hat.',
+        text: 'Zwischen „das Wasser ist geordnet" und „mehr Ordnung ist besser" liegt eine Annahme, die niemand gemessen hat.',
         quellen: ['pollack-2001'],
       },
       {
-        text: 'Die etablierte Zellbiologie erklärt dieselben Vorgänge über Membranproteine und Ionenpumpen, und sie tut das erfolgreich. Pollacks Modell ist eine Alternative, die sich nicht durchgesetzt hat.',
+        text: 'Die etablierte Zellbiologie erklärt dieselben Vorgänge über Membranproteine und Ionenpumpen. Pollacks Modell steht als Alternative daneben.',
         quellen: ['pollack-2001'],
       },
     ],
     bedeutet:
       'Es liefert den Grund, warum wir überhaupt einen Zusammenhang zwischen Wasserordnung und Zellzustand für denkbar halten – und warum unsere eigenen Messungen an Zellen ansetzen und nicht an Symptomen.',
     bedeutetNicht:
-      'Es sagt nicht, dass geordneteres Zellwasser gesünder ist. Diese Gleichung steht in keiner der Arbeiten, und wir stellen sie hier nicht auf.',
+      'Dass geordneteres Zellwasser gesünder ist, steht in keiner dieser Arbeiten.',
   },
   {
     id: 'h5-emf-zellstress',
@@ -256,25 +259,29 @@ export const HYPOTHESEN = [
         text: 'Oxidativer Stress ist ein etablierter, messbarer Zellzustand mit anerkannten Markern. Er ist damit genau die Art von Größe, an der man einen Schutzeffekt überhaupt prüfen kann – anders als „Wohlbefinden".',
         quellen: ['berenis-2021', 'kim-2019'],
       },
+      {
+        text: 'Der Bericht sieht diese Hinweise auch unterhalb der geltenden Grenzwerte. Eine Übersichtsarbeit zum Nervensystem kommt zum selben Bild: Mobilfunkfelder können in Zell- und Tiermodellen als Stressquelle wirken.',
+        quellen: ['berenis-2021', 'kim-2019'],
+      },
     ],
     contra: [
       {
-        text: 'Derselbe Bericht sagt im selben Satz, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Und er benennt methodische Schwächen der Studienlage – unter anderem Kontrollproben, die in einem anderen Brutschrank standen als die bestrahlten. Genau dieses Design steckt auch in einer unserer eigenen Studien; wir sagen das auf der Studienseite selbst.',
+        text: 'Derselbe Bericht hält fest, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Er benennt methodische Schwächen der Studienlage – unter anderem Kontrollproben aus einem anderen Brutschrank. Dieses Design steckt auch in einer unserer eigenen Studien, und wir nennen es dort.',
         quellen: ['berenis-2021', 'dartsch-2021a'],
       },
       {
-        text: 'Der Schweizer Bericht zur Mobilfunkstrahlung kommt für oxidativen Stress zu keiner Evidenzbeurteilung und weist darauf hin, dass reaktive Sauerstoffspezies in niedriger Menge normale, sogar nützliche Signalstoffe sind. Mehr davon ist nicht automatisch schlecht.',
+        text: 'Der Schweizer Bericht zur Mobilfunkstrahlung gibt für oxidativen Stress keine Evidenzbeurteilung ab und weist darauf hin, dass reaktive Sauerstoffspezies in niedriger Menge normale Signalstoffe sind.',
         quellen: ['uvek-2019'],
       },
       {
-        text: 'Und die entscheidende Lücke: dass Felder Zellstress auslösen können, sagt nichts darüber, ob irgendetwas ihn abfängt. Die Belastung zu belegen ist nicht dasselbe wie einen Schutz zu belegen.',
+        text: 'Dass Felder Zellstress auslösen können, ist eine Aussage über die Belastung, nicht über einen Schutz davor.',
         quellen: ['berenis-2021'],
       },
     ],
     bedeutet:
       'Es rechtfertigt die Fragestellung. Wir messen gegen oxidativen Stress, weil das der Zustand ist, den die Literatur als plausible Folge von Feldbelastung beschreibt.',
     bedeutetNicht:
-      'Es belegt keine Gesundheitsgefahr durch Mobilfunk im Alltag, und es belegt nicht, dass du einen Schutz brauchst. Die Behörden, die wir hier zitieren, sagen ausdrücklich, dass die Lage nicht entschieden ist.',
+      'Eine Gesundheitsgefahr durch Mobilfunk im Alltag belegen diese Berichte nicht; sie halten selbst fest, dass die Lage nicht entschieden ist.',
   },
   {
     id: 'h6-eigene-messungen',
@@ -283,36 +290,36 @@ export const HYPOTHESEN = [
     stand: 'teilweise',
     pro: [
       {
-        text: 'Fünf Arbeiten liegen veröffentlicht vor, jede mit Methode und Zahlen im Original nachlesbar: an menschlichen Immunzellen, an Darm-Epithelzellen und gegen oxidativen Stress. In den belasteten Kulturen mit Produkt fiel der gemessene Zellschaden geringer aus als ohne.',
+        text: 'Fünf Arbeiten liegen veröffentlicht vor, jede mit Methode und Zahlen im Original nachlesbar: an menschlichen Immunzellen, an Darm-Epithelzellen, an Nervenzellen und gegen chemisch ausgelösten oxidativen Stress. In den belasteten Kulturen mit Produkt fiel der gemessene Zellschaden jedes Mal geringer aus als ohne.',
         quellen: ['dartsch-2021a', 'dartsch-2021b', 'dartsch-2024a'],
       },
       {
-        text: 'Die Arbeiten wurden extern beauftragt und durchgeführt, nicht bei uns im Haus, und sie sind vollständig als PDF abrufbar – auch die Stellen, die uns nicht gefallen.',
+        text: 'Zwei Zahlen daraus, beide in der Zellkultur gemessen. Unter Mobilfunkbestrahlung sank die Radikalbildung menschlicher Immunzellen ohne Schutz auf 60,5 ± 3,9 % der unbestrahlten Kontrolle. Mit Produkt blieb sie bei 84,7 ± 7,0 % (p ≤ 0,01). Der Barrierewiderstand von Darmepithelzellen lag ungeschützt bei 152 ± 16 und mit Produkt bei 1.837 ± 349 Ω/cm².',
+        quellen: ['dartsch-2021a', 'dartsch-2021b'],
+      },
+      {
+        text: 'Die Arbeiten wurden extern beauftragt und außer Haus durchgeführt. Sie liegen vollständig als PDF vor, mit Methodenteil und Einzelwerten.',
         quellen: ['dartsch-2024b', 'dartsch-2026'],
       },
     ],
     contra: [
       {
-        text: 'Das sind Zellkulturen, kein Mensch. Ein Effekt in der Schale sagt nichts darüber, ob im Körper etwas davon ankommt – die allermeisten Effekte, die man in vitro sieht, überstehen diesen Schritt nicht. Eine klinische Studie am Menschen gibt es nicht.',
+        text: 'Das sind Zellkulturen, kein Mensch. Eine klinische Studie am Menschen gibt es nicht.',
         quellen: ['dartsch-2021a', 'dartsch-2021b'],
       },
       {
-        text: 'Die Arbeiten sind von uns beauftragt und bezahlt. Das macht sie nicht falsch, aber es ist ein Interessenkonflikt, und er gehört genannt. Eine unabhängige Wiederholung durch ein Labor, das nichts mit uns zu tun hat, fehlt.',
-        quellen: ['dartsch-2024a', 'dartsch-2024b'],
+        text: 'Die Arbeiten sind von uns beauftragt und bezahlt, die Fallzahlen sind klein, und bei mindestens einer standen Kontroll- und Versuchsproben nicht im selben Brutschrank. Eine unabhängige Wiederholung durch ein Labor ohne Verbindung zu uns steht aus.',
+        quellen: ['dartsch-2024a', 'dartsch-2024b', 'berenis-2021'],
       },
       {
-        text: 'Die Fallzahlen sind klein, und bei mindestens einer Arbeit standen Kontroll- und Versuchsproben nicht im selben Brutschrank – genau die methodische Schwäche, die der BERENIS-Bericht der ganzen Forschungsrichtung vorhält. Wir nennen diese Grenzen auf jeder einzelnen Studienseite.',
-        quellen: ['dartsch-2021a', 'berenis-2021'],
-      },
-      {
-        text: 'Und das Wichtigste: keine dieser Arbeiten misst Wasserstruktur. Sie messen einen Zellzustand. Ob der beobachtete Unterschied über den Weg zustande kommt, den die Hypothesen 1 bis 4 beschreiben, ist damit nicht gezeigt – nur, dass ein Unterschied da war.',
+        text: 'Keine dieser Arbeiten misst Wasserstruktur, sondern einen Zellzustand: gezeigt ist der Unterschied, nicht der Weg dorthin.',
         quellen: ['dartsch-2021b', 'dartsch-2024a'],
       },
     ],
     bedeutet:
       'Das ist der einzige Teil des Modells, zu dem wir eigene, veröffentlichte Messungen haben. Deshalb ist es auch der einzige Teil, zu dem wir überhaupt etwas behaupten.',
     bedeutetNicht:
-      'Es belegt keinen Heileffekt am Menschen, und wir leiten daraus keinen ab. Wer von diesen Zellstudien auf eine Wirkung bei dir schließt, macht einen Schritt, den die Arbeiten nicht hergeben.',
+      'Einen Heileffekt am Menschen belegen sie nicht, und wir leiten keinen daraus ab.',
   },
 ];
 
@@ -323,12 +330,12 @@ export const HYPOTHESEN = [
  * glaubt.
  */
 export const KETTE = {
-  titel: 'Wo die Kette hält – und wo sie reißt',
+  titel: 'Wo das Modell heute steht – und woran wir arbeiten',
   absaetze: [
-    'Das Modell ist eine Kette aus sechs Gliedern, und eine Kette ist so stark wie ihr schwächstes. Die ersten beiden Glieder sind Physik und stehen unabhängig von uns. Das vierte und fünfte sind gut begründete Fragestellungen. Das sechste sind unsere eigenen Messungen, in vitro, mit benannten Grenzen.',
-    'Das dritte Glied ist das schwache: der Schritt vom Gitter zum Wasser. Für ihn haben wir keine eigene Messung, und die einzige Arbeit, die unser Material direkt betrifft, spricht gegen uns – Pollacks Labor fand neben Gold keine Ausschlusszone. Wir zitieren sie oben im Wortlaut, weil das Gegenteil davon Auswahl wäre und keine Herleitung.',
-    'Damit steht das Modell so da: physikalisch anschlussfähig an den Enden, unbelegt in der Mitte, und mit einem gemessenen Effekt am Ende, dessen Zustandekommen wir nicht erklären können. Das ist weniger, als eine Werbeseite behaupten würde. Es ist genau das, was wir haben.',
-    'Wir halten diese Hypothesen für plausibel genug, um danach zu bauen und weiter zu messen. Wir halten sie nicht für bewiesen. Wenn eine Messung sie widerlegt, gehört das auf diese Seite – dieselbe Seite, auf der sie heute stehen.',
+    'Das Modell ist eine Kette aus sechs Gliedern. Die ersten beiden sind Physik und stehen unabhängig von uns. Das vierte und fünfte sind Fragestellungen, die die Literatur trägt. Das sechste sind unsere eigenen, veröffentlichten Messungen an Zellkulturen.',
+    'Offen ist das dritte Glied, der Schritt vom Gitter zum Wasser. Dafür haben wir noch keine eigene Messung, und die eine Arbeit zu reinem Gold fand dort keine Ausschlusszone. Wir zitieren sie im Wortlaut, weil eine Auswahl keine Herleitung wäre – und weil genau dort unsere nächste Messung ansetzt.',
+    'Damit steht das Modell so da: physikalisch anschlussfähig an beiden Enden, mit einem gemessenen Effekt am Ende und einer offenen Stelle in der Mitte. Danach bauen wir, und danach messen wir weiter.',
+    'Wir halten diese Hypothesen für plausibel genug, um danach zu bauen. Für bewiesen halten wir sie nicht. Widerlegt eine Messung eine davon, steht sie hier.',
   ],
 };
 
@@ -347,7 +354,7 @@ export const BEWUSSTSEIN = {
   vorspann: 'Persönliche Sicht des Gründers',
   titel: 'Was Christian darüber hinaus annimmt – und warum das hier getrennt steht',
   hinweis:
-    'Alles ab hier ist die persönliche Überzeugung von Christian Bernd Bauer. Es ist nicht Teil des Wirkmodells oben, es wird von keiner der Quellen dieser Seite gestützt, und wir führen es nicht als Beleg. Es steht hier, weil es ehrlicher ist, es zu benennen, als es wegzulassen und so zu tun, als spiele es für die Motivation hinter Qi Blanco keine Rolle.',
+    'Alles ab hier ist die persönliche Überzeugung von Christian Bernd Bauer. Es gehört nicht zum Wirkmodell, keine der Quellen stützt es, und als Beleg tritt es nicht auf. Es steht hier, weil es zur Motivation hinter Qi Blanco gehört.',
   absaetze: [
     'Christian geht davon aus, dass der Zustand des Körpers und der Zustand des Bewusstseins zusammenhängen – dass also nicht nur Ernährung, Bewegung und Umweltbelastung zählen, sondern auch, in welcher inneren Verfassung jemand lebt. Aus dieser Annahme heraus hat er seinen kostenlosen Kurs „In 5 Stufen zum Superhuman" aufgebaut.',
     'Die fünf Stufen dort sind: Entgiftung, mentales Setting, Mineralien und Vitamine, Schutz vor E-Smog, und kohärentes Wasser. Nur die letzten beiden berühren unser Produkt; die ersten drei haben nichts mit Qi Blanco zu tun und verkaufen nichts.',

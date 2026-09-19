@@ -337,7 +337,7 @@ export const QUELLEN = [
     gezeigt:
       'Für Hirnströme wird die Evidenz als ausreichend eingestuft. Für oxidativen Stress und andere zelluläre Effekte gibt die Arbeitsgruppe ausdrücklich KEINE Evidenzbeurteilung ab — mit dem Hinweis, dass reaktive Sauerstoffspezies in niedriger Konzentration gesundheitsfördernd und wichtig sind.',
     nichtUeberUns:
-      'Ein Bericht über Strahlung, nicht über Schutz. Er bremst uns eher: die Frage, ob Mobilfunk Zellen dauerhaft schädigt, ist nach diesem Bericht offen.',
+      'Ein Bericht über Strahlung, nicht über Schutz. Er beschreibt die Ausgangslage und kennt kein Schutzprodukt. Ob Mobilfunk Zellen dauerhaft schädigt, lässt er offen.',
     link: 'https://www.bafu.admin.ch/de/elektrosmog',
     linkText: 'BAFU, Themenseite Elektrosmog',
     bibliothek: 'bericht-mobilfunk-schweiz',
