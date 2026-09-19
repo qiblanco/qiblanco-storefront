@@ -17,10 +17,10 @@ const GITTERCHIP_VIDEO_MOBILE =
  * hb-heatmap-sync automatisch).
  * `heightVhDesktop`/`heightVhMobile` sind OPTIONAL und reichen nur durch:
  * ohne Angabe gilt weiter die Vorgabe des Bausteins (500/400vh), der
- * Bestand aendert sich also nicht. Gesetzt werden sie nur dort, wo eine
- * Seite eine ZWEITE Scroll-Strecke traegt (heute: /pages/schlaf-zellen-
+ * Bestand ändert sich also nicht. Gesetzt werden sie nur dort, wo eine
+ * Seite eine ZWEITE Scroll-Strecke trägt (heute: /pages/schlaf-zellen-
  * schutz, 300/250vh) -- der Scroll-Weg ist eine Eigenschaft der SEITE,
- * nicht des Videos. Die Overlay-Texte bleiben zentral und unveraenderbar.
+ * nicht des Videos. Die Overlay-Texte bleiben zentral und unveränderbar.
  */
 export function GitterchipMoleculesScrub({
   dataSection,

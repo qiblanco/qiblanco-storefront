@@ -236,28 +236,28 @@ function Hero() {
 }
 
 /* ───────── Wirkprinzip ─────────
-   Christian, 19.09.2026: der Abschnitt bekommt seinen Wortlaut. Uebernommen ist
-   sein Satzbau; korrigiert wurde ausschliesslich die Rechtschreibung. Der alte
+   Christian, 19.09.2026: der Abschnitt bekommt seinen Wortlaut. Übernommen ist
+   sein Satzbau; korrigiert wurde ausschließlich die Rechtschreibung. Der alte
    Absatz („Kein Wunder. Ein Prinzip mit drei Wirkungen.“) weicht ersatzlos, und
    mit ihm seine beiden Gedankenstriche — der Trennstrich vor „mit deutlich mehr
    Elektronenvolt“ ist Christians eigener und bleibt.
 
-   DIE QUELLE STEHT DORT, WO SIE TRAEGT — und das ist der teure Teil dieses
+   DIE QUELLE STEHT DORT, WO SIE TRÄGT — und das ist der teure Teil dieses
    Abschnitts. Die Auflage lautete, eine Warnke-Quelle zu setzen, aber nur, wenn
-   sie die Aussage traegt, an der sie steht. Gemessen an ZWEI unabhaengigen
+   sie die Aussage trägt, an der sie steht. Gemessen an ZWEI unabhängigen
    Volltext-Extrakten von „Bionisches Wasser“ (899.773 bzw. 892.359 Zeichen,
-   praktisch das ganze Buch): „Blutplaettchen“ 0 Treffer, „Thrombo“ 0,
+   praktisch das ganze Buch): „Blutplättchen“ 0 Treffer, „Thrombo“ 0,
    „gerinn“ 0, „Faltung“ 0, „Superzustand“ 0. „Elektronenvolt“ kommt 4x vor,
-   alle vier rein physikalisch (Ionisationspotenzial des Wassermolekuels
-   12,60 eV, Bindungsenergien, Glossar) — keine Stelle sagt, kohaerentes Wasser
-   habe mehr eV als normales. Warnke TRAEGT den kohaerenten Zustand; er traegt
-   das Blutplaettchen-Beispiel nicht.
-   Deshalb steht die Quelle am Kohaerenz-Satz und nicht pauschal am Absatzende:
+   alle vier rein physikalisch (Ionisationspotenzial des Wassermoleküls
+   12,60 eV, Bindungsenergien, Glossar) — keine Stelle sagt, kohärentes Wasser
+   habe mehr eV als normales. Warnke TRÄGT den kohärenten Zustand; er trägt
+   das Blutplättchen-Beispiel nicht.
+   Deshalb steht die Quelle am Kohärenz-Satz und nicht pauschal am Absatzende:
    eine Quellenangabe, die etwas anderes belegt als der Satz behauptet, ist
    schlimmer als keine. Der einschraenkende Warnke-Satz ist derselbe, den
    /pages/hypothesen schon zitiert (S. 168–169) — zwei Seiten des Hauses sagen
-   damit dasselbe ueber dieselbe Quelle. KEINE erfundene Seitenzahl: fuer den
-   Kohaerenz-Teil ist im Haus keine belegt, also steht dort keine. */
+   damit dasselbe über dieselbe Quelle. KEINE erfundene Seitenzahl: für den
+   Kohärenz-Teil ist im Haus keine belegt, also steht dort keine. */
 function IntroSection() {
   return (
     <section className="lp-vp-section" data-section="lp-a-intro">
@@ -775,12 +775,12 @@ export function SchlafZellenSchutz({products}) {
             /pages/tiefer-schlaf und /pages/E-Smog-Schutz schon tragen — EINE
             Definition (GitterchipMoleculesScrub), gleiches Video, gleiche
             Overlay-Texte. Bewusst nicht nachgebaut: Text-Drift zwischen den
-            Seiten waere sonst baulich moeglich.
-            HOEHE 300/250vh statt der Vorgabe 500/400 — Begruendung im RESULT.
-            Sie haengt an DIESER Seite: sie traegt im Wissenschafts-Block bereits
-            eine zweite Scroll-Strecke (lp-a-mikroskop-video). Zweimal fuenf
-            Bildschirmhoehen Scroll-Weg, die erste davon vor dem ersten
-            Argument, zerreissen den Lesefluss. */}
+            Seiten wäre sonst baulich möglich.
+            HÖHE 300/250vh statt der Vorgabe 500/400 — Begründung im RESULT.
+            Sie hängt an DIESER Seite: sie trägt im Wissenschafts-Block bereits
+            eine zweite Scroll-Strecke (lp-a-mikroskop-video). Zweimal fünf
+            Bildschirmhöhen Scroll-Weg, die erste davon vor dem ersten
+            Argument, zerreißen den Lesefluss. */}
         <GitterchipMoleculesScrub
           dataSection="lp-a-gitterchip-video"
           heightVhDesktop={300}
