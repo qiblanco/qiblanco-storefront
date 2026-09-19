@@ -1,6 +1,7 @@
 /* ============================================================================
-   QiHome-Einsatzkarte — Sektion unmittelbar oberhalb des Footers auf
-   /products/qihome-air.
+   QiHome-Einsatzkarte — Sektion auf /products/qihome-air, seit dem
+   2026-09-19 nach dem Kaufblock und vor dem Produkttext (vorher: unmittelbar
+   oberhalb des Footers). Den Ort bestimmt die Route; das CSS ist ortsneutral.
 
    TOKEN-REGEL DIESER DATEI: jede Groesse, Farbe, jeder Radius und jede Dauer
    kommt aus den :root-Tokens im Scope-Block unten. Ausserhalb davon erfindet
