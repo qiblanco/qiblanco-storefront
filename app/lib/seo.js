@@ -1067,6 +1067,76 @@ export const NUR_ROUTE_SEITEN = [
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
       'User-Agents.',
   },
+  {
+    pfad: '/pages/was-ist-elektrosmog',
+    lastmod: '2026-09-19T18:00:00Z',
+    grund:
+      'Antwortseite gegen eine GEMESSENE KI-Quellenluecke (Grossjob ' +
+      '20260919-…-wer-spricht-ueber-uns-wenn-die-ki-gefragt-wird, Segment ' +
+      's08). Die Luecke steht in ' +
+      'seo-manager/exports/KI-QUELLENLUECKE.json: planet-wissen.de, ' +
+      'bfs.de und lernhelfer.de sagen diesen Satz ueber unser Thema, und ' +
+      'keine eigene Seite trug ihn. Sie besteht allein aus der Route ' +
+      'pages.was-ist-elektrosmog.jsx und hat KEIN Shopify-Seitenobjekt — ' +
+      'ohne diesen Eintrag liefert sie HTTP 200 mit vollem Text und steht ' +
+      'in keiner Sitemap, und die Lueckenmessung baut ihren Eigenkorpus ' +
+      'aus der SITEMAP: die Luecke bliebe offen, obwohl die Seite steht. ' +
+      'Ein Seitenobjekt waere der zweite moegliche Traeger und ist NICHT ' +
+      'gewaehlt (Fremdsystem) — dieselbe Begruendung wie bei ' +
+      '/pages/fragen und den uebrigen Frageseiten. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py — sie ' +
+      'leitet ihre Pruefmenge aus dem Fragen-Hub ab und deckt diese Seite ' +
+      'deshalb ohne Zutun mit ab; zusaetzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die am ' +
+      'ausgelieferten HTML prueft, dass die Aussage wirklich dort steht.',
+  },
+  {
+    pfad: '/pages/armband-duschen-sauna',
+    lastmod: '2026-09-19T18:00:00Z',
+    grund:
+      'Antwortseite gegen eine GEMESSENE KI-Quellenluecke (Grossjob ' +
+      '20260919-…-wer-spricht-ueber-uns-wenn-die-ki-gefragt-wird, Segment ' +
+      's08). Die Luecke steht in ' +
+      'seo-manager/exports/KI-QUELLENLUECKE.json: sauna-portal.com und ' +
+      'armstark.com sagen diesen Satz ueber unser Thema, und keine eigene ' +
+      'Seite trug ihn. Sie besteht allein aus der Route ' +
+      'pages.armband-duschen-sauna.jsx und hat KEIN Shopify-Seitenobjekt ' +
+      '— ohne diesen Eintrag liefert sie HTTP 200 mit vollem Text und ' +
+      'steht in keiner Sitemap, und die Lueckenmessung baut ihren ' +
+      'Eigenkorpus aus der SITEMAP: die Luecke bliebe offen, obwohl die ' +
+      'Seite steht. Ein Seitenobjekt waere der zweite moegliche Traeger ' +
+      'und ist NICHT gewaehlt (Fremdsystem) — dieselbe Begruendung wie ' +
+      'bei /pages/fragen und den uebrigen Frageseiten. Wache (Kriterium ' +
+      '3): seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py — ' +
+      'sie leitet ihre Pruefmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite deshalb ohne Zutun mit ab; zusaetzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die am ' +
+      'ausgelieferten HTML prueft, dass die Aussage wirklich dort steht.',
+  },
+  {
+    pfad: '/pages/was-senkt-elektrosmog-im-alltag',
+    lastmod: '2026-09-19T18:00:00Z',
+    grund:
+      'Antwortseite gegen eine GEMESSENE KI-Quellenluecke (Grossjob ' +
+      '20260919-…-wer-spricht-ueber-uns-wenn-die-ki-gefragt-wird, Segment ' +
+      's08). Die Luecke steht in ' +
+      'seo-manager/exports/KI-QUELLENLUECKE.json: aerzteblatt.de und ' +
+      'schutz-vor-strahlung.ch sagen diesen Satz ueber unser Thema, und ' +
+      'keine eigene Seite trug ihn. Sie besteht allein aus der Route ' +
+      'pages.was-senkt-elektrosmog-im-alltag.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, und die ' +
+      'Lueckenmessung baut ihren Eigenkorpus aus der SITEMAP: die Luecke ' +
+      'bliebe offen, obwohl die Seite steht. Ein Seitenobjekt waere der ' +
+      'zweite moegliche Traeger und ist NICHT gewaehlt (Fremdsystem) — ' +
+      'dieselbe Begruendung wie bei /pages/fragen und den uebrigen ' +
+      'Frageseiten. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py — sie ' +
+      'leitet ihre Pruefmenge aus dem Fragen-Hub ab und deckt diese Seite ' +
+      'deshalb ohne Zutun mit ab; zusaetzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die am ' +
+      'ausgelieferten HTML prueft, dass die Aussage wirklich dort steht.',
+  },
 ];
 
 /**

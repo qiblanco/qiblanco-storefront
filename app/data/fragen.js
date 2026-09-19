@@ -673,6 +673,171 @@ export const FRAGEN = [
       "qb_studie_qihome"
     ],
     "pfad": "/pages/was-sagen-die-quarks-science-cops"
+  },
+  {
+    "slug": "was-ist-elektrosmog",
+    "katalog_id": "dach-was-ist-elektrosmog",
+    "markt": "dach",
+    "klasse": "neugier",
+    "frage": "Was ist Elektrosmog?",
+    "antwort": "Elektrosmog ist ein Sammelwort für die elektrischen, magnetischen und elektromagnetischen Felder der Technik und fasst zwei physikalisch verschiedene Bereiche zusammen, niederfrequente Felder aus der Stromversorgung und hochfrequente Felder aus der Funktechnik.",
+    "begruendung": [
+      "Das Wort kommt nicht aus der Physik. Es setzt sich aus Elektrizität und Smog zusammen und hat sich in der öffentlichen Debatte eingebürgert. Behörden greifen es auf, weil die Leute danach fragen. Wer genauer werden will, nennt den Bereich, um den es geht.",
+      "Niederfrequente Felder entstehen dort, wo Strom fließt. Das deutsche Netz schwingt mit 50 Hertz. Eine Leitung in der Wand, eine Herdplatte, ein Ladegerät: alle erzeugen ein Magnetfeld, solange sie Strom ziehen. Gemessen wird es als magnetische Flussdichte in Mikrotesla.",
+      "Hochfrequente elektromagnetische Felder entstehen dort, wo Technik funkt. Mobilfunk, WLAN und Rundfunk arbeiten mit Frequenzen von einigen hundert Megahertz bis in den Gigahertz-Bereich. Gemessen werden sie als elektrische Feldstärke in Volt pro Meter oder als Leistungsdichte in Watt pro Quadratmeter.",
+      "Der Unterschied ist nicht akademisch, denn die beiden Bereiche wirken verschieden. Niederfrequente Felder können Nerven und Muskeln reizen. Hochfrequente Felder können Gewebe erwärmen. Die Grenzwerte sind gegen genau diese beiden Wirkungen gebaut und gegen keine dritte.",
+      "Elektrosmog selbst lässt sich nicht messen. Kein Gerät zeigt eine Zahl dafür an, weil das Wort mehrere Größen mit verschiedenen Einheiten zusammenfasst. Wer eine Belastung beziffern will, muss sagen, welches Feld er meint, in welcher Einheit und in welchem Abstand.",
+      "Daraus folgt auch, wie man die Studienlage liest. Eine einzelne Studie entscheidet die Frage nicht, und ob eine Arbeit trägt, hängt an nachprüfbaren wissenschaftlichen Kriterien: Verblindung, eine Scheinexposition zum Vergleich, ein vorab angemeldeter Auswertungsplan und genug Teilnehmer, um den gesuchten Effekt überhaupt zu sehen. Fehlt eines davon, ist das Ergebnis eine Beobachtung und kein Beleg."
+    ],
+    "beleg": [
+      "Für ortsfeste Funkanlagen legt die 26. Verordnung zum Bundes-Immissionsschutzgesetz frequenzabhängige Grenzwerte fest. Um 900 Megahertz sind es 41 Volt pro Meter, um 1800 Megahertz 58 Volt pro Meter, um 2000 und um 3600 Megahertz je 61 Volt pro Meter.",
+      "Die international empfohlenen Richtlinien decken den Bereich von 100 Kilohertz bis 300 Gigahertz ab und begründen die Werte mit der Erwärmung von Gewebe.",
+      "Für niederfrequente Magnetfelder liegt der empfohlene Referenzwert bei 100 Mikrotesla. Haushaltsgeräte überschreiten ihn dicht an der Oberfläche, fallen aber steil ab: ein Haarföhn liefert in drei Zentimetern Abstand zwischen 6 und 2000 Mikrotesla und in einem Meter noch 0,01 bis 0,3 Mikrotesla.",
+      "Das Bundesamt für Strahlenschutz führt Wirkungen unterhalb der Grenzwerte als wissenschaftlich diskutiert. Diskutiert heißt dort weder nachgewiesen noch widerlegt."
+    ],
+    "offen": [
+      "Ob unterhalb der Grenzwerte etwas passiert, ist nicht abschließend geklärt. Die Behörden halten die Frage offen, und wir halten sie ebenfalls offen.",
+      "Für die neueren Mobilfunkfrequenzen fehlen Beobachtungen über Jahrzehnte, weil diese Frequenzen noch nicht lange genug in Gebrauch sind.",
+      "Ob ein einzelner Mensch empfindlicher reagiert als der Durchschnitt, beantwortet keine der genannten Arbeiten. Durchschnitte sagen nichts über den Einzelfall."
+    ],
+    "weiter": [
+      {
+        "pfad": "/pages/was-senkt-elektrosmog-im-alltag",
+        "text": "Was die Belastung im Alltag senkt, ohne dass man etwas kaufen muss"
+      },
+      {
+        "pfad": "/pages/lexikon-frequenz",
+        "text": "Frequenz: die Größe, in der Felder unterschieden werden"
+      },
+      {
+        "pfad": "/pages/kann-elektrosmog-den-schlaf-stoeren",
+        "text": "Kann Elektrosmog den Schlaf stören?"
+      },
+      {
+        "pfad": "/pages/kritik",
+        "text": "Was bei uns belegt ist und was nicht"
+      }
+    ],
+    "quellen": [
+      "bimschv26",
+      "icnirp2020",
+      "bfs_hff",
+      "bfs_haushalt",
+      "bfs_grenzwerte",
+      "bfs_diskutiert",
+      "who_emf",
+      "qb_kritik"
+    ],
+    "pfad": "/pages/was-ist-elektrosmog"
+  },
+  {
+    "slug": "armband-duschen-sauna",
+    "katalog_id": "dach-alltag-wasser",
+    "markt": "dach",
+    "klasse": "neugier",
+    "frage": "Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen?",
+    "antwort": "Das QiBracelet® und der QiOne® 2 Pro dürfen beim Duschen, Schwimmen und in der Sauna anbleiben, und weil ihr Gehäuse aus Chirurgenstahl besteht, nehmen sie in der Saunakabine deren Wärme an.",
+    "begruendung": [
+      "Wasser ist bei diesen beiden Stücken kein Thema. Das Gehäuse besteht aus Chirurgenstahl 316L, einem Edelstahl, der in der Medizintechnik für Implantate verwendet wird. Er ist korrosionsbeständig und verträgt Chlorwasser, Meerwasser, Schweiß und Sonne.",
+      "Die Sauna stellt eine andere Frage, und sie betrifft nicht die Technik, sondern die Wärme. Metall leitet Wärme sehr viel besser als Stoff oder Haut. Ein Schmuckstück aus Stahl kann sich in der Kabine deshalb bis auf die Umgebungstemperatur aufheizen, während ein Baumwollband darunter bleibt.",
+      "Daraus folgt die einzige Vorsichtsmaßnahme, die wir für nötig halten: Schmuck sollte in der Sauna Hautkontakt haben und nicht frei baumeln. Wer ein aufgeheiztes Metallstück auf der Haut trägt, merkt rechtzeitig, wenn es ihm zu warm wird. Ein Stück, das lose hängt und dann aufschlägt, tut das unangekündigt.",
+      "Beim Armband entscheidet außerdem das Band mit, und dort gehen die Materialien auseinander. Silikon und Kautschuk sind hitzebeständig, nehmen kaum Feuchtigkeit auf und sind für Sauna und Schwimmbad die unkomplizierte Wahl. Leder verträgt dauernde Nässe schlecht. Ein Metallband erwärmt sich wie das Gehäuse.",
+      "Dem QiOne® 2 Pro liegt ein Baumwollbändchen bei. Baumwolle saugt sich voll und bleibt lange feucht, was ihr nicht schadet, aber unangenehm ist. Wer viel schwimmt oder sauniert, ist mit einem Band aus Silikon oder mit der Edelstahlkette besser bedient.",
+      "Nach Salz- oder Chlorwasser genügt klares Wasser und Abtrocknen. Das ist keine Pflegevorschrift, sondern gilt für jeden Schmuck aus Edelstahl."
+    ],
+    "beleg": [
+      "Unsere Materialangabe: das Gehäuse des QiBracelet® und des QiOne® 2 Pro besteht aus Chirurgenstahl 316L. Dieser Edelstahl wird in der Medizin für implantierbare Teile eingesetzt, weil er korrosionsbeständig und gut verträglich ist und allergische Reaktionen selten sind.",
+      "Unsere Pflegeangabe: beide Stücke sind resistent gegen Chlor- und Meerwasser, Schweiß, Sonneneinstrahlung und Hitze, und sie sind für Schwimmer, Sportler und Saunagänger geeignet. Zu beachten ist, dass das Material sich erhitzen kann.",
+      "Die Bohrung im QiOne® misst 2,5 Millimeter im Durchmesser. Wer das beiliegende Baumwollbändchen ersetzen will, braucht ein Band, das hindurchpasst.",
+      "Ketten aus hartem Metall können den QiOne® verkratzen. Das ist ein Grund, das Band nach dem Gebrauch zu wechseln, und keiner gegen Wasser."
+    ],
+    "offen": [
+      "Wie warm das Gehäuse in einer Kabine wirklich wird, haben wir nicht gemessen. Was hier steht, folgt aus dem Material und aus unserer eigenen Pflegeangabe.",
+      "Ob das Tragen in Hitze oder Wasser die Wirkung verändert, ist von uns nicht untersucht worden.",
+      "Für Menschen mit einer Nickelallergie gilt Chirurgenstahl als gut verträglich, und selten ist nicht nie. Wer empfindlich reagiert, probiert es kurz aus."
+    ],
+    "weiter": [
+      {
+        "pfad": "/pages/faq",
+        "text": "Häufige Fragen zu Material, Pflege und Tragen"
+      },
+      {
+        "pfad": "/pages/qibracelet-details",
+        "text": "QiBracelet: Aufbau, Maße und Material"
+      },
+      {
+        "pfad": "/pages/qione-2-pro-details",
+        "text": "QiOne 2 Pro: Aufbau, Maße und Material"
+      },
+      {
+        "pfad": "/pages/kritik",
+        "text": "Was bei uns belegt ist und was nicht"
+      }
+    ],
+    "quellen": [
+      "qb_faq",
+      "qb_kritik",
+      "qb_hypothesen"
+    ],
+    "pfad": "/pages/armband-duschen-sauna"
+  },
+  {
+    "slug": "was-senkt-elektrosmog-im-alltag",
+    "katalog_id": null,
+    "markt": "dach",
+    "klasse": "neugier",
+    "frage": "Was senkt die Belastung durch Elektrosmog im Alltag?",
+    "antwort": "Abstand halten, den Flugmodus einschalten und Funkquellen abschalten senken die Belastung im Alltag sofort, kosten nichts und brauchen kein Produkt.",
+    "begruendung": [
+      "Abstand ist der stärkste Hebel, und er ist der einzige, der ohne Ausnahme wirkt. Die Stärke eines Feldes fällt mit der Entfernung steil ab. Bei Haushaltsgeräten liegen zwischen drei Zentimetern und einem Meter oft zwei bis drei Größenordnungen. Ein Ladegerät, das einen Meter weiter steht, ist die billigste Maßnahme, die es gibt.",
+      "Beim Telefon lässt sich Handystrahlung mit denselben drei Griffen senken. Der Flugmodus schaltet den Sender ab, und ein Gerät ohne Sender strahlt nicht. Ein Headset oder die Freisprechfunktion bringt das Gerät vom Kopf weg. Und ein Telefon mit gutem Empfang sendet mit weniger Leistung als eines, das im Funkloch nach dem Netz sucht.",
+      "Beim Kauf eines neuen Telefons steht eine Zahl im Datenblatt, die selten beachtet wird: der SAR-Wert. Er gibt an, wie viel Sendeleistung pro Kilogramm Körpergewebe im ungünstigsten Fall aufgenommen wird, und die Geräte unterscheiden sich darin erheblich. Wer die Belastung ohne Verhaltensänderung senken will, hat hier den einzigen Hebel, der beim Kauf entschieden wird.",
+      "Das Schlafzimmer verdient einen eigenen Blick, und zwar aus einem anderen Grund als vermutet. Für das Feld allein zeigen die Untersuchungen nichts. Für das Gerät im Raum zeigen sie viel: Licht am Abend verschiebt die innere Uhr, und die Erreichbarkeit kostet Erholung, weil sie den Schlaf unterbricht.",
+      "Praktische Tipps für den Raum sind deshalb schnell erzählt. Das Telefon lädt außerhalb des Schlafzimmers. Der Router läuft nachts nicht, wenn ihn niemand braucht. Der Wecker steht nicht am Kopfkissen. Diese Maßnahmen senken die Feldstärke im Zimmer und nehmen zugleich das Licht und die Unterbrechungen weg, für die die Beweislage deutlich ist.",
+      "Eine Sorge wirkt dabei selbst mit, und sie wird selten genannt. In einer Feldstudie schliefen Anwohner, die sich um eine Sendeanlage sorgten, schlechter als unbesorgte, und zwar in den Nächten, in denen die Anlage nichts sendete. Das macht niemandes Beschwerden kleiner. Es heißt, dass der Weg vom Feld zum schlechten Schlaf auch über den Kopf führen kann."
+    ],
+    "beleg": [
+      "Messwerte einer Behörde zum Abstand, in Mikrotesla, jeweils bei drei Zentimetern, 30 Zentimetern und einem Meter. Haarföhn: 6 bis 2000, dann 0,01 bis 7, dann 0,01 bis 0,3. Staubsauger: 200 bis 800, dann 2 bis 20, dann 0,13 bis 2. Bohrmaschine: 400 bis 800, dann 2 bis 3,5, dann 0,08 bis 0,2.",
+      "Der empfohlene Referenzwert für das niederfrequente Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand unterschreiten ihn die aufgeführten Geräte deutlich.",
+      "Im Fernfeld einer Antenne verteilt sich die Leistung über eine Kugelfläche. Doppelter Abstand bedeutet ein Viertel der Leistungsdichte, zehnfacher Abstand ein Hundertstel.",
+      "397 Anwohner zwischen 18 und 81 Jahren schliefen an zehn deutschen Orten zwölf Nächte lang neben einer Versuchs-Basisstation, die in fünf Nächten sendete und in fünf Nächten nicht. Zwischen beiden Bedingungen unterschied sich weder die Schlafaufzeichnung noch die Selbsteinschätzung. In den sendefreien Nächten schliefen die Besorgten messbar schlechter als die Unbesorgten.",
+      "Wer vier Stunden vor dem Zubettgehen auf einem selbstleuchtenden Lesegerät liest statt auf Papier, braucht länger zum Einschlafen, schüttet abends weniger Melatonin aus und ist am Morgen weniger wach.",
+      "Eine Zusammenfassung von 20 Studien mit 125 198 Kindern und Jugendlichen fand für ein Bildschirmgerät zur Schlafenszeit ein Chancenverhältnis von 2,17 für zu wenig Schlaf, Vertrauensbereich 1,42 bis 3,32. Studien zu elektromagnetischer Strahlung waren aus dieser Auswahl von vornherein ausgeschlossen."
+    ],
+    "offen": [
+      "Alle genannten Zahlen sind Durchschnitte über viele Menschen oder Messreihen. Wie stark eine Maßnahme bei einer einzelnen Person ankommt, sagen sie nicht.",
+      "Dass diese Maßnahmen die Exposition senken, ist Physik. Dass sich dadurch jemand besser fühlt, ist damit nicht gezeigt.",
+      "Zu unseren eigenen Produkten liegt keine Untersuchung vor, die sie mit diesen Alltagsmaßnahmen vergleicht."
+    ],
+    "weiter": [
+      {
+        "pfad": "/pages/was-ist-elektrosmog",
+        "text": "Was ist Elektrosmog?"
+      },
+      {
+        "pfad": "/pages/kann-elektrosmog-den-schlaf-stoeren",
+        "text": "Kann Elektrosmog den Schlaf stören?"
+      },
+      {
+        "pfad": "/pages/wie-weit-reicht-elektrosmog-schutz",
+        "text": "Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?"
+      },
+      {
+        "pfad": "/pages/kritik",
+        "text": "Was bei uns belegt ist und was nicht"
+      }
+    ],
+    "quellen": [
+      "bfs_haushalt",
+      "bfs_grenzwerte",
+      "bfs_hff",
+      "danker_hopfe2010",
+      "chang2015",
+      "carter2016",
+      "openstax_energie",
+      "qb_kritik"
+    ],
+    "pfad": "/pages/was-senkt-elektrosmog-im-alltag"
   }
 ];
 
