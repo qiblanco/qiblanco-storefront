@@ -28,15 +28,21 @@ import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
 import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
 // DATENSPARSAM AN DER GRENZE: benannte Importe statt des ganzen Artefakts.
-// Der Baustein braucht genau diese drei Felder; `stand`/`quelle`/`k` sagen
-// etwas über den Datensatz und haben im Browser nichts zu suchen. Vite
-// gibt JSON unter 10 KB benannte Exporte, unbenutzte fallen im Produktions-
-// bau weg -- am gebauten Bundle nachgemessen (s04), nicht angenommen.
+// Der Baustein braucht genau diese zwei Felder; `seed`/`verteilung` sagen etwas
+// über den Datensatz und haben im Browser nichts zu suchen. Vite gibt JSON
+// benannte Exporte, unbenutzte fallen im Produktionsbau weg -- am gebauten
+// Bundle nachgemessen (s04), nicht angenommen.
+//
+// QUELLENWECHSEL 2026-09-19 (Job 20260919-karte-479-punkte-und-text-ohne-
+// entschuldigung): bis hierher stand `~/data/qihome-einsatzkarte.json`, und die
+// Datei wurde woechentlich aus Kauf- und Kundendaten abgeleitet (kunden-db).
+// Christian hat die Karte auf 479 GERECHNETE, einwohnergewichtete Punkte
+// umgestellt -- kein Punkt darf ein echter Standort sein. Die neue Datei
+// entsteht in homepage-bauer/bin/qihome-karte-punkte und liest keine Bestellung.
 import {
-  geraete_gesamt as einsatzkarteGesamt,
   km_pro_einheit as einsatzkarteKmProEinheit,
   punkte as einsatzkartePunkte,
-} from '~/data/qihome-einsatzkarte.json';
+} from '~/data/qihome-karte-punkte.json';
 /**
  * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
  * 20260910-designschuld-...-s04). Sie hängt NUR hier und trägt
@@ -260,12 +266,14 @@ export default function Product() {
         live-auf-der-produktseite, s04): letztes Element der Route und damit
         der Abschluss der Seite unmittelbar oberhalb des Footers -- der Footer
         liegt im Layout, nicht hier. `daten` sind BEREITS projizierte
-        SVG-Punkte aus s02; diese Route rechnet nichts und reicht nur durch.
+        SVG-Punkte aus dem Erzeuger; diese Route rechnet nichts und reicht nur
+        durch. Die Zahl in der Ueberschrift ist `punkte.length` und wird
+        deshalb hier NICHT mitgegeben -- ein zweiter Zaehler koennte von der
+        Karte abweichen.
         Rueckweg: VITE_EINSATZKARTE=off lässt den Baustein `null` rendern und
         die Seite bleibt vollstaendig. */}
     <Einsatzkarte
       daten={{
-        geraete_gesamt: einsatzkarteGesamt,
         km_pro_einheit: einsatzkarteKmProEinheit,
         punkte: einsatzkartePunkte,
       }}
