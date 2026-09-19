@@ -275,3 +275,39 @@
   hyphens: auto;
   overflow-wrap: break-word;
 }
+
+/* ── Der Kopfbereich zeigt die 360-Grad-Drehung statt eines Standbilds ──────
+   Christian, 19.09.2026. Drei Regeln, und sie stehen HIER statt in app.css —
+   aus genau dem Grund, den der Kopf dieser Datei nennt: app.css laedt auf
+   jeder Route, und eine Regel an den Hero-Klassen traegt weiter, als man
+   denkt. Beim ersten Anlauf stand die Reihenfolge-Regel unten in app.css und
+   hing an `.herobanner-seperator`/`.featured-image`. Beide Namen klingen nach
+   genau einem Herobanner und sind doppelt vergeben:
+   `detailseiten/QiBracelet.jsx` ist eine Beinahe-Kopie des Startseiten-Heros
+   und traegt sogar denselben Wrapper `.HerobannerFeatured`. Die Regel zog auf
+   /pages/qibracelet-details das Produktbild mit nach oben — hb-formate mass
+   27,04 / 34,75 / 59,69 % veraenderte Bildzeilen auf mobil-360/-414/-600 bei
+   5 % erlaubt. Der `.home`-Scope dieser Datei macht das baulich unmoeglich.
+
+   `height: auto` gegen die festen width/height-Attribute am Element: die
+   Attribute sind fuer das Seitenverhaeltnis da, damit der Kasten seine Hoehe
+   VOR dem ersten Byte kennt (keine Layoutverschiebung) — nicht fuer die
+   Anzeigegroesse. */
+.home .herobanner-seperator div.featured-image--360 video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Die Drehung steht EINMAL im Dokument. Bis 2026-09-19 lag dasselbe
+   Produktfoto zweimal da: einmal als `hide-desktop`-Kopie oben im Text,
+   einmal als `hide-mobile`-Bild rechts. Bei einem Video waeren das zwei
+   Kaesten, von denen einer immer unsichtbar laedt. Auf schmalen Schirmen
+   zieht der eine Kasten deshalb per Reihenfolge nach oben — genau dorthin,
+   wo bis dahin die mobile Kopie stand: direkt unter die Ueberschrift, vor
+   „QiOne(R) 2 Pro". */
+@media screen and (max-width: 749px) {
+  .home .herobanner-seperator div.featured-image--360 {
+    order: -1;
+  }
+}
