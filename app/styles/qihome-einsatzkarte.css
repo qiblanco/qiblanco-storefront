@@ -13,10 +13,15 @@
    SCOPE: .qh-karte. Eine Seite ohne diese Klasse sieht von dieser Datei
    baulich nichts — deshalb darf sie global geladen werden.
 
-   GOLD HAT ZWEI ROLLEN, NICHT ZWEI TOENE: --qk-akzent ist die FLAECHE
-   (Kreise), --qk-akzent-tinte ist dieselbe Farbe abgedunkelt fuer SCHRIFT auf
-   hellem Grund (AA >= 4.5:1). Gleicher Hue, gleiche Saettigung — die Rubrik
-   zaehlt weiter EINEN Gold-Hue-Bin. Uebernommen aus schlaf-zellen-schutz.css.
+   GOLD HAT EINE ROLLE, KEINEN ZWEITEN TON: --qk-akzent-tinte ist Gold
+   abgedunkelt für SCHRIFT auf hellem Grund (AA >= 4.5:1, der Zuruf). Die
+   Kreise tragen seit dem 19.09.2026 NICHT mehr Gold, sondern Königsblau
+   (Christian: "in einem schönen Königs-Royal") — der Farb-Token --qk-punkt
+   und seine Kontur --qk-punkt-tinte kommen aus Einsatzkarte.jsx als Custom
+   Property am <svg>, weil die Abnahme das ausgelieferte Dokument liest. Hier
+   steht dafür bewusst kein Wert: zwei Stellen für dieselbe Farbe wären die
+   Doppelbuchführung, aus der der zweite Goldton einmal entstanden ist.
+   Übernommen aus schlaf-zellen-schutz.css.
    ========================================================================== */
 
 .qh-karte {
@@ -48,17 +53,17 @@
   --qk-s8: 64px; /* Sektions-Takt mobil */
   --qk-s12: 96px; /* Sektions-Takt Desktop */
 
-  /* Farbe — warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  /* Farbe — warmes Neutral-Kontinuum + EIN Gold-Akzent (Schrift); die
+     Punktfarbe kommt als --qk-punkt vom <svg>, siehe Kopf. */
   --qk-grund: #faf9f5;
   --qk-flaeche: #f4f0e9;
   --qk-text: #2c2a26;
   --qk-muted: #6b665d;
-  --qk-akzent: #c9a14b;
   --qk-akzent-tinte: #856828;
   --qk-linie: rgba(44, 42, 38, 0.12);
 
   /* Bewegung — EIN Takt. Derselbe Wert steht als TAKT_S in Einsatzkarte.jsx;
-     wer ihn hier aendert, aendert nur den Atem, nie den Phasenversatz. */
+     wer ihn hier ändert, ändert nur den Ping, nie den Phasenversatz. */
   --qk-takt: 3.4s;
 
   /* Layout */
@@ -154,42 +159,79 @@
   stroke-linejoin: round;
 }
 
-.qh-karte__puls {
-  fill: var(--qk-akzent);
-  fill-opacity: 0.85;
-  stroke: var(--qk-akzent-tinte);
+/* ─── Der Punkt: ruhender Kern + Ring, der darüber hinauswächst ─────────────
+   Das Muster, mit dem Kartenwerkzeuge "aktive Standorte" zeichnen (Mapbox GL
+   JS, Beispiel add-image-animated: fester Innenkreis, ein Außenkreis wächst
+   und verliert dabei Deckkraft — der Radar-Ping). Animiert werden NUR
+   transform und opacity: beides rechnet der Browser im Compositor, ohne
+   Layout und ohne Paint (web.dev, "How to create high-performance CSS
+   animations"). Die erste Fassung animierte das Geometrieattribut r — mit
+   Faktor 1,5 auf 4,5 Einheiten war das bei 460 px Kartenbreite ein halber
+   Pixel und damit unsichtbar. Ein Punkt hat jetzt eine sichtbare Bewegung
+   von klein auf doppelt (Christian 19.09.2026).
+
+   KONTUR STATT KLEINEREM RADIUS: bei doppeltem Radius liegen die Kerne im
+   Ruhrgebiet übereinander. Eine dünne Kontur in der Grundfarbe trennt die
+   Scheiben, ohne die Größe anzutasten — der Radius ist Christians Ansage. */
+.qh-karte__kern {
+  fill: var(--qk-punkt);
+  fill-opacity: 0.92;
+  stroke: var(--qk-grund);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
-  animation: qh-karte-atem var(--qk-takt) ease-in-out infinite;
+}
+
+.qh-karte__puls {
+  fill: var(--qk-punkt);
+  stroke: var(--qk-punkt-tinte);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  /* Skalieren um den eigenen Mittelpunkt, nicht um den Ursprung der viewBox. */
+  transform-box: fill-box;
+  transform-origin: center;
+  /* Der Faktor entsteht aus den beiden Größen, die Einsatzkarte.jsx an den
+     Kreis schreibt — hier steht keine Zahl. */
+  --qk-puls-skala: calc(var(--qk-r-max) / var(--qk-r-min));
+  opacity: 0;
+  animation: qh-karte-ping var(--qk-takt) cubic-bezier(0.2, 0.6, 0.35, 1)
+    infinite;
   animation-delay: var(--qk-versatz, 0s);
-  will-change: r;
 }
 
-/* Der Atem zwischen der kleinen und der grossen Punktgroesse. Beide Grenzen
-   kommen als CSS-Variable aus Einsatzkarte.jsx und dort aus km_pro_einheit —
-   hier steht keine Zahl. Seit die Punkte gerechnet sind (2026-09-19), ist das
-   eine DARSTELLUNGS-Groesse: sie haelt den Punkt auf jedem Geraet gleich
-   gross und behauptet keine Reichweite. */
-@keyframes qh-karte-atem {
-  0%,
+/* Der Ping: startet auf Kerngröße, wächst in 40 % des Takts (1,36 s) auf das
+   Doppelte und blendet dabei aus; die übrigen 60 % ruht er unsichtbar. So
+   bleibt es eine Karte und wird keine Lichtorgel — ruhiger Takt, versetzte
+   Phasen (goldener Schnitt in Einsatzkarte.jsx), kein Blinken, kein
+   Farbwechsel.
+
+   DIE 40 % SIND EINE LEISTUNGSZAHL, KEINE GESCHMACKSZAHL. 479 gleichzeitig
+   gezeichnete Ringe kosten Bildrate: Headless-Chromium (Software-Raster,
+   pessimistisch) gemessen am 19.09.2026 bei 1440 px — Ruhe 60 fps, Ring mit
+   70 % aktiver Phase 41-43 fps, mit 40 % aktiver Phase 56-58 fps. Ein Ring
+   mit opacity 0 wird nicht gezeichnet; die Zahl der GLEICHZEITIG sichtbaren
+   Ringe (rund 190 von 479) ist damit der Hebel, nicht die Zahl der Punkte:
+   jeder Punkt pingt weiter. Halbierung der pingenden Punkte brachte dieselbe
+   Bildrate und hätte die Hälfte der Karte stillgelegt — verworfen. */
+@keyframes qh-karte-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  40%,
   100% {
-    r: var(--qk-r-min);
-    fill-opacity: 0.55;
-  }
-  50% {
-    r: var(--qk-r-max);
-    fill-opacity: 0.9;
+    transform: scale(var(--qk-puls-skala));
+    opacity: 0;
   }
 }
 
-/* ─── Zugaenglichkeit: wer Bewegung abbestellt, bekommt keine ────────────── */
+/* ─── Zugänglichkeit: wer Bewegung abbestellt, bekommt keine ─────────────── */
 @media (prefers-reduced-motion: reduce) {
   .qh-karte__puls {
     animation: none;
-    /* Ruhiger Kreis auf dem GROESSEREN der beiden Werte: der Punkt bleibt
-       sichtbar und behaelt die Groesse, die er im Atem auch erreicht. */
-    r: var(--qk-r-max);
-    fill-opacity: 0.85;
+    /* Der Ring bleibt im Dokument (die Wachen zählen daran), zeigt sich aber
+       nicht; der Kern steht ruhig in voller Größe. */
+    opacity: 0;
+    transform: none;
   }
 }
 

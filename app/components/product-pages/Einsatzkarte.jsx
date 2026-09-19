@@ -55,18 +55,58 @@ import {
  * 20260919.py` misst beides am Kundenrand GEMEINSAM (Satz UND 479 Punkte) und
  * wird rot, sobald eines von beiden allein wandert.
  *
- * PUNKTGROESSE: der Punkt atmet zwischen zwei Größen, die aus
- * `km_pro_einheit` folgen — so ist er auf jedem Gerät gleich groß. Das ist
- * eine DARSTELLUNGS-Groesse und behauptet keine Reichweite; seit die Punkte
- * gerechnet sind, gaebe es dafür auch keinen Gegenstand.
+ * PUNKTGRÖSSE UND PULS (Christian 19.09.2026, zwei Ansagen):
+ *   "die Punkte auf der Karte bitte in einem schönen Königs-Royal machen und
+ *    die Größe der Punkte im Radius verdoppeln."
+ *   "eine aktive Anzeige [...] so klein anfangen und dann auf die doppelte
+ *    Größe wachsen [...] so wie das auch andere Profis nutzen."
+ * Der Kern-Radius ist PUNKT_FAKTOR mal der aus `km_pro_einheit` gerechnete
+ * 3-km-Radius; data-r-2km/-3km tragen denselben Faktor, damit die Karte nicht
+ * eine Größe zeigt und eine andere behauptet. Das bleibt eine
+ * DARSTELLUNGS-Größe und behauptet keine Reichweite; seit die Punkte
+ * gerechnet sind, gäbe es dafür auch keinen Gegenstand.
+ * Jeder Punkt besteht aus ZWEI Kreisen: dem ruhenden Kern (.qh-karte__kern)
+ * und dem Ring (.qh-karte__puls), der vom Kern-Radius auf das
+ * PULS_FAKTOR-fache wächst und dabei ausblendet — der Radar-Ping, wie ihn
+ * Kartenwerkzeuge für "aktive Standorte" zeichnen (Mapbox GL JS, Beispiel
+ * add-image-animated: fester Innenkreis, Außenkreis wächst und verliert
+ * Deckkraft). Animiert werden `transform: scale()` und `opacity`, nie mehr
+ * das Geometrieattribut `r`: die erste Fassung atmete r von 2,98 auf 4,48
+ * Einheiten — bei 460 px Kartenbreite ein halber Pixel, technisch animiert,
+ * optisch unsichtbar. Die Zahl der Elemente mit Klasse .qh-karte__puls bleibt
+ * gleich der Punktzahl (die Wachen zählen daran).
+ *
+ * FARBE: der Farb-Token --qk-punkt steht als Custom Property am <svg> und NUR
+ * dort; das CSS konsumiert ihn. Er steht im Markup statt im Stylesheet, weil
+ * die Abnahme das AUSGELIEFERTE Dokument liest (worker-pool/pruefungen/
+ * probe_karte_royal_und_doppelter_radius__20260919.py) und eine externe
+ * Stylesheet-Datei dort baulich nie erscheint. Eine Stelle, kein fill an
+ * 479 Kreisen.
  *
  * RUECKWEG: `VITE_EINSATZKARTE=off` in der .env schaltet den Baustein auf
  * `null`, ohne die Seite zu brechen. Das ist der Rueckweg, KEINE Shadow-Stufe
  * — der Default ist `on`.
  */
 
-/** Ein Zyklus des Atems in Sekunden. Auch im CSS als --qk-takt hinterlegt. */
+/** Ein Zyklus des Pings in Sekunden. Auch im CSS als --qk-takt hinterlegt. */
 const TAKT_S = 3.4;
+
+/** Christian 19.09.2026: "die Größe der Punkte im Radius verdoppeln." Gilt
+ *  für den Kern-Radius UND für data-r-2km/-3km — beide tragen denselben Faktor. */
+const PUNKT_FAKTOR = 2;
+
+/** Christian 19.09.2026: "so klein anfangen und dann auf die doppelte Größe
+ *  wachsen." Der Ring startet auf dem Kern-Radius und wächst auf das
+ *  PULS_FAKTOR-fache. Das CSS rechnet die Skalierung aus --qk-r-max/--qk-r-min,
+ *  damit der Faktor an genau EINER Stelle entsteht. */
+const PULS_FAKTOR = 2;
+
+/** Königsblau — CSS-Farbname `royalblue`, als Hex, damit die Abnahme es im
+ *  ausgelieferten Dokument liest. Gegen den cremefarbenen Grund (#faf9f5)
+ *  gemessen: Kontrast 4,3:1, für Grafik deutlich über 3:1. Die Kontur ist
+ *  derselbe Farbton abgedunkelt (gleicher Hue, gleiche Sättigung). */
+const PUNKT_FARBE = '#4169e1';
+const PUNKT_FARBE_TINTE = '#2a4bb8';
 
 /** Goldener Schnitt: streut die Phasen aus dem Index gleichmäßig über den
  *  Takt, für JEDE Punktzahl. Ohne Versatz pulsten alle Punkte gemeinsam —
@@ -112,8 +152,11 @@ export function Einsatzkarte({daten}) {
     Number(daten?.km_pro_einheit) > 0
       ? Number(daten.km_pro_einheit)
       : KM_PRO_EINHEIT;
-  const r2 = 2 / kmProEinheit; // viewBox-Einheiten für die kleine Punktgröße
-  const r3 = 3 / kmProEinheit; // viewBox-Einheiten für die große Punktgröße
+  // viewBox-Einheiten: 2 bzw. 3 km, jeweils mit Christians Faktor (19.09.2026).
+  const r2 = (2 / kmProEinheit) * PUNKT_FAKTOR;
+  const r3 = (3 / kmProEinheit) * PUNKT_FAKTOR;
+  const rKern = r3; // ruhender Kern und Startgröße des Rings
+  const rPuls = rKern * PULS_FAKTOR; // Endgröße des Rings (Faktor exakt 2)
 
   return (
     <section className="qh-karte" data-section="qihome-einsatzkarte">
@@ -142,6 +185,13 @@ export function Einsatzkarte({daten}) {
             data-km-pro-einheit={kmProEinheit}
             data-r-2km={r2.toFixed(4)}
             data-r-3km={r3.toFixed(4)}
+            data-punkt-faktor={PUNKT_FAKTOR}
+            data-puls-faktor={PULS_FAKTOR}
+            style={{
+              // Farb-Token an EINER Stelle, siehe Dateikopf (FARBE).
+              '--qk-punkt': PUNKT_FARBE,
+              '--qk-punkt-tinte': PUNKT_FARBE_TINTE,
+            }}
           >
             {/*
               DER ALTERNATIVTEXT NENNT KEINE ZAHL. Bis zum 2026-09-19 stand hier
@@ -160,23 +210,38 @@ export function Einsatzkarte({daten}) {
             <path className="qh-karte__umriss" d={DEUTSCHLAND_PFAD} />
             <g className="qh-karte__punkte">
               {punkte.map((p, i) => (
-                <circle
+                <g
                   key={`${p.e}-${p.n}-${i}`}
-                  className="qh-karte__puls"
-                  cx={p.e}
-                  cy={p.n}
-                  r={r3}
+                  className="qh-karte__punkt"
                   style={{
-                    // Größen-Grenzen als CSS-Variablen: die @keyframes
-                    // interpolieren zwischen ihnen, damit beide Werte an genau
-                    // EINER Stelle entstehen (hier, aus km_pro_einheit).
-                    '--qk-r-min': r2,
-                    '--qk-r-max': r3,
                     // Negativer Delay: der Punkt startet mitten im Takt statt
                     // erst nach einer Wartezeit.
                     '--qk-versatz': `${(-((i * PHI) % 1) * TAKT_S).toFixed(3)}s`,
                   }}
-                />
+                >
+                  {/* Der Ring zuerst: er liegt UNTER dem Kern und ist das
+                      erste .qh-karte__puls im Dokument — die Wachen messen
+                      die Bewegung an genau diesem Element. */}
+                  <circle
+                    className="qh-karte__puls"
+                    cx={p.e}
+                    cy={p.n}
+                    r={rKern}
+                    style={{
+                      // Start- und Endgröße des Rings als CSS-Variablen: das
+                      // CSS skaliert um --qk-r-max / --qk-r-min, damit der
+                      // Faktor an genau EINER Stelle entsteht (hier).
+                      '--qk-r-min': rKern,
+                      '--qk-r-max': rPuls,
+                    }}
+                  />
+                  <circle
+                    className="qh-karte__kern"
+                    cx={p.e}
+                    cy={p.n}
+                    r={rKern}
+                  />
+                </g>
               ))}
             </g>
           </svg>
