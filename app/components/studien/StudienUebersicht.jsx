@@ -608,11 +608,19 @@ export const EVIDENZSTUFE_FRAGEN = [
   },
   {
     frage: 'Wer hat die Qi-Blanco-Studien durchgeführt und wer hat sie bezahlt?',
+    // Hier stand bis zum 2026-09-19 als dritter Satz „Das steht auch in den
+    // Publikationen." Christian ließ ihn ersatzlos streichen: der Satz davor
+    // IST die Angabe, der Nachsatz verteidigte sie — und ein kurzer Rückverweis
+    // auf die schon genannte Quelle ist das Muster, an dem Leser maschinell
+    // geschriebenen Text erkennen. Die Angabe zu Geräten und Finanzierung
+    // bleibt wortgleich. Wer den Nachsatz wieder aufnimmt, braucht dafür den
+    // jüngeren Auftrag eines Menschen. Wache:
+    // worker-pool/pruefungen/probe_studien_ohne_publikations_klammer__20260919.py
     antwort:
       'Alle fünf Arbeiten hat Prof. Dr. Peter C. Dartsch am Dartsch ' +
       'Scientific Institut durchgeführt, ein einzelnes Labor mit einem ' +
       'einzelnen Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
-      'Untersuchungen finanziert. Das steht auch in den Publikationen.',
+      'Untersuchungen finanziert.',
   },
 ];
 
