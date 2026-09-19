@@ -21,9 +21,6 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qihomeAirStyles from '~/styles/qihome-air.css?url';
-import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
-import igStyles from '~/styles/ig-testimonials.css?url';
-import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
 import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
@@ -54,7 +51,6 @@ import {
 export function links() {
   return [
     {rel: 'stylesheet', href: qihomeAirStyles},
-    {rel: 'stylesheet', href: igStyles},
     // Scope-CSS der Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte, s04).
     // Eigene Datei, Scope `.qh-karte`: eine Seite ohne diese Klasse sieht von
     // ihr baulich nichts.
@@ -76,16 +72,13 @@ export const meta = ({data}) => {
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
   });
-  // VideoObject je Instagram-Beitrag MIT Video. Ein Knoten auf einem Eintrag
-  // OHNE Video wäre eine Lüge, und ein Knoten ohne Pflichtfeld (name,
-  // thumbnailUrl, uploadDate) steht dauerhaft als Fehler in der Search
-  // Console — beides faellt in ig-video-schema.js baulich aus.
-  const videos = igVideoDescriptor({
-    produkt: 'QiHome',
-    pfad: '/products/qihome-air',
-    produktTitel: data?.product?.title,
-  });
-  return videos ? [...basis, videos] : basis;
+  // KEIN VideoObject mehr auf dieser Seite (Christian 2026-09-19, Job
+  // 20260919-qihome-air-karte-statt-instagram-christian-hat-entschieden):
+  // die Instagram-Flaeche ist von dieser Route gestrichen. Ein VideoObject
+  // auf einer Seite ohne das Video waere gegenueber der Suchmaschine eine
+  // Luege — dieselbe Regel, die ig-video-schema.js fuer Eintraege ohne
+  // Video setzt, gilt fuer eine Route ohne Flaeche.
+  return basis;
 };
 
 /**
@@ -231,53 +224,48 @@ export default function Product() {
       />
     </div>
       {/*
-        DIE INSTAGRAM-STIMMEN — WEIT OBEN, wie auf den drei Schwesterseiten:
-        unmittelbar nach dem Kaufblock und VOR dem langen Inhaltsteil.
+        DIE QIHOME-EINSATZKARTE — HIER, unmittelbar nach dem Kaufblock und VOR
+        dem langen Produkttext ("QiHome® Air – Die Zukunft für ein
+        intelligentes Raumklima").
 
-        EIGENE UEBERSCHRIFT, und das ist der Punkt dieser Sektion:
-        die Komponente heißt per Default "Echte Stimmen auf Instagram".
-        Für QiHome deckt das Material diese Zusage NICHT — der Korpus trägt
-        hier drei Beitraege, alle drei von unserem eigenen Konto, kein einziges
-        fremdes. (Christians Nachtrag rechnete mit einem persoenlichen: das war
-        @_kamyata_, und dieses Konto ist seit der Browser-Messung in s03 des
-        Vorgaengerjobs als geloescht belegt — 3 von 3 Laeufen "Seite wurde
-        entfernt", Positiv-Kontrolle jedes Mal sauber.)
+        Bis zum 2026-09-19 stand an dieser Stelle die Instagram-Flaeche
+        (<IgTestimonialSlideshow produkt="QiHome" ueberschrift="QiHome® Air auf
+        Instagram" />) und die Karte war das letzte Element der Route, direkt
+        oberhalb des Footers. Christian, 19.09.2026: der Instagram-Abschnitt
+        kommt weg, "und dort sollte doch die Karte dann ersatzweise stehen".
+        Die Flaeche ist deshalb ersatzlos gestrichen — samt Ueberschrift,
+        Videoeinbettung, Stylesheet und VideoObject-Auszeichnung in meta() —
+        und die Karte ist VERSCHOBEN, nicht neu gebaut: Punkte, Verteilung,
+        Text und Gestaltung sind unveraendert (Grossjob 20260914-qihome-
+        einsatzkarte, Zahl und Wortlaut Job 20260919-karte-zahl-im-text-wird-
+        ueber-450).
 
-        "Echte Stimmen" über drei eigenen Beiträgen wäre eine Behauptung, die
-        das Material nicht trägt. Die Flaeche steht trotzdem — Christian
-        2026-09-11: "Trotzdem einen tollen Slider machen mit dem ganzen
-        Material", "Nichts fliegt raus" — aber sie sagt, was sie ist.
-        Kommt fremdes Material nach, gehört die Default-Überschrift zurück.
+        Die drei QiHome-Beitraege bleiben im Korpus (app/data/ig-testimonials.js)
+        und in der Komponente; QiOne 2 Pro, QiBracelet und Kakao haengen daran
+        und bewegen sich nicht. Kommt die Flaeche hierher zurueck, ist das eine
+        neue Ansage von Christian, kein Rueckbau.
 
-        BEWUSST OHNE dataSection: diese PDP führt heute kein einziges
-        data-section; das erste würde den Design-Rubrik-Collector auf genau
-        eine Sektion einengen (Watch-Regression) — dieselbe Begründung wie auf
+        `daten` sind BEREITS projizierte SVG-Punkte aus dem Erzeuger; diese
+        Route rechnet nichts und reicht nur durch. Die Zahl in der Ueberschrift
+        ist Christians Wortlaut in der Komponente und wird hier NICHT
+        mitgegeben. Rueckweg: VITE_EINSATZKARTE=off laesst den Baustein `null`
+        rendern und die Seite bleibt vollstaendig.
+
+        BEWUSST OHNE zweites data-section: die Karte traegt ihres in der
+        Komponente (qihome-einsatzkarte); ein weiteres wuerde den
+        Design-Rubrik-Collector einengen — dieselbe Begruendung wie auf
         products.qibracelet.jsx und products.qione-2-pro.jsx.
       */}
-      <IgTestimonialSlideshow
-        produkt="QiHome"
-        ueberschrift="QiHome® Air auf Instagram"
+      <Einsatzkarte
+        daten={{
+          km_pro_einheit: einsatzkarteKmProEinheit,
+          punkte: einsatzkartePunkte,
+        }}
       />
       <QiHome /> 
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
-    {/* QiHome-Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte-deutschland-
-        live-auf-der-produktseite, s04): letztes Element der Route und damit
-        der Abschluss der Seite unmittelbar oberhalb des Footers -- der Footer
-        liegt im Layout, nicht hier. `daten` sind BEREITS projizierte
-        SVG-Punkte aus dem Erzeuger; diese Route rechnet nichts und reicht nur
-        durch. Die Zahl in der Ueberschrift ist `punkte.length` und wird
-        deshalb hier NICHT mitgegeben -- ein zweiter Zaehler könnte von der
-        Karte abweichen.
-        Rueckweg: VITE_EINSATZKARTE=off lässt den Baustein `null` rendern und
-        die Seite bleibt vollstaendig. */}
-    <Einsatzkarte
-      daten={{
-        km_pro_einheit: einsatzkarteKmProEinheit,
-        punkte: einsatzkartePunkte,
-      }}
-    />
     </div>
   );
 }

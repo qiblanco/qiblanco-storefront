@@ -5,8 +5,11 @@ import {
 } from './einsatzkarte-geometrie';
 
 /**
- * <Einsatzkarte /> — Deutschland-Karte mit atmenden Punkten, unmittelbar
- * oberhalb des Footers der QiHome-Air-Kaufseite.
+ * <Einsatzkarte /> — Deutschland-Karte mit atmenden Punkten auf der
+ * QiHome-Air-Kaufseite, seit dem 2026-09-19 unmittelbar nach dem Kaufblock und
+ * VOR dem Produkttext (an der Stelle der gestrichenen Instagram-Flaeche,
+ * Christian 19.09.2026); bis dahin stand sie als letztes Element oberhalb des
+ * Footers. Den Ort bestimmt die Route, nicht dieser Baustein.
  *
  * WAS DIE PUNKTE SIND, UND WAS SIE AUSDRÜCKLICH NICHT SIND:
  * Christian, 2026-09-19, woertlich: "479 Punkte setzen, per Einwohnerzahlen
@@ -140,8 +143,19 @@ export function Einsatzkarte({daten}) {
             data-r-2km={r2.toFixed(4)}
             data-r-3km={r3.toFixed(4)}
           >
+            {/*
+              DER ALTERNATIVTEXT NENNT KEINE ZAHL. Bis zum 2026-09-19 stand hier
+              "Karte von Deutschland mit ${punkte.length} Punkten." — also
+              "479", waehrend die Ueberschrift direkt daneben Christians
+              "ueber 450" sagt. Zwei Stellen derselben Flaeche mit zwei Zahlen:
+              ein Screenreader liest beide hintereinander. Die Ueberschrift ist
+              Christians Festlegung (GL-SPR-0008) und wird nicht nachgerechnet;
+              der Titel beschreibt deshalb nur, WAS das Bild ist — und er nennt
+              keinen Standort, denn die Punkte sind gerechnet (siehe Dateikopf).
+              Die Punktzahl bleibt maschinell lesbar in data-punkte am <svg>.
+            */}
             <title id="qh-karte-titel">
-              {`Karte von Deutschland mit ${punkte.length} Punkten.`}
+              Karte von Deutschland mit leuchtenden Punkten.
             </title>
             <path className="qh-karte__umriss" d={DEUTSCHLAND_PFAD} />
             <g className="qh-karte__punkte">
