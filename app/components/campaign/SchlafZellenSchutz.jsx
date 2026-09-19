@@ -307,13 +307,9 @@ function MechanismSection() {
       className="lp-vp-section lp-a-mechs-section"
       data-section="lp-a-mechanismus"
     >
-      <span className="eyebrow">Drei Ebenen im Detail</span>
-      <h2>Was kohärentes Wasser auf jeder Ebene bewirkt.</h2>
-      <p className="lp-vp-section__lede">
-        Wir verkaufen dir keine Traum-Stimmung, sondern eine nachvollziehbare Wirkkette —
-        pro Ebene mit einem messbaren Beweis aus dem Labor. Willst du tiefer einsteigen,
-        führt jede Ebene zu ihrer eigenen Seite.
-      </p>
+      {/* Christian, 19.09.2026: Eyebrow, Überschrift und Absatz weichen der einen
+          Zeile. Die drei Ebenen darunter bleiben unverändert. */}
+      <h2>Er wirkt für dich auf 3 Ebenen</h2>
       <div className="lp-a-mechs">
         {ebenen.map(({thema, ebene, link}) => (
           <article className="lp-a-mech" key={thema.id}>
@@ -349,11 +345,9 @@ function MechanismSection() {
           </article>
         ))}
       </div>
-      <p className="lp-a-note">
-        Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten
-        Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie erklären den
-        Mechanismus, sie sind keine Heilaussage.
-      </p>
+      {/* Christian, 19.09.2026: der Grenzforschungs-Hinweis unter den drei Ebenen
+          ist ersatzlos gestrichen; die In-vitro-Einordnung steht weiter im
+          Wissenschafts-Abschnitt. */}
     </section>
   );
 }
