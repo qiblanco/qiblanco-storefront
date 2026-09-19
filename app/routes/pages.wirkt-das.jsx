@@ -97,9 +97,10 @@ const GEAENDERT = '2026-09-12';
  * unvollständiges auszuliefern, das wie ein vollständiges aussieht.
  *
  * GEGENPROBE AM KUNDENRAND: homepage-bauer/pruefungen/
- * probe_zitierfaehige_evidenzstufe.py, Arm A4 — stehend in der rt-Gruppe
- * abfluss-homepage-bauer-taeglich-3 (seit 2026-09-19; davor stand hier ein
- * Dateiname, den es nie gab, und die Naht galt fälschlich als unbewacht).
+ * probe_zitierfaehige_evidenzstufe.py, Arm A4 — stehend in der dritten
+ * täglichen rt-Abflussgruppe des Moduls homepage-bauer (seit 2026-09-19;
+ * davor stand hier ein Dateiname, den es nie gab, und die Naht galt
+ * fälschlich als unbewacht).
  * Sie pinnt die Neun NICHT: ihr Soll ist die Zahl der sichtbaren
  * <summary> im mm-faq-Block. Wer ein Paar ergänzt, zieht deshalb nur
  * ZWEIFEL_SOLL hier und den Titel „Neun Fragen“ nach — die Probe folgt.
