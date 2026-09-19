@@ -95,7 +95,14 @@ const GEAENDERT = '2026-09-12';
  * eine Maschine ärmer, ohne Fehlermeldung. Deshalb steht hier ein SOLL-ZÄHLER:
  * fällt auch nur ein Paar durch, wird GAR KEIN Schema ausgegeben, statt ein
  * unvollständiges auszuliefern, das wie ein vollständiges aussieht.
- * Gegenprobe: homepage-bauer/pruefungen/probe_zitierfaehig_wirkt_das.py.
+ *
+ * GEGENPROBE AM KUNDENRAND: homepage-bauer/pruefungen/
+ * probe_zitierfaehige_evidenzstufe.py, Arm A4 — stehend in der rt-Gruppe
+ * abfluss-homepage-bauer-taeglich-3 (seit 2026-09-19; davor stand hier ein
+ * Dateiname, den es nie gab, und die Naht galt fälschlich als unbewacht).
+ * Sie pinnt die Neun NICHT: ihr Soll ist die Zahl der sichtbaren
+ * <summary> im mm-faq-Block. Wer ein Paar ergänzt, zieht deshalb nur
+ * ZWEIFEL_SOLL hier und den Titel „Neun Fragen“ nach — die Probe folgt.
  */
 const ZWEIFEL_SOLL = 9;
 
