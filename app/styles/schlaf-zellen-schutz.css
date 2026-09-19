@@ -434,6 +434,20 @@ body:has(.lp-a3) footer {
   text-align: center;
 }
 
+/* Startseiten-Block „6 Jahre Forschung" (reusables/PeerReviewStudies) in die
+   Papier-Welt heben — Christian, 2026-09-19. Bauform, Kennzahlen und Trennlinien
+   bleiben die der Startseite; nur Abstand, Breite und Linienfarbe kommen aus den
+   Tokens dieser Seite, damit der Block nicht mit eigenem 100-px-Rand in der
+   Sektion schwimmt und die Zwischenzeile mittig unter der H2 steht. */
+.lp-a3 .PeerReviewStudies.NormalSectionSize {
+  padding: 0;
+  max-width: var(--a-breite);
+  margin: 0 auto var(--a-s8);
+}
+.lp-a3 .PeerReviewStudies > p { margin-inline: auto; color: var(--a-text); }
+.lp-a3 .PeerReviewResults .PeerReviewResult { border-color: var(--a-linie); }
+.lp-a3 .PeerReviewResults .PeerReviewResult p { color: var(--a-muted); }
+
 /* Studien-Bestandsblock (LpStudien) in die Papier-Welt heben */
 .lp-a3 .Studien.NormalSectionSize {
   background: transparent;

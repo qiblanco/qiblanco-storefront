@@ -4,6 +4,7 @@ import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/Go
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
+import {PeerReviewStudies} from '~/components/reusables/PeerReviewStudies';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
@@ -352,48 +353,28 @@ function MechanismSection() {
   );
 }
 
-/* ───────── Wissenschaft (gemeinsam, in-vitro gelabelt) ───────── */
+/* ───────── Wissenschaft ─────────
+   Christian, 19.09.2026: der Block „Nicht nur gefühlt — an Zellen gemessen"
+   (Eyebrow, H2, Lede, drei Kacheln 84,7 % / 10× / 5 / 5) ist GELÖSCHT und durch
+   den Startseiten-Block „6 Jahre Forschung" ersetzt — übernommen, nicht
+   nachgebaut (reusables/PeerReviewStudies, eine Definition für beide Seiten).
+   Zum Block gehört der Studienslider mit seiner Überschrift „Wirkung an
+   menschlichen Zellen bestätigt!", der Schlusszeile und dem Knopf
+   „Zelluntersuchungen ansehen" — exakt wie auf der Startseite.
+
+   DER SLIDER STEHT DESHALB NUR NOCH HIER. Bis zu diesem Tag hing er als
+   `<LpStudien headline="" />` am ENDE dieser Sektion, unter dem Mikroskop-
+   Video; Christian: „Wichtig, dass dann der Studienslider weiter unten auf der
+   Seite verschwindet, sonst wäre er doppelt." Die untere Fassung ist entfernt,
+   nicht beide — entdoppeln heißt nicht löschen. */
 function ScienceSection() {
-  const stats = [
-    {
-      value: '84,7 %',
-      label: 'Immunzell-Aktivität',
-      desc: 'Radikalbildung der Immunzellen bleibt unter Handystrahlung nahezu erhalten (ohne Schutz: 60,5 %).',
-      cite: 'Japan Journal of Medicine, 2021 · in vitro',
-    },
-    {
-      value: '10×',
-      label: 'Zell-Barrierefunktion',
-      desc: 'Bessere Barriere-Integrität gestresster Zellen (TEER-Messung) unter E-Smog-Belastung.',
-      cite: 'Applied Cell Biology, 2021 · in vitro',
-    },
-    {
-      value: '5 / 5',
-      label: 'Zelltypen geschützt',
-      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
-      cite: 'Applied Cell Biology, 2024 · in vitro',
-    },
-  ];
   return (
     <section className="lp-vp-section" data-section="lp-a-wissenschaft">
-      <span className="eyebrow">Wissenschaft</span>
-      <h2>Nicht nur gefühlt — an Zellen gemessen.</h2>
-      <p className="lp-vp-section__lede">
-        Vier peer-review-publizierte Zellstudien (Dartsch Scientific, unabhängiges Labor)
-        belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien in vitro —
-        messbare, reproduzierbare Effekte auf lebende Zellen. Ergänzt durch über 14.000
-        Menschen, die den QiOne<sup>®</sup> täglich tragen.
-      </p>
-      <div className="lp-vp-peer-stats">
-        {stats.map((s) => (
-          <div className="lp-vp-peer-stat" key={s.label}>
-            <div className="lp-vp-peer-stat__value">{s.value}</div>
-            <div className="lp-vp-peer-stat__label">{s.label}</div>
-            <div className="lp-vp-peer-stat__desc">{s.desc}</div>
-            <div className="lp-vp-peer-stat__cite">{s.cite}</div>
-          </div>
-        ))}
-      </div>
+      <PeerReviewStudies dataSection="lp-a-peer-review-studien" />
+      <LpStudien
+        dataSection="lp-a-studien"
+        headline="Wirkung an menschlichen Zellen bestätigt!"
+      />
       {/* Das Scroll-Scrub-Video belegt bauartbedingt mehrere Bildschirmhoehen —
           es war nach dem ersten Einbau die letzte verbliebene Durststrecke
           (Falz 5,9 bis 11,8). Der Knopf steht deshalb VOR dem Video, solange
@@ -429,7 +410,6 @@ function ScienceSection() {
           den Studienzahlen, wo der Beweis frisch ist). Höchstens EIN Hauptknopf
           je Abschnitt. Was er gekostet hat, steht im RESULT und ist gemessen,
           nicht geschätzt: 13 von 471 Weiter-Klicks. */}
-      <LpStudien headline="" />
     </section>
   );
 }
@@ -509,13 +489,11 @@ export function GuaranteeSection() {
   ];
   return (
     <section className="lp-vp-section" data-section="lp-a-garantie">
-      <span className="eyebrow">Dein Risiko: keins</span>
-      <h2>Überzeugt es dich — oder du bekommst dein Geld zurück.</h2>
-      <p className="lp-vp-section__lede">
-        Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort bewusst
-        wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl, sondern an den
-        Zeitraum: 20 Nächte, dann entscheidest du.
-      </p>
+      {/* Christian, 19.09.2026: Eyebrow „Dein Risiko: keins", H2 „Überzeugt es
+          dich — oder du bekommst dein Geld zurück." und der Lede-Absatz
+          („… 20 Nächte, dann entscheidest du.") sind auf diese EINE Zeile
+          gekürzt — in seiner Schreibweise, nicht normalisiert. */}
+      <h2>100% Geld zurück Garantie</h2>
       <div className="lp-vp-benefits-grid">
         {items.map((b) => (
           <article className="lp-a-benefit" key={b.title}>
