@@ -236,9 +236,9 @@ export default function Product() {
         Die Fläche ist deshalb ersatzlos gestrichen — samt Überschrift,
         Videoeinbettung, Stylesheet und VideoObject-Auszeichnung in meta() —
         und die Karte ist VERSCHOBEN, nicht neu gebaut: Punkte, Verteilung,
-        Text und Gestaltung sind unverändert (Grossjob 20260914-qihome-
-        einsatzkarte, Zahl und Wortlaut Job 20260919-karte-zahl-im-text-wird-
-        ueber-450).
+        Text und Gestaltung sind unverändert (Grossjob
+        20260914-qihome-einsatzkarte; Zahl und Wortlaut der Überschrift sind
+        Christians Festlegung vom 19.09.2026 und stehen in der Komponente).
 
         Die drei QiHome-Beiträge bleiben im Korpus (app/data/ig-testimonials.js)
         und in der Komponente; QiOne 2 Pro, QiBracelet und Kakao hängen daran
