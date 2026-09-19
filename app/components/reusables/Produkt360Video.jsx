@@ -1,13 +1,16 @@
 import {useEffect, useRef} from 'react';
 
 /*
- * video-360.js — die EINE Stelle, an der die 360-Grad-Produktdrehung des
- * QiOne(R) 2 Pro als ausgelieferte Adresse steht (SSoT).
+ * Die Adresse der 360-Grad-Produktdrehung des QiOne(R) 2 Pro steht GENAU
+ * hier — in dem einen Baustein, der sie ausliefert.
  *
- * WARUM HIER UND NICHT AN DER EINBINDUNG: die Drehung steht seit dem
- * 19.09.2026 an zwei Orten (Startseite und /pages/schlaf-zellen-schutz).
- * Zwei Literale wären zwei Stellen, die denselben Zustand fuehren — und
- * beim nächsten Austausch gewinnt still die falsche.
+ * WARUM HIER UND NICHT IN EINER EIGENEN ADRESS-DATEI: die Drehung steht
+ * seit dem 19.09.2026 an zwei Orten (Startseite und
+ * /pages/schlaf-zellen-schutz), beide binden diesen Baustein ein. Zwei
+ * Literale an den Einbindungen wären zwei Stellen, die denselben Zustand
+ * fuehren — beim nächsten Austausch gewinnt still die falsche. Eine dritte
+ * Datei für zwei Konstanten mit genau EINEM Leser wäre die andere Haelfte
+ * desselben Fehlers: eine zweite Stelle ohne zweiten Zweck (P10).
  *
  * WARUM SHOPIFY-CDN UND NICHT IMGIX: die drei Schwester-Drehungen
  * (360-QiHome-1x1.mov, new-360-QiBracelet-1x1.mov) laufen über
@@ -69,8 +72,8 @@ const QIONE_360_KANTE = 1080;
  * der richtige für alles, was über qiblanco-video.imgix.* läuft — er
  * bringt hls.js, die adaptive Bitratenleiter und den Ton-Umschalter mit.
  * Hier trägt nichts davon: die Quelle liegt auf dem Shopify-CDN (der
- * imgix-Weg ist für diese Datei kontoseitig verschlossen, Begründung in
- * app/lib/video-360.js), es gibt genau eine Fassung, und das Video hat
+ * imgix-Weg ist für diese Datei kontoseitig verschlossen, Begründung im
+ * Kopf dieser Datei), es gibt genau eine Fassung, und das Video hat
  * ueberhaupt keine Tonspur. hls.js dafür zu laden wäre teurer als das
  * Video selbst.
  *

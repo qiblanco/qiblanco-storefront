@@ -63,7 +63,10 @@ export function HerobannerFeatured({dataSection}){
                     gewesen, von denen einer immer unsichtbar lädt. Auf schmalen
                     Schirmen zieht `.featured-image` per `order: -1` an dieselbe
                     Stelle, an der vorher die mobile Kopie stand (direkt unter der
-                    Ueberschrift) — CSS in app.css, Abschnitt Herobanner. */}
+                    Ueberschrift) — CSS in app/styles/startseite.css, Abschnitt
+                    „Der Kopfbereich zeigt die 360-Grad-Drehung". Bewusst NICHT
+                    in app.css: die lädt auf jeder Route, und `.featured-image`
+                    ist doppelt vergeben (siehe dort). */}
                 <div className="featured-image featured-image--360">
                     <Produkt360Video alt="QiOne® 2 Pro in der 360-Grad-Ansicht" />
                 </div> 
