@@ -687,7 +687,7 @@ export const FRAGEN = [
       "Hochfrequente elektromagnetische Felder entstehen dort, wo Technik funkt. Mobilfunk, WLAN und Rundfunk arbeiten mit Frequenzen von einigen hundert Megahertz bis in den Gigahertz-Bereich. Gemessen werden sie als elektrische Feldstärke in Volt pro Meter oder als Leistungsdichte in Watt pro Quadratmeter.",
       "Der Unterschied ist nicht akademisch, denn die beiden Bereiche wirken verschieden. Niederfrequente Felder können Nerven und Muskeln reizen. Hochfrequente Felder können Gewebe erwärmen. Die Grenzwerte sind gegen genau diese beiden Wirkungen gebaut und gegen keine dritte.",
       "Elektrosmog selbst lässt sich nicht messen. Kein Gerät zeigt eine Zahl dafür an, weil das Wort mehrere Größen mit verschiedenen Einheiten zusammenfasst. Wer eine Belastung beziffern will, muss sagen, welches Feld er meint, in welcher Einheit und in welchem Abstand.",
-      "Daraus folgt auch, wie man die Studienlage liest. Eine einzelne Studie entscheidet die Frage nicht, und ob eine Arbeit trägt, hängt an nachprüfbaren wissenschaftlichen Kriterien: Verblindung, eine Scheinexposition zum Vergleich, ein vorab angemeldeter Auswertungsplan und genug Teilnehmer, um den gesuchten Effekt überhaupt zu sehen. Fehlt eines davon, ist das Ergebnis eine Beobachtung und kein Beleg."
+      "Eine einzelne Studie entscheidet die Frage nicht. Ob eine Arbeit trägt, hängt an nachprüfbaren wissenschaftlichen Kriterien: Verblindung, eine Scheinexposition zum Vergleich, ein vorab angemeldeter Auswertungsplan und genug Teilnehmer, um den gesuchten Effekt überhaupt zu sehen. Fehlt eines davon, ist das Ergebnis eine Beobachtung und kein Beleg."
     ],
     "beleg": [
       "Für ortsfeste Funkanlagen legt die 26. Verordnung zum Bundes-Immissionsschutzgesetz frequenzabhängige Grenzwerte fest. Um 900 Megahertz sind es 41 Volt pro Meter, um 1800 Megahertz 58 Volt pro Meter, um 2000 und um 3600 Megahertz je 61 Volt pro Meter.",
@@ -752,7 +752,7 @@ export const FRAGEN = [
       "Ketten aus hartem Metall können den QiOne® verkratzen. Das ist ein Grund, das Band nach dem Gebrauch zu wechseln, und keiner gegen Wasser."
     ],
     "offen": [
-      "Wie warm das Gehäuse in einer Kabine wirklich wird, haben wir nicht gemessen. Was hier steht, folgt aus dem Material und aus unserer eigenen Pflegeangabe.",
+      "Wie warm das Gehäuse wird, hängt von der Kabinentemperatur, der Aufenthaltsdauer und davon ab, ob das Stück frei liegt oder auf der Haut.",
       "Ob das Tragen in Hitze oder Wasser die Wirkung verändert, ist von uns nicht untersucht worden.",
       "Für Menschen mit einer Nickelallergie gilt Chirurgenstahl als gut verträglich, und selten ist nicht nie. Wer empfindlich reagiert, probiert es kurz aus."
     ],
