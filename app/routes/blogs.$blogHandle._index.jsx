@@ -1,8 +1,8 @@
 import {Link, useLoaderData} from 'react-router';
 import {Image, getPaginationVariables} from '@shopify/hydrogen';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {blogIndexSignale, blogMeta} from '~/lib/blog-seo';
+import {absoluteCanonical} from '~/lib/seo';
 import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
 import {tagLang} from '~/lib/datum';
@@ -16,6 +16,19 @@ import straengeStyles from '~/styles/werk-straenge.css?url';
 // das ein Risiko ohne Not. Hausmuster: app/routes/pages.faq.jsx,
 // pages.studien.jsx. Die Zeilenlänge kommt weiterhin aus dem globalen Token
 // --measure-text, das in app.css auf :root steht.
+// NEUN JE SEITE — Christians Vorgabe vom 18.09.2026, woertlich: "Pro Seite
+// nur 9 Artikel anzeigen lassen". Die Zahl ist eine VORGABE, keine Messung;
+// sie steht hier einmal und wird von der Blätterung UND vom Schnitt
+// gelesen, damit die beiden nicht auseinanderlaufen können.
+const PRO_SEITE = 9;
+
+// WIE VIELE ARTIKEL EINE ABFRAGE HOLT. Nicht die Seitengroesse: aus diesem
+// Bestand wird geschnitten. Vorher stand hier `pageBy: 50` mit derselben
+// Begründung (Befund 2026-09-03: `pageBy: 4` ließ zwei von sechs Artikeln
+// hinter einem "Mehr laden" verschwinden). Der Wert bleibt 50 — er deckelt
+// jetzt den BESTAND je Abfrage, nicht mehr die Anzeige.
+const BESTANDS_DECKEL = 50;
+
 export const links = () => [
   {rel: 'stylesheet', href: blogStyles},
   // Eigenes Blatt für die Strang-Gruppierung: siehe Kopf dort. Es trägt
@@ -27,7 +40,10 @@ export const links = () => [
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data, location, params}) => {
-  const pfad = location?.pathname ?? '/blogs';
+  const basis = location?.pathname ?? '/blogs';
+  const seite = data?.seite ?? 1;
+  const seiten = data?.seiten ?? 1;
+  const pfad = basis;
   // Nur was Shopify wirklich pflegt — ein erfundener Fuelltext wäre hier
   // schlechter als gar keiner (er stuende auf JEDER Blog-Uebersicht gleich).
   // `blog.seo.description` ist am 2026-09-06 leer und der Blog hat keinen
@@ -36,23 +52,58 @@ export const meta = ({data, location, params}) => {
   const beschreibung =
     data?.blog?.seo?.description?.trim() ||
     BESCHREIBUNGEN[`/blogs/${params?.blogHandle}`];
-  const artikel = data?.blog?.articles?.nodes ?? [];
+  // DIE ARTIKEL DIESER SEITE, nicht der ganze Bestand: die strukturierten
+  // Daten sollen beschreiben, was auf der Seite steht.
+  const artikel = data?.artikel ?? [];
 
   // DAS TEILEN-BILD KOMMT AUS DEM NEUESTEN ARTIKEL MIT BILD (s04 des Grossjobs
-  // 20260911-…-auffindbarkeit). `nodes` ist absteigend nach publishedAt
-  // sortiert, der erste Treffer ist also der juengste. Es wird KEIN Bild
+  // 20260911-…-auffindbarkeit). Die Liste ist absteigend nach publishedAt
+  // sortiert, der erste Treffer ist also der juengste.
+  //
+  // DIESER SATZ WAR BIS ZUM 2026-09-18 FALSCH, und er stand hier seit s04:
+  // die Abfrage trug KEIN `sortKey`, die Storefront-API liefert dann nach ID
+  // aufsteigend — der „juengste" Treffer war in Wahrheit der ÄLTESTE. Live
+  // gemessen am 18.09.: die Übersicht begann mit dem Beitrag vom 31.08. und
+  // endete mit dem vom 11.09. Seit dem Nachzug von `sortKey: PUBLISHED_AT,
+  // reverse: true` stimmt der Satz. Er ist nicht neu formuliert, sondern
+  // erstmals wahr. Es wird KEIN Bild
   // erfunden und keines hochskaliert: hat kein Artikel ein Aufmacherbild,
   // bleibt og:image weg — und mit ihm die twitter:card, die sonst ein großes
   // Bild ZUSAGEN würde, das es nicht gibt (blogMeta setzt beide in derselben
   // Bedingung).
   const bildUrl = artikel.find((a) => a?.image?.url)?.image?.url;
 
-  return blogMeta({
+  // DIE SEITENZAHL MUSS HINTER absoluteCanonical() DRANGEHAENGT WERDEN, nicht
+  // davor: jene Funktion SCHNEIDET den Query-String ab (app/lib/seo.js,
+  // `.split('?')[0]`) — und das ist dort richtig, weil eine Seite sich nicht
+  // über einen utm-Parameter vervielfältigen soll. Wer ihr `?seite=2`
+  // übergibt, bekommt schweigend die Adresse von Seite 1 zurück und hätte
+  // Seite 2 zum Duplikat erklärt. Sie wird deshalb NICHT angefasst; die
+  // Blätterung baut ihre Adresse hier.
+  const absolut = (n) =>
+    n <= 1
+      ? absoluteCanonical(basis)
+      : `${absoluteCanonical(basis)}?seite=${n}`;
+
+  const kopf = blogMeta({
     pfad,
     titel: data?.blog?.seo?.title || data?.blog?.title,
     beschreibung,
     bildUrl,
-  }).concat(
+  }).map((d) =>
+    // SELBST-CANONICAL JE SEITE. Zeigte Seite 2 auf Seite 1, erklärte sie
+    // sich selbst zum Duplikat, und die Beiträge darauf fielen aus dem
+    // Index — genau das verbietet der Auftrag ("Seite 2 und folgende bleiben
+    // crawlbar"). og:url wandert mit, sonst teilt jemand Seite 3 und landet
+    // auf Seite 1.
+    seite > 1 && d?.rel === 'canonical'
+      ? {...d, href: absolut(seite)}
+      : seite > 1 && d?.property === 'og:url'
+        ? {...d, content: absolut(seite)}
+        : d,
+  );
+
+  return kopf.concat(
     // STRUKTURIERTE DATEN DER INDEX-SEITE. Die ARTIKEL tragen seit dem
     // 2026-09-09 BlogPosting+Person+ImageObject; ohne Auszeichnung war
     // ausschließlich diese Uebersicht — sie ist der Knoten, der die neun
@@ -62,8 +113,17 @@ export const meta = ({data, location, params}) => {
       name: data?.blog?.title || 'Wissen',
       beschreibung,
       artikel,
-      ersteSeite: !data?.blog?.articles?.pageInfo?.hasPreviousPage,
+      ersteSeite: seite === 1,
     }),
+    // rel=prev/next, vom Auftrag namentlich verlangt. `tagName: 'link'` ist
+    // Pflicht — ohne es rendert react-router ein wirkungsloses
+    // <meta rel="next"> (dieselbe Falle wie beim Canonical, siehe
+    // app/lib/seo.js). Für die Indexierung sind sie seit 2019 kein Signal
+    // mehr; die Arbeit machen die Anker in <Seitenwahl>.
+    seite > 1 ? [{tagName: 'link', rel: 'prev', href: absolut(seite - 1)}] : [],
+    seite < seiten
+      ? [{tagName: 'link', rel: 'next', href: absolut(seite + 1)}]
+      : [],
   );
 };
 
@@ -111,7 +171,7 @@ async function loadCriticalData({context, request, params}) {
   // rot — dann ist eine Archiv-/Blätter-Fläche fällig, nicht die
   // nächsthöhere Zahl.
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 50,
+    pageBy: BESTANDS_DECKEL,
   });
 
   if (!params.blogHandle) {
@@ -149,7 +209,41 @@ async function loadCriticalData({context, request, params}) {
 
   redirectIfHandleIsLocalized(request, {handle: params.blogHandle, data: blog});
 
-  return {blog};
+  // --- BLAETTERUNG (Christian, 18.09.2026) -----------------------------
+  // "Pro Seite nur 9 Artikel anzeigen lassen, danach dann unten einen
+  //  Reiter einbauen mit Seite 1, 2, etc. Der neuste Artikel erscheint
+  //  immer ganz links oben als erstes."
+  //
+  // WARUM HIER GESCHNITTEN WIRD UND NICHT ÜBER `first`/`after`: Christian
+  // verlangt NUMMERIERTE Seiten. Die Storefront-API kennt nur Cursor —
+  // `?seite=3` lässt sich damit baulich nicht beantworten, ohne die zwei
+  // Seiten davor erst zu holen. Der Bestand ist menschlich gegated
+  // (blog-redaktion veroeffentlicht im Takt di/fr/so) und durch
+  // BESTANDS_DECKEL gedeckelt; EINE Abfrage holt ihn ganz, der Schnitt
+  // passiert danach. Wächst er über den Deckel, meldet das die stehende
+  // Wache blog-redaktion/pruefungen/probe_blog_index_vollstaendig.py von
+  // selbst rot — dann ist eine echte Cursor-Blätterung fällig, nicht die
+  // nächsthöhere Zahl.
+  const alle = blog.articles?.nodes ?? [];
+  const seiten = Math.max(1, Math.ceil(alle.length / PRO_SEITE));
+  const roh = Number.parseInt(
+    new URL(request.url).searchParams.get('seite') ?? '1',
+    10,
+  );
+  // EINE UNSINNIGE SEITENZAHL IST KEINE LEERE SEITE. `?seite=0`, `?seite=99`
+  // und `?seite=abc` fallen auf Seite 1 zurück statt ein leeres Raster zu
+  // rendern — eine leere Übersicht sieht für Mensch und Crawler aus wie
+  // ein geloeschter Blog.
+  const seite = Number.isFinite(roh) && roh >= 1 && roh <= seiten ? roh : 1;
+  const start = (seite - 1) * PRO_SEITE;
+
+  return {
+    blog,
+    artikel: alle.slice(start, start + PRO_SEITE),
+    seite,
+    seiten,
+    gesamt: alle.length,
+  };
 }
 
 /**
@@ -164,8 +258,7 @@ function loadDeferredData({context}) {
 
 export default function Blog() {
   /** @type {LoaderReturnData} */
-  const {blog} = useLoaderData();
-  const {articles} = blog;
+  const {blog, artikel, seite, seiten, gesamt} = useLoaderData();
 
   // Die Überschrift stand nackt über einer reinen Titelliste. Eine Einleitung
   // sagt in Kundensprache (Schutz, Schlaf, Energie, Strahlung), was hier
@@ -184,23 +277,84 @@ export default function Blog() {
         <h1>{blog.title}</h1>
         <p className="blog-einleitung">{einleitung}</p>
         {STRAENGE_LIVE ? (
-          <StraengeAnsicht articles={articles} />
+          <StraengeAnsicht articles={{nodes: artikel}} />
         ) : (
-          <PaginatedResourceSection
-            connection={articles}
-            resourcesClassName="blog-grid"
-          >
-            {({node: article, index}) => (
-              <ArticleItem
-                article={article}
-                key={article.id}
-                loading={index < 2 ? 'eager' : 'lazy'}
-              />
-            )}
-          </PaginatedResourceSection>
+          <>
+            <div className="blog-grid">
+              {artikel.map((article, index) => (
+                <ArticleItem
+                  article={article}
+                  key={article.id}
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                />
+              ))}
+            </div>
+            <Seitenwahl
+              pfad={`/blogs/${blog.handle}`}
+              seite={seite}
+              seiten={seiten}
+              gesamt={gesamt}
+            />
+          </>
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Die nummerierte Blätterung unter dem Raster.
+ *
+ * WARUM ECHTE <a href> UND KEINE KNOEPFE: Christian hat verlangt, dass die
+ * Blätterung die Seite nicht aus der Indexierung nimmt. Ein Crawler folgt
+ * einem Anker mit href — einem Knopf mit onClick folgt er nicht, und Seite 2
+ * wäre damit für eine Suchmaschine nicht vorhanden. Die Cursor-Blätterung
+ * davor (`?direction=next&cursor=...`) hatte genau dieses Problem: anklickbar
+ * und trotzdem keine Adresse, die man verlinken oder indexieren kann.
+ *
+ * KEINE BLAETTERUNG BEI EINER EINZIGEN SEITE: eine Leiste mit genau der
+ * Zahl 1 ist kein Bedienelement, sondern Dekoration.
+ *
+ * @param {{pfad: string, seite: number, seiten: number, gesamt: number}}
+ */
+function Seitenwahl({pfad, seite, seiten, gesamt}) {
+  if (seiten <= 1) return null;
+  const zu = (n) => (n <= 1 ? pfad : `${pfad}?seite=${n}`);
+  const nummern = Array.from({length: seiten}, (_, i) => i + 1);
+
+  return (
+    <nav className="blog-seitenwahl" aria-label="Seiten der Übersicht">
+      {seite > 1 ? (
+        <a className="blog-seitenwahl-pfeil" href={zu(seite - 1)} rel="prev">
+          <span aria-hidden="true">&#8592;</span> Zurück
+        </a>
+      ) : null}
+      <ol className="blog-seitenwahl-liste">
+        {nummern.map((n) =>
+          n === seite ? (
+            <li key={n}>
+              <span className="blog-seitenwahl-hier" aria-current="page">
+                {n}
+              </span>
+            </li>
+          ) : (
+            <li key={n}>
+              <a href={zu(n)} aria-label={`Seite ${n}`}>
+                {n}
+              </a>
+            </li>
+          ),
+        )}
+      </ol>
+      {seite < seiten ? (
+        <a className="blog-seitenwahl-pfeil" href={zu(seite + 1)} rel="next">
+          Weiter <span aria-hidden="true">&#8594;</span>
+        </a>
+      ) : null}
+      <p className="blog-seitenwahl-stand">
+        Seite {seite} von {seiten} &#183; {gesamt} Beiträge
+      </p>
+    </nav>
   );
 }
 
@@ -348,7 +502,9 @@ const BLOGS_QUERY = `#graphql
         first: $first,
         last: $last,
         before: $startCursor,
-        after: $endCursor
+        after: $endCursor,
+        sortKey: PUBLISHED_AT,
+        reverse: true
       ) {
         nodes {
           ...ArticleItem

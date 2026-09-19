@@ -602,6 +602,98 @@
 
 /* ─── Schmale Breiten ────────────────────────────────────────────────────── */
 
+/* ─── Blätterung ─────────────────────────────────────────────────────────
+
+   Christian, 18.09.2026: „Pro Seite nur 9 Artikel anzeigen lassen, danach
+   dann unten einen Reiter einbauen mit Seite 1, 2, etc."
+
+   KEIN NEUER WERT IN DIESER DATEI. Alles hier kommt aus den `--bw-*` weiter
+   oben: Schriftgrößen aus der Skala, Abstände aus dem 8pt-Raster, EIN
+   Goldton (`--bw-akzent-tinte`) und ausschließlich als SCHRIFT, EIN Radius
+   (`--bw-r-bild`, die kleine Stufe — die Zahlenfelder sind Knöpfe, keine
+   Flächen). Ein zweiter Goldton oder eine zehnte Schriftgröße wären genau
+   das, was der Design-Meister an sechs Landingpages als „von AI gemacht"
+   gemessen hat.
+
+   DAS TREFFERFELD IST 44px HOCH UND BREIT, nicht 32: eine Ziffer ist das
+   kleinste anklickbare Ding auf dieser Seite, und am Telefon wird sie mit
+   dem Daumen getroffen. */
+.blog-wissen .blog-seitenwahl {
+  align-items: center;
+  border-top: 1px solid var(--bw-linie);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bw-s2);
+  justify-content: center;
+  margin: var(--bw-s6) 0 0;
+  padding: var(--bw-s4) 0 0;
+}
+
+.blog-wissen .blog-seitenwahl-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bw-s1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blog-wissen .blog-seitenwahl-liste a,
+.blog-wissen .blog-seitenwahl-hier {
+  align-items: center;
+  border: 1px solid var(--bw-linie);
+  border-radius: var(--bw-r-bild);
+  display: flex;
+  font-size: var(--bw-fs-base);
+  justify-content: center;
+  line-height: 1;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 var(--bw-s1);
+  text-decoration: none;
+}
+
+.blog-wissen .blog-seitenwahl-liste a {
+  color: var(--bw-text);
+  transition: border-color 0.15s ease;
+}
+
+.blog-wissen .blog-seitenwahl-liste a:hover,
+.blog-wissen .blog-seitenwahl-liste a:focus-visible {
+  border-color: var(--bw-linie-stark);
+}
+
+/* Die aktuelle Seite ist der EINE Goldakzent dieser Leiste — sie ist der
+   Ort, an dem der Leser steht, nicht eine Handlung. Deshalb kein Anker und
+   kein Zeiger. */
+.blog-wissen .blog-seitenwahl-hier {
+  border-color: var(--bw-akzent-tinte);
+  color: var(--bw-akzent-tinte);
+  font-weight: 600;
+}
+
+.blog-wissen .blog-seitenwahl-pfeil {
+  align-items: center;
+  color: var(--bw-text);
+  display: flex;
+  font-size: var(--bw-fs-base);
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.blog-wissen .blog-seitenwahl-pfeil:hover,
+.blog-wissen .blog-seitenwahl-pfeil:focus-visible {
+  color: var(--bw-akzent-tinte);
+}
+
+.blog-wissen .blog-seitenwahl-stand {
+  color: var(--bw-muted);
+  flex-basis: 100%;
+  font-size: var(--bw-fs-xs);
+  margin: var(--bw-s1) 0 0;
+  text-align: center;
+}
+
 @media (max-width: 749px) {
   .blog-wissen .blog,
   .blog-wissen .blogs,

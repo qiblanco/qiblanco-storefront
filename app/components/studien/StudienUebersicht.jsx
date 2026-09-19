@@ -330,8 +330,6 @@ export function StudienUebersicht() {
           </div>
         </header>
 
-        <Evidenzstufe />
-
         <section className="qb-st-sektion" id="studien" aria-labelledby="studien-titel">
           <h2 id="studien-titel">Die {anzahl} Publikationen</h2>
           <p className="qb-st-sektion-intro">
@@ -347,6 +345,8 @@ export function StudienUebersicht() {
           </div>
         </section>
 
+        <Evidenzstufe />
+
         <HrvMessreihe />
 
         <section
@@ -354,13 +354,7 @@ export function StudienUebersicht() {
           id="weiterfuehrend"
           aria-labelledby="weiterfuehrend-titel"
         >
-          <h2 id="weiterfuehrend-titel">Bleibt eine Frage offen?</h2>
-          <p className="qb-st-sektion-intro">
-            Die {anzahl} Arbeiten oben prüfen unsere Geräte. Die Fragen
-            dahinter — was Wasser im Körper tut, was nachts messbar passiert,
-            was an den bekannten Trends dran ist — behandeln wir ausführlich im
-            Wissensteil. Dort steht jeweils, was gemessen ist und was nicht.
-          </p>
+          <h2 id="weiterfuehrend-titel">Weitere Fachartikel zum Thema Gesundheit</h2>
           <div className="qb-st-verwandt-grid">
             {WEITERFUEHREND.map((a) => (
               <Link key={a.pfad} to={a.pfad} className="qb-st-verwandt-karte">
@@ -374,19 +368,6 @@ export function StudienUebersicht() {
 
         <section className="qb-st-sektion" aria-labelledby="produkte-titel">
           <h2 id="produkte-titel">Die untersuchten Produkte</h2>
-          <p className="qb-st-sektion-intro">
-            {/* Eine Arbeit kann mehrere Geraete untersuchen — die Summe der
-                Karten ist deshalb größer als die Zahl der Studien. */}
-            {aufzaehlung(
-              produkte.map(
-                (p) =>
-                  `${initialCap(zahlwort(p.anzahl))} ${
-                    p.anzahl === 1 ? 'Arbeit untersucht' : 'Arbeiten untersuchen'
-                  } den ${p.name}`,
-              ),
-            )}
-            .
-          </p>
           <div className="qb-st-verwandt-grid">
             {produkte.map((p) => (
               <Link key={p.name} to={p.pfad} className="qb-st-verwandt-karte">
@@ -482,56 +463,63 @@ export function StudienUebersicht() {
 }
 
 /**
- * DIE EVIDENZSTUFE DER STUDIEN-REGISTRY, IN ZITIERFÄHIGER FORM.
+ * DIE EVIDENZSTUFE DER STUDIEN — GEKÜRZT, WÄRMER, UND DIREKT UNTER DEN STUDIEN.
  *
- * Herkunft: 20260911-GROSSJOB-googles-ki-antwort-zitiert-null-eigene-quellen-
- * zitierfaehig-werden, Segment s04. Der Befund, der dieses Modul begründet, ist
- * in zwei unabhängigen Messungen erhoben (Segment s03, RESULT):
+ * HERKUNFT: Christians Durchgang am Abend des 2026-09-18, woertlich: „Diesen
+ * Bereich hängen wir doch als Text direkt unter die Studien, glaube der kommt
+ * bei GEO sehr gut an." Und: „Könnte man das noch etwas freundlicher für uns
+ * formulieren? Das wirkt so kalt und abwertend unserer Leistung gegenueber. Und
+ * es bitte unterhalb der 5 Studien, direkt oberhalb der HRV-Messung einpflegen."
+ * (Job 20260918-evidenzblock-gekürzt-unter-die-studien-setzen.)
  *
- *   (a) Googles KI-Antwort zitiert über alle je gemessenen Läufe 858 Zeilen,
- *       davon 43 eigene — und ALLE 43 zeigen auf /pages/studien oder
- *       /pages/studie-*. Keine Produkt-, keine Kampagnen-, keine Antwortseite.
- *       Das ist die EINE Fläche, auf der Google uns liest.
- *   (b) Genau diese Fläche nennt ihre Evidenzstufe null mal. Gemessen an
- *       StudienUebersicht.jsx vor diesem Bau: „in vitro" 0x, „Zellkultur" 0x,
- *       „präklinisch" 0x, „nicht am Menschen" 0x. Die Detailseiten
- *       /pages/studie-* nennen sie 5–14x je Seite — die Einstiegsseite nicht.
+ * WARUM ER AM SELBEN TAG ERST FORT WAR: Job 20260918-studienseite-vier-
+ * änderungen-aus-christians-durchgang (PR #510) hat ihn ersatzlos gestrichen.
+ * Christian hat die Entscheidung danach revidiert und die Stelle neu bestimmt.
+ * Die jüngere Anweisung gilt — das ist keine Rücknahme jenes Jobs, seine drei
+ * anderen Aenderungen stehen unverändert.
  *
- * WAS DAS MODUL DESHALB TUT: es liefert die Antwort auf die Evidenzfrage in der
- * Form, in der eine Maschine sie als BELEG erkennt — Behauptung und Beleg
- * getrennt, Primärquelle mit Autor, Jahr, Journal, Methode UND der Stelle, an
- * der die Messung endet, eine Frage je Antwort.
+ * WARUM ALS TEXT UND NICHT ALS AUFKLAPPELEMENT: was zugeklappt ist, wird von
+ * generativen Suchsystemen schlechter zitiert. Genau darum geht es hier.
+ *
+ * WARUM AN DIESER STELLE: unterhalb der fünf Publikationen und unmittelbar
+ * oberhalb von „HRV-Messungen". Der Leser hat die Belege gesehen, bevor er ihre
+ * Einordnung liest.
+ *
+ * WAS „freundlicher“ BEDEUTET UND WAS NICHT. Die alte Fassung zog fünfmal
+ * dieselbe Grenze (nicht an Menschen · ohne Kontrollgruppe · ohne Verblindung ·
+ * keine Aussage · muss nicht passieren). Umgeschrieben ist die BLICKRICHTUNG,
+ * nicht der Inhalt: zuerst steht, was gemessen wurde, dann wer es finanziert
+ * hat, zuletzt in EINEM Satz, wo die Messung endet. Drei Sätze sind gestrichen,
+ * weil sie dasselbe sagen wie die Antwort auf „Gibt es eine Studie am
+ * Menschen?" — sie fielen als Wiederholung, nicht als Aussage:
+ *   1. „Eine kontrollierte klinische Studie am Menschen gibt es zu den
+ *      Qi-Blanco-Geräten nicht." (Ende der Antwort)
+ *   2. „Ein klinischer Wirknachweis am Menschen liegt für die Qi-Blanco-
+ *      Geräte nicht vor." (Ende von „Wo die Messung endet")
+ *   3. „Was im Labor an Zellen messbar ist, muss im Körper nicht passieren."
+ *      (Ende der ersten Frage)
+ * KEINE TATSACHE IST HINZUGEKOMMEN, WEGGEFALLEN ODER ABGESCHWÄCHT. Präklinisch
+ * bleibt präklinisch, in vitro bleibt in vitro, 171 bleiben 171, „ohne
+ * Kontrollgruppe" bleibt, „ein einzelnes Labor mit einem einzelnen Autor" bleibt,
+ * und das „Nein." auf die Menschenstudien-Frage steht wortgleich am Anfang.
+ * Die Finanzierung steht offen und ohne Beiwort — sie ist hier die Stärke.
  *
  * JEDER EINTRAG IST ISOLIERT VERSTÄNDLICH. Das ist kein Stil, sondern Mechanik:
  * ein RAG-System bewertet Abschnitte einzeln; ein Abschnitt, der mit „wie oben
  * beschrieben" beginnt, ist für eine KI-Antwort wertlos (GEO-Regel G03,
- * blog-redaktion/docs/KONZEPT.md, belegt aus arXiv 2311.09735). Deshalb steht
- * in jeder Antwort „Qi Blanco" bzw. „die fünf Arbeiten" ausgeschrieben, statt
- * auf den Seitenkontext zu verweisen.
- *
- * WAS DIESES MODUL NICHT ANGETASTET HAT: Titel, Beschreibung, H1 und URL von
- * /pages/studien. Diese Seite stand am 2026-08-14 auf Platz 1 für „Qi Blanco
- * Studien" (seo.db, Lauf 2026-W33), und der SSoT der Zweifelsflächen
- * (homepage-bauer/konzepte/abgrenzung-flaechen.json) führte sie als „HÄLT
- * PLATZ 1 … wird durch das Vorhaben NICHT umgebaut". Der Zuwachs war rein
- * additiv.
- *
- * SEIT DEM 2026-09-14 GILT DAS FÜR DIE H1 NICHT MEHR (Job 20260914-studien-h1-
- * sagt-was-die-eigene-antwortseite-verbietet-prio12). Sie lautete
- * „Wissenschaftlich getestet und in Fachpublikationen bestätigt" und sagte
- * damit genau das, was der Abschnitt `Evidenzstufe` zwei Bildschirme weiter
- * unten verneint. Eine Überschrift, die ihrem eigenen Inhalt widerspricht,
- * macht den Inhalt unglaubwürdig, nicht die Überschrift glaubhaft. Sie lautet
- * jetzt „Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht" —
- * dieselbe Evidenzstufe, die der Abschnitt unten ausführt. Der `title`
- * („Wissenschaftliche Studien | Qi Blanco") trägt die gemessenen
- * SERP-Positionen und ist unverändert.
+ * blog-redaktion/docs/KONZEPT.md, belegt aus arXiv 2311.09735). Deshalb steht in
+ * jeder Antwort „Qi Blanco" ausgeschrieben statt eines Seitenverweises.
  *
  * ZAHLEN UND METHODEN sind 1:1 aus app/data/studien/e0001…e0005.json
  * übernommen; hier steht keine Zahl, die dort nicht steht.
+ *
+ * NUR BESTANDS-KLASSEN, KEINE NEUE CSS-ZEILE: qb-st-sektion, qb-st-antwort-text,
+ * qb-st-eckdaten/-eckdatum und qb-st-liste stehen saemtlich in
+ * app/styles/studien.css und tragen dort die Typo-, Abstands- und Farbtokens der
+ * Seite. Ein eigener Block hätte einen zweiten Satz Werte eingeführt.
  */
 
-/** Die Anzahl der Frage-Antwort-Paare. Soll-Zähler gegen den stillen Verlust
+/** Die Anzahl der Frage-Antwort-Paare. Soll-Zaehler gegen den stillen Verlust
  *  im Deny-Netz von app/lib/faq-schema.js — siehe pages.studien.jsx. */
 export const EVIDENZSTUFE_SOLL = 3;
 
@@ -546,29 +534,31 @@ export const EVIDENZSTUFE_TITEL =
 /**
  * DIE ANTWORT AUF DIE ÜBERSCHRIFT — der Abschnitt, der als Ganzes zitierbar
  * sein soll. Er beantwortet die Frage vollständig, ohne eine andere Stelle der
- * Seite vorauszusetzen.
+ * Seite vorauszusetzen. Er beginnt mit dem, was vorliegt, nicht mit dem, was
+ * fehlt.
  */
 export const EVIDENZSTUFE_ANTWORT =
-  'Alle fünf Publikationen zu den Qi-Blanco-Geräten sind präklinisch. ' +
-  'Vier davon sind In-vitro-Studien: gemessen an Zellkulturen in der ' +
-  'Laborschale, nicht an Menschen. Die fünfte wertet 171 freiwillige ' +
-  'Erfahrungsberichte deskriptiv aus — ohne Kontrollgruppe und ohne ' +
-  'Verblindung. Eine kontrollierte klinische Studie am Menschen gibt es zu ' +
-  'den Qi-Blanco-Geräten nicht.';
+  'Zu den Qi-Blanco-Geräten liegen fünf veröffentlichte Arbeiten vor, alle ' +
+  'präklinisch. Vier davon sind In-vitro-Studien: gemessen an Zellkulturen ' +
+  'in der Laborschale, nicht an Menschen. Die fünfte wertet 171 freiwillige ' +
+  'Erfahrungsberichte deskriptiv aus, ohne Kontrollgruppe und ohne ' +
+  'Verblindung.';
 
 /**
- * BEHAUPTUNG UND BELEG SICHTBAR GETRENNT. Jede Zeile nennt eine Eigenschaft
- * der Primärquellen, keine Wirkaussage. Die vierte Zeile ist die wichtigste
- * und die, die sonst überall fehlt: wo die Messung endet.
+ * BEHAUPTUNG UND BELEG SICHTBAR GETRENNT. Jede Zeile nennt eine Eigenschaft der
+ * Primärquellen, keine Wirkaussage. Die Reihenfolge ist die Vorgabe aus
+ * Christians Bitte: erst was gemessen wurde, dann wer es finanziert hat, zuletzt
+ * wo die Messung endet.
  */
 export const EVIDENZSTUFE_ECKDATEN = [
   {
     label: 'Methode',
     text:
-      'Vier In-vitro-Studien an Zellkulturen — humane Immunzellen (Zelllinie ' +
-      'HL-60), kultivierte Darmzellen vom Schwein (Zelllinie IPEC-J2) und fünf ' +
-      'weitere Zelltypen unter Wasserstoffperoxid — sowie eine deskriptive ' +
-      'Auswertung von 171 freiwilligen öffentlichen Erfahrungsberichten.',
+      'Vier In-vitro-Studien an Zellkulturen: humane Immunzellen (Zelllinie ' +
+      'HL-60), kultivierte Darmzellen vom Schwein (Zelllinie IPEC-J2) und ' +
+      'fünf weitere Zelltypen unter Wasserstoffperoxid. Dazu eine ' +
+      'deskriptive Auswertung von 171 freiwilligen öffentlichen ' +
+      'Erfahrungsberichten.',
   },
   {
     label: 'Autor, Labor und Jahr',
@@ -582,23 +572,23 @@ export const EVIDENZSTUFE_ECKDATEN = [
   {
     label: 'Finanzierung',
     // Die Selbstnote zur ausstehenden Wiederholung steht hier NICHT, und das ist
-    // eine menschliche Entscheidung, kein Versehen: Christian liess sie am
+    // eine menschliche Entscheidung, kein Versehen: Christian ließ sie am
     // 2026-08-15 ersatzlos streichen (Auftrag studien-selbstkritik-streichung-w33,
     // PR #214 da1058b). PR #385 brachte sie am 2026-09-12 maschinell und ohne
     // Auftrag zurück, in einer umformulierten Fassung, die den Substring-Vergleich
     // der Wache nicht auslöste. Wer sie wieder aufnehmen will, braucht dafür den
-    // jüngeren Auftrag eines Menschen. Die zwei PRÜFBAREN Angaben bleiben.
+    // jüngeren Auftrag eines Menschen. Die zwei PRÜFBAREN Angaben bleiben —
+    // jetzt im Aktiv, weil das Haus dazu steht, statt es geschehen zu lassen.
     text:
-      'Die untersuchten Geräte wurden von Qi Blanco zur Verfügung gestellt, ' +
-      'die Untersuchungen von Qi Blanco finanziert.',
+      'Qi Blanco hat die untersuchten Geräte gestellt und die Untersuchungen ' +
+      'finanziert.',
   },
   {
     label: 'Wo die Messung endet',
     text:
       'An der Zellkultur. Aus einem gemessenen Effekt an Zellen in der ' +
       'Laborschale folgt keine Aussage über eine Wirkung im menschlichen ' +
-      'Körper. Ein klinischer Wirknachweis am Menschen liegt für die ' +
-      'Qi-Blanco-Geräte nicht vor.',
+      'Körper.',
   },
 ];
 
@@ -614,16 +604,15 @@ export const EVIDENZSTUFE_FRAGEN = [
       'Studie am Menschen vor. Vier der fünf Publikationen sind ' +
       'In-vitro-Studien an Zellkulturen, die fünfte ist eine deskriptive ' +
       'Auswertung von 171 freiwilligen Erfahrungsberichten ohne ' +
-      'Kontrollgruppe. Was im Labor an Zellen messbar ist, muss im Körper ' +
-      'nicht passieren.',
+      'Kontrollgruppe.',
   },
   {
     frage: 'Wer hat die Qi-Blanco-Studien durchgeführt und wer hat sie bezahlt?',
     antwort:
       'Alle fünf Arbeiten hat Prof. Dr. Peter C. Dartsch am Dartsch ' +
-      'Scientific Institut durchgeführt — ein einzelnes Labor, ein einzelner ' +
-      'Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
-      'Untersuchungen finanziert; das steht auch in den Publikationen.',
+      'Scientific Institut durchgeführt, ein einzelnes Labor mit einem ' +
+      'einzelnen Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
+      'Untersuchungen finanziert. Das steht auch in den Publikationen.',
   },
 ];
 
@@ -637,29 +626,9 @@ export function evidenzstufeSchemaItems() {
 }
 
 /**
- * EVIDENZSTUFE — der Abschnitt, der diese Seite zitierfähig macht.
- *
- * WARUM ER HIER STEHT UND NICHT AUF EINER EIGENEN SEITE: über alle je
- * gemessenen Läufe zitiert Googles KI-Antwort 43 eigene Quellen, und ALLE 43
- * zeigen auf /pages/studien oder /pages/studie-* (Segment s03 des Großjobs
- * 20260911-GROSSJOB-googles-ki-antwort-zitiert-null-eigene-quellen). Das ist
- * die eine Fläche, auf der Google uns liest — und sie nannte ihre Evidenzstufe
- * bis hierher null mal, während die Detailseiten sie 5–14x nennen.
- *
- * ADDITIV UND SONST NICHTS: Titel, Beschreibung, H1 und URL dieser Seite
- * bleiben unverändert (Platz 1 für „Qi Blanco Studien", seo.db 2026-W33).
- *
- * NUR BESTANDS-KLASSEN, KEINE NEUE CSS-ZEILE: qb-st-sektion,
- * qb-st-antwort-text, qb-st-eckdaten/-eckdatum und qb-st-liste existieren
- * sämtlich in app/styles/studien.css und tragen dort die Typo-, Abstands- und
- * Farbtokens der Seite. Ein eigener Block hätte einen zweiten Satz Werte
- * eingeführt, und genau das ist der Fehler, gegen den die Design-Pflicht
- * gebaut ist.
- *
- * DER TEXT STEHT IN app/data/studien-evidenzstufe.js, WEIL IHN ZWEI STELLEN
- * BRAUCHEN: diese Komponente rendert ihn, und app/routes/pages.studien.jsx
- * baut daraus das FAQPage-Schema. Zwei Textfassungen wären zwei Stellen, die
- * denselben Zustand führen.
+ * EVIDENZSTUFE — als Text, unterhalb der fünf Studien, oberhalb der
+ * HRV-Messungen. Die Überschriften sind unverändert; gekürzt und
+ * umgeschrieben ist allein der Fließtext (siehe Kopf oben).
  */
 function Evidenzstufe() {
   return (
