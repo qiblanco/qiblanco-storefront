@@ -29,10 +29,28 @@ import {
  *     viewBox-Koordinaten (Feld `e`/`n`). PLZ, lat/lon, Ort, Datum und
  *     Bestellkennung erreichen den Browser nie — er hat für sie keine Stelle.
  *
- * DIE ZAHL IM TEXT IST `punkte.length`, NICHT EIN ZWEITES FELD. Damit können
- * Text und Karte baulich nicht auseinanderlaufen: wer Punkte hinzufuegt,
- * aendert die Zahl mit. Ein getrennt gefuehrter Zaehler wäre eine zweite
- * Buchfuehrung, und die falsche gewinnt still.
+ * DIE ZAHL IM TEXT IST NICHT MEHR `punkte.length` — SEIT 2026-09-19 SIND ES
+ * ZWEI GRÖSSEN MIT ZWEI QUELLEN, und das ist Absicht, keine Nachlaessigkeit.
+ * Bis zum 2026-09-19 stand hier das Gegenteil: die Zahl wurde aus
+ * `punkte.length` abgeleitet, damit Text und Karte baulich nicht
+ * auseinanderlaufen konnten. Christian hat die Textzahl danach gesetzt
+ * (woertlich: "dann schreiben wir über 450 QiHome aktiv & live"), nachdem er
+ * eingeordnet hatte, dass die Shopify-Zählung nicht alle Verkaufswege
+ * abbildet. Damit misst der Satz eine ANDERE Größe als die Karte:
+ *   - "über 450" ist die Geschäftsangabe des Geschäftsführers über real
+ *     laufende Geräte (GL-SPR-0008). Sie kommt nicht aus diesem Repo.
+ *   - 479 Punkte sind der gerechnete Effekt der Karte, ebenfalls Christians
+ *     Vorgabe. 479 IST "über 450" — die beiden widersprechen sich nicht.
+ * Eine Ableitung der Textzahl aus `punkte.length` (etwa ein Abrunden auf 50)
+ * wäre deshalb FALSCH: sie würde Christians gesetzte Zahl bei jeder
+ * künftigen Punktänderung still mitverschieben. Wer die Textzahl ändern
+ * will, braucht eine neue Ansage von Christian, nicht einen neuen Punktstand.
+ *
+ * WAS DAMIT WEGFÄLLT, offen benannt: die Karte kann jetzt unter 450 Punkte
+ * rutschen, während der Satz 450 behauptet. Der Ersatz steht NICHT in diesem
+ * Bauteil, sondern daneben — `worker-pool/pruefungen/probe_karte_ueber450__
+ * 20260919.py` misst beides am Kundenrand GEMEINSAM (Satz UND 479 Punkte) und
+ * wird rot, sobald eines von beiden allein wandert.
  *
  * PUNKTGROESSE: der Punkt atmet zwischen zwei Größen, die aus
  * `km_pro_einheit` folgen — so ist er auf jedem Gerät gleich groß. Das ist
@@ -69,14 +87,11 @@ export function istEingeschaltet() {
  * 284x "&amp;", 0x rohes "&" im sichtbaren Text. Ein Textknoten kann diese
  * Zusage baulich nie erfuellen. Ein rohes "&" vor einem Leerzeichen ist nach
  * HTML5 KEIN "ambiguous ampersand" und damit konform.
- * `n` ist eine Ganzzahl aus `punkte.length` — es gibt hier keine Eingabe von
- * aussen, die Markup einschleusen könnte, und die Zahl wird vor dem Einsetzen
- * auf Ziffern verengt.
+ * Der Satz ist ein KONSTANTES Literal ohne Eingabe von aussen — es gibt hier
+ * nichts, was Markup einschleusen könnte. Warum er kein Rechenergebnis mehr
+ * ist, steht oben im Dateikopf.
  */
-function titelHtml(n) {
-  const ziffern = String(Math.max(0, Math.trunc(Number(n) || 0)));
-  return `${ziffern} QiHome® aktiv & live`;
-}
+const TITEL_HTML = 'über 450 QiHome® aktiv & live';
 
 /**
  * @param {{daten?: {punkte_gesamt?: number, km_pro_einheit?: number,
@@ -103,8 +118,8 @@ export function Einsatzkarte({daten}) {
         <div className="qh-karte__wort">
           <h2
             className="qh-karte__titel"
-            // eslint-disable-next-line react/no-danger -- siehe titelHtml()
-            dangerouslySetInnerHTML={{__html: titelHtml(punkte.length)}}
+            // eslint-disable-next-line react/no-danger -- siehe TITEL_HTML
+            dangerouslySetInnerHTML={{__html: TITEL_HTML}}
           />
           <p className="qh-karte__text">Spürst du schon den Unterschied?</p>
           <p className="qh-karte__text">Werde jetzt Teil der Revolution.</p>
