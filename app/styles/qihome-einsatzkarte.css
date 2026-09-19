@@ -65,9 +65,9 @@
   --qk-mass: 42ch; /* Zeilenlaenge weit unter dem 75ch-Soll */
 
   /* GROESSE DES KARTENAUSSCHNITTS — der einzige erlaubte Hebel gegen
-     "der Kreis ist zu klein". Er vergroessert Bildschirm je Kilometer und
-     laesst den Massstab in Ruhe. Ein fester Pixelradius am Kreis waere die
-     andere, falsche Antwort. */
+     "der Punkt ist zu klein". Er vergroessert Bildschirm je Kilometer und
+     laesst den Massstab in Ruhe. Ein fester Pixelradius am Punkt waere die
+     andere, falsche Antwort: er waere auf jedem Geraet eine andere Groesse. */
   --qk-karte-breite: 460px;
 
   box-sizing: border-box;
@@ -113,6 +113,21 @@
   color: var(--qk-muted);
 }
 
+/* Drei Zeilen statt eines Absatzes (Christian 2026-09-19). Der Abstand kommt
+   aus dem Grid-Token, damit hier keine freie Groesse entsteht. */
+.qh-karte__text + .qh-karte__text {
+  margin-top: var(--qk-s2);
+}
+
+/* Die letzte Zeile ist der Zuruf, nicht Fliesstext. Sie bekommt KEINE eigene
+   Groesse -- eine zweite Body-Groesse auf dieser Seite hat den Design-Score
+   schon einmal gedrueckt (siehe --qk-fs-lead oben). Getragen wird sie von
+   Gewicht und Gold-Tinte, und die ist auf hellem Grund AA-fest. */
+.qh-karte__ruf {
+  color: var(--qk-akzent-tinte);
+  font-weight: 600;
+}
+
 /* ─── Karte ──────────────────────────────────────────────────────────────── */
 .qh-karte__bild {
   justify-self: end;
@@ -149,8 +164,11 @@
   will-change: r;
 }
 
-/* Der Atem: 2 km -> 3 km -> 2 km. Beide Grenzen kommen als CSS-Variable aus
-   Einsatzkarte.jsx und dort aus km_pro_einheit — hier steht keine Zahl. */
+/* Der Atem zwischen der kleinen und der grossen Punktgroesse. Beide Grenzen
+   kommen als CSS-Variable aus Einsatzkarte.jsx und dort aus km_pro_einheit —
+   hier steht keine Zahl. Seit die Punkte gerechnet sind (2026-09-19), ist das
+   eine DARSTELLUNGS-Groesse: sie haelt den Punkt auf jedem Geraet gleich
+   gross und behauptet keine Reichweite. */
 @keyframes qh-karte-atem {
   0%,
   100% {
@@ -168,7 +186,7 @@
   .qh-karte__puls {
     animation: none;
     /* Ruhiger Kreis auf dem GROESSEREN der beiden Werte: der Punkt bleibt
-       sichtbar und behauptet weiter genau 3 km, nicht irgendeine Groesse. */
+       sichtbar und behaelt die Groesse, die er im Atem auch erreicht. */
     r: var(--qk-r-max);
     fill-opacity: 0.85;
   }
