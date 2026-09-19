@@ -1,25 +1,13 @@
 import { ReviewCount } from "../reusables/ReviewCount"
 import { Link } from "react-router"
 import {CdnBild} from '../reusables/CdnBild';
-import LazyImage from "../reusables/LazyImage"
+import {Produkt360Video} from "../reusables/Produkt360Video"
 export function HerobannerFeatured({dataSection}){
     return(
         <div className="HerobannerFeatured NormalSectionSize" data-section={dataSection}>
             <h1 className="text-center">Tragbares Hightech <br /> mit messbaren Effekten auf Zellebene</h1>
             <div className="herobanner-seperator g-10p flex-container flex-row small--flex-column flex-align-start flex-justify-space-between">
                 <div className="text-content">
-                    <div className="hide-desktop">
-                        <LazyImage
-                         highQualityLink={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196"}
-                         sofort
-                         alt="QiOne® 2 Pro mit Siegel"
-                         breite={1080}
-                         hoehe={1080}
-                         anzeigeBreite={358}
-                         masterBreite={1080}
-                         sizes="(min-width: 1000px) 654px, 92vw"
-                         />
-                    </div>
                     <h2>QiOne® 2 Pro</h2>
                     <p className="color-accent-main"><strong><ReviewCount /></strong></p>
                     <p><strong>Mehr als 14.000+ aktive Nutzer</strong></p>
@@ -55,7 +43,7 @@ export function HerobannerFeatured({dataSection}){
                         <Link prefetch="intent" to="/products/qione-2-pro" className="btn--primary">Jetzt kaufen</Link>
                         <Link prefetch="intent" to="/pages/qione-2-pro-details" className="btn--secondary">Mehr erfahren</Link>
                     </div>
-                    <p className="micro-text mt-1"><strong> 20 Tage risikofrei - Jetzt mit 0% Finanzierung & Käuferschutz </strong></p>
+                    <p className="micro-text mt-1"><strong> Jetzt 20 Tage nach Erhalt testen - mit 0 % Finanzierung & Käuferschutz - 100 % Geld-zurück-Garantie </strong></p>
                     {/* Markenname statt alt="": der Begleittext nennt nur "0 % Finanzierung",
                         WELCHE Zahlungsart gemeint ist steht nirgends als Text — die Logos sind
                         der einzige Träger dieser Auskunft. Dieselbe Begründung wie in
@@ -69,17 +57,15 @@ export function HerobannerFeatured({dataSection}){
                         loading="lazy" anzeigeBreite={75}
                         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082" alt="PayPal" />
                 </div>
-                <div className="featured-image hide-mobile">
-                    <LazyImage
-                     highQualityLink={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196"}
-                     sofort
-                     alt="QiOne® 2 Pro mit Siegel"
-                     breite={1080}
-                     hoehe={1080}
-                     anzeigeBreite={358}
-                     masterBreite={1080}
-                     sizes="(min-width: 1000px) 654px, 92vw"
-                     />
+                {/* Die 360-Grad-Drehung steht EINMAL im Dokument, nicht zweimal.
+                    Bis 2026-09-19 lag dasselbe Produktfoto hier UND weiter oben als
+                    `hide-desktop`-Kopie; bei einem Video wären das zwei Kaesten
+                    gewesen, von denen einer immer unsichtbar lädt. Auf schmalen
+                    Schirmen zieht `.featured-image` per `order: -1` an dieselbe
+                    Stelle, an der vorher die mobile Kopie stand (direkt unter der
+                    Ueberschrift) — CSS in app.css, Abschnitt Herobanner. */}
+                <div className="featured-image featured-image--360">
+                    <Produkt360Video alt="QiOne® 2 Pro in der 360-Grad-Ansicht" />
                 </div> 
             </div>
         </div>

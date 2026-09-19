@@ -6,6 +6,7 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
@@ -144,7 +145,6 @@ function Hero() {
   const {preisWert, preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
-  const heroImg = product?.featuredImage?.url || QIONE_FALLBACK_IMG;
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
   const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
   const waehrung = waehrungVon(product);
@@ -173,7 +173,7 @@ function Hero() {
       <div className="lp-a-hero__inner">
         <div className="lp-a-hero__copy">
           <span className="lp-a-hero__eyebrow">
-            Ein Begleiter für den ganzen Körper
+            Tragbares Hightech mit messbaren Effekten auf Zellebene
           </span>
           <h1 id="lp-a-hero-title" className="lp-a-hero__title">
             Ruhe auf Zellebene
@@ -219,12 +219,12 @@ function Hero() {
           </ul>
         </div>
         <figure className="lp-a-hero__visual">
-          <img
-            {...bildQuelle(heroImg, LEITER_HERO)}
-            sizes={SIZES_HERO}
-            alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
-            loading="eager"
-          />
+          {/* Seit 2026-09-19 die 360-Grad-Drehung statt des Standbilds
+              (Christian). Poster, Groesse und Ladeverhalten hängen am
+              Baustein; der Radius kommt weiter aus dem Bild-Token der Seite
+              (--a-r1), damit im Kopfbereich nicht zwei Formensprachen
+              nebeneinander stehen. */}
+          <Produkt360Video alt="QiOne® 2 Pro in der 360-Grad-Ansicht" />
           <figcaption>
             QiOne<sup>®</sup>&nbsp;2 Pro
           </figcaption>

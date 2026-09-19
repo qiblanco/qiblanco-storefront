@@ -180,7 +180,13 @@ body:has(.lp-a3) footer {
 
 /* Bilder: EIN Bild-Stil (Radius r2 + weicher Schatten) */
 .lp-a3 figure { margin: 0; }
-.lp-a3 figure img {
+/* `video` steht hier neben `img` und bekommt damit GENAU dieselben Tokens
+   (ein Bild-Radius, ein Schatten). Seit 2026-09-19 traegt der Kopfbereich
+   eine 360-Grad-Drehung statt eines Standbilds — eine eigene Klasse mit
+   eigenen Werten waere ein zweiter Bild-Stil auf einer Seite, die
+   ausdruecklich nur einen hat. */
+.lp-a3 figure img,
+.lp-a3 figure video {
   display: block;
   width: 100%;
   height: auto;
@@ -937,6 +943,7 @@ body:has(.lp-a3) .qb-sterne { color: var(--a-akzent) !important; }
    bzw. eine Form. */
 .lp-a3 img,
 .lp-a3 figure img,
+.lp-a3 figure video,
 .lp-a3 .snap-start img,
 body:has(.lp-a3) header img,
 body:has(.lp-a3) .footer-study img { border-radius: var(--a-r1) !important; }
