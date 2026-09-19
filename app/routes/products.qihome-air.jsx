@@ -268,7 +268,7 @@ export default function Product() {
         liegt im Layout, nicht hier. `daten` sind BEREITS projizierte
         SVG-Punkte aus dem Erzeuger; diese Route rechnet nichts und reicht nur
         durch. Die Zahl in der Ueberschrift ist `punkte.length` und wird
-        deshalb hier NICHT mitgegeben -- ein zweiter Zaehler koennte von der
+        deshalb hier NICHT mitgegeben -- ein zweiter Zaehler könnte von der
         Karte abweichen.
         Rueckweg: VITE_EINSATZKARTE=off lässt den Baustein `null` rendern und
         die Seite bleibt vollstaendig. */}

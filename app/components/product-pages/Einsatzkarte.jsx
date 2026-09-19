@@ -8,12 +8,12 @@ import {
  * <Einsatzkarte /> — Deutschland-Karte mit atmenden Punkten, unmittelbar
  * oberhalb des Footers der QiHome-Air-Kaufseite.
  *
- * WAS DIE PUNKTE SIND, UND WAS SIE AUSDRUECKLICH NICHT SIND:
+ * WAS DIE PUNKTE SIND, UND WAS SIE AUSDRÜCKLICH NICHT SIND:
  * Christian, 2026-09-19, woertlich: "479 Punkte setzen, per Einwohnerzahlen
  * gemittelt verteilt. Also dass die Karte nicht akkurat ist, sondern einfach
  * nur den Effekt widerspiegelt."
- * Die Punkte sind GERECHNET, nicht erhoben. Ein Punkt ist ein Geraet, und
- * KEIN Punkt ist der Standort eines Geraets. Die Lage folgt der
+ * Die Punkte sind GERECHNET, nicht erhoben. Ein Punkt ist ein Gerät, und
+ * KEIN Punkt ist der Standort eines Geräts. Die Lage folgt der
  * Bevoelkerungsdichte (bin/qihome-karte-punkte im Modul homepage-bauer), nicht
  * einer Bestellung. Bis zum 2026-09-19 kam die Punktdatei aus kunden-db und
  * war aus Kauf- und Kundendaten abgeleitet; diese Herkunft ist abgeloest.
@@ -27,17 +27,17 @@ import {
  *     Hover-Zustand, der irgendetwas benennt — ein Punkt ist ein Punkt.
  *   - keine Rohdaten. Er bekommt `daten` mit BEREITS PROJIZIERTEN
  *     viewBox-Koordinaten (Feld `e`/`n`). PLZ, lat/lon, Ort, Datum und
- *     Bestellkennung erreichen den Browser nie — er hat fuer sie keine Stelle.
+ *     Bestellkennung erreichen den Browser nie — er hat für sie keine Stelle.
  *
- * DIE ZAHL IM TEXT IST `punkte.length`, NICHT EIN ZWEITES FELD. Damit koennen
+ * DIE ZAHL IM TEXT IST `punkte.length`, NICHT EIN ZWEITES FELD. Damit können
  * Text und Karte baulich nicht auseinanderlaufen: wer Punkte hinzufuegt,
- * aendert die Zahl mit. Ein getrennt gefuehrter Zaehler waere eine zweite
+ * aendert die Zahl mit. Ein getrennt gefuehrter Zaehler wäre eine zweite
  * Buchfuehrung, und die falsche gewinnt still.
  *
- * PUNKTGROESSE: der Punkt atmet zwischen zwei Groessen, die aus
- * `km_pro_einheit` folgen — so ist er auf jedem Geraet gleich gross. Das ist
+ * PUNKTGROESSE: der Punkt atmet zwischen zwei Größen, die aus
+ * `km_pro_einheit` folgen — so ist er auf jedem Gerät gleich groß. Das ist
  * eine DARSTELLUNGS-Groesse und behauptet keine Reichweite; seit die Punkte
- * gerechnet sind, gaebe es dafuer auch keinen Gegenstand.
+ * gerechnet sind, gaebe es dafür auch keinen Gegenstand.
  *
  * RUECKWEG: `VITE_EINSATZKARTE=off` in der .env schaltet den Baustein auf
  * `null`, ohne die Seite zu brechen. Das ist der Rueckweg, KEINE Shadow-Stufe
@@ -70,7 +70,7 @@ export function istEingeschaltet() {
  * Zusage baulich nie erfuellen. Ein rohes "&" vor einem Leerzeichen ist nach
  * HTML5 KEIN "ambiguous ampersand" und damit konform.
  * `n` ist eine Ganzzahl aus `punkte.length` — es gibt hier keine Eingabe von
- * aussen, die Markup einschleusen koennte, und die Zahl wird vor dem Einsetzen
+ * aussen, die Markup einschleusen könnte, und die Zahl wird vor dem Einsetzen
  * auf Ziffern verengt.
  */
 function titelHtml(n) {
@@ -138,7 +138,7 @@ export function Einsatzkarte({daten}) {
                   cy={p.n}
                   r={r3}
                   style={{
-                    // Groessen-Grenzen als CSS-Variablen: die @keyframes
+                    // Größen-Grenzen als CSS-Variablen: die @keyframes
                     // interpolieren zwischen ihnen, damit beide Werte an genau
                     // EINER Stelle entstehen (hier, aus km_pro_einheit).
                     '--qk-r-min': r2,
