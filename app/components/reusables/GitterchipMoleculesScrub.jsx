@@ -15,11 +15,23 @@ const GITTERCHIP_VIDEO_MOBILE =
  * Text-Drift zwischen den Seiten baulich unmoeglich.
  * `dataSection` je Seite = Watch-/Heatmap-Anker (sektion_registry pflegt
  * hb-heatmap-sync automatisch).
+ * `heightVhDesktop`/`heightVhMobile` sind OPTIONAL und reichen nur durch:
+ * ohne Angabe gilt weiter die Vorgabe des Bausteins (500/400vh), der
+ * Bestand aendert sich also nicht. Gesetzt werden sie nur dort, wo eine
+ * Seite eine ZWEITE Scroll-Strecke traegt (heute: /pages/schlaf-zellen-
+ * schutz, 300/250vh) -- der Scroll-Weg ist eine Eigenschaft der SEITE,
+ * nicht des Videos. Die Overlay-Texte bleiben zentral und unveraenderbar.
  */
-export function GitterchipMoleculesScrub({dataSection}) {
+export function GitterchipMoleculesScrub({
+  dataSection,
+  heightVhDesktop,
+  heightVhMobile,
+}) {
   return (
     <ScrollScrubVideo
       dataSection={dataSection}
+      {...(heightVhDesktop ? {heightVhDesktop} : {})}
+      {...(heightVhMobile ? {heightVhMobile} : {})}
       srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
       srcMobile={GITTERCHIP_VIDEO_MOBILE}
       overlayStart={{

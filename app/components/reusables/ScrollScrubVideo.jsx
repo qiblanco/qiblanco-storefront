@@ -37,9 +37,45 @@ export function ScrollScrubVideo({
   const [progress, setProgress] = useState(0);
   const [videoSrc, setVideoSrc] = useState('');
   const [nahDran, setNahDran] = useState(false);
+  const [wenigerBewegung, setWenigerBewegung] = useState(false);
   const metadataLoadedRef = useRef(false);
+  // Der Scroll-Handler wird EINMAL registriert; ein Ref traegt die aktuelle
+  // Praeferenz hinein, ohne den Listener neu aufzuhaengen.
+  const wenigerBewegungRef = useRef(false);
   const gesturePrimedRef = useRef(false);
   const handleScrollRef = useRef(null);
+
+  /*
+   * prefers-reduced-motion — die Einstellung gehoert in den EFFEKT, nicht in
+   * die Attributwahl (design-meister, Lernkarte
+   * hero-bewegtbild-statt-standbild-poster-und-scope-20260919): ein Server
+   * weiss nicht, was am Geraet eingestellt ist. Der Startwert ist deshalb
+   * `false` und wird erst NACH der Hydration korrigiert — SSR-HTML, no-JS und
+   * Bots sehen unveraendert den vollstaendigen Block, die Degradation heisst
+   * also weiterhin „Inhalt sichtbar".
+   * Wirkung bei `reduce`: der Scroll-Scrub entfaellt, die vh-Strecke schrumpft
+   * auf EINEN Bildschirm und das Video steht auf seinem letzten Bild still.
+   * Bewusst das LETZTE und nicht das erste: der Block erzaehlt einen Vorgang,
+   * und sein Ergebnis ist die Aussage („Kohaerente Ordnung"). Der Start-Text
+   * ist eine Scroll-Aufforderung und waere ohne Scrubbing eine Anweisung ins
+   * Leere — er blendet ueber dieselbe Opazitaets-Regel aus, die auch beim
+   * Scrollen greift, es entsteht kein zweiter Mechanismus.
+   * Die Praeferenz wird MITGEHOERT (addEventListener), nicht einmalig gelesen:
+   * wer sie waehrend des Besuchs umstellt, bekommt sofort das Passende.
+   */
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mq) return;
+    const uebernehmen = () => setWenigerBewegung(mq.matches);
+    uebernehmen();
+    // Safari <14 kennt addEventListener auf MediaQueryList nicht.
+    if (mq.addEventListener) {
+      mq.addEventListener('change', uebernehmen);
+      return () => mq.removeEventListener('change', uebernehmen);
+    }
+    mq.addListener(uebernehmen);
+    return () => mq.removeListener(uebernehmen);
+  }, []);
 
   // Lazy-Gate: erst laden, wenn der Block ~1,5 Viewports entfernt ist
   useEffect(() => {
@@ -138,6 +174,33 @@ export function ScrollScrubVideo({
     if (!video || !container) return;
 
     const handleScroll = () => {
+      /*
+       * Standbild-Zweig: kein Scrubbing, ein fester Frame.
+       * Er steht VOR der Metadata-Wache, und das ist der ganze Punkt — gemessen
+       * 2026-09-19 an genau diesem Bau: stand er dahinter, kehrte der Handler
+       * bei noch nicht angehaengter Quelle vorher um, `progress` blieb 0, und
+       * der Block zeigte die Start-Einblendung „Scrolle: …" ueber einem Video,
+       * das nie scrubben wird. Sichtbar wurde das NUR mobil (390x844), weil das
+       * Lazy-Gate die Quelle dort nicht anhaengt — auf dem Desktop war
+       * derselbe Fehler gruen. Die Text-Umblendung braucht die Metadaten nicht,
+       * nur das Setzen von `currentTime` braucht sie.
+       */
+      if (wenigerBewegungRef.current) {
+        setProgress(100);
+        if (
+          metadataLoadedRef.current &&
+          Number.isFinite(video.duration) &&
+          video.duration > 0
+        ) {
+          const endTime = Math.max(video.duration - 0.05, 0);
+          if (Math.abs(video.currentTime - endTime) > 0.03) {
+            try { video.currentTime = endTime; } catch { /* Safari vor Datenempfang */ }
+          }
+        }
+        if (!video.paused) video.pause();
+        return;
+      }
+
       if (!metadataLoadedRef.current) return;
 
       const rect = container.getBoundingClientRect();
@@ -176,6 +239,16 @@ export function ScrollScrubVideo({
     };
   }, []);
 
+  wenigerBewegungRef.current = wenigerBewegung;
+
+  // Die Praeferenz kann sich mitten im Besuch aendern. Der Scroll-Handler
+  // haengt bewusst an [] und wuerde dann bis zur naechsten Scroll-Bewegung das
+  // Alte zeigen -- also einmal anstossen. Ohne das bleibt das Video bei einem
+  // Wechsel auf `reduce` auf dem Frame stehen, auf dem es gerade war.
+  useEffect(() => {
+    handleScrollRef.current?.();
+  }, [wenigerBewegung]);
+
   const anhaengen = Boolean(nahDran && videoSrc);
 
   return (
@@ -184,8 +257,8 @@ export function ScrollScrubVideo({
         ref={containerRef}
         className="ScrollScrubVideo"
         style={{
-          '--ssv-hoehe-desktop': `${heightVhDesktop}vh`,
-          '--ssv-hoehe-mobil': `${heightVhMobile}vh`,
+          '--ssv-hoehe-desktop': wenigerBewegung ? '100vh' : `${heightVhDesktop}vh`,
+          '--ssv-hoehe-mobil': wenigerBewegung ? '100vh' : `${heightVhMobile}vh`,
         }}
       >
         <div className="VideoOverlay">
