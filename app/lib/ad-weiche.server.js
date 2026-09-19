@@ -210,6 +210,68 @@ export const AUSSCHLUSS_SEGMENTE = [
   // ohne Ausschluss wuerfe die Weiche den Betrachter auf LP A und die
   // Review-URL saehe „kaputt" aus. Genau die DEV-DB-Regel oben.
   LP_V3_PFAD,
+  // DIE FÜNF ZIELE DES KRITIK-SUCHERS (Grossjob 20260916-wer-kritik-sucht-
+  // soll-uns-zuerst-finden, Segment s04; Christian-Auftrag 2026-09-16).
+  //
+  // GEMESSEN, NICHT VERMUTET (2026-09-16T12:37Z, erster Hop je Pfad mit
+  // ?utm_medium=paid&utm_source=google&gclid=TESTS04): alle fünf gaben 302
+  // auf LP A mit lp_m=w, waehrend LP A selbst im selben Lauf 200 gab. Die
+  // Ausschluss-Mechanik war also gesund — diese Pfade standen nur nicht drin.
+  //
+  // WARUM SIE HIER HINEINGEHOEREN, und warum das KEINE Aufweichung des
+  // Dekrets vom 2026-07-24 ist: Christians juengere Anweisung vom 2026-09-16
+  // baut ausdrücklich eine Anzeige für den Suchbegriff "Qi Blanco Kritik"
+  // und begründet sie woertlich damit, dass "eine Anzeige, die auf Qi Blanco
+  // Kritik mit einem Kaufversprechen antwortet, genau den Verdacht bestaetigt,
+  // den der Sucher hat". LP A IST das Kaufversprechen. Die Weiche haette diese
+  // Anzeige und die vier Sitelinks daneben also in ihr Gegenteil verkehrt —
+  // der Sucher tippt "Kritik" und landet auf der Kaufseite. Das ist derselbe
+  // Fall wie die vier Anzeigen vom 2026-08-27, die "Vier Studien offen
+  // einsehbar" versprachen und auf LP A landeten, eine Klasse hoeher: dort
+  // brach eine Anzeige ihr Versprechen, hier haette sie den Verdacht bestaetigt.
+  //
+  // REICHWEITE EHRLICH BENANNT: die drei unteren Pfade sind ZUSAETZLICH
+  // Sitelink-Ziele der Marken-Kampagne 8925560332. Für deren bezahlte Klicks
+  // aendert sich das Verhalten damit ebenfalls — sie landen kuenftig auf der
+  // Seite, die der Sitelink verspricht, statt auf LP A. Das ist gewollt und
+  // gemessen (Vorher-Stand je Asset im RESULT des Segments), kein Nebeneffekt.
+  //
+  // NICHT in dieser Liste: /pages/wirkt-das. Es ist die staerkste Skeptiker-
+  // Seite des Bestands, aber kein Ziel dieses Auftrags und kein Sitelink —
+  // es ohne Anlass mitzunehmen wäre ein Zaun ohne Gegenstand.
+  //
+  // NACHTRAG 2026-09-19 (Job 20260919-kritikanzeige-weiche-ausschluss-und-
+  // anzeige-scharf), und er ist der Grund, warum dieser Zweig nicht einfach
+  // gemergt wurde: DIE LISTE OBEN STAMMT VOM 2026-09-16 UND TRAF DIE
+  // SITELINKS VON HEUTE NICHT MEHR. Am Konto nachgemessen (GAQL
+  // ad_group_asset, ad_group.id=197449168702, field_type=SITELINK) trägt die
+  // AdGroup sechs Verknuepfungen: FÜNF ENABLED (/pages/studien,
+  // /pages/erfahrungen, /pages/kritik, /blogs/wissen und — neu seit dem
+  // Zweigbau — /pages/so-wirkt-kohaerentes-wasser) und EINE PAUSED
+  // (/pages/technologie, Asset 419586567404).
+  //
+  // Daraus folgen zwei Aenderungen an der Liste, beide additiv:
+  //   (1) /pages/so-wirkt-kohaerentes-wasser kommt DAZU. Es ist heute ein
+  //       ENABLED Sitelink ("Wirkweise, ehrlich", Asset 422848872673) und
+  //       wurde live mit gclid gemessen: 302 auf LP A. Ohne diese Zeile wäre
+  //       der Zweig gemergt worden und HÄTTE VIER VON FÜNF ZIELEN GEHOLFEN,
+  //       während das fünfte still weiter auf die Kaufseite geworfen haette
+  //       — ein halber Fix, der wie ein ganzer aussieht.
+  //   (2) /pages/technologie BLEIBT stehen, obwohl sein Sitelink heute
+  //       pausiert ist. Der Auftrag führt das Wiederanschalten ausdrücklich
+  //       als Rückweg; wäre der Pfad hier entfernt, käme der sechste
+  //       Sitelink beim Wiederanschalten sofort wieder auf LP A heraus. Ein
+  //       Ausschluss kostet nichts, solange kein Paid-Klick auf den Pfad
+  //       zielt — sein Fehlen kostet genau dann, wenn niemand mehr hinsieht.
+  //
+  // Die Reichweite bleibt, was der Absatz oben sagt: für bezahlte Klicks auf
+  // diese Pfade entfaellt die Umleitung, alles andere bleibt unangetastet.
+  '/pages/kritik',
+  '/blogs/wissen',
+  '/pages/studien',
+  '/pages/erfahrungen',
+  '/pages/so-wirkt-kohaerentes-wasser',
+  '/pages/technologie',
   '/go',
   '/collect',
   '/b',
