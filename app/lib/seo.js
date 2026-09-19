@@ -1067,6 +1067,79 @@ export const NUR_ROUTE_SEITEN = [
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
       'User-Agents.',
   },
+  {
+    pfad: '/pages/was-ist-elektrosmog',
+    lastmod: '2026-09-19T18:00:00Z',
+    grund:
+      'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
+      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
+      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
+      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
+      'planet-wissen.de, bfs.de, lernhelfer.de und beyondmatter.com ' +
+      'zitiert. Sie besteht allein aus der Route ' +
+      'pages.was-ist-elektrosmog.jsx und hat KEIN Shopify-Seitenobjekt ' +
+      '— ohne diesen Eintrag liefert sie HTTP 200 mit vollem Text und ' +
+      'steht in keiner Sitemap, und der Eigenkorpus der Zitatmessung ' +
+      'entsteht aus der SITEMAP: die Messung sähe die Seite nie. Ein ' +
+      'Seitenobjekt wäre der zweite mögliche Träger und ist nicht ' +
+      'gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
+      '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite ohne Zutun mit ab; zusätzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die ' +
+      'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
+      'Indexierbarkeit prüft, nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/armband-duschen-sauna',
+    lastmod: '2026-09-19T18:00:00Z',
+    grund:
+      'Antwortseite zur Frage „Kann man ein Armband gegen Elektrosmog ' +
+      'beim Duschen und in der Sauna tragen?“ (Großjob ' +
+      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
+      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
+      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
+      'sauna-portal.com und armstark.com zitiert. Sie besteht allein ' +
+      'aus der Route pages.armband-duschen-sauna.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, und der Eigenkorpus ' +
+      'der Zitatmessung entsteht aus der SITEMAP: die Messung sähe die ' +
+      'Seite nie. Ein Seitenobjekt wäre der zweite mögliche Träger und ' +
+      'ist nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
+      '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite ohne Zutun mit ab; zusätzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die ' +
+      'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
+      'Indexierbarkeit prüft, nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/was-senkt-elektrosmog-im-alltag',
+    lastmod: '2026-09-19T18:00:00Z',
+    grund:
+      'Antwortseite zur Frage „Was senkt die Belastung durch ' +
+      'Elektrosmog im Alltag?“ (Großjob ' +
+      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
+      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
+      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
+      'aerzteblatt.de, schutz-vor-strahlung.ch und ' +
+      'rumpfinger-schlafen.de zitiert. Sie besteht allein aus der Route ' +
+      'pages.was-senkt-elektrosmog-im-alltag.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, und der Eigenkorpus ' +
+      'der Zitatmessung entsteht aus der SITEMAP: die Messung sähe die ' +
+      'Seite nie. Ein Seitenobjekt wäre der zweite mögliche Träger und ' +
+      'ist nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
+      '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite ohne Zutun mit ab; zusätzlich ' +
+      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die ' +
+      'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
+      'Indexierbarkeit prüft, nicht den Statuscode.',
+  },
 ];
 
 /**
