@@ -13,10 +13,10 @@ const SLUG = PFAD.slice('/pages/'.length);
 /**
  * /pages/was-ist-elektrosmog — die Frage „Was ist Elektrosmog?".
  *
- * Gebaut von 20260919-GROSSJOB-von-4-prozent-auf-80-wer-spricht-ueber-uns-wenn-die-ki-
- * gefragt-wird, Segment s08, gegen eine GEMESSENE Quellenluecke (seo-manager
- * exports/KI-QUELLENLUECKE.json): Dritte sagen diesen Satz ueber unser Thema,
- * wir sagten ihn auf keiner eigenen Seite. Den Text schrieb dasselbe Segment; er steht committet in
+ * Gebaut vom Großjob 20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird,
+ * Segment s08. Die Frage ist anhand der Zitatmessung des seo-manager
+ * ausgewählt (exports/KI-QUELLENLUECKE.json — sie hält fest, welche Quellen
+ * Antwortsysteme heute zu welcher Frage zitieren). Den Text schrieb dasselbe Segment; er steht committet in
  * app/data/fragen.js, die Darstellung in
  * app/components/campaign/FrageSeite.jsx. DIESE DATEI TRÄGT KEINEN INHALT —
  * wer den Text aendert, aendert das Datenmodul, nicht die Route.
