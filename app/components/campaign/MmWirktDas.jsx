@@ -327,7 +327,7 @@ const ZWEIFEL = [
   {
     frage: 'Wer hat die Qi-Blanco-Studien gemacht — und wer hat sie bezahlt?',
     antwort:
-      'Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut hat alle fünf Arbeiten durchgeführt. Bezahlt hat sie Qi Blanco, und Qi Blanco hat die Geräte gestellt. Das steht auch in den Publikationen.',
+      'Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut hat alle fünf Arbeiten durchgeführt. Bezahlt hat sie Qi Blanco, und Qi Blanco hat die Geräte gestellt.',
   },
   {
     frage: 'Gibt es eine unabhängige Wiederholung der Qi-Blanco-Studien?',
