@@ -106,11 +106,16 @@ export const GESCHICHTE = {
  * Chancen, nicht für unsere Niederlage"). WAS SICH GEAENDERT HAT UND WAS NICHT:
  * `contra` heisst auf der Flaeche jetzt „Was offen ist" und steht KURZ, in
  * ganzen Saetzen, ohne ein Urteil ueber uns selbst. Verschwunden sind
- * ausschliesslich SELBSTBEWERTUNGEN („er bremst uns eher", „die schwaechste
- * Stelle", „die staerkste Arbeit gegen diese Hypothese", „auch wir", „wenn man
- * ehrlich ist") — kein einziger QUELLENBEFUND ist weggefallen, auch nicht der
- * Gold-Befund aus Chai/Mahtani/Pollack 2012 in h3. Eine Angabe zur Quellenlage
- * bleibt; ein Urteil ueber uns selbst gehoert nicht auf eine Verkaufsflaeche.
+ * ausschliesslich SELBSTBEWERTUNGEN — Saetze, in denen wir eine fremde Arbeit
+ * nicht referieren, sondern unser eigenes Vorhaben benoten. Kein einziger
+ * QUELLENBEFUND ist weggefallen, auch nicht der Gold-Befund aus
+ * Chai/Mahtani/Pollack 2012 in h3. Eine Angabe zur Quellenlage bleibt; ein
+ * Urteil ueber uns selbst gehoert nicht auf eine Verkaufsflaeche.
+ *
+ * DIE GESTRICHENEN WENDUNGEN STEHEN HIER BEWUSST NICHT IM WORTLAUT: eine
+ * Wache, die ihre eigenen Suchmuster als Treffer liest, meldet die Reparatur
+ * als den Schaden. Der vollstaendige Wortlaut steht in der Commit-Nachricht
+ * und in pruefungen/probe_hypothesen_sprechen_fuer_uns__20260919.py.
  *
  * `bedeutetNicht` ist weiterhin PFLICHT und darf NIE leer sein — es ist jetzt
  * EIN Satz und keine zweite Gegen-Seite. Sechsmal wiederholt wird aus einer
