@@ -74,10 +74,10 @@ export const meta = ({data}) => {
   });
   // KEIN VideoObject mehr auf dieser Seite (Christian 2026-09-19, Job
   // 20260919-qihome-air-karte-statt-instagram-christian-hat-entschieden):
-  // die Instagram-Flaeche ist von dieser Route gestrichen. Ein VideoObject
-  // auf einer Seite ohne das Video waere gegenueber der Suchmaschine eine
-  // Luege — dieselbe Regel, die ig-video-schema.js fuer Eintraege ohne
-  // Video setzt, gilt fuer eine Route ohne Flaeche.
+  // die Instagram-Fläche ist von dieser Route gestrichen. Ein VideoObject
+  // auf einer Seite ohne das Video wäre gegenüber der Suchmaschine eine
+  // Lüge — dieselbe Regel, die ig-video-schema.js für Einträge ohne
+  // Video setzt, gilt für eine Route ohne Fläche.
   return basis;
 };
 
@@ -228,32 +228,32 @@ export default function Product() {
         dem langen Produkttext ("QiHome® Air – Die Zukunft für ein
         intelligentes Raumklima").
 
-        Bis zum 2026-09-19 stand an dieser Stelle die Instagram-Flaeche
+        Bis zum 2026-09-19 stand an dieser Stelle die Instagram-Fläche
         (<IgTestimonialSlideshow produkt="QiHome" ueberschrift="QiHome® Air auf
         Instagram" />) und die Karte war das letzte Element der Route, direkt
         oberhalb des Footers. Christian, 19.09.2026: der Instagram-Abschnitt
         kommt weg, "und dort sollte doch die Karte dann ersatzweise stehen".
-        Die Flaeche ist deshalb ersatzlos gestrichen — samt Ueberschrift,
+        Die Fläche ist deshalb ersatzlos gestrichen — samt Überschrift,
         Videoeinbettung, Stylesheet und VideoObject-Auszeichnung in meta() —
         und die Karte ist VERSCHOBEN, nicht neu gebaut: Punkte, Verteilung,
-        Text und Gestaltung sind unveraendert (Grossjob 20260914-qihome-
+        Text und Gestaltung sind unverändert (Grossjob 20260914-qihome-
         einsatzkarte, Zahl und Wortlaut Job 20260919-karte-zahl-im-text-wird-
         ueber-450).
 
-        Die drei QiHome-Beitraege bleiben im Korpus (app/data/ig-testimonials.js)
-        und in der Komponente; QiOne 2 Pro, QiBracelet und Kakao haengen daran
-        und bewegen sich nicht. Kommt die Flaeche hierher zurueck, ist das eine
-        neue Ansage von Christian, kein Rueckbau.
+        Die drei QiHome-Beiträge bleiben im Korpus (app/data/ig-testimonials.js)
+        und in der Komponente; QiOne 2 Pro, QiBracelet und Kakao hängen daran
+        und bewegen sich nicht. Kommt die Fläche hierher zurück, ist das eine
+        neue Ansage von Christian, kein Rückbau.
 
         `daten` sind BEREITS projizierte SVG-Punkte aus dem Erzeuger; diese
-        Route rechnet nichts und reicht nur durch. Die Zahl in der Ueberschrift
+        Route rechnet nichts und reicht nur durch. Die Zahl in der Überschrift
         ist Christians Wortlaut in der Komponente und wird hier NICHT
-        mitgegeben. Rueckweg: VITE_EINSATZKARTE=off laesst den Baustein `null`
-        rendern und die Seite bleibt vollstaendig.
+        mitgegeben. Rückweg: VITE_EINSATZKARTE=off lässt den Baustein `null`
+        rendern und die Seite bleibt vollständig.
 
-        BEWUSST OHNE zweites data-section: die Karte traegt ihres in der
-        Komponente (qihome-einsatzkarte); ein weiteres wuerde den
-        Design-Rubrik-Collector einengen — dieselbe Begruendung wie auf
+        BEWUSST OHNE zweites data-section: die Karte trägt ihres in der
+        Komponente (qihome-einsatzkarte); ein weiteres würde den
+        Design-Rubrik-Collector einengen — dieselbe Begründung wie auf
         products.qibracelet.jsx und products.qione-2-pro.jsx.
       */}
       <Einsatzkarte

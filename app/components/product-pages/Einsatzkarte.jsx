@@ -7,7 +7,7 @@ import {
 /**
  * <Einsatzkarte /> — Deutschland-Karte mit atmenden Punkten auf der
  * QiHome-Air-Kaufseite, seit dem 2026-09-19 unmittelbar nach dem Kaufblock und
- * VOR dem Produkttext (an der Stelle der gestrichenen Instagram-Flaeche,
+ * VOR dem Produkttext (an der Stelle der gestrichenen Instagram-Fläche,
  * Christian 19.09.2026); bis dahin stand sie als letztes Element oberhalb des
  * Footers. Den Ort bestimmt die Route, nicht dieser Baustein.
  *
@@ -146,9 +146,9 @@ export function Einsatzkarte({daten}) {
             {/*
               DER ALTERNATIVTEXT NENNT KEINE ZAHL. Bis zum 2026-09-19 stand hier
               "Karte von Deutschland mit ${punkte.length} Punkten." — also
-              "479", waehrend die Ueberschrift direkt daneben Christians
-              "ueber 450" sagt. Zwei Stellen derselben Flaeche mit zwei Zahlen:
-              ein Screenreader liest beide hintereinander. Die Ueberschrift ist
+              "479", während die Überschrift direkt daneben Christians
+              "über 450" sagt. Zwei Stellen derselben Fläche mit zwei Zahlen:
+              ein Screenreader liest beide hintereinander. Die Überschrift ist
               Christians Festlegung (GL-SPR-0008) und wird nicht nachgerechnet;
               der Titel beschreibt deshalb nur, WAS das Bild ist — und er nennt
               keinen Standort, denn die Punkte sind gerechnet (siehe Dateikopf).
