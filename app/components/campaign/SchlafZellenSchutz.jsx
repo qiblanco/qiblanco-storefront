@@ -44,11 +44,12 @@ const QIONE_ZIEL = produktLink('qione-2-pro', BLOCK_LP, 'kauf');
 const QIONE_CTA = 'QiOne® 2 Pro ansehen';
 
 /*
- * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
+ * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
+ * (Kopfbereich seit 2026-09-19 nach Christians Vorlage; davor „Wirkt auf drei Ebenen").
  *
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept, Kap. 3.3 A):
  * breiter/generischer Erst-Kontakt, Perspektiven-Einstieg fuer die spaetere
- * Rotation. Dramaturgie: Hero (Drei-Ebenen-Versprechen) -> DreiThemenBand
+ * Rotation. Dramaturgie: Hero (Ruhe auf Zellebene, drei Zustaende) -> DreiThemenBand
  * (Struktur-Anker, aus dem Bestand) -> je Ebene ein Mechanismus-Block
  * (Zelle / Feld / Schlaf) mit Evidenz-Kachel + Anker-Link auf die Themen-LP ->
  * gemeinsamer Wissenschafts-Block -> Social Proof quer -> Garantie -> Pricing ->
@@ -151,16 +152,17 @@ function Hero() {
   const priceLabel = priceAmount ? preisLabelVon(product) : fallback.label;
   const compareLabel = compareLabelVon(product);
   const monthly = Math.ceil(priceNum / 12);
-  const dreizeiler = [
-    'Tiefer schlafen.',
-    'Geschützt vor E-Smog.',
-    'Auf Zellebene stabil.',
-  ];
+  // Wortlaut Christian, 19.09.2026 (Job 20260919-schlaf-zellen-schutz-neuer-
+  // kopfbereich-nach-christians-vorlage): Reihenfolge, Satzbau und Stil sind
+  // seine, korrigiert wurde allein die Rechtschreibung. Bewacht von
+  // worker-pool/pruefungen/probe_schlaf_zellen_schutz_neuer_kopf__20260919.py.
+  const dreizeiler = ['Tiefer schlafen.', 'Starker Fokus.', 'Innere Ruhe.'];
+  const vierzeiler = ['Kein Akku.', 'Kein Strom.', 'Kein Abo.', 'Pure Leistung.'];
   const trust = [
-    '14.000+ Träger',
-    'Zellstudien, peer-reviewed',
+    '14.000+ aktive Nutzer',
+    '100\u00a0% Geld-zurück-Garantie',
     'Made in Germany',
-    '20 Nächte risikofrei',
+    '20 Tage nach Erhalt in Ruhe testen',
   ];
   return (
     <section
@@ -174,7 +176,7 @@ function Hero() {
             Ein Begleiter für den ganzen Körper
           </span>
           <h1 id="lp-a-hero-title" className="lp-a-hero__title">
-            Wirkt auf drei Ebenen.
+            Ruhe auf Zellebene
           </h1>
           <ul className="lp-a-hero__dreizeiler" aria-hidden="false">
             {dreizeiler.map((z) => (
@@ -182,10 +184,22 @@ function Hero() {
             ))}
           </ul>
           <p className="lp-a-hero__subline">
-            Dein Körper besteht zu über 70&nbsp;% aus Wasser. Der QiOne<sup>®</sup>&nbsp;2
-            Pro bringt es in kohärente Ordnung — genau dort, wo es zählt: er stabilisiert
-            deine Zellen, puffert eingestrahlten E-Smog ab und hilft dem Nervensystem,
-            nachts herunterzufahren. In Zellstudien gemessen, von 14.000+ Trägern getragen.
+            Das berichten viele von unseren 14.000 aktiven Nutzern. Der QiOne<sup>®</sup>
+            &nbsp;2 Pro strukturiert dort Wasser, wo es darauf ankommt. In deinen Zellen.
+            Untersucht in 5 publizierten Studien ist es das bestuntersuchte Energie-Produkt
+            auf der Welt.
+          </p>
+          {/* Vier Produkt-Tatsachen als ruhiger Fliesstext (Bestandsklasse, kein
+              CSS-Diff: schlaf-zellen-schutz.css ist die geteilte Token-Quelle von
+              sechs Routen). Die Zeilen darueber tragen SEINEN Zustand und den
+              Akzent; diese hier sind Closer-Material und bleiben im Lauftext-Ton. */}
+          <p className="lp-a-hero__subline">
+            {vierzeiler.map((z, i) => (
+              <span key={z}>
+                {i > 0 && <br />}
+                {z}
+              </span>
+            ))}
           </p>
           <div className="lp-a-hero__cta-row">
             <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
@@ -193,7 +207,9 @@ function Hero() {
             </a>
             <span className="lp-a-hero__price">
               {compareLabel && <s>{compareLabel}</s>} {priceLabel}
-              {waehrung === 'EUR' && <> · oder 12 Raten à {monthly}&nbsp;€</>}
+              {waehrung === 'EUR' && (
+                <> · oder 12 Raten à {monthly}&nbsp;€ – mit 0&nbsp;% Finanzierung</>
+              )}
             </span>
           </div>
           <ul className="lp-a-hero__trust">
@@ -210,7 +226,7 @@ function Hero() {
             loading="eager"
           />
           <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro — getragen, Tag und Nacht.
+            QiOne<sup>®</sup>&nbsp;2 Pro
           </figcaption>
         </figure>
       </div>

@@ -5,7 +5,9 @@ import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 
 /**
- * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
+ * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
+ * (Kopfbereich seit 2026-09-19 nach Christians Vorlage, davor „Wirkt auf drei
+ * Ebenen"; Wortlaut und Bewachung: components/campaign/SchlafZellenSchutz.jsx).
  *
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept): breiter
  * Erst-Kontakt / Perspektiven-Einstieg. Additiv, kein Ad zeigt (noch) darauf.
