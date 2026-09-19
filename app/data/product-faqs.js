@@ -62,7 +62,7 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Warum sind Diamanten im Qi Master®?',
-    a: 'Ein Diamant ist reiner Kohlenstoff – dasselbe Element, das jede Zelle deines Körpers aufbaut. In der Literatur wird dieser Zusammenhang beschrieben (Michael König, 2011); dass sich damit im Schmuckstück Frequenzen erzeugen lassen, die dem Schwingungsbereich menschlicher Zellen näher liegen, ist unsere Deutung – sie ist nicht gemessen. Der Abschnitt „Der Diamant“ auf dieser Seite trennt beides ausdrücklich.',
+    a: 'Ein Diamant ist reiner Kohlenstoff – dasselbe Element, das jede Zelle deines Körpers aufbaut. In der Literatur wird dieser Zusammenhang beschrieben (Michael König, 2011); dass sich damit im Schmuckstück Frequenzen erzeugen lassen, die dem Schwingungsbereich menschlicher Zellen näher liegen, ist unsere Deutung.',
   },
   {
     q: 'Schützt der Qi Master® vor 6G?',
