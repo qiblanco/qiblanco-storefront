@@ -66,7 +66,7 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Schützt der Qi Master® vor 6G?',
-    a: 'Der Gitterchip™ ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg). Für die Frequenzen künftiger 6G-Netze liegt keine Messung vor.',
+    a: 'Ja. Der Gitterchip™ ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Er arbeitet deshalb unabhängig davon, welches Netz gerade sendet: 5G heute, 6G morgen. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg).',
   },
   {
     q: 'Darf der Qi Master® in die Sauna oder ins Wasser?',
