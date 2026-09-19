@@ -103,19 +103,19 @@ export const GESCHICHTE = {
  * (Physik des Grenzflächenwassers), bis zu dem, was wir selbst gemessen haben.
  *
  * FASSUNG 2026-09-19 (Christian, wörtlich: „das braucht ein Updaten für unsere
- * Chancen, nicht für unsere Niederlage"). WAS SICH GEAENDERT HAT UND WAS NICHT:
- * `contra` heisst auf der Flaeche jetzt „Was offen ist" und steht KURZ, in
- * ganzen Saetzen, ohne ein Urteil ueber uns selbst. Verschwunden sind
- * ausschliesslich SELBSTBEWERTUNGEN — Saetze, in denen wir eine fremde Arbeit
- * nicht referieren, sondern unser eigenes Vorhaben benoten. Kein einziger
- * QUELLENBEFUND ist weggefallen, auch nicht der Gold-Befund aus
- * Chai/Mahtani/Pollack 2012 in h3. Eine Angabe zur Quellenlage bleibt; ein
- * Urteil ueber uns selbst gehoert nicht auf eine Verkaufsflaeche.
+ * Chancen, nicht für unsere Niederlage"). WAS SICH GEÄNDERT HAT UND WAS NICHT:
+ * `contra` heißt auf der Fläche jetzt „Was offen ist" und steht KURZ, in ganzen
+ * Sätzen, ohne ein Urteil über uns selbst. Verschwunden sind ausschließlich
+ * SELBSTBEWERTUNGEN — Sätze, in denen wir eine fremde Arbeit nicht referieren,
+ * sondern unser eigenes Vorhaben benoten. Kein einziger QUELLENBEFUND ist
+ * weggefallen, auch nicht der Gold-Befund aus Chai/Mahtani/Pollack 2012 in h3.
+ * Eine Angabe zur Quellenlage bleibt; ein Urteil über uns selbst gehört nicht
+ * auf eine Verkaufsfläche.
  *
- * DIE GESTRICHENEN WENDUNGEN STEHEN HIER BEWUSST NICHT IM WORTLAUT: eine
- * Wache, die ihre eigenen Suchmuster als Treffer liest, meldet die Reparatur
- * als den Schaden. Der vollstaendige Wortlaut steht in der Commit-Nachricht
- * und in pruefungen/probe_hypothesen_sprechen_fuer_uns__20260919.py.
+ * DIE GESTRICHENEN WENDUNGEN STEHEN HIER BEWUSST NICHT IM WORTLAUT: eine Wache,
+ * die ihre eigenen Suchmuster als Treffer liest, meldet die Reparatur als den
+ * Schaden. Der volle Wortlaut steht in der Commit-Nachricht und in
+ * pruefungen/probe_hypothesen_sprechen_fuer_uns__20260919.py.
  *
  * `bedeutetNicht` ist weiterhin PFLICHT und darf NIE leer sein — es ist jetzt
  * EIN Satz und keine zweite Gegen-Seite. Sechsmal wiederholt wird aus einer
@@ -338,7 +338,7 @@ export const KETTE = {
   titel: 'Wo das Modell heute steht – und woran wir arbeiten',
   absaetze: [
     'Das Modell ist eine Kette aus sechs Gliedern. Die ersten beiden sind Physik und stehen unabhängig von uns. Das vierte und fünfte sind Fragestellungen, die die Literatur trägt. Das sechste sind unsere eigenen, veröffentlichten Messungen an Zellkulturen.',
-    'Offen ist das dritte Glied, der Schritt vom Gitter zum Wasser. Dafür haben wir noch keine eigene Messung, und die eine Arbeit zu reinem Gold fand dort keine Ausschlusszone. Wir zitieren sie im Wortlaut, weil eine Auswahl keine Herleitung wäre – und weil genau dort unsere nächste Messung ansetzt.',
+    'Offen ist das dritte Glied, der Schritt vom Gitter zum Wasser. Dafür haben wir noch keine eigene Messung, und die eine Arbeit zu reinem Gold fand dort keine Ausschlusszone. Genau dort setzt unsere nächste Messung an.',
     'Damit steht das Modell so da: physikalisch anschlussfähig an beiden Enden, mit einem gemessenen Effekt am Ende und einer offenen Stelle in der Mitte. Danach bauen wir, und danach messen wir weiter.',
     'Wir halten diese Hypothesen für plausibel genug, um danach zu bauen. Für bewiesen halten wir sie nicht. Widerlegt eine Messung eine davon, steht sie hier.',
   ],
