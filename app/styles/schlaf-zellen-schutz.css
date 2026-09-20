@@ -180,7 +180,13 @@ body:has(.lp-a3) footer {
 
 /* Bilder: EIN Bild-Stil (Radius r2 + weicher Schatten) */
 .lp-a3 figure { margin: 0; }
-.lp-a3 figure img {
+/* `video` steht hier neben `img` und bekommt damit GENAU dieselben Tokens
+   (ein Bild-Radius, ein Schatten). Seit 2026-09-19 traegt der Kopfbereich
+   eine 360-Grad-Drehung statt eines Standbilds — eine eigene Klasse mit
+   eigenen Werten waere ein zweiter Bild-Stil auf einer Seite, die
+   ausdruecklich nur einen hat. */
+.lp-a3 figure img,
+.lp-a3 figure video {
   display: block;
   width: 100%;
   height: auto;
@@ -427,6 +433,20 @@ body:has(.lp-a3) footer {
   color: var(--a-muted);
   text-align: center;
 }
+
+/* Startseiten-Block „6 Jahre Forschung" (reusables/PeerReviewStudies) in die
+   Papier-Welt heben — Christian, 2026-09-19. Bauform, Kennzahlen und Trennlinien
+   bleiben die der Startseite; nur Abstand, Breite und Linienfarbe kommen aus den
+   Tokens dieser Seite, damit der Block nicht mit eigenem 100-px-Rand in der
+   Sektion schwimmt und die Zwischenzeile mittig unter der H2 steht. */
+.lp-a3 .PeerReviewStudies.NormalSectionSize {
+  padding: 0;
+  max-width: var(--a-breite);
+  margin: 0 auto var(--a-s8);
+}
+.lp-a3 .PeerReviewStudies > p { margin-inline: auto; color: var(--a-text); }
+.lp-a3 .PeerReviewResults .PeerReviewResult { border-color: var(--a-linie); }
+.lp-a3 .PeerReviewResults .PeerReviewResult p { color: var(--a-muted); }
 
 /* Studien-Bestandsblock (LpStudien) in die Papier-Welt heben */
 .lp-a3 .Studien.NormalSectionSize {
@@ -937,6 +957,7 @@ body:has(.lp-a3) .qb-sterne { color: var(--a-akzent) !important; }
    bzw. eine Form. */
 .lp-a3 img,
 .lp-a3 figure img,
+.lp-a3 figure video,
 .lp-a3 .snap-start img,
 body:has(.lp-a3) header img,
 body:has(.lp-a3) .footer-study img { border-radius: var(--a-r1) !important; }

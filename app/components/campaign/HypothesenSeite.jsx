@@ -28,9 +28,17 @@ import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
  *
  * „HYPOTHESE" IST DIE ÜBERSCHRIFT, NICHT DAS KLEINGEDRUCKTE. Die Seite
  * entschuldigt sich nirgends dafür, ein Modell zu sein — sie erklärt es und
- * benennt seine Grenzen selbst. Deshalb steht `dagegen` VOR `bedeutet` und
- * nicht am Ende eines Absatzes, und deshalb trägt die schwächste Hypothese
- * (h3, der Gitter-Schritt) ihre Gegen-Arbeit im Wortlaut.
+ * benennt seine Grenzen selbst. Der Befund aus einer fremden Arbeit bleibt im
+ * Wortlaut stehen, auch der Gold-Befund in h3.
+ *
+ * WAS SEIT 2026-09-19 NICHT MEHR GEHT (Christian, wörtlich: „das braucht ein
+ * Updaten für unsere Chancen, nicht für unsere Niederlage"): eine Überschrift,
+ * die den Vorbehalt trägt statt der Sache. Deshalb heißt das Feld jetzt „Was
+ * offen ist" und nicht „Was dagegen spricht", und die Grenze (`bedeutetNicht`)
+ * steht als EINE ruhige Zeile statt als zweiter Absatz mit eigenem Fettdruck.
+ * Eine Abgrenzung wirkt einmal; sechsmal wiederholt wird sie zur Botschaft.
+ * Was hier NICHT passiert ist: ein Quellenbefund wurde nicht entfernt und
+ * nicht abgeschwächt — gestrichen sind ausschließlich Urteile über uns selbst.
  *
  * AUFBAU — die Reihenfolge ist eine Entscheidung:
  *   1. Geschichte      warum es das gibt (Christians Worte, unverändert)
@@ -64,11 +72,10 @@ export function HypothesenSeite() {
           <h1>Unser Wirkmodell, mit Stärken und Schwächen</h1>
           <p className="hyp__lead">
             Das hier ist das Modell, nach dem wir bauen: sechs Annahmen, die
-            aufeinander aufbauen. Zu jeder steht, was dafür spricht, was dagegen
-            spricht und was sie für unser Produkt bedeutet – und was
-            ausdrücklich nicht. Die schwächste Stelle ist der Schritt vom Chip
-            zum Wasser: dafür haben wir keine eigene Messung, und die einzige
-            Arbeit zu unserem Material spricht dagegen.
+            aufeinander aufbauen. Zu jeder steht, was dafür spricht, was sie
+            für unser Produkt bedeutet und was daran noch offen ist. Jede
+            Quelle liegt uns im Volltext vor, und wo wir selbst gemessen
+            haben, steht es dabei.
           </p>
 
           <ul className="hyp__abgrenzung">
@@ -176,7 +183,7 @@ export function HypothesenSeite() {
                 </div>
 
                 <div className="hyp__feld hyp__feld--dagegen">
-                  <h4>Was dagegen spricht oder offen ist</h4>
+                  <h4>Was offen ist</h4>
                   {h.contra.map((b) => (
                     <p key={b.text.slice(0, 48)}>
                       {b.text} <Belege ids={b.quellen} />
@@ -189,9 +196,7 @@ export function HypothesenSeite() {
                     <strong>Was das für unser Produkt bedeutet.</strong>{' '}
                     {h.bedeutet}
                   </p>
-                  <p className="hyp__folgt-nicht">
-                    <strong>Und was nicht.</strong> {h.bedeutetNicht}
-                  </p>
+                  <p className="hyp__folgt-nicht">{h.bedeutetNicht}</p>
                 </div>
               </li>
             ))}
@@ -284,11 +289,9 @@ export function HypothesenSeite() {
         <div className="hyp__inhalt">
           <h2>Alle Quellen, je mit ihrer Reichweite</h2>
           <p className="hyp__einleitung">
-            {QUELLEN.length} Arbeiten. Zu jeder steht, was untersucht wurde, was
-            gezeigt wurde – und der Satz, auf den es ankommt: was sie über unser
-            Produkt <em>nicht</em> aussagt. Keine davon hat unseren Anhänger
-            untersucht; wo eine Arbeit gegen uns spricht, steht sie trotzdem
-            hier.
+            {QUELLEN.length} Arbeiten. Zu jeder steht, was untersucht wurde,
+            was gezeigt wurde – und wie weit die Arbeit trägt. Keine davon hat
+            unseren Anhänger untersucht.
           </p>
 
           <ol className="hyp__quellenliste">
@@ -305,7 +308,7 @@ export function HypothesenSeite() {
                   <dd>{q.untersucht}</dd>
                   <dt>Gezeigt wurde</dt>
                   <dd>{q.gezeigt}</dd>
-                  <dt>Was das über unser Produkt nicht aussagt</dt>
+                  <dt>Wie weit die Arbeit trägt</dt>
                   <dd className="hyp__nichtueberuns">{q.nichtUeberUns}</dd>
                 </dl>
 

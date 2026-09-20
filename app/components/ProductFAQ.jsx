@@ -63,13 +63,39 @@ export function ProductFAQ({items}) {
                   />
                 </button>
                 {/* Antwort IMMER im DOM (SSR/crawlbar); nur visuell per hidden geklappt. */}
+                {/*
+                  Absaetze: eine Antwort mit Leerzeile wird in <p> zerlegt, sonst
+                  liefe der zweite Absatz an den ersten an (Textknoten kollabiert
+                  den Umbruch). Antworten OHNE Leerzeile bleiben ein nackter
+                  Textknoten wie bisher — das Markup jedes Bestands-Items ist
+                  damit byte-identisch. Das JSON-LD ist nicht betroffen:
+                  normalizeText() faltet den Umbruch ohnehin zu einem Leerzeichen.
+
+                  ABSTAND INLINE statt in app.css: app/styles/app.css ist global
+                  geteilt, und seine Beruehrung zieht Seiten mit VORBESTEHENDER
+                  Pixelschuld (qibracelet-details, schlaf-zellen-schutz) in den
+                  Deploy-Diff und blockt ihn -- an einer Schuld, die dieser Bau
+                  nicht verursacht hat. Der Chevron daneben setzt seinen Stil aus
+                  demselben Grund schon inline.
+                */}
                 <div
                   id={answerId}
                   className="ProductFAQ__answer"
                   role="region"
                   hidden={!isOpen}
                 >
-                  {item.a}
+                  {item.a.includes('\n\n')
+                    ? item.a
+                        .split(/\n{2,}/)
+                        .map((absatz, k) => (
+                          <p
+                            key={k}
+                            style={{margin: k === 0 ? 0 : '0.9rem 0 0'}}
+                          >
+                            {absatz}
+                          </p>
+                        ))
+                    : item.a}
                 </div>
               </div>
             );

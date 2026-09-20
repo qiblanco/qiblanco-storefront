@@ -5,13 +5,22 @@ import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 
 /**
- * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
+ * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
+ * (Kopfbereich seit 2026-09-19 nach Christians Vorlage, davor „Wirkt auf drei
+ * Ebenen"; Wortlaut und Bewachung: components/campaign/SchlafZellenSchutz.jsx).
  *
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept): breiter
  * Erst-Kontakt / Perspektiven-Einstieg. Additiv, kein Ad zeigt (noch) darauf.
  *
  * Eigenes Token-Designsystem (styles/schlaf-zellen-schutz.css, Scope .lp-a3);
  * NUTZT die vorhandene DreiThemenBand aus dem Bestand (~/components/redesign).
+ *
+ * Im Kopfbereich steht seit 2026-09-19 die 360-Grad-Drehung des QiOne(R) 2 Pro
+ * statt des Standbilds (Christian). Das Video liegt auf dem Shopify-CDN, läuft
+ * stumm und in Schleife, trägt den ersten Frame als Poster und hält bei
+ * `prefers-reduced-motion` an — Begründung und Messwerte stehen im Baustein
+ * `~/components/reusables/Produkt360Video`. Radius und Schatten kommen
+ * unverändert aus dem Bild-Token dieser Seite.
  *
  * Das Tracking (R1/R2/R3-Kette) hängt pfad-agnostisch im root-Layout — der
  * Loader fragt NUR Produktdaten ab, KEINEN zusaetzlichen Pixel (D-006,

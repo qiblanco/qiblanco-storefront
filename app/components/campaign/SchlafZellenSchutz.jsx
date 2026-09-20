@@ -4,8 +4,11 @@ import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/Go
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
+import {PeerReviewStudies} from '~/components/reusables/PeerReviewStudies';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
@@ -44,15 +47,17 @@ const QIONE_ZIEL = produktLink('qione-2-pro', BLOCK_LP, 'kauf');
 const QIONE_CTA = 'QiOne® 2 Pro ansehen';
 
 /*
- * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER „Wirkt auf drei Ebenen".
+ * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
+ * (Kopfbereich seit 2026-09-19 nach Christians Vorlage; davor „Wirkt auf drei Ebenen").
  *
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept, Kap. 3.3 A):
  * breiter/generischer Erst-Kontakt, Perspektiven-Einstieg fuer die spaetere
- * Rotation. Dramaturgie: Hero (Drei-Ebenen-Versprechen) -> DreiThemenBand
+ * Rotation. Dramaturgie: Hero (Ruhe auf Zellebene, drei Zustaende) -> DreiThemenBand
  * (Struktur-Anker, aus dem Bestand) -> je Ebene ein Mechanismus-Block
  * (Zelle / Feld / Schlaf) mit Evidenz-Kachel + Anker-Link auf die Themen-LP ->
  * gemeinsamer Wissenschafts-Block -> Social Proof quer -> Garantie -> Pricing ->
- * QB-Signatur -> Final CTA.
+ * Final CTA (die QB-Signatur „Unsere Sichtweise“ ist seit dem 19.09.2026 auf
+ * Christians Anweisung ersatzlos gestrichen).
  *
  * DESIGN: eigenes Token-System (styles/schlaf-zellen-schutz.css, Scope .lp-a3),
  * abgeleitet aus dem 93/100-Rezept der Tiefschlaf-v3 (Design-Meister-Pfad:
@@ -143,7 +148,6 @@ function Hero() {
   const {preisWert, preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
-  const heroImg = product?.featuredImage?.url || QIONE_FALLBACK_IMG;
   const priceAmount = product?.priceRange?.minVariantPrice?.amount;
   const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
   const waehrung = waehrungVon(product);
@@ -151,16 +155,17 @@ function Hero() {
   const priceLabel = priceAmount ? preisLabelVon(product) : fallback.label;
   const compareLabel = compareLabelVon(product);
   const monthly = Math.ceil(priceNum / 12);
-  const dreizeiler = [
-    'Tiefer schlafen.',
-    'Geschützt vor E-Smog.',
-    'Auf Zellebene stabil.',
-  ];
+  // Wortlaut Christian, 19.09.2026 (Job 20260919-schlaf-zellen-schutz-neuer-
+  // kopfbereich-nach-christians-vorlage): Reihenfolge, Satzbau und Stil sind
+  // seine, korrigiert wurde allein die Rechtschreibung. Bewacht von
+  // worker-pool/pruefungen/probe_schlaf_zellen_schutz_neuer_kopf__20260919.py.
+  const dreizeiler = ['Tiefer schlafen.', 'Starker Fokus.', 'Innere Ruhe.'];
+  const vierzeiler = ['Kein Akku.', 'Kein Strom.', 'Kein Abo.', 'Pure Leistung.'];
   const trust = [
-    '14.000+ Träger',
-    'Zellstudien, peer-reviewed',
+    '14.000+ aktive Nutzer',
+    '100\u00a0% Geld-zurück-Garantie',
     'Made in Germany',
-    '20 Nächte risikofrei',
+    '20 Tage nach Erhalt in Ruhe testen',
   ];
   return (
     <section
@@ -171,10 +176,10 @@ function Hero() {
       <div className="lp-a-hero__inner">
         <div className="lp-a-hero__copy">
           <span className="lp-a-hero__eyebrow">
-            Ein Begleiter für den ganzen Körper
+            Tragbares Hightech mit messbaren Effekten auf Zellebene
           </span>
           <h1 id="lp-a-hero-title" className="lp-a-hero__title">
-            Wirkt auf drei Ebenen.
+            Ruhe auf Zellebene
           </h1>
           <ul className="lp-a-hero__dreizeiler" aria-hidden="false">
             {dreizeiler.map((z) => (
@@ -182,10 +187,22 @@ function Hero() {
             ))}
           </ul>
           <p className="lp-a-hero__subline">
-            Dein Körper besteht zu über 70&nbsp;% aus Wasser. Der QiOne<sup>®</sup>&nbsp;2
-            Pro bringt es in kohärente Ordnung — genau dort, wo es zählt: er stabilisiert
-            deine Zellen, puffert eingestrahlten E-Smog ab und hilft dem Nervensystem,
-            nachts herunterzufahren. In Zellstudien gemessen, von 14.000+ Trägern getragen.
+            Das berichten viele von unseren 14.000 aktiven Nutzern. Der QiOne<sup>®</sup>
+            &nbsp;2 Pro strukturiert dort Wasser, wo es darauf ankommt. In deinen Zellen.
+            Untersucht in 5 publizierten Studien ist es das bestuntersuchte Energie-Produkt
+            auf der Welt.
+          </p>
+          {/* Vier Produkt-Tatsachen als ruhiger Fliesstext (Bestandsklasse, kein
+              CSS-Diff: schlaf-zellen-schutz.css ist die geteilte Token-Quelle von
+              sechs Routen). Die Zeilen darueber tragen SEINEN Zustand und den
+              Akzent; diese hier sind Closer-Material und bleiben im Lauftext-Ton. */}
+          <p className="lp-a-hero__subline">
+            {vierzeiler.map((z, i) => (
+              <span key={z}>
+                {i > 0 && <br />}
+                {z}
+              </span>
+            ))}
           </p>
           <div className="lp-a-hero__cta-row">
             <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
@@ -193,7 +210,9 @@ function Hero() {
             </a>
             <span className="lp-a-hero__price">
               {compareLabel && <s>{compareLabel}</s>} {priceLabel}
-              {waehrung === 'EUR' && <> · oder 12 Raten à {monthly}&nbsp;€</>}
+              {waehrung === 'EUR' && (
+                <> · oder 12 Raten à {monthly}&nbsp;€ – mit 0&nbsp;% Finanzierung</>
+              )}
             </span>
           </div>
           <ul className="lp-a-hero__trust">
@@ -203,14 +222,14 @@ function Hero() {
           </ul>
         </div>
         <figure className="lp-a-hero__visual">
-          <img
-            {...bildQuelle(heroImg, LEITER_HERO)}
-            sizes={SIZES_HERO}
-            alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
-            loading="eager"
-          />
+          {/* Seit 2026-09-19 die 360-Grad-Drehung statt des Standbilds
+              (Christian). Poster, Groesse und Ladeverhalten hängen am
+              Baustein; der Radius kommt weiter aus dem Bild-Token der Seite
+              (--a-r1), damit im Kopfbereich nicht zwei Formensprachen
+              nebeneinander stehen. */}
+          <Produkt360Video alt="QiOne® 2 Pro in der 360-Grad-Ansicht" />
           <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro — getragen, Tag und Nacht.
+            QiOne<sup>®</sup>&nbsp;2 Pro
           </figcaption>
         </figure>
       </div>
@@ -218,17 +237,45 @@ function Hero() {
   );
 }
 
-/* ───────── Intro / Brücke (ein Wirkprinzip, drei Ebenen) ───────── */
+/* ───────── Wirkprinzip ─────────
+   Christian, 19.09.2026: der Abschnitt bekommt seinen Wortlaut. Übernommen ist
+   sein Satzbau; korrigiert wurde ausschließlich die Rechtschreibung. Der alte
+   Absatz („Kein Wunder. Ein Prinzip mit drei Wirkungen.“) weicht ersatzlos, und
+   mit ihm seine beiden Gedankenstriche — der Trennstrich vor „mit deutlich mehr
+   Elektronenvolt“ ist Christians eigener und bleibt.
+
+   DIE QUELLE STEHT DORT, WO SIE TRÄGT — und das ist der teure Teil dieses
+   Abschnitts. Die Auflage lautete, eine Warnke-Quelle zu setzen, aber nur, wenn
+   sie die Aussage trägt, an der sie steht. Gemessen an ZWEI unabhängigen
+   Volltext-Extrakten von „Bionisches Wasser“ (899.773 bzw. 892.359 Zeichen,
+   praktisch das ganze Buch): „Blutplättchen“ 0 Treffer, „Thrombo“ 0,
+   „gerinn“ 0, „Faltung“ 0, „Superzustand“ 0. „Elektronenvolt“ kommt 4x vor,
+   alle vier rein physikalisch (Ionisationspotenzial des Wassermoleküls
+   12,60 eV, Bindungsenergien, Glossar) — keine Stelle sagt, kohärentes Wasser
+   habe mehr eV als normales. Warnke TRÄGT den kohärenten Zustand; er trägt
+   das Blutplättchen-Beispiel nicht.
+   Deshalb steht die Quelle am Kohärenz-Satz und nicht pauschal am Absatzende:
+   eine Quellenangabe, die etwas anderes belegt als der Satz behauptet, ist
+   schlimmer als keine. Der einschraenkende Warnke-Satz ist derselbe, den
+   /pages/hypothesen schon zitiert (S. 168–169) — zwei Seiten des Hauses sagen
+   damit dasselbe über dieselbe Quelle. KEINE erfundene Seitenzahl: für den
+   Kohärenz-Teil ist im Haus keine belegt, also steht dort keine. */
 function IntroSection() {
   return (
     <section className="lp-vp-section" data-section="lp-a-intro">
-      <span className="eyebrow">Ein Wirkprinzip</span>
-      <h2>Kein Wunder. Ein Prinzip mit drei Wirkungen.</h2>
+      <h2>Wirkprinzip</h2>
       <p className="lp-vp-section__lede">
-        Fast alle biologischen Prozesse laufen an wasserumhüllten Grenzflächen ab. Ist
-        dieses Wasser geordnet — kohärent —, arbeiten Zellen, Membranen und Nervensystem
-        ruhiger. Aus diesem einen Prinzip folgen drei Ebenen, auf denen der QiOne<sup>®</sup>
-        &nbsp;2 Pro ansetzt. Wähle die, die dich gerade am meisten betrifft.
+        Der GitterChip™ ermöglicht es naheliegenden Wassermolekülen, in den kohärenten
+        Zustand überzugehen. Den Superzustand des Wassers. Aus normalem Wasser wird
+        energetisch hoch aufgeladenes Wasser - mit deutlich mehr Elektronenvolt. Dies ist
+        die Grundlage für Zellprozesse im Körper. Sie haben mehr Energie, wie z. B. das
+        Falten von Blutplättchen.
+      </p>
+      <p className="lp-a-note">
+        Den kohärenten Wasserzustand beschreibt der Biologe und Physiker Ulrich Warnke in
+        „Bionisches Wasser“ (Arkana, München 2019). Er selbst hält fest, dass es zu den
+        Wirkungen dieses Wassers auf Organismen bislang kaum robuste Forschung gibt. Die
+        Angaben zu Elektronenvolt und Blutplättchen sind unsere eigenen.
       </p>
     </section>
   );
@@ -262,13 +309,9 @@ function MechanismSection() {
       className="lp-vp-section lp-a-mechs-section"
       data-section="lp-a-mechanismus"
     >
-      <span className="eyebrow">Drei Ebenen im Detail</span>
-      <h2>Was kohärentes Wasser auf jeder Ebene bewirkt.</h2>
-      <p className="lp-vp-section__lede">
-        Wir verkaufen dir keine Traum-Stimmung, sondern eine nachvollziehbare Wirkkette —
-        pro Ebene mit einem messbaren Beweis aus dem Labor. Willst du tiefer einsteigen,
-        führt jede Ebene zu ihrer eigenen Seite.
-      </p>
+      {/* Christian, 19.09.2026: Eyebrow, Überschrift und Absatz weichen der einen
+          Zeile. Die drei Ebenen darunter bleiben unverändert. */}
+      <h2>Er wirkt für dich auf 3 Ebenen</h2>
       <div className="lp-a-mechs">
         {ebenen.map(({thema, ebene, link}) => (
           <article className="lp-a-mech" key={thema.id}>
@@ -304,57 +347,35 @@ function MechanismSection() {
           </article>
         ))}
       </div>
-      <p className="lp-a-note">
-        Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten
-        Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie erklären den
-        Mechanismus, sie sind keine Heilaussage.
-      </p>
+      {/* Christian, 19.09.2026: der Grenzforschungs-Hinweis unter den drei Ebenen
+          ist ersatzlos gestrichen; die In-vitro-Einordnung steht weiter im
+          Wissenschafts-Abschnitt. */}
     </section>
   );
 }
 
-/* ───────── Wissenschaft (gemeinsam, in-vitro gelabelt) ───────── */
+/* ───────── Wissenschaft ─────────
+   Christian, 19.09.2026: der Block „Nicht nur gefühlt — an Zellen gemessen"
+   (Eyebrow, H2, Lede, drei Kacheln 84,7 % / 10× / 5 / 5) ist GELÖSCHT und durch
+   den Startseiten-Block „6 Jahre Forschung" ersetzt — übernommen, nicht
+   nachgebaut (reusables/PeerReviewStudies, eine Definition für beide Seiten).
+   Zum Block gehört der Studienslider mit seiner Überschrift „Wirkung an
+   menschlichen Zellen bestätigt!", der Schlusszeile und dem Knopf
+   „Zelluntersuchungen ansehen" — exakt wie auf der Startseite.
+
+   DER SLIDER STEHT DESHALB NUR NOCH HIER. Bis zu diesem Tag hing er als
+   `<LpStudien headline="" />` am ENDE dieser Sektion, unter dem Mikroskop-
+   Video; Christian: „Wichtig, dass dann der Studienslider weiter unten auf der
+   Seite verschwindet, sonst wäre er doppelt." Die untere Fassung ist entfernt,
+   nicht beide — entdoppeln heißt nicht löschen. */
 function ScienceSection() {
-  const stats = [
-    {
-      value: '84,7 %',
-      label: 'Immunzell-Aktivität',
-      desc: 'Radikalbildung der Immunzellen bleibt unter Handystrahlung nahezu erhalten (ohne Schutz: 60,5 %).',
-      cite: 'Japan Journal of Medicine, 2021 · in vitro',
-    },
-    {
-      value: '10×',
-      label: 'Zell-Barrierefunktion',
-      desc: 'Bessere Barriere-Integrität gestresster Zellen (TEER-Messung) unter E-Smog-Belastung.',
-      cite: 'Applied Cell Biology, 2021 · in vitro',
-    },
-    {
-      value: '5 / 5',
-      label: 'Zelltypen geschützt',
-      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
-      cite: 'Applied Cell Biology, 2024 · in vitro',
-    },
-  ];
   return (
     <section className="lp-vp-section" data-section="lp-a-wissenschaft">
-      <span className="eyebrow">Wissenschaft</span>
-      <h2>Nicht nur gefühlt — an Zellen gemessen.</h2>
-      <p className="lp-vp-section__lede">
-        Vier peer-review-publizierte Zellstudien (Dartsch Scientific, unabhängiges Labor)
-        belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien in vitro —
-        messbare, reproduzierbare Effekte auf lebende Zellen. Ergänzt durch über 14.000
-        Menschen, die den QiOne<sup>®</sup> täglich tragen.
-      </p>
-      <div className="lp-vp-peer-stats">
-        {stats.map((s) => (
-          <div className="lp-vp-peer-stat" key={s.label}>
-            <div className="lp-vp-peer-stat__value">{s.value}</div>
-            <div className="lp-vp-peer-stat__label">{s.label}</div>
-            <div className="lp-vp-peer-stat__desc">{s.desc}</div>
-            <div className="lp-vp-peer-stat__cite">{s.cite}</div>
-          </div>
-        ))}
-      </div>
+      <PeerReviewStudies dataSection="lp-a-peer-review-studien" />
+      <LpStudien
+        dataSection="lp-a-studien"
+        headline="Wirkung an menschlichen Zellen bestätigt!"
+      />
       {/* Das Scroll-Scrub-Video belegt bauartbedingt mehrere Bildschirmhoehen —
           es war nach dem ersten Einbau die letzte verbliebene Durststrecke
           (Falz 5,9 bis 11,8). Der Knopf steht deshalb VOR dem Video, solange
@@ -390,7 +411,6 @@ function ScienceSection() {
           den Studienzahlen, wo der Beweis frisch ist). Höchstens EIN Hauptknopf
           je Abschnitt. Was er gekostet hat, steht im RESULT und ist gemessen,
           nicht geschätzt: 13 von 471 Weiter-Klicks. */}
-      <LpStudien headline="" />
     </section>
   );
 }
@@ -456,11 +476,11 @@ function VideoSection() {
 export function GuaranteeSection() {
   const items = [
     {
-      title: '20 Nächte, dein Alltag',
+      title: 'Teste ihn 20 Tage lang',
       body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
     },
     {
-      title: 'In Raten, wenn du willst',
+      title: 'Zahle jetzt bequem in 0% Raten',
       body: 'Über Klarna oder PayPal in bequemen Monatsraten — 0 % Finanzierung. Du entscheidest, wie du zahlst.',
     },
     {
@@ -470,13 +490,11 @@ export function GuaranteeSection() {
   ];
   return (
     <section className="lp-vp-section" data-section="lp-a-garantie">
-      <span className="eyebrow">Dein Risiko: keins</span>
-      <h2>Überzeugt es dich — oder du bekommst dein Geld zurück.</h2>
-      <p className="lp-vp-section__lede">
-        Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort bewusst
-        wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl, sondern an den
-        Zeitraum: 20 Nächte, dann entscheidest du.
-      </p>
+      {/* Christian, 19.09.2026: Eyebrow „Dein Risiko: keins", H2 „Überzeugt es
+          dich — oder du bekommst dein Geld zurück." und der Lede-Absatz
+          („… 20 Nächte, dann entscheidest du.") sind auf diese EINE Zeile
+          gekürzt — in seiner Schreibweise, nicht normalisiert. */}
+      <h2>100% Geld zurück Garantie</h2>
       <div className="lp-vp-benefits-grid">
         {items.map((b) => (
           <article className="lp-a-benefit" key={b.title}>
@@ -532,7 +550,7 @@ function PricingSection() {
   return (
     <section className="lp-a-pricing" aria-labelledby="lp-a-pricing-title" data-section="lp-a-pricing">
       <span className="eyebrow">Unsere Produkte</span>
-      <h2 id="lp-a-pricing-title">Finde deinen Begleiter für kohärentes Wasser</h2>
+      <h2 id="lp-a-pricing-title">Hole dir jetzt deine „Energie zum Anlegen“</h2>
       <div className="lp-a-pricing-grid">
         {cards.map((c) => (
           <article
@@ -578,23 +596,6 @@ function PricingSection() {
         Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna ·
         kostenloser Versand innerhalb Deutschlands · Käuferschutz
       </p>
-    </section>
-  );
-}
-
-/* ───────── QB-Signatur ───────── */
-function SignatureSection() {
-  return (
-    <section className="lp-a-signature" data-section="lp-a-signatur">
-      <span className="eyebrow">Unsere Sichtweise</span>
-      <h2>Wir verkaufen dir keinen Schmuck.</h2>
-      <p className="lp-a-signature__body">
-        Der QiOne<sup>®</sup> ist schön — aber das ist nicht der Punkt. Der eigentliche Wert
-        ist unsichtbar: kohärentes Wasser in deinem Körper, Zellen, die besser geschützt
-        sind, ein Nervensystem, das abends herunterfahren darf. Der Schmuck ist nur das
-        Vehikel. Was du wirklich mitnimmst, ist die Ruhe auf allen drei Ebenen.
-      </p>
-      <p className="lp-a-signature__sign">— Dein Qi Blanco® Team</p>
     </section>
   );
 }
@@ -725,6 +726,22 @@ export function SchlafZellenSchutz({products}) {
         <Hero />
         <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
         <IntroSection />
+        {/* Christian, 19.09.2026: „danach unsere Scroll-down-Animation einfügen“.
+            Derselbe Baustein, den Startseite, /products/qione-2-pro,
+            /pages/tiefer-schlaf und /pages/E-Smog-Schutz schon tragen — EINE
+            Definition (GitterchipMoleculesScrub), gleiches Video, gleiche
+            Overlay-Texte. Bewusst nicht nachgebaut: Text-Drift zwischen den
+            Seiten wäre sonst baulich möglich.
+            HÖHE 300/250vh statt der Vorgabe 500/400 — Begründung im RESULT.
+            Sie hängt an DIESER Seite: sie trägt im Wissenschafts-Block bereits
+            eine zweite Scroll-Strecke (lp-a-mikroskop-video). Zweimal fünf
+            Bildschirmhöhen Scroll-Weg, die erste davon vor dem ersten
+            Argument, zerreißen den Lesefluss. */}
+        <GitterchipMoleculesScrub
+          dataSection="lp-a-gitterchip-video"
+          heightVhDesktop={300}
+          heightVhMobile={250}
+        />
         <MechanismSection />
         <WeiterCta nr={1} />
         <ScienceSection />
@@ -750,7 +767,6 @@ export function SchlafZellenSchutz({products}) {
         <VideoSection />
         <GuaranteeSection />
         <PricingSection />
-        <SignatureSection />
         <FinalCTA />
       </div>
     </LiveDataCtx.Provider>

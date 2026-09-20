@@ -21,22 +21,25 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qihomeAirStyles from '~/styles/qihome-air.css?url';
-import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
-import igStyles from '~/styles/ig-testimonials.css?url';
-import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
 import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
 // DATENSPARSAM AN DER GRENZE: benannte Importe statt des ganzen Artefakts.
-// Der Baustein braucht genau diese drei Felder; `stand`/`quelle`/`k` sagen
-// etwas über den Datensatz und haben im Browser nichts zu suchen. Vite
-// gibt JSON unter 10 KB benannte Exporte, unbenutzte fallen im Produktions-
-// bau weg -- am gebauten Bundle nachgemessen (s04), nicht angenommen.
+// Der Baustein braucht genau diese zwei Felder; `seed`/`verteilung` sagen etwas
+// über den Datensatz und haben im Browser nichts zu suchen. Vite gibt JSON
+// benannte Exporte, unbenutzte fallen im Produktionsbau weg -- am gebauten
+// Bundle nachgemessen (s04), nicht angenommen.
+//
+// QUELLENWECHSEL 2026-09-19 (Job 20260919-karte-479-punkte-und-text-ohne-
+// entschuldigung): bis hierher stand `~/data/qihome-einsatzkarte.json`, und die
+// Datei wurde woechentlich aus Kauf- und Kundendaten abgeleitet (kunden-db).
+// Christian hat die Karte auf 479 GERECHNETE, einwohnergewichtete Punkte
+// umgestellt -- kein Punkt darf ein echter Standort sein. Die neue Datei
+// entsteht in homepage-bauer/bin/qihome-karte-punkte und liest keine Bestellung.
 import {
-  geraete_gesamt as einsatzkarteGesamt,
   km_pro_einheit as einsatzkarteKmProEinheit,
   punkte as einsatzkartePunkte,
-} from '~/data/qihome-einsatzkarte.json';
+} from '~/data/qihome-karte-punkte.json';
 /**
  * Token-Schicht dieser Kaufseite (Design-Score 59 -> >= 80, Job
  * 20260910-designschuld-...-s04). Sie hängt NUR hier und trägt
@@ -48,7 +51,6 @@ import {
 export function links() {
   return [
     {rel: 'stylesheet', href: qihomeAirStyles},
-    {rel: 'stylesheet', href: igStyles},
     // Scope-CSS der Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte, s04).
     // Eigene Datei, Scope `.qh-karte`: eine Seite ohne diese Klasse sieht von
     // ihr baulich nichts.
@@ -70,16 +72,13 @@ export const meta = ({data}) => {
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
   });
-  // VideoObject je Instagram-Beitrag MIT Video. Ein Knoten auf einem Eintrag
-  // OHNE Video wäre eine Lüge, und ein Knoten ohne Pflichtfeld (name,
-  // thumbnailUrl, uploadDate) steht dauerhaft als Fehler in der Search
-  // Console — beides faellt in ig-video-schema.js baulich aus.
-  const videos = igVideoDescriptor({
-    produkt: 'QiHome',
-    pfad: '/products/qihome-air',
-    produktTitel: data?.product?.title,
-  });
-  return videos ? [...basis, videos] : basis;
+  // KEIN VideoObject mehr auf dieser Seite (Christian 2026-09-19, Job
+  // 20260919-qihome-air-karte-statt-instagram-christian-hat-entschieden):
+  // die Instagram-Fläche ist von dieser Route gestrichen. Ein VideoObject
+  // auf einer Seite ohne das Video wäre gegenüber der Suchmaschine eine
+  // Lüge — dieselbe Regel, die ig-video-schema.js für Einträge ohne
+  // Video setzt, gilt für eine Route ohne Fläche.
+  return basis;
 };
 
 /**
@@ -225,51 +224,48 @@ export default function Product() {
       />
     </div>
       {/*
-        DIE INSTAGRAM-STIMMEN — WEIT OBEN, wie auf den drei Schwesterseiten:
-        unmittelbar nach dem Kaufblock und VOR dem langen Inhaltsteil.
+        DIE QIHOME-EINSATZKARTE — HIER, unmittelbar nach dem Kaufblock und VOR
+        dem langen Produkttext ("QiHome® Air – Die Zukunft für ein
+        intelligentes Raumklima").
 
-        EIGENE UEBERSCHRIFT, und das ist der Punkt dieser Sektion:
-        die Komponente heißt per Default "Echte Stimmen auf Instagram".
-        Für QiHome deckt das Material diese Zusage NICHT — der Korpus trägt
-        hier drei Beitraege, alle drei von unserem eigenen Konto, kein einziges
-        fremdes. (Christians Nachtrag rechnete mit einem persoenlichen: das war
-        @_kamyata_, und dieses Konto ist seit der Browser-Messung in s03 des
-        Vorgaengerjobs als geloescht belegt — 3 von 3 Laeufen "Seite wurde
-        entfernt", Positiv-Kontrolle jedes Mal sauber.)
+        Bis zum 2026-09-19 stand an dieser Stelle die Instagram-Fläche
+        (<IgTestimonialSlideshow produkt="QiHome" ueberschrift="QiHome® Air auf
+        Instagram" />) und die Karte war das letzte Element der Route, direkt
+        oberhalb des Footers. Christian, 19.09.2026: der Instagram-Abschnitt
+        kommt weg, "und dort sollte doch die Karte dann ersatzweise stehen".
+        Die Fläche ist deshalb ersatzlos gestrichen — samt Überschrift,
+        Videoeinbettung, Stylesheet und VideoObject-Auszeichnung in meta() —
+        und die Karte ist VERSCHOBEN, nicht neu gebaut: Punkte, Verteilung,
+        Text und Gestaltung sind unverändert (Grossjob
+        20260914-qihome-einsatzkarte; Zahl und Wortlaut der Überschrift sind
+        Christians Festlegung vom 19.09.2026 und stehen in der Komponente).
 
-        "Echte Stimmen" über drei eigenen Beiträgen wäre eine Behauptung, die
-        das Material nicht trägt. Die Flaeche steht trotzdem — Christian
-        2026-09-11: "Trotzdem einen tollen Slider machen mit dem ganzen
-        Material", "Nichts fliegt raus" — aber sie sagt, was sie ist.
-        Kommt fremdes Material nach, gehört die Default-Überschrift zurück.
+        Die drei QiHome-Beiträge bleiben im Korpus (app/data/ig-testimonials.js)
+        und in der Komponente; QiOne 2 Pro, QiBracelet und Kakao hängen daran
+        und bewegen sich nicht. Kommt die Fläche hierher zurück, ist das eine
+        neue Ansage von Christian, kein Rückbau.
 
-        BEWUSST OHNE dataSection: diese PDP führt heute kein einziges
-        data-section; das erste würde den Design-Rubrik-Collector auf genau
-        eine Sektion einengen (Watch-Regression) — dieselbe Begründung wie auf
+        `daten` sind BEREITS projizierte SVG-Punkte aus dem Erzeuger; diese
+        Route rechnet nichts und reicht nur durch. Die Zahl in der Überschrift
+        ist Christians Wortlaut in der Komponente und wird hier NICHT
+        mitgegeben. Rückweg: VITE_EINSATZKARTE=off lässt den Baustein `null`
+        rendern und die Seite bleibt vollständig.
+
+        BEWUSST OHNE zweites data-section: die Karte trägt ihres in der
+        Komponente (qihome-einsatzkarte); ein weiteres würde den
+        Design-Rubrik-Collector einengen — dieselbe Begründung wie auf
         products.qibracelet.jsx und products.qione-2-pro.jsx.
       */}
-      <IgTestimonialSlideshow
-        produkt="QiHome"
-        ueberschrift="QiHome® Air auf Instagram"
+      <Einsatzkarte
+        daten={{
+          km_pro_einheit: einsatzkarteKmProEinheit,
+          punkte: einsatzkartePunkte,
+        }}
       />
       <QiHome /> 
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
-    {/* QiHome-Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte-deutschland-
-        live-auf-der-produktseite, s04): letztes Element der Route und damit
-        der Abschluss der Seite unmittelbar oberhalb des Footers -- der Footer
-        liegt im Layout, nicht hier. `daten` sind BEREITS projizierte
-        SVG-Punkte aus s02; diese Route rechnet nichts und reicht nur durch.
-        Rueckweg: VITE_EINSATZKARTE=off lässt den Baustein `null` rendern und
-        die Seite bleibt vollstaendig. */}
-    <Einsatzkarte
-      daten={{
-        geraete_gesamt: einsatzkarteGesamt,
-        km_pro_einheit: einsatzkarteKmProEinheit,
-        punkte: einsatzkartePunkte,
-      }}
-    />
     </div>
   );
 }
