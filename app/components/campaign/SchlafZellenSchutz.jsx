@@ -9,6 +9,8 @@ import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
+import {ExterneStimmen} from '~/components/reusables/ExterneStimmen';
+import {CdnBild} from '~/components/reusables/CdnBild';
 import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
@@ -160,11 +162,20 @@ function Hero() {
   // seine, korrigiert wurde allein die Rechtschreibung. Bewacht von
   // worker-pool/pruefungen/probe_schlaf_zellen_schutz_neuer_kopf__20260919.py.
   // Zweite Fassung des Kopfabsatzes, Christian 20.09.2026 (Job 20260920-kopfabsatz-
-  // zweite-fassung-pure-physik): Studien-Satz, vierte Zeile und die Schlusszeile
-  // sind seine, Zeichensetzung eingeschlossen. Bewacht von
+  // zweite-fassung-pure-physik): Studien-Satz und Schlusszeile sind seine,
+  // Zeichensetzung eingeschlossen. Bewacht von
   // worker-pool/pruefungen/probe_kopfabsatz_zweite_fassung__20260920.py.
+  //
+  // DER VIERZEILER („Kein Akku. / Kein Strom. / Kein Abo. / Pure Physik.") IST AM
+  // 20.09.2026 ERSATZLOS GESTRICHEN — Christian im selben Zug, in dem er den
+  // Bewertungsblock an die Startseite angleicht. Seine neue Anweisung sticht seine
+  // alte vom selben Tag. An seine Stelle tritt die grüne Hakenzeile der Startseite
+  // (siehe unten): ÜBERNOMMEN aus index-components/HerobannerFeatured.jsx — gleiche
+  // CDN-Grafik, gleiche Klasse `cellstudies-checkmark`, gleicher Wortlaut. Keine
+  // zweite Bauform, kein zweiter Grünton.
+  // Beide Kopf-Proben sind im selben Commit nachgezogen (der Vierzeiler wandert dort
+  // von NEU/BLEIBT nach ALT, damit ein Merge-Rückfall ein Befund bleibt).
   const dreizeiler = ['Tiefer schlafen.', 'Starker Fokus.', 'Innere Ruhe.'];
-  const vierzeiler = ['Kein Akku.', 'Kein Strom.', 'Kein Abo.', 'Pure Physik.'];
   const trust = [
     '14.000+ aktive Nutzer',
     '100\u00a0% Geld-zurück-Garantie',
@@ -221,17 +232,23 @@ function Hero() {
             Fünf publizierte Studien – so gut untersucht ist in diesem Bereich sonst kein
             Produkt.
           </p>
-          {/* Vier Produkt-Tatsachen als ruhiger Fliesstext (Bestandsklasse, kein
-              CSS-Diff: schlaf-zellen-schutz.css ist die geteilte Token-Quelle von
-              sechs Routen). Die Zeilen darueber tragen SEINEN Zustand und den
-              Akzent; diese hier sind Closer-Material und bleiben im Lauftext-Ton. */}
-          <p className="lp-a-hero__subline">
-            {vierzeiler.map((z, i) => (
-              <span key={z}>
-                {i > 0 && <br />}
-                {z}
-              </span>
-            ))}
+          {/* Die grüne Hakenzeile der Startseite, 1:1 übernommen statt nachgebaut:
+              dieselbe CDN-Grafik (Green_Checkmark.webp), dieselbe Klasse
+              `cellstudies-checkmark` (app.css:2256, global und ungescopet) und
+              derselbe Wortlaut wie in index-components/HerobannerFeatured.jsx.
+              `lp-a-hero__subline` bleibt daneben stehen, damit die Zeile in der
+              Typo-Skala DIESER Seite sitzt — die Bauform ist geerbt, die
+              Schriftgröße gehört der Seite. */}
+          <p className="lp-a-hero__subline mt-1 cellstudies-checkmark">
+            <CdnBild
+              className="inline-image"
+              src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Green_Checkmark.webp?v=1676668861"
+              alt=""
+              breite={17}
+              hoehe={17}
+              anzeigeBreite={17}
+            />
+            <strong>&nbsp; Wirkung in Zellstudien bestätigt</strong>
           </p>
           <p className="lp-a-hero__subline">Erfahre es jetzt selbst.</p>
           <div className="lp-a-hero__cta-row">
@@ -325,7 +342,7 @@ function MechanismSection() {
     >
       {/* Christian, 19.09.2026: Eyebrow, Überschrift und Absatz weichen der einen
           Zeile. Die drei Ebenen darunter bleiben unverändert. */}
-      <h2>Er wirkt für dich auf 3 Ebenen</h2>
+      <h2>3 Wirkebenen</h2>
       <div className="lp-a-mechs">
         {ebenen.map(({thema, ebene, link}) => (
           <article className="lp-a-mech" key={thema.id}>
@@ -564,7 +581,7 @@ function PricingSection() {
   return (
     <section className="lp-a-pricing" aria-labelledby="lp-a-pricing-title" data-section="lp-a-pricing">
       <span className="eyebrow">Unsere Produkte</span>
-      <h2 id="lp-a-pricing-title">Kohärentes Wasser. Zum Anlegen.</h2>
+      <h2 id="lp-a-pricing-title">Kohärentes Wasser. Für Deine Zellen.</h2>
       <div className="lp-a-pricing-grid">
         {cards.map((c) => (
           <article
@@ -655,7 +672,7 @@ function FinalCTA() {
         </div>
         <div className="lp-vp-final-cta__body">
           <span className="eyebrow">Bereit für alle drei Ebenen?</span>
-          <h2>Gib deinem Körper 20 Nächte. Den Rest entscheidest du.</h2>
+          <h2>Teste den QiOne 2 Pro jetzt 20 Tage lang ohne Risiko.</h2>
           <p className="lp-vp-final-cta__lede">
             Trage den QiOne® 2 Pro 20 Nächte lang. Bist du danach nicht überzeugt, erstatten
             wir dir den vollen Kaufpreis. Ohne Wenn und Aber.
@@ -757,26 +774,69 @@ export function SchlafZellenSchutz({products}) {
           heightVhMobile={250}
         />
         <MechanismSection />
-        <WeiterCta nr={1} />
+        {/* <WeiterCta nr={1} /> ERSATZLOS GESTRICHEN — Christian, 20.09.2026:
+            der Knopf unter „3 Wirkebenen". Eindeutig benannt, keine Auslegung. */}
         <ScienceSection />
-        {/* lp-a-weiter-2 teilt die zweite Seitenhälfte. Von den vier schwach
-            gesehenen Weiter-Knöpfen (-2/-3/-4/-5) überlebt genau dieser, und
-            die Wahl ist geometrisch: live gemessen lagen die Knöpfe bei Falz
-            7,71 (w6) und 19,50 (Preisblock), dazwischen 11,8 Falzen. Fielen
-            ALLE vier, wäre genau die Durststrecke zurück, gegen die der Bau
-            vom 2026-09-06 angetreten ist (damals 18,0 Falzen mobil). w2 liegt
-            mit Falz 13,30 fast auf der Mitte und halbiert sie; w3 hätte sie
-            unwuchtig geteilt (7,9 gegen 3,9). Die Nummer bleibt die alte,
-            obwohl er jetzt der dritte ist: `data-section` ist der Schlüssel in
-            verhaltens-schicht/data/verhalten.db — eine Umnummerierung hängte
-            seine Historie an einen neuen Namen. */}
-        <WeiterCta nr={2} />
-        <div data-section="lp-a-google-reviews">
-          <LpGoogleReviews />
+        {/* <WeiterCta nr={2} /> ERSATZLOS GESTRICHEN — Christians zweiter Streich,
+            20.09.2026. Die Bildbelege lagen weder s01 noch s02 vor; die Wahl
+            zwischen nr=2 und nr=6 ist deshalb GEMESSEN statt geraten, und sie fiel
+            gegen die Vorab-Empfehlung aus:
+
+            verhaltens-schicht/data/verhalten.db, sektion_daily, gleiche Grundmenge
+            (url_path=/pages/schlaf-zellen-schutz, in_dom=1, pv=4031, 08.–20.09.):
+              lp-a-weiter-6   842 Sichtungen   211 Klicks   25,1 % je Sichtung
+              lp-a-weiter-2   128 Sichtungen    17 Klicks   13,3 % je Sichtung
+            nr=2 ist auf BEIDEN Achsen der schwächere Knopf, in jedem Segment.
+
+            Der Kommentar, der hier stand, begründete nr=2 geometrisch: er halbiere
+            die Strecke zwischen w6 (Falz 7,71) und Preisblock (19,50). Das galt,
+            SOLANGE nr=1 stand. nr=1 ist Christians erster Streich, und damit dreht
+            sich die Rechnung um: ohne nr=2 bleiben w6 und Preisblock mit 11,8
+            Falzen Abstand, ohne nr=6 bliebe ab dem Hero eine Strecke von rund 12,3
+            Falzen ohne Knopf. Die kleinere Wunde ist nr=2 — und sie kostet 17
+            Klicks statt 211. Die dort genannten 18,0 Falzen sind der Zustand VOR
+            dem Bau vom 06.09., eine andere Seite und keine Vorhersage für heute.
+
+            nr=6 behält seine Nummer: `data-section` ist der Schlüssel in
+            verhalten.db, eine Umnummerierung hängte seine Historie an einen neuen
+            Namen. Annahme, die Christian in einem Satz umstoßen kann — begründet
+            im RESULT des Segments. */}
+
+        {/* ── Bewertungsblock, 1:1 die Bauform der Startseite ───────────────────
+            ÜBERNOMMEN aus homepage/HomepageSections.jsx:43-49, nicht nachgebaut:
+            GoogleReviews mit `dataSection`-Prop (statt in ein nacktes <div>
+            gewickelt), danach die NormalSectionSize-Hälfte mit dem <h2> „Alle
+            Google Bewertungen" und dem ReputonWidget. Das h2 fehlte hier ganz —
+            einer von Christians drei Bildbefunden.
+
+            WARUM DER WRAPPER: gemessen am Live-DOM liefen die beiden Hälften in
+            ZWEI Breitensystemen (obere Kartenspur 1032, untere 1248 — 108 px
+            Überhang je Seite, Christians „untere Reihe schwebt außerhalb"). Die
+            drei LP-Sonderregeln in schlaf-zellen-schutz.css erfassten nur die
+            OBERE Hälfte: sie tönten und polsterten sie allein, daher auch der
+            „schmale weiße Kasten". Tönung, Polsterung und Breite sitzen jetzt EINMAL
+            auf `.lp-a-bewertungen` und gelten für beide Hälften — ein Block, eine
+            Breite, ein Abstand. Die Tönung --a-flaeche ist ein geplanter Farbakt
+            dieser Seite und liegt jetzt auf dem ganzen Block statt auf einer Hälfte.
+            Der Wrapper trägt bewusst KEIN `data-section`: das wäre ein neuer Anker
+            in verhalten.db ohne Historie und ohne Registry-Eintrag.
+
+            KEINE Bewertung ist verändert, ausgewählt oder weggelassen — 4,8 und die
+            440 Bewertungen kommen unverändert aus denselben zwei Widgets. */}
+        <div className="lp-a-bewertungen">
+          <LpGoogleReviews dataSection="lp-a-google-reviews" />
+          <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
+            <h2 className="text-[1.6rem] sm:text-4xl font-semibold text-center mb-6 mt-2">
+              Alle Google Bewertungen
+            </h2>
+            <ReputonWidget />
+          </div>
         </div>
-        <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
-          <ReputonWidget />
-        </div>
+        {/* Externe Stimmen — mit dem Vorbildblock übernommen (Startseite Z.102).
+            Derselbe geteilte Baustein, dieselbe Reihenfolge MAXIM → BRAINEFFECT →
+            Geldhelden. Erst dadurch haben Christians MAXIM-/Andi-Lew-Textwechsel
+            auf dieser Seite überhaupt einen Gegenstand. */}
+        <ExterneStimmen dataSection="lp-a-externe-stimmen" />
         <VideoSection />
         {/* Kachelreihe NACH den Video-Testimonials (Christian, 2026-09-19):
             „Beeindruckende Kundenerfahrungen / alle Google-Bewertungen / und

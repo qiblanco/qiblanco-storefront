@@ -90,8 +90,13 @@ export const CLAIMS = {
     produkt: ['qione', 'qibracelet', 'qihomeair'],
     kanal: ['homepage', 'lp'],
   },
+  // Wortlaut Christian, 20.09.2026. Das Feld wird nachgezogen, damit Register und
+  // Seite nicht auseinanderlaufen (eine Wahrheit, nicht zwei). Der STATUS bleibt
+  // unberührt: er wurde für die Nennung vergeben, und eine stärkere Aussage
+  // legitimiert sich nicht dadurch selbst, dass jemand das Register nachpflegt.
+  // Fundstelle und Suchraum-Grenze: Kopf von small-components/Maxim.jsx.
   'WM-maxim-australia-nennung': {
-    aussage: 'MAXIM Australia nennt das QiOne®',
+    aussage: 'MAXIM feiert den QiOne® 2 Pro',
     status: 'legitimiert',
     produkt: ['qione'],
     kanal: ['homepage', 'lp'],
