@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   /pages/schlaf-zellen-schutz — SEITENEIGENE Regeln von LP A.
+
+   schlaf-zellen-schutz.css ist das geteilte Token-Kit (.lp-a3) von sechs
+   Routen (partner, affiliate-partnerprogramm, podcasts, qione-2-pro, …) und
+   bleibt dort unangetastet. Was NUR diese eine Seite baut, steht hier — nach
+   demselben Muster wie partner.css und podcasts.css über dem Kit. Die Datei
+   wird allein von app/routes/pages.schlaf-zellen-schutz.jsx geladen, ihr
+   Diff erreicht damit keine zweite Seite (Gate 12, seitenlokal).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Hero: das 360-Grad-Video zwischen Dreizeiler und Absatz ─────────────── */
+/* Christian, 20.09.2026: in der Mobilansicht steht das Video direkt nach
+   „Innere Ruhe.“ und über dem Absatz „Das berichten viele …“. Der Textblock
+   ist dafür in Kopf und Schluss geteilt, das Video steht im Markup dazwischen
+   — die Mobil-Reihenfolge ist die Quelltext-Reihenfolge. Der Desktop behält
+   Text links (7fr) und Video rechts (5fr) aus dem Kit über benannte Bereiche;
+   Kopf und Schluss stehen dort ohne Zeilenabstand untereinander (row-gap 0),
+   und die beiden 1fr-Leerzeilen nehmen den Überschuss auf, falls das Video
+   einmal höher als der Text wird — der Text bleibt dann wie bisher als
+   Ganzes mittig. Modifier statt Basisklasse: .lp-a-hero__inner teilen sich
+   Partner.jsx und AffiliatePartnerprogramm.jsx, dort bleibt der Textblock
+   ungeteilt. Gemessen 20.09.2026: Desktop 1440/1024 Geometrie identisch zur
+   Basis, mobil 390/360 Video direkt unter der dritten Zeile. */
+.lp-a3 .lp-a-hero__inner--video-zwischen {
+  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-areas:
+    '. visual'
+    'kopf visual'
+    'schluss visual'
+    '. visual';
+  row-gap: 0;
+}
+.lp-a3 .lp-a-hero__copy--kopf { grid-area: kopf; }
+.lp-a3 .lp-a-hero__copy--schluss { grid-area: schluss; }
+.lp-a3 .lp-a-hero__inner--video-zwischen .lp-a-hero__visual { grid-area: visual; }
+
+/* ─── Mobile (<= 767px, derselbe Bruch wie im Kit): eine Spalte ──────────── */
+@media (max-width: 767px) {
+  /* Video direkt nach „Innere Ruhe.“ und über dem Absatz — die Bereiche
+     folgen der Quelltext-Reihenfolge Kopf, Video, Schluss. */
+  .lp-a3 .lp-a-hero__inner--video-zwischen {
+    grid-template-rows: auto;
+    grid-template-areas: 'kopf' 'visual' 'schluss';
+    row-gap: var(--a-s6);
+  }
+}
