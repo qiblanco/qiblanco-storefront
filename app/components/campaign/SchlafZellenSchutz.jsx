@@ -56,7 +56,8 @@ const QIONE_CTA = 'QiOne® 2 Pro ansehen';
  * (Struktur-Anker, aus dem Bestand) -> je Ebene ein Mechanismus-Block
  * (Zelle / Feld / Schlaf) mit Evidenz-Kachel + Anker-Link auf die Themen-LP ->
  * gemeinsamer Wissenschafts-Block -> Social Proof quer -> Garantie -> Pricing ->
- * QB-Signatur -> Final CTA.
+ * Final CTA (die QB-Signatur „Unsere Sichtweise“ ist seit dem 19.09.2026 auf
+ * Christians Anweisung ersatzlos gestrichen).
  *
  * DESIGN: eigenes Token-System (styles/schlaf-zellen-schutz.css, Scope .lp-a3),
  * abgeleitet aus dem 93/100-Rezept der Tiefschlaf-v3 (Design-Meister-Pfad:
