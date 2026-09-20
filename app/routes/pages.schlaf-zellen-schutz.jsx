@@ -14,8 +14,8 @@ import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
  * Erst-Kontakt / Perspektiven-Einstieg. Additiv, kein Ad zeigt (noch) darauf.
  *
  * Eigenes Token-Designsystem (styles/schlaf-zellen-schutz.css, Scope .lp-a3,
- * geteilt mit fuenf weiteren Routen) plus seiteneigene Regeln in
- * styles/schlaf-zellen-schutz-seite.css (nur diese Route laedt sie);
+ * geteilt mit fünf weiteren Routen) plus seiteneigene Regeln in
+ * styles/schlaf-zellen-schutz-seite.css (nur diese Route lädt sie);
  * NUTZT die vorhandene DreiThemenBand aus dem Bestand (~/components/redesign).
  *
  * Im Kopfbereich steht seit 2026-09-19 die 360-Grad-Drehung des QiOne(R) 2 Pro
@@ -30,7 +30,7 @@ import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
  * keine Doppelzählung).
  */
 export function links() {
-  // Kit zuerst, dann die seiteneigenen Regeln (Hero-Bereiche fuer das
+  // Kit zuerst, dann die seiteneigenen Regeln (Hero-Bereiche für das
   // 360-Grad-Video, Christian 20.09.2026) — Reihenfolge = Kaskade.
   return [
     {rel: 'stylesheet', href: lpAStyles},
