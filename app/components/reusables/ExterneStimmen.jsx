@@ -90,12 +90,24 @@ export function ExterneStimmen({dataSection}) {
           </div>
           <div className="ExterneStimmen__text">
             <p className="ExterneStimmen__quelle">MAXIM Australia</p>
+            {/* Wortlaut Christian, 20.09.2026 (Grossjob schlafseite-sieht-aus-wie-
+                die-startseite). Seine Schreibweise steht so, „must haves"
+                eingeschlossen. Der Block ist GETEILT: diese Karte rendert auch auf
+                der Startseite (HomepageSections.jsx) — gewollt, damit zwischen den
+                Seiten kein Text-Drift entsteht.
+                EINMAL GESAGT, nicht in den Auftrag hineingeschrieben: der Beleg zu
+                dieser Nennung ist am 2026-09-14 im Volltext gelesen worden (Kopf von
+                small-components/Maxim.jsx, Archivstand verlinkt). Er trägt eine
+                Nennung des „Qi One necklace" in einer Trendvorhersage; „feiert",
+                eine Top-10-Platzierung und „2 Pro" stehen dort nicht. Christians
+                Angabe wird umgesetzt, nicht geprüft — die Fundstelle bleibt
+                unverändert darunter stehen, damit niemand sie später sucht. */}
             <h3 className="ExterneStimmen__karteTitel">
-              MAXIM Australia nennt das QiOne®
+              MAXIM feiert den QiOne® 2 Pro
             </h3>
             <p className="ExterneStimmen__lede">
-              Andi Lew nennt das QiOne® in ihren Wellness-Trends für 2022 als ihre
-              Antwort auf elektromagnetische Strahlung.
+              In den Wellness-Trends liegt der QiOne® 2 Pro unter den Top 10 must
+              haves!
             </p>
           </div>
         </article>

@@ -102,10 +102,14 @@ body:has(.lp-a3) footer {
   max-width: none;
 }
 
-/* Hintergrund-Dramaturgie: geplante Akte (3 Farbwelten gesamt) */
+/* Hintergrund-Dramaturgie: geplante Akte (3 Farbwelten gesamt)
+   20.09.2026: die Toenung des Bewertungs-Akts sass auf
+   [data-section='lp-a-google-reviews'], also auf der OBEREN Haelfte allein --
+   das war Christians "schmaler weisser Kasten". Sie sitzt jetzt auf dem
+   umschliessenden .lp-a-bewertungen und traegt beide Haelften. */
 .lp-a3 .lp-a-mechs-section,
 .lp-a3 [data-section='lp-a-videos'],
-.lp-a3 [data-section='lp-a-google-reviews'] { background: var(--a-flaeche); }
+.lp-a3 .lp-a-bewertungen { background: var(--a-flaeche); }
 .lp-a3 .lp-a-signature,
 .lp-a3 .lp-vp-final-cta { background: var(--a-dunkel); }
 
@@ -460,11 +464,37 @@ body:has(.lp-a3) footer {
 .lp-a3 .Studien img { border-radius: var(--a-r1); box-shadow: var(--a-shadow-sm); }
 .lp-a3 .Studien .btn--secondary { font-size: var(--a-fs-base); border-radius: var(--a-r1); }
 
-/* ─── Google-Reviews (Fremd-Widget in Seiten-Tokens einfaerben) ───────────── */
-.lp-a3 [data-section='lp-a-google-reviews'] { padding: var(--a-s12) var(--a-s3); }
-.lp-a3 [data-section='lp-a-google-reviews'] .NormalSectionSize {
+/* ─── Bewertungsblock (Fremd-Widgets in Seiten-Tokens einfaerben) ─────────────
+   BAUFORM DER STARTSEITE, 20.09.2026. Vorher standen Polsterung und Breite auf
+   [data-section='lp-a-google-reviews'] und erfassten damit nur die OBERE Haelfte:
+   Kartenspur oben 1032, unten 1248 -- 108 px Ueberhang je Seite, gemessen am
+   Live-DOM. Fuer lp-a-reputon-reviews gab es keine einzige Regel, die Haelfte
+   fiel auf den globalen .NormalSectionSize (max-width 1350) zurueck.
+   Beides haengt jetzt EINMAL am gemeinsamen Eltern: eine Polsterung fuer den
+   ganzen Akt (statt zweimal 96 px mitten im Block) und EINE Breite fuer beide
+   Kartenspuren. Die .rounded-2xl-/img-Regeln darunter bleiben auf der oberen
+   Haelfte -- sie faerben deren Karten und haben mit der Breite nichts zu tun. */
+.lp-a3 .lp-a-bewertungen {
+  padding: var(--a-s12) var(--a-s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s6);
+}
+/* DIE ZWEITE WURZEL, erst an der Messung sichtbar geworden: die OBERE Haelfte ist
+   ein <section> (GoogleReviews rendert GoogleKundenerfahrungen NormalSectionSize),
+   die UNTERE ein <div>. Die Grundregel `.lp-a3 section` (Z.98) gibt deshalb NUR der
+   oberen Haelfte eine eigene Flaeche (--a-grund) und 96 px Eigenpolsterung -- eine
+   hellere Kachel im getoenten Akt, gemessen rgb(250,249,245) gegen rgb(244,240,233).
+   Genau das ist Christians "schmaler weisser Kasten"; die Breite allein war es nicht.
+   Innerhalb des Blocks tragen beide Haelften daher WEDER eigene Flaeche NOCH eigene
+   Polsterung -- Toenung und Takt kommen einmal vom Eltern, der Abstand dazwischen aus
+   dessen `gap`. Damit ist die Bauform beider Haelften identisch, wie auf der Startseite. */
+.lp-a3 .lp-a-bewertungen .NormalSectionSize {
   margin: 0 auto !important;
   max-width: var(--a-breite);
+  width: 100%;
+  padding: 0;
+  background: transparent;
 }
 .lp-a3 [data-section='lp-a-google-reviews'] .rounded-2xl {
   background: var(--a-grund);

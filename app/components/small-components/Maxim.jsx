@@ -48,7 +48,16 @@ export function Maxim({dataSection}){
                 sizes="(min-width: 1000px) 418px, 92vw"
                 src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="Doppelseite aus MAXIM Australia mit dem Beitrag „Wellbeing 2022“ von Andi Lew" />
             <div className="MaximText">
-                <h2>MAXIM Australia nennt das QiOne®</h2>
+                {/* Wortlaut Christian, 20.09.2026 — dieselbe Zeile wie die Kartenkopie
+                    in ExterneStimmen.jsx (der Kopf oben sagt: wer eine ändert, ändert
+                    beide). Diese Überschrift ist im einzigen Einsatzort UNSICHTBAR
+                    (externe-stimmen.css:204 .MaximText{display:none}), steht aber im
+                    ausgelieferten HTML und wird von den Textproben mitgelesen — ein
+                    unveränderter h2 hielte sie dauerhaft rot, und man suchte den Grund
+                    auf dem Bildschirm, wo er nicht zu sehen ist.
+                    Der Absatz darunter samt Archiv-Link bleibt UNANGETASTET: er ist der
+                    Beleg und verschwindet nicht, weil die Überschrift wechselt. */}
+                <h2>MAXIM feiert den QiOne® 2 Pro</h2>
                 <p>Die Wellness-Expertin und Autorin Andi Lew (@andi.lew) stellt in MAXIM Australia ihre Wellness-Trends für 2022 vor. Unter dem Punkt „EMF“ nennt sie das QiOne® von Qi Blanco als ihre Antwort auf elektromagnetische Strahlung.</p>
                 <p className="MaximQuelle">Quelle: <a href="https://web.archive.org/web/20221029050232/https://www.maxim.com.au/archives/17224" rel="nofollow noopener" target="_blank">MAXIM Australia, „Wellbeing 2022“ von Andi Lew, Ausgabe März 2022</a></p>
             </div>
