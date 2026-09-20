@@ -4,6 +4,7 @@ import absichtStyles from '~/styles/absicht.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {teilbildTags} from '~/lib/seiten-seo';
 import {VIDEOS} from '~/data/hypothesen-quellen';
+import {isoMitZone} from '~/lib/datum';
 import {ABSENDER} from '~/data/absicht';
 
 /**
@@ -132,13 +133,25 @@ export const meta = () => [
  * YouTube-Beschreibung: was die Maschine zitiert, soll derselbe Satz sein, den
  * ein Mensch auf der Seite liest. Maskierung von `<` wie im Hausmuster
  * (faq-schema.js), damit ein „</script>" im Text den Tag nicht schließt.
+ *
+ * `uploadDate` TRÄGT UHRZEIT UND ZONE (Job 20260920-REPAIR-hypothesen-
+ * uploaddate-ohne-zone, Nachzug zu PR #432): Google verlangt für dieses Feld
+ * ISO 8601 und legt einen bloßen Kalendertag sonst nach dem Standort des
+ * Crawlers aus. Die drei Werte hier waren der letzte Rest dieser Klasse im
+ * ganzen Laden — sie konnten am 13.09. nicht mit, weil eine fremde
+ * Pixel-Soll-Sperre die Route hielt (weg seit PR #522). `veroeffentlicht` in
+ * hypothesen-quellen.js bleibt bewusst der Kalendertag: YouTube nennt in
+ * unserer Quelle keine Uhrzeit, und wir erfinden keine. isoMitZone() setzt
+ * den Anfang dieses Tages in der Hauszone (Europe/Berlin), Offset je Datum
+ * gerechnet (2013-09-06 ist CEST +02:00, 2016-11-21 CET +01:00) — dieselbe
+ * Funktion wie ig-video-schema.js und standFuer(), kein zweiter Zonen-Ort.
  */
 function videoJsonLd() {
   const graph = VIDEOS.map((v) => ({
     '@type': 'VideoObject',
     name: v.titel,
     description: v.zeigt,
-    uploadDate: v.veroeffentlicht,
+    uploadDate: isoMitZone(v.veroeffentlicht),
     duration: v.dauerIso,
     inLanguage: v.sprache,
     thumbnailUrl: [`https://i.ytimg.com/vi/${v.videoId}/maxresdefault.jpg`],
