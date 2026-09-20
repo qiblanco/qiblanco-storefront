@@ -475,11 +475,11 @@ function VideoSection() {
 export function GuaranteeSection() {
   const items = [
     {
-      title: '20 Nächte, dein Alltag',
+      title: 'Teste ihn 20 Tage lang',
       body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
     },
     {
-      title: 'In Raten, wenn du willst',
+      title: 'Zahle jetzt bequem in 0% Raten',
       body: 'Über Klarna oder PayPal in bequemen Monatsraten — 0 % Finanzierung. Du entscheidest, wie du zahlst.',
     },
     {
