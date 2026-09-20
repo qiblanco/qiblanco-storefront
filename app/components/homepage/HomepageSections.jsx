@@ -6,6 +6,7 @@ import {Richtext} from '~/components/reusables/Richtext';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {Studien} from '~/components/reusables/Studien';
+import {PeerReviewStudies} from '~/components/reusables/PeerReviewStudies';
 import {FeaturedProduct} from '~/components/index-components/FeaturedProduct';
 import {UpsellLineUp} from '~/components/UpsellLineUp';
 import {ExterneStimmen} from '~/components/reusables/ExterneStimmen';
@@ -195,29 +196,4 @@ export function HomepageSections({overrides = {}}) {
       <UpsellLineUp dataSection="upsell-lineup" />
     </div>
   );
-}
-
-function PeerReviewStudies(){
-  return (
-    <div className='PeerReviewStudies NormalSectionSize text-center' data-section="peer-review-studien">
-      <h2 className='text-center'>
-        6 Jahre Forschung
-      </h2>
-      <p><b>Ergebnisse unserer Peer-Review kontrollierten Zellstudien</b></p>
-      <div className="PeerReviewResults">
-        <div className="PeerReviewResult">
-          <h3>75,0 % Reduktion</h3>
-          <p>der Zellbelastung durch oxidativen Stress.</p>
-        </div>
-        <div className="PeerReviewResult">
-          <h3>10-fache Verbesserung</h3>
-          <p>der Zell-Barrierefunktion (TEER-Wert).</p>
-        </div>
-        <div className="PeerReviewResult">
-          <h3>87,1 % geringere</h3>
-          <p>Zellschädigung und -zerstörung durch<br/>elektromagnetische Strahlung.</p>
-        </div>
-      </div>
-    </div>
-  )
 }
