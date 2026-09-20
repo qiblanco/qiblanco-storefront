@@ -56,7 +56,8 @@ const QIONE_CTA = 'QiOne® 2 Pro ansehen';
  * (Struktur-Anker, aus dem Bestand) -> je Ebene ein Mechanismus-Block
  * (Zelle / Feld / Schlaf) mit Evidenz-Kachel + Anker-Link auf die Themen-LP ->
  * gemeinsamer Wissenschafts-Block -> Social Proof quer -> Garantie -> Pricing ->
- * QB-Signatur -> Final CTA.
+ * Final CTA (die QB-Signatur „Unsere Sichtweise“ ist seit dem 19.09.2026 auf
+ * Christians Anweisung ersatzlos gestrichen).
  *
  * DESIGN: eigenes Token-System (styles/schlaf-zellen-schutz.css, Scope .lp-a3),
  * abgeleitet aus dem 93/100-Rezept der Tiefschlaf-v3 (Design-Meister-Pfad:
@@ -599,23 +600,6 @@ function PricingSection() {
   );
 }
 
-/* ───────── QB-Signatur ───────── */
-function SignatureSection() {
-  return (
-    <section className="lp-a-signature" data-section="lp-a-signatur">
-      <span className="eyebrow">Unsere Sichtweise</span>
-      <h2>Wir verkaufen dir keinen Schmuck.</h2>
-      <p className="lp-a-signature__body">
-        Der QiOne<sup>®</sup> ist schön — aber das ist nicht der Punkt. Der eigentliche Wert
-        ist unsichtbar: kohärentes Wasser in deinem Körper, Zellen, die besser geschützt
-        sind, ein Nervensystem, das abends herunterfahren darf. Der Schmuck ist nur das
-        Vehikel. Was du wirklich mitnimmst, ist die Ruhe auf allen drei Ebenen.
-      </p>
-      <p className="lp-a-signature__sign">— Dein Qi Blanco® Team</p>
-    </section>
-  );
-}
-
 /* ───────── Final CTA ───────── */
 function FinalCTA() {
   const {preisLabelVon, compareLabelVon} = useLpPreis();
@@ -783,7 +767,6 @@ export function SchlafZellenSchutz({products}) {
         <VideoSection />
         <GuaranteeSection />
         <PricingSection />
-        <SignatureSection />
         <FinalCTA />
       </div>
     </LiveDataCtx.Provider>
