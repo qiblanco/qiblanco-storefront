@@ -45,3 +45,120 @@
     row-gap: var(--a-s6);
   }
 }
+
+/* ─── Kopfzeilen-Gimmicks: drei kleine Bewegtbilder vor den drei Zeilen ──── */
+/* Christian, 20.09.2026: „Tiefer schlafen. / Starker Fokus. / Innere Ruhe.
+   Gimmicks entwickeln und hochladen." Je Zeile ein ruhiges Bewegtbild, links
+   vor dem Text, in der Höhe der Zeile. Das Markup steht im Baustein
+   HeroGimmick (SchlafZellenSchutz.jsx), dort auch die Technikwahl.
+
+   KEIN ZUSÄTZLICHER PLATZ NACH UNTEN: das Bild ist 1.15em hoch, die Zeile
+   trägt bei --a-fs-lg (20px) und Zeilenhöhe 1.65 ein Zeilenfeld von 33px. Die
+   Zeilenhöhe entscheidet, nicht das Bild — gemessen 20.09.2026 gegen den
+   Live-Stand eb7f7b2, Desktop 1440 und mobil 390: Hero-Höhe, Oberkante und
+   Höhe jeder der drei Zeilen, Oberkante und Höhe des Videos und Oberkante des
+   Schlussblocks je +0 px. Deshalb `align-items: center` und KEIN margin.
+   NICHT als unverändert gemessen ist die Seitenhöhe unterhalb des Hero: sie
+   schwankt zwischen zwei Läufen DESSELBEN Standes um mehrere hundert Pixel,
+   weil die Fremd-Widgets (Bewertungen, Salesbot) unterschiedlich viel
+   nachladen — dort ist kein Urteil möglich, und deshalb steht hier keins.
+
+   KEIN SPRINGEN BEIM LADEN: das SVG steht im ausgelieferten HTML und trägt
+   seine Größe als CSS-Länge — es gibt keine Datei, auf die der Kasten warten
+   müsste, und damit keinen Zustand vor dem ersten Bild.
+
+   RUHIGER TAKT: alle drei Läufe dauern 5,5 bis 7 s mit `ease-in-out`, keine
+   Stufen, keine Deckkraft unter 0. Sie begleiten die Zeilen; wer liest, soll
+   nicht auf sie schauen müssen. */
+.lp-a3 .lp-a-hero__dreizeiler li {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s1);
+}
+.lp-a3 .lp-a-hero__gimmick {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;           /* schrumpft nie, wächst nie — die Zeile bleibt in Ruhe */
+  overflow: visible;
+}
+
+/* Tiefer schlafen — die Welle verliert ihren Ausschlag und legt sich auf die
+   Ruhelinie; danach eine gehaltene Ruhephase, dann von vorn. */
+.lp-a3 .lp-a-hero__gimmick-linie { opacity: 0.32; }
+.lp-a3 .lp-a-hero__gimmick-welle {
+  transform-box: view-box;
+  transform-origin: 12px 11px;
+  animation: lp-a-gimmick-absinken 7s ease-in-out infinite;
+}
+@keyframes lp-a-gimmick-absinken {
+  0%   { transform: translateY(0) scaleY(1); }
+  50%  { transform: translateY(6px) scaleY(0.08); }
+  72%  { transform: translateY(6px) scaleY(0.08); }
+  100% { transform: translateY(0) scaleY(1); }
+}
+
+/* Starker Fokus — die vier Ecken ziehen sich um den Kern zusammen, der Kern
+   wird dabei schärfer. */
+.lp-a3 .lp-a-hero__gimmick-rahmen {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  animation: lp-a-gimmick-sammeln 5.5s ease-in-out infinite;
+}
+.lp-a3 .lp-a-hero__gimmick--fokus .lp-a-hero__gimmick-kern {
+  animation: lp-a-gimmick-schaerfe 5.5s ease-in-out infinite;
+}
+@keyframes lp-a-gimmick-sammeln {
+  0%,
+  100% { transform: scale(1.16); }
+  50%  { transform: scale(0.84); }
+}
+@keyframes lp-a-gimmick-schaerfe {
+  0%,
+  100% { opacity: 0.45; }
+  50%  { opacity: 1; }
+}
+
+/* Innere Ruhe — zwei Ringe laufen im halben Takt versetzt nach außen, die
+   Mitte bleibt stehen. Der Versatz macht den Puls gleichmäßig statt schubweise. */
+.lp-a3 .lp-a-hero__gimmick-ring1,
+.lp-a3 .lp-a-hero__gimmick-ring2 {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  animation: lp-a-gimmick-puls 6s ease-out infinite;
+}
+.lp-a3 .lp-a-hero__gimmick-ring2 { animation-delay: -3s; }
+@keyframes lp-a-gimmick-puls {
+  0%   { transform: scale(0.18); opacity: 0; }
+  18%  { opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+/* STANDBILD statt Bewegung, wenn im System weniger Bewegung eingestellt ist.
+   Drei laufende Bilder nebeneinander sind für manche Menschen eine Belastung,
+   und die Einstellung existiert genau dafür.
+
+   Das Standbild ist AUSGESTALTET und nicht bloß der zufällige Nullzustand der
+   Keyframes: der Puls stünde sonst bei `opacity: 0` und die Zeile hätte gar
+   kein Bild mehr. Jedes der drei Bilder zeigt hier die Aussage seiner Zeile in
+   einem Moment — die abgesunkene Welle, den gefassten Rahmen, die zwei Ringe
+   um die ruhende Mitte.
+
+   `animation: none` ZUERST: eine laufende Animation schlägt jede normale
+   Deklaration derselben Eigenschaft (FEHLER-DB F-2312). Erst wenn der Lauf weg
+   ist, greifen die Werte darunter. */
+@media (prefers-reduced-motion: reduce) {
+  .lp-a3 .lp-a-hero__gimmick-welle,
+  .lp-a3 .lp-a-hero__gimmick-rahmen,
+  .lp-a3 .lp-a-hero__gimmick--fokus .lp-a-hero__gimmick-kern,
+  .lp-a3 .lp-a-hero__gimmick-ring1,
+  .lp-a3 .lp-a-hero__gimmick-ring2 {
+    animation: none;
+  }
+  .lp-a3 .lp-a-hero__gimmick-welle {
+    transform: translateY(3px) scaleY(0.45);
+  }
+  .lp-a3 .lp-a-hero__gimmick-rahmen { transform: scale(0.96); }
+  .lp-a3 .lp-a-hero__gimmick--fokus .lp-a-hero__gimmick-kern { opacity: 1; }
+  .lp-a3 .lp-a-hero__gimmick-ring1 { transform: scale(0.52); opacity: 0.55; }
+  .lp-a3 .lp-a-hero__gimmick-ring2 { transform: scale(1); opacity: 0.28; }
+}
