@@ -599,23 +599,6 @@ function PricingSection() {
   );
 }
 
-/* ───────── QB-Signatur ───────── */
-function SignatureSection() {
-  return (
-    <section className="lp-a-signature" data-section="lp-a-signatur">
-      <span className="eyebrow">Unsere Sichtweise</span>
-      <h2>Wir verkaufen dir keinen Schmuck.</h2>
-      <p className="lp-a-signature__body">
-        Der QiOne<sup>®</sup> ist schön — aber das ist nicht der Punkt. Der eigentliche Wert
-        ist unsichtbar: kohärentes Wasser in deinem Körper, Zellen, die besser geschützt
-        sind, ein Nervensystem, das abends herunterfahren darf. Der Schmuck ist nur das
-        Vehikel. Was du wirklich mitnimmst, ist die Ruhe auf allen drei Ebenen.
-      </p>
-      <p className="lp-a-signature__sign">— Dein Qi Blanco® Team</p>
-    </section>
-  );
-}
-
 /* ───────── Final CTA ───────── */
 function FinalCTA() {
   const {preisLabelVon, compareLabelVon} = useLpPreis();
@@ -783,7 +766,6 @@ export function SchlafZellenSchutz({products}) {
         <VideoSection />
         <GuaranteeSection />
         <PricingSection />
-        <SignatureSection />
         <FinalCTA />
       </div>
     </LiveDataCtx.Provider>
