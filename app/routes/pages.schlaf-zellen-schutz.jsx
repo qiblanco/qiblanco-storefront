@@ -3,6 +3,7 @@ import {SchlafZellenSchutz} from '~/components/campaign/SchlafZellenSchutz';
 import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
 import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
+import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
 
 /**
  * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
@@ -12,7 +13,9 @@ import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept): breiter
  * Erst-Kontakt / Perspektiven-Einstieg. Additiv, kein Ad zeigt (noch) darauf.
  *
- * Eigenes Token-Designsystem (styles/schlaf-zellen-schutz.css, Scope .lp-a3);
+ * Eigenes Token-Designsystem (styles/schlaf-zellen-schutz.css, Scope .lp-a3,
+ * geteilt mit fünf weiteren Routen) plus seiteneigene Regeln in
+ * styles/schlaf-zellen-schutz-seite.css (nur diese Route lädt sie);
  * NUTZT die vorhandene DreiThemenBand aus dem Bestand (~/components/redesign).
  *
  * Im Kopfbereich steht seit 2026-09-19 die 360-Grad-Drehung des QiOne(R) 2 Pro
@@ -27,7 +30,12 @@ import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
  * keine Doppelzählung).
  */
 export function links() {
-  return [{rel: 'stylesheet', href: lpAStyles}];
+  // Kit zuerst, dann die seiteneigenen Regeln (Hero-Bereiche für das
+  // 360-Grad-Video, Christian 20.09.2026) — Reihenfolge = Kaskade.
+  return [
+    {rel: 'stylesheet', href: lpAStyles},
+    {rel: 'stylesheet', href: lpASeiteStyles},
+  ];
 }
 
 /**

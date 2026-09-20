@@ -177,8 +177,20 @@ function Hero() {
       aria-labelledby="lp-a-hero-title"
       data-section="lp-a-hero"
     >
-      <div className="lp-a-hero__inner">
-        <div className="lp-a-hero__copy">
+      {/* Christian, 20.09.2026: in der Mobilansicht steht das 360-Grad-Video
+          direkt nach „Innere Ruhe.“ und über dem Absatz „Das berichten viele …“.
+          Der Textblock ist deshalb in KOPF (Eyebrow, Titel, Dreizeiler) und
+          SCHLUSS (Absätze, Kaufknopf, Preis, Merkmale) geteilt, das Video steht
+          im Markup dazwischen — so misst es die Einsteller-Probe an der
+          Reihenfolge des ausgelieferten HTML. Eine reine Sortierregel (order)
+          reichte nicht: das Video war Geschwister des GANZEN Textblocks, nicht
+          der drei Zeilen, und die Stylesheets sind extern. Der Desktop behält
+          seine Anordnung (Text links, Video rechts) über benannte Rasterbereiche
+          des Modifiers `--video-zwischen` in schlaf-zellen-schutz-seite.css; die
+          beiden Textteile stehen dort ohne Zeilenabstand untereinander. Bewacht
+          von worker-pool/pruefungen/probe_video_mobil_nach_innere_ruhe__20260920.py. */}
+      <div className="lp-a-hero__inner lp-a-hero__inner--video-zwischen">
+        <div className="lp-a-hero__copy lp-a-hero__copy--kopf">
           <span className="lp-a-hero__eyebrow">
             Tragbares Hightech mit messbaren Effekten auf Zellebene
           </span>
@@ -190,6 +202,19 @@ function Hero() {
               <li key={z}>{z}</li>
             ))}
           </ul>
+        </div>
+        <figure className="lp-a-hero__visual">
+          {/* Seit 2026-09-19 die 360-Grad-Drehung statt des Standbilds
+              (Christian). Poster, Groesse und Ladeverhalten hängen am
+              Baustein; der Radius kommt weiter aus dem Bild-Token der Seite
+              (--a-r1), damit im Kopfbereich nicht zwei Formensprachen
+              nebeneinander stehen. */}
+          <Produkt360Video alt="QiOne® 2 Pro in der 360-Grad-Ansicht" />
+          <figcaption>
+            QiOne<sup>®</sup>&nbsp;2 Pro
+          </figcaption>
+        </figure>
+        <div className="lp-a-hero__copy lp-a-hero__copy--schluss">
           <p className="lp-a-hero__subline">
             Das berichten viele von unseren 14.000 aktiven Nutzern. Der QiOne<sup>®</sup>
             &nbsp;2 Pro strukturiert dort Wasser, wo es darauf ankommt. In deinen Zellen.
@@ -226,17 +251,6 @@ function Hero() {
             ))}
           </ul>
         </div>
-        <figure className="lp-a-hero__visual">
-          {/* Seit 2026-09-19 die 360-Grad-Drehung statt des Standbilds
-              (Christian). Poster, Groesse und Ladeverhalten hängen am
-              Baustein; der Radius kommt weiter aus dem Bild-Token der Seite
-              (--a-r1), damit im Kopfbereich nicht zwei Formensprachen
-              nebeneinander stehen. */}
-          <Produkt360Video alt="QiOne® 2 Pro in der 360-Grad-Ansicht" />
-          <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro
-          </figcaption>
-        </figure>
       </div>
     </section>
   );
