@@ -159,8 +159,12 @@ function Hero() {
   // kopfbereich-nach-christians-vorlage): Reihenfolge, Satzbau und Stil sind
   // seine, korrigiert wurde allein die Rechtschreibung. Bewacht von
   // worker-pool/pruefungen/probe_schlaf_zellen_schutz_neuer_kopf__20260919.py.
+  // Zweite Fassung des Kopfabsatzes, Christian 20.09.2026 (Job 20260920-kopfabsatz-
+  // zweite-fassung-pure-physik): Studien-Satz, vierte Zeile und die Schlusszeile
+  // sind seine, Zeichensetzung eingeschlossen. Bewacht von
+  // worker-pool/pruefungen/probe_kopfabsatz_zweite_fassung__20260920.py.
   const dreizeiler = ['Tiefer schlafen.', 'Starker Fokus.', 'Innere Ruhe.'];
-  const vierzeiler = ['Kein Akku.', 'Kein Strom.', 'Kein Abo.', 'Pure Leistung.'];
+  const vierzeiler = ['Kein Akku.', 'Kein Strom.', 'Kein Abo.', 'Pure Physik.'];
   const trust = [
     '14.000+ aktive Nutzer',
     '100\u00a0% Geld-zurück-Garantie',
@@ -189,8 +193,8 @@ function Hero() {
           <p className="lp-a-hero__subline">
             Das berichten viele von unseren 14.000 aktiven Nutzern. Der QiOne<sup>®</sup>
             &nbsp;2 Pro strukturiert dort Wasser, wo es darauf ankommt. In deinen Zellen.
-            Untersucht in 5 publizierten Studien ist es das bestuntersuchte Energie-Produkt
-            auf der Welt.
+            Fünf publizierte Studien – so gut untersucht ist in diesem Bereich sonst kein
+            Produkt.
           </p>
           {/* Vier Produkt-Tatsachen als ruhiger Fliesstext (Bestandsklasse, kein
               CSS-Diff: schlaf-zellen-schutz.css ist die geteilte Token-Quelle von
@@ -204,6 +208,7 @@ function Hero() {
               </span>
             ))}
           </p>
+          <p className="lp-a-hero__subline">Erfahre es jetzt selbst.</p>
           <div className="lp-a-hero__cta-row">
             <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
               {QIONE_CTA}
