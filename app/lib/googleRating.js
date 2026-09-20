@@ -168,14 +168,14 @@ export function normalisiereReputonAntwort(data) {
     )
     .map((rv) => ({
       id: String(rv.hashId || rv.id || ''),
-      // STABILE GOOGLE-KENNUNG, getrennt von `id` gefuehrt. `id` ist die
+      // STABILE GOOGLE-KENNUNG, getrennt von `id` geführt. `id` ist die
       // Reputon-`hashId` und WANDERT: gemessen 2026-09-20 sprang sie bei
-      // voellig unveraendertem Text (1954 Zeichen) von -582554336 auf
-      // -1130994804 — sie haengt nicht nur am Text, sondern auch an der
+      // völlig unverändertem Text (1954 Zeichen) von -582554336 auf
+      // -1130994804 — sie hängt nicht nur am Text, sondern auch an der
       // mitlaufenden Relativzeit („vor 9 Monaten" -> „vor 10 Monaten").
-      // Die Google-`id` blieb dabei gleich und ist zusaetzlich
-      // shopuebergreifend stabil (DACH/US, gemessen 2026-09-18).
-      // Ein Ausschluss darf deshalb NUR an dieser Kennung haengen.
+      // Die Google-`id` blieb dabei gleich und ist zusätzlich
+      // shopübergreifend stabil (DACH/US, gemessen 2026-09-18).
+      // Ein Ausschluss darf deshalb NUR an dieser Kennung hängen.
       quellId: String(rv.id || ''),
       name: rv.authorName || 'Google-Nutzer',
       foto: rv.profilePhotoUrl || '',
