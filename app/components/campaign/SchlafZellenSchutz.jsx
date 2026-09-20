@@ -145,6 +145,107 @@ const LEITER_PAYPAL = [110, 160];
 const SIZES_HERO =
   '(max-width: 767px) calc(100vw - 48px), min(40vw, 423px)';
 
+/* ───────── Kopfzeilen-Gimmicks: drei kleine Bewegtbilder ─────────
+   Christian, 20.09.2026: „Tiefer schlafen. / Starker Fokus. / Innere Ruhe.
+   Gimmicks entwickeln und hochladen." Jede der drei Zeilen bekommt links vor
+   dem Text ein eigenes, ruhiges Bewegtbild in Zeilenhöhe.
+
+   WARUM INLINE-SVG UND NICHT GIF/VIDEO/LOTTIE — die Auflage war „so leicht wie
+   möglich", und die teuerste Eigenschaft über dem ersten Bildschirm ist nicht
+   das Gewicht, sondern die ZAHL DER LADEVORGÄNGE. Drei Bilddateien wären drei
+   zusätzliche Anfragen genau dort, wo der Kunde als Erstes hinsieht; inline im
+   SSR-HTML sind es NULL. GEMESSEN am 20.09.2026, Produktionsbau gegen
+   Produktionsbau — dieselbe Seite einmal mit und einmal ohne die drei Bilder:
+     HTML     393.105 -> 394.516 B   (+1.411 B brutto, +183 B gzip)
+     CSS-Datei    493 ->   2.343 B   (+1.850 B brutto, +437 B gzip)
+     zusammen                        +3.261 B brutto, +620 B gzip
+     zusätzliche Anfragen           0
+   Das Gewichtsbudget ist die 360-Grad-Drehung im selben Kopfbereich: 819.015 B
+   (Content-Length live am CDN gemessen, 20.09.2026). Alle drei Bilder zusammen
+   wiegen davon 0,4 % brutto und 0,08 % übertragen — Faktor 251 bzw. 1321.
+   Ein GIF scheidet zusätzlich fachlich aus: es lässt sich bei
+   `prefers-reduced-motion` nicht anhalten (das Standbild wäre nur über ein
+   zweites Asset zu haben), es skaliert nicht mit der Schriftgröße mit, und es
+   kann `currentColor` nicht tragen — jede Farbanpassung wäre eine neue Datei.
+   Lottie schied aus, weil seine Laufzeitbibliothek allein ein Vielfaches aller
+   drei Bewegtbilder wiegt.
+
+   FARBE: ausschließlich `currentColor`. Die drei Zeilen tragen die Gold-Tinte
+   (`--a-akzent-tinte`) aus dem Kit — die Bewegtbilder erben sie und bringen
+   damit KEINEN zweiten Goldton in die Seite (Rubrik-Hue-Bin bleibt 1).
+
+   KEINE AUSSAGE ÜBER WIRKUNG: die drei Bilder zeigen den Zustand, den die Zeile
+   nennt (absinken, sammeln, gleichmäßig schlagen) — keinen Körper, kein Organ,
+   keinen Vorher-Nachher-Verlauf, keine Messkurve. Sie behaupten nichts, was das
+   Produkt täte.
+
+   Die Bewegung selbst steht in `app/styles/schlaf-zellen-schutz-seite.css`
+   (Block „Kopfzeilen-Gimmicks") — dort auch das Standbild für
+   `prefers-reduced-motion`. Bewacht von
+   worker-pool/pruefungen/probe_drei_gimmicks_dreizeiler__20260920.py. */
+function HeroGimmick({art}) {
+  return (
+    <svg
+      className={`lp-a-hero__gimmick lp-a-hero__gimmick--${art}`}
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {art === 'schlaf' && (
+        /* Absinken zur Ruhe: eine Welle verliert ihren Ausschlag und legt
+           sich auf die Ruhelinie. */
+        <>
+          <path className="lp-a-hero__gimmick-linie" d="M3 17h18" />
+          <path className="lp-a-hero__gimmick-welle" d="M3 11q3-6 6 0t6 0t6 0" />
+        </>
+      )}
+      {art === 'fokus' && (
+        /* Sammlung und Ausrichtung: vier Ecken ziehen sich um einen Kern
+           zusammen, der Kern wird dabei schärfer. */
+        <>
+          <g className="lp-a-hero__gimmick-rahmen">
+            <path d="M5 9V5h4" />
+            <path d="M15 5h4v4" />
+            <path d="M19 15v4h-4" />
+            <path d="M9 19H5v-4" />
+          </g>
+          <circle
+            className="lp-a-hero__gimmick-kern"
+            cx="12"
+            cy="12"
+            r="1.7"
+            fill="currentColor"
+            stroke="none"
+          />
+        </>
+      )}
+      {art === 'ruhe' && (
+        /* Ausgleich und gleichmäßiger Puls: zwei Ringe laufen im halben
+           Takt versetzt nach außen, die Mitte bleibt stehen. */
+        <>
+          <circle className="lp-a-hero__gimmick-ring1" cx="12" cy="12" r="9" />
+          <circle className="lp-a-hero__gimmick-ring2" cx="12" cy="12" r="9" />
+          <circle
+            className="lp-a-hero__gimmick-kern"
+            cx="12"
+            cy="12"
+            r="1.7"
+            fill="currentColor"
+            stroke="none"
+          />
+        </>
+      )}
+    </svg>
+  );
+}
+
 /* ───────── Hero (Drei-Ebenen-Versprechen) ───────── */
 function Hero() {
   const {preisWert, preisLabelVon, compareLabelVon} = useLpPreis();
@@ -176,6 +277,11 @@ function Hero() {
   // Beide Kopf-Proben sind im selben Commit nachgezogen (der Vierzeiler wandert dort
   // von NEU/BLEIBT nach ALT, damit ein Merge-Rückfall ein Befund bleibt).
   const dreizeiler = ['Tiefer schlafen.', 'Starker Fokus.', 'Innere Ruhe.'];
+  // Index = Zeile: jede der drei Zeilen trägt ihr eigenes Bewegtbild
+  // (Christian, 20.09.2026). Beschreibung und Begründung am Baustein
+  // HeroGimmick weiter oben; Wortlaut und Reihenfolge der Zeilen bleiben
+  // davon unberührt.
+  const gimmickArt = ['schlaf', 'fokus', 'ruhe'];
   const trust = [
     '14.000+ aktive Nutzer',
     '100\u00a0% Geld-zurück-Garantie',
@@ -209,8 +315,11 @@ function Hero() {
             Ruhe auf Zellebene
           </h1>
           <ul className="lp-a-hero__dreizeiler" aria-hidden="false">
-            {dreizeiler.map((z) => (
-              <li key={z}>{z}</li>
+            {dreizeiler.map((z, i) => (
+              <li key={z}>
+                <HeroGimmick art={gimmickArt[i]} />
+                <span>{z}</span>
+              </li>
             ))}
           </ul>
         </div>
