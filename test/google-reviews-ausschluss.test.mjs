@@ -57,9 +57,17 @@ try {
 function feedMit(reviews) {
   return {business: [{rating: 4.8, reviewsNumber: 440, reviews}]};
 }
-function roh(id, text, zeitText = 'vor 1 Monat') {
+/**
+ * Baut eine Roh-Rezension. ERSTES ARGUMENT IST DIE GOOGLE-`id` — der stabile
+ * Schlüssel, an dem der Ausschluss hängt. Die `hashId` wird bewusst
+ * ABWEICHEND gesetzt (Präfix `wandert-`): sie ist im echten Feed nicht
+ * stabil (gemessen 2026-09-20: Sprung bei unverändertem Text), und kein
+ * Testfall darf versehentlich über sie greifen und dadurch grün werden.
+ */
+function roh(googleId, text, zeitText = 'vor 1 Monat', hashId = null) {
   return {
-    hashId: id,
+    id: googleId,
+    hashId: hashId === null ? `wandert-${googleId}-${zeitText}` : hashId,
     authorName: 'Test',
     rating: 5,
     text,
@@ -75,34 +83,44 @@ test('C0 — die Ausschlussliste hat überhaupt einen Gegenstand', () => {
     'MESSAUSFALL: leere Ausschlussliste — dieser Test kann nichts belegen.',
   );
   for (const e of GOOGLE_REVIEWS_AUSSCHLUSS) {
-    assert.match(e.id, /^-?\d+$/, `id unplausibel: ${e.id}`);
-    assert.ok(e.grund && e.grund.length > 40, `Grund zu dünn bei ${e.id}`);
+    // Der Schlüssel MUSS die Google-id sein, nicht die wandernde hashId.
+    // Eine rein numerische Kennung ist genau die alte, verfallene Form —
+    // sie hier durchzulassen hiesse, den Fehler wieder einzubauen.
+    assert.ok(e.googleId && e.googleId.length > 20, `googleId fehlt/zu kurz: ${e.googleId}`);
+    assert.ok(
+      !/^-?\d+$/.test(e.googleId),
+      `googleId sieht aus wie eine hashId (${e.googleId}) — die wandert und taugt nicht als Schlüssel`,
+    );
+    assert.ok(e.grund && e.grund.length > 40, `Grund zu dünn bei ${e.googleId}`);
     assert.match(e.belegtAm, /^\d{4}-\d{2}-\d{2}$/);
   }
-  assert.equal(AUSSCHLUSS_IDS.size, GOOGLE_REVIEWS_AUSSCHLUSS.length, 'doppelte id');
+  assert.equal(AUSSCHLUSS_IDS.size, GOOGLE_REVIEWS_AUSSCHLUSS.length, 'doppelte googleId');
 });
 
 test('C1 (ROT-ARM) — eine ausgeschlossene Rezension verlässt den Chokepoint nicht', () => {
   const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
   const out = normalisiereReputonAntwort(
     feedMit([
-      roh(eintrag.id, 'Ausgeschlossener Text, lang genug zum Durchkommen.'),
+      roh(eintrag.googleId, 'Ausgeschlossener Text, lang genug zum Durchkommen.'),
       roh('99999901', 'Eine echte, begeisterte Rezension — die bleibt.'),
     ]),
   );
-  const ids = out.reviews.map((r) => r.id);
-  assert.ok(!ids.includes(eintrag.id), `LECK: ${eintrag.id} wurde ausgeliefert`);
-  assert.ok(ids.includes('99999901'), 'der Filter hat zu viel weggenommen');
-  assert.equal(out.ausschlussTreffer[eintrag.id], 1);
+  const quellIds = out.reviews.map((r) => r.quellId);
+  assert.ok(
+    !quellIds.includes(eintrag.googleId),
+    `LECK: ${eintrag.googleId} wurde ausgeliefert`,
+  );
+  assert.ok(quellIds.includes('99999901'), 'der Filter hat zu viel weggenommen');
+  assert.equal(out.ausschlussTreffer[eintrag.googleId], 1);
 });
 
 test('C2 — der Ausschluss greift VOR dem Deckel, kostet also keinen Platz', () => {
   const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
-  const viele = [roh(eintrag.id, 'Ausgeschlossen, steht ganz vorn.')];
+  const viele = [roh(eintrag.googleId, 'Ausgeschlossen, steht ganz vorn.')];
   for (let i = 0; i < 60; i++) viele.push(roh(`8${i}`, `Echte Rezension Nummer ${i}.`));
   const out = normalisiereReputonAntwort(feedMit(viele));
   assert.equal(out.reviews.length, 50, 'MAX_REVIEWS nicht ausgeschöpft');
-  assert.ok(!out.reviews.map((r) => r.id).includes(eintrag.id));
+  assert.ok(!out.reviews.map((r) => r.quellId).includes(eintrag.googleId));
 });
 
 test('C3 — keine Übergriffigkeit: ohne Ausschlussfall bleibt alles stehen', () => {
@@ -111,7 +129,7 @@ test('C3 — keine Übergriffigkeit: ohne Ausschlussfall bleibt alles stehen', (
   );
   assert.equal(out.reviews.length, 2);
   for (const e of GOOGLE_REVIEWS_AUSSCHLUSS) {
-    assert.equal(out.ausschlussTreffer[e.id], 0);
+    assert.equal(out.ausschlussTreffer[e.googleId], 0);
   }
 });
 
@@ -124,16 +142,52 @@ test('C4 — der bestehende Rahmen bleibt unangetastet (5 Sterne, !hide, Text)',
       roh('66660004', '   '),
     ]),
   );
-  assert.deepEqual(out.reviews.map((r) => r.id), ['66660001']);
+  assert.deepEqual(out.reviews.map((r) => r.quellId), ['66660001']);
 });
 
 test('C5 — wendeAusschlussAn zählt und fällt nicht auf Unrat herein', () => {
   assert.deepEqual(wendeAusschlussAn(null).reviews, []);
   assert.deepEqual(wendeAusschlussAn(undefined).reviews, []);
   const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
-  // Zahl statt String: der Feed normalisiert auf String, ein Roh-Aufrufer
-  // könnte es nicht tun — der Ausschluss darf daran nicht vorbeigreifen.
-  const r = wendeAusschlussAn([{id: Number(eintrag.id)}, {id: null}, {}]);
-  assert.equal(r.treffer[eintrag.id], 1);
+  const r = wendeAusschlussAn([{quellId: eintrag.googleId}, {quellId: null}, {}]);
+  assert.equal(r.treffer[eintrag.googleId], 1);
   assert.equal(r.reviews.length, 2);
+  // RÜCKFALL: liefert der Feed einmal keine hashId, legt
+  // normalisiereReputonAntwort die Google-id in `id` ab. Auch dann muss der
+  // Eintrag greifen — sonst macht ein Feld-Ausfall den Ausschluss still
+  // wirkungslos.
+  const r2 = wendeAusschlussAn([{id: eintrag.googleId}]);
+  assert.equal(r2.treffer[eintrag.googleId], 1);
+  assert.equal(r2.reviews.length, 0);
+});
+
+test('C6 (ANLASSFALL) — die hashId wandert, der Ausschluss greift trotzdem', () => {
+  // DER FALL, DER DIESEN UMBAU AUSGELÖST HAT, gemessen am DACH-Live-Feed
+  // 2026-09-20: dieselbe Rezension, unveränderter Text (1954 Zeichen),
+  // unveränderte Google-id — hashId aber von -582554336 auf -1130994804
+  // gesprungen. Der erste Bau (2026-09-18) hing an der hashId und wäre nach
+  // dem Merge still wirkungslos gewesen.
+  //
+  // Zwei Abrufe DESSELBEN Gegenstands mit VERSCHIEDENER hashId; beide Male
+  // muss die Rezension verschwinden. Hinge der Filter wieder an der hashId,
+  // wäre höchstens einer der beiden Arme grün.
+  const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
+  const text = 'Derselbe Text, zweimal abgerufen — nur die hashId wandert.';
+  for (const [lauf, hashId] of [
+    ['vorher', '-582554336'],
+    ['nachher', '-1130994804'],
+  ]) {
+    const out = normalisiereReputonAntwort(
+      feedMit([
+        roh(eintrag.googleId, text, 'vor 9 Monaten', hashId),
+        roh('99999902', 'Eine echte Rezension — die bleibt.'),
+      ]),
+    );
+    assert.ok(
+      !out.reviews.map((r) => r.quellId).includes(eintrag.googleId),
+      `LECK im Lauf '${lauf}' (hashId ${hashId}): der Ausschluss hängt wieder an der wandernden Kennung`,
+    );
+    assert.equal(out.ausschlussTreffer[eintrag.googleId], 1, `Lauf '${lauf}'`);
+    assert.equal(out.reviews.length, 1, `Lauf '${lauf}': zu viel weggenommen`);
+  }
 });

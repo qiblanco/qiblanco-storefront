@@ -36,8 +36,20 @@
  */
 
 /**
+ * SCHLÜSSELWAHL — warum hier die Google-`id` steht und NICHT die `hashId`:
+ * die `hashId` des Reputon-Feeds ist nicht stabil. Gemessen 2026-09-20 sprang
+ * sie für genau diese Rezension von `-582554336` auf `-1130994804`, bei
+ * unverändertem Text (1954 Zeichen) — sie wird offenbar über die mitlaufende
+ * Relativzeit mitgebildet („vor 9 Monaten" → „vor 10 Monaten"). Zwischen Bau
+ * (2026-09-18) und Merge lagen 51 h Gate-Sperre; in dieser Zeit ist der erste
+ * Schlüssel verfallen. Ein Ausschluss auf `hashId` wäre still wirkungslos
+ * geworden — und das Rot am Kundenrand hätte sich bequem dem 6-h-Cache
+ * zuschreiben lassen (FEHLER-DB F-2462), also der falschen Ursache.
+ * Die Google-`id` blieb dabei unverändert und ist zusätzlich
+ * shopübergreifend dieselbe (DACH/US, gemessen 2026-09-18).
+ *
  * @typedef {Object} AusgeschlosseneRezension
- * @property {string} id       hashId aus dem Reputon-Feed
+ * @property {string} googleId Google-Rezensions-id (stabil) — der Schlüssel
  * @property {string} autor    Anzeigename, nur zur Wiedererkennung
  * @property {string} grund    warum sie nicht ausgeliefert wird
  * @property {string} belegtAm ISO-Datum der Messung, auf der das Urteil beruht
@@ -46,7 +58,8 @@
 /** @type {AusgeschlosseneRezension[]} */
 export const GOOGLE_REVIEWS_AUSSCHLUSS = [
   {
-    id: '-582554336',
+    googleId:
+      'AbFvOqkWRIIM8yOy-0FFxmTmreXg0oH00TuOFc-QMusa9jFGJJi9RMQM0-tHrIJ0tGRAWVEdRaSt9w',
     autor: 'Ma Pe',
     grund:
       'Durchgehende Satire: der Text schreibt dem Anhänger Wirkungen zu, die ' +
@@ -58,9 +71,9 @@ export const GOOGLE_REVIEWS_AUSSCHLUSS = [
   },
 ];
 
-/** Nur die IDs, als Menge — für den Filter. */
+/** Nur die stabilen Google-ids, als Menge — für den Filter. */
 export const AUSSCHLUSS_IDS = new Set(
-  GOOGLE_REVIEWS_AUSSCHLUSS.map((e) => e.id),
+  GOOGLE_REVIEWS_AUSSCHLUSS.map((e) => e.googleId),
 );
 
 /**
@@ -73,17 +86,28 @@ export const AUSSCHLUSS_IDS = new Set(
  * Die beiden sind hier nicht unterscheidbar, deshalb urteilt diese Funktion
  * nicht, sie berichtet.
  *
- * @param {{id?: string}[]} reviews normalisierte Rezensionen
+ * GEPRÜFT WIRD `quellId` (die stabile Google-id), NICHT `id` (die wandernde
+ * Reputon-hashId) — Begründung oben bei der Schlüsselwahl. `id` wird als
+ * Rückfall mitgelesen, weil `normalisiereReputonAntwort` dort die Google-id
+ * ablegt, wenn der Feed einmal keine hashId liefert; ein Eintrag greift also
+ * auch dann, und ein Feld-Ausfall auf der einen Seite macht den Ausschluss
+ * nicht still wirkungslos.
+ *
+ * @param {{id?: string, quellId?: string}[]} reviews normalisierte Rezensionen
  * @returns {{reviews: {id?: string}[], treffer: Record<string, number>}}
  */
 export function wendeAusschlussAn(reviews) {
   const treffer = {};
-  for (const e of GOOGLE_REVIEWS_AUSSCHLUSS) treffer[e.id] = 0;
+  for (const e of GOOGLE_REVIEWS_AUSSCHLUSS) treffer[e.googleId] = 0;
   if (!Array.isArray(reviews)) return {reviews: [], treffer};
   const behalten = reviews.filter((rv) => {
-    const id = rv && rv.id != null ? String(rv.id) : '';
-    if (id && AUSSCHLUSS_IDS.has(id)) {
-      treffer[id] += 1;
+    if (!rv) return true;
+    const kandidaten = [rv.quellId, rv.id]
+      .filter((k) => k != null && String(k) !== '')
+      .map(String);
+    const treffer_id = kandidaten.find((k) => AUSSCHLUSS_IDS.has(k));
+    if (treffer_id) {
+      treffer[treffer_id] += 1;
       return false;
     }
     return true;
