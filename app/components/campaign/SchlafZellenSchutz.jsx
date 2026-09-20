@@ -746,11 +746,19 @@ export function SchlafZellenSchutz({products}) {
         <div data-section="lp-a-google-reviews">
           <LpGoogleReviews />
         </div>
-        <InfoSlider dataSection="lp-a-info-slider" />
         <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
           <ReputonWidget />
         </div>
         <VideoSection />
+        {/* Kachelreihe NACH den Video-Testimonials (Christian, 2026-09-19):
+            „Beeindruckende Kundenerfahrungen / alle Google-Bewertungen / und
+            dann die 4,8 Sterne klickbar" ist EIN Bereich zusammen. Bis heute
+            stand der InfoSlider zwischen LpGoogleReviews (Textberichte) und
+            dem ReputonWidget (Google-Zusammenfassung + Sternebalken) und
+            zerschnitt ihn: der Leser bekam Erfahrungsberichte, dann
+            Werbekacheln, dann wieder Erfahrungsberichte. Verschoben, nicht
+            umgebaut — dieselben fünf Kacheln, dieselbe Bedienung. */}
+        <InfoSlider dataSection="lp-a-info-slider" />
         <GuaranteeSection />
         <PricingSection />
         <FinalCTA />
