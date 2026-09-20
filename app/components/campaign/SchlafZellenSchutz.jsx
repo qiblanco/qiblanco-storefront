@@ -545,7 +545,7 @@ function PricingSection() {
   return (
     <section className="lp-a-pricing" aria-labelledby="lp-a-pricing-title" data-section="lp-a-pricing">
       <span className="eyebrow">Unsere Produkte</span>
-      <h2 id="lp-a-pricing-title">Hole dir jetzt deine „Energie zum Anlegen“</h2>
+      <h2 id="lp-a-pricing-title">Kohärentes Wasser. Zum Anlegen.</h2>
       <div className="lp-a-pricing-grid">
         {cards.map((c) => (
           <article
