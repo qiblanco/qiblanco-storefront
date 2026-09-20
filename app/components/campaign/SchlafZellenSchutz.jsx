@@ -251,17 +251,26 @@ function Hero() {
    die Aussage trägt (die Blutplättchen-Angabe war in der Quelle nicht
    belegt); Christian hat entschieden, dass diese Einordnung nicht auf die
    Seite gehört. Auf der Seite steht seitdem keine Quellenangabe zu diesem
-   Abschnitt; der Absatz „Der GitterChip™ ermöglicht es …“ ist unverändert. */
+   Abschnitt.
+
+   Christian, 20.09.2026 (zweiter Auftrag desselben Tages): der Absatz selbst
+   bekommt seine neue Fassung — als Ganzes ersetzt, nicht Satz für Satz
+   geflickt. Der Wortlaut ist seiner, Rechtschreibung und Zeichensetzung
+   waren bereits sauber; der Gedankenstrich nach „überzugehen“ ist seiner und
+   bleibt (die Regel gegen Gedankenstriche gilt den Antworten von AI Anna,
+   nicht seinem Seitentext). Überschrift und Scroll-Animation darunter
+   bleiben; keine Quellenangabe kommt hinzu (GL-SPR-0008). */
 function IntroSection() {
   return (
     <section className="lp-vp-section" data-section="lp-a-intro">
       <h2>Wirkprinzip</h2>
       <p className="lp-vp-section__lede">
-        Der GitterChip™ ermöglicht es naheliegenden Wassermolekülen, in den kohärenten
-        Zustand überzugehen. Den Superzustand des Wassers. Aus normalem Wasser wird
-        energetisch hoch aufgeladenes Wasser - mit deutlich mehr Elektronenvolt. Dies ist
-        die Grundlage für Zellprozesse im Körper. Sie haben mehr Energie, wie z. B. das
-        Falten von Blutplättchen.
+        Der GitterChip™ ermöglicht es den umliegenden Wassermolekülen, in den kohärenten
+        Zustand überzugehen – den Superzustand des Wassers. Aus normalem Wasser wird
+        energetisch hoch aufgeladenes Wasser, mit deutlich mehr Elektronenvolt. Das ist die
+        Grundlage für Zellprozesse im Körper: Sie verfügen über mehr Energie, etwa für die
+        Verformung der roten Blutkörperchen, die sich falten müssen, um die engen Kapillaren
+        zu passieren.
       </p>
     </section>
   );
