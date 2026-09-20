@@ -244,22 +244,14 @@ function Hero() {
    mit ihm seine beiden Gedankenstriche — der Trennstrich vor „mit deutlich mehr
    Elektronenvolt“ ist Christians eigener und bleibt.
 
-   DIE QUELLE STEHT DORT, WO SIE TRÄGT — und das ist der teure Teil dieses
-   Abschnitts. Die Auflage lautete, eine Warnke-Quelle zu setzen, aber nur, wenn
-   sie die Aussage trägt, an der sie steht. Gemessen an ZWEI unabhängigen
-   Volltext-Extrakten von „Bionisches Wasser“ (899.773 bzw. 892.359 Zeichen,
-   praktisch das ganze Buch): „Blutplättchen“ 0 Treffer, „Thrombo“ 0,
-   „gerinn“ 0, „Faltung“ 0, „Superzustand“ 0. „Elektronenvolt“ kommt 4x vor,
-   alle vier rein physikalisch (Ionisationspotenzial des Wassermoleküls
-   12,60 eV, Bindungsenergien, Glossar) — keine Stelle sagt, kohärentes Wasser
-   habe mehr eV als normales. Warnke TRÄGT den kohärenten Zustand; er trägt
-   das Blutplättchen-Beispiel nicht.
-   Deshalb steht die Quelle am Kohärenz-Satz und nicht pauschal am Absatzende:
-   eine Quellenangabe, die etwas anderes belegt als der Satz behauptet, ist
-   schlimmer als keine. Der einschraenkende Warnke-Satz ist derselbe, den
-   /pages/hypothesen schon zitiert (S. 168–169) — zwei Seiten des Hauses sagen
-   damit dasselbe über dieselbe Quelle. KEINE erfundene Seitenzahl: für den
-   Kohärenz-Teil ist im Haus keine belegt, also steht dort keine. */
+   Christian, 20.09.2026: der Einordnungsabsatz unter dem Wirkprinzip (Quelle
+   „Bionisches Wasser“, ihr eigener Vorbehalt zur Forschungslage, „unsere
+   eigenen Angaben“) fällt ersatzlos weg — kein neuer Text. Der Absatz war am
+   19.09. entstanden, weil die Auflage eine Quelle nur dort erlaubte, wo sie
+   die Aussage trägt (die Blutplättchen-Angabe war in der Quelle nicht
+   belegt); Christian hat entschieden, dass diese Einordnung nicht auf die
+   Seite gehört. Auf der Seite steht seitdem keine Quellenangabe zu diesem
+   Abschnitt; der Absatz „Der GitterChip™ ermöglicht es …“ ist unverändert. */
 function IntroSection() {
   return (
     <section className="lp-vp-section" data-section="lp-a-intro">
@@ -270,12 +262,6 @@ function IntroSection() {
         energetisch hoch aufgeladenes Wasser - mit deutlich mehr Elektronenvolt. Dies ist
         die Grundlage für Zellprozesse im Körper. Sie haben mehr Energie, wie z. B. das
         Falten von Blutplättchen.
-      </p>
-      <p className="lp-a-note">
-        Den kohärenten Wasserzustand beschreibt der Biologe und Physiker Ulrich Warnke in
-        „Bionisches Wasser“ (Arkana, München 2019). Er selbst hält fest, dass es zu den
-        Wirkungen dieses Wassers auf Organismen bislang kaum robuste Forschung gibt. Die
-        Angaben zu Elektronenvolt und Blutplättchen sind unsere eigenen.
       </p>
     </section>
   );
