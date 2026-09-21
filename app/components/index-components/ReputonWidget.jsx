@@ -91,20 +91,34 @@ const MAX_BILDER = 3;
 // Deshalb zusätzlich ein geräte-unabhängiger Interaktions-Riegel
 // (`uebernommen`): jede echte Nutzer-Geste legt ihn um, und der Takt ruht,
 // solange er liegt.
-// WIEDERAUFNAHME — bewusst NICHT über einen Timer:
-// Ein Zeit-Timeout („nach X s wieder loslaufen") stellt genau Christians
-// Beschwerde wieder her, denn Lesen erzeugt keine Events — nach Ablauf
-// springt die Karte mitten im Satz weg. Gemessen: mit 8-s-Timer war W2 auf
-// 360/390/414/768 px weiterhin rot. Der Auftrag nennt die Wiederaufnahme
-// ausdrücklich nur als „idealerweise"; verbindlich ist „geht aus".
-// Deshalb: der Takt ruht, sobald der Nutzer die Steuerung übernimmt, und
-// wird erst wieder freigegeben, wenn der Slider den Viewport VERLASSEN hat
-// (echte Inaktivität am Widget) — dann startet er beim nächsten
-// „Ankommen" erneut mit der üblichen Lese-Verzögerung.
+//
+// WIEDERANLAUF (Christian 2026-09-21, Job 20260921-google-bewertungen-
+// autolauf-und-sichtbarer-wischhinweis): „Er hält an, sobald der Besucher
+// eingreift — beim Berühren, beim Ziehen, beim Tastaturfokus. Und er läuft
+// danach wieder an, nicht sofort, sondern nach einem Moment Ruhe."
+// Bis dahin löste sich der Riegel NUR, wenn der Slider den Viewport verließ —
+// das war die Antwort auf „springt beim Lesen weg", und sie hat den Autolauf
+// in der Praxis abgeschafft: `wheel` zählte auch das senkrechte Seiten-
+// Scrollen mit dem Mausrad über dem Karussell, `touchstart` den Finger, der
+// nur die Seite schiebt. Christian sah deshalb auf keiner Seite einen
+// Autolauf. Jetzt gilt: der Riegel fällt bei jeder echten Geste und löst sich
+// WIEDERANLAUF_MS nach der LETZTEN Geste von selbst; der erste Schritt kommt
+// dann einen Takt später (zusammen ~10 s Ruhe). Drei Rücksichten bleiben,
+// damit „springt beim Lesen weg" nicht zurückkommt: (1) Maus über dem
+// Karussell = keine Bewegung (hoverRef, wie bisher); (2) Tastaturfokus im
+// Karussell = keine Bewegung, solange er drin ist; (3) eine per „weiterlesen"
+// AUFGEKLAPPTE Karte ist der eine Lese-Beweis, den es gibt — solange eine
+// offen ist, bewegt sich nichts. Senkrechtes Mausrad-Scrollen gilt nicht mehr
+// als Geste am Karussell (nur waagerechtes: |deltaX| > |deltaY|).
 // Ein programmatischer scrollTo({behavior:'smooth'}) löst selbst scroll-
 // Events aus. Innerhalb dieses Fensters gelten sie NICHT als Nutzer-Geste,
 // sonst würde der Autoscroll sich mit dem ersten Schritt selbst abschalten.
 const PROGRAMMATISCH_FENSTER_MS = 1500;
+const WIEDERANLAUF_MS = 6000; // Ruhe nach der letzten Geste, bevor der Takt neu ansetzt
+// Fortschrittsbalken: der gefüllte Anteil ist (scrollLeft + Sichtbreite) /
+// Gesamtbreite. Auf dem Handy sind das bei 38 Karten anfangs ~3 % — zu
+// wenig, um als Position lesbar zu sein. Ein Boden hält die Marke sichtbar.
+const FORTSCHRITT_MIN_PROZENT = 8;
 
 /**
  * Fix (1): AI-Zusammenfassung von Google — die von Google mit KI aus den
@@ -158,12 +172,40 @@ function AiSummaryKarte({aiSummary}) {
  * (12 kuratierte Karten, ohne AI-Summary) und dem unteren „Alle Google
  * Bewertungen" (Live-Feed + AI-Summary als erste Karte). Gleiches Kartendesign,
  * gleiches Drag-/Autoscroll-/„weiterlesen"-Verhalten — kein zweites Layout.
+ *
+ * SICHTBARER WISCHHINWEIS (Christian 2026-09-21: „in der responsiven Ansicht,
+ * dass man klar erkennen kann, dass man die Bewertungen scrollen kann").
+ * Gemessen am 21.09.2026 auf Start- und Schlafseite: snap-x, overflow-x,
+ * cursor-grab und scrollbar-width:thin waren da — und NICHTS davon ist auf
+ * dem Handy zu sehen: `thin` rendert dort in der Regel gar keine Leiste, und
+ * einen Mauszeiger gibt es nicht. Man konnte wischen, aber nichts zeigte es.
+ * Jetzt trägt der Slider unter der Kartenreihe dieselbe Bedienleiste wie der
+ * InfoSlider (Bestand, app.css: .ProgressWrapper/.ProgressTracker und
+ * .SliderButtonWrapper/.SliderButton) — Fortschrittsbalken als Position,
+ * zwei Pfeile zum Antippen. Kein zweites Bedienmuster, dieselben Tokens
+ * (--color-dark, Radius 1000px, 35-px-Knopf), dieselbe Pfeil-Grafik.
+ *
+ * DOM-REIHENFOLGE: die Leiste steht im Markup VOR der Kartenreihe und wird
+ * per Flex-`order` darunter gezeigt. Grund: das Karussell trägt bis zu 38
+ * Karten; eine Leiste dahinter läge im ausgelieferten HTML zehntausende
+ * Zeichen hinter der Überschrift, und die Kundenrand-Probe (worker-pool/
+ * pruefungen/probe_google_bewertungen_laufen_und_zeigen_sich__20260921.py)
+ * liest den Block um die Überschrift. Tab-Reihenfolge: erst die Pfeile,
+ * dann die Karten — für die Tastatur ist das die gewohnte Ordnung.
+ *
+ * `data-autolauf` auf der Kartenreihe nennt den Zustand des Takts —
+ * bereit | aktiv | pause | aus — und ist zugleich der SSR-Marker, den die
+ * Probe liest; im Browser wird er aus dem Takt heraus fortgeschrieben.
  * @param {{reviews:Array, aiSummary?:Array, label?:string}} props
  */
 export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen von Qi Blanco'}) {
   const trackRef = useRef(null);
   const hoverRef = useRef(false);
   const dragRef = useRef(false);
+  const fortschrittRef = useRef(null);
+  // Die Pfeile liegen AUSSERHALB der Kartenreihe; ihre Sprünge und die
+  // Gesten-Buchung wohnen im Effekt unten. Der Ref reicht sie herüber.
+  const steuerungRef = useRef(null);
 
   // Fix (2): Maus-Drag (Klick-Halten-Ziehen) + Touch-Swipe über den
   // gemeinsamen Slider-Hook. mode 'scroll' steuert genau so einen
@@ -175,7 +217,8 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
   }, [isDragging]);
 
   // Sanfter Autoscroll: pro Karte (4 s) eine weiter, am Ende zurück zum
-  // Anfang; pausiert bei Hover/Drag und respektiert prefers-reduced-motion.
+  // Anfang; pausiert bei Hover/Drag/Fokus/aufgeklappter Karte und respektiert
+  // prefers-reduced-motion (dann gar kein Takt — Pfeile und Wischen bleiben).
   // NEU (Christian): NICHT sofort loslaufen — erst wenn das Widget wirklich
   // im Viewport sichtbar ist (IntersectionObserver) UND dann noch 3 s
   // warten, damit die AI-Zusammenfassung (erste Karte) in Ruhe gelesen
@@ -184,18 +227,45 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return undefined;
-    if (
+    const reduziert =
       typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      return undefined;
-    }
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const setzeZustand = (z) => {
+      track.dataset.autolauf = z;
+    };
 
     let gestartet = false;
     let startTimer = 0;
     let intervall = 0;
+    let ruheTimer = 0;
     let uebernommen = false; // Nutzer hat die Steuerung uebernommen
+    let fokusImTrack = false;
+    let sichtbar = false;
     let programmatischBis = 0;
+    let anzeigeFrame = 0;
+
+    // Fortschrittsbalken direkt am DOM fortschreiben — ein React-State je
+    // scroll-Event würde bis zu 38 Karten bei jedem Bildschirmbild neu rendern.
+    const aktualisiereAnzeige = () => {
+      anzeigeFrame = 0;
+      const balken = fortschrittRef.current;
+      if (!balken) return;
+      const gesamt = track.scrollWidth || 1;
+      const anteil = ((track.scrollLeft + track.clientWidth) / gesamt) * 100;
+      balken.style.width = `${Math.min(100, Math.max(FORTSCHRITT_MIN_PROZENT, anteil))}%`;
+    };
+    const planeAnzeige = () => {
+      if (!anzeigeFrame) anzeigeFrame = window.requestAnimationFrame(aktualisiereAnzeige);
+    };
+
+    const schrittweite = () => {
+      const karte = track.firstElementChild;
+      return karte ? karte.getBoundingClientRect().width + KARTEN_LUECKE_PX : 0;
+    };
+    const springe = (ziel) => {
+      programmatischBis = Date.now() + PROGRAMMATISCH_FENSTER_MS;
+      track.scrollTo({left: ziel, behavior: reduziert ? 'auto' : 'smooth'});
+    };
 
     const stoppeTakt = () => {
       if (intervall) {
@@ -209,85 +279,152 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
       gestartet = false;
     };
 
+    const einenSchritt = () => {
+      if (hoverRef.current || dragRef.current || !track.isConnected) return;
+      if (uebernommen || fokusImTrack) return; // Nutzer ist dran — nicht wegspringen
+      // Eine aufgeklappte Karte ist der einzige Beweis, dass gerade gelesen wird.
+      if (track.querySelector('[aria-expanded="true"]')) return;
+      const schritt = schrittweite();
+      if (!schritt) return;
+      const amEnde =
+        track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+      springe(amEnde ? 0 : track.scrollLeft + schritt);
+    };
+
+    const starteAutoscroll = () => {
+      if (gestartet || reduziert) return;
+      gestartet = true;
+      setzeZustand('aktiv');
+      intervall = window.setInterval(einenSchritt, AUTOSCROLL_MS);
+    };
+
+    // Wiederanlauf: WIEDERANLAUF_MS nach der LETZTEN Geste löst sich der
+    // Riegel von selbst; jede weitere Geste setzt die Uhr zurück.
+    const planeWiederanlauf = () => {
+      if (ruheTimer) window.clearTimeout(ruheTimer);
+      ruheTimer = window.setTimeout(() => {
+        ruheTimer = 0;
+        uebernommen = false;
+        if (sichtbar && !fokusImTrack) starteAutoscroll();
+        else if (!reduziert) setzeZustand('bereit');
+      }, WIEDERANLAUF_MS);
+    };
+
     const merkeInteraktion = () => {
-      if (uebernommen) return;
-      uebernommen = true;
-      stoppeTakt();
+      if (!uebernommen) {
+        uebernommen = true;
+        stoppeTakt();
+        if (!reduziert) setzeZustand('pause');
+      }
+      planeWiederanlauf();
+    };
+
+    // Senkrechtes Scrollen der SEITE mit dem Mausrad über dem Karussell ist
+    // keine Geste AM Karussell — nur die waagerechte Achse zählt.
+    const onGeste = (event) => {
+      if (event.type === 'wheel' && Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      merkeInteraktion();
     };
 
     // Eigener Scroll-Zaehler: auf Touch ist das native Wischen die einzige
     // Spur der Nutzer-Geste (kein isDragging, kein bleibendes Hover).
     const onTrackScroll = () => {
+      planeAnzeige();
       if (Date.now() < programmatischBis) return; // eigener smooth-Scroll
       merkeInteraktion();
     };
 
-    const einenSchritt = () => {
-      if (hoverRef.current || dragRef.current || !track.isConnected) return;
-      if (uebernommen) return; // Nutzer liest gerade — nicht wegspringen
-      const karte = track.firstElementChild;
-      if (!karte) return;
-      const schritt = karte.getBoundingClientRect().width + KARTEN_LUECKE_PX;
-      const amEnde =
-        track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
-      programmatischBis = Date.now() + PROGRAMMATISCH_FENSTER_MS;
-      track.scrollTo({
-        left: amEnde ? 0 : track.scrollLeft + schritt,
-        behavior: 'smooth',
-      });
+    // Tastaturfokus im Karussell (Tab auf „weiterlesen", ein Kundenfoto):
+    // solange er drin ist, bewegt sich nichts; beim Verlassen läuft die Ruhe-Uhr.
+    const onFocusIn = () => {
+      fokusImTrack = true;
+      merkeInteraktion();
+    };
+    const onFocusOut = (event) => {
+      if (event.relatedTarget && track.contains(event.relatedTarget)) return;
+      fokusImTrack = false;
+      planeWiederanlauf();
     };
 
     // Passive Listener: sie duerfen das native Wischen/Ziehen NICHT
     // beeinflussen (Baustandard GL-DES-0012 drag+swipe bleibt unberuehrt).
-    const gesten = ['pointerdown', 'touchstart', 'dragstart', 'wheel', 'keydown'];
+    const gesten = ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'dragstart', 'wheel', 'keydown'];
     for (const typ of gesten) {
-      track.addEventListener(typ, merkeInteraktion, {passive: true});
+      track.addEventListener(typ, onGeste, {passive: true});
     }
     track.addEventListener('scroll', onTrackScroll, {passive: true});
+    track.addEventListener('focusin', onFocusIn);
+    track.addEventListener('focusout', onFocusOut);
+    window.addEventListener('resize', planeAnzeige);
+    aktualisiereAnzeige();
 
-    const starteAutoscroll = () => {
-      if (gestartet) return;
-      gestartet = true;
-      intervall = window.setInterval(einenSchritt, AUTOSCROLL_MS);
+    // Pfeile: ein Kartenschritt in die Richtung, an den Enden umlaufend —
+    // und eine Geste wie jede andere (Takt aus, Ruhe-Uhr neu).
+    steuerungRef.current = {
+      next: () => {
+        merkeInteraktion();
+        const schritt = schrittweite();
+        const amEnde = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+        springe(amEnde ? 0 : track.scrollLeft + schritt);
+      },
+      prev: () => {
+        merkeInteraktion();
+        const schritt = schrittweite();
+        const amAnfang = track.scrollLeft <= 8;
+        springe(amAnfang ? track.scrollWidth - track.clientWidth : track.scrollLeft - schritt);
+      },
     };
+
+    const loeseListenerAb = () => {
+      for (const typ of gesten) track.removeEventListener(typ, onGeste);
+      track.removeEventListener('scroll', onTrackScroll);
+      track.removeEventListener('focusin', onFocusIn);
+      track.removeEventListener('focusout', onFocusOut);
+      window.removeEventListener('resize', planeAnzeige);
+      if (anzeigeFrame) window.cancelAnimationFrame(anzeigeFrame);
+      if (ruheTimer) window.clearTimeout(ruheTimer);
+      steuerungRef.current = null;
+    };
+
+    if (reduziert) {
+      // „Weniger Bewegung" im Gerät: kein Takt. Pfeile, Wischen und
+      // Fortschrittsbalken bleiben — die Bedienung ist keine Bewegung.
+      setzeZustand('aus');
+      return loeseListenerAb;
+    }
 
     // Ohne IntersectionObserver (sehr alte Browser): konservativ sofort mit
     // der Lese-Verzögerung starten statt gar nicht.
-    const loeseListenerAb = () => {
-      for (const typ of gesten) track.removeEventListener(typ, merkeInteraktion);
-      track.removeEventListener('scroll', onTrackScroll);
-    };
-
     if (typeof IntersectionObserver === 'undefined') {
+      sichtbar = true;
       startTimer = window.setTimeout(starteAutoscroll, START_VERZOEGERUNG_MS);
       return () => {
         loeseListenerAb();
-        if (startTimer) window.clearTimeout(startTimer);
-        if (intervall) window.clearInterval(intervall);
+        stoppeTakt();
       };
     }
 
     const beobachter = new IntersectionObserver(
       (eintraege) => {
-        const sichtbar = eintraege.some((e) => e.isIntersecting);
+        sichtbar = eintraege.some((e) => e.isIntersecting);
         if (sichtbar) {
           if (!uebernommen && !gestartet && !startTimer) {
             startTimer = window.setTimeout(() => {
               startTimer = 0;
-              starteAutoscroll();
+              if (sichtbar && !uebernommen) starteAutoscroll();
             }, START_VERZOEGERUNG_MS);
           }
         } else {
-          // Widget ist aus dem Blick — das ist die einzige Inaktivität, die
-          // sich sicher messen lässt: der Nutzer liest hier nicht mehr.
-          // Riegel lösen, damit der Takt beim nächsten „Ankommen" wieder
-          // starten darf (Wiederaufnahme ohne Weg-Springen beim Lesen).
+          // Widget ist aus dem Blick: nichts läuft im Hintergrund weiter,
+          // und beim nächsten „Ankommen" beginnt es wieder mit der
+          // Lese-Verzögerung — ohne Rest einer alten Ruhe-Uhr.
           uebernommen = false;
-          if (startTimer) {
-            // Vor Ablauf wieder aus dem Blick → Start-Timer zurücksetzen
-            window.clearTimeout(startTimer);
-            startTimer = 0;
+          if (ruheTimer) {
+            window.clearTimeout(ruheTimer);
+            ruheTimer = 0;
           }
+          stoppeTakt();
+          setzeZustand('bereit');
         }
       },
       {threshold: SICHTBAR_SCHWELLE},
@@ -297,35 +434,80 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
     return () => {
       beobachter.disconnect();
       loeseListenerAb();
-      if (startTimer) window.clearTimeout(startTimer);
-      if (intervall) window.clearInterval(intervall);
+      stoppeTakt();
     };
   }, [reviews.length]);
 
   if (!reviews.length) return null;
 
   return (
-    <div
-      ref={trackRef}
-      {...handlers}
-      onPointerEnter={() => {
-        hoverRef.current = true;
-      }}
-      onPointerLeave={() => {
-        hoverRef.current = false;
-      }}
-      className={`flex items-start overflow-x-auto pb-4 snap-x snap-mandatory select-none ${
-        isDragging ? 'cursor-grabbing' : 'cursor-grab'
-      }`}
-      style={{gap: KARTEN_LUECKE_PX, scrollbarWidth: 'thin'}}
-      role="region"
-      aria-label={label}
-    >
-      <AiSummaryKarte aiSummary={aiSummary} />
-      {reviews.map((review) => (
-        <ReviewKarte key={review.id || review.name} review={review} />
-      ))}
+    <div className="ReviewsSlider flex flex-col">
+      {/* Bedienleiste — im DOM vor der Kartenreihe, sichtbar darunter (order).
+          Klassen und Pfeil-Grafik sind die des InfoSlider (Bestand). */}
+      <div className="ReviewsSlider__scroll-hinweis" style={{order: 2}}>
+        <div className="ProgressWrapper" aria-hidden="true">
+          <div
+            ref={fortschrittRef}
+            className="ProgressTracker"
+            style={{width: `${FORTSCHRITT_MIN_PROZENT}%`}}
+          />
+        </div>
+        <div className="SliderButtonWrapper">
+          <button
+            type="button"
+            className="ButtonPrev SliderButton"
+            aria-label="Vorherige Bewertung"
+            onClick={() => steuerungRef.current?.prev()}
+          >
+            <PfeilIcon />
+          </button>
+          <button
+            type="button"
+            className="ButtonNext SliderButton"
+            aria-label="Nächste Bewertung"
+            onClick={() => steuerungRef.current?.next()}
+          >
+            <PfeilIcon />
+          </button>
+        </div>
+      </div>
+      <div
+        ref={trackRef}
+        {...handlers}
+        onPointerEnter={() => {
+          hoverRef.current = true;
+        }}
+        onPointerLeave={() => {
+          hoverRef.current = false;
+        }}
+        className={`flex items-start overflow-x-auto pb-4 snap-x snap-mandatory select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
+        style={{gap: KARTEN_LUECKE_PX, scrollbarWidth: 'thin', order: 1}}
+        role="region"
+        aria-label={label}
+        data-autolauf="bereit"
+      >
+        <AiSummaryKarte aiSummary={aiSummary} />
+        {reviews.map((review) => (
+          <ReviewKarte key={review.id || review.name} review={review} />
+        ))}
+      </div>
     </div>
+  );
+}
+
+/** Dieselbe Pfeil-Grafik wie im InfoSlider; die Richtung kommt aus
+ *  .ButtonPrev/.ButtonNext (rotate ∓90°) in app.css. */
+function PfeilIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M29.52 22.52L18 10.6L6.48 22.52a1.7 1.7 0 0 0 2.45 2.36L18 15.49l9.08 9.39a1.7 1.7 0 0 0 2.45-2.36Z"
+      />
+      <path fill="none" d="M0 0h36v36H0z" />
+    </svg>
   );
 }
 
