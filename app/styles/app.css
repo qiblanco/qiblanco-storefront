@@ -2646,6 +2646,46 @@ ul.submenu li a {
   width: auto !important;
   filter: brightness(0);
 }
+/* ═══════════════════════════════════════════════════════════════════
+   BAUSATZ — .qb-wischbahn: die Bahn eines Wischbereichs ohne native Leiste
+   ═══════════════════════════════════════════════════════════════════
+
+   Angelegt 2026-09-21, Grossjob "Ein Bausatz fuer die ganze Seite"
+   (Arm 1). Christian am 21.09.: "Jetzt sind die Slider doppelt bei den
+   Bewertungen auf Zelle-Schlaf-Schutz, das kommt nicht so gut."
+
+   WAS DER FEHLER WAR — und er ist ein STAPEL, kein kaputtes Bauteil:
+   Der Bewertungsblock trug eine native Scrollleiste (Inline-Stil
+   scrollbar-width:thin in ReputonWidget.jsx) UND seit dem Bau vom
+   selben Tag einen gestalteten Fortschrittsbalken. Jede Haelfte ist
+   fuer sich richtig; zusammen sind es zwei Leisten uebereinander.
+   Derselbe Stapel stand am Studienblock (.ghx-studien__track: native
+   Leiste plus eigene Pfeile plus Wischhinweis).
+
+   DIE REGEL DAHINTER: wo ein Wischbereich eine GEBAUTE Bedienung
+   traegt (Pfeile, Fortschrittsbalken), ist die native Leiste
+   ueberzaehlig und verschwindet. Wo sie die EINZIGE Bedienung ist,
+   bleibt sie — dort ist sie der einzige Hinweis, dass es weitergeht
+   (so etwa .eu-gwl-dialog__buehne, die amtliche Grafik im Dialog).
+   Diese Klasse wird deshalb NICHT pauschal auf .overflow-x-auto
+   gelegt, sondern je Bahn gesetzt.
+
+   GEMESSEN, NICHT GEMEINT: der Standard-Slider (InfoSlider, von
+   Christian am 21.09. als Standard gesetzt) zeigt ZWEI Bedienelemente
+   — Fortschrittsbalken und zwei Pfeile. Der Bewertungsblock zeigte
+   fuenf, der Studienblock vier. Das ist der ganze Unterschied.
+
+   Messung: homepage-bauer/pruefungen/probe_keine_native_scrollleiste_am_kundenrand.py
+   (folgt den verlinkten Stildateien — die Auftragsprobe sieht nur
+   Inline-Stile und ist auf dieser Achse baulich blind). */
+.qb-wischbahn {
+  scrollbar-width: none;      /* Firefox, moderne Chromium */
+  -ms-overflow-style: none;   /* aelteres Edge */
+}
+.qb-wischbahn::-webkit-scrollbar {
+  display: none;              /* Safari, aelteres Chromium */
+}
+
 .InfoSlider {
   margin-top: 40px;
   overflow: hidden;
@@ -5549,7 +5589,10 @@ ul.kakao-children li {
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding: 4px 4px 14px;
-  scrollbar-width: thin;
+  /* Die native Leiste stand hier neben zwei eigenen Pfeilen und dem
+     Wischhinweis — drei Bedienelemente auf einer Bahn. Sie wird jetzt
+     von .qb-wischbahn versteckt (im JSX gesetzt), damit das Verstecken
+     an EINER Stelle steht und nicht je Bahn neu geschrieben wird. */
 }
 .ghx-studie {
   flex: 0 0 min(340px, 78vw);

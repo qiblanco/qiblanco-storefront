@@ -480,10 +480,20 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
         onPointerLeave={() => {
           hoverRef.current = false;
         }}
-        className={`flex items-start overflow-x-auto pb-4 snap-x snap-mandatory select-none ${
+        // qb-wischbahn (app.css) versteckt die native Scrollleiste. Sie stand
+        // hier NEBEN dem Fortschrittsbalken und den zwei Pfeilen, die seit dem
+        // 21.09. unter den Karten liegen — also zwei Leisten übereinander, und
+        // genau das hat Christian am selben Tag gemeldet. Die gebaute Bedienung
+        // bleibt, die überzählige native Leiste geht.
+        //
+        // Das Verstecken steht bewusst NICHT als Inline-Stil hier: ein Inline
+        // `scrollbar-width` schlägt jede Datei-Regel und wäre die nächste
+        // Stelle, an der dieselbe Entscheidung einzeln getroffen wird. Es
+        // gehört in die eine Klasse, aus der alle Bahnen ziehen.
+        className={`qb-wischbahn flex items-start overflow-x-auto pb-4 snap-x snap-mandatory select-none ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
-        style={{gap: KARTEN_LUECKE_PX, scrollbarWidth: 'thin', order: 1}}
+        style={{gap: KARTEN_LUECKE_PX, order: 1}}
         role="region"
         aria-label={label}
         data-autolauf="bereit"
