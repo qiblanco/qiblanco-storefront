@@ -898,7 +898,23 @@ function FinalCTA() {
         </div>
         <div className="lp-vp-final-cta__body">
           <span className="eyebrow">Bereit für alle drei Ebenen?</span>
-          <h2>Teste den QiOne 2 Pro jetzt 20 Tage lang ohne Risiko.</h2>
+          {/* Zweizeilig auf Christians Anweisung vom 21.09.2026: „Teste jetzt den
+              QiOne® 2 Pro. / 20 Tage ohne Risiko.“ Die zweite Zeile ist keine
+              Fortsetzung des Satzes, sondern ein eigener — zwei Zeilen, zwei Punkte.
+              Die alte Fassung stellte das Produkt zwischen Verb und Angebot und machte
+              aus der Aufforderung einen Nebensatz; jetzt steht zuerst, was zu tun ist,
+              und die Bedingung daneben statt hinein.
+              BAUFORM ist der vorhandene Haus-Zweizeiler — <br /> im Heading, wie in
+              QiOneZellschutz.jsx (h1) und TieferSchlaf.jsx (h1). Bewusst KEINE zweite
+              Schriftgröße und keine neue Klasse: diese Seite hält genau EINEN H2-Stil
+              (--a-fs-h2, styles/schlaf-zellen-schutz.css). Das ruhigere Setzen der
+              zweiten Zeile gehört dem Bausatz-Auftrag, nicht diesem hier.
+              Der erklärende Satz darunter bleibt unberührt. */}
+          <h2>
+            Teste jetzt den QiOne® 2 Pro.
+            <br />
+            20 Tage ohne Risiko.
+          </h2>
           <p className="lp-vp-final-cta__lede">
             Trage den QiOne® 2 Pro 20 Nächte lang. Bist du danach nicht überzeugt, erstatten
             wir dir den vollen Kaufpreis. Ohne Wenn und Aber.
