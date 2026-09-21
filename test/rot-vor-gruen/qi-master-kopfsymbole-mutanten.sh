@@ -73,7 +73,7 @@ m_strichzeichnung() { # genau die Machart, die der AUFTRAGSTEXT verlangt
 m_feste_farbe() { sed -i 's/fill="currentColor"/fill="#f2bf72"/' app/assets/qi-master-symbole/alpha-charge.svg; }
 m_generiert_driftet() { sed -i "s/'one-eye': 'M12 5/'one-eye': 'M12 6/" app/lib/qi-master-symbole.generated.js; }
 m_regel_unscharf() { sed -i 's|{erkennung: /diamant/i|{erkennung: /gitterchip/i|' app/lib/qi-master-kopfsymbole.js; }
-m_zeile_fehlt() { sed -i "s|{erkennung: /alpha\\\\s\\*charge/i, symbol: 'alpha-charge'},||" app/lib/qi-master-kopfsymbole.js; }
+m_zeile_fehlt() { sed -i "s#{erkennung: /alpha\\\\s\\*(?:edition|charge)/i, symbol: 'alpha-charge'},##" app/lib/qi-master-kopfsymbole.js; }
 m_doppelt() { sed -i 's|if (/<svg\\b/i.test(inhalt)) return ganz;||' app/lib/qi-master-kopfsymbole.js; }
 m_vorlage_strich() { # die VORLAGE wird zur Strichzeichnung -> Positivkontrolle muss fallen
   python3 - <<'PY'

@@ -49,14 +49,18 @@ const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SYMBOL_DIR = join(WURZEL, 'app/assets/qi-master-symbole');
 const QIMASTER_JSX = join(WURZEL, 'app/components/product-pages/QiMaster.jsx');
 
-/** Christians Wortlaut, wie er am 2026-09-16 live im Shopify-Feld steht. */
+/**
+ * Christians Wortlaut, wie er live im Shopify-Feld steht.
+ * Stand 2026-09-21: die vierte Zeile heißt „Alpha Edition" (vorher „Alpha Charge",
+ * Christians Anweisung desselben Tages). Der Rest ist der Stand vom 2026-09-16.
+ */
 const KOPFBLOCK_HTML = `<div class="qi-de">
 <p class="p1">Das ultimative Wearable der Zukunft – Gitterchip™ der nächsten Generation</p>
 <ul>
 <li><b>"The One Eye" - Look</b></li>
 <li><b>Zweiteiliger Gitterchip™</b></li>
 <li><b>Hochreiner Natur Diamant eingelassen in den Gitterchip™</b></li>
-<li><b>Alpha Charge - Limitiert auf 100 Stück</b></li>
+<li><b>Alpha Edition - Limitiert auf 100 Stück</b></li>
 </ul>
 </div>`;
 
@@ -157,10 +161,32 @@ test('die vier Zeilen des Kopfblocks haben je ein eigenes Symbol', () => {
     '"The One Eye" - Look',
     'Zweiteiliger Gitterchip™',
     'Hochreiner Natur Diamant eingelassen in den Gitterchip™',
-    'Alpha Charge - Limitiert auf 100 Stück',
+    'Alpha Edition - Limitiert auf 100 Stück',
   ]) {
     assert.ok(html.includes(zeile), `Zeile verändert: ${zeile}`);
   }
+});
+
+test('UMBENENNUNG: beide Fassungen der vierten Zeile bekommen ihr Symbol', () => {
+  // Christian hat die Zeile am 2026-09-21 von „Alpha Charge" auf „Alpha Edition"
+  // umbenannt. Die Regel nennt beide Fassungen, weil das Repo VOR den Shopify-Daten
+  // live geht: dazwischen liegt ein Fenster, in dem noch der alte Wortlaut
+  // ausgeliefert wird. Ohne diesen Arm hätte die zweite Alternative keinen Leser --
+  // und eine Alternative, die nichts prueft, faellt bei keiner Mutation auf.
+  for (const zeile of [
+    'Alpha Edition - Limitiert auf 100 Stück',
+    'Alpha Charge - Limitiert auf 100 Stück',
+  ]) {
+    const treffer = ZUORDNUNG.filter((r) => r.erkennung.test(zeile));
+    assert.equal(treffer.length, 1, `„${zeile}" wird von ${treffer.length} Regeln erkannt`);
+    assert.equal(treffer[0].symbol, 'alpha-charge', `„${zeile}" bekommt ${treffer[0].symbol}`);
+  }
+  // Die Gegenrichtung: „alpha" allein trägt die Erkennung NICHT. Wäre die Regel auf
+  // das blosse Wort verkürzt worden, griffe sie in jede künftige Alpha-Zeile.
+  assert.ok(
+    !ZUORDNUNG.some((r) => r.symbol === 'alpha-charge' && r.erkennung.test('Alpha-Wellen 8 bis 13 Hz')),
+    'die Regel greift eine fremde Alpha-Zeile -- sie ist auf das blosse Wort verkürzt',
+  );
 });
 
 test('TRENNSCHAERFE: keine Regel greift die Zeile einer anderen', () => {
@@ -168,7 +194,7 @@ test('TRENNSCHAERFE: keine Regel greift die Zeile einer anderen', () => {
     '"The One Eye" - Look': 'one-eye',
     'Zweiteiliger Gitterchip™': 'gitterchip-zweiteilig',
     'Hochreiner Natur Diamant eingelassen in den Gitterchip™': 'diamant-gefasst',
-    'Alpha Charge - Limitiert auf 100 Stück': 'alpha-charge',
+    'Alpha Edition - Limitiert auf 100 Stück': 'alpha-charge',
   };
   for (const [text, erwartet] of Object.entries(zeilen)) {
     const treffer = ZUORDNUNG.filter((r) => r.erkennung.test(text));

@@ -70,7 +70,12 @@ bloßen Stein ist.
 
 Bewusst nicht die Seitenansicht: die führt die Vorlage schon für „Diamanten".
 
-## alpha-charge.svg — Alpha Charge - Limitiert auf 100 Stück
+## alpha-charge.svg — Alpha Edition - Limitiert auf 100 Stück
+
+Der Dateiname bleibt `alpha-charge.svg`: Christians Umbenennung am 2026-09-21 gilt dem
+Kundentext, nicht dem internen Bezeichner. Der steht in der Deploy-Allowlist, in der
+generierten Pfadtabelle und im Mutanten-Nachweis — vier Stellen Bruchrisiko ohne
+einen einzigen Kunden, der es merkt.
 
 Ein **Siegel**: kräftiger Ring (aussen r 8,6, innen r 6,2), darin ein **Alpha** als
 gefüllter Buchstabe mit dreieckiger Aussparung. Der Ring ist eine Punze, wie sie eine
