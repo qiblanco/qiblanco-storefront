@@ -3,6 +3,7 @@ import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {ReviewCount} from '~/components/reusables/ReviewCount';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {PeerReviewStudies} from '~/components/reusables/PeerReviewStudies';
 import {DreiThemenBand} from '~/components/redesign/DreiThemenBand';
@@ -27,17 +28,24 @@ import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
    sichern"). Ein Ziel, fünf Versprechen: das liest sich als Drängeln, nicht
    als Einladung.
 
-   WARUM „ansehen" UND NICHT „sichern"/„testen" — der Klick soll halten, was
-   der Knopf zusagt: /pages/qione-2-pro ist die LANDINGPAGE-Fassung, nicht die
-   Kaufseite /products/qione-2-pro (blockLinks.jsx, BLOCK_LP). Der Klick führt
-   auf eine weitere Seite, nicht in die Kasse — „sichern" und „testen" sagen
-   einen Vollzug zu, den er nicht einlöst (Kanon „Die Landingpage verkauft
-   nicht — sie erzeugt den nächsten Klick",
-   brain/Marketing/landingpage-trichter-und-messregel-2026-08-26.md).
-   Die 20-Nächte-Zusage ist damit NICHT verschwunden: sie steht unverändert in
-   der Hero-Subline, im Garantieblock, in der Final-CTA-Überschrift und im
-   Kleingedruckten des Preisblocks. Sie wandert vom Knopf in den Text, wo ein
-   Closer hingehört.
+   WARUM „Jetzt kaufen“ — UND WARUM DAS DIE BEGRÜNDUNG VOM 16.09. ABLÖST.
+   Christian, 21.09.2026, wörtlich: „Statt ‚QiOne 2 Pro ansehen‘ ganz klar
+   sagen, worum es geht: ‚Jetzt kaufen‘, fertig. Das darf auf einer LP stehen.“
+   Das ist eine Entscheidung, keine Auslegungsfrage — sie ersetzt die Abwägung,
+   die hier bis dahin stand, und gilt als Regel für Landeseiten: Zurückhaltung
+   im Knopftext ist dort kein Takt, sondern verschenkte Klarheit.
+
+   WAS DIE ALTE BEGRÜNDUNG RICHTIG SAH, und was davon bleibt: das Ziel
+   /pages/qione-2-pro ist die LANDINGPAGE-Fassung, nicht die Kaufseite
+   /products/qione-2-pro (blockLinks.jsx, BLOCK_LP) — der Klick führt auf eine
+   weitere Seite und nicht in die Kasse. Deshalb hiess der Knopf am 16.09.
+   bewusst „ansehen“. Christians Entscheidung sticht diese Abwägung; das ZIEL
+   bleibt unberührt und wird hier NICHT mitgeändert. Wer den Trichter enger
+   führen will, ändert QIONE_ZIEL — das ist ein eigener Eingriff mit eigener
+   Messung (Tracking-Kette BLOCK_LP), keine Nebenwirkung dieser Umbenennung.
+   Die 20-Tage-Zusage ist nicht verschwunden: sie steht in der Hero-Subline,
+   seit dem 21.09. zusätzlich als Vertrauenszeile direkt unter diesem Knopf,
+   im Garantieblock und im Kleingedruckten des Preisblocks.
 
    WER DIESEN WERT ÄNDERT, ändert ihn hier einmal — jeder Knopf auf
    /pages/qione-2-pro liest ihn. Genau das ist der Punkt: die fünf
@@ -46,7 +54,7 @@ import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
    homepage-bauer/pruefungen/probe_lp_cta_einstimmig.py --formulierungen
    (rt-Task lp-cta-einstimmig, täglich). */
 const QIONE_ZIEL = produktLink('qione-2-pro', BLOCK_LP, 'kauf');
-const QIONE_CTA = 'QiOne® 2 Pro ansehen';
+const QIONE_CTA = 'Jetzt kaufen';
 
 /*
  * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
@@ -282,12 +290,15 @@ function Hero() {
   // HeroGimmick weiter oben; Wortlaut und Reihenfolge der Zeilen bleiben
   // davon unberührt.
   const gimmickArt = ['schlaf', 'fokus', 'ruhe'];
-  const trust = [
-    '14.000+ aktive Nutzer',
-    '100\u00a0% Geld-zurück-Garantie',
-    'Made in Germany',
-    '20 Tage nach Erhalt in Ruhe testen',
-  ];
+  // ARM D (Christian, 21.09.2026): der Vierer-Merkmalskasten „14.000+ aktive
+  // Nutzer / 100 % Geld-zurück-Garantie / Made in Germany / 20 Tage nach
+  // Erhalt in Ruhe testen“ ist ERSATZLOS gestrichen — „das kommt nicht
+  // rüber“. Hier kommt nichts Neues hin; die Stelle bleibt leer.
+  // Kein Widerspruch dazu, dass „14.000+ aktive Nutzer“ weiter oben im
+  // Startseiten-Block (Arm E) wieder auftaucht: gestrichen ist der KASTEN,
+  // nicht die Zahl. Ebenso kehren „100 % Geld-zurück-Garantie“ und die
+  // 20-Tage-Zusage in der Vertrauenszeile unter dem Knopf zurück (Arm C),
+  // dort tragen sie den Abschluss statt eine Merkmalsliste.
   return (
     <section
       className="lp-a-hero"
@@ -314,6 +325,39 @@ function Hero() {
           <h1 id="lp-a-hero-title" className="lp-a-hero__title">
             Ruhe auf Zellebene
           </h1>
+          {/* ARM E (Christian, 21.09.2026): „Dafür oben, unterhalb von ‚Ruhe auf
+              Zellebene‘, muss 1:1 das kommen, was auf der Frontseite ist:
+              QiOne® 2 Pro / 4.8 / Mehr als 14.000+ aktive Nutzer / Erfahre
+              jetzt die Vorteile der kohärenten Wasserstruktur.“
+
+              ÜBERNOMMEN, NICHT NACHGEBAUT: dieselben vier Bausteine in
+              derselben Reihenfolge wie in index-components/HerobannerFeatured
+              .jsx, mit denselben globalen Klassen (`color-accent-main`,
+              `mt-1`) aus app.css. Die Bewertungsdarstellung ist der bereits
+              hinterlegte Standard-Baustein <ReviewCount /> — er wird benutzt
+              und NICHT neu geschrieben (Auftrags-Verbot „keine neuen
+              Bausteine, wo ein Standard existiert“). Die 4.8 kommt von dort
+              zur Laufzeit aus der Bewertungs-API; sie steht bewusst nicht als
+              Zahl im Markup, sonst gäbe es zwei Wahrheiten über dieselbe Note.
+
+              Der Block steht ZWISCHEN H1 und Dreizeiler — das ist „unterhalb
+              von ‚Ruhe auf Zellebene‘“ und hält zugleich die Reihenfolge, die
+              probe_video_mobil_nach_innere_ruhe__20260920.py bewacht: das
+              360-Grad-Video bleibt direkt hinter „Innere Ruhe.“. */}
+          <div className="lp-a-hero__startseiten-block">
+            <h2>QiOne® 2 Pro</h2>
+            <p className="color-accent-main">
+              <strong>
+                <ReviewCount />
+              </strong>
+            </p>
+            <p>
+              <strong>Mehr als 14.000+ aktive Nutzer</strong>
+            </p>
+            <p className="mt-1">
+              <strong>Erfahre jetzt die Vorteile der kohärenten Wasserstruktur</strong>
+            </p>
+          </div>
           <ul className="lp-a-hero__dreizeiler" aria-hidden="false">
             {dreizeiler.map((z, i) => (
               <li key={z}>
@@ -371,11 +415,48 @@ function Hero() {
               )}
             </span>
           </div>
-          <ul className="lp-a-hero__trust">
-            {trust.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ul>
+          {/* ARM C (Christian, 21.09.2026): „Unterhalb des Buttons muss ‚Jetzt
+              20 Tage nach Erhalt testen – mit 0 % Finanzierung & Käuferschutz –
+              100 % Geld-zurück-Garantie‘ stehen, plus die zwei Logos von Klarna
+              und PayPal, das schafft Vertrauen.“ Die Zeile steht deshalb DIREKT
+              unter dem Knopf und nicht irgendwo auf der Seite — gemessen wird
+              die Nähe zum Knopf, nicht das blosse Vorkommen.
+
+              1:1 von der Startseite übernommen statt nachgebaut: derselbe
+              `micro-text`-Absatz und dieselben zwei CdnBild-Aufrufe wie in
+              index-components/HerobannerFeatured.jsx — gleiche CDN-Quellen,
+              gleiche 75-px-Anzeigebreite, gleicher Abstand. Keine neuen
+              Dateien, keine anderen Grössen (Auftrags-Verbot).
+              Die Logos tragen ihren Markennamen als alt-Text: der Begleittext
+              nennt nur „0 % Finanzierung“, WELCHE Zahlungsart gemeint ist,
+              steht sonst nirgends — sie sind der einzige Träger der Auskunft. */}
+          <p className="micro-text mt-1 lp-a-hero__vertrauen">
+            <strong>
+              {' '}
+              Jetzt 20 Tage nach Erhalt testen – mit 0&nbsp;% Finanzierung &amp;
+              Käuferschutz – 100&nbsp;% Geld-zurück-Garantie{' '}
+            </strong>
+          </p>
+          <p className="lp-a-hero__zahlarten">
+            <CdnBild
+              style={{margin: '20px 20px 20px 0'}}
+              breite={75}
+              hoehe={42}
+              loading="lazy"
+              anzeigeBreite={75}
+              src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816"
+              alt="Klarna"
+            />
+            <CdnBild
+              style={{margin: '20px 20px 20px 0'}}
+              breite={75}
+              hoehe={38}
+              loading="lazy"
+              anzeigeBreite={75}
+              src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082"
+              alt="PayPal"
+            />
+          </p>
         </div>
       </div>
     </section>
