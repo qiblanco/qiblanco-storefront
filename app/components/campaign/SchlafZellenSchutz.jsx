@@ -403,8 +403,10 @@ function Hero() {
    geflickt. Der Wortlaut ist seiner, Rechtschreibung und Zeichensetzung
    waren bereits sauber; der Gedankenstrich nach „überzugehen“ ist seiner und
    bleibt (die Regel gegen Gedankenstriche gilt den Antworten von AI Anna,
-   nicht seinem Seitentext). Überschrift und Scroll-Animation darunter
-   bleiben; keine Quellenangabe kommt hinzu (GL-SPR-0008). */
+   nicht seinem Seitentext). Die Überschrift blieb, keine Quellenangabe kam
+   hinzu (GL-SPR-0008). Die Scroll-Animation stand damals darunter; seit dem
+   21.09.2026 steht sie DARÜBER — dieser Abschnitt ist unter sie gewandert,
+   auf Christians Anweisung. Der Wortlaut unten ist davon unberührt. */
 function IntroSection() {
   return (
     <section className="lp-vp-section" data-section="lp-a-intro">
@@ -883,7 +885,6 @@ export function SchlafZellenSchutz({products}) {
       <div className="lp-vp lp-a3">
         <Hero />
         <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
-        <IntroSection />
         {/* Christian, 19.09.2026: „danach unsere Scroll-down-Animation einfügen“.
             Derselbe Baustein, den Startseite, /products/qione-2-pro,
             /pages/tiefer-schlaf und /pages/E-Smog-Schutz schon tragen — EINE
@@ -894,12 +895,21 @@ export function SchlafZellenSchutz({products}) {
             Sie hängt an DIESER Seite: sie trägt im Wissenschafts-Block bereits
             eine zweite Scroll-Strecke (lp-a-mikroskop-video). Zweimal fünf
             Bildschirmhöhen Scroll-Weg, die erste davon vor dem ersten
-            Argument, zerreißen den Lesefluss. */}
+            Argument, zerreißen den Lesefluss.
+
+            REIHENFOLGE, Christian 21.09.2026: „der Bereich Wirkprinzip muss
+            unterhalb der ersten Scrollanimation“. Bis zu diesem Tag stand
+            <IntroSection /> DARÜBER — so hatte es seine Anweisung vom 19.09.
+            („danach unsere Scroll-down-Animation einfügen“) ergeben. Die
+            jüngere Anweisung sticht: erst zeigen, dann erklären. Die
+            Animation blieb stehen, der Abschnitt ist gewandert — als ein
+            Stück, unverändert im Wortlaut und nur an EINER Stelle. */}
         <GitterchipMoleculesScrub
           dataSection="lp-a-gitterchip-video"
           heightVhDesktop={300}
           heightVhMobile={250}
         />
+        <IntroSection />
         <MechanismSection />
         {/* <WeiterCta nr={1} /> ERSATZLOS GESTRICHEN — Christian, 20.09.2026:
             der Knopf unter „3 Wirkebenen". Eindeutig benannt, keine Auslegung. */}
