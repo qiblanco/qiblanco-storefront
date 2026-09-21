@@ -502,14 +502,39 @@ body:has(.lp-ts3) footer {
   margin: 0;
 }
 
-/* ─── Google-Reviews (Fremd-Widget in Seiten-Tokens einfaerben) ───────────── */
-.lp-ts3 [data-section='lp-ts-google-reviews'] {
+/* ─── Bewertungsblock — EIN BLOCK, EINE BREITE (Haus-Standard, siehe
+   homepage-bauer/SKILL-TRUST-ELEMENTE.md und app/components/reusables/Bewertungsblock.jsx)
+
+   VORHER standen Polsterung und Breite auf [data-section='lp-ts-google-reviews'],
+   also auf der OBEREN HAELFTE ALLEIN; fuer die untere gab es keine einzige Regel,
+   sie fiel auf den globalen .NormalSectionSize zurueck. Gemessen am Live-DOM
+   2026-09-21: Kartenspur oben 1080, unten 1280 — 100 px Ueberhang je Seite
+   (mobil 342 gegen 390). Jede der Regeln war fuer sich richtig geschrieben;
+   falsch war allein, dass sie eine HAELFTE adressierte, wo der BLOCK gemeint war.
+
+   DIE ZWEITE WURZEL, die man im Stylesheet nicht sieht: die obere Haelfte ist eine
+   <section> (GoogleReviews rendert `GoogleKundenerfahrungen NormalSectionSize`),
+   die untere ein <div>. Die Grundregel `.lp-ts3 section` (Z. 94) trifft deshalb
+   NUR die obere und gibt ihr eine eigene Flaeche und 96 px Eigenpolsterung — die
+   hellere Kachel mitten im Block. `padding: 0` und `background: transparent` unten
+   sind darum KEIN Zierrat, sondern genau die Neutralisierung dieser Wurzel.
+
+   Innen-Regeln duerfen halbseitig bleiben und sollen es: `…google-reviews .rounded-2xl`
+   faerbt die KARTEN der oberen Haelfte und hat mit der Breite des Blocks nichts zu tun.
+   Die Unterscheidung ist der SELEKTOR, nie die Deklaration. */
+.lp-ts3 .lp-ts-bewertungen {
   padding: var(--ts3-s12) var(--ts3-s3);
   background: var(--ts3-grund);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ts3-s6);
 }
-.lp-ts3 [data-section='lp-ts-google-reviews'] .NormalSectionSize {
+.lp-ts3 .lp-ts-bewertungen .NormalSectionSize {
   margin: 0 auto !important;
   max-width: var(--ts3-breite);
+  width: 100%;
+  padding: 0;
+  background: transparent;
 }
 .lp-ts3 [data-section='lp-ts-google-reviews'] .rounded-2xl {
   background: var(--ts3-grund);
@@ -816,7 +841,11 @@ body:has(.lp-ts3) .footer img { border-radius: var(--ts3-r1); }
   .lp-ts3 .lp-vp-section,
   .lp-ts3 .rd3-trio.NormalSectionSize,
   .lp-ts3 .rd3-podcast.NormalSectionSize,
-  .lp-ts3 [data-section='lp-ts-google-reviews'] {
+  /* Mobil gilt derselbe Satz wie oben: der halbierte Takt gehoert auf den
+     BLOCK, nicht auf seine obere Haelfte. Stand er nur dort, blieb der
+     Ueberhang mobil bestehen, auch wenn Desktop laengst geheilt war —
+     gemessen 2026-09-21: mobil 342 gegen 390, also 24 px je Seite. */
+  .lp-ts3 .lp-ts-bewertungen {
     padding: var(--ts3-s8) var(--ts3-s3);
   }
   .lp-ts3 .lp-ts2-hero__inner,
