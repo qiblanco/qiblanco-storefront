@@ -4,6 +4,7 @@ import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {ORGANISATION, ORG_ID, SITE_ID, MARKEN_PROFILE} from '~/lib/entity-schema';
 import absichtStyles from '~/styles/absicht.css?url';
 import {teilbildTags} from '~/lib/seiten-seo';
+import {isoMitZone} from '~/lib/datum';
 
 /**
  * /pages/warum-qi-blanco — DIE ABSICHT. LIVE UND AUSDRÜCKLICH CRAWLBAR.
@@ -124,8 +125,8 @@ function absichtSchema() {
         isPartOf: {'@id': SITE_ID},
         author: {'@id': personId},
         publisher: {'@id': ORG_ID},
-        datePublished: ABSENDER.stand,
-        dateModified: ABSENDER.stand,
+        datePublished: isoMitZone(ABSENDER.stand),
+        dateModified: isoMitZone(ABSENDER.stand),
         about: {'@id': ORG_ID},
       },
       {
