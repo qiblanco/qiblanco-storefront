@@ -6,7 +6,7 @@ import {BEWERTUNGEN_SEITE as T} from '~/data/bewertungen-seite';
  *
  * REIHENFOLGE, und sie ist tragend: ANTWORT (ein Satz, vor der ersten
  * Zwischenüberschrift) -> die Bewertungen selbst -> Herkunft -> Grenzen ->
- * Selbst prüfen. Wer die Seite wegen der Bewertungen aufruft, sieht sie nach
+ * Selbst testen. Wer die Seite wegen der Bewertungen aufruft, sieht sie nach
  * dem ersten Satz; wer wissen will, ob sie echt sind, liest direkt darunter,
  * woher sie kommen. Beweis ist ein Closer, kein Hook (Kaufüberzeugungs-Kanon):
  * die Studien stehen deshalb als Weiterweg am Ende, nicht oben.
@@ -20,7 +20,7 @@ import {BEWERTUNGEN_SEITE as T} from '~/data/bewertungen-seite';
  *
  * KEIN PREIS, KEIN WARENKORB. Eine /pages/-Seite wird am nächsten Klick
  * gemessen, eine Kaufseite an der Bestellung. Der Ausgang ist „ansehen" und
- * „selbst prüfen", nicht „kaufen".
+ * „selbst testen", nicht „kaufen".
  *
  * KEIN EIGENER LOADER: Note, Anzahl und Rezensionen kommen aus dem root-Loader
  * (app/lib/googleRating.js, Reputon-Feed, server-gecacht). Diese Seite fragt
@@ -76,20 +76,20 @@ export function BewertungenSeite() {
         </div>
       </section>
 
-      <section className="bew__pruefen" data-section="bew-pruefen">
+      <section className="bew__test" data-section="bew-test">
         <div className="bew__inhalt">
-          <h2>{T.pruefen.titel}</h2>
-          {T.pruefen.absaetze.map((absatz) => (
+          <h2>{T.test.titel}</h2>
+          {T.test.absaetze.map((absatz) => (
             <p key={absatz.slice(0, 48)}>{absatz}</p>
           ))}
           <p className="bew__fristen">
-            <a href={T.pruefen.fristen.pfad}>{T.pruefen.fristen.text}</a>
+            <a href={T.test.fristen.pfad}>{T.test.fristen.text}</a>
           </p>
           {/* Der eine Gold-Akzent auf der einen Handlung dieser Seite. Ziel ist
               die Detailseite (blockLinks.js: detail = /pages/<handle>-details),
               nicht die Kaufseite — der Satz darüber sagt „ansehen". */}
-          <a className="bew__cta" href={T.pruefen.weiter.pfad}>
-            {T.pruefen.weiter.text}
+          <a className="bew__cta" href={T.test.weiter.pfad}>
+            {T.test.weiter.text}
           </a>
         </div>
       </section>

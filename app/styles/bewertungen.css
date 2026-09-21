@@ -6,25 +6,25 @@
    Hauses (schlaf-zellen-schutz.css, .lp-a3) sowie zum design-meister web-brief
    --seite bewertungen: warmes Neutral-Kontinuum, EIN Gold-Akzent nur auf
    Handlung/Beweis, Weissraum gruppiert statt Boxen, 8pt-Grid, Sektions-Takt
-   96/64, Zeilenlaenge <= 75ch.
+   96/64, Zeilenlänge <= 75ch.
 
-   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   REGEL DIESES FILES: alle Größen, Farben, Radien und Schatten kommen aus dem
    :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
    Scope: .bew — self-contained.
 
    WARUM EIGENE DATEI UND NICHT kritik.css MITBENUTZT: Gate 12 loest geteilte
    Dateien auf ALLE importierenden Routen auf — jeder Format-/Design-Beleg der
    einen Seite hinge sonst an der anderen. Die WERTE sind kopiert, die DATEI
-   nicht geteilt (dieselbe Entscheidung wie kritik.css gegenueber erfahrungen.css).
+   nicht geteilt (dieselbe Entscheidung wie kritik.css gegenüber erfahrungen.css).
 
    DER EINE AKZENT SITZT AUF DEM BEWEIS UND DER EINEN HANDLUNG: die Antwortzeile
-   traegt das Gold als Linie, der Knopf „ansehen" als Flaeche. Sonst nirgends.
+   trägt das Gold als Linie, der Knopf „ansehen" als Fläche. Sonst nirgends.
 
-   DER BEWERTUNGSBLOCK (Fremd-Widgets in Seiten-Tokens einfaerben, Brief-Regel):
-   Bauform der Startseite in der GEHEILTEN Form vom 20.09.2026 — Flaeche,
+   DER BEWERTUNGSBLOCK (Fremd-Widgets in Seiten-Tokens einfärben, Brief-Regel):
+   Bauform der Startseite in der GEHEILTEN Form vom 20.09.2026 — Fläche,
    Polsterung, Breite und Abstand EINMAL am gemeinsamen Wrapper, beide
-   Haelften WEDER mit eigener Flaeche NOCH mit eigener Polsterung. Regeln, die
-   tiefer zielen (Karten, Bilder, Ueberschrift), faerben Innenleben und sind
+   Hälften WEDER mit eigener Fläche NOCH mit eigener Polsterung. Regeln, die
+   tiefer zielen (Karten, Bilder, Überschrift), färben Innenleben und sind
    keine Block-Eigenschaft (Gate 19, bewertungsblock_standard.py).
    ========================================================================== */
 
@@ -37,7 +37,12 @@
   --bew-fs-md: 1.125rem; /* 18px */
   --bew-fs-lg: 1.25rem; /* 20px */
   --bew-fs-xl: 1.5625rem; /* 25px */
-  --bew-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --bew-fs-h2: 1.5rem; /* EIN H2-Stil, 24px fest. Auf kritik ist die H2 bis 28px
+       fluid, weil dort 20 und 25 px dazwischen liegen. Hier zählt die Rubrik
+       nur Stufen mit mindestens drei Vorkommen: 12, 14, 16 (Seite + Widget) und
+       die H2 — 16→28 wäre 1,75 und 16→26 noch 1,63, beides außerhalb des
+       modularen Bands (≤ 1,55); 16→24 ist 1,5. Gemessen an der Rubrik am
+       Produktions-Build, nicht geschätzt. */
   --bew-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
 
   /* Spacing: 8pt-Grid */
@@ -57,7 +62,7 @@
   --bew-text-hell: #f4f0e9;
   --bew-muted: #6b665d;
   --bew-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis; als Linie und
-       als Knopfflaeche mit dunkler Schrift, nie als Schrift auf hellem Grund. */
+       als Knopffläche mit dunkler Schrift, nie als Schrift auf hellem Grund. */
   --bew-linie: rgba(44, 42, 38, 0.12);
 
   /* Radien + Schatten: je ZWEI Werte */
@@ -66,7 +71,7 @@
   --bew-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
   --bew-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
 
-  /* Layout: eine Lesespalte fuer den Text, eine breite Bahn fuer die Karten */
+  /* Layout: eine Lesespalte für den Text, eine breite Bahn für die Karten */
   --bew-mass: 68ch;
   --bew-breite-schmal: 760px;
   --bew-breite: 1200px;
@@ -81,7 +86,7 @@
   background: var(--bew-grund);
 }
 
-/* NAME MIT ABSICHT (wie .krit__inhalt): die Gestaltungs-Pruefliste erkennt einen
+/* NAME MIT ABSICHT (wie .krit__inhalt): die Gestaltungs-Prüfliste erkennt einen
    Textcontainer nur an einem Namen aus _CONTAINER_WOERTER (inhalt/content/...).
    Wer diese Klasse umbenennt, nimmt der Seite ihre Messbarkeit. */
 .bew__inhalt {
@@ -110,7 +115,7 @@
 }
 
 /* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen, auch
-   ueber dem Feed (die Widget-Ueberschrift wird unten auf dieselbe Regel gezogen). */
+   über dem Feed (die Widget-Überschrift wird unten auf dieselbe Regel gezogen). */
 .bew h2 {
   font-size: var(--bew-fs-h2);
   line-height: 1.25;
@@ -180,8 +185,8 @@
 }
 
 /* ─── Der Bewertungsblock ─────────────────────────────────────────────────────
-   Block-Eigenschaften EINMAL am Wrapper (.bew__block), beide Haelften ohne
-   eigene Flaeche und Polsterung; der Abstand dazwischen aus `gap`. */
+   Block-Eigenschaften EINMAL am Wrapper (.bew__block), beide Hälften ohne
+   eigene Fläche und Polsterung; der Abstand dazwischen aus `gap`. */
 .bew section.bew__bewertungen {
   padding-block: var(--bew-s8);
   background: var(--bew-grund);
@@ -195,9 +200,9 @@
   flex-direction: column;
   gap: var(--bew-s8);
 }
-/* Die obere Haelfte ist ein <section>, die untere ein <div> — die Grundregel
-   `.bew section` traefe deshalb NUR die obere und gaebe ihr 64/96 px eigene
-   Polsterung mitten im Block. Beide Layout-Traeger werden hier symmetrisch
+/* Die obere Hälfte ist ein <section>, die untere ein <div> — die Grundregel
+   `.bew section` träfe deshalb NUR die obere und gäbe ihr 64/96 px eigene
+   Polsterung mitten im Block. Beide Layout-Träger werden hier symmetrisch
    auf Null gesetzt. */
 .bew .bew__block .NormalSectionSize {
   margin: 0 auto !important;
@@ -206,8 +211,8 @@
   padding: 0;
   background: transparent;
 }
-/* Die Widget-Ueberschriften tragen Tailwind-Klassen (text-[1.6rem] sm:text-4xl,
-   zentriert) — zwei fremde Schriftgroessen und eine zweite H2-Ausrichtung. Sie
+/* Die Widget-Überschriften tragen Tailwind-Klassen (text-[1.6rem] sm:text-4xl,
+   zentriert) — zwei fremde Schriftgrößen und eine zweite H2-Ausrichtung. Sie
    erben hier den EINEN H2-Stil der Seite. Innen-Regel, keine Block-Eigenschaft. */
 .bew .bew__block h2 {
   font-size: var(--bew-fs-h2) !important;
@@ -216,6 +221,22 @@
   text-align: left;
   margin: 0 0 var(--bew-s3) !important;
   color: var(--bew-text);
+}
+/* Fremd-Widget in Seiten-Tokens (Brief-Regel), Innen-Regeln, keine Block-
+   Eigenschaft: der Badge-Zusatz trägt in app.css 0.95rem (15,25 px, ein wilder
+   Zwischenwert), der „weiterlesen"-Knopf Google-Blau #1565c0 — auf dieser Route
+   die ZWEITE gesättigte Akzentwelt neben dem Gold (gemessen: 2 Hue-Bins, −25).
+   Beides erbt hier Basis-Größe und Textfarbe; die Handlung bleibt an der
+   goldenen Linie erkennbar wie jeder Link der Seite. */
+.bew .bew__block .google-rating-badge__powered {
+  font-size: var(--bew-fs-base);
+}
+.bew .bew__block button[aria-expanded] {
+  color: var(--bew-text);
+  text-decoration: underline;
+  text-decoration-color: var(--bew-akzent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
 }
 /* Karten in Seiten-Tokens: Grund, Haarlinie, EIN Radius, EIN Schatten. */
 .bew .bew__block .rounded-2xl {
@@ -233,7 +254,7 @@
   border-radius: var(--bew-r1);
 }
 
-/* ─── Herkunft / Grenzen / Pruefen ────────────────────────────────────────── */
+/* ─── Herkunft / Grenzen / Prüfen ────────────────────────────────────────── */
 .bew__herkunft {
   background: var(--bew-flaeche);
 }
@@ -253,14 +274,14 @@
   font-weight: 600;
 }
 
-.bew__pruefen {
+.bew__test {
   background: var(--bew-flaeche);
 }
 .bew p.bew__fristen {
   color: var(--bew-muted);
 }
 
-/* Der eine Knopf der Seite: Gold als Flaeche, dunkle Schrift, EIN Radius. */
+/* Der eine Knopf der Seite: Gold als Fläche, dunkle Schrift, EIN Radius. */
 .bew a.bew__cta {
   display: inline-block;
   margin-top: var(--bew-s3);
@@ -288,7 +309,7 @@ body:has(.bew) {
   --shop-switch-active: rgba(201, 161, 75, 0.18);
 }
 
-/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss. */
+/* EIN Bild-Radius auf dieser Route — auch für die Bilder aus Kopf und Fuss. */
 body:has(.bew) img,
 body:has(.bew) picture,
 body:has(.bew) video {

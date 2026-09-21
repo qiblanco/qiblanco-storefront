@@ -67,7 +67,7 @@ export const BEWERTUNGEN_SEITE = {
     ],
   },
 
-  pruefen: {
+  test: {
     titel: 'Selbst prüfen: 20 Tage',
     absaetze: [
       'Du musst keiner Bewertung glauben. Du kannst den QiOne® 2 Pro 20 Tage ab Erhalt tragen und benutzen und ihn zurückgeben, ohne einen Grund zu nennen. „Ich merke nichts" reicht völlig; angeben musst du ohnehin keinen.',
