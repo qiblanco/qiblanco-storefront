@@ -34,8 +34,25 @@
  * ERKANNT WIRD AM STABILEN WORT, NICHT AM GANZEN SATZ. Die Zeilen sind Christians
  * Wortlaut und können sich in Anfuehrungszeichen, ™ und Bindestrichen aendern (genau
  * das hat der Schwester-Auftrag an diesem Tag getan). Ein Literal-Vergleich wäre beim
- * nächsten Feinschliff still wirkungslos; „one eye", „zweiteilig", „diamant",
- * „alpha charge" ueberleben ihn.
+ * nächsten Feinschliff still wirkungslos; „one eye", „zweiteilig", „diamant"
+ * ueberleben ihn.
+ *
+ * DIE VIERTE ZEILE HAT AM 2026-09-21 IHR STABILES WORT VERLOREN, und das ist der Fall,
+ * gegen den der Absatz darueber gebaut war -- er ist trotzdem eingetreten. Christian:
+ * „Alpha Charge – Limitiert auf 100 Stück ändern zu Alpha Edition – Limitiert auf 100
+ * Stück". Das Substantiv war das erkannte Wort; „alpha" allein trägt die Erkennung
+ * nicht, sobald eine zweite Zeile es je aufnimmt. Die Regel nennt deshalb BEIDE
+ * Fassungen. Der Grund ist nicht Nostalgie, sondern die Reihenfolge des Vollzugs: das
+ * Repo geht VOR den Shopify-Daten live, und zwischen beiden Schritten liegt der
+ * Zeitraum, in dem noch der alte Wortlaut ausgeliefert wird. Eine Regel, die nur den
+ * neuen kennt, lässt das Symbol genau in diesem Fenster wegfallen. Beide Alternativen
+ * haben einen Leser im Test (Arm „Umbenennung"), sonst wäre die zweite totes Holz.
+ *
+ * WAS HIER AUSDRÜCKLICH NICHT UMBENANNT WIRD: der Symbolname 'alpha-charge' und die
+ * Datei alpha-charge.svg. Die sind interne Bezeichner -- sie stehen in der Deploy-
+ * Allowlist (config/deploy.conf ALLOW_GLOB), in der generierten Pfadtabelle, im
+ * Mutanten-Nachweis und in der Randprobe. Kein Kunde sieht sie, und jede Umbenennung
+ * wäre Bewegung ohne Wirkung mit vier Stellen Bruchrisiko.
  *
  * FAIL-SOFT: passt nichts, bleibt das HTML unveraendert. Der Kopfblock ohne Symbole
  * ist der Zustand von gestern und kein Schaden; ein Fehler beim Einsetzen wäre einer.
@@ -55,7 +72,7 @@ export const ZUORDNUNG = [
   {erkennung: /one\s*eye/i, symbol: 'one-eye'},
   {erkennung: /zweiteilig/i, symbol: 'gitterchip-zweiteilig'},
   {erkennung: /diamant/i, symbol: 'diamant-gefasst'},
-  {erkennung: /alpha\s*charge/i, symbol: 'alpha-charge'},
+  {erkennung: /alpha\s*(?:edition|charge)/i, symbol: 'alpha-charge'},
 ];
 
 /**
