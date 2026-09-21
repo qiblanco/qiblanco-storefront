@@ -99,8 +99,11 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
 
   return (
     <div className="UpsellLineUp mt-2 NormalSectionSize" data-section={dataSection}>
+      {/* Christian 2026-09-21: "Über 300 neue Nutzer im Monat." ersatzlos
+        gestrichen (Job 20260921, "300 neue Nutzer ersatzlos streichen").
+        Die Revolutions-Zeile bleibt unveraendert stehen. Nicht wieder
+        einsetzen — der Satz ist eine Festlegung, keine Formulierungsfrage. */}
       <h2 className="text-5xl! text-center">
-        Über 300 neue Nutzer im Monat. <br />
         Werde Teil der Qi Blanco® Revolution!
       </h2>
       <div

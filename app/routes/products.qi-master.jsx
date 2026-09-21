@@ -35,11 +35,15 @@ import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
  * ZAHLEN AN DER MARKE — hier stand bis 2026-09-10 das Gegenteil des
  * Gerenderten, und der Kommentar war die Stelle, an der man die Claims-Lage
  * nachliest: die geteilten Bausteine <GoogleRezensionenBereich/> („Über
- * 14.000 zufriedene Kunden") und <UpsellLineUp/> („Über 300 neue Nutzer im
- * Monat") bringen MARKENWEITE Zahlen mit und rendern sie auch auf dieser
- * Seite — genauso wie auf /products/qione-2-pro. Sie behaupten nichts über
- * den QiMaster, und sie bleiben, weil der Auftrag ausdrücklich dieselben
- * Bausteine verlangt. Dass markenweiter Sozialbeweis auf einer brandneuen
+ * 14.000 zufriedene Kunden") und <UpsellLineUp/> bringen MARKENWEITE Zahlen
+ * mit und rendern sie auch auf dieser Seite — genauso wie auf
+ * /products/qione-2-pro. Sie behaupten nichts über den QiMaster, und sie
+ * bleiben, weil der Auftrag ausdrücklich dieselben Bausteine verlangt.
+ * NACHZUG 2026-09-21: <UpsellLineUp/> trug bis dahin zusätzlich die Zeile
+ * „Über 300 neue Nutzer im Monat". Christian hat sie ersatzlos streichen
+ * lassen (Job 20260921, "300 neue Nutzer ersatzlos streichen"); der
+ * Baustein bringt seitdem nur noch die Revolutions-Zeile mit. Die
+ * 14.000er-Zahl ist davon NICHT berührt — sie ist eine andere Aussage. Dass markenweiter Sozialbeweis auf einer brandneuen
  * Produktseite wie Produktbeweis gelesen werden kann, ist als offene Frage
  * an Christian ausgewiesen (RESULT) — nicht still entschieden.
  *

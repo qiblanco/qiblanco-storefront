@@ -113,6 +113,9 @@ export default function QiMaster({block = undefined}) {
           des Upsell-Blocks (Christian 2026-09-16, Auftrag 20260916-
           bewertungsblock-wandert-ans-ende: "Diesen Bereich ganz nach unten
           schieben, oberhalb von 'Über 300 neue Nutzer jeden Monat'").
+          Der zitierte Anker-Satz steht seit dem 2026-09-21 nicht mehr im
+          Upsell-Block (ersatzlos gestrichen, Christian) — gemeint ist die
+          Stelle, an der <UpsellLineUp/> beginnt. Das Zitat bleibt woertlich.
           Bis dahin stand er zwischen dem Fünf-Karten-Karussell (seit dem
           2026-09-16 ersatzlos gestrichen) und dem 20-Tage-Block.
 
