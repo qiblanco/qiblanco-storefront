@@ -766,15 +766,15 @@ export function ESmogSchutz({products}) {
         {/* BEWERTUNGSBLOCK — der Haus-Standard als BAUSTEIN, nicht als Abschrift
             (homepage-bauer/SKILL-TRUST-ELEMENTE.md, Christian 2026-09-20: „das beim
             Homepagebauer als Standard abspeichern"). Bis hierher stand der Block als
-            zwei Haelften von Hand nebeneinander — und die beiden liefen in ZWEI
+            zwei Hälften von Hand nebeneinander — und die beiden liefen in ZWEI
             Breitensystemen: gemessen am Live-DOM am 2026-09-21 lief die Kartenspur
-            oben 1080 px, unten 1280 px, also 100 px Ueberhang je Seite (mobil
-            342/390). Genau Christians „die untere Reihe schwebt ausserhalb".
+            oben 1080 px, unten 1280 px, also 100 px Überhang je Seite (mobil
+            342/390). Genau Christians „die untere Reihe schwebt außerhalb".
 
-            Der Baustein bringt die Bauform mit: EIN Wrapper, beide Haelften darin,
-            die Ueberschrift „Alle Google Bewertungen" ueber der unteren. Flaeche,
+            Der Baustein bringt die Bauform mit: EIN Wrapper, beide Hälften darin,
+            die Überschrift „Alle Google Bewertungen" über der unteren. Fläche,
             Polsterung und Breite sitzen jetzt EINMAL auf `.lp-d-bewertungen` und gelten
-            fuer beide Haelften — ein Block, eine Breite, ein Abstand.
+            für beide Hälften — ein Block, eine Breite, ein Abstand.
 
             DER INFOSLIDER STAND BIS HEUTE ZWISCHEN DEN BEIDEN HAELFTEN und zerschnitt
             den Block: der Leser bekam Erfahrungsberichte, dann Werbekacheln, dann
@@ -784,8 +784,8 @@ export function ESmogSchutz({products}) {
             „Beeindruckende Kundenerfahrungen / alle Google-Bewertungen / und dann die
             4,8 Sterne klickbar" ist EIN Bereich zusammen).
 
-            KEINE Bewertung ist veraendert, ausgewaehlt oder weggelassen — Note und
-            Anzahl kommen unveraendert aus denselben zwei Widgets. */}
+            KEINE Bewertung ist verändert, ausgewählt oder weggelassen — Note und
+            Anzahl kommen unverändert aus denselben zwei Widgets. */}
         <Bewertungsblock praefix="lp-d-" wrapperKlasse="lp-d-bewertungen" />
         <InfoSlider dataSection="lp-d-info-slider" />
         <VideoSection />
