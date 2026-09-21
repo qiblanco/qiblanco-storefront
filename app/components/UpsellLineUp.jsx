@@ -43,9 +43,13 @@ const ITEMS = [
     // Claim-Fix 20260718: „Der leistungsstärkste Gitterchip im Sortiment" ist
     // unbelegt (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
     // Christian/Legal-Gate, HARDWARE_ENTSCHEIDUNGSHILFE_V1) — ersetzt durch
-    // das belegte Flächen-Merkmal (bis zu 300 m²).
+    // das belegte Reichweiten-Merkmal.
+    // Reichweiten-Fix 20260921: „bis zu 300 m²" ist gesperrt (Salesbot seit
+    // 2026-07-30, Support-Fact-Gate VB-0011 seit 2026-09-21, /pages/faq nennt
+    // die Zahl seit 2026-09-02 als falsch). Kanonisch ist der Radius als
+    // AUSLEGUNG, nie in Quadratmetern (GL-SPR-0007, Christian 2026-09-16).
     description:
-      'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air deckt bis zu 300 m² ab und schafft ein Umfeld, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
+      'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air ist auf einen Radius von bis zu 160 m ausgelegt. Es schafft ein Umfeld, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
     produktId: 'qihome-air',
   },
 ];
