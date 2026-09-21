@@ -14,10 +14,20 @@
    Der body:has()-Layer hebt die fremden Gold-Toene (app.css, rd3) auf den EINEN
    Akzent und faerbt Header/Footer/Fremd-Widgets in die Token-Welt.
 
-   KOPPLUNG (2026-07-16): Die Campaign-PDP /pages/qione-2-pro laedt diese Datei
-   als geteilte Token-Quelle (styles/qione-2-pro-shop.css, Scope .lp-a3 .shopq).
-   Aenderungen hier wirken darum kuenftig AUCH auf die Shopseite -> beim Redesign
-   dieser LP die Shopseite MIT-TESTEN (Konzept „Shopseite nach LP" Kap. 8).
+   KOPPLUNG — AUFGEHOBEN, HIER NUR NOCH ALS HISTORIE (Stand 2026-09-21 gemessen):
+   Vom 2026-07-13 bis 2026-07-16 lud die Campaign-PDP /pages/qione-2-pro diese
+   Datei als geteilte Token-Quelle (Scope .lp-a3 .shopq); Aenderungen hier wirkten
+   darum auch auf die Shopseite. Der Job qione-shopniveau-design-qa hat die
+   Kopplung am 2026-07-16 AUFGEHOBEN — pages.qione-2-pro.jsx laedt seither nur
+   noch qione-2-pro-shop.css (Scope .shopq2), nachzulesen im Kopf jener Route.
+   Dieser Satz stand bis zum 2026-09-21 unveraendert als Gegenwart hier und war
+   damit zwei Monate unwahr, ohne dass jemand die Datei angefasst haette.
+   WER HEUTE HIER AENDERT, TRIFFT (gemessen per grep ueber app/routes):
+     pages.schlaf-zellen-schutz.jsx · pages.partner.jsx ·
+     pages.podcasts_.$seite.jsx · pages.affiliate-partnerprogramm.jsx
+   Von diesen vier rendert nur die Schlafseite einen ScrollScrubVideo bzw. einen
+   StudienSlider — Regeln auf diese beiden Bausteine haben also genau EINE
+   Zielseite. Die Reichweite wird nachgemessen, nicht aus diesem Kopf geglaubt.
    ========================================================================== */
 
 :root {
@@ -872,8 +882,35 @@ body:has(.lp-a3) header img { border-radius: var(--a-r1); }
 
 /* „Wissenschaftlich getestet..."-Zeile: .lp-a3 p setzt max-width — ohne
    auto-Margin klebt die Box links statt zentriert unter den Studien
-   (Hausmuster zell-schutz.css, gleicher Fix; 20260718). */
-.lp-a3 .Studien p.text-center { margin-inline: auto; }
+   (Hausmuster zell-schutz.css, gleicher Fix; 20260718).
+
+   21.09.2026 — DIE DIAGNOSE OBEN WAR RICHTIG, DER SELEKTOR LAG DANEBEN UND HAT
+   SEIN ELEMENT NIE GETROFFEN. Gemeint ist die Zeile unter dem Studien-Slider;
+   sie heisst p.ghx-studien__footnote und sitzt in div.ghx-studien
+   (components/reusables/StudienSlider.jsx), traegt also WEDER .text-center NOCH
+   einen .Studien-Vorfahren. Am Live-DOM gezaehlt:
+       .lp-a3 .Studien p.text-center                  → 0 Elemente
+       .lp-a3 .Studien                                → 1 (der Vorfahr existiert)
+       .lp-a3 .ghx-studien > p.ghx-studien__footnote  → 1 (genau das gemeinte)
+   Die Regel war zwei Monate lang wirkungslos; Christian hat den Befund in dieser
+   Zeit ein zweites Mal gemeldet. Gemessen stand die Zeile auf Desktop 234 px zu
+   weit links (Textmitte 406 gegen Elternmitte 640) — mobil zufaellig richtig,
+   weil der 68ch-Deckel dort breiter ist als die Spalte und der Kasten die volle
+   Breite bekommt. Eine Messung nur auf Mobil spricht diesen Defekt frei.
+
+   ERSETZT, NICHT ERGAENZT: der alte Selektor hat heute null Gegenstand: eine
+   zweite Regel danebenzustellen hiesse, zwei Regeln fuer dieselbe Sache zu
+   fuehren — und die falsche gewinnt still.
+
+   DER NACHWEIS IST GEOMETRIE, NIE EINE DEKLARATION: ein Fix mit danebenliegendem
+   Selektor ist im Quelltext von einem wirksamen nicht zu unterscheiden — er
+   traegt denselben Kommentar und dieselbe Begruendung. `text-align: center` war
+   die ganze Zeit gesetzt und rechnete sich auch zu `center` aus; es zentriert den
+   Text IM Kasten und sagt nichts ueber die Lage des Kastens. Stehende Wache:
+   worker-pool/pruefungen/probe_fussnote_gerendert_mittig__20260920.py
+   (rt-Task fussnote-schlafseite-mittig, taeglich) misst die echten Textkanten
+   gegen die Elternmitte, auf Desktop UND mobil. */
+.lp-a3 .ghx-studien > p.ghx-studien__footnote { margin-inline: auto; }
 
 /* ── Weiter-Knopf zwischen den Sektionen (Job 20260906-lp-erzeugt-den-naechsten-
    klick-…-prio20, s02) ──────────────────────────────────────────────────────
@@ -926,9 +963,67 @@ body:has(.lp-a3) header img { border-radius: var(--a-r1); }
    neue Schriftgroesse.
 
    GELTUNGSBEREICH: `.lp-a3` bzw. `body:has(.lp-a3)` — nur dort, wo dieses
-   Token-System ohnehin regiert. ACHTUNG (Dateikopf): die Campaign-PDP
-   /pages/qione-2-pro laedt diese Datei mit (Scope .lp-a3 .shopq) und ist
-   deshalb MITGETESTET. */
+   Token-System ohnehin regiert. Welche Routen das heute sind, steht gemessen im
+   Dateikopf; die dort frueher genannte Kopplung an /pages/qione-2-pro ist seit
+   dem 2026-07-16 aufgehoben (nachgemessen 2026-09-21). */
+
+/* ── Vertikaler Takt: fremde Aussenabstaende auf den Seiten-Rhythmus ──────
+   Job 20260920-GROSSJOB-schlafseite-sieht-aus-wie-die-startseite, Segment s04.
+   Christian: „nach dem Absatztext zum Thema Wirkprinzip ist der optische Abstand
+   zu gross [...] und die ganze Seite da nochmal kontrollieren, dass das optisch
+   gleichmaessig und harmonisch ist.“
+
+   BEFUND, live auf BEIDEN Viewports gemessen (nicht am Quelltext geraten): der
+   Takt dieser Seite kommt aus der Sektions-Polsterung und ist responsiv —
+   --a-s12 (96) auf Desktop, --a-s8 (64) ab 767px. Zwei fremde Bausteine bringen
+   dagegen KONSTANTEN mit, die von diesem Takt nichts wissen:
+     app.css:5366  .ScrollScrubVideoBlock     margin: 100px 0 100px ...
+     app.css:5468  .ScrollScrubVideo-fussnote margin: -70px auto 100px
+     app.css:2650  .InfoSlider                margin-top: 40px
+   Sie ADDIEREN sich auf die Polsterung des Nachbarn, statt sie zu ersetzen.
+   Gemessen ergab das vier Naehte ausserhalb des Rasters — 196 px nach dem
+   Wirkprinzip-Absatz (96 Polsterung + 100 Marge), ebenso vor und nach beiden
+   Scroll-Videos, dazu 40 px vor dem Info-Slider.
+   AUF MOBIL IST DER FEHLER GROESSER, NICHT KLEINER: die 100 sind dort 156 % des
+   64er-Taktes, auf Desktop nur 104 % des 96er. Christians Beschwerde ist am
+   Desktop formuliert; wer nur dort misst, behebt die kleinere Haelfte.
+
+   WARUM 0 UND NICHT EIN TOKEN-WERT — die Seite hat die Regel schon selbst
+   aufgeschrieben, bei .lp-a-weiter wenige Zeilen weiter oben: „KEIN eigener
+   vertikaler Abstand: der Knopf steht zwischen zwei <section>, die schon je
+   --a-s12 (mobil --a-s8) polstern — ein zusaetzlicher Rand wuerde das 8pt-Raster
+   verdoppeln statt es zu treffen.“ Genau diese Lage liegt hier vor. 0 ist
+   ausserdem der einzige Wert, der VON SELBST responsiv ist: er laesst den Takt
+   aus der Sektions-Polsterung kommen, die ihre mobile Fassung bereits hat —
+   jeder feste Token-Wert braeuchte eine zweite Zeile in der Media-Query und
+   fuehrte dieselbe Wahrheit an zwei Stellen.
+   (mm-lp.css:585, ...-v2-18ef.css:675 und ...-v3-67a7.css:706 loesen denselben
+   Fremdwert im eigenen Scope mit --X-s12. Das ist dasselbe Rezept — dort ging es
+   um das TOKENISIEREN des Wertes, hier um die VERDOPPLUNG an der Naht. Der Scope
+   wird uebernommen, der Zahlenwert folgt der lokalen Regel.)
+
+   DIE ZWEITE 100 IST UNSICHTBAR, UND DAS IST DIE EIGENTLICHE FALLE: die Fussnote
+   ist das letzte Kind von .ScrollScrubVideoBlock, und der Block hat weder
+   padding-bottom noch border-bottom. Ihre margin-bottom KOLLABIERT deshalb durch
+   die Blockkante und wirkt als Aussenabstand des Blocks — waehrend
+   getBoundingClientRect().bottom sie nicht enthaelt und getComputedStyle des
+   Blocks weiter 0px meldet. Beide naheliegenden Messgeraete sagen uebereinstimmend
+   „da ist nichts“. Sichtbar wird sie nur in der Arithmetik der ELTERNKANTE.
+   Sie trifft nur das Mikroskop-Video (nur dieses bekommt eine fussnote-Prop) —
+   eine Probe, die nur die andere Naht misst, meldet Heilung, wo keine ist.
+
+   REICHWEITE, gemessen statt angenommen: von den vier Routen, die diese Datei
+   laden, rendert nur die Schlafseite diese Bausteine — null Treffer auf
+   /pages/partner, /pages/podcasts/* und /pages/affiliate-partnerprogramm. Der
+   Eingriff bleibt deshalb im .lp-a3-Scope. app.css:5366/5468/2650 wird NICHT
+   angefasst: dort haengen acht weitere Nutzer (ESmogSchutz, MmWirktDas,
+   TieferSchlaf, ZellSchutz, SchlafZellenSchutzV2/V3, QiOne2Pro, StudienSlider),
+   von denen drei den Wert ohnehin schon selbst ueberschreiben.
+   KEIN NEUER WERT, KEIN NEUES GESTALTUNGSSYSTEM: diese Regeln NEHMEN nur einen
+   Fremdwert weg; den Abstand stellt danach die Sektion selbst. */
+.lp-a3 .ScrollScrubVideoBlock { margin-block: 0; }
+.lp-a3 .ScrollScrubVideo-fussnote { margin-bottom: 0; }
+.lp-a3 .InfoSlider { margin-top: 0; }
 
 /* ── Hintergruende: fremde Flaechen ins Neutral-Kontinuum ─────────────────── */
 .lp-a3 { --a-buehne: var(--a-grund); }
