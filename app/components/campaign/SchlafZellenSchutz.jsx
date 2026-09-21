@@ -526,7 +526,7 @@ function ScienceSection() {
           Themenblock ein, und erst dann erfolgt die schriftliche Erklärung."
           Erst die Zellen zeigen, dann sagen, was sechs Jahre Forschung daran
           gemessen haben. Die Regel gilt über diese Stelle hinaus und liegt als
-          Standard in SKILL-SCROLL-ANIMATIONEN.md, Kapitel 0. */}
+          Standard in SKILL-SCROLL-ANIMATIONEN.md, Kapitel 7. */}
       <ScrollScrubVideo
         dataSection="lp-a-mikroskop-video"
         srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
