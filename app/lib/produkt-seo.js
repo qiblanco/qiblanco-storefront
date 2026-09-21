@@ -91,8 +91,8 @@ export const PRODUKT_BESCHREIBUNGEN = {
     'Schutz, den man nicht sieht: Der QiBracelet® reduziert mit integriertem ' +
     'Gitterchip™ die Auswirkungen von E-Smog und 5G — elegant am Handgelenk.',
   '/products/qihome-air':
-    'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air deckt bis zu 300 m² ab ' +
-    'und schafft eine harmonische Atmosphäre — ideal für Schlafzimmer und Büro.',
+    'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air ist auf einen Radius ' +
+    'von bis zu 160 m ausgelegt. Ideal für Wohnung, Haus, Schlafzimmer und Büro.',
   // QiMaster (2026-09-10, Job 20260910-BAU-qi-master-…, Christian-Auftrag
   // CW-20260910-0e45045b): Produkt liegt als DRAFT in Shopify; die Zeile
   // wirkt erst, wenn Christian es aktiviert. Nur Beschaffenheit, keine
