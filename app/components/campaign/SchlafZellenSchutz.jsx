@@ -507,23 +507,26 @@ function MechanismSection() {
    `<LpStudien headline="" />` am ENDE dieser Sektion, unter dem Mikroskop-
    Video; Christian: „Wichtig, dass dann der Studienslider weiter unten auf der
    Seite verschwindet, sonst wäre er doppelt." Die untere Fassung ist entfernt,
-   nicht beide — entdoppeln heißt nicht löschen. */
+   nicht beide — entdoppeln heißt nicht löschen.
+
+   REIHENFOLGE SEIT DEM 21.09.2026 (Christian, Job 20260921-forschungsblock-
+   unter-die-zweite-scrollanimation): Video → „6 Jahre Forschung" → Studien-
+   slider → Knopf. Die Animation eröffnet den Themenblock, die Erklärung folgt
+   darunter. Das ist EINE Sektion geblieben, nur anders geordnet — der Slider
+   steht weiterhin genau einmal auf der Seite. */
 function ScienceSection() {
   return (
     <section className="lp-vp-section" data-section="lp-a-wissenschaft">
-      <PeerReviewStudies dataSection="lp-a-peer-review-studien" />
-      <LpStudien
-        dataSection="lp-a-studien"
-        headline="Wirkung an menschlichen Zellen bestätigt!"
-      />
-      {/* Das Scroll-Scrub-Video belegt bauartbedingt mehrere Bildschirmhoehen —
-          es war nach dem ersten Einbau die letzte verbliebene Durststrecke
-          (Falz 5,9 bis 11,8). Der Knopf steht deshalb VOR dem Video, solange
-          der Beweis aus den Zahlen darueber noch frisch ist. */}
-      <WeiterCta nr={6} imBlock />
       {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
           Karte, gleiche Botschaften — Job 20260716-bauer-scroll-down-
-          animationen-capability; SHOW IT statt Behauptung) */}
+          animationen-capability; SHOW IT statt Behauptung).
+
+          ER STEHT SEIT DEM 21.09.2026 AN DER SPITZE DIESER SEKTION, nicht mehr
+          an ihrem Ende — Christian: „Die Scrollanimation leitet den neuen
+          Themenblock ein, und erst dann erfolgt die schriftliche Erklärung."
+          Erst die Zellen zeigen, dann sagen, was sechs Jahre Forschung daran
+          gemessen haben. Die Regel gilt über diese Stelle hinaus und liegt als
+          Standard in SKILL-SCROLL-ANIMATIONEN.md, Kapitel 0. */}
       <ScrollScrubVideo
         dataSection="lp-a-mikroskop-video"
         srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
@@ -544,6 +547,21 @@ function ScienceSection() {
         ]}
         fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
       />
+      {/* DIE SCHRIFTLICHE ERKLÄRUNG ZUM BLOCK, den das Video darueber eröffnet:
+          „6 Jahre Forschung" (PeerReviewStudies, von der Startseite übernommen)
+          und der Studienslider „Wirkung an menschlichen Zellen bestätigt!".
+          Wortlaut unverändert — bewegt wurde die Reihenfolge, nicht der Text. */}
+      <PeerReviewStudies dataSection="lp-a-peer-review-studien" />
+      <LpStudien
+        dataSection="lp-a-studien"
+        headline="Wirkung an menschlichen Zellen bestätigt!"
+      />
+      {/* Der Knopf bleibt direkt unter den Studienzahlen — dort, wo der Beweis
+          frisch ist. Er ist mit dem Block gewandert, nicht stehengeblieben:
+          hätte er seinen Platz behalten, stünde er nun als erstes Element der
+          Sektion über dem Video und hätte nichts mehr, worauf er sich beruft.
+          Sein Text ist unangetastet. */}
+      <WeiterCta nr={6} imBlock />
       {/* lp-a-weiter-5 stand hier bis zum 2026-09-16 (Job 20260916-zwoelf-
           kaufknoepfe-und-neun-sagen-dasselbe, s03) und ist ENTFERNT: er war der
           ZWEITE Knopf derselben Sektion — der Wissenschafts-Block trägt seinen
