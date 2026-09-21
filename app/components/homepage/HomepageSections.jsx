@@ -1,5 +1,6 @@
 import {HerobannerFeatured} from '~/components/index-components/HerobannerFeatured';
 import {ZellDiagramme} from '~/components/index-components/ZellDiagramme';
+import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {LogoBar} from '~/components/reusables/LogoBar';
 import {Richtext} from '~/components/reusables/Richtext';
@@ -14,8 +15,6 @@ import {Finanzierungsbanner} from '~/components/index-components/Finanzierungsba
 import {SingleImage} from '~/components/reusables/SingleImage';
 import {CallToAction} from '~/components/index-components/CallToAction';
 import {HeroBanner} from '~/components/reusables/HeroBannerParallax';
-import {GoogleReviews} from '~/components/index-components/GoogleReviews';
-import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 
 /**
@@ -40,13 +39,20 @@ export function HomepageSections({overrides = {}}) {
         alignment="center"
         text={<h2>"87 % der Nutzer berichten von positiven <br /> Veränderungen in ihrem Wohlbefinden nach der <br /> Anwendung der Qi Blanco® Produkte."</h2>} />
       <InfoSlider dataSection="info-slider" />
-    <GoogleReviews dataSection="google-reviews" />
-    <div className="NormalSectionSize" data-section="reputon-reviews">
-      <h2 className="text-[1.6rem] sm:text-4xl font-semibold text-center mb-6 mt-2">
-        Alle Google Bewertungen
-      </h2>
-      <ReputonWidget />
-    </div>
+      {/* BEWERTUNGSBLOCK — hier stand das Original, von dem alle anderen Seiten
+          abgeschrieben haben: die zwei Hälften als Geschwister ohne gemeinsamen
+          Eltern, samt von Hand getipptem <h2>. Genau diese Bauform ist auf vier
+          Landingpages kopiert worden, und auf zweien davon liefen die Hälften
+          danach in zwei Breitensystemen (gemessen 2026-09-21: 100 px Überhang je
+          Seite). Die Referenz benutzt jetzt selbst den Baustein, den sie
+          hervorgebracht hat — sonst bleibt die Vorlage die letzte Abschrift.
+
+          Der gerenderte DOM bleibt bis auf den umschließenden Wrapper gleich:
+          dieselben zwei Hälften, dieselbe Überschrift, dieselben
+          data-section-Anker "google-reviews" und "reputon-reviews" (Schlüssel in
+          verhalten.db, deshalb unverändert). `.home` ist normaler Blockfluss ohne
+          flex/grid, der Wrapper ist damit layoutneutral. */}
+      <Bewertungsblock />
       {/* VORAUSSCHAUENDES LADEN (Job 20260903-BAU-vorausschauendes-laden-...,
           Christian 2026-09-03). Diese drei Testimonials luden bis heute je
           einen ECHTEN YouTube-Player beim Seitenaufbau — gemessen 3 Player und
