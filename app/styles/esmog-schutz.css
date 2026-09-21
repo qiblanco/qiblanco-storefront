@@ -436,11 +436,38 @@ body:has(.lp-d3) footer {
 .lp-d3 .Studien img { border-radius: var(--a-r1); box-shadow: var(--a-shadow-sm); }
 .lp-d3 .Studien .btn--secondary { font-size: var(--a-fs-base); border-radius: var(--a-r1); }
 
-/* ─── Google-Reviews (Fremd-Widget in Seiten-Tokens einfaerben) ───────────── */
-.lp-d3 [data-section='lp-d-google-reviews'] { padding: var(--a-s12) var(--a-s3); }
-.lp-d3 [data-section='lp-d-google-reviews'] .NormalSectionSize {
+/* ─── Bewertungsblock — EIN BLOCK, EINE BREITE (Haus-Standard, siehe
+   homepage-bauer/SKILL-TRUST-ELEMENTE.md und app/components/reusables/Bewertungsblock.jsx)
+
+   VORHER standen Polsterung und Breite auf [data-section='lp-d-google-reviews'],
+   also auf der OBEREN HAELFTE ALLEIN; fuer die untere gab es keine einzige Regel,
+   sie fiel auf den globalen .NormalSectionSize zurueck. Gemessen am Live-DOM
+   2026-09-21: Kartenspur oben 1080, unten 1280 — 100 px Ueberhang je Seite
+   (mobil 342 gegen 390). Jede der Regeln war fuer sich richtig geschrieben;
+   falsch war allein, dass sie eine HAELFTE adressierte, wo der BLOCK gemeint war.
+
+   DIE ZWEITE WURZEL, die man im Stylesheet nicht sieht: die obere Haelfte ist eine
+   <section> (GoogleReviews rendert `GoogleKundenerfahrungen NormalSectionSize`),
+   die untere ein <div>. Die Grundregel `.lp-d3 section` (Z. 101) trifft deshalb
+   NUR die obere und gibt ihr eine eigene Flaeche und 96 px Eigenpolsterung — die
+   hellere Kachel mitten im Block. `padding: 0` und `background: transparent` unten
+   sind darum KEIN Zierrat, sondern genau die Neutralisierung dieser Wurzel.
+
+   Innen-Regeln duerfen halbseitig bleiben und sollen es: `…google-reviews .rounded-2xl`
+   faerbt die KARTEN der oberen Haelfte und hat mit der Breite des Blocks nichts zu tun.
+   Die Unterscheidung ist der SELEKTOR, nie die Deklaration. */
+.lp-d3 .lp-d-bewertungen {
+  padding: var(--a-s12) var(--a-s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s6);
+}
+.lp-d3 .lp-d-bewertungen .NormalSectionSize {
   margin: 0 auto !important;
   max-width: var(--a-breite);
+  width: 100%;
+  padding: 0;
+  background: transparent;
 }
 .lp-d3 [data-section='lp-d-google-reviews'] .rounded-2xl {
   background: var(--a-grund);
