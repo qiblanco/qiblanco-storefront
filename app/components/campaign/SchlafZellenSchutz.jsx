@@ -834,7 +834,7 @@ function PricingSection() {
         ))}
       </div>
       <p className="lp-vp-pricing__fineprint">
-        Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna ·
+        Alle Produkte: 20 Tage risikofrei testen · 0 % Finanzierung über Klarna und PayPal ·
         kostenloser Versand innerhalb Deutschlands · Käuferschutz
       </p>
     </section>
