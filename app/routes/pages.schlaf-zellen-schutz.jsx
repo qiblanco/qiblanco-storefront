@@ -4,6 +4,7 @@ import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
 import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
+import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 
 /**
  * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
@@ -32,9 +33,27 @@ import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
 export function links() {
   // Kit zuerst, dann die seiteneigenen Regeln (Hero-Bereiche für das
   // 360-Grad-Video, Christian 20.09.2026) — Reihenfolge = Kaskade.
+  //
+  // externe-stimmen.css gehört zum Baustein <ExterneStimmen>, den diese Seite
+  // seit dem Startseiten-Abgleich rendert (SchlafZellenSchutz.jsx). Ohne diese
+  // Zeile kam das Markup beim Kunden an und die Regeln nicht: gemessen am
+  // 2026-09-21 trugen 13 Klassen des Blocks (.ExterneStimmen__raster bis
+  // .MaximText) in KEINER der 11 ausgelieferten CSS-Dateien eine Regel, und
+  // der Browser zeigte nackte Absätze statt der Kachelreihe. Auf der
+  // Startseite liefert dieselbe Datei genau diese Regeln (_index.jsx).
+  //
+  // NICHT der Abschnittsschlüssel lädt das Stylesheet — data-section ist ein
+  // Etikett. Geladen wird je Route über diese Ausfuhr; wer einen Baustein auf
+  // eine zweite Route holt, bringt seine Scope-CSS mit, sonst kommt sie nicht.
+  //
+  // Bewusst ZULETZT: die Blockregeln stehen unter .ExterneStimmen und treffen
+  // nichts außerhalb; die Typo-Skala der Seite (.lp-a3 h3) behält Vorrang —
+  // genauso wie auf der Startseite .home h3 vorgeht. Der Baustein bringt seine
+  // Kachelform mit, die Seite bleibt Herrin ihrer Schriftgrößen.
   return [
     {rel: 'stylesheet', href: lpAStyles},
     {rel: 'stylesheet', href: lpASeiteStyles},
+    {rel: 'stylesheet', href: externeStimmenStyles},
   ];
 }
 
