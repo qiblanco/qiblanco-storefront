@@ -297,6 +297,69 @@
   width: 100%;
   height: auto;
   display: block;
+  /* ── Die Drehung wird EINGEPASST, statt die Heroreihe zu beherrschen ──────
+     Christian, 20.09.2026: „das 360-Grad-Rotationsvideo ist nicht gut in die
+     Seite eingepasst, wirkt zu gross. Da ist das bei der Zellschutz-Seite
+     deutlich stimmiger platziert."
+
+     WAS DER DEFEKT WIRKLICH WAR — nicht „gross", sondern VERHAELTNIS: der
+     Kopfbereich ist ein 50/50-Flex (app.css: `.herobanner-seperator
+     div.text-content, … div.featured-image { flex: 1 1 50% }`), das Video
+     fuellt seine halbe Reihe voll aus und war damit HOEHER als der Textblock
+     daneben — es diktierte die Hoehe der ganzen Reihe. Gemessen am Live-DOM
+     2026-09-21: vw1280 Video 619x619 gegen Textblock 543 hoch (+76 px
+     Ueberhang), vw1440 654 gegen 543 (+111). Der Fehler WAECHST also mit der
+     Fensterbreite. Bei vw1024 gab es ihn nicht (491 gegen 570, also −79).
+
+     WOHER DIE 490 KOMMEN — zwei unabhaengige Wege, nicht per Dekret:
+     (1) ANTEIL: das Vorbild auf /pages/schlaf-zellen-schutz misst 423,3 px in
+         einem 1080-px-Container, also 39,2 % der Inhaltsbreite. Derselbe
+         Anteil auf die Inhaltsreihe hier (1248 px bei vw1280): 489,2.
+     (2) TEXTBLOCK: Christians Kriterium ist „passt zum Textblock daneben".
+         Der ist auf 1280 UND 1440 gemessen 543 px hoch. 490 liegt mit 53 px
+         Luft darunter — die Reihe wird damit wieder vom TEXT bestimmt.
+     Beide Wege landen bei ~490. Die 423 des Vorbilds sind der Beleg, dass ein
+     deutlich kleineres Mass traegt, nicht die vorgeschriebene Zahl.
+
+     WARUM EIN DECKEL UND KEIN VERHAELTNIS: `max-width` kann nur VERKLEINERN
+     und ist unterhalb seines Wertes wirkungslos. Gemessen greift er genau
+     dort, wo der Defekt ist — vw1440 654→490, vw1280 619→490, vw1024 491→490
+     (1 px, dort war die Lage schon gesund), MOBIL 390 358→358, Zahl fuer Zahl
+     unveraendert. Christians Auflage „mobil nicht anfassen" ist damit BAULICH
+     erfuellt, nicht bloss gemessen. Ein Prozentwert oder ein anderes
+     Flex-Verhaeltnis haette auch die schmalen Fenster verkleinert, wo nichts
+     zu heilen war.
+
+     WARUM DIE TEXTSPALTE UNANGETASTET BLEIBT: der naheliegende Griff — das
+     7fr/5fr-Verhaeltnis des Vorbilds uebernehmen — wurde live durchgemessen
+     und VERWORFEN. Er verbreitert die Textspalte von 619 auf 694…772 px und
+     die laengste Zeile von 618 auf 723. Das Hausmass fuer Lesbarkeit ist
+     68ch = 612 px (`--a-mass`), die heutigen 619 treffen es. Der Griff haette
+     einen Bildfehler gegen einen Lesefehler getauscht.
+
+     `margin-left: auto` und NICHT `margin-inline: auto`: das Video bleibt an
+     der rechten Inhaltskante und fluchtet dort mit der H1 (gemessen auf jedem
+     Viewport: Videokante == H1-Kante). Genau das tut das Vorbild auch
+     (756,7 + 423,3 = 1180 = Containerkante). Zentriert schwaemme es
+     stattdessen mit rund 90 px Totraum auf beiden Seiten und verloere die
+     Flucht.
+
+     KEIN GELADENES BYTE AENDERT SICH: das ist reine Darstellungsgroesse. Quelle,
+     Poster, `preload="metadata"`, `muted`, `playsinline` und die Schleife
+     liegen unveraendert am Baustein (reusables/Produkt360Video.jsx); es gibt
+     nur eine Fassung der Datei und keine `srcset`-Leiter, die hier umschalten
+     koennte. „Kleiner dargestellt, nicht schwerer geladen."
+
+     WACHE: worker-pool/pruefungen/probe_hero360_eingepasst__20260921.py misst
+     taeglich das VERHAELTNIS (Ueberhang, rechte Kante, mobile Spaltenfuellung)
+     statt einer Zahl — rt-Task `hero360-eingepasst`. Eine Probe auf „== 490"
+     waere das Dekret, das der Auftrag ausdruecklich ausschliesst.
+
+     RUECKWEG: diese zwei Deklarationen loeschen (reine Ergaenzung, kein
+     Zustand) — oder `hb-deploy revert --sha <merge-sha>`. */
+  max-width: 490px;
+  margin-left: auto;
+  margin-right: 0;
 }
 
 /* Die Drehung steht EINMAL im Dokument. Bis 2026-09-19 lag dasselbe
