@@ -6219,9 +6219,33 @@ html.qb-chat-docked .GoogleRezensionenPopup {
     max-width: 320px;
     margin-inline: auto;
   }
-  /* 1080px Quelle / (2 * 0.9) = 600px Obergrenze; 580 mit Reserve */
+  /* KAPPE AM KLEINSTEN HOMOGENEN MASTER, NICHT AM GROESSTEN — richtiggestellt
+     2026-09-21 (Job 20260921-bildschuld-...-s02). Hier stand "1080px Quelle /
+     (2 * 0.9) = 600px Obergrenze; 580 mit Reserve". Die 1080 sind
+     QIHome_82a49997, also die GROESSTE Quelle, die durch dieses Bauteil
+     laeuft — und damit die falsche Ableitungsbasis: eine Kappe schuetzt nur
+     bis zur KLEINSTEN Quelle, die sie mittraegt.
+     GEMESSEN 2026-09-21, alle Master, die durch .CallToAction laufen:
+       526  showcase-app-526x296       <- AUSREISSER, siehe unten
+       1024 qione-2-pro-transparent
+       1024 01_2048px-Alpha-1024x1024
+       1024 QiHomeAir-Front-Alpha-Web2
+       1080 QIHome_82a49997
+       1080 New_Project_1
+     ABLEITUNG (homogene Menge ohne den Ausreisser, kleinste Quelle 1024):
+       1024 / (2 * 0.9 Unschaerfe-Faktor) = 568,9px Obergrenze; 560 mit Reserve.
+     Die alte 580 lag DARUEBER und liess die drei 1024er-Master rot:
+     580 * 2 = 1160 Soll, 0.9 * 1160 = 1044 > 1024 — exakt der gemessene
+     Blocker "orig 1024 < soll 1160".
+     WARUM DER AUSREISSER NICHT MITGERECHNET WIRD: stur am kleinsten Master
+     abgeleitet waere die Kappe 526 / (2 * 0.9) = 292px und wuerde JEDES
+     CallToAction-Bild in neun Dateien auf 292px schrumpfen — ein
+     Darstellungsfehler gegen einen schlimmeren getauscht. Die showcase-app
+     bekommt deshalb ein groesseres Asset statt einer Kappe (Job
+     20260922-ersatz-master-fuer-sechs-sichtbar-unscharfe-bilder); sie bleibt
+     bis dahin ausgewiesen rot und ist nicht stillgelegt. */
   .CallToAction img {
-    max-width: 580px;
+    max-width: 560px;
     margin-inline: auto;
   }
   /* Studien-Kacheln: 620px Quelle / (2 * 0.9) = 344px Obergrenze; 330 mit
