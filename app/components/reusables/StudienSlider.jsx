@@ -148,7 +148,11 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
     <div className="ghx-studien" data-section={dataSection}>
       {headline ? <h2 className="text-center">{headline}</h2> : null}
       <div
-        className={`ghx-studien__track${isDragging ? ' is-dragging' : ''}`}
+        // qb-wischbahn (app.css): diese Bahn trägt bereits zwei eigene Pfeile
+        // und den Wischhinweis darunter. Die native Leiste war das vierte
+        // Bedienelement auf derselben Bahn und fällt deshalb weg — dieselbe
+        // Entscheidung wie im Bewertungsblock, aus derselben Klasse gezogen.
+        className={`ghx-studien__track qb-wischbahn${isDragging ? ' is-dragging' : ''}`}
         ref={trackRef}
         role="group"
         aria-label="Wissenschaftliche Publikationen — horizontal scrollbar"
