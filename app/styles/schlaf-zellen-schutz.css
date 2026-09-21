@@ -821,7 +821,16 @@ body:has(.lp-a3) footer {
 
 /* ─── Mobile (<= 767px): gleicher Rhythmus, halbierter Takt ───────────────── */
 @media (max-width: 767px) {
-  .lp-a3 section { padding: var(--a-s8) var(--a-s3); }
+  /* Der Bewertungs-Wrapper steht hier NEBEN `section`, obwohl er dieselbe Rolle
+     spielt: er ist ein <div> (SchlafZellenSchutz.jsx, bewusst ohne data-section),
+     und `.lp-a3 section` erreicht ihn deshalb nicht. Er trug seine Polsterung
+     korrekt als --a-s12, blieb mobil aber als EINZIGES Element des Blattes auf
+     96 px, waehrend jede echte Sektion auf 64 faellt — gemessen 2026-09-21 live:
+     Naht Mikroskop-Video -> Bewertungsblock 161 px gegen 128 px ueberall sonst.
+     Kein neuer Wert: derselbe Token, dieselbe Zeile, nur die fehlende Rolle
+     nachgetragen. (Job ...-schlafseite-sieht-aus-wie-die-startseite-s04) */
+  .lp-a3 section,
+  .lp-a3 .lp-a-bewertungen { padding: var(--a-s8) var(--a-s3); }
   .lp-a3 .lp-a-hero__inner,
   .lp-a3 .lp-a-mechs,
   .lp-a3 .lp-vp-peer-stats,
