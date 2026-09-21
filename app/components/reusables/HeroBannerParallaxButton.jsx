@@ -60,7 +60,7 @@ export function HeroBannerParallax({
 
       <div className="HeroBannerContent">
         <div>
-        <h2>{headline}</h2>
+        {headline && <h2>{headline}</h2>}
         {subheadline && <p>{subheadline}</p>}
         </div>
         {link && <Link className={`btn--${linkStyling} mt-1`} to={link}>{linkText}</Link>}
