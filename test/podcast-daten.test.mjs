@@ -231,6 +231,25 @@ test('die Bestands-Eintraege der Altseite erscheinen NUR auf Seite 1', () => {
   }
 });
 
+// --- Pflichtfeld Gast-Video (R8) --------------------------------------------
+// Bis 2026-09-21 trugen 4 von 11 Gaesten id="" und thumb="", und die Seite
+// zeigte Titel, Zitat, leere Flaeche. Ein Gast ohne Video ist seitdem eine
+// ENTSCHEIDUNG der Quelle (ov=true -> Zitat-Karte), nie ein leerer String.
+test('kein Gast mit leerem Pflichtfeld: Video ODER bewusste Zitat-Karte (R8)', () => {
+  for (const g of GAESTE) {
+    assert.ok(
+      g.id || g.ov === true,
+      `Gast ohne Video und ohne Entscheidung (leeres Pflichtfeld): ${g.t}`,
+    );
+    if (g.id) {
+      assert.match(g.id, /^[A-Za-z0-9_-]{11}$/, `keine YouTube-ID: ${g.t}`);
+      assert.match(g.thumb, /^https:\/\/i\.ytimg\.com\/vi\//, `kein Poster: ${g.t}`);
+    } else {
+      assert.equal(g.thumb, '', `Zitat-Karte mit Poster-Rest: ${g.t}`);
+    }
+  }
+});
+
 test('das Schema kanonisiert auf die uebergebene Basis, nie auf den Preview-Host', () => {
   const g = schemaGraph(seite(1), BASIS);
   assert.equal(g['@graph'][0]['@id'], `${BASIS}/pages/podcasts`);

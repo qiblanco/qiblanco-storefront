@@ -278,6 +278,27 @@
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
+/* Zitat-Karte (Gast ohne Video, Regel R8 des Generators): das Zitat traegt
+   die Karte. Warme Flaeche + EIN Radius-Token aus dem Satz, kein Rahmen, kein
+   zweiter Akzent, kein dekoratives Anfuehrungszeichen (das Zitat bringt sein
+   eigenes mit). Die Karte fuellt die Rasterzelle in voller Hoehe, damit neben
+   einem Video-Eintrag keine leere Flaeche unter ihr bleibt. */
+.lp-a3 .qbp__gast--zitat {
+  grid-template-rows: auto 1fr;
+}
+.lp-a3 .qbp__zitat {
+  margin: 0;
+  padding: var(--a-s3);
+  background: var(--a-flaeche);
+  border-radius: var(--a-r1);
+}
+.lp-a3 .qbp__zitat p {
+  font-size: var(--a-fs-base);
+  line-height: 1.7;
+  margin: 0;
+  max-width: var(--a-mass);
+}
+
 /* --- Schmale Fenster ----------------------------------------------------- */
 
 @media (max-width: 860px) {

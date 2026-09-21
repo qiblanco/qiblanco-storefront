@@ -148,17 +148,36 @@ function Folge({folge}) {
 }
 
 function Gast({gast}) {
+  /* ZWEI FORMEN, und die zweite ist eine ENTSCHEIDUNG, kein Zustand:
+   * mit Video steht der Player über dem Zitat. Ohne Video (ov=true, vom
+   * Generator nur gesetzt, wenn die Quelle das ausdrücklich so entschieden
+   * hat — Regel R8) wird der Eintrag eine Zitat-Karte: das Zitat trägt die
+   * Karte, kein leerer Rahmen wartet auf ein Video, das der Gastgeber
+   * gelöscht hat. Ein Eintrag ohne id UND ohne ov bleibt absichtlich die
+   * alte, sichtbar unfertige Form — damit die Rand-Probe ihn weiter findet
+   * statt ihn für "bewusst umgebaut" zu halten. */
+  const zitatKarte = !gast.id && gast.ov === true;
   return (
-    <article className="qbp__gast">
+    <article
+      className={zitatKarte ? 'qbp__gast qbp__gast--zitat' : 'qbp__gast'}
+      data-gast-form={zitatKarte ? 'zitat' : 'video'}
+    >
       <h3 className="qbp__titel qbp__titel--klein">{gast.t}</h3>
       {gast.id && <Player folge={gast} />}
-      <div className="qbp__text">
-        {/* Der Titel darüber ist die Überschrift UNSERER früheren DACH-Seite
-         * und bleibt gemessen. Der Text hier ist das Zitat des fremden
-         * Gastgebers, wörtlich samt Nennung — ihn zu glätten wäre eine
-         * Fälschung. */}
-        <p data-fremdtext="gastzitat">{gast.txt}</p>
-      </div>
+      {zitatKarte ? (
+        <blockquote className="qbp__zitat">
+          {/* Wörtlich samt Nennung — siehe unten. */}
+          <p data-fremdtext="gastzitat">{gast.txt}</p>
+        </blockquote>
+      ) : (
+        <div className="qbp__text">
+          {/* Der Titel darüber ist die Überschrift UNSERER früheren DACH-Seite
+           * und bleibt gemessen. Der Text hier ist das Zitat des fremden
+           * Gastgebers, wörtlich samt Nennung — ihn zu glätten wäre eine
+           * Fälschung. */}
+          <p data-fremdtext="gastzitat">{gast.txt}</p>
+        </div>
+      )}
     </article>
   );
 }
