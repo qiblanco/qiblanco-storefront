@@ -239,7 +239,14 @@
   text-align: left;
 }
 .lp-a3 .lp-a-hero__startseiten-block p {
-  font-size: var(--a-fs-md);
+  /* BEWUSST OHNE font-size: der Block erbt die Absatzgroesse dieser Seite.
+     Eine eigene Groesse (--a-fs-md, 18 px) war hier zuerst gesetzt und war der
+     EINZIGE Punkt, an dem dieser Bau die Seite verschlechtert hat: die
+     Design-Rubrik zaehlte dadurch 12 statt 11 Schriftgroessen, 18 px kam
+     sonst nirgends vor. Geerbt trifft der Block zugleich die Startseite
+     genauer -- dort stehen dieselben zwei Zeilen auf 19,2 px, und 19,2 px
+     ist auf dieser Seite eine bereits eingefuehrte Groesse. Weniger
+     Deklaration und naeher am Massstab. */
   margin: 0 0 var(--a-s1);
 }
 .lp-a3 .lp-a-hero__startseiten-block p:last-child {
