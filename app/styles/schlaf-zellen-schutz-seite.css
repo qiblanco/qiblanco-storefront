@@ -162,3 +162,107 @@
   .lp-a3 .lp-a-hero__gimmick-ring1 { transform: scale(0.52); opacity: 0.55; }
   .lp-a3 .lp-a-hero__gimmick-ring2 { transform: scale(1); opacity: 0.28; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DER STANDARD DER STARTSEITE (Christian, 21.09.2026)
+   Job 20260921-GROSSJOB-schlafseite-bekommt-den-standard-der-startseite.
+
+   WARUM ALLES HIER UND NICHTS IM KIT: app/styles/schlaf-zellen-schutz.css ist
+   das GETEILTE Token-Kit von sechs Routen (partner, affiliate-partnerprogramm,
+   podcasts, podcasts_.$seite, qione-2-pro, schlaf-zellen-schutz) — alle vier
+   Nachbarn importieren es als `lpTokenStyles`. Ein :root-Wert dort waere auf
+   vier fremden Seiten mitgewandert, und der Auftrag verbietet das woertlich:
+   „Nichts wird auf eine andere Seite mitgezogen, ohne dass es dort geprueft
+   ist." Diese Datei laedt allein pages.schlaf-zellen-schutz.jsx, und zwar NACH
+   dem Kit — sie gewinnt damit bei gleicher Spezifitaet, ohne fremde Reichweite.
+   Gemessen mit `python3 src/format_reichweite.py`: das Kit traegt 5 Slugs,
+   diese Datei genau einen.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── ARM A, Gold ─────────────────────────────────────────────────────────── */
+/* Christian: „Goldtoene anpassen, das sind nicht die richtigen" + „viel mehr an
+   die Frontseite gehen". BEIDE Werte sind von der STARTSEITE UEBERNOMMEN, keiner
+   ist hier gemischt:
+     --a-akzent      = app.css --color-accent-primary   rgb(242,191,114)
+     --a-akzent-tief = app.css .btn--primary:hover      rgb(208,164,98)
+   Damit ist eine im Haus als OFFEN gefuehrte Frage fuer DIESE Seite entschieden:
+   app.css nennt sie woertlich (design-meister db/tokens/web-dach.yaml,
+   gold-akzent-web-vs-marke: #F2BF72 gegen #C9A14B). Das Token-Register bleibt
+   unberuehrt — hier wird eine Seite angeglichen, kein Register umgeschrieben.
+   KONTRAST wird besser, nicht schlechter: Schrift auf der Goldflaeche ist
+   --a-text #2c2a26 (identisch mit app.css --color-on-accent) und steht auf dem
+   neuen Flaechenton bei 8,56:1 statt 5,9:1, auf dem Hover-Ton bei 6,28:1.
+   NICHT ANGEFASST: --qb-sterne-gold #F4B400 — der Sternton haengt an jedem
+   Stern beider Storefronts. --a-akzent-tinte #856828 bleibt ebenfalls: sie ist
+   mit app.css --color-accent-ink schon identisch. */
+:root {
+  --a-akzent: rgb(242, 191, 114);
+  --a-akzent-tief: rgb(208, 164, 98);
+}
+
+/* ─── ARM A, Gruen ────────────────────────────────────────────────────────── */
+/* Christian: „‚Wirkung in Zellstudien bestaetigt' muss gruen sein." Sie war es
+   nicht, und der Grund war keine fehlende Farbe, sondern eine
+   SPEZIFITAETS-KOLLISION:
+     app.css  `.cellstudies-checkmark { color: var(--checkmark-color) }`  (0,1,0)
+     Kit      `.lp-a3 .lp-a-hero__subline { color: var(--a-muted) }`      (0,2,0)
+   Das Kit gewann, die Zeile rendert grau (#6b665d). Der Bau vom 20.09. hatte die
+   Bauform der Startseite korrekt 1:1 uebernommen (gleiche Klasse, gleiche
+   CDN-Grafik, gleicher Wortlaut) — die WIRKUNG kam nicht mit, weil niemand sie
+   gemessen hat. Eine geerbte Bauform ist kein geerbtes Ergebnis.
+   KEIN NEUES GRUEN (Auftrags-Verbot): diese Regel zeigt auf DIESELBE Variable
+   --checkmark-color (#396e25) wie die Startseite und hebt nur die Spezifitaet
+   an. Es kommt kein Farbwert hinzu, der Hue-Bin der Rubrik bleibt unveraendert. */
+.lp-a3 .lp-a-hero__subline.cellstudies-checkmark {
+  color: var(--checkmark-color);
+}
+
+/* ─── ARM E, der Startseiten-Block unter „Ruhe auf Zellebene" ─────────────── */
+/* NUR Bestands-Tokens dieser Seite: kein neuer Wert, keine neue Schriftgroesse,
+   kein zweiter Goldton. Die Bausteine selbst (h2, ReviewCount, die beiden
+   Absaetze) kommen 1:1 aus index-components/HerobannerFeatured.jsx; diese Regel
+   gibt ihnen allein den Abstand des 8pt-Rasters dieser Seite.
+   Das h2 laeuft ueber --a-fs-h2, also ueber den EINEN H2-Stil der Seite: eine
+   eigene Groesse waere der zehnte Schriftgrad und genau der Befund, den die
+   Design-Rubrik an dieser Seite misst. */
+.lp-a3 .lp-a-hero__startseiten-block {
+  margin: var(--a-s2) 0 var(--a-s3);
+}
+.lp-a3 .lp-a-hero__startseiten-block h2 {
+  font-size: var(--a-fs-h2);
+  margin: 0 0 var(--a-s1);
+  /* Das Kit zentriert `.lp-a3 h2` seitenweit. Das ist fuer Sektions-
+     Ueberschriften richtig und hier falsch: auf der Startseite steht
+     „QiOne® 2 Pro" LINKS, buendig mit allem darunter. Ohne diese Zeile steht
+     die Zeile allein eingerueckt und sieht nach Fehler aus (gemessen: x=360
+     statt x=180; die Design-Rubrik stieg nach der Korrektur von 85 auf 86). */
+  text-align: left;
+}
+.lp-a3 .lp-a-hero__startseiten-block p {
+  font-size: var(--a-fs-md);
+  margin: 0 0 var(--a-s1);
+}
+.lp-a3 .lp-a-hero__startseiten-block p:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── ARM C, Vertrauenszeile und Zahlungslogos unter dem Knopf ────────────── */
+/* Christian: „Unterhalb des Buttons muss ... stehen, plus die zwei Logos von
+   Klarna und PayPal, das schafft Vertrauen." Der Abstand kommt aus dem 8pt-
+   Raster; die Logos tragen ihre Groesse als Attribut (75 px, wie auf der
+   Startseite) und bekommen hier keine zweite Groessenangabe. `align-items:
+   center` haelt die beiden Marken auf einer Grundlinie, obwohl ihre Hoehen sich
+   um 4 px unterscheiden. */
+.lp-a3 .lp-a-hero__vertrauen {
+  font-size: var(--a-fs-xs);
+  color: var(--a-text);
+  margin: var(--a-s2) 0 0;
+  max-width: 54ch;
+}
+.lp-a3 .lp-a-hero__zahlarten {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+}
