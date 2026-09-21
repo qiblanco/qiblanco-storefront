@@ -24,9 +24,21 @@
  *
  * WAS DIESE TESTS ABSICHERN UND WAS NICHT: sie prüfen die ERZEUGTEN URLs und
  * den Riegel. Ob eine Seite dadurch weniger Bytes zieht, ist eine Aussage
- * über die Auslieferung und wird von pruefungen/probe_chrome_bildlast.py am
- * echten Browser gemessen -- nicht hier. Ein gruener Test hier ist KEIN Beleg
- * für die Wirkung.
+ * über die Auslieferung und wird von
+ * homepage-bauer/pruefungen/probe_chrome_bildlast.py am echten Browser
+ * gemessen -- nicht hier. Ein gruener Test hier ist KEIN Beleg für die
+ * Wirkung.
+ * DER PFAD STAND BIS ZUM 2026-09-21 FALSCH HIER, und das war kein Tippfehler,
+ * sondern der Befund: die Probe lag ausschließlich in nie gepushten Commits
+ * eines geteilten Werkbank-Klons und hat NIE gelaufen. Dieser Verweis zeigte
+ * also auf einen Weg, den niemand gehen konnte -- ein Verweis ist aber eine
+ * Zusage auf Gangbarkeit. Seither liegt die Probe in shared-state (also dort,
+ * wo der ausgelieferte Stand sie nicht wieder verlieren kann) und läuft
+ * täglich als rt-Task `storefront-bildlast-rand`.
+ * IHR ERSTER LAUF MELDETE SOFORT BEFUND: alle drei bewachten Kennungen lagen
+ * exakt auf dem Vorher-Wert, den ihre eigenen Schwellen zitieren. Die
+ * Byte-Senkung, die diese Tests begleiten, ist am Kundenrand nie angekommen --
+ * genau das, wovor der Absatz oben warnt.
  */
 import {describe, it} from 'node:test';
 import assert from 'node:assert/strict';
