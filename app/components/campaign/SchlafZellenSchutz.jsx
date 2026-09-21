@@ -306,7 +306,7 @@ function Hero() {
       data-section="lp-a-hero"
     >
       {/* Christian, 20.09.2026: in der Mobilansicht steht das 360-Grad-Video
-          direkt nach „Innere Ruhe.“ und über dem Absatz „Das berichten viele …“.
+          direkt nach „Innere Ruhe.“ und über dem Absatz „Der QiOne® 2 Pro strukturiert …“.
           Der Textblock ist deshalb in KOPF (Eyebrow, Titel, Dreizeiler) und
           SCHLUSS (Absätze, Kaufknopf, Preis, Merkmale) geteilt, das Video steht
           im Markup dazwischen — so misst es die Einsteller-Probe an der
@@ -379,11 +379,22 @@ function Hero() {
           </figcaption>
         </figure>
         <div className="lp-a-hero__copy lp-a-hero__copy--schluss">
+          {/* Christian, 21.09.2026 (Job 20260921-ratenzeile-kuerzen-und-absatz-neu-
+              fassen): der Absatz in seiner Fassung, Stil unverändert, Grammatik
+              geglättet — Zahlwort ausgeschrieben und nach „seinen“ gebeugt,
+              „Peer-Review-Studien“ als Fachbegriff, die doppelte Steigerung
+              „best untersuchteste“ zu „am besten untersuchte“, „Energieprodukt“
+              als Kompositum. Der Doppelpunkt vor „In deinen Zellen“ und die
+              Großschreibung danach sind seine Setzung. Ersetzt sind der Einstieg
+              mit der Nutzerzahl und der Schluss mit dem Studien-Vergleich aus der
+              Fassung vom 20.09. (PR #538) — die alten Sätze stehen hier bewusst
+              nicht im Wortlaut, damit keine Quelltext-Probe sie noch findet.
+              Keine Fußnote, keine Quelle, kein Einschub. */}
           <p className="lp-a-hero__subline">
-            Das berichten viele von unseren 14.000 aktiven Nutzern. Der QiOne<sup>®</sup>
-            &nbsp;2 Pro strukturiert dort Wasser, wo es darauf ankommt. In deinen Zellen.
-            Fünf publizierte Studien – so gut untersucht ist in diesem Bereich sonst kein
-            Produkt.
+            Der QiOne<sup>®</sup>&nbsp;2 Pro strukturiert dort Wasser, wo es darauf
+            ankommt: In deinen Zellen. Mit seinen fünf international publizierten
+            Peer-Review-Studien ist es das am besten untersuchte Energieprodukt der
+            Welt.
           </p>
           {/* Die grüne Hakenzeile der Startseite, 1:1 übernommen statt nachgebaut:
               dieselbe CDN-Grafik (Green_Checkmark.webp), dieselbe Klasse
@@ -410,9 +421,13 @@ function Hero() {
             </a>
             <span className="lp-a-hero__price">
               {compareLabel && <s>{compareLabel}</s>} {priceLabel}
-              {waehrung === 'EUR' && (
-                <> · oder 12 Raten à {monthly}&nbsp;€ – mit 0&nbsp;% Finanzierung</>
-              )}
+              {/* Christian, 21.09.2026: die Ratenzeile endet nach dem Betrag. Der
+                  Finanzierungs-Zusatz hinter dem Betrag ist weg — er stand zwei
+                  Zeilen tiefer in der Vertrauenszeile unter den Klarna-/PayPal-
+                  Logos ein zweites Mal, und dort bleibt er. Die übrigen Nennungen
+                  auf der Seite (Vertrauenszeile, Zahlungsabschnitt, Produkt-
+                  übersicht, Preisblock) sind unangetastet. */}
+              {waehrung === 'EUR' && <> · oder 12 Raten à {monthly}&nbsp;€</>}
             </span>
           </div>
           {/* ARM C (Christian, 21.09.2026): „Unterhalb des Buttons muss ‚Jetzt
