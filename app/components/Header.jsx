@@ -97,38 +97,135 @@ function resolveMenuLink(rawUrl) {
   }
 }
 
+/*
+ * DER KOPF FOLGT DER SCROLLRICHTUNG — UND ER TUT ES ALS EIN STÜCK.
+ * (Christian, 21.09.2026. Herkunft, Messwerte und die Job-Kennung im devlog
+ * des homepage-bauer, D-2876. Wörtlich: "Ich möchte nun, dass wenn man nach oben scrollt,
+ * wieder beides angezeigt wird — also Dropdown und die Sternebewertung (die
+ * sieht man aktuell nicht).")
+ *
+ * WAS VORHER FALSCH WAR, und es war nicht das Menü:
+ *   Das Menü kam beim Hochscrollen schon immer zurück (`header--hidden` fiel
+ *   weg). Die 4,8-Sterne-Zeile NICHT: `AnnouncementBanner` hing an `scrolled`,
+ *   und `scrolled` ist `window.scrollY !== 0`. Sie kollabierte also beim ersten
+ *   Pixel und kam erst am SEITENANFANG zurück — nie beim Hochscrollen. Zwei
+ *   Teile desselben Kopfes an zwei verschiedenen Bedingungen; genau das hat
+ *   Christian gesehen.
+ *   Gemessen am 21.09.2026 live auf allen drei Pflichtseiten (1440 px, echte
+ *   Mausrad-Ereignisse): nach 1500 px runter und 300 px hoch stand der Kopf
+ *   wieder da (unten=95), die Bewertungszeile aber auf Höhe 0 und Deckkraft 0.
+ *
+ * WIE ES JETZT GEBAUT IST:
+ *   Es gibt genau EINEN Mechanismus — `.header-wrapper` fährt als Ganzes über
+ *   `transform: translateY(-100%)` aus dem Bild und wieder herein. Die
+ *   Bewertungszeile hat keine eigene Ein-/Ausblendung mehr. Damit kann der
+ *   Fehler "die eine Hälfte ist da, die andere nicht" baulich nicht
+ *   wiederkommen, statt nur heute behoben zu sein.
+ *
+ * ÜBERALL GLEICH, ohne dafür etwas zu bauen (Christians zweite Hälfte):
+ *   `Header` wird ausschließlich aus `PageLayout` gerendert, und PageLayout
+ *   liegt auf JEDER Route. Es gibt kein zweites Kopf-Bauteil und es kommt auch
+ *   keines dazu — genau das verbietet der Auftrag, und genau diese Klasse
+ *   Fehler hat auf der Schlafseite schon einmal einen Block ohne Stylesheet
+ *   stehen lassen. Der Beleg dafür ist keine Behauptung, sondern die
+ *   Gleichheits-Achse in pruefungen/probe_kopf_richtung_bewertung.py: sie
+ *   misst alle drei Seiten und meldet Ungleichheit als eigenen Befund.
+ *
+ * WARUM EINE TOTZONE:
+ *   Vorher reichte EIN Pixel aufwärts, um den Kopf auszufahren — ohne
+ *   Mindestweg. Auf dem Handy erzeugt schon das Abheben des Fingers solche
+ *   Gegenbewegungen, und der Kopf zappelt. 8 px ist die kleinste Strecke, die
+ *   ein Mensch als Geste meint und nicht als Zittern; die Zahl ist eine
+ *   Hypothese, keine Konstante (GL). Wer sie ändert, zieht
+ *   `ZAPPEL_PX` in pruefungen/probe_kopf_richtung_bewertung.py und die
+ *   Aufwärtsbewegung in pruefungen/probe_sterne_kopf_zustaende.py mit —
+ *   beide Proben messen GEGEN diese Zahl.
+ *
+ * DIE MARKER IM HTML SIND KEINE DEKORATION:
+ *   `KopfHaftet`, `data-scroll-dir` und `KopfBewertung` stehen im
+ *   serverseitig gerenderten HTML. Sie sind der billige, täglich fahrbare
+ *   Teil der Abnahme (worker-pool/pruefungen/probe_kopf_kommt_beim_
+ *   hochscrollen_zurueck__20260921.py). Sie beweisen für sich NICHTS über das
+ *   Verhalten — das misst nur die Browser-Probe. Deshalb stehen beide.
+ */
+const SCROLL_TOTZONE_PX = 8; // kleinere Bewegungen ändern am Kopf nichts
+const KOPF_EINFAHR_AB_PX = 100; // darüber darf der Kopf überhaupt einfahren
+const KOPF_RICHTUNG_AUF = 'auf';
+const KOPF_RICHTUNG_AB = 'ab';
+
 /**
  * @param {HeaderProps}
  */
 export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   const {shop, menu} = header;
   const [scrolled, setScrolled] = useState(false);
-  // ✅ Scroll-hide logic
+  // Kopf eingefahren? (nur beim Abwärtsscrollen, nie am Seitenanfang)
   const [hidden, setHidden] = useState(false);
+  // Die Scrollrichtung als eigener, ablesbarer Zustand — siehe Kommentarblock
+  // über SCROLL_TOTZONE_PX.
+  const [richtung, setRichtung] = useState(KOPF_RICHTUNG_AUF);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let lastY = window.scrollY;
+    let letzteY = window.scrollY;
+    // Bezugspunkt der Totzone: wird bei JEDEM Richtungswechsel neu gesetzt.
+    // Erst wenn sich der Finger SCROLL_TOTZONE_PX weit von hier entfernt hat,
+    // ändert der Kopf seinen Zustand.
+    let ankerY = window.scrollY;
+    let letzteRichtung = KOPF_RICHTUNG_AUF;
+    let angefordert = false;
 
-    const onScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY !== 0) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-      if (currentY > lastY && currentY > 100) {
-        setHidden(true);
-      } else if (currentY < lastY) {
+    const auswerten = () => {
+      angefordert = false;
+      const y = window.scrollY;
+      setScrolled(y !== 0);
+
+      // Am Seitenanfang ist der Kopf IMMER da — ohne Scrollbewegung, ohne
+      // Totzone. Das ist Christians Bestand und bleibt.
+      if (y <= 0) {
+        letzteY = 0;
+        ankerY = 0;
+        letzteRichtung = KOPF_RICHTUNG_AUF;
+        setRichtung(KOPF_RICHTUNG_AUF);
         setHidden(false);
+        return;
       }
 
-      lastY = currentY;
+      const richtungJetzt =
+        y > letzteY
+          ? KOPF_RICHTUNG_AB
+          : y < letzteY
+            ? KOPF_RICHTUNG_AUF
+            : letzteRichtung;
+
+      if (richtungJetzt !== letzteRichtung) {
+        // Richtungswechsel: die Totzone fängt hier neu an zu zählen.
+        ankerY = letzteY;
+        letzteRichtung = richtungJetzt;
+      }
+      letzteY = y;
+
+      // Unterhalb der Totzone passiert NICHTS — weder am Kopf noch am
+      // veröffentlichten Richtungszustand. Sonst flackert beides.
+      if (Math.abs(y - ankerY) < SCROLL_TOTZONE_PX) return;
+
+      setRichtung(richtungJetzt);
+      setHidden(richtungJetzt === KOPF_RICHTUNG_AB && y > KOPF_EINFAHR_AB_PX);
     };
 
-    window.addEventListener('scroll', onScroll, {passive: true});
-    return () => window.removeEventListener('scroll', onScroll);
+    // Ein Scroll-Ereignis feuert pro Frame mehrfach. Gerechnet wird einmal je
+    // Frame — das ist dieselbe Entprellung, die useKopfHoeheVariable schon
+    // fährt, und sie hält die Bewegung gleichmäßig statt ruckelig.
+    const anfordern = () => {
+      if (angefordert) return;
+      angefordert = true;
+      window.requestAnimationFrame(auswerten);
+    };
+
+    auswerten();
+    window.addEventListener('scroll', anfordern, {passive: true});
+    return () => window.removeEventListener('scroll', anfordern);
   }, []);
 
   const {pathname} = useLocation();
@@ -179,10 +276,10 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
 
   return (
     <header
-      className={`header-wrapper ${hidden ? 'header--hidden' : ''}`}
+      className={`header-wrapper KopfHaftet ${hidden ? 'header--hidden' : ''}`}
+      data-scroll-dir={richtung}
     >
       <AnnouncementBanner
-        scrolled={scrolled}
         announcement={
           isCacaoPage ? (
             <p>
@@ -969,17 +1066,27 @@ function GoogleSterneBadge() {
   );
 }
 
-function AnnouncementBanner({announcement, link, scrolled, onAnnouncementClick}) {
+/*
+ * DIE BEWERTUNGSZEILE HAT KEINE EIGENE EIN-/AUSBLENDUNG MEHR.
+ *
+ * Bis zum 21.09.2026 stand hier `maxHeight: scrolled ? '0px' : '100px'` — die
+ * Zeile kollabierte beim ersten gescrollten Pixel und kam erst am
+ * Seitenanfang zurück. Sie folgte damit einer ANDEREN Bedingung als das Menü
+ * darunter (`hidden`), und deshalb sah Christian das Menü zurückkommen und die
+ * Sterne nicht.
+ *
+ * Verborgen wird sie jetzt ausschließlich dadurch, dass `.header-wrapper` als
+ * Ganzes aus dem Bild fährt. Ein Zustand "Menü da, Sterne weg" ist damit nicht
+ * mehr herstellbar — das ist der Punkt, nicht die eingesparten Zeilen.
+ *
+ * `KopfBewertung` ist der Marker, an dem die Abnahme die Zeile IM KOPF
+ * wiederfindet. Ohne ihn griffe die Marker-Probe auf `google-rating-badge`
+ * zurück — und das ist der Google-Badge weiter unten auf der Seite, der auch
+ * dann dasteht, wenn der Kopf gar keine Bewertungszeile trägt.
+ */
+function AnnouncementBanner({announcement, link, onAnnouncementClick}) {
   return (
-    <div
-      className="Header-AnnouncementBanner"
-      style={{
-        maxHeight: scrolled ? '0px' : '100px',
-        opacity: scrolled ? 0 : 1,
-        overflow: 'hidden',
-        transition: 'max-height 0.8s ease, opacity 0.8s ease',
-      }}
-    >
+    <div className="Header-AnnouncementBanner KopfBewertung">
       <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
       </Link>
