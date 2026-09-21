@@ -1,8 +1,7 @@
 import {createContext, useContext} from 'react';
-import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
-import {ReputonWidget as LpReputonWidget} from '~/components/index-components/ReputonWidget';
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
+import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {BLOCK_LP, BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
@@ -458,8 +457,12 @@ export function QiOneZellschutz({products}) {
         <HRVSection />
         <BenefitsSection />
         <SocialProofSection />
-        <LpGoogleReviews />
-        <LpReputonWidget />
+        {/* BEWERTUNGSBLOCK aus dem Baustein. Hier standen die zwei Hälften als
+            nackte Geschwister ohne gemeinsamen Eltern, ohne die Überschrift
+            „Alle Google Bewertungen" und ohne jeden data-section-Anker — die
+            Sektion war damit auch in verhalten.db unsichtbar. Der Baustein
+            bringt Wrapper, Überschrift und beide Anker mit. */}
+        <Bewertungsblock praefix="lp-vp-" wrapperKlasse="lp-vp-bewertungen" />
         <ScienceSection />
         <VideoSection />
         <UrgencyBanner />
