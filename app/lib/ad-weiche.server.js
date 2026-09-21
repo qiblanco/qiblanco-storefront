@@ -282,6 +282,19 @@ export const AUSSCHLUSS_SEGMENTE = [
   // Verkehr darüber läuft. Gemessen am Rand: homepage-bauer/pruefungen/
   // probe_bewertungen_hell.py, Arm H (gclid -> 200 statt 302).
   '/pages/bewertungen',
+  // DIE ZWEI LANDEPLÄTZE FÜR "20 TAGE TESTEN / RÜCKGABE" (Grossjob 20260921-
+  // GROSSJOB-die-bewertenden-markenbegriffe-gehoeren-uns, Segment s04,
+  // Bestandsprüfung der Sitelink-Ziele). Live gemessen am 2026-09-21 mit
+  // ?gclid=S04PROBE: BEIDE gaben 302 auf LP A, während /pages/kritik,
+  // /pages/erfahrungen, /pages/studien und /pages/bewertungen 200 gaben.
+  // Die Risikoumkehr ist im Kaufüberzeugungs-Kanon der DACH-Closer Nummer
+  // zwei; ein Sitelink "20 Tage testen", der auf einem Kaufversprechen landet,
+  // hätte ihn in sein Gegenteil verkehrt. Der Ausschluss steht VOR dem
+  // Scharfschalten in s05. Additiv, reversibel: zwei Zeilen löschen.
+  //   /pages/das-20-tage-versprechen  Trust-Hub Garantie (noindex, MM-LP-Familie)
+  //   /pages/neu-oder-gebraucht       beide Fristen mit Quelle, indexiert
+  '/pages/das-20-tage-versprechen',
+  '/pages/neu-oder-gebraucht',
   '/go',
   '/collect',
   '/b',
