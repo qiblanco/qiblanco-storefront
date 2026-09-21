@@ -1,8 +1,7 @@
 import {createContext, useContext} from 'react';
+import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
-import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
-import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {claim} from '~/lib/claims';
@@ -716,13 +715,17 @@ export function ZellSchutz({products}) {
         <MechanismSection />
         <ScienceSection />
         <SkeptikerSection />
-        <div data-section="lp-b-google-reviews">
-          <LpGoogleReviews />
-        </div>
+        {/* BEWERTUNGSBLOCK aus dem Baustein (homepage-bauer/SKILL-TRUST-ELEMENTE.md).
+            Polsterung und Breite standen auf [data-section='lp-b-google-reviews'],
+            also auf der oberen Hälfte allein; sie sitzen jetzt auf
+            `.lp-b-bewertungen` und gelten für beide Hälften.
+
+            Diese Seite ist über /pages/zell-schutz heute nicht erreichbar — die
+            Route leitet LP-B-Verkehr per 302 auf /pages/schlaf-zellen-schutz um.
+            Der Defekt hatte deshalb keine Live-Wirkung; fällt die Weiche, hätte
+            er sie sofort. Der InfoSlider ist verschoben, nicht umgebaut. */}
+        <Bewertungsblock praefix="lp-b-" wrapperKlasse="lp-b-bewertungen" />
         <InfoSlider dataSection="lp-b-info-slider" />
-        <div className="NormalSectionSize" data-section="lp-b-reputon-reviews">
-          <ReputonWidget />
-        </div>
         <VideoSection />
         <AnwendungSection />
         <GuaranteeSection />

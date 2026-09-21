@@ -1,4 +1,5 @@
 import {createContext, useContext} from 'react';
+import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
@@ -1056,15 +1057,11 @@ export function SchlafZellenSchutz({products}) {
 
             KEINE Bewertung ist verändert, ausgewählt oder weggelassen — 4,8 und die
             440 Bewertungen kommen unverändert aus denselben zwei Widgets. */}
-        <div className="lp-a-bewertungen">
-          <LpGoogleReviews dataSection="lp-a-google-reviews" />
-          <div className="NormalSectionSize" data-section="lp-a-reputon-reviews">
-            <h2 className="text-[1.6rem] sm:text-4xl font-semibold text-center mb-6 mt-2">
-              Alle Google Bewertungen
-            </h2>
-            <ReputonWidget />
-          </div>
-        </div>
+        {/* Derselbe Block, jetzt aus dem Baustein statt von Hand. Der gerenderte
+            DOM ist unverändert — Wrapper, Hälften, Überschrift und beide
+            data-section-Anker sind dieselben. Diese Seite war der erste Nutzer
+            des Standards und trug ihn bis hier als letzte Abschrift. */}
+        <Bewertungsblock praefix="lp-a-" wrapperKlasse="lp-a-bewertungen" />
         {/* Externe Stimmen — mit dem Vorbildblock übernommen (Startseite Z.102).
             Derselbe geteilte Baustein, dieselbe Reihenfolge MAXIM → BRAINEFFECT →
             Geldhelden. Erst dadurch haben Christians MAXIM-/Andi-Lew-Textwechsel

@@ -440,11 +440,37 @@ body:has(.lp-b3) footer {
    auto-Margin klebt die Box links statt zentriert unter den Studien */
 .lp-b3 .Studien p.text-center { margin-inline: auto; }
 
-/* ─── Google-Reviews (Fremd-Widget in Seiten-Tokens einfaerben) ───────────── */
-.lp-b3 [data-section='lp-b-google-reviews'] { padding: var(--a-s12) var(--a-s3); }
-.lp-b3 [data-section='lp-b-google-reviews'] .NormalSectionSize {
+/* ─── Bewertungsblock — EIN BLOCK, EINE BREITE (Haus-Standard, siehe
+   homepage-bauer/SKILL-TRUST-ELEMENTE.md und app/components/reusables/Bewertungsblock.jsx)
+
+   VORHER standen Polsterung und Breite auf [data-section='lp-b-google-reviews'],
+   also auf der OBEREN HAELFTE ALLEIN; fuer die untere gab es keine einzige Regel.
+   Jede Regel war fuer sich richtig geschrieben — falsch war allein, dass sie eine
+   HAELFTE adressierte, wo der BLOCK gemeint war.
+
+   DIE ZWEITE WURZEL: die obere Haelfte ist eine <section> (GoogleReviews rendert
+   `GoogleKundenerfahrungen NormalSectionSize`), die untere ein <div>. `.lp-b3 section`
+   (Z. 99) trifft deshalb NUR die obere und gibt ihr eine eigene Flaeche und
+   Polsterung. `padding: 0` und `background: transparent` unten sind darum KEIN
+   Zierrat, sondern genau die Neutralisierung dieser Wurzel.
+
+   KEINE LIVE-WIRKUNG HEUTE, UND DAS IST EINE MESSLUECKE, KEINE ENTWARNUNG:
+   /pages/zell-schutz antwortet mit 302 auf /pages/schlaf-zellen-schutz (LP-Weiche
+   in app/routes/pages.zell-schutz.jsx). Wer die URL live misst, misst die
+   Schlafseite und bekommt ein Falsch-Gruen ueber DIESE Seite. Faellt die Weiche,
+   waere der Defekt sofort sichtbar. */
+.lp-b3 .lp-b-bewertungen {
+  padding: var(--a-s12) var(--a-s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s6);
+}
+.lp-b3 .lp-b-bewertungen .NormalSectionSize {
   margin: 0 auto !important;
   max-width: var(--a-breite);
+  width: 100%;
+  padding: 0;
+  background: transparent;
 }
 .lp-b3 [data-section='lp-b-google-reviews'] .rounded-2xl {
   background: var(--a-grund);
