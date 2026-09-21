@@ -5680,23 +5680,19 @@ ul.kakao-children li {
   color: rgb(90, 90, 90);
   text-align: left;
 }
+/* Traeger der Standard-Bedienung (Grossjob Bausatz, Arm 6a, 2026-09-21).
+   Vorher: eine Flex-ZEILE mit zwei Textpfeilen und dem Wischhinweis dazwischen.
+   Jetzt stehen hier die zwei Bausteine des Standards UNTEREINANDER -- oben der
+   Fortschrittsbalken (.ProgressWrapper), darunter die zwei Pfeile
+   (.SliderButtonWrapper). Beide bringen ihren eigenen Abstand nach oben mit
+   (je 20px, app.css:2826/2840), deshalb ist dieser Container ein blosser
+   Block ohne eigenes Flex-Layout -- genauso, wie sie im InfoSlider stehen.
+   Die .ghx-studien__arrow-Regeln sind mit den Textpfeilen entfallen; ihre
+   Optik bringt jetzt .SliderButton mit, an EINER Stelle fuer alle Slider. */
 .ghx-studien__nav {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+  display: block;
   margin-top: 14px;
 }
-.ghx-studien__arrow {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid rgba(28, 25, 23, 0.15);
-  background: #fff;
-  cursor: pointer;
-  font-size: 1.1rem;
-  line-height: 1;
-}
-.ghx-studien__arrow:hover { background: #f5f5f4; }
 .ghx-studien__footnote { text-align: center; margin: 18px 0 10px; }
 
 /* Slider-Interaktions-Standard (GL-DES-0012): Desktop-Maus-Drag am
@@ -5751,20 +5747,10 @@ ul.kakao-children li {
    war 10px — ein dritter Radius ohne Grund. */
 .ghx-studie__preview img { border-radius: 8px; }
 
-/* Gold ausschliesslich auf Handlung/Beweis: die Pfeile sind die Handlung. */
-.ghx-studien__arrow {
-  color: var(--a-akzent, #c9a14b);
-  transition: border-color 120ms ease, background-color 120ms ease;
-}
-.ghx-studien__arrow:hover { border-color: var(--a-akzent, #c9a14b); }
-
-.ghx-studien__nav { align-items: center; }
-.ghx-studien__wischhinweis {
-  font-size: 0.8125rem;
-  color: var(--a-muted, #6b665d);
-  letter-spacing: 0.02em;
-  padding: 0 8px;
-}
+/* Die Gold-Regel der alten Textpfeile ist mit ihnen entfallen. Sie hatte einen
+   eigenen Goldton als Rueckfallwert (#c9a14b) -- einer von 45 Literalen
+   desselben Wertes im Baum. Die Pfeile des Standards ziehen stattdessen
+   var(--color-dark)/var(--color-light) aus EINER Quelle (app.css:2854). */
 
 /* Der Track ist fokussierbar (Pfeiltasten blaettern) — also braucht er einen
    sichtbaren Fokus. Nur :focus-visible, damit ein Mausklick keinen Rahmen
@@ -5784,7 +5770,6 @@ ul.kakao-children li {
    useDragSwipe bereits in JS; hier faellt zusaetzlich das weiche Scrollen weg. */
 @media (prefers-reduced-motion: reduce) {
   .ghx-studien__track { scroll-behavior: auto; }
-  .ghx-studien__arrow { transition: none; }
 }
 
 /* ═══ DIE NAHT ZUR CLAUDE-ANSICHT DES ASSISTENTEN ═══════════════════════════

@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {Link} from 'react-router';
 import {useDragSwipe} from './useDragSwipe';
 import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
@@ -122,16 +122,107 @@ function flaechenNorm(eckdaten) {
   };
 }
 
+/*
+ * Die Pfeil-Grafik des Standards, unveraendert aus dem Bestand uebernommen
+ * (InfoSlider.jsx, dort zweimal inline). Sie steht hier als eigene kleine Marke
+ * und NICHT als Import aus einem Nachbarn: die Anwendungsregel des Bausatzes
+ * (homepage-bauer/baukasten/qb-standard-slider/README.md, Abschnitt 0) hält
+ * ausdrücklich fest, dass der Standard ein MARKUP-VERTRAG ist und kein Bauteil
+ * zum Importieren -- `InfoSlider` nimmt genau eine Prop und trägt seine fünf
+ * Karten als Literale. Der zweite Traeger der Anzeige (ReputonWidget) hält
+ * dieselbe Grafik aus demselben Grund lokal; sein `PfeilIcon` ist zudem nicht
+ * exportiert, und ein Import haette die 814 Zeilen des Bewertungs-Bausteins in
+ * jede Seite gezogen, die nur Studien zeigt.
+ *
+ * Die Richtung macht das CSS: .ButtonPrev dreht -90 Grad, .ButtonNext +90.
+ */
+function PfeilIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M29.52 22.52L18 10.6L6.48 22.52a1.7 1.7 0 0 0 2.45 2.36L18 15.49l9.08 9.39a1.7 1.7 0 0 0 2.45-2.36Z"
+      />
+      <path fill="none" d="M0 0h36v36H0z" />
+    </svg>
+  );
+}
+
 export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
   const trackRef = useRef(null);
+  const fortschrittRef = useRef(null);
   const scrollByCard = (dir) => {
     const track = trackRef.current;
     if (!track) return;
     const card = track.querySelector('.ghx-studie');
     const step = card ? card.offsetWidth + 24 : 340;
-    track.scrollBy({left: dir * step, behavior: 'smooth'});
+    // Punkt 3 des Standards: „weiter" wickelt am Ende auf die erste Karte,
+    // „zurück" klemmt am Anfang (so hält es InfoSlider, Christians Vorlage:
+    // canNext liefert dort immer true, canPrev nur oberhalb von 0). Das
+    // Klemmen erledigt der Browser bei einem negativen scrollBy von selbst.
+    if (dir > 0) {
+      const amEnde = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+      track.scrollTo({
+        left: amEnde ? 0 : track.scrollLeft + step,
+        behavior: 'smooth',
+      });
+      return;
+    }
+    track.scrollBy({left: -step, behavior: 'smooth'});
   };
   const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
+
+  /*
+   * FORTSCHRITTSBALKEN DIESER BAHN -- und die eine Stelle, an der dieser Umbau
+   * eine Entscheidung treffen musste.
+   *
+   * Der Standard kennt zwei Herkuenfte des Fortschritts (Anwendungsregel,
+   * Abschnitt 1). Springt die Bahn in ganze Karten (mode 'transform'), kommt er
+   * aus dem diskreten Index. DIESE Bahn gleitet frei (mode 'scroll'), also aus
+   * den Scroll-Massen. Genau dafür gibt es im Haus bereits einen Traeger:
+   * ReputonWidget.jsx rechnet seit dem 21.09. live
+   *     (scrollLeft + Sichtbreite) / Gesamtbreite
+   * also den GESEHENEN Anteil. Diese Formel ist hier UEBERNOMMEN, nicht
+   * nachgebaut -- eine zweite Bedeutung derselben Anzeige wäre der Anfang des
+   * nächsten Wildwuchses.
+   *
+   * Sie hat einen zweiten, baulichen Vorzug: passen alle Kacheln nebeneinander
+   * (Desktop, fünf Studien), ist der Scrollweg null. Die Lesart „zurück-
+   * gelegter Weg" müsste dann durch null teilen; diese faellt sauber auf
+   * 100 Prozent -- „du siehst alles" ist dort die richtige Aussage.
+   *
+   * Kein Boden-Wert: der Nachbar hält seine Marke ab 8 Prozent sichtbar, weil
+   * 38 Bewertungskarten sonst bei rund 3 Prozent anfingen. Fünf Kacheln
+   * starten mobil bei rund 24 Prozent. Eine Konstante, die nie bindet, wäre
+   * hier abgeschrieben statt uebernommen.
+   *
+   * Geschrieben wird direkt am DOM statt über React-State: sonst rendert die
+   * ganze Kachelreihe bei jedem Bildschirmbild des Scrollens neu.
+   */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+    let frame = 0;
+    const schreibe = () => {
+      frame = 0;
+      const balken = fortschrittRef.current;
+      if (!balken) return;
+      const gesamt = track.scrollWidth || 1;
+      const anteil = ((track.scrollLeft + track.clientWidth) / gesamt) * 100;
+      balken.style.width = `${Math.min(100, Math.max(0, anteil))}%`;
+    };
+    const plane = () => {
+      if (!frame) frame = window.requestAnimationFrame(schreibe);
+    };
+    schreibe();
+    track.addEventListener('scroll', plane, {passive: true});
+    window.addEventListener('resize', plane);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      track.removeEventListener('scroll', plane);
+      window.removeEventListener('resize', plane);
+    };
+  }, []);
 
   // Tastatur: der Track ist fokussierbar, Pfeiltasten blaettern kartenweise.
   const onKeyDown = (event) => {
@@ -198,26 +289,46 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
           );
         })}
       </div>
+      {/*
+        Die Bedienung des Standards, aus dem Bestand uebernommen: ein
+        Fortschrittsbalken und zwei Pfeile, mehr nicht. Vorher standen hier
+        zwei TEXT-Pfeile und der Hinweis „weiterwischen" -- zusammen mit der
+        nativen Leiste vier Bedienelemente auf einer Bahn, wo Christians
+        Standard zwei zeigt.
+
+        DER HINWEISTEXT FAELLT WEG, und das ist keine Sparsamkeit: die
+        Anwendungsregel führt ihn unter „wird nicht dazugestellt" (der Balken
+        sagt dasselbe, und die Pfeile zeigen es), und der Bewertungsblock hat
+        ihn am selben Tag aus demselben Grund weggelassen. Der Leser will nicht
+        lesen, wie man ein Karussell bedient.
+
+        Der Name .ghx-studien__nav bleibt absichtlich stehen: die
+        Kundenrand-Wache ordnet Bahn und Bedienung über die BEM-Naht
+        (block__nav) einander zu. Wer ihn hier gegen einen neuen Namen tauscht,
+        macht die Wache für genau diese Bahn blind -- und zwar lautlos.
+      */}
       <div className="ghx-studien__nav">
-        <button
-          type="button"
-          className="ghx-studien__arrow"
-          onClick={() => scrollByCard(-1)}
-          aria-label="Vorherige Studie"
-        >
-          ←
-        </button>
-        <span className="ghx-studien__wischhinweis" aria-hidden="true">
-          weiterwischen →
-        </span>
-        <button
-          type="button"
-          className="ghx-studien__arrow"
-          onClick={() => scrollByCard(1)}
-          aria-label="Nächste Studie"
-        >
-          →
-        </button>
+        <div className="ProgressWrapper" aria-hidden="true">
+          <div ref={fortschrittRef} className="ProgressTracker" style={{width: '0%'}} />
+        </div>
+        <div className="SliderButtonWrapper">
+          <button
+            type="button"
+            className="ButtonPrev SliderButton"
+            onClick={() => scrollByCard(-1)}
+            aria-label="Vorherige Studie"
+          >
+            <PfeilIcon />
+          </button>
+          <button
+            type="button"
+            className="ButtonNext SliderButton"
+            onClick={() => scrollByCard(1)}
+            aria-label="Nächste Studie"
+          >
+            <PfeilIcon />
+          </button>
+        </div>
       </div>
       <p className="ghx-studien__footnote">
         <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
