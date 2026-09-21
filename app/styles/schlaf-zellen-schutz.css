@@ -1034,6 +1034,28 @@ body:has(.lp-a3) header img { border-radius: var(--a-r1); }
 .lp-a3 .ScrollScrubVideo-fussnote { margin-bottom: 0; }
 .lp-a3 .InfoSlider { margin-top: 0; }
 
+/* ── Die Naht, die der 21.09.2026 neu geschaffen hat ──────────────────────
+   Seit Christians Anweisung „die Scrollanimation leitet den neuen Themenblock
+   ein, und erst dann erfolgt die schriftliche Erklaerung" steht der
+   Forschungsblock DIREKT unter dem Mikroskop-Video. Dort trafen zwei Nullen
+   aufeinander und ergaben 0 px (live gemessen, Desktop und Mobil): der Video-
+   Block hat seit der Zeile oben margin-block 0, und .PeerReviewStudies bringt
+   nur einen Abstand nach UNTEN mit. Eine H2 klebte damit an der Videokante.
+
+   0 ist hier kein Takt, sondern das Fehlen eines Taktes. Der Wert kommt NICHT
+   von aussen: --a-s8 ist der Innen-Abstand, mit dem dieselbe Sektion schon den
+   Forschungsblock vom Studienslider trennt (Regel .lp-a3
+   .PeerReviewStudies.NormalSectionSize weiter oben, ebenfalls --a-s8). Die
+   Naht bekommt damit denselben Takt wie ihre Nachbarin, kein zweiter Wert.
+
+   GESCHWISTER-SELEKTOR und nicht margin-top am Block: der Abstand gilt der
+   NACHBARSCHAFT zum Video, nicht dem Block. Steht der Forschungsblock
+   anderswo (Startseite, oder auf dieser Seite nach einer spaeteren Umstellung
+   wieder oben), soll er seinen Abstand weiter von der Sektion bekommen. */
+.lp-a3 .ScrollScrubVideoBlock + .PeerReviewStudies.NormalSectionSize {
+  margin-top: var(--a-s8);
+}
+
 /* ── Hintergruende: fremde Flaechen ins Neutral-Kontinuum ─────────────────── */
 .lp-a3 { --a-buehne: var(--a-grund); }
 .lp-a3 .snap-start,
