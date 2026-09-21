@@ -272,6 +272,16 @@ export const AUSSCHLUSS_SEGMENTE = [
   '/pages/erfahrungen',
   '/pages/so-wirkt-kohaerentes-wasser',
   '/pages/technologie',
+  // DER LANDEPLATZ FÜR "QI BLANCO BEWERTUNGEN" (Grossjob 20260921-GROSSJOB-
+  // die-bewertenden-markenbegriffe-gehoeren-uns, Segment s04). Die Seite wird
+  // in s05 Sitelink-Ziel der Marken-Kampagne 8925560332. Ohne diese Zeile
+  // würfe die Weiche jeden bezahlten Klick darauf auf LP A -- der Sucher
+  // tippt "Bewertungen" und landet auf einem Kaufversprechen, exakt der Fall
+  // der fünf Kritik-Ziele oben. Der Ausschluss steht deshalb VOR dem
+  // Scharfschalten des Sitelinks, nicht danach: die Naht wird gebaut, bevor
+  // Verkehr darüber läuft. Gemessen am Rand: homepage-bauer/pruefungen/
+  // probe_bewertungen_hell.py, Arm H (gclid -> 200 statt 302).
+  '/pages/bewertungen',
   '/go',
   '/collect',
   '/b',

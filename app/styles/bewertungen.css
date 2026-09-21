@@ -1,0 +1,363 @@
+/* ============================================================================
+   /pages/bewertungen — „Qi Blanco Bewertungen" (2026-09-21).
+
+   Token-System wortgleich zu den Schwesterseiten kritik.css (Rubrik 100/100)
+   und erfahrungen.css (98/100) und damit zum staerksten Bestands-Rezept des
+   Hauses (schlaf-zellen-schutz.css, .lp-a3) sowie zum design-meister web-brief
+   --seite bewertungen: warmes Neutral-Kontinuum, EIN Gold-Akzent nur auf
+   Handlung/Beweis, Weissraum gruppiert statt Boxen, 8pt-Grid, Sektions-Takt
+   96/64, Zeilenlänge <= 75ch.
+
+   REGEL DIESES FILES: alle Größen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .bew — self-contained.
+
+   WARUM EIGENE DATEI UND NICHT kritik.css MITBENUTZT: Gate 12 loest geteilte
+   Dateien auf ALLE importierenden Routen auf — jeder Format-/Design-Beleg der
+   einen Seite hinge sonst an der anderen. Die WERTE sind kopiert, die DATEI
+   nicht geteilt (dieselbe Entscheidung wie kritik.css gegenüber erfahrungen.css).
+
+   DER EINE AKZENT SITZT AUF DEM BEWEIS UND DER EINEN HANDLUNG: die Antwortzeile
+   trägt das Gold als Linie, der Knopf „ansehen" als Fläche. Sonst nirgends.
+
+   DER BEWERTUNGSBLOCK (Fremd-Widgets in Seiten-Tokens einfärben, Brief-Regel):
+   Bauform der Startseite in der GEHEILTEN Form vom 20.09.2026 — Fläche,
+   Polsterung, Breite und Abstand EINMAL am gemeinsamen Wrapper, beide
+   Hälften WEDER mit eigener Fläche NOCH mit eigener Polsterung. Regeln, die
+   tiefer zielen (Karten, Bilder, Überschrift), färben Innenleben und sind
+   keine Block-Eigenschaft (Gate 19, bewertungsblock_standard.py).
+   ========================================================================== */
+
+:root {
+  --bew-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --bew-fs-xs: 0.8125rem; /* 13px, nur Fuss */
+  --bew-fs-base: 1rem; /* 16px */
+  --bew-fs-md: 1.125rem; /* 18px */
+  --bew-fs-lg: 1.25rem; /* 20px */
+  --bew-fs-xl: 1.5625rem; /* 25px */
+  --bew-fs-h2: 1.5rem; /* EIN H2-Stil, 24px fest. Auf kritik ist die H2 bis 28px
+       fluid, weil dort 20 und 25 px dazwischen liegen. Hier zählt die Rubrik
+       nur Stufen mit mindestens drei Vorkommen: 12, 14, 16 (Seite + Widget) und
+       die H2 — 16→28 wäre 1,75 und 16→26 noch 1,63, beides außerhalb des
+       modularen Bands (≤ 1,55); 16→24 ist 1,5. Gemessen an der Rubrik am
+       Produktions-Build, nicht geschätzt. */
+  --bew-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --bew-s1: 8px;
+  --bew-s2: 16px;
+  --bew-s3: 24px;
+  --bew-s4: 32px;
+  --bew-s6: 48px;
+  --bew-s8: 64px;
+  --bew-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --bew-grund: #faf9f5;
+  --bew-flaeche: #f4f0e9;
+  --bew-dunkel: #191714;
+  --bew-text: #2c2a26;
+  --bew-text-hell: #f4f0e9;
+  --bew-muted: #6b665d;
+  --bew-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis; als Linie und
+       als Knopffläche mit dunkler Schrift, nie als Schrift auf hellem Grund. */
+  --bew-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --bew-r1: 8px;
+  --bew-r2: 16px;
+  --bew-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --bew-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte für den Text, eine breite Bahn für die Karten */
+  --bew-mass: 68ch;
+  --bew-breite-schmal: 760px;
+  --bew-breite: 1200px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.bew {
+  font-family: var(--bew-font);
+  font-size: var(--bew-fs-base);
+  line-height: 1.65;
+  color: var(--bew-text);
+  background: var(--bew-grund);
+}
+
+/* NAME MIT ABSICHT (wie .krit__inhalt): die Gestaltungs-Prüfliste erkennt einen
+   Textcontainer nur an einem Namen aus _CONTAINER_WOERTER (inhalt/content/...).
+   Wer diese Klasse umbenennt, nimmt der Seite ihre Messbarkeit. */
+.bew__inhalt {
+  width: 100%;
+  max-width: var(--bew-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--bew-s2);
+}
+
+.bew section {
+  padding-block: var(--bew-s8);
+}
+@media (min-width: 768px) {
+  .bew section {
+    padding-block: var(--bew-s12);
+  }
+}
+
+.bew h1 {
+  font-size: var(--bew-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--bew-s3);
+  color: var(--bew-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen, auch
+   über dem Feed (die Widget-Überschrift wird unten auf dieselbe Regel gezogen). */
+.bew h2 {
+  font-size: var(--bew-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--bew-s2);
+  color: var(--bew-text);
+}
+
+.bew p,
+.bew li {
+  font-size: var(--bew-fs-base);
+  line-height: 1.65;
+  color: var(--bew-text);
+  max-width: var(--bew-mass);
+  margin: 0 0 var(--bew-s2);
+}
+
+.bew p:last-child {
+  margin-bottom: 0;
+}
+
+.bew a {
+  color: var(--bew-text);
+  text-decoration: underline;
+  text-decoration-color: var(--bew-akzent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.bew a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.bew ol,
+.bew ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.bew__kopf {
+  background: var(--bew-flaeche);
+}
+
+.bew p.bew__vorspann {
+  font-size: var(--bew-fs-base);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bew-muted);
+  margin-bottom: var(--bew-s2);
+}
+
+/* Der Beweis-Akzent: EIN Gold, als Linie vor der Antwort. */
+.bew p.bew__antwort {
+  font-size: var(--bew-fs-lg);
+  font-weight: 600;
+  border-left: 3px solid var(--bew-akzent);
+  padding-left: var(--bew-s2);
+  margin: 0 0 var(--bew-s3);
+}
+
+.bew p.bew__lead {
+  font-size: var(--bew-fs-md);
+}
+
+/* ─── Der Bewertungsblock ─────────────────────────────────────────────────────
+   Block-Eigenschaften EINMAL am Wrapper (.bew__block), beide Hälften ohne
+   eigene Fläche und Polsterung; der Abstand dazwischen aus `gap`. */
+.bew section.bew__bewertungen {
+  padding-block: var(--bew-s8);
+  background: var(--bew-grund);
+}
+.bew .bew__block {
+  width: 100%;
+  max-width: var(--bew-breite);
+  margin-inline: auto;
+  padding-inline: var(--bew-s2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bew-s8);
+}
+/* Die obere Hälfte ist ein <section>, die untere ein <div> — die Grundregel
+   `.bew section` träfe deshalb NUR die obere und gäbe ihr 64/96 px eigene
+   Polsterung mitten im Block. Beide Layout-Träger werden hier symmetrisch
+   auf Null gesetzt. */
+.bew .bew__block .NormalSectionSize {
+  margin: 0 auto !important;
+  max-width: none;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+/* Die Widget-Überschriften tragen Tailwind-Klassen (text-[1.6rem] sm:text-4xl,
+   zentriert) — zwei fremde Schriftgrößen und eine zweite H2-Ausrichtung. Sie
+   erben hier den EINEN H2-Stil der Seite. Innen-Regel, keine Block-Eigenschaft. */
+.bew .bew__block h2 {
+  font-size: var(--bew-fs-h2) !important;
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--bew-s3) !important;
+  color: var(--bew-text);
+}
+/* Fremd-Widget in Seiten-Tokens (Brief-Regel), Innen-Regeln, keine Block-
+   Eigenschaft: der Badge-Zusatz trägt in app.css 0.95rem (15,25 px, ein wilder
+   Zwischenwert), der „weiterlesen"-Knopf Google-Blau #1565c0 — auf dieser Route
+   die ZWEITE gesättigte Akzentwelt neben dem Gold (gemessen: 2 Hue-Bins, −25).
+   Beides erbt hier Basis-Größe und Textfarbe; die Handlung bleibt an der
+   goldenen Linie erkennbar wie jeder Link der Seite. */
+.bew .bew__block .google-rating-badge__powered {
+  font-size: var(--bew-fs-base);
+}
+.bew .bew__block button[aria-expanded] {
+  color: var(--bew-text);
+  text-decoration: underline;
+  text-decoration-color: var(--bew-akzent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+/* Karten in Seiten-Tokens: Grund, Haarlinie, EIN Radius, EIN Schatten. */
+.bew .bew__block .rounded-2xl {
+  background: var(--bew-grund);
+  border-color: var(--bew-linie);
+  border-radius: var(--bew-r2);
+  box-shadow: var(--bew-shadow-sm);
+}
+.bew .bew__block .rounded-2xl p {
+  font-size: var(--bew-fs-base);
+  color: var(--bew-text);
+  max-width: none;
+}
+.bew .bew__block img {
+  border-radius: var(--bew-r1);
+}
+
+/* ─── Herkunft / Grenzen / Prüfen ────────────────────────────────────────── */
+.bew__herkunft {
+  background: var(--bew-flaeche);
+}
+
+.bew__weiter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bew-s1);
+  margin-top: var(--bew-s3);
+}
+.bew__weiter li {
+  margin: 0;
+  padding-top: var(--bew-s2);
+  border-top: 1px solid var(--bew-linie);
+}
+.bew__weiter a {
+  font-weight: 600;
+}
+
+.bew__test {
+  background: var(--bew-flaeche);
+}
+.bew p.bew__fristen {
+  color: var(--bew-muted);
+}
+
+/* Der eine Knopf der Seite: Gold als Fläche, dunkle Schrift, EIN Radius. */
+.bew a.bew__cta {
+  display: inline-block;
+  margin-top: var(--bew-s3);
+  padding: var(--bew-s2) var(--bew-s4);
+  border-radius: var(--bew-r1);
+  background: var(--bew-akzent);
+  color: var(--bew-text);
+  font-size: var(--bew-fs-base);
+  font-weight: 600;
+  text-decoration: none;
+}
+.bew a.bew__cta:hover {
+  background: var(--bew-dunkel);
+  color: var(--bew-text-hell);
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. Wortgleich zu kritik.css. */
+body:has(.bew) {
+  background: var(--bew-grund);
+  --color-accent-primary: var(--bew-akzent);
+  --rd3-gold: var(--bew-akzent);
+  --qb-sterne-gold: var(--bew-akzent);
+  --shop-switch-active: rgba(201, 161, 75, 0.18);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch für die Bilder aus Kopf und Fuss. */
+body:has(.bew) img,
+body:has(.bew) picture,
+body:has(.bew) video {
+  border-radius: var(--bew-r1);
+}
+
+body:has(.bew) .footer,
+body:has(.bew) footer {
+  background: var(--bew-dunkel);
+  font-family: var(--bew-font);
+}
+body:has(.bew) .footer p,
+body:has(.bew) .footer a,
+body:has(.bew) .footer li,
+body:has(.bew) .footer span {
+  font-size: var(--bew-fs-xs);
+}
+body:has(.bew) .footer .footer-heading {
+  font-size: var(--bew-fs-base);
+}
+body:has(.bew) .footer .btn--primary,
+body:has(.bew) .footer button[type='submit'],
+body:has(.bew) .footer input[type='submit'] {
+  background: var(--bew-akzent);
+  color: var(--bew-text);
+  border-radius: var(--bew-r1);
+  font-size: var(--bew-fs-base);
+}
+body:has(.bew) .footer input[type='email'],
+body:has(.bew) .footer input[type='text'] {
+  border-radius: var(--bew-r1);
+  font-size: var(--bew-fs-base);
+}
+/* Das Newsletter-Widget im Footer (ActiveCampaign `_form_15`) setzt seinen
+   Ocker #F2BF72 inline — der ZWEITE Goldton der Route, nur mit !important
+   erreichbar (gemessen an erfahrungen/kritik). */
+body #_form_15_submit._submit,
+body:has(.bew) ._form_15 button,
+body:has(.bew) ._form_15 ._submit,
+body:has(.bew) ._form_15 input[type='submit'] {
+  background: var(--bew-akzent) !important;
+  color: var(--bew-text) !important;
+  border-radius: var(--bew-r1) !important;
+  font-family: var(--bew-font) !important;
+}
+/* reset.css setzt "p, li { color: var(--color-dark) }" als DIREKTE Elementregel.
+   Direkt schlaegt GEERBT — auf dunklem Grund gewinnt sonst der dunkle Fliesstext. */
+body:has(.bew) .footer p,
+body:has(.bew) .footer li {
+  color: inherit;
+}

@@ -1140,6 +1140,26 @@ export const NUR_ROUTE_SEITEN = [
       'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
       'Indexierbarkeit prüft, nicht den Statuscode.',
   },
+  {
+    pfad: '/pages/bewertungen',
+    lastmod: '2026-09-21T12:00:00Z',
+    grund:
+      'Der Landeplatz für „Qi Blanco Bewertungen" (Grossjob 20260921-GROSSJOB-' +
+      'die-bewertenden-markenbegriffe-gehoeren-uns, Segment s04). Anlass ist ' +
+      'gemessen: der Begriff hatte am 2026-09-21 0 von 10 eigene organische ' +
+      'Treffer (seo.db) und /pages/bewertungen antwortete 404. Die Seite ' +
+      'besteht allein aus der Route pages.bewertungen.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 mit ' +
+      'den echten Google-Bewertungen und steht in keiner Sitemap. Ein ' +
+      'Seitenobjekt wäre der zweite mögliche Träger und ist bewusst NICHT ' +
+      'gewählt (Fremdsystem) — dieselbe Begründung wie bei /pages/kritik. ' +
+      'Wache (Kriterium 3): homepage-bauer/pruefungen/' +
+      'probe_bewertungen_hell.py — prüft am ausgelieferten HTML den INHALT ' +
+      '(Rand-Marker, Feed-Region mit gerenderten Karten, Badge mit Note), ' +
+      'kein noindex, kein Disallow, Canonical, den Sitemap-<loc>, den ' +
+      'eingehenden Link von /pages/faq und die Sitelink-Naht (gclid -> 200), ' +
+      'nicht den Statuscode.',
+  },
 ];
 
 /**

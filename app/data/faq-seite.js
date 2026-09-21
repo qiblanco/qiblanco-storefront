@@ -342,6 +342,36 @@ export const FAQ_KAUF = [
     },
   },
   {
+    q: 'Was sagen andere Kunden über Qi Blanco, und sind die Bewertungen echt?',
+    a:
+      'Ja, sie sind echt: Jede Bewertung, die wir zeigen, stammt aus unserem Google-Unternehmensprofil, ' +
+      'kommt von einem Google-Konto und ist dort öffentlich nachlesbar. Wir schreiben keine um, wir ' +
+      'kaufen keine, und für eine Bewertung gibt es weder Gutschein noch Rabatt. Die aktuelle Note und ' +
+      'die Anzahl stehen live auf unserer Bewertungsseite, so wie Google sie zählt. Dort liest du auch, ' +
+      'was eine Bewertung nicht zeigen kann: Was jemand gemerkt hat, ist sein Erlebnis, kein Messwert ' +
+      'für dich. Deshalb kannst du jedes Produkt 20 Tage selbst prüfen.',
+    quelle:
+      'app/lib/googleRating.js (Reputon-Feed des Google-Unternehmensprofils, root-Loader), ' +
+      'app/lib/googleReviewsCurated.js (Kopf: menschlich geprüfte, echte Rezensionen), ' +
+      'Elternauftrag des Grossjobs 20260921-GROSSJOB-die-bewertenden-markenbegriffe-gehoeren-uns ' +
+      '(Festlegung: keine Fake-Bewertungen, keine gekauften Rezensionen). KEINE ZAHL IM TEXT: Note ' +
+      'und Anzahl leben im Widget und würden hier still veralten.',
+    // DIE VERTIEFUNG DIESER ANTWORT, und zugleich der eingehende Link, den
+    // /pages/bewertungen braucht (Grossjob 20260921-GROSSJOB-die-bewertenden-
+    // markenbegriffe-gehoeren-uns, Segment s04): eine Seite ohne Verweis von
+    // einer indexierten Nachbarseite ist entdeckt und nicht gewichtet. Der
+    // Menü-Eintrag trägt das nicht — dessen Kinder rendert Shopify
+    // clientseitig per Portal, im Server-HTML stehen sie nicht.
+    //
+    // ARBEITSTEILUNG wie im Abgrenzungs-SSoT: die FAQ antwortet in EINEM
+    // Absatz und verlinkt in die Tiefe. Dort stehen die Bewertungen selbst,
+    // live aus dem Google-Profil, mit Herkunft und Grenzen.
+    weiter: {
+      pfad: '/pages/bewertungen',
+      text: 'Alle Google-Bewertungen live, mit Note und Anzahl, und woher sie kommen',
+    },
+  },
+  {
     q: 'Kann ich in Raten zahlen?',
     a:
       'Ja, über Klarna. Leg dein Produkt in den Warenkorb, geh zur Kasse und wähle Klarna als ' +
