@@ -47,6 +47,7 @@ import overlayOrdnungStyles from '~/styles/overlay-ordnung.css?url';
 // Steht bewusst VOR app.css, damit im Head sichtbar bleibt, woher die Werte
 // kommen, die weiter unten benutzt werden.
 import qbTokensStyles from '~/styles/qb-tokens.css?url';
+import qbErklaerPopupStyles from '~/styles/qb-erklaer-popup.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 // Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
@@ -509,6 +510,12 @@ export function Layout({children}) {
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={overlayOrdnungStyles}></link>
         <link rel="stylesheet" href={qbTokensStyles}></link>
+        {/* Der Ueberlagerungs-Baustein des Bausatzes. Er steht hier und nicht in
+            einer Route, weil er auf mehreren Seiten sitzt (heute Startseite und
+            /pages/schlaf-zellen-schutz) und der naechste Erklaer-Knopf ihn ohne
+            zweiten Einbau benutzen koennen soll. Er laedt NACH qb-tokens, weil er
+            deren Werte liest. */}
+        <link rel="stylesheet" href={qbErklaerPopupStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>

@@ -1,0 +1,437 @@
+/* ============================================================================
+   qb-erklaer-popup.css — der Überlagerungs-Baustein des Bausatzes
+   ----------------------------------------------------------------------------
+   Großjob 20260922-GROSSJOB-kohaerente-wasserstruktur-wird-anklickbar-und-
+   erklaert-sich, Segment s02.
+
+   ER BRINGT KEINEN EIGENEN WERT MIT, DEN ES SCHON GIBT.
+   Farbe, Radius, Fläche und Schriftgrößen kommen aus app/styles/qb-tokens.css
+   (Semantik-Ebene --qb-*). Ebenenleiter, Randabstand und die Mindestgröße des
+   Schließkreuzes kommen aus app/styles/overlay-ordnung.css, das der
+   Design-Meister aus seinem Web-Soll erzeugt. Beide Wurzeln lädt app/root.jsx
+   auf jeder Route — nachgemessen am 2026-09-22 (Zeilen 49/50 und 510/511).
+
+   WARUM DAS HIER STEHT UND NICHT IN app.css: app.css ist über 6400 Zeilen groß,
+   liegt auf jeder Route und in der Gate-12-Reichweiten-Achse. Diese Datei ist
+   additiv und berührt keine Bestandsdatei.
+
+   EIGENE ZAHLEN, GEZÄHLT STATT BEHAUPTET: die Deckbreite des Panels (44rem),
+   die Mindesthöhe 320px für die Lage-Entscheidung (steht im JSX), Zeilenhöhen
+   und Strichstärken. Keine davon ist eine Schriftgröße, eine Farbe oder ein
+   Abstand — genau die drei zählt die Design-Rubrik, und genau die kommen hier
+   ausnahmslos aus der Wurzel. Die erste Fassung dieser Zeile behauptete „eine
+   einzige neue Zahl" und übersah dabei ein getipptes font-size: 11px. Die
+   Rubrik nicht: sie meldete auf /pages/schlaf-zellen-schutz 12 statt 11
+   Schriftgrößen.
+   ========================================================================== */
+
+.qb-erklaer {
+  position: relative;
+  display: inline;
+}
+
+/* --- Der Auslöser: Text, der ein Knopf ist ------------------------------- */
+.qb-erklaer__ausloeser {
+  /* Ein echter <button> bringt Schriftart, Größe und Rahmen des Browsers mit.
+     Beides wird hier abgeräumt, damit die Wendung im Satz bleibt, in dem sie
+     steht — sie soll wie Text aussehen und sich wie ein Knopf verhalten. */
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  line-height: inherit;
+  /* Der Goldton kommt aus der Wurzel. Er ist hier nicht noch einmal getippt:
+     ein 15. handgezeichnetes Gold wäre genau der Befund, gegen den die
+     Token-Wurzel gebaut ist. */
+  color: var(--qb-akzent);
+  cursor: pointer;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 0.18em;
+}
+
+.qb-erklaer__ausloeser:hover,
+.qb-erklaer__ausloeser:focus-visible {
+  text-decoration-style: solid;
+}
+
+.qb-erklaer__ausloeser:focus-visible {
+  outline: 2px solid var(--qb-akzent);
+  outline-offset: 2px;
+  border-radius: var(--qb-radius-bild);
+}
+
+/* --- Das Panel ---------------------------------------------------------- */
+.qb-erklaer__panel {
+  position: absolute;
+  top: calc(100% + var(--qb-ref-raster));
+  left: 0;
+  z-index: var(--z-dialog);
+  display: block;
+  box-sizing: border-box;
+  width: min(44rem, calc(100vw - 2 * var(--overlay-grundabstand)));
+  /* --qb-erklaer-platz misst beim Öffnen, wie viel Höhe unter dem Auslöser
+     wirklich frei ist. Der Rückfallwert gilt, solange noch nichts gemessen
+     wurde — er ist bewusst großzügig, denn ein zu kleines Panel beim ersten
+     Bildaufbau wäre auffälliger als ein zu großes. */
+  max-height: min(var(--qb-erklaer-platz, 78vh), 44rem);
+  overflow-y: auto;
+  padding: calc(2 * var(--qb-ref-raster));
+  text-align: left;
+  /* Der Auslöser steht im Fließtext und dort oft in einem <strong>. Ohne diese
+     Zeile erbt der ganze Erklär-Inhalt dessen Fettung — am 2026-09-22 im
+     Bildschirmabzug so vorgefunden: 700 Wörter in Halbfett, und die
+     Zwischenüberschriften hoben sich von nichts mehr ab. Das Panel setzt die
+     Schriftstärke deshalb auf den Grundwert zurück; die Auszeichnungen im
+     Inhalt machen ihre eigenen <strong>. */
+  font-weight: 400;
+  color: var(--qb-text);
+  background: var(--qb-flaeche);
+  border: 1px solid var(--qb-akzent);
+  border-radius: var(--qb-radius-klein);
+  box-shadow: 0 6px 24px var(--qb-ref-bahn-schatten);
+}
+
+.qb-erklaer[data-ausrichtung='mitte'] .qb-erklaer__panel {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Das X gehört zum festgehaltenen Popup. Beim Darüberfahren steht das Popup
+   nur so lange, wie der Zeiger darauf ist — ein Schließkreuz wäre dort ein
+   Bedienelement, das man nie erreicht. */
+.qb-erklaer__schliessen {
+  display: none;
+}
+
+.qb-erklaer[data-zustand='fest'] .qb-erklaer__schliessen {
+  display: flex;
+  position: absolute;
+  top: var(--qb-ref-raster);
+  right: var(--qb-ref-raster);
+  align-items: center;
+  justify-content: center;
+  /* WCAG 2.5.5 Target Size (Enhanced): der Sollwert steht in
+     overlay-ordnung.css und wird hier nicht zum zweiten Mal entschieden. */
+  min-width: var(--schliesskreuz-min);
+  min-height: var(--schliesskreuz-min);
+  padding: 0;
+  font-size: var(--qb-ref-fs-6);
+  line-height: 1;
+  color: var(--qb-text-gedaempft);
+  background: none;
+  border: 0;
+  border-radius: var(--qb-radius-klein);
+  cursor: pointer;
+}
+
+.qb-erklaer__schliessen:hover,
+.qb-erklaer__schliessen:focus-visible {
+  color: var(--qb-text);
+}
+
+/* --- Der Inhalt --------------------------------------------------------- */
+.qb-erklaer__inhalt {
+  display: block;
+  padding-right: var(--schliesskreuz-min);
+}
+
+.qb-erklaer__titel {
+  display: block;
+  font-size: var(--qb-ref-fs-5);
+  line-height: 1.25;
+}
+
+.qb-erklaer__einleitung {
+  display: block;
+  margin-top: var(--qb-ref-raster);
+  font-size: var(--qb-ref-fs-3);
+}
+
+.qb-erklaer__bilder {
+  display: grid;
+  gap: calc(2 * var(--qb-ref-raster));
+  margin-top: calc(2 * var(--qb-ref-raster));
+}
+
+@media (min-width: 750px) {
+  .qb-erklaer__bilder {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.qb-erklaer__bild {
+  display: block;
+}
+
+.qb-erklaer__bildtitel {
+  display: block;
+  margin-top: var(--qb-ref-raster);
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.3;
+}
+
+.qb-erklaer__bildtext,
+.qb-erklaer__folge,
+.qb-erklaer__werte {
+  display: block;
+  margin-top: calc(var(--qb-ref-raster) / 2);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.45;
+}
+
+.qb-erklaer__folge {
+  color: var(--qb-text-gedaempft);
+}
+
+.qb-erklaer__wert {
+  display: block;
+}
+
+.qb-erklaer__wert strong {
+  color: var(--qb-text);
+}
+
+/* --- Die Gegenüberstellung ---------------------------------------------- */
+.qb-erklaer__tabelle {
+  display: block;
+  margin-top: calc(3 * var(--qb-ref-raster));
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.45;
+}
+
+.qb-erklaer__zeile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--qb-ref-raster);
+  padding: calc(var(--qb-ref-raster) / 2) 0;
+  border-bottom: 1px solid var(--qb-ref-tinte-gedaempft);
+}
+
+.qb-erklaer__zeile:last-child {
+  border-bottom: 0;
+}
+
+.qb-erklaer__zeile--kopf,
+.qb-erklaer__zelle--label {
+  color: var(--qb-text-gedaempft);
+}
+
+/* Die kohärente Spalte hebt sich über das GEWICHT ab, nicht über eine zweite
+   Farbe. Gemessen am 2026-09-22: mit dem Ton „Gold-Tinte" als Textfarbe meldete
+   die Design-Rubrik auf der Startseite „ZWEI konkurrierende Gold-/Ocker-Toene",
+   und der Gesamtwert fiel von 93 auf 90. Der Ton ist ein Haus-Token und war
+   trotzdem der zweite Goldton der Seite — ein Token aus der Wurzel zu ziehen
+   beweist nicht, dass er an DIESER Stelle hingehört. Er ist deshalb in dieser
+   Datei nirgends benutzt; Gold trägt hier nur, was Handlung oder Zeichnung ist. */
+.qb-erklaer__zelle--links {
+  font-weight: 700;
+}
+
+.qb-erklaer__einordnung {
+  display: block;
+  margin-top: calc(3 * var(--qb-ref-raster));
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft);
+}
+
+.qb-erklaer__einordnung strong {
+  display: block;
+}
+
+.qb-erklaer__quelle {
+  display: block;
+  margin-top: var(--qb-ref-raster);
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+/* Der Erklär-Block benutzt nur Schriftgrößen, die auf den beiden Gastgeber-
+   seiten ohnehin häufig vorkommen (14/16/20/24 aus der Wurzel). Die kleinste
+   Stufe (12) steht dort je Seite nur ein einziges Mal; sie hier für Einordnung,
+   Quelle und Bildunterschriften zu benutzen hätte die Größe aus dem Rauschen
+   gehoben, und die Design-Rubrik zählte auf /pages/schlaf-zellen-schutz
+   daraufhin 12 statt 11 Schriftgrößen. Ein Token aus der Wurzel zu ziehen ist
+   notwendig und nicht hinreichend — welche STUFE man zieht, entscheidet die
+   Gastgeberseite mit. */
+
+/* --- Die Bilder --------------------------------------------------------- */
+.qb-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.qb-mol__o,
+.qb-mol__h,
+.qb-gitter circle,
+.qb-schwarm circle {
+  fill: var(--qb-akzent);
+}
+
+.qb-mol__h,
+.qb-gitter--lose circle {
+  fill: var(--qb-text-gedaempft);
+}
+
+.qb-mol__bindung,
+.qb-gitter line,
+.qb-schwarm line {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.qb-gitter--fest line {
+  stroke: var(--qb-akzent);
+}
+
+.qb-gitter--lose line {
+  stroke-dasharray: 4 5;
+}
+
+.qb-mol__bogen {
+  fill: none;
+  stroke: var(--qb-akzent);
+  stroke-width: 2;
+}
+
+.qb-mol__geist line {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+  stroke-dasharray: 3 4;
+}
+
+.qb-mol__geist circle {
+  fill: none;
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+/* Die Atom-Buchstaben ziehen ihre Größe aus der Skala, nicht aus dem Gefühl.
+   Die erste Fassung tippte hier 11px — und die Design-Rubrik meldete auf
+   /pages/schlaf-zellen-schutz prompt „12 Schriftgroessen im Einsatz" statt 11,
+   technisch fiel von 88 auf 87. Die Kopfzeile dieser Datei behauptete zugleich,
+   sie führe genau EINEN eigenen Wert. Eine Zahl, die man für zu klein hält, um
+   sie zu zählen, wird trotzdem gezählt. */
+.qb-mol__zeichen {
+  font-size: var(--qb-ref-fs-1);
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--qb-flaeche);
+}
+
+.qb-bild__wert {
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--qb-text-gedaempft);
+}
+
+.qb-bild__wert--akzent {
+  fill: var(--qb-text);
+}
+
+.qb-bild__notiz {
+  font-size: var(--qb-ref-fs-2);
+  text-anchor: middle;
+  fill: var(--qb-text-gedaempft);
+}
+
+.qb-bild__notiz--akzent {
+  fill: var(--qb-text);
+}
+
+.qb-schwarm__feld {
+  fill: none;
+  stroke: var(--qb-akzent);
+  stroke-width: 1;
+  stroke-dasharray: 5 6;
+}
+
+/* --- Bewegung ----------------------------------------------------------- */
+/* Die Aufweitung wird gefahren, nicht gesprungen. Der Anfangszustand ist
+   GENAU die Lage des engeren Winkels: die beiden Faktoren sind das Verhältnis
+   der Sinus- und Kosinus-Hälften der zwei Winkel, nicht geschätzte Werte.
+   Endzustand ist immer scale(1) — wer die Bewegung abschaltet, sieht das
+   fertige Bild, nie das halbe. */
+.qb-mol__arme--weitet {
+  transform-box: view-box;
+  animation: qb-winkel-weitet 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) 0.25s both;
+}
+
+.qb-erklaer__bild[data-bild='winkel'] .qb-mol__arme--weitet {
+  transform-origin: 205px 64px;
+}
+
+@keyframes qb-winkel-weitet {
+  from {
+    transform: scale(0.9682, 1.0608);
+  }
+  to {
+    transform: scale(1, 1);
+  }
+}
+
+.qb-schwarm--verband > g {
+  animation: qb-gleichtakt 2.6s ease-in-out infinite;
+}
+
+@keyframes qb-gleichtakt {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qb-mol__arme--weitet,
+  .qb-schwarm--verband > g {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* --- Als Blatt über dem unteren Rand ------------------------------------
+   Zwei Wege führen hierher, und sie meinen dasselbe: ein schmaler Bildschirm
+   (das Handy hat für ein angehängtes Panel nie Platz) und ein Auslöser, unter
+   dem zu wenig Raum bleibt. Eine Form, zwei Anlässe. */
+.qb-erklaer[data-lage='blatt'] .qb-erklaer__panel,
+.qb-erklaer[data-lage='blatt'][data-ausrichtung='mitte'] .qb-erklaer__panel {
+  position: fixed;
+  top: auto;
+  left: var(--overlay-rand-links);
+  right: var(--overlay-rand-rechts);
+  bottom: var(--overlay-rand-unten);
+  width: auto;
+  max-width: 44rem;
+  max-height: 80vh;
+  margin-inline: auto;
+  transform: none;
+}
+
+@media (max-width: 749px) {
+  .qb-erklaer__panel {
+    position: fixed;
+    top: auto;
+    left: var(--overlay-rand-links);
+    right: var(--overlay-rand-rechts);
+    bottom: var(--overlay-rand-unten);
+    width: auto;
+    max-height: 80vh;
+  }
+
+  .qb-erklaer[data-ausrichtung='mitte'] .qb-erklaer__panel {
+    left: var(--overlay-rand-links);
+    transform: none;
+  }
+}
