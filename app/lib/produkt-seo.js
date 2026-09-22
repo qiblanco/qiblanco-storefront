@@ -97,9 +97,19 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // CW-20260910-0e45045b): Produkt liegt als DRAFT in Shopify; die Zeile
   // wirkt erst, wenn Christian es aktiviert. Nur Beschaffenheit, keine
   // Wirkzusage — derselbe Korridor wie die sechs Eintraege darueber.
+  //
+  // DIE GOLD-AUSSAGE WECHSELT DEN GEGENSTAND (Christian 2026-09-22): von Kette
+  // und Verschluss auf den Gitterchip. Bis dahin stand hier „Kette und
+  // Verschluss aus 750er Gold". GEFUNDEN HAT DAS DIE PROBE, NICHT DIE SUCHE:
+  // der erste Durchgang dieses Auftrags zog die abgelöste Aussage an ihren
+  // drei Fundstellen im Fliesstext mit und übersah diese hier, weil eine
+  // Meta-Beschreibung in keiner Komponente steht. Sie ist trotzdem
+  // kundensichtbar — sie ist der Satz im Suchergebnis. Wer hier etwas
+  // ändert, ändert nicht die Seite, sondern das, was über sie im Netz
+  // steht, und die beiden driften ohne Nachzug auseinander.
   '/products/qi-master':
-    'Qi Master®: der QiOne mit Diamanten. Gitterchip™ der zweiten Generation, Kette ' +
-    'und Verschluss aus 750er Gold, nummeriertes Einzelstück. 20 Tage risikofrei.',
+    'Qi Master®: Alpha Serie, limitiert auf 100 Stück. Der QiOne mit Diamanten, ' +
+    'Gitterchip™ der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
     'angenehm zu tragen, damit dein Anhänger überall dabei ist.',
