@@ -71,7 +71,7 @@ function Hero() {
         <div className="block sm:hidden">
           <LazyImage
             highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
-            compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min_small.jpg_1.webp?v=1669001851"
+            compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851&width=100"
           />
         </div>
         <h2 className="text-2xl">Crystal Cacao® - Bio</h2>
@@ -123,7 +123,7 @@ function Hero() {
       <div className="flex-1 rounded-xl overflow-hidden sm:block hidden">
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
-          compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min_small.jpg_1.webp?v=1669001851"
+          compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851&width=100"
         />
       </div>
     </div>
