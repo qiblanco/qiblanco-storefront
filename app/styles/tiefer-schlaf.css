@@ -40,9 +40,9 @@
   --ts3-text-hell: #f4f0e9;      /* Text auf dunkel = Flaechen-Ton */
   --ts3-muted: #6b665d;
   --ts3-muted-hell: rgba(244, 240, 233, 0.72);
-  --ts3-akzent: #c9a14b;         /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --ts3-akzent: var(--qb-akzent);         /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --ts3-akzent-tief: #b8893a;    /* Hover / Text-Akzent auf hell */
-  --ts3-akzent-tinte: #856828;  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+  --ts3-akzent-tinte: var(--qb-akzent-tinte);  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
        Gleicher Hue/Saettigung wie --ts3-akzent, nur abgedunkelt -> KEIN zweiter Gold-
        ton (Rubrik-Hue-Bin bleibt 1). --ts3-akzent-tief bleibt die FLAECHE
        (hover/outline/fill) — die beiden Rollen haben gegenlaeufige Anforderungen. */
@@ -60,7 +60,8 @@
   --ts3-breite-schmal: 760px;
 }
 
-/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere #856828 zu dunkel
+/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere var(--qb-akzent-tinte)
+   (heute #856828) zu dunkel
    (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt Selektor-Pflege:
    jedes Element in diesen Sektionen erbt die Korrektur automatisch. */
 .lp-ts3 .lp-vp-final-cta,

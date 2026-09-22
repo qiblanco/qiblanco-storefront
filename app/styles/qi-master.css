@@ -62,7 +62,7 @@
   --qm-text: #2c2a26;
   --qm-muted: #6b665d;
   --qm-akzent: #f2bf72;              /* = --color-accent-primary (Flaeche) */
-  --qm-akzent-tinte: #856828;        /* = --color-accent-ink (Schrift, AA)  */
+  --qm-akzent-tinte: var(--qb-akzent-tinte);        /* = --color-accent-ink (Schrift, AA)  */
   --qm-linie: rgba(44, 42, 38, 0.12);
 
   /* Radien: genau ZWEI */
@@ -839,7 +839,7 @@ body:has(.ProductPageQiMaster) .submenu .nav-styling-wrapper img {
 }
 body:has(.ProductPageQiMaster) .qb-sterne { color: var(--qm-akzent) !important; }
 /* EIN Gold als SCHRIFT: der Gewaehrleistungs-Link (eu-gewaehrleistung.css)
-   schreibt in --color-accent-ink (#856828), die Sterne im Kopf in #f2bf72 —
+   schreibt in --color-accent-ink (loest ueber var(--qb-akzent-tinte) auf #856828 auf), die Sterne im Kopf in #f2bf72 —
    die Rubrik zaehlt zwei Goldtoene (gemessen 2026-09-11). Der Link wird hier
    in der Textfarbe gesetzt und bleibt als Link erkennbar: Unterstrich in der
    Akzentfarbe (der Unterstrich ist keine Schriftfarbe). Nur diese Route. */
@@ -906,7 +906,7 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link {
  */
 body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:hover,
 body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visible {
-  color: var(--color-accent-ink, #856828);
+  color: var(--color-accent-ink, var(--qb-akzent-tinte));
   text-decoration: underline;
 }
 

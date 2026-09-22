@@ -55,7 +55,7 @@
   --lex-text: #2c2a26;
   --lex-text-hell: #f8f4ee;
   --lex-muted: #6b665d;
-  --lex-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR als Linie, nie als Schrift */
+  --lex-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR als Linie, nie als Schrift */
   --lex-linie: rgba(44, 42, 38, 0.12);
 
   /* Radien + Schatten: je ZWEI Werte */

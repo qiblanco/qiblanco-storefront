@@ -57,7 +57,7 @@
   --krit-text: #2c2a26;
   --krit-text-hell: #f4f0e9;
   --krit-muted: #6b665d;
-  --krit-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
+  --krit-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
        Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1). Gemessen
        2026-09-10: eine abgedunkelte Gold-TINTE fuer Fliesstext-Links waere auf
        dieser Route der ZWEITE Goldton neben den Fusszeilen-Links (harmonisch

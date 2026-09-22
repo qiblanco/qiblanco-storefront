@@ -42,7 +42,7 @@
   --qu-flaeche: #f4f0e9;
   --qu-text: #2c2a26;
   --qu-muted: #6b665d;
-  --qu-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
+  --qu-akzent-tinte: var(--qb-akzent-tinte); /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
   --qu-linie: rgba(44, 42, 38, 0.12);
 
   /* Radius: EIN Wert */
@@ -198,11 +198,11 @@
    Akzent") und app/styles/erfahrungen.css, die damit 92/100 mit NULL
    Befunden zu Skala/Farbe/Radien erreicht.
 
-   WARUM HIER #856828 UND NICHT DAS MARKEN-GOLD #c9a14b: auf dieser Route
+   WARUM HIER DIE GOLD-TINTE UND NICHT DER MARKEN-AKZENT: auf dieser Route
    trägt das Gold ausschließlich SCHRIFT (die DOI-Links und der Weg zurück in
-   den Artikel). #c9a14b erreicht als Text auf hellem Grund keine 4,5:1 —
-   #856828 ist genau dafür da und steht als `--st-akzent-tinte` schon im
-   Studien-Blatt. Ein zweites Gold nur für das Chrome einzuführen hieße, den
+   den Artikel). var(--qb-akzent) (heute #c9a14b) erreicht als Text auf hellem
+   Grund keine 4,5:1 — var(--qb-akzent-tinte) (heute #856828) ist genau dafür
+   da und steht als `--st-akzent-tinte` schon im Studien-Blatt. Ein zweites Gold nur für das Chrome einzuführen hieße, den
    gemessenen Befund gegen einen Kontrast-Fehler zu tauschen.
    ========================================================================== */
 body:has(.qb-qu) {
@@ -232,13 +232,15 @@ body:has(.qb-qu) video {
    gehen (gleiche ID-Gewichtung, eine Klasse mehr => gewinnt). Die Form-ID
    selbst ist bei jedem Render neu und darf NICHT adressiert werden.
 
-   WARUM HIER #856828 UND NICHT #c9a14b WIE IN uebersicht.css: dort trägt das
-   Gold keine Schrift, hier schon (91 gemessene Textvorkommen: DOI-Links und
-   der Weg zurück in den Artikel). Zwei Töne wären wieder zwei Cluster — und
-   von den beiden ist #c9a14b als Text auf hellem Grund nicht AA-fähig.
-   Der Knopf bekommt deshalb WEISSE Schrift: 5,2:1 auf #856828, geprüft.
-   Dunkle Schrift wäre hier der Fehler (auf #856828 nur 2,8:1) — genau
-   umgekehrt zum helleren #c9a14b, wo die dunkle Schrift richtig ist. */
+   WARUM HIER DIE GOLD-TINTE UND NICHT DER AKZENT WIE IN uebersicht.css: dort
+   trägt das Gold keine Schrift, hier schon (91 gemessene Textvorkommen:
+   DOI-Links und der Weg zurück in den Artikel). Zwei Töne wären wieder zwei
+   Cluster — und von den beiden ist var(--qb-akzent) (heute #c9a14b) als Text
+   auf hellem Grund nicht AA-fähig.
+   Der Knopf bekommt deshalb WEISSE Schrift: 5,2:1 auf var(--qb-akzent-tinte)
+   (heute #856828), geprüft. Dunkle Schrift wäre hier der Fehler (auf dieser
+   Tinte nur 2,8:1) — genau umgekehrt zum helleren Akzent, wo die dunkle
+   Schrift richtig ist. */
 body:has(.qb-qu) #qi-newsletter ._submit,
 body:has(.qb-qu) #qi-newsletter button,
 body:has(.qb-qu) #qi-newsletter input[type='submit'],

@@ -59,7 +59,7 @@
   --qk-flaeche: #f4f0e9;
   --qk-text: #2c2a26;
   --qk-muted: #6b665d;
-  --qk-akzent-tinte: #856828;
+  --qk-akzent-tinte: var(--qb-akzent-tinte);
   --qk-linie: rgba(44, 42, 38, 0.12);
 
   /* Bewegung — EIN Takt. Derselbe Wert steht als TAKT_S in Einsatzkarte.jsx;

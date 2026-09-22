@@ -42,8 +42,8 @@
   --erf-text: #2c2a26;
   --erf-text-hell: #f4f0e9;
   --erf-muted: #6b665d;
-  --erf-akzent: #c9a14b;          /* GL-DES-0001 Gold — NUR Handlung/Beweis */
-  --erf-akzent-tinte: #856828;    /* dasselbe Gold als SCHRIFT auf hellem Grund
+  --erf-akzent: var(--qb-akzent);          /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --erf-akzent-tinte: var(--qb-akzent-tinte);    /* dasselbe Gold als SCHRIFT auf hellem Grund
        (AA >= 4.5). Gleicher Hue, nur abgedunkelt — KEIN zweiter Goldton. */
   --erf-linie: rgba(44, 42, 38, 0.12);
 

@@ -33,7 +33,7 @@
   --es-flaeche: #f8f4ee;      /* warmes Off-White (palette.flaeche) */
   --es-text: #2c2a26;         /* palette.text */
   --es-muted: #6b665d;        /* palette.muted */
-  --es-akzent: #c9a14b;       /* palette.akzent — NUR auf Handlung */
+  --es-akzent: var(--qb-akzent);       /* palette.akzent — NUR auf Handlung */
   --es-radius: 16px;          /* EIN Radius (radius_set_px) */
   --es-luecke: 32px;          /* 8pt-Grid */
   --es-innen: 24px;           /* 8pt-Grid */

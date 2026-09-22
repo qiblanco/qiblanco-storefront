@@ -66,7 +66,7 @@
   --hyp-flaeche: #f4f0e9;
   --hyp-text: #2c2a26;
   --hyp-muted: #6b665d;
-  --hyp-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Beleg/Handlung, und NUR als
+  --hyp-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Beleg/Handlung, und NUR als
        Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1 reicht
        fuer Text nicht). Der Text bleibt dunkel, das Gold traegt die Linie. */
   --hyp-linie: rgba(44, 42, 38, 0.12);

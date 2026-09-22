@@ -48,9 +48,9 @@
   --mm-text-2: #6b665d;
   --mm-text-hell: #f4f0e9;
   --mm-text-hell-2: rgba(244, 240, 233, 0.72);
-  --mm-gold: #c9a14b;        /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --mm-gold: var(--qb-akzent);        /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --mm-gold-tief: #b8893a;   /* Hover + Text-Akzent auf hell */
-  --mm-gold-tinte: #856828;  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+  --mm-gold-tinte: var(--qb-akzent-tinte);  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
        Gleicher Hue/Saettigung wie --mm-gold, nur abgedunkelt -> KEIN zweiter Gold-
        ton (Rubrik-Hue-Bin bleibt 1). --mm-gold-tief bleibt die FLAECHE
        (hover/outline/fill) — die beiden Rollen haben gegenlaeufige Anforderungen. */
@@ -69,7 +69,8 @@
   --mm-mass: 68ch;
 }
 
-/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere #856828 zu dunkel
+/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere var(--qb-akzent-tinte)
+   (heute #856828) zu dunkel
    (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt Selektor-Pflege:
    jedes Element in diesen Sektionen erbt die Korrektur automatisch. */
 .mm-bahn--dunkel,

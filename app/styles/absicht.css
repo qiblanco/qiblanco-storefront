@@ -74,7 +74,7 @@
   --ab-text-hell: #f4f0e9;
   --ab-muted: #6b665d;
   --ab-muted-hell: rgba(244, 240, 233, 0.72);
-  --ab-akzent: #c9a14b;             /* GL-DES-0001 Gold — NUR Handlung/Beleg */
+  --ab-akzent: var(--qb-akzent);             /* GL-DES-0001 Gold — NUR Handlung/Beleg */
   --ab-linie: rgba(44, 42, 38, 0.12);
 
   /* EIN Radius-Token */
