@@ -333,10 +333,24 @@
   // Bindung riskiert, die an der Knotenidentitaet hängt.
   //
   // WARUM EIN TOKEN UND KEIN style-ATTRIBUT. Das Grau ist ein BENANNTER Wert
-  // und kein freier: es ist aus dem Bestand extrahiert, nämlich aus der
-  // vorhandenen Klasse .cookie-banner-button.edit, die live mit
-  // rgba(0,0,0,0.4) rendert -- derselbe Wert, den app.css für die
-  // Slider-Bahn führt. Kein Element bekommt hier ein style="".
+  // und kein freier, und kein Element bekommt hier ein style="".
+  //
+  // WELCHES GRAU -- und hier weicht der Wert BEWUSST vom Vorgefundenen ab.
+  // Die vorhandene Klasse .cookie-banner-button.edit rendert live mit
+  // rgba(0,0,0,0.4). Über dem weißen Banner-Grund (#cookie-consent-banner ist
+  // rgb(255,255,255)) ergibt das eine Fläche von #999999, und die weiße
+  // Schrift darauf steht bei gemessen 2,85:1 -- unter AA (4,5:1) und sogar
+  // unter der Großschrift-Schwelle (3,0:1). Das war schon vor diesem Bau so;
+  // neu ist, dass Christians Beschriftung auf einem ZWEITEN Knopf derselben
+  // Farbe steht. Eine Aufschrift, die niemand lesen kann, erfüllt den Auftrag
+  // nicht -- deshalb wird der Ton hier gesetzt statt geerbt.
+  //
+  // Der Wert ist trotzdem EXTRAHIERT und nicht erfunden: #6b665d ist der
+  // Hauswert --qb-ref-tinte-gedaempft aus app/styles/qb-tokens.css, dort aus
+  // startseite.css und erfahrungen.css als zwei unabhängige Fundstellen
+  // belegt. Er ist warm-neutral (GL-DES-0001 warmes Neutral-Kontinuum) und
+  // trägt weiße Schrift mit gemessen 5,70:1. Deckend statt halbdurchlässig,
+  // damit der Kontrast nicht vom Untergrund abhängt.
   // Die Drei-Ebenen-Ordnung des Hauses (Referenz -> Semantik -> Komponente,
   // baukasten/qb-tokens/README.md) ist eingehalten. Der Token zeigt bewusst
   // NOCH NICHT auf app/styles/qb-tokens.css: diese Datei ist laut ihrem
@@ -345,13 +359,17 @@
   var ORDNUNG_STIL_ID = 'qb-consent-knopfordnung';
   var ORDNUNG_CSS = [
     ':root{',
-    '  --qb-ref-consent-neutral: rgba(0, 0, 0, 0.4);',
+    '  --qb-ref-consent-neutral: #6b665d;',
     '  --qb-ref-consent-neutral-tinte: #ffffff;',
     '  --qb-komponente-consent-neutral-flaeche: var(--qb-ref-consent-neutral);',
     '  --qb-komponente-consent-neutral-tinte: var(--qb-ref-consent-neutral-tinte);',
     '}',
     '#cookie-buttons-wrapper{display:flex;flex-direction:row;}',
-    '#cookie-buttons-wrapper > #cookie-banner-button-edit{order:1;}',
+    '#cookie-buttons-wrapper > #cookie-banner-button-edit{',
+    '  order:1;',
+    '  background-color:var(--qb-komponente-consent-neutral-flaeche);',
+    '  color:var(--qb-komponente-consent-neutral-tinte);',
+    '}',
     '#cookie-buttons-wrapper > #CybotCookiebotDialogBodyButtonDecline{',
     '  order:2;',
     '  background-color:var(--qb-komponente-consent-neutral-flaeche);',
