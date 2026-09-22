@@ -1160,3 +1160,62 @@ test('ARM-I7 DAS GITTER: unknown kippt nie zu no, no steigt weiter zu yes', () =
     'ARM-I7 GEGENRICHTUNG: ein no muss zu yes aufsteigen duerfen (interner Link mit utm_*), sonst friert die Monotonie Information ein statt sie zu schuetzen',
   );
 });
+
+test('ARM-H7 DAS FRAGMENT GEGEN DAS ECHTE SCHEMA, nicht gegen unsere Annahme', () => {
+  // WARUM DIESER ARM UEBER H1/H2 HINAUS NOETIG IST: die beiden vergleichen
+  // unser Fragment mit Hydrogens Default-FRAGMENT — also Text gegen Text.
+  // Waere `attributes { key value }` gegenueber dem Storefront-SCHEMA falsch
+  // geschrieben, blieben beide gruen, und live braeche JEDE Cart-Mutation
+  // (LinesAdd, Discount, BuyerIdentity …) an einem ungueltigen GraphQL-
+  // Dokument — der Kaufweg, nicht nur der Marker. Das ist die Folge mit der
+  // groessten Fallhoehe in diesem ganzen Bau, und sie war bis hierher
+  // ungemessen.
+  // Der Pfad ist ueberschreibbar, damit die SCHEMA-SEITE dieses Arms ueberhaupt
+  // rot vorgefuehrt werden kann: gegen eine Fragment-Mutation schlaegt immer
+  // zuerst ARM-H1 an (seine Regex ist strenger), und ein Arm, dessen Rot nur
+  // ein Nachbar erzeugt, ist unbelegt. Ueber diesen Schalter laeuft er gegen
+  // eine Wegwerf-Kopie, in der das SCHEMA mutiert ist — der Fall, den H1
+  // baulich nie sieht (Shopify benennt ein Feld um).
+  const schemaPfad =
+    process.env.ADPARAMS_SCHEMA_PFAD ??
+    fileURLToPath(
+      new URL(
+        '../node_modules/@shopify/hydrogen/dist/storefront.schema.json',
+        import.meta.url,
+      ),
+    );
+  const schemaRoh = JSON.parse(readFileSync(schemaPfad, 'utf8'));
+  const schema = schemaRoh.__schema ?? schemaRoh.data?.__schema;
+  assert.ok(
+    schema?.types,
+    'ARM-H7 MESSAUSFALL: das Storefront-Schema liegt nicht in der erwarteten Form vor — die Gueltigkeit des Fragments ist damit nicht pruefbar. Neu messen, nicht wegklicken.',
+  );
+  const typen = new Map(schema.types.map((t) => [t.name, t]));
+  const entfalte = (t) => {
+    let x = t;
+    while (x.ofType) x = x.ofType;
+    return x.name;
+  };
+  const cartFelder = new Map(
+    (typen.get('Cart')?.fields ?? []).map((f) => [f.name, f]),
+  );
+  assert.ok(cartFelder.size > 0, 'ARM-H7 MESSAUSFALL: Typ Cart nicht im Schema');
+
+  // Jedes Feld unseres Fragments muss es auf Cart wirklich geben.
+  for (const feld of fragmentFelder(CART_MUTATE_FRAGMENT, 'CartApiMutation')) {
+    assert.ok(
+      cartFelder.has(feld),
+      `ARM-H7: das Mutations-Fragment fragt "${feld}" ab, aber der Typ Cart hat dieses Feld im Storefront-Schema nicht — jede Cart-Mutation wuerde live an einem ungueltigen GraphQL-Dokument scheitern, und das ist der Kaufweg.`,
+    );
+  }
+
+  // Und die Unterfelder von attributes muessen zum Typ passen.
+  const attrTyp = entfalte(cartFelder.get('attributes').type);
+  const attrFelder = (typen.get(attrTyp)?.fields ?? []).map((f) => f.name);
+  for (const unter of ['key', 'value']) {
+    assert.ok(
+      attrFelder.includes(unter),
+      `ARM-H7: Cart.attributes ist vom Typ ${attrTyp}, der hat kein Feld "${unter}" (vorhanden: ${attrFelder.join(', ')})`,
+    );
+  }
+});
