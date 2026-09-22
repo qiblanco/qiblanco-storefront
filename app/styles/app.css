@@ -5753,10 +5753,10 @@ ul.kakao-children li {
 
 /* Gold ausschliesslich auf Handlung/Beweis: die Pfeile sind die Handlung. */
 .ghx-studien__arrow {
-  color: var(--a-akzent, #c9a14b);
+  color: var(--a-akzent, var(--qb-akzent));
   transition: border-color 120ms ease, background-color 120ms ease;
 }
-.ghx-studien__arrow:hover { border-color: var(--a-akzent, #c9a14b); }
+.ghx-studien__arrow:hover { border-color: var(--a-akzent, var(--qb-akzent)); }
 
 .ghx-studien__nav { align-items: center; }
 .ghx-studien__wischhinweis {
@@ -5770,12 +5770,12 @@ ul.kakao-children li {
    sichtbaren Fokus. Nur :focus-visible, damit ein Mausklick keinen Rahmen
    hinterlaesst. */
 .ghx-studien__track:focus-visible {
-  outline: 2px solid var(--a-akzent, #c9a14b);
+  outline: 2px solid var(--a-akzent, var(--qb-akzent));
   outline-offset: 4px;
   border-radius: 8px;
 }
 .ghx-studie__link:focus-visible {
-  outline: 2px solid var(--a-akzent, #c9a14b);
+  outline: 2px solid var(--a-akzent, var(--qb-akzent));
   outline-offset: 4px;
   border-radius: 8px;
 }
@@ -6356,7 +6356,7 @@ html.qb-chat-docked .GoogleRezensionenPopup {
 
 /* Tastaturbedienung sichtbar machen — das <iframe> hatte nie einen Fokusring. */
 .YoutubeIframe--facade:focus-visible {
-  outline: 3px solid #c9a14b;
+  outline: 3px solid var(--qb-akzent);
   outline-offset: 3px;
 }
 
