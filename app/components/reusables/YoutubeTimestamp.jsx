@@ -119,18 +119,26 @@ import {VIDEO_LQIP} from '~/data/video-lqip';
  * zusteht (Radius, Schatten, Farbe, Filter) — die GEOMETRIE nicht mehr.
  * ═══════════════════════════════════════════════════════════════════════════
  */
-const FRAME_STYLE = {
-  position: 'relative',
-  display: 'block',
-  width: '100%',
-  aspectRatio: '16 / 9',
-  padding: 0,
-  border: 0,
-  borderRadius: '12px',
-  overflow: 'hidden',
-  background: '#000',
-  cursor: 'pointer',
-};
+/*
+ * DIE GEOMETRIE DER SCOPE-LOSEN HUELLE STEHT SEIT DEM 22.09.2026 ALS KLASSE
+ * IN app/styles/app.css (Selektor `.YoutubeTimestamp`, direkt unter
+ * `.YoutubeIframe--facade`) — wortgleich dieselben Werte, die hier bis dahin
+ * als `FRAME_STYLE` im `style`-Attribut standen.
+ *
+ * WARUM SIE UMGEZOGEN IST (Grossjob 20260922-GROSSJOB-alle-knoepfe-kommen-
+ * aus-dem-bausatz, Christian: "so ein Knopf nicht nochmal so konzipiert"):
+ * ein style-Attribut kennt keine Media Query. Solange die Geometrie dort
+ * stand, konnte dieser <button> baulich keinen Haltepunkt bekommen.
+ *
+ * WAS SICH NICHT GEAENDERT HAT — und das ist der Zaun vom 11.09.2026, der
+ * bewusst stehen bleibt: die Geometrie gehoert weiterhin der KOMPONENTE und
+ * nicht dem Seiten-CSS. Sie ist nur eine Zeile weiter gewandert, von der
+ * Attribut- in die Klassen-Form. Der Fall mit eigener Scope-Klasse
+ * (`eigenesKleid`) bekommt unveraendert `{display:block, width:100%}` inline,
+ * weil ein <button> sonst auf seinen Inhalt schrumpft und der Stapel darin
+ * mit `width:100%` auf null faellt (gemessen am 2026-09-11 auf
+ * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Groesse").
+ */
 const FILL_STYLE = {
   position: 'absolute',
   inset: 0,
@@ -612,9 +620,7 @@ export function YoutubeTimestamp({
     'data-video': objekt || undefined,
     'data-video-familie': 'youtube',
     'data-qb-video-zustand': laueft ? (zeigt ? 'spielt' : 'wartet') : 'vorschau',
-    style: eigenesKleid
-      ? {display: 'block', width: '100%'}
-      : FRAME_STYLE,
+    style: eigenesKleid ? {display: 'block', width: '100%'} : undefined,
   };
 
   if (laueft) {

@@ -605,19 +605,15 @@ export default function TechnologiePage() {
               ✅ Hochwertigste Materialien<br />
               ✅ Weltweiter Versand
             </p>
-            <a
-              href="/products/qione-2-pro"
-              style={{
-                display: 'inline-block',
-                background: 'var(--color-accent-primary)',
-                color: 'var(--color-dark)',
-                padding: '0.85rem 2.25rem',
-                borderRadius: '50px',
-                textDecoration: 'none',
-                fontWeight: 700,
-                fontSize: '1rem',
-              }}
-            >
+            {/* DER KNOPF AUS DEM BAUSATZ (Christian, 22.09.2026).
+                Vorher: 178 Zeichen `style`-Attribut — und damit baulich ohne
+                jeden Haltepunkt, weshalb die Beschriftung auf schmalen
+                Schirmen brach und "Pro" allein und links stand.
+                `.btn--primary` ist der Bestandsknopf des Hauses; `m-center`
+                zentriert ihn in seiner Spalte — beides genau so, wie es die
+                Startseite in HomepageSections.jsx schon tut. Hier wird nichts
+                Neues gebaut, sondern der vorhandene Knopf genommen. */}
+            <a className="btn--primary m-center" href="/products/qione-2-pro">
               Hole dir jetzt deinen QiOne® 2 Pro
             </a>
           </div>

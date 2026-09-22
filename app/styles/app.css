@@ -225,6 +225,126 @@ footer *{
   color: var(--color-accent-primary);
   border: 2px solid var(--color-accent-primary);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DER KNOPF AUS DEM BAUSATZ — Anwendungsregel:
+   homepage-bauer/baukasten/qb-knopf/README.md
+
+   Christian, 22.09.2026, zu einem von Hand gezeichneten Knopf auf
+   /pages/technologie: "Hier dieser Button ist auch super schlecht formatiert
+   fuer die responsive Version. Updaten lassen und ueberlegen, dass so ein
+   Knopf nicht nochmal so konzipiert wird. Das muss schoener gehen mit dem
+   Homepagebauer."
+
+   DIE URSACHE IST BAULICH, NICHT NACHLAESSIG: der Knopf trug 178 Zeichen
+   `style`-Attribut. Ein style-Attribut kennt keine Media Query — es gibt dort
+   schlicht keine Stelle, an der eine Regel fuer schmale Schirme stehen
+   koennte. Deshalb brach die Zeile, deshalb stand "Pro" allein und links.
+
+   WAS HIER NEU IST UND WAS NICHT: `.btn--primary` und `.btn--secondary`
+   existieren seit langem und sind der Bestand — sie werden NICHT ersetzt.
+   Ergaenzt werden genau die drei Zusagen, die Christian genannt hat und die
+   bisher fehlten, plus die dritte Spielart. Kein Wert ist erfunden; jeder
+   ist entweder aus dem Bestand uebernommen oder eine benannte Norm.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* (1) KEIN EINZELNES WORT AUF DER ZWEITEN ZEILE.
+ *
+ * Christian woertlich: "Auf schmalen Schirmen entweder ueber die volle Breite
+ * mit mittig gesetztem Text, oder mit einer Beschriftung, die nicht umbricht.
+ * Ein einzelnes Wort auf der zweiten Zeile ist in beiden Faellen
+ * ausgeschlossen."
+ *
+ * Der Fachbegriff dafuer ist ORPHAN (Typografie/CSS Text Module Level 4);
+ * `text-wrap: balance` verteilt die Zeilen eines kurzen Textblocks gleichmaessig
+ * statt gierig von links, und genau das verhindert das einzelne Restwort.
+ * Es ist baulich auf kurze Bloecke begrenzt (Browser wenden es nur bis zu einer
+ * Handvoll Zeilen an) — eine Knopfbeschriftung ist der Musterfall dafuer.
+ *
+ * FAIL-SAFE, und das ist der Grund, warum hier kein Fallback-Konstrukt steht:
+ * kennt ein Browser die Eigenschaft nicht, ignoriert er die eine Zeile und der
+ * Knopf bricht wie bisher. Der schlechteste Fall ist damit der Zustand von
+ * vorher, nie ein schlechterer.
+ *
+ * (2) MINDEST-ANTIPPFLAECHE.
+ * Christian: "44 px in der Hoehe ist der uebliche Boden fuer einen Finger."
+ * Das ist keine Hausmeinung, sondern WCAG 2.2 Success Criterion 2.5.8
+ * (Target Size, Minimum, 24x24 CSS-px) in der schaerferen Fassung von
+ * SC 2.5.5 (Target Size, Enhanced) bzw. der Apple-HIG-Empfehlung 44x44.
+ * `.btn--primary` erreicht die Hoehe heute ueber sein Padding (20 + 26,4 + 20
+ * + 2*2 = 70,4 px) — die Zusage steht damit aber auf einem Wert, der sich mit
+ * jeder Schriftaenderung verschiebt. `min-height` macht sie zur Zusage.
+ *
+ * (3) HOECHSTBREITE: steht bereits im Bestand (`max-width: 500px` bzw. 300px)
+ * und wird hier NICHT angefasst — sie war nie das Problem.
+ */
+.btn--primary,
+.btn--secondary,
+.btn--text {
+  box-sizing: border-box;
+  min-height: 44px;
+  text-wrap: balance;
+}
+
+/* DIE DRITTE SPIELART — der Textknopf.
+ *
+ * Christian: "Er kennt seine Spielarten — Haupt-, Neben- und Textknopf —
+ * damit niemand fuer eine abweichende Farbe wieder ein style-Attribut
+ * aufmacht. DER HAEUFIGSTE GRUND FUER EINE EINZELANFERTIGUNG IST EINE
+ * FEHLENDE SPIELART."
+ *
+ * Genau dieser Satz ist an diesem Bau belegt worden: von den 14 gemessenen
+ * Einzelanfertigungen war KEINE eine Haupt- oder Neben-Handlung. Sie waren
+ * ein Akkordeon-Umschalter, ein Formular-Absender und eine Video-Fassade —
+ * also durchweg Faelle, fuer die der Bausatz keine Form hatte.
+ *
+ * Der Textknopf ist die Form fuer eine NEBENSAECHLICHE Handlung, die keinen
+ * eigenen Farbblock verdient. Er erbt Schrift und Antippflaeche der beiden
+ * anderen und laesst alles Weitere weg.
+ */
+.btn--text {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  padding: 0.6rem 0.9rem;
+  font-family: 'Open Sans Variable', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-dark);
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  transition: 0.2s all linear;
+}
+.btn--text:hover {
+  text-decoration: none;
+  color: var(--color-accent-primary);
+}
+
+/* DER GESPERRTE ZUSTAND — auch er ist eine Spielart, und auch sein Fehlen hat
+ * am 22.09.2026 ein style-Attribut erzeugt: der Absendeknopf auf
+ * /pages/support trug `cursor` und `opacity` inline, WEIL der Bausatz fuer
+ * "laeuft gerade" keine Form hatte. */
+.btn--primary:disabled,
+.btn--secondary:disabled,
+.btn--text:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* SICHTBARER TASTATUR-FOKUS. Ohne ihn ist der Knopf mit der Tastatur
+ * unbedienbar-blind (WCAG 2.4.7). `:focus-visible` zeigt ihn nur dort, wo ein
+ * Mensch ihn braucht, und laesst den Mausklick unveraendert. */
+.btn--primary:focus-visible,
+.btn--secondary:focus-visible,
+.btn--text:focus-visible {
+  outline: 3px solid var(--color-dark);
+  outline-offset: 2px;
+}
 /* Kaufbutton im Warenkorb = derselbe Knopf wie der Haupt-CTA der Produktseite.
  *
  * Gemessen am 2026-08-20 wich er in drei Groessen ab: Hoehe 58,9 statt 70 px,
@@ -6294,6 +6414,50 @@ html.qb-chat-docked .GoogleRezensionenPopup {
   background: #000;
   border-radius: 20px;
   overflow: hidden;
+  cursor: pointer;
+}
+
+/* DIE VIDEO-FASSADE OHNE SEITEN-SCOPE — dieselbe Geometrie, jetzt als Klasse.
+ *
+ * Grossjob 20260922-GROSSJOB-alle-knoepfe-kommen-aus-dem-bausatz.
+ * Diese Regel traegt WORTGLEICH die Werte, die `FRAME_STYLE` in
+ * app/components/reusables/YoutubeTimestamp.jsx bis zum 22.09.2026 als
+ * `style`-Attribut auf den <button> schrieb — gemessen zweimal live auf
+ * /pages/hypothesen, je 147 Zeichen.
+ *
+ * WARUM DER UMZUG DEN ZAUN VOM 11.09.2026 NICHT EINREISST, sondern ihn erst
+ * vollstaendig macht: jener Bau hat die Geometrie bewusst der KOMPONENTE
+ * gegeben, weil zwei von acht Scopes (.v2-yt, .v3-yt) ueberhaupt keine Regel
+ * hatten und die Kachel dort auf Hoehe null fiel. Dieser Zweck haengt am
+ * BESITZ der Geometrie, nicht an ihrer Inline-Form — und der Besitz bleibt,
+ * wo er war: bei der Komponente, nur eine Zeile weiter.
+ *
+ * GEMESSEN STATT ANGENOMMEN, beides vor dem Umbau geprueft:
+ *  - `FRAME_STYLE` wird ausschliesslich im Fall `eigenesKleid === false`
+ *    gesetzt, also genau dann, wenn die Seite KEINE eigene Scope-Klasse gibt
+ *    und die Huelle `.YoutubeTimestamp` traegt. Mit Scope-Klasse setzt die
+ *    Komponente weiterhin nur `{display:block, width:100%}` — daran aendert
+ *    sich nichts.
+ *  - Die EINZIGE Bestandsregel auf `.YoutubeTimestamp` ist
+ *    tiefer-schlaf.css:917 (`.lp-ts3 .lp-ts-podcast2 .YoutubeTimestamp`) und
+ *    setzt ausschliesslich `max-width` und `margin`. Keine dieser beiden
+ *    Eigenschaften steht unten — es gibt also keine Ueberschneidung und damit
+ *    keine Verhaltensaenderung, obwohl die Klasse (0,1,0) schwaecher ist als
+ *    ein style-Attribut.
+ *
+ * WAS DER UMZUG GEWINNT: eine Klasse kann einen Haltepunkt tragen. Ein
+ * style-Attribut kann das nie — und genau das ist der Befund dieses Jobs.
+ */
+.YoutubeTimestamp {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
   cursor: pointer;
 }
 
