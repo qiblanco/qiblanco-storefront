@@ -46,9 +46,9 @@
   --st-text: #2c2a26;
   --st-text-hell: #f4f0e9;
   --st-muted: #6b665d;
-  --st-akzent: #c9a14b;
+  --st-akzent: var(--qb-akzent);
   --st-akzent-tief: #b8893a;
-  --st-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
+  --st-akzent-tinte: var(--qb-akzent-tinte); /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
   --st-linie: rgba(44, 42, 38, 0.12);
 
   /* Radien + Schatten: je ZWEI Werte */
@@ -853,11 +853,22 @@
    ihre eigene Schriftgrößen-Familie und eigene Bild-Radien mit. Ohne diesen
    Layer misst die Design-Rubrik ZWEI konkurrierende Goldtoene und über neun
    Schriftgrößen — beides entsteht nicht in dieser Datei, wirkt aber auf
-   dieser Seite. Token-Remap statt Doppel-Gold. */
+   dieser Seite. Token-Remap statt Doppel-Gold.
+
+   WARUM DER REMAP var(--qb-akzent) BENUTZEN DARF, obwohl jede andere Regel
+   dieser Datei ihre Tokens unter `.qb-st` holt: --qb-akzent steht auf :root
+   (app/styles/qb-tokens.css, global über app/root.jsx geladen), und :root IST
+   `html` — `body` liegt darin, das Token ist an diesem Selektor also vererbt.
+   Ein var(--st-akzent) wäre hier dagegen LEER: --st-akzent ist auf `.qb-st`
+   deklariert, und `body` ist kein Nachfahre von `.qb-st` — die Deklaration
+   fiele still in Vererbung zurück und der Remap wäre wirkungslos (dieselbe
+   Klasse stiller Fehler, gegen die weiter unten `var(--st-text, #2c2a26)`
+   seinen Rückfallwert trägt). Die Prüffrage ist nie „Token oder Literal",
+   sondern: ist das Token an DIESEM Selektor vererbt? */
 body:has(.qb-st) {
   background: var(--st-grund, #faf9f5);
-  --color-accent-primary: #c9a14b;
-  --rd3-gold: #c9a14b;
+  --color-accent-primary: var(--qb-akzent);
+  --rd3-gold: var(--qb-akzent);
 }
 body:has(.qb-st) .footer,
 body:has(.qb-st) footer {
@@ -872,7 +883,7 @@ body:has(.qb-st) .footer .footer-heading { font-size: 1rem; }
 body:has(.qb-st) .footer .btn--primary,
 body:has(.qb-st) .footer button[type='submit'],
 body:has(.qb-st) .footer input[type='submit'] {
-  background: #c9a14b;
+  background: var(--qb-akzent);
   color: #2c2a26;
   border-radius: 8px;
   font-size: 1rem;
@@ -885,7 +896,7 @@ body:has(.qb-st) .footer input[type='text'] {
 body:has(.qb-st) ._form_15 button,
 body:has(.qb-st) ._form_15 ._submit,
 body:has(.qb-st) ._form_15 input[type='submit'] {
-  background: #c9a14b !important;
+  background: var(--qb-akzent) !important;
   color: #2c2a26 !important;
   border-radius: 8px !important;
   font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
