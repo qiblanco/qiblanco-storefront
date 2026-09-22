@@ -103,7 +103,7 @@
   --bw-flaeche: #f4f0e9;
   --bw-text: #2c2a26;
   --bw-muted: #6b665d;
-  --bw-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA */
+  --bw-akzent-tinte: var(--qb-akzent-tinte); /* Gold als SCHRIFT auf hellem Grund, AA */
   --bw-linie: rgba(44, 42, 38, 0.12);
   --bw-linie-stark: rgba(44, 42, 38, 0.22);
 

@@ -61,7 +61,7 @@
   --bew-text: #2c2a26;
   --bew-text-hell: #f4f0e9;
   --bew-muted: #6b665d;
-  --bew-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis; als Linie und
+  --bew-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Handlung/Beweis; als Linie und
        als Knopffläche mit dunkler Schrift, nie als Schrift auf hellem Grund. */
   --bew-linie: rgba(44, 42, 38, 0.12);
 

@@ -55,7 +55,7 @@
   --frg-flaeche: #f8f4ee;
   --frg-text: #2c2a26;
   --frg-muted: #6b665d;
-  --frg-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR als Linie, nie als Schrift */
+  --frg-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR als Linie, nie als Schrift */
   --frg-linie: rgba(44, 42, 38, 0.12);
 
   /* Radien + Schatten: je ZWEI Werte */

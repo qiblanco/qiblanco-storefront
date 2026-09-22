@@ -50,7 +50,7 @@
   --nog-flaeche: #f4f0e9;
   --nog-text: #2c2a26;
   --nog-muted: #6b665d;
-  --nog-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
+  --nog-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
        Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1). */
   --nog-linie: rgba(44, 42, 38, 0.12);
 

@@ -52,8 +52,8 @@
   --igt-dunkel: #191714;
   --igt-text: #2c2a26;
   --igt-muted: #6b665d;
-  --igt-akzent: #c9a14b; /* GL-DES-0001 Gold — NUR Handlung/Beweis */
-  --igt-akzent-tinte: #856828; /* dasselbe Gold als SCHRIFT (AA ≥ 4.5) */
+  --igt-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --igt-akzent-tinte: var(--qb-akzent-tinte); /* dasselbe Gold als SCHRIFT (AA ≥ 4.5) */
   --igt-linie: rgba(44, 42, 38, 0.12);
 
   /* ── Radien + Schatten: je ZWEI Werte ────────────────────────────────── */

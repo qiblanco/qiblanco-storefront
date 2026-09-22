@@ -42,7 +42,7 @@
   --qu-flaeche: #f4f0e9;
   --qu-text: #2c2a26;
   --qu-muted: #6b665d;
-  --qu-akzent-tinte: #856828; /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
+  --qu-akzent-tinte: var(--qb-akzent-tinte); /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
   --qu-linie: rgba(44, 42, 38, 0.12);
 
   /* Radius: EIN Wert */

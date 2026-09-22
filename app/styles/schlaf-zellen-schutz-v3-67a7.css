@@ -50,7 +50,7 @@
   --v3-text-hell: #f4f0e9;
   --v3-muted: #6b665d;
   --v3-muted-hell: rgba(244, 240, 233, 0.72);
-  --v3-akzent: #c9a14b;             /* Gold — NUR Handlung/Beweis */
+  --v3-akzent: var(--qb-akzent);             /* Gold — NUR Handlung/Beweis */
   --v3-akzent-tief: #b8893a;        /* selber Hue-Cluster (Hover) */
   --v3-linie: rgba(44, 42, 38, 0.12);
   --v3-linie-hell: rgba(244, 240, 233, 0.2);

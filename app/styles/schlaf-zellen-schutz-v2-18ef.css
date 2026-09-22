@@ -50,7 +50,7 @@
   --v2-text-hell: #f4f0e9;
   --v2-muted: #6b665d;
   --v2-muted-hell: rgba(244, 240, 233, 0.72);
-  --v2-akzent: #c9a14b;              /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --v2-akzent: var(--qb-akzent);              /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --v2-akzent-tief: #b8893a;         /* selber Hue-Cluster (Abstand < 40) */
   --v2-linie: rgba(44, 42, 38, 0.12);
   --v2-linie-hell: rgba(244, 240, 233, 0.2);

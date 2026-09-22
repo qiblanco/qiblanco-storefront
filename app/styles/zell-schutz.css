@@ -45,9 +45,9 @@
   --a-text-hell: #f4f0e9;
   --a-muted: #6b665d;
   --a-muted-hell: rgba(244, 240, 233, 0.72);
-  --a-akzent: #c9a14b;               /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --a-akzent: var(--qb-akzent);               /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --a-akzent-tief: #b8893a;
-  --a-akzent-tinte: #856828;  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
+  --a-akzent-tinte: var(--qb-akzent-tinte);  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
        Gleicher Hue/Saettigung wie --a-akzent, nur abgedunkelt -> KEIN zweiter Gold-
        ton (Rubrik-Hue-Bin bleibt 1). --a-akzent-tief bleibt die FLAECHE
        (hover/outline/fill) — die beiden Rollen haben gegenlaeufige Anforderungen. */
