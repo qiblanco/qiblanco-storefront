@@ -120,7 +120,7 @@ import {VIDEO_LQIP} from '~/data/video-lqip';
  * ═══════════════════════════════════════════════════════════════════════════
  */
 /*
- * DIE GEOMETRIE DER SCOPE-LOSEN HUELLE STEHT SEIT DEM 22.09.2026 ALS KLASSE
+ * DIE GEOMETRIE DER SCOPE-LOSEN HÜLLE STEHT SEIT DEM 22.09.2026 ALS KLASSE
  * IN app/styles/app.css (Selektor `.YoutubeTimestamp`, direkt unter
  * `.YoutubeIframe--facade`) — wortgleich dieselben Werte, die hier bis dahin
  * als `FRAME_STYLE` im `style`-Attribut standen.
@@ -130,14 +130,14 @@ import {VIDEO_LQIP} from '~/data/video-lqip';
  * ein style-Attribut kennt keine Media Query. Solange die Geometrie dort
  * stand, konnte dieser <button> baulich keinen Haltepunkt bekommen.
  *
- * WAS SICH NICHT GEAENDERT HAT — und das ist der Zaun vom 11.09.2026, der
- * bewusst stehen bleibt: die Geometrie gehoert weiterhin der KOMPONENTE und
+ * WAS SICH NICHT GEÄNDERT HAT — und das ist der Zaun vom 11.09.2026, der
+ * bewusst stehen bleibt: die Geometrie gehört weiterhin der KOMPONENTE und
  * nicht dem Seiten-CSS. Sie ist nur eine Zeile weiter gewandert, von der
  * Attribut- in die Klassen-Form. Der Fall mit eigener Scope-Klasse
- * (`eigenesKleid`) bekommt unveraendert `{display:block, width:100%}` inline,
+ * (`eigenesKleid`) bekommt unverändert `{display:block, width:100%}` inline,
  * weil ein <button> sonst auf seinen Inhalt schrumpft und der Stapel darin
- * mit `width:100%` auf null faellt (gemessen am 2026-09-11 auf
- * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Groesse").
+ * mit `width:100%` auf null fällt (gemessen am 2026-09-11 auf
+ * /pages/schlaf-zellen-schutz-v2-18ef: "Kasten hat keine messbare Größe").
  */
 const FILL_STYLE = {
   position: 'absolute',

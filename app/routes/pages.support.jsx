@@ -271,9 +271,9 @@ const FAQ_ITEMS = [
  *
  * WAS BEWUSST NICHT MITKOMMT: das FAQPage-JSON-LD. `FaqListe` emittiert
  * keines, und das ist hier die Sachentscheidung — FAQ_ITEMS ist der im Kopf
- * dieser Datei beschriebene DRITTE, inhaltlich ungepruefte FAQ-Bestand mit
- * drei bekannten Widerspruechen zu anderen Live-Flaechen. Ihn als
- * strukturierte Daten zu veroeffentlichen waere eine Inhaltsentscheidung und
+ * dieser Datei beschriebene DRITTE, inhaltlich ungeprüfte FAQ-Bestand mit
+ * drei bekannten Widersprüchen zu anderen Live-Flächen. Ihn als
+ * strukturierte Daten zu veröffentlichen wäre eine Inhaltsentscheidung und
  * damit ein Christian-Gate (Kopf von app/lib/faq-schema.js). Der Zustand
  * bleibt also exakt der, den das Segment vom 2026-09-02 hinterlassen hat.
  */
@@ -368,9 +368,9 @@ export default function SupportPage() {
               {/* DER KNOPF AUS DEM BAUSATZ (Christian, 22.09.2026).
                   Vorher 169 Zeichen `style`-Attribut. Der gesperrte Zustand
                   (`cursor`, `opacity`) stand nur deshalb inline, weil der
-                  Bausatz fuer "laeuft gerade" keine Form hatte — er hat sie
+                  Bausatz für "läuft gerade" keine Form hatte — er hat sie
                   jetzt (`.btn--primary:disabled` in app/styles/app.css), und
-                  das `disabled`-Attribut allein loest sie aus. */}
+                  das `disabled`-Attribut allein löst sie aus. */}
               <button type="submit" className="btn--primary" disabled={submitting}>
                 {submitting ? 'Wird gesendet…' : 'Nachricht senden'}
               </button>

@@ -6,12 +6,12 @@ import {ChevronDown} from 'lucide-react';
  *
  * WARUM ES DIESE DATEI GIBT (Grossjob 20260922-GROSSJOB-alle-knoepfe-kommen-
  * aus-dem-bausatz, Christian am 22.09.2026: „kontrollier gleich mal alle
- * Knoepfe auf der Homepage nach diesem bekannten Fehler und lass sie
+ * Knöpfe auf der Homepage nach diesem bekannten Fehler und lass sie
  * reparieren"):
  *
- * Gemessen am ausgelieferten Dokument trugen ZEHN Knoepfe auf /pages/support
+ * Gemessen am ausgelieferten Dokument trugen ZEHN Knöpfe auf /pages/support
  * je 225 Zeichen `style`-Attribut — eine zweite, von Hand gezeichnete
- * Akkordeon-Fassung in `app/routes/pages.support.jsx`. Sie war nicht bloss
+ * Akkordeon-Fassung in `app/routes/pages.support.jsx`. Sie war nicht bloß
  * anders gestaltet, sie war SCHLECHTER als der Bestand: ohne Klasse, ohne
  * `aria-expanded`, ohne `aria-controls`. Ein Screenreader konnte den Zustand
  * einer Frage dort nicht ansagen.
@@ -22,20 +22,20 @@ import {ChevronDown} from 'lucide-react';
  * EINE Akkordeon-Mechanik statt zweier — und die Support-Seite bekommt die
  * bessere, nicht die Support-Seite eine dritte.
  *
- * WAS BEWUSST NICHT MITGEWANDERT IST: die aufklappbare Ueberschrift, der
+ * WAS BEWUSST NICHT MITGEWANDERT IST: die aufklappbare Überschrift, der
  * Rahmen (`.ProductFAQ NormalSectionSize`) und das FAQPage-JSON-LD. Alle drei
- * gehoeren dem AUFRUFER, nicht der Liste — und beim JSON-LD ist das eine
- * Sachentscheidung, keine Bequemlichkeit: /pages/support fuehrt einen dritten,
- * inhaltlich ungeprueften FAQ-Bestand (drei bekannte Widersprueche zu anderen
- * Live-Flaechen, siehe Kopf von pages.support.jsx). Ihn als strukturierte
- * Daten zu veroeffentlichen waere eine Inhaltsentscheidung — und die ist laut
+ * gehören dem AUFRUFER, nicht der Liste — und beim JSON-LD ist das eine
+ * Sachentscheidung, keine Bequemlichkeit: /pages/support führt einen dritten,
+ * inhaltlich ungeprüften FAQ-Bestand (drei bekannte Widersprüche zu anderen
+ * Live-Flächen, siehe Kopf von pages.support.jsx). Ihn als strukturierte
+ * Daten zu veröffentlichen wäre eine Inhaltsentscheidung — und die ist laut
  * Kopf von `app/lib/faq-schema.js` ein Christian-Gate.
  *
  * DIE KLASSEN HEISSEN WEITER `.ProductFAQ__*`, OBWOHL SIE JETZT GETEILT SIND.
  * Das ist entschieden, nicht vergessen: die Regeln stehen in der global
- * geteilten `app/styles/app.css`, und ihre Beruehrung zieht jede importierende
+ * geteilten `app/styles/app.css`, und ihre Berührung zieht jede importierende
  * Seite in den Deploy-Diff — darunter Seiten mit vorbestehender Pixelschuld,
- * an der der Deploy dann blockt (dieselbe Begruendung steht seit dem
+ * an der der Deploy dann blockt (dieselbe Begründung steht seit dem
  * 2026-09-11 im Kopf von ProductFAQ.jsx). Ein reiner Namensgewinn ist diesen
  * Preis nicht wert. Die Umbenennung ist als Befund gemeldet, nicht still
  * unterlassen.
@@ -72,7 +72,7 @@ export function FaqListe({items}) {
             </button>
             {/* Antwort IMMER im DOM (SSR/crawlbar); nur visuell per hidden geklappt. */}
             {/*
-              Absaetze: eine Antwort mit Leerzeile wird in <p> zerlegt, sonst
+              Absätze: eine Antwort mit Leerzeile wird in <p> zerlegt, sonst
               liefe der zweite Absatz an den ersten an (Textknoten kollabiert
               den Umbruch). Antworten OHNE Leerzeile bleiben ein nackter
               Textknoten wie bisher — das Markup jedes Bestands-Items ist
@@ -80,7 +80,7 @@ export function FaqListe({items}) {
               normalizeText() faltet den Umbruch ohnehin zu einem Leerzeichen.
 
               ABSTAND INLINE statt in app.css: app/styles/app.css ist global
-              geteilt, und seine Beruehrung zieht Seiten mit VORBESTEHENDER
+              geteilt, und seine Berührung zieht Seiten mit VORBESTEHENDER
               Pixelschuld (qibracelet-details, schlaf-zellen-schutz) in den
               Deploy-Diff und blockt ihn -- an einer Schuld, die dieser Bau
               nicht verursacht hat. Der Chevron daneben setzt seinen Stil aus
