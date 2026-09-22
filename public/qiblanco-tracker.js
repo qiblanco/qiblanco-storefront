@@ -84,6 +84,49 @@
     }
   }
 
+  // ---- Consent-FREIER Ankunfts-Zustand (Job 20260922-blinde-menge-...) -----
+  // BEANTWORTET GENAU EINE FRAGE: kamen in dieser Registerkarte ueberhaupt
+  // Ad-Parameter an? Ja/Nein/Weiss-nicht — NIE ein Wert.
+  //
+  // WOZU: ohne diese Antwort erzeugen zwei voellig verschiedene Lagen denselben
+  // Zustand an der Order — "kam ohne Ad-Parameter" (ein Direktbesucher, voellig
+  // rechtmaessig ohne Attributions-Cookie) und "kam mit, aber der Cookie
+  // ueberlebte nicht". Gemessen 2026-09-22 betraf das 27 von 41 Orders; solange
+  // sie ununterscheidbar sind, ist Anzeigenwirkung auf Order-Ebene
+  // unentscheidbar.
+  //
+  // WARUM DAS OHNE ZUSTIMMUNG GEHT: hier wird NICHTS gespeichert. Gelesen wird
+  // die URL der laufenden Seite und — nur lesend — der sessionStorage-Puffer,
+  // den `bufferAttributionParams` oben seit jeher VOR der Zustimmung anlegt.
+  // Der Zustand lebt in einer Fenster-Variablen und stirbt mit dem Dokument.
+  //
+  // DREIWERTIG: 'no' heisst "nachgesehen und nichts gefunden". Ist der Puffer
+  // gar nicht lesbar (sessionStorage gesperrt), heisst es 'unknown' und nie
+  // 'no' — sonst waere ein gesperrter Speicher von einem echten Direktbesucher
+  // nicht zu unterscheiden, also genau die Zweideutigkeit von oben, eine Ebene
+  // tiefer.
+  function ankunftsZustand() {
+    // 1. Diese Seite traegt selbst Parameter — ohne jeden Speicher entschieden.
+    if (collectTrackedParams()) return 'yes';
+    // 2. Diese Registerkarte hat vorher welche gesehen.
+    try {
+      return window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)
+        ? 'yes'
+        : 'no';
+    } catch {
+      return 'unknown';
+    }
+  }
+
+  // MONOTON: ein einmal belegtes 'yes' wird nie zurueckgenommen. Nach einer
+  // SPA-Navigation traegt die neue URL keine Parameter mehr — ohne diese Regel
+  // wuerde der Besucher auf dem Weg zum Warenkorb vom Ad-Klicker zum
+  // Direktbesucher.
+  function merkeAnkunft() {
+    if (window.__qbAdAnkunft === 'yes') return;
+    window.__qbAdAnkunft = ankunftsZustand();
+  }
+
   function readBufferedAttribution() {
     try {
       return window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY) || '';
@@ -155,6 +198,7 @@
     function onNavigate() {
       window.setTimeout(function () {
         bufferAttributionParams();
+        merkeAnkunft();
         if (trackingAllowed()) {
           persistClickCookies();
           persistAttributionParams();
@@ -318,6 +362,7 @@
   }
 
   bufferAttributionParams();
+  merkeAnkunft();
   hookSpaNavigation();
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
