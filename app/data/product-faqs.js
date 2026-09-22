@@ -61,7 +61,7 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Was unterscheidet den Qi Master® vom QiOne® 2 Pro?',
-    a: 'Der Qi Master® ist der QiOne mit Diamanten: Er trägt denselben Gitterchip™ der zweiten Generation wie der QiOne® 2 Pro – dazu echte Diamanten, eine Iris mit 108 Strichen rund um das Auge und eine Kette samt Verschluss aus 750er Gold, beides mit Qi-Blanco-Logo. Jeder Qi Master® ist nummeriert.',
+    a: 'Der Qi Master® ist der QiOne mit Diamanten: Er trägt denselben Gitterchip™ der zweiten Generation wie der QiOne® 2 Pro – dazu echte Diamanten und eine Iris mit 108 Strichen rund um das Auge. Für den Gitterchip™ kommt eine eigene spezielle 750er Goldlegierung zum Einsatz. Jeder Qi Master® ist nummeriert.',
   },
   {
     q: 'Wie funktioniert der Gitterchip™?',

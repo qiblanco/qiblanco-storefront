@@ -83,6 +83,7 @@ export default function QiMaster({block = undefined}) {
       <DiamantAbschnitt />
       <SechsGAbschnitt />
       <PersoenlichkeitAbschnitt />
+      <AlphaSerie />
       <HeroBannerParallax
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
@@ -108,7 +109,21 @@ export default function QiMaster({block = undefined}) {
           pruefungen/probe_publizierte_zellstudien.py, Arm `ueberschrift`
           prüft die Überschrift, ausdrücklich nicht die Seite. */}
       <StudienCards headline="Publizierte Zellstudien zum Gitterchip™" />
-      <Fertigung />
+      {/* DIE FRAGEN STEHEN VOR DEM SCHLUSSAUFRUF, NICHT DAHINTER (Christian
+          2026-09-22): bis dahin lag der Fragenblock als letztes Element der
+          Seite, also hinter „Werde Teil der Qi Blanco® Revolution!" — gemessen
+          am 22.09. an der ausgelieferten Seite, Zeichen 268.704 gegen 260.210.
+          Neun offene Fragen (Vergleich zum QiOne® 2 Pro, Eignung, Gitterchip™,
+          Diamanten, 6G, Sauna, Rückgabe) standen damit hinter dem Aufruf, der
+          die Entscheidung einholen soll. Wer dort noch zweifelt, hat die
+          Antwort bereits hinter sich gelassen.
+
+          WARUM HIER UND NICHT UNMITTELBAR VOR DEM UPSELL-BLOCK: der
+          Bewertungsbereich steht seit dem 2026-09-16 auf Christians Anweisung
+          „ganz nach unten, oberhalb von <UpsellLineUp/>". Eingeschoben
+          zwischen beide, stünde er dort nicht mehr. Der Fragenblock geht
+          deshalb VOR die Rezensionen — beide Festlegungen halten. */}
+      <ProductFAQ items={FAQ_QI_MASTER} />
       {/* Der Google-Bewertungsbereich steht hier unten, unmittelbar oberhalb
           des Upsell-Blocks (Christian 2026-09-16, Auftrag 20260916-
           bewertungsblock-wandert-ans-ende: "Diesen Bereich ganz nach unten
@@ -138,7 +153,6 @@ export default function QiMaster({block = undefined}) {
           statt den Lesefluss nach dem zweiten Abschnitt zu unterbrechen. */}
       <GoogleRezensionenBereich />
       <UpsellLineUp block={block} />
-      <ProductFAQ items={FAQ_QI_MASTER} />
     </div>
   );
 }
@@ -714,32 +728,73 @@ function PersoenlichkeitAbschnitt() {
   );
 }
 
-function Fertigung() {
+/* ───────────────────── Alpha Serie ─────────────────────
+ * Christian am 2026-09-22 (Auftrag 20260922-qi-master-alpha-serie-nach-oben-
+ * und-fragen-vor-den-schlussaufruf), zwei Anweisungen in einer:
+ *
+ * (1) DER BLOCK WANDERT NACH OBEN. Er stand bis dahin unterhalb der
+ *     Bildstrecke, also hinter dem Parallax-Banner „Dein Qi Master®
+ *     begleitet dich Tag und Nacht." (gemessen am 22.09. um 21:55 an der
+ *     ausgelieferten Seite: Zeichen 59.877 gegen 53.074). Jetzt steht er
+ *     davor. Was ein Stück einmalig macht, entscheidet oben.
+ *
+ * (2) DER WORTLAUT IST CHRISTIANS FASSUNG UND WURDE UNVERAENDERT UEBERNOMMEN
+ *     (GL-SPR-0008: Festlegung zu Produkt und Fertigung, keine
+ *     Gegenpruefung, keine Umformulierung, keine Fussnote). Angepasst sind
+ *     allein Umlaute und Eszett, weil die Seite echte Zeichen trägt.
+ *     Das schließt Schreibweisen ein, die ein Lektorat glattziehen würde
+ *     („750iger", „hochreichen Natur Diamanten") — sie bleiben stehen.
+ *
+ * DIE ABGELOESTE FASSUNG IST WEG, NICHT VERSCHOBEN: „Ein Stück, kein
+ * Serienteil." / „750er Gold" mit „Kette und Verschluss aus 750er Gold" /
+ * „Diamanten" / „Die Iris: 108 Striche". Die Aussage über das Gold WECHSELT
+ * dabei den Gegenstand — von Kette und Verschluss auf den Gitterchip —, und
+ * deshalb wurde sie an ihren beiden weiteren Fundstellen mitgezogen:
+ * app/data/product-faqs.js (FAQ_QI_MASTER, „Was unterscheidet den Qi Master®
+ * vom QiOne® 2 Pro?") und app/routes/pages.qi-master-vorverkauf.jsx. Eine
+ * dritte, ausserhalb dieses Ladens, steht in Annas Katalog
+ * (qi-salesbot/src/domain/product-catalog.ts, materialFacts).
+ *
+ * DIE VIER SINNBILDER SIND DIE BESTEHENDEN, in derselben Reihenfolge — es ist
+ * ein Wortlaut- und Reihenfolgewechsel, kein neuer Baustein.
+ *
+ * „The One Eye" STEHT AUF DIESER SEITE EIN DRITTES MAL: als Überschrift über
+ * dem Bildpaar (seit 2026-09-17) und in der Zwischenueberschrift des
+ * Diamant-Abschnitts. Christian hat den Namen hier so bestellt; er ist damit
+ * der durchgehende Name desselben Merkmals, keine zweite Sache.
+ */
+function AlphaSerie() {
   return (
     <div className="MassgeschneiderteTechnologie NormalSectionSize">
-      <h2 className="text-center">Ein Stück, kein Serienteil.</h2>
+      <h2 className="text-center">Alpha Serie - Limitiert auf 100 Stück</h2>
       <div className="MassgeschneidertWrapper">
         <div className="Column">
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 17h3l-4 4l-4-4h3V3h2zM9 13H7c-1.1 0-2 .9-2 2v1a2 2 0 0 0 2 2h2v1H5v2h4c1.11 0 2-.89 2-2v-4a2 2 0 0 0-2-2m0 3H7v-1h2zM9 3H7c-1.1 0-2 .9-2 2v4a2 2 0 0 0 2 2h2c1.11 0 2-.89 2-2V5a2 2 0 0 0-2-2m0 6H7V5h2z"></path></svg>{' '}
             Eigene Seriennummer
           </h3>
-          <p>Jeder Qi Master® ist nummeriert – ein Stück, das es nur einmal gibt.</p>
+          <p>Jeder Qi Master® ist mit einer einmaligen Seriennummer versehen. "Alpha - 1/100"</p>
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m1 22l1.5-5h7l1.5 5zm12 0l1.5-5h7l1.5 5zm-7-7l1.5-5h7l1.5 5zm17-8.95l-3.86 1.09L18.05 11l-1.09-3.86l-3.86-1.09l3.86-1.09l1.09-3.86l1.09 3.86z"></path></svg>{' '}
-            750er Gold
+            Eigene Goldlegierung
           </h3>
-          <p>Kette und Verschluss aus 750er Gold, beide mit Qi-Blanco-Logo.</p>
+          <p>
+            Für den Gitterchip kommt eine eigene spezielle 750iger Goldlegierung
+            zum Einsatz um die gewohnten Eigenschaften zu gewährleisten.
+          </p>
         </div>
         <div className="Column">
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21L2 9l3-6h14l3 6zM9.625 8h4.75l-1.5-3h-1.75zM11 16.675V10H5.45zm2 0L18.55 10H13zM16.6 8h2.65l-1.5-3H15.1zM4.75 8H7.4l1.5-3H6.25z"></path></svg>{' '}
-            Diamanten
+            Diamant
           </h3>
-          <p>Echte Diamanten – reiner Kohlenstoff, gefasst am Gitterchip™.</p>
+          <p>
+            Wir verwenden ausschließlich zertifizierte hochreichen Natur
+            Diamanten – reiner Kohlenstoff, gefasst am Gitterchip™.
+          </p>
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-8a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"></path></svg>{' '}
-            Die Iris: 108 Striche
+            The One Eye
           </h3>
           <p>
             Rund um das Auge des Qi Master® laufen 108 Striche – die Zahl, die in
