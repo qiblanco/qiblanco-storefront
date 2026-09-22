@@ -66,7 +66,7 @@
   ];
   var VERWALT_ZIELE = ['#cookie-banner-button-edit'];
   var RX_AKZEPT = /^(alle[sn]?\s+)?(akzeptieren|erlauben|zustimmen|accept|allow)$/i;
-  var RX_VERWALT = /^(cookies?\s+verwalten|einstellungen|manage\s+cookies?)$/i;
+  var RX_VERWALT = /^(cookies?\s+(verwalten|einstellen)|einstellungen|manage\s+cookies?)$/i;
 
   // Nur der EIGENE Text: sonst erbt jeder Container den Text seiner Kinder,
   // und der Banner selbst gälte als "Akzeptieren"-Element.
@@ -299,10 +299,129 @@
     }
   }
 
+
+  // --- Christians Knopfordnung: drei Knöpfe, Mitte grau ------------------
+  //
+  // AUFTRAG (Christian, 22.09.2026, woertlich): statt "Alles ablehnen" ->
+  // "Notwendige Cookies akzeptieren", grauer Knopf, in die Mitte. Reihenfolge
+  // "zuerst 'Cookies einstellen', dann 'Notwendige Cookies akzeptieren' und
+  // dann zum Schluss 'Alle akzeptieren'".
+  //
+  // WARUM HIER UND NICHT IM COOKIEBOT-KONTO. Beschriftung, Reihenfolge und
+  // Farben stehen in der Cookiebot-Custom-Vorlage; die liegt im fremden Konto
+  // und ist Außengrenze (R3-Perimeter). Diese Datei läuft auf jeder Seite,
+  // gehört uns und bearbeitet den Banner-DOM seit dem 2026-08-22 ohnehin.
+  // Sie ist die nächstgelegene Stelle, die WIR besitzen. Die dauerhafte
+  // Ablage bleibt die Vorlage im Konto -- dafür liegt eine entscheidungs-
+  // reife Vorlage bei Christian; bis sie gezogen ist, trägt diese Schicht.
+  //
+  // DASS DIE UMBENENNUNG SACHLICH STIMMT, IST GEMESSEN UND NICHT ANGENOMMEN
+  // (2026-09-22, Chromium, frischer Kontext, https://qiblanco.com/products/
+  // qione-2-pro). Klick auf #CybotCookiebotDialogBodyButtonDecline setzt
+  //   necessary:true, preferences:false, statistics:false, marketing:false
+  // mit method:'explicit' -- also GENAU "nur notwendige Cookies". Der Knopf
+  // hiess "Alles ablehnen" und tat schon immer "notwendige akzeptieren";
+  // Christians Beschriftung beschreibt seine Wirkung präziser als die alte.
+  // Zur Gegenprobe im selben Lauf: "Alle akzeptieren" setzt alle vier auf
+  // true, und erst dann laden Meta, DoubleClick und TikTok.
+  //
+  // WARUM CSS-order UND NICHT DOM-UMHAENGEN. #cookie-buttons-wrapper ist
+  // gemessen display:flex; flex-direction:row. `order` stellt die Knöpfe um,
+  // ohne einen einzigen Knoten zu verschieben -- Cookiebots eigene
+  // ID-Bindungen, Klick-Handler und der Reconciler bleiben unberührt. Ein
+  // appendChild() hätte denselben Anblick erzeugt und dabei jede fremde
+  // Bindung riskiert, die an der Knotenidentitaet hängt.
+  //
+  // WARUM EIN TOKEN UND KEIN style-ATTRIBUT. Das Grau ist ein BENANNTER Wert
+  // und kein freier: es ist aus dem Bestand extrahiert, nämlich aus der
+  // vorhandenen Klasse .cookie-banner-button.edit, die live mit
+  // rgba(0,0,0,0.4) rendert -- derselbe Wert, den app.css für die
+  // Slider-Bahn führt. Kein Element bekommt hier ein style="".
+  // Die Drei-Ebenen-Ordnung des Hauses (Referenz -> Semantik -> Komponente,
+  // baukasten/qb-tokens/README.md) ist eingehalten. Der Token zeigt bewusst
+  // NOCH NICHT auf app/styles/qb-tokens.css: diese Datei ist laut ihrem
+  // eigenen README heute nirgends importiert, und ihr Import ist ein eigener,
+  // benannter Folgeauftrag. Wer ihn zieht, hängt diesen Token dort ein.
+  var ORDNUNG_STIL_ID = 'qb-consent-knopfordnung';
+  var ORDNUNG_CSS = [
+    ':root{',
+    '  --qb-ref-consent-neutral: rgba(0, 0, 0, 0.4);',
+    '  --qb-ref-consent-neutral-tinte: #ffffff;',
+    '  --qb-komponente-consent-neutral-flaeche: var(--qb-ref-consent-neutral);',
+    '  --qb-komponente-consent-neutral-tinte: var(--qb-ref-consent-neutral-tinte);',
+    '}',
+    '#cookie-buttons-wrapper{display:flex;flex-direction:row;}',
+    '#cookie-buttons-wrapper > #cookie-banner-button-edit{order:1;}',
+    '#cookie-buttons-wrapper > #CybotCookiebotDialogBodyButtonDecline{',
+    '  order:2;',
+    '  background-color:var(--qb-komponente-consent-neutral-flaeche);',
+    '  color:var(--qb-komponente-consent-neutral-tinte);',
+    '}',
+    '#cookie-buttons-wrapper > #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll{order:3;}',
+  ].join('\n');
+
+  // Beschriftung je ID. DER SCHLUESSEL IST DIE ID UND NICHT DER ALTE TEXT:
+  // die Wirkung des Knopfes hängt an seiner ID (Cookiebot bindet sie selbst),
+  // und Christians Beschriftung benennt genau diese Wirkung. Ein Zaun auf den
+  // alten Wortlaut würde bei der nächsten Vorlagenänderung still nichts
+  // mehr tun -- und "still nichts tun" ist der Defekt, den diese Datei an
+  // mehreren Stellen schon einmal behoben hat. Ob die ID noch das tut, was
+  // ihr Text verspricht, misst die Probe
+  // pruefungen/probe_cookiehinweis_drei_knoepfe_und_offener_shop__20260922.py
+  // im Browser -- Text UND Wirkung zusammen, nicht der Text allein.
+  var BESCHRIFTUNG = [
+    ['cookie-banner-button-edit', 'Cookies einstellen'],
+    ['CybotCookiebotDialogBodyButtonDecline', 'Notwendige Cookies akzeptieren'],
+    ['CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll', 'Alle akzeptieren'],
+  ];
+
+  function ordnungStilSetzen() {
+    if (document.getElementById(ORDNUNG_STIL_ID)) return;
+    var kopf = document.head || document.documentElement;
+    if (!kopf) return;
+    var st = document.createElement('style');
+    st.id = ORDNUNG_STIL_ID;
+    st.textContent = ORDNUNG_CSS;
+    kopf.appendChild(st);
+  }
+
+  function beschriftungSetzen() {
+    for (var i = 0; i < BESCHRIFTUNG.length; i++) {
+      var el = document.getElementById(BESCHRIFTUNG[i][0]);
+      if (!el) continue;
+      var soll = BESCHRIFTUNG[i][1];
+      // Nur schreiben, wenn es wirklich abweicht: jeder Schreibvorgang ist
+      // eine Mutation und weckt den MutationObserver oben. Ohne diesen
+      // Vergleich liefen Beobachter und Schreiber im Kreis.
+      if (el.textContent.trim() === soll) continue;
+      el.textContent = soll;
+    }
+    // Der Erklärabsatz nennt den Knopf beim Namen ("... indem du auf
+    // Cookies verwalten klickst"). Läuft der Name auseinander, zeigt der Satz
+    // auf einen Knopf, den es nicht mehr gibt. Der Anker wird deshalb
+    // mitgezogen -- und RX_VERWALT oben kennt beide Schreibweisen, damit die
+    // Belebung des toten Ankers weiterhin greift, egal welcher Text steht.
+    var w = document.getElementById('cookiebanner');
+    if (!w) return;
+    var anker = w.getElementsByTagName('a');
+    for (var j = 0; j < anker.length; j++) {
+      var a = anker[j];
+      if (a.id) continue;                       // die echten Knöpfe tragen IDs
+      if (a.getAttribute('href')) continue;     // Impressum/Datenschutz
+      if (eigenText(a) === 'Cookies verwalten') a.textContent = 'Cookies einstellen';
+    }
+  }
+
+  function knopfordnungStellen() {
+    ordnungStilSetzen();
+    beschriftungSetzen();
+  }
+
   function belebeBanner() {
     var wurzel = document.getElementById('cookiebanner');
     if (!wurzel) return;
     cspKnopfNachruesten();
+    knopfordnungStellen();
     var anker = wurzel.getElementsByTagName('a');
     for (var i = 0; i < anker.length; i++) {
       var el = anker[i];
