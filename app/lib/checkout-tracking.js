@@ -700,26 +700,193 @@ export function consentStateFromCookies(cookieHeader) {
 }
 
 /**
- * Die drei consent-freien Herkunfts-Marker als Cart-Attribute.
+ * Consent-FREIER Ankunfts-Marker: kamen auf der Landeseite ueberhaupt
+ * Ad-Parameter an?
+ *
+ * DIE ZWEIDEUTIGKEIT, DIE DIESE FUNKTION AUFLOEST (gemessen 2026-09-22,
+ * Vollerhebung d30, Nenner 41 Orders): 27 Orders trugen KEIN Feld aus dem
+ * gespeicherten Attributions-Cookie (`landing_page`/`referrer`/
+ * `attribution_saved_at`). Dieser EINE Zustand entsteht aus ZWEI voellig
+ * verschiedenen Lagen — der Besucher kam ohne Ad-Parameter (voellig
+ * rechtmaessig, ein Direktbesucher hat baulich keinen Cookie), ODER er kam
+ * mit, und der Cookie ueberlebte nicht. Solange beide denselben Zustand
+ * erzeugen, ist jede Aussage über Anzeigenwirkung auf Order-Ebene
+ * unentscheidbar: 27 blinde Orders fassen die unter der Kontrollquote
+ * erwarteten gebundenen Meta-Kaeufer muehelos.
+ *
+ * WARUM DAS OHNE EINWILLIGUNG ZULAESSIG IST — und wo die harte Grenze liegt:
+ * der Marker LIEST ausschließlich Metadaten des laufenden Requests und
+ * SPEICHERT NICHTS NEUES auf dem Endgeraet. Er beantwortet eine reine
+ * Ja/Nein-Frage über das VORHANDENSEIN eines Parameter-NAMENS aus der
+ * ohnehin bestehenden Allowlist; der WERT eines Ad-Parameters wird nie
+ * gelesen, nie weitergereicht und nie gespeichert. Das ist exakt die
+ * Bedingung, unter der `consent_state` und `ua_class` am 2026-09-07 zulaessig
+ * waren. EIN NEUES COOKIE — auch httpOnly, auch serverseitig, auch nur mit
+ * einem Boolean darin — wäre genau der Schritt an der Einwilligungsschranke,
+ * der hier NICHT gegangen wird.
+ *
+ * VIER ACHSEN, BEWUSST UNABHÄNGIG (sie fallen aus verschiedenen Gruenden
+ * aus — dieselbe Bauart wie die Zwei-Achsen-Erkennung des internen Verkehrs,
+ * UA und IP):
+ *   `yes_query`   Der Request trägt selbst einen Tracking-Parameter. Trägt
+ *                 bei `/cart/<lines>?utm_...` (Direkt-zur-Kasse-Link).
+ *   `yes_referer` Der Referer-Header trägt einen. Trägt, solange der
+ *                 Besucher die ad-gelandete URL noch nicht verlassen hat —
+ *                 ohne JavaScript, ohne jeden Speicher.
+ *   `yes_cookie`  Der gespeicherte Attributions-Cookie steht. Diese Achse ist
+ *                 die einzige consent-GEBUNDENE; sie ist hier nicht nötig,
+ *                 aber sie macht einen Widerspruch sichtbar (ein `no` neben
+ *                 einem `landing_page` wäre ein Defekt dieser Funktion).
+ *   `yes_client`  Der Tracker hat auf der Landeseite Parameter gesehen. Quelle
+ *                 ist sein sessionStorage-Puffer, den er SEIT JEHER VOR der
+ *                 Zustimmung fuellt (public/qiblanco-tracker.js,
+ *                 `bufferAttributionParams`) — hier wird nichts Neues
+ *                 angelegt, ein vorhandener technischer Zwischenspeicher wird
+ *                 nur zu einer Ja/Nein-Antwort verdichtet.
+ *
+ * WARUM DER WERT DIE ACHSE NENNT statt bloß 'yes': eine Achse, die still
+ * aufhört zu tragen, ist sonst von einer Welt ohne Ad-Verkehr nicht zu
+ * unterscheiden. Steht in den Orders eines Fensters nie wieder ein
+ * `yes_referer`, ist das ein Befund ÜBER den Marker und kein Befund über die
+ * Anzeigen.
+ *
+ * DREIWERTIG, NIE ZWEIWERTIG: `no` wird nur ausgegeben, wenn die Abwesenheit
+ * BELEGT ist — der Client hat seinen Puffer gelesen und er war leer. Konnte
+ * niemand messen (JavaScript aus, Tracker geblockt, sessionStorage gesperrt,
+ * ein Aufrufer ohne Formular), steht `unknown`. Ein Lesefehler darf nie
+ * denselben Wert liefern wie eine belegte Abwesenheit, sonst ist genau die
+ * Zweideutigkeit zurück, gegen die diese Funktion gebaut ist.
+ *
+ * MONOTON: ein einmal belegtes `yes_*` wird NIE durch einen schwaecheren Wert
+ * ersetzt. `mergeCartAttributes` ueberschreibt sonst bedingungslos, und ein
+ * spaeterer Lauf mit geblocktem Tracker würde ein frueheres `yes_query`
+ * stillschweigend zu `unknown` abwerten.
+ *
+ * @param {{searchParams?: URLSearchParams | string | null,
+ *          referer?: string | null,
+ *          cookieHeader?: string | null,
+ *          clientMarker?: string | null,
+ *          bisher?: string | null}} [options]
+ * @returns {'yes_query'|'yes_referer'|'yes_cookie'|'yes_client'|'no'|'unknown'}
+ */
+export function adParamsSeenMarker({
+  searchParams,
+  referer,
+  cookieHeader,
+  clientMarker,
+  bisher,
+} = {}) {
+  const wert = adParamsSeenRoh({
+    searchParams,
+    referer,
+    cookieHeader,
+    clientMarker,
+  });
+
+  // Monotonie: eine belegte Ankunft bleibt belegt.
+  if (
+    typeof bisher === 'string' &&
+    bisher.startsWith('yes_') &&
+    !wert.startsWith('yes_')
+  ) {
+    return /** @type {any} */ (bisher);
+  }
+
+  return wert;
+}
+
+/**
+ * @param {{searchParams?: URLSearchParams | string | null,
+ *          referer?: string | null,
+ *          cookieHeader?: string | null,
+ *          clientMarker?: string | null}} options
+ */
+function adParamsSeenRoh({searchParams, referer, cookieHeader, clientMarker}) {
+  if (hatTrackingParam(normalizeSearchParams(searchParams))) return 'yes_query';
+  if (hatTrackingParam(refererSuchParameter(referer))) return 'yes_referer';
+
+  if (
+    getStoredAttributionParamEntries(readStoredAttribution(cookieHeader))
+      .length > 0
+  ) {
+    return 'yes_cookie';
+  }
+
+  // Der Client-Marker kommt aus dem Browser und ist damit FREMDEINGABE: nur
+  // die zwei bekannten Woerter werden akzeptiert, alles andere — auch ein
+  // erfundener Wert — faellt auf 'unknown'. Es wird nie Fremdtext in ein
+  // Order-note_attribute durchgereicht.
+  if (clientMarker === 'yes') return 'yes_client';
+  if (clientMarker === 'no') return 'no';
+
+  return 'unknown';
+}
+
+/**
+ * Query-Parameter eines Referer-Headers. Wirft nie: ein unbrauchbarer oder
+ * fehlender Referer ist keine Stoerung, sondern der Normalfall.
+ *
+ * @param {string | null | undefined} referer
+ * @returns {Iterable<[string, string]>}
+ */
+function refererSuchParameter(referer) {
+  if (typeof referer !== 'string' || !referer) return [];
+  try {
+    return new URL(referer).searchParams;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Trägt die Parameterliste mindestens EINEN Tracking-Parameter mit nicht
+ * leerem Wert? Geprueft wird ausschließlich der NAME gegen die bestehende
+ * Allowlist — der Wert wird nur auf "nicht leer" geprueft und nie gelesen,
+ * nie zurueckgegeben, nie gespeichert.
+ *
+ * @param {Iterable<[string, string]>} eintraege
+ */
+function hatTrackingParam(eintraege) {
+  for (const [name, value] of eintraege) {
+    if (value && isTrackingParamName(name)) return true;
+  }
+  return false;
+}
+
+/**
+ * Die VIER consent-freien Herkunfts-Marker als Cart-Attribute.
  *
  * Sie werden an ALLEN Cart-Eintrittspunkten UNBEDINGT geschrieben — auch ohne
- * Marketing-Consent. Alle drei Werte sind immer nicht-leer, damit
+ * Marketing-Consent. Alle vier Werte sind immer nicht-leer, damit
  * `mergeCartAttributes` keinen davon still verwirft.
  *
- * KEIN NEUER SCHLUESSEL seit s02 — nur ein neuer WERT in `ua_class`. Ein
- * neuer Identitaets-Key müsste in TRACKING_COOKIE_NAMES nachgetragen werden
- * und fiele sonst an der Checkout-Domaingrenze weg (der `_qpx_anon`-Bug,
- * 90,6 % falsch `direct`). Ein Wert in einem bestehenden Schlüssel kann diese
- * Fehlerklasse baulich nicht haben: der Schlüssel reist schon.
+ * WARUM `ad_params_seen` EIN NEUER SCHLUESSEL SEIN DARF (2026-09-22) — hier
+ * stand bis heute "KEIN NEUER SCHLUESSEL seit s02", und der Satz war eine
+ * VORSICHT, keine Sperre. Die Fehlerklasse, vor der er warnt, ist die des
+ * `_qpx_anon`-Bugs (90,6 % falsch `direct`): ein neuer IDENTITAETS-Key, der
+ * als COOKIE die Checkout-Domaingrenze ueberqueren muss, faellt ohne Eintrag
+ * in TRACKING_COOKIE_NAMES dort weg. Diese Marker ueberqueren keine Grenze —
+ * sie gehen per `cart.updateAttributes` DIREKT in den Shopify-Warenkorb.
+ * Genau deshalb konnten `consent_state` und `ua_class` am 2026-09-07 als neue
+ * Schluessel entstehen, ohne dass TRACKING_COOKIE_NAMES angefasst wurde; das
+ * ist der lebende Beleg, nicht eine Vermutung. Die Alternative — den Wert in
+ * `attribution_source` mitzuschreiben — wäre die TEURERE Naht gewesen: den
+ * Wert `qiblanco_hydrogen` lesen heute fremde Konsumenten.
  *
  * @param {{userAgent?: string | null, cookieHeader?: string | null,
- *          intern?: boolean}} options
+ *          intern?: boolean, searchParams?: URLSearchParams | string | null,
+ *          referer?: string | null, clientMarker?: string | null,
+ *          bisherigerAdMarker?: string | null}} options
  * @returns {Array<{key: string, value: string}>}
  */
 export function buildOriginCartAttributes({
   userAgent,
   cookieHeader,
   intern = false,
+  searchParams,
+  referer,
+  clientMarker,
+  bisherigerAdMarker,
 } = {}) {
   const attributes = [];
   addCartAttribute(attributes, 'attribution_source', 'qiblanco_hydrogen');
@@ -729,5 +896,16 @@ export function buildOriginCartAttributes({
     consentStateFromCookies(cookieHeader ?? null),
   );
   addCartAttribute(attributes, 'ua_class', classifyUserAgent(userAgent, {intern}));
+  addCartAttribute(
+    attributes,
+    'ad_params_seen',
+    adParamsSeenMarker({
+      searchParams,
+      referer,
+      cookieHeader: cookieHeader ?? null,
+      clientMarker,
+      bisher: bisherigerAdMarker,
+    }),
+  );
   return attributes;
 }

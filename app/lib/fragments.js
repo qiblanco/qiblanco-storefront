@@ -236,3 +236,39 @@ export const FOOTER_QUERY = `#graphql
   }
   ${MENU_FRAGMENT}
 `;
+
+// Job 20260923-adparams-monotonie-tot-auf-hauptpfad-und-no-ist-kein-beleg.
+//
+// WARUM ES DIESES FRAGMENT ÜBERHAUPT GIBT: Hydrogen hat ZWEI Cart-Fragmente,
+// nicht eines. `queryFragment` gilt für `cart.get()`, `mutateFragment` für
+// JEDE Mutation (addLines/updateLines/removeLines/updateDiscountCodes/
+// updateGiftCardCodes/updateBuyerIdentity/updateAttributes/create). Wird
+// `mutateFragment` nicht gesetzt, greift Hydrogens Default — nachgelesen in
+// node_modules/@shopify/hydrogen/dist/production/index.js, `fragment
+// CartApiMutation on Cart { id totalQuantity checkoutUrl }`. Ein
+// Mutationsergebnis trägt dann NIE ein `attributes`-Feld.
+//
+// WAS DAS KAPUTT MACHTE: `persistAttributionOnCartResult` liest genau dieses
+// `result.cart.attributes` als Vorbestand für die Monotonie-Regel von
+// `ad_params_seen`. Ohne das Feld war der Vorbestand immer `null`, und jede
+// Warenkorb-Änderung von einer Seite ohne Ad-Parameter wertete ein belegtes
+// `yes_*` still auf `unknown` ab — der Marker war auf dem Hauptpfad tot.
+// Gesund war allein `cart.attribution.jsx`, weil es `cart.get()` benutzt.
+//
+// DER NAME IST VERTRAGLICH: Hydrogen spreizt `...CartApiMutation` in seine
+// Mutations-Dokumente und hängt diesen String darunter. Heißt das Fragment
+// anders, ist das GraphQL-Dokument ungültig. ARM-H2 nagelt das fest.
+//
+// ADDITIV: die drei Default-Felder bleiben, `attributes` kommt dazu. Kein
+// bestehender Konsument eines Mutationsergebnisses verliert etwas.
+export const CART_MUTATE_FRAGMENT = `#graphql
+  fragment CartApiMutation on Cart {
+    id
+    totalQuantity
+    checkoutUrl
+    attributes {
+      key
+      value
+    }
+  }
+`;

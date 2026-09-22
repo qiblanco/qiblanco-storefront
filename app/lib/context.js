@@ -1,6 +1,6 @@
 import {createHydrogenContext} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session';
-import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
+import {CART_MUTATE_FRAGMENT, CART_QUERY_FRAGMENT} from '~/lib/fragments';
 import {resolveCountry} from '~/lib/markt-pricing';
 
 /**
@@ -40,6 +40,14 @@ export async function createAppLoadContext(request, env, executionContext) {
     i18n: {language: 'DE', country},
     cart: {
       queryFragment: CART_QUERY_FRAGMENT,
+      // PFLICHT, nicht Kosmetik (Job 20260923-adparams-monotonie-tot-auf-
+      // hauptpfad-...): ohne `mutateFragment` greift Hydrogens Default
+      // `CartApiMutation { id totalQuantity checkoutUrl }`, und JEDES
+      // Mutationsergebnis kommt ohne `attributes` zurück. Der Vorbestand, den
+      // `persistAttributionOnCartResult` für die Monotonie von
+      // `ad_params_seen` liest, war deshalb auf dem gesamten Hauptpfad immer
+      // leer. Begründung und Nachweis: app/lib/fragments.js, ARM-H1/H2.
+      mutateFragment: CART_MUTATE_FRAGMENT,
       getBuyerIdentity: () => ({
            countryCode: country,
       }),

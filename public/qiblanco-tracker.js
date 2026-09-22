@@ -81,6 +81,168 @@
       );
     } catch {
       // Session storage can be unavailable in restricted browser contexts.
+      //
+      // DER SCHREIBFEHLSCHLAG WIRD GEMERKT, NICHT VERSCHLUCKT (Job 20260923-
+      // adparams-monotonie-...): ein gescheiterter Schreibvorgang (Quota,
+      // privater Modus) hinterlaesst einen LEEREN Puffer — und ein leerer
+      // Puffer sah bis heute aus wie "es kamen keine Ad-Parameter an". Das ist
+      // die Zweideutigkeit, gegen die `ad_params_seen` gebaut ist, eine Ebene
+      // tiefer. Ab hier ist die Leere dieses Puffers nicht mehr beweiskraeftig.
+      //
+      // KEIN NEUER SPEICHER: eine Fenster-Variable, die mit dem Dokument
+      // stirbt — dieselbe Bauform wie `window.__qbAdAnkunft`.
+      window.__qbPufferSchreibfehler = true;
+    }
+  }
+
+  // ---- Consent-FREIER Ankunfts-Zustand (Job 20260922-blinde-menge-...) -----
+  // BEANTWORTET GENAU EINE FRAGE: kamen in dieser Registerkarte ueberhaupt
+  // Ad-Parameter an? Ja/Nein/Weiss-nicht — NIE ein Wert.
+  //
+  // WOZU: ohne diese Antwort erzeugen zwei voellig verschiedene Lagen denselben
+  // Zustand an der Order — "kam ohne Ad-Parameter" (ein Direktbesucher, voellig
+  // rechtmaessig ohne Attributions-Cookie) und "kam mit, aber der Cookie
+  // ueberlebte nicht". Gemessen 2026-09-22 betraf das 27 von 41 Orders; solange
+  // sie ununterscheidbar sind, ist Anzeigenwirkung auf Order-Ebene
+  // unentscheidbar.
+  //
+  // WARUM DAS OHNE ZUSTIMMUNG GEHT: hier wird NICHTS gespeichert. Gelesen wird
+  // die URL der laufenden Seite und — nur lesend — der sessionStorage-Puffer,
+  // den `bufferAttributionParams` oben seit jeher VOR der Zustimmung anlegt.
+  // Der Zustand lebt in einer Fenster-Variablen und stirbt mit dem Dokument.
+  //
+  // DREIWERTIG: 'no' heißt "nachgesehen und nichts gefunden". Ist der Puffer
+  // gar nicht lesbar (sessionStorage gesperrt), heißt es 'unknown' und nie
+  // 'no' — sonst wäre ein gesperrter Speicher von einem echten Direktbesucher
+  // nicht zu unterscheiden, also genau die Zweideutigkeit von oben, eine Ebene
+  // tiefer.
+  function ankunftsZustand() {
+    // 1. Diese Seite trägt selbst Parameter — ohne jeden Speicher entschieden.
+    if (collectTrackedParams()) return 'yes';
+
+    // 2. Der Verweis auf diese Seite trug welche. Das ist der EINE Sprung
+    //    zurück, den der Browser uns geschenkt gibt: bei gleicher Herkunft
+    //    bleibt die volle URL samt Query stehen (strict-origin-when-cross-
+    //    origin). Er fängt genau den Fall, in dem der Puffer-Schreibvorgang
+    //    auf der Landeseite scheiterte — die Parameter standen dort in der
+    //    URL, und die URL ist jetzt unser Referrer.
+    if (adParamsImVerweis()) return 'yes';
+
+    // 3. Diese Registerkarte hat vorher welche gesehen.
+    var puffer;
+    try {
+      puffer = window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+    } catch {
+      // Speicher gesperrt: niemand konnte nachsehen.
+      return 'unknown';
+    }
+    if (puffer) return 'yes';
+
+    // ---- Ab hier ist der Puffer LEER. Das ist noch kein 'no'. -------------
+    //
+    // 'no' heißt "nachgesehen und nichts gefunden" und ist damit eine
+    // TATSACHENBEHAUPTUNG über die Herkunft dieses Besuchers. Sie hält nur,
+    // wenn die Leere des Puffers etwas BELEGT. Zwei Lagen, in denen sie das
+    // nicht tut (Gegenprüfung K3-P2 zum Bau vom 2026-09-22):
+    //
+    // (a) DER SCHREIBVORGANG IST GESCHEITERT. Quota voll, privater Modus:
+    //     `setItem` wirft, `getItem` antwortet brav mit null. Der Puffer ist
+    //     dann leer, weil wir ihn nicht füllen konnten — nicht, weil nichts
+    //     ankam.
+    if (window.__qbPufferSchreibfehler) return 'unknown';
+
+    // (b) DIESE REGISTERKARTE HAT DEN EINTRITT NIE GESEHEN. sessionStorage
+    //     lebt PRO TAB. Der häufige Meta-Weg — Anzeige im In-App-Browser
+    //     geöffnet, dann "im Systembrowser öffnen" — erzeugt ein frisches
+    //     Dokument in einem frischen Tab: keine Query, kein Verweis, kein
+    //     Puffer. Der Klick auf die Anzeige ist real passiert, nur eben
+    //     draußen. Genau diese Bevölkerung soll der Marker messen, also darf
+    //     er sie nicht als Direktbesucher verbuchen.
+    //
+    //     Der einzige speicherfreie Beleg, dass wir die Herkunft ÜBERHAUPT
+    //     gesehen haben, ist ein nicht-leerer Verweis. Er ist bei einer
+    //     Übergabe aus einer fremden App leer, bei einem Klick von Google,
+    //     einem Blog oder einer unserer eigenen Seiten gesetzt.
+    //
+    //     PREIS, ehrlich benannt: der Direkt-Eintipper und der Lesezeichen-
+    //     Besucher haben ebenfalls keinen Verweis und fallen mit auf
+    //     'unknown'. Sie sind von der Übergabe baulich NICHT unterscheidbar;
+    //     'unknown' ist dafür die richtige Antwort und nicht der Verlust.
+    //
+    //     DECKUNGSGRENZE, benannt statt verdeckt: eine HARTE Navigation tiefer
+    //     in einer Registerkarte, deren WURZEL eine solche Übergabe war,
+    //     trägt ab Sprung 2 wieder einen (gleich-origin) Verweis und ergibt
+    //     wieder 'no'. Das Verdikt der Wurzel mitzuführen bräuchte einen
+    //     Speicher pro Tab — also genau den neuen Speicher, den dieser Bau
+    //     nicht anlegen darf. Im SPA-Normalfall ist die ganze Reise EIN
+    //     Dokument, weshalb das Wurzelverdikt sie regiert; der Rest ist
+    //     zweiter Ordnung und ausgewiesen.
+    if (!verweisVorhanden()) return 'unknown';
+
+    return 'no';
+  }
+
+  /** Nicht-leerer document.referrer. Wirft nie. */
+  function verweisVorhanden() {
+    try {
+      return !!(window.document && window.document.referrer);
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Trägt der Verweis auf diese Seite selbst Ad-Parameter? Liest
+   * ausschließlich NAMEN, nie einen Wert — dieselbe harte Grenze wie
+   * serverseitig in `adParamsSeenMarker`.
+   */
+  function adParamsImVerweis() {
+    var verweis;
+    try {
+      verweis = window.document && window.document.referrer;
+    } catch {
+      return false;
+    }
+    if (!verweis) return false;
+
+    // Query von Hand abtrennen statt über `new URL`: der Tracker ist ein
+    // nacktes Browser-IIFE und soll sich für eine Ja/Nein-Auskunft keinen
+    // weiteren globalen Konstruktor einhandeln.
+    var frage = verweis.indexOf('?');
+    if (frage < 0) return false;
+    var raute = verweis.indexOf('#');
+    var suche =
+      raute > frage ? verweis.slice(frage + 1, raute) : verweis.slice(frage + 1);
+    if (!suche) return false;
+
+    var gefunden = false;
+    new URLSearchParams(suche).forEach(function (wert, name) {
+      if (wert && isTrackingParamName(name)) gefunden = true;
+    });
+    return gefunden;
+  }
+
+  // MONOTON: ein einmal belegtes 'yes' wird nie zurueckgenommen. Nach einer
+  // SPA-Navigation trägt die neue URL keine Parameter mehr — ohne diese Regel
+  // würde der Besucher auf dem Weg zum Warenkorb vom Ad-Klicker zum
+  // Direktbesucher.
+  function merkeAnkunft() {
+    // DAS GITTER, und es hat genau zwei Regeln:
+    //
+    // (1) 'yes' ist endgültig. Nach einer SPA-Navigation trägt die neue URL
+    //     keine Parameter mehr — ohne diese Regel würde der Besucher auf dem
+    //     Weg zum Warenkorb vom Ad-Klicker zum Direktbesucher.
+    //
+    // (2) Ein einmal gefaelltes Urteil wandert NUR NOCH NACH 'yes'. Ohne diese
+    //     zweite Hälfte könnte ein späterer Lauf ein 'unknown' zu einem 'no'
+    //     machen — aus "weiß nicht" würde eine Tatsachenbehauptung über die
+    //     Herkunft, also genau das, was der Fix vom 2026-09-23 verhindert.
+    //     Die Gegenrichtung ('no' → 'yes', etwa weil ein interner Link utm_*
+    //     trägt) bleibt ausdrücklich offen: sie fügt Information hinzu.
+    if (window.__qbAdAnkunft === 'yes') return;
+    var neu = ankunftsZustand();
+    if (window.__qbAdAnkunft === undefined || neu === 'yes') {
+      window.__qbAdAnkunft = neu;
     }
   }
 
@@ -155,6 +317,7 @@
     function onNavigate() {
       window.setTimeout(function () {
         bufferAttributionParams();
+        merkeAnkunft();
         if (trackingAllowed()) {
           persistClickCookies();
           persistAttributionParams();
@@ -318,6 +481,7 @@
   }
 
   bufferAttributionParams();
+  merkeAnkunft();
   hookSpaNavigation();
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
