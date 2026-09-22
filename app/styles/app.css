@@ -17,7 +17,7 @@
   /* Gold-Rollen (Kontrast-Konzept 2026-08-12). --color-accent-primary ist die
      FLAECHE. Als SCHRIFT auf hellem Grund reisst sie WCAG AA (1.68:1), darum
      zwei eigene Rollen — gleicher Farbton, nur andere Helligkeit: */
-  --color-accent-ink: #856828;   /* Gold als SCHRIFT auf hellem Grund (>= 4.5:1) */
+  --color-accent-ink: var(--qb-akzent-tinte);   /* Gold als SCHRIFT auf hellem Grund (>= 4.5:1) */
   --color-on-accent: #2c2a26;    /* Schrift AUF einer Gold-Flaeche (>= 5.9:1) */
   /* BEWERTUNGSSTERNE — DIE EINE QUELLE (Job 20260822-sterne-farbe-dach).
      Bewusst EIGENE Rollen und NICHT --color-accent-primary: die Sterne geben

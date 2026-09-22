@@ -52,8 +52,8 @@
   /* EIN Gold — als SCHRIFT auf hellem Grund (WCAG AA >= 4.5:1).
    * Gleicher Hue wie der Marken-Akzent #c9a14b, nur abgedunkelt, damit die
    * Rubrik EINEN Gold-Hue-Bin zaehlt und kein zweiter Goldton entsteht. */
-  --rs-akzent: #856828;
-  --rs-akzent-flaeche: #c9a14b;     /* Fill/Marker, nie als Schrift       */
+  --rs-akzent: var(--qb-akzent-tinte);
+  --rs-akzent-flaeche: var(--qb-akzent);     /* Fill/Marker, nie als Schrift       */
 
   /* ---- Mass, Radius, Linie ------------------------------------------- */
   --rs-mass: 68ch;                  /* Zeilenlaenge Fliesstext (Soll <=75) */
@@ -364,8 +364,8 @@ body:has(.rs-doc) {
    * traegt fuer diese Rubrik-Fassung nicht). Auf Dokumentseiten gilt deshalb
    * durchgaengig die dunklere Tinte, die auf hellem Grund ausserdem WCAG AA
    * erreicht (#c9a14b als Schrift auf Off-White tut das nicht). */
-  --color-accent-primary: #856828;
-  --color-accent-ink: #856828;
+  --color-accent-primary: var(--qb-akzent-tinte);
+  --color-accent-ink: var(--qb-akzent-tinte);
 }
 
 /* ---- Der zweite Goldton: Newsletter-Absendeknopf im Footer ------------
