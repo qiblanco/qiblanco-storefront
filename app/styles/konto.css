@@ -27,9 +27,15 @@
    unmöglich. Kein :root — es leakt nichts in fremde Routen.
 
    ROLLENTRENNUNG GOLD (nicht vermischen, GL-DES-0001):
-     --k-gold        #c9a14b  Fläche
-     --k-gold-tief   #b8893a  Hover/Outline
+     --k-gold        #c9a14b  Fläche        <- seit 22.09.2026 aus var(--qb-akzent)
+     --k-gold-tief   #b8893a  Hover/Outline    (weiterhin Literal: kein Token)
      --k-gold-tinte  #856828  Gold als SCHRIFT auf hell (AA >= 4.5)
+                                            <- seit 22.09.2026 aus var(--qb-akzent-tinte)
+   Die WERTE sind unverändert; geändert hat sich nur, woher sie kommen. Die
+   beiden Gold-Rollen ziehen aus der globalen Wurzel app/styles/qb-tokens.css,
+   damit der Marken-Goldton nur noch an EINER Stelle steht. Wer den Ton hier
+   ändern will, ändert die Wurzel — oder er überschreibt bewusst --k-gold in
+   diesem Scope und schreibt hin, warum.
    Gold trägt laut Designsprache NUR Handlung/Beweis. Ein Login-Knopf ist KEINE
    Kauf-CTA — die primäre Handlung nimmt deshalb --color-dark, genau wie der
    Widerrufs-Button (app.css .withdrawal-button). Gold erscheint hier nur als
@@ -63,9 +69,9 @@
   --k-dunkel: #191714;
   --k-text: #2c2a26;
   --k-text-2: #6b665d;
-  --k-gold: #c9a14b;
+  --k-gold: var(--qb-akzent);
   --k-gold-tief: #b8893a;
-  --k-gold-tinte: #856828;
+  --k-gold-tinte: var(--qb-akzent-tinte);
   --k-linie: rgba(44, 42, 38, 0.12);
   --k-linie-stark: rgba(44, 42, 38, 0.22);
 
@@ -538,13 +544,24 @@
    Präzedenzfalls, keine neue Antwort auf app.css Zeilen 26-28 — global bleibt
    --color-accent-primary unangetastet, und die Frage bleibt Christians.
 
-   WARUM HIER LITERALE STATT TOKENS STEHEN — das ist Absicht und genau die
-   Falle, gegen die dieses File gebaut ist: die Selektoren unten greifen auf
-   `body`, also AUSSERHALB von `.konto`. Dort sind die --k-*-Tokens nicht
-   definiert. `var(--k-gold)` wäre hier eine ungültige Deklaration und fiele
-   still auf Vererbung zurück — der Remap würde wirkungslos, und die Messung
-   sähe aus wie ein Design-Fehler. Die Werte sind deshalb bewusst ausgeschrieben
-   und mit dem Token-Block oben identisch zu halten.
+   WARUM HIER var(--qb-akzent) STEHT UND NICHT var(--k-gold) — der Unterschied
+   ist :root gegen .konto, nicht Token gegen Literal.
+   Bis zum 22.09.2026 stand der Goldton hier als Literal, begründet damit, dass
+   die Selektoren unten auf `body` greifen, also AUSSERHALB von `.konto`, wo die
+   --k-*-Tokens nicht definiert sind: `var(--k-gold)` wäre eine ungültige
+   Deklaration und fiele still auf Vererbung zurück. FÜR DIE --k-*-TOKENS GILT
+   DAS UNVERÄNDERT WEITER — sie stehen auf `.konto`, und `body` ist kein
+   Nachfahre von `.konto`.
+   --qb-akzent ist der andere Fall: es steht in app/styles/qb-tokens.css auf
+   :root und wird global über app/root.jsx geladen. :root IST `html`, `body`
+   liegt darin, das Token ist hier also vererbt und löst zu demselben #c9a14b
+   auf, das vorher ausgeschrieben stand. Deshalb steht hier jetzt ein Token.
+   WER DAS ZURÜCKBAUT, holt die Kopie des Goldtons zurück, die die Migration
+   entfernt hat. Die Prüffrage ist nie „Token oder Literal", sondern: ist das
+   Token an DIESEM Selektor vererbt?
+   Der Rest des Blocks bleibt ausgeschrieben, und zwar zu Recht: `#faf9f5`
+   (Zeile darunter) hat in der Wurzel KEIN wertgleiches Token — der dortige
+   warme Grundton ist #f8f4ee, also ähnlich und nicht gleich.
 
    NUR Farbe/Typo/Radius — Funktion und Verhalten bleiben unangetastet.
 */
@@ -553,8 +570,8 @@ body:has(.konto) {
      .konto-Scope noch nicht gilt. Genau das ist hier einmal passiert und wurde
      von bin/probe_konto_token_scope.py gefangen. */
   background: #faf9f5;
-  --color-accent-primary: #c9a14b;
-  --rd3-gold: #c9a14b;
+  --color-accent-primary: var(--qb-akzent);
+  --rd3-gold: var(--qb-akzent);
 }
 
 body:has(.konto) .footer p,
@@ -567,7 +584,7 @@ body:has(.konto) .footer p { max-width: 68ch; }
 body:has(.konto) .footer .btn--primary,
 body:has(.konto) .footer button[type='submit'],
 body:has(.konto) .footer input[type='submit'] {
-  background: #c9a14b;
+  background: var(--qb-akzent);
   color: #2c2a26;
   border-radius: 8px;
   font-size: 1rem;
@@ -585,7 +602,7 @@ body:has(.konto) #_form_15_submit._submit,
 body:has(.konto) ._form_15 button,
 body:has(.konto) ._form_15 ._submit,
 body:has(.konto) ._form_15 input[type='submit'] {
-  background: #c9a14b !important;
+  background: var(--qb-akzent) !important;
   color: #2c2a26 !important;
   border-radius: 8px !important;
 }
