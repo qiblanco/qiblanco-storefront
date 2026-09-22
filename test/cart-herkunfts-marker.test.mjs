@@ -77,7 +77,20 @@ const {
 // --- Sprachgebrauch -------------------------------------------------------
 // HERKUNFT = die drei consent-freien Marker. PERSONENBEZOGEN = alles, was an
 // eine Person ruecklesbar ist und deshalb consent-gegatet BLEIBEN muss.
-const HERKUNFT = ['attribution_source', 'consent_state', 'ua_class'];
+// 2026-09-22 (Job 20260922-blinde-menge-...): `ad_params_seen` ist der VIERTE
+// consent-freie Marker. Er steht bewusst HIER und nicht in PERSONENBEZOGEN: er
+// traegt eine reine Ja/Nein-Auskunft ueber das VORHANDENSEIN eines
+// Parameter-NAMENS, nie den Wert eines Ad-Parameters.
+//
+// DIESE LISTE IST DER ZAUN VON ARM-F6 und bleibt eine ERSCHOEPFENDE
+// Aufzaehlung: ein fuenfter, unabsichtlich entstandener Schluessel faellt dort
+// weiterhin auf. Sie wird nur mit einer bewussten Entscheidung verlaengert.
+const HERKUNFT = [
+  'attribution_source',
+  'consent_state',
+  'ua_class',
+  'ad_params_seen',
+];
 const PERSONENBEZOGEN = [
   '_fbc',
   '_fbp',
@@ -113,12 +126,17 @@ function anfrage({url = URL_MIT_KLICK, cookie = '', ua = UA_META, ip = ''} = {})
 }
 
 /** Merkt sich, womit cart.updateAttributes/cart.create aufgerufen wurde. */
-function cartAttrappe({checkoutUrl = 'https://checkout.qiblanco.com/c/1'} = {}) {
+function cartAttrappe({
+  checkoutUrl = 'https://checkout.qiblanco.com/c/1',
+  // Vorbestand am Warenkorb. Default leer = unveraendertes Verhalten fuer alle
+  // Arme, die es vor ARM-G gab; ARM-G7 braucht ihn fuer die Monotonie-Regel.
+  bestand = [],
+} = {}) {
   const spur = {updateAttributes: null, create: null};
   return {
     spur,
     cart: {
-      get: async () => ({id: 'gid://cart/1', checkoutUrl, attributes: []}),
+      get: async () => ({id: 'gid://cart/1', checkoutUrl, attributes: bestand}),
       updateAttributes: async (attributes) => {
         spur.updateAttributes = attributes;
         return {cart: {id: 'gid://cart/1', checkoutUrl, attributes}};
@@ -584,8 +602,19 @@ test('ARM-F6 `intern` ist ein WERT, kein neuer Schlüssel (Checkout-Grenze)', as
     result: {cart: {id: 'gid://cart/1', attributes: []}},
   });
   const keys = (spur.updateAttributes ?? []).map((a) => a.key).sort();
-  // Ein NEUER Schlüssel müsste in TRACKING_COOKIE_NAMES nachgetragen werden
-  // und fiele sonst an der Domaingrenze weg (der `_qpx_anon`-Bug).
+  // WAS DIESER ARM WIRKLICH BEWACHT: dass die Klasse `intern` ein WERT in
+  // `ua_class` bleibt und sich keinen eigenen Schluessel nimmt. Er zaehlt dafuer
+  // die Schluesselmenge gegen HERKUNFT — also gegen eine benannte Liste, nicht
+  // gegen eine eingefrorene Zahl.
+  //
+  // KORREKTUR DER BEGRUENDUNG 2026-09-22: hier stand, ein neuer Schluessel
+  // muesste in TRACKING_COOKIE_NAMES nachgetragen werden und fiele sonst an der
+  // Domaingrenze weg (der `_qpx_anon`-Bug). Das gilt fuer einen COOKIE, der die
+  // Checkout-Domaingrenze ueberqueren muss — nicht fuer ein Cart-Attribut, das
+  // per `cart.updateAttributes` direkt in den Warenkorb geht. Der lebende Beleg
+  // steht in dieser Liste selbst: `consent_state` und `ua_class` sind am
+  // 2026-09-07 als neue Schluessel entstanden, TRACKING_COOKIE_NAMES blieb
+  // unberuehrt, und nichts ist weggefallen.
   assert.deepEqual(
     keys,
     [...HERKUNFT].sort(),
@@ -607,4 +636,157 @@ test('ARM-F7 der SSoT-Spiegel ist nicht leer (Deko-Schutz)', () => {
       `ARM-F7: Marker "${m}" kommt in einem echten Browser-UA vor`,
     );
   }
+});
+
+// ===========================================================================
+// ARM G — ad_params_seen: der consent-freie Ankunfts-Marker
+// (Job 20260922-blinde-menge-attributionscookie-macht-anzeigenwirkung-
+// unentscheidbar)
+//
+// DER ZUSTAND, DEN DIESE ARME FESTNAGELN (gemessen 2026-09-22, Vollerhebung
+// d30, Nenner 41 Orders): 27 Orders trugen KEIN Feld aus dem gespeicherten
+// Attributions-Cookie. Dieser EINE Zustand entsteht aus ZWEI Lagen — "kam ohne
+// Ad-Parameter" (rechtmaessig) und "kam mit, aber der Cookie ueberlebte nicht"
+// (Blindstelle). Solange beide gleich aussehen, ist Anzeigenwirkung auf
+// Order-Ebene unentscheidbar.
+//
+// DIE HARTE GRENZE, die ARM-G8 bewacht: der Marker darf den WERT eines
+// Ad-Parameters weder lesen noch schreiben. Er beantwortet ausschliesslich, OB
+// ein Parameter-NAME vorkam.
+// ===========================================================================
+
+const AD_ID_TEST = '9990000000000922'; // Praefix 999 — keine echte Anzeige.
+
+/** POST auf /cart/attribution, wahlweise mit dem versteckten Feld. */
+function kassenAnfrage({
+  url = 'https://qiblanco.com/cart',
+  cookie = '',
+  ua = UA_META,
+  feld = undefined,
+  referer = '',
+} = {}) {
+  const kopf = new Headers();
+  if (cookie) kopf.set('Cookie', cookie);
+  if (ua) kopf.set('User-Agent', ua);
+  if (referer) kopf.set('Referer', referer);
+  const koerper = new FormData();
+  if (feld !== undefined) koerper.set('ad_params_seen', feld);
+  return new Request(url, {method: 'POST', headers: kopf, body: koerper});
+}
+
+async function kasseMarker(optionen) {
+  const {spur, cart} = cartAttrappe(optionen?.attrappe);
+  await attributionAction({
+    request: kassenAnfrage(optionen),
+    context: {cart, env: {}},
+  });
+  return {marker: alsMap(spur.updateAttributes).get('ad_params_seen'), spur};
+}
+
+test('ARM-G1 OHNE Consent: der Client-Marker "yes" wird zu yes_client', async () => {
+  const {marker, spur} = await kasseMarker({
+    cookie: COOKIE_CONSENT_NEIN,
+    feld: 'yes',
+  });
+  assert.equal(marker, 'yes_client', 'ARM-G1');
+  // Der ganze Zweck: OHNE Zustimmung, und trotzdem entscheidbar.
+  pruefeKeinPersonenbezug(spur.updateAttributes, 'ARM-G1');
+});
+
+test('ARM-G2 der Client-Marker "no" wird zu no — belegte Abwesenheit', async () => {
+  const {marker} = await kasseMarker({cookie: COOKIE_CONSENT_NEIN, feld: 'no'});
+  assert.equal(marker, 'no', 'ARM-G2');
+});
+
+test('ARM-G3 KEIN Feld ist "unknown", NIE "no" (Lesefehler ist kein Leerwert)', async () => {
+  const {marker} = await kasseMarker({cookie: COOKIE_CONSENT_NEIN});
+  assert.equal(
+    marker,
+    'unknown',
+    'ARM-G3: ohne JavaScript/Tracker faellt der Marker auf unknown — ein "no" waere hier eine erfundene Tatsache',
+  );
+});
+
+test('ARM-G4 Fremdeingabe wird NIE durchgereicht', async () => {
+  // Das Feld kommt aus dem Browser. Jeder Wert ausser den zwei bekannten
+  // Woertern faellt auf unknown — auch einer, der wie ein gueltiger aussieht.
+  for (const boese of ['<script>alert(1)</script>', 'yes_query', 'YES', '', 'ja']) {
+    const {marker} = await kasseMarker({cookie: COOKIE_CONSENT_NEIN, feld: boese});
+    assert.equal(marker, 'unknown', `ARM-G4: "${boese}" haette nicht durchgehen duerfen`);
+  }
+});
+
+test('ARM-G5 der Referer traegt die Antwort ohne jedes JavaScript', async () => {
+  const {marker} = await kasseMarker({
+    cookie: COOKIE_CONSENT_NEIN,
+    referer: `https://qiblanco.com/pages/schlaf-zellen-schutz?utm_source=facebook&utm_content=${AD_ID_TEST}`,
+  });
+  assert.equal(marker, 'yes_referer', 'ARM-G5');
+});
+
+test('ARM-G6 der Direkt-zur-Kasse-Link traegt sie in der eigenen Query', async () => {
+  const {spur, cart} = cartAttrappe();
+  await linesLoader({
+    request: anfrage({
+      url: `https://qiblanco.com/cart/41007289663544:1?utm_content=${AD_ID_TEST}`,
+      cookie: COOKIE_CONSENT_NEIN,
+    }),
+    context: {cart, env: {}},
+    params: {lines: '41007289663544:1'},
+  });
+  assert.equal(
+    alsMap(spur.create.attributes).get('ad_params_seen'),
+    'yes_query',
+    'ARM-G6',
+  );
+});
+
+test('ARM-G7 MONOTON: ein belegtes yes_ wird nie abgewertet', async () => {
+  const {marker} = await kasseMarker({
+    cookie: COOKIE_CONSENT_NEIN,
+    feld: 'no',
+    attrappe: {bestand: [{key: 'ad_params_seen', value: 'yes_query'}]},
+  });
+  assert.equal(
+    marker,
+    'yes_query',
+    'ARM-G7: mergeCartAttributes ueberschreibt bedingungslos — ohne die Monotonie-Regel wuerde ein spaeterer, schlechter informierter Lauf die belegte Ankunft still loeschen',
+  );
+});
+
+test('ARM-G8 DIE HARTE GRENZE: der WERT des Ad-Parameters taucht nirgends auf', async () => {
+  const {spur} = await kasseMarker({
+    cookie: COOKIE_CONSENT_NEIN, // KEINE Zustimmung
+    feld: 'yes',
+    referer: `https://qiblanco.com/pages/x?utm_content=${AD_ID_TEST}&fbclid=TESTKLICK999`,
+  });
+  const alles = JSON.stringify(spur.updateAttributes ?? []);
+  assert.ok(
+    !alles.includes(AD_ID_TEST),
+    'ARM-G8: die Ad-Id steht in den Attributen — der Marker darf das VORHANDENSEIN melden, nie den WERT',
+  );
+  assert.ok(!alles.includes('TESTKLICK999'), 'ARM-G8: Klick-Id durchgereicht');
+  pruefeKeinPersonenbezug(spur.updateAttributes, 'ARM-G8');
+});
+
+test('ARM-G9 NEGATIVKONTROLLE: ohne jeden Ad-Parameter entsteht NIE ein yes_', async () => {
+  // Diese Probe kann rot werden: sie wuerde anschlagen, sobald irgendeine der
+  // vier Achsen "ja" sagt, ohne dass ein Ad-Parameter im Spiel war — also
+  // genau dann, wenn der Marker jeden Direktbesucher zum Ad-Klicker macht.
+  const {marker} = await kasseMarker({
+    url: 'https://qiblanco.com/cart',
+    cookie: COOKIE_CONSENT_NEIN,
+    feld: 'no',
+    referer: 'https://www.google.com/',
+  });
+  assert.equal(marker, 'no', 'ARM-G9: ein Direktbesucher wurde als Ad-Klicker gezaehlt');
+});
+
+test('ARM-G10 MIT Consent aendert der Marker sein Verhalten NICHT', async () => {
+  // Die Zustimmung ist fuer diesen Marker gegenstandslos — er liest nur
+  // Request-Metadaten. Waere er consent-abhaengig, waere er fuer die blinde
+  // Menge (ueberwiegend Besucher ohne gespeicherte Attribution) wertlos.
+  const ohne = await kasseMarker({cookie: COOKIE_CONSENT_NEIN, feld: 'yes'});
+  const mit = await kasseMarker({cookie: COOKIE_CONSENT_JA, feld: 'yes'});
+  assert.equal(ohne.marker, mit.marker, 'ARM-G10');
 });

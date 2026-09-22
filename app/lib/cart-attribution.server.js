@@ -42,7 +42,9 @@ export async function persistAttributionOnCartResult({
   // Die consent-FREIEN Herkunfts-Marker werden deshalb IMMER geschrieben, die
   // personenbezogenen NUR mit Consent. Details: buildOriginCartAttributes().
   const cartAttributes = [
-    ...getOriginCartAttributes(request),
+    ...getOriginCartAttributes(request, {
+      bestehendeAttribute: result.cart.attributes,
+    }),
     ...(hasAttributionConsent(request, env)
       ? getAttributionCartAttributes(request)
       : []),
@@ -80,18 +82,36 @@ export function hasAttributionConsent(request, env) {
 }
 
 /**
- * Consent-FREIE Herkunfts-Marker (attribution_source, consent_state, ua_class).
- * Ausschließlich Request-Metadaten: User-Agent-Header + Cookiebot-Cookie als
- * ja/nein/unbekannt. Keine Klick-ID, kein _fbc/_fbp/_qpx_anon, kein
- * landing_page, kein referrer.
+ * Consent-FREIE Herkunfts-Marker (attribution_source, consent_state, ua_class,
+ * ad_params_seen). Ausschließlich Request-Metadaten: User-Agent-Header,
+ * Cookiebot-Cookie als ja/nein/unbekannt, das VORHANDENSEIN eines
+ * Tracking-Parameter-NAMENS in Query bzw. Referer, und die Ja/Nein-Antwort des
+ * Trackers aus seinem seit jeher pre-consent gefuellten sessionStorage-Puffer.
+ * Keine Klick-ID, kein _fbc/_fbp/_qpx_anon, kein landing_page, kein referrer —
+ * und kein WERT eines Ad-Parameters.
  *
  * @param {Request} request
+ * @param {{clientMarker?: string | null,
+ *          bestehendeAttribute?: Array<{key?: string | null, value?: string | null}> | null}} [optionen]
+ *   `clientMarker` liefert NUR der Kasse-Knopf (cart.attribution.jsx), weil nur
+ *   dort ein Formular existiert. Die uebrigen Eintrittspunkte kommen ohne aus
+ *   und fallen auf Query/Referer/Cookie bzw. auf `unknown` zurueck.
+ *   `bestehendeAttribute` traegt die Monotonie: ein bereits belegtes `yes_*`
+ *   darf von einem spaeteren, schlechter informierten Lauf nicht abgewertet
+ *   werden.
  */
-export function getOriginCartAttributes(request) {
+export function getOriginCartAttributes(request, optionen = {}) {
+  const {clientMarker = null, bestehendeAttribute = null} = optionen;
   const userAgent = request.headers.get('User-Agent');
   return buildOriginCartAttributes({
     userAgent,
     cookieHeader: request.headers.get('Cookie'),
+    // Die Query DIESES Requests: leer beim POST auf /cart/attribution, aber
+    // gefuellt beim Direkt-zur-Kasse-Link /cart/<lines>?utm_...
+    searchParams: sucheAusRequest(request),
+    referer: request.headers.get('Referer'),
+    clientMarker,
+    bisherigerAdMarker: adMarkerAusAttributen(bestehendeAttribute),
     // ZWEITE ACHSE, und sie ist NUR HIER verfuegbar: die Client-IP steht im
     // Request, nicht im User-Agent. Deshalb wird die SSoT SERVERSEITIG
     // ausgewertet — eine Wache, die ihren Marker-UA vergisst, wird an der IP
@@ -156,4 +176,33 @@ function isPreviewTrackingAllowed(request, env) {
     env?.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true' &&
     !isQiblancoProductionHost(request.url)
   );
+}
+
+/**
+ * Query des laufenden Requests. Wirft nie — eine unparsbare URL ist hier kein
+ * Grund, den Kaufweg zu stoeren.
+ *
+ * @param {Request} request
+ * @returns {URLSearchParams | null}
+ */
+function sucheAusRequest(request) {
+  try {
+    return new URL(request.url).searchParams;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Bereits am Warenkorb haengender Ankunfts-Marker (fuer die Monotonie-Regel in
+ * `adParamsSeenMarker`).
+ *
+ * @param {Array<{key?: string | null, value?: string | null}> | null | undefined} attribute
+ * @returns {string | null}
+ */
+function adMarkerAusAttributen(attribute) {
+  for (const eintrag of attribute ?? []) {
+    if (eintrag?.key === 'ad_params_seen') return eintrag.value ?? null;
+  }
+  return null;
 }
