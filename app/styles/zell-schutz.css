@@ -65,7 +65,8 @@
   --a-breite-schmal: 760px;
 }
 
-/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere #856828 zu dunkel
+/* Gold-Tinte ist eine HELLGRUND-Rolle. Auf dunklem Grund waere var(--qb-akzent-tinte)
+   (heute #856828) zu dunkel
    (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt Selektor-Pflege:
    jedes Element in diesen Sektionen erbt die Korrektur automatisch. */
 .lp-b3 .lp-vp-final-cta,

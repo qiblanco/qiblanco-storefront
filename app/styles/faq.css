@@ -69,8 +69,8 @@
   --f-breite-schmal: 760px;
 }
 
-/* Gold-TINTE ist eine Hellgrund-Rolle. Auf dunklem Grund wäre #856828 zu
-   dunkel (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt
+/* Gold-TINTE ist eine Hellgrund-Rolle. Auf dunklem Grund wäre
+   var(--qb-akzent-tinte) (heute #856828) zu dunkel (3.4:1) — dort gilt wieder das helle Gold (7.4:1). Kaskade statt
    Selektor-Pflege, dieselbe Bauart wie in der Benchmark-Datei. */
 .faq-a1 .faq-schluss,
 body:has(.faq-a1) .footer,
@@ -91,7 +91,7 @@ body:has(.faq-a1) footer {
    WARUM ER WIRKUNGSLOS WAR: die konkurrierenden Töne stehen NICHT in
    Custom-Properties, sondern als feste Hex-Werte in den ZAHLUNGSART-LOGOS des
    Footers — #F79E1B (Mastercard, hue 36) und #FBBC04 (Google Pay, hue 45)
-   gegen unseren Akzent #c9a14b (hue 41). Es sind fremde MARKENZEICHEN. Sie
+   gegen unseren Akzent var(--qb-akzent) (heute #c9a14b, hue 41). Es sind fremde MARKENZEICHEN. Sie
    umzufärben wäre kein Design-Fix, sondern eine Verfälschung fremder Logos.
    Der Befund ist damit auf einer Seite mit Footer strukturell nicht
    auflösbar und kein Mangel dieser Seite. */
