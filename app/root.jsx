@@ -22,6 +22,31 @@ import resetStyles from '~/styles/reset.css?url';
 // nichts, und so ist im Head auf einen Blick sichtbar, woher die Zahlen
 // kommen, die weiter unten benutzt werden.
 import overlayOrdnungStyles from '~/styles/overlay-ordnung.css?url';
+// Baukasten qb-tokens (Großjob-Segment s02, PR #573): die gemeinsame
+// Token-Wurzel für Farbe, Typo-Skala, Sektionsabstand und Radius, aus der
+// Startseite gezogen. Anwendungsregel:
+// homepage-bauer/baukasten/qb-tokens/README.md.
+//
+// WARUM GLOBAL UND NICHT JE ROUTE: die Datei deklariert ausschließlich
+// Custom Properties auf :root und überschreibt nichts — eine Seite, die
+// keinen --qb-Token benutzt, sieht davon baulich nichts. Je Route geladen
+// wäre sie dagegen genau der stille Fehler, gegen den sie gebaut ist: ein
+// Token aus einem route-lokalen :root ist auf jeder anderen Route
+// UNDEFINIERT, und `var(--qb-akzent)` fällt dann still in Vererbung
+// zurück. Dasselbe Muster und derselbe Grund wie bei overlay-ordnung.css
+// darüber.
+//
+// UND DER KONKRETE FALL, DER :root VERLANGT: die Seiten-Blöcke
+// `body:has(.ue)` / `body:has(.k)` / `body:has(.st)` (uebersicht.css,
+// konto.css, studien.css) liegen AUSSERHALB ihres eigenen Seiten-Scopes und
+// konnten deshalb bisher nur Literale benutzen — ein seitenlokales
+// var(--ue-akzent) ist dort leer. `--qb-akzent` steht auf :root (= html),
+// und body liegt innerhalb html: erst dadurch sind diese Stellen überhaupt
+// migrierbar.
+//
+// Steht bewusst VOR app.css, damit im Head sichtbar bleibt, woher die Werte
+// kommen, die weiter unten benutzt werden.
+import qbTokensStyles from '~/styles/qb-tokens.css?url';
 import appStyles from '~/styles/app.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 // Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
@@ -483,6 +508,7 @@ export function Layout({children}) {
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={overlayOrdnungStyles}></link>
+        <link rel="stylesheet" href={qbTokensStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>

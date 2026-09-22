@@ -149,7 +149,7 @@
  */
 .eu-gwl--listenpunkt > .eu-gwl__link:hover,
 .eu-gwl--listenpunkt > .eu-gwl__link:focus-visible {
-  color: var(--color-accent-ink, #856828);
+  color: var(--color-accent-ink, var(--qb-akzent-tinte));
   text-decoration: underline;
 }
 
@@ -168,7 +168,7 @@
 
   font: inherit;
   font-weight: 600;
-  color: var(--color-accent-ink, #856828);
+  color: var(--color-accent-ink, var(--qb-akzent-tinte));
   text-align: left;
   text-decoration: none;
   cursor: pointer;
@@ -180,7 +180,7 @@
 }
 
 .eu-gwl__link:focus-visible {
-  outline: 2px solid var(--color-accent-ink, #856828);
+  outline: 2px solid var(--color-accent-ink, var(--qb-akzent-tinte));
   outline-offset: 2px;
 }
 
@@ -285,7 +285,7 @@
 }
 
 .eu-gwl-dialog__zu:focus-visible {
-  outline: 2px solid var(--color-accent-ink, #856828);
+  outline: 2px solid var(--color-accent-ink, var(--qb-akzent-tinte));
   outline-offset: 2px;
 }
 
