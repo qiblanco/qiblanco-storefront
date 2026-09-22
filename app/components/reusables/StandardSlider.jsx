@@ -1,52 +1,52 @@
 /*
- * StandardSlider — die EINE Huelle des Haus-Sliders (Bausatz/Component Library).
+ * StandardSlider — die EINE Hülle des Haus-Sliders (Bausatz/Component Library).
  *
  * ANLASS, Christian am 2026-09-21: „Bei ‚Erholsame Naechte' haben wir auch noch
  * einen Slider. Der gefaellt mir optisch am besten, und das sollte unser
- * Standard sein fuer alle Slider." Und am 2026-09-22 zum Studienblock: „Hier
- * den Standard einfuegen wie bei den Bewertungen."
+ * Standard sein für alle Slider." Und am 2026-09-22 zum Studienblock: „Hier
+ * den Standard einfügen wie bei den Bewertungen."
  *
  * WARUM ES DIESE DATEI GIBT — die Sackgasse, die sie aufloest. Der
- * Registry-Eintrag `qb-standard-slider` haelt seit dem 2026-09-21 fest:
+ * Registry-Eintrag `qb-standard-slider` hält seit dem 2026-09-21 fest:
  * „DER STANDARD IST KEINE KOMPONENTE ZUM IMPORTIEREN, sondern ein Markup- und
  * Bedien-Vertrag … Wer ‚auf den Standard ziehen' als ‚InfoSlider importieren'
- * liest, laeuft in eine Sackgasse." Das stimmte und stimmt fuer
+ * liest, läuft in eine Sackgasse." Das stimmte und stimmt für
  * `index-components/InfoSlider.jsx`: der ist ein INHALTS-Baustein
- * (cardCount = 5 als harte Konstante, fuenf Karten als Literale im JSX, eine
+ * (cardCount = 5 als harte Konstante, fünf Karten als Literale im JSX, eine
  * einzige Prop). Ein Vertrag, den jeder von Hand abschreibt, wird aber genau
  * so oft abgeschrieben, wie er gebraucht wird — GEMESSEN am 2026-09-22 stand
- * das Bedien-Markup DREIMAL unabhaengig im Baum: InfoSlider.jsx,
- * UpsellLineUp.jsx, ReputonWidget.jsx. Der Studienblock waere die vierte
+ * das Bedien-Markup DREIMAL unabhängig im Baum: InfoSlider.jsx,
+ * UpsellLineUp.jsx, ReputonWidget.jsx. Der Studienblock wäre die vierte
  * Abschrift geworden.
  *
- * Deshalb wird aus dem Vertrag hier eine Vorlage: EINE Definition der Buehne
+ * Deshalb wird aus dem Vertrag hier eine Vorlage: EINE Definition der Bühne
  * (`.InfoSlider`), des Fortschrittsbalkens (`.ProgressWrapper`) und der zwei
  * Pfeile (`.SliderButtonWrapper`). Die CSS-Klassen bleiben die des Bestands —
  * sie stehen ungescopt in app/styles/app.css und werden NICHT umbenannt: eine
- * Umbenennung waere ein zweites Klassensystem neben dem, das schon traegt.
+ * Umbenennung wäre ein zweites Klassensystem neben dem, das schon trägt.
  *
  * ZWEI BAUARTEN, weil es im Haus zwei gibt:
  *   variante="transform" (Voreinstellung) — index-basierte Bahn, die per
- *     translateX geschoben wird. Die Buehne maskiert (`overflow: hidden`) und
- *     ueberlaesst dem Hook die waagerechte Geste (`touch-action: pan-y`).
+ *     translateX geschoben wird. Die Bühne maskiert (`overflow: hidden`) und
+ *     überlässt dem Hook die waagerechte Geste (`touch-action: pan-y`).
  *   variante="scroll" — die Bahn scrollt SELBST (`overflow-x: auto` +
- *     scroll-snap). Dafuer setzt der Modifier `.InfoSlider--scroll` genau die
- *     drei Zusagen der Transform-Buehne zurueck, die hier schaden wuerden:
+ *     scroll-snap). Dafür setzt der Modifier `.InfoSlider--scroll` genau die
+ *     drei Zusagen der Transform-Bühne zurück, die hier schaden würden:
  *     `overflow: hidden` (beschnitte Kartenschatten und Snap-Polster),
  *     `touch-action: pan-y` (nimmt der Bahn das Fingerwischen — das ist
  *     GENAU der Mangel, den Christian gemeldet hat) und `user-select: none`
  *     (eine Bahn aus Text und Links darf markierbar bleiben).
  *
- * DIE BEDIENUNG IST ABSCHLIESSEND, NICHT ADDITIV. Wer diese Huelle nimmt,
+ * DIE BEDIENUNG IST ABSCHLIESSEND, NICHT ADDITIV. Wer diese Hülle nimmt,
  * nimmt Fortschrittsbalken UND zwei Pfeile — und legt seine eigenen
  * Bedienelemente AB, statt sie danebenzustellen. Am 2026-09-22 sind am
- * Bewertungsblock zwei Leisten uebereinander entstanden, weil ein fuer sich
+ * Bewertungsblock zwei Leisten uebereinander entstanden, weil ein für sich
  * richtiger Zusatz auf vier schon vorhandene Bedienelemente gesetzt wurde.
  * Der Standard zeigt zwei Bedienelemente; das ist der ganze Unterschied.
  *
- * Die Huelle rendert BEWUSST kein aeusseres Element: der umgebende Block
+ * Die Hülle rendert BEWUSST kein aeusseres Element: der umgebende Block
  * (`.NormalSectionSize`, `.ghx-studien`, …) und sein `data-section`-Anker
- * gehoeren dem Aufrufer und duerfen durch den Umbau keine Ebene wandern.
+ * gehören dem Aufrufer und dürfen durch den Umbau keine Ebene wandern.
  */
 
 /* Die Pfeil-Grafik des Standards. Eine Definition, zwei Knoepfe — die Richtung
@@ -69,8 +69,8 @@ function StandardSliderPfeil() {
  * @param {() => void} [props.onNext]
  * @param {string} [props.prevLabel]               aria-label des linken Knopfs.
  * @param {string} [props.nextLabel]               aria-label des rechten Knopfs.
- * @param {string} [props.buehneKlasse]            Zusatzklassen der Buehne (z. B. 'is-dragging').
- * @param {object} [props.buehneAttribute]         role/aria/Drag-Handler der Buehne.
+ * @param {string} [props.buehneKlasse]            Zusatzklassen der Bühne (z. B. 'is-dragging').
+ * @param {object} [props.buehneAttribute]         role/aria/Drag-Handler der Bühne.
  * @param {string} [props.bahnKlasse]              Klassen der Bahn; Vorgabe 'InfoSliderTrack'.
  * @param {object} [props.bahnRef]
  * @param {object} [props.bahnStil]

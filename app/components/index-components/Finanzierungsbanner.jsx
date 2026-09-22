@@ -66,13 +66,13 @@ export function Finanzierungsbanner({dataSection}) {
                     vom Design her muss es zu anderen Auftreten passen."
 
                     DAS STERNCHEN WAR EIN VERWEIS AUF EINE FUSSNOTE, DIE ES NICHT
-                    GIBT — auf der ganzen Startseite stand kein zugehoeriger
-                    Anmerkungstext. Direkt neben den Zahlungslogos und ueber dem
+                    GIBT — auf der ganzen Startseite stand kein zugehöriger
+                    Anmerkungstext. Direkt neben den Zahlungslogos und über dem
                     Kaufknopf las sich die Zeile dadurch wie ein Rest aus einer
-                    frueheren Fassung, genau dort, wo Vertrauen entstehen soll.
+                    früheren Fassung, genau dort, wo Vertrauen entstehen soll.
 
                     DIE FORM IST KEINE NEUE: `p.micro-text` (reset.css) ist das
-                    bestehende Schrift-Token der Mikro-Vertrauenszeile und traegt
+                    bestehende Schrift-Token der Mikro-Vertrauenszeile und trägt
                     das zweite Auftreten derselben Zusage schon — die Zeile unter
                     dem Kauf-Knopf im HerobannerFeatured („… mit 0 % Finanzierung
                     & Käuferschutz …"), dort ebenfalls mit <strong>. Damit stehen

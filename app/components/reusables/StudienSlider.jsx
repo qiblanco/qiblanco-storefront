@@ -28,7 +28,7 @@ import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
  * ── 2026-08-15, Job 20260814-studien-slider-5-... s03: DATENGETRIEBEN ────────
  * Die vier Studien lagen bis hierher als hartkodiertes Array UNTEN in dieser
  * Datei -- und in vier weiteren Dateien noch einmal. Eine fuenfte Publikation
- * (QiHome® Air, e0005) haette also an fuenf Stellen nachgezogen werden müssen,
+ * (QiHome® Air, e0005) haette also an fünf Stellen nachgezogen werden müssen,
  * jede für sich stimmig, die Naht offen. Seitdem ist `app/data/studien` die
  * EINE Quelle: dieselbe Registry, aus der die Detailseiten und das Schema
  * lesen. Eine neue Studie erscheint damit ueberall zugleich, ohne dass jemand
@@ -48,8 +48,8 @@ import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
  *
  * ── 2026-09-22, Job 20260922-sternchen-faellt-und-studienblock-wird-wischbar ─
  * Christian: „Unten diese 3 Studien mit Knopf haben keine Funktion, dass man
- * mit dem Finger swipen kann. Hier den Standard einfuegen wie bei den
- * Bewertungen." Die Bahn traegt jetzt die geteilte Huelle
+ * mit dem Finger swipen kann. Hier den Standard einfügen wie bei den
+ * Bewertungen." Die Bahn trägt jetzt die geteilte Hülle
  * `reusables/StandardSlider` (variante="scroll") — denselben
  * Fortschrittsbalken und dieselben zwei Pfeile wie der Slider, den Christian
  * am 2026-09-21 zum Standard bestimmt hat.
@@ -57,8 +57,8 @@ import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
  * DIE VIER EIGENEN BEDIENELEMENTE SIND DABEI WEGGEFALLEN, NICHT DAZUGEKOMMEN:
  * die zwei `.ghx-studien__arrow` und der Wischhinweis „weiterwischen →" sind
  * durch den Standard ERSETZT (die native Leiste hatte `.qb-wischbahn` am
- * 2026-09-22 schon abgeraeumt). Am selben Tag sind am Bewertungsblock zwei
- * Leisten uebereinander entstanden, weil ein fuer sich richtiger Zusatz auf
+ * 2026-09-22 schon abgeräumt). Am selben Tag sind am Bewertungsblock zwei
+ * Leisten uebereinander entstanden, weil ein für sich richtiger Zusatz auf
  * vier schon vorhandene Bedienelemente gesetzt wurde — der Standard zeigt
  * zwei, und zwei bleiben es.
  *
@@ -153,7 +153,7 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
   /*
    * Der Fortschrittsbalken des Standards wird hier am ECHTEN Scrollweg
    * gemessen (scrollLeft / (scrollWidth - clientWidth)), nicht an einem
-   * Kartenindex: die Bahn scrollt frei, und ein gezaehlter Index waere nach
+   * Kartenindex: die Bahn scrollt frei, und ein gezählter Index wäre nach
    * dem ersten freien Wisch eine Behauptung statt einer Anzeige. Startwert 0
    * — serverseitig gibt es keine Geometrie, und 0 % ist dort richtig.
    */
