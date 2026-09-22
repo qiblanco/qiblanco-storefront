@@ -1,0 +1,229 @@
+/* ============================================================================
+   qb-tokens.css — die gemeinsame Token-Wurzel (Baukasten, Arm 4)
+   ----------------------------------------------------------------------------
+   Grossjob 20260921-GROSSJOB-ein-bausatz-fuer-die-ganze-seite-standard
+   elemente-statt-einzelanfertigungen, Segment s02. Konzept:
+   homepage-bauer/baukasten/KONZEPT-BAUSATZ.md, Abschnitt 3+4.
+   Anwendungsregel: homepage-bauer/baukasten/qb-tokens/README.md — WER etwas
+   hier aendern will, liest die Regel zuerst.
+
+   WARUM ES DIESE DATEI GIBT
+   Christian, 21.09.2026: "Die Goldtoene mussten heute von Hand angeglichen
+   werden. Das ist der Beleg, dass wir keine gemeinsame Quelle haben. Farbe,
+   Schrift, Abstand und Radius kommen kuenftig aus benannten Werten, die an
+   einer Stelle stehen. DIE STARTSEITE IST DER MASSSTAB, AUS DEM SIE GEZOGEN
+   WERDEN -- nicht ein neuer Entwurf."
+
+   Gemessen im Vorlaeufer-Segment s01 (Konzept, Abschnitt 2.3): 39 CSS-Dateien
+   unter app/styles, davon 25 mit eigenem :root-Block und 601 Custom-Property-
+   Deklarationen unter 494 verschiedenen Namen -- praktisch ein eigener
+   Namensraum je Seite. Nachgemessen bei Anlage dieser Datei (2026-09-22,
+   origin/main 58b7d1b, Kommentare aus dem CSS herausgeloest vor dem Zaehlen --
+   sonst zaehlt ein Satz, der den Wert nur ERWAEHNT, wie eine echte Kopie mit):
+   #c9a14b steht als tatsaechlicher Deklarationswert 43-mal in 25 Dateien
+   (s01 mass 45/19 einen Tag zuvor, am 21.09., vermutlich mit derselben
+   Zaehlweise -- ein eigenes Instrument dafuer ist im Konzept nicht genannt).
+   6 DER 25 DATEIEN SIND NEU GEGENUEBER s01 (u.a. kritik.css, ueber-uns.css,
+   hypothesen.css) -- in der Zwischenzeit sind weitere Seiten mit eigenen
+   Kopien des Goldtons entstanden. Der Befund, dass es keine gemeinsame Quelle
+   gibt, ist also nicht abgeklungen, sondern hat sich seit der Bestandsaufnahme
+   selbst bestaetigt, auch wenn die GESAMTZAHL der Vorkommen leicht gesunken
+   ist. Der A-Stand fuer DIESE Datei und ihre Probe ist deshalb 43/25, nicht
+   die aeltere Zahl aus dem Konzept -- eine genannte Zahl ist eine Hypothese,
+   keine Konstante, und wird bei jeder Wiederverwendung neu erhoben.
+
+   WAS DIESE DATEI IST -- UND WAS NICHT
+   Eine EXTRAKTION, kein Entwurf. Jeder Wert unten ist an mindestens einer
+   Bestandsstelle nachgemessen (Fundstelle im Kommentar), keiner ist neu
+   erfunden. Stand der Technik ist eine Dreiteilung (Material Design 3,
+   Salesforce, W3C Design Tokens CG -- Konzept Abschnitt 3):
+     1. REFERENZ  -- der rohe Wert, steht GENAU EINMAL (Praefix --qb-ref-).
+     2. SEMANTIK  -- die Bedeutung, zeigt per var() auf einen Referenz-Token
+        (Praefix --qb-, ohne weiteres Infix -- das ist die Ebene, die Seiten
+        und Komponenten tatsaechlich benutzen).
+     3. KOMPONENTEN -- der Ort, zeigt per var() auf einen Semantik- oder
+        Referenz-Token (Praefix --qb-komponente-).
+   Die tragende Disziplin ist die RICHTUNG: eine tiefere Ebene greift nie auf
+   einen rohen Literal zu, sondern immer nur auf die Ebene direkt darueber.
+
+   WARUM HIER UND NICHT IN app.css
+   app.css ist 6400+ Zeilen gross, wird ueber root.jsx auf JEDER Route
+   geladen und liegt in der Gate-12-Reichweiten-Achse (jede Aenderung dort
+   loest eine Formatpruefung auf allen importierenden Seiten aus). Segment
+   s04 dieses Grossjobs arbeitet zur selben Zeit in app.css (Studien-Slider) --
+   eine zweite gleichzeitige Aenderung dort waere keine disjunkte Mutation
+   mehr. Diese Datei ist additiv und beruehrt deshalb KEINE bestehende Datei.
+
+   WAS DIESE DATEI AUSDRUECKLICH NICHT TUT (Mutationsgebiet-Grenze des
+   Auftrags, s02)
+   Sie wird NIRGENDS importiert und ersetzt in KEINER Bestandsdatei einen
+   Literal. Das Umstellen der Bestandsdateien auf diese Wurzel -- und damit
+   das Senken des #c9a14b-Zaehlers -- ist ausdruecklich NICHT dieses Segment,
+   sondern der benannte Folgeauftrag (siehe RESULT.md dieses Segments). Diese
+   Datei hat deshalb fuer sich genommen NULL Wirkung auf den gerenderten
+   Kunden-Rand -- das ist gewollt und keine Unterlassung: eine reine
+   Custom-Property-Deklaration ohne Konsumenten aendert kein Pixel.
+
+   HERKUNFT DER WERTE, ZWEIFACH GEGENGEPRUEFT (P10 -- Bestand vor Neubau)
+   (a) app/styles/startseite.css, Block .home (Zeilen 34-56) -- der von
+       Christian benannte Massstab, gemessen am Live-Rezept (design-rubrik
+       78-82/100).
+   (b) design-meister/db/webdesign/web-soll.yaml, Abschnitt tokens.palette +
+       tokens.* -- die bereits bestehende Score-Ziel-SSoT, die dieselben
+       Rollennamen (grund/flaeche/text/muted/akzent, typo_skala_ratio,
+       spacing_grid_px, radius_set_px) schon fuehrt. Deckt sich (a) mit (b),
+       ist der Wert doppelt belegt; weicht (a) von (b) ab, gilt (a) -- der
+       Auftrag sagt ausdruecklich "die Startseite", nicht "web-soll.yaml".
+   Fast alle unten gezogenen Werte decken sich EXAKT zwischen (a) und (b) --
+   das ist selbst ein Beleg dafuer, dass ein gemeinsamer Standard bereits
+   FAKTISCH existiert, nur nirgends als CSS geschrieben stand.
+   ========================================================================== */
+
+:root {
+  /* ---- TIER 1 -- REFERENZ: der rohe Wert, GENAU EINMAL ------------------ */
+
+  /* Typo-Skala -- app/styles/startseite.css:36-42 (.home --st-fs-1..8),
+     7 Stufen, Verhaeltnisse 1,11-1,33. Deckungsgleich mit design-meister
+     web-soll.yaml tokens.typo_stufen_max=9 (Startseite nutzt 7 der 9
+     erlaubten Stufen) und tokens.body_px_min=16 (Stufe 3 trifft ihn genau). */
+  --qb-ref-fs-1: 12px;
+  --qb-ref-fs-2: 14px;
+  --qb-ref-fs-3: 16px;
+  --qb-ref-fs-4: 18px;
+  --qb-ref-fs-5: 20px;
+  --qb-ref-fs-6: 24px;
+  --qb-ref-fs-8: 32px;
+
+  /* Sektions-Takt -- app/styles/startseite.css:45-47 (--st-sec-lg/md/sm),
+     alle auf dem 8px-Grid. Deckungsgleich mit web-soll.yaml
+     tokens.sektions_takt_px: [96, 64] (dort fehlt die dritte, kleinste Stufe
+     32 -- die Startseite braucht sie fuer logo-bar/chip-cta und ist hier der
+     Massstab, deshalb bleibt sie drin). */
+  --qb-ref-raster: 8px;
+  --qb-ref-sektion-lg: 96px;
+  --qb-ref-sektion-md: 64px;
+  --qb-ref-sektion-sm: 32px;
+
+  /* Farbe -- warmes Neutral-Kontinuum, app/styles/startseite.css:50-52
+     (--st-text/--st-muted/--st-flaeche). Deckungsgleich mit web-soll.yaml
+     tokens.palette.text/muted/flaeche UND mit app/styles/app.css:19
+     (--color-on-accent: #2c2a26 -- derselbe Wert wie --st-text, nur fuer
+     eine andere Rolle benannt) und app/styles/erfahrungen.css:35/37
+     (--erf-text/--erf-muted, identisch). Vier unabhaengige Stellen, ein Wert
+     -- das ist der Beleg, dass dieser Ton schon De-facto-Standard ist. */
+  --qb-ref-tinte: #2c2a26;
+  --qb-ref-tinte-gedaempft: #6b665d;
+  --qb-ref-flaeche-warm: #f8f4ee;
+
+  /* Radius -- app/styles/startseite.css:54+56 (--st-radius/--st-bild-radius).
+     --qb-ref-radius-bild deckt sich mit dem globalen Hauswert
+     app/styles/app.css:93 (img{border-radius:4px}) -- kein zweiter,
+     konkurrierender Radius-Token neben dem Bestand (Regel 9 der
+     Startseiten-Datei). */
+  --qb-ref-radius-klein: 8px;
+  --qb-ref-radius-bild: 4px;
+
+  /* Gold-Akzent -- NICHT im .home-Block der Startseite selbst deklariert
+     (die Startseite fasst den Kauf-Button-Goldton bewusst nicht an, siehe
+     Kopf von startseite.css), aber Teil dessen, was auf der ausgelieferten
+     Startseite RENDERT: der Studien-Slider-Block (data-section=
+     'peer-review-studien', in startseite.css Regel 7 als Sektion mit
+     --st-sec-lg gefuehrt) zieht in app/styles/app.css:5713-5735
+     ausschliesslich `var(--a-akzent, #c9a14b)` -- also den LP-Goldton als
+     hartkodierten FALLBACK, weil auf der Startseite nirgends ein
+     `--a-akzent` deklariert ist. Genau DAS ist der gemessene Beleg fuer
+     Christians Satz: der Wert kommt heute nicht aus einer benannten Quelle,
+     sondern aus einem Notanker, der nur zufaellig richtig liegt.
+     Deckungsgleich mit web-soll.yaml tokens.palette.akzent (Kommentar dort:
+     "GL-DES-0001 Gold -- NUR auf Handlung") und mit GL-DES-0001 selbst
+     (marke.gold, tokens.json). */
+  --qb-ref-gold: #c9a14b;
+  /* Gold als SCHRIFT auf hellem Grund (gleicher Hue, abgedunkelt -- KEIN
+     zweiter Goldton). Deckungsgleich mit app/styles/app.css:19
+     (--color-accent-ink) UND app/styles/erfahrungen.css:41
+     (--erf-akzent-tinte) -- beide exakt derselbe Wert, unabhaengig benannt.
+     WEICHT AB von design-meister/guidelines/design/tokens.json
+     (marke.gold-dunkel = #B8893A) -- das ist eine gemessene, nicht
+     aufgeloeste Abweichung zwischen der Storefront-Praxis und der
+     GL-DES-0001-Markenreferenz fuer reel/ads/thumbnail. Wird hier
+     dokumentiert, nicht entschieden (Markendesign = Christian-Governance,
+     GL-DES-0001 aenderung_governance). */
+  --qb-ref-gold-tinte: #856828;
+
+  /* Neutrale Bahn-Flaeche des Fortschrittsbalkens -- app/styles/app.css:2789
+     (.ProgressWrapper, Bestandteil des qb-standard-slider aus Segment s03).
+     Von s03 ausdruecklich als offene Stelle an s02 benannt (baukasten/
+     qb-standard-slider/README.md, Abschnitt 7 Punkt 6): "der einzige
+     ungebundene Wert im Anzeige-CSS". Kein Bezug zu Tinte oder Gold -- ein
+     eigenstaendiger neutraler Schattenwert, deshalb eigene Referenz statt
+     einer erzwungenen Ableitung. */
+  --qb-ref-bahn-schatten: rgba(0, 0, 0, 0.2);
+
+  /* ---- TIER 2 -- SEMANTIK: die Bedeutung, zeigt auf Tier 1 --------------- */
+
+  --qb-text: var(--qb-ref-tinte);
+  --qb-text-gedaempft: var(--qb-ref-tinte-gedaempft);
+  --qb-flaeche: var(--qb-ref-flaeche-warm);
+
+  --qb-radius-klein: var(--qb-ref-radius-klein);
+  --qb-radius-bild: var(--qb-ref-radius-bild);
+
+  /* Akzent-Rollen -- GL-DES-0001: "NUR auf Handlung/Beweis", nie
+     dekorativ (Regel 5 in startseite.css setzt genau das fuer die
+     Startseite bereits durch). */
+  --qb-akzent: var(--qb-ref-gold);
+  --qb-akzent-tinte: var(--qb-ref-gold-tinte);
+  /* Schrift AUF einer Gold-Flaeche -- derselbe Wert wie --qb-text, hier
+     unter eigenem semantischen Namen, weil die Rolle eine andere ist
+     (vgl. app/styles/app.css:20 --color-on-accent, exakt derselbe Wert). */
+  --qb-text-auf-akzent: var(--qb-ref-tinte);
+
+  /* Typo-Rollen -- die Zuordnung, die startseite.css bereits lebt
+     (h2->fs-8 Desktop, h3->fs-6, Primaer-Button->fs-4,
+     Sekundaer-Button->fs-3). Als Semantik-Token benannt, damit ein
+     kuenftiger Einbau die ROLLE waehlt statt eine Zahl abzutippen. */
+  --qb-text-h2: var(--qb-ref-fs-8);
+  --qb-text-h2-mobil: var(--qb-ref-fs-6);
+  --qb-text-h3: var(--qb-ref-fs-6);
+  --qb-text-h3-mobil: var(--qb-ref-fs-5);
+  --qb-text-btn-primaer: var(--qb-ref-fs-4);
+  --qb-text-btn-sekundaer: var(--qb-ref-fs-3);
+
+  /* Abstands-Rollen -- die drei Sektionsstufen der Startseite. */
+  --qb-abstand-sektion-gross: var(--qb-ref-sektion-lg);
+  --qb-abstand-sektion-mittel: var(--qb-ref-sektion-md);
+  --qb-abstand-sektion-klein: var(--qb-ref-sektion-sm);
+
+  /* ---- TIER 3 -- KOMPONENTEN: der Ort, zeigt auf Tier 2 oder Tier 1 ------ */
+
+  /* qb-standard-slider (Segment s03/baukasten/qb-standard-slider) --
+     die Bahn des Fortschrittsbalkens. Direkt auf die Referenz gesetzt,
+     weil der Wert ausserhalb dieser einen Komponente keine Bedeutung
+     traegt -- eine erzwungene Semantik-Zwischenstufe waere hier Erfindung,
+     keine Extraktion. */
+  --qb-komponente-slider-bahn-hintergrund: var(--qb-ref-bahn-schatten);
+}
+
+/* ============================================================================
+   WAS DIESE DATEI NICHT ENTSCHEIDET (Konzept Abschnitt 7, hier fortgefuehrt)
+
+   - OB `--a-akzent` (drei widerspruechliche lokale Definitionen: esmog-
+     schutz.css/zell-schutz.css/schlaf-zellen-schutz.css setzen #c9a14b,
+     schlaf-zellen-schutz-seite.css:199 setzt STATTDESSEN rgb(242, 191, 114)
+     -- also den SHOP-Kauf-Goldton unter demselben Variablennamen) auf
+     --qb-akzent umgestellt wird. Das ist der konkrete, live gemessene Beleg
+     fuer Christians "von Hand angeglichen" und gehoert in den Folgeauftrag.
+   - WELCHER der zwei Golde (#c9a14b LP-Gold vs. rgb(242,191,114)/#F2BF72
+     Shop-CTA-Gold) auf welcher Flaeche gilt. Beide sind heute in Gebrauch,
+     beide sind hier als eigenstaendige Werte behandelt (--qb-ref-gold zieht
+     ausschliesslich das LP-Gold; der Shop-Kauf-Goldton bleibt unangetastet
+     unter --color-accent-primary in app.css). Eine Vereinheitlichung ist
+     eine Marken-/Kaufweg-Entscheidung, keine Extraktion.
+   - OB die design-meister-Rolle "dunkel" (web-soll.yaml: #1a1a1a,
+     GL-DES-0001 marke.anthrazit) eine eigene Referenz braucht. Sie steht in
+     KEINEM :root-Block der Startseite und wird deshalb hier nicht gezogen
+     -- "Startseite ist der Massstab" heisst auch: was dort fehlt, wird
+     nicht ergaenzt.
+   - WELCHE Bestandsdatei zuerst migriert wird. Das ist der Folgeauftrag,
+     benannt im RESULT.md dieses Segments.
+   ========================================================================== */
