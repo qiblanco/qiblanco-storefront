@@ -59,7 +59,7 @@
   --ue-text-hell: #f4f0e9;
   --ue-muted: #6b665d;
   --ue-muted-hell: rgba(244, 240, 233, 0.72);
-  --ue-akzent: #c9a14b;             /* GL-DES-0001 Gold — NUR Handlung/Beweis */
+  --ue-akzent: var(--qb-akzent);             /* GL-DES-0001 Gold — NUR Handlung/Beweis */
   --ue-linie: rgba(44, 42, 38, 0.12);
   --ue-linie-hell: rgba(244, 240, 233, 0.2);
 
@@ -326,14 +326,27 @@
    (schlaf-zellen-schutz.css): ein body:has()-Layer, der nur greift, solange
    diese Seite im Dokument steht. Keine Bestandsdatei wird angefasst.
 
-   WARUM HIER LITERALE STATT var(): `body` liegt AUSSERHALB von .ue, die Tokens
-   sind dort nicht vererbt — ein var(--ue-akzent) wäre hier leer und die Regel
-   still wirkungslos (dieselbe Klasse stiller Fehler wie F-009). Die Werte sind
-   identisch mit dem Token-Block oben; es sind keine freien Werte. */
+   WARUM HIER var(--qb-akzent) STEHT UND NICHT var(--ue-akzent): der Unterschied
+   ist :root gegen .ue — nicht Token gegen Literal.
+   Bis zum 22.09.2026 standen hier Literale, begründet mit genau diesem Satz:
+   „`body` liegt AUSSERHALB von .ue, die Tokens sind dort nicht vererbt — ein
+   var(--ue-akzent) wäre hier leer und die Regel still wirkungslos (dieselbe
+   Klasse stiller Fehler wie F-009)." Dieser Satz ist RICHTIG und gilt für die
+   --ue-*-Tokens unverändert weiter: sie sind auf `.ue` deklariert, und `body`
+   ist kein Nachfahre von `.ue`.
+   Er trägt aber nicht mehr, seit --qb-akzent existiert: das Token ist in
+   app/styles/qb-tokens.css auf :root deklariert und wird global über
+   app/root.jsx geladen. :root IST `html`, und `body` liegt darin — hier ist das
+   Token also vererbt, und var(--qb-akzent) löst zu demselben #c9a14b auf, das
+   vorher ausgeschrieben stand (--qb-akzent -> --qb-ref-gold -> #c9a14b).
+   WER DAS ZURÜCKBAUT, holt die Kopie des Goldtons zurück, die diese Migration
+   entfernt hat. Die Prüffrage ist nie „Token oder Literal", sondern: ist das
+   Token an DIESEM Selektor vererbt? Für --ue-* lautet die Antwort nein, für
+   --qb-* ja. */
 body:has(.ue) {
   background: #faf9f5;
-  --color-accent-primary: #c9a14b;
-  --rd3-gold: #c9a14b;
+  --color-accent-primary: var(--qb-akzent);
+  --rd3-gold: var(--qb-akzent);
 }
 body:has(.ue) .footer,
 body:has(.ue) footer {
@@ -354,7 +367,7 @@ body:has(.ue) .footer .footer-heading { font-size: 1.125rem; }
 body:has(.ue) .footer .btn--primary,
 body:has(.ue) .footer button[type='submit'],
 body:has(.ue) .footer input[type='submit'] {
-  background: #c9a14b;
+  background: var(--qb-akzent);
   color: #2c2a26;  /* Gold ist FLAECHE, Schrift darauf dunkel (weiss war 2.42:1) */
   border-radius: 8px;
   font-size: 1rem;
@@ -380,7 +393,7 @@ body:has(.ue) #qi-newsletter input[type='submit'],
 body:has(.ue) ._form_15 button,
 body:has(.ue) ._form_15 ._submit,
 body:has(.ue) ._form_15 input[type='submit'] {
-  background: #c9a14b !important;
+  background: var(--qb-akzent) !important;
   color: #2c2a26 !important;  /* weiss auf Gold war 2.42:1 */
   border-radius: 8px !important;
   font-family: 'Open Sans Variable', 'Open Sans', sans-serif !important;
