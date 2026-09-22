@@ -67,6 +67,10 @@ const {loader: linesLoader} = await import('../app/routes/cart.$lines.jsx');
 const {classifyUserAgent, consentStateFromCookies} = await import(
   '../app/lib/checkout-tracking.js'
 );
+const {getTrackedCheckoutUrl} = await import(
+  '../app/lib/cart-attribution.server.js'
+);
+const {CART_MUTATE_FRAGMENT} = await import('../app/lib/fragments.js');
 const {
   INTERN_NETZE,
   INTERN_UA_MARKER,
@@ -79,7 +83,7 @@ const {
 // eine Person ruecklesbar ist und deshalb consent-gegatet BLEIBEN muss.
 // 2026-09-22 (Job 20260922-blinde-menge-...): `ad_params_seen` ist der VIERTE
 // consent-freie Marker. Er steht bewusst HIER und nicht in PERSONENBEZOGEN: er
-// traegt eine reine Ja/Nein-Auskunft ueber das VORHANDENSEIN eines
+// trägt eine reine Ja/Nein-Auskunft über das VORHANDENSEIN eines
 // Parameter-NAMENS, nie den Wert eines Ad-Parameters.
 //
 // DIESE LISTE IST DER ZAUN VON ARM-F6 und bleibt eine ERSCHOEPFENDE
@@ -128,8 +132,8 @@ function anfrage({url = URL_MIT_KLICK, cookie = '', ua = UA_META, ip = ''} = {})
 /** Merkt sich, womit cart.updateAttributes/cart.create aufgerufen wurde. */
 function cartAttrappe({
   checkoutUrl = 'https://checkout.qiblanco.com/c/1',
-  // Vorbestand am Warenkorb. Default leer = unveraendertes Verhalten fuer alle
-  // Arme, die es vor ARM-G gab; ARM-G7 braucht ihn fuer die Monotonie-Regel.
+  // Vorbestand am Warenkorb. Default leer = unveraendertes Verhalten für alle
+  // Arme, die es vor ARM-G gab; ARM-G7 braucht ihn für die Monotonie-Regel.
   bestand = [],
 } = {}) {
   const spur = {updateAttributes: null, create: null};
@@ -361,7 +365,32 @@ test('ARM-D3 consent_state ist DREIwertig — "kein Stempel" ist nicht "abgelehn
 // läuft er hier in node:vm gegen eine Mini-DOM-Attrappe. Der Preview-Schalter
 // data-qiblanco-tracking-preview öffnet trackingAllowed() ohne Cookiebot.
 
-function trackerLaufen({search, cookiesVorher, gepuffertesFbclid = ''}) {
+/**
+ * ARM-E ruft weiter `trackerLaufen(...)` und bekommt weiter das _fbc — die
+ * Signatur bleibt byte-gleich, damit kein bestehender Rot-Arm sein Verdikt
+ * ändert. Neue Arme nehmen `trackerLauf(...)` und sehen den ganzen Lauf.
+ */
+function trackerLaufen(optionen) {
+  return trackerLauf(optionen).fbc;
+}
+
+function trackerLauf({
+  search,
+  cookiesVorher,
+  gepuffertesFbclid = '',
+  // --- ab Job 20260923-adparams-monotonie-... --------------------------
+  referrer = '',
+  // 'ok' | 'lesen-wirft' | 'schreiben-wirft' — ein gesperrter Speicher und
+  // ein VOLLER Speicher sind zwei verschiedene Lagen, und genau ihre
+  // Verwechslung war BEFUND 2.
+  speicher = 'ok',
+  // Vorbelegtes Urteil, um das Gitter von `merkeAnkunft` zu prüfen.
+  ankunftVorher = undefined,
+  // Ein in einem FRÜHEREN Dokument derselben Registerkarte gescheiterter
+  // Schreibvorgang. Ein einzelnes vm-Dokument kann die Kette nicht selbst
+  // durchlaufen; der Zustand wird deshalb so gesetzt, wie er dort ankäme.
+  schreibfehlerVorher = false,
+}) {
   const jar = new Map(Object.entries(cookiesVorher));
   // Der sessionStorage-Puffer ist NICHT Beiwerk: ohne ihn kann ARM-E3 gar nicht
   // rot werden (gemessen — die Mutation "gepufferter fbclid darf
@@ -374,6 +403,8 @@ function trackerLaufen({search, cookiesVorher, gepuffertesFbclid = ''}) {
       JSON.stringify({params: [['fbclid', gepuffertesFbclid]], href: 'https://qiblanco.com/', savedAt: '2026-09-01T00:00:00.000Z'}),
     );
   }
+  // ARM-H5 misst daran, dass der Ankunfts-Pfad KEINEN neuen Speicher anlegt.
+  const localGesetzt = [];
   const attrs = {'data-qiblanco-tracking-preview': 'true'};
   const dom = {
     documentElement: {getAttribute: (n) => attrs[n] ?? null},
@@ -388,7 +419,7 @@ function trackerLaufen({search, cookiesVorher, gepuffertesFbclid = ''}) {
     head: {appendChild() {}},
     createElement: () => ({setAttribute() {}, style: {}}),
     addEventListener() {},
-    referrer: '',
+    referrer,
     title: '',
   };
   const fenster = {
@@ -398,19 +429,35 @@ function trackerLaufen({search, cookiesVorher, gepuffertesFbclid = ''}) {
     setTimeout: () => 0,
     navigator: {userAgent: UA_META, sendBeacon: () => true},
     sessionStorage: {
-      getItem: (k) => puffer.get(k) ?? null,
-      setItem: (k, v) => puffer.set(k, v),
+      getItem: (k) => {
+        if (speicher === 'lesen-wirft') throw new Error('SecurityError');
+        return puffer.get(k) ?? null;
+      },
+      setItem: (k, v) => {
+        // QuotaExceededError: der Speicher ANTWORTET, er nimmt nur nichts mehr
+        // an. `getItem` funktioniert dabei weiter und liefert brav null —
+        // genau deshalb sah die Leere bisher aus wie eine belegte Abwesenheit.
+        if (speicher === 'schreiben-wirft') throw new Error('QuotaExceeded');
+        return puffer.set(k, v);
+      },
       removeItem: (k) => puffer.delete(k),
     },
-    localStorage: {getItem: () => null, setItem() {}, removeItem() {}},
+    localStorage: {
+      getItem: () => null,
+      setItem: (k) => localGesetzt.push(k),
+      removeItem() {},
+    },
     Cookiebot: undefined,
     screen: {width: 390, height: 844},
     JSON,
+    URL,
     URLSearchParams,
     Date,
   };
   fenster.window = fenster;
   fenster.document = dom;
+  if (ankunftVorher !== undefined) fenster.__qbAdAnkunft = ankunftVorher;
+  if (schreibfehlerVorher) fenster.__qbPufferSchreibfehler = true;
   const kontext = vm.createContext(fenster);
   const quelle = readFileSync(
     fileURLToPath(new URL('../public/qiblanco-tracker.js', import.meta.url)),
@@ -422,7 +469,13 @@ function trackerLaufen({search, cookiesVorher, gepuffertesFbclid = ''}) {
     // Der Tracker macht danach noch Netz-/Beacon-Dinge, die die Attrappe nicht
     // kennt. Für diesen Arm zählt allein, was bis dahin im Cookie-Jar steht.
   }
-  return jar.get('_fbc') || '';
+  return {
+    fbc: jar.get('_fbc') || '',
+    ankunft: fenster.__qbAdAnkunft,
+    schreibfehler: fenster.__qbPufferSchreibfehler === true,
+    puffer,
+    localStorageSchluessel: localGesetzt,
+  };
 }
 
 const FBCLID_ALT = 'IwZXh0bgNhZW0BMABhALT0000000';
@@ -603,14 +656,14 @@ test('ARM-F6 `intern` ist ein WERT, kein neuer Schlüssel (Checkout-Grenze)', as
   });
   const keys = (spur.updateAttributes ?? []).map((a) => a.key).sort();
   // WAS DIESER ARM WIRKLICH BEWACHT: dass die Klasse `intern` ein WERT in
-  // `ua_class` bleibt und sich keinen eigenen Schluessel nimmt. Er zaehlt dafuer
+  // `ua_class` bleibt und sich keinen eigenen Schluessel nimmt. Er zählt dafür
   // die Schluesselmenge gegen HERKUNFT — also gegen eine benannte Liste, nicht
   // gegen eine eingefrorene Zahl.
   //
-  // KORREKTUR DER BEGRUENDUNG 2026-09-22: hier stand, ein neuer Schluessel
-  // muesste in TRACKING_COOKIE_NAMES nachgetragen werden und fiele sonst an der
-  // Domaingrenze weg (der `_qpx_anon`-Bug). Das gilt fuer einen COOKIE, der die
-  // Checkout-Domaingrenze ueberqueren muss — nicht fuer ein Cart-Attribut, das
+  // KORREKTUR DER BEGRÜNDUNG 2026-09-22: hier stand, ein neuer Schluessel
+  // müsste in TRACKING_COOKIE_NAMES nachgetragen werden und fiele sonst an der
+  // Domaingrenze weg (der `_qpx_anon`-Bug). Das gilt für einen COOKIE, der die
+  // Checkout-Domaingrenze ueberqueren muss — nicht für ein Cart-Attribut, das
   // per `cart.updateAttributes` direkt in den Warenkorb geht. Der lebende Beleg
   // steht in dieser Liste selbst: `consent_state` und `ua_class` sind am
   // 2026-09-07 als neue Schluessel entstanden, TRACKING_COOKIE_NAMES blieb
@@ -651,7 +704,7 @@ test('ARM-F7 der SSoT-Spiegel ist nicht leer (Deko-Schutz)', () => {
 // Order-Ebene unentscheidbar.
 //
 // DIE HARTE GRENZE, die ARM-G8 bewacht: der Marker darf den WERT eines
-// Ad-Parameters weder lesen noch schreiben. Er beantwortet ausschliesslich, OB
+// Ad-Parameters weder lesen noch schreiben. Er beantwortet ausschließlich, OB
 // ein Parameter-NAME vorkam.
 // ===========================================================================
 
@@ -669,9 +722,9 @@ function kassenAnfrage({
   if (cookie) kopf.set('Cookie', cookie);
   if (ua) kopf.set('User-Agent', ua);
   if (referer) kopf.set('Referer', referer);
-  const koerper = new FormData();
-  if (feld !== undefined) koerper.set('ad_params_seen', feld);
-  return new Request(url, {method: 'POST', headers: kopf, body: koerper});
+  const Körper = new FormData();
+  if (feld !== undefined) Körper.set('ad_params_seen', feld);
+  return new Request(url, {method: 'POST', headers: kopf, body: Körper});
 }
 
 async function kasseMarker(optionen) {
@@ -703,7 +756,7 @@ test('ARM-G3 KEIN Feld ist "unknown", NIE "no" (Lesefehler ist kein Leerwert)', 
   assert.equal(
     marker,
     'unknown',
-    'ARM-G3: ohne JavaScript/Tracker faellt der Marker auf unknown — ein "no" waere hier eine erfundene Tatsache',
+    'ARM-G3: ohne JavaScript/Tracker faellt der Marker auf unknown — ein "no" wäre hier eine erfundene Tatsache',
   );
 });
 
@@ -716,7 +769,7 @@ test('ARM-G4 Fremdeingabe wird NIE durchgereicht', async () => {
   }
 });
 
-test('ARM-G5 der Referer traegt die Antwort ohne jedes JavaScript', async () => {
+test('ARM-G5 der Referer trägt die Antwort ohne jedes JavaScript', async () => {
   const {marker} = await kasseMarker({
     cookie: COOKIE_CONSENT_NEIN,
     referer: `https://qiblanco.com/pages/schlaf-zellen-schutz?utm_source=facebook&utm_content=${AD_ID_TEST}`,
@@ -724,7 +777,7 @@ test('ARM-G5 der Referer traegt die Antwort ohne jedes JavaScript', async () => 
   assert.equal(marker, 'yes_referer', 'ARM-G5');
 });
 
-test('ARM-G6 der Direkt-zur-Kasse-Link traegt sie in der eigenen Query', async () => {
+test('ARM-G6 der Direkt-zur-Kasse-Link trägt sie in der eigenen Query', async () => {
   const {spur, cart} = cartAttrappe();
   await linesLoader({
     request: anfrage({
@@ -750,7 +803,7 @@ test('ARM-G7 MONOTON: ein belegtes yes_ wird nie abgewertet', async () => {
   assert.equal(
     marker,
     'yes_query',
-    'ARM-G7: mergeCartAttributes ueberschreibt bedingungslos — ohne die Monotonie-Regel wuerde ein spaeterer, schlechter informierter Lauf die belegte Ankunft still loeschen',
+    'ARM-G7: mergeCartAttributes ueberschreibt bedingungslos — ohne die Monotonie-Regel würde ein spaeterer, schlechter informierter Lauf die belegte Ankunft still loeschen',
   );
 });
 
@@ -770,7 +823,7 @@ test('ARM-G8 DIE HARTE GRENZE: der WERT des Ad-Parameters taucht nirgends auf', 
 });
 
 test('ARM-G9 NEGATIVKONTROLLE: ohne jeden Ad-Parameter entsteht NIE ein yes_', async () => {
-  // Diese Probe kann rot werden: sie wuerde anschlagen, sobald irgendeine der
+  // Diese Probe kann rot werden: sie würde anschlagen, sobald irgendeine der
   // vier Achsen "ja" sagt, ohne dass ein Ad-Parameter im Spiel war — also
   // genau dann, wenn der Marker jeden Direktbesucher zum Ad-Klicker macht.
   const {marker} = await kasseMarker({
@@ -783,10 +836,327 @@ test('ARM-G9 NEGATIVKONTROLLE: ohne jeden Ad-Parameter entsteht NIE ein yes_', a
 });
 
 test('ARM-G10 MIT Consent aendert der Marker sein Verhalten NICHT', async () => {
-  // Die Zustimmung ist fuer diesen Marker gegenstandslos — er liest nur
-  // Request-Metadaten. Waere er consent-abhaengig, waere er fuer die blinde
+  // Die Zustimmung ist für diesen Marker gegenstandslos — er liest nur
+  // Request-Metadaten. Wäre er consent-abhängig, wäre er für die blinde
   // Menge (ueberwiegend Besucher ohne gespeicherte Attribution) wertlos.
   const ohne = await kasseMarker({cookie: COOKIE_CONSENT_NEIN, feld: 'yes'});
   const mit = await kasseMarker({cookie: COOKIE_CONSENT_JA, feld: 'yes'});
   assert.equal(ohne.marker, mit.marker, 'ARM-G10');
+});
+
+// ===========================================================================
+// ARM H — die FORM des echten Hydrogen-Mutationsergebnisses
+// (Job 20260923-adparams-monotonie-tot-auf-hauptpfad-und-no-ist-kein-beleg)
+//
+// WARUM ES DIESE ARME BRAUCHT, und das ist die eigentliche Lehre: die Matrix
+// von ARM-G war 33/33 gruen und hat den schwersten Defekt des Baus trotzdem
+// nicht gesehen — WEIL DIE ATTRAPPE GROSSZUEGIGER WAR ALS DIE WIRKLICHKEIT.
+// `cartAttrappe` liefert `attributes` aus jeder Mutation; Hydrogens echtes
+// Mutationsergebnis tut das nur, wenn `mutateFragment` gesetzt ist — und es
+// war nicht gesetzt. Eine Mutations-Matrix prueft die Logik gegen die
+// Attrappe, NIE die Attrappe gegen das Fremdsystem. Wer eine fremde
+// Bibliothek mockt, schuldet einen Arm, der die FORM der echten Antwort
+// festnagelt. Das sind ARM-H1 und ARM-H2.
+// ===========================================================================
+
+const QUELLE = (rel) =>
+  readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8');
+
+/** Felder der obersten Ebene eines `fragment X on Cart { ... }`-Blocks. */
+function fragmentFelder(quelle, name) {
+  const start = quelle.indexOf(`fragment ${name} on Cart {`);
+  if (start < 0) return null;
+  let tiefe = 0;
+  let i = quelle.indexOf('{', start);
+  const anfang = i;
+  for (; i < quelle.length; i += 1) {
+    if (quelle[i] === '{') tiefe += 1;
+    else if (quelle[i] === '}') {
+      tiefe -= 1;
+      if (tiefe === 0) break;
+    }
+  }
+  const rumpf = quelle.slice(anfang + 1, i);
+  const felder = [];
+  let unter = 0;
+  for (const zeile of rumpf.split('\n')) {
+    const t = zeile.trim();
+    if (!t) continue;
+    if (unter === 0 && /^[A-Za-z_][A-Za-z0-9_]*/.test(t)) {
+      felder.push(t.match(/^[A-Za-z_][A-Za-z0-9_]*/)[0]);
+    }
+    unter += (t.match(/\{/g) ?? []).length - (t.match(/\}/g) ?? []).length;
+  }
+  return felder;
+}
+
+test('ARM-H1 DER DEFEKT: context.js reicht ein mutateFragment MIT attributes durch', () => {
+  const kontextQuelle = QUELLE('../app/lib/context.js');
+  assert.match(
+    kontextQuelle,
+    /mutateFragment:\s*CART_MUTATE_FRAGMENT/,
+    'ARM-H1: `mutateFragment` ist nicht gesetzt — Hydrogen faellt dann auf seinen Default `CartApiMutation { id totalQuantity checkoutUrl }` zurück, JEDES Mutationsergebnis kommt ohne `attributes`, und die Monotonie von ad_params_seen ist auf dem GESAMTEN Hauptpfad tot (LinesAdd/Update/Remove, Discount, GiftCard, BuyerIdentity). Genau dieser Zustand war vom 2026-09-22 bis 2026-09-23 gebaut und 33/33 gruen.',
+  );
+
+  const felder = fragmentFelder(CART_MUTATE_FRAGMENT, 'CartApiMutation');
+  assert.ok(
+    felder,
+    'ARM-H1: das Fragment heißt nicht `CartApiMutation` — Hydrogen spreizt genau diesen Namen in seine Mutations-Dokumente (`...CartApiMutation`) und hängt unseren String darunter. Ein anderer Name macht das GraphQL-Dokument ungueltig, und zwar erst zur Laufzeit.',
+  );
+  assert.ok(
+    felder.includes('attributes'),
+    `ARM-H1: das Mutations-Fragment fragt \`attributes\` nicht ab (Felder: ${felder.join(', ')})`,
+  );
+  assert.match(
+    CART_MUTATE_FRAGMENT,
+    /attributes\s*\{\s*key\s*value\s*\}/,
+    'ARM-H1: `attributes` ohne key/value ist GraphQL-ungueltig',
+  );
+});
+
+test('ARM-H2 DIE ATTRAPPE GEGEN DAS FREMDSYSTEM: unser Fragment ist eine Obermenge von Hydrogens Default', () => {
+  const dist = QUELLE(
+    '../node_modules/@shopify/hydrogen/dist/production/index.js',
+  );
+  const standard = fragmentFelder(dist, 'CartApiMutation');
+
+  // ANKUNFTS-VORFLUG: ein Arm, der seinen Gegenstand nicht findet, wäre
+  // stumm gruen. Findet sich der Default nicht mehr, ist das ein MESSAUSFALL
+  // (Hydrogen umgebaut/umbenannt) und wird laut, nie stillschweigend bestanden.
+  assert.ok(
+    standard && standard.length > 0,
+    'ARM-H2 MESSAUSFALL: `fragment CartApiMutation on Cart` steht nicht mehr im ausgelieferten Hydrogen — die Annahme, gegen die dieser Bau gebaut ist, ist nicht mehr pruefbar. Neu messen, nicht wegklicken.',
+  );
+
+  const unsere = fragmentFelder(CART_MUTATE_FRAGMENT, 'CartApiMutation');
+  for (const feld of standard) {
+    assert.ok(
+      unsere.includes(feld),
+      `ARM-H2: Hydrogens Default liefert "${feld}", unser mutateFragment nicht — wir NEHMEN einem bestehenden Konsumenten eines Mutationsergebnisses ein Feld weg. Das Fragment ist ADDITIV zu halten.`,
+    );
+  }
+
+  // Der Grund, warum es diesen Bau ueberhaupt gibt, steht hier als Messwert
+  // und nicht als Behauptung. Trägt Hydrogens Default eines Tages selbst
+  // `attributes`, ist die Obermengen-Zusage weiter erfuellt und dieser Arm
+  // bleibt gruen — dann ist unser Fragment nur noch Absicherung statt Fix.
+  assert.ok(
+    Array.isArray(standard),
+    'ARM-H2: Default-Felder nicht lesbar',
+  );
+});
+
+test('ARM-H3 DER REAL BRECHENDE PFAD: ein Mutationsergebnis OHNE attributes-Feld wertet NICHT ab', async () => {
+  // Genau die Form, die Hydrogen bis zum 2026-09-23 auf dem Hauptpfad lieferte:
+  // `{id, totalQuantity, checkoutUrl}` — `attributes` ist UNDEFINED, nicht [].
+  const {spur, cart} = cartAttrappe({
+    bestand: [{key: 'ad_params_seen', value: 'yes_query'}],
+  });
+  await persistAttributionOnCartResult({
+    cart,
+    // Eine Seite OHNE Ad-Parameter in Query UND Referer — der Normalfall jeder
+    // Mengen-Aenderung im Warenkorb.
+    request: anfrage({url: 'https://qiblanco.com/cart', cookie: COOKIE_CONSENT_NEIN}),
+    env: {},
+    result: {
+      cart: {id: 'gid://cart/1', totalQuantity: 1, checkoutUrl: 'https://checkout.qiblanco.com/c/1'},
+    },
+  });
+  assert.equal(
+    alsMap(spur.updateAttributes).get('ad_params_seen'),
+    'yes_query',
+    'ARM-H3: ein belegtes yes_query wurde auf unknown abgewertet. `result.cart.attributes === undefined` heißt "das Feld wurde nicht abgefragt" und darf nie wie "da steht nichts" behandelt werden — sonst loescht JEDE Warenkorb-Aenderung von einer Seite ohne Ad-Parameter die belegte Ankunft. ARM-G7 hat das nie gesehen, weil es nur den cart.get()-Pfad prueft.',
+  );
+});
+
+test('ARM-H4 GEGENRICHTUNG: ein leeres attributes-Array ist eine ANTWORT und wird nicht nachgefragt', async () => {
+  let getRufe = 0;
+  const {spur, cart} = cartAttrappe();
+  const beobachtet = {...cart, get: async (...a) => (getRufe += 1, cart.get(...a))};
+  await persistAttributionOnCartResult({
+    cart: beobachtet,
+    request: anfrage({url: 'https://qiblanco.com/cart', cookie: COOKIE_CONSENT_NEIN}),
+    env: {},
+    result: {cart: {id: 'gid://cart/1', attributes: []}},
+  });
+  assert.equal(
+    getRufe,
+    0,
+    'ARM-H4: der Fail-safe hat eine zusaetzliche Cart-Abfrage ausgeloest, obwohl das Feld abgefragt und leer war. `[]` und `undefined` sind zwei verschiedene Saetze; wer sie zusammenwirft, zahlt eine Abfrage je Warenkorb-Aenderung.',
+  );
+  assert.ok(spur.updateAttributes, 'ARM-H4: es wurde gar nichts geschrieben');
+});
+
+test('ARM-H5 KEIN NEUER SPEICHER: der Ankunfts-Pfad legt keinen zweiten Schluessel an', () => {
+  // Gemessen am LAUF, nicht am Quelltext: nach einem vollen Tracker-Lauf darf
+  // im sessionStorage hoechstens der EINE seit jeher bestehende Schluessel
+  // stehen, und im localStorage gar nichts. Das ist die Zulaessigkeits-
+  // Bedingung des ganzen Baus — ein Fix darf sie nicht aufweichen.
+  const lauf = trackerLauf({
+    search: `?utm_source=facebook&utm_content=${AD_ID_TEST}&fbclid=${FBCLID_NEU}`,
+    cookiesVorher: {},
+    referrer: 'https://www.facebook.com/',
+  });
+  assert.deepEqual(
+    [...lauf.puffer.keys()],
+    ['qiblanco_checkout_attribution'],
+    'ARM-H5: der Tracker hat einen NEUEN sessionStorage-Schluessel angelegt — kein neuer Speicher auf dem Endgeraet ist die Zulaessigkeits-Bedingung dieses Baus',
+  );
+  assert.deepEqual(
+    lauf.localStorageSchluessel,
+    [],
+    'ARM-H5: es wurde in den localStorage geschrieben — der ueberlebt den Tab und ist damit genau der Schritt an der Einwilligungsschranke, den der Auftrag verbietet',
+  );
+});
+
+test('ARM-H6 KEINE ALLOWLIST-PFLICHT: der Marker reist als Cart-Attribut, nie über die Cookie-Grenze', () => {
+  // Der `_qpx_anon`-Fehler traf einen COOKIE, der per Query an
+  // checkout.qiblanco.com weitergereicht werden muss und dafür in
+  // TRACKING_COOKIE_NAMES stehen musste. `ad_params_seen` nimmt diesen Weg
+  // NICHT — er geht per cart.updateAttributes direkt in den Warenkorb.
+  // Zweiseitig gemessen: nicht in der Checkout-URL, sehr wohl im Attribut.
+  const req = anfrage({
+    url: `https://qiblanco.com/cart?utm_content=${AD_ID_TEST}`,
+    cookie: COOKIE_CONSENT_JA,
+  });
+  const url = getTrackedCheckoutUrl('https://checkout.qiblanco.com/c/1', req, {});
+  assert.ok(
+    !url.includes('ad_params_seen'),
+    'ARM-H6: der Marker steht in der Checkout-URL — dann wäre er eine Grenzueberquerung und brauchte eine Allowlist-Deckung. Er ist keine.',
+  );
+});
+
+// ===========================================================================
+// ARM I — `no` ist keine belegte Abwesenheit, solange sie nicht belegt ist
+// (BEFUND 2 der K3-P2-Gegenpruefung)
+//
+// Die Client-Haelfte lief bis heute in KEINEM Arm, obwohl ARM-E den Tracker
+// im selben File schon in node:vm faehrt. Das ist Luecke (c) des Auftrags.
+// ===========================================================================
+
+const VERWEIS_FREMD = 'https://www.google.com/';
+
+test('ARM-I1 DER HANDOVER: frische Registerkarte ohne Verweis ergibt unknown, nie no', () => {
+  // Meta-Weg: Anzeige im In-App-Browser, dann "im Systembrowser öffnen".
+  // Neues Dokument, neuer Tab: keine Query, kein Verweis, kein Puffer — der
+  // Klick auf die Anzeige ist trotzdem passiert. sessionStorage lebt PRO TAB.
+  const lauf = trackerLauf({search: '', cookiesVorher: {}, referrer: ''});
+  assert.equal(
+    lauf.ankunft,
+    'unknown',
+    'ARM-I1: eine Registerkarte, die den Eintritt nie gesehen hat, wurde als belegter Direktbesucher verbucht — und zwar bevorzugt in genau der Bevoelkerung, die der Marker messen soll',
+  );
+});
+
+test('ARM-I2 GEGENRICHTUNG: mit gesehener Herkunft bleibt no erreichbar', () => {
+  // Ohne diesen Arm wäre die Verengung aus ARM-I1 mit "dann sag halt immer
+  // unknown" erfuellbar — und der Marker damit wertlos. Wer von Google, einem
+  // Blog oder einer eigenen Seite kommt, dessen Herkunft HABEN wir gesehen.
+  const lauf = trackerLauf({
+    search: '',
+    cookiesVorher: {},
+    referrer: VERWEIS_FREMD,
+  });
+  assert.equal(
+    lauf.ankunft,
+    'no',
+    'ARM-I2: die Verengung ist zu weit — ein Besucher mit gesehener, ad-freier Herkunft muss ein belegtes no ergeben',
+  );
+});
+
+test('ARM-I3 der Verweis faengt den gescheiterten Puffer-Schreibvorgang eine Seite spaeter', () => {
+  const lauf = trackerLauf({
+    search: '',
+    cookiesVorher: {},
+    referrer: `https://qiblanco.com/pages/schlaf-zellen-schutz?utm_content=${AD_ID_TEST}`,
+  });
+  assert.equal(
+    lauf.ankunft,
+    'yes',
+    'ARM-I3: die Ad-Parameter standen im Verweis und wurden nicht gesehen',
+  );
+});
+
+test('ARM-I4 gesperrter Speicher ergibt unknown, nie no', () => {
+  const lauf = trackerLauf({
+    search: '',
+    cookiesVorher: {},
+    referrer: VERWEIS_FREMD,
+    speicher: 'lesen-wirft',
+  });
+  assert.equal(lauf.ankunft, 'unknown', 'ARM-I4');
+});
+
+test('ARM-I5 ein BEKANNTER Schreibfehlschlag entwertet die Leere des Puffers', () => {
+  // Die scharfe Kante von BEFUND 2: bei QuotaExceeded WIRFT `setItem`, aber
+  // `getItem` funktioniert weiter und liefert brav null. Ein Leser, der nur
+  // den LESEfehler abfaengt (so stand es bis zum 2026-09-23 da), sieht einen
+  // leeren Puffer und hält ihn für eine belegte Abwesenheit.
+  //
+  // VORFLUG, damit der Arm nicht durch die Kulisse gruen wird: dieselbe Lage
+  // OHNE den bekannten Fehlschlag muss weiterhin 'no' ergeben. Sonst maesse
+  // dieser Arm bloß ARM-I1 ein zweites Mal.
+  const ohne = trackerLauf({
+    search: '',
+    cookiesVorher: {},
+    referrer: VERWEIS_FREMD,
+  });
+  assert.equal(ohne.ankunft, 'no', 'ARM-I5 VORFLUG: ohne Fehlschlag muss no stehen');
+
+  const mit = trackerLauf({
+    search: '',
+    cookiesVorher: {},
+    referrer: VERWEIS_FREMD,
+    schreibfehlerVorher: true,
+  });
+  assert.equal(
+    mit.ankunft,
+    'unknown',
+    'ARM-I5: der Puffer ist leer, WEIL er nicht gefuellt werden konnte — nicht, weil nichts ankam. Das darf nie dieselbe Antwort geben wie eine belegte Abwesenheit.',
+  );
+});
+
+test('ARM-I6 ein gescheiterter Schreibvorgang wird GEMERKT statt verschluckt', () => {
+  const lauf = trackerLauf({
+    search: `?utm_content=${AD_ID_TEST}`,
+    cookiesVorher: {},
+    referrer: '',
+    speicher: 'schreiben-wirft',
+  });
+  assert.equal(
+    lauf.schreibfehler,
+    true,
+    'ARM-I6: `bufferAttributionParams` hat den Fehlschlag verschluckt. Der Puffer ist danach leer, weil wir ihn nicht fuellen KONNTEN — eine spaetere Seite liest diese Leere als "es kam nichts an".',
+  );
+  assert.equal(
+    lauf.ankunft,
+    'yes',
+    'ARM-I6: diese Seite trägt die Parameter selbst — sie muss ohne jeden Speicher yes sagen',
+  );
+});
+
+test('ARM-I7 DAS GITTER: unknown kippt nie zu no, no steigt weiter zu yes', () => {
+  const bleibtUnbekannt = trackerLauf({
+    search: '',
+    cookiesVorher: {},
+    referrer: VERWEIS_FREMD,
+    ankunftVorher: 'unknown',
+  });
+  assert.equal(
+    bleibtUnbekannt.ankunft,
+    'unknown',
+    'ARM-I7: ein bereits gefaelltes "weiss nicht" wurde zu einer Tatsachenbehauptung über die Herkunft aufgewertet',
+  );
+
+  const steigt = trackerLauf({
+    search: `?utm_content=${AD_ID_TEST}`,
+    cookiesVorher: {},
+    referrer: '',
+    ankunftVorher: 'no',
+  });
+  assert.equal(
+    steigt.ankunft,
+    'yes',
+    'ARM-I7 GEGENRICHTUNG: ein no muss zu yes aufsteigen duerfen (interner Link mit utm_*), sonst friert die Monotonie Information ein statt sie zu schuetzen',
+  );
 });

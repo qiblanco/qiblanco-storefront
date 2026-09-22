@@ -76,8 +76,8 @@ export function CartSummary({cart, layout}) {
  * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[]}}
  */
 function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
-  // Der Tracker haelt den Ankunfts-Zustand als reine Fenster-Variable
-  // (public/qiblanco-tracker.js, `merkeAnkunft`) — er speichert dafuer nichts
+  // Der Tracker hält den Ankunfts-Zustand als reine Fenster-Variable
+  // (public/qiblanco-tracker.js, `merkeAnkunft`) — er speichert dafür nichts
   // und liest nur seinen eigenen, seit jeher pre-consent gefuellten Puffer.
   // Gelesen wird er erst NACH der Hydration, damit Server- und Client-Markup
   // identisch bleiben; der Knopfdruck kommt immer danach.
@@ -87,7 +87,7 @@ function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
     if (zustand === 'yes' || zustand === 'no') setAdAnkunft(zustand);
   }, []);
 
-  // NACH den Hooks, nie davor: ein frueher Ausstieg ueber einem Hook aendert
+  // NACH den Hooks, nie davor: ein früher Ausstieg über einem Hook aendert
   // die Aufrufreihenfolge zwischen zwei Renders (eslint react-hooks/rules-of-hooks).
   if (!checkoutUrl) return null;
 
@@ -129,7 +129,7 @@ function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
       {/*
         CONSENT-FREIER ANKUNFTS-MARKER (Job 20260922-blinde-menge-...).
         Es reist EIN Wort — 'yes', 'no' oder (bei leerem Feld) nichts —, nie
-        der Wert eines Ad-Parameters. Der Server laesst ohnehin nur die beiden
+        der Wert eines Ad-Parameters. Der Server lässt ohnehin nur die beiden
         bekannten Woerter durch (adParamsSeenMarker).
 
         WOZU DIESES FELD UEBERHAUPT: der Server sieht beim POST hierher weder
@@ -137,7 +137,7 @@ function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
         Ad-Parameter" und "kam mit, aber der Attributions-Cookie ueberlebte
         nicht" denselben Zustand an der Order (27 von 41 Orders am 2026-09-22).
 
-        LEER IST EIN GUELTIGER ZUSTAND und heisst 'weiss nicht': vor der
+        LEER IST EIN GUELTIGER ZUSTAND und heißt 'weiss nicht': vor der
         Hydration, ohne JavaScript oder mit geblocktem Tracker bleibt der Wert
         leer, und der Server schreibt 'unknown' statt 'no'. Ein Lesefehler darf
         nie wie eine belegte Abwesenheit aussehen.

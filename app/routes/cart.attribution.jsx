@@ -25,9 +25,9 @@ export async function action({request, context}) {
   // Antwort mitschicken kann, ob auf der Landeseite ueberhaupt Ad-Parameter
   // ankamen (CartSummary.jsx, Quelle ist der sessionStorage-Puffer, den der
   // Tracker seit jeher VOR der Zustimmung fuellt). Es reist ein Wort, nie ein
-  // Parameter-Wert; `adParamsSeenMarker` laesst ohnehin nur 'yes'/'no' durch.
+  // Parameter-Wert; `adParamsSeenMarker` lässt ohnehin nur 'yes'/'no' durch.
   // Faellt das Feld aus (JavaScript aus, Tracker geblockt), bleibt es null und
-  // der Marker faellt auf Query/Referer/Cookie bzw. auf 'unknown' zurueck —
+  // der Marker faellt auf Query/Referer/Cookie bzw. auf 'unknown' zurück —
   // nie auf 'no'.
   const clientMarker = await adMarkerAusFormular(request);
 

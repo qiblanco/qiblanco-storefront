@@ -41,9 +41,24 @@ export async function persistAttributionOnCartResult({
   // wirkungslos, und die Order trug am Ende KEIN einziges note_attribute.
   // Die consent-FREIEN Herkunfts-Marker werden deshalb IMMER geschrieben, die
   // personenbezogenen NUR mit Consent. Details: buildOriginCartAttributes().
+
+  // FAIL-SAFE gegen eine Regression im Mutations-Fragment (Job 20260923-...):
+  // `result.cart.attributes === undefined` heißt "das Feld wurde gar nicht
+  // abgefragt", `[]` heißt "abgefragt und leer". Das sind zwei verschiedene
+  // Saetze, und sie duerfen nie denselben Wert liefern — sonst wird aus "ich
+  // konnte nicht nachsehen" die Sachaussage "da steht nichts", und die
+  // Monotonie von `ad_params_seen` wertet ein belegtes `yes_*` still ab.
+  // Genau so war es bis zum 2026-09-23 auf dem GESAMTEN Hauptpfad.
+  //
+  // Geheilt ist die Ursache im Fragment (app/lib/context.js `mutateFragment`).
+  // Dieser Nachgriff ist der Rueckfall, falls sie je wieder wegfaellt: EINE
+  // zusaetzliche Abfrage, und nur im kaputten Fall. Er ist zugleich der Grund,
+  // warum der Defekt VERHALTENSMAESSIG rot pruefbar ist (ARM-H3).
+  const bestehendeAttribute = await vorbestandAttribute(cart, result.cart);
+
   const cartAttributes = [
     ...getOriginCartAttributes(request, {
-      bestehendeAttribute: result.cart.attributes,
+      bestehendeAttribute,
     }),
     ...(hasAttributionConsent(request, env)
       ? getAttributionCartAttributes(request)
@@ -51,7 +66,7 @@ export async function persistAttributionOnCartResult({
   ];
 
   const {attributes, changed} = mergeCartAttributes(
-    result.cart.attributes,
+    bestehendeAttribute,
     cartAttributes,
   );
 
@@ -66,6 +81,31 @@ export async function persistAttributionOnCartResult({
     errors: mergeResultMessages(result.errors, updatedResult?.errors),
     warnings: mergeResultMessages(result.warnings, updatedResult?.warnings),
   };
+}
+
+/**
+ * Vorbestand der Cart-Attribute. Ein Mutationsergebnis TRÄGT das Feld, solange
+ * `mutateFragment` es abfragt; fehlt es (undefined), wird es einmal per
+ * `cart.get()` nachgeholt statt `null` anzunehmen. Ein leeres Array ist eine
+ * ANTWORT und wird nie nachgeholt.
+ *
+ * Wirft nie: eine gescheiterte Nachfrage darf den Kaufweg nicht stoeren — dann
+ * gilt wieder der Zustand von vorher (kein Vorbestand bekannt), also hoechstens
+ * so schlecht wie ohne diesen Nachgriff.
+ *
+ * @param {{get: () => Promise<{attributes?: Array<{key?: string | null, value?: string | null}> | null} | null>}} cart
+ * @param {{attributes?: Array<{key?: string | null, value?: string | null}> | null}} resultCart
+ * @returns {Promise<Array<{key?: string | null, value?: string | null}> | null>}
+ */
+async function vorbestandAttribute(cart, resultCart) {
+  if (resultCart.attributes !== undefined) return resultCart.attributes;
+
+  try {
+    const gelesen = await cart.get();
+    return gelesen?.attributes ?? null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -95,8 +135,8 @@ export function hasAttributionConsent(request, env) {
  *          bestehendeAttribute?: Array<{key?: string | null, value?: string | null}> | null}} [optionen]
  *   `clientMarker` liefert NUR der Kasse-Knopf (cart.attribution.jsx), weil nur
  *   dort ein Formular existiert. Die uebrigen Eintrittspunkte kommen ohne aus
- *   und fallen auf Query/Referer/Cookie bzw. auf `unknown` zurueck.
- *   `bestehendeAttribute` traegt die Monotonie: ein bereits belegtes `yes_*`
+ *   und fallen auf Query/Referer/Cookie bzw. auf `unknown` zurück.
+ *   `bestehendeAttribute` trägt die Monotonie: ein bereits belegtes `yes_*`
  *   darf von einem spaeteren, schlechter informierten Lauf nicht abgewertet
  *   werden.
  */
@@ -194,7 +234,7 @@ function sucheAusRequest(request) {
 }
 
 /**
- * Bereits am Warenkorb haengender Ankunfts-Marker (fuer die Monotonie-Regel in
+ * Bereits am Warenkorb haengender Ankunfts-Marker (für die Monotonie-Regel in
  * `adParamsSeenMarker`).
  *
  * @param {Array<{key?: string | null, value?: string | null}> | null | undefined} attribute

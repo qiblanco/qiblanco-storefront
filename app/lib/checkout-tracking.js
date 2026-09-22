@@ -710,33 +710,33 @@ export function consentStateFromCookies(cookieHeader) {
  * verschiedenen Lagen — der Besucher kam ohne Ad-Parameter (voellig
  * rechtmaessig, ein Direktbesucher hat baulich keinen Cookie), ODER er kam
  * mit, und der Cookie ueberlebte nicht. Solange beide denselben Zustand
- * erzeugen, ist jede Aussage ueber Anzeigenwirkung auf Order-Ebene
+ * erzeugen, ist jede Aussage über Anzeigenwirkung auf Order-Ebene
  * unentscheidbar: 27 blinde Orders fassen die unter der Kontrollquote
  * erwarteten gebundenen Meta-Kaeufer muehelos.
  *
  * WARUM DAS OHNE EINWILLIGUNG ZULAESSIG IST — und wo die harte Grenze liegt:
- * der Marker LIEST ausschliesslich Metadaten des laufenden Requests und
+ * der Marker LIEST ausschließlich Metadaten des laufenden Requests und
  * SPEICHERT NICHTS NEUES auf dem Endgeraet. Er beantwortet eine reine
- * Ja/Nein-Frage ueber das VORHANDENSEIN eines Parameter-NAMENS aus der
+ * Ja/Nein-Frage über das VORHANDENSEIN eines Parameter-NAMENS aus der
  * ohnehin bestehenden Allowlist; der WERT eines Ad-Parameters wird nie
  * gelesen, nie weitergereicht und nie gespeichert. Das ist exakt die
  * Bedingung, unter der `consent_state` und `ua_class` am 2026-09-07 zulaessig
  * waren. EIN NEUES COOKIE — auch httpOnly, auch serverseitig, auch nur mit
- * einem Boolean darin — waere genau der Schritt an der Einwilligungsschranke,
+ * einem Boolean darin — wäre genau der Schritt an der Einwilligungsschranke,
  * der hier NICHT gegangen wird.
  *
- * VIER ACHSEN, BEWUSST UNABHAENGIG (sie fallen aus verschiedenen Gruenden
+ * VIER ACHSEN, BEWUSST UNABHÄNGIG (sie fallen aus verschiedenen Gruenden
  * aus — dieselbe Bauart wie die Zwei-Achsen-Erkennung des internen Verkehrs,
  * UA und IP):
- *   `yes_query`   Der Request traegt selbst einen Tracking-Parameter. Traegt
+ *   `yes_query`   Der Request trägt selbst einen Tracking-Parameter. Trägt
  *                 bei `/cart/<lines>?utm_...` (Direkt-zur-Kasse-Link).
- *   `yes_referer` Der Referer-Header traegt einen. Traegt, solange der
+ *   `yes_referer` Der Referer-Header trägt einen. Trägt, solange der
  *                 Besucher die ad-gelandete URL noch nicht verlassen hat —
  *                 ohne JavaScript, ohne jeden Speicher.
  *   `yes_cookie`  Der gespeicherte Attributions-Cookie steht. Diese Achse ist
- *                 die einzige consent-GEBUNDENE; sie ist hier nicht noetig,
+ *                 die einzige consent-GEBUNDENE; sie ist hier nicht nötig,
  *                 aber sie macht einen Widerspruch sichtbar (ein `no` neben
- *                 einem `landing_page` waere ein Defekt dieser Funktion).
+ *                 einem `landing_page` wäre ein Defekt dieser Funktion).
  *   `yes_client`  Der Tracker hat auf der Landeseite Parameter gesehen. Quelle
  *                 ist sein sessionStorage-Puffer, den er SEIT JEHER VOR der
  *                 Zustimmung fuellt (public/qiblanco-tracker.js,
@@ -744,10 +744,10 @@ export function consentStateFromCookies(cookieHeader) {
  *                 angelegt, ein vorhandener technischer Zwischenspeicher wird
  *                 nur zu einer Ja/Nein-Antwort verdichtet.
  *
- * WARUM DER WERT DIE ACHSE NENNT statt bloss 'yes': eine Achse, die still
- * aufhoert zu tragen, ist sonst von einer Welt ohne Ad-Verkehr nicht zu
+ * WARUM DER WERT DIE ACHSE NENNT statt bloß 'yes': eine Achse, die still
+ * aufhört zu tragen, ist sonst von einer Welt ohne Ad-Verkehr nicht zu
  * unterscheiden. Steht in den Orders eines Fensters nie wieder ein
- * `yes_referer`, ist das ein Befund UEBER den Marker und kein Befund ueber die
+ * `yes_referer`, ist das ein Befund ÜBER den Marker und kein Befund über die
  * Anzeigen.
  *
  * DREIWERTIG, NIE ZWEIWERTIG: `no` wird nur ausgegeben, wenn die Abwesenheit
@@ -755,11 +755,11 @@ export function consentStateFromCookies(cookieHeader) {
  * niemand messen (JavaScript aus, Tracker geblockt, sessionStorage gesperrt,
  * ein Aufrufer ohne Formular), steht `unknown`. Ein Lesefehler darf nie
  * denselben Wert liefern wie eine belegte Abwesenheit, sonst ist genau die
- * Zweideutigkeit zurueck, gegen die diese Funktion gebaut ist.
+ * Zweideutigkeit zurück, gegen die diese Funktion gebaut ist.
  *
  * MONOTON: ein einmal belegtes `yes_*` wird NIE durch einen schwaecheren Wert
  * ersetzt. `mergeCartAttributes` ueberschreibt sonst bedingungslos, und ein
- * spaeterer Lauf mit geblocktem Tracker wuerde ein frueheres `yes_query`
+ * spaeterer Lauf mit geblocktem Tracker würde ein frueheres `yes_query`
  * stillschweigend zu `unknown` abwerten.
  *
  * @param {{searchParams?: URLSearchParams | string | null,
@@ -839,8 +839,8 @@ function refererSuchParameter(referer) {
 }
 
 /**
- * Traegt die Parameterliste mindestens EINEN Tracking-Parameter mit nicht
- * leerem Wert? Geprueft wird ausschliesslich der NAME gegen die bestehende
+ * Trägt die Parameterliste mindestens EINEN Tracking-Parameter mit nicht
+ * leerem Wert? Geprueft wird ausschließlich der NAME gegen die bestehende
  * Allowlist — der Wert wird nur auf "nicht leer" geprueft und nie gelesen,
  * nie zurueckgegeben, nie gespeichert.
  *
@@ -870,7 +870,7 @@ function hatTrackingParam(eintraege) {
  * Genau deshalb konnten `consent_state` und `ua_class` am 2026-09-07 als neue
  * Schluessel entstehen, ohne dass TRACKING_COOKIE_NAMES angefasst wurde; das
  * ist der lebende Beleg, nicht eine Vermutung. Die Alternative — den Wert in
- * `attribution_source` mitzuschreiben — waere die TEURERE Naht gewesen: den
+ * `attribution_source` mitzuschreiben — wäre die TEURERE Naht gewesen: den
  * Wert `qiblanco_hydrogen` lesen heute fremde Konsumenten.
  *
  * @param {{userAgent?: string | null, cookieHeader?: string | null,
