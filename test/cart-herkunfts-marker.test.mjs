@@ -1162,18 +1162,18 @@ test('ARM-I7 DAS GITTER: unknown kippt nie zu no, no steigt weiter zu yes', () =
 });
 
 test('ARM-H7 DAS FRAGMENT GEGEN DAS ECHTE SCHEMA, nicht gegen unsere Annahme', () => {
-  // WARUM DIESER ARM UEBER H1/H2 HINAUS NOETIG IST: die beiden vergleichen
+  // WARUM DIESER ARM ÜBER H1/H2 HINAUS NÖTIG IST: die beiden vergleichen
   // unser Fragment mit Hydrogens Default-FRAGMENT — also Text gegen Text.
-  // Waere `attributes { key value }` gegenueber dem Storefront-SCHEMA falsch
+  // Wäre `attributes { key value }` gegenueber dem Storefront-SCHEMA falsch
   // geschrieben, blieben beide gruen, und live braeche JEDE Cart-Mutation
   // (LinesAdd, Discount, BuyerIdentity …) an einem ungueltigen GraphQL-
   // Dokument — der Kaufweg, nicht nur der Marker. Das ist die Folge mit der
-  // groessten Fallhoehe in diesem ganzen Bau, und sie war bis hierher
+  // größten Fallhoehe in diesem ganzen Bau, und sie war bis hierher
   // ungemessen.
   // Der Pfad ist ueberschreibbar, damit die SCHEMA-SEITE dieses Arms ueberhaupt
   // rot vorgefuehrt werden kann: gegen eine Fragment-Mutation schlaegt immer
   // zuerst ARM-H1 an (seine Regex ist strenger), und ein Arm, dessen Rot nur
-  // ein Nachbar erzeugt, ist unbelegt. Ueber diesen Schalter laeuft er gegen
+  // ein Nachbar erzeugt, ist unbelegt. Über diesen Schalter läuft er gegen
   // eine Wegwerf-Kopie, in der das SCHEMA mutiert ist — der Fall, den H1
   // baulich nie sieht (Shopify benennt ein Feld um).
   const schemaPfad =
@@ -1205,11 +1205,11 @@ test('ARM-H7 DAS FRAGMENT GEGEN DAS ECHTE SCHEMA, nicht gegen unsere Annahme', (
   for (const feld of fragmentFelder(CART_MUTATE_FRAGMENT, 'CartApiMutation')) {
     assert.ok(
       cartFelder.has(feld),
-      `ARM-H7: das Mutations-Fragment fragt "${feld}" ab, aber der Typ Cart hat dieses Feld im Storefront-Schema nicht — jede Cart-Mutation wuerde live an einem ungueltigen GraphQL-Dokument scheitern, und das ist der Kaufweg.`,
+      `ARM-H7: das Mutations-Fragment fragt "${feld}" ab, aber der Typ Cart hat dieses Feld im Storefront-Schema nicht — jede Cart-Mutation würde live an einem ungueltigen GraphQL-Dokument scheitern, und das ist der Kaufweg.`,
     );
   }
 
-  // Und die Unterfelder von attributes muessen zum Typ passen.
+  // Und die Unterfelder von attributes müssen zum Typ passen.
   const attrTyp = entfalte(cartFelder.get('attributes').type);
   const attrFelder = (typen.get(attrTyp)?.fields ?? []).map((f) => f.name);
   for (const unter of ['key', 'value']) {
