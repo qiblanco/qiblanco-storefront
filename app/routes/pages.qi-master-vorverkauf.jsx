@@ -173,8 +173,15 @@ export default function QiMasterVorverkaufRoute() {
         <h3>Ein Stück, das es nur einmal gibt</h3>
         <ul className="qm-lp__liste">
           <li>Echte Diamanten, gefasst am Gitterchip™.</li>
+          {/* CHRISTIAN 2026-09-22: die Gold-Aussage wechselt den Gegenstand —
+              von Kette und Verschluss auf den Gitterchip™. Bis dahin stand
+              hier „Kette und Verschluss aus 750er Gold, beides mit
+              Qi-Blanco-Logo."; dieselbe abgeloeste Aussage lag auf
+              /products/qi-master und in der Fragenliste und ist dort im selben
+              Zug mitgezogen. */}
           <li>
-            Kette und Verschluss aus 750er Gold, beides mit Qi-Blanco-Logo.
+            Für den Gitterchip™ kommt eine eigene spezielle 750er
+            Goldlegierung zum Einsatz.
           </li>
           <li>
             Eigene Seriennummer auf jedem Stück – deinen gibt es kein zweites
