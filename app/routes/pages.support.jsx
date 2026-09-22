@@ -1,8 +1,8 @@
-import {useState} from 'react';
 import {data} from '@shopify/remix-oxygen';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {FaqListe} from '~/components/reusables/FaqListe';
 
 /**
  * TITEL UND BESCHREIBUNG GESCHÄRFT AM 2026-09-02 (Grossjob-Segment s04) — und
@@ -256,76 +256,27 @@ const FAQ_ITEMS = [
   },
 ];
 
-function FaqAccordion() {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  return (
-    <div style={{marginTop: '1.5rem'}}>
-      {FAQ_ITEMS.map((item, i) => {
-        const isOpen = openIndex === i;
-        return (
-          <div
-            key={i}
-            style={{
-              borderBottom: '1px solid rgba(0,0,0,0.12)',
-              overflow: 'hidden',
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setOpenIndex(isOpen ? null : i)}
-              style={{
-                width: '100%',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '1.1rem 0',
-                textAlign: 'left',
-                font: 'inherit',
-                fontSize: '1rem',
-                fontWeight: '600',
-                color: 'var(--color-dark)',
-                gap: '1rem',
-              }}
-            >
-              <span>{item.question}</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="1.1em"
-                height="1.1em"
-                viewBox="0 0 15 15"
-                style={{
-                  flexShrink: 0,
-                  transition: 'transform 0.2s',
-                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                }}
-              >
-                <path
-                  fill="currentColor"
-                  d="M7.5 9.95a.45.45 0 0 0 .319-.132l3-3a.45.45 0 0 0-.637-.637L7.5 8.863L4.82 6.181l-.07-.057a.451.451 0 0 0-.625.624l.058.07l3 3a.45.45 0 0 0 .318.132"
-                />
-              </svg>
-            </button>
-            <div
-              style={{
-                maxHeight: isOpen ? '600px' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.3s ease',
-              }}
-            >
-              <p style={{paddingBottom: '1.1rem', lineHeight: '1.8', color: 'var(--color-dark)', opacity: 0.85}}>
-                {item.answer}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+/*
+ * DIE ZWEITE AKKORDEON-FASSUNG IST AM 22.09.2026 ENTFALLEN (Grossjob
+ * 20260922-GROSSJOB-alle-knoepfe-kommen-aus-dem-bausatz).
+ *
+ * Hier stand eine eigene `FaqAccordion`, deren zehn Umschalter je 225 Zeichen
+ * `style`-Attribut trugen — gemessen am ausgelieferten Dokument. Sie war
+ * nicht nur anders als der Bestand, sie war schlechter: ohne Klasse, ohne
+ * `aria-expanded`, ohne `aria-controls`. Ein Screenreader konnte den Zustand
+ * einer Frage nicht ansagen.
+ *
+ * An ihre Stelle tritt `FaqListe` — dieselbe Mechanik, die auch ProductFAQ
+ * benutzt (dorthin extrahiert, nicht neu gebaut).
+ *
+ * WAS BEWUSST NICHT MITKOMMT: das FAQPage-JSON-LD. `FaqListe` emittiert
+ * keines, und das ist hier die Sachentscheidung — FAQ_ITEMS ist der im Kopf
+ * dieser Datei beschriebene DRITTE, inhaltlich ungeprüfte FAQ-Bestand mit
+ * drei bekannten Widersprüchen zu anderen Live-Flächen. Ihn als
+ * strukturierte Daten zu veröffentlichen wäre eine Inhaltsentscheidung und
+ * damit ein Christian-Gate (Kopf von app/lib/faq-schema.js). Der Zustand
+ * bleibt also exakt der, den das Segment vom 2026-09-02 hinterlassen hat.
+ */
 
 export default function SupportPage() {
   const actionData = useActionData();
@@ -414,22 +365,13 @@ export default function SupportPage() {
                 maxLength={5000}
                 style={{...inputStyle, resize: 'vertical'}}
               />
-              <button
-                type="submit"
-                disabled={submitting}
-                style={{
-                  alignSelf: 'flex-start',
-                  background: 'var(--color-dark)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '50px',
-                  padding: '0.75rem 2rem',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: submitting ? 'not-allowed' : 'pointer',
-                  opacity: submitting ? 0.7 : 1,
-                }}
-              >
+              {/* DER KNOPF AUS DEM BAUSATZ (Christian, 22.09.2026).
+                  Vorher 169 Zeichen `style`-Attribut. Der gesperrte Zustand
+                  (`cursor`, `opacity`) stand nur deshalb inline, weil der
+                  Bausatz für "läuft gerade" keine Form hatte — er hat sie
+                  jetzt (`.btn--primary:disabled` in app/styles/app.css), und
+                  das `disabled`-Attribut allein löst sie aus. */}
+              <button type="submit" className="btn--primary" disabled={submitting}>
                 {submitting ? 'Wird gesendet…' : 'Nachricht senden'}
               </button>
             </div>
@@ -445,7 +387,9 @@ export default function SupportPage() {
           ehrlichen Antwort auf „Wirkt das überhaupt?" —{' '}
           <Link to="/pages/faq">stehen die häufigen Fragen hier</Link>.
         </p>
-        <FaqAccordion />
+        <FaqListe
+          items={FAQ_ITEMS.map((f) => ({q: f.question, a: f.answer}))}
+        />
       </div>
     </div>
   );
