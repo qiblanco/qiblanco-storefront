@@ -61,7 +61,24 @@ export function Finanzierungsbanner({dataSection}) {
                         alt="PayPal"
                     />
                 </div>
-                <p>*Inklusive Käuferschutz</p>
+                {/*
+                    Christian, 2026-09-22: „Das Sternchen am Anfang muss weg und
+                    vom Design her muss es zu anderen Auftreten passen."
+
+                    DAS STERNCHEN WAR EIN VERWEIS AUF EINE FUSSNOTE, DIE ES NICHT
+                    GIBT — auf der ganzen Startseite stand kein zugehoeriger
+                    Anmerkungstext. Direkt neben den Zahlungslogos und ueber dem
+                    Kaufknopf las sich die Zeile dadurch wie ein Rest aus einer
+                    frueheren Fassung, genau dort, wo Vertrauen entstehen soll.
+
+                    DIE FORM IST KEINE NEUE: `p.micro-text` (reset.css) ist das
+                    bestehende Schrift-Token der Mikro-Vertrauenszeile und traegt
+                    das zweite Auftreten derselben Zusage schon — die Zeile unter
+                    dem Kauf-Knopf im HerobannerFeatured („… mit 0 % Finanzierung
+                    & Käuferschutz …"), dort ebenfalls mit <strong>. Damit stehen
+                    beide Auftreten in EINER Form, statt in zweien.
+                */}
+                <p className="micro-text"><strong>Inklusive Käuferschutz</strong></p>
                 <Link to="/products/qione-2-pro" className="btn--primary">
                     Hole dir deinen QiOne® 2 Pro
                 </Link>

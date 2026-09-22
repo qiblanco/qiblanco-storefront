@@ -1,6 +1,7 @@
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {useDragSwipe} from './useDragSwipe';
+import {StandardSlider} from '~/components/reusables/StandardSlider';
 import {STUDIEN, kachelZeilen, studienPfad} from '~/data/studien';
 import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
 
@@ -44,6 +45,22 @@ import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
  *
  * KEIN Autoplay: eine Beweisflaeche, die sich selbst weiterschiebt, nimmt dem
  * Leser die Kontrolle über genau den Moment, in dem er überzeugt wird.
+ *
+ * ── 2026-09-22, Job 20260922-sternchen-faellt-und-studienblock-wird-wischbar ─
+ * Christian: „Unten diese 3 Studien mit Knopf haben keine Funktion, dass man
+ * mit dem Finger swipen kann. Hier den Standard einfuegen wie bei den
+ * Bewertungen." Die Bahn traegt jetzt die geteilte Huelle
+ * `reusables/StandardSlider` (variante="scroll") — denselben
+ * Fortschrittsbalken und dieselben zwei Pfeile wie der Slider, den Christian
+ * am 2026-09-21 zum Standard bestimmt hat.
+ *
+ * DIE VIER EIGENEN BEDIENELEMENTE SIND DABEI WEGGEFALLEN, NICHT DAZUGEKOMMEN:
+ * die zwei `.ghx-studien__arrow` und der Wischhinweis „weiterwischen →" sind
+ * durch den Standard ERSETZT (die native Leiste hatte `.qb-wischbahn` am
+ * 2026-09-22 schon abgeraeumt). Am selben Tag sind am Bewertungsblock zwei
+ * Leisten uebereinander entstanden, weil ein fuer sich richtiger Zusatz auf
+ * vier schon vorhandene Bedienelemente gesetzt wurde — der Standard zeigt
+ * zwei, und zwei bleiben es.
  *
  * `headline` bleibt bewusst OHNE Default -- ExclusiveSolutions ruft
  * <StudienSlider /> ganz ohne Props und haette sonst ploetzlich eine H2, die es
@@ -133,6 +150,21 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
   };
   const {handlers, isDragging} = useDragSwipe({mode: 'scroll', trackRef});
 
+  /*
+   * Der Fortschrittsbalken des Standards wird hier am ECHTEN Scrollweg
+   * gemessen (scrollLeft / (scrollWidth - clientWidth)), nicht an einem
+   * Kartenindex: die Bahn scrollt frei, und ein gezaehlter Index waere nach
+   * dem ersten freien Wisch eine Behauptung statt einer Anzeige. Startwert 0
+   * — serverseitig gibt es keine Geometrie, und 0 % ist dort richtig.
+   */
+  const [fortschritt, setFortschritt] = useState(0);
+  const messeFortschritt = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const weg = track.scrollWidth - track.clientWidth;
+    setFortschritt(weg > 0 ? Math.min(100, Math.max(0, (track.scrollLeft / weg) * 100)) : 0);
+  };
+
   // Tastatur: der Track ist fokussierbar, Pfeiltasten blaettern kartenweise.
   const onKeyDown = (event) => {
     if (event.key === 'ArrowRight') {
@@ -147,18 +179,23 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
   return (
     <div className="ghx-studien" data-section={dataSection}>
       {headline ? <h2 className="text-center">{headline}</h2> : null}
-      <div
-        // qb-wischbahn (app.css): diese Bahn trägt bereits zwei eigene Pfeile
-        // und den Wischhinweis darunter. Die native Leiste war das vierte
-        // Bedienelement auf derselben Bahn und fällt deshalb weg — dieselbe
-        // Entscheidung wie im Bewertungsblock, aus derselben Klasse gezogen.
-        className={`ghx-studien__track qb-wischbahn${isDragging ? ' is-dragging' : ''}`}
-        ref={trackRef}
-        role="group"
-        aria-label="Wissenschaftliche Publikationen — horizontal scrollbar"
-        tabIndex={0}
-        onKeyDown={onKeyDown}
-        {...handlers}
+      <StandardSlider
+        variante="scroll"
+        fortschritt={fortschritt}
+        onPrev={() => scrollByCard(-1)}
+        onNext={() => scrollByCard(1)}
+        prevLabel="Vorherige Studie"
+        nextLabel="Nächste Studie"
+        bahnRef={trackRef}
+        bahnKlasse={`ghx-studien__track qb-wischbahn${isDragging ? ' is-dragging' : ''}`}
+        bahnAttribute={{
+          role: 'group',
+          'aria-label': 'Wissenschaftliche Publikationen — horizontal scrollbar',
+          tabIndex: 0,
+          onKeyDown,
+          onScroll: messeFortschritt,
+          ...handlers,
+        }}
       >
         {studien.map((s) => {
           const e = s.eckdaten || {};
@@ -197,28 +234,7 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
             </article>
           );
         })}
-      </div>
-      <div className="ghx-studien__nav">
-        <button
-          type="button"
-          className="ghx-studien__arrow"
-          onClick={() => scrollByCard(-1)}
-          aria-label="Vorherige Studie"
-        >
-          ←
-        </button>
-        <span className="ghx-studien__wischhinweis" aria-hidden="true">
-          weiterwischen →
-        </span>
-        <button
-          type="button"
-          className="ghx-studien__arrow"
-          onClick={() => scrollByCard(1)}
-          aria-label="Nächste Studie"
-        >
-          →
-        </button>
-      </div>
+      </StandardSlider>
       <p className="ghx-studien__footnote">
         <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
       </p>
