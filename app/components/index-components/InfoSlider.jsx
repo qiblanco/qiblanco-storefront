@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useDragSwipe } from "../reusables/useDragSwipe";
+import { StandardSlider } from "../reusables/StandardSlider";
 
 export function InfoSlider({dataSection}){
     const cardCount = 5;
@@ -56,15 +57,22 @@ export function InfoSlider({dataSection}){
 
     return (
         <div className="NormalSectionSize" data-section={dataSection}>
-            <div className={`InfoSlider${isDragging ? ' is-dragging' : ''}`}
-            role="region"
-            aria-label="Qi Blanco Vorteile Slider"
-            {...handlers}
-            >
-                <div className="InfoSliderTrack" ref={trackRef} style={{
+            <StandardSlider
+                fortschritt={progress}
+                onPrev={() => handlePlacementBehaviour("previous")}
+                onNext={() => handlePlacementBehaviour("next")}
+                buehneKlasse={isDragging ? 'is-dragging' : ''}
+                buehneAttribute={{
+                    role: "region",
+                    "aria-label": "Qi Blanco Vorteile Slider",
+                    ...handlers,
+                }}
+                bahnRef={trackRef}
+                bahnStil={{
                     transform: `translateX(${placement + dragOffset}px)`,
                     transition: isDragging ? 'none' : undefined,
-                }}>
+                }}
+            >
                     <InfoSliderCard data-index="0"
                     title={<h3>Erholsame Nächte</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216c88.68 0 166.73-51.57 200-128c-26.39 11.49-57.38 16-88 16c-119.29 0-216-96.71-216-216"></path></svg> Erholsame Nächte</p>}
@@ -100,19 +108,7 @@ export function InfoSlider({dataSection}){
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Shooting_-_2021-04-qiblanco-bali-11_1623305c-198d-4cea-9d20-12ba96d6a740.jpg?v=1738526957"
                     shouldSuppressClick={shouldSuppressClick}
                     />
-                </div>
-            </div>
-                <div className="ProgressWrapper">
-                    <div className="ProgressTracker" style={{width: progress + '%' }}></div>
-                </div>
-                <div className="SliderButtonWrapper">
-                    <button type="button" onClick={() => {
-                        handlePlacementBehaviour("previous");
-                        }} className="ButtonPrev SliderButton" aria-label="Vorheriger Slide"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="currentColor" d="M29.52 22.52L18 10.6L6.48 22.52a1.7 1.7 0 0 0 2.45 2.36L18 15.49l9.08 9.39a1.7 1.7 0 0 0 2.45-2.36Z" className="clr-i-outline clr-i-outline-path-1"/><path fill="none" d="M0 0h36v36H0z"/></svg></button>
-                    <button type="button" onClick={() => {
-                        handlePlacementBehaviour("next");
-                        }} className="ButtonNext SliderButton" aria-label="Nächster Slide"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="currentColor" d="M29.52 22.52L18 10.6L6.48 22.52a1.7 1.7 0 0 0 2.45 2.36L18 15.49l9.08 9.39a1.7 1.7 0 0 0 2.45-2.36Z" className="clr-i-outline clr-i-outline-path-1"/><path fill="none" d="M0 0h36v36H0z"/></svg></button>
-                </div>
+            </StandardSlider>
         </div>
     )
 }

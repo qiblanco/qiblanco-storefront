@@ -5689,6 +5689,39 @@ ul.kakao-children li {
   }
 }
 
+/* ─── Standard-Slider, Bauart SCROLL (reusables/StandardSlider, variante="scroll")
+   Die Buehne oben ist fuer eine TRANSFORM-Bahn gebaut: sie maskiert selbst
+   (`overflow: hidden`), nimmt die waagerechte Geste an sich
+   (`touch-action: pan-y`) und sperrt die Textauswahl. Eine Bahn, die SELBST
+   scrollt (`overflow-x: auto` + scroll-snap), braucht genau das Gegenteil —
+   und der mittlere Punkt ist nicht Kosmetik, sondern der gemeldete Mangel:
+   `pan-y` auf dem Vorfahren nimmt der Bahn das Fingerwischen.
+
+   Die drei Zusagen werden deshalb hier zurueckgenommen, NICHT oben gelockert:
+   die Transform-Bauart braucht sie unveraendert (InfoSlider, UpsellCarousel).
+   Der Block steht bewusst NACH `.InfoSlider, .UpsellCarousel {touch-action}`
+   und nach `.InfoSlider:hover` — gleiche Spezifitaet, spaeter gewinnt.
+
+   `overflow: visible` statt `hidden`: die Kacheln tragen einen Schlagschatten
+   und die Bahn ein Snap-Polster (padding 4px 4px 14px) — eine Maske auf der
+   Buehne schnitte beides ab. Der Rand kommt vom umgebenden Block, nicht von
+   der Huelle, deshalb faellt auch `margin-top` weg. */
+.InfoSlider--scroll {
+  overflow: visible;
+  margin-top: 0;
+  touch-action: auto;
+  -webkit-touch-callout: default;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+.InfoSlider--scroll:hover,
+.InfoSlider--scroll:active,
+.InfoSlider--scroll.is-dragging {
+  cursor: auto;
+}
+
 /* ═══ STUDIEN-KACHEL-ANSICHT (geteilt) ═══════════════════════════════════
    Regeln zu app/components/reusables/StudienSlider.jsx. Bis 2026-07-27 lagen
    sie in app/styles/exclusive-solutions.css und waren damit an EINE Route
@@ -5800,6 +5833,13 @@ ul.kakao-children li {
   color: rgb(90, 90, 90);
   text-align: left;
 }
+/* ABGELOEST am 2026-09-22 (Job 20260922-sternchen-faellt-und-studienblock-
+   wird-wischbar): StudienSlider rendert diese Eigen-Bedienung nicht mehr — die
+   zwei Pfeile und der Wischhinweis sind durch den Standard-Slider ersetzt.
+   Die Regeln bleiben vorerst STEHEN, weil vier route-gescopte Stylesheets sie
+   ueberschreiben (pdp-landing-qi.css, schlaf-zellen-schutz.css, qi-master.css,
+   qihome-air.css); sie zusammen abzuraeumen ist ein eigener Auftrag, kein
+   Nebeneffekt dieses. Bis dahin sind sie wirkungslos, nicht falsch. */
 .ghx-studien__nav {
   display: flex;
   gap: 10px;
