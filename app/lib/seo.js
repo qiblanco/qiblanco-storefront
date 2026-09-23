@@ -1160,6 +1160,24 @@ export const NUR_ROUTE_SEITEN = [
       'eingehenden Link von /pages/faq und die Sitelink-Naht (gclid -> 200), ' +
       'nicht den Statuscode.',
   },
+  {
+    pfad: '/pages/was-ist-kohaerentes-wasser',
+    lastmod: '2026-09-23T22:00:00Z',
+    grund:
+      'Die Info-Seite „Kohärentes Wasser" (Grossjob 20260923-GROSSJOB-was-' +
+      'ist-kohaerentes-wasser-wird-die-beste-infoseite, Christian 23.09.2026: ' +
+      '„die beste Info-Seite zu dem Thema im Netz"). Die Seite besteht allein ' +
+      'aus der Route pages.was-ist-kohaerentes-wasser.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 mit ' +
+      'vollem Text und steht in keiner Sitemap. Ein Seitenobjekt wäre der ' +
+      'zweite mögliche Träger und ist nicht gewählt (Fremdsystem), dieselbe ' +
+      'Begründung wie bei /pages/kritik. Kriterium 2 erfüllt: kein noindex, ' +
+      'canonicalLink() in der Route. Wache (Kriterium 3): homepage-bauer/' +
+      'pruefungen/probe_infoseite_kohaerentes_wasser_hell__20260923.py — ' +
+      'prüft am ausgelieferten HTML den INHALT (beide Teile, Quellen-Links, ' +
+      'Grafiken, JSON-LD), kein noindex, den Canonical und den Sitemap-<loc>, ' +
+      'nicht den Statuscode.',
+  },
 ];
 
 /**
