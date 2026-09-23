@@ -18,14 +18,19 @@
  * gepflegt werden müsste. Zwei Stellen führen dieselbe Größe, und die falsche
  * gewinnt still.
  *
+ * FASSUNG 2 (23.09.2026): DREI STUFEN STATT ZWEI SPALTEN. Christian fragte,
+ * ob wir zwischen kohärenter Domäne und hexagonalem Wasser unterscheiden. Die
+ * Quellen tragen drei Stufen: normales Wasser, kohärente Domäne, EZ-Wasser
+ * (SSoT Teil A2 `stufen`, Tabelle `vergleich`). Die zweispaltige
+ * Gegenüberstellung ist entfallen, im Storefront und im SSoT.
+ *
  * DREI ZAHLEN AUS CHRISTIANS SKIZZE STEHEN HIER NICHT, UND DAS IST ABSICHT.
- * s01 hat die Warnke-Quellen gelesen und gemessen: 180° kommt dort nicht vor
- * (der belegte Endpunkt der Aufweitung ist 109,5°), 13,5 eV kommt dort nicht vor
- * (belegt sind 12,06 eV, 12,56 eV, 0,5 eV), und H₃O ist bei Warnke das
- * Hydronium — also die Säure, die hexagonale Strukturen neutralisieren, nicht
- * die Summenformel des geordneten Wassers. Christians eigene Regel dazu lautet:
+ * Den größeren Winkel ordnet Warnkes Buch einem anderen Zustand zu (Rydberg-
+ * Zonen-Wasser, keine hexagonale Struktur mehr); die Energieangabe steht in
+ * keiner der fünf Quellen; H₃O ohne Ladung ist keine Formel, Pollacks EZ-Formel
+ * H₃O₂⁻ steht in der EZ-Spalte. Die Begründung je Wert steht im SSoT unter
+ * `widerlegt:` und `weitere_zustaende:`. Christians eigene Regel dazu lautet:
  * „Findet sich zu einer Zahl keine Fundstelle, wird sie nicht gezeigt."
- * Die Begründung je Wert steht im SSoT unter `widerlegt:`.
  *
  * KEIN SATZ ÜBER DEN MENSCHLICHEN KÖRPER. Christian wörtlich: „Nichts in diesem
  * Element spricht über den menschlichen Körper. Es geht um die Struktur von
@@ -33,7 +38,11 @@
  * nichts hier hinein.
  */
 
-/** Die drei Bilder, in der Reihenfolge des SSoT (`bilder:`). */
+/**
+ * Die drei Bilder, in der Reihenfolge des SSoT (`bilder:`): Winkel, Domäne,
+ * Struktur. Sie zeigen die Übergänge zwischen den drei Stufen der Tabelle.
+ * Die ids bleiben, drei Proben und Annas Vertrag lesen sie.
+ */
 export const bilder = [
   {
     id: 'winkel',
@@ -41,20 +50,10 @@ export const bilder = [
     text:
       'Nimmt das Wassermolekül Energie auf, rücken seine beiden Wasserstoff-Atome näher an den Sauerstoff. Beide sind positiv geladen, also stoßen sie sich ab, und der Winkel zwischen ihnen wird größer.',
     folge: 'Bei 109,5° entstehen im Wasser hexagonale Strukturen.',
-    // `grad` trägt die Zahl, aus der das SVG seine Geometrie RECHNET. Damit
-    // kann das Bild nicht von der Beschriftung abweichen: beide kommen aus
-    // demselben Wert.
+    // `grad` trägt die Zahl, aus der das SVG seine Geometrie RECHNET, auch die
+    // Aufweitung dazwischen. Bild und Beschriftung kommen aus demselben Wert.
     von: {grad: 104.5, anzeige: '104,5°', was: 'normal'},
     nach: {grad: 109.5, anzeige: '109,5°', was: 'energiereich'},
-  },
-  {
-    id: 'struktur',
-    titel: 'Die Struktur ordnet sich',
-    text:
-      'Flüssiges Bulkwasser ist ungeordnet. Seine Wasserstoffbrücken lösen sich ständig und bilden sich neu. Die hexagonale Struktur hält dieselbe Ordnung fest.',
-    folge: 'Hexagonalstruktur gilt Warnke als Anzeichen für energiereiches Wasser.',
-    von: {anzeige: 'Bulkwasser', was: 'ungeordnet'},
-    nach: {anzeige: 'Hexagonalstruktur', was: 'geordnet'},
   },
   {
     id: 'domaene',
@@ -68,49 +67,73 @@ export const bilder = [
     ],
     energie: {anzeige: '12,06 eV', was: 'Energieniveau'},
   },
+  {
+    id: 'struktur',
+    titel: 'Die Struktur ordnet sich',
+    text:
+      'An Oberflächen hält die Ordnung. Die Moleküle legen sich zu sechseckigen Schichten, Pollack nennt sie EZ-Wasser. Diese Schicht ist weit stabiler als die Domäne.',
+    folge: 'Hexagonalstruktur gilt Warnke als Anzeichen für energiereiches Wasser.',
+    von: {anzeige: 'normales Wasser', was: 'ungeordnet'},
+    nach: {anzeige: 'EZ-Wasser', was: 'hexagonal geordnet'},
+  },
 ];
 
-/** Christians zwei Spalten (SSoT `gegenueberstellung:`). */
-export const gegenueberstellung = {
-  spalteLinks: 'kohärente Struktur',
-  spalteRechts: 'normales Wasser',
+/**
+ * Die drei Stufen (SSoT Teil A2 `stufen:`). `null` heißt: keine der Quellen
+ * sagt dazu etwas. Das Fenster zeigt dann einen Strich, nie einen geratenen Wert.
+ */
+export const stufen = [
+  {
+    id: 'normal',
+    name: 'normales Wasser',
+    winkel: '104,5°',
+    formel: 'H₂O',
+    ordnung: 'Wasserstoffbrücken lösen sich und bilden sich neu',
+    energie: 'Grundzustand',
+    bestaendigkeit: 'Brücken halten Sekundenbruchteile',
+    ort: 'zwischen den Domänen',
+    hydronium: 'bleibt als Säure',
+  },
+  {
+    id: 'domaene',
+    name: 'kohärente Domäne',
+    winkel: '109,5°',
+    formel: 'H₂O',
+    ordnung: 'Moleküle schwingen im Gleichtakt',
+    energie: '12,06 eV',
+    bestaendigkeit: 'wechselt ständig mit normalem Wasser',
+    ort: 'Inseln im Wasser',
+    hydronium: null,
+  },
+  {
+    id: 'ez',
+    name: 'EZ-Wasser',
+    zusatz: 'hexagonal geordnet',
+    winkel: '109,5°',
+    formel: 'H₃O₂⁻',
+    ordnung: 'sechseckige Schichten',
+    energie: '12,06 eV',
+    bestaendigkeit: 'weit stabiler als die Domäne',
+    ort: 'an Oberflächen',
+    hydronium: 'wird neutralisiert',
+  },
+];
+
+/**
+ * Die Vergleichstabelle (SSoT `vergleich:`): Spalten in der Reihenfolge von
+ * `stufen`, Zeilen mit Label, die Werte liest das Bauteil aus `stufen`.
+ * Christian: „Keine Zeile mit gleichem Wert in allen Spalten."
+ */
+export const vergleich = {
+  spalten: ['normal', 'domaene', 'ez'],
   zeilen: [
-    {
-      id: 'summenformel',
-      label: 'Summenformel',
-      links: 'H₂O',
-      rechts: 'H₂O',
-    },
-    {
-      id: 'hydronium',
-      label: 'Hydronium H₃O⁺',
-      links: 'wird neutralisiert',
-      rechts: 'bleibt als Säure',
-    },
-    {
-      id: 'winkel',
-      label: 'Bindungswinkel',
-      links: 'bis 109,5°',
-      rechts: '104,5°',
-    },
-    {
-      id: 'struktur',
-      label: 'Anordnung',
-      links: 'hexagonal, geordnet',
-      rechts: 'Bulkwasser, ungeordnet',
-    },
-    {
-      id: 'wasserstoffbruecken',
-      label: 'Wasserstoffbrücken',
-      links: 'halten die Ordnung',
-      rechts: 'lösen sich und bilden sich neu',
-    },
-    {
-      id: 'energie',
-      label: 'Energieniveau',
-      links: '12,06 eV',
-      rechts: 'Bezugspunkt',
-    },
+    {feld: 'winkel', label: 'Bindungswinkel'},
+    {feld: 'ordnung', label: 'Ordnung'},
+    {feld: 'formel', label: 'Formel'},
+    {feld: 'energie', label: 'Energieniveau'},
+    {feld: 'bestaendigkeit', label: 'Beständigkeit'},
+    {feld: 'ort', label: 'Wo'},
+    {feld: 'hydronium', label: 'Hydronium H₃O⁺'},
   ],
 };
 
@@ -119,15 +142,25 @@ export const wasserstruktur = {
   einleitung:
     'Wasser verändert seine Form, wenn es Energie aufnimmt. Drei Dinge verschieben sich dabei.',
   bilder,
-  gegenueberstellung,
+  stufen,
+  vergleich,
   // Die Aussageklasse steht als eigene Überschrift über dem Absatz, nie als
-  // Vorbehalt mitten im Satz.
+  // Vorbehalt mitten im Satz. Die Sätze sind die `grenzen` des SSoT ohne die
+  // mit „Kein" beginnenden: die sind Verbote an Anna und keine Auskunft
+  // (dieselbe Regel wie Annas Generator).
   einordnung: {
     titel: 'Einordnung',
-    text:
-      'Warnkes Modell der kohärenten Domänen geht auf Preparata und Del Giudice zurück. Es ist kein Lehrbuch-Konsens der Physikochemie.',
+    saetze: [
+      'Warnke stützt sich auf das Modell kohärenter Domänen von Preparata und Del Giudice.',
+      'Das EZ-Wasser hat Prof. Dr. Gerald H. Pollack beschrieben. Del Giudice leitet es aus den kohärenten Domänen ab.',
+    ],
   },
-  quelle: 'Warnke, U. (2018): Vortrag Baden-Baden, 3. November 2018.',
+  // SSoT `quelle_anzeige`, eine Zeile je Werk.
+  quelle: [
+    'Warnke, U. (2018): Vortrag Baden-Baden, 3. November 2018, und Bionisches Wasser.',
+    'Pollack, G. H. (2013): The Fourth Phase of Water.',
+    'Del Giudice, E. u. a. (2015): Fields of the Cell, S. 95–111.',
+  ],
 };
 
 export default wasserstruktur;

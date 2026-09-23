@@ -47,8 +47,13 @@
   line-height: inherit;
   /* Der Goldton kommt aus der Wurzel. Er ist hier nicht noch einmal getippt:
      ein 15. handgezeichnetes Gold wäre genau der Befund, gegen den die
-     Token-Wurzel gebaut ist. */
-  color: var(--qb-akzent);
+     Token-Wurzel gebaut ist.
+     FARBROLLE (Großjob 20260923-…-ein-gold, s02): Die Wendung ist Gold als
+     SCHRIFT auf hellem Grund (gemessen: #fff auf der Startseite, #faf9f5 auf
+     /pages/schlaf-zellen-schutz). Dafür ist die Gold-Tinte da: #c9a14b erreicht
+     auf Weiß 2,42:1, das Kauf-Gold rgb(242,191,114) nur 1,68:1, die Tinte 5,24:1.
+     Flächen, Rahmen und Fokusring bleiben --qb-akzent. */
+  color: var(--qb-akzent-tinte);
   cursor: pointer;
   text-decoration-line: underline;
   text-decoration-style: dotted;
@@ -197,40 +202,115 @@
   color: var(--qb-text);
 }
 
-/* --- Die Gegenüberstellung ---------------------------------------------- */
+/* --- Die drei Stufen ----------------------------------------------------
+   EINE DOM-Struktur, zeilenweise (Merkmal, dann drei Stufen), so wie ein
+   Screenreader eine Tabelle liest. Die Zeilen sind `display: contents`, damit
+   alle Zellen Kinder EINES Rasters sind: auf breitem Schirm vier Spalten, auf
+   dem Handy eine Spalte, in der `order: var(--qb-karte)` die Zellen zu drei
+   Karten je Stufe umsortiert (Kopf = Stufenname, darunter Merkmal und Wert).
+   Christians Befund vom 23.09.2026 war ein Zeilenkopf, der breiter lief als
+   seine Spalte („Wasserstoffbrücken" über „halten die Ordnung"): jede Zelle
+   darf deshalb umbrechen, auch mitten im Wort, statt in die Nachbarzelle zu
+   laufen. */
 .qb-erklaer__tabelle {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) repeat(3, minmax(0, 1fr));
+  column-gap: calc(2 * var(--qb-ref-raster));
   margin-top: calc(3 * var(--qb-ref-raster));
   font-size: var(--qb-ref-fs-2);
   line-height: 1.45;
 }
 
 .qb-erklaer__zeile {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--qb-ref-raster);
-  padding: calc(var(--qb-ref-raster) / 2) 0;
-  border-bottom: 1px solid var(--qb-ref-tinte-gedaempft);
+  display: contents;
 }
 
-.qb-erklaer__zeile:last-child {
+.qb-erklaer__zelle {
+  display: block;
+  min-width: 0;
+  padding: calc(var(--qb-ref-raster) / 2) 0;
+  border-bottom: 1px solid var(--qb-ref-tinte-gedaempft);
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.qb-erklaer__zeile:last-child .qb-erklaer__zelle {
   border-bottom: 0;
 }
 
-.qb-erklaer__zeile--kopf,
-.qb-erklaer__zelle--label {
+.qb-erklaer__zelle--label,
+.qb-erklaer__zelle--leer {
   color: var(--qb-text-gedaempft);
 }
 
-/* Die kohärente Spalte hebt sich über das GEWICHT ab, nicht über eine zweite
-   Farbe. Gemessen am 2026-09-22: mit dem Ton „Gold-Tinte" als Textfarbe meldete
-   die Design-Rubrik auf der Startseite „ZWEI konkurrierende Gold-/Ocker-Toene",
-   und der Gesamtwert fiel von 93 auf 90. Der Ton ist ein Haus-Token und war
-   trotzdem der zweite Goldton der Seite — ein Token aus der Wurzel zu ziehen
-   beweist nicht, dass er an DIESER Stelle hingehört. Er ist deshalb in dieser
-   Datei nirgends benutzt; Gold trägt hier nur, was Handlung oder Zeichnung ist. */
-.qb-erklaer__zelle--links {
-  font-weight: 700;
+.qb-erklaer__zelle--stufe {
+  align-self: end;
+}
+
+.qb-erklaer__zelle--stufe strong,
+.qb-erklaer__zusatz {
+  display: block;
+}
+
+.qb-erklaer__zusatz {
+  color: var(--qb-text-gedaempft);
+}
+
+/* Handy: drei Karten je Stufe. Die Merkmal-Spalte verschwindet nur fürs Auge
+   (Screenreader lesen die Zeilenköpfe weiter); das Merkmal steht über jedem
+   Wert als erzeugter Text, der mit dem Alternativtext "" nicht vorgelesen
+   wird. Die erste `content`-Zeile ist der Rückfall für Browser ohne diese
+   Schreibweise: sie zeigen das Merkmal ebenfalls, lesen es aber doppelt. */
+@media (max-width: 749px) {
+  .qb-erklaer__tabelle {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qb-erklaer__zelle {
+    order: var(--qb-karte, 0);
+    display: grid;
+    grid-template-columns: minmax(0, 9em) minmax(0, 1fr);
+    column-gap: var(--qb-ref-raster);
+  }
+
+  .qb-erklaer__zelle::before {
+    content: attr(data-label);
+    content: attr(data-label) / '';
+    color: var(--qb-text-gedaempft);
+  }
+
+  .qb-erklaer__zelle--ecke {
+    display: none;
+  }
+
+  .qb-erklaer__zelle--label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .qb-erklaer__zelle--stufe {
+    display: block;
+    margin-top: calc(2 * var(--qb-ref-raster));
+    padding-bottom: var(--qb-ref-raster);
+    border-bottom: 1px solid var(--qb-akzent);
+  }
+
+  .qb-erklaer__zelle--stufe::before {
+    content: none;
+  }
+
+  .qb-erklaer__zeile--kopf > .qb-erklaer__zelle--stufe:nth-child(2) {
+    margin-top: 0;
+  }
+
+  .qb-erklaer__zeile:last-child .qb-erklaer__zelle {
+    border-bottom: 1px solid var(--qb-ref-tinte-gedaempft);
+  }
 }
 
 .qb-erklaer__einordnung {
@@ -252,6 +332,10 @@
   color: var(--qb-text-gedaempft);
 }
 
+.qb-erklaer__quellzeile {
+  display: block;
+}
+
 /* Der Erklär-Block benutzt nur Schriftgrößen, die auf den beiden Gastgeber-
    seiten ohnehin häufig vorkommen (14/16/20/24 aus der Wurzel). Die kleinste
    Stufe (12) steht dort je Seite nur ein einziges Mal; sie hier für Einordnung,
@@ -261,7 +345,14 @@
    notwendig und nicht hinreichend — welche STUFE man zieht, entscheidet die
    Gastgeberseite mit. */
 
-/* --- Die Bilder --------------------------------------------------------- */
+/* --- Die Bilder ---------------------------------------------------------
+   FARBROLLEN (s02, weil s03 den Goldwert der Seite auf das hellere Kauf-Gold
+   rgb(242,191,114) stellt): Atom-Füllungen und der Keil sind FLÄCHE und
+   tragen --qb-akzent. Dünne Linien, die etwas bedeuten (Winkelbogen,
+   Keilkante, Gitterkanten, das Feld der Domäne), und Gold als Schrift („+5°")
+   brauchen gegen den Popup-Grund mindestens 3:1 bzw. 4,5:1; das Kauf-Gold
+   erreicht 1,54:1, das Bausatz-Gold 2,21:1. Sie tragen deshalb
+   --qb-akzent-tinte (4,78:1). */
 .qb-bild {
   display: block;
   width: 100%;
@@ -269,7 +360,6 @@
 }
 
 .qb-mol__o,
-.qb-mol__h,
 .qb-gitter circle,
 .qb-schwarm circle {
   fill: var(--qb-akzent);
@@ -289,20 +379,15 @@
 }
 
 .qb-gitter--fest line {
-  stroke: var(--qb-akzent);
+  stroke: var(--qb-akzent-tinte);
 }
 
 .qb-gitter--lose line {
   stroke-dasharray: 4 5;
 }
 
-.qb-mol__bogen {
-  fill: none;
-  stroke: var(--qb-akzent);
-  stroke-width: 2;
-}
-
-.qb-mol__geist line {
+.qb-mol__geist line,
+.qb-mol__geist-linie {
   stroke: var(--qb-text-gedaempft);
   stroke-width: 2;
   stroke-dasharray: 3 4;
@@ -312,6 +397,58 @@
   fill: none;
   stroke: var(--qb-text-gedaempft);
   stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+/* Der Winkel: zwei Bögen, der Keil dazwischen, die Lupe. */
+.qb-winkel__keil {
+  fill: var(--qb-akzent);
+  fill-opacity: 0.5;
+}
+
+.qb-winkel__bogen {
+  fill: none;
+  stroke-width: 2;
+}
+
+.qb-winkel__bogen--von {
+  stroke: var(--qb-text-gedaempft);
+  stroke-dasharray: 3 3;
+}
+
+.qb-winkel__bogen--nach,
+.qb-winkel__keilkante {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2;
+}
+
+.qb-winkel__plus {
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+  dominant-baseline: central;
+  fill: var(--qb-akzent-tinte);
+}
+
+.qb-winkel__lupe {
+  fill: var(--qb-flaeche);
+}
+
+.qb-winkel__lupenrand,
+.qb-winkel__ausschnitt {
+  fill: none;
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 1.5;
+}
+
+.qb-winkel__muster {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.qb-winkel__muster--von {
+  stroke-width: 2;
   stroke-dasharray: 3 4;
 }
 
@@ -333,6 +470,7 @@
   font-size: var(--qb-ref-fs-3);
   font-weight: 700;
   text-anchor: middle;
+  dominant-baseline: central;
   fill: var(--qb-text-gedaempft);
 }
 
@@ -346,38 +484,52 @@
   fill: var(--qb-text-gedaempft);
 }
 
+.qb-bild__notiz--links {
+  text-anchor: start;
+}
+
+.qb-bild__notiz--rechtsbuendig {
+  text-anchor: end;
+}
+
 .qb-bild__notiz--akzent {
   fill: var(--qb-text);
 }
 
 .qb-schwarm__feld {
   fill: none;
-  stroke: var(--qb-akzent);
+  stroke: var(--qb-akzent-tinte);
   stroke-width: 1;
   stroke-dasharray: 5 6;
 }
 
+.qb-oberflaeche line {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.qb-oberflaeche .qb-oberflaeche__schraffur {
+  stroke-width: 1;
+}
+
 /* --- Bewegung ----------------------------------------------------------- */
-/* Die Aufweitung wird gefahren, nicht gesprungen. Der Anfangszustand ist
-   GENAU die Lage des engeren Winkels: die beiden Faktoren sind das Verhältnis
-   der Sinus- und Kosinus-Hälften der zwei Winkel, nicht geschätzte Werte.
-   Endzustand ist immer scale(1) — wer die Bewegung abschaltet, sieht das
-   fertige Bild, nie das halbe. */
+/* Der kräftige Arm fährt aus der alten Stellung in die neue. Um wie viel,
+   steht nicht hier: der Winkel kommt als --qb-winkel-weg aus dem Bauteil, das
+   ihn aus den beiden SSoT-Werten rechnet, der Drehpunkt ebenso. Endzustand ist
+   immer die gezeichnete Lage — wer die Bewegung abschaltet, sieht das fertige
+   Bild, nie das halbe. */
 .qb-mol__arme--weitet {
   transform-box: view-box;
   animation: qb-winkel-weitet 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) 0.25s both;
 }
 
-.qb-erklaer__bild[data-bild='winkel'] .qb-mol__arme--weitet {
-  transform-origin: 205px 64px;
-}
-
 @keyframes qb-winkel-weitet {
   from {
-    transform: scale(0.9682, 1.0608);
+    transform: rotate(var(--qb-winkel-weg, 0deg));
   }
   to {
-    transform: scale(1, 1);
+    transform: rotate(0deg);
   }
 }
 
