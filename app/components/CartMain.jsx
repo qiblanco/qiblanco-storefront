@@ -4,6 +4,7 @@ import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {Money} from '@shopify/hydrogen';
+import {taxRateForHandle} from '~/lib/cart-display-pricing';
 
 /**
  * The main cart component that displays the cart items and summary.
@@ -62,7 +63,10 @@ function CartEmpty({hidden = false}) {
 // Beide Zahlen stammen aus DERSELBEN Quelle — der Versandpolicy des DACH-Shops
 // (checkout.qiblanco.com/policies/shipping-policy, live nachgemessen über
 // /cart/shipping_rates.json am 2026-08-12): Deutschland 5,90 EUR, ab 99 EUR
-// versandkostenfrei. Sie stehen deshalb nebeneinander statt verstreut: vorher
+// versandkostenfrei. Die 99 sind NETTO (Warenwert vor Mehrwertsteuer):
+// nachgemessen 2026-09-23 an cartCreate/deliveryGroups, 2x Kakao mit Subtotal
+// 114,02 netto ist frei (Job 20260923-bot-versandfakten-gegen-rate-engine-prio40).
+// Sie stehen deshalb nebeneinander statt verstreut: vorher
 // lag die Schwelle im Rechenweg und der Versandpreis als Textliteral tief im
 // JSX — und dieses Literal war mit "4,96" der NETTO-Betrag (5,90 / 1,19), dem
 // B2C-Kunden also zu niedrig ausgewiesen. Wer eine der Zahlen anfasst, sieht
@@ -71,8 +75,11 @@ const SCHWELLE_DE = 99;
 const VERSAND_DE = '5,90';
 
 function FreeShipping({cart}){
-  // Die Schwelle gilt ausschließlich für Deutschland — Österreich (6,90 EUR)
-  // und die Schweiz (21,00 EUR) haben überhaupt keine. Der Währungs-Riegel
+  // Dieser Banner zeigt nur die deutsche Schwelle. Österreich hat eine eigene
+  // (6,90 EUR bis 250 EUR netto, Geräte dort ohnehin versandkostenfrei), die
+  // Schweiz rechnet in CHF (9 bzw. 21 CHF, ohne Schwelle); gemessen 2026-09-23
+  // an cartCreate/deliveryGroups, Stand wie die FAQ seit PR #590.
+  // Der Währungs-Riegel
   // unten blendet den Banner in Nicht-EUR-Märkten aus (CHF/USD) und fängt
   // damit die Schweiz, NICHT aber Österreich: das kauft ebenfalls in EUR und
   // sähe hier sonst einen Fortschrittsbalken auf ein Versprechen zu, das der
@@ -84,8 +91,15 @@ function FreeShipping({cart}){
   let difference = SCHWELLE_DE - subtotal;
   let progress = (subtotal / SCHWELLE_DE) * 100;
 
+  // ANZEIGE IN BRUTTO: Schwelle und Rechenweg sind netto (subtotalAmount im
+  // Netto-Shop), jede andere Zahl im Warenkorb steht aber brutto da. Bis
+  // 2026-09-23 stand hier die Netto-Differenz ("Nur noch 20,01 €" beim Necklace
+  // für 94 €). Aufgeschlagen wird der Regelsatz: fehlt der Rest mit Kakao
+  // (ermäßigter Satz), reicht sogar etwas weniger. Der Betrag ist damit eine
+  // Obergrenze und nie zu klein.
+  const diffBrutto = difference * (1 + taxRateForHandle(null, 'DE'));
   let diffMoney = {
-    amount: difference.toFixed(2),
+    amount: diffBrutto.toFixed(2),
     currencyCode: cart?.cost?.subtotalAmount?.currencyCode ?? "EUR",
   };
 
