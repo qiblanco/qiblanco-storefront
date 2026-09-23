@@ -30,7 +30,10 @@ const BOG = Math.PI / 180;
 const f1 = (z) => Number(z.toFixed(1));
 
 function punkt(ox, oy, r, richtung) {
-  return {x: ox + r * Math.cos(richtung * BOG), y: oy + r * Math.sin(richtung * BOG)};
+  return {
+    x: ox + r * Math.cos(richtung * BOG),
+    y: oy + r * Math.sin(richtung * BOG),
+  };
 }
 
 function bogen(ox, oy, r, von, bis) {
@@ -58,10 +61,13 @@ function streu(i, faktor) {
  * Oben der Sauerstoff, darunter die beiden Wasserstoffe. Gezeichnet ist die
  * Endlage (`nach`); die Arme starten um die halbe Differenz gedreht und fahren
  * in die Endlage. Danach setzen sich sechs Nachbarn zu einem Sechseck.
+ * Die Aufweitung um wenige Grad wäre neben dem Ring kaum zu sehen; die
+ * gestrichelten Geister-Arme zeigen die Ausgangslage deshalb dauerhaft mit.
  */
 export function GrafikLeit({von, nach}) {
-  const O = {x: 260, y: 118};
-  const R = 74;
+  const M = {x: 260, y: 160};
+  const O = {x: 260, y: 128};
+  const R = 80;
   const halbNach = nach.grad / 2;
   const halbVon = von.grad / 2;
   const links = punkt(O.x, O.y, R, 90 + halbNach);
@@ -69,27 +75,25 @@ export function GrafikLeit({von, nach}) {
   const geistL = punkt(O.x, O.y, R, 90 + halbVon);
   const geistR = punkt(O.x, O.y, R, 90 - halbVon);
   const weg = (nach.grad - von.grad) / 2;
-  const ring = sechseck(O.x, O.y + 26, 150, 0).filter((p) => p.y > 18 && p.y < 262);
-  const ringVoll = sechseck(O.x, O.y + 26, 150, 0);
-  const etikett = punkt(O.x, O.y, 40, 90);
+  const ring = sechseck(M.x, M.y, 136, 0);
   return (
     <svg
       className="kw-grafik kw-grafik--leit"
-      viewBox="0 0 520 290"
+      viewBox="0 0 520 340"
       role="img"
-      aria-label={`Ein Wassermolekül weitet seinen Winkel von ${von.anzeige} auf ${nach.anzeige}. Danach ordnen sich die Nachbarmoleküle zu einem Sechseck.`}
+      aria-label={`Ein Wassermolekül weitet seinen Winkel von ${von.anzeige} auf ${nach.anzeige}. Danach ordnen sich sechs Nachbarmoleküle zu einem Sechseck.`}
       data-kw-grafik="leit"
       data-winkel-von={von.grad}
       data-winkel-nach={nach.grad}
     >
       <g className="kw-leit__ring">
-        {ringVoll.map((p, i) => {
-          const q = ringVoll[(i + 1) % 6];
+        {ring.map((p, i) => {
+          const q = ring[(i + 1) % 6];
           return (
             <line
               key={`rl${i}`}
               className="kw-leit__ringkante"
-              style={{animationDelay: `${1.6 + i * 0.18}s`}}
+              style={{animationDelay: `${f1(0.25 + i * 0.12)}s`}}
               x1={f1(p.x)}
               y1={f1(p.y)}
               x2={f1(q.x)}
@@ -101,47 +105,102 @@ export function GrafikLeit({von, nach}) {
           <g
             key={`rn${i}`}
             className="kw-leit__nachbar"
-            style={{animationDelay: `${1.4 + i * 0.18}s`}}
+            style={{animationDelay: `${f1(i * 0.12)}s`}}
           >
+            <circle
+              className="kw-atom-h"
+              cx={f1(p.x - 9)}
+              cy={f1(p.y + 11)}
+              r="6"
+            />
+            <circle
+              className="kw-atom-h"
+              cx={f1(p.x + 9)}
+              cy={f1(p.y + 11)}
+              r="6"
+            />
             <circle className="kw-atom-o" cx={f1(p.x)} cy={f1(p.y)} r="13" />
           </g>
         ))}
       </g>
-      <line className="kw-geist" x1={O.x} y1={O.y} x2={f1(geistL.x)} y2={f1(geistL.y)} />
-      <line className="kw-geist" x1={O.x} y1={O.y} x2={f1(geistR.x)} y2={f1(geistR.y)} />
-      <path className="kw-leit__bogen-von" d={bogen(O.x, O.y, 30, 90 - halbVon, 90 + halbVon)} />
-      <path className="kw-leit__bogen-nach" d={bogen(O.x, O.y, 46, 90 - halbNach, 90 + halbNach)} />
+      <line
+        className="kw-geist"
+        x1={O.x}
+        y1={O.y}
+        x2={f1(geistL.x)}
+        y2={f1(geistL.y)}
+      />
+      <line
+        className="kw-geist"
+        x1={O.x}
+        y1={O.y}
+        x2={f1(geistR.x)}
+        y2={f1(geistR.y)}
+      />
+      <path
+        className="kw-leit__bogen-von"
+        d={bogen(O.x, O.y, 32, 90 - halbVon, 90 + halbVon)}
+      />
+      <path
+        className="kw-leit__bogen-nach"
+        d={bogen(O.x, O.y, 48, 90 - halbNach, 90 + halbNach)}
+      />
       <g
         className="kw-leit__arm"
-        style={{'--kw-dreh': `${-weg}deg`, transformOrigin: `${O.x}px ${O.y}px`}}
+        style={{
+          '--kw-dreh': `${-weg}deg`,
+          transformOrigin: `${O.x}px ${O.y}px`,
+        }}
       >
-        <line className="kw-bindung" x1={O.x} y1={O.y} x2={f1(links.x)} y2={f1(links.y)} />
-        <circle className="kw-atom-h" cx={f1(links.x)} cy={f1(links.y)} r="15" />
+        <line
+          className="kw-bindung"
+          x1={O.x}
+          y1={O.y}
+          x2={f1(links.x)}
+          y2={f1(links.y)}
+        />
+        <circle
+          className="kw-atom-h"
+          cx={f1(links.x)}
+          cy={f1(links.y)}
+          r="17"
+        />
+        <text className="kw-zeichen" x={f1(links.x)} y={f1(links.y)}>
+          H
+        </text>
       </g>
       <g
         className="kw-leit__arm"
         style={{'--kw-dreh': `${weg}deg`, transformOrigin: `${O.x}px ${O.y}px`}}
       >
-        <line className="kw-bindung" x1={O.x} y1={O.y} x2={f1(rechts.x)} y2={f1(rechts.y)} />
-        <circle className="kw-atom-h" cx={f1(rechts.x)} cy={f1(rechts.y)} r="15" />
+        <line
+          className="kw-bindung"
+          x1={O.x}
+          y1={O.y}
+          x2={f1(rechts.x)}
+          y2={f1(rechts.y)}
+        />
+        <circle
+          className="kw-atom-h"
+          cx={f1(rechts.x)}
+          cy={f1(rechts.y)}
+          r="17"
+        />
+        <text className="kw-zeichen" x={f1(rechts.x)} y={f1(rechts.y)}>
+          H
+        </text>
       </g>
-      <circle className="kw-atom-o" cx={O.x} cy={O.y} r="24" />
+      <circle className="kw-atom-o" cx={O.x} cy={O.y} r="27" />
       <text className="kw-zeichen kw-zeichen--auf-akzent" x={O.x} y={O.y}>
         O
       </text>
-      <text className="kw-zeichen" x={f1(links.x)} y={f1(links.y)}>
-        H
-      </text>
-      <text className="kw-zeichen" x={f1(rechts.x)} y={f1(rechts.y)}>
-        H
-      </text>
-      <text className="kw-wert kw-wert--akzent" x={f1(etikett.x)} y={f1(etikett.y + 20)}>
+      <text className="kw-wert kw-wert--akzent" x={O.x} y={O.y + 72}>
         {nach.anzeige}
       </text>
-      <text className="kw-notiz kw-notiz--links" x="18" y="276">
+      <text className="kw-notiz kw-notiz--links" x="12" y="334">
         gestrichelt: {von.anzeige} ({von.was})
       </text>
-      <text className="kw-notiz kw-notiz--rechts" x="502" y="276">
+      <text className="kw-notiz kw-notiz--rechts" x="508" y="334">
         kräftig: {nach.anzeige} ({nach.was})
       </text>
     </svg>
@@ -299,7 +358,9 @@ export function GrafikDomaene({energie, groesse, innen, aussen}) {
       {dipole.map((d) => (
         <g
           key={`d${d.i}`}
-          className={d.drin ? 'kw-dipol kw-dipol--takt' : 'kw-dipol kw-dipol--frei'}
+          className={
+            d.drin ? 'kw-dipol kw-dipol--takt' : 'kw-dipol kw-dipol--frei'
+          }
           style={
             d.drin
               ? undefined
@@ -313,7 +374,14 @@ export function GrafikDomaene({energie, groesse, innen, aussen}) {
           <circle cx={d.x} cy={d.y} r="6" />
         </g>
       ))}
-      <rect className="kw-schild" x="196" y="224" width="168" height="30" rx="8" />
+      <rect
+        className="kw-schild"
+        x="196"
+        y="224"
+        width="168"
+        height="30"
+        rx="8"
+      />
       <text className="kw-notiz kw-notiz--stark" x={M.x} y="240">
         {innen}: {energie}
       </text>
@@ -331,7 +399,14 @@ export function GrafikDomaene({energie, groesse, innen, aussen}) {
 /* 4  Die Ausschlusszone an einer wasserliebenden Oberfläche                */
 /* ------------------------------------------------------------------------ */
 
-export function GrafikAusschlusszone({oberflaeche, zone, verdraengt, ladungZone, ladungWasser, breite}) {
+export function GrafikAusschlusszone({
+  oberflaeche,
+  zone,
+  verdraengt,
+  ladungZone,
+  ladungWasser,
+  breite,
+}) {
   const X0 = 64;
   const B = 190;
   const waben = [];
@@ -359,7 +434,14 @@ export function GrafikAusschlusszone({oberflaeche, zone, verdraengt, ladungZone,
       <g className="kw-flaeche">
         <rect x="16" y="26" width={X0 - 16} height="204" />
         {Array.from({length: 12}, (_, i) => 30 + i * 17).map((y) => (
-          <line key={`s${y}`} className="kw-flaeche__schraffur" x1="18" y1={y + 12} x2={X0 - 4} y2={y} />
+          <line
+            key={`s${y}`}
+            className="kw-flaeche__schraffur"
+            x1="18"
+            y1={y + 12}
+            x2={X0 - 4}
+            y2={y}
+          />
         ))}
       </g>
       <g className="kw-zone" style={{transformOrigin: `${X0}px 128px`}}>
@@ -372,11 +454,22 @@ export function GrafikAusschlusszone({oberflaeche, zone, verdraengt, ladungZone,
           />
         ))}
         {[60, 110, 160, 205].map((y, i) => (
-          <text key={`m${y}`} className="kw-ladung kw-ladung--minus" x={X0 + 36 + (i % 2) * 70} y={y}>
+          <text
+            key={`m${y}`}
+            className="kw-ladung kw-ladung--minus"
+            x={X0 + 36 + (i % 2) * 70}
+            y={y}
+          >
             −
           </text>
         ))}
-        <line className="kw-zone__grenze" x1={X0 + B} y1="26" x2={X0 + B} y2="230" />
+        <line
+          className="kw-zone__grenze"
+          x1={X0 + B}
+          y1="26"
+          x2={X0 + B}
+          y2="230"
+        />
       </g>
       <g className="kw-teilchen">
         {teilchen.map((t, i) => (
@@ -390,7 +483,12 @@ export function GrafikAusschlusszone({oberflaeche, zone, verdraengt, ladungZone,
           />
         ))}
         {[70, 140, 200].map((y, i) => (
-          <text key={`p${y}`} className="kw-ladung kw-ladung--plus" x={X0 + B + 60 + i * 84} y={y}>
+          <text
+            key={`p${y}`}
+            className="kw-ladung kw-ladung--plus"
+            x={X0 + B + 60 + i * 84}
+            y={y}
+          >
             +
           </text>
         ))}
@@ -438,9 +536,17 @@ export function GrafikLicht({ohne, mit, licht, zusatz}) {
     >
       {zeilen.map((z) => (
         <g key={`z${z.y}`}>
-          <rect className="kw-flaeche__block" x="16" y={z.y - 34} width="40" height="68" />
           <rect
-            className={z.animiert ? 'kw-balken kw-balken--waechst' : 'kw-balken'}
+            className="kw-flaeche__block"
+            x="16"
+            y={z.y - 34}
+            width="40"
+            height="68"
+          />
+          <rect
+            className={
+              z.animiert ? 'kw-balken kw-balken--waechst' : 'kw-balken'
+            }
             style={{transformOrigin: `56px ${z.y}px`}}
             x="56"
             y={z.y - 34}
@@ -453,7 +559,10 @@ export function GrafikLicht({ohne, mit, licht, zusatz}) {
         </g>
       ))}
       <path className="kw-welle" d={welle(360, 540, 168, 10, 40)} />
-      <path className="kw-welle kw-welle--zwei" d={welle(360, 540, 150, 7, 40)} />
+      <path
+        className="kw-welle kw-welle--zwei"
+        d={welle(360, 540, 150, 7, 40)}
+      />
       <text className="kw-notiz kw-notiz--rechts" x="546" y="206">
         {licht}
       </text>
@@ -476,12 +585,13 @@ export function GrafikMassstab({marken, achse}) {
   const X1 = 530;
   const lgMin = -10;
   const lgMax = -3;
-  const xVon = (m) => X0 + ((Math.log10(m) - lgMin) / (lgMax - lgMin)) * (X1 - X0);
+  const xVon = (m) =>
+    X0 + ((Math.log10(m) - lgMin) / (lgMax - lgMin)) * (X1 - X0);
   const dekaden = Array.from({length: lgMax - lgMin + 1}, (_, k) => lgMin + k);
   return (
     <svg
       className="kw-grafik"
-      viewBox="0 0 560 190"
+      viewBox="0 0 560 200"
       role="img"
       aria-label={`Größenmaßstab von ${achse[0]} bis ${achse[1]}: ${marken
         .map((m) => `${m.was} ${m.anzeige}`)
@@ -491,12 +601,21 @@ export function GrafikMassstab({marken, achse}) {
       <line className="kw-achse" x1={X0} y1="120" x2={X1} y2="120" />
       {dekaden.map((lg) => {
         const x = X0 + ((lg - lgMin) / (lgMax - lgMin)) * (X1 - X0);
-        return <line key={`t${lg}`} className="kw-achse__strich" x1={f1(x)} y1="114" x2={f1(x)} y2="126" />;
+        return (
+          <line
+            key={`t${lg}`}
+            className="kw-achse__strich"
+            x1={f1(x)}
+            y1="114"
+            x2={f1(x)}
+            y2="126"
+          />
+        );
       })}
-      <text className="kw-notiz kw-notiz--links" x={X0} y="150">
+      <text className="kw-notiz kw-notiz--links" x={X0} y="148">
         {achse[0]}
       </text>
-      <text className="kw-notiz kw-notiz--rechts" x={X1} y="150">
+      <text className="kw-notiz kw-notiz--rechts" x={X1} y="148">
         {achse[1]}
       </text>
       {marken.map((m, i) => {
@@ -504,23 +623,39 @@ export function GrafikMassstab({marken, achse}) {
         const bis = m.meterBis ? f1(xVon(m.meterBis)) : null;
         const oben = i % 2 === 0;
         return (
-          <g key={m.was} className="kw-marke" style={{animationDelay: `${0.3 + i * 0.5}s`}}>
+          <g
+            key={m.was}
+            className="kw-marke"
+            style={{animationDelay: `${0.3 + i * 0.5}s`}}
+          >
             {bis ? (
-              <rect className="kw-marke__band" x={x} y="112" width={f1(bis - x)} height="16" rx="4" />
+              <rect
+                className="kw-marke__band"
+                x={x}
+                y="112"
+                width={f1(bis - x)}
+                height="16"
+                rx="4"
+              />
             ) : null}
             <circle className="kw-atom-o" cx={x} cy="120" r="8" />
-            <line className="kw-marke__stiel" x1={x} y1={oben ? 110 : 130} x2={x} y2={oben ? 62 : 164} />
-            <text className="kw-notiz kw-notiz--stark" x={x} y={oben ? 34 : 180}>
+            <line
+              className="kw-marke__stiel"
+              x1={x}
+              y1={oben ? 108 : 132}
+              x2={x}
+              y2={oben ? 66 : 150}
+            />
+            <text
+              className="kw-notiz kw-notiz--stark"
+              x={x}
+              y={oben ? 34 : 188}
+            >
               {m.was}
             </text>
-            <text className="kw-notiz" x={x} y={oben ? 54 : 164 + 0}>
-              {oben ? m.anzeige : ''}
+            <text className="kw-notiz" x={x} y={oben ? 56 : 168}>
+              {m.anzeige}
             </text>
-            {!oben ? (
-              <text className="kw-notiz" x={x} y="146">
-                {m.anzeige}
-              </text>
-            ) : null}
           </g>
         );
       })}
@@ -532,7 +667,13 @@ export function GrafikMassstab({marken, achse}) {
 /* 7  Das Absorptionsspektrum: das Maximum der Zone                          */
 /* ------------------------------------------------------------------------ */
 
-export function GrafikSpektrum({maximumNm, bereichNm, zoneText, wasserText, achseText}) {
+export function GrafikSpektrum({
+  maximumNm,
+  bereichNm,
+  zoneText,
+  wasserText,
+  achseText,
+}) {
   const [nmMin, nmMax] = bereichNm;
   const X0 = 50;
   const X1 = 530;
@@ -541,7 +682,10 @@ export function GrafikSpektrum({maximumNm, bereichNm, zoneText, wasserText, achs
   const kurve = (hoehe, breite, basis) => {
     let d = '';
     for (let nm = nmMin; nm <= nmMax; nm += 4) {
-      const y = Y0 - basis(nm) - hoehe * Math.exp(-((nm - maximumNm) ** 2) / (2 * breite ** 2));
+      const y =
+        Y0 -
+        basis(nm) -
+        hoehe * Math.exp(-((nm - maximumNm) ** 2) / (2 * breite ** 2));
       d += `${d ? ' L' : 'M'} ${f1(xVon(nm))} ${f1(y)}`;
     }
     return d;

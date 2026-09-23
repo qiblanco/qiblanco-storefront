@@ -57,7 +57,10 @@ export function WasserStufentafel({titel, erklaerung, startStufe = 'ez'}) {
         data-wasser-stufen={spalten.length}
       >
         <div className="qb-erklaer__zeile qb-erklaer__zeile--kopf" role="row">
-          <span className="qb-erklaer__zelle qb-erklaer__zelle--ecke" role="columnheader" />
+          <span
+            className="qb-erklaer__zelle qb-erklaer__zelle--ecke"
+            role="columnheader"
+          />
           {spalten.map((st, s) => (
             <span
               className="qb-erklaer__zelle qb-erklaer__zelle--stufe"
@@ -68,13 +71,18 @@ export function WasserStufentafel({titel, erklaerung, startStufe = 'ez'}) {
               style={{'--qb-karte': s * block}}
             >
               <strong>{st.name}</strong>
-              {st.zusatz ? <span className="qb-erklaer__zusatz">{st.zusatz}</span> : null}
+              {st.zusatz ? (
+                <span className="qb-erklaer__zusatz">{st.zusatz}</span>
+              ) : null}
             </span>
           ))}
         </div>
         {vergleich.zeilen.map((z, f) => (
           <div className="qb-erklaer__zeile" role="row" key={z.feld}>
-            <span className="qb-erklaer__zelle qb-erklaer__zelle--label" role="rowheader">
+            <span
+              className="qb-erklaer__zelle qb-erklaer__zelle--label"
+              role="rowheader"
+            >
               {z.label}
             </span>
             {spalten.map((st, s) => {

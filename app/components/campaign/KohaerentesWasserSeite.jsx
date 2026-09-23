@@ -1,6 +1,10 @@
 import {Fragment} from 'react';
 import {Link} from 'react-router';
-import {BildWinkel, BildDomaene, BildStruktur} from '~/components/reusables/WasserstrukturBilder';
+import {
+  BildWinkel,
+  BildDomaene,
+  BildStruktur,
+} from '~/components/reusables/WasserstrukturBilder';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {FaqListe} from '~/components/reusables/FaqListe';
 import {WasserStufentafel} from '~/components/campaign/WasserStufentafel';
@@ -55,7 +59,9 @@ const GRAFIKEN = {
 
 /** Text mit Zitatmarken {q:id} und internen Verweisen {l:/pfad|Text}. */
 function Text({children}) {
-  const teile = String(children).split(/(\{q:[a-z0-9-]+\}|\{l:[^}|]+\|[^}]+\})/g);
+  // Die Zitatnummer hängt am Wort, ohne Leerzeichen davor (wie im Fachtext).
+  const roh = String(children).replace(/\s+(\{q:)/g, '$1');
+  const teile = roh.split(/(\{q:[a-z0-9-]+\}|\{l:[^}|]+\|[^}]+\})/g);
   return teile.map((teil, i) => {
     const zitat = teil.match(/^\{q:([a-z0-9-]+)\}$/);
     if (zitat) {
@@ -104,18 +110,53 @@ function Grafik({grafik}) {
 
 function Abschnitt({a}) {
   return (
-    <section className="kw-abschnitt" id={a.id} aria-labelledby={`${a.id}-titel`}>
+    <section
+      className="kw-abschnitt"
+      id={a.id}
+      data-section={`kw-${a.id}`}
+      aria-labelledby={`${a.id}-titel`}
+    >
       <h3 id={`${a.id}-titel`}>{a.titel}</h3>
       {a.klasse ? <p className="kw-klasse">{a.klasse}</p> : null}
       <Absaetze liste={a.absaetze} />
+      {a.tabelle ? <Tabelle tabelle={a.tabelle} /> : null}
       <Grafik grafik={a.grafik} />
       {a.nachGrafik ? <Absaetze liste={a.nachGrafik} /> : null}
       {a.stufentafel ? (
-        <WasserStufentafel titel={STUFENTAFEL.titel} erklaerung={STUFENTAFEL.erklaerung} />
+        <WasserStufentafel
+          titel={STUFENTAFEL.titel}
+          erklaerung={STUFENTAFEL.erklaerung}
+        />
       ) : null}
       {a.video ? <Video /> : null}
       {a.begriffe ? <Begriffe /> : null}
     </section>
+  );
+}
+
+function Tabelle({tabelle}) {
+  return (
+    <table className="kw-begriffe kw-tabelle">
+      <thead>
+        <tr>
+          {tabelle.spalten.map((s) => (
+            <th scope="col" key={s}>
+              {s}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tabelle.zeilen.map(([kopf, befund]) => (
+          <tr key={kopf}>
+            <th scope="row">{kopf}</th>
+            <td>
+              <Text>{befund}</Text>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -181,7 +222,13 @@ function TeilEinfach() {
       </p>
       {t.abschnitte.map((a) =>
         a.stufenbilder ? (
-          <section className="kw-abschnitt" id={a.id} key={a.id} aria-labelledby={`${a.id}-titel`}>
+          <section
+            className="kw-abschnitt"
+            id={a.id}
+            key={a.id}
+            data-section={`kw-${a.id}`}
+            aria-labelledby={`${a.id}-titel`}
+          >
             <h3 id={`${a.id}-titel`}>{a.titel}</h3>
             <Absaetze liste={a.absaetze} />
             <ul className="kw-karten">
@@ -192,25 +239,40 @@ function TeilEinfach() {
                 <p className="kw-karte__folge">{BILD.winkel.folge}</p>
               </li>
               <li className="kw-karte">
-                <BildDomaene schwellen={BILD.domaene.schwellen} energie={BILD.domaene.energie} />
+                <BildDomaene
+                  schwellen={BILD.domaene.schwellen}
+                  energie={BILD.domaene.energie}
+                />
                 <h4>{BILD.domaene.titel}</h4>
                 <p>{BILD.domaene.text}</p>
                 <p className="kw-karte__folge">{BILD.domaene.folge}</p>
               </li>
               <li className="kw-karte">
-                <BildStruktur von={BILD.struktur.von} nach={BILD.struktur.nach} />
+                <BildStruktur
+                  von={BILD.struktur.von}
+                  nach={BILD.struktur.nach}
+                />
                 <h4>{BILD.struktur.titel}</h4>
                 <p>{BILD.struktur.text}</p>
                 <p className="kw-karte__folge">{BILD.struktur.folge}</p>
               </li>
             </ul>
             {a.nachGrafik ? <Absaetze liste={a.nachGrafik} /> : null}
+            {a.video ? <Video /> : null}
           </section>
         ) : a.karten ? (
-          <section className="kw-abschnitt" id={a.id} key={a.id} aria-labelledby={`${a.id}-titel`}>
+          <section
+            className="kw-abschnitt"
+            id={a.id}
+            key={a.id}
+            data-section={`kw-${a.id}`}
+            aria-labelledby={`${a.id}-titel`}
+          >
             <h3 id={`${a.id}-titel`}>{a.titel}</h3>
             <Absaetze liste={a.absaetze} />
-            <ul className="kw-karten">
+            <ul
+              className={`kw-karten${a.karten.length === 4 ? ' kw-karten--vier' : ''}`}
+            >
               {a.karten.map((k) => (
                 <li className="kw-karte" key={k.titel}>
                   <h4>{k.titel}</h4>
@@ -249,7 +311,7 @@ export function KohaerentesWasserSeite() {
   const winkel = BILD.winkel;
   return (
     <article className="kw" data-kw-seite="" lang="de">
-      <header className="kw-kopf">
+      <header className="kw-kopf" data-section="kw-kopf">
         <div className="kw-kopf__text">
           <p className="kw-kopf__marke">{SEITE.marke}</p>
           <h1>{SEITE.h1}</h1>
@@ -261,7 +323,8 @@ export function KohaerentesWasserSeite() {
             </p>
           </div>
           <p className="kw-meta">
-            {SEITE.autorZeile} · Stand {SEITE.standAnzeige} · {QUELLEN.length} Quellen
+            {SEITE.autorZeile} · Stand {SEITE.standAnzeige} · {QUELLEN.length}{' '}
+            Quellen
           </p>
         </div>
         <figure className="kw-figur kw-figur--leit">
@@ -270,7 +333,11 @@ export function KohaerentesWasserSeite() {
         </figure>
       </header>
 
-      <nav className="kw-inhalt" aria-labelledby="kw-inhalt-titel">
+      <nav
+        className="kw-inhalt"
+        data-section="kw-inhalt"
+        aria-labelledby="kw-inhalt-titel"
+      >
         <p className="kw-inhalt__titel" id="kw-inhalt-titel">
           Inhalt
         </p>
@@ -286,12 +353,22 @@ export function KohaerentesWasserSeite() {
       <TeilEinfach />
       <TeilFakten />
 
-      <section className="kw-teil kw-fragen" id="fragen" aria-labelledby="fragen-titel">
+      <section
+        className="kw-teil kw-fragen"
+        id="fragen"
+        data-section="kw-fragen"
+        aria-labelledby="fragen-titel"
+      >
         <h2 id="fragen-titel">Häufige Fragen zu kohärentem Wasser</h2>
         <FaqListe items={FRAGEN} />
       </section>
 
-      <section className="kw-teil" id="glossar" aria-labelledby="glossar-titel">
+      <section
+        className="kw-teil"
+        id="glossar"
+        data-section="kw-glossar"
+        aria-labelledby="glossar-titel"
+      >
         <h2 id="glossar-titel">Glossar</h2>
         <dl className="kw-glossar">
           {GLOSSAR.map((g) => (
@@ -305,24 +382,36 @@ export function KohaerentesWasserSeite() {
         </dl>
       </section>
 
-      <section className="kw-teil" id="quellen" aria-labelledby="quellen-titel">
+      <section
+        className="kw-teil"
+        id="quellen"
+        data-section="kw-quellen"
+        aria-labelledby="quellen-titel"
+      >
         <h2 id="quellen-titel">Quellen</h2>
         <ol className="kw-quellen">
           {QUELLEN.map((q) => (
             <li id={`q-${q.id}`} key={q.id}>
-              {q.zitat}{' '}
+              {q.autoren} ({q.jahr}): <cite>{q.titel}</cite>. {q.ort}.{' '}
               {q.url ? (
                 <a href={q.url} target="_blank" rel="noopener noreferrer">
-                  {q.linkText}
+                  {q.url.replace(/^https:\/\//, '')}
                 </a>
               ) : null}
-              {q.kern ? <span className="kw-quellen__kern">{q.kern}</span> : null}
+              {q.kern ? (
+                <span className="kw-quellen__kern">{q.kern}</span>
+              ) : null}
             </li>
           ))}
         </ol>
       </section>
 
-      <section className="kw-teil" id="weiter" aria-labelledby="weiter-titel">
+      <section
+        className="kw-teil"
+        id="weiter"
+        data-section="kw-weiter"
+        aria-labelledby="weiter-titel"
+      >
         <h2 id="weiter-titel">Weiterlesen</h2>
         <ul className="kw-weiter">
           {WEITER.map((w) => (
