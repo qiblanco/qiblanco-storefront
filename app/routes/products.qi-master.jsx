@@ -8,10 +8,9 @@ import QiMaster, {
 } from '~/components/product-pages/QiMaster';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qiMasterStyles from '~/styles/qi-master.css?url';
+import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {QiMasterTreppe} from '~/components/product-pages/QiMasterTreppe';
-import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
-import preisstufen from '~/data/qi-master-preisstufen.json';
+import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
 
@@ -64,7 +63,13 @@ import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
  * die Token-Schicht der Seite, damit app.css unangetastet bleibt.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: qiMasterStyles}];
+  return [
+    {rel: 'stylesheet', href: qiMasterStyles},
+    // Christians Fassung vom 22.09.2026 (QiMasterWortlaut) — eigene Datei,
+    // geteilt mit der Landingpage; Begründung im Kopf von
+    // app/styles/qi-master-wortlaut.css.
+    {rel: 'stylesheet', href: wortlautStyles},
+  ];
 }
 
 /**
@@ -123,15 +128,16 @@ async function loadCriticalData({context, request}, handle) {
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
-  // VORVERKAUFSTREPPE — hier und nicht in der Komponente. Welche Stufe gilt,
-  // entscheidet das Datum; im Browser berechnet stünde sie NICHT im
-  // ausgelieferten HTML (die Abnahme-Probe misst genau dieses HTML) und liefe
-  // am Stufenwechsel zwischen Server- und Browserdatum auseinander.
-  // Quelle ist app/data/qi-master-preisstufen.json — Prozentsätze, keine
-  // ausgerechneten Preise; gerechnet wird EINMAL in ~/lib/qi-master-preisstufen.
+  // HIER STAND BIS ZUM 22.09.2026 DIE VORVERKAUFSTREPPE (`treppe:
+  // treppeRechnen(preisstufen)`). Christian hat sie an diesem Tag ersatzlos
+  // abgelöst: kein laufender Vorverkauf, kein Rabatt, der Preis ist fixiert.
+  // Der Loader rechnet deshalb keine Stufe mehr — auch nicht „nur für die
+  // Daten": was der Loader liefert, steht im ausgelieferten Stream, und eine
+  // Treppe dort wäre ausgeliefert, auch wenn sie niemand sieht. Der Text an
+  // ihrer Stelle kommt zur Bauzeit aus app/data/qi-master-wortlaut.json
+  // (QiMasterWortlaut) und braucht keinen Loader.
   return {
     product,
-    treppe: treppeRechnen(preisstufen),
     // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
     // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
@@ -146,7 +152,7 @@ function loadDeferredData() {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, treppe} = useLoaderData();
+  const {product} = useLoaderData();
   const {descriptionHtml} = product;
 
   return (
@@ -214,7 +220,10 @@ export default function Product() {
         priceLabel={
           <>
             <p className="qm-steuerhinweis">inkl. 19 % MwSt.</p>
-            <QiMasterTreppe treppe={treppe} kompakt />
+            {/* Christians Fassung vom 22.09.2026 an der Stelle der
+                abgelösten Vorverkaufstreppe — aus der einen Quelle
+                app/data/qi-master-wortlaut.json. */}
+            <QiMasterWortlaut kompakt />
           </>
         }
         benefitList={
