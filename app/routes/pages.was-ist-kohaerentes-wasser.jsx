@@ -1,5 +1,5 @@
 import {KohaerentesWasserSeite} from '~/components/campaign/KohaerentesWasserSeite';
-import kwStyles from '~/styles/kohaerentes-wasser.css?url';
+import kwStyles from '~/styles/was-ist-kohaerentes-wasser.css?url';
 import qbErklaerPopupStyles from '~/styles/qb-erklaer-popup.css?url';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
