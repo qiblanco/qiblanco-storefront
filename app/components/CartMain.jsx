@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
-import {Money} from '@shopify/hydrogen';
+import {formatPreis} from '~/lib/markt-pricing';
 import {taxRateForHandle} from '~/lib/cart-display-pricing';
 
 /**
@@ -98,10 +98,9 @@ function FreeShipping({cart}){
   // (ermäßigter Satz), reicht sogar etwas weniger. Der Betrag ist damit eine
   // Obergrenze und nie zu klein.
   const diffBrutto = difference * (1 + taxRateForHandle(null, 'DE'));
-  let diffMoney = {
-    amount: diffBrutto.toFixed(2),
-    currencyCode: cart?.cost?.subtotalAmount?.currencyCode ?? "EUR",
-  };
+  // Geschrieben wie Zeile und Zwischensumme ("23,81 €", CartSummary nutzt
+  // denselben Formatierer). <Money> schrieb hier "€23.81" neben "94,00 €".
+  const diffText = formatPreis(diffBrutto, 'EUR', 'cart-cent');
 
   if(difference <= 0){
     progress = 100;
@@ -111,7 +110,7 @@ function FreeShipping({cart}){
   return (
     <div className="free-shipping-wrapper">
       <small className="free-shipping-header"> 
-        Nur noch <b><Money data={diffMoney} /></b> bis zum kostenlosen Versand innerhalb Deutschlands!
+        Nur noch <b>{diffText}</b> bis zum kostenlosen Versand innerhalb Deutschlands!
       </small>
       <div className="freeshipping-tracker-and-icon">
         <div className="free-shipping-progress">
@@ -120,7 +119,7 @@ function FreeShipping({cart}){
         <div className="svg"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="currentColor"><path d="M128 129.09V232a8 8 0 0 1-3.84-1l-88-48.18a8 8 0 0 1-4.16-7V80.18a8 8 0 0 1 .7-3.25Z" opacity={0.2}></path><path d="m223.68 66.15l-88-48.15a15.88 15.88 0 0 0-15.36 0l-88 48.17a16 16 0 0 0-8.32 14v95.64a16 16 0 0 0 8.32 14l88 48.17a15.88 15.88 0 0 0 15.36 0l88-48.17a16 16 0 0 0 8.32-14V80.18a16 16 0 0 0-8.32-14.03M128 32l80.34 44l-29.77 16.3l-80.35-44Zm0 88L47.66 76l33.9-18.56l80.34 44ZM40 90l80 43.78v85.79l-80-43.75Zm176 85.78l-80 43.79v-85.75l32-17.51V152a8 8 0 0 0 16 0v-44.45L216 90v85.77Z"></path></g></svg></div>
       </div> 
       <small className="free-shipping-footer">
-        Versandkosten innerhalb von Deutschland: €{VERSAND_DE}
+        Versandkosten innerhalb von Deutschland: {VERSAND_DE} €
       </small>
     </div>
   )
