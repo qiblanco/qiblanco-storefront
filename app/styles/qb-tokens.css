@@ -150,6 +150,26 @@
      GL-DES-0001 aenderung_governance). */
   --qb-ref-gold-tinte: #856828;
 
+  /* EIN GOLD (Christian, 23.09.2026: "Und die Goldtoene sind noch sehr
+     unterschiedlich. ... Gemeint ist einer. Ein Gold-Token fuer Fuellung und
+     Linien, hoechstens ein zweites, dunkleres fuer goldene Schrift auf hellem
+     Grund. ... Der Token gehoert in den Bausatz.")
+     Das Kauf-Gold der Startseite: Flaeche des Kaufknopfs, bisher als roher
+     Literal in app/styles/app.css:16 (--color-accent-primary). Jetzt steht der
+     Wert HIER genau einmal, app.css zeigt darauf -- global aendert sich kein
+     Pixel. Zwei Rollen, nicht mehr:
+       FLAECHE UND LINIE  --qb-akzent-kauf   (dieser Wert)
+       SCHRIFT AUF HELL   --qb-akzent-tinte  (#856828, oben; das Kauf-Gold als
+                          Schrift reisst WCAG AA, 1,68:1 auf Weiss)
+     Hover braucht KEIN drittes Gold: Schatten, Rahmen oder Unterstreichung.
+     Welche Seite schon auf diesem Gold steht: /pages/schlaf-zellen-schutz
+     (Christian 21.09.: "viel mehr an die Frontseite gehen", PR #555; die Route
+     mappt --qb-akzent in schlaf-zellen-schutz-seite.css hierauf). Ob das ganze
+     Haus folgt und --qb-ref-gold (#c9a14b) damit entfaellt, ist eine
+     Markenfrage und liegt bei Christian (Grossjob 20260923-GROSSJOB-
+     wasserfenster-zweite-runde-drei-stufen-winkel-sichtbar-ein-gold, s04). */
+  --qb-ref-gold-kauf: rgb(242, 191, 114);
+
   /* Neutrale Bahn-Flaeche des Fortschrittsbalkens -- app/styles/app.css:2789
      (.ProgressWrapper, Bestandteil des qb-standard-slider aus Segment s03).
      Von s03 ausdruecklich als offene Stelle an s02 benannt (baukasten/
@@ -173,6 +193,8 @@
      Startseite bereits durch). */
   --qb-akzent: var(--qb-ref-gold);
   --qb-akzent-tinte: var(--qb-ref-gold-tinte);
+  /* Das EINE Gold fuer Flaeche und Linie (Kauf-Gold, siehe Tier 1). */
+  --qb-akzent-kauf: var(--qb-ref-gold-kauf);
   /* Schrift AUF einer Gold-Flaeche -- derselbe Wert wie --qb-text, hier
      unter eigenem semantischen Namen, weil die Rolle eine andere ist
      (vgl. app/styles/app.css:20 --color-on-accent, exakt derselbe Wert). */
@@ -213,12 +235,16 @@
      -- also den SHOP-Kauf-Goldton unter demselben Variablennamen) auf
      --qb-akzent umgestellt wird. Das ist der konkrete, live gemessene Beleg
      fuer Christians "von Hand angeglichen" und gehoert in den Folgeauftrag.
+     NACHTRAG 2026-09-23: schlaf-zellen-schutz-seite.css setzt --a-akzent
+     nicht mehr selbst, sondern --qb-akzent: var(--qb-akzent-kauf); das Kit
+     zieht --a-akzent von dort. Kein Literal mehr in dieser Route-Datei.
    - WELCHER der zwei Golde (#c9a14b LP-Gold vs. rgb(242,191,114)/#F2BF72
-     Shop-CTA-Gold) auf welcher Flaeche gilt. Beide sind heute in Gebrauch,
-     beide sind hier als eigenstaendige Werte behandelt (--qb-ref-gold zieht
-     ausschliesslich das LP-Gold; der Shop-Kauf-Goldton bleibt unangetastet
-     unter --color-accent-primary in app.css). Eine Vereinheitlichung ist
-     eine Marken-/Kaufweg-Entscheidung, keine Extraktion.
+     Shop-CTA-Gold) auf welcher Flaeche gilt. Beide sind heute in Gebrauch.
+     NACHTRAG 2026-09-23: beide stehen jetzt HIER (--qb-ref-gold und
+     --qb-ref-gold-kauf), app.css --color-accent-primary zeigt auf das
+     Kauf-Gold. Fuer /pages/schlaf-zellen-schutz ist die Frage entschieden
+     (Kauf-Gold, siehe Tier 1); fuer das Haus nicht -- das ist eine
+     Marken-/Kaufweg-Entscheidung, keine Extraktion, und liegt bei Christian.
    - OB die design-meister-Rolle "dunkel" (web-soll.yaml: #1a1a1a,
      GL-DES-0001 marke.anthrazit) eine eigene Referenz braucht. Sie steht in
      KEINEM :root-Block der Startseite und wird deshalb hier nicht gezogen
