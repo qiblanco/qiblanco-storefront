@@ -168,7 +168,7 @@ function Video() {
           videoId={VIDEO.id}
           titel={VIDEO.titel}
           posterAlt={VIDEO.posterAlt}
-          sizes="(max-width: 800px) 100vw, 760px"
+          sizes="(max-width: 700px) 100vw, 640px"
         />
       </div>
       <figcaption>

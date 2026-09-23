@@ -31,6 +31,24 @@
   --kw-schatten: 0 12px 32px rgba(25, 23, 20, 0.1);
   --kw-radius: var(--qb-radius-klein);
   --kw-radius-gross: 16px;
+
+  /* Abstände: das 8pt-Raster der Wurzel (--qb-ref-raster: 8px), hier als
+     fertige Stufen ausgeschrieben. Grund, gemessen am 2026-09-23: die
+     Gestaltungs-Prüfliste (seiten_pruefliste.py) kann calc(N * var(...))
+     nicht auflösen und meldete die Innenabstände deshalb als „nicht
+     gemessen". Die Werte sind dieselben, nur direkt lesbar. */
+  --kw-s1: 8px;
+  --kw-s1h: 12px;
+  --kw-s2: 16px;
+  --kw-s3: 24px;
+  --kw-s4: 32px;
+  --kw-s6: 48px;
+  --kw-s8: 64px;
+  --kw-s10: 80px;
+  --kw-s12: 96px;
+  --kw-sektion-gross: 96px; /* = --qb-ref-sektion-lg */
+  --kw-sektion-mittel: 64px; /* = --qb-ref-sektion-md */
+  --kw-sektion-klein: 32px; /* = --qb-ref-sektion-sm */
 }
 
 /* ─── Grundfluss ─────────────────────────────────────────────────────────── */
@@ -39,8 +57,8 @@
   color: var(--qb-text);
   font-size: var(--qb-ref-fs-3);
   line-height: 1.65;
-  padding: var(--qb-abstand-sektion-klein) calc(2 * var(--qb-ref-raster))
-    var(--qb-abstand-sektion-gross);
+  padding: var(--kw-sektion-klein) var(--kw-s2)
+    var(--kw-sektion-gross);
 }
 
 .kw > * {
@@ -64,17 +82,17 @@
 
 .kw h2 {
   font-size: var(--qb-text-h2);
-  margin: 0 0 calc(2 * var(--qb-ref-raster));
+  margin: 0 0 var(--kw-s2);
 }
 
 .kw h3 {
   font-size: var(--qb-text-h3);
-  margin: calc(6 * var(--qb-ref-raster)) 0 calc(2 * var(--qb-ref-raster));
-  scroll-margin-top: calc(12 * var(--qb-ref-raster));
+  margin: var(--kw-s6) 0 var(--kw-s2);
+  scroll-margin-top: var(--kw-s12);
 }
 
 .kw p {
-  margin: 0 0 calc(2 * var(--qb-ref-raster));
+  margin: 0 0 var(--kw-s2);
 }
 
 .kw a {
@@ -104,9 +122,9 @@
 .kw-kopf {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: calc(6 * var(--qb-ref-raster));
+  gap: var(--kw-s6);
   align-items: center;
-  padding-bottom: calc(6 * var(--qb-ref-raster));
+  padding-bottom: var(--kw-s6);
 }
 
 .kw-kopf__text {
@@ -114,7 +132,7 @@
 }
 
 .kw-kopf__marke {
-  margin: 0 0 var(--qb-ref-raster);
+  margin: 0 0 var(--kw-s1);
   font-size: var(--qb-ref-fs-2);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -123,7 +141,7 @@
 }
 
 .kw-kopf h1 {
-  margin: 0 0 calc(2 * var(--qb-ref-raster));
+  margin: 0 0 var(--kw-s2);
   font-size: var(--kw-fs-h1);
   line-height: 1.12;
   font-weight: 700;
@@ -136,15 +154,15 @@
 }
 
 .kw-kurz {
-  margin: calc(3 * var(--qb-ref-raster)) 0;
-  padding: calc(3 * var(--qb-ref-raster));
+  margin: var(--kw-s3) 0;
+  padding: var(--kw-s3);
   background: var(--qb-flaeche);
   border-left: 3px solid var(--qb-akzent);
   border-radius: 0 var(--kw-radius) var(--kw-radius) 0;
 }
 
 .kw-kurz__titel {
-  margin: 0 0 var(--qb-ref-raster);
+  margin: 0 0 var(--kw-s1);
   font-size: var(--qb-ref-fs-2);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -164,13 +182,13 @@
 
 /* ─── Inhaltsverzeichnis ──────────────────────────────────────────────────── */
 .kw-inhalt {
-  padding: calc(3 * var(--qb-ref-raster)) 0;
+  padding: var(--kw-s3) 0;
   border-top: 1px solid var(--kw-linie);
   border-bottom: 1px solid var(--kw-linie);
 }
 
 .kw-inhalt__titel {
-  margin: 0 0 var(--qb-ref-raster);
+  margin: 0 0 var(--kw-s1);
   font-size: var(--qb-ref-fs-2);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -181,9 +199,9 @@
 .kw-inhalt ol {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--qb-ref-raster) calc(4 * var(--qb-ref-raster));
+  gap: var(--kw-s1) var(--kw-s4);
   margin: 0;
-  padding-left: calc(3 * var(--qb-ref-raster));
+  padding-left: var(--kw-s3);
 }
 
 .kw-inhalt li {
@@ -193,12 +211,12 @@
 
 /* ─── Teile und Abschnitte ────────────────────────────────────────────────── */
 .kw-teil {
-  padding-top: var(--qb-abstand-sektion-gross);
-  scroll-margin-top: calc(8 * var(--qb-ref-raster));
+  padding-top: var(--kw-sektion-gross);
+  scroll-margin-top: var(--kw-s8);
 }
 
 .kw-teil__nr {
-  margin: 0 0 var(--qb-ref-raster);
+  margin: 0 0 var(--kw-s1);
   font-size: var(--qb-ref-fs-2);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -212,7 +230,7 @@
 }
 
 .kw-abschnitt {
-  scroll-margin-top: calc(8 * var(--qb-ref-raster));
+  scroll-margin-top: var(--kw-s8);
 }
 
 /* Die Aussageklasse steht als Überschrift über dem Absatz, nie als Vorbehalt
@@ -220,8 +238,8 @@
    anderes Wort: keine Wertung durch Farbe. */
 .kw-klasse {
   display: inline-block;
-  margin: 0 0 var(--qb-ref-raster);
-  padding: 2px var(--qb-ref-raster);
+  margin: 0 0 var(--kw-s1);
+  padding: 2px var(--kw-s1);
   font-size: var(--qb-ref-fs-1);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -248,8 +266,8 @@
 .kw-karten {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: calc(3 * var(--qb-ref-raster));
-  margin: calc(3 * var(--qb-ref-raster)) 0;
+  gap: var(--kw-s3);
+  margin: var(--kw-s3) 0;
   padding: 0;
   list-style: none;
 }
@@ -261,13 +279,13 @@
 .kw-karte {
   min-width: 0;
   max-width: none;
-  padding: calc(3 * var(--qb-ref-raster));
+  padding: var(--kw-s3);
   background: var(--qb-flaeche);
   border-radius: var(--kw-radius-gross);
 }
 
 .kw-karte h4 {
-  margin: 0 0 var(--qb-ref-raster);
+  margin: 0 0 var(--kw-s1);
   font-size: var(--qb-ref-fs-5);
   font-weight: 700;
   line-height: 1.3;
@@ -278,11 +296,11 @@
 }
 
 .kw-karte .qb-bild {
-  margin-bottom: calc(2 * var(--qb-ref-raster));
+  margin-bottom: var(--kw-s2);
 }
 
 .kw-karte__folge {
-  margin-top: var(--qb-ref-raster);
+  margin-top: var(--kw-s1);
   font-size: var(--qb-ref-fs-2);
   color: var(--qb-text-gedaempft);
 }
@@ -290,15 +308,15 @@
 /* ─── Figuren ─────────────────────────────────────────────────────────────── */
 .kw-figur {
   max-width: 860px;
-  margin: calc(4 * var(--qb-ref-raster)) 0;
-  padding: calc(3 * var(--qb-ref-raster));
+  margin: var(--kw-s4) 0;
+  padding: var(--kw-s3);
   background: var(--qb-flaeche);
   border-radius: var(--kw-radius-gross);
 }
 
 .kw-figur figcaption {
   max-width: var(--kw-mass);
-  margin-top: calc(2 * var(--qb-ref-raster));
+  margin-top: var(--kw-s2);
   font-size: var(--qb-ref-fs-2);
   color: var(--qb-text-gedaempft);
 }
@@ -800,8 +818,8 @@
    kommen nur die Stufen-Knöpfe und die Hervorhebung der gewählten Spalte
    dazu. */
 .kw-stufen {
-  margin: calc(3 * var(--qb-ref-raster)) 0;
-  padding: calc(3 * var(--qb-ref-raster));
+  margin: var(--kw-s3) 0;
+  padding: var(--kw-s3);
   background: var(--qb-flaeche);
   border-radius: var(--kw-radius-gross);
 }
@@ -809,8 +827,8 @@
 .kw-stufen__wahl {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--qb-ref-raster);
-  margin: 0 0 var(--qb-ref-raster);
+  gap: var(--kw-s1);
+  margin: 0 0 var(--kw-s1);
   padding: 0;
   list-style: none;
 }
@@ -818,7 +836,7 @@
 .kw-stufen__knopf {
   appearance: none;
   min-height: 44px;
-  padding: 0 calc(2 * var(--qb-ref-raster));
+  padding: 0 var(--kw-s2);
   font: inherit;
   font-size: var(--qb-ref-fs-2);
   font-weight: 700;
@@ -835,7 +853,7 @@
 }
 
 .kw-stufen__text {
-  min-height: calc(6 * var(--qb-ref-raster));
+  min-height: var(--kw-s6);
   font-size: var(--qb-ref-fs-3);
 }
 
@@ -854,15 +872,15 @@
 /* ─── Begriffe ────────────────────────────────────────────────────────────── */
 .kw-begriffe {
   width: 100%;
-  margin: calc(3 * var(--qb-ref-raster)) 0;
+  margin: var(--kw-s3) 0;
   border-collapse: collapse;
   font-size: var(--qb-ref-fs-3);
 }
 
 .kw-begriffe th,
 .kw-begriffe td {
-  padding: var(--qb-ref-raster) calc(2 * var(--qb-ref-raster))
-    var(--qb-ref-raster) 0;
+  padding: var(--kw-s1) var(--kw-s2)
+    var(--kw-s1) 0;
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--kw-linie);
@@ -881,9 +899,14 @@
 }
 
 /* ─── Video ───────────────────────────────────────────────────────────────── */
+/* 640 px, nicht breiter: YouTube liefert das Vorschaubild höchstens 1280 px
+   breit (maxresdefault, gemessen mit bin/anbieter-deckel-messen). Bei
+   doppelter Pixeldichte deckt das genau 640 CSS-Pixel; jede breitere Fläche
+   würde das Bild hochskalieren und unscharf zeigen (Gate 12, bild-aufloesung,
+   gemessen am 2026-09-23 bei 760 px). */
 .kw-video {
-  margin: calc(4 * var(--qb-ref-raster)) 0;
-  max-width: var(--kw-breite-text);
+  margin: var(--kw-s4) 0;
+  max-width: 640px;
 }
 
 .kw-video__rahmen {
@@ -893,7 +916,7 @@
 }
 
 .kw-video figcaption {
-  margin-top: calc(2 * var(--qb-ref-raster));
+  margin-top: var(--kw-s2);
   font-size: var(--qb-ref-fs-2);
   color: var(--qb-text-gedaempft);
 }
@@ -906,8 +929,8 @@
 .kw-glossar {
   display: grid;
   grid-template-columns: minmax(0, 14em) minmax(0, 1fr);
-  gap: calc(2 * var(--qb-ref-raster)) calc(3 * var(--qb-ref-raster));
-  margin: calc(3 * var(--qb-ref-raster)) 0 0;
+  gap: var(--kw-s2) var(--kw-s3);
+  margin: var(--kw-s3) 0 0;
 }
 
 .kw-glossar dt {
@@ -921,14 +944,14 @@
 }
 
 .kw-quellen {
-  margin: calc(3 * var(--qb-ref-raster)) 0 0;
-  padding-left: calc(4 * var(--qb-ref-raster));
+  margin: var(--kw-s3) 0 0;
+  padding-left: var(--kw-s4);
   font-size: var(--qb-ref-fs-2);
 }
 
 .kw-quellen li {
-  margin-bottom: calc(1.5 * var(--qb-ref-raster));
-  scroll-margin-top: calc(10 * var(--qb-ref-raster));
+  margin-bottom: var(--kw-s1h);
+  scroll-margin-top: var(--kw-s10);
   overflow-wrap: anywhere;
 }
 
@@ -952,8 +975,8 @@
 .kw-weiter {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: calc(3 * var(--qb-ref-raster));
-  margin: calc(3 * var(--qb-ref-raster)) 0 0;
+  gap: var(--kw-s3);
+  margin: var(--kw-s3) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -961,7 +984,7 @@
 .kw-weiter li {
   min-width: 0;
   max-width: none;
-  padding: calc(3 * var(--qb-ref-raster));
+  padding: var(--kw-s3);
   border: 1px solid var(--kw-linie);
   border-radius: var(--kw-radius-gross);
 }
@@ -971,13 +994,13 @@
 }
 
 .kw-weiter p {
-  margin: var(--qb-ref-raster) 0 0;
+  margin: var(--kw-s1) 0 0;
   font-size: var(--qb-ref-fs-2);
   color: var(--qb-text-gedaempft);
 }
 
 .kw-stand {
-  margin-top: calc(6 * var(--qb-ref-raster));
+  margin-top: var(--kw-s6);
   font-size: var(--qb-ref-fs-2);
   color: var(--qb-text-gedaempft);
 }
@@ -994,11 +1017,11 @@
 
   .kw-kopf {
     grid-template-columns: minmax(0, 1fr);
-    gap: calc(3 * var(--qb-ref-raster));
+    gap: var(--kw-s3);
   }
 
   .kw-teil {
-    padding-top: var(--qb-abstand-sektion-mittel);
+    padding-top: var(--kw-sektion-mittel);
   }
 
   .kw-inhalt ol,
@@ -1008,17 +1031,17 @@
   }
 
   .kw-figur {
-    padding: calc(2 * var(--qb-ref-raster));
-    margin-inline: calc(-1 * var(--qb-ref-raster));
+    padding: var(--kw-s2);
+    margin-inline: calc(-1 * var(--kw-s1));
   }
 
   .kw-glossar {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--qb-ref-raster);
+    gap: var(--kw-s1);
   }
 
   .kw-glossar dd {
-    margin-bottom: calc(2 * var(--qb-ref-raster));
+    margin-bottom: var(--kw-s2);
   }
 
   /* Tabellen stapeln sich auf dem Handy: jede Zeile ein Block, der
@@ -1045,7 +1068,7 @@
   }
 
   .kw-begriffe tr {
-    padding: var(--qb-ref-raster) 0;
+    padding: var(--kw-s1) 0;
     border-bottom: 1px solid var(--kw-linie);
   }
 
