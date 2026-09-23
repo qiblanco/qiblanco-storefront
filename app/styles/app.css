@@ -219,7 +219,7 @@ footer *{
    unterschiedlich"). Bis dahin dunkelte der Hover auf rgb(208,164,98) ab, einen
    eigenen Goldton. Jetzt bleibt die Flaeche im Kauf-Gold und der Knopf hebt sich
    mit einem Schatten ab -- derselbe Schatten wie --shop-switch-shadow, kein
-   neuer Farbwert. Schrift auf der Flaeche bleibt --color-on-accent (8,56:1). */
+   neuer Farbwert. Schrift auf der Flaeche bleibt --color-on-accent (8,51:1). */
 .btn--primary:hover {
   cursor: pointer;
   text-decoration: none;
@@ -4720,7 +4720,7 @@ ul.kakao-children li {
   color: #e00!important;
 }
 /* Goldene SCHRIFT auf hellem Grund = die Tinte, kein eigener Goldton (bis
-   2026-09-23 #b8943e, 2,8:1 auf Weiss). "EIN Gold", Christian 23.09.2026. */
+   2026-09-23 #b8943e, 2,86:1 auf Weiss; jetzt 5,24:1). "EIN Gold", Christian 23.09.2026. */
 .CacaoPriceCurrent.exclusive {
   color: var(--color-accent-ink)!important;
 }
@@ -4730,8 +4730,8 @@ ul.kakao-children li {
   text-decoration: line-through!important;
 }
 /* Gold-FLAECHE = das Kauf-Gold, kein Verlauf aus zwei eigenen Goldtoenen (bis
-   2026-09-23 #c9a040 -> #e0c068). Die Schrift darauf wechselt von Weiss (2,4:1,
-   unter AA) auf --color-on-accent. "EIN Gold", Christian 23.09.2026. */
+   2026-09-23 #c9a040 -> #e0c068). Die Schrift darauf wechselt von Weiss (1,76 bis 2,45:1,
+   unter AA) auf --color-on-accent (8,51:1). "EIN Gold", Christian 23.09.2026. */
 .BestsellerLabel--gold {
   background: var(--color-accent-primary) !important;
   color: var(--color-on-accent) !important;
