@@ -3,6 +3,7 @@ import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {entityGraph} from '~/lib/entity-schema';
 import startseiteStyles from '~/styles/startseite.css?url';
+import qbErklaerPopupStyles from '~/styles/qb-erklaer-popup.css?url';
 
 /**
  * Die beiden Scope-CSS-Dateien dieser Route — EINE links()-Ausfuhr, weil ein
@@ -22,6 +23,10 @@ export function links() {
   return [
     {rel: 'stylesheet', href: externeStimmenStyles},
     {rel: 'stylesheet', href: startseiteStyles},
+    // Der Überlagerungs-Baustein <ErklaerPopup> in der Kopfzeile. Je Route
+    // geladen statt in root.jsx: nur die Routen, die ihn tragen, bezahlen ihn,
+    // und nur sie liegen in seiner Reichweite.
+    {rel: 'stylesheet', href: qbErklaerPopupStyles},
   ];
 }
 
