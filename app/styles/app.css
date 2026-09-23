@@ -958,11 +958,13 @@ aside h3 {
 .shop-switch__trigger:hover {
   background: var(--shop-switch-hover);
 }
+/* Ring in der Tinte: der Kopf ist hell (#e8e7e3), dort misst das Kauf-Gold als
+   Linie 1,36:1, die Tinte 4,19:1 (WCAG 1.4.11 verlangt 3:1; gemessen 2026-09-23). */
 .shop-switch__trigger:focus-visible,
 .shop-switch__option:focus-visible,
 .header-account:focus-visible,
 .header-ctas a.openCart:focus-visible {
-  outline: 2px solid var(--color-accent-primary);
+  outline: 2px solid var(--color-accent-ink);
   outline-offset: 2px;
 }
 .shop-switch__chevron {
@@ -1545,6 +1547,13 @@ ul.submenu li a {
   background: var(--color-footer);
   margin-top: auto;
   color: rgba(255, 255, 255, 0.85);
+}
+/* Im Fuss ist der Grund dunkel. Dort ist der Fokusring das Kauf-Gold, die
+   Rolle fuer Linien (10,6:1 auf #191714), und nicht die Tinte, die nur auf
+   hellem Grund gilt. footer.footer (0,2,1) sticht die Ringe der Bauteile
+   (0,2,0), etwa .eu-gwl__link:focus-visible; alle stehen hier auf dunkel. */
+footer.footer :focus-visible {
+  outline-color: var(--color-accent-primary);
 }
 
 .footer-inner {
@@ -5965,14 +5974,16 @@ ul.kakao-children li {
 
 /* Der Track ist fokussierbar (Pfeiltasten blaettern) — also braucht er einen
    sichtbaren Fokus. Nur :focus-visible, damit ein Mausklick keinen Rahmen
-   hinterlaesst. */
+   hinterlaesst. Der Ring ist die Tinte, nicht das Kauf-Gold: auf dem hellen
+   Grund der Studienbahn (#faf9f5) misst das Kauf-Gold als Linie 1,60:1, die
+   Tinte 4,97:1 (WCAG 1.4.11 verlangt 3:1; gemessen 2026-09-23). */
 .ghx-studien__track:focus-visible {
-  outline: 2px solid var(--a-akzent, var(--qb-akzent));
+  outline: 2px solid var(--color-accent-ink);
   outline-offset: 4px;
   border-radius: 8px;
 }
 .ghx-studie__link:focus-visible {
-  outline: 2px solid var(--a-akzent, var(--qb-akzent));
+  outline: 2px solid var(--color-accent-ink);
   outline-offset: 4px;
   border-radius: 8px;
 }

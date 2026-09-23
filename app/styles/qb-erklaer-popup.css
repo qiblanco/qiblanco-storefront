@@ -52,7 +52,9 @@
      SCHRIFT auf hellem Grund (gemessen: #fff auf der Startseite, #faf9f5 auf
      /pages/schlaf-zellen-schutz). Dafür ist die Gold-Tinte da: #c9a14b erreicht
      auf Weiß 2,42:1, das Kauf-Gold rgb(242,191,114) nur 1,68:1, die Tinte 5,24:1.
-     Flächen, Rahmen und Fokusring bleiben --qb-akzent. */
+     Flächen und Rahmen bleiben --qb-akzent. Der Fokusring ist seit dem
+     2026-09-23 ebenfalls die Tinte: er ist eine Linie auf hellem Grund, und
+     dort misst das Kauf-Gold 1,60:1, WCAG 1.4.11 verlangt 3:1. */
   color: var(--qb-akzent-tinte);
   cursor: pointer;
   text-decoration-line: underline;
@@ -66,7 +68,7 @@
 }
 
 .qb-erklaer__ausloeser:focus-visible {
-  outline: 2px solid var(--qb-akzent);
+  outline: 2px solid var(--qb-akzent-tinte);
   outline-offset: 2px;
   border-radius: var(--qb-radius-bild);
 }
