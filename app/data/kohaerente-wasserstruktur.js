@@ -71,15 +71,22 @@ export const bilder = [
     id: 'struktur',
     titel: 'Die Struktur ordnet sich',
     text:
-      'An Oberflächen hält die Ordnung. Die Moleküle legen sich zu sechseckigen Schichten, Pollack nennt sie EZ-Wasser. Diese Schicht ist weit stabiler als die Domäne.',
-    folge: 'Hexagonalstruktur gilt Warnke als Anzeichen für energiereiches Wasser.',
+      'An Oberflächen hält die Ordnung. Die Moleküle legen sich zu sechseckigen Schichten, Prof. Dr. Pollack nennt sie EZ-Wasser. Diese Schicht ist weit stabiler als die Domäne.',
+    folge: 'Hexagonalstruktur gilt Dr. Warnke als Anzeichen für energiereiches Wasser.',
     von: {anzeige: 'normales Wasser', was: 'ungeordnet'},
     nach: {anzeige: 'EZ-Wasser', was: 'hexagonal geordnet'},
   },
 ];
 
 /**
- * Die drei Stufen (SSoT Teil A2 `stufen:`). `null` heißt: keine der Quellen
+ * Die drei Stufen (SSoT Teil A2 `stufen:`).
+ *
+ * NICHT MEHR IM WASSERFENSTER (23.09.2026 abends). Christian: „Auf den
+ * Landingpages geben wir nur das im Screenshot an sowie die Einordnung" — also
+ * die drei Bilder und „Quellen". Die Stufentafel zieht auf die Info-Seite
+ * /pages/was-ist-kohaerentes-wasser. `stufen` und `vergleich` bleiben hier als
+ * benannte Exporte stehen, damit die Info-Seite sie aus derselben Quelle liest
+ * statt die Werte ein zweites Mal zu tippen. `null` heißt: keine der Quellen
  * sagt dazu etwas. Das Fenster zeigt dann einen Strich, nie einen geratenen Wert.
  */
 export const stufen = [
@@ -148,10 +155,13 @@ export const wasserstruktur = {
   // Vorbehalt mitten im Satz. Die Sätze sind die `grenzen` des SSoT ohne die
   // mit „Kein" beginnenden: die sind Verbote an Anna und keine Auskunft
   // (dieselbe Regel wie Annas Generator).
+  // Die Überschrift heißt seit 23.09.2026 „Quellen" (Christian: „das braucht
+  // einen anderen Namen — wir nennen es ‚Quellen'"). Der Schlüssel bleibt
+  // `einordnung`, weil Annas Vertrag und die Proben ihn so lesen.
   einordnung: {
-    titel: 'Einordnung',
+    titel: 'Quellen',
     saetze: [
-      'Warnke stützt sich auf das Modell kohärenter Domänen von Preparata und Del Giudice.',
+      'Dr. Warnke stützt sich auf das Modell kohärenter Domänen von Preparata und Del Giudice.',
       'Das EZ-Wasser hat Prof. Dr. Gerald H. Pollack beschrieben. Del Giudice leitet es aus den kohärenten Domänen ab.',
     ],
   },

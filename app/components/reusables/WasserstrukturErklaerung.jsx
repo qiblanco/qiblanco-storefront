@@ -23,26 +23,19 @@ import {wasserstruktur} from '~/data/kohaerente-wasserstruktur';
  * Design-Rubrik als „zu viele Schriftgrößen" meldet. Er erbt Größe und Farbe
  * und bringt nur Struktur mit (app/styles/qb-erklaer-popup.css).
  *
- * DIE TABELLE HAT EINE DOM-STRUKTUR, NICHT ZWEI (Fassung 2, 23.09.2026). Sie
- * steht zeilenweise im Markup, so wie ein Screenreader eine Tabelle liest:
- * Merkmal, dann die drei Stufen. Auf dem Handy wird sie per CSS zu drei Karten
- * je Stufe umgeordnet (`--qb-karte` trägt die Reihenfolge, `data-label` das
- * Merkmal über dem Wert). Zwei Fassungen im Markup hätten denselben Inhalt
- * doppelt vorgelesen oder eine davon verstecken müssen.
+ * NUR DIE KURZFASSUNG UND „QUELLEN" (23.09.2026 abends). Christian zum
+ * Bildschirmfoto der drei Spalten: „Auf den Landingpages geben wir nur das im
+ * Screenshot an sowie die Einordnung, aber das braucht einen anderen Namen —
+ * wir nennen es ‚Quellen'." Die Stufentafel (drei Stufen, sieben Merkmale)
+ * steht deshalb nicht mehr im Fenster; sie zieht auf die Info-Seite
+ * /pages/was-ist-kohaerentes-wasser und bleibt im SSoT und in
+ * app/data/kohaerente-wasserstruktur.js (`stufen`, `vergleich`) stehen.
  */
 
-/** „kein Wert" im SSoT ist `null`: ein Strich, der sagt, dass nichts gemessen ist. */
-const KEINE_ANGABE = 'keine Angabe in den Quellen';
-
 export function WasserstrukturErklaerung({wendung = 'kohärenten Wasserstruktur'}) {
-  const {titel, einleitung, bilder, stufen, vergleich, einordnung, quelle} =
-    wasserstruktur;
+  const {titel, einleitung, bilder, einordnung, quelle} = wasserstruktur;
   const bild = Object.fromEntries(bilder.map((b) => [b.id, b]));
   const {winkel, domaene, struktur} = bild;
-  const stufeZu = Object.fromEntries(stufen.map((s) => [s.id, s]));
-  const spalten = vergleich.spalten.map((id) => stufeZu[id]);
-  // Reihenfolge der Handy-Karten: je Stufe ein Block, Kopf zuerst.
-  const block = vergleich.zeilen.length + 1;
 
   return (
     <ErklaerPopup ausloeser={wendung} titel={titel} ausrichtung="links">
@@ -84,61 +77,6 @@ export function WasserstrukturErklaerung({wendung = 'kohärenten Wasserstruktur'
             <span className="qb-erklaer__bildtext">{struktur.text}</span>
             <span className="qb-erklaer__folge">{struktur.folge}</span>
           </span>
-        </span>
-
-        <span
-          className="qb-erklaer__tabelle"
-          role="table"
-          aria-label={`${titel}: die drei Stufen im Vergleich`}
-          data-wasser-stufen={spalten.length}
-        >
-          <span className="qb-erklaer__zeile qb-erklaer__zeile--kopf" role="row">
-            <span
-              className="qb-erklaer__zelle qb-erklaer__zelle--ecke"
-              role="columnheader"
-            />
-            {spalten.map((st, s) => (
-              <span
-                className="qb-erklaer__zelle qb-erklaer__zelle--stufe"
-                role="columnheader"
-                key={st.id}
-                data-stufe={st.id}
-                style={{'--qb-karte': s * block}}
-              >
-                <strong>{st.name}</strong>
-                {st.zusatz ? (
-                  <span className="qb-erklaer__zusatz">{st.zusatz}</span>
-                ) : null}
-              </span>
-            ))}
-          </span>
-          {vergleich.zeilen.map((z, f) => (
-            <span className="qb-erklaer__zeile" role="row" key={z.feld}>
-              <span
-                className="qb-erklaer__zelle qb-erklaer__zelle--label"
-                role="rowheader"
-              >
-                {z.label}
-              </span>
-              {spalten.map((st, s) => {
-                const wert = st[z.feld];
-                const leer = wert === null || wert === undefined;
-                return (
-                  <span
-                    className={`qb-erklaer__zelle${leer ? ' qb-erklaer__zelle--leer' : ''}`}
-                    role="cell"
-                    key={st.id}
-                    data-stufe={st.id}
-                    data-label={z.label}
-                    aria-label={leer ? KEINE_ANGABE : undefined}
-                    style={{'--qb-karte': s * block + f + 1}}
-                  >
-                    {leer ? '–' : wert}
-                  </span>
-                );
-              })}
-            </span>
-          ))}
         </span>
 
         <span className="qb-erklaer__einordnung" data-wasser-einordnung>
