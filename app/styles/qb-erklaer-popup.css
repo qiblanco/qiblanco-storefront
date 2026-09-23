@@ -466,6 +466,14 @@
   fill: var(--qb-flaeche);
 }
 
+/* Der Buchstabe auf dem goldenen Sauerstoff-Atom ist Schrift AUF Gold: hell
+   (--qb-flaeche) misst er dort 1,54:1 (adversariale Pruefung 2026-09-23), die
+   Rolle --qb-text-auf-akzent 8,51:1. Die H-Atome sind gedaempft grau, auf ihnen
+   bleibt die helle Schrift (5,5:1). */
+.qb-mol__zeichen--auf-akzent {
+  fill: var(--qb-text-auf-akzent);
+}
+
 .qb-bild__wert {
   font-size: var(--qb-ref-fs-3);
   font-weight: 700;

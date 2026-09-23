@@ -227,10 +227,15 @@ footer *{
   background: var(--color-accent-primary);
   box-shadow: var(--shop-switch-shadow);
 }
+/* Die SCHRIFT des Sekundaerknopfs nimmt beim Hover die Tinte, nicht das
+   Kauf-Gold: Kauf-Gold als Schrift auf #faf9f5 misst 1,60:1 (adversariale
+   Pruefung 2026-09-23, "Zelluntersuchungen ansehen" auf der Schlafseite).
+   Das Kauf-Gold bleibt die LINIE (Rahmen), die Tinte ist die Rolle fuer
+   goldene Schrift auf hellem Grund (4,97:1). */
 .btn--secondary:hover {
   cursor: pointer;
   text-decoration: none;
-  color: var(--color-accent-primary);
+  color: var(--color-accent-ink);
   border: 2px solid var(--color-accent-primary);
 }
 
@@ -342,6 +347,20 @@ footer *{
 .btn--text:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* FOKUSRING FUER ALLES OHNE EIGENEN. Ohne diese Regel zeichnet der Browser
+ * seinen eigenen Ring, und der ist nicht unser Gold: Chromium mobil malt
+ * #e59700 (outline-style:auto), gemessen 2026-09-23 auf der Schlafseite bei
+ * 390 und 768 an jedem fokussierbaren Element ohne eigene Regel. Der Ring ist
+ * die Tinte, die Rolle fuer Gold auf hellem Grund: 4,97:1 auf #faf9f5, auf den
+ * dunklen Flaechen (Kopfbanner, Fuss) noch ueber den 3:1 aus WCAG 1.4.11.
+ * :where() haelt die Spezifitaet auf null, jede eigene :focus-visible-Regel
+ * einer Komponente gewinnt weiter. Gegen den Browser-Ring gewinnt die Regel
+ * immer, weil Autoren-CSS vor dem UA-Stylesheet steht. */
+:where(:focus-visible) {
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: 2px;
 }
 
 /* SICHTBARER TASTATUR-FOKUS. Ohne ihn ist der Knopf mit der Tastatur
@@ -5235,10 +5254,11 @@ ul.kakao-children li {
    REINER BUTTON-RESET, KEIN NEUES AUSSEHEN: die Optik der Zeile kommt weiter
    aus .product-rating bzw. .ReviewCount, damit sich am Bild nichts aendert.
    Neu ist ausschliesslich die AFFORDANZ — Zeigehand und ein sichtbarer
-   Fokusring. Keine neuen Farb-, Schrift- oder Radius-Werte: Ring und Hover
-   nutzen den bestehenden Token --color-accent-primary und dieselbe
-   outline-Schreibweise wie .shop-switch__trigger:focus-visible (kein zweiter
-   Goldton, keine freie Groesse). */
+   Fokusring. Keine neuen Farb-, Schrift- oder Radius-Werte: der Ring nutzt
+   seit 2026-09-23 die Tinte --color-accent-ink (die Zeile steht auf hellem
+   Grund, dort misst das Kauf-Gold als Linie nur 1,60:1, WCAG 1.4.11 verlangt
+   3:1) und dieselbe outline-Schreibweise wie .shop-switch__trigger:focus-visible
+   (kein zweiter Goldton, keine freie Groesse). */
 .sterne-sprung {
   display: inline-flex;
   align-items: center;
@@ -5251,18 +5271,21 @@ ul.kakao-children li {
   color: inherit;
   text-align: left;
   cursor: pointer;
-  transition: opacity 0.2s;
 }
 
+/* Hover unterstreicht, statt aufzuhellen. Die Deckkraft 0,85 machte die Tinte
+   auf der Bewertungszahl effektiv zu #977e47 (3,70:1), und auf Touch blieb der
+   Hover nach dem Tap stehen (adversariale Pruefung 2026-09-23). Eine Linie
+   aendert keine Farbe. */
 .sterne-sprung:hover {
-  opacity: 0.85;
+  text-decoration: underline;
 }
 
 /* Nur :focus-visible — ein Mausklick soll keinen Rahmen hinterlassen, die
    Tastaturbedienung dagegen sichtbar sein (beide Stacks hatten bisher gar
    keinen sichtbaren Fokus auf den Sterne-Zeilen). */
 .sterne-sprung:focus-visible {
-  outline: 2px solid var(--color-accent-primary);
+  outline: 2px solid var(--color-accent-ink);
   outline-offset: 2px;
   border-radius: 4px;
 }
