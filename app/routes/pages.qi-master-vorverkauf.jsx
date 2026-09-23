@@ -1,13 +1,39 @@
-import {useLoaderData} from 'react-router';
-import {QiMasterTreppe} from '~/components/product-pages/QiMasterTreppe';
-import {treppe as treppeRechnen} from '~/lib/qi-master-preisstufen';
-import preisstufen from '~/data/qi-master-preisstufen.json';
+import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import qiMasterStyles from '~/styles/qi-master.css?url';
+import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
 import lpStyles from '~/styles/qi-master-vorverkauf.css?url';
 
 /**
- * /pages/qi-master-vorverkauf — die Landingpage zum QiMaster-Vorverkauf.
+ * /pages/qi-master-vorverkauf — die Landingpage zum Qi Master®.
+ *
+ * ─── STAND 22.09.2026: KEIN LAUFENDER VORVERKAUF, KEIN RABATT ─────────────
+ *
+ * Christian hat an diesem Tag die Vorverkaufsfassung abgelöst: „Durch seine
+ * sehr aufwendige Herstellung ist der Preis des Qi Master® fixiert … Der
+ * Vorverkauf starte im Oktober 2026." Diese Seite existierte ausschließlich
+ * für die Treppe, die jetzt nicht läuft. Entschieden wurde UMBAUEN, nicht
+ * entfernen (Grossjob 20260922-GROSSJOB-qi-master-ohne-laufenden-vorverkauf-
+ * und-ohne-rabatt, Segment s03):
+ *   - die Adresse steht in bereits verschickten Mails der Bestandskette; ein
+ *     404 oder Redirect wäre für diese Leser der Abbruch statt eines Klicks,
+ *     und ein Redirect ist kundenwirksam schwerer zurückzunehmen als ein Text;
+ *   - der Oktober-Start ist angekündigt — der Tag, an dem die Seite wieder
+ *     einen laufenden Vorverkauf trägt, kommt aus der einen Quelle
+ *     app/data/qi-master-wortlaut.json (offene_frage, fällig 2026-10-01);
+ *   - der Rückweg ist ein git revert, ohne Nebenwirkung auf Suchmaschinen
+ *     (die Seite ist und bleibt noindex).
+ * Ob die Seite nach dem Oktober-Start weiterlebt oder auf /products/qi-master
+ * weiterleitet, ist eine eigene Frage und im RESULT des Segments benannt.
+ *
+ * WAS WEG IST, UND WARUM NICHTS DAVON UMGEBAUT WURDE: die Treppe (Tabelle,
+ * „läuft jetzt", Angebotssatz, Überschrift), der Kopf „zum besten Preis, den
+ * es je für ihn geben wird", der Abschnitt „Warum es diese Seite gibt"
+ * (Nachlass als Dank) und „Die Zusage" (ab 01.01.2027 regulärer Preis). Alle
+ * vier setzten einen Nachlass voraus, den es nicht mehr gibt. An ihre Stelle
+ * tritt Christians Wortlaut, aus derselben Quelle wie auf der Produktseite.
+ *
+ * ─── DIE GESCHICHTE DER SEITE (bis 22.09.2026) ─────────────────────────────
  *
  * IHRE AUFGABE IST EINE ANDERE ALS DIE DER PRODUKTSEITE. /products/qi-master
  * verkauft ein Gerät und wird an der Bestellung gemessen; diese Seite erklärt
@@ -91,17 +117,18 @@ import lpStyles from '~/styles/qi-master-vorverkauf.css?url';
 export function links() {
   return [
     {rel: 'stylesheet', href: qiMasterStyles},
+    {rel: 'stylesheet', href: wortlautStyles},
     {rel: 'stylesheet', href: lpStyles},
   ];
 }
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Master® Vorverkauf – die Treppe bis Ende des Jahres | Qi Blanco'},
+  {title: 'Qi Master® – Alpha Serie, limitiert auf 100 Stück | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Der Qi Master® geht nie in eine Rabattaktion. Bis zum 31.12.2026 gibt es eine Ausnahme, und sie wird jeden Monat kleiner.',
+      'Der Preis des Qi Master® ist fixiert. Limitierte Auflage von 100 Stück, von Goldschmieden per Hand poliert. Designed in Germany. Made in Germany.',
   },
   noindexMeta(),
 ];
@@ -112,46 +139,20 @@ export const meta = () => [
  */
 export const headers = () => noindexHeader();
 
-export function loader() {
-  return {treppe: treppeRechnen(preisstufen)};
-}
-
 export default function QiMasterVorverkaufRoute() {
-  const {treppe} = useLoaderData();
-
   return (
     <div className="qm-lp">
       <header className="qm-lp__inhalt qm-lp__kopf">
         <div className="qm-lp__kopf-inhalt">
-          <span className="qm-lp__auge">Vorverkauf</span>
+          <span className="qm-lp__auge">Alpha Serie</span>
           <h1 className="qm-lp__titel">
-            Du warst schon da. Deshalb bekommst du den Qi Master® zuerst – und zum
-            besten Preis, den es je für ihn geben wird.
+            Qi Master®: 100 Stück, von Hand poliert, zu einem festen Preis.
           </h1>
-          <p className="qm-lp__vorspann">
-            Diese Seite ist nicht öffentlich. Du hast sie bekommen, weil du
-            schon einmal bei uns warst.
-          </p>
         </div>
       </header>
 
-      <section className="qm-lp__inhalt" aria-labelledby="qm-lp-warum">
-        <h2 id="qm-lp-warum">Warum es diese Seite gibt</h2>
-        <p>
-          Das hier ist kein Abverkauf. Die Fertigung läuft ohnehin, kein Stück
-          bleibt liegen, und niemand muss etwas loswerden. Der Nachlass ist ein
-          Dank an die Menschen, die vor allen anderen da waren – keine Notlage.
-        </p>
-        <p>
-          Und weil es ein Dank ist und keine Verkaufsmechanik, wird er jeden
-          Monat kleiner statt grösser. Du siehst unten die ganze Treppe bis zum
-          Jahresende, bevor du dich entscheidest. Es gibt nichts, was danach
-          noch kommt.
-        </p>
-      </section>
-
-      <section className="qm-lp__inhalt" aria-labelledby="qm-lp-treppe-titel">
-        <QiMasterTreppe treppe={treppe} titelId="qm-lp-treppe-titel" />
+      <section className="qm-lp__inhalt qm-lp__wortlaut">
+        <QiMasterWortlaut />
       </section>
 
       <section className="qm-lp__inhalt" aria-labelledby="qm-lp-gerät">
@@ -207,31 +208,13 @@ export default function QiMasterVorverkaufRoute() {
         </p>
       </section>
 
-      <section className="qm-lp__inhalt qm-lp__handlung">
-        <a className="qm-lp__knopf" href="/products/qi-master">
-          Zum Qi Master®
-        </a>
-        <p className="qm-lp__knopf-hinweis">
-          Der Preis deiner Stufe steht auf der Produktseite – dort kaufst du
-          auch.
-        </p>
-      </section>
-
-      <section
-        className="qm-lp__inhalt qm-lp__zusage"
-        aria-labelledby="qm-lp-zusage"
-      >
-        <div className="qm-lp__zusage-inhalt">
-          <h2 id="qm-lp-zusage">Die Zusage</h2>
-          <p>
-            Ab dem 01.01.2027 gilt dauerhaft der reguläre Preis. Kein Black
-            Friday, keine Aktion, keine Ausnahme – auch nicht still und auch
-            nicht für einzelne.
-          </p>
-          <p>
-            Wir schreiben das hier auf, damit es nachlesbar ist: wer den
-            Qi Master® später kauft, soll nicht das Gefühl haben, zu früh gekauft
-            zu haben.
+      <section className="qm-lp__inhalt qm-lp__abschluss">
+        <div className="qm-lp__abschluss-inhalt">
+          <a className="qm-lp__knopf" href="/products/qi-master">
+            Zum Qi Master®
+          </a>
+          <p className="qm-lp__knopf-hinweis">
+            Preis, Bilder und alle Details stehen auf der Produktseite.
           </p>
         </div>
       </section>
