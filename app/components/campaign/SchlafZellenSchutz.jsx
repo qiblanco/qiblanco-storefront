@@ -12,7 +12,6 @@ import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ExterneStimmen} from '~/components/reusables/ExterneStimmen';
-import {WasserstrukturErklaerung} from '~/components/reusables/WasserstrukturErklaerung';
 import {CdnBild} from '~/components/reusables/CdnBild';
 import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
@@ -356,12 +355,8 @@ function Hero() {
             <p>
               <strong>Mehr als 14.000+ aktive Nutzer</strong>
             </p>
-            {/* Zweite Ausspielung desselben Erklär-Knopfes — derselbe
-                Baustein wie im Kopf der Startseite, damit die Erklärung nicht
-                an zwei Stellen gepflegt werden muss. Die Wendung bleibt ein
-                zusammenhängender Textknoten mit echten Umlauten. */}
             <p className="mt-1">
-              <strong>Erfahre jetzt die Vorteile der <WasserstrukturErklaerung /></strong>
+              <strong>Erfahre jetzt die Vorteile der kohärenten Wasserstruktur</strong>
             </p>
           </div>
           <ul className="lp-a-hero__dreizeiler" aria-hidden="false">
