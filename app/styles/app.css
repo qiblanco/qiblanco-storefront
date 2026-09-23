@@ -13,7 +13,9 @@
   --header-height: 64px;
   --color-dark: #4A4741;
   --color-light: #fff;
-  --color-accent-primary: rgb(242, 191, 114);
+  /* Der Wert steht seit 2026-09-23 im Bausatz (qb-tokens.css --qb-ref-gold-kauf,
+     "EIN Gold", Christian 23.09.2026) und ist hier nur noch ein Zeiger. */
+  --color-accent-primary: var(--qb-akzent-kauf);
   /* Gold-Rollen (Kontrast-Konzept 2026-08-12). --color-accent-primary ist die
      FLAECHE. Als SCHRIFT auf hellem Grund reisst sie WCAG AA (1.68:1), darum
      zwei eigene Rollen — gleicher Farbton, nur andere Helligkeit: */
@@ -213,11 +215,17 @@ footer *{
   color: var(--color-dark);
   transition: 0.2s all linear;
 }
+/* Hover ohne drittes Gold (Christian 23.09.2026: "Die Goldtoene sind noch sehr
+   unterschiedlich"). Bis dahin dunkelte der Hover auf rgb(208,164,98) ab, einen
+   eigenen Goldton. Jetzt bleibt die Flaeche im Kauf-Gold und der Knopf hebt sich
+   mit einem Schatten ab -- derselbe Schatten wie --shop-switch-shadow, kein
+   neuer Farbwert. Schrift auf der Flaeche bleibt --color-on-accent (8,51:1). */
 .btn--primary:hover {
   cursor: pointer;
   text-decoration: none;
-  border: 2px solid rgb(208, 164, 98);
-  background: rgb(208, 164, 98);
+  border: 2px solid var(--color-accent-primary);
+  background: var(--color-accent-primary);
+  box-shadow: var(--shop-switch-shadow);
 }
 .btn--secondary:hover {
   cursor: pointer;
@@ -4711,16 +4719,22 @@ ul.kakao-children li {
 .CacaoPriceCurrent.sale {
   color: #e00!important;
 }
+/* Goldene SCHRIFT auf hellem Grund = die Tinte, kein eigener Goldton (bis
+   2026-09-23 #b8943e, 2,86:1 auf Weiss; jetzt 5,24:1). "EIN Gold", Christian 23.09.2026. */
 .CacaoPriceCurrent.exclusive {
-  color: #b8943e!important; 
+  color: var(--color-accent-ink)!important;
 }
 .CacaoPriceCompare {
   font-size: var(--kk-fs-lead)!important;
   color: var(--color-dark)!important;
   text-decoration: line-through!important;
 }
+/* Gold-FLAECHE = das Kauf-Gold, kein Verlauf aus zwei eigenen Goldtoenen (bis
+   2026-09-23 #c9a040 -> #e0c068). Die Schrift darauf wechselt von Weiss (1,76 bis 2,45:1,
+   unter AA) auf --color-on-accent (8,51:1). "EIN Gold", Christian 23.09.2026. */
 .BestsellerLabel--gold {
-  background: linear-gradient(90deg, #c9a040, #e0c068) !important;
+  background: var(--color-accent-primary) !important;
+  color: var(--color-on-accent) !important;
 }
 .BestsellerLabel--red {
   background: #e00 !important;

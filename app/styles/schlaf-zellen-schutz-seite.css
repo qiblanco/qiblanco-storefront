@@ -194,11 +194,38 @@
    neuen Flaechenton bei 8,56:1 statt 5,9:1, auf dem Hover-Ton bei 6,28:1.
    NICHT ANGEFASST: --qb-sterne-gold #F4B400 — der Sternton haengt an jedem
    Stern beider Storefronts. --a-akzent-tinte #856828 bleibt ebenfalls: sie ist
-   mit app.css --color-accent-ink schon identisch. */
+   mit app.css --color-accent-ink schon identisch.
+   STAND 21.09.2026 — die zwei Werte oben sind seit 23.09. durch den Block
+   „EIN GOLD" darunter abgeloest (Hover-Ton rgb(208,164,98) gestrichen). */
+/* ─── EIN GOLD (Christian 23.09.2026) ─────────────────────────────────────── */
+/* „Und die Goldtoene sind noch sehr unterschiedlich. ... Gemeint ist einer."
+   Gezaehlt vor dem Umbau (computed style, 390 und 1440 px, Fenster zu und
+   offen, Hover auf die Kaufknoepfe): VIER eigene Goldtoene gerendert —
+     rgb(242,191,114)  Kauf-Gold, --a-akzent dieser Datei (ARM A)
+     #856828           Tinte, goldene Schrift auf hell
+     #c9a14b           Bausatz-Gold: kam ueber --qb-akzent mit dem Wasser-
+                       Fenster und den externen Stimmen zurueck
+     rgb(208,164,98)   --a-akzent-tief, nur im Hover des Kaufknopfs
+   Jetzt: das Kauf-Gold ist ein Bausatz-Token (qb-tokens.css
+   --qb-akzent-kauf), und DIESE Route stellt die Bausatz-Rolle --qb-akzent
+   darauf. Das Kit zieht --a-akzent schon aus --qb-akzent, das Fenster und die
+   externen Stimmen ebenso — alle folgen von selbst, ohne dass eine ihrer
+   Dateien angefasst wird. Kein neuer Farbwert, kein Literal in dieser Datei.
+   --a-akzent-tief faellt mit dem Gold zusammen; der Hover des Kaufknopfs hebt
+   sich per Schatten ab (--a-shadow-md aus dem Kit), der Fokusring nimmt die
+   Tinte (Linie auf dem Seitengrund #faf9f5: 4,97:1 statt 1,6:1). Goldene Schrift auf
+   hell bleibt --a-akzent-tinte = --qb-akzent-tinte #856828.
+   NUR diese Route: das Haus steht weiter auf #c9a14b, bis Christian die
+   Markenfrage entscheidet (s04 legt sie vor). */
 :root {
-  --a-akzent: rgb(242, 191, 114);
-  --a-akzent-tief: rgb(208, 164, 98);
+  --qb-akzent: var(--qb-akzent-kauf);
+  --a-akzent-tief: var(--a-akzent);
 }
+.lp-a3 .lp-vp-btn:hover { box-shadow: var(--a-shadow-md); }
+.lp-a3 .lp-vp-btn:focus-visible { outline-color: var(--a-akzent-tinte); }
+/* Play-Knopf im Video-Block: auf der Gold-Flaeche dunkle Schrift, nicht Weiss. */
+.lp-a3 .lp-a-yt:hover .lp-a-yt__play span,
+.lp-a3 .lp-a-yt:focus-visible .lp-a-yt__play span { color: var(--a-text); }
 
 /* ─── ARM A, Gruen ────────────────────────────────────────────────────────── */
 /* Christian: „‚Wirkung in Zellstudien bestaetigt' muss gruen sein." Sie war es
