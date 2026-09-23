@@ -10,7 +10,10 @@ import {
   QIMASTER_DIAMANTBILDER_TITEL,
 } from '~/data/qi-master-diamantbilder';
 import {QIMASTER_LITERATURBILDER} from '~/data/qi-master-literaturbilder';
-import {QIMASTER_GUETEZEICHEN} from '~/data/qi-master-guetezeichen';
+import {
+  QIMASTER_GUETEZEICHEN,
+  QIMASTER_GUETE_UEBERSCHRIFT,
+} from '~/data/qi-master-guetezeichen';
 import {
   QIMASTER_DIAMANT,
   QIMASTER_SECHS_G,
@@ -427,6 +430,14 @@ function MainFeatures() {
  * von der Überschrift „Lass dich vom Qi Master® tragen." Christian hat die
  * Überschrift gestrichen und die drei Zusagen nach oben geholt.
  *
+ * SEIT DEM 2026-09-22 STEHT DIE ÜBERSCHRIFT WIEDER DA (Christian, Auftrag
+ * CW-20260922-9561b2f2; Datumsregel CW-20260923-b67684aa: „Bei solchen Fällen
+ * immer die neueste Version vom Datum her nehmen."). Sie steht als <h2> an der
+ * ersten Stelle DIESES Blocks, über den drei Gütezeichen — der Umbau vom
+ * 17.09. (grösser, oberhalb der Diamantbilder) bleibt, `RisikofreiErleben`
+ * bleibt weg. Die Streichung vom 17.09. ist in diesem einen Punkt abgelöst;
+ * die zwei anderen gestrichenen Sätze bleiben gestrichen.
+ *
  * WAS DIE SCHWESTERSEITEN WEITER TRAGEN: QiOne2Pro, QiBracelet und QiHome
  * haben in ihrer `.RisikofreiErleben` unverändert den erzählenden Block mit
  * Rückgabeweg. Diese Seite hat ihn seit dem 2026-09-16 nicht mehr, und die
@@ -444,16 +455,18 @@ function MainFeatures() {
  * daneben, ein erfundener Alternativtext wäre schlechter als keiner (dieselbe
  * Entscheidung wie bei den Kopfsymbolen, qi-master-kopfsymbole.js).
  *
- * KEIN <h2>: der Block hat keine Überschrift mehr, weil Christian sie
- * gestrichen hat. Eine erfundene Ersatz-Überschrift wäre genau der Text, den er
- * nicht wollte — und die Dokument-Gliederung der Seite trägt weiter über die
- * H2 der Abschnitte darunter. Die nächste davon ist seit dem 2026-09-17
- * „The One Eye" über dem Bildpaar; sie folgt unmittelbar auf diesen Block und
- * gehört den Bildern, nicht ihm.
+ * EIN <h2> IM HAUS-H2-STIL (bis 2026-09-22 stand hier „KEIN <h2>", weil
+ * Christian die Überschrift am 17.09. gestrichen hatte; am 22.09. hat er sie
+ * zurückverlangt). Kein eigener Schriftwert: `.ProductPageQiMaster h2` trägt
+ * `--qm-fs-h2`, mittig — derselbe eine H2-Stil wie „The One Eye" über dem
+ * Bildpaar direkt darunter. Die Überschrift steht AUSSERHALB der Liste und ist
+ * kein `.qm-guete__punkt`: sie ist kein viertes Gütezeichen, und die Proben,
+ * die Gütezeilen zählen und messen, lesen sie deshalb nicht mit.
  */
 function Guetezeichen() {
   return (
     <section className="qm-guete NormalSectionSize" data-section="qm-guete">
+      <h2 className="qm-guete__ueberschrift">{QIMASTER_GUETE_UEBERSCHRIFT}</h2>
       <ul className="qm-guete__liste">
         {QIMASTER_GUETEZEICHEN.map((zeichen) => (
           <li className="qm-guete__punkt" key={zeichen.id}>
