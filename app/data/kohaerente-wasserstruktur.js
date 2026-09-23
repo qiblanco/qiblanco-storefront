@@ -88,6 +88,12 @@ export const bilder = [
  * benannte Exporte stehen, damit die Info-Seite sie aus derselben Quelle liest
  * statt die Werte ein zweites Mal zu tippen. `null` heißt: keine der Quellen
  * sagt dazu etwas. Das Fenster zeigt dann einen Strich, nie einen geratenen Wert.
+ *
+ * DIE ZEILE „LADUNG" ERSETZT SEIT DEM 23.09.2026 (abends) DIE ZEILE
+ * „HYDRONIUM". Deren EZ-Wert „wird neutralisiert" widersprach drei
+ * Primärmessungen aus Pollacks eigenem Labor: beim Aufbau der Zone entsteht
+ * jenseits davon Hydronium, das Wasser dort wird sauer. Die Korrektur steht im
+ * SSoT (Kopfkommentar) mit allen Fundstellen; hier ist sie nur nachgezogen.
  */
 export const stufen = [
   {
@@ -99,7 +105,7 @@ export const stufen = [
     energie: 'Grundzustand',
     bestaendigkeit: 'Brücken halten Sekundenbruchteile',
     ort: 'zwischen den Domänen',
-    hydronium: 'bleibt als Säure',
+    ladung: 'elektrisch neutral',
   },
   {
     id: 'domaene',
@@ -110,7 +116,7 @@ export const stufen = [
     energie: '12,06 eV',
     bestaendigkeit: 'wechselt ständig mit normalem Wasser',
     ort: 'Inseln im Wasser',
-    hydronium: null,
+    ladung: 'ein Elektron je Molekül fast frei',
   },
   {
     id: 'ez',
@@ -122,7 +128,7 @@ export const stufen = [
     energie: '12,06 eV',
     bestaendigkeit: 'weit stabiler als die Domäne',
     ort: 'an Oberflächen',
-    hydronium: 'wird neutralisiert',
+    ladung: 'negativ, das Wasser davor positiv',
   },
 ];
 
@@ -140,7 +146,7 @@ export const vergleich = {
     {feld: 'energie', label: 'Energieniveau'},
     {feld: 'bestaendigkeit', label: 'Beständigkeit'},
     {feld: 'ort', label: 'Wo'},
-    {feld: 'hydronium', label: 'Hydronium H₃O⁺'},
+    {feld: 'ladung', label: 'Ladung'},
   ],
 };
 

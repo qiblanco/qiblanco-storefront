@@ -1,0 +1,1108 @@
+/* ============================================================================
+   /pages/was-ist-kohaerentes-wasser — die Info-Seite „Kohärentes Wasser"
+   (Christian, 23.09.2026: „die beste Info-Seite zu dem Thema im Netz").
+
+   TOKEN-SYSTEM: Schriftgrößen, Abstände, Radien und Farben kommen aus der
+   Wurzel app/styles/qb-tokens.css (--qb-*), die app/root.jsx auf jeder Route
+   lädt. Diese Datei setzt nur die Rollen der Seite darauf (--kw-*), und
+   außerhalb des :root-Blocks erfindet keine Regel einen freien Wert.
+   Skala: 12/14/16/18/20/24/32 aus der Wurzel plus EIN H1-Wert (clamp),
+   also acht Stufen bei einem Deckel von neun (design-meister web-soll).
+
+   EIN GOLD: seit dem 23.09.2026 ist das Kauf-Gold (--qb-akzent-kauf) der eine
+   Goldton für Fläche und Linie; goldene Schrift und dünne bedeutungstragende
+   Linien tragen die Gold-Tinte (--qb-akzent-tinte, 4,78:1 auf hellem Grund).
+   Die Route setzt --qb-akzent deshalb auf das Kauf-Gold, damit auch die drei
+   Bilder aus dem Bausatz (qb-erklaer-popup.css) und die Kopf- und Fußzeile
+   denselben Ton ziehen. Dieselbe Rollenverteilung wie auf
+   /pages/schlaf-zellen-schutz.
+
+   WARUM EIGENE DATEI: Gate 12 löst geteilte Dateien auf alle importierenden
+   Routen auf. Die Werte kommen aus der Wurzel, die Datei gehört dieser Route.
+   ========================================================================== */
+
+:root {
+  --kw-grund: #faf9f5; /* web-soll palette.grund */
+  --kw-mass: 68ch;
+  --kw-breite: 1080px;
+  --kw-breite-text: 760px;
+  --kw-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+  --kw-linie: rgba(44, 42, 38, 0.14);
+  --kw-schatten: 0 12px 32px rgba(25, 23, 20, 0.1);
+  --kw-radius: var(--qb-radius-klein);
+  --kw-radius-gross: 16px;
+
+  /* Abstände: das 8pt-Raster der Wurzel (--qb-ref-raster: 8px), hier als
+     fertige Stufen ausgeschrieben. Grund, gemessen am 2026-09-23: die
+     Gestaltungs-Prüfliste (seiten_pruefliste.py) kann calc(N * var(...))
+     nicht auflösen und meldete die Innenabstände deshalb als „nicht
+     gemessen". Die Werte sind dieselben, nur direkt lesbar. */
+  --kw-s1: 8px;
+  --kw-s1h: 12px;
+  --kw-s2: 16px;
+  --kw-s3: 24px;
+  --kw-s4: 32px;
+  --kw-s6: 48px;
+  --kw-s8: 64px;
+  --kw-s10: 80px;
+  --kw-s12: 96px;
+  --kw-sektion-gross: 96px; /* = --qb-ref-sektion-lg */
+  --kw-sektion-mittel: 64px; /* = --qb-ref-sektion-md */
+  --kw-sektion-klein: 32px; /* = --qb-ref-sektion-sm */
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.kw {
+  --qb-akzent: var(--qb-akzent-kauf);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.65;
+  padding: var(--kw-sektion-klein) var(--kw-s2)
+    var(--kw-sektion-gross);
+}
+
+.kw > * {
+  max-width: var(--kw-breite);
+  margin-inline: auto;
+}
+
+.kw p,
+.kw li,
+.kw dd {
+  max-width: var(--kw-mass);
+}
+
+.kw h2,
+.kw h3 {
+  color: var(--qb-text);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.kw h2 {
+  font-size: var(--qb-text-h2);
+  margin: 0 0 var(--kw-s2);
+}
+
+.kw h3 {
+  font-size: var(--qb-text-h3);
+  margin: var(--kw-s6) 0 var(--kw-s2);
+  scroll-margin-top: var(--kw-s12);
+}
+
+.kw p {
+  margin: 0 0 var(--kw-s2);
+}
+
+.kw a {
+  color: var(--qb-text);
+  text-decoration-line: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.kw a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.kw a:focus-visible,
+.kw button:focus-visible {
+  outline: 2px solid var(--qb-akzent-tinte);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.kw strong {
+  font-weight: 700;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.kw-kopf {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--kw-s6);
+  align-items: center;
+  padding-bottom: var(--kw-s6);
+}
+
+.kw-kopf__text {
+  min-width: 0;
+}
+
+.kw-kopf__marke {
+  margin: 0 0 var(--kw-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte);
+}
+
+.kw-kopf h1 {
+  margin: 0 0 var(--kw-s2);
+  font-size: var(--kw-fs-h1);
+  line-height: 1.12;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.kw-kopf__unter {
+  font-size: var(--qb-ref-fs-4);
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-kurz {
+  margin: var(--kw-s3) 0;
+  padding: var(--kw-s3);
+  background: var(--qb-flaeche);
+  border-left: 3px solid var(--qb-akzent);
+  border-radius: 0 var(--kw-radius) var(--kw-radius) 0;
+}
+
+.kw-kurz__titel {
+  margin: 0 0 var(--kw-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-kurz p:last-child {
+  margin-bottom: 0;
+  font-size: var(--qb-ref-fs-4);
+}
+
+.kw-meta {
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+/* ─── Inhaltsverzeichnis ──────────────────────────────────────────────────── */
+.kw-inhalt {
+  padding: var(--kw-s3) 0;
+  border-top: 1px solid var(--kw-linie);
+  border-bottom: 1px solid var(--kw-linie);
+}
+
+.kw-inhalt__titel {
+  margin: 0 0 var(--kw-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-inhalt ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kw-s1) var(--kw-s4);
+  margin: 0;
+  padding-left: var(--kw-s3);
+}
+
+.kw-inhalt li {
+  min-width: 0;
+  font-size: var(--qb-ref-fs-3);
+}
+
+/* ─── Teile und Abschnitte ────────────────────────────────────────────────── */
+.kw-teil {
+  padding-top: var(--kw-sektion-gross);
+  scroll-margin-top: var(--kw-s8);
+}
+
+.kw-teil__nr {
+  margin: 0 0 var(--kw-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte);
+}
+
+.kw-teil__einleitung {
+  font-size: var(--qb-ref-fs-4);
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-abschnitt {
+  scroll-margin-top: var(--kw-s8);
+}
+
+/* Die Aussageklasse steht als Überschrift über dem Absatz, nie als Vorbehalt
+   im Satz (Brain-Regel). Messung und Modell tragen dieselbe Form, nur ein
+   anderes Wort: keine Wertung durch Farbe. */
+.kw-klasse {
+  display: inline-block;
+  margin: 0 0 var(--kw-s1);
+  padding: 2px var(--kw-s1);
+  font-size: var(--qb-ref-fs-1);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--qb-text);
+  border: 1px solid var(--qb-akzent-tinte);
+  border-radius: var(--kw-radius);
+}
+
+.kw-zitat {
+  font-size: var(--qb-ref-fs-2);
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 1px;
+}
+
+.kw-zitat a {
+  text-decoration: none;
+  color: var(--qb-akzent-tinte);
+  font-weight: 700;
+}
+
+/* ─── Karten (Teil 1) ─────────────────────────────────────────────────────── */
+.kw-karten {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--kw-s3);
+  margin: var(--kw-s3) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kw-karten--vier {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.kw-karte {
+  min-width: 0;
+  max-width: none;
+  padding: var(--kw-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--kw-radius-gross);
+}
+
+.kw-karte h4 {
+  margin: 0 0 var(--kw-s1);
+  font-size: var(--qb-ref-fs-5);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.kw-karte p {
+  margin: 0;
+}
+
+.kw-karte .qb-bild {
+  margin-bottom: var(--kw-s2);
+}
+
+.kw-karte__folge {
+  margin-top: var(--kw-s1);
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+/* ─── Figuren ─────────────────────────────────────────────────────────────── */
+.kw-figur {
+  max-width: 860px;
+  margin: var(--kw-s4) 0;
+  padding: var(--kw-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--kw-radius-gross);
+}
+
+.kw-figur figcaption {
+  max-width: var(--kw-mass);
+  margin-top: var(--kw-s2);
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-figur--leit {
+  max-width: none;
+  margin: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.kw-grafik {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Grafik-Bausteine */
+.kw-atom-o {
+  fill: var(--qb-akzent);
+}
+
+.kw-atom-h {
+  fill: var(--qb-text-gedaempft);
+}
+
+.kw-bindung {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.kw-geist {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+  stroke-dasharray: 4 5;
+}
+
+.kw-zeichen {
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--qb-flaeche);
+}
+
+.kw-zeichen--auf-akzent {
+  fill: var(--qb-text-auf-akzent);
+}
+
+.kw-wert {
+  font-size: var(--qb-ref-fs-5);
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--qb-text);
+}
+
+.kw-wert--akzent {
+  fill: var(--qb-akzent-tinte);
+}
+
+.kw-titelzeile {
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--qb-text);
+}
+
+.kw-titelzeile--akzent {
+  fill: var(--qb-akzent-tinte);
+}
+
+.kw-notiz {
+  font-size: var(--qb-ref-fs-2);
+  text-anchor: middle;
+  fill: var(--qb-text-gedaempft);
+}
+
+.kw-notiz--links {
+  text-anchor: start;
+}
+
+.kw-notiz--rechts {
+  text-anchor: end;
+}
+
+.kw-notiz--stark {
+  font-weight: 700;
+  fill: var(--qb-text);
+}
+
+.kw-leit__bogen-von {
+  fill: none;
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+  stroke-dasharray: 3 4;
+}
+
+.kw-leit__bogen-nach {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2.5;
+}
+
+.kw-leit__ringkante {
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2;
+  stroke-dasharray: 5 6;
+}
+
+.kw-trenner {
+  stroke: var(--kw-linie);
+  stroke-width: 1;
+}
+
+.kw-bruecke {
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.kw-bruecke--wechselt {
+  stroke: var(--qb-text-gedaempft);
+  stroke-dasharray: 4 5;
+}
+
+.kw-bruecke--fest {
+  stroke: var(--qb-akzent-tinte);
+}
+
+.kw-domaene__feld {
+  fill: var(--qb-akzent);
+  fill-opacity: 0.16;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+}
+
+.kw-domaene__puls {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+.kw-dipol line {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.kw-dipol circle {
+  fill: var(--qb-text-gedaempft);
+}
+
+.kw-dipol--takt circle {
+  fill: var(--qb-akzent);
+}
+
+.kw-dipol--takt line {
+  stroke: var(--qb-akzent-tinte);
+}
+
+.kw-schild {
+  fill: var(--kw-grund);
+  stroke: var(--kw-linie);
+}
+
+.kw-flaeche rect,
+.kw-flaeche__block {
+  fill: var(--qb-text-gedaempft);
+  fill-opacity: 0.35;
+}
+
+.kw-flaeche__schraffur {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 1;
+}
+
+.kw-zone__grund,
+.kw-balken {
+  fill: var(--qb-akzent);
+  fill-opacity: 0.28;
+}
+
+.kw-zone__wabe {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1;
+  stroke-opacity: 0.7;
+}
+
+.kw-zone__grenze {
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
+
+.kw-teilchen__kugel {
+  fill: var(--qb-text-gedaempft);
+  fill-opacity: 0.8;
+}
+
+.kw-ladung {
+  font-size: var(--qb-ref-fs-5);
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.kw-ladung--minus {
+  fill: var(--qb-akzent-tinte);
+}
+
+.kw-ladung--plus {
+  fill: var(--qb-text-gedaempft);
+}
+
+.kw-welle {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 6;
+}
+
+.kw-welle--zwei {
+  stroke-opacity: 0.55;
+}
+
+.kw-achse,
+.kw-achse__strich {
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 1.5;
+}
+
+.kw-marke__stiel {
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.kw-marke__band {
+  fill: var(--qb-akzent);
+  fill-opacity: 0.35;
+}
+
+.kw-kurve {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kw-kurve--wasser {
+  stroke: var(--qb-text-gedaempft);
+  stroke-dasharray: 5 5;
+}
+
+.kw-kurve--zone {
+  stroke: var(--qb-akzent-tinte);
+}
+
+/* ─── Bewegung ────────────────────────────────────────────────────────────
+   Nur transform und opacity. Endzustand = gezeichnete Lage. */
+.kw-leit__arm {
+  transform-box: view-box;
+  animation: kw-weitet 9s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes kw-weitet {
+  0%,
+  6% {
+    transform: rotate(var(--kw-dreh, 0deg));
+  }
+  22%,
+  92% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(var(--kw-dreh, 0deg));
+  }
+}
+
+.kw-leit__nachbar,
+.kw-leit__ringkante {
+  animation: kw-erscheint 9s ease-out infinite both;
+}
+
+@keyframes kw-erscheint {
+  0%,
+  16% {
+    opacity: 0;
+  }
+  30%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.kw-bruecke--wechselt {
+  animation: kw-flackert 2.8s ease-in-out infinite;
+}
+
+@keyframes kw-flackert {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45%,
+  60% {
+    opacity: 0.08;
+  }
+}
+
+.kw-atom-o--wackelt {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kw-wackelt 2.4s ease-in-out infinite;
+}
+
+@keyframes kw-wackelt {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(2px, -2px);
+  }
+  66% {
+    transform: translate(-2px, 1px);
+  }
+}
+
+.kw-dipol {
+  transform-box: fill-box;
+  transform-origin: 50% 85%;
+}
+
+.kw-dipol--frei {
+  animation: kw-pendelt 3s ease-in-out infinite;
+}
+
+.kw-dipol--takt {
+  animation: kw-pendelt 2.4s ease-in-out infinite;
+}
+
+@keyframes kw-pendelt {
+  0%,
+  100% {
+    transform: rotate(-28deg);
+  }
+  50% {
+    transform: rotate(28deg);
+  }
+}
+
+.kw-domaene__puls {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kw-puls 2.4s ease-out infinite;
+}
+
+@keyframes kw-puls {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+.kw-zone {
+  animation: kw-zone-waechst 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes kw-zone-waechst {
+  0% {
+    transform: scaleX(0.2);
+  }
+  45%,
+  90% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.2);
+  }
+}
+
+.kw-teilchen {
+  animation: kw-verdraengt 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes kw-verdraengt {
+  0% {
+    transform: translateX(-120px);
+  }
+  45%,
+  90% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-120px);
+  }
+}
+
+.kw-balken--waechst {
+  transform-box: view-box;
+  animation: kw-balken 6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes kw-balken {
+  0% {
+    transform: scaleX(0.28);
+  }
+  50%,
+  88% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.28);
+  }
+}
+
+.kw-welle {
+  animation: kw-welle 1.2s linear infinite;
+}
+
+@keyframes kw-welle {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.kw-marke {
+  animation: kw-erscheint-einmal 0.8s ease-out both;
+}
+
+@keyframes kw-erscheint-einmal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.kw-kurve--zone {
+  stroke-dasharray: 900;
+  animation: kw-zeichnet 3.2s ease-out 0.3s both;
+}
+
+@keyframes kw-zeichnet {
+  from {
+    stroke-dashoffset: 900;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-leit__arm,
+  .kw-leit__nachbar,
+  .kw-leit__ringkante,
+  .kw-bruecke--wechselt,
+  .kw-atom-o--wackelt,
+  .kw-dipol,
+  .kw-domaene__puls,
+  .kw-zone,
+  .kw-teilchen,
+  .kw-balken--waechst,
+  .kw-welle,
+  .kw-marke,
+  .kw-kurve--zone {
+    animation: none;
+    transform: none;
+  }
+
+  .kw-leit__nachbar,
+  .kw-leit__ringkante,
+  .kw-marke {
+    opacity: 1;
+  }
+
+  .kw-kurve--zone {
+    stroke-dasharray: none;
+  }
+}
+
+/* ─── Stufentafel ─────────────────────────────────────────────────────────
+   Das Raster selbst ist der Bausatz aus qb-erklaer-popup.css
+   (.qb-erklaer__tabelle), der seit dem 23.09.2026 ohne Aufrufer stand. Hier
+   kommen nur die Stufen-Knöpfe und die Hervorhebung der gewählten Spalte
+   dazu. */
+.kw-stufen {
+  margin: var(--kw-s3) 0;
+  padding: var(--kw-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--kw-radius-gross);
+}
+
+.kw-stufen__wahl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kw-s1);
+  margin: 0 0 var(--kw-s1);
+  padding: 0;
+  list-style: none;
+}
+
+.kw-stufen__knopf {
+  appearance: none;
+  min-height: 44px;
+  padding: 0 var(--kw-s2);
+  font: inherit;
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text);
+  background: var(--kw-grund);
+  border: 1px solid var(--kw-linie);
+  border-radius: var(--kw-radius);
+  cursor: pointer;
+}
+
+.kw-stufen__knopf[aria-pressed='true'] {
+  border-color: var(--qb-akzent-tinte);
+  box-shadow: inset 0 -3px 0 var(--qb-akzent);
+}
+
+.kw-stufen__text {
+  min-height: var(--kw-s6);
+  font-size: var(--qb-ref-fs-3);
+}
+
+.kw-stufen .qb-erklaer__tabelle {
+  font-size: var(--qb-ref-fs-3);
+}
+
+.kw-stufen [data-aktiv='ja'] {
+  background: var(--kw-grund);
+}
+
+.kw-stufen .qb-erklaer__zelle--stufe[data-aktiv='ja'] {
+  box-shadow: inset 0 -3px 0 var(--qb-akzent);
+}
+
+/* ─── Begriffe ────────────────────────────────────────────────────────────── */
+.kw-begriffe {
+  width: 100%;
+  margin: var(--kw-s3) 0;
+  border-collapse: collapse;
+  font-size: var(--qb-ref-fs-3);
+}
+
+.kw-begriffe th,
+.kw-begriffe td {
+  padding: var(--kw-s1) var(--kw-s2)
+    var(--kw-s1) 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--kw-linie);
+}
+
+.kw-begriffe thead th {
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kw-begriffe tbody th {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ─── Video ───────────────────────────────────────────────────────────────── */
+/* 640 px, nicht breiter: YouTube liefert das Vorschaubild höchstens 1280 px
+   breit (maxresdefault, gemessen mit bin/anbieter-deckel-messen). Bei
+   doppelter Pixeldichte deckt das genau 640 CSS-Pixel; jede breitere Fläche
+   würde das Bild hochskalieren und unscharf zeigen (Gate 12, bild-aufloesung,
+   gemessen am 2026-09-23 bei 760 px). */
+.kw-video {
+  margin: var(--kw-s4) 0;
+  max-width: 640px;
+}
+
+.kw-video__rahmen {
+  overflow: hidden;
+  border-radius: var(--kw-radius-gross);
+  box-shadow: var(--kw-schatten);
+}
+
+.kw-video figcaption {
+  margin-top: var(--kw-s2);
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+/* ─── Fragen, Glossar, Quellen ────────────────────────────────────────────── */
+.kw-fragen .ProductFAQ__list {
+  max-width: var(--kw-breite-text);
+}
+
+.kw-glossar {
+  display: grid;
+  grid-template-columns: minmax(0, 14em) minmax(0, 1fr);
+  gap: var(--kw-s2) var(--kw-s3);
+  margin: var(--kw-s3) 0 0;
+}
+
+.kw-glossar dt {
+  font-weight: 700;
+  min-width: 0;
+}
+
+.kw-glossar dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.kw-quellen {
+  margin: var(--kw-s3) 0 0;
+  padding-left: var(--kw-s4);
+  font-size: var(--qb-ref-fs-2);
+}
+
+.kw-quellen li {
+  margin-bottom: var(--kw-s1h);
+  scroll-margin-top: var(--kw-s10);
+  overflow-wrap: anywhere;
+}
+
+.kw-quellen li:target {
+  background: var(--qb-flaeche);
+  box-shadow:
+    -8px 0 0 var(--qb-flaeche),
+    8px 0 0 var(--qb-flaeche);
+}
+
+.kw-quellen cite {
+  font-style: normal;
+  color: var(--qb-text);
+}
+
+.kw-quellen__kern {
+  display: block;
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-weiter {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--kw-s3);
+  margin: var(--kw-s3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kw-weiter li {
+  min-width: 0;
+  max-width: none;
+  padding: var(--kw-s3);
+  border: 1px solid var(--kw-linie);
+  border-radius: var(--kw-radius-gross);
+}
+
+.kw-weiter a {
+  font-weight: 700;
+}
+
+.kw-weiter p {
+  margin: var(--kw-s1) 0 0;
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+.kw-stand {
+  margin-top: var(--kw-s6);
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+/* ─── Schmal ──────────────────────────────────────────────────────────────── */
+@media (max-width: 749px) {
+  .kw h2 {
+    font-size: var(--qb-text-h2-mobil);
+  }
+
+  .kw h3 {
+    font-size: var(--qb-text-h3-mobil);
+  }
+
+  .kw-kopf {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--kw-s3);
+  }
+
+  .kw-teil {
+    padding-top: var(--kw-sektion-mittel);
+  }
+
+  .kw-inhalt ol,
+  .kw-karten,
+  .kw-weiter {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kw-figur {
+    padding: var(--kw-s2);
+    margin-inline: calc(-1 * var(--kw-s1));
+  }
+
+  .kw-glossar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--kw-s1);
+  }
+
+  .kw-glossar dd {
+    margin-bottom: var(--kw-s2);
+  }
+
+  /* Tabellen stapeln sich auf dem Handy: jede Zeile ein Block, der
+     Zeilenkopf oben, die Werte darunter. Drei Spalten auf 358 px liefen
+     sonst 33 px aus dem Viewport (gemessen 2026-09-23, Design-Rubrik). */
+  .kw-begriffe,
+  .kw-begriffe tbody,
+  .kw-begriffe tr,
+  .kw-begriffe th,
+  .kw-begriffe td,
+  .kw-begriffe caption {
+    display: block;
+    width: auto;
+    text-align: left;
+  }
+
+  .kw-begriffe thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .kw-begriffe tr {
+    padding: var(--kw-s1) 0;
+    border-bottom: 1px solid var(--kw-linie);
+  }
+
+  .kw-begriffe th,
+  .kw-begriffe td {
+    padding: 2px 0;
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .kw-begriffe tbody th {
+    white-space: normal;
+  }
+
+  .kw-begriffe td + td {
+    font-size: var(--qb-ref-fs-2);
+    color: var(--qb-text-gedaempft);
+  }
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Die fremden Gold-Variablen aus app.css und dem rd3-System erben hier den
+   EINEN Goldton, damit Kopf und Fuß keinen zweiten mitbringen. */
+body:has(.kw) {
+  background: var(--kw-grund);
+  --qb-akzent: var(--qb-akzent-kauf);
+  --color-accent-primary: var(--qb-akzent-kauf);
+  --rd3-gold: var(--qb-akzent-kauf);
+  --qb-sterne-gold: var(--qb-akzent-kauf);
+}
+
+/* EIN Bild-Radius auf dieser Route, auch für die Bilder aus Kopf und Fuß. */
+body:has(.kw) img,
+body:has(.kw) picture,
+body:has(.kw) video {
+  border-radius: var(--kw-radius);
+}
