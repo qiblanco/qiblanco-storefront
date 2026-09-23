@@ -1,11 +1,11 @@
-// Hermetische Tests der Info-Seite /pages/was-ist-kohaerentes-wasser (Grossjob
-// 20260923-GROSSJOB-was-ist-kohaerentes-wasser-wird-die-beste-infoseite).
+// Hermetische Tests der Info-Seite /pages/was-ist-kohaerentes-wasser (Großjob
+// vom 23.09.2026, Christian: „die beste Info-Seite zu dem Thema im Netz").
 // node:test/node:assert sind Bordmittel, KEIN Netz.
-// Ausfuehren: node --test test/kohaerentes-wasser-info.test.mjs
+// Ausführen: node --test test/wasser-infoseite.test.mjs
 //
-// WAS DIESE DATEI PRUEFT: die Zusagen des Datenmoduls am Quelltext — jede
-// Zitatmarke hat eine Quelle, jede Quelle wird zitiert, mindestens zwoelf
-// verschiedene DOI-Links, keine Koerper- oder Heilzusage, keine
+// WAS DIESE DATEI PRÜFT: die Zusagen des Datenmoduls am Quelltext — jede
+// Zitatmarke hat eine Quelle, jede Quelle wird zitiert, mindestens zwölf
+// verschiedene DOI-Links, keine Körper- oder Heilzusage, keine
 // Selbstentwertung, die Werte der drei Stufen kommen aus dem SSoT-Konsumenten,
 // und die strukturierten Daten tragen Article, FAQPage, DefinedTermSet und
 // VideoObject aus dem sichtbaren Text. Ob die Seite LIVE hell ist, misst
@@ -15,13 +15,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 import {ladeMitAufgeloestenImporten} from './route-import-aufloesung.mjs';
+import * as SSOT from '../app/data/kohaerente-wasserstruktur.js';
 
-const DATEI = new URL(
-  '../app/data/kohaerentes-wasser-info.js',
-  import.meta.url,
-);
+const DATEI = new URL('../app/data/wasser-infoseite.js', import.meta.url);
 const W = await ladeMitAufgeloestenImporten(DATEI.pathname, 'kwinfo');
-const SSOT = await import('../app/data/kohaerente-wasserstruktur.js');
 
 /** Alle Texte der Seite, wie sie gerendert werden (ohne Marken). */
 function alleTexte() {
@@ -93,9 +90,9 @@ test('mindestens zwoelf verschiedene DOI-Links, alle wohlgeformt', () => {
     assert.match(u, /^https:\/\/doi\.org\/10\.\d{4,5}\/\S+$/, u);
 });
 
-test('kein Koerper- oder Heilversprechen im sichtbaren Text (GL-SPR-0008)', () => {
+test('kein Körper- oder Heilversprechen im sichtbaren Text (GL-SPR-0008)', () => {
   // Dasselbe Muster wie Arm H der Erfuellungsprobe, plus die Sperre des
-  // Datenmoduls selbst. Titel fremder Werke im Quellenverzeichnis zaehlen
+  // Datenmoduls selbst. Titel fremder Werke im Quellenverzeichnis zählen
   // nicht: sie sind bibliografische Angabe, nicht unsere Aussage.
   const armH =
     /st(ä|ae)rkt (dein|das) Immunsystem|sch(ü|ue)tzt (deine )?Zellen vor|vor Viren|heilt|verhindert Krankheit|sch(ü|ue)tzt (dich|deinen K(ö|oe)rper) vor/i;
@@ -176,18 +173,14 @@ test('strukturierte Daten: Article, FAQPage, DefinedTermSet, VideoObject', () =>
   ]) {
     assert.ok(video[f], `VideoObject ohne ${f}`);
   }
-  // Auf der Seite gilt: dieselben Knoten muessen JSON-serialisierbar sein.
+  // Auf der Seite gilt: dieselben Knoten müssen JSON-serialisierbar sein.
   for (const k of knoten) JSON.parse(JSON.stringify(k));
 });
 
-test('die Route traegt canonicalLink und kein noindex', () => {
-  const route = readFileSync(
-    new URL(
-      '../app/routes/pages.was-ist-kohaerentes-wasser.jsx',
-      import.meta.url,
-    ),
-    'utf8',
-  );
+test('die Route trägt canonicalLink und kein noindex', () => {
+  // Der Dateiname folgt aus dem Pfad der Seite; so steht er nur an EINER Stelle.
+  const datei = `../app/routes/pages.${W.PFAD.split('/').pop()}.jsx`;
+  const route = readFileSync(new URL(datei, import.meta.url), 'utf8');
   assert.match(route, /canonicalLink\(SEITE\.pfad\)/);
   const code = route.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   assert.doesNotMatch(code, /noindex/);

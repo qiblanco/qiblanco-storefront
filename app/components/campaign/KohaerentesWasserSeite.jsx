@@ -31,13 +31,13 @@ import {
   QUELLEN,
   WEITER,
   quellenNummer,
-} from '~/data/kohaerentes-wasser-info';
+} from '~/data/wasser-infoseite';
 
 /**
  * Die Info-Seite „Kohärentes Wasser" — Darstellung. DIESE DATEI TRÄGT KEINEN
  * INHALT: jeder Satz, jede Zahl und jede Quelle steht in
- * app/data/kohaerentes-wasser-info.js, die Werte der drei Stufen in
- * app/data/kohaerente-wasserstruktur.js (Konsument des Brain-SSoT). Wer Text
+ * app/data/wasser-infoseite.js, die Werte der drei Stufen in
+ * dem Datenmodul der Wasserstruktur (Konsument des Brain-SSoT). Wer Text
  * ändert, ändert das Datenmodul.
  *
  * AUFBAU nach Christians Zweiteilung: Kopf mit Kurzfassung (sie ist auch der
@@ -53,7 +53,7 @@ const GRAFIKEN = {
   domaene: GrafikDomaene,
   ausschlusszone: GrafikAusschlusszone,
   licht: GrafikLicht,
-  massstab: GrafikMassstab,
+  skala: GrafikMassstab,
   spektrum: GrafikSpektrum,
 };
 

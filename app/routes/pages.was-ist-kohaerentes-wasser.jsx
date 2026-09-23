@@ -3,12 +3,12 @@ import kwStyles from '~/styles/kohaerentes-wasser.css?url';
 import qbErklaerPopupStyles from '~/styles/qb-erklaer-popup.css?url';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
-import {SEITE, strukturierteDaten} from '~/data/kohaerentes-wasser-info';
+import {SEITE, strukturierteDaten} from '~/data/wasser-infoseite';
 
 /**
  * /pages/was-ist-kohaerentes-wasser — die Info-Seite „Kohärentes Wasser".
  *
- * Auftrag: 20260923-GROSSJOB-was-ist-kohaerentes-wasser-wird-die-beste-infoseite
+ * Auftrag: Großjob vom 23.09.2026 „Info-Seite kohärentes Wasser"
  * (Christian, 23.09.2026, wörtlich: „die beste Info-Seite zu dem Thema im Netz
  * … Erster Teil: Kohärentes Wasser — einfach erklärt … Zweiter Teil: harte
  * Fakten … mit Quellen belegen und sehr guten detaillierten Grafiken").
@@ -20,7 +20,7 @@ import {SEITE, strukturierteDaten} from '~/data/kohaerentes-wasser-info';
  * strukturierte Daten und die internen Verweise zum Begriff.
  *
  * REINE ROUTE, KEIN SHOPIFY-SEITENOBJEKT und kein Loader: der Inhalt steht
- * committet in app/data/kohaerentes-wasser-info.js (Oxygen läuft am Edge und
+ * committet in app/data/wasser-infoseite.js (Oxygen läuft am Edge und
  * liest shared-state zur Laufzeit nicht). In die Sitemap kommt die Seite über
  * NUR_ROUTE_SEITEN in app/lib/seo.js, ins Menü „Mehr" über das Shopify-Menü
  * main-menu (kein Code).

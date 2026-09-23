@@ -9,14 +9,14 @@
  *
  * KEINE PHYSIKALISCHE ZAHL STEHT IN DIESER DATEI. Jede Zahl, die ein Leser in
  * einer Grafik liest, kommt als Wert herein: die drei Stufen und der Winkel aus
- * app/data/kohaerente-wasserstruktur.js (dem Konsumenten des Brain-SSoT), alles
- * Übrige aus app/data/kohaerentes-wasser-info.js, wo jede Zahl ihre Fundstelle
+ * dem Datenmodul der Wasserstruktur (dem Konsumenten des Brain-SSoT), alles
+ * Übrige aus app/data/wasser-infoseite.js, wo jede Zahl ihre Fundstelle
  * trägt. Was hier steht, sind Zeichenkoordinaten. Der Winkel der Leitgrafik
  * wird aus `grad` GERECHNET, damit Bild und Beschriftung nicht auseinanderlaufen
  * können.
  *
  * BEWEGUNG: jede Animation hängt an einer kw-Klasse, die
- * app/styles/kohaerentes-wasser.css unter `prefers-reduced-motion: reduce`
+ * das Stylesheet der Info-Seite unter `prefers-reduced-motion: reduce`
  * abschaltet. Abgeschaltet steht jedes Bild im Endzustand, nie im halben.
  * Animiert werden nur transform und opacity (kein Layout, kein Repaint der
  * Seite).
@@ -39,8 +39,8 @@ function punkt(ox, oy, r, richtung) {
 function bogen(ox, oy, r, von, bis) {
   const p = punkt(ox, oy, r, von);
   const q = punkt(ox, oy, r, bis);
-  const gross = Math.abs(bis - von) > 180 ? 1 : 0;
-  return `M ${f1(p.x)} ${f1(p.y)} A ${r} ${r} 0 ${gross} 1 ${f1(q.x)} ${f1(q.y)}`;
+  const weit = Math.abs(bis - von) > 180 ? 1 : 0;
+  return `M ${f1(p.x)} ${f1(p.y)} A ${r} ${r} 0 ${weit} 1 ${f1(q.x)} ${f1(q.y)}`;
 }
 
 function sechseck(cx, cy, r, start = 30) {
@@ -301,7 +301,7 @@ export function GrafikBruecken({links, rechts}) {
         {w.kanten.map(([p, q], i) => (
           <line
             key={`w${i}`}
-            className="kw-bruecke kw-bruecke--haelt"
+            className="kw-bruecke kw-bruecke--fest"
             x1={f1(p.x)}
             y1={f1(p.y)}
             x2={f1(q.x)}
@@ -596,7 +596,7 @@ export function GrafikMassstab({marken, achse}) {
       aria-label={`Größenmaßstab von ${achse[0]} bis ${achse[1]}: ${marken
         .map((m) => `${m.was} ${m.anzeige}`)
         .join(', ')}.`}
-      data-kw-grafik="massstab"
+      data-kw-grafik="skala"
     >
       <line className="kw-achse" x1={X0} y1="120" x2={X1} y2="120" />
       {dekaden.map((lg) => {

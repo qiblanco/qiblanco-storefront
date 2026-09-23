@@ -11,7 +11,7 @@ import {stufen, vergleich} from '~/data/kohaerente-wasserstruktur';
  * seitdem ohne Aufrufer und bekommt hier seinen Aufrufer zurück.
  *
  * KEINE ZAHL IN DIESER DATEI. Jeder Wert kommt aus `stufen` und `vergleich`
- * in app/data/kohaerente-wasserstruktur.js, dem Konsumenten des Brain-SSoT.
+ * im Datenmodul der Wasserstruktur, dem Konsumenten des Brain-SSoT.
  * `null` heißt: keine Quelle sagt dazu etwas, gezeigt wird ein Strich.
  *
  * EINE DOM-STRUKTUR: zeilenweise (Merkmal, dann die drei Stufen), wie ein

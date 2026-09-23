@@ -6,7 +6,7 @@ import {isoMitZone} from '~/lib/datum';
 /**
  * DER INHALT DER INFO-SEITE „KOHÄRENTES WASSER" — /pages/was-ist-kohaerentes-wasser.
  *
- * Auftrag: 20260923-GROSSJOB-was-ist-kohaerentes-wasser-wird-die-beste-infoseite
+ * Auftrag: Großjob vom 23.09.2026 „Info-Seite kohärentes Wasser"
  * (Christian, 23.09.2026). Zwei Teile: „einfach erklärt" für den Laien, dann
  * „harte Fakten" mit Quellen. Jede Zahl trägt ihre Fundstelle als Zitatmarke
  * {q:id}; das Quellenverzeichnis unten nennt Werk, DOI oder PubMed-Link und
@@ -15,8 +15,8 @@ import {isoMitZone} from '~/lib/datum';
  *
  * EINE ZAHLENHALTUNG FÜR DIE DREI STUFEN. Winkel, Formel, Energieniveau,
  * Dichte und Abstand der kohärenten Wasserstruktur stehen im Brain-SSoT
- * (qi-brain/brain/Marketing/kohaerente-wasserstruktur-gegenueberstellung.yaml)
- * und kommen über app/data/kohaerente-wasserstruktur.js hierher. Diese Datei
+ * (im qi-brain unter brain/Marketing, die Wasserstruktur-Gegenüberstellung)
+ * und kommen über das Datenmodul der Wasserstruktur hierher. Diese Datei
  * setzt sie in Sätze ein (Template-Literale), sie tippt sie nicht ein zweites
  * Mal. Die drei im SSoT als widerlegt geführten Werte stehen hier nicht.
  *
@@ -97,7 +97,7 @@ export const TEIL_EINFACH = {
     'Vier Fragen, vier kurze Antworten. Ohne Formeln, dafür mit Bildern.',
   abschnitte: [
     {
-      id: 'was-heisst-kohaerent',
+      id: 'gleichtakt',
       titel: 'Was heißt kohärent?',
       absaetze: [
         'Kohärent heißt: im Gleichtakt. Kohärentes Wasser ist Wasser, in dem viele Moleküle dasselbe tun, statt jedes für sich.',
@@ -175,7 +175,7 @@ export const TEIL_FAKTEN = {
     'Jede Zahl mit ihrer Fundstelle. Über jedem Abschnitt steht, ob er eine Messung beschreibt oder ein Modell.',
   abschnitte: [
     {
-      id: 'molekuel',
+      id: 'wassermolekuel',
       titel: 'Das Wassermolekül und das Eis',
       klasse: 'Messung',
       absaetze: [
@@ -217,7 +217,7 @@ export const TEIL_FAKTEN = {
       },
     },
     {
-      id: 'kohaerente-domaenen',
+      id: 'domaenen',
       titel: 'Kohärente Domänen: das Modell von Preparata und Del Giudice',
       klasse: 'Modell',
       absaetze: [
@@ -263,13 +263,13 @@ export const TEIL_FAKTEN = {
       },
     },
     {
-      id: 'groessen',
+      id: 'skala',
       titel: 'Vom Molekül zur Zone: die Größen',
       absaetze: [
         'Die drei Stufen spielen auf sehr verschiedenen Größen. Zwei benachbarte Moleküle trennen im flüssigen Wasser rund 0,31 Nanometer {q:preparata1995}. Eine Domäne ist im Modell etwa dreihundertmal so groß {q:delgiudice2010}, die Ausschlusszone noch einmal tausendmal größer {q:zheng2006}.',
       ],
       grafik: {
-        typ: 'massstab',
+        typ: 'skala',
         werte: {
           achse: ['0,1 nm', '1 mm'],
           marken: [
@@ -603,13 +603,13 @@ export const GLOSSAR = [
       'Eine schwache Bindung zwischen dem Wasserstoff eines Moleküls und dem Sauerstoff eines Nachbarn. Im flüssigen Wasser lebt sie nur Billionstel Sekunden {q:fecko2003}.',
   },
   {
-    id: 'kohaerenz',
+    id: 'gleichtakt',
     begriff: 'Kohärenz',
     definition:
       'Gleichtakt: Viele Teilchen schwingen mit derselben Frequenz und in fester Phase zueinander.',
   },
   {
-    id: 'kohaerente-domaene',
+    id: 'domaene',
     begriff: 'Kohärente Domäne',
     definition:
       'Ein Bereich von rund 0,1 Mikrometern, in dem Wassermoleküle nach dem Modell von Del Giudice und Preparata im Gleichtakt schwingen {q:delgiudice2010}.',
@@ -1114,7 +1114,7 @@ export function quellenNummer(id) {
  * und Christians Auftrag verlangt FAQPage und DefinedTerm ausdrücklich. Die
  * Sperre hier sitzt deshalb auf dem, was die Regel meint: Heil- und
  * Körperschutzzusagen. Trifft sie, fliegt der Eintrag aus dem Schema, und der
- * Test test/kohaerentes-wasser-info.test.mjs wird rot (nichts fällt still weg).
+ * Test der Seite (test/wasser-infoseite.test.mjs) wird rot (nichts fällt still weg).
  */
 export const KOERPER_SPERRE = [
   /st(ä|ae)rk\w* (dein|das|ihr|unser) Immunsystem/i,

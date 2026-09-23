@@ -1164,10 +1164,10 @@ export const NUR_ROUTE_SEITEN = [
     pfad: '/pages/was-ist-kohaerentes-wasser',
     lastmod: '2026-09-23T22:00:00Z',
     grund:
-      'Die Info-Seite „Kohärentes Wasser" (Grossjob 20260923-GROSSJOB-was-' +
-      'ist-kohaerentes-wasser-wird-die-beste-infoseite, Christian 23.09.2026: ' +
+      'Die Info-Seite „Kohärentes Wasser" (Großjob vom 23.09.2026, ' +
+      'Christian: ' +
       '„die beste Info-Seite zu dem Thema im Netz"). Die Seite besteht allein ' +
-      'aus der Route pages.was-ist-kohaerentes-wasser.jsx und hat KEIN ' +
+      'aus ihrer eigenen Route und hat KEIN ' +
       'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 mit ' +
       'vollem Text und steht in keiner Sitemap. Ein Seitenobjekt wäre der ' +
       'zweite mögliche Träger und ist nicht gewählt (Fremdsystem), dieselbe ' +
