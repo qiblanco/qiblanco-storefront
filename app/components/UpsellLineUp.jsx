@@ -73,8 +73,11 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
 
   const maxIndex = ITEMS.length - 1;
 
+  // Slider-Standard (baukasten/qb-standard-slider, Abschnitt 1, Punkt 3):
+  // „weiter“ wickelt am Ende auf die erste Karte, genau wie der InfoSlider.
+  // „zurück“ bleibt an der ersten Karte stehen.
   const goNext = useCallback(() => {
-    setCurrentIndex((i) => Math.min(i + 1, maxIndex));
+    setCurrentIndex((i) => (i < maxIndex ? i + 1 : 0));
   }, [maxIndex]);
 
   const goPrev = useCallback(() => {
@@ -89,11 +92,13 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
     slideStep,
     onNext: goNext,
     onPrev: goPrev,
-    canNext: () => currentIndex < maxIndex,
+    canNext: () => true, // „weiter“ wickelt am Ende auf 0 (Standard, wie InfoSlider)
     canPrev: () => currentIndex > 0,
   });
 
-  const progress = ((currentIndex + 1) / ITEMS.length) * 100;
+  // Slider-Standard (Abschnitt 1, Punkt 1): der Balken zeigt den zurückgelegten
+  // Weg und startet bei 0 %, also Index durch letzten Index, nicht (Index+1)/n.
+  const progress = maxIndex > 0 ? (currentIndex / maxIndex) * 100 : 100;
 
   // On mobile, translate by one card width per index; waehrend des Drags
   // folgt der Track dem Finger 1:1 (dragOffset in px).
@@ -159,9 +164,15 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
               style={{width: `${progress}%`}}
             />
           </div>
+          {/* Slider-Standard (Abschnitt 1, Punkt 2): die zwei vorhandenen Pfeile
+            sind echte Knöpfe mit Namen, per Tastatur erreichbar. Kein neues
+            Bedienelement, nur das vorhandene Element als <button>; das
+            Aussehen kommt unverändert aus .SliderButtonWrapper .SliderButton. */}
           <div className="SliderButtonWrapper">
-            <div
+            <button
+              type="button"
               className="ButtonPrev SliderButton"
+              aria-label="Vorheriger Slide"
               onClick={goPrev}
             >
               <svg
@@ -175,9 +186,11 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
                   d="M29.52 22.52L18 10.6L6.48 22.52a1.7 1.7 0 0 0 2.45 2.36L18 15.49l9.08 9.39a1.7 1.7 0 0 0 2.45-2.36Z"
                 />
               </svg>
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               className="ButtonNext SliderButton"
+              aria-label="Nächster Slide"
               onClick={goNext}
             >
               <svg
@@ -191,7 +204,7 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
                   d="M29.52 22.52L18 10.6L6.48 22.52a1.7 1.7 0 0 0 2.45 2.36L18 15.49l9.08 9.39a1.7 1.7 0 0 0 2.45-2.36Z"
                 />
               </svg>
-            </div>
+            </button>
           </div>
         </>
       )}
