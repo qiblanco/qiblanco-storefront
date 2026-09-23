@@ -779,7 +779,7 @@ function AlphaSerie() {
             Eigene Goldlegierung
           </h3>
           <p>
-            Für den Gitterchip kommt eine eigene spezielle 750iger Goldlegierung
+            Für den Gitterchip™ kommt eine eigene spezielle 750iger Goldlegierung
             zum Einsatz um die gewohnten Eigenschaften zu gewährleisten.
           </p>
         </div>
