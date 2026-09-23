@@ -1,0 +1,67 @@
+/* ============================================================================
+   Christians Fassung zum Qi Master® vom 22.09.2026 (QiMasterWortlaut.jsx).
+   Grossjob 20260922-GROSSJOB-qi-master-ohne-laufenden-vorverkauf-und-ohne-
+   rabatt, Segment s03.
+
+   EIN Bauteil, zwei Orte: auf /pages/qi-master-vorverkauf als eigener
+   Abschnitt und auf /products/qi-master im priceLabel-Slot der Buy-Box (dort,
+   wo bis zum 22.09.2026 die Vorverkaufstreppe stand). Beide Routen laden diese
+   Datei ZUSAETZLICH zu qi-master.css.
+
+   WARUM EINE EIGENE DATEI UND NICHT IN qi-master.css: qi-master.css laedt
+   JEDE der beiden Qi-Master-Routen. Eine Aenderung dort erreicht beide Seiten
+   zugleich, und Gate 12 (Alle-Formate, Pixel-Soll) verlangt dann fuer die
+   Landingpage einen Erlass, den ein Diff ueber zwei Seiten baulich nicht
+   bekommt (Fortschritts-Bedingung bei Design 100/100 unerfuellbar, nur der
+   seitenlokale Diff laesst sie entfallen). Eine NEUE Datei, die zuerst nur die
+   Landingpage laedt, haelt den ersten PR seitenlokal; die Produktseite zieht
+   im zweiten PR nach, ohne qi-master.css anzufassen.
+
+   KEIN EIGENES TOKEN-SYSTEM: jede Groesse, jeder Abstand, jede Farbe und jeder
+   Radius kommt aus den --qm-*-Token in qi-master.css. Eine Skala hier waere
+   ein zweiter Goldton und eine zehnte Schriftgroesse.
+
+   GESTALTUNG: vier Absaetze, EINE Schriftgroesse (--qm-fs-base); die Rolle
+   eines Absatzes zeigt sich allein am Gewicht und am Ton aus dem warmen
+   Neutral-Kontinuum. KEIN Gold: der eine Gold-Akzent der Seite gehoert der
+   Handlung (Kaufknopf), und ein Terminsatz ist weder Handlung noch Beweis.
+   ========================================================================== */
+
+.qm-wortlaut {
+  margin-top: var(--qm-s3);
+  padding: var(--qm-s3);
+  background: var(--qm-flaeche);
+  border-radius: var(--qm-r2);
+  color: var(--qm-text);
+}
+.qm-wortlaut--kompakt { padding: var(--qm-s2); }
+
+.qm-wortlaut__absatz {
+  font-size: var(--qm-fs-base);
+  line-height: 1.6;
+  max-width: var(--qm-mass);
+  margin: 0 0 var(--qm-s2);
+}
+.qm-wortlaut__absatz:last-child { margin-bottom: 0; }
+
+/* Der lange Absatz traegt die Begruendung — Fliesstext im Grundton. */
+.qm-wortlaut__absatz--grund { color: var(--qm-text); }
+
+/* „Designed in Germany. Made in Germany." und der Terminsatz sind die zwei
+   kurzen Aussagen des Blocks: abgesetzt durch Gewicht, nicht durch eine
+   zweite Groesse und nicht durch eine zweite Farbe. */
+.qm-wortlaut__absatz--herkunft,
+.qm-wortlaut__absatz--termin {
+  font-weight: 700;
+  color: var(--qm-dunkel);
+}
+
+/* Der Versandsatz ist eine Auskunft, keine Werbung: ruhigste Stufe im Block. */
+.qm-wortlaut__absatz--versand { color: var(--qm-muted); }
+
+/* Auf der Produktseite sitzt der Block im priceLabel-Slot neben der
+   inline-flex-Preiszeile (.qm-pdp .Bestseller-Price > .product-price, gesetzt
+   in qi-master.css) und muss als eigener Block darunter stehen, statt
+   daneben zu rutschen. Die Regel greift nur dort; auf der Landingpage gibt es
+   kein .qm-pdp. */
+.qm-pdp .Bestseller-Price > .qm-wortlaut { display: block; }
