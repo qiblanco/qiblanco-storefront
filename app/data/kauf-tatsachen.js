@@ -67,9 +67,10 @@ export const IM_PREIS = [
   {
     id: 'versand',
     text:
-      'Der Versand innerhalb Deutschlands kostet 5,90 Euro und ist ab 99 ' +
-      'Euro Warenwert frei. Nach Österreich und in die Schweiz fallen ' +
-      'Versandkosten an; Zoll und Einfuhrabgaben sind im Preis enthalten.',
+      'Nach Deutschland und Österreich schicken wir QiOne® 2 Pro, ' +
+      'QiBracelet®, QiHome® Air und Qi Master® versandkostenfrei. In die ' +
+      'Schweiz kostet der Versand 21 Franken, Zoll und Einfuhrabgaben sind ' +
+      'dort im Preis enthalten.',
     beleg: 'Versandrichtlinie',
     belegPfad: '/policies/shipping-policy',
   },
