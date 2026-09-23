@@ -1,0 +1,156 @@
+/* ============================================================================
+   qb-balkendiagramm.css — Studien-Balkendiagramm aus dem Bausatz
+   ----------------------------------------------------------------------------
+   Komponente: app/components/reusables/BalkenDiagramm.jsx
+   Anwendungsregel: homepage-bauer/baukasten/qb-balkendiagramm/README.md
+   Job 20260923-startseite-studienbalken-wachsen-und-zaehlen-und-kurze-titel.
+
+   Global ueber app/root.jsx geladen wie qb-swipetab.css. Wirkt ausschliesslich
+   innerhalb von .qb-balkendiagramm — eine Seite ohne den Baustein sieht davon
+   baulich nichts.
+
+   Die Bewegung haengt an EINER Variablen je Saeule: --qb-sb-p (0..1). Default
+   ist 1, also der Endzustand. Nur der Zustand "bereit" setzt sie auf 0; waehrend
+   des Laufs schreibt die Komponente sie inline. Animiert wird nur transform.
+   ========================================================================== */
+
+.qb-balkendiagramm {
+  /* Datenfarben der bisherigen Diagrammbilder (Diagram_Website_1..3.webp,
+     Pixel am 23.09.2026 gemessen: rot 240/71/35, gruen 19/173/91). Sie
+     stehen nicht in qb-tokens.css, weil die Startseite sie nur hier fuehrt —
+     deshalb Komponenten-Token, nicht Semantik. */
+  --qb-komponente-balkendiagramm-ohne: #f04723;
+  --qb-komponente-balkendiagramm-mit: #13ad5b;
+  --qb-sb-hoehe: 240px;
+
+  width: 100%;
+  max-width: 406px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  min-width: 0;
+}
+
+/* Die Huelle, in der der Baustein steht, teilt sich die Reihe gleichmaessig
+   (vorher trug das Bild seine Breite selbst). :has() haelt die Regel am
+   Baustein: eine Huelle ohne ihn bleibt unberuehrt. */
+@media (min-width: 750px) {
+  :has(> .qb-balkendiagramm) {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+.qb-balkendiagramm__titel {
+  margin: 0;
+}
+
+.qb-balkendiagramm__messgroesse {
+  margin: var(--qb-ref-raster, 8px) 0 0;
+  font-size: var(--qb-ref-fs-2, 14px);
+  line-height: 1.4;
+  color: var(--qb-text-gedaempft, #6b665d);
+}
+
+.qb-balkendiagramm__flaeche {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(var(--qb-ref-raster, 8px) * 3);
+  height: var(--qb-sb-hoehe);
+  /* Luft fuer die Zahl ueber dem hoechsten Balken */
+  margin-top: calc(var(--qb-ref-raster, 8px) * 6);
+  border-bottom: 1px solid var(--qb-text-gedaempft, #6b665d);
+}
+
+.qb-balkendiagramm__saeule {
+  --qb-sb-p: 1;
+  position: relative;
+  display: block;
+  height: 100%;
+  min-width: 0;
+  color: var(--qb-text, #2c2a26);
+  text-decoration: none;
+}
+
+.qb-balkendiagramm[data-zustand='bereit'] .qb-balkendiagramm__saeule {
+  --qb-sb-p: 0;
+}
+
+.qb-balkendiagramm__balken {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 0;
+  height: calc(var(--qb-sb-anteil) * 100%);
+  transform-origin: 50% 100%;
+  transform: scaleY(var(--qb-sb-p));
+  border-radius: var(--qb-ref-radius-bild, 4px) var(--qb-ref-radius-bild, 4px) 0 0;
+}
+
+.qb-balkendiagramm__saeule--ohne .qb-balkendiagramm__balken {
+  background-color: var(--qb-komponente-balkendiagramm-ohne);
+}
+
+.qb-balkendiagramm__saeule--mit .qb-balkendiagramm__balken {
+  background-color: var(--qb-komponente-balkendiagramm-mit);
+}
+
+/* Die Zahl steht ueber der Balkenspitze und faehrt mit ihr hoch. */
+.qb-balkendiagramm__wert {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--qb-sb-anteil) * 100%);
+  padding-bottom: var(--qb-ref-raster, 8px);
+  transform: translateY(calc((1 - var(--qb-sb-p)) * var(--qb-sb-anteil) * var(--qb-sb-hoehe)));
+  font-size: var(--qb-ref-fs-6, 24px);
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.qb-balkendiagramm__saeule:hover .qb-balkendiagramm__balken {
+  opacity: 0.88;
+}
+
+.qb-balkendiagramm__saeule:focus-visible {
+  outline: 2px solid var(--qb-text, #2c2a26);
+  outline-offset: 4px;
+}
+
+.qb-balkendiagramm__achse {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(var(--qb-ref-raster, 8px) * 3);
+  margin-top: var(--qb-ref-raster, 8px);
+  font-size: var(--qb-ref-fs-2, 14px);
+  line-height: 1.4;
+  color: var(--qb-text, #2c2a26);
+}
+
+.qb-balkendiagramm figcaption {
+  margin-top: calc(var(--qb-ref-raster, 8px) * 2);
+}
+
+.qb-balkendiagramm__studie {
+  margin: 0;
+  color: var(--qb-text-gedaempft, #6b665d);
+}
+
+@media (max-width: 749px) {
+  .qb-balkendiagramm {
+    --qb-sb-hoehe: 200px;
+  }
+}
+
+/* Zweiter Guertel neben der JS-Weiche: haengt der Zustand schon, wenn der
+   Nutzer die Bewegung spaeter abschaltet, steht trotzdem der Endzustand. */
+@media (prefers-reduced-motion: reduce) {
+  .qb-balkendiagramm__saeule {
+    --qb-sb-p: 1 !important;
+  }
+}
