@@ -337,16 +337,16 @@ export function ErklaerPopup({
     } catch {
       eigenerEintrag = false;
     }
-    const zurueck = (e) => {
+    const vomVerlauf = (e) => {
       e.stopImmediatePropagation();
       eigenerEintrag = false;
       popupSchliessen(true);
     };
-    window.addEventListener('popstate', zurueck, true);
+    window.addEventListener('popstate', vomVerlauf, true);
 
     return () => {
       html.style.overflow = vorher;
-      window.removeEventListener('popstate', zurueck, true);
+      window.removeEventListener('popstate', vomVerlauf, true);
       // Über X, Vorhang, Wischen oder Escape geschlossen: den eigenen Eintrag
       // wieder wegnehmen, damit das nächste Zurück die Seite verlässt und
       // nicht ins Leere geht. Nur wenn er noch obenauf liegt — nach einer
