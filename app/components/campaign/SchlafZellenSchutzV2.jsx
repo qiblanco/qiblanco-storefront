@@ -3,6 +3,7 @@ import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {THEMEN} from '~/lib/redesign3themen';
+import {bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
 import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 import {useGoogleRating} from '~/lib/googleRating';
@@ -172,7 +173,19 @@ function EbenenSection() {
         {karten.map(({thema, ebene, anker}) => (
           <article className="v2-ebene" key={thema.id}>
             <figure className="v2-ebene__figur">
-              <img src={thema.bild} alt={thema.alt} width="800" height="450" loading="lazy" />
+              {/* srcSet seit 2026-09-23: die THEMEN-Master sind jetzt 2400px breit,
+                  roh geladen wäre das Faktor 3-7 zu viel. sizes GEMESSEN live
+                  (11 Formate): einspaltig bis 900px Viewport = 100vw - 50px,
+                  ab 1000px drei Spalten bis 342px. */}
+              <img
+                src={thema.bild}
+                srcSet={bildSrcSet(thema.bild)}
+                sizes="(max-width: 999px) calc(100vw - 48px), (max-width: 1127px) calc((100vw - 96px) / 3), 344px"
+                alt={thema.alt}
+                width="800"
+                height="450"
+                loading="lazy"
+              />
             </figure>
             <div className="v2-ebene__body">
               <h3>{thema.titel}</h3>
