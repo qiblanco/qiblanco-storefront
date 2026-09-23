@@ -68,8 +68,14 @@ export const THEMEN = [
     mechanismusText:
       'Die kohärente Grenzschicht am Wasser puffert eingestrahlten E-Smog ab und stabilisiert die Zellmembran. In Zellstudien (in vitro) zeigte sich unter Mobilfunk-Stress eine bis zu zehnfach bessere Zell-Barrierefunktion.',
     link: '/products/qione-2-pro',
-    // ECHTES Shooting-Foto (Laptop-Arbeit = Funk-Alltag)
-    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250',
+    // ECHTES Shooting-Foto (Laptop-Arbeit = Funk-Alltag). Dasselbe Motiv und
+    // derselbe Ausschnitt wie das frühere 2024-06-qiblanco-bali-05984.webp,
+    // neu aus dem Original (bildmaterial/bali-couple-2024/raw, 4000x6000)
+    // geschnitten: der alte Master hatte nur 940 px und war in der
+    // Einspalten-Kachel (<=767px, 4:3 cover) auf dpr 2 hochskaliert — Gate 12
+    // bild-aufloesung. Neuer Master 2400 px (Job
+    // 20260923-formate-schuld-schlaf-zellen-schutz-bilder-und-pixelsoll).
+    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971',
     alt: 'Frau arbeitet am Laptop — Alltag zwischen WLAN und Bildschirm',
   },
   {
@@ -81,9 +87,15 @@ export const THEMEN = [
     mechanismusText:
       'Oxidativer Stress gilt als anerkannter Treiber der Zellalterung — kohärentes Wasser senkt ihn an den Zellgrenzflächen. In peer-review-kontrollierten Zellstudien (in vitro) sank die Zellbelastung durch oxidativen Stress um 75,0 %.',
     link: '/pages/zell-schutz',
-    // ECHTES Shooting-Foto (draussen, in Bewegung — Vitalitaet)
-    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579',
-    alt: 'Draussen in Bewegung — QiBracelet am Handgelenk',
+    // ECHTES Shooting-Foto (Canggu 2025, draußen im Grünen, QiBracelet am
+    // Handgelenk, grüner Saft — Frische/Vitalität). Ersetzt am 2026-09-23
+    // 2023-06-qiblanco-kitzbuehel-10.webp: dessen Master hat nur 668 px, ein
+    // größeres Original existiert weder in Shopify Files noch in
+    // bildmaterial/ — das Bild war auf jedem Retina-Gerät hochskaliert
+    // (Gate 12 bild-aufloesung). Neuer Master 2400 px aus
+    // bildmaterial/qione-qibracelet-2025/raw/2025-05-qiblanco-canggu-06390.jpg.
+    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-themen--themen-zellen-qibracelet-gruensaft-canggu-06390--b4ab3f9b62c8.webp?v=1790161977',
+    alt: 'Hand mit QiBracelet hält ein Glas grünen Saft, draußen im Grünen',
   },
 ];
 

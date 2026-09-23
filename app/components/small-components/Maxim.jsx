@@ -44,8 +44,14 @@ import {CdnBild} from '../reusables/CdnBild';
 export function Maxim({dataSection}){
     return (
         <div className="Maxim NormalSectionSize" data-section={dataSection}>
-            <CdnBild width={500} anzeigeBreite={418} loading="lazy"
-                sizes="(min-width: 1000px) 418px, 92vw"
+            {/* sizes = GEMESSENE Kachelbreite (externe-stimmen.css, Raster
+                auto-fit): ab 1000px bis 472px (desktop-1024), darunter <= 92vw.
+                Mit 418 wählte der Browser bei 1000-1279px die 836er-Sprosse
+                für eine 472px-Fläche — Gate 12 bild-aufloesung auf
+                schlaf-zellen-schutz (Job 20260923-formate-schuld-...). Master
+                1024px, darum masterBreite: die Leiter endet am Original. */}
+            <CdnBild width={500} anzeigeBreite={472} masterBreite={1024} loading="lazy"
+                sizes="(min-width: 1000px) 472px, 92vw"
                 src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/image0-1-1024x1024.png_1_19394721-7ee7-4381-94db-07654ed59dd9.webp?v=1736281312" alt="Doppelseite aus MAXIM Australia mit dem Beitrag „Wellbeing 2022“ von Andi Lew" />
             <div className="MaximText">
                 {/* Wortlaut Christian, 20.09.2026 — dieselbe Zeile wie die Kartenkopie
