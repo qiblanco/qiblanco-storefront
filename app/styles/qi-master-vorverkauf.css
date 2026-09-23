@@ -4,6 +4,15 @@
    20260911-BAU-qi-master-einmalig-aussage-auf-die-shopseite-und-eigene-
    landingpage.
 
+   UMBAU 2026-09-22 (Grossjob 20260922-GROSSJOB-qi-master-ohne-laufenden-
+   vorverkauf-und-ohne-rabatt, s03): die Treppe ist abgeloest und durch
+   Christians Wortlaut ersetzt (QiMasterWortlaut.jsx, gestaltet in
+   qi-master-wortlaut.css). Der dunkle Abschluss trug bis dahin „Die Zusage" (ab
+   01.01.2027 regulaerer Preis) — der Satz setzte einen Nachlass voraus und ist
+   entfallen. Die dunkle Flaeche bleibt als dritter Farb-Akt und traegt jetzt
+   die Handlung: den EINEN Knopf. Was unten ueber „Treppe" steht, ist die
+   Geschichte der Datei; die geltende Gestaltung steht im Code.
+
    WAS DIESE DATEI IST — UND WAS SIE AUSDRÜCKLICH NICHT IST: sie ist die
    route-gebundene Schicht der Landingpage und enthält NUR das, was es auf der
    Produktseite nicht gibt (Kopfbereich, Textspalte, Handlungsknopf,
@@ -109,12 +118,6 @@
   margin: 0 0 var(--qm-s3);
 }
 
-.qm-lp__vorspann {
-  font-size: var(--qm-fs-md);
-  color: var(--qm-text);
-  margin: 0;
-}
-
 /* ─── EIN H2-Stil, ausnahmslos linksbündig ────────────────────────────────── */
 .qm-lp h2 {
   font-size: var(--qm-fs-h2);
@@ -157,7 +160,7 @@
   margin-bottom: var(--qm-s1);
 }
 
-/* ─── Grenzen-Block: dieselbe Fläche wie die Treppe, kein Warnton ─────────── */
+/* ─── Grenzen-Block: dieselbe Fläche wie der Wortlaut-Block, kein Warnton ── */
 .qm-lp__grenzen {
   background: var(--qm-flaeche);
   border-radius: var(--qm-r2);
@@ -167,9 +170,32 @@
   margin-bottom: var(--qm-s2);
 }
 
-/* ─── Handlung: der EINE Knopf, der EINE Gold-Akzent ─────────────────────── */
-.qm-lp__handlung {
+/* ─── Abschluss: dunkle Flaeche, darin der EINE Knopf mit dem EINEN Gold ───
+   Bis 2026-09-22 zwei Bloecke (heller Handlungs-Block, darunter dunkle
+   „Zusage"). Die Zusage ist entfallen; der Knopf zieht in die dunkle Flaeche,
+   damit die Seite ihre drei Farb-Akte behaelt (Grund, Flaeche, Dunkel) und
+   der Abschluss eine Handlung ist statt einer Verwaltungsangabe. */
+.qm-lp__abschluss {
+  background: var(--qm-dunkel);
+  color: var(--qm-grund);
+  max-width: none;
+  padding-top: var(--qm-s8);
+  padding-bottom: var(--qm-s12);
+}
+.qm-lp__abschluss-inhalt {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--qm-s3);
   text-align: center;
+}
+@media (max-width: 767px) {
+  .qm-lp__abschluss {
+    padding-top: var(--qm-s6);
+    padding-bottom: var(--qm-s8);
+  }
+  .qm-lp__abschluss-inhalt {
+    padding: 0 var(--qm-s2);
+  }
 }
 
 .qm-lp__knopf {
@@ -185,49 +211,22 @@
   min-height: 48px; /* Touch-Ziel, 8pt-Raster */
   box-sizing: border-box;
 }
+/* Auf der dunklen Flaeche kehrt der Hover die Toene um: Grund statt Dunkel,
+   sonst verschwaende der Knopf im Hover in seinem Hintergrund. */
 .qm-lp__knopf:hover,
 .qm-lp__knopf:focus-visible {
-  background: var(--qm-dunkel);
-  color: var(--qm-grund);
+  background: var(--qm-grund);
+  color: var(--qm-dunkel);
 }
 .qm-lp__knopf:focus-visible {
-  outline: 2px solid var(--qm-dunkel);
+  outline: 2px solid var(--qm-grund);
   outline-offset: 2px;
 }
 
-.qm-lp__knopf-hinweis {
+.qm-lp .qm-lp__knopf-hinweis {
   font-size: var(--qm-fs-xs);
-  color: var(--qm-muted);
+  color: var(--qm-grund);
   margin-top: var(--qm-s2);
-}
-
-/* ─── Abschluss ───────────────────────────────────────────────────────────── */
-.qm-lp__zusage {
-  background: var(--qm-dunkel);
-  color: var(--qm-grund);
-  max-width: none;
-  padding-top: var(--qm-s8);
-  padding-bottom: var(--qm-s12);
-}
-.qm-lp__zusage-inhalt {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 var(--qm-s3);
-}
-.qm-lp__zusage h2 {
-  color: var(--qm-grund);
-}
-.qm-lp__zusage p {
-  color: var(--qm-grund);
-}
-@media (max-width: 767px) {
-  .qm-lp__zusage {
-    padding-top: var(--qm-s6);
-    padding-bottom: var(--qm-s8);
-  }
-  .qm-lp__zusage-inhalt {
-    padding: 0 var(--qm-s2);
-  }
 }
 
 /* ─── Huellen-Normalisierung (gilt NUR auf dieser Route) ──────────────────────
