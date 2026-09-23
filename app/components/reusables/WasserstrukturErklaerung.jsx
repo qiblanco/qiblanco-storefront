@@ -28,8 +28,8 @@ import {wasserstruktur} from '~/data/kohaerente-wasserstruktur';
  * Screenshot an sowie die Einordnung, aber das braucht einen anderen Namen —
  * wir nennen es ‚Quellen'." Die Stufentafel (drei Stufen, sieben Merkmale)
  * steht deshalb nicht mehr im Fenster; sie zieht auf die Info-Seite
- * /pages/was-ist-kohaerentes-wasser und bleibt im SSoT und in
- * app/data/kohaerente-wasserstruktur.js (`stufen`, `vergleich`) stehen.
+ * /pages/was-ist-kohaerentes-wasser und bleibt im SSoT und im Datenmodul
+ * dieses Bauteils (`stufen`, `vergleich`) stehen.
  */
 
 export function WasserstrukturErklaerung({wendung = 'kohärenten Wasserstruktur'}) {
