@@ -184,7 +184,7 @@ export function BildWinkel({von, nach}) {
         H
       </text>
       <circle className="qb-mol__o" cx={O.x} cy={O.y} r="13" />
-      <text className="qb-mol__zeichen" x={O.x} y={O.y}>
+      <text className="qb-mol__zeichen qb-mol__zeichen--auf-akzent" x={O.x} y={O.y}>
         O
       </text>
 
