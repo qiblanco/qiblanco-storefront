@@ -524,6 +524,15 @@ export default async function handleRequest(
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'https://stats.g.doubleclick.net',
+      // GA4-Regionalendpunkt, STELLE 2 VON 2 zu connect-src oben. Der
+      // Messpunkt hat zwei Transporte: fetch/beacon (connect-src, seit s03)
+      // und den Zählpixel (hier). Bisher deckte img-src nur den GLOBALEN
+      // Endpunkt www.google-analytics.com — der regionale fehlte, also genau
+      // der, den GA4 für diesen Laden tatsächlich wählt. Ein
+      // Namens-Beinahetreffer ist keine Deckung. Gemessen 2026-09-19 auf
+      // /pages/schlaf-zellen-schutz, 1 Meldung; exakter Host, weil bei GA4
+      // die Hausform exakt ist und die Hostmenge nicht wächst.
+      'https://region1.analytics.google.com',
       'https://*.clarity.ms',
       'https://c.bing.com',
       'https://bat.bing.com',
@@ -534,6 +543,17 @@ export default async function handleRequest(
       'https://cm.g.doubleclick.net',
       'https://*.tiktok.com',
       'https://*.tiktokw.us',
+      // Taboola (Konto 1695700), STELLE 2 VON 2 zu connect-src oben. img-src
+      // führte bisher GAR KEIN Taboola, während connect-src die
+      // Anbieter-Domain seit s03 trägt — der Beacon lebte, das Zählbild
+      // starb. Gemessen 2026-09-20 auf /pages/superhuman (trc.taboola.com,
+      // 1 Meldung). WILDCARD und nicht der gemessene Host: die
+      // Anbieter-Entscheidung steht bei connect-src oben und gilt hier
+      // unverändert — Taboolas HOSTmenge wächst (trc-events, cds, pips,
+      // psb, jetzt trc), seine Anbietermenge nicht. Wer hier 'trc' literal
+      // schreibt, stellt das Laufband wieder an, das der ccTLD-Block oben
+      // beschreibt.
+      'https://*.taboola.com',
       // Google-ccTLD-Matching aus gtm.js:422. Die Liste ist seit dem
       // 2026-09-18 ABGELEITET statt gemessen: sie ist genau MARKT_LAENDER
       // aus app/lib/markt-pricing.js. Herleitung, Kostenrechnung und die
