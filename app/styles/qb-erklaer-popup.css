@@ -437,3 +437,101 @@
     transform: none;
   }
 }
+
+/* --- Das Blatt als Modal: Kopf, Greifstreifen, Vorhang ------------------
+   Job 20260923-wasserfenster-hover-bruecke-und-handy-sheet-wcag-1-4-13.
+   data-modal steht NUR am festgehaltenen Blatt (Handy, oder Lage 'blatt').
+   Ein erschwebtes Panel am Desktop bekommt nichts davon: ein Vorhang nähme
+   dem Zeiger den Weg ins Fenster, und genau der soll offen bleiben.
+
+   Der Kopf ist am Desktop kein eigener Kasten. Mit display: contents sitzt das
+   X wie bisher absolut in der Ecke des Panels, der Greifstreifen ist aus. */
+.qb-erklaer__kopf {
+  display: contents;
+}
+
+.qb-erklaer__griff {
+  display: none;
+}
+
+/* Der Vorhang. Sein Ton ist derselbe wie der des einzigen anderen Vorhangs
+   im Haus (.overlay des Warenkorb-Drawers in app.css, rgba(0,0,0,0.2)); das
+   Token dafür heißt in der Wurzel --qb-ref-bahn-schatten. Er trägt denselben
+   z-Wert wie das Panel (overlay-ordnung.css: „Vorhang UND Panel tragen
+   GEMEINSAM diesen einen Wert") und steht im Quelltext davor, liegt also
+   darunter. */
+.qb-erklaer__vorhang {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  background: var(--qb-ref-bahn-schatten);
+}
+
+.qb-erklaer__vorhang[hidden] {
+  display: none;
+}
+
+.qb-erklaer[data-modal='ja'] .qb-erklaer__panel {
+  /* Das Blatt endet unter der Oberkante: oben bleibt die Seite sichtbar, der
+     Leser weiß, dass er nicht woanders ist (NN/g, Material 3). 80 % der
+     sichtbaren Höhe; dvh zählt die Adressleiste mit, wo der Browser es kann. */
+  max-height: 80vh;
+  max-height: 80dvh;
+  overscroll-behavior: contain;
+}
+
+.qb-erklaer__panel:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.qb-erklaer[data-modal='ja'] .qb-erklaer__kopf {
+  display: block;
+  position: sticky;
+  /* Das Panel hat zwei Raster Innenabstand; der Kopf klebt an der Kante,
+     nicht zwei Raster darunter. */
+  top: calc(-2 * var(--qb-ref-raster));
+  z-index: 1;
+  height: var(--schliesskreuz-min);
+  margin: calc(-2 * var(--qb-ref-raster)) calc(-2 * var(--qb-ref-raster))
+    var(--qb-ref-raster);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein) var(--qb-radius-klein) 0 0;
+}
+
+.qb-erklaer[data-modal='ja'] .qb-erklaer__schliessen {
+  top: 0;
+  right: 0;
+}
+
+/* Der Greifstreifen: die ganze Kopfbreite links vom X ist Griff, sichtbar
+   ist der Strich in der Mitte. touch-action: none, damit der Browser das
+   Wischen nicht als Seitenscrollen an sich nimmt. */
+.qb-erklaer[data-modal='ja'] .qb-erklaer__griff {
+  display: block;
+  position: absolute;
+  inset: 0 var(--schliesskreuz-min);
+  touch-action: none;
+  cursor: grab;
+}
+
+.qb-erklaer[data-modal='ja'] .qb-erklaer__griff::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(5 * var(--qb-ref-raster));
+  height: calc(var(--qb-ref-raster) / 2);
+  border-radius: calc(var(--qb-ref-raster) / 4);
+  background: var(--qb-ref-tinte-gedaempft);
+  transform: translate(-50%, -50%);
+}
+
+.qb-erklaer[data-modal='ja'] .qb-erklaer__panel {
+  transition: transform 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qb-erklaer[data-modal='ja'] .qb-erklaer__panel {
+    transition: none;
+  }
+}
