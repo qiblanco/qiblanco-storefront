@@ -2,6 +2,7 @@ import { ReviewCount } from "../reusables/ReviewCount"
 import { Link } from "react-router"
 import {CdnBild} from '../reusables/CdnBild';
 import {Produkt360Video} from "../reusables/Produkt360Video"
+import {WasserstrukturErklaerung} from "../reusables/WasserstrukturErklaerung"
 export function HerobannerFeatured({dataSection}){
     return(
         <div className="HerobannerFeatured NormalSectionSize" data-section={dataSection}>
@@ -11,7 +12,18 @@ export function HerobannerFeatured({dataSection}){
                     <h2>QiOne® 2 Pro</h2>
                     <p className="color-accent-main"><strong><ReviewCount /></strong></p>
                     <p><strong>Mehr als 14.000+ aktive Nutzer</strong></p>
-                    <p class="mt-1"><strong>Erfahre jetzt die Vorteile der kohärenten Wasserstruktur</strong></p>
+                    {/* „kohärenten Wasserstruktur" ist seit dem 22.09.2026 ein
+                        Erklär-Knopf (Christian: „Sobald man drüber fährt oder
+                        drauf klickt, geht ein Popup auf"). Der Baustein liegt
+                        in reusables/, weil dieselbe Zeile auch im Kopf von
+                        /pages/schlaf-zellen-schutz steht.
+
+                        DIE WENDUNG BLEIBT EIN ZUSAMMENHÄNGENDER TEXTKNOTEN mit
+                        echten Umlauten. Die Abnahme-Probe sucht sie so; in zwei
+                        Elemente zerrissen oder auf ASCII umgeschrieben findet
+                        sie die Probe nicht mehr und meldet Messausfall statt
+                        eines Urteils. */}
+                    <p class="mt-1"><strong>Erfahre jetzt die Vorteile der <WasserstrukturErklaerung /></strong></p>
                     {/* Bis 2026-09-17 trugen diese vier Symbole EINEN festen
                         &width=51 - die 3x-Sprosse für ein 17-px-Feld. Das ist auf
                         einem Telefon mit dpr 3 richtig und auf einem Rechner mit

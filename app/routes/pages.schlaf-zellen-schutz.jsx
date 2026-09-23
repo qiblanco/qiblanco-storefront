@@ -5,6 +5,7 @@ import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
+import qbErklaerPopupStyles from '~/styles/qb-erklaer-popup.css?url';
 
 /**
  * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
@@ -54,6 +55,10 @@ export function links() {
     {rel: 'stylesheet', href: lpAStyles},
     {rel: 'stylesheet', href: lpASeiteStyles},
     {rel: 'stylesheet', href: externeStimmenStyles},
+    // Der Überlagerungs-Baustein <ErklaerPopup> (SchlafZellenSchutz.jsx),
+    // dieselbe Regel wie oben: wer den Baustein rendert, lädt seine
+    // Scope-CSS mit.
+    {rel: 'stylesheet', href: qbErklaerPopupStyles},
   ];
 }
 
