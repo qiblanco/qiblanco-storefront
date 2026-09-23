@@ -405,14 +405,24 @@ export const FAQ_KAUF = [
   {
     q: 'Was kostet der Versand und wie lange dauert er?',
     a:
-      'Innerhalb Deutschlands 5,90 €, ab 99 € Warenwert versandkostenfrei. QiOne® 2 Pro, ' +
-      'QiBracelet®, QiHome® Air und das Necklace liegen über dieser Schwelle und gehen damit ' +
-      'versandkostenfrei raus. Nach Österreich kostet der Versand 6,90 €, in die Schweiz 21,00 €. ' +
+      'QiOne® 2 Pro, QiBracelet®, QiHome® Air und Qi Master® schicken wir dir nach Deutschland ' +
+      'und Österreich versandkostenfrei. Für das Necklace und Crystal Cacao® kostet der Versand ' +
+      'nach Deutschland 5,90 €. Ab 99 € Warenwert vor Mehrwertsteuer ist er frei, zwei Packungen ' +
+      'Crystal Cacao® liegen schon darüber. Nach Österreich kostet er 6,90 € und ist ab 250 € ' +
+      'Warenwert vor Mehrwertsteuer frei. In die Schweiz zahlst du 9 Franken für ein einzelnes ' +
+      'Necklace oder eine Packung Crystal Cacao®, für alles andere 21 Franken. Zoll und ' +
+      'Einfuhrabgaben sind dort schon im Preis enthalten. ' +
       'Die Lieferzeit steht auf jeder Produktseite. QiOne® 2 Pro, QiBracelet®, QiHome® Air und ' +
       'das Necklace sind in 2 bis 3 Tagen bei dir, die Crystal Cacao®-Sorten in 1 bis 3 Tagen.',
     quelle:
-      '/policies/shipping-policy, wörtlich „Deutschland 5,90 € (Versandkostenfrei ab 99€)", ' +
-      '„Österreich 6,90 €", „Schweiz 21,00 €". Lieferzeiten aus der Messreihe von Segment s03 über ' +
+      'Versandkosten JE PRODUKT aus der rechnenden Instanz, nicht aus der Prosa: Storefront-API ' +
+      'cartCreate/deliveryGroups mit Lieferadresse DE/AT/CH, gemessen 2026-09-23 (Job ' +
+      '20260923-versand-faq-widerspricht-rate-engine-prio35). Gerät allein DE/AT 0,00; Necklace ' +
+      '(94 € brutto) und 1x Kakao zahlen. Die Schwellen greifen auf den NETTO-Warenwert ' +
+      '(taxes_included=false): DE 98,91 zahlt, 99,74 frei; AT 249,42 zahlt, 250,25 frei. CH in CHF: ' +
+      'einzelnes Necklace oder 1x Kakao 9,00, alles Gemessene darüber 21,00. Die Versandrichtlinie ' +
+      'nennt „Österreich 6,90 €" und „EU ab 250€" — die frühere FAQ zitierte nur die erste Hälfte ' +
+      'und nannte das Necklace irrtümlich über 99 €. Lieferzeiten aus der Messreihe von Segment s03 über ' +
       'alle 13 DACH-Produktseiten (2026-09-01; die Kakao-Seiten am 2026-09-09 auf die Hausform ' +
       'nachgezogen): „In 2-3 Tagen bei Dir" auf den vier Geräteseiten, „In 1-3 Tagen bei Dir" ' +
       'auf den Kakao-Seiten. Bewusst KEINE pauschale Zahl für „den ' +
