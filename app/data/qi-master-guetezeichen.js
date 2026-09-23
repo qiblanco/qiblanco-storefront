@@ -13,6 +13,21 @@
  * unter dem Bildpaar wird damit ein eigener Block davor — das ist die
  * Bewegung, und die Schriftgrösse trägt sie mit.
  *
+ * DIE ÜBERSCHRIFT IST ZURÜCK, SEIT DEM 2026-09-22 (Christian, Auftrag
+ * CW-20260922-9561b2f2): „Lass dich vom Qi Master® tragen." steht wieder an
+ * der ersten Stelle des Blocks, jetzt als Überschrift ÜBER den drei
+ * Gütezeichen in ihrer neuen Form — nicht als Wiederbelebung des alten
+ * `RisikofreiErleben`-Blocks unter den Bildern. Der 17.09. (Streichung, PR
+ * #482) ist in DIESEM einen Punkt abgelöst, nicht verletzt: Christian am
+ * 2026-09-23, CW-20260923-b67684aa, „Bei solchen Fällen immer die neueste
+ * Version vom Datum her nehmen." Die zwei anderen Sätze vom 17.09. bleiben
+ * gestrichen. Gebaut von Job
+ * 20260922-zwanzig-tage-block-vier-zeilen-und-die-probe-misst-wieder-das-soll-wv1.
+ *
+ * DIE ÜBERSCHRIFT IST KEIN VIERTES GÜTEZEICHEN: sie trägt kein Symbol und
+ * keine Zusage, sie steht deshalb nicht in QIMASTER_GUETEZEICHEN, sondern
+ * daneben. Die Liste bleibt drei Einträge lang.
+ *
  * WARUM DIE TEXTE HIER UND NICHT IM MARKUP LEBEN: dieselbe Trennung, die
  * qi-master-texte.js und qi-master-diamantbilder.js tragen — jede Aussage
  * steht bei ihrer Quelle.
@@ -41,6 +56,9 @@
  * uniform und die Zeichnungen untereinander vergleichbar. Der Kreis von
  * `zufriedenheit` ist deshalb als Pfad geschrieben (zwei Halbbögen, r=9).
  */
+// Christians Wortlaut vom 2026-09-22, mit ®, nicht umformuliert.
+export const QIMASTER_GUETE_UEBERSCHRIFT = 'Lass dich vom Qi Master® tragen.';
+
 export const QIMASTER_GUETEZEICHEN = [
   {
     id: 'zufriedenheit',
