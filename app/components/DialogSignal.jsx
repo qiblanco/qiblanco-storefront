@@ -59,6 +59,12 @@ export const DIALOG_SELEKTOREN = [
   '.video360-overlay',
   '.GoogleRezensionenPopup',
   '.qb-st-lightbox',
+  // Das Erklär-Popup (ErklaerPopup.jsx), nur im festgeklickten Zustand.
+  // Gemessen am 2026-09-23 auf 390x844: das angetippte Popup lag über dem
+  // Chat-Widget, das sichtbar blieb und nicht mehr zu treffen war. Der
+  // Schwebe-Zustand (Maus darüber) zählt nicht: er ist flüchtig, und das
+  // Widget würde beim Darüberfahren flackern.
+  '.qb-erklaer[data-zustand="fest"]',
 ].join(', ');
 
 /** Das Attribut am <html>, auf das die Unterdrueckungs-Regel in app.css hängt. */
@@ -113,7 +119,9 @@ export function DialogSignal() {
       subtree: true,
       childList: true,
       attributes: true,
-      attributeFilter: ['class'],
+      // `data-zustand`: das Erklär-Popup trägt seinen Zustand dort, nicht in
+      // der Klasse.
+      attributeFilter: ['class', 'data-zustand'],
     });
 
     return () => {
