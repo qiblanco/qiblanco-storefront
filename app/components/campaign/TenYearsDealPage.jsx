@@ -12,6 +12,7 @@ import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikrosko
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {Studien} from '~/components/reusables/Studien';
 import {useDragSwipe} from '~/components/reusables/useDragSwipe';
+import {istBrutto} from '~/lib/preismodus';
 
 const wholeEuroFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
@@ -230,7 +231,8 @@ const CACAO_SHIPPING_HTML =
 function toGrossPrice(value, deal) {
   const numberValue = Number(value);
   if (!Number.isFinite(numberValue)) return 0;
-  const vat = deal.theme === 'cacao' ? 1.07 : 1.19;
+  // Preismodus brutto: der Betrag ist schon der Endbetrag (lib/preismodus.js).
+  const vat = istBrutto() ? 1 : deal.theme === 'cacao' ? 1.07 : 1.19;
   return Math.round(numberValue * vat);
 }
 

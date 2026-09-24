@@ -2,6 +2,7 @@ import {createHydrogenContext} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session';
 import {CART_MUTATE_FRAGMENT, CART_QUERY_FRAGMENT} from '~/lib/fragments';
 import {resolveCountry} from '~/lib/markt-pricing';
+import {ladePreismodus} from '~/lib/preismodus';
 
 /**
  * The context implementation is separate from server.ts
@@ -54,8 +55,16 @@ export async function createAppLoadContext(request, env, executionContext) {
     },
   });
 
+  // PREISMODUS netto|brutto (Grossjob 20260924-kasse-zeigt-bruttopreise-wie-
+  // produktseite-prio10, s02): HIER und nicht im root-Loader, weil Kind-Loader
+  // parallel zum root-Loader laufen und sonst mit dem alten Modus rechneten.
+  // Kurz gecacht (30 s + 30 s stale), wirft nie; Rueckfall-Reihenfolge und
+  // Begruendung in lib/preismodus.js.
+  const preismodus = await ladePreismodus(hydrogenContext.storefront);
+
   return {
     ...hydrogenContext,
+    preismodus,
     // declare additional Remix loader context
   };
 }

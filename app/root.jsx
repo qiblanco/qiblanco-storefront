@@ -86,6 +86,7 @@ import {
   istSalesbotDeutscherShop,
 } from '~/lib/salesbot-widget';
 import {SalesbotWidget} from './components/SalesbotWidget';
+import {preismodusStand, setzePreismodus} from '~/lib/preismodus';
 import {DialogSignal} from './components/DialogSignal';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -202,6 +203,11 @@ export async function loader(args) {
     // niedrig. Hier steht derselbe Wert, den auch `consent.country` und die
     // @inContext-Queries benutzen -- eine Quelle, kein zweiter Schluss.
     marktLand: storefront.i18n.country,
+    // PREISMODUS netto|brutto (Grossjob 20260924-kasse-zeigt-bruttopreise-wie-
+    // produktseite-prio10, s02). Gelesen in lib/context.js VOR diesem Loader
+    // (Metafeld qb_preis.modus); hier nur an den Client gereicht, damit die
+    // Hydration mit demselben Modus rechnet wie der Server.
+    preismodus: args.context.preismodus ?? preismodusStand(),
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -452,6 +458,13 @@ export function Layout({children}) {
     Boolean(data?.salesbotWidgetOrigin) &&
     (salesbotSeite || salesbotDeutscherShop);
 
+  // Client: den Preismodus des Servers uebernehmen, BEVOR ein Kind rechnet
+  // (Eltern rendern vor Kindern). Auf dem Server hat lib/context.js ihn schon
+  // gesetzt. Ohne Loader-Daten (Fehlerseite) bleibt der Modul-Stand.
+  if (typeof window !== 'undefined' && data?.preismodus?.modus) {
+    setzePreismodus(data.preismodus.modus, data.preismodus.quelle);
+  }
+
   const faviconUrl =
     data?.header?.shop?.brand?.squareLogo?.image?.url ||
     data?.header?.shop?.brand?.logo?.image?.url;
@@ -462,6 +475,8 @@ export function Layout({children}) {
       data-qiblanco-tracking-preview={isTrackingPreview ? 'true' : undefined}
       data-qb-region={data?.buyerCountry || undefined}
       data-qb-consent-strict={data?.consentStrictRegions || undefined}
+      data-qb-preismodus={data?.preismodus?.modus || undefined}
+      data-qb-preismodus-quelle={data?.preismodus?.quelle || undefined}
     >
       <head>
         <meta charSet="utf-8" />

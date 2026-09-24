@@ -61,6 +61,8 @@
  * die Fremdmaerkte, sondern die ehrliche Grenze dieses Baus.
  */
 import {anzeigeSatz} from './markt-pricing.js';
+import {taxRateForHandle} from './cart-display-pricing.js';
+import {istBrutto} from './preismodus.js';
 
 /** Waehrung, in der `rabattFest` denominiert ist. */
 export const FESTBETRAG_WAEHRUNG = 'EUR';
@@ -95,6 +97,11 @@ export function paketBetraege(lines, paket, land) {
   let compareRoh = 0;
   let preisProzentRoh = 0;
   const saetze = new Set();
+  // Heimatsatz (DE) je Zeile: `rabattFest` steht NETTO im Code, weil der Shop
+  // bis zum Kipp netto kalibriert war. Im Preismodus brutto wird der Rabatt-
+  // code in Shopify (s04) auf rabattFest x (1+Heimatsatz) gezogen, und genau
+  // diese Zahl muss die Karte abziehen. Gemischte Heimatsaetze -> kein Fest-Pfad.
+  const heimatSaetze = new Set();
 
   for (const line of lines) {
     const menge = Number(line.quantity);
@@ -104,6 +111,7 @@ export function paketBetraege(lines, paket, land) {
     }
     const satz = anzeigeSatz(line.handle, line.waehrung, land);
     saetze.add(satz);
+    heimatSaetze.add(taxRateForHandle(line.handle, 'DE'));
     nettoSumme += netto * menge;
     compareRoh += netto * menge * (1 + satz);
     // Prozent-Pfad: Shopify schneidet den Prozentrabatt JE STÜCK centgenau ab
@@ -121,10 +129,20 @@ export function paketBetraege(lines, paket, land) {
     Number.isFinite(paket.rabattFest) &&
     paket.rabattFest > 0 &&
     waehrung === FESTBETRAG_WAEHRUNG &&
-    saetze.size === 1;
+    saetze.size === 1 &&
+    heimatSaetze.size === 1;
 
+  // Preismodus brutto: `nettoSumme` ist dann schon die Bruttosumme (die API
+  // liefert Endbetraege, satz ist 0), der Festbetrag wird auf denselben
+  // centgenauen Bruttowert gehoben, den s04 in den Rabattcode schreibt.
+  // UNGEMESSEN fuer AT: ob Shopify unter "Dynamisch" einen Festbetrag je Land
+  // umrechnet, ist nicht belegt -- gerechnet wird er hier unveraendert (Rand-
+  // messung s05 prueft den Kartenpreis gegen die AT-Kasse).
+  const rabattAbzug = istBrutto()
+    ? Math.round(paket.rabattFest * (1 + [...heimatSaetze][0]) * 100) / 100
+    : paket.rabattFest;
   const preisRoh = festGilt
-    ? (nettoSumme - paket.rabattFest) * (1 + [...saetze][0])
+    ? (nettoSumme - rabattAbzug) * (1 + [...saetze][0])
     : preisProzentRoh;
 
   return {

@@ -1,4 +1,5 @@
 import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
+import {istBrutto} from '~/lib/preismodus';
 import {useMarktLand} from '~/lib/markt-land';
 
 /**
@@ -53,7 +54,11 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
       // Ausdrueckliche Ausnahme (Warenkorb: Betrag ist schon brutto).
       // Nicht-EUR bleibt auch hier steuerfrei — das ist die Markt-Mechanik
       // aus markt-pricing.js und gilt für beide Wege gleich.
-      return (money.currencyCode || 'EUR') === 'EUR' ? taxRate : 0;
+      // Im Preismodus brutto ist jeder EUR-Betrag schon der Endbetrag -- auch
+      // eine ausdrueckliche Ausnahme darf dann nichts mehr aufschlagen.
+      return (money.currencyCode || 'EUR') === 'EUR' && !istBrutto()
+        ? taxRate
+        : 0;
     }
     return anzeigeSatz(handle, money.currencyCode, marktLand);
   };
