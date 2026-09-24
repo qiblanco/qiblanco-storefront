@@ -4,6 +4,7 @@ import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
 import {istStillgelegteJSaleSeite} from '~/data/ten-years-deals';
+import {refAusAufruf, wendePartnercodeAn} from '~/lib/partnercode.server';
 
 /**
  * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
@@ -597,6 +598,20 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
   });
+
+  // PARTNERCODE AUTOMATISCH: ein Partnerlink (?sca_ref=...) legt den Code
+  // des Partners in den Warenkorb, wenn dort noch keiner liegt. Begruendung,
+  // Schutz der Codeliste und Rueckweg: app/lib/partnercode.server.js.
+  if (responseStatusCode < 400) {
+    const partnerRef = refAusAufruf(request, isbot);
+    if (partnerRef && context?.cart) {
+      await wendePartnercodeAn({
+        ref: partnerRef,
+        cart: context.cart,
+        responseHeaders,
+      });
+    }
+  }
 
   const body = await renderToReadableStream(
     <NonceProvider>
