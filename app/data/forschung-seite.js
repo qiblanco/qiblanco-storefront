@@ -388,7 +388,6 @@ export const ABSCHNITTE = [
     absaetze: [
       'Jeder Befund aus Stufe 1 wirft eine Frage auf. Solange sie offen ist, wissen wir, dass etwas wirkt, aber nicht warum. Diese Antworten liefert nur Grundlagenforschung.',
       'Prof. Dr. Peter C. Dartsch schließt seine Arbeit zum QiBracelet® selbst mit diesem Schritt: Weitere Forschung sei nötig, um die zugrunde liegenden Mechanismen zu verstehen.',
-      'Die Liste folgt der Studienlage. Zu jedem Warum stehen der Befund, aus dem es entsteht, unsere Hypothese und der Versuch, der sie prüft.',
     ],
     modellLink: {href: '/pages/hypothesen', text: 'Unser ganzes Wirkmodell mit allen Quellen'},
     weiter: {anker: 'stufe-3-weltweit', text: 'Weiter zu Stufe 3: weltweit ausrollen'},
