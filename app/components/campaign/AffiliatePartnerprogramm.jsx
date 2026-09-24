@@ -13,11 +13,11 @@
  *   eigener 5-%-Gutscheincode für die Community     (Anmeldeseite)
  *   Tracking-Link mit 30 Tagen Zuordnung            (Anmeldeseite)
  *   KORREKTUR 2026-09-24 (Job 20260924-GROSSJOB-partnerlinks-...): die
- *   Anmeldeseite verspricht "automatischen Rabatt" ueber den Tracking-Link.
+ *   Anmeldeseite verspricht "automatischen Rabatt" über den Tracking-Link.
  *   Gemessen bis in die Kasse: der reine sca_ref-Link setzt den Code auf
  *   dieser Hydrogen-Storefront NICHT (UpPromote-Auto-Apply braucht ein
  *   Theme-App-Embed). Den Code bringt der Rabattlink
- *   /discount/<CODE>?redirect=<pfad>&sca_ref=<ref> mit; erklaert auf
+ *   /discount/<CODE>?redirect=<pfad>&sca_ref=<ref> mit; erklärt auf
  *   /pages/partner-details.
  *   Teilnahme erst nach Prüfung/Freigabe            (AGB § 2, § 6)
  *   keine Provision auf Eigen- und Firmenkäufe      (AGB § 5)

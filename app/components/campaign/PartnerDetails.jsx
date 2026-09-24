@@ -26,7 +26,9 @@ const KONTAKT = 'info@qiblanco.com';
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 
 /* Bildschirmfotos vom 2026-09-24 (Test-Partner, Code und Referenz
-   unkenntlich). Breite/Höhe = Pixelmaß der Datei, gegen Layout-Sprung. */
+   unkenntlich). Breite/Höhe = Pixelmaß der Datei, gegen Layout-Sprung.
+   Kassen-Ausschnitte und die Weiter-Seite in doppelter Dichte (Alle-Formate-
+   Prüfung: Quelle >= 1,8 x Anzeigebreite). */
 const BILDER = {
   konto: {
     src: `${CDN}qb-partner-details--partner-details-01-partnerkonto-login--535fa00def01.webp?v=1790255474`,
@@ -53,22 +55,22 @@ const BILDER = {
     h: 1688,
   },
   kasse: {
-    src: `${CDN}qb-partner-details--partner-details-05-kasse-mit-code--e49584edad73.webp?v=1790255486`,
+    src: `${CDN}qb-partner-details--partner-details-05-kasse-mit-code-2x--4f714628a029.webp?v=1790256449`,
     alt: 'Kasse mit angewendetem Partnercode und Abzug von 5 Prozent',
-    w: 490,
-    h: 380,
+    w: 980,
+    h: 760,
   },
   codefeld: {
-    src: `${CDN}qb-partner-details--partner-details-06-kasse-code-eingeben--fa3641c1419a.webp?v=1790255489`,
+    src: `${CDN}qb-partner-details--partner-details-06-kasse-code-eingeben-2x--518a6dbbe57d.webp?v=1790256452`,
     alt: 'Kasse ohne Code, das Feld Rabattcode oder Gutschein ist markiert',
-    w: 490,
-    h: 350,
+    w: 980,
+    h: 700,
   },
   eingebettet: {
-    src: `${CDN}qb-partner-details--partner-details-07-eingebettet-weiter--87832b8614f0.webp?v=1790255492`,
+    src: `${CDN}qb-partner-details--partner-details-07-eingebettet-weiter-2x--a6c210f86e7e.webp?v=1790256455`,
     alt: 'Ein eingebetteter Link zeigt den Knopf Jetzt öffnen statt einer Fehlermeldung',
-    w: 1100,
-    h: 700,
+    w: 1800,
+    h: 1040,
   },
 };
 
@@ -118,7 +120,8 @@ const LINKARTEN = [
 
 const HILFE = [
   {
-    frage: 'Die Seite öffnet sich nicht, es steht „hat die Verbindung abgelehnt“.',
+    frage:
+      'Die Seite öffnet sich nicht, es steht „hat die Verbindung abgelehnt“.',
     antwort:
       'Der Link wurde eingebettet geöffnet, etwa in einer Vorschau oder ' +
       'einem Website-Baustein. Setze ihn als normalen Link. Seit dem ' +
@@ -329,7 +332,9 @@ function Konto() {
   return (
     <section aria-labelledby="lp-pd-konto-title" data-section="lp-pd-konto">
       <span className="eyebrow">Dein Partnerkonto</span>
-      <h2 id="lp-pd-konto-title">Link, Code und Zahlen liegen im Partnerkonto</h2>
+      <h2 id="lp-pd-konto-title">
+        Link, Code und Zahlen liegen im Partnerkonto
+      </h2>
       <div className="lp-pd-zweispaltig">
         <div className="lp-pd-text">
           <p>
@@ -383,10 +388,12 @@ function BaukastenSektion() {
       data-section="lp-pd-baukasten"
     >
       <span className="eyebrow">Link-Baukasten</span>
-      <h2 id="lp-pd-baukasten-title">Deinen Rabattlink in zehn Sekunden bauen</h2>
+      <h2 id="lp-pd-baukasten-title">
+        Deinen Rabattlink in zehn Sekunden bauen
+      </h2>
       <p className="lp-vp-section__lede">
-        Code eintragen, Empfehlungslink einfügen, Ziel wählen. Der fertige
-        Link bringt deinen Rabatt in den Warenkorb und den Kauf zu dir.
+        Code eintragen, Empfehlungslink einfügen, Ziel wählen. Der fertige Link
+        bringt deinen Rabatt in den Warenkorb und den Kauf zu dir.
       </p>
       <Baukasten />
     </section>
@@ -405,7 +412,9 @@ function Kunde() {
         </figure>
         <figure className="lp-pd-bild lp-pd-bild--handy">
           <Bild name="warenkorb" />
-          <figcaption>2. Im Warenkorb ist dein Rabatt schon abgezogen.</figcaption>
+          <figcaption>
+            2. Im Warenkorb ist dein Rabatt schon abgezogen.
+          </figcaption>
         </figure>
         <figure className="lp-pd-bild">
           <Bild name="kasse" />
@@ -433,18 +442,25 @@ function Provision() {
       <span className="eyebrow">Provision</span>
       <h2 id="lp-pd-provision-title">Provision und Auszahlung</h2>
       <div className="lp-pd-zweispaltig">
-        <ul className="lp-pp-liste lp-pp-liste--ja">
-          <li>10&nbsp;% auf den Netto-Warenwert, also ohne Steuern und Versand.</li>
-          <li>
-            Gutgeschrieben wird, sobald der Kauf abgeschlossen und nicht
-            widerrufen ist.
-          </li>
-          <li>
-            Ausgezahlt wird per PayPal oder Banküberweisung. Die Verbindung
-            hinterlegst du im Partnerkonto.
-          </li>
-          <li>Deine vermittelten Käufe und dein Guthaben siehst du im Partnerkonto.</li>
-        </ul>
+        <article className="lp-a-benefit">
+          <ul className="lp-pp-liste lp-pp-liste--ja">
+            <li>
+              10&nbsp;% auf den Netto-Warenwert, also ohne Steuern und Versand.
+            </li>
+            <li>
+              Gutgeschrieben wird, sobald der Kauf abgeschlossen und nicht
+              widerrufen ist.
+            </li>
+            <li>
+              Ausgezahlt wird per PayPal oder Banküberweisung. Die Verbindung
+              hinterlegst du im Partnerkonto.
+            </li>
+            <li>
+              Deine vermittelten Käufe und dein Guthaben siehst du im
+              Partnerkonto.
+            </li>
+          </ul>
+        </article>
         <figure className="lp-pd-bild">
           <Bild name="konditionen" />
           <figcaption>

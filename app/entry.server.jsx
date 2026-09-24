@@ -146,29 +146,29 @@ function berichtsziel(env) {
  * ================================================================
  * Diese Seite sendet `frame-ancestors 'none'` (unten, scharf), die Kasse
  * checkout.qiblanco.com sendet dasselbe plus `X-Frame-Options: DENY` —
- * die Kasse ist bei Shopify NICHT abschaltbar. Oeffnet ein fremdes Werkzeug
+ * die Kasse ist bei Shopify NICHT abschaltbar. Öffnet ein fremdes Werkzeug
  * einen unserer Links in einem Rahmen (Link-in-Bio-Vorschau, Website-
  * Einbettung, App-Vorschau), zeigt Chrome deshalb nur
  * "... hat die Verbindung abgelehnt / ERR_BLOCKED_BY_RESPONSE". Genau das
- * hat eine Partnerin am 2026-09-24 gemeldet; reproduziert fuer Kassen-,
+ * hat eine Partnerin am 2026-09-24 gemeldet; reproduziert für Kassen-,
  * Produkt- und Rabattlink.
  *
  * WAS DIE WEICHE TUT: erkennt eine Navigation IN einem Rahmen einer
  * FREMDEN Seite (Sec-Fetch-Dest iframe/frame UND Sec-Fetch-Site cross-site/
  * same-site) und antwortet statt mit der blockierten Seite mit einer
  * kleinen, einbettbaren Weiter-Seite: ein Knopf, der denselben Link in
- * einem eigenen Fenster oeffnet. Dort laeuft alles wie gewohnt (Rabatt,
+ * einem eigenen Fenster öffnet. Dort läuft alles wie gewohnt (Rabatt,
  * Zuordnung, Kasse).
  *
  * WARUM DAS NICHTS KAPUTT MACHEN KANN: jede Antwort, die heute unter diese
- * Bedingung faellt, wird vom Browser ohnehin verworfen (frame-ancestors
+ * Bedingung fällt, wird vom Browser ohnehin verworfen (frame-ancestors
  * 'none'). Die Weiche ersetzt also nur eine Fehlerseite. Eigene Rahmen
  * (same-origin), normale Seitenaufrufe (document), Datenabrufe (empty) und
- * Browser ohne Sec-Fetch-Kopf laufen unveraendert durch. Die Weiter-Seite
- * enthaelt nur einen Link auf unsere eigene Adresse — kein Formular, keine
- * Aktion, also nichts, was ein fremder Rahmen ausnutzen koennte.
+ * Browser ohne Sec-Fetch-Kopf laufen unverändert durch. Die Weiter-Seite
+ * enthält nur einen Link auf unsere eigene Adresse — kein Formular, keine
+ * Aktion, also nichts, was ein fremder Rahmen ausnutzen könnte.
  *
- * MESSUNG: partner-manager/bin/partnerlink-check (taeglich, linkart
+ * MESSUNG: partner-manager/bin/partnerlink-check (täglich, linkart
  * "einbettung") erkennt die Seite am Attribut data-einbettung-weiter.
  * RUECKWEG: den Aufruf oben in handleRequest entfernen.
  */
