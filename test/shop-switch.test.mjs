@@ -28,9 +28,19 @@ test('GLEICHWERTIG: eine Seite mit Entsprechung führt auf genau diese', () => {
     switchTarget('/pages/impressum', 'us'),
     'https://qi-blanco.com/pages/imprint',
   );
+  // Kohärentes Wasser: Info-Seite <-> Info-Seite, Kurs Tag 5 <-> Part 5
+  // (seit 24.09.2026, shop-mapping.yaml).
+  assert.equal(
+    switchTarget('/pages/was-ist-kohaerentes-wasser', 'us'),
+    'https://qi-blanco.com/pages/coherent-water',
+  );
   assert.equal(
     switchTarget('/pages/kohaerentes-wasser', 'us'),
-    'https://qi-blanco.com/pages/coherent-water',
+    'https://qi-blanco.com/pages/coherent-water-structure',
+  );
+  assert.equal(
+    switchTarget('/pages/coherent-water', 'de'),
+    'https://qiblanco.com/pages/was-ist-kohaerentes-wasser',
   );
   // und derselbe Weg zurück
   assert.equal(
