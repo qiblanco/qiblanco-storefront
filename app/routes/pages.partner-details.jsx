@@ -21,6 +21,9 @@ import pdStyles from '~/styles/partner-details.css?url';
  *
  * TRACKING-NAHT: KEIN Redirect, KEIN Pixel, KEINE Cookies. Der Link-Baukasten
  * rechnet ausschließlich im Browser (kein Formular-Versand, kein Abruf).
+ * Das gilt auch für den QR-Code (partnerQr.js) und die Beispieltexte je
+ * Kanal (partnerKanaele.js), seit 2026-09-24 (Job 20260924-update-
+ * partnerseite-zeigt-je-kanal-wie-und-wofuer-die-links-eingesetzt-werden).
  *
  * BILDER: echte Bildschirmfotos vom 2026-09-24, auf dem Shopify-CDN
  * (GL-PRO-0015). Gezeigt ist ein TEST-Partner; Code und Referenz sind im Bild
@@ -37,12 +40,13 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'So funktionieren deine Partnerlinks | Qi Blanco'},
+  {title: 'So setzt du deine Partnerlinks ein | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Welcher Link wofür, wie der Rabatt beim Kunden ankommt, Provision und ' +
-      'Auszahlung, und was du tust, wenn ein Link nicht funktioniert.',
+      'Welcher Link in welchen Kanal, Schritt für Schritt für Instagram, ' +
+      'TikTok, YouTube, Podcast, Newsletter, Website, Nachrichten und vor ' +
+      'Ort, mit fertigen Texten und QR-Code.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
 ];

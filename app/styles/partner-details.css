@@ -224,11 +224,643 @@
   text-align: left;
 }
 
+/* ═══ Einsatz je Kanal (Job 20260924-update-partnerseite-zeigt-je-kanal-wie-
+   und-wofuer-die-links-eingesetzt-werden). Dieselben Tokens wie oben: kein
+   neuer Farbton, keine neue Schriftgröße, Radien nur r1/r2. Gold markiert in
+   jedem Mockup genau EINE Stelle: den Link oder den Code, also die Handlung. */
+
+.lp-a3.lp-pd [id] {
+  scroll-margin-top: var(--a-s12);
+}
+.lp-a3.lp-pd button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Übersicht Kanal × Link × Ziel ───────────────────────────────────────── */
+.lp-a3 .lp-pd-tabelle {
+  width: 100%;
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--a-fs-base);
+  color: var(--a-text);
+}
+.lp-a3 .lp-pd-tabelle th,
+.lp-a3 .lp-pd-tabelle td {
+  padding: var(--a-s1) var(--a-s2);
+  border-bottom: 1px solid var(--a-linie);
+  vertical-align: top;
+}
+.lp-a3 .lp-pd-tabelle thead th {
+  font-size: var(--a-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pd-tabelle tbody th {
+  font-weight: 600;
+}
+.lp-a3 .lp-pd-tabelle tbody th a {
+  color: var(--a-text);
+  text-decoration: underline;
+  text-decoration-color: var(--a-akzent-tief);
+  text-underline-offset: 3px;
+}
+
+/* ─── Kanäle: Kopf, Sprungmarken, Gruppen ─────────────────────────────────── */
+.lp-a3 .lp-pd-kanaele__kopf {
+  max-width: var(--a-breite-schmal);
+  margin: 0 auto;
+  display: grid;
+  gap: var(--a-s2);
+  text-align: left;
+}
+.lp-a3 .lp-pd-stand {
+  max-width: none;
+  margin: 0;
+  padding: var(--a-s2);
+  border-radius: var(--a-r1);
+  border: 1px solid var(--a-akzent-tief);
+  background: var(--a-grund);
+  font-size: var(--a-fs-base);
+}
+.lp-a3 .lp-pd-stand a,
+.lp-a3 .lp-pd-kanal a {
+  color: var(--a-akzent-tinte);
+  font-weight: 600;
+}
+.lp-a3 .lp-pd-kennzeichnung {
+  max-width: none;
+  margin: 0;
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pd-sprung {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--a-s1);
+}
+.lp-a3 .lp-pd-sprung a {
+  padding: var(--a-s1) var(--a-s2);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+  font-size: var(--a-fs-xs);
+  font-weight: 600;
+  color: var(--a-text);
+  text-decoration: none;
+}
+.lp-a3 .lp-pd-sprung a:hover {
+  border-color: var(--a-akzent-tief);
+}
+/* Je Gruppe ein eigener Abschnitt mit eigener H2; enger Abstand nach oben,
+   weil die Gruppen zusammengehören. */
+.lp-a3.lp-pd section.lp-pd-gruppe {
+  padding-top: var(--a-s8);
+  padding-bottom: var(--a-s8);
+}
+.lp-a3 .lp-pd-gruppe__karten {
+  max-width: var(--a-breite);
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* ─── Kanal-Karte: Mockup links, Inhalt rechts ────────────────────────────── */
+.lp-a3 .lp-pd-kanal {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: var(--a-s6);
+  align-items: start;
+  margin-top: var(--a-s3);
+  padding: var(--a-s4);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+  box-shadow: var(--a-shadow-sm);
+}
+.lp-a3 .lp-pd-kanal__bild {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+.lp-a3 .lp-pd-kanal__inhalt {
+  min-width: 0;
+}
+.lp-a3 .lp-pd-kanal__titel {
+  margin: 0 0 var(--a-s2);
+}
+.lp-a3 .lp-pd-kanal__fakten {
+  display: grid;
+  gap: var(--a-s1);
+  margin: 0;
+}
+.lp-a3 .lp-pd-kanal__fakten div {
+  display: grid;
+  grid-template-columns: calc(var(--a-s12) + var(--a-s3)) minmax(0, 1fr);
+  gap: var(--a-s2);
+}
+.lp-a3 .lp-pd-kanal__fakten dt,
+.lp-a3 .lp-pd-kanal__zwischen {
+  font-size: var(--a-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-akzent-tinte);
+}
+.lp-a3 .lp-pd-kanal__fakten dt {
+  padding-top: 2px;
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pd-kanal__fakten dd {
+  margin: 0;
+  font-size: var(--a-fs-base);
+  color: var(--a-text);
+}
+.lp-a3 .lp-pd-kanal__zwischen {
+  margin: var(--a-s3) 0 var(--a-s1);
+}
+.lp-a3 .lp-pd-kanal__schritte {
+  margin: 0;
+  padding-left: var(--a-s3);
+  list-style: decimal;
+}
+/* Die Hülle nimmt Listen die Zeichen; hier tragen die Nummern den Ablauf. */
+.lp-a3 .lp-pd-kanal__schritte li {
+  display: list-item;
+  list-style: decimal;
+  font-size: var(--a-fs-base);
+  color: var(--a-text);
+}
+.lp-a3 .lp-pd-kanal__schritte li::marker {
+  color: var(--a-akzent-tinte);
+  font-weight: 700;
+}
+.lp-a3 .lp-pd-kanal__schritte li + li {
+  margin-top: var(--a-s1);
+}
+.lp-a3 .lp-pd-kanal .lp-pd-hinweis {
+  margin-top: var(--a-s1);
+}
+
+/* Beispieltext: Kasten + Knopf */
+.lp-a3 .lp-pd-vorlage {
+  display: grid;
+  gap: var(--a-s1);
+  margin-top: var(--a-s2);
+  padding: var(--a-s2);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r1);
+  background: var(--a-flaeche);
+}
+.lp-a3 .lp-pd-vorlage__titel {
+  margin: 0;
+  font-size: var(--a-fs-xs);
+  font-weight: 600;
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pd-vorlage__text {
+  max-width: none;
+  margin: 0;
+  font-size: var(--a-fs-base);
+  color: var(--a-text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.lp-a3 .lp-pd-vorlage .lp-vp-btn {
+  justify-self: start;
+}
+
+/* ─── Mockups ─────────────────────────────────────────────────────────────── */
+.lp-a3 .lp-pd-mock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  width: 100%;
+  font-size: var(--a-fs-xs);
+  line-height: 1.35;
+  color: var(--a-text);
+  text-align: left;
+  overflow: hidden;
+}
+.lp-a3 .lp-pd-mock--handy {
+  max-width: 208px;
+  aspect-ratio: 9 / 16;
+  padding: var(--a-s2);
+  border: var(--a-s1) solid var(--a-dunkel);
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pd-mock--dunkel {
+  background: var(--a-dunkel);
+  color: var(--a-text-hell);
+}
+.lp-a3 .lp-pd-mock--quer {
+  max-width: 280px;
+  padding: var(--a-s2);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pd-mock--fenster {
+  padding-top: var(--a-s1);
+}
+.lp-a3 .lp-pd-mock--folie {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--a-s2);
+  aspect-ratio: 16 / 10;
+  background: var(--a-flaeche);
+}
+.lp-a3 .lp-pd-mock--karte {
+  max-width: 208px;
+  aspect-ratio: 5 / 7;
+  align-items: center;
+  justify-content: center;
+  gap: var(--a-s2);
+  padding: var(--a-s3);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r1);
+  background: var(--a-grund);
+  box-shadow: var(--a-shadow-md);
+  text-align: center;
+}
+.lp-a3 .lp-pd-mock--gespraech {
+  max-width: 280px;
+  gap: var(--a-s2);
+}
+.lp-a3 .lp-pd-mock__zeilen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  min-width: 0;
+}
+.lp-a3 .lp-pd-mock__z {
+  display: block;
+  height: var(--a-s1);
+  border-radius: var(--a-r1);
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__z--hell {
+  background: var(--a-linie-hell);
+}
+.lp-a3 .lp-pd-mock__z--40 {
+  width: 40%;
+}
+.lp-a3 .lp-pd-mock__z--60 {
+  width: 60%;
+}
+.lp-a3 .lp-pd-mock__z--80 {
+  width: 80%;
+}
+.lp-a3 .lp-pd-mock__z--100 {
+  width: 100%;
+}
+.lp-a3 .lp-pd-mock__text {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.lp-a3 .lp-pd-mock__text--akzent,
+.lp-a3 .lp-pd-mock__link {
+  color: var(--a-akzent-tinte);
+}
+.lp-a3 .lp-pd-mock__text--hell {
+  color: var(--a-text-hell);
+}
+.lp-a3 .lp-pd-mock__text--leise {
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pd-mock__link {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s1);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.lp-a3 .lp-pd-mock__symbol {
+  flex: none;
+  width: var(--a-s2);
+  height: var(--a-s2);
+}
+.lp-a3 .lp-pd-mock__kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s1);
+}
+.lp-a3 .lp-pd-mock__kopf .lp-pd-mock__zeilen {
+  flex: 1;
+}
+.lp-a3 .lp-pd-mock__avatar {
+  flex: none;
+  width: var(--a-s4);
+  height: var(--a-s4);
+  border-radius: var(--a-r2);
+  background: var(--a-flaeche);
+  border: 2px solid var(--a-akzent-tief);
+}
+.lp-a3 .lp-pd-mock__raster {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: auto;
+}
+.lp-a3 .lp-pd-mock__raster span,
+.lp-a3 .lp-pd-mock__foto {
+  display: block;
+  aspect-ratio: 1;
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__foto {
+  border-radius: var(--a-r1);
+}
+.lp-a3 .lp-pd-mock__mitte {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lp-a3 .lp-pd-mock__sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--a-s1);
+  padding: var(--a-s1) var(--a-s2);
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+  color: var(--a-text);
+  font-weight: 700;
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pd-mock__sticker .lp-pd-mock__symbol {
+  color: var(--a-akzent-tief);
+}
+.lp-a3 .lp-pd-mock__einblendung {
+  padding: var(--a-s1) var(--a-s2);
+  border-radius: var(--a-r1);
+  background: var(--a-akzent);
+  color: var(--a-dunkel);
+  font-size: var(--a-fs-base);
+  font-weight: 700;
+}
+.lp-a3 .lp-pd-mock__seite {
+  position: absolute;
+  right: var(--a-s2);
+  top: 45%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s2);
+}
+.lp-a3 .lp-pd-mock--dunkel {
+  position: relative;
+}
+.lp-a3 .lp-pd-mock__seite span {
+  width: var(--a-s3);
+  height: var(--a-s3);
+  border-radius: var(--a-r2);
+  background: var(--a-linie-hell);
+}
+.lp-a3 .lp-pd-mock__film {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--a-r1);
+  background: var(--a-dunkel);
+}
+.lp-a3 .lp-pd-mock__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-40%, -50%);
+  border-style: solid;
+  border-width: var(--a-s2) 0 var(--a-s2) var(--a-s3);
+  border-color: transparent transparent transparent var(--a-text-hell);
+}
+.lp-a3 .lp-pd-mock__kommentar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--a-s1);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r1);
+}
+.lp-a3 .lp-pd-mock__marke {
+  color: var(--a-muted);
+  font-weight: 600;
+}
+.lp-a3 .lp-pd-mock__player {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s2);
+}
+.lp-a3 .lp-pd-mock__cover {
+  flex: none;
+  width: var(--a-s6);
+  height: var(--a-s6);
+  border-radius: var(--a-r1);
+  background: var(--a-dunkel);
+}
+.lp-a3 .lp-pd-mock__welle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: var(--a-s6);
+}
+.lp-a3 .lp-pd-mock__welle span {
+  flex: 1;
+  border-radius: var(--a-r1);
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__balken--3 {
+  height: 25%;
+}
+.lp-a3 .lp-pd-mock__balken--4 {
+  height: 35%;
+}
+.lp-a3 .lp-pd-mock__balken--5 {
+  height: 45%;
+}
+.lp-a3 .lp-pd-mock__balken--6 {
+  height: 60%;
+}
+.lp-a3 .lp-pd-mock__balken--7 {
+  height: 75%;
+}
+.lp-a3 .lp-pd-mock__balken--8 {
+  height: 90%;
+}
+.lp-a3 .lp-pd-mock__knopf {
+  align-self: center;
+  margin: var(--a-s1) 0;
+  padding: var(--a-s1) var(--a-s2);
+  border-radius: var(--a-r1);
+  background: var(--a-akzent);
+  color: var(--a-dunkel);
+  font-weight: 700;
+}
+.lp-a3 .lp-pd-mock__leiste {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--a-s1);
+  padding-bottom: var(--a-s1);
+  border-bottom: 1px solid var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__leiste span {
+  width: var(--a-s1);
+  height: var(--a-s1);
+  border-radius: var(--a-r1);
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__blase {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  align-self: flex-start;
+  max-width: 85%;
+  padding: var(--a-s1) var(--a-s2);
+  border-radius: var(--a-r2);
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__blase .lp-pd-mock__z {
+  width: 96px;
+}
+.lp-a3 .lp-pd-mock__blase--eigen {
+  align-self: flex-end;
+  background: var(--a-grund);
+  border: 1px solid var(--a-linie);
+}
+.lp-a3 .lp-pd-mock--gespraech .lp-pd-mock__blase--eigen {
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pd-mock__blase--laut {
+  font-size: var(--a-fs-base);
+  font-weight: 600;
+}
+.lp-a3 .lp-pd-mock__vorschau {
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--a-r1);
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__trenner {
+  display: block;
+  height: 1px;
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pd-mock__titel {
+  font-size: var(--a-fs-lg);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.lp-a3 .lp-pd-mock__code {
+  padding: var(--a-s1) var(--a-s2);
+  border: 1px solid var(--a-akzent-tief);
+  border-radius: var(--a-r1);
+  font-size: var(--a-fs-base);
+  font-weight: 700;
+  color: var(--a-akzent-tinte);
+  overflow-wrap: anywhere;
+}
+.lp-a3 .lp-pd-mock__qr {
+  display: block;
+  flex: none;
+  width: 60%;
+  max-width: 112px;
+  height: auto;
+}
+
+/* ─── QR-Code im Baukasten ────────────────────────────────────────────────── */
+.lp-a3 .lp-pd-qr {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: var(--a-s3);
+  align-items: center;
+  padding: var(--a-s2);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r1);
+}
+.lp-a3 .lp-pd-qr__bild {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.lp-a3 .lp-pd-qr__titel {
+  margin: 0 0 var(--a-s1);
+  font-size: var(--a-fs-base);
+  font-weight: 600;
+}
+.lp-a3 .lp-pd-qr__knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--a-s1);
+  margin-top: var(--a-s2);
+}
+
+/* ─── Ziele ───────────────────────────────────────────────────────────────── */
+.lp-a3 .lp-pd-karten.lp-pd-ziele {
+  grid-template-columns: repeat(3, 1fr);
+}
+.lp-a3 .lp-pd-ziel__waehlen {
+  display: inline-block;
+  margin-top: var(--a-s2);
+}
+
 /* ─── Schmal ──────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .lp-a3 .lp-pd-zweispaltig,
   .lp-a3 .lp-pd-karten {
     grid-template-columns: 1fr;
+  }
+  .lp-a3 .lp-pd-karten.lp-pd-ziele {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lp-a3 .lp-pd-kanal {
+    grid-template-columns: 1fr;
+    gap: var(--a-s3);
+    padding: var(--a-s3);
+  }
+  /* Übersicht als Stapel: jede Zeile ein Block, Spaltenname davor. */
+  .lp-a3 .lp-pd-tabelle thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .lp-a3 .lp-pd-tabelle,
+  .lp-a3 .lp-pd-tabelle tbody,
+  .lp-a3 .lp-pd-tabelle tr,
+  .lp-a3 .lp-pd-tabelle th,
+  .lp-a3 .lp-pd-tabelle td {
+    display: block;
+  }
+  .lp-a3 .lp-pd-tabelle tr {
+    padding: var(--a-s2) 0;
+    border-bottom: 1px solid var(--a-linie);
+  }
+  .lp-a3 .lp-pd-tabelle th,
+  .lp-a3 .lp-pd-tabelle td {
+    padding: 0;
+    border: 0;
+  }
+  .lp-a3 .lp-pd-tabelle tbody th {
+    margin-bottom: var(--a-s1);
+  }
+  .lp-a3 .lp-pd-tabelle td {
+    display: grid;
+    grid-template-columns: var(--a-s8) minmax(0, 1fr);
+    gap: var(--a-s1);
+  }
+  .lp-a3 .lp-pd-tabelle td::before {
+    content: attr(data-titel);
+    font-size: var(--a-fs-xs);
+    font-weight: 600;
+    color: var(--a-muted);
+    padding-top: 2px;
   }
   .lp-a3 .lp-pd-schritte {
     grid-template-columns: 1fr 1fr;
@@ -241,7 +873,34 @@
   .lp-a3 .lp-pd-baukasten {
     padding: var(--a-s3);
   }
+  .lp-a3 .lp-pd-karten.lp-pd-ziele {
+    grid-template-columns: 1fr;
+  }
+  .lp-a3 .lp-pd-qr {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .lp-a3 .lp-pd-qr__bild {
+    max-width: 200px;
+  }
+  .lp-a3 .lp-pd-qr__knoepfe {
+    justify-content: center;
+  }
+  .lp-a3 .lp-pd-kanal__fakten div {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
   .lp-a3 .lp-pd-ergebnis {
     grid-template-columns: 1fr;
   }
+}
+
+/* Einleitung der Kanäle und erste Gruppe gehören zusammen: kein Trennstrich,
+   kein doppelter Abstand dazwischen. */
+.lp-a3.lp-pd [data-section='lp-pd-kanaele'] {
+  padding-bottom: var(--a-s2);
+}
+.lp-a3.lp-pd [data-section='lp-pd-kanaele'] + section {
+  border-top: 0;
 }
