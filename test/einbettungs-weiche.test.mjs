@@ -57,14 +57,14 @@ test('W4 cart.$lines legt im fremden Rahmen KEINEN Warenkorb an und leitet nicht
   assert.equal(istFremderRahmen(anfrage(PERMALINK, {'sec-fetch-dest': 'document', 'sec-fetch-site': 'none'})), false);
 });
 
-test('W5 entry.server.jsx ruft die EINE Weiche vor dem Rendern und fuehrt keine eigene Kopie', () => {
+test('W5 entry.server.jsx ruft die EINE Weiche vor dem Rendern und führt keine eigene Kopie', () => {
   const src = readFileSync(join(WURZEL, 'app/entry.server.jsx'), 'utf8');
   assert.match(src, /import \{einbettungsWeiche\} from '~\/lib\/einbettungs-weiche\.server';/);
   const w = src.indexOf('einbettungsWeiche(request)');
   const r = src.indexOf('await renderToReadableStream(');
   assert.ok(w > 0, 'Aufruf fehlt');
   assert.ok(w < r, 'Weiche steht hinter dem Rendern');
-  assert.match(src.slice(w, w + 120), /\n\s*if \((\w+)\) return \1;/, 'Antwort der Weiche wird nicht zurueckgegeben');
+  assert.match(src.slice(w, w + 120), /\n\s*if \((\w+)\) return \1;/, 'Antwort der Weiche wird nicht zurückgegeben');
   assert.ok(!/function einbettungsWeiche\s*\(/.test(src), 'zweite Kopie der Weiche in entry.server.jsx');
   assert.ok(!src.includes('data-einbettung-weiter'), 'Weiter-Markup doppelt in entry.server.jsx');
 });
