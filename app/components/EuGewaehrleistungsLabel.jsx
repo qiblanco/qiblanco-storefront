@@ -290,9 +290,45 @@ const EuLabelDialog = forwardRef(function EuLabelDialog(
           darunter, nicht an diesem Absatz; ein fehlender Zusatz ist deshalb
           kein Mangel, sondern der ehrliche Zustand.
         */}
+        {/*
+          WARUM <h3> UND NICHT <h2> -- ZWEI GRÜNDE, DER ZWEITE IST GEMESSEN.
+
+          (1) SEMANTISCH: der Amtstitel 14 Zeilen weiter unten trägt h3, und
+          beide Überschriften hängen am selben Zweig (`label.eigeneWorte`).
+          Zwei Überschriften, die gemeinsam erscheinen und gemeinsam
+          verschwinden, stehen auf derselben Ebene -- nicht die eine unter
+          der anderen.
+
+          (2) DER DIALOG IST ZU, UND DIE SEITE ZAHLT TROTZDEM. `showModal()`
+          hängt am Klick, der <dialog> steht aber dauerhaft gemountet im
+          Baum -- und dort, wo der Ausloeser hängt, also INNERHALB von
+          <main>. Die Design-Rubrik zählt Überschriften genau danach
+          (design-meister/src/web_collect.py: `istHuelle(el) =
+          !<main>.contains(el)`) und urteilt in `dim_stimmig` ausschließlich
+          über H2. Ein <h2> hier ist deshalb ein zweiter H2-Stil auf JEDER
+          Kaufflaeche -- 20 Punkte in `stimmig_typo`, für eine Überschrift,
+          die kein Besucher je neben den Sektionstiteln sieht.
+
+          GEMESSEN 2026-09-18 am ausgelieferten HTML aller 104 Gate-Seiten
+          (Job 20260918-kakao-dialog-h2-dritter-stil-zwei-shops): 87 Seiten
+          tragen den Dialog, 13 davon im Hauptbereich, und auf 10 davon
+          erzeugte dieses eine <h2> eine zusätzliche H2-Kombi.
+
+          UND DER TEURERE TEIL, den die Punktzahl NICHT zeigt: auf
+          /products/qibracelet, /products/qihome-air und /products/qione-2-pro
+          zog `body > main h2 { font-size: 2.2rem !important }` (pdp-qi.css)
+          diesen Titel auf 35,2 px -- im schmalen Modal. Dort fiel er der
+          Rubrik nicht auf, WEIL er die Seitengröße angenommen hatte. Als
+          <h3> trägt er wieder seine eigene, entworfene Größe
+          (die Titelstufe der Typo-Skala, 20 px) aus eu-gewaehrleistung.css.
+
+          DIE GROESSE IST NICHT GEÄNDERT WORDEN. Die Klasse bleibt, die CSS-
+          Regel bleibt, der Text bleibt, die Sichtbarkeit bleibt -- allein die
+          Ebene wandert.
+        */}
         {label.eigeneWorte ? (
           <div className="eu-gwl-dialog__wort">
-            <h2 className="eu-gwl-dialog__titel">{label.eigeneWorte.titel}</h2>
+            <h3 className="eu-gwl-dialog__titel">{label.eigeneWorte.titel}</h3>
             {label.eigeneWorte.absaetze.map((absatz) => (
               <p className="eu-gwl-dialog__absatz" key={absatz.slice(0, 40)}>
                 {absatz}
