@@ -1126,3 +1126,89 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visibl
     margin-top: var(--qm-s2);
   }
 }
+
+/* ─── Add-ons unter dem Kaufknopf (Christian 2026-09-24) ─────────────────
+   Wunschnummer und Goldkette, components/product-pages/QiMasterAddons.jsx.
+   Hängt an .qm-pdp (die Buy-Box dieser Route) und kann keine andere
+   Kaufseite erreichen. EINE Kartenform, gestapelt: die Buy-Box-Spalte ist
+   schmal, zwei Karten nebeneinander brächen dort die Preise um.
+   Aktiv = Goldrand (der eine Akzent der Seite), sonst die Linie. */
+.qm-pdp .qm-addons {
+  margin-top: var(--qm-s3);
+  display: grid;
+  gap: var(--qm-s2);
+}
+.qm-pdp .qm-addons__titel {
+  margin: 0;
+  font-size: var(--qm-fs-lg);
+  line-height: 1.3;
+}
+.qm-pdp .qm-addons__karten {
+  display: grid;
+  gap: var(--qm-s2);
+}
+.qm-pdp .qm-addon {
+  display: grid;
+  gap: var(--qm-s1);
+  padding: var(--qm-s2);
+  background: var(--qm-flaeche);
+  border: 1px solid var(--qm-linie);
+  border-radius: var(--qm-r2);
+}
+.qm-pdp .qm-addon--an { border-color: var(--qm-akzent); }
+.qm-pdp .qm-addon__kopf {
+  display: flex;
+  align-items: baseline;
+  gap: var(--qm-s1);
+  margin: 0;
+}
+.qm-pdp .qm-addon__schalter { cursor: pointer; }
+.qm-pdp .qm-addon__schalter input {
+  align-self: center;
+  width: var(--qm-s3);
+  height: var(--qm-s3);
+  margin: 0;
+  accent-color: var(--qm-akzent);
+}
+.qm-pdp .qm-addon__name {
+  font-size: var(--qm-fs-md);
+  font-weight: 600;
+}
+/* Der Preis sitzt rechts in der Kopfzeile; ProductPrice bringt aus dem
+   Bestand einen Block mit großer Schrift mit, hier ist er Beigabe. */
+.qm-pdp .qm-addon__kopf .product-price {
+  margin-left: auto;
+  font-size: var(--qm-fs-md);
+  font-weight: 600;
+}
+.qm-pdp .qm-addon__text,
+.qm-pdp .qm-addon__hinweis { margin: 0; }
+.qm-pdp .qm-addon__hinweis {
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+}
+.qm-pdp .qm-addon__feld {
+  display: grid;
+  gap: var(--qm-s1);
+}
+.qm-pdp .qm-addon__feldname {
+  font-size: var(--qm-fs-xs);
+  color: var(--qm-muted);
+}
+.qm-pdp .qm-addon__feld select {
+  width: 100%;
+  padding: var(--qm-s1) var(--qm-s2);
+  font: inherit;
+  color: var(--qm-text);
+  background: var(--qm-grund);
+  border: 1px solid var(--qm-linie);
+  border-radius: var(--qm-r1);
+}
+.qm-pdp .qm-addon__feld select:focus-visible {
+  outline: 2px solid var(--qm-akzent-tinte);
+  outline-offset: 2px;
+}
+.qm-pdp .qm-addons__summe {
+  margin: 0;
+  font-size: var(--qm-fs-md);
+}

@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -13,6 +14,12 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
+import {QiMasterAddons} from '~/components/product-pages/QiMasterAddons';
+import {
+  QM_ADDONS_QUERY,
+  KETTE_VORWAHL,
+  addonLinien,
+} from '~/lib/qi-master-addons';
 
 /*
  * Organische Produktseite /products/qi-master — QiMaster, „der QiOne mit
@@ -103,13 +110,18 @@ export async function loader(args) {
 async function loadCriticalData({context, request}, handle) {
   const {storefront} = context;
 
-  const [{product}] = await Promise.all([
+  const [{product}, addonDaten] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle,
         selectedOptions: getSelectedProductOptions(request),
       },
     }),
+    // DIE ADD-ONS UNTER DEM KAUFKNOPF (Christian 2026-09-24): Wunschnummer
+    // und Goldkette sind eigene Shopify-Produkte (lib/qi-master-addons.js).
+    // FAIL-SOFT: fehlt eines (noch nicht veröffentlicht) oder scheitert die
+    // Abfrage, entfällt nur der Bereich — die Kaufseite selbst bleibt heil.
+    storefront.query(QM_ADDONS_QUERY).catch(() => null),
   ]);
 
   if (!product?.id) {
@@ -143,6 +155,10 @@ async function loadCriticalData({context, request}, handle) {
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
     // kasse-nimmt-20-prio8.
     marktLand: storefront.i18n.country,
+    addons: {
+      wunschnummer: addonDaten?.wunschnummer ?? null,
+      kette: addonDaten?.kette ?? null,
+    },
   };
 }
 
@@ -152,8 +168,30 @@ function loadDeferredData() {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, addons} = useLoaderData();
   const {descriptionHtml} = product;
+  const qmVariante = product.selectedOrFirstAvailableVariant;
+  // Add-ons nur neben einem KAUFBAREN Qi Master: ist er nicht bestellbar,
+  // sind es die Add-ons auch nicht (Auftrag 2026-09-24, Grenzen).
+  const addonsSichtbar = qmVariante?.availableForSale ? addons : null;
+  const [auswahl, setAuswahl] = useState(() => ({
+    wunschnummer: null,
+    ketteAn: false,
+    kette:
+      addons?.kette?.variants?.nodes?.find((v) => v.title === KETTE_VORWAHL)?.id ??
+      addons?.kette?.variants?.nodes?.[0]?.id ??
+      null,
+  }));
+  const zusatzLinien = addonsSichtbar
+    ? addonLinien({
+        wunschnummer: addonsSichtbar.wunschnummer?.variants?.nodes?.find(
+          (v) => v.id === auswahl.wunschnummer && v.availableForSale,
+        ),
+        kette: auswahl.ketteAn
+          ? addonsSichtbar.kette?.variants?.nodes?.find((v) => v.id === auswahl.kette)
+          : null,
+      })
+    : [];
 
   return (
     <div className="qm-pdp">
@@ -189,6 +227,20 @@ export default function Product() {
            Mehrheit der Kaufflächen, die über products.$handle laufen und
            gar keine Liste haben. */
         gewaehrleistungsHinweis={false}
+        /* DIE ADD-ONS STEHEN UNTER DEM KAUFKNOPF, nicht darüber (Christian
+           2026-09-24, woertlich: „einen Bereich unterhalb vom Kaufknopf, wo
+           man Add-ons auswählen kann"). Der Knopf legt die gewählten Add-ons
+           im selben Klick mit in den Warenkorb; die Warenkorb-Action bindet
+           sie dort an den Qi Master (lib/qi-master-addons.server.js). */
+        zusatzLinien={zusatzLinien}
+        unterKaufknopf={
+          <QiMasterAddons
+            addons={addonsSichtbar}
+            qmPreis={qmVariante?.price}
+            auswahl={auswahl}
+            setAuswahl={setAuswahl}
+          />
+        }
         description={
           <div
             className="ProductDescription"

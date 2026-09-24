@@ -59,6 +59,8 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   ctaLabel?: string,
  *   gewaehrleistungsHinweis?: boolean,
  *   ankerId?: string,
+ *   zusatzLinien?: Array<object>,
+ *   unterKaufknopf?: import('react').ReactNode,
  * }} props
  *
  * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
@@ -83,6 +85,13 @@ import {ProductImageList} from '~/components/ProductImageList';
  * products.qihome-air.jsx und products.zeremonie-kakao.jsx von Hand tun
  * (`<div className="product" id="product">`) -- dieselbe Hausform, nur über
  * die geteilte Komponente erreichbar.
+ *
+ * ADD-ONS (`zusatzLinien` + `unterKaufknopf`, beide additiv, Default leer):
+ * nur DURCHGEREICHT an ProductForm, genau wie `gewaehrleistungsHinweis`.
+ * Die Route /products/qi-master hängt dort ihren Add-on-Bereich direkt unter
+ * den Kaufknopf und legt die gewählten Add-ons im SELBEN Klick mit in den
+ * Warenkorb (Christian 2026-09-24). Jede andere Seite übergibt nichts und
+ * rendert byte-identisch weiter.
  */
 export function QiOneBuyBox({
   product,
@@ -95,6 +104,8 @@ export function QiOneBuyBox({
   ctaLabel,
   gewaehrleistungsHinweis = true,
   ankerId = undefined,
+  zusatzLinien = undefined,
+  unterKaufknopf = null,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -151,6 +162,8 @@ export function QiOneBuyBox({
           quantity={quantity}
           ctaLabel={ctaLabel}
           gewaehrleistungsHinweis={gewaehrleistungsHinweis}
+          zusatzLinien={zusatzLinien}
+          unterKaufknopf={unterKaufknopf}
         />
         {benefitList}
       </div>

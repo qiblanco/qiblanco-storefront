@@ -7,6 +7,7 @@ import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import cartSeiteStyles from '~/styles/cart-seite.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
+import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {noindexMeta} from '~/lib/seo';
 
 /**
@@ -132,6 +133,11 @@ export async function action({request, context}) {
     default:
       throw new Error(`${action} cart action is not defined`);
   }
+
+  // Qi-Master-Add-ons hängen am Qi Master: ohne ihn fallen sie mit, eine
+  // Wunschnummer steht höchstens einmal im Warenkorb (Christian 2026-09-24).
+  // Liest nur bei Entfernen/Menge ändern/Add-on hinzufügen nach.
+  result = await bindeQiMasterAddons({cart, action, inputs, result});
 
   result = await persistAttributionOnCartResult({cart, request, env, result});
 
