@@ -1,0 +1,976 @@
+/* ============================================================================
+   /pages/forschung — „Forschung bei Qi Blanco“ (Christian, 24.09.2026).
+
+   TOKEN-SYSTEM: Schriftgrößen, Abstände, Radien und Farben kommen aus der
+   Wurzel app/styles/qb-tokens.css (--qb-*). Diese Datei setzt nur die Rollen
+   der Seite darauf (--fo-*); außerhalb des :root-Blocks steht kein freier
+   Wert. Skala: 14/16/18/20/24/32 aus der Wurzel plus EIN H1-Wert (clamp),
+   sieben Stufen bei einem Deckel von neun. Raster 8 px.
+
+   EIN GOLD: das Kauf-Gold (--qb-akzent-kauf) für Flächen, Linien und den
+   Knopf, die Gold-Tinte (--qb-akzent-tinte) für goldene Schrift. Gold steht
+   nur auf dem Beweis (gegangener Weg, erreichte Sprossen, Messwerte) und auf
+   der Handlung. Kein zweiter Goldton.
+
+   BEWEGUNG: jede Grafik läuft EINMAL, sobald der Leser sie erreicht, und
+   bleibt im Endbild stehen (Szene fertig / bereit / aktiv, FoGrafiken.jsx).
+   Die Kopfgrafik steht vom ersten Pixel an; ihre Bewegung ist ein Zusatz.
+   Nur transform, opacity und stroke-dashoffset.
+   ========================================================================== */
+
+:root {
+  --fo-breite: 1120px;
+  --fo-breite-text: 64ch;
+  --fo-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+  --fo-linie: rgba(44, 42, 38, 0.14);
+  --fo-linie-stark: rgba(44, 42, 38, 0.28);
+  --fo-weiss: #fff;
+  --fo-kurve: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --fo-s1: 8px;
+  --fo-s2: 16px;
+  --fo-s3: 24px;
+  --fo-s4: 32px;
+  --fo-s6: 48px;
+  --fo-s8: 64px;
+  --fo-s12: 96px;
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.fo {
+  --qb-akzent: var(--qb-akzent-kauf);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-4);
+  line-height: 1.65;
+  padding: var(--fo-s4) var(--fo-s2) var(--fo-s12);
+}
+
+.fo > * {
+  max-width: var(--fo-breite);
+  margin-inline: auto;
+}
+
+/* Die globale p-Regel setzt 1.2rem (19,2 px), einen Wert außerhalb der Skala.
+   Der Fließtext steht auf der Body-Größe der Seite. */
+.fo p {
+  margin: 0 0 var(--fo-s2);
+  font-size: var(--qb-ref-fs-4);
+}
+
+.fo h1,
+.fo h2,
+.fo h3,
+.fo h4 {
+  color: var(--qb-text);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.fo h1 {
+  font-size: var(--fo-fs-h1);
+  margin: 0 0 var(--fo-s3);
+}
+
+.fo h2 {
+  font-size: var(--qb-text-h2);
+  margin: var(--fo-s1) 0 var(--fo-s3);
+}
+
+.fo h3 {
+  font-size: var(--qb-text-h3);
+  margin: 0 0 var(--fo-s2);
+}
+
+.fo h4 {
+  font-size: var(--qb-ref-fs-5);
+  margin: 0 0 var(--fo-s2);
+}
+
+.fo a {
+  color: var(--qb-text);
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-underline-offset: 3px;
+}
+
+.fo a:focus-visible {
+  outline: 2px solid var(--qb-akzent-tinte);
+  outline-offset: 3px;
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo ol,
+.fo ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fo-text {
+  max-width: var(--fo-breite-text);
+}
+
+/* ─── Kopf ───────────────────────────────────────────────────────────────── */
+.fo-kopf {
+  display: grid;
+  gap: var(--fo-s6);
+  align-items: center;
+  padding-bottom: var(--fo-s8);
+}
+
+.fo .fo-dachzeile,
+.fo .fo-marke {
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte);
+}
+
+.fo .fo-kurz {
+  max-width: var(--fo-breite-text);
+  font-size: var(--qb-ref-fs-5);
+}
+
+.fo-inhalt {
+  margin-top: var(--fo-s3);
+}
+
+.fo .fo-inhalt__titel {
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text-gedaempft);
+  margin-bottom: var(--fo-s1);
+}
+
+.fo-inhalt ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fo-s1);
+  counter-reset: fo-inhalt;
+}
+
+.fo-inhalt li {
+  counter-increment: fo-inhalt;
+}
+
+.fo-inhalt a {
+  display: inline-block;
+  padding: var(--fo-s1) var(--fo-s2);
+  font-size: var(--qb-ref-fs-2);
+  text-decoration: none;
+  border: 1px solid var(--fo-linie);
+  border-radius: var(--qb-radius-klein);
+  background: var(--qb-flaeche);
+}
+
+.fo-inhalt a::before {
+  content: counter(fo-inhalt) '  ';
+  font-weight: 700;
+  color: var(--qb-akzent-tinte);
+}
+
+.fo-inhalt a:hover {
+  border-color: var(--qb-akzent-tinte);
+}
+
+/* ─── Szene und Grafik ───────────────────────────────────────────────────── */
+.fo-szene {
+  margin: 0;
+  padding: var(--fo-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-szene__titel {
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+  margin-bottom: var(--fo-s2);
+}
+
+.fo-szene figcaption {
+  max-width: var(--fo-breite-text);
+  margin-top: var(--fo-s2);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft);
+}
+
+.fo-grafik {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Der Weg */
+.fo-weg__grund {
+  fill: none;
+  stroke: var(--fo-linie-stark);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.fo-weg__gold {
+  fill: none;
+  stroke: var(--qb-akzent);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.fo-weg__puls {
+  fill: none;
+  stroke: var(--fo-weiss);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 12 100;
+  stroke-dashoffset: 112;
+  opacity: 0;
+}
+
+.fo-weg__knoten circle {
+  fill: var(--fo-weiss);
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+}
+
+.fo-weg__knoten text {
+  fill: var(--qb-text);
+  font-size: var(--qb-ref-fs-4);
+  font-weight: 700;
+}
+
+.fo-weg__erde circle,
+.fo-weg__erde ellipse,
+.fo-weg__erde path {
+  fill: none;
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+}
+
+.fo-weg__erde circle {
+  fill: var(--fo-weiss);
+}
+
+.fo-weg__punkt {
+  fill: var(--qb-akzent);
+  stroke: var(--qb-text);
+  stroke-width: 2;
+}
+
+.fo-weg__ring {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.fo .fo-weg__legende {
+  display: grid;
+  gap: var(--fo-s1);
+  margin-top: var(--fo-s2);
+}
+
+.fo-weg__legende li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--fo-s1);
+  font-size: var(--qb-ref-fs-3);
+}
+
+.fo-weg__nr,
+.fo-stufen__nr,
+.fo-leiter__nr {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--fo-s3);
+  height: var(--fo-s3);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  border: 2px solid var(--qb-text-gedaempft);
+  border-radius: 50%;
+}
+
+.fo-weg__name {
+  font-weight: 700;
+}
+
+.fo-weg__zeile {
+  color: var(--qb-text-gedaempft);
+}
+
+.fo-weg__hier,
+.fo-leiter__hier {
+  display: inline-block;
+  padding: 0 var(--fo-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text-auf-akzent);
+  background: var(--qb-akzent);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo-weg__legende .ist-hier .fo-weg__nr {
+  border-color: var(--qb-akzent-tinte);
+  background: var(--qb-akzent);
+}
+
+/* ─── Abschnitte ─────────────────────────────────────────────────────────── */
+.fo-abschnitt {
+  padding-top: var(--fo-s8);
+  margin-top: var(--fo-s4);
+  border-top: 1px solid var(--fo-linie);
+  scroll-margin-top: var(--fo-s12);
+}
+
+.fo-abschnitt__kopf {
+  max-width: 820px;
+}
+
+.fo .fo-zwischen {
+  margin-top: var(--fo-s6);
+}
+
+
+.fo .fo-weiter,
+.fo .fo-weiter a {
+  font-size: var(--qb-ref-fs-4);
+  font-weight: 700;
+}
+
+.fo .fo-weiter {
+  margin: var(--fo-s4) 0 0;
+}
+
+.fo-weiter a::after {
+  content: ' ↓';
+  color: var(--qb-akzent-tinte);
+}
+
+/* Forschungsverständnis */
+.fo .fo-stufen {
+  display: grid;
+  gap: var(--fo-s2);
+  margin: var(--fo-s4) 0;
+}
+
+.fo-stufen__karte {
+  padding: var(--fo-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-stufen__kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--fo-s1);
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-5);
+  font-weight: 700;
+}
+
+.fo .fo-stufen__karte p:last-child {
+  margin-bottom: 0;
+}
+
+.fo-fliegen {
+  max-width: 820px;
+  padding: var(--fo-s3) var(--fo-s4);
+  border: 1px solid var(--fo-linie);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-fliegen p:last-child {
+  margin-bottom: 0;
+}
+
+/* Stufe 1: Studienkarten */
+.fo-studien {
+  display: grid;
+  gap: var(--fo-s2);
+}
+
+.fo-studie {
+  display: flex;
+  flex-direction: column;
+  padding: var(--fo-s3);
+  background: var(--fo-weiss);
+  border: 1px solid var(--fo-linie);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-studie__produkt {
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-akzent-tinte);
+}
+
+.fo .fo-studie__rahmen {
+  margin: 0 0 var(--fo-s2);
+}
+
+.fo-studie__rahmen div {
+  padding: var(--fo-s1) 0;
+  border-top: 1px solid var(--fo-linie);
+}
+
+.fo-studie__rahmen dt {
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text-gedaempft);
+}
+
+.fo-studie__rahmen dd {
+  margin: 0;
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.5;
+}
+
+.fo .fo-studie__ergebnis {
+  padding: var(--fo-s2);
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+  line-height: 1.5;
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-studie__link {
+  margin-top: auto;
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+}
+
+/* Stufe 1: Reproduzierbarkeit und Leiter */
+.fo-repro {
+  display: grid;
+  gap: var(--fo-s4);
+  align-items: start;
+}
+
+.fo-repro__text {
+  max-width: var(--fo-breite-text);
+}
+
+.fo .fo-repro__schluss {
+  font-weight: 700;
+}
+
+.fo-leiter {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.fo .fo-leiter__sprosse {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: var(--fo-s2);
+}
+
+.fo-leiter__bild {
+  position: relative;
+  display: block;
+  border-inline: 3px solid var(--fo-linie-stark);
+}
+
+.fo-leiter__stab {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: var(--fo-s1);
+  margin-top: -4px;
+  border: 2px dashed var(--fo-linie-stark);
+  border-radius: var(--qb-radius-klein);
+  transform-origin: left center;
+}
+
+.fo-leiter__sprosse.ist-erreicht .fo-leiter__stab {
+  background: var(--qb-akzent);
+  border: 2px solid var(--qb-akzent);
+}
+
+.fo-leiter__text {
+  display: grid;
+  gap: 2px;
+  padding: var(--fo-s2) 0;
+}
+
+.fo-leiter__kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--fo-s1);
+  font-size: var(--qb-ref-fs-4);
+  font-weight: 700;
+}
+
+.fo-leiter__sprosse.ist-erreicht .fo-leiter__nr {
+  border-color: var(--qb-akzent-tinte);
+}
+
+.fo-leiter__satz {
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.5;
+}
+
+.fo-leiter__stand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fo-s1);
+  align-items: center;
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text-gedaempft);
+}
+
+.fo-leiter__sprosse.ist-erreicht .fo-leiter__stand {
+  color: var(--qb-akzent-tinte);
+}
+
+.fo-naechster {
+  max-width: var(--fo-breite-text);
+}
+
+/* Stufe 2: die Warums */
+.fo .fo-warums {
+  display: grid;
+  gap: var(--fo-s3);
+  margin-top: var(--fo-s4);
+  counter-reset: fo-warum;
+}
+
+.fo-warum {
+  padding: var(--fo-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+  scroll-margin-top: var(--fo-s12);
+}
+
+.fo .fo-warum__marke {
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte);
+}
+
+.fo-warum__teile {
+  display: grid;
+  gap: var(--fo-s2);
+}
+
+.fo-warum__teil {
+  padding: var(--fo-s2);
+  background: var(--fo-weiss);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-warum__klasse {
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text-gedaempft);
+}
+
+.fo .fo-warum__teil p:last-child {
+  margin-bottom: 0;
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.55;
+}
+
+.fo-warum .fo-szene {
+  margin-top: var(--fo-s2);
+  background: var(--fo-weiss);
+}
+
+.fo .fo-warum__link,
+.fo .fo-modell {
+  margin: var(--fo-s2) 0 0;
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+}
+
+.fo .fo-modell {
+  margin-top: var(--fo-s4);
+  font-size: var(--qb-ref-fs-4);
+}
+
+/* Schutzgrad je Zellart */
+.fo-zellarten {
+  display: grid;
+  gap: var(--fo-s1);
+  max-width: 640px;
+}
+
+.fo-zellarten__zeile {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) 4.5rem;
+  gap: var(--fo-s2);
+  align-items: center;
+  font-size: var(--qb-ref-fs-3);
+}
+
+.fo-zellarten__bahn {
+  display: block;
+  height: var(--fo-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+  overflow: hidden;
+}
+
+.fo-zellarten__balken {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--qb-akzent);
+  transform: scaleX(var(--fo-anteil));
+  transform-origin: left center;
+}
+
+.fo-zellarten__wert {
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Versuchsaufbau über die Ferne */
+.fo-grafik--abstand {
+  max-width: 640px;
+}
+
+.fo-abstand__quelle rect {
+  fill: var(--fo-weiss);
+  stroke: var(--qb-text);
+  stroke-width: 2;
+}
+
+.fo-abstand__quelle circle {
+  fill: var(--qb-akzent);
+}
+
+.fo-abstand__welle {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.fo-abstand__mass path,
+.fo-abstand__ferne path {
+  fill: none;
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+}
+
+.fo-abstand__ferne path:first-child {
+  stroke-dasharray: 6 8;
+}
+
+.fo-abstand__inkubator rect {
+  fill: var(--fo-weiss);
+  stroke: var(--qb-text);
+  stroke-width: 2;
+}
+
+.fo-abstand__inkubator circle {
+  fill: var(--qb-akzent);
+  fill-opacity: 0.55;
+}
+
+.fo-abstand__inkubator--kontrolle rect {
+  stroke: var(--qb-text-gedaempft);
+  stroke-dasharray: 6 6;
+}
+
+.fo-abstand__inkubator--kontrolle circle {
+  fill: var(--qb-text-gedaempft);
+  fill-opacity: 0.35;
+}
+
+.fo-grafik--abstand text {
+  fill: var(--qb-text);
+  font-size: var(--qb-ref-fs-6);
+  font-weight: 700;
+}
+
+/* Stufe 3 */
+.fo .fo-hebel {
+  display: grid;
+  gap: var(--fo-s2);
+  margin: var(--fo-s4) 0;
+}
+
+.fo-hebel__karte {
+  padding: var(--fo-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo .fo-hebel__karte p {
+  margin-bottom: 0;
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.55;
+}
+
+.fo .fo-schluss {
+  max-width: var(--fo-breite-text);
+  font-size: var(--qb-ref-fs-5);
+  font-weight: 700;
+}
+
+/* Standort */
+.fo-spalten {
+  display: grid;
+  gap: var(--fo-s2);
+  margin: var(--fo-s4) 0;
+}
+
+.fo-spalte {
+  padding: var(--fo-s3);
+  border: 1px solid var(--fo-linie);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo-spalte:first-child {
+  border-color: var(--qb-akzent-tinte);
+}
+
+.fo-spalte li {
+  position: relative;
+  padding-left: var(--fo-s3);
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.5;
+}
+
+.fo-spalte li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: var(--fo-s1);
+  height: var(--fo-s1);
+  border: 2px solid var(--qb-text-gedaempft);
+  border-radius: 50%;
+}
+
+.fo-spalte:first-child li::before {
+  background: var(--qb-akzent);
+  border-color: var(--qb-akzent-tinte);
+}
+
+.fo-einladung {
+  max-width: 820px;
+  padding: var(--fo-s4);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-klein);
+}
+
+.fo-einladung__wege {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fo-s2);
+  align-items: center;
+  margin-top: var(--fo-s3);
+}
+
+/* Quellen */
+.fo-quellen {
+  margin-top: var(--fo-s8);
+  padding-top: var(--fo-s6);
+  border-top: 1px solid var(--fo-linie);
+}
+
+.fo-quellen li {
+  max-width: 70ch;
+  margin-bottom: var(--fo-s1);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.5;
+}
+
+.fo-quellen a {
+  text-decoration: underline;
+}
+
+/* ─── Breiten ────────────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .fo h2 {
+    font-size: var(--qb-text-h2-mobil);
+  }
+
+  .fo h3 {
+    font-size: var(--qb-text-h3-mobil);
+  }
+
+  .fo .fo-kurz {
+    font-size: var(--qb-ref-fs-4);
+  }
+
+  .fo-szene,
+  .fo-warum,
+  .fo-einladung {
+    padding: var(--fo-s2);
+  }
+
+  .fo-fliegen {
+    padding: var(--fo-s2);
+  }
+
+  .fo-zellarten__zeile {
+    grid-template-columns: 6.5rem minmax(0, 1fr) 4rem;
+    gap: var(--fo-s1);
+  }
+
+  .fo-leiter__sprosse {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 720px) {
+  .fo-stufen,
+  .fo-spalten {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fo-studien,
+  .fo-hebel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .fo {
+    padding-top: var(--fo-s6);
+  }
+
+  .fo-kopf {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+
+  .fo-studien,
+  .fo-hebel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fo-repro {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--fo-s6);
+  }
+
+  .fo-warum {
+    padding: var(--fo-s4);
+  }
+
+  .fo-warum__teile {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ─── Bewegung ───────────────────────────────────────────────────────────── */
+
+/* 1. Ohne Zustand (Server-HTML, reduzierte Bewegung) steht das Endbild. Die
+      Animationen hängen nur an „bereit“ und „aktiv“. */
+.fo-szene:not([data-zustand='fertig']) .fo-weg__puls {
+  animation: fo-puls 2.2s var(--fo-kurve) 0.2s 1 both;
+}
+
+.fo-szene:not([data-zustand='fertig']) .fo-weg__ring {
+  animation: fo-ring 1.4s ease-out 2s 1 both;
+}
+
+.fo-szene:not([data-zustand='fertig']) .ist-erreicht .fo-leiter__stab {
+  animation: fo-sprosse 0.7s var(--fo-kurve) calc(var(--fo-i) * 0.3s) 1 both;
+}
+
+.fo-szene:not([data-zustand='fertig']) .fo-zellarten__balken {
+  animation: fo-balken 1.2s var(--fo-kurve) calc(var(--fo-i) * 0.15s) 1 both;
+}
+
+.fo-szene:not([data-zustand='fertig']) .fo-abstand__welle {
+  animation: fo-welle 0.9s ease-out calc(0.3s + var(--fo-i) * 0.35s) 1 both;
+}
+
+/* 2. „bereit“: das Startbild steht still. Dieselbe Spezifität wie oben,
+      deshalb NACH den Zuweisungen: der animation-Kurzschrieb setzt sonst den
+      play-state zurück. */
+.fo .fo-szene[data-zustand='bereit'] * {
+  animation-play-state: paused;
+}
+
+/* 3. Die Einmal-Bewegungen */
+@keyframes fo-puls {
+  0% {
+    stroke-dashoffset: 112;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fo-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+@keyframes fo-sprosse {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fo-balken {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(var(--fo-anteil));
+  }
+}
+
+@keyframes fo-welle {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 4. Reduzierte Bewegung: zweiter Gürtel neben der JS-Weiche der Szene. */
+@media (prefers-reduced-motion: reduce) {
+  .fo *,
+  .fo .fo-szene * {
+    animation: none !important;
+  }
+
+  .fo-weg__puls,
+  .fo-weg__ring {
+    opacity: 0;
+  }
+}
