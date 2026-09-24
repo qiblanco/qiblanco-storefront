@@ -102,6 +102,9 @@ export function paketBetraege(lines, paket, land) {
   // code in Shopify (s04) auf rabattFest x (1+Heimatsatz) gezogen, und genau
   // diese Zahl muss die Karte abziehen. Gemischte Heimatsätze -> kein Fest-Pfad.
   const heimatSaetze = new Set();
+  // Summe in HEIMAT-Brutto (DE), auch wenn die Zeilen AT-Preise tragen: nur an
+  // ihr ist der Festbetrag kalibriert, den s04 in den Rabattcode schreibt.
+  let summeHeimat = 0;
 
   for (const line of lines) {
     const menge = Number(line.quantity);
@@ -112,6 +115,9 @@ export function paketBetraege(lines, paket, land) {
     const satz = anzeigeSatz(line.handle, line.waehrung, land);
     saetze.add(satz);
     heimatSaetze.add(taxRateForHandle(line.handle, 'DE'));
+    summeHeimat +=
+      ((netto * menge) / (1 + taxRateForHandle(line.handle, land))) *
+      (1 + taxRateForHandle(line.handle, 'DE'));
     nettoSumme += netto * menge;
     compareRoh += netto * menge * (1 + satz);
     // Prozent-Pfad: Shopify schneidet den Prozentrabatt JE STÜCK centgenau ab
@@ -139,7 +145,7 @@ export function paketBetraege(lines, paket, land) {
   // umrechnet, ist nicht belegt -- gerechnet wird er hier unverändert (Rand-
   // messung s05 prüft den Kartenpreis gegen die AT-Kasse).
   const rabattAbzug = istBrutto()
-    ? Math.round(paket.rabattFest * (1 + [...heimatSaetze][0]) * 100) / 100
+    ? festAbzugBrutto(summeHeimat, paket.rabattFest, [...heimatSaetze][0])
     : paket.rabattFest;
   const preisRoh = festGilt
     ? (nettoSumme - rabattAbzug) * (1 + [...saetze][0])
@@ -155,6 +161,28 @@ export function paketBetraege(lines, paket, land) {
     // sie ist am 2026-09-13 in CHF/USD gebrochen.
     rabattart: festGilt ? 'fest' : 'prozent',
   };
+}
+
+/**
+ * DER BRUTTO-FESTBETRAG, DER DIE KASSE AUF GANZE EURO LEGT (Preismodus brutto,
+ * Grossjob 20260924-kasse-zeigt-bruttopreise-wie-produktseite-prio10, s02).
+ *
+ * Der naheliegende Weg -- `rabattFest x 1,19` auf den Cent -- trifft den
+ * ganzen Euro NICHT: 494,97 x 1,19 = 589,01, und 7.345 - 589,01 = 6.755,99 an
+ * der Kasse (gefunden vom unabhängigen Prüfer, P2). Kalibriert wird deshalb
+ * wie vor dem Kipp auf den ganzen Euro, den die Karte heute zeigt:
+ *   Ziel   = round(summeHeimat - rabattFest x (1+heimatSatz))
+ *   Abzug  = summeHeimat - Ziel
+ * Fundament 589,00 · Unabhängig 1.265,00 · Residenz 3.077,00 bei den
+ * Brutto-Basen von heute. GENAU DIESE Beträge schreibt s04 in die PAKET-Codes.
+ * @param {number} summeHeimat Paketsumme in Heimat-Brutto (DE)
+ * @param {number} rabattFest Festbetrag netto (wie im Code kalibriert)
+ * @param {number} heimatSatz Steuersatz DE der Paketware
+ * @returns {number} centgenauer Brutto-Abzug
+ */
+export function festAbzugBrutto(summeHeimat, rabattFest, heimatSatz) {
+  const ziel = Math.round(summeHeimat - rabattFest * (1 + heimatSatz));
+  return Math.round((summeHeimat - ziel) * 100) / 100;
 }
 
 /**

@@ -86,13 +86,25 @@ import {
   istSalesbotDeutscherShop,
 } from '~/lib/salesbot-widget';
 import {SalesbotWidget} from './components/SalesbotWidget';
-import {preismodusStand, setzePreismodus} from '~/lib/preismodus';
+import {
+  preismodusStand,
+  rootDatenGesehen,
+  rootDatenZuAlt,
+  setzePreismodus,
+} from '~/lib/preismodus';
 import {DialogSignal} from './components/DialogSignal';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
  */
 export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
+  // PREISMODUS (s02 Grossjob 20260924-kasse-zeigt-bruttopreise-...): der
+  // Client kennt den Modus nur aus den root-Daten. Ohne Altersdeckel rechnete
+  // ein vor dem Kipp geöffneter Tab bei jeder Client-Navigation mit dem alten
+  // Modus weiter (brutto-Preis x 1,19 = 1.294 statt 1.087, gefunden vom
+  // unabhängigen Prüfer). Deshalb werden die root-Daten höchstens
+  // PREISMODUS_MAX_ALTER_MS alt, dann einmal neu geladen.
+  if (rootDatenZuAlt()) return true;
   // revalidate when a mutation is performed e.g add to cart, login...
   if (formMethod && formMethod !== 'GET') return true;
 
@@ -463,6 +475,7 @@ export function Layout({children}) {
   // gesetzt. Ohne Loader-Daten (Fehlerseite) bleibt der Modul-Stand.
   if (typeof window !== 'undefined' && data?.preismodus?.modus) {
     setzePreismodus(data.preismodus.modus, data.preismodus.quelle);
+    rootDatenGesehen(data.preismodus);
   }
 
   const faviconUrl =

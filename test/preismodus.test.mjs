@@ -27,13 +27,16 @@ import {
   uebernehmeMetafeld,
   ladePreismodus,
   vorschauModus,
+  rootDatenGesehen,
+  rootDatenZuAlt,
+  PREISMODUS_MAX_ALTER_MS,
 } from '../app/lib/preismodus.js';
 import {anzeigeSatz, bruttoAnzeige} from '../app/lib/markt-pricing.js';
 import {
   getCartLineGrossDisplayTotalExact,
   taxRateForHandle,
 } from '../app/lib/cart-display-pricing.js';
-import {paketBetraege} from '../app/lib/paket-preis.js';
+import {paketBetraege, festAbzugBrutto} from '../app/lib/paket-preis.js';
 
 const r2 = (x) => Math.round(x * 100) / 100;
 
@@ -209,6 +212,27 @@ describe('ARM C Paketkarte mit Festbetrag: vor und nach dem Kipp derselbe Karten
     assert.equal(nachher.preis, vorher.preis);
   });
 
+  it('Brutto-Festbetrag legt die Kasse auf ganze Euro (Werte für s04)', () => {
+    // Paketsummen in DE-Brutto: Fundament 7345, Unabhängig 10501, Residenz 20467
+    for (const [summe, fest, soll] of [
+      [7345, 494.97, 589.0],
+      [10501, 1063.04, 1265.0],
+      [20467, 2585.73, 3077.0],
+    ]) {
+      const abzug = festAbzugBrutto(summe, fest, 0.19);
+      assert.equal(abzug, soll);
+      assert.equal(Number.isInteger(Math.round((summe - abzug) * 100) / 100), true);
+    }
+  });
+
+  it('AT Fundament: Festbetrag aus der Heimat-Summe, nicht mit dem AT-Satz', () => {
+    setzePreismodus('brutto');
+    const r = paketBetraege(lines(BRUTTO, 'AT'), paket, 'AT');
+    assert.equal(r.rabattart, 'fest');
+    // AT-Summe 7406,72 minus derselbe Brutto-Code 589,00 wie in DE
+    assert.equal(r.preis, 6818);
+  });
+
   it('gemischte Heimatsätze nehmen den Festbetrag-Pfad nicht', () => {
     setzePreismodus('brutto');
     const r = paketBetraege(
@@ -235,6 +259,7 @@ describe('Vorschau-Weiche: nur auf Hosts ohne Kunden', () => {
       'https://crystal-cacao.com/?preismodus=brutto',
       'https://qi-master.qiblanco.com/?preismodus=brutto',
       'https://localhost.boese.de/?preismodus=brutto',
+      'https://myshopify.dev.boese.de/?preismodus=brutto',
     ]) {
       assert.equal(vorschauModus(u), null, u);
     }
@@ -242,5 +267,19 @@ describe('Vorschau-Weiche: nur auf Hosts ohne Kunden', () => {
   it('unbekannter Wert und kaputte URL: keine Weiche', () => {
     assert.equal(vorschauModus('http://localhost/?preismodus=inkl'), null);
     assert.equal(vorschauModus('kein url'), null);
+  });
+});
+
+describe('Altersdeckel der root-Daten (offene Tabs über den Kipp)', () => {
+  it('frisch nicht zu alt, nach dem Deckel zu alt, neuer Datensatz setzt zurück', () => {
+    const t0 = 1_000_000;
+    assert.equal(rootDatenZuAlt(t0), false); // nie gesehen: kein Neuladen erzwingen
+    const a = {modus: 'netto'};
+    rootDatenGesehen(a, t0);
+    assert.equal(rootDatenZuAlt(t0 + 1000), false);
+    rootDatenGesehen(a, t0 + PREISMODUS_MAX_ALTER_MS); // dasselbe Objekt: Uhr läuft weiter
+    assert.equal(rootDatenZuAlt(t0 + PREISMODUS_MAX_ALTER_MS + 1), true);
+    rootDatenGesehen({modus: 'brutto'}, t0 + PREISMODUS_MAX_ALTER_MS + 2);
+    assert.equal(rootDatenZuAlt(t0 + PREISMODUS_MAX_ALTER_MS + 3), false);
   });
 });
