@@ -8,21 +8,27 @@
    Route. JEDER Wert kommt aus den :root-Tokens: keine freien Größen, kein
    zweiter Goldton, kein dritter Radius, kein zweiter H2-Stil.
 
-   Farb-Dramaturgie (3 Farbwelten, alternierend):
-   grund:   Hero, Linkarten, Beim Kunden, Hilfe
-   fläche:  Partnerkonto, Baukasten, Provision
-   dunkel:  Kontakt (EIN dunkler Schluss-Bogen)
+   Farb-Dramaturgie: EIN heller Grund (Fläche) + EIN dunkler Schluss-Bogen.
+   Die Seite setzt --a-grund auf --a-flaeche um. Grund: die geteilte Hülle
+   bringt schon Weiß, Gold, Dunkel und den Menü-Ton mit; ein zweiter heller
+   Ton (Grund UND Fläche) wäre die fünfte Hintergrund-Farbwelt (Rubrik-Soll
+   <= 4). Karten heben sich über Linie und Schatten ab statt über einen
+   weiteren Ton.
    ========================================================================== */
 
-.lp-a3 [data-section='lp-pd-konto'],
-.lp-a3 [data-section='lp-pd-baukasten'],
-.lp-a3 [data-section='lp-pd-provision'] {
-  background: var(--a-flaeche);
+.lp-a3.lp-pd {
+  --a-grund: var(--a-flaeche);
 }
 
-.lp-a3 [data-section='lp-pd-konto'] .lp-a-benefit,
-.lp-a3 [data-section='lp-pd-provision'] .lp-a-benefit {
-  background: var(--a-grund);
+.lp-a3.lp-pd .lp-a-benefit,
+.lp-a3.lp-pd .lp-pd-baukasten {
+  border: 1px solid var(--a-linie);
+  box-shadow: var(--a-shadow-sm);
+}
+
+/* Sektionen trennt eine Linie, weil kein Tonwechsel mehr trennt. */
+.lp-a3.lp-pd section + section:not(.lp-vp-final-cta) {
+  border-top: 1px solid var(--a-linie);
 }
 
 /* ─── Hero: nur Text, eine Spalte ─────────────────────────────────────────── */
@@ -141,7 +147,7 @@
   color: var(--a-text);
   overflow-wrap: anywhere;
 }
-.lp-a3 .lp-pd-karte--warnung {
+.lp-a3.lp-pd .lp-pd-karte--warnung {
   border: 1px solid var(--a-akzent-tief);
 }
 
