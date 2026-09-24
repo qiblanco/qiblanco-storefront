@@ -376,6 +376,10 @@
     '  color:var(--qb-komponente-consent-neutral-tinte);',
     '}',
     '#cookie-buttons-wrapper > #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll{order:3;}',
+    // order NIE mitanimieren -- Begründung im Block "Das Pendeln" unten.
+    '#cookie-buttons-wrapper > a{',
+    '  transition-property:background-color,color,border-color,box-shadow,opacity;',
+    '}',
   ].join('\n');
 
   // Beschriftung je ID. DER SCHLUESSEL IST DIE ID UND NICHT DER ALTE TEXT:
@@ -435,6 +439,36 @@
     beschriftungSetzen();
   }
 
+  // --- Das Pendeln: warum Stil und Beschriftung VOR dem ersten Bild stehen --
+  //
+  // BEFUND (gemessen 2026-09-24, live, 1440x900, PerformanceObserver
+  // layout-shift mit sources[]): nach dem Einblenden tauschten "Cookies
+  // einstellen" und "Notwendige Cookies akzeptieren" dreimal binnen ~150 ms
+  // die Plätze (x 421 <-> 592), vier Layout-Shifts mit CLS 0,0109 auf JEDER
+  // Seite. Ein Klick in diesem Fenster konnte den falschen Knopf treffen --
+  // bei einer Einwilligung der eigentliche Schaden.
+  //
+  // URSACHE, gemessen und nicht vermutet: Cookiebots Vorlage gibt beiden
+  // Knöpfen `transition: all 0.2s linear`. `order` ist in CSS eine GANZZAHL
+  // und wird mitanimiert. Kam unser Stil erst, als der Banner schon stand,
+  // liefen order 0->1 und 0->2 linear hoch; gerundet ergibt das Gleichstände,
+  // und bei Gleichstand entscheidet die DOM-Reihenfolge -- also Wechsel bei
+  // 25, 50 und 75 % der Laufzeit. Unser <style> wurde dabei genau EINMAL
+  // eingehängt und nie entfernt; ein zweiter Schreiber war es nicht.
+  //
+  // DARUM ZWEI RIEGEL, die verschiedene Größen lesen:
+  //  1. ZEITPUNKT: der Stil geht SOFORT beim Start in den Kopf, nicht erst,
+  //     wenn #cookiebanner existiert -- dann trägt jeder Knopf seine order
+  //     vom ersten Bild an, und es gibt nichts zu animieren. Die Beschriftung
+  //     wird SYNCHRON im Beobachter gesetzt (Microtask, also vor dem nächsten
+  //     Bild), nicht erst im gebündelten setTimeout danach.
+  //  2. EIGENSCHAFT: `order` fällt aus der transition-Liste. Kommt der Stil
+  //     doch einmal spät (Banner neu aufgebaut, Stil neu eingehängt), springt
+  //     die Reihenfolge einmal statt dreimal hin und her. Die Farbübergänge
+  //     beim Überfahren bleiben erhalten.
+  // Probe: claude-jobs/20260924-cookiehinweis-knoepfe-pendeln-cls-prio20/
+  // mess_pendeln.py (exit 0 = kein Layout-Shift mit Knopf-Quelle).
+
   function belebeBanner() {
     var wurzel = document.getElementById('cookiebanner');
     if (!wurzel) return;
@@ -466,6 +500,7 @@
   }
 
   function beobachteBanner() {
+    ordnungStilSetzen();   // vor dem Banner, siehe "Das Pendeln"
     belebeBanner();
     if (typeof MutationObserver !== 'function') return;
     // Cookiebot hängt den Banner erst nach ~2 s ein, und
@@ -475,6 +510,10 @@
     // statt je Mutation ausgeführt.
     var geplant = false;
     var mo = new MutationObserver(function () {
+      // Synchron, vor dem nächsten Bild -- siehe "Das Pendeln". Idempotent:
+      // schreibt nur bei Abweichung, der Kreis Beobachter/Schreiber schließt
+      // sich deshalb nach einem Durchlauf.
+      if (document.getElementById('cookiebanner')) knopfordnungStellen();
       if (geplant) return;
       geplant = true;
       setTimeout(function () {
@@ -495,6 +534,7 @@
     // sofort aus, der Takt kostet also praktisch nichts - und er endet.
     var takte = 0;
     var iv = setInterval(function () {
+      ordnungStilSetzen();   // falls die Hydration den Kopf bereinigt hat
       belebeBanner();
       if (++takte > 60) clearInterval(iv);
     }, 250);
