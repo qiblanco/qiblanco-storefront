@@ -86,10 +86,23 @@ export function cacaoPricing(quantity, selectedVariant, handle, land) {
     einzel = fallback.einzel;
     compareAt = fallback.compareAt;
   }
+  // GESAMTPREIS DES KAUFKNOPFS (Job rtbefund-kopfpreis-vs-kaufmenge-wache-
+  // 20260924): der Knopf legt `quantity` Packungen in den Warenkorb, also ist
+  // DAS der Betrag, den ein Klick kostet. Im EUR-Markt trifft der Festbetrag
+  // seit 2026-09-12 den runden Bruttobetrag je Packung exakt, darum ist
+  // Packungspreis mal Menge hier gleich dem Warenkorb (gemessen 2026-09-24 per
+  // cartCreate: 76 / 122 / 159). Eine Zeilen-Rundung wie im Entwurf vom
+  // 2026-09-01 (3x = 160) wäre seit dem Festbetrag FALSCH.
+  const menge = Number.parseInt(quantity, 10) || 1;
   return {
     price: formatPreis(einzel, waehrung, 'pdp'),
     priceNum: einzel,
     compareAt: compareAt != null ? formatPreis(compareAt, waehrung, 'pdp') : null,
+    menge,
+    gesamt: formatPreis(einzel * menge, waehrung, 'pdp'),
+    gesamtNum: einzel * menge,
+    compareAtGesamt:
+      compareAt != null ? formatPreis(compareAt * menge, waehrung, 'pdp') : null,
     per100g: formatPer100g(einzel / (PACKUNG_GRAMM / 100), waehrung),
     badge: staffel.badge,
     badgeStyle: staffel.badgeStyle,

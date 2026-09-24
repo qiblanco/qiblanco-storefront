@@ -137,7 +137,11 @@ export default function Product() {
 
   const {title, descriptionHtml} = product;
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
-  const [quantity, setQuantity] = useState('3');
+  // Vorbelegung 1 Packung: der Kopfpreis nennt damit denselben Einstieg wie
+  // der Salesbot-Kanon ("ab 76 EUR") und hält die öffentliche Zusage vom
+  // 2026-08-30 ("Du musst kein Dreierpack nehmen"). Die Staffel 2x/3x bleibt
+  // eine Auswahl entfernt. Job rtbefund-kopfpreis-vs-kaufmenge-wache-20260924.
+  const [quantity, setQuantity] = useState('1');
   return (
     <>
       <div className="flex flex-col gap-5 items-center-justify-center text-center max-w-[750px] mx-auto! my-[5vh]! p-2">
