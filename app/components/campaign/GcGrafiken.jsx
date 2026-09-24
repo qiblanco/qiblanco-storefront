@@ -70,10 +70,10 @@ function feldlinie(x0, x1, y, h) {
 }
 
 /** Wassermolekül als Zeichen: Sauerstoff oben, zwei Wasserstoffe darunter. */
-function Molekuel({x, y, kipp, verzoegerung}) {
+function H2oZeichen({x, y, kipp, verzoegerung}) {
   return (
     <g
-      className="gc-molekuel"
+      className="gc-h2o"
       style={{
         '--gc-kipp': `${kipp}deg`,
         animationDelay: `${verzoegerung}s`,
@@ -87,7 +87,7 @@ function Molekuel({x, y, kipp, verzoegerung}) {
   );
 }
 
-const MOLEKUELE = [
+const H2O_ORTE = [
   {x: 92, y: 96, kipp: 70},
   {x: 150, y: 44, kipp: -55},
   {x: 232, y: 30, kipp: 110},
@@ -159,8 +159,8 @@ export function GrafikGitterChip({beschriftungGold, beschriftungStahl, beschrift
         ))}
         <line x1={X0} y1={Y} x2={X1} y2={Y} />
       </g>
-      {MOLEKUELE.map((m, i) => (
-        <Molekuel key={`m${i}`} {...m} verzoegerung={f1(0.6 + i * 0.08)} />
+      {H2O_ORTE.map((m, i) => (
+        <H2oZeichen key={`m${i}`} {...m} verzoegerung={f1(0.6 + i * 0.08)} />
       ))}
       <g className="gc-beschriftung">
         <text className="kw-notiz kw-notiz--rechts kw-notiz--stark" x={X0 - 30} y={Y - 4}>
@@ -226,7 +226,7 @@ function TafelOrdnung() {
       {SECHSECK.map((p, i) => (
         <g
           key={`m${i}`}
-          className="gc-tafel__molekuel"
+          className="gc-tafel__h2o"
           style={{
             '--gc-dx': `${STREU[i][0]}px`,
             '--gc-dy': `${STREU[i][1]}px`,

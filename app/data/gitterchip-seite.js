@@ -13,7 +13,7 @@ import {VIDEO, TEIL_EINFACH, TEIL_FAKTEN} from '~/data/wasser-infoseite';
  * crawlbar machen.“
  *
  * EINE QUELLE JE GRÖSSE. Winkel und Energieniveau kommen aus dem Konsumenten
- * des Brain-SSoT (app/data/kohaerente-wasserstruktur.js), das Video und die
+ * des Brain-SSoT (Datenmodul der Wasserstruktur), das Video und die
  * Werte der wiederverwendeten Grafiken aus dem Datenmodul der Info-Seite
  * /pages/was-ist-kohaerentes-wasser. Keine dieser Zahlen steht hier als
  * Literal. Die Studienzahlen stehen hier, jede mit ihrer Fundstelle; die

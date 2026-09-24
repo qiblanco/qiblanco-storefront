@@ -53,7 +53,7 @@ function alleTexte() {
 // der den Prüfer importiert, nur prüft, dass der Prüfer sich selbst glaubt.
 const VERTEIDIGUNG =
   /nicht (vollst(ä|ae)ndig )?bewiesen|kein Nachweis|nicht belegt|umstritten|Lehrbuch-Konsens|Pseudowissenschaft|Hypothese|wissenschaftlich bewiesen|nicht versprechen|in Ruhe an/i;
-const KOERPER = [
+const SPERRE_HEIL = [
   /st(ä|ae)rk\w* (dein|das|ihr|unser) Immunsystem/i,
   /sch(ü|ue)tz\w* (deine |die |unsere )?Zellen/i,
   /vor Viren/i,
@@ -67,7 +67,7 @@ const KOERPER = [
 test('keine Verteidigung, kein Körper- oder Heilversprechen', () => {
   for (const text of alleTexte()) {
     assert.doesNotMatch(text, VERTEIDIGUNG, text);
-    for (const rx of KOERPER) assert.doesNotMatch(text, rx, text);
+    for (const rx of SPERRE_HEIL) assert.doesNotMatch(text, rx, text);
   }
 });
 

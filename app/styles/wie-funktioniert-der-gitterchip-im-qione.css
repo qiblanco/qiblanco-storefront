@@ -251,6 +251,12 @@
   max-width: var(--gc-breite-text);
 }
 
+/* Die globale p-Regel setzt 1.2rem (19,2 px), einen Wert außerhalb der Skala.
+   Der Fließtext der Stufen steht auf der Body-Größe der Seite. */
+.gc .gc-stufe__text p {
+  font-size: var(--qb-ref-fs-4);
+}
+
 .gc-weiter {
   margin-top: var(--gc-s4);
   font-size: var(--qb-ref-fs-4);
@@ -401,7 +407,7 @@
   stroke-width: 1.5;
 }
 
-.gc-molekuel {
+.gc-h2o {
   transform-box: view-box;
 }
 
@@ -415,8 +421,10 @@
 }
 
 /* ─── Video ──────────────────────────────────────────────────────────────── */
+/* 640 px: die größte Stufe des YouTube-Vorschaubilds, die es zu diesem Video
+   sicher gibt (sddefault). Breiter würde das Bild hochskaliert (Gate 12). */
 .gc-video {
-  max-width: 760px;
+  max-width: 640px;
   margin-top: var(--gc-s6);
 }
 
@@ -618,7 +626,7 @@
   animation: gc-puls-laeuft 2.2s var(--gc-kurve) 1 both;
 }
 
-.gc-molekuel {
+.gc-h2o {
   animation: gc-richtet-sich 1.6s var(--gc-kurve) 1 both;
 }
 
@@ -693,7 +701,7 @@
   animation-delay: 2.2s;
 }
 
-.gc-szene:not([data-zustand='fertig']) .gc-tafel__molekuel {
+.gc-szene:not([data-zustand='fertig']) .gc-tafel__h2o {
   animation: gc-findet-platz 1.2s var(--gc-kurve) 1 both;
 }
 

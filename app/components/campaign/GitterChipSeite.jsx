@@ -80,7 +80,7 @@ function Video({video}) {
         videoId={video.id}
         titel={video.titel}
         posterAlt={video.posterAlt}
-        sizes="(min-width: 1080px) 760px, 100vw"
+        sizes="(min-width: 672px) 640px, 100vw"
         dataSection="gc-video-player"
       />
       <p className="gc-video__legende">{video.legende}</p>
