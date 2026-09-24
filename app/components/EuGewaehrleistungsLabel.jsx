@@ -320,7 +320,7 @@ const EuLabelDialog = forwardRef(function EuLabelDialog(
           diesen Titel auf 35,2 px -- im schmalen Modal. Dort fiel er der
           Rubrik nicht auf, WEIL er die Seitengröße angenommen hatte. Als
           <h3> trägt er wieder seine eigene, entworfene Größe
-          (--qs-t-groß, 20 px) aus eu-gewaehrleistung.css.
+          (die Titelstufe der Typo-Skala, 20 px) aus eu-gewaehrleistung.css.
 
           DIE GROESSE IST NICHT GEÄNDERT WORDEN. Die Klasse bleibt, die CSS-
           Regel bleibt, der Text bleibt, die Sichtbarkeit bleibt -- allein die
