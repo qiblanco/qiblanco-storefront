@@ -1,18 +1,24 @@
 import {
   AffiliatePartnerprogramm,
   FRAGEN,
+  STAND,
 } from '~/components/campaign/AffiliatePartnerprogramm';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import ppStyles from '~/styles/affiliate-partnerprogramm.css?url';
+import pwStyles from '~/styles/partner-werden.css?url';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {organizationSchema, ORG_ID, SITE_ID} from '~/lib/entity-schema';
 
 const PFAD = '/pages/affiliate-partnerprogramm';
-const TITEL = 'Partnerprogramm: 10 % Provision auf deine Empfehlung | Qi Blanco';
+/* Titel und Beschreibung tragen beide Suchformen: „Partner werden" (so heißt
+   der Menüpunkt, so fragen Interessenten) und „Partnerprogramm". Neu gefasst
+   am 2026-09-24 mit dem Umbau zur Erklärseite. */
+const TITEL = 'Qi Blanco Partnerprogramm: Partner werden, 10 % Provision';
 const BESCHREIBUNG =
-  'Empfiehl Qi Blanco weiter und erhalte 10 % Provision auf den Netto-Warenwert. ' +
-  'Dazu deinen eigenen 5-%-Gutscheincode für deine Community, einen Tracking-Link ' +
-  'und 30 Tage Zuordnung. Bedingungen, Ablauf und Anmeldung auf einen Blick.';
+  'Werde Partner von Qi Blanco: Deine Community spart 5 % mit deinem Code, ' +
+  'du bekommst 10 % Provision. Kostenlos, 30 Tage Zuordnung, Anmeldung in ' +
+  'wenigen Minuten.';
 
 /**
  * /pages/affiliate-partnerprogramm — die EIGENE, indexierbare Antwort auf die
@@ -59,6 +65,7 @@ export function links() {
   return [
     {rel: 'stylesheet', href: lpTokenStyles},
     {rel: 'stylesheet', href: ppStyles},
+    {rel: 'stylesheet', href: pwStyles},
   ];
 }
 
@@ -80,6 +87,35 @@ function faqSchema() {
   };
 }
 
+/**
+ * Seite und Organisation als EIN Graph: die WebPage nennt Qi Blanco als
+ * Herausgeber und Gegenstand, das Datum der Konditionen steht als
+ * dateModified. Der Organization-Knoten kommt aus derselben Funktion wie auf
+ * der Startseite (organizationSchema, gleiche @id, gleiche Felder) — also
+ * dieselbe Entität, keine zweite Fassung mit abweichenden Angaben.
+ */
+function seitenSchema() {
+  const url = absoluteCanonical(PFAD);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': `${url}#seite`,
+        url,
+        name: TITEL,
+        description: BESCHREIBUNG,
+        inLanguage: 'de-DE',
+        isPartOf: {'@id': SITE_ID},
+        about: {'@id': ORG_ID},
+        publisher: {'@id': ORG_ID},
+        dateModified: STAND.iso,
+      },
+      organizationSchema(),
+    ],
+  };
+}
+
 /** @type {MetaFunction} */
 export const meta = () => [
   {title: TITEL},
@@ -92,6 +128,7 @@ export const meta = () => [
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:site_name', content: MARKE},
   {'script:ld+json': faqSchema()},
+  {'script:ld+json': seitenSchema()},
 ];
 
 export function loader() {

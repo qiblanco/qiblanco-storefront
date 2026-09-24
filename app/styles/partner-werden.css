@@ -1,0 +1,405 @@
+/* ============================================================================
+   /pages/affiliate-partnerprogramm — Erklärseite „Partner werden"
+   (Job 20260924-bau-partner-werden-erst-erklaerseite-mit-freude-dann-anmeldung).
+
+   ADDITIV zu zwei bestehenden Dateien, in dieser Reihenfolge geladen:
+     1. styles/schlaf-zellen-schutz.css  — Token-Quelle, Scope .lp-a3
+     2. styles/affiliate-partnerprogramm.css — lp-pp-* (Ablauf, Fragen,
+        Partnerkonto-Zeile). Diese Datei bleibt unberührt, weil auch
+        /pages/partner-details sie lädt.
+   Hier stehen nur lp-pw-*-Regeln und die Akt-Hintergründe dieser Route. JEDER
+   Wert kommt aus den :root-Tokens der Token-Quelle: keine freien Größen, kein
+   zweiter Goldton, ein Bild-Radius (--a-r2), ein H2-Stil.
+
+   Farb-Dramaturgie (3 Farbwelten, abwechselnd):
+     grund:   Hero, Vorteile, Produkte, Wo teilen
+     fläche:  Idee, Rechenbeispiel, Ablauf, Fragen
+     dunkel:  Anmeldung (EIN dunkler Schluss-Akt, trägt den Hauptknopf)
+
+   BEWEGUNG: ruhig und kurz. Der Hero taucht beim Laden einmal auf, Karten
+   heben sich beim Überfahren leicht an. Keine scroll-gebundene Animation: sie
+   würde Inhalte unterhalb des sichtbaren Bereichs in Bildschirmfotos
+   unsichtbar lassen. Bei prefers-reduced-motion steht alles still.
+   ========================================================================== */
+
+/* ─── Akt-Hintergründe ───────────────────────────────────────────────────── */
+.lp-a3 [data-section='lp-pw-idee'],
+.lp-a3 [data-section='lp-pw-verdienst'],
+.lp-a3 [data-section='lp-pw-ablauf'],
+.lp-a3 [data-section='lp-pw-faq'] {
+  background: var(--a-flaeche);
+}
+
+/* ─── Hero: Text und Bild gleich breit ───────────────────────────────────── */
+.lp-a3 .lp-pw-hero__inner {
+  grid-template-columns: 1fr 1fr;
+}
+.lp-a3 .lp-pw-hero__knoepfe {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.lp-a3 .lp-pw-hero__bild img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.lp-a3 .lp-pw-hero__inner > * {
+  animation: lp-pw-auftauchen 0.6s ease-out both;
+}
+.lp-a3 .lp-pw-hero__bild {
+  animation-delay: 0.12s;
+}
+@keyframes lp-pw-auftauchen {
+  from {
+    opacity: 0;
+    transform: translateY(var(--a-s2));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Idee: Bild und Text nebeneinander ──────────────────────────────────── */
+.lp-a3 .lp-pw-zwei {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--a-s8);
+  align-items: center;
+}
+.lp-a3 .lp-pw-zwei__text p {
+  margin: 0 0 var(--a-s2);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-zwei__text p:last-child {
+  margin-bottom: 0;
+}
+.lp-a3 .lp-pw-zwei__text .lp-pw-gross {
+  font-size: var(--a-fs-xl);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--a-text);
+}
+
+/* ─── Vorteile: vier Eckdaten ────────────────────────────────────────────── */
+.lp-a3 .lp-pw-eckdaten {
+  list-style: none;
+  max-width: var(--a-breite);
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--a-s3);
+}
+.lp-a3 .lp-pw-eckdatum {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  padding: var(--a-s4) var(--a-s3);
+  background: var(--a-flaeche);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  text-align: center;
+}
+.lp-a3 .lp-pw-eckdatum__wert {
+  font-size: var(--a-fs-h2);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--a-akzent-tinte);
+  font-variant-numeric: tabular-nums;
+}
+.lp-a3 .lp-pw-eckdatum__titel {
+  font-size: var(--a-fs-base);
+  font-weight: 600;
+  color: var(--a-text);
+}
+.lp-a3 .lp-pw-eckdatum__text {
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+
+/* ─── Karten mit Bild (Vorteile) und Orte (Wo teilen) ────────────────────── */
+.lp-a3 .lp-pw-karten,
+.lp-a3 .lp-pw-orte {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--a-s3);
+}
+.lp-a3 .lp-pw-karte {
+  display: flex;
+  flex-direction: column;
+  background: var(--a-flaeche);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.lp-a3 .lp-pw-karte:hover {
+  transform: translateY(calc(-1 * var(--a-s1) / 2));
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pw-karte__bild {
+  overflow: hidden;
+}
+.lp-a3 .lp-pw-karte__bild img,
+.lp-a3 .lp-pw-ort__bild img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.lp-a3 .lp-pw-karte__bild img {
+  border-radius: 0;
+  box-shadow: none;
+}
+.lp-a3 .lp-pw-karte:hover .lp-pw-karte__bild img {
+  transform: scale(1.03);
+}
+.lp-a3 .lp-pw-karte__bild--portrait img {
+  object-position: 50% 22%;
+}
+.lp-a3 .lp-pw-karte__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  padding: var(--a-s4);
+  flex: 1;
+}
+.lp-a3 .lp-pw-karte__text h3,
+.lp-a3 .lp-pw-ort h3 {
+  font-size: var(--a-fs-lg);
+  margin: 0;
+}
+.lp-a3 .lp-pw-karte__text p,
+.lp-a3 .lp-pw-ort p {
+  margin: 0;
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-marke {
+  font-size: var(--a-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-akzent-tinte);
+}
+.lp-a3 .lp-pw-link {
+  margin-top: auto;
+  padding-top: var(--a-s1);
+  font-weight: 600;
+  color: var(--a-akzent-tinte);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.lp-a3 .lp-pw-link:hover {
+  color: var(--a-text);
+}
+.lp-a3 .lp-pw-ort {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  text-align: left;
+}
+.lp-a3 .lp-pw-ort__bild {
+  margin-bottom: var(--a-s2);
+}
+.lp-a3 .lp-pw-ort__bild--hoch img {
+  object-position: 50% 30%;
+}
+.lp-a3 .lp-pw-ort .lp-pw-quelle {
+  font-size: var(--a-fs-xs);
+}
+
+/* ─── Rechenbeispiel: drei Stufen mit Pfeil ──────────────────────────────── */
+.lp-a3 .lp-pw-rechnung {
+  list-style: none;
+  max-width: var(--a-breite);
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--a-s6);
+}
+.lp-a3 .lp-pw-rechnung__schritt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  padding: var(--a-s4) var(--a-s3);
+  background: var(--a-grund);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  text-align: center;
+}
+.lp-a3 .lp-pw-rechnung__schritt + .lp-pw-rechnung__schritt::before {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--a-s6) / 2);
+  transform: translate(-50%, -50%);
+  font-size: var(--a-fs-xl);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-rechnung__zahl {
+  font-size: var(--a-fs-h2);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--a-text);
+  font-variant-numeric: tabular-nums;
+}
+.lp-a3 .lp-pw-rechnung__text {
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+}
+/* Gold trägt nur das Ergebnis: das ist die Zahl, um die es dem Leser geht. */
+.lp-a3 .lp-pw-rechnung__schritt--ziel {
+  border-color: var(--a-akzent);
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pw-rechnung__schritt--ziel .lp-pw-rechnung__zahl {
+  color: var(--a-akzent-tinte);
+}
+
+/* ─── Produkte ───────────────────────────────────────────────────────────── */
+.lp-a3 .lp-pw-produkte {
+  max-width: var(--a-breite);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--a-s3);
+}
+.lp-a3 .lp-pw-produkt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--a-s1);
+  padding: var(--a-s4) var(--a-s3);
+  background: var(--a-flaeche);
+  border: 1px solid var(--a-linie);
+  border-radius: var(--a-r2);
+  color: var(--a-text);
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.lp-a3 .lp-pw-produkt:hover {
+  transform: translateY(calc(-1 * var(--a-s1) / 2));
+  box-shadow: var(--a-shadow-md);
+}
+.lp-a3 .lp-pw-produkt:focus-visible {
+  outline: 2px solid var(--a-akzent-tief);
+  outline-offset: 2px;
+}
+.lp-a3 .lp-pw-produkt__bild {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: var(--a-s2);
+}
+.lp-a3 .lp-pw-produkt__bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+}
+.lp-a3 .lp-pw-produkt__wort {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+}
+.lp-a3 .lp-pw-produkt__name {
+  font-size: var(--a-fs-lg);
+  font-weight: 600;
+}
+.lp-a3 .lp-pw-produkt__text {
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+}
+
+/* ─── Vertrauenszeilen: die Listenpunkte erben die Größe ihrer Liste ────────
+   Die Token-Quelle setzt --a-fs-xs an der LISTE; eine globale Elementregel
+   für li (reset.css) schlägt die Vererbung und macht die Punkte größer als
+   den Fließtext daneben. Hier nur für diese Route zurückgegeben. */
+.lp-pw .lp-a-hero__trust li,
+.lp-pw .lp-vp-final-cta__trust li {
+  font-size: inherit;
+}
+
+/* ─── Anmeldung (dunkler Schluss-Akt) ─────────────────────────────────────── */
+.lp-a3 .lp-pw-abschluss__bild img {
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.lp-a3 .lp-pw-hinweis {
+  margin: var(--a-s2) auto 0;
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted-hell);
+}
+
+/* ─── Bewegung abschalten, wenn der Mensch das so eingestellt hat ────────── */
+@media (prefers-reduced-motion: reduce) {
+  .lp-a3 .lp-pw-hero__inner > * {
+    animation: none;
+  }
+  .lp-a3 .lp-pw-karte,
+  .lp-a3 .lp-pw-produkt,
+  .lp-a3 .lp-pw-karte__bild img,
+  .lp-a3 .lp-pw-ort__bild img {
+    transition: none;
+  }
+  .lp-a3 .lp-pw-karte:hover,
+  .lp-a3 .lp-pw-produkt:hover,
+  .lp-a3 .lp-pw-karte:hover .lp-pw-karte__bild img {
+    transform: none;
+  }
+}
+
+/* ─── Tablet: Karten einspaltig und schmal ────────────────────────────────── */
+@media (max-width: 900px) {
+  .lp-a3 .lp-pw-eckdaten {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lp-a3 .lp-pw-karten,
+  .lp-a3 .lp-pw-orte {
+    grid-template-columns: 1fr;
+    max-width: var(--a-breite-schmal);
+  }
+}
+
+/* ─── Handy (<= 767px): alles untereinander ──────────────────────────────── */
+@media (max-width: 767px) {
+  .lp-a3 .lp-pw-hero__inner,
+  .lp-a3 .lp-pw-zwei,
+  .lp-a3 .lp-pw-produkte,
+  .lp-a3 .lp-pw-rechnung {
+    grid-template-columns: 1fr;
+    gap: var(--a-s3);
+  }
+  .lp-a3 .lp-pw-hero__inner {
+    gap: var(--a-s6);
+  }
+  .lp-a3 .lp-pw-rechnung {
+    gap: var(--a-s6);
+  }
+  .lp-a3 .lp-pw-rechnung__schritt + .lp-pw-rechnung__schritt::before {
+    content: '↓';
+    top: calc(-1 * var(--a-s6) / 2);
+    left: 50%;
+  }
+  .lp-a3 .lp-pw-produkt {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: var(--a-s3);
+  }
+  .lp-a3 .lp-pw-produkt__bild {
+    flex: 0 0 var(--a-s12);
+    margin-bottom: 0;
+  }
+}

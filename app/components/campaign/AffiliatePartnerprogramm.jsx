@@ -1,42 +1,50 @@
 /*
- * /pages/affiliate-partnerprogramm — die eigene, indexierbare Antwort auf
- * „Qi Blanco Partnerprogramm" (Job 20260905-eigene-indexierbare-partnerseite-
- * statt-vendor-flaeche-prio25). Begründung, Abgrenzung zu /pages/partner und
- * die Sitemap-Naht stehen im Kopf der Route.
+ * /pages/affiliate-partnerprogramm — die Erklärseite des Partnerprogramms.
  *
- * INHALTS-DISZIPLIN: Jede Zahl und jede Bedingung auf dieser Seite ist am
- * 2026-09-05 aus dem Vendor-Portal selbst erhoben (Anmeldeseite
- * aff.revolution.qiblanco.com/register samt der dort hinterlegten
- * Partnerprogramm-AGB, Stand April 2026) — hier wird NICHTS erfunden und
- * nichts aufgerundet:
+ * AUFTRAG (Christian 2026-09-24, Job 20260924-bau-partner-werden-erst-
+ * erklaerseite-mit-freude-dann-anmeldung): „Partner werden" im Menü führt
+ * zuerst hierher. Die Seite erklärt die Idee, die Vorteile und den Ablauf
+ * mit echten Bildern, „mit viel Freude, mit viel Leidenschaft", und erst
+ * unten steht der Knopf zur Anmeldung im Partnerportal. Bis dahin sprang das
+ * Menü direkt ins Formular.
+ *
+ * WARUM DIESE ADRESSE UND KEINE NEUE: die Seite ist seit dem 2026-09-05
+ * indexiert, steht in der Sitemap (Shopify-Seitenobjekt + NUR_ROUTE_SEITEN)
+ * und wird von zwei stehenden Proben gewacht (Routen-Marker, Provisionssatz,
+ * Formular-Link, canonical). Eine zweite Adresse wie /pages/partner-werden
+ * hätte zwei Seiten zur selben Frage erzeugt. Begründung, Abgrenzung zu
+ * /pages/partner und die Sitemap-Naht stehen im Kopf der Route.
+ *
+ * INHALTS-DISZIPLIN: Jede Zahl und jede Bedingung stammt aus dem
+ * Vendor-Portal (Anmeldeseite aff.revolution.qiblanco.com/register samt der
+ * Partnerprogramm-AGB, Stand April 2026, erhoben am 2026-09-05):
  *   10 % Provision auf den Netto-Warenwert          (AGB § 4, § 7)
  *   eigener 5-%-Gutscheincode für die Community     (Anmeldeseite)
- *   Tracking-Link mit 30 Tagen Zuordnung            (Anmeldeseite)
- *   KORREKTUR 2026-09-24 (Job 20260924-GROSSJOB-partnerlinks-...): die
- *   Anmeldeseite verspricht "automatischen Rabatt" über den Tracking-Link.
- *   Gemessen bis in die Kasse: der reine sca_ref-Link setzte den Code auf
- *   dieser Hydrogen-Storefront NICHT (UpPromote-Auto-Apply braucht ein
- *   Theme-App-Embed).
- *   BEHOBEN 2026-09-24 (Job 20260924-partnerlink-setzt-code-automatisch-
- *   und-permalink-einbettungsfest-prio12, PR #616): der Server legt beim
- *   Aufruf mit sca_ref den Code des Partners in den Warenkorb, sofern dort
- *   noch keiner liegt. Gemessen am Rand mit dem Test-Partner: Code im
- *   Warenkorb, Abzug in der Kasse (partner-manager/bin/partnercode-abgleich
- *   messe). Neue Partner kommen über den täglichen Abgleich hinzu.
+ *   Empfehlungslink mit 30 Tagen Zuordnung          (Anmeldeseite)
+ *   Code liegt beim Aufruf mit sca_ref im Warenkorb (PR #616, am Rand gemessen)
  *   Teilnahme erst nach Prüfung/Freigabe            (AGB § 2, § 6)
  *   keine Provision auf Eigen- und Firmenkäufe      (AGB § 5)
  *   nur abgeschlossene, nicht widerrufene Käufe     (AGB § 7)
  *   jederzeit ohne Grund kündbar                    (AGB § 9)
+ * Das Rechenbeispiel (238 € brutto = 200 € netto = 20 € Provision) ist reine
+ * Arithmetik mit 19 % Mehrwertsteuer, kein Preis aus dem Shop.
  *
- * KEINE PRODUKT-WIRKAUSSAGEN. Diese Seite verkauft kein Produkt, sie erklärt
- * ein Programm — der Leser ist ein möglicher Partner, kein Käufer. Studien,
- * Wirkmechanismus und Produktversprechen gehören auf die Produkt- und
- * Studienseiten und sind hier bewusst weggelassen (KWD-0001 Frage 3: was ihn
- * NICHT interessiert). Verlinkt wird dorthin, statt es zu wiederholen.
+ * KEINE PRODUKT-WIRKAUSSAGEN. Der Leser ist ein möglicher Partner, kein
+ * Käufer. Die Produktkarten nennen, was man in der Hand hält, und verlinken
+ * auf die Produktseiten, statt Aussagen von dort zu wiederholen.
  *
- * DESIGN: geteilte Token-Quelle styles/schlaf-zellen-schutz.css (Scope
- * .lp-a3) + additive lp-pp-*-Klassen. Alle Werte aus den :root-Tokens.
+ * BILDER: nur Bestand vom Shopify-CDN (GL-PRO-0015), über CdnBild mit
+ * Bildleiter und festen Maßen. Die Instagram-Aufnahme stammt aus dem
+ * Testimonial-Korpus (app/data/ig-testimonials.js); die Nutzungsrechte sind
+ * dort vermerkt, der Name steht unter dem Bild.
+ *
+ * DESIGN: geteilte Token-Quelle styles/schlaf-zellen-schutz.css (Scope .lp-a3)
+ * + lp-pp-*-Regeln aus affiliate-partnerprogramm.css (Ablauf, Fragen,
+ * Partnerkonto-Zeile) + eigene lp-pw-*-Regeln in partner-werden.css. Die
+ * geteilte Datei affiliate-partnerprogramm.css bleibt unberührt, weil
+ * /pages/partner-details sie ebenfalls lädt.
  */
+import {CdnBild} from '~/components/reusables/CdnBild';
 
 const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
 /* Das Login desselben Partnerportals. Gemessen 2026-09-08: HTTP 200, Titel
@@ -44,38 +52,151 @@ const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
    liegenden Nachbarpfade sind TOT und dürfen hier nie stehen: /account,
    /dashboard und /signin geben je 410, /affiliate/login gibt 403. */
 const PARTNERKONTO = 'https://aff.revolution.qiblanco.com/login';
+const HILFESEITE = '/pages/partner-details';
+const KONTAKT = 'info@qiblanco.com';
 
-// Bestands-Asset vom Shopify-CDN (dieselbe Datei, die /pages/partner als
-// Hero-Rückfall nutzt) — GL-PRO-0015: Medien liegen auf dem CDN, nie im Repo.
-//
-// MIT `width=` AUSGELIEFERT, nicht in Originalgröße: der Alle-Formate-Lauf
-// (bin/hb-formate, Prüfpunkt `bild-ueberaufloesung`) hat am 2026-09-05 in
-// allen elf Formaten gemessen, dass die 1080-px-Quelle auf einer 423-px-
-// Fläche landet — Ladezeit ohne Gegenwert. Zwei Breiten als srcset: 440 für
-// Standard-Displays, 880 für Retina. Damit `sizes` in JEDEM Format stimmt,
-// deckelt die CSS die Anzeigefläche bei 440 px — sonst zieht ein 600-px-Handy
-// bei 100vw das 440er Bild auf 600 px auf und wird sichtbar unscharf (genau
-// dieser Blocker, gemessen im Format mobil-600 am 2026-09-05).
-const HERO_BASIS =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
-  'QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196';
-const HERO_IMG = `${HERO_BASIS}&width=880`;
-const HERO_SRCSET = `${HERO_BASIS}&width=440 440w, ${HERO_BASIS}&width=880 880w`;
+const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+
+/*
+ * Die Bilder. `masterBreite` ist die echte Breite der Masterdatei, am
+ * 2026-09-24 am CDN nachgemessen; sie klemmt die Bildleiter, damit keine
+ * Sprosse versprochen wird, die das CDN nur mit dem Master beantwortet.
+ */
+const BILD = {
+  hero: {
+    src: `${CDN}2024-06-qiblanco-bali-06610.jpg?v=1738529250`,
+    alt: 'Zwei Menschen lachen in einem Café und zeigen sich etwas auf Tablet und Laptop',
+    breite: 1200,
+    hoehe: 800,
+    masterBreite: 6000,
+  },
+  idee: {
+    src: `${CDN}2022-07-26-qiblanco-berlin-1001190-Kopie-1024x589_jpg.webp?v=1666617198`,
+    alt: 'Frau mit gelber Tasse lächelt mit geschlossenen Augen in die Sonne',
+    breite: 1024,
+    hoehe: 589,
+    masterBreite: 1024,
+  },
+  community: {
+    src: `${CDN}qb-themen--themen-zellen-qibracelet-gruensaft-canggu-06390--b4ab3f9b62c8.webp?v=1790161977`,
+    alt: 'Hand mit QiBracelet hält ein Glas grünen Saft, draußen im Grünen',
+    breite: 1200,
+    hoehe: 800,
+    masterBreite: 2400,
+  },
+  werkzeuge: {
+    src: `${CDN}2024-06-qiblanco-bali-05984.webp?v=1738529250`,
+    alt: 'Frau sitzt mit dem Laptop auf dem Sofa und schreibt',
+    breite: 940,
+    hoehe: 576,
+    masterBreite: 940,
+  },
+  team: {
+    src: `${CDN}Christian.jpg?v=1668985845`,
+    alt: 'Christian Bernd Bauer, Gründer von Qi Blanco',
+    breite: 1200,
+    hoehe: 1535,
+    masterBreite: 1200,
+  },
+  online: {
+    src: `${CDN}qb-ig-testimonials--ig-dzpdupbu-i--dd93ce088f50.jpg?v=1789161030`,
+    alt: 'Frau sitzt im Garten und erzählt in einem Instagram-Video, dass sie das QiBracelet trägt',
+    breite: 640,
+    hoehe: 1136,
+    masterBreite: 640,
+  },
+  sport: {
+    src: `${CDN}2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579`,
+    alt: 'Mann sitzt nach dem Sport im Gras, am einen Handgelenk die Uhr, am anderen das QiBracelet',
+    breite: 668,
+    hoehe: 350,
+    masterBreite: 668,
+  },
+  familie: {
+    src: `${CDN}2023-03-01-qiblanco-milva-martin-1020791_1_0f03ee06-6ad1-4997-9182-3685335eb04c.webp?v=1738063344`,
+    alt: 'Älteres Paar liegt entspannt im Bett und lächelt sich an',
+    breite: 1714,
+    hoehe: 964,
+    masterBreite: 1714,
+  },
+  abschluss: {
+    src: `${CDN}2022-11-02-qiblanco-bracelet-L1010739_1.webp?v=1676979374`,
+    alt: 'Drei QiBracelet® aus gebürstetem Edelstahl, ineinandergelegt auf dunklem Untergrund',
+    breite: 2333,
+    hoehe: 3500,
+    masterBreite: 2333,
+  },
+};
+
+const PRODUKTE = [
+  {
+    name: 'QiOne® 2 Pro',
+    text: 'Der kleine Anhänger, an der Kette nah am Körper getragen.',
+    pfad: '/products/qione-2-pro',
+    bild: {
+      src: `${CDN}QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196`,
+      alt: 'QiOne® 2 Pro',
+      breite: 1080,
+      hoehe: 1080,
+      masterBreite: 1080,
+    },
+  },
+  {
+    name: 'QiBracelet®',
+    text: 'Der Armreif aus gebürstetem Edelstahl, gemacht für jeden Tag.',
+    pfad: '/products/qibracelet',
+    bild: {
+      src: `${CDN}2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp`,
+      alt: 'QiBracelet® auf seinem Ständer mit dem Qi-Blanco-Zeichen',
+      breite: 819,
+      hoehe: 1024,
+      masterBreite: 819,
+    },
+  },
+  {
+    name: 'QiHome® Air',
+    text: 'Der Würfel mit Holzdeckel für Wohnung, Haus, Schlafzimmer und Büro.',
+    pfad: '/products/qihome-air',
+    bild: {
+      src: `${CDN}QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp`,
+      alt: 'QiHome® Air, ein heller Würfel mit Holzdeckel und goldenem Punkt',
+      breite: 1024,
+      hoehe: 906,
+      masterBreite: 1024,
+    },
+  },
+];
 
 /**
  * Die Fragen stehen EINMAL hier und werden zweimal gelesen: sichtbar von
  * dieser Komponente und als FAQPage-Auszeichnung von der Route. Zwei Listen
- * würden auseinanderdriften — und strukturierte Daten, die etwas anderes
- * sagen als die Seite, sind ein Richtlinienverstoß, keine Unsauberkeit.
+ * würden auseinanderdriften, und strukturierte Daten, die etwas anderes
+ * sagen als die Seite, sind ein Richtlinienverstoß.
  */
 export const FRAGEN = [
   {
+    frage: 'Wie werde ich Partner von Qi Blanco?',
+    antwort:
+      'Du meldest dich im Partnerportal von Qi Blanco an und trägst Name, ' +
+      'Kontakt, deine Kanäle und den Wunschnamen für deinen Gutscheincode ' +
+      'ein. Wir sehen uns jede Anmeldung an und schalten dein Partnerkonto ' +
+      'nach der Prüfung frei. Die Teilnahme ist kostenlos.',
+  },
+  {
     frage: 'Wie hoch ist die Provision im Qi Blanco Partnerprogramm?',
     antwort:
-      'Du erhältst 10 % Provision auf den Netto-Warenwert jedes vermittelten ' +
-      'Verkaufs. Netto heißt: ohne Steuern und ohne Versandkosten. Der Satz ' +
-      'ist für alle Partner gleich, es gibt keine Staffel und keine ' +
-      'Mindestumsätze.',
+      'Du erhältst 10 % Provision auf den Netto-Warenwert jedes vermittelten ' +
+      'Kaufs, also ohne Mehrwertsteuer und ohne Versandkosten. Ein Beispiel: ' +
+      'Ein Einkauf über 238 € inklusive 19 % Mehrwertsteuer sind 200 € ' +
+      'Netto-Warenwert, du bekommst also 20 €. Der Satz gilt für alle ' +
+      'Partner, ohne Staffel und ohne Mindestumsatz.',
+  },
+  {
+    frage: 'Was hat meine Community davon?',
+    antwort:
+      'Mit deinem persönlichen Gutscheincode spart deine Community 5 %. ' +
+      'Kommt jemand über deinen Empfehlungslink in den Shop, liegt dein Code ' +
+      'schon im Warenkorb.',
   },
   {
     frage: 'Was kostet die Teilnahme?',
@@ -85,61 +206,53 @@ export const FRAGEN = [
       'von Gründen kündigen.',
   },
   {
-    frage: 'Wie lange wird ein Klick mir zugeordnet?',
+    frage: 'Wie lange wird ein Kauf mir zugeordnet?',
     antwort:
-      'Dein Tracking-Link setzt ein Cookie mit 30 Tagen Laufzeit. Kauft ' +
+      'Dein Empfehlungslink setzt ein Cookie mit 30 Tagen Laufzeit. Kauft ' +
       'jemand innerhalb dieser 30 Tage, wird der Verkauf dir zugeordnet, ' +
-      'auch dann, wenn er erst ein paar Tage später bestellt. Käufe nach ' +
-      'Ablauf der Cookie-Laufzeit können nicht mehr zugeordnet werden.',
+      'auch wenn er erst ein paar Tage später bestellt. Käufe nach Ablauf ' +
+      'der Laufzeit können nicht mehr zugeordnet werden.',
+  },
+  {
+    frage: 'Wann und wie wird ausgezahlt?',
+    antwort:
+      'Provisionen werden gutgeschrieben, sobald der Kauf abgeschlossen und ' +
+      'nicht widerrufen ist. Die Auszahlung läuft über PayPal oder ' +
+      'Banküberweisung; dafür hinterlegst du eine Rechnungsadresse und deine ' +
+      'Zahlungsverbindung im Partnerkonto.',
   },
   {
     frage: 'Bekomme ich Provision auf meine eigenen Bestellungen?',
     antwort:
-      'Nein. Provision gibt es ausschließlich für Empfehlungen an Dritte. ' +
-      'Eigenkäufe, Bestellungen deiner eigenen Firma oder verbundener ' +
-      'Unternehmen und die systematische Eigennutzung deines Codes sind ' +
-      'ausgeschlossen. Der Rabatt aus deinem Code greift dabei weiterhin. ' +
-      'Nur eine Provision entsteht daraus nicht.',
-  },
-  {
-    frage: 'Wann wird ausgezahlt?',
-    antwort:
-      'Provisionen werden gutgeschrieben, sobald der Kauf abgeschlossen und ' +
-      'nicht widerrufen ist. Die Auszahlung läuft über PayPal oder ' +
-      'Banküberweisung; dafür hinterlegst du eine gültige Rechnungsadresse ' +
-      'und Zahlungsverbindung in deinem Partnerkonto.',
+      'Nein. Provision gibt es für Empfehlungen an andere. Eigenkäufe, ' +
+      'Bestellungen deiner eigenen Firma oder verbundener Unternehmen und ' +
+      'die systematische Eigennutzung deines Codes sind ausgeschlossen.',
   },
   {
     frage: 'Wird jede Anmeldung angenommen?',
     antwort:
-      'Nein. Jede Anmeldung wird von uns geprüft, und wir behalten uns vor, ' +
-      'Anmeldungen abzulehnen. Einen Anspruch auf Zulassung gibt es nicht. ' +
-      'Du erfährst nach der Prüfung, ob dein Partnerkonto freigeschaltet ist.',
+      'Jede Anmeldung wird von uns geprüft, und einen Anspruch auf Zulassung ' +
+      'gibt es nicht. Du erfährst nach der Prüfung, ob dein Partnerkonto ' +
+      'freigeschaltet ist.',
+  },
+  {
+    frage: 'Wo finde ich meinen Link und meinen Code?',
+    antwort:
+      'Nach der Freischaltung im Partnerkonto. Wie du Link, Code und ' +
+      'QR-Code auf Instagram, im Newsletter, im Podcast oder in deiner Praxis ' +
+      'einsetzt, zeigt dir die Hilfeseite für Partner Schritt für Schritt, ' +
+      'mit fertigen Beispieltexten zum Kopieren.',
   },
 ];
 
-const VORTEILE = [
-  {
-    titel: '10 % auf den Netto-Warenwert',
-    text:
-      'Für jeden Kauf, der über deinen Link oder deinen Code zustande kommt, ' +
-      'bekommst du 10 % des Netto-Warenwerts. Ein Satz für alle, ohne Staffel ' +
-      'und ohne Mindestumsatz.',
-  },
-  {
-    titel: 'Dein eigener 5-%-Code',
-    text:
-      'Du bekommst einen persönlichen Gutscheincode, den du selbst benennen ' +
-      'kannst. Wer ihn nutzt, spart 5 %. Du empfiehlst also nicht mit leeren ' +
-      'Händen, sondern gibst deiner Community etwas mit.',
-  },
-  {
-    titel: '30 Tage Zuordnung',
-    text:
-      'Wer über deinen Tracking-Link kommt, bleibt dir 30 Tage lang ' +
-      'zugeordnet, auch wenn er erst ein paar Tage später bestellt. Dein ' +
-      'Code liegt dabei gleich im Warenkorb.',
-  },
+/** Stand der Konditionen, sichtbar und im JSON-LD (dateModified). */
+export const STAND = {iso: '2026-09-24', text: '24. September 2026'};
+
+const ECKDATEN = [
+  {wert: '10 %', titel: 'Provision', text: 'auf den Netto-Warenwert jedes Kaufs über dich'},
+  {wert: '5 %', titel: 'für deine Community', text: 'mit deinem eigenen Gutscheincode'},
+  {wert: '30 Tage', titel: 'Zuordnung', text: 'auch wenn erst später bestellt wird'},
+  {wert: '0 €', titel: 'Kosten', text: 'kostenlos und jederzeit kündbar'},
 ];
 
 const SCHRITTE = [
@@ -147,129 +260,192 @@ const SCHRITTE = [
     titel: 'Anmelden',
     text:
       'Du füllst das Formular im Partnerportal aus: Name, Kontakt, deine ' +
-      'Kanäle und der Wunschname für deinen Gutscheincode. Das dauert ein ' +
-      'paar Minuten.',
+      'Kanäle und den Wunschnamen für deinen Code. Das dauert ein paar Minuten.',
   },
   {
-    titel: 'Freigabe abwarten',
+    titel: 'Freischaltung',
     text:
-      'Wir sehen uns jede Anmeldung an. Nach der Prüfung schalten wir dein ' +
-      'Partnerkonto frei oder sagen dir, dass es diesmal nicht passt.',
+      'Wir sehen uns deine Anmeldung an und schalten dein Partnerkonto frei. ' +
+      'Du bekommst Bescheid, sobald es losgehen kann.',
   },
   {
-    titel: 'Link und Code teilen',
+    titel: 'Teilen',
     text:
-      'Im Partnerkonto liegen dein Tracking-Link, dein Gutscheincode und ' +
-      'deine Zahlen. Du teilst, wo du ohnehin unterwegs bist.',
+      'Im Partnerkonto liegen dein Link, dein Code und deine Zahlen. Du teilst ' +
+      'dort, wo du ohnehin unterwegs bist.',
   },
   {
     titel: 'Provision erhalten',
     text:
-      'Jeder abgeschlossene, nicht widerrufene Kauf wird dir gutgeschrieben. ' +
-      'Die Auszahlung läuft über PayPal oder Bankverbindung.',
+      'Jeder abgeschlossene Kauf über dich wird dir gutgeschrieben und per ' +
+      'PayPal oder Überweisung ausgezahlt.',
   },
 ];
 
-const PASST = [
-  'Du benutzt Qi Blanco selbst und wirst ohnehin danach gefragt.',
-  'Du hast eine Community, der ein 5-%-Code echten Nutzen bringt.',
-  'Du empfiehlst gern in eigenen Worten, statt Werbetexte zu kopieren.',
-  'Du willst nachlesen können, woran du bist: Zahlen, Bedingungen, Kündigung.',
-];
-
-const PASST_NICHT = [
-  'Du möchtest den Code vor allem für eigene Einkäufe nutzen. Dafür gibt es keine Provision.',
-  'Du willst mit fremden Marken- oder Wirkversprechen werben, die wir nicht belegen können.',
-  'Du erwartest eine garantierte Zulassung. Jede Anmeldung wird geprüft.',
-];
-
-/* ───────── Hero: die Zahl zuerst, das Versprechen danach ───────── */
+/* ───────── Hero: Menschen zuerst, die Zahlen gleich dahinter ───────── */
 function Hero() {
   return (
     <section
       className="lp-a-hero"
-      aria-labelledby="lp-pp-hero-title"
-      data-section="lp-pp-hero"
+      aria-labelledby="lp-pw-hero-title"
+      data-section="lp-pw-hero"
     >
-      <div className="lp-a-hero__inner lp-pp-hero__inner">
+      <div className="lp-a-hero__inner lp-pw-hero__inner">
         <div className="lp-a-hero__copy">
           <span className="lp-a-hero__eyebrow">Partnerprogramm</span>
-          <h1 id="lp-pp-hero-title" className="lp-a-hero__title">
-            10 % Provision auf deine Empfehlung.
+          <h1 id="lp-pw-hero-title" className="lp-a-hero__title">
+            Werde Partner von Qi&nbsp;Blanco und teile, was dich begeistert.
           </h1>
-          <ul className="lp-a-hero__dreizeiler">
-            <li>Eigener 5-%-Gutscheincode.</li>
-            <li>Tracking-Link bringt den Rabatt mit.</li>
-            <li>Kostenlos, jederzeit kündbar.</li>
-          </ul>
           <p className="lp-a-hero__subline">
-            Du empfiehlst Qi Blanco ohnehin weiter? Dann bekommst du dafür
-            10&nbsp;% Provision auf den Netto-Warenwert, und deine Community
-            bekommt über deinen Code 5&nbsp;% Rabatt. In zwei Minuten steht
-            hier alles, was du vorher wissen willst: die Zahlen, der Ablauf
-            und die Fälle, in denen es keine Provision gibt.
+            Du erzählst gern von Qi Blanco? Dann mach mehr daraus. Deine
+            Community spart mit deinem Code 5&nbsp;%, und du bekommst
+            10&nbsp;% Provision auf jeden Kauf, der über dich kommt.
           </p>
-          <div className="lp-a-hero__cta-row">
-            <a
-              className="lp-vp-btn lp-vp-btn--lg"
-              href={FORMULAR}
-              rel="noopener"
-            >
-              Jetzt als Partner bewerben
+          <div className="lp-a-hero__cta-row lp-pw-hero__knoepfe">
+            <a className="lp-vp-btn lp-vp-btn--lg" href="#anmeldung">
+              Partner werden
             </a>
-            <a className="lp-vp-btn lp-vp-btn--secondary" href="#bedingungen">
-              Erst die Bedingungen lesen
+            <a className="lp-vp-btn lp-vp-btn--secondary" href="#so-gehts">
+              So funktioniert es
             </a>
           </div>
           <ul className="lp-a-hero__trust">
             <li>Kostenlos</li>
-            <li>Keine Mindestlaufzeit</li>
-            <li>Anmeldung in wenigen Minuten</li>
+            <li>Jederzeit kündbar</li>
+            <li>Auszahlung per PayPal oder Überweisung</li>
           </ul>
           <p className="lp-pp-konto">
             Schon Partner? Im{' '}
             <a href={PARTNERKONTO} rel="noopener">
               Partnerkonto
             </a>{' '}
-            liegen dein Tracking-Link, dein Gutscheincode und deine Zahlen.{' '}
-            <a href="/pages/partner-details">So funktionieren deine Links</a>.
+            liegen dein Link, dein Code und deine Zahlen.{' '}
+            <a href={HILFESEITE}>So setzt du deine Links ein</a>.
           </p>
         </div>
-        <figure className="lp-pp-hero__visual">
-          <img
-            src={HERO_IMG}
-            srcSet={HERO_SRCSET}
-            sizes="440px"
-            alt="QiOne® 2 Pro, eines der Produkte, die du als Partner empfiehlst"
-            width="880"
-            height="880"
+        <figure className="lp-pw-hero__bild">
+          <CdnBild
+            {...BILD.hero}
+            anzeigeBreite={528}
+            sizes="(min-width: 768px) 528px, 100vw"
             loading="eager"
           />
-          <figcaption>
-            Das empfiehlst du: QiOne<sup>®</sup>&nbsp;2 Pro, QiBracelet und
-            QiHome Air.
-          </figcaption>
         </figure>
       </div>
     </section>
   );
 }
 
-/* ───────── Was du bekommst ───────── */
-function Vorteile() {
+/* ───────── Die Idee ───────── */
+function Idee() {
   return (
-    <section aria-labelledby="lp-pp-vorteile-title" data-section="lp-pp-vorteile">
-      <span className="eyebrow">Deine Konditionen</span>
-      <h2 id="lp-pp-vorteile-title">Das bekommst du als Partner</h2>
-      <p className="lp-vp-section__lede">
-        Ein Satz für alle, ohne Staffel und ohne Mindestumsatz. Damit kannst
-        du vorher ausrechnen, was eine Empfehlung dir bringt.
-      </p>
-      <div className="lp-vp-benefits-grid">
-        {VORTEILE.map((v) => (
-          <article className="lp-a-benefit" key={v.titel}>
-            <h3 className="lp-vp-benefit__title">{v.titel}</h3>
-            <p className="lp-vp-benefit__body">{v.text}</p>
+    <section aria-labelledby="lp-pw-idee-title" data-section="lp-pw-idee">
+      <span className="eyebrow">Die Idee</span>
+      <h2 id="lp-pw-idee-title">
+        Was ist die Idee hinter dem Partnerprogramm?
+      </h2>
+      <div className="lp-pw-zwei">
+        <figure className="lp-pw-zwei__bild">
+          <CdnBild
+            {...BILD.idee}
+            anzeigeBreite={528}
+            sizes="(min-width: 768px) 528px, 100vw"
+            loading="lazy"
+          />
+        </figure>
+        <div className="lp-pw-zwei__text">
+          <p className="lp-pw-gross">
+            Die schönste Empfehlung kommt von jemandem, der etwas selbst
+            erlebt hat.
+          </p>
+          <p>
+            Wer Qi Blanco trägt, wird danach gefragt: beim Abendessen, im
+            Studio, nach einer Story. Deine Antwort überzeugt, weil sie aus
+            deinem Alltag kommt und nicht aus einer Anzeige.
+          </p>
+          <p>
+            Dafür gibt es das Partnerprogramm. Wir arbeiten am liebsten mit
+            Menschen, die Qi Blanco selbst leben und gern weitergeben. Du
+            bringst deine Erfahrung und deine Community mit, wir bringen den
+            Rest: deinen eigenen Code, fertige Links und 10&nbsp;% Provision.
+          </p>
+          <p>
+            Deine Leute bekommen einen Rabatt von jemandem, dem sie vertrauen.
+            Und du wirst für etwas belohnt, das du ohnehin gern tust.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────── Vorteile: Eckdaten + drei Bildkarten ───────── */
+function Vorteile() {
+  const karten = [
+    {
+      marke: 'Für deine Community',
+      titel: 'Du empfiehlst mit einem Geschenk in der Hand',
+      text:
+        'Du bekommst einen persönlichen Gutscheincode und wählst seinen ' +
+        'Namen selbst. Wer ihn nutzt, spart 5 %. Kommt jemand über deinen ' +
+        'Link, liegt der Code schon im Warenkorb.',
+      bild: BILD.community,
+    },
+    {
+      marke: 'Fertig vorbereitet',
+      titel: 'Alles, was du zum Teilen brauchst',
+      text:
+        'Im Link-Baukasten baust du Links zu jedem Produkt. Dazu gibt es ' +
+        'einen QR-Code für Flyer, Visitenkarte und Praxis und Beispieltexte ' +
+        'für Instagram, Newsletter und WhatsApp.',
+      bild: BILD.werkzeuge,
+      link: {href: HILFESEITE, text: 'Zur Hilfeseite für Partner'},
+    },
+    {
+      marke: 'Persönlich',
+      titel: 'Wir sind für dich da',
+      text:
+        'Du hast einen direkten Draht zu uns. Wir helfen dir beim Start und ' +
+        'schauen mit dir hin, wenn ein Link einmal nicht tut, was er soll.',
+      bild: BILD.team,
+      bildKlasse: 'lp-pw-karte__bild--portrait',
+      link: {href: `mailto:${KONTAKT}`, text: KONTAKT},
+    },
+  ];
+  return (
+    <section aria-labelledby="lp-pw-vorteile-title" data-section="lp-pw-vorteile">
+      <span className="eyebrow">Deine Vorteile</span>
+      <h2 id="lp-pw-vorteile-title">Was habe ich als Partner davon?</h2>
+      <ul className="lp-pw-eckdaten">
+        {ECKDATEN.map((e) => (
+          <li className="lp-pw-eckdatum" key={e.titel}>
+            <span className="lp-pw-eckdatum__wert">{e.wert}</span>
+            <span className="lp-pw-eckdatum__titel">{e.titel}</span>
+            <span className="lp-pw-eckdatum__text">{e.text}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="lp-pw-karten">
+        {karten.map((k) => (
+          <article className="lp-pw-karte" key={k.titel}>
+            <figure className={`lp-pw-karte__bild ${k.bildKlasse || ''}`}>
+              <CdnBild
+                {...k.bild}
+                anzeigeBreite={344}
+                sizes="(min-width: 768px) 344px, 100vw"
+                loading="lazy"
+              />
+            </figure>
+            <div className="lp-pw-karte__text">
+              <span className="lp-pw-marke">{k.marke}</span>
+              <h3>{k.titel}</h3>
+              <p>{k.text}</p>
+              {k.link ? (
+                <a className="lp-pw-link" href={k.link.href}>
+                  {k.link.text}
+                </a>
+              ) : null}
+            </div>
           </article>
         ))}
       </div>
@@ -277,12 +453,88 @@ function Vorteile() {
   );
 }
 
-/* ───────── Ablauf in vier Schritten ───────── */
+/* ───────── Rechenbeispiel ───────── */
+function Verdienst() {
+  return (
+    <section aria-labelledby="lp-pw-verdienst-title" data-section="lp-pw-verdienst">
+      <span className="eyebrow">Rechenbeispiel</span>
+      <h2 id="lp-pw-verdienst-title">Was verdiene ich als Partner?</h2>
+      <p className="lp-vp-section__lede">
+        Du bekommst 10&nbsp;% vom Netto-Warenwert, also vom Einkauf ohne
+        Mehrwertsteuer und ohne Versand. An einem Beispiel:
+      </p>
+      <ol className="lp-pw-rechnung">
+        <li className="lp-pw-rechnung__schritt">
+          <span className="lp-pw-rechnung__zahl">238&nbsp;€</span>
+          <span className="lp-pw-rechnung__text">
+            kauft jemand über deinen Link ein, inklusive 19&nbsp;% Mehrwertsteuer
+          </span>
+        </li>
+        <li className="lp-pw-rechnung__schritt">
+          <span className="lp-pw-rechnung__zahl">200&nbsp;€</span>
+          <span className="lp-pw-rechnung__text">sind davon der Netto-Warenwert</span>
+        </li>
+        <li className="lp-pw-rechnung__schritt lp-pw-rechnung__schritt--ziel">
+          <span className="lp-pw-rechnung__zahl">20&nbsp;€</span>
+          <span className="lp-pw-rechnung__text">bekommst du als Provision</span>
+        </li>
+      </ol>
+      <p className="lp-a-note">
+        Der Satz gilt für alle Partner, ohne Staffel und ohne Mindestumsatz.
+        Gutgeschrieben wird, sobald der Kauf abgeschlossen und nicht widerrufen
+        ist.
+      </p>
+    </section>
+  );
+}
+
+/* ───────── Was empfehle ich? ───────── */
+function Produkte() {
+  return (
+    <section aria-labelledby="lp-pw-produkte-title" data-section="lp-pw-produkte">
+      <span className="eyebrow">Das empfiehlst du</span>
+      <h2 id="lp-pw-produkte-title">Was empfehle ich als Partner?</h2>
+      <p className="lp-vp-section__lede">
+        Im Link-Baukasten führst du deine Leute direkt zu dem Produkt, von dem
+        du erzählst.
+      </p>
+      <div className="lp-pw-produkte">
+        {PRODUKTE.map((p) => (
+          <a className="lp-pw-produkt" href={p.pfad} key={p.pfad}>
+            <span className="lp-pw-produkt__bild">
+              <CdnBild
+                {...p.bild}
+                anzeigeBreite={280}
+                sizes="(min-width: 768px) 280px, 70vw"
+                loading="lazy"
+              />
+            </span>
+            <span className="lp-pw-produkt__wort">
+              <span className="lp-pw-produkt__name">{p.name}</span>
+              <span className="lp-pw-produkt__text">{p.text}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+      <p className="lp-a-note">
+        Wer tiefer einsteigen will, findet die{' '}
+        <a href="/pages/studien">Studien zu unseren Produkten</a> und die{' '}
+        <a href="/pages/warum-qi-blanco">Geschichte hinter Qi Blanco</a>.
+      </p>
+    </section>
+  );
+}
+
+/* ───────── Ablauf ───────── */
 function Ablauf() {
   return (
-    <section aria-labelledby="lp-pp-ablauf-title" data-section="lp-pp-ablauf">
+    <section
+      id="so-gehts"
+      aria-labelledby="lp-pw-ablauf-title"
+      data-section="lp-pw-ablauf"
+    >
       <span className="eyebrow">In vier Schritten</span>
-      <h2 id="lp-pp-ablauf-title">So läuft es ab</h2>
+      <h2 id="lp-pw-ablauf-title">Wie werde ich Partner von Qi Blanco?</h2>
       <ol className="lp-pp-schritte">
         {SCHRITTE.map((s, i) => (
           <li className="lp-pp-schritt" key={s.titel}>
@@ -300,50 +552,60 @@ function Ablauf() {
   );
 }
 
-/* ───────── Ehrliche Bedingungen ─────────
- * Bewusst VOR dem Abschluss und nicht im Kleingedruckten: die Ausschlüsse
- * (AGB § 5) sind der häufigste Grund für Ärger im Nachhinein.
- */
-function Bedingungen() {
+/* ───────── Wo teile ich meinen Link? ───────── */
+function Kanaele() {
+  const orte = [
+    {
+      titel: 'Online',
+      text:
+        'Auf Instagram, TikTok, YouTube oder im Newsletter: Link in die Bio ' +
+        'oder unter das Video, Code in den Text.',
+      bild: BILD.online,
+      bildKlasse: 'lp-pw-ort__bild--hoch',
+      quelle: 'Instagram-Beitrag von @desiree_witschel',
+    },
+    {
+      titel: 'Beim Sport und im Studio',
+      text:
+        'Im Gespräch nach dem Training reicht dein Code. Auf Flyer und ' +
+        'Aufsteller kommt dein QR-Code.',
+      bild: BILD.sport,
+    },
+    {
+      titel: 'Mit Familie und Freunden',
+      text:
+        'Eine Nachricht mit deinem Link genügt. Wer ihn öffnet, hat deinen ' +
+        'Rabatt schon im Warenkorb.',
+      bild: BILD.familie,
+    },
+  ];
   return (
-    <section
-      id="bedingungen"
-      aria-labelledby="lp-pp-bedingungen-title"
-      data-section="lp-pp-bedingungen"
-    >
-      <span className="eyebrow">Klarheit vorab</span>
-      <h2 id="lp-pp-bedingungen-title">Für wen das passt und für wen nicht</h2>
+    <section aria-labelledby="lp-pw-kanaele-title" data-section="lp-pw-kanaele">
+      <span className="eyebrow">Wo Empfehlungen entstehen</span>
+      <h2 id="lp-pw-kanaele-title">Wo teile ich meinen Link?</h2>
       <p className="lp-vp-section__lede">
-        Provision entsteht nur für Empfehlungen an Dritte, und jede Anmeldung
-        wird vor der Freischaltung geprüft. Was das konkret bedeutet, steht
-        hier.
+        Überall dort, wo du ohnehin von Qi Blanco erzählst.
       </p>
-      <div className="lp-pp-grid-2">
-        <article className="lp-a-benefit">
-          <h3 className="lp-vp-benefit__title">Das passt zu dir, wenn …</h3>
-          <ul className="lp-pp-liste lp-pp-liste--ja">
-            {PASST.map((z) => (
-              <li key={z}>{z}</li>
-            ))}
-          </ul>
-        </article>
-        <article className="lp-a-benefit">
-          <h3 className="lp-vp-benefit__title">Das passt nicht, wenn …</h3>
-          <ul className="lp-pp-liste lp-pp-liste--nein">
-            {PASST_NICHT.map((z) => (
-              <li key={z}>{z}</li>
-            ))}
-          </ul>
-        </article>
+      <div className="lp-pw-orte">
+        {orte.map((o) => (
+          <article className="lp-pw-ort" key={o.titel}>
+            <figure className={`lp-pw-ort__bild ${o.bildKlasse || ''}`}>
+              <CdnBild
+                {...o.bild}
+                anzeigeBreite={344}
+                sizes="(min-width: 768px) 344px, 100vw"
+                loading="lazy"
+              />
+            </figure>
+            <h3>{o.titel}</h3>
+            <p>{o.text}</p>
+            {o.quelle ? <p className="lp-pw-quelle">{o.quelle}</p> : null}
+          </article>
+        ))}
       </div>
       <p className="lp-a-note">
-        Die vollständigen Teilnahmebedingungen liegen im Anmeldeformular unter
-        {'„AGBs“'}. Dort steht auch, wie Prüfung, Stornierung und Kündigung
-        geregelt sind. Womit du wirbst, kannst du dir hier ansehen:{' '}
-        <a href="/products/qione-2-pro">QiOne® 2 Pro</a>,{' '}
-        <a href="/products/qibracelet">QiBracelet</a>,{' '}
-        <a href="/products/qihome-air">QiHome Air</a> und die{' '}
-        <a href="/pages/studien">wissenschaftlichen Studien</a>.
+        Jeden Kanal Schritt für Schritt, mit fertigen Texten zum Kopieren,
+        zeigt dir die <a href={HILFESEITE}>Hilfeseite für Partner</a>.
       </p>
     </section>
   );
@@ -352,9 +614,9 @@ function Bedingungen() {
 /* ───────── Fragen ───────── */
 function Fragen() {
   return (
-    <section aria-labelledby="lp-pp-faq-title" data-section="lp-pp-faq">
+    <section aria-labelledby="lp-pw-faq-title" data-section="lp-pw-faq">
       <span className="eyebrow">Häufige Fragen</span>
-      <h2 id="lp-pp-faq-title">Was Partner vorher wissen wollen</h2>
+      <h2 id="lp-pw-faq-title">Häufige Fragen zum Partnerprogramm</h2>
       <dl className="lp-pp-faq">
         {FRAGEN.map((f) => (
           <div className="lp-pp-faq__item" key={f.frage}>
@@ -363,41 +625,65 @@ function Fragen() {
           </div>
         ))}
       </dl>
+      <p className="lp-a-note">
+        Stand der Konditionen: <time dateTime={STAND.iso}>{STAND.text}</time>.
+        Die vollständigen Teilnahmebedingungen findest du im Anmeldeformular.
+      </p>
     </section>
   );
 }
 
-/* ───────── Abschluss ───────── */
-function Abschluss() {
+/* ───────── Anmeldung: der Hauptknopf steht am Ende ───────── */
+function Anmeldung() {
   return (
     <section
+      id="anmeldung"
       className="lp-vp-final-cta"
-      aria-labelledby="lp-pp-cta-title"
-      data-section="lp-pp-cta"
+      aria-labelledby="lp-pw-cta-title"
+      data-section="lp-pw-anmeldung"
     >
-      <div className="lp-pp-cta__inner">
-        <span className="eyebrow">Anmeldung</span>
-        <h2 id="lp-pp-cta-title">Werde Partner</h2>
-        <p className="lp-vp-final-cta__lede">
-          Die Anmeldung läuft über unser Partnerportal. Du hinterlegst dort
-          deine Daten und den Wunschnamen für deinen Gutscheincode. Danach
-          prüfen wir und schalten dein Partnerkonto frei.
-        </p>
-        <a className="lp-vp-btn lp-vp-btn--lg" href={FORMULAR} rel="noopener">
-          Zum Anmeldeformular
-        </a>
-        <ul className="lp-vp-final-cta__trust">
-          <li>10 % auf den Netto-Warenwert</li>
-          <li>5-%-Code für deine Community</li>
-          <li>30 Tage Zuordnung</li>
-          <li>Jederzeit kündbar</li>
-        </ul>
-        <p className="lp-pp-konto lp-pp-konto--dunkel">
-          Schon angemeldet?{' '}
-          <a href={PARTNERKONTO} rel="noopener">
-            Zum Partnerkonto
+      <div className="lp-vp-final-cta__inner">
+        <figure className="lp-pw-abschluss__bild">
+          <CdnBild
+            {...BILD.abschluss}
+            anzeigeBreite={400}
+            sizes="(min-width: 768px) 400px, 100vw"
+            loading="lazy"
+          />
+        </figure>
+        <div className="lp-vp-final-cta__body">
+          <span className="eyebrow">Anmeldung</span>
+          <h2 id="lp-pw-cta-title">Leg los und werde Partner</h2>
+          <p className="lp-vp-final-cta__lede">
+            Die Anmeldung dauert ein paar Minuten. Danach sehen wir uns deine
+            Angaben an und schalten dein Partnerkonto frei. Wir freuen uns auf
+            dich.
+          </p>
+          <a
+            className="lp-vp-btn lp-vp-btn--lg"
+            href={FORMULAR}
+            target="_blank"
+            rel="noopener"
+          >
+            Jetzt Partner werden
           </a>
-        </p>
+          <p className="lp-pw-hinweis">
+            Das Formular öffnet sich in einem neuen Fenster im Partnerportal
+            von Qi Blanco.
+          </p>
+          <ul className="lp-vp-final-cta__trust">
+            <li>10 % Provision</li>
+            <li>5 % für deine Community</li>
+            <li>30 Tage Zuordnung</li>
+            <li>Jederzeit kündbar</li>
+          </ul>
+          <p className="lp-pp-konto lp-pp-konto--dunkel">
+            Schon angemeldet?{' '}
+            <a href={PARTNERKONTO} rel="noopener">
+              Zum Partnerkonto
+            </a>
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -406,15 +692,18 @@ function Abschluss() {
 export function AffiliatePartnerprogramm() {
   return (
     <div
-      className="lp-vp lp-a3 lp-pp"
+      className="lp-vp lp-a3 lp-pp lp-pw"
       data-qbp-route="affiliate-partnerprogramm"
     >
       <Hero />
+      <Idee />
       <Vorteile />
+      <Verdienst />
+      <Produkte />
       <Ablauf />
-      <Bedingungen />
+      <Kanaele />
       <Fragen />
-      <Abschluss />
+      <Anmeldung />
     </div>
   );
 }
