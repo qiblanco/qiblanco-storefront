@@ -6,9 +6,13 @@
  * INHALTS-DISZIPLIN, jede Aussage am 2026-09-24 gemessen:
  *   Rabattlink /discount/<CODE>?redirect=<pfad>&sca_ref=<ref>: Code liegt in
  *     der Kasse, Kassen-URL trägt sca_ref (Playwright, bis vor die Zahlung).
- *   Empfehlungslink ?sca_ref=: Zuordnung ja, Code NICHT automatisch
- *     (gemessen mit erlaubten UpPromote-Aufrufen, Test-Partner).
- *   Kassen-/Warenkorb-Adressen: eingebettet net::ERR_BLOCKED_BY_RESPONSE.
+ *   Empfehlungslink ?sca_ref=: Zuordnung ja, und seit PR #616 legt der
+ *     Server den Code in den Warenkorb, wenn dort noch keiner liegt
+ *     (gemessen am Rand mit dem Test-Partner: Code im Warenkorb, Abzug in
+ *     der Kasse; Job 20260924-partnerlink-setzt-code-automatisch-...).
+ *     Neue Partner: täglicher Abgleich, also ab dem Folgetag.
+ *   Kassen-Adressen: eingebettet net::ERR_BLOCKED_BY_RESPONSE (Shopify).
+ *   Warenkorb-Permalinks qiblanco.com/cart/…: eingebettet Weiter-Seite.
  *   Kasse zeigt netto + "Geschätzte Steuern", Endbetrag = Seitenpreis
  *     (shop.taxesIncluded=false, Admin-API).
  *   10 % auf den Netto-Warenwert ohne Steuern und Versand, PayPal oder Bank
@@ -95,8 +99,8 @@ const LINKARTEN = [
   {
     titel: 'Empfehlungslink aus dem Partnerkonto',
     text:
-      'Ordnet dir jeden Kauf 30 Tage lang zu. Den Rabatt gibt dein Kunde ' +
-      'in der Kasse selbst als Code ein.',
+      'Ordnet dir jeden Kauf 30 Tage lang zu und legt deinen Code gleich ' +
+      'in den Warenkorb. Neue Konten: ab dem Tag nach der Freischaltung.',
     beispiel: 'qiblanco.com/?sca_ref=DEINE-REFERENZ',
   },
   {
@@ -127,16 +131,16 @@ const HILFE = [
       'einem Website-Baustein. Setze ihn als normalen Link. Seit dem ' +
       '24. September zeigt ein eingebetteter Link statt des Fehlers einen ' +
       'Knopf „Jetzt öffnen“, der den Shop in einem eigenen Fenster öffnet. ' +
-      'Kassen- und Warenkorb-Adressen bleiben eingebettet gesperrt, das ' +
-      'legt Shopify fest.',
+      'Kassen-Adressen bleiben eingebettet gesperrt, das legt Shopify fest.',
     bild: 'eingebettet',
   },
   {
     frage: 'In der Kasse fehlt der Rabatt.',
     antwort:
-      'Nutze den Rabattlink aus dem Baukasten. Oder dein Kunde gibt den Code ' +
-      'in der Kasse in das Feld „Rabattcode oder Gutschein“ ein und tippt ' +
-      'auf „Anwenden“.',
+      'Dein Empfehlungslink und der Rabattlink legen den Code in den ' +
+      'Warenkorb. Hatte dein Kunde schon einen anderen Code eingegeben, ' +
+      'bleibt seiner stehen. Dann gibt er deinen Code in der Kasse in das ' +
+      'Feld „Rabattcode oder Gutschein“ ein und tippt auf „Anwenden“.',
     bild: 'codefeld',
   },
   {
