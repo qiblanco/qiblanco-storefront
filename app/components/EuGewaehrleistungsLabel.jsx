@@ -257,6 +257,14 @@ const EuLabelDialog = forwardRef(function EuLabelDialog(
     <dialog
       ref={ref}
       className="eu-gwl-dialog"
+      /*
+       * Die Sprachfassung steht AM DIALOG, nicht nur an der Grafik: seit die
+       * Grafik erst beim Öffnen ins DOM kommt (PR #623), trüge sonst keine
+       * Seite ohne eigene Hinweisfläche die Kennung im ausgelieferten Markup
+       * -- gemessen an /pages/qione-2-pro-details (Probe eulabel_de_en_scanbar
+       * exit 4). Der Dialog wird immer mitgerendert, also trägt er sie immer.
+       */
+      data-eu-label-iso={label.iso}
       aria-label="Gesetzliches Gewährleistungsrecht"
       onClick={aufRandKlick}
       onCancel={onClose}
