@@ -76,7 +76,7 @@
 .lp-a3 .lp-pw-zwei__text p:last-child {
   margin-bottom: 0;
 }
-.lp-a3 .lp-pw-zwei__text .lp-pw-gross {
+.lp-a3 .lp-pw-zwei__text .lp-pw-leitsatz {
   font-size: var(--a-fs-xl);
   font-weight: 600;
   line-height: 1.3;

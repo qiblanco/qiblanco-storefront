@@ -379,7 +379,7 @@ function Idee() {
           />
         </figure>
         <div className="lp-pw-zwei__text">
-          <p className="lp-pw-gross">
+          <p className="lp-pw-leitsatz">
             Die schönste Empfehlung kommt von jemandem, der etwas selbst
             erlebt hat.
           </p>
