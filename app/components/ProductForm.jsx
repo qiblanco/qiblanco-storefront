@@ -10,7 +10,15 @@ import {useAside} from './Aside';
  *   quantity?: number;
  *   ctaLabel?: string;
  *   gewaehrleistungsHinweis?: boolean;
+ *   zusatzLinien?: Array<object>;
+ *   unterKaufknopf?: React.ReactNode;
  * }}
+ *
+ * `zusatzLinien` (Default leer) sind weitere Warenkorbzeilen, die im SELBEN
+ * Klick mit der gewählten Variante in den Warenkorb gehen; `unterKaufknopf`
+ * wird unmittelbar unter dem Knopf gerendert. Beides nutzt heute allein
+ * /products/qi-master für seine Add-ons (Christian 2026-09-24: „einen Bereich
+ * unterhalb vom Kaufknopf"). Ohne die Props ist die Ausgabe byte-identisch.
  *
  * `quantity` (Default 1) legt die Stückzahl der EINEN Add-to-Cart-Zeile fest.
  * Der Default hält jeden Bestands-Aufrufer byte-identisch; nur die Campaign-PDP
@@ -48,6 +56,8 @@ export function ProductForm({
   quantity = 1,
   ctaLabel,
   gewaehrleistungsHinweis = true,
+  zusatzLinien = undefined,
+  unterKaufknopf = null,
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -149,6 +159,7 @@ export function ProductForm({
                     quantity,
                     selectedVariant,
                   },
+                  ...(zusatzLinien || []),
                 ]
               : []
           }
@@ -158,6 +169,7 @@ export function ProductForm({
             : 'Ausverkauft'}
         </AddToCartButton>
       </div>
+      {unterKaufknopf}
       {/*
         Sichtbarer Text-Link zur Pflichtmitteilung, unmittelbar unter dem
         Kauf-Button (Art. 6 Abs. 1 lit. l RL 2011/83/EU: "in hervorgehobener
