@@ -139,6 +139,106 @@ function berichtsziel(env) {
   return roh;
 }
 
+/*
+ * ================================================================
+ * EINBETTUNGS-WEICHE (Job 20260924-GROSSJOB-partnerlinks-sauber-in-
+ * die-kasse-partnerseite-und-mail-an-elina, Christian 2026-09-24).
+ * ================================================================
+ * Diese Seite sendet `frame-ancestors 'none'` (unten, scharf), die Kasse
+ * checkout.qiblanco.com sendet dasselbe plus `X-Frame-Options: DENY` —
+ * die Kasse ist bei Shopify NICHT abschaltbar. Oeffnet ein fremdes Werkzeug
+ * einen unserer Links in einem Rahmen (Link-in-Bio-Vorschau, Website-
+ * Einbettung, App-Vorschau), zeigt Chrome deshalb nur
+ * "... hat die Verbindung abgelehnt / ERR_BLOCKED_BY_RESPONSE". Genau das
+ * hat eine Partnerin am 2026-09-24 gemeldet; reproduziert fuer Kassen-,
+ * Produkt- und Rabattlink.
+ *
+ * WAS DIE WEICHE TUT: erkennt eine Navigation IN einem Rahmen einer
+ * FREMDEN Seite (Sec-Fetch-Dest iframe/frame UND Sec-Fetch-Site cross-site/
+ * same-site) und antwortet statt mit der blockierten Seite mit einer
+ * kleinen, einbettbaren Weiter-Seite: ein Knopf, der denselben Link in
+ * einem eigenen Fenster oeffnet. Dort laeuft alles wie gewohnt (Rabatt,
+ * Zuordnung, Kasse).
+ *
+ * WARUM DAS NICHTS KAPUTT MACHEN KANN: jede Antwort, die heute unter diese
+ * Bedingung faellt, wird vom Browser ohnehin verworfen (frame-ancestors
+ * 'none'). Die Weiche ersetzt also nur eine Fehlerseite. Eigene Rahmen
+ * (same-origin), normale Seitenaufrufe (document), Datenabrufe (empty) und
+ * Browser ohne Sec-Fetch-Kopf laufen unveraendert durch. Die Weiter-Seite
+ * enthaelt nur einen Link auf unsere eigene Adresse — kein Formular, keine
+ * Aktion, also nichts, was ein fremder Rahmen ausnutzen koennte.
+ *
+ * MESSUNG: partner-manager/bin/partnerlink-check (taeglich, linkart
+ * "einbettung") erkennt die Seite am Attribut data-einbettung-weiter.
+ * RUECKWEG: den Aufruf oben in handleRequest entfernen.
+ */
+const EINBETTUNG_ZIELE = new Set(['iframe', 'frame']);
+const EINBETTUNG_FREMD = new Set(['cross-site', 'same-site']);
+
+function htmlEscape(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * @param {Request} request
+ * @returns {Response | null}
+ */
+function einbettungsWeiche(request) {
+  try {
+    if (request.method !== 'GET') return null;
+    const ziel = (request.headers.get('sec-fetch-dest') || '').toLowerCase();
+    const herkunft = (request.headers.get('sec-fetch-site') || '').toLowerCase();
+    if (!EINBETTUNG_ZIELE.has(ziel) || !EINBETTUNG_FREMD.has(herkunft)) {
+      return null;
+    }
+    const url = new URL(request.url);
+    // Nur die eigene Adresse, nie ein Ziel aus dem Anfrage-Inhalt.
+    const weiter = `${url.origin}${url.pathname}${url.search}`;
+    const w = htmlEscape(weiter);
+    const html = `<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Weiter zu Qi Blanco</title>
+<style>
+body{margin:0;font-family:"Open Sans",Arial,sans-serif;background:#faf8f5;color:#2b2b2b}
+main{max-width:440px;margin:0 auto;padding:32px 24px;text-align:center}
+.marke{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#6b6358;margin:0 0 16px}
+h1{font-size:22px;line-height:1.3;margin:0 0 12px;font-weight:600}
+p{font-size:15px;line-height:1.5;margin:0 0 20px}
+a.knopf{display:inline-block;background:#2b2b2b;color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:14px 28px;border-radius:8px}
+.klein{font-size:13px;color:#6b6358;margin-top:24px;word-break:break-all}
+</style></head>
+<body><main>
+<p class="marke">Qi Blanco</p>
+<h1>Weiter zu Qi Blanco</h1>
+<p>Dieser Link öffnet sich in einem eigenen Fenster. Dort kommen Rabatt und Kasse sicher an.</p>
+<a class="knopf" data-einbettung-weiter href="${w}" target="_blank" rel="noopener">Jetzt öffnen</a>
+<p class="klein">Öffnet sich nichts? Kopiere diese Adresse in deinen Browser:<br>${w}</p>
+</main></body></html>`;
+    return new Response(html, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Security-Policy':
+          "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors *",
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex, nofollow',
+        Vary: 'Sec-Fetch-Dest, Sec-Fetch-Site',
+      },
+    });
+  } catch (error) {
+    // Die Weiche darf eine Seite nie verhindern: im Zweifel normal rendern.
+    console.error(error);
+    return null;
+  }
+}
+
 /**
  * @param {Request} request
  * @param {number} responseStatusCode
@@ -169,6 +269,10 @@ export default async function handleRequest(
   if (istStillgelegteJSaleSeite(new URL(request.url).pathname)) {
     return new Response(null, {status: 404});
   }
+
+  // EINBETTUNGS-WEICHE: siehe einbettungsWeiche() unten.
+  const einbettung = einbettungsWeiche(request);
+  if (einbettung) return einbettung;
 
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     defaultSrc: [

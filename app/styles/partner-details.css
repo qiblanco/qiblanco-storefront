@@ -1,0 +1,224 @@
+/* ============================================================================
+   /pages/partner-details — Hilfe für angemeldete Partner (Job 20260924-
+   GROSSJOB-partnerlinks-sauber-in-die-kasse-partnerseite-und-mail-an-elina).
+
+   ADDITIV zur Token-Quelle styles/schlaf-zellen-schutz.css (Scope .lp-a3)
+   und zu den lp-pp-*-Regeln aus affiliate-partnerprogramm.css. Diese Datei
+   definiert ausschließlich lp-pd-*-Regeln und die Akt-Hintergründe dieser
+   Route. JEDER Wert kommt aus den :root-Tokens: keine freien Größen, kein
+   zweiter Goldton, kein dritter Radius, kein zweiter H2-Stil.
+
+   Farb-Dramaturgie (3 Farbwelten, alternierend):
+   grund:   Hero, Linkarten, Beim Kunden, Hilfe
+   fläche:  Partnerkonto, Baukasten, Provision
+   dunkel:  Kontakt (EIN dunkler Schluss-Bogen)
+   ========================================================================== */
+
+.lp-a3 [data-section='lp-pd-konto'],
+.lp-a3 [data-section='lp-pd-baukasten'],
+.lp-a3 [data-section='lp-pd-provision'] {
+  background: var(--a-flaeche);
+}
+
+.lp-a3 [data-section='lp-pd-konto'] .lp-a-benefit,
+.lp-a3 [data-section='lp-pd-provision'] .lp-a-benefit {
+  background: var(--a-grund);
+}
+
+/* ─── Hero: nur Text, eine Spalte ─────────────────────────────────────────── */
+.lp-a3 .lp-pd-hero__inner {
+  grid-template-columns: 1fr;
+  max-width: var(--a-breite-schmal);
+}
+.lp-a3 .lp-pd-hero__knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--a-s3);
+  margin-top: var(--a-s4);
+}
+.lp-a3 .lp-pd-textlink {
+  font-size: var(--a-fs-base);
+  font-weight: 600;
+  color: var(--a-akzent-tinte);
+}
+
+/* ─── Zwei Spalten: Text links, Bild rechts ───────────────────────────────── */
+.lp-a3 .lp-pd-zweispaltig {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--a-s6);
+  align-items: center;
+  text-align: left;
+}
+.lp-a3 .lp-pd-text p {
+  font-size: var(--a-fs-md);
+  color: var(--a-text);
+  max-width: var(--a-mass);
+}
+
+/* ─── Bildschirmfotos ─────────────────────────────────────────────────────── */
+.lp-a3 .lp-pd-bild {
+  margin: 0;
+  min-width: 0;
+}
+.lp-a3 .lp-pd-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--a-r1);
+  border: 1px solid var(--a-linie);
+  box-shadow: var(--a-shadow-md);
+  background: var(--a-grund);
+}
+.lp-a3 .lp-pd-bild figcaption {
+  margin-top: var(--a-s2);
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+  text-align: center;
+}
+.lp-a3 .lp-pd-bild--handy img {
+  max-width: 280px;
+  margin: 0 auto;
+}
+.lp-a3 .lp-pd-bild--klein {
+  margin-top: var(--a-s3);
+}
+.lp-a3 .lp-pd-bild--klein img {
+  max-width: 440px;
+}
+
+/* Drei Schritte beim Kunden: zwei Handy-Bilder + Kasse */
+.lp-a3 .lp-pd-schritte {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto var(--a-s4);
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: var(--a-s3);
+  align-items: start;
+}
+
+/* ─── Linkarten ───────────────────────────────────────────────────────────── */
+.lp-a3 .lp-pd-karten {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--a-s3);
+  text-align: left;
+}
+.lp-a3 .lp-pd-marke {
+  display: inline-block;
+  margin-bottom: var(--a-s1);
+  padding: 0 var(--a-s1);
+  border-radius: var(--a-r1);
+  background: var(--a-akzent);
+  color: var(--a-dunkel);
+  font-size: var(--a-fs-xs);
+  font-weight: 700;
+}
+.lp-a3 .lp-pd-beispiel {
+  display: block;
+  margin-top: var(--a-s2);
+  padding: var(--a-s1) var(--a-s2);
+  border-radius: var(--a-r1);
+  background: var(--a-grund);
+  border: 1px solid var(--a-linie);
+  font-size: var(--a-fs-xs);
+  color: var(--a-text);
+  overflow-wrap: anywhere;
+}
+.lp-a3 .lp-pd-karte--warnung {
+  border: 1px solid var(--a-akzent-tief);
+}
+
+/* ─── Link-Baukasten ──────────────────────────────────────────────────────── */
+.lp-a3 .lp-pd-baukasten {
+  max-width: var(--a-breite-schmal);
+  margin: var(--a-s6) auto 0;
+  padding: var(--a-s4);
+  border-radius: var(--a-r2);
+  background: var(--a-grund);
+  box-shadow: var(--a-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s3);
+  text-align: left;
+}
+.lp-a3 .lp-pd-feld {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  font-size: var(--a-fs-base);
+  font-weight: 600;
+  color: var(--a-text);
+}
+.lp-a3 .lp-pd-feld input,
+.lp-a3 .lp-pd-feld select {
+  font-family: var(--a-font);
+  font-size: var(--a-fs-base);
+  font-weight: 400;
+  padding: var(--a-s2);
+  border-radius: var(--a-r1);
+  border: 1px solid var(--a-linie);
+  background: var(--a-grund);
+  color: var(--a-text);
+  min-width: 0;
+}
+.lp-a3 .lp-pd-feld input:focus-visible,
+.lp-a3 .lp-pd-feld select:focus-visible {
+  outline: 2px solid var(--a-akzent-tief);
+  outline-offset: 2px;
+}
+.lp-a3 .lp-pd-ergebnis {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--a-s2);
+  align-items: center;
+}
+.lp-a3 .lp-pd-ergebnis code {
+  padding: var(--a-s2);
+  border-radius: var(--a-r1);
+  background: var(--a-flaeche);
+  font-size: var(--a-fs-xs);
+  color: var(--a-text);
+  overflow-wrap: anywhere;
+}
+.lp-a3 .lp-pd-ergebnis button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.lp-a3 .lp-pd-hinweis {
+  margin: 0;
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+
+/* ─── Hilfe: Antworten mit Bild ───────────────────────────────────────────── */
+.lp-a3 .lp-pd-hilfe dd {
+  text-align: left;
+}
+
+/* ─── Schmal ──────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .lp-a3 .lp-pd-zweispaltig,
+  .lp-a3 .lp-pd-karten {
+    grid-template-columns: 1fr;
+  }
+  .lp-a3 .lp-pd-schritte {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lp-a3 .lp-pd-schritte .lp-pd-bild:last-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 560px) {
+  .lp-a3 .lp-pd-baukasten {
+    padding: var(--a-s3);
+  }
+  .lp-a3 .lp-pd-ergebnis {
+    grid-template-columns: 1fr;
+  }
+}
