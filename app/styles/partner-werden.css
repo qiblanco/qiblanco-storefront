@@ -360,7 +360,11 @@
   }
 }
 
-/* ─── Tablet: Karten einspaltig und schmal ────────────────────────────────── */
+/* ─── Tablet (<= 900px): Karten einspaltig und waagerecht ────────────────────
+   Einspaltig und senkrecht würde jedes Bild bis zu 758 px breit, und drei
+   Master (Instagram 640, Sport 668, Portrait 1200) reichen dafür bei 2x nicht
+   (hb-formate bild-aufloesung, erster Lauf 2026-09-24). Waagerecht nimmt das
+   Bild 2/5 der Karte (höchstens 304 px) und der Text steht daneben. */
 @media (max-width: 900px) {
   .lp-a3 .lp-pw-eckdaten {
     grid-template-columns: repeat(2, 1fr);
@@ -369,6 +373,27 @@
   .lp-a3 .lp-pw-orte {
     grid-template-columns: 1fr;
     max-width: var(--a-breite-schmal);
+  }
+  .lp-a3 .lp-pw-karte {
+    flex-direction: row;
+  }
+  .lp-a3 .lp-pw-karte__bild {
+    flex: 0 0 40%;
+  }
+  .lp-a3 .lp-pw-karte__bild img {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  .lp-a3 .lp-pw-ort {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    column-gap: var(--a-s3);
+    align-items: start;
+    align-content: start;
+  }
+  .lp-a3 .lp-pw-ort__bild {
+    grid-row: 1 / span 4;
+    margin-bottom: 0;
   }
 }
 
@@ -383,6 +408,17 @@
   }
   .lp-a3 .lp-pw-hero__inner {
     gap: var(--a-s6);
+  }
+  /* Handy: die Vorteilskarten wieder senkrecht, Bild über volle Breite. */
+  .lp-a3 .lp-pw-karte {
+    flex-direction: column;
+  }
+  .lp-a3 .lp-pw-karte__bild {
+    flex: none;
+  }
+  .lp-a3 .lp-pw-karte__bild img {
+    height: auto;
+    aspect-ratio: 4 / 3;
   }
   .lp-a3 .lp-pw-rechnung {
     gap: var(--a-s6);

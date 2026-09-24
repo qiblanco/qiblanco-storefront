@@ -84,12 +84,15 @@ const BILD = {
     hoehe: 800,
     masterBreite: 2400,
   },
+  // Dasselbe Foto wie 2024-06-qiblanco-bali-05984.webp, aber als 2400-px-
+  // Master: die 940-px-Fassung reicht auf Tablet und Handy nicht für 2x
+  // (hb-formate bild-aufloesung, gemessen 2026-09-24).
   werkzeuge: {
-    src: `${CDN}2024-06-qiblanco-bali-05984.webp?v=1738529250`,
+    src: `${CDN}qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971`,
     alt: 'Frau sitzt mit dem Laptop auf dem Sofa und schreibt',
-    breite: 940,
-    hoehe: 576,
-    masterBreite: 940,
+    breite: 2400,
+    hoehe: 1471,
+    masterBreite: 2400,
   },
   team: {
     src: `${CDN}Christian.jpg?v=1668985845`,
@@ -126,6 +129,28 @@ const BILD = {
     hoehe: 3500,
     masterBreite: 2333,
   },
+};
+
+/*
+ * `sizes` je Akt, abgeleitet aus dem Layout in partner-werden.css und der
+ * Token-Quelle (Sektion polstert --a-s3 = 24 px je Seite, Container
+ * --a-breite 1080 bzw. --a-breite-schmal 760). Stimmt `sizes` nicht mit dem
+ * Layout überein, zieht der Browser eine zu kleine Sprosse und das Bild wird
+ * hochskaliert; genau das hat hb-formate im ersten Lauf auf Tablet und Handy
+ * gemeldet.
+ *   halb      Hero, Idee: zwei Spalten ab 768 px ((1080 - 64) / 2 = 508)
+ *   karte     drei Spalten ab 901 px (344), waagerecht 768-900 px
+ *             (40 % von 760 = 304), darunter volle Breite
+ *   ort       wie karte, aber auch unter 768 px waagerecht (40 %)
+ *   produkt   Kachel höchstens 280 px, auf dem Handy ein 96-px-Vorschaubild
+ *   abschluss 5/12 des Containers ab 768 px ((1080 - 64) * 5 / 12 = 424)
+ */
+const SIZES = {
+  halb: '(min-width: 768px) 508px, calc(100vw - 48px)',
+  karte: '(min-width: 901px) 344px, (min-width: 768px) 304px, calc(100vw - 48px)',
+  ort: '(min-width: 901px) 344px, (min-width: 768px) 304px, calc((100vw - 48px) * 0.4)',
+  produkt: '(min-width: 768px) 280px, 96px',
+  abschluss: '(min-width: 768px) 424px, calc(100vw - 48px)',
 };
 
 const PRODUKTE = [
@@ -326,8 +351,8 @@ function Hero() {
         <figure className="lp-pw-hero__bild">
           <CdnBild
             {...BILD.hero}
-            anzeigeBreite={528}
-            sizes="(min-width: 768px) 528px, 100vw"
+            anzeigeBreite={552}
+            sizes={SIZES.halb}
             loading="eager"
           />
         </figure>
@@ -348,8 +373,8 @@ function Idee() {
         <figure className="lp-pw-zwei__bild">
           <CdnBild
             {...BILD.idee}
-            anzeigeBreite={528}
-            sizes="(min-width: 768px) 528px, 100vw"
+            anzeigeBreite={552}
+            sizes={SIZES.halb}
             loading="lazy"
           />
         </figure>
@@ -431,8 +456,8 @@ function Vorteile() {
             <figure className={`lp-pw-karte__bild ${k.bildKlasse || ''}`}>
               <CdnBild
                 {...k.bild}
-                anzeigeBreite={344}
-                sizes="(min-width: 768px) 344px, 100vw"
+                anzeigeBreite={552}
+                sizes={SIZES.karte}
                 loading="lazy"
               />
             </figure>
@@ -505,7 +530,7 @@ function Produkte() {
               <CdnBild
                 {...p.bild}
                 anzeigeBreite={280}
-                sizes="(min-width: 768px) 280px, 70vw"
+                sizes={SIZES.produkt}
                 loading="lazy"
               />
             </span>
@@ -593,7 +618,7 @@ function Kanaele() {
               <CdnBild
                 {...o.bild}
                 anzeigeBreite={344}
-                sizes="(min-width: 768px) 344px, 100vw"
+                sizes={SIZES.ort}
                 loading="lazy"
               />
             </figure>
@@ -646,8 +671,8 @@ function Anmeldung() {
         <figure className="lp-pw-abschluss__bild">
           <CdnBild
             {...BILD.abschluss}
-            anzeigeBreite={400}
-            sizes="(min-width: 768px) 400px, 100vw"
+            anzeigeBreite={552}
+            sizes={SIZES.abschluss}
             loading="lazy"
           />
         </figure>
