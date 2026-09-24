@@ -229,7 +229,10 @@ describe('ARM C Paketkarte mit Festbetrag: vor und nach dem Kipp derselbe Karten
     setzePreismodus('brutto');
     const r = paketBetraege(lines(BRUTTO, 'AT'), paket, 'AT');
     assert.equal(r.rabattart, 'fest');
-    // AT-Summe 7406,72 minus derselbe Brutto-Code 589,00 wie in DE
+    // AT-Summe 7406,72 minus derselbe Brutto-Code 589,00 wie in DE. Der Abzug
+    // wird direkt geprüft: die Karte allein landet auch mit falschem Abzug
+    // (588,72 aus der AT-Summe) auf 6818 -- der Mutant blieb damit grün.
+    assert.equal(r.festAbzug, 589.0);
     assert.equal(r.preis, 6818);
   });
 

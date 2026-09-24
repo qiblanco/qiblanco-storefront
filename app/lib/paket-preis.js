@@ -160,6 +160,9 @@ export function paketBetraege(lines, paket, land) {
     // wurde -- siehe rabattCodeFuer(). Vorher war das eine stille Annahme, und
     // sie ist am 2026-09-13 in CHF/USD gebrochen.
     rabattart: festGilt ? 'fest' : 'prozent',
+    // Der Festbetrag, den diese Zahl unterstellt (null im Prozent-Pfad). Im
+    // Preismodus brutto ist das der Betrag, der im PAKET-Code stehen muss.
+    festAbzug: festGilt ? rabattAbzug : null,
   };
 }
 
