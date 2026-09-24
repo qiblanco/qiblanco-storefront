@@ -11,7 +11,14 @@
  * nichts aufgerundet:
  *   10 % Provision auf den Netto-Warenwert          (AGB § 4, § 7)
  *   eigener 5-%-Gutscheincode für die Community     (Anmeldeseite)
- *   Tracking-Link mit automatischem Rabatt, 30 Tage (Anmeldeseite)
+ *   Tracking-Link mit 30 Tagen Zuordnung            (Anmeldeseite)
+ *   KORREKTUR 2026-09-24 (Job 20260924-GROSSJOB-partnerlinks-...): die
+ *   Anmeldeseite verspricht "automatischen Rabatt" über den Tracking-Link.
+ *   Gemessen bis in die Kasse: der reine sca_ref-Link setzt den Code auf
+ *   dieser Hydrogen-Storefront NICHT (UpPromote-Auto-Apply braucht ein
+ *   Theme-App-Embed). Den Code bringt der Rabattlink
+ *   /discount/<CODE>?redirect=<pfad>&sca_ref=<ref> mit; erklärt auf
+ *   /pages/partner-details.
  *   Teilnahme erst nach Prüfung/Freigabe            (AGB § 2, § 6)
  *   keine Provision auf Eigen- und Firmenkäufe      (AGB § 5)
  *   nur abgeschlossene, nicht widerrufene Käufe     (AGB § 7)
@@ -125,9 +132,9 @@ const VORTEILE = [
   {
     titel: '30 Tage Zuordnung',
     text:
-      'Dein Tracking-Link zieht den Rabatt automatisch. Wer darüber kommt, ' +
-      'bleibt dir 30 Tage lang zugeordnet, auch wenn er erst ein paar Tage ' +
-      'später bestellt.',
+      'Wer über deinen Tracking-Link kommt, bleibt dir 30 Tage lang ' +
+      'zugeordnet, auch wenn er erst ein paar Tage später bestellt. Mit ' +
+      'deinem Rabattlink liegt dein Code gleich im Warenkorb.',
   },
 ];
 
@@ -220,7 +227,8 @@ function Hero() {
             <a href={PARTNERKONTO} rel="noopener">
               Partnerkonto
             </a>{' '}
-            liegen dein Tracking-Link, dein Gutscheincode und deine Zahlen.
+            liegen dein Tracking-Link, dein Gutscheincode und deine Zahlen.{' '}
+            <a href="/pages/partner-details">So funktionieren deine Links</a>.
           </p>
         </div>
         <figure className="lp-pp-hero__visual">
