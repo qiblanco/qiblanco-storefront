@@ -26,6 +26,7 @@ import {
   setzePreismodus,
   uebernehmeMetafeld,
   ladePreismodus,
+  vorschauModus,
 } from '../app/lib/preismodus.js';
 import {anzeigeSatz, bruttoAnzeige} from '../app/lib/markt-pricing.js';
 import {
@@ -219,5 +220,27 @@ describe('ARM C Paketkarte mit Festbetrag: vor und nach dem Kipp derselbe Karten
       'DE',
     );
     assert.equal(r.rabattart, 'prozent');
+  });
+});
+
+describe('Vorschau-Weiche: nur auf Hosts ohne Kunden', () => {
+  it('localhost und Oxygen-Vorschau nehmen den Parameter', () => {
+    assert.equal(vorschauModus('http://localhost:3000/products/x?preismodus=brutto'), 'brutto');
+    assert.equal(vorschauModus('https://abc-123.o2.myshopify.dev/?preismodus=netto'), 'netto');
+  });
+  it('Kundenhosts ignorieren ihn', () => {
+    for (const u of [
+      'https://qiblanco.com/products/qione-2-pro?preismodus=brutto',
+      'https://www.qiblanco.com/?preismodus=brutto',
+      'https://crystal-cacao.com/?preismodus=brutto',
+      'https://qi-master.qiblanco.com/?preismodus=brutto',
+      'https://localhost.boese.de/?preismodus=brutto',
+    ]) {
+      assert.equal(vorschauModus(u), null, u);
+    }
+  });
+  it('unbekannter Wert und kaputte URL: keine Weiche', () => {
+    assert.equal(vorschauModus('http://localhost/?preismodus=inkl'), null);
+    assert.equal(vorschauModus('kein url'), null);
   });
 });

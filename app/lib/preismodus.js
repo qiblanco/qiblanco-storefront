@@ -134,3 +134,33 @@ export async function ladePreismodus(storefront) {
   }
   return uebernehmeMetafeld(wert);
 }
+
+/**
+ * VORSCHAU-WEICHE: `?preismodus=brutto|netto` wirkt NUR auf Hosts, die kein
+ * Kunde erreicht (localhost, 127.0.0.1, Oxygen-Vorschau *.myshopify.dev).
+ * Wozu: der Kipp ist sonst erst im Kipp-Moment am gerenderten Laden messbar.
+ * Mit der Weiche zeigt das lokale Prod-Bundle VOR dem Kipp, was die Seite nach
+ * dem Kipp rechnet (bei heute noch netto gespeicherten Preisen: den Nettobetrag
+ * ohne Aufschlag -- genau das beweist, dass der Zweig greift).
+ * Eine Positivliste statt „nicht Produktion“: ein neuer Kundenhost (etwa der
+ * Qi-Master-Laden, der denselben Code fährt) bekommt die Weiche so nie.
+ * @param {string} requestUrl
+ * @returns {'netto'|'brutto'|null}
+ */
+export function vorschauModus(requestUrl) {
+  try {
+    const url = new URL(requestUrl);
+    const host = url.hostname;
+    const erlaubt =
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host.endsWith('.myshopify.dev');
+    if (!erlaubt) return null;
+    const m = String(url.searchParams.get('preismodus') ?? '')
+      .trim()
+      .toLowerCase();
+    return PREISMODI.includes(m) ? m : null;
+  } catch {
+    return null;
+  }
+}
