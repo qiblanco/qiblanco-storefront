@@ -46,9 +46,13 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
 
   return (
     <section className="qm-addons" aria-labelledby="qm-addons-titel">
-      <h2 id="qm-addons-titel" className="qm-addons__titel">
+      {/* Bewusst KEIN h2: die Seite fuehrt genau EINEN H2-Stil
+          (--qm-fs-h2, design-rubrik „EIN H2-Stil je Seite"), und der wäre in
+          der schmalen Kaufspalte lauter als der Preis. Die Zeile benennt den
+          Bereich über aria-labelledby. */}
+      <p id="qm-addons-titel" className="qm-addons__titel">
         Dazu für deinen Qi Master®
-      </h2>
+      </p>
       <div className="qm-addons__karten">
         {wn ? (
           <div className={`qm-addon${wnVariante ? ' qm-addon--an' : ''}`}>
