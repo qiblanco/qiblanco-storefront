@@ -238,7 +238,7 @@
 
 .fo-weg__knoten text {
   fill: var(--qb-text);
-  font-size: var(--qb-ref-fs-4);
+  font-size: var(--qb-ref-fs-6);
   font-weight: 700;
 }
 

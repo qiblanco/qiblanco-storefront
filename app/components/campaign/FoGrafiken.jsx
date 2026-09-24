@@ -104,17 +104,17 @@ export function GrafikWeg({stufen, stand, hier}) {
       <path className="fo-weg__puls" d={gold} pathLength="100" aria-hidden="true" />
       {WEG_TEILE.map((w, i) => (
         <g key={stufen[i].nr} className="fo-weg__knoten">
-          <circle cx={w.p0[0]} cy={w.p0[1]} r="18" />
-          <text x={w.p0[0]} y={w.p0[1] + 6} textAnchor="middle">
+          <circle cx={w.p0[0]} cy={w.p0[1]} r="22" />
+          <text x={w.p0[0]} y={w.p0[1] + 8} textAnchor="middle">
             {stufen[i].nr}
           </text>
         </g>
       ))}
       <g className="fo-weg__erde" aria-hidden="true">
-        <circle cx={erde[0]} cy={erde[1]} r="24" />
-        <ellipse cx={erde[0]} cy={erde[1]} rx="10" ry="24" />
-        <path d={`M ${erde[0] - 24} ${erde[1]} H ${erde[0] + 24}`} />
-        <path d={`M ${erde[0] - 20} ${erde[1] - 12} H ${erde[0] + 20} M ${erde[0] - 20} ${erde[1] + 12} H ${erde[0] + 20}`} />
+        <circle cx={erde[0]} cy={erde[1]} r="26" />
+        <ellipse cx={erde[0]} cy={erde[1]} rx="11" ry="26" />
+        <path d={`M ${erde[0] - 26} ${erde[1]} H ${erde[0] + 26}`} />
+        <path d={`M ${erde[0] - 22} ${erde[1] - 13} H ${erde[0] + 22} M ${erde[0] - 22} ${erde[1] + 13} H ${erde[0] + 22}`} />
       </g>
       <circle className="fo-weg__ring" cx={punkt[0]} cy={punkt[1]} r="16" aria-hidden="true" />
       <circle className="fo-weg__punkt" cx={punkt[0]} cy={punkt[1]} r="9" />
