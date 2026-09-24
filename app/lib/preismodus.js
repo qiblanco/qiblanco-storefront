@@ -2,41 +2,41 @@
  * PREISMODUS DES DACH-SHOPS — stehen die EUR-Variantenpreise in Shopify
  * NETTO oder BRUTTO?
  *
- * WOFUER (Christian 2026-09-24, z3://auftrag/CW-20260924-094bcdd4: "die
+ * WOFÜR (Christian 2026-09-24, z3://auftrag/CW-20260924-094bcdd4: "die
  * Einstellung so richten, dass die Kasse dieselben Bruttopreise zeigt wie die
  * Produktseite"; Grossjob 20260924-kasse-zeigt-bruttopreise-wie-produktseite-
  * prio10). Bis zum Kipp speichert Shopify NETTO, und jede Anzeige rechnet
  * `preis x (1+satz)`. Christian stellt im Admin den Steuer-Einbezug um, der
  * Server schreibt in derselben Minute die Basispreise auf brutto (Segment
  * s04). Ab dann ist der EUR-Preis der Storefront-API schon der Endbetrag, und
- * derselbe Aufschlag waere doppelte Steuer. Die Anzeige muss also OHNE Deploy
- * kippen koennen, genau in dieser Minute.
+ * derselbe Aufschlag wäre doppelte Steuer. Die Anzeige muss also OHNE Deploy
+ * kippen können, genau in dieser Minute.
  *
- * DER TRAEGER: Shop-Metafeld `qb_preis.modus` (Definition mit
+ * DER TRÄGER: Shop-Metafeld `qb_preis.modus` (Definition mit
  * access.storefront=PUBLIC_READ, angelegt 2026-09-24 — ohne Definition gibt
- * die Storefront-API NULL zurueck). Gelesen in lib/context.js VOR jedem
+ * die Storefront-API NULL zurück). Gelesen in lib/context.js VOR jedem
  * Request, also bevor irgendein Loader rechnet (Kind-Loader laufen parallel
- * zum root-Loader; dort waere es zu spaet). Der root-Loader reicht den Wert
+ * zum root-Loader; dort wäre es zu spät). Der root-Loader reicht den Wert
  * an den Client weiter, damit die Hydration dieselbe Zahl rechnet.
  *
- * FAIL-DEFAULT, BEGRUENDET: ein fester Rueckfall ist in EINER der beiden
+ * FAIL-DEFAULT, BEGRÜNDET: ein fester Rückfall ist in EINER der beiden
  * Welten falsch — `netto` nach dem Kipp (Anzeige +19 %), `brutto` davor
  * (Anzeige -19 %). Deshalb in dieser Reihenfolge:
- *   1. Metafeld lesbar und gueltig        -> sein Wert       (quelle metafeld)
+ *   1. Metafeld lesbar und gültig        -> sein Wert       (quelle metafeld)
  *   2. unlesbar, Isolate hat schon gelesen -> letzter Wert    (quelle zuletzt)
  *   3. sonst                               -> PREISMODUS_VORGABE (quelle vorgabe)
  * Die Vorgabe ist der ZUSTAND DES SHOPS BEIM DEPLOY und wird nach dem Kipp
  * per Folge-Deploy auf 'brutto' gezogen (Zusage an s04). Welche Quelle gilt,
- * steht als data-qb-preismodus-quelle im HTML — ein Rueckfall ist damit
+ * steht als data-qb-preismodus-quelle im HTML — ein Rückfall ist damit
  * messbar statt still.
  *
- * WAS "BRUTTO" HEISST: der @inContext-Preis ist der Endbetrag, auch in AT
+ * WAS „BRUTTO“ HEISST: der @inContext-Preis ist der Endbetrag, auch in AT
  * (Markt EU "Dynamisch": Shopify rechnet den Heimatsatz heraus und den
  * Landessatz drauf). Der Steuersatz wird dann NICHT mehr aufgeschlagen; er
- * bleibt nur noch fuer Festbetraege gebraucht, die im Code netto stehen
+ * bleibt nur noch für Festbeträge gebraucht, die im Code netto stehen
  * (heimatSatz).
  *
- * Relativ importierbar, kein '~'-Alias: `node --test` muss das laden koennen.
+ * Relativ importierbar, kein '~'-Alias: `node --test` muss das laden können.
  */
 
 export const PREISMODI = ['netto', 'brutto'];
@@ -74,7 +74,7 @@ export function istBrutto() {
 }
 
 /**
- * Setzt den Modus. Unbekannte Werte werden NICHT uebernommen (Rueckgabe
+ * Setzt den Modus. Unbekannte Werte werden NICHT übernommen (Rückgabe
  * false) — ein Tippfehler im Metafeld darf keinen dritten Zustand erzeugen.
  * @param {string} modus
  * @param {string} [quelle]
@@ -86,7 +86,7 @@ export function setzePreismodus(modus, quelle = 'gesetzt') {
   return true;
 }
 
-/** Nur fuer Tests: zurueck auf den Deploy-Zustand. */
+/** Nur für Tests: zurück auf den Deploy-Zustand. */
 export function preismodusZuruecksetzen() {
   aktuell = {modus: PREISMODUS_VORGABE, quelle: 'vorgabe'};
   zuletztGelesen = null;
@@ -94,7 +94,7 @@ export function preismodusZuruecksetzen() {
 
 /**
  * Bewertet eine Metafeld-Antwort nach der Reihenfolge im Kopf und setzt den
- * Modus. Getrennt von der Abfrage, damit die Reihenfolge ohne Netz pruefbar ist.
+ * Modus. Getrennt von der Abfrage, damit die Reihenfolge ohne Netz prüfbar ist.
  * @param {string|null|undefined} wert Metafeld-Wert (null = unlesbar/fehlt)
  */
 export function uebernehmeMetafeld(wert) {
@@ -111,9 +111,9 @@ export function uebernehmeMetafeld(wert) {
 }
 
 /**
- * Liest das Metafeld ueber die Storefront-API (kurzer Cache: der Kipp soll
+ * Liest das Metafeld über die Storefront-API (kurzer Cache: der Kipp soll
  * binnen rund einer Minute ankommen) und setzt den Modus. Wirft nie — ein
- * Lesefehler faellt auf die Reihenfolge im Kopf zurueck.
+ * Lesefehler fällt auf die Reihenfolge im Kopf zurück.
  * @param {any} storefront Hydrogen-Storefront-Client
  */
 export async function ladePreismodus(storefront) {

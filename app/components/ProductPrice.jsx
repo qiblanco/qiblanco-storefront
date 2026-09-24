@@ -55,7 +55,7 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
       // Nicht-EUR bleibt auch hier steuerfrei — das ist die Markt-Mechanik
       // aus markt-pricing.js und gilt für beide Wege gleich.
       // Im Preismodus brutto ist jeder EUR-Betrag schon der Endbetrag -- auch
-      // eine ausdrueckliche Ausnahme darf dann nichts mehr aufschlagen.
+      // eine ausdrückliche Ausnahme darf dann nichts mehr aufschlagen.
       return (money.currencyCode || 'EUR') === 'EUR' && !istBrutto()
         ? taxRate
         : 0;

@@ -5,11 +5,11 @@
  *
  * DIE TRAGENDE EIGENSCHAFT IST EINE INVARIANZ: derselbe Kunde sieht vor und
  * nach dem Kipp dieselbe Zahl. Vorher liefert die API netto und der Kanon
- * schlaegt auf; nachher liefert sie brutto (s04 schreibt die Basispreise um,
- * AT bekommt ueber "Dynamisch" basis/1,19*1,20) und der Kanon schlaegt NICHT
+ * schlägt auf; nachher liefert sie brutto (s04 schreibt die Basispreise um,
+ * AT bekommt über "Dynamisch" basis/1,19*1,20) und der Kanon schlägt NICHT
  * auf. Deshalb vergleicht jeder Arm unten die netto-Welt mit der brutto-Welt.
  *
- * ROT VOR GRUEN: ein Kanon, der den Modus ignoriert (brutto-Preis x 1,19),
+ * ROT VOR GRÜN: ein Kanon, der den Modus ignoriert (brutto-Preis x 1,19),
  * muss hier rot werden. Belegt per Mutant (anzeigeSatz ohne istBrutto-Zweig,
  * bruttoZeileRoh ohne istBrutto-Zweig, paket-preis ohne Heimatsatz-Abzug) --
  * Kommandos und Ausgabe im RESULT des Segments. Die Mutanten zielen je auf
@@ -61,13 +61,13 @@ const cartLine = (handle, amount, quantity = 1, currencyCode = 'EUR') => ({
 
 beforeEach(() => preismodusZuruecksetzen());
 
-describe('Traeger: Metafeld-Wert und Rueckfall-Reihenfolge', () => {
+describe('Träger: Metafeld-Wert und Rückfall-Reihenfolge', () => {
   it('Deploy-Vorgabe ist netto (heutiger Shop-Zustand)', () => {
     assert.equal(PREISMODUS_VORGABE, 'netto');
     assert.deepEqual(preismodusStand(), {modus: 'netto', quelle: 'vorgabe'});
   });
 
-  it('gueltiger Metafeld-Wert gewinnt, normalisiert', () => {
+  it('gültiger Metafeld-Wert gewinnt, normalisiert', () => {
     assert.deepEqual(uebernehmeMetafeld(' Brutto '), {
       modus: 'brutto',
       quelle: 'metafeld',
@@ -97,7 +97,7 @@ describe('Traeger: Metafeld-Wert und Rueckfall-Reihenfolge', () => {
     assert.equal(uebernehmeMetafeld('inkl').modus, 'brutto');
   });
 
-  it('ladePreismodus: Storefront-Fehler wirft nicht, faellt zurueck', async () => {
+  it('ladePreismodus: Storefront-Fehler wirft nicht, fällt zurück', async () => {
     const kaputt = {
       query: async () => {
         throw new Error('503');
@@ -131,7 +131,7 @@ describe('ARM A anzeigeSatz/bruttoAnzeige: vor und nach dem Kipp dieselbe Zahl',
     }
   }
 
-  it('brutto schlaegt NICHTS auf, der enthaltene Satz bleibt lesbar', () => {
+  it('brutto schlägt NICHTS auf, der enthaltene Satz bleibt lesbar', () => {
     setzePreismodus('brutto');
     assert.equal(anzeigeSatz('qione-2-pro', 'EUR', 'AT'), 0);
     assert.equal(taxRateForHandle('qione-2-pro', 'AT'), 0.2);
@@ -160,7 +160,7 @@ describe('ARM B Warenkorbzeile: Zeilenbetrag = Kassenbetrag', () => {
         'DE',
       );
       // Nach dem Kipp ist die Zeile cent-genau der gerundete Seitenpreis;
-      // vorher lag sie hoechstens einen Cent daneben (netto*1,19).
+      // vorher lag sie höchstens einen Cent daneben (netto*1,19).
       assert.ok(
         Math.abs(nachher - vorher) <= 0.02,
         `vorher ${vorher}, nachher ${nachher}`,
@@ -169,7 +169,7 @@ describe('ARM B Warenkorbzeile: Zeilenbetrag = Kassenbetrag', () => {
     });
   }
 
-  it('Sale-Kakao: im Modus brutto zaehlt der API-Betrag, nicht die Konstante', () => {
+  it('Sale-Kakao: im Modus brutto zählt der API-Betrag, nicht die Konstante', () => {
     setzePreismodus('brutto');
     assert.equal(
       getCartLineGrossDisplayTotalExact(cartLine('37cr378n', 150.0, 2), 'DE'),
@@ -208,7 +208,7 @@ describe('ARM C Paketkarte mit Festbetrag: vor und nach dem Kipp derselbe Karten
     assert.equal(nachher.preis, vorher.preis);
   });
 
-  it('gemischte Heimatsaetze nehmen den Festbetrag-Pfad nicht', () => {
+  it('gemischte Heimatsätze nehmen den Festbetrag-Pfad nicht', () => {
     setzePreismodus('brutto');
     const r = paketBetraege(
       [

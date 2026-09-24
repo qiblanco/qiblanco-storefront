@@ -100,7 +100,7 @@ export function paketBetraege(lines, paket, land) {
   // Heimatsatz (DE) je Zeile: `rabattFest` steht NETTO im Code, weil der Shop
   // bis zum Kipp netto kalibriert war. Im Preismodus brutto wird der Rabatt-
   // code in Shopify (s04) auf rabattFest x (1+Heimatsatz) gezogen, und genau
-  // diese Zahl muss die Karte abziehen. Gemischte Heimatsaetze -> kein Fest-Pfad.
+  // diese Zahl muss die Karte abziehen. Gemischte Heimatsätze -> kein Fest-Pfad.
   const heimatSaetze = new Set();
 
   for (const line of lines) {
@@ -133,11 +133,11 @@ export function paketBetraege(lines, paket, land) {
     heimatSaetze.size === 1;
 
   // Preismodus brutto: `nettoSumme` ist dann schon die Bruttosumme (die API
-  // liefert Endbetraege, satz ist 0), der Festbetrag wird auf denselben
+  // liefert Endbeträge, satz ist 0), der Festbetrag wird auf denselben
   // centgenauen Bruttowert gehoben, den s04 in den Rabattcode schreibt.
-  // UNGEMESSEN fuer AT: ob Shopify unter "Dynamisch" einen Festbetrag je Land
-  // umrechnet, ist nicht belegt -- gerechnet wird er hier unveraendert (Rand-
-  // messung s05 prueft den Kartenpreis gegen die AT-Kasse).
+  // UNGEMESSEN für AT: ob Shopify unter "Dynamisch" einen Festbetrag je Land
+  // umrechnet, ist nicht belegt -- gerechnet wird er hier unverändert (Rand-
+  // messung s05 prüft den Kartenpreis gegen die AT-Kasse).
   const rabattAbzug = istBrutto()
     ? Math.round(paket.rabattFest * (1 + [...heimatSaetze][0]) * 100) / 100
     : paket.rabattFest;

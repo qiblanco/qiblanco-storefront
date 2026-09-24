@@ -58,8 +58,8 @@ export async function createAppLoadContext(request, env, executionContext) {
   // PREISMODUS netto|brutto (Grossjob 20260924-kasse-zeigt-bruttopreise-wie-
   // produktseite-prio10, s02): HIER und nicht im root-Loader, weil Kind-Loader
   // parallel zum root-Loader laufen und sonst mit dem alten Modus rechneten.
-  // Kurz gecacht (30 s + 30 s stale), wirft nie; Rueckfall-Reihenfolge und
-  // Begruendung in lib/preismodus.js.
+  // Kurz gecacht (30 s + 30 s stale), wirft nie; Rückfall-Reihenfolge und
+  // Begründung in lib/preismodus.js.
   const preismodus = await ladePreismodus(hydrogenContext.storefront);
 
   return {

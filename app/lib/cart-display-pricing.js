@@ -176,7 +176,7 @@ function bruttoZeileRoh(line, land) {
   }
 
   // PREISMODUS brutto (Grossjob 20260924-kasse-zeigt-bruttopreise-wie-
-  // produktseite-prio10, s02): der Zeilenbetrag IST der Kassenbetrag, auch fuer
+  // produktseite-prio10, s02): der Zeilenbetrag IST der Kassenbetrag, auch für
   // den Sale-Kakao -- die Kasse belastet, was Shopify liefert, nicht die
   // Konstante darunter. Kein Aufschlag, kein Ersatzwert.
   if (istBrutto()) {

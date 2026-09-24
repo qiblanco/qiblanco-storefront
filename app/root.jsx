@@ -458,7 +458,7 @@ export function Layout({children}) {
     Boolean(data?.salesbotWidgetOrigin) &&
     (salesbotSeite || salesbotDeutscherShop);
 
-  // Client: den Preismodus des Servers uebernehmen, BEVOR ein Kind rechnet
+  // Client: den Preismodus des Servers übernehmen, BEVOR ein Kind rechnet
   // (Eltern rendern vor Kindern). Auf dem Server hat lib/context.js ihn schon
   // gesetzt. Ohne Loader-Daten (Fehlerseite) bleibt der Modul-Stand.
   if (typeof window !== 'undefined' && data?.preismodus?.modus) {
