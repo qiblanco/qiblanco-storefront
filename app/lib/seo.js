@@ -425,6 +425,19 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Erklärseite GitterChip, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-24',
   },
+  // Neu 2026-09-24 (Großjob „Forschung bei Qi Blanco“, Christian 24.09.2026:
+  // „Die Page heißt /pages/forschung. Nicht crawlen, nicht veröffentlicht.“).
+  // Dieselbe Lage wie der Eintrag darüber: von Anfang an unsichtbar gebaut,
+  // wirkungslos, solange es kein Shopify-Seitenobjekt mit diesem Handle gibt.
+  // Das noindex steht in der eigenen Route `pages.forschung.jsx`. Bei
+  // Christians Freigabe wird dieser Eintrag entfernt.
+  {
+    handle: 'forschung',
+    ausSitemap: true,
+    grund:
+      'Forschungsverständnis in drei Stufen, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-09-24',
+  },
 ];
 
 /**
