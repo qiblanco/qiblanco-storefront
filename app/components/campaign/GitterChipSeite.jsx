@@ -1,3 +1,4 @@
+import {Fragment} from 'react';
 import {Link} from 'react-router';
 import {
   GrafikLeit,
@@ -38,13 +39,15 @@ const GRAFIKEN = {
 function Kette({glied}) {
   return (
     <ol className="gc-kette" aria-hidden="true">
-      {KETTE.map((k) => (
-        <li
-          key={k.id}
-          className={glied === 'alle' || glied === k.id ? 'gc-kette__glied ist-an' : 'gc-kette__glied'}
-        >
-          {k.name}
-        </li>
+      {KETTE.map((k, i) => (
+        <Fragment key={k.id}>
+          {i > 0 ? <li className="gc-kette__pfeil">→</li> : null}
+          <li
+            className={glied === 'alle' || glied === k.id ? 'gc-kette__glied ist-an' : 'gc-kette__glied'}
+          >
+            {k.name}
+          </li>
+        </Fragment>
       ))}
     </ol>
   );
@@ -153,8 +156,8 @@ function Stufe({stufe, nr}) {
         <div className="gc-innenansicht">
           <GitterchipMoleculesScrub
             dataSection="gc-innenansicht"
-            heightVhDesktop={250}
-            heightVhMobile={200}
+            heightVhDesktop={200}
+            heightVhMobile={160}
           />
         </div>
       ) : null}
@@ -223,7 +226,7 @@ function Quellen() {
 
 export function GitterChipSeite() {
   return (
-    <article className="gc" data-section="gc-seite">
+    <article className="gc">
       <header className="gc-kopf" data-section="gc-kopf">
         <div className="gc-kopf__text">
           <p className="gc-dachzeile">{SEITE.dachzeile}</p>

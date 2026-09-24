@@ -65,7 +65,7 @@ const f1 = (z) => Number(z.toFixed(1));
 
 /** Eine Feldlinie vom linken zum rechten Rand des Chips, Bogen der Höhe h. */
 function feldlinie(x0, x1, y, h) {
-  const k = (x1 - x0) * 0.08;
+  const k = (x1 - x0) * 0.12 + Math.abs(h) * 0.45;
   return `M ${x0} ${y} C ${f1(x0 - k)} ${f1(y - h)}, ${f1(x1 + k)} ${f1(y - h)}, ${x1} ${y}`;
 }
 
@@ -80,9 +80,9 @@ function Molekuel({x, y, kipp, verzoegerung}) {
         transformOrigin: `${x}px ${y}px`,
       }}
     >
-      <circle className="kw-atom-h" cx={x - 7} cy={y + 8} r="4.5" />
-      <circle className="kw-atom-h" cx={x + 7} cy={y + 8} r="4.5" />
-      <circle className="kw-atom-o" cx={x} cy={y} r="8" />
+      <circle className="kw-atom-h" cx={x - 9} cy={y + 10} r="5.5" />
+      <circle className="kw-atom-h" cx={x + 9} cy={y + 10} r="5.5" />
+      <circle className="kw-atom-o" cx={x} cy={y} r="10" />
     </g>
   );
 }

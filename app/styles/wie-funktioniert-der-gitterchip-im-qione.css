@@ -23,7 +23,7 @@
 
 :root {
   --gc-breite: 1120px;
-  --gc-breite-text: 680px;
+  --gc-breite-text: 64ch;
   --gc-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
   --gc-linie: rgba(44, 42, 38, 0.14);
   --gc-schatten: 0 12px 32px rgba(25, 23, 20, 0.08);
@@ -166,6 +166,7 @@
 
 .gc-figur figcaption,
 .gc-szene figcaption {
+  max-width: var(--gc-breite-text);
   margin-top: var(--gc-s2);
   font-size: var(--qb-ref-fs-2);
   line-height: 1.5;
@@ -214,8 +215,13 @@
   margin: 0 0 var(--gc-s1);
   padding: 0;
   list-style: none;
-  font-size: var(--qb-ref-fs-1);
   color: var(--qb-text-gedaempft);
+}
+
+.gc-kette li {
+  margin: 0;
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.4;
 }
 
 .gc-kette__glied {
@@ -224,9 +230,8 @@
   border-radius: var(--qb-radius-klein);
 }
 
-.gc-kette__glied + .gc-kette__glied::before {
-  content: '→';
-  margin-right: var(--gc-s1);
+.gc-kette__pfeil {
+  align-self: center;
   color: var(--qb-text-gedaempft);
 }
 
@@ -248,8 +253,14 @@
 
 .gc-weiter {
   margin-top: var(--gc-s4);
-  font-size: var(--qb-ref-fs-3);
+  font-size: var(--qb-ref-fs-4);
   font-weight: 700;
+}
+
+.gc-weiter a,
+.gc-video__liste a,
+.gc-quellen a {
+  text-decoration: underline;
 }
 
 .gc-weiter a::after {
@@ -259,6 +270,16 @@
 
 .gc-innenansicht {
   margin: var(--gc-s3) 0 var(--gc-s4);
+}
+
+/* Der Scroll-Film (Bausatz) setzt seinen Einstiegstitel mit 2,5rem größer als
+   jede H2 dieser Seite. Im Scope gilt die eine H2-Größe der Seite, beide
+   Overlays zentriert (dasselbe Rezept wie .lp-v3 auf der Schlafseite). */
+.gc .ScrollScrubVideo .VideoOverlay .TextContent-Start h2,
+.gc .ScrollScrubVideo .VideoOverlay .TextContent-End div h2 {
+  font-size: var(--qb-text-h2);
+  font-weight: 700;
+  text-align: center;
 }
 
 /* ─── Kette Chip → Wasser → Zelle ────────────────────────────────────────── */
@@ -291,13 +312,18 @@
 
 .gc-kettenbild__text {
   margin: 0;
-  font-size: var(--qb-ref-fs-3);
+  font-size: var(--qb-ref-fs-4);
 }
 
 .gc-kettenbild__quelle {
   margin: var(--gc-s1) 0 0;
   font-size: var(--qb-ref-fs-2);
   color: var(--qb-akzent-tinte);
+}
+
+.gc-tafel {
+  max-width: 220px;
+  margin-inline: auto;
 }
 
 .gc-pfeil {
@@ -400,12 +426,13 @@
 }
 
 .gc-video__legende {
+  max-width: var(--gc-breite-text);
   margin-top: var(--gc-s2);
-  font-size: var(--qb-ref-fs-3);
+  font-size: var(--qb-ref-fs-4);
 }
 
 .gc-video__liste {
-  font-size: var(--qb-ref-fs-3);
+  font-size: var(--qb-ref-fs-4);
 }
 
 /* ─── Studien ────────────────────────────────────────────────────────────── */
@@ -453,7 +480,7 @@
 }
 
 .gc-kennzahl__text {
-  font-size: var(--qb-ref-fs-3);
+  font-size: var(--qb-ref-fs-4);
 }
 
 .gc-kennzahl__zeile {
@@ -481,27 +508,28 @@
   color: var(--qb-text-gedaempft);
 }
 
-.gc-quellen h2 {
-  font-size: var(--qb-text-h3);
-}
-
 .gc-quellen h3 {
   font-size: var(--qb-ref-fs-4);
   margin-top: var(--gc-s3);
 }
 
 .gc-quellen__liste {
+  max-width: 70ch;
   margin: 0;
   padding-left: var(--gc-s3);
 }
 
 .gc-quellen__liste li {
   margin-bottom: var(--gc-s1);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.5;
 }
 
 /* ─── Breiten ────────────────────────────────────────────────────────────── */
 @media (max-width: 599px) {
-  .gc h2 {
+  .gc h2,
+  .gc .ScrollScrubVideo .VideoOverlay .TextContent-Start h2,
+  .gc .ScrollScrubVideo .VideoOverlay .TextContent-End div h2 {
     font-size: var(--qb-text-h2-mobil);
   }
 

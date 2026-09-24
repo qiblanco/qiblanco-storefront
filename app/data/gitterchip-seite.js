@@ -290,7 +290,7 @@ export const STUFEN = [
       'Überzeugt er dich nicht, schickst du ihn zurück und bekommst den vollen Kaufpreis erstattet.',
     ],
     kauf: {text: 'Zum QiOne® 2 Pro', href: KAUFWEG},
-    neben: {text: 'Alle Studien im Überblick', href: '/pages/studien'},
+    neben: {text: 'Die fünf veröffentlichten Studien im Überblick', href: '/pages/studien'},
   },
 ];
 
