@@ -5,6 +5,7 @@ import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {formatPreis} from '~/lib/markt-pricing';
 import {taxRateForHandle} from '~/lib/cart-display-pricing';
+import {istBrutto} from '~/lib/preismodus';
 
 /**
  * The main cart component that displays the cart items and summary.
@@ -63,7 +64,8 @@ function CartEmpty({hidden = false}) {
 // Beide Zahlen stammen aus DERSELBEN Quelle — der Versandpolicy des DACH-Shops
 // (checkout.qiblanco.com/policies/shipping-policy, live nachgemessen über
 // /cart/shipping_rates.json am 2026-08-12): Deutschland 5,90 EUR, ab 99 EUR
-// versandkostenfrei. Die 99 sind NETTO (Warenwert vor Mehrwertsteuer):
+// versandkostenfrei. Die 99 sind NETTO (Warenwert vor Mehrwertsteuer), solange
+// der Shop im Preismodus netto steht (lib/preismodus.js):
 // nachgemessen 2026-09-23 an cartCreate/deliveryGroups, 2x Kakao mit Subtotal
 // 114,02 netto ist frei (Job 20260923-bot-versandfakten-gegen-rate-engine-prio40).
 // Sie stehen deshalb nebeneinander statt verstreut: vorher
@@ -97,7 +99,14 @@ function FreeShipping({cart}){
   // für 94 €). Aufgeschlagen wird der Regelsatz: fehlt der Rest mit Kakao
   // (ermäßigter Satz), reicht sogar etwas weniger. Der Betrag ist damit eine
   // Obergrenze und nie zu klein.
-  const diffBrutto = difference * (1 + taxRateForHandle(null, 'DE'));
+  // PREISMODUS brutto (s02 Grossjob 20260924-kasse-zeigt-bruttopreise-...):
+  // subtotalAmount ist dann schon brutto, und Shopify vergleicht die
+  // Versandschwelle gegen genau diese Zahl -- kein Aufschlag mehr. Die 99 bleibt
+  // die Zahl, die in der Shopify-Versandrate steht; zieht jemand sie dort auf
+  // brutto (117,81), muss SCHWELLE_DE im selben Zug mit (offene Flanke s04).
+  const diffBrutto = istBrutto()
+    ? difference
+    : difference * (1 + taxRateForHandle(null, 'DE'));
   // Geschrieben wie Zeile und Zwischensumme ("23,81 €", CartSummary nutzt
   // denselben Formatierer). <Money> schrieb hier "€23.81" neben "94,00 €".
   const diffText = formatPreis(diffBrutto, 'EUR', 'cart-cent');

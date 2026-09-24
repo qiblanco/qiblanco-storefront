@@ -21,6 +21,7 @@
 // relativen Pfad identisch auf; cart-display-pricing importiert selbst
 // nichts, die Kette ist damit vollstaendig node-aufloesbar.
 import {taxRateForHandle} from './cart-display-pricing.js';
+import {istBrutto} from './preismodus.js';
 
 /**
  * Anzeige-Steuersatz eines Produkts im Markt-Kontext.
@@ -36,10 +37,17 @@ import {taxRateForHandle} from './cart-display-pricing.js';
  * @param {string} handle Produkt-Handle
  * @param {string} [currencyCode] Waehrung des API-Preises (Default EUR)
  * @param {string} [land] ISO-Land des aufgeloesten Marktes (Default DE)
- * @returns {number} Satz des Landes für EUR-Netto-Maerkte, 0 sonst (Endbetrag)
+ * @returns {number} AUFZUSCHLAGENDER Satz: der des Landes für EUR im Preismodus
+ *   netto, 0 sonst (Nicht-EUR oder Preismodus brutto: Betrag ist Endbetrag)
  */
 export function anzeigeSatz(handle, currencyCode, land) {
   if ((currencyCode || 'EUR') !== 'EUR') return 0;
+  // DRITTE ACHSE, der PREISMODUS (Grossjob 20260924-kasse-zeigt-brutto-
+  // preise-wie-produktseite-prio10, s02): steht der Shop auf brutto, ist auch
+  // der EUR-Preis schon der Endbetrag -- in DE ohnehin, in AT über Shopifys
+  // "Dynamisch" (Heimatsatz heraus, Landessatz drauf). Aufschlagen hieße dann
+  // doppelte Steuer. Der ENTHALTENE Satz bleibt über taxRateForHandle lesbar.
+  if (istBrutto()) return 0;
   return taxRateForHandle(handle, land);
 }
 
