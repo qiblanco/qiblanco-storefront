@@ -14,11 +14,15 @@
  *   Tracking-Link mit 30 Tagen Zuordnung            (Anmeldeseite)
  *   KORREKTUR 2026-09-24 (Job 20260924-GROSSJOB-partnerlinks-...): die
  *   Anmeldeseite verspricht "automatischen Rabatt" über den Tracking-Link.
- *   Gemessen bis in die Kasse: der reine sca_ref-Link setzt den Code auf
+ *   Gemessen bis in die Kasse: der reine sca_ref-Link setzte den Code auf
  *   dieser Hydrogen-Storefront NICHT (UpPromote-Auto-Apply braucht ein
- *   Theme-App-Embed). Den Code bringt der Rabattlink
- *   /discount/<CODE>?redirect=<pfad>&sca_ref=<ref> mit; erklärt auf
- *   /pages/partner-details.
+ *   Theme-App-Embed).
+ *   BEHOBEN 2026-09-24 (Job 20260924-partnerlink-setzt-code-automatisch-
+ *   und-permalink-einbettungsfest-prio12, PR #616): der Server legt beim
+ *   Aufruf mit sca_ref den Code des Partners in den Warenkorb, sofern dort
+ *   noch keiner liegt. Gemessen am Rand mit dem Test-Partner: Code im
+ *   Warenkorb, Abzug in der Kasse (partner-manager/bin/partnercode-abgleich
+ *   messe). Neue Partner kommen über den täglichen Abgleich hinzu.
  *   Teilnahme erst nach Prüfung/Freigabe            (AGB § 2, § 6)
  *   keine Provision auf Eigen- und Firmenkäufe      (AGB § 5)
  *   nur abgeschlossene, nicht widerrufene Käufe     (AGB § 7)
@@ -133,8 +137,8 @@ const VORTEILE = [
     titel: '30 Tage Zuordnung',
     text:
       'Wer über deinen Tracking-Link kommt, bleibt dir 30 Tage lang ' +
-      'zugeordnet, auch wenn er erst ein paar Tage später bestellt. Mit ' +
-      'deinem Rabattlink liegt dein Code gleich im Warenkorb.',
+      'zugeordnet, auch wenn er erst ein paar Tage später bestellt. Dein ' +
+      'Code liegt dabei gleich im Warenkorb.',
   },
 ];
 
@@ -195,7 +199,7 @@ function Hero() {
           </h1>
           <ul className="lp-a-hero__dreizeiler">
             <li>Eigener 5-%-Gutscheincode.</li>
-            <li>Tracking-Link mit 30 Tagen Zuordnung.</li>
+            <li>Tracking-Link bringt den Rabatt mit.</li>
             <li>Kostenlos, jederzeit kündbar.</li>
           </ul>
           <p className="lp-a-hero__subline">
