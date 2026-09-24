@@ -5,6 +5,7 @@ import {
   getTrackedCheckoutUrl,
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
+import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -26,6 +27,19 @@ import {
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context, params}) {
+  // EINBETTUNGS-WEICHE (Job 20260924-partnerlink-setzt-code-automatisch-und-
+  // permalink-einbettungsfest-prio12): in einem fremden Rahmen führt die
+  // Weiterleitung unten auf checkout.qiblanco.com (X-Frame-Options DENY) zu
+  // ERR_BLOCKED_BY_RESPONSE — genau Christians Bildschirmfoto vom 24.09.
+  // Dort legt der Permalink deshalb KEINEN Warenkorb an und leitet nicht
+  // weiter; die Seite rendert durch, und app/entry.server.jsx antwortet mit
+  // der einbettbaren Weiter-Seite (app/lib/einbettungs-weiche.server.js). Sie
+  // öffnet DENSELBEN Link im eigenen Fenster; erst dort entsteht der Warenkorb.
+  // WARUM KEIN `return new Response(...)` HIER: diese Route hat eine
+  // Komponente; React Router rendert eine Nicht-Weiterleitungs-Antwort eines
+  // Loaders als Seite und verwirft ihren Rumpf (lokal gemessen: leere Seite).
+  if (istFremderRahmen(request)) return null;
+
   const {cart, env} = context;
   const {lines} = params;
   if (!lines) return redirect('/cart');
