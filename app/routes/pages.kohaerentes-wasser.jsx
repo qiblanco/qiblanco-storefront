@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
@@ -51,15 +51,40 @@ function loadDeferredData() {
 export default function KohaerentesWasserPage() {
   const {page} = useLoaderData();
   return (
-    <CourseLesson
-      title={page.title}
-      body={page.body}
-      courseTitle="Superhuman"
-      courseTo="/pages/superhuman"
-      videoEmbed="https://www.youtube.com/embed/oc0CB-fPlp4?si=fyriX2HtFKagDiBS"
-      prevLesson={{label: 'Vorherige Lektion', to: '/pages/e-smog'}}
-      nextLesson={{label: 'Nächste Lektion', to: '/pages/das-beispiel'}}
-    />
+    <>
+      {/* Christian, 23.09.2026: Tag 5 bleibt, wie er ist, und bekommt oben
+          einen Hinweis auf die Info-Seite zum Begriff. Die Info-Seite trägt
+          Titel, H1 und strukturierte Daten zu „kohärentes Wasser"; dieser
+          Verweis sagt Besuchern und Suchmaschinen, wo die Hauptseite steht.
+          Bewusst HIER und nicht in CourseLesson.jsx: das Bauteil teilen zehn
+          Lektionen, und nur diese eine bekommt den Hinweis. */}
+      <div className="NormalSectionSize">
+        <p
+          data-kurs-vertiefung=""
+          style={{
+            margin: '24px 0 0',
+            padding: '12px 16px',
+            background: 'var(--qb-flaeche)',
+            borderLeft: '3px solid var(--qb-akzent-kauf)',
+            borderRadius: '0 8px 8px 0',
+          }}
+        >
+          Alles zum Thema, ausführlich und mit Quellen:{' '}
+          <Link to="/pages/was-ist-kohaerentes-wasser" prefetch="intent">
+            → Kohärentes Wasser
+          </Link>
+        </p>
+      </div>
+      <CourseLesson
+        title={page.title}
+        body={page.body}
+        courseTitle="Superhuman"
+        courseTo="/pages/superhuman"
+        videoEmbed="https://www.youtube.com/embed/oc0CB-fPlp4?si=fyriX2HtFKagDiBS"
+        prevLesson={{label: 'Vorherige Lektion', to: '/pages/e-smog'}}
+        nextLesson={{label: 'Nächste Lektion', to: '/pages/das-beispiel'}}
+      />
+    </>
   );
 }
 
