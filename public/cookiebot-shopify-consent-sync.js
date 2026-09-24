@@ -356,6 +356,27 @@
   // NOCH NICHT auf app/styles/qb-tokens.css: diese Datei ist laut ihrem
   // eigenen README heute nirgends importiert, und ihr Import ist ein eigener,
   // benannter Folgeauftrag. Wer ihn zieht, hängt diesen Token dort ein.
+  //
+  // DIE DURCHSICHTIGKEIT. Der Wert oben galt auf der Fläche, aber nicht am
+  // Rand: Cookiebots Vorlage setzt zusätzlich
+  //   a.cookie-banner-button.decline-all { opacity: .5 }
+  //   a.cookie-banner-button.edit        { opacity: .8 }
+  // und blendet erst beim Hover auf 1 (gemessen 2026-09-24 per CDP
+  // CSS.getMatchedStylesForNode, live qiblanco.com). opacity macht den
+  // GANZEN Knopf durchsichtig, also Fläche UND Schrift, und der weiße
+  // Bannergrund scheint durch. Am Screenshot-Pixel stand die Mitte damit auf
+  // #b4b1ad mit weißer Schrift = 2,14:1, "Cookies einstellen" auf #88847d =
+  // 3,72:1, desktop und mobil gleich. Die 5,70:1 aus #585 gab es nur im
+  // Hover. Christian wollte die Mitte grau, nicht halb durchsichtig; die
+  // Durchsichtigkeit ist Cookiebots Art, einen Knopf als "zweitrangig"
+  // auszuweisen, und genau die hat der Auftrag abgeschafft.
+  // Deshalb steht opacity:1 in UNSERER Regel. Der ID-Selektor schlägt die
+  // Klassenregel der Vorlage in beiden Zuständen, auch in :hover. Der
+  // Hover-Zustand bleibt also, wie er war (opacity 1, dieselbe Fläche), nur
+  // der Ruhezustand ist jetzt derselbe. Die Wirkung der Knöpfe hängt an
+  // ihrer ID und wird hier nicht berührt.
+  // Messgerät: pruefungen/probe_consent_knoepfe_kontrast_am_rand.py
+  // (homepage-bauer), Pixel gegen Pixel.
   var ORDNUNG_STIL_ID = 'qb-consent-knopfordnung';
   var ORDNUNG_CSS = [
     ':root{',
@@ -369,11 +390,14 @@
     '  order:1;',
     '  background-color:var(--qb-komponente-consent-neutral-flaeche);',
     '  color:var(--qb-komponente-consent-neutral-tinte);',
+    // deckend -- Begründung im Block "Die Durchsichtigkeit" oben.
+    '  opacity:1;',
     '}',
     '#cookie-buttons-wrapper > #CybotCookiebotDialogBodyButtonDecline{',
     '  order:2;',
     '  background-color:var(--qb-komponente-consent-neutral-flaeche);',
     '  color:var(--qb-komponente-consent-neutral-tinte);',
+    '  opacity:1;',
     '}',
     '#cookie-buttons-wrapper > #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll{order:3;}',
     // order NIE mitanimieren -- Begründung im Block "Das Pendeln" unten.
