@@ -17,6 +17,7 @@ import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
 import {QiMasterAddons} from '~/components/product-pages/QiMasterAddons';
 import {
   QM_ADDONS_QUERY,
+  ADDON_WAEHRUNGEN,
   KETTE_VORWAHL,
   addonLinien,
 } from '~/lib/qi-master-addons';
@@ -172,8 +173,13 @@ export default function Product() {
   const {descriptionHtml} = product;
   const qmVariante = product.selectedOrFirstAvailableVariant;
   // Add-ons nur neben einem KAUFBAREN Qi Master: ist er nicht bestellbar,
-  // sind es die Add-ons auch nicht (Auftrag 2026-09-24, Grenzen).
-  const addonsSichtbar = qmVariante?.availableForSale ? addons : null;
+  // sind es die Add-ons auch nicht (Auftrag 2026-09-24, Grenzen). Und nur in
+  // den Märkten, für die Christian einen Preis genannt hat (ADDON_WAEHRUNGEN).
+  const addonsSichtbar =
+    qmVariante?.availableForSale &&
+    ADDON_WAEHRUNGEN.includes(qmVariante?.price?.currencyCode)
+      ? addons
+      : null;
   const [auswahl, setAuswahl] = useState(() => ({
     wunschnummer: null,
     ketteAn: false,

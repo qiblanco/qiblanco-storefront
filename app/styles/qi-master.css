@@ -1163,6 +1163,17 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visibl
   margin: 0;
 }
 .qm-pdp .qm-addon__schalter { cursor: pointer; }
+/* reset.css setzt JEDES Eingabefeld auf `-webkit-appearance: none
+   !important`. Ein Kästchen ist dann auch angehakt leer (gemessen
+   2026-09-24: checked=true, nichts zu sehen), und eine Auswahlliste verliert
+   ihren Pfeil und sieht aus wie ein Textfeld. Im Add-on-Bereich gilt deshalb
+   die native Form; das !important ist die einzige Sprache, die der Reset
+   versteht, und der Selektor reicht nicht über diesen Bereich hinaus. */
+.qm-pdp .qm-addon__schalter input,
+.qm-pdp .qm-addon__feld select {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+}
 .qm-pdp .qm-addon__schalter input {
   align-self: center;
   width: var(--qm-s3);
@@ -1176,9 +1187,10 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visibl
 }
 /* Der Preis sitzt rechts in der Kopfzeile; ProductPrice bringt aus dem
    Bestand einen Block mit großer Schrift mit, hier ist er Beigabe. */
-.qm-pdp .qm-addon__kopf .product-price {
+.qm-pdp .qm-addon__kopf .product-price,
+.qm-pdp .qm-addon__kopf .product-price span {
   margin-left: auto;
-  font-size: var(--qm-fs-md);
+  font-size: var(--qm-fs-lg);
   font-weight: 600;
 }
 .qm-pdp .qm-addon__text,

@@ -24,6 +24,16 @@ export const QM_ADDON_HANDLES = Object.values(QM_ADDON);
 /** Zeilen-Merkmal einer Add-on-Zeile. Unterstrich = in der Kasse unsichtbar. */
 export const ADDON_ATTR = '_qm_addon';
 
+/**
+ * In welchen Währungen die Add-ons erscheinen. Christian hat EURO-Preise
+ * genannt (2.000 € / 4.879 €); der Laden rechnet sie für die DACH-Märkte
+ * (DE/AT in EUR, CH in CHF) über denselben Weg um wie den Qi Master selbst.
+ * US-Preise hat er offen gelassen — sie liegen als Frage bei ihm (RESULT des
+ * Auftrags). Bis zur Antwort erscheinen die Add-ons im US-Markt nicht.
+ * Rückweg/Freischaltung: 'USD' hier ergänzen.
+ */
+export const ADDON_WAEHRUNGEN = ['EUR', 'CHF'];
+
 /** Vorausgewählte Kettenlänge (Christian/Coworker A 2026-09-24). */
 export const KETTE_VORWAHL = '60 cm';
 
