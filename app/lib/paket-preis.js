@@ -115,9 +115,17 @@ export function paketBetraege(lines, paket, land) {
     const satz = anzeigeSatz(line.handle, line.waehrung, land);
     saetze.add(satz);
     heimatSaetze.add(taxRateForHandle(line.handle, 'DE'));
+    // Je STÜCK auf Cent zurückgerechnet: der AT-Preis ist DE-Brutto/1,19x1,20
+    // auf Cent gerundet, der Rundungsfehler (<= 0,5 Cent) verschwindet so
+    // wieder. Über die Summe gerechnet blieb er stehen (588,99 statt 589,00).
     summeHeimat +=
-      ((netto * menge) / (1 + taxRateForHandle(line.handle, land))) *
-      (1 + taxRateForHandle(line.handle, 'DE'));
+      (Math.round(
+        (netto / (1 + taxRateForHandle(line.handle, land))) *
+          (1 + taxRateForHandle(line.handle, 'DE')) *
+          100,
+      ) /
+        100) *
+      menge;
     nettoSumme += netto * menge;
     compareRoh += netto * menge * (1 + satz);
     // Prozent-Pfad: Shopify schneidet den Prozentrabatt JE STÜCK centgenau ab
