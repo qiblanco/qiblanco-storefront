@@ -7,6 +7,7 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
+import {ohneAusgeschlossene} from '~/lib/such-ausschluss';
 import {
   absoluteCanonical,
   canonicalLink,
@@ -195,6 +196,28 @@ async function loadCriticalData({context, params, request}) {
   // The API handle might be localized, so redirect to the localized handle
   redirectIfHandleIsLocalized(request, {handle, data: collection});
 
+  // SICHTBARKEIT GETRENNT VOM STEUERTRÄGER (Job 20260924-kakao-adfiefiale-
+  // kasse-19-statt-7-prozent). In Shopify hängt der ermäßigte Steuersatz
+  // für Lebensmittel an der Kollektion zeremonie-kakao: DE 7, AT 10, NL 9,
+  // FR 5,5, BE 6, IT 10 Prozent, je Land ein Override. Am 2026-09-10 wurde die
+  // Dublette crystal-cacao-adfiefiale aus dieser Kollektion genommen, damit sie
+  // nicht mehr im Kollektionsraster steht. Das nahm den Steuersatz mit: die
+  // Kasse verlangte 19 statt 7 Prozent, gemessen 84,53 statt 76,00 Euro.
+  // Deshalb entscheidet die Kollektion nicht mehr über die Sichtbarkeit.
+  // Dieselbe Ausschlussliste wie in der Suche filtert jetzt auch das Raster.
+  // Ein Produkt kann so in der Steuer-Kollektion bleiben und trotzdem
+  // unsichtbar sein. Der Filter greift VOR meta(): die ItemList nennt nur, was
+  // die Seite zeigt. Preis des Nachfilterns: eine Seite zeigt dann 7 statt 8.
+  const produkte = collection.products;
+  if (produkte && Array.isArray(produkte.nodes)) {
+    return {
+      collection: {
+        ...collection,
+        products: {...produkte, nodes: ohneAusgeschlossene(produkte.nodes)},
+      },
+    };
+  }
+
   return {
     collection,
   };
@@ -251,6 +274,8 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    # tags: für den Tag-Weg von ~/lib/such-ausschluss (qb-nicht-suchbar).
+    tags
     featuredImage {
       id
       altText
