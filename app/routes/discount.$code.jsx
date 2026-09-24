@@ -1,4 +1,5 @@
 import {redirect} from '@shopify/remix-oxygen';
+import {rabattlinkZiel} from '~/lib/discount-ziel';
 
 /**
  * Automatically applies a discount found on the url
@@ -16,20 +17,8 @@ export async function loader({request, context, params}) {
   const {cart} = context;
   const {code} = params;
 
-  const url = new URL(request.url);
-  const searchParams = new URLSearchParams(url.search);
-  let redirectParam =
-    searchParams.get('redirect') || searchParams.get('return_to') || '/';
-
-  if (redirectParam.includes('//')) {
-    // Avoid redirecting to external URLs to prevent phishing attacks
-    redirectParam = '/';
-  }
-
-  searchParams.delete('redirect');
-  searchParams.delete('return_to');
-
-  const redirectUrl = `${redirectParam}?${searchParams}`;
+  // Nur Pfade auf der eigenen Herkunft; Begründung in lib/discount-ziel.js.
+  const redirectUrl = rabattlinkZiel(request.url);
 
   if (!code) {
     return redirect(redirectUrl);
