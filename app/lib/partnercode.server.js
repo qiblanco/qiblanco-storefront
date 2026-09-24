@@ -4,9 +4,9 @@
  * und-permalink-einbettungsfest-prio12, Folgejob aus Christians
  * Partnerlink-Auftrag vom 2026-09-24).
  * ================================================================
- * BEFUND: der Empfehlungslink eines Partners (`?sca_ref=<id>.<token>`) traegt
+ * BEFUND: der Empfehlungslink eines Partners (`?sca_ref=<id>.<token>`) trägt
  * die ZUORDNUNG bis in die Kasse, aber nicht den RABATT. UpPromotes
- * "Auto-Apply" haengt an einem Theme-App-Embed und wirkt auf dieser
+ * "Auto-Apply" hängt an einem Theme-App-Embed und wirkt auf dieser
  * Hydrogen-Storefront nicht (gemessen 2026-09-24, Test-Partner TESTIX:
  * Kasse ohne Abzug). Partner, die nur ihren Standardlink teilen, lieferten
  * ihren Leuten deshalb keinen Rabatt.
@@ -14,7 +14,7 @@
  * WAS DIESES MODUL TUT: kommt ein Seitenaufruf mit `sca_ref` an und kennt
  * das Datenmodul diesen Link, legt der Server den Code des Partners in den
  * Warenkorb (cart.updateDiscountCodes — derselbe Weg wie /discount/<CODE>).
- * Traegt der Warenkorb schon IRGENDEINEN Code, bleibt er unangetastet: ein
+ * Trägt der Warenkorb schon IRGENDEINEN Code, bleibt er unangetastet: ein
  * Kunde, der selbst einen Code eingegeben hat, verliert ihn nie an einen
  * Link.
  *
@@ -31,7 +31,7 @@
  * QUELLE UND AKTUALITAET: app/lib/partnercode-daten.server.js wird NIE von
  * Hand gepflegt. Erzeuger ist bin/partnercode-gen.mjs, gespeist aus UpPromote
  * (nur lesend) durch partner-manager/bin/partnercode-abgleich; neue Partner
- * kommen ueber den gegateten hb-deploy-Weg hinein.
+ * kommen über den gegateten hb-deploy-Weg hinein.
  *
  * RUECKWEG: PARTNERCODE_AUTO unten auf false (ein Deploy), oder die
  * Einhaengestelle in app/entry.server.jsx entfernen. Messung am Rand:
@@ -96,9 +96,9 @@ export async function suchfeld(ref) {
 }
 
 /**
- * Ein Eintrag {k, c} fuer den Erzeuger. Das IV ist aus Link UND Code
+ * Ein Eintrag {k, c} für den Erzeuger. Das IV ist aus Link UND Code
  * abgeleitet: gleiche Eingabe -> byte-gleiche Ausgabe (kein Diff-Rauschen im
- * taeglichen Abgleich), und weil der Schluessel je Link ein eigener ist, faellt
+ * täglichen Abgleich), und weil der Schluessel je Link ein eigener ist, faellt
  * ein IV nur dann zweimal, wenn auch der Klartext derselbe ist.
  */
 export async function eintragFuer(ref, code) {
@@ -120,7 +120,7 @@ export async function eintragFuer(ref, code) {
 
 /**
  * Code des Partners zu diesem Link oder null. Wirft nie: ein kaputter
- * Eintrag heisst "kein Code", nie ein kaputter Seitenaufruf.
+ * Eintrag heißt "kein Code", nie ein kaputter Seitenaufruf.
  */
 export async function partnercodeFuer(roh, eintraege = PARTNERCODE_EINTRAEGE) {
   try {
@@ -166,9 +166,9 @@ export function refAusAufruf(request, istBot) {
 }
 
 /**
- * Legt den Partnercode in den Warenkorb, falls moeglich.
- * Rueckgabe ist ein Zustandswort; es geht als Kopf X-Qb-Partnercode an die
- * Antwort (kein Code, kein Link — nur das Wort), damit die taegliche
+ * Legt den Partnercode in den Warenkorb, falls möglich.
+ * Rückgabe ist ein Zustandswort; es geht als Kopf X-Qb-Partnercode an die
+ * Antwort (kein Code, kein Link — nur das Wort), damit die tägliche
  * Messung den Weg am Rand sieht.
  *   aus | kein-treffer | fremder-code | schon-gesetzt | gesetzt | fehler
  * @param {{ref: string, cart: any, responseHeaders: Headers,

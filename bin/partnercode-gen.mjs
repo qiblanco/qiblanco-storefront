@@ -3,13 +3,13 @@
  * partnercode-gen — erzeugt app/lib/partnercode-daten.server.js.
  *
  * EINGABE (stdin, JSON): {"eintraege": [{"ref": "<id>.<token>", "code": "X"}, ...]}
- * Die Eingabe traegt Links und Codes im KLARTEXT und darf deshalb nie auf
+ * Die Eingabe trägt Links und Codes im KLARTEXT und darf deshalb nie auf
  * Platte liegen bleiben: der Aufrufer (partner-manager/bin/partnercode-abgleich)
- * reicht sie ueber eine Pipe herein. Die AUSGABE traegt beides nicht mehr —
+ * reicht sie über eine Pipe herein. Die AUSGABE trägt beides nicht mehr —
  * jeder Eintrag ist nur mit dem Link selbst lesbar (app/lib/partnercode.server.js).
  *
  * Deterministisch: gleiche Eingabe -> byte-gleiche Datei (sortiert nach
- * Suchfeld, IV aus Link+Code). Der taegliche Abgleich erzeugt deshalb nur dann
+ * Suchfeld, IV aus Link+Code). Der tägliche Abgleich erzeugt deshalb nur dann
  * einen Deploy, wenn sich die Partnermenge wirklich geaendert hat.
  *
  * Aufruf:  node bin/partnercode-gen.mjs [--ziel PFAD] [--pruefe]  < eingabe.json
@@ -51,9 +51,9 @@ export async function erzeuge(eingabe) {
   }
   return (
     '// ERZEUGT von bin/partnercode-gen.mjs — NICHT VON HAND AENDERN.\n' +
-    '// Quelle: UpPromote (nur lesend) ueber partner-manager/bin/partnercode-abgleich.\n' +
+    '// Quelle: UpPromote (nur lesend) über partner-manager/bin/partnercode-abgleich.\n' +
     '// Jeder Eintrag ist nur mit dem vollstaendigen Partnerlink-Wert lesbar;\n' +
-    '// Klartext-Codes stehen hier nicht (Begruendung: app/lib/partnercode.server.js).\n' +
+    '// Klartext-Codes stehen hier nicht (Begründung: app/lib/partnercode.server.js).\n' +
     `export const PARTNERCODE_ANZAHL = ${liste.length};\n` +
     'export const PARTNERCODE_EINTRAEGE = [\n' +
     zeilen.join('\n') +

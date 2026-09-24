@@ -600,7 +600,7 @@ export default async function handleRequest(
   });
 
   // PARTNERCODE AUTOMATISCH: ein Partnerlink (?sca_ref=...) legt den Code
-  // des Partners in den Warenkorb, wenn dort noch keiner liegt. Begruendung,
+  // des Partners in den Warenkorb, wenn dort noch keiner liegt. Begründung,
   // Schutz der Codeliste und Rueckweg: app/lib/partnercode.server.js.
   if (responseStatusCode < 400) {
     const partnerRef = refAusAufruf(request, isbot);

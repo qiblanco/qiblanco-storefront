@@ -61,7 +61,7 @@ test('A1 der richtige Link liefert den Code', async () => {
   assert.equal(await partnercodeFuer(REF, await eintraege()), CODE);
 });
 
-test('A2 derselbe Partner mit falschem Token liefert NICHTS (kein Aufzaehlen ueber die id)', async () => {
+test('A2 derselbe Partner mit falschem Token liefert NICHTS (kein Aufzaehlen über die id)', async () => {
   const e = await eintraege();
   assert.equal(await partnercodeFuer('2043355.AbCdEfGh13', e), null);
   assert.equal(await partnercodeFuer('2043355', e), null);
@@ -74,7 +74,7 @@ test('A3 Unsinn und leere Daten werfen nie', async () => {
   assert.equal(await partnercodeFuer(REF, [{k: 'x', c: '!!'}]), null);
 });
 
-// --- B: Datenmodul traegt keinen Klartext -------------------------------------
+// --- B: Datenmodul trägt keinen Klartext -------------------------------------
 
 test('B1 der Erzeuger schreibt weder Code noch Link-Token', async () => {
   const text = await erzeuge({eintraege: [{ref: REF, code: CODE}, {ref: '77.ZzZzZzZz99', code: 'ANDERS'}]});
@@ -106,7 +106,7 @@ test('C1 Seitenaufruf mit sca_ref -> Link-Wert', () => {
   assert.equal(refAusAufruf(aufruf(`?sca_ref=${REF}&utm_source=x`)), REF);
 });
 
-test('C2 kein Warenkorb fuer Datenabruf, Rahmen, POST, Bot oder fehlendes sca_ref', () => {
+test('C2 kein Warenkorb für Datenabruf, Rahmen, POST, Bot oder fehlendes sca_ref', () => {
   assert.equal(refAusAufruf(aufruf(`?sca_ref=${REF}`, {'sec-fetch-dest': 'empty'})), null);
   assert.equal(refAusAufruf(aufruf(`?sca_ref=${REF}`, {'sec-fetch-dest': 'iframe'})), null);
   assert.equal(refAusAufruf(aufruf(`?sca_ref=${REF}`, {}, 'POST')), null);

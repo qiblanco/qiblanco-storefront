@@ -1,7 +1,7 @@
 // ERZEUGT von bin/partnercode-gen.mjs — NICHT VON HAND AENDERN.
-// Quelle: UpPromote (nur lesend) ueber partner-manager/bin/partnercode-abgleich.
+// Quelle: UpPromote (nur lesend) über partner-manager/bin/partnercode-abgleich.
 // Jeder Eintrag ist nur mit dem vollstaendigen Partnerlink-Wert lesbar;
-// Klartext-Codes stehen hier nicht (Begruendung: app/lib/partnercode.server.js).
+// Klartext-Codes stehen hier nicht (Begründung: app/lib/partnercode.server.js).
 export const PARTNERCODE_ANZAHL = 647;
 export const PARTNERCODE_EINTRAEGE = [
   {k:'--43IjlJq_bmWDVLfJ7a3M',c:'JJkutWFU8yA096iGHNIKTjHGLMvHqhCPARpoR-y2FiOxuobA8b4'},{k:'-1tItZXhFf4p268BIsReX8',c:'Mo69MGqFqXSbDK8nrXVUaKfXs72jrOB8TlsjHMscQBgQmeI'},{k:'-2I1r1YO_d0PqqnoUmCMXU',c:'hEmtJe1XcuEXIv55eU1nLHZjYwmZCzVNI3c0fUnPdRULYLI'},{k:'-8x7THXCaOC8cAD7nBANZp',c:'NrOAPKbfsvBDLWZnnbaVDpq-ymnAGJV055e-uSHLSJEOT6Sr'},{k:'-DQjPNX5C7VtMOxkQma-c1',c:'4v6oYbyx8Cl9DjKUmqfZhqX-cwVZTqsnXx8fISo0HGUe4IoitQBidnDUwg'},{k:'-HkM4opJqXLfnU1TzVjraq',c:'xUF2j8gqjovsoDYKp9sM1dftqTaKGz5B0Gwgzkz9h51y3LsbsQ'},
