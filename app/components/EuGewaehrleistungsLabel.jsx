@@ -5,6 +5,7 @@ import {
   useContext,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import {useRouteLoaderData} from 'react-router';
 import {bildQuellen} from '~/components/reusables/shopifyBildQuellen';
@@ -149,8 +150,19 @@ const EuLabelKontext = createContext(null);
 export function EuLabelProvider({children}) {
   const dialogRef = useRef(null);
   const label = useEuLabelAsset();
+  /*
+   * EINWEG-SCHALTER: einmal true, bleibt true. Er entscheidet, ob die
+   * amtliche Grafik ueberhaupt im DOM steht (Begründung am <img> im Dialog).
+   * Er wird beim Öffnen gesetzt und nie zurueckgenommen -- ein zweites
+   * Öffnen soll das Bild nicht noch einmal aus dem Netz holen müssen.
+   */
+  const [grafikGebraucht, setGrafikGebraucht] = useState(false);
 
   const open = useCallback(() => {
+    // Der Zustand zuerst: showModal() läuft synchron, das Bild montiert im
+    // unmittelbar folgenden Rendern. Weil grafikVorwaermen() die Datei bei
+    // der ersten Absichtsgeste geholt hat, kommt sie dabei aus dem Cache.
+    setGrafikGebraucht(true);
     // showModal() wirft, wenn der Dialog bereits offen ist (z.B. Doppelklick
     // oder zweiter Ausloeser). Ohne den Schutz reißt das die Seite ab.
     const d = dialogRef.current;
@@ -167,7 +179,12 @@ export function EuLabelProvider({children}) {
   return (
     <EuLabelKontext.Provider value={wert}>
       {children}
-      <EuLabelDialog ref={dialogRef} label={label} onClose={close} />
+      <EuLabelDialog
+        ref={dialogRef}
+        label={label}
+        onClose={close}
+        grafikGebraucht={grafikGebraucht}
+      />
     </EuLabelKontext.Provider>
   );
 }
@@ -215,7 +232,10 @@ function useEuLabelAsset() {
 // (package.json). Die React-19-Schreibweise "ref als normales Prop" wäre
 // hier still `undefined` -- showModal() liefe nie, das Overlay bliebe tot,
 // und der Fehler zeigte sich erst im Browser.
-const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
+const EuLabelDialog = forwardRef(function EuLabelDialog(
+  {label, onClose, grafikGebraucht},
+  ref,
+) {
   // Klick auf den dunklen Rand schließt. Der <dialog> selbst IST der
   // zentrierte Kasten (der Rand ist ::backdrop), deshalb lässt sich der Rand
   // nicht direkt beklicken -- die Trefferpruefung läuft über die Geometrie
@@ -300,14 +320,57 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
           geschoben wird.
         */}
         <div className="eu-gwl-dialog__buehne">
-          <img
-            className="eu-gwl-dialog__bild"
-            src={label.url}
-            alt={LABEL_ALT_DE}
-            width={label.breite}
-            height={label.hoehe}
-            data-eu-label-iso={label.iso}
-          />
+          {/*
+            DIE GRAFIK STEHT ERST IM DOM, WENN DER DIALOG ZUM ERSTEN MAL
+            GEÖFFNET WURDE -- und der Umweg dorthin ist die eigentliche
+            Lehre dieser Stelle.
+
+            BEFUND (2026-09-18, live, mobil 390x844 DPR2): dieses Bild lag in
+            einem GESCHLOSSENEN <dialog>, seine Box misst 0x0 Pixel -- und es
+            wurde trotzdem vollständig geholt: 259 314 Byte, responseEnd bei
+            t=267 ms. Das sind 39,3 Prozent aller Bildbytes der Hülle, und
+            weil der Fuss auf JEDER Seite steht, wurde das auf JEDEM
+            Seitenaufruf des Ladens bezahlt.
+
+            DER ERSTE VERSUCH WAR `loading="lazy"`, UND ER IST GEMESSEN
+            GESCHEITERT. Die Begründung dafür klang zwingend: ein
+            geschlossener <dialog> ist `display: none`, ein lazy-Bild darin
+            bekommt nie einen Schnittbereich, also wird es nicht geholt.
+            A/B an zwei Dev-Servern derselben Anwendung mit genau diesem
+            einen Unterschied sagt etwas anderes -- A (ohne Attribut)
+            259 314 Byte bei t=215 ms, B (mit `lazy`) DIESELBEN 259 314 Byte
+            bei t=798 ms. Verschoben, nicht vermieden. Für ein Element ohne
+            Layout-Box kann der Browser nicht entscheiden, ob es je in den
+            Blick kommt, und lädt im Zweifel. `loading` ist eine Bitte über
+            die Reihenfolge, kein Riegel gegen den Abruf.
+
+            Ein Riegel über Bytes muss deshalb am DOM ansetzen: kein <img>,
+            keine Anfrage. Sobald es gebraucht wird, soll es dagegen sofort
+            laden -- es steht dann im Blick, ein `lazy` wäre hier genau
+            falsch herum.
+
+            DASS DER KASTEN NICHT LEER BLEIBT, TRÄGT NICHT DIESE ZEILE sondern
+            grafikVorwaermen() weiter unten: die Datei wird bei Zeigerkontakt,
+            Fokus oder erstem Fingerkontakt geholt, also bevor der Klick
+            überhaupt fällt. Beim Öffnen kommt sie aus dem Cache.
+
+            AUSDRÜCKLICH NICHT GEBAUT: eine Bildleiter oder ein
+            `width=`-Parameter an dieser Grafik. LABEL_MINDESTBREITE_PX
+            schützt die Ablesbarkeit des QR-Codes (Anhang I Nr. 3); die Datei
+            geht unverändert raus, nur später. Die Auflagen aus Anhang I
+            Nr. 1 und Nr. 5 bleiben unberührt.
+          */}
+          {grafikGebraucht ? (
+            <img
+              className="eu-gwl-dialog__bild"
+              src={label.url}
+              alt={LABEL_ALT_DE}
+              width={label.breite}
+              height={label.hoehe}
+              decoding="async"
+              data-eu-label-iso={label.iso}
+            />
+          ) : null}
         </div>
 
         <p className="eu-gwl-dialog__fuss">
@@ -354,6 +417,49 @@ const EuLabelDialog = forwardRef(function EuLabelDialog({label, onClose}, ref) {
  * AUSSERHALB des <button> und ist für Screenreader unsichtbar (alt="",
  * aria-hidden) -- der Knopf daneben sagt bereits, was es zeigt.
  */
+/*
+ * DIE ZWEITE HÄLFTE DES `loading="lazy"` OBEN -- ohne sie wäre der Bau ein
+ * Tausch von Ladezeit gegen Wartezeit an genau der Stelle, an der die
+ * Verordnung eine Zusage macht.
+ *
+ * Die Pflicht ist ein SATZ auf der Seite und die Mitteilung "on the first
+ * mouse click" (Leitlinien der Kommission, Abschnitt 2.3, wörtlich zitiert
+ * im Kopf dieser Datei). Ein lazy geladenes Bild beginnt seinen Abruf erst,
+ * wenn der Dialog öffnet -- auf einer gedrosselten Mobilleitung sind das
+ * für 259 kB rund 1,3 Sekunden, in denen der Kasten leer steht.
+ *
+ * Deshalb wird die Grafik geholt, sobald der Mensch ABSICHT zeigt, und
+ * nicht erst, wenn er sie schon sehen will: Zeigerkontakt, Tastaturfokus
+ * oder der erste Fingerkontakt. Zwischen diesem Moment und dem Klick liegen
+ * erfahrungsgemäss einige hundert Millisekunden -- der Abruf läuft dann
+ * bereits, und im Regelfall steht das Bild beim Öffnen im Cache.
+ *
+ * WARUM `new Image()` UND KEIN ZUSTANDSWECHSEL AM <img>: ein nachträglich
+ * von `lazy` auf `eager` gedrehtes `loading`-Attribut ist kein verlässlicher
+ * Auslöser -- der Browser hat die Entscheidung für dieses Element dann
+ * schon getroffen. Ein eigener Abruf füllt dagegen den HTTP-Cache, und das
+ * <img> im Dialog bedient sich beim Öffnen daraus. Es ist derselbe URL,
+ * also derselbe Cache-Eintrag.
+ *
+ * Mehr als einmal je URL muss das nicht geschehen; `vorgewaermt` hält das
+ * fest. Ein Fehlschlag ist bewusst folgenlos: gelingt die Vorwärmung nicht,
+ * lädt das <img> beim Öffnen ganz normal selbst. Die Vorwärmung ist eine
+ * Beschleunigung, nie die Bedingung dafür, dass die Mitteilung erscheint.
+ */
+const vorgewaermt = new Set();
+
+function grafikVorwaermen(url) {
+  if (typeof window === 'undefined' || !url || vorgewaermt.has(url)) return;
+  vorgewaermt.add(url);
+  try {
+    const img = new window.Image();
+    img.decoding = 'async';
+    img.src = url;
+  } catch {
+    // Folgenlos: das <img> im Dialog lädt beim Öffnen weiterhin selbst.
+  }
+}
+
 function EuLabelAusloeser({
   flaeche,
   beschriftung,
@@ -363,12 +469,21 @@ function EuLabelAusloeser({
   const kontext = useEuLabel();
   if (!kontext) return null;
 
+  // Absicht statt Klick: siehe grafikVorwaermen() oben. Bewusst KEIN
+  // useCallback -- oberhalb steht ein `if (!kontext) return null`, ein Hook
+  // an dieser Stelle wäre ein bedingter Hook. Für drei DOM-Handler an einem
+  // Knopf ist die Neuerzeugung je Rendern ohnehin ohne Belang.
+  const vorwaermen = () => grafikVorwaermen(kontext.label?.url);
+
   const knopf = (
     <button
       type="button"
       className="eu-gwl__link"
       data-eu-gewaehrleistungslabel={flaeche}
       onClick={kontext.open}
+      onPointerEnter={vorwaermen}
+      onFocus={vorwaermen}
+      onTouchStart={vorwaermen}
     >
       {beschriftung}
     </button>
