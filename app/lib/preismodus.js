@@ -30,7 +30,7 @@
  * steht als data-qb-preismodus-quelle im HTML — ein Rückfall ist damit
  * messbar statt still.
  *
- * WAS „BRUTTO“ HEISST: der @inContext-Preis ist der Endbetrag, auch in AT
+ * Was „brutto“ heißt: der @inContext-Preis ist der Endbetrag, auch in AT
  * (Markt EU "Dynamisch": Shopify rechnet den Heimatsatz heraus und den
  * Landessatz drauf). Der Steuersatz wird dann NICHT mehr aufgeschlagen; er
  * bleibt nur noch für Festbeträge gebraucht, die im Code netto stehen
