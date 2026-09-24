@@ -1,0 +1,814 @@
+/* ============================================================================
+   /pages/wie-funktioniert-der-gitterchip-im-qione — „Wie funktioniert der
+   GitterChip im QiOne?" (Christian, 23.09.2026).
+
+   TOKEN-SYSTEM: Schriftgrößen, Abstände, Radien und Farben kommen aus der
+   Wurzel app/styles/qb-tokens.css (--qb-*). Diese Datei setzt nur die Rollen
+   der Seite darauf (--gc-*); außerhalb des :root-Blocks steht kein freier
+   Wert. Skala: 12/14/16/18/20/24/32 aus der Wurzel plus EIN H1-Wert (clamp),
+   acht Stufen bei einem Deckel von neun. Raster 8 px.
+
+   EIN GOLD: das Kauf-Gold (--qb-akzent-kauf) für Flächen und den Knopf, die
+   Gold-Tinte (--qb-akzent-tinte) für goldene Schrift und dünne Linien. Der
+   Scope setzt --qb-akzent auf das Kauf-Gold, damit die drei Zeichnungen der
+   Info-Seite denselben Ton ziehen. Kein zweiter Goldton.
+
+   BEWEGUNG: die Zeichnungen der Info-Seite laufen dort in Endlos-Schleifen,
+   deren letztes Bild wieder das erste ist. Hier läuft jede Grafik EINMAL,
+   sobald der Leser sie erreicht, und bleibt im Endbild stehen. Deshalb
+   schaltet dieser Scope die kw-Schleifen ab und setzt eigene Einmal-Keyframes
+   unter den Zustand der Szene (fertig / bereit / aktiv, GcGrafiken.jsx).
+   Nur transform, opacity und stroke-dashoffset.
+   ========================================================================== */
+
+:root {
+  --gc-breite: 1120px;
+  --gc-breite-text: 680px;
+  --gc-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+  --gc-linie: rgba(44, 42, 38, 0.14);
+  --gc-schatten: 0 12px 32px rgba(25, 23, 20, 0.08);
+  --gc-kurve: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --gc-s1: 8px;
+  --gc-s2: 16px;
+  --gc-s3: 24px;
+  --gc-s4: 32px;
+  --gc-s6: 48px;
+  --gc-s8: 64px;
+  --gc-s12: 96px;
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.gc {
+  --qb-akzent: var(--qb-akzent-kauf);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-4);
+  line-height: 1.65;
+  padding: var(--gc-s4) var(--gc-s2) var(--gc-s12);
+}
+
+.gc > * {
+  max-width: var(--gc-breite);
+  margin-inline: auto;
+}
+
+.gc p {
+  margin: 0 0 var(--gc-s2);
+}
+
+.gc h1,
+.gc h2,
+.gc h3 {
+  color: var(--qb-text);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.gc h2 {
+  font-size: var(--qb-text-h2);
+  margin: var(--gc-s1) 0 var(--gc-s3);
+}
+
+.gc h3 {
+  font-size: var(--qb-text-h3);
+  margin: 0 0 var(--gc-s2);
+}
+
+.gc a {
+  color: var(--qb-text);
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-underline-offset: 3px;
+}
+
+.gc a:focus-visible {
+  outline: 2px solid var(--qb-akzent-tinte);
+  outline-offset: 3px;
+  border-radius: var(--qb-radius-klein);
+}
+
+/* ─── Kopf ───────────────────────────────────────────────────────────────── */
+.gc-kopf {
+  display: grid;
+  gap: var(--gc-s6);
+  align-items: center;
+  padding-bottom: var(--gc-s8);
+}
+
+.gc-dachzeile {
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte);
+}
+
+.gc h1 {
+  font-size: var(--gc-fs-h1);
+  margin: 0 0 var(--gc-s3);
+}
+
+.gc-kurz {
+  max-width: var(--gc-breite-text);
+  font-size: var(--qb-ref-fs-5);
+}
+
+.gc-inhalt {
+  margin-top: var(--gc-s3);
+}
+
+.gc-inhalt__titel {
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  color: var(--qb-text-gedaempft);
+}
+
+.gc-inhalt ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gc-s1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: gc-inhalt;
+}
+
+.gc-inhalt li {
+  counter-increment: gc-inhalt;
+}
+
+.gc-inhalt a {
+  display: inline-block;
+  padding: var(--gc-s1) var(--gc-s2);
+  font-size: var(--qb-ref-fs-2);
+  text-decoration: none;
+  border: 1px solid var(--gc-linie);
+  border-radius: var(--qb-radius-klein);
+  background: var(--qb-flaeche);
+}
+
+.gc-inhalt a::before {
+  content: counter(gc-inhalt) '  ';
+  font-weight: 700;
+  color: var(--qb-akzent-tinte);
+}
+
+.gc-inhalt a:hover {
+  border-color: var(--qb-akzent-tinte);
+}
+
+.gc-figur,
+.gc-szene {
+  margin: 0;
+  padding: var(--gc-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-bild);
+}
+
+.gc-figur figcaption,
+.gc-szene figcaption {
+  margin-top: var(--gc-s2);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft);
+}
+
+.gc-grafik {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ─── Stufen ─────────────────────────────────────────────────────────────── */
+.gc-stufe {
+  padding-top: var(--gc-s8);
+  margin-top: var(--gc-s4);
+  border-top: 1px solid var(--gc-linie);
+  scroll-margin-top: var(--gc-s12);
+}
+
+.gc-stufe__kopf {
+  max-width: 820px;
+}
+
+.gc-marke {
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte);
+}
+
+.gc-marke__nr {
+  display: inline-block;
+  margin-right: var(--gc-s1);
+  padding: 2px var(--gc-s1);
+  color: var(--qb-text-auf-akzent);
+  background: var(--qb-akzent);
+  border-radius: var(--qb-radius-klein);
+}
+
+.gc-kette {
+  display: flex;
+  gap: var(--gc-s1);
+  margin: 0 0 var(--gc-s1);
+  padding: 0;
+  list-style: none;
+  font-size: var(--qb-ref-fs-1);
+  color: var(--qb-text-gedaempft);
+}
+
+.gc-kette__glied {
+  padding: 2px var(--gc-s1);
+  border: 1px solid var(--gc-linie);
+  border-radius: var(--qb-radius-klein);
+}
+
+.gc-kette__glied + .gc-kette__glied::before {
+  content: '→';
+  margin-right: var(--gc-s1);
+  color: var(--qb-text-gedaempft);
+}
+
+.gc-kette__glied.ist-an {
+  color: var(--qb-text);
+  font-weight: 700;
+  border-color: var(--qb-akzent-tinte);
+}
+
+.gc-stufe__inhalt {
+  display: grid;
+  gap: var(--gc-s4);
+  align-items: start;
+}
+
+.gc-stufe__text {
+  max-width: var(--gc-breite-text);
+}
+
+.gc-weiter {
+  margin-top: var(--gc-s4);
+  font-size: var(--qb-ref-fs-3);
+  font-weight: 700;
+}
+
+.gc-weiter a::after {
+  content: ' ↓';
+  color: var(--qb-akzent-tinte);
+}
+
+.gc-innenansicht {
+  margin: var(--gc-s3) 0 var(--gc-s4);
+}
+
+/* ─── Kette Chip → Wasser → Zelle ────────────────────────────────────────── */
+.gc-szene--breit {
+  margin-top: var(--gc-s4);
+}
+
+.gc-kettenbild {
+  display: grid;
+  gap: var(--gc-s2);
+}
+
+.gc-kettenbild__schritt {
+  display: grid;
+  gap: var(--gc-s1);
+  justify-items: center;
+}
+
+.gc-kettenbild__glied {
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+
+.gc-kettenbild__titel {
+  margin: var(--gc-s1) 0 0;
+  font-size: var(--qb-ref-fs-5);
+  font-weight: 700;
+}
+
+.gc-kettenbild__text {
+  margin: 0;
+  font-size: var(--qb-ref-fs-3);
+}
+
+.gc-kettenbild__quelle {
+  margin: var(--gc-s1) 0 0;
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-akzent-tinte);
+}
+
+.gc-pfeil {
+  width: 48px;
+  height: 24px;
+  transform: rotate(90deg);
+}
+
+.gc-pfeil__linie {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gc-tafel__ring {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.gc-tafel__sechseck {
+  fill: var(--qb-akzent);
+  fill-opacity: 0.16;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1.5;
+}
+
+.gc-tafel__zelle {
+  fill: var(--qb-text-gedaempft);
+  fill-opacity: 0.12;
+}
+
+.gc-tafel__membran {
+  fill: none;
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+/* ─── GitterChip im Querschnitt ──────────────────────────────────────────── */
+.gc-feld__linie {
+  fill: none;
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1.5;
+  stroke-opacity: 0.55;
+}
+
+.gc-feld__puls {
+  fill: none;
+  stroke: var(--qb-akzent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 14 100;
+  stroke-dashoffset: 114;
+  opacity: 0;
+}
+
+.gc-chip__fassung {
+  fill: var(--qb-flaeche);
+  stroke: var(--qb-text-gedaempft);
+  stroke-width: 2;
+}
+
+.gc-chip__gold {
+  fill: var(--qb-akzent);
+}
+
+.gc-chip__gitter line {
+  stroke: var(--qb-akzent-tinte);
+  stroke-width: 1.5;
+}
+
+.gc-molekuel {
+  transform-box: view-box;
+}
+
+.gc-beschriftung .kw-notiz {
+  font-size: var(--qb-ref-fs-3);
+}
+
+.gc-beschriftung__feld {
+  fill: var(--qb-akzent-tinte);
+  font-weight: 700;
+}
+
+/* ─── Video ──────────────────────────────────────────────────────────────── */
+.gc-video {
+  max-width: 760px;
+  margin-top: var(--gc-s6);
+}
+
+.gc-video .YoutubeTimestamp {
+  border-radius: var(--qb-radius-bild);
+  overflow: hidden;
+}
+
+.gc-video__legende {
+  margin-top: var(--gc-s2);
+  font-size: var(--qb-ref-fs-3);
+}
+
+.gc-video__liste {
+  font-size: var(--qb-ref-fs-3);
+}
+
+/* ─── Studien ────────────────────────────────────────────────────────────── */
+.gc-studien {
+  margin-top: var(--gc-s4);
+}
+
+.gc-studien__balken {
+  display: grid;
+  gap: var(--gc-s4);
+}
+
+.gc-studien__diagramm {
+  padding: var(--gc-s3);
+  background: var(--qb-flaeche);
+  border-radius: var(--qb-radius-bild);
+}
+
+.gc-studien__kennzahlen {
+  display: grid;
+  gap: var(--gc-s3);
+  margin-top: var(--gc-s4);
+}
+
+.gc .gc-kennzahl {
+  display: grid;
+  gap: var(--gc-s1);
+  padding: var(--gc-s3);
+  text-decoration: none;
+  background: var(--qb-flaeche);
+  border: 1px solid var(--gc-linie);
+  border-radius: var(--qb-radius-bild);
+  box-shadow: var(--gc-schatten);
+}
+
+.gc .gc-kennzahl:hover {
+  border-color: var(--qb-akzent-tinte);
+}
+
+.gc-kennzahl__wert {
+  font-size: var(--qb-ref-fs-8);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--qb-akzent-tinte);
+}
+
+.gc-kennzahl__text {
+  font-size: var(--qb-ref-fs-3);
+}
+
+.gc-kennzahl__zeile {
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+}
+
+/* ─── Kauf ───────────────────────────────────────────────────────────────── */
+.gc-kauf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gc-s3);
+  align-items: center;
+  margin-top: var(--gc-s4);
+}
+
+/* ─── Quellen ────────────────────────────────────────────────────────────── */
+.gc-quellen {
+  margin-top: var(--gc-s8);
+  padding-top: var(--gc-s6);
+  border-top: 1px solid var(--gc-linie);
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+
+.gc-quellen h2 {
+  font-size: var(--qb-text-h3);
+}
+
+.gc-quellen h3 {
+  font-size: var(--qb-ref-fs-4);
+  margin-top: var(--gc-s3);
+}
+
+.gc-quellen__liste {
+  margin: 0;
+  padding-left: var(--gc-s3);
+}
+
+.gc-quellen__liste li {
+  margin-bottom: var(--gc-s1);
+}
+
+/* ─── Breiten ────────────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .gc h2 {
+    font-size: var(--qb-text-h2-mobil);
+  }
+
+  .gc h3 {
+    font-size: var(--qb-text-h3-mobil);
+  }
+
+  .gc-kurz {
+    font-size: var(--qb-ref-fs-4);
+  }
+
+  .gc-figur,
+  .gc-szene {
+    padding: var(--gc-s2);
+  }
+
+  .gc-beschriftung {
+    display: none;
+  }
+}
+
+@media (min-width: 720px) {
+  .gc-studien__balken,
+  .gc-studien__kennzahlen {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .gc {
+    padding-top: var(--gc-s6);
+  }
+
+  .gc-kopf {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+
+  .gc-stufe--zweispaltig .gc-stufe__inhalt {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--gc-s6);
+  }
+
+  .gc-kettenbild {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .gc-kettenbild__schritt {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .gc-kettenbild__schritt:first-child {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gc-pfeil {
+    transform: none;
+  }
+}
+
+/* ─── Bewegung ───────────────────────────────────────────────────────────── */
+
+/* 1. Die Endlos-Schleifen der Info-Seite sind in diesem Scope aus. Ohne
+      Zustand (Server-HTML, reduzierte Bewegung) steht das Endbild. */
+.gc .kw-leit__arm,
+.gc .kw-leit__nachbar,
+.gc .kw-leit__ringkante,
+.gc .kw-dipol,
+.gc .kw-domaene__puls,
+.gc .kw-zone,
+.gc .kw-teilchen,
+.gc .kw-bruecke--wechselt,
+.gc .kw-atom-o--wackelt,
+.gc .kw-welle,
+.gc .kw-marke,
+.gc .kw-kurve--zone,
+.gc .kw-balken--waechst {
+  animation: none;
+}
+
+/* 2. Kopf: ein goldener Puls läuft EINMAL die Feldlinien entlang, die
+      Moleküle drehen sich EINMAL in dieselbe Richtung. Das Endbild steht vom
+      ersten Pixel an, nichts wird versteckt. */
+.gc-feld__puls {
+  animation: gc-puls-laeuft 2.2s var(--gc-kurve) 1 both;
+}
+
+.gc-molekuel {
+  animation: gc-richtet-sich 1.6s var(--gc-kurve) 1 both;
+}
+
+@keyframes gc-puls-laeuft {
+  0% {
+    stroke-dashoffset: 114;
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes gc-richtet-sich {
+  from {
+    transform: rotate(var(--gc-kipp, 0deg));
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/* 3. Szenen: EINE Animation je Element, einmal, Endbild bleibt (both).
+      „bereit" zeigt das Startbild angehalten, „aktiv" spielt ab. */
+.gc-szene:not([data-zustand='fertig']) .kw-leit__arm {
+  animation: gc-weitet 1.6s var(--gc-kurve) 0.3s 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .kw-leit__nachbar,
+.gc-szene:not([data-zustand='fertig']) .kw-leit__ringkante {
+  animation: gc-erscheint-spaet 3s ease-out 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .kw-dipol--takt {
+  animation: gc-gleichtakt 2.4s ease-in-out 0.2s 3 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .kw-dipol--frei {
+  animation: gc-frei 3s ease-in-out 2 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .kw-domaene__puls {
+  animation: gc-domaene-puls 2.4s ease-out 0.2s 3 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .kw-zone {
+  animation: gc-zone-waechst 2.6s var(--gc-kurve) 0.2s 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .kw-teilchen {
+  animation: gc-verdraengt 2.6s var(--gc-kurve) 0.2s 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .gc-tafel__ring {
+  animation: gc-ring 1.2s var(--gc-kurve) 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .gc-pfeil__linie {
+  stroke-dasharray: 100;
+  animation: gc-zeichnet 0.6s ease-out 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) [data-gc-pfeil='1'] .gc-pfeil__linie {
+  animation-delay: 0.8s;
+}
+
+.gc-szene:not([data-zustand='fertig']) [data-gc-pfeil='2'] .gc-pfeil__linie {
+  animation-delay: 2.2s;
+}
+
+.gc-szene:not([data-zustand='fertig']) .gc-tafel__molekuel {
+  animation: gc-findet-platz 1.2s var(--gc-kurve) 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .gc-tafel__sechseck {
+  animation: gc-erscheint 0.8s ease-out 2s 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .gc-tafel__schicht {
+  animation: gc-zone-waechst 1.6s var(--gc-kurve) 2.8s 1 both;
+}
+
+.gc-szene:not([data-zustand='fertig']) .gc-tafel__ladung {
+  animation: gc-erscheint 0.6s ease-out 3.8s 1 both;
+}
+
+/* Angehalten, solange die Szene wartet. Steht NACH den Zuweisungen oben und
+   hat dieselbe Spezifität, gewinnt also für animation-play-state. */
+.gc .gc-szene[data-zustand='bereit'] * {
+  animation-play-state: paused;
+}
+
+@keyframes gc-weitet {
+  from {
+    transform: rotate(var(--kw-dreh, 0deg));
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes gc-erscheint-spaet {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes gc-erscheint {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gc-gleichtakt {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(26deg);
+  }
+  75% {
+    transform: rotate(-26deg);
+  }
+}
+
+@keyframes gc-frei {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-24deg);
+  }
+  70% {
+    transform: rotate(20deg);
+  }
+}
+
+@keyframes gc-domaene-puls {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes gc-zone-waechst {
+  from {
+    transform: scaleX(0.2);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes gc-verdraengt {
+  from {
+    transform: translateX(-120px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes gc-ring {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gc-zeichnet {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes gc-findet-platz {
+  from {
+    transform: translate(var(--gc-dx, 0px), var(--gc-dy, 0px));
+    opacity: 0.4;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+/* 4. Reduzierte Bewegung: zweiter Gürtel neben der JS-Weiche der Szene. */
+@media (prefers-reduced-motion: reduce) {
+  .gc *,
+  .gc .gc-szene * {
+    animation: none !important;
+  }
+
+  .gc-feld__puls {
+    opacity: 0;
+  }
+}

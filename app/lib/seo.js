@@ -408,6 +408,23 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Vorverkaufs-Landingpage, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-12',
   },
+  // Neu 2026-09-24 (Großjob „Seite: Wie funktioniert der GitterChip im
+  // QiOne?", Christian 23.09.2026: „Die Seite noch nicht verlinken und nicht
+  // crawlbar machen."). Dieselbe Lage wie `qi-master-vorverkauf`: von Anfang an
+  // unsichtbar gebaut, nie im Index, in keiner Sitemap, ohne interne
+  // Verlinkung. Deshalb `ausSitemap: true` und keine Übergangsstufe. Der
+  // Eintrag ist heute wirkungslos (reine Route, kein Shopify-Seitenobjekt, nicht
+  // in NUR_ROUTE_SEITEN) und sperrt den Tag, an dem jemand im Admin eine Seite
+  // mit diesem Handle anlegt. Das noindex selbst steht in der eigenen Route
+  // `pages.wie-funktioniert-der-gitterchip-im-qione.jsx` (meta + X-Robots-Tag).
+  // Bei Christians Freigabe wird dieser Eintrag entfernt.
+  {
+    handle: 'wie-funktioniert-der-gitterchip-im-qione',
+    ausSitemap: true,
+    grund:
+      'Erklärseite GitterChip, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-09-24',
+  },
 ];
 
 /**
