@@ -5,6 +5,7 @@ import {createContentSecurityPolicy} from '@shopify/hydrogen';
 import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
 import {istStillgelegteJSaleSeite} from '~/data/ten-years-deals';
 import {refAusAufruf, wendePartnercodeAn} from '~/lib/partnercode.server';
+import {einbettungsWeiche as einbettungsWeicheGemeinsam} from '~/lib/einbettungs-weiche.server';
 
 /**
  * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
@@ -702,6 +703,13 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
   });
+
+  // EINBETTUNGS-WEICHE als gemeinsame Quelle (app/lib/einbettungs-weiche.
+  // server.js): antwortet im fremden Rahmen mit der einbettbaren Weiter-Seite
+  // statt mit einer Seite, die frame-ancestors 'none' ohnehin verwirft. Deckt
+  // auch den Warenkorb-Permalink (cart.$lines.jsx rendert dort durch).
+  const weiterSeite = einbettungsWeicheGemeinsam(request);
+  if (weiterSeite) return weiterSeite;
 
   // PARTNERCODE AUTOMATISCH: ein Partnerlink (?sca_ref=...) legt den Code
   // des Partners in den Warenkorb, wenn dort noch keiner liegt. Begründung,
