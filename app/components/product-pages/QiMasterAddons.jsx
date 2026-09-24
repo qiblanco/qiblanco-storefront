@@ -46,7 +46,7 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
 
   return (
     <section className="qm-addons" aria-labelledby="qm-addons-titel">
-      {/* Bewusst KEIN h2: die Seite fuehrt genau EINEN H2-Stil
+      {/* Bewusst KEIN h2: die Seite führt genau EINEN H2-Stil
           (--qm-fs-h2, design-rubrik „EIN H2-Stil je Seite"), und der wäre in
           der schmalen Kaufspalte lauter als der Preis. Die Zeile benennt den
           Bereich über aria-labelledby. */}
