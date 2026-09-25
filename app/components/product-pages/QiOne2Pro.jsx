@@ -13,6 +13,7 @@ import {YoutubeIframe} from '../reusables/YoutubeIframe';
 import {Gitterchip} from '../reusables/Gitterchip';
 import { RatenzahlungHerobanner } from '../reusables/RatenzahlungHerobanner';
 import {StudienCards} from './StudienCards';
+import {InhaltswegNeuOderGebraucht} from './InhaltswegNeuOderGebraucht';
 
 /*
  * Kompletter PDP-Inhalt unterhalb der Buy-Box. Seit 2026-07-16 auch von der
@@ -295,6 +296,7 @@ function RisikofreiErleben() {
         nicht behalten wollen, kannst du ihn innerhalb von 20 Tagen
         unkompliziert zurückgeben – und erhältst den vollen Kaufpreis zurück.
       </p>
+      <InhaltswegNeuOderGebraucht />
       <p className="mt-1">
         Deine Vorteile: <br />✔ In Ruhe erleben: Erfahre den QiOne® 2 Pro in
         deinem eigenen Tempo. <br />

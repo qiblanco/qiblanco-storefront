@@ -305,6 +305,18 @@ export const FAQ_BELEGE = [
       'MmWirktDas.jsx GRENZE 4 (wörtlich übernommen, Anrede angepasst) + product-faqs.js ' +
       'Material-Item (ungeflaggt). BEWUSST WEGGELASSEN: die Mechanismus-Erklärung aus ' +
       'product-faqs.js, die im Bestand die flags `eso-buzzword` und `wirkmechanismus` trägt.',
+    // DIE VERTIEFUNG DIESER ANTWORT, und zugleich ein eingehender Link, den
+    // /pages/hypothesen braucht (Grossjob 20260925-GROSSJOB-neue-seiten-
+    // kommen-bei-google-nicht-an-indexierung-und-soll, Segment s03): am
+    // 2026-09-25 verlinkte keine indexierte Seite die Hypothesen aus dem
+    // Inhalt, Google kannte sie nur aus der Sitemap. Die Antwort nennt das
+    // Erklärungsmodell eine Hypothese; dort steht es ausgeführt.
+    weiter: {
+      pfad: '/pages/hypothesen',
+      text:
+        'Unser Wirkmodell in sechs Hypothesen, jede mit dem, was dafür und ' +
+        'was dagegen spricht',
+    },
   },
 ];
 
