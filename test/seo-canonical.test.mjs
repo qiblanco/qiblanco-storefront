@@ -12,6 +12,7 @@ import {
   CANONICAL_ORIGIN,
   NICHT_INDEXIERBARE_SEITEN,
   NICHT_INDEXIERBARE_SEITEN_DEF,
+  SEITEN_KLASSEN,
   absoluteCanonical,
   canonicalLink,
   istNichtIndexierbar,
@@ -280,6 +281,31 @@ test('jeder Definitionseintrag trägt Handle, Sitemap-Entscheid UND Begründung'
     new Set(NICHT_INDEXIERBARE_SEITEN).size,
     NICHT_INDEXIERBARE_SEITEN.length,
   );
+});
+
+test('jeder Definitionseintrag trägt eine gültige Klasse, kanal-anderer nennt den Kanal', () => {
+  // Leser außerhalb des Repos (funnel-substrat, nachbau-audit) entscheiden an
+  // `klasse`, ob eine Seite tot oder eine Landingpage ist. Ein Eintrag ohne
+  // Klasse würde dort still als tote Seite gelesen: genau der Fehler, durch
+  // den /pages/qibracelet aus der Ads-Auswertung fiel.
+  for (const e of NICHT_INDEXIERBARE_SEITEN_DEF) {
+    assert.ok(
+      SEITEN_KLASSEN.includes(e.klasse),
+      `${e.handle}: klasse ${JSON.stringify(e.klasse)} nicht in ${SEITEN_KLASSEN}`,
+    );
+    if (e.klasse === 'kanal-anderer') {
+      assert.ok(e.kanal && e.kanal.length > 0, `${e.handle}: kanal fehlt`);
+    } else {
+      assert.equal(e.kanal, undefined, `${e.handle}: kanal nur bei kanal-anderer`);
+    }
+  }
+  // Die Belegfälle des Auftrags, namentlich, damit eine Umklassierung auffällt.
+  const k = Object.fromEntries(NICHT_INDEXIERBARE_SEITEN_DEF.map((e) => [e.handle, e]));
+  assert.equal(k.qibracelet.klasse, 'landing');
+  assert.equal(k.partner.klasse, 'kanal-anderer');
+  assert.equal(k.partner.kanal, 'partner');
+  assert.equal(k['qi-master-vorverkauf'].kanal, 'mail');
+  assert.equal(k['qibracelet_'].klasse, 'hygiene');
 });
 
 test('noindexHeader ist der X-Robots-Tag mit demselben Wortlaut wie die Einzelrouten', () => {
