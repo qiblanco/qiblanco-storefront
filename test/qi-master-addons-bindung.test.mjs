@@ -1,19 +1,19 @@
-// Regressionstest: die Bindung der Qi-Master-Add-ons greift unabhaengig vom
+// Regressionstest: die Bindung der Qi-Master-Add-ons greift unabhängig vom
 // Zeilen-Merkmal `_qm_addon`, das der CLIENT setzt
 // (Job 20260925-qm-addon-bindung-greift-nur-bei-attribut-prio15).
-// Ausfuehren: node --test test/qi-master-addons-bindung.test.mjs
+// Ausführen: node --test test/qi-master-addons-bindung.test.mjs
 //
 // DER DEFEKT (K3-Widerleger s05, live gemessen 2026-09-25): die Warenkorb-
 // Action las bei LinesAdd nur nach, wenn eine Eingabezeile das Merkmal trug.
 // Ein POST an /cart ohne Merkmal hinterliess eine Wunschnummer ohne Qi Master
 // (H1), eine Kette x3 ohne Qi Master (H1b), eine Wunschnummer mit Menge 2
 // (H3b) und dieselbe Nummer in zwei Zeilen (H6). Die attributierten Arme
-// (H2-H5, H7-H9) hielten schon vorher und muessen es weiter tun.
+// (H2-H5, H7-H9) hielten schon vorher und müssen es weiter tun.
 //
 // Der Fake-Warenkorb bildet die zwei Shopify-Eigenschaften nach, auf die es
 // ankommt (beide in hydrogen_versuche.out gemessen): gleiche Variante MIT
 // gleichen Attributen wird zu einer Zeile zusammengelegt, und die zuletzt
-// hinzugefuegte Zeile steht vorn.
+// hinzugefügte Zeile steht vorn.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {registerHooks} from 'node:module';
@@ -22,18 +22,18 @@ import {fileURLToPath} from 'node:url';
 
 const APP = new URL('../app/', import.meta.url).href;
 registerHooks({
-  resolve(spez, kontext, naechster) {
+  resolve(spez, kontext, nächster) {
     if (spez.startsWith('~/')) {
       const pfad = APP + spez.slice(2);
-      return naechster(/\.(js|jsx|mjs)$/.test(pfad) ? pfad : pfad + '.js', kontext);
+      return nächster(/\.(js|jsx|mjs)$/.test(pfad) ? pfad : pfad + '.js', kontext);
     }
-    return naechster(spez, kontext);
+    return nächster(spez, kontext);
   },
-  load(url, kontext, naechster) {
+  load(url, kontext, nächster) {
     if (url.endsWith('.jsx')) {
       return {format: 'module', shortCircuit: true, source: readFileSync(fileURLToPath(url), 'utf8')};
     }
-    return naechster(url, kontext);
+    return nächster(url, kontext);
   },
 });
 
@@ -101,12 +101,12 @@ const korb = (cart) => cart.zeilen().map((z) => `${handleVon(z.vid).replace('qi-
 const zeile = (cart, vid) => cart.zeilen().find((z) => z.vid === vid).id;
 
 // ---- Die vier Umgehungen (vor dem Fix rot) ----
-test('H1 Wunschnummer OHNE Merkmal, OHNE Qi Master -> faellt weg', async () => {
+test('H1 Wunschnummer OHNE Merkmal, OHNE Qi Master -> fällt weg', async () => {
   const c = fakeCart();
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: WN1, quantity: 1}]});
   assert.deepEqual(korb(c), []);
 });
-test('H1b Kette x3 OHNE Merkmal, OHNE Qi Master -> faellt weg', async () => {
+test('H1b Kette x3 OHNE Merkmal, OHNE Qi Master -> fällt weg', async () => {
   const c = fakeCart();
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: K60, quantity: 3}]});
   assert.deepEqual(korb(c), []);
@@ -116,7 +116,7 @@ test('H3b Qi Master + Wunschnummer x2 OHNE Merkmal -> Menge 1, Merkmal gesetzt',
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: QM, quantity: 1}, {merchandiseId: WN2, quantity: 2}]});
   assert.deepEqual(korb(c), ['qi-master:1x1', 'wunschnummer:2x1+']);
 });
-test('H6 dieselbe Nummer ein zweites Mal OHNE Merkmal, dann weitere Add-ons -> je Art hoechstens Qi-Master-Menge, keine Nummer doppelt', async () => {
+test('H6 dieselbe Nummer ein zweites Mal OHNE Merkmal, dann weitere Add-ons -> je Art höchstens Qi-Master-Menge, keine Nummer doppelt', async () => {
   const c = fakeCart();
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: QM, quantity: 1}, {merchandiseId: WN3, quantity: 1, attributes: ATTR}]});
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: WN3, quantity: 1}]});
@@ -146,8 +146,8 @@ test('PERMALINK /cart/<Wunschnummer>:2 ohne Qi Master -> leerer Korb, Weiterleit
   assert.equal(antwort.headers.get('Location'), '/cart');
 });
 
-// ---- Die attributierten Arme (vor und nach dem Fix gruen) ----
-test('H2 Wunschnummer MIT Merkmal ohne Qi Master -> faellt weg', async () => {
+// ---- Die attributierten Arme (vor und nach dem Fix grün) ----
+test('H2 Wunschnummer MIT Merkmal ohne Qi Master -> fällt weg', async () => {
   const c = fakeCart();
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: WN1, quantity: 1, attributes: ATTR}]});
   assert.deepEqual(korb(c), []);
@@ -163,7 +163,7 @@ test('H4 LinesRemove Qi Master -> Add-ons fallen mit', async () => {
   await aktion(c, 'LinesRemove', {lineIds: [zeile(c, QM)]});
   assert.deepEqual(korb(c), []);
 });
-test('H5 LinesUpdate Wunschnummer auf 2 -> zurueck auf 1', async () => {
+test('H5 LinesUpdate Wunschnummer auf 2 -> zurück auf 1', async () => {
   const c = fakeCart();
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: QM, quantity: 1}, {merchandiseId: WN3, quantity: 1, attributes: ATTR}]});
   await aktion(c, 'LinesUpdate', {lines: [{id: zeile(c, WN3), quantity: 2}]});
@@ -180,7 +180,7 @@ test('H9 zwei Ketten-Zeilen bei einem Qi Master -> die zuletzt genannte bleibt (
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: QM, quantity: 1}, {merchandiseId: K60, quantity: 1, attributes: ATTRK}, {merchandiseId: K40, quantity: 1, attributes: ATTRK}]});
   assert.deepEqual(korb(c), ['goldkette:40x1+', 'qi-master:1x1']);
 });
-test('REGULAER Qi Master + Nummer + Kette mit Merkmal -> unveraendert', async () => {
+test('REGULÄR Qi Master + Nummer + Kette mit Merkmal -> unverändert', async () => {
   const c = fakeCart();
   await aktion(c, 'LinesAdd', {lines: [{merchandiseId: QM, quantity: 1}, {merchandiseId: WN1, quantity: 1, attributes: ATTR}, {merchandiseId: K60, quantity: 1, attributes: ATTRK}]});
   assert.deepEqual(korb(c), ['goldkette:60x1+', 'qi-master:1x1', 'wunschnummer:1x1+']);
