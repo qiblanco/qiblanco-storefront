@@ -680,6 +680,27 @@ function Evidenzstufe() {
           </div>
         ))}
       </div>
+
+      {/* WEITERWEG DORT, WO DIE MESSUNG ENDET (Grossjob 20260925-GROSSJOB-
+          neue-seiten-kommen-bei-google-nicht-an-indexierung-und-soll, Segment
+          s03). Am 2026-09-25 verlinkte keine von Google indexierte Seite die
+          Hypothesen oder „Warum es Qi Blanco gibt" aus dem Inhalt; Google
+          kannte beide nur aus der Sitemap und hatte sie nach 13 Tagen nicht
+          gelesen. Diese Seite ist die stärkste der Domain. Der Absatz steht
+          AUSSERHALB der Schema-Konstanten oben: das FAQPage-Schema bleibt
+          unverändert. Linktext = Name der Zielseite. Bauform und Farbe von
+          `qb-st-weiterweg` (s02 des Schwester-Grossjobs), null Zeilen CSS.
+          Wache: homepage-bauer/pruefungen/probe_neue_seiten_inhaltslinks__20260925.py */}
+      <p
+        className="qb-st-sektion-intro qb-st-weiterweg"
+        data-qb-weg="wirkmodell"
+      >
+        Unser Erklärungsmodell für diese Messwerte steht in den{' '}
+        <Link to="/pages/hypothesen">Hypothesen</Link>: sechs Annahmen, jede
+        mit dem, was für sie spricht und was noch offen ist. Die Absicht hinter
+        dem Unternehmen erzählt Christian Bernd Bauer in{' '}
+        <Link to="/pages/warum-qi-blanco">Warum es Qi Blanco gibt</Link>.
+      </p>
     </section>
   );
 }
