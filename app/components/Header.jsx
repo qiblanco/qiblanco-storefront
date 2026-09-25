@@ -97,6 +97,34 @@ const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
  * die es nicht gibt, und das CDN gibt dafür nur den Master zurück.
  */
 const MENUE_SIZES = '(min-width: 1000px) 325px, (min-width: 768px) 34vw, 27vw';
+/*
+ * DIE ZUSATZ-SPROSSE 240 — Nachtrag 2026-09-24 (Job
+ * 20260924-header-menue-mobil-sprosse-dach-arm-prio45).
+ *
+ * Nach dem Merge der Leiter (#610) blieb am Telefon ein Rest: die Leiter
+ * beginnt bei 325 (1x-Sprosse der Desktop-Fläche), die Kacheln sind dort aber
+ * 80 CSS-px breit. Gemessen am 2026-09-24 mit
+ * ladeverhalten/bin/probe_startseite_bildlast.py (390 px, dpr 2), live und am
+ * eigenen Dev-Server gleich: bali-17 80 px und kitzbuehel-10 81 px, beide mit
+ * 325 px beliefert = 2,02-fach. `27vw` behauptet dort 105 px -> Bedarf 210.
+ *
+ * WARUM GENAU EINE SPROSSE: Chromium nimmt die kleinste Sprosse, deren
+ * Breite sizes x dpr erreicht (nachgemessen am selben Tag: 414 px, dpr 3,
+ * 27vw = 112 px -> Bedarf 335 -> es kommt 597, nicht 325). Eine neue Sprosse
+ * ändert also NUR dort etwas, wo sie selbst gewählt wird. Die 240 wird bei
+ * 390/dpr 2 (Probe: 80 px -> 1,49-fach) und 360/dpr 2 (73 px -> 1,64-fach)
+ * gewählt, an KEINEM der elf Gate-12-Haltepunkte (360/414/883 laufen mit dpr 3,
+ * 600/768/820/900/1024 mit dpr 2 brauchen mehr als 240, 1000/1280/1440 mit
+ * dpr 1 nehmen 325) — dort bleibt die Auslieferung Pixel für Pixel dieselbe.
+ * Jede weitere Sprosse (160, 200)
+ * würde an keinem gemessenen Punkt etwas verbessern, aber die Wahl an
+ * ungemessenen Fenstern verschieben. Unterdeckung ist ausgeschlossen, solange
+ * `27vw` die Fläche nicht unterschätzt (Mehr bei 360..600: 24,9..26,8vw).
+ *
+ * Nur die MENUE_SIZES-Kacheln bekommen sie; die Kurse-Kachel hat ihre eigene
+ * Fläche (133 px am Telefon, Master 526) und ist nicht betroffen.
+ */
+const MENUE_ZUSATZ_SPROSSEN = [240];
 const MENUE_SIZES_KURSE = '(min-width: 1000px) 325px, (min-width: 768px) 35vw, 36vw';
 
 const STUDIEN_DROPDOWN_BILD = {
@@ -691,7 +719,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             <div className="nav-styling-wrapper">
               <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={217}
                 loading="lazy" alt="QiBracelet® am Handgelenk getragen"
-                anzeigeBreite={325} masterBreite={1368} sizes={MENUE_SIZES}
+                anzeigeBreite={325} masterBreite={1368} sizes={MENUE_SIZES} zusatzSprossen={MENUE_ZUSATZ_SPROSSEN}
                 src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-03-01-qiblanco-milva-martin-1020737.webp?v=1707317356' />
               <div className="nav-styling-overlay">QiBracelet®</div>
             </div>
@@ -700,7 +728,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             <div className="nav-styling-wrapper">
               <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={217}
                 loading="lazy" alt="QiOne® 2 Pro im Alltag am Strand"
-                anzeigeBreite={325} masterBreite={597} sizes={MENUE_SIZES}
+                anzeigeBreite={325} masterBreite={597} sizes={MENUE_SIZES} zusatzSprossen={MENUE_ZUSATZ_SPROSSEN}
                 src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2021-04-qiblanco-bali-17.webp?v=1765230912' />
               <div className="nav-styling-overlay">QiOne 2 Pro®</div>
             </div>
@@ -709,7 +737,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             <div className="nav-styling-wrapper">
               <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={244}
                 loading="lazy" alt="QiHome® Air im Wohnraum aufgestellt"
-                anzeigeBreite={325} masterBreite={1118} sizes={MENUE_SIZES}
+                anzeigeBreite={325} masterBreite={1118} sizes={MENUE_SIZES} zusatzSprossen={MENUE_ZUSATZ_SPROSSEN}
                 src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000819-2.jpg?v=1668999599' />
               <div className="nav-styling-overlay">QiHome Air®</div>
             </div>
@@ -745,7 +773,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
         <div className="nav-styling-wrapper">
           <CdnBild style={{borderRadius: '20px'}} breite={325} hoehe={170}
                 loading="lazy" alt="Qi Blanco in den Bergen bei Kitzbühel"
-                anzeigeBreite={325} masterBreite={668} sizes={MENUE_SIZES}
+                anzeigeBreite={325} masterBreite={668} sizes={MENUE_SIZES} zusatzSprossen={MENUE_ZUSATZ_SPROSSEN}
                 src='https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579' />
         </div>
       )}
@@ -763,6 +791,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             anzeigeBreite={325}
             masterBreite={1080}
             sizes={MENUE_SIZES}
+            zusatzSprossen={MENUE_ZUSATZ_SPROSSEN}
             src={STUDIEN_DROPDOWN_BILD.url}
             alt={STUDIEN_DROPDOWN_BILD.alt}
             loading="lazy"

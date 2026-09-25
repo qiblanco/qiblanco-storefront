@@ -86,6 +86,8 @@ import {bildQuellen} from './shopifyBildQuellen';
  * @param {number} [p.masterBreite]   echte Breite der Masterdatei, klemmt die Leiter
  * @param {number} [p.mindestBreite]  Riegel für inhaltlich tragende Aufloesung
  * @param {string} [p.sizes]          eigener sizes-Wert, sonst `${anzeigeBreite}px`
+ * @param {number[]} [p.zusatzSprossen] GEMESSENE Zusatzbreiten unterhalb der
+ *   dpr-Leiter, für Flächen, die mit dem Fenster schrumpfen (s. shopifyBildQuellen)
  * @param {string} [p.leiterAus]     GEMESSENE Begründung, warum hier keine
  *   Leiter gebaut wird (der Master ist bereits die guenstigste Sprosse)
  * @param {'lazy'|'eager'} [p.loading]
@@ -103,6 +105,7 @@ export function CdnBild({
   masterBreite,
   mindestBreite,
   sizes,
+  zusatzSprossen,
   leiterAus,
   loading,
   decoding,
@@ -146,6 +149,7 @@ export function CdnBild({
         mindestBreite,
         masterBreite: masterBreite || null,
         sizes,
+        zusatzSprossen,
       });
 
   return (
