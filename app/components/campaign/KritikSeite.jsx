@@ -3,6 +3,8 @@ import {
   BEFUNDE,
   EINRAEUMUNGEN,
   FRAGEN,
+  EINSTIEG,
+  KURZABSATZ,
   PLUSPUNKTE,
 } from '~/data/kritik-vorwuerfe';
 import e0001 from '~/data/studien/e0001.json';
@@ -25,10 +27,11 @@ import e0003 from '~/data/studien/e0003.json';
  * Seite her auf.
  *
  * DIE FRAGE, DIE DIE SEITE BEANTWORTET, ist nicht „was sagen Kritiker", sondern
- * „ist das echt, oder werde ich verschaukelt?". Die lässt sich vollständig
- * beantworten, ohne eine einzige fremde Anklage zu wiederholen. Alle sieben
- * Themen sind da, in derselben Reihenfolge nach Gewicht — nur die Worte sind
- * unsere.
+ * „ist das echt?" — seit 2026-09-25 positiv aufgenommen: „Du willst überzeugt
+ * werden" (Christian). Sie lässt sich vollständig beantworten, ohne eine
+ * einzige fremde Anklage zu wiederholen. Alle sieben Themen sind da; seit
+ * 2026-09-25 in der Reihenfolge „Belegtes zuerst" (Begründung über FRAGEN in
+ * app/data/kritik-vorwuerfe.js) — nur die Worte sind unsere.
  *
  * DIE REIHENFOLGE DER ABSCHNITTE IST TRAGEND, nicht Geschmack:
  *   Fragen → Einräumungen → was in den Studien steht → STÄRKEN → Abschluss.
@@ -150,13 +153,22 @@ export function KritikSeite() {
             Qi Blanco Kritik: was belegt ist, was nicht – und was du selbst
             prüfen kannst
           </h1>
-          <p className="krit__lead">
-            Du willst wissen, ob hinter Qi Blanco etwas Belegtes steckt oder ob
-            du verschaukelt wirst. Das ist die richtige Frage. Hier stehen die
-            sieben härtesten Fragen zu unseren Produkten, jede mit einer geraden
-            Antwort: was gemessen ist, was offen ist, und was du selbst
-            nachprüfen kannst.
+          {/* DER KURZABSATZ (2026-09-25, Grossjob 20260925-GROSSJOB-seo-geo-
+              bewertung-und-kritik-auf-platz-1-bis-3-und-ki-zitat, s03). Er
+              steht direkt unter der H1 und trägt sich allein: wer wir sind,
+              was untersucht und veröffentlicht ist, was jeder selbst prüfen
+              kann. Das ist der Satz, den eine KI-Übersicht übernehmen soll —
+              Google schneidet Passagen am Abschnitt, was hinter der ersten
+              Zwischenüberschrift steht, beantwortet die Suche nicht mehr.
+              JEDE ANGABE IST BELEGT: Firma, Sitz, Register und Geschäftsführer
+              wie im Impressum (pages.impressum.jsx), die fünf Arbeiten wie in
+              BEFUNDE (vier Zellkultur, eine Erfahrungsberichte — „fünf
+              Arbeiten an Zellkulturen" wäre ungenau), die 20 Tage wie K5.
+              KEIN FAQ-SATZ WÖRTLICH (Duplikat-Risiko), keine Wirkaussage. */}
+          <p className="krit__kurz" data-kurzantwort="kritik">
+            {KURZABSATZ}
           </p>
+          <p className="krit__lead">{EINSTIEG}</p>
         </div>
       </section>
 
@@ -164,8 +176,8 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Die sieben Fragen, der Reihe nach</h2>
           <p className="krit__einleitung">
-            Sortiert nach Gewicht: zuerst die Frage, die am schwersten wiegt,
-            zuletzt die, die am wenigsten mit Messwerten zu tun hat.
+            Zuerst das, was gemessen und veröffentlicht ist. Danach das, was
+            offen ist, und am Ende die Prüfung, die du selbst machen kannst.
           </p>
 
           <ol className="krit__liste">
@@ -191,8 +203,8 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Was wir selbst einräumen</h2>
           <p className="krit__einleitung">
-            Vier Punkte, die gegen uns sprechen. Sie stehen so auch auf unseren
-            Studienseiten.
+            Vier Punkte, die offen sind. Sie stehen wortgleich auch auf
+            unseren Studienseiten.
           </p>
           <Belegbild
             studie={e0001}
@@ -276,9 +288,9 @@ export function KritikSeite() {
           <h2>Warum wir weitermachen</h2>
           <p className="krit__einleitung">
             Offene Fragen sind der normale Zustand von allem, was neu ist. Uns
-            trägt, was oben nachprüfbar steht – und die Fragen, die noch offen
-            sind, sind unsere Arbeitsliste und nicht unser Kleingedrucktes.
-            Deshalb findest du sie hier und nicht zwischen den Zeilen.
+            trägt, was nachprüfbar veröffentlicht ist – und die Fragen, die
+            noch offen sind, sind unsere Arbeitsliste und nicht unser
+            Kleingedrucktes.
           </p>
           <AbsichtHinweis />
         </div>
@@ -288,8 +300,7 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Was für uns spricht</h2>
           <p className="krit__einleitung">
-            Die offenen Punkte stehen oben, ungekürzt. Das hier steht daneben –
-            jeder Punkt so, dass du ihn nachprüfen kannst.
+            Jeder Punkt so, dass du ihn selbst nachprüfen kannst.
           </p>
           <ul className="krit__plusliste">
             {PLUSPUNKTE.map((s) => (
@@ -311,7 +322,7 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Du musst uns nichts glauben</h2>
           <p>
-            Ob das plausibel ist, entscheidest du nicht an unserem Text. Ein
+            Ob das plausibel ist, entscheidest du an dir selbst. Ein
             klinischer Wirknachweis am Menschen, der die Frage entscheiden
             würde, liegt nicht vor. Was es gibt, ist die Prüfung an dir selbst:
             20 Tage tragen, und wenn es nichts für dich ist, ohne Angabe von
