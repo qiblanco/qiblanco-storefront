@@ -140,9 +140,9 @@ async function loadCriticalData({context, request, params}) {
 
   const article = blog.articleByHandle;
 
-  // Die drei naechsten Beitraege in der Veroeffentlichungsreihe, zyklisch
+  // Die drei nächsten Beiträge in der Veröffentlichungsreihe, zyklisch
   // (app/lib/weiterlesen.js). Bis 2026-09-25 standen hier auf jedem Artikel
-  // dieselben drei aeltesten, und neun von dreizehn Beitraegen bekamen aus
+  // dieselben drei ältesten, und neun von dreizehn Beiträgen bekamen aus
   // diesem Block nie einen Link. Fehlt die Verbindung (leerer Blog, alte
   // Antwort aus dem Cache), ist die Liste leer und der Abschluss-Block
   // rendert seinen Weiterlesen-Teil gar nicht.

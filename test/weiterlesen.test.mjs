@@ -18,7 +18,7 @@ import {weiterlesenNachbarn} from '../app/lib/weiterlesen.js';
 
 const REIHE = ['a', 'b', 'c', 'd', 'e', 'f'].map((h) => ({handle: h, title: h.toUpperCase()}));
 
-// Die Bauform bis 2026-09-25, als Mutant: die ersten drei ausser dem aktuellen.
+// Die Bauform bis 2026-09-25, als Mutant: die ersten drei außer dem aktuellen.
 const ALTE_BAUFORM = (liste, aktuell) =>
   liste.filter((a) => a?.handle && a.handle !== aktuell).slice(0, 3);
 
@@ -28,7 +28,7 @@ function eingangsgrade(fn, liste) {
   return grad;
 }
 
-test('die drei naechsten in der Reihe, am Ende zyklisch weiter', () => {
+test('die drei nächsten in der Reihe, am Ende zyklisch weiter', () => {
   assert.deepEqual(weiterlesenNachbarn(REIHE, 'a').map((x) => x.handle), ['b', 'c', 'd']);
   assert.deepEqual(weiterlesenNachbarn(REIHE, 'e').map((x) => x.handle), ['f', 'a', 'b']);
   assert.deepEqual(weiterlesenNachbarn(REIHE, 'f').map((x) => x.handle), ['a', 'b', 'c']);
@@ -47,7 +47,7 @@ test('jeder Beitrag wird von genau drei anderen verlinkt', () => {
   assert.deepEqual(Object.values(grad), [3, 3, 3, 3, 3, 3]);
 });
 
-test('Mutant alte Bauform: derselbe Arm faellt rot', () => {
+test('Mutant alte Bauform: derselbe Arm fällt rot', () => {
   const grad = eingangsgrade(ALTE_BAUFORM, REIHE);
   assert.notDeepEqual(Object.values(grad), [3, 3, 3, 3, 3, 3]);
   assert.equal(grad.f, 0);
@@ -63,7 +63,7 @@ test('aktueller Beitrag fehlt in der Liste: die neuesten ohne ihn', () => {
   assert.deepEqual(weiterlesenNachbarn(REIHE, 'zz').map((x) => x.handle), ['a', 'b', 'c']);
 });
 
-test('leere, fehlende und kaputte Eintraege brechen nichts', () => {
+test('leere, fehlende und kaputte Einträge brechen nichts', () => {
   assert.deepEqual(weiterlesenNachbarn(undefined, 'a'), []);
   assert.deepEqual(weiterlesenNachbarn([], 'a'), []);
   const kaputt = [null, {title: 'ohne'}, {handle: 'a'}, {handle: 'a'}, {handle: 'b'}];

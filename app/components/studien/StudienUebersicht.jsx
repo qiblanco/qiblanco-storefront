@@ -382,10 +382,10 @@ export function StudienUebersicht() {
           {/* WEG IN DIE BLOG-UEBERSICHT (Segment s04 des Grossjobs
             20260925-GROSSJOB-neue-seiten-kommen-bei-google-nicht-an-
             indexierung-und-soll). Die acht Karten oben sind ein fester
-            Ausschnitt; neuere Beitraege erreicht man von hier sonst nicht.
-            Die Uebersicht /blogs/wissen hatte am 2026-09-25 von KEINER
+            Ausschnitt; neuere Beiträge erreicht man von hier sonst nicht.
+            Die Übersicht /blogs/wissen hatte am 2026-09-25 von KEINER
             indexierten Seite einen Link aus dem Inhalt, nur aus Kopf und
-            Fuss, und Google kannte sie nicht. Linktext = Name im Fussmenue.
+            Fuß, und Google kannte sie nicht. Linktext = Name im Fußmenü.
             Bauform `qb-st-weiterweg`, null Zeilen CSS.
             Wache: homepage-bauer/pruefungen/probe_blog_wege__20260925.py */}
           <p
