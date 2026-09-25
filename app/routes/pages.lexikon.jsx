@@ -1,5 +1,6 @@
 import {LexikonHub} from '~/components/campaign/LexikonHub';
 import lexikonStyles from '~/styles/lexikon.css?url';
+import lexikonHubStyles from '~/styles/lexikon-hub.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {LEXIKON} from '~/data/lexikon';
 import {hubSchema} from '~/lib/lexikon-schema';
@@ -52,10 +53,13 @@ const BESCHREIBUNG =
  * NUR_ROUTE_SEITEN im selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-09-15';
-const GEAENDERT = '2026-09-15';
+const GEAENDERT = '2026-09-25';
 
 export function links() {
-  return [{rel: 'stylesheet', href: lexikonStyles}];
+  return [
+    {rel: 'stylesheet', href: lexikonStyles},
+    {rel: 'stylesheet', href: lexikonHubStyles},
+  ];
 }
 
 /** @type {MetaFunction} */

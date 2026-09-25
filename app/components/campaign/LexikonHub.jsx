@@ -55,19 +55,40 @@ export function LexikonHub() {
         <div className="lex__inhalt">
           <h2>Die Begriffe</h2>
           <p className="lex__einleitung">
-            Jeder Begriff hat eine eigene Seite, weil eine Definition nur
-            vollständig etwas wert ist.
+            Zu jedem Begriff steht hier das Wesentliche. Die ganze Herleitung
+            mit allen Quellen steht auf der eigenen Seite des Begriffs.
           </p>
-          <ul className="lex__liste">
+          {/* DIE DEFINITIONEN STEHEN SEIT 2026-09-25 AUF DEM HUB SELBST
+              (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-
+              zusammenfuehren). Vorher zeigte der Hub je Begriff nur
+              Definition und Grenze, zusammen 485 Wörter — eine dünne
+              Vorlagenseite nach Christians Maßstab vom selben Tag. Jetzt
+              trägt jede Karte dieselben vier Aussagen wie die Begriffsseite in
+              Kurzform, alle aus app/data/lexikon.js: messbare Größe, der erste
+              Absatz „Was die Physik dazu sagt", der Übertragungssatz und die
+              Grenze. Kein neuer Text, keine neue Aussage. */}
+          <ul className="lex__liste lex__liste--voll">
             {LEXIKON.map((e) => (
-              <li key={e.slug} className="lex__karte">
+              <li key={e.slug} id={e.slug} className="lex__karte">
                 <h3>
                   <a className="lex__karte-link" href={e.pfad}>
                     {e.begriff}
                   </a>
                 </h3>
                 <p>{e.definition}</p>
-                <p className="lex__karte-grenze">{e.grenze}</p>
+                <p className="lex__groesse">
+                  Messbare Größe: {e.physik_groesse}
+                </p>
+                <p>
+                  <strong>Was die Physik dazu sagt:</strong> {e.physik[0]}
+                </p>
+                <p>
+                  <strong>Was die Übertragung trägt:</strong>{' '}
+                  {e.uebertragung_satz}
+                </p>
+                <p className="lex__karte-grenze">
+                  <strong>Und was sie nicht trägt:</strong> {e.grenze}
+                </p>
               </li>
             ))}
           </ul>
@@ -76,7 +97,13 @@ export function LexikonHub() {
 
       <section data-section="lex-haltung">
         <div className="lex__inhalt">
-          <h2>Warum wir das aufschreiben</h2>
+          {/* 2026-09-25: Überschrift „Warum wir das aufschreiben" und der
+              Absatz „Uns liegt an … Das kostet uns jedes Mal ein Stück
+              Behauptung und ist es wert." sind gestrichen (Haltungs-Gate
+              K1-K4: die Seite erklärte, warum sie geschrieben wurde — ein
+              Selbstgespräch, keine Angabe für den Leser). Was er daraus
+              mitnimmt, steht jetzt als Satz über den Begriffen. */}
+          <h2>Zwei Sprachen für dieselbe Erfahrung</h2>
           <p>
             Zwischen Spiritualität und Physik liegt kein Widerspruch, sondern
             ein Übersetzungsproblem. Beide Seiten beschreiben Erfahrungen, und
@@ -85,9 +112,7 @@ export function LexikonHub() {
             Missverständnisse in beide Richtungen.
           </p>
           <p>
-            Uns liegt an einer gemeinsamen Sprache. Deshalb steht bei jedem
-            Begriff auch, was er nicht hergibt. Das kostet uns jedes Mal ein
-            Stück Behauptung und ist es wert.
+            Deshalb steht bei jedem Begriff hier auch, wie weit er trägt.
           </p>
         </div>
       </section>
