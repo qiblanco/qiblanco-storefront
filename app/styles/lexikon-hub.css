@@ -1,0 +1,31 @@
+/* ============================================================================
+   /pages/lexikon — NUR der Hub (2026-09-25, Auftrag
+   20260926-seo-duenne-vorlagenseiten-aufwerten-oder-zusammenfuehren).
+
+   Seit diesem Tag trägt jede Karte des Hubs die Kurzfassung ihres Begriffs:
+   Definition, messbare Größe, den ersten Physik-Absatz, den Übertragungssatz
+   und die Grenze. Im Raster aus lexikon.css (drei Spalten ab 280px) würde
+   daraus eine hohe, schmale Säule. Der Hub liest sich deshalb einspaltig wie
+   ein Wörterbuch, mit Lesemaß.
+
+   EIGENE DATEI, NICHT lexikon.css: lexikon.css laden auch die neun
+   Begriffsseiten. Eine Regel hier kann keine von ihnen verschieben.
+
+   NUR TOKENS aus dem :root-Block von lexikon.css, kein freier Wert.
+   ========================================================================== */
+
+.lex__liste--voll {
+  grid-template-columns: 1fr;
+}
+
+.lex__liste--voll .lex__karte {
+  padding: var(--lex-s4);
+}
+
+.lex__liste--voll .lex__karte p {
+  max-width: var(--lex-mass);
+}
+
+.lex__liste--voll .lex__groesse {
+  margin-bottom: var(--lex-s2);
+}
