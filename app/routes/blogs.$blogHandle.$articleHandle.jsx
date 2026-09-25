@@ -8,6 +8,7 @@ import {tagLang} from '~/lib/datum';
 import {artikelSchema} from '~/lib/blog-schema';
 import {autorenkastenSichtbarkeit} from '~/lib/autorenkasten';
 import {Autorenkasten} from '~/components/Autorenkasten';
+import {weiterlesenNachbarn} from '~/lib/weiterlesen';
 import blogStyles from '~/styles/blog.css?url';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
@@ -139,12 +140,13 @@ async function loadCriticalData({context, request, params}) {
 
   const article = blog.articleByHandle;
 
-  // Der aktuelle Beitrag faellt raus; hoechstens drei bleiben stehen. Fehlt
-  // die Verbindung (leerer Blog, alte Antwort aus dem Cache), ist die Liste
-  // leer und der Abschluss-Block rendert seinen Weiterlesen-Teil gar nicht.
-  const weitere = (blog.articles?.nodes ?? [])
-    .filter((a) => a?.handle && a.handle !== articleHandle)
-    .slice(0, 3);
+  // Die drei naechsten Beitraege in der Veroeffentlichungsreihe, zyklisch
+  // (app/lib/weiterlesen.js). Bis 2026-09-25 standen hier auf jedem Artikel
+  // dieselben drei aeltesten, und neun von dreizehn Beitraegen bekamen aus
+  // diesem Block nie einen Link. Fehlt die Verbindung (leerer Blog, alte
+  // Antwort aus dem Cache), ist die Liste leer und der Abschluss-Block
+  // rendert seinen Weiterlesen-Teil gar nicht.
+  const weitere = weiterlesenNachbarn(blog.articles?.nodes, articleHandle);
 
   // DER AUTORENKASTEN WIRD HIER ENTSCHIEDEN, NICHT IN DER KOMPONENTE.
   // Die Sichtbarkeit hängt an der angefragten URL (Vorschau-Parameter), und
@@ -278,7 +280,9 @@ const ARTICLE_QUERY = `#graphql
       # der Abschluss-Block braucht Namen, keine Inhalte. Ein zweites Mal
       # Artikeltext im Payload war 2026-09-03 der Grund, warum die Uebersicht
       # 183 KB wog.
-      articles(first: 4) {
+      # Neueste zuerst und alle (bis 100), damit weiterlesenNachbarn die
+      # Stelle des aktuellen Beitrags in der Reihe kennt.
+      articles(first: 100, sortKey: PUBLISHED_AT, reverse: true) {
         nodes {
           handle
           title
