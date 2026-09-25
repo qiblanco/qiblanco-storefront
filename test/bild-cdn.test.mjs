@@ -98,6 +98,29 @@ describe('bildQuellen', () => {
     assert.equal(q.srcSet, undefined);
   });
 
+  it('nimmt gemessene Zusatz-Sprossen unter die dpr-Leiter auf', () => {
+    // Mega-Menü (Job 20260924-header-menue-mobil-sprosse): 325er-Fläche,
+    // Master 597 -> bisher [325, 597]; mit 240 darunter wird 240 der src.
+    const q = bildQuellen(CDN, {anzeigeBreite: 325, masterBreite: 597, zusatzSprossen: [240]});
+    assert.deepEqual(q.srcSet.split(', ').map((x) => Number(x.split(' ')[1].slice(0, -1))),
+      [240, 325, 597]);
+    assert.match(q.src, /[?&]width=240$/);
+  });
+
+  it('klemmt Zusatz-Sprossen an Master und Mindestbreite', () => {
+    const q = bildQuellen(CDN, {anzeigeBreite: 100, masterBreite: 250, mindestBreite: 120,
+      zusatzSprossen: [60, 160, 400]});
+    assert.deepEqual(q.srcSet.split(', ').map((x) => Number(x.split(' ')[1].slice(0, -1))),
+      [120, 160, 200, 250]);
+  });
+
+  it('lässt die Leiter ohne Zusatz-Sprossen byte-gleich', () => {
+    const ohne = bildQuellen(CDN, {anzeigeBreite: 325, masterBreite: 668});
+    const leer = bildQuellen(CDN, {anzeigeBreite: 325, masterBreite: 668, zusatzSprossen: []});
+    assert.deepEqual(leer, ohne);
+    assert.match(ohne.srcSet, /^\S+width=325 325w, \S+width=650 650w, \S+width=668 668w$/);
+  });
+
   it('bleibt vertraeglich mit dem aelteren bildSrcSet', () => {
     assert.match(bildSrcSet(CDN), /width=320 320w/);
   });
