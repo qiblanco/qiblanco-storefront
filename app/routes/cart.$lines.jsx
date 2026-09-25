@@ -6,6 +6,7 @@ import {
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
 import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
+import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -70,13 +71,20 @@ export async function loader({request, context, params}) {
   ];
 
   // create a cart
-  const result = await cart.create({
+  const angelegt = await cart.create({
     lines: linesMap,
     discountCodes: discountArray,
     ...(attributionAttributes.length
       ? {attributes: attributionAttributes}
       : {}),
   });
+
+  // Qi-Master-Add-ons hängen am Qi Master — auch über den Permalink: ein
+  // /cart/<Wunschnummer>:2 ohne Qi Master führte bis 2026-09-25 direkt zur
+  // Kasse (Job 20260925-qm-addon-bindung-greift-nur-bei-attribut).
+  const result = angelegt?.errors?.length
+    ? angelegt
+    : await bindeQiMasterAddons({cart, action: 'LinesAdd', result: angelegt});
 
   const cartResult = result.cart;
 
@@ -88,6 +96,12 @@ export async function loader({request, context, params}) {
 
   // Update cart id in cookie
   const headers = cart.setCartId(cartResult.id);
+
+  // Hat die Bindung alles entfernt (nur Add-ons, kein Qi Master), gibt es
+  // nichts zu bezahlen: zum Warenkorb statt in eine leere Kasse.
+  if (result !== angelegt && cartResult.totalQuantity === 0) {
+    return redirect('/cart', {headers});
+  }
 
   // redirect to checkout
   if (cartResult.checkoutUrl) {

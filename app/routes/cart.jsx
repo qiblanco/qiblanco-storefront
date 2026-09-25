@@ -136,8 +136,9 @@ export async function action({request, context}) {
 
   // Qi-Master-Add-ons hängen am Qi Master: ohne ihn fallen sie mit, eine
   // Wunschnummer steht höchstens einmal im Warenkorb (Christian 2026-09-24).
-  // Liest nur bei Entfernen/Menge ändern/Add-on hinzufügen nach.
-  result = await bindeQiMasterAddons({cart, action, inputs, result});
+  // Liest nach jeder Zeilen-Aktion nach (eine Cart-Query) und erkennt Add-ons
+  // am Produkt, nie am Zeilen-Merkmal des Clients.
+  result = await bindeQiMasterAddons({cart, action, result});
 
   result = await persistAttributionOnCartResult({cart, request, env, result});
 

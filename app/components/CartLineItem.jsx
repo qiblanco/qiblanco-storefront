@@ -6,6 +6,7 @@ import {useAside} from './Aside';
 import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
 import {warenkorbTitel} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
+import {addonArt} from '~/lib/qi-master-addons';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -93,6 +94,11 @@ function CartLineQuantity({line}) {
   const {id: lineId, quantity, isOptimistic} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
   const nextQuantity = Number((quantity + 1).toFixed(0));
+  // Eine Wunschnummer gibt es genau einmal: die Warenkorb-Action setzt jede
+  // höhere Menge auf 1 zurück (lib/qi-master-addons.server.js). Ein aktiver
+  // Plus-Knopf wäre ein Knopf, der nichts tut.
+  const einzelstueck =
+    addonArt(line.merchandise?.product?.handle) === 'wunschnummer';
 
   return (
     <div className="cart-line-quantity">
@@ -113,7 +119,7 @@ function CartLineQuantity({line}) {
           aria-label="Menge erhöhen"
           name="increase-quantity"
           value={nextQuantity}
-          disabled={!!isOptimistic}
+          disabled={!!isOptimistic || einzelstueck}
         >
           <span>&#43;</span>
         </button>

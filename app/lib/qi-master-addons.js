@@ -99,12 +99,18 @@ export function addonLinien({wunschnummer, kette}) {
 
 /**
  * DIE BINDUNGSREGEL, rein (kein Netz). Eingabe: Warenkorbzeilen mit
- * {id, quantity, handle}. Ausgabe: was entfernt bzw. auf welche Menge gesetzt
- * werden muss, damit gilt:
+ * {id, quantity, handle} und, wo bekannt, {variantId, attributes}. Ausgabe:
+ * was entfernt bzw. geändert werden muss, damit gilt:
  *   1. ohne Qi Master kein Add-on,
- *   2. jede Wunschnummer-Zeile hat Menge 1 (eine Nummer gibt es einmal),
- *   3. je Add-on-Art höchstens so viele Stück wie Qi Master im Warenkorb.
- * Überzählige Zeilen fallen von hinten weg — die zuerst gewählten bleiben.
+ *   2. jede Wunschnummer-Zeile hat Menge 1, und jede Nummer steht in
+ *      höchstens einer Zeile (eine Nummer gibt es einmal),
+ *   3. je Add-on-Art höchstens so viele Stück wie Qi Master im Warenkorb,
+ *   4. jede behaltene Add-on-Zeile trägt das Merkmal `_qm_addon` (nur wenn
+ *      `attributes` mitgeliefert wird; fehlt das Feld, bleibt es unberührt).
+ * Überzählige Zeilen fallen in der Reihenfolge weg, in der der Warenkorb sie
+ * liefert: es bleiben die VORNE stehenden. Shopify liefert die zuletzt
+ * hinzugefügte Zeile zuerst — bei zwei Ketten-Zeilen bleibt also die zuletzt
+ * gewählte (gemessen 2026-09-25, K3-Widerleger s05, Versuch H9).
  */
 export function bindungsKorrektur(zeilen) {
   const qm = zeilen
@@ -114,14 +120,34 @@ export function bindungsKorrektur(zeilen) {
   const aendern = [];
   for (const art of ['wunschnummer', 'kette']) {
     let rest = qm;
+    const gesehen = new Set();
     for (const z of zeilen.filter((x) => addonArt(x.handle) === art)) {
-      const soll = Math.min(art === 'wunschnummer' ? 1 : z.quantity, rest);
+      const doppelt =
+        art === 'wunschnummer' && z.variantId && gesehen.has(z.variantId);
+      const soll = doppelt
+        ? 0
+        : Math.min(art === 'wunschnummer' ? 1 : z.quantity, rest);
       if (soll <= 0) {
         entfernen.push(z.id);
-      } else if (soll !== z.quantity) {
-        aendern.push({id: z.id, quantity: soll});
+        continue;
       }
-      rest -= Math.max(soll, 0);
+      if (z.variantId) gesehen.add(z.variantId);
+      rest -= soll;
+      const merkmalFehlt =
+        Array.isArray(z.attributes) &&
+        !z.attributes.some((a) => a?.key === ADDON_ATTR && a?.value === art);
+      if (soll !== z.quantity || merkmalFehlt) {
+        const aenderung = {id: z.id, quantity: soll};
+        if (merkmalFehlt) {
+          aenderung.attributes = [
+            ...z.attributes
+              .filter((a) => a?.key && a.key !== ADDON_ATTR)
+              .map(({key, value}) => ({key, value})),
+            {key: ADDON_ATTR, value: art},
+          ];
+        }
+        aendern.push(aenderung);
+      }
     }
   }
   return {entfernen, aendern};
