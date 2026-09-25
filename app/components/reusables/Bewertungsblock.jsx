@@ -1,5 +1,6 @@
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
+import {AlleBewertungenLink} from '~/components/reusables/AlleBewertungenLink';
 
 /*
  * Bewertungsblock — DER STANDARD-BAUSTEIN (Christian 2026-09-20: „den 1:1 auf
@@ -51,6 +52,12 @@ import {ReputonWidget} from '~/components/index-components/ReputonWidget';
  * LP-Seiten: 'lp-a-'). Sie sind der Schlüssel in verhalten.db — eine
  * Umbenennung hängt die Historie einer Sektion an einen neuen Namen, deshalb
  * werden sie übergeben und nicht vom Baustein vergeben.
+ *
+ * `mitWeiterweg` hängt unter die Zusammenfassung den Link „Alle Bewertungen
+ * lesen" (AlleBewertungenLink, Segment s02 des Grossjobs 20260925-GROSSJOB-
+ * seo-geo-bewertung-und-kritik-...). Default AUS: gesetzt wird er nur auf der
+ * Startseite. Die Landingpages führen zum Kauf, nicht auf eine weitere
+ * Lesefläche, und die Bewertungsseite verlinkt sich nicht selbst.
  */
 
 export const BEWERTUNGSBLOCK_UEBERSCHRIFT = 'Alle Google Bewertungen';
@@ -59,6 +66,7 @@ export function Bewertungsblock({
   praefix = '',
   wrapperKlasse = 'qb-bewertungsblock',
   ueberschrift = BEWERTUNGSBLOCK_UEBERSCHRIFT,
+  mitWeiterweg = false,
 }) {
   return (
     <div className={wrapperKlasse}>
@@ -68,6 +76,7 @@ export function Bewertungsblock({
           {ueberschrift}
         </h2>
         <ReputonWidget />
+        {mitWeiterweg ? <AlleBewertungenLink /> : null}
       </div>
     </div>
   );

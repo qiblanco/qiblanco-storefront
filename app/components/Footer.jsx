@@ -69,6 +69,7 @@ function FooterContent() {
       <FooterStudies />
       <FooterDisclaimer />
       <FooterInhalt />
+      <FooterNachlesen />
       <FooterMenu />
     </footer>
   );
@@ -377,6 +378,62 @@ function FooterInhalt() {
   return (
     <nav className="footer-menu" role="navigation" aria-label="Mehr über Qi Blanco">
       {INHALT_LINKS.map(({to, label}) => (
+        <NavLink
+          end
+          key={to}
+          prefetch="intent"
+          style={activeLinkStyle}
+          to={to}
+        >
+          {label}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
+
+/**
+ * Die Seiten für die Frage „kann ich dem trauen?" — die dritte Zeile im
+ * dunklen Bereich (Grossjob 20260925-GROSSJOB-seo-geo-bewertung-und-kritik-
+ * auf-platz-1-bis-3-und-ki-zitat, Segment s02).
+ *
+ * WARUM SIE HIER STEHT, GEMESSEN: /pages/kritik, /pages/bewertungen und
+ * /pages/erfahrungen waren am 2026-09-25 technisch einwandfrei (200,
+ * Canonical, kein noindex, Sitemap) und trotzdem NICHT in Googles Index; die
+ * Search Console fand für keine von ihnen einen einzigen verweisenden Link.
+ * Von zwölf seit Mitte August angelegten Seiten war genau eine im Index —
+ * /pages/faq, die einzige mit einem sichtbaren Link in diesem Fuß (#288).
+ * Das ist eine Korrelation an einem Fall, aber der einzige Befund im Haus,
+ * der „kommt rein" von „kommt nicht rein" trennt.
+ *
+ * WARUM „Belege und offene Fragen" UND NICHT „Kritik": derselbe Name wie im
+ * Menü „Mehr". Und Christians Regel vom 2026-09-07: wir verbreiten die
+ * Kritik nicht selbst — ein Wort im Fuß stünde auf jeder Seite. Für den
+ * Suchbegriff tragen Titel und Überschrift der Zielseite.
+ *
+ * WARUM EINE EIGENE ZEILE: dieselbe Abwägung wie bei INHALT_LINKS oben —
+ * sieben Einträge in einer Zeile werden auf dem Telefon zur Treppe, und die
+ * vorhandene Klasse `.footer-menu` trägt Schrift, Trennlinie und Umbruch.
+ * Keine Zeile CSS (app.css steht unter der Gate-12-Sperre F-2314).
+ *
+ * `aria-label` ist zugleich das Merkmal, an dem die Live-Probe diesen Bau
+ * erkennt (hb-deploy verify) — es kommt nur aus dieser Zeile.
+ */
+const NACHLESEN_LINKS = [
+  {to: '/pages/bewertungen', label: 'Bewertungen'},
+  {to: '/pages/erfahrungen', label: 'Erfahrungen'},
+  {to: '/pages/studien', label: 'Studien'},
+  {to: '/pages/kritik', label: 'Belege und offene Fragen'},
+];
+
+function FooterNachlesen() {
+  return (
+    <nav
+      className="footer-menu"
+      role="navigation"
+      aria-label="Erfahrungen, Bewertungen und Belege"
+    >
+      {NACHLESEN_LINKS.map(({to, label}) => (
         <NavLink
           end
           key={to}

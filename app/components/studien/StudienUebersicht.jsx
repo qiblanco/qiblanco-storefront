@@ -343,6 +343,21 @@ export function StudienUebersicht() {
               <StudienKarte key={s.id} studie={s} />
             ))}
           </div>
+
+          {/* WEITERWEG NACH DEN ARBEITEN (Grossjob 20260925-GROSSJOB-seo-geo-
+              bewertung-und-kritik-..., Segment s02). Diese Seite ist die
+              stärkste indexierte Seite der Domain; die drei Zielseiten
+              kannte Google am 2026-09-25 aus keinem einzigen Link. Der Absatz
+              steht HINTER den Publikationen: erst der Beleg, dann der Weg zu
+              den Menschen, die das Produkt tragen. „Belege und offene Fragen"
+              ist derselbe Name wie im Menü „Mehr". */}
+          <p className="qb-st-sektion-intro qb-st-weiterweg">
+            Wie Kundinnen und Kunden die Produkte im Alltag erleben, lesen Sie
+            in den <Link to="/pages/erfahrungen">Erfahrungen</Link> und in
+            allen <Link to="/pages/bewertungen">Bewertungen</Link>. Was die{' '}
+            {anzahl} Arbeiten belegen und wo die Forschung weitergeht, fasst{' '}
+            <Link to="/pages/kritik">Belege und offene Fragen</Link> zusammen.
+          </p>
         </section>
 
         <Evidenzstufe />
