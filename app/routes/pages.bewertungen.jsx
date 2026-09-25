@@ -68,6 +68,27 @@ const TITEL = 'Qi Blanco Bewertungen – was Kundinnen und Kunden schreiben | Qi
 const BESCHREIBUNG =
   'Echte Google-Bewertungen zu Qi Blanco, live mit Note und Anzahl: woher sie kommen, was sie zeigen, was nicht – und wie du es 20 Tage selbst prüfst.';
 
+/**
+ * DER EINZIGE LOADER-WERT DIESER SEITE IST DER TAG DER AUSLIEFERUNG (2026-09-25,
+ * Grossjob 20260925-GROSSJOB-seo-geo-bewertung-und-kritik-auf-platz-1-bis-3-
+ * und-ki-zitat, s03). Er ist das „Stand" im Note-Satz (BewertungenSeite.jsx).
+ * Note und Anzahl kommen NICHT von hier, sondern aus useGoogleRating() — der
+ * Variablen, aus der auch das Widget zeichnet.
+ *
+ * WARUM SERVERSEITIG UND NICHT `new Date()` IN DER KOMPONENTE: die Komponente
+ * rendert zweimal (Server, dann Hydrierung im Browser). Zwei Uhren ergäben um
+ * Mitternacht zwei verschiedene Texte und einen Hydrierungsfehler. Der Loader
+ * läuft einmal, sein Wert reist mit den Seitendaten.
+ *
+ * WAS „STAND" HIER BEDEUTET, ehrlich: der Tag, an dem die Seite ausgeliefert
+ * wurde. Der Wert daneben ist dabei höchstens sechs Stunden alt (CACHE_TTL_S in
+ * app/lib/googleRating.js). Das Abrufdatum selbst führt googleRating.js nicht;
+ * es dort nachzurüsten hätte den root-Loader und damit jede Seite berührt.
+ */
+export async function loader() {
+  return {ausgeliefert: new Date().toISOString()};
+}
+
 /** @type {MetaFunction} */
 export const meta = () => [
   {title: TITEL},

@@ -27,9 +27,11 @@
  * wiederholt beides nicht (Abgrenzungs-SSoT homepage-bauer/konzepte/
  * abgrenzung-flaechen.json).
  *
- * KEINE ZAHL IM TEXT: Note und Anzahl der Google-Bewertungen stehen im
- * Baustein und ändern sich mit jedem Feed-Lauf. Eine Zahl hier würde still
- * veralten und der Zahl daneben widersprechen.
+ * KEINE ZAHL IN DIESER DATEI: Note und Anzahl der Google-Bewertungen ändern
+ * sich mit jedem Feed-Lauf. Eine Zahl hier würde still veralten und der Zahl
+ * daneben widersprechen. Seit 2026-09-25 steht die Note trotzdem als Satz im
+ * Text — gebaut in BewertungenSeite.jsx aus useGoogleRating(), also aus
+ * derselben Variablen wie das Widget, nie aus einem Literal hier.
  *
  * HAUSSTIMME: Antwort zuerst, ein Gedanke je Satz, kein Text über sich
  * selbst. Geprüft mit homepage-bauer/bin/stil-pruefe.
@@ -62,7 +64,7 @@ export const BEWERTUNGEN_SEITE = {
     ],
     links: [
       {pfad: '/pages/studien', text: 'Die fünf Studien im Original'},
-      {pfad: '/pages/kritik', text: 'Die härtesten Fragen, einzeln beantwortet'},
+      {pfad: '/pages/kritik', text: 'Sieben Fragen, gerade beantwortet'},
       {pfad: '/pages/erfahrungen', text: 'Menschen, die in eigenen Videos erzählen'},
     ],
   },
