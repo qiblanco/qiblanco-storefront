@@ -26,13 +26,17 @@
  */
 
 import {useEffect, useRef, useState} from 'react';
-import {Link} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {
   STUDIEN,
+  anzahlNachArt,
   studienPfad,
   untersuchteProdukte,
   zahlwort,
 } from '~/data/studien';
+import {BEWERTUNGEN_SEITE} from '~/data/bewertungen-seite';
+import {useGoogleRating} from '~/lib/googleRating';
+import {tagLang} from '~/lib/datum';
 
 /** Bestands-Idiom (reusables/useDragSwipe.js, campaign/SchlafZellenSchutzV3.jsx,
  * index-components/ReputonWidget.jsx) — hier wiederverwendet, nicht neu erfunden. */
@@ -361,6 +365,8 @@ export function StudienUebersicht() {
         </section>
 
         <Evidenzstufe />
+
+        <KundenstimmenUndBelege />
 
         <HrvMessreihe />
 
@@ -785,6 +791,106 @@ function StudienKarte({studie}) {
         </div>
       </div>
     </article>
+  );
+}
+
+/**
+ * KUNDENSTIMMEN UND BELEGE (2026-09-26, Job 20260926-serp-test-m03-
+ * bewertung-studien-abschnitt-kundenstimmen, Christian 2026-09-25: „für
+ * ‚Bewertung' die Studienseite, dort ein klar benannter Abschnitt zu
+ * Kundenstimmen und Belegen").
+ *
+ * WARUM HIER: bei der Suche „Qi Blanco Bewertung" zeigt Google von dieser
+ * Domain allein /pages/studien (Zensus 2026-09-25, organisch Platz 8). Wer so
+ * sucht, will zwei Dinge wissen: taugt es, und ist das belegt. Den zweiten
+ * Teil beantwortet die Seite schon; dieser Abschnitt ergänzt den ersten.
+ *
+ * DIE NOTE IST NIE EIN LITERAL. `g` ist dieselbe useGoogleRating()-Variable,
+ * aus der das Widget (ReputonWidget.jsx) und der Note-Satz der
+ * Bewertungsseite (BewertungenSeite.jsx, PR #637) rechnen. `noteSatz` unten
+ * spiegelt die Satzform von dort wortgleich; importiert wird sie nicht, weil
+ * das Studien-Bundle sonst den ganzen Bewertungsblock mitschleppt. Fällt der
+ * Feed auf den Fallback, entfallen Note-Satz UND Herkunftssatz: ein „Stand"
+ * neben dem letzten bekannten Wert eines früheren Tages wäre falsch.
+ *
+ * DER HERKUNFTSSATZ WIRD IMPORTIERT, NICHT ABGESCHRIEBEN: zwei eigene Seiten
+ * sagen über dieselben Rezensionen dasselbe, und eine Änderung dort zieht hier
+ * mit (BEWERTUNGEN_SEITE.herkunft.absaetze[0]).
+ *
+ * ABGRENZUNG (homepage-bauer/konzepte/abgrenzung-flaechen.json, regel_1 bis
+ * regel_3): keine einzelne Rezension und kein Video im Wortlaut. Note, Anzahl
+ * und die zwei Wege genügen; die Stimmen selbst stehen auf ihren Flächen.
+ * Keine Sterne-Auszeichnung (aggregateRating): die Note ist eine Aussage über
+ * das Unternehmen und steht als Satz im Text.
+ *
+ * NUR BESTANDS-KLASSEN, NULL ZEILEN CSS: qb-st-sektion, qb-st-antwort-text,
+ * qb-st-karte-text und qb-st-verwandt-grid/-karte tragen in studien.css
+ * schon die Typo-, Abstands- und Farbtokens der Seite.
+ */
+function noteSatz(g, ausgeliefert) {
+  if (!g || g.source === 'fallback') return '';
+  if (typeof g.value !== 'number' || typeof g.total !== 'number') return '';
+  const tag = tagLang(ausgeliefert);
+  return (
+    `Qi Blanco steht bei Google auf ${g.komma} von 5 Sternen aus ${g.total} Rezensionen` +
+    (tag ? `, Stand ${tag}.` : '.')
+  );
+}
+
+export const KUNDENSTIMMEN_TITEL = 'Kundenstimmen und Belege';
+
+const KUNDENSTIMMEN_WEGE = [
+  {
+    pfad: '/pages/bewertungen',
+    kicker: 'Google-Rezensionen',
+    titel: 'Alle Bewertungen lesen',
+    text: 'Die neuesten Stimmen aus dem Google-Profil, laufend aktualisiert.',
+  },
+  {
+    pfad: '/pages/erfahrungen',
+    kicker: 'Im eigenen Video',
+    titel: 'Menschen erzählen',
+    text: 'Kundinnen und Kunden berichten, was sie im Alltag gemerkt haben.',
+  },
+];
+
+function KundenstimmenUndBelege() {
+  const g = useGoogleRating();
+  const daten = useLoaderData();
+  const satz = noteSatz(g, daten?.ausgeliefert);
+  const invitro = zahlwort(anzahlNachArt('in-vitro'));
+  return (
+    <section
+      className="qb-st-sektion"
+      id="kundenstimmen"
+      aria-labelledby="kundenstimmen-titel"
+      data-section="studien-kundenstimmen"
+    >
+      <h2 id="kundenstimmen-titel">{KUNDENSTIMMEN_TITEL}</h2>
+      {satz ? (
+        <p className="qb-st-antwort-text">
+          <span data-note-satz="google">{satz}</span>{' '}
+          {BEWERTUNGEN_SEITE.herkunft.absaetze[0]}
+        </p>
+      ) : null}
+      <p className="qb-st-karte-text">
+        In {invitro} Laborstudien zeigten Zellkulturen neben einem
+        Qi-Blanco-Gerät unter Handystrahlung oder chemischem Stress bessere
+        Messwerte als Vergleichskulturen ohne Gerät. Eine weitere Arbeit wertet
+        171 Erfahrungsberichte aus; am häufigsten nennen sie mehr Ruhe und
+        tieferen Schlaf. Gemessen wurde an Zellen in der Laborschale, und was
+        Menschen im Alltag bemerken, erzählen sie selbst.
+      </p>
+      <div className="qb-st-verwandt-grid" data-qb-weg="kundenstimmen">
+        {KUNDENSTIMMEN_WEGE.map((w) => (
+          <Link key={w.pfad} to={w.pfad} className="qb-st-verwandt-karte">
+            <span className="qb-st-verwandt-kicker">{w.kicker}</span>
+            <strong>{w.titel}</strong>
+            <span className="qb-st-verwandt-text">{w.text}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 
