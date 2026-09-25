@@ -108,8 +108,17 @@ function evidenzstufeSchema() {
   return schema;
 }
 
+/**
+ * DER EINZIGE LOADER-WERT DIESER SEITE IST DER TAG DER AUSLIEFERUNG
+ * (2026-09-26, Job 20260926-serp-test-m03-bewertung-studien-abschnitt-
+ * kundenstimmen). Er ist das „Stand" im Note-Satz des Abschnitts
+ * „Kundenstimmen und Belege" (StudienUebersicht.jsx). Note und Anzahl kommen
+ * NICHT von hier, sondern aus useGoogleRating(). Dieselbe Bauform wie
+ * pages.bewertungen.jsx: serverseitig, damit Server und Hydrierung denselben
+ * Tag rendern. Titel, H1 und Meta dieser Seite bleiben davon unberührt.
+ */
 export function loader() {
-  return {};
+  return {ausgeliefert: new Date().toISOString()};
 }
 
 export default function StudienPage() {
