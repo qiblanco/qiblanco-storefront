@@ -48,12 +48,49 @@ function loadDeferredData() {
   return {};
 }
 
+/**
+ * DER ANKER AUF DIE ANTWORTSEITE „Was ist Elektrosmog?" (2026-09-25, Auftrag
+ * 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-zusammenfuehren).
+ *
+ * WARUM HIER: /pages/e-smog ist die einzige eigene Seite zum Thema, die Google
+ * im Index hat. /pages/was-ist-elektrosmog war Google am 2026-09-25 „nicht
+ * bekannt" und nur von Seiten verlinkt, die selbst nicht im Index stehen. Die
+ * Gewinner-Analyse des SERP-Testsystems misst: was eine Seite in den Index
+ * bringt, ist der Link von einer indexierten Seite, nicht ihr Umfang.
+ *
+ * WARUM KEIN 301 IN DIESE LEKTION: geprüft und verworfen. Die Lektion ist
+ * Tag 4 eines Kurses mit eigener Erzählung, die Antwortseite eine Definition
+ * mit Quellen; die Texte teilen fast nichts (TF-IDF-Kosinus 0,038). Ein 301
+ * hätte die Antwort unter 1900 Wörter Kurs geschoben.
+ *
+ * WO: vor „Weiterführende Informationen" im CMS-Text der Lektion, also vor dem
+ * Kaufblock. Fehlt die Marke (jemand ändert die Lektion im Shopify-Admin),
+ * hängt der Absatz am Ende — der Anker geht nie still verloren.
+ * CourseLesson bleibt unberührt (zehn Routen teilen die Komponente).
+ */
+const ANKER_MARKE = '<h3>Weiterführende Informationen</h3>';
+const ANKER_HTML =
+  '<h3>Was hinter dem Wort Elektrosmog steckt</h3>' +
+  '<p>Elektrosmog ist ein Sammelwort für zwei verschiedene Bereiche: ' +
+  'niederfrequente Felder aus der Stromversorgung und hochfrequente Felder ' +
+  'aus der Funktechnik. Wie du beide unterscheidest, in welcher Einheit sie ' +
+  'gemessen werden und wogegen die Grenzwerte schützen, liest du mit allen ' +
+  'Quellen unter <a href="/pages/was-ist-elektrosmog">Was ist ' +
+  'Elektrosmog?</a></p>';
+
+/** @param {string} [body] */
+function mitAnker(body = '') {
+  const i = body.indexOf(ANKER_MARKE);
+  if (i === -1) return `${body}${ANKER_HTML}`;
+  return `${body.slice(0, i)}${ANKER_HTML}${body.slice(i)}`;
+}
+
 export default function ESmogPage() {
   const {page} = useLoaderData();
   return (
     <CourseLesson
       title={page.title}
-      body={page.body}
+      body={mitAnker(page.body)}
       courseTitle="Superhuman"
       courseTo="/pages/superhuman"
       videoEmbed="https://www.youtube.com/embed/JmDaIlhOYaA?si=fUstmDJgspa2eDli"

@@ -197,3 +197,30 @@ test('6 — die Route ist indexierbar gebaut: Canonical ja, noindex nein', () =>
     'Das Schema muss aus der Bestands-Fabrik kommen, nicht aus einer zweiten Serialisierung',
   );
 });
+
+test('7 — der Abschnitt „Einzelne Fragen" lässt das FAQPage-Schema unberührt', () => {
+  // Seit 2026-09-25 trägt die FAQ die Liste der Frageseiten (vorher der Hub
+  // /pages/fragen). Jede Frageseite hat ihr EIGENES FAQPage-Schema; stünde
+  // dieselbe Frage auch im Schema der FAQ, konkurrierten zwei URLs um sie.
+  // Arm 2 hält die Zahl der Question-Knoten an FAQ_ALLE — dieser Arm hält,
+  // dass die Route ihr Schema aus nichts anderem baut.
+  const CODE = ROUTE.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
+  assert.match(CODE, /buildFaqPageJsonLd\(FAQ_ALLE\b/, 'das Schema speist sich nicht aus FAQ_ALLE');
+  assert.doesNotMatch(CODE, /data\/fragen|FRAGEN\b/, 'die Route zieht die Frageseiten ins Schema');
+  // Nur der Rumpf von FaqEinzelfragen() — die FAQ-Einträge selbst zeigen ihre
+  // Antwort (item.a) natürlich weiter.
+  const seite = readFileSync(
+    new URL('../app/components/faq/FaqSeite.jsx', import.meta.url),
+    'utf8',
+  );
+  const start = seite.indexOf('function FaqEinzelfragen()');
+  assert.ok(start !== -1, 'FaqEinzelfragen() fehlt in FaqSeite.jsx');
+  const ende = seite.indexOf('\nexport function FaqSeite', start);
+  assert.ok(ende > start, 'FaqEinzelfragen() steht nicht vor FaqSeite()');
+  const liste = seite.slice(start, ende);
+  assert.doesNotMatch(
+    liste,
+    /\.antwort\b/,
+    'die Liste zeigt Antwortsätze — die gehören auf die Frageseite, nicht in die FAQ',
+  );
+});

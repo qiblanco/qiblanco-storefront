@@ -1007,26 +1007,13 @@ export const NUR_ROUTE_SEITEN = [
   // Dasselbe gilt für /pages/haelt-das-mein-leben-aus und
   // /pages/kette-oder-armband (beide ebenfalls live noindex,nofollow). Der
   // richtige Weg ist der Text, nicht die Sitemap — siehe RESULT s07.
-  {
-    pfad: '/pages/fragen',
-    lastmod: '2026-09-16T01:15:00Z',
-    grund:
-      'Der Hub der Frageseiten (Grossjob 20260915-GEO-lexikon-frageseiten-' +
-      'und-ob-die-ki-uns-zitiert, Segment s07). Er zeigt je Frage die Frage ' +
-      'und den einen Satz, der sie beantwortet, und verlinkt daneben die ' +
-      'beiden Zweifelsflaechen /pages/kritik und /pages/hypothesen sowie das ' +
-      'Lexikon. Die Seite besteht allein aus der Route pages.fragen.jsx und ' +
-      'hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
-      '200 mit voller Liste und steht in keiner Sitemap. Ein Seitenobjekt ' +
-      'wäre der zweite mögliche Traeger und ist bewusst NICHT gewählt ' +
-      '(Fremdsystem) — dieselbe Begründung wie bei /pages/lexikon, ' +
-      '/pages/kritik und /pages/hypothesen. Kriterium 2 erfuellt: kein ' +
-      'noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Links der Frageliste und ' +
-      'prueft je Ziel den Marker data-geo="frage", HTTP 200 und die gleiche ' +
-      'Auslieferung an Mensch, Googlebot und OAI-SearchBot.',
-  },
+  // /pages/fragen STAND HIER BIS 2026-09-25 und ist entfernt: die Route
+  // leitet seither per 301 auf den Abschnitt #einzelfragen von /pages/faq
+  // (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-
+  // zusammenfuehren; Begründung im Kopf von app/routes/pages.fragen.jsx).
+  // Eine Sitemap-URL, die weiterleitet, meldet
+  // pruefungen/probe_sitemap_ohne_weiterleitung.py. /pages/faq selbst steht
+  // über ihr Shopify-Seitenobjekt in der Sitemap, nicht in dieser Liste.
   {
     pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
     lastmod: '2026-09-16T01:15:00Z',

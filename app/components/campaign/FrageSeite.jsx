@@ -1,4 +1,5 @@
 import {quellenFuer} from '~/data/fragen';
+import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
 
 /**
  * /pages/<frage-slug> — EINE Frage, EINE Antwort.
@@ -47,7 +48,13 @@ export function FrageSeite({seite}) {
       <section className="frg__kopf" data-section="frg-kopf">
         <div className="frg__inhalt">
           <p className="frg__vorspann">
-            <a className="frg__vorspann-link" href="/pages/fragen">
+            {/* Die Sammelstelle der Frageseiten ist seit 2026-09-25 der
+                Abschnitt #einzelfragen der FAQ (/pages/fragen leitet per 301
+                dorthin) — direkt verlinkt, nicht über die Weiterleitung. */}
+            <a
+              className="frg__vorspann-link"
+              href={`${HUB_PFAD}#${HUB_ANKER}`}
+            >
               Fragen und Antworten
             </a>
           </p>
