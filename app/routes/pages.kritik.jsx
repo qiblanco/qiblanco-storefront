@@ -83,13 +83,27 @@ export function links() {
 }
 
 /**
- * DER TITEL BLEIBT, WIE ER IST — er bedient die Suche „Qi Blanco Kritik" und
- * stellt genau die Frage, die der Suchende hat. Das Wort trägt hier und in der
- * H1; im Fließtext der Seite steht es bewusst NICHT mehr (siehe KritikSeite.jsx).
+ * DER TITEL, GEÄNDERT AM 2026-09-25 (Grossjob 20260925-GROSSJOB-seo-geo-
+ * bewertung-und-kritik-auf-platz-1-bis-3-und-ki-zitat, s03). Vorher: „Qi Blanco
+ * Kritik – was stimmt davon? | Qi Blanco". Jetzt Christians Anzeigenfassung.
+ * DREI GRÜNDE, gegeneinander abgewogen:
+ *  (1) „was stimmt davon?" setzt voraus, dass es einen Vorwurfskatalog gibt,
+ *      von dem ein Teil stimmt — in einem Suchergebnis liest sich das wie ein
+ *      Teilgeständnis, bevor jemand die Seite öffnet.
+ *  (2) „Zellversuche" nennt den Gegenstand unserer stärksten belegbaren
+ *      Antwort (fünf veröffentlichte Arbeiten) und bedient die Unterfrage
+ *      „was zeigen die Studien", die eine KI-Übersicht per query fan-out
+ *      mitsucht.
+ *  (3) Derselbe Wortlaut steht in der Anzeige auf „qi blanco kritik"
+ *      (Ruf-Manager): Anzeige und Zielseite sagen dasselbe.
+ * Der Begriff steht vorn (Google, Title links: beschreibend, knapp). Ohne
+ * „| Qi Blanco"-Anhang: die Marke steht schon am Anfang, und mit Anhang läge
+ * der Titel über der Länge, die Google im Ergebnis zeigt.
+ * Das Wort „Kritik" trägt weiter nur hier und in der H1 (siehe KritikSeite.jsx).
  */
-const TITEL = 'Qi Blanco Kritik – was stimmt davon? | Qi Blanco';
+const TITEL = 'Qi Blanco Kritik – Zellversuche: was sie sagen und was nicht';
 const BESCHREIBUNG =
-  'Die sieben härtesten Fragen zu Qi Blanco, gerade beantwortet: was gemessen ist, was offen ist – und was du in 20 Tagen selbst prüfen kannst.';
+  'Fünf veröffentlichte Arbeiten, sieben Fragen, gerade beantwortet: was die Zellversuche zeigen, was offen ist – und was du in 20 Tagen selbst prüfen kannst.';
 
 /**
  * SCHEMA-DATEN. `datePublished` ist der Tag der Freischaltung dieser Seite,
@@ -99,7 +113,7 @@ const BESCHREIBUNG =
  * DIESER SEITE ÄNDERT, ZIEHT `KRITIK_GEAENDERT` IM SELBEN COMMIT NACH.
  */
 const KRITIK_VEROEFFENTLICHT = '2026-09-11';
-const KRITIK_GEAENDERT = '2026-09-11';
+const KRITIK_GEAENDERT = '2026-09-25';
 
 /**
  * DAS FAQPage-SCHEMA kommt aus app/lib/faq-schema.js (P10: die Fabrik
