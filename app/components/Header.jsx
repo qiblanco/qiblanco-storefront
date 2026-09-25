@@ -22,7 +22,19 @@ import {
   GOOGLE_REZENSIONEN_ANKER_ID,
 } from '~/components/reusables/GoogleRezensionenBereich';
 
-const PARTNER_REGISTER_URL = 'https://aff.revolution.qiblanco.com/register';
+/**
+ * „Partner werden" im Menü „Mehr" führt auf UNSERE Erklärseite, nicht mehr
+ * direkt ins Anmeldeformular des Partnerportals (Christian 2026-09-24: „zuerst
+ * eine Seite, wo das Partnersystem erklärt wird … und dann unten der Knopf zur
+ * Anmeldung"; Job 20260924-bau-partner-werden-erst-erklaerseite-mit-freude-
+ * dann-anmeldung). Den Anmeldeknopf trägt jetzt die Seite selbst.
+ *
+ * Warum die Zuordnung hier im Code steht und nicht allein in den Shopify-
+ * Menüdaten: sie tat es schon vorher (Titel -> Ziel), und nur so gilt dasselbe
+ * Ziel unabhängig davon, welche URL der Menüpunkt im Admin trägt. Intern, also
+ * NavLink im selben Fenster statt target=_blank.
+ */
+const PARTNER_SEITE = '/pages/affiliate-partnerprogramm';
 
 /**
  * TITELBILD DER NEUESTEN STUDIE (e0005) FÜR DAS STUDIEN-DROPDOWN.
@@ -136,7 +148,7 @@ const STUDIEN_DROPDOWN_BILD = {
 
 function resolveMenuItemLink(item) {
   if (item?.title?.trim().toLowerCase() === 'partner werden') {
-    return {to: PARTNER_REGISTER_URL, isExternal: true};
+    return {to: PARTNER_SEITE, isExternal: false};
   }
 
   return resolveMenuLink(item?.url);

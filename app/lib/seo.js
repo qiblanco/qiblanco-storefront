@@ -639,7 +639,12 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/affiliate-partnerprogramm',
-    lastmod: '2026-09-05T14:39:23Z',
+    // lastmod nachgezogen am 2026-09-24: die Seite ist seitdem die
+    // Erklärseite, auf die der Menüpunkt „Partner werden" führt (Job
+    // 20260924-bau-partner-werden-erst-erklaerseite-mit-freude-dann-
+    // anmeldung). Neuer Inhalt mit altem Datum hieße für die Suchmaschine
+    // „unverändert seit drei Wochen".
+    lastmod: '2026-09-24T21:00:00Z',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Partnerprogramm" (Job ' +
       '20260905-eigene-indexierbare-partnerseite-...-prio25). Sie ersetzt die ' +
