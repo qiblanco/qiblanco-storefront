@@ -32,7 +32,11 @@ import {Link, useLocation} from 'react-router';
  * Unterstreichung da, also als Wort statt als Weg (gemessen 2026-09-25 am
  * Popup und an der Startseite). Im Widget darüber wirkt dieselbe Farbklasse
  * nur, weil dort ein <button> steht. Die Schrift bleibt die dunkle Textfarbe
- * der Seite; das Link-Signal ist die Linie.
+ * der Seite; das Link-Signal ist die Linie. Auch die Linienstärke braucht das
+ * `!`: das Kürzel `text-decoration` in reset.css setzt die Dicke mit auf
+ * `auto`, `decoration-2` ohne `!` bliebe im Hover wirkungslos (gemessen am
+ * Computed Style der Vorschau). `underline-offset-4` gehört nicht zum Kürzel
+ * und wirkt ohne `!`.
  */
 export const BEWERTUNGEN_PFAD = '/pages/bewertungen';
 
@@ -45,7 +49,7 @@ export function AlleBewertungenLink({onKlick}) {
         to={BEWERTUNGEN_PFAD}
         prefetch="intent"
         onClick={onKlick}
-        className="text-base font-semibold underline! underline-offset-4 decoration-1 hover:decoration-2"
+        className="text-base font-semibold underline! underline-offset-4 decoration-1! hover:decoration-2!"
       >
         Alle Bewertungen lesen
       </Link>
