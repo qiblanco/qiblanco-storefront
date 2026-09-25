@@ -154,16 +154,47 @@ export function canonicalLink(pathname) {
  * als laufende Übergangsstufe belegten) und kann deshalb nicht dadurch grün
  * werden, dass jemand Einträge löscht.
  *
+ * KLASSE JE EINTRAG — WARUM DIE LISTE SAGT, WAS FÜR EINE SEITE SIE FÜHRT
+ * (2026-09-25, Job 20260925-update-lb-hygieneliste-naht-funnel-storefront-prio45).
+ * Die Liste hat inzwischen Leser AUSSERHALB dieses Repos, und die lesen mehr
+ * als „nicht in Index/Sitemap": funnel-substrat (bin/landing-bereich) zieht
+ * jeden Handle als tote Seite vom Landing-Bereich ab, und nachbau-audit führt
+ * die Handles als zurückgezogene Seiten. Das stimmte, solange hier nur tote
+ * Seiten standen. Seit dem 2026-08-29 (#271) stehen auch Landingpages hier
+ * (`partner`, `qibracelet`), später `qi-master-vorverkauf` und zwei noch
+ * unveröffentlichte Seiten. Die Bedeutung „tote Seite" ergab sich seitdem nur
+ * noch aus dem Freitext in `grund`. `/pages/qibracelet` fiel dadurch aus der
+ * Ads-Auswertung (42 Landungen als „organisch" gebucht statt als Ads-Verkehr).
+ *
+ * Deshalb trägt jeder Eintrag ein maschinenlesbares Feld `klasse`. Die
+ * Werte stehen in SEITEN_KLASSEN (unten):
+ *   'hygiene'       leer, tot, Dublette, Bestätigungsseite oder zurückgezogen.
+ *                   Kein Anzeigenziel und kein Kanalziel.
+ *   'landing'       Landingpage, die NUR über Anzeigen erreichbar ist
+ *                   (Landing-Bereich). Verkehr dort ist Ads-Verkehr.
+ *   'kanal-anderer' Landingpage für einen ANDEREN Kanal als Anzeigen. Das
+ *                   Pflichtfeld `kanal` nennt ihn ('partner', 'mail'). Verkehr
+ *                   dort ist KEIN Ads-Verkehr.
+ *   'vorab'         gebaut, aber bis zur Freigabe unsichtbar und unverlinkt.
+ *                   Wird bei Freigabe aus der Liste entfernt.
+ * Das Feld hat im Shop KEINE Laufzeitwirkung: `pages.$handle.jsx` und die
+ * Sitemap-Route lesen nur `handle` und `ausSitemap`. Wer einen Eintrag
+ * hinzufügt, entscheidet die Klasse mit. Der Test in
+ * test/seo-canonical.test.mjs lässt keinen Eintrag ohne gültige Klasse durch.
+ * Den Freitext in `grund` zu parsen ist ausdrücklich NICHT der Weg.
+ *
  * Was hier NICHT passieren darf, ist eine ZWEITE Liste: die beiden Sichten
  * unten werden aus DIESER einen Definition abgeleitet, können also nicht
  * auseinanderdriften.
- * @type {Array<{handle: string, ausSitemap: boolean, grund: string,
- *               seit: string}>}
+ * @type {Array<{handle: string, ausSitemap: boolean,
+ *               klasse: 'hygiene'|'landing'|'kanal-anderer'|'vorab',
+ *               kanal?: string, grund: string, seit: string}>}
  */
 export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'development-nicht-loschen',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund:
       'Entwicklungsseite; Sitemap war ihr einziger Discovery-Pfad (2026-08-14)',
     seit: '2026-08-14',
@@ -175,6 +206,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'pre-access',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund:
       'leere Kampagnen-Restseite, stand auf Platz 2 der Suche nach "QiOne 2 Pro"',
     seit: '2026-08-24',
@@ -182,60 +214,70 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'qibracelet_',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'leerer Handle-Vertipper zu /pages/qibracelet',
     seit: '2026-08-24',
   },
   {
     handle: 'qiblanco-qibracelet',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'leere Dublette zu /pages/qibracelet',
     seit: '2026-08-24',
   },
   {
     handle: 'kakao-anwendung-de',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'leere Sprachvariante zu /pages/kakao-anwendung',
     seit: '2026-08-24',
   },
   {
     handle: 'kakao-anwendung-us',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'leere Sprachvariante, rankte auf der DACH-Markensuche',
     seit: '2026-08-24',
   },
   {
     handle: 'zeremonie-kakao-language-select',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'leere Sprachweiche ohne Inhalt',
     seit: '2026-08-24',
   },
   {
     handle: 'anmeldung-erfolgreich',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'kw-anmeldung-erfolgreich',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'superhuman-anmeldung-erfolgreich',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'erinnerung-erfolgreich',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
   {
     handle: 'superhuman-kurs-bestatigung',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
   },
@@ -255,6 +297,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'qiblanco',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund:
       'leere Restseite unter dem Markennamen; konkurriert mit der Startseite',
     seit: '2026-08-27',
@@ -262,12 +305,14 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'linkseite',
     ausSitemap: false,
+    klasse: 'hygiene',
     grund: 'leere Link-in-Bio-Restseite ohne eigenen Inhalt',
     seit: '2026-08-27',
   },
   {
     handle: 'one-inch',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund:
       'leere Kampagnen-Restseite (One Inch Club), laut Grossjob depubliziert',
     seit: '2026-08-27',
@@ -275,6 +320,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'ketogenes-wochenende',
     ausSitemap: false,
+    klasse: 'hygiene',
     grund:
       'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
     seit: '2026-08-27',
@@ -282,6 +328,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'superhuman-kurs',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund:
       'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
     seit: '2026-08-27',
@@ -308,6 +355,8 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'partner',
     ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'partner',
     grund:
       'noindex-LP im Landing-Bereich (Partner-Funnel); stand trotz noindex in ' +
       'der Sitemap — Achse B der landing-bereich-Wache, gemessen 2026-08-29',
@@ -316,6 +365,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'qibracelet',
     ausSitemap: true,
+    klasse: 'landing',
     grund:
       'noindex-LP-Shopseite im Landing-Bereich; stand trotz noindex in der ' +
       'Sitemap. Der öffentliche Zwilling ist /pages/qibracelet-details und ' +
@@ -364,6 +414,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'wirkt-das',
     ausSitemap: true,
+    klasse: 'hygiene',
     grund:
       'am 2026-08-31 von Christian wegen Textqualität zurückgezogen; URL bleibt 200, noindex in der eigenen Route',
     seit: '2026-08-31',
@@ -404,6 +455,8 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'qi-master-vorverkauf',
     ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'mail',
     grund:
       'Vorverkaufs-Landingpage, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-12',
@@ -421,6 +474,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'wie-funktioniert-der-gitterchip-im-qione',
     ausSitemap: true,
+    klasse: 'vorab',
     grund:
       'Erklärseite GitterChip, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-24',
@@ -434,6 +488,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   {
     handle: 'forschung',
     ausSitemap: true,
+    klasse: 'vorab',
     grund:
       'Forschungsverständnis in drei Stufen, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-24',
@@ -1209,6 +1264,19 @@ export const NUR_ROUTE_SEITEN = [
       'nicht den Statuscode.',
   },
 ];
+
+/**
+ * Die erlaubten Werte von `klasse` in NICHT_INDEXIERBARE_SEITEN_DEF, mit ihrer
+ * Bedeutung für Leser außerhalb des Shops (Lesart oben an der Liste). Exportiert,
+ * damit ein Test und ein fremder Leser dasselbe Vokabular prüfen.
+ * @type {ReadonlyArray<'hygiene'|'landing'|'kanal-anderer'|'vorab'>}
+ */
+export const SEITEN_KLASSEN = Object.freeze([
+  'hygiene',
+  'landing',
+  'kanal-anderer',
+  'vorab',
+]);
 
 /**
  * Sicht 1 — alle Handles, die ein `noindex` bekommen. Leser: die Route
