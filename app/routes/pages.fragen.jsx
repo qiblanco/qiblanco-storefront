@@ -1,86 +1,44 @@
-import {FragenHub} from '~/components/campaign/FragenHub';
-import fragenStyles from '~/styles/fragen.css?url';
-import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {FRAGEN} from '~/data/fragen';
-import {hubSchema} from '~/lib/fragen-schema';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
-import {isoMitZone} from '~/lib/datum';
-
-const PFAD = '/pages/fragen';
+import {redirect} from '@shopify/remix-oxygen';
+import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
 
 /**
- * /pages/fragen — der Hub der Frageseiten.
+ * /pages/fragen — permanenter 301 auf den Fragen-Abschnitt der FAQ.
  *
- * Gebaut von 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert,
- * Segment s07, aus Christians Auftrag vom 2026-09-15: „Fragen und Antworten,
- * die nicht für den Menschen gedacht sind, sondern nur für die AI" — gemeint
- * ist: so geschrieben, dass eine Maschine sie zitieren kann, NICHT vor
- * Menschen versteckt.
+ * WARUM (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-
+ * zusammenfuehren, Christian 2026-09-25: „Dünne Vorlagenseiten … werden
+ * aufgewertet oder in eine starke Seite zusammengeführt (301)"): der Hub hatte
+ * 480 Wörter, stand bei Google auf „Gefunden – zurzeit nicht indexiert" und war
+ * nur von Seiten verlinkt, die selbst nicht im Index sind. Seine Absicht ist
+ * die der FAQ — die Flächen-SSoT homepage-bauer/konzepte/abgrenzung-
+ * flaechen.json führt für /pages/faq die Primär-Anfrage „Qi Blanco Fragen".
+ * Die FAQ ist seit dem 2026-09-22 indexiert und hängt an der Fußzeile jeder
+ * Seite. Ihr Abschnitt `#einzelfragen` trägt jetzt die Liste der Frageseiten
+ * (FaqEinzelfragen() in app/components/faq/FaqSeite.jsx), samt dem Marker
+ * data-geo="frageliste", an dem die Proben die Frageseiten ablesen.
  *
- * DIE GRENZE, DIE ALLES ANDERE ZULAESST: verboten ist genau eines,
- * verschiedene Inhalte je nach Besucher. Diese Seite und ihre Frageseiten
- * liefern Mensch, Googlebot und OAI-SearchBot denselben sichtbaren Text;
- * gemessen wird das, nicht behauptet
- * (seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py vergleicht drei
- * User-Agents auf dem SICHTBAREN Text, nicht auf Roh-Bytes: Cookiebot setzt je
- * Abruf eine Zufalls-Nonce und React-Streaming liefert dem Browser
- * zusaetzliche Hydrations-Zeilen — auf der Byte-Achse irrt die Messung
- * beidseitig).
+ * WARUM CODE-ROUTE STATT SHOPIFY-ADMIN-REDIRECT: storefrontRedirect
+ * (server.js) greift NUR bei 404, und ohne diese Datei übernähme
+ * pages.$handle.jsx — dieselbe Begründung wie in pages.qihome.jsx. Der
+ * Query-String bleibt erhalten (Klick-IDs überleben).
  *
- * WARUM EIN HUB UND NICHT NUR SECHS SEITEN: ein Begriff oder eine Frage, die
- * von mehreren Stellen angesteuert wird, gilt als definiert. Der Hub ist die
- * Stelle, an der die Ordnung sichtbar wird — er verlinkt die Frageseiten und
- * die beiden Zweifelsflaechen, und jede Frageseite verlinkt zurück auf die
- * Begriffe, die sie benutzt.
+ * SITEMAP: der Eintrag in NUR_ROUTE_SEITEN (app/lib/seo.js) ist im selben
+ * Commit entfernt — eine Sitemap-URL, die weiterleitet, meldet
+ * pruefungen/probe_sitemap_ohne_weiterleitung.py.
  *
- * SITEMAP ÜBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), KEIN Shopify-Seitenobjekt
- * (Fremdsystem, zweiter Traeger). Ohne diesen Eintrag lieferte die Seite HTTP
- * 200 mit vollem Text und stuende in keiner Sitemap: erreichbar und trotzdem
- * unauffindbar.
- *
- * KEIN LOADER, KEIN KAUFWEG, KEINE COOKIES. Der Inhalt ist ein committetes
- * Datenmodul; Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
- * lesen.
+ * RÜCKWEG: hb-deploy revert --sha <merge> stellt Hub, Route und
+ * Sitemap-Eintrag gemeinsam wieder her.
  */
-const TITEL = 'Fragen und Antworten | Qi Blanco';
-const BESCHREIBUNG =
-  'Zu jeder Frage eine eigene Seite: die Antwort zuerst, danach die Belege ' +
-  'mit Zahl und Fundstelle — und am Ende, was wir nicht wissen.';
 
 /**
- * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR — siehe pages.lexikon.jsx. Wer
- * eine Frage ergänzt, zieht `GEAENDERT` und das `lastmod` in
- * NUR_ROUTE_SEITEN im selben Commit nach.
+ * @param {LoaderFunctionArgs} args
  */
-const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-16';
-
-export function links() {
-  return [{rel: 'stylesheet', href: fragenStyles}];
+export async function loader({request}) {
+  const url = new URL(request.url);
+  throw redirect(`${HUB_PFAD}${url.search}#${HUB_ANKER}`, 301);
 }
 
-/** @type {MetaFunction} */
-export const meta = () => {
-  const schema = hubSchema(FRAGEN, {
-    datePublished: isoMitZone(VEROEFFENTLICHT),
-    dateModified: isoMitZone(GEAENDERT),
-  });
-  return [
-    {title: TITEL},
-    {name: 'description', content: BESCHREIBUNG},
-    canonicalLink(PFAD),
-    ...teilbildTags(PFAD),
-    {property: 'og:type', content: 'website'},
-    {property: 'og:title', content: TITEL},
-    {property: 'og:description', content: BESCHREIBUNG},
-    {property: 'og:url', content: absoluteCanonical(PFAD)},
-    {property: 'og:site_name', content: MARKE},
-    ...(schema ? [{'script:ld+json': schema}] : []),
-  ];
-};
-
-export default function FragenRoute() {
-  return <FragenHub />;
+export default function FragenWeiterleitung() {
+  return null;
 }
 
-/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
+/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */

@@ -1,6 +1,8 @@
 import {useId, useState} from 'react';
 import {Link} from 'react-router';
 import {FAQ_BLOECKE} from '~/data/faq-seite';
+import {FRAGEN} from '~/data/fragen';
+import {HUB_ANKER} from '~/lib/fragen-schema';
 
 /**
  * /pages/faq — die öffentliche Fragen-und-Antworten-Fläche der DACH-Storefront.
@@ -140,6 +142,75 @@ function FaqBlock({block}) {
   );
 }
 
+/**
+ * Der Abschnitt „Einzelne Fragen" der FAQ — die Sammelstelle der Frageseiten.
+ *
+ * HERKUNFT: bis 2026-09-25 stand diese Liste auf einem eigenen Hub
+ * (/pages/fragen). Der Hub war eine dünne Vorlagenseite ohne Zufahrt: 480
+ * Wörter, bei Google „Gefunden – zurzeit nicht indexiert", nur von Seiten
+ * verlinkt, die selbst nicht im Index stehen. Christian (2026-09-25): dünne
+ * Vorlagenseiten werden aufgewertet oder in eine starke Seite zusammengeführt.
+ * Die FAQ trägt dieselbe Absicht (Flächen-SSoT abgrenzung-flaechen.json:
+ * Primär-Anfrage „Qi Blanco Fragen"), ist indexiert und hängt an der Fußzeile
+ * jeder Seite. /pages/fragen leitet seither per 301 hierher.
+ *
+ * NUR FRAGE UND LINK, KEIN ANTWORTSATZ. Der alte Hub zeigte je Frage den
+ * Antwortsatz. Hier fehlt er mit Absicht: stünde die Erstantwort jeder
+ * Frageseite auch in der FAQ, konkurrierten die starke und die dünne Seite
+ * um denselben Satz. Die FAQ weist den Weg, die Frageseite trägt die Antwort.
+ * Aus demselben Grund wächst das FAQPage-Schema dieser Seite NICHT —
+ * test/faq-seite.test.mjs hält die Zahl der Question-Knoten an FAQ_ALLE.
+ *
+ * ZWEI MARKER, ÜBERNOMMEN VOM ALTEN HUB, und beide sind Verträge:
+ *   data-geo="frageliste"  NUR die Liste der Frageseiten. Die Proben lesen
+ *                          daraus ihre Prüfmenge (seo-manager/pruefungen/
+ *                          probe_lexikon_und_frageseiten_live.py u. a.).
+ *   data-geo="hub-inhalt"  der eigene Text dieses Abschnitts. Links darin
+ *                          sind Querverweise und werden nur auf
+ *                          Erreichbarkeit geprüft.
+ * Deshalb steht der Lexikon-Link im Kopf und nicht in der Liste.
+ *
+ * KEIN KAUFWEG, KEIN KNOPF: der Abschnitt erzeugt den nächsten Klick.
+ */
+function FaqEinzelfragen() {
+  return (
+    <>
+      <section
+        className="faq-einzelfragen"
+        id={HUB_ANKER}
+        data-geo="hub-inhalt"
+        data-section="faq-einzelfragen"
+      >
+        <div className="faq-inner faq-inner--schmal">
+          <h2>Einzelne Fragen, ausführlich beantwortet</h2>
+          <p className="faq-block-intro">
+            Zu jeder dieser Fragen gibt es eine eigene Seite. Sie beginnt mit
+            der Antwort, danach folgen die Belege mit Zahl und Fundstelle, und
+            am Ende steht, was offen ist. Begriffe wie Frequenz oder
+            Elektrosmog erklärt das{' '}
+            <a href="/pages/lexikon">Lexikon in der Sprache der Physik</a>.
+          </p>
+        </div>
+      </section>
+      <section
+        className="faq-einzelfragen-liste-sektion"
+        data-geo="frageliste"
+        data-section="faq-einzelfragen-liste"
+      >
+        <div className="faq-inner faq-inner--schmal">
+          <ul className="faq-einzelfragen-liste">
+            {FRAGEN.map((s) => (
+              <li key={s.slug}>
+                <a href={s.pfad}>{s.frage}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  );
+}
+
 export function FaqSeite() {
   return (
     <div className="faq-a1">
@@ -164,6 +235,10 @@ export function FaqSeite() {
       {FAQ_BLOECKE.map((block) => (
         <FaqBlock key={block.id} block={block} />
       ))}
+
+      {/* Seit 2026-09-25 die Sammelstelle der Frageseiten (vorher der Hub
+          /pages/fragen, der jetzt per 301 hierher führt). */}
+      <FaqEinzelfragen />
 
       <section className="faq-schluss">
         <div className="faq-inner faq-inner--schmal">

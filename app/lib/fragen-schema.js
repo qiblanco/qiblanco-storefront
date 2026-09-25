@@ -1,5 +1,5 @@
 /**
- * JSON-LD für die Frageseiten (`FAQPage` je Seite, `ItemList` am Hub).
+ * JSON-LD für die Frageseiten (`FAQPage` je Seite).
  * Reine Datenfabrik ohne React-Import — `node --test` kann sie direkt laden,
  * wie faq-schema.js, lexikon-schema.js und studien-schema.js.
  *
@@ -56,12 +56,20 @@
 import {
   FORBIDDEN_PATTERNS,
   buildFaqPageJsonLd,
-  normalizeText,
 } from './faq-schema.js';
 import {absoluteCanonical} from './seo.js';
 import {MARKE} from './seiten-seo.js';
 
-export const HUB_PFAD = '/pages/fragen';
+/**
+ * WO DIE FRAGESEITEN GESAMMELT STEHEN. Bis 2026-09-25 war das der eigene Hub
+ * /pages/fragen; seither ist es der Abschnitt `#einzelfragen` der FAQ
+ * (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-zusammenfuehren,
+ * Begründung im Kopf von app/routes/pages.fragen.jsx, die per 301 dorthin
+ * führt). Brotkrume der Frageseiten, Weiterleitung und Abschnitt lesen beide
+ * Werte von hier — ein Umzug ist eine Zeile, nicht drei.
+ */
+export const HUB_PFAD = '/pages/faq';
+export const HUB_ANKER = 'einzelfragen';
 
 /** Ein Satz? Der Antwort-zuerst-Vertrag in einer Zeile. */
 const SATZ_ENDE = /[.!?]["»„]?\s+\S/;
@@ -112,37 +120,4 @@ export function frageSchema(s, datum = {}) {
   });
   if (!schema) return null;
   return {...schema, '@id': `${absoluteCanonical(s.pfad)}#frage`, url: absoluteCanonical(s.pfad)};
-}
-
-/**
- * `ItemList` am Hub — die Systematik, maschinenlesbar.
- *
- * BEWUSST KEINE ZWEITE FAQPage AM HUB: die Antwort-Sätze stehen dort als
- * Anriss, und ein zweiter Question-Knoten zu derselben Frage unter einer
- * anderen URL erzeugt genau die Konkurrenz um dieselbe Frage, gegen die diese
- * Flaeche gebaut ist. Der Hub weist den Weg, die Seite trägt die Antwort.
- * @param {object[]} seiten
- * @param {{datePublished?: string, dateModified?: string}} [datum]
- */
-export function hubSchema(seiten, datum = {}) {
-  const liste = (Array.isArray(seiten) ? seiten : []).filter(
-    (s) => s && s.pfad && s.frage,
-  );
-  if (liste.length === 0) return null;
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    '@id': `${absoluteCanonical(HUB_PFAD)}#fragenliste`,
-    name: 'Fragen und Antworten',
-    inLanguage: 'de-DE',
-    numberOfItems: liste.length,
-    ...(datum.datePublished ? {datePublished: datum.datePublished} : {}),
-    ...(datum.dateModified ? {dateModified: datum.dateModified} : {}),
-    itemListElement: liste.map((s, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: normalizeText(s.frage),
-      url: absoluteCanonical(s.pfad),
-    })),
-  };
 }

@@ -320,6 +320,48 @@ body:has(.faq-a1) footer {
   letter-spacing: 0.06em;
 }
 
+/* ─── Einzelne Fragen: die Sammelstelle der Frageseiten ─────────────────── */
+/* Seit 2026-09-25 (vorher der Hub /pages/fragen). Zwei <section>, weil die
+   Proben die Liste an ihrem EIGENEN Abschnitt data-geo="frageliste" ablesen;
+   optisch ist es ein Block: der Kopf gibt unten keinen Takt ab, die Liste oben
+   keinen, den Abstand dazwischen trägt .faq-block-intro. Nur Tokens. */
+.faq-a1 .faq-einzelfragen {
+  border-top: 1px solid var(--f-linie);
+  padding-bottom: 0;
+}
+
+.faq-a1 .faq-einzelfragen-liste-sektion {
+  padding-top: 0;
+}
+
+.faq-a1 .faq-einzelfragen-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--f-linie);
+}
+
+.faq-a1 .faq-einzelfragen-liste li {
+  border-bottom: 1px solid var(--f-linie);
+}
+
+.faq-a1 .faq-einzelfragen-liste a {
+  display: block;
+  padding: var(--f-s2) 0;
+  font-size: var(--f-fs-md);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--f-text);
+  text-decoration: underline;
+  text-decoration-color: var(--f-akzent);
+  text-decoration-thickness: 2px;
+}
+
+.faq-a1 .faq-einzelfragen-liste a:hover,
+.faq-a1 .faq-einzelfragen-liste a:focus-visible {
+  color: var(--f-akzent-tinte);
+}
+
 /* ─── Schluss: der nächste Klick ────────────────────────────────────────── */
 /* Eine /pages/-Seite wird am NÄCHSTEN KLICK gemessen, nicht an der
    Bestellung (Kanon: „Die Landingpage verkauft nicht — sie erzeugt den

@@ -31,10 +31,10 @@ import {FRAGEN, QUELLEN, seiteFuer, quellenFuer} from '../app/data/fragen.js';
 import {FORBIDDEN_PATTERNS} from '../app/lib/faq-schema.js';
 import {
   frageSchema,
-  hubSchema,
   warumKeinSchema,
   antwortIstEinSatz,
   HUB_PFAD,
+  HUB_ANKER,
 } from '../app/lib/fragen-schema.js';
 import {NUR_ROUTE_SEITEN} from '../app/lib/seo.js';
 
@@ -82,12 +82,54 @@ test('die Antwort ist GENAU EIN Satz und steht als erstes', () => {
   );
 });
 
-test('jede Frage hat eine eigene Route, und der Hub auch', () => {
+test('jede Frage hat eine eigene Route', () => {
   for (const s of FRAGEN) {
     const datei = path.join(WURZEL, 'app', 'routes', `pages.${s.slug}.jsx`);
     assert.ok(fs.existsSync(datei), `${s.slug}: Routendatei fehlt (${datei})`);
   }
-  assert.ok(fs.existsSync(path.join(WURZEL, 'app', 'routes', 'pages.fragen.jsx')));
+});
+
+// SEIT 2026-09-25 IST DIE SAMMELSTELLE DER ABSCHNITT #einzelfragen DER FAQ
+// (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-zusammenfuehren).
+// Die alte Adresse /pages/fragen lebt als 301 weiter. Die drei Arme unten
+// halten die Naht dieses Umzugs: Weiterleitung, Sitemap, interne Links.
+test('/pages/fragen leitet per 301 auf die Sammelstelle in der FAQ', () => {
+  const route = lies('app', 'routes', 'pages.fragen.jsx');
+  assert.equal(HUB_PFAD, '/pages/faq', 'die Sammelstelle ist die FAQ');
+  assert.match(route, /throw redirect\(/, 'die alte Route wirft keinen redirect');
+  assert.match(route, /,\s*301\)/, 'die Weiterleitung ist nicht permanent (301)');
+  assert.match(route, /HUB_PFAD[\s\S]*HUB_ANKER/, 'das Ziel kommt nicht aus fragen-schema.js');
+  assert.doesNotMatch(route, /from '~\/components\//, 'die alte Route importiert noch eine Komponente');
+  assert.match(route, /return null;/, 'die alte Route rendert noch Inhalt');
+  const faq = lies('app', 'components', 'faq', 'FaqSeite.jsx');
+  assert.match(faq, /id=\{HUB_ANKER\}/, 'der Abschnitt trägt den Anker der Weiterleitung nicht');
+});
+
+test('keine interne Verlinkung zeigt noch auf /pages/fragen', () => {
+  // Eine Weiterleitung ist ein Wegweiser für alte Links von aussen, kein
+  // Linkziel. Gelesen werden die Quelltexte, die Links rendern, und die
+  // Datenmodule — der Rumpf der alten Route selbst ist ausgenommen.
+  const orte = [
+    ['app', 'components'],
+    ['app', 'data'],
+    ['app', 'routes'],
+  ];
+  const treffer = [];
+  for (const ort of orte) {
+    const wurzel = path.join(WURZEL, ...ort);
+    for (const name of fs.readdirSync(wurzel, {recursive: true})) {
+      const datei = path.join(wurzel, String(name));
+      if (!/\.(jsx?|mjs)$/.test(datei) || datei.endsWith('pages.fragen.jsx')) continue;
+      const text = fs.readFileSync(datei, 'utf8');
+      // GENERIERTE Inventare (uebersicht-links.js, Reconciler) führen auch
+      // Weiterleitungen als Eintrag — das ist ihr Zweck, kein Link.
+      if (text.startsWith('// GENERIERT')) continue;
+      if (/href=["'`{]*\/pages\/fragen["'`#?]|"pfad":\s*"\/pages\/fragen"/.test(text)) {
+        treffer.push(path.relative(WURZEL, datei));
+      }
+    }
+  }
+  assert.deepEqual(treffer, [], `Links auf die Weiterleitung: ${treffer.join(', ')}`);
 });
 
 test('die Marker data-geo sind Verträge und stehen in den Komponenten', () => {
@@ -99,20 +141,23 @@ test('die Marker data-geo sind Verträge und stehen in den Komponenten', () => {
   for (const m of ['antwort', 'beleg', 'offen']) {
     assert.ok(seite.includes(`data-geo="${m}"`), `Abschnitt data-geo="${m}" fehlt`);
   }
-  const hub = lies('app', 'components', 'campaign', 'FragenHub.jsx');
+  const hub = lies('app', 'components', 'faq', 'FaqSeite.jsx');
   assert.match(
     hub,
-    /data-geo="frageliste"/,
+    /<section[^>]*data-geo="frageliste"/,
     'ohne die Abgrenzung liest die Abnahme JEDEN Link des Hubs als Frageseite — ' +
       'auch /pages/kritik und /pages/hypothesen, die keine sind',
   );
 });
 
-test('der Hub verlinkt jede Frageseite und keinen Lexikon-Eintrag in der Liste', () => {
-  const hub = lies('app', 'components', 'campaign', 'FragenHub.jsx');
+test('die Sammelstelle verlinkt jede Frageseite und keinen Lexikon-Eintrag in der Liste', () => {
+  const hub = lies('app', 'components', 'faq', 'FaqSeite.jsx');
   // Die Liste kommt aus den Daten (FRAGEN.map), also kann sie nicht driften.
   assert.match(hub, /FRAGEN\.map/, 'die Frageliste wird nicht aus den Daten gebaut');
-  const anfang = hub.indexOf('data-geo="frageliste"');
+  // Der Marker steht auch im Kopfkommentar — gesucht wird das ATTRIBUT am
+  // <section>, also die Stelle, die ausgeliefert wird.
+  const anfang = hub.search(/<section[^>]*data-geo="frageliste"/);
+  assert.ok(anfang !== -1, 'kein <section> mit data-geo="frageliste"');
   const ende = hub.indexOf('</section>', anfang);
   const liste = hub.slice(anfang, ende);
   const fremde = [...liste.matchAll(/href="(\/pages\/[a-z0-9-]+)"/g)].map((m) => m[1]);
@@ -184,12 +229,6 @@ test('das Seiten-Schema trägt GENAU EINE Question, und sie ist der sichtbare Te
   }
 });
 
-test('das Hub-Schema verliert keine Frage (Sollwert aus den Daten)', () => {
-  const schema = hubSchema(FRAGEN, DATUM);
-  assert.equal(schema.numberOfItems, FRAGEN.length);
-  assert.equal(schema.itemListElement.length, FRAGEN.length);
-});
-
 test('jede Route steht in NUR_ROUTE_SEITEN — sonst ist sie unauffindbar', () => {
   // Die Naht zwischen Route und Sitemap. Ohne den Eintrag liefert die Seite
   // HTTP 200 mit vollem Text und steht in keiner Sitemap: erreichbar und
@@ -199,7 +238,10 @@ test('jede Route steht in NUR_ROUTE_SEITEN — sonst ist sie unauffindbar', () =
   for (const s of FRAGEN) {
     assert.ok(pfade.has(s.pfad), `${s.slug}: fehlt in NUR_ROUTE_SEITEN`);
   }
-  assert.ok(pfade.has(HUB_PFAD), 'der Fragen-Hub fehlt in NUR_ROUTE_SEITEN');
+  // Die Weiterleitung steht in KEINER Sitemap: eine Sitemap-URL, die
+  // weiterleitet, sendet ein gegenläufiges Signal. Die FAQ selbst steht über
+  // ihr Shopify-Seitenobjekt in der Sitemap, nicht in dieser Liste.
+  assert.ok(!pfade.has('/pages/fragen'), '/pages/fragen leitet weiter und gehört in keine Sitemap');
 });
 
 test('ROT-ARM: ein Deny-Muster im Schema-Paar schließt die Seite aus', () => {
