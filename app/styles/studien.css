@@ -680,6 +680,11 @@
   margin: 0 0 var(--st-s6);
   color: var(--st-text);
 }
+/* Weiterweg nach den Publikationen (Segment s02, 2026-09-25): Abstand zu den
+   Karten aus dem Raster, Links in der Akzent-Tinte wie im Zitat- und
+   Inhaltsverzeichnis-Muster dieser Datei. */
+.qb-st-weiterweg { margin-top: var(--st-s6); }
+.qb-st-weiterweg a { color: var(--st-akzent-tinte); }
 
 /* Studien-Karte auf der Übersicht — Titelseite gross links, Text rechts. */
 .qb-st-karte {

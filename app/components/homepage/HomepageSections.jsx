@@ -51,8 +51,14 @@ export function HomepageSections({overrides = {}}) {
           dieselben zwei Hälften, dieselbe Überschrift, dieselben
           data-section-Anker "google-reviews" und "reputon-reviews" (Schlüssel in
           verhalten.db, deshalb unverändert). `.home` ist normaler Blockfluss ohne
-          flex/grid, der Wrapper ist damit layoutneutral. */}
-      <Bewertungsblock />
+          flex/grid, der Wrapper ist damit layoutneutral.
+
+          `mitWeiterweg`: der Link „Alle Bewertungen lesen" auf
+          /pages/bewertungen, im Inhalt statt nur im Fuß — ein Link aus dem
+          Inhalt der Startseite wiegt für Google mehr als jede Fußzeile
+          (Segment s02, 2026-09-25). Kein neuer Abschnitt: die Startseite
+          endet weiter nach dem Produktblock (#391). */}
+      <Bewertungsblock mitWeiterweg />
       {/* VORAUSSCHAUENDES LADEN (Job 20260903-BAU-vorausschauendes-laden-...,
           Christian 2026-09-03). Diese drei Testimonials luden bis heute je
           einen ECHTEN YouTube-Player beim Seitenaufbau — gemessen 3 Player und
