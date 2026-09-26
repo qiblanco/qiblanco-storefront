@@ -5,10 +5,10 @@ import {
   GOOGLE_REVIEWS_AUSSCHLUSS,
   AUSSCHLUSS_IDS,
   wendeAusschlussAn,
-} from '../app/lib/googleReviewsAusschluss.js';
+} from '../app/lib/googleReviewsAusschluss.server.js';
 
 /**
- * googleRating.js benutzt den Vite-Alias `~/lib/…`, den node nicht kennt —
+ * googleRating.server.js benutzt den Vite-Alias `~/lib/…`, den node nicht kennt —
  * das Hausmuster (test/datumsfelder-zone-naht.test.mjs) liest solche Module
  * deshalb als TEXT. Text allein kann den Filter aber nicht AUSFUEHREN, und
  * ein Rot-Nachweis am Quelltext belegt nur die Schreibweise.
@@ -19,9 +19,9 @@ import {
  * gleichzeitige Läufe sonst denselben Pfad wählen (die Kollision ist
  * korreliert, nicht zufällig). Die Datei wird in jedem Fall wieder entfernt.
  */
-const originalUrl = new URL('../app/lib/googleRating.js', import.meta.url);
+const originalUrl = new URL('../app/lib/googleRating.server.js', import.meta.url);
 const schattenUrl = new URL(
-  `../app/lib/.test-googleRating-${process.pid}.mjs`,
+  `../app/lib/.test-googleRating-server-${process.pid}.mjs`,
   import.meta.url,
 );
 writeFileSync(
@@ -32,8 +32,18 @@ writeFileSync(
   ),
 );
 let normalisiereReputonAntwort;
+let schnappschussMitAusschluss;
+let GOOGLE_REVIEWS_FALLBACK_GEFILTERT;
+let auslieferbar;
+let ladeGoogleRating;
 try {
-  ({normalisiereReputonAntwort} = await import(schattenUrl.href));
+  ({
+    normalisiereReputonAntwort,
+    schnappschussMitAusschluss,
+    GOOGLE_REVIEWS_FALLBACK_GEFILTERT,
+    auslieferbar,
+    ladeGoogleRating,
+  } = await import(schattenUrl.href));
 } finally {
   unlinkSync(schattenUrl);
 }
@@ -189,5 +199,76 @@ test('C6 (ANLASSFALL) — die hashId wandert, der Ausschluss greift trotzdem', (
     );
     assert.equal(out.ausschlussTreffer[eintrag.googleId], 1, `Lauf '${lauf}'`);
     assert.equal(out.reviews.length, 1, `Lauf '${lauf}': zu viel weggenommen`);
+  }
+});
+
+/**
+ * C7..C10 — Job 20260926-rezensions-ausschluss-serverseitig.
+ * ROT-ARM IST C7: der Notfall-Schnappschuss lief bis hierher NICHT durch den
+ * Ausschluss. Er trägt keine Google-id, nur Reputons wandernde hashId —
+ * deshalb greift dort der Namens-Arm. Die Fixture liest den Namen aus der
+ * Ausschlussliste, statt ihn zu nennen.
+ */
+test('C7 (ROT-ARM) — der Notfall-Schnappschuss läuft durch den Ausschluss (per Name)', () => {
+  const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
+  const schnappschuss = [
+    {id: '-582554336', name: eintrag.autor, text: 'ausgeschlossen', rating: 5},
+    {id: '-582554337', name: `  ${eintrag.autor.toUpperCase()} `, text: 'Schreibweise', rating: 5},
+    {id: '123456789', name: 'Echte Kundin', text: 'bleibt', rating: 5},
+  ];
+  const out = schnappschussMitAusschluss(schnappschuss);
+  assert.deepEqual(
+    out.map((r) => r.id),
+    ['123456789'],
+    `LECK im Notfall-Schnappschuss: ${eintrag.autor} wird bei Feed-Ausfall ausgeliefert`,
+  );
+});
+
+test('C8 — der Namens-Arm bleibt im Live-Feed aus (Google-id trägt dort)', () => {
+  const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
+  const namensvetter = {...roh('55550001', 'Andere Person, gleicher Name.'), authorName: eintrag.autor};
+  const out = normalisiereReputonAntwort(feedMit([namensvetter]));
+  assert.deepEqual(out.reviews.map((r) => r.quellId), ['55550001']);
+  // Feed ohne verwertbare Rezension -> gefilterter Schnappschuss, nie der rohe.
+  const leer = normalisiereReputonAntwort(feedMit([]));
+  assert.equal(leer.reviews, GOOGLE_REVIEWS_FALLBACK_GEFILTERT);
+  const namen = new Set(GOOGLE_REVIEWS_AUSSCHLUSS.map((e) => e.autor.toLowerCase()));
+  for (const r of GOOGLE_REVIEWS_FALLBACK_GEFILTERT) {
+    assert.ok(!namen.has(String(r.name).trim().toLowerCase()), `ausgeschlossen im Schnappschuss: ${r.name}`);
+  }
+  assert.ok(GOOGLE_REVIEWS_FALLBACK_GEFILTERT.length > 0, 'Schnappschuss leer gefiltert');
+});
+
+test('C9 — ausschlussTreffer (Google-ids) verlässt den Server nicht', async () => {
+  const eintrag = GOOGLE_REVIEWS_AUSSCHLUSS[0];
+  assert.deepEqual(auslieferbar({rating: 4.8, ausschlussTreffer: {x: 1}}), {rating: 4.8});
+  const altFetch = globalThis.fetch;
+  globalThis.fetch = async () =>
+    new Response(
+      JSON.stringify(feedMit([roh(eintrag.googleId, 'weg'), roh('44440001', 'bleibt')])),
+      {status: 200, headers: {'content-type': 'application/json'}},
+    );
+  try {
+    const wert = await ladeGoogleRating({env: {}});
+    assert.equal(wert.source, 'reputon');
+    assert.ok(!('ausschlussTreffer' in wert), 'ausschlussTreffer im Loader-Wert');
+    assert.ok(!JSON.stringify(wert).includes(eintrag.googleId), 'Google-id des Ausschlusses im Loader-Wert');
+    globalThis.fetch = async () => {
+      throw new Error('Feed weg');
+    };
+    const notfall = await ladeGoogleRating({env: {}});
+    assert.equal(notfall.source, 'fallback');
+    assert.equal(notfall.reviews, GOOGLE_REVIEWS_FALLBACK_GEFILTERT);
+  } finally {
+    globalThis.fetch = altFetch;
+  }
+});
+
+test('C10 — das Client-Modul importiert weder Ausschluss noch Schnappschuss', () => {
+  const client = readFileSync(new URL('../app/lib/googleRating.js', import.meta.url), 'utf8');
+  const importe = [...client.matchAll(/^import[^;]*from\s+'([^']+)'/gm)].map((m) => m[1]);
+  assert.deepEqual(importe, ['react-router'], `Client-Importe: ${importe.join(', ')}`);
+  for (const e of GOOGLE_REVIEWS_AUSSCHLUSS) {
+    assert.ok(!client.includes(e.autor), `Verfassername im Client-Modul: ${e.autor}`);
   }
 });
