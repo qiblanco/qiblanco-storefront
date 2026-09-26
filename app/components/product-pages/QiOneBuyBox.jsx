@@ -61,6 +61,7 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   ankerId?: string,
  *   zusatzLinien?: Array<object>,
  *   unterKaufknopf?: import('react').ReactNode,
+ *   videoKachel?: import('react').ReactNode,
  * }} props
  *
  * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
@@ -92,6 +93,13 @@ import {ProductImageList} from '~/components/ProductImageList';
  * den Kaufknopf und legt die gewählten Add-ons im SELBEN Klick mit in den
  * Warenkorb (Christian 2026-09-24). Jede andere Seite übergibt nichts und
  * rendert byte-identisch weiter.
+ *
+ * VIDEO-KACHEL (`videoKachel`, additiv, Default null): nur DURCHGEREICHT an
+ * ProductImageList (Maßnahme „Produktseite, die verkauft“, Grossjob
+ * growth-m-lp-produktseite-verkauft). Die organische PDP übergibt
+ * <ProduktVideoKachel handle="qione-2-pro" />; die Kampagnen-Kaufseiten
+ * (/pages/qione-2-pro, -2x) übergeben nichts und bleiben byte-identisch —
+ * sie sind damit zugleich die Vergleichsgruppe der Wirkungsmessung.
  */
 export function QiOneBuyBox({
   product,
@@ -106,6 +114,7 @@ export function QiOneBuyBox({
   ankerId = undefined,
   zusatzLinien = undefined,
   unterKaufknopf = null,
+  videoKachel = null,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -133,6 +142,7 @@ export function QiOneBuyBox({
         <ProductImageList
           images={product?.images}
           onSelectImage={(image) => setFeaturedImage(image)}
+          videoKachel={videoKachel}
         />
         </div>
       </div>

@@ -1,0 +1,293 @@
+/* ============================================================================
+   produkt-videos.css — Video-Kachel im Vorschaustreifen + Video-Dialog
+   ----------------------------------------------------------------------------
+   Maßnahme „Produktseite, die verkauft“ (Grossjob growth-m-lp-produktseite-
+   verkauft, 26.09.2026). Komponente: components/reusables/ProduktVideos.jsx,
+   Daten: data/produkt-videos.js. Geladen über links() genau der Routen, die
+   eine Kachel zeigen (products.qione-2-pro, products.qibracelet). Entfernen
+   der Import-Zeilen stellt den Vorzustand her.
+
+   KEIN NEUER WERT: Farben, Größen und Radien kommen aus qb-tokens.css (global
+   über root.jsx) oder sind die Werte, die der Vorschaustreifen schon trägt:
+   - Kachel = die Maße von `.ImageSeeMore` (app.css), dieselbe
+     Schleier-Farbe rgba(0,0,0,.5), dieselbe Schrift 0.8rem/600. Die Kachel
+     trägt die Klasse selbst NICHT (Begründung in ProduktVideos.jsx).
+   - Dialog = das Hausmuster des Bilder-Popups (.ImageGalleryModal): Vorhang
+     rgba(0,0,0,.82), weiße Fläche, Ebene var(--z-dialog).
+   Der Dialog ist nur im geöffneten Zustand im DOM; die Design-Rubrik der
+   ruhenden Seite sieht ihn nicht, die Kachel dagegen schon.
+   ========================================================================== */
+
+/* ---- Kachel im Streifen --------------------------------------------------- */
+.ProductImages .product-image-list > .qb-pv-kachel {
+  position: relative;
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--qb-radius-bild);
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+}
+/* Das Standbild liegt AUSSERHALB des Flusses: so traegt es nichts zur
+   Eigenbreite der Kachel bei. Im Fluss hob sein width-Attribut (240) die
+   Breite des Streifens von 216 auf 240 px, und das Hauptbild schrumpfte um
+   24 px (gemessen 2026-09-26 an der Vorschau, 1440x900). Die Groesse der
+   Kachel kommt damit allein aus Flex-Anteil und Seitenverhaeltnis, genau wie
+   bei den Bild-Kacheln daneben. */
+.ProductImages .product-image-list > .qb-pv-kachel img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 0;
+}
+.qb-pv-kachel__schleier {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+.ProductImages .product-image-list > .qb-pv-kachel:hover img {
+  opacity: 0.8;
+}
+.ProductImages .product-image-list > .qb-pv-kachel:focus-visible {
+  outline: 2px solid var(--qb-text);
+  outline-offset: 2px;
+}
+
+/* Desktop: dieselbe Spalten-Rechnung wie `.ImageSeeMore` (app.css >=1024px) */
+@media (min-width: 1024px) {
+  .ProductImages .product-image-list > .qb-pv-kachel {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    width: auto !important;
+    height: auto !important;
+  }
+}
+/* Mobil: fünf Kacheln je 20 %, wie Bild und „+N“ (app.css <=749px) */
+@media screen and (max-width: 749px) {
+  .ProductImages .product-image-list > .qb-pv-kachel {
+    flex: 0 0 calc(20% - 0.5em);
+    width: 20% !important;
+    height: auto !important;
+  }
+}
+/* Docked-Naht Teil 3 (app.css): mit angedocktem Chat fällt die Desktop-Galerie
+   auf die Reihe zurück — die Kachel folgt wie `.ImageSeeMore`. */
+@media (min-width: 1024px) and (max-width: 1543.98px) {
+  html.qb-chat-docked .ProductImages .product-image-list > .qb-pv-kachel {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ---- Dialog --------------------------------------------------------------- */
+/* Solange der Video-Dialog offen ist, wird das Chat-Widget nicht dargestellt —
+   dieselbe Regel wie app.css `html[data-dialog-offen] #qiblanco-salesbot-
+   widget-frame`, hier an der seitenlokalen Klasse (Zwischenstand, Begründung
+   im Kopf von ProduktVideos.jsx). */
+html.qb-pv-offen #qiblanco-salesbot-widget-frame {
+  display: none !important;
+}
+.qb-pv-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 16px;
+  border: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.82);
+  color: var(--qb-text);
+  z-index: var(--z-dialog);
+}
+.qb-pv-panel {
+  box-sizing: border-box;
+  width: min(960px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-areas:
+    'kopf kopf'
+    'buehne text'
+    'buehne auswahl';
+  grid-template-rows: auto auto 1fr;
+  gap: 16px 24px;
+  padding: 16px 24px 24px;
+  background: #fff;
+  border-radius: var(--qb-radius-klein);
+}
+.qb-pv-kopf {
+  grid-area: kopf;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.qb-pv-overlay .qb-pv-titel {
+  margin: 0;
+  font-size: var(--qb-ref-fs-5) !important;
+  font-weight: 600;
+  line-height: 1.3;
+  text-shadow: none;
+  color: var(--qb-text);
+}
+.qb-pv-zu {
+  flex: none;
+  padding: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--qb-text);
+  cursor: pointer;
+}
+.qb-pv-zu:hover {
+  background: var(--qb-flaeche);
+}
+.qb-pv-buehne {
+  grid-area: buehne;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  background: #000;
+  border-radius: var(--qb-radius-bild);
+  overflow: hidden;
+}
+.qb-pv-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  max-height: 70dvh;
+  background: #000;
+}
+.qb-pv-video--hoch {
+  width: auto;
+  max-width: 100%;
+  height: 70vh;
+  height: 70dvh;
+}
+.qb-pv-text {
+  grid-area: text;
+}
+.qb-pv-overlay .qb-pv-videotitel {
+  margin: 0;
+  font-size: var(--qb-ref-fs-4) !important;
+  font-weight: 600;
+  line-height: 1.3;
+  text-shadow: none;
+  color: var(--qb-text);
+}
+.qb-pv-text p {
+  margin: 8px 0 0;
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.5;
+  color: var(--qb-text);
+}
+.qb-pv-text .qb-pv-quelle {
+  font-size: var(--qb-ref-fs-2);
+  color: var(--qb-text-gedaempft);
+}
+.qb-pv-text a {
+  color: var(--qb-text);
+  text-decoration: underline;
+}
+.qb-pv-auswahl {
+  grid-area: auswahl;
+  display: flex;
+  flex-direction: column;
+  align-content: start;
+  gap: 8px;
+}
+.qb-pv-wahl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: var(--qb-radius-klein);
+  background: transparent;
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-2);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+.qb-pv-wahl img {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--qb-radius-bild);
+}
+.qb-pv-wahl.is-aktiv {
+  border-color: var(--qb-text);
+}
+.qb-pv-wahl:hover:not(.is-aktiv) {
+  background: var(--qb-flaeche);
+}
+
+@media (max-width: 749px) {
+  .qb-pv-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+  .qb-pv-panel {
+    width: 100%;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'kopf'
+      'buehne'
+      'text'
+      'auswahl';
+    grid-template-rows: auto auto auto 1fr;
+    align-content: start;
+    padding: 8px 16px 24px;
+  }
+  .qb-pv-video {
+    max-height: 56vh;
+    max-height: 56dvh;
+  }
+  .qb-pv-video--hoch {
+    height: 60vh;
+    height: 60dvh;
+  }
+  .qb-pv-auswahl {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .qb-pv-wahl {
+    width: auto;
+    flex: 1 1 140px;
+  }
+}

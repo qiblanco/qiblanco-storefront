@@ -25,6 +25,8 @@ import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlides
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import produktVideoStyles from '~/styles/produkt-videos.css?url';
+import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 /*
  * ZWEI route-gebundene Stylesheets — zwei Gründe, keines ersetzt das andere.
@@ -57,6 +59,9 @@ export function links() {
   return [
     {rel: 'stylesheet', href: igStyles},
     {rel: 'stylesheet', href: pdpQiStyles},
+    // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
+    // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*).
+    {rel: 'stylesheet', href: produktVideoStyles},
   ];
 }
 
@@ -186,7 +191,14 @@ export default function Product() {
           <div className="ProductImageWrapperSticky">
 
         <ProductImage image={featuredImage} />
-        <ProductImageList images={product?.images} onSelectImage={(image) => setFeaturedImage(image)} />
+        {/* Videos im Vorschaustreifen (Amazon-Muster, Maßnahme „Produktseite,
+            die verkauft“, 26.09.2026): das Zellvideo der QiBracelet-Studie,
+            bis heute auf keiner Seite. Daten: app/data/produkt-videos.js. */}
+        <ProductImageList
+          images={product?.images}
+          onSelectImage={(image) => setFeaturedImage(image)}
+          videoKachel={<ProduktVideoKachel handle="qibracelet" />}
+        />
       </div>
       </div>
       <div className="product-main">
