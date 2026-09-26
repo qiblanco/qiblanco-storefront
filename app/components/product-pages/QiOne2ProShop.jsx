@@ -7,6 +7,7 @@ import {
 } from '~/components/product-pages/QiOneBuyBox';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
@@ -90,7 +91,14 @@ export function QiOne2ProShop({product}) {
              `gewaehrleistungsHinweis={false}` schaltet den Default in
              ProductForm ab -- ohne ihn stuende die Mitteilung zweimal da. */
           benefitList={
-            <QiOneBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
+            /* Dieselben drei Punkte wie auf der Referenz /products/qione-2-pro
+               (shop-spiegel-Parität, Job 20260926-growth-kaufweg-vertrauen-dach):
+               über diese Seite kommen 1.348 von 2.506 Sitzungen mit
+               QiOne-Ansicht (27.08.-26.09.2026). */
+            <QiOneBenefitList
+              vorPunkte={<KaufZusagePunkte />}
+              zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
+            />
           }
           gewaehrleistungsHinweis={false}
         />

@@ -220,13 +220,21 @@ export function QiOneBuyBox({
  * stuende sie zweimal auf der Seite. Default `null` heißt weiterhin: wer
  * nichts sagt, bekommt nichts.
  *
- * @param {{zusatzPunkt?: React.ReactNode}} props  zusatzPunkt MUSS ein <li>
- *   liefern -- alles andere wäre ein ungueltiges Kind einer <ul>.
+ * `vorPunkte` (seit 26.09.2026, Job 20260926-growth-kaufweg-vertrauen-dach)
+ * ist die Naht am ANFANG der Liste, also direkt unter dem Kaufknopf: dort
+ * stehen Rücknahme, Raten und der Weg zu den Bewertungen
+ * (reusables/KaufZusage.jsx). Auch hier gilt: wer nichts übergibt, bekommt
+ * nichts, jede andere Verwendung bleibt byte-identisch.
+ *
+ * @param {{zusatzPunkt?: React.ReactNode, vorPunkte?: React.ReactNode}} props
+ *   zusatzPunkt und vorPunkte MÜSSEN <li> liefern -- alles andere wäre ein
+ *   ungueltiges Kind einer <ul>.
  */
-export function QiOneBenefitList({zusatzPunkt = null}) {
+export function QiOneBenefitList({zusatzPunkt = null, vorPunkte = null}) {
   return (
     <div className="BenefitList">
       <ul>
+        {vorPunkte}
         <li>
           <svg
             xmlns="http://www.w3.org/2000/svg"

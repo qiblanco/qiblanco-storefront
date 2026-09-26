@@ -20,6 +20,7 @@ import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
@@ -251,6 +252,10 @@ function BenefitList() {
   return (
     <div className="BenefitList">
       <ul>
+        {/* Rücknahme, Raten und der Weg zu den Bewertungen OBEN in der Liste,
+            also direkt unter dem Kaufknopf (Job 20260926-growth-kaufweg-
+            vertrauen-dach, Begründung in reusables/KaufZusage.jsx). */}
+        <KaufZusagePunkte />
         <li>
           <svg
             xmlns="http://www.w3.org/2000/svg"
