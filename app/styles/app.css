@@ -828,7 +828,7 @@ html[data-dialog-offen] #qiblanco-salesbot-widget-frame {
  * RUECKWEG: diesen Block loeschen oder <KaufknopfChatSignal /> aus root.jsx
  * nehmen. Kill-Schalter fuer das ganze Widget bleibt
  * PUBLIC_SALESBOT_WIDGET_ORIGIN=off. */
-html[data-chat-ueber-kaufknopf] #qiblanco-salesbot-widget-frame {
+html[data-chat-deckt-kaufknopf] #qiblanco-salesbot-widget-frame {
   visibility: hidden !important;
   pointer-events: none !important;
 }

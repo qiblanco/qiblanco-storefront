@@ -737,7 +737,7 @@ export function Layout({children}) {
             Unterdrueckung muss auch dann greifen, wenn das Widget erst per
             Client-Navigation dazukommt. */}
         <DialogSignal />
-        {/* Setzt `data-chat-ueber-kaufknopf` am <html>, solange das
+        {/* Setzt das Attribut data-chat-deckt-kaufknopf am <html>, solange das
             geschlossene Chat-Widget einen Kaufknopf überdeckt (vierter Fall
             desselben Leitsatzes, Begründung in der Komponente). Ohne
             Bedingung aus demselben Grund wie DialogSignal. */}
