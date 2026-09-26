@@ -1,0 +1,356 @@
+/* ============================================================================
+   /pages/partner-beispielseite — „So kann eine Erfahrungsseite aufgebaut sein"
+   (2026-09-26, Grossjob partnerseiten-ranken, Segment s02).
+
+   Rezept wie kritik.css (Rubrik 100/100) und damit wie .lp-a3 in
+   schlaf-zellen-schutz.css: warmes Neutral-Kontinuum, EIN Gold-Akzent nur auf
+   Handlung, Weissraum gruppiert statt Boxen, 8pt-Grid, Sektions-Takt 96/64,
+   Zeilenlaenge <= 75ch, eine Lesespalte. design-meister web-brief
+   --seite partner-beispielseite.
+
+   REGEL DIESER DATEI: alle Groessen, Farben, Radien und Linien kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .pbs — self-contained, eigene Datei, damit Gate 12 den Diff als
+   seitenlokal liest (eine geteilte Datei zoege fremde Seiten in die Pflicht).
+
+   GOLD NUR UEBER DEN BAUSATZ (app/styles/qb-tokens.css, global geladen):
+   Linie = --qb-akzent, Link-Unterstreichung und Fokusring auf hellem Grund =
+   --qb-akzent-tinte (Rollen-Tabelle des Haus-Gold-Konzepts vom 2026-09-26).
+   Kein Gold-Literal in dieser Datei: stellt das Haus --qb-akzent auf das
+   Kauf-Gold um, folgt diese Seite ohne eigenen Nachzug. Gold steht NIE als
+   Schriftfarbe und nie als Flaeche — der Text traegt die Aussage.
+
+   DIE VIER FLAECHEN DER SEITE, jede mit einer Rolle:
+     Grund        die Lesespalte
+     Flaeche      Kopf, Muster-Kaesten, Anhang
+     gestrichelt  der Platzhalter: eine Entwurfsflaeche, kein Inhalt
+     Goldlinie    der Satz „Dieser Bereich sollte individuell ..."
+   ========================================================================== */
+
+:root {
+  --pbs-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, 6 eigene Stufen (Deckel des Briefs: 9, die Huelle
+     traegt 13/16/20). Nachbarverhaeltnisse am Desktop 1.14/1.13/1.11/1.6/1.25
+     — vier von fuenf in der modularen Spanne, die Rubrik verlangt 70 %. */
+  --pbs-fs-sm: 0.875rem; /* 14px Etiketten und Vorspann */
+  --pbs-fs-base: 1rem; /* 16px */
+  --pbs-fs-md: 1.125rem; /* 18px Lead, Frage im Muster */
+  --pbs-fs-lg: 1.25rem; /* 20px Zeitleiste */
+  --pbs-fs-h2: clamp(1.5rem, 1.1rem + 1.6vw, 2rem); /* 24..32, EIN H2-Stil */
+  --pbs-fs-h1: clamp(2rem, 1.4rem + 2.2vw, 2.5rem); /* 32..40 */
+
+  /* Spacing: 8pt-Grid */
+  --pbs-s1: 8px;
+  --pbs-s2: 16px;
+  --pbs-s3: 24px;
+  --pbs-s4: 32px;
+  --pbs-s6: 48px;
+  --pbs-s8: 64px;
+  --pbs-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --pbs-grund: #faf9f5;
+  --pbs-flaeche: #f4f0e9;
+  --pbs-text: var(--qb-text);
+  --pbs-muted: var(--qb-text-gedaempft);
+  --pbs-akzent: var(--qb-akzent);
+  --pbs-tinte: var(--qb-akzent-tinte);
+  --pbs-linie: rgba(44, 42, 38, 0.12);
+  --pbs-linie-entwurf: rgba(107, 102, 93, 0.55);
+
+  /* Radien: ZWEI Werte */
+  --pbs-r1: var(--qb-radius-klein); /* 8px */
+  --pbs-r2: 16px;
+
+  /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
+  --pbs-mass: 68ch;
+  --pbs-breite: 760px;
+  --pbs-sprungabstand: var(--qb-kopf-hoehe, 150px);
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.pbs {
+  font-family: var(--pbs-font);
+  font-size: var(--pbs-fs-base);
+  line-height: 1.65;
+  color: var(--pbs-text);
+  background: var(--pbs-grund);
+}
+
+/* NAME MIT ABSICHT (wie .krit__inhalt): die Gestaltungs-Pruefliste misst
+   Zeilenlaenge und Innenabstaende nur an Containern, deren Klassenname ein
+   Wort wie `inhalt` traegt. Wer umbenennt, nimmt der Seite ihre Messbarkeit. */
+.pbs__inhalt {
+  width: 100%;
+  max-width: var(--pbs-breite);
+  margin-inline: auto;
+  padding-inline: var(--pbs-s2);
+}
+
+.pbs section {
+  padding-block: var(--pbs-s8);
+  scroll-margin-top: var(--pbs-sprungabstand);
+}
+@media (min-width: 768px) {
+  .pbs .pbs__kopf,
+  .pbs .pbs__technik {
+    padding-block: var(--pbs-s12);
+  }
+}
+
+.pbs .pbs__baustein + .pbs__baustein {
+  border-top: 1px solid var(--pbs-linie);
+}
+
+.pbs h1 {
+  font-size: var(--pbs-fs-h1);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--pbs-s3);
+  color: var(--pbs-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig in jeder Sektion. */
+.pbs h2 {
+  font-size: var(--pbs-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--pbs-s2);
+  color: var(--pbs-text);
+}
+
+.pbs p,
+.pbs li {
+  font-size: var(--pbs-fs-base);
+  line-height: 1.65;
+  color: var(--pbs-text);
+  max-width: var(--pbs-mass);
+  margin: 0 0 var(--pbs-s2);
+}
+
+.pbs p:last-child,
+.pbs li:last-child {
+  margin-bottom: 0;
+}
+
+.pbs ul,
+.pbs ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pbs a {
+  color: var(--pbs-text);
+  text-decoration: underline;
+  text-decoration-color: var(--pbs-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.pbs a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.pbs a:focus-visible {
+  outline: 2px solid var(--pbs-tinte);
+  outline-offset: 2px;
+  border-radius: var(--pbs-r1);
+}
+
+.pbs strong {
+  font-weight: 600;
+}
+
+/* Fachwoerter im Anhang: dieselbe Familie, eine Flaeche statt einer zweiten
+   Schrift (eine Monospace waere die zweite Familie der Seite). */
+.pbs code {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  padding: 0 var(--pbs-s1);
+  background: var(--pbs-grund);
+  border: 1px solid var(--pbs-linie);
+  border-radius: var(--pbs-r1);
+  white-space: nowrap;
+}
+
+/* Etiketten: Vorspann, „Baustein n", „Platzhalter", „Muster", „Inhalt". */
+.pbs p.pbs__vorspann,
+.pbs p.pbs__nummer,
+.pbs p.pbs__etikett {
+  font-size: var(--pbs-fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pbs-muted);
+  margin: 0 0 var(--pbs-s1);
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.pbs__kopf {
+  background: var(--pbs-flaeche);
+}
+
+.pbs p.pbs__vorspann {
+  margin-bottom: var(--pbs-s2);
+}
+
+.pbs p.pbs__lead {
+  font-size: var(--pbs-fs-md);
+}
+
+.pbs p.pbs__hinweiszeile {
+  color: var(--pbs-muted);
+  padding-top: var(--pbs-s2);
+  border-top: 1px solid var(--pbs-linie);
+  margin-top: var(--pbs-s3);
+}
+
+.pbs__sprungliste {
+  margin-top: var(--pbs-s6);
+}
+
+.pbs__sprungliste ol {
+  counter-reset: pbs-teil;
+}
+@media (min-width: 768px) {
+  .pbs__sprungliste ol {
+    columns: 2;
+    column-gap: var(--pbs-s4);
+  }
+}
+
+.pbs .pbs__sprungliste li {
+  counter-increment: pbs-teil;
+  position: relative;
+  padding-left: var(--pbs-s4);
+  margin: 0 0 var(--pbs-s1);
+  break-inside: avoid;
+}
+
+.pbs .pbs__sprungliste li::before {
+  content: counter(pbs-teil);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 600;
+  color: var(--pbs-muted);
+}
+
+.pbs p.pbs__sprung-anhang {
+  margin-top: var(--pbs-s2);
+}
+
+/* ─── Baustein ────────────────────────────────────────────────────────────── */
+.pbs p.pbs__wozu {
+  color: var(--pbs-muted);
+  margin-bottom: var(--pbs-s3);
+}
+
+.pbs p.pbs__wozu strong {
+  color: var(--pbs-text);
+}
+
+/* Der Platzhalter ist eine ENTWURFSFLAECHE: gestrichelt, ohne Flaeche — er
+   soll leer aussehen, bis die Partnerin ihn fuellt. */
+.pbs__platzhalter {
+  margin: 0 0 var(--pbs-s3);
+  padding: var(--pbs-s3);
+  border: 2px dashed var(--pbs-linie-entwurf);
+  border-radius: var(--pbs-r2);
+}
+
+.pbs__platzhalter ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pbs-s1);
+}
+
+.pbs .pbs__platzhalter li {
+  margin: 0;
+}
+
+/* Das Muster ist ein BEISPIEL: Flaeche und Etikett, die Luecken sichtbar
+   gedaempft. Der Wortlaut bleibt Zeichen fuer Zeichen, auch die Klammern. */
+.pbs__muster {
+  margin: 0 0 var(--pbs-s3);
+  padding: var(--pbs-s3);
+  background: var(--pbs-flaeche);
+  border-radius: var(--pbs-r2);
+}
+
+.pbs .pbs__luecke {
+  color: var(--pbs-muted);
+}
+
+.pbs .pbs__zeitleiste {
+  border-left: 2px solid var(--pbs-linie-entwurf);
+  padding-left: var(--pbs-s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pbs-s2);
+}
+
+.pbs .pbs__zeitleiste li {
+  font-size: var(--pbs-fs-lg);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.pbs .pbs__frage + .pbs__frage {
+  margin-top: var(--pbs-s3);
+}
+
+.pbs p.pbs__frage-titel {
+  font-size: var(--pbs-fs-md);
+  font-weight: 600;
+  margin-bottom: var(--pbs-s1);
+}
+
+.pbs p.pbs__nach {
+  margin-bottom: var(--pbs-s3);
+}
+
+/* Der EINE Akzent sitzt auf der Handlung: dem Satz, der sagt, dass die
+   Partnerin diesen Bereich selbst gestaltet. Gold als Linie, nie als Schrift. */
+.pbs p.pbs__individuell {
+  margin: var(--pbs-s4) 0 0;
+  padding-left: var(--pbs-s2);
+  border-left: 3px solid var(--pbs-akzent);
+  font-weight: 600;
+}
+
+/* ─── Anhang: Technik im Hintergrund ──────────────────────────────────────── */
+.pbs__technik {
+  background: var(--pbs-flaeche);
+}
+
+.pbs .pbs__technikliste {
+  margin-top: var(--pbs-s3);
+}
+
+.pbs .pbs__technikliste li {
+  max-width: none;
+  margin: 0;
+  padding-block: var(--pbs-s2);
+  border-top: 1px solid var(--pbs-linie);
+}
+
+.pbs p.pbs__schluss {
+  color: var(--pbs-muted);
+  margin-top: var(--pbs-s6);
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Der Seitengrund reicht bis unter Kopf und Fuss. Das Gold der geteilten
+   Huelle wird hier BEWUSST NICHT umgebogen (anders als kritik.css): die Seite
+   setzt Gold nur als Linie, und Kaufknopf und Newsletter-Knopf stehen schon
+   heute beide auf dem Kauf-Gold. Ein Remap auf --qb-akzent faerbte nur den
+   einen um und liesse den zweiten (inline gesetzt) stehen — zwei Golde. */
+body:has(.pbs) {
+  background: var(--pbs-grund);
+}
