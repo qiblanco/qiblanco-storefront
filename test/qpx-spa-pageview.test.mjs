@@ -242,3 +242,47 @@ test('Medien der Altseite bluten NICHT in den neuen Pageview', () => {
   assert.ok(!objs.includes('alt-bild'),
     `Medien-Überlappung: alt-bild hängt noch am neuen Pageview (${objs.join(',')})`);
 });
+
+// Auftrag vom 2026-09-26 (qpx-Abschluss-Flush, prio40): der Abschluss-
+// Flush des ALTEN Seitenaufrufs läuft im History-Hook NACH dem Original-
+// pushState, also steht location schon auf der Folgeseite. base() las bis
+// 2026-09-26 w.location.href, und weil der Receiver behavior_page je pv_id mit
+// dem Pfad des LETZTEN Snapshots ersetzt (INSERT OR REPLACE), trug der alte
+// Seitenaufruf den Pfad der Folgeseite (gemessen 218 von 709 A->B-Sitzungen).
+// Dieser Arm prüft genau den Abschluss-Snapshot, nicht irgendeinen Flush davor.
+test('Der Abschluss-Snapshot von A trägt Pfad A, nicht den der Folgeseite', () => {
+  const px = bootPixel('/pages/schlaf-zellen-schutz');
+  px.seeSection('lp-a-hero');
+  const vorher = px.behaviors().length;
+
+  px.navigate('/products/qione-2-pro');
+
+  const neu = px.behaviors().slice(vorher);
+  assert.equal(neu.length, 1, `genau ein Abschluss-Flush beim Routenwechsel erwartet, waren ${neu.length}`);
+  const abschluss = neu[0];
+  const pvB = px.pageViews().pop();
+  assert.notEqual(abschluss.pv_id, undefined, 'der Abschluss-Flush muss eine pv_id tragen');
+  assert.match(abschluss.url, /\/pages\/schlaf-zellen-schutz$/,
+    `der Abschluss-Snapshot von A trägt ${abschluss.url} statt Pfad A`);
+  assert.match(pvB.url, /\/products\/qione-2-pro$/,
+    'der page_view der Folgeseite muss weiter den NEUEN Pfad tragen');
+
+  // Auch der erste Flush NACH dem Wechsel gehört zu B und trägt Pfad B.
+  px.seeSection('pdp-hero');
+  px.flush();
+  const b = px.behaviors().pop();
+  assert.notEqual(b.pv_id, abschluss.pv_id, 'B muss eine eigene pv_id haben');
+  assert.match(b.url, /\/products\/qione-2-pro$/, `der Snapshot von B trägt ${b.url}`);
+});
+
+test('Query-Wechsel innerhalb von A: der Abschluss-Snapshot trägt die letzte URL von A', () => {
+  const px = bootPixel('/pages/schlaf-zellen-schutz');
+  px.navigate('/pages/schlaf-zellen-schutz?lp_ab=b');
+  px.seeSection('lp-a-hero');
+  const vorher = px.behaviors().length;
+  px.navigate('/pages/qione-2-pro');
+  const abschluss = px.behaviors().slice(vorher)[0];
+  assert.ok(abschluss, 'Abschluss-Flush fehlt');
+  assert.match(abschluss.url, /\/pages\/schlaf-zellen-schutz\?lp_ab=b$/,
+    `der Abschluss-Snapshot trägt ${abschluss.url}`);
+});
