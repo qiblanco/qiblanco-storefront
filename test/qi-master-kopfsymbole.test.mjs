@@ -81,8 +81,8 @@ function vorlageMachart() {
   const quelle = readFileSync(QIMASTER_JSX, 'utf8');
   const ab = quelle.indexOf('function AlphaSerie(');
   assert.ok(ab > 0, 'AlphaSerie() nicht gefunden -- Vorlage-Abschnitt umbenannt?');
-  // Nur der Abschnitt selbst: bis zur naechsten Funktion auf oberster Ebene,
-  // sonst zaehlten Symbole spaeterer Abschnitte zur Vorlage.
+  // Nur der Abschnitt selbst: bis zur nächsten Funktion auf oberster Ebene,
+  // sonst zählten Symbole späterer Abschnitte zur Vorlage.
   const ende = quelle.indexOf('\nfunction ', ab + 1);
   const abschnitt = quelle.slice(ab, ende > ab ? ende : undefined);
   const svgs = abschnitt.match(/<svg[\s\S]*?<\/svg>/g) || [];

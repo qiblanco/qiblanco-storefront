@@ -156,7 +156,7 @@ test('A4-ROT: ad_weiche=aus schaltet auch den Rabattweg ab', async () => {
 // Seit #620 (2026-09-24) rechnet die Route ihr Ziel in lib/discount-ziel.js
 // (rabattlinkZiel). Die Importzeilen werden weiter gestrichen, darum reicht der
 // Test die ECHTE Funktion hinein — kein Nachbau, die Naht bleibt Route + Lib.
-// Importiert die Route kuenftig einen weiteren Namen, faellt A5 mit
+// Importiert die Route künftig einen weiteren Namen, fällt A5 mit
 // ReferenceError: dann hier nachreichen, nicht nachbauen.
 
 const ROUTE_SRC = readFileSync(new URL('../app/routes/discount.$code.jsx', import.meta.url), 'utf8');
