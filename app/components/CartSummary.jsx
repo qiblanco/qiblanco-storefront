@@ -6,6 +6,7 @@ import {useMarktLand} from '~/lib/markt-land';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
 import {versandhinweisFürLinien} from '~/lib/vorbestellung';
+import {KasseImBrowser} from '~/components/reusables/KasseImBrowser';
 
 /**
  * @param {CartSummaryProps}
@@ -67,6 +68,10 @@ export function CartSummary({cart, layout}) {
         numItems={lines.length}
         contentIds={cartLineContentIds(lines)}
       />
+      {/* Direkt unter dem Kassenknopf und nur im Instagram-/Facebook-Browser:
+          der Weg zu Apple Pay / Google Pay führt über die Kasse, nicht über
+          diesen Warenkorb (Begründung und Rückweg in reusables/KasseImBrowser.jsx). */}
+      {cart.checkoutUrl ? <KasseImBrowser layout={layout} /> : null}
       <PaymentMethods />
     </div>
   );
