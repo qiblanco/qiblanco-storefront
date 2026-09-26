@@ -1,87 +1,60 @@
-import {STRAENGE} from '~/data/werk';
+import {EINSTIEG, STRAENGE} from '~/data/werk';
 
 /**
- * Die Werk-Ordnung des Wissensforums — Schalter und Zuordnung.
+ * Die Werk-Ordnung des Wissensforums — Schalter und Einstiegsweg.
  *
- * WARUM DIESER SCHALTER EXISTIERT, und warum er auf `false` steht:
- * Die BENENNUNG der Straenge ("Was ist an dem Trend wirklich dran?") und der
- * Einstiegstext sind eine INHALTLICHE Entscheidung und liegen als Vorlage bei
- * Christian — review.db, Item
- * `blog-redaktion:entscheidung:werk-straenge-benennung-20260908` (Stand
- * 2026-09-08: status `vorgelegt`, `christian_entscheidung` leer). Der
- * MECHANISMUS darf gebaut sein, die Benennung darf noch nicht ausgeliefert
- * werden. Ein `Ja` legt genau diese eine Zeile auf `true` um und braucht
- * keinen zweiten Bau.
+ * DER SCHALTER STEHT AUF `true`, SEIT DER ENTSCHEIDUNG VOM 2026-09-26:
+ * review.db, Item `blog-redaktion:entscheidung:werk-straenge-benennung-20260908`,
+ * entschieden vom AI-CEO (Nordstern Kl.10, Shop-Texte/Navigation): die
+ * Strang-Fragen und der Einstiegstext "Wo Sie anfangen" gehen live, leere
+ * Stränge erst, wenn sie Artikel tragen; die Quellenübersicht bleibt unter
+ * /pages/quellen.
  *
- * WAS DER SCHALTER NICHT IST: eine Vorsichtsmassnahme, die man irgendwann
- * vergisst. Steht er nach der Entscheidung noch auf `false`, ist das ein
- * BEFUND — die stehende Probe
- * `homepage-bauer/pruefungen/probe_werk_straenge_schalter.py` meldet genau
- * diesen Fall und
- * nennt die Entscheidung, gegen die sie misst. Ohne diesen Traeger wäre ein
- * vergessener Schalter von einer bewussten Entscheidung nicht zu
- * unterscheiden, und das Wahrscheinlichere von beidem ist das Vergessen.
+ * WAS ER SCHALTET: den Wegweiser über dem chronologischen Raster auf Seite 1
+ * von /blogs/wissen (Begründung der Bauform im Kopf von `Wegweiser` in
+ * app/routes/blogs.$blogHandle._index.jsx). `false` nimmt ihn vollständig
+ * zurück, die Übersicht ist dann byte-gleich die Blätterliste.
+ *
+ * DER TRÄGER: die stehende Probe
+ * `homepage-bauer/pruefungen/probe_werk_straenge_schalter.py` misst, ob der
+ * Schalter auf origin/main zur Entscheidungslage passt — in beide Richtungen.
  */
-export const STRAENGE_LIVE = false;
+export const STRAENGE_LIVE = true;
 
 /**
- * Ordnet die vom Shop gelieferten Artikel den Straengen zu.
+ * Der Einstiegsweg: je belegtem Strang die Strang-Frage und EIN Artikel.
  *
- * DIE ZUORDNUNG WIRD NICHT HIER ENTSCHIEDEN, sondern in blog-redaktion aus dem
- * Bestand ABGELEITET und über `app/data/werk.js` hereingetragen — hier steht
- * nur das Nachschlagen. Das ist der Grund, warum ein neuer Artikel niemanden
- * zwingt, eine Liste zu pflegen.
+ * WELCHER Artikel, entscheidet blog-redaktion (src/werk.py, meiste
+ * eingehende Querverweise) und trägt es über `app/data/werk.js` herein —
+ * hier steht nur das Auflösen gegen den Bestand, den der Shop liefert.
  *
- * FAIL-SOFT UND VOLLSTAENDIG: ein Artikel, den der Auszug (noch) nicht kennt,
- * geht NICHT verloren — er landet in `rest`. Ein stiller Verlust wäre hier
- * besonders teuer, weil er wie eine bewusste redaktionelle Auswahl aussaehe.
- * Genau diese Klasse hat der Blog schon einmal bezahlt: `pageBy: 4` liess bei
- * sechs Artikeln zwei hinter einem "Mehr laden"-Link verschwinden.
+ * FAIL-SOFT IN DIE RICHTIGE RICHTUNG: ein Einstieg, dessen Artikel der Shop
+ * (noch) nicht liefert, fällt WEG. Ein Link ins Leere am wichtigsten Klick
+ * der Seite wäre schlimmer als ein kürzerer Weg. Ein Strang ohne Artikel
+ * steht gar nicht erst im Auszug (Erzeuger homepage-bauer/bin/werk-snapshot).
  *
- * @param {Array<{handle?: string}>} artikel  Artikel in Shop-Reihenfolge
- * @returns {{gruppen: Array<{id: string, frage: string, kurz: string,
- *            artikel: Array<object>}>, rest: Array<object>}}
+ * @param {Array<{handle?: string, title?: string}>} artikel  der ganze Bestand
+ * @returns {Array<{id: string, frage: string, kurz?: string, handle: string,
+ *            titel: string}>}
  */
-export function gruppiereNachStraengen(artikel) {
-  const offen = new Map();
+export function einstiegsWeg(artikel) {
+  const nachHandle = new Map();
   for (const a of artikel || []) {
-    if (a?.handle) offen.set(a.handle, a);
+    if (a?.handle) nachHandle.set(a.handle, a);
   }
-
-  const gruppen = [];
-  for (const strang of STRAENGE) {
-    const zugeordnet = [];
-    for (const eintrag of strang.slugs || []) {
-      // BEIDE FORMEN, und das ist kein Schluder, sondern die Antwort auf eine
-      // Naht, die schon einmal gerissen ist: der Auszug wird von einem FREMDEN
-      // Modul erzeugt (blog-redaktion über homepage-bauer/bin/werk-snapshot).
-      // Der Erzeuger ist am 2026-09-08 von blossen Strings auf das BENANNTE
-      // Feld {"slug": "..."} umgestellt — aus gutem Grund: das Umlaut-Gate
-      // maskiert Slugs nur in dieser Form, und Slugs müssen ASCII bleiben.
-      // Der Verbraucher hier zog nicht nach und ordnete danach NICHTS mehr zu:
-      // `Map.get(objekt)` trifft einen String-Schlüssel nie, jeder Strang war
-      // leer, alle Artikel fielen in die Restgruppe — der Bau hätte fertig
-      // ausgesehen und nichts bewirkt. Wer eine Form erzwingt, verstummt beim
-      // nächsten Mal genauso still; deshalb wird hier gelesen, nicht verlangt.
-      const slug = typeof eintrag === 'string' ? eintrag : eintrag?.slug;
-      const treffer = slug ? offen.get(slug) : undefined;
-      if (treffer) {
-        zugeordnet.push(treffer);
-        offen.delete(slug);
-      }
-    }
-    // Eine Ueberschrift ohne Artikel darunter ist kein Strang, sondern ein
-    // leeres Versprechen — und die ZIEL-Probe des Auftrags zählt sie
-    // ausdrücklich nicht mit.
-    if (zugeordnet.length) {
-      gruppen.push({
-        id: strang.id,
-        frage: strang.frage,
-        kurz: strang.kurz,
-        artikel: zugeordnet,
-      });
-    }
+  const straenge = new Map(STRAENGE.map((s) => [s.id, s]));
+  const weg = [];
+  for (const e of EINSTIEG || []) {
+    const strang = straenge.get(e.strang);
+    const treffer = nachHandle.get(e.slug);
+    if (!strang || !treffer) continue;
+    weg.push({
+      id: strang.id,
+      frage: strang.frage,
+      kurz: strang.kurz,
+      handle: treffer.handle,
+      titel: treffer.title || e.titel,
+    });
   }
-
-  return {gruppen, rest: [...offen.values()]};
+  return weg;
 }

@@ -44,3 +44,88 @@
   margin: 0 0 var(--bw-s4);
   max-width: var(--bw-breite-text);
 }
+
+/* --- Wegweiser "Wo Sie anfangen" (2026-09-26) -------------------------------
+   Steht auf Seite 1 UEBER dem chronologischen Raster; die Begruendung der
+   Bauform steht im Kopf von `Wegweiser` in der Route. Auch hier nur die
+   `--bw-*`-Tokens aus blog.css: EIN H2-Stil (.blog-strang-frage), h3 auf der
+   bestehenden Sprosse --bw-fs-lg, Flaeche und Radius wie die Kacheln. */
+.blog-wegweiser {
+  background: var(--bw-flaeche);
+  border-radius: var(--bw-r-flaeche);
+  margin: 0 0 var(--bw-s6);
+  padding: var(--bw-s4) var(--bw-s3);
+}
+
+.blog-wegweiser-liste {
+  counter-reset: wegweiser;
+  display: grid;
+  gap: var(--bw-s3);
+  list-style: none;
+  margin: 0 0 var(--bw-s3);
+  padding: 0;
+}
+
+.blog-wegweiser-schritt {
+  counter-increment: wegweiser;
+  max-width: var(--bw-breite-text);
+  padding-left: var(--bw-s4);
+  position: relative;
+}
+
+.blog-wegweiser-schritt::before {
+  color: var(--bw-muted);
+  content: counter(wegweiser) '.';
+  font-size: var(--bw-fs-lg);
+  left: 0;
+  line-height: 1.3;
+  position: absolute;
+  top: 0;
+}
+
+.blog-wegweiser-frage {
+  font-size: var(--bw-fs-lg);
+  line-height: 1.3;
+  margin: 0 0 var(--bw-s1);
+}
+
+.blog-wegweiser-kurz {
+  color: var(--bw-muted);
+  font-size: var(--bw-fs-base);
+  margin: 0 0 var(--bw-s1);
+}
+
+/* Der Link ist die Handlung dieses Blocks und traegt deshalb den Gold-Akzent
+   (als AA-Schrifttinte), sonst nichts in diesem Block. */
+.blog-wegweiser-link {
+  color: var(--bw-akzent-tinte);
+  font-size: var(--bw-fs-md);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.blog-wegweiser-link:hover,
+.blog-wegweiser-link:focus-visible {
+  color: var(--bw-text);
+}
+
+.blog-wegweiser-quellen {
+  font-size: var(--bw-fs-base);
+  margin: 0;
+  max-width: var(--bw-breite-text);
+}
+
+.blog-wegweiser-quellen a {
+  color: var(--bw-akzent-tinte);
+  text-decoration: underline;
+}
+
+.blog-alle {
+  margin-top: 0;
+}
+
+@media (min-width: 750px) {
+  .blog-wegweiser {
+    padding: var(--bw-s6);
+  }
+}

@@ -6,7 +6,7 @@ import {absoluteCanonical} from '~/lib/seo';
 import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
 import {tagLang} from '~/lib/datum';
-import {STRAENGE_LIVE, gruppiereNachStraengen} from '~/lib/werk';
+import {STRAENGE_LIVE, einstiegsWeg} from '~/lib/werk';
 import blogStyles from '~/styles/blog.css?url';
 import straengeStyles from '~/styles/werk-straenge.css?url';
 
@@ -243,6 +243,11 @@ async function loadCriticalData({context, request, params}) {
     seite,
     seiten,
     gesamt: alle.length,
+    // Der Wegweiser steht nur auf Seite 1: wer blättert, kennt den Einstieg
+    // schon. Er wird gegen den GANZEN Bestand aufgelöst, nicht gegen die
+    // Seitenscheibe — der Einstiegsartikel eines Strangs ist selten der
+    // neueste und läge sonst meist außerhalb der ersten neun.
+    einstieg: STRAENGE_LIVE && seite === 1 ? einstiegsWeg(alle) : [],
   };
 }
 
@@ -258,7 +263,7 @@ function loadDeferredData({context}) {
 
 export default function Blog() {
   /** @type {LoaderReturnData} */
-  const {blog, artikel, seite, seiten, gesamt} = useLoaderData();
+  const {blog, artikel, seite, seiten, gesamt, einstieg} = useLoaderData();
 
   // Die Überschrift stand nackt über einer reinen Titelliste. Eine Einleitung
   // sagt in Kundensprache (Schutz, Schlaf, Energie, Strahlung), was hier
@@ -276,27 +281,27 @@ export default function Blog() {
       <div className="blog">
         <h1>{blog.title}</h1>
         <p className="blog-einleitung">{einleitung}</p>
-        {STRAENGE_LIVE ? (
-          <StraengeAnsicht articles={{nodes: artikel}} />
-        ) : (
-          <>
-            <div className="blog-grid">
-              {artikel.map((article, index) => (
-                <ArticleItem
-                  article={article}
-                  key={article.id}
-                  loading={index < 2 ? 'eager' : 'lazy'}
-                />
-              ))}
-            </div>
-            <Seitenwahl
-              pfad={`/blogs/${blog.handle}`}
-              seite={seite}
-              seiten={seiten}
-              gesamt={gesamt}
+        {einstieg?.length ? (
+          <Wegweiser blogHandle={blog.handle} weg={einstieg} />
+        ) : null}
+        {einstieg?.length ? (
+          <h2 className="blog-strang-frage blog-alle">Alle Beiträge</h2>
+        ) : null}
+        <div className="blog-grid">
+          {artikel.map((article, index) => (
+            <ArticleItem
+              article={article}
+              key={article.id}
+              loading={index < 2 ? 'eager' : 'lazy'}
             />
-          </>
-        )}
+          ))}
+        </div>
+        <Seitenwahl
+          pfad={`/blogs/${blog.handle}`}
+          seite={seite}
+          seiten={seiten}
+          gesamt={gesamt}
+        />
       </div>
     </div>
   );
@@ -359,64 +364,61 @@ function Seitenwahl({pfad, seite, seiten, gesamt}) {
 }
 
 /**
- * Die Uebersicht nach Themenstraengen statt chronologisch.
+ * "Wo Sie anfangen" — der Weg für jemanden, der zum ersten Mal hier ist.
  *
- * WARUM SIE HINTER `STRAENGE_LIVE` STEHT: die BENENNUNG der Straenge ist eine
- * inhaltliche Entscheidung und liegt als Vorlage bei Christian (Begründung
- * und Item-Schluessel im Kopf von ~/lib/werk). Der Mechanismus ist gebaut und
- * hermetisch geprueft; ein `Ja` legt eine Zeile um und braucht keinen zweiten
- * Bau. Bis dahin liefert die Seite unveraendert die chronologische Liste —
- * NICHT eine halbe Neuerung.
+ * ENTSCHIEDEN am 2026-09-26 (AI-CEO, review.db
+ * `blog-redaktion:entscheidung:werk-straenge-benennung-20260908`): die
+ * Strang-Fragen und der Einstiegstext gehen live, leere Stränge erst, wenn sie
+ * Artikel tragen.
  *
- * KEINE PAGINIERUNG IN DIESER ANSICHT, und das ist eine Entscheidung, keine
- * Auslassung: eine Ordnung, die auf Seite 2 weitergeht, ist keine Ordnung
- * mehr — der Leser saehe einen Strang, dessen Artikel teils hinter einem
- * "Mehr laden" liegen. Die Zahl der Artikel ist menschlich gegated
- * (blog-redaktion veroeffentlicht nicht selbst) und liegt bei 8; die
- * Kachelzahl bleibt durch `pageBy: 50` gedeckelt. Waechst der Bestand
- * darueber, meldet das die stehende Wache
- * blog-redaktion/pruefungen/probe_blog_index_vollstaendig.py.
+ * WARUM EIN WEGWEISER ÜBER DEM RASTER UND NICHT DIE GRUPPIERTE ÜBERSICHT, die
+ * hier bis dahin hinter dem Schalter lag: jene Ansicht ersetzte die
+ * Blätterung. Christian hat am 18.09.2026 wörtlich verlangt "Pro Seite nur 9
+ * Artikel ... Der neuste Artikel erscheint immer ganz links oben als erstes".
+ * Die Gruppierung hätte nur die Seitenscheibe gruppiert (Beitrag 10 und
+ * folgende wären aus der Übersicht verschwunden) und den neuesten Beitrag
+ * unter einen älteren Strang geschoben. Eine Maschinen-Entscheidung
+ * überstimmt keine menschliche; die Fragen gehen deshalb als Wegweiser live,
+ * und das Raster darunter bleibt, wie Christian es bestellt hat.
  *
- * @param {{articles: {nodes: Array<ArticleItemFragment>}}}
+ * WELCHER Artikel je Strang der Einstieg ist, entscheidet der Bestand
+ * (blog-redaktion, meiste eingehende Querverweise) — nicht diese Datei.
+ *
+ * @param {{blogHandle: string, weg: Array<{id: string, frage: string,
+ *          kurz?: string, handle: string, titel: string}>}}
  */
-function StraengeAnsicht({articles}) {
-  const {gruppen, rest} = gruppiereNachStraengen(articles?.nodes ?? []);
-
+function Wegweiser({blogHandle, weg}) {
   return (
-    <>
-      {gruppen.map((strang) => (
-        <section className="blog-strang" key={strang.id}>
-          <h2 className="blog-strang-frage">{strang.frage}</h2>
-          {strang.kurz ? (
-            <p className="blog-strang-kurz">{strang.kurz}</p>
-          ) : null}
-          <div className="blog-grid">
-            {strang.artikel.map((article, index) => (
-              <ArticleItem
-                article={article}
-                key={article.id}
-                loading={index < 2 ? 'eager' : 'lazy'}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
-      {/* FAIL-SOFT UND SICHTBAR: ein Artikel, den der Auszug noch nicht kennt
-          (frisch veroeffentlicht, Snapshot noch nicht nachgezogen), faellt
-          NICHT aus der Uebersicht. Ein stiller Verlust saehe hier aus wie eine
-          redaktionelle Auswahl — genau die Klasse, die der Blog mit
-          `pageBy: 4` schon einmal bezahlt hat. */}
-      {rest.length ? (
-        <section className="blog-strang" key="rest">
-          <h2 className="blog-strang-frage">Zuletzt erschienen</h2>
-          <div className="blog-grid">
-            {rest.map((article) => (
-              <ArticleItem article={article} key={article.id} loading="lazy" />
-            ))}
-          </div>
-        </section>
-      ) : null}
-    </>
+    <section className="blog-wegweiser" aria-labelledby="blog-wegweiser-titel">
+      <h2 className="blog-strang-frage" id="blog-wegweiser-titel">
+        Wo Sie anfangen
+      </h2>
+      <p className="blog-strang-kurz">
+        Wenn Sie zum ersten Mal hier sind, ist das der kürzeste Weg durch das
+        Material:
+      </p>
+      <ol className="blog-wegweiser-liste">
+        {weg.map((schritt) => (
+          <li className="blog-wegweiser-schritt" key={schritt.id}>
+            <h3 className="blog-wegweiser-frage">{schritt.frage}</h3>
+            {schritt.kurz ? (
+              <p className="blog-wegweiser-kurz">{schritt.kurz}</p>
+            ) : null}
+            <Link
+              className="blog-wegweiser-link"
+              to={`/blogs/${blogHandle}/${schritt.handle}`}
+            >
+              {schritt.titel}
+            </Link>
+          </li>
+        ))}
+      </ol>
+      <p className="blog-wegweiser-quellen">
+        Wenn Sie eine Angabe nachschlagen wollen: In der{' '}
+        <Link to="/pages/quellen">Quellenübersicht</Link> steht jede Studie,
+        auf die wir uns berufen, mit voller Angabe.
+      </p>
+    </section>
   );
 }
 

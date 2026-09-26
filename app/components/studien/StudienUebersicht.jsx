@@ -153,13 +153,12 @@ function kachelVars(studie, i) {
  * Ruhe — fast nie "kohärentes Wasser". Der Fachbegriff steht deshalb
  * nirgends am Anfang eines Eintrags, sondern hoechstens als Erklaerung.
  *
- * BEWUSST OHNE GRUPPEN-UEBERSCHRIFTEN: app/data/werk.js gruppiert dieselben
- * acht Artikel bereits in drei Stränge. Deren BENENNUNG ist eine
- * unentschiedene Vorlage bei Christian (review.db,
- * blog-redaktion:entscheidung:werk-straenge-benennung-20260908) und
- * app/lib/werk.js hält sie ausdrücklich per STRAENGE_LIVE=false zurück.
- * Eine eigene Gruppen-Benennung hier wäre eine zweite Stelle, die dieselbe
- * offene Entscheidung führt — deshalb flach.
+ * BEWUSST OHNE GRUPPEN-UEBERSCHRIFTEN: app/data/werk.js gruppiert die
+ * Artikel bereits in Stränge; deren Benennung ist seit 2026-09-26 entschieden
+ * (review.db, blog-redaktion:entscheidung:werk-straenge-benennung-20260908)
+ * und steht als Wegweiser auf /blogs/wissen (app/lib/werk.js). Eine eigene
+ * Gruppen-Benennung hier wäre eine zweite Stelle, die dieselbe Benennung
+ * führt — deshalb flach.
  *
  * REIHENFOLGE: erst die Wirksamkeitsfrage (der Einwand, der blockt), dann
  * Mechanismus, dann Schlaf. Das folgt der gemessenen Einwandslage, nicht
