@@ -35,8 +35,8 @@ import {isoMitZone} from '~/lib/datum';
 const WINKEL = bilder.find((b) => b.id === 'winkel');
 const DOMAENE = bilder.find((b) => b.id === 'domaene');
 const STUFE = Object.fromEntries(stufen.map((s) => [s.id, s]));
-// Nur die Dichte: den Abstand aus dem SSoT zeigt diese Seite nicht (keine
-// Primärquelle, Prüfbericht Abschnitt C; offene Flanke an den SSoT-Eigner).
+// Nur die Dichte: der Abstand ist seit 26.09.2026 auch im SSoT gestrichen
+// (keine Primärquelle, Prüfbericht Abschnitt C; Flanke geschlossen).
 const [DICHTE] = DOMAENE.schwellen;
 const VON = WINKEL.von.anzeige;
 const NACH = WINKEL.nach.anzeige;
