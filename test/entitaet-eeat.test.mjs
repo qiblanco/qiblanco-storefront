@@ -176,7 +176,7 @@ test('der Hub trennt Zellstudien und Kundenerfahrungs-Auswertung (STUDIEN_FAKTEN
   assert.ok(zell > 0 && rest > 0, 'Bestand trägt nicht beide Arten');
   assert.equal(zell + rest, STUDIEN.length, 'eine Studie ohne bekannte Art');
   assert.match(text, /zellbiologische Untersuchung/);
-  assert.match(text, /Auswertung(en)? von Kundenerfahrungen/);
+  assert.match(text, /deskriptive Auswertung(en)? von Kundenerfahrungen/);
   assert.doesNotMatch(text, /\S+ zellbiologische Fachpublikationen/);
   assert.equal(studienArten(STUDIEN.filter((s) => s.art === 'in-vitro')).includes('Auswertung'), false);
 });
