@@ -7,7 +7,9 @@
 /**
  * Die Kaufknöpfe, als EIGENSCHAFT und nicht als Ort: das Attribut sitzt am
  * <button> in AddToCartButton.jsx und damit an jedem Kaufknopf, der über
- * diese Komponente gerendert wird, egal auf welcher Seite.
+ * diese Komponente gerendert wird, egal auf welcher Seite. Dazu der einzige
+ * Ausgang der Landingpage /pages/qi-master-vorverkauf („Zum Qi Master®"),
+ * die keinen Warenkorb trägt und am nächsten Klick gemessen wird.
  */
 export const KAUFKNOPF_SELEKTOR = '[data-qb-kaufknopf]';
 
