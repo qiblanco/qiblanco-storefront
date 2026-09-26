@@ -836,10 +836,6 @@
       letzterAnker = ""; ausstiegAn = 0;
       MED_T0 = now;
     }
-    // Der History-Hook ruft routeChanged() erst NACH dem Original-pushState,
-    // location steht dann schon auf der Folgeseite. Der Abschluss-Flush des
-    // alten Seitenaufrufs bekommt deshalb dessen letzte URL mit, sonst schreibt
-    // der Receiver den Pfad der Folgeseite in seine behavior_page-Zeile.
     var lastPath = w.location.pathname, lastHref = w.location.href;
     function routeChanged() {
       try {
