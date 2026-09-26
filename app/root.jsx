@@ -78,7 +78,10 @@ import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
-import {ladeGoogleRating, GOOGLE_RATING_FALLBACK} from '~/lib/googleRating';
+import {
+  ladeGoogleRating,
+  GOOGLE_RATING_FALLBACK_VOLL,
+} from '~/lib/googleRating.server';
 import {redirect} from '@shopify/remix-oxygen';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
 import {
@@ -174,7 +177,7 @@ export async function loader(args) {
     // Feed, kein Key nötig), fällt auf 4,8/437-Schnappschuss zurück (nie
     // 500en/erfinden).
     googleRating: await ladeGoogleRating(args.context).catch(() => ({
-      ...GOOGLE_RATING_FALLBACK,
+      ...GOOGLE_RATING_FALLBACK_VOLL,
     })),
     isProductionHost: isQiblancoProductionHost(args.request.url),
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',

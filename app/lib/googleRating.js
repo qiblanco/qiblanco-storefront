@@ -5,8 +5,8 @@
  * „gecachte Bewertungszahl veraltet + neueste Reviews zuerst").
  *
  * ARCHITEKTUR:
- *  - ladeGoogleRating(context) läuft im root-Loader EINMAL je Request und
- *    liefert {rating,total,source,reviews} an ALLE Routen (root data →
+ *  - ladeGoogleRating(context) (googleRating.server.js) läuft im root-Loader
+ *    EINMAL je Request und liefert {rating,total,source,reviews} an ALLE Routen (root data →
  *    useGoogleRating / useGoogleReviews).
  *  - PRIMÄRQUELLE: Reputon-Storefront-Feed (dieselbe Quelle, die das
  *    Rezensions-Widget schon immer nutzte — echte Google-Daten des
@@ -17,7 +17,7 @@
  *    (caches.open('hydrogen')) gehalten → max. 4 Abrufe/Tag/Edge, KEIN
  *    Abruf je Seitenaufruf (schnelles Seitenladen bleibt).
  *  - AUSSCHLUSS (Job 20260918-…-review-ist-satire): namentlich benannte
- *    Einzelfälle aus googleReviewsAusschluss.js fallen hier raus — der
+ *    Einzelfälle aus googleReviewsAusschluss.server.js fallen raus — der
  *    Rahmen „nur 5 Sterne" lässt Satire durch, weil Satire gern 5 Sterne
  *    gibt. Die Kuration des oberen Widgets (googleReviewsCurated.js) trug
  *    diese Regel seit 2026-08-01, dieser Kanal kannte sie nicht.
@@ -28,8 +28,17 @@
  *  - FAIL-SAFE (Muster mmProducts/campaign-fallback-prices): scheitert der
  *    Abruf ODER ist der Wert unplausibel → letzter bekannter guter Wert
  *    (GOOGLE_RATING_FALLBACK) + statischer Review-Schnappschuss
- *    (googleReviewsFallback.js, echte Rezensionen). NIE 0/leer/erfunden,
- *    NIE ein 500 aus dem root-Loader.
+ *    (googleReviewsFallback.server.js, echte Rezensionen, durch den
+ *    Ausschluss gefiltert). NIE 0/leer/erfunden, NIE ein 500 aus dem
+ *    root-Loader.
+ *  - CLIENT/SERVER-SCHNITT (Job 20260926-rezensions-ausschluss-serverseitig):
+ *    DIESE Datei wird über `useGoogleRating` in den Client gebündelt. Sie
+ *    trägt deshalb nur Konstanten, Hooks und Anzeige-Helfer. Abruf,
+ *    Ausschlussliste und Rezensions-Schnappschuss stehen in *.server.js-
+ *    Modulen — der Build bricht ab, wenn Client-Code sie importiert. Vorher
+ *    stand die Ausschlussliste samt Verfassernamen im öffentlichen Asset
+ *    assets/googleRating-*.js (bewacht von
+ *    pruefungen/probe_ausschluss_nicht_im_asset.py).
  *
  * MONITORING: bauten-wache Check `google-rating-live-frisch` (homepage-bauer
  * Registry) alarmiert, wenn die Live-Seite wieder dauerhaft den Fallback
@@ -37,19 +46,11 @@
  */
 
 import {useRouteLoaderData} from 'react-router';
-import {GOOGLE_REVIEWS_FALLBACK, GOOGLE_AI_SUMMARY_FALLBACK} from '~/lib/googleReviewsFallback';
-import {wendeAusschlussAn} from '~/lib/googleReviewsAusschluss';
 
 // Place-ID identisch zu StarRating.GOOGLE_REVIEWS_URL (Business-Profil „Qi Blanco")
 export const GOOGLE_PLACE_ID = 'ChIJafc6o-z3okcRPlf__D3fDBM';
 export const GOOGLE_REVIEWS_URL =
   'https://search.google.com/local/reviews?placeid=' + GOOGLE_PLACE_ID;
-
-// Reputon-Storefront-Feed: öffentlicher, unauthentifizierter JSON-Endpunkt,
-// den das bisherige Widget-Script client-seitig nutzte — jetzt serverseitig
-// gecacht abgerufen (Anbindung erhalten, nur der Ort des Abrufs wandert).
-export const REPUTON_FEED_URL =
-  'https://grw.reputon.com/app/storefront/widget?shop=qi-blanco.myshopify.com';
 
 // Letzter bekannter guter Wert (aktualisiert 2026-08-08: live 438; davor 437
 // vom 2026-07-31 und 429 vom 2026-07-24 — die Zahl stand damals fest, weil der
@@ -63,19 +64,16 @@ export const GOOGLE_RATING_FALLBACK = {
   rating: 4.8,
   total: 438,
   source: 'fallback',
-  reviews: GOOGLE_REVIEWS_FALLBACK,
-  aiSummary: GOOGLE_AI_SUMMARY_FALLBACK,
+  // Die Rezensionstexte des Notfalls liefert der root-Loader
+  // (googleRating.server.js, GOOGLE_RATING_FALLBACK_VOLL). Hier, im Client,
+  // steht nur die Zahl: fehlen root-Daten ganz, rendert das Widget keine
+  // Karten statt eines ungefilterten Schnappschusses.
+  reviews: [],
+  aiSummary: [],
 };
 
-const CACHE_TTL_S = 21600; // 6 h — „periodischer Refresh", nie je Seitenaufruf
-const MAX_REVIEWS = 50; // Deckel: die NEUESTEN 50 Fünf-Sterne-Reviews
-// (Christian 2026-08-01). Hinweis: der Reputon-Storefront-Feed liefert
-// real nur wenige Dutzend Fünf-Sterne-Reviews (keine Pagination; gemessen
-// 2026-09-18: 38 vor Ausschluss, 37 danach) — mehr gibt die Quelle derzeit
-// nicht her; NICHT auffüllen/erfinden. Die Zahl ist eine Messung, keine
-// Konstante: sie wächst mit jeder neuen Google-Rezension.
-
-function istPlausibel(v) {
+/** Ist ein Loader-Wert brauchbar? (auch von googleRating.server.js benutzt) */
+export function istPlausibel(v) {
   return (
     v &&
     typeof v.rating === 'number' &&
@@ -83,33 +81,6 @@ function istPlausibel(v) {
     v.rating <= 5 &&
     (v.total == null || (typeof v.total === 'number' && v.total >= 0))
   );
-}
-
-/**
- * Googles deutsche Relativzeit („vor 3 Tagen", „vor 1 Monat") → Alter in
- * Tagen. Sie ist die verlässlichere Sortier-Achse: der epoch im Feed weicht
- * nachweislich von Googles eigener Anzeige ab (Feed 2026-07-30: „vor 1 Tag"
- * bei epoch 2026-06-15). Fallback: epoch, sonst „uralt".
- */
-export function relativZeitInTagen(zeitText, epochSekunden) {
-  const m = /vor\s+(\d+)\s+(Minute|Stunde|Tag|Woche|Monat|Jahr)/i.exec(
-    zeitText || '',
-  );
-  if (m) {
-    const faktor = {
-      minute: 1 / 1440,
-      stunde: 1 / 24,
-      tag: 1,
-      woche: 7,
-      monat: 30,
-      jahr: 365,
-    }[m[2].toLowerCase()];
-    return parseInt(m[1], 10) * (faktor || 1);
-  }
-  if (typeof epochSekunden === 'number' && epochSekunden > 0) {
-    return Math.max(0, (Date.now() / 1000 - epochSekunden) / 86400);
-  }
-  return 99999;
 }
 
 /**
@@ -131,175 +102,6 @@ export function bildThumbUrl(url, groesse = 112) {
   const schnitt = url.lastIndexOf('=');
   if (schnitt <= url.lastIndexOf('/')) return url; // kein Suffix → nicht anfassen
   return `${url.slice(0, schnitt)}=s${groesse}-c`;
-}
-
-/** Rohantwort der Places-API → normalisiertes {rating,total,source} oder null. */
-export function normalisiereGoogleAntwort(data) {
-  const r = data?.result?.rating;
-  const t = data?.result?.user_ratings_total;
-  if (typeof r !== 'number' || r < 1 || r > 5) return null;
-  return {
-    rating: Math.round(r * 10) / 10, // eine Nachkommastelle wie Google
-    total:
-      typeof t === 'number' && t > 0 ? Math.round(t) : GOOGLE_RATING_FALLBACK.total,
-    source: 'google',
-    reviews: GOOGLE_REVIEWS_FALLBACK, // Places liefert keine sortierbaren Reviews
-    aiSummary: GOOGLE_AI_SUMMARY_FALLBACK,
-  };
-}
-
-/**
- * Rohantwort des Reputon-Feeds → normalisiertes
- * {rating,total,source,reviews[]} oder null. Reviews: nur 5 Sterne, nicht
- * versteckt, mit Text; sortiert neueste zuerst; auf MAX_REVIEWS gedeckelt.
- */
-export function normalisiereReputonAntwort(data) {
-  const b = data?.business?.[0];
-  const r = b?.rating;
-  if (typeof r !== 'number' || r < 1 || r > 5) return null;
-  const sortiert = (Array.isArray(b.reviews) ? b.reviews : [])
-    .filter(
-      (rv) =>
-        rv &&
-        rv.rating === 5 &&
-        !rv.hide &&
-        typeof rv.text === 'string' &&
-        rv.text.trim().length > 0,
-    )
-    .map((rv) => ({
-      id: String(rv.hashId || rv.id || ''),
-      // STABILE GOOGLE-KENNUNG, getrennt von `id` geführt. `id` ist die
-      // Reputon-`hashId` und WANDERT: gemessen 2026-09-20 sprang sie bei
-      // völlig unverändertem Text (1954 Zeichen) von -582554336 auf
-      // -1130994804 — sie hängt nicht nur am Text, sondern auch an der
-      // mitlaufenden Relativzeit („vor 9 Monaten" -> „vor 10 Monaten").
-      // Die Google-`id` blieb dabei gleich und ist zusätzlich
-      // shopübergreifend stabil (DACH/US, gemessen 2026-09-18).
-      // Ein Ausschluss darf deshalb NUR an dieser Kennung hängen.
-      quellId: String(rv.id || ''),
-      name: rv.authorName || 'Google-Nutzer',
-      foto: rv.profilePhotoUrl || '',
-      // KUNDENFOTOS (Feed-Feld `images`) — NICHT mit `foto` verwechseln:
-      // `foto`/profilePhotoUrl ist das Google-PROFILBILD des Verfassers
-      // (37/37 Rezensionen), `bilder`/images sind die vom Kunden GEPOSTETEN
-      // Fotos (gemessen 2026-08-08: 3/37). Das Feld wurde bis hierher gar
-      // nicht durchgereicht — genau deshalb rendert der Slider bisher keine.
-      bilder: Array.isArray(rv.images)
-        ? rv.images
-            .filter((b) => b && typeof b.url === 'string' && b.url)
-            .map((b) => ({url: b.url, thumb: b.thumbnailUrl || b.url}))
-        : [],
-      rating: 5,
-      text: rv.text.trim(),
-      zeitText: rv.relativeTimeDescription || '',
-      alterTage: relativZeitInTagen(rv.relativeTimeDescription, rv.time),
-      zeit: typeof rv.time === 'number' ? rv.time : 0,
-    }))
-    .sort((a, c) => a.alterTage - c.alterTage || c.zeit - a.zeit);
-  // AUSSCHLUSS vor dem Deckel, nie danach: eine ausgeschlossene Rezension
-  // darf keinen der MAX_REVIEWS Plätze verbrauchen, sonst zeigt das Widget
-  // je Ausschluss eine Karte weniger, obwohl der Feed sie hätte.
-  // Die Trefferzahlen wandern nach außen; wer 0 liest, hat einen Eintrag,
-  // der sein Objekt nicht mehr findet (googleReviewsAusschluss.js).
-  const {reviews: sichtbar, treffer: ausschlussTreffer} =
-    wendeAusschlussAn(sortiert);
-  const reviews = sichtbar.slice(0, MAX_REVIEWS);
-  // Fix #1: Googles KI-Zusammenfassung der Rezensionen (business.summary.items)
-  const aiSummary = Array.isArray(b?.summary?.items)
-    ? b.summary.items
-        .map((s) => (typeof s === 'string' ? s.replace(/[;.\s]+$/, '').trim() : ''))
-        .filter(Boolean)
-    : [];
-  return {
-    rating: Math.round(r * 10) / 10,
-    total:
-      typeof b.reviewsNumber === 'number' && b.reviewsNumber > 0
-        ? Math.round(b.reviewsNumber)
-        : GOOGLE_RATING_FALLBACK.total,
-    source: 'reputon',
-    reviews: reviews.length > 0 ? reviews : GOOGLE_REVIEWS_FALLBACK,
-    ausschlussTreffer,
-    aiSummary: aiSummary.length > 0 ? aiSummary : GOOGLE_AI_SUMMARY_FALLBACK,
-  };
-}
-
-async function holeReputon() {
-  const res = await fetch(REPUTON_FEED_URL, {
-    headers: {accept: 'application/json'},
-  });
-  if (!res || !res.ok) return null;
-  return normalisiereReputonAntwort(await res.json());
-}
-
-async function holePlaces(key) {
-  const url =
-    'https://maps.googleapis.com/maps/api/place/details/json' +
-    `?place_id=${encodeURIComponent(GOOGLE_PLACE_ID)}` +
-    '&fields=rating,user_ratings_total&language=de' +
-    `&key=${encodeURIComponent(key)}`;
-  const res = await fetch(url);
-  if (!res || !res.ok) return null;
-  return normalisiereGoogleAntwort(await res.json());
-}
-
-/**
- * Lädt Gesamtbewertung + neueste 5-Sterne-Reviews fail-safe. Wirft NIE
- * (root-Loader darf nicht 500en).
- * @param {any} context Hydrogen-AppLoadContext (mit .env, optional .waitUntil)
- * @returns {Promise<{rating:number,total:number,source:string,reviews:Array}>}
- */
-export async function ladeGoogleRating(context) {
-  const env = context?.env || {};
-  const key = env.GOOGLE_PLACES_API_KEY || env.PUBLIC_GOOGLE_PLACES_API_KEY;
-
-  // Cache-Key ohne Secrets; v2 = neues Payload-Format (mit reviews).
-  const cacheReq = new Request(
-    'https://qpx.internal/google-rating-v2/' + GOOGLE_PLACE_ID,
-  );
-  const hatCaches = typeof caches !== 'undefined';
-
-  try {
-    let cache = null;
-    if (hatCaches) {
-      try {
-        cache = await caches.open('hydrogen');
-        const hit = await cache.match(cacheReq);
-        if (hit) {
-          const j = await hit.json();
-          if (istPlausibel(j)) return j;
-        }
-      } catch {
-        // Cache nicht verfügbar → einfach live abrufen
-      }
-    }
-
-    // Primär Reputon (echte Google-Daten inkl. Reviews, kein Key nötig),
-    // sekundär Places (falls der Key je gesetzt wird), sonst Fallback.
-    let wert = await holeReputon().catch(() => null);
-    if (!istPlausibel(wert) && key) {
-      wert = await holePlaces(key).catch(() => null);
-    }
-    if (!istPlausibel(wert)) return {...GOOGLE_RATING_FALLBACK};
-
-    if (cache) {
-      const store = new Response(JSON.stringify(wert), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': `max-age=${CACHE_TTL_S}`,
-        },
-      });
-      const put = cache.put(cacheReq, store);
-      if (context?.waitUntil) context.waitUntil(put);
-      else await put;
-    }
-    return wert;
-  } catch (fehler) {
-    console.error(
-      '[google-rating-fallback] Abruf fehlgeschlagen:',
-      fehler?.message || fehler,
-    );
-    return {...GOOGLE_RATING_FALLBACK};
-  }
 }
 
 /** Deutsche Komma-Schreibweise „4,8". */
@@ -331,8 +133,9 @@ export function useGoogleRating() {
 
 /**
  * Hook: die neuesten 5-Sterne-Google-Rezensionen aus dem root-Loader
- * (server-gecacht, neueste zuerst). Nie leer: fällt auf den statischen
- * Schnappschuss echter Reviews zurück.
+ * (server-gecacht, neueste zuerst). Bei Feed-Ausfall liefert schon der
+ * Loader den gefilterten Schnappschuss; fehlen root-Daten ganz, ist die
+ * Liste leer (das Widget rendert dann keine Karten).
  * `foto` = Avatar des Verfassers, `bilder` = vom Kunden gepostete Kundenfotos.
  * @returns {{reviews:Array<{id:string,name:string,foto:string,bilder:Array<{url:string,thumb:string}>,rating:number,text:string,zeitText:string}>,url:string}}
  */
@@ -342,10 +145,10 @@ export function useGoogleReviews() {
   const reviews =
     g && Array.isArray(g.reviews) && g.reviews.length > 0
       ? g.reviews
-      : GOOGLE_REVIEWS_FALLBACK;
+      : [];
   const aiSummary =
     g && Array.isArray(g.aiSummary) && g.aiSummary.length > 0
       ? g.aiSummary
-      : GOOGLE_AI_SUMMARY_FALLBACK;
+      : [];
   return {reviews, aiSummary, url: GOOGLE_REVIEWS_URL};
 }

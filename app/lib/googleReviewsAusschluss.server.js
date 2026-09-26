@@ -7,7 +7,7 @@
  * googleReviewsCurated.js trägt sie seit dem 2026-08-01 im Dateikopf
  * („Ironie/Satire … ausgeschlossen", Christian) und hält sie, weil dort ein
  * Mensch 12 Texte von Hand ausgewählt hat. Der zweite Kanal — der
- * server-gecachte Live-Abruf in googleRating.js, den ReputonWidget auf 16
+ * server-gecachte Live-Abruf in googleRating.server.js, den ReputonWidget auf 16
  * Seiten rendert — kannte sie nie: er filterte auf `rating === 5`, `!hide`
  * und „Text nicht leer", und mehr nicht. Beide Kanäle zeigen dieselbe Quelle,
  * nur einer kannte die Regel.
@@ -20,7 +20,7 @@
  * gelobt hat. Ausgeschlossen wird deshalb ein NAMENTLICH BENANNTER Einzelfall
  * nach menschlichem Urteil — nie eine Eigenschaft von Text.
  *
- * SCHLÜSSEL ist `hashId` aus dem Reputon-Feed (in googleRating.js zu `id`
+ * SCHLÜSSEL ist `hashId` aus dem Reputon-Feed (in googleRating.server.js zu `id`
  * normalisiert). Er ist stabil, solange der Verfasser den Text nicht ändert.
  * ÄNDERT ER IHN, PASST DIE ID NICHT MEHR — und der Ausschluss liefe still ins
  * Leere, während der Text wieder ausgeliefert wird. Genau dagegen zählt
@@ -79,7 +79,7 @@ export const GOOGLE_REVIEWS_AUSSCHLUSS = [
       'ausgeschlossen (Dateikopf googleReviewsCurated.js); AI-CEO-Entscheid ' +
       '2026-09-26 (review-Item live-feed-heilungsschilderung-hwg-' +
       'froitzheim-20260920). Aus demselben Grund aus dem Fallback-' +
-      'Schnappschuss googleReviewsFallback.js entfernt.',
+      'Schnappschuss googleReviewsFallback.server.js entfernt.',
     belegtAm: '2026-09-26',
   },
 ];
@@ -87,6 +87,16 @@ export const GOOGLE_REVIEWS_AUSSCHLUSS = [
 /** Nur die stabilen Google-ids, als Menge — für den Filter. */
 export const AUSSCHLUSS_IDS = new Set(
   GOOGLE_REVIEWS_AUSSCHLUSS.map((e) => e.googleId),
+);
+
+/** Anzeigenamen, normalisiert — nur für den Notfall-Schnappschuss (perName). */
+export function nameSchluessel(name) {
+  return typeof name === 'string'
+    ? name.normalize('NFC').replace(/\s+/g, ' ').trim().toLowerCase()
+    : '';
+}
+const AUSSCHLUSS_NAMEN = new Map(
+  GOOGLE_REVIEWS_AUSSCHLUSS.map((e) => [nameSchluessel(e.autor), e.googleId]),
 );
 
 /**
@@ -106,10 +116,19 @@ export const AUSSCHLUSS_IDS = new Set(
  * auch dann, und ein Feld-Ausfall auf der einen Seite macht den Ausschluss
  * nicht still wirkungslos.
  *
- * @param {{id?: string, quellId?: string}[]} reviews normalisierte Rezensionen
+ * NAMENS-ARM (`perName`, 2026-09-26): der statische Notfall-Schnappschuss
+ * (googleReviewsFallback.server.js) trägt nur die wandernde hashId, keine
+ * Google-id — über die Kennung kann er nie treffen. Für ihn vergleicht der
+ * Filter zusätzlich den Anzeigenamen gegen `autor`. Das ist bewusst NUR
+ * dort eingeschaltet: im Live-Feed trägt die Google-id, und ein Namensvetter
+ * soll dort nicht verschwinden. Im Notfall kostet ein Namensvetter eine Karte
+ * — nie wird eine ausgeschlossene zu viel gezeigt.
+ *
+ * @param {{id?: string, quellId?: string, name?: string}[]} reviews normalisierte Rezensionen
+ * @param {{perName?: boolean}} [optionen]
  * @returns {{reviews: {id?: string}[], treffer: Record<string, number>}}
  */
-export function wendeAusschlussAn(reviews) {
+export function wendeAusschlussAn(reviews, {perName = false} = {}) {
   const treffer = {};
   for (const e of GOOGLE_REVIEWS_AUSSCHLUSS) treffer[e.googleId] = 0;
   if (!Array.isArray(reviews)) return {reviews: [], treffer};
@@ -118,7 +137,9 @@ export function wendeAusschlussAn(reviews) {
     const kandidaten = [rv.quellId, rv.id]
       .filter((k) => k != null && String(k) !== '')
       .map(String);
-    const treffer_id = kandidaten.find((k) => AUSSCHLUSS_IDS.has(k));
+    const treffer_id =
+      kandidaten.find((k) => AUSSCHLUSS_IDS.has(k)) ||
+      (perName ? AUSSCHLUSS_NAMEN.get(nameSchluessel(rv.name)) : undefined);
     if (treffer_id) {
       treffer[treffer_id] += 1;
       return false;
