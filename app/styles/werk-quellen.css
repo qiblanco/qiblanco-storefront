@@ -200,7 +200,7 @@
 
    WARUM HIER DIE GOLD-TINTE UND NICHT DER MARKEN-AKZENT: auf dieser Route
    trägt das Gold ausschließlich SCHRIFT (die DOI-Links und der Weg zurück in
-   den Artikel). var(--qb-akzent) (heute #c9a14b) erreicht als Text auf hellem
+   den Artikel). var(--qb-akzent) (bis 26.09.2026 #c9a14b, seither Kauf-Gold #f2bf72) erreicht als Text auf hellem
    Grund keine 4,5:1 — var(--qb-akzent-tinte) (heute #856828) ist genau dafür
    da und steht als `--st-akzent-tinte` schon im Studien-Blatt. Ein zweites Gold nur für das Chrome einzuführen hieße, den
    gemessenen Befund gegen einen Kontrast-Fehler zu tauschen.
@@ -235,7 +235,7 @@ body:has(.qb-qu) video {
    WARUM HIER DIE GOLD-TINTE UND NICHT DER AKZENT WIE IN uebersicht.css: dort
    trägt das Gold keine Schrift, hier schon (91 gemessene Textvorkommen:
    DOI-Links und der Weg zurück in den Artikel). Zwei Töne wären wieder zwei
-   Cluster — und von den beiden ist var(--qb-akzent) (heute #c9a14b) als Text
+   Cluster — und von den beiden ist var(--qb-akzent) (bis 26.09.2026 #c9a14b, seither #f2bf72) als Text
    auf hellem Grund nicht AA-fähig.
    Der Knopf bekommt deshalb WEISSE Schrift: 5,2:1 auf var(--qb-akzent-tinte)
    (heute #856828), geprüft. Dunkle Schrift wäre hier der Fehler (auf dieser

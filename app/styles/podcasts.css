@@ -123,7 +123,7 @@
 }
 .lp-a3 .qbp__start:hover .qbp__knopf,
 .lp-a3 .qbp__start:focus-visible .qbp__knopf {
-  background: var(--a-akzent-tief);
+  background: var(--a-akzent);
   transform: translate(-50%, -50%) scale(1.06);
 }
 
@@ -205,7 +205,7 @@
   font-size: var(--a-fs-base);
   color: var(--a-akzent-tinte);
   text-decoration: none;
-  border-bottom: 1px solid var(--a-akzent);
+  border-bottom: 1px solid var(--a-akzent-tinte);
   padding-bottom: 2px;
 }
 .lp-a3 .qbp__produkt:hover,

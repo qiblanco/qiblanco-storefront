@@ -161,7 +161,7 @@
 }
 
 .ExterneStimmen__yt:focus-visible {
-  outline: 3px solid var(--es-akzent);
+  outline: 3px solid var(--qb-akzent-tinte);
   outline-offset: 3px;
 }
 

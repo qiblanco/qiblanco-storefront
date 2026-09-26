@@ -277,7 +277,7 @@ body:has(.erf) {
   /* Der Shop-Umschalter im Kopf faerbt seine aktive Option mit einer
      18-%-Lasur desselben Fremd-Ockers (#F2BF72) — auch das ist auf dieser
      Route ein zweiter Goldton, nur blass. */
-  --shop-switch-active: rgba(201, 161, 75, 0.18);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
 }
 
 /* EIN Bild-Radius auf dieser Route: das Chrome bringt 4px, 6px, 10px und 20px

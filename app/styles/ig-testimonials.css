@@ -179,7 +179,7 @@
 }
 
 .qb-igt__bahn:focus-visible {
-  outline: 2px solid var(--igt-akzent);
+  outline: 2px solid var(--igt-akzent-tinte);
   outline-offset: 4px;
   border-radius: var(--igt-r1);
 }
@@ -223,7 +223,7 @@ span.qb-igt__flaeche {
 }
 
 .qb-igt__flaeche:focus-visible {
-  outline: 2px solid var(--igt-akzent);
+  outline: 2px solid var(--igt-akzent-tinte);
   outline-offset: 3px;
 }
 
@@ -297,7 +297,7 @@ span.qb-igt__flaeche {
 }
 
 .qb-igt__profil:focus-visible {
-  outline: 2px solid var(--igt-akzent);
+  outline: 2px solid var(--igt-akzent-tinte);
   outline-offset: 2px;
   border-radius: var(--igt-r1);
 }
@@ -336,7 +336,7 @@ span.qb-igt__flaeche {
 }
 
 .qb-igt__pfeil:focus-visible {
-  outline: 2px solid var(--igt-akzent);
+  outline: 2px solid var(--igt-akzent-tinte);
   outline-offset: 2px;
 }
 

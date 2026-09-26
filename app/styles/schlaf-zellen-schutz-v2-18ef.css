@@ -51,7 +51,7 @@
   --v2-muted: #6b665d;
   --v2-muted-hell: rgba(244, 240, 233, 0.72);
   --v2-akzent: var(--qb-akzent);              /* GL-DES-0001 Gold — NUR Handlung/Beweis */
-  --v2-akzent-tief: #b8893a;         /* selber Hue-Cluster (Abstand < 40) */
+  --v2-akzent-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */         /* selber Hue-Cluster (Abstand < 40) */
   --v2-linie: rgba(44, 42, 38, 0.12);
   --v2-linie-hell: rgba(244, 240, 233, 0.2);
 
@@ -181,7 +181,7 @@
   box-shadow: var(--v2-shadow-sm);
   max-width: none;
 }
-.lp-v2 .v2-btn:hover { background: var(--v2-akzent-tief); color: #fff; }
+.lp-v2 .v2-btn:hover { box-shadow: var(--v2-shadow-md); }
 .lp-v2 .v2-btn:focus-visible {
   outline: 2px solid var(--v2-akzent-tief);
   outline-offset: 2px;

@@ -202,13 +202,13 @@
 .uu-link {
   color: var(--uu-text);
   text-decoration: underline;
-  text-decoration-color: var(--uu-akzent);
+  text-decoration-color: var(--qb-akzent-tinte);
   text-underline-offset: 3px;
 }
 .uu-link:hover,
 .uu-link:focus-visible {
-  color: var(--uu-akzent);
-  text-decoration-color: var(--uu-akzent);
+  color: var(--qb-akzent-tinte);
+  text-decoration-color: var(--qb-akzent-tinte);
 }
 .uu-kopf .uu-link { color: var(--uu-text-hell); }
 .uu-kopf .uu-link:hover,

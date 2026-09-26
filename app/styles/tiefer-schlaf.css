@@ -41,7 +41,7 @@
   --ts3-muted: #6b665d;
   --ts3-muted-hell: rgba(244, 240, 233, 0.72);
   --ts3-akzent: var(--qb-akzent);         /* GL-DES-0001 Gold — NUR Handlung/Beweis */
-  --ts3-akzent-tief: #b8893a;    /* Hover / Text-Akzent auf hell */
+  --ts3-akzent-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */    /* Hover / Text-Akzent auf hell */
   --ts3-akzent-tinte: var(--qb-akzent-tinte);  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
        Gleicher Hue/Saettigung wie --ts3-akzent, nur abgedunkelt -> KEIN zweiter Gold-
        ton (Rubrik-Hue-Bin bleibt 1). --ts3-akzent-tief bleibt die FLAECHE
@@ -174,7 +174,7 @@ body:has(.lp-ts3) footer {
   border-radius: var(--ts3-r1) !important;
 }
 .lp-ts3 .lp-vp-btn:hover, .lp-ts3 .btn--primary:hover,
-.lp-ts3 .rd3-trio__kauf:hover { background: var(--ts3-akzent-tief); color: var(--ts3-text); }
+.lp-ts3 .rd3-trio__kauf:hover { box-shadow: var(--ts3-shadow-md); }
 .lp-ts3 .lp-vp-btn:focus-visible, .lp-ts3 .btn--primary:focus-visible,
 .lp-ts3 .rd3-trio__kauf:focus-visible {
   outline: 2px solid var(--ts3-akzent-tief);
@@ -369,7 +369,7 @@ body:has(.lp-ts3) footer {
   box-shadow: var(--ts3-shadow-md);
 }
 .lp-ts3 .rd3-akk-panel__titel { font-family: var(--ts3-font); font-size: var(--ts3-fs-lg); }
-.lp-ts3 .rd3-akk-panel__zahl { color: var(--ts3-akzent); font-size: var(--ts3-fs-xl); }
+.lp-ts3 .rd3-akk-panel__zahl { color: var(--ts3-akzent-tinte); font-size: var(--ts3-fs-xl); }
 .lp-ts3 .rd3-akk-panel__label,
 .lp-ts3 .rd3-akk-panel__text { font-size: var(--ts3-fs-xs); }
 .lp-ts3 .rd3-akk-panel__link {
@@ -613,7 +613,7 @@ body:has(.lp-ts3) .footer img { border-radius: var(--ts3-r1); }
   transition: background 0.15s ease;
 }
 .lp-ts3 .lp-ts3-yt:hover .lp-ts3-yt__play span,
-.lp-ts3 .lp-ts3-yt:focus-visible .lp-ts3-yt__play span { background: var(--ts3-akzent-tief); }
+.lp-ts3 .lp-ts3-yt:focus-visible .lp-ts3-yt__play span { background: var(--ts3-akzent); color: var(--qb-text-auf-akzent); }
 .lp-ts3 .lp-ts3-yt iframe { width: 100%; height: 100%; border: 0; }
 .lp-ts3 .lp-vp-video__tag {
   display: inline-block;

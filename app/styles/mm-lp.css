@@ -49,7 +49,7 @@
   --mm-text-hell: #f4f0e9;
   --mm-text-hell-2: rgba(244, 240, 233, 0.72);
   --mm-gold: var(--qb-akzent);        /* GL-DES-0001 Gold — NUR Handlung/Beweis */
-  --mm-gold-tief: #b8893a;   /* Hover + Text-Akzent auf hell */
+  --mm-gold-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */   /* Hover + Text-Akzent auf hell */
   --mm-gold-tinte: var(--qb-akzent-tinte);  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
        Gleicher Hue/Saettigung wie --mm-gold, nur abgedunkelt -> KEIN zweiter Gold-
        ton (Rubrik-Hue-Bin bleibt 1). --mm-gold-tief bleibt die FLAECHE
@@ -197,7 +197,7 @@ section.mm-bahn--schmal.mm-bahn--dunkel > * { max-width: var(--mm-max-schmal); }
   box-shadow: var(--mm-schatten-1);
   transition: background 0.15s ease;
 }
-.mm-cta:hover { background: var(--mm-gold-tief); color: var(--mm-text); }
+.mm-cta:hover { text-decoration: underline; text-underline-offset: 3px; }
 .mm-cta:focus-visible { outline: 2px solid var(--mm-gold-tief); outline-offset: 2px; }
 .mm-cta--sekundaer {
   background: transparent;

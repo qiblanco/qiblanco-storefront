@@ -141,7 +141,7 @@
 .bew a {
   color: var(--bew-text);
   text-decoration: underline;
-  text-decoration-color: var(--bew-akzent);
+  text-decoration-color: var(--qb-akzent-tinte);
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
 }
@@ -234,7 +234,7 @@
 .bew .bew__block button[aria-expanded] {
   color: var(--bew-text);
   text-decoration: underline;
-  text-decoration-color: var(--bew-akzent);
+  text-decoration-color: var(--qb-akzent-tinte);
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
 }
@@ -306,7 +306,7 @@ body:has(.bew) {
   --color-accent-primary: var(--bew-akzent);
   --rd3-gold: var(--bew-akzent);
   --qb-sterne-gold: var(--bew-akzent);
-  --shop-switch-active: rgba(201, 161, 75, 0.18);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
 }
 
 /* EIN Bild-Radius auf dieser Route — auch für die Bilder aus Kopf und Fuss. */

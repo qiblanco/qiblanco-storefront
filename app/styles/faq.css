@@ -51,7 +51,7 @@
   --f-muted: #6b665d;
   --f-muted-hell: rgba(244, 240, 233, 0.72);
   --f-akzent: var(--qb-akzent);             /* Gold — NUR Handlung/Beweis */
-  --f-akzent-tief: #b8893a;        /* Gold als FLÄCHE (hover/outline) */
+  --f-akzent-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */        /* Gold als FLÄCHE (hover/outline) */
   --f-akzent-tinte: var(--qb-akzent-tinte);       /* Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
         Gleicher Hue, nur abgedunkelt -> KEIN zweiter Goldton, der Hue-Bin
         der Rubrik bleibt 1. Übernommen aus dem 94/100-Rezept. */
@@ -91,7 +91,7 @@ body:has(.faq-a1) footer {
    WARUM ER WIRKUNGSLOS WAR: die konkurrierenden Töne stehen NICHT in
    Custom-Properties, sondern als feste Hex-Werte in den ZAHLUNGSART-LOGOS des
    Footers — #F79E1B (Mastercard, hue 36) und #FBBC04 (Google Pay, hue 45)
-   gegen unseren Akzent var(--qb-akzent) (heute #c9a14b, hue 41). Es sind fremde MARKENZEICHEN. Sie
+   gegen unseren Akzent var(--qb-akzent) (seit 26.09.2026 Kauf-Gold #f2bf72, vorher #c9a14b, hue 41). Es sind fremde MARKENZEICHEN. Sie
    umzufärben wäre kein Design-Fix, sondern eine Verfälschung fremder Logos.
    Der Befund ist damit auf einer Seite mit Footer strukturell nicht
    auflösbar und kein Mangel dieser Seite. */
@@ -181,7 +181,7 @@ body:has(.faq-a1) footer {
 
 .faq-a1 .faq-sprungmarken a:hover,
 .faq-a1 .faq-sprungmarken a:focus-visible {
-  border-bottom-color: var(--f-akzent);
+  border-bottom-color: var(--f-akzent-tinte);
 }
 
 /* ─── Bloecke ────────────────────────────────────────────────────────────── */
@@ -353,7 +353,7 @@ body:has(.faq-a1) footer {
   line-height: 1.4;
   color: var(--f-text);
   text-decoration: underline;
-  text-decoration-color: var(--f-akzent);
+  text-decoration-color: var(--f-akzent-tinte);
   text-decoration-thickness: 2px;
 }
 
@@ -400,8 +400,8 @@ body:has(.faq-a1) footer {
 
 .faq-a1 .faq-weg:hover,
 .faq-a1 .faq-weg:focus-visible {
-  border-color: var(--f-akzent);
-  background: rgba(201, 161, 75, 0.08);
+  border-color: var(--f-akzent-tinte);
+  background: color-mix(in srgb, var(--qb-akzent) 8%, transparent);
   color: var(--f-text-hell);
 }
 
@@ -410,7 +410,7 @@ body:has(.faq-a1) footer {
   margin-bottom: var(--f-s1);
   font-size: var(--f-fs-md);
   font-weight: 600;
-  color: var(--f-akzent);
+  color: var(--f-akzent-tinte);
 }
 
 .faq-a1 .faq-weg span {
