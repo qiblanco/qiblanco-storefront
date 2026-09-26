@@ -212,6 +212,32 @@ function zahlwortCap(n) {
   return ZAHLWORTE_CAP[n] || String(n);
 }
 
+const ZAHLWORTE_KLEIN = ['null', 'eine', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht'];
+
+/**
+ * „vier zellbiologische Untersuchungen und eine Auswertung von Kundenerfahrungen"
+ * aus dem Feld `art` je Studie. Die fünf Arbeiten sind ZWEI Kategorien
+ * (STUDIEN_FAKTENBLATT.md, Christian 2026-07-04): wer sie in einer Zahl als
+ * „zellbiologisch" zusammenfasst, widerspricht dem Text derselben Seite, der
+ * sie trennt. Die Zahlen kommen aus den Daten, nie als Prosa.
+ */
+export function studienArten(studien) {
+  const zahl = (art) => studien.filter((s) => s.art === art).length;
+  const wort = (n) => ZAHLWORTE_KLEIN[n] || String(n);
+  const zell = zahl('in-vitro');
+  const auswertung = zahl('deskriptiv');
+  return [
+    zell
+      ? `${wort(zell)} zellbiologische ${zell === 1 ? 'Untersuchung' : 'Untersuchungen'}`
+      : '',
+    auswertung
+      ? `${wort(auswertung)} ${auswertung === 1 ? 'Auswertung' : 'Auswertungen'} von Kundenerfahrungen`
+      : '',
+  ]
+    .filter(Boolean)
+    .join(' und ');
+}
+
 /** „QiOne® 2 Pro, QiBracelet® und QiHome® Air" — aus den Daten, nach Studienzahl. */
 function produktAufzaehlung(studien) {
   const zahl = new Map();
@@ -267,8 +293,8 @@ export function übersichtSchema(studien, produkte = []) {
         // Anzahl und Produktliste kommen aus den Daten: eine feste Zahl hier war
         // schon einmal die Naht, die beim Ergänzen der fuenften Studie riss.
         description:
-          `${zahlwortCap(studien.length)} zellbiologische Fachpublikationen zu ` +
-          `${produktAufzaehlung(studien)} — je mit Zusammenfassung in Normalsprache, ` +
+          `${zahlwortCap(studien.length)} Fachpublikationen zu ${produktAufzaehlung(studien)}: ` +
+          `${studienArten(studien)}, je mit Zusammenfassung in Normalsprache, ` +
           'deutschem Volltext, Abbildungen und Original-PDF.',
         inLanguage: 'de',
         isPartOf: {'@type': 'WebSite', '@id': `${CANONICAL_ORIGIN}/#website`},

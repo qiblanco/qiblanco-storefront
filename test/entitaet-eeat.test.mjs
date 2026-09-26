@@ -11,7 +11,7 @@ import {
   STAND_ISO,
   standFuer,
 } from '../app/data/redaktionsstand.js';
-import {übersichtSchema, studieSchema} from '../app/lib/studien-schema.js';
+import {studienArten, übersichtSchema, studieSchema} from '../app/lib/studien-schema.js';
 import {ORG_ID} from '../app/lib/entity-schema.js';
 
 /**
@@ -162,4 +162,21 @@ test('der Stand der Über-uns-Seite ist geführt', () => {
     'STAND_ISO muss den gefuehrten Kalendertag tragen',
   );
   assert.match(STAND_ISO, MIT_ZONE);
+});
+
+test('der Hub trennt Zellstudien und Kundenerfahrungs-Auswertung (STUDIEN_FAKTENBLATT)', () => {
+  // Job 20260926-s07-folge-laden-widersprueche-us-und-studien: die Kopfzeile
+  // und die Beschreibung nannten alle Arbeiten „zellbiologisch", der Text
+  // derselben Seite trennt vier Zellstudien und eine Auswertung. Die Zahlen
+  // kommen aus dem Feld `art`, der Test rechnet sie selbst aus dem Bestand.
+  const graph = übersichtSchema(STUDIEN)['@graph'];
+  const text = graph.find((n) => n['@type'] === 'CollectionPage').description;
+  const zell = STUDIEN.filter((s) => s.art === 'in-vitro').length;
+  const rest = STUDIEN.filter((s) => s.art === 'deskriptiv').length;
+  assert.ok(zell > 0 && rest > 0, 'Bestand trägt nicht beide Arten');
+  assert.equal(zell + rest, STUDIEN.length, 'eine Studie ohne bekannte Art');
+  assert.match(text, /zellbiologische Untersuchung/);
+  assert.match(text, /Auswertung(en)? von Kundenerfahrungen/);
+  assert.doesNotMatch(text, /\S+ zellbiologische Fachpublikationen/);
+  assert.equal(studienArten(STUDIEN.filter((s) => s.art === 'in-vitro')).includes('Auswertung'), false);
 });

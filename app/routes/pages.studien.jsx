@@ -1,5 +1,5 @@
 import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
-import {übersichtSchema} from '~/lib/studien-schema';
+import {studienArten, übersichtSchema} from '~/lib/studien-schema';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {
   StudienUebersicht,
@@ -64,8 +64,8 @@ export const meta = () => [
     property: 'og:description',
     content:
       `${zahlwort(STUDIEN.length).replace(/^./, (c) => c.toUpperCase())} ` +
-      'zellbiologische Fachpublikationen zu QiOne® 2 Pro, QiBracelet® und ' +
-      'QiHome® Air — mit Zusammenfassung, deutschem Volltext und Original-PDF.',
+      'Fachpublikationen zu QiOne® 2 Pro, QiBracelet® und QiHome® Air: ' +
+      `${studienArten(STUDIEN)}, mit Zusammenfassung, deutschem Volltext und Original-PDF.`,
   },
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:site_name', content: MARKE},
