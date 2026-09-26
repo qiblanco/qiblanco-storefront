@@ -36,6 +36,7 @@ import {
 } from '~/data/studien';
 import {BEWERTUNGEN_SEITE} from '~/data/bewertungen-seite';
 import {useGoogleRating} from '~/lib/googleRating';
+import {studienArten} from '~/lib/studien-schema';
 import {tagLang} from '~/lib/datum';
 
 /** Bestands-Idiom (reusables/useDragSwipe.js, campaign/SchlafZellenSchutzV3.jsx,
@@ -297,12 +298,15 @@ export function StudienUebersicht() {
             <p className="qb-st-kicker">Belege statt Behauptungen</p>
             <h1>Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht</h1>
             <p>
-              {initialCap(anzahl)} zellbiologische Untersuchungen zu{' '}
-              {aufzaehlung(produkte.map((p) => p.name))}, durchgeführt am
-              Institut für zellbiologische Testsysteme von Prof. Dr. Peter C.
-              Dartsch und in Fachjournalen veröffentlicht. Jede Studie finden
-              Sie hier in verständlicher Zusammenfassung, im vollständigen
-              deutschen Text und als englisches Original-PDF.
+              {/* Zwei Kategorien, nicht eine (STUDIEN_FAKTENBLATT.md): die
+                  Kopfzeile nannte alle fünf „zellbiologisch", der Text weiter
+                  unten trennt vier Zellstudien und eine Auswertung. */}
+              {initialCap(anzahl)} Arbeiten zu{' '}
+              {aufzaehlung(produkte.map((p) => p.name))}: {studienArten(STUDIEN)}.
+              Alle stammen vom Institut für zellbiologische Testsysteme von Prof.
+              Dr. Peter C. Dartsch und sind in Fachjournalen veröffentlicht. Jede
+              Studie finden Sie hier in verständlicher Zusammenfassung, im
+              vollständigen deutschen Text und als englisches Original-PDF.
             </p>
           </div>
           <div className="qb-st-hero-bild">
