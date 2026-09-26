@@ -210,7 +210,14 @@ export default function QiMasterVorverkaufRoute() {
 
       <section className="qm-lp__inhalt qm-lp__abschluss">
         <div className="qm-lp__abschluss-inhalt">
-          <a className="qm-lp__knopf" href="/products/qi-master">
+          {/* data-qb-kaufknopf: der einzige Ausgang dieser Seite zählt für
+              KaufknopfChatSignal wie ein Kaufknopf — das Chat-Widget
+              weicht ihm, solange es ihn überdeckt. */}
+          <a
+            className="qm-lp__knopf"
+            href="/products/qi-master"
+            data-qb-kaufknopf=""
+          >
             Zum Qi Master®
           </a>
           <p className="qm-lp__knopf-hinweis">
