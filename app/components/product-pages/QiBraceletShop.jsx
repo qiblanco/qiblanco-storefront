@@ -15,6 +15,7 @@ import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {QiBraceletHeroBullets} from '~/components/product-pages/QiBraceletHeroBullets';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {
   StarRating,
   SterneSprung,
@@ -151,6 +152,10 @@ function BenefitList() {
   return (
     <div className="BenefitList">
       <ul>
+        {/* Rücknahme, Raten und der Weg zu den Bewertungen OBEN in der Liste,
+            also direkt unter dem Kaufknopf (Job 20260926-growth-kaufweg-
+            vertrauen-dach, Begründung in reusables/KaufZusage.jsx). */}
+        <KaufZusagePunkte />
         <li>
           <svg
             xmlns="http://www.w3.org/2000/svg"
