@@ -284,6 +284,21 @@ export default async function handleRequest(
     ],
     connectSrc: [
       "'self'",
+      /*
+       * data: — entschieden 2026-09-26 (Job 20260923-csp-neue-klasse-
+       * qiblanco-com-connect-src-data). Gemeldet: 3 Blockaden in 6 Tagen
+       * (/pages/schlaf-zellen-schutz, /pages/studien). Den Verursacher
+       * finden wir nicht: 0 fetch(data:) in unseren Bundles und in den
+       * Trackern, ein Chromium mit Einwilligung löst die Meldung nicht aus.
+       * Geweitet wird trotzdem, weil ein fetch/XHR auf eine data:-URL den
+       * Browser nie verlässt. Er liest nur Bytes, die schon auf der Seite
+       * stehen, und erreicht keinen Server. Damit gibt es keinen
+       * Exfiltrationsweg und keinen neuen Drittanbieter (anders als bei
+       * fonts.bunny.net unten in styleSrc). img-src und font-src tragen
+       * data: bereits. Blockiert blieb nur eine unbekannte Funktion auf
+       * der wichtigsten Anzeigen-Landingpage.
+       */
+      'data:',
       'https://monorail-edge.shopifysvc.com',
       // Shopify-eigene Telemetrie (OpenTelemetry-Kollektor). GLEICHE
       // REGISTRIERBARE DOMAIN wie monorail-edge daneben, also derselbe
