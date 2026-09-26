@@ -3,8 +3,9 @@
  * das obere „Beeindruckende Kundenerfahrungen"-Widget (Christian 2026-08-01).
  * Texte WORTWÖRTLICH aus dem echten Reputon-Google-Feed (Profil Qi Blanco),
  * nichts erfunden/gefälscht. Menschlich kuratiert nach Wirkung; Ironie/Satire,
- * Service-Einzeiler und explizite Krankheits-Heilungsversprechen ausgeschlossen
- * (letztere als Option unten). datum (ISO) → LIVE-Relativzeit (self-updating).
+ * Service-Einzeiler und Heilungsschilderungen ausgeschlossen (auch nicht als
+ * Option in dieser Client-Datei, Job 20260926-rezensionen-curated-optional-
+ * heilungsschilderungen-raus). datum (ISO) → LIVE-Relativzeit (self-updating).
  * Reihenfolge = Anzeigereihenfolge (sortier-/pflegbar).
  *
  * `bilder` = vom Kunden bei Google GEPOSTETE Fotos (Feed-Feld `images`),
@@ -142,26 +143,5 @@ export const GOOGLE_REVIEWS_CURATED = [
     "rating": 5,
     "text": "Seit ich den QiOne®2Pro trage, habe ich mehr Klarheit bei Entscheidungen und fühle mich selbstsicherer. Ich möchte ihn nicht mehr missen.",
     "datum": "2025-12-04"
-  }
-];
-
-// OPTIONAL — sehr eindrucksvoll, aber explizite Krankheits-/Heilungsaussagen
-// (rechtliche Abwägung). NUR nach Freigabe oben einreihen.
-export const GOOGLE_REVIEWS_CURATED_OPTIONAL = [
-  {
-    "id": "-1883267151",
-    "name": "Christian Froitzheim",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjXkVsixJ0Cndm0wn9lxYbWEyvhZCBhgOjMI_JaRluHS_ScyQMZD=s120-c-rp-mo-br100",
-    "rating": 5,
-    "text": "Absolute Empfehlung!\nChristian und Anna sind solche Herzensmenschen und ich bin Ihnen auf ewig dankbar für den Qi One 2 Pro, der mein Lebensretter war und den ich nie wieder ablegen werde.\nIch war seit vielen, vielen Jahren sehr schwer krank. Habe einen Ärztemarathon durchlaufen und aufgrund vieler verschiedener Diagnosen unendlich viele Therapien ausprobiert, doch nichts half wirklich. Bis am Ende ein Gehirntumor feststand und auch ich so verzweifelt war, dass ich ebenfalls glaubte, mein Körper wird sterben. Mein aller letzter Versuch, sagte ich zu meiner Familie, ist nun der Qi One 2 Pro. Und er holte mich zurück in mein Leben, in mein wahres Leben. Ich kam endlich zu mir selbst, wurde mir meiner Selbst bewusst. Endlich bin ich die, die ich wirklich bin und nicht die, die ich dachte, die ich bin. Seitdem durchlaufe ich viele innere Prozesse auf allen Ebenen, die bis dahin blockiert waren. Mein Leben hat sich vollkommen geändert und zwar endlich so wie es zu mir passt. Durch die nachgewiesenen Wirkungen auf die Zellen, regeneriert sich mein Körper im schnellsten Modus. Meine Heilung begann so plötzlich so schnell, dass ich vollkommen überrascht war. Mein Körper ist fast wieder komplett gesund, alle Diagnosen sind Vergangenheit. Die große wahre Heilung bedeutet, sich seiner Selbst bewusst zu werden und einfach man Selbst zu sein, auch wenn der Weg dahin nicht immer leicht ist. Der Qi One hat mich genau dorthin zu mir selbst geführt und meinen Körper in dem Wandel und der Regeneration optimal unterstützt. Der Qi One hat mich zur Bewusstheit, zur absoluten Klarheit und zur Liebe geführt.\nIch bin Euch auf ewig dankbar für den Qi One 2 Pro und kann ihn jedem, egal ob gesundheitliche Probleme vorliegen oder nicht, aus tiefstem Herzen empfehlen!\nIn Liebe und ewiger Dankbarkeit, Eure Nina!",
-    "datum": "2026-07-25"
-  },
-  {
-    "id": "-1177122222",
-    "name": "Hope Freeman",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjXyclvFna1Q3ga_h_w8m4yqu9QSxGn_Fmv8E6MgaTteZgQFkcs=s120-c-rp-mo-br100",
-    "rating": 5,
-    "text": "Very happy with my Qi Blanco necklace I\nWear it everyday and I notice a difference emotionally and physically. I am currently a breast cancer patient and I know the Qi Blanco is making a difference in my healing journey .\nA friend, who is an advocate nurse for cancer patients recommended this for me. I am very grateful.",
-    "datum": "2025-11-04"
   }
 ];
