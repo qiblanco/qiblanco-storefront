@@ -60,7 +60,11 @@ export default {
       }
 
       if (appLoadContext.session.isPending) {
-        response.headers.set(
+        // append, nicht set: seit Hydrogen 2026.4 haengt createRequestHandler
+        // die Set-Cookie-Zeilen der Storefront-API-Unterabfragen (server-
+        // gesetzte _shopify_*-Cookies) an die Dokument-Antwort. `set` wuerde
+        // sie beim Session-Commit still ueberschreiben.
+        response.headers.append(
           'Set-Cookie',
           await appLoadContext.session.commit(),
         );
