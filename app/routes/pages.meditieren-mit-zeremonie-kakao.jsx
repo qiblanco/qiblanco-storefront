@@ -13,7 +13,12 @@ export function links() {
 }
 
 export const meta = ({data}) => {
-  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
+  // TITEL (2026-09-26, AI-CEO-Entscheid seo:entscheidung:vorlage-titel-und-
+  // beschreibungen-dach-20260908): 30-65 Zeichen, weil die Suchergebnis-Zeile
+  // darunter Flaeche verschenkt und darueber abschneidet. Aussage vorn, Marke
+  // hinten, keine Kurs-Nummerierung und keine Minutenangabe: beides sagt dem
+  // Suchenden nicht, was er auf der Seite bekommt.
+  const titel = 'Mit Zeremonie-Kakao meditieren: fünf Minuten genügen | Qi Blanco';
   return [
     {title: titel},
     ...beschreibungTags('/pages/meditieren-mit-zeremonie-kakao', data?.page?.seo?.description),
