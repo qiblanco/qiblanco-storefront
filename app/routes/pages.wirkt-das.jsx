@@ -6,6 +6,7 @@ import mmStyles from '~/styles/mm-lp.css?url';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {isoMitZone} from '~/lib/datum';
+import {anzahlNachArt, zahlwort} from '~/data/studien';
 
 /**
  * /pages/wirkt-das — Antwort auf den größten Einwand des Bestands
@@ -121,6 +122,8 @@ function faqSchema() {
   return schema;
 }
 
+const gross = (w) => w.charAt(0).toUpperCase() + w.slice(1);
+
 /** @type {MetaFunction} */
 export const meta = () => {
   const schema = faqSchema();
@@ -129,7 +132,9 @@ export const meta = () => {
     {
       name: 'description',
       content:
-        'Fünf Zellstudien, ein Labor, klare Grenzen: was bei Qi Blanco im Labor gemessen wurde, was daraus folgt und was ausdrücklich nicht. Zum Selbstnachlesen.',
+        // Zahlen aus dem Feld `art`: nur die In-vitro-Arbeiten sind Zellstudien,
+        // die fünfte wertet Kundenerfahrungen aus („Fünf Zellstudien" war falsch).
+        `${gross(zahlwort(anzahlNachArt('in-vitro')))} Zellstudien und ${zahlwort(anzahlNachArt('deskriptiv'))} Auswertung von Kundenerfahrungen, ein Labor, klare Grenzen: was gemessen wurde, was daraus folgt und was nicht. Zum Selbstnachlesen.`,
     },
     noindexMeta(),
     ...(schema ? [{'script:ld+json': schema}] : []),

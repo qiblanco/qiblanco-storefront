@@ -1,5 +1,6 @@
 import {bilder, stufen, wasserstruktur} from '~/data/kohaerente-wasserstruktur';
 import {VIDEO, TEIL_EINFACH, TEIL_FAKTEN} from '~/data/wasser-infoseite';
+import {anzahlNachArt, zahlwort} from '~/data/studien';
 
 /**
  * DIE SEITE „WIE FUNKTIONIERT DER GITTERCHIP IM QIONE?“: jeder Satz und jede
@@ -47,16 +48,24 @@ export function infoGrafik(typ) {
   return null;
 }
 
+/**
+ * Zellstudien sind nur die Arbeiten mit `art: 'in-vitro'`. Die fünfte
+ * Publikation wertet Kundenerfahrungen deskriptiv aus und hat keine Zellen
+ * gemessen; „fünf Zellstudien" war deshalb falsch (Job
+ * 20260926-studien-zahlwort-probe-und-vorlage-7028, wie PR #660/#661).
+ */
+const ZELLSTUDIEN = zahlwort(anzahlNachArt('in-vitro'));
+
 export const SEITE = {
   pfad: PFAD,
   titel: 'Wie funktioniert der GitterChip im QiOne? | Qi Blanco',
   beschreibung:
-    'Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser. Stufe für Stufe erklärt nach Dr. Warnke, Prof. Del Giudice und Prof. Dr. Pollack, mit fünf Zellstudien.',
+    `Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser. Stufe für Stufe erklärt nach Dr. Warnke, Prof. Del Giudice und Prof. Dr. Pollack, mit ${ZELLSTUDIEN} Zellstudien.`,
   dachzeile: 'QiOne® 2 Pro · GitterChip™',
   h1: 'Wie funktioniert der GitterChip im QiOne?',
   kurz: [
     'Der GitterChip bringt Ordnung ins Wasser. Sein statisches Feld regt Wassermoleküle an, in einen geordneten, energiereichen Zustand zu wechseln.',
-    'So leiten wir es aus der Forschung von Dr. Ulrich Warnke, Prof. Emilio Del Giudice und Prof. Dr. Gerald Pollack ab. In fünf international publizierten Studien hat die GitterChip-Technik an Zellen im Labor deutlich gewirkt.',
+    `So leiten wir es aus der Forschung von Dr. Ulrich Warnke, Prof. Emilio Del Giudice und Prof. Dr. Gerald Pollack ab. In ${ZELLSTUDIEN} international publizierten Studien hat die GitterChip-Technik an Zellen im Labor deutlich gewirkt.`,
   ],
   inhaltTitel: 'In sieben Stufen erklärt',
   kopfGrafik: {
@@ -162,7 +171,7 @@ export const STUFEN = [
       'Aus diesen drei Forschungslinien leiten wir ab, wie der GitterChip wirkt. Sein statisches Feld regt Wassermoleküle an, in den geordneten Zustand zu wechseln, den Dr. Warnke beschreibt.',
       'Die Moleküle finden in den Gleichtakt der Domänen nach Prof. Del Giudice. Wo dieses Wasser auf eine Oberfläche trifft, wächst die stabile Schicht, die Prof. Dr. Pollack gemessen hat.',
       'Jede Zelle ist eine solche Oberfläche. Sie ist von Wasser umgeben und besteht selbst zum größten Teil daraus. So entsteht die Kette, die der QiOne® 2 Pro anstößt: Feld, geordnetes Wasser, Zelle.',
-      'Wie deutlich Zellen darauf reagieren, hat Prof. Dr. Peter C. Dartsch in fünf Studien gemessen.',
+      `Wie deutlich Zellen darauf reagieren, hat Prof. Dr. Peter C. Dartsch in ${ZELLSTUDIEN} Studien gemessen.`,
     ],
     grafik: {
       typ: 'kette',
