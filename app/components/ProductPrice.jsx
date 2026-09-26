@@ -1,4 +1,4 @@
-import {anzeigeSatz, formatPreis} from '~/lib/markt-pricing';
+import {anzeigeSatz, formatPreis, ganzEuroAnzeige} from '~/lib/markt-pricing';
 import {istBrutto} from '~/lib/preismodus';
 import {useMarktLand} from '~/lib/markt-land';
 
@@ -67,10 +67,14 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     if (!money) return null;
     const numericAmount = Number.parseFloat(money.amount);
     if (!Number.isFinite(numericAmount)) return null;
-    // Warenkorb-Kanon (cart-display-pricing: Math.round) — ceil zeigte
-    // 1.088 statt offiziell 1.087 bei netto 913,45 (QiOne 2 Pro).
+    // Ganz-Euro-Regel je Land (markt-pricing.js, ganzEuroAnzeige): in DE
+    // kaufmännisch gerundet -- ceil zeigte dort 1.088 statt offiziell 1.087
+    // bei netto 913,45 (QiOne 2 Pro) --, in jedem anderen Land aufgerundet,
+    // damit die Seite nie weniger nennt, als die Kasse nimmt (AT 2026-09-26).
     const roh = numericAmount * (1 + satzFuer(money));
-    const amount = centGenau ? Math.round(roh * 100) / 100 : Math.round(roh);
+    const amount = centGenau
+      ? Math.round(roh * 100) / 100
+      : ganzEuroAnzeige(roh, marktLand);
     return {...money, amount};
   };
 

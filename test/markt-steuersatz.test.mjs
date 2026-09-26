@@ -38,7 +38,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, readdirSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 
-import {anzeigeSatz, bruttoAnzeige} from '../app/lib/markt-pricing.js';
+import {anzeigeSatz, bruttoAnzeige, ganzEuroAnzeige} from '../app/lib/markt-pricing.js';
 import {
   taxRateForHandle,
   getCartLineGrossDisplayTotalExact,
@@ -52,13 +52,16 @@ import {
    als gewuenschtes Ergebnis. */
 const FAELLE = [
   // handle,               netto,      land, Steuer der Kasse, erwartete Anzeige
+  // AT seit 2026-09-26 AUFgerundet (markt-pricing.js, ganzEuroAnzeige; Job
+  // 20260926-at-kakao-einzelpackung-78-beworben-kasse-78-13-beide-laeden):
+  // 1096 / 78 / 6814 lagen je unter der Kasse (1096,14 / 78,13 / 6814,24).
   ['qione-2-pro',          '913.45',   'DE', '173.56', 1087],
-  ['qione-2-pro',          '913.45',   'AT', '182.69', 1096],
+  ['qione-2-pro',          '913.45',   'AT', '182.69', 1097],
   ['crystal-cacao-awake',  '71.03',    'DE', '4.97',     76],
-  ['crystal-cacao-awake',  '71.03',    'AT', '7.10',     78],
+  ['crystal-cacao-awake',  '71.03',    'AT', '7.10',     79],
   // Der Anlassfall: Netto des Fundament-Pakets nach Rabatt.
   ['qione-2-pro',          '5678.53',  'DE', '1078.92', 6757],
-  ['qione-2-pro',          '5678.53',  'AT', '1135.71', 6814],
+  ['qione-2-pro',          '5678.53',  'AT', '1135.71', 6815],
 ];
 
 test('(A) die Anzeige trifft den Betrag, den die Kasse belastet -- je Markt', () => {
@@ -340,4 +343,41 @@ test('(C) jeder produktMeta-Aufruf nennt sein Markt-Land', () => {
   }
   assert.ok(gefunden >= 5, `nur ${gefunden} produktMeta-Aufrufe gefunden`);
   assert.deepEqual(blind, [], `produktMeta ohne Markt-Land: ${blind.join(', ')}`);
+});
+
+/* GANZ-EURO-REGEL JE LAND (Job 20260926-at-kakao-einzelpackung-78-beworben-
+   kasse-78-13-beide-laeden): in AT nannte die Kakao-Kaufseite 78 für eine
+   Packung, die Kasse nahm 78,13. Zwei Hälften, beide Pflicht: AT rundet AUF
+   (nie unter der Kasse), DE bleibt kaufmännisch (sonst QiOne 1.088 statt 1.087
+   und Kakao-Staffel 3x 54 statt 53). */
+test('AT: aufgerundet, nie unter der Kasse', () => {
+  // [netto, Satz, Kasse (Cent), erwartete Anzeige]
+  const faelle = [
+    [71.03, 0.1, 78.13, 79], // Kakao 1x
+    [(71.03 * 2 - 28.04) / 2, 0.1, 62.71, 63], // Kasse je Packung 2x
+    [913.45, 0.2, 1096.14, 1097], // QiOne 2 Pro
+  ];
+  for (const [netto, satz, kasse, soll] of faelle) {
+    const ist = ganzEuroAnzeige(netto * (1 + satz), 'AT');
+    assert.equal(ist, soll, `${netto} x ${1 + satz}`);
+    assert.ok(ist >= kasse, `${ist} < Kasse ${kasse}`);
+  }
+  assert.equal(bruttoAnzeige('71.03', 'crystal-cacao-awake', 'EUR', 'AT'), 79);
+});
+
+test('glatter Betrag bleibt glatt, auch aufgerundet', () => {
+  // 71,03 x 1,07 = 76,0021 -- auf Cent 76,00, also 76 und nicht 77
+  assert.equal(ganzEuroAnzeige(71.03 * 1.07, 'AT'), 76);
+  assert.equal(ganzEuroAnzeige(71, 'CH'), 71);
+  assert.equal(ganzEuroAnzeige(99, 'US'), 99);
+});
+
+test('DE bleibt kaufmännisch gerundet (Gegenrichtung)', () => {
+  assert.equal(ganzEuroAnzeige(913.45 * 1.19, 'DE'), 1087);
+  assert.equal(ganzEuroAnzeige((71.03 - 21.3) * 1.07, 'DE'), 53);
+  assert.equal(ganzEuroAnzeige(71.03 * 1.07, 'DE'), 76);
+  // ohne Land = DE (fail-closed wie taxRateForHandle)
+  assert.equal(ganzEuroAnzeige(913.45 * 1.19), 1087);
+  assert.equal(bruttoAnzeige('71.03', 'crystal-cacao-awake', 'EUR', 'DE'), 76);
+  assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR'), 1087);
 });
