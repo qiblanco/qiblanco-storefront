@@ -2,6 +2,23 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useDragSwipe } from "../reusables/useDragSwipe";
 import { StandardSlider } from "../reusables/StandardSlider";
 
+// KARTENBILDER (Job 20260926-infoslider-hintergrundbilder-zu-klein-und-
+// probenblind): Die Karte ist ein CSS-Hintergrund (cover) auf 400x500,
+// geöffnet auf 800x500. Bei DPR 2 braucht sie also mindestens 1600 px
+// Breite und 1000 px Höhe. Ein CSS-Hintergrund hat kein srcset, deshalb
+// liefert das CDN (&width=1800) genau eine passende Stufe statt des
+// 2400er-Masters.
+const BILD = {
+    // gleicher Ausschnitt wie 2024-06-qiblanco-bali-06825.webp (1192 px),
+    // neu aus dem Original bildmaterial/bali-couple-2024/raw
+    schlaf: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-infoslider--infoslider-erholsame-naechte-bali-06825--2f21555b63e2.webp?v=1790389248&width=1800",
+    // gleicher Ausschnitt wie 2024-06-qiblanco-bali-05984.webp (940 px)
+    kopf: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971&width=1800",
+    // ersetzt 2023-06-qiblanco-kitzbuehel-10.webp (668x350, ohne größeres
+    // Original): zwei Handgelenke mit QiBracelet, Canggu 2025, 3500 px
+    fokus: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2025-05-qiblanco-canggu-06482.jpg?v=1752531662&width=1800",
+};
+
 export function InfoSlider({dataSection}){
     const cardCount = 5;
     const maxSlideIndex = cardCount - 1;
@@ -77,7 +94,7 @@ export function InfoSlider({dataSection}){
                     title={<h3>Erholsame Nächte</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216c88.68 0 166.73-51.57 200-128c-26.39 11.49-57.38 16-88 16c-119.29 0-216-96.71-216-216"></path></svg> Erholsame Nächte</p>}
                     description="Mit seinem einzigartigen Ansatz unterstützt der QiOne® 2 Pro die Bildung kohärenter Wasserstrukturen, die von vielen Anwendern als beruhigend und ausgleichend empfunden werden. So kannst du dein Wohlbefinden auf natürliche Weise fördern und dein Lebensumfeld optimieren."
-                    background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06825.webp?v=1737715386"
+                    background={BILD.schlaf}
                     shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="1"
@@ -91,14 +108,14 @@ export function InfoSlider({dataSection}){
                     title={<h3>Mach deinen Kopf frei - und deine Ziele greifbar.</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" d="M12 5a3 3 0 1 0-6 .13a4 4 0 0 0-2.53 5.77a4 4 0 0 0 .56 6.58A4 4 0 1 0 12 18zM12 5a3 3 0 1 1 6 .13a4 4 0 0 1 2.53 5.77a4 4 0 0 1-.56 6.58A4 4 0 1 1 12 18zM15 13a4.5 4.5 0 0 1-3-4a4.5 4.5 0 0 1-3 4"></path></svg>Klarer Kopf</p>}
                     description="Mit seinem einzigartigen GitterChip™ besitzt der QiOne® 2 Pro die Fähigkeit, um äußere Einflüsse wie E-Smog zu reduzieren. Viele Anwender schätzen ihn für seine Vielseitigkeit und das Gefühl, ihn bei jeder Aktivität an ihrer Seite zu haben."
-                    background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250"
+                    background={BILD.kopf}
                     shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="3"
                     title={<h3>Mach Energie zur Grundlage deines Erfolgs</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"></circle><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"></circle><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M12 3v2M12 19v2M3 12h2M19 12h2"></path></svg>Klarer Fokus</p>}
                     description="Durch die Erzeugung eines statischen Feldes unterstützt der QiBracelet® Wasser dabei, seine molekulare Struktur in kohärente Zustände zu überführen. Diese Technologie kann dir ermöglichen, Energie bewusster in deinen Alltag zu integrieren. Zahlreiche Nutzer berichten von einer gesteigerten Vitalität, einem klareren Fokus und einer harmonischeren Lebensweise."
-                    background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023-06-qiblanco-kitzbuehel-10.webp?v=1738529579"
+                    background={BILD.fokus}
                     shouldSuppressClick={shouldSuppressClick}
                     />
                     <InfoSliderCard data-index="4"

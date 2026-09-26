@@ -63,7 +63,7 @@ const PAYPAL_IMG =
 // verifiziert: QiOne2Pro-Anhaenger an duenner Kette getragen — die Sektion
 // heisst "Ein Anhaenger", das Bild MUSS den QiOne zeigen (Christian 2026-07-14).
 const ZELLEN_SZENE_IMG =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250';
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971&width=1600';
 
 /* ───────── Hero (der Zellversuch als Held) ───────── */
 function Hero() {
