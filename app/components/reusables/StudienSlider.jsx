@@ -139,7 +139,7 @@ function flaechenNorm(eckdaten) {
   };
 }
 
-export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
+export function StudienSlider({dataSection, studien = STUDIEN, headline, children}) {
   const trackRef = useRef(null);
   const scrollByCard = (dir) => {
     const track = trackRef.current;
@@ -235,6 +235,13 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline}) {
           );
         })}
       </StandardSlider>
+      {/* EINSCHUB ZWISCHEN KACHELN UND STUDIENZEILE, nur wenn die aufrufende
+          Seite ihn mitgibt (2026-09-26, Job 20260926-vollzug-ai-ceo-entscheide-
+          shop-prio35-s03): die Qi-Master-Seite setzt hier die gemessenen Werte
+          ihrer zwei Studien als Beleg. Ohne children rendert nichts — das
+          Markup von /pages/exclusive-solutions, /pages/qione-2-pro-2x und
+          /products/qione-2-pro bleibt byte-gleich. */}
+      {children}
       <p className="ghx-studien__footnote">
         <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
       </p>

@@ -111,7 +111,45 @@ export default function QiMaster({block = undefined}) {
           dort gehört er hin. Gemessen:
           pruefungen/probe_publizierte_zellstudien.py, Arm `ueberschrift`
           prüft die Überschrift, ausdrücklich nicht die Seite. */}
-      <StudienCards headline="Publizierte Zellstudien zum Gitterchip™" />
+      <StudienCards headline="Publizierte Zellstudien zum Gitterchip™">
+        {/* DIE GEMESSENEN WERTE STEHEN AM ABSCHLUSS, NICHT IM HOOK (AI-CEO-
+            Entscheid 2026-09-26 zu review-Items qimaster-zellwerte-nach-
+            streichung-20260917 und qimaster-isac-nachtrag-20260917, Frage 1;
+            Vollzug Job 20260926-vollzug-ai-ceo-entscheide-shop-prio35-s03).
+
+            Christian hat die Zahlen am 2026-09-17 aus dem Fundament-Absatz
+            (PR #495) und dem 6G-Absatz (PR #489) genommen. Beide Streichungen
+            betrafen Einstiegs- und Deutungstext. Der Haus-Kanon sagt: Beweis
+            ist ein Closer, kein Hook. Deshalb stehen die Werte hier, direkt
+            unter den Studienkacheln, und nirgends sonst auf der Seite.
+
+            WORTLAUT UND ZUORDNUNG SIND NICHT NEU: sie stammen aus dem Stand
+            vor der Streichung (5282c60^, QIMASTER_SECHS_G). [8] ist die
+            Darmepithel-Studie (Applied Cell Biology 9(3), /pages/studie-
+            darmbarriere, TEER), [9] die Immunzell-Studie (Japanese Journal of
+            Medicine 4(1), /pages/studie-immunzellen, 84,7/60,5). Die Marken
+            zeigen auf die Quellenliste im 6G-Abschnitt.
+
+            Optik aus dem Bestand: .qm-sektion__inner (Lesespalte 760 px),
+            .qm-label--beleg (Gold nur auf „Gemessen“). Kein neues CSS.
+            Gemessen: pruefungen/probe_qimaster_zellwerte_im_studienabschnitt.py */}
+        <div className="qm-sektion__inner" data-block="qm-zellwerte">
+          <span className="qm-label qm-label--beleg">Gemessen</span>
+          <p>
+            Darmepithelzellen behielten ihre Barrierefunktion rund zwölfmal
+            besser als ungeschützte Zellen (TEER 1.837 gegenüber 152 Ω·cm²). [8]
+          </p>
+          <p>
+            Menschliche Immunzellen behielten ihre Fähigkeit, Sauerstoffradikale
+            zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts. [9]
+          </p>
+          <p>
+            Beide Male lagen die Zellen vier Stunden lang auf einem sendenden
+            Smartphone mit aktivem WLAN. Geschützt waren sie vom QiOne® 2 Pro,
+            der denselben Gitterchip™ trägt wie dein Qi Master®.
+          </p>
+        </div>
+      </StudienCards>
       {/* DIE FRAGEN STEHEN VOR DEM SCHLUSSAUFRUF, NICHT DAHINTER (Christian
           2026-09-22): bis dahin lag der Fragenblock als letztes Element der
           Seite, also hinter „Werde Teil der Qi Blanco® Revolution!" — gemessen
