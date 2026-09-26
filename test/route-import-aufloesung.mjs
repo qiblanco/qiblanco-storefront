@@ -16,7 +16,7 @@
  * das Paket nicht (`ERR_MODULE_NOT_FOUND`). Die Dateien werden nach dem
  * Import wieder entfernt.
  */
-import {readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {existsSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
@@ -44,10 +44,21 @@ export async function ladeMitAufgeloestenImporten(pfad, marke, wandle = (q) => q
     gesehen.set(datei, url);
     wegwerf.push(ziel);
     const roh = readFileSync(datei, 'utf8');
-    const quelle = (istWurzel ? wandle(roh) : roh).replace(
-      /from '~\/([^']+)'/g,
-      (_, rest) => `from '${aufloesen(join(appDir, `${rest}.js`), false)}'`,
-    );
+    const quelle = (istWurzel ? wandle(roh) : roh)
+      .replace(/from '~\/([^']+)'/g, (_, rest) => {
+        // `~/data/studien` ist ein Verzeichnis mit index.js (Vite loest das
+        // auf, node nicht).
+        const datei = join(appDir, `${rest}.js`);
+        const ziel = existsSync(datei) ? datei : join(appDir, rest, 'index.js');
+        return `from '${aufloesen(ziel, false)}'`;
+      })
+      // Relative JSON-Importe (die Studien-Registry laedt so ihre e000N.json):
+      // die Wegwerf-Datei liegt an der Repo-Wurzel, also absolut machen, und
+      // node verlangt das Import-Attribut, das Vite nicht braucht.
+      .replace(
+        /from '(\.{1,2}\/[^']+\.json)'/g,
+        (_, rel) => `from '${pathToFileURL(join(dirname(datei), rel)).href}' with {type: 'json'}`,
+      );
     writeFileSync(ziel, quelle);
     return url;
   };

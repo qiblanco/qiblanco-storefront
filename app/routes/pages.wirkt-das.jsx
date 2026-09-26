@@ -122,7 +122,7 @@ function faqSchema() {
   return schema;
 }
 
-const gross = (w) => w.charAt(0).toUpperCase() + w.slice(1);
+const satzAnfang = (w) => w.charAt(0).toUpperCase() + w.slice(1);
 
 /** @type {MetaFunction} */
 export const meta = () => {
@@ -134,7 +134,7 @@ export const meta = () => {
       content:
         // Zahlen aus dem Feld `art`: nur die In-vitro-Arbeiten sind Zellstudien,
         // die fünfte wertet Kundenerfahrungen aus („Fünf Zellstudien" war falsch).
-        `${gross(zahlwort(anzahlNachArt('in-vitro')))} Zellstudien und ${zahlwort(anzahlNachArt('deskriptiv'))} Auswertung von Kundenerfahrungen, ein Labor, klare Grenzen: was gemessen wurde, was daraus folgt und was nicht. Zum Selbstnachlesen.`,
+        `${satzAnfang(zahlwort(anzahlNachArt('in-vitro')))} Zellstudien und ${zahlwort(anzahlNachArt('deskriptiv'))} Auswertung von Kundenerfahrungen, ein Labor, klare Grenzen: was gemessen wurde, was daraus folgt und was nicht. Zum Selbstnachlesen.`,
     },
     noindexMeta(),
     ...(schema ? [{'script:ld+json': schema}] : []),
