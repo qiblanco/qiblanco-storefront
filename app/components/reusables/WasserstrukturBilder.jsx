@@ -358,7 +358,7 @@ export function BildDomaene({schwellen, energie}) {
       className="qb-bild"
       viewBox="0 0 280 170"
       role="img"
-      aria-label={`Einzeln schwingende Moleküle ordnen sich zu einem Verband, der bei ${schwellen[0].anzeige} Dichte und ${schwellen[1].anzeige} Abstand auf ${energie.anzeige} arbeitet.`}
+      aria-label={`Einzeln schwingende Moleküle ordnen sich zu einem Verband, der bei ${schwellen.map((s) => `${s.anzeige} ${s.was}`).join(' und ')} auf ${energie.anzeige} arbeitet.`}
       data-wasser-bild="domaene"
     >
       <g className="qb-schwarm qb-schwarm--einzeln">

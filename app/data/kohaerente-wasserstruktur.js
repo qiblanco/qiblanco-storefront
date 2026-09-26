@@ -63,7 +63,9 @@ export const bilder = [
     folge: 'Der Verband arbeitet auf einem eigenen Energieniveau.',
     schwellen: [
       {anzeige: '0,31 g/cm³', was: 'Dichte'},
-      {anzeige: '< 0,3 nm', was: 'Abstand'},
+      // Der Abstand ist seit 26.09.2026 gestrichen (SSoT Teil C, id
+      // abstand_0_3nm): keine Primärquelle, und er widerspricht der Dichte
+      // daneben. Die Naht-Probe führt die Zahl seitdem als verboten.
     ],
     energie: {anzeige: '12,06 eV', was: 'Energieniveau'},
   },
@@ -173,7 +175,7 @@ export const wasserstruktur = {
   },
   // SSoT `quelle_anzeige`, eine Zeile je Werk.
   quelle: [
-    'Warnke, U. (2018): Vortrag Baden-Baden, 3. November 2018, und Bionisches Wasser.',
+    'Warnke, U.: Vortrag Baden-Baden, 3. November 2018, und Bionisches Wasser (2019).',
     'Pollack, G. H. (2013): The Fourth Phase of Water.',
     'Del Giudice, E. u. a. (2015): Fields of the Cell, S. 95–111.',
   ],
