@@ -2,7 +2,7 @@ import {Suspense, useState, useEffect} from 'react';
 import {EuGewaehrleistungsLink} from './EuGewaehrleistungsLabel';
 import {Await, NavLink, Link} from 'react-router';
 // Hub-Seiten-Liste + Begründung: app/lib/hub-seiten.js (SEO-Stufe S5).
-import {HUB_LINKS} from '~/lib/hub-seiten';
+import {themenLinks} from '~/lib/hub-seiten';
 
 const PRODUCT_LINKS = [
   {to: '/products/qione-2-pro', label: 'QiOne® 2 Pro'},
@@ -95,7 +95,13 @@ function FooterTop() {
             zweite Überschrift direkt an der Produktliste. */}
         <p className="footer-heading mt-2">Themen</p>
         <ul>
-          {HUB_LINKS.map(({to, label}) => (
+          {themenLinks(
+            // Was der Fuß schon anderswo führt, steht unter "Themen" nicht
+            // noch einmal (Begründung: themenLinks in app/lib/hub-seiten.js).
+            [...PRODUCT_LINKS, ...INHALT_LINKS, ...NACHLESEN_LINKS, ...LEGAL_LINKS].map(
+              (l) => l.to,
+            ),
+          ).map(({to, label}) => (
             <li key={to}>
               <Link to={to}>{label}</Link>
             </li>

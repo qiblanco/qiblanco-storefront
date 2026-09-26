@@ -34,6 +34,7 @@ import {
   HUB_LINKS,
   hubPfade,
   pruefe_titel_hygiene,
+  themenLinks,
 } from '../app/lib/hub-seiten.js';
 
 const FOOTER = readFileSync(
@@ -57,13 +58,13 @@ test('die L8-Ziele sind enthalten — sie sind der Ausgangsbefund', () => {
 test('die Liste ist im Footer verdrahtet, nicht nur gepflegt', () => {
   assert.match(
     FOOTER,
-    /import\s*\{\s*HUB_LINKS\s*\}\s*from\s*'~\/lib\/hub-seiten'/,
-    'Footer.jsx importiert HUB_LINKS nicht',
+    /import\s*\{\s*themenLinks\s*\}\s*from\s*'~\/lib\/hub-seiten'/,
+    'Footer.jsx importiert themenLinks nicht',
   );
   assert.match(
     FOOTER,
-    /HUB_LINKS\.map\(/,
-    'Footer.jsx rendert HUB_LINKS nicht — die Liste erreicht kein HTML',
+    /themenLinks\([\s\S]*?\)\.map\(/,
+    'Footer.jsx rendert themenLinks nicht — die Liste erreicht kein HTML',
   );
 });
 
@@ -78,13 +79,25 @@ test('jeder Eintrag ist ein absoluter /pages/-Pfad mit Ankertext', () => {
   }
 });
 
-test('keine Dublette gegen die Produktliste des Footers', () => {
+test('keine Dublette im Fuß: jeder Hub steht dort genau einmal', () => {
+  // Seit dem Rebase auf main (2026-09-26) führt der Fuß drei Hubs bereits in
+  // eigenen Zeilen (INHALT_LINKS, NACHLESEN_LINKS, #636). Geprüft wird darum
+  // nicht mehr "kein Hub steht literal im Footer", sondern die Eigenschaft
+  // dahinter: jeder Hub erreicht den Fuß GENAU EINMAL — entweder über eine
+  // bestehende Zeile oder über "Themen", nie über beide.
   for (const to of hubPfade()) {
     const treffer = FOOTER.split(`'${to}'`).length - 1;
     assert.ok(
-      treffer === 0,
-      `${to} steht zusaetzlich literal im Footer — doppelter Link ` +
-        'verwaessert den Ankertext',
+      treffer <= 1,
+      `${to} steht ${treffer}-mal literal im Footer — doppelter Link ` +
+        'verwässert den Ankertext',
+    );
+  }
+  for (const liste of ['PRODUCT_LINKS', 'INHALT_LINKS', 'NACHLESEN_LINKS', 'LEGAL_LINKS']) {
+    assert.match(
+      FOOTER,
+      new RegExp(`themenLinks\\([\\s\\S]*?\\.\\.\\.${liste}[\\s\\S]*?\\)\\.map\\(`),
+      `themenLinks bekommt ${liste} nicht als "schon im Fuß" — Dublette möglich`,
     );
   }
   assert.equal(
@@ -92,6 +105,30 @@ test('keine Dublette gegen die Produktliste des Footers', () => {
     hubPfade().length,
     'ein Pfad steht zweimal in HUB_LINKS',
   );
+});
+
+test('themenLinks lässt genau die schon verlinkten Hubs weg', () => {
+  const liste = [
+    {to: '/pages/a', label: 'A'},
+    {to: '/pages/b', label: 'B'},
+    {to: '/pages/c', label: 'C'},
+  ];
+  assert.deepEqual(
+    themenLinks(['/pages/b', '/pages/x'], liste).map((h) => h.to),
+    ['/pages/a', '/pages/c'],
+  );
+  assert.equal(themenLinks([], liste).length, 3);
+  // Echtbestand: nichts verschwindet ganz — was "Themen" weglässt, steht
+  // literal in einer anderen Zeile des Fußes.
+  const gerendert = new Set(
+    themenLinks(hubPfade().filter((p) => FOOTER.includes(`'${p}'`))).map((h) => h.to),
+  );
+  for (const to of hubPfade()) {
+    assert.ok(
+      gerendert.has(to) || FOOTER.includes(`'${to}'`),
+      `${to} erreicht den Fuß gar nicht`,
+    );
+  }
 });
 
 test('Ankertext trägt echte Umlaute (kundensichtbarer Text)', () => {

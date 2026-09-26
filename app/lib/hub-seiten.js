@@ -99,6 +99,27 @@ export const HUB_LINKS = [
 ];
 
 /**
+ * Die Hub-Seiten, die der Fuß NOCH NICHT an anderer Stelle verlinkt.
+ *
+ * WARUM ES DIESEN FILTER GIBT (Rebase auf main am 2026-09-26, Job
+ * 20260926-altrueckstau-vollzug-ai-ceo-shop-prio35-s05): während PR #200
+ * lag, hat main den Fuß um zwei Link-Zeilen erweitert (INHALT_LINKS mit
+ * /pages/technologie und /pages/crystal-cacao, NACHLESEN_LINKS mit
+ * /pages/studien, #636). Alle sechs Hubs unverändert zu rendern hieße drei
+ * davon doppelt im selben Fuß — genau das, was der Test "keine Dublette"
+ * verbietet. HUB_LINKS bleibt die vollständige Absicht (die Knopfdruck-Probe
+ * misst alle sechs); gerendert wird unter "Themen" nur der Rest.
+ *
+ * @param {string[]} [bereitsImFuss] Pfade, die der Fuß schon anderswo führt.
+ * @param {{to: string}[]} [liste] Ohne Angabe der Echtbestand `HUB_LINKS`.
+ * @returns {{to: string, label: string}[]}
+ */
+export function themenLinks(bereitsImFuss = [], liste = HUB_LINKS) {
+  const schon = new Set(bereitsImFuss);
+  return liste.filter((h) => !schon.has(h.to));
+}
+
+/**
  * Die Pfade der Hub-Seiten — der Prüfgegenstand der Knopfdruck-Probe.
  * @returns {string[]}
  */
