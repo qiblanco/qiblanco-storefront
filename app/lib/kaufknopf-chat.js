@@ -14,7 +14,7 @@
 export const KAUFKNOPF_SELEKTOR = '[data-qb-kaufknopf]';
 
 /** Das Attribut am <html>, auf das die Unterdrückungs-Regel in app.css hängt. */
-export const UEBERDECKUNG_ATTRIBUT = 'data-chat-ueber-kaufknopf';
+export const UEBERDECKUNG_ATTRIBUT = 'data-chat-deckt-kaufknopf';
 
 /** Die id, die der Loader seinem iframe gibt (wie SalesbotWidget.jsx). */
 export const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';

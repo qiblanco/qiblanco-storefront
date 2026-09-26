@@ -24,13 +24,13 @@ const r = (left, top, right, bottom) => ({left, top, right, bottom});
 const KNOPF_1280 = r(701, 715, 1101, 785);
 const RAHMEN_1280 = r(926, 640, 1258, 793);
 
-const lage = (ueber = {}) => ({
+const lage = (abweichung = {}) => ({
   rahmen: RAHMEN_1280,
   knoepfe: [KNOPF_1280],
   fensterHoehe: 800,
   angedockt: false,
   beruehrt: false,
-  ...ueber,
+  ...abweichung,
 });
 
 test('der gemessene Befund: geschlossenes Widget über dem Knopf wird unterdrückt', () => {

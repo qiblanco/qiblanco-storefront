@@ -8,7 +8,7 @@ import {
 } from '~/lib/kaufknopf-chat';
 
 /**
- * CHAT-WIDGET UEBER DEM KAUFKNOPF — DERSELBE LEITSATZ, VIERTER FALL.
+ * CHAT-WIDGET ÜBER DEM KAUFKNOPF — DERSELBE LEITSATZ, VIERTER FALL.
  * Job 20260926-chat-widget-verdeckt-kaufknopf-desktop.
  *
  * Live gemessen am 2026-09-26 (Chromium, Zustimmung gesetzt, Ruhelage 6 s):
@@ -19,7 +19,7 @@ import {
  * dem die Anna-Einladung mit Sprechblase stand. Wer die rechte Knopfhälfte
  * klickte, öffnete den Chat statt den Warenkorb.
  *
- * DIE AUFLOESUNG GEHT NACH UNTEN, wie bei den drei Fällen davor (app.css,
+ * DIE AUFLÖSUNG GEHT NACH UNTEN, wie bei den drei Fällen davor (app.css,
  * Blöcke „CHAT-WIDGET ..."): solange das GESCHLOSSENE Widget einen Kaufknopf
  * überdeckt, wird es nicht dargestellt. Sobald der Kunde weiterscrollt und
  * die Überdeckung endet, steht es wieder da. Der Chat bleibt erreichbar
@@ -33,9 +33,9 @@ import {
  * Media-Query kann sie beantworten — dieselbe Seite auf demselben Fenster
  * ist beim Laden verdeckt und 200 px tiefer frei.
  *
- * DER OFFENE CHAT WIRD NIE UNTERDRUECKT. Der Loader lebt im Seitenkontext
+ * DER OFFENE CHAT WIRD NIE UNTERDRÜCKT. Der Loader lebt im Seitenkontext
  * und verrät seinen Zustand nicht als Attribut; drei beobachtbare Merkmale
- * schliessen die Unterdrückung einzeln aus, jedes für sich genügt:
+ * schließen die Unterdrückung einzeln aus, jedes für sich genügt:
  *   (1) `html.qb-chat-docked` — der Loader setzt die Klasse, solange das
  *       Fenster als Spalte angedockt ist (Desktop ab 1024 px). Dann schiebt
  *       er den Shop selbst zur Seite; es gibt keine Überdeckung.
@@ -59,13 +59,13 @@ import {
  * überlebt.
  *
  * DIE NAHT ZU qi-salesbot IST EINSEITIG: die Storefront unterdrückt von
- * aussen (`html[data-chat-ueber-kaufknopf] #qiblanco-salesbot-widget-frame`
+ * außen (`html[data-chat-über-kaufknopf] #qiblanco-salesbot-widget-frame`
  * in app.css). Der Loader setzt `visibility` nicht inline (nachgemessen
  * 2026-09-26 an route.ts). Nebenwirkung, die passt: Annas Auftritt wartet,
  * solange ihre Ecke verdeckt ist (eckeVerdeckt im Loader trifft dann den
  * Kaufknopf statt des Rahmens) — die Blase läuft nicht ungesehen ab.
  *
- * RUECKWEG: <KaufknopfChatSignal /> in root.jsx entfernen, oder die Regel
+ * RÜCKWEG: <KaufknopfChatSignal /> in root.jsx entfernen, oder die Regel
  * in app.css löschen. Ohne das Attribut ist alles wie vor dem Bau.
  */
 
@@ -114,7 +114,7 @@ export function KaufknopfChatSignal() {
       else wurzel.removeAttribute(UEBERDECKUNG_ATTRIBUT);
     };
 
-    // Ein Urteil pro Bild, egal wie viele Ereignisse es anstossen.
+    // Ein Urteil pro Bild, egal wie viele Ereignisse es anstoßen.
     let angefordert = 0;
     const anfordern = () => {
       if (angefordert) return;
@@ -129,7 +129,7 @@ export function KaufknopfChatSignal() {
     /**
      * Klick in den Chat: das Dokument verliert den Fokus an das iframe.
      * `blur` am window ist der einzige Weg, einen Klick in ein
-     * Cross-Origin-iframe von aussen zu bemerken.
+     * Cross-Origin-iframe von außen zu bemerken.
      */
     const beiBlur = () => {
       window.setTimeout(() => {
