@@ -14,6 +14,8 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import produktVideoStyles from '~/styles/produkt-videos.css?url';
+import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /*
@@ -59,6 +61,10 @@ export function links() {
   return [
     {rel: 'stylesheet', href: igStyles},
     {rel: 'stylesheet', href: pdpQiStyles},
+    // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
+    // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*), berührt keinen
+    // Selektor von pdp-qi.css — die Reihenfolge darüber bleibt tragend.
+    {rel: 'stylesheet', href: produktVideoStyles},
   ];
 }
 /**
@@ -153,6 +159,12 @@ export default function Product() {
   return (
     <>
       <QiOneBuyBox
+        /* VIDEOS IM VORSCHAUSTREIFEN (Amazon-Muster, Maßnahme „Produktseite,
+           die verkauft“, Christian 26.09.2026): Zellvideo, Stimme aus dem
+           Podcast, GitterChip-Animation hinter EINER Kachel. Daten und Texte:
+           app/data/produkt-videos.js. Die Kampagnen-Kaufseite
+           /pages/qione-2-pro übergibt diese Prop nicht. */
+        videoKachel={<ProduktVideoKachel handle="qione-2-pro" />}
         /* SPRUNGZIEL DER BEIDEN "#product"-CTAs im Inhalt darunter
            (product-pages/QiOne2Pro.jsx, ctaAnchor-Default). Der Kopfkommentar
            dort fuehrte sie seit der Extraktion als "toter Anker — bleibt dort
