@@ -24,8 +24,19 @@ import {Link, useLocation} from 'react-router';
  * `onKlick` braucht nur das Popup: es liegt als Portal über der Seite, und
  * eine Navigation ohne Schließen ließe es über der neuen Seite stehen.
  *
- * Farbe und Hover sind die des Widgets darüber (ReputonWidget, „Mehr lesen"):
- * derselbe Block, dieselbe Linkform.
+ * DIE LINKFORM IST EINE UNTERSTREICHUNG, UND SIE BRAUCHT DAS `!`:
+ * app/styles/reset.css setzt ungeschichtet `a { color: var(--color-dark);
+ * text-decoration: none }`. Tailwind-Klassen liegen in `@layer` und verlieren
+ * dagegen unabhängig von ihrer Spezifität — die erste Fassung trug
+ * `text-[#1565c0] hover:underline` und stand live dunkelgrau und ohne
+ * Unterstreichung da, also als Wort statt als Weg (gemessen 2026-09-25 am
+ * Popup und an der Startseite). Im Widget darüber wirkt dieselbe Farbklasse
+ * nur, weil dort ein <button> steht. Die Schrift bleibt die dunkle Textfarbe
+ * der Seite; das Link-Signal ist die Linie. Auch die Linienstärke braucht das
+ * `!`: das Kürzel `text-decoration` in reset.css setzt die Dicke mit auf
+ * `auto`, `decoration-2` ohne `!` bliebe im Hover wirkungslos (gemessen am
+ * Computed Style der Vorschau). `underline-offset-4` gehört nicht zum Kürzel
+ * und wirkt ohne `!`.
  */
 export const BEWERTUNGEN_PFAD = '/pages/bewertungen';
 
@@ -38,7 +49,7 @@ export function AlleBewertungenLink({onKlick}) {
         to={BEWERTUNGEN_PFAD}
         prefetch="intent"
         onClick={onKlick}
-        className="text-base font-semibold text-[#1565c0] hover:underline"
+        className="text-base font-semibold underline! underline-offset-4 decoration-1! hover:decoration-2!"
       >
         Alle Bewertungen lesen
       </Link>
