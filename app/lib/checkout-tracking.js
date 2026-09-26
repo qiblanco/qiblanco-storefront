@@ -647,7 +647,7 @@ export function classifyUserAgent(userAgent, {intern = false} = {}) {
   return 'browser';
 }
 
-const WEBVIEW_META_MARKERS = [
+export const WEBVIEW_META_MARKERS = [
   'fban/',
   'fbav/',
   'fb_iab',

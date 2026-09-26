@@ -19,6 +19,7 @@ import {
 } from '~/components/reusables/StarRating';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 
 /*
  * QiHomeAirShop — Campaign-PDP-Komponente fuer die LP-Shopseite
@@ -150,6 +151,13 @@ function BenefitList() {
   return (
     <div className="BenefitList">
       <ul>
+        {/* Rücknahme, Raten und der Weg zu den Bewertungen OBEN in der Liste,
+            also direkt unter dem Kaufknopf (Job 20260926-growth-kaufweg-
+            vertrauen-dach, Begründung in reusables/KaufZusage.jsx).
+            Die Rücknahme OHNE Tageszahl: der Inhalt dieser Seite verspricht
+            weiter unten 30 Tage, AGB und Kopfbanner 20. Der Widerspruch ist
+            gemeldet; eine dritte Stelle mit einer Zahl würde ihn vergrößern. */}
+        <KaufZusagePunkte ruecknahmeTage={null} />
         <li>
           <svg
             xmlns="http://www.w3.org/2000/svg"

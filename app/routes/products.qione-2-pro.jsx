@@ -7,6 +7,7 @@ import QiOne2Pro from '~/components/product-pages/QiOne2Pro';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
@@ -214,7 +215,14 @@ export default function Product() {
            dieser PDP unberührt bleibt: ein neues data-section hätte den
            Design-Rubrik-Collector verschoben. */
         benefitList={
-          <QiOneBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
+          /* Rücknahme, Raten und der Weg zu den Bewertungen stehen seit dem
+             26.09.2026 OBEN in derselben Liste, also direkt unter dem
+             Kaufknopf (Job 20260926-growth-kaufweg-vertrauen-dach, Begründung
+             in reusables/KaufZusage.jsx). */
+          <QiOneBenefitList
+            vorPunkte={<KaufZusagePunkte />}
+            zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
+          />
         }
       />
       {/*
