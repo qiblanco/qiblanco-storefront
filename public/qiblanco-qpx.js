@@ -634,7 +634,7 @@
                               device: snap.device, sections: kern, frust: snap.frust,
                               medien: medSchluessel(snap.medien || []) });
     }
-    function flush(force) {
+    function flush(force, url) {
       if (force) ausstiegAn = 1;
       var snap = snapshot();
       var sig = JSON.stringify(snap);
@@ -646,6 +646,7 @@
       lastKey = key; lastVoll = sig;
       snap.pv_id = PV_ID; snap.seq = seq++;
       if (hiddenUnterdrueckt) snap.hidden_unterdrueckt = hiddenUnterdrueckt;
+      if (url) snap.url = url;
       track("behavior", snap);
     }
 
@@ -835,13 +836,18 @@
       letzterAnker = ""; ausstiegAn = 0;
       MED_T0 = now;
     }
-    var lastPath = w.location.pathname;
+    // Der History-Hook ruft routeChanged() erst NACH dem Original-pushState,
+    // location steht dann schon auf der Folgeseite. Der Abschluss-Flush des
+    // alten Seitenaufrufs bekommt deshalb dessen letzte URL mit, sonst schreibt
+    // der Receiver den Pfad der Folgeseite in seine behavior_page-Zeile.
+    var lastPath = w.location.pathname, lastHref = w.location.href;
     function routeChanged() {
       try {
-        var p = w.location.pathname;
+        var p = w.location.pathname, altHref = lastHref;
+        lastHref = w.location.href;
         if (p === lastPath) return;
         lastPath = p;
-        try { flush(true); } catch (e) {}
+        try { flush(true, altHref); } catch (e) {}
         PV_ID = uuid(); seq = 0; lastKey = ""; lastVoll = ""; hiddenUnterdrueckt = 0;
         scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
         sections = {}; frust = []; lastClick = null;
