@@ -69,6 +69,19 @@ export const GOOGLE_REVIEWS_AUSSCHLUSS = [
       'Verifiziert-Haken liest sie sich als Tatsachenbericht.',
     belegtAm: '2026-09-18',
   },
+  {
+    googleId:
+      'AbFvOqmMxYyt68DNpOEVH3QphP4lh7c9HyT9WsAtqKpVdKoB-pSR25I8g_gYvmRXeRzjYSUjmXxm',
+    autor: 'Christian Froitzheim',
+    grund:
+      "Heilungsschilderung (Gehirntumor, 'Lebensretter'); Kuratier-Regel " +
+      'Christian 2026-08-01, explizite Krankheits-Heilungsversprechen ' +
+      'ausgeschlossen (Dateikopf googleReviewsCurated.js); AI-CEO-Entscheid ' +
+      '2026-09-26 (review-Item live-feed-heilungsschilderung-hwg-' +
+      'froitzheim-20260920). Aus demselben Grund aus dem Fallback-' +
+      'Schnappschuss googleReviewsFallback.js entfernt.',
+    belegtAm: '2026-09-26',
+  },
 ];
 
 /** Nur die stabilen Google-ids, als Menge — für den Filter. */
