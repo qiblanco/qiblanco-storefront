@@ -2,6 +2,7 @@ import {Link} from 'react-router';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {ORGANISATION, ORG_ID, SITE_ID} from '~/lib/entity-schema';
 import {STUDIEN, UEBERSICHT_PFAD} from '~/data/studien';
+import {studienArten} from '~/lib/studien-schema';
 import {STAND_ISO} from '~/data/redaktionsstand';
 import ueberUnsStyles from '~/styles/ueber-uns.css?url';
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
@@ -250,9 +251,14 @@ export default function UeberUns() {
         <div className="uu-innen">
           <h2 className="uu-h2">Worauf wir uns stützen</h2>
           <p className="uu-text">
-            {STUDIEN.length} zellbiologische Fachpublikationen zu unseren
-            Produkten stammen von {PRUEFINSTITUT.autor},{' '}
-            {PRUEFINSTITUT.institut} in {PRUEFINSTITUT.ort}. Wir veröffentlichen
+            {/* Die Bauart kommt aus dem Feld `art`: vier Arbeiten messen an
+                Zellkulturen, eine wertet Kundenerfahrungen deskriptiv aus.
+                „5 zellbiologische Fachpublikationen" war für eine davon falsch
+                (Vorschlag Schaltstelle 7028, vollzogen im Job
+                20260926-s07-folge-laden-widersprueche-us-und-studien). */}
+            {STUDIEN.length} Fachpublikationen zu unseren Produkten stammen von{' '}
+            {PRUEFINSTITUT.autor}, {PRUEFINSTITUT.institut} in{' '}
+            {PRUEFINSTITUT.ort}: {studienArten(STUDIEN)}. Wir veröffentlichen
             sie vollständig: deutsche Fassung, Abbildungen, Original-PDF. Du
             musst uns nicht glauben — du kannst nachlesen.
           </p>

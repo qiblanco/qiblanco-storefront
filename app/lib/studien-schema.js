@@ -215,7 +215,8 @@ function zahlwortCap(n) {
 const ZAHLWORTE_KLEIN = ['null', 'eine', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht'];
 
 /**
- * „vier zellbiologische Untersuchungen und eine Auswertung von Kundenerfahrungen"
+ * „vier zellbiologische Untersuchungen und eine deskriptive Auswertung von
+ * Kundenerfahrungen" (Wortlaut, den probe_studien_bauart_getrennt.py am Rand liest)
  * aus dem Feld `art` je Studie. Die fünf Arbeiten sind ZWEI Kategorien
  * (STUDIEN_FAKTENBLATT.md, Christian 2026-07-04): wer sie in einer Zahl als
  * „zellbiologisch" zusammenfasst, widerspricht dem Text derselben Seite, der
@@ -231,7 +232,7 @@ export function studienArten(studien) {
       ? `${wort(zell)} zellbiologische ${zell === 1 ? 'Untersuchung' : 'Untersuchungen'}`
       : '',
     auswertung
-      ? `${wort(auswertung)} ${auswertung === 1 ? 'Auswertung' : 'Auswertungen'} von Kundenerfahrungen`
+      ? `${wort(auswertung)} ${auswertung === 1 ? 'deskriptive Auswertung' : 'deskriptive Auswertungen'} von Kundenerfahrungen`
       : '',
   ]
     .filter(Boolean)
