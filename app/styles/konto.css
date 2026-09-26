@@ -27,8 +27,8 @@
    unmöglich. Kein :root — es leakt nichts in fremde Routen.
 
    ROLLENTRENNUNG GOLD (nicht vermischen, GL-DES-0001):
-     --k-gold        #c9a14b  Fläche        <- seit 22.09.2026 aus var(--qb-akzent)
-     --k-gold-tief   #b8893a  Hover/Outline    (weiterhin Literal: kein Token)
+     --k-gold        #f2bf72  Fläche        <- aus var(--qb-akzent), seit 26.09.2026 Kauf-Gold (vorher #c9a14b)
+     --k-gold-tief   #856828  Outline          <- seit 26.09.2026 var(--qb-akzent-tinte) (vorher Literal #b8893a)
      --k-gold-tinte  #856828  Gold als SCHRIFT auf hell (AA >= 4.5)
                                             <- seit 22.09.2026 aus var(--qb-akzent-tinte)
    Die WERTE sind unverändert; geändert hat sich nur, woher sie kommen. Die
@@ -70,7 +70,7 @@
   --k-text: #2c2a26;
   --k-text-2: #6b665d;
   --k-gold: var(--qb-akzent);
-  --k-gold-tief: #b8893a;
+  --k-gold-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */
   --k-gold-tinte: var(--qb-akzent-tinte);
   --k-linie: rgba(44, 42, 38, 0.12);
   --k-linie-stark: rgba(44, 42, 38, 0.22);

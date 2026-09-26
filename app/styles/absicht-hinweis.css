@@ -35,7 +35,7 @@
   padding: 24px;
   border-radius: 8px;
   border-left: 3px solid var(--qb-akzent);
-  background: rgba(201, 161, 75, 0.07);
+  background: color-mix(in srgb, var(--qb-akzent) 7%, transparent);
 }
 
 .ab-hinweis-titel {
@@ -58,6 +58,6 @@
 
 .ab-hinweis .ab-link:hover,
 .ab-hinweis .ab-link:focus-visible {
-  color: var(--qb-akzent);
-  text-decoration-color: var(--qb-akzent);
+  color: var(--qb-akzent-tinte);
+  text-decoration-color: var(--qb-akzent-tinte);
 }

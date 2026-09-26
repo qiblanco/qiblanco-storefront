@@ -5959,7 +5959,7 @@ ul.kakao-children li {
 
 /* Gold ausschliesslich auf Handlung/Beweis: die Pfeile sind die Handlung. */
 .ghx-studien__arrow {
-  color: var(--a-akzent, var(--qb-akzent));
+  color: var(--a-akzent-tinte, var(--qb-akzent-tinte));
   transition: border-color 120ms ease, background-color 120ms ease;
 }
 .ghx-studien__arrow:hover { border-color: var(--a-akzent, var(--qb-akzent)); }
@@ -6608,7 +6608,7 @@ html.qb-chat-docked .GoogleRezensionenPopup {
 
 /* Tastaturbedienung sichtbar machen — das <iframe> hatte nie einen Fokusring. */
 .YoutubeIframe--facade:focus-visible {
-  outline: 3px solid var(--qb-akzent);
+  outline: 3px solid var(--qb-akzent-tinte);
   outline-offset: 3px;
 }
 

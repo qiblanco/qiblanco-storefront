@@ -334,8 +334,8 @@ body:has(.ab) video {
 
 .ab-link:hover,
 .ab-link:focus-visible {
-  color: var(--ab-akzent);
-  text-decoration-color: var(--ab-akzent);
+  color: var(--qb-akzent-tinte);
+  text-decoration-color: var(--qb-akzent-tinte);
 }
 
 /* --- Der Verweis-Baustein auf fremden Flächen --------------------------- */

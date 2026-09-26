@@ -162,12 +162,12 @@
        SCHRIFT AUF HELL   --qb-akzent-tinte  (#856828, oben; das Kauf-Gold als
                           Schrift reisst WCAG AA, 1,68:1 auf Weiss)
      Hover braucht KEIN drittes Gold: Schatten, Rahmen oder Unterstreichung.
-     Welche Seite schon auf diesem Gold steht: /pages/schlaf-zellen-schutz
-     (Christian 21.09.: "viel mehr an die Frontseite gehen", PR #555; die Route
-     mappt --qb-akzent in schlaf-zellen-schutz-seite.css hierauf). Ob das ganze
-     Haus folgt und --qb-ref-gold (#c9a14b) damit entfaellt, ist eine
-     Markenfrage und liegt bei Christian (Grossjob 20260923-GROSSJOB-
-     wasserfenster-zweite-runde-drei-stufen-winkel-sichtbar-ein-gold, s04). */
+     Seit 2026-09-26 steht das GANZE HAUS auf diesem Gold: --qb-akzent zeigt
+     unten auf --qb-akzent-kauf (Grossjob 20260926-haus-gold-hausweit-kaufgold-
+     anna-widget-prio35, s02). Entschieden hat der AI-CEO (review-Item
+     grossjob:entscheidung:haus-gold-kaufgold-oder-c9a14b-20260923, Option A);
+     Christians Einspruch sticht jederzeit. --qb-ref-gold (#c9a14b) bleibt oben
+     als Referenz ohne Semantik-Konsument stehen: sie ist der Rueckweg. */
   --qb-ref-gold-kauf: rgb(242, 191, 114);
 
   /* Neutrale Bahn-Flaeche des Fortschrittsbalkens -- app/styles/app.css:2789
@@ -191,7 +191,10 @@
   /* Akzent-Rollen -- GL-DES-0001: "NUR auf Handlung/Beweis", nie
      dekorativ (Regel 5 in startseite.css setzt genau das fuer die
      Startseite bereits durch). */
-  --qb-akzent: var(--qb-ref-gold);
+  /* EIN GOLD im ganzen Haus (2026-09-26): Flaeche/Linie = Kauf-Gold, Schrift und
+     Fokusring auf hell = --qb-akzent-tinte. RUECKWEG in einer Zeile:
+     --qb-akzent wieder auf var(--qb-ref-gold) -- oder hb-deploy revert --sha <merge>. */
+  --qb-akzent: var(--qb-akzent-kauf);
   --qb-akzent-tinte: var(--qb-ref-gold-tinte);
   /* Das EINE Gold fuer Flaeche und Linie (Kauf-Gold, siehe Tier 1). */
   --qb-akzent-kauf: var(--qb-ref-gold-kauf);
@@ -245,6 +248,14 @@
      Kauf-Gold. Fuer /pages/schlaf-zellen-schutz ist die Frage entschieden
      (Kauf-Gold, siehe Tier 1); fuer das Haus nicht -- das ist eine
      Marken-/Kaufweg-Entscheidung, keine Extraktion, und liegt bei Christian.
+     NACHTRAG 2026-09-26: ENTSCHIEDEN. Das Haus steht auf dem Kauf-Gold
+     (--qb-akzent -> --qb-akzent-kauf), goldene Schrift, Link-Kennung und
+     Fokusringe auf hellem Grund auf der Tinte. Entschieden hat der AI-CEO
+     (review-Item grossjob:entscheidung:haus-gold-kaufgold-oder-c9a14b-20260923,
+     Option A), vollzogen von 20260926-haus-gold-hausweit-kaufgold-anna-widget-
+     prio35-s02. Christians Einspruch sticht jederzeit; Rueckweg ist die eine
+     Zeile oben (--qb-akzent wieder auf var(--qb-ref-gold)) oder hb-deploy revert.
+     Die -tief-Literale #b8893a der Seiten-Bausaetze zeigen seither auf die Tinte.
    - OB die design-meister-Rolle "dunkel" (web-soll.yaml: #1a1a1a,
      GL-DES-0001 marke.anthrazit) eine eigene Referenz braucht. Sie steht in
      KEINEM :root-Block der Startseite und wird deshalb hier nicht gezogen

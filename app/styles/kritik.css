@@ -151,7 +151,7 @@
 .krit a {
   color: var(--krit-text);
   text-decoration: underline;
-  text-decoration-color: var(--krit-akzent);
+  text-decoration-color: var(--qb-akzent-tinte);
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
 }
@@ -378,7 +378,7 @@ body:has(.krit) {
   --color-accent-primary: var(--krit-akzent);
   --rd3-gold: var(--krit-akzent);
   --qb-sterne-gold: var(--krit-akzent);
-  --shop-switch-active: rgba(201, 161, 75, 0.18);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
 }
 
 /* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss. */

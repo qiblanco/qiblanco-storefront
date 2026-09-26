@@ -47,7 +47,7 @@
   --st-text-hell: #f4f0e9;
   --st-muted: #6b665d;
   --st-akzent: var(--qb-akzent);
-  --st-akzent-tief: #b8893a;
+  --st-akzent-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */
   --st-akzent-tinte: var(--qb-akzent-tinte); /* Gold als SCHRIFT auf hellem Grund, AA >= 4.5 */
   --st-linie: rgba(44, 42, 38, 0.12);
 
@@ -787,7 +787,7 @@
   text-decoration: none;
   transition: background 0.2s ease;
 }
-.qb-st-btn:hover { background: var(--st-akzent-tief); }
+.qb-st-btn:hover { box-shadow: var(--st-shadow-md); }
 .qb-st-btn-flach {
   background: transparent;
   color: var(--st-akzent-tinte);

@@ -207,7 +207,7 @@
 .frg__karte-link {
   color: var(--frg-text);
   text-decoration: none;
-  border-bottom: 2px solid var(--frg-akzent);
+  border-bottom: 2px solid var(--qb-akzent-tinte);
   padding-bottom: 2px;
 }
 

@@ -46,7 +46,7 @@
   --a-muted: #6b665d;
   --a-muted-hell: rgba(244, 240, 233, 0.72);
   --a-akzent: var(--qb-akzent);               /* GL-DES-0001 Gold — NUR Handlung/Beweis */
-  --a-akzent-tief: #b8893a;
+  --a-akzent-tief: var(--qb-akzent-tinte);  /* Ein Gold (20260926): war #b8893a; Schrift/Linie/Fokus auf hell = Tinte */
   --a-akzent-tinte: var(--qb-akzent-tinte);  /* Gold-TINTE: Gold als SCHRIFT auf hellem Grund (AA >= 4.5).
        Gleicher Hue/Saettigung wie --a-akzent, nur abgedunkelt -> KEIN zweiter Gold-
        ton (Rubrik-Hue-Bin bleibt 1). --a-akzent-tief bleibt die FLAECHE
@@ -167,7 +167,7 @@ body:has(.lp-b3) footer {
   transition: background 0.15s ease;
   box-shadow: var(--a-shadow-sm);
 }
-.lp-b3 .lp-vp-btn:hover { background: var(--a-akzent-tief); color: var(--a-text); }
+.lp-b3 .lp-vp-btn:hover { box-shadow: var(--a-shadow-md); }
 .lp-b3 .lp-vp-btn:focus-visible {
   outline: 2px solid var(--a-akzent-tief);
   outline-offset: 2px;
@@ -532,7 +532,7 @@ body:has(.lp-b3) footer {
   transition: background 0.15s ease;
 }
 .lp-b3 .lp-b-yt:hover .lp-b-yt__play span,
-.lp-b3 .lp-b-yt:focus-visible .lp-b-yt__play span { background: var(--a-akzent-tief); }
+.lp-b3 .lp-b-yt:focus-visible .lp-b-yt__play span { background: var(--a-akzent); color: var(--qb-text-auf-akzent); }
 .lp-b3 .lp-b-yt iframe { width: 100%; height: 100%; border: 0; }
 .lp-b3 .lp-vp-video__tag {
   display: inline-block;

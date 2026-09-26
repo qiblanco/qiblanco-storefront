@@ -168,8 +168,8 @@
 /* HANDLUNG -> Gold. Der einzige Ort neben Hover/Fokus und „Ads aktiv". */
 .ue-anker-eintrag:hover,
 .ue-anker-eintrag:focus-visible {
-  border-color: var(--ue-akzent);
-  color: var(--ue-akzent);
+  border-color: var(--qb-akzent-tinte);
+  color: var(--qb-akzent-tinte);
   outline: none;
 }
 .ue-anker-zahl {
@@ -223,10 +223,10 @@
 }
 .ue-link:hover,
 .ue-link:focus-visible {
-  background: rgba(201, 161, 75, 0.07);   /* derselbe Akzent, nur als Fläche */
+  background: color-mix(in srgb, var(--qb-akzent) 7%, transparent);   /* derselbe Akzent, nur als Fläche */
   outline: none;
 }
-.ue-link:focus-visible { box-shadow: inset 3px 0 0 var(--ue-akzent); }
+.ue-link:focus-visible { box-shadow: inset 3px 0 0 var(--qb-akzent-tinte); }
 
 .ue-pfad {
   font-family: var(--ue-mono);
@@ -263,7 +263,7 @@
 }
 .ue-marker--aktiv {
   border-color: var(--ue-akzent);
-  color: var(--ue-akzent);
+  color: var(--qb-akzent-tinte);
 }
 /* Abweichender Zustand (unfertig/archiviert/ersetzt). BEWUSST KEIN zweiter
    Akzentton und KEIN Rot: die Liste soll das Auffällige zeigen, nicht bewerten —

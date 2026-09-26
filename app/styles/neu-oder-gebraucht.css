@@ -142,7 +142,7 @@
 .nog a {
   color: var(--nog-text);
   text-decoration: underline;
-  text-decoration-color: var(--nog-akzent);
+  text-decoration-color: var(--qb-akzent-tinte);
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
 }
@@ -340,7 +340,7 @@ body:has(.nog) {
   --color-accent-primary: var(--nog-akzent);
   --rd3-gold: var(--nog-akzent);
   --qb-sterne-gold: var(--nog-akzent);
-  --shop-switch-active: rgba(201, 161, 75, 0.18);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
 }
 
 /* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss.

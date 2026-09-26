@@ -317,7 +317,7 @@
 .hyp p a {
   color: var(--hyp-text);
   text-decoration: none;
-  border-bottom: 1px solid var(--hyp-akzent);
+  border-bottom: 1px solid var(--qb-akzent-tinte);
   padding-bottom: 1px;
 }
 
@@ -409,7 +409,7 @@
 
 .hyp__quellenart::before {
   content: '[' counter(quelle) '] ';
-  color: var(--hyp-akzent);
+  color: var(--qb-akzent-tinte);
 }
 
 .hyp__quellenort {
