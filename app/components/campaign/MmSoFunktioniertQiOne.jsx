@@ -45,7 +45,7 @@ const BILD_SCHLAF =
 const BILD_ZELLE =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06550.jpg?v=1738529250';
 const BILD_ESMOG =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250';
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971&width=1600';
 
 const KAUF = '/pages/qione-2-pro?Title=Default+Title';
 

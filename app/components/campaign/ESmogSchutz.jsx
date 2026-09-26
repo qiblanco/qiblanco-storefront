@@ -70,7 +70,7 @@ const PAYPAL_IMG =
 // Kette getragen, Homeoffice-Szene am Laptop — das alt behauptet den QiOne,
 // das Bild MUSS ihn zeigen (F-006-Klasse, bild-guard-Befund 2026-07-14).
 const ALLTAG_SZENE_IMG =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-05984.webp?v=1738529250';
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971&width=1600';
 
 /* ───────── Hero (die unsichtbare Dauerbelastung, ruhig) ───────── */
 function Hero() {
