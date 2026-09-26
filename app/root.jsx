@@ -96,6 +96,7 @@ import {
   setzePreismodus,
 } from '~/lib/preismodus';
 import {DialogSignal} from './components/DialogSignal';
+import {KaufknopfChatSignal} from './components/KaufknopfChatSignal';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -736,6 +737,11 @@ export function Layout({children}) {
             Unterdrueckung muss auch dann greifen, wenn das Widget erst per
             Client-Navigation dazukommt. */}
         <DialogSignal />
+        {/* Setzt `data-chat-ueber-kaufknopf` am <html>, solange das
+            geschlossene Chat-Widget einen Kaufknopf überdeckt (vierter Fall
+            desselben Leitsatzes, Begründung in der Komponente). Ohne
+            Bedingung aus demselben Grund wie DialogSignal. */}
+        <KaufknopfChatSignal />
         <LoadingBar />
         {data ? (
           <Analytics.Provider

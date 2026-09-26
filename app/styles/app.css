@@ -806,6 +806,33 @@ html[data-dialog-offen] #qiblanco-salesbot-widget-frame {
   display: none !important;
 }
 
+/* CHAT-WIDGET UEBER DEM KAUFKNOPF — DERSELBE SATZ, VIERTER FALL.
+ *
+ * Live gemessen am 2026-09-26: auf /products/qione-2-pro trafen bei
+ * 1280x800 nur 12 von 20 Punkten der Knopf-Mittellinie den Kaufknopf, der
+ * Rest das geschlossene Widget mit Annas Sprechblase (1366x768: 13,
+ * 1440x900: 15). Wer rechts klickte, bekam den Chat statt des Warenkorbs.
+ *
+ * Wieder nach unten aufgeloest: solange das GESCHLOSSENE Widget einen
+ * Kaufknopf ueberdeckt, wird es nicht dargestellt. Die Lage misst
+ * components/KaufknopfChatSignal.jsx, weil sie am Scrollstand haengt und
+ * keine Media-Query sie beantworten kann; dort steht auch, warum der offene
+ * Chat nie darunter faellt.
+ *
+ * `visibility` statt `display` wie oben: das Signal misst die Ueberdeckung am
+ * Rechteck des iframe. Ohne Layout-Kasten gaebe es keins, und das Widget kaeme
+ * nach dem Ausblenden nie zurueck. `pointer-events` steht als Guertel dabei:
+ * ein unsichtbares Element darf keinen Klick fangen, auch wenn ein Browser
+ * `visibility` am iframe anders auslegt.
+ *
+ * RUECKWEG: diesen Block loeschen oder <KaufknopfChatSignal /> aus root.jsx
+ * nehmen. Kill-Schalter fuer das ganze Widget bleibt
+ * PUBLIC_SALESBOT_WIDGET_ORIGIN=off. */
+html[data-chat-ueber-kaufknopf] #qiblanco-salesbot-widget-frame {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 .overlay {
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
