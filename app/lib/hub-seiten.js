@@ -84,7 +84,13 @@ export const HUB_LINKS = [
   {to: '/pages/technologie', label: 'Technologie', titel_ok: true},
   {to: '/pages/studien', label: 'Wissenschaftliche Studien', titel_ok: true},
   {to: '/pages/crystal-cacao', label: 'Crystal Cacao®', titel_ok: true},
-  {to: '/pages/superhuman', label: 'Superhuman Videokurs', titel_ok: true},
+  // Ankertext am 2026-09-26 nachgezogen: die Seite heißt seit PR #657
+  // live "Superhuman: der kostenlose Videokurs in fünf Stufen | Qi Blanco".
+  // "Superhuman Videokurs" war darin nicht mehr enthalten, die Naht-Probe
+  // homepage-bauer/pruefungen/probe_hub_ankertext_titel_naht.py wurde rot.
+  // Der Titelanfang "Superhuman: der kostenlose Videokurs" hat 36 Zeichen
+  // und sprengt den 32-Zeichen-Deckel des Tests; es bleibt der Seitenname.
+  {to: '/pages/superhuman', label: 'Superhuman', titel_ok: true},
   {
     to: '/pages/zeremonie-kakao-kurs',
     label: 'Zeremonie Kakao Kurs',
