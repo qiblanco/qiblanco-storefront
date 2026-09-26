@@ -148,7 +148,7 @@ const BAUSTEINE = [
     wozu:
       'Bei Gesundheitsthemen wollen Leserinnen und Leser die Grundlage sehen. Zwei Arten passen: was andere Trägerinnen und Träger berichten, als Erfahrung formuliert, und was im Labor gemessen wurde, als Möglichkeit formuliert und mit Quelle.',
     platzhalter: [
-      '[Welche Studie oder Auswertung möchtest du nennen? Mit Titel der Zeitschrift und Jahr.]',
+      '[Welche Studie oder Auswertung möchtest du anführen? Mit Titel der Zeitschrift und Jahr.]',
       '[Was folgt daraus für dich, und was ist offen?]',
     ],
     muster: [
