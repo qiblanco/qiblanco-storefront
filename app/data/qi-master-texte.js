@@ -42,9 +42,18 @@
  * spätere Streichung nicht. Was auf der Seite noch aus ihr zitiert wird:
  * Dartsch über die ISAC-Quellen [8] und [9], Del Giudice/König/Popp/Pollack
  * über den Diamant-Abschnitt, Warnke namentlich im Absatz „Unsere Deutung“.
- * Die Zahlen 84,7/60,5 und TEER 1.837 stehen auf dieser Seite nicht mehr;
- * sie tragen /pages/studie-darmbarriere, /pages/studie-immunzellen und
- * /pages/studien.
+ * Die Zahlen 84,7/60,5 und TEER 1.837 standen ab diesem Tag nicht mehr auf
+ * dieser Seite; getragen haben sie /pages/studie-darmbarriere,
+ * /pages/studie-immunzellen und /pages/studien.
+ *
+ * STAND SEIT 2026-09-26 (PR #645, eed34a3): die Werte stehen wieder auf der
+ * Seite, und zwar NUR im Abschnitt „Publizierte Zellstudien“ unter den
+ * Studienkacheln (QiMaster.jsx, data-block="qm-zellwerte"), mit den Quellen
+ * [8]/[9] — nicht im Fundament und nicht im 6G-Fließtext. Das ist ein
+ * AI-CEO-Entscheid (review-Item qimaster-zellwerte-nach-streichung-20260917),
+ * keine Rücknahme von Christians Streichung: gestrichen hat er Einstiegs- und
+ * Deutungstext, der Beweis steht am Abschluss. Die Werte hier nicht wieder
+ * entfernen, und sie nicht zurück in diese Datei holen.
  *
  * KEINE Gesundheits-, Heil- oder Wirkungsaussage über das Belegte hinaus.
  * Fremde Autoren werden zitiert, nicht zu Befuerwortern gemacht.
@@ -315,12 +324,18 @@ export const QIMASTER_PERSOENLICHKEIT = {
   // Fundament“, der Gebaut-Absatz, der Gemessen-Absatz mit den
   // Dartsch-Werten, der Warnke-Absatz und die Quellenzeile.
   //
-  // WAS DAMIT VON DER SEITE VERSCHWINDET, und es gehört aufgeschrieben: die
-  // Werte 84,7/60,5 Prozent, „zwölfmal besser“, „Barrierefunktion“ und die
-  // Zeitschriftennamen stehen danach auf dieser Seite nirgends mehr. Die
-  // beiden Zeitschriften kommen über den ISAC-Abschnitt als Quelle [8] und
-  // [9] zurück, die Zahlen nicht. Die Studien selbst tragen weiterhin
-  // /pages/studie-darmbarriere, /pages/studie-immunzellen und /pages/studien.
+  // WAS DAMIT AM 2026-09-17 VON DER SEITE VERSCHWAND, und es gehört
+  // aufgeschrieben: die Werte 84,7/60,5 Prozent, „zwölfmal besser“,
+  // „Barrierefunktion“ und die Zeitschriftennamen standen danach auf dieser
+  // Seite nirgends mehr. Die beiden Zeitschriften kamen über den
+  // ISAC-Abschnitt als Quelle [8] und [9] zurück, die Zahlen damals nicht.
+  // Die Studien selbst tragen weiterhin /pages/studie-darmbarriere,
+  // /pages/studie-immunzellen und /pages/studien.
+  //
+  // STAND SEIT 2026-09-26 (PR #645): die Zahlen stehen wieder auf der Seite,
+  // nur im Abschnitt „Publizierte Zellstudien“ mit den Quellen [8]/[9]
+  // (QiMaster.jsx, data-block="qm-zellwerte"). In diesem Fundament-Block
+  // bleiben sie weg — siehe Kopfkommentar, Absatz „STAND SEIT 2026-09-26“.
   //
   // Orthografisch korrigiert nach der stehenden Erlaubnis, nur Eindeutiges:
   // „Zeitgenössischen Interpretiert“ -> „Zeitgenössisch interpretiert“,
