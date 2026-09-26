@@ -17,6 +17,7 @@ import {
   adIdAusTrackingParams,
   buildAttributionCartAttributes,
 } from '../app/lib/checkout-tracking.js';
+import {rabattlinkZiel} from '../app/lib/discount-ziel.js';
 
 const BASIS = 'https://qiblanco.com';
 const AD = '120250590409220704';
@@ -152,6 +153,11 @@ test('A4-ROT: ad_weiche=aus schaltet auch den Rabattweg ab', async () => {
 // --- A5 DIE NAHT: was die ECHTE Zielroute aus meinem Ziel macht --------------
 // Gemessen wird der QUELLTEXT der Route, nicht ein Nachbau: waechst dort eine
 // Regel dazu, faellt dieser Test — genau das ist der Zweck.
+// Seit #620 (2026-09-24) rechnet die Route ihr Ziel in lib/discount-ziel.js
+// (rabattlinkZiel). Die Importzeilen werden weiter gestrichen, darum reicht der
+// Test die ECHTE Funktion hinein — kein Nachbau, die Naht bleibt Route + Lib.
+// Importiert die Route kuenftig einen weiteren Namen, faellt A5 mit
+// ReferenceError: dann hier nachreichen, nicht nachbauen.
 
 const ROUTE_SRC = readFileSync(new URL('../app/routes/discount.$code.jsx', import.meta.url), 'utf8');
 
@@ -162,9 +168,10 @@ function routenWeiterleitung(zielUrlString) {
     .replace(/export async function loader/, 'async function loader');
   const bauen = new Function(
     'redirect',
+    'rabattlinkZiel',
     `${rumpf}; return loader;`,
   );
-  const loader = bauen((url, init) => ({url, init}));
+  const loader = bauen((url, init) => ({url, init}), rabattlinkZiel);
   const request = new Request(`${BASIS}${zielUrlString}`);
   const code = decodeURIComponent(zielUrlString.split('/discount/')[1].split('?')[0]);
   return loader({

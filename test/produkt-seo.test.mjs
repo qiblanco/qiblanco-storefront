@@ -219,6 +219,21 @@ test('die 301-Route zeremonie-kakao trägt bewusst KEINE Beschreibung', () => {
   assert.equal(PRODUKT_BESCHREIBUNGEN['/products/zeremonie-kakao'], undefined);
 });
 
+/**
+ * Eine reine Code-Weiterleitung rendert keine Seite und hat deshalb keinen
+ * Kopf, an den produktMeta etwas haengen koennte. Erkannt an der EIGENSCHAFT,
+ * nicht am Slug: kein meta-Export UND der Loader leitet per 301 weiter.
+ * Anlass: die Add-on-Routen qi-master-goldkette/-wunschnummer (#615,
+ * 2026-09-24) leiten auf /products/qi-master, live gemessen 2026-09-26 je 301.
+ * Traegt eine Weiterleitungs-Route doch einen meta-Export, greift die
+ * Ausnahme NICHT -- dann rendert sie offenbar etwas und muss verdrahtet sein.
+ */
+function istReineWeiterleitung(inhalt) {
+  const hatMeta = /export\s+(const|function|async\s+function)\s+meta\b/.test(inhalt);
+  const leitet301 = /redirect\([^;]*,\s*301\s*\)/.test(inhalt);
+  return !hatMeta && leitet301;
+}
+
 test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
   // Der Ausgangsbefund war eine Drift zwischen den Routen. Dieser Test
   // findet die vergessene Route, nicht nur die gepflegte.
@@ -230,9 +245,28 @@ test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
     const inhalt = readFileSync(`app/routes/${f}`, 'utf8');
     const slug = f.replace(/^products\./, '').replace(/\.jsx$/, '');
     if (slug === 'zeremonie-kakao') continue; // 301, bewusst außen vor
+    if (istReineWeiterleitung(inhalt)) continue; // rendert nichts, kein Kopf
     if (!inhalt.includes('produktMeta')) fehlend.push(f);
   }
   assert.deepEqual(fehlend, [], `Routen ohne produktMeta: ${fehlend.join(', ')}`);
+});
+
+test('ROT: die Weiterleitungs-Ausnahme verschluckt keine rendernde Route', () => {
+  const weiter = `export async function loader({request}) {
+  throw redirect(\`/products/qi-master\${new URL(request.url).search}\`, 301);
+}
+export default function X() { return null; }`;
+  assert.equal(istReineWeiterleitung(weiter), true, 'reine 301-Route faellt heraus');
+  // Rendernde Route ohne produktMeta: meta-Export vorhanden -> KEINE Ausnahme.
+  const rendernd = `export const meta = () => [{title: 'T'}];
+export async function loader() { if (x) throw redirect('/a', 301); return {}; }`;
+  assert.equal(istReineWeiterleitung(rendernd), false, 'meta-Export schlaegt die Ausnahme');
+  // Rendernde Route ohne meta und ohne 301 (der vergessene Fall) -> KEINE Ausnahme.
+  const vergessen = `export async function loader() { return {}; }
+export default function Y() { return <div />; }`;
+  assert.equal(istReineWeiterleitung(vergessen), false, 'vergessene Route bleibt sichtbar');
+  // 302 ist kein Umzug, sondern ein Umweg -> KEINE Ausnahme.
+  assert.equal(istReineWeiterleitung(weiter.replace('301', '302')), false);
 });
 
 test('jeder verdrahtete Pfad hat auch wirklich einen Text', () => {

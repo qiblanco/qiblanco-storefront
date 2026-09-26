@@ -7,8 +7,12 @@
  *  1. DIE SOLL-MACHART WIRD AUS DER VORLAGE GERECHNET, NICHT HINGESCHRIEBEN.
  *     Christians Anweisung lautet „Farbe und Stil wie unten bei ‚Ein Stück, kein
  *     Serienteil'" -- also ist die VORLAGE der Maßstab, nicht ein Literal in
- *     dieser Datei. Der Test liest die Symbole des Fertigung-Abschnitts aus
+ *     dieser Datei. Der Test liest die Symbole des Vorlage-Abschnitts aus
  *     QiMaster.jsx und leitet daraus ab, was stilkonform heißt.
+ *     Seit #578 (2026-09-22) heißt der Abschnitt AlphaSerie() statt
+ *     Fertigung(): Christian hat Wortlaut und Position getauscht, die vier
+ *     Sinnbilder sind laut QiMaster.jsx „die bestehenden, in derselben
+ *     Reihenfolge". Der Maßstab ist also derselbe, nur sein Ort heißt anders.
  *     Das ist zugleich die POSITIVKONTROLLE, die der Auftrag verlangt: erkennt
  *     der Maßstab die Vorlage nicht als stilkonform, misst er den falschen Ort
  *     und der Test faellt -- statt die neuen Symbole falsch freizusprechen.
@@ -75,9 +79,12 @@ const svgDateien = () =>
  */
 function vorlageMachart() {
   const quelle = readFileSync(QIMASTER_JSX, 'utf8');
-  const ab = quelle.indexOf('function Fertigung(');
-  assert.ok(ab > 0, 'Fertigung() nicht gefunden -- Vorlage-Abschnitt umbenannt?');
-  const abschnitt = quelle.slice(ab);
+  const ab = quelle.indexOf('function AlphaSerie(');
+  assert.ok(ab > 0, 'AlphaSerie() nicht gefunden -- Vorlage-Abschnitt umbenannt?');
+  // Nur der Abschnitt selbst: bis zur naechsten Funktion auf oberster Ebene,
+  // sonst zaehlten Symbole spaeterer Abschnitte zur Vorlage.
+  const ende = quelle.indexOf('\nfunction ', ab + 1);
+  const abschnitt = quelle.slice(ab, ende > ab ? ende : undefined);
   const svgs = abschnitt.match(/<svg[\s\S]*?<\/svg>/g) || [];
   assert.ok(
     svgs.length >= 4,
