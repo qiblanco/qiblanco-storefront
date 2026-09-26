@@ -46,13 +46,13 @@ export async function ladeMitAufgeloestenImporten(pfad, marke, wandle = (q) => q
     const roh = readFileSync(datei, 'utf8');
     const quelle = (istWurzel ? wandle(roh) : roh)
       .replace(/from '~\/([^']+)'/g, (_, rest) => {
-        // `~/data/studien` ist ein Verzeichnis mit index.js (Vite loest das
+        // `~/data/studien` ist ein Verzeichnis mit index.js (Vite löst das
         // auf, node nicht).
         const datei = join(appDir, `${rest}.js`);
         const ziel = existsSync(datei) ? datei : join(appDir, rest, 'index.js');
         return `from '${aufloesen(ziel, false)}'`;
       })
-      // Relative JSON-Importe (die Studien-Registry laedt so ihre e000N.json):
+      // Relative JSON-Importe (die Studien-Registry lädt so ihre e000N.json):
       // die Wegwerf-Datei liegt an der Repo-Wurzel, also absolut machen, und
       // node verlangt das Import-Attribut, das Vite nicht braucht.
       .replace(
