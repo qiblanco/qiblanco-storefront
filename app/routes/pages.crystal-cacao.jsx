@@ -18,7 +18,12 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  const titel = `Crystal Cacao® | Qi Blanco`;
+  // TITEL (2026-09-26, AI-CEO-Entscheid seo:entscheidung:vorlage-titel-und-
+  // beschreibungen-dach-20260908): 30-65 Zeichen, weil die Suchergebnis-Zeile
+  // darunter Flaeche verschenkt und darueber abschneidet. Aussage vorn, Marke
+  // hinten, keine Kurs-Nummerierung und keine Minutenangabe: beides sagt dem
+  // Suchenden nicht, was er auf der Seite bekommt.
+  const titel = 'Crystal Cacao®: Kakao für einen wachen, klaren Kopf | Qi Blanco';
   return [
     {title: titel},
     {

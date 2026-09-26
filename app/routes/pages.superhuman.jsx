@@ -15,17 +15,22 @@ export const meta = ({data}) => {
   // kein noindex: sie wurde also aktiv zur Indexierung angeboten, mit dem
   // Namen des Frameworks statt dem der Marke.
   //
-  // Die Form ist die des Geschwisters `pages.$handle.jsx` — Vorrang für das
-  // in Shopify gepflegte `seo.title`, sonst der Seitentitel, immer mit der
-  // Marke dahinter. Der Loader holt `seo { title description }` bereits mit
-  // (PAGE_QUERY unten), benutzt wurde das Feld hier nie.
+  // Von 2026-09-05 bis 2026-09-26 kam der Titel aus Shopify (`seo.title`,
+  // sonst Seitentitel) und lautete live "Superhuman | Qi Blanco" — 22
+  // Zeichen, die dem Suchenden nichts über die Seite sagen. Seither steht er
+  // hier als Literal (Begründung unten); die Beschreibung kommt weiter aus
+  // Shopify.
   //
   // `Qi Blanco` bewusst als Literal und NICHT als Import von MARKE aus
   // ~/lib/produkt-seo: dessen Dateikopf begründet, dass ein Import die
   // Import-Closure der importierenden Seite in die Gate-12-Prüfmenge zieht.
   // `pages.$handle.jsx` schreibt aus demselben Grund ebenfalls das Literal.
-  const roh = data?.page?.seo?.title || data?.page?.title || '';
-  const titel = roh ? `${roh} | Qi Blanco` : 'Qi Blanco';
+  // TITEL (2026-09-26, AI-CEO-Entscheid seo:entscheidung:vorlage-titel-und-
+  // beschreibungen-dach-20260908): 30-65 Zeichen, weil die Suchergebnis-Zeile
+  // darunter Flaeche verschenkt und darueber abschneidet. Aussage vorn, Marke
+  // hinten, keine Kurs-Nummerierung und keine Minutenangabe: beides sagt dem
+  // Suchenden nicht, was er auf der Seite bekommt.
+  const titel = 'Superhuman: der kostenlose Videokurs in fünf Stufen | Qi Blanco';
   return [
     {title: titel},
     ...beschreibungTags('/pages/superhuman', data?.page?.seo?.description),
