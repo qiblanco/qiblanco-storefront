@@ -287,10 +287,19 @@ function empfaengerStarten() {
  * eigener API. Leer, wenn die Adresse keinen hat (dann wird nicht gegrüßt). */
 function ursprungVon(src) {
   try {
-    return new URL(String(src || ''), window.location.href).origin;
+    const basis =
+      typeof window !== 'undefined' && window.location ? window.location.href : undefined;
+    return new URL(String(src || ''), basis).origin;
   } catch {
     return '';
   }
+}
+/* Die aktuelle Adresse eines iframes. Defensiv: ein Rahmen ohne
+ * getAttribute (Test-Attrappe, fremdes Objekt) laesst die Anbindung still
+ * weiterlaufen, statt zu werfen -- dieselbe Fehlerrichtung wie ohne qpx. */
+function adresseVon(iframe) {
+  const a = typeof iframe.getAttribute === 'function' ? iframe.getAttribute('src') : '';
+  return a || iframe.src || '';
 }
 
 export function youtubeWatchtimeAnbinden(
@@ -342,7 +351,7 @@ export function youtubeWatchtimeAnbinden(
   /* `fenster` ist die WindowProxy des iframes; sie bleibt über dessen
    * Navigationen dieselbe, also kann `readyToListen` schon zugeordnet werden,
    * bevor irgendwer gegrüßt hat. */
-  const quelle = iframe.getAttribute('src') || iframe.src || '';
+  const quelle = adresseVon(iframe);
   const eintrag = {fenster: iframe.contentWindow || null, konto, ursprung: ursprungVon(quelle)};
   eintrag.gruessen = () => {
     try {
@@ -365,10 +374,11 @@ export function youtubeWatchtimeAnbinden(
    * load unter fremder Adresse (Erweiterung, Einwilligungs-Werkzeug) zählt
    * nicht. Kein Dauer-Timer. */
   const beiLoad = () => {
-    if ((iframe.getAttribute('src') || '') !== quelle) return;
+    if (adresseVon(iframe) !== quelle) return;
     if (!konto.initialisiert) eintrag.gruessen();
   };
-  iframe.addEventListener('load', beiLoad);
+  const hatLoad = typeof iframe.addEventListener === 'function';
+  if (hatLoad) iframe.addEventListener('load', beiLoad);
 
   /* MRC-Sichtbarkeit am iframe selbst.
    *
@@ -431,7 +441,7 @@ export function youtubeWatchtimeAnbinden(
   }
 
   return () => {
-    iframe.removeEventListener('load', beiLoad);
+    if (hatLoad) iframe.removeEventListener('load', beiLoad);
     mrcUhrLoeschen();
     if (io) io.disconnect();
     const i = spieler.indexOf(eintrag);
