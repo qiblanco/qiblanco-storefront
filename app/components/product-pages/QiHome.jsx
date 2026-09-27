@@ -189,7 +189,7 @@ function DasQiHome() {
 /* Rücknahmefrist: 20 Tage ab Erhalt, wie FAQ, Kopfbanner und
    /pages/das-20-tage-versprechen (Christian-Freigabe 2026-06-09, Support-SOP §4).
    Bis 2026-09-27 stand hier 30 Tage, ohne Beleg für eine gelebte 30-Tage-Regel
-   (Job 20260926-storefront-dach-seitenwidersprueche-rueckgabe-lieferzeit).
+   (Job „Seitenwidersprüche DACH" vom 26.09.2026).
    Der Halbsatz „erhältst den vollen Kaufpreis zurück" ist Beleg-Nadel der
    Nachkauf-Mail nachfrage-testzeit-qihome (postkauf-manager). */
 function RisikofreiErleben() {

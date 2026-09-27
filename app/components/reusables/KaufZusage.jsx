@@ -36,7 +36,7 @@ import {
  *  1. Rücknahme. `ruecknahmeTage={null}` lässt die Zahl weg, für eine Seite,
  *     deren eigener Inhalt eine andere Frist nennt. Bis 2026-09-27 war das
  *     /products/qihome-air (Inhalt 30 Tage, AGB und Kopfbanner 20); seit dem
- *     Job 20260926-storefront-dach-seitenwidersprueche-rueckgabe-lieferzeit
+ *     Job „Seitenwidersprüche DACH" vom 26.09.2026
  *     sagt die Seite 20 Tage und nutzt den Default.
  *  2. Raten, nur im Markt DE: Ratenzahlung steht laut Fußnote 2 nur Kundinnen
  *     und Kunden mit deutschem Wohnsitz offen.

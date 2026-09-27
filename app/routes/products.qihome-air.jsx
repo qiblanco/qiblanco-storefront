@@ -281,7 +281,7 @@ function BenefitList() {
             Die Rücknahme MIT Tageszahl (Default 20): bis 2026-09-27 stand sie
             hier ohne Zahl, weil der Inhalt weiter unten 30 Tage versprach.
             QiHome.jsx sagt seitdem 20 Tage wie AGB, FAQ und Kopfbanner (Job
-            20260926-storefront-dach-seitenwidersprueche-rueckgabe-lieferzeit). */}
+            „Seitenwidersprüche DACH" vom 26.09.2026). */}
         <KaufZusagePunkte />
         <li>
           <svg
