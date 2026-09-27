@@ -266,6 +266,63 @@ const GNADENFRIST_MS = 900;
  * schlimmer als keiner.
  */
 const HARTE_FRIST_MS = 4000;
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ÄNDERUNG 2026-09-27 (Job 20260927-videobaustein-klick-ohne-rueckmeldung-
+ * spielt-attribut-postmessage-beide-laeden): EIN KLICK OHNE PLAYER HAT JETZT
+ * EINEN AUSWEG, UND `spielt` SAGT, WER ES GESETZT HAT.
+ *
+ * GEMESSEN VOR DEM UMBAU (live, Browser stumm): mit gesperrtem YouTube
+ * (Tracking-Schutz, Erweiterung, Firmennetz) stand `spielt` nach ~1 s —
+ * gesetzt von der Gnadenfrist nach dem load der FEHLERSEITE, der Player hatte
+ * kein Wort gesagt. Danach sah der Besucher ein Poster ohne Knopf, ohne
+ * Ladezeichen, ohne Link. Auf der Startseite UND auf /pages/podcasts.
+ *
+ * Die Frist unten gilt seitdem nur für einen Player, der GEANTWORTET hat
+ * (`onAntwort` aus app/lib/video-watchtime.js). Schweigt er nach dem load der
+ * eigenen Quelle ANTWORT_FRIST_MS lang — oder ABSOLUTE_FRIST_MS ohne load —,
+ * lebt im Rahmen kein Player. Dann wird das iframe auf about:blank gestellt
+ * und verborgen (nicht ausgehängt: eine Erweiterung kann den Knoten ersetzt
+ * haben, und Reacts removeChild bräche dann die Seite), und über dem Poster
+ * steht ein LINK auf das Video an derselben Sekunde. `data-qb-video-ausloeser`
+ * sagt, wer entschieden hat (player | gnadenfrist | frist); nur `player` ist
+ * ein Abspielbeweis — homepage-bauer/bin/mess_videoumschaltung.py hält das
+ * gegen seine eigene Erhebung der Player-Nachrichten.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+/* Nach dem load der EIGENEN Quelle: so lange darf der Player schweigen. Er
+ * meldet sich gemessen schon VOR dem load; das ist Luft für langsame Geräte. */
+const ANTWORT_FRIST_MS = 1500;
+/* Kein load, kein Wort: ein hängendes Netz. */
+const ABSOLUTE_FRIST_MS = 15000;
+/* Laufende Nummer je Player der Seite (wie in YouTubes eigener API). Ohne
+ * `widgetid` in der Einbettungs-URL meldet der Player sich nie von selbst. */
+let naechsteWidgetId = 1;
+/* Der Ausweg: EINE Fläche über dem ganzen Stapel, damit jeder Klick auf das
+ * Video zu YouTube führt. Das Abzeichen darin behält sein Seiten-Aussehen
+ * (Klasse wie vorher); dazu eine Zeile, die sagt, wohin der Klick führt. */
+const AUSWEG_STYLE = {
+  position: 'absolute',
+  inset: 0,
+  display: 'block',
+  cursor: 'pointer',
+  color: 'inherit',
+  textDecoration: 'none',
+  pointerEvents: 'auto',
+};
+const AUSWEG_ZEILE_STYLE = {
+  position: 'absolute',
+  right: '8px',
+  bottom: '8px',
+  padding: '4px 10px',
+  borderRadius: '999px',
+  background: 'rgba(0, 0, 0, 0.72)',
+  color: '#fff',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  lineHeight: 1.3,
+  pointerEvents: 'none',
+};
 
 const PLAY_BADGE_STYLE = {
   display: 'grid',
@@ -392,6 +449,13 @@ export function YoutubeTimestamp({
    * in diesem Job geht. */
   const [zeigt, setZeigt] = useState(false);
   const [posterStufe, setPosterStufe] = useState(0);
+  /* `ausweg`: kein Player hat je geantwortet — über dem Poster steht der Link. */
+  const [ausweg, setAusweg] = useState(false);
+  /* Wer den Ladezustand beendet hat: player | gnadenfrist | frist. */
+  const [ausloeser, setAusloeser] = useState(null);
+  const antwort = useRef(false);
+  const entschieden = useRef(false);
+  const widgetId = useRef(0);
   const rahmen = useRef(null);
   const schonGewaermt = useRef(false);
   const start = Math.max(0, Math.floor(startSeconds || 0));
@@ -400,12 +464,45 @@ export function YoutubeTimestamp({
    * YouTube-Kennung. Die Herkunft wird mitgemeldet. */
   const objekt = dataSection || (videoId ? 'yt-' + String(videoId).toLowerCase() : '');
   const objektQuelle = dataSection ? 'anker' : 'quelle';
+  /* EINE Stelle entscheidet, und nur einmal. */
+  const entscheide = (wie, ergebnis) => {
+    if (entschieden.current) return;
+    entschieden.current = true;
+    setAusloeser(wie);
+    if (ergebnis === 'ausweg') setAusweg(true);
+    else setZeigt(true);
+  };
+  /* Schweigen wird erst im sichtbaren Tab zum Befund: im Hintergrund drosselt
+   * der Browser die Uhren, und ein langsamer Player sähe aus wie keiner. */
+  const pruefeSchweigen = (wie) => {
+    if (entschieden.current || antwort.current) return;
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+      const wieder = () => {
+        if (document.visibilityState !== 'visible') return;
+        document.removeEventListener('visibilitychange', wieder);
+        setTimeout(() => pruefeSchweigen(wie), ANTWORT_FRIST_MS);
+      };
+      document.addEventListener('visibilitychange', wieder);
+      return;
+    }
+    entscheide(wie, 'ausweg');
+  };
   useEffect(() => {
-    if (!laueft || !rahmen.current || !objekt) return undefined;
+    if (!laueft || !rahmen.current) return undefined;
+    /* Ohne Anker keine Anbindung und damit keine Auskunft: dann darf Schweigen
+     * NIE zum Ausweg führen — es wäre kein Beleg, nur fehlendes Zuhören. */
+    if (!objekt) {
+      antwort.current = true;
+      return undefined;
+    }
     return youtubeWatchtimeAnbinden(rahmen.current, {
       objekt,
       objektQuelle,
-      onSpielt: () => setZeigt(true),
+      widgetId: widgetId.current,
+      onSpielt: () => entscheide('player', 'spielt'),
+      onAntwort: () => {
+        antwort.current = true;
+      },
     });
   }, [laueft, objekt, objektQuelle]);
 
@@ -416,10 +513,20 @@ export function YoutubeTimestamp({
    * eine Vorschau sonst für immer liegengeblieben.
    */
   useEffect(() => {
-    if (!laueft || zeigt) return undefined;
-    const t = setTimeout(() => setZeigt(true), HARTE_FRIST_MS);
-    return () => clearTimeout(t);
-  }, [laueft, zeigt]);
+    if (!laueft) return undefined;
+    const hart = setTimeout(() => {
+      if (antwort.current) entscheide('frist', 'spielt');
+    }, HARTE_FRIST_MS);
+    const absolut = setTimeout(() => pruefeSchweigen('frist'), ABSOLUTE_FRIST_MS);
+    return () => {
+      clearTimeout(hart);
+      clearTimeout(absolut);
+    };
+    /* `entscheide`/`pruefeSchweigen` lesen nur Refs und stabile Setter; die
+       Fristen laufen EINMAL je Klick und sollen nicht bei jedem Rendern neu
+       starten. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [laueft]);
 
   /*
    * FEHLERFALL-ZUSAGE: Das Vorwärmen ist ein HINWEIS an den Browser, kein
@@ -457,6 +564,23 @@ export function YoutubeTimestamp({
    * keine erzeugte Vorstufe — dann bleibt es beim bisherigen Verhalten.
    * Eine fehlende Vorstufe ist kein Fehler, sondern der Stand von vorher. */
   const vorstufe = thumbnail ? null : VIDEO_LQIP[videoId];
+  /* Die Adresse des Videos auf YouTube, an derselben Sekunde: Ausweg UND
+   * Ohne-Skript-Link kommen aus DIESER Zeile. */
+  const watchUrl =
+    `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}` +
+    (start > 0 ? `&t=${start}s` : '');
+  const minuteWort = `${Math.floor(start / 60)}:${String(start % 60).padStart(2, '0')}`;
+  /* Die Einbettung. `origin` und `widgetid` wie in YouTubes eigener API: erst
+   * damit meldet der Player sich von selbst (`readyToListen`). Die Nummer
+   * entsteht beim Klick, die Adresse also erst im Browser. */
+  const quelle =
+    laueft && typeof window !== 'undefined'
+      ? mitJsApi(
+          `https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1` +
+            (zusatzParameter ? `&${zusatzParameter}` : '') +
+            `&origin=${encodeURIComponent(window.location.origin)}&widgetid=${widgetId.current}`,
+        )
+      : '';
   const posterProps = thumbnail
     ? {src: thumbnail, width: 1280, height: 720}
     : {
@@ -512,23 +636,26 @@ export function YoutubeTimestamp({
       {laueft ? (
         <iframe
           ref={rahmen}
-          src={mitJsApi(
-            `https://www.youtube-nocookie.com/embed/${videoId}?start=${start}&autoplay=1` +
-              (zusatzParameter ? `&${zusatzParameter}` : ''),
-          )}
+          src={ausweg ? 'about:blank' : quelle}
           title={titel}
           style={{
             ...SCHICHT_STYLE,
-            opacity: zeigt ? 1 : 0,
+            opacity: zeigt && !ausweg ? 1 : 0,
+            visibility: ausweg ? 'hidden' : undefined,
             /* Die Blende ist kurz und läuft nur in EINE Richtung. Wer
                `prefers-reduced-motion` gesetzt hat, bekommt sie nicht --
                eine Deckkraft-Animation ist Bewegung im Sinne der Einstellung. */
             transition: 'opacity 240ms ease-out',
           }}
           onLoad={() => {
-            /* Der Player ist DA. Ob er ZEIGT, weiß nur er selbst — deshalb
-               noch eine Gnadenfrist auf seine Auskunft, dann ohne sie. */
-            setTimeout(() => setZeigt(true), GNADENFRIST_MS);
+            /* Das Dokument ist DA. Ob ein Player darin lebt und ob er ZEIGT,
+               weiß nur er selbst. Nur der load der EIGENEN Quelle zählt. */
+            const f = rahmen.current;
+            if (entschieden.current || !f || f.getAttribute('src') !== quelle) return;
+            setTimeout(() => {
+              if (antwort.current) entscheide('gnadenfrist', 'spielt');
+            }, GNADENFRIST_MS);
+            setTimeout(() => pruefeSchweigen('gnadenfrist'), ANTWORT_FRIST_MS);
           }}
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
@@ -538,7 +665,7 @@ export function YoutubeTimestamp({
       {/* SCHICHT 3 — das Zeichen. Vor dem Klick das Play-Symbol, während des
           Ladens ein Ladezeichen: „Wer klickt und eine Sekunde nichts sieht,
           klickt nochmal" (Christian). Nach dem Umblenden ist es weg. */}
-      {zeigt ? null : (
+      {zeigt || ausweg ? null : (
         <span
           className={
             eigenesKleid
@@ -587,6 +714,34 @@ export function YoutubeTimestamp({
           ) : null}
         </span>
       )}
+
+      {/* DER AUSWEG — kein Player hat geantwortet (Tracking-Schutz,
+          Erweiterung, Firmennetz). Das Abzeichen bleibt, wo und wie es war;
+          der Klick führt jetzt zum Video auf YouTube, an derselben Sekunde. */}
+      {ausweg ? (
+        <a
+          href={watchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Video auf YouTube ansehen (neuer Tab): ${titel}`}
+          style={AUSWEG_STYLE}
+        >
+          <span
+            className={
+              eigenesKleid ? playClassName || `${className}__play` : 'YoutubeTimestamp__play'
+            }
+            aria-hidden="true"
+            style={eigenesKleid ? undefined : PLAY_STYLE}
+          >
+            {playInhalt ? (
+              <span style={eigenesKleid ? undefined : PLAY_BADGE_STYLE}>{playInhalt}</span>
+            ) : null}
+          </span>
+          <span aria-hidden="true" style={AUSWEG_ZEILE_STYLE}>
+            {start > 0 ? `Auf YouTube ansehen · ab ${minuteWort}` : 'Auf YouTube ansehen'}
+          </span>
+        </a>
+      ) : null}
     </span>
   );
 
@@ -619,7 +774,14 @@ export function YoutubeTimestamp({
     'data-section': dataSection || undefined,
     'data-video': objekt || undefined,
     'data-video-familie': 'youtube',
-    'data-qb-video-zustand': laueft ? (zeigt ? 'spielt' : 'wartet') : 'vorschau',
+    'data-qb-video-zustand': laueft
+      ? ausweg
+        ? 'ausweg'
+        : zeigt
+          ? 'spielt'
+          : 'wartet'
+      : 'vorschau',
+    'data-qb-video-ausloeser': ausloeser || undefined,
     style: eigenesKleid ? {display: 'block', width: '100%'} : undefined,
   };
 
@@ -628,7 +790,14 @@ export function YoutubeTimestamp({
   }
 
   const knopf = (
-    <button type="button" {...huellenProps} onClick={() => setLaueft(true)} {...absichtsSignale}
+    <button
+      type="button"
+      {...huellenProps}
+      onClick={() => {
+        if (!widgetId.current) widgetId.current = naechsteWidgetId++;
+        setLaueft(true);
+      }}
+      {...absichtsSignale}
       aria-label={`Video abspielen: ${titel}`}
     >
       {stapel}
@@ -657,9 +826,6 @@ export function YoutubeTimestamp({
    * Server-Text und wird als solcher gesetzt (Inhalt ist eigener,
    * nicht-nutzergesteuerter Code, keine Fremdeingabe).
    */
-  const watchUrl =
-    `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}` +
-    (start > 0 ? `&t=${start}s` : '');
   const posterUrl =
     thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
   const escape = (wert) =>
