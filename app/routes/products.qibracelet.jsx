@@ -212,7 +212,8 @@ export default function Product() {
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
-        <ProductImage image={featuredImage} />
+        {/* LCP ist hier das 360-Video: Bild eager, aber ohne hohe Priorität. */}
+        <ProductImage image={featuredImage} vorrang={false} />
         {/* Videos im Vorschaustreifen (Amazon-Muster, Maßnahme „Produktseite,
             die verkauft“, 26.09.2026): das Zellvideo der QiBracelet-Studie,
             bis heute auf keiner Seite. Daten: app/data/produkt-videos.js. */}
