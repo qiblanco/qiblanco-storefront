@@ -96,7 +96,15 @@ export function QiOne2ProShop({product}) {
                über diese Seite kommen 1.348 von 2.506 Sitzungen mit
                QiOne-Ansicht (27.08.-26.09.2026). */
             <QiOneBenefitList
-              vorPunkte={<KaufZusagePunkte />}
+              vorPunkte={
+                /* Monatsbetrag der Ratenzeile aus dem Preis dieser Variante
+                   (Job 20260926-kaufblock-raten-und-testzeit-qione-2-pro-prio35,
+                   Begründung in reusables/KaufZusage.jsx). */
+                <KaufZusagePunkte
+                  preis={product?.selectedOrFirstAvailableVariant?.price}
+                  handle={product?.handle}
+                />
+              }
               zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
             />
           }

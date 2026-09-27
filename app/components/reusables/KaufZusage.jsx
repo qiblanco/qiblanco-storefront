@@ -1,6 +1,8 @@
 import {useNavigate} from 'react-router';
 import {useGoogleRating} from '~/lib/googleRating';
 import {useMarktLand} from '~/lib/markt-land';
+import {bruttoAnzeige} from '~/lib/markt-pricing';
+import {monatsrate} from '~/components/reusables/raten-angebot';
 import {QIMASTER_SYMBOL_PFADE} from '~/lib/qi-master-symbole.generated';
 import {BEWERTUNGEN_PFAD} from '~/components/reusables/AlleBewertungenLink';
 import {
@@ -49,12 +51,29 @@ import {
  *     (StarRating.jsx) eine Bewertungsansicht mit eigener Farb- und
  *     Klickpflicht. Die Sterne stehen schon oben neben dem Titel.
  *
+ * MONATSBETRAG, NUR WO DIE SEITE IHN ÜBERGIBT (seit 27.09.2026, Job
+ * 20260926-kaufblock-raten-und-testzeit-qione-2-pro-prio35, AEM-Hypothese
+ * aem-h-1af5db847a): wer `preis` (MoneyV2 der Variante) und `handle` mitgibt,
+ * bekommt „In 12 Raten à 91 € zahlen" statt „In Raten zahlen". Das tun heute
+ * nur /products/qione-2-pro und ihr Spiegel /pages/qione-2-pro. Die Zahl
+ * kommt aus derselben Brutto-Rechnung wie der Preis darüber (bruttoAnzeige)
+ * und der Hausformel der Landingpages (reusables/raten-angebot.js); unter der
+ * Klarna-Schwelle von 500 € fällt sie weg. Das Absatzende oben („keine
+ * Beispielrechnung") stützte sich auf eine Grenze für Annas Chat-Antwort, nicht
+ * auf Christians Wortlaut: seine eigene Zeile „oder 12 Raten à 91 €" steht
+ * seit dem 21.09.2026 auf /pages/schlaf-zellen-schutz. Ohne `preis` bleibt jede
+ * andere Fläche byte-identisch.
+ *
  * data-qb-kaufzusage ist der Messanker (Geometrie, Rand-Proben). Kein
  * data-section: die Kaufseiten sind bewusst anker-frei (Design-Rubrik-
  * Collector, siehe products.qione-2-pro.jsx).
  */
-export function KaufZusagePunkte({ruecknahmeTage = 20}) {
+export function KaufZusagePunkte({ruecknahmeTage = 20, preis = null, handle}) {
   const marktLand = useMarktLand();
+  const rate =
+    preis && (preis.currencyCode || 'EUR') === 'EUR'
+      ? monatsrate(bruttoAnzeige(preis.amount, handle, preis.currencyCode, marktLand))
+      : null;
   const bewertung = useGoogleRating();
   const navigate = useNavigate();
   /* useGoogleRating() lässt eine fehlende Anzahl als plausibel durch (die
@@ -101,7 +120,7 @@ export function KaufZusagePunkte({ruecknahmeTage = 20}) {
           {/* „²" verweist auf Fußnote 2 im Fuß jeder Seite (Genehmigung durch
               den Anbieter, deutscher Wohnsitz), dieselbe Marke wie am
               Raten-Banner der Kaufseiten. */}
-          <b>In Raten zahlen</b>, mit 0&nbsp;% Finanzierung über PayPal und Klarna²
+          <b>{rate ? `In 12 Raten à ${rate}\u00a0€ zahlen` : 'In Raten zahlen'}</b>, mit 0&nbsp;% Finanzierung über PayPal und Klarna²
         </li>
       ) : null}
       <li data-qb-kaufzusage="bewertungen">
