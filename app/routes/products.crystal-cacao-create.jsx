@@ -147,7 +147,7 @@ export default function Product() {
       <div className="flex flex-col gap-5 items-center-justify-center text-center max-w-[750px] mx-auto! my-[5vh]! p-2">
         <div className="max-w-[500px] m-center">
           {/* Abmessungen der scharfen Datei (950x420): ohne sie nimmt das <img> erst
-              die Groesse des Platzhalters an (100 px breit) und springt beim
+              die Größe des Platzhalters an (100 px breit) und springt beim
               Eintreffen des Originals auf Spaltenbreite (gemessen an der Awake-Seite:
               mobil +104 px, CLS 0,128). */}
           <LazyImage highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Create_Schriftzug_1.png?v=1766481502"
