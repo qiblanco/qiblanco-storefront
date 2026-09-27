@@ -193,9 +193,6 @@ export default async function handleRequest(
       'https://*.gorgias.chat',
       'https://*.gorgias.help',
       'https://*.gorgias.io',
-      'https://*.gorgias-convert.com',
-      'https://*.9gtb.com',
-      'https://*.9gti.com',
     ],
     scriptSrc: [
       "'self'",
@@ -220,9 +217,6 @@ export default async function handleRequest(
       'https://config.gorgias.help',
       'https://assets.gorgias.chat',
       'https://client.gorgias.chat',
-      'https://content.9gtb.com',
-      'https://*.gorgias-convert.com',
-      'https://gorgias-convert.com',
       'https://connect.facebook.net',
       // UpPromote-Affiliate-Pixel (collect.js, von UpPromoteTracking.jsx nach
       // Einwilligung nachgeladen). STELLE 1 VON 2 — die zweite ist connect-src
@@ -465,11 +459,6 @@ export default async function handleRequest(
       'https://*.gorgias.help',
       'wss://*.gorgias.chat',
       'wss://*.gorgias.io',
-      'https://content.9gtb.com',
-      'https://*.9gtb.com',
-      'https://*.9gti.com',
-      'https://gorgias-convert.com',
-      'https://*.gorgias-convert.com',
       'https://www.facebook.com',
       'https://connect.facebook.net',
       // UpPromote-Affiliate-Pixel: die Messpunkte, die collect.js sendet
@@ -605,7 +594,6 @@ export default async function handleRequest(
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
       'https://*.gorgias.io',
-      'https://*.gorgias-convert.com',
       'https://www.facebook.com',
     ],
     shop: {

@@ -645,7 +645,7 @@ export function Layout({children}) {
               PUBLIC_SALESBOT_WIDGET_ORIGIN=off schaltet AI-Anna ab, bringt den
               Gorgias-Chat NICHT zurück (entfernt). Der separate US-/englische
               Store (us-qiblanco-2024) behält seinen Gorgias-Chat — anderes Repo.
-              Der Gorgias CONVERT-Loader unten ist KEIN Chat und bleibt.
+              Der Gorgias CONVERT-Loader ist seit 2026-09-27 ebenfalls raus.
             */}
             {/*
               GORGIAS-MAILTO-REPLACE ENTFERNT (2026-09-09, Job
@@ -668,13 +668,20 @@ export function Layout({children}) {
               und (2), nicht auf der Messung.
               Rückweg: git revert dieses Commits.
             */}
-            <script
-              src="https://content.9gtb.com/loader.js"
-              data-gorgias-loader-convert=""
-              nonce={nonce}
-              defer
-              suppressHydrationWarning
-            />
+            {/*
+              GORGIAS-CONVERT-LOADER ENTFERNT (2026-09-27, Job
+              20260927-update-gorgias-aufgeben-eigenbau-und-erfahrungsseite-
+              freigegeben-s02). Christian hat Gorgias am 2026-09-27
+              aufgegeben (Eigenbau AI Anna); das Konto ist seit 2026-08-29
+              deaktiviert. Der Loader (content.9gtb.com/loader.js) lud auf
+              JEDER Seite ein 199-KB-Bundle, ohne Shop-Kennung
+              (CONVERT_SHOP_NAME/REVENUE_ADDON_ID leer), ohne DOM, ohne
+              Cookies — gemessen am Live-Stand, er tat nichts für uns.
+              Die CSP-Einträge der Convert-Familie (9gtb.com, 9gti.com,
+              gorgias-convert.com) sind in app/entry.server.jsx mit raus.
+              Probe: homepage-bauer/pruefungen/probe_gorgias_convert_loader_tot.py
+              Rückweg: git revert dieses Commits.
+            */}
             {data?.qpxEndpoint ? (
               <script
                 src="/qiblanco-qpx-loader.js"
