@@ -2,6 +2,39 @@ import {Image} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import {createPortal} from 'react-dom';
 
+/*
+ * Breite der Vorschaubilder, gemessen statt geschätzt (2026-09-27, 16
+ * Fenster von 360x740 bis 2560x1440, qiblanco.com und crystal-cacao.com,
+ * Zwilling gegen origin/main):
+ *   bis 749 px     eine Zeile, je Bild 17-19 % der Fensterbreite
+ *   720-749 px     zweispaltig, je Bild rund 9 %
+ *   750-1023 px    25 % der Fensterbreite
+ *   ab 1024 px     Spalte neben dem Hauptbild, siehe unten
+ *
+ * AB 1024 PX BESTIMMT DIESE ANGABE DAS LAYOUT MIT, nicht nur die Datei. Die
+ * Spalte (.product-image-list, flex: none, width: auto) ist so breit wie die
+ * Eigenbreite ihrer Bilder, und die ist bei srcset mit w-Angaben genau der
+ * sizes-Wert. Vorher 15vw: bei 1440 px eine 216 px breite Spalte für 89 px
+ * Bilder (127 px leer), der Browser zog die 400er-Datei (4,5-4,95x). Die
+ * Bilder selbst sind hoch begrenzt: (Hauptbildhöhe - 4 Lücken à 8 px) / 5.
+ * Der Wert unten ist der Punkt, an dem Spalte und Bild gleich breit sind:
+ * Galeriebreite W = 52,38vw - 41,9 px (gemessen 1024-2560), Bild = (W - 52) / 6.
+ * Auf crystal-cacao.com ist W kleiner; die Spalte behält dort ein paar
+ * Pixel Luft, die Datei ist nie zu klein. Wer das CSS der Galerie ändert,
+ * misst diesen Wert neu (Probe: homepage-bauer/pruefungen/
+ * probe_galerie_lcp_und_vorschau.py).
+ * Die Hydrogen-Leiter beginnt sonst bei 200 px; in 100er-Schritten bekommt
+ * ein 110-px-Bild die 200er statt der 400er.
+ */
+const VORSCHAU_SIZES =
+  '(min-width: 1024px) calc(8.73vw - 15.6px), (min-width: 750px) 25vw, (min-width: 45em) 9.5vw, 20vw';
+const VORSCHAU_SRCSET = {
+  intervals: 8,
+  startingWidth: 100,
+  incrementSize: 100,
+  placeholderWidth: 100,
+};
+
 /**
  * VIDEO-KACHEL (additiv, Default null): eine Kaufseite kann eine Kachel in
  * den Streifen geben (components/reusables/ProduktVideos.jsx, Maßnahme
@@ -42,7 +75,8 @@ export function ProductImageList({images, onSelectImage, videoKachel = null}) {
             alt={image.altText || ''}
             aspectRatio="1/1"
             onClick={() => onSelectImage?.(image)}
-            sizes="(min-width: 1024px) 15vw, 25vw"
+            sizes={VORSCHAU_SIZES}
+            srcSetOptions={VORSCHAU_SRCSET}
             className="thumb-image"
             loading={index === 0 ? 'eager' : 'lazy'}
           />
@@ -69,7 +103,8 @@ export function ProductImageList({images, onSelectImage, videoKachel = null}) {
               data={allImages[bildKacheln]}
               alt={allImages[bildKacheln].altText || ''}
               aspectRatio="1/1"
-              sizes="(min-width: 1024px) 15vw, 25vw"
+              sizes={VORSCHAU_SIZES}
+              srcSetOptions={VORSCHAU_SRCSET}
               className="thumb-image"
             />
           </button>
