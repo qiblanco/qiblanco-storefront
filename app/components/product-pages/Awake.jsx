@@ -248,7 +248,13 @@ function Herkunft() {
             key={i}
             className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center"
           >
-            <p className="text-sm text-gray-800 leading-relaxed">{row.text}</p>
+            {/* <div> statt <p>: row.text traegt selbst Absaetze. Ein <p> in einem <p>
+                schliesst der HTML-Parser vorzeitig, Server- und Client-Baum laufen
+                auseinander, React bricht die Hydration ab (#418/#423) und rendert das
+                ganze Dokument neu — live gemessen als Sprung der ganzen Seite (CLS 1,0
+                in 1 von 5 Laeufen). crystal-cacao.com hat denselben Fix seit 2026-09-03
+                (SortenSeite.jsx). */}
+            <div className="text-sm text-gray-800 leading-relaxed">{row.text}</div>
             <img className="w-full rounded-xl" src={row.img} alt="" />
           </div>
         ))}

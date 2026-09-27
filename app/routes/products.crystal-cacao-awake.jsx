@@ -146,8 +146,12 @@ export default function Product() {
     <>
       <div className="flex flex-col gap-5 items-center-justify-center text-center max-w-[750px] mx-auto! my-[5vh]! p-2">
         <div className="max-w-[500px] m-center">
+          {/* Abmessungen der scharfen Datei (995x356): ohne sie nimmt das <img> erst
+              die Groesse des Platzhalters an (100 px breit) und springt beim
+              Eintreffen des Originals auf Spaltenbreite — mobil +104 px, CLS 0,128. */}
           <LazyImage highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug.webp?v=1766482188"
-          compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug_small.webp?v=1766482188" />
+          compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug_small.webp?v=1766482188"
+          breite={995} hoehe={356} />
         </div>
         <h2 className="kk-h2 kk-h2--hero">Wach. Mutig. Kraftvoll.</h2>
         <h3 className="kk-lead">High Performance Cacao</h3>

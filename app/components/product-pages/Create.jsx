@@ -178,7 +178,7 @@ export function Mineralstoffe() {
 const herkunftRows = [
   {
     text: (
-      <>
+      <p>
         Aus dem geheimnisvollen Amazonas bringen wir dir eine heilige Pflanze in
         ihrer reinsten Form: unseren bio-zertifizierten{' '}
         <b>Kristall Kakao® Create.</b> Diese besonderen Kakaobohnen stammen aus
@@ -187,13 +187,13 @@ const herkunftRows = [
         behutsam bei niedriger Temperatur vermahlen und anschließend in eine
         elegante, quadratische 420 g-Tafel gegossen – ein purer Block{' '}
         <b>Bio Kristall Kakao®.</b>
-      </>
+      </p>
     ),
     img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/DSC01491_Kopie.webp?v=1759179615',
   },
   {
     text: (
-      <>
+      <p>
         Nach der Formung geben wir dem Kakao die Zeit, die er braucht: In Ruhe
         kristallisiert er langsam und entwickelt dabei sein charakteristisches
         Kristallmuster – Sinnbild für naturbelassene Qualität, aromatische Tiefe
@@ -201,7 +201,7 @@ const herkunftRows = [
         setzen wir das <b>QiHome® Air</b> ein: Es schafft eine besondere
         Atmosphäre, die die Kristallisation begleitet und den Kakao auf seinem
         Weg zu seiner einzigartigen Struktur unterstützt.
-      </>
+      </p>
     ),
     img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/DSC02183_1.jpg?v=1764259399',
   },
@@ -240,7 +240,14 @@ function Herkunft() {
             key={i}
             className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center"
           >
-            <p className="text-sm text-gray-800 leading-relaxed">{row.text}</p>
+            {/* <div> statt <p>: row.text traegt selbst Absaetze. Ein <p> in einem <p>
+                schliesst der HTML-Parser vorzeitig, Server- und Client-Baum laufen
+                auseinander, React bricht die Hydration ab (#418/#423) und rendert das
+                ganze Dokument neu — live gemessen als Sprung der ganzen Seite (CLS 1,0
+                in 1 von 5 Laeufen). crystal-cacao.com hat denselben Fix seit 2026-09-03
+                (SortenSeite.jsx). Jede Zeile traegt ihren Text deshalb selbst in <p>:
+                so bleibt die p-Typografie aus reset.css (1.2rem/1.4) wie bisher. */}
+            <div className="text-sm text-gray-800 leading-relaxed">{row.text}</div>
             <img className="w-full rounded-xl" src={row.img} alt="" />
           </div>
         ))}
