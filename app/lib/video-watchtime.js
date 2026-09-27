@@ -295,7 +295,7 @@ function ursprungVon(src) {
   }
 }
 /* Die aktuelle Adresse eines iframes. Defensiv: ein Rahmen ohne
- * getAttribute (Test-Attrappe, fremdes Objekt) laesst die Anbindung still
+ * getAttribute (Test-Attrappe, fremdes Objekt) lässt die Anbindung still
  * weiterlaufen, statt zu werfen -- dieselbe Fehlerrichtung wie ohne qpx. */
 function adresseVon(iframe) {
   const a = typeof iframe.getAttribute === 'function' ? iframe.getAttribute('src') : '';

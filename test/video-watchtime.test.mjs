@@ -329,9 +329,9 @@ test('Ohne Anker wird nichts angebunden — ein Notbehelf wäre hier ein erfunde
 
 /* --- DER HANDSCHLAG (Job 20260927-videobaustein-klick-ohne-rueckmeldung-
  * spielt-attribut-postmessage-beide-laeden) -------------------------------
- * Vorher ging der Gruss alle 700 ms an ZWEI Urspruenge und begann vor dem
+ * Vorher ging der Gruß alle 700 ms an ZWEI Ursprünge und begann vor dem
  * load: gemessen 4 Konsolenwarnungen je Klick bei erreichbarem YouTube, 16 bei
- * gesperrtem. Festgenagelt wird hier, was WIR senden -- nicht, ob YouTube
+ * gesperrtem. Festgenagelt wird hier, was WIR senden — nicht, ob YouTube
  * antwortet (das misst homepage-bauer/bin/mess_videoumschaltung.py live). */
 const NC = 'https://www.youtube-nocookie.com';
 function ECHTER_RAHMEN() {
@@ -360,7 +360,7 @@ function ECHTER_RAHMEN() {
   };
 }
 
-test('HANDSCHLAG: kein Gruss vor readyToListen, danach genau einer an den Ursprung der src', async () => {
+test('HANDSCHLAG: kein Gruß vor readyToListen, danach genau einer an den Ursprung der src', async () => {
   const U = mkUmgebung();
   const {youtubeWatchtimeAnbinden} = await ladeModul(U);
   const r = ECHTER_RAHMEN();
@@ -369,18 +369,18 @@ test('HANDSCHLAG: kein Gruss vor readyToListen, danach genau einer an den Urspru
   assert.equal(r.gesendet.length, 0, 'vor readyToListen darf NICHTS gesendet werden');
   U.nachricht(r.contentWindow, {event: 'readyToListen', channel: 'widget', id: 7}, NC);
   assert.equal(r.gesendet.length, 1);
-  assert.equal(r.gesendet[0].ziel, NC, 'nur der Ursprung, den das iframe traegt');
+  assert.equal(r.gesendet[0].ziel, NC, 'nur der Ursprung, den das iframe trägt');
   assert.equal(r.gesendet[0].daten.event, 'listening');
   assert.equal(r.gesendet[0].daten.id, 7);
 });
 
-test('HANDSCHLAG: Ersatz-Gruss beim load nur, solange kein initialDelivery kam', async () => {
+test('HANDSCHLAG: Ersatz-Gruß beim load nur, solange kein initialDelivery kam', async () => {
   const U = mkUmgebung();
   const {youtubeWatchtimeAnbinden} = await ladeModul(U);
   const r = ECHTER_RAHMEN();
   youtubeWatchtimeAnbinden(r, {objekt: 'yt-abc', widgetId: 7});
   r.feuere('load');
-  assert.equal(r.gesendet.length, 1, 'ohne Handschlag: EIN Ersatz-Gruss beim load');
+  assert.equal(r.gesendet.length, 1, 'ohne Handschlag: EIN Ersatz-Gruß beim load');
   const r2 = ECHTER_RAHMEN();
   youtubeWatchtimeAnbinden(r2, {objekt: 'yt-def', widgetId: 8});
   U.nachricht(r2.contentWindow, {event: 'initialDelivery', info: {playerState: -1}}, NC);
@@ -390,10 +390,10 @@ test('HANDSCHLAG: Ersatz-Gruss beim load nur, solange kein initialDelivery kam',
   youtubeWatchtimeAnbinden(r3, {objekt: 'yt-ghi', widgetId: 9});
   r3.src = 'about:blank';
   r3.feuere('load');
-  assert.equal(r3.gesendet.length, 0, 'ein load unter fremder Adresse zaehlt nicht');
+  assert.equal(r3.gesendet.length, 0, 'ein load unter fremder Adresse zählt nicht');
 });
 
-test('HANDSCHLAG: onAntwort genau einmal, und nur fuer den eigenen Ursprung', async () => {
+test('HANDSCHLAG: onAntwort genau einmal, und nur für den eigenen Ursprung', async () => {
   const U = mkUmgebung();
   const {youtubeWatchtimeAnbinden} = await ladeModul(U);
   const r = ECHTER_RAHMEN();
@@ -403,5 +403,5 @@ test('HANDSCHLAG: onAntwort genau einmal, und nur fuer den eigenen Ursprung', as
   assert.equal(antworten, 0, 'ein fremder Ursprung ist keine Antwort des Players');
   U.nachricht(r.contentWindow, {event: 'readyToListen'}, NC);
   U.nachricht(r.contentWindow, {event: 'onReady', info: null}, NC);
-  assert.equal(antworten, 1, 'die ERSTE Nachricht zaehlt, und nur einmal');
+  assert.equal(antworten, 1, 'die ERSTE Nachricht zählt, und nur einmal');
 });
