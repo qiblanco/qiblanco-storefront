@@ -1,4 +1,4 @@
-import {data} from '@shopify/remix-oxygen';
+import {data} from 'react-router';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import {
@@ -338,4 +338,4 @@ function Alert({message}) {
   );
 }
 
-/** @typedef {import('@shopify/remix-oxygen').ActionFunctionArgs} ActionFunctionArgs */
+/** @typedef {import('react-router').ActionFunctionArgs} ActionFunctionArgs */

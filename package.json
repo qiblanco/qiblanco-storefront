@@ -20,7 +20,6 @@
     "@react-router/dev": "7.16.0",
     "@react-router/fs-routes": "7.16.0",
     "@shopify/hydrogen": "2026.4.5",
-    "@shopify/remix-oxygen": "^3.0.4",
     "@tailwindcss/vite": "^4.2.1",
     "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",

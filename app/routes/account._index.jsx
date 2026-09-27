@@ -1,7 +1,7 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 
 export async function loader() {
   return redirect('/account/orders');
 }
 
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

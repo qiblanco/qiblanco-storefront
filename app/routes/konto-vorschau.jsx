@@ -1,4 +1,4 @@
-import {data} from '@shopify/remix-oxygen';
+import {data} from 'react-router';
 import {
   AdressLese,
   BestellKarte,

@@ -1,5 +1,5 @@
 import {useLoaderData} from 'react-router';
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {ESmogSchutz} from '~/components/campaign/ESmogSchutz';
 import lpDStyles from '~/styles/esmog-schutz.css?url';
 

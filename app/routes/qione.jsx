@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 
 /*
  * /qione — permanenter 301 auf die echte Produktseite.
@@ -46,4 +46,4 @@ export default function QiOneVanityRedirect() {
   return null;
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

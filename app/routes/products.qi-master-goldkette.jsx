@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 
 /*
  * /products/qi-master-goldkette — 301 auf /products/qi-master.
@@ -24,4 +24,4 @@ export default function QiMasterAddonRedirect() {
   return null;
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

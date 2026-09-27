@@ -82,7 +82,7 @@ import {
   ladeGoogleRating,
   GOOGLE_RATING_FALLBACK_VOLL,
 } from '~/lib/googleRating.server';
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
 import {
   salesbotWidgetOrigin,
@@ -827,6 +827,6 @@ export function ErrorBoundary() {
 
 /** @typedef {LoaderReturnData} RootLoader */
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @typedef {import('react-router').ShouldRevalidateFunction} ShouldRevalidateFunction */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

@@ -1,4 +1,4 @@
-import {data as remixData} from '@shopify/remix-oxygen';
+import {data as remixData} from 'react-router';
 import {Outlet, useLoaderData} from 'react-router';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {
@@ -82,5 +82,5 @@ export function ErrorBoundary() {
   return <KontoStoerung />;
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

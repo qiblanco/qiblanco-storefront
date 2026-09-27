@@ -670,5 +670,5 @@ export default async function handleRequest(
   });
 }
 
-/** @typedef {import('@shopify/remix-oxygen').AppLoadContext} AppLoadContext */
+/** @typedef {import('react-router').AppLoadContext} AppLoadContext */
 /** @typedef {import('react-router').EntryContext} EntryContext */

@@ -68,6 +68,6 @@ export default function QiBraceletShopRoute() {
   return <QiBraceletShop product={product} />;
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
