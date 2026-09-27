@@ -52,10 +52,12 @@ export const VERGLEICH = {
       // mit einem Anhänger konzipiert und eignet sich daher ideal zum Tragen
       // um den Hals."
       einsatz: 'Anhänger zum Tragen um den Hals',
-      // product-faqs.js FAQ_QIONE_2_PRO[2].a: "Für das Gehäuse verwenden wir
-      // ausschließlich hochwertigen Chirurgenstahl, während der Gitterchip™
-      // auf Basis einer maßgeschneiderten 750er Goldlegierung gefertigt wird."
-      material: 'Gehäuse aus Chirurgenstahl, Gitterchip™ aus 750er Goldlegierung',
+      // product-faqs.js FAQ_QIONE_2_PRO[2].a ("... Gehäuse ... Chirurgenstahl,
+      // ... Gitterchip™ ... 750er Goldlegierung"). Legierungsgrad und 316L
+      // bewusst weg: der Bestand nennt sie je Gerät verschieden (750er / High-
+      // Carat), in der Tabelle läse sich das als Unterschied. Voller Wortlaut:
+      // die Material-Frage direkt darunter.
+      material: 'Gehäuse aus Chirurgenstahl, Gitterchip™ aus Goldlegierung',
       // product-faqs.js FAQ_QIONE_2_PRO[3] "Darf der QiOne® in die Sauna bzw.
       // nass werden?", Antwort beginnt mit "Ja!".
       wasser: 'Ja',
@@ -71,11 +73,10 @@ export const VERGLEICH = {
       handle: 'qibracelet',
       // product-faqs.js FAQ_QIBRACELET[0].a: "... ist das QiBracelet® als
       // Armreifen aus Chirurgenstahl gestaltet ... Tragestil am Handgelenk."
-      einsatz: 'Armreif zum Tragen am Handgelenk',
-      // product-faqs.js FAQ_QIBRACELET[4].a ("Chirurgenstahl 316L als
-      // Gehäusematerial") und FAQ_QIBRACELET[2].a (Gitterchip™, 750er
-      // Goldlegierung).
-      material: 'Gehäuse aus Chirurgenstahl 316L, Gitterchip™ aus 750er Goldlegierung',
+      einsatz: 'Armreifen zum Tragen am Handgelenk',
+      // product-faqs.js FAQ_QIBRACELET[2].a (Chirurgenstahl, Gitterchip™,
+      // Goldlegierung); Grad weg wie beim QiOne® 2 Pro.
+      material: 'Gehäuse aus Chirurgenstahl, Gitterchip™ aus Goldlegierung',
       // product-faqs.js FAQ_QIBRACELET[3].a: "... bedenkenlos in feuchten
       // Umgebungen ... eignet sich auch für Saunabesuche ...".
       wasser: 'Ja',
@@ -95,11 +96,11 @@ export const VERGLEICH = {
       // product-faqs.js FAQ_QIHOME_AIR[2].a: "Das Gehäuse besteht aus
       // hochwertigem Chirurgenstahl, der exklusive Gitterchip™ wird aus einer
       // maßgeschneiderten High-Carat-Goldlegierung gefertigt, und die
-      // Holzelemente ... aus regionaler deutscher Eiche".
+      // Holzelemente ... aus regionaler deutscher Eiche" (Grad weg, s. o.).
       material:
-        'Gehäuse aus Chirurgenstahl, Gitterchip™ aus High-Carat-Goldlegierung, Holzelemente aus regionaler deutscher Eiche',
-      // Ein Raumgerät geht nicht ins Wasser: die Frage entfällt (Bedienwort).
-      wasser: 'Entfällt',
+        'Gehäuse aus Chirurgenstahl, Gitterchip™ aus Goldlegierung, Holzelemente aus regionaler deutscher Eiche',
+      // Raumgerät: die Frage stellt sich nicht; der Strich wie bei fehlendem Preis.
+      wasser: '–',
       // data/studien/e0005.json, kachel ("an neuronalen Zellen", "...
       // Neurodegenerative Diseases: Current Research 2026").
       studien: [
