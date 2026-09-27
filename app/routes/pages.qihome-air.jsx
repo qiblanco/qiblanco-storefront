@@ -4,6 +4,7 @@ import {
   QiHomeAirShop,
   QIHOME_AIR_PRODUCT_QUERY,
 } from '~/components/product-pages/QiHomeAirShop';
+import qihomeAirStyles from '~/styles/qihome-air.css?url';
 
 /*
  * Campaign-PDP /pages/qihome-air — LP-Shopseite des LP-Blocks
@@ -17,6 +18,18 @@ import {
  * dorthin (eigene Route). Die organische PDP /products/qihome-air bleibt
  * die SEO-Seite (kanonisch, unangetastet).
  */
+
+/*
+ * Token-Schicht der Kaufseite /products/qihome-air (qihome-air.css), hier an
+ * der LP-Fassung derselben Ware: beide Routen rendern dieselben Bausteine,
+ * nur diese hier lud die Schicht nie (Design-Score 71 gegen 97, Job
+ * 20260927-designschuld-lp-shopseiten-qibracelet-qihome-air-prio35). Scope
+ * ist der Wrapper `.ProductQiHomeAir` in der Default-Komponente unten; Kopf/Fuss/Warenkorb
+ * bleiben unberuehrt. Rueckweg: links()-Export, Import und Wrapper entfernen.
+ */
+export function links() {
+  return [{rel: 'stylesheet', href: qihomeAirStyles}];
+}
 
 /*
  * noindex, nofollow (D-006): Campaign-Seite gehoert NICHT in den Index.
@@ -63,7 +76,13 @@ export async function loader({context, request}) {
  */
 export default function QiHomeAirShopRoute() {
   const {product} = useLoaderData();
-  return <QiHomeAirShop product={product} />;
+  // Scope der Token-Schicht qihome-air.css (links() oben) — derselbe Wrapper
+  // wie auf /products/qihome-air, hier an der Route statt in QiHomeAirShop.
+  return (
+    <div className="ProductQiHomeAir">
+      <QiHomeAirShop product={product} />
+    </div>
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
