@@ -1,27 +1,18 @@
 /* ============================================================================
    amazonstil.css — Gerätevergleich (.qb-gv) und Kundenfragen (.qb-kf)
-   ----------------------------------------------------------------------------
    Amazon-Stil Stufe 2 (Grossjob growth-m-lp-produktseite-verkauft, s04,
-   27.09.2026). Komponente: components/reusables/AmazonStil.jsx, Texte und
-   Schalter: components/reusables/amazonstil-daten.js. Geladen über links()
-   genau der drei Geräte-Kaufseiten (/products/qione-2-pro, /qibracelet,
-   /qihome-air); die /pages/-Kaufseiten laden die Datei nicht.
+   27.09.2026). Komponente reusables/AmazonStil.jsx, Texte und Schalter
+   reusables/amazonstil-daten.js. Geladen nur über links() der drei
+   /products/-Geräteseiten; die /pages/-Kaufseiten laden die Datei nicht.
 
-   KEIN NEUER WERT (Design-Pflicht, Brief products-qione-2-pro):
-   - Schrift nur in Stufen, die alle drei Seiten schon führen: 14 px
-     (0.875rem), 16 px (1rem), 19,2 px (1.2rem). H2 und H3 setzen die Seiten
-     selbst (pdp-qi.css bzw. qihome-air.css, reset.css) — hier steht
-     ABSICHTLICH keine Überschriftengröße, sonst bekäme die Seite einen
-     zweiten H2-Stil (Lehre der IG-Stimmen-Fläche, D-2026-09-11).
-   - Farbe aus qb-tokens.css (--qb-text, --qb-text-gedaempft); der
-     Kartengrund ist der Kartengrund DER JEWEILIGEN SEITE (--pdpqi-karte auf
-     QiOne/QiBracelet, --qa-flaeche auf QiHome Air), keine vierte Fläche.
-     Die Linie ist dieselbe wie zwischen den FAQ-Fragen (app.css
-     .ProductFAQ__item: 1px rgba(0,0,0,0.1)).
-   - Radius --qb-radius-klein (8 px, web-soll radius_set_px), Abstände auf
-     dem 8-px-Raster, Sektions-Takt 64 px (web-soll sektions_takt_px).
-   - Gold nur auf Handlung: hier steht kein Gold. Die Wege zu den anderen
-     Geräten sind der Textknopf aus dem Bausatz (.btn--text, app.css).
+   KEIN NEUER WERT (Design-Pflicht): Schrift nur in Stufen, die alle drei
+   Seiten schon führen (14, 16, 19,2 px); H2/H3 setzen die Seiten selbst
+   (pdp-qi.css, qihome-air.css, reset.css), hier steht ABSICHTLICH keine
+   Überschriftengröße (Lehre IG-Stimmen, D-2026-09-11). Farben aus qb-tokens;
+   Kartengrund = der Kartengrund DER Seite (--pdpqi-karte bzw. --qa-flaeche).
+   Linie wie zwischen den FAQ-Fragen (app.css .ProductFAQ__item). Radius
+   --qb-radius-klein, 8-px-Raster, Sektions-Takt 64 px. Kein Gold: die Wege
+   zu den anderen Geräten sind der Textknopf des Bausatzes (.btn--text).
    ========================================================================== */
 
 /* ---- Gerätevergleich ------------------------------------------------------ */
@@ -48,8 +39,7 @@
   border-radius: var(--qb-radius-klein);
   color: var(--qb-text);
 }
-/* Das Gerät DIESER Seite: dieselbe Linie, nur kräftiger und in der Tinte —
-   ein Zustand, keine Handlung, deshalb kein Gold. */
+/* Das Gerät DIESER Seite: kräftigere Linie in der Tinte (Zustand, kein Gold). */
 .qb-gv__geraet--eigenes {
   border: 2px solid var(--qb-text);
 }
@@ -102,8 +92,7 @@ a.qb-gv__kopf-inhalt:hover .qb-gv__name {
   font-size: 1.2rem;
   font-weight: 600;
 }
-/* Trefferfläche >= 44 px auch für die Studien-Links (web-tokens
-   trefferflaeche.min_px, WCAG 2.5.5). */
+/* Trefferfläche >= 44 px (web-tokens trefferflaeche.min_px). */
 .qb-gv__studie {
   display: flex;
   align-items: center;
@@ -132,10 +121,8 @@ a.qb-gv__kopf-inhalt:hover .qb-gv__name {
   color: var(--qb-text-gedaempft);
 }
 
-/* Breiter als das Handy: drei Spalten nebeneinander, und die Zeilen der drei
-   Karten stehen auf EINER Höhe (subgrid), damit sich Preis neben Preis und
-   Material neben Material lesen lässt wie in einer Tabelle. Ohne subgrid
-   (alte Browser) stehen die Karten nur nebeneinander, lesbar bleibt alles. */
+/* Ab 750 px: drei Spalten, deren Zeilen auf EINER Höhe stehen (subgrid) —
+   Preis neben Preis wie in einer Tabelle. Ohne subgrid bleibt alles lesbar. */
 @media (min-width: 750px) {
   .qb-gv__raster {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -176,10 +163,8 @@ a.qb-gv__kopf-inhalt:hover .qb-gv__name {
 }
 
 /* ---- Kundenfragen --------------------------------------------------------- */
-/* Rahmenmass wie die FAQ unten (ProductFAQ.jsx: max-width 860, seitlich
-   1.5rem), damit beide Fragen-Blöcke der Seite dieselbe Spalte haben. Die
-   Fragen selbst tragen die Klassen der FAQ (.ProductFAQ__*, app.css) und
-   sehen deshalb aus wie sie. */
+/* Spalte wie die FAQ unten (ProductFAQ.jsx: 860 px, seitlich 1.5rem); die
+   Fragen tragen die FAQ-Klassen (.ProductFAQ__*) und sehen aus wie sie. */
 .qb-kf {
   max-width: 860px;
   margin-top: 64px;

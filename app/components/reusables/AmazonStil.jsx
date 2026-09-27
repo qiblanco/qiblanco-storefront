@@ -6,27 +6,19 @@ import {useMarktLand} from '~/lib/markt-land';
 import {KUNDENFRAGEN, VERGLEICH, vergleichSpalten} from './amazonstil-daten';
 
 /*
- * AMAZON-STIL STUFE 2 — Gerätevergleich und Kundenfragen weit oben auf den
- * drei Geräte-Kaufseiten (/products/qione-2-pro, /products/qibracelet,
- * /products/qihome-air). Grossjob growth-m-lp-produktseite-verkauft, s04,
- * 27.09.2026. Warum weit oben: 73,5 % der Nichtkäufer kommen nicht über 25 %
- * Scrolltiefe (Messung 26.09.), und "Vergleich" ist eines der drei Themen,
- * die Kunden im Verkaufs-Chat am häufigsten in eigenen Worten fragen.
+ * AMAZON-STIL STUFE 2 — Gerätevergleich und Kundenfragen weit oben auf
+ * /products/qione-2-pro, /products/qibracelet und /products/qihome-air
+ * (Grossjob growth-m-lp-produktseite-verkauft, s04, 27.09.2026). Weit oben,
+ * weil 73,5 % der Nichtkäufer nicht über 25 % Scrolltiefe kommen (Messung
+ * 26.09.) und "Vergleich" zu den drei häufigsten eigenen Kundenfragen im
+ * Verkaufs-Chat gehört. Texte, Schalter, Auswahlregel: ./amazonstil-daten.js.
  *
- * Texte, Schalter und Auswahlregel: ./amazonstil-daten.js. Diese Datei
- * setzt nur zusammen.
- *
- * NUR DIE /products/-SEITEN: die /pages/-Kaufseiten derselben Geräte sind die
- * Kontrollgruppe der Wirkungsmessung (Hypothese hce22957c, reif 25.10.) und
- * tragen keinen dieser Blöcke.
- *
- * MESSANKER (Vertrag der Abnahme-Probe probe_amazonstil_s04.py, nicht
- * umbenennen): data-qb-geraetevergleich, data-qb-vergleich-produkt,
- * data-qb-vergleich-preis, data-qb-kundenfragen, data-qb-kundenfrage.
- * data-textplatz ist der Anker der Textmappe für Christians Wortlaut.
- * BEWUSST KEIN data-section: diese Kaufseiten sind anker-frei, ein erster
- * Anker würde den Sektions-Kollektor der Design-Rubrik auf eine Sektion
- * einengen (Kommentar in routes/products.qione-2-pro.jsx).
+ * NUR /products/: die /pages/-Kaufseiten sind die Kontrollgruppe der
+ * Wirkungsmessung (Hypothese hce22957c, reif 25.10.).
+ * MESSANKER (Vertrag von probe_amazonstil_s04.py, nicht umbenennen):
+ * data-qb-geraetevergleich, -vergleich-produkt, -vergleich-preis,
+ * -kundenfragen, -kundenfrage. data-textplatz = Anker der Textmappe.
+ * BEWUSST KEIN data-section (anker-freie PDPs, Kopf der Route).
  */
 
 /**

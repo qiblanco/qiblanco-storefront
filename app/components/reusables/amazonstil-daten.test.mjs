@@ -1,17 +1,10 @@
 /*
- * Hermetischer Wächter für amazonstil-daten.js (Amazon-Stil Stufe 2, s04,
- * 27.09.2026). Aufruf: node --test app/components/reusables/amazonstil-daten.test.mjs
- *
- * WARUM DER TEST NEBEN DER DATEI LIEGT und nicht in test/: die Scope-
- * Allowlist des Deploy-Wegs gibt test/ nur namentlich frei, reusables/* als
- * Ganzes (Kopf von amazonstil-daten.js). Der Node-Test-Runner findet die
- * Datei über ihren Namen (*.test.mjs) auch hier.
- *
- * Was er bewacht: (1) die Auswahl der Kundenfragen und dass das FAQPage-
- * Schema genau eines bleibt, (2) den Preis in derselben Rechnung wie die
- * Kaufbox, (3) den Rückweg über die zwei Schalter, (4) dass jede Frage der
- * Rangliste und jede Studie des Vergleichs im Bestand existiert, (5) keine
- * gesperrten Wörter im Vergleich.
+ * Hermetischer Wächter für amazonstil-daten.js (Amazon-Stil Stufe 2, s04).
+ * Aufruf: node --test app/components/reusables/amazonstil-daten.test.mjs
+ * Liegt neben der Datei, weil die Deploy-Allowlist test/ nur namentlich
+ * freigibt. Bewacht: Auswahl der Kundenfragen und EIN FAQPage-Schema, Preis
+ * wie die Kaufbox, Rückweg über beide Schalter, Bestand (Fragen, Studien),
+ * keine gesperrten Wörter.
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';

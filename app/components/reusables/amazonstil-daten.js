@@ -1,34 +1,25 @@
 /*
  * amazonstil-daten.js — Texte, Schalter und reine Logik der Amazon-Stil-
  * Stufe 2 auf den drei Geräte-Kaufseiten: Gerätevergleich und Kundenfragen
- * weit oben (Grossjob growth-m-lp-produktseite-verkauft, Segment s04,
- * 27.09.2026; Christians Leitplanke 26.09. Folie 11 "Amazon Style Produkte
- * Seite"). Komponenten: reusables/AmazonStil.jsx, Stylesheet:
- * styles/amazonstil.css, hermetischer Test: amazonstil-daten.test.mjs.
+ * weit oben (Grossjob growth-m-lp-produktseite-verkauft, s04, 27.09.2026;
+ * Leitplanke Folie 11). Komponenten: ./AmazonStil.jsx, Stylesheet:
+ * styles/amazonstil.css, Test: ./amazonstil-daten.test.mjs.
  *
- * WARUM DIESE DATEI IN reusables/ LIEGT UND NICHT IN app/data/: die
- * Scope-Allowlist des Deploy-Wegs (homepage-bauer/config/deploy.conf) gibt
- * app/data/ nur namentlich frei, reusables/* dagegen als Ganzes. Das Muster
- * ist dasselbe wie app/data/produkt-videos.js: reine Daten, EIN Ort je Text.
+ * Liegt in reusables/ statt app/data/, weil die Scope-Allowlist des
+ * Deploy-Wegs (homepage-bauer/config/deploy.conf) app/data/ nur namentlich
+ * freigibt. Muster wie app/data/produkt-videos.js: reine Daten, EIN Ort je Text.
  *
- * KEIN NEUER WERBETEXT (Folie 15: Christian schreibt die Texte selbst). Jede
- * sichtbare Zeile ist Bestand dieser Seiten, ein Tabellenkopf oder ein
- * Bedienwort; die Fundstelle steht je Feld im Kommentar. Christians Wortlaut
- * ersetzt eine Zeile hier 1:1, ohne dass eine Komponente angefasst wird. Die
- * Plätze der Textmappe heissen <handle>.geraetevergleich und
- * <handle>.kundenfragen (data-textplatz an der Wurzel beider Blöcke).
+ * KEIN NEUER WERBETEXT (Folie 15): jede sichtbare Zeile ist Bestand dieser
+ * Seiten (Fundstelle je Feld), ein Tabellenkopf oder ein Bedienwort.
+ * Christians Wortlaut ersetzt eine Zeile hier 1:1. Textmappen-Plätze:
+ * <handle>.geraetevergleich und <handle>.kundenfragen (data-textplatz).
  *
- * RÜCKWEG OHNE CODE-LOGIK (zwei Schalter, beide Listen):
- *   VERGLEICH.geraete = []      -> kein Vergleich, keine Preisabfrage im
- *                                  Loader, kein Stylesheet
- *   KUNDENFRAGEN.seiten = []    -> keine Kundenfragen oben, die FAQ unten ist
- *                                  wieder vollständig und trägt ihr Schema
- *                                  wieder selbst
- * Beide aus = die drei Seiten liefern byte-gleich den Stand vor s04 aus
- * (geprüft in amazonstil-daten.test.mjs). Mit Code: hb-deploy revert.
+ * RÜCKWEG OHNE CODE-LOGIK: VERGLEICH.geraete = [] (kein Vergleich, keine
+ * Preisabfrage, kein Stylesheet) und KUNDENFRAGEN.seiten = [] (FAQ unten
+ * wieder vollständig, trägt ihr Schema selbst). Beide aus = byte-gleich zum
+ * Stand vor s04 (Test). Mit Code: hb-deploy revert.
  *
- * Nur relative Importe, kein React: die Datei muss unter `node --test` ohne
- * Build laufen (Kopf von lib/markt-pricing.js, gleiche Begründung).
+ * Nur relative Importe, kein React: läuft unter `node --test` ohne Build.
  */
 import {PRODUKT_TRIO} from '../../lib/redesign3themen.js';
 import {anzeigeSatz, formatPreis, ganzEuroAnzeige} from '../../lib/markt-pricing.js';
@@ -37,17 +28,12 @@ import {monatsrate} from './raten-angebot.js';
 
 /* ---- Gerätevergleich ------------------------------------------------------ */
 
-/*
- * Reihenfolge der Spalten: das Gerät DIESER Seite zuerst (Amazon "Dieser
- * Artikel"), danach die zwei anderen in der Reihenfolge dieser Liste.
- * Name, Bild und Bildtext kommen aus PRODUKT_TRIO (lib/redesign3themen.js,
- * die Daten des Produkt-Trios), nicht aus einer zweiten Liste.
- */
+/* Spalten: das Gerät DIESER Seite zuerst (Amazon "Dieser Artikel"), dann die
+   anderen zwei. Name, Bild, Bildtext aus PRODUKT_TRIO (lib/redesign3themen.js). */
 export const VERGLEICH = {
   // Tabellenkopf: die drei Produktnamen, wie PRODUKT_TRIO sie schreibt.
   titel: 'QiOne® 2 Pro, QiBracelet® und QiHome® Air im Vergleich',
-  // Zeilenköpfe (Tabellenköpfe). "Raten" steht nur im Markt DE, wie die
-  // Ratenzeile unter dem Kaufknopf (reusables/KaufZusage.jsx).
+  // Tabellenköpfe. "Raten" nur im Markt DE, wie unter dem Kaufknopf (KaufZusage.jsx).
   zeilen: {
     preis: 'Preis',
     einsatz: 'Einsatz',
@@ -56,8 +42,7 @@ export const VERGLEICH = {
     studie: 'Zellstudie',
     raten: 'Raten',
   },
-  // Bedienwörter. Das Ziel heisst im Wort mit, damit ein Screenreader nicht
-  // dreimal dasselbe "Ansehen" vorliest.
+  // Bedienwörter; das Ziel steht im Wort (kein dreifaches "Ansehen" im Screenreader).
   zumGeraet: (name) => `Zum ${name}`,
   dieserArtikel: 'Dieser Artikel',
   geraete: [
@@ -129,12 +114,8 @@ export function vergleichAn(vergleich = VERGLEICH) {
   return Array.isArray(vergleich?.geraete) && vergleich.geraete.length > 0;
 }
 
-/*
- * Der Preis steht im Vergleich so, wie er in der Kaufbox des Geräts steht:
- * dieselbe Rechnung wie components/ProductPrice.jsx (anzeigeSatz ->
- * ganzEuroAnzeige -> formatPreis 'pdp'), nur ohne den Streichpreis. Nicht
- * nachgebaut, sondern aus demselben Preis-Kanon (lib/markt-pricing.js).
- */
+/* Preis wie in der Kaufbox: dieselbe Rechnung wie components/ProductPrice.jsx
+   (anzeigeSatz -> ganzEuroAnzeige -> formatPreis 'pdp'), ohne Streichpreis. */
 export function preisAnzeige(money, handle, land) {
   const betrag = Number.parseFloat(money?.amount);
   if (!Number.isFinite(betrag)) return null;
@@ -144,27 +125,20 @@ export function preisAnzeige(money, handle, land) {
   return formatPreis(Math.round(wert), waehrung, 'pdp');
 }
 
-/*
- * Monatsrate wie in der Ratenzeile unter dem Kaufknopf (KaufZusage.jsx):
- * nur im Markt DE, nur in EUR, 12 Raten ab 500 EUR (raten-angebot.js).
- */
+/* Monatsrate wie die Ratenzeile unter dem Kaufknopf (KaufZusage.jsx): nur DE,
+   nur EUR, 12 Raten ab 500 EUR (raten-angebot.js). */
 export function ratenAnzeige(money, handle, land) {
   if (land !== 'DE') return null;
   if ((money?.currencyCode || 'EUR') !== 'EUR') return null;
   const betrag = Number.parseFloat(money?.amount);
   if (!Number.isFinite(betrag)) return null;
   const rate = monatsrate(ganzEuroAnzeige(betrag * (1 + anzeigeSatz(handle, 'EUR', land)), land));
-  // Fussnote ² wie an der Ratenzeile: Genehmigung durch den Anbieter,
-  // deutscher Wohnsitz (Fuss jeder Seite).
+  // Fussnote ² wie an der Ratenzeile (Fuss jeder Seite).
   return rate ? `12 Raten à ${rate} €²` : null;
 }
 
-/*
- * Die Spalten für EINE Seite: das eigene Gerät zuerst. `preise` ist
- * {handle: {amount, currencyCode}} aus dem Loader (ladeVergleichsPreise);
- * das eigene Gerät nimmt den Preis seiner eigenen Kaufbox (`eigenerPreis`),
- * damit Kaufbox und Vergleich aus derselben Variante rechnen.
- */
+/* Spalten für EINE Seite. `preise` {handle: money} aus ladeVergleichsPreise;
+   das eigene Gerät nimmt den Preis seiner Kaufbox (`eigenerPreis`). */
 export function vergleichSpalten(handle, {preise = {}, eigenerPreis = null, land = 'DE'} = {},
   vergleich = VERGLEICH) {
   if (!vergleichAn(vergleich)) return [];
@@ -186,12 +160,9 @@ export function vergleichSpalten(handle, {preise = {}, eigenerPreis = null, land
   return [...spalten.filter((s) => s.eigenes), ...spalten.filter((s) => !s.eigenes)];
 }
 
-/*
- * Die Preise der drei Geräte in EINER Abfrage — dasselbe Feld, aus dem die
- * Kaufbox jeder Seite ihren Preis nimmt (selectedOrFirstAvailableVariant,
- * ohne gewählte Optionen = die Variante, mit der die Kaufseite öffnet).
- * Muster: CAMPAIGN_PRODUCTS_QUERY in routes/pages.tiefer-schlaf.jsx.
- */
+/* Die drei Preise in EINER Abfrage, aus dem Feld der Kaufbox
+   (selectedOrFirstAvailableVariant ohne Optionen = die Variante, mit der die
+   Kaufseite öffnet). Muster: CAMPAIGN_PRODUCTS_QUERY, pages.tiefer-schlaf.jsx. */
 export const VERGLEICH_PREISE_QUERY = `#graphql
   fragment VergleichPreis on Product {
     handle
@@ -220,11 +191,8 @@ export const VERGLEICH_PREISE_QUERY = `#graphql
   }
 `;
 
-/*
- * Für den Loader. Fail-soft: fällt die Abfrage aus, rendert der Vergleich
- * ohne Preis, die Kaufseite bleibt stehen (kein 500er wegen eines
- * Nebenblocks). Ist der Vergleich aus, fragt der Loader gar nicht erst.
- */
+/* Für den Loader. Fail-soft: Abfrage aus -> Vergleich ohne Preis, die
+   Kaufseite bleibt stehen. Vergleich aus -> keine Abfrage (null). */
 export async function ladeVergleichsPreise(storefront, vergleich = VERGLEICH) {
   if (!vergleichAn(vergleich)) return null;
   try {
@@ -246,31 +214,24 @@ export async function ladeVergleichsPreise(storefront, vergleich = VERGLEICH) {
 /* ---- Kundenfragen --------------------------------------------------------- */
 
 /*
- * WELCHE FRAGEN NACH OBEN: alle Fragen, deren Bestandsantwort das Haus heute
- * schon als sauber auszeichnet (isSchemaSafe aus lib/faq-schema.js, dieselbe
- * Regel, die über das FAQPage-Schema entscheidet). Was das Haus nicht
- * verstärkt, zieht auch dieser Block nicht nach oben; es bleibt unten stehen.
- *
- * IN WELCHER REIHENFOLGE: nach dem Zähler der Kundenworte aus s03
- * (claude-jobs/growth-m-lp-produktseite-verkauft-s03/mess/kundenfragen-
- * zaehler.json, Stand 2026-09-26): Anteil der Gespräche im Verkaufs-Chat, in
- * denen das Thema in EIGENEN Worten vorkam (Nenner 377), plus Anteil der
- * deutschen Support-Chats (Gorgias, Nenner 1.029). Tragen 6,4 + 26,2 = 32,6;
- * Sauna/Wasser 0,5 + 18,4 = 18,9; Preis/Raten 8,5 + 4,4 = 12,9;
- * Material 1,6 + 2,8 = 4,4. Fragen ohne Thema stehen am Ende.
- *
- * DAS SCHEMA BLEIBT EINES: weil oben ALLE sauberen Fragen stehen, trägt die
- * FAQ unten keine saubere Frage mehr und gibt kein FAQPage-JSON-LD mehr aus.
- * Der Block oben gibt es statt ihrer aus, über die VOLLE Liste — byte-gleich
- * zu dem, was die FAQ vorher ausgab. Genau ein FAQPage je Seite.
+ * WELCHE FRAGEN NACH OBEN: alle, deren Bestandsantwort das Haus schon als
+ * sauber auszeichnet (isSchemaSafe, lib/faq-schema.js, dieselbe Regel wie das
+ * FAQPage-Schema). Was das Haus nicht verstärkt, zieht auch dieser Block nicht
+ * nach oben. REIHENFOLGE nach dem Kundenworte-Zähler aus s03 (claude-jobs/
+ * growth-m-lp-produktseite-verkauft-s03/mess/kundenfragen-zaehler.json,
+ * 2026-09-26): Anteil Verkaufs-Chat in eigenen Worten (Nenner 377) plus Anteil
+ * deutsche Support-Chats (Gorgias, Nenner 1.029): Tragen 6,4 + 26,2 = 32,6;
+ * Sauna/Wasser 0,5 + 18,4 = 18,9; Preis/Raten 8,5 + 4,4 = 12,9; Material
+ * 1,6 + 2,8 = 4,4. SCHEMA: unten bleibt keine saubere Frage, die FAQ unten gibt
+ * kein FAQPage mehr aus; der Block oben gibt es über die VOLLE Liste aus,
+ * byte-gleich zu vorher. Genau ein FAQPage je Seite.
  */
 export const KUNDENFRAGEN = {
   // Überschrift des Blocks (Bedienwort, Christians Wortlaut ersetzt sie).
   titel: 'Kunden fragen',
   // Schalter: Seiten, auf denen der Block steht. [] = aus.
   seiten: ['qione-2-pro', 'qibracelet', 'qihome-air'],
-  // Themen in Rangfolge (siehe oben), je Thema die Fragen aus
-  // data/product-faqs.js, wörtlich als Schlüssel.
+  // Themen in Rangfolge; Fragen wörtlich aus data/product-faqs.js.
   rang: [
     {
       thema: 'tragen',
@@ -308,12 +269,8 @@ function rangVon(frage, rang) {
   return Number.MAX_SAFE_INTEGER;
 }
 
-/*
- * Teilt die FAQ einer Seite: `oben` = die sauberen Fragen nach Rang, `unten`
- * = der Rest in Bestandsreihenfolge. Aus (Schalter) oder nichts Sauberes:
- * oben leer, unten ist DIESELBE Liste (dasselbe Array), die Seite rendert
- * damit exakt wie vor s04.
- */
+/* `oben` = saubere Fragen nach Rang, `unten` = der Rest. Aus oder nichts
+   Sauberes: oben leer, unten DASSELBE Array (Seite wie vor s04). */
 export function teileFragen(handle, items, kundenfragen = KUNDENFRAGEN) {
   const liste = Array.isArray(items) ? items : [];
   const an = Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle);
