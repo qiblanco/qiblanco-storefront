@@ -3494,6 +3494,25 @@ footer.footer :focus-visible {
   justify-content: space-between;
   gap: 20px;
 }
+/* Galerie VOR dem Bildeingang so breit wie ihre Spalte (Job 20260927-
+   produktgalerie-kollabiert-vor-dem-bildeingang-css-beide-laeden-prio40).
+   .ProductImages zentriert (align-items: center), der Wrapper ist darum
+   shrink-to-fit, und .product-image darin ebenfalls (align-items: flex-start).
+   Ihre Breite ist dann die Eigenbreite des Hauptbilds; bevor es da ist, ist
+   die 0. Gemessen mit festgehaltenen Bildabrufen: Galerie 52 px von 390 px
+   (qiblanco QiOne 2 Pro), 0 px von 358 px (crystal-cacao.com Awake), beim
+   Bildeingang Sprung auf volle Breite. Beide Breiten sind noetig: nur der
+   Wrapper auf 100 % liess .product-image auf crystal-cacao.com bei 0 px.
+   Geladen ist die Geometrie unter 1024 px unveraendert (Wrapper und Bild
+   waren dort schon spaltenbreit). Ab 1024 px bleibt alles, wie es ist: dort
+   haengt die Spaltenbreite der Vorschau am sizes-Wert von ProductImageList
+   (Herleitung im Kopf der Komponente). */
+@media (max-width: 1023.98px) {
+  .ProductImageWrapperSticky,
+  .ProductImageWrapperSticky > .product-image {
+    width: 100%;
+  }
+}
 
 .product-image img {
   width: 100%;
