@@ -92,7 +92,7 @@ export const VERGLEICH = {
       // für den ganzen Raum: Das QiHome® Air ist auf einen Radius von bis zu
       // 160 m ausgelegt." Radius als Auslegung, nie in Quadratmetern
       // (GL-SPR-0007, Christian 2026-09-16).
-      einsatz: 'Für den ganzen Raum, auf einen Radius von bis zu 160 m ausgelegt',
+      einsatz: 'Für den ganzen Raum, auf einen Radius von bis zu 160\u00a0m ausgelegt',
       // product-faqs.js FAQ_QIHOME_AIR[2].a: "Das Gehäuse besteht aus
       // hochwertigem Chirurgenstahl, der exklusive Gitterchip™ wird aus einer
       // maßgeschneiderten High-Carat-Goldlegierung gefertigt, und die
