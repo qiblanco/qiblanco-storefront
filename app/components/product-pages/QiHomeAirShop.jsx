@@ -83,7 +83,8 @@ export function QiHomeAirShop({product}) {
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
-        <ProductImage image={featuredImage} />
+        {/* LCP ist hier das 360-Video: Bild eager, aber ohne hohe Priorität. */}
+        <ProductImage image={featuredImage} vorrang={false} />
         <ProductImageList images={product?.images} onSelectImage={(image) => setFeaturedImage(image)} />
       </div>
       </div>
