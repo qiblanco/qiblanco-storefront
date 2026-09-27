@@ -1166,6 +1166,12 @@ body:has(.lp-a3) aside h3 { font-size: var(--a-fs-xl) !important; }
 body:has(.lp-a3) ._form_15 input,
 body:has(.lp-a3) .eu-gwl-dialog { background-color: var(--a-grund) !important; }
 .lp-a3 .InfoSlider .CardOverlay { background-color: rgba(25, 23, 20, 0.5) !important; }
+/* InfoSlider-Label: dunkles Glas im Marken-Dunkelton statt 20 % Weiss aus app.css.
+   Das weisse Glas hellte helle Fotostellen weiter auf: „Starkes Wohlbefinden“
+   stand am Pixel bei Median 4,18 / p5 2,98 (Soll 4,5, 1280 px, 2026-09-27).
+   Mit 20 % Dunkelton gemessen 8,35 / 5,63. Unschaerfe und Pillenform bleiben.
+   Probe: design-meister/pruefungen/probe_kontrast_infoslider_dach.py */
+.lp-a3 .InfoSlider .InfoSliderCard .CardLabel { background: rgba(25, 23, 20, 0.2); }
 .lp-a3 .ScrollScrubVideo .TextContent-End .content {
   background-color: rgba(25, 23, 20, 0.3) !important;
 }
