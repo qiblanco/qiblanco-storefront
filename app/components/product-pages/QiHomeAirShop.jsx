@@ -154,10 +154,11 @@ function BenefitList() {
         {/* Rücknahme, Raten und der Weg zu den Bewertungen OBEN in der Liste,
             also direkt unter dem Kaufknopf (Job 20260926-growth-kaufweg-
             vertrauen-dach, Begründung in reusables/KaufZusage.jsx).
-            Die Rücknahme OHNE Tageszahl: der Inhalt dieser Seite verspricht
-            weiter unten 30 Tage, AGB und Kopfbanner 20. Der Widerspruch ist
-            gemeldet; eine dritte Stelle mit einer Zahl würde ihn vergrößern. */}
-        <KaufZusagePunkte ruecknahmeTage={null} />
+            Die Rücknahme MIT Tageszahl (Default 20): bis 2026-09-27 stand sie
+            hier ohne Zahl, weil der Inhalt weiter unten 30 Tage versprach.
+            QiHome.jsx sagt seitdem 20 Tage wie AGB, FAQ und Kopfbanner (Job
+            „Seitenwidersprüche DACH" vom 26.09.2026). */}
+        <KaufZusagePunkte />
         <li>
           <svg
             xmlns="http://www.w3.org/2000/svg"

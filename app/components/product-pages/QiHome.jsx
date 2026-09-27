@@ -186,25 +186,31 @@ function DasQiHome() {
   );
 }
 
+/* Rücknahmefrist: 20 Tage ab Erhalt, wie FAQ, Kopfbanner und
+   /pages/das-20-tage-versprechen (Christian-Freigabe 2026-06-09, Support-SOP §4).
+   Bis 2026-09-27 stand hier 30 Tage, ohne Beleg für eine gelebte 30-Tage-Regel
+   (Job „Seitenwidersprüche DACH" vom 26.09.2026).
+   Der Halbsatz „erhältst den vollen Kaufpreis zurück" ist Beleg-Nadel der
+   Nachkauf-Mail nachfrage-testzeit-qihome (postkauf-manager). */
 function RisikofreiErleben() {
   return (
     <div className="RisikofreiErleben NormalSectionSize">
-      <h2>QiHome® Air – 30 Tage erleben. Ohne Risiko, mit vollem Mehrwert!</h2>
+      <h2>QiHome® Air – 20 Tage erleben. Ohne Risiko, mit vollem Mehrwert!</h2>
       <p className="mt-2">
         Das <b>QiHome® Air</b> wurde entwickelt, um Wohn- und Arbeitsräume auf ein
         neues Level zu heben - und wir möchten, dass du es selbst erlebst.
-        Deshalb kannst du das <b> QiHome® Air 30 Tage lang in deinem Zuhause oder Unternehmen integrieren
+        Deshalb kannst du das <b> QiHome® Air 20 Tage lang in deinem Zuhause oder Unternehmen integrieren
         </b> und herausfinden, welchen Unterschied es für dich macht.
       </p>
       <p className="mt-2">
         <b>So einfach geht's:</b> <br />
         <b>✅ Stelle das QiHome® Air in deinem Wohn- oder Arbeitsbereich auf</b> und lass es wirken. <br />
         <b>✅ Erfahre, wie es deine Umgebung optimiert</b> und sich mühelos in dein Leben einfügt. <br />
-        <b>✅ Solltest du wider Erwarten nicht überzeugt sein</b>, kannst du es innerhalb von 30 Tagen unkompliziert zurückgeben und erhältst den vollen Kaufpreis zurück.
+        <b>✅ Solltest du wider Erwarten nicht überzeugt sein</b>, kannst du es innerhalb von 20 Tagen ab Erhalt unkompliziert zurückgeben und erhältst den vollen Kaufpreis zurück.
       </p>
       <p className="mt-2">
         <b>Deine Vorteile:</b> <br />
-        <b>✔ 30 Tage erleben: </b>Integriere das QiHome® Air in deinen Alltag und spüre den Unterschied in deiner Umgebung. <br />
+        <b>✔ 20 Tage erleben: </b>Integriere das QiHome® Air in deinen Alltag und spüre den Unterschied in deiner Umgebung. <br />
         <b>✔ Sicherheit durch Erfahrung:</b> Erlebe selbst, warum bereits über 500 Haushalte und Unternehmen darauf setzen. <br />
         <b>✔ Kein Risiko, nur Mehrwert: </b>Sollte es nicht das Richtige für dich sein, bekommst du dein Geld zurück – einfach & fair.
       </p>

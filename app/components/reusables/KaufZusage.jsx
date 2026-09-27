@@ -33,10 +33,11 @@ import {
  * (Fußnote 2 im Fuß jeder Seite).
  *
  * DIE DREI PUNKTE:
- *  1. Rücknahme. `ruecknahmeTage={null}` lässt die Zahl weg: auf
- *     /products/qihome-air verspricht der Inhalt weiter unten 30 Tage, AGB und
- *     Kopfbanner sagen 20. Der Widerspruch ist gemeldet und wird hier nicht
- *     durch eine dritte Zahl vergrößert.
+ *  1. Rücknahme. `ruecknahmeTage={null}` lässt die Zahl weg, für eine Seite,
+ *     deren eigener Inhalt eine andere Frist nennt. Bis 2026-09-27 war das
+ *     /products/qihome-air (Inhalt 30 Tage, AGB und Kopfbanner 20); seit dem
+ *     Job „Seitenwidersprüche DACH" vom 26.09.2026
+ *     sagt die Seite 20 Tage und nutzt den Default.
  *  2. Raten, nur im Markt DE: Ratenzahlung steht laut Fußnote 2 nur Kundinnen
  *     und Kunden mit deutschem Wohnsitz offen.
  *  3. Der Weg zu den echten Google-Bewertungen. Anzahl und Note kommen zur
