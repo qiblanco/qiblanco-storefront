@@ -232,7 +232,15 @@ export default function Product() {
              Kaufknopf (Job 20260926-growth-kaufweg-vertrauen-dach, Begründung
              in reusables/KaufZusage.jsx). */
           <QiOneBenefitList
-            vorPunkte={<KaufZusagePunkte />}
+            vorPunkte={
+              /* Monatsbetrag der Ratenzeile aus dem Preis dieser Variante
+                 (Job 20260926-kaufblock-raten-und-testzeit-qione-2-pro-prio35,
+                 Begründung in reusables/KaufZusage.jsx). */
+              <KaufZusagePunkte
+                preis={product?.selectedOrFirstAvailableVariant?.price}
+                handle={product?.handle}
+              />
+            }
             zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
           />
         }
