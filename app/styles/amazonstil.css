@@ -1,0 +1,195 @@
+/* ============================================================================
+   amazonstil.css — Gerätevergleich (.qb-gv) und Kundenfragen (.qb-kf)
+   ----------------------------------------------------------------------------
+   Amazon-Stil Stufe 2 (Grossjob growth-m-lp-produktseite-verkauft, s04,
+   27.09.2026). Komponente: components/reusables/AmazonStil.jsx, Texte und
+   Schalter: components/reusables/amazonstil-daten.js. Geladen über links()
+   genau der drei Geräte-Kaufseiten (/products/qione-2-pro, /qibracelet,
+   /qihome-air); die /pages/-Kaufseiten laden die Datei nicht.
+
+   KEIN NEUER WERT (Design-Pflicht, Brief products-qione-2-pro):
+   - Schrift nur in Stufen, die alle drei Seiten schon führen: 14 px
+     (0.875rem), 16 px (1rem), 19,2 px (1.2rem). H2 und H3 setzen die Seiten
+     selbst (pdp-qi.css bzw. qihome-air.css, reset.css) — hier steht
+     ABSICHTLICH keine Überschriftengröße, sonst bekäme die Seite einen
+     zweiten H2-Stil (Lehre der IG-Stimmen-Fläche, D-2026-09-11).
+   - Farbe aus qb-tokens.css (--qb-text, --qb-text-gedaempft); der
+     Kartengrund ist der Kartengrund DER JEWEILIGEN SEITE (--pdpqi-karte auf
+     QiOne/QiBracelet, --qa-flaeche auf QiHome Air), keine vierte Fläche.
+     Die Linie ist dieselbe wie zwischen den FAQ-Fragen (app.css
+     .ProductFAQ__item: 1px rgba(0,0,0,0.1)).
+   - Radius --qb-radius-klein (8 px, web-soll radius_set_px), Abstände auf
+     dem 8-px-Raster, Sektions-Takt 64 px (web-soll sektions_takt_px).
+   - Gold nur auf Handlung: hier steht kein Gold. Die Wege zu den anderen
+     Geräten sind der Textknopf aus dem Bausatz (.btn--text, app.css).
+   ========================================================================== */
+
+/* ---- Gerätevergleich ------------------------------------------------------ */
+.qb-gv {
+  margin-top: 64px;
+  margin-bottom: 64px;
+}
+.qb-gv__titel {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.qb-gv__raster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.qb-gv__geraet {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--pdpqi-karte, var(--qa-flaeche, #fff));
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--qb-radius-klein);
+  color: var(--qb-text);
+}
+/* Das Gerät DIESER Seite: dieselbe Linie, nur kräftiger und in der Tinte —
+   ein Zustand, keine Handlung, deshalb kein Gold. */
+.qb-gv__geraet--eigenes {
+  border: 2px solid var(--qb-text);
+}
+.qb-gv__kopf {
+  margin: 0;
+}
+.qb-gv__kopf-inhalt {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+a.qb-gv__kopf-inhalt:hover .qb-gv__name {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.qb-gv__bild {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+.qb-gv__merkmale {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.qb-gv__zeile {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 8px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.qb-gv__zeile dt {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft);
+}
+.qb-gv__zeile dd {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.qb-gv__zeile--preis dd {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+/* Trefferfläche >= 44 px auch für die Studien-Links (web-tokens
+   trefferflaeche.min_px, WCAG 2.5.5). */
+.qb-gv__studie {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.qb-gv__studie:hover {
+  text-decoration: none;
+}
+.qb-gv__fuss {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: auto;
+}
+.qb-gv__weg {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: left;
+}
+.qb-gv__marke {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--qb-text-gedaempft);
+}
+
+/* Breiter als das Handy: drei Spalten nebeneinander, und die Zeilen der drei
+   Karten stehen auf EINER Höhe (subgrid), damit sich Preis neben Preis und
+   Material neben Material lesen lässt wie in einer Tabelle. Ohne subgrid
+   (alte Browser) stehen die Karten nur nebeneinander, lesbar bleibt alles. */
+@media (min-width: 750px) {
+  .qb-gv__raster {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 24px;
+  }
+  .qb-gv__geraet {
+    display: grid;
+    grid-row: span 7;
+    grid-template-rows: subgrid;
+    gap: 0;
+    padding: 24px;
+  }
+  .qb-gv__raster--raten .qb-gv__geraet {
+    grid-row: span 8;
+  }
+  .qb-gv__kopf-inhalt {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    padding-bottom: 16px;
+  }
+  .qb-gv__bild {
+    width: 120px;
+    height: 120px;
+  }
+  .qb-gv__merkmale {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+  }
+  .qb-gv__raster--raten .qb-gv__merkmale {
+    grid-row: span 6;
+  }
+  .qb-gv__fuss {
+    padding-top: 8px;
+  }
+}
+
+/* ---- Kundenfragen --------------------------------------------------------- */
+/* Rahmenmass wie die FAQ unten (ProductFAQ.jsx: max-width 860, seitlich
+   1.5rem), damit beide Fragen-Blöcke der Seite dieselbe Spalte haben. Die
+   Fragen selbst tragen die Klassen der FAQ (.ProductFAQ__*, app.css) und
+   sehen deshalb aus wie sie. */
+.qb-kf {
+  max-width: 860px;
+  margin-top: 64px;
+  margin-bottom: 64px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.qb-kf__titel {
+  margin-bottom: 16px;
+}
+.qb-kf__liste {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}

@@ -35,6 +35,11 @@ import {InhaltswegNeuOderGebraucht} from './InhaltswegNeuOderGebraucht';
  * optionale Trust-Slots um den BESTEHENDEN InfoSlider — die Campaign-PDP
  * übergibt die 3 Google-Einzel-Bewertungen davor und das Reputon-Widget
  * danach (Startseiten-Trust 1:1; Slider-REUSE statt Zweitinstanz, D-045).
+ * faqItems (Default = die volle Bestandsliste, also unverändert): die Fragen
+ * der FAQ am Seitenende. Die organische PDP übergibt seit dem 27.09.2026 nur
+ * den Rest, weil ihre häufigsten Kundenfragen weiter oben stehen (Amazon-Stil
+ * Stufe 2, reusables/AmazonStil.jsx). Die Campaign-PDP übergibt nichts und
+ * bleibt als Kontrollgruppe byte-gleich.
  */
 export default function QiOne2Pro({
   block = undefined,
@@ -43,6 +48,7 @@ export default function QiOne2Pro({
   gitterchipAnimation = null,
   trustVorSlider = null,
   trustNachSlider = null,
+  faqItems = FAQ_QIONE_2_PRO,
 }) {
   return (
     <div className="ProductPageQiOne">
@@ -189,7 +195,7 @@ export default function QiOne2Pro({
         <YoutubeIframe link={'https://www.youtube.com/embed/ugzSE3UXno4'} titel="Dreifacher Weltrekordhalter Frank Delventhal spricht über seine Erfahrungen mit QiOne" />
       </div>
       <UpsellLineUp block={block} />
-      <ProductFAQ items={FAQ_QIONE_2_PRO} />
+      <ProductFAQ items={faqItems} />
     </div>
   );
 }

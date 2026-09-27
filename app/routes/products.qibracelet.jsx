@@ -27,6 +27,14 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
+import amazonstilStyles from '~/styles/amazonstil.css?url';
+import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
+import {
+  amazonstilAn,
+  ladeVergleichsPreise,
+  teileFragen,
+} from '~/components/reusables/amazonstil-daten';
+import {FAQ_QIBRACELET} from '~/data/product-faqs';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 /*
  * ZWEI route-gebundene Stylesheets — zwei Gründe, keines ersetzt das andere.
@@ -62,6 +70,9 @@ export function links() {
     // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*).
     {rel: 'stylesheet', href: produktVideoStyles},
+    // Gerätevergleich + Kundenfragen (Amazon-Stil Stufe 2, s04, 27.09.2026).
+    // Eigene Klassen (.qb-gv-*, .qb-kf-*); beide Schalter aus = keine Zeile.
+    ...(amazonstilAn('qibracelet') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
   ];
 }
 
@@ -112,13 +123,17 @@ export async function loader(args) {
 async function loadCriticalData({ context, request }, handle) {
   const { storefront } = context;
 
-  const [{ product }] = await Promise.all([
+  const [{ product }, vergleichsPreise] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle, // ✅ use the static handle
         selectedOptions: getSelectedProductOptions(request),
       },
     }),
+    // Preise der drei Geräte für den Gerätevergleich, parallel zur Kaufbox
+    // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
+    // null = Vergleich aus, dann fragt niemand.
+    ladeVergleichsPreise(storefront),
   ]);
 
   if (!product?.id) {
@@ -134,6 +149,9 @@ async function loadCriticalData({ context, request }, handle) {
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
     // kasse-nimmt-20-prio8.
     marktLand: storefront.i18n.country,
+    // Nur bei eingeschaltetem Vergleich: aus heisst auch ohne Schlüssel in
+    // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
+    ...(vergleichsPreise ? {vergleichsPreise} : {}),
   };
 }
 
@@ -147,7 +165,11 @@ function loadDeferredData({ context, params }) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, vergleichsPreise} = useLoaderData();
+  // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
+  // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
+  // unveränderte Liste.
+  const fragen = teileFragen('qibracelet', FAQ_QIBRACELET);
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -252,7 +274,21 @@ export default function Product() {
         der products.qione-2-pro.jsx seine Anker-frei-Regel führt.
       */}
       <IgTestimonialSlideshow produkt="QiBracelet" />
-      <QiBracelet /> 
+      {/*
+        AMAZON-STIL STUFE 2 (Christian 26.09.2026, Leitplanke Folie 11;
+        Grossjob growth-m-lp-produktseite-verkauft, s04): der Vergleich der
+        drei Geräte und die häufigsten Kundenfragen direkt nach den
+        Instagram-Stimmen, statt bei 90 % Seitentiefe. Nur hier auf der
+        /products/-Seite; /pages/qibracelet ist die Kontrollgruppe der
+        Wirkungsmessung und bekommt nichts davon. BEWUSST ohne dataSection.
+      */}
+      <Geraetevergleich
+        handle="qibracelet"
+        preise={vergleichsPreise}
+        eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
+      />
+      <Kundenfragen handle="qibracelet" oben={fragen.oben} alle={FAQ_QIBRACELET} />
+      <QiBracelet faqItems={fragen.unten} /> 
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
