@@ -1,5 +1,5 @@
 import {useLoaderData} from 'react-router';
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {ZellSchutz} from '~/components/campaign/ZellSchutz';
 import {lpTestPausiert, lpAZiel} from '~/lib/lp-pause.server';
 import lpBStyles from '~/styles/zell-schutz.css?url';

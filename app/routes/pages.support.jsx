@@ -1,4 +1,4 @@
-import {data} from '@shopify/remix-oxygen';
+import {data} from 'react-router';
 import {Form, Link, useActionData, useNavigation} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
@@ -407,4 +407,4 @@ const inputStyle = {
 };
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('@shopify/remix-oxygen').ActionFunctionArgs} ActionFunctionArgs */
+/** @typedef {import('react-router').ActionFunctionArgs} ActionFunctionArgs */

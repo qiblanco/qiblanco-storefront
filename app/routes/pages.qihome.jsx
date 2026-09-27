@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 
 /*
  * /pages/qihome — permanenter 301 auf /pages/qihome-details
@@ -31,4 +31,4 @@ export default function QiHomeRedirect() {
   return null;
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

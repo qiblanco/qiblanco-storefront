@@ -1,4 +1,4 @@
-import {createCookieSessionStorage} from '@shopify/remix-oxygen';
+import {createCookieSessionStorage} from 'react-router';
 
 /**
  * This is a custom session implementation for your Hydrogen shop.
@@ -80,5 +80,5 @@ export class AppSession {
 }
 
 /** @typedef {import('@shopify/hydrogen').HydrogenSession} HydrogenSession */
-/** @typedef {import('@shopify/remix-oxygen').SessionStorage} SessionStorage */
-/** @typedef {import('@shopify/remix-oxygen').Session} Session */
+/** @typedef {import('react-router').SessionStorage} SessionStorage */
+/** @typedef {import('react-router').Session} Session */

@@ -138,5 +138,5 @@ export default function ImpressumPage() {
   );
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */

@@ -1,5 +1,5 @@
 import {useLoaderData} from 'react-router';
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {QiOneZellschutz} from '~/components/campaign/QiOneZellschutz';
 import {lpTestPausiert, lpAZiel} from '~/lib/lp-pause.server';
 import qioneZellschutzStyles from '~/styles/qione-zellschutz.css?url';

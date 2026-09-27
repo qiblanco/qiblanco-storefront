@@ -1,5 +1,5 @@
 /**
- * Orchestrierung des /go-Loaders — bewusst OHNE @shopify/remix-oxygen-Import, damit
+ * Orchestrierung des /go-Loaders — bewusst OHNE react-router-Import (frueher @shopify/remix-oxygen), damit
  * sie ohne Build-Toolchain per `node --test` prüfbar ist (app/routes/go.jsx bleibt ein
  * duenner Adapter, der handleGoRequest() in ein redirect() uebersetzt).
  *

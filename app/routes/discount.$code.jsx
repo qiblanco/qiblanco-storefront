@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
 
 /**
@@ -36,5 +36,5 @@ export async function loader({request, context, params}) {
   });
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

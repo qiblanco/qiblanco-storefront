@@ -203,7 +203,7 @@ const COLLECTIONS_QUERY = `#graphql
   }
 `;
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('storefrontapi.generated').CollectionFragment} CollectionFragment */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

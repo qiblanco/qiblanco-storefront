@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 
 // fallback wild card for all unauthenticated routes in account section
 /**
@@ -10,5 +10,5 @@ export async function loader({context}) {
   return redirect('/account');
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

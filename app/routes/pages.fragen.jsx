@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
 
 /**
@@ -41,4 +41,4 @@ export default function FragenWeiterleitung() {
   return null;
 }
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

@@ -1,5 +1,5 @@
 import {useLoaderData} from 'react-router';
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -455,6 +455,6 @@ const PRODUCT_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
 `;
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */

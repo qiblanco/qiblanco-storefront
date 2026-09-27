@@ -1,4 +1,4 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect} from 'react-router';
 // `data` umbenannt importiert: der meta()-Export destrukturiert selbst ein
 // Argument namens `data` und würde den Import sonst beschatten (Muster aus
 // `pages.$handle.jsx`).
@@ -346,6 +346,6 @@ const COLLECTION_QUERY = `#graphql
   }
 `;
 
-/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+/** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */
