@@ -5473,6 +5473,23 @@ ul.kakao-children li {
     max-height: 50vh;
     width: 100%;
   }
+
+  /* Platz fuer das 360-Grad-Video reservieren, bevor Poster oder Metadaten da
+     sind. Ohne das ist der Wrapper im zentrierenden Flex-Container
+     shrink-to-fit, das <video> hat noch keine Abmessungen, und die Galerie
+     darunter springt beim Eintreffen um ~358 px (390x844, QiBracelet live
+     CLS 0,21 von 0,24). Alle vier 360-Videos (QiBracelet, QiHome Air, je
+     /products/ und /pages/) sind 1x1, ihre Poster ebenso; `auto` laesst ein
+     kuenftiges Video mit anderem Format sein eigenes Verhaeltnis nehmen.
+     min(100%, 50vh): so breit wie das geladene Video (max-height 50vh, 1x1),
+     damit Tablet-Breiten bis 768 px dieselbe Box behalten wie bisher. */
+  .product-360-hero__video .ImgixVideo-wrap {
+    width: min(100%, 50vh);
+  }
+
+  .product-360-hero__video video {
+    aspect-ratio: auto 1 / 1;
+  }
 }
 
 @media screen and (max-width: 749px) {
