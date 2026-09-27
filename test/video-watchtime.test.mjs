@@ -101,9 +101,9 @@ function mkUmgebung() {
         );
       }
     },
-    nachricht(fenster, daten) {
+    nachricht(fenster, daten, origin) {
       for (const fn of listener.message || []) {
-        fn({source: fenster, data: JSON.stringify(daten)});
+        fn({source: fenster, data: JSON.stringify(daten), origin});
       }
     },
     tab(zustand) {
@@ -325,4 +325,83 @@ test('Ohne Anker wird nichts angebunden — ein Notbehelf wäre hier ein erfunde
   U.uhr(5000);
   U.nachricht(rahmen.contentWindow, {event: 'onStateChange', info: 1});
   assert.equal(U.gemeldet.length, 0);
+});
+
+/* --- DER HANDSCHLAG (Job 20260927-videobaustein-klick-ohne-rueckmeldung-
+ * spielt-attribut-postmessage-beide-laeden) -------------------------------
+ * Vorher ging der Gruß alle 700 ms an ZWEI Ursprünge und begann vor dem
+ * load: gemessen 4 Konsolenwarnungen je Klick bei erreichbarem YouTube, 16 bei
+ * gesperrtem. Festgenagelt wird hier, was WIR senden — nicht, ob YouTube
+ * antwortet (das misst homepage-bauer/bin/mess_videoumschaltung.py live). */
+const NC = 'https://www.youtube-nocookie.com';
+function ECHTER_RAHMEN() {
+  const gesendet = [];
+  const lauscher = {};
+  return {
+    gesendet,
+    src: `${NC}/embed/abc?start=0&autoplay=1&origin=https%3A%2F%2Fqiblanco.com&widgetid=7&enablejsapi=1`,
+    getAttribute(n) {
+      return n === 'src' ? this.src : null;
+    },
+    addEventListener(t, fn) {
+      (lauscher[t] = lauscher[t] || []).push(fn);
+    },
+    removeEventListener(t, fn) {
+      lauscher[t] = (lauscher[t] || []).filter((f) => f !== fn);
+    },
+    feuere(t) {
+      for (const fn of lauscher[t] || []) fn({});
+    },
+    contentWindow: {
+      postMessage(daten, ziel) {
+        gesendet.push({daten: JSON.parse(daten), ziel});
+      },
+    },
+  };
+}
+
+test('HANDSCHLAG: kein Gruß vor readyToListen, danach genau einer an den Ursprung der src', async () => {
+  const U = mkUmgebung();
+  const {youtubeWatchtimeAnbinden} = await ladeModul(U);
+  const r = ECHTER_RAHMEN();
+  youtubeWatchtimeAnbinden(r, {objekt: 'yt-abc', widgetId: 7});
+  U.uhr(5000);
+  assert.equal(r.gesendet.length, 0, 'vor readyToListen darf NICHTS gesendet werden');
+  U.nachricht(r.contentWindow, {event: 'readyToListen', channel: 'widget', id: 7}, NC);
+  assert.equal(r.gesendet.length, 1);
+  assert.equal(r.gesendet[0].ziel, NC, 'nur der Ursprung, den das iframe trägt');
+  assert.equal(r.gesendet[0].daten.event, 'listening');
+  assert.equal(r.gesendet[0].daten.id, 7);
+});
+
+test('HANDSCHLAG: Ersatz-Gruß beim load nur, solange kein initialDelivery kam', async () => {
+  const U = mkUmgebung();
+  const {youtubeWatchtimeAnbinden} = await ladeModul(U);
+  const r = ECHTER_RAHMEN();
+  youtubeWatchtimeAnbinden(r, {objekt: 'yt-abc', widgetId: 7});
+  r.feuere('load');
+  assert.equal(r.gesendet.length, 1, 'ohne Handschlag: EIN Ersatz-Gruß beim load');
+  const r2 = ECHTER_RAHMEN();
+  youtubeWatchtimeAnbinden(r2, {objekt: 'yt-def', widgetId: 8});
+  U.nachricht(r2.contentWindow, {event: 'initialDelivery', info: {playerState: -1}}, NC);
+  r2.feuere('load');
+  assert.equal(r2.gesendet.length, 0, 'steht der Handschlag, bleibt der load stumm');
+  const r3 = ECHTER_RAHMEN();
+  youtubeWatchtimeAnbinden(r3, {objekt: 'yt-ghi', widgetId: 9});
+  r3.src = 'about:blank';
+  r3.feuere('load');
+  assert.equal(r3.gesendet.length, 0, 'ein load unter fremder Adresse zählt nicht');
+});
+
+test('HANDSCHLAG: onAntwort genau einmal, und nur für den eigenen Ursprung', async () => {
+  const U = mkUmgebung();
+  const {youtubeWatchtimeAnbinden} = await ladeModul(U);
+  const r = ECHTER_RAHMEN();
+  let antworten = 0;
+  youtubeWatchtimeAnbinden(r, {objekt: 'yt-abc', widgetId: 7, onAntwort: () => { antworten += 1; }});
+  U.nachricht(r.contentWindow, {event: 'initialDelivery', info: {}}, 'https://fremd.example');
+  assert.equal(antworten, 0, 'ein fremder Ursprung ist keine Antwort des Players');
+  U.nachricht(r.contentWindow, {event: 'readyToListen'}, NC);
+  U.nachricht(r.contentWindow, {event: 'onReady', info: null}, NC);
+  assert.equal(antworten, 1, 'die ERSTE Nachricht zählt, und nur einmal');
 });

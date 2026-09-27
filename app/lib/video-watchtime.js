@@ -24,6 +24,20 @@
  * Antworten `onReady` / `onStateChange` / `infoDelivery`. Kosten: null Bytes
  * Netz, kein zusätzlicher Request.
  *
+ * DER HANDSCHLAG SEIT DEM 2026-09-27 (Job 20260927-videobaustein-klick-ohne-
+ * rueckmeldung-spielt-attribut-postmessage-beide-laeden) — nach YouTubes
+ * eigener www-widgetapi.js, nicht nach Gefühl: gegrüßt wird NUR der Ursprung,
+ * den das iframe trägt (aus seiner `src`), und nur wenn der Player zuhört.
+ * Trägt die Einbettungs-URL `origin` und `widgetid`, meldet er sich UNGEFRAGT
+ * mit `readyToListen` (gemessen 516 ms nach dem Einhängen, VOR dem load);
+ * darauf wird gegrüßt, plus EIN Ersatz-Gruß beim load, falls bis dahin kein
+ * `initialDelivery` kam. VORHER ging der Gruß alle 700 ms an ZWEI Ursprünge
+ * und begann, bevor das iframe geladen war — gemessen 4 Konsolenwarnungen je
+ * Klick mit erreichbarem YouTube und 16 mit gesperrtem. Jetzt 0 bzw. 1.
+ * Neu dazu `onAntwort`: die erste Nachricht des Players überhaupt — die
+ * Auskunft, ob im Rahmen ein Player lebt (YoutubeTimestamp baut daraus den
+ * Ausweg für den Fall, dass keiner antwortet).
+ *
  * EHRLICHE GRENZE: dieses Protokoll ist nicht förmlich dokumentiert. Bleiben
  * die Antworten aus, passiert genau NICHTS — keine Ereignisse, kein Fehler,
  * kein Rückfall auf geratene Zahlen. Der Zustand ist dann derselbe wie heute
@@ -166,6 +180,7 @@ function pruefeStart(konto) {
 function aufNachricht(ev) {
   const eintrag = spieler.find((s) => s.fenster && s.fenster === ev.source);
   if (!eintrag) return;
+  if (eintrag.ursprung && ev.origin !== eintrag.ursprung) return;
   let d;
   try {
     d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
@@ -176,6 +191,25 @@ function aufNachricht(ev) {
   const konto = eintrag.konto;
   const info = d.info && typeof d.info === 'object' ? d.info : null;
 
+  /* Die erste Nachricht überhaupt: im Rahmen lebt ein Player. Ein Fehler des
+   * Empfängers darf die Erfassung nie reißen. */
+  if (!konto.geantwortet) {
+    konto.geantwortet = 1;
+    if (konto.onAntwort) {
+      try {
+        konto.onAntwort();
+      } catch {
+        /* bewusst stumm */
+      }
+    }
+  }
+  if (d.event === 'readyToListen') {
+    eintrag.gruessen();
+    return;
+  }
+  if (d.event === 'initialDelivery' || d.event === 'onReady' || d.event === 'alreadyInitialized') {
+    konto.initialisiert = 1;
+  }
   if (d.event === 'onReady') konto.bereit = 1;
 
   let neuerLauf = konto.spielt;
@@ -249,9 +283,28 @@ function empfaengerStarten() {
  *        Anker und ein Notbehelf dürfen in der Auswertung nicht gleich wiegen.
  * @returns {() => void} Abmelder
  */
+/* Der Ursprung, den ein iframe trägt — aus seiner `src`, wie in YouTubes
+ * eigener API. Leer, wenn die Adresse keinen hat (dann wird nicht gegrüßt). */
+function ursprungVon(src) {
+  try {
+    const basis =
+      typeof window !== 'undefined' && window.location ? window.location.href : undefined;
+    return new URL(String(src || ''), basis).origin;
+  } catch {
+    return '';
+  }
+}
+/* Die aktuelle Adresse eines iframes. Defensiv: ein Rahmen ohne
+ * getAttribute (Test-Attrappe, fremdes Objekt) lässt die Anbindung still
+ * weiterlaufen, statt zu werfen -- dieselbe Fehlerrichtung wie ohne qpx. */
+function adresseVon(iframe) {
+  const a = typeof iframe.getAttribute === 'function' ? iframe.getAttribute('src') : '';
+  return a || iframe.src || '';
+}
+
 export function youtubeWatchtimeAnbinden(
   iframe,
-  {objekt, objektQuelle = 'anker', onSpielt} = {},
+  {objekt, objektQuelle = 'anker', onSpielt, onAntwort, widgetId = 1} = {},
 ) {
   if (typeof window === 'undefined' || !iframe || !objekt) return () => {};
   const konto = {
@@ -290,40 +343,42 @@ export function youtubeWatchtimeAnbinden(
      */
     onSpielt: typeof onSpielt === 'function' ? onSpielt : null,
     spieltGemeldet: 0,
+    /* Hat im Rahmen je ein Player gesprochen? (Job 20260927-videobaustein) */
+    onAntwort: typeof onAntwort === 'function' ? onAntwort : null,
+    geantwortet: 0,
+    initialisiert: 0,
   };
-  const eintrag = {fenster: null, konto};
+  /* `fenster` ist die WindowProxy des iframes; sie bleibt über dessen
+   * Navigationen dieselbe, also kann `readyToListen` schon zugeordnet werden,
+   * bevor irgendwer gegrüßt hat. */
+  const quelle = adresseVon(iframe);
+  const eintrag = {fenster: iframe.contentWindow || null, konto, ursprung: ursprungVon(quelle)};
+  eintrag.gruessen = () => {
+    try {
+      const f = iframe.contentWindow;
+      if (!f || !eintrag.ursprung) return;
+      eintrag.fenster = f;
+      f.postMessage(
+        JSON.stringify({event: 'listening', id: widgetId, channel: 'widget'}),
+        eintrag.ursprung,
+      );
+    } catch {
+      /* fremdes Fenster nicht erreichbar — der Ausweg der Fassade fängt das auf */
+    }
+  };
   spieler.push(eintrag);
   empfaengerStarten();
 
-  /* Handshake. Der Player antwortet erst, wenn er zuhört — bis `onReady` wird
-   * er deshalb ein paar Mal angesprochen und dann nicht mehr. Kein Dauer-Timer. */
-  let versuche = 0;
-  let handschlag = 0;
-  const anklopfen = () => {
-    versuche += 1;
-    try {
-      const f = iframe.contentWindow;
-      if (f) {
-        eintrag.fenster = f;
-        f.postMessage(
-          JSON.stringify({event: 'listening', id: 1, channel: 'widget'}),
-          'https://www.youtube.com',
-        );
-        f.postMessage(
-          JSON.stringify({event: 'listening', id: 1, channel: 'widget'}),
-          'https://www.youtube-nocookie.com',
-        );
-      }
-    } catch {
-      /* fremdes Fenster noch nicht bereit — beim nächsten Versuch wieder */
-    }
-    if (konto.bereit || versuche >= 8) {
-      window.clearInterval(handschlag);
-      handschlag = 0;
-    }
+  /* EIN Ersatz-Gruß beim load der EIGENEN Quelle, falls der Handschlag bis
+   * dahin nicht steht (etwa weil YouTube `readyToListen` je fallen lässt). Ein
+   * load unter fremder Adresse (Erweiterung, Einwilligungs-Werkzeug) zählt
+   * nicht. Kein Dauer-Timer. */
+  const beiLoad = () => {
+    if (adresseVon(iframe) !== quelle) return;
+    if (!konto.initialisiert) eintrag.gruessen();
   };
-  anklopfen();
-  handschlag = window.setInterval(anklopfen, 700);
+  const hatLoad = typeof iframe.addEventListener === 'function';
+  if (hatLoad) iframe.addEventListener('load', beiLoad);
 
   /* MRC-Sichtbarkeit am iframe selbst.
    *
@@ -386,7 +441,7 @@ export function youtubeWatchtimeAnbinden(
   }
 
   return () => {
-    window.clearInterval(handschlag);
+    if (hatLoad) iframe.removeEventListener('load', beiLoad);
     mrcUhrLoeschen();
     if (io) io.disconnect();
     const i = spieler.indexOf(eintrag);
