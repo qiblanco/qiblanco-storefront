@@ -18,6 +18,7 @@ import {
   QIMASTER_DIAMANT,
   QIMASTER_SECHS_G,
   QIMASTER_PERSOENLICHKEIT,
+  QIMASTER_ZELLWERTE,
 } from '~/data/qi-master-texte';
 
 /*
@@ -132,22 +133,16 @@ export default function QiMaster({block = undefined}) {
 
             Optik aus dem Bestand: .qm-sektion__inner (Lesespalte 760 px),
             .qm-label--beleg (Gold nur auf „Gemessen“). Kein neues CSS.
-            Gemessen: pruefungen/probe_qimaster_zellwerte_im_studienabschnitt.py */}
+            Gemessen: pruefungen/probe_qimaster_zellwerte_im_studienabschnitt.py
+
+            DER WORTLAUT STEHT SEIT 2026-09-27 IN app/data/qi-master-texte.js
+            (QIMASTER_ZELLWERTE), nicht mehr hier: qi-master.de leitet seine
+            Inhalte aus jener Datei ab und bekommt den Block nur so mit. */}
         <div className="qm-sektion__inner" data-block="qm-zellwerte">
-          <span className="qm-label qm-label--beleg">Gemessen</span>
-          <p>
-            Darmepithelzellen behielten ihre Barrierefunktion rund zwölfmal
-            besser als ungeschützte Zellen (TEER 1.837 gegenüber 152 Ω·cm²). [8]
-          </p>
-          <p>
-            Menschliche Immunzellen behielten ihre Fähigkeit, Sauerstoffradikale
-            zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts. [9]
-          </p>
-          <p>
-            Beide Male lagen die Zellen vier Stunden lang auf einem sendenden
-            Smartphone mit aktivem WLAN. Geschützt waren sie vom QiOne® 2 Pro,
-            der denselben Gitterchip™ trägt wie dein Qi Master®.
-          </p>
+          <span className="qm-label qm-label--beleg">{QIMASTER_ZELLWERTE.label}</span>
+          {QIMASTER_ZELLWERTE.absaetze.map((abs) => (
+            <p key={abs.slice(0, 40)}>{abs}</p>
+          ))}
         </div>
       </StudienCards>
       {/* DIE FRAGEN STEHEN VOR DEM SCHLUSSAUFRUF, NICHT DAHINTER (Christian
