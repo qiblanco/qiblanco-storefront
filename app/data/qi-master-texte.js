@@ -52,8 +52,17 @@
  * [8]/[9] — nicht im Fundament und nicht im 6G-Fließtext. Das ist ein
  * AI-CEO-Entscheid (review-Item qimaster-zellwerte-nach-streichung-20260917),
  * keine Rücknahme von Christians Streichung: gestrichen hat er Einstiegs- und
- * Deutungstext, der Beweis steht am Abschluss. Die Werte hier nicht wieder
- * entfernen, und sie nicht zurück in diese Datei holen.
+ * Deutungstext, der Beweis steht am Abschluss. Die Werte nicht wieder
+ * entfernen, und sie nicht zurück in Fundament oder 6G-Fließtext holen.
+ *
+ * NACHTRAG 2026-09-27: der Wortlaut des Blocks steht seitdem in DIESER Datei,
+ * im eigenen Export QIMASTER_ZELLWERTE (ganz unten) — nicht mehr hart im JSX.
+ * Grund: qi-master.de leitet seine Inhalte aus dieser Datei ab (byte-gleich,
+ * qi-master-storefront/pruefungen/bestand.py, Klasse K1). Stand der Text im
+ * JSX, sah die Ableitung ihn nie, und der Block kam dort nie an. Gerendert
+ * wird er weiterhin NUR unter den Studienkacheln; der Export ist ein eigenes
+ * Feld, kein Teil von QIMASTER_SECHS_G oder QIMASTER_PERSOENLICHKEIT.
+ * Job 20260927-qi-master-de-zellwerte-block-mitfuehren.
  *
  * KEINE Gesundheits-, Heil- oder Wirkungsaussage über das Belegte hinaus.
  * Fremde Autoren werden zitiert, nicht zu Befuerwortern gemacht.
@@ -373,4 +382,21 @@ export const QIMASTER_PERSOENLICHKEIT = {
   // diesem Satz vor (am Live-Stand gemessen, 2026-09-18). Er steht damit
   // nicht mehr auf der Seite. Yogananda (Überlieferungs-Block) und Dartsch
   // (Quellenverzeichnis des 6G-Abschnitts) bleiben, wo sie stehen.
+};
+
+/**
+ * Die gemessenen Zellwerte im Abschnitt „Publizierte Zellstudien zum
+ * Gitterchip™“ — direkt unter den Studienkacheln (QiMaster.jsx,
+ * data-block="qm-zellwerte"; auf qi-master.de Studien.jsx). Wortlaut aus
+ * PR #645 (eed34a3), unverändert; [8] Darmepithel (Applied Cell Biology
+ * 9(3)), [9] Immunzellen (Japanese Journal of Medicine 4(1)). Die Marken
+ * zeigen auf die Quellenliste von QIMASTER_SECHS_G.
+ */
+export const QIMASTER_ZELLWERTE = {
+  label: 'Gemessen',
+  absaetze: [
+    'Darmepithelzellen behielten ihre Barrierefunktion rund zwölfmal besser als ungeschützte Zellen (TEER 1.837 gegenüber 152 Ω·cm²). [8]',
+    'Menschliche Immunzellen behielten ihre Fähigkeit, Sauerstoffradikale zu bilden, zu 84,7 statt 60,5 Prozent des Kontrollwerts. [9]',
+    'Beide Male lagen die Zellen vier Stunden lang auf einem sendenden Smartphone mit aktivem WLAN. Geschützt waren sie vom QiOne® 2 Pro, der denselben Gitterchip™ trägt wie dein Qi Master®.',
+  ],
 };
