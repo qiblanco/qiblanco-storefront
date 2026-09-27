@@ -652,6 +652,13 @@ export default async function handleRequest(
 
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);
+  // TDM-NUTZUNGSVORBEHALT als HTTP-Kopf auf jeder Dokument-Antwort. Das
+  // Impressum (app/routes/pages.impressum.jsx) nennt `tdm-reservation: 1` als
+  // Träger neben /.well-known/tdmrep.json, robots.txt und dem
+  // <meta name="tdm-reservation"> aus app/root.jsx. Bis 2026-09-27 trugen ihn
+  // nur die beiden .well-known-Routen. Hier und nicht in server.js, weil
+  // server.* auf der HARD-DENY-Liste von hb-deploy steht.
+  responseHeaders.set('tdm-reservation', '1');
 
   // Meldeweg: siehe den Block CSP-MELDEWEG am Kopf dieser Datei.
   // `header` geht UNVERÄNDERT in den scharfen Kopf darüber — dieser
