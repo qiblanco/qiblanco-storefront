@@ -449,6 +449,10 @@ export function YoutubeTimestamp({
    * in diesem Job geht. */
   const [zeigt, setZeigt] = useState(false);
   const [posterStufe, setPosterStufe] = useState(0);
+  /* `posterAus`: das Poster ist endgültig gescheitert und wird ausgeblendet.
+   * Siehe `posterFehlt` weiter unten. */
+  const [posterAus, setPosterAus] = useState(false);
+  const posterBild = useRef(null);
   /* `ausweg`: kein Player hat je geantwortet — über dem Poster steht der Link. */
   const [ausweg, setAusweg] = useState(false);
   /* Wer den Ladezustand beendet hat: player | gnadenfrist | frist. */
@@ -562,8 +566,48 @@ export function YoutubeTimestamp({
   const [stufenDatei, stufenBreite, stufenHoehe] = POSTER_STUFEN[posterStufe];
   /* Eigenes Standbild (`thumbnail`) bringt seine eigene Kette mit und hat
    * keine erzeugte Vorstufe — dann bleibt es beim bisherigen Verhalten.
-   * Eine fehlende Vorstufe ist kein Fehler, sondern der Stand von vorher. */
-  const vorstufe = thumbnail ? null : VIDEO_LQIP[videoId];
+   * Eine fehlende Vorstufe ist kein Fehler, sondern der Stand von vorher.
+   * AUSNAHME (2026-09-27): ist `thumbnail` nur das YouTube-Poster DESSELBEN
+   * Videos (i.ytimg.com/vi/<videoId>/…), zeigt es dasselbe Motiv wie die
+   * Vorstufe — dann liegt sie darunter wie im Ketten-Modus. */
+  const eigenesStandbild =
+    Boolean(thumbnail) && !String(thumbnail).includes(`i.ytimg.com/vi/${videoId}/`);
+  const vorstufe = eigenesStandbild ? null : VIDEO_LQIP[videoId];
+
+  /*
+   * DAS POSTER FÄLLT AUS (Job 20260927-dach-videoposter-von-ytimg-kaputt-bei-
+   * gesperrtem-youtube).
+   *
+   * Sperrt der Besucher YouTube (Tracking-Schutz, Erweiterung, Firmennetz),
+   * scheitert auch i.ytimg.com. Bis hierher stand dann VOR jedem Klick ein
+   * kaputtes Bildsymbol im Kasten: auf der Startseite über der Vorstufe, auf
+   * /pages/podcasts auf leerer Fläche (gemessen 2026-09-27: 5 von 5 und 18 von
+   * 18 Kästen). Zwei Lücken trugen das:
+   *   1. Der Abstieg maxres → sd → hq endete bei hq. Scheiterte auch hq,
+   *      blieb das gescheiterte Bild sichtbar stehen. Mit `thumbnail` gab es
+   *      gar keinen Fehlerweg.
+   *   2. Ein Bild, das VOR der Hydration scheitert, meldet sein `error` an
+   *      niemanden: React hängt `onError` erst beim Hydrieren an. Oberhalb
+   *      der Falz ist das der Normalfall bei einer Sperre (gemessen: der erste
+   *      Startseiten-Kasten stand noch auf maxresdefault, die tieferen, erst
+   *      beim Scrollen geladenen, waren bis hqdefault abgestiegen).
+   * Jetzt: die letzte Stufe (bzw. das eigene Standbild) scheitert → das Poster
+   * wird ausgeblendet. Darunter bleibt die Vorstufe, sonst die Fläche des
+   * Kastens, und darüber das Play-Abzeichen. Beim Einhängen wird einmal
+   * nachgesehen, ob das Bild schon gescheitert ist (`complete` und
+   * `naturalWidth === 0`). Ein lazy Bild, das noch nicht angefragt wurde, ist
+   * nicht `complete` und wird deshalb nicht angerührt.
+   */
+  const posterFehlt = () => {
+    if (thumbnail || posterStufe >= POSTER_STUFEN.length - 1) setPosterAus(true);
+    else setPosterStufe(posterStufe + 1);
+  };
+  useEffect(() => {
+    const p = posterBild.current;
+    if (p && p.getAttribute('src') && p.complete && p.naturalWidth === 0) posterFehlt();
+    /* Nur beim Einhängen: danach trägt `onError`. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   /* Die Adresse des Videos auf YouTube, an derselben Sekunde: Ausweg UND
    * Ohne-Skript-Link kommen aus DIESER Zeile. */
   const watchUrl =
@@ -582,7 +626,7 @@ export function YoutubeTimestamp({
         )
       : '';
   const posterProps = thumbnail
-    ? {src: thumbnail, width: 1280, height: 720}
+    ? {src: thumbnail, width: 1280, height: 720, onError: posterFehlt}
     : {
         src: `https://i.ytimg.com/vi/${videoId}/${stufenDatei}.jpg`,
         srcSet: POSTER_STUFEN.slice(posterStufe)
@@ -591,8 +635,7 @@ export function YoutubeTimestamp({
         sizes,
         width: stufenBreite,
         height: stufenHoehe,
-        onError: () =>
-          setPosterStufe((s) => Math.min(s + 1, POSTER_STUFEN.length - 1)),
+        onError: posterFehlt,
       };
 
   /*
@@ -622,13 +665,15 @@ export function YoutubeTimestamp({
           zurück statt auf Schwarz. Sie kostet nichts, sie ist längst da. */}
       <img
         {...posterProps}
+        ref={posterBild}
         alt={posterAlt}
         loading="lazy"
+        data-qb-video-poster={posterAus ? 'aus' : undefined}
         /* Sobald der Player läuft, ist die Vorschau nur noch UNTERLAGE und
          * trägt keine eigene Aussage mehr -- für die Vorlesehilfe wäre sie
          * dann ein zweiter Text neben einem laufenden Video. */
         aria-hidden={laueft ? 'true' : undefined}
-        style={SCHICHT_STYLE}
+        style={posterAus ? {...SCHICHT_STYLE, visibility: 'hidden'} : SCHICHT_STYLE}
       />
 
       {/* SCHICHT 2 — der Player. Erst ab dem Klick im Dokument (das ist die
