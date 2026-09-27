@@ -25,6 +25,14 @@ import qihomeAirStyles from '~/styles/qihome-air.css?url';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
 import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
+import amazonstilStyles from '~/styles/amazonstil.css?url';
+import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
+import {
+  amazonstilAn,
+  ladeVergleichsPreise,
+  teileFragen,
+} from '~/components/reusables/amazonstil-daten';
+import {FAQ_QIHOME_AIR} from '~/data/product-faqs';
 // DATENSPARSAM AN DER GRENZE: benannte Importe statt des ganzen Artefakts.
 // Der Baustein braucht genau diese zwei Felder; `seed`/`verteilung` sagen etwas
 // über den Datensatz und haben im Browser nichts zu suchen. Vite gibt JSON
@@ -56,6 +64,9 @@ export function links() {
     // Eigene Datei, Scope `.qh-karte`: eine Seite ohne diese Klasse sieht von
     // ihr baulich nichts.
     {rel: 'stylesheet', href: einsatzkarteStyles},
+    // Gerätevergleich + Kundenfragen (Amazon-Stil Stufe 2, s04, 27.09.2026).
+    // Eigene Klassen (.qb-gv-*, .qb-kf-*); beide Schalter aus = keine Zeile.
+    ...(amazonstilAn('qihome-air') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
   ];
 }
 
@@ -103,13 +114,17 @@ export async function loader(args) {
 async function loadCriticalData({ context, request }, handle) {
   const { storefront } = context;
 
-  const [{ product }] = await Promise.all([
+  const [{ product }, vergleichsPreise] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle, // ✅ use the static handle
         selectedOptions: getSelectedProductOptions(request),
       },
     }),
+    // Preise der drei Geräte für den Gerätevergleich, parallel zur Kaufbox
+    // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
+    // null = Vergleich aus, dann fragt niemand.
+    ladeVergleichsPreise(storefront),
   ]);
 
   if (!product?.id) {
@@ -125,6 +140,9 @@ async function loadCriticalData({ context, request }, handle) {
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
     // kasse-nimmt-20-prio8.
     marktLand: storefront.i18n.country,
+    // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
+    // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
+    ...(vergleichsPreise ? {vergleichsPreise} : {}),
   };
 }
 
@@ -138,7 +156,11 @@ function loadDeferredData({ context, params }) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, vergleichsPreise} = useLoaderData();
+  // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
+  // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
+  // unveränderte Liste.
+  const fragen = teileFragen('qihome-air', FAQ_QIHOME_AIR);
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -263,7 +285,21 @@ export default function Product() {
           punkte: einsatzkartePunkte,
         }}
       />
-      <QiHome /> 
+      {/*
+        AMAZON-STIL STUFE 2 (Christian 26.09.2026, Leitplanke Folie 11;
+        Grossjob growth-m-lp-produktseite-verkauft, s04): der Vergleich der
+        drei Geräte und die häufigsten Kundenfragen direkt nach der
+        Einsatzkarte, statt bei 90 % Seitentiefe. Nur hier auf der
+        /products/-Seite; /pages/qihome-air bekommt nichts davon. BEWUSST
+        ohne dataSection (siehe Einsatzkarte oben).
+      */}
+      <Geraetevergleich
+        handle="qihome-air"
+        preise={vergleichsPreise}
+        eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
+      />
+      <Kundenfragen handle="qihome-air" oben={fragen.oben} alle={FAQ_QIHOME_AIR} />
+      <QiHome faqItems={fragen.unten} /> 
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />

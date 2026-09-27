@@ -16,6 +16,14 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
+import amazonstilStyles from '~/styles/amazonstil.css?url';
+import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
+import {
+  amazonstilAn,
+  ladeVergleichsPreise,
+  teileFragen,
+} from '~/components/reusables/amazonstil-daten';
+import {FAQ_QIONE_2_PRO} from '~/data/product-faqs';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 /*
@@ -65,6 +73,9 @@ export function links() {
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*), berührt keinen
     // Selektor von pdp-qi.css — die Reihenfolge darüber bleibt tragend.
     {rel: 'stylesheet', href: produktVideoStyles},
+    // Gerätevergleich + Kundenfragen (Amazon-Stil Stufe 2, s04, 27.09.2026).
+    // Eigene Klassen (.qb-gv-*, .qb-kf-*); beide Schalter aus = keine Zeile.
+    ...(amazonstilAn('qione-2-pro') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
   ];
 }
 /**
@@ -114,13 +125,17 @@ export async function loader(args) {
 async function loadCriticalData({context, request}, handle) {
   const {storefront} = context;
 
-  const [{product}] = await Promise.all([
+  const [{product}, vergleichsPreise] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle, // ✅ use the static handle
         selectedOptions: getSelectedProductOptions(request),
       },
     }),
+    // Preise der drei Geräte für den Gerätevergleich, parallel zur Kaufbox
+    // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
+    // null = Vergleich aus, dann fragt niemand.
+    ladeVergleichsPreise(storefront),
   ]);
 
   if (!product?.id) {
@@ -136,6 +151,9 @@ async function loadCriticalData({context, request}, handle) {
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
     // kasse-nimmt-20-prio8.
     marktLand: storefront.i18n.country,
+    // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
+    // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
+    ...(vergleichsPreise ? {vergleichsPreise} : {}),
   };
 }
 
@@ -148,7 +166,11 @@ function loadDeferredData({context, params}) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, vergleichsPreise} = useLoaderData();
+  // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
+  // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
+  // unveränderte Liste.
+  const fragen = teileFragen('qione-2-pro', FAQ_QIONE_2_PRO);
 
   const {descriptionHtml} = product;
   // Buy-Box-Struktur (Bilder + Preis + Varianten + ATC + Analytics) lebt jetzt
@@ -269,6 +291,21 @@ export default function Product() {
         20260911-GROSSJOB-ig-testimonial-slideshow-auf-die-produktseiten-weit-oben-s03:software:h:09efed4e1f
       */}
       <IgTestimonialSlideshow produkt="QiOne 2 Pro" />
+      {/*
+        AMAZON-STIL STUFE 2 (Christian 26.09.2026, Leitplanke Folie 11;
+        Grossjob growth-m-lp-produktseite-verkauft, s04): der Vergleich der
+        drei Geräte und die häufigsten Kundenfragen direkt nach den
+        Instagram-Stimmen, statt bei 90 % Seitentiefe. Nur hier auf der
+        /products/-Seite; /pages/qione-2-pro ist die Kontrollgruppe der
+        Wirkungsmessung und bekommt nichts davon. BEWUSST ohne dataSection
+        (Anker-frei-Regel dieser PDP, siehe oben).
+      */}
+      <Geraetevergleich
+        handle="qione-2-pro"
+        preise={vergleichsPreise}
+        eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
+      />
+      <Kundenfragen handle="qione-2-pro" oben={fragen.oben} alle={FAQ_QIONE_2_PRO} />
       {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
           von Christian 2026-07-17 ausdruecklich fuer die organische PDP
           freigegeben (Job 20260717-gitterchip-animation-3seiten-rollout).
@@ -285,6 +322,7 @@ export default function Product() {
       <QiOne2Pro
         gitterchipAnimation={<GitterchipMoleculesScrub />}
         trustNachSlider={<GoogleRezensionenBereich />}
+        faqItems={fragen.unten}
       />
     </>
   );

@@ -11,7 +11,14 @@ import {FAQ_QIBRACELET} from '~/data/product-faqs';
 import {InhaltswegNeuOderGebraucht} from './InhaltswegNeuOderGebraucht';
 
 
-export function QiBracelet({block = undefined}) {
+/*
+ * faqItems (Default = die volle Bestandsliste, also unverändert): die Fragen
+ * der FAQ am Seitenende. /products/qibracelet übergibt seit dem 27.09.2026
+ * nur den Rest, weil die häufigsten Kundenfragen dort weiter oben stehen
+ * (Amazon-Stil Stufe 2, reusables/AmazonStil.jsx). Die Campaign-Seite
+ * /pages/qibracelet übergibt nichts und bleibt als Kontrollgruppe byte-gleich.
+ */
+export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
   return (
     <div className="ProductPageQiBracelet">
       <LogoBar />
@@ -80,7 +87,7 @@ export function QiBracelet({block = undefined}) {
         img={'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha.webp?v=1732220427'}
       />
       <UpsellLineUp block={block} />
-      <ProductFAQ items={FAQ_QIBRACELET} />
+      <ProductFAQ items={faqItems} />
     </div>
   );
 }
