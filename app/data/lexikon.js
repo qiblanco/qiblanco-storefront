@@ -463,6 +463,7 @@ export const LEXIKON = [
       "/pages/wie-funktioniert-schutz-vor-elektrosmog",
       "/pages/gibt-es-studien-zu-elektrosmog-schutz",
       "/pages/wie-weit-reicht-elektrosmog-schutz",
+      "/pages/armband-duschen-sauna",
       "/pages/e-smog",
       "/pages/lexikon-frequenz"
     ],
@@ -635,6 +636,11 @@ const FREMDE_ZIELE = {
     'Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?',
   '/pages/was-sagen-die-quarks-science-cops':
     'Was sagen die Quarks Science Cops zu Elektrosmog-Schmuck?',
+  // Antwortseite der KI-Luecken-Welle (s08, #526), dieselbe Regel: die Frage ist
+  // die Beschriftung. Verlinkt vom Eintrag Elektrosmog, der seit 27.09.2026 im
+  // Google-Index steht (Auftrag zs-marke-energie-schmuck-20260927).
+  '/pages/armband-duschen-sauna':
+    'Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen?',
   '/pages/hypothesen': 'Woran wir arbeiten und was offen ist',
   '/pages/kritik': 'Belege und offene Fragen',
   '/pages/e-smog': 'Elektrosmog im Alltag',
