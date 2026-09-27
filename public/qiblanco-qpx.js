@@ -204,6 +204,9 @@
     var frust = [];
     var lastClick = null;
     var rageChain = [], rageEmitted = false;
+    var KLICK_ON = CFG.klicks !== false;
+    var KLICK_MAX = 60;
+    var klicks = [];
     var lastMutation = 0, lastScrollTs = 0, unloading = false;
 
     function sec(id) {
@@ -256,6 +259,33 @@
       try { var sc = el && el.closest ? el.closest("[data-section]") : null;
             return sc ? (sc.getAttribute("data-section") || "") : ""; }
       catch (e) { return ""; }
+    }
+    function klickZiel(el) {
+      try {
+        var a = el && el.closest ? el.closest("a,button,input,select,textarea,label,summary,[role=button],[role=link],[role=tab]") : null;
+        return a || el;
+      } catch (e) { return el; }
+    }
+    function pfadOf(el) {
+      var teile = [], n = el;
+      try {
+        while (n && n.nodeType === 1 && teile.length < 3) {
+          var st = selOf(n);
+          if (!st) break;
+          teile.unshift(st);
+          if (st.charAt(0) === "#" || st.indexOf("[data-section=") >= 0) break;
+          n = n.parentElement;
+        }
+      } catch (e) {}
+      return teile.join(" > ");
+    }
+    function r3(n) { return n == null ? null : Math.round(n * 1000) / 1000; }
+    function pushKlick(tgt, cx, cy) {
+      if (!KLICK_ON || klicks.length >= KLICK_MAX) return;
+      var el = klickZiel(tgt);
+      if (!el || el.nodeType !== 1) return;
+      var rp = (cx != null) ? relPos(el, cx, cy) : { rx: null, ry: null };
+      klicks.push({ section_id: sectionOf(el), sel: pfadOf(el), rx: r3(rp.rx), ry: r3(rp.ry) });
     }
     function pushFrust(typ, el, cx, cy, meta) {
       if (!FRUST_ON || frust.length >= FRUST_MAX) return;
@@ -621,7 +651,7 @@
       }
       list.sort(function (a, b) { return a.id < b.id ? -1 : 1; });
       return { attention_ms: attentionMs, scroll_max_pct: scrollMax,
-               device: device(), sections: list, frust: frust,
+               device: device(), sections: list, frust: frust, klicks: klicks,
                medien: medienListe(now) };
     }
     function schluessel(snap) {
@@ -632,6 +662,7 @@
       }
       return JSON.stringify({ attention_ms: snap.attention_ms, scroll_max_pct: snap.scroll_max_pct,
                               device: snap.device, sections: kern, frust: snap.frust,
+                              klicks: (snap.klicks || []).length,
                               medien: medSchluessel(snap.medien || []) });
     }
     function flush(force, url) {
@@ -714,6 +745,7 @@
         var el = e.target && e.target.closest ? e.target.closest("[data-section]") : null;
         if (el) { var id = el.getAttribute("data-section"); if (id) sec(id).clicks++; }
       } catch (e2) {}
+      try { pushKlick(e.target, e.clientX, e.clientY); } catch (e5) {}
       if (!FRUST_ON) return;
       try {
         var now = Date.now(), tgt = e.target, cx = e.clientX, cy = e.clientY;
@@ -846,7 +878,7 @@
         try { flush(true, altHref); } catch (e) {}
         PV_ID = uuid(); seq = 0; lastKey = ""; lastVoll = ""; hiddenUnterdrueckt = 0;
         scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
-        sections = {}; frust = []; lastClick = null;
+        sections = {}; frust = []; klicks = []; lastClick = null;
         rageChain = []; rageEmitted = false;
         var keep = [];
         for (var i = 0; i < secObserved.length; i++) {
