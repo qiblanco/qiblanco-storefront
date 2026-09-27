@@ -149,7 +149,7 @@ async function loadCriticalData({ context, request }, handle) {
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
     // kasse-nimmt-20-prio8.
     marktLand: storefront.i18n.country,
-    // Nur bei eingeschaltetem Vergleich: aus heisst auch ohne Schlüssel in
+    // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
     // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
     ...(vergleichsPreise ? {vergleichsPreise} : {}),
   };

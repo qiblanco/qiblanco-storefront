@@ -89,8 +89,8 @@ test('Rückweg Schalter Kundenfragen: seiten=[] -> oben leer, unten DIESELBE Lis
   }
 });
 
-test('Rückweg Schalter Vergleich: geraete=[] -> keine Spalten, keine Abfrage, kein Stylesheet', async () => {
-  const aus = {...VERGLEICH, geraete: []};
+test('Rückweg Schalter Vergleich: produkte=[] -> keine Spalten, keine Abfrage, kein Stylesheet', async () => {
+  const aus = {...VERGLEICH, produkte: []};
   assert.equal(vergleichAn(aus), false);
   assert.deepEqual(vergleichSpalten('qione-2-pro', {}, aus), []);
   let gefragt = false;
@@ -165,7 +165,7 @@ test('Bestand: jede Studie des Vergleichs hat ihre Datei und ihre Seite', () => 
       .filter((f) => f.endsWith('.json'))
       .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')).slug),
   );
-  for (const g of VERGLEICH.geraete) {
+  for (const g of VERGLEICH.produkte) {
     assert.ok(g.studien.length >= 1, `${g.handle}: keine Studie`);
     for (const st of g.studien) {
       const slug = st.href.replace('/pages/', '');
@@ -179,10 +179,10 @@ test('Wortlaut: keine gesperrten Angaben im Vergleich (300 m², Stärke-Rangfolg
   const texte = [
     VERGLEICH.titel,
     ...Object.values(VERGLEICH.zeilen),
-    ...VERGLEICH.geraete.flatMap((g) => [g.einsatz, g.material, g.wasser, ...g.studien.map((s) => s.text)]),
+    ...VERGLEICH.produkte.flatMap((g) => [g.einsatz, g.material, g.wasser, ...g.studien.map((s) => s.text)]),
     KUNDENFRAGEN.titel,
   ].join('\n');
   assert.doesNotMatch(texte, /m²|m2\b|quadratmeter/i, 'Fläche in m² ist gesperrt (GL-SPR-0007)');
-  assert.doesNotMatch(texte, /stärker|staerker|stärkste|besser als/i, 'kein Stärke-Vergleich');
+  assert.doesNotMatch(texte, /stärker|stärkste|besser als/i, 'kein Stärke-Vergleich');
   assert.doesNotMatch(texte, /koh(ä|ae)rent/i, 'Kanon: nicht mit "kohärent" einsteigen');
 });

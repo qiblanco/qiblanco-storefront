@@ -14,7 +14,7 @@
  * Christians Wortlaut ersetzt eine Zeile hier 1:1. Textmappen-Plätze:
  * <handle>.geraetevergleich und <handle>.kundenfragen (data-textplatz).
  *
- * RÜCKWEG OHNE CODE-LOGIK: VERGLEICH.geraete = [] (kein Vergleich, keine
+ * RÜCKWEG OHNE CODE-LOGIK: VERGLEICH.produkte = [] (kein Vergleich, keine
  * Preisabfrage, kein Stylesheet) und KUNDENFRAGEN.seiten = [] (FAQ unten
  * wieder vollständig, trägt ihr Schema selbst). Beide aus = byte-gleich zum
  * Stand vor s04 (Test). Mit Code: hb-deploy revert.
@@ -45,7 +45,7 @@ export const VERGLEICH = {
   // Bedienwörter; das Ziel steht im Wort (kein dreifaches "Ansehen" im Screenreader).
   zumGeraet: (name) => `Zum ${name}`,
   dieserArtikel: 'Dieser Artikel',
-  geraete: [
+  produkte: [
     {
       handle: 'qione-2-pro',
       // product-faqs.js FAQ_QIBRACELET[0].a: "Der QiOne® 2 Pro ist als Gehäuse
@@ -109,9 +109,9 @@ export const VERGLEICH = {
   ],
 };
 
-/** Ist der Vergleich eingeschaltet (Schalter: VERGLEICH.geraete)? */
+/** Ist der Vergleich eingeschaltet (Schalter: VERGLEICH.produkte)? */
 export function vergleichAn(vergleich = VERGLEICH) {
-  return Array.isArray(vergleich?.geraete) && vergleich.geraete.length > 0;
+  return Array.isArray(vergleich?.produkte) && vergleich.produkte.length > 0;
 }
 
 /* Preis wie in der Kaufbox: dieselbe Rechnung wie components/ProductPrice.jsx
@@ -143,7 +143,7 @@ export function vergleichSpalten(handle, {preise = {}, eigenerPreis = null, land
   vergleich = VERGLEICH) {
   if (!vergleichAn(vergleich)) return [];
   const trio = Object.fromEntries(PRODUKT_TRIO.map((p) => [p.handle, p]));
-  const spalten = vergleich.geraete
+  const spalten = vergleich.produkte
     .filter((g) => trio[g.handle])
     .map((g) => {
       const money = g.handle === handle && eigenerPreis ? eigenerPreis : preise[g.handle];
