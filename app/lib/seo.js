@@ -1227,11 +1227,11 @@ export const NUR_ROUTE_SEITEN = [
       '20260928-GROSSJOB-produktberatung-live-mit-christian-buchen, s02). ' +
       'Christian 28.09.2026: live und über die Google-Suche auffindbar, aber ' +
       'nicht in Menü oder Startseite verlinkt. Die Seite besteht allein aus ' +
-      'der Route pages.produktberatung.jsx und hat KEIN Shopify-Seitenobjekt; ' +
-      'ohne diesen Eintrag stünde sie in keiner Sitemap, und ohne Menü-Link ' +
-      'ist die Sitemap ihr einziger Weg zu Google. Wache: produktberatung/' +
-      'pruefungen/probe_seite_zeigt_termine.py — prüft am ausgelieferten HTML ' +
-      'die freien Termine des Endpunkts, Canonical und kein noindex.',
+      'der Route pages.produktberatung.jsx und hat KEIN Shopify-Seitenobjekt. ' +
+      'Ohne Menü-Link ist die Sitemap ihr einziger Weg zu Google. Die Wache ' +
+      'produktberatung/pruefungen/probe_seite_zeigt_termine.py prüft am ' +
+      'ausgelieferten HTML die freien Termine des Endpunkts, den Canonical ' +
+      'und das Fehlen von noindex.',
   },
   {
     pfad: '/pages/was-ist-kohaerentes-wasser',
