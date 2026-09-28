@@ -1,8 +1,13 @@
 import {useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
-import {QiOne2ProShop} from '~/components/product-pages/QiOne2ProShop';
-import shopStyles from '~/styles/qione-2-pro-shop.css?url';
+import {
+  QiOne2ProSeite,
+  qiOne2ProSeiteLinks,
+} from '~/components/product-pages/QiOne2ProSeite';
+import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
+import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
+import {BLOCK_LP} from '~/components/reusables/blockLinks';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — kaufbereite Fortsetzung der Paid-Strecke
@@ -22,8 +27,20 @@ import shopStyles from '~/styles/qione-2-pro-shop.css?url';
  * „qione-2-pro" anlegen (Sitemap-/noindex-Falle, Konzept Kap. 4).
  */
 
+/*
+ * GLEICH DER PRODUKTSEITE BIS AUF DIE BESCHREIBUNG (Christian 28.09.2026):
+ * diese Route rendert QiOne2ProSeite.jsx, dieselbe Komponente wie
+ * /products/qione-2-pro. Eigen bleiben hier: noindex-Doppelgate ohne
+ * canonical (meta/headers unten), der harte Handle im Loader, die Hero-Punkte
+ * als Beschreibung, der LP-Block (Links bleiben im Landing-Bereich) und die
+ * Messanker dieses Landeziels (Sprungziel #shopq-buybox, data-section
+ * shopq-buybox / shopq-gitterchip-video / shopq-reputon-reviews).
+ * Nicht mehr hier: der Nachbau QiOne2ProShop.jsx samt DreiThemenBand und
+ * Google-Einzelbewertungen (die Produktseite trägt beides nicht) und das
+ * Delta-CSS qione-2-pro-shop.css (Scope .shopq2, den es nicht mehr gibt).
+ */
 export function links() {
-  return [{rel: 'stylesheet', href: shopStyles}];
+  return qiOne2ProSeiteLinks();
 }
 
 /*
@@ -57,19 +74,24 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context, request}) {
-  const {product} = await context.storefront.query(PRODUCT_QUERY, {
-    variables: {
-      handle: 'qione-2-pro',
-      selectedOptions: getSelectedProductOptions(request),
-    },
-    cache: context.storefront.CacheShort(),
-  });
+  const [{product}, vergleichsPreise] = await Promise.all([
+    context.storefront.query(PRODUCT_QUERY, {
+      variables: {
+        handle: 'qione-2-pro',
+        selectedOptions: getSelectedProductOptions(request),
+      },
+      cache: context.storefront.CacheShort(),
+    }),
+    // Preise der drei Geräte für den Gerätevergleich (seit dem 28.09.2026 auch
+    // hier, dieselbe Seite wie /products). Fail-soft; null = Vergleich aus.
+    ladeVergleichsPreise(context.storefront),
+  ]);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
-  return {product};
+  return {product, ...(vergleichsPreise ? {vergleichsPreise} : {})};
 }
 
 /*
@@ -79,9 +101,22 @@ export async function loader({context, request}) {
  * Cart-Event (routen-unabhängig). R1/R2/R3 hängen im root-Layout. Ein
  * zusätzlicher fbq/gtag/MetaPixel hier wäre Doppelzählung.
  */
-export default function QiOne2ProShopRoute() {
-  const {product} = useLoaderData();
-  return <QiOne2ProShop product={product} />;
+export default function QiOne2ProSeiteRoute() {
+  const {product, vergleichsPreise} = useLoaderData();
+  return (
+    <QiOne2ProSeite
+      product={product}
+      vergleichsPreise={vergleichsPreise}
+      beschreibung={<QiOneHeroBulletsPages />}
+      block={BLOCK_LP}
+      ankerId="shopq-buybox"
+      anker={{
+        buybox: 'shopq-buybox',
+        gitterchip: 'shopq-gitterchip-video',
+        rezensionen: 'shopq-reputon-reviews',
+      }}
+    />
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
