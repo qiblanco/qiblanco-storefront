@@ -1221,7 +1221,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/produktberatung',
-    lastmod: '2026-09-28T22:00:00Z',
+    lastmod: '2026-09-28T22:09:16Z',
     grund:
       'Die Buchungsseite „Produktberatung: 20 Minuten mit Christian" (Grossjob ' +
       '20260928-GROSSJOB-produktberatung-live-mit-christian-buchen, s02). ' +
