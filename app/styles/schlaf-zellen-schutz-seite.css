@@ -244,7 +244,8 @@
   color: var(--checkmark-color);
 }
 
-/* ─── ARM E, der Startseiten-Block unter „Ruhe auf Zellebene" ─────────────── */
+/* ─── ARM E, der Startseiten-Block unter der H1 (seit 28.09.2026 „Leistung auf
+   Zellebene", vorher „Ruhe auf Zellebene") ────────────────────────────────── */
 /* NUR Bestands-Tokens dieser Seite: kein neuer Wert, keine neue Schriftgroesse,
    kein zweiter Goldton. Die Bausteine selbst (h2, ReviewCount, die beiden
    Absaetze) kommen 1:1 aus index-components/HerobannerFeatured.jsx; diese Regel
