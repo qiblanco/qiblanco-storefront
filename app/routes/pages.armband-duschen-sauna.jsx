@@ -64,7 +64,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen? | Qi Blanco";
-const BESCHREIBUNG = "Das QiBracelet® und der QiOne® 2 Pro dürfen beim Duschen, Schwimmen und in der Sauna anbleiben, und weil ihr Gehäuse aus Chirurgenstahl besteht, nehmen sie in der Saunakabine deren Wärme an.";
+const BESCHREIBUNG = "Ja, das QiBracelet® und den QiOne® 2 Pro kannst du beim Duschen, beim Schwimmen und in der Sauna anbehalten, nur wird ihr Gehäuse aus Chirurgenstahl in der Sauna warm.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -73,7 +73,7 @@ const BESCHREIBUNG = "Das QiBracelet® und der QiOne® 2 Pro dürfen beim Dusche
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-19';
-const GEAENDERT = '2026-09-19';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

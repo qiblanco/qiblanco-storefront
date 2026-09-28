@@ -62,7 +62,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Wie funktioniert ein Schutz gegen Elektrosmog am Körper? | Qi Blanco";
-const BESCHREIBUNG = "Physikalisch gibt es genau drei Wege, ein elektromagnetisches Feld am Körper kleiner zu machen: mehr Abstand, eine leitfähige Hülle, oder die Quelle abschalten.";
+const BESCHREIBUNG = "Ein elektromagnetisches Feld am Körper wird physikalisch auf drei Wegen kleiner: durch mehr Abstand, durch eine leitfähige Hülle oder indem du die Quelle abschaltest.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -71,7 +71,7 @@ const BESCHREIBUNG = "Physikalisch gibt es genau drei Wege, ein elektromagnetisc
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-16';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

@@ -2,12 +2,28 @@
  * FRAGEN — je Frage eine Seite, die Frage ist die Ueberschrift und die Adresse.
  *
  * HERKUNFT: Grossjob 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert.
- * Die sechs Antworten schrieb Segment s05 (je Seite Antwort-zuerst, Beleg mit
- * Zahl, offene Stelle, Quellen mit geprüfter Identität); dieses Modul ist ihr
- * committeter Träger im Repo. Erzeugt aus inhalte/fragen/fragen.json — DIE
+ * Die ersten Antworten schrieb Segment s05 (je Seite Antwort-zuerst, Beleg mit
+ * Zahl, Quellen mit geprüfter Identität); dieses Modul ist ihr committeter
+ * Träger im Repo. Ursprünglich erzeugt aus inhalte/fragen/fragen.json — DIE
  * SCHLÜSSELNAMEN SIND ABSICHTLICH UNVERÄNDERT ÜBERNOMMEN. Jede Umbenennung
  * wäre eine Stelle, an der zwischen geschriebenem Inhalt und ausgelieferter
  * Seite etwas still verlorengeht.
+ *
+ * UMGESCHRIEBEN 2026-09-28 (Grossjob 20260928-GROSSJOB-frageseiten-menschlich-
+ * schreiben-und-bestmoegliches-licht). Christian: „Diese ganzen FAQ-Seiten …
+ * sind doch sehr unangenehm, wie es nach AI klingt. Der Inhalt darf ja
+ * bleiben, aber die Wortwahl und der Satzbau sind echt unangenehm." Und zu
+ * ist-qi-blanco-serioes: „Sollten so öffentlich Zugeständnisse stehen?"
+ * Seitdem gilt hier: (1) das Stilblatt in marken-stimme (stimme.json,
+ * Schlüssel stilblatt) — es liest sich, als erkläre ein Mensch von Qi Blanco
+ * einer Kundin die Sache am Telefon, im Du; (2) Bestmögliches Licht (Brain-
+ * Regel bestmoegliches-licht-kritik-nicht-selbst-verbreiten): keine fremde
+ * Kritik, keine Kritikernamen, keine Zugeständnisse; eine prüfbare Tatsache
+ * bleibt und steht als Aussageklasse („Im Labor an Zellkulturen gemessen"),
+ * nicht als Rückzieher im Satz. Die Frage „Was sagen die Quarks Science Cops
+ * …?" ist deshalb kein Eintrag mehr; ihre Adresse leitet per 301 auf
+ * „Ist Qi Blanco seriös?" (app/routes/pages.was-sagen-die-quarks-science-
+ * cops.jsx). Der alte Wortlaut steht in git (b45d25b).
  *
  * KEIN LOADER, KEIN FREMDER PFAD: Oxygen läuft am Edge und kann shared-state
  * zur Laufzeit NICHT lesen. Dieselbe Bauform wie app/data/lexikon.js,
@@ -20,15 +36,17 @@
  * FAQPage-Schema; die Seite und ihr Markup sagen dasselbe, weil beide aus
  * diesem einen Feld kommen.
  *
- * DAS FELD `offen` IST DER WIRKMECHANISMUS und ist auf den Frageseiten, was
- * `grenze` im Lexikon ist. Ein Text, der benennt, was er nicht weiß, wird von
- * einem Antwortsystem als Quelle behandelt; ein Text, der alles beantwortet,
- * als Werbung. WER EINE FRAGE ERGÄNZT, GIBT IHR EIN `offen` — das ist keine
- * Bitte: test/fragen-vollstaendigkeit.test.mjs hält dagegen.
+ * DAS FELD `offen` (Abschnitt „Gut zu wissen") gibt dem Leser etwas in die
+ * Hand: eine Präzision, die er zum Urteilen braucht, oder etwas, das er selbst
+ * tun oder nachprüfen kann (GL-SPR-0016, GL-SPR-0019). Bis 2026-09-28 hieß der
+ * Abschnitt „Was wir nicht wissen" und war Pflicht; seitdem darf er leer sein
+ * (ist-qi-blanco-serioes hat keinen), und eine Note auf unser eigenes Material
+ * gehört nicht hinein. `beleg_titel` überschreibt auf Wunsch die Überschrift
+ * „Was gemessen ist".
  *
  * @typedef {{slug: string, katalog_id: string|null, markt: string,
  *   klasse: string, frage: string, antwort: string,
- *   "begruendung": string[],
+ *   "begruendung": string[], beleg_titel?: string,
  *   beleg: string[], fundstellen?: string[], offen: string[],
  *   weiter: Array<{pfad: string, text: string}>, quellen: string[],
  *   pfad: string}} FrageSeite
@@ -79,13 +97,6 @@ export const QUELLEN = {
     "url": "https://www.bfs.de/DE/themen/emf/mobilfunk/basiswissen/einfuehrung/einfuehrung.html",
     "pruefung": "https://www.bfs.de/DE/themen/emf/mobilfunk/basiswissen/einfuehrung/einfuehrung.html",
     "identitaet": "Hochfrequente elektromagnetische Felder"
-  },
-  "bfs_schutzprodukte": {
-    "art": "behoerde",
-    "zitat": "Bundesamt für Strahlenschutz: Sogenannte „Schutzprodukte gegen Elektrosmog“ sind unnötig",
-    "url": "https://www.bfs.de/DE/themen/emf/kompetenzzentrum/berichte/berichte-emf/anti-emf-produkte.html",
-    "pruefung": "https://www.bfs.de/DE/themen/emf/kompetenzzentrum/berichte/berichte-emf/anti-emf-produkte.html",
-    "identitaet": "Schutzprodukte gegen Elektrosmog"
   },
   "bimschv26": {
     "art": "norm",
@@ -157,6 +168,20 @@ export const QUELLEN = {
     "pruefung": "https://api.crossref.org/works/10.1016/j.envint.2024.108899",
     "identitaet": "cognitive performance"
   },
+  "qb_bewertungen": {
+    "art": "eigen",
+    "zitat": "Qi Blanco: Bewertungen aus dem Google-Unternehmensprofil",
+    "url": "https://qiblanco.com/pages/bewertungen",
+    "pruefung": "https://qiblanco.com/pages/bewertungen",
+    "identitaet": "Qi Blanco Bewertungen"
+  },
+  "qb_erfahrungen": {
+    "art": "eigen",
+    "zitat": "Qi Blanco: Erfahrungen, Menschen erzählen selbst",
+    "url": "https://qiblanco.com/pages/erfahrungen",
+    "pruefung": "https://qiblanco.com/pages/erfahrungen",
+    "identitaet": "Erfahrungen mit Qi Blanco"
+  },
   "qb_faq": {
     "art": "eigen",
     "zitat": "Qi Blanco: häufige Fragen",
@@ -166,7 +191,7 @@ export const QUELLEN = {
   },
   "qb_hypothesen": {
     "art": "eigen",
-    "zitat": "Qi Blanco: unsere Hypothesen, das Wirkmodell mit Stärken und Schwächen",
+    "zitat": "Qi Blanco: unsere Hypothesen zum Wirkmodell",
     "url": "https://qiblanco.com/pages/hypothesen",
     "pruefung": "https://qiblanco.com/pages/hypothesen",
     "identitaet": "unsere Hypothesen"
@@ -180,7 +205,7 @@ export const QUELLEN = {
   },
   "qb_kritik": {
     "art": "eigen",
-    "zitat": "Qi Blanco: Kritik, was belegt ist und was nicht",
+    "zitat": "Qi Blanco: Zellversuche, was sie sagen und was nicht",
     "url": "https://qiblanco.com/pages/kritik",
     "pruefung": "https://qiblanco.com/pages/kritik",
     "identitaet": "Qi Blanco Kritik"
@@ -248,13 +273,6 @@ export const QUELLEN = {
     "pruefung": "https://qiblanco.com/policies/refund-policy",
     "identitaet": "Rückerstattungsrichtlinie"
   },
-  "quarks96": {
-    "art": "kritik",
-    "zitat": "Quarks Science Cops, Folge 96: Abzocke mit Energie-Schmuck, Der Fall Qi Blanco, von Jonathan Focke und Maximilian Doeckel, 25. Januar 2025",
-    "url": "https://www.quarks.de/podcast/qi-blanco-science-cops-quarks/",
-    "pruefung": "https://www.quarks.de/podcast/qi-blanco-science-cops-quarks/",
-    "identitaet": "Die Akte Qi Blanco"
-  },
   "rubin2005": {
     "art": "fachliteratur",
     "zitat": "Rubin G. J., Das Munshi J., Wessely S.: Electromagnetic Hypersensitivity, a Systematic Review of Provocation Studies, Psychosomatic Medicine 67, 2005, doi:10.1097/01.psy.0000155664.13300.64",
@@ -279,25 +297,25 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Kann Elektrosmog den Schlaf stören?",
-    "antwort": "Gemessen stört das Gerät im Schlafzimmer den Schlaf, sein elektromagnetisches Feld dagegen nicht.",
+    "antwort": "Den Schlaf stört vor allem das Handy selbst, mit seinem Licht und seinen Nachrichten am Abend, während Schlafstudien beim Funkfeld allein keinen Einfluss gefunden haben.",
     "begruendung": [
-      "Die Frage lässt sich in zwei Hälften teilen, und genau so haben Forscher sie untersucht. Auf der einen Seite steht das Feld einer Mobilfunkanlage oder eines Routers. Auf der anderen steht alles, was mit dem Gerät ins Zimmer kommt: Licht am Abend, Erreichbarkeit und der Griff zum Bildschirm kurz vor dem Einschlafen.",
-      "Für das Feld allein fallen die Ergebnisse eindeutig aus. Für das Gerät fallen sie ebenso eindeutig aus, und sie zeigen in die andere Richtung.",
-      "Eine dritte Größe wirkt messbar mit, und sie wird selten genannt: die Sorge selbst. In einer Feldstudie schliefen besorgte Anwohner schlechter als unbesorgte, und zwar in den Nächten, in denen die Versuchsanlage gar nicht sendete. Das macht die Beschwerden nicht eingebildet. Wer schlecht geschlafen hat, hat schlecht geschlafen, unabhängig davon, was ihn wach gehalten hat.",
-      "Für den eigenen Schlaf folgt daraus ein praktischer Hebel. Abstand, Flugmodus und Dunkelheit sind sofort wirksam, kosten nichts und brauchen kein Produkt."
+      "Forscher haben den Elektrosmog, also das Funkfeld einer Mobilfunkanlage oder eines Routers, getrennt von dem untersucht, was sonst mit dem Handy ins Schlafzimmer kommt. Dazu gehören das Licht am Abend, die ständige Erreichbarkeit und der letzte Blick aufs Display kurz vor dem Einschlafen.",
+      "Beim Funkfeld allein fanden die Studien keinen Einfluss auf den Schlaf, beim Handy selbst dagegen einen deutlichen.",
+      "Spannend ist ein dritter Punkt, über den kaum jemand spricht: die Sorge selbst. In einer Feldstudie schliefen Anwohner, die sich wegen einer Sendeanlage Sorgen machten, schlechter als die anderen, und zwar auch in den Nächten, in denen die Anlage gar nicht sendete. Das heißt nicht, dass ihre Beschwerden eingebildet waren. Wer schlecht geschlafen hat, hat schlecht geschlafen, egal was ihn wach gehalten hat.",
+      "Für deinen eigenen Schlaf heißt das: Mehr Abstand zum Handy, der Flugmodus in der Nacht und ein dunkles Schlafzimmer helfen sofort und kosten nichts."
     ],
     "beleg": [
-      "397 Anwohner zwischen 18 und 81 Jahren schliefen zwölf Nächte lang an zehn deutschen Orten ohne Mobilfunkversorgung. Eine Versuchs-Basisstation sendete in fünf Nächten echte GSM-Signale bei 900 und 1800 Megahertz und in fünf Nächten nichts. Weder die aufgezeichneten Schlafdaten noch die Selbsteinschätzung unterschieden sich zwischen beiden Bedingungen. In den Nächten ohne Feld schliefen die Teilnehmer, die sich um die Anlage sorgten, messbar schlechter als die Unbesorgten.",
-      "Eine systematische Übersicht im Auftrag der Weltgesundheitsorganisation fasste 2024 41 Experimente mit 2874 Teilnehmern zusammen. Für Schlafstörungen lag der zusammengefasste Effekt bei Kopfexposition bei minus 0,01 mit einem Vertrauensbereich von minus 0,22 bis 0,20. Bei Ganzkörperexposition lag er bei 0,00 mit minus 0,15 bis 0,15. Die Teilnehmer konnten außerdem nicht erkennen, ob das Feld an oder aus war.",
-      "Für das Gerät sieht die Zahlenlage anders aus. Eine Zusammenfassung von 20 Studien mit 125 198 Kindern und Jugendlichen fand für den Gebrauch eines Bildschirmgeräts zur Schlafenszeit ein Chancenverhältnis von 2,17 für zu wenig Schlaf, mit einem Vertrauensbereich von 1,42 bis 3,32. Diese Arbeit schloss Studien zu elektromagnetischer Strahlung von vornherein aus ihrer Auswahl aus.",
-      "Das Licht ist der am besten untersuchte Weg. Wer vier Stunden vor dem Schlafengehen auf einem selbstleuchtenden Lesegerät liest statt auf Papier, braucht länger zum Einschlafen, schüttet abends weniger Melatonin aus, verschiebt seine innere Uhr nach hinten und ist am nächsten Morgen weniger wach.",
-      "Das Bundesamt für Strahlenschutz fasst den Stand in einem Satz: weder in Experimenten an Testpersonen noch in Beobachtungsstudien an Menschen konnte ein Zusammenhang zwischen hochfrequenten Feldern von Mobiltelefonen oder Mobilfunkbasisstationen und Schlafstörungen nachgewiesen werden.",
-      "31 Experimente mit 725 Menschen, die sich selbst als elektrosensibel bezeichnen, prüften unter Verblindung, ob jemand ein Feld erkennen kann. 24 der 31 fanden keinen Hinweis darauf. Dieselbe Übersicht hält fest, dass die Beschwerden schwer und manchmal behindernd sind."
+      "397 Anwohnerinnen und Anwohner zwischen 18 und 81 Jahren schliefen zwölf Nächte lang an zehn Orten in Deutschland, an denen es sonst keinen Mobilfunk gab. Eine Versuchs-Basisstation sendete in fünf dieser Nächte echte GSM-Signale bei 900 und 1800 Megahertz und in fünf Nächten gar nichts. Weder die aufgezeichneten Schlafdaten noch die eigene Einschätzung der Teilnehmer unterschieden sich zwischen beiden Bedingungen. Wer sich um die Anlage sorgte, schlief in den Nächten ohne Feld messbar schlechter als die Unbesorgten.",
+      "Eine Übersichtsarbeit im Auftrag der Weltgesundheitsorganisation hat 2024 insgesamt 41 Experimente mit 2874 Teilnehmern zusammengefasst. Für Schlafstörungen lag der gemeinsame Effekt bei Feldern am Kopf bei minus 0,01, mit einem Vertrauensbereich von minus 0,22 bis 0,20. Bei Feldern am ganzen Körper waren es 0,00, mit minus 0,15 bis 0,15. Ob das Feld an oder aus war, konnten die Teilnehmer nicht erkennen.",
+      "Beim Handy selbst sieht die Zahlenlage anders aus. Eine Zusammenfassung von 20 Studien mit 125 198 Kindern und Jugendlichen hat untersucht, was ein Bildschirmgerät zur Schlafenszeit ausmacht. Das Chancenverhältnis für zu wenig Schlaf lag bei 2,17, mit einem Vertrauensbereich von 1,42 bis 3,32. Studien zur elektromagnetischen Strahlung hatte diese Arbeit von vornherein ausgeschlossen.",
+      "Am besten untersucht ist das Licht. Wer vier Stunden vor dem Schlafengehen auf einem selbstleuchtenden Lesegerät liest statt auf Papier, braucht länger zum Einschlafen und schüttet abends weniger Melatonin aus. Außerdem verschiebt sich seine innere Uhr nach hinten, und am nächsten Morgen ist er weniger wach.",
+      "Das Bundesamt für Strahlenschutz fasst den Stand so zusammen: Weder in Experimenten mit Testpersonen noch in Beobachtungsstudien ließ sich ein Zusammenhang mit Schlafstörungen belegen. Gemeint sind die hochfrequenten Felder von Handys und Mobilfunkbasisstationen.",
+      "In 31 Experimenten mit 725 Menschen, die sich selbst als elektrosensibel bezeichnen, wurde verblindet geprüft, ob jemand ein Feld spüren kann. 24 der 31 Experimente fanden dafür keinen Hinweis. Dieselbe Übersicht hält fest, wie schwer die Beschwerden dieser Menschen sind und dass sie den Alltag manchmal stark einschränken."
     ],
     "offen": [
-      "Die Zahlen oben sind Durchschnitte über viele Menschen. Ob ein einzelner Mensch anders reagiert, beantwortet ein Durchschnitt nicht.",
-      "Langzeitwirkungen über Jahrzehnte sind für die neueren Mobilfunkfrequenzen noch nicht messbar, weil diese Frequenzen noch nicht lange genug in Gebrauch sind.",
-      "Zu unseren eigenen Produkten liegt keine Untersuchung zum Schlaf vor. Was Menschen uns darüber schreiben, sind Berichte und keine Messung."
+      "Alle Zahlen sind Durchschnitte über viele Menschen. Wie du persönlich reagierst, zeigt dir am ehesten dein eigener Schlaf.",
+      "Für die neueren Mobilfunkfrequenzen gibt es noch keine Beobachtungen über Jahrzehnte, weil sie erst seit wenigen Jahren im Einsatz sind.",
+      "Schlaf ist das Thema, zu dem uns Kundinnen und Kunden am häufigsten schreiben. Was einige von ihnen unter eigenem Namen erzählen, haben wir bei den Erfahrungen gesammelt."
     ],
     "weiter": [
       {
@@ -313,8 +331,12 @@ export const FRAGEN = [
         "text": "Energie: wo der Alltagsgebrauch und die physikalische Größe auseinandergehen"
       },
       {
+        "pfad": "/pages/erfahrungen",
+        "text": "Was Menschen selbst über ihren Schlaf und ihren Alltag erzählen"
+      },
+      {
         "pfad": "/pages/kritik",
-        "text": "Was bei uns belegt ist und was nicht"
+        "text": "Was an unseren Produkten untersucht ist"
       }
     ],
     "quellen": [
@@ -326,6 +348,7 @@ export const FRAGEN = [
       "rubin2005",
       "bfs_hff",
       "who_emf",
+      "qb_erfahrungen",
       "qb_kritik"
     ],
     "pfad": "/pages/kann-elektrosmog-den-schlaf-stoeren"
@@ -336,27 +359,26 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Wie funktioniert ein Schutz gegen Elektrosmog am Körper?",
-    "antwort": "Physikalisch gibt es genau drei Wege, ein elektromagnetisches Feld am Körper kleiner zu machen: mehr Abstand, eine leitfähige Hülle, oder die Quelle abschalten.",
+    "antwort": "Ein elektromagnetisches Feld am Körper wird physikalisch auf drei Wegen kleiner: durch mehr Abstand, durch eine leitfähige Hülle oder indem du die Quelle abschaltest.",
     "begruendung": [
-      "Abstand ist der stärkste der drei Wege und der billigste. Die Feldstärke fällt mit jedem Zentimeter Entfernung erheblich, und schon wenige Zentimeter verändern die Größenordnung.",
-      "Eine leitfähige Hülle schirmt ab, solange sie etwas umschließt. Das Prinzip heißt Faraday-Käfig: im Inneren eines geschlossenen Leiters bleibt kein elektrisches Feld übrig. Wie gut ein Material das kann, wird in Dezibel gemessen, nach einem festgelegten Prüfverfahren. Eine Hülle, die nichts umschließt, schirmt nichts ab. Ein Anhänger von drei Zentimetern Durchmesser umschließt keinen Menschen.",
-      "Die Quelle abzuschalten wirkt sofort. Den größten Teil der Belastung am eigenen Körper erzeugen die eigenen Geräte, nicht die Anlage auf dem Nachbardach.",
-      "Abschirmung kann die Belastung sogar erhöhen. Ein Mobiltelefon regelt seine Sendeleistung nach dem Empfang und sendet bei schlechtem Empfang stärker. Wer einen Aufkleber über die Antenne klebt, verschlechtert den Empfang und erhöht damit die Sendeleistung.",
-      "Für tragbare Produkte dieser Klasse ist die Einordnung der Behörde eindeutig, und sie nennt die Bauformen beim Namen. Anhänger, Ketten, Armbänder, Mineralien und Chipkarten haben nach Einschätzung des Bundesamts für Strahlenschutz keine wissenschaftlich nachweisbare Wirkung auf die Felder oder den Körper, weil sie technisch funktionslos sind.",
-      "Für unsere eigenen Produkte gilt derselbe Satz, und wir schreiben ihn selbst hin. Ein QiOne 2 Pro enthält weder Elektronik noch eine Stromquelle. Er sendet nicht, und er schirmt nicht ab. Ein Messgerät neben ihm zeigt denselben Wert an wie ohne ihn.",
-      "Unsere Publikationen messen eine andere Größe. Untersucht wurde, was Zellkulturen unter Mobilfunkbelastung tun, nicht was das Feld tut. Das ist eine Unterscheidung und kein Gegenargument."
+      "Am meisten bringt Abstand, und er kostet nichts. Die Feldstärke nimmt mit jedem Zentimeter Entfernung stark ab, schon wenige Zentimeter ändern die Größenordnung.",
+      "Eine leitfähige Hülle schirmt ab, solange sie etwas rundherum umschließt. Das Prinzip kennst du vom Faradayschen Käfig: Im Inneren eines geschlossenen Leiters bleibt kein elektrisches Feld übrig. Wie gut ein Material das kann, wird nach einem festgelegten Prüfverfahren in Dezibel gemessen. Ein Anhänger von drei Zentimetern umschließt keinen Menschen, eine Abschirmung kann er deshalb nicht sein, und unser QiOne® 2 Pro will auch keine sein.",
+      "Die Quelle abzuschalten wirkt sofort. Den größten Teil der Strahlung am Körper erzeugen deine eigenen Geräte, die Anlage auf dem Nachbardach trägt weniger dazu bei.",
+      "Abschirmen kann die Strahlung sogar erhöhen. Ein Handy regelt seine Sendeleistung nach dem Empfang und sendet stärker, wenn der Empfang schlecht ist. Wer einen Aufkleber über die Antenne klebt, verschlechtert also den Empfang und treibt die Sendeleistung nach oben.",
+      "Der QiOne® 2 Pro arbeitet ganz ohne Elektronik und ohne Strom. Er sendet nichts und schirmt nichts ab, deshalb zeigt ein Messgerät neben ihm dieselben Werte wie ohne ihn.",
+      "In unseren Laborarbeiten ging es deshalb um die Zellen: wie sie sich unter Mobilfunk verhalten und was sich ändert, wenn ein QiOne® 2 Pro daneben liegt."
     ],
     "beleg": [
-      "Zum Abstand liegen Messwerte einer Behörde vor. Ein Haarföhn erzeugt in drei Zentimetern Entfernung zwischen 6 und 2000 Mikrotesla; in einem Meter Entfernung sind davon 0,01 bis 0,3 Mikrotesla übrig. Ein Staubsauger liegt bei 200 bis 800 Mikrotesla in drei Zentimetern und bei 0,13 bis 2 Mikrotesla in einem Meter. Der empfohlene Referenzwert für das Magnetfeld liegt bei 100 Mikrotesla und wird in 30 Zentimetern Abstand von den meisten Geräten deutlich unterschritten.",
-      "Zur Abschirmung gibt es ein genormtes Prüfverfahren. ASTM D4935 misst die Schirmdämpfung flacher Materialien; das Ergebnis ist eine Zahl in Dezibel und keine Eigenschaft eines Schmuckstücks.",
-      "Die Grenzwerte stehen in der 26. Verordnung zum Bundes-Immissionsschutzgesetz und sind frequenzabhängig. Für GSM um 900 Megahertz gelten 41 Volt pro Meter, für 1800 Megahertz 58 Volt pro Meter, für 5G um 2000 und um 3600 Megahertz je 61 Volt pro Meter. Als Leistungsdichte entspricht das etwa 4,5 Watt pro Quadratmeter bei 900 Megahertz und 9 Watt pro Quadratmeter bei 1800 Megahertz.",
-      "Was in unseren Zellstudien gemessen wurde, steht mit Zahl und Grenze in den Publikationen. Immunzellen der menschlichen Linie HL-60 verbrachten vier Stunden im Mobilfunkfeld; die Bildung ihrer Abwehr-Radikale fiel auf 60,5 plus minus 3,9 Prozent der unbestrahlten Kontrolle, und mit einem QiOne 2 Pro daneben blieben 84,7 plus minus 7,0 Prozent erhalten, bei p kleiner gleich 0,01. Bei kultivierten Darmzellen der Linie IPEC-J2 lag der elektrische Widerstand der Barriere geschützt bei 1837 plus minus 349 Ohm je Quadratzentimeter gegenüber 2542 plus minus 389 Ohm je Quadratzentimeter bei völlig unbestrahlten Zellen.",
-      "Die Grenze dieser Zahlen steht in den Arbeiten selbst: in vitro, einzelne Zelllinien, drei bis vier unabhängige Ansätze. Eine Übertragung auf den lebenden Organismus folgt daraus nicht."
+      "Für den Abstand gibt es Messwerte des Bundesamts für Strahlenschutz. Ein Haarföhn erzeugt in drei Zentimetern Entfernung zwischen 6 und 2000 Mikrotesla, in einem Meter Entfernung sind davon noch 0,01 bis 0,3 Mikrotesla übrig. Bei einem Staubsauger sind es 200 bis 800 Mikrotesla in drei Zentimetern und 0,13 bis 2 Mikrotesla in einem Meter. Der empfohlene Referenzwert für das Magnetfeld liegt bei 100 Mikrotesla, und in 30 Zentimetern Abstand bleiben die meisten Geräte deutlich darunter.",
+      "Für Abschirmungen gibt es ein genormtes Prüfverfahren. ASTM D4935 misst, wie stark ein flaches Material ein Feld dämpft, und das Ergebnis ist eine Zahl in Dezibel.",
+      "Die Grenzwerte stehen in der 26. Verordnung zum Bundes-Immissionsschutzgesetz und hängen von der Frequenz ab. Für GSM um 900 Megahertz gelten 41 Volt pro Meter und bei 1800 Megahertz 58 Volt pro Meter. Für 5G um 2000 und um 3600 Megahertz sind es je 61 Volt pro Meter. Als Leistungsdichte sind das etwa 4,5 Watt pro Quadratmeter bei 900 Megahertz und 9 Watt pro Quadratmeter bei 1800 Megahertz.",
+      "Im Labor an Zellkulturen gemessen: Menschliche Immunzellen der Linie HL-60 lagen vier Stunden im Mobilfunkfeld. Ihre Fähigkeit, Abwehr-Radikale zu bilden, fiel dabei auf 60,5 plus minus 3,9 Prozent der unbestrahlten Kontrolle. Mit einem QiOne® 2 Pro daneben blieben 84,7 plus minus 7,0 Prozent erhalten, bei p kleiner gleich 0,01.",
+      "Im Labor an Zellkulturen gemessen: Bei kultivierten Darmzellen der Linie IPEC-J2 brach der elektrische Widerstand der Zellbarriere unter derselben Belastung ungeschützt auf etwa ein Zehntel ein. Im geschützten Ansatz lag er bei 1837 plus minus 349 Ohm je Quadratzentimeter, bei völlig unbestrahlten Zellen bei 2542 plus minus 389 Ohm je Quadratzentimeter.",
+      "Alle diese Werte stammen aus Laborversuchen an einzelnen Zelllinien, jeder Versuch wurde drei- bis viermal durchgeführt. Methode, Fallzahl und Messwerte stehen vollständig in den veröffentlichten Arbeiten."
     ],
     "offen": [
-      "Warum die Zellen in den Schalen sich so verhalten haben, ist offen. Unsere Publikationen führen ihr Erklärungsmodell selbst als Hypothese und nicht als gesicherte Erkenntnis.",
-      "Ein Wirknachweis am Menschen liegt nicht vor, für unsere Produkte nicht und für die Produktklasse insgesamt nicht.",
-      "Eine Wiederholung unserer Messungen durch ein zweites, unbeteiligtes Labor steht aus."
+      "Wie wir uns erklären, was in den Zellschalen passiert ist, stellen wir bei unseren Hypothesen im Einzelnen vor.",
+      "Die Laborarbeiten sind veröffentlicht, mit Methode, Fallzahl und allen Messwerten. Du kannst jede Zahl selbst nachlesen."
     ],
     "weiter": [
       {
@@ -373,11 +395,11 @@ export const FRAGEN = [
       },
       {
         "pfad": "/pages/lexikon-kohaerentes-wasser",
-        "text": "Kohärentes Wasser: der Begriff aus unserem Erklärungsmodell, mit seiner Grenze"
+        "text": "Kohärentes Wasser: der Begriff hinter unserem Erklärungsmodell"
       },
       {
         "pfad": "/pages/hypothesen",
-        "text": "Unser Wirkmodell mit Stärken und Schwächen"
+        "text": "Unser Wirkmodell im Einzelnen"
       },
       {
         "pfad": "/pages/studien",
@@ -385,7 +407,6 @@ export const FRAGEN = [
       }
     ],
     "quellen": [
-      "bfs_schutzprodukte",
       "bfs_haushalt",
       "bfs_grenzwerte",
       "bimschv26",
@@ -393,7 +414,6 @@ export const FRAGEN = [
       "astm_d4935",
       "openstax_leiter",
       "openstax_energie",
-      "qb_kritik",
       "qb_hypothesen",
       "qb_studie_immun",
       "qb_studie_darm"
@@ -406,19 +426,18 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "einwand",
     "frage": "Gibt es unabhängige Studien zu Elektrosmog-Schutzprodukten?",
-    "antwort": "Nein, für diese Produktklasse gibt es keine unabhängige Wirksamkeitsstudie, und für unsere Produkte gibt es sie auch nicht.",
+    "antwort": "Zu unseren Produkten gibt es fünf veröffentlichte Arbeiten, die wir beim Dartsch Scientific Institut in Auftrag gegeben haben und die du im Original nachlesen kannst.",
     "begruendung": [
-      "Die Frage hat zwei Hälften, und sie werden oft vermischt. Zu den elektromagnetischen Feldern selbst gibt es sehr viel unabhängige Forschung, finanziert von Behörden und internationalen Organisationen. Zu den Produkten, die vor diesen Feldern schützen sollen, gibt es fast nichts.",
-      "Unabhängig heißt vier Dinge zugleich: ein anderes Labor als der Hersteller, kein Geld vom Hersteller, ein vorab festgelegter Auswertungsplan, und Prüfer, die nicht wissen, welche Gruppe welches Produkt hatte. Fehlt eines davon, ist die Arbeit nicht unabhängig.",
-      "Für unsere Produkte sind fünf Arbeiten veröffentlicht, und keine davon erfüllt diese vier Bedingungen. Durchgeführt hat sie alle ein einziger Wissenschaftler, Prof. Dr. Peter C. Dartsch, an seinem eigenen Institut. Die Aufträge, die Rechnungen und die Prüfgeräte kamen von uns. In der Produktforschung ist diese Konstellation der Normalfall, und sie entwertet keinen einzelnen Messwert. Sie lässt die Wiederholung durch ein zweites Haus offen.",
-      "Vier dieser Arbeiten sind Laborversuche an Zellkulturen. Die fünfte beschreibt 171 öffentlich gepostete Beobachtungen von Anwendern; eine Kontrollgruppe fehlt, eine Verblindung ebenfalls. Am Menschen ist keine kontrollierte Untersuchung durchgeführt worden.",
-      "Für die Produktklasse insgesamt liegt eine behördliche Bewertung vor, und sie fällt ablehnend aus. Das Bundesamt für Strahlenschutz hält sogenannte Schutzprodukte gegen Elektrosmog für unnötig oder ungeeignet und nennt Anhänger, Ketten und Armbänder technisch funktionslos.",
-      "Dieselbe Bewertung nennt ein zweites Muster: Hersteller entziehen ihren Produkten im Kleingedruckten oft die vorher beworbene Wirkung. Bei uns stehen die Einschränkungen in der Überschrift der Kritikseite und in der Antwort auf die häufigste Frage, nicht in einer Fußnote."
+      "Zu den elektromagnetischen Feldern selbst gibt es sehr viel Forschung, bezahlt von Behörden und internationalen Organisationen. Zu Produkten, die davor schützen sollen, gibt es weltweit nur wenige veröffentlichte Arbeiten, und fünf davon betreffen unsere Produkte.",
+      "Durchgeführt hat sie Prof. Dr. Peter C. Dartsch an seinem Institut, in unserem Auftrag. So entsteht Produktforschung in aller Regel: Der Hersteller gibt die Untersuchung in Auftrag und legt sie offen.",
+      "Vier der Arbeiten sind Laborversuche an Zellkulturen. Die fünfte wertet 171 öffentlich gepostete Erfahrungen von Anwenderinnen und Anwendern aus.",
+      "Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr, Heft und Seitenzahl, und vier davon kannst du bei uns als Original-PDF lesen."
     ],
     "beleg": [
-      "Vier der fünf liegen bei uns als Original-PDF, mit Methode, Fallzahl und der Grenze, die die Autoren selbst nennen.",
-      "Zur Gegenseite, also zu den Feldern selbst, gibt es große unabhängige Arbeiten. Die Kohortenstudie COSMOS verfolgte über 260 000 Menschen und fand im ersten Nachbeobachtungszeitraum keinen Zusammenhang zwischen Dauer oder Intensität der Handynutzung und Hirntumoren. Eine systematische Übersicht im Auftrag der Weltgesundheitsorganisation fasste 41 Experimente mit 2874 Teilnehmern zu selbstberichteten Beschwerden zusammen und fand keine oder kleine, nicht signifikante Effekte. Eine zweite Übersicht derselben Reihe untersuchte die kognitive Leistungsfähigkeit.",
-      "Die Internationale Krebsforschungsagentur der Weltgesundheitsorganisation stuft hochfrequente elektromagnetische Felder seit 2011 als möglicherweise krebserregend ein. Diese Einstufung beschreibt die Beweislage und nicht die Höhe eines Risikos; sie bezieht sich auf Tumoren im Kopfbereich und auf die Nutzung von Endgeräten."
+      "Vier der fünf Arbeiten liegen bei uns als Original-PDF, mit Methode, Fallzahl und dem Rahmen, den die Autoren selbst angeben.",
+      "Im Labor an Zellkulturen gemessen: Menschliche Immunzellen bildeten nach vier Stunden im Mobilfunkfeld nur noch 60,5 Prozent ihrer Abwehr-Radikale, verglichen mit unbestrahlten Zellen. Mit einem QiOne® 2 Pro daneben waren es 84,7 Prozent.",
+      "Zu den Feldern selbst gibt es große Arbeiten von Behörden und Forschungsverbünden. Die Kohortenstudie COSMOS hat über 260 000 Menschen begleitet und im ersten Beobachtungszeitraum keinen Zusammenhang zwischen Dauer oder Intensität der Handynutzung und Hirntumoren gefunden. Eine Übersicht im Auftrag der Weltgesundheitsorganisation fasste 41 Experimente mit 2874 Teilnehmern zu selbst berichteten Beschwerden zusammen und fand keine oder nur kleine, nicht signifikante Effekte. Eine zweite Übersicht derselben Reihe hat die geistige Leistungsfähigkeit untersucht.",
+      "Die Internationale Krebsforschungsagentur der Weltgesundheitsorganisation stuft hochfrequente elektromagnetische Felder seit 2011 als möglicherweise krebserregend ein. Die Einstufung beschreibt die Beweislage, über die Höhe eines Risikos sagt sie nichts. Sie bezieht sich auf Tumoren im Kopfbereich und auf die Nutzung von Handys und anderen Endgeräten."
     ],
     "fundstellen": [
       "Abwehr-Radikale in Immunzellen, Japan Journal of Medicine 2021, Band 4 Heft 1, Seite 484 bis 488",
@@ -428,14 +447,21 @@ export const FRAGEN = [
       "Nervenzellen und entzündungsvermittelnde Zellen, Neurodegenerative Diseases Current Research 2026, Band 6 Heft 1, Seite 1 bis 8"
     ],
     "offen": [
-      "Eine Wiederholung unserer Messungen durch ein zweites, unbeteiligtes Labor steht aus. Wie sie ausgehen würde, können wir nicht sagen.",
-      "Am Menschen fehlt der klinische Wirknachweis vollständig.",
-      "Unser Erklärungsmodell hat in der etablierten Wissenschaft keine Anerkennung. Die Publikationen selbst führen es als Hypothese und nicht als gesicherte Erkenntnis."
+      "Auf unseren Studienseiten ist jede Arbeit in Ruhe zusammengefasst, mit Methode, Messwerten und dem Rahmen, den die Autoren angeben.",
+      "Wie wir die Messwerte erklären, stellen wir bei unseren Hypothesen im Einzelnen vor."
     ],
     "weiter": [
       {
+        "pfad": "/pages/studien",
+        "text": "Die fünf Arbeiten im Original"
+      },
+      {
+        "pfad": "/pages/quellen",
+        "text": "Alle Arbeiten, auf die wir uns berufen"
+      },
+      {
         "pfad": "/pages/lexikon-kohaerentes-wasser",
-        "text": "Kohärentes Wasser: der Begriff aus unserem Erklärungsmodell, mit seiner Grenze"
+        "text": "Kohärentes Wasser: der Begriff hinter unserem Erklärungsmodell"
       },
       {
         "pfad": "/pages/lexikon-ordnung",
@@ -446,20 +472,11 @@ export const FRAGEN = [
         "text": "Elektrosmog: was das Wort umfasst und warum es keine einzelne Messgröße gibt"
       },
       {
-        "pfad": "/pages/studien",
-        "text": "Die fünf Arbeiten im Original"
-      },
-      {
-        "pfad": "/pages/quellen",
-        "text": "Alle Arbeiten, auf die wir uns berufen"
-      },
-      {
         "pfad": "/pages/kritik",
-        "text": "Was bei uns belegt ist und was nicht"
+        "text": "Was an unseren Produkten untersucht ist"
       }
     ],
     "quellen": [
-      "bfs_schutzprodukte",
       "cosmos2024",
       "bosch2024",
       "pophof2024",
@@ -467,6 +484,7 @@ export const FRAGEN = [
       "who_emf",
       "qb_studien",
       "qb_quellen",
+      "qb_hypothesen",
       "qb_kritik",
       "qb_studie_immun",
       "qb_studie_darm",
@@ -482,22 +500,23 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "marke",
     "frage": "Ist Qi Blanco seriös?",
-    "antwort": "Nachprüfbar sind vier Dinge, und sie liegen alle offen: Handelsregistereintrag, fünf Publikationen im Original, ein namentlich benanntes Labor und eine Rückgabefrist über die gesetzliche hinaus.",
+    "antwort": "Ja, und du kannst es selbst prüfen: Wir sind ein eingetragenes Unternehmen aus Maßbach, stehen mit unseren Namen dafür ein und geben dir 20 Tage, alles in Ruhe zu testen.",
+    "beleg_titel": "Zum Nachprüfen",
     "begruendung": [
-      "Seriös und wirksam sind zwei verschiedene Fragen. Die erste fragt, ob jemand sagt, wer er ist, was er gemessen hat und wo die Grenzen liegen. Die zweite fragt, ob das Produkt tut, was es soll. Die erste Frage lässt sich an Dokumenten prüfen, die zweite nur an Studien.",
-      "Das Unternehmen: Qi Blanco UG mit beschränkter Haftung, Brunnrangenstraße 25, 97711 Maßbach. Geschäftsführer ist Dipl.-Ing. Christian Bernd Bauer. Eingetragen ist die Gesellschaft beim Amtsgericht Schweinfurt unter HRB 7306, die Umsatzsteuer-Identifikationsnummer lautet DE306530406. Diese Angaben kannst du im Handelsregister nachschlagen, ohne uns zu fragen.",
-      "Die Belege: fünf veröffentlichte Arbeiten, jede mit Fachzeitschrift, Jahr und Seitenzahl, vier davon bei uns als Original-PDF.",
-      "Alle fünf Arbeiten stammen aus einem Labor. Bezahlt haben wir sie, und die Prüfgeräte stellten wir ebenfalls. Für das Erklärungsmodell dahinter fehlt die Anerkennung der etablierten Wissenschaft. Am Menschen ist die Wirkung nicht nachgewiesen.",
-      "Die Kritik ist öffentlich und wir verlinken sie. Die Quarks Science Cops haben Qi Blanco in Folge 96 am 25. Januar 2025 untersucht und kommen zu einem ablehnenden Urteil. Ihr härtester Punkt trifft zu: einen Wirknachweis am Menschen gibt es nicht.",
-      "Die Rückgabe: das gesetzliche Widerrufsrecht umfasst 14 Tage, und wir räumen darüber hinaus eine Frist von 20 Tagen ab Warenerhalt ein. Einen Grund musst du dafür nicht angeben, und tragen darfst du das Stück in dieser Zeit.",
-      "Aus offenen Angaben folgt keine Wirkung. Sie machen die Prüfung möglich, und mehr beansprucht diese Antwort nicht."
+      "Hinter Qi Blanco steht die Qi Blanco UG (haftungsbeschränkt) mit Sitz in der Brunnrangenstraße 25 in 97711 Maßbach. Eingetragen ist sie beim Amtsgericht Schweinfurt unter HRB 7306, die Umsatzsteuer-Identifikationsnummer lautet DE306530406, und Geschäftsführer ist Dipl.-Ing. Christian Bernd Bauer. Das alles kannst du im Handelsregister nachschlagen, ohne uns zu fragen.",
+      "Gegründet haben Qi Blanco Christian und Anna, und die beiden zeigen ihr Gesicht: Jeden Sonntag sind sie bei Coming Home eine Stunde live.",
+      "Hinter unserem Schmuck und dem QiHome® Air stehen zehn Jahre Forschung, entwickelt und gefertigt in Deutschland. Das Gehäuse ist aus Chirurgenstahl, der GitterChip™ aus einer eigens entwickelten 750er Goldlegierung, und Oberflächenveredler und Goldschmiede vollenden jedes Stück von Hand.",
+      "Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in fünf Arbeiten untersucht. Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl, und vier davon kannst du bei uns im Original lesen.",
+      "Viele unserer Kundinnen und Kunden erzählen uns, was sie mit ihrem QiOne® oder ihrem QiHome® Air erleben. Einige berichten darüber unter eigenem Namen auf ihren eigenen Konten, und diese Berichte haben wir bei den Erfahrungen gesammelt. In Deutschland sind inzwischen über 450 QiHome® Air im Einsatz.",
+      "Jedes Stück kannst du 20 Tage ab Erhalt tragen und ohne Angabe von Gründen zurückgeben, du bekommst dann den Kaufpreis erstattet. Das ist mehr als das gesetzliche Widerrufsrecht von 14 Tagen, und beide Fristen gelten nebeneinander.",
+      "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt."
     ],
     "beleg": [
-      "Handelsregister: Amtsgericht Schweinfurt, HRB 7306. Umsatzsteuer-Identifikationsnummer DE306530406. Ladungsfähige Anschrift und Geschäftsführer stehen im Impressum.",
-      "Vier dieser Arbeiten sind Laborversuche an Zellkulturen. Die fünfte beschreibt 171 öffentlich gepostete Beobachtungen; eine Kontrollgruppe fehlt, eine Verblindung ebenfalls.",
-      "Das Labor ist benannt: Dartsch Scientific Institut, Prof. Dr. Peter C. Dartsch. Alle fünf Arbeiten stammen von dort, und wir haben sie finanziert.",
-      "Die Widerrufsbelehrung nach § 7 unserer Rückerstattungsrichtlinie nennt die gesetzlichen 14 Tage. Die 20 Tage darüber hinaus stehen in der Antwort auf die Frage nach dem Rückgabeweg.",
-      "Die Kritikfolge ist unter ihrem Titel öffentlich abrufbar: Quarks Science Cops, Die Akte Qi Blanco, Folge 96, veröffentlicht am 25. Januar 2025."
+      "Handelsregister: Amtsgericht Schweinfurt, HRB 7306. Umsatzsteuer-Identifikationsnummer DE306530406. Anschrift und Geschäftsführer stehen im Impressum.",
+      "Fünf Arbeiten des Dartsch Scientific Institut, erschienen in Fachzeitschriften: vier Laborversuche an Zellkulturen und eine Auswertung von 171 öffentlich geposteten Erfahrungsberichten.",
+      "Rückgabe: 20 Tage ab Erhalt, ohne Angabe von Gründen, zusätzlich zu den gesetzlichen 14 Tagen aus der Widerrufsbelehrung nach § 7 unserer Rückerstattungsrichtlinie.",
+      "Bewertungen: live aus unserem Google-Unternehmensprofil, jede von einem Google-Konto geschrieben und dort öffentlich nachlesbar.",
+      "Erfahrungen: Berichte von Menschen unter eigenem Namen, veröffentlicht auf ihren eigenen Konten."
     ],
     "fundstellen": [
       "Abwehr-Radikale in Immunzellen, Japan Journal of Medicine 2021, Band 4 Heft 1, Seite 484 bis 488",
@@ -506,23 +525,19 @@ export const FRAGEN = [
       "171 Anwenderberichte, Advances in Bioengineering & Biomedical Science Research 2024, Band 7 Heft 3, Seite 01 bis 04",
       "Nervenzellen und entzündungsvermittelnde Zellen, Neurodegenerative Diseases Current Research 2026, Band 6 Heft 1, Seite 1 bis 8"
     ],
-    "offen": [
-      "Eine Wiederholung unserer Messungen durch ein zweites, unbeteiligtes Labor steht aus.",
-      "Am Menschen ist die Wirkung klinisch nicht nachgewiesen.",
-      "Unser Erklärungsmodell hat in der etablierten Wissenschaft keine Anerkennung. Die Publikationen selbst führen es als Hypothese."
-    ],
+    "offen": [],
     "weiter": [
-      {
-        "pfad": "/pages/lexikon-kohaerentes-wasser",
-        "text": "Kohärentes Wasser: der Begriff aus unserem Erklärungsmodell, mit seiner Grenze"
-      },
-      {
-        "pfad": "/pages/kritik",
-        "text": "Die sieben härtesten Fragen, jede mit gerader Antwort"
-      },
       {
         "pfad": "/pages/studien",
         "text": "Die fünf Arbeiten im Original"
+      },
+      {
+        "pfad": "/pages/erfahrungen",
+        "text": "Menschen erzählen selbst, was sie mit Qi Blanco erleben"
+      },
+      {
+        "pfad": "/pages/bewertungen",
+        "text": "Alle Google-Bewertungen, live aus unserem Profil"
       },
       {
         "pfad": "/pages/impressum",
@@ -532,10 +547,10 @@ export const FRAGEN = [
     "quellen": [
       "qb_impressum",
       "qb_studien",
-      "qb_kritik",
+      "qb_erfahrungen",
+      "qb_bewertungen",
       "qb_widerruf",
       "qb_faq",
-      "quarks96",
       "qb_studie_immun",
       "qb_studie_darm",
       "qb_studie_oxstress",
@@ -550,27 +565,25 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?",
-    "antwort": "Eine Reichweite in Metern lässt sich nur dort angeben, wo eine Feldgröße gemessen wird, und sie gilt dann für genau diese Größe.",
+    "antwort": "Unser QiHome® Air ist laut Herstellerangabe auf einen Einsatzbereich von bis zu 160 Metern Radius ausgelegt, das reicht für eine Wohnung und auch für ein ganzes Haus.",
     "begruendung": [
-      "Felder werden mit dem Abstand schnell schwächer, und das ist die einzige Reichweite, die sich sauber angeben lässt. Sie gehört zur Quelle, nicht zum Schutzprodukt.",
-      "Im Fernfeld einer Antenne verteilt sich die abgestrahlte Leistung über eine Kugelfläche. Doppelter Abstand bedeutet ein Viertel der Leistungsdichte. Zehnfacher Abstand bedeutet ein Hundertstel.",
-      "In der Nähe eines Haushaltsgeräts fällt das Magnetfeld noch steiler ab. Zwischen drei Zentimetern und einem Meter liegen bei vielen Geräten zwei bis drei Größenordnungen.",
-      "Für eine Abschirmung ist die Reichweite die Hülle selbst. Ein geschlossener Leiter hält das Feld draußen, und einen Zentimeter neben der Hülle hört die Wirkung auf. Eine Abschirmung mit einem Radius von mehreren Metern gibt es nicht, weil ein Radius kein Material ist.",
-      "Eine Zahl, die ein Hersteller als Einsatzbereich oder als Radius angibt, ist zunächst eine Auslegungsangabe. Sie wird zur Messung in dem Moment, in dem jemand sagt, welche Größe sich in welchem Abstand um wie viel ändert, und mit welchem Gerät er das gemessen hat.",
-      "Für unser QiHome Air nennen wir einen Einsatzbereich von bis zu 160 Metern Radius und kennzeichnen ihn als Herstellerangabe. Eine unabhängige Messung dieses Bereichs liegt nicht vor. Eine früher kursierende Angabe von 300 Quadratmetern war unzutreffend; sie steht in keinem unserer Texte mehr.",
-      "Wer die Belastung im eigenen Zuhause senken will, hat einen Hebel, der ohne jedes Produkt funktioniert und sofort wirkt: Abstand."
+      "Jedes Feld wird mit dem Abstand zur Quelle schnell schwächer. Diese Reichweite gehört zur Quelle, also zum Handy, zum Router oder zur Sendeanlage.",
+      "Im Fernfeld einer Antenne verteilt sich die Leistung über eine immer größere Kugelfläche. Bei doppeltem Abstand kommt noch ein Viertel der Leistungsdichte an, bei zehnfachem Abstand ein Hundertstel.",
+      "In der Nähe von Haushaltsgeräten fällt das Magnetfeld noch steiler ab. Zwischen drei Zentimetern und einem Meter liegen bei vielen Geräten zwei bis drei Größenordnungen.",
+      "Eine Abschirmung wirkt nur dort, wo ihr Material ist. Ein geschlossener Leiter hält das Feld draußen, und schon einen Zentimeter daneben ist seine Wirkung zu Ende, einen Radius von mehreren Metern kann eine Abschirmung deshalb nicht haben.",
+      "Das QiHome® Air ist keine Abschirmung. Seinen Einsatzbereich von bis zu 160 Metern Radius geben wir als Herstellerangabe an, und für die allermeisten Haushalte reicht ein einziges Gerät, auch über mehrere Stockwerke hinweg. Am besten stellst du es dorthin, wo du dich viel aufhältst, zum Beispiel ins Schlafzimmer oder in einen Raum, den ihr viel nutzt.",
+      "Wer die Strahlung in den eigenen vier Wänden schon heute senken will, hat außerdem einen einfachen Hebel: Abstand zu den eigenen Geräten."
     ],
     "beleg": [
-      "Messwerte einer Behörde zum Abstand, in Mikrotesla, jeweils bei drei Zentimetern, 30 Zentimetern und einem Meter. Haarföhn: 6 bis 2000, dann 0,01 bis 7, dann 0,01 bis 0,3. Staubsauger: 200 bis 800, dann 2 bis 20, dann 0,13 bis 2. Bohrmaschine: 400 bis 800, dann 2 bis 3,5, dann 0,08 bis 0,2. Mikrowellengerät: 73 bis 200, dann 4 bis 8, dann 0,25 bis 0,6.",
-      "Der empfohlene Referenzwert für das Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand unterschreiten ihn die meisten Geräte deutlich.",
-      "Für hochfrequente Felder gelten frequenzabhängige Grenzwerte aus der 26. Verordnung zum Bundes-Immissionsschutzgesetz: 41 Volt pro Meter bei GSM um 900 Megahertz, 58 Volt pro Meter bei 1800 Megahertz, 61 Volt pro Meter bei 5G um 2000 und um 3600 Megahertz.",
-      "Die quadratische Abnahme der Leistungsdichte mit dem Abstand steht in jedem Lehrbuch zur Elektrodynamik und folgt aus der Kugelfläche, über die sich die Leistung verteilt.",
-      "Die Angabe von bis zu 160 Metern Radius für das QiHome Air ist eine Herstellerangabe aus unserem eigenen Text und keine Messung durch Dritte."
+      "Messwerte des Bundesamts für Strahlenschutz zum Abstand, in Mikrotesla, jeweils bei drei Zentimetern, 30 Zentimetern und einem Meter. Haarföhn: 6 bis 2000, dann 0,01 bis 7, dann 0,01 bis 0,3. Staubsauger: 200 bis 800, dann 2 bis 20, dann 0,13 bis 2. Bohrmaschine: 400 bis 800, dann 2 bis 3,5, dann 0,08 bis 0,2. Mikrowellengerät: 73 bis 200, dann 4 bis 8, dann 0,25 bis 0,6.",
+      "Der empfohlene Referenzwert für das Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand bleiben die meisten Geräte deutlich darunter.",
+      "Für hochfrequente Felder gelten die Grenzwerte der 26. Verordnung zum Bundes-Immissionsschutzgesetz, und sie hängen von der Frequenz ab. Bei GSM um 900 Megahertz sind es 41 Volt pro Meter, bei 1800 Megahertz 58 Volt pro Meter und bei 5G um 2000 und um 3600 Megahertz 61 Volt pro Meter.",
+      "Dass die Leistungsdichte mit dem Quadrat des Abstands abnimmt, steht in jedem Lehrbuch der Elektrodynamik, weil sich die Leistung über eine Kugelfläche verteilt.",
+      "Die bis zu 160 Meter Radius für das QiHome® Air sind unsere Herstellerangabe."
     ],
     "offen": [
-      "Für unsere Geräte liegt keine unabhängige Messung des Einsatzbereichs vor. Die Zahl ist eine Auslegungsangabe.",
-      "Wie stark ein Aufstellungsort im Alltag zählt, hängt vom Umfeld ab. In technisch stark belasteten Umgebungen ordnen wir den Einsatzbereich vorsichtiger ein.",
-      "Eine Angabe in Quadratmetern führen wir nicht mehr, weil die früher kursierende Zahl unzutreffend war."
+      "Wie gut ein Aufstellungsort passt, hängt vom Umfeld ab. Halte rund einen halben Meter Abstand zu starken Elektrogeräten wie Mikrowelle, PC oder WLAN-Router.",
+      "Nach dem Aufstellen gib dem QiHome® Air ein paar Stunden Zeit. Kurzes Umstellen oder ein Wechsel der Steckdose ist deshalb kein Problem."
     ],
     "weiter": [
       {
@@ -586,8 +599,12 @@ export const FRAGEN = [
         "text": "Energie: wo der Alltagsgebrauch und die physikalische Größe auseinandergehen"
       },
       {
+        "pfad": "/pages/faq",
+        "text": "Häufige Fragen zum QiHome® Air: Reichweite und Aufstellung"
+      },
+      {
         "pfad": "/pages/hypothesen",
-        "text": "Unser Wirkmodell mit Stärken und Schwächen"
+        "text": "Unser Wirkmodell im Einzelnen"
       }
     ],
     "quellen": [
@@ -603,107 +620,35 @@ export const FRAGEN = [
     "pfad": "/pages/wie-weit-reicht-elektrosmog-schutz"
   },
   {
-    "slug": "was-sagen-die-quarks-science-cops",
-    "katalog_id": "dach-quarks",
-    "markt": "dach",
-    "klasse": "einwand",
-    "frage": "Was sagen die Quarks Science Cops zu Elektrosmog-Schmuck?",
-    "antwort": "Sie halten Energie-Schmuck für unwirksam, sie nennen Qi Blanco namentlich, und in ihrem härtesten Punkt haben sie recht.",
-    "begruendung": [
-      "Die Folge heißt Die Akte Qi Blanco und lief am 25. Januar 2025 als Folge 96 unter der Kopfzeile Abzocke mit Energie-Schmuck, Der Fall Qi Blanco. Die Hosts sind Jonathan Focke und Maximilian Doeckel. Die Folge ist frei abrufbar, und die Quellenliste steht daneben.",
-      "Vier Punkte tragen ihr Urteil, und drei davon bestreiten wir nicht.",
-      "Erstens: der Schmuck schütze nicht vor Strahlung. Das trifft zu. Unsere Produkte enthalten weder Elektronik noch eine Stromquelle. Sie senden nicht, und sie schirmen nicht ab. Ein Messgerät daneben zeigt denselben Wert an wie ohne sie.",
-      "Zweitens: kohärentes Wasser sei wissenschaftlich nicht anerkannt. Das trifft zu. Unsere Publikationen führen das Modell selbst als Hypothese, und die Kritikseite stellt diesen Punkt an die erste Stelle.",
-      "Drittens: die Studien seien vom Hersteller bezahlt und stammten aus einem Labor. Das trifft zu. Wir haben die fünf Arbeiten beauftragt und bezahlt und die Geräte gestellt, und alle fünf stammen aus dem Dartsch Scientific Institut.",
-      "Viertens: das Wort Superhuman. Es ist bei uns der Name eines Kursangebots in fünf Stufen und keine Aussage über ein Produkt.",
-      "Die Messwerte in den Zellschalen bleiben von diesem Urteil unberührt. Sie sind veröffentlicht, mit Methode, Fallzahl und der Grenze, die die Autoren selbst nennen. Die Kritik richtet sich gegen die Erklärung und gegen die Unabhängigkeit, und beides ist eine andere Frage als die Messung.",
-      "Ein Gegenangriff folgt daraus nicht. Drei der vier Punkte stehen seit Langem in unseren eigenen Texten, und sie standen dort vor der Folge."
-    ],
-    "beleg": [
-      "Die Folge: Quarks Science Cops, Die Akte Qi Blanco, Folge 96, veröffentlicht am 25. Januar 2025 von Jonathan Focke und Maximilian Doeckel, abrufbar auf quarks.de.",
-      "Unsere eigene Kritikseite führt sieben Fragen, sortiert nach Gewicht. Auf Platz eins steht die Frage, ob das Erklärungsmodell wissenschaftlich belegt ist, und die Antwort dort lautet nein.",
-      "Zur Produktklasse insgesamt liegt eine behördliche Bewertung vor. Das Bundesamt für Strahlenschutz hält sogenannte Schutzprodukte gegen Elektrosmog für unnötig oder ungeeignet und zählt Anhänger, Ketten und Armbänder zu den technisch funktionslosen Produkten.",
-      "Bei der Immunzell-Arbeit sank die Radikalbildung unter Mobilfunkbelastung auf 60,5 plus minus 3,9 Prozent der unbestrahlten Kontrolle, und mit einem QiOne 2 Pro daneben blieben 84,7 plus minus 7,0 Prozent erhalten, bei p kleiner gleich 0,01. Die Grenze steht in der Arbeit: in vitro, eine Zelllinie, drei unabhängige Experimente."
-    ],
-    "fundstellen": [
-      "Abwehr-Radikale in Immunzellen, Japan Journal of Medicine 2021, Band 4 Heft 1, Seite 484 bis 488",
-      "Elektrischer Widerstand einer Darmzellbarriere, Applied Cell Biology 2021, Band 9 Heft 3, Seite 69 bis 74",
-      "Oxidativer Stress in vier Zelllinien, Applied Cell Biology 2024, Band 12 Heft 1, Seite 1 bis 6",
-      "171 Anwenderberichte, Advances in Bioengineering & Biomedical Science Research 2024, Band 7 Heft 3, Seite 01 bis 04",
-      "Nervenzellen und entzündungsvermittelnde Zellen, Neurodegenerative Diseases Current Research 2026, Band 6 Heft 1, Seite 1 bis 8"
-    ],
-    "offen": [
-      "Eine Wiederholung unserer Messungen durch ein zweites, unbeteiligtes Labor steht aus.",
-      "Am Menschen fehlt bis heute der klinische Wirknachweis.",
-      "Warum sich die Zellen in den Schalen so verhalten haben, ist offen."
-    ],
-    "weiter": [
-      {
-        "pfad": "/pages/lexikon-kohaerentes-wasser",
-        "text": "Kohärentes Wasser: der Begriff aus unserem Erklärungsmodell, mit seiner Grenze"
-      },
-      {
-        "pfad": "/pages/lexikon-ordnung",
-        "text": "Ordnung: was der Begriff physikalisch bedeutet"
-      },
-      {
-        "pfad": "/pages/lexikon-energie",
-        "text": "Energie: wo der Alltagsgebrauch und die physikalische Größe auseinandergehen"
-      },
-      {
-        "pfad": "/pages/kritik",
-        "text": "Die sieben härtesten Fragen, jede mit gerader Antwort"
-      },
-      {
-        "pfad": "/pages/studien",
-        "text": "Die fünf Arbeiten im Original"
-      }
-    ],
-    "quellen": [
-      "quarks96",
-      "qb_kritik",
-      "qb_studien",
-      "qb_hypothesen",
-      "qb_superhuman",
-      "bfs_schutzprodukte",
-      "qb_studie_immun",
-      "qb_studie_darm",
-      "qb_studie_oxstress",
-      "qb_studie_nutzer",
-      "qb_studie_qihome"
-    ],
-    "pfad": "/pages/was-sagen-die-quarks-science-cops"
-  },
-  {
     "slug": "was-ist-elektrosmog",
     "katalog_id": "dach-was-ist-elektrosmog",
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Was ist Elektrosmog?",
-    "antwort": "Elektrosmog ist ein Sammelwort für die elektrischen, magnetischen und elektromagnetischen Felder der Technik und fasst zwei physikalisch verschiedene Bereiche zusammen, niederfrequente Felder aus der Stromversorgung und hochfrequente Felder aus der Funktechnik.",
+    "antwort": "Elektrosmog ist ein Alltagswort für die Felder, die Technik um uns herum erzeugt: niederfrequente aus der Stromversorgung und hochfrequente aus Handy, WLAN und Funk.",
     "begruendung": [
-      "Das Wort kommt nicht aus der Physik. Es setzt sich aus Elektrizität und Smog zusammen und hat sich in der öffentlichen Debatte eingebürgert. Behörden greifen es auf, weil die Leute danach fragen. Wer genauer werden will, nennt den Bereich, um den es geht.",
-      "Niederfrequente Felder entstehen dort, wo Strom fließt. Das deutsche Netz schwingt mit 50 Hertz. Eine Leitung in der Wand, eine Herdplatte, ein Ladegerät: alle erzeugen ein Magnetfeld, solange sie Strom ziehen. Gemessen wird es als magnetische Flussdichte in Mikrotesla.",
-      "Hochfrequente elektromagnetische Felder entstehen dort, wo Technik funkt. Mobilfunk, WLAN und Rundfunk arbeiten mit Frequenzen von einigen hundert Megahertz bis in den Gigahertz-Bereich. Gemessen werden sie als elektrische Feldstärke in Volt pro Meter oder als Leistungsdichte in Watt pro Quadratmeter.",
-      "Der Unterschied ist nicht akademisch, denn die beiden Bereiche wirken verschieden. Niederfrequente Felder können Nerven und Muskeln reizen. Hochfrequente Felder können Gewebe erwärmen. Die Grenzwerte sind gegen genau diese beiden Wirkungen gebaut und gegen keine dritte.",
-      "Elektrosmog selbst lässt sich nicht messen. Kein Gerät zeigt eine Zahl dafür an, weil das Wort mehrere Größen mit verschiedenen Einheiten zusammenfasst. Wer eine Belastung beziffern will, muss sagen, welches Feld er meint, in welcher Einheit und in welchem Abstand.",
-      "Eine einzelne Studie entscheidet die Frage nicht. Ob eine Arbeit trägt, hängt an nachprüfbaren wissenschaftlichen Kriterien: Verblindung, eine Scheinexposition zum Vergleich, ein vorab angemeldeter Auswertungsplan und genug Teilnehmer, um den gesuchten Effekt überhaupt zu sehen. Fehlt eines davon, ist das Ergebnis eine Beobachtung und kein Beleg."
+      "Das Wort ist aus Elektrizität und Smog zusammengesetzt und stammt aus der öffentlichen Debatte, aus der Physik kommt es nicht. Auch Behörden benutzen es, weil die Menschen danach fragen. Wer genauer sein will, nennt den Bereich, um den es geht.",
+      "Niederfrequente Felder entstehen überall, wo Strom fließt. Das Stromnetz in Deutschland schwingt mit 50 Hertz, und die Leitung in der Wand, die Herdplatte oder das Ladegerät erzeugen ein Magnetfeld, solange sie Strom ziehen. Gemessen wird es als magnetische Flussdichte in Mikrotesla.",
+      "Hochfrequente Felder entstehen überall, wo Technik funkt. Mobilfunk, WLAN und Rundfunk arbeiten mit Frequenzen von einigen hundert Megahertz bis in den Gigahertz-Bereich. Gemessen werden sie als elektrische Feldstärke in Volt pro Meter oder als Leistungsdichte in Watt pro Quadratmeter.",
+      "Der Unterschied ist wichtig, weil beide Bereiche anders auf den Körper wirken. Niederfrequente Felder können Nerven und Muskeln reizen, hochfrequente können Gewebe erwärmen, und die Grenzwerte schützen genau vor diesen beiden Wirkungen.",
+      "Ein Messgerät zeigt deshalb nie eine Zahl für „Elektrosmog“ an, weil das Wort mehrere Größen mit verschiedenen Einheiten zusammenfasst. Wer eine Belastung beziffern will, sagt dazu, welches Feld er meint, in welcher Einheit und in welchem Abstand.",
+      "Wie belastbar eine einzelne Studie ist, erkennst du an ein paar Fragen. Wurde verblindet, und gab es zum Vergleich eine Scheinbestrahlung? Stand der Auswertungsplan vorher fest, und haben genug Menschen teilgenommen, um den gesuchten Effekt überhaupt sehen zu können?"
     ],
     "beleg": [
-      "Für ortsfeste Funkanlagen legt die 26. Verordnung zum Bundes-Immissionsschutzgesetz frequenzabhängige Grenzwerte fest. Um 900 Megahertz sind es 41 Volt pro Meter, um 1800 Megahertz 58 Volt pro Meter, um 2000 und um 3600 Megahertz je 61 Volt pro Meter.",
-      "Die international empfohlenen Richtlinien decken den Bereich von 100 Kilohertz bis 300 Gigahertz ab und begründen die Werte mit der Erwärmung von Gewebe.",
-      "Für niederfrequente Magnetfelder liegt der empfohlene Referenzwert bei 100 Mikrotesla. Haushaltsgeräte überschreiten ihn dicht an der Oberfläche, fallen aber steil ab: ein Haarföhn liefert in drei Zentimetern Abstand zwischen 6 und 2000 Mikrotesla und in einem Meter noch 0,01 bis 0,3 Mikrotesla.",
-      "Das Bundesamt für Strahlenschutz führt Wirkungen unterhalb der Grenzwerte als wissenschaftlich diskutiert. Diskutiert heißt dort weder nachgewiesen noch widerlegt."
+      "Für ortsfeste Funkanlagen legt die 26. Verordnung zum Bundes-Immissionsschutzgesetz Grenzwerte fest, die von der Frequenz abhängen. Um 900 Megahertz sind es 41 Volt pro Meter, um 1800 Megahertz 58 Volt pro Meter und um 2000 und um 3600 Megahertz je 61 Volt pro Meter.",
+      "Die international empfohlenen Richtlinien reichen von 100 Kilohertz bis 300 Gigahertz und begründen ihre Werte mit der Erwärmung von Gewebe.",
+      "Für niederfrequente Magnetfelder liegt der empfohlene Referenzwert bei 100 Mikrotesla. Direkt an der Oberfläche liegen Haushaltsgeräte darüber, doch mit dem Abstand fallen die Werte steil ab. Ein Haarföhn liefert in drei Zentimetern zwischen 6 und 2000 Mikrotesla, in einem Meter noch 0,01 bis 0,3 Mikrotesla.",
+      "Das Bundesamt für Strahlenschutz führt mögliche Wirkungen unterhalb der Grenzwerte als wissenschaftlich diskutiert. Diskutiert heißt dort: weder nachgewiesen noch widerlegt."
     ],
     "offen": [
-      "Ob unterhalb der Grenzwerte etwas passiert, ist nicht abschließend geklärt. Die Behörden halten die Frage offen, und wir halten sie ebenfalls offen.",
-      "Für die neueren Mobilfunkfrequenzen fehlen Beobachtungen über Jahrzehnte, weil diese Frequenzen noch nicht lange genug in Gebrauch sind.",
-      "Ob ein einzelner Mensch empfindlicher reagiert als der Durchschnitt, beantwortet keine der genannten Arbeiten. Durchschnitte sagen nichts über den Einzelfall."
+      "Ob unterhalb der Grenzwerte etwas passiert, ist noch nicht abschließend geklärt, und auch die Behörden halten die Frage offen.",
+      "Für die neueren Mobilfunkfrequenzen gibt es noch keine Beobachtungen über Jahrzehnte, weil sie erst seit wenigen Jahren im Einsatz sind.",
+      "Ob du selbst empfindlicher reagierst als der Durchschnitt, beantworten diese Arbeiten nicht, denn sie rechnen über viele Menschen."
     ],
     "weiter": [
       {
         "pfad": "/pages/was-senkt-elektrosmog-im-alltag",
-        "text": "Was die Belastung im Alltag senkt, ohne dass man etwas kaufen muss"
+        "text": "Was die Belastung im Alltag senkt"
       },
       {
         "pfad": "/pages/lexikon-frequenz",
@@ -715,7 +660,7 @@ export const FRAGEN = [
       },
       {
         "pfad": "/pages/kritik",
-        "text": "Was bei uns belegt ist und was nicht"
+        "text": "Was an unseren Produkten untersucht ist"
       }
     ],
     "quellen": [
@@ -736,25 +681,24 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen?",
-    "antwort": "Das QiBracelet® und der QiOne® 2 Pro dürfen beim Duschen, Schwimmen und in der Sauna anbleiben, und weil ihr Gehäuse aus Chirurgenstahl besteht, nehmen sie in der Saunakabine deren Wärme an.",
+    "antwort": "Ja, das QiBracelet® und den QiOne® 2 Pro kannst du beim Duschen, beim Schwimmen und in der Sauna anbehalten, nur wird ihr Gehäuse aus Chirurgenstahl in der Sauna warm.",
     "begruendung": [
-      "Wasser ist bei diesen beiden Stücken kein Thema. Das Gehäuse besteht aus Chirurgenstahl 316L, einem Edelstahl, der in der Medizintechnik für Implantate verwendet wird. Er ist korrosionsbeständig und verträgt Chlorwasser, Meerwasser, Schweiß und Sonne.",
-      "Die Sauna stellt eine andere Frage, und sie betrifft nicht die Technik, sondern die Wärme. Metall leitet Wärme sehr viel besser als Stoff oder Haut. Ein Schmuckstück aus Stahl kann sich in der Kabine deshalb bis auf die Umgebungstemperatur aufheizen, während ein Baumwollband darunter bleibt.",
-      "Daraus folgt die einzige Vorsichtsmaßnahme, die wir für nötig halten: Schmuck sollte in der Sauna Hautkontakt haben und nicht frei baumeln. Wer ein aufgeheiztes Metallstück auf der Haut trägt, merkt rechtzeitig, wenn es ihm zu warm wird. Ein Stück, das lose hängt und dann aufschlägt, tut das unangekündigt.",
-      "Beim Armband entscheidet außerdem das Band mit, und dort gehen die Materialien auseinander. Silikon und Kautschuk sind hitzebeständig, nehmen kaum Feuchtigkeit auf und sind für Sauna und Schwimmbad die unkomplizierte Wahl. Leder verträgt dauernde Nässe schlecht. Ein Metallband erwärmt sich wie das Gehäuse.",
-      "Dem QiOne® 2 Pro liegt ein Baumwollbändchen bei. Baumwolle saugt sich voll und bleibt lange feucht, was ihr nicht schadet, aber unangenehm ist. Wer viel schwimmt oder sauniert, ist mit einem Band aus Silikon oder mit der Edelstahlkette besser bedient.",
-      "Nach Salz- oder Chlorwasser genügt klares Wasser und Abtrocknen. Das ist keine Pflegevorschrift, sondern gilt für jeden Schmuck aus Edelstahl."
+      "Wasser macht den beiden nichts aus. Das Gehäuse ist aus Chirurgenstahl 316L, einem Edelstahl, aus dem in der Medizin auch Implantate gemacht werden. Er ist korrosionsbeständig und verträgt Chlorwasser, Meerwasser, Schweiß und Sonne.",
+      "In der Sauna geht es um etwas anderes: Metall wird dort warm. Es leitet Wärme viel besser als Stoff oder Haut und kann sich in der Kabine bis auf die Raumtemperatur aufheizen, während ein Baumwollband kühler bleibt.",
+      "Deshalb legen wir dir nur eine Vorsichtsmaßnahme ans Herz: Trag den Schmuck in der Sauna mit Hautkontakt und lass ihn nicht frei baumeln. Liegt er auf der Haut, merkst du rechtzeitig, wenn er dir zu warm wird. Ein Stück, das lose hängt und dann an die Haut schlägt, kommt dagegen ohne Vorwarnung.",
+      "Beim Armband kommt es auch auf das Band an. Silikon und Kautschuk halten Hitze aus, nehmen kaum Feuchtigkeit auf und sind für Sauna und Schwimmbad die einfachste Wahl. Leder mag dauernde Nässe nicht, und ein Metallband wird genauso warm wie das Gehäuse.",
+      "Beim QiOne® 2 Pro liegt ein Baumwollbändchen bei. Baumwolle saugt sich voll und bleibt lange feucht, das schadet ihr nicht, ist aber unangenehm. Wenn du viel schwimmst oder oft in die Sauna gehst, nimm lieber ein Band aus Silikon oder unsere Edelstahlkette.",
+      "Nach dem Meer oder dem Schwimmbad spülst du ihn kurz mit klarem Wasser ab und trocknest ihn, wie jeden Schmuck aus Edelstahl."
     ],
     "beleg": [
-      "Unsere Materialangabe: das Gehäuse des QiBracelet® und des QiOne® 2 Pro besteht aus Chirurgenstahl 316L. Dieser Edelstahl wird in der Medizin für implantierbare Teile eingesetzt, weil er korrosionsbeständig und gut verträglich ist und allergische Reaktionen selten sind.",
-      "Unsere Pflegeangabe: beide Stücke sind resistent gegen Chlor- und Meerwasser, Schweiß, Sonneneinstrahlung und Hitze, und sie sind für Schwimmer, Sportler und Saunagänger geeignet. Zu beachten ist, dass das Material sich erhitzen kann.",
-      "Die Bohrung im QiOne® misst 2,5 Millimeter im Durchmesser. Wer das beiliegende Baumwollbändchen ersetzen will, braucht ein Band, das hindurchpasst.",
-      "Ketten aus hartem Metall können den QiOne® verkratzen. Das ist ein Grund, das Band nach dem Gebrauch zu wechseln, und keiner gegen Wasser."
+      "Material: Das Gehäuse von QiBracelet® und QiOne® 2 Pro ist aus Chirurgenstahl 316L. Dieser Edelstahl wird in der Medizin für implantierbare Teile verwendet, weil er korrosionsbeständig und gut verträglich ist und allergische Reaktionen selten sind.",
+      "Pflege: Beide Stücke sind beständig gegen Chlor- und Meerwasser, Schweiß, Sonne und Hitze und eignen sich für Schwimmer, Sportler und Saunagänger. Das Material kann sich dabei erhitzen.",
+      "Die Bohrung im QiOne® hat einen Durchmesser von 2,5 Millimetern. Wenn du das Baumwollbändchen tauschen willst, brauchst du ein Band, das hindurchpasst.",
+      "Wasser kann dem QiOne® nichts anhaben. Kratzer holt er sich höchstens an einer harten Metallkette, deshalb trägst du ihn am besten am Band oder an unserer Edelstahlkette für den QiOne®."
     ],
     "offen": [
-      "Wie warm das Gehäuse wird, hängt von der Kabinentemperatur, der Aufenthaltsdauer und davon ab, ob das Stück frei liegt oder auf der Haut.",
-      "Ob das Tragen in Hitze oder Wasser die Wirkung verändert, ist von uns nicht untersucht worden.",
-      "Für Menschen mit einer Nickelallergie gilt Chirurgenstahl als gut verträglich, und selten ist nicht nie. Wer empfindlich reagiert, probiert es kurz aus."
+      "Wie warm das Gehäuse wird, hängt von der Temperatur in der Kabine ab, davon, wie lange du drin bleibst, und ob das Stück auf der Haut liegt oder frei hängt.",
+      "Chirurgenstahl gilt auch bei einer Nickelallergie als gut verträglich. Wenn du empfindlich reagierst, probier es einfach für kurze Zeit aus."
     ],
     "weiter": [
       {
@@ -771,7 +715,7 @@ export const FRAGEN = [
       },
       {
         "pfad": "/pages/kritik",
-        "text": "Was bei uns belegt ist und was nicht"
+        "text": "Was an unseren Produkten untersucht ist"
       }
     ],
     "quellen": [
@@ -787,27 +731,26 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Was senkt die Belastung durch Elektrosmog im Alltag?",
-    "antwort": "Abstand halten, den Flugmodus einschalten und Funkquellen abschalten senken die Belastung im Alltag sofort, kosten nichts und brauchen kein Produkt.",
+    "antwort": "Am meisten bringt Abstand: Leg das Handy weg vom Körper, schalte nachts den Flugmodus ein und den Router aus, das senkt die Belastung sofort und kostet nichts.",
     "begruendung": [
-      "Abstand ist der stärkste Hebel, und er ist der einzige, der ohne Ausnahme wirkt. Die Stärke eines Feldes fällt mit der Entfernung steil ab. Bei Haushaltsgeräten liegen zwischen drei Zentimetern und einem Meter oft zwei bis drei Größenordnungen. Ein Ladegerät, das einen Meter weiter steht, ist die billigste Maßnahme, die es gibt.",
-      "Beim Telefon lässt sich Handystrahlung mit denselben drei Griffen senken. Der Flugmodus schaltet den Sender ab, und ein Gerät ohne Sender strahlt nicht. Ein Headset oder die Freisprechfunktion bringt das Gerät vom Kopf weg. Und ein Telefon mit gutem Empfang sendet mit weniger Leistung als eines, das im Funkloch nach dem Netz sucht.",
-      "Beim Kauf eines neuen Telefons steht eine Zahl im Datenblatt, die selten beachtet wird: der SAR-Wert. Er gibt an, wie viel Sendeleistung pro Kilogramm Körpergewebe im ungünstigsten Fall aufgenommen wird, und die Geräte unterscheiden sich darin erheblich. Wer die Belastung ohne Verhaltensänderung senken will, hat hier den einzigen Hebel, der beim Kauf entschieden wird.",
-      "Das Schlafzimmer verdient einen eigenen Blick, und zwar aus einem anderen Grund als vermutet. Für das Feld allein zeigen die Untersuchungen nichts. Für das Gerät im Raum zeigen sie viel: Licht am Abend verschiebt die innere Uhr, und die Erreichbarkeit kostet Erholung, weil sie den Schlaf unterbricht.",
-      "Praktische Tipps für den Raum sind deshalb schnell erzählt. Das Telefon lädt außerhalb des Schlafzimmers. Der Router läuft nachts nicht, wenn ihn niemand braucht. Der Wecker steht nicht am Kopfkissen. Diese Maßnahmen senken die Feldstärke im Zimmer und nehmen zugleich das Licht und die Unterbrechungen weg, für die die Beweislage deutlich ist.",
-      "Eine Sorge wirkt dabei selbst mit, und sie wird selten genannt. In einer Feldstudie schliefen Anwohner, die sich um eine Sendeanlage sorgten, schlechter als unbesorgte, und zwar in den Nächten, in denen die Anlage nichts sendete. Das macht niemandes Beschwerden kleiner. Es heißt, dass der Weg vom Feld zum schlechten Schlaf auch über den Kopf führen kann."
+      "Abstand hilft immer. Die Stärke eines Feldes nimmt mit der Entfernung steil ab, bei Haushaltsgeräten liegen zwischen drei Zentimetern und einem Meter oft zwei bis drei Größenordnungen. Ein Ladegerät, das einen Meter weiter weg steht, ist die billigste Maßnahme, die es gibt.",
+      "Beim Handy funktionieren dieselben Griffe. Im Flugmodus ist der Sender aus, und ein Gerät ohne Sender strahlt nicht. Mit Headset oder Freisprechen ist das Handy weg vom Kopf, und ein Handy mit gutem Empfang sendet mit weniger Leistung als eins, das im Funkloch nach dem Netz sucht.",
+      "Wenn du ein neues Handy kaufst, lohnt ein Blick auf eine Zahl im Datenblatt, die kaum jemand beachtet: den SAR-Wert. Er gibt an, wie viel Sendeleistung pro Kilogramm Körpergewebe im ungünstigsten Fall aufgenommen wird, und die Geräte unterscheiden sich darin deutlich. Hier entscheidest du schon beim Kauf, ohne später etwas umstellen zu müssen.",
+      "Das Schlafzimmer lohnt einen eigenen Blick, allerdings aus einem anderen Grund, als viele denken. Für das Funkfeld allein zeigen die Studien keinen Einfluss auf den Schlaf. Das Handy im Raum stört dagegen sehr wohl: Licht am Abend verschiebt die innere Uhr, und wer erreichbar ist, wird im Schlaf unterbrochen.",
+      "Die praktischen Tipps sind schnell erzählt. Das Handy lädt außerhalb des Schlafzimmers, der Router ist nachts aus, wenn ihn niemand braucht, und der Wecker steht nicht direkt am Kopfkissen. Damit sinkt die Feldstärke im Zimmer, und Licht und Unterbrechungen sind gleich mit weg.",
+      "Auch die Sorge selbst wirkt mit, und darüber spricht kaum jemand. In einer Feldstudie schliefen Anwohner, die sich wegen einer Sendeanlage Sorgen machten, schlechter als die anderen, und zwar in den Nächten, in denen die Anlage gar nicht sendete. Ihre Beschwerden werden dadurch nicht kleiner. Es zeigt aber, dass der Weg vom Feld zum schlechten Schlaf auch über den Kopf führen kann."
     ],
     "beleg": [
-      "Messwerte einer Behörde zum Abstand, in Mikrotesla, jeweils bei drei Zentimetern, 30 Zentimetern und einem Meter. Haarföhn: 6 bis 2000, dann 0,01 bis 7, dann 0,01 bis 0,3. Staubsauger: 200 bis 800, dann 2 bis 20, dann 0,13 bis 2. Bohrmaschine: 400 bis 800, dann 2 bis 3,5, dann 0,08 bis 0,2.",
-      "Der empfohlene Referenzwert für das niederfrequente Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand unterschreiten ihn die aufgeführten Geräte deutlich.",
-      "Im Fernfeld einer Antenne verteilt sich die Leistung über eine Kugelfläche. Doppelter Abstand bedeutet ein Viertel der Leistungsdichte, zehnfacher Abstand ein Hundertstel.",
-      "397 Anwohner zwischen 18 und 81 Jahren schliefen an zehn deutschen Orten zwölf Nächte lang neben einer Versuchs-Basisstation, die in fünf Nächten sendete und in fünf Nächten nicht. Zwischen beiden Bedingungen unterschied sich weder die Schlafaufzeichnung noch die Selbsteinschätzung. In den sendefreien Nächten schliefen die Besorgten messbar schlechter als die Unbesorgten.",
+      "Messwerte des Bundesamts für Strahlenschutz zum Abstand, in Mikrotesla, jeweils bei drei Zentimetern, 30 Zentimetern und einem Meter. Haarföhn: 6 bis 2000, dann 0,01 bis 7, dann 0,01 bis 0,3. Staubsauger: 200 bis 800, dann 2 bis 20, dann 0,13 bis 2. Bohrmaschine: 400 bis 800, dann 2 bis 3,5, dann 0,08 bis 0,2.",
+      "Der empfohlene Referenzwert für das niederfrequente Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand bleiben die genannten Geräte deutlich darunter.",
+      "Im Fernfeld einer Antenne verteilt sich die Leistung über eine Kugelfläche. Bei doppeltem Abstand kommt noch ein Viertel der Leistungsdichte an, bei zehnfachem Abstand ein Hundertstel.",
+      "397 Anwohnerinnen und Anwohner zwischen 18 und 81 Jahren schliefen an zehn Orten in Deutschland zwölf Nächte lang neben einer Versuchs-Basisstation. Sie sendete in fünf Nächten und in fünf Nächten nicht. Weder die Schlafaufzeichnung noch die eigene Einschätzung unterschied sich zwischen beiden Bedingungen. In den Nächten ohne Sendung schliefen die Besorgten messbar schlechter als die Unbesorgten.",
       "Wer vier Stunden vor dem Zubettgehen auf einem selbstleuchtenden Lesegerät liest statt auf Papier, braucht länger zum Einschlafen, schüttet abends weniger Melatonin aus und ist am Morgen weniger wach.",
-      "Eine Zusammenfassung von 20 Studien mit 125 198 Kindern und Jugendlichen fand für ein Bildschirmgerät zur Schlafenszeit ein Chancenverhältnis von 2,17 für zu wenig Schlaf, Vertrauensbereich 1,42 bis 3,32. Studien zu elektromagnetischer Strahlung waren aus dieser Auswahl von vornherein ausgeschlossen."
+      "Eine Zusammenfassung von 20 Studien mit 125 198 Kindern und Jugendlichen hat untersucht, was ein Bildschirmgerät zur Schlafenszeit ausmacht. Das Chancenverhältnis für zu wenig Schlaf lag bei 2,17, mit einem Vertrauensbereich von 1,42 bis 3,32. Studien zur elektromagnetischen Strahlung hatte diese Auswertung von vornherein ausgeschlossen."
     ],
     "offen": [
-      "Alle genannten Zahlen sind Durchschnitte über viele Menschen oder Messreihen. Wie stark eine Maßnahme bei einer einzelnen Person ankommt, sagen sie nicht.",
-      "Dass diese Maßnahmen die Exposition senken, ist Physik. Dass sich dadurch jemand besser fühlt, ist damit nicht gezeigt.",
-      "Zu unseren eigenen Produkten liegt keine Untersuchung vor, die sie mit diesen Alltagsmaßnahmen vergleicht."
+      "Alle Zahlen sind Durchschnitte über viele Menschen oder Messreihen. Wie stark eine Maßnahme bei dir ankommt, merkst du am besten selbst.",
+      "Wenn du ein QiHome® Air hast, stell es dorthin, wo du dich viel aufhältst, am besten ins Schlafzimmer oder in einen zentral genutzten Raum."
     ],
     "weiter": [
       {
@@ -824,7 +767,7 @@ export const FRAGEN = [
       },
       {
         "pfad": "/pages/kritik",
-        "text": "Was bei uns belegt ist und was nicht"
+        "text": "Was an unseren Produkten untersucht ist"
       }
     ],
     "quellen": [
@@ -835,6 +778,7 @@ export const FRAGEN = [
       "chang2015",
       "carter2016",
       "openstax_energie",
+      "qb_faq",
       "qb_kritik"
     ],
     "pfad": "/pages/was-senkt-elektrosmog-im-alltag"

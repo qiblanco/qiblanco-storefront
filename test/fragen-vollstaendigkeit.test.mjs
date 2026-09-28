@@ -45,7 +45,7 @@ const DATUM = {
 };
 const lies = (...t) => fs.readFileSync(path.join(WURZEL, ...t), 'utf8');
 
-test('jede Seite trägt ihre Pflichtteile und ihr Offenes', () => {
+test('jede Seite trägt ihre Pflichtteile', () => {
   assert.ok(FRAGEN.length > 0, 'FRAGEN ist leer');
   for (const s of FRAGEN) {
     assert.ok(s.slug && s.frage, `Seite ohne slug/frage: ${JSON.stringify(s).slice(0, 80)}`);
@@ -55,11 +55,12 @@ test('jede Seite trägt ihre Pflichtteile und ihr Offenes', () => {
     const {"begruendung": absaetze} = s;
     assert.ok(absaetze?.length, `${s.slug}: keine Begründung`);
     assert.ok(s.beleg?.length, `${s.slug}: kein Beleg`);
-    // Das Offene ist der Wirkmechanismus dieser Flaeche, nicht ein Feld.
-    assert.ok(
-      s.offen?.length,
-      `${s.slug}: NICHTS OFFEN — eine Antwort ohne ihre Lücke wäre Werbung`,
-    );
+    // BIS 2026-09-28 WAR `offen` PFLICHT („Was wir nicht wissen"). Christian
+    // hat das am 28.09. als öffentliches Zugeständnis zurückgenommen (Grossjob
+    // 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-bestmoegliches-
+    // licht). Seitdem heißt der Abschnitt „Gut zu wissen" und darf leer sein —
+    // aber das Feld bleibt ein Array, damit die Komponente es lesen kann.
+    assert.ok(Array.isArray(s.offen), `${s.slug}: offen ist kein Array`);
     assert.equal(seiteFuer(s.slug), s, `${s.slug}: seiteFuer findet die Seite nicht`);
   }
 });
@@ -295,4 +296,40 @@ test('GRÜN-ARM: dasselbe Muster im Fließtext lässt das Schema stehen', (t) =>
       'Fließtext steht',
   );
   assert.ok(frageSchema(kandidat, DATUM), `${kandidat.slug}: Schema fehlt`);
+});
+
+// SEIT 2026-09-28 LEITET /pages/was-sagen-die-quarks-science-cops PER 301 AUF
+// „Ist Qi Blanco seriös?" (Grossjob 20260928-GROSSJOB-frageseiten-menschlich-
+// schreiben-und-bestmoegliches-licht, Christians Regel „Bestmögliches Licht":
+// fremde Kritik wird nicht nacherzählt). Drei Arme halten die Naht wie bei
+// /pages/fragen: Weiterleitung, Sitemap, interne Links. Dazu ein vierter: die
+// Frage steht in keinem Datenmodul mehr als Eintrag.
+test('/pages/was-sagen-die-quarks-science-cops leitet per 301 auf die Seriös-Seite', () => {
+  const route = lies('app', 'routes', 'pages.was-sagen-die-quarks-science-cops.jsx');
+  assert.match(route, /throw redirect\(/, 'die alte Route wirft keinen redirect');
+  assert.match(route, /,\s*301\)/, 'die Weiterleitung ist nicht permanent (301)');
+  assert.match(route, /'\/pages\/ist-qi-blanco-serioes'/, 'das Ziel ist nicht die Seriös-Seite');
+  assert.ok(seiteFuer('ist-qi-blanco-serioes'), 'das Ziel der Weiterleitung existiert nicht');
+  assert.doesNotMatch(route, /from '~\/components\//, 'die alte Route importiert noch eine Komponente');
+  assert.match(route, /return null;/, 'die alte Route rendert noch Inhalt');
+  assert.equal(seiteFuer('was-sagen-die-quarks-science-cops'), undefined, 'die Frage steht noch in FRAGEN');
+  const pfade = new Set(NUR_ROUTE_SEITEN.map((e) => e.pfad));
+  assert.ok(
+    !pfade.has('/pages/was-sagen-die-quarks-science-cops'),
+    'die Weiterleitung steht noch in NUR_ROUTE_SEITEN (Sitemap)',
+  );
+  const treffer = [];
+  for (const ort of [['app', 'components'], ['app', 'data'], ['app', 'routes']]) {
+    const wurzel = path.join(WURZEL, ...ort);
+    for (const name of fs.readdirSync(wurzel, {recursive: true})) {
+      const datei = path.join(wurzel, String(name));
+      if (!/\.(jsx?|mjs)$/.test(datei) || datei.endsWith('pages.was-sagen-die-quarks-science-cops.jsx')) continue;
+      const text = fs.readFileSync(datei, 'utf8');
+      if (text.startsWith('// GENERIERT')) continue;
+      if (/["'`]\/pages\/was-sagen-die-quarks-science-cops["'`#?]/.test(text)) {
+        treffer.push(path.relative(WURZEL, datei));
+      }
+    }
+  }
+  assert.deepEqual(treffer, [], `Links auf die Weiterleitung: ${treffer.join(', ')}`);
 });

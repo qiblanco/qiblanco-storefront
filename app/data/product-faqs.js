@@ -1,3 +1,21 @@
+/*
+ * SPRACHE 2026-09-28 (Christian: „wie es nach AI klingt … Der Inhalt darf ja
+ * bleiben, aber die Wortwahl und der Satzbau sind echt unangenehm"; Grossjob
+ * 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-bestmoegliches-licht,
+ * Segment s04, Stilblatt im Jobordner). Umgeschrieben sind NUR die Antworten
+ * `a` der ungeflaggten Items außerhalb von FAQ_QI_MASTER; Fakten, Zahlen,
+ * Materialangaben und die Klarna-Staffel sind unverändert.
+ * BEWUSST NICHT ANGEFASST:
+ *  · jedes Item mit `flag`: es wartet auf Christians INHALTLICHE
+ *    Umformulierung, und eine Sprachglättung würde dieses Warten unsichtbar
+ *    machen;
+ *  · FAQ_QI_MASTER komplett: Christians eigene Festlegungen, sein Wortlaut
+ *    wird nicht ersetzt;
+ *  · jede Frage `q`: sie wird in app/components/reusables/amazonstil-daten.js
+ *    wörtlich kopiert und dort per Test gegen diese Datei geprüft.
+ * Diese Texte speisen auch Anna (qi-salesbot/scripts/import-storefront-
+ * faqs.mjs); den Import zieht der Merge nach.
+ */
 export const FAQ_QIONE_2_PRO = [
   {
     q: 'Wie funktioniert der QiOne®?',
@@ -11,15 +29,15 @@ export const FAQ_QIONE_2_PRO = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Unsere Produkte zeichnen sich durch erstklassige Materialien aus: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, während der Gitterchip™ auf Basis einer maßgeschneiderten 750er Goldlegierung gefertigt wird. Die finale Optik entsteht durch Oberflächenveredler und Goldschmiede, die jedes Detail per Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip™ darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
   {
     q: 'Darf der QiOne® in die Sauna bzw. nass werden?',
-    a: 'Ja! Die Technik ist unempfindlich gegenüber Wasser. Geeignet für Sonnenanbeter, Saunagänger, Schwimmer und Sportler: der QiOne® 2 Pro und das QiBracelet® sind robust und langlebig. Resistent gegen Chlor- und Meerwasser, Schweiß, Sonneneinstrahlung & Hitze.',
+    a: 'Ja, die Technik darin ist unempfindlich gegen Wasser. Der QiOne® 2 Pro und das QiBracelet® sind robust und langlebig und vertragen Chlor- und Meerwasser, Schweiß, Sonne und Hitze. Du kannst sie also beim Sonnenbaden, in der Sauna, beim Schwimmen und beim Sport einfach anbehalten.',
   },
   {
     q: 'Kann ich den QiOne® an einer anderen Kette tragen?',
-    a: 'Ja. Das mitgelieferte Baumwollbändchen ist ein Geschenk an Dich, um den Anhänger sofort tragen zu können. Gerne kannst du es durch Deine Lieblingskette ersetzen. Die Bohrung im QiOne® beträgt 2,5 mm im Durchmesser. Bitte beachte, dass Ketten aus (Edel-)Metall aufgrund ihrer eigenen Härte den QiOne® verkratzen können. Wir haben übrigens auch eine Edelstahlkette für den QiOne®. Sie ist die perfekte Ergänzung für deinen Anhänger.',
+    a: 'Ja, gern. Das Baumwollbändchen, das dabeiliegt, ist ein Geschenk an dich, damit du den Anhänger gleich tragen kannst, und du kannst es jederzeit gegen deine Lieblingskette tauschen. Die Bohrung im QiOne® hat einen Durchmesser von 2,5 mm. Denk nur daran, dass Ketten aus Metall, auch aus Edelstahl, härter sind als der QiOne® und ihn verkratzen können. Wir haben übrigens auch eine eigene Edelstahlkette für den QiOne®, die perfekt zu deinem Anhänger passt.',
   },
   {
     q: 'Wie sollte ich den QiOne® tragen?',
@@ -38,7 +56,7 @@ export const FAQ_QIONE_2_PRO = [
   },
   {
     q: 'Wie funktioniert die Finanzierung über Klarna?',
-    a: 'Lege deinen QiOne in den Warenkorb und klicke auf zur Kasse gehen. Wähle die Bezahlart "Klarna – Sofort oder später bezahlen". Klicke auf "Jetzt Kaufen": Dir wird noch nichts berechnet. Du wirst zum Klarna-Checkout weitergeleitet. Klicke im Klarna-Checkout-Fenster auf "Ratenzahlung" und wähle deine gewünschte Dauer und Betrag aus. Klicke nun auf Jetzt Kaufen. Du kannst mit unserem Partner Klarna von folgenden Deals profitieren: Option 1: Ab einem Warenwert von 25€ kannst du in 6 Monatsraten bezahlen. Option 2: Ab einem Warenwert von 500€ kannst du in 12 Monatsraten bezahlen. Option 3: Ab einem Warenwert von 1000€ kannst du in 24 Monatsraten bezahlen.',
+    a: 'Leg deinen QiOne in den Warenkorb und geh zur Kasse. Als Bezahlart wählst du „Klarna – Sofort oder später bezahlen“ und klickst auf „Jetzt Kaufen“, berechnet wird dir dabei noch nichts. Danach landest du im Klarna-Checkout, klickst dort auf „Ratenzahlung“ und suchst dir Laufzeit und Betrag aus. Zum Schluss klickst du noch einmal auf „Jetzt Kaufen“. Mit unserem Partner Klarna kannst du ab 25 € Warenwert in 6 Monatsraten zahlen, ab 500 € in 12 und ab 1000 € in 24 Monatsraten.',
   },
 ];
 
@@ -99,15 +117,15 @@ export const FAQ_QIBRACELET = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Unsere Produkte zeichnen sich durch erstklassige Materialien aus: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, während der Gitterchip™ auf Basis einer maßgeschneiderten 750er Goldlegierung gefertigt wird. Die finale Optik entsteht durch Oberflächenveredler und Goldschmiede, die jedes Detail per Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip™ darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
   {
     q: 'Darf das QiBracelet® nass werden, bzw. in die Sauna?',
-    a: 'Das QiBracelet® ist robust konstruiert und besteht aus Materialien, die Feuchtigkeit problemlos standhalten. Das bedeutet, dass es bedenkenlos in feuchten Umgebungen wie Schwimmbädern oder beim Schwimmen im Meer genutzt werden kann. Das QiBracelet® eignet sich auch für Saunabesuche, da es problemlos hohen Temperaturen standhält. Es ist wichtig zu beachten, dass das Material sich erhitzen kann.',
+    a: 'Ja, das QiBracelet® ist robust gebaut, und Feuchtigkeit macht seinen Materialien nichts aus. Du kannst es also ohne Bedenken im Schwimmbad oder beim Schwimmen im Meer tragen. Auch in die Sauna darf es mit, denn hohe Temperaturen hält es problemlos aus. Denk dort nur daran, dass das Material dabei heiß werden kann.',
   },
   {
     q: 'Ist das QiBracelet® sicher für Anwender mit Allergien?',
-    a: 'Das QiBracelet® setzt auf hochwertigen Chirurgenstahl 316L als Gehäusematerial. Dieser spezielle Edelstahl wurde aufgrund seiner bemerkenswerten Korrosionsbeständigkeit und seiner hohen Verträglichkeit mit dem menschlichen Körper ausgewählt. Tatsächlich wird dieses Material in der Medizinindustrie für implantierbare Geräte wie in der Orthopädie eingesetzt, da es sich bestens mit dem menschlichen Körper verbindet und allergische Reaktionen äußerst selten sind.',
+    a: 'Das Gehäuse des QiBracelet® ist aus hochwertigem Chirurgenstahl 316L. Diesen Edelstahl haben wir ausgewählt, weil er besonders korrosionsbeständig ist und vom menschlichen Körper sehr gut vertragen wird. Er wird sogar in der Medizin für Implantate verwendet, zum Beispiel in der Orthopädie, weil er sich bestens mit dem Körper verbindet und allergische Reaktionen äußerst selten sind.',
   },
   {
     q: 'Lässt die Wirkung irgendwann nach bzw. verändert sich das Empfinden mit der Zeit?',
@@ -116,7 +134,7 @@ export const FAQ_QIBRACELET = [
   },
   {
     q: 'Wie funktioniert die Finanzierung über Klarna?',
-    a: 'Lege dein QiBracelet® in den Warenkorb und klicke auf zur Kasse gehen. Wähle die Bezahlart "Klarna – Sofort oder später bezahlen". Klicke auf "Jetzt Kaufen": Dir wird noch nichts berechnet. Du wirst zum Klarna-Checkout weitergeleitet. Klicke im Klarna-Checkout-Fenster auf "Ratenzahlung" und wähle deine gewünschte Dauer und Betrag aus. Klicke nun auf Jetzt Kaufen. Option 1: Ab einem Warenwert von 25€ kannst du in 6 Monatsraten bezahlen. Option 2: Ab einem Warenwert von 500€ kannst du in 12 Monatsraten bezahlen. Option 3: Ab einem Warenwert von 1000€ kannst du in 24 Monatsraten bezahlen.',
+    a: 'Leg dein QiBracelet® in den Warenkorb und geh zur Kasse. Als Bezahlart wählst du „Klarna – Sofort oder später bezahlen“ und klickst auf „Jetzt Kaufen“, berechnet wird dir dabei noch nichts. Danach landest du im Klarna-Checkout, klickst dort auf „Ratenzahlung“ und suchst dir Laufzeit und Betrag aus. Zum Schluss klickst du noch einmal auf „Jetzt Kaufen“. Ab 25 € Warenwert kannst du in 6 Monatsraten zahlen, ab 500 € in 12 und ab 1000 € in 24 Monatsraten.',
   },
 ];
 
@@ -133,7 +151,7 @@ export const FAQ_QIHOME_AIR = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Unsere Produkte vereinen edelste Materialien: Das Gehäuse besteht aus hochwertigem Chirurgenstahl, der exklusive Gitterchip™ wird aus einer maßgeschneiderten High-Carat-Goldlegierung gefertigt, und die Holzelemente des QiHome Air® werden aus regionaler deutscher Eiche gefertigt. Die finale Optik entsteht durch Oberflächenveredler und Goldschmiede, die jedes Detail per Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, der Gitterchip™ entsteht aus einer maßgeschneiderten High-Carat-Goldlegierung, und die Holzteile des QiHome Air® sind aus regionaler deutscher Eiche. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
   {
     q: 'Kann das QiHome® Air im Freien verwendet werden?',
@@ -152,7 +170,7 @@ export const FAQ_QIHOME_AIR = [
   },
   {
     q: 'Kann ich mit dem QiHome® Air reisen?',
-    a: 'Ja, das QiHome® Air ist durch sein kompaktes und tragbares Design reisefreundlich. Es lässt sich bequem im Gepäck verstauen und an verschiedenen Orten nutzen. Entspannte Momente können genossen werden, ohne sich Sorgen um die Beständigkeit des QiHome® Airs machen zu müssen – es ist ein zuverlässiger Begleiter für jede Reise.',
+    a: 'Ja, das QiHome® Air ist kompakt und leicht mitzunehmen. Es passt bequem ins Gepäck, und du kannst es überall aufstellen, wo du gerade bist, ob im Hotel oder in der Ferienwohnung. Um seine Haltbarkeit musst du dir unterwegs keine Sorgen machen, es ist ein zuverlässiger Begleiter auf jeder Reise.',
   },
   {
     q: 'Hat das QiHome® Air einen Einfluss auf das Wasser, das ich trinke?',
@@ -166,7 +184,7 @@ export const FAQ_QIHOME_AIR = [
   },
   {
     q: 'Wie funktioniert die Finanzierung über Klarna?',
-    a: 'Lege dein QiHome® Air in den Warenkorb und klicke auf zur Kasse gehen. Wähle die Bezahlart "Klarna – Sofort oder später bezahlen". Klicke auf "Jetzt Kaufen": Dir wird noch nichts berechnet. Du wirst zum Klarna-Checkout weitergeleitet. Klicke im Klarna-Checkout-Fenster auf "Ratenzahlung" und wähle deine gewünschte Dauer und Betrag aus. Option 1: Ab einem Warenwert von 25€ kannst du in 6 Monatsraten bezahlen. Option 2: Ab einem Warenwert von 500€ kannst du in 12 Monatsraten bezahlen. Option 3: Ab einem Warenwert von 1000€ kannst du in 24 Monatsraten bezahlen.',
+    a: 'Leg dein QiHome® Air in den Warenkorb und geh zur Kasse. Als Bezahlart wählst du „Klarna – Sofort oder später bezahlen“ und klickst auf „Jetzt Kaufen“, berechnet wird dir dabei noch nichts. Danach landest du im Klarna-Checkout, klickst dort auf „Ratenzahlung“ und suchst dir Laufzeit und Betrag aus. Ab 25 € Warenwert kannst du in 6 Monatsraten zahlen, ab 500 € in 12 und ab 1000 € in 24 Monatsraten.',
   },
 ];
 
@@ -183,11 +201,11 @@ export const FAQ_QIONE_KETTE = [
   },
   {
     q: 'Darf der QiOne® 2 Pro nass werden, bzw. in die Sauna?',
-    a: 'Der QiOne® 2 Pro ist robust konstruiert und besteht aus Materialien, die Feuchtigkeit problemlos standhalten. Das bedeutet, dass er bedenkenlos in feuchten Umgebungen wie Schwimmbädern oder beim Schwimmen im Meer genutzt werden kann. Der QiOne® 2 Pro eignet sich auch für Saunabesuche, da er problemlos hohen Temperaturen standhält. Es ist wichtig zu beachten, dass das Material sich erhitzen kann.',
+    a: 'Ja, der QiOne® 2 Pro ist robust gebaut, und Feuchtigkeit macht seinen Materialien nichts aus. Du kannst ihn also ohne Bedenken im Schwimmbad oder beim Schwimmen im Meer tragen. Auch in die Sauna darf er mit, denn hohe Temperaturen hält er problemlos aus. Denk dort nur daran, dass das Material dabei heiß werden kann.',
   },
   {
     q: 'Ist der QiOne® 2 Pro sicher für Anwender mit Allergien?',
-    a: 'Der QiOne® 2 Pro setzt auf hochwertigen Chirurgenstahl 316L als Gehäusematerial. Dieser spezielle Edelstahl wurde aufgrund seiner bemerkenswerten Korrosionsbeständigkeit und seiner hohen Verträglichkeit mit dem menschlichen Körper ausgewählt. Tatsächlich wird dieses Material in der Medizinindustrie für implantierbare Geräte wie in der Orthopädie eingesetzt, da es sich bestens mit dem menschlichen Körper verbindet und allergische Reaktionen äußerst selten sind.',
+    a: 'Das Gehäuse des QiOne® 2 Pro ist aus hochwertigem Chirurgenstahl 316L. Diesen Edelstahl haben wir ausgewählt, weil er besonders korrosionsbeständig ist und vom menschlichen Körper sehr gut vertragen wird. Er wird sogar in der Medizin für Implantate verwendet, zum Beispiel in der Orthopädie, weil er sich bestens mit dem Körper verbindet und allergische Reaktionen äußerst selten sind.',
   },
   {
     q: 'Lässt die Wirkung irgendwann nach bzw. verändert sich das Empfinden mit der Zeit?',
@@ -196,11 +214,11 @@ export const FAQ_QIONE_KETTE = [
   },
   {
     q: 'Wie funktioniert die Finanzierung über Klarna?',
-    a: 'Lege deinen QiOne in den Warenkorb und klicke auf zur Kasse gehen. Wähle die Bezahlart "Klarna – Sofort oder später bezahlen". Klicke auf "Jetzt Kaufen": Dir wird noch nichts berechnet. Du wirst zum Klarna-Checkout weitergeleitet. Klicke im Klarna-Checkout-Fenster auf "Ratenzahlung" und wähle deine gewünschte Dauer und Betrag aus. Option 1: Ab einem Warenwert von 25€ kannst du in 6 Monatsraten bezahlen. Option 2: Ab einem Warenwert von 500€ kannst du in 12 Monatsraten bezahlen. Option 3: Ab einem Warenwert von 1000€ kannst du in 24 Monatsraten bezahlen.',
+    a: 'Leg deinen QiOne in den Warenkorb und geh zur Kasse. Als Bezahlart wählst du „Klarna – Sofort oder später bezahlen“ und klickst auf „Jetzt Kaufen“, berechnet wird dir dabei noch nichts. Danach landest du im Klarna-Checkout, klickst dort auf „Ratenzahlung“ und suchst dir Laufzeit und Betrag aus. Ab 25 € Warenwert kannst du in 6 Monatsraten zahlen, ab 500 € in 12 und ab 1000 € in 24 Monatsraten.',
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Unsere Produkte zeichnen sich durch erstklassige Materialien aus: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, während der Gitterchip™ auf Basis einer maßgeschneiderten 750er Goldlegierung gefertigt wird. Die finale Optik entsteht durch Oberflächenveredler und Goldschmiede, die jedes Detail per Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip™ darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
 ];
 
@@ -212,15 +230,15 @@ export const FAQ_CACAO = [
   },
   {
     q: 'Was bedeutet psychoaktiv in diesem Zusammenhang?',
-    a: 'Psychoaktiver Kakao enthält natürliche Verbindungen wie Theobromin, Koffein, Phenylethylamin und Anandamid. Diese Substanzen können leichte Veränderungen in der Stimmung, Wachsamkeit und Entspannung auslösen. Der Ausdruck "psychoaktiv" wird hier verwendet, um darauf hinzuweisen, dass der Konsum von Kakao das zentrale Nervensystem beeinflussen kann, wodurch positive Veränderungen in Denken, Fühlen und Wahrnehmen auftreten können. Es ist wichtig zu betonen, dass diese Effekte subtil sind und nicht mit starken Rauschzuständen verglichen werden können.',
+    a: 'Gemeint ist damit, dass Kakao das zentrale Nervensystem beeinflussen kann. Er enthält natürliche Stoffe wie Theobromin, Koffein, Phenylethylamin und Anandamid, und die können deine Stimmung, deine Wachheit und deine Entspannung leicht verändern, sodass sich auch Denken, Fühlen und Wahrnehmen positiv verändern können. Diese Effekte sind sanft und mit einem starken Rausch überhaupt nicht zu vergleichen.',
   },
   {
     q: 'Wie wird zeremonieller Kakao zubereitet?',
-    a: 'Die Zubereitung von zeremoniellem Kakao ist unkompliziert und kann nach den ersten Versuchen zu einer natürlichen und sogar freudigen Praxis werden. Eine Kurzanleitung dazu: 1. Erwärmen von etwa 75 ml Wasser oder pflanzlicher Milch (z.B. Hafermilch) auf maximal 85 °C. 2. Zerkleinern der Kakaomasse. 3. Abmessen von 15 g für eine Tasse. 4. Auflösen der Kakaomasse in der warmen Flüssigkeit. Rühren kann dabei helfen! 5. Je nach Vorliebe den Kakao mit verschiedenen Gewürzen verfeinern. 6. Zeit nehmen, den Kakao spüren und genießen.',
+    a: 'Das ist ganz unkompliziert, und nach den ersten Versuchen wird es dir schnell vertraut und macht sogar richtig Freude. Erwärm etwa 75 ml Wasser oder Pflanzenmilch, zum Beispiel Hafermilch, auf höchstens 85 °C. Zerkleinere die Kakaomasse, wieg 15 g für eine Tasse ab und lös sie in der warmen Flüssigkeit auf, am besten unter Rühren. Wenn du magst, verfeinerst du deinen Kakao mit verschiedenen Gewürzen. Und dann nimm dir Zeit, ihn zu spüren und zu genießen.',
   },
   {
     q: 'Für wen ist Kakao (un)geeignet?',
-    a: 'Kakao enthält Theobromin, ein natürliches Stimulans. Personen, die empfindlich auf Koffein reagieren, wird eine äußerst vorsichtige Dosierung von 5 bis 10 g pro Tasse empfohlen. Bei der Frage nach dem Konsum von reinem Kakao während der Schwangerschaft ist es ratsam, Gesundheitsfachleute zu konsultieren, da Ansichten dazu variieren können. Kinder erleben oft eine positive Reaktion auf Kakao und genießen seine stimmungsaufhellende Wirkung. Hierbei ist eine behutsame Dosierung wichtig, und es ist ratsam, die Konsumzeit in Bezug auf die Schlafenszeiten der Kleinen zu beachten. Für Personen, die Medikamente oder Antidepressiva (SSRIs) einnehmen, ist vor dem Genuss von zeremoniellem Kakao eine Rücksprache mit ihrem behandelnden Arzt äußerst empfehlenswert.',
+    a: 'Kakao enthält Theobromin, einen natürlichen Wachmacher. Wenn du empfindlich auf Koffein reagierst, fang deshalb sehr vorsichtig an, mit 5 bis 10 g pro Tasse. Wenn du schwanger bist und reinen Kakao trinken möchtest, frag am besten vorher deine Ärztin, deinen Arzt oder deine Hebamme, weil die Ansichten dazu auseinandergehen. Kinder mögen Kakao oft sehr und genießen, dass er die Stimmung hebt. Dosier für sie behutsam und achte darauf, dass sie ihn nicht zu kurz vor dem Schlafengehen trinken. Und wenn du Medikamente oder Antidepressiva (SSRIs) nimmst, sprich bitte unbedingt mit deinem behandelnden Arzt, bevor du zeremoniellen Kakao trinkst.',
   },
   {
     q: 'Was ist eine Kakaozeremonie und ist diese nötig?',
@@ -229,7 +247,7 @@ export const FAQ_CACAO = [
   },
   {
     q: 'Wie oft darf man zeremoniellen Kakao trinken?',
-    a: 'Die Häufigkeit des Konsums von zeremoniellem Kakao ist individuell und kann von Person zu Person variieren. Es wird empfohlen, auf die eigene körperliche und mentale Reaktion zu achten. Ein maßvoller Konsum, der das persönliche Wohlbefinden unterstützt, ist in der Regel angebracht.',
+    a: 'Das ist ganz individuell und bei jedem Menschen ein bisschen anders. Achte am besten darauf, wie du dich körperlich und im Kopf damit fühlst. In der Regel passt ein maßvoller Genuss, der dir guttut.',
   },
   {
     q: 'Welche Effekte entstehen durch die Kombination von Qi Blanco®-Produkten und zeremoniellem Kakao?',

@@ -1016,7 +1016,7 @@ export const NUR_ROUTE_SEITEN = [
   // über ihr Shopify-Seitenobjekt in der Sitemap, nicht in dieser Liste.
   {
     pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
-    lastmod: '2026-09-16T01:15:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Frageseite „Kann Elektrosmog den Schlaf stören?“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -1037,7 +1037,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
-    lastmod: '2026-09-16T01:15:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Frageseite „Wie funktioniert ein Schutz gegen Elektrosmog am ' +
       'Körper?“ (Grossjob ' +
@@ -1059,7 +1059,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
-    lastmod: '2026-09-16T01:15:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Frageseite „Gibt es unabhängige Studien zu ' +
       'Elektrosmog-Schutzprodukten?“ (Grossjob ' +
@@ -1081,7 +1081,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/ist-qi-blanco-serioes',
-    lastmod: '2026-09-16T01:15:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Frageseite „Ist Qi Blanco seriös?“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -1102,7 +1102,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
-    lastmod: '2026-09-16T01:15:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
       'Elektrosmog-Schutzes?“ (Grossjob ' +
@@ -1122,31 +1122,13 @@ export const NUR_ROUTE_SEITEN = [
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
       'User-Agents.',
   },
-  {
-    pfad: '/pages/was-sagen-die-quarks-science-cops',
-    lastmod: '2026-09-16T01:15:00Z',
-    grund:
-      'Frageseite „Was sagen die Quarks Science Cops zu ' +
-      'Elektrosmog-Schmuck?“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
-      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
-      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
-      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
-      'unangetastet. Die Seite besteht allein aus der Route ' +
-      'pages.was-sagen-die-quarks-science-cops.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
-      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
-      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
-      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
-      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
-      'User-Agents.',
-  },
+  // /pages/was-sagen-die-quarks-science-cops steht seit 2026-09-28 NICHT mehr
+  // hier: die Adresse leitet per 301 auf /pages/ist-qi-blanco-serioes (Grossjob
+  // 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-bestmoegliches-licht),
+  // und eine Sitemap-URL, die weiterleitet, sendet ein gegenlaeufiges Signal.
   {
     pfad: '/pages/was-ist-elektrosmog',
-    lastmod: '2026-09-19T18:00:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
       '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
@@ -1170,7 +1152,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/armband-duschen-sauna',
-    lastmod: '2026-09-19T18:00:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Antwortseite zur Frage „Kann man ein Armband gegen Elektrosmog ' +
       'beim Duschen und in der Sauna tragen?“ (Großjob ' +
@@ -1194,7 +1176,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/was-senkt-elektrosmog-im-alltag',
-    lastmod: '2026-09-19T18:00:00Z',
+    lastmod: '2026-09-28T12:00:00Z',
     grund:
       'Antwortseite zur Frage „Was senkt die Belastung durch ' +
       'Elektrosmog im Alltag?“ (Großjob ' +
