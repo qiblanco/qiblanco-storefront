@@ -694,7 +694,7 @@ export const FRAGEN = [
       "Material: Das Gehäuse von QiBracelet® und QiOne® 2 Pro ist aus Chirurgenstahl 316L. Dieser Edelstahl wird in der Medizin für implantierbare Teile verwendet, weil er korrosionsbeständig und gut verträglich ist und allergische Reaktionen selten sind.",
       "Pflege: Beide Stücke sind beständig gegen Chlor- und Meerwasser, Schweiß, Sonne und Hitze und eignen sich für Schwimmer, Sportler und Saunagänger. Das Material kann sich dabei erhitzen.",
       "Die Bohrung im QiOne® hat einen Durchmesser von 2,5 Millimetern. Wenn du das Baumwollbändchen tauschen willst, brauchst du ein Band, das hindurchpasst.",
-      "Wasser kann dem QiOne® nichts anhaben. Kratzer holt er sich höchstens an einer harten Metallkette, deshalb trägst du ihn am besten am Band oder an unserer Edelstahlkette für den QiOne®."
+      "Wasser kann dem QiOne® nichts anhaben. Kratzer bekommt er höchstens von Ketten aus hartem Metall, deshalb wechselst du nach dem Tragen an so einer Kette am besten wieder auf das Band."
     ],
     "offen": [
       "Wie warm das Gehäuse wird, hängt von der Temperatur in der Kabine ab, davon, wie lange du drin bleibst, und ob das Stück auf der Haut liegt oder frei hängt.",
