@@ -166,9 +166,48 @@ export function StudieSeite({studie}) {
               Zitierbarkeit. Ohne das Feld bleibt alles wie bisher.
             */}
             {e.doi ? (
-              <Eckdatum label="DOI">
+              <Eckdatum
+                label="DOI"
+                klasse={e.doiAufloesbar === false ? 'qb-st-eckdatum--voll' : ''}
+              >
                 {e.doiAufloesbar === false ? (
-                  <span>{e.doi}</span>
+                  <>
+                    <span>{e.doi}</span>
+                    {/*
+                      NACHTRAG 2026-09-28 (Job 20260928-dach-doi-offenlegung-
+                      wache-gegen-seitenvertrag): Den Link wegzulassen war nur
+                      die halbe Heilung. Wer die Kennung kopiert und selbst
+                      nachschlägt, landet im Nichts und muss die Quelle für
+                      erfunden halten. Die US-Seiten sagen das seit 2026-08-15,
+                      DACH schwieg (Wache pruefungen/probe_dach_doi_offenlegung.py
+                      exit 2). Der Satz steht HIER und nicht je JSON, weil
+                      `doiAufloesbar` schon die eine Wahrheit darüber ist; eine
+                      neue Studie mit dem Flag bekommt den Satz automatisch.
+                      Die Wache verlangt ihn binnen 300 Zeichen hinter der
+                      Kennung und meldet ihn als veraltet, sobald der Verlag
+                      die DOI doch registriert (dann das Flag entfernen).
+                      Kein Messdatum, kein HTTP-Code: das interessiert den
+                      Leser nicht, er will wissen, wo er die Studie liest.
+                      Template-Literal statt JSX-Fließtext, weil JSX jeden
+                      Zeilenumbruch zu einem Leerzeichen macht.
+                    */}
+                    <p className="qb-st-doi-hinweis">
+                      {`${
+                        e.journal ? `Die Zeitschrift „${e.journal}“` : 'Der Verlag'
+                      } hat diese Kennung abgedruckt, aber nicht im DOI-System registriert. Sie führt deshalb ins Leere.`}
+                      {e.pdfUrl || e.artikelUrl ? ' Die vollständige Studie lesen Sie ' : null}
+                      {e.pdfUrl ? (
+                        <a href={e.pdfUrl} target="_blank" rel="noopener noreferrer">
+                          im PDF
+                        </a>
+                      ) : e.artikelUrl ? (
+                        <a href={e.artikelUrl} target="_blank" rel="noopener noreferrer">
+                          auf der Artikelseite der Zeitschrift
+                        </a>
+                      ) : null}
+                      {e.pdfUrl || e.artikelUrl ? '.' : null}
+                    </p>
+                  </>
                 ) : (
                   <a href={`https://doi.org/${e.doi}`} rel="noopener">
                     {e.doi}
@@ -337,9 +376,12 @@ function referenziert(studie, feld, key) {
   return studie.abschnitte.some((a) => (a[feld] || []).includes(key));
 }
 
-function Eckdatum({label, children}) {
+// `klasse` ist optional und additiv: ohne sie rendert das Eckdatum wie
+// bisher. Die DOI-Offenlegung braucht sie, weil ihr Satz über die volle
+// Rasterbreite laufen muss statt als schmale Säule neben Einzeilern.
+function Eckdatum({label, children, klasse}) {
   return (
-    <div className="qb-st-eckdatum">
+    <div className={klasse ? `qb-st-eckdatum ${klasse}` : 'qb-st-eckdatum'}>
       <dt>{label}</dt>
       <dd>{children}</dd>
     </div>

@@ -140,6 +140,21 @@
 }
 .qb-st-eckdatum a { color: var(--st-akzent-tinte); }
 
+/* ---- DOI-Offenlegung ----------------------------------------------------
+   Eine gedruckte, aber nicht registrierte DOI wird genannt, nicht verlinkt,
+   und der Satz daneben sagt, wo man die Studie liest. Nur Bestands-Tokens:
+   keine neue Schriftgröße, keine zweite Akzentfarbe, kein eigener Radius.
+   `--voll` lässt die Zelle über das ganze auto-fit-Raster laufen; auf dem
+   Telefon ist das Raster ohnehin einspaltig. */
+.qb-st-eckdatum--voll { grid-column: 1 / -1; }
+.qb-st-doi-hinweis {
+  margin: var(--st-s1) 0 0;
+  max-width: var(--st-mass);
+  font-size: var(--st-fs-xs);
+  line-height: 1.5;
+  color: var(--st-muted);
+}
+
 /* ---- Antwort in Normalsprache (Snippet-Kandidat) ------------------------ */
 .qb-st-antwort {
   max-width: var(--st-mass);
