@@ -1,10 +1,13 @@
 import {useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {
-  QiHomeAirShop,
-  QIHOME_AIR_PRODUCT_QUERY,
-} from '~/components/product-pages/QiHomeAirShop';
-import qihomeAirStyles from '~/styles/qihome-air.css?url';
+  QiHomeAirSeite,
+  qiHomeAirSeiteLinks,
+  PRODUCT_QUERY,
+} from '~/components/product-pages/QiHomeAirSeite';
+import {QiHomeHeroBullets} from '~/components/product-pages/QiHomeHeroBullets';
+import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
+import {BLOCK_LP} from '~/components/reusables/blockLinks';
 
 /*
  * Campaign-PDP /pages/qihome-air — LP-Shopseite des LP-Blocks
@@ -20,15 +23,16 @@ import qihomeAirStyles from '~/styles/qihome-air.css?url';
  */
 
 /*
- * Token-Schicht der Kaufseite /products/qihome-air (qihome-air.css), hier an
- * der LP-Fassung derselben Ware: beide Routen rendern dieselben Bausteine,
- * nur diese hier lud die Schicht nie (Design-Score 71 gegen 97, Job
- * 20260927-designschuld-lp-shopseiten-qibracelet-qihome-air-prio35). Scope
- * ist der Wrapper `.ProductQiHomeAir` in der Default-Komponente unten; Kopf/Fuss/Warenkorb
- * bleiben unberuehrt. Rueckweg: links()-Export, Import und Wrapper entfernen.
+ * GLEICH DER PRODUKTSEITE BIS AUF DIE BESCHREIBUNG (Christian 28.09.2026):
+ * diese Route rendert QiHomeAirSeite.jsx, dieselbe Komponente wie
+ * /products/qihome-air (samt Wrapper .ProductQiHomeAir und Token-Schicht),
+ * mit derselben PRODUCT_QUERY (die Kopie in QiHomeAirShop.jsx ist entfallen).
+ * Eigen bleiben hier: noindex-Doppelgate ohne canonical, der harte Handle,
+ * die Hero-Punkte als Beschreibung, der LP-Block und der Marker
+ * data-qi-shop="qihome-pages".
  */
 export function links() {
-  return [{rel: 'stylesheet', href: qihomeAirStyles}];
+  return qiHomeAirSeiteLinks();
 }
 
 /*
@@ -46,7 +50,8 @@ export const meta = () => [
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
 /*
- * Loader: QUERY-KOPIE (Drift-Guard-gesichert) mit hartem Handle "qihome-air",
+ * Loader: dieselbe PRODUCT_QUERY wie /products/qihome-air (aus der Seitenkomponente,
+ * seit 28.09.2026 keine Kopie mehr), harter Handle "qihome-air",
  * getSelectedProductOptions(request) (Deep-Links SSR-korrekt), CacheShort().
  * BEWUSST KEIN redirectIfHandleIsLocalized (qione-2-pro-Praezedenz: harter
  * Handle, keine lokalisierten Code-Routen).
@@ -54,34 +59,41 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context, request}) {
-  const {product} = await context.storefront.query(QIHOME_AIR_PRODUCT_QUERY, {
-    variables: {
-      handle: 'qihome-air',
-      selectedOptions: getSelectedProductOptions(request),
-    },
-    cache: context.storefront.CacheShort(),
-  });
+  const [{product}, vergleichsPreise] = await Promise.all([
+    context.storefront.query(PRODUCT_QUERY, {
+      variables: {
+        handle: 'qihome-air',
+        selectedOptions: getSelectedProductOptions(request),
+      },
+      cache: context.storefront.CacheShort(),
+    }),
+    // Preise der drei Geräte für den Gerätevergleich (seit dem 28.09.2026 auch
+    // hier, dieselbe Seite wie /products). Fail-soft; null = Vergleich aus.
+    ladeVergleichsPreise(context.storefront),
+  ]);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
-  return {product};
+  return {product, ...(vergleichsPreise ? {vergleichsPreise} : {})};
 }
 
 /*
  * KEIN Pixel-Code in dieser Route (0-Pixel-Regel, D-006): ViewContent feuert
- * aus <Analytics.ProductView> in QiHomeAirShop (exakt der PDP-Payload);
+ * aus <Analytics.ProductView> in QiHomeAirSeite (exakt der PDP-Payload);
  * AddToCart als Cart-Event routen-unabhaengig; R1/R2/R3 im root-Layout.
  */
-export default function QiHomeAirShopRoute() {
-  const {product} = useLoaderData();
-  // Scope der Token-Schicht qihome-air.css (links() oben) — derselbe Wrapper
-  // wie auf /products/qihome-air, hier an der Route statt in QiHomeAirShop.
+export default function QiHomeAirSeiteRoute() {
+  const {product, vergleichsPreise} = useLoaderData();
   return (
-    <div className="ProductQiHomeAir">
-      <QiHomeAirShop product={product} />
-    </div>
+    <QiHomeAirSeite
+      product={product}
+      vergleichsPreise={vergleichsPreise}
+      beschreibung={<QiHomeHeroBullets />}
+      block={BLOCK_LP}
+      shopMarker="qihome-pages"
+    />
   );
 }
 
