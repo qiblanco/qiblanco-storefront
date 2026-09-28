@@ -74,8 +74,8 @@ import {
  * Das Attribut wird im selben synchronen Schritt wie die erste Messung
  * gesetzt, also nie vor ihr.
  *
- * RÜCKWEG: beide Regeln in app.css löschen (Block „CHAT-WIDGET UEBER DEM
- * KAUFKNOPF" und der Block danach). <KaufknopfChatSignal /> allein aus
+ * RÜCKWEG: beide Regeln in app.css löschen (die zu data-chat-deckt-kaufknopf
+ * und die zu data-chat-signal-bereit). <KaufknopfChatSignal /> allein aus
  * root.jsx zu nehmen genügt NICHT mehr: das Widget bliebe dann unsichtbar.
  */
 
