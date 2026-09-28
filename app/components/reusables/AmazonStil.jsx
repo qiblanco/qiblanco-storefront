@@ -13,8 +13,11 @@ import {KUNDENFRAGEN, VERGLEICH, vergleichSpalten} from './amazonstil-daten';
  * 26.09.) und "Vergleich" zu den drei häufigsten eigenen Kundenfragen im
  * Verkaufs-Chat gehört. Texte, Schalter, Auswahlregel: ./amazonstil-daten.js.
  *
- * NUR /products/: die /pages/-Kaufseiten sind die Kontrollgruppe der
- * Wirkungsmessung (Hypothese hce22957c, reif 25.10.).
+ * Seit dem 28.09.2026 AUCH auf /pages/qione-2-pro, /pages/qibracelet und
+ * /pages/qihome-air: Christian will die LP-Spiegel "gleich bis auf den
+ * Beschreibungstext oben", beide Routen rendern dieselbe Seitenkomponente
+ * (product-pages/*Seite.jsx). Bis dahin waren die /pages/-Kaufseiten die
+ * Kontrollgruppe der Wirkungsmessung (Hypothese hce22957c).
  * MESSANKER (Vertrag von probe_amazonstil_s04.py, nicht umbenennen):
  * data-qb-geraetevergleich, -vergleich-produkt, -vergleich-preis,
  * -kundenfragen, -kundenfrage. data-textplatz = Anker der Textmappe.
@@ -26,9 +29,19 @@ import {KUNDENFRAGEN, VERGLEICH, vergleichSpalten} from './amazonstil-daten';
  * (ladeVergleichsPreise), `eigenerPreis` ist der Preis der Kaufbox dieser
  * Seite. Aus (Schalter) oder ohne Spalten: nichts.
  *
- * @param {{handle: string, preise?: object|null, eigenerPreis?: object|null}} props
+ * `block` (Default BLOCK_PUBLIC) bestimmt die Ziele der Geräte-Links: auf den
+ * LP-Landezielen /pages/<handle> übergibt die gemeinsame Seitenkomponente
+ * BLOCK_LP, damit der Vergleich im Landing-Bereich bleibt (Zwei-Block-IA,
+ * reusables/blockLinks.js). Ohne die Angabe zeigt er wie bisher auf /products/.
+ *
+ * @param {{handle: string, preise?: object|null, eigenerPreis?: object|null, block?: string}} props
  */
-export function Geraetevergleich({handle, preise = null, eigenerPreis = null}) {
+export function Geraetevergleich({
+  handle,
+  preise = null,
+  eigenerPreis = null,
+  block = BLOCK_PUBLIC,
+}) {
   const land = useMarktLand();
   const spalten = vergleichSpalten(handle, {preise: preise || {}, eigenerPreis, land});
   if (spalten.length < 2) return null;
@@ -48,7 +61,7 @@ export function Geraetevergleich({handle, preise = null, eigenerPreis = null}) {
       </h2>
       <div className={`qb-gv__raster${mitRaten ? ' qb-gv__raster--raten' : ''}`}>
         {spalten.map((s) => {
-          const ziel = produktLink(s.handle, BLOCK_PUBLIC, 'kauf');
+          const ziel = produktLink(s.handle, block, 'kauf');
           const nameId = `qb-gv-name-${handle}-${s.handle}`;
           const bild = (
             <CdnBild

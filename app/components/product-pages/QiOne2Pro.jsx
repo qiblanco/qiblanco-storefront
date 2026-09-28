@@ -38,8 +38,8 @@ import {InhaltswegNeuOderGebraucht} from './InhaltswegNeuOderGebraucht';
  * faqItems (Default = die volle Bestandsliste, also unverändert): die Fragen
  * der FAQ am Seitenende. Die organische PDP übergibt seit dem 27.09.2026 nur
  * den Rest, weil ihre häufigsten Kundenfragen weiter oben stehen (Amazon-Stil
- * Stufe 2, reusables/AmazonStil.jsx). Die Campaign-PDP übergibt nichts und
- * bleibt als Kontrollgruppe byte-gleich.
+ * Stufe 2, reusables/AmazonStil.jsx). Seit dem 28.09.2026 gilt das auch für
+ * /pages/qione-2-pro: beide Routen rendern QiOne2ProSeite.jsx.
  */
 export default function QiOne2Pro({
   block = undefined,

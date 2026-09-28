@@ -13,8 +13,8 @@ import {FAQ_QIHOME_AIR} from '~/data/product-faqs';
  * faqItems (Default = die volle Bestandsliste, also unverändert): die Fragen
  * der FAQ am Seitenende. /products/qihome-air übergibt seit dem 27.09.2026
  * nur den Rest, weil die häufigsten Kundenfragen dort weiter oben stehen
- * (Amazon-Stil Stufe 2, reusables/AmazonStil.jsx). Die Campaign-Seite
- * /pages/qihome-air übergibt nichts und bleibt als Kontrollgruppe byte-gleich.
+ * (Amazon-Stil Stufe 2, reusables/AmazonStil.jsx). Seit dem 28.09.2026 gilt
+ * das auch für /pages/qihome-air: beide Routen rendern QiHomeAirSeite.jsx.
  */
 export function QiHome({block = undefined, faqItems = FAQ_QIHOME_AIR}) {
   return (
