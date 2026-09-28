@@ -723,7 +723,13 @@ test('der Warenkorb montiert die Pflichtmitteilung selbst', () => {
  * das sieht man an keinem Exit-Code.
  * ------------------------------------------------------------------------ */
 
-const PDP_ROUTE = join(HIER, '..', 'app', 'routes', 'products.qione-2-pro.jsx');
+// Seit dem 28.09.2026 steht der Rumpf von /products/qione-2-pro in der
+// gemeinsamen Seitenkomponente (dieselbe Seite rendert /pages/qione-2-pro);
+// die Route gibt nur noch den Beschreibungstext hinein. Die Zusagen unten
+// gelten deshalb dort -- und damit auf beiden Routen.
+const PDP_ROUTE = join(
+  HIER, '..', 'app', 'components', 'product-pages', 'QiOne2ProSeite.jsx',
+);
 const PRODUCT_FORM = join(HIER, '..', 'app', 'components', 'ProductForm.jsx');
 const BUY_BOX = join(
   HIER, '..', 'app', 'components', 'product-pages', 'QiOneBuyBox.jsx',
@@ -1141,16 +1147,16 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
   // faellt sie in die Zusagen darunter, nicht hier heraus.
   const gefunden = mitListe.map((d) => d.pfad).sort();
   for (const pflicht of [
-    'app/components/product-pages/QiBraceletShop.jsx',
-    'app/components/product-pages/QiHomeAirShop.jsx',
+    // Seit dem 28.09.2026 rendern /products/<h> und /pages/<h> für diese
+    // drei Produkte EINE Seitenkomponente (*Seite.jsx); die Kaufflaeche steht
+    // deshalb dort und nicht mehr in der Route bzw. im früheren *Shop.jsx.
+    'app/components/product-pages/QiBraceletSeite.jsx',
+    'app/components/product-pages/QiHomeAirSeite.jsx',
     'app/components/product-pages/QiOne2Pro2xShop.jsx',
-    'app/components/product-pages/QiOne2ProShop.jsx',
+    'app/components/product-pages/QiOne2ProSeite.jsx',
     'app/routes/products.crystal-cacao-awake.jsx',
     'app/routes/products.crystal-cacao-create.jsx',
     'app/routes/products.qi-master.jsx',
-    'app/routes/products.qibracelet.jsx',
-    'app/routes/products.qihome-air.jsx',
-    'app/routes/products.qione-2-pro.jsx',
     'app/routes/products.qione-kette.jsx',
   ]) {
     assert.ok(

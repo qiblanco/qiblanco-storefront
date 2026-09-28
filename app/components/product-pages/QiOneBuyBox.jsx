@@ -62,6 +62,7 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   zusatzLinien?: Array<object>,
  *   unterKaufknopf?: import('react').ReactNode,
  *   videoKachel?: import('react').ReactNode,
+ *   dataSection?: string,
  * }} props
  *
  * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
@@ -97,9 +98,16 @@ import {ProductImageList} from '~/components/ProductImageList';
  * VIDEO-KACHEL (`videoKachel`, additiv, Default null): nur DURCHGEREICHT an
  * ProductImageList (Maßnahme „Produktseite, die verkauft“, Grossjob
  * growth-m-lp-produktseite-verkauft). Die organische PDP übergibt
- * <ProduktVideoKachel handle="qione-2-pro" />; die Kampagnen-Kaufseiten
- * (/pages/qione-2-pro, -2x) übergeben nichts und bleiben byte-identisch —
- * sie sind damit zugleich die Vergleichsgruppe der Wirkungsmessung.
+ * <ProduktVideoKachel handle="qione-2-pro" />; seit dem 28.09.2026 auch ihr
+ * Spiegel /pages/qione-2-pro, weil beide Routen dieselbe Seite rendern
+ * (QiOne2ProSeite.jsx, Christian: "die Seiten sind gleich bis auf den
+ * Beschreibungstext oben"). /pages/qione-2-pro-2x übergibt nichts.
+ *
+ * MESSANKER (`dataSection`, additiv, Default undefined): setzt data-section am
+ * `.product`-Knoten. Nur /pages/qione-2-pro übergibt ihn ("shopq-buybox"),
+ * damit die Sektions-Messung dieses LP-Landeziels (verhaltens-schicht
+ * sektion_registry.yaml) weiterläuft. Die organische PDP bleibt anker-frei;
+ * React lässt `data-section={undefined}` weg.
  */
 export function QiOneBuyBox({
   product,
@@ -115,6 +123,7 @@ export function QiOneBuyBox({
   zusatzLinien = undefined,
   unterKaufknopf = null,
   videoKachel = null,
+  dataSection = undefined,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -135,7 +144,7 @@ export function QiOneBuyBox({
   const {title} = product;
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
   return (
-    <div className="product" id={ankerId}>
+    <div className="product" id={ankerId} data-section={dataSection}>
       <div className="ProductImages">
         <div className="ProductImageWrapperSticky">
         <ProductImage image={featuredImage} />
