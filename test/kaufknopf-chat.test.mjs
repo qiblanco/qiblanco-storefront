@@ -78,3 +78,22 @@ test('ein zweiter Knopf, der überdeckt, genügt', () => {
     true,
   );
 });
+
+// NAHT Signal -> app.css (Nachzug 2026-09-28, Vollzug ov1f0335e4ad): der Loader
+// läuft vor der Hydration, das Signal danach. app.css muss das Widget
+// ausblenden, solange genau das Attribut fehlt, das die Komponente setzt.
+// Zwei Namen, zwei Dateien: nur dieser Test hält sie zusammen.
+test('app.css blendet das Widget aus, bis das Signal bereit ist', async () => {
+  const {readFileSync} = await import('node:fs');
+  const {BEREIT_ATTRIBUT, RAHMEN_ID} = await import('../app/lib/kaufknopf-chat.js');
+  const css = readFileSync(new URL('../app/styles/app.css', import.meta.url), 'utf8');
+  const regel = new RegExp(
+    `html:not\\(\\[${BEREIT_ATTRIBUT}\\]\\)\\s*#${RAHMEN_ID}\\s*\\{[^}]*visibility:\\s*hidden`,
+  );
+  assert.match(css, regel);
+  const komponente = readFileSync(
+    new URL('../app/components/KaufknopfChatSignal.jsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(komponente, /setAttribute\(BEREIT_ATTRIBUT/);
+});
