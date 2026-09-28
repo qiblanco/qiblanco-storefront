@@ -54,7 +54,7 @@
  * ein Mensch von Qi Blanco einer Kundin die Sache am Telefon, im Du. Die
  * Regeln (keine gebaute Antithese, kein Merksatz am Absatzende, kein
  * Selbstkommentar, kein Stakkato, Antwort zuerst) stehen im Stilblatt des
- * Grossjobs (jobdaten/gross/20260928-GROSSJOB-…/stilblatt.md). Die Fragen `q`
+ * Auftrags 20260928-GROSSJOB-… (Stilblatt in marken-stimme/spec/stimme.json). Die Fragen `q`
  * sind Suchanfragen und blieben deshalb bis auf zwei behutsame Ausnahmen
  * stehen (Begründung jeweils im Feld `quelle`).
  *
