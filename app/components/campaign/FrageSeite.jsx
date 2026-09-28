@@ -76,7 +76,7 @@ export function FrageSeite({seite}) {
 
       <section data-geo="beleg" data-section="frg-beleg">
         <div className="frg__inhalt">
-          <h2>Was gemessen ist</h2>
+          <h2>{seite.beleg_titel || 'Was gemessen ist'}</h2>
           {seite.beleg.map((absatz) => (
             <p key={absatz.slice(0, 48)}>{absatz}</p>
           ))}
@@ -92,14 +92,22 @@ export function FrageSeite({seite}) {
         </div>
       </section>
 
-      <section className="frg__offen" data-geo="offen" data-section="frg-offen">
-        <div className="frg__inhalt">
-          <h2>Was wir nicht wissen</h2>
-          {seite.offen.map((absatz) => (
-            <p key={absatz.slice(0, 48)}>{absatz}</p>
-          ))}
-        </div>
-      </section>
+      {/* „GUT ZU WISSEN" STATT „WAS WIR NICHT WISSEN" (Christian 2026-09-28,
+          Grossjob 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-
+          bestmoegliches-licht): der Abschnitt gibt dem Leser eine Präzision
+          oder etwas, das er selbst prüfen kann — keine Note auf unser eigenes
+          Material. Er darf leer sein; dann entfällt er ganz, statt als leere
+          Überschrift stehenzubleiben. */}
+      {seite.offen?.length > 0 && (
+        <section className="frg__offen" data-geo="offen" data-section="frg-offen">
+          <div className="frg__inhalt">
+            <h2>Gut zu wissen</h2>
+            {seite.offen.map((absatz) => (
+              <p key={absatz.slice(0, 48)}>{absatz}</p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {seite.weiter.length > 0 && (
         <section data-geo="weiter" data-section="frg-weiter">

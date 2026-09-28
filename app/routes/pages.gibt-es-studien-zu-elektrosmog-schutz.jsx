@@ -62,7 +62,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Gibt es unabhängige Studien zu Elektrosmog-Schutzprodukten? | Qi Blanco";
-const BESCHREIBUNG = "Nein, für diese Produktklasse gibt es keine unabhängige Wirksamkeitsstudie, und für unsere Produkte gibt es sie auch nicht.";
+const BESCHREIBUNG = "Zu unseren Produkten gibt es fünf veröffentlichte Arbeiten, die wir beim Dartsch Scientific Institut in Auftrag gegeben haben und die du im Original nachlesen kannst.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -71,7 +71,7 @@ const BESCHREIBUNG = "Nein, für diese Produktklasse gibt es keine unabhängige 
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-16';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

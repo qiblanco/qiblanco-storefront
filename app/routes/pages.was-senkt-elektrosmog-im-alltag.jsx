@@ -64,7 +64,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Was senkt die Belastung durch Elektrosmog im Alltag? | Qi Blanco";
-const BESCHREIBUNG = "Abstand halten, den Flugmodus einschalten und Funkquellen abschalten senken die Belastung im Alltag sofort, kosten nichts und brauchen kein Produkt.";
+const BESCHREIBUNG = "Am meisten bringt Abstand: Leg das Handy weg vom Körper, schalte nachts den Flugmodus ein und den Router aus, das senkt die Belastung sofort und kostet nichts.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -73,7 +73,7 @@ const BESCHREIBUNG = "Abstand halten, den Flugmodus einschalten und Funkquellen 
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-19';
-const GEAENDERT = '2026-09-19';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

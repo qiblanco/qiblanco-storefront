@@ -62,7 +62,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes? | Qi Blanco";
-const BESCHREIBUNG = "Eine Reichweite in Metern lässt sich nur dort angeben, wo eine Feldgröße gemessen wird, und sie gilt dann für genau diese Größe.";
+const BESCHREIBUNG = "Unser QiHome® Air ist laut Herstellerangabe auf einen Einsatzbereich von bis zu 160 Metern Radius ausgelegt, das reicht für eine Wohnung und auch für ein ganzes Haus.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -71,7 +71,7 @@ const BESCHREIBUNG = "Eine Reichweite in Metern lässt sich nur dort angeben, wo
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-16';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

@@ -416,7 +416,6 @@ export const LEXIKON = [
       "/pages/wie-funktioniert-schutz-vor-elektrosmog",
       "/pages/gibt-es-studien-zu-elektrosmog-schutz",
       "/pages/ist-qi-blanco-serioes",
-      "/pages/was-sagen-die-quarks-science-cops",
       "/pages/kohaerentes-wasser",
       "/pages/lexikon-ordnung",
       "/pages/hypothesen"
@@ -540,7 +539,6 @@ export const LEXIKON = [
     "verlinkt_auf": [
       "/pages/kann-elektrosmog-den-schlaf-stoeren",
       "/pages/wie-weit-reicht-elektrosmog-schutz",
-      "/pages/was-sagen-die-quarks-science-cops",
       "/pages/lexikon-frequenz",
       "/pages/lexikon-ordnung"
     ],
@@ -581,7 +579,6 @@ export const LEXIKON = [
     "verlinkt_auf": [
       "/pages/wie-funktioniert-schutz-vor-elektrosmog",
       "/pages/gibt-es-studien-zu-elektrosmog-schutz",
-      "/pages/was-sagen-die-quarks-science-cops",
       "/pages/lexikon-kohaerentes-wasser",
       "/pages/hypothesen",
       "/pages/warum-qi-blanco"
@@ -634,8 +631,6 @@ const FREMDE_ZIELE = {
     'Ist Qi Blanco seriös?',
   '/pages/wie-weit-reicht-elektrosmog-schutz':
     'Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?',
-  '/pages/was-sagen-die-quarks-science-cops':
-    'Was sagen die Quarks Science Cops zu Elektrosmog-Schmuck?',
   // Antwortseite der KI-Luecken-Welle (s08, #526), dieselbe Regel: die Frage ist
   // die Beschriftung. Verlinkt vom Eintrag Elektrosmog, der seit 27.09.2026 im
   // Google-Index steht (Auftrag zs-marke-energie-schmuck-20260927).

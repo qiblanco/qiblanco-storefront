@@ -62,7 +62,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Ist Qi Blanco seriös? | Qi Blanco";
-const BESCHREIBUNG = "Nachprüfbar sind vier Dinge, und sie liegen alle offen: Handelsregistereintrag, fünf Publikationen im Original, ein namentlich benanntes Labor und eine Rückgabefrist über die gesetzliche hinaus.";
+const BESCHREIBUNG = "Ja, und du kannst es selbst prüfen: Qi Blanco ist ein eingetragenes Unternehmen aus Maßbach, mit fünf veröffentlichten Laborarbeiten, echten Google-Bewertungen und 20 Tagen zum Testen.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -71,7 +71,7 @@ const BESCHREIBUNG = "Nachprüfbar sind vier Dinge, und sie liegen alle offen: H
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-16';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

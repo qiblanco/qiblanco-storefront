@@ -150,7 +150,7 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <p className="krit__vorspann">Belege und offene Fragen</p>
           <h1>
-            Qi Blanco Kritik: was belegt ist, was nicht – und was du selbst
+            Qi Blanco Kritik: was belegt ist, was nicht, und was du selbst
             prüfen kannst
           </h1>
           {/* DER KURZABSATZ (2026-09-25, Grossjob 20260925-GROSSJOB-seo-geo-
@@ -176,8 +176,8 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Die sieben Fragen, der Reihe nach</h2>
           <p className="krit__einleitung">
-            Zuerst das, was gemessen und veröffentlicht ist. Danach das, was
-            offen ist, und am Ende die Prüfung, die du selbst machen kannst.
+            Wir fangen bei dem an, was gemessen und veröffentlicht ist, und
+            hören bei der Prüfung auf, die du selbst machen kannst.
           </p>
 
           <ol className="krit__liste">
@@ -203,13 +203,13 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Was wir selbst einräumen</h2>
           <p className="krit__einleitung">
-            Vier Punkte, die offen sind. Sie stehen wortgleich auch auf
-            unseren Studienseiten.
+            Vier Punkte sind noch offen, und wir sagen sie dir hier selbst. Auf
+            unseren Studienseiten steht bei jeder Arbeit dazu, was sie zeigt.
           </p>
           <Belegbild
             studie={e0001}
             bildKey="abb1"
-            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen, oben und unten je zwei, dazwischen das Gerät. Das sendende Mobiltelefon liegt zwischen den beiden Ebenen. Keine Menschen — Zellen in Kunststoffflaschen."
+            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen, oben und unten je zwei, dazwischen das Gerät. Das sendende Mobiltelefon liegt zwischen den beiden Ebenen. Das sind Zellen in Kunststoffflaschen, keine Menschen."
           />
           <ol className="krit__einraeumungen">
             {EINRAEUMUNGEN.map((e) => (
@@ -226,13 +226,14 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Was in den Studien wirklich steht</h2>
           <p className="krit__einleitung">
-            Fünf Arbeiten, je mit dem, was gemessen wurde – und mit der Grenze,
-            die die Arbeit selbst nennt. Jede ist im Original nachlesbar.
+            Zu jeder der fünf Arbeiten findest du hier, was gemessen wurde und
+            welchen Rahmen die Arbeit selbst angibt. Jede kannst du im Original
+            nachlesen.
           </p>
           <Belegbild
             studie={e0003}
             bildKey="abb1"
-            einordnung="Und so bei der Arbeit zum oxidativen Stress: eine 96-Well-Platte im Mini-Inkubator, das QiBracelet obenauf. Auch hier ist das der ganze Aufbau — eine Platte, ein Gerät, ein Inkubator."
+            einordnung="Und so bei der Arbeit zum oxidativen Stress: eine 96-Well-Platte im Mini-Inkubator, das QiBracelet obenauf. Mehr gehört zu diesem Aufbau nicht: eine Platte, ein Gerät und ein Inkubator."
           />
           <ul className="krit__befunde">
             {BEFUNDE.map((b) => (
@@ -287,10 +288,9 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Warum wir weitermachen</h2>
           <p className="krit__einleitung">
-            Offene Fragen sind der normale Zustand von allem, was neu ist. Uns
-            trägt, was nachprüfbar veröffentlicht ist – und die Fragen, die
-            noch offen sind, sind unsere Arbeitsliste und nicht unser
-            Kleingedrucktes.
+            Offene Fragen gehören zu allem, was neu ist. Uns trägt, was
+            nachprüfbar veröffentlicht ist, und an den offenen Fragen arbeiten
+            wir weiter.
           </p>
           <AbsichtHinweis />
         </div>
@@ -300,7 +300,7 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Was für uns spricht</h2>
           <p className="krit__einleitung">
-            Jeder Punkt so, dass du ihn selbst nachprüfen kannst.
+            Jeden dieser Punkte kannst du selbst nachprüfen.
           </p>
           <ul className="krit__plusliste">
             {PLUSPUNKTE.map((s) => (
@@ -322,11 +322,11 @@ export function KritikSeite() {
         <div className="krit__inhalt">
           <h2>Du musst uns nichts glauben</h2>
           <p>
-            Ob das plausibel ist, entscheidest du an dir selbst. Ein
-            klinischer Wirknachweis am Menschen, der die Frage entscheiden
-            würde, liegt nicht vor. Was es gibt, ist die Prüfung an dir selbst:
-            20 Tage tragen, und wenn es nichts für dich ist, ohne Angabe von
-            Gründen zurück. Wenn nichts passiert, hast du deine Antwort.
+            Ob das für dich plausibel ist, entscheidest du am besten an dir
+            selbst. Einen klinischen Wirknachweis am Menschen, der die Frage
+            entscheiden würde, gibt es nicht, aber es gibt die Prüfung an dir:
+            Trag es 20 Tage, und wenn es nichts für dich ist, schick es ohne
+            Angabe von Gründen zurück.
           </p>
           <p>
             Alle fünf Arbeiten mit Methode, Zahlen und Original-PDF findest du

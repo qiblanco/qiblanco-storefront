@@ -31,9 +31,24 @@
  * HERKUNFT DER ANTWORTEN — faktengegatet: jede Zahl kommt aus
  * `app/data/studien/e0001…e0005.json` (Feld `factGate` hält fest, welche
  * kursierenden Zahlen in der Primärquelle NICHT stehen; solche Zahlen sind hier
- * nicht verbaut). Die vier Einräumungen sind wortgleich zu
- * `MmWirktDas.jsx GRENZEN 1–4` und zu `faq-seite.js FAQ_BELEGE` — eine zweite
- * Fassung wäre eine zweite Wahrheit.
+ * nicht verbaut). Die vier Einräumungen waren bis 2026-09-28 wortgleich zu
+ * `MmWirktDas.jsx GRENZEN 1–4` und zu `faq-seite.js FAQ_BELEGE`, mit der
+ * Begründung „eine zweite Fassung wäre eine zweite Wahrheit".
+ * DIESE KOPPLUNG IST SEIT 2026-09-28 GEWOLLT AUFGELÖST (Grossjob
+ * 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-bestmoegliches-
+ * licht, Segment s04):
+ *  · faq-seite.js folgt Christians Licht-Regel vom 07.09. („Bestmögliches
+ *    Licht") und führt keine Einräumungen mehr, nur noch die Tatsachen mit
+ *    ihrer Aussageklasse.
+ *  · Diese Seite folgt Christians NEUERER Vorgabe vom 21.09. (Landeziel der
+ *    Anzeige „Qi Blanco Kritik: Zellversuche / Was sie sagen und was nicht")
+ *    und behält alle vier Einräumungen INHALTLICH vollständig. Nur die Sprache
+ *    ist nach dem Stilblatt des Grossjobs geglättet (Antwort zuerst, keine
+ *    gebaute Antithese, kein Selbstkommentar, kein Stakkato).
+ *  · MmWirktDas.jsx bleibt beim alten Wortlaut; die Seite /pages/wirkt-das ist
+ *    zurückgezogen und wird nicht angefasst.
+ * Es gibt also keine wortgleiche zweite Fassung mehr, deren Abweichung eine
+ * Wache fangen müsste. Die Zahlen bleiben faktengegatet (s. o.).
  *
  * WAS HIER BEWUSST FEHLT (benannt, nicht beispielhaft):
  *  · JEDER Redaktions-, Sendungs- und Domainname, jedes Datum eines fremden
@@ -52,9 +67,10 @@
  * TEXTSORTE (Abgrenzungs-SSoT `konzepte/abgrenzung-flaechen.json`, Fläche
  * `kritik`): diese Seite trägt BEWEISFÜHRUNG. Keine Kundenstimme wird hier als
  * Beweis benutzt — das ist der Gegenstand von /pages/erfahrungen. Der Verweis
- * dorthin in PLUSPUNKTE sagt das ausdrücklich mit („Kein Beweis für eine
- * Wirkung"); sobald hier ein Erlebnis überzeugen soll statt eines Belegs, ist
- * die Abgrenzung gebrochen.
+ * dorthin in PLUSPUNKTE sagt das ausdrücklich mit (seit 2026-09-28: „Als
+ * Beweis für eine Wirkung führen wir das nicht", vorher „Das ist kein Beweis
+ * für eine Wirkung"); sobald hier ein Erlebnis überzeugen soll statt eines
+ * Belegs, ist die Abgrenzung gebrochen.
  */
 
 /**
@@ -77,7 +93,7 @@
  * wird, DASS untersucht wurde, nicht was es bewirkt.
  */
 export const KURZABSATZ =
-  'Qi Blanco ist ein eingetragenes Unternehmen aus Maßbach, Amtsgericht Schweinfurt, HRB 7306, geführt von Christian Bernd Bauer. Das Dartsch Scientific Institut hat unsere Produkte in fünf veröffentlichten Arbeiten untersucht: vier an Zellkulturen im Labor, eine als Auswertung von 171 Erfahrungsberichten. Alle fünf sind in Fachzeitschriften erschienen und dort nachlesbar. Prüfen kannst du es an dir selbst: 20 Tage tragen und ohne Angabe von Gründen zurückgeben, wenn es nichts für dich ist.';
+  'Qi Blanco ist ein eingetragenes Unternehmen aus Maßbach, Amtsgericht Schweinfurt, HRB 7306, geführt von Christian Bernd Bauer. Das Dartsch Scientific Institut hat unsere Produkte in fünf veröffentlichten Arbeiten untersucht: vier an Zellkulturen im Labor, eine als Auswertung von 171 Erfahrungsberichten. Alle fünf sind in Fachzeitschriften erschienen und dort nachlesbar. Und prüfen kannst du es an dir selbst: Du trägst es 20 Tage und gibst es ohne Angabe von Gründen zurück, wenn es nichts für dich ist.';
 
 /**
  * DER EINSTIEG ersetzt seit 2026-09-25 den Satz „… oder ob du verschaukelt
@@ -85,9 +101,14 @@ export const KURZABSATZ =
  * als Verdächtige antreten. Christians Lesart der Frage: „Jeder will von uns
  * überzeugt werden." Das ist dieselbe Frage, positiv aufgenommen — ohne
  * Wirkversprechen und ohne fremde Stimme.
+ * SPRACHE 2026-09-28 (Grossjob 20260928-GROSSJOB-frageseiten-menschlich-…,
+ * s04, Stilblatt Paar 18): „und das ist der richtige Anspruch" (Merksatz) und
+ * „jede mit einer geraden Antwort: was gemessen ist, was offen ist und was du
+ * selbst nachprüfen kannst" (Selbstkommentar + Dreierformel) sind ersetzt.
+ * Dass manches offen ist, sagen die Fragen selbst (K4 trägt ton `offen`).
  */
 export const EINSTIEG =
-  'Du willst überzeugt werden, bevor du dich entscheidest, und das ist der richtige Anspruch. Sieben Fragen, jede mit einer geraden Antwort: was gemessen ist, was offen ist und was du selbst nachprüfen kannst.';
+  'Bevor du dich entscheidest, willst du überzeugt sein, und das verstehen wir gut. Hier stehen sieben Fragen, die du dir vielleicht auch stellst, und zu jeder, was wir gemessen haben und was du selbst nachprüfen kannst.';
 
 /**
  * Die drei Antwortstufen. Mehr gibt es nicht — eine Frage, die keine dieser
@@ -128,18 +149,18 @@ export const FRAGEN = [
     kurz: 'Ja, fünf Mal, veröffentlicht und im Original nachlesbar.',
     ton: 'ja',
     antwort: [
-      'Fünf Arbeiten sind erschienen, jede mit Fachzeitschrift, Datum und Seitenzahl; vier davon liegen bei uns im Original als PDF. Du kannst sie lesen, ohne uns ein Wort zu glauben.',
-      'Jede Arbeit nennt ihre Grenze selbst, und wir führen sie Punkt für Punkt mit. Vier der fünf untersuchen Zellkulturen, die fünfte wertet Erfahrungsberichte aus; eine Studie am Menschen ist nicht darunter. Das ist der Unterschied, auf den es ankommt, und wir schreiben ihn hin, statt ihn zu überspringen.',
+      'Fünf Arbeiten sind in Fachzeitschriften erschienen, jede mit Datum und Seitenzahl, und alle fünf kannst du bei uns im Original als PDF lesen. So siehst du selbst, was drinsteht.',
+      'Vier der fünf Arbeiten untersuchen Zellkulturen, die fünfte wertet Erfahrungsberichte aus, und eine Studie am Menschen ist nicht darunter. Jede Arbeit nennt ihre Grenzen selbst, und wir führen sie bei jeder Studie Punkt für Punkt mit auf, weil genau dieser Unterschied zählt, wenn du die Ergebnisse einordnen willst.',
     ],
   },
   {
     id: 'K1',
     frage: 'Wehrt der Schmuck Strahlung ab?',
-    kurz: 'Nein. Gemessen wurden Zellen, nicht Strahlung.',
+    kurz: 'Nein. Gemessen wurde, wie sich Zellen unter Strahlung verhalten.',
     ton: 'nein',
     antwort: [
-      'In unseren Produkten steckt keine Elektronik, kein Akku, keine Batterie. Es wird nichts gesendet und nichts abgeschirmt. Wer ein Messgerät danebenlegt, misst dieselbe Strahlung wie vorher. Das haben wir nie anders gesagt.',
-      'Untersucht wurde etwas anderes: nicht die Strahlung, sondern was Zellen unter Strahlung tun. In den Zellstudien lagen Zellkulturen vier Stunden unter Mobilfunkbelastung, einmal mit und einmal ohne Gerät daneben. Gemessen wurden die Zellen, nicht das Feld. „Strahlung abwehren" beschreibt das falsch, auch wenn es kürzer klingt.',
+      'Unsere Produkte arbeiten ganz ohne Elektronik, Akku oder Batterie, senden nichts und schirmen nichts ab. Ein Messgerät daneben zeigt deshalb dieselbe Strahlung wie vorher, und das haben wir auch nie anders gesagt.',
+      'In den Zellstudien ging es um die Zellen selbst: Zellkulturen lagen vier Stunden unter Mobilfunkbelastung, einmal mit und einmal ohne Gerät daneben, und gemessen wurde, wie sie sich dabei verhalten. Mit „Strahlung abwehren" wäre das falsch beschrieben, auch wenn es kürzer klingt.',
     ],
   },
   {
@@ -148,8 +169,8 @@ export const FRAGEN = [
     kurz: 'Nein.',
     ton: 'nein',
     antwort: [
-      'Kein Text von uns verspricht das, und du wirst es auf keiner unserer Seiten finden.',
-      'Ein Wirknachweis am Menschen liegt nicht vor. Wir behaupten keinen Heileffekt, versprechen keine Heilung und raten niemandem, wegen uns eine Behandlung zu ändern. Untersucht sind Zellkulturen und eine Sammlung von Erfahrungsberichten. Mehr steht in keinem unserer Texte.',
+      'So etwas versprechen wir in keinem Text, und du wirst es auf keiner unserer Seiten finden.',
+      'Wir behaupten keinen Heileffekt, versprechen keine Heilung und raten niemandem, wegen uns eine Behandlung zu ändern. Ein Wirknachweis am Menschen liegt nicht vor. Untersucht sind Zellkulturen und eine Sammlung von Erfahrungsberichten, und mehr als das steht in keinem unserer Texte.',
     ],
   },
   {
@@ -158,45 +179,53 @@ export const FRAGEN = [
     kurz: 'Ja. Wir haben sie finanziert und die Geräte gestellt.',
     ton: 'ja',
     antwort: [
-      'Das steht auch in den Publikationen selbst. Es sind fünf, und alle fünf stammen von demselben Labor, dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. Das ist bei Produktforschung üblich und macht Ergebnisse nicht falsch. Es heißt aber, dass eine unabhängige Wiederholung durch ein zweites Labor aussteht, und das ist die größte offene Stelle unserer Datenlage. Sie liegt bei uns.',
-      'Was wir belegen können, ist Offenlegung: Auftraggeber, Labor, Methode, Fallzahlen und die Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Was wir nicht belegen können, ist Unabhängigkeit. Deshalb steht das Wort „unabhängig getestet" bei uns nirgends.',
+      'Das steht auch so in den Publikationen. Alle fünf Arbeiten kommen aus demselben Labor, dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. So läuft Produktforschung in aller Regel, und falsch werden die Ergebnisse dadurch nicht. Eine Wiederholung durch ein zweites, unabhängiges Labor steht allerdings noch aus. Das ist die größte offene Stelle in unserer Datenlage, und sie liegt bei uns.',
+      'Offengelegt ist alles, was dazugehört: Auftraggeber, Labor, Methode, Fallzahlen und Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Unabhängigkeit können wir dagegen nicht belegen, und deshalb schreiben wir nirgends „unabhängig getestet".',
     ],
   },
   {
     id: 'K2',
     frage: 'Ist das Erklärungsmodell wissenschaftlich belegt?',
-    kurz: 'Nein, es ist eine Hypothese. Die Messwerte hängen nicht davon ab.',
+    kurz: 'Nein, es ist eine Hypothese, und die Messwerte hängen nicht davon ab.',
     ton: 'nein',
     antwort: [
-      'Das Modell, mit dem unsere Publikationen ihre Messwerte erklären, das geordnete Wasser, ist in der etablierten Wissenschaft nicht anerkannt. Die Arbeiten selbst führen es als Hypothese, nicht als gesicherte Erkenntnis. Wir bestreiten das nicht und haben es nie bestritten.',
-      'Was wir dem entgegensetzen, ist kein Gegenargument, sondern eine Unterscheidung: Die Erklärung ist offen. Die Messung ist es nicht. Was in den Zellschalen passiert ist, wurde gemessen und veröffentlicht. Warum es passiert ist, weiß niemand sicher, wir eingeschlossen. Beides auseinanderzuhalten ist der ehrlichste Umgang mit dieser Datenlage.',
+      'Unsere Publikationen erklären ihre Messwerte mit dem Modell des geordneten Wassers. In der etablierten Wissenschaft ist dieses Modell nicht anerkannt, die Arbeiten selbst führen es als Hypothese, und genau so haben wir es auch immer dargestellt.',
+      'An den Messwerten ändert das nichts: Was in den Zellschalen passiert ist, wurde gemessen und veröffentlicht. Offen ist, warum es passiert, und das weiß heute niemand sicher, wir auch nicht.',
     ],
   },
   {
     id: 'K5',
     frage: 'Über 1000 Euro: wofür eigentlich?',
-    kurz: 'Der Preis stimmt. Er steckt im GitterChip aus 750er Gold und in fünf Publikationen.',
+    kurz: 'Der Preis stimmt, und er steckt im GitterChip aus 750er Gold und in fünf Publikationen.',
     ton: 'ja',
     antwort: [
-      'Wir reden den Preis nicht klein. Was du bezahlst, ist nicht das Gehäuse: Im Inneren sitzt der GitterChip aus einer eigens entwickelten 750er Goldlegierung, und die fünf Publikationen haben wir bezahlt. Ob dir das den Preis wert ist, entscheidest du und niemand sonst.',
-      'Deshalb gilt ein Rückgaberecht: 20 Tage tragen, und wenn es nichts für dich ist, ohne Angabe von Gründen zurück.',
+      'Der Preis ist hoch, und das Geld steckt vor allem im Inneren: Dort sitzt der GitterChip aus einer eigens entwickelten 750er Goldlegierung. Dazu kommen die fünf Publikationen, die wir bezahlt haben. Ob dir das den Preis wert ist, entscheidest ganz allein du.',
+      'Damit du das in Ruhe entscheiden kannst, trägst du es erst einmal 20 Tage, und wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen zurück.',
     ],
   },
   {
     id: 'K4',
     frage: 'Kann so etwas überhaupt plausibel sein?',
-    kurz: 'Offen, und die Frage ist berechtigt.',
+    kurz: 'Offen, und die Frage ist völlig verständlich.',
     ton: 'offen',
     antwort: [
-      'Das ist keine Messfrage, sondern ein Bauchgefühl in Frageform, und das Bauchgefühl ist berechtigt. Wir haben uns dieselbe Frage am Anfang auch gestellt.',
-      'Ein klinischer Wirknachweis am Menschen, der die Frage entscheiden würde, liegt nicht vor. Was es gibt, sind vier Zellstudien und eine Auswertung von 171 Erfahrungsberichten. Und es gibt die Prüfung an dir selbst: 20 Tage tragen, danach ohne Angabe von Gründen zurückschicken. Wenn nichts passiert, hast du deine Antwort.',
+      'Diese Frage kommt meistens aus dem Bauch, und wir haben sie uns am Anfang genauso gestellt.',
+      'Beantworten könnte sie erst eine klinische Untersuchung am Menschen, und die gibt es bisher nicht. Es gibt vier Zellstudien und eine Auswertung von 171 Erfahrungsberichten. Und es gibt die Prüfung an dir selbst: Du trägst es 20 Tage, und wenn nichts passiert, schickst du es ohne Angabe von Gründen zurück und hast deine Antwort.',
     ],
   },
 ];
 
 /**
- * Die vier Einräumungen. WORTGLEICH zu MmWirktDas.jsx GRENZEN 1–4 und zu
- * faq-seite.js — sie sind die Inhaltsgrenze dieser Seite, nicht ihre Rhetorik.
+ * Die vier Einräumungen — die Inhaltsgrenze dieser Seite, nicht ihre Rhetorik.
+ * Bis 2026-09-28 WORTGLEICH zu MmWirktDas.jsx GRENZEN 1–4 und zu faq-seite.js;
+ * seitdem ist die Sprache nach dem Stilblatt geglättet und die Kopplung
+ * gewollt aufgelöst (Begründung im Dateikopf). INHALTLICH ist jede der vier
+ * vollständig geblieben: keine Studie am Menschen, ein Labor und ein Autor,
+ * von uns bezahlt und die Geräte gestellt, Wiederholung durch ein zweites
+ * Labor steht aus, Erklärung ist eine Hypothese und in der konventionellen
+ * Wissenschaft nicht etabliert. Weggefallen sind allein Stakkato und
+ * Nachdruck („Keine einzige.", „Ein einzelnes Labor, ein einzelner Autor.",
+ * „und zwar unserer") und die Gedankenstriche.
  * SIE WERDEN NICHT GEKÜRZT: beim Aufräumen der fremden Zitate darf die
  * Ehrlichkeit nicht mit verschwinden, das wäre der schlimmere Schaden.
  * @type {Array<{titel: string, text: string}>}
@@ -204,19 +233,19 @@ export const FRAGEN = [
 export const EINRAEUMUNGEN = [
   {
     titel: 'Es gibt keine Studie am Menschen.',
-    text: 'Keine einzige. Vier der fünf Arbeiten sind Zellkultur, die fünfte ist eine Sammlung von Erfahrungsberichten. Was im Labor an Zellen messbar ist, muss im Körper nicht passieren. Ein klinischer Wirknachweis am Menschen liegt nicht vor.',
+    text: 'Vier der fünf Arbeiten sind Versuche an Zellkulturen, die fünfte ist eine Sammlung von Erfahrungsberichten. Was sich im Labor an Zellen messen lässt, muss im Körper nicht genauso passieren, und ein klinischer Wirknachweis am Menschen liegt nicht vor.',
   },
   {
     titel: 'Alle fünf Arbeiten stammen von demselben Labor.',
-    text: 'Sie wurden von Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut durchgeführt. Ein einzelnes Labor, ein einzelner Autor.',
+    text: 'Durchgeführt hat sie Prof. Dr. Peter C. Dartsch an seinem Dartsch Scientific Institut, sie kommen also aus einem Labor und von einem Autor.',
   },
   {
     titel: 'Wir haben sie bezahlt.',
-    text: 'Die Geräte wurden vom Hersteller — von uns — zur Verfügung gestellt, die Untersuchungen von uns finanziert. Das ist bei Produktforschung üblich und macht Ergebnisse nicht falsch. Es heißt aber: eine unabhängige Wiederholung durch ein zweites Labor steht aus. Bis dahin ist das ein offener Punkt, und zwar unserer.',
+    text: 'Die Untersuchungen haben wir finanziert, und die Geräte dafür haben wir als Hersteller zur Verfügung gestellt. Das ist bei Produktforschung üblich, und falsch werden die Ergebnisse dadurch nicht. Eine Wiederholung durch ein zweites, unabhängiges Labor steht aber noch aus, und bis dahin ist das ein offener Punkt, der bei uns liegt.',
   },
   {
     titel: 'Die Erklärung dahinter ist eine Hypothese.',
-    text: 'Das Modell, mit dem die Publikationen den Effekt erklären, ist in der konventionellen Wissenschaft nicht etabliert. Die Arbeiten selbst kennzeichnen es als Hypothese. Die Messwerte hängen nicht von der Erklärung ab: Was in den Zellschalen passiert ist, ist gemessen worden — warum, ist offen.',
+    text: 'Das Modell, mit dem die Publikationen den Effekt erklären, ist in der konventionellen Wissenschaft nicht etabliert, und die Arbeiten kennzeichnen es selbst als Hypothese. Die Messwerte hängen an dieser Erklärung nicht: Was in den Zellschalen passiert ist, wurde gemessen, und offen ist, warum es passiert.',
   },
 ];
 
@@ -234,9 +263,9 @@ export const BEFUNDE = [
     titel: 'Immunzellen unter Mobilfunkbelastung',
     quelle: 'Japan Journal of Medicine 2021, 4(1): 484–488',
     befund:
-      'Menschliche Immunzellen (HL-60) lagen vier Stunden unter Mobilfunkbelastung. Ihre Fähigkeit, Abwehr-Radikale zu bilden, sank auf 60,5 ± 3,9 Prozent der unbestrahlten Kontrolle. Lag ein QiOne 2 Pro daneben, blieben 84,7 ± 7,0 Prozent erhalten (p ≤ 0,01).',
+      'Menschliche Immunzellen (HL-60) lagen vier Stunden unter Mobilfunkbelastung. Dabei sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf 60,5 ± 3,9 Prozent der unbestrahlten Kontrolle. Lag ein QiOne 2 Pro daneben, blieben 84,7 ± 7,0 Prozent erhalten (p ≤ 0,01).',
     grenze:
-      'In vitro, eine Zelllinie, drei unabhängige Experimente. Auf den lebenden Menschen ist das nicht übertragbar.',
+      'In vitro, eine Zelllinie, drei unabhängige Experimente. Auf den lebenden Menschen lässt sich das nicht übertragen.',
     slug: 'studie-immunzellen',
   },
   {
@@ -244,9 +273,9 @@ export const BEFUNDE = [
     titel: 'Darmbarriere unter derselben Belastung',
     quelle: 'Applied Cell Biology 2021, 9(3): 69–74',
     befund:
-      'Kultivierte Darmzellen (IPEC-J2). Der elektrische Widerstand der Zellbarriere brach ungeschützt auf etwa ein Zehntel ein. Geschützt lag er bei 1.837 ± 349 Ω/cm² gegenüber 2.542 ± 389 Ω/cm² bei völlig unbestrahlten Zellen.',
+      'Bei kultivierten Darmzellen (IPEC-J2) brach der elektrische Widerstand der Zellbarriere ungeschützt auf etwa ein Zehntel ein. Geschützt lag er bei 1.837 ± 349 Ω/cm², bei völlig unbestrahlten Zellen bei 2.542 ± 389 Ω/cm².',
     grenze:
-      'In vitro, Zellen vom Schwein, n = 3–4. Eine Übertragbarkeit auf den menschlichen Darm ist nicht belegt.',
+      'In vitro, Zellen vom Schwein, n = 3–4. Dass sich das auf den menschlichen Darm übertragen lässt, ist nicht belegt.',
     slug: 'studie-darmbarriere',
   },
   {
@@ -256,7 +285,7 @@ export const BEFUNDE = [
     befund:
       'Vier Zelllinien wurden mit Wasserstoffperoxid unter Stress gesetzt, einmal mit und einmal ohne QiBracelet.',
     grenze:
-      'In vitro. Der Stressor ist ein chemisches Modell — die Arbeit untersucht ausdrücklich keinen Schutz vor Mobilfunk. Zum Zahlenwert der Vitalität widersprechen sich Abstract und Ergebnisteil des Originals; wir geben ihn deshalb nicht wieder.',
+      'In vitro. Den Stress erzeugt hier ein chemisches Modell, um einen Schutz vor Mobilfunk geht es in dieser Arbeit nicht. Beim Zahlenwert der Vitalität widersprechen sich Abstract und Ergebnisteil des Originals, deshalb geben wir ihn nicht wieder.',
     slug: 'studie-oxidativer-stress',
   },
   {
@@ -267,7 +296,7 @@ export const BEFUNDE = [
     befund:
       'Eine beschreibende Auswertung von 171 öffentlich geposteten Nutzerbeobachtungen zu QiOne 2 Pro und QiBracelet.',
     grenze:
-      'Kein Fragebogen, keine Kontrollgruppe, keine Verblindung. Auswahl- und Bestätigungsverzerrung sind nicht ausgeschlossen; ein Ursachenzusammenhang folgt daraus nicht.',
+      'Ohne Fragebogen, ohne Kontrollgruppe und ohne Verblindung. Auswahl- und Bestätigungsverzerrung sind deshalb nicht ausgeschlossen, und auf eine Ursache lässt sich daraus nicht schließen.',
     slug: 'studie-nutzererfahrung',
   },
   {
@@ -278,7 +307,7 @@ export const BEFUNDE = [
     befund:
       'Humane Nervenzellen (SH-SY5Y) und entzündungsvermittelnde Zellen unter Einfluss des QiHome Air.',
     grenze:
-      'In vitro. Keine klinische Untersuchung am Menschen. Das verwendete Regenerationsmodell bildet nach Angabe der Publikation ausschließlich das periphere Nervensystem ab.',
+      'In vitro, ohne klinische Untersuchung am Menschen. Das verwendete Regenerationsmodell bildet nach Angabe der Publikation nur das periphere Nervensystem ab.',
     slug: 'studie-qihome-air',
   },
 ];
@@ -313,12 +342,17 @@ export const BEFUNDE = [
 export const PLUSPUNKTE = [
   {
     titel: 'Zu jeder Arbeit steht, was sie nicht zeigt.',
-    text: 'Bei allen fünf Studien steht die Grenze direkt daneben: in vitro, welche Zelllinie, welche Fallzahl, was daraus NICHT folgt. Die vier offenen Punkte stehen wortgleich auch auf unseren Studienseiten.',
+    // „wortgleich" 2026-09-28 gestrichen: die Einräumungen sind seitdem
+    // sprachlich geglättet (Dateikopf), und die Studienseiten tragen ihre
+    // Grenzen aus der Registry, nicht diesen Wortlaut. Der Satz in
+    // KritikSeite.jsx („Sie stehen wortgleich auch auf unseren Studienseiten")
+    // ist nicht Teil dieses Moduls und steht als offener Punkt im RESULT-s04.
+    text: 'Bei allen fünf Studien steht die Grenze gleich daneben: in vitro, welche Zelllinie, welche Fallzahl und was daraus nicht folgt. Die vier offenen Punkte stehen auch auf unseren Studienseiten.',
     beleg: 'Die Grenzen-Zeile bei jeder der fünf Arbeiten, hier und auf /pages/studien.',
   },
   {
     titel: '20 Tage auf unsere Rechnung prüfen.',
-    text: 'Trag es 20 Tage. Wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen zurück. Das Risiko liegt bei uns, nicht bei dir.',
+    text: 'Trag es 20 Tage, und wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen zurück. Das Risiko liegt bei uns.',
     beleg: 'Rückgaberecht, öffentlich nachlesbar.',
     // ZIEL UMGEBOGEN AM 2026-09-14 (offener Vollzug ov90ac04c6c8). Vorher
     // /pages/das-20-tage-versprechen — und das ist eine Landingpage des
@@ -338,26 +372,26 @@ export const PLUSPUNKTE = [
   },
   {
     titel: 'Fünf veröffentlichte Arbeiten, im Original nachlesbar.',
-    text: 'Jede mit Fachzeitschrift, Datum und Seitenzahl; vier davon liegen bei uns als Original-PDF. Alle fünf stammen aus demselben Labor, und beides gehört nebeneinander, nicht nur das eine.',
+    text: 'Jede ist mit Fachzeitschrift, Datum und Seitenzahl erschienen, und alle fünf kannst du bei uns als Original-PDF lesen. Dass alle fünf aus demselben Labor stammen, steht gleich mit dabei.',
     beleg: 'Die fünf Arbeiten mit Methode, Zahlen und PDF.',
     pfad: '/pages/studien',
     link: 'Alle fünf Arbeiten ansehen',
   },
   {
-    titel: 'Ein benanntes Institut, ein benannter Wissenschaftler.',
-    text: 'Prof. Dr. Peter C. Dartsch, Dartsch Scientific Institut. Kein anonymes Gutachten, kein Prüfsiegel ohne Absender: du kannst nachsehen, wer gemessen hat.',
+    titel: 'Ein Institut und ein Wissenschaftler, beide mit Namen.',
+    text: 'Gemessen hat Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut. Du kannst also genau nachsehen, wer hinter den Ergebnissen steht, anders als bei einem anonymen Gutachten oder einem Prüfsiegel ohne Absender.',
     beleg: 'Autor und Institut stehen in jeder der fünf Publikationen.',
   },
   {
     titel: 'Ein eingetragenes Unternehmen mit Anschrift.',
-    text: 'Handelsregister, ladungsfähige Anschrift, Menschen, die mit ihrem Namen dafür einstehen. Alles im Impressum, ohne Umweg und ohne Formular.',
+    text: 'Wir stehen im Handelsregister, haben eine ladungsfähige Anschrift, und hinter Qi Blanco stehen Menschen, die mit ihrem Namen dafür einstehen. Das findest du alles im Impressum, ohne Umweg und ohne Formular.',
     beleg: 'Impressum mit Handelsregisternummer und Anschrift.',
     pfad: '/pages/impressum',
     link: 'Impressum ansehen',
   },
   {
     titel: 'Erfahrungen, die du selbst nachprüfen kannst.',
-    text: 'Menschen berichten unter eigenem Namen auf ihren eigenen Konten, nicht auf unseren. Das ist kein Beweis für eine Wirkung, und wir führen es auch nicht als einen. Es ist nachprüfbar, und das ist mehr, als eine anonyme Bewertung dir bietet.',
+    text: 'Menschen erzählen unter ihrem eigenen Namen und auf ihren eigenen Konten, was sie erlebt haben. Als Beweis für eine Wirkung führen wir das nicht, aber du kannst jeden Bericht selbst nachprüfen, und das bietet dir eine anonyme Bewertung nicht.',
     beleg: 'Berichte auf den öffentlichen Konten der Menschen selbst.',
     pfad: '/pages/erfahrungen',
     link: 'Erfahrungen nachsehen',

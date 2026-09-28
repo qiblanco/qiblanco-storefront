@@ -24,8 +24,8 @@
    DER EINE AKZENT SITZT AUF DER ANTWORT UND AUF DEM OFFENEN, nicht auf einem
    Kaufknopf — auf dieser Flaeche gibt es keinen. Das Gold traegt die Linie am
    Antwort-Satz (der Satz, wegen dem jemand die Seite aufgerufen hat) und am
-   Abschnitt „Was wir nicht wissen" (der Satz, der diese Seite von Werbung
-   unterscheidet). Als TINTE erscheint das Gold nirgends: auf hellem Grund misst
+   Abschnitt „Gut zu wissen" (seit 2026-09-28; bis dahin „Was wir nicht
+   wissen" — Christian hat die öffentliche Zugeständnis-Sektion zurückgenommen). Als TINTE erscheint das Gold nirgends: auf hellem Grund misst
    es 2,2:1 und faellt unter die Kontrastschwelle 4,5:1.
    ========================================================================== */
 
@@ -161,7 +161,7 @@
   margin-bottom: var(--frg-s4);
 }
 
-/* ── „Was wir nicht wissen" — der zweite Ort des Akzents ────────────────── */
+/* ── „Gut zu wissen" — der zweite Ort des Akzents ───────────────────────── */
 
 .frg__offen .frg__inhalt {
   background: var(--frg-flaeche);

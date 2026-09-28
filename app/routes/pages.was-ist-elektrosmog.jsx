@@ -64,7 +64,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Was ist Elektrosmog? | Qi Blanco";
-const BESCHREIBUNG = "Elektrosmog ist ein Sammelwort für die elektrischen, magnetischen und elektromagnetischen Felder der Technik und fasst zwei physikalisch verschiedene Bereiche zusammen, niederfrequente Felder aus der Stromversorgung und hochfrequente Felder aus der Funktechnik.";
+const BESCHREIBUNG = "Elektrosmog ist ein Alltagswort für die Felder, die Technik um uns herum erzeugt: niederfrequente aus der Stromversorgung und hochfrequente aus Handy, WLAN und Funk.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -73,7 +73,7 @@ const BESCHREIBUNG = "Elektrosmog ist ein Sammelwort für die elektrischen, magn
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-19';
-const GEAENDERT = '2026-09-19';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

@@ -62,7 +62,7 @@ if (!SEITE) {
 }
 
 const TITEL = "Kann Elektrosmog den Schlaf stören? | Qi Blanco";
-const BESCHREIBUNG = "Gemessen stört das Gerät im Schlafzimmer den Schlaf, sein elektromagnetisches Feld dagegen nicht.";
+const BESCHREIBUNG = "Den Schlaf stört vor allem das Handy selbst, mit seinem Licht und seinen Nachrichten am Abend, während Schlafstudien beim Funkfeld allein keinen Einfluss gefunden haben.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -71,7 +71,7 @@ const BESCHREIBUNG = "Gemessen stört das Gerät im Schlafzimmer den Schlaf, sei
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-16';
+const GEAENDERT = '2026-09-28';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];
