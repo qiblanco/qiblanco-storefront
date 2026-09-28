@@ -12,7 +12,20 @@
  *   Zahl 0) — und nur, wenn der Nutzer keine reduzierte Bewegung wünscht und
  *   der Browser IntersectionObserver kennt. Fällt JavaScript aus, bleibt der
  *   Endzustand stehen, nie eine leere Fläche.
- * - Auslöser: IntersectionObserver, 35 % sichtbar, EINMAL (unobserve).
+ * - Auslöser (Christian, 28.09.2026: "die Balken fahren zu früh und viel zu
+ *   schnell hoch ... es ist schon fertig, obwohl man noch gar nicht wirklich
+ *   hingescrollt hat"): beobachtet wird die Balkenfläche samt Grundlinie, nicht
+ *   die ganze Figur mit Titel. Start erst, wenn die Fläche voll im Bild ist und
+ *   mindestens 15 % über dem unteren Bildschirmrand steht (rootMargin unten
+ *   -15 %, Schwelle 0,99). EINMAL (disconnect).
+ * - Rückfall für eine Fläche, die höher ist als der Bildschirm (abzüglich der
+ *   15 %): sie kann nie voll sichtbar werden. Sie startet, sobald sie 90 % des
+ *   Beobachtungsfensters (Bildschirm ohne die unteren 15 %) füllt. Die feinen Stufen (alle 5 %) sorgen dafür, dass der
+ *   Beobachter diesen Moment überhaupt meldet.
+ * - Tempo (ebenfalls 28.09.2026, "auf 25 % von dem, was es jetzt ist"):
+ *   4,8 s je Balken, der zweite 0,72 s später. Vorher 1,2 s und 0,18 s.
+ *   Die Figur trägt die Dauer als data-qb-sb-dauer im Server-HTML; daran
+ *   misst die Probe den ausgelieferten Stand.
  * - Bewegung: EIN requestAnimationFrame-Takt schreibt je Säule die Variable
  *   --qb-sb-p (0..1). Balken (transform: scaleY) und Zahl (Text + translateY)
  *   lesen dieselbe Variable und bleiben deshalb synchron. Nur transform —
@@ -24,9 +37,11 @@
 import {Link} from 'react-router';
 import {useEffect, useLayoutEffect, useRef, useState} from 'react';
 
-const DAUER_MS = 1200;
-const VERSATZ_MS = 180;
-const SCHWELLE = 0.35;
+const DAUER_MS = 4800;
+const VERSATZ_MS = 720;
+const SCHWELLE = 0.99;
+const FUELLGRAD_HOHE_FLAECHE = 0.9;
+const STUFEN = [...Array.from({length: 20}, (_, i) => i / 20), SCHWELLE, 1];
 
 const useFruehEffekt = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
@@ -94,16 +109,23 @@ export function BalkenDiagramm({titel, messgroesse, balken, studieHref, studieZe
       rahmen = requestAnimationFrame(takt);
     };
 
+    const flaeche = el.querySelector('.qb-balkendiagramm__flaeche') || el;
+    const imBild = (e) => {
+      if (!e.isIntersecting) return false;
+      if (e.intersectionRatio >= SCHWELLE) return true;
+      const hoehe = e.rootBounds && e.rootBounds.height;
+      return Boolean(hoehe) && e.intersectionRect.height >= hoehe * FUELLGRAD_HOHE_FLAECHE;
+    };
     const beobachter = new IntersectionObserver(
       (eintraege) => {
-        if (eintraege.some((e) => e.isIntersecting)) {
+        if (eintraege.some(imBild)) {
           beobachter.disconnect();
           abspielen();
         }
       },
-      {threshold: SCHWELLE},
+      {threshold: STUFEN, rootMargin: '0px 0px -15% 0px'},
     );
-    beobachter.observe(el);
+    beobachter.observe(flaeche);
     return () => {
       beobachter.disconnect();
       cancelAnimationFrame(rahmen);
@@ -115,7 +137,12 @@ export function BalkenDiagramm({titel, messgroesse, balken, studieHref, studieZe
   }, []);
 
   return (
-    <figure className="qb-balkendiagramm" data-zustand={zustand} ref={wurzel}>
+    <figure
+      className="qb-balkendiagramm"
+      data-zustand={zustand}
+      data-qb-sb-dauer={DAUER_MS}
+      ref={wurzel}
+    >
       <h3 className="qb-balkendiagramm__titel">{titel}</h3>
       <p className="qb-balkendiagramm__messgroesse">{messgroesse}</p>
       <div className="qb-balkendiagramm__flaeche">
