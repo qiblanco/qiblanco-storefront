@@ -305,15 +305,16 @@ export default function Product() {
         preise={vergleichsPreise}
         eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
       />
-      <Kundenfragen handle="qione-2-pro" oben={fragen.oben} alle={FAQ_QIONE_2_PRO} />
-      {/* Vertrauensblock direkt nach den Kundenfragen, vor der Tiefe
-          (Christian 28.09.2026: "dass es nicht der Abschluss ist, sondern
-          direkt nach den Kundenfragen kommt"). Genau einmal auf der Seite. */}
+      {/* Vertrauensblock vor den Kundenfragen, die Kundenfragen direkt
+          darunter (Christian 28.09.2026 ~19:45: "das FAQ kommt direkt
+          darunter, nicht oben drüber, dann wirkt es insgesamt stimmiger";
+          löst die Reihenfolge von ~19:25 ab). Genau einmal auf der Seite. */}
       {/* Messanker ohne Eingriff in den geteilten Baustein: display:contents
           erzeugt keine eigene Box, das Layout bleibt wie ohne Hülle. */}
       <div data-qb-block="zufriedene-kunden" style={{display: 'contents'}}>
         <GoogleRezensionenBereich />
       </div>
+      <Kundenfragen handle="qione-2-pro" oben={fragen.oben} alle={FAQ_QIONE_2_PRO} />
       {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
           von Christian 2026-07-17 ausdruecklich fuer die organische PDP
           freigegeben (Job 20260717-gitterchip-animation-3seiten-rollout).
