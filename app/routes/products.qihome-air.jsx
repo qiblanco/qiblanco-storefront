@@ -300,10 +300,17 @@ export default function Product() {
         eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
       />
       <Kundenfragen handle="qihome-air" oben={fragen.oben} alle={FAQ_QIHOME_AIR} />
+      {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
+          Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
+      {/* Vertrauensblock direkt nach den Kundenfragen, vor der Tiefe
+          (Christian 28.09.2026: "dass es nicht der Abschluss ist, sondern
+          direkt nach den Kundenfragen kommt"). Genau einmal auf der Seite. */}
+      {/* Messanker ohne Eingriff in den geteilten Baustein: display:contents
+          erzeugt keine eigene Box, das Layout bleibt wie ohne Hülle. */}
+      <div data-qb-block="zufriedene-kunden" style={{display: 'contents'}}>
+        <GoogleRezensionenBereich />
+      </div>
       <QiHome faqItems={fragen.unten} /> 
-    {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
-        Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
-    <GoogleRezensionenBereich />
     </div>
   );
 }

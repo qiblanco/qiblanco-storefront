@@ -99,8 +99,10 @@ export const VERGLEICH = {
       // Holzelemente ... aus regionaler deutscher Eiche" (Grad weg, s. o.).
       material:
         'Gehäuse aus Chirurgenstahl, Gitterchip™ aus Goldlegierung, Holzelemente aus regionaler deutscher Eiche',
-      // Raumgerät: die Frage stellt sich nicht; der Strich wie bei fehlendem Preis.
-      wasser: '–',
+      // Christians Produktangabe 28.09.2026 (Festlegung, GL-SPR-0008): "Beim
+      // QiHome Air darf dann bei Wasser und Sauna 'Nein' stehen. Das ist ganz
+      // klar, dass es nicht für die Sauna ist."
+      wasser: 'Nein',
       // data/studien/e0005.json, kachel ("an neuronalen Zellen", "...
       // Neurodegenerative Diseases: Current Research 2026").
       studien: [
