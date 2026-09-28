@@ -330,7 +330,7 @@ export function GoogleRezensionenBereich({
       {...(dataSection ? {'data-section': dataSection} : {})}
     >
       <h2 className="GoogleRezensionenBereich-titel">
-        Über 14.000 zufriedene Kunden – entscheide dich jetzt!
+        Über 14.000 zufriedene Kunden
       </h2>
       <ReputonWidget />
       {/* Weg zur Bewertungsseite (Segment s02, Begründung am Baustein).
