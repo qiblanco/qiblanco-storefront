@@ -1,0 +1,559 @@
+/* ============================================================================
+   /pages/produktberatung — 20 Minuten mit Christian (2026-09-28).
+
+   Token-System wortgleich zur Schwesterseite bewertungen.css (und damit zu
+   kritik.css / erfahrungen.css und zum design-meister web-brief --seite
+   produktberatung): warmes Neutral-Kontinuum, EIN Gold-Akzent nur auf der
+   Handlung, Weissraum gruppiert statt Boxen, 8pt-Grid, Sektions-Takt 96/64,
+   Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .pb — self-contained. Eigene Datei statt bewertungen.css mitzubenutzen:
+   Gate 12 loest geteilte Dateien auf ALLE importierenden Routen auf.
+
+   DAS EINE GOLD SITZT AUF DER EINEN HANDLUNG: dem Knopf „Termin verbindlich
+   buchen" (bzw. „umbuchen"). Der gewaehlte Termin ist DUNKEL, nicht gold —
+   Auswahl ist keine Handlung. Zweite Handlungen (Kalender, Absagen) sind
+   Umriss-Knoepfe in Textfarbe.
+
+   MOBIL ZUERST: Termine sind Tipp-Flaechen mit mindestens 48 px Hoehe, das
+   Formular ist einspaltig, Eingaben tragen 16 px (sonst zoomt iOS beim Tippen).
+   ========================================================================== */
+
+:root {
+  --pb-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25 (Deckel des Briefs: 9 Stufen) */
+  --pb-fs-xs: 0.8125rem; /* 13px, nur Fuss */
+  --pb-fs-base: 1rem; /* 16px */
+  --pb-fs-md: 1.125rem; /* 18px */
+  --pb-fs-lg: 1.25rem; /* 20px */
+  --pb-fs-h2: 1.5rem; /* EIN H2-Stil, 24px fest (16 -> 24 = 1,5, im modularen Band) */
+  --pb-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --pb-s1: 8px;
+  --pb-s2: 16px;
+  --pb-s3: 24px;
+  --pb-s4: 32px;
+  --pb-s6: 48px;
+  --pb-s8: 64px;
+  --pb-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --pb-grund: #faf9f5;
+  --pb-flaeche: #f4f0e9;
+  --pb-dunkel: #191714;
+  --pb-text: #2c2a26;
+  --pb-text-hell: #f4f0e9;
+  --pb-muted: #6b665d; /* 5,5:1 auf --pb-grund: traegt auch Eingabe-Raender (>= 3:1) */
+  --pb-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR die Buchen-Handlung */
+  --pb-linie: rgba(44, 42, 38, 0.12);
+  --pb-fehler: #8f2d1f; /* 7,4:1 auf --pb-grund, nur Fehlersatz */
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --pb-r1: 8px;
+  --pb-r2: 16px;
+  --pb-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --pb-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --pb-mass: 68ch;
+  --pb-breite-schmal: 760px;
+  --pb-tipp: 48px; /* Mindesthoehe jeder Tipp-Flaeche */
+  --pb-foto: 160px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.pb {
+  font-family: var(--pb-font);
+  font-size: var(--pb-fs-base);
+  line-height: 1.65;
+  color: var(--pb-text);
+  background: var(--pb-grund);
+}
+
+/* NAME MIT ABSICHT (wie .bew__inhalt): die Gestaltungs-Pruefliste erkennt einen
+   Textcontainer nur an einem Namen aus _CONTAINER_WOERTER (inhalt/content/...). */
+.pb__inhalt {
+  width: 100%;
+  max-width: var(--pb-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--pb-s2);
+}
+
+.pb section {
+  padding-block: var(--pb-s8);
+}
+@media (min-width: 768px) {
+  .pb section {
+    padding-block: var(--pb-s12);
+  }
+}
+
+.pb h1 {
+  font-size: var(--pb-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--pb-s3);
+  color: var(--pb-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.pb h2 {
+  font-size: var(--pb-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--pb-s2);
+  color: var(--pb-text);
+}
+
+.pb p,
+.pb li {
+  font-size: var(--pb-fs-base);
+  line-height: 1.65;
+  color: var(--pb-text);
+  max-width: var(--pb-mass);
+  margin: 0 0 var(--pb-s2);
+}
+.pb p:last-child {
+  margin-bottom: 0;
+}
+
+.pb a {
+  color: var(--pb-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+.pb a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.pb ol,
+.pb ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pb :focus-visible {
+  outline: 2px solid var(--pb-dunkel);
+  outline-offset: 2px;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.pb__kopf {
+  background: var(--pb-flaeche);
+}
+.pb p.pb__vorspann {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pb-muted);
+  margin-bottom: var(--pb-s2);
+}
+.pb p.pb__lead {
+  font-size: var(--pb-fs-md);
+}
+
+/* ─── Termine ─────────────────────────────────────────────────────────────── */
+.pb__termine {
+  background: var(--pb-grund);
+}
+
+.pb__tage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s3);
+  margin-bottom: var(--pb-s4);
+}
+
+.pb fieldset.pb__tag {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.pb legend.pb__tagname {
+  padding: 0;
+  margin: 0 0 var(--pb-s1);
+  font-size: var(--pb-fs-md);
+  font-weight: 600;
+  color: var(--pb-text);
+}
+
+.pb ul.pb__slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--pb-s1);
+}
+.pb ul.pb__slots li {
+  position: relative; /* Anker des unsichtbaren Radios: es bleibt im Rahmen seiner Flaeche */
+  margin: 0;
+  max-width: none;
+}
+
+/* Das Radio selbst ist unsichtbar, aber erreichbar (Tastatur, Screenreader):
+   die Tipp-Flaeche ist sein Label. Nie display:none — dann faellt es aus der
+   Tab-Reihenfolge und aus der required-Pruefung. */
+.pb .pb__radio {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.pb .pb__slot {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--pb-tipp);
+  padding: var(--pb-s1) var(--pb-s2);
+  border: 1px solid var(--pb-muted);
+  border-radius: var(--pb-r1);
+  background: var(--pb-grund);
+  color: var(--pb-text);
+  cursor: pointer;
+  text-align: center;
+}
+.pb label.pb__slot:hover {
+  border-color: var(--pb-dunkel);
+  box-shadow: var(--pb-shadow-sm);
+}
+.pb .pb__radio:checked + .pb__slot {
+  background: var(--pb-dunkel);
+  border-color: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+.pb .pb__radio:focus-visible + .pb__slot {
+  outline: 2px solid var(--pb-dunkel);
+  outline-offset: 2px;
+}
+.pb .pb__slot--anzeige {
+  cursor: default;
+  border-color: var(--pb-linie);
+  background: var(--pb-flaeche);
+}
+
+.pb .pb__zeit {
+  font-size: var(--pb-fs-md);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.pb .pb__lokal {
+  font-size: var(--pb-fs-xs);
+  line-height: 1.25;
+}
+
+.pb p.pb__klein {
+  color: var(--pb-muted);
+}
+
+.pb p.pb__bald {
+  font-size: var(--pb-fs-lg);
+  font-weight: 600;
+}
+
+/* ─── Formular ────────────────────────────────────────────────────────────── */
+/* Die Angaben erscheinen erst nach der Terminwahl — aber nur, wo der Browser
+   :has() kennt. Ohne :has() bleiben sie sichtbar: lieber ein Formular zu frueh
+   als keines. */
+.pb__felder {
+  position: relative; /* Anker des Honigtopfs */
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s2);
+  padding-top: var(--pb-s4);
+  border-top: 1px solid var(--pb-linie);
+}
+@supports selector(:has(*)) {
+  .pb__form:not(:has(.pb__radio:checked)) .pb__felder {
+    display: none;
+  }
+}
+
+.pb__feld {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s1);
+}
+.pb__feld label {
+  font-weight: 600;
+}
+.pb .pb__frei {
+  font-weight: 400;
+  color: var(--pb-muted);
+}
+.pb__feld input,
+.pb__feld select,
+.pb__feld textarea {
+  width: 100%;
+  min-height: var(--pb-tipp);
+  padding: var(--pb-s1) var(--pb-s2);
+  font-family: var(--pb-font);
+  font-size: var(--pb-fs-base);
+  line-height: 1.5;
+  color: var(--pb-text);
+  background: var(--pb-grund);
+  border: 1px solid var(--pb-muted);
+  border-radius: var(--pb-r1);
+}
+.pb__feld textarea {
+  resize: vertical;
+}
+
+/* Honigtopf: neben dem Bild statt display:none (manche Bots lassen versteckte
+   Felder aus, sehen aber keine Position). */
+.pb .pb__topf {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Der eine Knopf der Seite: Gold als Flaeche, dunkle Schrift, EIN Radius. */
+.pb .pb__knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--pb-tipp);
+  width: 100%;
+  margin-top: var(--pb-s1);
+  padding: var(--pb-s2) var(--pb-s4);
+  border: 0;
+  border-radius: var(--pb-r1);
+  background: var(--pb-akzent);
+  color: var(--pb-text);
+  font-family: var(--pb-font);
+  font-size: var(--pb-fs-base);
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  .pb .pb__knopf {
+    width: auto;
+  }
+}
+.pb .pb__knopf:hover {
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+.pb .pb__knopf:disabled {
+  cursor: progress;
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+
+/* Zweite Handlung (Kalender, Absagen): Umriss in Textfarbe, kein Gold. */
+.pb .pb__knopf-zwei {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--pb-tipp);
+  padding: var(--pb-s1) var(--pb-s3);
+  border: 1px solid var(--pb-dunkel);
+  border-radius: var(--pb-r1);
+  background: var(--pb-grund);
+  color: var(--pb-text);
+  font-family: var(--pb-font);
+  font-size: var(--pb-fs-base);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.pb .pb__knopf-zwei:hover {
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+
+.pb p.pb__hinweis {
+  padding-left: var(--pb-s2);
+  border-left: 3px solid var(--pb-dunkel);
+  font-weight: 600;
+}
+.pb p.pb__hinweis--fehler {
+  border-left-color: var(--pb-fehler);
+  color: var(--pb-fehler);
+}
+
+/* ─── Bestaetigung / Verwalten ────────────────────────────────────────────── */
+.pb dl.pb__daten {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s2);
+  margin: 0 0 var(--pb-s4);
+  padding: var(--pb-s3);
+  background: var(--pb-flaeche);
+  border-radius: var(--pb-r2);
+}
+.pb .pb__daten dt {
+  font-size: var(--pb-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pb-muted);
+}
+.pb .pb__daten dd {
+  margin: 0;
+  font-size: var(--pb-fs-md);
+  overflow-wrap: anywhere;
+}
+.pb .pb__kenncode {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.pb .pb__aktionen {
+  padding-top: var(--pb-s1);
+}
+
+.pb .pb__absagen {
+  margin-top: var(--pb-s6);
+  padding-top: var(--pb-s4);
+  border-top: 1px solid var(--pb-linie);
+}
+.pb .pb__form + .pb__absagen {
+  margin-top: var(--pb-s6);
+}
+
+/* ─── Ablauf / Person ─────────────────────────────────────────────────────── */
+.pb__ablauf {
+  background: var(--pb-flaeche);
+}
+.pb ol.pb__schritte {
+  counter-reset: pb-schritt;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s2);
+}
+.pb ol.pb__schritte li {
+  counter-increment: pb-schritt;
+  position: relative;
+  padding-left: var(--pb-s6);
+  margin: 0;
+}
+.pb ol.pb__schritte li::before {
+  content: counter(pb-schritt);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--pb-s4);
+  height: var(--pb-s4);
+  border-radius: 50%;
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+  font-weight: 600;
+  line-height: var(--pb-s4);
+  text-align: center;
+}
+
+.pb__person {
+  background: var(--pb-grund);
+}
+.pb__wer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s3);
+  margin-bottom: var(--pb-s6);
+}
+@media (min-width: 768px) {
+  .pb__wer {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.pb img.pb__foto {
+  width: var(--pb-foto);
+  height: auto;
+  aspect-ratio: 1200 / 1535;
+  object-fit: cover;
+  border-radius: var(--pb-r2);
+  box-shadow: var(--pb-shadow-md);
+  flex: 0 0 auto;
+}
+.pb ul.pb__liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s1);
+  margin-bottom: var(--pb-s3);
+}
+.pb ul.pb__liste li {
+  position: relative;
+  padding-left: var(--pb-s3);
+  margin: 0;
+}
+.pb ul.pb__liste li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: var(--pb-s1);
+  height: var(--pb-s1);
+  border-radius: 50%;
+  background: var(--pb-muted);
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. Wortgleich zu bewertungen.css. */
+body:has(.pb) {
+  background: var(--pb-grund);
+  --color-accent-primary: var(--pb-akzent);
+  --rd3-gold: var(--pb-akzent);
+  --qb-sterne-gold: var(--pb-akzent);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
+}
+
+body:has(.pb) img,
+body:has(.pb) picture,
+body:has(.pb) video {
+  border-radius: var(--pb-r1);
+}
+
+body:has(.pb) .footer,
+body:has(.pb) footer {
+  background: var(--pb-dunkel);
+  font-family: var(--pb-font);
+}
+body:has(.pb) .footer p,
+body:has(.pb) .footer a,
+body:has(.pb) .footer li,
+body:has(.pb) .footer span {
+  font-size: var(--pb-fs-xs);
+}
+body:has(.pb) .footer .footer-heading {
+  font-size: var(--pb-fs-base);
+}
+body:has(.pb) .footer .btn--primary,
+body:has(.pb) .footer button[type='submit'],
+body:has(.pb) .footer input[type='submit'] {
+  background: var(--pb-akzent);
+  color: var(--pb-text);
+  border-radius: var(--pb-r1);
+  font-size: var(--pb-fs-base);
+}
+body:has(.pb) .footer input[type='email'],
+body:has(.pb) .footer input[type='text'] {
+  border-radius: var(--pb-r1);
+  font-size: var(--pb-fs-base);
+}
+body #_form_15_submit._submit,
+body:has(.pb) ._form_15 button,
+body:has(.pb) ._form_15 ._submit,
+body:has(.pb) ._form_15 input[type='submit'] {
+  background: var(--pb-akzent) !important;
+  color: var(--pb-text) !important;
+  border-radius: var(--pb-r1) !important;
+  font-family: var(--pb-font) !important;
+}
+body:has(.pb) .footer p,
+body:has(.pb) .footer li {
+  color: inherit;
+}
