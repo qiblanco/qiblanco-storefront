@@ -309,7 +309,11 @@ export default function Product() {
       {/* Vertrauensblock direkt nach den Kundenfragen, vor der Tiefe
           (Christian 28.09.2026: "dass es nicht der Abschluss ist, sondern
           direkt nach den Kundenfragen kommt"). Genau einmal auf der Seite. */}
-      <GoogleRezensionenBereich block="zufriedene-kunden" />
+      {/* Messanker ohne Eingriff in den geteilten Baustein: display:contents
+          erzeugt keine eigene Box, das Layout bleibt wie ohne Hülle. */}
+      <div data-qb-block="zufriedene-kunden" style={{display: 'contents'}}>
+        <GoogleRezensionenBereich />
+      </div>
       {/* GitterChip-Molecules-Scrub nach dem Gitterchip-Erklaerblock —
           von Christian 2026-07-17 ausdruecklich fuer die organische PDP
           freigegeben (Job 20260717-gitterchip-animation-3seiten-rollout).

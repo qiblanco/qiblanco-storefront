@@ -294,7 +294,11 @@ export default function Product() {
       {/* Vertrauensblock direkt nach den Kundenfragen, vor der Tiefe
           (Christian 28.09.2026: "dass es nicht der Abschluss ist, sondern
           direkt nach den Kundenfragen kommt"). Genau einmal auf der Seite. */}
-      <GoogleRezensionenBereich block="zufriedene-kunden" />
+      {/* Messanker ohne Eingriff in den geteilten Baustein: display:contents
+          erzeugt keine eigene Box, das Layout bleibt wie ohne Hülle. */}
+      <div data-qb-block="zufriedene-kunden" style={{display: 'contents'}}>
+        <GoogleRezensionenBereich />
+      </div>
       <QiBracelet faqItems={fragen.unten} /> 
     </>
   );

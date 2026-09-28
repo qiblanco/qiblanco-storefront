@@ -314,14 +314,10 @@ export function useSterneSprungDelegation(aufSprung) {
   }, [aufSprung]);
 }
 
-/* block: optionaler Messanker data-qb-block (Job 20260928-update-kaufseiten-
-   vertrauensblock-nach-kundenfragen). Nur die drei Geräte-Kaufseiten setzen
-   ihn ("zufriedene-kunden"); ohne Angabe bleibt das Markup byte-gleich. */
 export function GoogleRezensionenBereich({
   dataSection,
   mitAnker = true,
   onWeiter,
-  block,
 }) {
   /* Sektions-Marker NUR zusammen mit dem Anker: das Fallback-Popup rendert
      denselben Bereich mit mitAnker=false und darf nicht zum eigenen
@@ -332,7 +328,6 @@ export function GoogleRezensionenBereich({
       className="GoogleRezensionenBereich NormalSectionSize"
       {...(mitAnker ? {[REVIEWS_SEKTION_ATTR]: ''} : {})}
       {...(dataSection ? {'data-section': dataSection} : {})}
-      {...(block ? {'data-qb-block': block} : {})}
     >
       <h2 className="GoogleRezensionenBereich-titel">
         Über 14.000 zufriedene Kunden – entscheide dich jetzt!
