@@ -1,9 +1,13 @@
 import {useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {
-  QiBraceletShop,
-  QIBRACELET_PRODUCT_QUERY,
-} from '~/components/product-pages/QiBraceletShop';
+  QiBraceletSeite,
+  qiBraceletSeiteLinks,
+  PRODUCT_QUERY,
+} from '~/components/product-pages/QiBraceletSeite';
+import {QiBraceletHeroBullets} from '~/components/product-pages/QiBraceletHeroBullets';
+import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
+import {BLOCK_LP} from '~/components/reusables/blockLinks';
 
 /*
  * Campaign-PDP /pages/qibracelet — LP-Shopseite des LP-Blocks
@@ -21,6 +25,18 @@ import {
  */
 
 /*
+ * GLEICH DER PRODUKTSEITE BIS AUF DIE BESCHREIBUNG (Christian 28.09.2026):
+ * diese Route rendert QiBraceletSeite.jsx, dieselbe Komponente wie
+ * /products/qibracelet, mit derselben PRODUCT_QUERY (die Kopie in
+ * QiBraceletShop.jsx ist entfallen). Eigen bleiben hier: noindex-Doppelgate
+ * ohne canonical, der harte Handle, die Hero-Punkte als Beschreibung, der
+ * LP-Block und der Marker data-qi-shop="qibracelet-pages".
+ */
+export function links() {
+  return qiBraceletSeiteLinks();
+}
+
+/*
  * noindex, nofollow (D-006): Campaign-Seite gehoert NICHT in den Index.
  * Doppelgate Meta-robots + X-Robots-Tag; BEWUSST KEIN canonical
  * (noindex + fremdes canonical = widerspruechliche Signale).
@@ -35,7 +51,8 @@ export const meta = () => [
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
 /*
- * Loader: QUERY-KOPIE (Drift-Guard-gesichert) mit hartem Handle "qibracelet",
+ * Loader: dieselbe PRODUCT_QUERY wie /products/qibracelet (aus der Seitenkomponente,
+ * seit 28.09.2026 keine Kopie mehr), harter Handle "qibracelet",
  * getSelectedProductOptions(request) (Deep-Links SSR-korrekt), CacheShort().
  * BEWUSST KEIN redirectIfHandleIsLocalized (qione-2-pro-Praezedenz: harter
  * Handle, keine lokalisierten Code-Routen).
@@ -43,29 +60,42 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context, request}) {
-  const {product} = await context.storefront.query(QIBRACELET_PRODUCT_QUERY, {
-    variables: {
-      handle: 'qibracelet',
-      selectedOptions: getSelectedProductOptions(request),
-    },
-    cache: context.storefront.CacheShort(),
-  });
+  const [{product}, vergleichsPreise] = await Promise.all([
+    context.storefront.query(PRODUCT_QUERY, {
+      variables: {
+        handle: 'qibracelet',
+        selectedOptions: getSelectedProductOptions(request),
+      },
+      cache: context.storefront.CacheShort(),
+    }),
+    // Preise der drei Geräte für den Gerätevergleich (seit dem 28.09.2026 auch
+    // hier, dieselbe Seite wie /products). Fail-soft; null = Vergleich aus.
+    ladeVergleichsPreise(context.storefront),
+  ]);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
-  return {product};
+  return {product, ...(vergleichsPreise ? {vergleichsPreise} : {})};
 }
 
 /*
  * KEIN Pixel-Code in dieser Route (0-Pixel-Regel, D-006): ViewContent feuert
- * aus <Analytics.ProductView> in QiBraceletShop (exakt der PDP-Payload);
+ * aus <Analytics.ProductView> in QiBraceletSeite (exakt der PDP-Payload);
  * AddToCart als Cart-Event routen-unabhaengig; R1/R2/R3 im root-Layout.
  */
-export default function QiBraceletShopRoute() {
-  const {product} = useLoaderData();
-  return <QiBraceletShop product={product} />;
+export default function QiBraceletSeiteRoute() {
+  const {product, vergleichsPreise} = useLoaderData();
+  return (
+    <QiBraceletSeite
+      product={product}
+      vergleichsPreise={vergleichsPreise}
+      beschreibung={<QiBraceletHeroBullets />}
+      block={BLOCK_LP}
+      shopMarker="qibracelet-pages"
+    />
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
