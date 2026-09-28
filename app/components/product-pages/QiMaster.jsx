@@ -18,7 +18,6 @@ import {
   QIMASTER_DIAMANT,
   QIMASTER_SECHS_G,
   QIMASTER_PERSOENLICHKEIT,
-  QIMASTER_ZELLWERTE,
 } from '~/data/qi-master-texte';
 
 /*
@@ -67,6 +66,32 @@ import {
  *  - Produktbilder: es gibt noch keine. Die Buy-Box zieht sie aus Shopify,
  *    sobald sie dort liegen — hier wird kein QiOne-Bild als QiMaster gezeigt.
  *
+ *  - CHRISTIAN 2026-09-28 ERSATZLOS GESTRICHEN (verbindliche Christian-
+ *    Entscheidung; sie hebt den AI-CEO-Entscheid vom 2026-09-26 zu review-
+ *    Item homepage-bauer:entscheidung:qimaster-zellwerte-nach-streichung-
+ *    20260917 auf, PR #645). Christian wörtlich:
+ *      „ersatzlos löschen auf Qi Master Seite: Gemessen — Darmepithelzellen
+ *       behielten ihre Barrierefunktion rund zwölfmal besser als ungeschützte
+ *       Zellen (TEER 1.837 gegenüber 152 Ω·cm²). [8] / Menschliche
+ *       Immunzellen behielten ihre Fähigkeit, Sauerstoffradikale zu bilden,
+ *       zu 84,7 statt 60,5 Prozent des Kontrollwerts. [9] / Beide Male lagen
+ *       die Zellen vier Stunden lang auf einem sendenden Smartphone mit
+ *       aktivem WLAN. Geschützt waren sie vom QiOne® 2 Pro, der denselben
+ *       Gitterchip™ trägt wie dein Qi Master®."
+ *      „die Verlinkung ist auch sehr irreführend: ‚Alle Bewertungen lesen'
+ *       bitte ersatzlos löschen"
+ *    Weg ist damit (a) der Block „Gemessen" unter den Studienkacheln samt
+ *    Export QIMASTER_ZELLWERTE in qi-master-texte.js, (b) der Link „Alle
+ *    Bewertungen lesen" im Bewertungsbereich dieser Seite. (b) hängt NICHT
+ *    an dieser Datei, sondern an der Route: products.qi-master.jsx und
+ *    pages.qi-master-vorverkauf.jsx exportieren
+ *    handle.ohneAlleBewertungenLink, AlleBewertungenLink.jsx liest ihn.
+ *    So gilt es auch für das Sterne-Popup im Kopf, und die übrigen
+ *    Produktseiten behalten den Link. Die Quellen [8]/[9] bleiben, der
+ *    6G-Absatz zitiert sie. NICHT WIEDER EINBAUEN — auch nicht als „Beweis
+ *    am Abschluss": zweimal gestrichen (17.09. und 28.09.), zurückholen kann
+ *    das nur Christian. Wächter: test/qi-master-streichungen-christian.test.mjs.
+ *
  * CTA-Ziel: #qm-buybox — die Buy-Box dieser Seite, seit 2026-09-16 wirklich.
  *
  * DIESER SATZ WAR BIS DAHIN FALSCH, UND ZWAR IN BEIDE RICHTUNGEN: er nannte
@@ -112,39 +137,12 @@ export default function QiMaster({block = undefined}) {
           dort gehört er hin. Gemessen:
           pruefungen/probe_publizierte_zellstudien.py, Arm `ueberschrift`
           prüft die Überschrift, ausdrücklich nicht die Seite. */}
-      <StudienCards headline="Publizierte Zellstudien zum Gitterchip™">
-        {/* DIE GEMESSENEN WERTE STEHEN AM ABSCHLUSS, NICHT IM HOOK (AI-CEO-
-            Entscheid 2026-09-26 zu review-Items qimaster-zellwerte-nach-
-            streichung-20260917 und qimaster-isac-nachtrag-20260917, Frage 1;
-            Vollzug Job 20260926-vollzug-ai-ceo-entscheide-shop-prio35-s03).
-
-            Christian hat die Zahlen am 2026-09-17 aus dem Fundament-Absatz
-            (PR #495) und dem 6G-Absatz (PR #489) genommen. Beide Streichungen
-            betrafen Einstiegs- und Deutungstext. Der Haus-Kanon sagt: Beweis
-            ist ein Closer, kein Hook. Deshalb stehen die Werte hier, direkt
-            unter den Studienkacheln, und nirgends sonst auf der Seite.
-
-            WORTLAUT UND ZUORDNUNG SIND NICHT NEU: sie stammen aus dem Stand
-            vor der Streichung (5282c60^, QIMASTER_SECHS_G). [8] ist die
-            Darmepithel-Studie (Applied Cell Biology 9(3), /pages/studie-
-            darmbarriere, TEER), [9] die Immunzell-Studie (Japanese Journal of
-            Medicine 4(1), /pages/studie-immunzellen, 84,7/60,5). Die Marken
-            zeigen auf die Quellenliste im 6G-Abschnitt.
-
-            Optik aus dem Bestand: .qm-sektion__inner (Lesespalte 760 px),
-            .qm-label--beleg (Gold nur auf „Gemessen“). Kein neues CSS.
-            Gemessen: pruefungen/probe_qimaster_zellwerte_im_studienabschnitt.py
-
-            DER WORTLAUT STEHT SEIT 2026-09-27 IN app/data/qi-master-texte.js
-            (QIMASTER_ZELLWERTE), nicht mehr hier: qi-master.de leitet seine
-            Inhalte aus jener Datei ab und bekommt den Block nur so mit. */}
-        <div className="qm-sektion__inner" data-block="qm-zellwerte">
-          <span className="qm-label qm-label--beleg">{QIMASTER_ZELLWERTE.label}</span>
-          {QIMASTER_ZELLWERTE.absaetze.map((abs) => (
-            <p key={abs.slice(0, 40)}>{abs}</p>
-          ))}
-        </div>
-      </StudienCards>
+      {/* Unter den Kacheln stand vom 2026-09-26 bis 2026-09-28 der Block
+          „Gemessen" (data-block="qm-zellwerte"). Christian hat ihn am
+          2026-09-28 ersatzlos gestrichen und damit den AI-CEO-Entscheid vom
+          2026-09-26 aufgehoben. Nicht wieder einbauen, siehe Dateikopf,
+          Absatz „CHRISTIAN 2026-09-28 ERSATZLOS GESTRICHEN". */}
+      <StudienCards headline="Publizierte Zellstudien zum Gitterchip™" />
       {/* DIE FRAGEN STEHEN VOR DEM SCHLUSSAUFRUF, NICHT DAHINTER (Christian
           2026-09-22): bis dahin lag der Fragenblock als letztes Element der
           Seite, also hinter „Werde Teil der Qi Blanco® Revolution!" — gemessen

@@ -1,4 +1,4 @@
-import {Link, useLocation} from 'react-router';
+import {Link, useLocation, useMatches} from 'react-router';
 
 /*
  * „Alle Bewertungen lesen" — der sichtbare Weg von jeder Rezensions-Ansicht
@@ -37,12 +37,28 @@ import {Link, useLocation} from 'react-router';
  * `auto`, `decoration-2` ohne `!` bliebe im Hover wirkungslos (gemessen am
  * Computed Style der Vorschau). `underline-offset-4` gehört nicht zum Kürzel
  * und wirkt ohne `!`.
+ *
+ * SCHALTER JE SEITE (Christian 2026-09-28, Job 20260928-update-qimaster-seite-
+ * streichungen-christian): „die Verlinkung ist auch sehr irreführend: ‚Alle
+ * Bewertungen lesen' bitte ersatzlos löschen" — gemeint ist die Qi-Master-
+ * Seite. Eine Route, die `handle = {[OHNE_ALLE_BEWERTUNGEN_LINK]: true}`
+ * exportiert, bekommt den Link nirgends: weder im Bewertungsbereich der Seite
+ * noch im Sterne-Popup aus dem Kopf. Hausmuster wie `handle.salesbotWidget`
+ * in root.jsx. Heute gesetzt von products.qi-master.jsx und
+ * pages.qi-master-vorverkauf.jsx (Goldkette und Wunschnummer leiten per 301
+ * auf die Kaufseite). Alle anderen Seiten behalten den Link unverändert —
+ * der Baustein selbst ist nicht geändert, nur abschaltbar.
  */
 export const BEWERTUNGEN_PFAD = '/pages/bewertungen';
+export const OHNE_ALLE_BEWERTUNGEN_LINK = 'ohneAlleBewertungenLink';
 
 export function AlleBewertungenLink({onKlick}) {
   const {pathname} = useLocation();
+  const matches = useMatches();
   if (pathname === BEWERTUNGEN_PFAD) return null;
+  if (matches.some((m) => m?.handle?.[OHNE_ALLE_BEWERTUNGEN_LINK] === true)) {
+    return null;
+  }
   return (
     <p className="text-center mt-6 mb-2" data-qb-weg="alle-bewertungen">
       <Link

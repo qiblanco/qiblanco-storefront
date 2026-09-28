@@ -114,6 +114,13 @@ import lpStyles from '~/styles/qi-master-vorverkauf.css?url';
  * Goldton und eine zehnte Schriftgrösse.
  */
 
+/* „Alle Bewertungen lesen" gibt es auf dieser Seite nicht (Christian
+   2026-09-28: „die Verlinkung ist auch sehr irreführend … bitte ersatzlos
+   löschen"). Schalter je Seite, gelesen in AlleBewertungenLink.jsx; gilt für
+   den Bewertungsbereich und für das Sterne-Popup aus dem Kopf. Nicht
+   entfernen — CHRISTIAN 2026-09-28 ERSATZLOS GESTRICHEN. */
+export const handle = {ohneAlleBewertungenLink: true};
+
 export function links() {
   return [
     {rel: 'stylesheet', href: qiMasterStyles},
