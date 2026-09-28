@@ -61,11 +61,13 @@
  *    ersatzlos löschen"
  * Damit ist der Block „Gemessen" (Export QIMASTER_ZELLWERTE, gerendert unter
  * den Studienkacheln in QiMaster.jsx, data-block="qm-zellwerte") samt Export
- * entfallen — nicht umformuliert, nicht verschoben, kein Ersatztext. Der
- * Link „Alle Bewertungen lesen" rendert auf den Qi-Master-Seiten nicht mehr
- * (Schalter je Route: handle.ohneAlleBewertungenLink, gelesen in
- * AlleBewertungenLink.jsx). Die Quellen [8]/[9] bleiben: der 6G-Absatz
- * zitiert sie weiter.
+ * entfallen — nicht umformuliert, nicht verschoben, kein Ersatztext. Den
+ * Link „Alle Bewertungen lesen" hat Christian am selben Abend für ALLE
+ * Seiten gestrichen („Das muss überall entfernt werden und nicht wieder
+ * hingebaut werden", CHRISTIAN 2026-09-28 KEIN WEGLINK, hb-deploy Gate 23
+ * weglink-sperre); das trägt der Auftrag 20260928-update-alle-bewertungen-
+ * lesen-weglink-ueberall-weg-und-sperre, nicht diese Datei. Die Quellen
+ * [8]/[9] bleiben: der 6G-Absatz zitiert sie weiter.
  *
  * DER AI-CEO-ENTSCHEID VOM 2026-09-26 IST AUFGEHOBEN (review-Item
  * homepage-bauer:entscheidung:qimaster-zellwerte-nach-streichung-20260917,

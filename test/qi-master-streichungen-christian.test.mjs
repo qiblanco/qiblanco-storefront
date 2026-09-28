@@ -9,6 +9,9 @@
  *    Male lagen die Zellen vier Stunden lang auf einem sendenden Smartphone …"
  *   „die Verlinkung ist auch sehr irreführend: ‚Alle Bewertungen lesen' bitte
  *    ersatzlos löschen"
+ * Den Link hat Christian am selben Abend für ALLE Seiten gestrichen
+ * (CHRISTIAN 2026-09-28 KEIN WEGLINK); die seitenweite Sperre dafür ist
+ * hb-deploy Gate 23 (bin/weglink-sperre). Hier steht nur der Qi-Master-Teil.
  *
  * WARUM EIN TEST UND NICHT NUR EIN KOMMENTAR: dieselben Werte hat Christian
  * schon am 2026-09-17 gestrichen, und am 2026-09-26 hat ein AI-CEO-Entscheid
@@ -118,29 +121,11 @@ test('Sperre steht im Quelltext-Kopf beider Dateien', () => {
   }
 });
 
-test('„Alle Bewertungen lesen": aus auf den Qi-Master-Routen, an auf allen anderen', () => {
-  const link = ohneKommentare(lies('app/components/reusables/AlleBewertungenLink.jsx'));
-  assert.match(link, /OHNE_ALLE_BEWERTUNGEN_LINK = 'ohneAlleBewertungenLink'/);
-  assert.match(link, /handle\?\.\[OHNE_ALLE_BEWERTUNGEN_LINK\] === true[\s\S]*?return null/,
-    'AlleBewertungenLink wertet den Schalter je Seite nicht aus');
+test('„Alle Bewertungen lesen": QiMaster.jsx rendert den Link nicht selbst', () => {
+  // Seitenweit ist der Link seit CHRISTIAN 2026-09-28 KEIN WEGLINK auf ALLEN
+  // Seiten gestrichen; das trägt hb-deploy Gate 23 (bin/weglink-sperre) über
+  // den ganzen Baum. Dieser Arm hält nur die Qi-Master-Datei selbst fest.
   const qm = ohneKommentare(lies('app/components/product-pages/QiMaster.jsx'));
-  assert.doesNotMatch(qm, /AlleBewertungenLink|Alle Bewertungen lesen/,
-    'QiMaster.jsx rendert den Link direkt');
-
-  const routen = readdirSync(join(WURZEL, 'app/routes'));
-  const mitSchalter = routen.filter((r) =>
-    /export const handle = \{[^}]*ohneAlleBewertungenLink: true/.test(
-      ohneKommentare(lies(join('app/routes', r))),
-    ),
-  );
-  for (const r of ['products.qi-master.jsx', 'pages.qi-master-vorverkauf.jsx']) {
-    assert.ok(mitSchalter.includes(r), `${r}: Schalter ohneAlleBewertungenLink fehlt`);
-  }
-  // Gegenrichtung: der Schalter gilt nur der Qi-Master-Seite, die übrigen
-  // Produktseiten behalten den Link (Auftrag: „Auf den anderen Produktseiten
-  // bleibt er").
-  const fremd = mitSchalter.filter((r) => !/qi-master/.test(r));
-  assert.deepEqual(fremd, [], `Schalter auf Nicht-Qi-Master-Routen: ${fremd.join(', ')}`);
-  const bereich = ohneKommentare(lies('app/components/reusables/GoogleRezensionenBereich.jsx'));
-  assert.match(bereich, /<AlleBewertungenLink\b/, 'Baustein trägt den Link für die übrigen Seiten nicht mehr');
+  assert.doesNotMatch(qm, /AlleBewertungenLink|Alle Bewertungen lesen|\/pages\/bewertungen/,
+    'QiMaster.jsx rendert den Link oder den Weg auf /pages/bewertungen');
 });

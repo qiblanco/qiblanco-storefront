@@ -80,14 +80,13 @@ import {
  *       Gitterchip™ trägt wie dein Qi Master®."
  *      „die Verlinkung ist auch sehr irreführend: ‚Alle Bewertungen lesen'
  *       bitte ersatzlos löschen"
- *    Weg ist damit (a) der Block „Gemessen" unter den Studienkacheln samt
- *    Export QIMASTER_ZELLWERTE in qi-master-texte.js, (b) der Link „Alle
- *    Bewertungen lesen" im Bewertungsbereich dieser Seite. (b) hängt NICHT
- *    an dieser Datei, sondern an der Route: products.qi-master.jsx und
- *    pages.qi-master-vorverkauf.jsx exportieren
- *    handle.ohneAlleBewertungenLink, AlleBewertungenLink.jsx liest ihn.
- *    So gilt es auch für das Sterne-Popup im Kopf, und die übrigen
- *    Produktseiten behalten den Link. Die Quellen [8]/[9] bleiben, der
+ *    Weg ist damit der Block „Gemessen" unter den Studienkacheln samt Export
+ *    QIMASTER_ZELLWERTE in qi-master-texte.js. Den Link „Alle Bewertungen
+ *    lesen" im Bewertungsbereich hat Christian am selben Abend für ALLE
+ *    Seiten gestrichen (CHRISTIAN 2026-09-28 KEIN WEGLINK, hb-deploy Gate 23
+ *    weglink-sperre, Auftrag 20260928-update-alle-bewertungen-lesen-weglink-
+ *    ueberall-weg-und-sperre) — er hängt am geteilten Baustein, nicht an
+ *    dieser Datei. Die Quellen [8]/[9] bleiben, der
  *    6G-Absatz zitiert sie. NICHT WIEDER EINBAUEN — auch nicht als „Beweis
  *    am Abschluss": zweimal gestrichen (17.09. und 28.09.), zurückholen kann
  *    das nur Christian. Wächter: test/qi-master-streichungen-christian.test.mjs.
