@@ -1,7 +1,6 @@
 import {useEffect} from 'react';
 import {createPortal} from 'react-dom';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
-import {AlleBewertungenLink} from '~/components/reusables/AlleBewertungenLink';
 
 /*
  * Google-Rezensionen-Bereich — DIE eine geteilte Sektion "echte Google-
@@ -317,7 +316,6 @@ export function useSterneSprungDelegation(aufSprung) {
 export function GoogleRezensionenBereich({
   dataSection,
   mitAnker = true,
-  onWeiter,
 }) {
   /* Sektions-Marker NUR zusammen mit dem Anker: das Fallback-Popup rendert
      denselben Bereich mit mitAnker=false und darf nicht zum eigenen
@@ -333,12 +331,10 @@ export function GoogleRezensionenBereich({
         Über 14.000 zufriedene Kunden – entscheide dich jetzt!
       </h2>
       <ReputonWidget />
-      {/* Weg zur Bewertungsseite (Segment s02, Begründung am Baustein).
-          Er steht hier und nicht an der Sternezeile oben neben dem Preis:
-          dieser Bereich IST das Ziel jedes Sterne-Klicks (Kopf-Banner und
-          Produkt-Sterne springen hierher, siehe findeRezensionsZiel), und
-          die Kaufbox bleibt frei von einem Weg aus dem Kaufweg heraus. */}
-      <AlleBewertungenLink onKlick={onWeiter} />
+      {/* KEIN WEGLINK (CHRISTIAN 2026-09-28 KEIN WEGLINK): hier stand bis
+          zum 2026-09-28 der Link auf /pages/bewertungen. Er führte aus dem
+          Kaufweg heraus und ist ersatzlos entfernt; der Sterne-Klick zu Google
+          bleibt. Sperre: homepage-bauer/bin/weglink-sperre. */}
     </section>
   );
 }
@@ -388,7 +384,7 @@ export function GoogleRezensionenPopup({offen, onSchliessen}) {
         >
           ×
         </button>
-        <GoogleRezensionenBereich mitAnker={false} onWeiter={onSchliessen} />
+        <GoogleRezensionenBereich mitAnker={false} />
       </div>
     </div>,
     document.body,

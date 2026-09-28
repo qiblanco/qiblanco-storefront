@@ -53,12 +53,14 @@ export function HomepageSections({overrides = {}}) {
           verhalten.db, deshalb unverändert). `.home` ist normaler Blockfluss ohne
           flex/grid, der Wrapper ist damit layoutneutral.
 
-          `mitWeiterweg`: der Link „Alle Bewertungen lesen" auf
-          /pages/bewertungen, im Inhalt statt nur im Fuß — ein Link aus dem
-          Inhalt der Startseite wiegt für Google mehr als jede Fußzeile
-          (Segment s02, 2026-09-25). Kein neuer Abschnitt: die Startseite
-          endet weiter nach dem Produktblock (#391). */}
-      <Bewertungsblock mitWeiterweg />
+          KEIN WEGLINK UNTER DEM BLOCK (CHRISTIAN 2026-09-28 KEIN WEGLINK):
+          der Link auf /pages/bewertungen stand hier seit dem 2026-09-25 und
+          ist ersatzlos entfernt. Christian: „wenn man oben auf die Sterne
+          klickt, kommt man ja direkt auf Google, was sehr viel Authentizität
+          schafft. Dass da noch ein Link ist, der weg von der verkaufsstarken
+          LP oder Shopseite führt, ist verkaufspsychologisch nicht gut." Die
+          Sperre dagegen: homepage-bauer/bin/weglink-sperre (Tor in hb-deploy). */}
+      <Bewertungsblock />
       {/* VORAUSSCHAUENDES LADEN (Job 20260903-BAU-vorausschauendes-laden-...,
           Christian 2026-09-03). Diese drei Testimonials luden bis heute je
           einen ECHTEN YouTube-Player beim Seitenaufbau — gemessen 3 Player und

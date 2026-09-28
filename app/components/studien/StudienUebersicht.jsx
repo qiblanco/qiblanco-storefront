@@ -822,7 +822,7 @@ function StudienKarte({studie}) {
  *
  * ABGRENZUNG (homepage-bauer/konzepte/abgrenzung-flaechen.json, regel_1 bis
  * regel_3): keine einzelne Rezension und kein Video im Wortlaut. Note, Anzahl
- * und die zwei Wege genügen; die Stimmen selbst stehen auf ihren Flächen.
+ * und der Weg zu den Erfahrungen genügen; die Stimmen selbst stehen auf ihren Flächen.
  * Keine Sterne-Auszeichnung (aggregateRating): die Note ist eine Aussage über
  * das Unternehmen und steht als Satz im Text.
  *
@@ -842,13 +842,12 @@ function noteSatz(g, ausgeliefert) {
 
 export const KUNDENSTIMMEN_TITEL = 'Kundenstimmen und Belege';
 
+/* Die Karte „Google-Rezensionen" auf /pages/bewertungen ist ersatzlos
+   entfernt (CHRISTIAN 2026-09-28 KEIN WEGLINK: „Das muss überall entfernt
+   werden und nicht wieder hingebaut werden."). Der Textlink im Abschnitt
+   „Wege" oben bleibt: diese Seite ist eine Hub-Seite, über die
+   /pages/bewertungen ab jetzt gefunden wird. */
 const KUNDENSTIMMEN_WEGE = [
-  {
-    pfad: '/pages/bewertungen',
-    kicker: 'Google-Rezensionen',
-    titel: 'Alle Bewertungen lesen',
-    text: 'Die neuesten Stimmen aus dem Google-Profil, laufend aktualisiert.',
-  },
   {
     pfad: '/pages/erfahrungen',
     kicker: 'Im eigenen Video',
