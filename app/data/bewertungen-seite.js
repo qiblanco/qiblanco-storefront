@@ -64,7 +64,7 @@ export const BEWERTUNGEN_SEITE = {
     ],
     links: [
       {pfad: '/pages/studien', text: 'Die fünf Studien im Original'},
-      {pfad: '/pages/kritik', text: 'Sieben Fragen, gerade beantwortet'},
+      {pfad: '/pages/kritik', text: 'Sieben Fragen zur Kritik'},
       {pfad: '/pages/erfahrungen', text: 'Menschen, die in eigenen Videos erzählen'},
     ],
   },

@@ -103,7 +103,7 @@ export function links() {
  */
 const TITEL = 'Qi Blanco Kritik – Zellversuche: was sie sagen und was nicht';
 const BESCHREIBUNG =
-  'Fünf veröffentlichte Arbeiten, sieben Fragen, gerade beantwortet: was die Zellversuche zeigen, was offen ist – und was du in 20 Tagen selbst prüfen kannst.';
+  'Sieben Fragen zur Kritik, die du dir vielleicht auch stellst. Dazu fünf veröffentlichte Studien mit ihren Zahlen und 20 Tage, in denen du es selbst prüfst.';
 
 /**
  * SCHEMA-DATEN. `datePublished` ist der Tag der Freischaltung dieser Seite,
@@ -113,7 +113,7 @@ const BESCHREIBUNG =
  * DIESER SEITE ÄNDERT, ZIEHT `KRITIK_GEAENDERT` IM SELBEN COMMIT NACH.
  */
 const KRITIK_VEROEFFENTLICHT = '2026-09-11';
-const KRITIK_GEAENDERT = '2026-09-25';
+const KRITIK_GEAENDERT = '2026-09-28';
 
 /**
  * DAS FAQPage-SCHEMA kommt aus app/lib/faq-schema.js (P10: die Fabrik
