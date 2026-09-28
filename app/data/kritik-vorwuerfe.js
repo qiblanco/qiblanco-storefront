@@ -149,7 +149,7 @@ export const FRAGEN = [
     kurz: 'Ja, fünf Mal, veröffentlicht und im Original nachlesbar.',
     ton: 'ja',
     antwort: [
-      'Fünf Arbeiten sind in Fachzeitschriften erschienen, jede mit Datum und Seitenzahl, und vier davon kannst du bei uns im Original als PDF lesen. So siehst du selbst, was drinsteht.',
+      'Fünf Arbeiten sind in Fachzeitschriften erschienen, jede mit Datum und Seitenzahl, und alle fünf kannst du bei uns im Original als PDF lesen. So siehst du selbst, was drinsteht.',
       'Vier der fünf Arbeiten untersuchen Zellkulturen, die fünfte wertet Erfahrungsberichte aus, und eine Studie am Menschen ist nicht darunter. Jede Arbeit nennt ihre Grenzen selbst, und wir führen sie bei jeder Studie Punkt für Punkt mit auf, weil genau dieser Unterschied zählt, wenn du die Ergebnisse einordnen willst.',
     ],
   },
@@ -372,7 +372,7 @@ export const PLUSPUNKTE = [
   },
   {
     titel: 'Fünf veröffentlichte Arbeiten, im Original nachlesbar.',
-    text: 'Jede ist mit Fachzeitschrift, Datum und Seitenzahl erschienen, und vier davon kannst du bei uns als Original-PDF lesen. Dass alle fünf aus demselben Labor stammen, steht gleich mit dabei.',
+    text: 'Jede ist mit Fachzeitschrift, Datum und Seitenzahl erschienen, und alle fünf kannst du bei uns als Original-PDF lesen. Dass alle fünf aus demselben Labor stammen, steht gleich mit dabei.',
     beleg: 'Die fünf Arbeiten mit Methode, Zahlen und PDF.',
     pfad: '/pages/studien',
     link: 'Alle fünf Arbeiten ansehen',

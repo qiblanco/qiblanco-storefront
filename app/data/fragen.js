@@ -431,7 +431,7 @@ export const FRAGEN = [
       "Zu den elektromagnetischen Feldern selbst gibt es sehr viel Forschung, bezahlt von Behörden und internationalen Organisationen. Zu Produkten, die davor schützen sollen, gibt es weltweit nur wenige veröffentlichte Arbeiten, und fünf davon betreffen unsere Produkte.",
       "Durchgeführt hat sie Prof. Dr. Peter C. Dartsch an seinem Institut, in unserem Auftrag. So entsteht Produktforschung in aller Regel: Der Hersteller gibt die Untersuchung in Auftrag und legt sie offen.",
       "Vier der Arbeiten sind Laborversuche an Zellkulturen. Die fünfte wertet 171 öffentlich gepostete Erfahrungen von Anwenderinnen und Anwendern aus.",
-      "Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr, Heft und Seitenzahl, und vier davon kannst du bei uns als Original-PDF lesen."
+      "Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr, Heft und Seitenzahl, und alle fünf kannst du bei uns als Original-PDF lesen."
     ],
     "beleg": [
       "Vier der fünf Arbeiten liegen bei uns als Original-PDF, mit Methode, Fallzahl und dem Rahmen, den die Autoren selbst angeben.",
@@ -506,7 +506,7 @@ export const FRAGEN = [
       "Hinter Qi Blanco steht die Qi Blanco UG (haftungsbeschränkt) mit Sitz in der Brunnrangenstraße 25 in 97711 Maßbach. Eingetragen ist sie beim Amtsgericht Schweinfurt unter HRB 7306, die Umsatzsteuer-Identifikationsnummer lautet DE306530406, und Geschäftsführer ist Dipl.-Ing. Christian Bernd Bauer. Das alles kannst du im Handelsregister nachschlagen, ohne uns zu fragen.",
       "Gegründet haben Qi Blanco Christian und Anna, und die beiden zeigen ihr Gesicht: Jeden Sonntag sind sie bei Coming Home eine Stunde live.",
       "Hinter unserem Schmuck und dem QiHome® Air stehen zehn Jahre Forschung, entwickelt und gefertigt in Deutschland. Das Gehäuse ist aus Chirurgenstahl, der GitterChip™ aus einer eigens entwickelten 750er Goldlegierung, und Oberflächenveredler und Goldschmiede vollenden jedes Stück von Hand.",
-      "Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in fünf Arbeiten untersucht. Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl, und vier davon kannst du bei uns im Original lesen.",
+      "Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in fünf Arbeiten untersucht. Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl, und alle fünf kannst du bei uns im Original lesen.",
       "Viele unserer Kundinnen und Kunden erzählen uns, was sie mit ihrem QiOne® oder ihrem QiHome® Air erleben. Einige berichten darüber unter eigenem Namen auf ihren eigenen Konten, und diese Berichte haben wir bei den Erfahrungen gesammelt. In Deutschland sind inzwischen über 450 QiHome® Air im Einsatz.",
       "Jedes Stück kannst du 20 Tage ab Erhalt tragen und ohne Angabe von Gründen zurückgeben, du bekommst dann den Kaufpreis erstattet. Das ist mehr als das gesetzliche Widerrufsrecht von 14 Tagen, und beide Fristen gelten nebeneinander.",
       "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt."
@@ -579,7 +579,7 @@ export const FRAGEN = [
       "Der empfohlene Referenzwert für das Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand bleiben die meisten Geräte deutlich darunter.",
       "Für hochfrequente Felder gelten die Grenzwerte der 26. Verordnung zum Bundes-Immissionsschutzgesetz, und sie hängen von der Frequenz ab. Bei GSM um 900 Megahertz sind es 41 Volt pro Meter, bei 1800 Megahertz 58 Volt pro Meter und bei 5G um 2000 und um 3600 Megahertz 61 Volt pro Meter.",
       "Dass die Leistungsdichte mit dem Quadrat des Abstands abnimmt, steht in jedem Lehrbuch der Elektrodynamik, weil sich die Leistung über eine Kugelfläche verteilt.",
-      "Die bis zu 160 Meter Radius für das QiHome® Air sind unsere Herstellerangabe."
+      "Die bis zu 160 Meter Radius für das QiHome® Air sind unsere Herstellerangabe. Wir geben die Reichweite immer als Radius an, und die Zahl von 300 Quadratmetern, die früher kursierte, gilt nicht mehr."
     ],
     "offen": [
       "Wie gut ein Aufstellungsort passt, hängt vom Umfeld ab. Halte rund einen halben Meter Abstand zu starken Elektrogeräten wie Mikrowelle, PC oder WLAN-Router.",
