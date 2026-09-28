@@ -825,10 +825,33 @@ html[data-dialog-offen] #qiblanco-salesbot-widget-frame {
  * ein unsichtbares Element darf keinen Klick fangen, auch wenn ein Browser
  * `visibility` am iframe anders auslegt.
  *
- * RUECKWEG: diesen Block loeschen oder <KaufknopfChatSignal /> aus root.jsx
- * nehmen. Kill-Schalter fuer das ganze Widget bleibt
- * PUBLIC_SALESBOT_WIDGET_ORIGIN=off. */
+ * RUECKWEG: diesen Block UND den folgenden loeschen. <KaufknopfChatSignal />
+ * allein aus root.jsx zu nehmen genuegt seit 2026-09-28 nicht mehr: dann
+ * bliebe das Widget am Block darunter dauerhaft unsichtbar. Kill-Schalter
+ * fuer das ganze Widget bleibt PUBLIC_SALESBOT_WIDGET_ORIGIN=off. */
 html[data-chat-deckt-kaufknopf] #qiblanco-salesbot-widget-frame {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ... UND BIS DAS SIGNAL ZUM ERSTEN MAL GEMESSEN HAT.
+ *
+ * Der Loader laeuft als defer-Skript VOR dem React-Entry; das Signal oben
+ * setzt sein Attribut erst im useEffect nach der Hydration. Dazwischen stand
+ * das Widget ungeprueft ueber dem Knopf. Gemessen 2026-09-28 auf
+ * /products/qihome-air, 1024x768, Lage 4 px ueber dem unteren Rand: ohne
+ * Last 0,2 s bis 1,2 s nur 6 von 20 Punkten treffbar, unter Last (Load 40)
+ * bis zu 10 s lang. Genau das hat das Kriterium k48888ce68d nach dem Merge
+ * von #691 wieder rot gemacht (Vollzug ov1f0335e4ad).
+ *
+ * Darum ist das Widget unsichtbar, bis KaufknopfChatSignal einmal gemessen
+ * und `data-chat-signal-bereit` gesetzt hat. Beide Attribute schreibt
+ * derselbe synchrone Schritt, also gibt es kein Bild dazwischen. Der Preis:
+ * der Chat erscheint erst nach der Hydration, ohne Last rund 1 s nach dem
+ * Laden. Annas Einladung wartet ohnehin, solange ihre Ecke verdeckt ist.
+ *
+ * RUECKWEG: diesen Block loeschen; dann gilt wieder der Stand von #691. */
+html:not([data-chat-signal-bereit]) #qiblanco-salesbot-widget-frame {
   visibility: hidden !important;
   pointer-events: none !important;
 }

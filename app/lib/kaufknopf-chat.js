@@ -16,6 +16,13 @@ export const KAUFKNOPF_SELEKTOR = '[data-qb-kaufknopf]';
 /** Das Attribut am <html>, auf das die Unterdrückungs-Regel in app.css hängt. */
 export const UEBERDECKUNG_ATTRIBUT = 'data-chat-deckt-kaufknopf';
 
+/**
+ * Das Attribut am <html>, das die Signal-Komponente nach ihrer ersten
+ * Messung setzt. Bis dahin hält app.css das Widget unsichtbar: der Loader
+ * läuft vor der Hydration, das Signal erst danach.
+ */
+export const BEREIT_ATTRIBUT = 'data-chat-signal-bereit';
+
 /** Die id, die der Loader seinem iframe gibt (wie SalesbotWidget.jsx). */
 export const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
 

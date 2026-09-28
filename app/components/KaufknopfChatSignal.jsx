@@ -1,5 +1,6 @@
 import {useEffect} from 'react';
 import {
+  BEREIT_ATTRIBUT,
   DOCK_KLASSE,
   KAUFKNOPF_SELEKTOR,
   RAHMEN_ID,
@@ -65,8 +66,17 @@ import {
  * solange ihre Ecke verdeckt ist (eckeVerdeckt im Loader trifft dann den
  * Kaufknopf statt des Rahmens) — die Blase läuft nicht ungesehen ab.
  *
- * RÜCKWEG: <KaufknopfChatSignal /> in root.jsx entfernen, oder die Regel
- * in app.css löschen. Ohne das Attribut ist alles wie vor dem Bau.
+ * VOR DER HYDRATION (Nachzug 2026-09-28, Vollzug ov1f0335e4ad): der Loader
+ * läuft als defer-Skript vor dem React-Entry, dieser Effekt erst danach.
+ * Dazwischen stand das Widget ungeprüft über dem Knopf — ohne Last rund
+ * 1 s, unter Last bis zu 10 s (/products/qihome-air, 1024x768). Deshalb
+ * blendet app.css das Widget aus, bis hier `data-chat-signal-bereit` steht.
+ * Das Attribut wird im selben synchronen Schritt wie die erste Messung
+ * gesetzt, also nie vor ihr.
+ *
+ * RÜCKWEG: beide Regeln in app.css löschen (Block „CHAT-WIDGET UEBER DEM
+ * KAUFKNOPF" und der Block danach). <KaufknopfChatSignal /> allein aus
+ * root.jsx zu nehmen genügt NICHT mehr: das Widget bliebe dann unsichtbar.
  */
 
 // Modulweit statt je Effekt: der Rahmen überlebt Client-Navigationen (er hängt
@@ -125,6 +135,10 @@ export function KaufknopfChatSignal() {
     };
 
     schreibe();
+    // Erst jetzt gibt app.css das Widget frei. Beim Abbau bleibt das Attribut
+    // stehen: ohne Signal gilt wieder der Stand vor dem Bau (Widget sichtbar),
+    // nicht ein dauerhaft verschwundener Chat.
+    wurzel.setAttribute(BEREIT_ATTRIBUT, '');
 
     /**
      * Klick in den Chat: das Dokument verliert den Fokus an das iframe.
