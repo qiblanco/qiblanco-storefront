@@ -1,6 +1,5 @@
 import {GoogleReviews} from '~/components/index-components/GoogleReviews';
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
-import {AlleBewertungenLink} from '~/components/reusables/AlleBewertungenLink';
 
 /*
  * Bewertungsblock — DER STANDARD-BAUSTEIN (Christian 2026-09-20: „den 1:1 auf
@@ -53,11 +52,14 @@ import {AlleBewertungenLink} from '~/components/reusables/AlleBewertungenLink';
  * Umbenennung hängt die Historie einer Sektion an einen neuen Namen, deshalb
  * werden sie übergeben und nicht vom Baustein vergeben.
  *
- * `mitWeiterweg` hängt unter die Zusammenfassung den Link „Alle Bewertungen
- * lesen" (AlleBewertungenLink, Segment s02 des Grossjobs 20260925-GROSSJOB-
- * seo-geo-bewertung-und-kritik-...). Default AUS: gesetzt wird er nur auf der
- * Startseite. Die Landingpages führen zum Kauf, nicht auf eine weitere
- * Lesefläche, und die Bewertungsseite verlinkt sich nicht selbst.
+ * KEIN WEGLINK (CHRISTIAN 2026-09-28 KEIN WEGLINK): unter dem Block steht
+ * kein Link auf /pages/bewertungen, auf keiner Seite. Der Schalter
+ * `mitWeiterweg` (2026-09-25) ist entfernt, nicht nur ausgeschaltet. Die
+ * Sterne mit ihrem Klick zu Google bleiben der einzige Weg aus dem Block.
+ * Christian: „Dass da noch ein Link ist, der weg von der verkaufsstarken LP
+ * oder Shopseite führt, ist verkaufspsychologisch nicht gut. Das muss
+ * überall entfernt werden und nicht wieder hingebaut werden." Durchgesetzt
+ * von homepage-bauer/bin/weglink-sperre am Deploy-Chokepoint.
  */
 
 export const BEWERTUNGSBLOCK_UEBERSCHRIFT = 'Alle Google Bewertungen';
@@ -66,7 +68,6 @@ export function Bewertungsblock({
   praefix = '',
   wrapperKlasse = 'qb-bewertungsblock',
   ueberschrift = BEWERTUNGSBLOCK_UEBERSCHRIFT,
-  mitWeiterweg = false,
 }) {
   return (
     <div className={wrapperKlasse}>
@@ -76,7 +77,6 @@ export function Bewertungsblock({
           {ueberschrift}
         </h2>
         <ReputonWidget />
-        {mitWeiterweg ? <AlleBewertungenLink /> : null}
       </div>
     </div>
   );
