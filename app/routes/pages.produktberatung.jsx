@@ -1,3 +1,4 @@
+import {redirect} from 'react-router';
 import {ProduktberatungSeite} from '~/components/campaign/ProduktberatungSeite';
 import produktberatungStyles from '~/styles/produktberatung.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
@@ -94,6 +95,7 @@ export async function loader({request, context}) {
   const url = new URL(request.url);
   const token = (url.searchParams.get('b') || '').trim();
   const vorwahl = (url.searchParams.get('termin') || '').trim();
+  const status = (url.searchParams.get('status') || '').trim();
   const api = basis(context);
   const jetzt = new Date().toISOString();
 
@@ -108,6 +110,8 @@ export async function loader({request, context}) {
         jetzt,
         token,
         vorwahl,
+        status,
+        api,
         buchung: r.body.buchung,
         termine: r.body.termine || [],
         buchungMoeglich: Boolean(r.body.buchung_moeglich),
@@ -118,6 +122,8 @@ export async function loader({request, context}) {
       jetzt,
       token,
       vorwahl,
+      status,
+      api,
       buchung: null,
       verwaltenFehler:
         r.body?.text ||
@@ -136,16 +142,22 @@ export async function loader({request, context}) {
       jetzt,
       token: '',
       vorwahl,
+      status,
+      api,
       buchung: null,
       termine: r.body.termine,
       buchungMoeglich: Boolean(r.body.buchung_moeglich),
       ladeFehler: false,
     };
   }
-  return {jetzt, token: '', vorwahl, buchung: null, termine: [], buchungMoeglich: false, ladeFehler: true};
+  return {jetzt, token: '', vorwahl, status, api, buchung: null, termine: [], buchungMoeglich: false, ladeFehler: true};
 }
 
 const FELDER = ['name', 'email', 'telefon', 'produkt', 'anliegen'];
+
+function verwaltenPfad(token, status) {
+  return `${PFAD}?b=${encodeURIComponent(token)}&status=${status}`;
+}
 
 export async function action({request, context}) {
   const form = await request.formData();
@@ -173,7 +185,10 @@ export async function action({request, context}) {
       quelle: 'seite',
     });
     if (r.status === 200 && r.body?.ok && r.body.buchung) {
-      return {intent, ok: true, buchung: r.body.buchung, token: r.body.t || ''};
+      // POST -> REDIRECT -> GET: die Bestaetigung lebt unter ?b=<token>. Neuladen schickt die Buchung so
+      // nie ein zweites Mal ab (ohne JavaScript), und die Angaben gehen beim Neuladen nicht verloren.
+      if (r.body.t) return redirect(verwaltenPfad(r.body.t, 'gebucht'));
+      return {intent, ok: true, buchung: r.body.buchung, token: ''};
     }
     if (r.status === 200 && r.body?.ok) {
       // Honigtopf: der Endpunkt bucht nicht und sagt nichts. Die Seite auch nicht.
@@ -193,7 +208,9 @@ export async function action({request, context}) {
     if (!slot) return {intent, ok: false, text: 'Wähl bitte zuerst einen neuen Termin.'};
     const r = await post('/api/umbuchen', {t, slot_start: slot});
     if (r.status === 200 && r.body?.ok) {
-      return {intent, ok: true, buchung: r.body.buchung, token: r.body.t || ''};
+      // Das alte Token zeigt danach auf eine stornierte Buchung: weiter auf das NEUE.
+      if (r.body.t) return redirect(verwaltenPfad(r.body.t, 'umgebucht'));
+      return {intent, ok: true, buchung: r.body.buchung, token: ''};
     }
     return {intent, ok: false, text: r.body?.text || NICHT_ERREICHBAR};
   }
