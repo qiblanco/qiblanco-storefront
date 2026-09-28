@@ -129,8 +129,8 @@ function Hinweis({text, art = 'hinweis'}) {
   );
 }
 
-/** Die Terminliste. `waehlbar` = Radio im Formular, sonst reine Anzeige. */
-function Terminliste({termine, waehlbar, gewaehlt, zone, feldname = 'slot_start'}) {
+/** Die Terminliste. `mitRadio` = Radio im Formular, sonst reine Anzeige. */
+function Terminliste({termine, mitRadio, auswahl, zone, feldname = 'slot_start'}) {
   return (
     <div className="pb__tage">
       {nachTag(termine).map((tag) => (
@@ -142,7 +142,7 @@ function Terminliste({termine, waehlbar, gewaehlt, zone, feldname = 'slot_start'
               const id = `pb-slot-${t.utc}`;
               return (
                 <li key={t.slot_start} data-pb-slot={t.slot_start}>
-                  {waehlbar ? (
+                  {mitRadio ? (
                     <>
                       <input
                         className="pb__radio"
@@ -150,7 +150,7 @@ function Terminliste({termine, waehlbar, gewaehlt, zone, feldname = 'slot_start'
                         id={id}
                         name={feldname}
                         value={t.slot_start}
-                        defaultChecked={gewaehlt === t.slot_start}
+                        defaultChecked={auswahl === t.slot_start}
                         required
                       />
                       <label className="pb__slot" htmlFor={id}>
@@ -199,7 +199,7 @@ function Buchen({daten, fehler, zone}) {
   const nav = useNavigation();
   const sendet = nav.state !== 'idle' && nav.formData?.get('intent') === 'buchen';
   const e = fehler?.eingabe || {};
-  const gewaehlt = fehler?.slot || daten.vorwahl || '';
+  const auswahl = fehler?.slot || daten.vorwahl || '';
 
   if (daten.ladeFehler) {
     return (
@@ -234,7 +234,7 @@ function Buchen({daten, fehler, zone}) {
       <section className="pb__termine" data-section="pb-termine" id="termine">
         <div className="pb__inhalt">
           <h2>Die nächsten Termine</h2>
-          <Terminliste termine={daten.termine} waehlbar={false} zone={zone} />
+          <Terminliste termine={daten.termine} mitRadio={false} zone={zone} />
           <p className="pb__bald">Die Buchung öffnet in Kürze.</p>
           <p>Bis dahin erreichst du uns unter service@qiblanco.com.</p>
         </div>
@@ -252,7 +252,7 @@ function Buchen({daten, fehler, zone}) {
               er nach dem Neuladen, kein Radio ist gewählt und :has() blendet die Angaben aus. */}
           <Hinweis art="fehler" text={fehler?.text} />
           <h2>1. Wähl deinen Termin</h2>
-          <Terminliste termine={daten.termine} waehlbar gewaehlt={gewaehlt} zone={zone} />
+          <Terminliste termine={daten.termine} mitRadio auswahl={auswahl} zone={zone} />
 
           <div className="pb__felder">
             <h2>2. Deine Angaben</h2>
@@ -438,7 +438,7 @@ function Verwalten({daten, ergebnis, zone}) {
                 <input type="hidden" name="intent" value="umbuchen" />
                 <input type="hidden" name="t" value={daten.token} />
                 <h2>Umbuchen</h2>
-                <Terminliste termine={andere} waehlbar zone={zone} />
+                <Terminliste termine={andere} mitRadio zone={zone} />
                 <button type="submit" className="pb__knopf" disabled={sendet}>
                   Auf diesen Termin umbuchen
                 </button>
