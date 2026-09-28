@@ -155,6 +155,25 @@
  * nur `inDerReihe: false` — will Christian es zurück, ist es da. Das ist
  * derselbe Weg, auf dem am 2026-09-12 aus 66 Slots 18 Kacheln wurden.
  *
+ * ==================== CHRISTIANS DREI ZUERST (QiBracelet) ====================
+ *
+ * Christian am 2026-09-28, wörtlich, mit drei Bildschirmfotos der Reihe auf
+ * /products/qibracelet: „Reihenfolge der QiBracelet-Instagram-Videos: bitte
+ * diese 3 zuerst stellen, dann die anderen danach".
+ *
+ * Zugeordnet über einen Posterabgleich (dHash) gegen diese Datei, nur über
+ * die sichtbaren Einträge: DE7RtJ6MEIn (unser Konto) → DXxEwcUM2tv
+ * (@naehrstoffwissen) → DZPDuPBu_i- (@desiree_witschel). Danach die übrigen
+ * drei in ihrer bisherigen Reihenfolge.
+ *
+ * DAS IST EINE JÜNGERE WEISUNG ALS „FREMDE KONTEN VORN" (2026-09-11), und sie
+ * sticht für diese eine Seite: an Position 1 steht bewusst unser eigener
+ * Post. Deshalb kein Umschreiben von Datum oder Stufe, sondern das Feld
+ * `vorn` — die Stufe bleibt T3, weil sie eine Messung ist. Die Live-Probe
+ * probe_ig_slideshow_live.py liest dieselbe Marke und verlangt auf einer
+ * Seite mit `vorn: 1` genau diesen Code an Position 1 statt eines fremden
+ * Kontos; ohne Marke gilt dort unverändert die alte Regel.
+ *
  * ==================== DIE EINE GRENZE, DIE BLEIBT ====================
  *
  * KEIN T3-EINTRAG BEKOMMT EINE NAMENSZEILE. Wo keine Person dahintersteht,
@@ -213,9 +232,16 @@
  *               ihrer Stufe. Die Komponente sortiert sie als ERSTE Stufe, vor
  *               (stufe, sprache); fehlt das Feld, ändert sich nichts. Heute
  *               trägt sie genau EIN Eintrag: das Gedicht von @gianky261
- *               (DQCe9F3jP00, QiOne 2 Pro). Sie ist die einzige Ordnungs-
- *               angabe in dieser Datei, die nicht aus einer Messung stammt,
- *               sondern aus einer Weisung — siehe Abschnitt „DAS GEDICHT".
+ *               (DQCe9F3jP00, QiOne 2 Pro). Sie stammt nicht aus einer
+ *               Messung, sondern aus einer Weisung — siehe Abschnitt
+ *               „DAS GEDICHT".
+ *  vorn         1, 2, 3 … = diese Kachel steht an genau dieser Stelle am
+ *               ANFANG der Reihe, vor allen Kacheln ohne das Feld und
+ *               unabhängig von ihrer Stufe. Die Komponente sortiert danach
+ *               als ERSTES, noch vor `ansEnde`; fehlt das Feld, ändert sich
+ *               nichts. Heute tragen es drei QiBracelet-Kacheln — siehe
+ *               Abschnitt „CHRISTIANS DREI ZUERST". Wie `ansEnde` kommt es
+ *               aus einer Weisung, nicht aus einer Messung.
  *  inDerReihe   true = diese Kachel steht auf der Fläche. Die Komponente
  *               rendert FAIL-CLOSED nur `inDerReihe === true`: fehlt das Feld,
  *               steht gar keine Kachel und die Sektion verschwindet — laut.
@@ -318,22 +344,42 @@ export const IG_TESTIMONIALS = [
     videoUrl: null,
   },
   {
-    code: "DVJo5KcDepJ",
+    code: "DE7RtJ6MEIn",
+    produkt: "QiBracelet",
+    stufe: "T3",
+    typ: "reel",
+    konto: "qiblanco",
+    profil: "qiblanco",
+    profilUrl: "https://www.instagram.com/qiblanco/",
+    verifiziert: true,
+    video: true,
+    datum: "2025-01-17",
+    sprache: "beide",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-de7rtj6mein--f8a353b4928e.jpg?v=1789161071",
+    inDerReihe: true,
+    vorn: 1,
+    videoUrl:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-de7rtj6mein--3d4497e9072f.mp4?v=1789239546",
+  },
+  {
+    code: "DXxEwcUM2tv",
     produkt: "QiBracelet",
     stufe: "T1",
     typ: "reel",
-    konto: "gianky261",
-    profil: "gianky261",
-    profilUrl: "https://www.instagram.com/gianky261/",
+    konto: "naehrstoffwissen",
+    profil: "naehrstoffwissen",
+    profilUrl: "https://www.instagram.com/naehrstoffwissen/",
     verifiziert: true,
     video: true,
-    datum: "2026-02-24",
+    datum: "2026-04-30",
     sprache: "de",
     posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dvjo5kcdepj--a3ecd0f1605b.jpg?v=1789161002",
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dxxewcum2tv--be1a963d268d.jpg?v=1789161020",
     inDerReihe: true,
+    vorn: 2,
     videoUrl:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dvjo5kcdepj--2dea72403756.mp4?v=1789239644",
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dxxewcum2tv--04f46161aae4.mp4?v=1789239659",
   },
   {
     code: "DZPDuPBu_i-",
@@ -350,8 +396,27 @@ export const IG_TESTIMONIALS = [
     posterPfad:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzpdupbu-i--dd93ce088f50.jpg?v=1789161030",
     inDerReihe: true,
+    vorn: 3,
     videoUrl:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dzpdupbu-i--f6a865d42fb1.mp4?v=1789239699",
+  },
+  {
+    code: "DVJo5KcDepJ",
+    produkt: "QiBracelet",
+    stufe: "T1",
+    typ: "reel",
+    konto: "gianky261",
+    profil: "gianky261",
+    profilUrl: "https://www.instagram.com/gianky261/",
+    verifiziert: true,
+    video: true,
+    datum: "2026-02-24",
+    sprache: "de",
+    posterPfad:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dvjo5kcdepj--a3ecd0f1605b.jpg?v=1789161002",
+    inDerReihe: true,
+    videoUrl:
+      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dvjo5kcdepj--2dea72403756.mp4?v=1789239644",
   },
   {
     code: "DWRvSt1DfRD",
@@ -372,24 +437,6 @@ export const IG_TESTIMONIALS = [
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dwrvst1dfrd--3905e70616a4.mp4?v=1789239652",
   },
   {
-    code: "DXxEwcUM2tv",
-    produkt: "QiBracelet",
-    stufe: "T1",
-    typ: "reel",
-    konto: "naehrstoffwissen",
-    profil: "naehrstoffwissen",
-    profilUrl: "https://www.instagram.com/naehrstoffwissen/",
-    verifiziert: true,
-    video: true,
-    datum: "2026-04-30",
-    sprache: "de",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dxxewcum2tv--be1a963d268d.jpg?v=1789161020",
-    inDerReihe: true,
-    videoUrl:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-dxxewcum2tv--04f46161aae4.mp4?v=1789239659",
-  },
-  {
     code: "C0cPj-uPKlx",
     produkt: "QiBracelet",
     stufe: "T1",
@@ -406,24 +453,6 @@ export const IG_TESTIMONIALS = [
     inDerReihe: true,
     videoUrl:
       "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-c0cpj-upklx-web--8045aa502c97.mp4?v=1789239302",
-  },
-  {
-    code: "DE7RtJ6MEIn",
-    produkt: "QiBracelet",
-    stufe: "T3",
-    typ: "reel",
-    konto: "qiblanco",
-    profil: "qiblanco",
-    profilUrl: "https://www.instagram.com/qiblanco/",
-    verifiziert: true,
-    video: true,
-    datum: "2025-01-17",
-    sprache: "beide",
-    posterPfad:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-de7rtj6mein--f8a353b4928e.jpg?v=1789161071",
-    inDerReihe: true,
-    videoUrl:
-      "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-ig-testimonials--ig-de7rtj6mein--3d4497e9072f.mp4?v=1789239546",
   },
   {
     code: "DZz7q6JSvfX",
