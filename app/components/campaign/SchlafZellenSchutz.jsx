@@ -58,12 +58,14 @@ const QIONE_ZIEL = produktLink('qione-2-pro', BLOCK_LP, 'kauf');
 const QIONE_CTA = 'Jetzt kaufen';
 
 /*
- * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
- * (Kopfbereich seit 2026-09-19 nach Christians Vorlage; davor „Wirkt auf drei Ebenen").
+ * Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Leistung auf Zellebene"
+ * (seit 2026-09-28, Christian: „tausch den Slogan mal auf der LP aus: ‚Ruhe auf
+ * Zellebene' zu ‚Leistung auf Zellebene'"; vorher „Ruhe auf Zellebene", Kopfbereich
+ * seit 2026-09-19 nach Christians Vorlage; davor „Wirkt auf drei Ebenen").
  *
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept, Kap. 3.3 A):
  * breiter/generischer Erst-Kontakt, Perspektiven-Einstieg fuer die spaetere
- * Rotation. Dramaturgie: Hero (Ruhe auf Zellebene, drei Zustaende) -> DreiThemenBand
+ * Rotation. Dramaturgie: Hero (Leistung auf Zellebene, drei Zustaende) -> DreiThemenBand
  * (Struktur-Anker, aus dem Bestand) -> je Ebene ein Mechanismus-Block
  * (Zelle / Feld / Schlaf) mit Evidenz-Kachel + Anker-Link auf die Themen-LP ->
  * gemeinsamer Wissenschafts-Block -> Social Proof quer -> Garantie -> Pricing ->
@@ -323,8 +325,12 @@ function Hero() {
           <span className="lp-a-hero__eyebrow">
             Tragbares Hightech mit messbaren Effekten auf Zellebene
           </span>
+          {/* Christian, 28.09.2026: „tausch den Slogan mal auf der LP aus:
+              ‚Ruhe auf Zellebene' zu ‚Leistung auf Zellebene'". Nur die H1;
+              Eyebrow, Startseiten-Block und Dreizeiler bleiben. Vorher stand
+              hier „Ruhe auf Zellebene" (seit 19.09.2026). */}
           <h1 id="lp-a-hero-title" className="lp-a-hero__title">
-            Ruhe auf Zellebene
+            Leistung auf Zellebene
           </h1>
           {/* ARM E (Christian, 21.09.2026): „Dafür oben, unterhalb von ‚Ruhe auf
               Zellebene‘, muss 1:1 das kommen, was auf der Frontseite ist:
@@ -342,7 +348,8 @@ function Hero() {
               Zahl im Markup, sonst gäbe es zwei Wahrheiten über dieselbe Note.
 
               Der Block steht ZWISCHEN H1 und Dreizeiler — das ist „unterhalb
-              von ‚Ruhe auf Zellebene‘“ und hält zugleich die Reihenfolge, die
+              von ‚Ruhe auf Zellebene‘“ (die H1 heißt seit dem 28.09.2026
+              „Leistung auf Zellebene“) und hält zugleich die Reihenfolge, die
               probe_video_mobil_nach_innere_ruhe__20260920.py bewacht: das
               360-Grad-Video bleibt direkt hinter „Innere Ruhe.“. */}
           <div className="lp-a-hero__startseiten-block">

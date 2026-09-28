@@ -7,9 +7,11 @@ import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 
 /**
- * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Ruhe auf Zellebene"
- * (Kopfbereich seit 2026-09-19 nach Christians Vorlage, davor „Wirkt auf drei
- * Ebenen"; Wortlaut und Bewachung: components/campaign/SchlafZellenSchutz.jsx).
+ * Ad-Landingpage /pages/schlaf-zellen-schutz — ALLROUNDER, Hero „Leistung auf Zellebene"
+ * (seit 2026-09-28, Christian: „tausch den Slogan mal auf der LP aus: ‚Ruhe auf
+ * Zellebene' zu ‚Leistung auf Zellebene'"; vorher „Ruhe auf Zellebene", Kopfbereich
+ * seit 2026-09-19 nach Christians Vorlage, davor „Wirkt auf drei Ebenen";
+ * Wortlaut und Bewachung: components/campaign/SchlafZellenSchutz.jsx).
  *
  * LP A der 4-LP-A/B/C/D-Struktur (Konzept landingpage-4lp-abcd-konzept): breiter
  * Erst-Kontakt / Perspektiven-Einstieg. Additiv, kein Ad zeigt (noch) darauf.
