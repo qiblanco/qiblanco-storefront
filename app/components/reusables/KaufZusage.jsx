@@ -103,7 +103,7 @@ export function KaufZusagePunkte({ruecknahmeTage = 20, preis = null, handle}) {
             ? `${ruecknahmeTage} Tage zu Hause testen`
             : 'Zu Hause in Ruhe testen'}
         </b>
-        , mit Geld-zurück-Garantie
+        , 100% Geld-zurück-Garantie
       </li>
       {marktLand === 'DE' ? (
         <li data-qb-kaufzusage="raten">
@@ -117,22 +117,32 @@ export function KaufZusagePunkte({ruecknahmeTage = 20, preis = null, handle}) {
           >
             <path fill="currentColor" d={QIMASTER_SYMBOL_PFADE['finanzierung-null']} />
           </svg>
-          {/* „²" verweist auf Fußnote 2 im Fuß jeder Seite (Genehmigung durch
-              den Anbieter, deutscher Wohnsitz), dieselbe Marke wie am
-              Raten-Banner der Kaufseiten. */}
-          <b>{rate ? `In 12 Raten à ${rate}\u00a0€ zahlen` : 'In Raten zahlen'}</b>, mit 0&nbsp;% Finanzierung über PayPal und Klarna²
+          {/* Christians Wortlaut vom 28.09.2026: „mit PayPal und Klarna", ohne
+              das „²". Die Fußnote 2 im Fuß jeder Seite bleibt stehen, das
+              Raten-Banner der Kaufseiten verweist weiter auf sie. */}
+          <b>{rate ? `In 12 Raten à ${rate}\u00a0€ zahlen` : 'In Raten zahlen'}</b>, mit 0&nbsp;% Finanzierung mit PayPal und Klarna
         </li>
       ) : null}
       <li data-qb-kaufzusage="bewertungen">
         <SymbolStimmen />
+        {/* OHNE STÄNDIGE UNTERSTREICHUNG, BEWUSST ENTGEGEN DEM HAUSSTANDARD
+            „Links sichtbar unterstreichen" (#643, 26.09.2026). Christian am
+            28.09.2026 auf /products/qihome-air: „das ‚441 Google-Bewertungen'
+            nicht mehr unterstrichen, aber der Link darf bleiben" und „es darf
+            fett sein … So wie bei der gesetzlichen Gewährleistung … erst wenn
+            man drüber läuft, drüber streicht, wird es unterstrichen." Fett
+            bleibt, die Linie erscheint nur beim Drüberfahren und beim
+            Tastaturfokus, wie am Gewährleistungs-Punkt darunter
+            (eu-gewaehrleistung.css). Keine Wache und kein Aufräumen setzt hier
+            wieder `underline`: das ist Christians Ausnahme, kein Versehen. */}
         <button
           type="button"
           onClick={zuDenBewertungen}
-          className="kaufzusage-bewertungen font-semibold underline underline-offset-4 decoration-1 hover:decoration-2 cursor-pointer"
+          className="kaufzusage-bewertungen font-semibold hover:underline focus-visible:underline cursor-pointer"
         >
-          {anzahl ? `${anzahl} Google-Bewertungen lesen` : 'Google-Bewertungen lesen'}
+          {anzahl ? `${anzahl} Google-Bewertungen` : 'Google-Bewertungen'}
         </button>
-        {`, im Schnitt ${bewertung.komma} von 5`}
+        {`, im Schnitt ${bewertung.komma} von 5 Sterne`}
       </li>
     </>
   );
