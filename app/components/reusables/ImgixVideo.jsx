@@ -25,6 +25,42 @@ import {hatHoerbarenTon} from '~/lib/video-ton';
 
 const SOUND_STORAGE_PREFIX = 'qb-video-sound:';
 
+/*
+ * LADEN ERST IN SICHTWEITE, MIT BEGRENZTEM VORLAUF (Elina EL-20260929-5a09bac3,
+ * imgix-Kontingent: 1 GB Auslieferung = 1 Credit).
+ *
+ * Gemessen am 29.09.2026 (Chromium, 1440x900): `new Hls()` ohne Konfiguration
+ * lud auf /pages/qione-2-pro-details in den ersten 3 Sekunden das GANZE
+ * 54-s-Video, 37,4 MB, in der Stufe 1440x1440 für einen 450 px breiten Spieler.
+ * hls.js übergeht `preload="metadata"` und wählt ohne Deckel auf schneller
+ * Leitung die höchste Stufe.
+ *
+ * - `maxBufferLength` 10 s / `maxMaxBufferLength` 20 s: Vorlauf statt ganzes
+ *   Video. hls.js rechnet den Vorlauf zusätzlich aus `maxBufferSize` hoch
+ *   (8 × Bytes / Bitrate). Mit der Vorgabe 60 MB wären das bei der
+ *   1440er-Stufe wieder 20 s. 8 MB ergeben dort 10 s. Der Rückpuffer bleibt unbegrenzt (hls.js-Vorgabe), damit `loop`
+ *   aus dem Puffer weiterspielt und nichts zweimal geholt wird.
+ * - Die imgix-URL bleibt unverändert: jede neue Parameterkombination löst bei
+ *   imgix eine neue, bezahlte Kodierung aus.
+ *
+ * NOCH NICHT DRIN: `capLevelToPlayerSize` (Stufe nach Spielergröße). Seit dem
+ * 29.09.2026 ist das imgix-Kontingent gekappt. imgix liefert dann nur Segmente,
+ * die schon einmal erzeugt wurden, und antwortet sonst mit HTTP 402
+ * (plan_credits_depleted_payment_required). Die großen Stufen liegen fertig vor,
+ * die kleinen nur lückenhaft: mit dem Deckel blieb das Video nach dem ersten
+ * Segment stehen. Der Deckel folgt, sobald imgix wieder erzeugt (Folgeauftrag
+ * 20260929-imgix-dach-videospieler-stufendeckel-nach-kontingent).
+ */
+const HLS_KONFIG = {
+  maxBufferLength: 10,
+  maxMaxBufferLength: 20,
+  maxBufferSize: 8 * 1000 * 1000,
+};
+
+// Vorlauf vor dem sichtbaren Bereich: knapp ein Handy-Bildschirm, damit das
+// erste Bild beim normalen Scrollen schon da ist.
+const SICHTWEITE = '600px 0px';
+
 function anfangsZustandStumm(videoPath) {
   // SSR/kein sessionStorage -> Default stumm (Policy-konform). Pro
   // videoPath geschluesselt: zwei verschiedene Videos auf einer Seite
@@ -62,18 +98,42 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
     const video = videoRef.current;
     if (!video) return;
 
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(hlsUrl);
-      hls.attachMedia(video);
-      return () => hls.destroy();
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Safari has native HLS support
-      video.src = hlsUrl;
-    } else {
-      // Fallback to mp4
-      video.src = mp4Url;
+    let hls = null;
+    let beobachter = null;
+
+    function laden() {
+      if (Hls.isSupported()) {
+        hls = new Hls(HLS_KONFIG);
+        hls.loadSource(hlsUrl);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari: natives HLS, dieselbe URL, erst in Sichtweite gesetzt.
+        video.src = hlsUrl;
+      } else {
+        // Rückfall mp4
+        video.src = mp4Url;
+      }
     }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      laden();
+    } else {
+      beobachter = new IntersectionObserver(
+        (eintraege) => {
+          if (!eintraege.some((e) => e.isIntersecting)) return;
+          beobachter.disconnect();
+          beobachter = null;
+          laden();
+        },
+        {rootMargin: SICHTWEITE},
+      );
+      beobachter.observe(video);
+    }
+
+    return () => {
+      if (beobachter) beobachter.disconnect();
+      if (hls) hls.destroy();
+    };
   }, [hlsUrl, mp4Url]);
 
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
