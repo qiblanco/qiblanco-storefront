@@ -20,7 +20,7 @@ import {noindexMeta, noindexHeader} from '~/lib/seo';
  *
  * QUELLENZEILEN IN BAUSTEIN 5 (`quelle` am Musterkasten): Person, Titel und
  * Fundstelle stammen aus dem Profiperspektive-Register (autoren-db,
- * `profiperspektive fuer --kanal partnerseite`, Bausteine dartsch-e0004 und
+ * Kanal partnerseite, Bausteine dartsch-e0004 und
  * dartsch-e0001; Großjob growth-m-lp-profi-und-podcast-testimonials, s04).
  * Der Titel ist dort verriegelt (fakten-basis); `profiperspektive titel-drift`
  * prüft diese Datei. Das Materialpaket mit allen freien Bausteinen erzeugt
