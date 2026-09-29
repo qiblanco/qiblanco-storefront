@@ -295,6 +295,11 @@ export const AUSSCHLUSS_SEGMENTE = [
   //   /pages/neu-oder-gebraucht       beide Fristen mit Quelle, indexiert
   '/pages/das-20-tage-versprechen',
   '/pages/neu-oder-gebraucht',
+  // DIE BUCHUNGSSEITE DER PRODUKTBERATUNG (Grossjob 20260928-GROSSJOB-
+  // produktberatung-live-mit-christian-buchen, s02). Wer über eine Anzeige
+  // hierher kommt, will einen Termin mit Christian, kein Kaufversprechen.
+  // Additiv, reversibel: eine Zeile löschen.
+  '/pages/produktberatung',
   '/go',
   '/collect',
   '/b',
