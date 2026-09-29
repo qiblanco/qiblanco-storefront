@@ -712,6 +712,12 @@ export default async function handleRequest(
       'https://*.clarity.ms',
       'https://c.bing.com',
       'https://bat.bing.com',
+      // Bing UET, STELLE 2 VON 2 zu connect-src oben. Dort steht
+      // bat.bing.net seit s03 als Geschwisterhost derselben bat.js-Kette aus
+      // dem eigenen GTM; img-src führte bisher nur bat.bing.com. Gemessen
+      // 2026-09-27 auf /pages/kritik, 4 Meldungen in einer Sekunde (ein
+      // Besuch). Exakter Host, weil bei Bing die Hausform exakt ist.
+      'https://bat.bing.net',
       // Belegte Tracking-Urspruenge (2026-09-18, s03) — Herleitung, Messung
       // und die Wildcard-Entscheidung stehen einmal bei connect-src oben.
       // Hier stehen nur die Ursprünge, die als img-src gemeldet wurden.
