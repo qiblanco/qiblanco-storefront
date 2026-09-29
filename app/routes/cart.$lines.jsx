@@ -7,6 +7,7 @@ import {
 } from '~/lib/cart-attribution.server';
 import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
+import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -41,7 +42,7 @@ export async function loader({request, context, params}) {
   // Loaders als Seite und verwirft ihren Rumpf (lokal gemessen: leere Seite).
   if (istFremderRahmen(request)) return null;
 
-  const {cart, env} = context;
+  const {cart, env, storefront} = context;
   const {lines} = params;
   if (!lines) return redirect('/cart');
   const linesMap = lines.split(',').map((line) => {
@@ -82,9 +83,20 @@ export async function loader({request, context, params}) {
   // Qi-Master-Add-ons hängen am Qi Master — auch über den Permalink: ein
   // /cart/<Wunschnummer>:2 ohne Qi Master führte bis 2026-09-25 direkt zur
   // Kasse (Job 20260925-qm-addon-bindung-greift-nur-bei-attribut).
-  const result = angelegt?.errors?.length
+  const gebunden = angelegt?.errors?.length
     ? angelegt
     : await bindeQiMasterAddons({cart, action: 'LinesAdd', result: angelegt});
+  // Partner-Permalink mit 2/3 Packungen einer Kakao-Sorte: Set-Zeile, damit
+  // der ?discount=-Code neben dem Staffelpreis greift (kakao-set-zeile.server.js).
+  const result = gebunden?.errors?.length
+    ? gebunden
+    : await legeKakaoSetZeile({
+        cart,
+        storefront,
+        env,
+        action: 'LinesAdd',
+        result: gebunden,
+      });
 
   const cartResult = result.cart;
 

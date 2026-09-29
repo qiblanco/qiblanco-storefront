@@ -8,6 +8,10 @@ import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import cartSeiteStyles from '~/styles/cart-seite.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
+import {
+  kakaoPackungenEingabe,
+  legeKakaoSetZeile,
+} from '~/lib/kakao-set-zeile.server';
 import {noindexMeta} from '~/lib/seo';
 
 /**
@@ -67,7 +71,7 @@ export const headers = ({actionHeaders}) => actionHeaders;
  * @param {ActionFunctionArgs}
  */
 export async function action({request, context}) {
-  const {cart, env} = context;
+  const {cart, env, storefront} = context;
 
   const formData = await request.formData();
 
@@ -95,7 +99,10 @@ export async function action({request, context}) {
       break;
     }
     case CartForm.ACTIONS.LinesUpdate:
-      result = await cart.updateLines(inputs.lines);
+      // Der Stepper einer Kakao-Set-Zeile zaehlt Packungen (kakao-set-zeile.server.js).
+      result = await cart.updateLines(
+        await kakaoPackungenEingabe({storefront, inputs}),
+      );
       break;
     case CartForm.ACTIONS.LinesRemove:
       result = await cart.removeLines(inputs.lineIds);
@@ -139,6 +146,11 @@ export async function action({request, context}) {
   // Liest nach jeder Zeilen-Aktion nach (eine Cart-Query) und erkennt Add-ons
   // am Produkt, nie am Zeilen-Merkmal des Clients.
   result = await bindeQiMasterAddons({cart, action, result});
+
+  // 2 oder 3 Packungen einer Kakao-Sorte liegen als Set-Zeile im Warenkorb,
+  // damit ein Partnercode neben dem Staffelpreis greift (Grossjob 20260929
+  // partnercodes x Sets, s03). Liest nach jeder Zeilen-Aktion nach.
+  result = await legeKakaoSetZeile({cart, storefront, env, action, result});
 
   result = await persistAttributionOnCartResult({cart, request, env, result});
 

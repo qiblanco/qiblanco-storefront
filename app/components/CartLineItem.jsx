@@ -7,6 +7,7 @@ import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
 import {warenkorbTitel} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonArt} from '~/lib/qi-master-addons';
+import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -92,8 +93,21 @@ export function CartLineItem({layout, line}) {
 function CartLineQuantity({line}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
-  const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
-  const nextQuantity = Number((quantity + 1).toFixed(0));
+  // Eine Kakao-Set-Zeile (Menge 1) traegt 2 oder 3 Packungen. Der Stepper
+  // zeigt und zaehlt dort PACKUNGEN; der Server legt die Zeile danach selbst
+  // wieder auf Set oder Einzelpackung (lib/kakao-set-zeile.server.js).
+  const handle = line.merchandise?.product?.handle;
+  const set = kakaoSetArt(handle);
+  const menge = set ? set.packungen * quantity : quantity;
+  const prevQuantity = Number(Math.max(0, menge - 1).toFixed(0));
+  const nextQuantity = Number((menge + 1).toFixed(0));
+  const eingabe = (neu) =>
+    set
+      ? {
+          lines: [{id: lineId, quantity}],
+          kakaoPackungen: {lineId, handle, packungen: neu},
+        }
+      : {lines: [{id: lineId, quantity: neu}]};
   // Eine Wunschnummer gibt es genau einmal: die Warenkorb-Action setzt jede
   // höhere Menge auf 1 zurück (lib/qi-master-addons.server.js). Ein aktiver
   // Plus-Knopf wäre ein Knopf, der nichts tut.
@@ -103,18 +117,18 @@ function CartLineQuantity({line}) {
   return (
     <div className="cart-line-quantity">
       <div className="quantity-wrapper">
-      <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
+      <CartLineUpdateButton {...eingabe(prevQuantity)}>
         <button
           aria-label="Menge verringern"
-          disabled={quantity <= 1 || !!isOptimistic}
+          disabled={menge <= 1 || !!isOptimistic}
           name="decrease-quantity"
           value={prevQuantity}
           >
           <span>&#8722; </span>
         </button>
       </CartLineUpdateButton>
-      <small>{quantity}</small>
-      <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
+      <small>{menge}</small>
+      <CartLineUpdateButton {...eingabe(nextQuantity)}>
         <button
           aria-label="Menge erhöhen"
           name="increase-quantity"
@@ -160,7 +174,7 @@ function CartLineRemoveButton({lineIds, disabled}) {
  *   lines: CartLineUpdateInput[];
  * }}
  */
-function CartLineUpdateButton({children, lines}) {
+function CartLineUpdateButton({children, lines, kakaoPackungen}) {
   const lineIds = lines.map((line) => line.id);
 
   return (
@@ -168,7 +182,7 @@ function CartLineUpdateButton({children, lines}) {
       fetcherKey={getUpdateKey(lineIds)}
       route="/cart"
       action={CartForm.ACTIONS.LinesUpdate}
-      inputs={{lines}}
+      inputs={kakaoPackungen ? {lines, kakaoPackungen} : {lines}}
     >
       {children}
     </CartForm>
