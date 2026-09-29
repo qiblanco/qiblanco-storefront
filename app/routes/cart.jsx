@@ -148,7 +148,7 @@ export async function action({request, context}) {
   result = await bindeQiMasterAddons({cart, action, result});
 
   // 2 oder 3 Packungen einer Kakao-Sorte liegen als Set-Zeile im Warenkorb,
-  // damit ein Partnercode neben dem Staffelpreis greift (Grossjob 20260929
+  // damit ein Partnercode neben dem Staffelpreis greift (Großjob 20260929
   // partnercodes x Sets, s03). Liest nach jeder Zeilen-Aktion nach.
   result = await legeKakaoSetZeile({cart, storefront, env, action, result});
 
