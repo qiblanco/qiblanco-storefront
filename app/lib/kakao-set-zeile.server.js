@@ -215,9 +215,9 @@ export async function legeKakaoSetZeile({cart, storefront, env, action, result})
 }
 
 /**
- * Der Stepper einer Set-Zeile zaehlt PACKUNGEN, nicht Sets: "+" auf dem
- * 3er-Set heisst 4 Packungen, nicht zwei 3er-Sets (das waeren 6 und teurer
- * als die Automatik ab 4x). CartLineItem schickt dafuer `kakaoPackungen`
+ * Der Stepper einer Set-Zeile rechnet in PACKUNGEN, nicht in Sets: "+" auf
+ * dem 3er-Set bedeutet 4 Packungen, nicht zwei 3er-Sets (sonst 6 Packungen,
+ * teurer als die Automatik ab 4x). CartLineItem schickt deshalb `kakaoPackungen`
  * {lineId, handle, packungen}; hier wird daraus die Einzelpackung der Sorte
  * mit dieser Menge, und legeKakaoSetZeile() stellt danach die Normalform her.
  * Ohne aufloesbare Einzelpackung bleiben die Zeilen, wie der Client sie

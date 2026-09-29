@@ -99,7 +99,7 @@ export async function action({request, context}) {
       break;
     }
     case CartForm.ACTIONS.LinesUpdate:
-      // Der Stepper einer Kakao-Set-Zeile zaehlt Packungen (kakao-set-zeile.server.js).
+      // Stepper einer Kakao-Set-Zeile: Menge in Packungen (kakao-set-zeile.server.js).
       result = await cart.updateLines(
         await kakaoPackungenEingabe({storefront, inputs}),
       );
