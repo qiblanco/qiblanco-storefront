@@ -5874,6 +5874,14 @@ ul.kakao-children li {
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding: 4px 4px 14px;
+  /* Gleich der linken Innenpolsterung. Ohne sie liegt die Snap-Position der
+     ersten Kachel (scroll-snap-align: start) bei scrollLeft 4 statt 0, und
+     der Browser korrigiert das beim ersten Layout mit einem scroll-Ereignis
+     -- live gemessen 2026-09-29 auf /products/qione-2-pro und
+     /products/qibracelet in 6 von 6 Laeufen, einmal VOR dem ersten
+     LCP-Kandidaten. Gleiche Wurzel und gleicher Fix wie .qb-igt__bahn
+     (ig-testimonials.css). Probe: homepage-bauer/pruefungen/probe_lcp_meldet.py */
+  scroll-padding-inline-start: 4px;
   /* Die native Leiste stand hier neben zwei eigenen Pfeilen und dem
      Wischhinweis — drei Bedienelemente auf einer Bahn. Sie wird jetzt
      von .qb-wischbahn versteckt (im JSX gesetzt), damit das Verstecken
