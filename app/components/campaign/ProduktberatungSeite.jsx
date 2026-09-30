@@ -425,7 +425,7 @@ function Verwalten({daten, ergebnis, zone}) {
         <h2>{titel}</h2>
         {neu ? (
           <p>
-            Heb dir diese Seite auf, die Bestätigung kommt zusätzlich per Mail. Über diese Seite kannst du auch
+            Heb dir diese Seite auf. Hier findest du jederzeit Zoom-Link und Kenncode, und hier kannst du
             absagen oder umbuchen.
           </p>
         ) : null}
@@ -470,7 +470,7 @@ function Ablauf() {
             <strong>Termin wählen.</strong> Name und E-Mail genügen.
           </li>
           <li>
-            <strong>Zoom-Link bekommen.</strong> Du siehst ihn sofort hier, dazu kommt eine Mail.
+            <strong>Zoom-Link bekommen.</strong> Du siehst ihn direkt nach der Buchung, samt Kalenderdatei.
           </li>
           <li>
             <strong>Zur Zeit auf den Link tippen.</strong> Die Kamera ist freiwillig, ein Handy reicht.
