@@ -1,14 +1,22 @@
 import {useEffect, useState} from 'react';
 import {Form, Link, useActionData, useLoaderData, useNavigation} from 'react-router';
+import {useGoogleRating} from '~/lib/googleRating';
+import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
 
 /**
  * /pages/produktberatung — Darstellung (Route: app/routes/pages.produktberatung.jsx).
  *
  * Grossjob 20260928-GROSSJOB-produktberatung-live-mit-christian-buchen, s02.
- * Aufbau nach KONZEPT.md Abschnitt 5, mobil zuerst:
- *   Kopf -> Termine + Formular -> Ablauf -> Wer spricht mit dir -> Was du klärst.
- * Die Termine stehen direkt unter der Überschrift: wer die Seite öffnet, will
- * einen Termin, keinen Text davor.
+ * Aufbau (Umbau 20261001-bau-beratungsseite-gestaltung-und-text-in-christians-stimme,
+ * Christian 01.10.2026: „noch etwas schöner", „der Text ist super schwach",
+ * „dieser Bereich muss oberhalb von ‚Wähl deinen Termin' stehen"), mobil zuerst:
+ *   Kopf mit Christian (Bild + seine Worte) -> Termine als Tageskarten +
+ *   Formular -> Ablauf in drei Schritten (mit Warteraum) -> Was wir klären +
+ *   Für wen -> Kundenstimmen (wörtlich, Google) -> Schluss mit Weg zurück zu
+ *   den Terminen.
+ * ANNA WIRD NICHT GENANNT (Christian): es ist sein Gespräch, und Kunden würden
+ * sie mit der AI Anna aus dem Chat verwechseln. Das gilt auch für die
+ * Kundenstimmen: eine Rezension, die Anna nennt, wird nie gezeigt (Filter unten).
  *
  * ZWEI ANSICHTEN, EINE SEITE:
  *   Buchen      (ohne ?b=)       Termine als große Tipp-Flächen (Radio im
@@ -23,7 +31,7 @@ import {Form, Link, useActionData, useLoaderData, useNavigation} from 'react-rou
  * BUCHUNG ZU (Zoom fehlt oder Schalter aus): Termine bleiben sichtbar, das
  * Formular weicht dem Satz „Die Buchung öffnet in Kürze." Kein toter Knopf.
  *
- * ZEITEN: angezeigt wird deutsche Zeit aus den Feldern `datum`/`zeit` des
+ * ZEITEN: angezeigt wird die Zeitzone Berlin aus den Feldern `datum`/`zeit` des
  * Endpunkts, ohne Intl auf dem Server (zwei Uhren = Hydrierungsfehler). Die
  * Zeit der Kundin ergänzt erst der Browser nach dem Laden, und nur, wenn ihre
  * Zeitzone abweicht.
@@ -63,7 +71,7 @@ function tagName(datum, mitJahr = false) {
   return `${wt}, ${t}. ${MONATE[m - 1]}${mitJahr ? ` ${j}` : ''}`;
 }
 
-/** '2026-10-01T19:00:00+02:00' -> {datum:'2026-10-01', zeit:'19:00'} (die Endpunkt-Zeit ist deutsche Zeit). */
+/** '2026-10-01T19:00:00+02:00' -> {datum:'2026-10-01', zeit:'19:00'} (die Endpunkt-Zeit ist Zeitzone Berlin). */
 function teile(slotStart) {
   const s = String(slotStart || '');
   return {datum: s.slice(0, 10), zeit: s.slice(11, 16)};
@@ -106,15 +114,64 @@ function lokaleZeit(utc, zone) {
   }
 }
 
-function Kopf() {
+/**
+ * Kopf: Überschrift, dann Christian selbst (Bild + seine Worte), dann der Weg zu
+ * den Terminen. Christian 01.10.: der Bereich mit ihm steht ÜBER „Wähl deinen
+ * Termin". Kein „Ich bin … und habe … gegründet": die Seite fängt bei der
+ * Frage des Besuchers an, nicht bei uns.
+ */
+function Kopf({mitWeg}) {
+  const g = useGoogleRating();
   return (
     <section className="pb__kopf" data-section="pb-kopf">
-      <div className="pb__inhalt">
-        <p className="pb__vorspann">Kostenlos · live per Zoom · Kamera freiwillig</p>
-        <h1>Produktberatung: 20 Minuten mit Christian</h1>
-        <p className="pb__lead">
-          Du hast eine Frage zu unseren Produkten? Stell sie mir direkt, live per Zoom.
-        </p>
+      <div className="pb__inhalt pb__inhalt--breit">
+        <div className="pb__kopf-text">
+          <p className="pb__vorspann">Kostenlos · live per Zoom</p>
+          <h1>Produktberatung: 20 Minuten mit Christian</h1>
+          <p className="pb__lead">
+            Du überlegst, welches Gerät zu dir passt? Frag mich direkt. Ich nehme mir 20 Minuten Zeit
+            für dich, und du musst danach nichts kaufen.
+          </p>
+          <p className="pb__vertrauen">
+            <a href={g.url} target="_blank" rel="noopener noreferrer" className="pb__sterne-link">
+              <span className="pb__sterne" aria-hidden="true">
+                ★★★★★
+              </span>{' '}
+              {g.komma} von 5 bei Google
+            </a>
+            <span>über 14.000 zufriedene Anwender</span>
+          </p>
+          {mitWeg ? (
+            <p className="pb__weg">
+              {/* Der sichtbare Einstieg in die Buchung (design-qa Q2): der Buchen-Knopf selbst
+                  erscheint erst nach der Terminwahl. */}
+              <a href="#termine" className="pb__knopf-zwei" data-qa="cta">
+                Zu den Terminen
+              </a>
+            </p>
+          ) : null}
+        </div>
+        <figure className="pb__christian" data-section="pb-person">
+          <img
+            className="pb__foto"
+            src={`${FOTO}&width=480`}
+            srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w`}
+            sizes="(min-width: 960px) 280px, 120px"
+            width="280"
+            height="358"
+            fetchpriority="high"
+            decoding="async"
+            alt="Christian Bauer, Gründer von Qi Blanco"
+          />
+          <figcaption className="pb__christian-text">
+            <p>
+              Seit mehr als zehn Jahren arbeite ich an Qi Blanco. Du erzählst mir, was dich beschäftigt:
+              dein Schlaf, dein Alltag, das Handy am Bett. Ich sage dir, welches Gerät dazu passt und wie du
+              es trägst.
+            </p>
+            <p className="pb__unterschrift">Christian Bauer, Gründer von Qi Blanco®</p>
+          </figcaption>
+        </figure>
       </div>
     </section>
   );
@@ -136,6 +193,9 @@ function Terminliste({termine, mitRadio, auswahl, zone, feldname = 'slot_start'}
       {nachTag(termine).map((tag) => (
         <fieldset className="pb__tag" key={tag.datum}>
           <legend className="pb__tagname">{tagName(tag.datum)}</legend>
+          <p className="pb__tagzahl">
+            {tag.termine.length === 1 ? 'ein Termin frei' : `${tag.termine.length} Termine frei`}
+          </p>
           <ul className="pb__slots">
             {tag.termine.map((t) => {
               const lokal = lokaleZeit(t.utc, zone);
@@ -170,7 +230,7 @@ function Terminliste({termine, mitRadio, auswahl, zone, feldname = 'slot_start'}
           </ul>
         </fieldset>
       ))}
-      <p className="pb__klein">Alle Zeiten in deutscher Zeit. Ein Gespräch dauert 20 Minuten.</p>
+      <p className="pb__klein">Alle Uhrzeiten gelten für die Zeitzone Berlin. Ein Gespräch dauert 20 Minuten.</p>
     </div>
   );
 }
@@ -204,7 +264,7 @@ function Buchen({daten, fehler, zone}) {
   if (daten.ladeFehler) {
     return (
       <section className="pb__termine" data-section="pb-termine" id="termine">
-        <div className="pb__inhalt">
+        <div className="pb__inhalt pb__inhalt--breit">
           <h2>Termine</h2>
           <Hinweis
             art="fehler"
@@ -218,7 +278,7 @@ function Buchen({daten, fehler, zone}) {
   if (!daten.termine.length) {
     return (
       <section className="pb__termine" data-section="pb-termine" id="termine">
-        <div className="pb__inhalt">
+        <div className="pb__inhalt pb__inhalt--breit">
           <h2>Termine</h2>
           <p>
             Gerade sind alle Termine vergeben, neue kommen jede Woche dazu. Schreib uns gern an
@@ -232,8 +292,9 @@ function Buchen({daten, fehler, zone}) {
   if (!daten.buchungMoeglich) {
     return (
       <section className="pb__termine" data-section="pb-termine" id="termine">
-        <div className="pb__inhalt">
+        <div className="pb__inhalt pb__inhalt--breit">
           <h2>Die nächsten Termine</h2>
+          <p className="pb__unterzeile">Donnerstags, je 20 Minuten, live per Zoom.</p>
           <Terminliste termine={daten.termine} mitRadio={false} zone={zone} />
           <p className="pb__bald">Die Buchung öffnet in Kürze.</p>
           <p>Bis dahin erreichst du uns unter service@qiblanco.com.</p>
@@ -244,18 +305,19 @@ function Buchen({daten, fehler, zone}) {
 
   return (
     <section className="pb__termine" data-section="pb-termine" id="termine">
-      <div className="pb__inhalt">
+      <div className="pb__inhalt pb__inhalt--breit">
         <Form method="post" className="pb__form" preventScrollReset>
           <input type="hidden" name="intent" value="buchen" />
           <input type="hidden" name="tz" value={zone} />
           {/* Der Fehlersatz steht ÜBER der Terminliste: ist der gewählte Termin inzwischen vergeben, fehlt
               er nach dem Neuladen, kein Radio ist gewählt und :has() blendet die Angaben aus. */}
           <Hinweis art="fehler" text={fehler?.text} />
-          <h2>1. Wähl deinen Termin</h2>
+          <h2>Wähl deinen Termin</h2>
+          <p className="pb__unterzeile">Donnerstags, je 20 Minuten, live per Zoom.</p>
           <Terminliste termine={daten.termine} mitRadio auswahl={auswahl} zone={zone} />
 
           <div className="pb__felder">
-            <h2>2. Deine Angaben</h2>
+            <h2>Deine Angaben</h2>
             <Feld name="name" label="Name" pflicht auto="name" wert={e.name} />
             <Feld name="email" label="E-Mail" typ="email" pflicht auto="email" wert={e.email} />
             <Feld name="telefon" label="Telefon" typ="tel" auto="tel" wert={e.telefon} />
@@ -284,7 +346,7 @@ function Buchen({daten, fehler, zone}) {
               <label htmlFor="pb-website">Website</label>
               <input id="pb-website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
             </div>
-            <button type="submit" className="pb__knopf" disabled={sendet}>
+            <button type="submit" className="pb__knopf" disabled={sendet} data-qa="cta">
               {sendet ? 'Einen Moment …' : 'Termin verbindlich buchen'}
             </button>
             <p className="pb__klein">
@@ -311,7 +373,7 @@ function Termindaten({buchung, token, zone, api}) {
       <div>
         <dt>Termin</dt>
         <dd>
-          {tagName(datum, true)}, {zeit} Uhr (deutsche Zeit)
+          {tagName(datum, true)}, {zeit} Uhr (Zeitzone Berlin)
           {lokal ? <span className="pb__lokal"> · bei dir {lokal}</span> : null}
         </dd>
       </div>
@@ -460,10 +522,11 @@ function Verwalten({daten, ergebnis, zone}) {
   );
 }
 
+/** Drei Schritte. Der dritte sagt, was im Zoom passiert (Warteraum ist an, Christian 01.10.). */
 function Ablauf() {
   return (
     <section className="pb__ablauf" data-section="pb-ablauf">
-      <div className="pb__inhalt">
+      <div className="pb__inhalt pb__inhalt--breit">
         <h2>So läuft es ab</h2>
         <ol className="pb__schritte">
           <li>
@@ -473,7 +536,8 @@ function Ablauf() {
             <strong>Zoom-Link bekommen.</strong> Du siehst ihn direkt nach der Buchung, samt Kalenderdatei.
           </li>
           <li>
-            <strong>Zur Zeit auf den Link tippen.</strong> Die Kamera ist freiwillig, ein Handy reicht.
+            <strong>Zur Zeit auf den Link tippen.</strong> Du kommst zuerst in den Warteraum, Christian lässt
+            dich zu deinem Termin herein. Die Kamera ist freiwillig, ein Handy reicht.
           </li>
         </ol>
       </div>
@@ -481,35 +545,96 @@ function Ablauf() {
   );
 }
 
-function WerSpricht() {
+/**
+ * Was im Gespräch geklärt wird und für wen es ist. Christian: „welches Gerät
+ * passt, Anwendung, Erfahrungen". Kein Satz über Studienlage oder Grenzen: das
+ * waren die Absicherungsfloskeln, die Christian „nach AI" klingen ließen.
+ */
+function Klaeren() {
   return (
-    <section className="pb__person" data-section="pb-person">
-      <div className="pb__inhalt">
-        <h2>Wer mit dir spricht</h2>
-        <div className="pb__wer">
-          <img
-            className="pb__foto"
-            src={`${FOTO}&width=320`}
-            srcSet={`${FOTO}&width=160 160w, ${FOTO}&width=320 320w, ${FOTO}&width=480 480w`}
-            sizes="160px"
-            width="160"
-            height="205"
-            loading="lazy"
-            decoding="async"
-            alt="Christian Bernd Bauer, Gründer von Qi Blanco"
-          />
-          <p>
-            Ich bin Christian Bauer und habe Qi Blanco mit Anna gegründet. In unserem Gespräch beantworte
-            ich deine Fragen selbst.
-          </p>
+    <section className="pb__klaeren" data-section="pb-klaeren">
+      <div className="pb__inhalt pb__inhalt--breit">
+        <div className="pb__spalten">
+          <div>
+            <h2>Was wir in 20 Minuten klären</h2>
+            <ul className="pb__liste">
+              <li>Welches Gerät zu dir passt: QiOne® 2 Pro, QiBracelet® oder QiHome® Air.</li>
+              <li>Wie du es trägst oder aufstellst, beim Schlafen, beim Sport, unter der Dusche.</li>
+              <li>Was unsere Anwender im Alltag damit erleben, und was du davon erwarten kannst.</li>
+            </ul>
+          </div>
+          <div>
+            <h2>Für wen das Gespräch ist</h2>
+            <p>
+              Für dich, wenn du vor dem Kauf noch eine Frage hast. Und für dich, wenn du schon ein Gerät
+              trägst und wissen willst, wie du mehr daraus machst.
+            </p>
+            <p>Das Gespräch kostet nichts. Du brauchst nur einen Termin und ein Handy.</p>
+          </div>
         </div>
-        <h2>Was du in 20 Minuten klärst</h2>
-        <ul className="pb__liste">
-          <li>welches Produkt zu deinem Alltag passt</li>
-          <li>wie du es trägst oder aufstellst</li>
-          <li>was du erwarten kannst, und wo die Grenzen liegen</li>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Kundenstimmen: WÖRTLICH aus der kuratierten, echten Google-Liste
+ * (app/lib/googleReviewsCurated.js), ausgewählt per id, nichts gekürzt oder
+ * geglättet. Eine Stimme, die Anna nennt, fällt heraus (Christian 01.10.) —
+ * deshalb hier nicht der Standard-Bewertungsblock: dessen Kartenreihe zeigt
+ * die ganze Liste, auch die Rezension mit „Danke … an Anna und Christian".
+ * Die Note verlinkt auf das Google-Profil (lp-paritaet T-02); der Klick zu
+ * Google ist wie im Bewertungsblock der einzige Weg aus dem Block.
+ */
+const STIMMEN_IDS = ['-729236865', '850007411', '-1868946154'];
+const STIMMEN = STIMMEN_IDS.map((id) => GOOGLE_REVIEWS_CURATED.find((r) => r.id === id)).filter(
+  (r) => r && !/anna/i.test(`${r.name} ${r.text}`),
+);
+
+function Stimmen() {
+  const g = useGoogleRating();
+  if (!STIMMEN.length) return null;
+  return (
+    <section className="pb__stimmen" data-section="pb-stimmen">
+      <div className="pb__inhalt pb__inhalt--breit">
+        <h2>Was Anwender erzählen</h2>
+        <ul className="pb__zitate">
+          {STIMMEN.map((r) => (
+            <li key={r.id} className="pb__zitat">
+              <p className="pb__sterne" aria-label="5 von 5 Sternen">
+                ★★★★★
+              </p>
+              <blockquote>
+                {r.text.split('\n').map((zeile) => (
+                  <p key={zeile.slice(0, 32)}>{zeile}</p>
+                ))}
+              </blockquote>
+              <p className="pb__zitat-name">{r.name}, Google-Rezension</p>
+            </li>
+          ))}
         </ul>
-        <p>Willst du es genauer wissen, erkläre ich dir die Studienlage offen.</p>
+        <p className="pb__quelle">
+          <a href={g.url} target="_blank" rel="noopener noreferrer">
+            Alle Google-Rezensionen ansehen: {g.komma} von 5 Sternen
+          </a>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/** Schluss: ein Satz und der Weg zurück zu den Terminen (nur in der Buchen-Ansicht). */
+function Schluss() {
+  return (
+    <section className="pb__schluss" data-section="pb-schluss">
+      <div className="pb__inhalt">
+        <h2>Deine Frage, meine Antwort</h2>
+        <p>Such dir einen Donnerstag aus. Ich freue mich auf das Gespräch mit dir.</p>
+        <p className="pb__weg">
+          <a href="#termine" className="pb__knopf-zwei">
+            Zu den Terminen
+          </a>
+        </p>
       </div>
     </section>
   );
@@ -525,12 +650,15 @@ export function ProduktberatungSeite() {
   else if (ergebnis?.ok && ergebnis.intent === 'buchen') mitte = <Danke />;
   else mitte = <Buchen daten={daten} fehler={ergebnis && !ergebnis.ok ? ergebnis : null} zone={zone} />;
 
+  const buchenAnsicht = !daten.token && !(ergebnis?.ok && ergebnis.intent === 'buchen');
   return (
     <div className="pb">
-      <Kopf />
+      <Kopf mitWeg={buchenAnsicht} />
       {mitte}
       <Ablauf />
-      <WerSpricht />
+      <Klaeren />
+      <Stimmen />
+      {buchenAnsicht ? <Schluss /> : null}
     </div>
   );
 }
