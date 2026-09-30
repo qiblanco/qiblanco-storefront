@@ -227,6 +227,9 @@ export const OHNE_PREIS_NACHWEIS = [
   'bundle-3x-awake',
   'mengenrabatt-2x',
   'mengenrabatt-3x-create',
+  'bundle-1x-awake-1x-create',
+  'bundle-2x-awake-1x-create',
+  'bundle-1x-awake-2x-create',
 ];
 
 /**
