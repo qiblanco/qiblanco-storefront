@@ -1,5 +1,6 @@
 import {Link, useNavigate} from 'react-router';
 import {AddToCartButton} from './AddToCartButton';
+import {LinkPerMail} from '~/components/reusables/LinkPerMail';
 import {EuGewaehrleistungsHinweis} from './EuGewaehrleistungsLabel';
 import {useAside} from './Aside';
 
@@ -190,6 +191,11 @@ export function ProductForm({
         nichts sagt, bekommt sie hier.
       */}
       {gewaehrleistungsHinweis ? <EuGewaehrleistungsHinweis /> : null}
+      {/* „Link per E-Mail schicken", nur im Instagram-/Facebook-Browser (CJ-
+          Großjob 20260930 s06). Bewusst NACH der Pflichtmitteilung: die steht
+          unmittelbar unter dem Kaufknopf und wird nicht verdrängt. Höchstens
+          einmal je Seite, auch bei zwei Kaufboxen (LinkPerMail.jsx). */}
+      <LinkPerMail art="seite" />
     </div>
   );
 }

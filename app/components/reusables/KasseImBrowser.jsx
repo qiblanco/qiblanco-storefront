@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useAside} from '~/components/Aside';
 import {WEBVIEW_META_MARKERS} from '~/lib/checkout-tracking';
+import {LinkPerMail} from '~/components/reusables/LinkPerMail';
 
 /**
  * Hinweis im Warenkorb für Besucher im Instagram-/Facebook-Browser
@@ -104,6 +105,10 @@ export function KasseImBrowser({layout}) {
         Dein Warenkorb kommt mit, und {ziel} hast du {wallet} und deine
         gespeicherten Karten.
       </p>
+      {/* Zweiter Weg hinaus, für wen jetzt nicht zahlen will: der Warenkorb
+          als Link per E-Mail (CJ-Großjob 20260930 s06). Erscheint nur, wenn
+          der Server-Versand bereit ist; Begründung in LinkPerMail.jsx. */}
+      <LinkPerMail art="warenkorb" />
     </div>
   );
 }
