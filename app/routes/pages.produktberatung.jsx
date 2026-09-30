@@ -22,6 +22,11 @@ const PFAD = '/pages/produktberatung';
  * Buchen, Absagen und Umbuchen durch. Anna und das Dashboard buchen über
  * denselben Endpunkt; einen zweiten Kalender gibt es nicht.
  *
+ * UMBAU 2026-10-01 (Job 20261001-bau-beratungsseite-gestaltung-und-text-in-
+ * christians-stimme): Gestaltung und Text leben in
+ * app/components/campaign/ProduktberatungSeite.jsx und styles/produktberatung.css;
+ * Loader, Action und Feldnamen dieser Route sind unverändert.
+ *
  * FUNKTIONIERT OHNE JAVASCRIPT: Termine und Formular kommen serverseitig, das
  * Formular ist ein normaler POST. JavaScript ergänzt nur die Zeitzone der
  * Kundin (verstecktes Feld + „bei dir …"-Zeit).
