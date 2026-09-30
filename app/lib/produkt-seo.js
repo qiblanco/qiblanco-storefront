@@ -153,7 +153,7 @@ export const PRODUKT_BESCHREIBUNGEN = {
     'Crystal Cacao® 1x Awake und 2x Create – Bio im gemischten 3er-Set: ' +
     'Zeremonie-Kakao aus dem Piura-Tal in Peru, schonend kalt verarbeitet.',
   // Die Sets mit 4 bis 7 Packungen (2026-09-30, Grossjob kakao-partnercodes-
-  // alle-mengen s02), gleiche Bauart und derselbe Satz wie darueber.
+  // alle-mengen s02), gleiche Bauart und derselbe Satz wie darüber.
   '/products/bundle-4x-awake':
     'Crystal Cacao® Awake, Bio im 4er-Set mit vier Packungen: ' +
     'Zeremonie-Kakao aus dem Piura-Tal in Peru, schonend kalt verarbeitet.',

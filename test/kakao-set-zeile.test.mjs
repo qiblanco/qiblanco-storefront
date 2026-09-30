@@ -1,9 +1,9 @@
 // Hermetischer Regeltest der Kakao-Normalform (app/lib/kakao-set-zeile.js).
-// Kein Netz. Ausfuehren: node --test test/kakao-set-zeile.test.mjs
+// Kein Netz. Ausführen: node --test test/kakao-set-zeile.test.mjs
 //
 // Gegenstand: Christian 30.09.2026 "die Rabattcodes von den Influencern sollen
 // mit allen Kakaomengen kompatibel sein ... auch gemischt über die Sorten
-// hinweg", Nachtrag 01.10. "für jede Menge, auch 20". Grossjob
+// hinweg", Nachtrag 01.10. "für jede Menge, auch 20". Großjob
 // 20260930-GROSSJOB-kakao-partnercodes-alle-mengen-und-mengenrabatt-gemischt,
 // s03. Rot-Arm: gegen die Tabelle vor s03 (nur 2 und 3 Packungen) muss jeder
 // Fall ab 4 Packungen hier FAIL geben.
@@ -57,7 +57,7 @@ test('jede Zusammensetzung von 2 bis 7 Packungen hat genau ein Set', () => {
   for (let n = 2; n <= 7; n += 1) {
     for (let a = 0; a <= n; a += 1) {
       const h = setHandle(a, n - a);
-      assert.ok(h, `kein Set fuer ${a}+${n - a}`);
+      assert.ok(h, `kein Set für ${a}+${n - a}`);
       const art = kakaoSetArt(h);
       assert.deepEqual(art.je, {awake: a, create: n - a});
       assert.equal(art.packungen, n);
@@ -72,7 +72,7 @@ test('Handles der neuen Sets wie in Shopify angelegt (s02)', () => {
   assert.equal(setHandle(0, 5), 'bundle-5x-create');
   assert.equal(setHandle(3, 2), 'bundle-3x-awake-2x-create');
   assert.equal(setHandle(1, 6), 'bundle-1x-awake-6x-create');
-  // Bestand vom 29.09. bleibt, wie er heisst.
+  // Bestand vom 29.09. bleibt, wie er heißt.
   assert.equal(setHandle(0, 2), 'mengenrabatt-2x');
   assert.equal(setHandle(0, 3), 'mengenrabatt-3x-create');
 });
@@ -101,7 +101,7 @@ test('2 bis 7 Packungen, jede Mischung: genau EIN Set x1', () => {
   }
 });
 
-test('8 bis 30 Packungen, jede Mischung: Sets der Groessen 4 bis 7, Summe stimmt', () => {
+test('8 bis 30 Packungen, jede Mischung: Sets der Größen 4 bis 7, Summe stimmt', () => {
   for (let n = 8; n <= 30; n += 1) {
     for (let a = 0; a <= n; a += 1) {
       const c = n - a;
@@ -111,7 +111,7 @@ test('8 bis 30 Packungen, jede Mischung: Sets der Groessen 4 bis 7, Summe stimmt
       assert.deepEqual(summe(sets), {awake: a, create: c}, `${a}+${c}`);
       for (const s of sets) {
         const g = kakaoSetArt(s.handle).packungen;
-        assert.ok(g >= 4 && g <= 7, `${a}+${c}: Set-Groesse ${g}`);
+        assert.ok(g >= 4 && g <= 7, `${a}+${c}: Set-Größe ${g}`);
         assert.ok(s.quantity >= 1);
       }
       assert.equal(new Set(sets.map((s) => s.handle)).size, sets.length);
@@ -145,7 +145,7 @@ test('Warenkorb schon in Normalform: nichts zu tun', () => {
   assert.equal(plan([['bundle-3x-awake', 1]]), null);
 });
 
-test('Set-Zeilen, die nicht die Normalform sind, gehen ueber die Einzelform', () => {
+test('Set-Zeilen, die nicht die Normalform sind, gehen über die Einzelform', () => {
   // Set 3 Awake + 1 Awake -> Einzelform Awake x4, dann Set 4.
   const p = plan([['bundle-3x-awake', 1], [A, 1]]);
   assert.equal(p.einzelform.length, 1);
@@ -172,13 +172,13 @@ test('fremde Kakao-Zeile daneben: alter Weg, kein Set, auch ab 4', () => {
   assert.equal(p.einzelform[0].quantity, 4);
 });
 
-test('fremde Nicht-Kakao-Zeile stoert nicht', () => {
+test('fremde Nicht-Kakao-Zeile stört nicht', () => {
   assert.equal(plan([[A, 3], [C, 2], ['qione-2-pro', 1]]).kandidat.set, 'bundle-3x-awake-2x-create');
 });
 
 // --- Stepper ----------------------------------------------------------------
 
-test('Stepper ueber 3 <-> 4 <-> 5 <-> 6 und zurueck, Sorte und gemischt', () => {
+test('Stepper über 3 <-> 4 <-> 5 <-> 6 und zurück, Sorte und gemischt', () => {
   const {stepperEinzelZeilen} = lib;
   assert.equal(typeof stepperEinzelZeilen, 'function', 'stepperEinzelZeilen fehlt');
   const weg = (handle, menge, packungen) => {
@@ -198,7 +198,7 @@ test('Stepper ueber 3 <-> 4 <-> 5 <-> 6 und zurueck, Sorte und gemischt', () => 
   assert.equal(weg('bundle-5x-awake', 1, 4), 'bundle-4x-awakex1');
   assert.equal(weg('bundle-4x-awake', 1, 3), 'bundle-3x-awakex1');
   assert.equal(weg('mengenrabatt-2x', 1, 1), 'einzel');
-  // gemischt: 2+1 -> 3+1 -> 4+1 -> 4+2 ... und zurueck
+  // gemischt: 2+1 -> 3+1 -> 4+1 -> 4+2 ... und zurück
   assert.equal(weg('bundle-2x-awake-1x-create', 1, 4), 'bundle-3x-awake-1x-createx1');
   assert.equal(weg('bundle-3x-awake-1x-create', 1, 5), 'bundle-4x-awake-1x-createx1');
   assert.equal(weg('bundle-4x-awake-1x-create', 1, 4), 'bundle-3x-awake-1x-createx1');
@@ -213,7 +213,7 @@ test('Stepper ueber 3 <-> 4 <-> 5 <-> 6 und zurueck, Sorte und gemischt', () => 
   assert.equal(stepperEinzelZeilen(A, 1, 2), null);
 });
 
-test('stepperZusammensetzung: + auf die groessere Sorte, - von der groesseren', () => {
+test('stepperZusammensetzung: + auf die größere Sorte, - von der größeren', () => {
   assert.deepEqual(stepperZusammensetzung({awake: 1, create: 1}, 3), {awake: 2, create: 1});
   assert.deepEqual(stepperZusammensetzung({awake: 1, create: 2}, 4), {awake: 1, create: 3});
   assert.deepEqual(stepperZusammensetzung({awake: 4, create: 1}, 4), {awake: 3, create: 1});
