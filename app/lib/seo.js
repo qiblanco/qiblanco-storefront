@@ -461,6 +461,28 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Vorverkaufs-Landingpage, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-12',
   },
+  // Neu 2026-09-30 (Vollzug ov769eece306, Traeger 20260826-formate-gate12-
+  // blockade-sechs-belege-rot-vollzug-ov769eece306-w1). `/pages/partner-details`
+  // ist die Hilfeseite für angemeldete Partner und wird von der öffentlichen
+  // `/pages/affiliate-partnerprogramm` absichtlich verlinkt (HILFESEITE in
+  // AffiliatePartnerprogramm.jsx). Ohne Eintrag hier zog funnel-substrat sie
+  // wegen ihres noindex als Ads-Landingpage in den Landing-Bereich, und die
+  // Wache landing_bereich_unverlinkt.py las den gewollten Partner-Link als Leck
+  // (Achse A, gemessen 2026-09-30: 1 Verweis aus 1 Seite, genau dieser).
+  // Verkehr dort kommt aus dem Partnerkanal, nicht aus Anzeigen, also dieselbe
+  // Klasse wie `partner`. WIRKUNG IM SHOP: keine. Die eigene Route
+  // `pages.partner-details.jsx` sticht den Katchall und setzt noindex selbst,
+  // und in der Sitemap stand die Seite nie. Der Eintrag ist die Klassifikation
+  // für die Leser außerhalb des Repos und sperrt einen künftigen Sitemap-Eintrag.
+  {
+    handle: 'partner-details',
+    ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'partner',
+    grund:
+      'Hilfeseite für angemeldete Partner, aus /pages/affiliate-partnerprogramm verlinkt; Partnerkanal, kein Anzeigenziel. noindex in der eigenen Route',
+    seit: '2026-09-30',
+  },
   // Neu 2026-09-24 (Großjob „Seite: Wie funktioniert der GitterChip im
   // QiOne?", Christian 23.09.2026: „Die Seite noch nicht verlinken und nicht
   // crawlbar machen."). Dieselbe Lage wie `qi-master-vorverkauf`: von Anfang an
