@@ -45,7 +45,7 @@ export const meta = ({data}) => {
  */
 export async function loader(args) {
   // KAKAO-LADEN-WEICHE (20260930-growth-crystal-laden-zulauf-traeger): Einstiege
-  // aus eigenen Kanaelen (Social organisch, Mail) gehen per 302 in den eigenen
+  // aus eigenen Kanälen (Social organisch, Mail) gehen per 302 in den eigenen
   // Laden crystal-cacao.com; Suche, bezahlt, intern und ohne Referrer bleiben.
   // Schalter Shop-Metafeld qb_routing.kakao_laden, fail-safe aus.
   const kakaoZiel = await kakaoLadenZiel(args);

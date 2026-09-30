@@ -19,7 +19,7 @@ function ent(pfad, referer, schalter = EIN) {
   return entscheideKakaoWeiche({url: `${Q}${pfad}`, referer, schalter});
 }
 
-// --- Eigene Kanaele werden umgeleitet ----------------------------------------
+// --- Eigene Kanäle werden umgeleitet ----------------------------------------
 
 test('Instagram-Bio (utm) auf der Landeseite -> Startseite des eigenen Ladens', () => {
   const r = ent('/pages/crystal-cacao?utm_source=ig&utm_medium=social&utm_content=link_in_bio',
@@ -40,7 +40,7 @@ test('Newsletter-Klick auf Kaufseite Awake -> Kaufseite Awake, Query vollstaendi
   );
 });
 
-test('Facebook organisch mit fbclid (kein Bezahl-Marker) -> umgeleitet, fbclid faehrt mit', () => {
+test('Facebook organisch mit fbclid (kein Bezahl-Marker) -> umgeleitet, fbclid fährt mit', () => {
   const r = ent('/products/crystal-cacao-create?fbclid=IwAR0abc', 'https://m.facebook.com/');
   assert.equal(r.grund, 'eigener_kanal');
   assert.match(r.ziel, /^https:\/\/crystal-cacao\.com\/products\/crystal-cacao-create\?fbclid=IwAR0abc&qb_weg=qiblanco-kakao$/);
@@ -56,7 +56,7 @@ test('Mail-Klick ohne Referrer, nur utm_medium=email -> umgeleitet', () => {
   assert.equal(ent('/pages/crystal-cacao?utm_source=newsletter&utm_medium=email', null).grund, 'eigener_kanal');
 });
 
-test('abschliessender Schraegstrich zaehlt wie die Seite', () => {
+test('abschließender Schrägstrich zählt wie die Seite', () => {
   assert.equal(ent('/pages/crystal-cacao/', 'https://www.instagram.com/').grund, 'eigener_kanal');
 });
 
@@ -84,7 +84,7 @@ test('bezahlt bleibt, auch mit Social-Referrer', () => {
   }
 });
 
-test('interne Navigation bleibt (Menue auf qiblanco.com, Rueckweg vom eigenen Laden)', () => {
+test('interne Navigation bleibt (Menü auf qiblanco.com, Rückweg vom eigenen Laden)', () => {
   assert.equal(ent('/pages/crystal-cacao', 'https://qiblanco.com/').grund, 'intern');
   assert.equal(ent('/pages/crystal-cacao?utm_source=ig', 'https://www.qiblanco.com/products/qione-2-pro').grund, 'intern');
   assert.equal(ent('/pages/crystal-cacao', 'https://crystal-cacao.com/').grund, 'intern');
@@ -106,7 +106,7 @@ test('Schleifenschutz und Healthcheck', () => {
 
 test('Schalter: nur eigene-kanaele schaltet ein; aus, leer, null, Tippfehler = aus', () => {
   for (const s of ['aus', '', null, undefined, 'an', 'eigene_kanaele', 'true']) {
-    // direkt, nicht ueber ent(): dessen Vorgabewert machte aus undefined 'ein'
+    // direkt, nicht über ent(): dessen Vorgabewert machte aus undefined 'ein'
     const r = entscheideKakaoWeiche({url: `${Q}/pages/crystal-cacao`, referer: 'https://l.instagram.com/', schalter: s});
     assert.equal(r.ziel, null, String(s));
     assert.equal(r.grund, 'schalter_aus', String(s));
@@ -114,7 +114,7 @@ test('Schalter: nur eigene-kanaele schaltet ein; aus, leer, null, Tippfehler = a
   assert.ok(ent('/pages/crystal-cacao', 'https://l.instagram.com/', ' Eigene-Kanaele ').ziel);
 });
 
-test('herkunftsKlasse: utm_source allein (ohne medium) aus Social zaehlt als eigener Kanal', () => {
+test('herkunftsKlasse: utm_source allein (ohne medium) aus Social zählt als eigener Kanal', () => {
   assert.equal(herkunftsKlasse(new URLSearchParams('utm_source=instagram'), ''), 'eigener_kanal');
   assert.equal(herkunftsKlasse(new URLSearchParams('utm_source=partnerseite'), ''), 'andere');
 });

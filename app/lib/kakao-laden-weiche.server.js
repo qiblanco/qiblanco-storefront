@@ -20,7 +20,7 @@
  *     Suchbesucher wäre gegenüber dem Crawler ein verdeckter Redirect.
  *   - Einstiege ohne Referrer und ohne Kanal-Parameter (Crawler, Tipper,
  *     Lesezeichen): der Crawler sieht so dieselbe Seite wie der Besucher.
- *   - Bezahlte Klicks (utm_medium paid/cpc, gclid, ...): deren Landeflaeche
+ *   - Bezahlte Klicks (utm_medium paid/cpc, gclid, ...): deren Landefläche
  *     gehört der Anzeigen-Steuerung (siehe ad-weiche.server.js).
  *   - Interne Navigation (Referrer qiblanco.com oder crystal-cacao.com) und
  *     Datenrequests (*.data, _data): wer in der Qi-Blanco-Welt weiterklickt,
@@ -129,8 +129,8 @@ export function herkunftsKlasse(sp, host) {
   if (host && INTERNE_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))) {
     return 'intern';
   }
-  // Mail VOR Suche: Gmail (mail.google.com, com.google.android.gm) traegt
-  // 'google.' im Host und waere sonst ein Suchbesucher.
+  // Mail VOR Suche: Gmail (mail.google.com, com.google.android.gm) trägt
+  // 'google.' im Host und wäre sonst ein Suchbesucher.
   if (host && hostPasst(host, MAIL_HOSTS)) return 'eigener_kanal';
   if (host && hostPasst(host, SUCH_HOSTS)) return 'suche';
   if (EIGENES_MEDIUM.has(medium) || (!medium && EIGENE_QUELLE.has(quelle))) {
