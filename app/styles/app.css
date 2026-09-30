@@ -6761,3 +6761,73 @@ html.qb-chat-docked .GoogleRezensionenPopup {
     transition: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LINK PER E-MAIL — nur im Instagram-/Facebook-Browser
+   (app/components/reusables/LinkPerMail.jsx, CJ-Großjob 20260930 s06).
+   Eine Nebenhandlung unter dem Kaufknopf: Textknopf zum Aufklappen, dann ein
+   Eingabefeld und der Nebenknopf aus dem Bausatz. Kein Gold, kein eigener
+   Farbblock: der Kaufknopf bleibt der eine Fokus. Werte aus qb-tokens.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.link-per-mail {
+  margin-top: var(--qb-ref-raster);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.45;
+}
+.link-per-mail .link-per-mail__auf {
+  padding-left: 0;
+  padding-right: 0;
+  font-size: var(--qb-ref-fs-2);
+  text-align: left;
+}
+.link-per-mail__satz,
+.link-per-mail__hinweis,
+.link-per-mail__fehler {
+  margin: 0 0 var(--qb-ref-raster);
+  font-size: var(--qb-ref-fs-2);
+}
+.link-per-mail__hinweis {
+  color: var(--qb-text-gedaempft);
+}
+.link-per-mail__fehler {
+  font-weight: 600;
+}
+.link-per-mail__label {
+  display: block;
+  margin-bottom: calc(var(--qb-ref-raster) / 2);
+  font-weight: 600;
+}
+.link-per-mail__zeile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--qb-ref-raster);
+  margin-bottom: var(--qb-ref-raster);
+}
+.link-per-mail__eingabe {
+  flex: 1 1 12rem;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: var(--qb-ref-raster) calc(var(--qb-ref-raster) * 1.5);
+  /* 16px verhindert das automatische Hineinzoomen von iOS beim Tippen. */
+  font-size: var(--qb-ref-fs-3);
+  color: var(--qb-text);
+  background: transparent;
+  border: 1px solid var(--qb-text-gedaempft);
+  border-radius: var(--qb-radius-klein);
+}
+.link-per-mail .link-per-mail__senden {
+  flex: 0 0 auto;
+  width: auto;
+  padding: var(--qb-ref-raster) calc(var(--qb-ref-raster) * 2);
+  font-size: var(--qb-ref-fs-3);
+}
+/* Honigtopf: aus dem Bild geschoben statt display:none (Hausmuster .pb__topf). */
+.link-per-mail__topf {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
