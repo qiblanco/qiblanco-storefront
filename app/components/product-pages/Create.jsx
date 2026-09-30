@@ -398,7 +398,13 @@ function HerobannerWithText({src, text}) {
   );
 }
 
-export default function CreateProductPage() {
+/**
+ * faqItems (Default = die volle Bestandsliste, also unverändert): die Fragen
+ * der FAQ am Seitenende. Die Kaufseite übergibt seit dem 30.09.2026 nur den
+ * Rest, weil ihre häufigsten Kundenfragen weiter oben stehen (Amazon-Stil,
+ * reusables/AmazonStil.jsx Kundenfragen; Muster der Geräteseiten).
+ */
+export default function CreateProductPage({faqItems = FAQ_CACAO} = {}) {
   return (
     <>
       <BioaktiveInhaltsstoffe />
@@ -410,7 +416,7 @@ export default function CreateProductPage() {
         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/bohne-create.jpg?v=1763083566"
         text=""
       />
-      <ProductFAQ items={FAQ_CACAO} />
+      <ProductFAQ items={faqItems} />
     </>
   );
 }

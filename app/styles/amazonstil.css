@@ -3,7 +3,7 @@
    Amazon-Stil Stufe 2 (Grossjob growth-m-lp-produktseite-verkauft, s04,
    27.09.2026). Komponente reusables/AmazonStil.jsx, Texte und Schalter
    reusables/amazonstil-daten.js. Geladen nur über links() der drei
-   /products/-Geräteseiten; die /pages/-Kaufseiten laden die Datei nicht.
+   /products/-Geräteseiten und (seit 30.09.2026) der zwei Kakao-Kaufseiten.
 
    KEIN NEUER WERT (Design-Pflicht): Schrift nur in Stufen, die alle drei
    Seiten schon führen (14, 16, 19,2 px); H2/H3 setzen die Seiten selbst
@@ -159,6 +159,58 @@ a.qb-gv__kopf-inhalt:hover .qb-gv__name {
   }
   .qb-gv__fuss {
     padding-top: 8px;
+  }
+}
+
+/* ---- Sortenvergleich Crystal Cacao® (s03, 30.09.2026) --------------------
+   Dieselben qb-gv-Klassen, zwei Spalten, sechs Zeilen. Neu sind nur die
+   Wofür-Liste und die zweizeiligen Bericht-Links; Werte aus dem Bestand
+   dieser Datei (14/16 px, 8-px-Raster, Tinte/gedämpft). */
+.qb-gv__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.25em;
+  list-style: disc;
+}
+/* Die Seiten setzen <li> selbst größer (reset.css); in der Tabelle gilt die
+   Zellgröße der übrigen Zeilen. */
+.qb-gv__liste li {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.qb-gv__bericht {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px 0;
+  text-decoration: none;
+}
+.qb-gv__bericht-art {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.qb-gv__bericht:hover .qb-gv__bericht-art {
+  text-decoration: none;
+}
+.qb-gv__bericht-quelle {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft);
+}
+@media (min-width: 750px) {
+  .qb-gv__raster--sorten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .qb-gv__raster--sorten .qb-gv__geraet {
+    grid-row: span 8;
+  }
+  .qb-gv__raster--sorten .qb-gv__merkmale {
+    grid-row: span 6;
   }
 }
 
