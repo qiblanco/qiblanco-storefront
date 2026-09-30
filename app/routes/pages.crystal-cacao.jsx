@@ -1,4 +1,5 @@
-import {useLoaderData} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
+import {kakaoLadenZiel} from '~/lib/kakao-laden-weiche.server';
 import {Kakao} from '~/components/product-pages/Kakao';
 import crystalCacaoStyles from '~/styles/crystal-cacao.css?url';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -43,6 +44,14 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // KAKAO-LADEN-WEICHE (20260930-growth-crystal-laden-zulauf-traeger): Einstiege
+  // aus eigenen Kanaelen (Social organisch, Mail) gehen per 302 in den eigenen
+  // Laden crystal-cacao.com; Suche, bezahlt, intern und ohne Referrer bleiben.
+  // Schalter Shop-Metafeld qb_routing.kakao_laden, fail-safe aus.
+  const kakaoZiel = await kakaoLadenZiel(args);
+  if (kakaoZiel) {
+    throw redirect(kakaoZiel, {status: 302, headers: {'Cache-Control': 'no-store'}});
+  }
   const deferredData = loadDeferredData(args);
   const criticalData = await loadCriticalData(args, 'crystal-cacao');
   return {...deferredData, ...criticalData};
