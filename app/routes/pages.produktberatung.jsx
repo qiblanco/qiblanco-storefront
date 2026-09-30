@@ -26,6 +26,8 @@ const PFAD = '/pages/produktberatung';
  * christians-stimme): Gestaltung und Text leben in
  * app/components/campaign/ProduktberatungSeite.jsx und styles/produktberatung.css;
  * Loader, Action und Feldnamen dieser Route sind unverändert.
+ * Nachtrag PR 2: der Kopf ist einspaltig, damit das Chat-Fenster unten rechts
+ * Christians Worte nicht verdeckt.
  *
  * FUNKTIONIERT OHNE JAVASCRIPT: Termine und Formular kommen serverseitig, das
  * Formular ist ein normaler POST. JavaScript ergänzt nur die Zeitzone der
