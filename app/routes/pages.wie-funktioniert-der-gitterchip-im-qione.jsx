@@ -1,5 +1,6 @@
 import {GitterChipSeite} from '~/components/campaign/GitterChipSeite';
-import {noindexMeta, noindexHeader} from '~/lib/seo';
+import {canonicalLink} from '~/lib/seo';
+import {teilbildTags} from '~/lib/seiten-seo';
 import kwStyles from '~/styles/was-ist-kohaerentes-wasser.css?url';
 import gcStyles from '~/styles/wie-funktioniert-der-gitterchip-im-qione.css?url';
 import {SEITE} from '~/data/gitterchip-seite';
@@ -12,22 +13,21 @@ import {SEITE} from '~/data/gitterchip-seite';
  * Salesmanager aufbauen … mit Grafiken und Animation und ohne Verteidigung …
  * Die Seite noch nicht verlinken und nicht crawlbar machen.“
  *
- * ─── VERSTECKT, BIS CHRISTIAN SIE FREIGIBT ─────────────────────────────────
+ * ─── FREIGEGEBEN AM 2026-10-01 ────────────────────────────────────────────
  *
- * Dasselbe Hausmuster wie pages.qi-master-vorverkauf.jsx, drei Wege:
- * (1) noindexMeta() im head und (2) noindexHeader() als X-Robots-Tag, KEIN
- * canonical (entweder noindex oder canonical, nie beides); (3) der Eintrag
- * `wie-funktioniert-der-gitterchip-im-qione` in NICHT_INDEXIERBARE_SEITEN_DEF
- * (app/lib/seo.js) mit `ausSitemap: true`. Er ist heute wirkungslos, weil
- * diese reine Route in keiner Sitemap steht; er ist die Sperre für den Tag, an
- * dem jemand im Shopify-Admin eine Seite mit diesem Handle anlegt. Die Seite
- * steht NICHT in NUR_ROUTE_SEITEN, und kein Menü, keine Seite und Anna
- * verlinken sie. Erreichbar ist sie nur über die Adresse.
+ * Gebaut ab 24.09. versteckt (noindex in meta und X-Robots-Tag, Sperreintrag
+ * in NICHT_INDEXIERBARE_SEITEN_DEF, nicht in NUR_ROUTE_SEITEN), bis zur
+ * Leitplanken-Frage 7 („Wie-funktioniert-Seite sichtbar schalten“, Business-
+ * Growth-PDF vom 26.09.). Entschieden am 30.09. (AI-CEO im Mandat, Option a):
+ * sichtbar schalten und im Video-Dialog der QiOne-Kaufseite verlinken. Job
+ * growth-m-lp-produktseite-verkauft-s05, in EINEM PR an allen Stellen:
+ * canonicalLink und Teilbild (og:image) statt noindex hier, Sperreintrag entfernt, Eintrag in
+ * NUR_ROUTE_SEITEN (Sitemap), WIE_FUNKTIONIERT_LINK = true in
+ * app/data/produkt-videos.js.
  *
- * FREIGABE (ein PR, drei Stellen): hier noindexMeta/noindexHeader durch
- * canonicalLink(SEITE.pfad) ersetzen, den Eintrag aus
- * NICHT_INDEXIERBARE_SEITEN_DEF nehmen und die Seite in NUR_ROUTE_SEITEN
- * aufnehmen.
+ * RÜCKWEG, falls Christian Frage 7 anders beantwortet: denselben PR
+ * zurücknehmen (hb-deploy revert). Nur den Link aus: WIE_FUNKTIONIERT_LINK
+ * = false; dann bleibt die Seite indexierbar, aber ohne Link aus dem Dialog.
  *
  * ─── GESTALTUNG ────────────────────────────────────────────────────────────
  *
@@ -52,14 +52,9 @@ export function links() {
 export const meta = () => [
   {title: SEITE.titel},
   {name: 'description', content: SEITE.beschreibung},
-  noindexMeta(),
+  canonicalLink(SEITE.pfad),
+  ...teilbildTags(SEITE.pfad),
 ];
-
-/**
- * Zweite, vom HTML unabhängige Sperre desselben Signals: greift auch bei einem
- * Bot, der den head nicht parst.
- */
-export const headers = () => noindexHeader();
 
 export default function WieFunktioniertDerGitterChipRoute() {
   return <GitterChipSeite />;

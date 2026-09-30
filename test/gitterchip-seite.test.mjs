@@ -127,13 +127,15 @@ test('jede Stufe führt weiter, die letzte zum Kaufweg', () => {
   assert.equal(G.KAUFWEG, '/products/qione-2-pro');
 });
 
-test('versteckt: noindex in der Route, kein canonical, Sitemap-Sperre in seo.js', () => {
-  assert.match(ROUTE, /noindexMeta\(\)/);
-  assert.match(ROUTE, /headers = \(\) => noindexHeader\(\)/);
-  assert.doesNotMatch(ROUTE, /canonicalLink\(SEITE/);
-  const eintrag = SEO.match(/handle: 'wie-funktioniert-der-gitterchip-im-qione',\s*ausSitemap: (true|false)/);
-  assert.ok(eintrag, 'Eintrag in NICHT_INDEXIERBARE_SEITEN_DEF fehlt');
-  assert.equal(eintrag[1], 'true');
+test('freigegeben: canonical statt noindex, keine Sitemap-Sperre, in NUR_ROUTE_SEITEN', () => {
+  assert.doesNotMatch(ROUTE, /noindexMeta\(\)/);
+  assert.doesNotMatch(ROUTE, /noindexHeader\(\)/);
+  assert.match(ROUTE, /canonicalLink\(SEITE\.pfad\)/);
+  const sperre = SEO.slice(
+    SEO.indexOf('export const NICHT_INDEXIERBARE_SEITEN_DEF'),
+    SEO.indexOf('export const NUR_ROUTE_SEITEN'),
+  );
+  assert.doesNotMatch(sperre, /handle: 'wie-funktioniert-der-gitterchip-im-qione'/);
   const nurRoute = SEO.slice(SEO.indexOf('export const NUR_ROUTE_SEITEN'));
-  assert.ok(!nurRoute.includes('wie-funktioniert-der-gitterchip-im-qione'), 'steht in NUR_ROUTE_SEITEN');
+  assert.match(nurRoute, /pfad: '\/pages\/wie-funktioniert-der-gitterchip-im-qione'/);
 });
