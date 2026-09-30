@@ -103,10 +103,15 @@ export function LinkPerMail({art}) {
   const sendet = fetcher.state !== 'idle';
 
   return (
+    // data-qb-kaufknopf: die fixierte Chat-Blase (KaufknopfChatSignal) weicht
+    // aus, solange sie dieses Formular überdeckt. Gemessen 30.09. auf der
+    // Produktseite (390 px): aufgeklappt am unteren Bildrand lagen Eingabe und
+    // „Link schicken" unter der Blase.
     <div
       className="link-per-mail"
       data-link-per-mail=""
       data-link-per-mail-art={art}
+      data-qb-kaufknopf=""
     >
       {!offen ? (
         <button
