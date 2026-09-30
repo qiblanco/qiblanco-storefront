@@ -235,6 +235,187 @@ export async function ladeVergleichsPreise(storefront, vergleich = VERGLEICH) {
  * (FAQ unten wieder vollständig, kein Stylesheet). Beides aus = beide Seiten
  * byte-gleich zum Stand vor s03 (Test).
  */
+// Die Daten (SORTENVERGLEICH) stehen am Dateiende. Grund: das Stil-Tor von
+// hb-deploy liest alle String-Literale einer Datei als EINEN Fliesstext; die
+// Tabellenzellen der Create-Spalte liefen hier mit der GraphQL-Abfrage darunter
+// zu einem 63-Wort-"Satz" zusammen. Am Dateiende endet die Kette nach den Zellen.
+
+
+// Zweite Zeile je Bericht: Labor, Datum, Dateiart und Sprache des Dokuments.
+const SPRACHE = {de: 'deutsch', en: 'englisch'};
+export function berichtQuelle(b) {
+  return [b.labor, b.datum, `PDF ${SPRACHE[b.sprache] || b.sprache}`].join(', ');
+}
+
+/** Ist der Sortenvergleich eingeschaltet (Schalter: SORTENVERGLEICH.sorten)? */
+export function sortenAn(sortenvergleich = SORTENVERGLEICH) {
+  return Array.isArray(sortenvergleich?.sorten) && sortenvergleich.sorten.length > 0;
+}
+
+/* Spalten für EINE Kakao-Seite: die Sorte dieser Seite zuerst ("Dieser
+   Artikel"). `varianten` {handle: {price}} aus ladeSortenPreise; die eigene
+   Sorte nimmt die Variante ihrer Kaufbox (`eigeneVariante`). Den Preis rechnet
+   die Komponente mit derselben Funktion wie die Kaufbox (cacaoPricing). */
+export function sortenSpalten(handle, {varianten = {}, eigeneVariante = null} = {},
+  sortenvergleich = SORTENVERGLEICH) {
+  if (!sortenAn(sortenvergleich)) return [];
+  const spalten = sortenvergleich.sorten.map((s) => ({
+    ...s,
+    eigenes: s.handle === handle,
+    variante: s.handle === handle && eigeneVariante ? eigeneVariante : varianten[s.handle] || null,
+  }));
+  return [...spalten.filter((s) => s.eigenes), ...spalten.filter((s) => !s.eigenes)];
+}
+
+/* Beide Kakao-Preise in EINER Abfrage, aus dem Feld der Kaufbox (Muster
+   VERGLEICH_PREISE_QUERY oben; Fragment hinten, damit das Stil-Tor die Abfrage
+   nicht als einen Langsatz liest). */
+export const SORTEN_PREISE_QUERY = `#graphql
+  query KakaoSortenPreise($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    awake: product(handle: "crystal-cacao-awake") {
+      ...SortenPreis
+    }
+    create: product(handle: "crystal-cacao-create") {
+      ...SortenPreis
+    }
+  }
+  fragment SortenPreis on Product {
+    handle
+    selectedOrFirstAvailableVariant(
+      selectedOptions: []
+      ignoreUnknownOptions: true
+      caseInsensitiveMatch: true
+    ) {
+      price {
+        amount
+        currencyCode
+      }
+    }
+  }
+`;
+
+/* Für den Loader. Fail-soft: Abfrage aus -> Vergleich ohne Preis ("–"), die
+   Kaufseite bleibt stehen. Vergleich aus -> keine Abfrage (null). */
+export async function ladeSortenPreise(storefront, sortenvergleich = SORTENVERGLEICH) {
+  if (!sortenAn(sortenvergleich)) return null;
+  try {
+    const daten = await storefront.query(SORTEN_PREISE_QUERY, {
+      cache: storefront.CacheShort(),
+    });
+    const varianten = {};
+    for (const p of [daten?.awake, daten?.create]) {
+      const v = p?.selectedOrFirstAvailableVariant;
+      if (p?.handle && v?.price) varianten[p.handle] = v;
+    }
+    return varianten;
+  } catch (fehler) {
+    console.error('[sortenvergleich] Preisabfrage fehlgeschlagen.', fehler?.message || fehler);
+    return {};
+  }
+}
+
+/* ---- Kundenfragen --------------------------------------------------------- */
+
+/*
+ * WELCHE FRAGEN NACH OBEN: alle, deren Bestandsantwort das Haus schon als
+ * sauber auszeichnet (isSchemaSafe, lib/faq-schema.js, dieselbe Regel wie das
+ * FAQPage-Schema). Was das Haus nicht verstärkt, zieht auch dieser Block nicht
+ * nach oben. REIHENFOLGE nach dem Kundenworte-Zähler aus s03 (claude-jobs/
+ * growth-m-lp-produktseite-verkauft-s03/mess/kundenfragen-zaehler.json,
+ * 2026-09-26): Anteil Verkaufs-Chat in eigenen Worten (Nenner 377) plus Anteil
+ * deutsche Support-Chats (Gorgias, Nenner 1.029): Tragen 6,4 + 26,2 = 32,6;
+ * Sauna/Wasser 0,5 + 18,4 = 18,9; Preis/Raten 8,5 + 4,4 = 12,9; Material
+ * 1,6 + 2,8 = 4,4. SCHEMA: unten bleibt keine saubere Frage, die FAQ unten gibt
+ * kein FAQPage mehr aus; der Block oben gibt es über die VOLLE Liste aus,
+ * byte-gleich zu vorher. Genau ein FAQPage je Seite.
+ */
+export const KUNDENFRAGEN = {
+  // Überschrift des Blocks (Bedienwort, Christians Wortlaut ersetzt sie).
+  titel: 'Kunden fragen',
+  // Schalter: Seiten, auf denen der Block steht. [] = aus.
+  seiten: ['qione-2-pro', 'qibracelet', 'qihome-air', 'crystal-cacao-awake', 'crystal-cacao-create'],
+  // Themen in Rangfolge; Fragen wörtlich aus data/product-faqs.js.
+  // Die Kakao-Themen stehen am Ende: keine Kakao-Frage steht auf einer
+  // Geräteseite, die Reihenfolge dort bleibt unberührt.
+  rang: [
+    {
+      thema: 'tragen',
+      fragen: [
+        'Kann ich den QiOne® an einer anderen Kette tragen?',
+        'Wie sollte ich den QiOne® tragen?',
+      ],
+    },
+    {
+      thema: 'sauna-wasser',
+      fragen: [
+        'Darf der QiOne® in die Sauna bzw. nass werden?',
+        'Darf das QiBracelet® nass werden, bzw. in die Sauna?',
+      ],
+    },
+    {thema: 'preis-raten', fragen: ['Wie funktioniert die Finanzierung über Klarna?']},
+    {
+      thema: 'material',
+      fragen: [
+        'Ist das QiBracelet® sicher für Anwender mit Allergien?',
+        'Aus welchem Material bestehen die Qi Blanco® Produkte?',
+      ],
+    },
+    /*
+     * KAKAO (FAQ_CACAO, s03 30.09.2026). Einen Kundenworte-Zähler für Kakao
+     * gibt es nicht (der von s03 growth-m zählt nur Geräte-Themen). Eigene
+     * Zählung im Verkaufs-Chat (qi-salesbot app.db, Widget-Gespräche ohne
+     * Proben, 28.07.-30.09.2026, 83 Gespräche mit Kakao-Bezug): Zubereitung 5,
+     * Für wen 0, Wie oft 0, Psychoaktiv 0. Zubereitung zuerst, der Rest in der
+     * Reihenfolge des Auftrags. Dünne Grundlage, neu ordnen, sobald gezählt.
+     */
+    {thema: 'kakao-zubereitung', fragen: ['Wie wird zeremonieller Kakao zubereitet?']},
+    {thema: 'kakao-zielgruppe', fragen: ['Für wen ist Kakao (un)geeignet?']},
+    {thema: 'kakao-wie-oft', fragen: ['Wie oft darf man zeremoniellen Kakao trinken?']},
+    {thema: 'kakao-psychoaktiv', fragen: ['Was bedeutet psychoaktiv in diesem Zusammenhang?']},
+  ],
+};
+
+function rangVon(frage, rang) {
+  let i = 0;
+  for (const t of rang) {
+    for (const f of t.fragen) {
+      if (f === frage) return i;
+      i += 1;
+    }
+  }
+  return Number.MAX_SAFE_INTEGER;
+}
+
+/* `oben` = saubere Fragen nach Rang, `unten` = der Rest. Aus oder nichts
+   Sauberes: oben leer, unten DASSELBE Array (Seite wie vor s04). */
+export function teileFragen(handle, items, kundenfragen = KUNDENFRAGEN) {
+  const liste = Array.isArray(items) ? items : [];
+  const an = Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle);
+  const sauber = an ? liste.filter((it) => isSchemaSafe(it)) : [];
+  if (!sauber.length) return {oben: [], unten: items};
+  const rang = kundenfragen.rang || [];
+  const oben = sauber
+    .map((it, i) => ({it, i}))
+    .sort((a, b) => rangVon(a.it.q, rang) - rangVon(b.it.q, rang) || a.i - b.i)
+    .map((x) => x.it);
+  return {oben, unten: liste.filter((it) => !oben.includes(it))};
+}
+
+/** Brauchen die Blöcke dieser Seite ihr Stylesheet? */
+export function amazonstilAn(handle, vergleich = VERGLEICH, kundenfragen = KUNDENFRAGEN) {
+  return vergleichAn(vergleich) ||
+    (Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle));
+}
+
+/** Dieselbe Frage für die zwei Kakao-Seiten (Schalter: Sortenvergleich). */
+export function sortenStilAn(handle, sortenvergleich = SORTENVERGLEICH, kundenfragen = KUNDENFRAGEN) {
+  return sortenAn(sortenvergleich) ||
+    (Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle));
+}
+
+/* ---- Sortenvergleich: Daten (Erklärung oben bei SORTENVERGLEICH-Kopf) ---- */
+
 export const SORTENVERGLEICH = {
   titel: 'Crystal Cacao® Awake und Create im Vergleich',
   // Tabellenköpfe. "Analyseberichte" steht dort, wo bei den Geräten die
@@ -346,175 +527,3 @@ export const SORTENVERGLEICH = {
     },
   ],
 };
-
-// Zweite Zeile je Bericht: Labor, Datum, Dateiart und Sprache des Dokuments.
-const SPRACHE = {de: 'deutsch', en: 'englisch'};
-export function berichtQuelle(b) {
-  return [b.labor, b.datum, `PDF ${SPRACHE[b.sprache] || b.sprache}`].join(', ');
-}
-
-/** Ist der Sortenvergleich eingeschaltet (Schalter: SORTENVERGLEICH.sorten)? */
-export function sortenAn(sortenvergleich = SORTENVERGLEICH) {
-  return Array.isArray(sortenvergleich?.sorten) && sortenvergleich.sorten.length > 0;
-}
-
-/* Spalten für EINE Kakao-Seite: die Sorte dieser Seite zuerst ("Dieser
-   Artikel"). `varianten` {handle: {price}} aus ladeSortenPreise; die eigene
-   Sorte nimmt die Variante ihrer Kaufbox (`eigeneVariante`). Den Preis rechnet
-   die Komponente mit derselben Funktion wie die Kaufbox (cacaoPricing). */
-export function sortenSpalten(handle, {varianten = {}, eigeneVariante = null} = {},
-  sortenvergleich = SORTENVERGLEICH) {
-  if (!sortenAn(sortenvergleich)) return [];
-  const spalten = sortenvergleich.sorten.map((s) => ({
-    ...s,
-    eigenes: s.handle === handle,
-    variante: s.handle === handle && eigeneVariante ? eigeneVariante : varianten[s.handle] || null,
-  }));
-  return [...spalten.filter((s) => s.eigenes), ...spalten.filter((s) => !s.eigenes)];
-}
-
-/* Beide Kakao-Preise in EINER Abfrage, aus dem Feld der Kaufbox (Muster
-   VERGLEICH_PREISE_QUERY oben). */
-export const SORTEN_PREISE_QUERY = `#graphql
-  fragment SortenPreis on Product {
-    handle
-    selectedOrFirstAvailableVariant(
-      selectedOptions: []
-      ignoreUnknownOptions: true
-      caseInsensitiveMatch: true
-    ) {
-      price {
-        amount
-        currencyCode
-      }
-    }
-  }
-  query KakaoSortenPreise($country: CountryCode, $language: LanguageCode)
-  @inContext(country: $country, language: $language) {
-    awake: product(handle: "crystal-cacao-awake") {
-      ...SortenPreis
-    }
-    create: product(handle: "crystal-cacao-create") {
-      ...SortenPreis
-    }
-  }
-`;
-
-/* Für den Loader. Fail-soft: Abfrage aus -> Vergleich ohne Preis ("–"), die
-   Kaufseite bleibt stehen. Vergleich aus -> keine Abfrage (null). */
-export async function ladeSortenPreise(storefront, sortenvergleich = SORTENVERGLEICH) {
-  if (!sortenAn(sortenvergleich)) return null;
-  try {
-    const daten = await storefront.query(SORTEN_PREISE_QUERY, {
-      cache: storefront.CacheShort(),
-    });
-    const varianten = {};
-    for (const p of [daten?.awake, daten?.create]) {
-      const v = p?.selectedOrFirstAvailableVariant;
-      if (p?.handle && v?.price) varianten[p.handle] = v;
-    }
-    return varianten;
-  } catch (fehler) {
-    console.error('[sortenvergleich] Preisabfrage fehlgeschlagen:', fehler?.message || fehler);
-    return {};
-  }
-}
-
-/* ---- Kundenfragen --------------------------------------------------------- */
-
-/*
- * WELCHE FRAGEN NACH OBEN: alle, deren Bestandsantwort das Haus schon als
- * sauber auszeichnet (isSchemaSafe, lib/faq-schema.js, dieselbe Regel wie das
- * FAQPage-Schema). Was das Haus nicht verstärkt, zieht auch dieser Block nicht
- * nach oben. REIHENFOLGE nach dem Kundenworte-Zähler aus s03 (claude-jobs/
- * growth-m-lp-produktseite-verkauft-s03/mess/kundenfragen-zaehler.json,
- * 2026-09-26): Anteil Verkaufs-Chat in eigenen Worten (Nenner 377) plus Anteil
- * deutsche Support-Chats (Gorgias, Nenner 1.029): Tragen 6,4 + 26,2 = 32,6;
- * Sauna/Wasser 0,5 + 18,4 = 18,9; Preis/Raten 8,5 + 4,4 = 12,9; Material
- * 1,6 + 2,8 = 4,4. SCHEMA: unten bleibt keine saubere Frage, die FAQ unten gibt
- * kein FAQPage mehr aus; der Block oben gibt es über die VOLLE Liste aus,
- * byte-gleich zu vorher. Genau ein FAQPage je Seite.
- */
-export const KUNDENFRAGEN = {
-  // Überschrift des Blocks (Bedienwort, Christians Wortlaut ersetzt sie).
-  titel: 'Kunden fragen',
-  // Schalter: Seiten, auf denen der Block steht. [] = aus.
-  seiten: ['qione-2-pro', 'qibracelet', 'qihome-air', 'crystal-cacao-awake', 'crystal-cacao-create'],
-  // Themen in Rangfolge; Fragen wörtlich aus data/product-faqs.js.
-  // Die Kakao-Themen stehen am Ende: keine Kakao-Frage steht auf einer
-  // Geräteseite, die Reihenfolge dort bleibt unberührt.
-  rang: [
-    {
-      thema: 'tragen',
-      fragen: [
-        'Kann ich den QiOne® an einer anderen Kette tragen?',
-        'Wie sollte ich den QiOne® tragen?',
-      ],
-    },
-    {
-      thema: 'sauna-wasser',
-      fragen: [
-        'Darf der QiOne® in die Sauna bzw. nass werden?',
-        'Darf das QiBracelet® nass werden, bzw. in die Sauna?',
-      ],
-    },
-    {thema: 'preis-raten', fragen: ['Wie funktioniert die Finanzierung über Klarna?']},
-    {
-      thema: 'material',
-      fragen: [
-        'Ist das QiBracelet® sicher für Anwender mit Allergien?',
-        'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-      ],
-    },
-    /*
-     * KAKAO (FAQ_CACAO, s03 30.09.2026). Einen Kundenworte-Zähler für Kakao
-     * gibt es nicht (der von s03 growth-m zählt nur Geräte-Themen). Eigene
-     * Zählung im Verkaufs-Chat (qi-salesbot app.db, Widget-Gespräche ohne
-     * Proben, 28.07.-30.09.2026, 83 Gespräche mit Kakao-Bezug): Zubereitung 5,
-     * Für wen 0, Wie oft 0, Psychoaktiv 0. Zubereitung zuerst, der Rest in der
-     * Reihenfolge des Auftrags. Dünne Grundlage, neu ordnen, sobald gezählt.
-     */
-    {thema: 'kakao-zubereitung', fragen: ['Wie wird zeremonieller Kakao zubereitet?']},
-    {thema: 'kakao-fuer-wen', fragen: ['Für wen ist Kakao (un)geeignet?']},
-    {thema: 'kakao-wie-oft', fragen: ['Wie oft darf man zeremoniellen Kakao trinken?']},
-    {thema: 'kakao-psychoaktiv', fragen: ['Was bedeutet psychoaktiv in diesem Zusammenhang?']},
-  ],
-};
-
-function rangVon(frage, rang) {
-  let i = 0;
-  for (const t of rang) {
-    for (const f of t.fragen) {
-      if (f === frage) return i;
-      i += 1;
-    }
-  }
-  return Number.MAX_SAFE_INTEGER;
-}
-
-/* `oben` = saubere Fragen nach Rang, `unten` = der Rest. Aus oder nichts
-   Sauberes: oben leer, unten DASSELBE Array (Seite wie vor s04). */
-export function teileFragen(handle, items, kundenfragen = KUNDENFRAGEN) {
-  const liste = Array.isArray(items) ? items : [];
-  const an = Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle);
-  const sauber = an ? liste.filter((it) => isSchemaSafe(it)) : [];
-  if (!sauber.length) return {oben: [], unten: items};
-  const rang = kundenfragen.rang || [];
-  const oben = sauber
-    .map((it, i) => ({it, i}))
-    .sort((a, b) => rangVon(a.it.q, rang) - rangVon(b.it.q, rang) || a.i - b.i)
-    .map((x) => x.it);
-  return {oben, unten: liste.filter((it) => !oben.includes(it))};
-}
-
-/** Brauchen die Blöcke dieser Seite ihr Stylesheet? */
-export function amazonstilAn(handle, vergleich = VERGLEICH, kundenfragen = KUNDENFRAGEN) {
-  return vergleichAn(vergleich) ||
-    (Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle));
-}
-
-/** Dieselbe Frage für die zwei Kakao-Seiten (Schalter: Sortenvergleich). */
-export function sortenStilAn(handle, sortenvergleich = SORTENVERGLEICH, kundenfragen = KUNDENFRAGEN) {
-  return sortenAn(sortenvergleich) ||
-    (Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle));
-}
