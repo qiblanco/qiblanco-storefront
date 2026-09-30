@@ -161,7 +161,7 @@ function Kopf({mitWeg}) {
             height="358"
             fetchpriority="high"
             decoding="async"
-            alt="Christian Bauer, Gründer von Qi Blanco"
+            alt="Christian Bernd Bauer, Gründer von Qi Blanco"
           />
           <figcaption className="pb__christian-text">
             <p>
