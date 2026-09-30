@@ -70,7 +70,7 @@
   --pb-breite: 1080px;
   --pb-tipp: 48px; /* Mindesthoehe jeder Tipp-Flaeche */
   --pb-foto: 112px; /* Handy: Bild neben Christians Worten */
-  --pb-foto-gross: 280px; /* ab 960 px: Bild ueber seinen Worten */
+  --pb-foto-gross: 200px; /* ab 768 px */
 }
 
 /* ─── Grundfluss ──────────────────────────────────────────────────────────── */
@@ -196,20 +196,19 @@
   color: var(--qb-akzent-tinte);
   letter-spacing: 0.08em;
 }
-.pb__kopf .pb__inhalt--breit {
+/* Der Kopf ist EINSPALTIG auf allen Breiten, linksbuendig mit den breiten
+   Sektionen, jedes Kind hoechstens 760 px: das Chat-Fenster steht unten rechts
+   (bei 1440 px ab x 1101, y 660) und verdeckte in der zweispaltigen Fassung
+   Christians Worte. */
+.pb__kopf .pb__inhalt {
   display: grid;
   gap: var(--pb-s4);
 }
-@media (min-width: 960px) {
-  .pb__kopf .pb__inhalt--breit {
-    grid-template-columns: minmax(0, 1fr) var(--pb-foto-gross);
-    column-gap: var(--pb-s8);
-    align-items: center;
-  }
+.pb__kopf .pb__inhalt > * {
+  max-width: var(--pb-breite-schmal);
 }
 
-/* Christian: Bild + seine Worte als EINE Karte. Handy: Bild links daneben,
-   ab 960 px: Bild oben, volle Kartenbreite. */
+/* Christian: Bild + seine Worte als EINE Karte, Bild links daneben. */
 .pb figure.pb__christian {
   display: grid;
   grid-template-columns: var(--pb-foto) minmax(0, 1fr);
@@ -221,14 +220,12 @@
   border-radius: var(--pb-r2);
   box-shadow: var(--pb-shadow-md);
 }
-@media (min-width: 960px) {
+@media (min-width: 768px) {
   .pb figure.pb__christian {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 0 0 var(--pb-s3);
-    overflow: hidden;
-  }
-  .pb figure.pb__christian .pb__christian-text {
-    padding-inline: var(--pb-s3);
+    grid-template-columns: var(--pb-foto-gross) minmax(0, 1fr);
+    gap: var(--pb-s3);
+    align-items: center;
+    padding: var(--pb-s3);
   }
 }
 .pb img.pb__foto {
@@ -238,11 +235,6 @@
   object-position: 50% 20%;
   object-fit: cover;
   border-radius: var(--pb-r1);
-}
-@media (min-width: 960px) {
-  .pb img.pb__foto {
-    border-radius: 0;
-  }
 }
 .pb .pb__christian-text p {
   font-size: var(--pb-fs-base);

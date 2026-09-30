@@ -156,9 +156,9 @@ function Kopf({mitWeg}) {
             className="pb__foto"
             src={`${FOTO}&width=480`}
             srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w`}
-            sizes="(min-width: 960px) 280px, 120px"
-            width="280"
-            height="358"
+            sizes="(min-width: 768px) 200px, 112px"
+            width="200"
+            height="256"
             fetchpriority="high"
             decoding="async"
             alt="Christian Bernd Bauer, Gründer von Qi Blanco"
@@ -627,7 +627,7 @@ function Stimmen() {
 function Schluss() {
   return (
     <section className="pb__schluss" data-section="pb-schluss">
-      <div className="pb__inhalt">
+      <div className="pb__inhalt pb__inhalt--breit">
         <h2>Deine Frage, meine Antwort</h2>
         <p>Such dir einen Donnerstag aus. Ich freue mich auf das Gespräch mit dir.</p>
         <p className="pb__weg">
