@@ -14,16 +14,22 @@ import {fileURLToPath} from 'node:url';
 
 import {
   KUNDENFRAGEN,
+  SORTENVERGLEICH,
   VERGLEICH,
   amazonstilAn,
+  berichtQuelle,
+  ladeSortenPreise,
   ladeVergleichsPreise,
   preisAnzeige,
   ratenAnzeige,
+  sortenAn,
+  sortenSpalten,
+  sortenStilAn,
   teileFragen,
   vergleichAn,
   vergleichSpalten,
 } from './amazonstil-daten.js';
-import {FAQ_QIBRACELET, FAQ_QIHOME_AIR, FAQ_QIONE_2_PRO} from '../../data/product-faqs.js';
+import {FAQ_CACAO, FAQ_QIBRACELET, FAQ_QIHOME_AIR, FAQ_QIONE_2_PRO} from '../../data/product-faqs.js';
 import {faqPageJsonLdString, isSchemaSafe} from '../../lib/faq-schema.js';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -152,7 +158,7 @@ test('Loader: fail-soft bei Ausfall der Abfrage, Preise je Handle bei Erfolg', a
 });
 
 test('Bestand: jede Frage der Rangliste steht wörtlich in product-faqs.js', () => {
-  const alle = new Set([...FAQ_QIONE_2_PRO, ...FAQ_QIBRACELET, ...FAQ_QIHOME_AIR].map((it) => it.q));
+  const alle = new Set([...FAQ_QIONE_2_PRO, ...FAQ_QIBRACELET, ...FAQ_QIHOME_AIR, ...FAQ_CACAO].map((it) => it.q));
   for (const t of KUNDENFRAGEN.rang) {
     for (const q of t.fragen) assert.ok(alle.has(q), `Frage nicht (mehr) im Bestand: ${q}`);
   }
@@ -185,4 +191,165 @@ test('Wortlaut: keine gesperrten Angaben im Vergleich (300 m², Stärke-Rangfolg
   assert.doesNotMatch(texte, /m²|m2\b|quadratmeter/i, 'Fläche in m² ist gesperrt (GL-SPR-0007)');
   assert.doesNotMatch(texte, /stärker|stärkste|besser als/i, 'kein Stärke-Vergleich');
   assert.doesNotMatch(texte, /koh(ä|ae)rent/i, 'Kanon: nicht mit "kohärent" einsteigen');
+});
+
+/* ---- Sortenvergleich Crystal Cacao® (s03, 30.09.2026) --------------------- */
+
+const KAKAO = ['crystal-cacao-awake', 'crystal-cacao-create'];
+const KAKAO_AUS = {...KUNDENFRAGEN, seiten: KUNDENFRAGEN.seiten.filter((h) => !KAKAO.includes(h))};
+const SORTEN_AUS = {...SORTENVERGLEICH, sorten: []};
+const ROUTE = (h) => readFileSync(join(APP, 'routes', `products.${h}.jsx`), 'utf8');
+const SEITE = (k) => readFileSync(join(APP, 'components', 'product-pages', `${k}.jsx`), 'utf8');
+// Quellen ausserhalb dieses Repos (Server). Fehlen sie (CI), wird der Arm
+// übersprungen, nicht grün gerechnet.
+const SERVER = '/srv/openclaw/shared-state';
+const ausserhalb = (pfad) => (existsSync(pfad) ? readFileSync(pfad, 'utf8') : null);
+
+test('Kakao Kundenfragen: Zubereitung, Für wen, Wie oft, Psychoaktiv oben, die drei geflaggten unten', () => {
+  for (const h of KAKAO) {
+    const {oben, unten} = teileFragen(h, FAQ_CACAO);
+    assert.deepEqual(oben.map((it) => it.q), [
+      'Wie wird zeremonieller Kakao zubereitet?',
+      'Für wen ist Kakao (un)geeignet?',
+      'Wie oft darf man zeremoniellen Kakao trinken?',
+      'Was bedeutet psychoaktiv in diesem Zusammenhang?',
+    ]);
+    assert.ok(unten.length === 3 && unten.every((it) => it.flag), `${h}: unten nicht genau die geflaggten`);
+    assert.equal(faqPageJsonLdString(unten), null, `${h}: FAQ unten gäbe ein zweites FAQPage aus`);
+    assert.notEqual(faqPageJsonLdString(FAQ_CACAO), null);
+  }
+});
+
+test('Kakao Rückweg: beide Schalter aus -> kein Vergleich, keine Abfrage, kein Stylesheet, FAQ unten DIESELBE Liste', async () => {
+  assert.equal(sortenAn(SORTEN_AUS), false);
+  assert.deepEqual(sortenSpalten('crystal-cacao-awake', {}, SORTEN_AUS), []);
+  let gefragt = false;
+  const storefront = {query: async () => { gefragt = true; return {}; }, CacheShort: () => ({})};
+  assert.equal(await ladeSortenPreise(storefront, SORTEN_AUS), null);
+  assert.equal(gefragt, false, 'Loader fragt trotz Schalter aus');
+  for (const h of KAKAO) {
+    const {oben, unten} = teileFragen(h, FAQ_CACAO, KAKAO_AUS);
+    assert.equal(oben.length, 0);
+    assert.equal(unten, FAQ_CACAO, `${h}: unten ist nicht dasselbe Array (Seite nicht byte-gleich)`);
+    assert.equal(sortenStilAn(h, SORTEN_AUS, KAKAO_AUS), false, `${h}: Stylesheet trotz Schalter aus`);
+    assert.equal(sortenStilAn(h), true);
+  }
+  // Geräteseiten bleiben vom Kakao-Schalter unberührt und umgekehrt.
+  assert.equal(amazonstilAn('qione-2-pro', VERGLEICH, KAKAO_AUS), true);
+  // Ohne Prop bleibt die Seitenkomponente wie vorher (volle FAQ).
+  for (const k of ['Awake', 'Create']) {
+    assert.match(SEITE(k), /\{faqItems = FAQ_CACAO\} = \{\}/, `${k}: Default ist nicht die volle Liste`);
+  }
+});
+
+test('Kakao Spalten: eigene Sorte zuerst, eigene Variante aus der Kaufbox, andere aus dem Loader', () => {
+  const v = (a) => ({price: {amount: a, currencyCode: 'EUR'}});
+  const s = sortenSpalten('crystal-cacao-create', {varianten: {'crystal-cacao-awake': v('71.03'), 'crystal-cacao-create': v('1')}, eigeneVariante: v('71.03')});
+  assert.deepEqual(s.map((x) => x.handle), ['crystal-cacao-create', 'crystal-cacao-awake']);
+  assert.equal(s[0].eigenes, true);
+  assert.equal(s[0].variante.price.amount, '71.03', 'eigene Sorte nimmt die Kaufbox-Variante');
+  assert.equal(s[1].variante.price.amount, '71.03');
+  assert.equal(sortenSpalten('crystal-cacao-awake', {})[1].variante, null, 'ohne Preis: null, Komponente zeigt "–"');
+});
+
+test('Kakao Preis: Komponente rechnet mit der Funktion der Kaufbox (cacaoPricing, EINE Packung)', () => {
+  const quelle = readFileSync(join(HIER, 'AmazonStil.jsx'), 'utf8');
+  assert.match(quelle, /import \{cacaoPricing\} from '~\/components\/CacaoProductForm'/);
+  assert.match(quelle, /cacaoPricing\('1', s\.variante, s\.handle, land\)\.price/);
+  assert.match(readFileSync(join(APP, 'components', 'CacaoPriceDisplay.jsx'), 'utf8'), /cacaoPricing\(quantity, selectedVariant, handle, marktLand\)/,
+    'Kaufbox rechnet nicht mehr mit cacaoPricing: Vergleich und Kaufbox könnten auseinanderlaufen');
+});
+
+test('Kakao Loader: fail-soft bei Ausfall, Varianten je Handle bei Erfolg', async () => {
+  const alt = console.error;
+  console.error = () => {};
+  try {
+    assert.deepEqual(await ladeSortenPreise({query: async () => { throw new Error('netz'); }, CacheShort: () => ({})}), {});
+  } finally {
+    console.error = alt;
+  }
+  const v = {selectedOrFirstAvailableVariant: {price: {amount: '71.03', currencyCode: 'EUR'}}};
+  const p = await ladeSortenPreise({
+    query: async () => ({awake: {handle: 'crystal-cacao-awake', ...v}, create: {handle: 'crystal-cacao-create', ...v}}),
+    CacheShort: () => ({}),
+  });
+  assert.deepEqual(Object.keys(p).sort(), KAKAO);
+});
+
+test('Kakao Messanker und Einbau: Anker laut ANKER-VERTRAG, Einbau direkt nach den Instagram-Stimmen', () => {
+  const quelle = readFileSync(join(HIER, 'AmazonStil.jsx'), 'utf8');
+  for (const anker of ['data-qb-sortenvergleich', 'data-qb-vergleich-produkt', 'data-qb-vergleich-preis', 'data-qb-sorten-liste', 'data-qb-analysebericht']) {
+    assert.ok(quelle.includes(anker), `Anker fehlt: ${anker}`);
+  }
+  for (const [h, k] of [['crystal-cacao-awake', 'Awake'], ['crystal-cacao-create', 'Create']]) {
+    const r = ROUTE(h);
+    const folge = ['<IgTestimonialSlideshow produkt="Kakao" />', '<Sortenvergleich', `<Kundenfragen handle="${h}"`, `<${k} faqItems={fragen.unten} />`]
+      .map((m) => r.indexOf(m));
+    assert.ok(folge.every((i) => i > 0), `${h}: Baustein fehlt (${folge})`);
+    assert.deepEqual([...folge].sort((a, b) => a - b), folge, `${h}: Reihenfolge falsch`);
+    assert.match(r, new RegExp(`teileFragen\\('${h}', FAQ_CACAO\\)`));
+    assert.match(r, new RegExp(`sortenStilAn\\('${h}'\\)`));
+  }
+});
+
+test('Kakao Fundstellen: Wofür, Profil, Bio stehen so im Bestand dieser Seiten', () => {
+  const [awake, create] = SORTENVERGLEICH.sorten;
+  assert.equal(awake.handle, 'crystal-cacao-awake');
+  assert.ok(ROUTE('crystal-cacao-awake').includes(`>${awake.wofuer[0]}<`), 'Awake-Claim nicht die Überschrift der Seite');
+  assert.ok(ROUTE('crystal-cacao-create').includes(`>${create.wofuer[0]}<`), 'Create-Claim nicht die Überschrift der Seite');
+  assert.ok(SEITE('Awake').includes('Theobromin: 950 mg / 100g') && awake.profil.includes('Theobromin 950 mg'));
+  assert.ok(SEITE('Create').includes('Theobromin: 1.050 mg / 100g & Koffein: 140 mg / 100g'));
+  assert.ok(create.profil.includes('Theobromin 1.050 mg') && create.profil.includes('Koffein 140 mg'));
+  assert.ok(SEITE('Awake').includes('Piura-Tals im Norden Perus') && awake.bohne.includes('Piura'));
+  assert.ok(SEITE('Create').includes('Departamento Amazonas') && create.bohne.includes('Departamento Amazonas'));
+  for (const h of KAKAO) assert.ok(ROUTE(h).includes('Bio-zertifiziert nach DE-ÖKO-006'));
+  for (const s of SORTENVERGLEICH.sorten) assert.equal(s.bio, 'Bio-zertifiziert nach DE-ÖKO-006');
+});
+
+test('Kakao Fundstellen (Server): Wofür wörtlich aus sorten-profil.js, Koffein Awake aus dem Verkaufs-Chat', (t) => {
+  const profil = ausserhalb(`${SERVER}/crystal-cacao-node/repo/app/lib/sorten-profil.js`);
+  const wissen = ausserhalb(`${SERVER}/qi-salesbot/data/seeds/qiblanco-knowledge.json`);
+  if (!profil || !wissen) return t.skip('Serverquellen nicht erreichbar (CI)');
+  const flach = profil.replace(/'\s*\+\s*'/g, '');
+  for (const s of SORTENVERGLEICH.sorten) {
+    for (const zeile of s.wofuer) assert.ok(flach.includes(`'${zeile}'`), `nicht wörtlich in sorten-profil.js: ${zeile}`);
+  }
+  assert.ok(wissen.includes('Theobromin 950 mg, Koffein 120 mg'), 'Awake-Koffein 120 mg nicht (mehr) im Bestand');
+});
+
+test('Kakao Analyseberichte: je Sorte drei, Adresse/Labor/Datum wie der Zeugnis-Vertrag', (t) => {
+  for (const s of SORTENVERGLEICH.sorten) {
+    assert.deepEqual(s.berichte.map((b) => b.art), ['Schadstoff-Prüfzeugnis', 'Nährstoff-Analyse', 'Mineralstoff-Analyse']);
+    for (const b of s.berichte) {
+      assert.match(b.url, /^https:\/\/cdn\.shopify\.com\/s\/files\/1\/0279\/3095\/1750\/files\/[a-z0-9-]+\.pdf\?v=\d+$/);
+      assert.ok(berichtQuelle(b).startsWith(`${b.labor}, ${b.datum}, PDF `));
+    }
+  }
+  const vertrag = ausserhalb(`${SERVER}/qi-salesbot/data/zeugnis-vertrag.json`);
+  if (!vertrag) return t.skip('Zeugnis-Vertrag nicht erreichbar (CI)');
+  const dok = JSON.parse(vertrag).dokumente;
+  const datum = (iso) => iso.split('-').reverse().join('.');
+  for (const s of SORTENVERGLEICH.sorten) {
+    const soll = dok.filter((d) => d.produkt_keys.includes(s.handle));
+    assert.equal(soll.length, 3, `${s.handle}: Vertrag nennt ${soll.length} Dokumente`);
+    for (const b of s.berichte) {
+      const d = soll.find((x) => x.url === b.url);
+      assert.ok(d, `${s.handle}: Adresse nicht im Vertrag: ${b.url}`);
+      assert.equal(datum(d.geprueft_am), b.datum, `${s.handle}: Datum`);
+      assert.equal(d.sprache, b.sprache, `${s.handle}: Sprache`);
+      assert.ok(d.titel.startsWith(`${b.art} · `), `${s.handle}: Art ${b.art} gegen ${d.titel}`);
+      for (const teil of b.labor.split(' und ')) assert.ok(d.labor.includes(teil), `${s.handle}: Labor ${teil}`);
+    }
+  }
+});
+
+test('Kakao Wortlaut: Analyseberichte statt Studien, kein "kohärent", nichts in m²', () => {
+  const texte = [
+    SORTENVERGLEICH.titel,
+    ...Object.values(SORTENVERGLEICH.zeilen),
+    ...SORTENVERGLEICH.sorten.flatMap((s) => [s.name, ...s.wofuer, s.bohne, s.profil, s.bio, ...s.berichte.map((b) => `${b.art} ${berichtQuelle(b)}`)]),
+  ].join('\n');
+  assert.doesNotMatch(texte, /studie/i, 'Christian: nicht die Studien, sondern die Analyseberichte');
+  assert.doesNotMatch(texte, /koh(ä|ae)rent/i);
+  assert.doesNotMatch(texte, /stärker|stärkste|besser als/i, 'kein Stärke-Vergleich');
 });

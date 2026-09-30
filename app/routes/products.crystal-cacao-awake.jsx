@@ -25,6 +25,10 @@ import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlides
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import amazonstilStyles from '~/styles/amazonstil.css?url';
+import {Kundenfragen, Sortenvergleich} from '~/components/reusables/AmazonStil';
+import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
+import {FAQ_CACAO} from '~/data/product-faqs';
 /**
  * Route-gebundenes Stylesheet der Instagram-Stimmen (Muster: zweifel-beleg.css
  * in products.qione-2-pro.jsx). NICHT in app.css: die globale Datei erreicht
@@ -34,7 +38,12 @@ import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
  * Rueckfall kippt dort still in Vererbung.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: igStyles}];
+  return [
+    {rel: 'stylesheet', href: igStyles},
+    // Sortenvergleich + Kundenfragen (Amazon-Stil, s03, 30.09.2026). Beide
+    // Schalter aus (amazonstil-daten.js): kein Stylesheet, Seite wie vorher.
+    ...(sortenStilAn('crystal-cacao-awake') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
+  ];
 }
 
 /** 
@@ -92,13 +101,17 @@ export async function loader(args) {
 async function loadCriticalData({context, request}, handle) {
   const {storefront} = context;
 
-  const [{product}] = await Promise.all([
+  const [{product}, sortenPreise] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle, // ✅ use the static handle
         selectedOptions: getSelectedProductOptions(request),
       },
     }),
+    // Preise beider Sorten für den Sortenvergleich, in derselben Runde wie die
+    // Produktabfrage (amazonstil-daten.js). Fail-soft; Schalter aus: null,
+    // keine Abfrage.
+    ladeSortenPreise(storefront),
   ]);
 
   if (!product?.id) {
@@ -109,6 +122,7 @@ async function loadCriticalData({context, request}, handle) {
 
   return {
     product,
+    sortenPreise,
     // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
     // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
@@ -126,7 +140,7 @@ function loadDeferredData({context, params}) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, sortenPreise} = useLoaderData();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -151,6 +165,10 @@ export default function Product() {
   // 2026-08-30 ("Du musst kein Dreierpack nehmen"). Die Staffel 2x/3x bleibt
   // eine Auswahl entfernt. Job rtbefund-kopfpreis-vs-kaufmenge-wache-20260924.
   const [quantity, setQuantity] = useState('1');
+  // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
+  // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
+  // volle Liste, Seite wie vorher.
+  const fragen = teileFragen('crystal-cacao-awake', FAQ_CACAO);
   return (
     <>
       <div className="flex flex-col gap-5 items-center-justify-center text-center max-w-[750px] mx-auto! my-[5vh]! p-2">
@@ -254,7 +272,18 @@ export default function Product() {
         keiner der vier Bildtexte nennt eine Sorte.
       */}
       <IgTestimonialSlideshow produkt="Kakao" />
-      <Awake />
+      {/* AMAZON-STIL (s03 des Grossjobs 20260930-GROSSJOB-amazonstil-crystal-
+          cacao-...): direkt nach den Instagram-Stimmen der Sortenvergleich mit
+          Wofür-Liste und Analyseberichten, dann die häufigsten Kundenfragen,
+          wie auf den Geräteseiten. FAQPage-Schema genau einmal: oben über die
+          volle Liste, die FAQ unten bekommt nur den Rest. */}
+      <Sortenvergleich
+        handle="crystal-cacao-awake"
+        varianten={sortenPreise}
+        eigeneVariante={selectedVariant}
+      />
+      <Kundenfragen handle="crystal-cacao-awake" oben={fragen.oben} alle={FAQ_CACAO} />
+      <Awake faqItems={fragen.unten} />
     </>
   );
 }

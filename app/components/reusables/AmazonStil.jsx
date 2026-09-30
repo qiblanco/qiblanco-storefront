@@ -3,7 +3,15 @@ import {FaqListe} from './FaqListe';
 import {produktLink, BLOCK_PUBLIC} from './blockLinks';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
 import {useMarktLand} from '~/lib/markt-land';
-import {KUNDENFRAGEN, VERGLEICH, vergleichSpalten} from './amazonstil-daten';
+import {cacaoPricing} from '~/components/CacaoProductForm';
+import {
+  KUNDENFRAGEN,
+  SORTENVERGLEICH,
+  VERGLEICH,
+  berichtQuelle,
+  sortenSpalten,
+  vergleichSpalten,
+} from './amazonstil-daten';
 
 /*
  * AMAZON-STIL STUFE 2 — Gerätevergleich und Kundenfragen weit oben auf
@@ -135,6 +143,142 @@ export function Geraetevergleich({
                 ) : (
                   <a className="btn--text qb-gv__weg" href={ziel}>
                     {VERGLEICH.zumGeraet(s.name)}
+                  </a>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Vergleich der zwei Crystal Cacao®-Sorten auf /products/crystal-cacao-awake
+ * und -create (s03, 30.09.2026): dasselbe Raster und dieselben qb-gv-Klassen
+ * wie der Gerätevergleich, zwei Spalten statt drei, Analyseberichte statt
+ * Zellstudie. MESSANKER (ANKER-VERTRAG des Grossjobs, markt-paritaet misst
+ * daran, nicht umbenennen): data-qb-sortenvergleich, data-qb-vergleich-produkt,
+ * data-qb-vergleich-preis, data-qb-sorten-liste, data-qb-analysebericht.
+ *
+ * Preis: dieselbe Rechnung wie die Kaufbox für EINE Packung (cacaoPricing aus
+ * CacaoProductForm.jsx, dort auch der Mengenrabatt). Ohne Preis der Variante:
+ * "–" statt des EUR-Rückfallwerts der Kaufbox, der in anderen Märkten eine
+ * falsche Währung zeigen würde.
+ *
+ * @param {{handle: string, varianten?: object|null, eigeneVariante?: object|null}} props
+ */
+export function Sortenvergleich({handle, varianten = null, eigeneVariante = null}) {
+  const land = useMarktLand();
+  const spalten = sortenSpalten(handle, {varianten: varianten || {}, eigeneVariante});
+  if (spalten.length < 2) return null;
+  const z = SORTENVERGLEICH.zeilen;
+  const titelId = `qb-gv-titel-${handle}`;
+
+  return (
+    <section
+      className="qb-gv qb-gv--sorten NormalSectionSize"
+      data-qb-sortenvergleich=""
+      data-textplatz={`${handle}.sortenvergleich`}
+      aria-labelledby={titelId}
+    >
+      <h2 id={titelId} className="qb-gv__titel">
+        {SORTENVERGLEICH.titel}
+      </h2>
+      <div className="qb-gv__raster qb-gv__raster--sorten">
+        {spalten.map((s) => {
+          const ziel = `/products/${s.handle}`;
+          const nameId = `qb-gv-name-${handle}-${s.handle}`;
+          const preis = s.variante?.price?.amount
+            ? cacaoPricing('1', s.variante, s.handle, land).price
+            : null;
+          const bild = (
+            <CdnBild
+              src={s.bild}
+              alt=""
+              anzeigeBreite={120}
+              breite={s.breite}
+              hoehe={s.hoehe}
+              sizes="120px"
+              loading="lazy"
+              className="qb-gv__bild"
+            />
+          );
+          return (
+            <article
+              key={s.handle}
+              className={`qb-gv__geraet${s.eigenes ? ' qb-gv__geraet--eigenes' : ''}`}
+              data-qb-vergleich-produkt={s.handle}
+              aria-labelledby={nameId}
+            >
+              <h3 id={nameId} className="qb-gv__kopf">
+                {s.eigenes ? (
+                  <span className="qb-gv__kopf-inhalt">
+                    {bild}
+                    <span className="qb-gv__name">{s.name}</span>
+                  </span>
+                ) : (
+                  <a className="qb-gv__kopf-inhalt" href={ziel}>
+                    {bild}
+                    <span className="qb-gv__name">{s.name}</span>
+                  </a>
+                )}
+              </h3>
+              <dl className="qb-gv__merkmale">
+                <div className="qb-gv__zeile qb-gv__zeile--preis">
+                  <dt>{z.preis}</dt>
+                  <dd data-qb-vergleich-preis="">{preis || '–'}</dd>
+                </div>
+                <div className="qb-gv__zeile">
+                  <dt>{z.wofuer}</dt>
+                  <dd>
+                    <ul className="qb-gv__liste" data-qb-sorten-liste="">
+                      {s.wofuer.map((zeile) => (
+                        <li key={zeile}>{zeile}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+                <div className="qb-gv__zeile">
+                  <dt>{z.bohne}</dt>
+                  <dd>{s.bohne}</dd>
+                </div>
+                <div className="qb-gv__zeile">
+                  <dt>{z.profil}</dt>
+                  <dd>{s.profil}</dd>
+                </div>
+                <div className="qb-gv__zeile">
+                  <dt>{z.bio}</dt>
+                  <dd>{s.bio}</dd>
+                </div>
+                <div className="qb-gv__zeile">
+                  <dt>{z.berichte}</dt>
+                  <dd>
+                    {s.berichte.map((b) => (
+                      <a
+                        key={b.url}
+                        className="qb-gv__studie qb-gv__bericht"
+                        href={b.url}
+                        hrefLang={b.sprache}
+                        type="application/pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-qb-analysebericht=""
+                      >
+                        <span className="qb-gv__bericht-art">{b.art}</span>
+                        <span className="qb-gv__bericht-quelle">{berichtQuelle(b)}</span>
+                      </a>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
+              <div className="qb-gv__fuss">
+                {s.eigenes ? (
+                  <span className="qb-gv__marke">{SORTENVERGLEICH.dieserArtikel}</span>
+                ) : (
+                  <a className="btn--text qb-gv__weg" href={ziel}>
+                    {SORTENVERGLEICH.zurSorte(s.name)}
                   </a>
                 )}
               </div>

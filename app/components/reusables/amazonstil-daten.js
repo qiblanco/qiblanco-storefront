@@ -2,7 +2,9 @@
  * amazonstil-daten.js — Texte, Schalter und reine Logik der Amazon-Stil-
  * Stufe 2 auf den drei Geräte-Kaufseiten: Gerätevergleich und Kundenfragen
  * weit oben (Grossjob growth-m-lp-produktseite-verkauft, s04, 27.09.2026;
- * Leitplanke Folie 11). Komponenten: ./AmazonStil.jsx, Stylesheet:
+ * Leitplanke Folie 11). Seit dem 30.09.2026 auch auf den zwei Kakao-
+ * Kaufseiten: Sortenvergleich mit Analyseberichten und Kundenfragen
+ * (Abschnitt SORTENVERGLEICH). Komponenten: ./AmazonStil.jsx, Stylesheet:
  * styles/amazonstil.css, Test: ./amazonstil-daten.test.mjs.
  *
  * Liegt in reusables/ statt app/data/, weil die Scope-Allowlist des
@@ -214,6 +216,210 @@ export async function ladeVergleichsPreise(storefront, vergleich = VERGLEICH) {
   }
 }
 
+/* ---- Sortenvergleich Crystal Cacao® --------------------------------------- */
+
+/*
+ * Derselbe Amazon-Stil für die zwei Kakao-Kaufseiten /products/crystal-cacao-
+ * awake und -create (Grossjob 20260930-GROSSJOB-amazonstil-crystal-cacao-und-
+ * us-seite-genau-wie-deutsch-mit-paritaetspruefer, s03). Christian 30.09.2026:
+ * statt der Studien die Analyseberichte verlinken und kurz auflisten, wofür
+ * die zwei Sorten sind. Verglichen werden die zwei SORTEN, nicht die Mengen:
+ * die Mengen stehen schon in der Kaufbox.
+ *
+ * Diese Daten übernimmt crystal-cacao.com byte-gleich (s04) und qi-blanco.com
+ * auf Englisch (s06, Übersetzung markt-paritaet/data/uebersetzungen.json).
+ * Wer hier einen Text ändert, ändert ihn auf drei Läden.
+ *
+ * RÜCKWEG OHNE CODE-LOGIK: SORTENVERGLEICH.sorten = [] (kein Vergleich, keine
+ * Preisabfrage) und die zwei Kakao-Handles aus KUNDENFRAGEN.seiten nehmen
+ * (FAQ unten wieder vollständig, kein Stylesheet). Beides aus = beide Seiten
+ * byte-gleich zum Stand vor s03 (Test).
+ */
+export const SORTENVERGLEICH = {
+  titel: 'Crystal Cacao® Awake und Create im Vergleich',
+  // Tabellenköpfe. "Analyseberichte" steht dort, wo bei den Geräten die
+  // Zellstudie steht (Christian: "nicht die Studien, sondern die Analyseberichte").
+  zeilen: {
+    preis: 'Preis',
+    wofuer: 'Wofür',
+    bohne: 'Bohne und Herkunft',
+    profil: 'Profil',
+    bio: 'Bio',
+    berichte: 'Analyseberichte',
+  },
+  zurSorte: (name) => `Zum ${name}`,
+  dieserArtikel: 'Dieser Artikel',
+  sorten: [
+    {
+      handle: 'crystal-cacao-awake',
+      // Produkttitel (Storefront, <h1> der Kaufseite).
+      name: 'Crystal Cacao® Awake',
+      // featuredImage des Produkts (og:image der Kaufseite, 2000x2000).
+      bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/7.png?v=1765893911',
+      breite: 2000,
+      hoehe: 2000,
+      // crystal-cacao-node/repo/app/lib/sorten-profil.js SORTEN.awake.claim
+      // und .einordnung (claim auch <h2> dieser Kaufseite).
+      wofuer: [
+        'Wach. Mutig. Kraftvoll.',
+        'Gedacht für den Start in den Tag: morgens, vor dem Sport, vor einem langen Vormittag.',
+      ],
+      // Bohne: qi-salesbot/data/zeugnis-vertrag.json (Referenz »Piura Blanco«);
+      // Herkunft: product-pages/Awake.jsx herkunftRows[0] ("goldenen
+      // Flusstälern des Piura-Tals im Norden Perus").
+      bohne: 'Piura Blanco aus dem Piura-Tal im Norden Perus',
+      // Theobromin: product-pages/Awake.jsx ("Theobromin: 950 mg / 100g");
+      // Koffein: Nährstoff-Analyse Dartsch DARTSCH/04/11/25 (unten verlinkt),
+      // Wortlaut im Verkaufs-Chat qi-salesbot/data/seeds/qiblanco-knowledge.json.
+      profil: 'Theobromin 950 mg, Koffein 120 mg je 100 g',
+      // Route products.crystal-cacao-awake.jsx, CacaoBenefitList.
+      bio: 'Bio-zertifiziert nach DE-ÖKO-006',
+      // qi-salesbot/data/zeugnis-vertrag.json (SSoT), im Kakao-Laden
+      // app/lib/kakao-belege.js: Art, Labor, Datum, Adresse, Sprache.
+      berichte: [
+        {
+          art: 'Schadstoff-Prüfzeugnis',
+          labor: 'Primoris Belgium',
+          datum: '21.08.2025',
+          sprache: 'en',
+          url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/pruefzeugnis-primoris-piura-blanco-2025-08-21.pdf?v=1788373365',
+        },
+        {
+          art: 'Nährstoff-Analyse',
+          labor: 'Dartsch Scientific',
+          datum: '04.11.2025',
+          sprache: 'en',
+          url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/naehrstoffanalyse-dartsch-crystal-cacao-awake-2025-11-04.pdf?v=1788373343',
+        },
+        {
+          art: 'Mineralstoff-Analyse',
+          labor: 'SAS hagmann und Dartsch Scientific',
+          datum: '24.03.2026',
+          sprache: 'en',
+          url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mineralstoffanalyse-dartsch-crystal-cacao-awake-2026-03-24.pdf?v=1789034539',
+        },
+      ],
+    },
+    {
+      handle: 'crystal-cacao-create',
+      name: 'Crystal Cacao® Create',
+      // featuredImage des Produkts (og:image der Kaufseite, 2144x2133).
+      bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Doypack_Mockup__v3-min.png?v=1765893937',
+      breite: 2144,
+      hoehe: 2133,
+      // sorten-profil.js SORTEN.create.claim und .einordnung.
+      wofuer: [
+        'Wach. Klar. Fokussiert.',
+        'Gedacht für den klaren Kopf: lange Stunden am Schreibtisch, Arbeit, die Ruhe braucht.',
+      ],
+      // Bohne: zeugnis-vertrag.json (Referenz »Amazonas Nativo«); Herkunft:
+      // product-pages/Create.jsx herkunftRows[0] ("Bergwäldern des
+      // peruanischen Departamento Amazonas").
+      bohne: 'Amazonas Nativo aus dem Departamento Amazonas in Peru',
+      // product-pages/Create.jsx ("Theobromin: 1.050 mg / 100g & Koffein:
+      // 140 mg / 100g").
+      profil: 'Theobromin 1.050 mg, Koffein 140 mg je 100 g',
+      bio: 'Bio-zertifiziert nach DE-ÖKO-006',
+      berichte: [
+        {
+          art: 'Schadstoff-Prüfzeugnis',
+          labor: 'Primoris Belgium',
+          datum: '19.08.2025',
+          sprache: 'en',
+          url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/pruefzeugnis-primoris-amazonas-nativo-2025-08-19.pdf?v=1788373357',
+        },
+        {
+          art: 'Nährstoff-Analyse',
+          labor: 'Dartsch Scientific',
+          datum: '27.10.2025',
+          sprache: 'de',
+          url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/naehrstoffanalyse-dartsch-crystal-cacao-create-2025-10-27.pdf?v=1788373349',
+        },
+        {
+          art: 'Mineralstoff-Analyse',
+          labor: 'SAS hagmann und Dartsch Scientific',
+          datum: '12.03.2026',
+          sprache: 'en',
+          url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mineralstoffanalyse-dartsch-crystal-cacao-create-2026-03-12.pdf?v=1789034532',
+        },
+      ],
+    },
+  ],
+};
+
+// Zweite Zeile je Bericht: Labor, Datum, Dateiart und Sprache des Dokuments.
+const SPRACHE = {de: 'deutsch', en: 'englisch'};
+export function berichtQuelle(b) {
+  return [b.labor, b.datum, `PDF ${SPRACHE[b.sprache] || b.sprache}`].join(', ');
+}
+
+/** Ist der Sortenvergleich eingeschaltet (Schalter: SORTENVERGLEICH.sorten)? */
+export function sortenAn(sortenvergleich = SORTENVERGLEICH) {
+  return Array.isArray(sortenvergleich?.sorten) && sortenvergleich.sorten.length > 0;
+}
+
+/* Spalten für EINE Kakao-Seite: die Sorte dieser Seite zuerst ("Dieser
+   Artikel"). `varianten` {handle: {price}} aus ladeSortenPreise; die eigene
+   Sorte nimmt die Variante ihrer Kaufbox (`eigeneVariante`). Den Preis rechnet
+   die Komponente mit derselben Funktion wie die Kaufbox (cacaoPricing). */
+export function sortenSpalten(handle, {varianten = {}, eigeneVariante = null} = {},
+  sortenvergleich = SORTENVERGLEICH) {
+  if (!sortenAn(sortenvergleich)) return [];
+  const spalten = sortenvergleich.sorten.map((s) => ({
+    ...s,
+    eigenes: s.handle === handle,
+    variante: s.handle === handle && eigeneVariante ? eigeneVariante : varianten[s.handle] || null,
+  }));
+  return [...spalten.filter((s) => s.eigenes), ...spalten.filter((s) => !s.eigenes)];
+}
+
+/* Beide Kakao-Preise in EINER Abfrage, aus dem Feld der Kaufbox (Muster
+   VERGLEICH_PREISE_QUERY oben). */
+export const SORTEN_PREISE_QUERY = `#graphql
+  fragment SortenPreis on Product {
+    handle
+    selectedOrFirstAvailableVariant(
+      selectedOptions: []
+      ignoreUnknownOptions: true
+      caseInsensitiveMatch: true
+    ) {
+      price {
+        amount
+        currencyCode
+      }
+    }
+  }
+  query KakaoSortenPreise($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    awake: product(handle: "crystal-cacao-awake") {
+      ...SortenPreis
+    }
+    create: product(handle: "crystal-cacao-create") {
+      ...SortenPreis
+    }
+  }
+`;
+
+/* Für den Loader. Fail-soft: Abfrage aus -> Vergleich ohne Preis ("–"), die
+   Kaufseite bleibt stehen. Vergleich aus -> keine Abfrage (null). */
+export async function ladeSortenPreise(storefront, sortenvergleich = SORTENVERGLEICH) {
+  if (!sortenAn(sortenvergleich)) return null;
+  try {
+    const daten = await storefront.query(SORTEN_PREISE_QUERY, {
+      cache: storefront.CacheShort(),
+    });
+    const varianten = {};
+    for (const p of [daten?.awake, daten?.create]) {
+      const v = p?.selectedOrFirstAvailableVariant;
+      if (p?.handle && v?.price) varianten[p.handle] = v;
+    }
+    return varianten;
+  } catch (fehler) {
+    console.error('[sortenvergleich] Preisabfrage fehlgeschlagen:', fehler?.message || fehler);
+    return {};
+  }
+}
+
 /* ---- Kundenfragen --------------------------------------------------------- */
 
 /*
@@ -233,8 +439,10 @@ export const KUNDENFRAGEN = {
   // Überschrift des Blocks (Bedienwort, Christians Wortlaut ersetzt sie).
   titel: 'Kunden fragen',
   // Schalter: Seiten, auf denen der Block steht. [] = aus.
-  seiten: ['qione-2-pro', 'qibracelet', 'qihome-air'],
+  seiten: ['qione-2-pro', 'qibracelet', 'qihome-air', 'crystal-cacao-awake', 'crystal-cacao-create'],
   // Themen in Rangfolge; Fragen wörtlich aus data/product-faqs.js.
+  // Die Kakao-Themen stehen am Ende: keine Kakao-Frage steht auf einer
+  // Geräteseite, die Reihenfolge dort bleibt unberührt.
   rang: [
     {
       thema: 'tragen',
@@ -258,6 +466,18 @@ export const KUNDENFRAGEN = {
         'Aus welchem Material bestehen die Qi Blanco® Produkte?',
       ],
     },
+    /*
+     * KAKAO (FAQ_CACAO, s03 30.09.2026). Einen Kundenworte-Zähler für Kakao
+     * gibt es nicht (der von s03 growth-m zählt nur Geräte-Themen). Eigene
+     * Zählung im Verkaufs-Chat (qi-salesbot app.db, Widget-Gespräche ohne
+     * Proben, 28.07.-30.09.2026, 83 Gespräche mit Kakao-Bezug): Zubereitung 5,
+     * Für wen 0, Wie oft 0, Psychoaktiv 0. Zubereitung zuerst, der Rest in der
+     * Reihenfolge des Auftrags. Dünne Grundlage, neu ordnen, sobald gezählt.
+     */
+    {thema: 'kakao-zubereitung', fragen: ['Wie wird zeremonieller Kakao zubereitet?']},
+    {thema: 'kakao-fuer-wen', fragen: ['Für wen ist Kakao (un)geeignet?']},
+    {thema: 'kakao-wie-oft', fragen: ['Wie oft darf man zeremoniellen Kakao trinken?']},
+    {thema: 'kakao-psychoaktiv', fragen: ['Was bedeutet psychoaktiv in diesem Zusammenhang?']},
   ],
 };
 
@@ -290,5 +510,11 @@ export function teileFragen(handle, items, kundenfragen = KUNDENFRAGEN) {
 /** Brauchen die Blöcke dieser Seite ihr Stylesheet? */
 export function amazonstilAn(handle, vergleich = VERGLEICH, kundenfragen = KUNDENFRAGEN) {
   return vergleichAn(vergleich) ||
+    (Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle));
+}
+
+/** Dieselbe Frage für die zwei Kakao-Seiten (Schalter: Sortenvergleich). */
+export function sortenStilAn(handle, sortenvergleich = SORTENVERGLEICH, kundenfragen = KUNDENFRAGEN) {
+  return sortenAn(sortenvergleich) ||
     (Array.isArray(kundenfragen?.seiten) && kundenfragen.seiten.includes(handle));
 }
