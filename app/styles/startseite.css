@@ -166,10 +166,42 @@
 }
 
 /* --- 8. Mobile: Ueberschriften zurueckdrehen ----------------------------- */
-/* Ohne das traegt der Desktop-Token 32px auf 390px Breite und bricht um. */
-@media (max-width: 640px) {
-  .home h2 {
-    font-size: var(--st-fs-6) !important;
+/* Ohne das traegt der Desktop-Token 32px auf 390px Breite und bricht um.
+
+   ZWEI KORREKTUREN AM 2026-09-15, beide GEMESSEN und nicht vermutet — der
+   Block stand seit PR #281 hier und hat in dieser Zeit NIE gewirkt:
+
+   (a) @layer utilities. Regel 1 oben setzt `.home h2` mit !important INNERHALB
+       von @layer utilities. Bei !important dreht die Kaskade die Layer-Reihen-
+       folge um: eine ungelayerte !important-Regel hat dann die NIEDRIGSTE
+       Prioritaet und verliert gegen jede gelayerte — unabhaengig von ihrer
+       Spezifitaet und unabhaengig davon, dass sie spaeter in der Datei steht.
+       Dieser Block war ungelayert und hat deshalb nie gegriffen. Gemessen am
+       2026-09-15 auf https://qiblanco.com/ bei 600px Breite: 22 von 22 H2
+       standen auf 32,0px statt auf dem Hauswert 24px (reset.css:203 fuehrt
+       unter 750px `h2 { font-size: 1.5rem !important }`).
+       Bauform woertlich wie app/styles/pdp-qi.css (Commit 2102512) und
+       app/styles/pdp-landing-qi.css: die Ruecknahme steht in DERSELBEN Ebene
+       wie der Token darueber, sonst verliert sie gegen ihn.
+
+   (b) 640px -> 749px. Der Hausbreakpoint steht in reset.css auf 749px. Mit
+       640px blieb ein Band von 641 bis 749px ohne jede Ruecknahme — dort trug
+       die Seite den Desktop-Token, waehrend der Rest des Shops laengst auf den
+       Mobilwerten stand.
+       DIE H3-ZEILE WANDERT MIT, UND ZWAR ZWINGEND: --st-fs-6 ist 24px und ist
+       zugleich der H2-Mobilwert. Bliebe H3 bei 640px stehen, waeren H2 und H3
+       im Band 641-749px beide 24px gross — die Ueberschriften-Hierarchie faellt
+       dort zusammen. Der Layer-Fix allein haette diesen Defekt also ERZEUGT.
+
+   WARUM DAS NIEMAND GESEHEN HAT: `dim_stimmig` der design-rubrik liest
+   ausschliesslich viewports["desktop"]; der Score der Startseite war mit dem
+   Fehler 82 und damit gruen. Der Melder ist seit 2026-09-15 die h2-mobil-wache
+   (homepage-bauer/bin/h2-mobil-wache, rt-Task), die genau diesen Fall misst. */
+@media (max-width: 749px) {
+  @layer utilities {
+    .home h2 {
+      font-size: var(--st-fs-6) !important;
+    }
   }
   .home h3 {
     font-size: var(--st-fs-5) !important;
