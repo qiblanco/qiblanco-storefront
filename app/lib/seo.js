@@ -483,27 +483,12 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Hilfeseite für angemeldete Partner, aus /pages/affiliate-partnerprogramm verlinkt; Partnerkanal, kein Anzeigenziel. noindex in der eigenen Route',
     seit: '2026-09-30',
   },
-  // Neu 2026-09-24 (Großjob „Seite: Wie funktioniert der GitterChip im
-  // QiOne?", Christian 23.09.2026: „Die Seite noch nicht verlinken und nicht
-  // crawlbar machen."). Dieselbe Lage wie `qi-master-vorverkauf`: von Anfang an
-  // unsichtbar gebaut, nie im Index, in keiner Sitemap, ohne interne
-  // Verlinkung. Deshalb `ausSitemap: true` und keine Übergangsstufe. Der
-  // Eintrag ist heute wirkungslos (reine Route, kein Shopify-Seitenobjekt, nicht
-  // in NUR_ROUTE_SEITEN) und sperrt den Tag, an dem jemand im Admin eine Seite
-  // mit diesem Handle anlegt. Das noindex selbst steht in der eigenen Route
-  // `pages.wie-funktioniert-der-gitterchip-im-qione.jsx` (meta + X-Robots-Tag).
-  // Bei Christians Freigabe wird dieser Eintrag entfernt.
-  {
-    handle: 'wie-funktioniert-der-gitterchip-im-qione',
-    ausSitemap: true,
-    klasse: 'vorab',
-    grund:
-      'Erklärseite GitterChip, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
-    seit: '2026-09-24',
-  },
+  // Der Eintrag `wie-funktioniert-der-gitterchip-im-qione` (seit 2026-09-24,
+  // klasse vorab) ist am 2026-10-01 mit der Freigabe entfernt; die Seite steht
+  // jetzt in NUR_ROUTE_SEITEN (Job growth-m-lp-produktseite-verkauft-s05).
   // Neu 2026-09-24 (Großjob „Forschung bei Qi Blanco“, Christian 24.09.2026:
   // „Die Page heißt /pages/forschung. Nicht crawlen, nicht veröffentlicht.“).
-  // Dieselbe Lage wie der Eintrag darüber: von Anfang an unsichtbar gebaut,
+  // Dieselbe Lage wie bis 2026-10-01 die GitterChip-Seite: von Anfang an unsichtbar gebaut,
   // wirkungslos, solange es kein Shopify-Seitenobjekt mit diesem Handle gibt.
   // Das noindex steht in der eigenen Route `pages.forschung.jsx`. Bei
   // Christians Freigabe wird dieser Eintrag entfernt.
@@ -564,6 +549,31 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
  * geratenes Datum.
  */
 export const NUR_ROUTE_SEITEN = [
+  {
+    pfad: '/pages/wie-funktioniert-der-gitterchip-im-qione',
+    lastmod: '2026-10-01T01:00:00Z',
+    grund:
+      'Die Seite „Wie funktioniert der GitterChip im QiOne?“ (Christian ' +
+      '23.09.2026, Grossjob 20260923-GROSSJOB-seite-wie-funktioniert-der-' +
+      'gitterchip-im-qione-versteckt), bis zur Leitplanken-Frage 7 versteckt. ' +
+      'Freigegeben am 2026-10-01 (Job growth-m-lp-produktseite-verkauft-s05, ' +
+      'Entscheid AI-CEO 30.09., Option a): indexierbar und im Video-Dialog ' +
+      'der QiOne-Kaufseite verlinkt. Sie besteht allein aus der Route ' +
+      'pages.wie-funktioniert-der-gitterchip-im-qione.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kriterium 2 erfuellt: kein noindex, ' +
+      'canonicalLink() in der Route, im selben Commit. lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Commits (Merge am 2026-09-30 ' +
+      'nach 22:20Z geplant); probe_sitemap_lastmod_wahrhaftig.py meldet, ' +
+      'falls der Merge spaeter lag. WACHE (Kriterium 3): ' +
+      'claude-jobs/growth-m-lp-produktseite-verkauft-s05/pruefungen/' +
+      'probe_gitterchip_seite_freigegeben.py, Messgeraet des ' +
+      'nachbau-audit-Kriteriums k5d7340e6f3. Sie prueft den INHALT ' +
+      '(Grafiken, Forscher, Kaufweg), nicht den Statuscode. Dazu prueft ' +
+      'sie kein noindex, den Canonical, den Sitemap-<loc> und den Link im ' +
+      'geoeffneten Video-Dialog der Kaufseite. Klassenweit wacht ' +
+      'probe_sitemap_noindex_naht.py.',
+  },
   {
     pfad: '/pages/neu-oder-gebraucht',
     lastmod: '2026-09-12T23:30:00Z',

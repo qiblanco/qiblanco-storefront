@@ -80,8 +80,8 @@ test('QiHome Air hat noch keine Kachel (kein Zellvideo, wartet auf Christians Ma
   assert.deepEqual(aktiveVideos('qihome-air'), []);
 });
 
-test('Wie-funktioniert-Link bleibt aus, bis Christian entscheidet, und zeigt auf die gebaute Seite', () => {
-  assert.equal(WIE_FUNKTIONIERT_LINK, false);
+test('Wie-funktioniert-Link ist freigegeben (Frage 7, Option a) und zeigt auf die gebaute Seite', () => {
+  assert.equal(WIE_FUNKTIONIERT_LINK, true);
   assert.equal(WIE_FUNKTIONIERT_PFAD, '/pages/wie-funktioniert-der-gitterchip-im-qione');
 });
 

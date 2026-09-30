@@ -53,15 +53,16 @@ function imgixVideo(pfad, standbild) {
 }
 
 /*
- * Link auf die Seite „Wie funktioniert der GitterChip im QiOne?“ (live,
- * versteckt, homepage-bauer D-2957 / PR #608). SICHTBAR SCHALTEN ENTSCHEIDET
- * CHRISTIAN (Leitplanken-PDF 26.09., Frage 7). Solange false, rendert keine
- * Fläche den Link, und die Wachen der GitterChip-Seite (Arm „versteckt“)
- * bleiben grün. Freigabe = dieser Schalter PLUS die drei Stellen im Kopf von
- * routes/pages.wie-funktioniert-der-gitterchip-im-qione.jsx PLUS Rücknahme
- * der Abnahme-Kriterien jenes Jobs — in EINEM Zug.
+ * Link auf die Seite „Wie funktioniert der GitterChip im QiOne?“ (homepage-
+ * bauer D-2957 / PR #608). Bis 2026-10-01 aus, weil die Seite versteckt war
+ * (Leitplanken-PDF 26.09., Frage 7). Entschieden am 30.09. (AI-CEO im Mandat,
+ * Option a): Seite sichtbar, Link im Dialog der QiOne-Kaufseite. Freigegeben
+ * in EINEM Zug mit dem Kopf von routes/pages.wie-funktioniert-der-gitterchip-
+ * im-qione.jsx (canonical statt noindex), NUR_ROUTE_SEITEN in lib/seo.js und
+ * dem Probentausch des Seiten-Jobs (Job growth-m-lp-produktseite-verkauft-s05).
+ * Rückweg nur für den Link: false.
  */
-export const WIE_FUNKTIONIERT_LINK = false;
+export const WIE_FUNKTIONIERT_LINK = true;
 export const WIE_FUNKTIONIERT_PFAD = '/pages/wie-funktioniert-der-gitterchip-im-qione';
 export const WIE_FUNKTIONIERT_TEXT = 'Wie funktioniert der GitterChip im QiOne?';
 
