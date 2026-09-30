@@ -7,6 +7,10 @@ import {
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
 import {mergeCartAttributes} from '~/lib/checkout-tracking';
+import {
+  bewertungsanfrageAusFormular,
+  bewertungsanfrageCartAttributes,
+} from '~/lib/bewertungsanfrage';
 
 /**
  * Saves click IDs on the cart before sending the customer to Shopify Checkout.
@@ -34,7 +38,11 @@ export async function action({request, context}) {
   // Faellt das Feld aus (JavaScript aus, Tracker geblockt), bleibt es null und
   // der Marker faellt auf Query/Referer/Cookie bzw. auf 'unknown' zurück —
   // nie auf 'no'.
-  const clientMarker = await adMarkerAusFormular(request);
+  //
+  // Ein Request-Body ist nur EINMAL lesbar: das Formular wird hier einmal
+  // gelesen und an beide Leser weitergegeben.
+  const form = await formularLesen(request);
+  const clientMarker = adMarkerAusFormular(form);
 
 
   // Job 20260907-fbc-klick-id-... (s02): der gesamte Block stand unter
@@ -54,6 +62,12 @@ export async function action({request, context}) {
     ...(hasAttributionConsent(request, env)
       ? getAttributionCartAttributes(request)
       : []),
+    // Einwilligung in die Bewertungsanfrage (E1): eine Erklärung des Kunden,
+    // kein Tracking, darum außerhalb des Consent-Zweigs. Leer, wenn die Frage
+    // nicht gestellt wurde oder sich die Antwort nicht geändert hat.
+    ...bewertungsanfrageCartAttributes(bewertungsanfrageAusFormular(form), {
+      bestehendeAttribute: cartResult.attributes,
+    }),
   ];
   const {attributes, changed} = mergeCartAttributes(
     cartResult.attributes,
@@ -76,21 +90,30 @@ export async function action({request, context}) {
 }
 
 /**
- * Liest das versteckte Feld des Kasse-Formulars. Wirft NIE: ein Request ohne
- * lesbaren Body ist kein Grund, den Weg zur Kasse zu stoeren — das Tracking
- * darf den Checkout nie blockieren (dieselbe Regel wie in CartSummary.jsx).
+ * Liest das Kasse-Formular. Wirft NIE: ein Request ohne lesbaren Body ist kein
+ * Grund, den Weg zur Kasse zu stoeren — das Tracking darf den Checkout nie
+ * blockieren (dieselbe Regel wie in CartSummary.jsx).
  *
  * @param {Request} request
- * @returns {Promise<string | null>}
+ * @returns {Promise<FormData | null>}
  */
-async function adMarkerAusFormular(request) {
+async function formularLesen(request) {
   try {
-    const form = await request.formData();
-    const wert = form.get('ad_params_seen');
-    return typeof wert === 'string' ? wert : null;
+    return await request.formData();
   } catch {
     return null;
   }
+}
+
+/**
+ * Das versteckte Ankunfts-Feld des Kasse-Formulars.
+ *
+ * @param {FormData | null} form
+ * @returns {string | null}
+ */
+function adMarkerAusFormular(form) {
+  const wert = form?.get('ad_params_seen');
+  return typeof wert === 'string' ? wert : null;
 }
 
 /**

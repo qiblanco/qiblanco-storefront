@@ -2128,6 +2128,27 @@ footer.footer :focus-visible {
   font-size: 0.9rem;
   color: rgba(0, 0, 0, 0.5);
 }
+/* Einwilligung in die Bewertungsanfrage direkt über dem Kasse-Knopf (E1).
+   Das ganze Label ist die Trefferfläche, nicht nur das Kästchen: auf dem
+   Handy ist ein 16-px-Kästchen allein kaum zu treffen. */
+.cart-bewertung-optin {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0 4px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+.cart-bewertung-optin input[type='checkbox'] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: #000;
+  cursor: pointer;
+}
 .cart-line-quantity {
   display: flex;
   align-items: center;

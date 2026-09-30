@@ -12,6 +12,12 @@ import {useMarktLand} from '~/lib/markt-land';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
 import {versandhinweisFürLinien} from '~/lib/vorbestellung';
+import {
+  BEWERTUNGSANFRAGE_ANGEZEIGT_FELD,
+  BEWERTUNGSANFRAGE_FELD,
+  BEWERTUNGSANFRAGE_TEXT,
+  BEWERTUNGSANFRAGE_VERSION,
+} from '~/lib/bewertungsanfrage';
 import {KasseImBrowser} from '~/components/reusables/KasseImBrowser';
 
 /**
@@ -179,6 +185,23 @@ function CartCheckoutActions({
         nie wie eine belegte Abwesenheit aussehen.
       */}
       <input type="hidden" name="ad_params_seen" value={adAnkunft} />
+      {/*
+        EINWILLIGUNG IN DIE BEWERTUNGSANFRAGE (E1, ~/lib/bewertungsanfrage).
+        Separat, NIE vorausgefüllt (kein checked/defaultChecked), für jeden
+        Warenkorb gleich, und der Kasse-Knopf geht mit und ohne Haken. Das
+        versteckte Feld sagt dem Server, dass die Frage gestellt wurde: ohne
+        es wäre "nicht angehakt" von "nie gesehen" nicht zu unterscheiden,
+        weil der Browser eine leere Checkbox gar nicht mitschickt.
+      */}
+      <input
+        type="hidden"
+        name={BEWERTUNGSANFRAGE_ANGEZEIGT_FELD}
+        value={BEWERTUNGSANFRAGE_VERSION}
+      />
+      <label className="cart-bewertung-optin">
+        <input type="checkbox" name={BEWERTUNGSANFRAGE_FELD} value="ja" />
+        <span>{BEWERTUNGSANFRAGE_TEXT}</span>
+      </label>
       <button
         className="btn--primary"
         type="submit"
