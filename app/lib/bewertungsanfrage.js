@@ -1,11 +1,11 @@
 // Einwilligung in eine Bewertungsanfrage per E-Mail, erhoben am Kasse-Knopf
 // (E1, Job 20261001-aiceo-s08-i-checkout-optin-bewertung; Entscheid in
-// review.db, Schluessel ...-s06:vorlage:s06-vorlage-drittquellen-e1-e3).
+// review.db, Schlüssel ...-s06:vorlage:s06-vorlage-drittquellen-e1-e3).
 //
 // DIE VIER BEDINGUNGEN DES ENTSCHEIDS, und wo jede im Code steht:
 //   separat           eigenes Feld, eigenes Cart-Attribut, nie mit etwas anderem
 //                     zusammen erhoben (CartSummary.jsx)
-//   unvorausgefuellt  die Checkbox hat weder `checked` noch `defaultChecked`
+//   unvorausgefüllt  die Checkbox hat weder `checked` noch `defaultChecked`
 //   nicht gekoppelt   der Kasse-Knopf funktioniert mit und ohne Haken gleich;
 //                     die Route liest den Wert, sie verlangt ihn nie
 //   alle gleich       die Checkbox steht in JEDEM Warenkorb, ohne Bedingung
@@ -15,12 +15,12 @@
 //   bewertungsanfrage_optin_text  Version des gezeigten Wortlauts ('v1')
 //   bewertungsanfrage_optin_at    ISO-Zeitpunkt der letzten ÄNDERUNG
 // Fehlt `bewertungsanfrage_optin` ganz, wurde die Frage NICHT gestellt (Kauf am
-// Kasse-Formular vorbei, z. B. ueber einen Direkt-zur-Kasse-Link). Das ist ein
+// Kasse-Formular vorbei, z. B. über einen Direkt-zur-Kasse-Link). Das ist ein
 // dritter Zustand und kein 'nein': eine Frage, die niemand gesehen hat, hat
 // niemand verneint.
 //
-// Der Wert ist eine Willenserklaerung des Kunden, kein Tracking. Er wird
-// deshalb unabhaengig vom Cookie-Consent geschrieben.
+// Der Wert ist eine Willenserklärung des Kunden, kein Tracking. Er wird
+// deshalb unabhängig vom Cookie-Consent geschrieben.
 //
 // Der Leser auf der anderen Seite der Grenze ist
 // postkauf-manager/src/review_anstoss.py: nur wer am LETZTEN Kauf 'ja' trägt,
@@ -34,8 +34,8 @@ export const BEWERTUNGSANFRAGE_TEXT_KEY = 'bewertungsanfrage_optin_text';
 export const BEWERTUNGSANFRAGE_ZEIT_KEY = 'bewertungsanfrage_optin_at';
 
 // Der Wortlaut ist Teil des Nachweises: an der Order steht nur die Version,
-// der Text dazu steht hier. Wer ihn aendert, vergibt eine NEUE Version und
-// laesst die alte in WORTLAUTE stehen.
+// der Text dazu steht hier. Wer ihn ändert, vergibt eine NEUE Version und
+// lässt die alte in WORTLAUTE stehen.
 export const BEWERTUNGSANFRAGE_VERSION = 'v1';
 export const WORTLAUTE = {
   v1: 'Wir dürfen dich nach der Lieferung per E-Mail um eine Bewertung deiner Bestellung bitten. Freiwillig, jederzeit abbestellbar.',
@@ -63,10 +63,10 @@ export function bewertungsanfrageAusFormular(form) {
 
 /**
  * Cart-Attribute für die Antwort. Leer, wenn nicht gefragt wurde oder sich
- * nichts geaendert hat: so bleibt der Zeitpunkt der ERSTEN Erklaerung stehen,
+ * nichts geändert hat: so bleibt der Zeitpunkt der ERSTEN Erklärung stehen,
  * und ein zweiter Klick auf den Kasse-Knopf kostet keine Cart-Mutation.
- * Eine geaenderte Antwort (Haken wieder entfernt) ersetzt die alte samt
- * Zeitpunkt; die letzte Erklaerung gilt.
+ * Eine geänderte Antwort (Haken wieder entfernt) ersetzt die alte samt
+ * Zeitpunkt; die letzte Erklärung gilt.
  *
  * @param {{version: string, wert: 'ja' | 'nein'} | null} antwort
  * @param {{bestehendeAttribute?: Array<{key?: string | null, value?: string | null}> | null,

@@ -86,12 +86,12 @@ function cartAttrappe(bestand = []) {
 
 function kassenAnfrage(felder) {
   const kopf = new Headers({'User-Agent': UA, Cookie: COOKIE_CONSENT_NEIN});
-  const koerper = new FormData();
-  for (const [k, v] of Object.entries(felder)) koerper.set(k, v);
+  const körper = new FormData();
+  for (const [k, v] of Object.entries(felder)) körper.set(k, v);
   return new Request('https://qiblanco.com/cart/attribution', {
     method: 'POST',
     headers: kopf,
-    body: koerper,
+    body: körper,
   });
 }
 
