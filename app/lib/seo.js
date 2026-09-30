@@ -560,18 +560,19 @@ export const NUR_ROUTE_SEITEN = [
       'Entscheid AI-CEO 30.09., Option a): indexierbar und im Video-Dialog ' +
       'der QiOne-Kaufseite verlinkt. Sie besteht allein aus der Route ' +
       'pages.wie-funktioniert-der-gitterchip-im-qione.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
       'steht in keiner Sitemap. Kriterium 2 erfuellt: kein noindex, ' +
       'canonicalLink() in der Route, im selben Commit. lastmod ist die ' +
       'Obergrenze des Merge-Fensters dieses Commits (Merge am 2026-09-30 ' +
       'nach 22:20Z geplant); probe_sitemap_lastmod_wahrhaftig.py meldet, ' +
       'falls der Merge spaeter lag. WACHE (Kriterium 3): ' +
       'claude-jobs/growth-m-lp-produktseite-verkauft-s05/pruefungen/' +
-      'probe_gitterchip_seite_freigegeben.py als Messgeraet des ' +
-      'nachbau-audit-Kriteriums k5d7340e6f3 — sie prueft INHALT (Grafiken, ' +
-      'Forscher, Kaufweg), kein noindex, Canonical, den Sitemap-<loc> und ' +
-      'den Link im geoeffneten Video-Dialog der Kaufseite, nicht den ' +
-      'Statuscode; dazu klassenweit probe_sitemap_noindex_naht.py.',
+      'probe_gitterchip_seite_freigegeben.py, Messgeraet des ' +
+      'nachbau-audit-Kriteriums k5d7340e6f3. Sie prueft den INHALT ' +
+      '(Grafiken, Forscher, Kaufweg), nicht den Statuscode. Dazu prueft ' +
+      'sie kein noindex, den Canonical, den Sitemap-<loc> und den Link im ' +
+      'geoeffneten Video-Dialog der Kaufseite. Klassenweit wacht ' +
+      'probe_sitemap_noindex_naht.py.',
   },
   {
     pfad: '/pages/neu-oder-gebraucht',
