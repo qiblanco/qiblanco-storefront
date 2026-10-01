@@ -1,0 +1,329 @@
+/* ============================================================================
+   /pages/was-auf-reddit-ueber-qi-blanco-steht — „Was auf Reddit über Qi
+   Blanco steht" (2026-10-01).
+
+   Token-System WORTGLEICH zur Schwesterseite neu-oder-gebraucht.css (Rubrik
+   92/100), die es ihrerseits wortgleich von kritik.css uebernommen hat:
+   warmes Neutral-Kontinuum, EIN Gold-Akzent nur auf Beweis, Weissraum
+   gruppiert statt Boxen, 8pt-Grid, Sektions-Takt 96/64, Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus
+   dem :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .rdt — self-contained.
+
+   WARUM EIGENE DATEI: Gate 12 loest geteilte Dateien auf ALLE importierenden
+   Routen auf. Die WERTE sind kopiert, die DATEI nicht geteilt — dieselbe
+   Entscheidung wie neu-oder-gebraucht.css gegenueber kritik.css.
+
+   DER EINE AKZENT SITZT AUF DEM BEWEIS: die Quellenzeilen tragen das Gold als
+   Unterstreichung ihres Links, die Titel der fuenf genannten Faeden als Linie.
+   ========================================================================== */
+
+:root {
+  --rdt-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --rdt-fs-xs: 0.8125rem; /* 13px, nur Fuss */
+  --rdt-fs-base: 1rem; /* 16px */
+  --rdt-fs-md: 1.125rem; /* 18px */
+  --rdt-fs-lg: 1.25rem; /* 20px */
+  --rdt-fs-xl: 1.5625rem; /* 25px */
+  --rdt-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --rdt-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --rdt-s1: 8px;
+  --rdt-s2: 16px;
+  --rdt-s3: 24px;
+  --rdt-s4: 32px;
+  --rdt-s6: 48px;
+  --rdt-s8: 64px;
+  --rdt-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --rdt-grund: #faf9f5;
+  --rdt-flaeche: #f4f0e9;
+  --rdt-text: #2c2a26;
+  --rdt-muted: #6b665d;
+  --rdt-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
+       Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1). */
+  --rdt-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --rdt-r1: 8px;
+  --rdt-r2: 16px;
+  --rdt-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --rdt-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
+  --rdt-mass: 68ch;
+  --rdt-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.rdt {
+  font-family: var(--rdt-font);
+  font-size: var(--rdt-fs-base);
+  line-height: 1.65;
+  color: var(--rdt-text);
+  background: var(--rdt-grund);
+}
+
+/* NAME MIT ABSICHT: der Gestaltungs-Pruefliste (homepage-bauer/src/
+   seiten_pruefliste.py) faellt ein Textcontainer nur auf, wenn sein
+   Klassenname eines der Woerter aus _CONTAINER_WOERTER traegt (inhalt/content/
+   article/text/...). Die Punkte P1 Zeilenlaenge und P2 Innenabstaende werden
+   sonst nicht ROT, sondern gar nicht erst GEMESSEN. Wer diese Klasse
+   umbenennt, nimmt der Seite ihre Messbarkeit, ohne dass sich am Aussehen
+   etwas aendert. */
+.rdt__inhalt {
+  width: 100%;
+  max-width: var(--rdt-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--rdt-s2);
+}
+
+.rdt section {
+  padding-block: var(--rdt-s8);
+}
+@media (min-width: 768px) {
+  .rdt section {
+    padding-block: var(--rdt-s12);
+  }
+}
+
+.rdt h1 {
+  font-size: var(--rdt-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--rdt-s3);
+  color: var(--rdt-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.rdt h2 {
+  font-size: var(--rdt-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--rdt-s2);
+  color: var(--rdt-text);
+}
+
+.rdt h3 {
+  font-size: var(--rdt-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--rdt-s1);
+  color: var(--rdt-text);
+}
+
+.rdt p,
+.rdt li,
+.rdt dd {
+  font-size: var(--rdt-fs-base);
+  line-height: 1.65;
+  color: var(--rdt-text);
+  max-width: var(--rdt-mass);
+  margin: 0 0 var(--rdt-s2);
+}
+
+.rdt p:last-child,
+.rdt dd:last-child {
+  margin-bottom: 0;
+}
+
+.rdt a {
+  color: var(--rdt-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.rdt a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.rdt ol,
+.rdt ul,
+.rdt dl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.rdt__kopf {
+  background: var(--rdt-flaeche);
+}
+
+.rdt p.rdt__vorspann {
+  font-size: var(--rdt-fs-base);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rdt-muted);
+  margin-bottom: var(--rdt-s2);
+}
+
+.rdt p.rdt__lead {
+  font-size: var(--rdt-fs-md);
+}
+
+.rdt p.rdt__einleitung {
+  font-size: var(--rdt-fs-md);
+  color: var(--rdt-muted);
+  margin-bottom: var(--rdt-s4);
+}
+
+/* Die Quellenzeile — die kleinste Schrift der Seite und ihr wichtigstes
+   Bauteil: eine Zahl ohne Herkunft ist von einer erfundenen nicht zu
+   unterscheiden. */
+.rdt p.rdt__quelle {
+  font-size: var(--rdt-fs-xs);
+  color: var(--rdt-muted);
+  margin-top: var(--rdt-s1);
+  margin-bottom: 0;
+}
+
+/* ─── Fäden mit Qi-Blanco-Bezug ───────────────────────────────────────────── */
+.rdt__genannt {
+  background: var(--rdt-flaeche);
+}
+
+
+
+
+
+/* ─── Fäden ohne Bezug ────────────────────────────────────────────────────── */
+.rdt__fremdliste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rdt-s4);
+}
+
+.rdt li.rdt__faden {
+  max-width: none;
+  margin: 0;
+  padding-top: var(--rdt-s3);
+  border-top: 1px solid var(--rdt-linie);
+}
+
+/* ─── Die fuenf genannten Faeden, nummeriert ──────────────────────────────── */
+.rdt__genanntliste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rdt-s4);
+  counter-reset: eintrag;
+}
+
+.rdt li.rdt__eintrag {
+  max-width: none;
+  margin: 0;
+  padding-left: var(--rdt-s6);
+  position: relative;
+  counter-increment: eintrag;
+}
+
+.rdt li.rdt__eintrag::before {
+  content: counter(eintrag);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--rdt-fs-lg);
+  font-weight: 600;
+  color: var(--rdt-muted);
+  line-height: 1.35;
+}
+
+
+/* ─── Selbst ausprobieren ─────────────────────────────────────────────────── */
+.rdt__selbst {
+  background: var(--rdt-flaeche);
+}
+
+
+
+
+/* Ein Folgeabsatz im Stimmen-Abschnitt: Abstand nach der Quellenzeile. */
+.rdt p.rdt__absatz {
+  margin-top: var(--rdt-s4);
+}
+
+/* Der Beweis-Akzent: EIN Gold, als Linie am Titel der genannten Faeden. */
+.rdt li.rdt__eintrag h3 {
+  border-left: 3px solid var(--rdt-akzent);
+  padding-left: var(--rdt-s2);
+}
+
+.rdt p.rdt__weiter {
+  margin-top: var(--rdt-s4);
+  color: var(--rdt-muted);
+}
+
+/* ─── Kurz gefragt ────────────────────────────────────────────────────────── */
+.rdt__fragen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rdt-s4);
+}
+
+.rdt__frage {
+  padding-top: var(--rdt-s3);
+  border-top: 1px solid var(--rdt-linie);
+}
+
+.rdt__frage dt {
+  font-size: var(--rdt-fs-lg);
+  font-weight: 600;
+  color: var(--rdt-text);
+  margin: 0 0 var(--rdt-s1);
+}
+
+.rdt__frage dd {
+  margin-inline: 0;
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. Wortgleich zu kritik.css,
+   weil Kopf und Fuss dieselben sind. */
+body:has(.rdt) {
+  background: var(--rdt-grund);
+  --color-accent-primary: var(--rdt-akzent);
+  --rd3-gold: var(--rdt-akzent);
+  --qb-sterne-gold: var(--rdt-akzent);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss.
+   GEMESSEN, NICHT UEBERNOMMEN: ohne diese Regel liefert die Rubrik hier drei
+   Bild-Radius-Werte (4px, 6px, 20px), und zwar aus der GETEILTEN Huelle — die
+   Seite selbst traegt kein einziges eigenes Bild. Die Schwesterseite /pages/
+   kritik misst am selben Build 8px auf allen Huellen-Bildern, weil sie genau
+   diese Regel fuehrt. Der Befund ist damit keine Eigenschaft der Huelle,
+   sondern die Abwesenheit ihres Remaps. */
+body:has(.rdt) img,
+body:has(.rdt) picture,
+body:has(.rdt) video {
+  border-radius: var(--rdt-r1);
+}
+
+/* Das Newsletter-Widget im Fuss (ActiveCampaign `_form_15`) setzt seinen Ocker
+   #F2BF72 inline — der ZWEITE Goldton der Route, nur mit !important
+   erreichbar. GEMESSEN: ohne diese Regel meldet die Rubrik hier "ZWEI
+   konkurrierende Gold-/Ocker-Toene", waehrend /pages/kritik am selben Build
+   harmonisch 100 misst; der Unterschied ist genau dieser Block. Anders als in
+   kritik.css steht hier KEINE unscoped Regel: eine Datei, die nur auf dieser
+   Route geladen wird, soll auch nur auf dieser Route wirken. */
+body:has(.rdt) #_form_15_submit._submit,
+body:has(.rdt) ._form_15 button,
+body:has(.rdt) ._form_15 ._submit,
+body:has(.rdt) ._form_15 input[type='submit'] {
+  background: var(--rdt-akzent) !important;
+  color: var(--rdt-text) !important;
+  border-radius: var(--rdt-r1) !important;
+  font-family: var(--rdt-font) !important;
+}

@@ -455,6 +455,18 @@ export const FAQ_KAUF = [
       pfad: '/pages/bewertungen',
       text: 'Alle Google-Bewertungen live, mit Note und Anzahl, und woher sie kommen',
     },
+    // DER ZWEITE WEG AUS DIESER ANTWORT, und der eingehende Link, den
+    // /pages/was-auf-reddit-ueber-qi-blanco-steht braucht (Job 20261001-
+    // s07vm-tatsachenseite-reddit). Die FAQ ist am 2026-10-01 die einzige
+    // Zweifels-Nachbarin, die laut Search Console im Index steht. Ein
+    // EIGENES Feld statt `weiter` als Liste: drei Tests und vier Proben lesen
+    // `weiter.pfad` als Objekt, eine Liste hätte sie still leer gemacht.
+    // Der Eintrag ist der zweite seines Blocks und startet zugeklappt: im
+    // Server-HTML steht der Link, das Bild der Seite ändert sich nicht.
+    auch: {
+      pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
+      text: 'Was auf Reddit über Qi Blanco steht, Faden für Faden nachgezählt',
+    },
   },
   {
     q: 'Kann ich in Raten zahlen?',
