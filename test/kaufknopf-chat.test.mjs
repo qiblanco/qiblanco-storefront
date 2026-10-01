@@ -97,3 +97,31 @@ test('app.css blendet das Widget aus, bis das Signal bereit ist', async () => {
   );
   assert.match(komponente, /setAttribute\(BEREIT_ATTRIBUT/);
 });
+
+// LP-Knöpfe (Job 20261001-lp-kaufknoepfe-chatblase-verdeckt): die Ausgänge
+// einer Landingpage zur Kaufseite zählen als Kaufknopf, am Pfad entschieden.
+test('LP-Kaufausgang: genau die Kaufziele des LP-Blocks, nicht ihre Nachbarpfade', async () => {
+  const {istLpKaufausgang, LP_KAUFZIELE, LP_KAUFAUSGANG_VORFILTER} = await import(
+    '../app/lib/kaufknopf-chat.js'
+  );
+  assert.deepEqual(
+    [...LP_KAUFZIELE].sort(),
+    ['/pages/qibracelet', '/pages/qihome-air', '/pages/qione-2-pro'],
+  );
+  for (const pfad of LP_KAUFZIELE) {
+    assert.equal(istLpKaufausgang(pfad), true, pfad);
+    assert.equal(istLpKaufausgang(pfad + '/'), true, pfad + '/');
+    assert.ok(LP_KAUFAUSGANG_VORFILTER.includes(`main a[href*="${pfad}"]`));
+  }
+  for (const pfad of [
+    '/pages/qione-2-pro-details',
+    '/pages/qione-2-pro-2x',
+    '/products/qione-2-pro',
+    '/pages/E-Smog-Schutz',
+    '/',
+    '',
+    undefined,
+  ]) {
+    assert.equal(istLpKaufausgang(pfad), false, String(pfad));
+  }
+});

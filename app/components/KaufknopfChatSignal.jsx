@@ -3,7 +3,9 @@ import {
   BEREIT_ATTRIBUT,
   DOCK_KLASSE,
   KAUFKNOPF_SELEKTOR,
+  LP_KAUFAUSGANG_VORFILTER,
   RAHMEN_ID,
+  istLpKaufausgang,
   UEBERDECKUNG_ATTRIBUT,
   ueberdecktKaufknopf,
 } from '~/lib/kaufknopf-chat';
@@ -89,9 +91,15 @@ export function KaufknopfChatSignal() {
 
     const knopfRechtecke = () => {
       const liste = [];
-      document.querySelectorAll(KAUFKNOPF_SELEKTOR).forEach((k) => {
+      const nimm = (k) => {
         const r = k.getBoundingClientRect();
         if (r.width > 0 && r.height > 0) liste.push(r);
+      };
+      document.querySelectorAll(KAUFKNOPF_SELEKTOR).forEach(nimm);
+      // Landingpage-Knöpfe zur Kaufseite (lib/kaufknopf-chat.js): der
+      // Vorfilter trifft auch Nachbarpfade, entschieden wird am Pfad.
+      document.querySelectorAll(LP_KAUFAUSGANG_VORFILTER).forEach((a) => {
+        if (istLpKaufausgang(a.pathname)) nimm(a);
       });
       return liste;
     };

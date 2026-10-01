@@ -4,6 +4,8 @@
  * Begründung, Messung und Rückweg stehen in der Komponente.
  */
 
+import {lpKaufZiele} from '../components/reusables/blockLinks.js';
+
 /**
  * Die Kaufknöpfe, als EIGENSCHAFT und nicht als Ort: das Attribut sitzt am
  * <button> in AddToCartButton.jsx und damit an jedem Kaufknopf, der über
@@ -12,6 +14,36 @@
  * die keinen Warenkorb trägt und am nächsten Klick gemessen wird.
  */
 export const KAUFKNOPF_SELEKTOR = '[data-qb-kaufknopf]';
+
+/**
+ * Die Landingpage-Knöpfe, ebenfalls als EIGENSCHAFT: jeder Link im
+ * Seiteninhalt, dessen Ziel ein Kaufziel des LP-Blocks ist (blockLinks.js,
+ * lpKaufZiele: /pages/qione-2-pro, /pages/qibracelet, /pages/qihome-air).
+ * Er trägt den nächsten Klick der Landingpage, ob er aus einer Campaign-LP,
+ * einer Mm-Seite oder einer Produktkarte kommt.
+ *
+ * Anlass: Job 20261001-lp-kaufknoepfe-chatblase-verdeckt. Live auf
+ * /pages/E-Smog-Schutz (390x844, Zustimmung gesetzt) trafen 5 von 8
+ * Hit-Tests auf Knöpfe nach /pages/qione-2-pro das iframe des Chats, darunter
+ * der Hero-Knopf. Keiner dieser Knöpfe trug [data-qb-kaufknopf].
+ *
+ * Der Selektor ist nur der Vorfilter (er trifft auch /pages/qione-2-pro-details
+ * und -2x); entschieden wird am Pfad in istLpKaufausgang.
+ */
+export const LP_KAUFZIELE = lpKaufZiele();
+export const LP_KAUFAUSGANG_VORFILTER = LP_KAUFZIELE.map(
+  (pfad) => `main a[href*="${pfad}"]`,
+).join(', ');
+
+/**
+ * @param {string} pfad pathname des Links (a.pathname)
+ * @returns {boolean} true = der Link führt auf ein LP-Kaufziel
+ */
+export function istLpKaufausgang(pfad) {
+  if (typeof pfad !== 'string' || !pfad) return false;
+  const ohneSchraegstrich = pfad.length > 1 ? pfad.replace(/\/+$/, '') : pfad;
+  return LP_KAUFZIELE.includes(ohneSchraegstrich);
+}
 
 /** Das Attribut am <html>, auf das die Unterdrückungs-Regel in app.css hängt. */
 export const UEBERDECKUNG_ATTRIBUT = 'data-chat-deckt-kaufknopf';
