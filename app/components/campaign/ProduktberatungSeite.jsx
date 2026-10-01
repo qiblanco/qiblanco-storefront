@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
-import {Form, Link, useActionData, useLoaderData, useNavigation} from 'react-router';
+import {Form, Link, useLoaderData, useNavigation} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {useGoogleRating} from '~/lib/googleRating';
 import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
 
@@ -642,7 +643,7 @@ function Schluss() {
 
 export function ProduktberatungSeite() {
   const daten = useLoaderData();
-  const ergebnis = useActionData();
+  const ergebnis = useAktionsergebnisUeberRevalidierung();
   const zone = useKundenZone();
 
   let mitte;
