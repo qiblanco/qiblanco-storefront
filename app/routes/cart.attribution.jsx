@@ -19,10 +19,6 @@ import {
  */
 export async function action({request, context}) {
   const {cart, env} = context;
-  // Die Geschenk-Angabe (~/lib/geschenk) liest eine KOPIE des Requests: ein
-  // Body ist nur einmal lesbar, und das Original gehört dem Ankunfts-Marker
-  // weiter unten. Die Kopie muss vor jedem Lesen entstehen.
-  const geschenk = geschenkAusFormular(await geschenkFormularLesen(request.clone()));
   const cartResult = await cart.get();
 
   if (!cartResult?.checkoutUrl) return redirect('/cart');
@@ -40,9 +36,11 @@ export async function action({request, context}) {
   // nie auf 'no'.
   //
   // Ein Request-Body ist nur EINMAL lesbar: das Formular wird hier einmal
-  // gelesen und an beide Leser weitergegeben.
+  // gelesen und an alle drei Leser weitergegeben (Ankunfts-Marker,
+  // Geschenk-Angabe, Einwilligung in die Bewertungsanfrage).
   const form = await formularLesen(request);
   const clientMarker = adMarkerAusFormular(form);
+  const geschenk = geschenkAusFormular(form);
 
 
   // Job 20260907-fbc-klick-id-... (s02): der gesamte Block stand unter
@@ -129,18 +127,3 @@ export default function CartAttribution() {
 
 /** @typedef {import('react-router').ActionFunctionArgs} ActionFunctionArgs */
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
-
-/**
- * Liest ein Formular. Wirft NIE: ein Request ohne lesbaren Body ist kein
- * Grund, den Weg zur Kasse zu stoeren.
- *
- * @param {Request} request
- * @returns {Promise<FormData | null>}
- */
-async function geschenkFormularLesen(request) {
-  try {
-    return await request.formData();
-  } catch {
-    return null;
-  }
-}
