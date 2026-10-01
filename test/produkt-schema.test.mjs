@@ -159,6 +159,17 @@ test('die Nachbarfelder sind vom Nachtrag unberührt geblieben', () => {
   assert.equal(k.sku, 'QO2P-1');
 });
 
+test('die Rücksendung ist als kostenlos ausgezeichnet, wie AGB und Merchant Center sagen', () => {
+  // AGB, Zufriedenheitsgarantie Absatz 2 (Christian-Entscheidung 2026-08-14):
+  // „Die Rücksendung ist für Sie kostenlos." Das Merchant Center deklariert
+  // dasselbe. Bis 2026-10-01 stand hier ReturnFeesCustomerResponsibility,
+  // abgeschrieben aus der nie angeglichenen Shopify-Richtlinie
+  // /policies/refund-policy — Markup und Feed sagten Verschiedenes.
+  const p = produktSchema(produkt('QiOne® 2 Pro')).offers.hasMerchantReturnPolicy;
+  assert.equal(p.returnFees, 'https://schema.org/FreeReturn');
+  assert.equal(p.returnShippingFeesAmount, undefined);
+});
+
 // --- Die getrennte Suchform (Segment s03, 2026-09-11) -----------------------
 //
 // Geprüft wird wieder die REGEL, nicht das Literal: „die Wortfuge

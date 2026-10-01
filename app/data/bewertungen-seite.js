@@ -73,7 +73,7 @@ export const BEWERTUNGEN_SEITE = {
     titel: 'Selbst prüfen: 20 Tage',
     absaetze: [
       'Du musst keiner Bewertung glauben. Du kannst den QiOne® 2 Pro 20 Tage ab Erhalt tragen und benutzen und ihn zurückgeben, ohne einen Grund zu nennen. „Ich merke nichts" reicht völlig; angeben musst du ohnehin keinen.',
-      'Das gilt zusätzlich zum gesetzlichen Widerrufsrecht von 14 Tagen. Der Ablauf ist kurz: Melde dich bei uns, sende zurück, du bekommst den Kaufpreis erstattet. Die unmittelbaren Kosten der Rücksendung trägst du.',
+      'Das gilt zusätzlich zum gesetzlichen Widerrufsrecht von 14 Tagen. Der Ablauf ist kurz: Melde dich bei uns, sende zurück, du bekommst den Kaufpreis erstattet. Die Rücksendung ist für dich kostenlos.',
     ],
     weiter: {
       pfad: '/pages/qione-2-pro-details',

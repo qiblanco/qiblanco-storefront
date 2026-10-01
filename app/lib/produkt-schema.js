@@ -94,11 +94,11 @@
  * Deutschland sagen beide dasselbe — deshalb steht hier nur Deutschland.
  *
  * WAS BEWUSST NICHT DRINSTEHT — `returnShippingFeesAmount`: Die
- * Widerrufsbelehrung sagt, wer die Rücksendung zahlt („Sie tragen die
- * unmittelbaren Kosten der Rücksendung der Waren"), aber nirgends, wie viel
- * das ist. `ReturnFeesCustomerResponsibility` drückt genau diese Aussage aus
- * und braucht keinen Betrag; `ReturnShippingFees` würde einen verlangen, den
- * wir uns ausdenken müssten.
+ * Rücksendung ist für den Kunden kostenlos (/pages/agb, Abschnitt
+ * Zufriedenheitsgarantie Absatz 2: „Die Rücksendung ist für Sie kostenlos.
+ * Die Kosten der Rücksendung tragen wir", Christian-Entscheidung vom
+ * 2026-08-14; das Merchant Center deklariert dasselbe). `FreeReturn` drückt
+ * genau das aus und braucht keinen Betrag.
  */
 
 import {CANONICAL_ORIGIN} from './seo.js';
@@ -313,7 +313,7 @@ const LIEFERZEIT_TAGE = {
  * DIE EINE ENTSCHEIDUNG DIESER DATEI, DIE EINE BEGRÜNDUNG BRAUCHT: Der Shop
  * nennt ZWEI Fristen, und sie meinen nicht dasselbe.
  *
- *  - Die Widerrufsbelehrung (/policies/refund-policy) nennt „vierzehn Tage".
+ *  - Das gesetzliche Widerrufsrecht (AGB § 7) nennt „vierzehn Tage".
  *    Das ist das gesetzliche Widerrufsrecht — ein eigener Rechtsbehelf, der
  *    von dieser Datei nicht berührt, nicht ausgelegt und nicht verkürzt wird.
  *  - Die Kopfleiste JEDER Seite nennt „Jetzt 20 Tage risikofrei erleben!",
@@ -391,10 +391,11 @@ function retourenRichtlinie() {
     returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
     merchantReturnDays: RETOURENFRIST_TAGE_AB_ERHALT,
     returnMethod: 'https://schema.org/ReturnByMail',
-    // „Sie tragen die unmittelbaren Kosten der Rücksendung der Waren."
-    // (/policies/refund-policy) — die Aussage ohne Betrag, den niemand
-    // beziffert hat.
-    returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+    // „Die Rücksendung ist für Sie kostenlos." (/pages/agb, Zufriedenheits-
+    // garantie Absatz 2; gilt auch beim gesetzlichen Widerruf). Nicht
+    // /policies/refund-policy: deren Shopify-Text sagt noch das Gegenteil
+    // und ist vom Server nicht schreibbar (Scope read/write_legal_policies).
+    returnFees: 'https://schema.org/FreeReturn',
   };
 }
 

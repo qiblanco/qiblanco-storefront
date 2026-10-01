@@ -121,7 +121,7 @@ test('3 — durchgehend geduzt, kein Anrede-Mix', () => {
   // löst einen Fehlalarm aus und muss umformuliert werden. Auf einer Seite, die
   // durchgehend duzt, ist das ein zumutbarer Preis für einen Arm, der wirkt.
   // Der Prüftext ist bewusst nur `q` + `a` — das Quellenfeld zitiert Rechtstexte
-  // wörtlich („Sie tragen die unmittelbaren Kosten der Rücksendung") und ist
+  // wörtlich („Die Rücksendung ist für Sie kostenlos") und ist
   // kein Kundentext.
   const SIEZFORM = /\b(Sie|Ihnen|Ihre[rmns]?|Ihr)\b/;
   for (const item of FAQ_ALLE) {

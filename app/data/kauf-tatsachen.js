@@ -33,7 +33,7 @@ export const FRISTEN = [
       'Du kannst dein Stück 20 Tage ab Erhalt zurückgeben und bekommst den ' +
       'Kaufpreis erstattet. Einen Grund brauchst du nicht. Tragen und ' +
       'benutzen darfst du es in dieser Zeit, dafür ist die Frist da. Die ' +
-      'unmittelbaren Kosten der Rücksendung trägst du.',
+      'Rücksendung ist für dich kostenlos.',
     beleg: 'unsere eigene Zusage, auf jeder Seite in der Kopfleiste',
     belegPfad: null,
   },
@@ -45,8 +45,8 @@ export const FRISTEN = [
       'Es gilt für jeden Kauf in einem Onlineshop und ist nicht dasselbe wie ' +
       'unsere Rücknahme. Die beiden Fristen laufen nebeneinander, und die ' +
       'längere ist die freiwillige.',
-    beleg: 'Widerrufsbelehrung',
-    belegPfad: '/policies/refund-policy',
+    beleg: 'AGB, § 7 Widerrufsrecht',
+    belegPfad: '/pages/agb',
   },
   {
     id: 'gewaehrleistung',
@@ -160,7 +160,7 @@ export const PREIS_HINWEIS =
 /** Der Weg zurück, in drei Schritten. */
 export const RUECKWEG = [
   'Melde dich bei uns, per Mail an info@qiblanco.com oder über das Kontaktformular.',
-  'Sende das Stück zurück. Die unmittelbaren Kosten der Rücksendung trägst du.',
+  'Sende das Stück zurück. Die Rücksendung ist für dich kostenlos.',
   'Du bekommst den Kaufpreis erstattet.',
 ];
 
