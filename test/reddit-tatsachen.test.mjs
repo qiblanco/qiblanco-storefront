@@ -70,15 +70,19 @@ test('robots.txt sperrt diesen Pfad nicht', () => {
 });
 
 test('die indexierte FAQ verlinkt hierher, ohne ihren bestehenden Weg zu verlieren', () => {
-  const treffer = FAQ_ALLE.filter((i) => i.auch?.pfad === PFAD);
+  // `auch` ist ein Objekt oder eine Liste (seit 2026-10-01 eine Liste, Job
+  // 20261001-s07vm-tatsachenseite-trustpilot).
+  const wege = (i) => [].concat(i.auch || []);
+  const treffer = FAQ_ALLE.filter((i) => wege(i).some((a) => a.pfad === PFAD));
   assert.equal(treffer.length, 1);
-  assert.ok(treffer[0].auch.text.length > 20);
+  assert.ok(wege(treffer[0]).find((a) => a.pfad === PFAD).text.length > 20);
   // Der Eintrag trägt weiter seinen alten Weg zu /pages/bewertungen: ein
   // zweiter Link darf den ersten nicht verdrängen.
   assert.equal(treffer[0].weiter?.pfad, '/pages/bewertungen');
   // Und die Komponente rendert das Feld überhaupt.
   const faq = ohneProsa(lies('../app/components/faq/FaqSeite.jsx'));
-  assert.match(faq, /item\.auch\.pfad/);
+  assert.match(faq, /\[\]\.concat\(item\.auch/);
+  assert.match(faq, /auch\.pfad/);
 });
 
 // ---------------------------------------------------------------------------

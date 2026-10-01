@@ -617,6 +617,24 @@ export const NUR_ROUTE_SEITEN = [
       'eingehenden Link einer indexierten Nachbarseite.',
   },
   {
+    pfad: '/pages/qi-blanco-auf-trustpilot',
+    lastmod: '2026-10-01T18:00:00Z',
+    grund:
+      'Tatsachenseite zum Zweifelsbegriff „Qi Blanco Trustpilot" (Job ' +
+      '20261001-s07vm-tatsachenseite-trustpilot, AI-CEO-Entscheid zu ' +
+      'forschungs-meister sollist-seo07-zitierwirkung-bewertende-reihe). ' +
+      'Anlass ist gemessen: Eigenanteil in Googles KI-Antwort 5 von 58 ' +
+      'Zitatzeilen (8,6 %), der Begriff hatte keine zuständige Seite. ' +
+      'Die Seite besteht allein aus ihrer Route und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex, canonicalLink() in der Route, ' +
+      'im selben Commit. lastmod ist die Obergrenze des Merge-Fensters ' +
+      '(Merge am 2026-10-01 vor 18:00Z geplant). ' +
+      'probe_sitemap_lastmod_wahrhaftig.py meldet, falls der Merge spaeter ' +
+      'lag. Wache: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py ' +
+      '--flaeche trustpilot.',
+  },
+  {
     pfad: '/pages/quellen',
     lastmod: '2026-09-08T18:49:16Z',
     grund:

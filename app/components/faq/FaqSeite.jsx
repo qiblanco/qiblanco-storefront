@@ -110,14 +110,14 @@ function FaqEintrag({item, id, offen, onToggle}) {
             <Link to={item.weiter.pfad}>{item.weiter.text}</Link>
           </p>
         ) : null}
-        {/* Optionaler zweiter Weg, gleiche Bauform. Eigenes Feld statt
+        {/* Optionale weitere Wege, gleiche Bauform. Eigenes Feld statt
             `weiter` als Liste, weil Tests und Proben `weiter.pfad` als
-            Objekt lesen. */}
-        {item.auch ? (
-          <p className="faq-vertiefung">
-            <Link to={item.auch.pfad}>{item.auch.text}</Link>
+            Objekt lesen. `item.auch` ist ein Objekt oder eine Liste davon. */}
+        {[].concat(item.auch || []).map((auch) => (
+          <p className="faq-vertiefung" key={auch.pfad}>
+            <Link to={auch.pfad}>{auch.text}</Link>
           </p>
-        ) : null}
+        ))}
       </div>
     </div>
   );
