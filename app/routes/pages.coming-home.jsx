@@ -34,10 +34,19 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * WARUM EIGENES FORMULAR-MARKUP statt <ActiveCampaignForm formId="15">: der
  * Fuß trägt das Embed dieser Id schon. Die Komponente entfernt jedes zweite
  * Element der Klasse _form_15 außerhalb ihres Containers, sie würde also das
- * Formular im Fuß löschen. Die verborgenen Felder unten sind die des
- * Live-Embeds (embed.php?id=15, gemessen 2026-10-01). Die Wache
- * growth-manager/pruefungen/probe_coming_home_seite.py vergleicht sie mit
- * dem Embed und meldet, wenn ActiveCampaign sie ändert.
+ * Formular im Fuß löschen.
+ *
+ * DIE VERBORGENEN FELDER KOMMEN AUS DEM EMBED IM FUSS, NICHT AUS DIESER DATEI.
+ * Zwei davon erzeugt ActiveCampaign bei jedem Rendern des Embeds neu: `u`
+ * (eine Kennung mit der Renderzeit) und `or` (eine UUID). Gemessen am
+ * 2026-10-01: um 11:16Z und um 11:48Z lieferte embed.php?id=15 verschiedene
+ * Werte. Feste Werte in dieser Datei veralten also nach Minuten. Beim
+ * Absenden liest die Seite deshalb die verborgenen Felder aus dem Formular
+ * im Fuß (form._form_15), so wie der Fuß sie selbst abschickt. Die Werte
+ * unten sind nur der Rückfall, falls das Embed im Fuß nicht geladen ist.
+ * Ob ActiveCampaign veraltete Werte annimmt, ist nicht gemessen. Die Wache
+ * growth-manager/pruefungen/probe_coming_home_seite.py prüft die festen
+ * Felder gegen das Embed und meldet, wenn ActiveCampaign das Formular ändert.
  *
  * DERSELBE WEG WIE DAS EMBED: proc.php?…&jsonp=true als GET. So schickt das
  * Embed von Formular 15 selbst ab (dort formSupportsPost = false). Die Antwort
@@ -59,7 +68,8 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * dies ein echtes <form> mit input[type=email].
  *
  * Messmarker: data-coming-home-form, data-coming-home-zustand
- * (offen | sendet | gesendet | fehler), data-coming-home-link.
+ * (offen | sendet | gesendet | fehler), data-coming-home-felder
+ * (embed | ersatz, nach dem Absenden), data-coming-home-link.
  */
 
 const PFAD = '/pages/coming-home';
@@ -81,11 +91,33 @@ const BILD_ALT =
   'Anna und Christian von Qi Blanco sitzen nebeneinander auf dem Sofa und lachen';
 
 /**
- * Ziel und verborgene Felder des ActiveCampaign-Formulars 15, wörtlich aus
- * dem Live-Embed. `s` ist dort leer.
+ * Ziel und verborgene Felder des ActiveCampaign-Formulars 15. `u` und `or`
+ * sind der Stand des Embeds vom 2026-10-01 und nur der Rückfall; die
+ * übrigen Felder sind fest. `s` ist im Embed leer.
  */
 const AC_ZIEL = 'https://qiblanco.activehosted.com/proc.php';
 const AC_ERFOLG = '_show_thank_you(';
+const AC_EMBED_FORMULAR = 'form._form_15';
+
+/**
+ * Die verborgenen Felder, wie das Embed im Fuß sie gerade trägt. Fehlt das
+ * Embed oder eines seiner Felder, bleibt für dieses Feld der Rückfall.
+ * @returns {{felder: Record<string, string>, ausEmbed: boolean}}
+ */
+function acFelder() {
+  const felder = {...AC_FELDER};
+  const embed = document.querySelector(AC_EMBED_FORMULAR);
+  if (!embed) return {felder, ausEmbed: false};
+  let gelesen = 0;
+  for (const name of Object.keys(AC_FELDER)) {
+    const feld = embed.querySelector(`input[type="hidden"][name="${name}"]`);
+    if (feld) {
+      felder[name] = feld.value;
+      gelesen += 1;
+    }
+  }
+  return {felder, ausEmbed: gelesen === Object.keys(AC_FELDER).length};
+}
 const AC_FELDER = {
   u: '6ABE3FFF6E1DB',
   f: '15',
@@ -316,6 +348,7 @@ export default function ComingHome() {
  */
 function Anmeldung() {
   const [zustand, setZustand] = useState('offen');
+  const [felderQuelle, setFelderQuelle] = useState('');
   const fetcher = useFetcher();
   const id = useId();
   const erfolgRef = useRef(null);
@@ -338,7 +371,9 @@ function Anmeldung() {
       return;
     }
     setZustand('sendet');
-    const sendung = new URLSearchParams(AC_FELDER);
+    const {felder, ausEmbed} = acFelder();
+    setFelderQuelle(ausEmbed ? 'embed' : 'ersatz');
+    const sendung = new URLSearchParams(felder);
     sendung.set('fullname', String(werte.get('fullname') || '').trim());
     sendung.set('email', String(werte.get('email') || '').trim());
     sendung.set('jsonp', 'true');
@@ -365,6 +400,7 @@ function Anmeldung() {
         className="ch-karte"
         data-coming-home-form=""
         data-coming-home-zustand="gesendet"
+        data-coming-home-felder={felderQuelle}
         data-qb-kaufknopf=""
       >
         <h3 className="ch-h3" tabIndex={-1} ref={erfolgRef}>
@@ -409,6 +445,7 @@ function Anmeldung() {
       onSubmit={absenden}
       data-coming-home-form=""
       data-coming-home-zustand={zustand}
+      data-coming-home-felder={felderQuelle}
       data-qb-kaufknopf=""
     >
       <h3 className="ch-h3">Melde dich an und hol dir den Link</h3>
