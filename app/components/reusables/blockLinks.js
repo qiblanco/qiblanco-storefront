@@ -69,9 +69,9 @@ export function produktLink(handle, block, art) {
 
 /**
  * Die Kaufziele des LP-Blocks (die LP-Shopseiten mit Buy-Box), als Pfade.
- * Ein Link dorthin ist der Ausgang einer Landingpage zur Kaufseite und traegt
- * ihren naechsten Klick. KaufknopfChatSignal (lib/kaufknopf-chat.js) erkennt
- * daran die LP-Knoepfe, ueber denen die Chat-Blase nicht stehen darf.
+ * Ein Link dorthin ist der Ausgang einer Landingpage zur Kaufseite und trägt
+ * ihren nächsten Klick. KaufknopfChatSignal (lib/kaufknopf-chat.js) erkennt
+ * daran die LP-Knöpfe, über denen die Chat-Blase nicht stehen darf.
  * @returns {string[]}
  */
 export function lpKaufZiele() {
