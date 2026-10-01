@@ -16,6 +16,10 @@ import {
   istSuchAusgeschlossen,
   ohneAusgeschlossene,
 } from '../app/lib/such-ausschluss.js';
+import {
+  istNichtIndexierbaresProdukt,
+  istZusammensetzungsSet,
+} from '../app/lib/seo.js';
 
 test('die Kakao-Dublette steht mit Grund in der Liste', () => {
   const eintrag = SUCH_AUSSCHLUSS_HANDLES.find(
@@ -89,4 +93,74 @@ test('ohneAusgeschlossene ist robust gegen fehlende Knotenliste', () => {
   assert.deepEqual(ohneAusgeschlossene(undefined), []);
   assert.deepEqual(ohneAusgeschlossene(null), []);
   assert.deepEqual(ohneAusgeschlossene([]), []);
+});
+
+// Elina EL-20261001-397a9719: Kakao-Zusammensetzungs-Sets sind Warenkorb-Ziele
+// und fallen per REGEL aus der Suche. Die Gegenrichtung ist die wichtigere:
+// die Bestands-Sets und die Sorten selbst bleiben auffindbar.
+test('AUSSCHLUSS der Kakao-Zusammensetzungs-Sets per Regel', () => {
+  for (const handle of [
+    'bundle-1x-awake-1x-create',
+    'bundle-2x-awake-1x-create',
+    'bundle-1x-awake-6x-create',
+    'bundle-4x-awake',
+    'bundle-7x-create',
+    'bundle-12x-awake',
+  ]) {
+    assert.equal(istSuchAusgeschlossen({handle}), true, handle);
+  }
+});
+
+test('GEGENRICHTUNG: Sorten und Bestands-Sets bleiben in der Suche', () => {
+  for (const handle of [
+    'crystal-cacao-awake',
+    'crystal-cacao-create',
+    'bundle-2x-awake',
+    'bundle-3x-awake',
+    'bundle-3x-create',
+    'mengenrabatt-2x',
+    'mengenrabatt-3x-create',
+    'bundle-4x-awake-geschenk',
+    'bundle-04x-awake',
+  ]) {
+    assert.equal(istSuchAusgeschlossen({handle}), false, handle);
+  }
+});
+
+// Index-Seite derselben Regel (Sitemap, robots-Meta, Kollektionen).
+
+test('alle 29 Sets vom 30.09. fallen unter die Regel', () => {
+  const handles = [];
+  for (const [a, c] of [[1, 1], [2, 1], [1, 2]]) {
+    handles.push(`bundle-${a}x-awake-${c}x-create`);
+  }
+  for (let n = 4; n <= 7; n++) {
+    handles.push(`bundle-${n}x-awake`, `bundle-${n}x-create`);
+    for (let a = 1; a < n; a++) handles.push(`bundle-${a}x-awake-${n - a}x-create`);
+  }
+  assert.equal(handles.length, 29);
+  for (const h of handles) {
+    assert.equal(istZusammensetzungsSet(h), true, h);
+    assert.equal(istNichtIndexierbaresProdukt(h), true, h);
+  }
+});
+
+test('GEGENRICHTUNG: Bestands-Sets und Sorten bleiben indexierbar', () => {
+  for (const h of [
+    'bundle-2x-awake',
+    'bundle-3x-awake',
+    'mengenrabatt-2x',
+    'mengenrabatt-3x-create',
+    'crystal-cacao-awake',
+    'crystal-cacao-create',
+    undefined,
+    '',
+  ]) {
+    assert.equal(istNichtIndexierbaresProdukt(h), false, String(h));
+  }
+});
+
+test('die Liste wirkt weiter neben der Regel', () => {
+  assert.equal(istNichtIndexierbaresProdukt('bundle-fundament'), true);
+  assert.equal(istZusammensetzungsSet('bundle-fundament'), false);
 });

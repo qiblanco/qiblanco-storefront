@@ -38,7 +38,7 @@
  */
 import {
   AUS_SITEMAP_ENTFERNTE_SEITEN,
-  NICHT_INDEXIERBARE_PRODUKTE,
+  istNichtIndexierbaresProdukt,
   NUR_ROUTE_SEITEN,
   ausSitemapEntfernteKollektionen,
 } from '~/lib/seo';
@@ -95,7 +95,9 @@ export function kinderAusIndex(xml) {
 function sichtbareEintraege(typ, items, bestand) {
   switch (typ) {
     case 'products':
-      return items.filter((i) => !NICHT_INDEXIERBARE_PRODUKTE.includes(i.handle));
+      // Dieselbe Funktion wie Kind-Route und robots-Meta: sie kennt neben
+      // der Liste auch die Regel für Kakao-Zusammensetzungs-Sets.
+      return items.filter((i) => !istNichtIndexierbaresProdukt(i.handle));
     case 'pages':
       // Dieselbe Vereinigung wie in der Kind-Route: nennt der Index ein
       // `lastmod` aus einem Eintrag, den das Kind gar nicht ausliefert, ist

@@ -5,6 +5,7 @@ import {
   NUR_ROUTE_SEITEN,
   absoluteCanonical,
   ausSitemapEntfernteKollektionen,
+  istNichtIndexierbaresProdukt,
 } from '~/lib/seo';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
@@ -73,6 +74,19 @@ const VERSTECKTE_HANDLES = {
 };
 
 /**
+ * Typen, deren Auswahl zusätzlich eine REGEL liest statt nur einer Liste.
+ *
+ * `products` seit 2026-10-01 (Elina EL-20261001-397a9719): die
+ * Kakao-Zusammensetzungs-Sets erkennt `istNichtIndexierbaresProdukt` am
+ * Handle-Muster, nicht an einer Aufzählung, damit künftige Sets ohne
+ * Code-Änderung herausfallen. Dieselbe Funktion setzt das robots-Meta der
+ * Produktseite, Sitemap und `noindex` können also nicht auseinanderlaufen.
+ */
+const VERSTECKT_NACH_REGEL = {
+  products: istNichtIndexierbaresProdukt,
+};
+
+/**
  * `blogs` kam am 2026-09-01 dazu und steht als EINZIGER Typ nicht in der
  * Tabelle oben, weil seine Menge nicht kuratiert ist, sondern GEMESSEN wird:
  * ein Blog ohne Artikel beantwortet seine Route seit demselben Tag mit 404
@@ -135,7 +149,8 @@ export async function loader({request, params, context: {storefront}}) {
   // eine Falle — der früher an dieser Stelle stehende Schnell-Ausstieg
   // greift für `articles` (kein Eintrag in VERSTECKTE_HANDLES) und haette
   // den Filter zuverlaessig übersprungen.
-  const hatVersteckte = Boolean(versteckt && versteckt.length > 0);
+  const regel = VERSTECKT_NACH_REGEL[params.type];
+  const hatVersteckte = Boolean((versteckt && versteckt.length > 0) || regel);
   // Nur-Route-Seiten kommen NACH dem Filter dazu (s. mitNurRouteSeiten unten).
   // Sie müssen den Schnell-Ausstieg mit öffnen, sonst greift die Ergänzung
   // genau dann nicht, wenn es sonst nichts zu tun gibt.
@@ -156,8 +171,12 @@ export async function loader({request, params, context: {storefront}}) {
       // Handle auch seinen längeren Namensvetter mit raus (…-2, …-alt).
       // Für die drei Bundle-Handles ist das wirkungsgleich zur früheren
       // Form — es kann nur WENIGER entfernen, nie mehr.
+      if (regel) {
+        const loc = urlEntry.match(/<loc>[^<]*\/([^/<]+)<\/loc>/);
+        if (loc && regel(loc[1])) return '';
+      }
       return hatVersteckte &&
-        versteckt.some((handle) =>
+        (versteckt ?? []).some((handle) =>
           urlEntry.includes(`/${params.type}/${handle}</loc>`),
         )
         ? ''
