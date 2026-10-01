@@ -1012,13 +1012,13 @@ test('das Overlay hängt seine Schrift nicht an den Ort, an dem es montiert ist'
   );
 });
 
-test('die Icon-Liste: feste Icon-Spalte, haengender Einzug, Zeichen in Gold', () => {
+test('die Icon-Liste: feste Icon-Spalte, hängender Einzug, Zeichen in Gold', () => {
   // Elina EL-20261001-0b68ad76, drei Punkte: (1) umbrechende Zeilen beginnen
-  // buendig mit dem Textanfang, nicht unter dem Icon; (2) alle Icons exakt
-  // senkrecht uebereinander; (3) das EU-Zeichen im selben Goldton wie die
+  // bündig mit dem Textanfang, nicht unter dem Icon; (2) alle Icons exakt
+  // senkrecht übereinander; (3) das EU-Zeichen im selben Goldton wie die
   // Nachbar-Icons. Gemessen im Browser (Chromium, 1440 und 390 px, sechs
   // Kaufseiten): Icon-Mitte und Textbeginn jeder Zeile auf denselben Pixel.
-  // Hier steht, was diese Messung im Quelltext traegt.
+  // Hier steht, was diese Messung im Quelltext trägt.
   const appCss = ohneCssKommentare(readFileSync(APP_CSS, 'utf8'));
 
   // 1. EIN Abstand für alle Icons -- als gemeinsame Regel, nicht als
@@ -1027,7 +1027,7 @@ test('die Icon-Liste: feste Icon-Spalte, haengender Einzug, Zeichen in Gold', ()
     appCss,
     /\.BenefitList svg,\s*\.BenefitList \.eu-gwl__zeichen\s*\{[^}]*margin-right:\s*var\(--benefit-icon-abstand/,
     'Der Icon-Abstand der Liste gilt nicht für alle Icons gemeinsam -- dann ' +
-      'beginnt ein Text auf einer anderen Kante als die darueber.',
+      'beginnt ein Text auf einer anderen Kante als die darüber.',
   );
 
   // 2. FESTE SPALTE: jedes Icon (auch das Zeichen) ist gleich breit, die
@@ -1037,19 +1037,19 @@ test('die Icon-Liste: feste Icon-Spalte, haengender Einzug, Zeichen in Gold', ()
     appCss,
     /\.BenefitList li > svg,\s*\.BenefitList li > \.eu-gwl__zeichen\s*\{[^}]*width:\s*var\(--benefit-icon-spalte\)[^}]*height:\s*1em/,
     'Die Icons der Liste haben keine gemeinsame Spaltenbreite -- sie stehen ' +
-      'dann nicht senkrecht uebereinander.',
+      'dann nicht senkrecht übereinander.',
   );
   assert.ok(
     !/\.BenefitList \.eu-gwl__zeichen\s*\{[^}]*width:\s*auto/.test(appCss),
-    'Das Zeichen bekommt wieder `width: auto` -- das schlaegt die Spalten-' +
-      'regel (hoehere Spezifitaet) und schiebt seinen Text um 0,3em nach links.',
+    'Das Zeichen bekommt wieder `width: auto` -- das schlägt die Spalten-' +
+      'regel (höhere Spezifität) und schiebt seinen Text um 0,3em nach links.',
   );
 
   // 3. HAENGENDER EINZUG: padding-left und negatives text-indent aus
-  //    DENSELBEN beiden Groessen, und die Kinder setzen text-indent zurueck
+  //    DENSELBEN beiden Größen, und die Kinder setzen text-indent zurück
   //    (sonst schiebt ein Knopf in der Zeile seinen Text aus sich heraus).
   const li = appCss.match(/\.BenefitList li\s*\{([^}]*)\}/);
-  assert.ok(li, '.BenefitList li traegt keinen Einzug -- Folgezeilen laufen unter das Icon');
+  assert.ok(li, '.BenefitList li trägt keinen Einzug -- Folgezeilen laufen unter das Icon');
   assert.match(
     li[1],
     /padding-left:\s*calc\(var\(--benefit-icon-spalte\) \+ var\(--benefit-icon-abstand\)\)/,
@@ -1087,11 +1087,11 @@ test('die Icon-Liste: feste Icon-Spalte, haengender Einzug, Zeichen in Gold', ()
   );
 
   // 5. DAS ZEICHEN IN GOLD: die Listen-Bauform zeigt den Vektor (ein JPEG
-  //    laesst sich nicht in den Goldton faerben), sein Schild zieht
+  //    lässt sich nicht in den Goldton färben), sein Schild zieht
   //    currentColor, und `.BenefitList svg` setzt die Akzentfarbe.
   const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
   const ab = code.indexOf('if (!eigeneZeile)');
-  assert.ok(ab >= 0, 'die Listen-Bauform des Ausloesers fehlt');
+  assert.ok(ab >= 0, 'die Listen-Bauform des Auslösers fehlt');
   const listenZweig = code.slice(ab, code.indexOf('</>', ab));
   assert.match(listenZweig, /<EuZeichenVektor\s*\/>/, 'die Liste zeigt nicht das Vektor-Zeichen');
   assert.doesNotMatch(listenZweig, /\{bild\}/, 'die Liste zeigt wieder das blaue JPEG');

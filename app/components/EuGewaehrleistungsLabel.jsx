@@ -590,13 +590,13 @@ function EuLabelAusloeser({
 /**
  * DAS ZEICHEN DER LISTEN-BAUFORM ALS VEKTOR (Elina EL-20261001-0b68ad76).
  *
- * Auftrag: "das EU-Gewaehrleistungslabel-Icon soll in denselben Goldton
- * eingefaerbt werden wie alle anderen Icons in der Liste, aktuell faellt es
- * farblich heraus". Das loest EL-20260909-395f848c ab, das das Originalbild
+ * Auftrag: "das EU-Gewährleistungslabel-Icon soll in denselben Goldton
+ * eingefärbt werden wie alle anderen Icons in der Liste, aktuell fällt es
+ * farblich heraus". Das löst EL-20260909-395f848c ab, das das Originalbild
  * in Blau verlangt hatte.
  *
- * Ein Rasterbild (AUSLOESER_ZEICHEN, JPEG) laesst sich nicht in einen
- * CSS-Farbwert umfaerben -- ein `filter` traefe den Goldton nur ungefaehr.
+ * Ein Rasterbild (AUSLOESER_ZEICHEN, JPEG) lässt sich nicht in einen
+ * CSS-Farbwert umfärben -- ein `filter` träfe den Goldton nur ungefähr.
  * Darum steht das Zeichen hier nachgezeichnet: Schild, Sternenkranz, das
  * G-Schild, vermessen am Original (240 x 251). Das Schild zieht seine Farbe
  * aus `currentColor`, also aus derselben Regel wie die Nachbar-Icons
@@ -605,11 +605,11 @@ function EuLabelAusloeser({
  * dort aus wie bisher.
  *
  * DAS IST WEITERHIN NUR DAS SCHMUCK-ZEICHEN, NIE DIE AMTLICHE GRAFIK: kein
- * QR-Code, kein Verordnungstext. Die Auflagen aus Anhang I gelten fuer das
- * Bild im Overlay und bleiben unberuehrt. Die Block-Bauform (eigeneZeile)
+ * QR-Code, kein Verordnungstext. Die Auflagen aus Anhang I gelten für das
+ * Bild im Overlay und bleiben unberührt. Die Block-Bauform (eigeneZeile)
  * zeigt weiter das Bild aus AUSLOESER_ZEICHEN.
  *
- * Keine width-Angabe am Element: das Seitenverhaeltnis kommt aus der
+ * Keine width-Angabe am Element: das Seitenverhältnis kommt aus der
  * viewBox. Die Breite setzt die jeweilige Liste (feste Icon-Spalte in der
  * .BenefitList, `width: auto` in der Kakao-Liste).
  */
