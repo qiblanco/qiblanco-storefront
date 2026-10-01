@@ -13,7 +13,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {QiHome} from '~/components/product-pages/QiHome';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {ERSATZBILD_360} from '~/lib/video360-ersatzbild';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';

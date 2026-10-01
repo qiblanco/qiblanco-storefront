@@ -4,7 +4,7 @@ import {
   ERSATZBILD_KANTE,
   Ersatzbild,
   useErsatzbild,
-} from '~/lib/video360-ersatzbild';
+} from '~/components/reusables/video360-ersatzbild';
 
 /*
  * Die Adresse der 360-Grad-Produktdrehung des QiOne(R) 2 Pro steht GENAU
@@ -47,15 +47,15 @@ const QIONE_360_VIDEO =
 
 /*
  * Poster und Ersatzbild = Bild 0 der Drehung, die Frontansicht, in voller
- * Groesse (1080 px) aus app/lib/video360-ersatzbild.js (Christian
+ * Größe (1080 px) aus app/lib/video360-ersatzbild.js (Christian
  * 01.10.2026: steht das Video, soll ein vollwertiges Bild aus dem Video
  * stehen). Bis zum 01.10.2026 war das Poster derselbe Frame als stark
  * komprimiertes WebP (qb-hero--360-qione-1x1-poster--ab845898916e.webp,
- * 4.622 B) — es bleibt unveraendert auf dem CDN liegen.
+ * 4.622 B) — es bleibt unverändert auf dem CDN liegen.
  *
  * Warum ein Bild aus dem Video und kein Produktfoto: die Drehung zeigt den
  * QiOne(R) 2 Pro auf SCHWARZEM Grund, das Hero-Foto ihn auf WEISSEM. Ein
- * weisses Bild haette bei jedem Seitenaufruf einen Weiss-nach-Schwarz-Sprung
+ * weisses Bild hätte bei jedem Seitenaufruf einen Weiss-nach-Schwarz-Sprung
  * ergeben, sobald das erste Videobild kommt.
  */
 const QIONE_ERSATZ = ERSATZBILD_360.qione;
@@ -101,13 +101,13 @@ const QIONE_360_KANTE = ERSATZBILD_KANTE;
  * beiden Stellen NICHT.
  */
 /*
- * ERSATZBILD (01.10.2026): das <video> steckt in einer Huelle
- * (data-qb-360="qione"), darueber liegt das Bild, bis das Video nachweislich
- * laeuft — und es kommt nach Fehler, Pause oder Stocken zurueck. Logik in
+ * ERSATZBILD (01.10.2026): das <video> steckt in einer Hülle
+ * (data-qb-360="qione"), darüber liegt das Bild, bis das Video nachweislich
+ * läuft — und es kommt nach Fehler, Pause oder Stocken zurück. Logik in
  * useErsatzbild (dieselbe wie in <ImgixVideo>). Der Alt-Text kommt seitdem
  * vom Bild (ERSATZBILD_360), das Video ist aria-hidden: sonst liest ein
  * Screenreader dasselbe Produkt zweimal. `alt` der Aufrufer wird deshalb
- * nicht mehr gelesen; die Huelle nimmt Groesse und Ausrichtung, die bisher
+ * nicht mehr gelesen; die Hülle nimmt Größe und Ausrichtung, die bisher
  * das <video> trug (startseite.css).
  */
 export function Produkt360Video({className}) {

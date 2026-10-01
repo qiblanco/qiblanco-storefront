@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import Hls from 'hls.js';
 import {hatHoerbarenTon} from '~/lib/video-ton';
-import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/lib/video360-ersatzbild';
+import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/components/reusables/video360-ersatzbild';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
@@ -77,20 +77,20 @@ function anfangsZustandStumm(videoPath) {
 /*
  * ERSATZBILD (Christian 01.10.2026, Job 20261001-bau-360-video-ersatzbild-aus-
  * dem-video-dach-und-us): mit `ersatz` (ein Eintrag aus ERSATZBILD_360 in
- * app/lib/video360-ersatzbild.js) liegt ueber dem Video ein vollwertiges Bild
- * aus dem Video, solange es nicht nachweislich laeuft — auch nach einem Fehler
- * oder Stocken. Das Bild ist dann auch das poster, die Huelle traegt
+ * app/components/reusables/video360-ersatzbild.jsx) liegt über dem Video ein vollwertiges Bild
+ * aus dem Video, solange es nicht nachweislich läuft — auch nach einem Fehler
+ * oder Stocken. Das Bild ist dann auch das poster, die Hülle trägt
  * data-qb-360 / data-qb-360-zustand (Messmerkmale des Vertrags), das <video>
- * aria-hidden (das Bild traegt die Beschreibung). Unter
+ * aria-hidden (das Bild trägt die Beschreibung). Unter
  * prefers-reduced-motion wird das Video gar nicht erst geladen.
- * OHNE `ersatz` rendert und laedt ImgixVideo genau wie bisher (es gibt
+ * OHNE `ersatz` rendert und lädt ImgixVideo genau wie bisher (es gibt
  * Aufrufer ohne Drehung, z. B. das 60-s-Video der QiOne-Detailseite).
  */
 export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = null}) {
   const videoRef = useRef(null);
   const {zustand, zuBild} = useErsatzbild(videoRef, Boolean(ersatz));
-  // Die Effekte unten lesen zuBild ueber den Ref: ein neuer Effekt-Lauf je
-  // Render wuerde hls.js neu aufsetzen.
+  // Die Effekte unten lesen zuBild über den Ref: ein neuer Effekt-Lauf je
+  // Render würde hls.js neu aufsetzen.
   const zuBildRef = useRef(zuBild);
   zuBildRef.current = zuBild;
   const mitErsatz = Boolean(ersatz);
@@ -120,7 +120,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
     let hls = null;
     let beobachter = null;
 
-    // Ruhe gewuenscht: die Drehung gar nicht laden, das Ersatzbild bleibt
+    // Ruhe gewünscht: die Drehung gar nicht laden, das Ersatzbild bleibt
     // stehen. Spart nebenbei imgix-Kontingent. Nur mit Ersatzbild — ohne
     // bliebe sonst ein leerer Kasten.
     if (mitErsatz && bevorzugtRuhe()) return;

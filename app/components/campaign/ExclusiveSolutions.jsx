@@ -9,7 +9,7 @@ import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {ERSATZBILD_360} from '~/lib/video360-ersatzbild';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {StudienSlider} from '~/components/reusables/StudienSlider';
 import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
