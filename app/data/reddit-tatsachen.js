@@ -17,7 +17,7 @@
  * einzeln im öffentlichen Reddit-Archiv Arctic Shift gelesen
  * (arctic-shift.photon-reddit.com, posts/ids + comments/tree), weil reddit.com
  * selbst dem Server mit HTTP 403 antwortet. Rohdaten des Zählauftrags:
- * /mnt/HC_Volume_106066469/jobdaten/gross/20261001-s07vm-tatsachenseite-reddit/
+ * /mnt/HC_Volume_106066469/jobdaten/versal/20261001-s07vm-tatsachenseite-reddit/
  * reddit/ (grundmenge.txt).
  *
  * KEINE ZAHL IM TEXT IST EIN LITERAL: Anzahl der Fäden, der fremden und der
@@ -42,7 +42,7 @@ export const FENSTER = {von: '2026-09-17', bis: '2026-09-30', abrufe: 10};
 
 /**
  * Die zehn Fäden. `bezug`: 'fremd' = Qi Blanco kommt weder im Beitrag noch in
- * einer Antwort vor; 'genannt' = der Name fällt. `traegt` = Zahl der Beiträge,
+ * einer Antwort vor; 'genannt' = der Name fällt. `tragen` = Zahl der Beiträge,
  * in denen jemand vom EIGENEN Tragen berichtet — gelesen, nicht geschätzt.
  * `link` nur dort, wo der Faden nichts verbreitet, was wir nicht selbst
  * verbreiten wollen (siehe Kopf); `id` ist die Reddit-Kennung zum Nachprüfen.
@@ -55,7 +55,7 @@ export const FAEDEN = [
     bezug: 'fremd',
     text: 'Ein Gießharz-Farbton namens „Blanco Blanco", gefragt in einem Forum fürs Würfelgießen.',
     antworten: 6,
-    traegt: 0,
+    tragen: 0,
     link: 'https://www.reddit.com/r/DiceMaking/comments/1gz56e3/',
   },
   {
@@ -65,7 +65,7 @@ export const FAEDEN = [
     bezug: 'fremd',
     text: 'Ein Tequila der Marke „Qui".',
     antworten: 20,
-    traegt: 0,
+    tragen: 0,
     link: 'https://www.reddit.com/r/tequila/comments/1p29zz6/',
   },
   {
@@ -75,7 +75,7 @@ export const FAEDEN = [
     bezug: 'fremd',
     text: 'Eine Folge der britischen Quizsendung „QI".',
     antworten: 28,
-    traegt: 0,
+    tragen: 0,
     link: 'https://www.reddit.com/r/panelshow/comments/1hbjetr/',
   },
   {
@@ -85,7 +85,7 @@ export const FAEDEN = [
     bezug: 'fremd',
     text: 'Ein Video, in dem ein Mann mit bloßen Händen Feuer entfacht.',
     antworten: 182,
-    traegt: 0,
+    tragen: 0,
     link: 'https://www.reddit.com/r/videos/comments/ykyy6/',
   },
   {
@@ -95,7 +95,7 @@ export const FAEDEN = [
     bezug: 'fremd',
     text: 'Eine allgemeine Frage nach Aufklebern fürs Handy. Qi Blanco kommt darin nicht vor.',
     antworten: 22,
-    traegt: 0,
+    tragen: 0,
     link: null,
   },
   {
@@ -105,7 +105,7 @@ export const FAEDEN = [
     bezug: 'genannt',
     gruppe: 'frage',
     antworten: 0,
-    traegt: 0,
+    tragen: 0,
     link: 'https://www.reddit.com/r/AskReddit/comments/1uyhj8h/',
   },
   {
@@ -115,7 +115,7 @@ export const FAEDEN = [
     bezug: 'genannt',
     gruppe: 'frage',
     antworten: 0,
-    traegt: 0,
+    tragen: 0,
     link: 'https://www.reddit.com/r/productreview/comments/1uyhjzt/',
   },
   {
@@ -125,7 +125,7 @@ export const FAEDEN = [
     bezug: 'genannt',
     gruppe: 'kleinanzeige',
     antworten: 12,
-    traegt: 0,
+    tragen: 0,
     link: null,
   },
   {
@@ -135,7 +135,7 @@ export const FAEDEN = [
     bezug: 'genannt',
     gruppe: 'fundstueck',
     antworten: 3,
-    traegt: 0,
+    tragen: 0,
     link: null,
   },
   {
@@ -145,7 +145,7 @@ export const FAEDEN = [
     bezug: 'genannt',
     gruppe: 'nebensatz',
     antworten: 14,
-    traegt: 0,
+    tragen: 0,
     link: null,
   },
 ];
@@ -158,13 +158,13 @@ const WORT = [
 export function zahlwort(n) {
   return Number.isInteger(n) && n >= 0 && n < WORT.length ? WORT[n] : String(n);
 }
-const gross = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const versal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export const ZAHL = {
   alle: FAEDEN.length,
   fremd: FAEDEN.filter((f) => f.bezug === 'fremd').length,
   genannt: FAEDEN.filter((f) => f.bezug === 'genannt').length,
-  traegt: FAEDEN.reduce((s, f) => s + f.traegt, 0),
+  tragen: FAEDEN.reduce((s, f) => s + f.tragen, 0),
   frageAntworten: FAEDEN.filter((f) => f.gruppe === 'frage').reduce(
     (s, f) => s + f.antworten,
     0,
@@ -188,7 +188,7 @@ export const KOPF = {
   lead:
     `Auf Reddit erzählt bisher niemand, wie es ist, einen Qi Blanco zu tragen. ` +
     `Zur Suche „Qi Blanco Reddit" zeigt Google ${zahlwort(ZAHL.alle)} Fäden. ` +
-    `${gross(zahlwort(ZAHL.fremd))} davon handeln von etwas anderem. In den ` +
+    `${versal(zahlwort(ZAHL.fremd))} davon handeln von etwas anderem. In den ` +
     `übrigen ${zahlwort(ZAHL.genannt)} fällt der Name, und ein Bericht vom ` +
     `eigenen Tragen steht in keinem.`,
   quelle:
@@ -198,14 +198,14 @@ export const KOPF = {
 };
 
 export const FREMD = {
-  titel: `${gross(zahlwort(ZAHL.fremd))} Fäden handeln von etwas anderem`,
+  titel: `${versal(zahlwort(ZAHL.fremd))} Fäden handeln von etwas anderem`,
   einleitung:
     'Sie teilen mit Qi Blanco ein Wort oder ein Thema. Mit unseren Produkten ' +
     'haben sie nichts zu tun.',
 };
 
 export const GENANNT = {
-  titel: `${gross(zahlwort(ZAHL.genannt))} Fäden, in denen Qi Blanco vorkommt`,
+  titel: `${versal(zahlwort(ZAHL.genannt))} Fäden, in denen Qi Blanco vorkommt`,
   einleitung:
     'In keinem davon berichtet jemand, der einen Qi Blanco trägt. So sieht ' +
     'jeder einzelne aus.',
@@ -315,7 +315,7 @@ export const FRAGEN = [
     a:
       'Weil sie ein ähnliches Wort wie „Blanco", „Qui" oder „QI" enthalten ' +
       'oder ein verwandtes Thema behandeln. ' +
-      `${gross(zahlwort(ZAHL.fremd))} der ${zahlwort(ZAHL.alle)} Fäden haben ` +
+      `${versal(zahlwort(ZAHL.fremd))} der ${zahlwort(ZAHL.alle)} Fäden haben ` +
       'mit Qi Blanco nichts zu tun.',
   },
   {

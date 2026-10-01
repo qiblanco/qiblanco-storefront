@@ -604,19 +604,17 @@ export const NUR_ROUTE_SEITEN = [
       'forschungs-meister sollist-seo07-zitierwirkung-bewertende-reihe). ' +
       'Anlass ist gemessen: Eigenanteil in Googles KI-Antwort 2 von 42 ' +
       'Zitatzeilen (4,8 %), zitiert wurden zwei Reddit-Faeden ohne Antwort. ' +
-      'Die Seite besteht allein aus der Route ' +
-      'pages.was-auf-reddit-ueber-qi-blanco-steht.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt; ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'Die Seite besteht allein aus ihrer Route und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
       'steht in keiner Sitemap. Kein noindex, canonicalLink() in der Route, ' +
       'im selben Commit. lastmod ist die Obergrenze des Merge-Fensters ' +
-      '(Merge am 2026-10-01 vor 12:00Z geplant); ' +
+      '(Merge am 2026-10-01 vor 12:00Z geplant). ' +
       'probe_sitemap_lastmod_wahrhaftig.py meldet, falls der Merge spaeter ' +
       'lag. Wache (Kriterium 3): homepage-bauer/pruefungen/' +
-      'probe_zweifelsseite_dunkel.py --flaeche reddit, prueft am ' +
-      'ausgelieferten HTML den INHALT (Rand-Marker aus der Flaechen-SSoT), ' +
-      'kein noindex, kein Disallow, Canonical, den Sitemap-<loc> und den ' +
-      'eingehenden Link einer indexierten Nachbarseite, nicht den ' +
-      'Statuscode.',
+      'probe_zweifelsseite_dunkel.py --flaeche reddit. Sie prueft am ' +
+      'ausgelieferten HTML den INHALT (Rand-Marker aus der Flaechen-SSoT). ' +
+      'Dazu kein noindex, kein Disallow, Canonical, Sitemap-<loc> und den ' +
+      'eingehenden Link einer indexierten Nachbarseite.',
   },
   {
     pfad: '/pages/quellen',

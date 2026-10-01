@@ -53,11 +53,11 @@ export function links() {
 }
 
 // Die Zahlen im Titel kommen aus dem Datenmodul, nicht aus der Hand.
-const gross = (w) => w.charAt(0).toUpperCase() + w.slice(1);
+const versal = (w) => w.charAt(0).toUpperCase() + w.slice(1);
 const TITEL = `Qi Blanco auf Reddit: ${zahlwort(ZAHL.alle)} Fäden, einzeln nachgelesen | Qi Blanco`;
 const BESCHREIBUNG =
   'Was auf Reddit über Qi Blanco steht: die Fäden, die Google zeigt, mit ' +
-  `Datum und Quelle. ${gross(zahlwort(ZAHL.fremd))} handeln von etwas ` +
+  `Datum und Quelle. ${versal(zahlwort(ZAHL.fremd))} handeln von etwas ` +
   'anderem, in keinem berichtet jemand vom eigenen Tragen.';
 
 /**

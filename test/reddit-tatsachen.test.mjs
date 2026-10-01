@@ -30,8 +30,10 @@ import {FAQ_ALLE} from '../app/data/faq-seite.js';
 
 const lies = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 
+// Der Dateiname der Route folgt dem Pfad; er wird abgeleitet, nicht getippt.
+const PFAD_SLUG = '/pages/was-auf-reddit-ueber-qi-blanco-steht'.split('/').pop();
 const ROUTE = ohneProsa(
-  lies('../app/routes/pages.was-auf-reddit-ueber-qi-blanco-steht.jsx'),
+  lies(`../app/routes/pages.${PFAD_SLUG}.jsx`),
 );
 const KOMPONENTE = ohneProsa(
   lies('../app/components/campaign/RedditTatsachenSeite.jsx'),
@@ -119,7 +121,7 @@ test('der Kopfsatz "niemand trägt" ist an die Daten gebunden', () => {
   // Die Seite sagt, in keinem Faden berichte jemand vom eigenen Tragen. Das
   // ist nur wahr, solange die Zählung null ergibt. Wer einen Faden mit einem
   // Tragebericht ergänzt, muss den Text ändern, sonst wird hier rot.
-  assert.equal(ZAHL.traegt, 0);
+  assert.equal(ZAHL.tragen, 0);
   assert.match(KOPF.lead, /steht in keinem/);
 });
 
