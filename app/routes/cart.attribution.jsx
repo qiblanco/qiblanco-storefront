@@ -16,7 +16,7 @@ import {mergeCartAttributes} from '~/lib/checkout-tracking';
 export async function action({request, context}) {
   const {cart, env} = context;
   // Die Geschenk-Angabe (~/lib/geschenk) liest eine KOPIE des Requests: ein
-  // Body ist nur einmal lesbar, und das Original gehoert dem Ankunfts-Marker
+  // Body ist nur einmal lesbar, und das Original gehört dem Ankunfts-Marker
   // weiter unten. Die Kopie muss vor jedem Lesen entstehen.
   const geschenk = geschenkAusFormular(await geschenkFormularLesen(request.clone()));
   const cartResult = await cart.get();
