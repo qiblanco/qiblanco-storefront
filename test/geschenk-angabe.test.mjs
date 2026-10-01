@@ -158,10 +158,17 @@ test('ARM-G9 Vorbelegung des Hakens folgt nur einem echten ja', () => {
   assert.equal(geschenkVermerkt(null), false, 'ARM-G9c');
 });
 
-test('ARM-G10 Wortlaut: echte Umlaute-tauglich, kein Versprechen', () => {
+test('ARM-G10 Wortlaut und Checkbox: nie fest vorausgefüllt, kein Versprechen', () => {
   assert.equal(GESCHENK_TEXT, 'Das ist ein Geschenk');
   const quelle = readFileSync(new URL('../app/components/CartSummary.jsx', import.meta.url), 'utf8');
-  assert.ok(!/defaultChecked=\{true\}|\bchecked\b(?!=)/.test(quelle.replace(/defaultChecked=\{geschenk\}/, '')),
-    'ARM-G10: die Checkbox darf nie fest vorausgefüllt sein');
-  assert.ok(!/Rechnung/.test(quelle), 'ARM-G10: kein Rechnungs-Versprechen ohne Beleg des Versandwegs');
+  // Nur den EIGENEN Label-Block prüfen: andere Checkboxen im selben Formular
+  // (Bewertungs-Opt-in) und deren Kommentare gehen diesen Arm nichts an.
+  const block = quelle.match(/<label className="cart-geschenk">[\s\S]*?<\/label>/)?.[0];
+  assert.ok(block, 'ARM-G10a: Label-Block .cart-geschenk fehlt im Kasse-Formular');
+  assert.ok(/name=\{GESCHENK_FELD\}/.test(block), 'ARM-G10b: Checkbox ohne Feldnamen');
+  const ohneVorbelegung = block.replace('defaultChecked={geschenk}', '');
+  assert.ok(!/checked|required/i.test(ohneVorbelegung),
+    'ARM-G10c: die Checkbox darf nur aus dem Warenkorb vorbelegt und nie Pflicht sein');
+  assert.ok(!/Rechnung/.test(block + GESCHENK_TEXT),
+    'ARM-G10d: kein Rechnungs-Versprechen ohne Beleg des Versandwegs');
 });
