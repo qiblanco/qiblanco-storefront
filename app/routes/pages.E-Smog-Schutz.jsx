@@ -1,7 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {redirect} from 'react-router';
 import {ESmogSchutz} from '~/components/campaign/ESmogSchutz';
-import lpDStyles from '~/styles/esmog-schutz.css?url';
+import lpDStyles from '~/styles/e-smog-schutz.css?url';
 
 /**
  * Ad-Landingpage /pages/E-Smog-Schutz — E-SMOG „Die unsichtbare Dauerbelastung,
@@ -17,7 +17,7 @@ import lpDStyles from '~/styles/esmog-schutz.css?url';
  * JEDE Case-Variante, eine Zeile im Router-Layer). Die alte Info-Seite
  * pages.e-smog.jsx (anderes Muster) ist davon unberuehrt.
  *
- * Eigenes Token-Designsystem (styles/esmog-schutz.css, Scope .lp-d3), uebernommen
+ * Eigenes Token-Designsystem (styles/e-smog-schutz.css, Scope .lp-d3), uebernommen
  * aus dem 93/100-Rezept der LP A/B. Ruhiger Luxus statt Alarm-Rot (Konzept 3.3 D).
  *
  * Das Tracking (R1/R2/R3-Kette) haengt pfad-agnostisch im root-Layout — der

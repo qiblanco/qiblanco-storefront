@@ -28,7 +28,7 @@ import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
  * Video-Erfahrungen -> Alltags-Integration + 20-Tage-Erlebnisfenster -> Garantie ->
  * Pricing -> QB-Signatur -> Final CTA.
  *
- * DESIGN: uebernimmt das 93/100-Token-System der LP A/B (styles/esmog-schutz.css,
+ * DESIGN: uebernimmt das 93/100-Token-System der LP A/B (styles/e-smog-schutz.css,
  * Scope .lp-d3). EIN Gold-Akzent (#c9a14b), warmes Neutral-Kontinuum, Beweis vor
  * Behauptung. BEWUSST KEIN Alarm-Rot/Angst-Aesthetik (Konzept 3.3 D: ruhiger Luxus).
  *
