@@ -1,4 +1,4 @@
-/* qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.8) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.8) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -85,6 +85,9 @@
     try {
       var cb = w.Cookiebot;
       if (cb && cb.consent && typeof cb.consent.marketing !== "undefined") {
+        if (typeof cb.hasResponse !== "undefined" && !cb.hasResponse) {
+          return { ad_storage: "pending", ad_user_data: "pending" };
+        }
         var mk = cb.consent.marketing ? "granted" : "denied";
         return { ad_storage: mk, ad_user_data: mk };
       }
