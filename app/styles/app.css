@@ -1530,23 +1530,23 @@ ul.submenu li a {
 
 /* `anywhere` bleibt und wird NICHT durch `break-word` ersetzt: nur `anywhere`
    senkt die intrinsische Mindestbreite, die die 0.6fr/1.4fr-Spur oben sonst
-   ueber den Viewport spreizt. Gefehlt hat der Silben-Partner — ohne ihn bricht
-   der Browser an JEDEM Zeichen. Gemessen 2026-09-01 am Live-Rand (390px,
-   Name "Wohnungsbaugenossenschaftsverwaltung Rheinlandpfalz"): Umbruch nach
-   "verwaltun", einzelnes "g" in der Folgezeile. Mit `hyphens: auto`:
-   "verwal-/tung". Voraussetzung <html lang="de"> ist in app/root.jsx erfuellt.
-   DIE SORGE, EIN TRENNSTRICH KOENNTE EINE E-MAIL ODER BESTELLNUMMER
-   VERFAELSCHEN, IST AUSGEMESSEN, NICHT WEGGEDACHT: A/B ueber 3 Eingaben x 2
-   Breiten am Live-Rand ergab in 5 von 6 Faellen IDENTISCHE Zeilenkaesten —
-   Chrome trennt weder ein Token mit @ noch eine Bestellnummer. Die Regel wirkt
-   ausschliesslich auf deutsche Komposita im Namensfeld. Wer sie entfernt,
-   holt den Buchstaben-Waisen zurueck; wer `anywhere` entfernt, die Spur-
-   Spreizung. Probe: pruefungen/probe_widerruf_zusammenfassung_umbruch.py
-   (erreicht die confirm-Phase per intent=review, sendet keinen Widerruf). */
+   ueber den Viewport spreizt.
+   KEINE Silbentrennung an dieser Stelle. Die Werte sind Kundendaten
+   (Bestellnummer, Name, E-Mail), und Firefox mit deutschen Trennmustern trennt
+   auch sie: gemessen 2026-09-04 und 2026-10-01 an der Live-Seite (390x844)
+   "...@musterhaus-" / "verwaltung.de". Die fruehere Entlastung ("Chrome trennt
+   weder ein Token mit @ noch eine Bestellnummer") war an Playwright-Chromium
+   gemessen, das gar nicht trennt. Traeger ist der Inline-Stil
+   `hyphens: manual` in <Datenfeld> (app/routes/widerruf_.bestaetigen.jsx,
+   PR #725); hier steht keine hyphens-Angabe, damit die Eigenschaft an EINER
+   Stelle gefuehrt wird. Gegenrichtung, in Kauf genommen: ein sehr langes Wort
+   im Namensfeld kann per `anywhere` einen kurzen Rest in die Folgezeile
+   schieben. Proben: pruefungen/probe_widerruf_zusammenfassung_umbruch.py
+   (Firefox, Tinte) und probe_widerruf_regel_ausgeliefert.py (ausgeliefertes
+   app.css ohne hyphens:auto, Route-Asset mit hyphens:"manual"). */
 .withdrawal-summary dd {
   margin: 0;
   overflow-wrap: anywhere;
-  hyphens: auto;
 }
 
 .withdrawal-alert {
