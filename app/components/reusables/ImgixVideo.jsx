@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import Hls from 'hls.js';
 import {hatHoerbarenTon} from '~/lib/video-ton';
+import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/lib/video360-ersatzbild';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
@@ -73,8 +74,26 @@ function anfangsZustandStumm(videoPath) {
   }
 }
 
-export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
+/*
+ * ERSATZBILD (Christian 01.10.2026, Job 20261001-bau-360-video-ersatzbild-aus-
+ * dem-video-dach-und-us): mit `ersatz` (ein Eintrag aus ERSATZBILD_360 in
+ * app/lib/video360-ersatzbild.js) liegt ueber dem Video ein vollwertiges Bild
+ * aus dem Video, solange es nicht nachweislich laeuft — auch nach einem Fehler
+ * oder Stocken. Das Bild ist dann auch das poster, die Huelle traegt
+ * data-qb-360 / data-qb-360-zustand (Messmerkmale des Vertrags), das <video>
+ * aria-hidden (das Bild traegt die Beschreibung). Unter
+ * prefers-reduced-motion wird das Video gar nicht erst geladen.
+ * OHNE `ersatz` rendert und laedt ImgixVideo genau wie bisher (es gibt
+ * Aufrufer ohne Drehung, z. B. das 60-s-Video der QiOne-Detailseite).
+ */
+export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = null}) {
   const videoRef = useRef(null);
+  const {zustand, zuBild} = useErsatzbild(videoRef, Boolean(ersatz));
+  // Die Effekte unten lesen zuBild ueber den Ref: ein neuer Effekt-Lauf je
+  // Render wuerde hls.js neu aufsetzen.
+  const zuBildRef = useRef(zuBild);
+  zuBildRef.current = zuBild;
+  const mitErsatz = Boolean(ersatz);
   // DOMAIN-WECHSEL 2026-09-18 (Vorgang EL-20260814-9a7f9a50, Elina).
   // imgix führt die Video-Auslieferung auf imgix.net zusammen; die eigene
   // Anleitung sagt wörtlich, .imgix.video-URLs hören nach dem Sunset auf
@@ -101,9 +120,21 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
     let hls = null;
     let beobachter = null;
 
+    // Ruhe gewuenscht: die Drehung gar nicht laden, das Ersatzbild bleibt
+    // stehen. Spart nebenbei imgix-Kontingent. Nur mit Ersatzbild — ohne
+    // bliebe sonst ein leerer Kasten.
+    if (mitErsatz && bevorzugtRuhe()) return;
+
     function laden() {
       if (Hls.isSupported()) {
         hls = new Hls(HLS_KONFIG);
+        if (mitErsatz) {
+          // Fataler Fehler (Netz, Manifest, Medien): hls.js gibt auf, das
+          // <video> selbst meldet dann nicht zwingend etwas.
+          hls.on(Hls.Events.ERROR, (_e, data) => {
+            if (data && data.fatal) zuBildRef.current();
+          });
+        }
         hls.loadSource(hlsUrl);
         hls.attachMedia(video);
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -134,7 +165,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
       if (beobachter) beobachter.disconnect();
       if (hls) hls.destroy();
     };
-  }, [hlsUrl, mp4Url]);
+  }, [hlsUrl, mp4Url, mitErsatz]);
 
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
   // das Attribut bleibt für die Autoplay-Erlaubnis unveraendert `muted`).
@@ -164,14 +195,18 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
       const video = videoRef.current;
       if (video && !nachher) {
         const p = video.play();
-        if (p && typeof p.catch === 'function') p.catch(() => {});
+        if (p && typeof p.catch === 'function') p.catch(() => zuBildRef.current());
       }
       return nachher;
     });
   }
 
   return (
-    <div className={`${className} ImgixVideo-wrap`}>
+    <div
+      className={`${className} ImgixVideo-wrap`}
+      data-qb-360={mitErsatz ? ersatz.drehung : undefined}
+      data-qb-360-zustand={mitErsatz ? zustand : undefined}
+    >
       {/* ANKER für die Medien-Erfassung (Grossjob 20260903-tracking-
           videowatchtime, s04). Ohne sie leitet der Pixel den Namen aus einer
           blob:-URL bzw. dem poster ab (hls.js hängt die Quelle nachtraeglich
@@ -191,8 +226,10 @@ export function ImgixVideo({videoPath, fallbackImage, className = ''}) {
         loop
         autoPlay
         preload="metadata"
-        poster={fallbackImage}
+        poster={mitErsatz ? ersatz.bild : fallbackImage}
+        aria-hidden={mitErsatz ? 'true' : undefined}
       />
+      {mitErsatz && <Ersatzbild ersatz={ersatz} zustand={zustand} />}
       {zeigtTonSteuerung && (
       <button
         type="button"
