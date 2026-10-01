@@ -114,7 +114,7 @@ function Hero() {
           </p>
           <div className="lp-d-hero__cta-row">
             <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
-              Jetzt 20 Nächte risikofrei testen
+              20 Nächte risikofrei testen
             </a>
             <span className="lp-d-hero__price">
               {compareLabel && <s>{compareLabel}</s>} {priceLabel}
@@ -519,7 +519,7 @@ function AnwendungSection() {
             ))}
           </ol>
           <a className="lp-vp-btn lp-vp-btn--primary" href="/pages/qione-2-pro">
-            Jetzt die 20 Nächte starten
+            20 Nächte risikofrei testen
           </a>
         </div>
       </div>
@@ -645,7 +645,7 @@ function PricingSection() {
               className={`lp-vp-btn ${c.featured ? 'lp-vp-btn--primary' : 'lp-vp-btn--secondary'} lp-d-product__cta`}
               href={produktLink(c.handle, BLOCK_LP, c.featured ? 'kauf' : 'detail')}
             >
-              {c.featured ? 'Jetzt risikofrei testen' : 'Mehr erfahren'}
+              {c.featured ? '20 Nächte risikofrei testen' : 'Mehr erfahren'}
             </a>
           </article>
         ))}
@@ -733,7 +733,7 @@ function FinalCTA() {
             </div>
           )}
           <a className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg" href="/pages/qione-2-pro">
-            Jetzt QiOne® 2 Pro sichern
+            20 Nächte risikofrei testen
           </a>
           <ul className="lp-vp-final-cta__trust">
             <li>0 % Finanzierung über Klarna und PayPal</li>
