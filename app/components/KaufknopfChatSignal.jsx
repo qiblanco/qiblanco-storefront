@@ -4,8 +4,12 @@ import {
   DOCK_KLASSE,
   KAUFKNOPF_SELEKTOR,
   LP_KAUFAUSGANG_VORFILTER,
+  OEFFENTLICH_KNOPF_VORFILTER,
   RAHMEN_ID,
+  farbeDeckt,
+  hatKnopfOptik,
   istLpKaufausgang,
+  istOeffentlichesProduktziel,
   UEBERDECKUNG_ATTRIBUT,
   ueberdecktKaufknopf,
 } from '~/lib/kaufknopf-chat';
@@ -72,6 +76,15 @@ import {
  * gesehen worden zu sein; live ohne Unterdrückung stand sie 7,5 s. Gewollt:
  * der Knopf geht vor der Einladung. Der Chat selbst bleibt als Pille da.
  *
+ * DER ÖFFENTLICHE BLOCK (Job 20261001-oeffentlicher-block-chatblase-verdeckt-
+ * produktknoepfe): auch die Knöpfe der öffentlichen Seiten zur Produkt- bzw.
+ * Kaufseite zählen, erkannt an Ziel und Knopf-Optik. Zensus, Schnitt und die
+ * Abwägung gegen Annas Einstieg stehen in lib/kaufknopf-chat.js bei
+ * OEFFENTLICH_KNOPF_VORFILTER. Dieselbe Nebenwirkung wie oben: wo der erste
+ * Knopf beim Laden in der Zone der Einladungsblase liegt
+ * (/pages/qione-2-pro-details, /pages/qibracelet-details), läuft die
+ * Einladung ungesehen ab und die Pille steht danach.
+ *
  * VOR DER HYDRATION (Nachzug 2026-09-28, Vollzug ov1f0335e4ad): der Loader
  * läuft als defer-Skript vor dem React-Entry, dieser Effekt erst danach.
  * Dazwischen stand das Widget ungeprüft über dem Knopf — ohne Last rund
@@ -93,6 +106,27 @@ export function KaufknopfChatSignal() {
   useEffect(() => {
     const wurzel = document.documentElement;
 
+    // Gemerkt wird nur das Ja: ein Nein kann an einem Stylesheet liegen, das
+    // nach einer Client-Navigation noch lädt, und darf deshalb nicht haften.
+    const alsKnopfErkannt = new WeakSet();
+    const knopfOptik = (a, r) => {
+      if (alsKnopfErkannt.has(a)) return true;
+      const stil = window.getComputedStyle(a);
+      const rahmenDeckt = farbeDeckt(stil.borderTopColor);
+      const ja = hatKnopfOptik({
+        display: stil.display,
+        flaeche:
+          farbeDeckt(stil.backgroundColor) || stil.backgroundImage !== 'none',
+        raender: ['Top', 'Right', 'Bottom', 'Left'].map((seite) =>
+          rahmenDeckt ? parseFloat(stil[`border${seite}Width`]) || 0 : 0,
+        ),
+        hoehe: r.height,
+        hatBild: !!a.querySelector('img, picture, video'),
+      });
+      if (ja) alsKnopfErkannt.add(a);
+      return ja;
+    };
+
     const knopfRechtecke = () => {
       const liste = [];
       const nimm = (k) => {
@@ -104,6 +138,16 @@ export function KaufknopfChatSignal() {
       // Vorfilter trifft auch Nachbarpfade, entschieden wird am Pfad.
       document.querySelectorAll(LP_KAUFAUSGANG_VORFILTER).forEach((a) => {
         if (istLpKaufausgang(a.pathname)) nimm(a);
+      });
+      // Knöpfe des öffentlichen Blocks zur Produkt- bzw. Kaufseite: Ziel am
+      // Pfad, Knopf an der Optik (lib/kaufknopf-chat.js). Die Optik wird nur
+      // für Links im Fenster gelesen; außerhalb kann der Rahmen nichts decken.
+      document.querySelectorAll(OEFFENTLICH_KNOPF_VORFILTER).forEach((a) => {
+        if (!istOeffentlichesProduktziel(a.pathname)) return;
+        const r = a.getBoundingClientRect();
+        if (!(r.width > 0 && r.height > 0)) return;
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        if (knopfOptik(a, r)) liste.push(r);
       });
       return liste;
     };
