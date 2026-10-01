@@ -75,7 +75,7 @@ export function zahlwort(n) {
 const s = PROFIL.sterne;
 export const ZAHL = {
   alle: s[5] + s[4] + s[3] + s[2] + s[1],
-  fuenf: s[5],
+  voll: s[5],
   vier: s[4],
   unterVier: s[3] + s[2] + s[1],
 };
@@ -105,7 +105,7 @@ export const VERTEILUNG = [5, 4, 3, 2, 1].map((n) => ({
 export const PROFIL_ABSCHNITT = {
   titel: 'Was im Profil steht',
   einleitung:
-    `${ZAHL.fuenf} Bewertungen geben fünf Sterne, ` +
+    `${ZAHL.voll} Bewertungen geben fünf Sterne, ` +
     `${zahlwort(ZAHL.vier)} gibt vier. ` +
     (ZAHL.unterVier === 0
       ? 'Mit drei Sternen oder weniger hat niemand bewertet.'

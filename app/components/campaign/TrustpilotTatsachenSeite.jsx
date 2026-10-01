@@ -145,11 +145,11 @@ export function TrustpilotTatsachenSeite() {
         <div className="tpt__inhalt">
           <h2>{SELBST.titel}</h2>
           <p>{SELBST.text}</p>
+          {/* KEIN Weg auf /pages/bewertungen: Christian 2026-09-28 („Das muss
+              ueberall entfernt werden"), durchgesetzt von hb-deploy WEGLINK.
+              Der Weg zu den Google-Stimmen ist der Link auf das Google-Profil
+              im Abschnitt darueber. */}
           <p className="tpt__weiter">
-            <a className="tpt__link" href="/pages/bewertungen">
-              Alle Google-Bewertungen live
-            </a>{' '}
-            ·{' '}
             <a className="tpt__link" href="/pages/neu-oder-gebraucht">
               Beide Fristen mit Quelle
             </a>{' '}
