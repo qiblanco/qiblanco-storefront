@@ -48,6 +48,13 @@ const LAEUFT_AB_S = 0.25;
 /* So lange darf ein `waiting`/`stalled` ohne Fortschritt dauern, bevor das
    Bild zurueckkommt. */
 const STOCKEN_MS = 1500;
+/* Herzschlag, solange das Video als laufend gilt. Gemessen 01.10.2026
+   (Chromium, hls.js, Segmente nach dem ersten gesperrt): currentTime stand
+   fast 3 s still, bevor `waiting` kam — mit nur den Ereignissen kam das Bild
+   erst nach 4,4 s zurueck. Der Herzschlag prueft selbst, ob die Zeit
+   weiterlaeuft, und haengt damit an keinem Ereignis, das spaet oder nie
+   kommt. Er laeuft NUR im Zustand 'video'. */
+const HERZSCHLAG_MS = 500;
 
 export function bevorzugtRuhe() {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
@@ -61,7 +68,9 @@ export function bevorzugtRuhe() {
  * Start und Server-HTML: 'bild'. Wechsel zu 'video' erst nach echtem
  * Fortschritt. Zurueck zu 'bild' bei error, emptied, pause (die Spieler haben
  * keine Bedienelemente, eine Pause ist nie gewollt) und bei waiting/stalled,
- * wenn currentTime binnen STOCKEN_MS nicht weiterlaeuft. `zuBild` ist fuer die
+ * wenn currentTime binnen STOCKEN_MS nicht weiterlaeuft — und ueber den
+ * Herzschlag auch dann, wenn currentTime stillsteht, ohne dass eines dieser
+ * Ereignisse (rechtzeitig) kommt. `zuBild` ist fuer die
  * Fehlerwege, die das <video> nicht selbst meldet (fataler hls.js-Fehler,
  * abgelehntes play()).
  *
@@ -81,9 +90,32 @@ export function useErsatzbild(videoRef, an = true) {
     const video = videoRef.current;
     if (!video || !an) return;
     let wache = null;
+    let herz = null;
     const wacheAus = () => {
       if (wache) clearTimeout(wache);
       wache = null;
+    };
+    const herzAus = () => {
+      if (herz) clearInterval(herz);
+      herz = null;
+    };
+    const herzAn = () => {
+      if (herz) return;
+      let letzteZeit = video.currentTime;
+      let still = 0;
+      herz = setInterval(() => {
+        if (video.paused) return;
+        if (video.currentTime !== letzteZeit) {
+          letzteZeit = video.currentTime;
+          still = 0;
+          return;
+        }
+        still += HERZSCHLAG_MS;
+        if (still >= STOCKEN_MS) {
+          herzAus();
+          zuBild();
+        }
+      }, HERZSCHLAG_MS);
     };
 
     const beiPlaying = () => {
@@ -104,6 +136,7 @@ export function useErsatzbild(videoRef, an = true) {
       }
       if (video.currentTime - startRef.current >= LAEUFT_AB_S) {
         wacheAus();
+        herzAn();
         setZustand('video');
       }
     };
@@ -112,11 +145,15 @@ export function useErsatzbild(videoRef, an = true) {
       const t = video.currentTime;
       wache = setTimeout(() => {
         wache = null;
-        if (Math.abs(video.currentTime - t) < 0.01) zuBild();
+        if (Math.abs(video.currentTime - t) < 0.01) {
+          herzAus();
+          zuBild();
+        }
       }, STOCKEN_MS);
     };
     const beiAbbruch = () => {
       wacheAus();
+      herzAus();
       zuBild();
     };
 
@@ -132,6 +169,7 @@ export function useErsatzbild(videoRef, an = true) {
     zuhoerer.forEach(([name, f]) => video.addEventListener(name, f));
     return () => {
       wacheAus();
+      herzAus();
       zuhoerer.forEach(([name, f]) => video.removeEventListener(name, f));
     };
   }, [videoRef, an, zuBild]);
@@ -145,6 +183,10 @@ export function useErsatzbild(videoRef, an = true) {
  * springen Layout und Laden. Die Stile stehen inline, damit kein Blatt auf
  * jeder Route mitlaedt (app.css) und die Seiten-Stile (Radius, Schatten der
  * jeweiligen Bild-Tokens) das <img> wie jedes andere Bild der Seite treffen.
+ * Bewusst OHNE pointer-events:none: die Spieler haben keine Bedienelemente,
+ * und ein Bild, das fuer Treffertests unsichtbar ist, ist auch fuer
+ * elementsFromPoint unsichtbar — also fuer jede Messung, die fragt, was an
+ * dieser Stelle zu sehen ist.
  * fetchpriority high: alle Einbindungen stehen im Kopfbereich, das Bild ist
  * dort das groesste Element beim ersten Malen.
  */
@@ -169,7 +211,6 @@ export function Ersatzbild({ersatz, zustand, objectFit = 'contain'}) {
         objectFit,
         opacity: zustand === 'bild' ? 1 : 0,
         transition: 'opacity 200ms ease',
-        pointerEvents: 'none',
       }}
     />
   );
