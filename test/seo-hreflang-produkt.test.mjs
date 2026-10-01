@@ -217,10 +217,11 @@ test('Product-Knoten trägt die tragenden Felder', () => {
   assert.equal(s['@type'], 'Product');
   assert.equal(s.name, 'QiOne® 2 Pro');
   assert.equal(s.url, 'https://qiblanco.com/products/qione-2-pro');
-  // BRUTTO, nicht der Netto-Betrag der API: 1290,00 x 1,19 = 1535,1 -> 1535.
+  // BRUTTO, nicht der Netto-Betrag der API: 1290,00 x 1,19 = 1535,10 -> 1536
+  // (seit 2026-10-01 aufgerundet, ganzEuroAnzeige: nie unter der Kasse).
   // Ein Suchergebnis, das weniger nennt als die Seite verlangt, ist
   // irrefuehrend — das war der Live-Defekt vom 2026-08-15.
-  assert.equal(s.offers.price, '1535');
+  assert.equal(s.offers.price, '1536');
   assert.equal(s.offers.priceCurrency, 'EUR');
   assert.equal(s.offers.availability, 'https://schema.org/InStock');
   assert.equal(s.sku, 'QO2P');
@@ -302,9 +303,10 @@ test('Kakao trägt den ermaessigten Satz (7 %), nicht 19 %', () => {
       price: {amount: '66.38', currencyCode: 'EUR'},
     },
   });
-  // 66,38 x 1,07 = 71,03 -> 71. Mit 19 % wären es 79 — der Kanon kennt den
+  // 66,38 x 1,07 = 71,03 -> 72 (aufgerundet seit 2026-10-01, Kasse 71,03).
+  // Mit 19 % wären es 79 — der Kanon kennt den
   // Unterschied, eine eigene Umrechnung an dieser Stelle würde ihn verlieren.
-  assert.equal(s.offers.price, '71');
+  assert.equal(s.offers.price, '72');
 });
 
 test('Nicht-EUR-Maerkte liefern bereits den Endbetrag (kein MwSt-Aufschlag)', () => {

@@ -38,7 +38,12 @@ import assert from 'node:assert/strict';
 import {readFileSync, readdirSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 
-import {anzeigeSatz, bruttoAnzeige, ganzEuroAnzeige} from '../app/lib/markt-pricing.js';
+import {
+  anzeigeSatz,
+  bruttoAnzeige,
+  ganzEuroAnzeige,
+  staffelModellAnzeige,
+} from '../app/lib/markt-pricing.js';
 import {
   taxRateForHandle,
   getCartLineGrossDisplayTotalExact,
@@ -59,8 +64,12 @@ const FAELLE = [
   ['qione-2-pro',          '913.45',   'AT', '182.69', 1097],
   ['crystal-cacao-awake',  '71.03',    'DE', '4.97',     76],
   ['crystal-cacao-awake',  '71.03',    'AT', '7.10',     79],
-  // Der Anlassfall: Netto des Fundament-Pakets nach Rabatt.
-  ['qione-2-pro',          '5678.53',  'DE', '1078.92', 6757],
+  // Der Anlassfall: Netto des Fundament-Pakets nach Rabatt. DE seit
+  // 2026-10-01 ebenfalls aufgerundet (1 Cent Kalibrier-Toleranz; Job
+  // 20261001-kakao-sets-ab-4-seite-nennt-weniger-als-kasse-prio30): 6757
+  // lag unter der Kasse 6757,45. Die Paketkarte selbst rechnet in
+  // paket-preis.js und ist davon nicht beruehrt.
+  ['qione-2-pro',          '5678.53',  'DE', '1078.92', 6758],
   ['qione-2-pro',          '5678.53',  'AT', '1135.71', 6815],
 ];
 
@@ -349,7 +358,11 @@ test('(C) jeder produktMeta-Aufruf nennt sein Markt-Land', () => {
    kasse-78-13-beide-laeden): in AT nannte die Kakao-Kaufseite 78 für eine
    Packung, die Kasse nahm 78,13. Zwei Hälften, beide Pflicht: AT rundet AUF
    (nie unter der Kasse), DE bleibt kaufmännisch (sonst QiOne 1.088 statt 1.087
-   und Kakao-Staffel 3x 54 statt 53). */
+   und Kakao-Staffel 3x 54 statt 53).
+   NACHTRAG 2026-10-01 (Job 20261001-kakao-sets-ab-4-seite-nennt-weniger-als-
+   kasse-prio30): DE rundet jetzt ebenfalls AUF, mit 1 Cent Kalibrier-Toleranz
+   (QiOne 1087,0055 bleibt 1.087). Die Kakao-Staffel ist ein Modell und rechnet
+   über staffelModellAnzeige (DE kaufmännisch, 3x bleibt 53). */
 test('AT: aufgerundet, nie unter der Kasse', () => {
   // [netto, Satz, Kasse (Cent), erwartete Anzeige]
   const faelle = [
@@ -372,12 +385,40 @@ test('glatter Betrag bleibt glatt, auch aufgerundet', () => {
   assert.equal(ganzEuroAnzeige(99, 'US'), 99);
 });
 
-test('DE bleibt kaufmännisch gerundet (Gegenrichtung)', () => {
+test('DE: kalibrierte Preise bleiben, 1 Cent Toleranz (Gegenrichtung)', () => {
   assert.equal(ganzEuroAnzeige(913.45 * 1.19, 'DE'), 1087);
-  assert.equal(ganzEuroAnzeige((71.03 - 21.3) * 1.07, 'DE'), 53);
+  // Staffel-Modell 3x: 53,21 im Modell, Kasse 53,00 (Festbetrag) -> 53
+  assert.equal(staffelModellAnzeige((71.03 - 21.3) * 1.07, 'DE'), 53);
+  assert.equal(staffelModellAnzeige((71.03 - 14.2) * 1.07, 'DE'), 61);
+  assert.equal(staffelModellAnzeige((71.03 - 21.3) * 1.1, 'AT'), 55);
   assert.equal(ganzEuroAnzeige(71.03 * 1.07, 'DE'), 76);
+  assert.equal(ganzEuroAnzeige(114.02 * 1.07, 'DE'), 122);
+  assert.equal(ganzEuroAnzeige(148.6 * 1.07, 'DE'), 159);
+  assert.equal(ganzEuroAnzeige(335.29 * 1.19, 'DE'), 399); // 398,9951
+  assert.equal(ganzEuroAnzeige(78.99 * 1.19, 'DE'), 94); // 93,9981
+  assert.equal(Object.is(ganzEuroAnzeige(0, 'DE'), 0), true, 'kein -0');
   // ohne Land = DE (fail-closed wie taxRateForHandle)
   assert.equal(ganzEuroAnzeige(913.45 * 1.19), 1087);
   assert.equal(bruttoAnzeige('71.03', 'crystal-cacao-awake', 'EUR', 'DE'), 76);
   assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR'), 1087);
+});
+
+/* KAKAO-SETS AB 4 PACKUNGEN (Job 20261001-kakao-sets-ab-4-seite-nennt-weniger-
+   als-kasse-prio30, Christian 30.09.: "Auswahl auf der Seite und Warenkorb
+   zeigen denselben Preis"). Die Sets kosten 49,73 netto je Packung und sind in
+   DE nicht ganzzahlig brutto. Kaufmännisch gerundet nannte die Seite bei 5, 6
+   und 7 Packungen weniger, als die Kasse nimmt (266 gegen 266,06). */
+test('DE: Kakao-Sets 4-7 nie unter der Kasse, nie einen Euro darüber', () => {
+  // [netto Warenkorb, Kasse brutto auf den Cent, erwartete Anzeige]
+  const faelle = [
+    [198.92, 212.84, 213],
+    [248.65, 266.06, 267],
+    [298.38, 319.27, 320],
+    [348.11, 372.48, 373],
+  ];
+  for (const [netto, kasse, soll] of faelle) {
+    const ist = bruttoAnzeige(String(netto), 'bundle-4x-awake', 'EUR', 'DE');
+    assert.equal(ist, soll, `netto ${netto}`);
+    assert.ok(ist >= kasse && ist < kasse + 1, `${ist} gegen Kasse ${kasse}`);
+  }
 });
