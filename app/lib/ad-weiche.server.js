@@ -300,6 +300,14 @@ export const AUSSCHLUSS_SEGMENTE = [
   // hierher kommt, will einen Termin mit Christian, kein Kaufversprechen.
   // Additiv, reversibel: eine Zeile löschen.
   '/pages/produktberatung',
+  // DIE ANMELDESEITE ZU COMING HOME (Grossjob growth-m-lp-coming-home-
+  // anmeldeseite, s04; Christian 26.09.2026, Leitplanke Folie 15). Die Anzeige
+  // V18 („Sonntags live: Coming Home“, Ads-Konzept vom 27.09.2026) lädt zur
+  // Anmeldung ein. Gemessen am 2026-10-01: ?utm_medium=paid gab 302 auf LP A.
+  // Wer der Einladung folgt, will sich anmelden, kein Kaufversprechen; dieselbe
+  // Lage wie die Ziele des Kritik-Suchers oben. Additiv, reversibel: eine
+  // Zeile löschen.
+  '/pages/coming-home',
   '/go',
   '/collect',
   '/b',

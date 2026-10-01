@@ -1305,6 +1305,23 @@ export const NUR_ROUTE_SEITEN = [
       'und das Fehlen von noindex.',
   },
   {
+    pfad: '/pages/coming-home',
+    lastmod: '2026-10-01T13:31:10Z',
+    grund:
+      'Die Anmeldeseite zu „Coming Home“, sonntags 19 Uhr live mit Anna und ' +
+      'Christian (Grossjob growth-m-lp-coming-home-anmeldeseite, Christian ' +
+      '26.09.2026, Leitplanke Folie 15). Ziel für Einladungsmail, Bio, Reels ' +
+      'und die Anzeige V18, dazu organisch auffindbar. Die Seite besteht ' +
+      'allein aus der Route pages.coming-home.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex auf dem Dokument (nur die ' +
+      'Action-Antwort trägt X-Robots-Tag), canonicalLink() in der Route. ' +
+      'Wache (Kriterium 3): growth-manager/pruefungen/' +
+      'probe_coming_home_seite.py, stehender Träger rt coming-home-wache. ' +
+      'Arm A prüft am ausgelieferten HTML HTTP 200, den Formular-Marker, ' +
+      'den Canonical und das Fehlen von noindex; 404 ist dort ein Befund.',
+  },
+  {
     pfad: '/pages/was-ist-kohaerentes-wasser',
     lastmod: '2026-09-23T22:00:00Z',
     grund:
