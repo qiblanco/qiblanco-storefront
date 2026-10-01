@@ -27,6 +27,7 @@
   --a-font: 'Open Sans Variable', 'Open Sans', sans-serif;
 
   /* Typo-Skala (modulare Skala ~1.25; 7 Stufen) */
+  --a-fs-2xs: 0.75rem;                                     /* 12px: Hochstellung + Schema-Beschriftung */
   --a-fs-xs: 0.8125rem;                                    /* 13px */
   --a-fs-base: 1rem;                                       /* 16px */
   --a-fs-md: 1.125rem;                                     /* 18px */
@@ -296,7 +297,7 @@ body:has(.lp-d3) footer {
 .lp-d3 .lp-d-schema__zelle { fill: var(--a-dunkel); opacity: 0.06; }
 .lp-d3 .lp-d-schema__span {
   font-family: var(--a-font);
-  font-size: 11px;
+  font-size: var(--a-fs-2xs);
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -956,3 +957,46 @@ body:has(.lp-d3) header img { border-radius: var(--a-r1); }
    auto-Margin klebt die Box links statt zentriert unter den Studien
    (Hausmuster zell-schutz.css, gleicher Fix). */
 .lp-d3 .Studien p.text-center { margin-inline: auto; }
+
+/* ─── Fremd-Widgets in die Token-Welt (2026-10-01, Job 20261001-esmog-schutz-
+   design-upgrade-und-beleg-naht) ─────────────────────────────────────────────
+   Gemessen an der Live-Seite (Design-Rubrik 77/100, harmonisch 45): die
+   Gestaltungs-Schuld lag nicht im Token-Block oben, sondern in GETEILTEN Widgets,
+   die ihre eigenen Farben und Groessen mitbringen — ScrollScrubVideo (Blauschwarz
+   #080918, Ueberschrift 40px, Absatz 24px/14.4px), InfoSlider (Overlay #000/50 %,
+   Karten-Titel 28.8px), Reputon-Karten (#f3f6f9, „Mehr lesen" in Google-Blau
+   #1565c0 = zweite Akzent-Farbwelt), Studien-Karten und Fussformular in Reinweiss.
+   Eingefaerbt wird NUR auf dieser Route (Scope .lp-d3 bzw. body:has(.lp-d3));
+   die Komponenten selbst bleiben unberuehrt, andere Seiten sehen nichts davon.
+   Ergebnis: vier Flaechen-Familien (Grund, Flaeche, Gold-Handlung, Dunkel), EIN
+   Akzent, die Typo-Stufen der Skala oben. */
+.lp-d3 .ScrollScrubVideo { background-color: var(--a-dunkel); }
+.lp-d3 .ScrollScrubVideo .TextContent-Start h2,
+.lp-d3 .ScrollScrubVideo .TextContent-End h2 { font-size: var(--a-fs-h2); font-weight: 600; }
+.lp-d3 .ScrollScrubVideo .TextContent-Start p { font-size: var(--a-fs-lg); }
+.lp-d3 .ScrollScrubVideo .TextContent-End p { font-size: var(--a-fs-base); }
+.lp-d3 .InfoSliderCard .CardOverlay { background-color: rgba(25, 23, 20, 0.5); }
+.lp-d3 .InfoSliderCard .CardTitle h3 { font-size: var(--a-fs-xl); }
+.lp-d3 .InfoSliderCard .CardLabel p { font-size: var(--a-fs-xs); }
+.lp-d3 .InfoSliderCard .CardCollapseButton { background-color: var(--a-grund); color: var(--a-text); }
+.lp-d3 .ghx-studie { background-color: var(--a-grund); border: 1px solid var(--a-linie); }
+.lp-d3 .lp-d-bewertungen .snap-start { background-color: var(--a-grund) !important; border-color: var(--a-linie) !important; }
+.lp-d3 .lp-d-bewertungen .snap-start img { border-radius: var(--a-r1); }
+.lp-d3 .lp-d-bewertungen .text-gray-400,
+.lp-d3 .lp-d-bewertungen .text-gray-500,
+.lp-d3 .lp-d-bewertungen .text-gray-700 { color: var(--a-muted) !important; }
+/* „Mehr lesen": eine leise Textaktion, kein Akzent. Text-Ton + Unterstrich
+   (12,6:1 auf Grund) statt Google-Blau, das als zweite Farbwelt zaehlte. */
+.lp-d3 .lp-d-bewertungen button.self-start {
+  color: var(--a-text) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lp-d3 .google-rating-badge__powered,
+.lp-d3 .google-rating-badge__powered strong { font-size: var(--a-fs-xs); }
+/* Listen erben die Groesse ihrer Liste: app.css setzt li global auf 1.2rem
+   (19.2px, eine Stufe ausserhalb der Skala) — hier tragen Trust- und
+   Feature-Listen ihre Groesse am <ul>. */
+.lp-d3 li { font-size: inherit; }
+.lp-d3 sup { font-size: var(--a-fs-2xs); }
+body:has(.lp-d3) ._form_15 input:not([type='submit']) { background-color: var(--a-grund) !important; }
