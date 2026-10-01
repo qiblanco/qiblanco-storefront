@@ -64,9 +64,13 @@ import {
  * DIE NAHT ZU qi-salesbot IST EINSEITIG: die Storefront unterdrückt von
  * außen (`html[data-chat-über-kaufknopf] #qiblanco-salesbot-widget-frame`
  * in app.css). Der Loader setzt `visibility` nicht inline (nachgemessen
- * 2026-09-26 an route.ts). Nebenwirkung, die passt: Annas Auftritt wartet,
- * solange ihre Ecke verdeckt ist (eckeVerdeckt im Loader trifft dann den
- * Kaufknopf statt des Rahmens) — die Blase läuft nicht ungesehen ab.
+ * 2026-09-26 an route.ts). Nebenwirkung: Annas Auftritt wartet, solange
+ * ihre Ecke verdeckt ist (eckeVerdeckt im Loader trifft dann den Kaufknopf
+ * statt des Rahmens) — aber nicht unbegrenzt. Gemessen 2026-10-01 auf
+ * /pages/E-Smog-Schutz (390x844, Hero-Knopf unter der Einladungsblase): die
+ * Blase blieb 3,5 s ausgeblendet und fiel dann zur Pille zusammen, ohne
+ * gesehen worden zu sein; live ohne Unterdrückung stand sie 7,5 s. Gewollt:
+ * der Knopf geht vor der Einladung. Der Chat selbst bleibt als Pille da.
  *
  * VOR DER HYDRATION (Nachzug 2026-09-28, Vollzug ov1f0335e4ad): der Loader
  * läuft als defer-Skript vor dem React-Entry, dieser Effekt erst danach.
