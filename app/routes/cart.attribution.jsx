@@ -1,4 +1,5 @@
 import {redirect} from 'react-router';
+import {geschenkAusFormular, geschenkCartAttributes} from '~/lib/geschenk';
 import {
   getAttributionCartAttributes,
   getOriginCartAttributes,
@@ -6,7 +7,6 @@ import {
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
 import {mergeCartAttributes} from '~/lib/checkout-tracking';
-import {geschenkAusFormular, geschenkCartAttributes} from '~/lib/geschenk';
 
 /**
  * Saves click IDs on the cart before sending the customer to Shopify Checkout.
