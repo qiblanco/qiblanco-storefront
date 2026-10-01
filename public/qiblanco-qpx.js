@@ -1,4 +1,4 @@
-/* qpx.js — ERZEUGT aus receiver/pixel/qpx.js (bin/qpx-ausliefern). NICHT VON HAND AENDERN. */
+/* qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.8) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
