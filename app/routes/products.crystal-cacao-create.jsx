@@ -208,7 +208,7 @@ export default function Product() {
             * daneben geschrieben, damit sie nicht erneut auseinanderlaufen kann.
             */}
           <SterneSprung className="product-rating">
-            <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+            <span style={{color: 'var(--color-accent-ink)'}}>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
             <StarRating
               value={Number(KAKAO_KENNZAHLEN.bewertung.replace(',', '.'))}
             />{' '}

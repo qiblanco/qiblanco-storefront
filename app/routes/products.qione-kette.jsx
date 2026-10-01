@@ -128,7 +128,7 @@ export default function Product() {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <SterneSprung className="product-rating mt-2"><span>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
+        <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
