@@ -259,7 +259,9 @@ function ComparisonTable() {
                     alt=""
                     className="mx-auto! mb-1"
                   />
-                  <h3 className="text-sm font-bold" style={{color: '#cab581'}}>
+                  {/* Tinte statt #cab581 (2,01:1 auf Weiss): der Spaltenkopf ist Schrift,
+                      Gold als Schrift auf hell nimmt die Tinte (AI-CEO-Entscheid 2026-10-01). */}
+                  <h3 className="text-sm font-bold" style={{color: 'var(--color-accent-ink)'}}>
                     Crystal Cacao®
                   </h3>
                   <h4 className="text-gray-500">15g</h4>

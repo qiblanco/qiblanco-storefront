@@ -183,7 +183,7 @@ export default function Product() {
         <div className="product-main">
           <h1>{title}</h1>
           <SterneSprung className="product-rating mt-2">
-            <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+            <span style={{color: 'var(--color-accent-ink)'}}>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
             <StarRating value={KAKAO_BEWERTUNG_ZAHL} />{' '}
             <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
           </SterneSprung>
@@ -467,7 +467,7 @@ export default function Product() {
           <div className="product-main">
             <h1>{title}</h1>
             <SterneSprung className="product-rating mt-2">
-              <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+              <span style={{color: 'var(--color-accent-ink)'}}>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
               <StarRating value={KAKAO_BEWERTUNG_ZAHL} />{' '}
               <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
             </SterneSprung>
