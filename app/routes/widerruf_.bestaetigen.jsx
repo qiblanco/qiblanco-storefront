@@ -398,16 +398,17 @@ function SuccessState({data}) {
  * kein Zeichen erfinden.
  *
  * Gemessen an der Live-Seite (Firefox mit deutschen Trennmustern, 390x844,
- * 2026-09-04 und 2026-10-01) hat `hyphens: auto` aus app.css
+ * 2026-09-04 und 2026-10-01) hat `hyphens: auto`, bis PR #733 aus app.css,
  *   maximiliane.donnersmarck@musterhausverwaltung.de
  * gerendert als "…@musterhaus-" / "verwaltung.de". Der Trennstrich steht
  * nicht in der Adresse des Kunden.
  *
- * Der Inline-Stil schlägt die Regel `.withdrawal-summary dd` in app.css und
- * wirkt nur auf dieser Route. Gegenrichtung, in Kauf genommen: ein sehr langes
- * Wort im Namensfeld kann per `overflow-wrap: anywhere` einen kurzen Rest in
- * die Folgezeile schieben. Der Rest fügt nichts hinzu, der Trennstrich
- * verfälscht die Angabe.
+ * Der Inline-Stil ist die einzige Stelle, die die Silbentrennung der
+ * Kundendaten führt: app.css setzt für `.withdrawal-summary dd` seit PR #733
+ * nur noch `overflow-wrap: anywhere`. Der Stil wirkt nur auf dieser Route.
+ * Gegenrichtung, in Kauf genommen: ein sehr langes Wort im Namensfeld kann
+ * per `overflow-wrap: anywhere` einen kurzen Rest in die Folgezeile schieben.
+ * Der Rest fügt nichts hinzu, der Trennstrich verfälscht die Angabe.
  *
  * Probe: homepage-bauer/pruefungen/probe_widerruf_zusammenfassung_umbruch.py
  */
