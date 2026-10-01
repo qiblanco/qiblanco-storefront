@@ -1,0 +1,409 @@
+/* ============================================================================
+   /pages/coming-home — Anmeldeseite „Coming Home live" (2026-10-01).
+   Auftrag growth-m-lp-coming-home-anmeldeseite.
+
+   TOKEN-SYSTEM: Gold, Tinte und Radius kommen aus der Wurzel
+   app/styles/qb-tokens.css (--qb-*), die app/root.jsx auf jeder Route lädt.
+   Diese Datei setzt nur die Rollen der Seite darauf (--ch-*). Werte nach dem
+   Referenz-Rezept der LP A (styles/schlaf-zellen-schutz.css): warmes
+   Neutral-Kontinuum, EIN Gold nur auf Handlung, 8pt-Raster, EIN H2-Stil,
+   zwei Radien, drei Farb-Akte (Grund, Fläche, ein dunkler Akt für die
+   Anmeldung).
+
+   REGEL DIESER DATEI: außerhalb des :root-Blocks erfindet keine Regel einen
+   freien Wert.
+
+   KNOPF: der Bausatz-Knopf .btn--primary (app.css). Diese Datei gibt ihm nur
+   seinen Platz (.ch-knopf), nicht seine Gestalt.
+
+   SCOPE: .ch am Seiten-Wrapper, jede Regel selektiert eine .ch-*-Klasse.
+
+   WARUM EIGENE DATEI: Gate 12 löst geteilte Dateien auf alle importierenden
+   Routen auf. Diese Datei gehört allein dieser Route.
+   ========================================================================== */
+
+:root {
+  --ch-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala: 13 / 16 / 20 / 25 / H2 / H1. Der Bausatz-Knopf bringt seine
+     eigene Stufe mit. */
+  --ch-fs-xs: 0.8125rem;
+  --ch-fs-base: 1rem;
+  --ch-fs-lg: 1.25rem;
+  --ch-fs-xl: 1.5625rem;
+  --ch-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --ch-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Abstände: 8pt-Raster */
+  --ch-s1: 8px;
+  --ch-s2: 16px;
+  --ch-s3: 24px;
+  --ch-s4: 32px;
+  --ch-s6: 48px;
+  --ch-s8: 64px;
+  --ch-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent */
+  --ch-grund: #faf9f5;
+  --ch-flaeche: #f4f0e9;
+  --ch-dunkel: #191714;
+  --ch-text: var(--qb-text);
+  --ch-text-hell: #f4f0e9;
+  --ch-muted: var(--qb-text-gedaempft);
+  --ch-muted-hell: rgba(244, 240, 233, 0.72);
+  --ch-akzent: var(--qb-akzent);
+  --ch-akzent-tinte: var(--qb-akzent-tinte);
+  --ch-linie: rgba(44, 42, 38, 0.12);
+  --ch-linie-hell: rgba(244, 240, 233, 0.2);
+
+  /* Radien und Schatten */
+  --ch-r1: 8px;
+  --ch-r2: 16px;
+  --ch-schatten: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --ch-mass: 60ch;
+  --ch-breite: 1080px;
+  --ch-breite-schmal: 760px;
+  --ch-bild: 500px;
+  --ch-nr: 40px;
+}
+
+body:has(.ch) {
+  background: var(--ch-grund);
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.ch {
+  font-family: var(--ch-font);
+  font-size: var(--ch-fs-base);
+  line-height: 1.65;
+  color: var(--ch-text);
+  background: var(--ch-grund);
+}
+.ch *,
+.ch *::before,
+.ch *::after {
+  box-sizing: border-box;
+}
+
+.ch .ch-abschnitt {
+  margin: 0;
+  padding: var(--ch-s12) var(--ch-s3);
+  max-width: none;
+  background: var(--ch-grund);
+}
+.ch .ch-innen {
+  max-width: var(--ch-breite);
+  margin: 0 auto;
+}
+.ch .ch-innen-schmal {
+  max-width: var(--ch-breite-schmal);
+}
+
+/* ─── Typo: EIN H1, EIN H2, EIN H3 ───────────────────────────────────────── */
+.ch .ch-h1 {
+  font-family: var(--ch-font);
+  font-size: var(--ch-fs-h1);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--ch-text);
+  margin: 0 0 var(--ch-s3);
+}
+.ch .ch-h2 {
+  font-family: var(--ch-font);
+  font-size: var(--ch-fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: inherit;
+  max-width: var(--ch-breite-schmal);
+  margin: 0 auto var(--ch-s6);
+}
+.ch .ch-h3 {
+  font-family: var(--ch-font);
+  font-size: var(--ch-fs-xl);
+  font-weight: 600;
+  line-height: 1.25;
+  color: inherit;
+  margin: 0 0 var(--ch-s1);
+}
+.ch .ch-vorzeile {
+  font-size: var(--ch-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ch-akzent-tinte);
+  margin: 0 0 var(--ch-s2);
+}
+.ch .ch-lede {
+  font-size: var(--ch-fs-lg);
+  line-height: 1.5;
+  color: var(--ch-muted);
+  max-width: var(--ch-mass);
+  margin: 0 0 var(--ch-s4);
+}
+.ch .ch-text {
+  font-size: var(--ch-fs-base);
+  line-height: 1.65;
+  color: inherit;
+  max-width: var(--ch-mass);
+  margin: 0;
+}
+.ch .ch-text-stark {
+  font-weight: 600;
+  margin-top: var(--ch-s3);
+}
+.ch .ch-hinweis {
+  font-size: var(--ch-fs-xs);
+  line-height: 1.6;
+  color: var(--ch-muted);
+  max-width: var(--ch-mass);
+  margin: var(--ch-s2) 0 0;
+}
+.ch .ch-verweis {
+  color: var(--ch-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Der Bausatz-Knopf bekommt hier nur seinen Platz. */
+.ch .ch-knopf {
+  margin: 0;
+}
+
+/* ─── Akt 1: Kopf ────────────────────────────────────────────────────────── */
+.ch .ch-kopf-raster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ch-bild);
+  gap: var(--ch-s8);
+  align-items: center;
+}
+.ch .ch-bild {
+  margin: 0;
+}
+.ch .ch-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--ch-r2);
+  box-shadow: var(--ch-schatten);
+}
+
+/* ─── Band: auf einen Blick ──────────────────────────────────────────────── */
+.ch .ch-band {
+  padding: var(--ch-s4) var(--ch-s3);
+  background: var(--ch-flaeche);
+}
+.ch .ch-eckdaten {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ch-s3);
+}
+.ch .ch-eckdatum {
+  margin: 0;
+}
+.ch .ch-eckdatum-begriff {
+  font-size: var(--ch-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ch-muted);
+  margin: 0;
+}
+.ch .ch-eckdatum-wert {
+  font-size: var(--ch-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ch-text);
+  margin: 0;
+}
+
+/* ─── Akt 2: was dich erwartet ───────────────────────────────────────────── */
+.ch .ch-erwartung {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ch-s6);
+}
+.ch .ch-erwartung-punkt {
+  margin: 0;
+  padding: var(--ch-s3) 0 0;
+  border-top: 2px solid var(--ch-akzent);
+  color: var(--ch-text);
+}
+.ch .ch-zitat {
+  margin: var(--ch-s8) auto 0;
+  padding: 0;
+  max-width: var(--ch-breite-schmal);
+  text-align: center;
+  border: 0;
+}
+.ch .ch-zitat-satz {
+  font-size: var(--ch-fs-xl);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--ch-text);
+  margin: 0 0 var(--ch-s1);
+}
+.ch .ch-zitat-von {
+  font-size: var(--ch-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ch-muted);
+}
+
+/* ─── Akt 3: dunkel, die Anmeldung ───────────────────────────────────────── */
+.ch .ch-dunkel {
+  background: var(--ch-dunkel);
+  color: var(--ch-text-hell);
+  scroll-margin-top: var(--ch-s8);
+}
+.ch .ch-dabei {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ch-s8);
+  align-items: start;
+}
+.ch .ch-schritte {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--ch-s4);
+}
+.ch .ch-schritt {
+  display: grid;
+  grid-template-columns: var(--ch-nr) minmax(0, 1fr);
+  gap: var(--ch-s3);
+  align-items: start;
+  margin: 0;
+  color: var(--ch-text-hell);
+}
+.ch .ch-schritt .ch-text {
+  color: var(--ch-muted-hell);
+}
+.ch .ch-schritt-nr {
+  display: grid;
+  place-items: center;
+  width: var(--ch-nr);
+  height: var(--ch-nr);
+  border: 1px solid var(--ch-akzent);
+  border-radius: 50%;
+  font-size: var(--ch-fs-base);
+  font-weight: 600;
+  color: var(--ch-akzent);
+}
+
+/* Die Karte: Formular und Erfolgszustand tragen dieselbe Gestalt. */
+.ch .ch-karte {
+  margin: 0;
+  padding: var(--ch-s4);
+  border-radius: var(--ch-r2);
+  background: var(--ch-grund);
+  color: var(--ch-text);
+}
+.ch .ch-karte .ch-h3 {
+  margin-bottom: var(--ch-s3);
+}
+.ch .ch-karte .ch-h3:focus {
+  outline: none;
+}
+.ch .ch-feldname {
+  display: block;
+  font-size: var(--ch-fs-xs);
+  font-weight: 600;
+  color: var(--ch-text);
+  margin: 0 0 var(--ch-s1);
+}
+.ch .ch-feld {
+  display: block;
+  width: 100%;
+  min-height: var(--ch-s6);
+  padding: var(--ch-s1) var(--ch-s2);
+  margin: 0 0 var(--ch-s3);
+  font-family: var(--ch-font);
+  font-size: var(--ch-fs-base);
+  line-height: 1.4;
+  color: var(--ch-text);
+  background: var(--ch-flaeche);
+  border: 1px solid var(--ch-linie);
+  border-radius: var(--ch-r1);
+}
+.ch .ch-feld:focus-visible {
+  outline: 2px solid var(--ch-akzent-tinte);
+  outline-offset: 2px;
+}
+.ch .ch-topf {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.ch .ch-fehler {
+  font-size: var(--ch-fs-base);
+  font-weight: 600;
+  color: var(--ch-text);
+  margin: var(--ch-s2) 0 0;
+}
+
+/* ─── Fragen ─────────────────────────────────────────────────────────────── */
+.ch .ch-fragen {
+  margin: 0;
+}
+.ch .ch-frage {
+  padding: var(--ch-s3) 0;
+  border-top: 1px solid var(--ch-linie);
+}
+.ch .ch-frage-titel {
+  font-size: var(--ch-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ch-text);
+  margin: 0 0 var(--ch-s1);
+}
+.ch .ch-frage-antwort {
+  font-size: var(--ch-fs-base);
+  line-height: 1.65;
+  color: var(--ch-text);
+  max-width: var(--ch-mass);
+  margin: 0;
+}
+
+/* ─── Schmal ─────────────────────────────────────────────────────────────── */
+@media (max-width: 899px) {
+  .ch .ch-abschnitt {
+    padding: var(--ch-s8) var(--ch-s3);
+  }
+  .ch .ch-band {
+    padding: var(--ch-s4) var(--ch-s3);
+  }
+  .ch .ch-kopf-raster,
+  .ch .ch-dabei {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ch-s6);
+  }
+  .ch .ch-eckdaten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ch .ch-erwartung {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ch-s4);
+  }
+  .ch .ch-h2 {
+    margin-bottom: var(--ch-s4);
+  }
+  .ch .ch-karte {
+    padding: var(--ch-s3);
+  }
+  .ch .ch-zitat-satz {
+    font-size: var(--ch-fs-lg);
+  }
+}
