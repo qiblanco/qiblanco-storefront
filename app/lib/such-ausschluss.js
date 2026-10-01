@@ -20,10 +20,18 @@
  *      Preis: sie braucht einen zweiten Schreibweg (Admin-API) und ist damit
  *      von einem fremden System abhängig.
  *
- * Ein Produkt ist ausgeschlossen, wenn EINER der beiden Wege zutrifft.
+ *  (3) istZusammensetzungsSet (~/lib/seo) — eine Regel am Handle-Muster,
+ *      seit 2026-10-01 (Elina EL-20261001-397a9719). Die Kakao-Sets vom
+ *      30.09. sind reine Warenkorb-Ziele; ohne diesen Weg standen sie mit
+ *      bis zu 25 Treffern vor den echten Sorten. Eine Regel statt 29
+ *      Listeneinträgen, damit künftige Sets ohne Deploy mitfallen. Die
+ *      Begründung steht an der Funktion in ~/lib/seo.
+ *
+ * Ein Produkt ist ausgeschlossen, wenn EINER der Wege zutrifft.
  * Wer einen Eintrag ergänzt, schreibt den Grund dazu — eine Liste ohne
  * Gründe ist in einem halben Jahr nicht mehr aufloesbar.
  */
+import {istZusammensetzungsSet} from './seo.js';
 
 /** Tag am Produkt (Admin: Produkt -> Tags), pflegbar ohne Deploy. */
 export const SUCH_AUSSCHLUSS_TAG = 'qb-nicht-suchbar';
@@ -55,6 +63,7 @@ const HANDLE_SET = new Set(SUCH_AUSSCHLUSS_HANDLES.map((e) => e.handle));
 export function istSuchAusgeschlossen(node) {
   if (!node) return false;
   if (node.handle && HANDLE_SET.has(node.handle)) return true;
+  if (istZusammensetzungsSet(node.handle)) return true;
   if (Array.isArray(node.tags)) {
     for (const tag of node.tags) {
       if (typeof tag === 'string' && tag.trim().toLowerCase() === SUCH_AUSSCHLUSS_TAG) {
