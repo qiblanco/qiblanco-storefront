@@ -1,9 +1,11 @@
 import {Form} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   WITHDRAWAL_PRODUCTS,
+  validateWithdrawalFormData,
 } from '~/lib/withdrawal';
 
 const PFAD = '/widerruf';
@@ -40,7 +42,45 @@ export function loader() {
   return {};
 }
 
+/**
+ * "ANGABEN ÄNDERN" KOMMT HIERHER ZURÜCK, MIT DEN WERTEN IM POST-RUMPF (Job
+ * 20261001-widerruf-angaben-aendern-leert-das-formular-prio40).
+ *
+ * Bis dahin war "Angaben ändern" auf /widerruf/bestaetigen ein Link auf
+ * diese Seite, und alle Felder standen leer: gemessen am 2026-10-01 in
+ * Firefox und Chromium, 4 von 4 Feldern. Wer einen Tippfehler korrigieren
+ * wollte, tippte alles neu.
+ *
+ * WARUM POST UND NICHT ?orderNumber=...: Query-Parameter landen im
+ * page_view der Analytics, im Referrer und in Zugriffslogs Dritter. Der
+ * POST-Rumpf geht nur an unseren Server, die URL bleibt /widerruf. Ohne
+ * JavaScript funktioniert es genauso (echtes Formular).
+ *
+ * Die Aktion sendet nichts und speichert nichts. Sie bereinigt die Werte mit
+ * derselben Funktion wie die Bestätigungsseite und gibt sie zurück. Prüft die
+ * Bereinigung Fehler, ist das hier egal: der Kunde will ja gerade korrigieren.
+ * Ein Produktwert außerhalb der Liste wird leer, damit die Auswahl ehrlich
+ * "Bitte auswählen" zeigt.
+ *
+ * Probe: homepage-bauer/pruefungen/probe_widerruf_angaben_aendern_vorbelegt.py
+ */
+export async function action({request}) {
+  const {values} = validateWithdrawalFormData(await request.formData());
+  return {
+    werte: {
+      ...values,
+      product: WITHDRAWAL_PRODUCTS.some((p) => p.value === values.product)
+        ? values.product
+        : '',
+    },
+  };
+}
+
 export default function WithdrawalPage() {
+  // Über die Revalidierung der Cookie-Wahl gehalten: sonst setzt React die
+  // noch unberührten Felder auf den leeren defaultValue zurück.
+  const werte = useAktionsergebnisUeberRevalidierung()?.werte || {};
+
   return (
     <main className="withdrawal-page">
       <section className="withdrawal-hero">
@@ -79,6 +119,7 @@ export default function WithdrawalPage() {
             <input
               autoComplete="off"
               maxLength={80}
+              defaultValue={werte.orderNumber || ''}
               name="orderNumber"
               placeholder="#1001"
               required
@@ -91,6 +132,7 @@ export default function WithdrawalPage() {
             <input
               autoComplete="name"
               maxLength={120}
+              defaultValue={werte.name || ''}
               name="name"
               placeholder="Vor- und Nachname"
               required
@@ -103,6 +145,7 @@ export default function WithdrawalPage() {
             <input
               autoComplete="email"
               maxLength={254}
+              defaultValue={werte.email || ''}
               name="email"
               placeholder="name@example.com"
               required
@@ -112,7 +155,11 @@ export default function WithdrawalPage() {
 
           <label>
             <span>Produkt / Vertrag</span>
-            <select name="product" required defaultValue="">
+            <select
+              name="product"
+              required
+              defaultValue={werte.product || ''}
+            >
               <option disabled value="">
                 Bitte auswählen
               </option>

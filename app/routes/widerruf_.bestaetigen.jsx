@@ -289,12 +289,55 @@ export default function WithdrawalConfirmPage() {
           >
             {submitting ? 'Wird gesendet...' : 'Widerruf bestätigen'}
           </button>
-          <Link className="withdrawal-text-link" to="/widerruf">
+          <button
+            className="withdrawal-text-link"
+            form={AENDERN_FORM_ID}
+            style={TEXTLINK_KNOPF_STIL}
+            type="submit"
+          >
             Angaben ändern
-          </Link>
+          </button>
         </Form>
+        <AendernFormular values={values} />
       </section>
     </main>
+  );
+}
+
+/*
+ * "ANGABEN ÄNDERN" TRÄGT DIE WERTE ZURÜCK INS FORMULAR (Job 20261001-widerruf-
+ * angaben-aendern-leert-das-formular-prio40). Vorher ein Link auf /widerruf:
+ * dort standen alle Felder leer.
+ *
+ * Ein eigenes Formular, POST an /widerruf (dessen action() belegt die Felder
+ * vor). Keine Werte in der URL, denn Query-Parameter sehen die Tracker.
+ *
+ * WARUM EIN ZWEITES FORMULAR UND KEIN formAction AM KNOPF IM ABSENDE-FORMULAR:
+ * dort steht intent=submit. Ginge die formAction verloren, schickte
+ * "Angaben ändern" den Widerruf verbindlich ab. Der Knopf bleibt optisch, wo der
+ * Link war, gehört über das form-Attribut aber zu diesem Formular, das kein
+ * intent und kein Absende-Ziel kennt.
+ */
+const AENDERN_FORM_ID = 'widerruf-angaben-aendern';
+
+/** Der Knopf sieht aus wie der Link vorher (.withdrawal-text-link). */
+const TEXTLINK_KNOPF_STIL = {
+  background: 'none',
+  border: 0,
+  cursor: 'pointer',
+  font: 'inherit',
+  fontWeight: 700,
+  padding: 0,
+};
+
+function AendernFormular({values}) {
+  return (
+    <Form action="/widerruf" id={AENDERN_FORM_ID} method="post">
+      <input name="orderNumber" type="hidden" value={values.orderNumber} />
+      <input name="name" type="hidden" value={values.name} />
+      <input name="email" type="hidden" value={values.email} />
+      <input name="product" type="hidden" value={values.product} />
+    </Form>
   );
 }
 
