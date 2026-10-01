@@ -223,7 +223,7 @@ const FAQ_ITEMS = [
   {
     question: 'Gibt es ein Widerrufsrecht?',
     answer:
-      'Ja. Es gilt das gesetzliche 14-tägige Widerrufsrecht. Deinen Widerruf kannst du online über den Link "Vertrag widerrufen" im Footer erklären. Für Warenrücksendungen empfehlen wir den versicherten Versand. Nach Eingang der Ware erstatten wir den Kaufpreis.',
+      'Ja. Es gilt das gesetzliche 14-tägige Widerrufsrecht. Deinen Widerruf kannst du online über den Link "Vertrag widerrufen" im Footer erklären. Die Rücksendung ist für dich kostenlos: Melde dich vorher kurz bei uns, dann bekommst du ein Rücksendeetikett. Nach Eingang der Ware erstatten wir den Kaufpreis.',
   },
   {
     question: 'Darf der QiOne® nass werden oder in die Sauna?',
