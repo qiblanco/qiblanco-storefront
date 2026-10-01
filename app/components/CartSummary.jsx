@@ -1,5 +1,11 @@
 import {useEffect, useState} from 'react';
 import {Form} from 'react-router';
+import {
+  GESCHENK_ANGEZEIGT_FELD,
+  GESCHENK_FELD,
+  GESCHENK_TEXT,
+  geschenkVermerkt,
+} from '~/lib/geschenk';
 import {getCartLineGrossDisplayTotalExact} from '~/lib/cart-display-pricing';
 import {formatPreis} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
@@ -67,6 +73,7 @@ export function CartSummary({cart, layout}) {
         subtotal={taxedSubtotal}
         numItems={lines.length}
         contentIds={cartLineContentIds(lines)}
+        geschenk={geschenkVermerkt(cart.attributes)}
       />
       {/* Direkt unter dem Kassenknopf und nur im Instagram-/Facebook-Browser:
           der Weg zu Apple Pay / Google Pay führt über die Kasse, nicht über
@@ -78,9 +85,15 @@ export function CartSummary({cart, layout}) {
 }
 
 /**
- * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[]}}
+ * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[], geschenk?: boolean}}
  */
-function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
+function CartCheckoutActions({
+  checkoutUrl,
+  subtotal,
+  numItems,
+  contentIds,
+  geschenk = false,
+}) {
   // Der Tracker hält den Ankunfts-Zustand als reine Fenster-Variable
   // (public/qiblanco-tracker.js, `merkeAnkunft`) — er speichert dafür nichts
   // und liest nur seinen eigenen, seit jeher pre-consent gefuellten Puffer.
@@ -131,6 +144,24 @@ function CartCheckoutActions({checkoutUrl, subtotal, numItems, contentIds}) {
       method="post"
       onSubmit={trackInitiateCheckout}
     >
+      {/*
+        GESCHENK-ANGABE (~/lib/geschenk). Freiwillig, nie verlangt: der
+        Kasse-Knopf geht mit und ohne Haken. Das versteckte Feld sagt dem
+        Server, dass die Frage gestellt wurde; ohne es wäre "nicht angehakt"
+        von "nie gesehen" nicht zu unterscheiden, weil der Browser eine leere
+        Checkbox gar nicht mitschickt. Vorbelegt ist der Haken nur, wenn
+        dieser Warenkorb schon "Geschenk" trägt.
+      */}
+      <input type="hidden" name={GESCHENK_ANGEZEIGT_FELD} value="1" />
+      <label className="cart-geschenk">
+        <input
+          type="checkbox"
+          name={GESCHENK_FELD}
+          value="ja"
+          defaultChecked={geschenk}
+        />
+        <span>{GESCHENK_TEXT}</span>
+      </label>
       {/*
         CONSENT-FREIER ANKUNFTS-MARKER (Job 20260922-blinde-menge-...).
         Es reist EIN Wort — 'yes', 'no' oder (bei leerem Feld) nichts —, nie
