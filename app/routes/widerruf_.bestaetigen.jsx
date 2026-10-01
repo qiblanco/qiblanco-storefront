@@ -280,19 +280,19 @@ export default function WithdrawalConfirmPage() {
         <dl className="withdrawal-summary">
           <div>
             <dt>Bestellnummer</dt>
-            <dd>{values.orderNumber}</dd>
+            <Datenfeld>{values.orderNumber}</Datenfeld>
           </div>
           <div>
             <dt>Name</dt>
-            <dd>{values.name}</dd>
+            <Datenfeld>{values.name}</Datenfeld>
           </div>
           <div>
             <dt>E-Mail</dt>
-            <dd>{values.email}</dd>
+            <Datenfeld>{values.email}</Datenfeld>
           </div>
           <div>
             <dt>Produkt / Vertrag</dt>
-            <dd>{productLabel}</dd>
+            <Datenfeld>{productLabel}</Datenfeld>
           </div>
         </dl>
 
@@ -346,25 +346,25 @@ function SuccessState({data}) {
           {data.receivedAtDisplay ? (
             <div>
               <dt>Eingang</dt>
-              <dd>{data.receivedAtDisplay}</dd>
+              <Datenfeld>{data.receivedAtDisplay}</Datenfeld>
             </div>
           ) : null}
           {data.values?.orderNumber ? (
             <div>
               <dt>Bestellnummer</dt>
-              <dd>{data.values.orderNumber}</dd>
+              <Datenfeld>{data.values.orderNumber}</Datenfeld>
             </div>
           ) : null}
           {productLabel ? (
             <div>
               <dt>Widerrufsinhalt</dt>
-              <dd>{productLabel}</dd>
+              <Datenfeld>{productLabel}</Datenfeld>
             </div>
           ) : null}
           {data.ticketId ? (
             <div>
               <dt>Referenz</dt>
-              <dd>Freshdesk Ticket #{data.ticketId}</dd>
+              <Datenfeld>Freshdesk Ticket #{data.ticketId}</Datenfeld>
             </div>
           ) : null}
         </dl>
@@ -375,6 +375,32 @@ function SuccessState({data}) {
       </section>
     </main>
   );
+}
+
+/**
+ * Ein Wert der Zusammenfassung: Bestellnummer, Name, E-Mail, Produkt, Eingang,
+ * Freshdesk-Referenz. Der Kunde liest ihn ab, tippt ihn ab oder reicht ihn
+ * ausgedruckt weiter. Deshalb `hyphens: manual`: die Silbentrennung darf hier
+ * kein Zeichen erfinden.
+ *
+ * Gemessen an der Live-Seite (Firefox mit deutschen Trennmustern, 390x844,
+ * 2026-09-04 und 2026-10-01) hat `hyphens: auto` aus app.css
+ *   maximiliane.donnersmarck@musterhausverwaltung.de
+ * gerendert als "…@musterhaus-" / "verwaltung.de". Der Trennstrich steht
+ * nicht in der Adresse des Kunden.
+ *
+ * Der Inline-Stil schlägt die Regel `.withdrawal-summary dd` in app.css und
+ * wirkt nur auf dieser Route. Gegenrichtung, in Kauf genommen: ein sehr langes
+ * Wort im Namensfeld kann per `overflow-wrap: anywhere` einen kurzen Rest in
+ * die Folgezeile schieben. Der Rest fügt nichts hinzu, der Trennstrich
+ * verfälscht die Angabe.
+ *
+ * Probe: homepage-bauer/pruefungen/probe_widerruf_zusammenfassung_umbruch.py
+ */
+const DATENFELD_STIL = {hyphens: 'manual', WebkitHyphens: 'manual'};
+
+function Datenfeld({children}) {
+  return <dd style={DATENFELD_STIL}>{children}</dd>;
 }
 
 function Alert({message}) {
