@@ -21,14 +21,43 @@ import {tagLang} from '~/lib/datum';
  * daneben wäre falsch. Das Widget zeigt in diesem Fall weiter seinen
  * Fallback, der Satz schweigt. Ohne Tag (Loader-Wert fehlt) steht der Satz
  * ohne „Stand".
+ *
+ * ANZAHL UND TAG TRAGEN `data-zeitachse` (Job 20261001-gate12-bewertungen-
+ * pixelsoll-misst-laufzeitdatum-prio20). Beide Werte ändern sich ohne jede
+ * Codeänderung: der Tag jeden Tag, die Anzahl mit jeder neuen Rezension. Der
+ * Pixelvergleich (homepage-bauer/src/format_pruefer.py, ZEITACHSE_FEST) setzt
+ * dort vor der Aufnahme einen festen Text ein. Sonst misst er die Uhr: aus
+ * „Stand 28. September 2026" wurde „Stand 1. Oktober 2026", der Satz brach
+ * anders um, alles darunter rutschte, und mobil-600 meldete 37 % Abweichung.
+ * Kundschaft und Suchmaschine sehen unverändert den echten Wert; das Attribut
+ * rendert nichts. `<time>` und `<data>` statt `<span>`: zwei Proben lesen den
+ * Satz per Regex bis zum ersten `</span>` (probe_kritik_bewertungen_antwort_
+ * am_rand, probe_studien_kundenstimmen_belege), ein inneres `<span>` würde
+ * ihn abschneiden. Der Text des Satzes bleibt Zeichen für Zeichen derselbe.
  */
-function noteSatz(g, ausgeliefert) {
-  if (!g || g.source === 'fallback') return '';
-  if (typeof g.value !== 'number' || typeof g.total !== 'number') return '';
+function NoteSatz({g, ausgeliefert}) {
+  if (!g || g.source === 'fallback') return null;
+  if (typeof g.value !== 'number' || typeof g.total !== 'number') return null;
   const tag = tagLang(ausgeliefert);
   return (
-    `Qi Blanco steht bei Google auf ${g.komma} von 5 Sternen aus ${g.total} Rezensionen` +
-    (tag ? `, Stand ${tag}.` : '.')
+    <span data-note-satz="google">
+      Qi Blanco steht bei Google auf {g.komma} von 5 Sternen aus{' '}
+      <data value={g.total} data-zeitachse="anzahl">
+        {g.total}
+      </data>{' '}
+      Rezensionen
+      {tag ? (
+        <>
+          , Stand{' '}
+          <time dateTime={ausgeliefert} data-zeitachse="tag">
+            {tag}
+          </time>
+          .
+        </>
+      ) : (
+        '.'
+      )}{' '}
+    </span>
   );
 }
 
@@ -60,7 +89,6 @@ function noteSatz(g, ausgeliefert) {
 export function BewertungenSeite() {
   const g = useGoogleRating();
   const daten = useLoaderData();
-  const satz = noteSatz(g, daten?.ausgeliefert);
   return (
     <div className="bew">
       <section className="bew__kopf" data-section="bew-kopf">
@@ -71,9 +99,7 @@ export function BewertungenSeite() {
               Retriever schneidet am Abschnitt; was dahinter liegt, beantwortet
               die Frage nicht mehr. */}
           <p className="bew__antwort">
-            {satz ? (
-              <span data-note-satz="google">{satz} </span>
-            ) : null}
+            <NoteSatz g={g} ausgeliefert={daten?.ausgeliefert} />
             {T.antwort}
           </p>
           {T.einleitung.map((absatz) => (
