@@ -431,6 +431,30 @@ footer *{
 .cartSummaryWrapper .btn--primary div {
   display: inline-block !important;
 }
+/* Geschenk-Angabe im Kasse-Formular, direkt über dem Kaufbutton
+ * (~/lib/geschenk). Das ganze Label ist die Trefferfläche, nicht nur das
+ * Kästchen: auf dem Handy ist ein 16-px-Kästchen allein kaum zu treffen.
+ * Alle Werte aus qb-tokens (8-px-Raster, Typo-Stufe 2, Tinte), keine freien
+ * Zahlen außer der Kästchengröße. Der Abstand nach unten kommt allein vom
+ * `margin-top` des Knopfes, damit er nur EINE Quelle hat. */
+.cart-geschenk {
+  display: flex;
+  align-items: center;
+  gap: var(--qb-ref-raster);
+  padding-top: var(--qb-ref-raster);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.4;
+  color: var(--qb-text);
+  cursor: pointer;
+}
+.cart-geschenk input[type='checkbox'] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--qb-text);
+  cursor: pointer;
+}
 @media screen and (max-width: 749px) {
   .btn--primary,
   .btn--secondary {
