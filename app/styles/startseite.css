@@ -374,3 +374,16 @@
     order: -1;
   }
 }
+
+/* Seit 01.10.2026 steckt das <video> in einer Huelle mit dem Ersatzbild
+   darueber (Produkt360Video, data-qb-360). Das Bild liegt absolut auf der
+   Huelle — die Huelle muss also genau so gross sein und genau dort stehen
+   wie das Video, sonst deckt das Bild die ganze halbe Reihe statt der
+   Drehung. Deshalb traegt sie denselben Deckel und dieselbe Ausrichtung;
+   die Regel am <video> oben bleibt unveraendert (innerhalb der Huelle
+   wirkungslos, das Video fuellt sie mit width: 100%). */
+.home .herobanner-seperator div.featured-image--360 .qb-360-huelle {
+  max-width: 490px;
+  margin-left: auto;
+  margin-right: 0;
+}

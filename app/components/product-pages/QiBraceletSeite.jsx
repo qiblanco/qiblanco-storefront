@@ -13,6 +13,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
@@ -145,7 +146,9 @@ export function QiBraceletSeite({
         </p>
       </div>
       <div className="product-360-hero__video">
-        <ImgixVideo videoPath="new-360-QiBracelet-1x1.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/JjGdCuv.webp?v=1747927956" />
+        {/* Ersatzbild statt JjGdCuv.webp (zeigte die Kante des Reifs, bleibt auf dem CDN):
+            steht die Drehung, steht der Reif schräg von vorn aus dem Video. */}
+        <ImgixVideo videoPath="new-360-QiBracelet-1x1.mov" ersatz={ERSATZBILD_360.qibracelet} />
       </div>
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiBracelet-Content

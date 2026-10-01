@@ -1,4 +1,10 @@
 import {useEffect, useRef} from 'react';
+import {
+  ERSATZBILD_360,
+  ERSATZBILD_KANTE,
+  Ersatzbild,
+  useErsatzbild,
+} from '~/components/reusables/video360-ersatzbild';
 
 /*
  * Die Adresse der 360-Grad-Produktdrehung des QiOne(R) 2 Pro steht GENAU
@@ -40,28 +46,23 @@ const QIONE_360_VIDEO =
   'qb-hero--360-qione-1x1--aad20f3d037e.mp4?v=1789844356';
 
 /*
- * Poster = der ERSTE FRAME der Drehung, nicht das bisherige Produktfoto.
+ * Poster und Ersatzbild = Bild 0 der Drehung, die Frontansicht, in voller
+ * Größe (1080 px) aus app/lib/video360-ersatzbild.js (Christian
+ * 01.10.2026: steht das Video, soll ein vollwertiges Bild aus dem Video
+ * stehen). Bis zum 01.10.2026 war das Poster derselbe Frame als stark
+ * komprimiertes WebP (qb-hero--360-qione-1x1-poster--ab845898916e.webp,
+ * 4.622 B) — es bleibt unverändert auf dem CDN liegen.
  *
- * Gemessen: die Drehung zeigt den QiOne(R) 2 Pro auf SCHWARZEM Grund, das
- * bisherige Hero-Foto (QiOne2Pro_mit-Siegel…webp) ihn auf WEISSEM (alle
- * vier Eckpixel 255,255,255). Das weisse Foto als Poster haette bei JEDEM
- * Seitenaufruf einen sichtbaren Weiss-nach-Schwarz-Sprung ergeben, sobald
- * das erste Videobild kommt. Das Foto ist deshalb nicht geloescht, sondern
- * bleibt unveraendert auf dem CDN liegen — es trägt hier nur nicht mehr
- * den ersten Moment.
- *
- * Shopify verhandelt das Format am Abruf: mit `Accept: image/webp` (jeder
- * moderne Browser) 4.622 B WebP, ohne 35.684 B JPEG. Das bisherige Foto
- * wog 108.540 B — das zuerst sichtbare Element wird also leichter, nicht
- * schwerer.
+ * Warum ein Bild aus dem Video und kein Produktfoto: die Drehung zeigt den
+ * QiOne(R) 2 Pro auf SCHWARZEM Grund, das Hero-Foto ihn auf WEISSEM. Ein
+ * weisses Bild hätte bei jedem Seitenaufruf einen Weiss-nach-Schwarz-Sprung
+ * ergeben, sobald das erste Videobild kommt.
  */
-const QIONE_360_POSTER =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
-  'qb-hero--360-qione-1x1-poster--ab845898916e.webp?v=1789844359';
+const QIONE_ERSATZ = ERSATZBILD_360.qione;
 
 /* Native Kantenlaenge, 1:1. Als width/height am <video>, damit der Kasten
    seine Hoehe VOR dem ersten Byte kennt (keine Layout-Verschiebung). */
-const QIONE_360_KANTE = 1080;
+const QIONE_360_KANTE = ERSATZBILD_KANTE;
 
 /*
  * Produkt360Video — die 360-Grad-Produktdrehung an der Stelle, an der
@@ -99,11 +100,21 @@ const QIONE_360_KANTE = 1080;
  * Seitenverhaeltnis vor dem ersten Byte — das vorherige <img> tat das an
  * beiden Stellen NICHT.
  */
-export function Produkt360Video({
-  className,
-  alt = 'QiOne® 2 Pro, 360-Grad-Ansicht',
-}) {
+/*
+ * ERSATZBILD (01.10.2026): das <video> steckt in einer Hülle
+ * (data-qb-360="qione"), darüber liegt das Bild, bis das Video nachweislich
+ * läuft — und es kommt nach Fehler, Pause oder Stocken zurück. Logik in
+ * useErsatzbild (dieselbe wie in <ImgixVideo>). Der Alt-Text kommt seitdem
+ * vom Bild (ERSATZBILD_360), das Video ist aria-hidden: sonst liest ein
+ * Screenreader dasselbe Produkt zweimal. `alt` der Aufrufer wird deshalb
+ * nicht mehr gelesen; die Hülle nimmt Größe und Ausrichtung, die bisher
+ * das <video> trug (startseite.css).
+ */
+export function Produkt360Video({className}) {
   const ref = useRef(null);
+  const {zustand, zuBild} = useErsatzbild(ref);
+  const zuBildRef = useRef(zuBild);
+  zuBildRef.current = zuBild;
 
   useEffect(() => {
     const video = ref.current;
@@ -125,7 +136,7 @@ export function Produkt360Video({
       } else {
         video.autoplay = true;
         const p = video.play();
-        if (p && typeof p.catch === 'function') p.catch(() => {});
+        if (p && typeof p.catch === 'function') p.catch(() => zuBildRef.current());
       }
     };
 
@@ -136,14 +147,20 @@ export function Produkt360Video({
   }, []);
 
   return (
+    <div
+      className="qb-360-huelle"
+      data-qb-360={QIONE_ERSATZ.drehung}
+      data-qb-360-zustand={zustand}
+      style={{position: 'relative'}}
+    >
     <video
       ref={ref}
       className={className || undefined}
       src={QIONE_360_VIDEO}
-      poster={QIONE_360_POSTER}
+      poster={QIONE_ERSATZ.bild}
       width={QIONE_360_KANTE}
       height={QIONE_360_KANTE}
-      aria-label={alt}
+      aria-hidden="true"
       data-video="360-qione-1x1"
       data-video-familie="shopify-cdn"
       data-video-ton="stumm"
@@ -153,5 +170,7 @@ export function Produkt360Video({
       autoPlay
       preload="metadata"
     />
+    <Ersatzbild ersatz={QIONE_ERSATZ} zustand={zustand} />
+    </div>
   );
 }

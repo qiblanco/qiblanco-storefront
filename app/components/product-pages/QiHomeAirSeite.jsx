@@ -13,6 +13,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {QiHome} from '~/components/product-pages/QiHome';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
@@ -139,7 +140,9 @@ export function QiHomeAirSeite({
         </p>
       </div>
       <div className="product-360-hero__video">
-        <ImgixVideo videoPath="360-QiHome-1x1.mov" fallbackImage="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/3d-animation-qi-home-preview.webp?v=1740224642" />
+        {/* Ersatzbild statt des 459-px-Vorschaubilds (3d-animation-qi-home-preview.webp,
+            bleibt auf dem CDN): steht die Drehung, steht die Frontansicht aus dem Video. */}
+        <ImgixVideo videoPath="360-QiHome-1x1.mov" ersatz={ERSATZBILD_360.qihome} />
       </div>
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiHome-Content

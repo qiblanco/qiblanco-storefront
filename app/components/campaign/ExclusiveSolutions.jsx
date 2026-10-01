@@ -9,6 +9,7 @@ import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {StudienSlider} from '~/components/reusables/StudienSlider';
 import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
@@ -21,20 +22,22 @@ import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/You
 
 /* ───────── 1. Geldhelden-Hero (ersetzt Hero) ───────── */
 function HeroStackedVisuals() {
-  // 360°-Animationen (Imgix/HLS) statt statischer Bilder;
-  // das bisherige Bild dient als Poster/Fallback.
+  // 360°-Animationen (Imgix/HLS) statt statischer Bilder. Steht eine
+  // Drehung, steht ein Bild aus dem Video (ERSATZBILD_360, seit 01.10.2026;
+  // die alten Vorschaubilder JjGdCuv.webp = Kante, 3d-animation-qi-home-
+  // preview.webp = 459 px bleiben auf dem CDN).
   const slides = [
     {
       label: "QiBracelet®",
       tag: "GitterChip™ — am Handgelenk",
       video: "new-360-QiBracelet-1x1.mov",
-      img: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/JjGdCuv.webp?v=1747927956",
+      ersatz: ERSATZBILD_360.qibracelet,
     },
     {
       label: "QiHome® Air",
       tag: "Schützt dein Zuhause",
       video: "360-QiHome-1x1.mov",
-      img: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/3d-animation-qi-home-preview.webp?v=1740224642",
+      ersatz: ERSATZBILD_360.qihome,
     },
   ];
   return (
@@ -43,7 +46,7 @@ function HeroStackedVisuals() {
         <figure key={s.label} className="ghx-hero__tile">
           <ImgixVideo
             videoPath={s.video}
-            fallbackImage={s.img}
+            ersatz={s.ersatz}
             className="ghx-hero__tile-video"
           />
         </figure>
