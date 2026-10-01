@@ -67,10 +67,10 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     if (!money) return null;
     const numericAmount = Number.parseFloat(money.amount);
     if (!Number.isFinite(numericAmount)) return null;
-    // Ganz-Euro-Regel je Land (markt-pricing.js, ganzEuroAnzeige): in DE
-    // kaufmännisch gerundet -- ceil zeigte dort 1.088 statt offiziell 1.087
-    // bei netto 913,45 (QiOne 2 Pro) --, in jedem anderen Land aufgerundet,
-    // damit die Seite nie weniger nennt, als die Kasse nimmt (AT 2026-09-26).
+    // Ganz-Euro-Regel (markt-pricing.js, ganzEuroAnzeige): aufgerundet, damit
+    // die Seite nie weniger nennt, als die Kasse nimmt (AT 2026-09-26, Kakao-
+    // Sets ab 5 Packungen 2026-10-01: 266,06 -> 267). In DE mit 1 Cent
+    // Kalibrier-Toleranz: QiOne 2 Pro 913,45 netto = 1087,0055 bleibt 1.087.
     const roh = numericAmount * (1 + satzFuer(money));
     const amount = centGenau
       ? Math.round(roh * 100) / 100
