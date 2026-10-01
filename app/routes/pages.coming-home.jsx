@@ -39,7 +39,12 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * growth-manager/pruefungen/probe_coming_home_seite.py vergleicht sie mit
  * dem Embed und meldet, wenn ActiveCampaign sie ändert.
  *
- * WARUM fetch(no-cors) UND KEIN VERSTECKTES IFRAME: frame-src der CSP
+ * DERSELBE WEG WIE DAS EMBED: proc.php?…&jsonp=true als GET. So schickt das
+ * Embed von Formular 15 selbst ab (dort formSupportsPost = false). Die Antwort
+ * trägt access-control-allow-origin: *, die Seite kann sie also lesen und
+ * Erfolg von Fehler unterscheiden. Gemessen am 2026-10-01: Erfolg beginnt mit
+ * _show_thank_you(, ein Fehler mit _show_error(. Ein verstecktes iframe wie
+ * auf der alten Pre-Access-Seite geht nicht: frame-src der CSP
  * (app/entry.server.jsx) führt qiblanco.activehosted.com nicht, connect-src
  * führt es. So bleibt entry.server.jsx unberührt.
  *
@@ -80,6 +85,7 @@ const BILD_ALT =
  * dem Live-Embed. `s` ist dort leer.
  */
 const AC_ZIEL = 'https://qiblanco.activehosted.com/proc.php';
+const AC_ERFOLG = '_show_thank_you(';
 const AC_FELDER = {
   u: '6ABE3FFF6E1DB',
   f: '15',
@@ -303,11 +309,10 @@ export default function ComingHome() {
  * Das Anmeldeformular samt Erfolgszustand.
  *
  * ABLAUF: (1) der Browser prüft die Felder, (2) er schickt sie an
- * ActiveCampaign, (3) die Seite holt den Teilnahme-Link aus der Action,
- * (4) Erfolgszustand. Scheitert Schritt 2 am Netz, bleibt das Formular
- * stehen und sagt es. Die Antwort von ActiveCampaign selbst ist für die
- * Seite nicht lesbar (fremde Herkunft); deshalb sagt der Erfolgszustand,
- * was als Nächstes im Postfach liegen muss.
+ * ActiveCampaign und liest die Antwort, (3) bei Erfolg holt die Seite den
+ * Teilnahme-Link aus der Action, (4) Erfolgszustand. Meldet ActiveCampaign
+ * einen Fehler oder scheitert das Netz, bleibt das Formular stehen und sagt
+ * es. Den Link gibt es nur nach einer angenommenen Anmeldung.
  */
 function Anmeldung() {
   const [zustand, setZustand] = useState('offen');
@@ -336,9 +341,17 @@ function Anmeldung() {
     const sendung = new URLSearchParams(AC_FELDER);
     sendung.set('fullname', String(werte.get('fullname') || '').trim());
     sendung.set('email', String(werte.get('email') || '').trim());
+    sendung.set('jsonp', 'true');
+    let angenommen = false;
     try {
-      await fetch(AC_ZIEL, {method: 'POST', mode: 'no-cors', body: sendung});
+      const antwort = await fetch(`${AC_ZIEL}?${sendung.toString()}`, {
+        credentials: 'omit',
+      });
+      angenommen = (await antwort.text()).trimStart().startsWith(AC_ERFOLG);
     } catch {
+      angenommen = false;
+    }
+    if (!angenommen) {
       setZustand('fehler');
       return;
     }
@@ -437,7 +450,8 @@ function Anmeldung() {
       </button>
       {zustand === 'fehler' ? (
         <p className="ch-fehler" role="alert">
-          Das hat gerade nicht geklappt. Bitte versuch es gleich noch einmal.
+          Das hat nicht geklappt. Bitte prüf deine E-Mail-Adresse und versuch
+          es noch einmal.
         </p>
       ) : null}
       <p className="ch-hinweis">
