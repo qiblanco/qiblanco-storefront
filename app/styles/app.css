@@ -2373,57 +2373,72 @@ footer.footer :focus-visible {
 /*
  * ICON-SPALTE DER NUTZEN-LISTE -- EINE Regel fuer alle Punkte.
  *
- * Seit Elina EL-20260909-395f848c traegt die Liste einen weiteren Punkt
- * (gesetzliche Gewaehrleistung), und dessen Icon ist ein BILD, kein <svg>.
  * Seit EL-20260909-8c4001d1 gilt das fuer JEDE .BenefitList im Shop -- die
- * Klasse traegt acht Kaufflaechen (QiOne 2 Pro + seine beiden /pages-
- * Spiegel, QiHome Air und QiBracelet je organisch + Spiegel, QiOne-Kette).
- * Genau deshalb steht die Regel hier an der KLASSE und nicht je Seite: sonst
- * waere sie achtmal nachzuziehen und beim naechsten Mal siebenmal.
+ * Klasse traegt alle Kaufflaechen mit Icon-Liste (QiOne 2 Pro + Spiegel,
+ * QiHome Air und QiBracelet je organisch + Spiegel, QiOne-Kette, QiMaster).
+ * Genau deshalb steht die Regel hier an der KLASSE und nicht je Seite.
  * Die Kakao-Liste (.CacaoBenefitList) hat keine <svg>-Spalte und regelt ihr
  * Zeichen darum bei sich selbst, weiter unten in dieser Datei.
- * Bestellt ist "gleiches Groessenformat des Icons wie die anderen Icons in
- * der Liste" -- der Abstand steht deshalb EINMAL fuer beide Bauarten. Wer
- * ihn kuenftig anfasst, fasst ALLE Zeilen JEDER dieser Listen an (sie sind
- * verschieden lang: vier Punkte bei QiHome Air, QiBracelet und der Kette,
- * fuenf bei QiOne 2 Pro).
+ *
+ * FESTE ICON-SPALTE UND HAENGENDER EINZUG (Elina EL-20261001-0b68ad76):
+ *   1. "beim Zeilenumbruch soll die zweite Zeile buendig mit dem Textanfang
+ *      der ersten Zeile beginnen, nicht unter dem Icon";
+ *   2. "alle Icons exakt senkrecht zueinander, auf derselben horizontalen
+ *      Position" -- vorher war jedes Icon so breit wie seine Zeichnung
+ *      (LKW 1,23em, Schiff 1,15em, die uebrigen 1em, das EU-Zeichen 0,96em),
+ *      also lagen weder die Icon-Mitten noch die Textanfaenge auf einer
+ *      Linie.
+ * Jetzt ist JEDES Icon eine Spalte von --benefit-icon-spalte Breite (so
+ * breit wie das breiteste, der LKW); die Zeichnung sitzt darin mittig
+ * (SVG-Vorgabe preserveAspectRatio xMidYMid). Text beginnt bei Spalte +
+ * Abstand, in JEDER Zeile.
+ *
+ * Der Einzug laeuft ueber padding-left + negatives text-indent statt ueber
+ * flex/grid: die Punkte sind gemischter Inline-Fluss (<b>, Text, ein <button>,
+ * beim Gewaehrleistungs-Punkt dazu der <dialog>). Als Grid-Kinder wuerde jedes
+ * Textstueck eine eigene Zelle. `li > * { text-indent: 0 }` ist Pflicht:
+ * text-indent erbt, und ein Knopf in der Zeile (Google-Bewertungen,
+ * Gewaehrleistung) wuerde seinen Text sonst nach links aus sich herausschieben.
  *
  * `display: inline-block` ist hier nicht Kosmetik: die Preflight-Basis
  * stellt <img> UND <svg> auf `display: block`. Ohne diese Zeile rutscht das
  * Icon auf eine eigene Zeile ueber seinen Text.
  */
+.BenefitList li {
+  --benefit-icon-spalte: 1.25em;
+  --benefit-icon-abstand: 20px;
+  padding-left: calc(var(--benefit-icon-spalte) + var(--benefit-icon-abstand));
+  text-indent: calc(-1 * (var(--benefit-icon-spalte) + var(--benefit-icon-abstand)));
+}
+.BenefitList li > * {
+  text-indent: 0;
+}
 .BenefitList svg,
 .BenefitList .eu-gwl__zeichen {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: var(--benefit-icon-abstand, 20px);
+}
+.BenefitList li > svg,
+.BenefitList li > .eu-gwl__zeichen {
+  width: var(--benefit-icon-spalte);
+  height: 1em;
 }
 /*
- * Was NUR fuer die vier Linien-Icons gilt: sie sind einfarbig und ziehen
- * ihre Farbe ueber `fill="currentColor"` aus dieser Regel. Das
- * EU-Sternenkranz-Zeichen steht hier ausdruecklich NICHT mit drin -- es
- * bleibt das Originalbild in Blau (Elina EL-20260909-395f848c: "wird nicht
- * wie die anderen einfarbig/als Linien-Icon nachgebaut"). Auf ein Rasterbild
- * wirkt `color` ohnehin nicht; die Trennung steht trotzdem hier, damit
- * niemand sie spaeter fuer eine Nachlaessigkeit haelt und "aufraeumt".
+ * Die Farbe: alle Icons sind einfarbig und ziehen sie ueber
+ * `fill="currentColor"` aus dieser Regel. Seit Elina EL-20261001-0b68ad76
+ * gilt das AUCH fuer das EU-Gewaehrleistungs-Zeichen ("in denselben Goldton
+ * eingefaerbt wie alle anderen Icons"): es ist dafuer als <svg> nachgezeichnet
+ * (EuZeichenVektor in EuGewaehrleistungsLabel.jsx), sein Schild faellt unter
+ * diese Regel. Sterne und G sind Aussparungen in Weiss -- Gelb auf Gold waere
+ * unsichtbar. Das loest EL-20260909-395f848c ("bleibt das Originalbild in
+ * Blau") ab.
  */
 .BenefitList svg{
   vertical-align: -.25;
   color: var(--color-accent-primary);
 }
-/*
- * Das Zeichen des fuenften Punkts auf Icon-Hoehe. Die vier <svg> tragen ihre
- * `height="1em"` als Attribut; ein <img> kann das nicht, also steht es hier.
- *
- * `1em` und keine px-Zahl: em ist die Schriftgroesse DIESER Zeile. Damit
- * bleibt das Zeichen genau so hoch wie die Nachbar-Icons, auch wenn die
- * Listenschrift einmal wandert -- eine px-Zahl waere ab dem Tag daneben und
- * es faellt niemandem auf. `width: auto` laesst die Breite aus den
- * width/height-Attributen des Bildes folgen: kein Beschnitt, keine
- * Verzerrung, kein zweites Seitenverhaeltnis neben dem echten.
- */
-.BenefitList .eu-gwl__zeichen {
-  height: 1em;
-  width: auto;
+.BenefitList .eu-gwl__zeichen-sterne {
+  fill: #fff;
 }
 .movedup-small{
   font-size: .7em;
