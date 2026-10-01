@@ -1,12 +1,10 @@
 import {data} from 'react-router';
-import {useRef} from 'react';
 import {
   Form,
   Link,
-  useActionData,
-  useLocation,
   useNavigation,
 } from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
@@ -175,45 +173,18 @@ export async function action({request, context}) {
   }
 }
 
-/**
+/*
  * DIE ZUSAMMENFASSUNG ÜBERLEBT EINE REVALIDIERUNG — sonst wirft die
  * Cookie-Wahl die Angaben des Kunden weg (Job 20261001-widerruf-bestaetigen-
  * cookie-wahl-wirft-die-zusammenfassung-weg-prio25).
  *
  * GEMESSEN am 2026-10-01 an qiblanco.com, 4 von 4 Läufen: wer den Banner erst
  * hier beantwortet, sieht danach „Bitte fülle zuerst das Widerrufsformular
- * aus". Es lädt nichts neu. Die Kette, per Stack-Mitschnitt belegt:
- * Cookiebot-Wahl -> public/cookiebot-shopify-consent-sync.js
- * syncShopifyConsent() -> Shopify.customerPrivacy.setTrackingConsent ->
- * Hydrogens useCustomerPrivacy sieht neue Besucher-Token und ruft
- * `revalidate()` -> GET /widerruf/bestaetigen.data. Eine Revalidierung ist für
- * React Router eine Navigation ohne formMethod, und dann setzt der Router
- * actionData auf null (react-router 7.16, completeNavigation: isActionReload
- * ist falsch). Die confirm-Phase lebt aber NUR in actionData.
- *
- * WARUM HIER UND NICHT AM CONSENT-SYNC: die Revalidierung ist gewollt. Sie
- * lässt den Root-Loader die Token nach der Wahl neu lesen, und die Wahl samt
- * ihrer Wirkung auf Tracking bleibt so, wie sie ist. Kaputt ist nur, dass
- * diese Seite ihr einziges Gedächtnis an etwas hängt, das eine Revalidierung
- * löscht.
- *
- * WARUM JE location.key: eine Revalidierung behält den Ort und damit den
- * Schlüssel; jede echte Navigation (neues Absenden, Link, Zurück) bringt einen
- * anderen. Gehalten wird also genau über die Revalidierung hinweg und nicht
- * darüber hinaus. Wer die Seite neu betritt, bekommt den alten Zustand nicht
- * untergeschoben.
+ * aus". Die confirm-Phase lebt nur in actionData, und eine Revalidierung
+ * setzt actionData auf null. Kette, Begründung und der Halt je location.key:
+ * app/lib/aktionsergebnis.js (dorthin gezogen, als Kontakt, Produktberatung
+ * und Konto dieselbe Mechanik zeigten).
  */
-function useAktionsergebnisUeberRevalidierung() {
-  const actionData = useActionData();
-  const {key} = useLocation();
-  const gehalten = useRef({key: null, data: null});
-  if (actionData) {
-    gehalten.current = {key, data: actionData};
-  } else if (gehalten.current.key !== key) {
-    gehalten.current = {key, data: null};
-  }
-  return actionData || gehalten.current.data;
-}
 
 export default function WithdrawalConfirmPage() {
   const actionData = useAktionsergebnisUeberRevalidierung();

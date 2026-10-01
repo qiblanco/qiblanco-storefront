@@ -2,10 +2,10 @@ import {CUSTOMER_UPDATE_MUTATION} from '~/graphql/customer-account/CustomerUpdat
 import {data} from 'react-router';
 import {
   Form,
-  useActionData,
   useNavigation,
   useOutletContext,
 } from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {
   KontoAbschnitt,
   KontoErfolg,
@@ -93,7 +93,7 @@ export default function AccountProfile() {
   const account = useOutletContext();
   const {state} = useNavigation();
   /** @type {ActionReturnData} */
-  const action = useActionData();
+  const action = useAktionsergebnisUeberRevalidierung();
   const customer = action?.customer ?? account?.customer;
   const gespeichert = Boolean(action && !action.error && action.customer);
 

@@ -1,5 +1,6 @@
 import {data} from 'react-router';
-import {Form, Link, useActionData, useNavigation} from 'react-router';
+import {Form, Link, useNavigation} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {FaqListe} from '~/components/reusables/FaqListe';
@@ -279,7 +280,7 @@ const FAQ_ITEMS = [
  */
 
 export default function SupportPage() {
-  const actionData = useActionData();
+  const actionData = useAktionsergebnisUeberRevalidierung();
   const navigation = useNavigation();
   const submitting = navigation.state !== 'idle';
   const success = actionData?.ok === true;

@@ -1,10 +1,10 @@
 import {data} from 'react-router';
 import {
   Form,
-  useActionData,
   useNavigation,
   useOutletContext,
 } from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {
   UPDATE_ADDRESS_MUTATION,
   DELETE_ADDRESS_MUTATION,
@@ -398,7 +398,7 @@ function ExistingAddresses({addresses, defaultAddress}) {
 export function AddressForm({addressId, address, defaultAddress, children}) {
   const {state, formMethod} = useNavigation();
   /** @type {ActionReturnData} */
-  const action = useActionData();
+  const action = useAktionsergebnisUeberRevalidierung();
   const error = action?.error?.[addressId];
   const isDefaultAddress = defaultAddress?.id === addressId;
   // Die Formularschlüssel (name=, id=, htmlFor=, autoComplete=, pattern=)
