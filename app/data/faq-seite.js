@@ -393,13 +393,14 @@ export const FAQ_KAUF = [
       'Du hast 20 Tage ab Erhalt, um alles in Ruhe auszuprobieren, und darfst dein Stück in dieser ' +
       'Zeit ganz normal tragen und benutzen, dafür ist die Frist ja da. Wenn du nichts merkst oder ' +
       'es aus einem anderen Grund nicht behalten möchtest, meldest du dich bei uns, schickst es ' +
-      'zurück und bekommst den Kaufpreis erstattet. Einen Grund musst du dafür nicht nennen, nur die ' +
-      'unmittelbaren Kosten der Rücksendung trägst du selbst. Die 20 Tage gelten zusätzlich zum ' +
+      'zurück und bekommst den Kaufpreis erstattet. Einen Grund musst du dafür nicht nennen, und die ' +
+      'Rücksendung ist für dich kostenlos. Die 20 Tage gelten zusätzlich zum ' +
       'gesetzlichen Widerrufsrecht von 14 Tagen.',
     quelle:
       'Kopfleiste jeder Seite („Jetzt 20 Tage risikofrei erleben!"), Bedingungen im Repo ' +
-      '(„Frist: 20 Tage ab Erhalt · Grund: keiner nötig"), /policies/refund-policy für die ' +
-      'gesetzliche 14-Tage-Frist und den Satz „Sie tragen die unmittelbaren Kosten der Rücksendung". ' +
+      '(„Frist: 20 Tage ab Erhalt · Grund: keiner nötig"), /pages/agb für die gesetzliche ' +
+      '14-Tage-Frist (§ 7) und den Satz „Die Rücksendung ist für Sie kostenlos" (Abschnitt ' +
+      'Zufriedenheitsgarantie, Absatz 2, Christian-Entscheidung vom 2026-08-14). ' +
       'Beide Fristen stehen NEBENEINANDER, weil sie zwei verschiedene Instrumente sind — genau die ' +
       'Lesart, die Segment s03 am 2026-09-01 für merchantReturnDays = 20 begründet hat.',
     // DIE VERTIEFUNG DIESER ANTWORT, und zugleich der eingehende Link, den

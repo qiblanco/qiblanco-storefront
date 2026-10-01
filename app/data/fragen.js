@@ -268,10 +268,10 @@ export const QUELLEN = {
   },
   "qb_widerruf": {
     "art": "eigen",
-    "zitat": "Qi Blanco: Widerrufsbelehrung nach § 7 der Rückerstattungsrichtlinie",
-    "url": "https://qiblanco.com/policies/refund-policy",
-    "pruefung": "https://qiblanco.com/policies/refund-policy",
-    "identitaet": "Rückerstattungsrichtlinie"
+    "zitat": "Qi Blanco: AGB, § 7 Widerrufsbelehrung",
+    "url": "https://qiblanco.com/pages/agb",
+    "pruefung": "https://qiblanco.com/pages/agb",
+    "identitaet": "Widerrufsbelehrung"
   },
   "rubin2005": {
     "art": "fachliteratur",

@@ -281,7 +281,7 @@ export const SELBST = {
   text:
     'Du musst weder Reddit noch uns glauben. Den QiOne® 2 Pro kannst du 20 ' +
     'Tage ab Erhalt tragen und zurückgeben, ohne einen Grund zu nennen. Die ' +
-    'unmittelbaren Kosten der Rücksendung trägst du.',
+    'Rücksendung ist für dich kostenlos.',
 };
 
 /**
@@ -330,7 +330,7 @@ export const FRAGEN = [
     q: 'Kann ich den QiOne® 2 Pro selbst ausprobieren?',
     a:
       'Ja. Du hast 20 Tage ab Erhalt, um ihn zurückzugeben, ohne einen Grund ' +
-      'zu nennen. Die unmittelbaren Kosten der Rücksendung trägst du.',
+      'zu nennen. Die Rücksendung ist für dich kostenlos.',
   },
   {
     id: 'stand',
