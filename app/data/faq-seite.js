@@ -463,10 +463,21 @@ export const FAQ_KAUF = [
     // `weiter.pfad` als Objekt, eine Liste hätte sie still leer gemacht.
     // Der Eintrag ist der zweite seines Blocks und startet zugeklappt: im
     // Server-HTML steht der Link, das Bild der Seite ändert sich nicht.
-    auch: {
-      pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
-      text: 'Was auf Reddit über Qi Blanco steht, Faden für Faden nachgezählt',
-    },
+    //
+    // SEIT 2026-10-01 EINE LISTE (Job 20261001-s07vm-tatsachenseite-
+    // trustpilot): /pages/qi-blanco-auf-trustpilot braucht denselben
+    // eingehenden Link aus derselben Antwort. `auch` darf ein Objekt ODER eine
+    // Liste sein; FaqSeite.jsx rendert beides. `weiter` bleibt ein Objekt.
+    auch: [
+      {
+        pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
+        text: 'Was auf Reddit über Qi Blanco steht, Faden für Faden nachgezählt',
+      },
+      {
+        pfad: '/pages/qi-blanco-auf-trustpilot',
+        text: 'Was auf Trustpilot über Qi Blanco steht, mit Quelle und Stand',
+      },
+    ],
   },
   {
     q: 'Kann ich in Raten zahlen?',

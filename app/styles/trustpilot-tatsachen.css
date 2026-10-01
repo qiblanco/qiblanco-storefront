@@ -1,0 +1,329 @@
+/* ============================================================================
+   /pages/qi-blanco-auf-trustpilot — „Qi Blanco auf Trustpilot" (2026-10-01).
+
+   Token-System WORTGLEICH zur Schwesterseite reddit-tatsachen.css (Rubrik
+   100/100), die es ihrerseits wortgleich von neu-oder-gebraucht.css und
+   kritik.css uebernommen hat: warmes Neutral-Kontinuum, EIN Gold-Akzent nur
+   auf Beweis, Weissraum gruppiert statt Boxen, 8pt-Grid, Sektions-Takt 96/64,
+   Zeilenlaenge <= 75ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus
+   dem :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .tpt — self-contained.
+
+   WARUM EIGENE DATEI: Gate 12 loest geteilte Dateien auf ALLE importierenden
+   Routen auf. Die WERTE sind kopiert, die DATEI nicht geteilt — dieselbe
+   Entscheidung wie reddit-tatsachen.css gegenueber neu-oder-gebraucht.css.
+
+   DER EINE AKZENT SITZT AUF DEM BEWEIS: die Quellenzeilen tragen das Gold als
+   Unterstreichung ihres Links, die Titel der drei Profil-Punkte als Linie.
+   ========================================================================== */
+
+:root {
+  --tpt-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --tpt-fs-xs: 0.8125rem; /* 13px, nur Fuss */
+  --tpt-fs-base: 1rem; /* 16px */
+  --tpt-fs-md: 1.125rem; /* 18px */
+  --tpt-fs-lg: 1.25rem; /* 20px */
+  --tpt-fs-xl: 1.5625rem; /* 25px */
+  --tpt-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --tpt-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --tpt-s1: 8px;
+  --tpt-s2: 16px;
+  --tpt-s3: 24px;
+  --tpt-s4: 32px;
+  --tpt-s6: 48px;
+  --tpt-s8: 64px;
+  --tpt-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --tpt-grund: #faf9f5;
+  --tpt-flaeche: #f4f0e9;
+  --tpt-text: #2c2a26;
+  --tpt-muted: #6b665d;
+  --tpt-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR Handlung/Beweis, und NUR als
+       Linie/Unterstreichung, nie als Schrift auf hellem Grund (2,2:1). */
+  --tpt-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --tpt-r1: 8px;
+  --tpt-r2: 16px;
+  --tpt-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --tpt-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte — diese Seite ist ein Text, kein Raster */
+  --tpt-mass: 68ch;
+  --tpt-breite-schmal: 760px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.tpt {
+  font-family: var(--tpt-font);
+  font-size: var(--tpt-fs-base);
+  line-height: 1.65;
+  color: var(--tpt-text);
+  background: var(--tpt-grund);
+}
+
+/* NAME MIT ABSICHT: der Gestaltungs-Pruefliste (homepage-bauer/src/
+   seiten_pruefliste.py) faellt ein Textcontainer nur auf, wenn sein
+   Klassenname eines der Woerter aus _CONTAINER_WOERTER traegt (inhalt/content/
+   article/text/...). Die Punkte P1 Zeilenlaenge und P2 Innenabstaende werden
+   sonst nicht ROT, sondern gar nicht erst GEMESSEN. Wer diese Klasse
+   umbenennt, nimmt der Seite ihre Messbarkeit, ohne dass sich am Aussehen
+   etwas aendert. */
+.tpt__inhalt {
+  width: 100%;
+  max-width: var(--tpt-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--tpt-s2);
+}
+
+.tpt section {
+  padding-block: var(--tpt-s8);
+}
+@media (min-width: 768px) {
+  .tpt section {
+    padding-block: var(--tpt-s12);
+  }
+}
+
+.tpt h1 {
+  font-size: var(--tpt-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--tpt-s3);
+  color: var(--tpt-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.tpt h2 {
+  font-size: var(--tpt-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--tpt-s2);
+  color: var(--tpt-text);
+}
+
+.tpt h3 {
+  font-size: var(--tpt-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--tpt-s1);
+  color: var(--tpt-text);
+}
+
+.tpt p,
+.tpt li,
+.tpt dd {
+  font-size: var(--tpt-fs-base);
+  line-height: 1.65;
+  color: var(--tpt-text);
+  max-width: var(--tpt-mass);
+  margin: 0 0 var(--tpt-s2);
+}
+
+.tpt p:last-child,
+.tpt dd:last-child {
+  margin-bottom: 0;
+}
+
+.tpt a {
+  color: var(--tpt-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.tpt a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.tpt ol,
+.tpt ul,
+.tpt dl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Kopf ────────────────────────────────────────────────────────────────── */
+.tpt__kopf {
+  background: var(--tpt-flaeche);
+}
+
+.tpt p.tpt__vorspann {
+  font-size: var(--tpt-fs-base);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tpt-muted);
+  margin-bottom: var(--tpt-s2);
+}
+
+.tpt p.tpt__lead {
+  font-size: var(--tpt-fs-md);
+}
+
+.tpt p.tpt__einleitung {
+  font-size: var(--tpt-fs-md);
+  color: var(--tpt-muted);
+  margin-bottom: var(--tpt-s4);
+}
+
+/* Die Quellenzeile — die kleinste Schrift der Seite und ihr wichtigstes
+   Bauteil: eine Zahl ohne Herkunft ist von einer erfundenen nicht zu
+   unterscheiden. */
+.tpt p.tpt__quelle {
+  font-size: var(--tpt-fs-xs);
+  color: var(--tpt-muted);
+  margin-top: var(--tpt-s1);
+  margin-bottom: 0;
+}
+
+/* ─── Zwei Profile, die nicht zu uns gehören ──────────────────────────────── */
+.tpt__fremd {
+  background: var(--tpt-flaeche);
+}
+
+
+
+
+
+/* ─── Verteilung der Sterne ───────────────────────────────────────────────── */
+.tpt__verteilung {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tpt-s4);
+}
+
+.tpt li.tpt__zeile {
+  max-width: none;
+  margin: 0;
+  padding-top: var(--tpt-s3);
+  border-top: 1px solid var(--tpt-linie);
+}
+
+/* ─── Die drei Profil-Punkte, nummeriert ──────────────────────────────────── */
+.tpt__punkte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tpt-s4);
+  counter-reset: punkt;
+}
+
+.tpt li.tpt__punkt {
+  max-width: none;
+  margin: 0;
+  padding-left: var(--tpt-s6);
+  position: relative;
+  counter-increment: punkt;
+}
+
+.tpt li.tpt__punkt::before {
+  content: counter(punkt);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--tpt-fs-lg);
+  font-weight: 600;
+  color: var(--tpt-muted);
+  line-height: 1.35;
+}
+
+
+/* ─── Selbst ausprobieren ─────────────────────────────────────────────────── */
+.tpt__selbst {
+  background: var(--tpt-flaeche);
+}
+
+
+
+
+/* Ein Folgeabsatz im Stimmen-Abschnitt: Abstand nach der Quellenzeile. */
+.tpt p.tpt__absatz {
+  margin-top: var(--tpt-s4);
+}
+
+/* Der Beweis-Akzent: EIN Gold, als Linie am Titel der Profil-Punkte. */
+.tpt li.tpt__punkt h3 {
+  border-left: 3px solid var(--tpt-akzent);
+  padding-left: var(--tpt-s2);
+}
+
+.tpt p.tpt__weiter {
+  margin-top: var(--tpt-s4);
+  color: var(--tpt-muted);
+}
+
+/* ─── Kurz gefragt ────────────────────────────────────────────────────────── */
+.tpt__fragen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tpt-s4);
+}
+
+.tpt__frage {
+  padding-top: var(--tpt-s3);
+  border-top: 1px solid var(--tpt-linie);
+}
+
+.tpt__frage dt {
+  font-size: var(--tpt-fs-lg);
+  font-weight: 600;
+  color: var(--tpt-text);
+  margin: 0 0 var(--tpt-s1);
+}
+
+.tpt__frage dd {
+  margin-inline: 0;
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Token-Remap: die fremden Gold-Toene aus app.css und dem rd3-System erben hier
+   den EINEN Akzent — Mapping statt Doppel-Gold. Wortgleich zu kritik.css,
+   weil Kopf und Fuss dieselben sind. */
+body:has(.tpt) {
+  background: var(--tpt-grund);
+  --color-accent-primary: var(--tpt-akzent);
+  --rd3-gold: var(--tpt-akzent);
+  --qb-sterne-gold: var(--tpt-akzent);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
+}
+
+/* EIN Bild-Radius auf dieser Route — auch fuer die Bilder aus Kopf und Fuss.
+   GEMESSEN, NICHT UEBERNOMMEN: ohne diese Regel liefert die Rubrik hier drei
+   Bild-Radius-Werte (4px, 6px, 20px), und zwar aus der GETEILTEN Huelle — die
+   Seite selbst traegt kein einziges eigenes Bild. Die Schwesterseite /pages/
+   kritik misst am selben Build 8px auf allen Huellen-Bildern, weil sie genau
+   diese Regel fuehrt. Der Befund ist damit keine Eigenschaft der Huelle,
+   sondern die Abwesenheit ihres Remaps. */
+body:has(.tpt) img,
+body:has(.tpt) picture,
+body:has(.tpt) video {
+  border-radius: var(--tpt-r1);
+}
+
+/* Das Newsletter-Widget im Fuss (ActiveCampaign `_form_15`) setzt seinen Ocker
+   #F2BF72 inline — der ZWEITE Goldton der Route, nur mit !important
+   erreichbar. GEMESSEN: ohne diese Regel meldet die Rubrik hier "ZWEI
+   konkurrierende Gold-/Ocker-Toene", waehrend /pages/kritik am selben Build
+   harmonisch 100 misst; der Unterschied ist genau dieser Block. Anders als in
+   kritik.css steht hier KEINE unscoped Regel: eine Datei, die nur auf dieser
+   Route geladen wird, soll auch nur auf dieser Route wirken. */
+body:has(.tpt) #_form_15_submit._submit,
+body:has(.tpt) ._form_15 button,
+body:has(.tpt) ._form_15 ._submit,
+body:has(.tpt) ._form_15 input[type='submit'] {
+  background: var(--tpt-akzent) !important;
+  color: var(--tpt-text) !important;
+  border-radius: var(--tpt-r1) !important;
+  font-family: var(--tpt-font) !important;
+}
