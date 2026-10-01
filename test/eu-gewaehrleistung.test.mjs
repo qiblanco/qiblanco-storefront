@@ -1012,54 +1012,98 @@ test('das Overlay hängt seine Schrift nicht an den Ort, an dem es montiert ist'
   );
 });
 
-test('das Zeichen im Listenpunkt ist so groß wie die Nachbar-Icons', () => {
+test('die Icon-Liste: feste Icon-Spalte, haengender Einzug, Zeichen in Gold', () => {
+  // Elina EL-20261001-0b68ad76, drei Punkte: (1) umbrechende Zeilen beginnen
+  // buendig mit dem Textanfang, nicht unter dem Icon; (2) alle Icons exakt
+  // senkrecht uebereinander; (3) das EU-Zeichen im selben Goldton wie die
+  // Nachbar-Icons. Gemessen im Browser (Chromium, 1440 und 390 px, sechs
+  // Kaufseiten): Icon-Mitte und Textbeginn jeder Zeile auf denselben Pixel.
+  // Hier steht, was diese Messung im Quelltext traegt.
   const appCss = ohneCssKommentare(readFileSync(APP_CSS, 'utf8'));
 
-  // 1. EIN Abstand für alle fünf Icons -- als gemeinsame Regel, nicht als
+  // 1. EIN Abstand für alle Icons -- als gemeinsame Regel, nicht als
   //    zweite Zahl daneben, die beim nächsten Mal nur halb nachgezogen wird.
   assert.match(
     appCss,
-    /\.BenefitList svg,\s*\.BenefitList \.eu-gwl__zeichen\s*\{[^}]*margin-right:/,
-    'Der Icon-Abstand der Liste gilt nicht für das Zeichen des fünften ' +
-      'Punktes -- dann beginnt sein Text auf einer anderen Kante als die vier ' +
-      'darueber.',
+    /\.BenefitList svg,\s*\.BenefitList \.eu-gwl__zeichen\s*\{[^}]*margin-right:\s*var\(--benefit-icon-abstand/,
+    'Der Icon-Abstand der Liste gilt nicht für alle Icons gemeinsam -- dann ' +
+      'beginnt ein Text auf einer anderen Kante als die darueber.',
   );
 
-  // 2. Hoehe wie die vier <svg> (die tragen height="1em" als Attribut),
-  //    Breite aus dem Seitenverhaeltnis. Eine px-Zahl wäre ab der nächsten
-  //    Aenderung der Listenschrift daneben, ohne dass es jemand sieht.
-  const bloecke = [
-    ...appCss.matchAll(/\.BenefitList \.eu-gwl__zeichen\s*\{([^}]*)\}/g),
-  ].map((m) => m[1]);
+  // 2. FESTE SPALTE: jedes Icon (auch das Zeichen) ist gleich breit, die
+  //    Zeichnung sitzt darin mittig. Vorher war jedes so breit wie seine
+  //    Zeichnung (1,23em / 1,15em / 1em / 0,96em) -- Elinas Punkt 2.
+  assert.match(
+    appCss,
+    /\.BenefitList li > svg,\s*\.BenefitList li > \.eu-gwl__zeichen\s*\{[^}]*width:\s*var\(--benefit-icon-spalte\)[^}]*height:\s*1em/,
+    'Die Icons der Liste haben keine gemeinsame Spaltenbreite -- sie stehen ' +
+      'dann nicht senkrecht uebereinander.',
+  );
   assert.ok(
-    bloecke.some((b) => /height:\s*1em/.test(b) && /width:\s*auto/.test(b)),
-    'Das Zeichen wird nicht auf Icon-Hoehe (1em) gebracht -- es bleibt auf ' +
-      'den 36 px der Block-Bauform und ueberragt die vier Nachbar-Icons.',
+    !/\.BenefitList \.eu-gwl__zeichen\s*\{[^}]*width:\s*auto/.test(appCss),
+    'Das Zeichen bekommt wieder `width: auto` -- das schlaegt die Spalten-' +
+      'regel (hoehere Spezifitaet) und schiebt seinen Text um 0,3em nach links.',
   );
 
-  // 3. RICHTUNGS-ZUSAGE FÜR DIE BILDLEITER. In der Liste ist die Flaeche
-  //    kleiner als AUSLOESER_ZEICHEN.anzeigeBreite; das ist hingenommen (das
-  //    Bild kommt schaerfer herein als nötig, ein paar hundert Byte).
-  //    Der umgekehrte Fall darf NICHT eintreten: waechst die Listenschrift
-  //    über die Anzeigebreite hinaus, liefert die Leiter zu wenig Pixel und
-  //    das Zeichen wird sichtbar unscharf. Genau diese Richtung steht hier.
-  const reset = ohneCssKommentare(readFileSync(RESET_CSS, 'utf8'));
-  const pLi = reset.match(/p,\s*li\s*\{([^}]*)\}/);
-  assert.ok(pLi, 'die Schriftgroesse der Liste steht nicht mehr in reset.css');
-  const rem = pLi[1].match(/font-size:\s*([\d.]+)rem/);
-  assert.ok(rem, 'p, li führt keine Schriftgroesse in rem');
+  // 3. HAENGENDER EINZUG: padding-left und negatives text-indent aus
+  //    DENSELBEN beiden Groessen, und die Kinder setzen text-indent zurueck
+  //    (sonst schiebt ein Knopf in der Zeile seinen Text aus sich heraus).
+  const li = appCss.match(/\.BenefitList li\s*\{([^}]*)\}/);
+  assert.ok(li, '.BenefitList li traegt keinen Einzug -- Folgezeilen laufen unter das Icon');
+  assert.match(
+    li[1],
+    /padding-left:\s*calc\(var\(--benefit-icon-spalte\) \+ var\(--benefit-icon-abstand\)\)/,
+  );
+  assert.match(
+    li[1],
+    /text-indent:\s*calc\(-1 \* \(var\(--benefit-icon-spalte\) \+ var\(--benefit-icon-abstand\)\)\)/,
+  );
+  const spalte = li[1].match(/--benefit-icon-spalte:\s*([\d.]+)em/);
+  assert.ok(spalte, '--benefit-icon-spalte steht nicht in em');
+  assert.match(appCss, /\.BenefitList li > \*\s*\{\s*text-indent:\s*0;?\s*\}/);
 
-  const WURZEL_PX = 16; // Browser-Vorgabe; die Storefront setzt kein html{font-size}
-  const zeichenHoehePx = Number(rem[1]) * WURZEL_PX;
-  const zeichenBreitePx =
-    (zeichenHoehePx * AUSLOESER_ZEICHEN.breite) / AUSLOESER_ZEICHEN.hoehe;
-
+  // 4. DIE SPALTE IST MINDESTENS SO BREIT WIE DAS BREITESTE ICON. Wer ein
+  //    breiteres Icon einbaut, muss die Spalte mitziehen -- sonst ragt es in
+  //    den Abstand und sein Text beginnt wieder woanders.
+  const listen = [
+    ['app', 'components', 'product-pages', 'QiOneBuyBox.jsx'],
+    ['app', 'components', 'product-pages', 'QiBraceletSeite.jsx'],
+    ['app', 'components', 'product-pages', 'QiHomeAirSeite.jsx'],
+    ['app', 'components', 'product-pages', 'QiMaster.jsx'],
+    ['app', 'components', 'reusables', 'KaufZusage.jsx'],
+    ['app', 'routes', 'products.qione-kette.jsx'],
+  ];
+  let breitestes = 0;
+  for (const teile of listen) {
+    const code = readFileSync(join(HIER, '..', ...teile), 'utf8');
+    for (const m of code.matchAll(/<svg\b[^>]*?width="([\d.]+)em"/g)) {
+      breitestes = Math.max(breitestes, Number(m[1]));
+    }
+  }
+  assert.ok(breitestes >= 1, 'Positiv-Kontrolle: kein einziges Listen-Icon gefunden');
   assert.ok(
-    AUSLOESER_ZEICHEN.anzeigeBreite >= zeichenBreitePx,
-    `Die Bildleiter rechnet mit ${AUSLOESER_ZEICHEN.anzeigeBreite} px, der ` +
-      `Listenpunkt zeigt das Zeichen aber ${zeichenBreitePx.toFixed(1)} px ` +
-      'breit. Das Zeichen wird damit sichtbar unscharf ausgeliefert.',
+    Number(spalte[1]) >= breitestes,
+    `Die Icon-Spalte ist ${spalte[1]}em breit, das breiteste Icon ${breitestes}em.`,
   );
+
+  // 5. DAS ZEICHEN IN GOLD: die Listen-Bauform zeigt den Vektor (ein JPEG
+  //    laesst sich nicht in den Goldton faerben), sein Schild zieht
+  //    currentColor, und `.BenefitList svg` setzt die Akzentfarbe.
+  const code = ohneKommentare(readFileSync(KOMPONENTE, 'utf8'));
+  const ab = code.indexOf('if (!eigeneZeile)');
+  assert.ok(ab >= 0, 'die Listen-Bauform des Ausloesers fehlt');
+  const listenZweig = code.slice(ab, code.indexOf('</>', ab));
+  assert.match(listenZweig, /<EuZeichenVektor\s*\/>/, 'die Liste zeigt nicht das Vektor-Zeichen');
+  assert.doesNotMatch(listenZweig, /\{bild\}/, 'die Liste zeigt wieder das blaue JPEG');
+  const vektor = code.slice(code.indexOf('function EuZeichenVektor'));
+  assert.match(vektor, /className="eu-gwl__zeichen eu-gwl__zeichen--vektor"/);
+  assert.match(vektor, /fill="currentColor"/, 'das Schild zieht seine Farbe nicht aus der Liste');
+  assert.match(
+    appCss,
+    /\.BenefitList svg\s*\{[^}]*color:\s*var\(--color-accent-primary\)/,
+    'die Icons der Liste ziehen nicht mehr den Goldton',
+  );
+  assert.match(appCss, /\.BenefitList \.eu-gwl__zeichen-sterne\s*\{\s*fill:\s*#fff/);
 });
 
 /* ---------------------------------------------------------------------------
