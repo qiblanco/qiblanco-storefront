@@ -6294,6 +6294,33 @@ html.qb-chat-docked .overlay aside {
   right: calc(25px + var(--qb-chat-dock-breite, 0px));
 }
 
+/* 4b. Kopf ohne Umbruch auch im Dock (Job 20261001-kopf-tablet-beratung-reiter-
+      umbruch): seit `.header-menu-item` nicht mehr umbricht, ist das Logo das
+      einzige schrumpfbare Element. Gemessen mit Dock 520 px: bei Wirt 1270 fiel es
+      auf 80 px, bei Wirt 1544 auf 141 px. Dieselben Werte wie der Viewport-Block
+      750-1199 oben, hier an der Seitenflaeche (Wirt minus 520).
+      Steht bewusst VOR Block 4: dort gewinnt zwischen Wirt 1270 und 1543 die
+      engere Luecke 0.5rem durch die Reihenfolge. Eine eigene Grenze bei 1544
+      (min-width) wuerde keine Breite der Format-Matrix ueberfahren
+      (hb-formate breakpoint-deckung, gemessen 2026-10-01). */
+@media (min-width: 1270px) and (max-width: 1719px) {
+  html.qb-chat-docked .header-menu-desktop {
+    flex-shrink: 0;
+    gap: 1rem;
+    margin-left: 1.5rem;
+  }
+  /* Polster wie im Viewport-Block: `.header-menu-item` setzt es mit
+     !important, Block 4 unten kommt dagegen nicht an. Ohne diese Zeile
+     ragten bei Wirt 1270 die Icons 14 px unter die Chat-Spalte. */
+  html.qb-chat-docked .header-menu-desktop .header-menu-item {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  html.qb-chat-docked .header .NavLink-logo {
+    min-width: 110px;
+  }
+}
+
 /* 4. Seitenflaeche 750-1023 px: das Tablet-Rezept dieser Datei
       (@media 750-1023: gap 0.5rem, Schrift 0.85rem). Die Schriftgroesse
       braucht hier `!important`, weil `.header-menu-item` seine 1rem bereits
@@ -6306,9 +6333,17 @@ html.qb-chat-docked .overlay aside {
   }
   html.qb-chat-docked .header-menu-desktop .header-menu-item,
   html.qb-chat-docked .header-menu-desktop p.header-menu-item {
-    font-size: 0.85rem !important;
+    font-size: var(--qs-t-fein) !important;
     padding-left: 0.4rem;
     padding-right: 0.4rem;
+  }
+  /* Wie der Viewport-Tablet-Block (750-1023): schmaleres Kopfpolster. Mit
+     sechs Reitern ohne Umbruch fehlten bei Wirt 1270 sonst 30 px, die Icons
+     ragten 14 px ueber den Kopfbalken (Job 20261001-kopf-tablet-beratung-
+     reiter-umbruch-wv1, gemessen am Produktions-Build). */
+  html.qb-chat-docked .header {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 }
 
