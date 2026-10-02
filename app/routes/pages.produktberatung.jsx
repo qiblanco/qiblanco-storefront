@@ -27,7 +27,10 @@ const PFAD = '/pages/produktberatung';
  * app/components/campaign/ProduktberatungSeite.jsx und styles/produktberatung.css;
  * Loader, Action und Feldnamen dieser Route sind unverändert.
  * Nachtrag PR 2: der Kopf ist einspaltig, damit das Chat-Fenster unten rechts
- * Christians Worte nicht verdeckt.
+ * Christians Worte nicht verdeckt. Nachtrag 02.10. (lebensfroh, s02): zwischen
+ * 768 und 1139 px ist Christians Karte schmaler als 100vw minus Chat-Breite
+ * (produktberatung.css, --pb-chat-frei), sonst lag das Fenster bei 1024 px auf
+ * seinem Text.
  *
  * FUNKTIONIERT OHNE JAVASCRIPT: Termine und Formular kommen serverseitig, das
  * Formular ist ein normaler POST. JavaScript ergänzt nur die Zeitzone der
