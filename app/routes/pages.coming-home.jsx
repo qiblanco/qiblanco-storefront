@@ -555,16 +555,21 @@ function Anmeldung() {
  * keinen Text: markiert und kopiert wird genau der Link.
  */
 function mitUmbruchstellen(link) {
-  const teile = link.split('/');
-  return teile.map((teil, i) =>
-    i < teile.length - 1 ? (
-      <span key={i}>
-        {teil}/<wbr />
+  // Schlüssel = der Link bis einschließlich dieses Stücks: wächst mit jedem
+  // Stück, ist also eindeutig.
+  const stuecke = link.match(/[^/]*\/|[^/]+$/g) || [link];
+  let bisher = '';
+  return stuecke.map((stueck) => {
+    bisher += stueck;
+    return stueck.endsWith('/') ? (
+      <span key={bisher}>
+        {stueck}
+        <wbr />
       </span>
     ) : (
-      <span key={i}>{teil}</span>
-    ),
-  );
+      <span key={bisher}>{stueck}</span>
+    );
+  });
 }
 
 /**
