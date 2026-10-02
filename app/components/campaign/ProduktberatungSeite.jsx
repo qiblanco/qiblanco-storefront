@@ -449,21 +449,21 @@ function Buchen({daten, fehler, zone}) {
   const auswahl = fehler?.slot || daten.vorwahl || '';
   // Gewählter Termin, damit die Seite merkt, wenn er beim Abdaten verschwindet. Nur ein
   // Termin, den es beim ersten Bild gab, zählt (eine alte Vorwahl löst keinen Hinweis aus).
-  const [gewaehlt, setGewaehlt] = useState(() =>
+  const [markiert, setMarkiert] = useState(() =>
     daten.termine.some((t) => t.slot_start === auswahl) ? auswahl : '',
   );
   const [verpasst, setVerpasst] = useState('');
   useEffect(() => {
-    if (gewaehlt && !daten.termine.some((t) => t.slot_start === gewaehlt)) {
-      const {datum, zeit} = teile(gewaehlt);
+    if (markiert && !daten.termine.some((t) => t.slot_start === markiert)) {
+      const {datum, zeit} = teile(markiert);
       setVerpasst(
         `${tagName(datum)}, ${zeit} Uhr ist jetzt zu kurzfristig. Such dir bitte eine andere Zeit aus.`,
       );
-      setGewaehlt('');
+      setMarkiert('');
     }
-  }, [daten.termine, gewaehlt]);
-  const waehle = (slot) => {
-    setGewaehlt(slot);
+  }, [daten.termine, markiert]);
+  const nimm = (slot) => {
+    setMarkiert(slot);
     setVerpasst('');
   };
 
@@ -526,7 +526,7 @@ function Buchen({daten, fehler, zone}) {
             mitRadio
             auswahl={auswahl}
             zone={zone}
-            onWahl={waehle}
+            onWahl={nimm}
           />
 
           <div className="pb__felder">
