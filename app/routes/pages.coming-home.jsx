@@ -550,6 +550,24 @@ function Anmeldung() {
 }
 
 /**
+ * Der Link als Text, umbrechbar nur hinter einem Schrägstrich (<wbr>), damit
+ * er auf dem Handy nicht mitten in der Meeting-Nummer bricht. <wbr> trägt
+ * keinen Text: markiert und kopiert wird genau der Link.
+ */
+function mitUmbruchstellen(link) {
+  const teile = link.split('/');
+  return teile.map((teil, i) =>
+    i < teile.length - 1 ? (
+      <span key={i}>
+        {teil}/<wbr />
+      </span>
+    ) : (
+      <span key={i}>{teil}</span>
+    ),
+  );
+}
+
+/**
  * Der Zugang nach der Anmeldung: Knopf ins Meeting (neuer Tab), darunter
  * derselbe Link als Text mit Kopieren-Knopf. Beide lesen `link`.
  */
@@ -609,7 +627,7 @@ function ZoomZugang({link, id}) {
           aria-labelledby={`${id}-linktext`}
           data-coming-home-linktext=""
         >
-          {link}
+          <span>{mitUmbruchstellen(link)}</span>
         </span>
         <button
           type="button"

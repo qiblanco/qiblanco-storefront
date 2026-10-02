@@ -69,6 +69,8 @@
   --ch-nr: 40px;
   /* so breit wie der Bausatz-Knopf (.btn--primary, max-width 500px) */
   --ch-knopf-breite: 500px;
+  /* ab hier rutscht der Kopieren-Knopf unter den Link (schmale Schirme) */
+  --ch-link-min: 18rem;
 }
 
 body:has(.ch) {
@@ -367,12 +369,13 @@ body:has(.ch) {
 }
 .ch .ch-link-zeile {
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   gap: var(--ch-s1);
   max-width: var(--ch-knopf-breite);
 }
 .ch .ch-link-text {
-  flex: 1 1 auto;
+  flex: 1 1 var(--ch-link-min);
   min-width: 0;
   display: flex;
   align-items: center;
@@ -384,7 +387,7 @@ body:has(.ch) {
   background: var(--ch-flaeche);
   border: 1px solid var(--ch-linie);
   border-radius: var(--ch-r1);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   user-select: all;
 }
 .ch .ch-kopieren {
