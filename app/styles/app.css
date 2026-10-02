@@ -2371,29 +2371,42 @@ footer.footer :focus-visible {
   margin-top: 40px;
 }
 /*
- * ABSTAND UNTER DER LISTE (Elina EL-20261002-e9cf5364): schliesst die Liste
- * die Kaufbox ab, soll unter dem letzten Punkt mindestens so viel Weiss stehen
- * wie im folgenden grauen Abschnitt zwischen Oberkante und Ueberschrift.
- * Gemessen vorher: 8 px (Desktop) / 18 px (mobil) gegen 64 px / 48 px
- * (.qb-igt, Instagram) bzw. 96 px / 64 px (.qh-karte, QiHome). Ein Wert fuer
- * alle acht Kaufseiten: 96 px Desktop, 72 px mobil, gemessen von der
- * Unterkante des letzten Punkts bis zur Oberkante des naechsten Abschnitts.
- * Die Rand-Margin der <ul> faellt in diese Margin hinein (Kollaps), das
- * mobile padding der .product-main (10 px) kommt dazu und ist abgezogen.
+ * ABSTAND UNTER DEM PRODUKTBEREICH (Elina EL-20261002-ddcf1d86, Korrektur zu
+ * EL-20261002-e9cf5364 und EL-20261002-c4146cc6).
+ * Der Weissraum gehoert unter den GANZEN Produktbereich (Galerie links und
+ * Infos rechts zusammen): 96 px am Computer, 72 px am Handy, gemessen von der
+ * Unterkante des tiefer reichenden Elements bis zur Oberkante des naechsten
+ * Abschnitts. Er sitzt deshalb als padding am Raster .product, NICHT mehr als
+ * margin unter der Liste: dort sass er bis hierher nur in der rechten Spalte,
+ * und die Galerie (ab 1024 px position: sticky) wanderte beim Scrollen bis an
+ * das Ende des Rasters und stiess mit 0 px an "Echte Stimmen auf Instagram".
+ * Das sticky-Element bleibt in seiner Rasterzelle, also oberhalb des padding.
+ * Nicht doppelt: die alte margin unter der Liste ist entfernt, und die 8 px
+ * margin des letzten Listenpunkts (reset.css) werden auf 0 gesetzt, sonst
+ * stuenden rechts 104 px. Am Handy steht die Liste unter der Galerie; die
+ * 10 px padding der .product-main sind von den 72 px abgezogen.
+ * Gilt, wo die Liste die Kaufbox abschliesst (wie vorher): .BenefitList und
+ * die Kakao-Liste .CacaoBenefitList.
  * Der QiMaster (.qm-pdp) bekommt den Zuschlag NICHT: dort folgt kein grauer
- * Abschnitt, sondern die eigene Sektion mit Vorlauf -- schon vorher 152 px /
- * 130 px Weiss bis zur naechsten Ueberschrift, mit Zuschlag waeren es 240 px.
+ * Abschnitt, sondern die eigene Sektion mit Vorlauf -- schon 152 px / 130 px
+ * Weiss bis zur naechsten Ueberschrift, und die Galerie ist dort leer.
  */
-.product-main > .BenefitList:last-child {
-  margin-bottom: 96px;
+.product:has(> .product-main > :is(.BenefitList, .CacaoBenefitList):last-child) {
+  padding-bottom: 96px;
+}
+.product-main > :is(.BenefitList, .CacaoBenefitList):last-child li:last-child {
+  margin-bottom: 0;
 }
 @media screen and (max-width: 749px) {
-  .product-main > .BenefitList:last-child {
-    margin-bottom: 62px;
+  .product:has(> .product-main > :is(.BenefitList, .CacaoBenefitList):last-child) {
+    padding-bottom: 62px;
   }
 }
-.qm-pdp .product-main > .BenefitList:last-child {
-  margin-bottom: 0;
+.qm-pdp .product:has(> .product-main > .BenefitList:last-child) {
+  padding-bottom: 0;
+}
+.qm-pdp .product-main > .BenefitList:last-child li:last-child {
+  margin-bottom: 8px;
 }
 /*
  * ICON-SPALTE DER NUTZEN-LISTE -- EINE Regel fuer alle Punkte.
@@ -2800,23 +2813,6 @@ footer.footer :focus-visible {
 
 .CacaoBenefitList {
   margin-top: 1.5rem;
-}
-/*
- * ABSTAND UNTER DER KAKAO-LISTE (Elina EL-20261002-c4146cc6, Ergaenzung zu
- * EL-20261002-e9cf5364): dieselbe Regel wie unter der .BenefitList -- vom
- * letzten Punkt (Gesetzliche Gewaehrleistung) bis zur Oberkante des grauen
- * Instagram-Abschnitts 96 px am Computer, 72 px mobil, also mindestens so viel
- * wie dessen Innenabstand bis zur Ueberschrift (64 / 48 px).
- * Gemessen vorher: 8 px Desktop, 18 px mobil. Die 8 px Restabstand des letzten
- * Punkts und das mobile padding der .product-main (10 px) sind abgezogen.
- */
-.product-main > .CacaoBenefitList:last-child {
-  margin-bottom: 88px;
-}
-@media screen and (max-width: 749px) {
-  .product-main > .CacaoBenefitList:last-child {
-    margin-bottom: 54px;
-  }
 }
 .CacaoBenefitList ul {
   list-style: none;
