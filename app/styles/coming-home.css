@@ -67,6 +67,10 @@
   --ch-breite-schmal: 760px;
   --ch-bild: 500px;
   --ch-nr: 40px;
+  /* so breit wie der Bausatz-Knopf (.btn--primary, max-width 500px) */
+  --ch-knopf-breite: 500px;
+  /* ab hier rutscht der Kopieren-Knopf unter den Link (schmale Schirme) */
+  --ch-link-min: 18rem;
 }
 
 body:has(.ch) {
@@ -352,6 +356,68 @@ body:has(.ch) {
   font-weight: 600;
   color: var(--ch-text);
   margin: var(--ch-s2) 0 0;
+}
+
+/* Erfolgszustand (EL-20261002-4328e3fe): Knopf ins Meeting, darunter der
+   Link als Text mit Kopieren-Knopf, ganz unten klein der Mail-Hinweis. */
+.ch .ch-knopf-zoom {
+  margin-top: var(--ch-s3);
+  text-decoration: none;
+}
+.ch .ch-link-titel {
+  margin-top: var(--ch-s4);
+}
+.ch .ch-link-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--ch-s1);
+  max-width: var(--ch-knopf-breite);
+}
+.ch .ch-link-text {
+  flex: 1 1 var(--ch-link-min);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  min-height: var(--ch-s6);
+  padding: var(--ch-s1) var(--ch-s2);
+  font-size: var(--ch-fs-base);
+  line-height: 1.4;
+  color: var(--ch-text);
+  background: var(--ch-flaeche);
+  border: 1px solid var(--ch-linie);
+  border-radius: var(--ch-r1);
+  overflow-wrap: break-word;
+  user-select: all;
+}
+.ch .ch-kopieren {
+  flex: 0 0 auto;
+  min-height: var(--ch-s6);
+  padding: var(--ch-s1) var(--ch-s2);
+  font-family: var(--ch-font);
+  font-size: var(--ch-fs-xs);
+  font-weight: 600;
+  color: var(--ch-text);
+  background: var(--ch-grund);
+  border: 1px solid var(--ch-akzent);
+  border-radius: var(--ch-r1);
+  cursor: pointer;
+}
+.ch .ch-kopieren:hover {
+  background: var(--ch-flaeche);
+}
+.ch .ch-kopieren:focus-visible {
+  outline: 2px solid var(--ch-akzent-tinte);
+  outline-offset: 2px;
+}
+.ch .ch-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  margin: 0;
 }
 
 /* ─── Fragen ─────────────────────────────────────────────────────────────── */
