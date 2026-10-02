@@ -180,7 +180,7 @@ export default function Product() {
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug_small.webp?v=1766482188"
           breite={995} hoehe={356} />
         </div>
-        <h2 className="kk-h2 kk-h2--hero">Wach. Mutig. Kraftvoll.</h2>
+        <h2 className="kk-h2 kk-h2--hero">Herzöffnend. Powerful.</h2>
         <h3 className="kk-lead">High Performance Cacao</h3>
       </div>
       <div className="product">
