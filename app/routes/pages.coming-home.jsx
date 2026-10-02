@@ -1,6 +1,7 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import {Link, data, useFetcher} from 'react-router';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
 import {teilnahmeLink} from '~/lib/coming-home.server';
 import comingHomeStyles from '~/styles/coming-home.css?url';
 
@@ -26,30 +27,35 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * NICHT geschrieben, weil in keiner Quelle belegt: Aussagen zu Kamera,
  * Aufzeichnung oder Teilnehmerzahl.
  *
- * ANMELDUNG = BESTAND. Die Felder gehen an das ActiveCampaign-Formular 15,
- * dasselbe, das im Fuß jeder Seite hängt: Liste „Newsletter DACH", Name und
- * E-Mail, Bestätigung per E-Mail (Double-Opt-in). Der Browser schickt sie
- * direkt an ActiveCampaign, unser Server sieht weder Name noch Adresse.
+ * ANMELDUNG = EIGENES FORMULAR 33 „Coming Home Anmeldung" (seit Elinas
+ * Auftrag EL-20261002-4328e3fe; bis dahin Formular 15 wie der Fuß). Elina
+ * hat es am 02.10.2026 in ActiveCampaign angelegt: Liste „Newsletter DACH",
+ * dieselbe Bestätigungsmail wie Formular 15 (Double-Opt-in), und das
+ * Formular hängt selbst den Tag „coming-home" an. So ist jede Anmeldung über
+ * diese Seite in ActiveCampaign einzeln zählbar. Der Fuß jeder Seite bleibt
+ * bei Formular 15. Der Browser schickt Name und E-Mail direkt an
+ * ActiveCampaign, unser Server sieht weder Name noch Adresse.
  *
- * WARUM EIGENES FORMULAR-MARKUP statt <ActiveCampaignForm formId="15">: der
- * Fuß trägt das Embed dieser Id schon. Die Komponente entfernt jedes zweite
- * Element der Klasse _form_15 außerhalb ihres Containers, sie würde also das
- * Formular im Fuß löschen.
+ * EIGENES FORMULAR-MARKUP, DAS EMBED NUR ALS QUELLE: die Seite zeigt ihr
+ * eigenes Formular im Seitendesign. Das Embed von Formular 33 wird
+ * unsichtbar mitgeladen (<ActiveCampaignForm formId="33"> in einem
+ * hidden-Container), nur damit die Seite seine verborgenen Felder lesen kann.
+ * Es kollidiert nicht mit dem Fuß, der trägt die Id 15.
  *
- * DIE VERBORGENEN FELDER KOMMEN AUS DEM EMBED IM FUSS, NICHT AUS DIESER DATEI.
+ * DIE VERBORGENEN FELDER KOMMEN AUS DEM EMBED, NICHT AUS DIESER DATEI.
  * Zwei davon erzeugt ActiveCampaign bei jedem Rendern des Embeds neu: `u`
  * (eine Kennung mit der Renderzeit) und `or` (eine UUID). Gemessen am
  * 2026-10-01: um 11:16Z und um 11:48Z lieferte embed.php?id=15 verschiedene
  * Werte. Feste Werte in dieser Datei veralten also nach Minuten. Beim
- * Absenden liest die Seite deshalb die verborgenen Felder aus dem Formular
- * im Fuß (form._form_15), so wie der Fuß sie selbst abschickt. Die Werte
- * unten sind nur der Rückfall, falls das Embed im Fuß nicht geladen ist.
- * Ob ActiveCampaign veraltete Werte annimmt, ist nicht gemessen. Die Wache
+ * Absenden liest die Seite deshalb die verborgenen Felder aus dem
+ * unsichtbaren Embed (form._form_33), so wie das Embed sie selbst abschickt.
+ * Die Werte unten (Stand embed.php?id=33 vom 2026-10-02) sind nur der
+ * Rückfall, falls das Embed noch nicht geladen ist. Die Wache
  * growth-manager/pruefungen/probe_coming_home_seite.py prüft die festen
  * Felder gegen das Embed und meldet, wenn ActiveCampaign das Formular ändert.
  *
  * DERSELBE WEG WIE DAS EMBED: proc.php?…&jsonp=true als GET. So schickt das
- * Embed von Formular 15 selbst ab (dort formSupportsPost = false). Die Antwort
+ * Embed von Formular 33 selbst ab (dort formSupportsPost = false). Die Antwort
  * trägt access-control-allow-origin: *, die Seite kann sie also lesen und
  * Erfolg von Fehler unterscheiden. Gemessen am 2026-10-01: Erfolg beginnt mit
  * _show_thank_you(, ein Fehler mit _show_error(. Ein verstecktes iframe wie
@@ -61,6 +67,23 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * (app/lib/coming-home.server.js). Er steht nicht im HTML und nicht im
  * Bundle. Rückweg ohne Revert: LINK_AN = false in jener Datei.
  *
+ * NACH DEM ABSENDEN bleibt man in derselben Section, ohne Weiterleitung
+ * (Elina, EL-20261002-4328e3fe): ein großer Knopf „Zum Zoom-Meeting" öffnet
+ * das Meeting in einem neuen Tab, darunter steht derselbe Link als Text mit
+ * einem Kopieren-Knopf, ganz unten klein der Hinweis auf die
+ * Bestätigungsmail. Knopf und Text lesen denselben Wert, sie können nicht
+ * auseinanderlaufen.
+ *
+ * WARUM ELINAS PROBE NUR „Fast geschafft" ZEIGTE (02.10.2026, 10:49Z): die
+ * Anmeldung kam bei ActiveCampaign nie an (Formular 15 blieb bei 979
+ * Einträgen, ihr Kontakt unverändert), und der Link wurde nie abgefragt. Den
+ * Erfolgszustand ohne beides erreichte nur ein Weg: das unsichtbare
+ * Spam-Fangfeld (Honigtopf) war gefüllt. Es hieß „website" und lag nur
+ * außerhalb des Bildes; das füllen Browser-Autofill und Passwortmanager mit.
+ * Deshalb jetzt: ein Name ohne Bedeutung, die Ignorier-Merkmale der gängigen
+ * Passwortmanager, und ein gefüllter Topf führt nicht mehr in eine Sackgasse
+ * (kein Versand an ActiveCampaign, aber der Link kommt).
+ *
  * TRACKING-NAHT: die Seite setzt keine Cookies und führt keinen neuen
  * Identitäts- oder Tracking-Schlüssel ein; TRACKING_COOKIE_NAMES bleibt
  * unangetastet. Das identify macht der Bestand: qpx.js meldet das Absenden
@@ -69,7 +92,8 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  *
  * Messmarker: data-coming-home-form, data-coming-home-zustand
  * (offen | sendet | gesendet | fehler), data-coming-home-felder
- * (embed | ersatz, nach dem Absenden), data-coming-home-link.
+ * (embed | ersatz | topf, nach dem Absenden), data-coming-home-link (Knopf),
+ * data-coming-home-linktext (Link als Text), data-coming-home-kopieren.
  */
 
 const PFAD = '/pages/coming-home';
@@ -91,16 +115,17 @@ const BILD_ALT =
   'Anna und Christian von Qi Blanco sitzen nebeneinander auf dem Sofa und lachen';
 
 /**
- * Ziel und verborgene Felder des ActiveCampaign-Formulars 15. `u` und `or`
- * sind der Stand des Embeds vom 2026-10-01 und nur der Rückfall; die
+ * Ziel und verborgene Felder des ActiveCampaign-Formulars 33. `u` und `or`
+ * sind der Stand des Embeds vom 2026-10-02 und nur der Rückfall; die
  * übrigen Felder sind fest. `s` ist im Embed leer.
  */
+const AC_FORMULAR_ID = '33';
 const AC_ZIEL = 'https://qiblanco.activehosted.com/proc.php';
 const AC_ERFOLG = '_show_thank_you(';
-const AC_EMBED_FORMULAR = 'form._form_15';
+const AC_EMBED_FORMULAR = 'form._form_33';
 
 /**
- * Die verborgenen Felder, wie das Embed im Fuß sie gerade trägt. Fehlt das
+ * Die verborgenen Felder, wie das unsichtbare Embed sie gerade trägt. Fehlt das
  * Embed oder eines seiner Felder, bleibt für dieses Feld der Rückfall.
  * @returns {{felder: Record<string, string>, ausEmbed: boolean}}
  */
@@ -119,15 +144,22 @@ function acFelder() {
   return {felder, ausEmbed: gelesen === Object.keys(AC_FELDER).length};
 }
 const AC_FELDER = {
-  u: '6ABE3FFF6E1DB',
-  f: '15',
+  u: '6ABFA6BE407FA',
+  f: '33',
   s: '',
   c: '0',
   m: '0',
   act: 'sub',
   v: '2',
-  or: '75dbe52b-0360-4678-937a-db2130c711bc',
+  or: '6b32c1ee-6c69-4110-b4a9-c59c12d45df4',
 };
+
+/**
+ * Das Spam-Fangfeld. Der Name trägt bewusst keine Bedeutung („website",
+ * „url", „company" füllt Autofill mit), dazu die Ignorier-Merkmale von
+ * LastPass, 1Password und Bitwarden.
+ */
+const TOPF_NAME = 'ch_kontrollfeld';
 
 const ECKDATEN = [
   {begriff: 'Wann', wert: 'Jeden Sonntag, 19 Uhr'},
@@ -342,9 +374,9 @@ export default function ComingHome() {
  *
  * ABLAUF: (1) der Browser prüft die Felder, (2) er schickt sie an
  * ActiveCampaign und liest die Antwort, (3) bei Erfolg holt die Seite den
- * Teilnahme-Link aus der Action, (4) Erfolgszustand. Meldet ActiveCampaign
- * einen Fehler oder scheitert das Netz, bleibt das Formular stehen und sagt
- * es. Den Link gibt es nur nach einer angenommenen Anmeldung.
+ * Teilnahme-Link aus der Action, (4) Erfolgszustand in derselben Karte, ohne
+ * Weiterleitung. Meldet ActiveCampaign einen Fehler oder scheitert das Netz,
+ * bleibt das Formular stehen und sagt es.
  */
 function Anmeldung() {
   const [zustand, setZustand] = useState('offen');
@@ -353,10 +385,15 @@ function Anmeldung() {
   const id = useId();
   const erfolgRef = useRef(null);
   const link = fetcher.data?.ok ? fetcher.data.link : null;
+  const linkLaedt = fetcher.state !== 'idle';
 
   useEffect(() => {
     if (zustand === 'gesendet') erfolgRef.current?.focus();
   }, [zustand]);
+
+  function linkHolen() {
+    fetcher.submit({absicht: 'link'}, {method: 'post', action: PFAD});
+  }
 
   async function absenden(event) {
     event.preventDefault();
@@ -364,9 +401,13 @@ function Anmeldung() {
     if (zustand === 'sendet') return;
     if (!form.reportValidity()) return;
     const werte = new FormData(form);
-    // Honigtopf: ein Mensch sieht das Feld nicht. Ist es gefüllt, endet der
-    // Weg hier, ohne Sendung und ohne Link.
-    if (String(werte.get('website') || '') !== '') {
+    // Honigtopf: ein Mensch sieht das Feld nicht. Ist es gefüllt, geht nichts
+    // an ActiveCampaign. Den Link gibt es trotzdem: füllt ein übereifriges
+    // Autofill das Feld, steht ein Mensch sonst ohne Link da (so geschehen
+    // bei Elinas Probe am 02.10.2026).
+    if (String(werte.get(TOPF_NAME) || '') !== '') {
+      setFelderQuelle('topf');
+      linkHolen();
       setZustand('gesendet');
       return;
     }
@@ -390,7 +431,7 @@ function Anmeldung() {
       setZustand('fehler');
       return;
     }
-    fetcher.submit({absicht: 'link'}, {method: 'post', action: PFAD});
+    linkHolen();
     setZustand('gesendet');
   }
 
@@ -404,101 +445,184 @@ function Anmeldung() {
         data-qb-kaufknopf=""
       >
         <h3 className="ch-h3" tabIndex={-1} ref={erfolgRef}>
-          Fast geschafft
+          Du bist dabei
         </h3>
-        <p className="ch-text" role="status">
-          Wir haben dir eine E-Mail geschickt. Bestätige sie mit einem Klick,
-          dann bekommst du jede Woche die Einladung. Schau auch im Spam-Ordner
-          nach.
-        </p>
         {link ? (
-          <>
-            <p className="ch-text ch-text-stark">
-              Dein Link für Sonntag, 19 Uhr:
-            </p>
-            <a
-              className="btn--primary ch-knopf"
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-coming-home-link=""
-            >
-              Zoom-Link öffnen
-            </a>
-            <p className="ch-hinweis">
-              Speichere dir den Link am besten gleich als Lesezeichen.
-            </p>
-          </>
-        ) : fetcher.state === 'idle' && fetcher.data ? (
-          <p className="ch-text ch-text-stark">
+          <ZoomZugang link={link} id={id} />
+        ) : linkLaedt || !fetcher.data ? (
+          <p className="ch-text" role="status">
+            Dein Zoom-Link wird geladen …
+          </p>
+        ) : (
+          <p className="ch-text ch-text-stark" role="status">
             Den Zoom-Link bekommst du mit der Einladung per E-Mail.
           </p>
-        ) : null}
+        )}
+        {felderQuelle === 'topf' ? null : (
+          <p className="ch-hinweis">
+            Für unseren Newsletter haben wir dir außerdem eine E-Mail
+            geschickt. Bestätige sie mit einem Klick, dann bekommst du jede
+            Woche die Einladung. Schau auch im Spam-Ordner nach.
+          </p>
+        )}
       </div>
     );
   }
 
   const sendet = zustand === 'sendet';
   return (
-    <form
-      className="ch-karte"
-      onSubmit={absenden}
-      data-coming-home-form=""
-      data-coming-home-zustand={zustand}
-      data-coming-home-felder={felderQuelle}
-      data-qb-kaufknopf=""
-    >
-      <h3 className="ch-h3">Melde dich an und hol dir den Link</h3>
-      <label className="ch-feldname" htmlFor={`${id}-name`}>
-        Dein Name
-      </label>
-      <input
-        id={`${id}-name`}
-        className="ch-feld"
-        type="text"
-        name="fullname"
-        autoComplete="name"
-        required
-        maxLength={120}
-      />
-      <label className="ch-feldname" htmlFor={`${id}-email`}>
-        Deine E-Mail-Adresse
-      </label>
-      <input
-        id={`${id}-email`}
-        className="ch-feld"
-        type="email"
-        name="email"
-        autoComplete="email"
-        inputMode="email"
-        required
-        maxLength={254}
-      />
-      <input
-        className="ch-topf"
-        type="text"
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-      />
-      <button className="btn--primary ch-knopf" type="submit" disabled={sendet}>
-        {sendet ? 'Wird gesendet …' : 'Anmelden und Link bekommen'}
-      </button>
-      {zustand === 'fehler' ? (
-        <p className="ch-fehler" role="alert">
-          Das hat nicht geklappt. Bitte prüf deine E-Mail-Adresse und versuch
-          es noch einmal.
+    <>
+      <form
+        className="ch-karte"
+        onSubmit={absenden}
+        data-coming-home-form=""
+        data-coming-home-zustand={zustand}
+        data-coming-home-felder={felderQuelle}
+        data-qb-kaufknopf=""
+      >
+        <h3 className="ch-h3">Melde dich an und hol dir den Link</h3>
+        <label className="ch-feldname" htmlFor={`${id}-name`}>
+          Dein Name
+        </label>
+        <input
+          id={`${id}-name`}
+          className="ch-feld"
+          type="text"
+          name="fullname"
+          autoComplete="name"
+          required
+          maxLength={120}
+        />
+        <label className="ch-feldname" htmlFor={`${id}-email`}>
+          Deine E-Mail-Adresse
+        </label>
+        <input
+          id={`${id}-email`}
+          className="ch-feld"
+          type="email"
+          name="email"
+          autoComplete="email"
+          inputMode="email"
+          required
+          maxLength={254}
+        />
+        <input
+          className="ch-topf"
+          type="text"
+          name={TOPF_NAME}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          data-lpignore="true"
+          data-1p-ignore=""
+          data-bwignore=""
+          data-form-type="other"
+        />
+        <button
+          className="btn--primary ch-knopf"
+          type="submit"
+          disabled={sendet}
+        >
+          {sendet ? 'Wird gesendet …' : 'Anmelden und Link bekommen'}
+        </button>
+        {zustand === 'fehler' ? (
+          <p className="ch-fehler" role="alert">
+            Das hat nicht geklappt. Bitte prüf deine E-Mail-Adresse und
+            versuch es noch einmal.
+          </p>
+        ) : null}
+        <p className="ch-hinweis">
+          Mit der Anmeldung bekommst du unsere E-Mails: jede Woche die
+          Einladung zu Coming Home und Neuigkeiten von Qi Blanco. Du bestätigst
+          deine Adresse per E-Mail und kannst dich jederzeit mit einem Klick
+          abmelden.{' '}
+          <Link className="ch-verweis" to="/pages/datenschutz" prefetch="intent">
+            Datenschutz
+          </Link>
         </p>
-      ) : null}
-      <p className="ch-hinweis">
-        Mit der Anmeldung bekommst du unsere E-Mails: jede Woche die Einladung
-        zu Coming Home und Neuigkeiten von Qi Blanco. Du bestätigst deine
-        Adresse per E-Mail und kannst dich jederzeit mit einem Klick abmelden.{' '}
-        <Link className="ch-verweis" to="/pages/datenschutz" prefetch="intent">
-          Datenschutz
-        </Link>
+      </form>
+      {/* Nur Quelle der verborgenen Felder, nie sichtbar (siehe Kopf). */}
+      <div className="ch-ac-quelle" hidden aria-hidden="true">
+        <ActiveCampaignForm formId={AC_FORMULAR_ID} />
+      </div>
+    </>
+  );
+}
+
+/**
+ * Der Zugang nach der Anmeldung: Knopf ins Meeting (neuer Tab), darunter
+ * derselbe Link als Text mit Kopieren-Knopf. Beide lesen `link`.
+ */
+function ZoomZugang({link, id}) {
+  const [kopiert, setKopiert] = useState(false);
+  const textRef = useRef(null);
+
+  useEffect(() => {
+    if (!kopiert) return undefined;
+    const t = setTimeout(() => setKopiert(false), 2500);
+    return () => clearTimeout(t);
+  }, [kopiert]);
+
+  async function kopieren() {
+    try {
+      await navigator.clipboard.writeText(link);
+      setKopiert(true);
+      return;
+    } catch {
+      // ältere Browser oder ohne Freigabe: Text markieren, damit Strg+C geht
+    }
+    const el = textRef.current;
+    if (!el) return;
+    const bereich = document.createRange();
+    bereich.selectNodeContents(el);
+    const auswahl = window.getSelection();
+    auswahl?.removeAllRanges();
+    auswahl?.addRange(bereich);
+    try {
+      setKopiert(document.execCommand('copy'));
+    } catch {
+      setKopiert(false);
+    }
+  }
+
+  return (
+    <>
+      <p className="ch-text">
+        Sonntag um 19{' '}Uhr geht es los. Hier kommst du ins Meeting:
       </p>
-    </form>
+      <a
+        className="btn--primary ch-knopf ch-knopf-zoom"
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-coming-home-link=""
+      >
+        Zum Zoom-Meeting
+      </a>
+      <p className="ch-feldname ch-link-titel" id={`${id}-linktext`}>
+        Oder kopiere dir den Link:
+      </p>
+      <div className="ch-link-zeile">
+        <span
+          className="ch-link-text"
+          ref={textRef}
+          aria-labelledby={`${id}-linktext`}
+          data-coming-home-linktext=""
+        >
+          {link}
+        </span>
+        <button
+          type="button"
+          className="ch-kopieren"
+          onClick={kopieren}
+          data-coming-home-kopieren=""
+        >
+          {kopiert ? 'Kopiert' : 'Kopieren'}
+        </button>
+      </div>
+      <p className="ch-sr" aria-live="polite">
+        {kopiert ? 'Der Link ist kopiert.' : ''}
+      </p>
+    </>
   );
 }
