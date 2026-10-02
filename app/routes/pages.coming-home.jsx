@@ -58,7 +58,17 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * Embed von Formular 33 selbst ab (dort formSupportsPost = false). Die Antwort
  * trägt access-control-allow-origin: *, die Seite kann sie also lesen und
  * Erfolg von Fehler unterscheiden. Gemessen am 2026-10-01: Erfolg beginnt mit
- * _show_thank_you(, ein Fehler mit _show_error(. Ein verstecktes iframe wie
+ * _show_thank_you(, ein Fehler mit _show_error(.
+ *
+ * ZWEITE ERFOLGSANTWORT, gemessen am 2026-10-02 an Formular 33 mit einer
+ * Adresse, die schon bestätigt auf der Liste steht: ActiveCampaign antwortet
+ * dann mit window.top.location.href = "…/f/confirm.php?id=…" (seine Seite
+ * „Vielen Dank für die Registrierung!") und nimmt die Anmeldung an (Eintrag
+ * gezählt, Tag gesetzt), schickt aber keine Bestätigungsmail. Bis dahin hielt
+ * die Seite das für einen Fehler und zeigte „Das hat nicht geklappt", genau
+ * bei den Menschen, die die Einladung schon bekommen. Die Seite wertet die
+ * Antwort jetzt als Erfolg und folgt der Weiterleitung NICHT (Elina: man
+ * bleibt auf der Seite). Ein verstecktes iframe wie
  * auf der alten Pre-Access-Seite geht nicht: frame-src der CSP
  * (app/entry.server.jsx) führt qiblanco.activehosted.com nicht, connect-src
  * führt es. So bleibt entry.server.jsx unberührt.
@@ -92,7 +102,8 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  *
  * Messmarker: data-coming-home-form, data-coming-home-zustand
  * (offen | sendet | gesendet | fehler), data-coming-home-felder
- * (embed | ersatz | topf, nach dem Absenden), data-coming-home-link (Knopf),
+ * (embed | ersatz | topf, nach dem Absenden), data-coming-home-anmeldung
+ * (neu | bekannt | topf), data-coming-home-link (Knopf),
  * data-coming-home-linktext (Link als Text), data-coming-home-kopieren.
  */
 
@@ -122,6 +133,9 @@ const BILD_ALT =
 const AC_FORMULAR_ID = '33';
 const AC_ZIEL = 'https://qiblanco.activehosted.com/proc.php';
 const AC_ERFOLG = '_show_thank_you(';
+/** Erfolg für schon bestätigte Kontakte (siehe Kopf): Weiterleitung auf confirm.php. */
+const AC_ERFOLG_BEKANNT =
+  /^window\.top\.location\.href\s*=\s*["']https:\/\/qiblanco\.activehosted\.com\/f\/confirm\.php\?/;
 const AC_EMBED_FORMULAR = 'form._form_33';
 
 /**
@@ -381,6 +395,9 @@ export default function ComingHome() {
 function Anmeldung() {
   const [zustand, setZustand] = useState('offen');
   const [felderQuelle, setFelderQuelle] = useState('');
+  // neu = Bestätigungsmail unterwegs | bekannt = stand schon auf der Liste |
+  // topf = nichts gesendet (Fangfeld gefüllt)
+  const [anmeldung, setAnmeldung] = useState('');
   const fetcher = useFetcher();
   const id = useId();
   const erfolgRef = useRef(null);
@@ -407,6 +424,7 @@ function Anmeldung() {
     // bei Elinas Probe am 02.10.2026).
     if (String(werte.get(TOPF_NAME) || '') !== '') {
       setFelderQuelle('topf');
+      setAnmeldung('topf');
       linkHolen();
       setZustand('gesendet');
       return;
@@ -418,19 +436,22 @@ function Anmeldung() {
     sendung.set('fullname', String(werte.get('fullname') || '').trim());
     sendung.set('email', String(werte.get('email') || '').trim());
     sendung.set('jsonp', 'true');
-    let angenommen = false;
+    let ergebnis = '';
     try {
       const antwort = await fetch(`${AC_ZIEL}?${sendung.toString()}`, {
         credentials: 'omit',
       });
-      angenommen = (await antwort.text()).trimStart().startsWith(AC_ERFOLG);
+      const text = (await antwort.text()).trimStart();
+      if (text.startsWith(AC_ERFOLG)) ergebnis = 'neu';
+      else if (AC_ERFOLG_BEKANNT.test(text)) ergebnis = 'bekannt';
     } catch {
-      angenommen = false;
+      ergebnis = '';
     }
-    if (!angenommen) {
+    if (!ergebnis) {
       setZustand('fehler');
       return;
     }
+    setAnmeldung(ergebnis);
     linkHolen();
     setZustand('gesendet');
   }
@@ -442,6 +463,7 @@ function Anmeldung() {
         data-coming-home-form=""
         data-coming-home-zustand="gesendet"
         data-coming-home-felder={felderQuelle}
+        data-coming-home-anmeldung={anmeldung}
         data-qb-kaufknopf=""
       >
         <h3 className="ch-h3" tabIndex={-1} ref={erfolgRef}>
@@ -458,13 +480,19 @@ function Anmeldung() {
             Den Zoom-Link bekommst du mit der Einladung per E-Mail.
           </p>
         )}
-        {felderQuelle === 'topf' ? null : (
+        {anmeldung === 'neu' ? (
           <p className="ch-hinweis">
             Für unseren Newsletter haben wir dir außerdem eine E-Mail
             geschickt. Bestätige sie mit einem Klick, dann bekommst du jede
             Woche die Einladung. Schau auch im Spam-Ordner nach.
           </p>
-        )}
+        ) : null}
+        {anmeldung === 'bekannt' ? (
+          <p className="ch-hinweis">
+            Du stehst schon auf unserer Newsletter-Liste. Die Einladung bekommst
+            du weiter jede Woche per E-Mail.
+          </p>
+        ) : null}
       </div>
     );
   }
