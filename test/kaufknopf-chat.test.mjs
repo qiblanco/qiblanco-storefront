@@ -125,3 +125,94 @@ test('LP-Kaufausgang: genau die Kaufziele des LP-Blocks, nicht ihre Nachbarpfade
     assert.equal(istLpKaufausgang(pfad), false, String(pfad));
   }
 });
+
+// Öffentlicher Block (Job 20261001-oeffentlicher-block-chatblase-verdeckt-
+// produktknoepfe): Knöpfe zur Produkt- bzw. Kaufseite, erkannt an Ziel und
+// Knopf-Optik. Die Werte unten sind die im Zensus gemessenen.
+test('öffentliches Produktziel: jede /products/<handle> und die Detailseiten, sonst nichts', async () => {
+  const {
+    istOeffentlichesProduktziel,
+    OEFFENTLICHE_DETAILZIELE,
+    OEFFENTLICH_KNOPF_VORFILTER,
+  } = await import('../app/lib/kaufknopf-chat.js');
+  assert.deepEqual(
+    [...OEFFENTLICHE_DETAILZIELE].sort(),
+    ['/pages/qibracelet-details', '/pages/qihome-details', '/pages/qione-2-pro-details'],
+  );
+  assert.ok(OEFFENTLICH_KNOPF_VORFILTER.includes('main a[href*="/products/"]'));
+  for (const pfad of [
+    '/products/qione-2-pro',
+    '/products/qione-2-pro/',
+    '/products/qi-master',
+    '/products/crystal-cacao-create',
+    ...OEFFENTLICHE_DETAILZIELE,
+  ]) {
+    assert.equal(istOeffentlichesProduktziel(pfad), true, pfad);
+    if (OEFFENTLICHE_DETAILZIELE.includes(pfad)) {
+      assert.ok(OEFFENTLICH_KNOPF_VORFILTER.includes(`main a[href*="${pfad}"]`));
+    }
+  }
+  for (const pfad of [
+    '/products',
+    '/products/',
+    '/products/qione-2-pro/reviews',
+    '/pages/partner-details',
+    '/pages/qione-2-pro',
+    '/pages/erfahrungen',
+    '/collections/zeremonie-kakao',
+    '/collections/zeremonie-kakao/products/crystal-cacao-create',
+    '/cart',
+    '/',
+    '',
+    undefined,
+  ]) {
+    assert.equal(istOeffentlichesProduktziel(pfad), false, String(pfad));
+  }
+});
+
+test('Knopf-Optik: Fläche oder Rahmen an vier Seiten, kein Textlink, keine Karte', async () => {
+  const {hatKnopfOptik, KNOPF_MAX_HOEHE_PX} = await import('../app/lib/kaufknopf-chat.js');
+  const optik = (abweichung = {}) => ({
+    display: 'block',
+    flaeche: false,
+    raender: [0, 0, 0, 0],
+    hoehe: 58,
+    hatBild: false,
+    ...abweichung,
+  });
+  // erf__weiter auf /pages/erfahrungen: inline-block, gefüllt, ohne Rahmen
+  assert.equal(hatKnopfOptik(optik({display: 'inline-block', flaeche: true})), true);
+  // btn--secondary: 2 px sichtbarer Rahmen, keine Fläche
+  assert.equal(hatKnopfOptik(optik({raender: [2, 2, 2, 2], hoehe: 73})), true);
+  // btn--text qb-gv__weg (Geschwister-Vergleich): 2 px Rahmen in durchsichtiger
+  // Farbe; die Komponente meldet ihn deshalb als 0 und der Link ist kein Knopf
+  assert.equal(hatKnopfOptik(optik({raender: [0, 0, 0, 0], hoehe: 47})), false);
+  // UpsellLink „Mehr erfahren" in der Produktkarte: block, weder Fläche noch Rahmen
+  assert.equal(hatKnopfOptik(optik({hoehe: 29})), false);
+  // qbp__produkt auf /pages/podcasts: nur eine Unterlinie
+  assert.equal(hatKnopfOptik(optik({raender: [0, 0, 1, 0], hoehe: 25})), false);
+  // Link im Fließtext, auch mit Marker-Hintergrund
+  assert.equal(hatKnopfOptik(optik({display: 'inline', flaeche: true, hoehe: 18})), false);
+  // Produktkarte mit Fläche: zu hoch (lp-pw-produkt 186 px) oder mit Bild
+  assert.equal(hatKnopfOptik(optik({flaeche: true, hoehe: 186})), false);
+  assert.equal(hatKnopfOptik(optik({flaeche: true, hoehe: 72, hatBild: true})), false);
+  assert.equal(hatKnopfOptik(optik({flaeche: true, hoehe: KNOPF_MAX_HOEHE_PX})), true);
+  assert.equal(hatKnopfOptik(optik({flaeche: true, hoehe: KNOPF_MAX_HOEHE_PX + 1})), false);
+  // ohne Kasten oder mit kaputter Eingabe: kein Knopf
+  assert.equal(hatKnopfOptik(optik({flaeche: true, hoehe: 0})), false);
+  assert.equal(hatKnopfOptik(optik({raender: [2, 2, 2]})), false);
+  assert.equal(hatKnopfOptik(optik({raender: undefined})), false);
+});
+
+test('farbeDeckt: transparent und Alpha 0 decken nicht, beide Schreibweisen', async () => {
+  const {farbeDeckt} = await import('../app/lib/kaufknopf-chat.js');
+  for (const farbe of ['rgb(0, 0, 0)', 'rgb(199, 162, 88)', 'rgba(0, 0, 0, 0.5)',
+    'rgb(0 0 0 / 0.5)', 'rgb(0 0 0 / 40%)', 'rgb(12 34 56)', 'oklch(0.7 0.1 80)',
+    'color(srgb 0 0 0 / 1)']) {
+    assert.equal(farbeDeckt(farbe), true, farbe);
+  }
+  for (const farbe of ['rgba(0, 0, 0, 0)', 'rgb(0 0 0 / 0)', 'rgb(0 0 0 / 0%)',
+    'rgba(255, 255, 255, 0.04)', 'transparent', '', undefined, null]) {
+    assert.equal(farbeDeckt(farbe), false, String(farbe));
+  }
+});

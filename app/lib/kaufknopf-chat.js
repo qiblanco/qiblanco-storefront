@@ -4,7 +4,10 @@
  * Begründung, Messung und Rückweg stehen in der Komponente.
  */
 
-import {lpKaufZiele} from '../components/reusables/blockLinks.js';
+import {
+  lpKaufZiele,
+  oeffentlicheDetailZiele,
+} from '../components/reusables/blockLinks.js';
 
 /**
  * Die Kaufknöpfe, als EIGENSCHAFT und nicht als Ort: das Attribut sitzt am
@@ -43,6 +46,105 @@ export function istLpKaufausgang(pfad) {
   if (typeof pfad !== 'string' || !pfad) return false;
   const ohneSchraegstrich = pfad.length > 1 ? pfad.replace(/\/+$/, '') : pfad;
   return LP_KAUFZIELE.includes(ohneSchraegstrich);
+}
+
+/**
+ * Die Knöpfe des ÖFFENTLICHEN Blocks zur Produkt- bzw. Kaufseite, ebenfalls
+ * als EIGENSCHAFT und zwar als zwei: das ZIEL (jede /products/<handle> und
+ * die Detailseiten aus blockLinks.js, oeffentlicheDetailZiele) und die
+ * KNOPF-OPTIK (hatKnopfOptik unten). Ein Klassenname taugt dafür nicht: die
+ * 50 Knöpfe, die der Zensus fand, tragen fünf Klassenfamilien (btn--primary,
+ * btn--secondary, lp-vp-btn, bew__cta, erf__weiter), zwei tragen gar keine,
+ * und die nächste Seite bringt eine sechste mit. Umgekehrt heißt btn--text
+ * Knopf und ist optisch ein Textlink (Rahmen und Fläche durchsichtig).
+ *
+ * Anlass: Job 20261001-oeffentlicher-block-chatblase-verdeckt-produktknoepfe.
+ * Zensus am 2026-10-01 über 102 öffentliche URLs (390x844, Zustimmung
+ * gesetzt): 25 Seiten tragen 50 solche Knöpfe. Unter der Einladungsblase
+ * (298x225, die ersten Sekunden nach dem Laden) trafen 35 von 38 Hit-Tests
+ * in der Knopfmitte das iframe des Chats, Belegfall „Den QiOne® 2 Pro
+ * ansehen“ auf /pages/erfahrungen. Unter der Pille (86x86, Dauerzustand) lag
+ * bei 45 der 50 Knöpfe an mindestens einer Scrollposition der rechte
+ * Knopfrand.
+ *
+ * DER SCHNITT, und warum nicht mehr: Produktkarten und Textlinks bleiben
+ * draußen. Mit ihnen wäre der Chat an 1,05 % der Scrollpositionen
+ * ausgeblendet, mit allen Knöpfen gleich welchen Ziels an 1,43 %; mit diesem
+ * Schnitt sind es 0,71 % (vorher 0,20 %). Der Chat ist Annas Einstieg und
+ * soll nur dort weichen, wo er einen Knopf zum Kauf verdeckt.
+ *
+ * Der Selektor ist nur der Vorfilter; entschieden wird am Pfad
+ * (istOeffentlichesProduktziel) und an der Optik.
+ */
+export const OEFFENTLICHE_DETAILZIELE = oeffentlicheDetailZiele();
+export const OEFFENTLICH_KNOPF_VORFILTER = [
+  'main a[href*="/products/"]',
+  ...OEFFENTLICHE_DETAILZIELE.map((pfad) => `main a[href*="${pfad}"]`),
+].join(', ');
+
+/**
+ * @param {string} pfad pathname des Links (a.pathname)
+ * @returns {boolean} true = der Link führt auf eine Produkt- bzw. Kaufseite
+ *   des öffentlichen Blocks
+ */
+export function istOeffentlichesProduktziel(pfad) {
+  if (typeof pfad !== 'string' || !pfad) return false;
+  const ohneSchraegstrich = pfad.length > 1 ? pfad.replace(/\/+$/, '') : pfad;
+  return (
+    /^\/products\/[^/]+$/.test(ohneSchraegstrich) ||
+    OEFFENTLICHE_DETAILZIELE.includes(ohneSchraegstrich)
+  );
+}
+
+/** Höher ist kein Knopf mehr, sondern eine Karte mit Fläche. */
+export const KNOPF_MAX_HOEHE_PX = 120;
+
+/**
+ * Deckt eine berechnete Farbe (getComputedStyle) sichtbar? `transparent` und
+ * ein Alpha bis 0,05 decken nicht. Gelesen werden beide Schreibweisen:
+ * `rgba(0, 0, 0, 0)` und `rgb(0 0 0 / 0)`.
+ *
+ * @param {string} farbe
+ * @returns {boolean}
+ */
+export function farbeDeckt(farbe) {
+  if (typeof farbe !== 'string' || !farbe || farbe === 'transparent') {
+    return false;
+  }
+  const innen = /\(([^)]*)\)/.exec(farbe)?.[1];
+  if (innen == null) return true;
+  let alpha = '1';
+  if (innen.includes('/')) alpha = innen.split('/').pop();
+  else if (innen.split(',').length > 3) alpha = innen.split(',')[3];
+  const zahl = parseFloat(alpha);
+  if (Number.isNaN(zahl)) return true;
+  return (alpha.trim().endsWith('%') ? zahl / 100 : zahl) > 0.05;
+}
+
+/**
+ * Sieht der Link wie ein Knopf aus? Reine Entscheidung über berechnete
+ * Werte, damit sie ohne Browser prüfbar ist: ein Knopf hat eine eigene
+ * Fläche oder einen Rahmen an allen vier Seiten, steht nicht im Textfluss,
+ * trägt kein Bild und ist höchstens KNOPF_MAX_HOEHE_PX hoch. Ein Textlink
+ * („Mehr erfahren“ in der Produktkarte) hat weder Fläche noch Rahmen, eine
+ * Produktkarte trägt ein Bild oder ist höher.
+ *
+ * @param {{
+ *   display: string,
+ *   flaeche: boolean,
+ *   raender: number[],
+ *   hoehe: number,
+ *   hatBild: boolean,
+ * }} optik
+ * @returns {boolean}
+ */
+export function hatKnopfOptik({display, flaeche, raender, hoehe, hatBild}) {
+  if (display === 'inline' || hatBild) return false;
+  if (!(hoehe > 0) || hoehe > KNOPF_MAX_HOEHE_PX) return false;
+  if (flaeche) return true;
+  return (
+    Array.isArray(raender) && raender.length === 4 && raender.every((b) => b > 0)
+  );
 }
 
 /** Das Attribut am <html>, auf das die Unterdrückungs-Regel in app.css hängt. */
