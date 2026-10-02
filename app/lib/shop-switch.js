@@ -22,6 +22,7 @@ export const SHOP_LABEL = {
 export const HREFLANG_PAARE = {
   "/": "/",
   "/pages/agb": "/pages/terms-conditions",
+  "/pages/bewertungen": "/pages/reviews",
   "/pages/das-beispiel": "/pages/example",
   "/pages/datenschutz": "/pages/privacy-policy",
   "/pages/e-smog": "/pages/e-smog",
@@ -45,6 +46,7 @@ export const HREFLANG_PAARE = {
 
 const MAP_DE_US = {
   "/pages/agb": "/pages/terms-conditions",
+  "/pages/bewertungen": "/pages/reviews",
   "/pages/das-beispiel": "/pages/example",
   "/pages/datenschutz": "/pages/privacy-policy",
   "/pages/e-smog": "/pages/e-smog",
@@ -88,6 +90,7 @@ const MAP_US_DE = {
   "/pages/pre-access": "/pages/pre-access",
   "/pages/privacy-policy": "/pages/datenschutz",
   "/pages/return-instructions": "/pages/widerrufsbelehrung",
+  "/pages/reviews": "/pages/bewertungen",
   "/pages/studies": "/pages/studien",
   "/pages/support": "/pages/support",
   "/pages/terms-conditions": "/pages/agb",
