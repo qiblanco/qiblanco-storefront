@@ -53,17 +53,19 @@ export function istLpKaufausgang(pfad) {
  * als EIGENSCHAFT und zwar als zwei: das ZIEL (jede /products/<handle> und
  * die Detailseiten aus blockLinks.js, oeffentlicheDetailZiele) und die
  * KNOPF-OPTIK (hatKnopfOptik unten). Ein Klassenname taugt dafür nicht: die
- * 58 Knöpfe, die der Zensus fand, tragen neun Klassenfamilien (btn--primary,
- * btn--secondary, btn--text, lp-vp-btn, erf__weiter …), und die nächste
- * Seite bringt eine zehnte mit.
+ * 50 Knöpfe, die der Zensus fand, tragen fünf Klassenfamilien (btn--primary,
+ * btn--secondary, lp-vp-btn, bew__cta, erf__weiter), zwei tragen gar keine,
+ * und die nächste Seite bringt eine sechste mit. Umgekehrt heißt btn--text
+ * Knopf und ist optisch ein Textlink (Rahmen und Fläche durchsichtig).
  *
  * Anlass: Job 20261001-oeffentlicher-block-chatblase-verdeckt-produktknoepfe.
  * Zensus am 2026-10-01 über 102 öffentliche URLs (390x844, Zustimmung
- * gesetzt): 27 Seiten tragen 58 solche Knöpfe. Unter der Einladungsblase
- * (298x225, die ersten Sekunden nach dem Laden) traf der Hit-Test in der
- * Knopfmitte das iframe des Chats, Belegfall „Den QiOne® 2 Pro ansehen“ auf
- * /pages/erfahrungen. Unter der Pille (86x86, Dauerzustand) lag bei 45 der
- * 58 Knöpfe an mindestens einer Scrollposition der rechte Knopfrand.
+ * gesetzt): 25 Seiten tragen 50 solche Knöpfe. Unter der Einladungsblase
+ * (298x225, die ersten Sekunden nach dem Laden) trafen 35 von 38 Hit-Tests
+ * in der Knopfmitte das iframe des Chats, Belegfall „Den QiOne® 2 Pro
+ * ansehen“ auf /pages/erfahrungen. Unter der Pille (86x86, Dauerzustand) lag
+ * bei 45 der 50 Knöpfe an mindestens einer Scrollposition der rechte
+ * Knopfrand.
  *
  * DER SCHNITT, und warum nicht mehr: Produktkarten und Textlinks bleiben
  * draußen. Mit ihnen wäre der Chat an 1,05 % der Scrollpositionen

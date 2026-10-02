@@ -182,8 +182,11 @@ test('Knopf-Optik: Fläche oder Rahmen an vier Seiten, kein Textlink, keine Kart
   });
   // erf__weiter auf /pages/erfahrungen: inline-block, gefüllt, ohne Rahmen
   assert.equal(hatKnopfOptik(optik({display: 'inline-block', flaeche: true})), true);
-  // btn--secondary und btn--text qb-gv__weg: 2 px Rahmen, keine Fläche
-  assert.equal(hatKnopfOptik(optik({raender: [2, 2, 2, 2], hoehe: 47})), true);
+  // btn--secondary: 2 px sichtbarer Rahmen, keine Fläche
+  assert.equal(hatKnopfOptik(optik({raender: [2, 2, 2, 2], hoehe: 73})), true);
+  // btn--text qb-gv__weg (Geschwister-Vergleich): 2 px Rahmen in durchsichtiger
+  // Farbe; die Komponente meldet ihn deshalb als 0 und der Link ist kein Knopf
+  assert.equal(hatKnopfOptik(optik({raender: [0, 0, 0, 0], hoehe: 47})), false);
   // UpsellLink „Mehr erfahren" in der Produktkarte: block, weder Fläche noch Rahmen
   assert.equal(hatKnopfOptik(optik({hoehe: 29})), false);
   // qbp__produkt auf /pages/podcasts: nur eine Unterlinie
