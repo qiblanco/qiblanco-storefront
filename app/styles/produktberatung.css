@@ -25,6 +25,14 @@
    die drei Schritte als Karten, Kundenstimmen als Zitatkarten. Karten wechseln
    die Flaeche gegen den Sektionsgrund (grund <-> flaeche), keine dritte Farbe.
    Breite Sektionen tragen .pb__inhalt--breit (Raster), Fliesstext bleibt <= 68ch.
+
+   UMBAU 2026-10-02 „lebensfroh" (Christian: „nicht so eine trostlose Show"):
+   drei Farb-Akte statt zwei (grund / flaeche / DUNKEL fuer den Ablauf),
+   Termintage mit Kalender-Kachel (Zahl gross, Monat klein, per CSS aus
+   data-Attributen), echte Alltagsbilder im Fragen-Akt, der Einstieg „Termin
+   aussuchen" traegt das Gold (er IST eine Handlung), Tipp-Flaechen heben sich
+   beim Hover sanft an (aus bei prefers-reduced-motion). Keine neue Farbe: die
+   hellen Toene des dunklen Akts sind --pb-text-hell mit Deckkraft.
    ========================================================================== */
 
 :root {
@@ -35,6 +43,7 @@
   --pb-fs-base: 1rem; /* 16px */
   --pb-fs-md: 1.125rem; /* 18px */
   --pb-fs-lg: 1.25rem; /* 20px */
+  --pb-fs-xl: 2rem; /* 32px, nur die Tageszahl der Kalender-Kachel */
   --pb-fs-h2: 1.5rem; /* EIN H2-Stil, 24px fest (16 -> 24 = 1,5, im modularen Band) */
   --pb-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
 
@@ -53,8 +62,18 @@
   --pb-dunkel: #191714;
   --pb-text: #2c2a26;
   --pb-text-hell: #f4f0e9;
+  --pb-muted-hell: rgba(
+    244,
+    240,
+    233,
+    0.78
+  ); /* Fliesstext im dunklen Akt (>= 9:1 auf --pb-dunkel) */
+  --pb-flaeche-hell: rgba(244, 240, 233, 0.07); /* Karte im dunklen Akt */
+  --pb-linie-hell: rgba(244, 240, 233, 0.2);
   --pb-muted: #6b665d; /* 5,5:1 auf --pb-grund: traegt auch Eingabe-Raender (>= 3:1) */
-  --pb-akzent: var(--qb-akzent); /* GL-DES-0001 Gold — NUR die Buchen-Handlung */
+  --pb-akzent: var(
+    --qb-akzent
+  ); /* GL-DES-0001 Gold — NUR die Buchen-Handlung */
   --pb-linie: rgba(44, 42, 38, 0.12);
   --pb-fehler: #8f2d1f; /* 7,4:1 auf --pb-grund, nur Fehlersatz */
 
@@ -70,7 +89,8 @@
   --pb-breite: 1080px;
   --pb-tipp: 48px; /* Mindesthoehe jeder Tipp-Flaeche */
   --pb-foto: 112px; /* Handy: Bild neben Christians Worten */
-  --pb-foto-gross: 200px; /* ab 768 px */
+  --pb-foto-gross: 240px; /* ab 768 px */
+  --pb-bewegung: 160ms ease; /* EINE Bewegung: Hover der Tipp-Flaechen */
 }
 
 /* ─── Grundfluss ──────────────────────────────────────────────────────────── */
@@ -208,24 +228,34 @@
   max-width: var(--pb-breite-schmal);
 }
 
-/* Christian: Bild + seine Worte als EINE Karte, Bild links daneben. */
+/* Christian: Bild + seine Worte als EINE Karte. Am Handy fliesst der Text um das
+   Bild (eine schmale Spalte neben dem Bild war 30 Zeilen lang), ab 768 px steht
+   das Bild links neben dem Text. */
 .pb figure.pb__christian {
-  display: grid;
-  grid-template-columns: var(--pb-foto) minmax(0, 1fr);
-  gap: var(--pb-s2);
-  align-items: start;
+  display: flow-root;
   margin: 0;
   padding: var(--pb-s2);
   background: var(--pb-grund);
   border-radius: var(--pb-r2);
   box-shadow: var(--pb-shadow-md);
 }
+.pb figure.pb__christian img.pb__foto {
+  float: left;
+  width: var(--pb-foto);
+  margin: 0 var(--pb-s2) var(--pb-s1) 0;
+}
 @media (min-width: 768px) {
   .pb figure.pb__christian {
+    display: grid;
     grid-template-columns: var(--pb-foto-gross) minmax(0, 1fr);
     gap: var(--pb-s3);
     align-items: center;
     padding: var(--pb-s3);
+  }
+  .pb figure.pb__christian img.pb__foto {
+    float: none;
+    width: 100%;
+    margin: 0;
   }
 }
 .pb img.pb__foto {
@@ -239,6 +269,13 @@
 .pb .pb__christian-text p {
   font-size: var(--pb-fs-base);
 }
+.pb .pb__christian-text p.pb__vorspann {
+  font-size: var(--pb-fs-xs);
+  margin-bottom: var(--pb-s1);
+}
+.pb .pb__christian-text p.pb__christian-wort {
+  font-size: var(--pb-fs-md);
+}
 .pb p.pb__unterschrift {
   font-size: var(--pb-fs-xs);
   font-weight: 600;
@@ -251,7 +288,9 @@
 /* ─── Termine ─────────────────────────────────────────────────────────────── */
 .pb__termine {
   background: var(--pb-grund);
-  scroll-margin-top: var(--pb-s4); /* Ziel von „Zu den Terminen": Luft unter dem Kopf der Seite */
+  scroll-margin-top: var(
+    --pb-s4
+  ); /* Ziel von „Zu den Terminen": Luft unter dem Kopf der Seite */
 }
 
 .pb p.pb__unterzeile {
@@ -260,19 +299,20 @@
 }
 
 /* Jeder Termintag ist eine Karte; ab 768 px stehen die Tage nebeneinander. */
+/* Nur Tageskarten im Raster: zwei Donnerstage teilen sich die Breite, ein dritter rueckt daneben. */
 .pb__tage {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--pb-s2);
-  margin-bottom: var(--pb-s4);
+  margin-bottom: var(--pb-s3);
 }
 @media (min-width: 768px) {
   .pb__tage {
-    grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
   }
 }
-.pb__tage p.pb__klein {
-  grid-column: 1 / -1;
+.pb p.pb__zone {
+  margin-bottom: var(--pb-s4);
 }
 
 .pb fieldset.pb__tag {
@@ -283,40 +323,72 @@
   background: var(--pb-flaeche);
   border-radius: var(--pb-r2);
 }
-/* legend steht im fieldset-Rahmen oben; float holt sie in den Karteninhalt. */
+/* legend steht im fieldset-Rahmen oben; float holt sie in den Karteninhalt.
+   Links die Kalender-Kachel: Zahl (::before) ueber Monat (::after), beide aus
+   data-Attributen, also Schmuck und nicht Seitentext. Rechts Datum + freie Zeiten. */
 .pb legend.pb__tagname {
   float: left;
   width: 100%;
+  display: grid;
+  grid-template-columns: var(--pb-s8) minmax(0, 1fr);
+  column-gap: var(--pb-s2);
+  align-items: center;
   padding: 0;
-  margin: 0;
-  font-size: var(--pb-fs-md);
-  font-weight: 600;
-  line-height: 1.25;
+  margin: 0 0 var(--pb-s3);
   color: var(--pb-text);
 }
-.pb p.pb__tagzahl {
-  clear: both;
-  margin: 0 0 var(--pb-s2);
+.pb legend.pb__tagname::before,
+.pb legend.pb__tagname::after {
+  grid-column: 1;
+  display: block;
+  text-align: center;
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+.pb legend.pb__tagname::before {
+  content: attr(data-tag);
+  grid-row: 1;
+  padding-top: var(--pb-s1);
+  font-size: var(--pb-fs-xl);
+  font-weight: 700;
+  line-height: 1.15;
+  border-radius: var(--pb-r1) var(--pb-r1) 0 0;
+}
+.pb legend.pb__tagname::after {
+  content: attr(data-monat);
+  grid-row: 2;
+  padding-bottom: var(--pb-s1);
   font-size: var(--pb-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  border-radius: 0 0 var(--pb-r1) var(--pb-r1);
+}
+.pb .pb__tagtext {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-s1);
+}
+.pb .pb__tagdatum {
+  font-size: var(--pb-fs-lg);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.pb .pb__tagzahl {
+  font-size: var(--pb-fs-xs);
+  font-weight: 600;
+  line-height: 1.25;
   color: var(--pb-muted);
 }
 
 .pb ul.pb__slots {
+  clear: both;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: var(--pb-s1);
-}
-@media (min-width: 768px) {
-  .pb ul.pb__slots {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .pb ul.pb__slots .pb__slot {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--pb-s2);
-    text-align: left;
-  }
 }
 .pb ul.pb__slots li {
   position: relative; /* Anker des unsichtbaren Radios: es bleibt im Rahmen seiner Flaeche */
@@ -349,9 +421,24 @@
   cursor: pointer;
   text-align: center;
 }
+.pb label.pb__slot {
+  transition:
+    transform var(--pb-bewegung),
+    box-shadow var(--pb-bewegung),
+    border-color var(--pb-bewegung);
+}
 .pb label.pb__slot:hover {
   border-color: var(--pb-dunkel);
-  box-shadow: var(--pb-shadow-sm);
+  box-shadow: var(--pb-shadow-md);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pb label.pb__slot {
+    transition: none;
+  }
+  .pb label.pb__slot:hover {
+    transform: none;
+  }
 }
 .pb .pb__radio:checked + .pb__slot {
   background: var(--pb-dunkel);
@@ -479,6 +566,14 @@
   background: var(--pb-dunkel);
   color: var(--pb-text-hell);
 }
+/* Der Einstieg „Termin aussuchen" ist ein Link im Knopf-Kleid: ohne Unterstrich, nie volle Breite. */
+.pb a.pb__knopf {
+  text-decoration: none;
+}
+.pb a.pb__knopf--weg {
+  width: auto;
+  margin-top: 0;
+}
 .pb .pb__knopf:disabled {
   cursor: progress;
   background: var(--pb-dunkel);
@@ -556,9 +651,18 @@
   margin-top: var(--pb-s6);
 }
 
-/* ─── Ablauf: drei Karten ──────────────────────────────────────────────── */
+/* ─── Ablauf: drei Karten, der DUNKLE Akt ──────────────────────────────── */
 .pb__ablauf {
-  background: var(--pb-flaeche);
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+/* reset.css faerbt p/li/strong direkt dunkel; im dunklen Akt gilt die helle Schrift. */
+.pb .pb__ablauf h2,
+.pb .pb__ablauf strong {
+  color: var(--pb-text-hell);
+}
+.pb .pb__ablauf li {
+  color: var(--pb-muted-hell);
 }
 .pb ol.pb__schritte {
   counter-reset: pb-schritt;
@@ -574,10 +678,11 @@
 .pb ol.pb__schritte li {
   counter-increment: pb-schritt;
   margin: 0;
+  max-width: none;
   padding: var(--pb-s3);
-  background: var(--pb-grund);
+  background: var(--pb-flaeche-hell);
+  border: 1px solid var(--pb-linie-hell);
   border-radius: var(--pb-r2);
-  box-shadow: var(--pb-shadow-sm);
 }
 .pb ol.pb__schritte li::before {
   content: counter(pb-schritt);
@@ -586,8 +691,8 @@
   height: var(--pb-s4);
   margin-bottom: var(--pb-s2);
   border-radius: 50%;
-  background: var(--pb-dunkel);
-  color: var(--pb-text-hell);
+  background: var(--pb-text-hell);
+  color: var(--pb-dunkel);
   font-weight: 600;
   line-height: var(--pb-s4);
   text-align: center;
@@ -599,45 +704,56 @@
   margin-bottom: var(--pb-s1);
 }
 
-/* ─── Was wir klaeren / Fuer wen ──────────────────────────────────────────── */
-.pb__klaeren {
-  background: var(--pb-grund);
+/* ─── Was du mich fragen kannst: drei Alltagsbilder ──────────────────────── */
+.pb__fragen {
+  background: var(--pb-flaeche);
 }
-.pb__spalten {
+.pb ul.pb__bilder {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--pb-s6);
+  gap: var(--pb-s4);
+  margin-bottom: var(--pb-s4);
 }
 @media (min-width: 768px) {
-  .pb__spalten {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--pb-s8);
+  .pb ul.pb__bilder {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--pb-s3);
+  }
+  .pb figure.pb__bild img {
+    aspect-ratio: 4 / 3;
   }
 }
-.pb ul.pb__liste {
+.pb ul.pb__bilder li {
+  margin: 0;
+  max-width: none;
+}
+.pb figure.pb__bild {
   display: flex;
   flex-direction: column;
   gap: var(--pb-s2);
-}
-.pb ul.pb__liste li {
-  position: relative;
-  padding-left: var(--pb-s3);
   margin: 0;
 }
-.pb ul.pb__liste li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.7em;
-  width: var(--pb-s1);
-  height: var(--pb-s1);
-  border-radius: 50%;
-  background: var(--pb-dunkel);
+.pb figure.pb__bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--pb-r1);
+}
+.pb figure.pb__bild figcaption {
+  font-size: var(--pb-fs-md);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--pb-text);
+}
+.pb p.pb__schon {
+  font-size: var(--pb-fs-md);
 }
 
 /* ─── Kundenstimmen: Zitatkarten ──────────────────────────────────────────── */
 .pb__stimmen {
-  background: var(--pb-flaeche);
+  background: var(--pb-grund);
 }
 .pb ul.pb__zitate {
   display: grid;
@@ -657,9 +773,8 @@
   margin: 0;
   max-width: none;
   padding: var(--pb-s3);
-  background: var(--pb-grund);
+  background: var(--pb-flaeche);
   border-radius: var(--pb-r2);
-  box-shadow: var(--pb-shadow-sm);
 }
 .pb .pb__zitat blockquote {
   flex: 1 1 auto;
@@ -679,7 +794,7 @@
 
 /* ─── Schluss ─────────────────────────────────────────────────────────────── */
 .pb__schluss {
-  background: var(--pb-grund);
+  background: var(--pb-flaeche);
 }
 
 /* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */

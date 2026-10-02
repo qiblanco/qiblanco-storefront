@@ -31,7 +31,15 @@ const PFAD = '/pages/produktberatung';
  *
  * FUNKTIONIERT OHNE JAVASCRIPT: Termine und Formular kommen serverseitig, das
  * Formular ist ein normaler POST. JavaScript ergänzt nur die Zeitzone der
- * Kundin (verstecktes Feld + „bei dir …"-Zeit).
+ * Kundin (verstecktes Feld + „bei dir …"-Zeit) und das Abdaten im Browser.
+ *
+ * ABDATEN IM BROWSER (Grossjob 20261002-…-lebensfroh, s02; Christian 02.10.:
+ * „sind die 8 h für den Donnerstag um, zeigt die Seite automatisch den nächsten
+ * Donnerstag"): der Loader reicht `buchungsschluss_min` aus der Antwort des
+ * Endpunkts durch (nie eine feste Zahl hier). Die Komponente blendet damit jeden
+ * Termin aus, dessen Beginn minus Buchungsschluss erreicht ist, und holt beim
+ * Zurückkehren in den Tab frische Termine (revalidate). Das SSR-HTML bleibt die
+ * Quelle der Wahrheit: der Endpunkt liefert ohnehin nur buchbare Termine.
  *
  * FÄLLT DER ENDPUNKT AUS, RENDERT DIE SEITE TROTZDEM — mit dem Satz, dass die
  * Termine gerade nicht laden, und der Service-Adresse. Kein 500.
@@ -67,7 +75,8 @@ function basis(context) {
 }
 
 function signal(ms) {
-  return typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+  return typeof AbortSignal !== 'undefined' &&
+    typeof AbortSignal.timeout === 'function'
     ? AbortSignal.timeout(ms)
     : undefined;
 }
@@ -89,6 +98,12 @@ async function holeJson(url, init, ms) {
   } catch {
     return {status: 0, body: null};
   }
+}
+
+/** Buchungsschluss in Minuten, wie ihn der Endpunkt meldet; fehlt er oder ist er unbrauchbar: null (dann kein Abdaten). */
+function schlussMin(body) {
+  const n = Number(body?.buchungsschluss_min);
+  return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
 export function links() {
@@ -122,6 +137,7 @@ export async function loader({request, context}) {
         buchung: r.body.buchung,
         termine: r.body.termine || [],
         buchungMoeglich: Boolean(r.body.buchung_moeglich),
+        buchungsschlussMin: schlussMin(r.body),
         ladeFehler: false,
       };
     }
@@ -143,7 +159,11 @@ export async function loader({request, context}) {
     };
   }
 
-  const r = await holeJson(`${api}/api/termine`, {headers: {Accept: 'application/json'}}, 4000);
+  const r = await holeJson(
+    `${api}/api/termine`,
+    {headers: {Accept: 'application/json'}},
+    4000,
+  );
   if (r.status === 200 && Array.isArray(r.body?.termine)) {
     return {
       jetzt,
@@ -154,10 +174,21 @@ export async function loader({request, context}) {
       buchung: null,
       termine: r.body.termine,
       buchungMoeglich: Boolean(r.body.buchung_moeglich),
+      buchungsschlussMin: schlussMin(r.body),
       ladeFehler: false,
     };
   }
-  return {jetzt, token: '', vorwahl, status, api, buchung: null, termine: [], buchungMoeglich: false, ladeFehler: true};
+  return {
+    jetzt,
+    token: '',
+    vorwahl,
+    status,
+    api,
+    buchung: null,
+    termine: [],
+    buchungMoeglich: false,
+    ladeFehler: true,
+  };
 }
 
 const FELDER = ['name', 'email', 'telefon', 'produkt', 'anliegen'];
@@ -176,13 +207,25 @@ export async function action({request, context}) {
     'X-PB-Kunde-IP': buyerIpAusRequest(request),
   };
   const post = (pfad, body) =>
-    holeJson(`${api}${pfad}`, {method: 'POST', headers: kopf, body: JSON.stringify(body)}, 15000);
+    holeJson(
+      `${api}${pfad}`,
+      {method: 'POST', headers: kopf, body: JSON.stringify(body)},
+      15000,
+    );
 
   if (intent === 'buchen') {
-    const eingabe = Object.fromEntries(FELDER.map((k) => [k, String(form.get(k) || '').slice(0, 2000)]));
+    const eingabe = Object.fromEntries(
+      FELDER.map((k) => [k, String(form.get(k) || '').slice(0, 2000)]),
+    );
     const slot = String(form.get('slot_start') || '');
     if (!slot) {
-      return {intent, ok: false, text: 'Wähl bitte zuerst einen Termin.', eingabe, slot};
+      return {
+        intent,
+        ok: false,
+        text: 'Wähl bitte zuerst einen Termin.',
+        eingabe,
+        slot,
+      };
     }
     const r = await post('/api/buchen', {
       ...eingabe,
@@ -201,18 +244,27 @@ export async function action({request, context}) {
       // Honigtopf: der Endpunkt bucht nicht und sagt nichts. Die Seite auch nicht.
       return {intent, ok: true, buchung: null, token: ''};
     }
-    return {intent, ok: false, text: r.body?.text || NICHT_ERREICHBAR, code: r.body?.code || '', eingabe, slot};
+    return {
+      intent,
+      ok: false,
+      text: r.body?.text || NICHT_ERREICHBAR,
+      code: r.body?.code || '',
+      eingabe,
+      slot,
+    };
   }
 
   const t = String(form.get('t') || '');
   if (intent === 'absagen') {
     const r = await post('/api/absagen', {t});
-    if (r.status === 200 && r.body?.ok) return {intent, ok: true, buchung: r.body.buchung};
+    if (r.status === 200 && r.body?.ok)
+      return {intent, ok: true, buchung: r.body.buchung};
     return {intent, ok: false, text: r.body?.text || NICHT_ERREICHBAR};
   }
   if (intent === 'umbuchen') {
     const slot = String(form.get('slot_start') || '');
-    if (!slot) return {intent, ok: false, text: 'Wähl bitte zuerst einen neuen Termin.'};
+    if (!slot)
+      return {intent, ok: false, text: 'Wähl bitte zuerst einen neuen Termin.'};
     const r = await post('/api/umbuchen', {t, slot_start: slot});
     if (r.status === 200 && r.body?.ok) {
       // Das alte Token zeigt danach auf eine stornierte Buchung: weiter auf das NEUE.
@@ -275,7 +327,10 @@ function serviceJsonLd() {
 export default function ProduktberatungRoute() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: serviceJsonLd()}} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: serviceJsonLd()}}
+      />
       <ProduktberatungSeite />
     </>
   );

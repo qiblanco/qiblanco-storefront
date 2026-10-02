@@ -1,5 +1,11 @@
-import {useEffect, useState} from 'react';
-import {Form, Link, useLoaderData, useNavigation} from 'react-router';
+import {useEffect, useRef, useState} from 'react';
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useNavigation,
+  useRevalidator,
+} from 'react-router';
 import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {useGoogleRating} from '~/lib/googleRating';
 import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
@@ -39,10 +45,29 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  *
  * KEIN PREIS, KEIN WARENKORB, KEIN HEILVERSPRECHEN. Die Seite wird am nächsten
  * Schritt gemessen: an der Buchung.
+ *
+ * UMBAU 2026-10-02 „lebensfroh" (Grossjob 20261002-GROSSJOB-beratung-8h-schluss-
+ * termine-rollen-kontrolle-lebensfroh, s02; Christian: „klingt noch ein bisschen
+ * nach AI … cool und lebensfroh, nicht so eine trostlose Show"): Text in
+ * Christians Ich-Form neu, gegengelesen aus Annas Sicht (Review-Befunde im
+ * Job-Ordner), Termintage mit Kalender-Kachel, „Was du mich fragen kannst" mit
+ * echten Alltagsbildern aus dem Shopify-Bestand, Ablauf als dunkler Akt.
+ * Die Listen „Was wir klären"/„Für wen" sind in Christians Worten aufgegangen.
+ *
+ * ABDATEN IM BROWSER: siehe useJetzt()/nochBuchbar() unten. Die Grenze kommt
+ * allein aus `buchungsschluss_min` des Endpunkts; die Seite kennt keine Zahl.
  */
 
 const ZONE = 'Europe/Berlin';
-const WOCHENTAGE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+const WOCHENTAGE = [
+  'Sonntag',
+  'Montag',
+  'Dienstag',
+  'Mittwoch',
+  'Donnerstag',
+  'Freitag',
+  'Samstag',
+];
 const MONATE = [
   'Januar',
   'Februar',
@@ -57,10 +82,100 @@ const MONATE = [
   'November',
   'Dezember',
 ];
-const PRODUKTE = ['QiOne® 2 Pro', 'QiBracelet', 'QiHome Air', 'Qi Master', 'anderes / weiß noch nicht'];
+const PRODUKTE = [
+  'QiOne® 2 Pro',
+  'QiBracelet',
+  'QiHome Air',
+  'Qi Master',
+  'anderes / weiß noch nicht',
+];
 export const TERMIN_API = 'https://termin.65-108-150-121.sslip.io';
 /** Porträt aus dem Shopify-CDN (Master 1200 x 1535, dieselbe Datei wie /pages/partnerprogramm). */
-const FOTO = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
+const FOTO =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
+
+const MONATE_KURZ = [
+  'Jan',
+  'Feb',
+  'Mär',
+  'Apr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Okt',
+  'Nov',
+  'Dez',
+];
+
+/** '2026-10-01' -> {zahl:'1', monat:'Okt'} für die Kalender-Kachel (nur Schmuck, steht per CSS da). */
+function kachel(datum) {
+  const [, m, t] = String(datum || '')
+    .split('-')
+    .map(Number);
+  return m && t
+    ? {zahl: String(t), monat: MONATE_KURZ[m - 1]}
+    : {zahl: '', monat: ''};
+}
+
+/** 480 -> '8 Stunden', 60 -> 'eine Stunde', 90 -> '90 Minuten'; unbekannt -> '' (dann kein Satz). */
+export function fristText(min) {
+  if (typeof min !== 'number' || !Number.isFinite(min) || min <= 0) return '';
+  if (min % 60 === 0) {
+    const h = min / 60;
+    return h === 1 ? 'eine Stunde' : `${h} Stunden`;
+  }
+  return `${min} Minuten`;
+}
+
+/**
+ * Abdaten: ein Termin bleibt nur sichtbar, solange Beginn minus Buchungsschluss
+ * in der Zukunft liegt. `jetzt` ist null auf dem Server und im ersten
+ * Browser-Render (gleiches HTML, kein Hydrierungsfehler); fehlt der
+ * Buchungsschluss, bleibt die Liste wie vom Endpunkt.
+ */
+export function nochBuchbar(termine, schlussMin, jetzt) {
+  if (
+    jetzt == null ||
+    typeof schlussMin !== 'number' ||
+    !Number.isFinite(schlussMin)
+  )
+    return termine;
+  const grenze = jetzt + schlussMin * 60000;
+  return termine.filter((t) => {
+    const ms = Date.parse(t.utc);
+    return !Number.isFinite(ms) || ms > grenze;
+  });
+}
+
+/**
+ * Die Uhr der Seite: nach dem Laden, alle 60 s und beim Zurückkehren in den
+ * Tab. Kommt der Tab zurück, holt die Seite zusätzlich frische Termine beim
+ * Endpunkt (revalidate), damit der nächste Donnerstag nachrückt.
+ */
+function useJetzt() {
+  const [jetzt, setJetzt] = useState(null);
+  const revalidator = useRevalidator();
+  const reval = useRef(revalidator);
+  reval.current = revalidator;
+  useEffect(() => {
+    const tick = () => setJetzt(Date.now());
+    tick();
+    const takt = window.setInterval(tick, 60000);
+    const sichtbar = () => {
+      if (document.visibilityState !== 'visible') return;
+      tick();
+      if (reval.current.state === 'idle') reval.current.revalidate();
+    };
+    document.addEventListener('visibilitychange', sichtbar);
+    return () => {
+      window.clearInterval(takt);
+      document.removeEventListener('visibilitychange', sichtbar);
+    };
+  }, []);
+  return jetzt;
+}
 
 /** '2026-10-01' -> 'Donnerstag, 1. Oktober' (deterministisch, ohne Intl). */
 function tagName(datum, mitJahr = false) {
@@ -117,9 +232,10 @@ function lokaleZeit(utc, zone) {
 
 /**
  * Kopf: Überschrift, dann Christian selbst (Bild + seine Worte), dann der Weg zu
- * den Terminen. Christian 01.10.: der Bereich mit ihm steht ÜBER „Wähl deinen
- * Termin". Kein „Ich bin … und habe … gegründet": die Seite fängt bei der
- * Frage des Besuchers an, nicht bei uns.
+ * den Terminen. Christian 01.10.: der Bereich „Wer mit dir spricht" steht ÜBER
+ * „Wähl deinen Termin". Die Seite fängt bei der Lage des Besuchers an (drei Tabs
+ * offen, welches Stück passt), nicht bei uns. Einspaltig, damit das Chat-Fenster
+ * unten rechts Christians Worte nicht verdeckt.
  */
 function Kopf({mitWeg}) {
   const g = useGoogleRating();
@@ -130,24 +246,33 @@ function Kopf({mitWeg}) {
           <p className="pb__vorspann">Kostenlos · live per Zoom</p>
           <h1>Produktberatung: 20 Minuten mit Christian</h1>
           <p className="pb__lead">
-            Du überlegst, welches Gerät zu dir passt? Frag mich direkt. Ich nehme mir 20 Minuten Zeit
-            für dich, und du musst danach nichts kaufen.
+            Du hast drei Tabs offen und weißt nicht, ob der Anhänger, das
+            Armband oder der QiHome Air zu dir passt? Frag mich. 20 Minuten, du
+            und ich, per Zoom. Kaufen musst du danach nichts.
           </p>
           <p className="pb__vertrauen">
-            <a href={g.url} target="_blank" rel="noopener noreferrer" className="pb__sterne-link">
+            <a
+              href={g.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pb__sterne-link"
+            >
               <span className="pb__sterne" aria-hidden="true">
                 ★★★★★
               </span>{' '}
               {g.komma} von 5 bei Google
             </a>
-            <span>über 14.000 zufriedene Anwender</span>
           </p>
           {mitWeg ? (
             <p className="pb__weg">
               {/* Der sichtbare Einstieg in die Buchung (design-qa Q2): der Buchen-Knopf selbst
                   erscheint erst nach der Terminwahl. */}
-              <a href="#termine" className="pb__knopf-zwei" data-qa="cta">
-                Zu den Terminen
+              <a
+                href="#termine"
+                className="pb__knopf pb__knopf--weg"
+                data-qa="cta"
+              >
+                Termin aussuchen
               </a>
             </p>
           ) : null}
@@ -157,20 +282,29 @@ function Kopf({mitWeg}) {
             className="pb__foto"
             src={`${FOTO}&width=480`}
             srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w`}
-            sizes="(min-width: 768px) 200px, 112px"
-            width="200"
-            height="256"
+            sizes="(min-width: 768px) 240px, 112px"
+            width="240"
+            height="307"
             fetchpriority="high"
             decoding="async"
             alt="Christian Bernd Bauer, Gründer von Qi Blanco"
           />
           <figcaption className="pb__christian-text">
-            <p>
-              Seit mehr als zehn Jahren arbeite ich an Qi Blanco. Du erzählst mir, was dich beschäftigt:
-              dein Schlaf, dein Alltag, das Handy am Bett. Ich sage dir, welches Gerät dazu passt und wie du
-              es trägst.
+            <p className="pb__vorspann">Wer mit dir spricht</p>
+            <p className="pb__christian-wort">
+              Ich bin Christian, und seit mehr als zehn Jahren baue ich Qi
+              Blanco. Erzähl mir, wie dein Tag aussieht, von der ersten Mail bis
+              zum Handy am Bett. Dann sage ich dir, welches Stück zu dir passt
+              und wie du es am besten trägst.
             </p>
-            <p className="pb__unterschrift">Christian Bauer, Gründer von Qi Blanco®</p>
+            <p>
+              Frag mich die ganz praktischen Sachen: Unterm Shirt oder drüber?
+              Auch beim Sport? Und wenn du skeptisch bist, bring genau das mit.
+              Deine kritischste Frage ist mir die liebste.
+            </p>
+            <p className="pb__unterschrift">
+              Christian Bauer, Gründer von Qi Blanco®
+            </p>
           </figcaption>
         </figure>
       </div>
@@ -181,58 +315,98 @@ function Kopf({mitWeg}) {
 function Hinweis({text, art = 'hinweis'}) {
   if (!text) return null;
   return (
-    <p className={`pb__hinweis pb__hinweis--${art}`} role={art === 'fehler' ? 'alert' : 'status'}>
+    <p
+      className={`pb__hinweis pb__hinweis--${art}`}
+      role={art === 'fehler' ? 'alert' : 'status'}
+    >
       {text}
     </p>
   );
 }
 
-/** Die Terminliste. `mitRadio` = Radio im Formular, sonst reine Anzeige. */
-function Terminliste({termine, mitRadio, auswahl, zone, feldname = 'slot_start'}) {
+/**
+ * Die Terminliste. `mitRadio` = Radio im Formular, sonst reine Anzeige.
+ * Jeder Tag ist eine Karte mit Kalender-Kachel: Zahl und Monat stehen als
+ * data-Attribute an der Legende und erscheinen per CSS (Schmuck, nicht im
+ * Seitentext). Der Seitentext trägt das Datum ganz: „Donnerstag, 8. Oktober".
+ */
+function Terminliste({
+  termine,
+  mitRadio,
+  auswahl,
+  zone,
+  feldname = 'slot_start',
+  onWahl,
+}) {
   return (
-    <div className="pb__tage">
-      {nachTag(termine).map((tag) => (
-        <fieldset className="pb__tag" key={tag.datum}>
-          <legend className="pb__tagname">{tagName(tag.datum)}</legend>
-          <p className="pb__tagzahl">
-            {tag.termine.length === 1 ? 'ein Termin frei' : `${tag.termine.length} Termine frei`}
-          </p>
-          <ul className="pb__slots">
-            {tag.termine.map((t) => {
-              const lokal = lokaleZeit(t.utc, zone);
-              const id = `pb-slot-${t.utc}`;
-              return (
-                <li key={t.slot_start} data-pb-slot={t.slot_start}>
-                  {mitRadio ? (
-                    <>
-                      <input
-                        className="pb__radio"
-                        type="radio"
-                        id={id}
-                        name={feldname}
-                        value={t.slot_start}
-                        defaultChecked={auswahl === t.slot_start}
-                        required
-                      />
-                      <label className="pb__slot" htmlFor={id}>
-                        <span className="pb__zeit">{t.zeit} Uhr</span>
-                        {lokal ? <span className="pb__lokal">bei dir {lokal}</span> : null}
-                      </label>
-                    </>
-                  ) : (
-                    <span className="pb__slot pb__slot--anzeige">
-                      <span className="pb__zeit">{t.zeit} Uhr</span>
-                      {lokal ? <span className="pb__lokal">bei dir {lokal}</span> : null}
-                    </span>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </fieldset>
-      ))}
-      <p className="pb__klein">Alle Uhrzeiten gelten für die Zeitzone Berlin. Ein Gespräch dauert 20 Minuten.</p>
-    </div>
+    <>
+      <div className="pb__tage">
+        {nachTag(termine).map((tag) => {
+          const k = kachel(tag.datum);
+          return (
+            <fieldset className="pb__tag" key={tag.datum}>
+              <legend
+                className="pb__tagname"
+                data-tag={k.zahl}
+                data-monat={k.monat}
+              >
+                <span className="pb__tagtext">
+                  <span className="pb__tagdatum">{tagName(tag.datum)}</span>
+                  <span className="pb__tagzahl">
+                    {tag.termine.length === 1
+                      ? 'eine Zeit frei'
+                      : `${tag.termine.length} Zeiten frei`}
+                  </span>
+                </span>
+              </legend>
+              <ul className="pb__slots">
+                {tag.termine.map((t) => {
+                  const lokal = lokaleZeit(t.utc, zone);
+                  const id = `pb-slot-${t.utc}`;
+                  return (
+                    <li key={t.slot_start} data-pb-slot={t.slot_start}>
+                      {mitRadio ? (
+                        <>
+                          <input
+                            className="pb__radio"
+                            type="radio"
+                            id={id}
+                            name={feldname}
+                            value={t.slot_start}
+                            defaultChecked={auswahl === t.slot_start}
+                            onChange={
+                              onWahl ? () => onWahl(t.slot_start) : undefined
+                            }
+                            required
+                          />
+                          <label className="pb__slot" htmlFor={id}>
+                            <span className="pb__zeit">{t.zeit} Uhr</span>
+                            {lokal ? (
+                              <span className="pb__lokal">bei dir {lokal}</span>
+                            ) : null}
+                          </label>
+                        </>
+                      ) : (
+                        <span className="pb__slot pb__slot--anzeige">
+                          <span className="pb__zeit">{t.zeit} Uhr</span>
+                          {lokal ? (
+                            <span className="pb__lokal">bei dir {lokal}</span>
+                          ) : null}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </fieldset>
+          );
+        })}
+      </div>
+      <p className="pb__klein pb__zone">
+        Alle Uhrzeiten gelten für die Zeitzone Berlin. In Wien und Zürich ist es
+        dieselbe Uhrzeit.
+      </p>
+    </>
   );
 }
 
@@ -256,11 +430,42 @@ function Feld({name, label, typ = 'text', pflicht = false, auto, wert}) {
   );
 }
 
+/** Der eine Satz unter „Wähl deinen Termin"; die Frist nur, wenn der Endpunkt sie meldet. */
+function Unterzeile({schlussMin}) {
+  const frist = fristText(schlussMin);
+  return (
+    <p className="pb__unterzeile">
+      Donnerstags halte ich mir dafür Zeit frei.
+      {frist ? ` Spontan? Bis ${frist} vorher kannst du noch buchen.` : ''}
+    </p>
+  );
+}
+
 function Buchen({daten, fehler, zone}) {
   const nav = useNavigation();
-  const sendet = nav.state !== 'idle' && nav.formData?.get('intent') === 'buchen';
+  const sendet =
+    nav.state !== 'idle' && nav.formData?.get('intent') === 'buchen';
   const e = fehler?.eingabe || {};
   const auswahl = fehler?.slot || daten.vorwahl || '';
+  // Gewählter Termin, damit die Seite merkt, wenn er beim Abdaten verschwindet. Nur ein
+  // Termin, den es beim ersten Bild gab, zählt (eine alte Vorwahl löst keinen Hinweis aus).
+  const [gewaehlt, setGewaehlt] = useState(() =>
+    daten.termine.some((t) => t.slot_start === auswahl) ? auswahl : '',
+  );
+  const [verpasst, setVerpasst] = useState('');
+  useEffect(() => {
+    if (gewaehlt && !daten.termine.some((t) => t.slot_start === gewaehlt)) {
+      const {datum, zeit} = teile(gewaehlt);
+      setVerpasst(
+        `${tagName(datum)}, ${zeit} Uhr ist jetzt zu kurzfristig. Such dir bitte eine andere Zeit aus.`,
+      );
+      setGewaehlt('');
+    }
+  }, [daten.termine, gewaehlt]);
+  const waehle = (slot) => {
+    setGewaehlt(slot);
+    setVerpasst('');
+  };
 
   if (daten.ladeFehler) {
     return (
@@ -282,8 +487,8 @@ function Buchen({daten, fehler, zone}) {
         <div className="pb__inhalt pb__inhalt--breit">
           <h2>Termine</h2>
           <p>
-            Gerade sind alle Termine vergeben, neue kommen jede Woche dazu. Schreib uns gern an
-            service@qiblanco.com.
+            Gerade sind alle Termine vergeben, neue kommen jede Woche dazu.
+            Schreib uns gern an service@qiblanco.com.
           </p>
         </div>
       </section>
@@ -295,7 +500,7 @@ function Buchen({daten, fehler, zone}) {
       <section className="pb__termine" data-section="pb-termine" id="termine">
         <div className="pb__inhalt pb__inhalt--breit">
           <h2>Die nächsten Termine</h2>
-          <p className="pb__unterzeile">Donnerstags, je 20 Minuten, live per Zoom.</p>
+          <Unterzeile schlussMin={daten.buchungsschlussMin} />
           <Terminliste termine={daten.termine} mitRadio={false} zone={zone} />
           <p className="pb__bald">Die Buchung öffnet in Kürze.</p>
           <p>Bis dahin erreichst du uns unter service@qiblanco.com.</p>
@@ -314,19 +519,44 @@ function Buchen({daten, fehler, zone}) {
               er nach dem Neuladen, kein Radio ist gewählt und :has() blendet die Angaben aus. */}
           <Hinweis art="fehler" text={fehler?.text} />
           <h2>Wähl deinen Termin</h2>
-          <p className="pb__unterzeile">Donnerstags, je 20 Minuten, live per Zoom.</p>
-          <Terminliste termine={daten.termine} mitRadio auswahl={auswahl} zone={zone} />
+          <Unterzeile schlussMin={daten.buchungsschlussMin} />
+          <Hinweis text={verpasst} />
+          <Terminliste
+            termine={daten.termine}
+            mitRadio
+            auswahl={auswahl}
+            zone={zone}
+            onWahl={waehle}
+          />
 
           <div className="pb__felder">
             <h2>Deine Angaben</h2>
             <Feld name="name" label="Name" pflicht auto="name" wert={e.name} />
-            <Feld name="email" label="E-Mail" typ="email" pflicht auto="email" wert={e.email} />
-            <Feld name="telefon" label="Telefon" typ="tel" auto="tel" wert={e.telefon} />
+            <Feld
+              name="email"
+              label="E-Mail"
+              typ="email"
+              pflicht
+              auto="email"
+              wert={e.email}
+            />
+            <Feld
+              name="telefon"
+              label="Telefon"
+              typ="tel"
+              auto="tel"
+              wert={e.telefon}
+            />
             <div className="pb__feld">
               <label htmlFor="pb-produkt">
-                Um welches Produkt geht es?<span className="pb__frei"> (freiwillig)</span>
+                Um welches Produkt geht es?
+                <span className="pb__frei"> (freiwillig)</span>
               </label>
-              <select id="pb-produkt" name="produkt" defaultValue={e.produkt || ''}>
+              <select
+                id="pb-produkt"
+                name="produkt"
+                defaultValue={e.produkt || ''}
+              >
                 <option value="">bitte wählen</option>
                 {PRODUKTE.map((p) => (
                   <option key={p} value={p}>
@@ -339,20 +569,39 @@ function Buchen({daten, fehler, zone}) {
               <label htmlFor="pb-anliegen">
                 Worum geht es?<span className="pb__frei"> (freiwillig)</span>
               </label>
-              <textarea id="pb-anliegen" name="anliegen" rows={3} maxLength={1000} defaultValue={e.anliegen || ''} />
+              <textarea
+                id="pb-anliegen"
+                name="anliegen"
+                rows={3}
+                maxLength={1000}
+                defaultValue={e.anliegen || ''}
+              />
             </div>
             {/* Honigtopf: Menschen sehen und erreichen dieses Feld nicht (neben dem
                 Bild, ohne Tab-Halt, ohne Autofill). Wer es füllt, bucht nicht. */}
             <div className="pb__topf" aria-hidden="true">
               <label htmlFor="pb-website">Website</label>
-              <input id="pb-website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+              <input
+                id="pb-website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                defaultValue=""
+              />
             </div>
-            <button type="submit" className="pb__knopf" disabled={sendet} data-qa="cta">
+            <button
+              type="submit"
+              className="pb__knopf"
+              disabled={sendet}
+              data-qa="cta"
+            >
               {sendet ? 'Einen Moment …' : 'Termin verbindlich buchen'}
             </button>
             <p className="pb__klein">
-              Wir speichern deinen Namen, deine E-Mail und deine freiwilligen Angaben nur für dieses Gespräch
-              und löschen sie 60 Tage nach dem Termin. Mehr dazu in unserer{' '}
+              Wir speichern deinen Namen, deine E-Mail und deine freiwilligen
+              Angaben nur für dieses Gespräch und löschen sie 60 Tage nach dem
+              Termin. Mehr dazu in unserer{' '}
               <Link to="/pages/datenschutz">Datenschutzerklärung</Link>.
             </p>
           </div>
@@ -382,7 +631,12 @@ function Termindaten({buchung, token, zone, api}) {
         <div>
           <dt>Zoom-Link</dt>
           <dd>
-            <a href={buchung.zoom_url} rel="noopener noreferrer" target="_blank" className="pb__zoom">
+            <a
+              href={buchung.zoom_url}
+              rel="noopener noreferrer"
+              target="_blank"
+              className="pb__zoom"
+            >
               {buchung.zoom_url}
             </a>
           </dd>
@@ -415,7 +669,9 @@ function Danke() {
     <section className="pb__termine" data-section="pb-bestaetigung">
       <div className="pb__inhalt">
         <h2>Danke.</h2>
-        <p>Kommt keine Bestätigung, schreib uns bitte an service@qiblanco.com.</p>
+        <p>
+          Kommt keine Bestätigung, schreib uns bitte an service@qiblanco.com.
+        </p>
       </div>
     </section>
   );
@@ -423,7 +679,10 @@ function Danke() {
 
 /** Warum ein Termin abgesagt ist: das entscheidet den Satz (der Endpunkt meldet es grob). */
 const ABGESAGT = {
-  kundin: ['Dein Termin ist abgesagt.', 'Danke, dass du Bescheid gegeben hast, der Platz ist jetzt wieder frei.'],
+  kundin: [
+    'Dein Termin ist abgesagt.',
+    'Danke, dass du Bescheid gegeben hast, der Platz ist jetzt wieder frei.',
+  ],
   christian: [
     'Christian musste diesen Termin leider absagen.',
     'Das tut uns leid. Wähl gern einen neuen Termin, wir freuen uns auf dich.',
@@ -456,7 +715,10 @@ function Verwalten({daten, ergebnis, zone}) {
     );
   }
 
-  const b = ergebnis?.ok && ergebnis.intent === 'absagen' && ergebnis.buchung ? ergebnis.buchung : daten.buchung;
+  const b =
+    ergebnis?.ok && ergebnis.intent === 'absagen' && ergebnis.buchung
+      ? ergebnis.buchung
+      : daten.buchung;
   const vorbei = b.slot_utc && daten.jetzt && b.slot_utc <= daten.jetzt;
   if (b.storniert) {
     const [kopf, satz] = ABGESAGT[b.storno_von] || ABGESAGT.kundin;
@@ -483,17 +745,29 @@ function Verwalten({daten, ergebnis, zone}) {
         : `Dein Termin${gruss}`;
   const andere = daten.termine.filter((t) => t.slot_start !== b.slot_start);
   return (
-    <section className={`pb__termine${neu ? ' pb__bestaetigt' : ''}`} data-section="pb-verwalten" id="termine">
+    <section
+      className={`pb__termine${neu ? ' pb__bestaetigt' : ''}`}
+      data-section="pb-verwalten"
+      id="termine"
+    >
       <div className="pb__inhalt">
         <h2>{titel}</h2>
         {neu ? (
           <p>
-            Heb dir diese Seite auf. Hier findest du jederzeit Zoom-Link und Kenncode, und hier kannst du
-            absagen oder umbuchen.
+            Heb dir diese Seite auf. Hier findest du jederzeit Zoom-Link und
+            Kenncode, und hier kannst du absagen oder umbuchen.
           </p>
         ) : null}
-        <Hinweis art="fehler" text={ergebnis && !ergebnis.ok ? ergebnis.text : ''} />
-        <Termindaten buchung={b} token={daten.token} zone={zone} api={daten.api} />
+        <Hinweis
+          art="fehler"
+          text={ergebnis && !ergebnis.ok ? ergebnis.text : ''}
+        />
+        <Termindaten
+          buchung={b}
+          token={daten.token}
+          zone={zone}
+          api={daten.api}
+        />
         {vorbei ? null : (
           <>
             {daten.buchungMoeglich && andere.length ? (
@@ -511,8 +785,15 @@ function Verwalten({daten, ergebnis, zone}) {
               <input type="hidden" name="intent" value="absagen" />
               <input type="hidden" name="t" value={daten.token} />
               <h2>Absagen</h2>
-              <p>Wenn du nicht kannst, sag ab, damit der Platz für jemand anderen frei wird.</p>
-              <button type="submit" className="pb__knopf-zwei" disabled={sendet}>
+              <p>
+                Wenn du nicht kannst, sag ab, damit der Platz für jemand anderen
+                frei wird.
+              </p>
+              <button
+                type="submit"
+                className="pb__knopf-zwei"
+                disabled={sendet}
+              >
                 Termin absagen
               </button>
             </Form>
@@ -523,7 +804,71 @@ function Verwalten({daten, ergebnis, zone}) {
   );
 }
 
-/** Drei Schritte. Der dritte sagt, was im Zoom passiert (Warteraum ist an, Christian 01.10.). */
+/**
+ * Was man Christian fragen kann: drei echte Alltagsbilder aus dem Shopify-Bestand
+ * (dieselben Dateien wie Infoslider und Themenseiten), je eine praktische Frage.
+ * Die Fragen werden hier nicht beantwortet: das ist das Gespräch. Die Menschen auf
+ * den Bildern sind Models aus dem Bali-Shooting, keine Kunden, und werden nicht so
+ * ausgegeben.
+ */
+const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+const FRAGEN = [
+  {
+    bild: `${CDN}qb-infoslider--infoslider-erholsame-naechte-bali-06825--2f21555b63e2.webp?v=1790389248`,
+    alt: 'Ein Mann schläft im Bademantel auf weißer Bettwäsche, um den Hals trägt er einen Anhänger.',
+    frage: 'Darf der Anhänger mit ins Bett?',
+  },
+  {
+    bild: `${CDN}qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp?v=1790161971`,
+    alt: 'Eine Frau sitzt mit dem Laptop auf dem Sofa, vor ihr ein Holztisch mit einem Glas Wasser.',
+    frage: 'Wohin mit dem QiHome Air, wenn der Router im Flur steht?',
+  },
+  {
+    bild: `${CDN}qb-themen--themen-zellen-qibracelet-gruensaft-canggu-06390--b4ab3f9b62c8.webp?v=1790161977`,
+    alt: 'Ein Arm mit QiBracelet hält ein Glas grünen Saft vor Palmenblättern.',
+    frage: 'Armband oder Anhänger: Was trage ich, wenn ich viel unterwegs bin?',
+  },
+];
+
+function Fragen() {
+  return (
+    <section className="pb__fragen" data-section="pb-fragen">
+      <div className="pb__inhalt pb__inhalt--breit">
+        <h2>Was du mich fragen kannst</h2>
+        <ul className="pb__bilder">
+          {FRAGEN.map((f) => (
+            <li key={f.frage}>
+              <figure className="pb__bild">
+                <img
+                  src={`${f.bild}&width=600`}
+                  srcSet={`${f.bild}&width=400 400w, ${f.bild}&width=600 600w, ${f.bild}&width=900 900w`}
+                  sizes="(min-width: 768px) 336px, 100vw"
+                  width="600"
+                  height="450"
+                  loading="lazy"
+                  decoding="async"
+                  alt={f.alt}
+                />
+                <figcaption>{f.frage}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+        <p className="pb__schon">
+          Du trägst schon eins? Dann komm erst recht. Wir reden über die
+          Kleinigkeiten: wie lang die Kette sein soll, ob du ihn nachts
+          abnimmst, ob das Armband als Ergänzung Sinn ergibt.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Drei Schritte, der dunkle Akt der Seite. In Christians Stimme (Anna-Review: die
+ * Infinitive lasen sich wie eine Bedienungsanleitung; im dritten Schritt sprach die
+ * Seite plötzlich in der dritten Person über ihn). Warteraum ist an (Christian 01.10.).
+ */
 function Ablauf() {
   return (
     <section className="pb__ablauf" data-section="pb-ablauf">
@@ -531,48 +876,19 @@ function Ablauf() {
         <h2>So läuft es ab</h2>
         <ol className="pb__schritte">
           <li>
-            <strong>Termin wählen.</strong> Name und E-Mail genügen.
+            <strong>Du suchst dir eine Zeit aus.</strong> Name und E-Mail
+            reichen.
           </li>
           <li>
-            <strong>Zoom-Link bekommen.</strong> Du siehst ihn direkt nach der Buchung, samt Kalenderdatei.
+            <strong>Du bekommst den Zoom-Link.</strong> Er steht gleich nach der
+            Buchung da, samt Kalenderdatei.
           </li>
           <li>
-            <strong>Zur Zeit auf den Link tippen.</strong> Du kommst zuerst in den Warteraum, Christian lässt
-            dich zu deinem Termin herein. Die Kamera ist freiwillig, ein Handy reicht.
+            <strong>Du klickst pünktlich rein.</strong> Kurz Warteraum, dann
+            hole ich dich rein. Kamera an oder aus, wie du magst. Ein Handy
+            reicht.
           </li>
         </ol>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Was im Gespräch geklärt wird und für wen es ist. Christian: „welches Gerät
- * passt, Anwendung, Erfahrungen". Kein Satz über Studienlage oder Grenzen: das
- * waren die Absicherungsfloskeln, die Christian „nach AI" klingen ließen.
- */
-function Klaeren() {
-  return (
-    <section className="pb__klaeren" data-section="pb-klaeren">
-      <div className="pb__inhalt pb__inhalt--breit">
-        <div className="pb__spalten">
-          <div>
-            <h2>Was wir in 20 Minuten klären</h2>
-            <ul className="pb__liste">
-              <li>Welches Gerät zu dir passt: QiOne® 2 Pro, QiBracelet® oder QiHome® Air.</li>
-              <li>Wie du es trägst oder aufstellst, beim Schlafen, beim Sport, unter der Dusche.</li>
-              <li>Was unsere Anwender im Alltag damit erleben, und was du davon erwarten kannst.</li>
-            </ul>
-          </div>
-          <div>
-            <h2>Für wen das Gespräch ist</h2>
-            <p>
-              Für dich, wenn du vor dem Kauf noch eine Frage hast. Und für dich, wenn du schon ein Gerät
-              trägst und wissen willst, wie du mehr daraus machst.
-            </p>
-            <p>Das Gespräch kostet nichts. Du brauchst nur einen Termin und ein Handy.</p>
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -588,9 +904,9 @@ function Klaeren() {
  * Google ist wie im Bewertungsblock der einzige Weg aus dem Block.
  */
 const STIMMEN_IDS = ['-729236865', '850007411', '-1868946154'];
-const STIMMEN = STIMMEN_IDS.map((id) => GOOGLE_REVIEWS_CURATED.find((r) => r.id === id)).filter(
-  (r) => r && !/anna/i.test(`${r.name} ${r.text}`),
-);
+const STIMMEN = STIMMEN_IDS.map((id) =>
+  GOOGLE_REVIEWS_CURATED.find((r) => r.id === id),
+).filter((r) => r && !/anna/i.test(`${r.name} ${r.text}`));
 
 function Stimmen() {
   const g = useGoogleRating();
@@ -598,7 +914,7 @@ function Stimmen() {
   return (
     <section className="pb__stimmen" data-section="pb-stimmen">
       <div className="pb__inhalt pb__inhalt--breit">
-        <h2>Was Anwender erzählen</h2>
+        <h2>Das schreiben Kunden bei Google</h2>
         <ul className="pb__zitate">
           {STIMMEN.map((r) => (
             <li key={r.id} className="pb__zitat">
@@ -629,11 +945,11 @@ function Schluss() {
   return (
     <section className="pb__schluss" data-section="pb-schluss">
       <div className="pb__inhalt pb__inhalt--breit">
-        <h2>Deine Frage, meine Antwort</h2>
-        <p>Such dir einen Donnerstag aus. Ich freue mich auf das Gespräch mit dir.</p>
+        <h2>Bis Donnerstag?</h2>
+        <p>Such dir eine Zeit aus, hol dir einen Kaffee, und dann reden wir.</p>
         <p className="pb__weg">
           <a href="#termine" className="pb__knopf-zwei">
-            Zu den Terminen
+            Termin aussuchen
           </a>
         </p>
       </div>
@@ -642,22 +958,37 @@ function Schluss() {
 }
 
 export function ProduktberatungSeite() {
-  const daten = useLoaderData();
+  const roh = useLoaderData();
   const ergebnis = useAktionsergebnisUeberRevalidierung();
   const zone = useKundenZone();
+  const jetzt = useJetzt();
+  // Abgedatete Termine fallen hier heraus, für Buchen UND Umbuchen; leere Tageskarten mit ihnen.
+  const daten = {
+    ...roh,
+    termine: nochBuchbar(roh.termine || [], roh.buchungsschlussMin, jetzt),
+  };
 
   let mitte;
-  if (daten.token) mitte = <Verwalten daten={daten} ergebnis={ergebnis} zone={zone} />;
+  if (daten.token)
+    mitte = <Verwalten daten={daten} ergebnis={ergebnis} zone={zone} />;
   else if (ergebnis?.ok && ergebnis.intent === 'buchen') mitte = <Danke />;
-  else mitte = <Buchen daten={daten} fehler={ergebnis && !ergebnis.ok ? ergebnis : null} zone={zone} />;
+  else
+    mitte = (
+      <Buchen
+        daten={daten}
+        fehler={ergebnis && !ergebnis.ok ? ergebnis : null}
+        zone={zone}
+      />
+    );
 
-  const buchenAnsicht = !daten.token && !(ergebnis?.ok && ergebnis.intent === 'buchen');
+  const buchenAnsicht =
+    !daten.token && !(ergebnis?.ok && ergebnis.intent === 'buchen');
   return (
     <div className="pb">
       <Kopf mitWeg={buchenAnsicht} />
       {mitte}
+      <Fragen />
       <Ablauf />
-      <Klaeren />
       <Stimmen />
       {buchenAnsicht ? <Schluss /> : null}
     </div>
