@@ -13,26 +13,26 @@ import {
  * Gestaltungssystem der Startseite von crystal-cacao.com.
  *
  * Grossjob 20261002-GROSSJOB-kakaoseiten-mineralstoffe-dartsch-und-crystal-
- * niveau-auf-dach-und-us. EIN Baustein fuer drei Laeden: qiblanco.com und
+ * niveau-auf-dach-und-us. EIN Baustein für drei Läden: qiblanco.com und
  * crystal-cacao.com rendern ihn direkt (K1, byte-gleich), der US-Shop bekommt
  * sein Markup per renderToStaticMarkup(<KakaoTiefe sprache="en" />) als
  * Liquid-Snippet. Darum gilt hier: reines React, kein Hydrogen-Hook, kein
- * Router-Link, kein Zustand, kein Effekt. Was im Browser laeuft, muss auch
+ * Router-Link, kein Zustand, kein Effekt. Was im Browser läuft, muss auch
  * als statisches HTML stimmen.
  *
  * Reihenfolge (Mehrwert -> Wirkung -> Einordnung -> Herkunft -> Ritual ->
  * Belege): Mineralstoffe · Analyseprofil · Einordnung · Herkunft ·
- * Zubereitung · Pruefdokumente. Der Laden crystal-cacao.com fuehrt seine
- * Pruefdokumente schon als `.cc-belege` (bewacht von probe_belege_abrufbar)
+ * Zubereitung · Prüfdokumente. Der Laden crystal-cacao.com führt seine
+ * Prüfdokumente schon als `.cc-belege` (bewacht von probe_belege_abrufbar)
  * und ruft deshalb mit belege={false}.
  *
- * FARBE: die Sorte der Seite traegt ihre Sortenfarbe, die Vergleichssorte
+ * FARBE: die Sorte der Seite trägt ihre Sortenfarbe, die Vergleichssorte
  * ein Neutral (data-kt-farbe="neutral"). So bleibt es je Seite bei Gold plus
- * EINER Sortenfarbe; eine dritte gesaettigte Farbwelt kostet in der
+ * EINER Sortenfarbe; eine dritte gesättigte Farbwelt kostet in der
  * design-rubrik 25 Punkte (Kandidat 2026-10-02: 88 statt 95).
  *
- * MESSBAR: jede Mineralstoff-Kachel traegt data-kt-symbol und data-kt-wert
- * (der Rohwert der JSON). Daran haelt probe_mineralstoffe_naht.py die sechs
+ * MESSBAR: jede Mineralstoff-Kachel trägt data-kt-symbol und data-kt-wert
+ * (der Rohwert der JSON). Daran hält probe_mineralstoffe_naht.py die sechs
  * Seiten gegen den Dartsch-Auszug.
  */
 
@@ -43,13 +43,13 @@ function fuelle(vorlage, werte) {
   return vorlage.replace(/\{(\w+)\}/g, (_, k) => (k in werte ? String(werte[k]) : `{${k}}`));
 }
 
-/** Berichtswert -> Anzeige. Nur das Dezimalzeichen wechselt; '<' haelt am Wert. */
+/** Berichtswert -> Anzeige. Nur das Dezimalzeichen wechselt; '<' hält am Wert. */
 function zeigeWert(w, sprache) {
   const t = sprache === 'de' ? w.replace('.', ',') : w;
   return t.replace('< ', '< ');
 }
 
-/** Zahl fuer Balken; '< 0.001' zaehlt als 0. */
+/** Zahl für Balken; '< 0.001' zählt als 0. */
 function zahl(w) {
   return w.startsWith('<') ? 0 : Number(w);
 }
@@ -434,7 +434,7 @@ function Zubereitung({sprache}) {
   );
 }
 
-/* ==== Akt 6 · Pruefdokumente ============================================ */
+/* ==== Akt 6 · Prüfdokumente ============================================ */
 
 function Pruefdokumente({sorte, sprache}) {
   const t = KT_TEXTE[sprache].belege;

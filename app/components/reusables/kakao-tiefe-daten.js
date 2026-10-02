@@ -1,7 +1,7 @@
 /**
  * kakao-tiefe-daten.js — Inhalt der „Kakao-Tiefe“ unter dem Amazon-Bereich der
- * zwei Kakao-Kaufseiten. EINE Quelle fuer drei Laeden: qiblanco.com und
- * crystal-cacao.com rendern sie ueber KakaoTiefe.jsx (K1, byte-gleich), der
+ * zwei Kakao-Kaufseiten. EINE Quelle für drei Läden: qiblanco.com und
+ * crystal-cacao.com rendern sie über KakaoTiefe.jsx (K1, byte-gleich), der
  * US-Shop qi-blanco.com bekommt ihr Markup per renderToStaticMarkup als Liquid-
  * Snippet (sprache 'en').
  *
@@ -11,8 +11,8 @@
  * DIE MINERALSTOFFE SIND KEIN HANDTEXT. Der Block KT_MINERALSTOFFE ist ein
  * Abdruck von shared-state/crystal-cacao-node/data/mineralstoffe-dartsch.json
  * (wortgleich aus den Dartsch-PDFs, Mehrheitslesung der Zellen-OCR, 62/62).
- * Wer einen Wert aendern will, aendert die JSON und erzeugt den Block neu;
- * die Nahtprobe crystal-cacao-node/proben/probe_mineralstoffe_naht.py haelt
+ * Wer einen Wert ändern will, ändert die JSON und erzeugt den Block neu;
+ * die Nahtprobe crystal-cacao-node/proben/probe_mineralstoffe_naht.py hält
  * JSON, diese Datei und die sechs gerenderten Seiten gegeneinander.
  *
  * ZAHLEN WIE IM BERICHT: Wert als String, Dezimalpunkt, keine Tausender-
@@ -20,7 +20,7 @@
  * Deutschen nur den Punkt gegen ein Komma.
  */
 
-/** Rueckweg: false zeigt wieder die bisherigen Abschnitte (Awake.jsx/Create.jsx). */
+/** Rückweg: false zeigt wieder die bisherigen Abschnitte (Awake.jsx/Create.jsx). */
 export const KAKAO_TIEFE_AN = true;
 
 /** Die Bestimmungsgrenze des Berichts; sie trennt die zwei Gruppen. */
@@ -49,9 +49,9 @@ export const KT_BILDER = Object.freeze({
 });
 
 /**
- * Analyseprofil je 100 g (Dartsch-Naehrstoffanalysen 2025). Dieselben zwoelf
+ * Analyseprofil je 100 g (Dartsch-Nährstoffanalysen 2025). Dieselben zwölf
  * Zahlen wie die Startseite von crystal-cacao.com (app/lib/analyseprofil.js);
- * probe_analyseprofil_naht.py haelt beide gleich.
+ * probe_analyseprofil_naht.py hält beide gleich.
  */
 export const KT_PROFIL = Object.freeze([
   {key: 'tryptophan', de: 'L-Tryptophan', en: 'L-Tryptophan', bedeutung: {de: 'Serotonin-Vorstufe', en: 'serotonin precursor'}, einheit: 'mg', awake: 30, create: 20},
@@ -62,7 +62,7 @@ export const KT_PROFIL = Object.freeze([
   {key: 'polyphenole', de: 'Polyphenole & Flavanole', en: 'Polyphenols & flavanols', bedeutung: {de: 'antioxidative Pflanzenstoffe', en: 'antioxidant plant compounds'}, einheit: 'mg', awake: 5030, create: 5620},
 ]);
 
-/** Die drei Pruefdokumente je Sorte, Felder wie app/lib/kakao-belege.js (Zeugnis-Vertrag). */
+/** Die drei Prüfdokumente je Sorte, Felder wie app/lib/kakao-belege.js (Zeugnis-Vertrag). */
 export const KT_DOKUMENTE = Object.freeze({
   awake: Object.freeze([
     {art: 'schadstoff', titel: {de: 'Schadstoff-Prüfzeugnis · Piura Blanco', en: 'Contaminant test certificate · Piura Blanco'}, geprueft: {de: 'Schadstoffe an der rohen Bohne', en: 'Contaminants in the raw bean'}, labor: 'Primoris Belgium', datum: '2025-08-21', kennung: {de: 'Zertifikat 25/049938', en: 'Certificate 25/049938'}, sprache: 'en', seiten: 9, url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/pruefzeugnis-primoris-piura-blanco-2025-08-21.pdf?v=1788373365'},
@@ -79,7 +79,7 @@ export const KT_DOKUMENTE = Object.freeze({
 /**
  * Alle Texte. Platzhalter {name}, {andere} usw. ersetzt KakaoTiefe.jsx.
  * Hausstimme (writing-rules): Antwort zuerst, ein Gedanke je Satz, kein Text
- * ueber sich selbst. Keine Wirkaussage je Element: der Bericht misst Gehalte,
+ * über sich selbst. Keine Wirkaussage je Element: der Bericht misst Gehalte,
  * keine Wirkung.
  */
 export const KT_TEXTE = Object.freeze({
@@ -279,7 +279,7 @@ export const KT_TEXTE = Object.freeze({
   }),
 });
 
-// >>> KT_MINERALSTOFFE (erzeugt von crystal-cacao-node/bin/kakao-tiefe-mineralblock, nicht von Hand aendern)
+// >>> KT_MINERALSTOFFE (erzeugt von crystal-cacao-node/bin/kakao-tiefe-mineralblock, nicht von Hand ändern)
 export const KT_MINERALSTOFFE = Object.freeze({
   quelle: Object.freeze({awake: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mineralstoffanalyse-dartsch-crystal-cacao-awake-2026-03-24.pdf?v=1789034539", create: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mineralstoffanalyse-dartsch-crystal-cacao-create-2026-03-12.pdf?v=1789034532"}),
   bericht: Object.freeze({
