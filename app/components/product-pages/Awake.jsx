@@ -1,6 +1,8 @@
 import LazyImage from '../reusables/LazyImage';
 import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_CACAO} from '~/data/product-faqs';
+import {KakaoTiefe} from '../reusables/KakaoTiefe';
+import {KAKAO_TIEFE_AN} from '../reusables/kakao-tiefe-daten';
 
 export function BioaktiveInhaltsstoffe() {
   const IMG_FRAU =
@@ -412,6 +414,19 @@ function HerobannerWithText({src, text}) {
  * reusables/AmazonStil.jsx Kundenfragen; Muster der Geräteseiten).
  */
 export default function AwakeProductPage({faqItems = FAQ_CACAO} = {}) {
+  // Kakao-Tiefe (Grossjob 20261002-GROSSJOB-kakaoseiten-mineralstoffe-dartsch-
+  // und-crystal-niveau-auf-dach-und-us): unter dem Amazon-Bereich derselbe
+  // Baustein wie auf crystal-cacao.com, mit den Mineralstoffen aus dem
+  // Dartsch-Bericht. Die Abschnitte darunter bleiben als Rückweg stehen:
+  // KAKAO_TIEFE_AN = false in reusables/kakao-tiefe-daten.js.
+  if (KAKAO_TIEFE_AN) {
+    return (
+      <>
+        <KakaoTiefe sorte="awake" />
+        <ProductFAQ items={faqItems} />
+      </>
+    );
+  }
   return (
     <>
       <BioaktiveInhaltsstoffe />

@@ -26,6 +26,7 @@ import igStyles from '~/styles/ig-testimonials.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
+import kakaoTiefeStyles from '~/styles/kakao-tiefe.css?url';
 import {Kundenfragen, Sortenvergleich} from '~/components/reusables/AmazonStil';
 import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
 import {FAQ_CACAO} from '~/data/product-faqs';
@@ -43,6 +44,8 @@ export function links() {
     // Sortenvergleich + Kundenfragen (Amazon-Stil, s03, 30.09.2026). Beide
     // Schalter aus (amazonstil-daten.js): kein Stylesheet, Seite wie vorher.
     ...(sortenStilAn('crystal-cacao-create') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
+    // Kakao-Tiefe unter dem Amazon-Bereich (reusables/KakaoTiefe.jsx).
+    {rel: 'stylesheet', href: kakaoTiefeStyles},
   ];
 }
 
