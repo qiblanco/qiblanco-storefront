@@ -2371,6 +2371,31 @@ footer.footer :focus-visible {
   margin-top: 40px;
 }
 /*
+ * ABSTAND UNTER DER LISTE (Elina EL-20261002-e9cf5364): schliesst die Liste
+ * die Kaufbox ab, soll unter dem letzten Punkt mindestens so viel Weiss stehen
+ * wie im folgenden grauen Abschnitt zwischen Oberkante und Ueberschrift.
+ * Gemessen vorher: 8 px (Desktop) / 18 px (mobil) gegen 64 px / 48 px
+ * (.qb-igt, Instagram) bzw. 96 px / 64 px (.qh-karte, QiHome). Ein Wert fuer
+ * alle acht Kaufseiten: 96 px Desktop, 72 px mobil, gemessen von der
+ * Unterkante des letzten Punkts bis zur Oberkante des naechsten Abschnitts.
+ * Die Rand-Margin der <ul> faellt in diese Margin hinein (Kollaps), das
+ * mobile padding der .product-main (10 px) kommt dazu und ist abgezogen.
+ * Der QiMaster (.qm-pdp) bekommt den Zuschlag NICHT: dort folgt kein grauer
+ * Abschnitt, sondern die eigene Sektion mit Vorlauf -- schon vorher 152 px /
+ * 130 px Weiss bis zur naechsten Ueberschrift, mit Zuschlag waeren es 240 px.
+ */
+.product-main > .BenefitList:last-child {
+  margin-bottom: 96px;
+}
+@media screen and (max-width: 749px) {
+  .product-main > .BenefitList:last-child {
+    margin-bottom: 62px;
+  }
+}
+.qm-pdp .product-main > .BenefitList:last-child {
+  margin-bottom: 0;
+}
+/*
  * ICON-SPALTE DER NUTZEN-LISTE -- EINE Regel fuer alle Punkte.
  *
  * Seit EL-20260909-8c4001d1 gilt das fuer JEDE .BenefitList im Shop -- die
