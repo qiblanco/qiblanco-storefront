@@ -557,17 +557,17 @@ function Anmeldung() {
 function mitUmbruchstellen(link) {
   // Schlüssel = der Link bis einschließlich dieses Stücks: wächst mit jedem
   // Stück, ist also eindeutig.
-  const stuecke = link.match(/[^/]*\/|[^/]+$/g) || [link];
+  const teile = link.match(/[^/]*\/|[^/]+$/g) || [link];
   let bisher = '';
-  return stuecke.map((stueck) => {
-    bisher += stueck;
-    return stueck.endsWith('/') ? (
+  return teile.map((teil) => {
+    bisher += teil;
+    return teil.endsWith('/') ? (
       <span key={bisher}>
-        {stueck}
+        {teil}
         <wbr />
       </span>
     ) : (
-      <span key={bisher}>{stueck}</span>
+      <span key={bisher}>{teil}</span>
     );
   });
 }
