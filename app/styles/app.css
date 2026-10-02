@@ -2774,7 +2774,24 @@ footer.footer :focus-visible {
 }
 
 .CacaoBenefitList {
-  margin-top: 1.5rem; 
+  margin-top: 1.5rem;
+}
+/*
+ * ABSTAND UNTER DER KAKAO-LISTE (Elina EL-20261002-c4146cc6, Ergaenzung zu
+ * EL-20261002-e9cf5364): dieselbe Regel wie unter der .BenefitList -- vom
+ * letzten Punkt (Gesetzliche Gewaehrleistung) bis zur Oberkante des grauen
+ * Instagram-Abschnitts 96 px am Computer, 72 px mobil, also mindestens so viel
+ * wie dessen Innenabstand bis zur Ueberschrift (64 / 48 px).
+ * Gemessen vorher: 8 px Desktop, 18 px mobil. Die 8 px Restabstand des letzten
+ * Punkts und das mobile padding der .product-main (10 px) sind abgezogen.
+ */
+.product-main > .CacaoBenefitList:last-child {
+  margin-bottom: 88px;
+}
+@media screen and (max-width: 749px) {
+  .product-main > .CacaoBenefitList:last-child {
+    margin-bottom: 54px;
+  }
 }
 .CacaoBenefitList ul {
   list-style: none;
