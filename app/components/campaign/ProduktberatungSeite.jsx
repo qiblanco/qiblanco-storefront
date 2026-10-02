@@ -841,7 +841,7 @@ function Fragen() {
               <figure className="pb__bild">
                 <img
                   src={`${f.bild}&width=600`}
-                  srcSet={`${f.bild}&width=400 400w, ${f.bild}&width=600 600w, ${f.bild}&width=900 900w`}
+                  srcSet={`${f.bild}&width=400 400w, ${f.bild}&width=600 600w, ${f.bild}&width=900 900w, ${f.bild}&width=1200 1200w`}
                   sizes="(min-width: 768px) 336px, 100vw"
                   width="600"
                   height="450"
