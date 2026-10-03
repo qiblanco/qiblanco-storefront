@@ -99,3 +99,18 @@ test('Rückweg: ein Pfad ohne Eintrag liefert die imgix-URLs von vorher', () => 
   assert.equal(q.quelle, 'imgix');
   assert.equal(IMGIX_HOST, 'https://qiblanco-video.imgix.net/');
 });
+
+test('Stufendeckel greift nur auf der Shopify-Quelle (imgix-Kappung: 402 auf kleinen Stufen)', () => {
+  const jsx = readFileSync(join(APP, 'components', 'reusables', 'ImgixVideo.jsx'), 'utf8');
+  const deckel = jsx.match(/const HLS_STUFENDECKEL = \{([^}]*)\}/);
+  assert.ok(deckel, 'HLS_STUFENDECKEL fehlt');
+  assert.match(deckel[1], /capLevelToPlayerSize:\s*true/);
+  assert.match(deckel[1], /maxDevicePixelRatio:\s*1\.5/);
+  const basis = jsx.match(/const HLS_KONFIG = \{([^}]*)\}/);
+  assert.ok(basis && !/capLevel/.test(basis[1]), 'Deckel in der Basis: gilt dann auch für imgix');
+  assert.match(
+    jsx,
+    /new Hls\(\s*quelle === 'shopify' \? \{\.\.\.HLS_KONFIG, \.\.\.HLS_STUFENDECKEL\} : HLS_KONFIG,?\s*\)/,
+    'Hls-Konstruktor koppelt den Deckel nicht an die Quelle',
+  );
+});
