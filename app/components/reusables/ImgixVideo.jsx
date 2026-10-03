@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import Hls from 'hls.js';
+import {videoQuellen} from '~/data/video-quellen';
 import {hatHoerbarenTon} from '~/lib/video-ton';
 import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/components/reusables/video360-ersatzbild';
 
@@ -44,18 +45,25 @@ const SOUND_STORAGE_PREFIX = 'qb-video-sound:';
  * - Die imgix-URL bleibt unverändert: jede neue Parameterkombination löst bei
  *   imgix eine neue, bezahlte Kodierung aus.
  *
- * NOCH NICHT DRIN: `capLevelToPlayerSize` (Stufe nach Spielergröße). Seit dem
- * 29.09.2026 ist das imgix-Kontingent gekappt. imgix liefert dann nur Segmente,
- * die schon einmal erzeugt wurden, und antwortet sonst mit HTTP 402
- * (plan_credits_depleted_payment_required). Die großen Stufen liegen fertig vor,
- * die kleinen nur lückenhaft: mit dem Deckel blieb das Video nach dem ersten
- * Segment stehen. Der Deckel folgt, sobald imgix wieder erzeugt (Folgeauftrag
- * 20260929-imgix-dach-videospieler-stufendeckel-nach-kontingent).
+ * STUFENDECKEL NUR AUF DER SHOPIFY-QUELLE: `capLevelToPlayerSize` wählt die
+ * Stufe nach Spielergröße, `maxDevicePixelRatio` 1,5 hält sie auf dem Handy
+ * (DPR 3) unter 1080. Gemessen am 29.09.2026 mit diesem Deckel: Desktop 480x480,
+ * 1,6 MB statt 14,4 MB in 10 s. Auf imgix bleibt er aus: das Konto ist seit dem
+ * 29.09.2026 gekappt, nie erzeugte kleine Stufen antworten dort mit HTTP 402,
+ * und das Video blieb mit Deckel nach dem ersten Segment stehen. Shopify liefert
+ * alle Stufen (1080/720/480) vollständig. Kippt VIDEO_QUELLE zurück auf
+ * 'imgix', gilt wieder die Konfiguration ohne Deckel
+ * (Folgeauftrag 20260929-imgix-dach-videospieler-stufendeckel-nach-kontingent).
  */
 const HLS_KONFIG = {
   maxBufferLength: 10,
   maxMaxBufferLength: 20,
   maxBufferSize: 8 * 1000 * 1000,
+};
+
+const HLS_STUFENDECKEL = {
+  capLevelToPlayerSize: true,
+  maxDevicePixelRatio: 1.5,
 };
 
 // Vorlauf vor dem sichtbaren Bereich: knapp ein Handy-Bildschirm, damit das
@@ -103,8 +111,12 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
   // .net liefert außerdem OHNE Redirect und aus Frankfurt statt aus
   // us-east1 — ein Grund mehr, hls.js und den Sound-Toggle unangetastet zu
   // lassen: dieser Wechsel ist ein Domaintausch, kein Formatwechsel.
-  const hlsUrl = `https://qiblanco-video.imgix.net/${videoPath}?fm=hls`;
-  const mp4Url = `https://qiblanco-video.imgix.net/${videoPath}?fm=mp4`;
+  //
+  // KONTINGENT-KAPPUNG 2026-10-03 (Regelkreis video-spielbarkeit, Arm BREIT):
+  // imgix antwortet auf nicht gecachte Segmente mit HTTP 402, das Video
+  // bleibt stehen. Die Quelle kommt deshalb aus app/data/video-quellen.js:
+  // dasselbe Video als Shopify-Video, Rückweg dort per VIDEO_QUELLE.
+  const {hls: hlsUrl, mp4: mp4Url, quelle} = videoQuellen(videoPath);
 
   // Gemessene Ton-Wahrheit (SSoT app/lib/video-ton.js). Konstant je
   // videoPath, daher kein State und kein Effekt — das Video rendert
@@ -127,7 +139,9 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
 
     function laden() {
       if (Hls.isSupported()) {
-        hls = new Hls(HLS_KONFIG);
+        hls = new Hls(
+          quelle === 'shopify' ? {...HLS_KONFIG, ...HLS_STUFENDECKEL} : HLS_KONFIG,
+        );
         if (mitErsatz) {
           // Fataler Fehler (Netz, Manifest, Medien): hls.js gibt auf, das
           // <video> selbst meldet dann nicht zwingend etwas.
@@ -165,7 +179,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
       if (beobachter) beobachter.disconnect();
       if (hls) hls.destroy();
     };
-  }, [hlsUrl, mp4Url, mitErsatz]);
+  }, [hlsUrl, mp4Url, quelle, mitErsatz]);
 
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
   // das Attribut bleibt für die Autoplay-Erlaubnis unveraendert `muted`).
@@ -220,6 +234,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
         ref={videoRef}
         data-video={videoPath}
         data-video-familie="imgix"
+        data-video-quelle={quelle}
         data-video-ton={zeigtTonSteuerung ? 'hoerbar' : 'stumm'}
         muted
         playsInline
