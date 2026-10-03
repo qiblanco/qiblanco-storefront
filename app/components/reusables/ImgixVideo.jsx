@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import Hls from 'hls.js';
+import {videoQuellen} from '~/data/video-quellen';
 import {hatHoerbarenTon} from '~/lib/video-ton';
 import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/components/reusables/video360-ersatzbild';
 
@@ -103,8 +104,12 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
   // .net liefert außerdem OHNE Redirect und aus Frankfurt statt aus
   // us-east1 — ein Grund mehr, hls.js und den Sound-Toggle unangetastet zu
   // lassen: dieser Wechsel ist ein Domaintausch, kein Formatwechsel.
-  const hlsUrl = `https://qiblanco-video.imgix.net/${videoPath}?fm=hls`;
-  const mp4Url = `https://qiblanco-video.imgix.net/${videoPath}?fm=mp4`;
+  //
+  // KONTINGENT-KAPPUNG 2026-10-03 (Regelkreis video-spielbarkeit, Arm BREIT):
+  // imgix antwortet auf nicht gecachte Segmente mit HTTP 402, das Video
+  // bleibt stehen. Die Quelle kommt deshalb aus app/data/video-quellen.js:
+  // dasselbe Video als Shopify-Video, Rückweg dort per VIDEO_QUELLE.
+  const {hls: hlsUrl, mp4: mp4Url, quelle} = videoQuellen(videoPath);
 
   // Gemessene Ton-Wahrheit (SSoT app/lib/video-ton.js). Konstant je
   // videoPath, daher kein State und kein Effekt — das Video rendert
@@ -220,6 +225,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
         ref={videoRef}
         data-video={videoPath}
         data-video-familie="imgix"
+        data-video-quelle={quelle}
         data-video-ton={zeigtTonSteuerung ? 'hoerbar' : 'stumm'}
         muted
         playsInline

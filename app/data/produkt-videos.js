@@ -22,8 +22,9 @@
  * die Liste eines Produkts leer, rendert die Seite KEINE Kachel und der
  * Vorschaustreifen ist byte-gleich zum Stand vor diesem Bau.
  *
- * BEWUSST OHNE IMPORT (Hausmuster podcast-daten.server.js): so prüft
- * `node --test test/produkt-videos.test.mjs` die Regeln hermetisch.
+ * NUR EIN RELATIVER IMPORT (Hausmuster podcast-daten.server.js): video-quellen.js
+ * importiert selbst nichts, so prüft `node --test test/produkt-videos.test.mjs`
+ * die Regeln weiter hermetisch.
  *
  * VERTRAG MIT DER RAND-PROBE (claude-jobs/growth-m-lp-produktseite-verkauft/
  * pruefungen/probe_produktvideos_am_rand.py): das erste aktive Video eines
@@ -32,7 +33,7 @@
  * einen Start im Dialog.
  */
 
-const IMGIX = 'https://qiblanco-video.imgix.net/';
+import {videoQuellen} from './video-quellen.js';
 
 /*
  * imgix liefert das Video (HLS, mp4). Das STANDBILD kommt NICHT von imgix,
@@ -43,12 +44,15 @@ const IMGIX = 'https://qiblanco-video.imgix.net/';
  * img-src erlaubt; `&width=` skaliert dort serverseitig.
  */
 function imgixVideo(pfad, standbild) {
+  // Quelle aus video-quellen.js: seit der imgix-Kappung (03.10.2026) dasselbe
+  // Video als Shopify-Video, Rückweg dort per VIDEO_QUELLE.
+  const {hls, mp4, familie} = videoQuellen(pfad);
   return {
-    hls: `${IMGIX}${pfad}?fm=hls`,
-    mp4: `${IMGIX}${pfad}?fm=mp4`,
+    hls,
+    mp4,
     poster: `${standbild}&width=720`,
     vorschau: `${standbild}&width=240`,
-    familie: 'imgix',
+    familie,
   };
 }
 
