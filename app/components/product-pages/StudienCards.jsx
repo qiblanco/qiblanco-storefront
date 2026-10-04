@@ -36,10 +36,10 @@ import {StudienSlider} from '~/components/reusables/StudienSlider';
  * exakt dieselben Abstaende wie die beiden anderen Slider-Seiten. Das ist eine
  * Vereinheitlichung, kein Verlust.
  */
-export function StudienCards({headline = 'Wirkung an menschlichen Zellen bestätigt!', children}) {
+export function StudienCards({headline = 'Wirkung an Zellkulturen untersucht', children}) {
   return (
     <div className="qione-studien-cards NormalSectionSize">
-      {/* children: optionaler Beleg-Einschub zwischen Kacheln und Studienzeile
+      {/* children: optionaler Beleg-Einschub zwischen Kacheln und Knopf
           (siehe StudienSlider). Nur die Qi-Master-Seite gibt ihn mit. */}
       <StudienSlider headline={headline}>{children}</StudienSlider>
     </div>

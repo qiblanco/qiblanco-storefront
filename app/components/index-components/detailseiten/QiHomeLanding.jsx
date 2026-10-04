@@ -30,7 +30,7 @@ export function QiHomeLanding() {
       <div className="NormalSectionSize">
         <ReputonWidget />
       </div>
-      <Studien headline="Wirkung an menschlichen Zellen bestätigt!" />
+      <Studien headline="Wirkung an Zellkulturen untersucht" />
       <ScrollMikroskopVideo />
       <HeroBannerParallax
         backgroundImage="Anna_Vers2_QiHome-1024x587.jpg_1.webp?v=1670796013"

@@ -117,7 +117,7 @@ export function HomepageSections({overrides = {}}) {
 
       <PeerReviewStudies />
 
-      <Studien dataSection="studien" headline="Wirkung an menschlichen Zellen bestätigt!" />
+      <Studien dataSection="studien" headline="Wirkung an Zellkulturen untersucht" />
 
       <ScrollMikroskopVideo dataSection="mikroskop-video" />
 

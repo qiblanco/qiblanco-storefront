@@ -606,8 +606,9 @@ function MechanismSection() {
    den Startseiten-Block „6 Jahre Forschung" ersetzt — übernommen, nicht
    nachgebaut (reusables/PeerReviewStudies, eine Definition für beide Seiten).
    Zum Block gehört der Studienslider mit seiner Überschrift „Wirkung an
-   menschlichen Zellen bestätigt!", der Schlusszeile und dem Knopf
-   „Zelluntersuchungen ansehen" — exakt wie auf der Startseite.
+   Zellkulturen untersucht" und dem Knopf „Zelluntersuchungen ansehen" — exakt
+   wie auf der Startseite. (Überschrift am 04.10.2026 gesenkt, die Schlusszeile
+   darunter im selben Zug gestrichen.)
 
    DER SLIDER STEHT DESHALB NUR NOCH HIER. Bis zu diesem Tag hing er als
    `<LpStudien headline="" />` am ENDE dieser Sektion, unter dem Mikroskop-
@@ -655,12 +656,12 @@ function ScienceSection() {
       />
       {/* DIE SCHRIFTLICHE ERKLÄRUNG ZUM BLOCK, den das Video darueber eröffnet:
           „6 Jahre Forschung" (PeerReviewStudies, von der Startseite übernommen)
-          und der Studienslider „Wirkung an menschlichen Zellen bestätigt!".
+          und der Studienslider „Wirkung an Zellkulturen untersucht".
           Wortlaut unverändert — bewegt wurde die Reihenfolge, nicht der Text. */}
       <PeerReviewStudies dataSection="lp-a-peer-review-studien" />
       <LpStudien
         dataSection="lp-a-studien"
-        headline="Wirkung an menschlichen Zellen bestätigt!"
+        headline="Wirkung an Zellkulturen untersucht"
       />
       {/* Der Knopf bleibt direkt unter den Studienzahlen — dort, wo der Beweis
           frisch ist. Er ist mit dem Block gewandert, nicht stehengeblieben:

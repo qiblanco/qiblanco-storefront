@@ -6107,7 +6107,21 @@ ul.kakao-children li {
   line-height: 1;
 }
 .ghx-studien__arrow:hover { background: #f5f5f4; }
-.ghx-studien__footnote { text-align: center; margin: 18px 0 10px; }
+/* DER KNOPF UNTER DEM STUDIEN-SLIDER TRÄGT SEINEN ABSTAND SELBST (04.10.2026,
+   Job 20261004-studien-slider-a-h-vollzug-aiceo). Bis dahin stand zwischen
+   Pfeilreihe und Knopf die Schlusszeile .ghx-studien__footnote und trug mit
+   18 px oben und 10 px unten den ganzen Abstand; mit ihr fällt er auf 0 —
+   gemessen am gerenderten Element auf 1280 und 390 px, sechs Seiten, zwölfmal
+   0 px. 32 px ist der Wert des 8er-Rasters, den die Pfeilreihe auch nach oben
+   zur Fortschrittsleiste hält (20 px) plus eine Stufe: der Knopf ist die
+   Handlung des Blocks und steht frei, nicht an der Bedienung des Sliders.
+   Kindselektor, damit er nur den einen Knopf des Bausteins trifft und auch
+   dann gilt, wenn eine Seite einen Einschub (children) davorsetzt.
+   Die route-gescopten Regeln für .ghx-studien__footnote (pdp-qi.css,
+   qi-master.css, schlaf-zellen-schutz.css, ExclusiveSolutions.jsx) haben seit
+   diesem Tag keinen Gegenstand mehr: wirkungslos, nicht falsch, wie die
+   __nav-Regeln oben. */
+.ghx-studien > a.btn--secondary { margin-top: 32px; }
 
 /* Slider-Interaktions-Standard (GL-DES-0012): Desktop-Maus-Drag am
    Studien-Track (Touch scrollt weiterhin nativ ueber overflow-x). */

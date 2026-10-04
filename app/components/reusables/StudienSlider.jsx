@@ -235,16 +235,20 @@ export function StudienSlider({dataSection, studien = STUDIEN, headline, childre
           );
         })}
       </StandardSlider>
-      {/* EINSCHUB ZWISCHEN KACHELN UND STUDIENZEILE, nur wenn die aufrufende
+      {/* EINSCHUB ZWISCHEN KACHELN UND KNOPF, nur wenn die aufrufende
           Seite ihn mitgibt (2026-09-26, Job 20260926-vollzug-ai-ceo-entscheide-
           shop-prio35-s03): die Qi-Master-Seite setzt hier die gemessenen Werte
           ihrer zwei Studien als Beleg. Ohne children rendert nichts — das
           Markup von /pages/exclusive-solutions, /pages/qione-2-pro-2x und
           /products/qione-2-pro bleibt byte-gleich. */}
       {children}
-      <p className="ghx-studien__footnote">
-        <strong>Wissenschaftlich getestet und in internationalen Fachpublikationen bestätigt.</strong>
-      </p>
+      {/* HIER STAND BIS ZUM 04.10.2026 EINE FETTE SCHLUSSZEILE, die den Kacheln
+          ein „bestätigt" nachschob. Sie ist ersatzlos gestrichen (Entscheid
+          AI-CEO, Job 20261004-studien-slider-a-h-vollzug-aiceo): die Kacheln
+          nennen Journal und Zelltyp je Publikation, der Knopf führt zu den
+          Untersuchungen, und /pages/kritik sagt, warum das Wort dort fehlt.
+          Den Abstand zum Knopf trug diese Zeile; jetzt trägt ihn der Knopf
+          selbst (app.css, `.ghx-studien > a.btn--secondary`). */}
       <Link prefetch="intent" to="/pages/studien" className="btn--secondary m-center">
         Zelluntersuchungen ansehen
       </Link>

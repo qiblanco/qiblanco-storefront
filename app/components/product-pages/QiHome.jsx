@@ -60,7 +60,7 @@ export function QiHome({block = undefined, faqItems = FAQ_QIHOME_AIR}) {
         "QiHome® und die Vorteile für Kinder"
       </h2>
       <YoutubeIframe link={"https://www.youtube.com/embed/mH0vaUEeFqg"} titel="5G & E-Smog | Welche Optionen bleiben uns? Dr. Klinghardt Therapeut & Heilpraktiker Matthias Cebula" />
-      <Studien headline={"Wirkung an menschlichen Zellen bestätigt!"} />
+      <Studien headline={"Wirkung an Zellkulturen untersucht"} />
       <SchutzVorGeopathogenerStrahlung />
       <MassgeschneiderteTechnologie />
       <CallToAction 

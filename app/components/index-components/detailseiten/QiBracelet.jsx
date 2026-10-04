@@ -17,7 +17,7 @@ export function QiBracelet() {
       <LogoBar />
       <Expertenmeinungen />
       <LeistungsstarkeUnterstutzung />
-      <Studien headline={"Wirkung an menschlichen Zellen bestätigt!"} />
+      <Studien headline={"Wirkung an Zellkulturen untersucht"} />
       <ScrollMikroskopVideo />
       <h2 className="text-center">Zelluntersuchungen</h2>
       <ZellDiagramme />

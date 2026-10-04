@@ -16,9 +16,11 @@ import {StudienSlider} from '~/components/reusables/StudienSlider';
  * Konsumenten-Datei angefasst werden muss.
  *
  * WAS BEWUSST ERHALTEN BLEIBT (steckt jetzt im Slider):
- *   - die Schlusszeile "Wissenschaftlich getestet und in internationalen
- *     Fachpublikationen bestaetigt."
  *   - der Button "Zelluntersuchungen ansehen" -> /pages/studien
+ * Die fette Schlusszeile unter den Kacheln ist am 04.10.2026 gestrichen, die
+ * Überschrift im selben Zug auf "Wirkung an Zellkulturen untersucht" gesenkt
+ * (Job 20261004-studien-slider-a-h-vollzug-aiceo): e0002 misst an porzinen
+ * IPEC-J2-Zellen, "menschliche Zellen" stimmte für diese Arbeit nicht.
  *
  * `data-section` bleibt AUF DIESEM aeusseren Element, exakt dort, wo es vorher
  * stand — der Watch-/Heatmap-Anker von HomepageSections (`dataSection="studien"`)
@@ -32,7 +34,7 @@ import {StudienSlider} from '~/components/reusables/StudienSlider';
  * auf den Default abbilden, bekaemen diese sechs Seiten eine zweite,
  * doppelte H2. Leeres headline heißt deshalb weiterhin: keine Ueberschrift.
  */
-export function Studien({headline = 'Wirkung an menschlichen Zellen bestätigt!', dataSection}) {
+export function Studien({headline = 'Wirkung an Zellkulturen untersucht', dataSection}) {
   return (
     <div className="Studien NormalSectionSize" data-section={dataSection}>
       <StudienSlider headline={headline} />

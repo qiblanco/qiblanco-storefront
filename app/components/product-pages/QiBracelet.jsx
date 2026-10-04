@@ -45,7 +45,7 @@ export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
       />
       <RisikofreiErleben />
       <Gitterchip />
-      <Studien headline={'Wirkung an menschlichen Zellen bestätigt!'} />
+      <Studien headline={'Wirkung an Zellkulturen untersucht'} />
       <RatenzahlungHerobanner
         text={
           <>
