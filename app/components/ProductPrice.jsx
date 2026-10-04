@@ -67,8 +67,8 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     if (!money) return null;
     const numericAmount = Number.parseFloat(money.amount);
     if (!Number.isFinite(numericAmount)) return null;
-    // Kassenbetrag-Regel (markt-pricing.js, kassenAnzeige; Grossjob 20261004-
-    // GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s03):
+    // Kassenbetrag-Regel (markt-pricing.js, kassenAnzeige; Grossjob 20261004
+    // preisanzeige, s03):
     // die Seite nennt den Betrag der Kasse, ganz ohne Cent, sonst cent-genau
     // (AT Kakao 78,13 statt 79). DE mit 1 Cent Kalibrier-Toleranz: QiOne 2 Pro
     // 913,45 netto = 1087,0055 bleibt 1.087.

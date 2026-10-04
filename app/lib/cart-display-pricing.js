@@ -155,9 +155,9 @@ const SATZ_JE_LAND = {
   GB: {regel: 0, ermaessigt: 0},
   US: {regel: 0, ermaessigt: 0},
 };
-// SATZ-ACHSE LAND, NICHT WAEHRUNG (Grossjob 20261004-GROSSJOB-preisanzeige-
-// netto-brutto-rundung-alle-shops-waehrungen, s03). Die Zeilen ab CH stammen
-// aus der Kassenmessung je Land (preisanzeige-pruefung/data/saetze.json,
+// SATZ-ACHSE LAND, NICHT WÄHRUNG (Grossjob 20261004 preisanzeige, s03).
+// Die Zeilen ab CH stammen
+// aus der Kassenmessung je Land (Kassenmessung s02, saetze.json,
 // 2026-10-04): Steuer der Kassenseite geteilt durch die Netto-Zwischensumme,
 // je Land eine Messung Regelsatz und eine Kakao, gegen echte Bestellungen
 // gekreuzt, wo es welche gibt. CH ist die Ausnahme in der Quelle: die
@@ -165,13 +165,13 @@ const SATZ_JE_LAND = {
 // tragen 8,1 Prozent obendrauf, auch auf den Kakao (36 bzw. 39 Zeilen). Bis
 // zu diesem Job galt CHF als Endbetrag, und die Seite nannte 8,1 Prozent zu
 // wenig.
-// BENANNTE LUECKEN (kein Satz, also Status quo): LI, weil der Kakao-Satz nur
+// BENANNTE LÜCKEN (kein Satz, also Status quo): LI, weil der Kakao-Satz nur
 // von der adresslosen Kassenseite kommt und dieselbe Quelle in CH nachweislich
-// falsch liegt; die EU-Laender ohne Messung (BG, CY, CZ, DK, EE, FI, GR, HR,
+// falsch liegt; die EU-Länder ohne Messung (BG, CY, CZ, DK, EE, FI, GR, HR,
 // HU, LT, LU, LV, MT, RO, SI, SK). Ein Land ohne Zeile bekommt in EUR den
-// DE-Satz und in jeder anderen Waehrung keinen Aufschlag, siehe kassenSatz.
+// DE-Satz und in jeder anderen Währung keinen Aufschlag, siehe kassenSatz.
 
-/** Kassenwaehrung je Land mit Nicht-EUR-Kasse (gemessen 2026-10-04, s02). */
+/** Kassenwährung je Land mit Nicht-EUR-Kasse (gemessen 2026-10-04, s02). */
 const KASSEN_WAEHRUNG = {
   CH: 'CHF',
   PL: 'PLN',
@@ -198,7 +198,7 @@ export const STEUER_LAENDER = Object.keys(SATZ_JE_LAND);
  * unterscheiden.
  *
  * @param {string} handle Produkt-Handle (entscheidet die Steuerklasse)
- * @param {string} [land] ISO-Land des aufgeloesten Marktes (Default DE)
+ * @param {string} [land] ISO-Land des aufgelösten Marktes (Default DE)
  * @returns {number} Steuersatz als Dezimalzahl
  */
 export function taxRateForHandle(handle, land) {
@@ -209,23 +209,23 @@ export function taxRateForHandle(handle, land) {
 }
 
 /**
- * DER AUFZUSCHLAGENDE SATZ, den die Kasse fuer dieses Land nimmt (ohne den
- * Preismodus; den prueft der Aufrufer). Eine Stelle fuer Seite und Warenkorb.
+ * DER AUFZUSCHLAGENDE SATZ, den die Kasse für dieses Land nimmt (ohne den
+ * Preismodus; den prüft der Aufrufer). Eine Stelle für Seite und Warenkorb.
  *
  * Reihenfolge: hat das Land einen GEMESSENEN Satz und steht der Preis in
- * seiner Kassenwaehrung, gilt dieser Satz (CH: CHF-Preis mal 1,081). Sonst
+ * seiner Kassenwährung, gilt dieser Satz (CH: CHF-Preis mal 1,081). Sonst
  * bleibt es beim Stand vor dem 2026-10-04: in EUR der DE-Satz, in jeder
- * anderen Waehrung keiner.
+ * anderen Währung keiner.
  *
  * @param {string} handle Produkt-Handle (entscheidet die Steuerklasse)
- * @param {string} [currencyCode] Waehrung des API-Preises (Default EUR)
- * @param {string} [land] ISO-Land des aufgeloesten Marktes (Default DE)
+ * @param {string} [currencyCode] Währung des API-Preises (Default EUR)
+ * @param {string} [land] ISO-Land des aufgelösten Marktes (Default DE)
  * @returns {number} Satz als Dezimalzahl
  */
 export function kassenSatz(handle, currencyCode, land) {
   const l = String(land || STEUER_LAND_DEFAULT).toUpperCase();
   const waehrung = currencyCode || 'EUR';
-  // Der Satz eines Landes gilt nur fuer einen Preis in der Kassenwaehrung
+  // Der Satz eines Landes gilt nur für einen Preis in der Kassenwährung
   // dieses Landes. Ein CHF-Preis ohne Land (Default DE) bekommt so nicht die
   // deutschen 19 Prozent.
   if (
@@ -265,13 +265,13 @@ export function getCartLinePriceDisplay(line, land) {
  * @returns {number} Brutto, UNGERUNDET (EUR) bzw. Endbetrag (andere Waehrung)
  */
 function bruttoZeileRoh(line, land) {
-  // M3: Nicht-EUR-Maerkte (Shopify Markets, CHF/USD/GBP): nie die deutsche
+  // M3: Nicht-EUR-Märkte (Shopify Markets, CHF/USD/GBP): nie die deutsche
   // MwSt aufschlagen, sondern den Satz des Landes (US/GB 0, CH 8,1 Prozent).
   const net = parseFloat(line?.cost?.totalAmount?.amount ?? '0');
   if (!Number.isFinite(net)) return 0;
 
   if (getCurrencyCode(line) !== 'EUR') {
-    // Satz-Achse LAND (s03 2026-10-04): CHF ist nur dort Endbetrag, wo fuer
+    // Satz-Achse LAND (s03 2026-10-04): CHF ist nur dort Endbetrag, wo für
     // das Land kein Kassensatz gemessen ist; CH nimmt 8,1 Prozent obendrauf.
     if (istBrutto()) return net;
     return net * (1 + kassenSatz(getProductHandle(line), getCurrencyCode(line), land));

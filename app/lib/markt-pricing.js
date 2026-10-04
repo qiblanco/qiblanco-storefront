@@ -41,11 +41,11 @@ import {istBrutto} from './preismodus.js';
  *   Kassensatz des Landes (kassenSatz), 0 im Preismodus brutto
  */
 export function anzeigeSatz(handle, currencyCode, land) {
-  // SATZ-ACHSE LAND (Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-
-  // rundung-alle-shops-waehrungen, s03): die Waehrung entscheidet nicht mehr,
+  // SATZ-ACHSE LAND (Grossjob 20261004 preisanzeige, s03): die Währung
+  // entscheidet nicht mehr,
   // OB Steuer aufkommt. CH zahlt auf den CHF-Preis 8,1 Prozent obendrauf;
-  // kassenSatz() kennt die gemessenen Laender und laesst ungemessene in
-  // Fremdwaehrung beim Endbetrag.
+  // kassenSatz() kennt die gemessenen Länder und lässt ungemessene in
+  // Fremdwährung beim Endbetrag.
   // DRITTE ACHSE, der PREISMODUS (Grossjob 20260924-kasse-zeigt-brutto-
   // preise-wie-produktseite-prio10, s02): steht der Shop auf brutto, ist auch
   // der EUR-Preis schon der Endbetrag -- in DE ohnehin, in AT über Shopifys
@@ -75,8 +75,8 @@ export function bruttoAnzeige(amount, handle, currencyCode, land) {
 /**
  * KASSENBETRAG-ANZEIGE: aus dem Kundenbetrag die Zahl, die die Seite nennt.
  * Die Regel heißt: die Seite nennt den Betrag, den die Kasse des Landes nimmt
- * (Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-
- * waehrungen, Konzept Abschnitt 2, Christian 2026-10-04: "1 Euro mehr
+ * (Grossjob 20261004 preisanzeige, Konzept Abschnitt 2, Christian
+ * 2026-10-04: "1 Euro mehr
  * anzeigen macht keinen Sinn").
  *
  * Gerechnet wird auf den Cent. Ist der Betrag ein ganzer Euro, zeigt die Seite

@@ -85,14 +85,14 @@ export function cacaoPricing(quantity, selectedVariant, handle, land) {
     // Staffelpreis ist ein MODELL des Festbetrags (markt-pricing.js,
     // staffelModellAnzeige): DE gerundet (3x Modell 53,21, Kasse 53,00).
     einzel = staffelModellAnzeige((netto - rabattProEinheit) * (1 + satz), land);
-    // KASSENBETRAG DER ZEILE ausserhalb DE (Grossjob 20261004-GROSSJOB-
-    // preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s03): der
+    // KASSENBETRAG DER ZEILE außerhalb DE (Grossjob 20261004 preisanzeige,
+    // s03): der
     // Festbetrag ist so gesetzt, dass der DE-Bruttobetrag ganz ist. Die
     // Netto-Zeile nach Rabatt ist also der DE-Ganzbetrag durch (1 + DE-Satz),
     // auf den Cent: 3x 159 / 1,07 = 148,60, 2x 122 / 1,07 = 114,02 (gemessen
-    // als Cart-Zeile 2026-10-04, preisanzeige-pruefung messung-20261004T201009Z).
+    // als Cart-Zeile 2026-10-04, Kassenmessung s02 vom 2026-10-04).
     // Darauf kommt der Satz des Landes: AT 3x 148,60 x 1,10 = 163,46 = Kasse.
-    // Packungspreis mal Menge waere 1 Cent daneben (78,13 x 3 = 234,39, Kasse
+    // Packungspreis mal Menge wäre 1 Cent daneben (78,13 x 3 = 234,39, Kasse
     // 71,03 x 3 x 1,10 = 234,40), darum rechnet der Gesamtbetrag die Zeile.
     let nettoZeile = netto * menge;
     if (rabattProzent > 0) {
@@ -130,7 +130,7 @@ export function cacaoPricing(quantity, selectedVariant, handle, land) {
   // DAS der Betrag, den ein Klick kostet. In DE trifft der Festbetrag seit
   // 2026-09-12 den runden Bruttobetrag je Packung exakt, darum ist dort
   // Packungspreis mal Menge gleich dem Warenkorb (gemessen 2026-09-24 per
-  // cartCreate: 76 / 122 / 159). Ausserhalb DE rechnet er die Zeile (oben).
+  // cartCreate: 76 / 122 / 159). Außerhalb DE rechnet er die Zeile (oben).
   return {
     price: formatPreis(einzel, waehrung, 'pdp'),
     priceNum: einzel,
