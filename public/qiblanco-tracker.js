@@ -36,6 +36,10 @@
     // Richtungen. Bewacht von probe-uppromote-dach (Subkommando `naht`).
     sca_ref: true,
     sca_source: true,
+    // Google-Ads-Kampagnen-ID (AI-CEO K2 vom 2026-10-04, J5). Ohne diesen
+    // Eintrag wird sie nicht gespeichert und hängt allein an der Landeseite.
+    // ZWILLING: app/lib/checkout-tracking.js TRACKING_PARAM_NAMES.
+    gad_campaignid: true,
   };
 
   function isTrackingParamName(name) {
