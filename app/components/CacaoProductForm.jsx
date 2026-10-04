@@ -4,7 +4,7 @@ import {useAside} from './Aside';
 import {
   anzeigeSatz,
   formatPreis,
-  ganzEuroAnzeige,
+  kassenAnzeige,
   staffelModellAnzeige,
 } from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
@@ -61,6 +61,9 @@ export function cacaoPricing(quantity, selectedVariant, handle, land) {
   let waehrung = selectedVariant?.price?.currencyCode || 'EUR';
   let einzel;
   let compareAt;
+  let gesamtNum;
+  let compareAtGesamtNum = null;
+  const menge = Number.parseInt(quantity, 10) || 1;
   // NICHT-EUR-MAERKTE BEKOMMEN KEINE STAFFEL-BEHAUPTUNG (2026-09-12).
   // Der Mengenrabatt ist seit dem 2026-09-12 ein FESTBETRAG in EUR; Shopify
   // rechnet ihn je Markt per Wechselkurs um. Diesen Kurs kann die Kaufseite
@@ -74,16 +77,41 @@ export function cacaoPricing(quantity, selectedVariant, handle, land) {
   const rabattProzent =
     waehrung === 'EUR' ? staffel.rabattProzent : 0;
   const rabattImWarenkorb = waehrung !== 'EUR' && staffel.rabattProzent > 0;
+  const istDE = String(land || 'DE').toUpperCase() === 'DE';
   if (Number.isFinite(netto)) {
     const satz = anzeigeSatz(handle, waehrung, land);
     const rabattProEinheit =
       Math.floor(netto * (rabattProzent / 100) * 100) / 100;
     // Staffelpreis ist ein MODELL des Festbetrags (markt-pricing.js,
-    // staffelModellAnzeige): DE gerundet (3x Modell 53,21, Kasse 53,00),
-    // sonst aufgerundet -- AT 1x nennt 79 statt 78 bei 78,13 Kasse.
+    // staffelModellAnzeige): DE gerundet (3x Modell 53,21, Kasse 53,00).
     einzel = staffelModellAnzeige((netto - rabattProEinheit) * (1 + satz), land);
-    compareAt =
-      rabattProzent > 0 ? ganzEuroAnzeige(netto * (1 + satz), land) : null;
+    // KASSENBETRAG DER ZEILE ausserhalb DE (Grossjob 20261004-GROSSJOB-
+    // preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s03): der
+    // Festbetrag ist so gesetzt, dass der DE-Bruttobetrag ganz ist. Die
+    // Netto-Zeile nach Rabatt ist also der DE-Ganzbetrag durch (1 + DE-Satz),
+    // auf den Cent: 3x 159 / 1,07 = 148,60, 2x 122 / 1,07 = 114,02 (gemessen
+    // als Cart-Zeile 2026-10-04, preisanzeige-pruefung messung-20261004T201009Z).
+    // Darauf kommt der Satz des Landes: AT 3x 148,60 x 1,10 = 163,46 = Kasse.
+    // Packungspreis mal Menge waere 1 Cent daneben (78,13 x 3 = 234,39, Kasse
+    // 71,03 x 3 x 1,10 = 234,40), darum rechnet der Gesamtbetrag die Zeile.
+    let nettoZeile = netto * menge;
+    if (rabattProzent > 0) {
+      const satzDE = anzeigeSatz(handle, waehrung, 'DE');
+      const deGanz = Math.round((netto - rabattProEinheit) * (1 + satzDE));
+      nettoZeile = Math.round(((deGanz * menge) / (1 + satzDE)) * 100) / 100;
+    }
+    if (istDE) {
+      gesamtNum = einzel * menge;
+    } else {
+      gesamtNum = kassenAnzeige(nettoZeile * (1 + satz), land);
+      einzel = kassenAnzeige(gesamtNum / menge, land);
+    }
+    if (rabattProzent > 0) {
+      compareAt = kassenAnzeige(netto * (1 + satz), land);
+      compareAtGesamtNum = kassenAnzeige(netto * menge * (1 + satz), land);
+    } else {
+      compareAt = null;
+    }
   } else {
     if (typeof console !== 'undefined') {
       console.warn(
@@ -94,25 +122,28 @@ export function cacaoPricing(quantity, selectedVariant, handle, land) {
     waehrung = 'EUR';
     einzel = fallback.einzel;
     compareAt = fallback.compareAt;
+    gesamtNum = einzel * menge;
+    compareAtGesamtNum = compareAt != null ? compareAt * menge : null;
   }
   // GESAMTPREIS DES KAUFKNOPFS (Job rtbefund-kopfpreis-vs-kaufmenge-wache-
   // 20260924): der Knopf legt `quantity` Packungen in den Warenkorb, also ist
-  // DAS der Betrag, den ein Klick kostet. Im EUR-Markt trifft der Festbetrag
-  // seit 2026-09-12 den runden Bruttobetrag je Packung exakt, darum ist
-  // Packungspreis mal Menge hier gleich dem Warenkorb (gemessen 2026-09-24 per
-  // cartCreate: 76 / 122 / 159). Eine Zeilen-Rundung wie im Entwurf vom
-  // 2026-09-01 (3x = 160) wäre seit dem Festbetrag FALSCH.
-  const menge = Number.parseInt(quantity, 10) || 1;
+  // DAS der Betrag, den ein Klick kostet. In DE trifft der Festbetrag seit
+  // 2026-09-12 den runden Bruttobetrag je Packung exakt, darum ist dort
+  // Packungspreis mal Menge gleich dem Warenkorb (gemessen 2026-09-24 per
+  // cartCreate: 76 / 122 / 159). Ausserhalb DE rechnet er die Zeile (oben).
   return {
     price: formatPreis(einzel, waehrung, 'pdp'),
     priceNum: einzel,
     compareAt: compareAt != null ? formatPreis(compareAt, waehrung, 'pdp') : null,
     menge,
-    gesamt: formatPreis(einzel * menge, waehrung, 'pdp'),
-    gesamtNum: einzel * menge,
+    gesamt: formatPreis(gesamtNum, waehrung, 'pdp'),
+    gesamtNum,
     compareAtGesamt:
-      compareAt != null ? formatPreis(compareAt * menge, waehrung, 'pdp') : null,
-    per100g: formatPer100g(einzel / (PACKUNG_GRAMM / 100), waehrung),
+      compareAtGesamtNum != null
+        ? formatPreis(compareAtGesamtNum, waehrung, 'pdp')
+        : null,
+    // Grundpreis aus dem exakten Zeilenbetrag, nicht aus einer gerundeten Zahl.
+    per100g: formatPer100g(gesamtNum / menge / (PACKUNG_GRAMM / 100), waehrung),
     badge: staffel.badge,
     badgeStyle: staffel.badgeStyle,
     rabattProzent,

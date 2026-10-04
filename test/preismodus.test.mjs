@@ -130,7 +130,14 @@ describe('ARM A anzeigeSatz/bruttoAnzeige: vor und nach dem Kipp dieselbe Zahl',
         const api =
           land === 'DE' ? f.brutto : atPreisBrutto(f.handle, f.brutto);
         const nachher = bruttoAnzeige(api, f.handle, 'EUR', land);
-        assert.equal(nachher, vorher, `vorher ${vorher}, nachher ${nachher}`);
+        // Seit der Kassenbetrag-Regel (s03 2026-10-04) zeigt die Seite Cent.
+        // Der AT-Bruttopreis nach dem Kipp ist DE-Brutto / 1,19 x 1,20 auf den
+        // Cent und kann darum 1 Cent neben netto x 1,20 liegen (1096,13 gegen
+        // 1096,14). Die Anzeige folgt in beiden Modi dem, was die Kasse nimmt.
+        assert.ok(
+          Math.abs(nachher - vorher) <= 0.0101,
+          `vorher ${vorher}, nachher ${nachher}`,
+        );
       });
     }
   }
@@ -142,11 +149,12 @@ describe('ARM A anzeigeSatz/bruttoAnzeige: vor und nach dem Kipp dieselbe Zahl',
     assert.equal(bruttoAnzeige('1087.00', 'qione-2-pro', 'EUR', 'DE'), 1087);
   });
 
-  it('Nicht-EUR bleibt in beiden Modi Endbetrag', () => {
-    for (const m of ['netto', 'brutto']) {
-      setzePreismodus(m);
-      assert.equal(bruttoAnzeige('1048.00', 'qione-2-pro', 'CHF', 'CH'), 1048);
-    }
+  it('CHF: netto mit dem CH-Kassensatz, brutto als Endbetrag', () => {
+    // s03 2026-10-04: die CH-Kasse nimmt 8,1 Prozent auf den CHF-Preis.
+    setzePreismodus('netto');
+    assert.equal(bruttoAnzeige('1048.00', 'qione-2-pro', 'CHF', 'CH'), 1132.89);
+    setzePreismodus('brutto');
+    assert.equal(bruttoAnzeige('1048.00', 'qione-2-pro', 'CHF', 'CH'), 1048);
   });
 });
 

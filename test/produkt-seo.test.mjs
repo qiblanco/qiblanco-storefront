@@ -394,9 +394,9 @@ test('produktMeta mit `produkt` hängt genau EINEN Product-Knoten an', () => {
   const s = produkte[0];
   assert.equal(s['@type'], 'Product');
   // BRUTTO, nicht der Netto-Betrag der API (Korrektur 2026-08-15):
-  // 1290,00 x 1,19 = 1535,10 -> 1536 (aufgerundet seit 2026-10-01,
-  // ganzEuroAnzeige: nie unter der Kasse). Siehe Kopf von produkt-schema.js.
-  assert.equal(s.offers.price, '1536');
+  // 1290,00 x 1,19 = 1535,10 = Kasse (auf den Cent seit 2026-10-04, s03;
+  // davor aufgerundet 1536). Siehe Kopf von produkt-schema.js.
+  assert.equal(s.offers.price, '1535.10');
 });
 
 // Ein Produkt ohne Preis darf die Seite NICHT mit einem kaputten PRODUCT-Knoten
