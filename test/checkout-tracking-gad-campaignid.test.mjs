@@ -1,10 +1,10 @@
 // Hermetische Tests: gad_campaignid reist als eigenes Order-note_attribute
 // (Job 20261004-aiceo-k2-j5, 2026-10-04). Wie qpx-anon: node:test/node:assert,
-// KEIN Netz. Ausfuehren: node --test test/checkout-tracking-gad-campaignid.test.mjs
+// KEIN Netz. Ausführen: node --test test/checkout-tracking-gad-campaignid.test.mjs
 //
 // Vorher hing die Google-Kampagnen-ID allein an der `landing_page`-Query: war
-// die Landeseite nicht die Ad-Seite (SPA-Navigation, Rueckkehr mit Cookie),
-// war sie fuer das Backend weg. Jetzt speichert der Tracker sie, und
+// die Landeseite nicht die Ad-Seite (SPA-Navigation, Rückkehr mit Cookie),
+// war sie für das Backend weg. Jetzt speichert der Tracker sie, und
 // checkout-tracking.js reicht sie an Checkout-URL und Cart-Attribute weiter.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,7 +30,7 @@ test('gad_campaignid aus der URL -> eigenes Cart-Attribut', () => {
   assert.ok(attrs.find((x) => x.key === 'gclid'), 'gclid regressierte');
 });
 
-test('gad_campaignid aus dem gespeicherten Tracker-Record (Rueckkehr ohne Query)', () => {
+test('gad_campaignid aus dem gespeicherten Tracker-Record (Rückkehr ohne Query)', () => {
   const record = {
     params: [['gclid', 'abc'], ['gad_campaignid', CID]],
     href: `https://qiblanco.com/?gclid=abc&gad_campaignid=${CID}`,
