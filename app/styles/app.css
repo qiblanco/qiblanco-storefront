@@ -1281,22 +1281,55 @@ button[aria-label="Close" i],
     align-items: center;
   }
 }
+/* KOPFNAVIGATION OHNE UMBRUCH (Job 20261001-kopf-tablet-beratung-reiter-umbruch).
+   Seit dem sechsten Reiter "Beratung" (Shopify-Menue 2026-09-30, kein Repo-Commit)
+   reichte die Zeile zwischen 750 und 1060 px nicht mehr: "Online Kurse" brach
+   zweizeilig um, die Pfeile von Shop/Studien/Mehr rutschten unter ihr Label, und
+   das Logo wurde als einziges schrumpfbares Element bis auf 108 px gequetscht.
+   Gemessen live 2026-10-01 bei 750/768/820/1024 px.
+   Drei Hebel, alle aus dem Bestand:
+   1. Ein Reiter ist eine Einheit: Label und Pfeil brechen nie auseinander.
+   2. Die Tablet-Regel unten war wirkungslos: `.header-menu-item` traegt Schrift und
+      Polster mit !important, also gewann die Ankerschrift 16 px. Sie greift jetzt
+      ueber dieselbe Klasse mit !important. Schrift unter 960 px ist die Stufe
+      --qs-t-fein der Huellen-Skala (keine vierte Stufe), darueber bleibt 16 px.
+   3. Das Menue schrumpft nicht, das Logo hoechstens bis 110 px (der Wert, den die
+      alte Tablet-Regel meinte; sie unterlag `.NavLink-logo` weiter unten). */
+.header-menu-desktop .header-menu-item {
+  white-space: nowrap;
+}
+/* Tablet und schmaler Desktop (750px–1199px): bis 1199 px reichte die 2rem-Luecke
+   mit sechs Reitern nicht (Umbruch bei 1024 px gemessen). */
+@media (min-width: 750px) and (max-width: 1199px) {
+  .header-menu-desktop {
+    gap: 1rem;
+    margin-left: 1.5rem;
+    flex-shrink: 0;
+  }
+  .header-menu-desktop .header-menu-item {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .header .NavLink-logo {
+    min-width: 110px;
+  }
+}
+@media (min-width: 750px) and (max-width: 959px) {
+  .header-menu-desktop {
+    gap: 0.75rem;
+    margin-left: 1rem;
+  }
+  .header-menu-desktop .header-menu-item {
+    font-size: var(--qs-t-fein) !important;
+  }
+}
 /* Tablet nav adjustments (750px–1023px) */
 @media (min-width: 750px) and (max-width: 1023px) {
-  .header-menu-desktop {
-    gap: 0.5rem;
-  }
   .header-menu-desktop a,
   .header-menu-desktop button {
-    font-size: var(--qs-t-fein);
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
     min-height: 44px;
     display: inline-flex;
     align-items: center;
-  }
-  .NavLink-logo {
-    max-width: 110px;
   }
   .header {
     padding-left: 0.75rem;
@@ -6261,6 +6294,33 @@ html.qb-chat-docked .overlay aside {
   right: calc(25px + var(--qb-chat-dock-breite, 0px));
 }
 
+/* 4b. Kopf ohne Umbruch auch im Dock (Job 20261001-kopf-tablet-beratung-reiter-
+      umbruch): seit `.header-menu-item` nicht mehr umbricht, ist das Logo das
+      einzige schrumpfbare Element. Gemessen mit Dock 520 px: bei Wirt 1270 fiel es
+      auf 80 px, bei Wirt 1544 auf 141 px. Dieselben Werte wie der Viewport-Block
+      750-1199 oben, hier an der Seitenflaeche (Wirt minus 520).
+      Steht bewusst VOR Block 4: dort gewinnt zwischen Wirt 1270 und 1543 die
+      engere Luecke 0.5rem durch die Reihenfolge. Eine eigene Grenze bei 1544
+      (min-width) wuerde keine Breite der Format-Matrix ueberfahren
+      (hb-formate breakpoint-deckung, gemessen 2026-10-01). */
+@media (min-width: 1270px) and (max-width: 1719px) {
+  html.qb-chat-docked .header-menu-desktop {
+    flex-shrink: 0;
+    gap: 1rem;
+    margin-left: 1.5rem;
+  }
+  /* Polster wie im Viewport-Block: `.header-menu-item` setzt es mit
+     !important, Block 4 unten kommt dagegen nicht an. Ohne diese Zeile
+     ragten bei Wirt 1270 die Icons 14 px unter die Chat-Spalte. */
+  html.qb-chat-docked .header-menu-desktop .header-menu-item {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  html.qb-chat-docked .header .NavLink-logo {
+    min-width: 110px;
+  }
+}
+
 /* 4. Seitenflaeche 750-1023 px: das Tablet-Rezept dieser Datei
       (@media 750-1023: gap 0.5rem, Schrift 0.85rem). Die Schriftgroesse
       braucht hier `!important`, weil `.header-menu-item` seine 1rem bereits
@@ -6273,9 +6333,17 @@ html.qb-chat-docked .overlay aside {
   }
   html.qb-chat-docked .header-menu-desktop .header-menu-item,
   html.qb-chat-docked .header-menu-desktop p.header-menu-item {
-    font-size: 0.85rem !important;
+    font-size: var(--qs-t-fein) !important;
     padding-left: 0.4rem;
     padding-right: 0.4rem;
+  }
+  /* Wie der Viewport-Tablet-Block (750-1023): schmaleres Kopfpolster. Mit
+     sechs Reitern ohne Umbruch fehlten bei Wirt 1270 sonst 30 px, die Icons
+     ragten 14 px ueber den Kopfbalken (Job 20261001-kopf-tablet-beratung-
+     reiter-umbruch-wv1, gemessen am Produktions-Build). */
+  html.qb-chat-docked .header {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 }
 
