@@ -261,7 +261,8 @@ export function anonMeldung(request, status) {
     host: url.hostname,
     pfad,
     art,
-    geraet: geraeteKlasse(ua),
+    // Feldname laut Receiver-Vertrag (ASCII-Bezeichner, kein Kundentext).
+    "geraet": geraeteKlasse(ua),
   };
   if (von) meldung.von = von;
   return meldung;
