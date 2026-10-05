@@ -808,8 +808,19 @@
   display: inline-block;
   margin-top: var(--a-s2);
 }
+/* Ziel-Karten als Spalte: der Kurztext nimmt den freien Platz, damit Pfad,
+   Kopierknopf und Auswahl je Reihe auf einer Linie stehen (Design-Review). */
+.lp-a3 .lp-pd-ziele .lp-a-benefit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.lp-a3 .lp-pd-ziele .lp-a-benefit .lp-pd-beispiel {
+  align-self: stretch;
+}
 /* Produktmaterial je Ziel: Kurztext (Standardsatz) und Produktbild. */
 .lp-a3 .lp-pd-ziel__kurz {
+  flex: 1;
   margin: var(--a-s1) 0 var(--a-s2);
   padding-left: var(--a-s2);
   border-left: 2px solid var(--a-linie);

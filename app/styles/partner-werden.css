@@ -274,7 +274,7 @@
 }
 .lp-a3 .lp-pw-gruppe__titel {
   margin: 0 0 var(--a-s3);
-  font-size: var(--a-fs-lg);
+  font-size: var(--a-fs-xl);
   font-weight: 600;
   text-align: center;
 }
@@ -285,10 +285,17 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--a-s3);
 }
-/* Kakao: zwei Karten in der Breite von zwei Gerätekarten, mittig. */
+/* Kakao: zwei Karten in der Breite von zwei Gerätekarten, mittig. Aus der
+   echten Containerbreite (100 %), nicht aus --a-breite: unter 1080 px wären
+   die Kakaokarten sonst breiter als die Gerätekarten (Design-Review). */
 .lp-a3 .lp-pw-gruppe--kakao .lp-pw-produkte {
   grid-template-columns: repeat(2, 1fr);
-  max-width: calc((var(--a-breite) - 2 * var(--a-s3)) * 2 / 3 + var(--a-s3));
+  max-width: calc((100% - 2 * var(--a-s3)) * 2 / 3 + var(--a-s3));
+}
+/* Die Zeile unter einer Gruppe gehört zu ihr: nah an den Karten, weit weg
+   von der nächsten Gruppe. Die Studienzeile belegt nur die Geräte. */
+.lp-a3 .lp-pw-gruppe .lp-a-note {
+  margin-top: var(--a-s2);
 }
 .lp-a3 .lp-pw-produkt {
   display: flex;
@@ -336,10 +343,12 @@
 .lp-a3 .lp-pw-produkt__name {
   font-size: var(--a-fs-lg);
   font-weight: 600;
+  line-height: 1.3;
 }
 .lp-a3 .lp-pw-produkt__kopf {
   font-size: var(--a-fs-base);
   font-weight: 600;
+  line-height: 1.4;
   color: var(--a-text);
 }
 .lp-a3 .lp-pw-produkt__aussagen {
@@ -492,10 +501,11 @@
   }
   /* Handy: Bild klein links, Text daneben; beide Gruppen einspaltig. */
   .lp-a3 .lp-pw-gruppe {
-    margin-top: var(--a-s4);
+    margin-top: var(--a-s6);
   }
   .lp-a3 .lp-pw-gruppe--kakao .lp-pw-produkte {
     grid-template-columns: 1fr;
+    max-width: none;
   }
   /* Bild klein neben Name und Kopfzeile, die Sätze darunter über die volle
      Kartenbreite: so bleibt die Zeile lang genug zum Lesen. */

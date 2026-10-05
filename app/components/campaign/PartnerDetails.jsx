@@ -73,8 +73,11 @@ import {useEffect, useMemo, useState} from 'react';
  *           tragen den Kanal homepage/lp/ads/sales, nicht den Beitrag eines
  *           Partners (BEISPIELTEXTE-Regel oben, GL-SPR-0008).
  *   Kette   Beschreibung aus ~/lib/produkt-seo.js.
- *   Kakao   Sortensatz aus crystal-cacao-node app/lib/sorten-profil.js
- *           (Christian 2026-10-02) und Herkunft aus ~/lib/produkt-seo.js.
+ *   Kakao   Sortensatz und Herkunft je Sorte aus crystal-cacao-node
+ *           app/lib/sorten-profil.js (Christian 2026-10-02; `herkunft`: Awake
+ *           Piura-Tal im Norden Perus, Create Departamento Amazonas). Die
+ *           Bundle-Texte in ~/lib/produkt-seo.js nennen auch für Create das
+ *           Piura-Tal und sind deshalb hier NICHT die Quelle.
  * `bild` ist das Hauptbild des Produkts im Shop (Shopify-CDN, 2000 px und
  * mehr), damit Partner es in voller Größe speichern können.
  * Kakao-Ziele zeigen auf die qiblanco.com-Pfade: kommt der Besuch aus einem
@@ -85,8 +88,6 @@ import {useEffect, useMemo, useState} from 'react';
 /* Eigene Konstante: CDN steht weiter unten (Bilder der Seite) und wäre hier
    noch nicht initialisiert. */
 const PRODUKTBILD = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
-const KAKAO_HERKUNFT =
-  'Zeremonie-Kakao in Bio-Qualität aus dem Piura-Tal in Peru, schonend kalt verarbeitet.';
 
 export const ZIELE = [
   {
@@ -99,7 +100,7 @@ export const ZIELE = [
   },
   {
     pfad: '/products/qibracelet',
-    name: 'QiBracelet',
+    name: 'QiBracelet®',
     tipp: 'das QiBracelet von Qi Blanco',
     wann: 'Es geht um das Armband, im Alltag, beim Sport oder auf Reisen.',
     kurz: 'QiBracelet® von Qi Blanco. Eleganz und Schutz: dein Support.',
@@ -107,7 +108,7 @@ export const ZIELE = [
   },
   {
     pfad: '/products/qihome-air',
-    name: 'QiHome Air',
+    name: 'QiHome® Air',
     tipp: 'QiHome Air von Qi Blanco für den ganzen Raum',
     wann: 'Du sprichst über Zuhause, Praxis oder Büro.',
     kurz: 'QiHome® Air von Qi Blanco. Gesundes Zuhause, produktives Umfeld.',
@@ -129,7 +130,9 @@ export const ZIELE = [
     tipp: 'Crystal Cacao® Awake von Qi Blanco',
     wann:
       'Für Tage, an denen du mit offenem Herzen und voller Kraft dabei sein willst.',
-    kurz: `Crystal Cacao® Awake. Herzöffnend. Powerful. ${KAKAO_HERKUNFT}`,
+    kurz:
+      'Crystal Cacao® Awake. Herzöffnend. Powerful. Zeremonie-Kakao in ' +
+      'Bio-Qualität aus dem Piura-Tal im Norden Perus.',
     bild: `${PRODUKTBILD}7.png?v=1765893911`,
   },
   {
@@ -137,7 +140,9 @@ export const ZIELE = [
     name: 'Crystal Cacao® Create',
     tipp: 'Crystal Cacao® Create von Qi Blanco',
     wann: 'Für Tage, an denen du konzentriert und mit voller Leistung arbeitest.',
-    kurz: `Crystal Cacao® Create. Fokus. High Performance. ${KAKAO_HERKUNFT}`,
+    kurz:
+      'Crystal Cacao® Create. Fokus. High Performance. Zeremonie-Kakao in ' +
+      'Bio-Qualität aus den Bergwäldern des peruanischen Departamento Amazonas.',
     bild: `${PRODUKTBILD}Doypack_Mockup__v3-min.png?v=1765893937`,
   },
   {
@@ -1871,7 +1876,9 @@ function Ziele({pfad, waehle}) {
       <p className="lp-vp-section__lede">
         Zeigst du ein Produkt, verlinke genau dieses Produkt. Dein Kunde landet
         dort, wo er kaufen kann, statt auf der Startseite zu suchen. Zu jedem
-        Produkt gibt es einen Kurztext zum Kopieren und das Produktbild.
+        Produkt gibt es einen Kurztext zum Kopieren und das Produktbild. Der
+        Kurztext ist die Basis: Erzähl dazu, was du selbst erlebst.
+        Heilversprechen gehören nie hinein.
       </p>
       <div className="lp-pd-karten lp-pd-ziele">
         {ZIELE.map((z) => (

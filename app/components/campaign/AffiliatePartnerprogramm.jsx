@@ -182,11 +182,15 @@ const satzanfang = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 /* Kakao-Sätze wörtlich aus crystal-cacao-node app/lib/sorten-profil.js
    (SORTEN.awake / SORTEN.create: claim + einordnung, Stand 2026-10-02), die
    Analyse-Angabe aus dem `fazit` derselben Sorte (Herstellerangabe aus dem
-   Analyseprofil, ohne den Wirkungsteil dahinter) und die Herkunft aus der
-   Bundle-Beschreibung in ~/lib/produkt-seo.js. Wer sie dort ändert, ändert sie hier
+   Analyseprofil, ohne den Wirkungsteil dahinter). Die gemeinsame Herkunft
+   folgt `herkunft` beider Sorten in sorten-profil.js: Awake kommt aus dem
+   Piura-Tal, Create aus dem Departamento Amazonas, beide aus Peru und bei
+   niedriger Temperatur vermahlen. NICHT aus den Bundle-Texten in
+   ~/lib/produkt-seo.js übernehmen: die nennen auch für Create das Piura-Tal
+   (PR-Review 2026-10-05). Wer sie dort ändert, ändert sie hier
    mit; die Rand-Probe des Auftrags vergleicht beide. */
 const KAKAO_HERKUNFT =
-  'Zeremonie-Kakao in Bio-Qualität aus dem Piura-Tal in Peru, schonend kalt verarbeitet.';
+  'Zeremonie-Kakao in Bio-Qualität aus Peru, schonend bei niedriger Temperatur vermahlen.';
 
 /*
  * Die Produkte, in zwei Gruppen. Jede Zeile ist ein Standardsatz des Hauses
@@ -350,12 +354,13 @@ export const FRAGEN = [
       'der Laufzeit können nicht mehr zugeordnet werden.',
   },
   {
-    frage: 'Wann und wie wird ausgezahlt?',
+    frage: 'Wie wird ausgezahlt?',
     antwort:
       'Provisionen werden gutgeschrieben, sobald der Kauf abgeschlossen und ' +
-      'nicht widerrufen ist. Die Auszahlung läuft über PayPal oder ' +
-      'Banküberweisung; dafür hinterlegst du eine Rechnungsadresse und deine ' +
-      'Zahlungsverbindung im Partnerkonto.',
+      'nicht widerrufen ist. Ausgezahlt wird per PayPal oder Banküberweisung. ' +
+      'Damit wir auszahlen können, hinterlegst du deine Zahlungsverbindung und ' +
+      'eine Rechnungsadresse im Partnerkonto. Ohne hinterlegten Zahlungsweg ' +
+      'bleibt dein Guthaben stehen.',
   },
   {
     frage: 'Bekomme ich Provision auf meine eigenen Bestellungen?',
@@ -413,8 +418,9 @@ const SCHRITTE = [
   {
     titel: 'Provision erhalten',
     text:
-      'Jeder abgeschlossene Kauf über dich wird dir gutgeschrieben und per ' +
-      'PayPal oder Überweisung ausgezahlt.',
+      'Hinterlege im Partnerkonto deinen Zahlungsweg. Jeder abgeschlossene ' +
+      'Kauf über dich wird dir gutgeschrieben und per PayPal oder ' +
+      'Überweisung ausgezahlt.',
   },
 ];
 
@@ -435,7 +441,8 @@ function Hero() {
           <p className="lp-a-hero__subline">
             Du erzählst gern von Qi Blanco? Dann mach mehr daraus. Deine
             Community spart mit deinem Code 5&nbsp;%, und du bekommst
-            10&nbsp;% Provision auf jeden Kauf, der über dich kommt.
+            10&nbsp;% Provision auf den Netto-Warenwert jedes Kaufs, der über
+            dich kommt.
           </p>
           <div className="lp-a-hero__cta-row lp-pw-hero__knoepfe">
             <a className="lp-vp-btn lp-vp-btn--lg" href="#anmeldung">
@@ -663,7 +670,9 @@ function Produkte() {
       <p className="lp-vp-section__lede">
         Für jedes Produkt bekommst du 10&nbsp;% Provision, auch für Crystal
         Cacao®. Im Link-Baukasten führst du deine Leute direkt zu dem Produkt,
-        von dem du erzählst.
+        von dem du erzählst. Auf der{' '}
+        <a href={HILFESEITE}>Hilfeseite für Partner</a> steht zu jedem Produkt,
+        wann es passt, dazu der Kurztext zum Kopieren und das Produktbild.
       </p>
       {PRODUKT_GRUPPEN.map((g) => (
         <div
@@ -681,7 +690,10 @@ function Produkte() {
             <p className="lp-a-note">
               Grundlage dieser Aussagen: Wirkung an Zellkulturen gemessen, in
               Fachjournalen veröffentlicht. Alle Arbeiten findest du bei den{' '}
-              <a href="/pages/studien">Studien zu unseren Produkten</a>.
+              <a href="/pages/studien">
+                Studien zu QiOne®, QiBracelet® und QiHome®
+              </a>
+              .
             </p>
           ) : (
             <p className="lp-a-note">
