@@ -808,6 +808,21 @@
   display: inline-block;
   margin-top: var(--a-s2);
 }
+/* Produktmaterial je Ziel: Kurztext (Standardsatz) und Produktbild. */
+.lp-a3 .lp-pd-ziel__kurz {
+  margin: var(--a-s1) 0 var(--a-s2);
+  padding-left: var(--a-s2);
+  border-left: 2px solid var(--a-linie);
+  font-size: var(--a-fs-base);
+  color: var(--a-text);
+}
+.lp-a3 .lp-pd-ziel__material {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--a-s1) var(--a-s2);
+  margin-top: var(--a-s2);
+}
 
 /* ─── Schmal ──────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {

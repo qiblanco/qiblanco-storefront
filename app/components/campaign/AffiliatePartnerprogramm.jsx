@@ -29,9 +29,30 @@
  * Das Rechenbeispiel (238 € brutto = 200 € netto = 20 € Provision) ist reine
  * Arithmetik mit 19 % Mehrwertsteuer, kein Preis aus dem Shop.
  *
- * KEINE PRODUKT-WIRKAUSSAGEN. Der Leser ist ein möglicher Partner, kein
- * Käufer. Die Produktkarten nennen, was man in der Hand hält, und verlinken
- * auf die Produktseiten, statt Aussagen von dort zu wiederholen.
+ * PRODUKTTEXTE NUR AUS DEN STANDARDSÄTZEN DES HAUSES (Christian 2026-10-05,
+ * Job 20261005-GROSSJOB-partnerprogramm-seite-standardsaetze-kakao: „was für
+ * ein Gelaber ‚Würfel aus Holz‘, warum werden da nicht die Standardsätze
+ * genommen, die wir für die Produkte haben?“). Die frühere Regel „keine
+ * Produktaussagen, nur was man in der Hand hält“ hatte eigene Beschreibungen
+ * erzeugt („Würfel mit Holzdeckel“), die nirgends im Haus stehen. Jetzt gilt:
+ *   Geräte  Kopfzeile = Produktkarten-Zeile aus UpsellLineUp.jsx (Startseite
+ *           und alle Detailseiten), Aussagen = NUR legitimierte Claims über
+ *           claim(<id>) aus ~/lib/claims (generiert aus fakten-basis.yaml,
+ *           Christian-Diktat 2026-07-14), Zahl = Installed-Base-Claim.
+ *           Entwurfs-Claims (status 'entwurf') stehen hier bewusst NICHT.
+ *   Kakao   Sortensatz und Einordnung wörtlich aus crystal-cacao-node
+ *           app/lib/sorten-profil.js (Christian 2026-10-02: „das eine ist
+ *           herzöffnend, powerful, das ist Awake, und der Create ist Fokus,
+ *           High Performance“), Beschaffenheit aus app/lib/produkt-seo.js.
+ * Die sichtbare Grundlage der Geräte-Aussagen ist die Studienzeile unter den
+ * Karten (Wortlaut des legitimierten Claims WM-studien-evidenzstufe-
+ * ueberschrift). Studien gehören nur zu den Geräten, nie zum Kakao
+ * (positioning-zwei-saeulen-energie-pflanze).
+ *
+ * KAKAO IM PROGRAMM: dieselben 10 % wie bei allen Produkten (UpPromote-
+ * Programm 67404, eine Stufe), der 5-%-Code gilt auf Awake und Create in jeder
+ * Menge (Grossjob 20260930-GROSSJOB-kakao-partnercodes-alle-mengen-und-
+ * mengenrabatt-gemischt).
  *
  * BILDER: nur Bestand vom Shopify-CDN (GL-PRO-0015), über CdnBild mit
  * Bildleiter und festen Maßen. Die Instagram-Aufnahme stammt aus dem
@@ -45,6 +66,7 @@
  * /pages/partner-details sie ebenfalls lädt.
  */
 import {CdnBild} from '~/components/reusables/CdnBild';
+import {claim} from '~/lib/claims';
 
 const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
 /* Das Login desselben Partnerportals. Gemessen 2026-09-08: HTTP 200, Titel
@@ -153,44 +175,123 @@ const SIZES = {
   abschluss: '(min-width: 768px) 424px, calc(100vw - 48px)',
 };
 
-const PRODUKTE = [
+/** Erster Buchstabe groß: die Installed-Base-Claims stehen im Register klein
+    („mehr als 14.000 …“), auf der Karte beginnen sie die Zeile. */
+const satzanfang = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* Kakao-Sätze wörtlich aus crystal-cacao-node app/lib/sorten-profil.js
+   (SORTEN.awake / SORTEN.create: claim + einordnung, Stand 2026-10-02) und
+   der Bundle-Beschreibung in ~/lib/produkt-seo.js. Wer sie dort ändert,
+   ändert sie hier mit; die Rand-Probe des Auftrags vergleicht beide. */
+const KAKAO_HERKUNFT =
+  'Zeremonie-Kakao in Bio-Qualität aus dem Piura-Tal in Peru, schonend kalt verarbeitet.';
+
+/*
+ * Die Produkte, in zwei Gruppen. Jede Zeile ist ein Standardsatz des Hauses
+ * (Quellen im Dateikopf); hier wird nichts neu formuliert.
+ */
+const PRODUKT_GRUPPEN = [
   {
-    name: 'QiOne® 2 Pro',
-    text: 'Der kleine Anhänger, an der Kette nah am Körper getragen.',
-    pfad: '/products/qione-2-pro',
-    bild: {
-      src: `${CDN}QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196`,
-      alt: 'QiOne® 2 Pro',
-      breite: 1080,
-      hoehe: 1080,
-      masterBreite: 1080,
-    },
+    id: 'geraete',
+    titel: 'Gitterchip™ für dich und dein Zuhause',
+    produkte: [
+      {
+        name: 'QiOne® 2 Pro',
+        kopf: 'Kompakt. Innovativ. Stark.',
+        aussagen: [
+          claim('WM-zellwasser-ganzer-koerper'),
+          claim('WM-design-elegant-luxurioes'),
+        ],
+        zahl: satzanfang(claim('IB-qione-14000')),
+        pfad: '/products/qione-2-pro',
+        bild: {
+          src: `${CDN}QiOne2Pro_mit-Siegel_2a003117-6b48-42ea-be23-c237a78215db.webp?v=1673788196`,
+          alt: 'QiOne® 2 Pro',
+          breite: 1080,
+          hoehe: 1080,
+          masterBreite: 1080,
+        },
+      },
+      {
+        name: 'QiBracelet®',
+        kopf: 'Eleganz und Schutz: dein Support.',
+        aussagen: [
+          claim('WM-qibracelet-gleiche-leistung'),
+          claim('WM-design-elegant-luxurioes'),
+        ],
+        zahl: satzanfang(claim('IB-qibracelet-1000')),
+        pfad: '/products/qibracelet',
+        bild: {
+          src: `${CDN}2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp`,
+          alt: 'QiBracelet® auf seinem Ständer mit dem Qi-Blanco-Zeichen',
+          breite: 819,
+          hoehe: 1024,
+          masterBreite: 819,
+        },
+      },
+      {
+        name: 'QiHome® Air',
+        kopf: 'Gesundes Zuhause, produktives Umfeld.',
+        aussagen: [
+          claim('WM-qihome-atmosphaere-raum'),
+          claim('WM-qihome-schlafzimmer-buero'),
+        ],
+        zahl: satzanfang(claim('IB-qihome-400')),
+        pfad: '/products/qihome-air',
+        bild: {
+          src: `${CDN}QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp`,
+          alt: 'QiHome® Air',
+          breite: 1024,
+          hoehe: 906,
+          masterBreite: 1024,
+        },
+      },
+    ],
   },
   {
-    name: 'QiBracelet®',
-    text: 'Der Armreif aus gebürstetem Edelstahl, gemacht für jeden Tag.',
-    pfad: '/products/qibracelet',
-    bild: {
-      src: `${CDN}2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp`,
-      alt: 'QiBracelet® auf seinem Ständer mit dem Qi-Blanco-Zeichen',
-      breite: 819,
-      hoehe: 1024,
-      masterBreite: 819,
-    },
-  },
-  {
-    name: 'QiHome® Air',
-    text: 'Der Würfel mit Holzdeckel für Wohnung, Haus, Schlafzimmer und Büro.',
-    pfad: '/products/qihome-air',
-    bild: {
-      src: `${CDN}QiHomeAir-Front-Alpha-Web2_1024x1024_741c3ad5-b5f7-49bf-89d4-c9b4a961545b.webp`,
-      alt: 'QiHome® Air, ein heller Würfel mit Holzdeckel und goldenem Punkt',
-      breite: 1024,
-      hoehe: 906,
-      masterBreite: 1024,
-    },
+    id: 'kakao',
+    titel: 'Crystal Cacao®',
+    produkte: [
+      {
+        name: 'Crystal Cacao® Awake',
+        kopf: 'Herzöffnend. Powerful.',
+        aussagen: [
+          'Für Tage, an denen du mit offenem Herzen und voller Kraft dabei sein willst.',
+          KAKAO_HERKUNFT,
+        ],
+        zahl: 'Bio, 420 g',
+        pfad: '/products/crystal-cacao-awake',
+        bild: {
+          src: `${CDN}7.png?v=1765893911`,
+          alt: 'Crystal Cacao® Awake, Bio-Zeremonie-Kakao im Beutel',
+          breite: 2000,
+          hoehe: 2000,
+          masterBreite: 2000,
+        },
+      },
+      {
+        name: 'Crystal Cacao® Create',
+        kopf: 'Fokus. High Performance.',
+        aussagen: [
+          'Für Tage, an denen du konzentriert und mit voller Leistung arbeitest.',
+          KAKAO_HERKUNFT,
+        ],
+        zahl: 'Bio, 420 g',
+        pfad: '/products/crystal-cacao-create',
+        bild: {
+          src: `${CDN}Doypack_Mockup__v3-min.png?v=1765893937`,
+          alt: 'Crystal Cacao® Create, Bio-Zeremonie-Kakao im Beutel',
+          breite: 2144,
+          hoehe: 2133,
+          masterBreite: 2144,
+        },
+      },
+    ],
   },
 ];
+
+/** Alle Produkte flach (Reihenfolge der Gruppen), für Tests und Proben. */
+export const PRODUKTE = PRODUKT_GRUPPEN.flatMap((g) => g.produkte);
 
 /**
  * Die Fragen stehen EINMAL hier und werden zweimal gelesen: sichtbar von
@@ -215,6 +316,14 @@ export const FRAGEN = [
       'Ein Einkauf über 238 € inklusive 19 % Mehrwertsteuer sind 200 € ' +
       'Netto-Warenwert, du bekommst also 20 €. Der Satz gilt für alle ' +
       'Partner, ohne Staffel und ohne Mindestumsatz.',
+  },
+  {
+    frage: 'Bekomme ich auch für Crystal Cacao® Provision?',
+    antwort:
+      'Ja. Für Crystal Cacao® Awake und Create gelten dieselben 10 % auf den ' +
+      'Netto-Warenwert wie für alle anderen Produkte. Dein Gutscheincode gibt ' +
+      'deiner Community auch auf den Kakao 5 %, in jeder Menge und auch ' +
+      'gemischt aus beiden Sorten.',
   },
   {
     frage: 'Was hat meine Community davon?',
@@ -271,7 +380,7 @@ export const FRAGEN = [
 ];
 
 /** Stand der Konditionen, sichtbar und im JSON-LD (dateModified). */
-export const STAND = {iso: '2026-09-24', text: '24. September 2026'};
+export const STAND = {iso: '2026-10-05', text: '5. Oktober 2026'};
 
 const ECKDATEN = [
   {wert: '10 %', titel: 'Provision', text: 'auf den Netto-Warenwert jedes Kaufs über dich'},
@@ -514,38 +623,73 @@ function Verdienst() {
 }
 
 /* ───────── Was empfehle ich? ───────── */
+function Produktkarte({p}) {
+  return (
+    <a className="lp-pw-produkt" href={p.pfad}>
+      <span className="lp-pw-produkt__bild">
+        <CdnBild
+          {...p.bild}
+          anzeigeBreite={280}
+          sizes={SIZES.produkt}
+          loading="lazy"
+        />
+      </span>
+      <span className="lp-pw-produkt__wort">
+        <span className="lp-pw-produkt__name">{p.name}</span>
+        <span className="lp-pw-produkt__kopf">{p.kopf}</span>
+        <span className="lp-pw-produkt__aussagen">
+          {p.aussagen.map((a) => (
+            <span className="lp-pw-produkt__aussage" key={a}>
+              {a}
+            </span>
+          ))}
+        </span>
+        <span className="lp-pw-produkt__fuss">
+          <span className="lp-pw-produkt__zahl">{p.zahl}</span>
+          <span className="lp-pw-produkt__provision">10&nbsp;% Provision</span>
+        </span>
+      </span>
+    </a>
+  );
+}
+
 function Produkte() {
   return (
     <section aria-labelledby="lp-pw-produkte-title" data-section="lp-pw-produkte">
       <span className="eyebrow">Das empfiehlst du</span>
       <h2 id="lp-pw-produkte-title">Was empfehle ich als Partner?</h2>
       <p className="lp-vp-section__lede">
-        Im Link-Baukasten führst du deine Leute direkt zu dem Produkt, von dem
-        du erzählst.
+        Für jedes Produkt bekommst du 10&nbsp;% Provision, auch für Crystal
+        Cacao®. Im Link-Baukasten führst du deine Leute direkt zu dem Produkt,
+        von dem du erzählst.
       </p>
-      <div className="lp-pw-produkte">
-        {PRODUKTE.map((p) => (
-          <a className="lp-pw-produkt" href={p.pfad} key={p.pfad}>
-            <span className="lp-pw-produkt__bild">
-              <CdnBild
-                {...p.bild}
-                anzeigeBreite={280}
-                sizes={SIZES.produkt}
-                loading="lazy"
-              />
-            </span>
-            <span className="lp-pw-produkt__wort">
-              <span className="lp-pw-produkt__name">{p.name}</span>
-              <span className="lp-pw-produkt__text">{p.text}</span>
-            </span>
-          </a>
-        ))}
-      </div>
-      <p className="lp-a-note">
-        Wer tiefer einsteigen will, findet die{' '}
-        <a href="/pages/studien">Studien zu unseren Produkten</a> und die{' '}
-        <a href="/pages/warum-qi-blanco">Geschichte hinter Qi Blanco</a>.
-      </p>
+      {PRODUKT_GRUPPEN.map((g) => (
+        <div
+          className={`lp-pw-gruppe lp-pw-gruppe--${g.id}`}
+          key={g.id}
+          data-produktgruppe={g.id}
+        >
+          <h3 className="lp-pw-gruppe__titel">{g.titel}</h3>
+          <div className="lp-pw-produkte">
+            {g.produkte.map((p) => (
+              <Produktkarte p={p} key={p.pfad} />
+            ))}
+          </div>
+          {g.id === 'geraete' ? (
+            <p className="lp-a-note">
+              Grundlage dieser Aussagen: Wirkung an Zellkulturen gemessen, in
+              Fachjournalen veröffentlicht. Alle Arbeiten findest du bei den{' '}
+              <a href="/pages/studien">Studien zu unseren Produkten</a>.
+            </p>
+          ) : (
+            <p className="lp-a-note">
+              Dein Code gibt deiner Community auch auf den Kakao 5&nbsp;%, in
+              jeder Menge und auch gemischt. Mehr über die beiden Sorten
+              steht bei <a href="/pages/crystal-cacao">Crystal Cacao®</a>.
+            </p>
+          )}
+        </div>
+      ))}
     </section>
   );
 }
