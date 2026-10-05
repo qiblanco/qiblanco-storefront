@@ -194,7 +194,7 @@ const KAKAO_HERKUNFT =
  */
 const PRODUKT_GRUPPEN = [
   {
-    id: 'geraete',
+    id: 'gitterchip',
     titel: 'Gitterchip™ für dich und dein Zuhause',
     produkte: [
       {
@@ -677,7 +677,7 @@ function Produkte() {
               <Produktkarte p={p} key={p.pfad} />
             ))}
           </div>
-          {g.id === 'geraete' ? (
+          {g.id === 'gitterchip' ? (
             <p className="lp-a-note">
               Grundlage dieser Aussagen: Wirkung an Zellkulturen gemessen, in
               Fachjournalen veröffentlicht. Alle Arbeiten findest du bei den{' '}
