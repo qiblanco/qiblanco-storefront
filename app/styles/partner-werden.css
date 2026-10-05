@@ -369,9 +369,8 @@
   padding-top: var(--a-s2);
   border-top: 1px solid var(--a-linie);
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--a-s1);
 }
 .lp-a3 .lp-pw-produkt__zahl {
@@ -498,14 +497,38 @@
   .lp-a3 .lp-pw-gruppe--kakao .lp-pw-produkte {
     grid-template-columns: 1fr;
   }
+  /* Bild klein neben Name und Kopfzeile, die Sätze darunter über die volle
+     Kartenbreite: so bleibt die Zeile lang genug zum Lesen. */
   .lp-a3 .lp-pw-produkt {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: var(--a-s2);
-    padding: var(--a-s2);
+    display: grid;
+    grid-template-columns: var(--a-s12) 1fr;
+    column-gap: var(--a-s2);
+    row-gap: var(--a-s1);
+    align-items: start;
+    padding: var(--a-s3) var(--a-s2);
+  }
+  .lp-a3 .lp-pw-produkt__wort {
+    display: contents;
   }
   .lp-a3 .lp-pw-produkt__bild {
-    flex: 0 0 var(--a-s12);
+    grid-column: 1;
+    grid-row: 1 / span 2;
     margin: 0;
+  }
+  .lp-a3 .lp-pw-produkt__name {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+  }
+  .lp-a3 .lp-pw-produkt__kopf {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .lp-a3 .lp-pw-produkt__aussagen,
+  .lp-a3 .lp-pw-produkt__fuss {
+    grid-column: 1 / -1;
+  }
+  .lp-a3 .lp-pw-produkt__aussagen {
+    margin: var(--a-s1) 0 0;
   }
 }

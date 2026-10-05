@@ -180,9 +180,11 @@ const SIZES = {
 const satzanfang = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /* Kakao-Sätze wörtlich aus crystal-cacao-node app/lib/sorten-profil.js
-   (SORTEN.awake / SORTEN.create: claim + einordnung, Stand 2026-10-02) und
-   der Bundle-Beschreibung in ~/lib/produkt-seo.js. Wer sie dort ändert,
-   ändert sie hier mit; die Rand-Probe des Auftrags vergleicht beide. */
+   (SORTEN.awake / SORTEN.create: claim + einordnung, Stand 2026-10-02), die
+   Analyse-Angabe aus dem `fazit` derselben Sorte (Herstellerangabe aus dem
+   Analyseprofil, ohne den Wirkungsteil dahinter) und die Herkunft aus der
+   Bundle-Beschreibung in ~/lib/produkt-seo.js. Wer sie dort ändert, ändert sie hier
+   mit; die Rand-Probe des Auftrags vergleicht beide. */
 const KAKAO_HERKUNFT =
   'Zeremonie-Kakao in Bio-Qualität aus dem Piura-Tal in Peru, schonend kalt verarbeitet.';
 
@@ -257,7 +259,7 @@ const PRODUKT_GRUPPEN = [
         kopf: 'Herzöffnend. Powerful.',
         aussagen: [
           'Für Tage, an denen du mit offenem Herzen und voller Kraft dabei sein willst.',
-          KAKAO_HERKUNFT,
+          'Der höchste L-Tryptophan-Gehalt aller Kristall Kakao® Sorten.',
         ],
         zahl: 'Bio, 420 g',
         pfad: '/products/crystal-cacao-awake',
@@ -274,7 +276,7 @@ const PRODUKT_GRUPPEN = [
         kopf: 'Fokus. High Performance.',
         aussagen: [
           'Für Tage, an denen du konzentriert und mit voller Leistung arbeitest.',
-          KAKAO_HERKUNFT,
+          'Das stärkste aktivierende Profil aller Kristall Kakao® Sorten.',
         ],
         zahl: 'Bio, 420 g',
         pfad: '/products/crystal-cacao-create',
@@ -683,9 +685,10 @@ function Produkte() {
             </p>
           ) : (
             <p className="lp-a-note">
-              Dein Code gibt deiner Community auch auf den Kakao 5&nbsp;%, in
-              jeder Menge und auch gemischt. Mehr über die beiden Sorten
-              steht bei <a href="/pages/crystal-cacao">Crystal Cacao®</a>.
+              Beide Sorten: {KAKAO_HERKUNFT} Dein Code gibt deiner Community
+              auch auf den Kakao 5&nbsp;%, in jeder Menge und auch gemischt.
+              Mehr über die Sorten steht bei{' '}
+              <a href="/pages/crystal-cacao">Crystal Cacao®</a>.
             </p>
           )}
         </div>
