@@ -377,9 +377,11 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             </p>
           ) : (
             <p>
+              {/* „Anwender", nie „Kunden": fakten-basis.yaml kennzahlen.wording_regel
+                  und Sperre VB-0010 (Folgeauftrag standardsatz-quellen-drift, 05.10.2026). */}
               <span className="banner-line">
                 <GoogleSterneBadge /> - Über {QIBLANCO_KENNZAHLEN.nutzer}{' '}
-                zufriedene Kunden
+                zufriedene Anwender
               </span>
               <span className="banner-offer-sep"> - </span>
               <span className="banner-line">

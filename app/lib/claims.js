@@ -2,7 +2,7 @@
  * Claims-SSoT-Konsument — GENERIERT, NICHT HAND-EDITIEREN.
  *
  * Quelle (Single Source of Truth): fakten-basis.yaml claims[]
- *   (/srv/openclaw/_design/gorgias-fact-gate/fakten-basis.yaml, stand 2026-07-26)
+ *   (/srv/openclaw/_design/gorgias-fact-gate/fakten-basis.yaml, stand 2026-10-05)
  * Generator: /srv/openclaw/_design/gorgias-fact-gate/claims_emit.py
  *   (Filter: kanal enthaelt 'homepage')
  *
@@ -90,11 +90,12 @@ export const CLAIMS = {
     produkt: ['qione', 'qibracelet', 'qihomeair'],
     kanal: ['homepage', 'lp'],
   },
-  // Wortlaut Christian, 20.09.2026. Das Feld wird nachgezogen, damit Register und
-  // Seite nicht auseinanderlaufen (eine Wahrheit, nicht zwei). Der STATUS bleibt
-  // unberührt: er wurde für die Nennung vergeben, und eine stärkere Aussage
-  // legitimiert sich nicht dadurch selbst, dass jemand das Register nachpflegt.
-  // Fundstelle und Suchraum-Grenze: Kopf von small-components/Maxim.jsx.
+  'WM-studien-evidenzstufe-ueberschrift': {
+    aussage: 'Wirkung an Zellkulturen gemessen, in Fachjournalen veröffentlicht',
+    status: 'entwurf',
+    produkt: ['qione', 'qibracelet', 'qihome'],
+    kanal: ['homepage', 'lp'],
+  },
   'WM-maxim-australia-nennung': {
     aussage: 'MAXIM feiert den QiOne® 2 Pro',
     status: 'legitimiert',
