@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.8) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.9) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -212,6 +212,13 @@
     var KONTO_PFAD = /^\/account(\/|$)/;
     var klicks = [];
     var lastMutation = 0, lastScrollTs = 0, unloading = false;
+    var FEIN_ON = CFG.heatmap_fein !== false;
+    var scrollFein = 0;
+    var attentionFeinMs = 0;
+    var PV_T0 = Date.now();
+    try {
+      if (w.performance && typeof w.performance.now === "function") PV_T0 = Date.now() - w.performance.now();
+    } catch (e) {}
 
     function sec(id) {
       if (!sections[id]) sections[id] = { seen: 0, dwellAcc: 0, visibleSince: 0, clicks: 0, vis: 0 };
@@ -286,13 +293,78 @@
       return teile.join(" > ");
     }
     function r3(n) { return n == null ? null : Math.round(n * 1000) / 1000; }
+    function feinNachmessen(pv) {
+      try {
+        if (!FEIN_ON || pv !== PV_ID) return;
+        var de = d.documentElement, h = Math.max(1, de.scrollHeight || 1);
+        var pct = ((w.pageYOffset || de.scrollTop || 0) + (w.innerHeight || de.clientHeight || 0)) / h * 100;
+        var pf = Math.round(Math.max(0, Math.min(100, pct)));
+        if (pf > scrollFein) scrollFein = pf;
+      } catch (e) {}
+    }
+    function klickSectionOf(el) {
+      if (!FEIN_ON) return sectionOf(el);
+      try {
+        var sc = el && el.closest ? el.closest("[data-section]") : null;
+        if (sc) return sc.getAttribute("data-section") || "";
+        sc = el && el.closest ? el.closest("[data-section-type]") : null;
+        return sc ? (sc.getAttribute("data-section-type") || "") : "";
+      } catch (e) { return ""; }
+    }
+    var ZIEL_LOCALE = /^\/[a-z]{2}(-[a-z]{2})?(?=\/)/i;
+    function hostOhneWww(h) { return String(h || "").toLowerCase().replace(/^www\./, ""); }
+    function zielAusPfad(p) {
+      p = String(p || "/").replace(ZIEL_LOCALE, "").toLowerCase();
+      if (/^\/cart\/add(\/|\.js|$)/.test(p)) return "kauf";
+      if (/^\/(checkouts?|cart\/c|cart\/attribution)(\/|$)/.test(p) || /^\/cart\/[0-9]+:[0-9]+/.test(p)) return "kasse";
+      if (/^\/cart(\/|$)/.test(p)) return "warenkorb";
+      if (/^\/(collections\/[^\/]+\/)?products\/./.test(p)) return "produkt";
+      if (/^\/pages\/./.test(p)) return "lp";
+      return "navigation";
+    }
+    function zielKlasse(el) {
+      try {
+        if (!el || el.nodeType !== 1 || !el.closest) return "sonst";
+        var hier = hostOhneWww(w.location.hostname), u;
+        var a = el.closest("a"), href = a ? a.getAttribute("href") : null;
+        if (href != null) {
+          href = String(href).trim();
+          if (href.charAt(0) === "#") return "anker";
+          var sch = /^([a-z][a-z0-9+.-]*):/i.exec(href);
+          if (sch && !/^https?$/i.test(sch[1])) return /^javascript$/i.test(sch[1]) ? "sonst" : "extern";
+          u = new URL(href, w.location.href);
+          var dort = hostOhneWww(u.hostname);
+          if (dort !== hier) {
+            if (dort.indexOf("checkout.") === 0 || /^\/checkouts?(\/|$)/.test(u.pathname)) return "kasse";
+            if (/\.myshopify\.com$/.test(dort) && /^\/cart\/c(\/|$)/.test(u.pathname)) return "kasse";
+            return "extern";
+          }
+          if (u.hash && u.pathname === w.location.pathname) return "anker";
+          return zielAusPfad(u.pathname);
+        }
+        var tag = el.tagName, typ = String(el.getAttribute("type") || "").toLowerCase();
+        var absenden = (tag === "BUTTON" && (typ === "" || typ === "submit")) ||
+                       (tag === "INPUT" && (typ === "submit" || typ === "image"));
+        if (!absenden) return "sonst";
+        if (String(el.getAttribute("name") || "").toLowerCase() === "checkout") return "kasse";
+        var f = el.closest("form"), act = f ? f.getAttribute("action") : null;
+        if (!act) return "sonst";
+        u = new URL(String(act), w.location.href);
+        if (hostOhneWww(u.hostname) !== hier) return "extern";
+        var z = zielAusPfad(u.pathname);
+        if (z === "warenkorb" && el.closest("[data-qb-kaufknopf]")) return "kauf";
+        return (z === "kauf" || z === "warenkorb" || z === "kasse") ? z : "sonst";
+      } catch (e) { return "sonst"; }
+    }
     function pushKlick(tgt, cx, cy) {
       if (!KLICK_ON || klicks.length >= KLICK_MAX) return;
       if (KONTO_PFAD.test(w.location.pathname || "")) return;
       var el = klickZiel(tgt);
       if (!el || el.nodeType !== 1) return;
       var rp = (cx != null) ? relPos(el, cx, cy) : { rx: null, ry: null };
-      klicks.push({ section_id: sectionOf(el), sel: pfadOf(el), rx: r3(rp.rx), ry: r3(rp.ry) });
+      var kl = { section_id: klickSectionOf(el), sel: pfadOf(el), rx: r3(rp.rx), ry: r3(rp.ry) };
+      if (FEIN_ON) { kl.z = zielKlasse(el); kl.t = Math.max(0, Math.round((Date.now() - PV_T0) / 100) * 100); }
+      klicks.push(kl);
     }
     function pushFrust(typ, el, cx, cy, meta) {
       if (!FRUST_ON || frust.length >= FRUST_MAX) return;
@@ -657,9 +729,11 @@
         list.push({ id: id, seen: s.seen, dwell_ms: dw, clicks: s.clicks });
       }
       list.sort(function (a, b) { return a.id < b.id ? -1 : 1; });
-      return { attention_ms: attentionMs, scroll_max_pct: scrollMax,
+      var snap = { attention_ms: attentionMs, scroll_max_pct: scrollMax,
                device: device(), sections: list, frust: frust, klicks: klicks,
                medien: medienListe(now) };
+      if (FEIN_ON) { snap.scroll_fein_pct = scrollFein; snap.attention_fein_ms = attentionFeinMs; }
+      return snap;
     }
     function schluessel(snap) {
       var kern = [];
@@ -667,10 +741,12 @@
         var s = snap.sections[i];
         kern.push({ id: s.id, seen: s.seen, clicks: s.clicks });
       }
-      return JSON.stringify({ attention_ms: snap.attention_ms, scroll_max_pct: snap.scroll_max_pct,
+      var key = { attention_ms: snap.attention_ms, scroll_max_pct: snap.scroll_max_pct,
                               device: snap.device, sections: kern, frust: snap.frust,
                               klicks: (snap.klicks || []).length,
-                              medien: medSchluessel(snap.medien || []) });
+                              medien: medSchluessel(snap.medien || []) };
+      if (FEIN_ON) key.scroll_fein_stufe = Math.floor((snap.scroll_fein_pct || 0) / 10) * 10;
+      return JSON.stringify(key);
     }
     function flush(force, url) {
       if (force) ausstiegAn = 1;
@@ -811,6 +887,10 @@
         var marks = [25, 50, 75, 100];
         for (var i = 0; i < marks.length; i++) { if (pct >= marks[i] && marks[i] > scrollMax) scrollMax = marks[i]; }
         medScroll(Math.max(0, Math.min(100, pct)));
+        if (FEIN_ON) {
+          var pf = Math.round(Math.max(0, Math.min(100, pct)));
+          if (pf > scrollFein) scrollFein = pf;
+        }
       } catch (e) {}
     }
     w.addEventListener("scroll", function () {
@@ -828,6 +908,11 @@
         if (d.visibilityState === "visible" && Date.now() - lastActivity < 30000) attentionMs += 5000;
       } catch (e) {}
     }, 5000);
+    if (FEIN_ON) w.setInterval(function () {
+      try {
+        if (d.visibilityState === "visible" && Date.now() - lastActivity < 30000) attentionFeinMs += 1000;
+      } catch (e) {}
+    }, 1000);
 
     w.setInterval(function () { try { flush(false); } catch (e) {} }, 15000);
     d.addEventListener("visibilitychange", function () {
@@ -885,6 +970,8 @@
         try { flush(true, altHref); } catch (e) {}
         PV_ID = uuid(); seq = 0; lastKey = ""; lastVoll = ""; hiddenUnterdrueckt = 0;
         scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
+        scrollFein = 0; attentionFeinMs = 0; PV_T0 = Date.now();
+        if (FEIN_ON) { var pvNeu = PV_ID; try { w.setTimeout(function () { feinNachmessen(pvNeu); }, 1500); } catch (e) {} }
         sections = {}; frust = []; klicks = []; lastClick = null;
         rageChain = []; rageEmitted = false;
         var keep = [];
