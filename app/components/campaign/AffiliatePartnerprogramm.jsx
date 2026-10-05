@@ -259,7 +259,7 @@ const PRODUKT_GRUPPEN = [
         kopf: 'Herzöffnend. Powerful.',
         aussagen: [
           'Für Tage, an denen du mit offenem Herzen und voller Kraft dabei sein willst.',
-          'Der höchste L-Tryptophan-Gehalt aller Kristall Kakao® Sorten.',
+          'Mit dem höchsten L-Tryptophan-Gehalt aller Kristall Kakao® Sorten.',
         ],
         zahl: 'Bio, 420 g',
         pfad: '/products/crystal-cacao-awake',
