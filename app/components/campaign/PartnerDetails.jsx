@@ -63,30 +63,87 @@ import {useEffect, useMemo, useState} from 'react';
  *   {CODE} {LINK} {TIPP} {BUCHSTABIERT}
  */
 
+/*
+ * PRODUKTMATERIAL JE ZIEL (Christian 2026-10-05, Job 20261005-GROSSJOB-
+ * partnerprogramm-seite-standardsaetze-kakao: Standardsätze statt eigener
+ * Beschreibungen, Kakao ins Partnerprogramm). `kurz` ist der Kurztext zum
+ * Weitergeben, wörtlich aus den Standardsätzen des Hauses:
+ *   Geräte  Produktkarten-Zeile aus UpsellLineUp.jsx (Startseite und alle
+ *           Detailseiten). Bewusst OHNE Wirk-Claims: die legitimierten Claims
+ *           tragen den Kanal homepage/lp/ads/sales, nicht den Beitrag eines
+ *           Partners (BEISPIELTEXTE-Regel oben, GL-SPR-0008).
+ *   Kette   Beschreibung aus ~/lib/produkt-seo.js.
+ *   Kakao   Sortensatz und Herkunft je Sorte aus crystal-cacao-node
+ *           app/lib/sorten-profil.js (Christian 2026-10-02; `herkunft`: Awake
+ *           Piura-Tal im Norden Perus, Create Departamento Amazonas). Die
+ *           Bundle-Texte in ~/lib/produkt-seo.js nennen auch für Create das
+ *           Piura-Tal und sind deshalb hier NICHT die Quelle.
+ * `bild` ist das Hauptbild des Produkts im Shop (Shopify-CDN, 2000 px und
+ * mehr), damit Partner es in voller Größe speichern können.
+ * Kakao-Ziele zeigen auf die qiblanco.com-Pfade: kommt der Besuch aus einem
+ * eigenen Kanal, leitet die Kakao-Laden-Weiche mit vollem Query (sca_ref)
+ * auf crystal-cacao.com weiter, und der Laden legt den Code aus demselben
+ * Datenmodul wieder in den Warenkorb (eine DACH-Kasse).
+ */
+/* Eigene Konstante: CDN steht weiter unten (Bilder der Seite) und wäre hier
+   noch nicht initialisiert. */
+const PRODUKTBILD = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+
 export const ZIELE = [
   {
     pfad: '/products/qione-2-pro',
     name: 'QiOne® 2 Pro',
     tipp: 'der QiOne® 2 Pro von Qi Blanco',
     wann: 'Du zeigst oder trägst den Anhänger.',
+    kurz: 'QiOne® 2 Pro von Qi Blanco. Kompakt. Innovativ. Stark.',
+    bild: `${PRODUKTBILD}QiOne1.webp?v=1732874828`,
   },
   {
     pfad: '/products/qibracelet',
-    name: 'QiBracelet',
+    name: 'QiBracelet®',
     tipp: 'das QiBracelet von Qi Blanco',
     wann: 'Es geht um das Armband, im Alltag, beim Sport oder auf Reisen.',
+    kurz: 'QiBracelet® von Qi Blanco. Eleganz und Schutz: dein Support.',
+    bild: `${PRODUKTBILD}QiBracelet1.webp?v=1732874909`,
   },
   {
     pfad: '/products/qihome-air',
-    name: 'QiHome Air',
+    name: 'QiHome® Air',
     tipp: 'QiHome Air von Qi Blanco für den ganzen Raum',
     wann: 'Du sprichst über Zuhause, Praxis oder Büro.',
+    kurz: 'QiHome® Air von Qi Blanco. Gesundes Zuhause, produktives Umfeld.',
+    bild: `${PRODUKTBILD}QiHome1.webp?v=1732874979`,
   },
   {
     pfad: '/products/qione-kette',
     name: 'Necklace für QiOne®',
     tipp: 'die Necklace für den QiOne® von Qi Blanco',
     wann: 'Dein Gegenüber hat schon einen QiOne® und sucht die passende Kette.',
+    kurz:
+      'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
+      'angenehm zu tragen, damit dein Anhänger überall dabei ist.',
+    bild: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/products/necklace_06.png?v=1698259307',
+  },
+  {
+    pfad: '/products/crystal-cacao-awake',
+    name: 'Crystal Cacao® Awake',
+    tipp: 'Crystal Cacao® Awake von Qi Blanco',
+    wann:
+      'Für Tage, an denen du mit offenem Herzen und voller Kraft dabei sein willst.',
+    kurz:
+      'Crystal Cacao® Awake. Herzöffnend. Powerful. Zeremonie-Kakao in ' +
+      'Bio-Qualität aus dem Piura-Tal im Norden Perus.',
+    bild: `${PRODUKTBILD}7.png?v=1765893911`,
+  },
+  {
+    pfad: '/products/crystal-cacao-create',
+    name: 'Crystal Cacao® Create',
+    tipp: 'Crystal Cacao® Create von Qi Blanco',
+    wann: 'Für Tage, an denen du konzentriert und mit voller Leistung arbeitest.',
+    kurz:
+      'Crystal Cacao® Create. Fokus. High Performance. Zeremonie-Kakao in ' +
+      'Bio-Qualität aus den Bergwäldern des peruanischen Departamento Amazonas.',
+    bild: `${PRODUKTBILD}Doypack_Mockup__v3-min.png?v=1765893937`,
   },
   {
     pfad: '/pages/studien',
@@ -1818,16 +1875,38 @@ function Ziele({pfad, waehle}) {
       <h2 id="lp-pd-ziele-title">Wohin soll dein Link führen?</h2>
       <p className="lp-vp-section__lede">
         Zeigst du ein Produkt, verlinke genau dieses Produkt. Dein Kunde landet
-        dort, wo er kaufen kann, statt auf der Startseite zu suchen.
+        dort, wo er kaufen kann, statt auf der Startseite zu suchen. Zu jedem
+        Produkt gibt es einen Kurztext zum Kopieren und das Produktbild. Der
+        Kurztext ist die Basis: Erzähl dazu, was du selbst erlebst.
+        Heilversprechen gehören nie hinein.
       </p>
       <div className="lp-pd-karten lp-pd-ziele">
         {ZIELE.map((z) => (
           <article className="lp-a-benefit" key={z.pfad}>
             <h3 className="lp-vp-benefit__title">{z.name}</h3>
             <p className="lp-vp-benefit__body">{z.wann}</p>
+            {z.kurz ? (
+              <p className="lp-pd-ziel__kurz" data-lp-pd-kurztext>
+                {z.kurz}
+              </p>
+            ) : null}
             <code className="lp-pd-beispiel">
               {z.pfad === '/' ? 'qiblanco.com' : z.pfad}
             </code>
+            {z.kurz ? (
+              <span className="lp-pd-ziel__material">
+                <KopierKnopf text={z.kurz} label="Kurztext kopieren" />
+                <a
+                  className="lp-pd-textlink"
+                  href={z.bild}
+                  target="_blank"
+                  rel="noopener"
+                  data-lp-pd-produktbild
+                >
+                  Produktbild öffnen
+                </a>
+              </span>
+            ) : null}
             <a
               className="lp-pd-textlink lp-pd-ziel__waehlen"
               href="#baukasten"
@@ -1941,6 +2020,10 @@ function Provision() {
           <ul className="lp-pp-liste lp-pp-liste--ja">
             <li>
               10&nbsp;% auf den Netto-Warenwert, also ohne Steuern und Versand.
+            </li>
+            <li>
+              Das gilt für alle Produkte, auch für Crystal Cacao® Awake und
+              Create.
             </li>
             <li>
               Gutgeschrieben wird, sobald der Kauf abgeschlossen und nicht

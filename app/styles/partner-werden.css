@@ -264,6 +264,20 @@
 }
 
 /* ─── Produkte ───────────────────────────────────────────────────────────── */
+/* Zwei Gruppen (Geräte, Crystal Cacao®), je Karte: Name, Kopfzeile, zwei
+   Standardsätze, Fußzeile mit Zahl und Provision. Text links, damit die
+   zwei Sätze als Liste lesbar bleiben; das Gold trägt nur die Provision
+   (Handlung/Ergebnis, GL-DES-0001). */
+.lp-a3 .lp-pw-gruppe {
+  max-width: var(--a-breite);
+  margin: var(--a-s6) auto 0;
+}
+.lp-a3 .lp-pw-gruppe__titel {
+  margin: 0 0 var(--a-s3);
+  font-size: var(--a-fs-xl);
+  font-weight: 600;
+  text-align: center;
+}
 .lp-a3 .lp-pw-produkte {
   max-width: var(--a-breite);
   margin: 0 auto;
@@ -271,17 +285,29 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--a-s3);
 }
+/* Kakao: zwei Karten in der Breite von zwei Gerätekarten, mittig. Aus der
+   echten Containerbreite (100 %), nicht aus --a-breite: unter 1080 px wären
+   die Kakaokarten sonst breiter als die Gerätekarten (Design-Review). */
+.lp-a3 .lp-pw-gruppe--kakao .lp-pw-produkte {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: calc((100% - 2 * var(--a-s3)) * 2 / 3 + var(--a-s3));
+}
+/* Die Zeile unter einer Gruppe gehört zu ihr: nah an den Karten, weit weg
+   von der nächsten Gruppe. Die Studienzeile belegt nur die Geräte. */
+.lp-a3 .lp-pw-gruppe .lp-a-note {
+  margin-top: var(--a-s2);
+}
 .lp-a3 .lp-pw-produkt {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: var(--a-s1);
-  padding: var(--a-s4) var(--a-s3);
+  padding: var(--a-s3);
   background: var(--a-flaeche);
   border: 1px solid var(--a-linie);
   border-radius: var(--a-r2);
   color: var(--a-text);
-  text-align: center;
+  text-align: left;
   text-decoration: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -297,7 +323,7 @@
   display: block;
   width: 100%;
   max-width: 280px;
-  margin-bottom: var(--a-s2);
+  margin: 0 auto var(--a-s2);
 }
 .lp-a3 .lp-pw-produkt__bild img {
   display: block;
@@ -309,6 +335,7 @@
   background: var(--a-grund);
 }
 .lp-a3 .lp-pw-produkt__wort {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: var(--a-s1);
@@ -316,10 +343,54 @@
 .lp-a3 .lp-pw-produkt__name {
   font-size: var(--a-fs-lg);
   font-weight: 600;
+  line-height: 1.3;
 }
-.lp-a3 .lp-pw-produkt__text {
+.lp-a3 .lp-pw-produkt__kopf {
+  font-size: var(--a-fs-base);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--a-text);
+}
+.lp-a3 .lp-pw-produkt__aussagen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+  margin-bottom: var(--a-s2);
+}
+.lp-a3 .lp-pw-produkt__aussage {
+  position: relative;
+  padding-left: var(--a-s2);
   font-size: var(--a-fs-base);
   color: var(--a-muted);
+}
+.lp-a3 .lp-pw-produkt__aussage::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--a-linie);
+}
+.lp-a3 .lp-pw-produkt__fuss {
+  margin-top: auto;
+  padding-top: var(--a-s2);
+  border-top: 1px solid var(--a-linie);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--a-s1);
+}
+.lp-a3 .lp-pw-produkt__zahl {
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-produkt__provision {
+  font-size: var(--a-fs-xs);
+  font-weight: 600;
+  color: var(--a-akzent-tinte);
+  white-space: nowrap;
 }
 
 /* ─── Vertrauenszeilen: die Listenpunkte erben die Größe ihrer Liste ────────
@@ -428,14 +499,46 @@
     top: calc(-1 * var(--a-s6) / 2);
     left: 50%;
   }
+  /* Handy: Bild klein links, Text daneben; beide Gruppen einspaltig. */
+  .lp-a3 .lp-pw-gruppe {
+    margin-top: var(--a-s6);
+  }
+  .lp-a3 .lp-pw-gruppe--kakao .lp-pw-produkte {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+  /* Bild klein neben Name und Kopfzeile, die Sätze darunter über die volle
+     Kartenbreite: so bleibt die Zeile lang genug zum Lesen. */
   .lp-a3 .lp-pw-produkt {
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-    gap: var(--a-s3);
+    display: grid;
+    grid-template-columns: var(--a-s12) 1fr;
+    column-gap: var(--a-s2);
+    row-gap: var(--a-s1);
+    align-items: start;
+    padding: var(--a-s3) var(--a-s2);
+  }
+  .lp-a3 .lp-pw-produkt__wort {
+    display: contents;
   }
   .lp-a3 .lp-pw-produkt__bild {
-    flex: 0 0 var(--a-s12);
-    margin-bottom: 0;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+  .lp-a3 .lp-pw-produkt__name {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+  }
+  .lp-a3 .lp-pw-produkt__kopf {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .lp-a3 .lp-pw-produkt__aussagen,
+  .lp-a3 .lp-pw-produkt__fuss {
+    grid-column: 1 / -1;
+  }
+  .lp-a3 .lp-pw-produkt__aussagen {
+    margin: var(--a-s1) 0 0;
   }
 }
