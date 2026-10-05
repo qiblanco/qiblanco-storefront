@@ -44,9 +44,14 @@
  *           app/lib/sorten-profil.js (Christian 2026-10-02: „das eine ist
  *           herzöffnend, powerful, das ist Awake, und der Create ist Fokus,
  *           High Performance“), Beschaffenheit aus app/lib/produkt-seo.js.
- * Die sichtbare Grundlage der Geräte-Aussagen ist die Studienzeile unter den
- * Karten (Wortlaut des legitimierten Claims WM-studien-evidenzstufe-
- * ueberschrift). Studien gehören nur zu den Geräten, nie zum Kakao
+ * Unter den Gerätekarten steht nur der Verweis auf die Studien, kein eigener
+ * Evidenz-Satz: der Kandidat WM-studien-evidenzstufe-ueberschrift („Wirkung an
+ * Zellkulturen gemessen, in Fachjournalen veröffentlicht“) hat im Register
+ * status 'entwurf' (kein Christian-Anker, PL-0129) und steht deshalb nach der
+ * Regel oben NICHT hier. Wird er legitimiert, darf er per claim() zurück
+ * (Job 20261005-fa1-nachzug-kakao-kollektion-herkunft-studienclaim-naht-prio45;
+ * Randprobe partnerseite-update/probe_partnerseite_standardsaetze_rand.py Arm Z).
+ * Studien gehören nur zu den Geräten, nie zum Kakao
  * (positioning-zwei-saeulen-energie-pflanze).
  *
  * KAKAO IM PROGRAMM: dieselben 10 % wie bei allen Produkten (UpPromote-
@@ -688,8 +693,7 @@ function Produkte() {
           </div>
           {g.id === 'gitterchip' ? (
             <p className="lp-a-note">
-              Grundlage dieser Aussagen: Wirkung an Zellkulturen gemessen, in
-              Fachjournalen veröffentlicht. Alle Arbeiten findest du bei den{' '}
+              Alle Arbeiten zu diesen Geräten findest du bei den{' '}
               <a href="/pages/studien">
                 Studien zu QiOne®, QiBracelet® und QiHome®
               </a>
