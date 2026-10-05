@@ -6,6 +6,10 @@ import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
 import {istStillgelegteJSaleSeite} from '~/data/ten-years-deals';
 import {refAusAufruf, wendePartnercodeAn} from '~/lib/partnercode.server';
 import {einbettungsWeiche} from '~/lib/einbettungs-weiche.server';
+import {
+  buyerIpAusRequest,
+  istInternerZugriff,
+} from '~/lib/interner-verkehr';
 
 /**
  * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
@@ -139,6 +143,168 @@ function berichtsziel(env) {
   const roh = (env?.QIBLANCO_CSP_REPORT ?? CSP_BERICHT_ZIEL_DEFAULT).trim();
   if (!roh || roh.toLowerCase() === 'off') return null;
   return roh;
+}
+
+/*
+ * ================================================================
+ * ANONYME ZÄHLUNG, VARIANTE 1 (serverseitig) — Christian 05.10.2026:
+ * "die, die ablehnen, anonym das Verhalten tracken … live schalten".
+ * ================================================================
+ * Je Seitenanfrage, die der Browser ohnehin an diesen Server schickt, geht
+ * EINE Meldung an den Receiver (POST /a, quelle=server). Gezählt wird dort
+ * nur ein Zähler je Stunde/Seite/Geräteklasse, nie eine Zeile je Besucher.
+ * Vertrag: heatmap-manager/docs/VERTRAG-anonyme-zaehlung.md, Abschnitt 1a.
+ * Rechtsbewertung: heatmap-manager/recht/anonyme-zaehlung-bewertung.json.
+ *
+ * Die Meldung trägt KEINE IP, KEINEN User-Agent, keine Query, keine
+ * Cookies. Den User-Agent liest dieser Code nur für drei Urteile, die im
+ * Worker bleiben: Bot ja/nein, interner Messlauf ja/nein, Geräteklasse.
+ * Die IP liest er nur für das Intern-Urteil (app/lib/interner-verkehr.js),
+ * weil der Receiver bei quelle=server nur die Oxygen-IP sieht und unsere
+ * eigenen Wachen sonst als Kundschaft zählen würden.
+ *
+ * /account ist ausgenommen: dort stehen Bestellnummern im Pfad, und eine
+ * Bestellnummer ist eine Kennung.
+ *
+ * Endpunkt: aus PUBLIC_QPX_BASIS_ENDPOINT abgeleitet (…/b -> …/a). Keine
+ * neue env-Variable, keine Workflow-Änderung; Previews tragen die Variable
+ * nicht und senden deshalb nichts.
+ *
+ * Der Fetch läuft in waitUntil, NACH dem Aufbau der Antwort; er verzögert
+ * sie nicht und wirft nie (Muster: app/lib/catchall.server.js).
+ *
+ * RÜCKWEG: Receiver PIXEL_ANON_SERVER=off (verwirft quelle=server) oder
+ * hb-deploy revert --sha <merge-sha>.
+ */
+const ANON_TIMEOUT_MS = 1200;
+const ANON_UA = 'qpx-anon-server/1.0';
+const ANON_AUSGENOMMEN = /^\/(?:collect|api|account)(?:\/|$)|^\/__qb-/;
+
+/**
+ * @param {Record<string, string|undefined>} env
+ * @returns {string|null}
+ */
+export function anonZiel(env) {
+  const basis = env?.PUBLIC_QPX_BASIS_ENDPOINT;
+  if (!basis) return null;
+  try {
+    const u = new URL(basis);
+    if (!/\/b$/.test(u.pathname)) return null;
+    u.pathname = u.pathname.replace(/\/b$/, '/a');
+    u.search = '';
+    u.hash = '';
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Grobe Klasse wie der Receiver (receiver/src/basis.py device_class).
+ * @param {string} ua
+ */
+export function geraeteKlasse(ua) {
+  const u = ua.toLowerCase();
+  if (/ipad|tablet|playbook|kindle|silk|nexus [79]/.test(u)) return 'tablet';
+  if (u.includes('android') && !u.includes('mobi')) return 'tablet';
+  if (/mobi|iphone|ipod|android|blackberry|windows phone|opera mini/.test(u)) {
+    return 'mobile';
+  }
+  return 'desktop';
+}
+
+/**
+ * Meldung nach Vertrag 1a, oder null (nicht melden). Reine Funktion.
+ * @param {Request} request
+ * @param {number} status
+ */
+export function anonMeldung(request, status) {
+  const url = new URL(request.url);
+  let pfad = url.pathname;
+  const daten = pfad.endsWith('.data');
+  if (daten) pfad = pfad === '/_root.data' ? '/' : pfad.slice(0, -5);
+  if (ANON_AUSGENOMMEN.test(pfad)) return null;
+  if (/\.[a-z0-9]{1,8}$/i.test(pfad)) return null;
+  const h = request.headers;
+  const ua = h.get('user-agent') || '';
+  if (!ua || isbot(ua)) return null;
+  // React Router lädt beim Überfahren von Links .data vorab; Chrome trägt
+  // dann Sec-Purpose, ältere Firefox X-moz.
+  const zweck = ['purpose', 'sec-purpose', 'x-moz']
+    .map((k) => h.get(k) || '')
+    .join(' ');
+  if (/prefetch/i.test(zweck)) return null;
+  if (istInternerZugriff({userAgent: ua, ip: buyerIpAusRequest(request)})) {
+    return null;
+  }
+  let von = '';
+  try {
+    const ref = new URL(h.get('referer') || '');
+    if (ref.host === url.host) von = ref.pathname;
+  } catch {
+    // kein oder fremder Verweis: 'von' bleibt weg
+  }
+  let art;
+  if (request.method === 'POST' && pfad === '/cart') {
+    if (status >= 400) return null;
+    art = 'warenkorb';
+  } else if (request.method === 'GET' && status === 200) {
+    // .data mit Ziel = Herkunft ist Revalidierung (z. B. nach einer
+    // Warenkorb-Aktion), kein Seitenaufruf.
+    if (daten && von === pfad) return null;
+    art = 'seite';
+  } else {
+    return null;
+  }
+  const meldung = {
+    quelle: 'server',
+    host: url.hostname,
+    pfad,
+    art,
+    geraet: geraeteKlasse(ua),
+  };
+  if (von) meldung.von = von;
+  return meldung;
+}
+
+/**
+ * Fail-soft: wirft nie, verzögert die Antwort nicht.
+ * @param {Request} request
+ * @param {number} status
+ * @param {AppLoadContext} context
+ */
+function meldeAnonym(request, status, context) {
+  try {
+    const ziel = anonZiel(context?.env);
+    if (!ziel || typeof fetch !== 'function') return;
+    const meldung = anonMeldung(request, status);
+    if (!meldung) return;
+    const signal =
+      typeof AbortSignal !== 'undefined' &&
+      typeof AbortSignal.timeout === 'function'
+        ? AbortSignal.timeout(ANON_TIMEOUT_MS)
+        : undefined;
+    const senden = fetch(ziel, {
+      method: 'POST',
+      signal,
+      headers: {'Content-Type': 'application/json', 'User-Agent': ANON_UA},
+      body: JSON.stringify(meldung),
+    }).catch(() => {});
+    if (typeof context?.waitUntil === 'function') context.waitUntil(senden);
+  } catch {
+    // Messung darf die Antwort nie brechen.
+  }
+}
+
+/**
+ * React Router ruft das für jede .data-Anfrage (Seitenwechsel in der SPA,
+ * Warenkorb-Aktionen) und gibt die Antwort unverändert weiter.
+ * @param {Response} response
+ * @param {{request: Request, context: AppLoadContext}} args
+ */
+export function handleDataRequest(response, {request, context}) {
+  meldeAnonym(request, response?.status ?? 0, context);
+  return response;
 }
 
 /*
@@ -658,6 +824,9 @@ export default async function handleRequest(
       `${header}; report-uri ${berichtZiel}`,
     );
   }
+
+  // Anonyme Zählung (Variante 1), siehe Block ANONYME ZÄHLUNG oben.
+  meldeAnonym(request, responseStatusCode, context);
 
   return new Response(body, {
     headers: responseHeaders,
