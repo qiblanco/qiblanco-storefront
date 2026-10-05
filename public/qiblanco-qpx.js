@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.9) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.10) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -749,6 +749,9 @@
       return JSON.stringify(key);
     }
     function flush(force, url) {
+      if (!url && lastPath && w.location.pathname !== lastPath) {
+        try { routeChanged(); } catch (e) {}
+      }
       if (force) ausstiegAn = 1;
       var snap = snapshot();
       var sig = JSON.stringify(snap);
@@ -789,6 +792,12 @@
           for (var i = 0; i < entries.length; i++) {
             var en = entries[i], id = anchorId(en.target);
             if (!id) continue;
+            var weg = false;
+            try { weg = en.target.isConnected === false; } catch (e) {}
+            if (weg) {
+              try { secIo.unobserve(en.target); } catch (e) {}
+              if (!Object.prototype.hasOwnProperty.call(sections, id)) continue;
+            }
             var s = sec(id), vis = en.isIntersecting && visEnough(en);
             s.vis = vis ? 1 : 0;
             if (vis) letzterAnker = id;

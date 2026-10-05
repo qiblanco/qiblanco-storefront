@@ -82,6 +82,7 @@ function bootPixel(startPath = '/pages/schlaf-zellen-schutz') {
         ioCallbacks.push(cb);
       }
       observe() {}
+      unobserve() {}
     },
     // Die Produktion registriert SPAET gemountete Anker über den
     // MutationObserver nach (observeSections() steigt bei 0 Knoten frueh aus,
@@ -151,6 +152,28 @@ function bootPixel(startPath = '/pages/schlaf-zellen-schutz') {
       ioCallbacks.forEach((fn) =>
         fn([{target: node, isIntersecting: true, intersectionRatio: 1,
              intersectionRect: {height: 800}, rootBounds: {height: 800}}]));
+    },
+    /**
+     * Knoten abräumen, wie React es beim Routenwechsel tut: er verlässt das
+     * DOM, und der echte IntersectionObserver meldet ihn ein letztes Mal mit
+     * isIntersecting=false (gemessen in Chromium am 2026-10-05: genau die beim
+     * Klick sichtbaren Abschnitte).
+     */
+    removeSection(id) {
+      const node = nodes.find((n) => n.attrs['data-section'] === id);
+      if (!node) throw new Error(`kein Knoten ${id}`);
+      node.isConnected = false;
+      nodes = nodes.filter((n) => n !== node);
+      ioCallbacks.forEach((fn) =>
+        fn([{target: node, isIntersecting: false, intersectionRatio: 0,
+             intersectionRect: {height: 0}, rootBounds: {height: 800}}]));
+    },
+    /** Adresswechsel OHNE History-Hook (z. B. In-App-Browser): nur location ändert sich. */
+    adresseOhneHook(path) {
+      const u = new URL(path, 'https://qiblanco.com');
+      location.pathname = u.pathname;
+      location.search = u.search;
+      location.href = u.href;
     },
     /** Erzwingt einen Flush über den visibilitychange-Pfad (setzt kein unloading). */
     flush() {
@@ -285,4 +308,61 @@ test('Query-Wechsel innerhalb von A: der Abschluss-Snapshot trägt die letzte UR
   assert.ok(abschluss, 'Abschluss-Flush fehlt');
   assert.match(abschluss.url, /\/pages\/schlaf-zellen-schutz\?lp_ab=b$/,
     `der Abschluss-Snapshot trägt ${abschluss.url}`);
+});
+
+// Auftrag 20261005-qpx-spa-lp-sektionen-auf-dach-startseite-prio40: 23 von 28
+// Startseiten-Aufrufen mit lp-a-* (2026-09-26 bis 10-05, ohne Bots) trugen
+// LEERE Abschnitte der Landingpage. Der Arm 'Sektionen der Altseite bluten
+// NICHT' sah das nie: er räumt keinen Knoten ab, also meldet sein Observer
+// nichts nach dem Wechsel.
+test('Ein abgeräumter Knoten der Altseite legt im neuen Pageview keinen Abschnitt an', () => {
+  const px = bootPixel('/pages/schlaf-zellen-schutz');
+  px.seeSection('lp-a-gitterchip-video');
+  px.flush();
+
+  px.navigate('/');
+  px.removeSection('lp-a-gitterchip-video');
+  px.seeSection('hero');
+  px.flush();
+
+  const letzte = px.behaviors().pop();
+  assert.match(letzte.url, /qiblanco\.com\/$/, `der Snapshot trägt ${letzte.url}`);
+  const ids = letzte.sections.map((s) => s.id);
+  assert.ok(ids.includes('hero'), 'die Sektion der NEUEN Seite fehlt');
+  assert.ok(!ids.includes('lp-a-gitterchip-video'),
+    `Geist: lp-a-gitterchip-video hängt als leerer Abschnitt am neuen Pageview (${ids.join(',')})`);
+});
+
+test('Ein abgeräumter Knoten DESSELBEN Pageviews bleibt dessen Abschnitt', () => {
+  const px = bootPixel('/pages/schlaf-zellen-schutz');
+  px.seeSection('lp-a-slider');
+  px.removeSection('lp-a-slider');
+  px.flush();
+  const ids = px.behaviors().pop().sections.map((s) => s.id);
+  assert.ok(ids.includes('lp-a-slider'),
+    `der Abschnitt der eigenen Seite darf durch das Abräumen nicht verschwinden (${ids.join(',')})`);
+});
+
+// 5 der 28: der GANZE Landingpage-Aufruf trug den Pfad `/`. Ein Flush ohne
+// eigene URL (Timer, hidden, pagehide) las location.href, nachdem die Adresse
+// gewechselt hatte, aber ohne dass der History-Hook gelaufen war.
+test('Adresswechsel ohne History-Hook: der nächste Flush schließt den alten Aufruf mit SEINEM Pfad ab', () => {
+  const px = bootPixel('/pages/schlaf-zellen-schutz');
+  px.seeSection('lp-a-hero');
+  px.flush();
+  const altPv = px.behaviors().pop().pv_id;
+  const vorher = px.behaviors().length;
+
+  px.adresseOhneHook('/');
+  px.flush();
+
+  const neu = px.behaviors().slice(vorher);
+  const vomAlten = neu.filter((b) => b.pv_id === altPv);
+  for (const b of vomAlten) {
+    assert.match(b.url, /\/pages\/schlaf-zellen-schutz$/,
+      `ein Snapshot des alten Aufrufs trägt ${b.url} statt Pfad A`);
+  }
+  const pvs = px.pageViews();
+  assert.equal(pvs.length, 2, 'der Pfadwechsel muss einen page_view für / auslösen');
+  assert.match(pvs[1].url, /qiblanco\.com\/$/, `page_view trägt ${pvs[1].url}`);
 });
