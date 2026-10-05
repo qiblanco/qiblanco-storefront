@@ -293,6 +293,15 @@
       return teile.join(" > ");
     }
     function r3(n) { return n == null ? null : Math.round(n * 1000) / 1000; }
+    function feinNachmessen(pv) {
+      try {
+        if (!FEIN_ON || pv !== PV_ID) return;
+        var de = d.documentElement, h = Math.max(1, de.scrollHeight || 1);
+        var pct = ((w.pageYOffset || de.scrollTop || 0) + (w.innerHeight || de.clientHeight || 0)) / h * 100;
+        var pf = Math.round(Math.max(0, Math.min(100, pct)));
+        if (pf > scrollFein) scrollFein = pf;
+      } catch (e) {}
+    }
     function klickSectionOf(el) {
       if (!FEIN_ON) return sectionOf(el);
       try {
@@ -316,7 +325,6 @@
     function zielKlasse(el) {
       try {
         if (!el || el.nodeType !== 1 || !el.closest) return "sonst";
-        if (el.closest("[data-qb-kaufknopf]")) return "kauf";
         var hier = hostOhneWww(w.location.hostname), u;
         var a = el.closest("a"), href = a ? a.getAttribute("href") : null;
         if (href != null) {
@@ -326,7 +334,11 @@
           if (sch && !/^https?$/i.test(sch[1])) return /^javascript$/i.test(sch[1]) ? "sonst" : "extern";
           u = new URL(href, w.location.href);
           var dort = hostOhneWww(u.hostname);
-          if (dort !== hier) return (dort.indexOf("checkout.") === 0 || /^\/checkouts?(\/|$)/.test(u.pathname)) ? "kasse" : "extern";
+          if (dort !== hier) {
+            if (dort.indexOf("checkout.") === 0 || /^\/checkouts?(\/|$)/.test(u.pathname)) return "kasse";
+            if (/\.myshopify\.com$/.test(dort) && /^\/cart\/c(\/|$)/.test(u.pathname)) return "kasse";
+            return "extern";
+          }
           if (u.hash && u.pathname === w.location.pathname) return "anker";
           return zielAusPfad(u.pathname);
         }
@@ -340,6 +352,7 @@
         u = new URL(String(act), w.location.href);
         if (hostOhneWww(u.hostname) !== hier) return "extern";
         var z = zielAusPfad(u.pathname);
+        if (z === "warenkorb" && el.closest("[data-qb-kaufknopf]")) return "kauf";
         return (z === "kauf" || z === "warenkorb" || z === "kasse") ? z : "sonst";
       } catch (e) { return "sonst"; }
     }
@@ -958,6 +971,7 @@
         PV_ID = uuid(); seq = 0; lastKey = ""; lastVoll = ""; hiddenUnterdrueckt = 0;
         scrollMax = 0; attentionMs = 0; lastActivity = Date.now();
         scrollFein = 0; attentionFeinMs = 0; PV_T0 = Date.now();
+        if (FEIN_ON) { var pvNeu = PV_ID; try { w.setTimeout(function () { feinNachmessen(pvNeu); }, 1500); } catch (e) {} }
         sections = {}; frust = []; klicks = []; lastClick = null;
         rageChain = []; rageEmitted = false;
         var keep = [];
