@@ -12,6 +12,7 @@ import {
 import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/components/CacaoProductForm';
 import {CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
+import {ladeStaffelKasse} from '~/lib/cacao-pricing';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -123,9 +124,20 @@ async function loadCriticalData({context, request}, handle) {
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
+  // Staffel 2x/3x außerhalb des EUR-Markts: Zeilenbetrag aus einem Warenkorb
+  // des Landes (lib/cacao-pricing.js, ladeStaffelKasse). EUR: null, keine Abfrage.
+  const variante = product.selectedOrFirstAvailableVariant;
+  const staffelKasse = await ladeStaffelKasse(storefront, {
+    variantId: variante?.id,
+    waehrung: variante?.price?.currencyCode,
+    land: storefront.i18n.country,
+    listenpreis: variante?.price?.amount,
+  });
+
   return {
     product,
     sortenPreise,
+    staffelKasse,
     // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
     // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
     // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
@@ -143,7 +155,7 @@ function loadDeferredData({context, params}) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, sortenPreise} = useLoaderData();
+  const {product, sortenPreise, staffelKasse} = useLoaderData();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -230,6 +242,7 @@ export default function Product() {
             quantity={quantity}
             selectedVariant={selectedVariant}
             handle={product.handle}
+            staffelKasse={staffelKasse}
           />
 
           <CacaoProductForm
@@ -237,6 +250,7 @@ export default function Product() {
             handle={product.handle}
             quantity={quantity}
             onQuantityChange={setQuantity}
+            staffelKasse={staffelKasse}
             /* Elina EL-20260909-8c4001d1: die Mitteilung hängt auf dieser
                Kaufflaeche IN der Nutzen-Liste darunter. Hier abgeschaltet --
                sonst stuende sie zweimal auf der Seite. */

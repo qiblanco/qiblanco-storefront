@@ -256,7 +256,7 @@ test('Kakao Preis: Komponente rechnet mit der Funktion der Kaufbox (cacaoPricing
   const quelle = readFileSync(join(HIER, 'AmazonStil.jsx'), 'utf8');
   assert.match(quelle, /import \{cacaoPricing\} from '~\/components\/CacaoProductForm'/);
   assert.match(quelle, /cacaoPricing\('1', s\.variante, s\.handle, land\)\.price/);
-  assert.match(readFileSync(join(APP, 'components', 'CacaoPriceDisplay.jsx'), 'utf8'), /cacaoPricing\(quantity, selectedVariant, handle, marktLand\)/,
+  assert.match(readFileSync(join(APP, 'components', 'CacaoPriceDisplay.jsx'), 'utf8'), /cacaoPricing\(quantity, selectedVariant, handle, marktLand[,)]/,
     'Kaufbox rechnet nicht mehr mit cacaoPricing: Vergleich und Kaufbox könnten auseinanderlaufen');
 });
 
