@@ -42,10 +42,10 @@
  },
  "laienSummary": {
   "frage": "Kann QiOne® 2 Pro die Darmschleimhaut vor den Auswirkungen von Handystrahlung schützen?",
-  "antwort": "In dieser Laborstudie wurden Darmzellen in der Zellkultur vier Stunden lang Handystrahlung ausgesetzt. Ungeschützte Zellen zeigten dabei einen nahezu vollständigen Zusammenbruch der Barriere. Zellen, die mit QiOne® 2 Pro geschützt wurden, wiesen dagegen eine weitgehend intakte Barriere auf — ihr Messwert lag auf einem ähnlichen Niveau wie völlig unbestrahlte Kontrollzellen.",
+  "antwort": "In dieser Laborstudie wurden Darmzellen in der Zellkultur vier Stunden lang Handystrahlung ausgesetzt. Ungeschützte Zellen zeigten dabei einen nahezu vollständigen Zusammenbruch der Barriere. Zellen, die mit QiOne® 2 Pro geschützt wurden, wiesen dagegen eine weitgehend intakte Barriere auf. Ihr Messwert lag auf einem ähnlichen Niveau wie bei völlig unbestrahlten Kontrollzellen.",
   "punkte": [
    "In der Zellkultur reduzierte Handystrahlung die Regenerationsaktivität ungeschützter Darmzellen um etwa 60 %.",
-   "Bei mit QiOne® 2 Pro geschützten Zellen lag die Verringerung der Regenerationsaktivität nur bei etwa 15 % — ähnlich wie bei unbestrahlten Kontrollzellen.",
+   "Bei mit QiOne® 2 Pro geschützten Zellen lag die Verringerung der Regenerationsaktivität nur bei etwa 15 %, ähnlich wie bei unbestrahlten Kontrollzellen.",
    "Der elektrische Widerstand der Darmbarriere (TEER) war bei ungeschützten Zellen auf ein Zehntel des Ausgangswertes eingebrochen; geschützte Zellen zeigten kaum eine Veränderung.",
    "Die Unterschiede zwischen geschützten und ungeschützten Zellen waren statistisch hoch signifikant (p ≤ 0,01)."
   ],
@@ -323,11 +323,11 @@
  "faq": [
   {
    "frage": "Was wurde in dieser Studie gemessen?",
-   "antwort": "In dieser Laborstudie wurden zwei verschiedene Messverfahren eingesetzt: Erstens ein Wundheilungs-Assay, bei dem verfolgt wurde, wie schnell Darmzellen einen zellfreien Bereich wieder schließen (Zellregeneration). Zweitens wurde der transepitheliale elektrische Widerstand (TEER) gemessen — ein etablierter Laborwert, der anzeigt, wie dicht und intakt eine Zellbarriere ist. Je höher der TEER-Wert, desto dichter ist die Barriere."
+   "antwort": "Das Labor hat verfolgt, wie schnell Darmzellen einen zellfreien Bereich wieder schließen. Dieser Wundheilungs-Assay zeigt die Zellregeneration. Außerdem hat es den transepithelialen elektrischen Widerstand (TEER) gemessen, einen etablierten Laborwert dafür, wie dicht und intakt eine Zellbarriere ist. Je höher der TEER-Wert, desto dichter ist die Barriere."
   },
   {
    "frage": "Wie stark war der Effekt von Handystrahlung auf die Darmzellen im Labor?",
-   "antwort": "Ungeschützte Darmzellen zeigten nach 4 Stunden Bestrahlung einen Zusammenbruch der Barriere: Ihr TEER sank auf 152 Ω/cm², verglichen mit 2.542 Ω/cm² bei unbestrahlten Kontrollzellen. Auch die Regenerationsaktivität war bei ungeschützten Zellen deutlich eingeschränkt — der zellfreie Bereich betrug noch 43,7 %, während er bei Kontrollzellen nur 13,8 % ausmachte."
+   "antwort": "Ungeschützte Darmzellen zeigten nach 4 Stunden Bestrahlung einen Zusammenbruch der Barriere: Ihr TEER sank auf 152 Ω/cm², verglichen mit 2.542 Ω/cm² bei unbestrahlten Kontrollzellen. Auch die Regenerationsaktivität war bei ungeschützten Zellen deutlich eingeschränkt. Der zellfreie Bereich betrug bei ihnen noch 43,7 %, bei Kontrollzellen nur 13,8 %."
   },
   {
    "frage": "Welche Ergebnisse wurden für QiOne® 2 Pro geschützte Zellen beobachtet?",

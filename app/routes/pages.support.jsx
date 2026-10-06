@@ -33,7 +33,7 @@ export const meta = () => {
     {
       name: 'description',
       content:
-        'Schreib uns direkt — wir antworten dir persönlich. Kontaktformular für Fragen zu ' +
+        'Schreib uns direkt, wir antworten dir persönlich. Kontaktformular für Fragen zu ' +
         'Bestellung, Größe und Rückgabe. Die häufigsten Fragen beantworten wir gebündelt ' +
         'unter „Häufige Fragen".',
     },
@@ -208,7 +208,7 @@ const FAQ_ITEMS = [
   {
     question: 'Wie funktioniert der QiOne®?',
     answer:
-      'Der QiOne® enthält keinerlei elektronische Bauteile. Er nutzt einen proprietären Gitterchip™, der durch die spezifische Positionierung von Goldatomen ein statisches Feld erzeugt. Dieses Feld fördert die Selbstorganisation von Wassermolekülen zu kohärenten Strukturen – ein Zustand, der die zelluläre Kommunikation im Körper verbessert.',
+      'Der QiOne® enthält keinerlei elektronische Bauteile. Er nutzt einen proprietären Gitterchip™, der durch die spezifische Positionierung von Goldatomen ein statisches Feld erzeugt. Dieses Feld fördert die Selbstorganisation von Wassermolekülen zu kohärenten Strukturen, einem Zustand, der die zelluläre Kommunikation im Körper verbessert.',
   },
   {
     question: 'Ist die kohärente Wasserstruktur messbar?',
@@ -218,7 +218,7 @@ const FAQ_ITEMS = [
   {
     question: 'Gibt es einen „Handy Chip" von Qi Blanco®?',
     answer:
-      'Nein. Qi Blanco® stellt keine Handy-Chips her. Unsere Produkte passen sich dynamisch an verschiedene Situationen an und bieten durch ihre lange Lebensdauer einen dauerhaften Schutz – im Gegensatz zu herkömmlichen Abschirmprodukten, die nur für ein einzelnes Gerät konzipiert sind.',
+      'Nein. Qi Blanco® stellt keine Handy-Chips her. Unsere Produkte passen sich dynamisch an verschiedene Situationen an und bieten durch ihre lange Lebensdauer einen dauerhaften Schutz. Herkömmliche Abschirmprodukte sind dagegen nur für ein einzelnes Gerät konzipiert.',
   },
   {
     question: 'Gibt es ein Widerrufsrecht?',
@@ -233,7 +233,7 @@ const FAQ_ITEMS = [
   {
     question: 'Kann ich den QiOne® an einer anderen Kette tragen?',
     answer:
-      'Ja. Der Bohrdurchmesser beträgt 2,5 mm. Metallketten können Kratzer hinterlassen – eine Alternative aus Edelstahl ist erhältlich. Wichtig ist, dass die Kette durch die Öffnung passt.',
+      'Ja. Der Bohrdurchmesser beträgt 2,5 mm. Metallketten können Kratzer hinterlassen, eine Alternative aus Edelstahl ist erhältlich. Wichtig ist, dass die Kette durch die Öffnung passt.',
   },
   {
     question: 'Wie sollte ich den QiOne® tragen?',
@@ -243,7 +243,7 @@ const FAQ_ITEMS = [
   {
     question: 'Lässt die Wirkung irgendwann nach?',
     answer:
-      'Nein. Die Wirkung des QiOne® bleibt bestehen. Was nachlässt, ist das bewusste Spüren der Wirkung – dies ist ein natürlicher Gewöhnungseffekt des Körpers.',
+      'Nein. Die Wirkung des QiOne® bleibt bestehen. Mit der Zeit spürst du sie weniger deutlich, weil sich dein Körper daran gewöhnt.',
   },
   {
     question: 'Hat der QiOne® einen Einfluss auf Trinkwasser?',
@@ -384,8 +384,8 @@ export default function SupportPage() {
             darunter: wer hier landet und eine Antwort sucht, soll den besseren
             Ort finden, bevor er sich durch die Kurzfassung klickt. */}
         <p style={{marginTop: '0.5rem'}}>
-          Ausführlicher — inklusive Größentabelle, Reichweite, Rückgabe und der
-          ehrlichen Antwort auf „Wirkt das überhaupt?" —{' '}
+          Ausführlicher und mit Größentabelle, Reichweite, Rückgabe und der
+          Antwort auf „Wirkt das überhaupt?"{' '}
           <Link to="/pages/faq">stehen die häufigen Fragen hier</Link>.
         </p>
         <FaqListe

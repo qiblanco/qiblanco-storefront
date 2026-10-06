@@ -39,8 +39,8 @@ export function AbsichtHinweis({einleitung}) {
         <Link className="ab-link" to="/pages/warum-qi-blanco" prefetch="intent">
           Christian Bernd Bauer hat aufgeschrieben, woran er seit zwanzig Jahren
           arbeitet und warum
-        </Link>{' '}
-        — in der ersten Person, ohne Verkaufstext.
+        </Link>
+        , in der ersten Person und ohne Verkaufstext.
       </p>
     </aside>
   );
