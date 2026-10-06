@@ -465,6 +465,12 @@ export default async function handleRequest(
       // 2026-09-18). Ein Host genügt, der Wildcard entfällt.
       'https://qiblanco-video.imgix.net',
       'https://qiblanco.activehosted.com',
+      // Eigener Anmelde-Endpunkt (ac-eingang, Stufe E1 der AC-Ablösung, s11):
+      // GET /w (Weiche je Formular) und POST /f/<id>. STELLE 2 VON 2 — die
+      // erste ist ANMELDE_ENDPUNKT in app/components/reusables/Anmeldeweiche.jsx.
+      // Fehlt diese Zeile, scheitert der Abruf STILL und jedes Formular bleibt
+      // beim AC-Embed.
+      'https://anmelden.65-108-150-121.sslip.io',
       'https://*.myshopify.dev',
       'https://*.vimeo.com',
       'https://*.vimeocdn.com',
