@@ -1,4 +1,9 @@
-import {anzeigeSatz, formatPreis, kassenAnzeige} from '~/lib/markt-pricing';
+import {
+  anzeigeSatz,
+  formatPreis,
+  kassenAnzeige,
+  streichAnzeige,
+} from '~/lib/markt-pricing';
 import {istBrutto} from '~/lib/preismodus';
 import {useMarktLand} from '~/lib/markt-land';
 
@@ -13,10 +18,13 @@ import {useMarktLand} from '~/lib/markt-land';
  * die Kaufseite davor rechnete unverandert mit 19 %.
  *
  * WAS DAS GEKOSTET HAT, gemessen am Kundenrand:
- * /products/crystal-cacao-adfiefiale zeigte 85,- € (= round(71,03 × 1,19)),
- * waehrend Warenkorb und Kasse für DIESELBE Ware (SKU 6666, 420 g) 44,08 €
- * belasteten und die Schwesterseite /products/crystal-cacao-create für die
- * gleiche Packung 76,- € auswies. Der Fix vom 2026-07-29 (PR #144/#145,
+ * /products/crystal-cacao-adfiefiale zeigte 85 Euro (gerundet aus 71,03 mal
+ * 1,19), waehrend Warenkorb und Kasse für DIESELBE Ware (SKU 6666, 420 g)
+ * 44,08 Euro belasteten und die Schwesterseite /products/crystal-cacao-create
+ * für die gleiche Packung 76 Euro auswies.
+ * (Beträge hier ohne Eurozeichen: preiswatch liest auf der Quelltext-Ebene
+ * jede Zahl mit Eurozeichen als Preis, auch im Kommentar. Mit Zeichen stand
+ * die 85 seit dem Soll-Wechsel vom 2026-10-06 als Abweichung im Bericht.) Der Fix vom 2026-07-29 (PR #144/#145,
  * "Lebensmittel-MwSt für crystal-cacao-adfiefiale + -angebot") hat genau
  * diese Klasse geschlossen — aber nur beim Warenkorb-Konsumenten. Der zweite
  * Konsument stand daneben und wurde nicht mitgezogen.
@@ -79,6 +87,16 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     return {...money, amount};
   };
 
+  // Streichpreis: im Warenkorb (taxRate gesetzt) wie bisher ganz und
+  // unversteuert; auf der Seite auf derselben Satz-Achse wie der Kaufpreis
+  // (markt-pricing.js streichAnzeige, Job 20261006-preisanzeige-rest).
+  const streich = (money) => {
+    if (!money) return null;
+    if (taxRate != null || centGenau) return money;
+    const amount = streichAnzeige(money, handle, marktLand);
+    return amount == null ? null : {...money, amount};
+  };
+
   const formatMarktPreis = (money, runden = false) => {
     if (!money) return null;
     const amount = Number(money.amount);
@@ -86,8 +104,9 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     if (centGenau) {
       return formatPreis(amount, money.currencyCode || 'EUR', 'cart-cent');
     }
-    // Der Kaufpreis kommt schon auf den Cent aus kassenAnzeige und wird nicht
-    // ein zweites Mal gerundet; nur der Streichpreis bleibt ganz wie bisher.
+    // Kauf- und Streichpreis kommen schon auf den Cent aus kassenAnzeige bzw.
+    // streichAnzeige und werden nicht ein zweites Mal gerundet; nur der
+    // Streichpreis im Warenkorb bleibt ganz wie bisher.
     return formatPreis(
       runden ? Math.round(amount) : amount,
       money.currencyCode || 'EUR',
@@ -96,7 +115,10 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
   };
 
   const taxedPrice = formatMarktPreis(applyTax(price));
-  const compareAtFormatted = formatMarktPreis(compareAtPrice, true); // no tax here
+  const compareAtFormatted = formatMarktPreis(
+    streich(compareAtPrice),
+    taxRate != null,
+  );
 
   return (
     <div className="product-price">

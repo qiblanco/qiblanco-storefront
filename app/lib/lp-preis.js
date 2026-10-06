@@ -1,4 +1,4 @@
-import {bruttoAnzeige, formatPreis} from './markt-pricing.js';
+import {bruttoAnzeige, formatPreis, streichAnzeige} from './markt-pricing.js';
 import {mitStreichpreisFallback} from './streichpreis-paritaet.js';
 import {useMarktLand} from './markt-land.js';
 
@@ -54,15 +54,21 @@ export function useLpPreis() {
   const preisLabelVon = (p) => formatPreis(preisWert(p), waehrungVon(p));
   const getCompareAtMoney = (p) => {
     const v = p?.variants?.nodes?.[0] || p?.variants?.[0];
-    return mitStreichpreisFallback(v?.compareAtPrice, p?.handle, waehrungVon(p));
+    return mitStreichpreisFallback(
+      v?.compareAtPrice,
+      p?.handle,
+      waehrungVon(p),
+      p?.priceRange?.minVariantPrice?.amount,
+    );
   };
-  // Streichpreis: API-Wert ist bereits der Anzeigewert (kein Steueraufschlag),
-  // also kommt der Markt hier bewusst NICHT vor.
+  // Streichpreis auf derselben Satz-Achse wie der Preis (markt-pricing.js
+  // streichAnzeige, Job 20261006-preisanzeige-rest): DE bleibt 1.238, AT
+  // 1.248,40, CH 1.535,02.
   const compareLabelVon = (p) => {
     const money = getCompareAtMoney(p);
-    const n = Number.parseFloat(money?.amount);
-    if (!Number.isFinite(n)) return null;
-    return formatPreis(Math.round(n), money.currencyCode || waehrungVon(p));
+    const n = streichAnzeige(money, p?.handle, land);
+    if (n == null) return null;
+    return formatPreis(n, money.currencyCode || waehrungVon(p));
   };
 
   return {preisWert, preisLabelVon, getCompareAtMoney, compareLabelVon};

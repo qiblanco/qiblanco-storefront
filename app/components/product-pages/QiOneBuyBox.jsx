@@ -170,6 +170,7 @@ export function QiOneBuyBox({
               selectedVariant?.compareAtPrice,
               product?.handle,
               selectedVariant?.price?.currencyCode,
+              selectedVariant?.price?.amount,
             )}
           />
           {priceLabel}

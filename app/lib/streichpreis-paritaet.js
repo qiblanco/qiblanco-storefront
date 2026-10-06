@@ -47,9 +47,16 @@
 /** @typedef {{amount: string, currencyCode: string}} Money */
 
 // Vergleichspreise je Produkt-Handle und Währung. Beträge als String (API-Form).
+// `zuPreis`: der Aktionspreis, zu dem die Parität gerechnet ist. Der Ersatz
+// gilt nur, wenn der Preis daneben genau dieser ist (Job 20261006-preisanzeige-
+// rest): LI zahlt in CHF, hat aber eine eigene Preisliste (QiOne 2 Pro
+// 1173 CHF statt 1048). Ohne den Abgleich bekäme LI die CH-Parität.
 const STREICHPREIS = {
-  'qione-2-pro': {USD: '1599', CHF: '1420'},
-  aw783hfn: {USD: '198'},
+  'qione-2-pro': {
+    USD: {amount: '1599', zuPreis: 1383},
+    CHF: {amount: '1420', zuPreis: 1048},
+  },
+  aw783hfn: {USD: {amount: '198'}},
 };
 
 /**
@@ -57,12 +64,22 @@ const STREICHPREIS = {
  * EUR gibt IMMER null (die API liefert den Wert dort selbst).
  * @param {string} [handle] Produkt-Handle
  * @param {string} [currencyCode] Währung des aktiven Preises
+ * @param {Money|string|number} [preis] aktiver Preis (Abgleich mit zuPreis)
  * @returns {Money|null}
  */
-export function streichpreisFallback(handle, currencyCode) {
+export function streichpreisFallback(handle, currencyCode, preis) {
   if (!handle || !currencyCode || currencyCode === 'EUR') return null;
-  const amount = STREICHPREIS[handle]?.[currencyCode];
-  return amount ? {amount, currencyCode} : null;
+  const eintrag = STREICHPREIS[handle]?.[currencyCode];
+  if (!eintrag) return null;
+  // Ohne Preisangabe (Altaufrufer) wie bisher; mit Preis nur bei Gleichheit.
+  if (preis != null && eintrag.zuPreis != null) {
+    const n = Number.parseFloat(preis?.amount ?? preis);
+    if (!Number.isFinite(n) || Math.abs(n - eintrag.zuPreis) > 0.005) return null;
+  }
+  // basis 'preisliste': der Wert steht auf der Basis der Preisliste dieser
+  // Währung (wie der Preis daneben), nicht als DE-Bruttobetrag wie der
+  // API-Vergleichspreis. markt-pricing.js streichAnzeige liest das Feld.
+  return {amount: eintrag.amount, currencyCode, basis: 'preisliste'};
 }
 
 /**
@@ -74,6 +91,6 @@ export function streichpreisFallback(handle, currencyCode) {
  * @param {string} [currencyCode] Währung des aktiven Preises
  * @returns {Money|null}
  */
-export function mitStreichpreisFallback(apiMoney, handle, currencyCode) {
-  return apiMoney || streichpreisFallback(handle, currencyCode);
+export function mitStreichpreisFallback(apiMoney, handle, currencyCode, preis) {
+  return apiMoney || streichpreisFallback(handle, currencyCode, preis);
 }
