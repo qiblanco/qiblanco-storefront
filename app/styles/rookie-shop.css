@@ -1,0 +1,84 @@
+/* ============================================================================
+   rookie-shop.css — Rookie /pages/qione-2-pro-b (Experiment q2p-e1-gs080,
+   Hypothese GS-080), haengt NUR an links() dieser einen Route.
+
+   Die Seite traegt dieselben Stylesheets wie Champion A (qiOne2ProSeiteLinks:
+   pdp-qi.css, ig-testimonials.css, produkt-videos.css, amazonstil.css). Diese
+   Datei fuegt nur hinzu, was B mehr hat: den Sticky-Warenkorb-Knopf mobil und
+   den Takt zwischen den neu gereihten Bloecken.
+
+   TOKENS: jeder Wert kommt aus der gemeinsamen Wurzel qb-tokens.css (root.jsx)
+   oder aus pdp-qi.css. KEIN neuer Farbwert, KEINE neue Schriftgroesse, KEIN
+   zweiter Goldton: der Knopf ist .btn--primary aus app.css (Akzent-Flaeche),
+   der Balken ist Kartengrund und Tinte der Seite.
+   ========================================================================== */
+
+.qb-rookie-shop {
+  /* Raster 8px (qb-tokens) */
+  --rs-s1: var(--qb-ref-raster, 8px);
+  --rs-s2: calc(var(--rs-s1) * 2);
+  --rs-s3: calc(var(--rs-s1) * 3);
+  /* Typo: Hauswerte aus qb-tokens */
+  --rs-fs-klein: var(--qb-ref-fs-2, 14px);
+  /* Farbe: Kartengrund und Tinte der Seite (pdp-qi.css), gedaempfte Linie */
+  --rs-grund: var(--pdpqi-karte, #fff);
+  --rs-text: var(--qb-text, #2c2a26);
+  --rs-linie: color-mix(in srgb, var(--qb-text-gedaempft, #6b665d) 25%, transparent);
+  --rs-schatten: 0 -4px 16px color-mix(in srgb, var(--qb-text, #2c2a26) 12%, transparent);
+  /* Sektions-Takt (qb-tokens, mittlere Stufe 64px des Soll-Takts [96, 64]) */
+  --rs-sektion: var(--qb-abstand-sektion-mittel, 64px);
+}
+
+/* Die aus QiOne2Pro.jsx uebernommenen Bloecke stehen in .ProductPageQiOne,
+   damit sie genau wie auf A aussehen. Der Rahmen bringt dort 50px oben und
+   unten mit; in B gibt es ihn dreimal, der Takt kommt deshalb aus dem Token. */
+.qb-rookie-shop .qb-rookie-teil {
+  padding: 0;
+  margin-block: var(--rs-sektion);
+}
+
+/* ---- Sticky-Warenkorb-Knopf (StickyWarenkorb.jsx) -------------------------
+   Nur mobil. Versteckt heisst: leer, visibility hidden, unter dem Rand. Kein
+   Gleiten beim Erscheinen: KaufknopfChatSignal misst im naechsten Bild, ein
+   Knopf mitten in der Bewegung laege dann noch unter dem Rand. */
+.qb-rookie-sticky { display: none; }
+
+@media (max-width: 767px) {
+  .qb-rookie-sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-schwebend);
+    display: flex;
+    flex-direction: column;
+    gap: var(--rs-s1);
+    padding: var(--rs-s1) var(--rs-s2) max(var(--rs-s1), env(safe-area-inset-bottom));
+    background: var(--rs-grund);
+    border-top: 1px solid var(--rs-linie);
+    box-shadow: var(--rs-schatten);
+    color: var(--rs-text);
+    transform: translateY(110%);
+    visibility: hidden;
+  }
+  .qb-rookie-sticky--sichtbar {
+    transform: none;
+    visibility: visible;
+  }
+  /* Die drei Zeilen wie unter dem Buybox-Knopf, nur enger gesetzt. */
+  .qb-rookie-sticky__zusage {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--rs-fs-klein);
+    line-height: 1.35;
+  }
+  .qb-rookie-sticky__zusage svg {
+    vertical-align: -0.125em;
+    margin-inline-end: calc(var(--rs-s1) / 2);
+  }
+  .qb-rookie-sticky .btn--primary {
+    max-width: none;
+    padding: var(--rs-s2);
+  }
+}
