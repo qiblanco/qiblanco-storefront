@@ -480,6 +480,19 @@
   margin: 0;
   max-width: var(--st-mass);
 }
+/* Produktnamen im Einleitungssatz verlinken auf ihre Kaufseite (s02,
+   2026-10-06). Hausform für Prosa-Links wie .krit a: Text in Textfarbe,
+   Unterstrich in Gold-Tinte, kein neuer Farbton, keine neue Schriftgröße. */
+.qb-st-hero-text > p:last-child a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--st-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+.qb-st-hero-text > p:last-child a:hover {
+  text-decoration-thickness: 3px;
+}
 /* Bezugsrahmen des Faechers. container-type macht 100cqw zur BREITE DIESER
    SPALTE — nicht des Viewports; nur so kann der Faecher seine Hoehe so
    deckeln, dass er in seine eigene Spalte passt. */
