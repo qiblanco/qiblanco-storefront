@@ -946,7 +946,7 @@ function Schluss() {
     <section className="pb__schluss" data-section="pb-schluss">
       <div className="pb__inhalt pb__inhalt--breit">
         <h2>Bis Donnerstag?</h2>
-        <p>Such dir eine Zeit aus, hol dir einen Kaffee, und dann reden wir.</p>
+        <p>Such dir eine Zeit aus, mach dir einen Kakao, und dann reden wir.</p>
         <p className="pb__weg">
           <a href="#termine" className="pb__knopf-zwei">
             Termin aussuchen
