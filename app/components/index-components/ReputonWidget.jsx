@@ -198,7 +198,12 @@ function AiSummaryKarte({aiSummary}) {
  * Probe liest; im Browser wird er aus dem Takt heraus fortgeschrieben.
  * @param {{reviews:Array, aiSummary?:Array, label?:string}} props
  */
-export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen von Qi Blanco'}) {
+export function ReviewsSlider({
+  reviews,
+  aiSummary,
+  label = 'Google-Rezensionen von Qi Blanco',
+  quelle = 'google',
+}) {
   const trackRef = useRef(null);
   const hoverRef = useRef(false);
   const dragRef = useRef(false);
@@ -500,7 +505,7 @@ export function ReviewsSlider({reviews, aiSummary, label = 'Google-Rezensionen v
       >
         <AiSummaryKarte aiSummary={aiSummary} />
         {reviews.map((review) => (
-          <ReviewKarte key={review.id || review.name} review={review} />
+          <ReviewKarte key={review.id || review.name} review={review} quelle={quelle} />
         ))}
       </div>
     </div>
@@ -521,7 +526,26 @@ function PfeilIcon() {
   );
 }
 
-function ReviewKarte({review}) {
+/*
+ * QUELLE TRUSTPILOT (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq,
+ * Christian 2026-10-06: „einen Scroller bauen wie bei den Googlebewertungen").
+ * DIESELBE Karte, kein zweites Layout. Drei Unterschiede, alle aus der Quelle:
+ *  - rechts oben das Trustpilot-Zeichen statt des Google-„G", und es ist ein
+ *    Link auf genau diese Bewertung bei Trustpilot (Herkunft + Quelle);
+ *  - kein blauer Haken: Trustpilot führt die Bewertungen als „unaufgefordert",
+ *    nicht als verifiziert. Ein Haken wäre eine Behauptung, die die Quelle
+ *    nicht trägt;
+ *  - der Titel steht über dem Text, wenn er nicht nur dessen Anfang ist. Der
+ *    Text bleibt wortgleich.
+ * Kein Trustpilot-Skript, keine TrustBox: das Zeichen ist ein Inline-SVG.
+ */
+function titelIstTextanfang(titel, text) {
+  const t = (titel || '').replace(/(…|\.\.\.)\s*$/, '').trim();
+  return !t || (text || '').trim().startsWith(t);
+}
+
+function ReviewKarte({review, quelle = 'google'}) {
+  const istTrustpilot = quelle === 'trustpilot';
   const [offen, setOffen] = useState(false);
   const [ueberlaeuft, setUeberlaeuft] = useState(false);
   // TOTE KUNDENFOTOS AUSBLENDEN statt sie kaputt zu zeigen.
@@ -600,7 +624,11 @@ function ReviewKarte({review}) {
               className="w-9 h-9 rounded-full flex-shrink-0"
             />
           ) : (
-            <div className="w-9 h-9 rounded-full flex-shrink-0 bg-[#4285f4] flex items-center justify-center text-white font-medium text-sm">
+            <div
+              className={`w-9 h-9 rounded-full flex-shrink-0 ${
+                istTrustpilot ? 'bg-[#4a4a4a]' : 'bg-[#4285f4]'
+              } flex items-center justify-center text-white font-medium text-sm`}
+            >
               {(review.name || 'G').charAt(0)}
             </div>
           )}
@@ -611,7 +639,20 @@ function ReviewKarte({review}) {
             ) : null}
           </div>
         </div>
-        <GoogleIcon />
+        {istTrustpilot ? (
+          <a
+            href={review.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0"
+            aria-label={`Bewertung von ${review.name} auf Trustpilot lesen`}
+            data-qb-trustpilot-link="karte"
+          >
+            <TrustpilotIcon />
+          </a>
+        ) : (
+          <GoogleIcon />
+        )}
       </div>
 
       {/* Sterne + Verifiziert-Haken.
@@ -622,15 +663,27 @@ function ReviewKarte({review}) {
           Karten des zweiten Karussells als Fehlstelle zählen. */}
       <div className="flex items-center gap-1.5">
         <StarRating value={review.rating} size={16} qb="d" />
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="#3b82f6" aria-hidden="true">
-          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-        </svg>
+        {istTrustpilot ? null : (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#3b82f6" aria-hidden="true">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+          </svg>
+        )}
       </div>
+
+      {istTrustpilot && !titelIstTextanfang(review.titel, text) ? (
+        <p
+          className="text-sm! font-semibold text-gray-800 m-0! -mb-1!"
+          data-fremdtext="trustpilot"
+        >
+          {review.titel}
+        </p>
+      ) : null}
 
       {/* Fix (3): Review-Text — eingeklappt geklammert, „weiterlesen" klappt
           den GANZEN Text inline auf (kein externer Google-Link mehr). */}
       <p
         ref={textRef}
+        {...(istTrustpilot ? {'data-fremdtext': 'trustpilot'} : {})}
         className="text-sm! text-gray-700 leading-relaxed whitespace-pre-line"
         style={
           offen
@@ -721,6 +774,27 @@ function SparkleIcon() {
       className="flex-shrink-0"
     >
       <path d="M12 2l1.9 5.1L19 9l-5.1 1.9L12 16l-1.9-5.1L5 9l5.1-1.9L12 2zM19 14l.95 2.55L22.5 17.5l-2.55.95L19 21l-.95-2.55L15.5 17.5l2.55-.95L19 14z" />
+    </svg>
+  );
+}
+
+/** Trustpilot-Zeichen (Stern auf Grün), inline — kein Fremdskript, kein Bild-Abruf. */
+function TrustpilotIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Trustpilot"
+      className="flex-shrink-0"
+    >
+      <rect width="24" height="24" rx="3" fill="#00b67a" />
+      <path
+        d="M12 4.5l2.1 5.6h6l-4.85 3.55 1.85 5.85L12 15.9l-5.1 3.6 1.85-5.85L3.9 10.1h6z"
+        fill="#fff"
+      />
     </svg>
   );
 }
