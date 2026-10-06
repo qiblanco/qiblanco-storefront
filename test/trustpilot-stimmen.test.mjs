@@ -109,3 +109,15 @@ test('T3 Datenmodul: gefüllt, keine Inhaber-Bewertung, keine Gesamtzahl', async
   assert.doesNotMatch(baustein, /basierend auf|Bewertungen insgesamt|\d+\s+Bewertungen/);
   assert.doesNotMatch(baustein, /<script|widget\.trustpilot|tp\.widget/i);
 });
+
+test('T4 Frageseite: der Scroller steht im Seitenrand der Frageseite, nicht bei x=0', () => {
+  // `.frg section` (fragen.css) nullt das seitliche Padding JEDER Section, auch
+  // der Trustpilot-Section (live gemessen 2026-10-06: Titel 0..390 bei 390 px).
+  // Der Rahmen um den Baustein muss den Rand mit dem Token der Seite tragen.
+  const quelle = readFileSync(join(APP, 'components/campaign/FrageSeite.jsx'), 'utf8')
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
+  const m = quelle.match(/<div\s+style=\{\{\s*paddingInline:\s*'var\(--frg-s3\)'\s*\}\}>\s*<TrustpilotStimmen\b/);
+  assert.ok(m, 'TrustpilotStimmen ohne Rand-Rahmen in FrageSeite.jsx');
+  const css = readFileSync(join(APP, 'styles/fragen.css'), 'utf8');
+  assert.match(css, /--frg-s3:\s*\d+px/, 'Token --frg-s3 fehlt in fragen.css');
+});

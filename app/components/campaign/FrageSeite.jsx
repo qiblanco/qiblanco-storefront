@@ -97,7 +97,15 @@ export function FrageSeite({seite}) {
         </div>
       </section>
 
-      {seite.trustpilot ? <TrustpilotStimmen praefix="frg-" /> : null}
+      {/* RAND (gemessen 2026-10-06 live, 390 px): `.frg section` in fragen.css
+          setzt das seitliche Padding JEDER Section auf 0, auch das der
+          Trustpilot-Section; Titel und Karten standen bei x=0. Der Rahmen gibt
+          den Seitenrand der Frageseite (--frg-s3) zurück. */}
+      {seite.trustpilot ? (
+        <div style={{paddingInline: 'var(--frg-s3)'}}>
+          <TrustpilotStimmen praefix="frg-" />
+        </div>
+      ) : null}
 
       {/* „GUT ZU WISSEN" STATT „WAS WIR NICHT WISSEN" (Christian 2026-09-28,
           Grossjob 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-
