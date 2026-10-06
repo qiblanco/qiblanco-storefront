@@ -48,7 +48,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2021-02-12T03:23:31Z",
     dauer: "PT1M17S",
     zusammenfassung:
-      "Patrick Thiele stellt sich als Biohacker und Mentaltrainer vor und trägt den QiOne zum Aufnahmezeitpunkt seit knapp vier Monaten. Er berichtet, er habe schon vor dem Kauf nach einer Lösung für genau die Bereiche gesucht, die das Produkt abdecke, und sei nach einem Gespräch mit Christian Bauer über die Technologie begeistert gewesen. Vom ersten Moment an habe er eine Veränderung im Körper gespürt und diese auch an seiner Uhr ablesen können. In Situationen, in denen es darauf ankomme – im Beruf, im Alltag, beim Sport – fühle er sich anders. Er empfiehlt, es einfach auszuprobieren, und nennt es für sich einen Game Changer.",
+      "Patrick Thiele stellt sich als Biohacker und Mentaltrainer vor und trägt den QiOne zum Aufnahmezeitpunkt seit knapp vier Monaten. Er berichtet, er habe schon vor dem Kauf nach einer Lösung für genau die Bereiche gesucht, die das Produkt abdecke, und sei nach einem Gespräch mit Christian Bauer über die Technologie begeistert gewesen. Vom ersten Moment an habe er eine Veränderung im Körper gespürt und diese auch an seiner Uhr ablesen können. Im Beruf, im Alltag und beim Sport fühle er sich in den Situationen anders, in denen es darauf ankomme. Er empfiehlt, es einfach auszuprobieren. Für ihn persönlich habe es viel verändert.",
   },
   {
     videoId: "3prNkfss1Uc",
@@ -58,7 +58,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2023-02-08T20:23:36Z",
     dauer: "PT7M49S",
     zusammenfassung:
-      "Yann Sura spricht über den QiHome Air. Er stellt voran, dass er solchen Dingen gegenüber grundsätzlich kritisch eingestellt sei, und begründet das mit seiner Arbeit im spirituellen Umfeld. Er habe zuvor bereits den QiOne getragen und einen deutlichen Unterschied gespürt; deshalb habe er sich nach etwa vier Wochen zusätzlich das Gerät für zu Hause geholt. Er berichtet von drei Beobachtungen: im Büro habe er sich lockerer gefühlt und abends noch klar denken können statt erschöpft zu sein; im Schlafzimmer habe er – wie auch seine Frau – intensivere Träume gehabt; und beim Wasser habe er einen Geschmacksunterschied bemerkt. Er räumt ausdrücklich ein, es könne Placebo sein, glaubt es aber nicht. Er schildert außerdem, dass Dritte bei Videodrehs ebenfalls einen Unterschied bemerkt hätten.",
+      "Yann Sura spricht über den QiHome Air. Er stellt voran, dass er solchen Dingen gegenüber grundsätzlich kritisch eingestellt sei, und begründet das mit seiner Arbeit im spirituellen Umfeld. Er habe zuvor bereits den QiOne getragen und einen deutlichen Unterschied gespürt; deshalb habe er sich nach etwa vier Wochen zusätzlich das Gerät für zu Hause geholt. Im Büro habe er sich lockerer gefühlt und abends noch klar denken können, statt erschöpft zu sein. Im Schlafzimmer hätten er und seine Frau intensivere Träume gehabt, und beim Wasser habe er einen Geschmacksunterschied bemerkt. Er räumt ein, es könne Placebo sein, glaubt es aber nicht. Er schildert außerdem, dass Dritte bei Videodrehs ebenfalls einen Unterschied bemerkt hätten.",
   },
   {
     videoId: "jyLyXZqHxaw",
@@ -68,7 +68,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2023-02-08T20:23:40Z",
     dauer: "PT9M58S",
     zusammenfassung:
-      "Constantin Preis, Leichtathlet über 400 Meter Hürden, trägt die Kette zum Aufnahmezeitpunkt seit etwa Ende September. Er berichtet vier Beobachtungen. Erstens das Immunsystem: in den Jahren zuvor sei er nach jeder Saison ein bis zwei Wochen krank gewesen, in diesem Jahr nicht; auf Reisen habe er zwar erste Anzeichen gespürt, sei aber am nächsten Morgen wieder fit gewesen. Zweitens der Schlaf: er schlafe entspannter ein, und seine per Tracker aufgezeichnete Tiefschlafphase habe sich verbessert; an Tagen ohne die Kette habe er nach eigener Aussage besonders schlecht geschlafen. Drittens Entspannung und Klarheit. Viertens die Bildschirmzeit: die Abhängigkeit vom Handy habe deutlich nachgelassen. Er ordnet diese Beobachtungen selbst ausdrücklich der Kette zu.",
+      "Constantin Preis, Leichtathlet über 400 Meter Hürden, trägt die Kette zum Aufnahmezeitpunkt seit etwa Ende September. Als Erstes spricht er über sein Immunsystem: In den Jahren zuvor sei er nach jeder Saison ein bis zwei Wochen krank gewesen, in diesem Jahr nicht. Auf Reisen habe er zwar erste Anzeichen gespürt, sei aber am nächsten Morgen wieder fit gewesen. Außerdem schlafe er entspannter ein, und seine per Tracker aufgezeichnete Tiefschlafphase habe sich verbessert. An Tagen ohne die Kette habe er nach eigener Aussage besonders schlecht geschlafen. Er erzählt auch von mehr Entspannung und Klarheit, und die Abhängigkeit vom Handy habe deutlich nachgelassen. Er ordnet diese Beobachtungen selbst der Kette zu.",
   },
   {
     videoId: "aG36zJKxDzg",
@@ -78,7 +78,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2022-10-26T04:49:50Z",
     dauer: "PT15M",
     zusammenfassung:
-      "Nada Breidenbach und Kurt Tepperwein schildern in einem Nachgespräch ihre Erfahrung mit dem QiOne. Nada berichtet, ihr Körper habe sofort reagiert, als sie das Gerät in der Hand hielt; in einer Nacht, in der sie es trug, seien Themen hochgekommen – es sei für sie kein durchweg entspannender, sondern ein Prozess auslösender Vorgang gewesen. Kurt Tepperwein sei zunächst skeptisch gewesen, habe es getragen und dann abgelegt mit der Begründung, er brauche es nicht mehr. Kurz darauf habe er über Herzrhythmusstörungen berichtet; nachdem er es wieder angelegt habe, sei der Zustand nach seiner Aussage wieder stabil gewesen. Beide ordnen das Produkt in einen spirituellen Deutungsrahmen ein.",
+      "Nada Breidenbach und Kurt Tepperwein schildern in einem Nachgespräch ihre Erfahrung mit dem QiOne. Nada berichtet, ihr Körper habe sofort reagiert, als sie das Gerät in der Hand hielt; in einer Nacht, in der sie es trug, seien Themen hochgekommen. Für sie habe es einen Prozess ausgelöst und sei nicht durchweg entspannend gewesen. Kurt Tepperwein sei zunächst skeptisch gewesen, habe es getragen und dann abgelegt mit der Begründung, er brauche es nicht mehr. Kurz darauf habe er über Herzrhythmusstörungen berichtet; nachdem er es wieder angelegt habe, sei der Zustand nach seiner Aussage wieder stabil gewesen. Beide ordnen das Produkt in einen spirituellen Deutungsrahmen ein.",
   },
   {
     videoId: "ugzSE3UXno4",
@@ -88,7 +88,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2020-08-05T14:09:36Z",
     dauer: "PT5M42S",
     zusammenfassung:
-      "Frank Delventhal, Weltrekordhalter im Kraftsport, bedankt sich für das Produkt und berichtet, er habe die erste Generation lange getragen und beim Wechsel auf die zweite erneut einen Unterschied bemerkt. Er habe seiner Tochter ebenfalls eines besorgt, weil ihm Gesundheit wichtiger sei als Kraft. Er erzählt, Ärzte hätten ihm vor elf Jahren wegen seiner Schulter gesagt, er werde nie wieder Sport machen; danach habe seine Rekordlaufbahn erst begonnen, und er habe in diesem Jahr mehrere Weltrekorde aufgestellt, bei denen er das Produkt getragen habe. Er stellt ausdrücklich klar, dass er nicht erzählen wolle, was das Produkt alles könne, sondern danke sagen wolle. Sein Appell an die Zuschauer ist allgemein gehalten: sich um die eigene Gesundheit zu kümmern und die Dinge zu tun, die zu dem Menschen gehören, der man sein möchte.",
+      "Frank Delventhal, Weltrekordhalter im Kraftsport, bedankt sich für das Produkt und berichtet, er habe die erste Generation lange getragen und beim Wechsel auf die zweite erneut einen Unterschied bemerkt. Er habe seiner Tochter ebenfalls eines besorgt, weil ihm Gesundheit wichtiger sei als Kraft. Er erzählt, Ärzte hätten ihm vor elf Jahren wegen seiner Schulter gesagt, er werde nie wieder Sport machen; danach habe seine Rekordlaufbahn erst begonnen, und er habe in diesem Jahr mehrere Weltrekorde aufgestellt, bei denen er das Produkt getragen habe. Er sagt, er wolle danke sagen und nicht erzählen, was das Produkt alles könne. Sein Appell an die Zuschauer ist allgemein gehalten: sich um die eigene Gesundheit zu kümmern und die Dinge zu tun, die zu dem Menschen gehören, der man sein möchte.",
   },
   {
     videoId: "EjXTIldVrk4",
@@ -98,7 +98,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2022-10-26T04:32:16Z",
     dauer: "PT5M31S",
     zusammenfassung:
-      "Yann Sura berichtet über den QiOne, den er zum Aufnahmezeitpunkt seit knapp zwei Monaten trägt. Er sagt, er habe zuvor viele ähnliche Anhänger ausprobiert, teils in derselben Preisklasse, und der Effekt sei jeweils unklar geblieben – er habe sich stets gefragt, ob es Placebo sei. Bei diesem Produkt sei ihm nach einem stressigen Tag und einer halben Stunde in der Natur aufgefallen, dass es ihm deutlich besser gehe, ohne dass er es zunächst dem Anhänger zugeschrieben habe. Überzeugt habe ihn erst der Gegentest: an einem Tag ohne den Anhänger sei der Tag chaotischer verlaufen, und als er ihn seiner Frau geliehen habe, habe er ihn zurückerbeten. Er grenzt ausdrücklich gegen Heilversprechen ab und beschreibt die Wirkung als Stärkung dessen, was ohnehin da ist. Er nennt Authentizität, Demut und Mitgefühl als seine wichtigsten Werte.",
+      "Yann Sura berichtet über den QiOne, den er zum Aufnahmezeitpunkt seit knapp zwei Monaten trägt. Er sagt, er habe zuvor viele ähnliche Anhänger ausprobiert, teils in derselben Preisklasse, und der Effekt sei jeweils unklar geblieben. Er habe sich stets gefragt, ob es Placebo sei. Bei diesem Produkt sei ihm nach einem stressigen Tag und einer halben Stunde in der Natur aufgefallen, dass es ihm deutlich besser gehe, ohne dass er es zunächst dem Anhänger zugeschrieben habe. Überzeugt habe ihn erst der Gegentest: an einem Tag ohne den Anhänger sei der Tag chaotischer verlaufen, und als er ihn seiner Frau geliehen habe, habe er ihn zurückerbeten. Er grenzt sich von Heilversprechen ab und beschreibt die Wirkung als Stärkung dessen, was ohnehin da ist. Er nennt Authentizität, Demut und Mitgefühl als seine wichtigsten Werte.",
   },
   {
     videoId: "4fd1kQCQ9FQ",
@@ -108,7 +108,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2019-10-09T13:23:04Z",
     dauer: "PT1M20S",
     zusammenfassung:
-      "Mark Henninger, Mitgründer von Black Sheep Athletics in Berlin, trägt den QiOne zum Aufnahmezeitpunkt seit etwa eineinhalb Jahren. Er berichtet ausdrücklich von einem unangenehmen Anfang: beim ersten Tragen habe sich das Gefühl fremd angefühlt, er habe ihn weder ganztags noch nachts tragen können, und es habe eine Weile gedauert, bis sein Körper sich daran gewöhnt habe. Bereits in dieser Zeit habe er mehr Energie bemerkt. Wichtiger sei ihm gewesen, dass er sich ausbalancierter fühle: in stressigen Situationen einen klaren Kopf behalten, klare Entscheidungen treffen und Dinge weniger persönlich nehmen. Das sei bis heute der Grund, warum er ihn trage.",
+      "Mark Henninger, Mitgründer von Black Sheep Athletics in Berlin, trägt den QiOne zum Aufnahmezeitpunkt seit etwa eineinhalb Jahren. Er berichtet von einem unangenehmen Anfang: beim ersten Tragen habe sich das Gefühl fremd angefühlt, er habe ihn weder ganztags noch nachts tragen können, und es habe eine Weile gedauert, bis sein Körper sich daran gewöhnt habe. Bereits in dieser Zeit habe er mehr Energie bemerkt. Wichtiger sei ihm gewesen, dass er sich ausbalancierter fühle: in stressigen Situationen einen klaren Kopf behalten, klare Entscheidungen treffen und Dinge weniger persönlich nehmen. Das sei bis heute der Grund, warum er ihn trage.",
   },
   {
     videoId: "yesfFpoBk-s",
@@ -118,7 +118,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2019-12-30T04:46:15Z",
     dauer: "PT3M17S",
     zusammenfassung:
-      "Marion Engelbrecht, Business-Coach und Sängerin und Mutter von zwei Kindern, berichtet über ihre Erfahrung. Sie arbeite täglich viel am Handy und am Laptop und sei seit der Nutzung dabei nicht mehr müde. Auch nach Auftritten vor vielen Menschen falle sie nicht mehr in ein Erschöpfungsloch. Sie schlafe intensiver, schlafe durch und wache ausgeruht auf. Sie nennt ausdrücklich eine Voraussetzung, die sie selbst bemerkt habe: sie müsse mindestens zwei Liter Wasser am Tag trinken, damit es gut wirke. Außerdem berichtet sie von einer regulierteren Verdauung, ebenfalls unter derselben Trinkmenge-Bedingung. Sie sagt, es habe auf vielen Ebenen viel Positives gebracht, vor allem, dass es ihr gut gehe und sie sowohl beruflich leistungsfähig als auch nachmittags für ihre Kinder da sein könne.",
+      "Marion Engelbrecht, Business-Coach und Sängerin und Mutter von zwei Kindern, berichtet über ihre Erfahrung. Sie arbeite täglich viel am Handy und am Laptop und sei seit der Nutzung dabei nicht mehr müde. Auch nach Auftritten vor vielen Menschen falle sie nicht mehr in ein Erschöpfungsloch. Sie schlafe intensiver, schlafe durch und wache ausgeruht auf. Sie nennt eine Voraussetzung, die sie selbst bemerkt habe: sie müsse mindestens zwei Liter Wasser am Tag trinken, damit es gut wirke. Außerdem berichtet sie von einer regulierteren Verdauung, ebenfalls unter derselben Trinkmenge-Bedingung. Sie sagt, es habe auf vielen Ebenen viel Positives gebracht, vor allem, dass es ihr gut gehe und sie sowohl beruflich leistungsfähig als auch nachmittags für ihre Kinder da sein könne.",
   },
   {
     videoId: "3KBHZ2bWp6U",
@@ -148,7 +148,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2023-03-23T17:02:28Z",
     dauer: "PT3M34S",
     zusammenfassung:
-      "Andre Stern erzählt, wie er den QiOne geschenkt bekam. Er sei skeptisch gewesen und habe gedacht, schaden könne es nicht. Beim Tragen habe er bemerkt, es sei ein wenig, als sei etwas nach Hause gekommen. Er sagt, er sei zu diesem Zeitpunkt körperlich nicht besonders fit gewesen und habe in den folgenden Tagen einen Unterschied festgestellt, auch bei seinen sportlichen Leistungen. Er berichtet ausdrücklich, er habe die auf der Website verlinkten wissenschaftlichen Studien gelesen und sie hätten sich mit seinem Empfinden gedeckt. Bemerkenswert und ausdrücklich Teil seiner Aussage ist seine Placebo-Einordnung: selbst wenn es nur Placebo wäre, sei Placebo die beste Medizin, die es gebe – er halte es aber nicht dafür. Er führe das Produkt auf seiner Website unter der Rubrik der Dinge, die sein Leben verändert hätten.",
+      "Andre Stern erzählt, wie er den QiOne geschenkt bekam. Er sei skeptisch gewesen und habe gedacht, schaden könne es nicht. Beim Tragen habe er bemerkt, es sei ein wenig, als sei etwas nach Hause gekommen. Er sagt, er sei zu diesem Zeitpunkt körperlich nicht besonders fit gewesen und habe in den folgenden Tagen einen Unterschied festgestellt, auch bei seinen sportlichen Leistungen. Er berichtet, er habe die auf der Website verlinkten wissenschaftlichen Studien gelesen, und sie hätten sich mit seinem Empfinden gedeckt. Auch zum Placebo sagt er etwas: Selbst wenn es nur Placebo wäre, sei Placebo die beste Medizin, die es gebe. Er halte es aber nicht dafür. Er führe das Produkt auf seiner Website unter der Rubrik der Dinge, die sein Leben verändert hätten.",
   },
   {
     videoId: "I0I0ErUHYbs",
@@ -188,7 +188,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2024-03-08T22:16:25Z",
     dauer: "PT1M4S",
     zusammenfassung:
-      "Dr. Andreas Kramer hat das QiBracelet seit etwa zweieinhalb Monaten und trägt es täglich. Er stellt ausdrücklich voran, er habe beim ersten Anlegen keine Superkräfte und kein Kribbeln verspürt – eine der wenigen Stellen im Vorrat, an denen ein Sprecher eine Erwartung ausdrücklich dämpft. Inzwischen wolle er es aber nicht mehr missen: er berichtet von weniger Erschöpfung, mehr Energie am Morgen und besserem Schlaf. Da er viel am Telefon und am Rechner arbeite, empfinde er den Schutz als zusätzlichen Nutzen. Wenn er es nach dem Sport einmal vergesse, vermisse er es.",
+      "Dr. Andreas Kramer hat das QiBracelet seit etwa zweieinhalb Monaten und trägt es täglich. Er sagt gleich zu Beginn, er habe beim ersten Anlegen keine Superkräfte und kein Kribbeln verspürt. Inzwischen wolle er es aber nicht mehr missen: er berichtet von weniger Erschöpfung, mehr Energie am Morgen und besserem Schlaf. Da er viel am Telefon und am Rechner arbeite, empfinde er den Schutz als zusätzlichen Nutzen. Wenn er es nach dem Sport einmal vergesse, vermisse er es.",
   },
   {
     videoId: "HqnnToUGagI",
@@ -198,7 +198,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2024-07-02T21:44:47Z",
     dauer: "PT1M40S",
     zusammenfassung:
-      "Scott Schwenk berichtet, er habe die Wirkung bereits gespürt, als er das Produkt noch ungeöffnet in der Hand hielt. Er habe zuvor jahrzehntelang andere, in seinem Markt bekannte Technologien genutzt, die hilfreich gewesen seien; dieses sei für ihn eine andere Stufe. Als Beobachtungen nennt er tiefere Atemzüge, gleichmäßigere Stimmung, ein zugänglicheres Herzgefühl und weniger Augenbelastung vor dem Laptop – nach vier Stunden Videokonferenzen habe er nicht die übliche Erschöpfung verspürt. Er schränkt selbst ein, er sei erst etwa einen Monat dabei. Außerdem beschreibt er einen aus seiner Sicht verstärkten Effekt im Beisein anderer Träger.",
+      "Scott Schwenk berichtet, er habe die Wirkung bereits gespürt, als er das Produkt noch ungeöffnet in der Hand hielt. Er habe zuvor jahrzehntelang andere, in seinem Markt bekannte Technologien genutzt, die hilfreich gewesen seien; dieses sei für ihn eine andere Stufe. Als Beobachtungen nennt er tiefere Atemzüge, gleichmäßigere Stimmung, ein zugänglicheres Herzgefühl und weniger Augenbelastung vor dem Laptop. Nach vier Stunden Videokonferenzen habe er nicht die übliche Erschöpfung verspürt. Er schränkt selbst ein, er sei erst etwa einen Monat dabei. Außerdem beschreibt er einen aus seiner Sicht verstärkten Effekt im Beisein anderer Träger.",
   },
   {
     videoId: "I-4r69GwmZ8",
@@ -208,6 +208,6 @@ export const ERFAHRUNGS_BEITRAEGE = [
     veroeffentlicht: "2024-03-01T12:56:00Z",
     dauer: "PT3M19S",
     zusammenfassung:
-      "Scott Schwenk stellt sich als Master Coach und Kursleiter vor und schildert seine Erfahrung ausführlicher. Er habe jahrzehntelang ein anderes Produkt genutzt und dieses bei einem Kursdreh in der Schweiz geschenkt bekommen. Schon bevor er es ausgepackt habe, habe er etwas wahrgenommen; nach dem Anlegen habe er ein Gefühl in der Brust bemerkt, das er als langjähriger Meditierender als Weitung des Herzzentrums beschreibt. Seither berichtet er, er sei ausgeruhter aufgewacht, obwohl er kein Morgenmensch sei, habe gleichmäßigere Energie über den Tag, sei auch nach einem Monat Europa vom Jetlag schneller erholt gewesen und sei ebenso fokussiert wie sonst – obwohl ihm ein sonst regelmäßig eingenommenes Nahrungsergänzungsmittel seit Wochen ausgegangen sei. Er ordnet seine eigene Sprache ausdrücklich als die eines Künstlers ein und sagt, jeder werde seine eigene Erfahrung machen.",
+      "Scott Schwenk stellt sich als Master Coach und Kursleiter vor und schildert seine Erfahrung ausführlicher. Er habe jahrzehntelang ein anderes Produkt genutzt und dieses bei einem Kursdreh in der Schweiz geschenkt bekommen. Schon bevor er es ausgepackt habe, habe er etwas wahrgenommen; nach dem Anlegen habe er ein Gefühl in der Brust bemerkt, das er als langjähriger Meditierender als Weitung des Herzzentrums beschreibt. Seither berichtet er, er sei ausgeruhter aufgewacht, obwohl er kein Morgenmensch sei, habe gleichmäßigere Energie über den Tag, sei auch nach einem Monat Europa vom Jetlag schneller erholt gewesen und sei ebenso fokussiert wie sonst, obwohl ihm ein sonst regelmäßig eingenommenes Nahrungsergänzungsmittel seit Wochen ausgegangen sei. Er ordnet seine eigene Sprache als die eines Künstlers ein und sagt, jeder werde seine eigene Erfahrung machen.",
   },
 ];

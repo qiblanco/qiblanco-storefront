@@ -51,7 +51,7 @@ const FAQ = [
   {
     frage: 'Muss ich etwas „gespürt" haben, um zurückzugeben?',
     antwort:
-      'Nein, im Gegenteil. Die Rückgabe hängt NICHT am Spüren, sondern nur an der Frist und deiner Überzeugung.',
+      'Nein. Die Rückgabe hängt nur an der Frist und an deiner Überzeugung.',
   },
   {
     frage: 'Wie bekomme ich mein Geld zurück?',
@@ -118,8 +118,8 @@ export function MmDas20TageVersprechen({products}) {
         eyebrow="Die Angst vor dem Fehlkauf"
         title="Was, wenn es teuer war und dann nichts für mich ist?"
         text={[
-          'Das ist die häufigste Sorge kurz vor der Bestellung, und sie ist berechtigt. Niemand gibt gern Geld für etwas aus, das man vorher nicht ausprobieren konnte.',
-          'Genau dafür gibt es die 20 Tage. Nicht als Marketing-Floskel, sondern als klaren Ablauf: testen, und bei Nicht-Überzeugung unkompliziert zurück. Das Risiko trägt Qi Blanco, nicht du.',
+          'Das ist die häufigste Sorge kurz vor der Bestellung, und wir verstehen sie gut. Niemand gibt gern Geld für etwas aus, das man vorher nicht ausprobieren konnte.',
+          'Genau dafür gibt es die 20 Tage, mit einem klaren Ablauf: Du testest in Ruhe, und überzeugt es dich nicht, schickst du es unkompliziert zurück. Das Risiko trägt Qi Blanco, nicht du.',
         ]}
         punkte={[
           'Kein Vorschuss-Vertrauen nötig.',

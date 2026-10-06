@@ -162,8 +162,8 @@ const STUDIEN = [
       <>
         Kultivierte Darmzellen unter derselben Belastung. Der elektrische
         Widerstand der Zellbarriere brach ungeschützt auf etwa ein Zehntel ein.
-        Geschützt lag er bei 1.837 ± 349 Ω/cm² — gegenüber 2.542 ± 389 Ω/cm² bei
-        völlig unbestrahlten Zellen.
+        Geschützt lag er bei 1.837 ± 349 Ω/cm², völlig unbestrahlte Zellen
+        kamen auf 2.542 ± 389 Ω/cm².
         <em>
           Die Messung endet hier: der Abstand zur unbestrahlten Kontrolle blieb
           bestehen, der Schutz war also nicht vollständig. Und die Zellen
@@ -180,7 +180,7 @@ const STUDIEN = [
     body: (
       <>
         Fünf Zelltypen wurden mit Wasserstoffperoxid gestresst, mit und ohne
-        QiBracelet®. Alle fünf überlebten in Gegenwart des Armbands besser — aber
+        QiBracelet®. Alle fünf überlebten in Gegenwart des Armbands besser, aber
         sehr unterschiedlich stark: von +47,3 ± 7,1 % bei Leberzellen bis
         +3,9 ± 2,8 % bei Lungenzellen.
         <em>
@@ -202,8 +202,8 @@ const STUDIEN = [
         (rund 17 %).
         <em>
           Die Messung endet hier: keine Kontrollgruppe, keine Verblindung, kein
-          Fragebogen. Die Arbeit zeigt, was Menschen berichtet haben — nicht,
-          was das Gerät bewirkt hat.
+          Fragebogen. Die Arbeit zeigt, was Menschen berichtet haben. Eine
+          Wirkung des Geräts belegt sie nicht.
         </em>
       </>
     ),
@@ -263,19 +263,18 @@ const GRENZEN = [
     durchgeführt. Ein einzelnes Labor, ein einzelner Autor.
   </>,
   <>
-    <strong>3. Wir haben sie bezahlt.</strong> Die Geräte wurden vom Hersteller
-    — von uns — zur Verfügung gestellt, die Untersuchungen von uns finanziert.
+    <strong>3. Wir haben sie bezahlt.</strong> Die Geräte haben wir als
+    Hersteller gestellt, und die Untersuchungen haben wir finanziert.
     Das ist bei Produktforschung üblich und macht Ergebnisse nicht falsch. Es
     heißt aber: eine unabhängige Wiederholung durch ein zweites Labor steht aus.
   </>,
   <>
-    <strong>4. Die Erklärung dahinter ist eine Hypothese.</strong> Das Modell,
-    mit dem die fünf Publikationen den Effekt erklären — geordnetes,
-    „kohärentes“ Wasser — ist in der konventionellen Wissenschaft nicht
-    etabliert. Die Arbeiten selbst kennzeichnen es als Hypothese. Der
-    Unterschied ist wichtig: die Messwerte hängen nicht von der Erklärung ab.
-    Was in den Zellschalen passiert ist, ist gemessen worden — warum es
-    passiert ist, ist offen.{' '}
+    <strong>4. Die Erklärung dahinter ist eine Hypothese.</strong> Die fünf
+    Publikationen erklären den Effekt mit geordnetem, „kohärentem“ Wasser.
+    Dieses Modell ist in der konventionellen Wissenschaft nicht etabliert, und
+    die Arbeiten selbst kennzeichnen es als Hypothese. Der Unterschied ist
+    wichtig: die Messwerte hängen nicht von der Erklärung ab. Was in den
+    Zellschalen passiert ist, wurde gemessen. Warum es passiert, ist offen.{' '}
     {/* Zeigte bis 2026-08-26 auf /pages/so-wirkt-kohaerentes-wasser. Das ist
         eine noindex-Seite des Landing-Bereichs und laut ihrem eigenen
         Docstring eine „Freigabe-Ansicht für Christian, NICHT öffentlich
@@ -289,7 +288,7 @@ const GRENZEN = [
 const LEITER = [
   {
     titel: 'Zellkultur (in vitro)',
-    text: 'Auf dieser Stufe stehen die fünf Qi-Blanco-Arbeiten. Ein realer Schritt — der Punkt, an dem jede Forschung anfängt. Und der früheste.',
+    text: 'Auf dieser Stufe stehen die fünf Qi-Blanco-Arbeiten. Hier fängt jede Forschung an.',
   },
   {
     titel: 'Tierversuch',
@@ -325,14 +324,14 @@ const ZWEIFEL = [
       'Nein. Vier der fünf Arbeiten sind In-vitro-Studien an Zellkulturen, die fünfte wertet freiwillige Erfahrungsberichte aus. Eine randomisierte Studie am Menschen gibt es zu den Qi-Blanco-Geräten nicht.',
   },
   {
-    frage: 'Wer hat die Qi-Blanco-Studien gemacht — und wer hat sie bezahlt?',
+    frage: 'Wer hat die Qi-Blanco-Studien gemacht, und wer hat sie bezahlt?',
     antwort:
       'Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut hat alle fünf Arbeiten durchgeführt. Bezahlt hat sie Qi Blanco, und Qi Blanco hat die Geräte gestellt.',
   },
   {
     frage: 'Gibt es eine unabhängige Wiederholung der Qi-Blanco-Studien?',
     antwort:
-      'Nein. Ein zweites, nicht von uns bezahltes Labor hat die Zellversuche bisher nicht wiederholt. Das ist die größte offene Stelle der Datenlage, und sie liegt bei uns.',
+      'Nein. Ein zweites, nicht von uns bezahltes Labor hat die Zellversuche bisher nicht wiederholt.',
   },
   {
     frage: 'Ist der Wirkmechanismus wissenschaftlich anerkannt?',
@@ -342,7 +341,7 @@ const ZWEIFEL = [
   {
     frage: 'Heißt „im Labor gemessen“, dass ich etwas merken werde?',
     antwort:
-      'Nein. Aus einem Effekt an Zellen in der Laborschale folgt keine Aussage darüber, wie es dir mit dem Gerät geht. Die einzige Arbeit mit Menschen ist eine Auswertung von 171 freiwilligen Berichten — ohne Kontrollgruppe, ohne Verblindung.',
+      'Nein. Aus einem Effekt an Zellen in der Laborschale folgt keine Aussage darüber, wie es dir mit dem Gerät geht. Die einzige Arbeit mit Menschen ist eine Auswertung von 171 freiwilligen Berichten, ohne Kontrollgruppe und ohne Verblindung.',
   },
   {
     frage: 'Warum steht bei Qi Blanco überall „in vitro“?',
@@ -358,18 +357,18 @@ const ZWEIFEL = [
     frage: 'Kann ich die Original-Publikationen selbst lesen?',
     antwort: (
       <>
-        Ja. Alle fünf Arbeiten liegen als PDF offen — mit Methode, Zahlen und
+        Ja. Alle fünf Arbeiten liegen als PDF offen, mit Methode, Zahlen und
         den Grenzen, die die Autoren selbst benennen.{' '}
         <a href="/pages/studien">Zu den Studien</a>
       </>
     ),
     schemaAntwort:
-      'Ja. Alle fünf Arbeiten liegen als PDF offen — mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen. Sie stehen auf der Seite /pages/studien.',
+      'Ja. Alle fünf Arbeiten liegen als PDF offen, mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen. Sie stehen auf der Seite /pages/studien.',
   },
   {
     frage: 'Und wenn mich das alles nicht überzeugt?',
     antwort:
-      'Dann ist das eine vernünftige Reaktion auf diese Evidenzstufe. Du musst uns nichts glauben — du kannst das Gerät 20 Tage lang an dir selbst prüfen und ohne Angabe von Gründen zurückgeben.',
+      'Dann prüf es an dir selbst. Du hast 20 Tage Zeit dafür und kannst das Gerät ohne Angabe von Gründen zurückgeben.',
   },
 ];
 
@@ -408,13 +407,13 @@ const WEITER = [
   },
   {
     titel: 'Menschen, die es benutzen',
-    text: 'Dreizehn namentliche Erfahrungsberichte im eigenen Video — Einzelstimmen, keine Studie.',
+    text: 'Dreizehn Menschen erzählen unter ihrem Namen und im eigenen Video, was sie erlebt haben. Es sind Einzelstimmen, keine Studie.',
     href: '/pages/erfahrungen',
     cta: 'Erfahrungen ansehen',
   },
   {
     titel: 'Das Modell dahinter',
-    text: 'Wie die Publikationen den Effekt erklären — und warum das eine Hypothese bleibt.',
+    text: 'Wie die Publikationen den Effekt erklären und warum das eine Hypothese bleibt.',
     href: '/pages/technologie',
     cta: 'Modell ansehen',
   },
@@ -431,17 +430,15 @@ export function MmWirktDas() {
           <>
             Häufiger als jede Frage nach Größe, Preis oder Versand.{' '}
             <strong>
-              Die kurze Antwort: Ja, es ist etwas gemessen worden — im Labor, an
-              Zellkulturen. Nein, es gibt keinen Nachweis am Menschen.
-            </strong>{' '}
-            Darunter stehen die Zahlen dazu, die vier Grenzen dieser Datenlage
-            und die Original-Publikationen zum Nachlesen.
+              Die kurze Antwort: Ja, im Labor an Zellkulturen ist etwas gemessen
+              worden. Ein Nachweis am Menschen liegt nicht vor.
+            </strong>
           </>
         }
         media={{
           src: `${CDN}QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861`,
           alt: 'QiOne 2 Pro, Vorderseite mit sichtbarem GitterChip.',
-          hint: 'QiOne® 2 Pro — der Gegenstand, um den es geht.',
+          hint: 'QiOne® 2 Pro, der Gegenstand, um den es geht.',
         }}
       />
 
@@ -449,7 +446,7 @@ export function MmWirktDas() {
         dataSection="gemessen"
         eyebrow="Abschnitt 1"
         title="Was tatsächlich gemessen wurde"
-        intro="Zu den Qi-Blanco-Geräten gibt es fünf veröffentlichte Arbeiten. Vier davon sind In-vitro-Studien: Zellen in einer Laborschale, nicht im Körper. Die fünfte wertet aus, was Anwender von sich aus berichtet haben. Vier Beispiele, so genau, wie die Originale es hergeben — je mit Quelle, Befund und der Stelle, an der die Messung endet:"
+        intro="Zu den Qi-Blanco-Geräten gibt es fünf veröffentlichte Arbeiten. Vier davon sind In-vitro-Studien mit Zellen in einer Laborschale, also außerhalb des Körpers. Die fünfte wertet aus, was Anwender von sich aus berichtet haben. Vier Beispiele mit Quelle, Befund und der Stelle, an der die Messung endet:"
         studien={STUDIEN}
         mehrHref="/pages/studien"
         mehrLabel="Die Studien im Überblick"
@@ -460,9 +457,9 @@ export function MmWirktDas() {
         variante="flaeche"
         eyebrow="Zum Selbstnachlesen"
         title="Die fünf Arbeiten im Original"
-        intro="Alle fünf Publikationen zu den Qi-Blanco-Geräten sind veröffentlicht und liegen als PDF frei zugänglich. Jede Titelseite führt direkt zur Publikation — mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen."
+        intro="Alle fünf Publikationen zu den Qi-Blanco-Geräten sind veröffentlicht und liegen als PDF frei zugänglich. Jede Titelseite führt direkt zur Publikation mit Methode, Zahlen und den Grenzen, die die Autoren selbst benennen."
         belege={BELEGE}
-        note="Die Deckblätter sind eigene Montagen aus Journal-Titel und einer Seite der jeweiligen Arbeit — keine Scans der Originalhefte. Die verlinkten PDFs sind die Publikationen selbst."
+        note="Die Deckblätter haben wir aus dem Journal-Titel und einer Seite der jeweiligen Arbeit zusammengesetzt, es sind also keine Scans der Originalhefte. Die verlinkten PDFs sind die Publikationen selbst."
       />
 
       <MmProblem
@@ -486,7 +483,7 @@ export function MmWirktDas() {
         overlayEnd={[
           {
             titel: 'Ein Modell, keine Messung',
-            text: 'Wie sich das auf Zellen auswirkt, wurde gemessen. Warum — ist eine offene Frage.',
+            text: 'Wie sich das auf Zellen auswirkt, wurde gemessen. Warum es so ist, ist eine offene Frage.',
           },
         ]}
         fussnote="Animation: Aufbau des GitterChip im QiOne® 2 Pro und die modellhafte Ausrichtung benachbarter Wassermoleküle. Eine Darstellung des Erklärmodells, keine Aufnahme eines Versuchs."
@@ -497,9 +494,9 @@ export function MmWirktDas() {
         variante="flaeche"
         eyebrow="Abschnitt 3"
         title="Wo die Qi-Blanco-Studien auf der Beweisleiter stehen"
-        intro="Forschung läuft in Stufen — von der Laborschale bis zur Zusammenfassung mehrerer unabhängiger Studien am Menschen. Die fünf Arbeiten zu den Qi-Blanco-Geräten stehen auf der ersten:"
+        intro="Forschung läuft in Stufen, von der Laborschale bis zur Zusammenfassung mehrerer unabhängiger Studien am Menschen. Die fünf Arbeiten zu den Qi-Blanco-Geräten stehen auf der ersten:"
         schritte={LEITER}
-        note="Stufe 1 von 4 ist mehr als nichts — und es ist der früheste Punkt der Kette. Ein Beleg für eine Wirkung bei dir ist sie nicht."
+        note="Die erste Stufe zeigt, was an Zellen passiert. Eine Wirkung bei dir belegt sie nicht."
       />
 
       <MmFaq
@@ -512,12 +509,12 @@ export function MmWirktDas() {
         dataSection="risiko"
         variante="dunkel"
         ring="20"
-        title="Der einzige Beleg, der für dich zählt"
-        text="Die fünf Arbeiten sind im Labor entstanden. Der Beleg, der deine Frage wirklich beantwortet, entsteht woanders — bei dir. Deshalb hast du 20 Tage ab Erhalt."
+        title="Prüf es an dir selbst"
+        text="Die fünf Arbeiten sind im Labor entstanden. Wie es dir damit geht, findest du am besten selbst heraus, und dafür hast du 20 Tage ab Erhalt."
         punkte={[
           'Kein Grund nötig, keine Bedingung, die am Spüren hängt.',
           'Überzeugt es dich nicht, bekommst du dein Geld zurück.',
-          'Solange die Belege dort stehen, wo sie stehen, tragen wir das Risiko — nicht du.',
+          'Das Risiko tragen wir.',
         ]}
       />
 
