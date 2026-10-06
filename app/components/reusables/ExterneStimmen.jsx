@@ -56,16 +56,16 @@ const PODCASTS = [
     startSeconds: 0,
     // Titel wörtlich wie auf YouTube (oEmbed, 2026-09-03).
     titel:
-      'So schützt du dich mit moderner Technologie vor EMF und Elektrosmog - Christian Bauer',
+      'So schützt du dich mit moderner Technologie vor EMF und Elektrosmog - Christian Bauer'/*@fremdtext:youtube-titel*/,
     text:
-      'Wie sich Elektrosmog im Alltag bemerkbar macht — und was zwischen Router, Handy und Schlafplatz wirklich hilft.',
+      'Wie sich Elektrosmog im Alltag bemerkbar macht und was zwischen Router, Handy und Schlafplatz wirklich hilft.',
   },
   {
     quelle: 'Zu Gast bei Geldhelden',
     videoId: 'BQxzbXqREWE',
     startSeconds: GELDHELDEN_START_S,
     titel:
-      'Elektrosmog: Wie WLAN deine Zellen stresst – und was hilft | Die Geschichte hinter Qi Blanco',
+      'Elektrosmog: Wie WLAN deine Zellen stresst – und was hilft | Die Geschichte hinter Qi Blanco'/*@fremdtext:youtube-titel*/,
     text:
       'Das Kopfkissen-Experiment: Was dein Handy nachts mit deinem Schlaf zu tun hat. Das Video startet direkt an der Stelle.',
   },
@@ -126,7 +126,9 @@ export function ExterneStimmen({dataSection}) {
             </div>
             <div className="ExterneStimmen__text">
               <p className="ExterneStimmen__quelle">{p.quelle}</p>
-              <h3 className="ExterneStimmen__karteTitel">{p.titel}</h3>
+              <h3 className="ExterneStimmen__karteTitel" data-fremdtext="youtube-titel">
+                {p.titel}
+              </h3>
               <p className="ExterneStimmen__lede">{p.text}</p>
             </div>
           </article>
