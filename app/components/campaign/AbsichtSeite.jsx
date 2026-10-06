@@ -48,11 +48,11 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 const WEITERLESEN = [
   {
     pfad: '/pages/hypothesen',
-    text: 'Was wir annehmen und wie gut es belegt ist — sechs Hypothesen mit dem, was dagegen spricht',
+    text: 'Was wir annehmen und wie gut es belegt ist: sechs Hypothesen mit dem, was dagegen spricht',
   },
   {
     pfad: '/pages/ueber-uns',
-    text: 'Wer hinter Qi Blanco steht — mit Namen, Anschrift und Handelsregister',
+    text: 'Wer hinter Qi Blanco steht, mit Namen, Anschrift und Handelsregister',
   },
   {
     pfad: '/pages/studien',
@@ -60,7 +60,10 @@ const WEITERLESEN = [
   },
   {
     pfad: '/pages/kritik',
-    text: 'Was gegen uns vorgebracht wird — und was wir dazu sagen',
+    // 2026-10-06 (s02 Grossjob …-selbstabwertung-ki-sprache): „Was gegen uns
+    // vorgebracht wird — und was wir dazu sagen" erzählte Vorwürfe nach (L3);
+    // jetzt die Sache der Seite, wie ihre H1.
+    text: 'Was belegt ist und was du selbst prüfen kannst',
   },
 ];
 

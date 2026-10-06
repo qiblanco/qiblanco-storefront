@@ -85,7 +85,7 @@
  *  · Firma, Sitz, Register, Geschäftsführer: app/routes/pages.impressum.jsx
  *    (dieselben Daten in app/data/fragen.js, Frage „seriös").
  *  · fünf Arbeiten, vier Zellkultur, eine Auswertung von 171 Berichten, ein
- *    Labor: BEFUNDE unten und EINRAEUMUNGEN 1–2. „Fünf Arbeiten an
+ *    Labor: BEFUNDE unten, K8 und PLUSPUNKTE (bis 2026-10-06 auch EINRAEUMUNGEN 1–2). „Fünf Arbeiten an
  *    Zellkulturen" wäre kürzer und falsch — e0004 ist keine Zellkultur.
  *  · 20 Tage, ohne Angabe von Gründen: K5 und PLUSPUNKTE.
  * KEIN SATZ IST WÖRTLICH AUS DER FAQ übernommen (zwei Seiten mit derselben
@@ -150,7 +150,7 @@ export const FRAGEN = [
     ton: 'ja',
     antwort: [
       'Fünf Arbeiten sind in Fachzeitschriften erschienen, jede mit Datum und Seitenzahl, und alle fünf kannst du bei uns im Original als PDF lesen. So siehst du selbst, was drinsteht.',
-      'Vier der fünf Arbeiten untersuchen Zellkulturen, die fünfte wertet Erfahrungsberichte aus, und eine Studie am Menschen ist nicht darunter. Jede Arbeit nennt ihre Grenzen selbst, und wir führen sie bei jeder Studie Punkt für Punkt mit auf, weil genau dieser Unterschied zählt, wenn du die Ergebnisse einordnen willst.',
+      'Vier der fünf Arbeiten untersuchen Zellkulturen, die fünfte wertet Erfahrungsberichte aus, und eine Studie am Menschen ist nicht darunter.',
     ],
   },
   {
@@ -176,10 +176,10 @@ export const FRAGEN = [
   {
     id: 'K8',
     frage: 'Sind das von euch bezahlte Studien?',
-    kurz: 'Ja. Wir haben sie finanziert und die Geräte gestellt.',
+    kurz: 'Ja. Wir haben sie bezahlt und die Geräte gestellt.',
     ton: 'ja',
     antwort: [
-      'Das steht auch so in den Publikationen. Alle fünf Arbeiten kommen aus demselben Labor, dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. So läuft Produktforschung in aller Regel, und falsch werden die Ergebnisse dadurch nicht. Eine Wiederholung durch ein zweites, unabhängiges Labor steht allerdings noch aus. Das ist die größte offene Stelle in unserer Datenlage, und sie liegt bei uns.',
+      'Das steht auch so in den Publikationen. Alle fünf Arbeiten kommen aus demselben Labor, dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. So läuft Produktforschung in aller Regel, und falsch werden die Ergebnisse dadurch nicht. Eine Wiederholung durch ein zweites, unabhängiges Labor steht noch aus.',
       'Offengelegt ist alles, was dazugehört: Auftraggeber, Labor, Methode, Fallzahlen und Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Unabhängigkeit können wir dagegen nicht belegen, und deshalb schreiben wir nirgends „unabhängig getestet".',
     ],
   },
@@ -216,38 +216,18 @@ export const FRAGEN = [
 ];
 
 /**
- * Die vier Einräumungen — die Inhaltsgrenze dieser Seite, nicht ihre Rhetorik.
- * Bis 2026-09-28 WORTGLEICH zu MmWirktDas.jsx GRENZEN 1–4 und zu faq-seite.js;
- * seitdem ist die Sprache nach dem Stilblatt geglättet und die Kopplung
- * gewollt aufgelöst (Begründung im Dateikopf). INHALTLICH ist jede der vier
- * vollständig geblieben: keine Studie am Menschen, ein Labor und ein Autor,
- * von uns bezahlt und die Geräte gestellt, Wiederholung durch ein zweites
- * Labor steht aus, Erklärung ist eine Hypothese und in der konventionellen
- * Wissenschaft nicht etabliert. Weggefallen sind allein Stakkato und
- * Nachdruck („Keine einzige.", „Ein einzelnes Labor, ein einzelner Autor.",
- * „und zwar unserer") und die Gedankenstriche.
- * SIE WERDEN NICHT GEKÜRZT: beim Aufräumen der fremden Zitate darf die
- * Ehrlichkeit nicht mit verschwinden, das wäre der schlimmere Schaden.
- * @type {Array<{titel: string, text: string}>}
+ * DIE VIER EINRÄUMUNGEN SIND AUFGELÖST (2026-10-06, Grossjob „neue Seiten,
+ * PR-Freigabe“, s02). Bis dahin stand
+ * hier ein Export EINRAEUMUNGEN, den KritikSeite.jsx als Rubrik „Was wir selbst
+ * einräumen" rendert. Christian, 06.10.: „steht da also nichts mehr, was uns
+ * selbst beleidigt oder klein macht?" Die Rubrik benotet unser Material,
+ * obwohl jede Angabe darin stimmt. DIE ANGABEN SIND GEBLIEBEN, jede an ihrer
+ * Frage: keine Studie am Menschen (K3, K6, K4), ein Labor und ein Autor (K8,
+ * PLUSPUNKTE), von uns bezahlt und Geräte gestellt, Wiederholung durch ein
+ * zweites Labor steht aus (K8), Erklärung ist eine Hypothese und in der
+ * etablierten Wissenschaft nicht anerkannt (K2), Grenzen je Arbeit (BEFUNDE).
+ * Wer die Rubrik zurückholt, holt die Note zurück, nicht eine Angabe.
  */
-export const EINRAEUMUNGEN = [
-  {
-    titel: 'Es gibt keine Studie am Menschen.',
-    text: 'Vier der fünf Arbeiten sind Versuche an Zellkulturen, die fünfte ist eine Sammlung von Erfahrungsberichten. Was sich im Labor an Zellen messen lässt, muss im Körper nicht genauso passieren, und ein klinischer Wirknachweis am Menschen liegt nicht vor.',
-  },
-  {
-    titel: 'Alle fünf Arbeiten stammen von demselben Labor.',
-    text: 'Durchgeführt hat sie Prof. Dr. Peter C. Dartsch an seinem Dartsch Scientific Institut, sie kommen also aus einem Labor und von einem Autor.',
-  },
-  {
-    titel: 'Wir haben sie bezahlt.',
-    text: 'Die Untersuchungen haben wir finanziert, und die Geräte dafür haben wir als Hersteller zur Verfügung gestellt. Das ist bei Produktforschung üblich, und falsch werden die Ergebnisse dadurch nicht. Eine Wiederholung durch ein zweites, unabhängiges Labor steht aber noch aus, und bis dahin ist das ein offener Punkt, der bei uns liegt.',
-  },
-  {
-    titel: 'Die Erklärung dahinter ist eine Hypothese.',
-    text: 'Das Modell, mit dem die Publikationen den Effekt erklären, ist in der konventionellen Wissenschaft nicht etabliert, und die Arbeiten kennzeichnen es selbst als Hypothese. Die Messwerte hängen an dieser Erklärung nicht: Was in den Zellschalen passiert ist, wurde gemessen, und offen ist, warum es passiert.',
-  },
-];
 
 /**
  * Was in den Studien wirklich steht. Zahlen ausschließlich aus den
@@ -347,7 +327,7 @@ export const PLUSPUNKTE = [
     // Grenzen aus der Registry, nicht diesen Wortlaut. Der Satz in
     // KritikSeite.jsx („Sie stehen wortgleich auch auf unseren Studienseiten")
     // ist nicht Teil dieses Moduls und steht als offener Punkt im RESULT-s04.
-    text: 'Bei allen fünf Studien steht die Grenze gleich daneben: in vitro, welche Zelllinie, welche Fallzahl und was daraus nicht folgt. Die vier offenen Punkte stehen auch auf unseren Studienseiten.',
+    text: 'Bei allen fünf Studien steht die Grenze gleich daneben: in vitro, welche Zelllinie, welche Fallzahl und was daraus nicht folgt. So steht es auch auf unseren Studienseiten.',
     beleg: 'Die Grenzen-Zeile bei jeder der fünf Arbeiten, hier und auf /pages/studien.',
   },
   {

@@ -110,19 +110,20 @@ export const ABSICHT = {
   vorspann: 'Die Absicht',
   titel: 'Warum es Qi Blanco gibt',
 
-  lead:
-    'Diese Seite verkauft nichts. Sie beantwortet eine einzige Frage: woran ' +
-    'ich arbeite und warum. Wer wissen will, was wir annehmen und wie gut es ' +
-    'belegt ist, findet das an anderer Stelle — hier steht die Absicht ' +
-    'dahinter, und sie steht in der ersten Person, weil sie meine ist.',
+  // LEAD UMGESCHRIEBEN 2026-10-06 (Grossjob „neue Seiten,
+  // PR-Freigabe“, s02): „Diese Seite verkauft nichts …
+  // hier steht die Absicht dahinter, und sie steht in der ersten Person, weil
+  // sie meine ist" urteilte der K4-Richter als Redakteursgedanken (ein Text,
+  // der dem Leser erklärt, wie er gebaut ist). Der Lead sagt jetzt die Sache.
+  lead: 'Qi Blanco gibt es, weil ich seit zwanzig Jahren an einer Frage arbeite.',
 
   /** GEDANKE 1 — zwanzig Jahre an einer Brücke. */
   bruecke: {
     titel: 'Seit zwanzig Jahren baue ich an einer Brücke',
     absaetze: [
-      'Ich bin Ingenieur. Das ist keine Nebensache, sondern die Brille, durch die ich alles ansehe: Ein Ingenieur fragt nicht zuerst, ob etwas sein darf, sondern ob es sich messen lässt und ob es sich wiederholen lässt. Mit dieser Brille bin ich vor etwa zwanzig Jahren in ein Gebiet geraten, in dem sie eigentlich niemand aufsetzt.',
+      'Ich bin Ingenieur, und das ist die Brille, durch die ich alles ansehe. Ein Ingenieur fragt zuerst, ob sich etwas messen lässt und ob es sich wiederholen lässt. Mit dieser Brille bin ich vor etwa zwanzig Jahren in ein Gebiet geraten, in dem sie eigentlich niemand aufsetzt.',
       'Seitdem versuche ich, eine Brücke zwischen drei Welten zu schlagen, die voneinander kaum Notiz nehmen: dem Ingenieurwesen, der Metaphysik und der Esoterik. Die erste rechnet und baut. Die zweite fragt, was hinter dem Messbaren liegt. Die dritte hat über Jahrhunderte Erfahrungen gesammelt und in Bildern weitergegeben. Jede dieser drei hält die anderen für unseriös, und jede hat dafür aus ihrer eigenen Sicht gute Gründe.',
-      'Ich habe in keiner der drei Welten je ganz dazugehört. Für die Ingenieure interessiere ich mich für die falschen Fragen, für die Esoterik frage ich zu hartnäckig nach Zahlen. Dass ich trotzdem seit zwanzig Jahren dabei geblieben bin, hat einen einzigen Grund, und der steht im nächsten Abschnitt.',
+      'Ich habe in keiner der drei Welten je ganz dazugehört. Für die Ingenieure interessiere ich mich für die falschen Fragen, für die Esoterik frage ich zu hartnäckig nach Zahlen. Dass ich trotzdem seit zwanzig Jahren dabei geblieben bin, hat einen einzigen Grund.',
     ],
   },
 
@@ -130,7 +131,7 @@ export const ABSICHT = {
   sprachen: {
     titel: 'Mir ist aufgefallen, dass verschiedene Sprachen über dieselben Effekte reden',
     absaetze: [
-      'Das ist die Beobachtung, die alles ausgelöst hat, und sie kam nicht aus einem Buch, sondern aus dem Vergleichen. Ich habe immer wieder erlebt, dass zwei Felder etwas beschreiben, das sich in der Realität sehen und messen lässt — und dass sie völlig verschiedene Wörter dafür benutzen. Weil die Wörter verschieden sind, merkt keiner der beiden, dass der andere vom selben Vorgang spricht. Also reden sie aneinander vorbei, und beide halten den anderen für verwirrt.',
+      'Das ist die Beobachtung, die alles ausgelöst hat. Sie kam aus dem Vergleichen, nicht aus einem Buch. Ich habe immer wieder erlebt, dass zwei Felder etwas beschreiben, das sich in der Realität sehen und messen lässt, und dafür völlig verschiedene Wörter benutzen. Weil die Wörter verschieden sind, merkt keiner der beiden, dass der andere vom selben Vorgang spricht. Also reden sie aneinander vorbei, und beide halten den anderen für verwirrt.',
     ],
     /**
      * DIE BEISPIELE — der Auftrag verlangt sie ausdrücklich („ausgefuehrt,
@@ -150,13 +151,13 @@ export const ABSICHT = {
         links: 'Kohärenz',
         rechts: 'Harmonie',
         gemeinsam:
-          'Viele Einzelteile bewegen sich in fester Beziehung zueinander statt durcheinander. In der Physik ist das eine messbare Phasenbeziehung — der Unterschied zwischen einer Glühbirne und einem Laser. In der anderen Sprache heißt Ordnung statt Durcheinander „Harmonie" oder „Einklang". Gemeint ist beide Male der Übergang von zufällig zu geordnet.',
+          'Viele Einzelteile bewegen sich in fester Beziehung zueinander statt durcheinander. In der Physik ist das eine messbare Phasenbeziehung. Sie macht den Unterschied zwischen einer Glühbirne und einem Laser. In der anderen Sprache heißt Ordnung statt Durcheinander „Harmonie" oder „Einklang". Gemeint ist beide Male der Übergang von zufällig zu geordnet.',
       },
       {
         links: 'Erwartungseffekt',
         rechts: 'die Kraft der Absicht',
         gemeinsam:
-          'Dass die Erwartung eines Menschen sein Befinden messbar verändert, ist in der Medizin seit Jahrzehnten belegt und heißt dort Placebo- beziehungsweise Noceboeffekt. Interessant ist, welche ROLLE ihm die beiden Sprachen geben: Die Medizin behandelt ihn als Störgröße, die man aus einer Studie herausrechnen muss. Die andere Seite behandelt genau denselben Effekt als Mechanismus, mit dem man arbeiten kann. Es ist dasselbe Phänomen — einmal als das, was man loswerden will, einmal als das, was man benutzen will.',
+          'Dass die Erwartung eines Menschen sein Befinden messbar verändert, ist in der Medizin seit Jahrzehnten belegt und heißt dort Placebo- beziehungsweise Noceboeffekt. Interessant ist, welche ROLLE ihm die beiden Sprachen geben: Die Medizin behandelt ihn als Störgröße, die man aus einer Studie herausrechnen muss. Die andere Seite behandelt genau denselben Effekt als Mechanismus, mit dem man arbeiten kann. Es ist dasselbe Phänomen: einmal das, was man loswerden will, einmal das, was man benutzen will.',
       },
       {
         links: 'Vagotonus',
@@ -166,8 +167,8 @@ export const ABSICHT = {
       },
     ],
     nachsatz: [
-      'Der schwierigste Fall ist nicht, wenn zwei Sprachen verschiedene Wörter benutzen. Der schwierigste Fall ist, wenn sie DASSELBE Wort benutzen und etwas anderes meinen. „Energie" ist in der Physik eine streng definierte, erhaltene Größe mit einer Einheit. Im Alltag und in der esoterischen Sprache meint dasselbe Wort Lebendigkeit, Stimmung, Ausstrahlung. Wer diese beiden Bedeutungen nicht auseinanderhält, produziert Sätze, die für die eine Seite selbstverständlich und für die andere blanker Unsinn sind — und keiner von beiden merkt, woran es liegt. Ich halte das für die größte einzelne Quelle von Missverständnis auf diesem Gebiet.',
-      'Und hier gehört die Einschränkung hin, die dieser ganze Abschnitt braucht: Dass zwei Sprachen dasselbe Phänomen beschreiben, heißt NICHT, dass eine der beiden Erklärungen dafür stimmt. Eine gemeinsame Beobachtung ist noch kein gemeinsamer Beweis. Ich behaupte an dieser Stelle nichts weiter, als dass hier oft vom selben Vorgang die Rede ist — was ihn verursacht, ist damit nicht entschieden.',
+      'Am schwierigsten wird es, wenn zwei Sprachen DASSELBE Wort benutzen und etwas anderes meinen. „Energie" ist in der Physik eine streng definierte, erhaltene Größe mit einer Einheit. Im Alltag und in der esoterischen Sprache meint dasselbe Wort Lebendigkeit, Stimmung, Ausstrahlung. Wer diese beiden Bedeutungen nicht auseinanderhält, produziert Sätze, die für die eine Seite selbstverständlich und für die andere blanker Unsinn sind. Und keiner von beiden merkt, woran es liegt. Ich halte das für die größte einzelne Quelle von Missverständnis auf diesem Gebiet.',
+      'Dass zwei Sprachen dasselbe Phänomen beschreiben, heißt allerdings NICHT, dass eine der beiden Erklärungen dafür stimmt. Eine gemeinsame Beobachtung ist noch kein gemeinsamer Beweis. Ich sage nur: Hier ist oft vom selben Vorgang die Rede. Was ihn verursacht, ist damit nicht entschieden.',
     ],
   },
 
@@ -175,9 +176,9 @@ export const ABSICHT = {
   anliegen: {
     titel: 'Mein Anliegen ist eine gemeinsame Sprache',
     absaetze: [
-      'Es ist mir ein Herzensanliegen, hier eine gleichmäßige Sprache zu etablieren. Nicht, um jemandem seine eigene wegzunehmen — sondern damit die Effekte, um die es geht, überhaupt besprochen werden können, ohne dass das Gespräch nach drei Sätzen am Vokabular scheitert.',
-      'Eine gemeinsame Sprache tut zwei Dinge. Sie macht die Sache PRÜFBAR: Wer denselben Begriff benutzt, kann widersprochen werden, und das ist ein Fortschritt — solange jeder seine eigenen Wörter hat, kann niemand dem anderen nachweisen, dass er sich irrt. Und sie macht die Sache BRAUCHBAR: Was man benennen kann, kann man in den Alltag holen. Was nur als Ahnung existiert, bleibt eine Ahnung.',
-      'Prüfbar heißt: Eine Annahme muss so formuliert sein, dass man ihr widersprechen kann. Deshalb steht zu jeder Annahme, nach der wir bauen, auch das Gegenargument — mit Quelle, Jahr und Fundstelle, damit jeder selbst nachsehen kann. Ein Modell, dessen Gegenargumente niemand kennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
+      'Es ist mir ein Herzensanliegen, hier eine gleichmäßige Sprache zu etablieren. Die Effekte, um die es geht, sollen sich überhaupt besprechen lassen, ohne dass das Gespräch nach drei Sätzen am Vokabular scheitert. Seine eigene Sprache muss dafür niemand aufgeben.',
+      'Mit einer gemeinsamen Sprache wird die Sache PRÜFBAR. Wer denselben Begriff benutzt, dem kann man widersprechen, und das ist ein Fortschritt. Solange jeder seine eigenen Wörter hat, kann niemand dem anderen nachweisen, dass er sich irrt. Und die Sache wird BRAUCHBAR: Was man benennen kann, kann man in den Alltag holen. Was nur als Ahnung existiert, bleibt eine Ahnung.',
+      'Prüfbar heißt: Eine Annahme muss so formuliert sein, dass man ihr widersprechen kann. Deshalb steht zu jeder Annahme, nach der wir bauen, auch das Gegenargument, mit Quelle, Jahr und Fundstelle, damit jeder selbst nachsehen kann. Ein Modell, dessen Gegenargumente niemand kennt, kann niemand prüfen. Und was niemand prüfen kann, bringt dieses Feld keinen Schritt weiter.',
     ],
   },
 
@@ -185,9 +186,9 @@ export const ABSICHT = {
   einordnung: {
     titel: 'Aus meiner Sicht ist das der nächste Schritt',
     absaetze: [
-      'Ich halte ein tieferes Verständnis der Metaphysik — und ihren praktischen Nutzen im Alltag — für den nächsten Schritt für die Menschheit. Das ist der größte Satz auf dieser Seite, und ich schreibe ihn bewusst in der ersten Person: Es ist meine Sicht. Sie ist nicht bewiesen, und ich stelle sie auch nicht als bewiesen dar.',
-      'Was ich dafür anführen kann, ist kein Beweis, sondern ein Muster: Immer wieder war etwas zuerst eine Erfahrung, die man nicht erklären konnte, dann ein Streit darüber, ob es das überhaupt gibt, und erst danach ein Messverfahren und eine nüchterne Beschreibung. Ich vermute, dass wir an diesem Gebiet gerade irgendwo zwischen dem zweiten und dem dritten Schritt stehen. Beweisen kann ich das nicht — es ist der Grund, warum ich weitermache.',
-      'Deshalb gibt es Qi Blanco. Nicht, weil ich etwas zu verkaufen hatte, sondern weil ich an dieser Frage arbeite, und weil aus dieser Arbeit etwas entstanden ist, das man in die Hand nehmen kann. Was dabei herauskommt, muss sich derselben Prüfung stellen wie alles andere — deshalb legen wir unsere Annahmen offen, und deshalb steht neben jeder von ihnen auch das, was gegen sie spricht.',
+      'Ich halte ein tieferes Verständnis der Metaphysik und ihren praktischen Nutzen im Alltag für den nächsten Schritt für die Menschheit. Das ist meine Sicht. Sie ist nicht bewiesen, und ich stelle sie auch nicht als bewiesen dar.',
+      'Anführen kann ich dafür ein Muster: Immer wieder war etwas zuerst eine Erfahrung, die man nicht erklären konnte, dann ein Streit darüber, ob es das überhaupt gibt, und erst danach ein Messverfahren und eine nüchterne Beschreibung. Ich vermute, dass wir an diesem Gebiet gerade irgendwo zwischen dem zweiten und dem dritten Schritt stehen. Beweisen kann ich das nicht. Es ist der Grund, warum ich weitermache.',
+      'Deshalb gibt es Qi Blanco: Ich arbeite an dieser Frage, und aus dieser Arbeit ist etwas entstanden, das man in die Hand nehmen kann. Was dabei herauskommt, muss sich derselben Prüfung stellen wie alles andere. Deshalb legen wir unsere Annahmen offen, und neben jeder von ihnen steht auch, was gegen sie spricht.',
     ],
   },
 
@@ -207,9 +208,11 @@ export const ABSICHT = {
    * WAS DABEI NICHT VERLORENGEHT, und das ist der Grund, warum das Streichen
    * hier zulaessig ist: die Ehrlichkeit stand nie allein in dieser Zeile. Sie
    * steht im Text selbst, in der ersten Person und damit stärker —
-   * `einordnung.absaetze[0]`: „Das ist der groesste Satz auf dieser Seite, und
-   * ich schreibe ihn bewusst in der ersten Person: Es ist meine Sicht. Sie ist
-   * nicht bewiesen, und ich stelle sie auch nicht als bewiesen dar."
+   * `einordnung.absaetze[0]`: „Das ist meine Sicht. Sie ist nicht bewiesen,
+   * und ich stelle sie auch nicht als bewiesen dar." (Bis 2026-10-06 mit dem
+   * Vorsatz „Das ist der groesste Satz auf dieser Seite, und ich schreibe ihn
+   * bewusst in der ersten Person"; der Vorsatz war eine Note über die Seite,
+   * gestrichen in s02 des Grossjobs 20261006-…-selbstabwertung-ki-sprache.)
    * Weggefallen ist eine NOTE über die Seite, keine pruefbare Angabe
    * (Brain-Regel `ehrlich-oder-selbstabwertend-entscheidet-sich-am-streichen`).
    *

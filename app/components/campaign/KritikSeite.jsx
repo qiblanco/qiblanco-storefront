@@ -1,7 +1,6 @@
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {
   BEFUNDE,
-  EINRAEUMUNGEN,
   FRAGEN,
   EINSTIEG,
   KURZABSATZ,
@@ -34,8 +33,10 @@ import e0003 from '~/data/studien/e0003.json';
  * app/data/kritik-vorwuerfe.js) — nur die Worte sind unsere.
  *
  * DIE REIHENFOLGE DER ABSCHNITTE IST TRAGEND, nicht Geschmack:
- *   Fragen → Einräumungen → was in den Studien steht → STÄRKEN → Abschluss.
- * Erst die offenen Punkte, dann die Stärken. Wer mit den Stärken anfängt, wirkt
+ *   Fragen → was in den Studien steht → STÄRKEN → Abschluss.
+ * (Bis 2026-10-06 stand nach den Fragen die Rubrik „Einräumungen"; aufgelöst,
+ * Begründung am Ort des alten Abschnitts.)
+ * Erst das Belegte mit seinen Grenzen, dann die Stärken. Wer mit den Stärken anfängt, wirkt
  * ausweichend; wer mit ihnen aufhört, wirkt souverän. Wer die Stärken nach oben
  * zieht, dreht die Wirkung der Seite um.
  *
@@ -199,29 +200,16 @@ export function KritikSeite() {
         </div>
       </section>
 
-      <section className="krit__einraeumen" data-section="krit-einraeumen">
-        <div className="krit__inhalt">
-          <h2>Was wir selbst einräumen</h2>
-          <p className="krit__einleitung">
-            Vier Punkte sind noch offen, und wir sagen sie dir hier selbst. Auf
-            unseren Studienseiten steht bei jeder Arbeit dazu, was sie zeigt.
-          </p>
-          <Belegbild
-            studie={e0001}
-            bildKey="abb1"
-            einordnung="So sah der Versuch aus, um den es hier geht: vier Zellkulturflaschen, oben und unten je zwei, dazwischen das Gerät. Das sendende Mobiltelefon liegt zwischen den beiden Ebenen. Das sind Zellen in Kunststoffflaschen, keine Menschen."
-          />
-          <ol className="krit__einraeumungen">
-            {EINRAEUMUNGEN.map((e) => (
-              <li key={e.titel}>
-                <h3>{e.titel}</h3>
-                <p>{e.text}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
+      {/* DIE RUBRIK „Was wir selbst einräumen" IST AUFGELÖST (2026-10-06,
+          Grossjob „neue Seiten,
+          PR-Freigabe“, s02). Christian, 06.10.: „steht da also nichts mehr, was
+          uns selbst beleidigt oder klein macht?" Eine Liste mit der Überschrift
+          „einräumen" benotet unser eigenes Material, auch wenn jeder Satz darin
+          stimmt. Keine Angabe ist dabei verloren gegangen, jede steht als
+          Sachsatz an ihrer Frage: keine Studie am Menschen in K3/K6/K4, ein
+          Labor und ein Autor in K8 und PLUSPUNKTE, bezahlt und Wiederholung
+          durch ein zweites Labor in K8, Hypothese in K2, die Grenzen je Arbeit
+          in BEFUNDE. Das Versuchsbild steht jetzt bei den Studien. */}
       <section data-section="krit-studien">
         <div className="krit__inhalt">
           <h2>Was in den Studien wirklich steht</h2>
@@ -230,6 +218,11 @@ export function KritikSeite() {
             welchen Rahmen die Arbeit selbst angibt. Jede kannst du im Original
             nachlesen.
           </p>
+          <Belegbild
+            studie={e0001}
+            bildKey="abb1"
+            einordnung="So sah der Versuch mit den Immunzellen aus: vier Zellkulturflaschen, oben und unten je zwei, dazwischen das Gerät. Das sendende Mobiltelefon liegt zwischen den beiden Ebenen. Das sind Zellen in Kunststoffflaschen, keine Menschen."
+          />
           <Belegbild
             studie={e0003}
             bildKey="abb1"
@@ -323,10 +316,9 @@ export function KritikSeite() {
           <h2>Du musst uns nichts glauben</h2>
           <p>
             Ob das für dich plausibel ist, entscheidest du am besten an dir
-            selbst. Einen klinischen Wirknachweis am Menschen, der die Frage
-            entscheiden würde, gibt es nicht, aber es gibt die Prüfung an dir:
-            Trag es 20 Tage, und wenn es nichts für dich ist, schick es ohne
-            Angabe von Gründen zurück.
+            selbst. Es gibt keine Studie am Menschen. Es gibt aber die Prüfung
+            an dir: Trag es 20 Tage, und wenn es nichts für dich ist, schick es
+            ohne Angabe von Gründen zurück.
           </p>
           <p>
             Alle fünf Arbeiten mit Methode, Zahlen und Original-PDF findest du

@@ -68,7 +68,7 @@ export function HypothesenSeite() {
       {/* ---------------------------------------------------------------- 1 */}
       <section className="hyp__kopf" data-section="hyp-kopf">
         <div className="hyp__inhalt">
-          <p className="hyp__vorspann">Qi Blanco – unsere Hypothesen</p>
+          <p className="hyp__vorspann">Qi Blanco: unsere Hypothesen</p>
           <h1>Unser Wirkmodell, mit Stärken und Schwächen</h1>
           <p className="hyp__lead">
             Das hier ist das Modell, nach dem wir bauen: sechs Annahmen, die
@@ -111,10 +111,8 @@ export function HypothesenSeite() {
           <p className="hyp__vorspann">Die Absicht dahinter</p>
           <h2>Warum ich an dieser Frage arbeite</h2>
           <p className="hyp__einleitung">
-            Bevor die einzelnen Annahmen kommen, gehört hierher, wer sie
-            aufstellt und warum. Der folgende Text ist von{' '}
-            {ABSENDER.name} und steht in der ersten Person — hier spricht
-            kein Unternehmen, sondern ein Mensch.
+            {ABSENDER.name} hat diese Annahmen aufgestellt, und er schreibt
+            selbst, warum.
           </p>
 
           <div className="ab">
@@ -212,9 +210,8 @@ export function HypothesenSeite() {
             <p key={p.slice(0, 48)}>{p}</p>
           ))}
           <p className="hyp__weiter">
-            Was von alldem tatsächlich gemessen ist und was nicht, beantwortet{' '}
-            <a href="/pages/kritik">die Seite zur Kritik an Qi Blanco</a> Punkt
-            für Punkt. Die fünf Arbeiten im Original liegen auf{' '}
+            Was von alldem tatsächlich gemessen ist, steht Punkt für Punkt bei{' '}
+            <a href="/pages/kritik">unseren Belegen und offenen Fragen</a>. Die fünf Arbeiten im Original liegen auf{' '}
             <a href="/pages/studien">der Studienübersicht</a>.
           </p>
         </div>
@@ -226,9 +223,7 @@ export function HypothesenSeite() {
           <h2>Die Vorträge dazu, im Original</h2>
           <p className="hyp__einleitung">
             Gerald Pollack erklärt seine Messungen selbst. Zu jedem Vortrag
-            steht, was er zeigt – und worüber er nichts sagt. Ein eingebettetes
-            Video ohne Einordnung wäre ein Argument, das wir nicht geführt
-            haben.
+            steht, was er zeigt und worüber er nichts sagt.
           </p>
 
           <ul className="hyp__videoliste">
@@ -290,7 +285,7 @@ export function HypothesenSeite() {
           <h2>Alle Quellen, je mit ihrer Reichweite</h2>
           <p className="hyp__einleitung">
             {QUELLEN.length} Arbeiten. Zu jeder steht, was untersucht wurde,
-            was gezeigt wurde – und wie weit die Arbeit trägt. Keine davon hat
+            was gezeigt wurde und wie weit die Arbeit trägt. Keine davon hat
             unseren Anhänger untersucht.
           </p>
 

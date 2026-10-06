@@ -45,11 +45,11 @@
 export const STAND = {
   tragfaehig: {
     kuerzel: 'tragfaehig',
-    text: 'Gut belegt – unabhängig von uns',
+    text: 'Gut belegt, unabhängig von uns',
   },
   teilweise: {
     kuerzel: 'teilweise',
-    text: 'In der Forschung belegt – für unseren Fall noch offen',
+    text: 'In der Forschung belegt, für unseren Fall noch offen',
   },
   offen: {
     kuerzel: 'offen',
@@ -57,7 +57,7 @@ export const STAND = {
   },
   schwach: {
     kuerzel: 'schwach',
-    text: 'Hier arbeiten wir – die eigene Messung steht aus',
+    text: 'Hier arbeiten wir: Die eigene Messung steht aus',
   },
 };
 
@@ -80,7 +80,7 @@ export const GESCHICHTE = {
   vorspann: 'Woher es kommt',
   titel: 'Die Geschichte fängt mit einem Problem an, nicht mit einem Produkt',
   absaetze: [
-    'Qi Blanco ist nicht aus einer Marktlücke entstanden, sondern aus einer Notlage. Christian Bernd Bauer, der Gründer, hat das Unternehmen nicht gegründet, weil er etwas verkaufen wollte, sondern weil er für sich selbst eine Antwort gesucht hat. Was er dazu sagt, steht hier unverändert so, wie er es seit Jahren in seinem Kurs erzählt.',
+    'Qi Blanco ist aus einer Notlage entstanden. Christian Bernd Bauer, der Gründer, hat für sich selbst eine Antwort gesucht. So erzählt er es seit Jahren in seinem Kurs:',
   ],
   zitat: {
     absaetze: [
@@ -125,15 +125,15 @@ export const HYPOTHESEN = [
   {
     id: 'h1-grenzflaechenwasser',
     kurz: 'Wasser an Grenzflächen',
-    satz: 'Direkt an einer Oberfläche verhält sich Wasser anders als ein paar Millimeter weiter weg – es ordnet sich dort.',
+    satz: 'Direkt an einer Oberfläche verhält sich Wasser anders als ein paar Millimeter weiter weg: Es ordnet sich dort.',
     stand: 'tragfaehig',
     pro: [
       {
-        text: 'Pollacks Labor hat an hydrophilen Oberflächen eine Zone gefunden, aus der Mikrokügelchen und gelöste Stoffe verdrängt werden. Sie ist bis zu mehrere hundert Mikrometer breit – für Wasser eine enorme Reichweite – und ihre Eigenschaften unterscheiden sich messbar vom übrigen Wasser: anderes elektrisches Potential, anderer pH-Wert am Rand, anderes Verhalten im Infrarot.',
+        text: 'Pollacks Labor hat an hydrophilen Oberflächen eine Zone gefunden, aus der Mikrokügelchen und gelöste Stoffe verdrängt werden. Sie ist bis zu mehrere hundert Mikrometer breit, für Wasser eine enorme Reichweite, und ihre Eigenschaften unterscheiden sich messbar vom übrigen Wasser: anderes elektrisches Potential, anderer pH-Wert am Rand, anderes Verhalten im Infrarot.',
         quellen: ['pollack-2013', 'pollack-2010', 'pollack-2001'],
       },
       {
-        text: 'Der Aufbau der Zone braucht Energie von außen, vor allem Infrarotlicht. Das ist die Messung, die am schwersten wegzuerklären ist: bestrahlt man die Zone, wächst sie – ein Artefakt der Probenvorbereitung würde sich nicht so verhalten.',
+        text: 'Der Aufbau der Zone braucht Energie von außen, vor allem Infrarotlicht. Das ist die Messung, die am schwersten wegzuerklären ist: bestrahlt man die Zone, wächst sie. Ein Artefakt der Probenvorbereitung würde sich nicht so verhalten.',
         quellen: ['pollack-2013', 'nhan-pollack-2011'],
       },
       {
@@ -154,7 +154,7 @@ export const HYPOTHESEN = [
     bedeutet:
       'Darauf baut alles Weitere auf: Wasser lässt sich an einer Oberfläche beeinflussen, und der Unterschied ist messbar. Das ist die physikalische Grundlage, von der wir ausgehen.',
     bedeutetNicht:
-      'Gemessen wurde in der Küvette, am Gel und an Metallproben – nicht an einem Menschen und nicht mit einem getragenen Anhänger.',
+      'Gemessen wurde in der Küvette, am Gel und an Metallproben, nicht an einem Menschen und nicht mit einem getragenen Anhänger.',
   },
   {
     id: 'h2-ordnung-theorie',
@@ -167,7 +167,7 @@ export const HYPOTHESEN = [
         quellen: ['preparata-1995', 'delgiudice-2015'],
       },
       {
-        text: 'Aus dieser Theorie lassen sich Eigenschaften ableiten, die zu Pollacks Messungen passen – unter anderem, dass ein solcher Bereich Stoffe ausschließt und ein anderes elektrisches Potential trägt. Zwei voneinander unabhängige Zugänge, die auf dasselbe Bild zeigen, sind ein Argument.',
+        text: 'Aus dieser Theorie lassen sich Eigenschaften ableiten, die zu Pollacks Messungen passen. Dazu gehört, dass ein solcher Bereich Stoffe ausschließt und ein anderes elektrisches Potential trägt. Zwei voneinander unabhängige Zugänge, die auf dasselbe Bild zeigen, sind ein Argument.',
         quellen: ['delgiudice-2015', 'pollack-2013'],
       },
     ],
@@ -182,14 +182,14 @@ export const HYPOTHESEN = [
       },
     ],
     bedeutet:
-      'Sie liefert die Sprache, in der wir das Wort „kohärent" überhaupt benutzen: gemeint ist eine geordnete, gemeinsame Anordnung – nicht „energetisiert" und nicht „informiert".',
+      'Sie liefert die Sprache, in der wir das Wort „kohärent" überhaupt benutzen: gemeint ist eine geordnete, gemeinsame Anordnung, nicht „energetisiert" und nicht „informiert".',
     bedeutetNicht:
       'Ob es solche Bereiche in deinem Körper gibt und ob unser Chip sie erzeugt, sagt diese Theorie nicht.',
   },
   {
     id: 'h3-gitter-als-vorlage',
     kurz: 'Der Chip als Vorlage',
-    satz: 'Ein festes, präzise geschnittenes Gitter kann für benachbartes Wasser als Vorlage wirken, an der es sich ausrichtet – ohne Strom, allein durch seine Struktur.',
+    satz: 'Ein festes, präzise geschnittenes Gitter kann für benachbartes Wasser als Vorlage wirken, an der es sich ausrichtet, ohne Strom und allein durch seine Struktur.',
     stand: 'schwach',
     pro: [
       {
@@ -207,7 +207,7 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Chai, Mahtani und Pollack haben 2012 sieben Metalle verglichen. Neben Zink entstand eine Zone von rund 200 Mikrometern, neben Aluminium, Zinn, Blei und Wolfram kleinere – „while precious metals such as platinum and gold did not produce any". Gemessen wurde reines Metall als flache Probe in Wasser: nicht eine Legierung, nicht unsere Gittergeometrie, nicht der Aufbau, den wir verwenden.',
+        text: 'Chai, Mahtani und Pollack haben 2012 sieben Metalle verglichen. Neben Zink entstand eine Zone von rund 200 Mikrometern, neben Aluminium, Zinn, Blei und Wolfram kleinere, „while precious metals such as platinum and gold did not produce any". Gemessen wurde reines Metall als flache Probe in Wasser: nicht eine Legierung, nicht unsere Gittergeometrie, nicht der Aufbau, den wir verwenden.',
         quellen: ['chai-pollack-2012'],
       },
       {
@@ -216,14 +216,14 @@ export const HYPOTHESEN = [
       },
     ],
     bedeutet:
-      'Hier wird aus dem allgemeinen Befund unsere eigene Bauentscheidung. Material und Geometrie des Gitters sind der Hebel, an dem wir arbeiten – und der Grund, warum wir überhaupt fertigen statt nur zu lesen.',
+      'Hier wird aus dem allgemeinen Befund unsere eigene Bauentscheidung. Material und Geometrie des Gitters sind der Hebel, an dem wir arbeiten. Sie sind auch der Grund, warum wir überhaupt fertigen statt nur zu lesen.',
     bedeutetNicht:
       'Dass der Chip Wasser strukturiert, können wir heute nicht zeigen.',
   },
   {
     id: 'h4-wasser-in-der-zelle',
     kurz: 'Wasser in der Zelle',
-    satz: 'Auch das Wasser in unseren Zellen liegt größtenteils an Oberflächen – deshalb könnte seine Ordnung für die Zelle eine Rolle spielen.',
+    satz: 'Auch das Wasser in unseren Zellen liegt größtenteils an Oberflächen. Deshalb könnte seine Ordnung für die Zelle eine Rolle spielen.',
     stand: 'teilweise',
     pro: [
       {
@@ -246,22 +246,22 @@ export const HYPOTHESEN = [
       },
     ],
     bedeutet:
-      'Es liefert den Grund, warum wir überhaupt einen Zusammenhang zwischen Wasserordnung und Zellzustand für denkbar halten – und warum unsere eigenen Messungen an Zellen ansetzen und nicht an Symptomen.',
+      'Es liefert den Grund, warum wir überhaupt einen Zusammenhang zwischen Wasserordnung und Zellzustand für denkbar halten. Und es erklärt, warum unsere eigenen Messungen an Zellen ansetzen und nicht an Symptomen.',
     bedeutetNicht:
       'Dass geordneteres Zellwasser gesünder ist, steht in keiner dieser Arbeiten.',
   },
   {
     id: 'h5-emf-zellstress',
     kurz: 'Strahlung und Zellstress',
-    satz: 'Elektromagnetische Felder können in Zellen oxidativen Stress auslösen – das ist der Belastungsfall, für den wir gebaut haben.',
+    satz: 'Elektromagnetische Felder können in Zellen oxidativen Stress auslösen. Für diesen Belastungsfall haben wir gebaut.',
     stand: 'teilweise',
     pro: [
       {
-        text: 'Die Schweizer Beratende Expertengruppe BERENIS hat die Literatur gesichtet und kommt zu einem klaren Zwischenstand: „the majority of the animal and more than half of the cell studies provided evidence of increased oxidative stress caused by RF-EMF or ELF-MF". Das ist keine Randmeinung, sondern ein Behördenbericht.',
+        text: 'Die Schweizer Beratende Expertengruppe BERENIS hat die Literatur gesichtet und kommt zu einem klaren Zwischenstand: „the majority of the animal and more than half of the cell studies provided evidence of increased oxidative stress caused by RF-EMF or ELF-MF". Diese Einschätzung stammt aus einem Behördenbericht.',
         quellen: ['berenis-2021'],
       },
       {
-        text: 'Oxidativer Stress ist ein etablierter, messbarer Zellzustand mit anerkannten Markern. Er ist damit genau die Art von Größe, an der man einen Schutzeffekt überhaupt prüfen kann – anders als „Wohlbefinden".',
+        text: 'Oxidativer Stress ist ein etablierter, messbarer Zellzustand mit anerkannten Markern. Er ist damit genau die Art von Größe, an der man einen Schutzeffekt überhaupt prüfen kann, anders als „Wohlbefinden".',
         quellen: ['berenis-2021', 'kim-2019'],
       },
       {
@@ -271,7 +271,7 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Derselbe Bericht hält fest, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Er benennt methodische Schwächen der Studienlage – unter anderem Kontrollproben aus einem anderen Brutschrank. Dieses Design steckt auch in einer unserer eigenen Studien, und wir nennen es dort.',
+        text: 'Derselbe Bericht hält fest, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Er benennt methodische Schwächen der Studienlage, unter anderem Kontrollproben aus einem anderen Brutschrank. Dieses Design steckt auch in einer unserer eigenen Studien, und wir nennen es dort.',
         quellen: ['berenis-2021', 'dartsch-2021a'],
       },
       {
@@ -317,7 +317,7 @@ export const HYPOTHESEN = [
         quellen: ['dartsch-2024a', 'dartsch-2024b', 'berenis-2021'],
       },
       {
-        text: 'Keine dieser Arbeiten misst Wasserstruktur, sondern einen Zellzustand: gezeigt ist der Unterschied, nicht der Weg dorthin.',
+        text: 'Diese Arbeiten messen einen Zellzustand, keine Wasserstruktur. Gezeigt ist der Unterschied, nicht der Weg dorthin.',
         quellen: ['dartsch-2021b', 'dartsch-2024a'],
       },
     ],
@@ -335,7 +335,7 @@ export const HYPOTHESEN = [
  * glaubt.
  */
 export const KETTE = {
-  titel: 'Wo das Modell heute steht – und woran wir arbeiten',
+  titel: 'Wo das Modell heute steht und woran wir arbeiten',
   absaetze: [
     'Das Modell ist eine Kette aus sechs Gliedern. Die ersten beiden sind Physik und stehen unabhängig von uns. Das vierte und fünfte sind Fragestellungen, die die Literatur trägt. Das sechste sind unsere eigenen, veröffentlichten Messungen an Zellkulturen.',
     'Offen ist das dritte Glied, der Schritt vom Gitter zum Wasser. Dafür haben wir noch keine eigene Messung, und die eine Arbeit zu reinem Gold fand dort keine Ausschlusszone. Genau dort setzt unsere nächste Messung an.',
@@ -357,13 +357,13 @@ export const KETTE = {
  */
 export const BEWUSSTSEIN = {
   vorspann: 'Persönliche Sicht des Gründers',
-  titel: 'Was Christian darüber hinaus annimmt – und warum das hier getrennt steht',
+  titel: 'Was Christian außerdem annimmt',
   hinweis:
     'Alles ab hier ist die persönliche Überzeugung von Christian Bernd Bauer. Es gehört nicht zum Wirkmodell, keine der Quellen stützt es, und als Beleg tritt es nicht auf. Es steht hier, weil es zur Motivation hinter Qi Blanco gehört.',
   absaetze: [
-    'Christian geht davon aus, dass der Zustand des Körpers und der Zustand des Bewusstseins zusammenhängen – dass also nicht nur Ernährung, Bewegung und Umweltbelastung zählen, sondern auch, in welcher inneren Verfassung jemand lebt. Aus dieser Annahme heraus hat er seinen kostenlosen Kurs „In 5 Stufen zum Superhuman" aufgebaut.',
+    'Christian geht davon aus, dass der Zustand des Körpers und der Zustand des Bewusstseins zusammenhängen. Für ihn zählen Ernährung, Bewegung und Umweltbelastung, und es zählt auch, in welcher inneren Verfassung jemand lebt. Aus dieser Annahme heraus hat er seinen kostenlosen Kurs „In 5 Stufen zum Superhuman" aufgebaut.',
     'Die fünf Stufen dort sind: Entgiftung, mentales Setting, Mineralien und Vitamine, Schutz vor E-Smog, und kohärentes Wasser. Nur die letzten beiden berühren unser Produkt; die ersten drei haben nichts mit Qi Blanco zu tun und verkaufen nichts.',
-    'Für diese Annahmen gibt es keine Studienlage, die wir hier anführen könnten, und wir tun so etwas auch nicht. Wer das Modell oben prüfen will, kann diesen Abschnitt vollständig ignorieren, ohne dass sich an der Kette etwas ändert. Das ist der Sinn der Trennung.',
+    'Für diese Annahmen gibt es keine Studienlage, die wir anführen könnten. Die Kette des Wirkmodells hängt nicht an ihnen.',
   ],
   verweis: {
     text: 'Den Kurs gibt es kostenlos',
@@ -375,11 +375,11 @@ export const BEWUSSTSEIN = {
 export const ABGRENZUNG = [
   {
     titel: 'Das hier sind Hypothesen, keine Befunde',
-    text: 'Eine Hypothese ist eine begründete Annahme, die man prüfen kann – nicht ein Beweis und nicht eine Meinung. Wir schreiben das in die Überschrift und nicht ins Kleingedruckte, weil es die ehrliche Beschreibung dessen ist, was wir haben.',
+    text: 'Eine Hypothese ist eine begründete Annahme, die man prüfen kann. Sie ist kein Beweis und keine Meinung.',
   },
   {
-    titel: 'Was gemessen ist, steht woanders',
-    text: 'Diese Seite erklärt unser Modell. Was davon tatsächlich gemessen wurde und was nicht, beantwortet die Seite zur Kritik an Qi Blanco – Punkt für Punkt und mit Urteil.',
+    titel: 'Was gemessen ist',
+    text: 'Das Modell erklärt, warum wir so bauen. Was davon tatsächlich gemessen wurde, steht Punkt für Punkt bei unseren Belegen.',
   },
   {
     titel: 'Keine Quelle, die wir nicht gelesen haben',

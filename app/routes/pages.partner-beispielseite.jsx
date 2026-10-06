@@ -194,7 +194,7 @@ const BAUSTEINE = [
     id: 'kritik',
     name: 'Zur Kritik, in meinen Worten',
     wozu:
-      'Wer nach Kritik sucht, will wissen, was daran stimmt. Qi Blanco räumt selbst vier Punkte ein: kein Wirknachweis am Menschen, alle Studien aus einem Labor, von Qi Blanco bezahlt, und das Erklärungsmodell ist in der etablierten Wissenschaft nicht anerkannt. Nenne die Kritik so, wie sie lautet, und gib dann deine Einordnung.',
+      'Wer nach Kritik sucht, will wissen, was daran stimmt. Bei Qi Blanco steht dazu selbst: kein Wirknachweis am Menschen, alle Studien aus einem Labor, von Qi Blanco bezahlt, und das Erklärungsmodell ist in der etablierten Wissenschaft nicht anerkannt. Nenne die Kritik so, wie sie lautet, und gib dann deine Einordnung.',
     platzhalter: [
       '[Welche Kritik hörst du am häufigsten, und wie lautet sie genau?]',
       '[Was davon zählt für dich, und was nicht?]',
