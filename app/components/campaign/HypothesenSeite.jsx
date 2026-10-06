@@ -69,7 +69,16 @@ export function HypothesenSeite() {
       <section className="hyp__kopf" data-section="hyp-kopf">
         <div className="hyp__inhalt">
           <p className="hyp__vorspann">Qi Blanco: unsere Hypothesen</p>
-          <h1>Unser Wirkmodell, mit Stärken und Schwächen</h1>
+          {/* KEINE NOTE IM ETIKETT (2026-10-06, Job 20261006-hypothesen-
+              titel-selbstbenotung-und-metatext-kern-prio45). Christian
+              bestellte am 2026-09-11 das Modell „mit Stärken und Schwächen“:
+              gemeint ist der INHALT, je Hypothese „Was dafür spricht“ und
+              „Was offen ist“. Der stand schon da und bleibt. Die Überschrift
+              trug dieselbe Formel als Note, und seine Frage vom 06.10. („steht
+              da also nichts mehr, was uns selbst beleidigt oder klein macht?“)
+              ist der Maßstab für das Etikett. Der Vorspann darüber ist sein
+              Wortlaut und bleibt. */}
+          <h1>Unser Wirkmodell, Annahme für Annahme</h1>
           <p className="hyp__lead">
             Das hier ist das Modell, nach dem wir bauen: sechs Annahmen, die
             aufeinander aufbauen. Zu jeder steht, was dafür spricht, was sie
