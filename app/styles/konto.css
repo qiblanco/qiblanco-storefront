@@ -363,6 +363,23 @@
   color: var(--k-fehler);
 }
 
+/* Knopf als Link (<a class="konto-cta">): `.konto a` (Spezifitaet 0,1,1) schlug
+   `.konto-cta` (0,1,0) und gab dem dunklen Knopf dunkle, unterstrichene Schrift.
+   Betraf jeden Link-Knopf der Konto-Flaeche (KontoLeer, Partnerbereich) UND die
+   Konto-Navigation (NavLink ist ein <a>): der aktive Reiter zeigte dunkle,
+   unterstrichene Schrift auf dunkler Pille, die anderen Unterstrich statt Ruhe.
+   Gefunden 2026-10-06 am Screenshot des Partnerbereichs; die Rubrik sah es nicht. */
+.konto a.konto-nav__link { color: var(--k-text-2); text-decoration: none; }
+.konto a.konto-nav__link:hover { color: var(--k-text); }
+.konto a.konto-nav__link--aktiv,
+.konto a.konto-nav__link--aktiv:hover { color: var(--k-grund); }
+.konto a.konto-cta,
+.konto a.konto-cta:hover { color: var(--k-grund); text-decoration: none; }
+.konto a.konto-cta--sekundaer,
+.konto a.konto-cta--sekundaer:hover { color: var(--k-text); }
+.konto a.konto-cta--gefahr,
+.konto a.konto-cta--gefahr:hover { color: var(--k-fehler); }
+
 /* Mobil trägt die primäre Handlung die volle Breite — Daumenweg */
 .konto-cta--breit { width: 100%; }
 

@@ -1,0 +1,99 @@
+/* ============================================================================
+   konto-partner.css — Partnerbereich (/account/partner).
+   Job 20261006-GROSSJOB-partnerbereich-salesforce-aufbau-login.
+
+   NUR TOKENS AUS konto.css: jede Regel liegt unter `.konto` und benutzt die
+   --k-*-Werte, die dort im selben Scope definiert sind (Typo-Skala, 8pt-Raster,
+   Radien 8/16, ein Gold). Kein freier Wert, kein zweiter Goldton, kein Schatten.
+   Geladen wird die Datei nur über den links()-Export der Partner-Route.
+   ========================================================================== */
+
+.konto .partner-luft { margin-top: var(--k-s3); }
+
+/* Fliesstext der Partner-Bausteine auf die Basisgroesse der Skala. Ohne diese
+   Regel greift eine globale p/li-Regel (19,2 px, steht in keiner Skala);
+   gemessen 2026-10-06 per getComputedStyle, 3 von 11 Textbloecken. */
+.konto .partner-produkt p:not(.partner-code),
+.konto p.partner-luft,
+.konto .partner-liste__zeile { font-size: var(--k-fs-base); }
+
+.konto .partner-kacheln {
+  display: grid;
+  gap: var(--k-s2);
+  grid-template-columns: 1fr 1fr;
+}
+
+.konto .partner-kachel {
+  background: var(--k-flaeche);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s1);
+  padding: var(--k-s2);
+}
+
+.konto .partner-kachel__wert {
+  color: var(--k-dunkel);
+  font-size: var(--k-fs-xl);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.konto .partner-kachel__text {
+  color: var(--k-text-2);
+  font-size: var(--k-fs-xs);
+}
+
+.konto .partner-liste {
+  list-style: none;
+  margin: var(--k-s2) 0 0;
+  padding: 0;
+}
+
+.konto .partner-liste__zeile {
+  align-items: baseline;
+  border-top: 1px solid var(--k-linie);
+  display: grid;
+  gap: var(--k-s1) var(--k-s2);
+  grid-template-columns: 1fr auto;
+  padding: var(--k-s1) 0;
+}
+
+.konto .partner-code {
+  background: var(--k-grund);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r1);
+  font-size: var(--k-fs-base);
+  margin: var(--k-s1) 0 0;
+  overflow-wrap: anywhere;
+  padding: var(--k-s1) var(--k-s2);
+  user-select: all;
+}
+
+.konto .partner-produkte {
+  display: grid;
+  gap: var(--k-s2);
+}
+
+.konto .partner-produkt {
+  display: grid;
+  gap: var(--k-s2);
+}
+
+.konto .partner-produkte .konto-karte + .konto-karte { margin-top: 0; }
+
+.konto .partner-produkt__bild {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--k-r1);
+  height: auto;
+  max-width: 160px;
+  object-fit: cover;
+  width: 100%;
+}
+
+@media (min-width: 720px) {
+  .konto .partner-kacheln { grid-template-columns: repeat(5, 1fr); }
+  .konto .partner-liste__zeile { grid-template-columns: 1fr 1fr 1.4fr auto; }
+  .konto .partner-produkt { align-items: start; grid-template-columns: 160px 1fr; }
+}
