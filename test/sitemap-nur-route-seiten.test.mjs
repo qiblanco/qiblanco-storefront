@@ -236,4 +236,57 @@ await pruefe('die Kollektions-Sitemap wird NICHT um Seiten ergänzt', async () =
   }
 });
 
+// ---------------------------------------------------------------------------
+// PRODUKTE, DIE GOOGLEBOT NUR ALS 404 SIEHT (2026-10-06). Herleitung an der
+// Definition in ~/lib/sitemap-bestand. Zwei Arme wie bei den Kollektionen:
+// mit der Verdrahtung MUSS der Handle verschwinden, mit herausmutierter
+// Verdrahtung MUSS er stehen bleiben.
+// ---------------------------------------------------------------------------
+
+// sitemap-bestand.js importiert selbst über `~/`, darum derselbe Auflöser
+// wie für die Route, kein nacktes import().
+const {IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE} = await ladeMitAufgeloestenImporten(
+  join(appDir, 'lib', 'sitemap-bestand.js'),
+  'sitemap-bestand-crawlermarkt-test',
+);
+assert.ok(
+  IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE.length > 0,
+  'Die Crawler-Markt-Liste ist leer — die zwei Arme unten hätten keinen ' +
+    'Gegenstand. MESSAUSFALL.',
+);
+const CRAWLER_VERDRAHTUNG = '...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,';
+const namensvetter = `${IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE[0]}-neu`;
+const produktHandles = [
+  'qione-2-pro',
+  namensvetter,
+  ...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
+];
+
+await pruefe('Crawler-Markt: gelistete Produkte fehlen in der Produkt-Sitemap', async () => {
+  const xml = await sitemapXml('products', produktHandles);
+  for (const h of IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE) {
+    assert.equal(zaehle(xml, `/products/${h}`), 0, `${h} steht trotz Liste in der Sitemap`);
+  }
+  assert.equal(zaehle(xml, '/products/qione-2-pro'), 1, 'qione-2-pro wurde mitgerissen');
+  assert.equal(
+    zaehle(xml, `/products/${namensvetter}`),
+    1,
+    `${namensvetter} wurde mitgerissen — der Filter ist nicht auf </loc> verankert`,
+  );
+});
+
+await pruefe('Crawler-Markt: ohne Verdrahtung bleiben sie stehen (Mutation)', async () => {
+  const xml = await sitemapXml('products', produktHandles, (quelle) => {
+    assert.ok(
+      quelle.includes(CRAWLER_VERDRAHTUNG),
+      'Die Verdrahtung steht nicht mehr in der Route — die Mutation griffe ' +
+        'ins Leere und Arm 1 wäre nicht belegt.',
+    );
+    return quelle.replace(CRAWLER_VERDRAHTUNG, '');
+  });
+  for (const h of IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE) {
+    assert.equal(zaehle(xml, `/products/${h}`), 1, `${h} fehlt auch ohne Verdrahtung`);
+  }
+});
+
 console.log(`\nsitemap-nur-route-seiten: ${grün} Prüfungen grün`);

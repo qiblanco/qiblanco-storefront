@@ -43,7 +43,11 @@ import {
   ausSitemapEntfernteKollektionen,
 } from '~/lib/seo';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
-import {artikelKarte, leereBlogHandles} from '~/lib/sitemap-bestand';
+import {
+  artikelKarte,
+  IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
+  leereBlogHandles,
+} from '~/lib/sitemap-bestand';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 
 /**
@@ -97,7 +101,13 @@ function sichtbareEintraege(typ, items, bestand) {
     case 'products':
       // Dieselbe Funktion wie Kind-Route und robots-Meta: sie kennt neben
       // der Liste auch die Regel für Kakao-Zusammensetzungs-Sets.
-      return items.filter((i) => !istNichtIndexierbaresProdukt(i.handle));
+      // Dazu die Produkte, die Googlebot im US-Markt nur als 404 sieht
+      // (~/lib/sitemap-bestand): dieselbe Menge wie in der Kind-Route.
+      return items.filter(
+        (i) =>
+          !istNichtIndexierbaresProdukt(i.handle) &&
+          !IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE.includes(i.handle),
+      );
     case 'pages':
       // Dieselbe Vereinigung wie in der Kind-Route: nennt der Index ein
       // `lastmod` aus einem Eintrag, den das Kind gar nicht ausliefert, ist

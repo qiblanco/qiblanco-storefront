@@ -10,6 +10,7 @@ import {
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 import {
+  IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
   OHNE_BLOG,
   artikelKarte,
   leereBlogHandles,
@@ -67,8 +68,20 @@ const NICHT_IN_PAGES_SITEMAP = [
   ...WEITERGELEITETE_PAGES_HANDLES,
 ];
 
+/**
+ * Aus der `products`-Sitemap fliegen ebenfalls ZWEI Klassen: Produkte mit
+ * `noindex` (~/lib/seo) und Produkte, die Googlebot im US-Markt nur als 404
+ * sieht (~/lib/sitemap-bestand, seit 2026-10-06). Die zweite Klasse
+ * bleibt für Kunden kaufbar; sie verliert nur den Sitemap-Eintrag. Die
+ * Begründung steht an der Definition.
+ */
+const NICHT_IN_PRODUCTS_SITEMAP = [
+  ...NICHT_INDEXIERBARE_PRODUKTE,
+  ...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
+];
+
 const VERSTECKTE_HANDLES = {
-  products: NICHT_INDEXIERBARE_PRODUKTE,
+  products: NICHT_IN_PRODUCTS_SITEMAP,
   pages: NICHT_IN_PAGES_SITEMAP,
   collections: ausSitemapEntfernteKollektionen(),
 };
