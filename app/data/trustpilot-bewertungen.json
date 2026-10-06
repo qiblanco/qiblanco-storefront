@@ -1,0 +1,256 @@
+{
+  "_hinweis": "GENERIERT, nicht von Hand ändern. Quelle: trustpilot-wache/exports/scroller-daten.json (die Bewertungs-Wache liest das öffentliche Profil jeden Morgen), erzeugt von trustpilot-wache/bin/scroller-abgleich. Gezeigt: 5 Sterne, neueste zuerst, wie beim Google-Live-Feed; was fehlt, steht mit Grund in scroller-daten.json. Texte wortgleich, Namen als Vorname + Initial. KEINE GESAMTZAHL (Christian 2026-10-06): die Länge der Liste wird nirgends angezeigt.",
+  "profil_url": "https://www.trustpilot.com/review/qiblanco.com",
+  "bewertungen": [
+    {
+      "id": "trustpilot:698734a61774ca208346a139",
+      "name": "Arne M.",
+      "datum": "2026-02-07",
+      "rating": 5,
+      "titel": "Create Kakao echt top",
+      "text": "Seit einigen Wochen trinke ich den Create Kakao und bin begeistert. Der schmeckt richtig lecker schokoladig und ich fühle mich danach ruhig und aufgeheitert- AWAKE ist bestellt, bin schon sehr gespannt auf die neue Sorte und ob und wie die anders wirkt",
+      "link": "https://www.trustpilot.com/reviews/698734a61774ca208346a139",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:696b6a418baa6fb539839568",
+      "name": "Amir W.",
+      "datum": "2026-01-17",
+      "rating": 5,
+      "titel": "Er bringt mich runter",
+      "text": "Er bringt mich runter, fühle mich stabiler im Alltag, weniger emotionale/mentale Überreizung.",
+      "link": "https://www.trustpilot.com/reviews/696b6a418baa6fb539839568",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:694fd962d8b7d120fd8964c5",
+      "name": "Sven.VM",
+      "datum": "2025-12-27",
+      "rating": 5,
+      "titel": "Verarbeitung und Wirkung top",
+      "text": "Wunderschön verarbeitet und eine spürbare Wirkung. Ich fühl mich damit sicherer, irgendwie getragen. Eine echte Bereicherung im Alltag ❤️",
+      "link": "https://www.trustpilot.com/reviews/694fd962d8b7d120fd8964c5",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:694a8787a0337870b9ebda94",
+      "name": "Florian L.",
+      "datum": "2025-12-23",
+      "rating": 5,
+      "titel": "Top Produkte",
+      "text": "Top Produkte",
+      "link": "https://www.trustpilot.com/reviews/694a8787a0337870b9ebda94",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:693e932f3a7028a713cb41d0",
+      "name": "Jonas Z.",
+      "datum": "2025-12-14",
+      "rating": 5,
+      "titel": "Einfach wow!",
+      "text": "Einfach wow! Ich spürs richtig stark - wie so ein kleines Kraftwerk in mir. Hätte ich nicht gedacht.",
+      "link": "https://www.trustpilot.com/reviews/693e932f3a7028a713cb41d0",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:693a93a109c9ee1794abeb3d",
+      "name": "Sofia B.",
+      "datum": "2025-12-11",
+      "rating": 5,
+      "titel": "Ich habe viel mehr Energie",
+      "text": "Ich war eigentlich davon überzeugt, dass ich ,,nichts spüren`` werde - ich bin eher der nüchterne, rationale Typ. Aber die ersten Tage war mein Körper total aktiv, fast so als würde er sich neu kalibieren. \nAb Woche zwei war es dann ganz klar: Ich hatte mehr Energie als seit Jahren. Ich wache auf und fühle mich nicht mehr wie ein leerer Akku, sondern wie ein Mensch, der richtig im Leben steht!!!",
+      "link": "https://www.trustpilot.com/reviews/693a93a109c9ee1794abeb3d",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:69391318a80c9ab20bb5005c",
+      "name": "Stefanie W.",
+      "datum": "2025-12-10",
+      "rating": 5,
+      "titel": "Total angenehm",
+      "text": "Ich hätte niemals gedacht, dass so ein kleines Teil so viel in mir auslösen kann. Bei mir fühlt es sich an wie ein warmes pulsieren unter der Haut, total angenehm. Seitdem ich es trage, bin ich viel stabiler und nicht mehr so schnell erschöpft. Und dieses klare, wache Gefühl am Morgen... herrlich!",
+      "link": "https://www.trustpilot.com/reviews/69391318a80c9ab20bb5005c",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:692d4bedceda2835eddf7865",
+      "name": "Lea D.",
+      "datum": "2025-12-01",
+      "rating": 5,
+      "titel": "Ich merks vor allem NACHTS",
+      "text": "Ich merks vor allem NACHTS! Ich schlaf viel schneller ein und träume intensiver!! Voll crazy, aber nice.",
+      "link": "https://www.trustpilot.com/reviews/692d4bedceda2835eddf7865",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:6929bb8b9c450f3216c5f3e0",
+      "name": "Isabel",
+      "datum": "2025-11-28",
+      "rating": 5,
+      "titel": "Komme viel besser klar",
+      "text": "Ich trag`s seit ca. zwei Wochen und der Unterschied ist echt deutlich. Weniger Chaos im Kopf, ich fühle mich geerdeter und irgendwie klarer. Vor allem in stressigen Momenten komme ich besser klar.",
+      "link": "https://www.trustpilot.com/reviews/6929bb8b9c450f3216c5f3e0",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:69285e8abb3b16ca78d0f4fe",
+      "name": "Sophie G.",
+      "datum": "2025-11-27",
+      "rating": 5,
+      "titel": "Ich fühle mich damit sehr gut",
+      "text": "Das hat mich iwie echt überrascht. Ich bin normalerweise skeptisch. Aber nach ein paar Tagen hatte ich ein richtig warmes, ruhiges Gefühl im Körper. Und seitdem ist das geblieben. Für mich fühlt es sich an wie so ein innerer Reset-Button 🧘💛",
+      "link": "https://www.trustpilot.com/reviews/69285e8abb3b16ca78d0f4fe",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:69247c21955308330db7d3e8",
+      "name": "Kai-Uwe R.",
+      "datum": "2025-11-24",
+      "rating": 5,
+      "titel": "Das hätte ich echt nicht erwartet..",
+      "text": "Ich hätte NIE gedacht, dass ich sowas mal schreibe. Icg bin Ingenieur, sehr logisch, sehr skeptisch. \nAber: Die Wirkung ist real. \nIch merke es vor allem im Großraumbüro. Früher war ich nach 2-3 Stunden komplett durch, reiz+berflutet, müde, zero Fokus. Jetzt ziehe ich den Tag durch und bin abends nicht mehr völlig zerstört. \n\nDas Krasseste: mein Stresslevel ist nieddriger, obwohl mein Job gerade extrem viel abverlagt. \nWenn ich es mal vergesse (einmal passiert): ich war nach paar Tagen wieder völlig zu im Kopf. Das hat`s mir erst richtig gezeigt...\n\nFür mich persönlich Esoterik, sondern einfach spürbare Wirkung.",
+      "link": "https://www.trustpilot.com/reviews/69247c21955308330db7d3e8",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:692447eeed0b5f39efd9c69e",
+      "name": "Caroline M.",
+      "datum": "2025-11-24",
+      "rating": 5,
+      "titel": "Ich fühle mich stabiler",
+      "text": "Kurz gesagt: Ich fühl mich stabiler. Weniger müde, weniger überreizt. Trage es jetzt fast jeden Tag und würde`s nicht mehr hergeben.",
+      "link": "https://www.trustpilot.com/reviews/692447eeed0b5f39efd9c69e",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:691dca5f299730f0de52eba2",
+      "name": "Linnea G.",
+      "datum": "2025-11-19",
+      "rating": 5,
+      "titel": "Ein echter Gamechanger",
+      "text": "Ich hab ehrlich gesagt gar nichts erwartet. Ich bin ziemlich sensibel, aber gleichzeitig voll der Zweifler. Hab`s dann trotzdem angelegt und erstmal nix Besonderes bemerkt.. bis ich am nächsten Morgen wach wurde und dachte: „Hä? Warum fühl ich mich so ruhig?“\n\nNormalerweise starte ich schon gestresst in den Tag, Kopf rattert, Herz schneller... aber es war das Gegenteil. \nDie Woche drauf wurde`s noch krasser: weniger genervt, weniger müde, irgendwie mehr „ich“. Meine Kollegin meinte sogar, ich wirke wieder wie früher. Das hat mich fast ein bisschen berührt 😅\n\nIch trage es jetzt jeden Tag und merke SOFORT, wenn ich`s vergesse - mein Kopf geht wieder schneller in Stressmodus. Für mich persönlich ein echter Gamechanger.",
+      "link": "https://www.trustpilot.com/reviews/691dca5f299730f0de52eba2",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:6798efbd1e599ef2f2450b7e",
+      "name": "Marcel M.",
+      "datum": "2025-01-28",
+      "rating": 5,
+      "titel": "Netter Kontakt",
+      "text": "Schnelle Lieferung und Qualität ist auch sehr gut und falls man fragen hat werden die schnell und freundlich beantwortet",
+      "link": "https://www.trustpilot.com/reviews/6798efbd1e599ef2f2450b7e",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:67866d7b5edaa95ba2ba5006",
+      "name": "MellyundHarry L.",
+      "datum": "2025-01-14",
+      "rating": 5,
+      "titel": "Ich bin sehr zufrieden und der…",
+      "text": "Ich bin sehr zufrieden und der Kundenservice ist Top.",
+      "link": "https://www.trustpilot.com/reviews/67866d7b5edaa95ba2ba5006",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:67818817f1721c56d075c00e",
+      "name": "marcelleo90 M.",
+      "datum": "2025-01-10",
+      "rating": 5,
+      "titel": "Sehr zufrieden",
+      "text": "Sehr zufrieden",
+      "link": "https://www.trustpilot.com/reviews/67818817f1721c56d075c00e",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:676d518d94a4223b61e161cf",
+      "name": "Laura G.",
+      "datum": "2024-12-26",
+      "rating": 5,
+      "titel": "Ich bin echt rundum zufrieden sowohl…",
+      "text": "Ich bin echt rundum zufrieden sowohl mit dem Produkt an sich als auch mit der schnellen und pünktlichen Lieferung.",
+      "link": "https://www.trustpilot.com/reviews/676d518d94a4223b61e161cf",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:675a10798383397f61610c26",
+      "name": "Josef B.",
+      "datum": "2024-12-12",
+      "rating": 5,
+      "titel": "Bin sehr zufrieden",
+      "text": "Bin sehr zufrieden mit dem Anhänger, einfach super.",
+      "link": "https://www.trustpilot.com/reviews/675a10798383397f61610c26",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:65bd0d6a1ec712abef5ddf9f",
+      "name": "Andy K.",
+      "datum": "2024-02-02",
+      "rating": 5,
+      "titel": "It works for me!",
+      "text": "I have been wearing the QiBracelet now for 4 weeks and won't take it off. I feel overall better, have more energy, and sleep has improved. Whatever it does, it works for me.",
+      "link": "https://www.trustpilot.com/reviews/65bd0d6a1ec712abef5ddf9f",
+      "sprache": "en"
+    },
+    {
+      "id": "trustpilot:659b3e1e7d731bbb02fa1707",
+      "name": "Nadia C.",
+      "datum": "2024-01-08",
+      "rating": 5,
+      "titel": "Es fällt mir schwer in Worte zu fassen…",
+      "text": "Es fällt mir schwer in Worte zu fassen wie ich mich fühle wenn ich den Qi One trage.\nSeit mehreren Jahren besitze ich den Anhänger und das Armband. \nFür mich persönlich ein energetisches “upgrade”. \nAuch optisch finde ich das Design sehr gelungen.\nQualität ist top !",
+      "link": "https://www.trustpilot.com/reviews/659b3e1e7d731bbb02fa1707",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:659af87da44e94af3cb19d9d",
+      "name": "Larisa W.",
+      "datum": "2024-01-07",
+      "rating": 5,
+      "titel": "Ich bin sehr fasziniert und beeindruckt!",
+      "text": "Ich bin sehr fasziniert und beeindruckt!",
+      "link": "https://www.trustpilot.com/reviews/659af87da44e94af3cb19d9d",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:6599be4e92626f93fe3eb45a",
+      "name": "Olga",
+      "datum": "2024-01-06",
+      "rating": 5,
+      "titel": "Nie mehr ohne",
+      "text": "Nie mehr ohne! Ich bin seit Tag 1 ein riesen Fan. Ich habe ihn versucht für eine Woche abzulegen und habe in dieser Woche keine einzige Nacht durchgeschlafen... Macht weiter so!",
+      "link": "https://www.trustpilot.com/reviews/6599be4e92626f93fe3eb45a",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:6599bbab5ae35bab2b60458a",
+      "name": "Michelle K.",
+      "datum": "2024-01-06",
+      "rating": 5,
+      "titel": "Einfach nur Klasse",
+      "text": "Einfach nur Klasse. ✨🤍",
+      "link": "https://www.trustpilot.com/reviews/6599bbab5ae35bab2b60458a",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:6599b97297758340a69396df",
+      "name": "Werner",
+      "datum": "2024-01-06",
+      "rating": 5,
+      "titel": "Das beste was ich gekauft habe .Und…",
+      "text": "Das beste was ich gekauft habe .Und meine Frau ubergluklich User ihr Braslette.Vielen danke.",
+      "link": "https://www.trustpilot.com/reviews/6599b97297758340a69396df",
+      "sprache": "de"
+    },
+    {
+      "id": "trustpilot:6599b82cc76a25e2e0121b82",
+      "name": "Vera F.",
+      "datum": "2024-01-06",
+      "rating": 5,
+      "titel": "Vielen lieben Dank..ich bin begeistert…",
+      "text": "Vielen lieben Dank..ich bin begeistert und meine Familie auch",
+      "link": "https://www.trustpilot.com/reviews/6599b82cc76a25e2e0121b82",
+      "sprache": "de"
+    }
+  ]
+}
