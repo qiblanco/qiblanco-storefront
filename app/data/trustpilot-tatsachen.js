@@ -25,9 +25,12 @@
  * Live-Seite täglich mit dem, den Google im Zensus neben dem Profil anzeigt.
  *
  * WAS BEWUSST NICHT HIER STEHT:
- * - Kein Name und kein Wortlaut einer Bewertung. Die Namen sind Daten
- *   Dritter, und die Wortlaute stehen bei Trustpilot, wo jede einzeln lesbar
- *   ist.
+ * - Kein Name und kein Wortlaut einer Bewertung IN DIESEM MODUL. ABGELOEST
+ *   am 2026-10-06 (Christian: Trustpilot „gekonnt verlinken … einen Scroller
+ *   bauen wie bei den Googlebewertungen"): die Seite zeigt die Bewertungen
+ *   seither im TrustpilotStimmen-Scroller, wortgleich, Name als Vorname +
+ *   Initial, Daten aus app/data/trustpilot-bewertungen.json (generiert aus der
+ *   Bewertungs-Wache). Die Zählung hier bleibt, wie sie ist.
  * - Keine Note eines anderen Unternehmens. Google zeigt zur Suche auch die
  *   Profile von BLANCO (Küchenspülen). Wir sagen, wem sie gehören, nicht,
  *   wie sie bewertet sind.

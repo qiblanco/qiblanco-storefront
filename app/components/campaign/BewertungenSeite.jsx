@@ -3,6 +3,7 @@ import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {BEWERTUNGEN_SEITE as T} from '~/data/bewertungen-seite';
 import {useGoogleRating} from '~/lib/googleRating';
 import {tagLang} from '~/lib/datum';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * DER NOTE-SATZ (2026-09-25, Grossjob 20260925-GROSSJOB-seo-geo-bewertung-und-
@@ -115,6 +116,9 @@ export function BewertungenSeite() {
       <section className="bew__bewertungen" data-section="bew-bewertungen">
         <Bewertungsblock praefix="bew-" wrapperKlasse="bew__block" />
       </section>
+
+      {/* Trustpilot-Stimmen (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). */}
+      <TrustpilotStimmen praefix="bew-" />
 
       <section className="bew__herkunft" data-section="bew-herkunft">
         <div className="bew__inhalt">

@@ -427,12 +427,12 @@ export const FAQ_KAUF = [
   {
     q: 'Was sagen andere Kunden über Qi Blanco, und sind die Bewertungen echt?',
     a:
-      'Ja, die sind echt. Jede Bewertung, die du bei uns siehst, kommt aus unserem ' +
-      'Google-Unternehmensprofil, wurde dort von einem Google-Konto geschrieben und ist öffentlich ' +
-      'nachlesbar. Wir schreiben keine davon um, kaufen keine ein und geben für eine Bewertung auch ' +
-      'keinen Gutschein oder Rabatt. Die aktuelle Note und die Anzahl siehst du live auf unserer ' +
-      'Bewertungsseite, genau so, wie Google sie zählt. Und weil jeder Mensch etwas anderes erlebt, ' +
-      'kannst du jedes Produkt 20 Tage lang selbst ausprobieren.',
+      'Ja, die sind echt. Jede Bewertung, die du bei uns siehst, steht öffentlich bei Google ' +
+      'oder bei Trustpilot und ist dort im Original nachlesbar. Wir schreiben keine davon um, ' +
+      'kaufen keine ein und geben für eine Bewertung auch keinen Gutschein oder Rabatt. Die ' +
+      'aktuelle Google-Note und die Anzahl siehst du live auf unserer Bewertungsseite, genau so, ' +
+      'wie Google sie zählt. Und weil jeder Mensch etwas anderes erlebt, kannst du jedes Produkt ' +
+      '20 Tage lang selbst ausprobieren.',
     quelle:
       'app/lib/googleRating.js (Reputon-Feed des Google-Unternehmensprofils, root-Loader), ' +
       'app/lib/googleReviewsCurated.js (Kopf: menschlich geprüfte, echte Rezensionen), ' +
@@ -469,6 +469,13 @@ export const FAQ_KAUF = [
     // trustpilot): /pages/qi-blanco-auf-trustpilot braucht denselben
     // eingehenden Link aus derselben Antwort. `auch` darf ein Objekt ODER eine
     // Liste sein; FaqSeite.jsx rendert beides. `weiter` bleibt ein Objekt.
+    // TRUSTPILOT-STIMMEN (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-
+    // faq, Christian 2026-10-06 „ja bei FAQ z.B. schon"): FaqSeite.jsx setzt
+    // den Trustpilot-Scroller direkt hinter den Block, der diesen Eintrag
+    // trägt. Deshalb sagt die Antwort seither „bei Google oder bei Trustpilot"
+    // statt „aus unserem Google-Unternehmensprofil": der alte Satz wäre neben
+    // den Trustpilot-Karten falsch gewesen.
+    trustpilot: true,
     auch: [
       {
         pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',

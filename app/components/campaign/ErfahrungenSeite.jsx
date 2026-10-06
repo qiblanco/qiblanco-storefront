@@ -2,6 +2,7 @@ import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
 import {gruppenNachSprache} from '~/lib/erfahrungen-gruppen';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * /pages/erfahrungen — die Erlebnis-Flaeche.
@@ -72,6 +73,9 @@ export function ErfahrungenSeite() {
           <BeitragsRaster gruppen={englisch} />
         </div>
       </section>
+
+      {/* Trustpilot-Stimmen (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). */}
+      <TrustpilotStimmen praefix="erf-" />
 
       {/* Der Verweis auf die Absicht — nach den Erfahrungen anderer die
           Frage, warum es das Ganze überhaupt gibt. */}

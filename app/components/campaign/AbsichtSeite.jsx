@@ -2,6 +2,7 @@ import {Link} from 'react-router';
 import {ABSICHT, ABSENDER, ABSENDER_FOTO} from '~/data/absicht';
 import {AbsichtText} from '~/components/campaign/AbsichtText';
 import {CdnBild} from '~/components/reusables/CdnBild';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * /pages/warum-qi-blanco — die Absicht als eigene Seite.
@@ -121,6 +122,11 @@ export function AbsichtSeite() {
           </ul>
         </div>
       </div>
+
+      {/* Nach dem Brief: was Kundinnen und Kunden sagen (Job 20261006-bau-
+          trustpilot-scroller-ki-seiten-und-faq). Hinter dem Text, nicht
+          darin: der Brief ist Christians Wortlaut und bleibt unberührt. */}
+      <TrustpilotStimmen praefix="ab-" />
     </div>
   );
 }

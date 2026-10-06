@@ -1,5 +1,6 @@
 import {quellenFuer} from '~/data/fragen';
 import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * /pages/<frage-slug> — EINE Frage, EINE Antwort.
@@ -34,6 +35,10 @@ import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
  * verkauft wird, ist der Grund weg, aus dem ein Antwortsystem diese Seite als
  * Quelle behandelt.
  */
+/** `seite.trustpilot` (data/fragen.js): Trustpilot-Stimmen nach dem Beleg-
+ *  Abschnitt — nur auf den Frageseiten, deren Frage die Seriosität selbst ist
+ *  (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). Im Datensatz statt
+ *  als Routen-Prop: der Bau ändert so keine Route. */
 export function FrageSeite({seite}) {
   const quellen = quellenFuer(seite);
   // DER QUOTIERTE SCHLUESSEL IST ABSICHT, NICHT UMSTAENDLICHKEIT: das
@@ -91,6 +96,8 @@ export function FrageSeite({seite}) {
           )}
         </div>
       </section>
+
+      {seite.trustpilot ? <TrustpilotStimmen praefix="frg-" /> : null}
 
       {/* „GUT ZU WISSEN" STATT „WAS WIR NICHT WISSEN" (Christian 2026-09-28,
           Grossjob 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-
