@@ -1,8 +1,10 @@
+import {redirect} from 'react-router';
 import {HomepageSections} from '~/components/homepage/HomepageSections';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {entityGraph} from '~/lib/entity-schema';
 import startseiteStyles from '~/styles/startseite.css?url';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
 
 /**
  * Die beiden Scope-CSS-Dateien dieser Route — EINE links()-Ausfuhr, weil ein
@@ -171,6 +173,12 @@ export const meta = ({matches}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // SEITEN-EXPERIMENT start-e1-gs081 (Christian 06.10.2026): 15 % der Besucher sehen
+  // die Rookie-Seite /pages/start-b, stabil je Besucher, ohne Speicher auf dem Gerät.
+  // Diese Seite selbst bleibt unverändert; Begründung in experiment-weiche.server.js.
+  const exp = entscheideSeitenExperiment(args.request, args.context.env, 'start-e1-gs081');
+  if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
