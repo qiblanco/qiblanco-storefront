@@ -17,9 +17,8 @@
   /* Raster 8px (qb-tokens) */
   --rs-s1: var(--qb-ref-raster, 8px);
   --rs-s2: calc(var(--rs-s1) * 2);
-  --rs-s3: calc(var(--rs-s1) * 3);
   /* Typo: Hauswerte aus qb-tokens */
-  --rs-fs-klein: var(--qb-ref-fs-2, 14px);
+  --rs-fs-klein: var(--qb-ref-fs-1, 12px);
   /* Farbe: Kartengrund und Tinte der Seite (pdp-qi.css), gedaempfte Linie */
   --rs-grund: var(--pdpqi-karte, #fff);
   --rs-text: var(--qb-text, #2c2a26);
@@ -52,7 +51,7 @@
     z-index: var(--z-schwebend);
     display: flex;
     flex-direction: column;
-    gap: var(--rs-s1);
+    gap: calc(var(--rs-s1) / 2);
     padding: var(--rs-s1) var(--rs-s2) max(var(--rs-s1), env(safe-area-inset-bottom));
     background: var(--rs-grund);
     border-top: 1px solid var(--rs-linie);
@@ -65,20 +64,29 @@
     transform: none;
     visibility: visible;
   }
-  /* Die drei Zeilen wie unter dem Buybox-Knopf, nur enger gesetzt. */
+  /* Die drei Zeilen wie unter dem Buybox-Knopf, enger und kleiner gesetzt
+     (12px, unterste Stufe der Haus-Skala): der Balken soll das Fenster nicht
+     zu einem Fuenftel fuellen. */
   .qb-rookie-sticky__zusage {
     margin: 0;
     padding: 0;
     list-style: none;
     font-size: var(--rs-fs-klein);
-    line-height: 1.35;
+    line-height: 1.3;
+  }
+  /* app.css setzt `p, li { font-size: 1.2rem }` global; ohne diese Zeile
+     erbt die Liste ihre 12px nicht (gemessen: 19,2px, Balken 260px hoch). */
+  .qb-rookie-sticky__zusage li {
+    font-size: var(--rs-fs-klein);
   }
   .qb-rookie-sticky__zusage svg {
     vertical-align: -0.125em;
     margin-inline-end: calc(var(--rs-s1) / 2);
   }
+  /* Knopfhoehe 54px: Schrift 1.1rem aus app.css, 12px Polster, 2px Rand;
+     bleibt ueber der 48px-Trefferflaeche. */
   .qb-rookie-sticky .btn--primary {
     max-width: none;
-    padding: var(--rs-s2);
+    padding: calc(var(--rs-s1) * 1.5);
   }
 }
