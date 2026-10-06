@@ -96,11 +96,18 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Blanco – unsere Hypothesen: das Wirkmodell mit Stärken und Schwächen | Qi Blanco'},
+  // Titel und Beschreibung OHNE Note (2026-10-06, Job 20261006-hypothesen-
+  // titel-selbstbenotung-und-metatext-kern-prio45): „mit Stärken und
+  // Schwächen“ stand hier als Etikett, also in der Zeile, die Google zeigt.
+  // Der Inhalt dahinter bleibt (Begründung an der h1 in HypothesenSeite.jsx).
+  // Die Beschreibung folgt dem Lead der Seite und den Feldern, die sie seit
+  // dem 2026-09-19 trägt („Was dafür spricht“, „Was offen ist“). Gemessen
+  // werden beide am Kundenrand: seo-manager neue_seiten_pruefung, Feld `kopf`.
+  {title: 'Qi Blanco – unsere Hypothesen: das Wirkmodell in sechs Annahmen | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Das Wirkmodell hinter Qi Blanco, offen gelegt: sechs Hypothesen, je mit dem, was dafür spricht, was dagegen spricht und was sie für unser Produkt nicht bedeuten – mit allen Quellen und ihrer Reichweite.',
+      'Das Wirkmodell hinter Qi Blanco in sechs Hypothesen: was für jede spricht, was offen ist und was sie für unser Produkt bedeutet. Dazu alle Quellen mit ihrer Reichweite.',
   },
   // Die Autorenangabe. Sie stand hier schon, als die Seite noch auf noindex
   // stand — damit sie am Tag der Freischaltung fertig ist. Ein Text mit Autor
