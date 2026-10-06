@@ -25,7 +25,7 @@
  * die neue Struktur her.
  */
 
-import {useEffect, useRef, useState} from 'react';
+import {Fragment, useEffect, useRef, useState} from 'react';
 import {Link, useLoaderData} from 'react-router';
 import {
   STUDIEN,
@@ -49,10 +49,28 @@ function prefersReducedMotion() {
   );
 }
 
-/** „A, B und C" — deutsche Aufzaehlung ohne Oxford-Komma. */
-function aufzaehlung(namen) {
-  if (namen.length <= 1) return namen[0] || '';
-  return `${namen.slice(0, -1).join(', ')} und ${namen[namen.length - 1]}`;
+/**
+ * „A, B und C" (deutsche Aufzählung ohne Oxford-Komma) aus den untersuchten
+ * Produkten; jeder Name ist ein Link auf seine Kaufseite (`pfad` aus
+ * PRODUKT_TEXTE in ~/data/studien).
+ *
+ * WARUM (Grossjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-
+ * kannibalisierung, s02): Für „qione 2 pro" stand diese Seite in der Search
+ * Console auf Position 3,0, die Kaufseite auf 7,4. Der Link mit dem
+ * Produktnamen als Linktext, oben im Inhalt, sagt Google, welche eigene
+ * Seite den Namen trägt. Die Studienseite selbst verliert dabei nichts:
+ * Text und Reihenfolge bleiben gleich, nur die drei Namen werden klickbar.
+ * Wer nach den Studien das Gerät ansehen will, ist mit einem Klick dort.
+ *
+ * @param {{produkte: Array<{name: string, pfad: string}>}} props
+ */
+function ProduktLinks({produkte}) {
+  return produkte.map((p, i) => (
+    <Fragment key={p.name}>
+      {i === 0 ? '' : i === produkte.length - 1 ? ' und ' : ', '}
+      <Link to={p.pfad}>{p.name}</Link>
+    </Fragment>
+  ));
 }
 
 function initialCap(w) {
@@ -302,7 +320,7 @@ export function StudienUebersicht() {
                   Kopfzeile nannte alle fünf „zellbiologisch", der Text weiter
                   unten trennt vier Zellstudien und eine Auswertung. */}
               {initialCap(anzahl)} Arbeiten zu{' '}
-              {aufzaehlung(produkte.map((p) => p.name))}: {studienArten(STUDIEN)}.
+              <ProduktLinks produkte={produkte} />: {studienArten(STUDIEN)}.
               Alle stammen vom Institut für zellbiologische Testsysteme von Prof.
               Dr. Peter C. Dartsch und sind in Fachjournalen veröffentlicht. Jede
               Studie finden Sie hier in verständlicher Zusammenfassung, im

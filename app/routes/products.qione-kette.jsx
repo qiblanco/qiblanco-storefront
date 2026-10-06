@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -129,6 +129,20 @@ export default function Product() {
       <div className="product-main">
         <h1>{title}</h1>
         <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
+        {/* Die Kette ist Zubehör, das Gerät hat seine eigene Kaufseite
+            (Grossjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-
+            kannibalisierung, s02). Für „qione 2 pro" stand diese Seite in der
+            Search Console auf Position 4,0 und damit vor der Kaufseite (7,4).
+            Der Link mit dem Produktnamen als Linktext, oben in der Textspalte,
+            zeigt Google und dem Kunden, wo das Gerät steht. Kein Preis, kein
+            Kaufknopf: Linkstil `withdrawal-text-link` aus app.css (Bestand,
+            wie in InhaltswegNeuOderGebraucht.jsx), Schriftgröße geerbt. */}
+        <p className="mt-2">
+          Zubehör für den{' '}
+          <Link className="withdrawal-text-link" to="/products/qione-2-pro">
+            QiOne® 2 Pro
+          </Link>
+        </p>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
