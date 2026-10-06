@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-09-26T09:50:17Z";
+export const WERK_STAND = "2026-10-06T12:14:29Z";
 
 export const STRAENGE = [
   {
@@ -32,6 +32,12 @@ export const STRAENGE = [
     "frage": "Wie wirkt das überhaupt?",
     "kurz": "Die Physik dahinter, in Größenordnungen statt in Behauptungen.",
     "slugs": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst"
+      },
+      {
+        "slug": "das-ist-kein-schmuck-material-im-qione-2-pro"
+      },
       {
         "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt"
       },
@@ -64,6 +70,12 @@ export const STRAENGE = [
     "kurz": "Schlaf ist das Thema, zu dem uns am meisten geschrieben wird – hier steht, was dabei messbar ist.",
     "slugs": [
       {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie"
+      },
+      {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht"
       },
       {
@@ -94,7 +106,7 @@ export const EINSTIEG = [
 export const QUELLEN = [
   {
     "titel": "Auswirkungen hochfrequenter elektromagnetischer Felder auf Gehirnaktivität und Schlaf",
-    "autoren": "Bundesamt für Strahlenschutz",
+    "autoren": "Federal Office for Radiation Protection (BfS)",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -102,6 +114,19 @@ export const QUELLEN = [
       {
         "slug": "schlaf-vermessen-trend-optimierte-nacht",
         "titel": "Schlaf vermessen: Was hinter dem Trend zur optimierten Nacht steckt"
+      }
+    ]
+  },
+  {
+    "titel": "Dartsch PC, Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells , Neurodegener Dis Current Res 6(1), 2026, 1–8",
+    "autoren": "",
+    "jahr": 2026,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
       }
     ]
   },
@@ -119,19 +144,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Research Themes, Pollack Laboratory, University of Washington (accessed 7 September 2026)",
-    "autoren": "",
-    "jahr": 2026,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
-      }
-    ]
-  },
-  {
     "titel": "Sleep tracking and sleepmaxxing change bedtime behaviors",
     "autoren": "American Academy of Sleep Medicine",
     "jahr": 2026,
@@ -145,7 +157,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "The Future of Fitness – ACSM Announces Top Trends for 2026",
+    "titel": "The Future of Fitness, ACSM Announces Top Trends for 2026",
     "autoren": "American College of Sports Medicine",
     "jahr": 2026,
     "doi": null,
@@ -159,7 +171,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Why The Polyvagal Theory Is Untenable: An international expert evaluation",
-    "autoren": "Paul Grossman u. a.",
+    "autoren": "Paul Grossman et al.",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -172,7 +184,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Wissenschaftlich diskutierte biologische und gesundheitliche Wirkungen hochfrequenter Felder",
-    "autoren": "Bundesamt für Strahlenschutz",
+    "autoren": "Federal Office for Radiation Protection (BfS)",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -184,7 +196,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "AASM Sleep Prioritization Survey — Social Media Sleep Trends",
+    "titel": "AASM Sleep Prioritization Survey: Social Media Sleep Trends",
     "autoren": "American Academy of Sleep Medicine",
     "jahr": 2025,
     "doi": null,
@@ -197,7 +209,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "AASM Sleep Prioritization Survey — Using Sleep Tracking Devices",
+    "titel": "AASM Sleep Prioritization Survey: Using Sleep Tracking Devices",
     "autoren": "American Academy of Sleep Medicine",
     "jahr": 2025,
     "doi": null,
@@ -217,10 +229,6 @@ export const QUELLEN = [
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "does-dehydration-affect-sleep-studies",
-        "titel": "Does Dehydration Affect Sleep? What Three Studies Actually Measured"
-      },
-      {
         "slug": "schlafqualitaet-wasser-drei-studien",
         "titel": "Schlafqualität und Hydration: Drei Studien unter der Lupe"
       }
@@ -228,7 +236,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Performance of consumer wrist-worn sleep tracking devices compared to polysomnography: a meta-analysis",
-    "autoren": "Young Jeong Lee u. a.",
+    "autoren": "Young Jeong Lee et al.",
     "jahr": 2025,
     "doi": "10.5664/jcsm.11460",
     "sprache": null,
@@ -254,7 +262,7 @@ export const QUELLEN = [
   },
   {
     "titel": "World Sleep Society recommendations for the use of wearable consumer health trackers that monitor sleep",
-    "autoren": "Michael W. L. Chee u. a. (World Sleep Society Sleep Tracker Task Force)",
+    "autoren": "Michael W. L. Chee et al. (World Sleep Society Sleep Tracker Task Force)",
     "jahr": 2025,
     "doi": "10.1016/j.sleep.2025.106506",
     "sprache": null,
@@ -262,6 +270,23 @@ export const QUELLEN = [
       {
         "slug": "schlaf-vermessen-trend-optimierte-nacht",
         "titel": "Schlaf vermessen: Was hinter dem Trend zur optimierten Nacht steckt"
+      }
+    ]
+  },
+  {
+    "titel": "Dartsch PC, Protective Effect of the QiBracelet Against Oxidative Stress , Applied Cell Biology 12(1), 2024, 1–6",
+    "autoren": "",
+    "jahr": 2024,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
       }
     ]
   },
@@ -307,18 +332,27 @@ export const QUELLEN = [
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
-      },
-      {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
         "titel": "Warum Wasser an Grenzflächen anders ist als im Glas"
       }
     ]
   },
   {
+    "titel": "Halliwell B, Understanding mechanisms of antioxidant action in health and disease , Nature Reviews Molecular Cell Biology, 2024",
+    "autoren": "",
+    "jahr": 2024,
+    "doi": "10.1038/s41580-023-00645-4",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
+      }
+    ]
+  },
+  {
     "titel": "Prevalence of Orthosomnia in a General Population Sample: A Cross-Sectional Study",
-    "autoren": "Haitham Jahrami u. a.",
+    "autoren": "Haitham Jahrami et al.",
     "jahr": 2024,
     "doi": "10.3390/brainsci14111123",
     "sprache": null,
@@ -326,6 +360,32 @@ export const QUELLEN = [
       {
         "slug": "schlaf-vermessen-trend-optimierte-nacht",
         "titel": "Schlaf vermessen: Was hinter dem Trend zur optimierten Nacht steckt"
+      }
+    ]
+  },
+  {
+    "titel": "Relationship Between Individual User Observations and Experimental Preclinical Data , Adv Bioeng Biomed Sci Res 7(3), 2024, 1–4",
+    "autoren": "Dartsch PC, *QTA Gitterchip Technology",
+    "jahr": 2024,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
+    "titel": "Zellstudie zum QiBracelet®, Applied Cell Biology, Januar 2024, Dartsch Scientific GmbH. Werte einsehbar auf der Studienseite von Qi Blanco",
+    "autoren": "",
+    "jahr": 2024,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
       }
     ]
   },
@@ -395,21 +455,38 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Science Cops: Abkassieren mit „belebtem\" Wasser? Der Fall Grander",
-    "autoren": "WDR / Quarks",
-    "jahr": 2022,
+    "titel": "Dartsch PC, Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation , Applied Cell Biology 9(3), 2021, 69–74",
+    "autoren": "Peter C. Dartsch",
+    "jahr": 2021,
+    "doi": "10.53043/2320-1991.acb90012",
+    "sprache": "en",
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Dartsch PC, QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation , Japan Journal of Medicine 4(1), 2021, 484–488",
+    "autoren": "",
+    "jahr": 2021,
     "doi": null,
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "strukturiertes-wasser-trend-was-gemessen-ist",
-        "titel": "Strukturiertes Wasser: was am Trend gemessen ist"
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
       }
     ]
   },
   {
     "titel": "Direct observation of ultrafast hydrogen bond strengthening in liquid water",
-    "autoren": "Jie Yang u. a.",
+    "autoren": "Jie Yang et al.",
     "jahr": 2021,
     "doi": "10.1038/s41586-021-03793-9",
     "sprache": null,
@@ -427,10 +504,6 @@ export const QUELLEN = [
     "doi": "10.1016/j.colcom.2021.100397",
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
-      },
       {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
         "titel": "Warum Wasser an Grenzflächen anders ist als im Glas"
@@ -465,7 +538,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Performance of seven consumer sleep-tracking devices compared with polysomnography",
-    "autoren": "Evan D. Chinoy u. a.",
+    "autoren": "Evan D. Chinoy et al.",
     "jahr": 2021,
     "doi": "10.1093/sleep/zsaa291",
     "sprache": null,
@@ -477,29 +550,12 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Risiken durch die Nachbehandlung von Trinkwasser in der Trinkwasser-Installation",
-    "autoren": "Umweltbundesamt und Trinkwasserkommission beim Bundesministerium für Gesundheit",
-    "jahr": 2021,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "strukturiertes-wasser-trend-was-gemessen-ist",
-        "titel": "Strukturiertes Wasser: was am Trend gemessen ist"
-      }
-    ]
-  },
-  {
-    "titel": "Exclusion Zone Phenomena in Water - A Critical Review of Experimental Findings and Theories",
+    "titel": "Exclusion Zone Phenomena in Water – A Critical Review of Experimental Findings and Theories",
     "autoren": "Elton, D. C., Spencer, P. D., Riches, J. D., Williams, E. D.",
     "jahr": 2020,
     "doi": "10.3390/ijms21145041",
     "sprache": "en",
     "zitiert_in": [
-      {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
       {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
@@ -517,10 +573,6 @@ export const QUELLEN = [
         "titel": "Strukturiertes Wasser: was am Trend gemessen ist"
       },
       {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
-      },
-      {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
         "titel": "Warum Wasser an Grenzflächen anders ist als im Glas"
       },
@@ -529,12 +581,21 @@ export const QUELLEN = [
         "titel": "Die vierte Phase deines Körperwassers: was daran gemessen ist"
       },
       {
-        "slug": "cellular-hydration-what-water-does-in-cells",
-        "titel": "Cellular Hydration: What Water Really Does Inside Your Cells"
-      },
-      {
         "slug": "zellulaere-hydration-biophysik",
         "titel": "Zelluläre Hydration: Was die Biophysik sagt"
+      }
+    ]
+  },
+  {
+    "titel": "Sies H, Jones DP, Reactive oxygen species (ROS) as pleiotropic physiological signalling agents , Nature Reviews Molecular Cell Biology, 2020",
+    "autoren": "",
+    "jahr": 2020,
+    "doi": "10.1038/s41580-020-0230-3",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
       }
     ]
   },
@@ -550,10 +611,6 @@ export const QUELLEN = [
         "titel": "Nicht nur das Herz: Blut und die vierte Phase des Wassers"
       },
       {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
-      },
-      {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
         "titel": "Warum Wasser an Grenzflächen anders ist als im Glas"
       }
@@ -567,10 +624,6 @@ export const QUELLEN = [
     "sprache": "en",
     "zitiert_in": [
       {
-        "slug": "does-dehydration-affect-sleep-studies",
-        "titel": "Does Dehydration Affect Sleep? What Three Studies Actually Measured"
-      },
-      {
         "slug": "schlafqualitaet-wasser-drei-studien",
         "titel": "Schlafqualität und Hydration: Drei Studien unter der Lupe"
       }
@@ -578,7 +631,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Consumer Sleep Technology: An American Academy of Sleep Medicine Position Statement",
-    "autoren": "Seema Khosla u. a.",
+    "autoren": "Seema Khosla et al.",
     "jahr": 2018,
     "doi": "10.5664/jcsm.7128",
     "sprache": null,
@@ -590,21 +643,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Granderwasser: Wirkung nicht plausibel",
-    "autoren": "Cochrane Österreich an der Universität für Weiterbildung Krems",
-    "jahr": 2018,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "strukturiertes-wasser-trend-was-gemessen-ist",
-        "titel": "Strukturiertes Wasser: was am Trend gemessen ist"
-      }
-    ]
-  },
-  {
     "titel": "How Breath-Control Can Change Your Life: A Systematic Review on Psycho-Physiological Correlates of Slow Breathing",
-    "autoren": "Andrea Zaccaro u. a.",
+    "autoren": "Andrea Zaccaro et al.",
     "jahr": 2018,
     "doi": null,
     "sprache": null,
@@ -636,10 +676,6 @@ export const QUELLEN = [
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "does-dehydration-affect-sleep-studies",
-        "titel": "Does Dehydration Affect Sleep? What Three Studies Actually Measured"
-      },
-      {
         "slug": "schlafqualitaet-wasser-drei-studien",
         "titel": "Schlafqualität und Hydration: Drei Studien unter der Lupe"
       }
@@ -647,7 +683,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Orthosomnia: Are Some Patients Taking the Quantified Self Too Far?",
-    "autoren": "Kelly Glazer Baron u. a.",
+    "autoren": "Kelly Glazer Baron et al.",
     "jahr": 2017,
     "doi": "10.5664/jcsm.6472",
     "sprache": null,
@@ -672,6 +708,32 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Oxidative eustress , Redox Biology, 2017",
+    "autoren": "Sies H, *Hydrogen peroxide as a central redox signaling molecule in physiological oxidative stress",
+    "jahr": 2017,
+    "doi": "10.1016/j.redox.2016.12.035",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
+      }
+    ]
+  },
+  {
+    "titel": "Sies H, Berndt C, Jones DP, Oxidative Stress , Annual Review of Biochemistry, 2017",
+    "autoren": "",
+    "jahr": 2017,
+    "doi": "10.1146/annurev-biochem-061516-045037",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
+      }
+    ]
+  },
+  {
     "titel": "Sleep inertia and sleep drunkenness , Sleep Medicine Reviews 35, 2017, 76–84",
     "autoren": "Trotti LM, *Waking up is the hardest thing I do all day",
     "jahr": 2017,
@@ -692,20 +754,25 @@ export const QUELLEN = [
     "sprache": "en",
     "zitiert_in": [
       {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
-      {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
       },
       {
-        "slug": "cellular-hydration-what-water-does-in-cells",
-        "titel": "Cellular Hydration: What Water Really Does Inside Your Cells"
-      },
-      {
         "slug": "zellulaere-hydration-biophysik",
         "titel": "Zelluläre Hydration: Was die Biophysik sagt"
+      }
+    ]
+  },
+  {
+    "titel": "American Statistical Association, Statement on Statistical Significance and P-Values , 2016",
+    "autoren": "",
+    "jahr": 2016,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
       }
     ]
   },
@@ -716,10 +783,6 @@ export const QUELLEN = [
     "doi": null,
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
-      },
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
@@ -741,15 +804,11 @@ export const QUELLEN = [
   },
   {
     "titel": "National Sleep Foundation's sleep time duration recommendations: methodology and results summary",
-    "autoren": "Hirshkowitz M et al. (2015)",
+    "autoren": "Hirshkowitz M, Whiton K, Albert SM et al. (2015)",
     "jahr": 2015,
     "doi": "10.1016/j.sleh.2014.12.010",
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
-      },
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
@@ -758,18 +817,27 @@ export const QUELLEN = [
   },
   {
     "titel": "Recommended amount of sleep for a healthy adult: a joint consensus statement of the American Academy of Sleep Medicine and Sleep Research Society",
-    "autoren": "Watson NF et al. (2015)",
+    "autoren": "Watson NF, Badr MS, Belenky G et al. (2015)",
     "jahr": 2015,
     "doi": "10.5664/jcsm.4758",
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
-      },
-      {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
+      }
+    ]
+  },
+  {
+    "titel": "a concept in redox biology and medicine , Redox Biology, 2015",
+    "autoren": "Sies H, *Oxidative stress",
+    "jahr": 2015,
+    "doi": "10.1016/j.redox.2015.01.002",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
       }
     ]
   },
@@ -837,10 +905,6 @@ export const QUELLEN = [
         "titel": "Nicht nur das Herz: Blut und die vierte Phase des Wassers"
       },
       {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
-      },
-      {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
         "titel": "Warum Wasser an Grenzflächen anders ist als im Glas"
       }
@@ -860,16 +924,12 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "A Paravascular Pathway Facilitates CSF Flow Through the Brain Parenchyma",
+    "titel": "A Paravascular Pathway Facilitates CSF Flow Through the Brain Parenchyma and the Clearance of Interstitial Solutes, Including Amyloid β. Science Translational Medicine 4(147):147ra111",
     "autoren": "Iliff JJ et al. (2012)",
     "jahr": 2012,
     "doi": "10.1126/scitranslmed.3003748",
     "sprache": "en",
     "zitiert_in": [
-      {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
-      },
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
@@ -883,10 +943,6 @@ export const QUELLEN = [
     "doi": "10.3945/jn.111.142000",
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "does-dehydration-affect-sleep-studies",
-        "titel": "Does Dehydration Affect Sleep? What Three Studies Actually Measured"
-      },
       {
         "slug": "schlafqualitaet-wasser-drei-studien",
         "titel": "Schlafqualität und Hydration: Drei Studien unter der Lupe"
@@ -903,10 +959,6 @@ export const QUELLEN = [
       {
         "slug": "womit-faengt-der-tag-an-erste-stunde",
         "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
-      },
-      {
-        "slug": "does-dehydration-affect-sleep-studies",
-        "titel": "Does Dehydration Affect Sleep? What Three Studies Actually Measured"
       },
       {
         "slug": "schlafqualitaet-wasser-drei-studien",
@@ -961,10 +1013,6 @@ export const QUELLEN = [
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
-      },
-      {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
       }
@@ -978,20 +1026,12 @@ export const QUELLEN = [
     "sprache": "en",
     "zitiert_in": [
       {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
-      {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
       },
       {
         "slug": "blutfluss-vierte-phase-wasser-pollack",
         "titel": "Nicht nur das Herz: Blut und die vierte Phase des Wassers"
-      },
-      {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
       },
       {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
@@ -1028,25 +1068,8 @@ export const QUELLEN = [
         "titel": "Ausschlusszone: drei Mechanismen auf dem Prüfstand"
       },
       {
-        "slug": "cellular-hydration-what-water-does-in-cells",
-        "titel": "Cellular Hydration: What Water Really Does Inside Your Cells"
-      },
-      {
         "slug": "zellulaere-hydration-biophysik",
         "titel": "Zelluläre Hydration: Was die Biophysik sagt"
-      }
-    ]
-  },
-  {
-    "titel": "Granderwasser-Kritik bestätigt — Oberlandesgericht Wien fällte Urteil",
-    "autoren": "Verein für Konsumenteninformation",
-    "jahr": 2006,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "strukturiertes-wasser-trend-was-gemessen-ist",
-        "titel": "Strukturiertes Wasser: was am Trend gemessen ist"
       }
     ]
   },
@@ -1084,10 +1107,6 @@ export const QUELLEN = [
     "sprache": "en",
     "zitiert_in": [
       {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
-      {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
       },
@@ -1105,10 +1124,6 @@ export const QUELLEN = [
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "cellular-hydration-what-water-does-in-cells",
-        "titel": "Cellular Hydration: What Water Really Does Inside Your Cells"
-      },
-      {
         "slug": "zellulaere-hydration-biophysik",
         "titel": "Zelluläre Hydration: Was die Biophysik sagt"
       }
@@ -1121,10 +1136,6 @@ export const QUELLEN = [
     "doi": null,
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "cellular-hydration-what-water-does-in-cells",
-        "titel": "Cellular Hydration: What Water Really Does Inside Your Cells"
-      },
       {
         "slug": "zellulaere-hydration-biophysik",
         "titel": "Zelluläre Hydration: Was die Biophysik sagt"
@@ -1139,10 +1150,6 @@ export const QUELLEN = [
     "sprache": "en",
     "zitiert_in": [
       {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
-      {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
       },
@@ -1153,10 +1160,6 @@ export const QUELLEN = [
       {
         "slug": "ausschlusszone-drei-mechanismen-pruefstand",
         "titel": "Ausschlusszone: drei Mechanismen auf dem Prüfstand"
-      },
-      {
-        "slug": "water-at-surfaces-exclusion-zone-light",
-        "titel": "What Makes Water at Surfaces Different From Water in a Glass"
       },
       {
         "slug": "wasser-grenzflaeche-ausschlusszone-licht",
@@ -1171,10 +1174,6 @@ export const QUELLEN = [
     "doi": "10.1126/science.1084801",
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
       {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
@@ -1195,16 +1194,25 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Dröge W, Free Radicals in the Physiological Control of Cell Function , Physiological Reviews, 2002",
+    "autoren": "",
+    "jahr": 2002,
+    "doi": "10.1152/physrev.00018.2001",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
+      }
+    ]
+  },
+  {
     "titel": "On the \"unreasonable\" effects of ELF magnetic fields upon a system of ions",
     "autoren": "Del Giudice, E., Fleischmann, M., Preparata, G., Talpo, G.",
     "jahr": 2002,
     "doi": "10.1002/bem.10046",
     "sprache": "en",
     "zitiert_in": [
-      {
-        "slug": "does-water-have-memory-what-physics-measured",
-        "titel": "Does Water Have Memory? What Physics Has Actually Measured"
-      },
       {
         "slug": "kohaerentes-wasser-was-die-forschung-misst",
         "titel": "Kohärentes Wasser: Was die Forschung wirklich misst"
@@ -1277,6 +1285,36 @@ export const QUELLEN = [
       {
         "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt",
         "titel": "Selbsttest: was ein einzelner Versuch über Wirkung sagt"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Cellosaurus, Eintrag IPEC-J2 (CVCL_2246), SIB Swiss Institute of Bioinformatics",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Cellosaurus, Einträge HL-60 (CVCL_0002), SH-SY5Y (CVCL_0019) und IPEC-J2 (CVCL_2246), SIB Swiss Institute of Bioinformatics",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
       }
     ]
   },
@@ -1287,10 +1325,6 @@ export const QUELLEN = [
     "doi": null,
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
-      },
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
@@ -1324,15 +1358,58 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Sleep Basics",
-    "autoren": "National Institutes of Health — National Heart, Lung, and Blood Institute",
+    "titel": "Oxford Centre for Evidence-Based Medicine, OCEBM Levels of Evidence",
+    "autoren": "",
     "jahr": null,
     "doi": null,
     "sprache": null,
     "zitiert_in": [
       {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
+    "titel": "Qi Blanco, Necklace für den QiOne®",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Qi Blanco, QiOne® 2 Pro im Detail",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Qi Blanco, Studienübersicht mit allen Volltexten",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
       }
     ]
   },
@@ -1363,19 +1440,6 @@ export const QUELLEN = [
       {
         "slug": "vierte-phase-koerperwasser-was-gemessen-ist",
         "titel": "Die vierte Phase deines Körperwassers: was daran gemessen ist"
-      }
-    ]
-  },
-  {
-    "titel": "shift work and oxidative stress",
-    "autoren": "PubMed — literature search",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "how-sleep-protects-cells-nighttime-repair",
-        "titel": "How Sleep Protects Your Cells: The Science of Nighttime Repair"
       }
     ]
   }
