@@ -155,3 +155,285 @@ export function hubPfade() {
 export function pruefe_titel_hygiene(liste = HUB_LINKS) {
   return liste.filter((h) => h.titel_ok === false).map((h) => h.to);
 }
+
+/* ==========================================================================
+ * WISSEN & VERTRAUEN — die Übersicht der Wissens- und Vertrauensseiten.
+ *
+ * Gebaut vom Großjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-
+ * kannibalisierung, Segment s06. Christian am 2026-10-06 über Coworker A zur
+ * Verlinkung der neuen Seiten: „das muss sauber gemacht werden", sein
+ * Vorschlag war der Fuß. Zu Trustpilot: „wir sollten es gekonnt verlinken,
+ * da auch dort die Bewertungen in Summe sehr gut sind".
+ *
+ * DREI LESER, EINE QUELLE: die Spalte „Wissen & Vertrauen" im Fuß, die
+ * Übersichtsseite /pages/wissen-und-vertrauen und die Leiste „Weiterlesen"
+ * über dem Fuß jeder aufgeführten Seite lesen alle aus dieser Liste. Dieselbe
+ * Begründung wie bei HUB_LINKS oben: lägen die Ziele in drei Komponenten,
+ * drifteten die Kopien auseinander.
+ *
+ * WARUM EINE NEUE SEITE UND KEINE BESTEHENDE (geprüft am 2026-10-06): das
+ * Lexikon trägt ein DefinedTermSet und übersetzt Begriffe in Physik; Seiten
+ * zu Trustpilot oder Reddit verwässerten genau das. /pages/warum-qi-blanco ist
+ * ein Brief in der ersten Person, kein Inhaltsverzeichnis. Die FAQ beantwortet
+ * Fragen in je einem Absatz und ist selbst ein Testkandidat des SERP-Registers.
+ * Kein Begriff der Kannibalisierungs-Auswertung (seo-manager/exports/
+ * seo-strategie.json, zwölf Familien) zielt auf eine Übersicht; die Seite
+ * konkurriert deshalb mit keiner bestehenden, solange Titel und Überschrift
+ * nicht „Erfahrungen", „seriös" oder „Kritik" tragen.
+ *
+ * ANKERTEXT = SUCHBEGRIFF DER ZIELSEITE, mit einer Ausnahme: /pages/kritik
+ * heißt hier wie im Fuß „Belege und offene Fragen". Christian am 2026-09-07:
+ * wir verbreiten die Kritik nicht selbst (Brain-Regel bestmoegliches-licht-
+ * kritik-nicht-selbst-verbreiten). Titel und Überschrift der Zielseite tragen
+ * den Suchbegriff.
+ *
+ * KAUFPFAD-ZAUN: /pages/kritik, /pages/was-auf-reddit-ueber-qi-blanco-steht
+ * und /pages/hypothesen
+ * stehen NUR hier in der Übersicht und damit hinter dem einen Link im Fuß,
+ * nie als eigener Fußlink und nie auf Startseite, Produktseiten, /pages/qione,
+ * Landingpage oder Kasse. Der Test prüft das an `fuss`.
+ *
+ * DIE FELDER JE SEITE:
+ *   to        absoluter Pfad
+ *   label     Ankertext auf der Übersicht und in der Leiste
+ *   teaser    EIN Satz: was der Leser dort findet
+ *   fuss      Kurzname, wenn die Seite in der Fußspalte steht (höchstens fünf
+ *             Seiten plus der Übersichtslink; „Erfahrungen" und „Bewertungen"
+ *             führt der Fuß schon in der Zeile NACHLESEN_LINKS, Footer.jsx —
+ *             ein zweiter Link auf dasselbe Ziel im selben Fuß ist Unordnung)
+ *   weiter    ein bis zwei Geschwister für die Leiste „Weiterlesen". Fehlt das
+ *             Feld, bekommt die Seite keine Leiste. Ohne Leiste bleiben die
+ *             FAQ und /pages/studien: beide verlinken selbst in die Tiefe, und
+ *             /pages/studien steht im SERP-Register in einer laufenden
+ *             Messphase (m03).
+ *
+ * WER EINE SEITE ERGÄNZT, prüft vorher, ob sie live 200 liefert, in der
+ * Sitemap steht und kein noindex trägt. Der Test prüft, dass es die Route im
+ * Repo gibt, nicht den Live-Zustand.
+ * ======================================================================== */
+
+/** Die Übersichtsseite selbst; der Ankertext ist Christians Wortlaut. */
+export const WV_HUB = {
+  to: '/pages/wissen-und-vertrauen',
+  label: 'Alle Antworten rund um Qi Blanco',
+};
+
+/** Überschrift der Fußspalte und Name der Übersicht. */
+export const WV_TITEL = 'Wissen & Vertrauen';
+
+export const WV_GRUPPEN = [
+  {
+    id: 'wissen',
+    titel: 'Wissen',
+    seiten: [
+      {
+        to: '/pages/was-ist-elektrosmog',
+        label: 'Was ist Elektrosmog?',
+        teaser:
+          'Welche Felder das Wort zusammenfasst, woher sie kommen und in welcher Einheit man sie misst.',
+        fuss: 'Was ist Elektrosmog?',
+        weiter: [
+          '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+          '/pages/wie-weit-reicht-elektrosmog-schutz',
+        ],
+      },
+      {
+        to: '/pages/lexikon',
+        label: 'Lexikon: unsere Begriffe in der Sprache der Physik',
+        teaser:
+          'Hohe Frequenz, High Vibe, kohärentes Wasser: was Menschen damit meinen und welche messbare Größe dahinter liegt.',
+        fuss: 'Lexikon',
+        weiter: ['/pages/hypothesen', '/pages/gibt-es-studien-zu-elektrosmog-schutz'],
+      },
+      {
+        to: '/pages/faq',
+        label: 'Häufige Fragen zu Qi Blanco',
+        teaser:
+          'Größe, Wasser und Sauna, Reichweite, Rückgabe und Ratenzahlung, jede Frage in einem Absatz beantwortet.',
+      },
+      {
+        to: '/pages/was-senkt-elektrosmog-im-alltag',
+        label: 'Was senkt Elektrosmog im Alltag?',
+        teaser:
+          'Handy weg vom Körper, nachts Flugmodus, Router aus: was die Belastung sofort senkt und nichts kostet.',
+        weiter: ['/pages/was-ist-elektrosmog', '/pages/kann-elektrosmog-den-schlaf-stoeren'],
+      },
+      {
+        to: '/pages/kann-elektrosmog-den-schlaf-stoeren',
+        label: 'Kann Elektrosmog den Schlaf stören?',
+        teaser:
+          'Was Schlafstudien zum Funkfeld zeigen und warum am Abend vor allem Licht und Nachrichten des Handys stören.',
+        weiter: ['/pages/was-senkt-elektrosmog-im-alltag', '/pages/was-ist-elektrosmog'],
+      },
+      {
+        to: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+        label: 'Wie funktioniert Schutz vor Elektrosmog?',
+        teaser:
+          'Die drei Wege, auf denen ein Feld am Körper physikalisch kleiner wird.',
+        weiter: ['/pages/wie-weit-reicht-elektrosmog-schutz', '/pages/hypothesen'],
+      },
+      {
+        to: '/pages/wie-weit-reicht-elektrosmog-schutz',
+        label: 'Wie weit reicht ein Elektrosmog-Schutz?',
+        teaser:
+          'Für welchen Bereich der QiHome® Air ausgelegt ist, von der Wohnung bis zum ganzen Haus.',
+        weiter: ['/pages/wie-funktioniert-schutz-vor-elektrosmog', '/pages/armband-duschen-sauna'],
+      },
+      {
+        to: '/pages/armband-duschen-sauna',
+        label: 'Armband beim Duschen und in der Sauna?',
+        teaser:
+          'Wann du QiBracelet® und QiOne® 2 Pro beim Duschen, Schwimmen und in der Sauna anbehalten kannst.',
+        weiter: ['/pages/wie-weit-reicht-elektrosmog-schutz', '/pages/neu-oder-gebraucht'],
+      },
+      {
+        to: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
+        label: 'Gibt es Studien zu Elektrosmog-Schutz?',
+        teaser:
+          'Welche fünf Arbeiten es zu unseren Produkten gibt und wo du sie im Original liest.',
+        weiter: ['/pages/hypothesen', '/pages/ist-qi-blanco-serioes'],
+      },
+      {
+        to: '/pages/studien',
+        label: 'Qi Blanco Studien',
+        teaser:
+          'Die fünf veröffentlichten Arbeiten mit Methode und allen Zahlen, vollständig als PDF.',
+      },
+      {
+        to: '/pages/hypothesen',
+        label: 'Unsere Hypothesen zum Wirkmodell',
+        teaser:
+          'Wie wir uns die Wirkung erklären, Gedanke für Gedanke mit seinen Stärken und Schwächen.',
+        weiter: ['/pages/gibt-es-studien-zu-elektrosmog-schutz', '/pages/lexikon'],
+      },
+    ],
+  },
+  {
+    id: 'vertrauen',
+    titel: 'Vertrauen & Stimmen',
+    seiten: [
+      {
+        to: '/pages/erfahrungen',
+        label: 'Qi Blanco Erfahrungen',
+        teaser:
+          'Menschen erzählen in eigenen Videos, was sie mit QiOne®, QiBracelet® und QiHome® Air erlebt haben.',
+        weiter: ['/pages/bewertungen', '/pages/qi-blanco-auf-trustpilot'],
+      },
+      {
+        to: '/pages/bewertungen',
+        label: 'Qi Blanco Bewertungen',
+        teaser: 'Die Google-Bewertungen live, mit Note, Anzahl und Herkunft.',
+        weiter: ['/pages/qi-blanco-auf-trustpilot', '/pages/erfahrungen'],
+      },
+      {
+        to: '/pages/qi-blanco-auf-trustpilot',
+        label: 'Qi Blanco auf Trustpilot',
+        teaser:
+          'Was Kundinnen und Kunden auf Trustpilot schreiben, mit Quelle und Stand.',
+        fuss: 'Qi Blanco auf Trustpilot',
+        weiter: ['/pages/bewertungen', '/pages/erfahrungen'],
+      },
+      {
+        to: '/pages/ist-qi-blanco-serioes',
+        label: 'Ist Qi Blanco seriös?',
+        teaser:
+          'Wer hinter Qi Blanco steht und wie du alles 20 Tage in Ruhe selbst prüfst.',
+        fuss: 'Ist Qi Blanco seriös?',
+        weiter: ['/pages/warum-qi-blanco', '/pages/qi-blanco-auf-trustpilot'],
+      },
+      {
+        to: '/pages/warum-qi-blanco',
+        label: 'Warum es Qi Blanco gibt',
+        teaser:
+          'Christian Bernd Bauer schreibt in der ersten Person, woran er seit zwanzig Jahren arbeitet und warum.',
+        fuss: 'Warum Qi Blanco',
+        weiter: ['/pages/ist-qi-blanco-serioes', '/pages/erfahrungen'],
+      },
+      {
+        to: '/pages/neu-oder-gebraucht',
+        label: 'Qi Blanco neu oder gebraucht?',
+        teaser:
+          'Rücknahme, Widerruf, Gewährleistung und Versand mit Quelle, und was bei einem Kauf von privat wegfällt.',
+        weiter: ['/pages/ist-qi-blanco-serioes', '/pages/bewertungen'],
+      },
+      {
+        to: '/pages/kritik',
+        label: 'Belege und offene Fragen',
+        teaser:
+          'Sieben Fragen, die du dir vielleicht auch stellst, beantwortet mit fünf veröffentlichten Studien und ihren Zahlen.',
+        weiter: ['/pages/hypothesen', '/pages/erfahrungen'],
+      },
+      {
+        to: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
+        label: 'Was auf Reddit über Qi Blanco steht',
+        teaser:
+          'Die Fäden, die Google zu Qi Blanco zeigt, einzeln mit Datum und Quelle nachgelesen.',
+        weiter: ['/pages/qi-blanco-auf-trustpilot', '/pages/erfahrungen'],
+      },
+    ],
+  },
+];
+
+/**
+ * Alle Seiten der Übersicht in Anzeige-Reihenfolge.
+ * @param {typeof WV_GRUPPEN} [gruppen]
+ */
+export function wvSeiten(gruppen = WV_GRUPPEN) {
+  return gruppen.flatMap((g) => g.seiten);
+}
+
+/**
+ * Die Fußspalte: die Seiten mit `fuss`, in Christians Reihenfolge, und zuletzt
+ * der Link auf die Übersicht.
+ *
+ * DIE REIHENFOLGE IST CHRISTIANS LISTE vom 2026-10-06 (Lexikon, Was ist
+ * Elektrosmog?, Warum Qi Blanco, Ist Qi Blanco seriös?, Trustpilot) und nicht
+ * die der Übersicht. Erfahrungen und Bewertungen stehen in seiner Liste vorn;
+ * im Fuß führt sie die Zeile NACHLESEN_LINKS bereits.
+ *
+ * @param {typeof WV_GRUPPEN} [gruppen]
+ * @returns {{to: string, label: string}[]}
+ */
+export function wvFussLinks(gruppen = WV_GRUPPEN) {
+  const reihenfolge = [
+    '/pages/lexikon',
+    '/pages/was-ist-elektrosmog',
+    '/pages/warum-qi-blanco',
+    '/pages/ist-qi-blanco-serioes',
+    '/pages/qi-blanco-auf-trustpilot',
+  ];
+  const mitFuss = wvSeiten(gruppen).filter((s) => s.fuss);
+  const rang = (s) => {
+    const i = reihenfolge.indexOf(s.to);
+    return i < 0 ? reihenfolge.length : i;
+  };
+  return [...mitFuss]
+    .sort((a, b) => rang(a) - rang(b))
+    .map((s) => ({to: s.to, label: s.fuss}))
+    .concat([{to: WV_HUB.to, label: WV_HUB.label}]);
+}
+
+/**
+ * Die Leiste „Weiterlesen" für einen Pfad: ein bis zwei Geschwister und der
+ * Link auf die Übersicht. `null`, wenn die Seite keine Leiste trägt.
+ *
+ * Der Pfad wird ohne Länderpräfix (/EN-US/…) und ohne Schrägstrich am Ende
+ * verglichen, damit die Leiste auf jeder Adresse derselben Seite erscheint.
+ *
+ * @param {string} pfad
+ * @param {typeof WV_GRUPPEN} [gruppen]
+ * @returns {{geschwister: {to: string, label: string}[], hub: typeof WV_HUB} | null}
+ */
+export function wvWeiterFuer(pfad, gruppen = WV_GRUPPEN) {
+  const p = String(pfad || '')
+    .replace(/^\/[A-Za-z]{2}-[A-Za-z]{2}(?=\/)/, '')
+    .replace(/\/+$/, '');
+  const seiten = wvSeiten(gruppen);
+  const s = seiten.find((x) => x.to === p);
+  if (!s || !s.weiter || s.weiter.length === 0) return null;
+  const geschwister = s.weiter
+    .map((to) => seiten.find((x) => x.to === to))
+    .filter(Boolean)
+    .map((x) => ({to: x.to, label: x.label}));
+  return {geschwister, hub: WV_HUB};
+}

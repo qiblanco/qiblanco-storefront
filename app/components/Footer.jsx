@@ -2,7 +2,7 @@ import {Suspense, useState, useEffect} from 'react';
 import {EuGewaehrleistungsLink} from './EuGewaehrleistungsLabel';
 import {Await, NavLink, Link} from 'react-router';
 // Hub-Seiten-Liste + Begründung: app/lib/hub-seiten.js (SEO-Stufe S5).
-import {themenLinks} from '~/lib/hub-seiten';
+import {themenLinks, wvFussLinks, WV_TITEL} from '~/lib/hub-seiten';
 import {AnmeldeWeiche} from './reusables/Anmeldeweiche';
 
 const PRODUCT_LINKS = [
@@ -99,9 +99,13 @@ function FooterTop() {
           {themenLinks(
             // Was der Fuß schon anderswo führt, steht unter "Themen" nicht
             // noch einmal (Begründung: themenLinks in app/lib/hub-seiten.js).
-            [...PRODUCT_LINKS, ...INHALT_LINKS, ...NACHLESEN_LINKS, ...LEGAL_LINKS].map(
-              (l) => l.to,
-            ),
+            [
+              ...PRODUCT_LINKS,
+              ...INHALT_LINKS,
+              ...NACHLESEN_LINKS,
+              ...LEGAL_LINKS,
+              ...wvFussLinks(),
+            ].map((l) => l.to),
           ).map(({to, label}) => (
             <li key={to}>
               <Link to={to}>{label}</Link>
@@ -109,6 +113,7 @@ function FooterTop() {
           ))}
         </ul>
       </div>
+      <FooterWissenVertrauen />
       <div className="footer-newsletter">
         <p className="footer-heading">
           Erhalte die neusten Beiträge und Angebote von Qi Blanco®
@@ -116,6 +121,58 @@ function FooterTop() {
         <NewsletterForm />
       </div>
     </div>
+  );
+}
+
+/**
+ * Spalte „Wissen & Vertrauen" (Großjob 20261006-GROSSJOB-seo-strategie-
+ * seiten-bewertung-crawl-kannibalisierung, Segment s06). Christian am
+ * 2026-10-06: die neuen Wissens- und Vertrauensseiten „sauber" verlinken,
+ * sein Vorschlag war der Fuß. Liste und Begründung: wvFussLinks in
+ * app/lib/hub-seiten.js.
+ *
+ * WARUM <details>: auf dem Telefon soll die Spalte zuklappbar sein und keinen
+ * langen Weg durch den Fuß erzeugen. Das Element ist nativ bedienbar
+ * (Tastatur, Screenreader) und braucht kein Skript, um zu funktionieren.
+ *
+ * WARUM DER SERVER SIE OFFEN AUSLIEFERT und erst der Browser sie auf dem
+ * Telefon zuklappt: ohne Skript und für jeden Crawler stehen die Links
+ * sichtbar im Dokument. Der Fuß liegt beim Laden unterhalb des sichtbaren
+ * Bereichs, das Zuklappen verschiebt also nichts, was der Leser gerade sieht.
+ * Ab 750 px bleibt sie immer offen (dieselbe Grenze wie das Fuß-Raster in
+ * app.css), die Überschrift ist dort kein Schalter.
+ */
+function FooterWissenVertrauen() {
+  const [offen, setOffen] = useState(true);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const schmal = window.matchMedia('(max-width: 749px)');
+    setOffen(!schmal.matches);
+    const wechsel = (e) => {
+      if (!e.matches) setOffen(true);
+    };
+    schmal.addEventListener?.('change', wechsel);
+    return () => schmal.removeEventListener?.('change', wechsel);
+  }, []);
+
+  return (
+    <details
+      className="footer-wv"
+      open={offen}
+      onToggle={(e) => setOffen(e.currentTarget.open)}
+    >
+      <summary className="footer-heading">{WV_TITEL}</summary>
+      <ul>
+        {wvFussLinks().map(({to, label}) => (
+          <li key={to}>
+            <Link prefetch="intent" to={to}>
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 

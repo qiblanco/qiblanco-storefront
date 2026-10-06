@@ -458,6 +458,7 @@ export const LEXIKON = [
       "openstax_em"
     ],
     "verlinkt_auf": [
+      "/pages/was-ist-elektrosmog",
       "/pages/kann-elektrosmog-den-schlaf-stoeren",
       "/pages/wie-funktioniert-schutz-vor-elektrosmog",
       "/pages/gibt-es-studien-zu-elektrosmog-schutz",
@@ -466,6 +467,7 @@ export const LEXIKON = [
       "/pages/e-smog",
       "/pages/lexikon-frequenz"
     ],
+    "frage": "/pages/was-ist-elektrosmog",
     "pfad": "/pages/lexikon-elektrosmog"
   },
   {
@@ -641,6 +643,10 @@ const FREMDE_ZIELE = {
   '/pages/e-smog': 'Elektrosmog im Alltag',
   '/pages/kohaerentes-wasser': 'Wasser und seine Ordnung',
   '/pages/warum-qi-blanco': 'Warum es Qi Blanco gibt',
+  // Die Grundfrage zum Eintrag Elektrosmog (Großjob 20261006-GROSSJOB-seo-
+  // strategie-seiten-bewertung-crawl-kannibalisierung, s06: Lexikon und „Was
+  // ist Elektrosmog?" verlinken sich gegenseitig). Beschriftung = die Frage.
+  '/pages/was-ist-elektrosmog': 'Was ist Elektrosmog?',
 };
 
 /**

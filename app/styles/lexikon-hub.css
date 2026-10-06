@@ -29,3 +29,9 @@
 .lex__liste--voll .lex__groesse {
   margin-bottom: var(--lex-s2);
 }
+
+/* Die Grundfrage unter einer Karte (Feld `frage`, seit 2026-10-06). Die
+   Grenze darüber endet ohne Außenabstand; der Abstand sitzt deshalb oben. */
+.lex__liste--voll .lex__karte-frage {
+  margin: var(--lex-s2) 0 0;
+}

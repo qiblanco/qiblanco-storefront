@@ -818,7 +818,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon',
-    lastmod: '2026-09-25T23:45:00Z',
+    lastmod: '2026-10-06T20:05:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -962,7 +962,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-elektrosmog',
-    lastmod: '2026-09-16T00:08:30Z',
+    lastmod: '2026-10-06T20:05:00Z',
     grund:
       'Lexikon-Eintrag „Elektrosmog“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -1199,7 +1199,7 @@ export const NUR_ROUTE_SEITEN = [
   // und eine Sitemap-URL, die weiterleitet, sendet ein gegenlaeufiges Signal.
   {
     pfad: '/pages/was-ist-elektrosmog',
-    lastmod: '2026-09-28T12:00:00Z',
+    lastmod: '2026-10-06T20:05:00Z',
     grund:
       'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
       '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
@@ -1338,6 +1338,22 @@ export const NUR_ROUTE_SEITEN = [
       'prüft am ausgelieferten HTML den INHALT (beide Teile, Quellen-Links, ' +
       'Grafiken, JSON-LD), kein noindex, den Canonical und den Sitemap-<loc>, ' +
       'nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/wissen-und-vertrauen',
+    lastmod: '2026-10-06T20:05:00Z',
+    grund:
+      'Die Übersicht „Alle Antworten rund um Qi Blanco" (Großjob ' +
+      '20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-' +
+      'kannibalisierung, Segment s06; Christian 06.10.2026: die neuen ' +
+      'Wissens- und Vertrauensseiten „sauber" verlinken). Sie besteht allein ' +
+      'aus der Route pages.wissen-und-vertrauen.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und ' +
+      'steht in keiner Sitemap. Kein noindex, canonicalLink() in der Route. ' +
+      'Wache: homepage-bauer/pruefungen/' +
+      'probe_wissen_vertrauen_verlinkung__20261006.py prüft am ' +
+      'ausgelieferten HTML Fußspalte, vollständige Übersicht, Leiste ' +
+      '„Weiterlesen" und den Sitemap-<loc>.',
   },
 ];
 

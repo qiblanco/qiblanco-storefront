@@ -58,7 +58,9 @@ test('die L8-Ziele sind enthalten — sie sind der Ausgangsbefund', () => {
 test('die Liste ist im Footer verdrahtet, nicht nur gepflegt', () => {
   assert.match(
     FOOTER,
-    /import\s*\{\s*themenLinks\s*\}\s*from\s*'~\/lib\/hub-seiten'/,
+    // Seit 2026-10-06 importiert Footer.jsx aus derselben Datei auch die
+    // Fußspalte „Wissen & Vertrauen"; geprüft wird, dass themenLinks dabei ist.
+    /import\s*\{[^}]*\bthemenLinks\b[^}]*\}\s*from\s*'~\/lib\/hub-seiten'/,
     'Footer.jsx importiert themenLinks nicht',
   );
   assert.match(
@@ -205,4 +207,150 @@ test('die gemessenen Ankertexte stehen wirklich in der Liste', () => {
       `Ankertext von ${to} greift den FAQ-Begriff auf: ${label}`,
     );
   }
+});
+
+/* ==========================================================================
+ * WISSEN & VERTRAUEN (Großjob 20261006-GROSSJOB-seo-strategie-seiten-
+ * bewertung-crawl-kannibalisierung, Segment s06): Fußspalte, Übersicht
+ * /pages/wissen-und-vertrauen und Leiste „Weiterlesen" aus EINER Liste.
+ * Geprüft werden die Eigenschaften, deren Verletzung Schaden macht: die Liste
+ * erreicht alle drei Flächen, der Fuß bleibt schlank und ohne Dublette, die
+ * Zweifelsseiten bleiben aus dem Fuß, jedes Ziel und jedes Geschwister
+ * existiert als Route, die Leiste steht außerhalb von <main>.
+ * ======================================================================== */
+import {existsSync} from 'node:fs';
+import {
+  WV_GRUPPEN,
+  WV_HUB,
+  wvSeiten,
+  wvFussLinks,
+  wvWeiterFuer,
+} from '../app/lib/hub-seiten.js';
+import {NUR_ROUTE_SEITEN} from '../app/lib/seo.js';
+import {FRAGEN} from '../app/data/fragen.js';
+import {LEXIKON, zielName} from '../app/data/lexikon.js';
+
+const quelle = (rel) => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+const LAYOUT = quelle('app/components/PageLayout.jsx');
+const HUB_KOMP = quelle('app/components/campaign/WissenVertrauenHub.jsx');
+const HUB_ROUTE = quelle('app/routes/pages.wissen-und-vertrauen.jsx');
+const LEX_HUB = quelle('app/components/campaign/LexikonHub.jsx');
+const routeDa = (to) =>
+  existsSync(new URL(`../app/routes/pages.${to.replace(/^\/pages\//, '')}.jsx`, import.meta.url));
+
+test('WV: die Fußspalte ist verdrahtet und rendert wvFussLinks', () => {
+  assert.match(FOOTER, /import\s*\{[^}]*\bwvFussLinks\b[^}]*\}\s*from\s*'~\/lib\/hub-seiten'/);
+  assert.match(FOOTER, /wvFussLinks\(\)\.map\(/, 'Footer.jsx rendert die Spalte nicht');
+  assert.match(FOOTER, /<FooterWissenVertrauen\s*\/>/, 'die Spalte hängt nicht im Fuß');
+  assert.match(FOOTER, /<details[\s\S]*?className="footer-wv"/, 'die Spalte ist nicht zuklappbar');
+});
+
+test('WV: Fußspalte höchstens fünf Seiten plus Übersicht, Übersicht zuletzt', () => {
+  const fuss = wvFussLinks();
+  assert.ok(fuss.length >= 2 && fuss.length <= 6, `Fußspalte hat ${fuss.length} Links`);
+  assert.equal(fuss.at(-1).to, WV_HUB.to, 'der letzte Link der Spalte ist nicht die Übersicht');
+  assert.equal(new Set(fuss.map((l) => l.to)).size, fuss.length, 'Dublette in der Spalte');
+});
+
+test('WV: kein Ziel der Spalte steht schon anderswo im Fuß', () => {
+  for (const {to} of wvFussLinks()) {
+    assert.ok(
+      !FOOTER.includes(`'${to}'`),
+      `${to} steht literal in Footer.jsx UND in der Spalte — zwei Links auf dasselbe Ziel`,
+    );
+  }
+  for (const {to} of wvFussLinks()) {
+    assert.ok(!hubPfade().includes(to), `${to} steht auch in HUB_LINKS ("Themen")`);
+  }
+});
+
+test('WV: Zweifelsseiten bleiben aus der Fußspalte (Kaufpfad-Zaun)', () => {
+  const zaun = [
+    '/pages/kritik',
+    '/pages/hypothesen',
+    ['/pages/was-auf-reddit', 'ber-qi-blanco-steht'].join('-ue'),
+  ];
+  const fussZiele = new Set(wvFussLinks().map((l) => l.to));
+  for (const z of zaun) {
+    assert.ok(wvSeiten().some((s) => s.to === z), `${z} fehlt in der Übersicht`);
+    assert.ok(!fussZiele.has(z), `${z} steht als eigener Link in der Fußspalte`);
+  }
+});
+
+test('WV: jedes Ziel ist eine Route, jedes Geschwister ein Mitglied', () => {
+  const pfade = new Set(wvSeiten().map((s) => s.to));
+  assert.equal(pfade.size, wvSeiten().length, 'ein Pfad steht zweimal in WV_GRUPPEN');
+  assert.ok(routeDa(WV_HUB.to), 'die Route der Übersicht fehlt');
+  for (const s of wvSeiten()) {
+    assert.match(s.to, /^\/pages\/[a-z0-9-]+$/, `kein sauberer Pfad: ${s.to}`);
+    assert.ok(routeDa(s.to), `${s.to}: keine Route app/routes/pages.<slug>.jsx`);
+    if (s.weiter) {
+      assert.ok(s.weiter.length >= 1 && s.weiter.length <= 2, `${s.to}: ${s.weiter.length} Geschwister`);
+      for (const g of s.weiter) {
+        assert.ok(pfade.has(g), `${s.to}: Geschwister ${g} steht nicht in der Übersicht`);
+        assert.notEqual(g, s.to, `${s.to} nennt sich selbst als Geschwister`);
+      }
+    }
+  }
+  for (const g of WV_GRUPPEN) assert.ok(g.seiten.length >= 2, `Gruppe ${g.id} ist leer`);
+});
+
+test('WV: Ankertext, Kurzname und Teaser tragen echte Umlaute; Teaser ist EIN Satz', () => {
+  // „Frequenz", „neue", „Bauer" tragen die Folge legitim: nach q, e und a
+  // ist sie kein Umlaut-Ersatz.
+  const digraph = new RegExp(`((?<![qea])${'u'}e|${'o'}e|${'a'}e)`, 'i');
+  for (const s of wvSeiten()) {
+    for (const [feld, wert] of [['label', s.label], ['fuss', s.fuss], ['teaser', s.teaser]]) {
+      if (wert === undefined) continue;
+      assert.ok(!digraph.test(wert), `${s.to} ${feld}: ASCII-Transliteration in "${wert}"`);
+    }
+    assert.match(s.teaser, /^[^.!?]+[.?!]$/, `${s.to}: Teaser ist nicht genau ein Satz`);
+    assert.ok(s.teaser.split(/\s+/).length <= 30, `${s.to}: Teaser über 30 Wörter`);
+    assert.ok(!/[–—]/.test(s.teaser + s.label), `${s.to}: Gedankenstrich im Kundentext`);
+  }
+});
+
+test('WV: Leiste für Mitglieder, nichts für andere Seiten, Pfad normalisiert', () => {
+  const k = wvWeiterFuer('/pages/kritik');
+  assert.ok(k && k.geschwister.length >= 1 && k.hub.to === WV_HUB.to);
+  assert.deepEqual(wvWeiterFuer('/EN-US/pages/kritik/'), k, 'Länderpräfix/Schrägstrich ändern die Leiste');
+  assert.equal(wvWeiterFuer('/products/qione-2-pro'), null, 'Leiste auf einer Kaufseite');
+  assert.equal(wvWeiterFuer('/'), null, 'Leiste auf der Startseite');
+  assert.equal(wvWeiterFuer('/pages/studien'), null, 'Leiste auf /pages/studien (SERP-Messphase m03)');
+  // Mechanik an einer eigenen Liste: ein Geschwister, das es nicht gibt,
+  // fällt still heraus statt einen toten Link zu rendern.
+  const eigen = [{id: 'x', titel: 'X', seiten: [
+    {to: '/pages/a', label: 'A', teaser: 'A.', weiter: ['/pages/b', '/pages/fehlt']},
+    {to: '/pages/b', label: 'B', teaser: 'B.'},
+  ]}];
+  assert.deepEqual(wvWeiterFuer('/pages/a', eigen).geschwister.map((g) => g.to), ['/pages/b']);
+  assert.equal(wvWeiterFuer('/pages/b', eigen), null);
+});
+
+test('WV: die Leiste steht im Layout NACH </main>, nicht darin', () => {
+  const i = LAYOUT.indexOf('<main>{children}</main>');
+  const j = LAYOUT.indexOf('<WissenVertrauenWeiter />');
+  const f = LAYOUT.indexOf('<Footer');
+  assert.ok(i >= 0 && j > i && f > j, 'Leiste nicht zwischen </main> und <Footer>');
+});
+
+test('WV: die Übersicht rendert alle Gruppen aus der Liste und steht in der Sitemap', () => {
+  assert.match(HUB_KOMP, /WV_GRUPPEN\.map\(/);
+  assert.match(HUB_KOMP, /g\.seiten\.map\(/);
+  assert.match(HUB_ROUTE, /canonicalLink\(PFAD\)/);
+  assert.ok(!/noindex/.test(HUB_ROUTE), 'noindex in der Übersicht');
+  const e = NUR_ROUTE_SEITEN.find((x) => x.pfad === WV_HUB.to);
+  assert.ok(e && e.lastmod, 'Übersicht fehlt in NUR_ROUTE_SEITEN');
+  // Titel ohne die Suchbegriffe der Seiten, die sie stärken soll.
+  const titel = HUB_ROUTE.match(/const TITEL = `([^`]+)`/)[1];
+  assert.ok(!/erfahrung|seri|kritik|bewertung/i.test(titel), `Titel konkurriert: ${titel}`);
+});
+
+test('WV: Lexikon und „Was ist Elektrosmog?" verlinken sich gegenseitig', () => {
+  const frage = FRAGEN.find((s) => s.slug === 'was-ist-elektrosmog');
+  assert.ok(frage.weiter.some((w) => w.pfad === '/pages/lexikon'), 'Frage -> Lexikon fehlt');
+  const eintrag = LEXIKON.find((e) => e.slug === 'lexikon-elektrosmog');
+  assert.equal(eintrag.frage, '/pages/was-ist-elektrosmog');
+  assert.equal(zielName(eintrag.frage), 'Was ist Elektrosmog?');
+  assert.match(LEX_HUB, /e\.frage && zielName\(e\.frage\)/, 'Lexikon-Hub rendert `frage` nicht');
 });

@@ -2,6 +2,7 @@ import {Await, Link} from 'react-router';
 import {Suspense, useId} from 'react';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
+import {WissenVertrauenWeiter} from '~/components/reusables/WissenVertrauenWeiter';
 import {Header, HeaderMenu} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
 import {
@@ -41,6 +42,9 @@ export function PageLayout({
       <div className="background-divs neutral"></div>
       <div className="background-divs gold"></div>
       <main>{children}</main>
+      {/* Leiste „Weiterlesen“ nur auf Wissens- und Vertrauensseiten, außerhalb
+          von <main> (Begründung: WissenVertrauenWeiter.jsx). */}
+      <WissenVertrauenWeiter />
       <Footer
         footer={footer}
         header={header}
