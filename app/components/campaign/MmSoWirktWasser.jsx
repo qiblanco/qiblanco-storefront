@@ -151,7 +151,7 @@ export function MmSoWirktWasser({products}) {
         punkte={[
           'KEIN Perpetuum mobile, kein „Energiefeld".',
           'KEIN Heilstrahl, kein Ersatz für Medizin.',
-          'EIN physikalisches Ordnungs-Modell mit begrenzter, offener Evidenz.',
+          'EIN physikalisches Ordnungs-Modell, bisher an Zellen im Labor untersucht.',
         ]}
       />
 
