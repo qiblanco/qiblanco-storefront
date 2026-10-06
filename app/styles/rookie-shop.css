@@ -22,7 +22,7 @@
   /* Farbe: Kartengrund und Tinte der Seite (pdp-qi.css), gedämpfte Linie */
   --rs-grund: var(--pdpqi-karte, #fff);
   --rs-text: var(--qb-text, #2c2a26);
-  --rs-linie: color-mix(in srgb, var(--qb-text-gedämpft, #6b665d) 25%, transparent);
+  --rs-linie: color-mix(in srgb, var(--qb-text-gedaempft, #6b665d) 25%, transparent);
   --rs-schatten: 0 -4px 16px color-mix(in srgb, var(--qb-text, #2c2a26) 12%, transparent);
   /* Sektions-Takt (qb-tokens, mittlere Stufe 64px des Soll-Takts [96, 64]) */
   --rs-sektion: var(--qb-abstand-sektion-mittel, 64px);

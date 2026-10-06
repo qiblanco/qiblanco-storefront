@@ -69,3 +69,35 @@ test('Rookie: Animationen raus, höchstens zwei Wiederholungs-Knöpfe', () => {
   assert.match(code, /'shopq-buybox'/);
   assert.match(code, /'shopq-reputon-reviews'/);
 });
+
+// Jeder benannte Import aus dem eigenen Baum muss dort exportiert sein. Eine
+// Textersetzung in Kommentaren (ae -> ä) hat am 06.10. den Komponentennamen
+// Geraetevergleich im Import mit umgeschrieben; Build und SSR liefen weiter,
+// erst im Browser brach das Modul (keine Schrift, kein Menü).
+test('Rookie: benannte Importe existieren in ihren Quelldateien', () => {
+  for (const datei of ['components/rookie/shop/QiOne2ProRookie.jsx', 'components/rookie/shop/StickyWarenkorb.jsx', 'routes/pages.qione-2-pro-b.jsx']) {
+    const q = lies(datei);
+    for (const m of q.matchAll(/import \{([^}]+)\} from '(~\/[^']+|\.\/[^']+)'/g)) {
+      const ziel = m[2].startsWith('~/') ? m[2].slice(2) : join(dirname(datei), m[2]);
+      const kandidaten = ['', '.jsx', '.js'].map((e) => ziel + e);
+      let quelle = null;
+      for (const k of kandidaten) {
+        try { quelle = lies(k); break; } catch { /* naechster Kandidat */ }
+      }
+      assert.ok(quelle, `${datei}: Quelle ${m[2]} nicht gefunden`);
+      for (const roh of m[1].split(',')) {
+        const name = roh.trim().split(/\s+as\s+/)[0];
+        if (!name) continue;
+        assert.match(quelle, new RegExp(`export (async )?(function|const|let) ${name}\\b`), `${datei}: ${name} fehlt in ${m[2]}`);
+      }
+    }
+  }
+});
+
+test('rookie-shop.css nutzt nur Token-Namen, die es gibt', () => {
+  const css = lies('styles/rookie-shop.css');
+  const wurzel = lies('styles/qb-tokens.css') + lies('styles/pdp-qi.css') + lies('styles/overlay-ordnung.css') + css;
+  for (const m of css.matchAll(/var\((--[a-z0-9-]+)/g)) {
+    assert.ok(wurzel.includes(`${m[1]}:`), `${m[1]} ist nirgends definiert`);
+  }
+});

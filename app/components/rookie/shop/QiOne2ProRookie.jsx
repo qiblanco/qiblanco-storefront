@@ -5,7 +5,7 @@ import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
-import {Gerätevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
+import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
 import {teileFragen} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_LP} from '~/components/reusables/blockLinks';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
@@ -122,7 +122,7 @@ export function QiOne2ProRookie({product, vergleichsPreise}) {
           klarna={true}
         />
       </div>
-      <Gerätevergleich
+      <Geraetevergleich
         handle="qione-2-pro"
         block={BLOCK_LP}
         preise={vergleichsPreise}
