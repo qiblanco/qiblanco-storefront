@@ -57,7 +57,7 @@ import {teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/ueber-uns';
 
-const TITEL = 'Über uns — wer hinter Qi Blanco steht | Qi Blanco';
+const TITEL = 'Über uns: wer hinter Qi Blanco steht | Qi Blanco';
 
 /**
  * Meta-Beschreibung. Sie sagt, was die Seite BIETET (Namen, Register,
@@ -83,7 +83,7 @@ const TITEL = 'Über uns — wer hinter Qi Blanco steht | Qi Blanco';
  * ein Adjektiv nicht.
  */
 const BESCHREIBUNG =
-  'Wer Qi Blanco verantwortet, mit Namen, Anschrift und Handelsregister — und ' +
+  'Wer Qi Blanco verantwortet, mit Namen, Anschrift und Handelsregister, und ' +
   'in welchem Institut unsere Produkte zellbiologisch geprüft wurden.';
 
 /** Aus dem Impressum, wörtlich. Die einzige natürliche Person dieser Seite. */
@@ -155,7 +155,7 @@ function aboutSchema() {
         '@type': 'AboutPage',
         '@id': `${url}#seite`,
         url,
-        name: 'Über uns — wer hinter Qi Blanco steht',
+        name: 'Über uns: wer hinter Qi Blanco steht',
         description: BESCHREIBUNG,
         inLanguage: 'de',
         isPartOf: {'@id': SITE_ID},
@@ -222,9 +222,8 @@ export default function UeberUns() {
           <h1>Wer hinter Qi Blanco steht</h1>
           <p className="uu-lead">
             Du kaufst hier bei einem Unternehmen mit Anschrift, Handelsregister
-            und einem Menschen, der mit Namen dafür geradesteht. Auf dieser
-            Seite steht beides — und daneben das Institut, das unsere Produkte
-            zellbiologisch untersucht hat.
+            und einem Menschen, der mit Namen dafür geradesteht. Dazu kommt das
+            Institut, das unsere Produkte zellbiologisch untersucht hat.
           </p>
         </div>
       </section>
@@ -259,10 +258,13 @@ export default function UeberUns() {
             {STUDIEN.length} Fachpublikationen zu unseren Produkten stammen von{' '}
             {PRUEFINSTITUT.autor}, {PRUEFINSTITUT.institut} in{' '}
             {PRUEFINSTITUT.ort}: {studienArten(STUDIEN)}. Wir veröffentlichen
-            sie vollständig: deutsche Fassung, Abbildungen, Original-PDF. Du
-            musst uns nicht glauben — du kannst nachlesen.
+            sie vollständig: deutsche Fassung, Abbildungen, Original-PDF. So
+            kannst du selbst nachlesen.
           </p>
-          <ul className="uu-belege">
+          {/* Die Einträge sind die deutschen Titel der Publikationen
+              (eckdaten.titelDeutsch), also fremde Rede: wortgleich, deshalb
+              als Herkunft ausgezeichnet (GL-SPR-0020, Bauform D-2618). */}
+          <ul className="uu-belege" data-fremdtext="studientitel">
             {STUDIEN.map((s) => (
               <li key={s.slug}>
                 <Link
@@ -319,7 +321,7 @@ export default function UeberUns() {
           eine ist die natürliche Fortsetzung der anderen. */}
       <section className="uu-abschnitt">
         <div className="uu-innen">
-          <AbsichtHinweis einleitung="Wer hier steht, ist das eine — woran er arbeitet, das andere." />
+          <AbsichtHinweis />
         </div>
       </section>
 

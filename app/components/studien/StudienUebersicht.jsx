@@ -170,13 +170,13 @@ const WEITERFUEHREND = [
     pfad: '/blogs/wissen/strukturiertes-wasser-trend-was-gemessen-ist',
     frage: 'Wirkt das überhaupt?',
     titel: 'Strukturiertes Wasser: was davon wirklich gemessen ist',
-    text: 'Der Trend ist überall. Hier steht, welcher Teil davon im Labor nachweisbar ist — und welcher nicht.',
+    text: 'Der Trend ist überall. Der Artikel zeigt, welcher Teil davon im Labor nachweisbar ist und welcher nicht.',
   },
   {
     pfad: '/blogs/wissen/kohaerentes-wasser-was-die-forschung-misst',
     frage: 'Wirkt das überhaupt?',
     titel: 'Was die Forschung an diesem Wasser wirklich misst',
-    text: 'Die Messgrößen hinter dem Begriff „kohärentes Wasser“ — in Größenordnungen statt in Versprechen.',
+    text: 'Die Messgrößen hinter dem Begriff „kohärentes Wasser“, in Größenordnungen statt in Versprechen.',
   },
   {
     pfad: '/blogs/wissen/zellulaere-hydration-biophysik',
@@ -188,31 +188,31 @@ const WEITERFUEHREND = [
     pfad: '/blogs/wissen/blutfluss-vierte-phase-wasser-pollack',
     frage: 'Wie wirkt das im Körper?',
     titel: 'Wie Ihr Blut durch die feinsten Gefäße kommt',
-    text: 'Die vierte Phase des Wassers nach Gerald Pollack — und was sie mit dem Blutfluss zu tun hat.',
+    text: 'Die vierte Phase des Wassers nach Gerald Pollack: was sie mit dem Blutfluss zu tun hat.',
   },
   {
     pfad: '/blogs/wissen/schlaf-zellschutz-mechanismen-der-nacht',
     frage: 'Was passiert nachts?',
     titel: 'Was Ihr Körper nachts an Zellschutz leistet',
-    text: 'Die Mechanismen, die im Schlaf anlaufen — und welcher Teil davon messbar ist.',
+    text: 'Welche Mechanismen im Schlaf anlaufen und welcher Teil davon messbar ist.',
   },
   {
     pfad: '/blogs/wissen/schlafqualitaet-wasser-drei-studien',
     frage: 'Schlafen Sie schlecht?',
     titel: 'Schlafqualität und Trinkmenge: drei Studien nachgerechnet',
-    text: 'Drei Arbeiten, die den Zusammenhang untersucht haben — mit ihren Grenzen offen benannt.',
+    text: 'Drei Arbeiten, die den Zusammenhang untersucht haben, samt ihren Grenzen.',
   },
   {
     pfad: '/blogs/wissen/schlaf-vermessen-trend-optimierte-nacht',
     frage: 'Lohnt sich das Messen?',
     titel: 'Ihre Schlafdaten: was die Zahlen hergeben',
-    text: 'Ring, Uhr, Matte — was die vermessene Nacht wirklich zeigt und wo sie sich irrt.',
+    text: 'Ring, Uhr, Matte: was die vermessene Nacht wirklich zeigt und wo sie sich irrt.',
   },
   {
     pfad: '/blogs/wissen/nervensystem-regulieren-trend-innere-ruhe',
     frage: 'Kommen Sie nicht zur Ruhe?',
     titel: 'Nervensystem regulieren: was hinter dem Trend steckt',
-    text: 'Was an der inneren Ruhe messbar ist — und was davon Marketing bleibt.',
+    text: 'Was an der inneren Ruhe messbar ist und was davon Marketing bleibt.',
   },
 ];
 
@@ -331,8 +331,8 @@ export function StudienUebersicht() {
               ))}
             </ul>
             <p className="qb-st-hero-bildunter">
-              Die Titelseiten der {anzahl} Publikationen — jede einzeln unten
-              als Original-PDF abrufbar.
+              Die Titelseiten der {anzahl} Publikationen, jede einzeln als
+              Original-PDF abrufbar.
             </p>
           </div>
         </header>
@@ -909,19 +909,19 @@ function KundenstimmenUndBelege() {
 function HrvMessreihe() {
   const rang = [
     {
-      lage: ['Messung 1 – Start', 'Stressor – inaktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: ['Messung 1: Start', 'Stressor: inaktiv', 'Qi Blanco Systeme: inaktiv'],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/diagram_1-1-1024x883.jpg_1.webp?v=1667543752',
       alt: 'Rangdiagramm der HRV-Messung 1 ohne Stressor und ohne Qi Blanco System',
       bild: 'biol. HRV-Alter (Kurzzeit-HRV): 56 Jahre',
     },
     {
-      lage: ['Messung 2 – nach 13 min', 'Stressor – aktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: ['Messung 2: nach 13 min', 'Stressor: aktiv', 'Qi Blanco Systeme: inaktiv'],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/diagram_2-1-1024x883.jpg_1.webp?v=1667543774',
       alt: 'Rangdiagramm der HRV-Messung 2 mit aktivem WLAN-Stressor, ohne Qi Blanco System',
       bild: 'biol. HRV-Alter (Kurzzeit-HRV): 61 Jahre',
     },
     {
-      lage: ['Messung 7 – nach 60 min', 'Stressor – aktiv', 'Qi Blanco Systeme – aktiv'],
+      lage: ['Messung 7: nach 60 min', 'Stressor: aktiv', 'Qi Blanco Systeme: aktiv'],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/diagram_3-1-1024x883.jpg_1.webp?v=1667543810',
       alt: 'Rangdiagramm der HRV-Messung 7 mit aktivem Stressor und aktivem Qi Blanco System',
       bild: 'biol. HRV-Alter (Kurzzeit-HRV): 47 Jahre',
@@ -929,17 +929,17 @@ function HrvMessreihe() {
   ];
   const ans = [
     {
-      lage: ['Messung 1 – Start', 'Stressor – inaktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: ['Messung 1: Start', 'Stressor: inaktiv', 'Qi Blanco Systeme: inaktiv'],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ANS_1.png_1.webp?v=1667543906',
       alt: 'ANS-Status der Messung 1 ohne Stressor',
     },
     {
-      lage: ['Messung 2 – nach 13 min', 'Stressor – aktiv', 'Qi Blanco Systeme – inaktiv'],
+      lage: ['Messung 2: nach 13 min', 'Stressor: aktiv', 'Qi Blanco Systeme: inaktiv'],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ANS_2.png_1.webp?v=1667543930',
       alt: 'ANS-Status der Messung 2 mit aktivem Stressor',
     },
     {
-      lage: ['Messung 7 – nach 60 min', 'Stressor – aktiv', 'Qi Blanco Systeme – aktiv'],
+      lage: ['Messung 7: nach 60 min', 'Stressor: aktiv', 'Qi Blanco Systeme: aktiv'],
       src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ANS_3.png_1.webp?v=1667543973',
       alt: 'ANS-Status der Messung 7 mit aktivem Stressor und aktivem Qi Blanco System',
     },
@@ -949,10 +949,10 @@ function HrvMessreihe() {
     <section className="qb-st-sektion" id="hrv" aria-labelledby="hrv-titel">
       <h2 id="hrv-titel">HRV-Messungen</h2>
       <p className="qb-st-sektion-intro">
-        <strong>Hinweis zur Einordnung:</strong> Die folgende Messreihe ist{' '}
-        <em>keine</em> der {zahlwort(STUDIEN.length)} oben genannten
-        Fachpublikationen, sondern eine eigene Versuchsreihe an zwei Probanden.
-        Sie ist nicht peer-reviewed und versteht sich als Einzelnachweis.
+        <strong>Hinweis zur Einordnung:</strong> Die folgende Messreihe ist
+        eine eigene Versuchsreihe an zwei Probanden und gehört <em>nicht</em>{' '}
+        zu den {zahlwort(STUDIEN.length)} Fachpublikationen. Sie ist nicht
+        peer-reviewed und versteht sich als Einzelnachweis.
       </p>
 
       <div className="qb-st-volltext">
