@@ -9,7 +9,7 @@ const IMG_COUPLE =
 
 const videos = [
   {
-    title: 'Video 1: Intuition erfahren - Raus aus dem Kopf, rein ins Herz! – 9 min',
+    title: 'Video 1: Intuition erfahren. Raus aus dem Kopf, rein ins Herz! (9 min)',
     img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001190-Kopie-1024x589_jpg.webp?v=1666617198',
     bullets: [
       'Was ist Intuition?',
@@ -18,7 +18,7 @@ const videos = [
     ],
   },
   {
-    title: 'Video 2: Zeremonie-Kakao – Was ist das?! – 8 min',
+    title: 'Video 2: Zeremonie-Kakao. Was ist das?! (8 min)',
     img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001239-Kopie-1024x591.jpg_1_cf7bfbf2-2e9f-4654-a51a-e0f2b618501f.webp?v=1679327538',
     bullets: [
       'Warum enthält er so viele Inhaltsstoffe?',
@@ -27,7 +27,7 @@ const videos = [
     ],
   },
   {
-    title: 'Video 3: Die Zeremonie-Kakao-Kur in der Anwendung – 8 min',
+    title: 'Video 3: Die Zeremonie-Kakao-Kur in der Anwendung (8 min)',
     img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-ad-01_2.1.1-min.jpg_1_2b439bb6-ccde-4801-a43f-d36eb669cee5.webp?v=1679327670',
     bullets: [
       'Wie erwärmt man ihn richtig?',
@@ -36,7 +36,7 @@ const videos = [
     ],
   },
   {
-    title: 'Video 4: Einen Schritt tiefer – mit Zeremonie-Kakao meditieren – 4 min',
+    title: 'Video 4: Einen Schritt tiefer, mit Zeremonie-Kakao meditieren (4 min)',
     img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-ad-03_4.2.1-min.jpg_1_329aa829-10d5-4d95-a779-1dd0a92d0397.webp?v=1679328304',
     bullets: [
       'Warum überhaupt meditieren?',
@@ -100,7 +100,7 @@ export function KakaoKurs() {
           </h2>
           <div className="text-sm text-gray-800 leading-relaxed space-y-3">
             <p>
-              Wir sind Anna und Christian – und zusammen haben wir uns dazu entschieden, unser
+              Wir sind Anna und Christian, und zusammen haben wir uns dazu entschieden, unser
               Wissen und unsere Erfahrungen in einem Kurs zu teilen. Christian, als Ingenieur,
               Physiker und Biochemiker betrachtet den menschlichen Körper aus einer einzigartigen
               Perspektive, die ihm geholfen hat, seine eigene persönliche Leidensgeschichte zu
@@ -170,9 +170,9 @@ export function KakaoKurs() {
             Bewusstsein erweitern kannst.
           </p>
           <p className="mt-2">
-            Wenn du dich für diesen Kurs anmeldest, wirst du nicht nur lernen, wie du
-            Zeremonie-Kakao in deinem Leben nutzen kannst, sondern auch, wie du dein ganzes
-            Wohlergehen und damit dein Leben mit kohärentem Wasser verändern kannst. Du wirst
+            Im Kurs lernst du, wie du Zeremonie-Kakao in deinem Leben nutzen kannst. Außerdem
+            zeigen wir dir, wie du dein ganzes Wohlergehen und damit dein Leben mit kohärentem
+            Wasser verändern kannst. Du wirst
             erfahren, wie du dich mit deiner Intuition und deinem Körper verbindest und so zu einem
             tieferen Verständnis deiner selbst gelangst.
           </p>
