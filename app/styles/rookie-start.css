@@ -101,6 +101,20 @@
   margin-top: var(--st-sec-lg);
 }
 
+/* Kartenbilder höchstens 400 px breit. Das QiHome-Seitenbild hat nur 800 px
+   Quelle; app.css gibt jedem Kartenbild die halbe Reihe, bei 1024 px Fenster
+   456 px, auf einem Bildschirm mit doppelter Dichte also 912 Bildpunkte aus
+   800: sichtbar unscharf (hb-formate, bild-aufloesung desktop-1024, Branch-
+   Build 06.10.; A trägt dieselbe Stelle). 400 = 50 x 8 hält jede der sechs
+   Quellen scharf. Die beiden Bilder einer Karte rücken dafür in die Mitte. */
+.qb-rookie-start .FeaturedProduct .FeaturedProduct_ImageWrapper {
+  justify-content: center;
+  gap: var(--rs-s2);
+}
+.qb-rookie-start .FeaturedProduct .FeaturedProduct_ImageWrapper img {
+  max-width: 400px;
+}
+
 /* ---- Sticky-Kaufknopf (StickyKaufknopf.jsx) -------------------------------
    Nur mobil. Versteckt heißt: leer, visibility hidden, unter dem Rand. Kein
    Gleiten beim Erscheinen: KaufknopfChatSignal misst im nächsten Bild, ein
