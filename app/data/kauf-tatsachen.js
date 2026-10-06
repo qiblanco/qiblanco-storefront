@@ -154,8 +154,8 @@ export const NICHT_ENTHALTEN = [
 export const PREIS_HINWEIS =
   'In einer Kleinanzeige siehst du, was jemand haben möchte. Was am Ende ' +
   'gezahlt wurde, steht dort nicht, und ob überhaupt verkauft wurde, ' +
-  'ebenfalls nicht. Ein Angebotspreis ist deshalb keine Auskunft über den ' +
-  'Wert, sondern über eine Erwartung.';
+  'ebenfalls nicht. Ein Angebotspreis zeigt dir deshalb nur, was sich der ' +
+  'Verkäufer erhofft.';
 
 /** Der Weg zurück, in drei Schritten. */
 export const RUECKWEG = [

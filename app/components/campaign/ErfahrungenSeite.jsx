@@ -43,9 +43,9 @@ export function ErfahrungenSeite() {
         <div className="erf__schmal">
           <h1>Was Menschen mit Qi Blanco erlebt haben</h1>
           <p className="erf__lead">
-            Hier sprechen {menschen} Menschen selbst – in{' '}
-            {ERFAHRUNGS_BEITRAEGE.length} Videos über Schlaf, Energie, Ruhe im
-            Alltag und darüber, was sich für sie verändert hat. Jedes Video ist
+            Hier sprechen {menschen} Menschen selbst. In{' '}
+            {ERFAHRUNGS_BEITRAEGE.length} Videos erzählen sie von Schlaf, Energie
+            und Ruhe im Alltag und davon, was sich für sie verändert hat. Jedes Video ist
             das Original. Der Text daneben fasst zusammen, was darin gesagt
             wird.
           </p>
@@ -57,7 +57,7 @@ export function ErfahrungenSeite() {
           <h2>Auf Deutsch</h2>
           <p>
             {deutsch.length} Menschen, nach Reichweite geordnet. Wer mehr als
-            ein Video aufgenommen hat, steht einmal hier – mit allen.
+            ein Video aufgenommen hat, steht einmal hier, mit allen Videos.
           </p>
           <BeitragsRaster gruppen={deutsch} />
         </div>
@@ -67,7 +67,7 @@ export function ErfahrungenSeite() {
         <div className="erf__mitte">
           <h2>In English</h2>
           <p>
-            {englisch.length} Menschen haben auf Englisch aufgenommen – die
+            {englisch.length} Menschen haben auf Englisch aufgenommen. Die
             Zusammenfassung daneben ist auf Deutsch.
           </p>
           <BeitragsRaster gruppen={englisch} />
@@ -141,8 +141,13 @@ function BeitragsRaster({gruppen}) {
               />
               {/* Der Videotitel ist vom Haus geschrieben, NICHT vom Sprecher
                   gesagt — er steht deshalb als Titel da und nie in
-                  Anfuehrungszeichen als Aeusserung. */}
-              <p className="erf__videotitel">{b.titel}</p>
+                  Anfuehrungszeichen als Aeusserung. data-fremdtext: er ist der
+                  veroeffentlichte Titel des Videos auf unserem Kanal und wird
+                  1:1 zitiert, damit man das Video wiederfindet; umgeschrieben
+                  wird er am Kanal, nicht hier (2026-10-06, s02 neue-seiten-pr). */}
+              <p className="erf__videotitel" data-fremdtext="videotitel">
+                {b.titel}
+              </p>
               <p className="erf__text">{b.zusammenfassung}</p>
             </div>
           ))}
