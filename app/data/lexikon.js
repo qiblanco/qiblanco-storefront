@@ -379,7 +379,7 @@ export const LEXIKON = [
     "definition": "«Kohärentes Wasser» bezeichnet die Vorstellung, Wasser könne über längere Zeit geordnet vorliegen. Kohärenz ist in der Physik klar definiert und über Kohärenzlänge und Kohärenzzeit messbar.",
     "gebrauch": [
       "«Kohärentes Wasser» ist ein Wort aus der Wasserforschungs-Szene und aus unserem eigenen Sprachgebrauch. Kunden fragen fast nie danach; sie fragen nach Schutz, nach Wirkung und nach Schlaf.",
-      "Gemeint ist meistens: Wasser sei nicht einfach eine Ansammlung von Molekülen, sondern geordnet, und diese Ordnung lasse sich verändern. Wer den Begriff benutzt, meint eine Struktur und selten eine Formel. Populär geworden ist das Bild vom geordneten Wasser in den 2000er Jahren vor allem durch die Bücher von Masaru Emoto."
+      "Gemeint ist meistens: Wasser sei mehr als eine lose Ansammlung von Molekülen, es sei geordnet, und diese Ordnung lasse sich verändern. Wer den Begriff benutzt, meint eine Struktur und selten eine Formel. Populär geworden ist das Bild vom geordneten Wasser in den 2000er Jahren vor allem durch die Bücher von Masaru Emoto."
     ],
     "physik_groesse": "Kohärenzlänge in Metern, Kohärenzzeit in Sekunden; für die Ordnung in Flüssigkeiten die Paarverteilungsfunktion, dimensionslos",
     "physik": [
@@ -564,7 +564,7 @@ export const LEXIKON = [
     ],
     "grenze": "Ordnung trägt nicht als Wertung und nicht als Aussage über einen Menschen.",
     "grenze_begruendung": [
-      "Mehr Ordnung ist in der Physik nicht besser, sondern unwahrscheinlicher. Ein geordneter Zustand braucht Energie, um zu entstehen, und zerfällt von selbst.",
+      "Mehr Ordnung ist in der Physik unwahrscheinlicher, aber nicht besser. Ein geordneter Zustand braucht Energie, um zu entstehen, und zerfällt von selbst.",
       "Ein Ordnungsgrad des Körpers ist nicht definiert. Eine Kohärenzlänge in Metern und eine Entropie in Joule je Kelvin sagen nichts über ein Befinden."
     ],
     "quellen": [
