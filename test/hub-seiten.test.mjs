@@ -235,8 +235,8 @@ const LAYOUT = quelle('app/components/PageLayout.jsx');
 const HUB_KOMP = quelle('app/components/campaign/WissenVertrauenHub.jsx');
 const HUB_ROUTE = quelle('app/routes/pages.wissen-und-vertrauen.jsx');
 const LEX_HUB = quelle('app/components/campaign/LexikonHub.jsx');
-const routeDa = (to) =>
-  existsSync(new URL(`../app/routes/pages.${to.replace(/^\/pages\//, '')}.jsx`, import.meta.url));
+const routeDa = (pfad) =>
+  existsSync(new URL(`../app/routes/pages.${pfad.replace(/^\/pages\//, '')}.jsx`, import.meta.url));
 
 test('WV: die Fußspalte ist verdrahtet und rendert wvFussLinks', () => {
   assert.match(FOOTER, /import\s*\{[^}]*\bwvFussLinks\b[^}]*\}\s*from\s*'~\/lib\/hub-seiten'/);
@@ -248,7 +248,7 @@ test('WV: die Fußspalte ist verdrahtet und rendert wvFussLinks', () => {
 test('WV: Fußspalte höchstens fünf Seiten plus Übersicht, Übersicht zuletzt', () => {
   const fuss = wvFussLinks();
   assert.ok(fuss.length >= 2 && fuss.length <= 6, `Fußspalte hat ${fuss.length} Links`);
-  assert.equal(fuss.at(-1).to, WV_HUB.to, 'der letzte Link der Spalte ist nicht die Übersicht');
+  assert.equal(fuss.at(-1).to, WV_HUB.pfad, 'der letzte Link der Spalte ist nicht die Übersicht');
   assert.equal(new Set(fuss.map((l) => l.to)).size, fuss.length, 'Dublette in der Spalte');
 });
 
@@ -272,23 +272,23 @@ test('WV: Zweifelsseiten bleiben aus der Fußspalte (Kaufpfad-Zaun)', () => {
   ];
   const fussZiele = new Set(wvFussLinks().map((l) => l.to));
   for (const z of zaun) {
-    assert.ok(wvSeiten().some((s) => s.to === z), `${z} fehlt in der Übersicht`);
+    assert.ok(wvSeiten().some((s) => s.pfad === z), `${z} fehlt in der Übersicht`);
     assert.ok(!fussZiele.has(z), `${z} steht als eigener Link in der Fußspalte`);
   }
 });
 
 test('WV: jedes Ziel ist eine Route, jedes Geschwister ein Mitglied', () => {
-  const pfade = new Set(wvSeiten().map((s) => s.to));
+  const pfade = new Set(wvSeiten().map((s) => s.pfad));
   assert.equal(pfade.size, wvSeiten().length, 'ein Pfad steht zweimal in WV_GRUPPEN');
-  assert.ok(routeDa(WV_HUB.to), 'die Route der Übersicht fehlt');
+  assert.ok(routeDa(WV_HUB.pfad), 'die Route der Übersicht fehlt');
   for (const s of wvSeiten()) {
-    assert.match(s.to, /^\/pages\/[a-z0-9-]+$/, `kein sauberer Pfad: ${s.to}`);
-    assert.ok(routeDa(s.to), `${s.to}: keine Route app/routes/pages.<slug>.jsx`);
+    assert.match(s.pfad, /^\/pages\/[a-z0-9-]+$/, `kein sauberer Pfad: ${s.pfad}`);
+    assert.ok(routeDa(s.pfad), `${s.pfad}: keine Route app/routes/pages.<slug>.jsx`);
     if (s.weiter) {
-      assert.ok(s.weiter.length >= 1 && s.weiter.length <= 2, `${s.to}: ${s.weiter.length} Geschwister`);
+      assert.ok(s.weiter.length >= 1 && s.weiter.length <= 2, `${s.pfad}: ${s.weiter.length} Geschwister`);
       for (const g of s.weiter) {
-        assert.ok(pfade.has(g), `${s.to}: Geschwister ${g} steht nicht in der Übersicht`);
-        assert.notEqual(g, s.to, `${s.to} nennt sich selbst als Geschwister`);
+        assert.ok(pfade.has(g), `${s.pfad}: Geschwister ${g} steht nicht in der Übersicht`);
+        assert.notEqual(g, s.pfad, `${s.pfad} nennt sich selbst als Geschwister`);
       }
     }
   }
@@ -300,19 +300,19 @@ test('WV: Ankertext, Kurzname und Teaser tragen echte Umlaute; Teaser ist EIN Sa
   // ist sie kein Umlaut-Ersatz.
   const digraph = new RegExp(`((?<![qea])${'u'}e|${'o'}e|${'a'}e)`, 'i');
   for (const s of wvSeiten()) {
-    for (const [feld, wert] of [['label', s.label], ['fuss', s.fuss], ['teaser', s.teaser]]) {
+    for (const [feld, wert] of [['anker', s.anker], ['fuss', s.fuss], ['teaser', s.teaser]]) {
       if (wert === undefined) continue;
-      assert.ok(!digraph.test(wert), `${s.to} ${feld}: ASCII-Transliteration in "${wert}"`);
+      assert.ok(!digraph.test(wert), `${s.pfad} ${feld}: ASCII-Transliteration in "${wert}"`);
     }
-    assert.match(s.teaser, /^[^.!?]+[.?!]$/, `${s.to}: Teaser ist nicht genau ein Satz`);
-    assert.ok(s.teaser.split(/\s+/).length <= 30, `${s.to}: Teaser über 30 Wörter`);
-    assert.ok(!/[–—]/.test(s.teaser + s.label), `${s.to}: Gedankenstrich im Kundentext`);
+    assert.match(s.teaser, /^[^.!?]+[.?!]$/, `${s.pfad}: Teaser ist nicht genau ein Satz`);
+    assert.ok(s.teaser.split(/\s+/).length <= 30, `${s.pfad}: Teaser über 30 Wörter`);
+    assert.ok(!/[–—]/.test(s.teaser + s.anker), `${s.pfad}: Gedankenstrich im Kundentext`);
   }
 });
 
 test('WV: Leiste für Mitglieder, nichts für andere Seiten, Pfad normalisiert', () => {
   const k = wvWeiterFuer('/pages/kritik');
-  assert.ok(k && k.geschwister.length >= 1 && k.hub.to === WV_HUB.to);
+  assert.ok(k && k.geschwister.length >= 1 && k.hub.to === WV_HUB.pfad);
   assert.deepEqual(wvWeiterFuer('/EN-US/pages/kritik/'), k, 'Länderpräfix/Schrägstrich ändern die Leiste');
   assert.equal(wvWeiterFuer('/products/qione-2-pro'), null, 'Leiste auf einer Kaufseite');
   assert.equal(wvWeiterFuer('/'), null, 'Leiste auf der Startseite');
@@ -320,8 +320,8 @@ test('WV: Leiste für Mitglieder, nichts für andere Seiten, Pfad normalisiert',
   // Mechanik an einer eigenen Liste: ein Geschwister, das es nicht gibt,
   // fällt still heraus statt einen toten Link zu rendern.
   const eigen = [{id: 'x', titel: 'X', seiten: [
-    {to: '/pages/a', label: 'A', teaser: 'A.', weiter: ['/pages/b', '/pages/fehlt']},
-    {to: '/pages/b', label: 'B', teaser: 'B.'},
+    {pfad: '/pages/a', anker: 'A', teaser: 'A.', weiter: ['/pages/b', '/pages/fehlt']},
+    {pfad: '/pages/b', anker: 'B', teaser: 'B.'},
   ]}];
   assert.deepEqual(wvWeiterFuer('/pages/a', eigen).geschwister.map((g) => g.to), ['/pages/b']);
   assert.equal(wvWeiterFuer('/pages/b', eigen), null);
@@ -339,7 +339,7 @@ test('WV: die Übersicht rendert alle Gruppen aus der Liste und steht in der Sit
   assert.match(HUB_KOMP, /g\.seiten\.map\(/);
   assert.match(HUB_ROUTE, /canonicalLink\(PFAD\)/);
   assert.ok(!/noindex/.test(HUB_ROUTE), 'noindex in der Übersicht');
-  const e = NUR_ROUTE_SEITEN.find((x) => x.pfad === WV_HUB.to);
+  const e = NUR_ROUTE_SEITEN.find((x) => x.pfad === WV_HUB.pfad);
   assert.ok(e && e.lastmod, 'Übersicht fehlt in NUR_ROUTE_SEITEN');
   // Titel ohne die Suchbegriffe der Seiten, die sie stärken soll.
   const titel = HUB_ROUTE.match(/const TITEL = `([^`]+)`/)[1];
@@ -353,4 +353,24 @@ test('WV: Lexikon und „Was ist Elektrosmog?" verlinken sich gegenseitig', () =
   assert.equal(eintrag.frage, '/pages/was-ist-elektrosmog');
   assert.equal(zielName(eintrag.frage), 'Was ist Elektrosmog?');
   assert.match(LEX_HUB, /e\.frage && zielName\(e\.frage\)/, 'Lexikon-Hub rendert `frage` nicht');
+});
+
+test('WV: die S5-Leser sehen in hub-seiten.js nur HUB_LINKS', () => {
+  // Zwei Proben lesen diese Datei per Ausdruck und halten JEDEN Treffer für
+  // einen S5-Hub: pruefungen/abnahme-s5 (PFAD_RX, Soll: von der Startseite
+  // verlinkt) und pruefungen/probe_hub_ankertext_titel_naht.py (EINTRAG_RX,
+  // Soll: Ankertext = Seitentitel). Nach #805 trugen die WV-Einträge
+  // `to`/`label` und machten beide rot („9 von 25 nicht verlinkt"). Die
+  // Ausdrücke stehen hier wörtlich; ändert eine Probe ihren, gehört er hier
+  // nachgezogen.
+  const quelltext = readFileSync(new URL('../app/lib/hub-seiten.js', import.meta.url), 'utf8');
+  const pfadRx = /to:\s*'(\/pages\/[a-z0-9-]+)'/g;
+  const eintragRx = /\{\s*to:\s*'(\/pages\/[a-z0-9-]+)'\s*,\s*label:\s*'([^']*)'/gs;
+  const soll = [...hubPfade()].sort();
+  assert.deepEqual([...quelltext.matchAll(pfadRx)].map((m) => m[1]).sort(), soll, 'abnahme-s5 liest mehr als HUB_LINKS');
+  assert.deepEqual(
+    [...new Set([...quelltext.matchAll(eintragRx)].map((m) => m[1]))].sort(),
+    soll,
+    'probe_hub_ankertext_titel_naht liest mehr als HUB_LINKS',
+  );
 });

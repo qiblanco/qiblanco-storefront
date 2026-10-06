@@ -25,7 +25,7 @@ export function WissenVertrauenHub() {
       <section className="wv__kopf" data-section="wv-kopf">
         <div className="wv__inhalt">
           <p className="wv__vorspann">{WV_TITEL}</p>
-          <h1>{WV_HUB.label}</h1>
+          <h1>{WV_HUB.anker}</h1>
           <p className="wv__lead">
             Was Elektrosmog ist, wie ein Schutz funktioniert und was andere mit
             Qi Blanco erlebt haben: jede dieser Fragen hat ihre eigene Seite.
@@ -40,10 +40,10 @@ export function WissenVertrauenHub() {
             <h2 id={g.id}>{g.titel}</h2>
             <ul className="wv__liste">
               {g.seiten.map((s) => (
-                <li key={s.to} className="wv__eintrag">
+                <li key={s.pfad} className="wv__eintrag">
                   <h3>
-                    <Link className="wv__link" prefetch="intent" to={s.to}>
-                      {s.label}
+                    <Link className="wv__link" prefetch="intent" to={s.pfad}>
+                      {s.anker}
                     </Link>
                   </h3>
                   <p>{s.teaser}</p>

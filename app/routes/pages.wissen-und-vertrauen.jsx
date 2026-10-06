@@ -5,7 +5,7 @@ import {WV_HUB, WV_TITEL, wvSeiten} from '~/lib/hub-seiten';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
-const PFAD = WV_HUB.to;
+const PFAD = WV_HUB.pfad;
 
 /**
  * /pages/wissen-und-vertrauen — „Alle Antworten rund um Qi Blanco".
@@ -68,8 +68,8 @@ function schema() {
       itemListElement: wvSeiten().map((s, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        name: s.label,
-        url: absoluteCanonical(s.to),
+        name: s.anker,
+        url: absoluteCanonical(s.pfad),
       })),
     },
   };
