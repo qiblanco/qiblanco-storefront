@@ -24,7 +24,6 @@ import {
   PROFIL,
   PROFIL_ABSCHNITT,
   STAND,
-  VERTEILUNG,
   ZAHL,
 } from '../app/data/trustpilot-tatsachen.js';
 import {buildFaqPageJsonLd} from '../app/lib/faq-schema.js';
@@ -110,14 +109,17 @@ test('das Schema trägt Datum als Konstanten, nicht als Uhr', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Die Zahlen kommen aus der Verteilung, nicht aus der Hand.
+// ÜBERGANG (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq-r1-s02):
+// Christian 2026-10-06 „nicht die Gesamtanzahl anzeigen". Die Pins auf
+// „27 Bewertungen" in Lead und Titel, auf die Verteilungsliste und auf den
+// Satz „hat niemand bewertet" sind raus; die Seite verliert sie im nächsten
+// PR. Die strengen Tests (KEINE Anzahl in Text, Titel, Meta, Schema) folgen
+// direkt danach. Was hier steht, gilt für den alten UND den neuen Stand.
 // ---------------------------------------------------------------------------
 
-test('die Gesamtzahl ist die Summe der Verteilung', () => {
-  const summe = VERTEILUNG.reduce((s, v) => s + v.anzahl, 0);
-  assert.equal(ZAHL.alle, summe);
-  assert.equal(VERTEILUNG.length, 5);
-  assert.ok(KOPF.lead.includes(`${ZAHL.alle} Bewertungen`));
+test('die Zählung im Datenmodul ist die Summe der Sterne', () => {
+  const s = PROFIL.sterne;
+  assert.equal(ZAHL.alle, s[5] + s[4] + s[3] + s[2] + s[1]);
 });
 
 test('die Verteilung passt zu den Prozentwerten, die Trustpilot zeigt', () => {
@@ -127,18 +129,18 @@ test('die Verteilung passt zu den Prozentwerten, die Trustpilot zeigt', () => {
   assert.deepEqual([5, 4, 3, 2, 1].map(pct), [96, 4, 0, 0, 0]);
 });
 
-test('der Satz "niemand unter vier Sternen" ist an die Daten gebunden', () => {
-  // Die Seite sagt, niemand habe mit drei Sternen oder weniger bewertet. Wer
-  // die Verteilung ändert, bekommt den anderen Zweig des Satzes von selbst.
+test('keine schlechte Bewertung: an die Daten gebunden', () => {
   assert.equal(ZAHL.unterVier, 0);
-  assert.match(PROFIL_ABSCHNITT.einleitung, /hat niemand bewertet/);
   const schlechte = FRAGEN.find((f) => f.id === 'schlechte');
   assert.match(schlechte.a, /^Nein\./);
 });
 
-test('Titel und Beschreibung nehmen die Zahl aus dem Datenmodul', () => {
-  assert.ok(!/Trustpilot: \d/.test(ROUTE));
-  assert.match(ROUTE, /\$\{ZAHL\.alle\} Bewertungen/);
+test('der TrustScore steht im Lead und in der Route', () => {
+  // Die Stand-Wache (seo-manager/pruefungen/probe_trustpilot_stand_auf_der_seite.py)
+  // liest den TrustScore aus genau dieser Wendung.
+  assert.match(KOPF.lead, new RegExp(`TrustScore von ${PROFIL.trustscore} von 5`));
+  assert.match(KOPF.lead, /ohne Einladung/);
+  assert.match(KOPF.lead, /nicht beansprucht/);
   assert.match(ROUTE, /\$\{PROFIL\.trustscore\}/);
 });
 
