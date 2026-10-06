@@ -1,0 +1,105 @@
+/* ============================================================================
+   bracelet-bildquelle.css — Anzeigegroesse an die Quellaufloesung binden,
+   NUR /pages/qibracelet-details
+   (Job 20261006-s02b-folge-qibracelet-details-bildschuld, 2026-10-06)
+   ----------------------------------------------------------------------------
+   DAS PROBLEM: Gate 12 meldete auf dieser Seite `bild-aufloesung=kaputt` in
+   zehn Formaten. Zehn Dateien sind kleiner als ihre Anzeigeflaeche mal
+   Pixeldichte, also sichtbar hochskaliert (Regel in format_pruefer.py:
+   Quelle < CSS-Breite * dpr * 0.9, dpr gedeckelt auf 2).
+
+   ZUERST GESUCHT, NICHT GEKAPPT: Shopify Files am 2026-10-06 je Motiv
+   abgefragt (Admin-API files(query:...), Medienweg GL-PRO-0015). Ergebnis:
+   kein groesseres Original im SELBEN Ausschnitt.
+     - showcase-app 526x296: nur 526er Fassungen (png/webp). Das 1920er
+       "Superhuman_Kurs_Mockup-2" ist ein anderes Motiv. Ein Master ist seit
+       2026-09-22 bei Elina angefragt (Job 20260922-ersatz-master-...).
+     - 85M0173: das 730x1095-Original deckt den gezeigten Quadrat-Ausschnitt
+       nur mit ~670 px (Bildvergleich, Abweichung 6/255) — kein Gewinn.
+     - Gitterchip 1024x1024: anderer, weiterer Ausschnitt; auf den verbauten
+       Ausschnitt geschnitten kleiner als die heutigen 855 px.
+     - alle uebrigen: die verbaute Datei IST die groesste Fassung.
+   Hochskalieren kommt nicht in Frage, Motive werden nicht getauscht.
+
+   DIE HAUSANTWORT (P10, Bestand app.css "Anzeigegroesse an die
+   Quellaufloesung binden"): die Flaeche kappen, Obergrenze = Quellbreite /
+   (dpr * 0.9). Hier mit 5 % Reserve: Teiler 0.95 bei dpr 1, 1.9 bei dpr 2.
+   Die Kappe haengt am DATEINAMEN der Quelle (img[src*=...]), also an der
+   Eigenschaft "diese Datei hat N Pixel" und nicht an einem Platz im Layout.
+   `min(100%, ...)` haelt den Bestandswert max-width:100% aus app.css.
+
+   PAARE BEKOMMEN EINE GEMEINSAME KAPPE (die kleinere Quelle), sonst stehen
+   zwei zusammengehoerige Bilder verschieden gross untereinander.
+
+   WARUM EINE EIGENE DATEI: format_reichweite loest app/styles/<name>.css
+   ueber die Importeure auf (Regel R2). Diese Datei importiert nur
+   app/routes/pages.qibracelet-details.jsx, die Belegpflicht trifft also
+   genau diese eine Seite. pdp-landing-qi.css haette qione-2-pro-details
+   mitgezogen, app.css jede Seite.
+
+   RUECKWEG: Import in pages.qibracelet-details.jsx und diese Datei
+   entfernen. Kein Bestandsselektor wurde geaendert.
+   ========================================================================== */
+
+body > main {
+  /* Quellbreiten in px, gemessen am CDN 2026-10-06 (width=5000 liefert das
+     Original, Shopify skaliert nie hoch). Bei Paaren die kleinere Quelle. */
+  --bildquelle-showcase: 526px;      /* showcase-app-526x296.png */
+  --bildquelle-experten: 667px;      /* 85M0173 667 | image1_1 925 */
+  --bildquelle-wasser: 490px;        /* InkohaerentesWasser-2 490 | KohaerentesWasser-2 610 */
+  --bildquelle-armband-drei: 1024px; /* L1010752 1024 */
+  --bildquelle-armband-paar: 819px;  /* L1010701 973 | L1010711 819 */
+  --bildquelle-gitterchip: 774px;    /* Gitterchip 855 | 01_2048px.jpg 774 */
+}
+
+body > main .CallToAction img[src*="showcase-app-526x296"] {
+  --bild-quelle: var(--bildquelle-showcase);
+  margin-inline: auto; /* Flex-Kind wie in app.css: mittig in seiner Spalte */
+}
+body > main img[src*="85M0173-new_"],
+body > main img[src*="/image1_1.jpg"] {
+  --bild-quelle: var(--bildquelle-experten);
+}
+body > main img[src*="InkohaerentesWasser-2_transparent"],
+body > main img[src*="/KohaerentesWasser-2_transparent"] {
+  --bild-quelle: var(--bildquelle-wasser);
+}
+body > main img[src*="bracelet-L1010752-min"] {
+  --bild-quelle: var(--bildquelle-armband-drei);
+}
+body > main img[src*="bracelet-L1010701-min"],
+body > main img[src*="bracelet-L1010711-min"] {
+  --bild-quelle: var(--bildquelle-armband-paar);
+}
+body > main img[src*="QiOne_Gitterchip-1-e1668521164461"],
+body > main img[src*="/01_2048px.jpg_1_"] {
+  --bild-quelle: var(--bildquelle-gitterchip);
+}
+
+/* Eine Regel fuer alle: greift nur, wo --bild-quelle oben gesetzt ist. */
+body > main .CallToAction img[src*="showcase-app-526x296"],
+body > main img[src*="85M0173-new_"],
+body > main img[src*="/image1_1.jpg"],
+body > main img[src*="InkohaerentesWasser-2_transparent"],
+body > main img[src*="/KohaerentesWasser-2_transparent"],
+body > main img[src*="bracelet-L1010752-min"],
+body > main img[src*="bracelet-L1010701-min"],
+body > main img[src*="bracelet-L1010711-min"],
+body > main img[src*="QiOne_Gitterchip-1-e1668521164461"],
+body > main img[src*="/01_2048px.jpg_1_"] {
+  max-width: min(100%, calc(var(--bild-quelle) / 0.95));
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  body > main .CallToAction img[src*="showcase-app-526x296"],
+  body > main img[src*="85M0173-new_"],
+  body > main img[src*="/image1_1.jpg"],
+  body > main img[src*="InkohaerentesWasser-2_transparent"],
+  body > main img[src*="/KohaerentesWasser-2_transparent"],
+  body > main img[src*="bracelet-L1010752-min"],
+  body > main img[src*="bracelet-L1010701-min"],
+  body > main img[src*="bracelet-L1010711-min"],
+  body > main img[src*="QiOne_Gitterchip-1-e1668521164461"],
+  body > main img[src*="/01_2048px.jpg_1_"] {
+    max-width: min(100%, calc(var(--bild-quelle) / 1.9));
+  }
+}
