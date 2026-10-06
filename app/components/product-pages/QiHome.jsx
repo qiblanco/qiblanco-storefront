@@ -98,10 +98,10 @@ function MainFeatures() {
         <div className="MainFeaturesColumn">
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>
           <p>
-            Der ultimative Schutz vor elektromagnetischer Strahlung – jetzt mit
+            Der ultimative Schutz vor elektromagnetischer Strahlung, jetzt mit
             der 100-fachen Stärke des QiHome® Air dank unserer revolutionären
-            Gitterchip™ - Technologie der dritten Generation. Für alle, die
-            ihre Lebensqualität auf ein völlig neues Level bringen möchten.
+            Gitterchip™-Technologie der dritten Generation. Das QiHome® Air ist
+            für alle gemacht, die ihre Lebensqualität deutlich steigern möchten.
           </p>
         </div>
         <div className="MainFeaturesColumn">
@@ -123,25 +123,26 @@ function DasQiHome() {
   return (
     <div className="DasQiHome NormalSectionSize">
       <h2>
-        QiHome® Air – Die Zukunft für ein intelligentes Raumklima in
+        QiHome® Air: Die Zukunft für ein intelligentes Raumklima in
         Unternehmen & Zuhause
       </h2>
       <p>
         Das <b>QiHome® Air</b> wurde entwickelt, um dein Umfeld auf ein neues
-        Niveau zu heben – ideal für Unternehmen, Home-Offices und Wohnräume.
-        Während der QiOne® als kompakter Begleiter für den persönlichen
-        Gebrauch dient, optimiert das <b>QiHome® Air</b> deine gesamte Umgebung
-        – zuverlässig, ganzheitlich und ohne zusätzlichen Aufwand.
+        Niveau zu heben. Es eignet sich ideal für Unternehmen, Home-Offices und
+        Wohnräume. Während der QiOne® als kompakter Begleiter für den
+        persönlichen Gebrauch dient, optimiert das <b>QiHome® Air</b>{' '}
+        zuverlässig und ganzheitlich deine gesamte Umgebung, ohne zusätzlichen
+        Aufwand.
       </p>
       <h3 className="mt-2">Technologie, die dein Raumklima revolutioniert</h3>
       <p>
         Mit der weiterentwickelten Gitterchip™-Technologie unterstützt das{' '}
         <b>QiHome® Air</b> die molekulare Struktur von Wassermolekülen in der
-        Luft. Das Ergebnis? Ein Umfeld, das viele Anwender als angenehmer und
-        produktiver erleben – sei es zu Hause oder im Unternehmen.
+        Luft. Das Ergebnis? Ein Umfeld, das viele Anwender zu Hause und im
+        Unternehmen als angenehmer und produktiver erleben.
       </p>
       <h3 className="mt-2">
-        Maximale Wirkung – für spürbare Veränderung in größeren Räumen
+        Maximale Wirkung für spürbare Veränderung in größeren Räumen
       </h3>
       <ul>
         <li>
@@ -158,7 +159,7 @@ function DasQiHome() {
         </li>
         <li>
           <b>Für dein Zuhause: </b>Eine langfristige Lösung für ein angenehmes
-          Wohnklima – ohne tägliche Wartung oder zusätzlichen Aufwand.
+          Wohnklima, ohne tägliche Wartung oder zusätzlichen Aufwand.
         </li>
       </ul>
       <h3>Ein Investment, das sich auszahlt</h3>
@@ -185,7 +186,7 @@ function DasQiHome() {
       </p>
       <p className="mt-2">
         <b>
-          Erlebe mit QiHome® Air eine neue Dimension von Raumqualität – für
+          Erlebe mit QiHome® Air eine neue Dimension von Raumqualität für
           produktives Arbeiten und entspanntes Wohnen.
         </b>
       </p>
@@ -202,10 +203,10 @@ function DasQiHome() {
 function RisikofreiErleben() {
   return (
     <div className="RisikofreiErleben NormalSectionSize">
-      <h2>QiHome® Air – 20 Tage erleben. Ohne Risiko, mit vollem Mehrwert!</h2>
+      <h2>QiHome® Air: 20 Tage erleben. Ohne Risiko, mit vollem Mehrwert!</h2>
       <p className="mt-2">
-        Das <b>QiHome® Air</b> wurde entwickelt, um Wohn- und Arbeitsräume auf ein
-        neues Level zu heben - und wir möchten, dass du es selbst erlebst.
+        Das <b>QiHome® Air</b> ist für deine Wohn- und Arbeitsräume gemacht, und
+        wir möchten, dass du es dort selbst erlebst.
         Deshalb kannst du das <b> QiHome® Air 20 Tage lang in deinem Zuhause oder Unternehmen integrieren
         </b> und herausfinden, welchen Unterschied es für dich macht.
       </p>
@@ -219,7 +220,7 @@ function RisikofreiErleben() {
         <b>Deine Vorteile:</b> <br />
         <b>✔ 20 Tage erleben: </b>Integriere das QiHome® Air in deinen Alltag und spüre den Unterschied in deiner Umgebung. <br />
         <b>✔ Sicherheit durch Erfahrung:</b> Erlebe selbst, warum bereits über 500 Haushalte und Unternehmen darauf setzen. <br />
-        <b>✔ Kein Risiko, nur Mehrwert: </b>Sollte es nicht das Richtige für dich sein, bekommst du dein Geld zurück – einfach & fair.
+        <b>✔ Kein Risiko, nur Mehrwert: </b>Sollte es nicht das Richtige für dich sein, bekommst du dein Geld zurück, einfach & fair.
       </p>
       <p className="mt-2">
         <b>Erlebe das QiHome® Air und entdecke, warum es bereits in über 500 Häusern und Unternehmen geschätzt wird.</b>
@@ -330,7 +331,7 @@ function SchutzVorGeopathogenerStrahlung(){
       <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHome_Air.webp?v=1675434206" alt="" />
       </div>
     </div>
-    <p>Hier ist es wichtig zu verstehen, dass es sich bei all diesen geopathogenen Strahlungen am Ende auch „nur“ um elektromagnetische Strahlung handelt. Es ist also eine zusätzliche Strahlenbelastung zu den technisch erzeugten, wie Handy- oder Funkstrahlung.</p>
+    <p>Am Ende sind all diese geopathogenen Strahlungen auch „nur“ elektromagnetische Strahlung. Es ist also eine zusätzliche Strahlenbelastung zu den technisch erzeugten, wie Handy- oder Funkstrahlung.</p>
     <p className="mt-2">
       Die Erweiterung kohärenter Wasserstrukturen in deinem Zuhause ist die ideale Lösung, um dem Stress, der durch geopathogene Strahlung verursacht wird, entgegenzuwirken.
     </p>
