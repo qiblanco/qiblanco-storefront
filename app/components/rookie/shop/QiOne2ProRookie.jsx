@@ -5,7 +5,7 @@ import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
-import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
+import {Gerätevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
 import {teileFragen} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_LP} from '~/components/reusables/blockLinks';
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
@@ -26,19 +26,19 @@ import {StickyWarenkorb} from './StickyWarenkorb';
  *
  * Champion A ist /pages/qione-2-pro (QiOne2ProSeite.jsx). B ist dieselbe Ware
  * aus denselben Bausteinen, nur andere Auswahl und Reihenfolge. A bleibt
- * unberuehrt; keine Datei von A wird hier geaendert.
+ * unberührt; keine Datei von A wird hier geändert.
  *
  * DAS PAKET (drei Bestandteile, ein Test):
- *  1. Knoepfe: Sticky "In den Warenkorb legen" mobil, sobald die Buybox aus dem
- *     Bild ist, mit Ruecknahme-, Raten- und Bewertungszeile (StickyWarenkorb).
+ *  1. Knöpfe: Sticky "In den Warenkorb legen" mobil, sobald die Buybox aus dem
+ *     Bild ist, mit Rücknahme-, Raten- und Bewertungszeile (StickyWarenkorb).
  *     Die vier "Hole dir jetzt deinen QiOne 2 Pro"-Wiederholungen von A
  *     (50/55/72/78 % der Seite) werden zwei: Ratenbanner und Schlussbanner.
  *  2. Animationen raus: kein GitterChip-Scrollvideo, kein Mikroskop-
  *     Scrollvideo, der Schlussbanner ohne Parallax. Die Video-Kachel in der
  *     Buybox bleibt (nur auf Klick, keine Scrollbindung).
- *  3. Kuerzen: A misst mobil 39,2 Bildschirme (390x844, 06.10.). Raus sind
- *     Studien-Karten, Gruenderinterview, Chip-Design und Chip-Vergleich,
- *     Gitterchip-Erklaerung, Kohaerenz-Banner, geopathogene Strahlung,
+ *  3. Kürzen: A misst mobil 39,2 Bildschirme (390x844, 06.10.). Raus sind
+ *     Studien-Karten, Gründerinterview, Chip-Design und Chip-Vergleich,
+ *     Gitterchip-Erklärung, Kohärenz-Banner, geopathogene Strahlung,
  *     Delventhal-Video, Upsell-Reihe, "Einmal investieren", Main Features,
  *     Logo-Leiste und der zweite Ratenblock. A und /pages/qione-2-pro-details
  *     behalten sie.
@@ -46,15 +46,15 @@ import {StickyWarenkorb} from './StickyWarenkorb';
  * REIHENFOLGE: Buybox, dann der Beweis an der Entscheidung (Google-
  * Bewertungen, Kundenfragen direkt darunter wie auf A seit Christian
  * 28.09.2026, die 20-Tage-Garantie), dann Menschen (Instagram), Nutzen
- * (InfoSlider), Herstellung (Preis), Raten mit Knopf, der Geraetevergleich
+ * (InfoSlider), Herstellung (Preis), Raten mit Knopf, der Gerätevergleich
  * HINTER den Belegen (GS-068: erst das eine Produkt, dann die Auswahl), der
- * Schlussbanner mit Knopf und die uebrigen Fragen.
+ * Schlussbanner mit Knopf und die übrigen Fragen.
  *
- * MESSANKER WIE A: dieselben data-section-Namen fuer dieselben Bloecke
+ * MESSANKER WIE A: dieselben data-section-Namen für dieselben Blöcke
  * (shopq-buybox, shopq-reputon-reviews) und dasselbe Sprungziel
  * #shopq-buybox, damit der Heatmap-Manager Block gegen Block vergleicht. Neu
  * ist nur shopq-b-sticky-warenkorb (der Sticky-Knopf, den A nicht hat).
- * shopq-gitterchip-video entfaellt mit dem Block.
+ * shopq-gitterchip-video entfällt mit dem Block.
  */
 
 const ANKER_BUYBOX = 'shopq-buybox';
@@ -122,7 +122,7 @@ export function QiOne2ProRookie({product, vergleichsPreise}) {
           klarna={true}
         />
       </div>
-      <Geraetevergleich
+      <Gerätevergleich
         handle="qione-2-pro"
         block={BLOCK_LP}
         preise={vergleichsPreise}

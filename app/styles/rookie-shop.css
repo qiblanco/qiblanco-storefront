@@ -1,15 +1,15 @@
 /* ============================================================================
    rookie-shop.css — Rookie /pages/qione-2-pro-b (Experiment q2p-e1-gs080,
-   Hypothese GS-080), haengt NUR an links() dieser einen Route.
+   Hypothese GS-080), hängt NUR an links() dieser einen Route.
 
-   Die Seite traegt dieselben Stylesheets wie Champion A (qiOne2ProSeiteLinks:
+   Die Seite trägt dieselben Stylesheets wie Champion A (qiOne2ProSeiteLinks:
    pdp-qi.css, ig-testimonials.css, produkt-videos.css, amazonstil.css). Diese
-   Datei fuegt nur hinzu, was B mehr hat: den Sticky-Warenkorb-Knopf mobil und
-   den Takt zwischen den neu gereihten Bloecken.
+   Datei fügt nur hinzu, was B mehr hat: den Sticky-Warenkorb-Knopf mobil und
+   den Takt zwischen den neu gereihten Blöcken.
 
    TOKENS: jeder Wert kommt aus der gemeinsamen Wurzel qb-tokens.css (root.jsx)
-   oder aus pdp-qi.css. KEIN neuer Farbwert, KEINE neue Schriftgroesse, KEIN
-   zweiter Goldton: der Knopf ist .btn--primary aus app.css (Akzent-Flaeche),
+   oder aus pdp-qi.css. KEIN neuer Farbwert, KEINE neue Schriftgröße, KEIN
+   zweiter Goldton: der Knopf ist .btn--primary aus app.css (Akzent-Fläche),
    der Balken ist Kartengrund und Tinte der Seite.
    ========================================================================== */
 
@@ -19,16 +19,16 @@
   --rs-s2: calc(var(--rs-s1) * 2);
   /* Typo: Hauswerte aus qb-tokens */
   --rs-fs-klein: var(--qb-ref-fs-1, 12px);
-  /* Farbe: Kartengrund und Tinte der Seite (pdp-qi.css), gedaempfte Linie */
+  /* Farbe: Kartengrund und Tinte der Seite (pdp-qi.css), gedämpfte Linie */
   --rs-grund: var(--pdpqi-karte, #fff);
   --rs-text: var(--qb-text, #2c2a26);
-  --rs-linie: color-mix(in srgb, var(--qb-text-gedaempft, #6b665d) 25%, transparent);
+  --rs-linie: color-mix(in srgb, var(--qb-text-gedämpft, #6b665d) 25%, transparent);
   --rs-schatten: 0 -4px 16px color-mix(in srgb, var(--qb-text, #2c2a26) 12%, transparent);
   /* Sektions-Takt (qb-tokens, mittlere Stufe 64px des Soll-Takts [96, 64]) */
   --rs-sektion: var(--qb-abstand-sektion-mittel, 64px);
 }
 
-/* Die aus QiOne2Pro.jsx uebernommenen Bloecke stehen in .ProductPageQiOne,
+/* Die aus QiOne2Pro.jsx übernommenen Blöcke stehen in .ProductPageQiOne,
    damit sie genau wie auf A aussehen. Der Rahmen bringt dort 50px oben und
    unten mit; in B gibt es ihn dreimal, der Takt kommt deshalb aus dem Token. */
 .qb-rookie-shop .qb-rookie-teil {
@@ -37,9 +37,9 @@
 }
 
 /* ---- Sticky-Warenkorb-Knopf (StickyWarenkorb.jsx) -------------------------
-   Nur mobil. Versteckt heisst: leer, visibility hidden, unter dem Rand. Kein
-   Gleiten beim Erscheinen: KaufknopfChatSignal misst im naechsten Bild, ein
-   Knopf mitten in der Bewegung laege dann noch unter dem Rand. */
+   Nur mobil. Versteckt heißt: leer, visibility hidden, unter dem Rand. Kein
+   Gleiten beim Erscheinen: KaufknopfChatSignal misst im nächsten Bild, ein
+   Knopf mitten in der Bewegung läge dann noch unter dem Rand. */
 .qb-rookie-sticky { display: none; }
 
 @media (max-width: 767px) {
@@ -66,7 +66,7 @@
   }
   /* Die drei Zeilen wie unter dem Buybox-Knopf, enger und kleiner gesetzt
      (12px, unterste Stufe der Haus-Skala): der Balken soll das Fenster nicht
-     zu einem Fuenftel fuellen. */
+     zu einem Fünftel füllen. */
   .qb-rookie-sticky__zusage {
     margin: 0;
     padding: 0;
@@ -83,8 +83,8 @@
     vertical-align: -0.125em;
     margin-inline-end: calc(var(--rs-s1) / 2);
   }
-  /* Knopfhoehe 54px: Schrift 1.1rem aus app.css, 12px Polster, 2px Rand;
-     bleibt ueber der 48px-Trefferflaeche. */
+  /* Knopfhöhe 54px: Schrift 1.1rem aus app.css, 12px Polster, 2px Rand;
+     bleibt über der 48px-Trefferfläche. */
   .qb-rookie-sticky .btn--primary {
     max-width: none;
     padding: calc(var(--rs-s1) * 1.5);

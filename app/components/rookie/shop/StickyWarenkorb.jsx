@@ -10,28 +10,28 @@ import {stickySichtbar} from './sticky-lage';
 
 /*
  * STICKY "IN DEN WARENKORB LEGEN" MOBIL (Rookie /pages/qione-2-pro-b, GS-080,
- * Bestandteil "knoepfe": GS-065 Knopf immer erreichbar, GS-066 Beweis an der
+ * Bestandteil Knöpfe: GS-065 Knopf immer erreichbar, GS-066 Beweis an der
  * Entscheidung).
  *
  * DERSELBE WARENKORB-WEG WIE DIE BUYBOX: AddToCartButton (CartForm LinesAdd auf
- * /cart) mit derselben Variante, Menge 1, danach oeffnet sich der Warenkorb wie
+ * /cart) mit derselben Variante, Menge 1, danach öffnet sich der Warenkorb wie
  * nach dem Buybox-Knopf (ProductForm.jsx). Das Ereignis add_to_cart entsteht
- * nicht hier, sondern routenunabhaengig aus Hydrogens product_added_to_cart
- * (QpxCommerce.jsx, MetaPixel.jsx). Beide Knoepfe loesen es deshalb gleich aus.
+ * nicht hier, sondern routenunabhängig aus Hydrogens product_added_to_cart
+ * (QpxCommerce.jsx, MetaPixel.jsx). Beide Knöpfe lösen es deshalb gleich aus.
  *
  * DIESELBE VARIANTE: useOptimisticVariant mit denselben Eingaben wie
- * QiOneBuyBox. Waehlt jemand oben eine Variante, landet die Wahl per URL im
+ * QiOneBuyBox. Wählt jemand oben eine Variante, landet die Wahl per URL im
  * Loader und damit in product.selectedOrFirstAvailableVariant, also auch hier.
  *
  * KEIN NEUER TEXT: Wortlaut des Knopfs wie in ProductForm ("In den Warenkorb
- * legen" / "Ausverkauft"), die drei Zeilen darueber sind KaufZusagePunkte, wie
- * unter dem Buybox-Knopf (Ruecknahme, Raten, Google-Bewertungen).
+ * legen" / "Ausverkauft"), die drei Zeilen darüber sind KaufZusagePunkte, wie
+ * unter dem Buybox-Knopf (Rücknahme, Raten, Google-Bewertungen).
  *
- * CHAT-BLASE (Hausregel, Lehre aus LP B 06.10.): der Knopf traegt
- * data-qb-kaufknopf (aus AddToCartButton), KaufknopfChatSignal laesst die
+ * CHAT-BLASE (Hausregel, Lehre aus LP B 06.10.): der Knopf trägt
+ * data-qb-kaufknopf (aus AddToCartButton), KaufknopfChatSignal lässt die
  * geschlossene Blase weichen, solange sie ihn deckt. Das Signal misst nur bei
  * scroll/resize/childList. Deshalb steht der Inhalt NUR im sichtbaren Zustand
- * im DOM (Einhaengen = childList), und er erscheint ohne Gleiten.
+ * im DOM (Einhängen = childList), und er erscheint ohne Gleiten.
  *
  * Nur mobil (bis 767 px, rookie-shop.css). Auf breiten Fenstern bleibt der
  * Kasten leer und unsichtbar; dort steht die Buybox-Spalte ohnehin daneben.

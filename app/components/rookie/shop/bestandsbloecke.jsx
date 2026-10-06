@@ -6,11 +6,11 @@ import {InhaltswegNeuOderGebraucht} from '~/components/product-pages/InhaltswegN
  * und-startseite s02).
  *
  * Die Quelle ist product-pages/QiOne2Pro.jsx. Dort sind beide Funktionen nicht
- * exportiert. Ein `export` dort waere eine Aenderung an einer geteilten Datei der
+ * exportiert. Ein `export` dort wäre eine Änderung an einer geteilten Datei der
  * Champion-Seite A und der organischen PDP (Gate 9/12 messen dann beide neu).
  * Deshalb steht der Rumpf hier BYTE-GLEICH, und der Test
- * rookie-shop.test.mjs ("Bestandsbloecke sind byte-gleich zur Quelle") faellt
- * rot, sobald die Quelle sich aendert. Wer ihn rot sieht, zieht die Aenderung
+ * rookie-shop.test.mjs ("Bestandsblöcke sind byte-gleich zur Quelle") fällt
+ * rot, sobald die Quelle sich ändert. Wer ihn rot sieht, zieht die Änderung
  * hierher nach: kein neuer Text in B, A und B zeigen denselben Wortlaut.
  */
 

@@ -13,7 +13,7 @@ import rookieShopStyles from '~/styles/rookie-shop.css?url';
  * 20261006-GROSSJOB-rookie-15pct-qione-2-pro-und-startseite).
  *
  * Bis dahin ist die Seite DUNKEL: erreichbar, aber nirgends verlinkt und ohne
- * Verkehr. Diese Route enthaelt KEINE Weiche; die sitzt im Loader von A.
+ * Verkehr. Diese Route enthält KEINE Weiche; die sitzt im Loader von A.
  *
  * Loader wie A (pages.qione-2-pro.jsx): geteilte PRODUCT_QUERY, harter Handle,
  * getSelectedProductOptions, CacheShort, Vergleichspreise fail-soft.
@@ -26,13 +26,14 @@ export function links() {
 
 /*
  * noindex, nofollow als Doppelgate wie A (D-006): Meta-robots + X-Robots-Tag.
- * KEIN canonical (noindex + fremdes canonical = widerspruechliche Signale).
- * Titel wie A: die Seite ist dieselbe Ware, und ein Besucher von B sieht im Tab
- * dasselbe wie einer von A.
+ * KEIN canonical (noindex + fremdes canonical = widersprüchliche Signale).
+ * Titel wie A (dieselbe Ware, derselbe Wortlaut im Tab), nur ohne den
+ * Gedankenstrich: Gate 25 (Seiten-Freigabe) liest ihn auf einer NEUEN Route als
+ * KI-Muster. Kein Wort ist neu oder gestrichen.
  * @type {MetaFunction}
  */
 export const meta = () => [
-  {title: 'QiOne® 2 Pro — jetzt sichern | Qi Blanco'},
+  {title: 'QiOne® 2 Pro jetzt sichern | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
