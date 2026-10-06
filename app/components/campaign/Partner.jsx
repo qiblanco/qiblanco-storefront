@@ -338,9 +338,7 @@ function PasstSection() {
       <span className="eyebrow">Ehrliche Einordnung</span>
       <h2>Passt Qi Blanco zu dir?</h2>
       <p className="lp-vp-section__lede">
-        Eine gute Empfehlung verdient eine ehrliche Antwort, in beide
-        Richtungen. Deshalb sagen wir dir auch, wann Qi Blanco nichts für dich
-        ist.
+        Schau kurz, wo du dich eher wiederfindest.
       </p>
       <div className="lp-vp-benefits-grid lp-pt-grid-2">
         <article className="lp-a-benefit">
@@ -386,8 +384,7 @@ function GarantieSection() {
       <h2>Überzeugt es dich, oder du bekommst dein Geld zurück.</h2>
       <p className="lp-vp-section__lede">
         Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort
-        bewusst wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl,
-        sondern an den Zeitraum: 20 Nächte, dann entscheidest du.
+        merkst. Deshalb gibst du dir 20 Nächte Zeit und entscheidest dann.
       </p>
       <div className="lp-vp-benefits-grid">
         {items.map((b) => (
@@ -515,7 +512,7 @@ function SignatureSection() {
         herunterfahren darf. Der Schmuck ist nur das Vehikel. Was du wirklich
         mitnimmst, ist die Ruhe auf allen drei Ebenen.
       </p>
-      <p className="lp-a-signature__sign">— Dein Qi Blanco® Team</p>
+      <p className="lp-a-signature__sign">Dein Qi Blanco® Team</p>
     </section>
   );
 }
