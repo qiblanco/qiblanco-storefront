@@ -193,9 +193,15 @@ export function pruefe_titel_hygiene(liste = HUB_LINKS) {
  * nie als eigener Fußlink und nie auf Startseite, Produktseiten, /pages/qione,
  * Landingpage oder Kasse. Der Test prüft das an `fuss`.
  *
- * DIE FELDER JE SEITE:
- *   to        absoluter Pfad
- *   label     Ankertext auf der Übersicht und in der Leiste
+ * DIE FELDER JE SEITE (bewusst NICHT `to`/`label` wie in HUB_LINKS oben: zwei
+ * Proben lesen jedes `to: '/pages/…'` bzw. `{to: …, label: …}` dieser Datei
+ * per Ausdruck als S5-Hub — pruefungen/abnahme-s5 verlangt dafür einen Link
+ * von der Startseite, pruefungen/probe_hub_ankertext_titel_naht.py einen
+ * Ankertext gleich dem Seitentitel. Beides gilt für diese Liste nicht.
+ * Gemessen nach dem Merge von #805: „9 von 25 nicht verlinkt". Der Test
+ * „die S5-Leser sehen nur HUB_LINKS" hält die Trennung.)
+ *   pfad      absoluter Pfad
+ *   anker     Ankertext auf der Übersicht und in der Leiste
  *   teaser    EIN Satz: was der Leser dort findet
  *   fuss      Kurzname, wenn die Seite in der Fußspalte steht (höchstens fünf
  *             Seiten plus der Übersichtslink; „Erfahrungen" und „Bewertungen"
@@ -214,8 +220,8 @@ export function pruefe_titel_hygiene(liste = HUB_LINKS) {
 
 /** Die Übersichtsseite selbst; der Ankertext ist Christians Wortlaut. */
 export const WV_HUB = {
-  to: '/pages/wissen-und-vertrauen',
-  label: 'Alle Antworten rund um Qi Blanco',
+  pfad: '/pages/wissen-und-vertrauen',
+  anker: 'Alle Antworten rund um Qi Blanco',
 };
 
 /** Überschrift der Fußspalte und Name der Übersicht. */
@@ -227,8 +233,8 @@ export const WV_GRUPPEN = [
     titel: 'Wissen',
     seiten: [
       {
-        to: '/pages/was-ist-elektrosmog',
-        label: 'Was ist Elektrosmog?',
+        pfad: '/pages/was-ist-elektrosmog',
+        anker: 'Was ist Elektrosmog?',
         teaser:
           'Welche Felder das Wort zusammenfasst, woher sie kommen und in welcher Einheit man sie misst.',
         fuss: 'Was ist Elektrosmog?',
@@ -238,72 +244,72 @@ export const WV_GRUPPEN = [
         ],
       },
       {
-        to: '/pages/lexikon',
-        label: 'Lexikon: unsere Begriffe in der Sprache der Physik',
+        pfad: '/pages/lexikon',
+        anker: 'Lexikon: unsere Begriffe in der Sprache der Physik',
         teaser:
           'Hohe Frequenz, High Vibe, kohärentes Wasser: was Menschen damit meinen und welche messbare Größe dahinter liegt.',
         fuss: 'Lexikon',
         weiter: ['/pages/hypothesen', '/pages/gibt-es-studien-zu-elektrosmog-schutz'],
       },
       {
-        to: '/pages/faq',
-        label: 'Häufige Fragen zu Qi Blanco',
+        pfad: '/pages/faq',
+        anker: 'Häufige Fragen zu Qi Blanco',
         teaser:
           'Größe, Wasser und Sauna, Reichweite, Rückgabe und Ratenzahlung, jede Frage in einem Absatz beantwortet.',
       },
       {
-        to: '/pages/was-senkt-elektrosmog-im-alltag',
-        label: 'Was senkt Elektrosmog im Alltag?',
+        pfad: '/pages/was-senkt-elektrosmog-im-alltag',
+        anker: 'Was senkt Elektrosmog im Alltag?',
         teaser:
           'Handy weg vom Körper, nachts Flugmodus, Router aus: was die Belastung sofort senkt und nichts kostet.',
         weiter: ['/pages/was-ist-elektrosmog', '/pages/kann-elektrosmog-den-schlaf-stoeren'],
       },
       {
-        to: '/pages/kann-elektrosmog-den-schlaf-stoeren',
-        label: 'Kann Elektrosmog den Schlaf stören?',
+        pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
+        anker: 'Kann Elektrosmog den Schlaf stören?',
         teaser:
           'Was Schlafstudien zum Funkfeld zeigen und warum am Abend vor allem Licht und Nachrichten des Handys stören.',
         weiter: ['/pages/was-senkt-elektrosmog-im-alltag', '/pages/was-ist-elektrosmog'],
       },
       {
-        to: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
-        label: 'Wie funktioniert Schutz vor Elektrosmog?',
+        pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+        anker: 'Wie funktioniert Schutz vor Elektrosmog?',
         teaser:
           'Die drei Wege, auf denen ein Feld am Körper physikalisch kleiner wird.',
         weiter: ['/pages/wie-weit-reicht-elektrosmog-schutz', '/pages/hypothesen'],
       },
       {
-        to: '/pages/wie-weit-reicht-elektrosmog-schutz',
-        label: 'Wie weit reicht ein Elektrosmog-Schutz?',
+        pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
+        anker: 'Wie weit reicht ein Elektrosmog-Schutz?',
         teaser:
           'Für welchen Bereich der QiHome® Air ausgelegt ist, von der Wohnung bis zum ganzen Haus.',
         weiter: ['/pages/wie-funktioniert-schutz-vor-elektrosmog', '/pages/armband-duschen-sauna'],
       },
       {
-        to: '/pages/armband-duschen-sauna',
-        label: 'Armband beim Duschen und in der Sauna?',
+        pfad: '/pages/armband-duschen-sauna',
+        anker: 'Armband beim Duschen und in der Sauna?',
         teaser:
           'Wann du QiBracelet® und QiOne® 2 Pro beim Duschen, Schwimmen und in der Sauna anbehalten kannst.',
         weiter: ['/pages/wie-weit-reicht-elektrosmog-schutz', '/pages/neu-oder-gebraucht'],
       },
       {
-        to: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
-        label: 'Gibt es Studien zu Elektrosmog-Schutz?',
+        pfad: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
+        anker: 'Gibt es Studien zu Elektrosmog-Schutz?',
         teaser:
           'Welche fünf Arbeiten es zu unseren Produkten gibt und wo du sie im Original liest.',
         weiter: ['/pages/hypothesen', '/pages/ist-qi-blanco-serioes'],
       },
       {
-        to: '/pages/studien',
-        label: 'Qi Blanco Studien',
+        pfad: '/pages/studien',
+        anker: 'Qi Blanco Studien',
         teaser:
           'Die fünf veröffentlichten Arbeiten mit Methode und allen Zahlen, vollständig als PDF.',
       },
       {
-        to: '/pages/hypothesen',
-        label: 'Unsere Hypothesen zum Wirkmodell',
+        pfad: '/pages/hypothesen',
+        anker: 'Unsere Hypothesen zum Wirkmodell',
         teaser:
-          'Wie wir uns die Wirkung erklären, Gedanke für Gedanke mit seinen Stärken und Schwächen.',
+          'Wie wir uns die Wirkung erklären, Gedanke für Gedanke und mit allen Quellen.',
         weiter: ['/pages/gibt-es-studien-zu-elektrosmog-schutz', '/pages/lexikon'],
       },
     ],
@@ -313,59 +319,59 @@ export const WV_GRUPPEN = [
     titel: 'Vertrauen & Stimmen',
     seiten: [
       {
-        to: '/pages/erfahrungen',
-        label: 'Qi Blanco Erfahrungen',
+        pfad: '/pages/erfahrungen',
+        anker: 'Qi Blanco Erfahrungen',
         teaser:
           'Menschen erzählen in eigenen Videos, was sie mit QiOne®, QiBracelet® und QiHome® Air erlebt haben.',
         weiter: ['/pages/bewertungen', '/pages/qi-blanco-auf-trustpilot'],
       },
       {
-        to: '/pages/bewertungen',
-        label: 'Qi Blanco Bewertungen',
+        pfad: '/pages/bewertungen',
+        anker: 'Qi Blanco Bewertungen',
         teaser: 'Die Google-Bewertungen live, mit Note, Anzahl und Herkunft.',
         weiter: ['/pages/qi-blanco-auf-trustpilot', '/pages/erfahrungen'],
       },
       {
-        to: '/pages/qi-blanco-auf-trustpilot',
-        label: 'Qi Blanco auf Trustpilot',
+        pfad: '/pages/qi-blanco-auf-trustpilot',
+        anker: 'Qi Blanco auf Trustpilot',
         teaser:
           'Was Kundinnen und Kunden auf Trustpilot schreiben, mit Quelle und Stand.',
         fuss: 'Qi Blanco auf Trustpilot',
         weiter: ['/pages/bewertungen', '/pages/erfahrungen'],
       },
       {
-        to: '/pages/ist-qi-blanco-serioes',
-        label: 'Ist Qi Blanco seriös?',
+        pfad: '/pages/ist-qi-blanco-serioes',
+        anker: 'Ist Qi Blanco seriös?',
         teaser:
           'Wer hinter Qi Blanco steht und wie du alles 20 Tage in Ruhe selbst prüfst.',
         fuss: 'Ist Qi Blanco seriös?',
         weiter: ['/pages/warum-qi-blanco', '/pages/qi-blanco-auf-trustpilot'],
       },
       {
-        to: '/pages/warum-qi-blanco',
-        label: 'Warum es Qi Blanco gibt',
+        pfad: '/pages/warum-qi-blanco',
+        anker: 'Warum es Qi Blanco gibt',
         teaser:
           'Christian Bernd Bauer schreibt in der ersten Person, woran er seit zwanzig Jahren arbeitet und warum.',
         fuss: 'Warum Qi Blanco',
         weiter: ['/pages/ist-qi-blanco-serioes', '/pages/erfahrungen'],
       },
       {
-        to: '/pages/neu-oder-gebraucht',
-        label: 'Qi Blanco neu oder gebraucht?',
+        pfad: '/pages/neu-oder-gebraucht',
+        anker: 'Qi Blanco neu oder gebraucht?',
         teaser:
           'Rücknahme, Widerruf, Gewährleistung und Versand mit Quelle, und was bei einem Kauf von privat wegfällt.',
         weiter: ['/pages/ist-qi-blanco-serioes', '/pages/bewertungen'],
       },
       {
-        to: '/pages/kritik',
-        label: 'Belege und offene Fragen',
+        pfad: '/pages/kritik',
+        anker: 'Belege und offene Fragen',
         teaser:
           'Sieben Fragen, die du dir vielleicht auch stellst, beantwortet mit fünf veröffentlichten Studien und ihren Zahlen.',
         weiter: ['/pages/hypothesen', '/pages/erfahrungen'],
       },
       {
-        to: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
-        label: 'Was auf Reddit über Qi Blanco steht',
+        pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
+        anker: 'Was auf Reddit über Qi Blanco steht',
         teaser:
           'Die Fäden, die Google zu Qi Blanco zeigt, einzeln mit Datum und Quelle nachgelesen.',
         weiter: ['/pages/qi-blanco-auf-trustpilot', '/pages/erfahrungen'],
@@ -404,13 +410,13 @@ export function wvFussLinks(gruppen = WV_GRUPPEN) {
   ];
   const mitFuss = wvSeiten(gruppen).filter((s) => s.fuss);
   const rang = (s) => {
-    const i = reihenfolge.indexOf(s.to);
+    const i = reihenfolge.indexOf(s.pfad);
     return i < 0 ? reihenfolge.length : i;
   };
   return [...mitFuss]
     .sort((a, b) => rang(a) - rang(b))
-    .map((s) => ({to: s.to, label: s.fuss}))
-    .concat([{to: WV_HUB.to, label: WV_HUB.label}]);
+    .map((s) => ({to: s.pfad, label: s.fuss}))
+    .concat([{to: WV_HUB.pfad, label: WV_HUB.anker}]);
 }
 
 /**
@@ -422,18 +428,18 @@ export function wvFussLinks(gruppen = WV_GRUPPEN) {
  *
  * @param {string} pfad
  * @param {typeof WV_GRUPPEN} [gruppen]
- * @returns {{geschwister: {to: string, label: string}[], hub: typeof WV_HUB} | null}
+ * @returns {{geschwister: {to: string, label: string}[], hub: {to: string, label: string}} | null}
  */
 export function wvWeiterFuer(pfad, gruppen = WV_GRUPPEN) {
   const p = String(pfad || '')
     .replace(/^\/[A-Za-z]{2}-[A-Za-z]{2}(?=\/)/, '')
     .replace(/\/+$/, '');
   const seiten = wvSeiten(gruppen);
-  const s = seiten.find((x) => x.to === p);
+  const s = seiten.find((x) => x.pfad === p);
   if (!s || !s.weiter || s.weiter.length === 0) return null;
   const geschwister = s.weiter
-    .map((to) => seiten.find((x) => x.to === to))
+    .map((pf) => seiten.find((x) => x.pfad === pf))
     .filter(Boolean)
-    .map((x) => ({to: x.to, label: x.label}));
-  return {geschwister, hub: WV_HUB};
+    .map((x) => ({to: x.pfad, label: x.anker}));
+  return {geschwister, hub: {to: WV_HUB.pfad, label: WV_HUB.anker}};
 }

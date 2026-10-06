@@ -1087,7 +1087,7 @@ export const NUR_ROUTE_SEITEN = [
   // über ihr Shopify-Seitenobjekt in der Sitemap, nicht in dieser Liste.
   {
     pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
-    lastmod: '2026-09-28T12:00:00Z',
+    lastmod: '2026-10-06T22:10:00Z',
     grund:
       'Frageseite „Kann Elektrosmog den Schlaf stören?“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -1199,7 +1199,7 @@ export const NUR_ROUTE_SEITEN = [
   // und eine Sitemap-URL, die weiterleitet, sendet ein gegenlaeufiges Signal.
   {
     pfad: '/pages/was-ist-elektrosmog',
-    lastmod: '2026-10-06T20:05:00Z',
+    lastmod: '2026-10-06T22:10:00Z',
     grund:
       'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
       '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
