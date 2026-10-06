@@ -2,7 +2,7 @@ import {TrustpilotTatsachenSeite} from '~/components/campaign/TrustpilotTatsache
 import tptStyles from '~/styles/trustpilot-tatsachen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
-import {FRAGEN, PROFIL, ZAHL} from '~/data/trustpilot-tatsachen';
+import {FRAGEN, PROFIL, UNTER_VIER_KURZ} from '~/data/trustpilot-tatsachen';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
@@ -58,11 +58,12 @@ export function links() {
   return [{rel: 'stylesheet', href: tptStyles}];
 }
 
-// Die Zahlen in Titel und Beschreibung kommen aus dem Datenmodul.
-const TITEL = `Qi Blanco auf Trustpilot: ${ZAHL.alle} Bewertungen, nachgelesen | Qi Blanco`;
+// KEINE ANZAHL in Titel und Beschreibung (Christian 2026-10-06, „nicht die
+// Gesamtanzahl anzeigen"); der TrustScore kommt aus dem Datenmodul.
+const TITEL = `Qi Blanco auf Trustpilot: TrustScore ${PROFIL.trustscore}, nachgelesen | Qi Blanco`;
 const BESCHREIBUNG =
-  `Was auf Trustpilot über Qi Blanco steht: ${ZAHL.alle} Bewertungen, ` +
-  `TrustScore ${PROFIL.trustscore} von 5, alle ohne Einladung geschrieben. ` +
+  `Was auf Trustpilot über Qi Blanco steht: TrustScore ${PROFIL.trustscore} ` +
+  `von 5, ${UNTER_VIER_KURZ}, alle ohne Einladung geschrieben. ` +
   'Mit Quelle und Stand, und wo du mehr Stimmen liest.';
 
 /**
@@ -70,7 +71,7 @@ const BESCHREIBUNG =
  * ZIEHT `TPT_GEAENDERT` UND `STAND` IM DATENMODUL IM SELBEN COMMIT NACH.
  */
 const TPT_VEROEFFENTLICHT = '2026-10-01';
-const TPT_GEAENDERT = '2026-10-01';
+const TPT_GEAENDERT = '2026-10-06';
 
 /**
  * DAS FAQPage-SCHEMA WIRD AUS DEM SICHTBAREN TEXT GEBAUT: `FRAGEN` ist
