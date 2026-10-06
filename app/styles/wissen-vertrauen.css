@@ -90,7 +90,7 @@
   line-height: 1.25;
   font-weight: 700;
   text-align: left;
-  margin: 0 0 var(--wv-s2);
+  margin: 0 0 var(--wv-s4);
 }
 
 .wv h3 {
@@ -117,10 +117,6 @@
   font-size: var(--wv-fs-md);
 }
 
-.wv__einleitung {
-  color: var(--wv-muted);
-  margin-bottom: var(--wv-s4);
-}
 
 /* ── Die Listen ────────────────────────────────────────────────────────── */
 

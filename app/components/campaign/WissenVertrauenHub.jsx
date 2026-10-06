@@ -13,13 +13,11 @@ import {WV_GRUPPEN, WV_TITEL, WV_HUB} from '~/lib/hub-seiten';
  * Leiste „Weiterlesen" lesen.
  *
  * KEIN LOADER, KEIN KAUFWEG, KEIN PREIS. Die Seite erzeugt den nächsten Klick.
+ *
+ * KEINE EINLEITUNG JE GRUPPE (Haltungs-Gate K4, 2026-10-06): ein Satz, der nur
+ * sagt, was in der Gruppe steht, ist ein Gedanke über den Aufbau der Seite und
+ * keine Angabe für den Leser. Überschrift und Teaser tragen die Gruppe.
  */
-const EINLEITUNG = {
-  wissen:
-    'Was die Physik über Felder sagt, welche Studien es gibt und wie wir uns die Wirkung erklären.',
-  vertrauen:
-    'Was Kundinnen und Kunden schreiben, wer hinter Qi Blanco steht und was ein Kauf bei uns enthält.',
-};
 
 export function WissenVertrauenHub() {
   return (
@@ -40,9 +38,6 @@ export function WissenVertrauenHub() {
         <section key={g.id} data-section={`wv-${g.id}`}>
           <div className="wv__inhalt">
             <h2 id={g.id}>{g.titel}</h2>
-            {EINLEITUNG[g.id] ? (
-              <p className="wv__einleitung">{EINLEITUNG[g.id]}</p>
-            ) : null}
             <ul className="wv__liste">
               {g.seiten.map((s) => (
                 <li key={s.to} className="wv__eintrag">
