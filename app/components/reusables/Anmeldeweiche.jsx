@@ -30,6 +30,16 @@ import anmeldeStyles from './anmeldeformular.css?url';
  * Browser gesetzt (useEffect), nie beim Serverrendern — eine gecachte Seite
  * trüge sonst einen alten Wert. Wer schneller absendet, wartet den Rest der
  * 1,6 s ab, statt still verworfen zu werden.
+ * t STEHT IN SERVERZEIT, nicht in der Uhr des Besuchers: der Server rechnet
+ * seine Uhr gegen t. Eine 30 s vorgehende Kundenuhr ergab sonst `zu_schnell`
+ * und eine stille Danke-Meldung ohne Anmeldung (K3-Prüfung 06.10.2026, B3).
+ * Der Versatz kommt aus `stand` von /w. Er ist durch Cache (≤ 60 s), Laufzeit
+ * und Sekundenrundung immer zu klein, t also höchstens zu ALT — die sichere
+ * Richtung, weil nur ein zu junges t (oder eines über 24 h) verworfen wird.
+ *
+ * DIE KENNUNG DES GEZEIGTEN SATZES GEHT MIT (einwilligung_id). Ändert sich der
+ * Satz, während ein Tab offen steht, antwortet der Endpunkt 409; das Formular
+ * holt den neuen Satz und bittet um einen zweiten Klick (K3-Prüfung, B2).
  *
  * VORSCHAU OHNE UMSCHALTEN (Probe, Design-Beleg): localStorage
  * 'qb-anmeldung-vorschau' = 'eigen' (alle) oder '15,21' (diese) zeigt das
@@ -50,8 +60,35 @@ const VORSCHAU_SCHLUESSEL = 'qb-anmeldung-vorschau';
 let wegeAnfrage = null;
 let wegeGeholt = 0;
 
-function holeWege() {
-  if (wegeAnfrage && Date.now() - wegeGeholt < WEICHE_GUELTIG_MS) {
+function wegeGueltig(wege) {
+  return Boolean(
+    wege &&
+      wege.formulare &&
+      typeof wege.formulare === 'object' &&
+      wege.anzeige &&
+      typeof wege.anzeige === 'object',
+  );
+}
+
+function anzeigeVollstaendig(anzeige) {
+  return Boolean(
+    anzeige &&
+      typeof anzeige.einwilligung === 'string' &&
+      anzeige.einwilligung.trim() &&
+      typeof anzeige.knopf === 'string' &&
+      anzeige.knopf.trim() &&
+      anzeige.einwilligung_id,
+  );
+}
+
+// Versatz Serveruhr minus Besucheruhr in ms (0, wenn /w keinen Stand trägt).
+function uhrVersatz(wege) {
+  const server = Date.parse(wege && wege.stand);
+  return Number.isFinite(server) ? server - Date.now() : 0;
+}
+
+function holeWege({frisch = false} = {}) {
+  if (!frisch && wegeAnfrage && Date.now() - wegeGeholt < WEICHE_GUELTIG_MS) {
     return wegeAnfrage;
   }
   wegeGeholt = Date.now();
@@ -62,11 +99,13 @@ function holeWege() {
     try {
       const antwort = await fetch(`${ANMELDE_ENDPUNKT}/w`, {
         credentials: 'omit',
+        cache: frisch ? 'no-cache' : 'default',
         signal: abbruch ? abbruch.signal : undefined,
       });
       if (!antwort.ok) return null;
       const wege = await antwort.json();
-      return wege && typeof wege.formulare === 'object' ? wege : null;
+      if (!wegeGueltig(wege)) return null;
+      return {...wege, versatz: uhrVersatz(wege)};
     } catch {
       return null;
     } finally {
@@ -104,19 +143,29 @@ export function AnmeldeWeiche({formId, ac, dunkel = false}) {
 
   useEffect(() => {
     let aktiv = true;
-    holeWege().then((wege) => {
-      if (!aktiv) return;
-      const id = String(formId);
-      const anzeige = wege && wege.anzeige ? wege.anzeige[id] : null;
-      const eigen =
-        Boolean(anzeige) &&
-        (wege.formulare[id] === 'eigen' || vorschauEigen(id));
-      setLage(
-        eigen
-          ? {weg: 'eigen', anzeige, rueckfallAc: wege.rueckfall_ac !== false}
-          : {weg: 'ac'},
-      );
-    });
+    holeWege()
+      .then((wege) => {
+        if (!aktiv) return;
+        const id = String(formId);
+        const anzeige = wege ? wege.anzeige[id] : null;
+        const eigen =
+          anzeigeVollstaendig(anzeige) &&
+          (wege.formulare[id] === 'eigen' || vorschauEigen(id));
+        setLage(
+          eigen
+            ? {
+                weg: 'eigen',
+                anzeige,
+                versatz: wege.versatz,
+                rueckfallAc: wege.rueckfall_ac !== false,
+              }
+            : {weg: 'ac'},
+        );
+      })
+      .catch(() => {
+        // Jeder unerwartete Fehler endet beim AC-Formular, nie im Platzhalter.
+        if (aktiv) setLage({weg: 'ac'});
+      });
     return () => {
       aktiv = false;
     };
@@ -135,6 +184,7 @@ export function AnmeldeWeiche({formId, ac, dunkel = false}) {
         <EigenesFormular
           formId={String(formId)}
           anzeige={lage.anzeige}
+          versatz={lage.versatz}
           rueckfallAc={lage.rueckfallAc}
           ac={ac}
           dunkel={dunkel}
@@ -144,9 +194,11 @@ export function AnmeldeWeiche({formId, ac, dunkel = false}) {
   );
 }
 
-function EigenesFormular({formId, anzeige, rueckfallAc, ac, dunkel}) {
+function EigenesFormular({formId, anzeige: ersteAnzeige, versatz: ersterVersatz, rueckfallAc, ac, dunkel}) {
   const kennung = useId();
   const angezeigt = useRef(0);
+  const [anzeige, setAnzeige] = useState(ersteAnzeige);
+  const versatz = useRef(ersterVersatz || 0);
   const [stand, setStand] = useState('bereit');
   const [meldung, setMeldung] = useState('');
   const deutsch = anzeige.sprache !== 'en';
@@ -159,14 +211,15 @@ function EigenesFormular({formId, anzeige, rueckfallAc, ac, dunkel}) {
     ereignis.preventDefault();
     if (stand === 'sendet') return;
     const daten = new FormData(ereignis.currentTarget);
-    let t = angezeigt.current || Date.now();
-    if (Date.now() - t > MAX_ANZEIGE_MS) {
-      t = Date.now();
-      angezeigt.current = t;
+    // Anzeigezeit in Besucheruhr: nur für Abstände (Wartezeit, 23 h).
+    if (!angezeigt.current || Date.now() - angezeigt.current > MAX_ANZEIGE_MS) {
+      angezeigt.current = Date.now();
     }
+    // Was der Server bekommt: dieselbe Anzeigezeit in Serverzeit.
+    const t = Math.round(angezeigt.current + versatz.current);
     setStand('sendet');
     setMeldung('');
-    const rest = MIN_ANZEIGE_MS - (Date.now() - t);
+    const rest = MIN_ANZEIGE_MS - (Date.now() - angezeigt.current);
     if (rest > 0) await new Promise((fertig) => setTimeout(fertig, rest));
 
     let status = 0;
@@ -183,6 +236,7 @@ function EigenesFormular({formId, anzeige, rueckfallAc, ac, dunkel}) {
             email: String(daten.get('email') || ''),
             website: String(daten.get('website') || ''),
             t: String(t),
+            einwilligung_id: String(anzeige.einwilligung_id),
             seite: window.location.pathname,
           }),
         },
@@ -195,8 +249,30 @@ function EigenesFormular({formId, anzeige, rueckfallAc, ac, dunkel}) {
 
     if (status === 202 && antwort && antwort.ok) {
       setStand('fertig');
-      setMeldung(antwort.text || '');
+      setMeldung(
+        antwort.text ||
+          (deutsch
+            ? 'Wir haben dir gerade eine Mail geschickt. Bestätige darin deine Anmeldung.'
+            : "We've just sent you an email. Confirm your subscription there."),
+      );
       return;
+    }
+    if (status === 409) {
+      // Der Satz hat sich geändert, seit das Formular erschien: neuen Satz
+      // holen und zeigen, der Mensch bestätigt den Satz, den er jetzt sieht.
+      const wege = await holeWege({frisch: true}).catch(() => null);
+      const neu = wege ? wege.anzeige[formId] : null;
+      if (anzeigeVollstaendig(neu)) {
+        versatz.current = wege.versatz;
+        setAnzeige(neu);
+        setStand('bereit');
+        setMeldung(
+          deutsch
+            ? 'Der Text über dem Knopf hat sich gerade geändert. Bitte lies ihn und klick noch einmal.'
+            : 'The text above the button has just changed. Please read it and click again.',
+        );
+        return;
+      }
     }
     if (status === 400) {
       setStand('bereit');
@@ -282,14 +358,22 @@ function EigenesFormular({formId, anzeige, rueckfallAc, ac, dunkel}) {
         />
       </div>
       {/* Falle für Automaten: ein Mensch sieht und füllt dieses Feld nie. */}
+      {/* Neutrales Label und die Ignorier-Merkmale der verbreiteten
+          Passwortmanager (1Password, LastPass, Bitwarden, Dashlane): ein
+          automatisch befülltes Feld hieße eine stille Danke-Meldung ohne
+          Anmeldung (K3-Prüfung, B5). */}
       <div className="qb-anmelden__falle" aria-hidden="true">
-        <label htmlFor={`${kennung}-website`}>Website</label>
+        <label htmlFor={`${kennung}-website`}>Bitte leer lassen</label>
         <input
           id={`${kennung}-website`}
           name="website"
           type="text"
           tabIndex={-1}
-          autoComplete="off"
+          autoComplete="new-password"
+          data-1p-ignore="true"
+          data-lpignore="true"
+          data-bwignore="true"
+          data-form-type="other"
         />
       </div>
       <p className="qb-anmelden__einwilligung" id={`${kennung}-einwilligung`}>
