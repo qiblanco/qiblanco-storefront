@@ -106,10 +106,11 @@
    456 px, auf einem Bildschirm mit doppelter Dichte also 912 Bildpunkte aus
    800: sichtbar unscharf (hb-formate, bild-aufloesung desktop-1024, Branch-
    Build 06.10.; A trägt dieselbe Stelle). 400 = 50 x 8 hält jede der sechs
-   Quellen scharf. Die beiden Bilder einer Karte rücken dafür in die Mitte. */
+   Quellen scharf. Die beiden Bilder einer Karte rücken dafür in die Mitte.
+   KEIN gap: zwei Bilder zu je 50 % plus Abstand liefen schmal um 8 px über
+   den Rand (hb-formate layout-overflow mobil-360 bis tablet-768, gemessen). */
 .qb-rookie-start .FeaturedProduct .FeaturedProduct_ImageWrapper {
   justify-content: center;
-  gap: var(--rs-s2);
 }
 .qb-rookie-start .FeaturedProduct .FeaturedProduct_ImageWrapper img {
   max-width: 400px;
