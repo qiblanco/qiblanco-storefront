@@ -73,7 +73,7 @@ export function PartnerZahlen({konto, stand, veraltet, portal}) {
         <Kachel wert={geld(p.freigegeben)} text="Provision freigegeben" />
         <Kachel wert={geld(p.ausgezahlt)} text="Bereits ausgezahlt" />
       </div>
-      <p className="konto-meta partner-luft">
+      <p className="partner-luft">
         Seit {tag(konto.seit)}: {ZAHL.format(v.gesamt || 0)} Verkäufe über deinen Code oder Link,{' '}
         {geld(v.umsatz_gesamt)} Umsatz. In 90 Tagen: {ZAHL.format(v.tage_90?.anzahl || 0)} Verkäufe
         {klicks ? `, ${ZAHL.format(klicks.tage_90 || 0)} Klicks` : ''}.

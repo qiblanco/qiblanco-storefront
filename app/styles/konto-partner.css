@@ -10,6 +10,13 @@
 
 .konto .partner-luft { margin-top: var(--k-s3); }
 
+/* Fliesstext der Partner-Bausteine auf die Basisgroesse der Skala. Ohne diese
+   Regel greift eine globale p/li-Regel (19,2 px, steht in keiner Skala);
+   gemessen 2026-10-06 per getComputedStyle, 3 von 11 Textbloecken. */
+.konto .partner-produkt p:not(.partner-code),
+.konto p.partner-luft,
+.konto .partner-liste__zeile { font-size: var(--k-fs-base); }
+
 .konto .partner-kacheln {
   display: grid;
   gap: var(--k-s2);
@@ -57,7 +64,7 @@
   background: var(--k-grund);
   border: 1px solid var(--k-linie);
   border-radius: var(--k-r1);
-  font-size: var(--k-fs-xs);
+  font-size: var(--k-fs-base);
   margin: var(--k-s1) 0 0;
   overflow-wrap: anywhere;
   padding: var(--k-s1) var(--k-s2);
