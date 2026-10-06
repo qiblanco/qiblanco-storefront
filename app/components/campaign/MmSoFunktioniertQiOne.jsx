@@ -102,7 +102,7 @@ const FAQ = [
   {
     frage: 'Ist das ein Medizinprodukt?',
     antwort:
-      'Nein. Der QiOne 2 Pro ist kein Medizinprodukt, und wir machen keine Heilversprechen. Belegt sind Effekte in Zellkulturen; alles darüber hinaus ist ein Modell.',
+      'Nein. Der QiOne 2 Pro ist kein Medizinprodukt, und wir machen keine Heilversprechen. Belegt sind Effekte in Zellkulturen. Alles, was darüber hinausgeht, ist ein Modell.',
   },
   {
     frage: 'Muss ich etwas spüren, damit es wirkt?',
@@ -112,7 +112,7 @@ const FAQ = [
   {
     frage: 'Was heißt „in vitro“ / „Zellstudie“?',
     antwort:
-      'Die Studien wurden an Zellen im Labor gemacht, nicht am Menschen. Das ist eine echte, aber begrenzte Stufe von Beweis. Wir sagen das bewusst dazu, statt mehr zu behaupten.',
+      'Beides heißt: Die Studien wurden an Zellen im Labor gemacht, nicht am Menschen.',
   },
   {
     frage: 'Braucht der QiOne Strom oder Pflege?',

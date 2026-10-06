@@ -50,7 +50,7 @@ const STUDIEN = [
     tag: 'Nutzererfahrung',
     titel: 'Forschungsartikel zur Nutzererfahrung',
     meta: 'Advances in Bioengineering & Biomedical Science Research · 10. Mai 2024',
-    body: 'Methode: Auswertung berichteter Nutzererfahrungen. Ergebnis: wiederkehrend beschriebene positive Erfahrungen. Grenze: deskriptiv, ohne Kontrollgruppe. Ein Stimmungsbild, kein Wirknachweis.',
+    body: 'Methode: Auswertung berichteter Nutzererfahrungen. Ergebnis: wiederkehrend beschriebene positive Erfahrungen. Grenze: deskriptiv und ohne Kontrollgruppe, deshalb kein Wirknachweis.',
     href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
   },
 ];
@@ -73,7 +73,7 @@ const FAQ = [
   {
     frage: 'Was bedeutet „präklinisch"?',
     antwort:
-      'Präklinisch heißt: vor der Erprobung am Menschen, hier an Zellen im Labor. Ein realer, aber frühester Evidenzschritt.',
+      'Präklinisch heißt: vor der Erprobung am Menschen, hier an Zellen im Labor.',
   },
   {
     frage: 'Kann ich die Studien selbst prüfen?',
@@ -83,12 +83,12 @@ const FAQ = [
   {
     frage: 'Warum betont ihr die Grenzen so stark?',
     antwort:
-      'Weil Ehrlichkeit Vertrauen schafft, und weil übertriebene Behauptungen von Menschen wie von KI-Systemen abgestraft werden. Wir wollen zitierbar korrekt sein.',
+      'Weil Ehrlichkeit Vertrauen schafft, und weil übertriebene Behauptungen von Menschen wie von KI-Systemen abgestraft werden.',
   },
   {
-    frage: 'Wenn die Evidenz begrenzt ist, warum kaufen?',
+    frage: 'Wie finde ich heraus, ob er mir etwas bringt?',
     antwort:
-      'Weil die belastbarste Evidenz für dich an dir selbst entsteht, risikofrei in 20 Tagen. Genau dafür ist die Frist da.',
+      'Trag ihn 20 Tage, ohne Risiko. Die belastbarste Evidenz für dich entsteht an dir selbst, und genau dafür ist die Frist da.',
   },
 ];
 
@@ -151,7 +151,7 @@ export function MmZellstudienEhrlich({products}) {
         title="Wo diese Studien stehen und wo nicht"
         text={[
           'Nicht jede Studie wiegt gleich. Grob von schwach zu stark: Laborzellen (in-vitro) -> Tierstudie -> Studie am Menschen -> Meta-Analyse vieler Studien.',
-          'Unsere publizierte Evidenz steht auf der Stufe in-vitro (Zellkultur) plus deskriptive Erfahrungsberichte. Das ist ein realer, aber frühester Beleg, kein Nachweis eines Heileffekts am Menschen.',
+          'Unsere publizierte Evidenz steht auf der Stufe in-vitro (Zellkultur) plus deskriptive Erfahrungsberichte. Einen Heileffekt am Menschen weist sie nicht nach.',
         ]}
         punkte={[
           'in-vitro = an Zellen im Labor, unter kontrollierten Bedingungen.',

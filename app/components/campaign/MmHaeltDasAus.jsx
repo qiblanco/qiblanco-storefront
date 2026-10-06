@@ -150,7 +150,7 @@ export function MmHaeltDasAus({products}) {
         title="Muss ich ihn abnehmen, wenn es drauf ankommt?"
         text={[
           'Bei einem teuren Schmuckstück denkt man sofort: bloß nicht beim Duschen, beim Sport, in der Sauna. Genau dann würde man den größten Nutzen verlieren. Die Wirkung soll ja durchgehend laufen.',
-          'Der QiOne 2 Pro ist deshalb kein empfindliches Schmuckstück, sondern ein robuster Alltagsbegleiter. Du sollst ihn tragen und vergessen können.',
+          'Der QiOne 2 Pro ist deshalb robust gebaut, für jeden Tag. Du sollst ihn tragen und vergessen können.',
         ]}
         punkte={[
           'Kein Akku, der leer wird.',

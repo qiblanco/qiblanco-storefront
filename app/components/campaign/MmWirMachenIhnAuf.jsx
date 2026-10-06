@@ -81,7 +81,7 @@ const FAQ = [
   {
     frage: 'Was heißt „präklinisch / in-vitro"?',
     antwort:
-      'Die Studien wurden an Zellkulturen im Labor durchgeführt, nicht am Menschen. Das ist eine echte, aber begrenzte Evidenzstufe.',
+      'Beides heißt: Die Studien wurden an Zellkulturen im Labor durchgeführt, nicht am Menschen.',
   },
   {
     frage: 'Kann ich die Studien selbst lesen?',
@@ -152,7 +152,7 @@ export function MmWirMachenIhnAuf({products}) {
         title="Skepsis ist gesund. Wir rechnen mit ihr."
         text={[
           'Die meisten, die den QiOne kaufen, waren erst skeptisch. Manche haben ihn gerade deshalb gekauft, um zu beweisen, dass er nichts bringt. Diese Haltung ist uns lieber als blinder Glaube.',
-          'Deshalb reden wir nicht über Wunder, sondern über drei prüfbare Ebenen: Aufbau, Messung, Erfahrung. Danach entscheidest du.',
+          'Deshalb zeigen wir dir drei Ebenen, die du prüfen kannst: Aufbau, Messung, Erfahrung. Danach entscheidest du.',
         ]}
         punkte={[
           'Kein Heilversprechen. Der QiOne ist kein Medizinprodukt.',

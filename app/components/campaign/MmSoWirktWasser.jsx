@@ -69,7 +69,7 @@ const FAQ = [
   {
     frage: 'Ist „kohärentes Wasser" wissenschaftlich anerkannt?',
     antwort:
-      'Die Strukturierbarkeit von Wasser ist Gegenstand der physikalischen Chemie. Ein gesundheitlicher Nutzen daraus ist nicht anerkannt. Belegt sind bislang Effekte in Zellkulturen (präklinisch), nicht am Menschen. Das sagen wir offen.',
+      'Die Strukturierbarkeit von Wasser ist Gegenstand der physikalischen Chemie. Ein gesundheitlicher Nutzen daraus ist nicht anerkannt. Belegt sind bislang Effekte in Zellkulturen (präklinisch), nicht am Menschen.',
   },
   {
     frage: 'Wie kann ein Chip ohne Strom wirken?',
@@ -145,7 +145,7 @@ export function MmSoWirktWasser({products}) {
         eyebrow="Ehrlicher Rahmen"
         title="Was wir behaupten und was nicht"
         text={[
-          'Rund um „strukturiertes" oder „kohärentes" Wasser kursiert viel Überzogenes. Wir wollen das Gegenteil: nüchtern erklären, was gemeint ist, und klar sagen, wo das Modell aufhört.',
+          'Rund um „strukturiertes" oder „kohärentes" Wasser kursiert viel Überzogenes. Gemeint ist etwas Nüchternes: die Art, wie sich Wassermoleküle anordnen.',
           'Der Körper besteht zu rund zwei Dritteln aus Wasser. Die Idee: eine feste Gitterstruktur beeinflusst, wie sich benachbarte Wassermoleküle anordnen. Ob und wie stark das im Körper wirkt, ist genau die Frage, die die Zellstudien anfassen, präklinisch.',
         ]}
         punkte={[
@@ -164,7 +164,7 @@ export function MmSoWirktWasser({products}) {
         schritte={[
           {
             titel: '1. Wasser ist strukturierbar',
-            text: 'Wassermoleküle ordnen sich je nach Umgebung unterschiedlich an. Diese Anordnung („Ordnung" oder „Kohärenz") ist keine Esoterik, sondern Gegenstand der physikalischen Chemie.',
+            text: 'Wassermoleküle ordnen sich je nach Umgebung unterschiedlich an. Mit dieser Anordnung („Ordnung" oder „Kohärenz") befasst sich die physikalische Chemie.',
           },
           {
             titel: '2. Der Gitterchip™ als Vorlage',
