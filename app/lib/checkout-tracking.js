@@ -61,6 +61,14 @@ const TRACKING_PARAM_NAMES = new Set([
   // Bewacht von probe-uppromote-dach (Subkommando `naht`).
   'sca_ref',
   'sca_source',
+  // Google-Ads-Kampagnen-ID aus dem Auto-Tagging (AI-CEO K2 vom 2026-10-04, J5).
+  // Kein Cookie, ein Query-Parameter wie gclid. Bis hierher erreichte er das
+  // Backend NUR über die `landing_page`-Query: war die Landeseite nicht die
+  // Ad-Seite, war die Kampagne weg. Als eigenes note_attribute liest ihn
+  // hyros-eigenbau own_source `_landing_params` schon (na-Key, gleicher
+  // params-Schlüssel wie die Query, also kein Doppelzählen). Zwilling:
+  // public/qiblanco-tracker.js.
+  'gad_campaignid',
 ]);
 
 const TRACKING_COOKIE_NAMES = new Set([
@@ -88,8 +96,9 @@ const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
 // Modulen (hyros-eigenbau own_source `_landing_params` + herkunft,
 // capi-rueckspeisung order_to_event, google-rueckspeisung click_conversions,
 // funnel-substrat sources) und lesen dort u.a. `sca_ref`, `gad_campaignid` und
-// `source` — Keys, die in TRACKING_PARAM_NAMES bewusst NICHT stehen und darum
-// ausschließlich über diese Query erreichbar sind. Eine Allowlist wäre hier
+// `source` — `source` steht in TRACKING_PARAM_NAMES bewusst NICHT und ist darum
+// ausschließlich über diese Query erreichbar (sca_ref seit 2026-08-25 und
+// gad_campaignid seit 2026-10-04 reisen zusätzlich als eigene Attribute). Eine Allowlist wäre hier
 // eine handgepflegte Spiegelliste fremder Parser ohne Durchsetzer: ein
 // übersehener Key = stiller Attributionsverlust. Bei der Denylist ist ein
 // übersehener Key = unveränderter Bestand. Die Fehlerrichtung entscheidet.
