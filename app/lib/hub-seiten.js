@@ -309,7 +309,7 @@ export const WV_GRUPPEN = [
         pfad: '/pages/hypothesen',
         anker: 'Unsere Hypothesen zum Wirkmodell',
         teaser:
-          'Wie wir uns die Wirkung erklären, Gedanke für Gedanke mit seinen Stärken und Schwächen.',
+          'Wie wir uns die Wirkung erklären, Gedanke für Gedanke und mit allen Quellen.',
         weiter: ['/pages/gibt-es-studien-zu-elektrosmog-schutz', '/pages/lexikon'],
       },
     ],
