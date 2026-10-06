@@ -95,17 +95,17 @@ export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
 function EinmalInvestieren() {
   return (
     <div className="NormalSectionSize" style={{marginBottom: '100px'}}>
-      <h2>Einmal investieren - exklusiv genießen:</h2>
+      <h2>Einmal investieren, exklusiv genießen:</h2>
       <p>
         Das <b>QiBracelet®</b> vereint revolutionäre Technologie mit edlem
-        Design und hebt dein Umfeld auf ein neues Niveau – für alle, die
-        Innovation und Stil in einem Accessoire schätzen.
+        Design und hebt dein Umfeld auf ein neues Niveau. Es ist für alle
+        gemacht, die Innovation und Stil in einem Accessoire schätzen.
       </p>
       <p className="mt 2">
         <b>✔ Höchste Qualität:</b> Präzisionsgefertigt mit langlebigen,
         hochwertigen Materialien. <br />
-        <b>✔ Zeitloses Design:</b> Ein stilvolles Statement für dein Handgelenk
-        – elegant, dezent und kraftvoll zugleich. <br />
+        <b>✔ Zeitloses Design:</b> Ein stilvolles Statement für dein Handgelenk,
+        das elegant, dezent und kraftvoll zugleich wirkt. <br />
         <b>
           ✔ Innovative <b>GitterChip™</b>-Technologie:
         </b>{' '}
@@ -119,28 +119,27 @@ function EinmalInvestieren() {
         Das <b>QiBracelet®</b> basiert auf der <b>GitterChip™</b>-Technologie,
         einem wegweisenden Ansatz, der entwickelt wurde, um Wassermoleküle in
         einen kohärenten Zustand zu überführen. Diese innovative Technologie
-        trägt dazu bei, dein Umfeld zu strukturieren und eine Umgebung zu
-        schaffen, die dich in deinem aktiven Lebensstil unterstützt – sei es bei
-        der Arbeit, beim Sport oder in der Freizeit.
+        trägt dazu bei, dein Umfeld zu strukturieren. Sie hilft, eine Umgebung
+        zu schaffen, die dich in deinem aktiven Lebensstil unterstützt, bei der
+        Arbeit, beim Sport und in der Freizeit.
       </p>
       <p className="mt-2">
-        <b>2. Wissenschaftlich inspiriert – fundiert geprüft</b>
+        <b>2. Wissenschaftlich inspiriert, fundiert geprüft</b>
       </p>
       <p className="mt-1">
-        Das <b>QiBracelet®</b> ist nicht nur ein ästhetisches Accessoire,
-        sondern basiert auf wissenschaftlich geprüften Prinzipien. Studien
-        belegen den Einfluss der <b>GitterChip™</b>-Technologie auf molekulare
-        Strukturen und Umweltfaktoren. Ein Produkt, das nicht nur begeistert,
-        sondern mit Innovation überzeugt.
+        Das <b>QiBracelet®</b> ist ein ästhetisches Accessoire und basiert auf
+        wissenschaftlich geprüften Prinzipien. Studien belegen den Einfluss der{' '}
+        <b>GitterChip™</b>-Technologie auf molekulare Strukturen und
+        Umweltfaktoren.
       </p>
       <p className="mt-2">
         <b>3. Erfahrungen, die den Unterschied machen</b>
       </p>
       <p className="mt-1">
         Viele Nutzer berichten, dass das QiBracelet® ihre Wahrnehmung im Alltag
-        verändert hat – von einer bewussteren Lebensweise über einen
-        angenehmeren Schlaf bis hin zur Fähigkeit, sich klarer auf ihre Ziele zu
-        fokussieren. Diese Kombination aus Technologie und Design macht das
+        verändert hat. Sie erzählen von einer bewussteren Lebensweise, von
+        angenehmerem Schlaf und davon, dass sie sich klarer auf ihre Ziele
+        fokussieren können. Diese Kombination aus Technologie und Design macht das
         QiBracelet® zu einem einzigartigen Begleiter für alle, die Wert auf
         Stil und Wohlbefinden legen.
       </p>
@@ -148,11 +147,11 @@ function EinmalInvestieren() {
         <b>Zusätzliche Services</b>
       </p>
       <p className="mt-2">
-        <b>✔ Premium-Kundenservice:</b> 7 Tage die Woche für dich da – für eine
-        mühelose Integration in deinen Alltag.
+        <b>✔ Premium-Kundenservice:</b> 7 Tage die Woche für dich da, damit
+        sich das QiBracelet® mühelos in deinen Alltag einfügt.
       </p>
       <p className="mt-2">
-        <b>Erlebe das QiBracelet® – Technologie in ihrer schönsten Form.</b>
+        <b>Erlebe das QiBracelet®: Technologie in ihrer schönsten Form.</b>
       </p>
     </div>
   );
@@ -170,15 +169,15 @@ function MainFeatures() {
         <div className="MainFeaturesColumn">
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>
           <p>
-            Das QiBracelet®: Der ultimative Schutz vor Mobilfunkstrahlung –
-            jetzt mit der revolutionären Gitterchip™ -Technologie der dritten
+            Das QiBracelet®: Der ultimative Schutz vor Mobilfunkstrahlung,
+            jetzt mit der revolutionären Gitterchip™-Technologie der dritten
             Generation und 10-facher Stärke. Perfekt für alle, die den nächsten
             Schritt gehen wollen.
           </p>
         </div>
         <div className="MainFeaturesColumn">
           <h3>
-            Das QiBracelet® jetzt 10x stärker – für spürbare Verbesserungen auf
+            Das QiBracelet® jetzt 10x stärker, für spürbare Verbesserungen auf
             allen Ebenen.
           </h3>
           <p>
@@ -205,7 +204,7 @@ function PerfektePassform() {
         <p>
           Miss die <b>Breite deines Handgelenks</b> mit einem Lineal aus. Nimm
           das Lineal und lege es an der{' '}
-          <b>breitesten Stelle deines Handgelenks</b> an - das ist normalerweise
+          <b>breitesten Stelle deines Handgelenks</b> an. Das ist normalerweise
           dort, wo du knorrige Knochen an beiden Seiten des Armes fühlen kannst.{' '}
           <b>Schließe dann ein Auge</b> und <b>lies die Zahl vom Lineal</b> ab.
         </p>
@@ -273,7 +272,7 @@ function PerfektePassform() {
                 <b>S</b>
               </div>
               <div>
-                <strong>S - verengt -</strong>
+                <strong>S (verengt)</strong>
               </div>
             </div>
 
@@ -297,7 +296,7 @@ function PerfektePassform() {
                 <strong>M</strong>
               </div>
               <div>
-                <strong>M - verengt</strong>
+                <strong>M (verengt)</strong>
               </div>
             </div>
 
@@ -321,7 +320,7 @@ function PerfektePassform() {
                 <strong>L</strong>
               </div>
               <div>
-                <strong>L - verengt -</strong>
+                <strong>L (verengt)</strong>
               </div>
             </div>
 
@@ -330,7 +329,7 @@ function PerfektePassform() {
                 <strong>7,5 cm</strong>
               </div>
               <div>
-                <strong>L - gedehnt -</strong>
+                <strong>L (gedehnt)</strong>
               </div>
               <div>
                 <strong>L</strong>
@@ -378,14 +377,14 @@ function Gitterchip() {
         Das QiBracelet® beinhaltet die geballte Kundenerfahrungen des QiOne® 1
         und QiOne® 2 Pro. Aus über 4 Jahren gesammeltem Wissen, wurden alle
         Eventualitäten abgedeckt. Das QiBracelet® ist nahezu unzerstörbar und
-        für jeden Einsatzort geeignet – kombiniert mit dem außergewöhnlich
-        ansprechenden Design, ist es der ideale Begleiter.
+        für jeden Einsatzort geeignet. Mit seinem außergewöhnlich ansprechenden
+        Design ist es der ideale Begleiter.
       </p>
       <h3 className="mt-3">Ideales Design-Leistungs-Verhältnis</h3>
       <p>
         Das Design des QiBracelet® ist inspiriert durch die führenden
         Mode-Labels der ganzen Welt. Klassik trifft Eleganz. Leistung trifft
-        Optik. Das QiBracelet® kann durchaus mit jedem Kleidungsstück und
+        Optik. Das QiBracelet® kann mit jedem Kleidungsstück und
         Accessoire kombiniert werden. Das Zusammentreffen von Leistung und
         Style, macht es zum idealen Begleiter schlechthin. Edle Leistung für
         jeden Moment!
@@ -398,11 +397,11 @@ function StressfreiBezahlen() {
   return (
     <div className="NormalSectionSize" style={{margin: '50px auto 100px auto'}}>
       <h2>
-        Hole dir jetzt dein QiBracelet® - flexibel und stressfrei bezahlen!
+        Hole dir jetzt dein QiBracelet® und bezahle flexibel und stressfrei!
       </h2>
       <p>
         Mit unserer Ratenzahlung kannst du dein QiBracelet® bequem in kleinen
-        Beträgen abbezahlen – einfach, flexibel und unkompliziert.
+        Beträgen abbezahlen. Das geht einfach, flexibel und unkompliziert.
       </p>
       <p className="mt-3">
         <strong>So funktioniert's:</strong>
@@ -423,8 +422,8 @@ function StressfreiBezahlen() {
       </p>
       <p className="mt-3">
         <strong>
-          Mach es dir leicht - sichere dir deinen QiBracelet® und zahle bequem
-          in Raten.
+          Mach es dir leicht: Sichere dir dein QiBracelet® und zahle bequem in
+          Raten.
         </strong>
       </p>
     </div>
@@ -543,13 +542,13 @@ function RisikofreiErleben() {
   return (
     <div className="RisikofreiErleben NormalSectionSize">
       <h2>
-        QiBracelet® – 20 Tage erleben. Ohne Risiko, mit vollem Tragekomfort!
+        QiBracelet®: 20 Tage erleben. Ohne Risiko, mit vollem Tragekomfort!
       </h2>
       <p>
         Das <b>QiBracelet®</b> vereint modernes Design mit innovativer{' '}
-        <b>GitterChip™-Technologie</b> – stilvoll, tragbar und immer an deiner
-        Seite. Egal ob im Alltag, beim Sport oder auf Reisen – es passt sich
-        perfekt deinem Lebensstil an. Erlebe es selbst und integriere das
+        <b>GitterChip™-Technologie</b>. Es ist stilvoll, tragbar und immer an
+        deiner Seite. Im Alltag, beim Sport und auf Reisen passt es sich perfekt
+        deinem Lebensstil an. Erlebe es selbst und integriere das
         QiBracelet® <b>20 Tage lang mühelos in deine Routine</b>.
       </p>
       <p className="mt-2">
@@ -572,11 +571,11 @@ function RisikofreiErleben() {
         <b>✔ Sicherheit durch Erfahrung:</b> Probiere es aus und entscheide
         selbst, ob es dein täglicher Begleiter wird. <br />
         <b>✔ Kein Risiko, nur Mehrwert:</b> Sollte es nicht das Richtige für
-        dich sein, bekommst du dein Geld zurück – einfach & fair.
+        dich sein, bekommst du dein Geld zurück, einfach & fair.
       </p>
       <p className="mt-2">
         <b>
-          Mach den ersten Schritt – erlebe das QiBracelet® und verstehe, warum
+          Mach den ersten Schritt, erlebe das QiBracelet® und verstehe, warum
           es für so viele zum unverzichtbaren Accessoire geworden ist!
         </b>
       </p>
@@ -605,7 +604,7 @@ function GeophatogeneStrahlung(){
       <h2>Die Qi Blanco® Technologie und geopathogene Strahlung</h2>
       <p>Geopathogene Strahlung hat viele Namen: Erdstrahlen, Wasseradern, Gitternetze, Gesteinsbrüche und -verwerfungen. Über unterirdischen Wasserläufen und Erdverwerfungslinien treten messbare Abweichungen des Erdmagnetfeldes auf. Dieses Phänomen verursacht bei Menschen mit einem hohen Körperempfinden z.B. Schlafstörungen oder allgemeine Befindlichkeitsstörungen.</p>
       <p className="mt-2">Durch die unterschiedlichen Erdbedingungen bekommen diese geopathogene Strahlungen ihr individuelles Frequenzspektrum. Abhängig von der persönlichen körperlichen Verfassung empfinden das vor allem sensible Menschen als äußerst unangenehm</p>
-      <p className="mt-2">Hier ist es wichtig zu verstehen, dass es sich bei all diesen geopathogenen Strahlungen am Ende auch „nur“ um elektromagnetische Strahlung handelt. Es ist also eine zusätzliche Strahlenbelastung zu den technisch erzeugten, wie Handy- oder Funkstrahlung.</p>
+      <p className="mt-2">Am Ende sind all diese geopathogenen Strahlungen auch „nur“ elektromagnetische Strahlung. Es ist also eine zusätzliche Strahlenbelastung zu den technisch erzeugten, wie Handy- oder Funkstrahlung.</p>
       <p className="mt-2"><b>Die Erhöhung kohärenter Wasserstrukturen ist die ideale Lösung, um dem Stress, der durch geopathogene Strahlung verursacht wird, entgegenzuwirken.</b></p>
     </div>
   )

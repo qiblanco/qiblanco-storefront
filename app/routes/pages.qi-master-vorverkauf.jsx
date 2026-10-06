@@ -158,10 +158,10 @@ export default function QiMasterVorverkaufRoute() {
       <section className="qm-lp__inhalt" aria-labelledby="qm-lp-gerät">
         <h2 id="qm-lp-gerät">Warum es den Qi Master® überhaupt gibt</h2>
         <p>
-          Ein Diamant ist reiner Kohlenstoff – dasselbe Element, aus dem jede
-          Zelle deines Körpers gebaut ist. Das ist der Gedanke, aus dem der
-          Qi Master® entstanden ist: nicht ein Stein als Schmuck, sondern derselbe
-          Grundstoff, gefasst am Gitterchip™.
+          Ein Diamant ist reiner Kohlenstoff, dasselbe Element, aus dem jede
+          Zelle deines Körpers gebaut ist. Aus diesem Gedanken ist der
+          Qi Master® entstanden. Er trägt genau diesen Grundstoff, gefasst am
+          Gitterchip™.
         </p>
 
         <h3>Der Gitterchip™ der zweiten Generation</h3>
@@ -185,8 +185,8 @@ export default function QiMasterVorverkaufRoute() {
             Goldlegierung zum Einsatz.
           </li>
           <li>
-            Eigene Seriennummer auf jedem Stück – deinen gibt es kein zweites
-            Mal.
+            Jedes Stück trägt eine eigene Seriennummer. Deinen Qi Master® gibt
+            es kein zweites Mal.
           </li>
         </ul>
       </section>
@@ -195,7 +195,7 @@ export default function QiMasterVorverkaufRoute() {
         className="qm-lp__inhalt qm-lp__grenzen"
         aria-labelledby="qm-lp-grenzen"
       >
-        <h2 id="qm-lp-grenzen">Was er kann – und was er nicht kann</h2>
+        <h2 id="qm-lp-grenzen">Was er kann und was er nicht kann</h2>
         <p>
           Untersucht wurde der Gitterchip™, nicht das Schmuckstück: die
           Zellstudien sind am QiOne® 2 Pro in vitro durchgeführt worden, also

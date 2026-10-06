@@ -107,7 +107,7 @@ export const FAQ_QI_MASTER = [
 export const FAQ_QIBRACELET = [
   {
     q: 'Was ist der Unterschied zwischen dem QiOne® 2 Pro und dem QiBracelet®?',
-    a: 'Der Hauptunterschied zwischen dem QiOne® 2 Pro und dem QiBracelet® liegt in ihrer äußeren Gestaltung und dem Tragekomfort. Beide verwenden den gleichen innovativen Gitterchip™ 2.0, der durch die spezifische Atompositionierung von Goldatomen die Bildung kohärenter Wasserstrukturen fördert. Der QiOne® 2 Pro ist als Gehäuse mit einem Anhänger konzipiert und eignet sich daher ideal zum Tragen um den Hals. Im Gegensatz dazu ist das QiBracelet® als Armreifen aus Chirurgenstahl gestaltet. Dies verleiht dem QiBracelet® nicht nur einen edlen Look, sondern bietet auch einen besonders komfortablen Tragestil am Handgelenk.',
+    a: 'Der Hauptunterschied zwischen dem QiOne® 2 Pro und dem QiBracelet® liegt in ihrer äußeren Gestaltung und dem Tragekomfort. Beide verwenden den gleichen innovativen Gitterchip™ 2.0, der durch die spezifische Atompositionierung von Goldatomen die Bildung kohärenter Wasserstrukturen fördert. Der QiOne® 2 Pro ist als Gehäuse mit einem Anhänger konzipiert und eignet sich daher ideal zum Tragen um den Hals. Im Gegensatz dazu ist das QiBracelet® als Armreifen aus Chirurgenstahl gestaltet. So sieht es edel aus und trägt sich am Handgelenk besonders komfortabel.',
     flag: 'wirkmechanismus',
   },
   {

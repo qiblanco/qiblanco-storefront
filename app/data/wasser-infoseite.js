@@ -107,7 +107,7 @@ export const TEIL_EINFACH = {
     {
       id: 'woher',
       titel: 'Woher kommt es?',
-      absaetze: ['Drei Dinge bringen Wasser in Ordnung.'],
+      absaetze: ['Geordnetes Wasser entsteht auf mehreren Wegen.'],
       karten: [
         {
           titel: 'Oberflächen',
@@ -181,7 +181,7 @@ export const TEIL_FAKTEN = {
       absaetze: [
         `Ein Wassermolekül besteht aus einem Sauerstoff-Atom und zwei Wasserstoff-Atomen. Im freien Molekül stehen die beiden Bindungen im Winkel von 104,48° zueinander, gerundet ${VON} {q:csaszar2005}.`,
         'Im Eis sitzt jedes Molekül in der Mitte eines Tetraeders aus vier Nachbarn {q:kuhs1981}. Der Tetraederwinkel beträgt 109,47°, in Grad und Minuten 109° 28′. Aus diesen Tetraedern baut sich das sechseckige Gitter des gewöhnlichen Eises auf, Eis Ih {q:bernal1933}.',
-        'Wasser ist dabei ein ungewöhnlicher Stoff. Am dichtesten ist es nicht als Eis, sondern bei 3,983 °C mit 999,975 kg/m³ {q:tanaka2001}. Deshalb schwimmt Eis, und Seen frieren von oben zu.',
+        'Wasser ist dabei ein ungewöhnlicher Stoff. Am dichtesten ist es bei 3,983 °C mit 999,975 kg/m³ {q:tanaka2001}, also als Flüssigkeit. Deshalb schwimmt Eis, und Seen frieren von oben zu.',
       ],
     },
     {
