@@ -4,7 +4,7 @@
 // Ausfuehren: node --test test/trustpilot-tatsachen.test.mjs
 //
 // WAS DIESE DATEI PRUEFT UND WAS NICHT: die ZUSAGEN des Baus am Quelltext —
-// indexierbar, Schema aus sichtbarem Text, Zahlen aus der Sterne-Verteilung,
+// indexierbar, Schema aus sichtbarem Text, KEINE Anzahl von Bewertungen,
 // keine Namen und keine Fremdnote, das Profil nicht als unseres ausgegeben,
 // eingehender Link der FAQ. Ob die Seite LIVE hell ist, misst homepage-bauer/
 // pruefungen/probe_zweifelsseite_dunkel.py --flaeche trustpilot; ob ihr
@@ -24,6 +24,7 @@ import {
   PROFIL,
   PROFIL_ABSCHNITT,
   STAND,
+  UNTER_VIER_KURZ,
   ZAHL,
 } from '../app/data/trustpilot-tatsachen.js';
 import {buildFaqPageJsonLd} from '../app/lib/faq-schema.js';
@@ -109,13 +110,82 @@ test('das Schema trägt Datum als Konstanten, nicht als Uhr', () => {
 });
 
 // ---------------------------------------------------------------------------
-// ÜBERGANG (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq-r1-s02):
-// Christian 2026-10-06 „nicht die Gesamtanzahl anzeigen". Die Pins auf
-// „27 Bewertungen" in Lead und Titel, auf die Verteilungsliste und auf den
-// Satz „hat niemand bewertet" sind raus; die Seite verliert sie im nächsten
-// PR. Die strengen Tests (KEINE Anzahl in Text, Titel, Meta, Schema) folgen
-// direkt danach. Was hier steht, gilt für den alten UND den neuen Stand.
+// KEINE ANZAHL (Christian 2026-10-06, Job 20261006-bau-trustpilot-scroller-ki-
+// seiten-und-faq, Feste Grenze 2): „nicht die Gesamtanzahl anzeigen, da es nur
+// 27 sind". Weder Gesamt- noch Teilanzahl, weder in Ziffern noch als Zahlwort,
+// weder im sichtbaren Text noch in Titel, Beschreibung oder FAQPage-Schema.
+// Die Zählung bleibt im Datenmodul, weil der Satz „keine unter vier Sternen"
+// an ihr hängt.
 // ---------------------------------------------------------------------------
+
+// Alles, was die Seite über Trustpilot sichtbar sagt (das Schema kommt aus FRAGEN).
+const SICHTBAR = [
+  UNTER_VIER_KURZ,
+  KOPF.vorspann,
+  KOPF.titel,
+  KOPF.lead,
+  KOPF.quelle,
+  PROFIL_ABSCHNITT.titel,
+  PROFIL_ABSCHNITT.einleitung,
+  ...PROFIL_ABSCHNITT.punkte.flatMap((p) => [p.titel, p.text]),
+  ...FRAGEN.flatMap((f) => [f.q, f.a]),
+];
+const ZAHLWORT = '(?:eine[rn]?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf)';
+const ANZAHL = [
+  // „27 Bewertungen", „26 der 27", „27 Stimmen", „Alle 27"
+  /\b\d+\s+(?:der\s+\d+\s+)?(?:Trustpilot-)?(?:Bewertungen|Bewertung|Stimmen|Rezensionen)\b/i,
+  /\b\d+\s+der\s+\d+\b/,
+  /\bAlle\s+\d+\b/i,
+  // „eine gibt vier", „zwei Bewertungen", „alle bis auf eine"
+  new RegExp(`\\b${ZAHLWORT}\\s+(?:gibt|geben|Bewertung|Bewertungen|Stimme|Stimmen)\\b`, 'i'),
+  /\balle\s+bis\s+auf\b/i,
+  /\bbasierend\s+auf\b/i,
+  // Verteilungszeile „5 Sterne: 26"
+  /Sterne?\s*:\s*\d/,
+];
+const ZAHLEN_DES_PROFILS = [ZAHL.alle, ZAHL.voll, ZAHL.vier].filter((n) => n > 1);
+
+test('kein sichtbarer Satz nennt eine Anzahl von Trustpilot-Bewertungen', () => {
+  for (const satz of SICHTBAR) {
+    for (const m of ANZAHL) assert.ok(!m.test(satz), `Anzahl (${m}) in: ${satz}`);
+    for (const n of ZAHLEN_DES_PROFILS) {
+      assert.ok(!new RegExp(`\\b${n}\\b`).test(satz), `Profilzahl ${n} in: ${satz}`);
+    }
+  }
+});
+
+test('auch das FAQPage-Schema nennt keine Anzahl', () => {
+  const schema = JSON.stringify(buildFaqPageJsonLd(FRAGEN, {inLanguage: 'de-DE'}));
+  for (const m of ANZAHL) assert.ok(!m.test(schema), `Anzahl (${m}) im Schema`);
+  for (const n of ZAHLEN_DES_PROFILS) {
+    assert.ok(!new RegExp(`\\b${n}\\b`).test(schema), `Profilzahl ${n} im Schema`);
+  }
+});
+
+test('Route und Komponente geben keine Zählung aus', () => {
+  // Titel und Beschreibung stehen in der Route; sie importiert ZAHL gar nicht
+  // erst. Die Komponente rendert keine Verteilung und keine Zahl im Linktext.
+  assert.ok(!/\bZAHL\b/.test(ROUTE), 'die Route liest ZAHL');
+  assert.ok(!/ZAHL\.(?:alle|voll|vier)/.test(KOMPONENTE), 'die Komponente gibt eine Anzahl aus');
+  assert.ok(!/VERTEILUNG|tpt__verteilung|\.anzahl\b/.test(KOMPONENTE), 'Verteilung gerendert');
+  for (const name of ['TITEL', 'BESCHREIBUNG']) {
+    const m = ROUTE.match(new RegExp(`const ${name} =([\\s\\S]*?);`));
+    assert.ok(m, `${name} fehlt in der Route`);
+    const rest = m[1].replace(/\$\{(?:PROFIL\.trustscore|UNTER_VIER_KURZ)\}/g, '');
+    assert.ok(!/\$\{/.test(rest), `${name} setzt etwas anderes ein als TrustScore und Satzglied`);
+    for (const a of ANZAHL) assert.ok(!a.test(m[1]), `Anzahl (${a}) in ${name}`);
+  }
+});
+
+test('was bleibt: TrustScore mit Stand, keine unter vier Sternen, ohne Einladung', () => {
+  // Die Stand-Wache (seo-manager/pruefungen/probe_trustpilot_stand_auf_der_seite.py)
+  // liest den TrustScore aus genau dieser Wendung.
+  assert.match(KOPF.lead, new RegExp(`TrustScore von ${PROFIL.trustscore} von 5`));
+  assert.match(KOPF.lead, /ohne Einladung/);
+  assert.match(KOPF.lead, /nicht beansprucht/);
+  assert.match(KOPF.quelle, /Stand: /);
+  assert.match(ROUTE, /\$\{PROFIL\.trustscore\}/);
+});
 
 test('die Zählung im Datenmodul ist die Summe der Sterne', () => {
   const s = PROFIL.sterne;
@@ -129,19 +199,13 @@ test('die Verteilung passt zu den Prozentwerten, die Trustpilot zeigt', () => {
   assert.deepEqual([5, 4, 3, 2, 1].map(pct), [96, 4, 0, 0, 0]);
 });
 
-test('keine schlechte Bewertung: an die Daten gebunden', () => {
+test('der Satz "keine unter vier Sternen" ist an die Daten gebunden', () => {
+  // Wer die Verteilung ändert, bekommt den anderen Zweig des Satzes von selbst.
   assert.equal(ZAHL.unterVier, 0);
+  assert.equal(PROFIL_ABSCHNITT.einleitung, 'Die meisten Bewertungen geben fünf Sterne.');
+  assert.match(KOPF.lead, /Keine Bewertung liegt unter vier Sternen/);
   const schlechte = FRAGEN.find((f) => f.id === 'schlechte');
   assert.match(schlechte.a, /^Nein\./);
-});
-
-test('der TrustScore steht im Lead und in der Route', () => {
-  // Die Stand-Wache (seo-manager/pruefungen/probe_trustpilot_stand_auf_der_seite.py)
-  // liest den TrustScore aus genau dieser Wendung.
-  assert.match(KOPF.lead, new RegExp(`TrustScore von ${PROFIL.trustscore} von 5`));
-  assert.match(KOPF.lead, /ohne Einladung/);
-  assert.match(KOPF.lead, /nicht beansprucht/);
-  assert.match(ROUTE, /\$\{PROFIL\.trustscore\}/);
 });
 
 test('die Studienzahl deckt sich mit der Studie e0004', () => {
