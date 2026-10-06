@@ -606,6 +606,16 @@ export default async function handleRequest(
       'https://www.google.ch',
       'https://www.google.li',
       'https://www.google.co.uk',
+      // Neue MARKT_LAENDER seit 2026-10-04 (Grossjob 20261004 preisanzeige):
+      'https://www.google.fr',
+      'https://www.google.it',
+      'https://www.google.es',
+      'https://www.google.nl',
+      'https://www.google.be',
+      'https://www.google.pt',
+      'https://www.google.ie',
+      'https://www.google.pl',
+      'https://www.google.se',
       // Google Tag Manager, STELLE 3 VON 3. gtm.js wird von script-src
       // geladen und von img-src gepingt — beides steht seit jeher. Der
       // Container sendet zusätzlich per fetch/beacon zurück, und das
@@ -738,6 +748,16 @@ export default async function handleRequest(
       'https://www.google.ch',
       'https://www.google.li',
       'https://www.google.co.uk',
+      // Neue MARKT_LAENDER seit 2026-10-04 (Grossjob 20261004 preisanzeige):
+      'https://www.google.fr',
+      'https://www.google.it',
+      'https://www.google.es',
+      'https://www.google.nl',
+      'https://www.google.be',
+      'https://www.google.pt',
+      'https://www.google.ie',
+      'https://www.google.pl',
+      'https://www.google.se',
       // ZWEI ZEILEN AUSSERHALB DER ABLEITUNG, und beide bleiben mit Grund:
       // .cz ist ein gemessener Nachtrag vom selben Morgen (#502) aus der
       // Zeit vor der Regel — entfernen kostet einen Deploy und bringt

@@ -131,8 +131,10 @@ test('(A) Fremdwaehrung: Satz des Landes nur in seiner Kassenwaehrung', () => {
   assert.equal(anzeigeSatz('qione-2-pro', 'CHF', 'CH'), 0.081);
   assert.equal(anzeigeSatz('crystal-cacao-awake', 'CHF', 'CH'), 0.081);
   assert.equal(bruttoAnzeige('1048.00', 'qione-2-pro', 'CHF', 'CH'), 1132.89);
-  // Land ohne Messung (LI) bleibt beim Endbetrag (benannte Luecke).
-  assert.equal(bruttoAnzeige('1048.00', 'qione-2-pro', 'CHF', 'LI'), 1048);
+  // Land ohne Messung bleibt beim Endbetrag (benannte Luecke). LI war hier bis
+  // 2026-10-06 der Beleg; seitdem trägt es 8,1 Prozent (CH-Analogie, Beleg in
+  // cart-display-pricing.js), der Fall steht unten im Block des Rest-Jobs.
+  assert.equal(bruttoAnzeige('1048.00', 'qione-2-pro', 'CHF', 'CZ'), 1048);
 });
 
 test('(A) der Warenkorb rechnet denselben Satz wie die Seite davor', () => {
@@ -495,4 +497,83 @@ test('JSON-LD nennt den Cent-Betrag der Seite', () => {
     'AT',
   );
   assert.equal(s.offers.price, '78.13');
+});
+
+/* ───────── Job 20261006-preisanzeige-rest: Länder-Achse, LI, Streichpreis ─────────
+   Namensraum-Import statt Einzelnamen: gegen den Stand vor diesem Job (ohne
+   streichAnzeige) fallen so die einzelnen Tests rot, nicht die ganze Datei. */
+import * as mp from '../app/lib/markt-pricing.js';
+import * as cdp from '../app/lib/cart-display-pricing.js';
+import * as sp from '../app/lib/streichpreis-paritaet.js';
+
+const besucher = (land) =>
+  new Request('https://qiblanco.com/products/qione-2-pro', {
+    headers: {'oxygen-buyer-country': land},
+  });
+
+test('Länder-Achse: Besucher aus jedem Land mit gemessenem Kassensatz bekommen ihr Land', () => {
+  for (const land of ['FR', 'IT', 'ES', 'NL', 'BE', 'PT', 'IE', 'PL', 'SE', 'GB', 'LI', 'AT', 'CH', 'US']) {
+    assert.equal(mp.resolveCountry(besucher(land)), land, `Besucher ${land}`);
+  }
+  // Länder ohne gemessenen Satz bleiben auf der DE-Seite (Status quo).
+  for (const land of ['CZ', 'DK', 'HU', 'XX', '']) {
+    assert.equal(mp.resolveCountry(besucher(land)), 'DE', `Besucher ${land || 'ohne'}`);
+  }
+  // Jedes freigeschaltete Land hat einen Satz (sonst rechnete es mit dem DE-Satz).
+  for (const land of mp.FREIGESCHALTETE_MAERKTE) {
+    assert.ok(cdp.STEUER_LAENDER.includes(land), `${land} ohne Satz`);
+  }
+});
+
+test('LI: CHF-Kasse mit 8,1 Prozent, eigene Preisliste (QiOne 1173 CHF, Kakao 84 CHF)', () => {
+  assert.equal(cdp.kassenSatz('qione-2-pro', 'CHF', 'LI'), 0.081);
+  assert.equal(cdp.kassenSatz('crystal-cacao-awake', 'CHF', 'LI'), 0.081);
+  assert.equal(mp.bruttoAnzeige('1173', 'qione-2-pro', 'CHF', 'LI'), 1268.01);
+  assert.equal(mp.bruttoAnzeige('84', 'crystal-cacao-awake', 'CHF', 'LI'), 90.8);
+  assert.equal(mp.formatPreis(1268.01, 'CHF', 'pdp'), '1.268,01 CHF');
+});
+
+test('Streichpreis auf der Satz-Achse: Rabatt je Land wie in DE', () => {
+  const eur = {amount: '1238.0', currencyCode: 'EUR'};
+  assert.equal(typeof mp.streichAnzeige, 'function', 'streichAnzeige fehlt');
+  // DE byte-gleich wie bisher.
+  assert.equal(mp.streichAnzeige(eur, 'qione-2-pro', 'DE'), 1238);
+  assert.equal(mp.formatPreis(1238, 'EUR', 'pdp'), '1.238,- €');
+  // AT: 1238 / 1,19 x 1,20, der gezeigte Rabatt bleibt der deutsche.
+  assert.equal(mp.streichAnzeige(eur, 'qione-2-pro', 'AT'), 1248.4);
+  const rabatt = (preis, streich) => Math.round((1 - preis / streich) * 1000) / 10;
+  assert.equal(rabatt(1096.14, 1248.4), rabatt(1087, 1238));
+  // PL: Shopify rechnet 1238 mit demselben Kurs wie den Preis um.
+  assert.equal(
+    mp.streichAnzeige({amount: '5533.0', currencyCode: 'PLN'}, 'qione-2-pro', 'PL'),
+    5718.98,
+  );
+  // Paritäts-Ersatz CH steht auf der Basis der Preisliste: nur der Satz kommt dazu.
+  const ch = sp.mitStreichpreisFallback(null, 'qione-2-pro', 'CHF', '1048.0');
+  assert.equal(ch?.basis, 'preisliste');
+  assert.equal(mp.streichAnzeige(ch, 'qione-2-pro', 'CH'), 1535.02);
+  const us = sp.mitStreichpreisFallback(null, 'qione-2-pro', 'USD', '1383.0');
+  assert.equal(mp.streichAnzeige(us, 'qione-2-pro', 'US'), 1599);
+});
+
+test('Paritäts-Ersatz nur zum Preis, für den er gerechnet ist (LI hat eigene Preisliste)', () => {
+  assert.equal(sp.streichpreisFallback('qione-2-pro', 'CHF', '1173.0'), null);
+  assert.equal(sp.streichpreisFallback('qione-2-pro', 'CHF', '1048.0')?.amount, '1420');
+  // Altaufrufer ohne Preis: wie bisher.
+  assert.equal(sp.streichpreisFallback('qione-2-pro', 'CHF')?.amount, '1420');
+  // Ein API-Wert hat immer Vorrang.
+  const api = {amount: '1500.0', currencyCode: 'CHF'};
+  assert.equal(sp.mitStreichpreisFallback(api, 'qione-2-pro', 'CHF', '1173.0'), api);
+});
+
+test('Aufrufer: Kaufseiten-Streichpreis und Landingpage-Streichpreis laufen über streichAnzeige', () => {
+  const app = new URL('../app', import.meta.url).pathname;
+  const pp = readFileSync(join(app, 'components', 'ProductPrice.jsx'), 'utf8');
+  assert.match(pp, /streichAnzeige\(money, handle, marktLand\)/);
+  const lp = readFileSync(join(app, 'lib', 'lp-preis.js'), 'utf8');
+  assert.match(lp, /streichAnzeige\(money, p\?\.handle, land\)/);
+  // Der Kommentar im Kopf von ProductPrice nennt keine Beträge mit
+  // Eurozeichen (preiswatch liest sie auf der Quelltext-Ebene als Preis).
+  const kopf = pp.slice(0, pp.indexOf('export function'));
+  assert.doesNotMatch(kopf, /\d\s*(?:,-|,\d\d)?\s*€/);
 });
