@@ -1,0 +1,181 @@
+/* ============================================================================
+   /pages/wissen-und-vertrauen — „Alle Antworten rund um Qi Blanco"
+   (2026-10-06, Großjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-
+   crawl-kannibalisierung, Segment s06).
+
+   Rezept wortgleich zu lexikon.css (Design 100/100), dem nächsten Verwandten:
+   warmes Neutral-Kontinuum, EIN Gold-Akzent, 8pt-Grid, Sektions-Takt 96/64,
+   Zeilenlänge <= 68ch. EIGENE DATEI und eigener Scope .wv: lexikon.css laden
+   zehn Seiten, und Gate 12 löst eine geteilte Datei auf alle importierenden
+   Routen auf. Eine Regel hier verschiebt keine davon.
+
+   DER EINE AKZENT SITZT AUF DER HANDLUNG: die Linie unter jedem Seitenlink
+   in der Gold-Tinte des Hauses (--qb-akzent-tinte), dieselbe wie an den
+   Begriffskarten des Lexikons. Als Schriftfarbe erscheint das Gold nirgends.
+
+   REGEL DIESES FILES: alle Größen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Außerhalb davon erfindet keine Regel einen freien Wert.
+   ========================================================================== */
+
+:root {
+  --wv-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 6 Stufen */
+  --wv-fs-xs: 0.875rem;
+  --wv-fs-base: 1rem;
+  --wv-fs-md: 1.125rem;
+  --wv-fs-h3: 1.125rem;
+  --wv-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem);
+  --wv-fs-h1: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+
+  /* Spacing: 8pt-Grid */
+  --wv-s1: 8px;
+  --wv-s2: 16px;
+  --wv-s3: 24px;
+  --wv-s4: 32px;
+  --wv-s6: 48px;
+  --wv-s8: 64px;
+  --wv-s12: 96px;
+
+  /* Farbe: 60-30-10 */
+  --wv-grund: #faf9f5;
+  --wv-flaeche: #f8f4ee;
+  --wv-text: #2c2a26;
+  --wv-muted: #6b665d;
+  --wv-linie: rgba(44, 42, 38, 0.12);
+
+  /* EIN Radius, ZWEI Schatten */
+  --wv-r: 16px;
+  --wv-shadow-sm: 0 1px 3px rgba(26, 26, 26, 0.07);
+  --wv-shadow-md: 0 4px 16px rgba(26, 26, 26, 0.08);
+
+  --wv-mass: 68ch;
+  --wv-breit: 960px;
+}
+
+.wv {
+  font-family: var(--wv-font);
+  font-size: var(--wv-fs-base);
+  line-height: 1.65;
+  color: var(--wv-text);
+  background: var(--wv-grund);
+}
+
+.wv section {
+  padding: var(--wv-s12) 0;
+}
+
+.wv section + section {
+  padding-top: var(--wv-s8);
+}
+
+.wv__inhalt {
+  max-width: var(--wv-breit);
+  margin: 0 auto;
+  padding-inline: var(--wv-s3);
+}
+
+.wv h1 {
+  font-size: var(--wv-fs-h1);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--wv-s3);
+  max-width: var(--wv-mass);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung. */
+.wv h2 {
+  font-size: var(--wv-fs-h2);
+  line-height: 1.25;
+  font-weight: 700;
+  text-align: left;
+  margin: 0 0 var(--wv-s2);
+}
+
+.wv h3 {
+  font-size: var(--wv-fs-h3);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--wv-s1);
+}
+
+.wv p {
+  margin: 0 0 var(--wv-s2);
+  max-width: var(--wv-mass);
+}
+
+.wv__vorspann {
+  font-size: var(--wv-fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wv-muted);
+  margin-bottom: var(--wv-s2);
+}
+
+.wv__lead {
+  font-size: var(--wv-fs-md);
+}
+
+.wv__einleitung {
+  color: var(--wv-muted);
+  margin-bottom: var(--wv-s4);
+}
+
+/* ── Die Listen ────────────────────────────────────────────────────────── */
+
+.wv__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--wv-s3);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.wv__eintrag {
+  background: var(--wv-flaeche);
+  border-radius: var(--wv-r);
+  box-shadow: var(--wv-shadow-sm);
+  padding: var(--wv-s3);
+}
+
+.wv__eintrag p {
+  margin-bottom: 0;
+  color: var(--wv-muted);
+}
+
+.wv__link {
+  color: var(--wv-text);
+  text-decoration: none;
+  border-bottom: 2px solid var(--qb-akzent-tinte);
+  padding-bottom: 2px;
+}
+
+.wv__link:hover,
+.wv__link:focus-visible {
+  border-bottom-width: 3px;
+}
+
+.wv__eintrag:hover {
+  box-shadow: var(--wv-shadow-md);
+}
+
+.wv__kontakt {
+  padding-top: var(--wv-s4);
+  border-top: 1px solid var(--wv-linie);
+}
+
+.wv__kontakt a {
+  color: var(--wv-text);
+}
+
+@media (max-width: 640px) {
+  .wv section {
+    padding: var(--wv-s8) 0;
+  }
+
+  .wv section + section {
+    padding-top: var(--wv-s6);
+  }
+}

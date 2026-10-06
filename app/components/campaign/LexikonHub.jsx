@@ -1,4 +1,4 @@
-import {LEXIKON} from '~/data/lexikon';
+import {LEXIKON, zielName} from '~/data/lexikon';
 
 /**
  * /pages/lexikon — der Hub.
@@ -89,6 +89,18 @@ export function LexikonHub() {
                 <p className="lex__karte-grenze">
                   <strong>Und was sie nicht trägt:</strong> {e.grenze}
                 </p>
+                {/* Die Grundfrage zum Begriff, wo es eine eigene Frageseite
+                    gibt (Feld `frage` in app/data/lexikon.js). Ankertext ist
+                    die Frage selbst. Seit 2026-10-06: Elektrosmog -> „Was ist
+                    Elektrosmog?" (Großjob 20261006-GROSSJOB-seo-strategie-…,
+                    s06). Ohne belegte Beschriftung kein Link. */}
+                {e.frage && zielName(e.frage) ? (
+                  <p className="lex__karte-frage">
+                    <a className="lex__karte-link" href={e.frage}>
+                      {zielName(e.frage)}
+                    </a>
+                  </p>
+                ) : null}
               </li>
             ))}
           </ul>

@@ -652,6 +652,10 @@ export const FRAGEN = [
         "text": "Was die Belastung im Alltag senkt"
       },
       {
+        "pfad": "/pages/lexikon",
+        "text": "Lexikon: unsere Begriffe in der Sprache der Physik"
+      },
+      {
         "pfad": "/pages/lexikon-frequenz",
         "text": "Frequenz: die Größe, in der Felder unterschieden werden"
       },

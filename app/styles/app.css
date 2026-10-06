@@ -1669,11 +1669,15 @@ footer.footer :focus-visible {
   padding: 0 2rem;
 }
 
-/* Top: products + newsletter */
+/* Top: products + Wissen & Vertrauen + newsletter.
+   Seit 2026-10-06 drei Spalten (Großjob 20261006-GROSSJOB-seo-strategie-…,
+   s06): die Spalte „Wissen & Vertrauen" sitzt zwischen Produkten und
+   Newsletter. Bis 1023 px stehen Produkte und Wissen nebeneinander und der
+   Newsletter darunter über die volle Breite, ab 750 px abwärts eine Spalte. */
 .footer-top {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 4rem;
+  grid-template-columns: 1fr 1fr 1.6fr;
+  gap: 3rem;
   padding: 50px 2rem;
   max-width: 1280px;
   margin: 0 auto;
@@ -1690,7 +1694,8 @@ footer.footer :focus-visible {
   max-width: var(--measure-text);
 }
 
-.footer-products ul {
+.footer-products ul,
+.footer-wv ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -1699,15 +1704,148 @@ footer.footer :focus-visible {
   gap: 0.6rem;
 }
 
-.footer-products a {
+.footer-products a,
+.footer-wv a {
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   font-size: var(--qs-t-basis);
   transition: color 0.15s;
 }
 
-.footer-products a:hover {
+.footer-products a:hover,
+.footer-wv a:hover {
   color: #fff;
+}
+
+/* Spalte „Wissen & Vertrauen": ein <details>, dessen Überschrift nur auf dem
+   Telefon ein Schalter ist (Footer.jsx FooterWissenVertrauen). Die
+   Überschrift trägt .footer-heading, damit jede Seite, die die Fuß-
+   Überschriften an ihre Skala anpasst, auch diese mitnimmt. */
+.footer-wv > summary {
+  list-style: none;
+  cursor: default;
+}
+
+.footer-wv > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (min-width: 750px) {
+  .footer-wv > summary {
+    pointer-events: none;
+  }
+}
+
+@media (min-width: 750px) and (max-width: 1023px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-newsletter {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 749px) {
+  .footer-wv > summary {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+  }
+
+  .footer-wv > summary::after {
+    content: '+';
+    font-size: 1.25em;
+    line-height: 1;
+  }
+
+  .footer-wv[open] > summary::after {
+    content: '\2212';
+  }
+
+  .footer-wv:not([open]) > summary {
+    margin-bottom: 0;
+  }
+}
+
+/* Leiste „Weiterlesen" über dem Fuß der Wissens- und Vertrauensseiten
+   (reusables/WissenVertrauenWeiter.jsx). Heller Grund, damit sie zur Seite
+   gehört und nicht zum Fuß; die Gold-Tinte trägt nur die Linie unter den
+   Links, dieselbe wie auf der Übersicht und im Lexikon. */
+.wv-weiter {
+  /* Tokens der Leiste, wortgleich zu wissen-vertrauen.css / lexikon.css */
+  --wvw-grund: #f8f4ee;
+  --wvw-text: #2c2a26;
+  --wvw-muted: #6b665d;
+  --wvw-linie: rgba(44, 42, 38, 0.12);
+  --wvw-breit: 960px;
+  background: var(--wvw-grund);
+  border-top: 1px solid var(--wvw-linie);
+  color: var(--wvw-text);
+}
+
+.wv-weiter__inhalt {
+  max-width: var(--wvw-breit);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1rem 2rem;
+}
+
+.wv-weiter__titel {
+  margin: 0;
+  font-size: var(--qs-t-fein);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wvw-muted);
+}
+
+.wv-weiter__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+}
+
+.wv-weiter__hub {
+  margin: 0 0 0 auto;
+}
+
+.wv-weiter a {
+  color: var(--wvw-text);
+  text-decoration: none;
+  border-bottom: 2px solid var(--qb-akzent-tinte);
+  padding-bottom: 2px;
+  font-size: var(--qs-t-basis);
+}
+
+.wv-weiter a:hover,
+.wv-weiter a:focus-visible {
+  border-bottom-width: 3px;
+}
+
+@media (max-width: 749px) {
+  .wv-weiter__inhalt {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 1rem;
+  }
+
+  .wv-weiter__liste {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .wv-weiter__hub {
+    margin: 0;
+  }
 }
 
 /* Studies section */
