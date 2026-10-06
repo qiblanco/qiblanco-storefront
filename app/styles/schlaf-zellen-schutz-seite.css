@@ -301,3 +301,47 @@
   gap: 0;
   margin: 0;
 }
+
+/* ═══ VARIANTE B: STICKY-KAUFKNOPF MOBIL (Experiment-Kreislauf E1, GS-056) ══════
+   Nur die Route /pages/schlaf-zellen-schutz-b rendert das Element (Prop
+   variante="b"); auf A existiert es nicht, diese Regeln treffen dort nichts.
+
+   NUR BESTANDS-TOKENS: Fläche --a-grund, Linie --a-linie, Schatten --a-shadow-md,
+   Abstände --a-s1/--a-s2 (8pt-Raster), Schrift --a-fs-base, Ebene --z-schwebend
+   (overlay-ordnung.css: schwebende Bedienelemente über dem Inhalt). Der Knopf
+   selbst ist unverändert .lp-vp-btn--primary — EIN Gold, auf der Handlung.
+   Unterer Rand über --overlay-rand-unten (safe-area), keine freie Zahl.
+
+   Versteckt = visibility hidden + aus dem Bild geschoben: kein Treffer, kein
+   Fokus, und die Chat-Erkennung (KaufknopfChatSignal) sieht kein Rechteck im
+   Fenster. Ohne Gleiten (Begründung an StickyKaufknopf in der Komponente). */
+.lp-a3 .lp-b-sticky { display: none; }
+@media (max-width: 767px) {
+  .lp-a3 .lp-b-sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-schwebend);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--a-s2);
+    padding: var(--a-s1) var(--a-s2) max(var(--a-s1), env(safe-area-inset-bottom));
+    background: var(--a-grund);
+    border-top: 1px solid var(--a-linie);
+    box-shadow: var(--a-shadow-md);
+    transform: translateY(110%);
+    visibility: hidden;
+  }
+  .lp-a3 .lp-b-sticky--sichtbar {
+    transform: none;
+    visibility: visible;
+  }
+  .lp-a3 .lp-b-sticky__name {
+    font-size: var(--a-fs-base);
+    font-weight: 600;
+    color: var(--a-text);
+  }
+  .lp-a3 .lp-b-sticky .lp-vp-btn { flex: 0 0 auto; }
+}

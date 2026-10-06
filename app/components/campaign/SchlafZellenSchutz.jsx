@@ -1,4 +1,4 @@
-import {createContext, useContext} from 'react';
+import {createContext, useContext, useEffect, useState} from 'react';
 import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
@@ -996,9 +996,87 @@ function WeiterCta({nr, imBlock = false}) {
   );
 }
 
-/* ───────── Root ───────── */
-export function SchlafZellenSchutz({products}) {
+/* ───────── Sticky-Kaufknopf mobil (nur Variante B) ─────────
+   Experiment-Kreislauf E1, Hypothese GS-056 (geschaeftssteuerung/data/
+   hypothesen.json): „Wer die Anzeige angeklickt hat, will den nächsten Schritt
+   sofort sehen." Gemessen am 05.10.: der einzige Knopf im Kopf liegt mobil bei
+   1,6 Bildschirmen, die Seite ist 29,4 Bildschirme lang.
+
+   WANN ER STEHT: erst wenn der Kopf (lp-a-hero) aus dem Bild ist — dort steht
+   der Kopf-Knopf schon —, und nicht mehr, sobald Preisblock oder Schluss
+   (lp-a-pricing, lp-a-final) im Bild sind: dort trägt die Seite ihre eigenen
+   Knöpfe, ein zweiter darunter wäre Doppelung. Nur mobil (bis 749 px).
+
+   BEWUSST NICHTS NEUES: Ziel, Wortlaut und Knopfklasse sind die des Kopf-
+   Knopfs (QIONE_ZIEL, QIONE_CTA, lp-vp-btn--primary; die Einstimmigkeits-
+   Probe probe_lp_cta_einstimmig.py liest denselben Wert). Kein Preis, keine
+   neue Aussage, kein zweiter Goldton; Farben und Abstände aus den Tokens der
+   Seite (styles/schlaf-zellen-schutz-seite.css, .lp-b-sticky).
+
+   CHAT: der Leitsatz „kein Bedienelement sichtbar und zugleich nicht
+   treffbar" gilt — KaufknopfChatSignal erkennt diesen Link als LP-Kaufausgang
+   und blendet die geschlossene Chat-Blase aus, solange sie ihn deckt. Das ist
+   ein bekannter Nebeneffekt des Tests (weniger Chat-Sicht mobil in B) und im
+   Experiment-Export als Störgröße geführt.
+
+   Versteckt heißt: kein Inhalt, visibility hidden, unter dem Fensterrand —
+   kein Fokus, kein Klick, kein Kasten im Fenster. Erscheinen OHNE Gleiten:
+   die Chat-Erkennung misst im nächsten Bild, und ein Knopf mitten in der
+   Bewegung läge dann noch unter dem Rand (Chat bliebe über ihm stehen). */
+function StickyKaufknopf() {
+  const [sichtbar, setSichtbar] = useState(false);
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const kopf = document.querySelector('[data-section="lp-a-hero"]');
+    const enden = Array.from(
+      document.querySelectorAll('[data-section="lp-a-pricing"], [data-section="lp-a-final"]'),
+    );
+    if (!kopf) return undefined;
+    const lage = {kopfImBild: true, endeImBild: new Set()};
+    const neu = () => setSichtbar(!lage.kopfImBild && lage.endeImBild.size === 0);
+    const beobachter = new IntersectionObserver((einträge) => {
+      for (const e of einträge) {
+        if (e.target === kopf) lage.kopfImBild = e.isIntersecting;
+        else if (e.isIntersecting) lage.endeImBild.add(e.target);
+        else lage.endeImBild.delete(e.target);
+      }
+      neu();
+    });
+    beobachter.observe(kopf);
+    enden.forEach((el) => beobachter.observe(el));
+    return () => beobachter.disconnect();
+  }, []);
+  return (
+    <div
+      className={`lp-b-sticky${sichtbar ? ' lp-b-sticky--sichtbar' : ''}`}
+      data-section="lp-b-sticky-kaufknopf"
+      aria-hidden={sichtbar ? undefined : 'true'}
+    >
+      {/* Inhalt NUR im sichtbaren Zustand im DOM: das Einhängen ist eine
+          childList-Änderung, und genau die lässt KaufknopfChatSignal neu messen.
+          Ein reiner Klassenwechsel löste keine Messung aus — gemessen am Branch-
+          Build 06.10. (390x844): die Chat-Blase lag dann über dem Knopf. */}
+      {sichtbar && (
+        <>
+          <span className="lp-b-sticky__name">QiOne® 2 Pro</span>
+          <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
+            {QIONE_CTA}
+          </a>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ───────── Root ─────────
+   `variante` (Experiment-Kreislauf E1, 06.10.2026): 'a' = die Seite, wie sie
+   ist (Default; A rendert damit byte-gleich wie vor dem Experiment), 'b' = A
+   plus die Änderung der laufenden Hypothese. NUR die Route
+   pages.schlaf-zellen-schutz-b.jsx übergibt 'b'. Gewinnt B, übernimmt A die
+   Änderung fest und die Weiche kommt in den nächsten Test. */
+export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
+  const istB = variante === 'b';
 
   return (
     <LiveDataCtx.Provider value={{data}}>
@@ -1032,7 +1110,13 @@ export function SchlafZellenSchutz({products}) {
         <IntroSection />
         <MechanismSection />
         {/* <WeiterCta nr={1} /> ERSATZLOS GESTRICHEN — Christian, 20.09.2026:
-            der Knopf unter „3 Wirkebenen". Eindeutig benannt, keine Auslegung. */}
+            der Knopf unter „3 Wirkebenen". Eindeutig benannt, keine Auslegung.
+            IN VARIANTE B KEHRT ER ZURÜCK (Christian 06.10.2026, Test GS-050:
+            „die Weiter-Knöpfe im Text zurück, mindestens nach dem Mechanismus-
+            Block"). Gleicher Schlüssel lp-a-weiter-1 wie bis zum 20.09.: die
+            Arme trennen sich am Pfad, der Knopf behält seine Historie. A bleibt
+            ohne ihn, bis B gewinnt. */}
+        {istB && <WeiterCta nr={1} />}
         <ScienceSection />
         {/* <WeiterCta nr={2} /> ERSATZLOS GESTRICHEN — Christians zweiter Streich,
             20.09.2026. Die Bildbelege lagen weder s01 noch s02 vor; die Wahl
@@ -1103,6 +1187,7 @@ export function SchlafZellenSchutz({products}) {
         <GuaranteeSection />
         <PricingSection />
         <FinalCTA />
+        {istB && <StickyKaufknopf />}
       </div>
     </LiveDataCtx.Provider>
   );
