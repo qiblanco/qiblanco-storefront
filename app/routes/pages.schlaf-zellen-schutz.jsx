@@ -1,7 +1,7 @@
 import {redirect, useLoaderData} from 'react-router';
 import {SchlafZellenSchutz} from '~/components/campaign/SchlafZellenSchutz';
 import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
-import {entscheideLpAbV2} from '~/lib/lp-ab-v2.server';
+import {entscheideLpAbV2, entscheideLpExperiment} from '~/lib/lp-ab-v2.server';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
@@ -96,6 +96,17 @@ export async function loader({context, request}) {
   const v2 = entscheideLpAbV2(request, context.env);
   if (v2) {
     throw redirect(v2.ziel, {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
+  }
+
+  // EXPERIMENT-KREISLAUF E1 (Christian 06.10.2026): 15 % der Besucher sehen
+  // Variante B, stabil je Besucher und ohne Speicher auf dem Gerät. Die
+  // Seite A selbst bleibt unverändert; Begründung in lp-ab-v2.server.js.
+  const exp = entscheideLpExperiment(request, context.env);
+  if (exp) {
+    throw redirect(exp.ziel, {
       status: 302,
       headers: {'Cache-Control': 'no-store'},
     });

@@ -152,3 +152,114 @@ test('Der Pin faehrt im Query mit und zerstört den Passthrough nicht', () => {
                              {LP_AB_V2_MODE: 'on'}, () => 0.99);
   assert.ok(r.ziel.includes('fbclid=X1'), r.ziel);
 });
+
+// ═══ Experiment-Kreislauf E1 (06.10.2026): 15 % stabil je Besucher ═══════════
+import {
+  E1,
+  LP_EXP_B_PFAD,
+  besucherEimer,
+  entscheideLpExperiment,
+  experimentAktiv,
+} from '../app/lib/lp-ab-v2.server.js';
+
+/** Request-Stub mit Kopfzeilen (IP + UA), wie Oxygen sie liefert. */
+function reqK(pfadMitQuery, {ip = '', ua = 'Mozilla/5.0 (iPhone)', method = 'GET'} = {}) {
+  const h = new Map([['oxygen-buyer-ip', ip], ['user-agent', ua]]);
+  return {method, url: `${BASIS}${pfadMitQuery}`, headers: {get: (k) => h.get(k.toLowerCase()) || null}};
+}
+
+/** Erste IP (10.x), deren Eimer in bzw. außerhalb des B-Anteils liegt. */
+function ipMit(inB, ua = 'Mozilla/5.0 (iPhone)') {
+  for (let i = 1; i < 5000; i += 1) {
+    const ip = `10.0.${i >> 8}.${i & 255}`;
+    if ((besucherEimer(ip, ua) < E1.anteil_prozent) === inB) return ip;
+  }
+  throw new Error('keine IP gefunden');
+}
+
+test('E1: Anteil ist 15 % und B-Pfad ist eine eigene Route', () => {
+  assert.equal(E1.anteil_prozent, 15);
+  assert.equal(LP_EXP_B_PFAD, '/pages/schlaf-zellen-schutz-b');
+  assert.notEqual(LP_EXP_B_PFAD, LP_A);
+});
+
+test('E1: Zuteilung ist stabil je Besucher (gleiche IP+UA => gleicher Arm, 50x)', () => {
+  const ip = ipMit(true);
+  for (let i = 0; i < 50; i += 1) {
+    const e = entscheideLpExperiment(reqK(LP_A, {ip}), {});
+    assert.ok(e, 'derselbe Besucher muss jedes Mal B sehen');
+  }
+  const ipA = ipMit(false);
+  for (let i = 0; i < 50; i += 1) {
+    assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: ipA}), {}), null);
+  }
+});
+
+test('E1: Anteil über 20.000 Besucher liegt bei 15 % (+-1 Pkt.)', () => {
+  let b = 0;
+  const n = 20000;
+  for (let i = 0; i < n; i += 1) {
+    const ip = `100.${(i >> 16) & 255}.${(i >> 8) & 255}.${i & 255}`;
+    if (entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {})) b += 1;
+  }
+  const anteil = b / n;
+  assert.ok(anteil > 0.14 && anteil < 0.16, `Anteil ${anteil}`);
+});
+
+test('E1: Zuteilung hängt NICHT an der Quelle (Query) — Markensuche bleibt gleich verteilt', () => {
+  const ip = ipMit(true);
+  for (const q of ['', '?gclid=x&gad_campaignid=8925560332', '?utm_medium=paid&utm_content=120252123057700236', '?fbclid=abc']) {
+    assert.ok(entscheideLpExperiment(reqK(`${LP_A}${q}`, {ip}), {}), `Quelle ${q}`);
+  }
+});
+
+test('E1: Ziel trägt den rohen Query byte-identisch + lp_m=x (Tracking-Kette)', () => {
+  const ip = ipMit(true);
+  const q = '?utm_source=facebook&utm_medium=paid&fbclid=AbC_123&gclid=G-9';
+  const e = entscheideLpExperiment(reqK(`${LP_A}${q}`, {ip}), {});
+  assert.equal(e.ziel, `${LP_EXP_B_PFAD}${q}&lp_m=x`);
+  const ohne = entscheideLpExperiment(reqK(LP_A, {ip}), {});
+  assert.equal(ohne.ziel, `${LP_EXP_B_PFAD}?lp_m=x`);
+});
+
+test('E1: eigener Verkehr (Server-IP oder Marker-UA) bleibt immer auf A', () => {
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: '65.108.150.121'}), {}), null);
+  const ip = ipMit(true, 'QiBlancoInternal/1.0 (design-watch)');
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip, ua: 'QiBlancoInternal/1.0 (design-watch)'}), {}), null);
+});
+
+test('E1: Pin ?lp_exp=a|b dominiert den Würfel, auch für eigenen Verkehr', () => {
+  const ipB = ipMit(true);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=a`, {ip: ipB}), {}), null);
+  const e = entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {});
+  assert.ok(e && e.ziel.startsWith(`${LP_EXP_B_PFAD}?lp_exp=b`));
+});
+
+test('E1: ohne Client-IP keine Zuteilung (A), Datenrequests und POST nie', () => {
+  // Scharf gemacht: ein UA, dessen Eimer OHNE IP in B läge — nur die IP-Pflicht hält ihn auf A.
+  let uaOhne = '';
+  for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `UA-${i}`) < E1.anteil_prozent) uaOhne = `UA-${i}`;
+  assert.ok(uaOhne);
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
+  const ip = ipMit(true);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}.data`, {ip}), {}), null);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?_data=routes`, {ip}), {}), null);
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip, method: 'POST'}), {}), null);
+  assert.ok(entscheideLpExperiment(reqK(LP_A, {ip, method: 'HEAD'}), {}));
+});
+
+test('E1: Kill — Env LP_EXP_SZS_MODE=off oder Code-Schalter false => 100 % A', () => {
+  const ip = ipMit(true);
+  assert.equal(experimentAktiv({}), true);
+  assert.equal(experimentAktiv({LP_EXP_SZS_MODE: 'off'}), false);
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off'}), null);
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {}, false), null);
+});
+
+test('E1: Ad-Weiche schließt B aus (sonst Schleife B -> A für bezahlten Verkehr)', () => {
+  assert.ok(AUSSCHLUSS_SEGMENTE.includes(LP_EXP_B_PFAD));
+  assert.equal(istAusgeschlossen(LP_EXP_B_PFAD), true);
+  assert.equal(entscheideAdWeiche(`${BASIS}${LP_EXP_B_PFAD}?utm_medium=paid&lp_m=x`), null);
+  // Gegenprobe: ein nicht ausgeschlossener Pfad wird weiter umgeleitet.
+  assert.ok(entscheideAdWeiche(`${BASIS}/pages/irgendwas?utm_medium=paid`));
+});

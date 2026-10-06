@@ -48,7 +48,7 @@
  */
 import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
-import {LP_V2_PFAD} from './lp-ab-v2.server.js';
+import {LP_EXP_B_PFAD, LP_V2_PFAD} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
 import {MM_MARKER, mmZielPfad, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
 
@@ -204,6 +204,10 @@ const WEITERE_CLICK_IDS = ['ttclid', 'msclkid'];
 export const AUSSCHLUSS_SEGMENTE = [
   LP_A_PFAD,
   LP_V2_PFAD,
+  // Variante B des Experiment-Kreislaufs (E1, 06.10.2026): ohne diesen Eintrag
+  // leitete die Weiche jeden bezahlten Besucher von B zurück auf A — B wäre
+  // für Anzeigen-Verkehr unerreichbar und der 15-%-Arm stünde leer.
+  LP_EXP_B_PFAD,
   // LP-V3 (Review-Artefakt, 20260726-lp-v3-apple-microsoft-scrollanim):
   // NICHT schleifen-kritisch (nichts leitet auf V3), aber ein GETEILTER
   // Review-Link trägt schnell fbclid/utm (Messenger/WhatsApp-Klicks) —
