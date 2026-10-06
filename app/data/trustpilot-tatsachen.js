@@ -5,8 +5,16 @@
  * Eigenanteil in Googles KI-Antwort am 2026-09-30 bei 5 von 58 Zitatzeilen
  * (8,6 %, seo-manager/data/seo.db, Tabelle `flaeche`, letzte 14 Tage), und
  * der Begriff hatte keine zuständige Seite. Zitiert wurden vor allem die
- * Trustpilot-Seiten selbst. Die Antwort darauf ist eine Zählung mit Quelle
+ * Trustpilot-Seiten selbst. Die Antwort darauf ist eine Nachlese mit Quelle
  * und Stand, kein Werbetext.
+ *
+ * KEINE ANZAHL AUF DER SEITE (Christian 2026-10-06, Job 20261006-bau-
+ * trustpilot-scroller-ki-seiten-und-faq, Feste Grenze 2: „nicht die
+ * Gesamtanzahl anzeigen"): weder Gesamt- noch Teilanzahl, weder in Ziffern
+ * noch als Zahlwort, auch nicht in Titel, Beschreibung und Schema. Die
+ * Seite nennt TrustScore, Stand, „keine unter vier Sternen" und „ohne
+ * Einladung". Die Zählung `ZAHL` bleibt hier, weil dieser Satz an ihr hängt;
+ * sie wird nicht ausgegeben. test/trustpilot-tatsachen.test.mjs hält dagegen.
  *
  * DIE QUELLE IST EIN PROFIL, NICHT „GANZ TRUSTPILOT": de.trustpilot.com/
  * review/qiblanco.com, nachgelesen am 2026-10-01. trustpilot.com antwortet
@@ -17,8 +25,8 @@
  * Deshalb nennt die Seite kein einzelnes Bewertungsdatum und keinen Namen,
  * nur die Summe und den Stand.
  *
- * KEINE ZAHL IM TEXT IST EIN LITERAL außer in `PROFIL`: Anzahl, Verteilung
- * und „keine unter vier Sternen" werden aus `PROFIL.sterne` gezählt. Wer das
+ * KEINE ZAHL IM TEXT IST EIN LITERAL außer in `PROFIL`: „keine unter vier
+ * Sternen" wird aus `PROFIL.sterne` gezählt. Wer das
  * Profil neu nachliest, ändert die Seite an EINER Stelle, und `STAND` im
  * selben Commit. Die stehende Wache seo-manager/pruefungen/
  * probe_trustpilot_stand_auf_der_seite.py vergleicht den TrustScore der
@@ -66,16 +74,8 @@ export const PROFIL = {
  */
 export const FREMDE_PROFILE = ['blanco.de', 'www.blanco.com'];
 
-/** Zahlwörter bis zwölf: im Fließtext liest sich „fünf" anders als „5". */
-const WORT = [
-  'keine', 'eine', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht',
-  'neun', 'zehn', 'elf', 'zwölf',
-];
-export function zahlwort(n) {
-  return Number.isInteger(n) && n >= 0 && n < WORT.length ? WORT[n] : String(n);
-}
-
 const s = PROFIL.sterne;
+/** Nur zum Rechnen, nie zur Ausgabe (siehe oben, KEINE ANZAHL). */
 export const ZAHL = {
   alle: s[5] + s[4] + s[3] + s[2] + s[1],
   voll: s[5],
@@ -86,33 +86,39 @@ export const ZAHL = {
 /** Google-Rezensionen, Studie, Videos: wo es mehr Stimmen gibt. */
 export const BERICHTE_STUDIE = 171;
 
+/** Der eine Satz zur Verteilung, ohne Anzahl. */
+function unterVierSatz() {
+  return ZAHL.unterVier === 0
+    ? 'Keine Bewertung liegt unter vier Sternen.'
+    : 'Ein Teil der Bewertungen liegt bei drei Sternen oder darunter.';
+}
+
+/** Dasselbe als Satzglied für Titel-Umfeld und Beschreibung der Route. */
+export const UNTER_VIER_KURZ =
+  ZAHL.unterVier === 0
+    ? 'keine Bewertung unter vier Sternen'
+    : 'ein Teil der Bewertungen bei drei Sternen oder darunter';
+
 export const KOPF = {
   vorspann: 'Trustpilot, nachgelesen',
   titel: 'Qi Blanco auf Trustpilot',
   lead:
-    `Auf Trustpilot stehen ${ZAHL.alle} Bewertungen zu Qi Blanco, mit einem ` +
-    `TrustScore von ${PROFIL.trustscore} von 5. Alle ${ZAHL.alle} haben ` +
-    'Kundinnen und Kunden ohne Einladung von uns geschrieben. Qi Blanco hat ' +
-    'das Profil nicht beansprucht und verwaltet es nicht.',
+    `Auf Trustpilot hat Qi Blanco einen TrustScore von ${PROFIL.trustscore} ` +
+    `von 5. ${unterVierSatz()} Alle Bewertungen dort sind ohne Einladung ` +
+    'von uns geschrieben. Qi Blanco hat das Profil nicht beansprucht und ' +
+    'verwaltet es nicht.',
   quelle:
     `Trustpilot-Profil ${PROFIL.anzeige}, einzeln nachgelesen. ` +
     `Stand: ${STAND_TEXT}.`,
 };
 
-/** Die Verteilung als Zeilen, von fünf Sternen abwärts. */
-export const VERTEILUNG = [5, 4, 3, 2, 1].map((n) => ({
-  sterne: n,
-  anzahl: s[n],
-}));
-
 export const PROFIL_ABSCHNITT = {
   titel: 'Was im Profil steht',
+  // Ohne Anzahl: „die meisten" nur, solange es die Daten tragen.
   einleitung:
-    `${ZAHL.voll} Bewertungen geben fünf Sterne, ` +
-    `${zahlwort(ZAHL.vier)} gibt vier. ` +
-    (ZAHL.unterVier === 0
-      ? 'Mit drei Sternen oder weniger hat niemand bewertet.'
-      : `${ZAHL.unterVier} Bewertungen liegen bei drei Sternen oder darunter.`),
+    2 * ZAHL.voll > ZAHL.alle
+      ? 'Die meisten Bewertungen geben fünf Sterne.'
+      : 'Wie sich die Sterne verteilen, zeigt Trustpilot im Profil.',
   punkte: [
     {
       id: 'unaufgefordert',
@@ -132,7 +138,7 @@ export const PROFIL_ABSCHNITT = {
     },
     {
       id: 'wenige',
-      titel: `${ZAHL.alle} Stimmen sind ein kleiner Ausschnitt`,
+      titel: 'Die meisten Stimmen stehen bei Google',
       text:
         'Die meisten Rückmeldungen unserer Kundschaft stehen im ' +
         'Google-Unternehmensprofil von Qi Blanco.',
@@ -192,18 +198,17 @@ export const FRAGEN = [
     id: 'gibt-es',
     q: 'Ist Qi Blanco auf Trustpilot?',
     a:
-      `Ja. Unter ${PROFIL.anzeige} stehen ${ZAHL.alle} Bewertungen mit einem ` +
-      `TrustScore von ${PROFIL.trustscore} von 5 (Stand ${STAND_TEXT}).`,
+      `Ja. Unter ${PROFIL.anzeige} hat Qi Blanco einen TrustScore von ` +
+      `${PROFIL.trustscore} von 5 (Stand ${STAND_TEXT}).`,
   },
   {
     id: 'schlechte',
     q: 'Gibt es auf Trustpilot schlechte Bewertungen über Qi Blanco?',
     a:
       ZAHL.unterVier === 0
-        ? `Nein. Am ${STAND_TEXT} hat keine der ${ZAHL.alle} Bewertungen ` +
-          'weniger als vier Sterne.'
-        : `Ja. Am ${STAND_TEXT} liegen ${ZAHL.unterVier} der ${ZAHL.alle} ` +
-          'Bewertungen bei drei Sternen oder darunter.',
+        ? `Nein. Am ${STAND_TEXT} liegt keine Bewertung unter vier Sternen.`
+        : `Ja. Am ${STAND_TEXT} liegt ein Teil der Bewertungen bei drei ` +
+          'Sternen oder darunter.',
   },
   {
     id: 'eingeladen',
@@ -240,6 +245,6 @@ export const FRAGEN = [
     q: 'Wie aktuell sind diese Angaben?',
     a:
       `Stand ist der ${STAND_TEXT}. Das Profil ist an diesem Tag einzeln ` +
-      'nachgelesen. Die aktuelle Zahl steht jederzeit bei Trustpilot selbst.',
+      'nachgelesen. Den aktuellen Stand zeigt Trustpilot jederzeit selbst.',
   },
 ];

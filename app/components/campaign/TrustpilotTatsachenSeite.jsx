@@ -7,8 +7,6 @@ import {
   PROFIL_ABSCHNITT,
   SELBST,
   STIMMEN,
-  VERTEILUNG,
-  ZAHL,
 } from '~/data/trustpilot-tatsachen';
 import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
@@ -22,10 +20,11 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
  * geschrieben hat (Hausstimme: Antwort zuerst), danach, wo es mehr Stimmen
  * gibt.
  *
- * ALLE ZAHLEN KOMMEN AUS DEM DATENMODUL (Anzahl und Verteilung aus
- * `PROFIL.sterne`), die Google-Note aus `useGoogleRating()`, derselben
- * Variablen wie das sichtbare Badge. Ein Literal wäre am Tag seiner
- * Niederschrift richtig und danach falsch.
+ * KEINE ANZAHL VON TRUSTPILOT-BEWERTUNGEN (Christian 2026-10-06): keine
+ * Verteilung, keine Zahl im Linktext. Der TrustScore kommt aus dem
+ * Datenmodul, die Google-Note aus `useGoogleRating()`, derselben Variablen
+ * wie das sichtbare Badge. Ein Literal wäre am Tag seiner Niederschrift
+ * richtig und danach falsch.
  *
  * TRACKING-NAHT: keine Cookies, kein neuer Identitäts- oder Tracking-Key, kein
  * Kaufknopf. Externe Links öffnen mit rel="noopener noreferrer nofollow".
@@ -48,20 +47,6 @@ export function TrustpilotTatsachenSeite() {
         <div className="tpt__inhalt">
           <h2>{PROFIL_ABSCHNITT.titel}</h2>
           <p className="tpt__einleitung">{PROFIL_ABSCHNITT.einleitung}</p>
-          <ul className="tpt__verteilung" aria-label="Bewertungen nach Sternen">
-            {VERTEILUNG.map((v) => (
-              <li className="tpt__zeile" key={v.sterne} data-sterne={v.sterne}>
-                <p>
-                  {v.sterne === 1 ? 'Ein Stern' : `${v.sterne} Sterne`}:{' '}
-                  {v.anzahl === 0
-                    ? 'keine Bewertung'
-                    : v.anzahl === 1
-                      ? 'eine Bewertung'
-                      : `${v.anzahl} Bewertungen`}
-                </p>
-              </li>
-            ))}
-          </ul>
           <ol className="tpt__punkte">
             {PROFIL_ABSCHNITT.punkte.map((p) => (
               <li className="tpt__punkt" key={p.id} id={p.id}>
@@ -78,13 +63,13 @@ export function TrustpilotTatsachenSeite() {
               target="_blank"
               rel="noopener noreferrer nofollow"
             >
-              Alle {ZAHL.alle} Bewertungen bei Trustpilot lesen
+              Alle Bewertungen bei Trustpilot lesen
             </a>
           </p>
         </div>
       </section>
 
-      {/* Die Bewertungen selbst, direkt nach der Zählung (Job 20261006-bau-
+      {/* Die Bewertungen selbst, direkt nach dem Profil (Job 20261006-bau-
           trustpilot-scroller-ki-seiten-und-faq). Ohne den Link auf diese Seite. */}
       <TrustpilotStimmen praefix="tpt-" mitTatsachenLink={false} />
 
