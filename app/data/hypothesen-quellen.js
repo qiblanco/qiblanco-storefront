@@ -84,7 +84,7 @@ export const QUELLEN = [
     untersucht:
       'Kurzer Übersichtsaufsatz über die eigenen Messungen an Grenzflächenwasser (Hydrogele, hydrophile Polymere, Monoschichten, Ionenaustauscher-Kügelchen, biologisches Gewebe).',
     gezeigt:
-      'Die Ausschlusszone ist geladen, das Wasser dahinter entgegengesetzt geladen — „batterieartig" —, und diese Batterie wird von aufgenommener Strahlungsenergie gespeist. Pollack hält fest, dass der Ausschluss inzwischen „in a dozen different laboratories worldwide" bestätigt worden sei.',
+      'Die Ausschlusszone ist geladen, das Wasser dahinter entgegengesetzt geladen, „batterieartig", und diese Batterie wird von aufgenommener Strahlungsenergie gespeist. Pollack hält fest, dass der Ausschluss inzwischen „in a dozen different laboratories worldwide" bestätigt worden sei.',
     nichtUeberUns:
       'Der Aufsatz behandelt Grenzflächen aus Gelen und Polymeren. Über Metall, über Schmuck oder über einen Körper, der ein solches Objekt trägt, steht darin nichts.',
     zitat:
@@ -124,9 +124,9 @@ export const QUELLEN = [
     untersucht:
       'Einzelne Ionenaustauscher-Kügelchen von 15 bis 300 Mikrometer Durchmesser in Mikrokügelchen-Suspension; Breite der Ausschlusszone je Kügelchengröße.',
     gezeigt:
-      'Je größer das Kügelchen, desto breiter die Ausschlusszone — über den ganzen gemessenen Bereich. Sehr kleine Oberflächen erzeugen sehr kleine Zonen.',
+      'Je größer das Kügelchen, desto breiter die Ausschlusszone, und zwar über den ganzen gemessenen Bereich. Sehr kleine Oberflächen erzeugen sehr kleine Zonen.',
     nichtUeberUns:
-      'Die Arbeit sagt, dass die Größe der Oberfläche zählt. Sie sagt nicht, welche Zone ein Gitter von der Größe unseres Chips erzeugen würde — das hat niemand gemessen.',
+      'Die Arbeit sagt, dass die Größe der Oberfläche zählt. Sie sagt nicht, welche Zone ein Gitter von der Größe unseres Chips erzeugen würde. Das hat niemand gemessen.',
     link: 'https://doi.org/10.2495/DNE-V6-N2-139-144',
     linkText: 'DOI 10.2495/DNE-V6-N2-139-144',
     bibliothek: 'paper-effect-of-particle-diameter-on-exclusion-zone-size-2011',
@@ -141,7 +141,7 @@ export const QUELLEN = [
     untersucht:
       'Schmelzendes Eis, verfolgt mit UV-Vis-Spektroskopie; die Ausschlusszone hat eine kennzeichnende Absorption bei 270 nm.',
     gezeigt:
-      'Beim Schmelzen tritt vorübergehend die 270-nm-Absorption auf und verschwindet dann wieder — im Einklang mit der Annahme, dass Eis nicht direkt zu gewöhnlichem Wasser wird, sondern über die geordnete Zwischenphase.',
+      'Beim Schmelzen tritt vorübergehend die 270-nm-Absorption auf und verschwindet dann wieder. Das passt zu der Annahme, dass Eis über die geordnete Zwischenphase zu gewöhnlichem Wasser wird und nicht direkt.',
     nichtUeberUns:
       'Eine Arbeit über Eis. Sie stützt die Idee einer geordneten Wasserphase, nicht die Idee, dass ein Gegenstand sie im Körper erzeugt.',
     bibliothek:
@@ -157,11 +157,11 @@ export const QUELLEN = [
     wo: 'World Scientific, Singapore',
     art: 'theorie',
     untersucht:
-      'Theoretische Physik: eine Beschreibung kondensierter Materie — auch flüssigen Wassers — mit den Mitteln der Quantenelektrodynamik. Keine Messung, eine Rechnung.',
+      'Theoretische Physik: eine Beschreibung kondensierter Materie, auch flüssigen Wassers, mit den Mitteln der Quantenelektrodynamik. Keine Messung, eine Rechnung.',
     gezeigt:
       'Nach dieser Theorie können Moleküle in Flüssigkeiten „kohärente Domänen" bilden, in denen sie im Gleichtakt mit einem eingeschlossenen elektromagnetischen Feld schwingen.',
     nichtUeberUns:
-      'Ein Theoriebuch von 1995. Es kennt weder Pollacks spätere Messungen noch unser Produkt. Die Theorie ist in der Physik nicht Mehrheitsmeinung; sie ist das Fundament, auf dem unser Hauswort „kohärentes Wasser" steht — und das muss man wissen, wenn man es benutzt.',
+      'Ein Theoriebuch von 1995. Es kennt weder Pollacks spätere Messungen noch unser Produkt. Die Theorie ist in der Physik nicht Mehrheitsmeinung; auf ihr steht unser Hauswort „kohärentes Wasser".',
     link: 'https://doi.org/10.1142/2738',
     linkText: 'DOI 10.1142/2738',
     bibliothek: 'preparata-qed-coherence',
@@ -198,9 +198,9 @@ export const QUELLEN = [
     untersucht:
       'Verschiedene Metalle in wässriger Mikrokügelchen-Suspension: Zink, Aluminium, Zinn, Blei, Wolfram, Platin, Gold. Breite der partikelfreien Zone, elektrisches Potential, pH.',
     gezeigt:
-      'Neben reaktiven Metallen entstehen Ausschlusszonen — am breitesten neben Zink (rund 200 Mikrometer). Ihre Größe folgt der Stellung des Metalls in der elektrochemischen Spannungsreihe.',
+      'Neben reaktiven Metallen entstehen Ausschlusszonen, am breitesten neben Zink (rund 200 Mikrometer). Ihre Größe folgt der Stellung des Metalls in der elektrochemischen Spannungsreihe.',
     nichtUeberUns:
-      'Das ist die Arbeit, die am stärksten GEGEN unsere Chip-Hypothese spricht, und deshalb steht sie hier: neben Gold und Platin fand Pollacks Labor keine Ausschlusszone. Unser Gitter ist aus 750er Gold. Gemessen wurde allerdings reines Metall in Wasser — nicht eine Goldlegierung im Körper, nicht unser Gitter, nicht unsere Geometrie. Das schwächt die Hypothese; es widerlegt sie nicht. Beides muss man sagen.',
+      'Neben Gold und Platin fand Pollacks Labor keine Ausschlusszone. Unser Gitter ist aus 750er Gold. Gemessen wurde allerdings reines Metall in Wasser, nicht eine Goldlegierung im Körper, nicht unser Gitter, nicht unsere Geometrie.',
     zitat:
       'Other reactive metals, including aluminum, tin, lead, and tungsten exhibited distinct but smaller exclusion zones, while precious metals such as platinum and gold did not produce any.',
     zitatOrt: 'S. 1, Abstract',
@@ -221,7 +221,7 @@ export const QUELLEN = [
     gezeigt:
       'Neben beiden Magnetpolen bilden sich kügelchenfreie Zonen, die den Ausschlusszonen an hydrophilen Oberflächen in Größe und Verhalten ähneln. Die Zone am Nordpol war größer; der Unterschied war nur bei Polystyrol-Kügelchen statistisch signifikant.',
     nichtUeberUns:
-      'Die Arbeit zeigt, dass auch ein Feld — nicht nur eine benetzte Oberfläche — Wasser ordnen kann. Unser Chip ist kein Magnet; die Arbeit sagt nichts über die Art Feld, die wir für ihn annehmen. Finanziert von der Software AG Stiftung.',
+      'Die Arbeit zeigt, dass auch ein Feld Wasser ordnen kann, nicht nur eine benetzte Oberfläche. Unser Chip ist kein Magnet; die Arbeit sagt nichts über die Art Feld, die wir für ihn annehmen. Finanziert von der Software AG Stiftung.',
     link: 'https://doi.org/10.1371/journal.pone.0268747',
     linkText: 'DOI 10.1371/journal.pone.0268747',
     bibliothek: 'paper-magnetic-fields-induce-exclusion-zones-in-water-2022',
@@ -237,7 +237,7 @@ export const QUELLEN = [
     untersucht:
       'Entionisiertes, EZ- und gewöhnliches Wasser unter schwachen elektrischen Wechselfeldern (600 ± 150 V/m; 7,8 bis 1000 Hz) über Platinelektroden; gemessen mit Spektroradiometer und Kontaktwinkel.',
     gezeigt:
-      'Ein von oben angelegtes schwaches Feld bei 7,8 bis 75 Hz veränderte das Strahlungsprofil von entionisiertem Wasser so, dass es dem von EZ-Wasser ähnelte — die Autoren sprechen von einer möglicherweise induzierten molekularen Ordnung.',
+      'Ein von oben angelegtes schwaches Feld bei 7,8 bis 75 Hz veränderte das Strahlungsprofil von entionisiertem Wasser so, dass es dem von EZ-Wasser ähnelte. Die Autoren sprechen von einer möglicherweise induzierten molekularen Ordnung.',
     nichtUeberUns:
       'Die Felder kamen aus einer Spannungsquelle. Ob ein passiver Gegenstand ohne Stromversorgung ein vergleichbares Feld erzeugt, wurde nicht untersucht.',
     link: 'https://doi.org/10.1371/journal.pone.0260967',
@@ -259,7 +259,7 @@ export const QUELLEN = [
     gezeigt:
       'Wird die Zelle als Gel ernst genommen, erklärt der Phasenübergang von Gelen viele Zellfunktionen; Wasser ist darin strukturiert, nicht frei.',
     nichtUeberUns:
-      'Eine Arbeit über die Zelle, nicht über ein Produkt. Sie begründet, warum die Ordnung des Zellwassers überhaupt eine sinnvolle Frage ist — mehr nicht.',
+      'Eine Arbeit über die Zelle, nicht über ein Produkt. Sie begründet, warum die Ordnung des Zellwassers überhaupt eine sinnvolle Frage ist.',
     link: 'https://doi.org/10.2170/jjphysiol.51.649',
     linkText: 'DOI 10.2170/jjphysiol.51.649',
     bibliothek: 'paper-is-the-cell-a-gel-and-why-does-it-matter-2001',
@@ -291,11 +291,11 @@ export const QUELLEN = [
     wo: 'Advances in Preventive Medicine and Health Care 7, 1060',
     art: 'uebersicht',
     untersucht:
-      'Übersichts- und Thesenartikel — mit Fragezeichen im Titel. Keine eigene Messung.',
+      'Übersichts- und Thesenartikel, mit Fragezeichen im Titel. Keine eigene Messung.',
     gezeigt:
       'Pollack schlägt vor, dass EZ-Wasser die negative elektrische Spannung der Zelle erzeugt und ein Mangel daran mit dem niedrigen Potential von Krebszellen zusammenhängen könnte.',
     nichtUeberUns:
-      'Wir nennen diese Arbeit, weil sie zeigt, wie weit Pollack selbst seine Idee treibt — und dass er sie als Frage formuliert. Sie hat mit unserem Produkt nichts zu tun, und wir leiten daraus keine Aussage über Krankheiten ab.',
+      'Wir nennen diese Arbeit, weil sie zeigt, wie weit Pollack selbst seine Idee treibt und dass er sie als Frage formuliert. Sie hat mit unserem Produkt nichts zu tun, und wir leiten daraus keine Aussage über Krankheiten ab.',
     link: 'https://doi.org/10.29011/2688-996X.001060',
     linkText: 'DOI 10.29011/2688-996X.001060',
     bibliothek: 'paper-cancer-cell-water-2024',
@@ -305,7 +305,7 @@ export const QUELLEN = [
   {
     id: 'berenis-2021',
     autor:
-      'Meike Mevissen, David Schürmann (BERENIS — Beratende Expertengruppe nichtionisierende Strahlung, Schweiz)',
+      'Meike Mevissen, David Schürmann (BERENIS, Beratende Expertengruppe nichtionisierende Strahlung, Schweiz)',
     jahr: '2021',
     titel:
       'Is there evidence for oxidative stress caused by electromagnetic fields?',
@@ -314,7 +314,7 @@ export const QUELLEN = [
     untersucht:
       'Rund 150 begutachtete Tier- und Zellstudien der Jahre 2010–2020 zu niederfrequenten Magnetfeldern (50/60 Hz) und Mobilfunkfeldern (800 MHz–2,5 GHz) und oxidativem Stress.',
     gezeigt:
-      'Die Mehrheit der Tierstudien und mehr als die Hälfte der Zellstudien lieferten Hinweise auf erhöhten oxidativen Stress — auch unterhalb der Grenzwerte. Zugleich: kein wissenschaftlicher Konsens, methodische Schwächen in etlichen Studien, und eine ROS-Erhöhung ist nicht automatisch ein Gesundheitsschaden.',
+      'Die Mehrheit der Tierstudien und mehr als die Hälfte der Zellstudien lieferten Hinweise auf erhöhten oxidativen Stress, auch unterhalb der Grenzwerte. Zugleich: kein wissenschaftlicher Konsens, methodische Schwächen in etlichen Studien, und eine ROS-Erhöhung ist nicht automatisch ein Gesundheitsschaden.',
     nichtUeberUns:
       'Der Bericht belegt die Ausgangslage unserer Zellstudien (Strahlung kann Zellen stressen). Er kennt kein Schutzprodukt und sagt nichts über unseres. Und er warnt vor genau einer Schwäche, die auch unsere Studien haben: Kontrollen in einem anderen Brutschrank.',
     zitat:
@@ -335,7 +335,7 @@ export const QUELLEN = [
     untersucht:
       'Behördlicher Sachstandsbericht einer Arbeitsgruppe aus Ämtern, Forschung, Ärzteschaft und Telekommunikation; Evidenzbewertung gesundheitlicher Effekte von Mobilfunkstrahlung.',
     gezeigt:
-      'Für Hirnströme wird die Evidenz als ausreichend eingestuft. Für oxidativen Stress und andere zelluläre Effekte gibt die Arbeitsgruppe ausdrücklich KEINE Evidenzbeurteilung ab — mit dem Hinweis, dass reaktive Sauerstoffspezies in niedriger Konzentration gesundheitsfördernd und wichtig sind.',
+      'Für Hirnströme wird die Evidenz als ausreichend eingestuft. Für oxidativen Stress und andere zelluläre Effekte gibt die Arbeitsgruppe ausdrücklich KEINE Evidenzbeurteilung ab, mit dem Hinweis, dass reaktive Sauerstoffspezies in niedriger Konzentration gesundheitsfördernd und wichtig sind.',
     nichtUeberUns:
       'Ein Bericht über Strahlung, nicht über Schutz. Er beschreibt die Ausgangslage und kennt kein Schutzprodukt. Ob Mobilfunk Zellen dauerhaft schädigt, lässt er offen.',
     link: 'https://www.bafu.admin.ch/de/elektrosmog',
@@ -355,7 +355,7 @@ export const QUELLEN = [
     gezeigt:
       'Mobilfunkfelder können in Modellen Nervenzellen verändern und als Stressquelle wirken; die Autoren halten zugleich fest, dass die biologischen Effekte am Menschen nicht bewiesen sind und die Daten für eine klare Risikoaussage nicht reichen.',
     nichtUeberUns:
-      'Kein Bezug zu einem Produkt und keine Messung am Menschen: die Arbeit fasst Zell- und Tierstudien zusammen und hält ausdrücklich fest, dass die Datenlage für eine Risikoaussage nicht reicht.',
+      'Kein Bezug zu einem Produkt und keine Messung am Menschen: die Arbeit fasst Zell- und Tierstudien zusammen und hält fest, dass die Datenlage für eine Risikoaussage nicht reicht.',
     link: 'https://doi.org/10.4062/biomolther.2019.152',
     linkText: 'DOI 10.4062/biomolther.2019.152',
     bibliothek: 'emf-possible-effects-rf',
@@ -375,7 +375,7 @@ export const QUELLEN = [
     gezeigt:
       'Ohne Schutz sank die Radikalbildung auf 60,5 ± 3,9 % der unbestrahlten Kontrolle, mit QiOne 2 Pro blieb sie bei 84,7 ± 7,0 % (p ≤ 0,01). Die Werte der unbestrahlten Kontrolle wurden auch mit Schutz nicht vollständig erreicht.',
     nichtUeberUns:
-      'Das IST unser Produkt — deshalb gilt hier die andere Reichweitenfrage: Zellkultur, nicht Mensch; ein Labor, vom Hersteller gestellt, ohne unabhängige Wiederholung; drei Experimente; Kontrollen in einem anderen Brutschrank. Die Publikation erklärt ihre Messung mit kohärentem Wasser — und nennt das selbst eine Hypothese.',
+      'Das IST unser Produkt, und deshalb gilt hier die andere Reichweitenfrage: Zellkultur, nicht Mensch; ein Labor, vom Hersteller gestellt, ohne unabhängige Wiederholung; drei Experimente; Kontrollen in einem anderen Brutschrank. Die Publikation erklärt ihre Messung mit kohärentem Wasser und nennt das selbst eine Hypothese.',
     zitat:
       'However, even for the protected conditions, the values of the untreated controls without mobile phone radiation were not completely achieved.',
     zitatOrt: 'S. 484, Abstract',
@@ -411,9 +411,9 @@ export const QUELLEN = [
     untersucht:
       'Fünf Zelltypen (Niere/Hund, Leber/Mensch, Darm/Schwein, Lunge/Mensch, Bindegewebe/Maus) unter Wasserstoffperoxid als chemischem Stressor, mit und ohne QiBracelet; drei Serien.',
     gezeigt:
-      'Relativer Schutz je Zelltyp: Leber 47,3 %, Bindegewebe 29,6 %, Niere 27,1 %, Darm 18,0 %, Lunge 3,9 % — bei Lungenzellen also fast keiner.',
+      'Relativer Schutz je Zelltyp: Leber 47,3 %, Bindegewebe 29,6 %, Niere 27,1 %, Darm 18,0 %, Lunge 3,9 %. Bei Lungenzellen also fast keiner.',
     nichtUeberUns:
-      'Stressor ist Wasserstoffperoxid, nicht Strahlung — diese Studie sagt nichts über Elektrosmog. Sie gilt für das Armband, nicht für die Kette. p-Werte je Zelltyp werden nicht einzeln ausgewiesen.',
+      'Stressor ist Wasserstoffperoxid, nicht Strahlung. Diese Studie sagt nichts über Elektrosmog. Sie gilt für das Armband, nicht für die Kette. p-Werte je Zelltyp werden nicht einzeln ausgewiesen.',
     link: 'https://doi.org/10.53043/2320-1991.acb12001',
     linkText: 'DOI 10.53043/2320-1991.acb12001',
     bibliothek: 'studie-qibracelet-oxidative-2024',
@@ -429,9 +429,9 @@ export const QUELLEN = [
     untersucht:
       '171 freiwillig in sozialen Medien veröffentlichte Anwenderberichte, nach Themen gezählt. Kein Fragebogen, keine Kontrollgruppe, keine Verblindung.',
     gezeigt:
-      'Am häufigsten genannt: ruhigerer, tieferer Schlaf (rund 20 %) und mehr Energie (rund 17 %); alles Weitere unter 10 %. Der Autor vermutet als gemeinsamen Nenner weniger oxidativen Stress — gemessen hat er das in dieser Arbeit nicht.',
+      'Am häufigsten genannt: ruhigerer, tieferer Schlaf (rund 20 %) und mehr Energie (rund 17 %); alles Weitere unter 10 %. Der Autor vermutet als gemeinsamen Nenner weniger oxidativen Stress. Gemessen hat er das in dieser Arbeit nicht.',
     nichtUeberUns:
-      'Das ist keine Wirkungsstudie, sondern eine Zählung von Selbstberichten. Wer schreibt, dass ihm etwas geholfen hat, schreibt eher als wer nichts merkt. Diese Arbeit kann deshalb nicht sagen, wie es bei dir sein wird.',
+      'Das ist eine Zählung von Selbstberichten, keine Wirkungsstudie. Wer schreibt, dass ihm etwas geholfen hat, schreibt eher als wer nichts merkt. Diese Arbeit kann deshalb nicht sagen, wie es bei dir sein wird.',
     link: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ABBSR-24_-31_3.pdf?v=1717500318',
     linkText: 'Original-PDF',
     bibliothek: 'studie-abbsr-24',
@@ -466,9 +466,9 @@ export const QUELLEN = [
     untersucht:
       'Sachbuch eines Biologen und Physikers: verknüpft Pollacks Ausschlusszone, die QED-Theorie kohärenter Domänen und hexagonales Wasser zu einem Bild vom „bionischen" Wasser im Körper.',
     gezeigt:
-      'Warnke führt die Fäden zusammen — und ist an der entscheidenden Stelle selbst vorsichtig: zur Wirkung dieses Wassers auf Organismen gebe es kaum robuste Forschung.',
+      'Warnke führt die Fäden zusammen und ist an der entscheidenden Stelle selbst vorsichtig: zur Wirkung dieses Wassers auf Organismen gebe es kaum robuste Forschung.',
     nichtUeberUns:
-      'Ein Buch, kein Experiment; unser Produkt kommt darin nicht vor. Wir zitieren gerade den Satz, der uns Grenzen setzt.',
+      'Ein Buch, kein Experiment; unser Produkt kommt darin nicht vor.',
     zitat:
       'Wissenschaftlich robuste Forschung zu den Wirkungen speziell dieses Wassers auf Organismen gibt es kaum; man weiß bisher nur, dass es bestimmte Enzyme wie Dehydrogenasen, die Wasserstoff abspalten, aktivieren kann.',
     zitatOrt: 'S. 168–169',
@@ -482,9 +482,9 @@ export const QUELLEN = [
     wo: 'Scorpio, Berlin/München (E-Book-Ausgabe)',
     art: 'buch',
     untersucht:
-      'Philosophisches Sachbuch: Bewusstsein, Quantenphysik und Biologie — Warnkes Deutung, nicht Laborarbeit.',
+      'Philosophisches Sachbuch über Bewusstsein, Quantenphysik und Biologie. Warnkes Deutung, keine Laborarbeit.',
     gezeigt:
-      'Das Buch verbindet Physik mit Fragen des Bewusstseins. Es ist die Lektüre, aus der ein Teil unserer eigenen Sicht auf Bewusstsein kommt — und deshalb steht es hier, im Abschnitt „unsere Sicht", nicht im Abschnitt „Belege".',
+      'Das Buch verbindet Physik mit Fragen des Bewusstseins. Aus diesem Buch kommt ein Teil unserer eigenen Sicht auf Bewusstsein. Als Beleg führen wir es nicht.',
     nichtUeberUns:
       'Kein Beleg für irgendetwas an unserem Produkt. Eine Weltsicht, als solche gekennzeichnet.',
     bibliothek: 'warnke-quantenphilosophie',
@@ -549,7 +549,7 @@ export const VIDEOS = [
     dauerText: '24 Minuten',
     sprache: 'en',
     zeigt:
-      'Pollacks Kurzfassung seines Buches: die Ausschlusszone, ihre negative Ladung, und die These, dass Licht — vor allem Infrarot — sie aufbaut. Der meistgesehene Einstieg in das Thema.',
+      'Pollacks Kurzfassung seines Buches: die Ausschlusszone, ihre negative Ladung, und die These, dass Licht, vor allem Infrarot, sie aufbaut. Der meistgesehene Einstieg in das Thema.',
     sagtNichts:
       'Über Schmuck, Gold-Gitter oder ein Produkt, das man am Körper trägt. Pollack spricht über Wasser an Oberflächen und über Zellen, nicht über uns.',
     quellen: ['pollack-2013', 'pollack-2010'],
@@ -568,7 +568,7 @@ export const VIDEOS = [
     zeigt:
       'Der Schritt von der Oberfläche in die Zelle: warum Pollack das Zellwasser für strukturiert hält und was das für Zellfunktion bedeuten könnte.',
     sagtNichts:
-      'Über einen Weg, dieses Zellwasser von außen zu beeinflussen. Genau diese Lücke — zwischen Pollacks Zelle und unserem Chip — ist die offene Stelle unseres Modells.',
+      'Über einen Weg, dieses Zellwasser von außen zu beeinflussen. Genau diese Lücke zwischen Pollacks Zelle und unserem Chip ist die offene Stelle unseres Modells.',
     quellen: ['pollack-2001', 'sharma-pollack-2018'],
   },
   {
@@ -583,7 +583,7 @@ export const VIDEOS = [
     dauerText: '58 Minuten',
     sprache: 'en',
     zeigt:
-      'Die lange, akademische Fassung an der eigenen Universität — gleichnamig mit Pollacks Aufsatz von 2010: Ausschluss, Ladungstrennung, Strahlungsenergie, und die Kontrollen gegen Artefakte.',
+      'Die lange, akademische Fassung an der eigenen Universität, gleichnamig mit Pollacks Aufsatz von 2010: Ausschluss, Ladungstrennung, Strahlungsenergie, und die Kontrollen gegen Artefakte.',
     sagtNichts:
       'Über irgendein Produkt. Es ist eine Vorlesung über Grenzflächenwasser; wer eine Stunde Zeit hat, sieht hier, wie die Messungen gemacht wurden.',
     quellen: ['pollack-2010', 'pollack-2013'],
