@@ -99,7 +99,7 @@ function Expertenmeinungen() {
               <li>Gründer von PRO MIND ATHLETE</li>
             </ul>
             <p></p>
-            <p>
+            <p data-fremdtext="expertenmeinung">
               "Nachdem ich inzwischen schon seit fast zwei Jahren den QiOne® 2 Pro trage, war das QiBracelet® nochmal ein unglaublich kraftvolles Upgrade für mich. Nicht nur in meinen Meditationen, sondern auch im Arbeitsalltag spüre ich die verbesserte Verbindung zu meinem Körper und den gestiegenen Fokus ganz deutlich."
             </p>
             <p>
@@ -124,7 +124,7 @@ function Expertenmeinungen() {
               <li>Real Estate Professionals</li>
             </ul>
             <p></p>
-            <p>
+            <p data-fremdtext="expertenmeinung">
               „In unserem hektischen Alltag ist es oft schwer, das Gleichgewicht
               zwischen dem Drang, voranzukommen, und der Zeit zu finden, uns zu
               zentrieren und zu reflektieren. Qi Blanco hilft uns, dieses
@@ -138,7 +138,7 @@ function Expertenmeinungen() {
             <p>
               <strong>– Dr. Andreas Kramer –</strong>
             </p>
-            <p>
+            <p data-fremdtext="expertenmeinung">
               "Qi Blanco hat unsere Lebensqualität verbessert, indem es eine
               bestimmte Klarheit und Intuition bereitstellt, die uns in unserer
               täglichen Interaktion mit Menschen unterstützt. Der Schutz vor
@@ -165,8 +165,8 @@ function TechnologieQiBlanco() {
         <h3>Gitterchip™ aus eigens entwickelter Goldlegierung</h3>
         <p className='mt-2'>
           Der revolutionäre Gitterchip™ des QiBracelet® prägt ein statisches Feld
-          aus, das Wassermoleküle dazu anregt, in den kohärenten Zustand – den
-          Superzustand – überzugehen.
+          aus, das Wassermoleküle dazu anregt, in den kohärenten Zustand
+          überzugehen, den Superzustand.
         </p>
         <p className='mt-2'>
           Das QiBracelet® erhöht deutlich die kohärente Struktur des Wassers. Dies
