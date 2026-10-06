@@ -23,11 +23,11 @@ import bildquelleStyles from '~/styles/bracelet-bildquelle.css?url';
  * Kopf von app/styles/pdp-landing-qi.css.
  */
 /*
- * ZWEITES Stylesheet, NUR fuer diese Route: bracelet-bildquelle.css bindet die
- * Anzeigegroesse von zehn zu kleinen Bildquellen an ihre echte Pixelbreite
+ * ZWEITES Stylesheet, NUR für diese Route: bracelet-bildquelle.css bindet die
+ * Anzeigegröße von zehn zu kleinen Bildquellen an ihre echte Pixelbreite
  * (Gate 12 bild-aufloesung, Job 20261006-s02b-folge-qibracelet-details-
  * bildschuld). Eigene Datei, damit format_reichweite (R2) nur diese Seite in
- * die Belegpflicht zieht. Begruendung im Kopf der Datei.
+ * die Belegpflicht zieht. Begründung im Kopf der Datei.
  */
 export function links() {
   return [
