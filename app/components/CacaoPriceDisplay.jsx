@@ -13,11 +13,16 @@ import {useMarktLand} from '~/lib/markt-land';
  * den Warenkorb legte (Anlass: Kaufabbruch 2026-04-17). Der Packungspreis
  * bleibt als Nebenzeile sichtbar, er ist das Argument der Staffel.
  */
-export function CacaoPriceDisplay({quantity, selectedVariant, handle}) {
+export function CacaoPriceDisplay({quantity, selectedVariant, handle, staffelKasse = null}) {
   const marktLand = useMarktLand();
-  const pricing = cacaoPricing(quantity, selectedVariant, handle, marktLand);
+  const pricing = cacaoPricing(quantity, selectedVariant, handle, marktLand, staffelKasse);
+  // "3 x 54,49 € pro Packung" nur, wenn die Rechnung den großen Betrag
+  // darüber auf den Cent trifft (teilbar, lib/cacao-pricing.js). AT 3x ergäbe
+  // 163,47 neben 163,46; dann steht der Zeilenbetrag allein.
   const nebenzeile = [
-    pricing.menge > 1 ? `${pricing.menge} x ${pricing.price} pro Packung` : null,
+    pricing.menge > 1 && pricing.teilbar
+      ? `${pricing.menge} x ${pricing.price} pro Packung`
+      : null,
     pricing.per100g,
     pricing.rabattImWarenkorb ? 'Mengenrabatt im Warenkorb' : null,
   ]

@@ -24,6 +24,7 @@
 import {describe, it} from 'node:test';
 import assert from 'node:assert/strict';
 import {paketBetraege, rabattCodeFuer} from '../app/lib/paket-preis.js';
+import {kassenAnzeige} from '../app/lib/markt-pricing.js';
 
 // Netto-Einzelpreise, Storefront-API am 2026-09-12 (mess/preise.json).
 const NETTO = {
@@ -139,6 +140,23 @@ describe('ROT VOR GRUEN: die alte Rechnung schwankt wirklich', () => {
   }
 });
 
+describe('Kassenbetrag auf den Cent (Job 20261006-preisanzeige-rest)', () => {
+  it('AT Fundament: 5677,31 x 1,20 = 6812,77, nicht 6813', () => {
+    const p = PAKETE.Fundament;
+    const at = paketBetraege(strukturen(p)[0], p, 'AT');
+    assert.equal(at.preis, 6812.77);
+    // Streichpreis = Einzelpreise der Kaufseiten (AT 5024,88 + 2 x 1096,14 + ...).
+    assert.equal(at.compare, 7406.74);
+  });
+  it('DE bleibt ganz (1 Cent Kalibrier-Toleranz bis zum Brutto-Kipp)', () => {
+    for (const p of Object.values(PAKETE)) {
+      const de = paketBetraege(strukturen(p)[0], p, 'DE');
+      assert.equal(de.preis, p.erwartet.preis);
+      assert.equal(de.compare, p.erwartet.compare);
+    }
+  });
+});
+
 describe('Fremdwaehrung: der EUR-Festbetrag wird NICHT auf CHF angewendet', () => {
   it('CHF rechnet weiter mit dem Prozentsatz', () => {
     const p = PAKETE['Unabhängig'];
@@ -151,7 +169,14 @@ describe('Fremdwaehrung: der EUR-Festbetrag wird NICHT auf CHF angewendet', () =
       0,
     );
     assert.equal(chf.waehrung, 'CHF');
-    assert.equal(chf.compare, Math.round(nettoSumme));
+    // Seit 2026-10-06: Einzelpreise je Stück wie die Kaufseite (ohne Land gilt
+    // DE, also auch dessen 1-Cent-Toleranz: 78,99 -> 79), nicht mehr ganz.
+    const einzeln = strukturen(p, 'CHF')[0].reduce(
+      (s, l) => s + kassenAnzeige(l.einzelNetto, 'DE') * l.quantity,
+      0,
+    );
+    assert.equal(chf.compare, Math.round(einzeln * 100) / 100);
+    assert.ok(Math.abs(chf.compare - nettoSumme) < 0.1);
     assert.notEqual(chf.preis, Math.round(nettoSumme - p.rabattFest));
   });
 });

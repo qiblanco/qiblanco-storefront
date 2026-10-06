@@ -237,11 +237,14 @@ describe('ARM C Paketkarte mit Festbetrag: vor und nach dem Kipp derselbe Karten
     setzePreismodus('brutto');
     const r = paketBetraege(lines(BRUTTO, 'AT'), paket, 'AT');
     assert.equal(r.rabattart, 'fest');
-    // AT-Summe 7406,72 minus derselbe Brutto-Code 589,00 wie in DE. Der Abzug
-    // wird direkt geprüft: die Karte allein landet auch mit falschem Abzug
-    // (588,72 aus der AT-Summe) auf 6818 -- der Mutant blieb damit grün.
+    // AT-Summe 7406,71 (5024,87 + 2 x 1096,13 + 2 x 94,79) minus derselbe
+    // Brutto-Code 589,00 wie in DE. Der Abzug wird direkt geprüft: die Karte
+    // allein landete mit Ganz-Euro-Rundung auch mit falschem Abzug (588,72
+    // aus der AT-Summe) auf 6818 -- der Mutant blieb damit grün. Seit der
+    // Kassenbetrag-Regel auf der Karte (Job 20261006-preisanzeige-rest) nennt
+    // sie den Cent: 6817,71.
     assert.equal(r.festAbzug, 589.0);
-    assert.equal(r.preis, 6818);
+    assert.equal(r.preis, 6817.71);
   });
 
   it('gemischte Heimatsätze nehmen den Festbetrag-Pfad nicht', () => {

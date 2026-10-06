@@ -60,7 +60,7 @@
  * genau so, wie die Karte es vor diesem Umbau tat. Das ist keine Loesung für
  * die Fremdmaerkte, sondern die ehrliche Grenze dieses Baus.
  */
-import {anzeigeSatz} from './markt-pricing.js';
+import {anzeigeSatz, kassenAnzeige} from './markt-pricing.js';
 import {taxRateForHandle} from './cart-display-pricing.js';
 import {istBrutto} from './preismodus.js';
 
@@ -127,7 +127,10 @@ export function paketBetraege(lines, paket, land) {
         100) *
       menge;
     nettoSumme += netto * menge;
-    compareRoh += netto * menge * (1 + satz);
+    // Streichpreis der Karte = die Einzelpreise, wie jede Kaufseite sie nennt,
+    // mal Menge (je Stück auf den Cent, DE ganz). Über die Summe gerechnet
+    // stünde in DE 20.467,02 statt der 20.467 aus den Einzelpreisen.
+    compareRoh += kassenAnzeige(netto * (1 + satz), land) * menge;
     // Prozent-Pfad: Shopify schneidet den Prozentrabatt JE STÜCK centgenau ab
     // (Cart-Probe 2026-07-18: 78,99 x 8 % = 6,3192 -> 6,31).
     const rabattProEinheit = Math.floor(netto * paket.rabatt * 100) / 100;
@@ -159,9 +162,15 @@ export function paketBetraege(lines, paket, land) {
     ? (nettoSumme - rabattAbzug) * (1 + [...saetze][0])
     : preisProzentRoh;
 
+  // KASSENBETRAG STATT GANZER EURO (Job 20261006-preisanzeige-rest, Flanke 3
+  // aus s03 des Grossjobs 20261004 preisanzeige): bis hierher rundete die
+  // Karte auf ganze Beträge, also bis zu 0,50 neben der Kasse (AT Fundament
+  // 5677,31 x 1,20 = 6812,77, die Karte nannte 6813). Dieselbe Regel wie
+  // überall: auf den Cent, ganz bleibt ganz, DE mit der 1-Cent-Toleranz bis
+  // zum Brutto-Kipp (markt-pricing.js kassenAnzeige). DE ändert sich nicht.
   return {
-    compare: Math.round(compareRoh),
-    preis: Math.round(preisRoh),
+    compare: Math.round(compareRoh * 100) / 100,
+    preis: kassenAnzeige(preisRoh, land),
     waehrung,
     // WELCHE RABATTART DIESE ZAHL UNTERSTELLT. Sie wird zurueckgegeben, weil der
     // Warenkorb GENAU den Rabattcode bekommen muss, dessen Art hier gerechnet
