@@ -1,4 +1,4 @@
-import {anzeigeSatz, formatPreis, ganzEuroAnzeige} from '~/lib/markt-pricing';
+import {anzeigeSatz, formatPreis, kassenAnzeige} from '~/lib/markt-pricing';
 import {istBrutto} from '~/lib/preismodus';
 import {useMarktLand} from '~/lib/markt-land';
 
@@ -67,29 +67,36 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     if (!money) return null;
     const numericAmount = Number.parseFloat(money.amount);
     if (!Number.isFinite(numericAmount)) return null;
-    // Ganz-Euro-Regel (markt-pricing.js, ganzEuroAnzeige): aufgerundet, damit
-    // die Seite nie weniger nennt, als die Kasse nimmt (AT 2026-09-26, Kakao-
-    // Sets ab 5 Packungen 2026-10-01: 266,06 -> 267). In DE mit 1 Cent
-    // Kalibrier-Toleranz: QiOne 2 Pro 913,45 netto = 1087,0055 bleibt 1.087.
+    // Kassenbetrag-Regel (markt-pricing.js, kassenAnzeige; Grossjob 20261004
+    // preisanzeige, s03):
+    // die Seite nennt den Betrag der Kasse, ganz ohne Cent, sonst cent-genau
+    // (AT Kakao 78,13 statt 79). DE mit 1 Cent Kalibrier-Toleranz: QiOne 2 Pro
+    // 913,45 netto = 1087,0055 bleibt 1.087.
     const roh = numericAmount * (1 + satzFuer(money));
     const amount = centGenau
       ? Math.round(roh * 100) / 100
-      : ganzEuroAnzeige(roh, marktLand);
+      : kassenAnzeige(roh, marktLand);
     return {...money, amount};
   };
 
-  const formatMarktPreis = (money) => {
+  const formatMarktPreis = (money, runden = false) => {
     if (!money) return null;
     const amount = Number(money.amount);
     if (!Number.isFinite(amount)) return null;
     if (centGenau) {
       return formatPreis(amount, money.currencyCode || 'EUR', 'cart-cent');
     }
-    return formatPreis(Math.round(amount), money.currencyCode || 'EUR', 'pdp');
+    // Der Kaufpreis kommt schon auf den Cent aus kassenAnzeige und wird nicht
+    // ein zweites Mal gerundet; nur der Streichpreis bleibt ganz wie bisher.
+    return formatPreis(
+      runden ? Math.round(amount) : amount,
+      money.currencyCode || 'EUR',
+      'pdp',
+    );
   };
 
   const taxedPrice = formatMarktPreis(applyTax(price));
-  const compareAtFormatted = formatMarktPreis(compareAtPrice); // no tax here
+  const compareAtFormatted = formatMarktPreis(compareAtPrice, true); // no tax here
 
   return (
     <div className="product-price">
