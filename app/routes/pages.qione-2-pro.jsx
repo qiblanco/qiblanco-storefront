@@ -1,6 +1,7 @@
-import {useLoaderData} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
 import {
   QiOne2ProSeite,
   qiOne2ProSeiteLinks,
@@ -74,6 +75,12 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context, request}) {
+  // SEITEN-EXPERIMENT q2p-e1-gs080 (Christian 06.10.2026): 15 % der Besucher sehen
+  // die Rookie-Seite /pages/qione-2-pro-b, stabil je Besucher, ohne Speicher auf dem Gerät.
+  // Diese Seite selbst bleibt unverändert; Begründung in experiment-weiche.server.js.
+  const exp = entscheideSeitenExperiment(request, context.env, 'q2p-e1-gs080');
+  if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
+
   const [{product}, vergleichsPreise] = await Promise.all([
     context.storefront.query(PRODUCT_QUERY, {
       variables: {
