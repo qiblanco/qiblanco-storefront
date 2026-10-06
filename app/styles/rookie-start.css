@@ -1,0 +1,146 @@
+/* ============================================================================
+   rookie-start.css — Rookie /pages/start-b (Experiment start-e1-gs081,
+   Hypothese GS-081), hängt NUR an links() dieser einen Route.
+
+   B trägt dieselben Stylesheets wie A (_index.jsx: externe-stimmen.css,
+   startseite.css) und denselben Rahmen .home. Die Token-Schicht der
+   Startseite (Typo-Skala --st-fs-*, Takt --st-sec-*, warmes Neutral, EIN
+   Bild-Radius) gilt damit unverändert. Diese Datei fügt nur hinzu, was B mehr
+   hat: den Kopf mit Standbild, den Knopf nach den Zell-Diagrammen, den Takt
+   der neu gereihten Produktkarten und den Sticky-Kaufknopf mobil.
+
+   TOKENS: jeder Wert kommt aus startseite.css (.home --st-*) oder aus der
+   gemeinsamen Wurzel qb-tokens.css (root.jsx). KEIN neuer Farbwert, KEINE
+   neue Schriftgröße, KEIN zweiter Goldton: alle Knöpfe sind .btn--primary aus
+   app.css (die eine Akzent-Fläche), der Balken ist Grund und Tinte der Seite.
+   ========================================================================== */
+
+.qb-rookie-start {
+  /* Raster 8px (qb-tokens) */
+  --rs-s1: var(--qb-ref-raster, 8px);
+  --rs-s2: calc(var(--rs-s1) * 2);
+  /* Balken: warmes Neutral der Seite (dieselbe Fläche wie die Bewertungs-
+     Karten), gedämpfte Linie, weicher Schatten aus der Tinte */
+  --rs-grund: var(--st-flaeche);
+  --rs-linie: color-mix(in srgb, var(--st-muted) 25%, transparent);
+  --rs-schatten: 0 -4px 16px color-mix(in srgb, var(--st-text) 12%, transparent);
+}
+
+/* ---- Kopf (RookieKopf.jsx) ------------------------------------------------
+   Das Standbild steht dort, wo in A die Drehung steht, mit demselben Deckel
+   (startseite.css, Abschnitt „Die Drehung wird EINGEPASST“): auf breiten
+   Fenstern höchstens 490 px, an der rechten Inhaltskante. Mobil zieht es per
+   Reihenfolge direkt unter die Überschrift, wie in A. */
+.qb-rookie-start .qb-rs-kopf .qb-rs-kopf__bild img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-width: 490px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.qb-rookie-start .qb-rs-kopf__knopf {
+  margin-top: var(--rs-s2);
+}
+
+/* Breite Fenster: der Knopf so breit wie sein Wort plus Polster, nicht die
+   500 px, die .btn--primary als Block nimmt. In A steht er in einer Reihe
+   mit „Mehr erfahren“ und schrumpft dort; allein wäre er sonst ein Balken
+   über die halbe Textspalte. */
+@media screen and (min-width: 750px) {
+  .qb-rookie-start .qb-rs-kopf__knopf .btn--primary {
+    display: inline-block;
+    width: auto;
+    padding-inline: calc(var(--rs-s1) * 8);
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .qb-rookie-start .qb-rs-kopf .qb-rs-kopf__bild {
+    order: -1;
+  }
+  /* Mobil 256 px statt der vollen Spalte (358 px bei 390): das Produktfoto
+     trägt viel weißen Rand, und erst damit steht „Jetzt kaufen“ auch auf
+     kleinen Telefonen (360x740) im ersten Bildschirm. Gemessen am Branch-
+     Build 06.10.: volle Breite ließ den Knopf bei 390x844 mit 26 px Luft
+     gerade noch, bei 360x740 nicht mehr im Bild. 256 = 32 x 8 liegt auf dem
+     8-px-Raster und hält den Knopf auf beiden Größen im Bild. */
+  .qb-rookie-start .qb-rs-kopf .qb-rs-kopf__bild img {
+    max-width: 256px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* Der Knopf füllt mobil die Spalte: eine Trefferfläche, die man mit dem
+     Daumen nicht verfehlt, und genau ein Ziel im ersten Bildschirm. */
+  .qb-rookie-start .qb-rs-kopf__knopf .btn--primary {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* ---- Knopf nach den Zell-Diagrammen (GS-061) ------------------------------
+   Kleine Stufe des Takts wie der Chip-Knopf in A (--st-sec-sm). */
+.qb-rookie-start [data-section='zell-cta'] {
+  margin-top: var(--st-sec-sm);
+}
+
+/* ---- Produktkarten hinter der Nutzer-Statistik (GS-062) -------------------
+   In A tragen die Karten die große Stufe (96px), weil sie dort einen neuen
+   Abschnitt eröffnen. In B folgen sie direkt auf die Statistik und stehen
+   als eine Gruppe: die erste mit der mittleren Stufe, die beiden folgenden
+   mit der kleinen. */
+.qb-rookie-start [data-section='featured-qione-2-pro'] {
+  margin-top: var(--st-sec-md) !important;
+}
+.qb-rookie-start [data-section='featured-qibracelet'],
+.qb-rookie-start [data-section='featured-qihome-air'] {
+  margin-top: var(--st-sec-sm) !important;
+}
+.qb-rookie-start [data-section='info-slider'] {
+  margin-top: var(--st-sec-lg);
+}
+
+/* ---- Sticky-Kaufknopf (StickyKaufknopf.jsx) -------------------------------
+   Nur mobil. Versteckt heißt: leer, visibility hidden, unter dem Rand. Kein
+   Gleiten beim Erscheinen: KaufknopfChatSignal misst im nächsten Bild, ein
+   Knopf mitten in der Bewegung läge dann noch unter dem Rand. */
+.qb-rs-sticky { display: none; }
+
+@media screen and (max-width: 749px) {
+  .qb-rs-sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-schwebend);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--rs-s2);
+    padding: var(--rs-s1) var(--rs-s2) max(var(--rs-s1), env(safe-area-inset-bottom));
+    background: var(--rs-grund);
+    border-top: 1px solid var(--rs-linie);
+    box-shadow: var(--rs-schatten);
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+  .qb-rs-sticky--sichtbar {
+    transform: none;
+    visibility: visible;
+  }
+  .qb-rs-sticky__name {
+    font-size: var(--st-fs-3);
+    font-weight: 600;
+    color: var(--st-text);
+    white-space: nowrap;
+  }
+  /* Knopfhöhe über der 48px-Trefferfläche: 12px Polster oben und unten. */
+  .qb-rs-sticky .btn--primary {
+    flex: 1 1 auto;
+    max-width: none;
+    margin: 0;
+    padding: calc(var(--rs-s1) * 1.5) var(--rs-s2);
+    text-align: center;
+  }
+}
