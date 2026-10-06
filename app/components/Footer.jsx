@@ -3,6 +3,7 @@ import {EuGewaehrleistungsLink} from './EuGewaehrleistungsLabel';
 import {Await, NavLink, Link} from 'react-router';
 // Hub-Seiten-Liste + Begründung: app/lib/hub-seiten.js (SEO-Stufe S5).
 import {themenLinks} from '~/lib/hub-seiten';
+import {AnmeldeWeiche} from './reusables/Anmeldeweiche';
 
 const PRODUCT_LINKS = [
   {to: '/products/qione-2-pro', label: 'QiOne® 2 Pro'},
@@ -118,7 +119,16 @@ function FooterTop() {
   );
 }
 
+// Newsletter = AC-Formular 15. Die Weiche (Stufe E1 der AC-Ablösung, s11)
+// zeigt das eigene Formular, sobald der Anmelde-Endpunkt 15 auf 'eigen'
+// meldet; sonst und bei jedem Fehler das Embed wie bisher.
 function NewsletterForm() {
+  return (
+    <AnmeldeWeiche formId="15" ac={<NewsletterAcEmbed />} dunkel />
+  );
+}
+
+function NewsletterAcEmbed() {
   useEffect(() => {
     const id = 'ac-embed-15';
     if (document.getElementById(id)) return;
