@@ -97,7 +97,7 @@ function Hero() {
             Zellschutz, den man messen kann.
           </h1>
           <p className="lp-b-hero__subline">
-            Deine Zellen sind von Wasser umhüllt — und an genau diesem Wasser entscheidet
+            Deine Zellen sind von Wasser umhüllt, und an genau diesem Wasser entscheidet
             sich, wie stabil ihre Membran bleibt. Der QiOne<sup>®</sup>&nbsp;2 Pro bringt
             dieses Grenzflächen-Wasser in kohärente Ordnung. In peer-review-kontrollierten
             Zellstudien (in&nbsp;vitro) sank die Belastung durch oxidativen Stress um{' '}
@@ -122,11 +122,11 @@ function Hero() {
         <figure className="lp-b-hero__visual">
           <img
             src={heroImg}
-            alt="QiOne® 2 Pro — kohärentes Wasser auf Zellebene"
+            alt="QiOne® 2 Pro: kohärentes Wasser auf Zellebene"
             loading="eager"
           />
           <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro — getragen, Tag und Nacht.
+            QiOne<sup>®</sup>&nbsp;2 Pro, getragen Tag und Nacht.
           </figcaption>
         </figure>
       </div>
@@ -139,13 +139,13 @@ function ProblemSection() {
   return (
     <section className="lp-vp-section" data-section="lp-b-problem">
       <span className="eyebrow">Das stille Problem</span>
-      <h2>Deine Zellen altern — jeden Tag ein Stück.</h2>
+      <h2>Deine Zellen altern, jeden Tag ein Stück.</h2>
       <p className="lp-vp-section__lede">
         Oxidativer Stress gilt als einer der anerkannten Treiber der Zellalterung: Wenn
         freie Radikale schneller entstehen, als der Körper sie abfängt, leiden Zellmembran
-        und Zellfunktion. Handystrahlung, Dauerstress, schlechter Schlaf und Umwelt-
-        belastung befeuern ihn — meist, ohne dass du es merkst. Genau dort setzen wir an:
-        nicht am Symptom, sondern eine Ebene tiefer, am Wasser rund um deine Zellen.
+        und Zellfunktion. Handystrahlung, Dauerstress, schlechter Schlaf und
+        Umweltbelastung befeuern ihn, meist ohne dass du es merkst. Wir setzen eine Ebene
+        tiefer an, am Wasser rund um deine Zellen.
       </p>
     </section>
   );
@@ -218,7 +218,7 @@ function MechanismSection() {
     {
       n: '3',
       titel: 'Zellspannung halten',
-      text: 'Eine stabile Membran hält ihr Membranpotential — die „Zellspannung" — leichter aufrecht. Das ist die messbare Grundlage, nicht ein Gefühl.',
+      text: 'Eine stabile Membran hält ihr Membranpotential, die „Zellspannung", leichter aufrecht. Das ist die messbare Grundlage.',
     },
   ];
   return (
@@ -226,22 +226,21 @@ function MechanismSection() {
       <span className="eyebrow">Der Mechanismus</span>
       <h2>Alles beginnt am Wasser um deine Zellen.</h2>
       <p className="lp-vp-section__lede">
-        Wir verkaufen dir keine Traum-Stimmung, sondern eine nachvollziehbare Wirkkette.
-        Das Schema zeigt, was den Unterschied macht: die Ordnung des Wassers direkt an der
+        Dahinter steckt eine Wirkkette, die du nachvollziehen kannst. Das Schema zeigt, was den Unterschied macht: die Ordnung des Wassers direkt an der
         Zellmembran.
       </p>
       <div className="lp-b-schema" aria-hidden="false">
         <MembraneSchema
           variant="gestoert"
           label="Gestörtes Grenzflächen-Wasser"
-          hint="Unruhig, ungeordnet — die Membran wird schlechter gestützt, die Zellspannung schwankt."
+          hint="Unruhig und ungeordnet. Die Membran wird schlechter gestützt, die Zellspannung schwankt."
           spannung="instabil"
         />
         <span className="lp-b-schema__pfeil" aria-hidden="true">→</span>
         <MembraneSchema
           variant="kohaerent"
           label="Kohärentes Grenzflächen-Wasser"
-          hint="Geordnet — die Membran ist gestützt, die Zellspannung bleibt stabiler."
+          hint="Geordnet. Die Membran ist gestützt, die Zellspannung bleibt stabiler."
           spannung="stabil"
         />
       </div>
@@ -256,7 +255,7 @@ function MechanismSection() {
       </div>
       <p className="lp-b-note">
         Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten
-        Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie erklären den
+        Zellstudien sind in vitro (an Zellkulturen) durchgeführt. Sie erklären den
         Mechanismus, sie sind keine Heilaussage.
       </p>
     </section>
@@ -269,7 +268,7 @@ function ScienceSection() {
     {
       value: '75,0 %',
       label: 'Weniger oxidativer Zellstress',
-      desc: 'Die Belastung der Zellen durch oxidativen Stress sank messbar — der anerkannte Treiber der Zellalterung.',
+      desc: 'Die Belastung der Zellen durch oxidativen Stress sank messbar. Oxidativer Stress ist der anerkannte Treiber der Zellalterung.',
       cite: 'Peer-review-kontrolliert · in vitro',
     },
     {
@@ -281,18 +280,19 @@ function ScienceSection() {
     {
       value: '5 / 5',
       label: 'Zelltypen geschützt',
-      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
+      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen, von der Leber bis zur Lunge.',
       cite: 'Applied Cell Biology, 2024 · in vitro',
     },
   ];
   return (
     <section className="lp-vp-section" data-section="lp-b-wissenschaft">
       <span className="eyebrow">Der Zellversuch</span>
-      <h2>Nicht gefühlt — an lebenden Zellen gemessen.</h2>
+      <h2>An lebenden Zellen gemessen.</h2>
       <p className="lp-vp-section__lede">
-        Mehrere peer-review-publizierte Zellstudien (Dartsch Scientific, unabhängiges
-        Labor) belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien
-        in vitro — messbare, reproduzierbare Effekte auf lebende Zellen. Ergänzt durch
+        Mehrere peer-review-publizierte Zellstudien (Dartsch Scientific Institut)
+        belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien
+        sind in vitro durchgeführt und zeigen messbare, reproduzierbare Effekte auf lebende
+        Zellen. Ergänzt durch
         über 14.000 Menschen, die den QiOne<sup>®</sup> täglich tragen.
       </p>
       <div className="lp-vp-peer-stats">
@@ -326,7 +326,7 @@ function ScienceSection() {
             text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
           },
         ]}
-        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
+        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
       />
       <LpStudien headline="" />
     </section>
@@ -341,31 +341,30 @@ function SkeptikerSection() {
     {
       frage: '„Klingt nach Esoterik."',
       antwort:
-        'Verstehen wir. Deshalb reden wir nicht über Energien, sondern über Grenzflächen-Wasser und Membranpotential — messbare Physik. Und wir zeigen die Labormessung, statt sie zu behaupten.',
+        'Verstehen wir. Deshalb reden wir über Grenzflächen-Wasser und Membranpotential, also über messbare Physik. Und wir zeigen die Labormessung, statt sie zu behaupten.',
     },
     {
       frage: '„Wo ist der Beleg?"',
       antwort:
-        'In peer-review-kontrollierten Zellstudien (in vitro) an lebenden Zellkulturen — Dartsch Scientific, ein unabhängiges Labor. Reproduzierbare Effekte, kein Erfahrungsbericht.',
+        'In peer-review-kontrollierten Zellstudien (in vitro) an lebenden Zellkulturen, durchgeführt vom Dartsch Scientific Institut. Reproduzierbare Effekte, kein Erfahrungsbericht.',
     },
     {
       frage: '„Warum spüre ich nichts?"',
       antwort:
-        'Zellschutz ist kein Effekt, den man wie eine Kopfschmerztablette spürt. Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie bewusst wahrnimmst — deshalb bindest du dein Urteil an den Zeitraum, nicht ans Gefühl.',
+        'Zellschutz ist kein Effekt, den man wie eine Kopfschmerztablette spürt. Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie wahrnimmst. Deshalb bindest du dein Urteil an den Zeitraum.',
     },
     {
       frage: '„Und wenn es doch nichts bringt?"',
       antwort:
-        '20 Nächte risikofrei. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
+        '20 Nächte risikofrei. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.',
     },
   ];
   return (
     <section className="lp-vp-section lp-b-skeptiker-section" data-section="lp-b-skeptiker">
       <span className="eyebrow">Für Skeptiker</span>
-      <h2>Kein Wunder. Physik — und ein Labor, das misst.</h2>
+      <h2>Kein Wunder. Physik und ein Labor, das misst.</h2>
       <p className="lp-vp-section__lede">
-        Gesunde Skepsis ist genau richtig. Hier sind die vier Fragen, die wir am häufigsten
-        hören — offen beantwortet.
+        Gesunde Skepsis ist genau richtig. Diese vier Fragen hören wir am häufigsten.
       </p>
       <div className="lp-b-skeptiker">
         {qa.map((item) => (
@@ -398,13 +397,13 @@ function VideoSection() {
     },
     {
       tag: 'Erste Tage mit dem QiOne®',
-      title: 'Michelle Christin Guse — „wie ein kleines Wunder"',
+      title: 'Michelle Christin Guse: „wie ein kleines Wunder"',
       quote: 'Was für eine Energie — als würde sich mein Körper einmal neu strukturieren.',
       id: 'zIfDQ1N60fI',
     },
     {
       tag: 'Deutscher Leichtathletik-Meister',
-      title: 'Constantin Preis — getrackter Tiefschlaf',
+      title: 'Constantin Preis: getrackter Tiefschlaf',
       quote: 'Meine Tiefschlafphase hat sich deutlich verbessert — das habe ich getrackt.',
       id: 'jyLyXZqHxaw',
     },
@@ -414,7 +413,7 @@ function VideoSection() {
       <span className="eyebrow">Video-Erfahrungen</span>
       <h2>Menschen, die den QiOne® tragen.</h2>
       <p className="lp-vp-section__lede">
-        Drei Träger, drei Geschichten — von spürbarer Stabilität im Alltag bis zum
+        Drei Träger erzählen ihre Geschichte, von spürbarer Stabilität im Alltag bis zum
         getrackten Tiefschlaf des Leistungssportlers. Berichte einzelner Nutzer,
         deskriptiv.
       </p>
@@ -438,12 +437,12 @@ function AnwendungSection() {
     {
       tag: 'Tag 1',
       titel: 'Anlegen und vergessen',
-      text: 'Du trägst den QiOne® 2 Pro als Anhänger — schlicht, den ganzen Tag und die Nacht. Kein Ritual, kein Aufwand.',
+      text: 'Du trägst den QiOne® 2 Pro als Anhänger, den ganzen Tag und die Nacht. Kein Ritual, kein Aufwand.',
     },
     {
       tag: 'Tag 1–20',
       titel: 'Dein echter Alltag',
-      text: 'Arbeit, Schlaf, Sport, Familie. Das Grenzflächen-Wasser arbeitet im Hintergrund — genau dort, wo es im Labor gemessen wurde.',
+      text: 'Arbeit, Schlaf, Sport, Familie. Das Grenzflächen-Wasser arbeitet im Hintergrund, genau dort, wo es im Labor gemessen wurde.',
     },
     {
       tag: 'Tag 20',
@@ -461,8 +460,8 @@ function AnwendungSection() {
           <span className="eyebrow">So einfach ist es</span>
           <h2>20 Tage. Ein Anhänger. Dein Alltag.</h2>
           <p className="lp-b-anwendung__lede">
-            Das 20-Tage-Fenster ist dein Handlungs-Anker: lange genug, um es im echten
-            Leben zu tragen — kurz genug, um jetzt anzufangen.
+            20 Tage reichen, um ihn im echten Leben zu tragen, und anfangen kannst du
+            gleich jetzt.
           </p>
           <ol className="lp-b-fenster">
             {schritte.map((s) => (
@@ -487,11 +486,11 @@ function GuaranteeSection() {
   const items = [
     {
       title: '20 Nächte, dein Alltag',
-      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
+      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.',
     },
     {
       title: 'In Raten, wenn du willst',
-      body: 'Über Klarna oder PayPal in bequemen Monatsraten — 0 % Finanzierung. Du entscheidest, wie du zahlst.',
+      body: 'Über Klarna oder PayPal geht das in bequemen Monatsraten mit 0 % Finanzierung. Du entscheidest, wie du zahlst.',
     },
     {
       title: 'Made in Germany',
@@ -501,11 +500,11 @@ function GuaranteeSection() {
   return (
     <section className="lp-vp-section" data-section="lp-b-garantie">
       <span className="eyebrow">Dein Risiko: keins</span>
-      <h2>Überzeugt es dich — oder du bekommst dein Geld zurück.</h2>
+      <h2>Überzeugt es dich? Sonst bekommst du dein Geld zurück.</h2>
       <p className="lp-vp-section__lede">
-        Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort bewusst
-        wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl, sondern an den
-        Zeitraum: 20 Nächte, dann entscheidest du.
+        Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort
+        wahrnimmst. Deshalb bindest du dein Urteil an den Zeitraum: 20 Nächte, dann
+        entscheidest du.
       </p>
       <div className="lp-vp-benefits-grid">
         {items.map((b) => (
@@ -625,12 +624,12 @@ function SignatureSection() {
       <span className="eyebrow">Unsere Sichtweise</span>
       <h2>Wir verkaufen dir keinen Schmuck.</h2>
       <p className="lp-b-signature__body">
-        Der QiOne<sup>®</sup> ist schön — aber das ist nicht der Punkt. Der eigentliche Wert
+        Der QiOne<sup>®</sup> ist schön, aber das ist nicht der Punkt. Der eigentliche Wert
         ist unsichtbar: kohärentes Wasser rund um deine Zellen, eine Membran, die besser
         gestützt ist, eine Zellspannung, die stabiler bleibt. Der Schmuck ist nur das
         Vehikel. Was du wirklich mitnimmst, ist Schutz auf der Ebene, an der alles beginnt.
       </p>
-      <p className="lp-b-signature__sign">— Dein Qi Blanco® Team</p>
+      <p className="lp-b-signature__sign">Dein Qi Blanco® Team</p>
     </section>
   );
 }

@@ -99,15 +99,15 @@ function Hero() {
     >
       <div className="lp-d-hero__inner">
         <div className="lp-d-hero__copy">
-          <span className="lp-d-hero__eyebrow">Handy, WLAN, Homeoffice — der Alltag strahlt</span>
+          <span className="lp-d-hero__eyebrow">Handy, WLAN, Homeoffice: Der Alltag strahlt</span>
           <h1 id="lp-d-hero-title" className="lp-d-hero__title">
             E-Smog ist unsichtbar. Deine Ruhe muss ihm nicht ausgeliefert sein.
           </h1>
           <p className="lp-d-hero__subline">
-            Elektromagnetische Felder umgeben uns rund um die Uhr — Handy am Ohr, WLAN
+            Elektromagnetische Felder umgeben uns rund um die Uhr: Handy am Ohr, WLAN
             im Schlafzimmer, das ganze Homeoffice. Kein Grund zur Panik, aber ein guter
             Grund, hinzuschauen. Der QiOne<sup>®</sup>&nbsp;2 Pro bringt das Wasser rund
-            um deine Zellen in kohärente Ordnung — als ruhiger Puffer, den du einfach
+            um deine Zellen in kohärente Ordnung, als ruhiger Puffer, den du einfach
             trägst. In peer-review-kontrollierten Zellstudien (in&nbsp;vitro) hielt die
             Zell-Barriere unter elektromagnetischer Last bis zu <strong>10×</strong>{' '}
             besser stand.
@@ -130,11 +130,11 @@ function Hero() {
         <figure className="lp-d-hero__visual">
           <img
             src={heroImg}
-            alt="QiOne® 2 Pro — kohärentes Wasser als ruhiger Puffer im Alltag"
+            alt="QiOne® 2 Pro: kohärentes Wasser als ruhiger Puffer im Alltag"
             loading="eager"
           />
           <figcaption>
-            QiOne<sup>®</sup>&nbsp;2 Pro — getragen, Tag und Nacht.
+            QiOne<sup>®</sup>&nbsp;2 Pro, getragen Tag und Nacht.
           </figcaption>
         </figure>
       </div>
@@ -157,7 +157,7 @@ function ProblemSection() {
     {
       tag: 'Im Schlafzimmer',
       titel: 'Der WLAN-Router',
-      text: 'Funkt rund um die Uhr, oft die ganze Nacht — genau dort, wo dein Körper eigentlich regenerieren soll.',
+      text: 'Funkt rund um die Uhr, oft die ganze Nacht, und zwar genau dort, wo dein Körper eigentlich regenerieren soll.',
     },
     {
       tag: 'Den ganzen Tag',
@@ -168,11 +168,11 @@ function ProblemSection() {
   return (
     <section className="lp-vp-section lp-d-problem-section" data-section="lp-d-problem">
       <span className="eyebrow">Die Alltags-Realität</span>
-      <h2>Du lebst mitten im Feld — meist, ohne es zu merken.</h2>
+      <h2>Du lebst mitten im Feld, meist ohne es zu merken.</h2>
       <p className="lp-vp-section__lede">
         E-Smog ist kein Weltuntergang und keine Verschwörung. Er ist einfach die
         Summe der elektromagnetischen Felder, in denen wir heute leben. Wir zeigen
-        dir nüchtern, wo sie herkommen — und danach, was du in Ruhe dagegen tun kannst.
+        dir nüchtern, wo sie herkommen, und danach, was du in Ruhe dagegen tun kannst.
       </p>
       <div className="lp-d-quellen">
         {quellen.map((q) => (
@@ -185,8 +185,7 @@ function ProblemSection() {
       </div>
       <p className="lp-d-note">
         Kein Alarm, keine Angst: Diese Geräte gehören zum Leben und bleiben. Es geht
-        nicht ums Abschaffen, sondern um einen ruhigen Ausgleich — eine Ebene tiefer,
-        am Wasser rund um deine Zellen.
+        um einen ruhigen Ausgleich, eine Ebene tiefer, am Wasser rund um deine Zellen.
       </p>
     </section>
   );
@@ -259,30 +258,30 @@ function MechanismSection() {
     {
       n: '3',
       titel: 'Zellspannung halten',
-      text: 'Eine stabile Membran hält ihr Membranpotential — die „Zellspannung" — leichter aufrecht. Das ist die messbare Grundlage, nicht ein Gefühl.',
+      text: 'Eine stabile Membran hält ihr Membranpotential, die „Zellspannung", leichter aufrecht. Das ist die messbare Grundlage.',
     },
   ];
   return (
     <section className="lp-vp-section lp-d-mech-section" data-section="lp-d-mechanismus">
       <span className="eyebrow">Der Mechanismus</span>
-      <h2>Was E-Smog am Wasser tut — und wie Ordnung dagegen puffert.</h2>
+      <h2>Was E-Smog am Wasser tut und wie Ordnung dagegen puffert.</h2>
       <p className="lp-vp-section__lede">
-        Wir verkaufen dir keine Angst und kein Wunder, sondern eine nachvollziehbare
-        Wirkkette. Das Schema zeigt, was den Unterschied macht: die Ordnung des Wassers
-        direkt an der Zellmembran — auch dann, wenn ein elektromagnetisches Feld daran zerrt.
+        Dahinter steckt eine Wirkkette, die du nachvollziehen kannst. Das Schema zeigt,
+        was den Unterschied macht: die Ordnung des Wassers direkt an der Zellmembran, auch
+        dann, wenn ein elektromagnetisches Feld daran zerrt.
       </p>
       <div className="lp-d-schema" aria-hidden="false">
         <MembraneSchema
           variant="gestoert"
           label="Grenzflächen-Wasser unter EM-Last"
-          hint="Unruhig, ungeordnet — die Membran wird schlechter gestützt, die Zellspannung schwankt."
+          hint="Unruhig und ungeordnet. Die Membran wird schlechter gestützt, die Zellspannung schwankt."
           spannung="instabil"
         />
         <span className="lp-d-schema__pfeil" aria-hidden="true">→</span>
         <MembraneSchema
           variant="kohaerent"
           label="Kohärentes Grenzflächen-Wasser"
-          hint="Geordnet und gepuffert — die Membran ist gestützt, die Zellspannung bleibt stabiler."
+          hint="Geordnet und gepuffert. Die Membran ist gestützt, die Zellspannung bleibt stabiler."
           spannung="stabil"
         />
       </div>
@@ -297,7 +296,7 @@ function MechanismSection() {
       </div>
       <p className="lp-d-note">
         Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten
-        Zellstudien sind in vitro (an Zellkulturen) durchgeführt — sie erklären den
+        Zellstudien sind in vitro (an Zellkulturen) durchgeführt. Sie erklären den
         Mechanismus, sie sind keine Heilaussage und kein Schutzversprechen gegen Strahlung.
       </p>
     </section>
@@ -310,31 +309,31 @@ function ScienceSection() {
     {
       value: '10×',
       label: 'Zell-Barriere unter EM-Last',
-      desc: 'Bessere Barriere-Integrität gestresster Zellen (TEER-Messung) unter elektromagnetischer Belastung — der für E-Smog relevanteste Laborbefund.',
+      desc: 'Bessere Barriere-Integrität gestresster Zellen (TEER-Messung) unter elektromagnetischer Belastung. Für E-Smog ist das der relevanteste Laborbefund.',
       cite: 'Applied Cell Biology, 2021 · in vitro',
     },
     {
       value: '75,0 %',
       label: 'Weniger oxidativer Zellstress',
-      desc: 'Die Belastung der Zellen durch oxidativen Stress sank messbar — ein anerkannter Treiber der Zellalterung.',
+      desc: 'Die Belastung der Zellen durch oxidativen Stress sank messbar. Oxidativer Stress ist ein anerkannter Treiber der Zellalterung.',
       cite: 'Peer-review-kontrolliert · in vitro',
     },
     {
       value: '5 / 5',
       label: 'Zelltypen geschützt',
-      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen — von Leber bis Lunge.',
+      desc: 'Weniger oxidativer Stress in fünf verschiedenen Zelltypen, von der Leber bis zur Lunge.',
       cite: 'Applied Cell Biology, 2024 · in vitro',
     },
   ];
   return (
     <section className="lp-vp-section" data-section="lp-d-wissenschaft">
       <span className="eyebrow">Im Labor gemessen</span>
-      <h2>Nicht gefühlt — an lebenden Zellen unter EM-Last gemessen.</h2>
+      <h2>An lebenden Zellen unter EM-Last gemessen.</h2>
       <p className="lp-vp-section__lede">
-        Mehrere peer-review-publizierte Zellstudien (Dartsch Scientific, unabhängiges
-        Labor) belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien
-        in vitro — messbare, reproduzierbare Effekte auf lebende Zellen, teils gezielt
-        unter elektromagnetischer Belastung. Ergänzt durch über 14.000 Menschen, die den
+        Mehrere peer-review-publizierte Zellstudien (Dartsch Scientific Institut)
+        belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien
+        sind in vitro durchgeführt und zeigen messbare, reproduzierbare Effekte auf lebende
+        Zellen, teils gezielt unter elektromagnetischer Belastung. Ergänzt durch über 14.000 Menschen, die den
         QiOne<sup>®</sup> täglich tragen.
       </p>
       <div className="lp-vp-peer-stats">
@@ -368,7 +367,7 @@ function ScienceSection() {
             text: 'Dieselben Zellen halten ihre Barrierefunktion unter Mobilfunk-Stress messbar besser aufrecht (TEER-Messung, in vitro).',
           },
         ]}
-        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien unter elektromagnetischer Last — kein Erfahrungsbericht, keine Heilaussage."
+        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien unter elektromagnetischer Last. Kein Erfahrungsbericht, keine Heilaussage."
       />
       <LpStudien headline="" />
     </section>
@@ -383,31 +382,31 @@ function SkeptikerSection() {
     {
       frage: '„Ich dachte, E-Smog-Schutz ist Eso."',
       antwort:
-        'Ging uns ähnlich. Deshalb reden wir nicht über Strahlen-Angst oder Energien, sondern über Grenzflächen-Wasser und Membranpotential — messbare Physik. Und wir zeigen die Labormessung unter EM-Last, statt sie zu behaupten.',
+        'Ging uns ähnlich. Deshalb reden wir über Grenzflächen-Wasser und Membranpotential, also über messbare Physik. Und wir zeigen die Labormessung unter EM-Last, statt sie zu behaupten.',
     },
     {
       frage: '„Ist E-Smog überhaupt ein echtes Problem?"',
       antwort:
-        'Wir machen keine Panik: Wie stark alltägliche Felder wirken, ist wissenschaftlich nicht abschließend geklärt. Unser Punkt ist bescheidener — im Labor hielt die Zell-Barriere unter EM-Last mit kohärentem Wasser messbar besser stand. Mehr behaupten wir nicht.',
+        'Wir machen keine Panik: Wie stark alltägliche Felder wirken, ist wissenschaftlich nicht abschließend geklärt. Im Labor hielt die Zell-Barriere unter EM-Last mit kohärentem Wasser messbar besser stand.',
     },
     {
       frage: '„Warum spüre ich nichts?"',
       antwort:
-        'Ein Puffer auf Zellebene ist kein Effekt, den man wie eine Kopfschmerztablette spürt. Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie bewusst wahrnimmst — deshalb bindest du dein Urteil an den Zeitraum, nicht ans Gefühl.',
+        'Ein Puffer auf Zellebene ist kein Effekt, den man wie eine Kopfschmerztablette spürt. Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie wahrnimmst. Deshalb bindest du dein Urteil an den Zeitraum.',
     },
     {
       frage: '„Und wenn es doch nichts bringt?"',
       antwort:
-        '20 Nächte risikofrei. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
+        '20 Nächte risikofrei. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.',
     },
   ];
   return (
     <section className="lp-vp-section lp-d-skeptiker-section" data-section="lp-d-skeptiker">
       <span className="eyebrow">Für Skeptiker</span>
-      <h2>Kein Wunder, keine Panik. Physik — und ein Labor, das misst.</h2>
+      <h2>Kein Wunder, keine Panik. Physik und ein Labor, das misst.</h2>
       <p className="lp-vp-section__lede">
-        Gesunde Skepsis ist bei diesem Thema genau richtig. Hier sind die vier Fragen, die
-        wir am häufigsten hören — offen beantwortet.
+        Gesunde Skepsis ist bei diesem Thema genau richtig. Diese vier Fragen hören wir am
+        häufigsten.
       </p>
       <div className="lp-d-skeptiker">
         {qa.map((item) => (
@@ -440,13 +439,13 @@ function VideoSection() {
     },
     {
       tag: 'Erste Tage mit dem QiOne®',
-      title: 'Michelle Christin Guse — „wie ein kleines Wunder"',
+      title: 'Michelle Christin Guse: „wie ein kleines Wunder"',
       quote: 'Was für eine Energie — als würde sich mein Körper einmal neu strukturieren.',
       id: 'zIfDQ1N60fI',
     },
     {
       tag: 'Deutscher Leichtathletik-Meister',
-      title: 'Constantin Preis — getrackter Tiefschlaf',
+      title: 'Constantin Preis: getrackter Tiefschlaf',
       quote: 'Meine Tiefschlafphase hat sich deutlich verbessert — das habe ich getrackt.',
       id: 'jyLyXZqHxaw',
     },
@@ -456,7 +455,7 @@ function VideoSection() {
       <span className="eyebrow">Video-Erfahrungen</span>
       <h2>Menschen, die den QiOne® tragen.</h2>
       <p className="lp-vp-section__lede">
-        Drei Träger, drei Geschichten — von spürbarer Stabilität im Alltag bis zum
+        Drei Träger erzählen ihre Geschichte, von spürbarer Stabilität im Alltag bis zum
         getrackten Tiefschlaf des Leistungssportlers. Berichte einzelner Nutzer,
         deskriptiv.
       </p>
@@ -482,32 +481,32 @@ function AnwendungSection() {
     {
       tag: 'Am Handy',
       titel: 'Trägst du ihn einfach mit',
-      text: 'Der QiOne® 2 Pro ist als Anhänger dabei — unterwegs, im Call, in der Hosentasche. Kein Ritual, kein Aufwand.',
+      text: 'Der QiOne® 2 Pro ist als Anhänger dabei: unterwegs, im Call, in der Hosentasche. Kein Ritual, kein Aufwand.',
     },
     {
       tag: 'Im Schlafzimmer',
       titel: 'Bringt Ruhe an den Ort der Regeneration',
-      text: 'Genau dort, wo der Router die Nacht durchfunkt, arbeitet das kohärente Wasser im Hintergrund — die ganze Nacht.',
+      text: 'Genau dort, wo der Router die Nacht durchfunkt, arbeitet das kohärente Wasser im Hintergrund, die ganze Nacht lang.',
     },
     {
       tag: 'Nach 20 Tagen',
       titel: 'Entscheidest du',
-      text: 'Arbeit, Schlaf, Homeoffice, Familie — 20 Nächte im echten Alltag. Nicht überzeugt? Voller Kaufpreis zurück, ohne Wenn und Aber.',
+      text: '20 Nächte im echten Alltag, mit Arbeit, Schlaf, Homeoffice und Familie. Nicht überzeugt? Voller Kaufpreis zurück, ohne Wenn und Aber.',
     },
   ];
   return (
     <section className="lp-d-anwendung-section" data-section="lp-d-anwendung">
       <div className="lp-d-anwendung__inner">
         <figure className="lp-d-anwendung__media">
-          <img src={ALLTAG_SZENE_IMG} alt="Gelassen im Alltag — den QiOne® einfach tragen" loading="lazy" />
+          <img src={ALLTAG_SZENE_IMG} alt="Gelassen im Alltag, den QiOne® einfach tragen" loading="lazy" />
         </figure>
         <div className="lp-d-anwendung__copy">
           <span className="eyebrow">So einfach ist es</span>
           <h2>20 Tage. Ein Anhänger. Dein ganz normaler Alltag.</h2>
           <p className="lp-d-anwendung__lede">
-            Das 20-Tage-Fenster ist dein Handlungs-Anker: lange genug, um es im echten
-            Leben zu tragen — kurz genug, um jetzt anzufangen. Ohne dein Handy, dein WLAN
-            oder dein Homeoffice ändern zu müssen.
+            20 Tage reichen, um ihn im echten Leben zu tragen, und anfangen kannst du
+            gleich jetzt. Dein Handy, dein WLAN und dein Homeoffice bleiben dabei, wie sie
+            sind.
           </p>
           <ol className="lp-d-fenster">
             {schritte.map((s) => (
@@ -532,11 +531,11 @@ function GuaranteeSection() {
   const items = [
     {
       title: '20 Nächte, dein Alltag',
-      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
+      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.',
     },
     {
       title: 'In Raten, wenn du willst',
-      body: 'Über Klarna oder PayPal in bequemen Monatsraten — 0 % Finanzierung. Du entscheidest, wie du zahlst.',
+      body: 'Über Klarna oder PayPal geht das in bequemen Monatsraten mit 0 % Finanzierung. Du entscheidest, wie du zahlst.',
     },
     {
       title: 'Made in Germany',
@@ -546,11 +545,11 @@ function GuaranteeSection() {
   return (
     <section className="lp-vp-section" data-section="lp-d-garantie">
       <span className="eyebrow">Dein Risiko: keins</span>
-      <h2>Überzeugt es dich — oder du bekommst dein Geld zurück.</h2>
+      <h2>Überzeugt es dich? Sonst bekommst du dein Geld zurück.</h2>
       <p className="lp-vp-section__lede">
-        Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort bewusst
-        wahrnimmst. Deshalb bindest du dein Urteil nicht an ein Gefühl, sondern an den
-        Zeitraum: 20 Nächte, dann entscheidest du.
+        Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie sofort
+        wahrnimmst. Deshalb bindest du dein Urteil an den Zeitraum: 20 Nächte, dann
+        entscheidest du.
       </p>
       <div className="lp-vp-benefits-grid">
         {items.map((b) => (
@@ -588,7 +587,7 @@ function PricingSection() {
       p: qione,
       name: 'QiOne® 2 Pro',
       handle: 'qione-2-pro',
-      tagline: 'Der Allrounder — Tag und Nacht',
+      tagline: 'Der Allrounder für Tag und Nacht',
       features: [
         // Claim-Fix 20260718: „Stärkster GitterChip im Sortiment" ist unbelegt
         // (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
@@ -665,13 +664,13 @@ function SignatureSection() {
       <span className="eyebrow">Unsere Sichtweise</span>
       <h2>Wir verkaufen dir keine Angst.</h2>
       <p className="lp-d-signature__body">
-        Über E-Smog lässt sich viel Panik machen — wir machen keine. Der QiOne<sup>®</sup>{' '}
+        Über E-Smog lässt sich viel Panik machen. Wir machen keine. Der QiOne<sup>®</sup>{' '}
         ist schön, aber das ist nicht der Punkt. Der eigentliche Wert ist unsichtbar:
         kohärentes Wasser rund um deine Zellen, ein ruhiger Puffer, der einfach mitläuft,
         während du dein Handy, dein WLAN und dein Homeoffice ganz normal weiter nutzt. Der
         Schmuck ist nur das Vehikel. Was du wirklich mitnimmst, ist Gelassenheit.
       </p>
-      <p className="lp-d-signature__sign">— Dein Qi Blanco® Team</p>
+      <p className="lp-d-signature__sign">Dein Qi Blanco® Team</p>
     </section>
   );
 }

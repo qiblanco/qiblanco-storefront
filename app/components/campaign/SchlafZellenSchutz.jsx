@@ -452,12 +452,13 @@ function Hero() {
               Dateien, keine anderen Grössen (Auftrags-Verbot).
               Die Logos tragen ihren Markennamen als alt-Text: der Begleittext
               nennt nur „0 % Finanzierung“, WELCHE Zahlungsart gemeint ist,
-              steht sonst nirgends — sie sind der einzige Träger der Auskunft. */}
+              steht sonst nirgends — sie sind der einzige Träger der Auskunft.
+              Nachtrag 06.10.2026 (s02 KI-Sprache): nur die Zeichensetzung ist neu (Komma und Punkt statt der zwei Striche), Christians Wortlaut ist unverändert. */}
           <p className="micro-text mt-1 lp-a-hero__vertrauen">
             <strong>
               {' '}
-              Jetzt 20 Tage nach Erhalt testen – mit 0&nbsp;% Finanzierung &amp;
-              Käuferschutz – 100&nbsp;% Geld-zurück-Garantie{' '}
+              Jetzt 20 Tage nach Erhalt testen, mit 0&nbsp;% Finanzierung &amp;
+              Käuferschutz. 100&nbsp;% Geld-zurück-Garantie.{' '}
             </strong>
           </p>
           <p className="lp-a-hero__zahlarten">
@@ -651,7 +652,7 @@ function ScienceSection() {
             text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
           },
         ]}
-        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien — kein Erfahrungsbericht, keine Heilaussage."
+        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
       />
       {/* DIE SCHRIFTLICHE ERKLÄRUNG ZUM BLOCK, den das Video darueber eröffnet:
           „6 Jahre Forschung" (PeerReviewStudies, von der Startseite übernommen)
@@ -693,7 +694,7 @@ function VideoSection() {
   const videos = [
     {
       tag: 'Deutscher Leichtathletik-Meister',
-      title: 'Constantin Preis — getrackter Tiefschlaf',
+      title: 'Constantin Preis: getrackter Tiefschlaf',
       quote: 'Meine Tiefschlafphase hat sich deutlich verbessert — das habe ich getrackt.',
       id: 'jyLyXZqHxaw',
     },
@@ -705,7 +706,7 @@ function VideoSection() {
     },
     {
       tag: 'Erste Tage mit dem QiOne®',
-      title: 'Michelle Christin Guse — „wie ein kleines Wunder"',
+      title: 'Michelle Christin Guse: „wie ein kleines Wunder"',
       quote: 'Was für eine Energie — als würde sich mein Körper einmal neu strukturieren.',
       id: 'zIfDQ1N60fI',
     },
@@ -715,8 +716,9 @@ function VideoSection() {
       <span className="eyebrow">Video-Erfahrungen</span>
       <h2>Echte Menschen. Echte Erfahrungen.</h2>
       <p className="lp-vp-section__lede">
-        Drei Träger, drei Geschichten — vom getrackten Tiefschlaf des Leistungssportlers
-        bis zur spürbaren Veränderung im Alltag. Berichte einzelner Nutzer, deskriptiv.
+        Drei Träger erzählen ihre Geschichte, vom getrackten Tiefschlaf des
+        Leistungssportlers bis zur spürbaren Veränderung im Alltag. Berichte einzelner
+        Nutzer, deskriptiv.
       </p>
       <div className="lp-vp-videos-grid">
         {videos.map((v) => (
@@ -741,11 +743,11 @@ export function GuaranteeSection() {
   const items = [
     {
       title: 'Teste ihn 20 Tage lang',
-      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück — ohne Wenn und Aber.',
+      body: 'Trage den QiOne® 2 Pro 20 Tage und Nächte in deinem echten Alltag. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.',
     },
     {
       title: 'Zahle jetzt bequem in 0% Raten',
-      body: 'Über Klarna oder PayPal in bequemen Monatsraten — 0 % Finanzierung. Du entscheidest, wie du zahlst.',
+      body: 'Über Klarna oder PayPal geht das in bequemen Monatsraten mit 0 % Finanzierung. Du entscheidest, wie du zahlst.',
     },
     {
       title: 'Made in Germany',
@@ -793,7 +795,7 @@ function PricingSection() {
       p: qione,
       name: 'QiOne® 2 Pro',
       handle: 'qione-2-pro',
-      tagline: 'Der Allrounder — Tag und Nacht',
+      tagline: 'Der Allrounder für Tag und Nacht',
       features: [
         'Wirkt auf allen drei Ebenen',
         'Tragbar als Anhänger',
