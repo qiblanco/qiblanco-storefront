@@ -1,8 +1,9 @@
-import {useId, useState} from 'react';
+import {Fragment, useId, useState} from 'react';
 import {Link} from 'react-router';
 import {FAQ_BLOECKE} from '~/data/faq-seite';
 import {FRAGEN} from '~/data/fragen';
 import {HUB_ANKER} from '~/lib/fragen-schema';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * /pages/faq — die öffentliche Fragen-und-Antworten-Fläche der DACH-Storefront.
@@ -240,8 +241,18 @@ export function FaqSeite() {
         </div>
       </section>
 
+      {/* Trustpilot-Stimmen direkt nach dem Block, der die Frage „Was sagen
+          andere Kunden … sind die Bewertungen echt?" trägt (Eintrag mit
+          `trustpilot: true` in faq-seite.js). AUSSERHALB des Akkordeons: in
+          einer zugeklappten Antwort sähe sie niemand (Job 20261006-bau-
+          trustpilot-scroller-ki-seiten-und-faq). */}
       {FAQ_BLOECKE.map((block) => (
-        <FaqBlock key={block.id} block={block} />
+        <Fragment key={block.id}>
+          <FaqBlock block={block} />
+          {block.items.some((item) => item.trustpilot) ? (
+            <TrustpilotStimmen praefix="faq-" />
+          ) : null}
+        </Fragment>
       ))}
 
       {/* Seit 2026-09-25 die Sammelstelle der Frageseiten (vorher der Hub

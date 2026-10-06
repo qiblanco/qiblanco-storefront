@@ -557,7 +557,8 @@ export const FRAGEN = [
       "qb_studie_nutzer",
       "qb_studie_qihome"
     ],
-    "pfad": "/pages/ist-qi-blanco-serioes"
+    "pfad": "/pages/ist-qi-blanco-serioes",
+    "trustpilot": true
   },
   {
     "slug": "wie-weit-reicht-elektrosmog-schutz",

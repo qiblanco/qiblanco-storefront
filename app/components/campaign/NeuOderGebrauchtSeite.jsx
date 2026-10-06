@@ -7,6 +7,7 @@ import {
   PREIS_HINWEIS,
   RUECKWEG,
 } from '~/data/kauf-tatsachen';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * /pages/neu-oder-gebraucht — die nachprüfbaren Tatsachen des Kaufs als
@@ -83,6 +84,9 @@ export function NeuOderGebrauchtSeite() {
           </p>
         </div>
       </section>
+
+      {/* Trustpilot-Stimmen (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). */}
+      <TrustpilotStimmen praefix="nog-" />
 
       <section className="nog__fristen" data-section="nog-fristen">
         <div className="nog__inhalt">

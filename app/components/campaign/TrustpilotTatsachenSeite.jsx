@@ -10,6 +10,7 @@ import {
   VERTEILUNG,
   ZAHL,
 } from '~/data/trustpilot-tatsachen';
+import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
  * /pages/qi-blanco-auf-trustpilot — eine Nachlese mit Quelle und Stand, als
@@ -82,6 +83,10 @@ export function TrustpilotTatsachenSeite() {
           </p>
         </div>
       </section>
+
+      {/* Die Bewertungen selbst, direkt nach der Zählung (Job 20261006-bau-
+          trustpilot-scroller-ki-seiten-und-faq). Ohne den Link auf diese Seite. */}
+      <TrustpilotStimmen praefix="tpt-" mitTatsachenLink={false} />
 
       <section className="tpt__fremd" data-section="tpt-fremd">
         <div className="tpt__inhalt">
