@@ -337,6 +337,10 @@ export const FRAGEN = [
       {
         "pfad": "/pages/kritik",
         "text": "Was an unseren Produkten untersucht ist"
+      },
+      {
+        "pfad": "/pages/wissen-und-vertrauen",
+        "text": "Alle Antworten rund um Qi Blanco"
       }
     ],
     "quellen": [
@@ -666,6 +670,10 @@ export const FRAGEN = [
       {
         "pfad": "/pages/kritik",
         "text": "Was an unseren Produkten untersucht ist"
+      },
+      {
+        "pfad": "/pages/wissen-und-vertrauen",
+        "text": "Alle Antworten rund um Qi Blanco"
       }
     ],
     "quellen": [

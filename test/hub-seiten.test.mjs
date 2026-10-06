@@ -374,3 +374,14 @@ test('WV: die S5-Leser sehen in hub-seiten.js nur HUB_LINKS', () => {
     'probe_hub_ankertext_titel_naht liest mehr als HUB_LINKS',
   );
 });
+
+test('WV: die Übersicht hat Kontextlinks aus mindestens zwei Frageseiten', () => {
+  // Christians Regel (Nachtrag 06.10. 09:48Z, seit 06.10. Gate 9 Achse
+  // design-zufahrt): eine neue Seite ist erst fertig mit >= 2 Kontextlinks von
+  // indexierten Seiten. Fuß und Leiste zählen dort nicht als Inhalt. Die
+  // Übersicht bekommt sie aus dem Abschnitt „weiter" zweier Frageseiten, die
+  // am 06.10. im Index stehen (was-ist-elektrosmog, kann-elektrosmog-den-
+  // schlaf-stoeren).
+  const quellen = FRAGEN.filter((s) => (s.weiter || []).some((w) => w.pfad === WV_HUB.pfad));
+  assert.ok(quellen.length >= 2, `nur ${quellen.length} Frageseite(n) verlinken die Übersicht`);
+});
