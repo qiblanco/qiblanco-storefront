@@ -4,6 +4,7 @@ import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
+import bildquelleStyles from '~/styles/bracelet-bildquelle.css?url';
 
 /*
  * EIN route-gebundenes Stylesheet: pdp-landing-qi.css.
@@ -21,8 +22,18 @@ import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
  * Umsatz-Kaufseiten in die Belegpflicht ziehen. Begründung samt Messung im
  * Kopf von app/styles/pdp-landing-qi.css.
  */
+/*
+ * ZWEITES Stylesheet, NUR fuer diese Route: bracelet-bildquelle.css bindet die
+ * Anzeigegroesse von zehn zu kleinen Bildquellen an ihre echte Pixelbreite
+ * (Gate 12 bild-aufloesung, Job 20261006-s02b-folge-qibracelet-details-
+ * bildschuld). Eigene Datei, damit format_reichweite (R2) nur diese Seite in
+ * die Belegpflicht zieht. Begruendung im Kopf der Datei.
+ */
 export function links() {
-  return [{rel: 'stylesheet', href: pdpLandingStyles}];
+  return [
+    {rel: 'stylesheet', href: pdpLandingStyles},
+    {rel: 'stylesheet', href: bildquelleStyles},
+  ];
 }
 
 /*
