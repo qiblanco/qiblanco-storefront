@@ -515,6 +515,10 @@ function Buchen({daten, fehler, zone}) {
         <Form method="post" className="pb__form" preventScrollReset>
           <input type="hidden" name="intent" value="buchen" />
           <input type="hidden" name="tz" value={zone} />
+          {/* Quelle aus dem Link (?von=warenkorb-mail), vom Loader gegen die Allowlist geprüft. */}
+          {daten.von ? (
+            <input type="hidden" name="von" value={daten.von} />
+          ) : null}
           {/* Der Fehlersatz steht ÜBER der Terminliste: ist der gewählte Termin inzwischen vergeben, fehlt
               er nach dem Neuladen, kein Radio ist gewählt und :has() blendet die Angaben aus. */}
           <Hinweis art="fehler" text={fehler?.text} />

@@ -63,6 +63,14 @@ const PFAD = '/pages/produktberatung';
  * nur als X-PB-Kunde-IP an den eigenen Endpunkt (Mengen-Deckel je Kundin statt
  * je Oxygen-Knoten), nirgendwo sonst hin.
  *
+ * QUELLE AUS DEM LINK (Job 20261007-ep-beratungstermin-im-warenkorb-abbruch,
+ * s02): die Warenkorb-Mail verlinkt /pages/produktberatung?von=warenkorb-mail.
+ * Der Loader liest `von` gegen die Allowlist QUELLEN_AUS_LINK, die Komponente
+ * trägt den Wert als verstecktes Feld im Buchen-Formular, die Action schickt ihn
+ * als `quelle` an /api/buchen. Ohne oder mit unbekanntem `von` bleibt es
+ * 'seite'. Nie freie Weitergabe: der Endpunkt prüft zusätzlich selbst
+ * (produktberatung/src/server.py). Umbuchen und Absagen bleiben unberührt.
+ *
  * TESTUMGEBUNG: die Env-Variable PRODUKTBERATUNG_API lenkt Loader und Action
  * auf einen Wegwerf-Endpunkt um (lokaler Dev-Server). Ohne sie gilt der
  * Live-Endpunkt. Auf Oxygen ist sie nicht gesetzt.
@@ -82,6 +90,14 @@ function signal(ms) {
     typeof AbortSignal.timeout === 'function'
     ? AbortSignal.timeout(ms)
     : undefined;
+}
+
+/** Quellen, die ein Link über ?von= setzen darf; alles andere bucht als 'seite'. */
+const QUELLEN_AUS_LINK = ['warenkorb-mail'];
+
+function quelleAusLink(wert) {
+  const v = String(wert || '').trim();
+  return QUELLEN_AUS_LINK.includes(v) ? v : '';
 }
 
 const NICHT_ERREICHBAR =
@@ -121,6 +137,7 @@ export async function loader({request, context}) {
   const token = (url.searchParams.get('b') || '').trim();
   const vorwahl = (url.searchParams.get('termin') || '').trim();
   const status = (url.searchParams.get('status') || '').trim();
+  const von = quelleAusLink(url.searchParams.get('von'));
   const api = basis(context);
   const jetzt = new Date().toISOString();
 
@@ -135,6 +152,7 @@ export async function loader({request, context}) {
         jetzt,
         token,
         vorwahl,
+        von,
         status,
         api,
         buchung: r.body.buchung,
@@ -148,6 +166,7 @@ export async function loader({request, context}) {
       jetzt,
       token,
       vorwahl,
+      von,
       status,
       api,
       buchung: null,
@@ -172,6 +191,7 @@ export async function loader({request, context}) {
       jetzt,
       token: '',
       vorwahl,
+      von,
       status,
       api,
       buchung: null,
@@ -185,6 +205,7 @@ export async function loader({request, context}) {
     jetzt,
     token: '',
     vorwahl,
+    von,
     status,
     api,
     buchung: null,
@@ -235,7 +256,11 @@ export async function action({request, context}) {
       slot_start: slot,
       tz: String(form.get('tz') || '').slice(0, 64),
       website: String(form.get('website') || ''),
-      quelle: 'seite',
+      // Verstecktes Feld zuerst; ohne es (alter Tab vor dem Deploy) die URL des POST, der ?von= behält.
+      quelle:
+        quelleAusLink(form.get('von')) ||
+        quelleAusLink(new URL(request.url).searchParams.get('von')) ||
+        'seite',
     });
     if (r.status === 200 && r.body?.ok && r.body.buchung) {
       // POST -> REDIRECT -> GET: die Bestaetigung lebt unter ?b=<token>. Neuladen schickt die Buchung so
