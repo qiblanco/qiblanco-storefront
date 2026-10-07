@@ -1,3 +1,4 @@
+import {Link} from 'react-router';
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import technologieStyles from '~/styles/technologie.css?url';
 import frageAbschnittStyles from '~/styles/frage-abschnitt.css?url';
@@ -606,6 +607,25 @@ export default function TechnologiePage() {
       <div style={{background: '#f7f1e8'}}>
         <FrageAbschnitt seite={seiteFuer('wie-weit-reicht-elektrosmog-schutz')} />
       </div>
+
+      {/* ── HEALY ODER QI BLANCO? ──
+          Seit 2026-10-07 (Job 20261007-healy-alternative-auffindbar-sitemap-
+          kontextlinks-uebersicht-prio45): einer der zwei eingehenden Links,
+          die /pages/healy-alternative braucht (Christian 06.10.2026: zwei
+          Kontextlinks von indexierten Seiten). Er steht direkt nach dem Satz
+          „Der QiOne® 2 Pro arbeitet ganz ohne Elektronik und ohne Strom", denn
+          genau dort liegt der Unterschied zu einem Gerät mit Akku und App.
+          Im INHALT (vor dem CTA, in <main>), nicht in Kopf, Fuß oder Leiste:
+          nur dort zählt seiten_zufahrt ihn. Faktisch, ohne Wertung. */}
+      <section style={{padding: '3rem 1.5rem 0'}} data-section="healy-vergleich">
+        <div className="NormalSectionSize" style={{maxWidth: '860px'}}>
+          <p style={pStyle}>
+            Healy ist ein Gerät mit Akku, das du über eine App steuerst. Der QiOne® 2 Pro ist ein Anhänger
+            ohne Elektronik. Was das für Preis, Rückgabe und Belege heißt, zeigt der{' '}
+            <Link to="/pages/healy-alternative">Vergleich von Healy und Qi Blanco</Link>.
+          </p>
+        </div>
+      </section>
 
       {/* ── CTA ── */}
       <div style={{padding: '5rem 1.5rem'}}>

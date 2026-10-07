@@ -339,6 +339,21 @@ export const WV_GRUPPEN = [
         weiter: ['/pages/ist-qi-blanco-serioes', '/pages/bewertungen'],
       },
       {
+        // Seit 2026-10-07 (Job 20261007-healy-alternative-auffindbar-
+        // sitemap-kontextlinks-uebersicht-prio45). GRUPPE: wie „neu oder
+        // gebraucht?" beantwortet die Seite eine Kaufentscheidung mit
+        // prüfbaren Tatsachen (Preis, Rückgabe, Belege) und erklärt keinen
+        // Begriff, darum Vertrauen statt Wissen.
+        // OHNE `weiter`, BEWUSST: die Leiste „Weiterlesen" rendert
+        // PageLayout auf der Seite SELBST, und die Seite bleibt in diesem
+        // Auftrag unberührt. Sie verlinkt selbst in die Tiefe (Studien,
+        // Kaufseite), dieselbe Lage wie FAQ und /pages/studien.
+        pfad: '/pages/healy-alternative',
+        anker: 'Alternative zu Healy: Healy und Qi Blanco im Vergleich',
+        teaser:
+          'Bauart, Preis, Rückgabe und Belege nebeneinander, mit den Angaben beider Hersteller als Quelle.',
+      },
+      {
         pfad: '/pages/kritik',
         anker: 'Belege und offene Fragen',
         teaser:

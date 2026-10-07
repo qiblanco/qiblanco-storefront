@@ -423,6 +423,22 @@ export const FAQ_KAUF = [
         'Rücknahme, Widerruf, Gewährleistung und Versand mit Quelle, und ' +
         'was bei einem Kauf von privat wegfällt',
     },
+    // DER ZWEITE WEG AUS DIESER ANTWORT, und einer der zwei eingehenden
+    // Links, die /pages/healy-alternative braucht (Job 20261007-healy-
+    // alternative-auffindbar-sitemap-kontextlinks-uebersicht-prio45;
+    // Christian 06.10.2026: eine neue Seite ist erst fertig mit zwei
+    // Kontextlinks von indexierten Seiten). Der Vergleich stellt die
+    // Rückgabe beider Anbieter Zeile an Zeile, dazu Preis, Bauart und Belege:
+    // dieselbe Kaufentscheidung wie diese Antwort, aus der anderen Richtung.
+    // WARUM HIER UND NICHT BEI „Warum kostet das so viel?": nur der ERSTE
+    // Eintrag jedes Blocks startet offen, die übrigen tragen `hidden`.
+    // seiten_zufahrt zählt einen Link im zugeklappten Teil nicht als
+    // Kontextlink (Vorschau 2026-10-07: 1 von 2). Der Linktext nennt nur
+    // die Vergleichsachsen und wertet nicht.
+    auch: {
+      pfad: '/pages/healy-alternative',
+      text: 'Healy und Qi Blanco im Vergleich: Bauart, Preis, Rückgabe und Belege',
+    },
   },
   {
     q: 'Was sagen andere Kunden über Qi Blanco, und sind die Bewertungen echt?',

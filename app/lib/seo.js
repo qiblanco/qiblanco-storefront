@@ -1075,6 +1075,28 @@ export const NUR_ROUTE_SEITEN = [
       'ausgelieferten HTML Fußspalte, vollständige Übersicht, Leiste ' +
       '„Weiterlesen" und den Sitemap-<loc>.',
   },
+  {
+    pfad: '/pages/healy-alternative',
+    lastmod: '2026-10-07T16:33:49Z',
+    grund:
+      'Die Antwortseite „Was ist eine gute Alternative zu Healy?" (GEO-' +
+      'Grossjob 20261007-GROSSJOB-geo-manager-chatgpt-perplexity-grok-' +
+      'gemini-sichtbarkeit, Segment s04, Hebel M17; live seit 2026-10-07 ' +
+      'mit PR #828). Sie besteht allein aus der Route ' +
+      'pages.healy-alternative.jsx und hat KEIN Shopify-Seitenobjekt. ' +
+      'Ohne diesen Eintrag liefert sie HTTP 200 und steht in keiner ' +
+      'Sitemap. Dann meldet sie auch der IndexNow-Melder nie, er meldet ' +
+      'nur den Sitemap-Diff (am 2026-10-07: 0 Treffer in ' +
+      'seo-manager/data/indexnow/protokoll.jsonl). Nachgetragen ' +
+      'von Job 20261007-healy-alternative-auffindbar-sitemap-' +
+      'kontextlinks-uebersicht-prio45. Kriterium 2 erfüllt: kein noindex, ' +
+      'canonicalLink() in der Route. lastmod ist der Commit-Zeitpunkt der ' +
+      'Route in main (14781a4). WACHE (Kriterium 3): der GEO-Tagestakt ' +
+      'rt seo-manager-geo-daily prüft Hebel M17 täglich am Rand, dazu die ' +
+      'nachbau-audit-Abnahme hd08789ca und der tägliche Design-Watch ' +
+      '(homepage-bauer/config/design_gate_seiten.yaml, Seite ' +
+      'healy-alternative). Klassenweit wacht probe_sitemap_noindex_naht.py.',
+  },
 ];
 
 /**
