@@ -14,10 +14,15 @@ import {
   WISSENSGRAPH_ENTITAETEN,
   SCHWESTER_DOMAINS,
   KANAELE_OHNE_ZUGANG,
+  FOUNDER,
+  FOUNDER_ID,
   organizationSchema,
   websiteSchema,
   entityGraph,
 } from '../app/lib/entity-schema.js';
+import {absoluteCanonical} from '../app/lib/seo.js';
+import {ABSENDER} from '../app/data/absicht.js';
+import {ohneProsa} from './_quelltext.mjs';
 
 const IMPRESSUM = readFileSync(
   new URL('../app/routes/pages.impressum.jsx', import.meta.url),
@@ -26,6 +31,16 @@ const IMPRESSUM = readFileSync(
 const STARTSEITE = readFileSync(
   new URL('../app/routes/_index.jsx', import.meta.url),
   'utf8',
+);
+// Ohne Prosa gelesen: der Kopf der Route NENNT die Formel der Person-@id in
+// einem Kommentar, und ein Wächter, der Kommentare mitliest, bliebe grün,
+// wenn nur noch die Begründung dasteht (Klasse siehe test/_quelltext.mjs).
+// Die Datei der Route folgt aus ihrem Pfad (flache Routen: aus '/' wird '.').
+const UEBER_UNS_PFAD = '/pages/ueber-uns';
+const routenDatei = (pfad) =>
+  `../app/routes/${pfad.slice(1).replaceAll('/', '.')}.jsx`;
+const UEBER_UNS = ohneProsa(
+  readFileSync(new URL(routenDatei(UEBER_UNS_PFAD), import.meta.url), 'utf8'),
 );
 
 // --- Der eigentliche Befund: es MUSS überhaupt ein Schema geben ------------
@@ -86,6 +101,67 @@ test('Stammdaten stehen BYTE-GLEICH im Impressum', () => {
 
 test('POSITIV-KONTROLLE: erfundene Stammdaten würden auffallen', () => {
   assert.equal(IMPRESSUM.includes('Musterstr. 1'), false);
+});
+
+// --- founder: der Gründer am Organization-Knoten (Christian 2026-10-07) -----
+// Auftrag „Markenfakten überall gleich: Gründer, Sitz, Produkte". Vier
+// Wächter, je einer für eine Art, auf die das Feld still falsch werden kann.
+test('Organization nennt den Gründer als Person mit @id und Name', () => {
+  const f = organizationSchema().founder;
+  assert.ok(f, 'founder fehlt am Organization-Knoten');
+  assert.equal(f['@type'], 'Person');
+  assert.equal(f['@id'], FOUNDER_ID);
+  assert.equal(f.name, FOUNDER.name);
+  // Der Knoten trägt GENAU diese drei Felder. Wer ein viertes ergänzt
+  // (jobTitle, sameAs, image), bringt dessen Beleg mit und zieht diese Zeile
+  // bewusst nach. Ein unbelegtes Feld an einer Person kostet mehr Vertrauen,
+  // als ein fehlendes an Reichweite kostet.
+  assert.deepEqual(Object.keys(f).sort(), ['@id', '@type', 'name']);
+});
+
+test('der Name des Gründers steht WÖRTLICH im Impressum', () => {
+  assert.ok(
+    IMPRESSUM.includes(FOUNDER.name),
+    `FOUNDER.name = ${JSON.stringify(FOUNDER.name)} steht NICHT im Impressum`,
+  );
+});
+
+test('POSITIV-KONTROLLE: ein abgewandelter Gründername würde auffallen', () => {
+  // Die naheliegende Abwandlung lässt den zweiten Vornamen weg. Sie steht
+  // so nirgends im Impressum; der Wächter oben misst also den vollen Namen.
+  assert.equal(IMPRESSUM.includes('Christian Bauer'), false);
+});
+
+test('die Rolle „Gründer" steht bei demselben Namen auf einer öffentlichen Seite', () => {
+  // Das Impressum belegt den NAMEN, aber nicht die Rolle: es sagt
+  // „Geschäftsführer". Dass derselbe Mensch der Gründer ist, sagt
+  // /pages/warum-qi-blanco (app/data/absicht.js). Fällt das Wort dort weg,
+  // verliert `founder` seinen öffentlichen Beleg, und dieser Test wird rot.
+  assert.ok(
+    ABSENDER.name.includes(FOUNDER.name),
+    `ABSENDER.name = ${JSON.stringify(ABSENDER.name)} nennt den Gründer nicht`,
+  );
+  assert.match(ABSENDER.rolle, /Gründer/);
+});
+
+test('founder trägt die @id des Person-Knotens von /pages/ueber-uns', () => {
+  // Die Route baut ihre @id selbst und importiert FOUNDER_ID nicht. Diese
+  // drei Zeilen sind die Formel dort; zieht eine der beiden Stellen allein
+  // um, beschreiben Startseite und Über-uns-Seite zwei verschiedene Personen.
+  assert.equal(FOUNDER_ID, `${absoluteCanonical(UEBER_UNS_PFAD)}#person`);
+  assert.ok(
+    UEBER_UNS.includes(`const PFAD = '${UEBER_UNS_PFAD}';`),
+    'die Route nennt ihren Pfad nicht mehr als PFAD-Konstante',
+  );
+  assert.match(UEBER_UNS, /const url = absoluteCanonical\(PFAD\);/);
+  assert.match(UEBER_UNS, /const personId = `\$\{url\}#person`;/);
+  assert.match(UEBER_UNS, /'@type': 'Person',\s*'@id': personId,/);
+});
+
+test('POSITIV-KONTROLLE: eine umgezogene Person-@id würde auffallen', () => {
+  const umgezogen = UEBER_UNS.replace('#person`', '#gruender`');
+  assert.notEqual(umgezogen, UEBER_UNS, 'die Formel steht nicht in der Route');
+  assert.equal(/const personId = `\$\{url\}#person`;/.test(umgezogen), false);
 });
 
 // --- sameAs: die Unterlassung wurde BEWUSST aufgehoben ---------------------
