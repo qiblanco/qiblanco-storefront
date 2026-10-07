@@ -41,12 +41,19 @@ export async function loader({request, context}) {
  * Sätze liest: zwischen KI-TRAINING und KI-SUCHE entstand so ein zusätzlicher
  * Langsatz aus Agentennamen, hinter KI-SUCHE entsteht keiner.
  *
- * DIE GRUPPE KI-MODELLE TRÄGT KEINE EIGENE Content-Signal-ZEILE, und das ist
- * Absicht: die Freigabe betrifft den ABRUF. Ein `ai-train=yes` wäre eine
- * Erklärung über die NUTZUNG, also ein Rechtstext. Der Nutzungsvorbehalt im
- * Kopf der Datei, AGB § 12, /.well-known/tdm-policy.json, tdmrep.json und der
- * Kopf `tdm-reservation` sind mit dieser Freigabe NICHT angefasst worden; ob
- * sie nachgezogen werden, entscheidet Christian.
+ * WAS DIE FREIGABE BEDEUTET, in der Lesart der Anbieter: für GPTBot und
+ * ClaudeBot ist das robots-Token selbst der Schalter für die Verwendung im
+ * Training (OpenAI: „Disallowing GPTBot indicates a site's content should not
+ * be used in training"), für Google-Extended der Schalter für Training und
+ * Grounding. Die Freigabe erlaubt damit mehr als den Abruf.
+ *
+ * DIE GRUPPE KI-MODELLE TRÄGT KEINE EIGENE Content-Signal-ZEILE: `ai-train=no`
+ * widerspräche dem Zweck der Freigabe, und `ai-train=yes` wäre eine weitere
+ * Erklärung, die niemand beauftragt hat. Der Nutzungsvorbehalt im Kopf der
+ * Datei, das Content-Signal unter `*`, AGB § 12, /.well-known/tdm-policy.json,
+ * tdmrep.json und der Kopf `tdm-reservation` sind NICHT angefasst worden. Für
+ * die drei freigegebenen Kennungen sagen sie seither etwas anderes als diese
+ * Gruppe. Ob die Rechtstexte nachgezogen werden, entscheidet Christian.
  *
  * WER EINEN AGENTEN ZWISCHEN DEN GRUPPEN VERSCHIEBT, liest vorher die Leser
  * dieser Datei. Sie urteilen an der LIVE ausgelieferten robots.txt, nicht am
