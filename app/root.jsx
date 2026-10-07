@@ -603,11 +603,11 @@ export function Layout({children}) {
         */}
         {/*
           FASSUNG IM src: public/ wird mit cache-control max-age=31536000
-          ausgeliefert, unter festem Namen. Ohne neuen URL behaelt ein
+          ausgeliefert, unter festem Namen. Ohne neuen URL behält ein
           wiederkehrender Besucher die alte Datei bis zu ein Jahr.
-          publicSkript() haengt ?v=<sha256-8 des Inhalts> an, beim Build
-          berechnet (scripts/public-skript-version.mjs) — niemand zaehlt
-          von Hand hoch. Das gilt auch fuer /qiblanco-qpx.js: der Loader
+          publicSkript() hängt ?v=<sha256-8 des Inhalts> an, beim Build
+          berechnet (scripts/public-skript-version.mjs) — niemand zählt
+          von Hand hoch. Das gilt auch für /qiblanco-qpx.js: der Loader
           liest den versionierten URL aus data-qpx-src.
           Wache: homepage-bauer/pruefungen/probe_public_skripte_version.py
         */}
