@@ -49,6 +49,7 @@ import {
   leereBlogHandles,
 } from '~/lib/sitemap-bestand';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
+import {zielLastmod} from '~/lib/zusammenlegungen-lastmod';
 
 /**
  * Kind-Typ im URL-Pfad -> Enum-Wert der Storefront-API.
@@ -214,6 +215,9 @@ export async function lastmodJeKind(storefront, kinder) {
   // also in das Maximum. Eintraege ohne eigenes `lastmod` bleiben draußen:
   // ein fehlendes Datum ist kein Datum.
   const nurRoute = NUR_ROUTE_SEITEN.map((s) => s.lastmod).filter(Boolean);
+  // Ebenso die Daten, die die Kind-Route den Zielseiten einer
+  // Zusammenlegung einträgt (~/lib/zusammenlegungen-lastmod).
+  const zusammenlegung = [...zielLastmod().values()];
 
   kinder.forEach((kind, i) => {
     const alias = `k${i}`;
@@ -223,7 +227,7 @@ export async function lastmodJeKind(storefront, kinder) {
     const sichtbar = sichtbareEintraege(kind.typ, items, bestand);
     if (!sichtbar) return;
     const werte = sichtbar.map((e) => e.updatedAt).filter(Boolean);
-    if (kind.typ === 'pages') werte.push(...nurRoute);
+    if (kind.typ === 'pages') werte.push(...nurRoute, ...zusammenlegung);
     const wert = juengstes(werte);
     if (wert) karte.set(kind.loc, wert);
   });

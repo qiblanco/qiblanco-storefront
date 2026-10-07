@@ -37,7 +37,17 @@ const {NUR_ROUTE_SEITEN, NICHT_INDEXIERBARE_PRODUKTE} = await import(
 );
 
 const BASIS = 'https://x.test';
-const MAX_NUR_ROUTE = NUR_ROUTE_SEITEN.map((e) => e.lastmod)
+// Die Kind-Route trägt den Zielseiten einer Zusammenlegung deren Datum ein
+// (~/lib/zusammenlegungen-lastmod) — es gehört deshalb ins Maximum wie die
+// NUR_ROUTE_SEITEN.
+const {zielLastmod} = await ladeMitAufgeloestenImporten(
+  join(appDir, 'lib', 'zusammenlegungen-lastmod.js'),
+  'sitemap-index-test-zusammenlegung',
+);
+const MAX_NUR_ROUTE = [
+  ...NUR_ROUTE_SEITEN.map((e) => e.lastmod),
+  ...zielLastmod().values(),
+]
   .filter(Boolean)
   .sort()
   .at(-1);
@@ -148,7 +158,7 @@ const D = (t) => ({handle: 'egal', updatedAt: t});
   assert.equal(
     karte.pages,
     MAX_NUR_ROUTE > '2026-03-03T00:00:00Z' ? MAX_NUR_ROUTE : '2026-03-03T00:00:00Z',
-    'pages bezieht die NUR_ROUTE_SEITEN ein',
+    'pages bezieht die NUR_ROUTE_SEITEN und die Zusammenlegungs-Ziele ein',
   );
 }
 
