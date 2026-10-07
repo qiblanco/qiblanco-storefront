@@ -30,6 +30,13 @@
  * SEITE IN DIE CLOSURE — dann gilt Gate 12 auch dort. Das ist gewollt und
  * der Grund, warum hier kein Sammel-Helper entstehen soll.
  *
+ * STAND 2026-10-07: das ist eingetreten. Inzwischen importieren mehrere
+ * Routen und Schema-Bibliotheken dieses Modul (`grep -rl entity-schema app`
+ * nennt sie), meist nur ORG_ID und SITE_ID. Gate 12 prüft seither je Seite,
+ * ob ihre Bindestelle eines der GEÄNDERTEN Symbole bindet: ein Diff an
+ * organizationSchema erreicht so nur die Seiten, die den Knoten ausgeben
+ * (Startseite und /pages/affiliate-partnerprogramm).
+ *
  * CANONICAL_ORIGIN wird aus seo.js GELESEN (nicht kopiert): Lesen erzeugt
  * keinen Diff und damit keine Gate-12-Reichweite, hält aber die eine
  * kanonische Domain-Definition als Single Source of Truth.
@@ -81,12 +88,15 @@ export const SITE_ID = `${CANONICAL_ORIGIN}/#website`;
  * Namen auf einer öffentlichen Seite.
  *
  * WARUM NUR EINE PERSON, obwohl die eigene FAQ zwei nennt („Gegründet haben
- * Qi Blanco Christian und Anna", app/data/fragen.js): von der Mitgründerin
- * ist im Bestand nur der Vorname belegt. Ein Vorname löst keine Person als
- * Entität auf, und ein geratener Nachname wäre die erfundene Angabe, gegen
- * die diese Datei durchgehend steht. `founder` behauptet „ist Gründer",
- * nicht „ist einziger Gründer". Ist ihr voller Name belegt, wird aus dem
- * Feld ein Array mit zwei Personen.
+ * Qi Blanco Christian und Anna", app/data/fragen.js): die Firma nennt die
+ * Mitgründerin in ihren eigenen Texten nur beim Vornamen, und ein Vorname
+ * löst keine Person als Entität auf. Ihr voller Name steht im Bestand allein
+ * in Titeln von YouTube-Videos (Abzug in app/lib/podcast-daten.server.js,
+ * „Gründer Interview … Anna & Christian Bernd Bauer"). Das ist ein Hinweis,
+ * aber kein Satz der Firma über ihre Gründer; hier eingetragen wäre er eine
+ * abgeleitete Angabe über einen Menschen. `founder` behauptet „ist Gründer",
+ * nicht „ist einziger Gründer". Hat ein Mensch den Namen bestätigt, wird aus
+ * dem Feld ein Array mit zwei Personen.
  *
  * DIE @id IST DIE DES PERSON-KNOTENS AUF /pages/ueber-uns (dessen Route,
  * Funktion aboutSchema: absoluteCanonical(PFAD) + '#person'). Dort steht

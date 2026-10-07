@@ -119,17 +119,48 @@ test('Organization nennt den Gründer als Person mit @id und Name', () => {
   assert.deepEqual(Object.keys(f).sort(), ['@id', '@type', 'name']);
 });
 
+// Die Zeile des Impressums, die den Namen trägt: „Verantwortlich für den
+// Inhalt nach § 18 Abs. 2 MStV", Name, dann die Anschrift der Gesellschaft.
+// Verlangt wird die GANZE Zeile bis zur Straße. Ein nacktes `includes` auf den
+// Namen ließe „Christian", „Bernd Bauer" und sogar den leeren Namen durch
+// (Fund der unabhängigen Gegenprüfung vom 2026-10-07).
+const mstvZeile = (name) => `<p>${name}, ${ORGANISATION.streetAddress}`;
+
 test('der Name des Gründers steht WÖRTLICH im Impressum', () => {
+  assert.ok(FOUNDER.name.trim().length > 0, 'FOUNDER.name ist leer');
   assert.ok(
-    IMPRESSUM.includes(FOUNDER.name),
-    `FOUNDER.name = ${JSON.stringify(FOUNDER.name)} steht NICHT im Impressum`,
+    IMPRESSUM.includes(mstvZeile(FOUNDER.name)),
+    `FOUNDER.name = ${JSON.stringify(FOUNDER.name)} steht NICHT als ` +
+      'Verantwortlicher (MStV-Zeile) im Impressum',
   );
+  // WER DAS IMPRESSUM ÄNDERT: wechselt der Verantwortliche, wird dieser Test
+  // rot, obwohl der Gründer derselbe bleibt. Das ist gewollt. Der Name
+  // braucht dann eine andere öffentliche Quelle, und die wird hier benannt.
 });
 
-test('POSITIV-KONTROLLE: ein abgewandelter Gründername würde auffallen', () => {
-  // Die naheliegende Abwandlung lässt den zweiten Vornamen weg. Sie steht
-  // so nirgends im Impressum; der Wächter oben misst also den vollen Namen.
-  assert.equal(IMPRESSUM.includes('Christian Bauer'), false);
+test('POSITIV-KONTROLLE: Teilnamen und der leere Name würden auffallen', () => {
+  for (const falsch of ['Christian', 'Bernd Bauer', 'Christian Bauer', '']) {
+    assert.equal(
+      IMPRESSUM.includes(mstvZeile(falsch)),
+      false,
+      `der Wächter ließe ${JSON.stringify(falsch)} als Gründernamen durch`,
+    );
+  }
+});
+
+test('founder steht mit und ohne Logo am Knoten, und nur an der Organization', () => {
+  // Die Startseite ruft entityGraph({logoUrl}). Ein founder, der nur im Zweig
+  // ohne Logo gesetzt wäre, fehlte genau dort, wo er ausgeliefert wird.
+  const logoUrl = 'https://cdn.example/logo.png';
+  const soll = {'@type': 'Person', '@id': FOUNDER_ID, name: FOUNDER.name};
+  assert.deepEqual(organizationSchema().founder, soll);
+  assert.deepEqual(organizationSchema({logoUrl}).founder, soll);
+  const graph = entityGraph({logoUrl})['@graph'];
+  assert.deepEqual(
+    graph.filter((k) => 'founder' in k).map((k) => k['@type']),
+    ['Organization'],
+  );
+  assert.equal('founder' in websiteSchema(), false);
 });
 
 test('die Rolle „Gründer" steht bei demselben Namen auf einer öffentlichen Seite', () => {
@@ -137,8 +168,11 @@ test('die Rolle „Gründer" steht bei demselben Namen auf einer öffentlichen S
   // „Geschäftsführer". Dass derselbe Mensch der Gründer ist, sagt
   // /pages/warum-qi-blanco (app/data/absicht.js). Fällt das Wort dort weg,
   // verliert `founder` seinen öffentlichen Beleg, und dieser Test wird rot.
+  // Der volle Name am Ende, davor höchstens der akademische Grad. `includes`
+  // ließe auch hier einen Teilnamen durch.
   assert.ok(
-    ABSENDER.name.includes(FOUNDER.name),
+    ABSENDER.name === FOUNDER.name ||
+      ABSENDER.name.endsWith(` ${FOUNDER.name}`),
     `ABSENDER.name = ${JSON.stringify(ABSENDER.name)} nennt den Gründer nicht`,
   );
   assert.match(ABSENDER.rolle, /Gründer/);
@@ -156,6 +190,10 @@ test('founder trägt die @id des Person-Knotens von /pages/ueber-uns', () => {
   assert.match(UEBER_UNS, /const url = absoluteCanonical\(PFAD\);/);
   assert.match(UEBER_UNS, /const personId = `\$\{url\}#person`;/);
   assert.match(UEBER_UNS, /'@type': 'Person',\s*'@id': personId,/);
+  // Und die Route gibt den Graphen auch AUS. Stünde aboutSchema() nur noch
+  // als Funktion da, zeigte die @id des Gründers auf einen Knoten, den keine
+  // Seite mehr liefert.
+  assert.match(UEBER_UNS, /\{'script:ld\+json': aboutSchema\(\)\}/);
 });
 
 test('POSITIV-KONTROLLE: eine umgezogene Person-@id würde auffallen', () => {
