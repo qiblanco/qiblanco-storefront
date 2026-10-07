@@ -1,4 +1,5 @@
 import {FrageSeite} from '~/components/campaign/FrageSeite';
+import {FrageAbschnitt} from '~/components/campaign/FrageAbschnitt';
 import fragenStyles from '~/styles/fragen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {seiteFuer} from '~/data/fragen';
@@ -63,8 +64,9 @@ if (!SEITE) {
   );
 }
 
-const TITEL = "Was ist Elektrosmog? | Qi Blanco";
-const BESCHREIBUNG = "Elektrosmog ist ein Alltagswort für die Felder, die Technik um uns herum erzeugt: niederfrequente aus der Stromversorgung und hochfrequente aus Handy, WLAN und Funk.";
+const TITEL = 'Was ist Elektrosmog? | Qi Blanco';
+const BESCHREIBUNG =
+  'Elektrosmog ist ein Alltagswort für die Felder, die Technik um uns herum erzeugt: niederfrequente aus der Stromversorgung und hochfrequente aus Handy, WLAN und Funk.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -73,7 +75,7 @@ const BESCHREIBUNG = "Elektrosmog ist ein Alltagswort für die Felder, die Techn
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-19';
-const GEAENDERT = '2026-09-28';
+const GEAENDERT = '2026-10-07';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];
@@ -99,8 +101,32 @@ export const meta = () => {
   ];
 };
 
+/**
+ * Seit 2026-10-07 ist „Was senkt die Belastung durch Elektrosmog im Alltag?"
+ * in diese Seite aufgegangen (301 von /pages/was-senkt-elektrosmog-im-alltag,
+ * Anker #was-senkt-elektrosmog-im-alltag; Job 20261007-seo-zusammenlegung-
+ * duenne-seiten-301-umsetzen). Die Seite trägt die Frageseiten-Stile, der
+ * Abschnitt bekommt deshalb deren Klassen.
+ */
+const AUFGEGANGEN = seiteFuer('was-senkt-elektrosmog-im-alltag');
+
 export default function FrageRoute() {
-  return <FrageSeite seite={SEITE} />;
+  return (
+    <FrageSeite
+      seite={SEITE}
+      anhang={
+        <FrageAbschnitt
+          seite={AUFGEGANGEN}
+          klassen={{
+            abschnitt: 'frg__aufgegangen',
+            inhalt: 'frg__inhalt',
+            antwort: 'frg__antwort',
+            quellen: 'frg__quellen',
+          }}
+        />
+      }
+    />
+  );
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */

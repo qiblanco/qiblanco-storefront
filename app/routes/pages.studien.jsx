@@ -8,12 +8,16 @@ import {
 } from '~/components/studien/StudienUebersicht';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
+import frageAbschnittStyles from '~/styles/frage-abschnitt.css?url';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/studien';
 
 export function links() {
-  return [{rel: 'stylesheet', href: studienStyles}];
+  return [
+    {rel: 'stylesheet', href: studienStyles},
+    {rel: 'stylesheet', href: frageAbschnittStyles},
+  ];
 }
 
 /**

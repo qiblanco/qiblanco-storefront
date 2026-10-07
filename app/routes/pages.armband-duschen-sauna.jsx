@@ -1,106 +1,33 @@
-import {FrageSeite} from '~/components/campaign/FrageSeite';
-import fragenStyles from '~/styles/fragen.css?url';
-import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {seiteFuer} from '~/data/fragen';
-import {frageSchema} from '~/lib/fragen-schema';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
-import {isoMitZone} from '~/lib/datum';
+import {leiteUm} from '~/lib/zusammenlegungen';
 
 const PFAD = '/pages/armband-duschen-sauna';
-// EIN Traeger für die Adresse: der Slug wird abgeleitet, nicht danebengeschrieben.
-const SLUG = PFAD.slice('/pages/'.length);
 
 /**
- * /pages/armband-duschen-sauna — die Frage „Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen?".
+ * /pages/armband-duschen-sauna — permanenter 301 auf /pages/faq.
  *
- * Gebaut vom Großjob 20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird,
- * Segment s08. Die Frage ist anhand der Zitatmessung des seo-manager
- * ausgewählt (exports/KI-QUELLENLUECKE.json — sie hält fest, welche Quellen
- * Antwortsysteme heute zu welcher Frage zitieren). Den Text schrieb dasselbe Segment; er steht committet in
- * app/data/fragen.js, die Darstellung in
- * app/components/campaign/FrageSeite.jsx. DIESE DATEI TRÄGT KEINEN INHALT —
- * wer den Text aendert, aendert das Datenmodul, nicht die Route.
+ * Bis 07.10.2026 stand hier die Frageseite „Kann man ein Armband gegen
+ * Elektrosmog beim Duschen und in der Sauna tragen?". Die Seite ist in
+ * /pages/faq aufgegangen (die vollständige Antwort als Abschnitt der FAQ, Anker
+ * #armband-duschen-sauna), Entscheidung vom
+ * 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job
+ * 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt
+ * unverändert im Datenmodul; diese Route trägt nur noch die Weiterleitung.
  *
- * DIE FRAGE IST DIE ADRESSE UND DIE UEBERSCHRIFT. Das ist keine Kosmetik: ein
- * Antwortsystem schneidet Texte in Abschnitte und bewertet sie isoliert. Eine
- * Frage, die nur eine Zeile unter zwoelf anderen auf /pages/faq ist,
- * konkurriert mit ihren Nachbarn um dieselbe URL. Die Bestands-FAQ bleibt
- * unangetastet — sie bedient den Menschen, der blaettert.
+ * WARUM DIE ROUTE BLEIBT: ohne sie übernähme pages.$handle.jsx, fände kein
+ * Shopify-Seitenobjekt und lieferte 404. Alte Links, Lesezeichen und Zitate
+ * laufen so auf den neuen Abschnitt. Ziel und Anker stehen in EINEM Träger,
+ * app/lib/zusammenlegungen.js; der Query-String bleibt erhalten.
  *
- * Die Datei sticht ausserdem den Katchall pages.$handle.jsx, der sonst ein
- * Shopify-Seitenobjekt dieses Handles suchen und 404 liefern würde.
- *
- * SITEMAP ÜBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), NICHT über ein
- * Shopify-Seitenobjekt: die Shopify-Sitemap entsteht aus Seitenobjekten, eine
- * reine Route kaeme dort baulich nie hinein und wäre erreichbar UND
- * unauffindbar. Ein Seitenobjekt wäre der zweite mögliche Traeger und ist
- * bewusst nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei
- * /pages/kritik, /pages/hypothesen und /pages/lexikon.
- *
- * NICHT IM MENUE, UND DAS IST KEIN VERSTECK: die Route hängt nicht am
- * Shopify-Menue-Objekt, also gibt es keinen Dropdown-Eintrag. Öffentlich,
- * indexierbar, in der Sitemap, vom Fragen-Hub verlinkt — nur eben nicht im
- * Navigationsband. Jeder Besucher bekommt denselben Text, Mensch wie Crawler;
- * das misst die Abnahme und nicht dieser Kommentar.
- *
- * TRACKING-NAHT: keine Cookies, kein neuer Identitaets- oder Tracking-Key,
- * kein eigener Pixel, kein Kaufknopf. Die R1/R2/R3-Kette hängt pfad-agnostisch
- * im root-Layout; TRACKING_COOKIE_NAMES bleibt unangetastet.
- *
- * KEIN LOADER: Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
- * lesen.
+ * RÜCKWEG: hb-deploy revert --sha <merge> stellt die Seite wieder her.
  */
-const SEITE = seiteFuer(SLUG);
-if (!SEITE) {
-  // FAIL-LOUD AN DER RICHTIGEN STELLE. Faehrt jemand diese Frage aus
-  // app/data/fragen.js heraus, wäre die stille Variante eine leere Seite mit
-  // HTTP 200 — erreichbar und inhaltslos, also genau der Zustand, den der
-  // Wissens-Blog monatelang hatte. Ein Fehler beim Rendern ist laut und trifft
-  // nur diese eine Route.
-  throw new Error(
-    `Frageseite "${SLUG}" fehlt in app/data/fragen.js — ` +
-      'Route und Datenmodul sind auseinandergelaufen.',
-  );
-}
-
-const TITEL = "Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen? | Qi Blanco";
-const BESCHREIBUNG = "Ja, das QiBracelet® und den QiOne® 2 Pro kannst du beim Duschen, beim Schwimmen und in der Sauna anbehalten, nur wird ihr Gehäuse aus Chirurgenstahl in der Sauna warm.";
 
 /**
- * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
- * jedem Abruf bewegt, behauptet eine Pflege, die nicht stattfindet.
- * WER DEN TEXT DIESER SEITE AENDERT, ZIEHT `GEAENDERT` NACH — und den
- * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
+ * @param {{request: Request}} args
  */
-const VEROEFFENTLICHT = '2026-09-19';
-const GEAENDERT = '2026-09-28';
-
-export function links() {
-  return [{rel: 'stylesheet', href: fragenStyles}];
+export async function loader({request}) {
+  leiteUm(request, PFAD);
 }
 
-/** @type {MetaFunction} */
-export const meta = () => {
-  const schema = frageSchema(SEITE, {
-    datePublished: isoMitZone(VEROEFFENTLICHT),
-    dateModified: isoMitZone(GEAENDERT),
-  });
-  return [
-    {title: TITEL},
-    {name: 'description', content: BESCHREIBUNG},
-    canonicalLink(PFAD),
-    ...teilbildTags(PFAD),
-    {property: 'og:type', content: 'article'},
-    {property: 'og:title', content: TITEL},
-    {property: 'og:description', content: BESCHREIBUNG},
-    {property: 'og:url', content: absoluteCanonical(PFAD)},
-    {property: 'og:site_name', content: MARKE},
-    ...(schema ? [{'script:ld+json': schema}] : []),
-  ];
-};
-
-export default function FrageRoute() {
-  return <FrageSeite seite={SEITE} />;
+export default function ArmbandDuschenSaunaWeiterleitung() {
+  return null;
 }
-
-/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */

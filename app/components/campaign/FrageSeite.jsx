@@ -1,6 +1,7 @@
 import {quellenFuer} from '~/data/fragen';
 import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
 import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
+import {adresse} from '~/lib/zusammenlegungen';
 
 /**
  * /pages/<frage-slug> — EINE Frage, EINE Antwort.
@@ -39,7 +40,7 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
  *  Abschnitt — nur auf den Frageseiten, deren Frage die Seriosität selbst ist
  *  (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). Im Datensatz statt
  *  als Routen-Prop: der Bau ändert so keine Route. */
-export function FrageSeite({seite}) {
+export function FrageSeite({seite, anhang = null}) {
   const quellen = quellenFuer(seite);
   // DER QUOTIERTE SCHLUESSEL IST ABSICHT, NICHT UMSTAENDLICHKEIT: das
   // Umlaut-Gate (homepage-bauer/src/umlaut_gate.py) liest einen Bezeichner in
@@ -47,7 +48,7 @@ export function FrageSeite({seite}) {
   // der wäre in einem Feldnamen der Fehler. Die quotierte Form ist die
   // Schreibweise, die es bereits als Code-Kontext erkennt. Die Klasse ist
   // gemeldet (fünfte Instanz), der Feldname selbst bleibt unverändert.
-  const {"begruendung": absaetze} = seite;
+  const {begruendung: absaetze} = seite;
   return (
     <div className="frg">
       <section className="frg__kopf" data-section="frg-kopf">
@@ -56,10 +57,7 @@ export function FrageSeite({seite}) {
             {/* Die Sammelstelle der Frageseiten ist seit 2026-09-25 der
                 Abschnitt #einzelfragen der FAQ (/pages/fragen leitet per 301
                 dorthin) — direkt verlinkt, nicht über die Weiterleitung. */}
-            <a
-              className="frg__vorspann-link"
-              href={`${HUB_PFAD}#${HUB_ANKER}`}
-            >
+            <a className="frg__vorspann-link" href={`${HUB_PFAD}#${HUB_ANKER}`}>
               Fragen und Antworten
             </a>
           </p>
@@ -114,7 +112,11 @@ export function FrageSeite({seite}) {
           Material. Er darf leer sein; dann entfällt er ganz, statt als leere
           Überschrift stehenzubleiben. */}
       {seite.offen?.length > 0 && (
-        <section className="frg__offen" data-geo="offen" data-section="frg-offen">
+        <section
+          className="frg__offen"
+          data-geo="offen"
+          data-section="frg-offen"
+        >
           <div className="frg__inhalt">
             <h2>Gut zu wissen</h2>
             {seite.offen.map((absatz) => (
@@ -124,6 +126,11 @@ export function FrageSeite({seite}) {
         </section>
       )}
 
+      {/* ANHANG: eine Frageseite, die in DIESE Seite aufgegangen ist
+          (app/lib/zusammenlegungen.js), steht hier als eigener Abschnitt
+          mit Anker, nach „Gut zu wissen" und vor den Begriffen. */}
+      {anhang}
+
       {seite.weiter.length > 0 && (
         <section data-geo="weiter" data-section="frg-weiter">
           <div className="frg__inhalt">
@@ -131,7 +138,7 @@ export function FrageSeite({seite}) {
             <ul className="frg__weiter">
               {seite.weiter.map((z) => (
                 <li key={z.pfad}>
-                  <a href={z.pfad}>{z.text}</a>
+                  <a href={adresse(z.pfad)}>{z.text}</a>
                 </li>
               ))}
             </ul>

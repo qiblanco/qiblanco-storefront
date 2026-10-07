@@ -35,3 +35,16 @@
 .lex__liste--voll .lex__karte-frage {
   margin: var(--lex-s2) 0 0;
 }
+
+/* Der volle Eintrag in einer Karte (seit 2026-10-07, Job 20261007-seo-
+   zusammenlegung-duenne-seiten-301-umsetzen): die Begriffsseiten sind in den
+   Hub aufgegangen. Quellen und Weiterlesen bekommen Abstand nach oben, die
+   Grenze bleibt gedämpft wie in der Kurzfassung. */
+.lex__liste--voll .lex__karte-grenze p:last-child {
+  margin-bottom: 0;
+}
+
+.lex__liste--voll .lex__karte-voll .lex__quellen,
+.lex__liste--voll .lex__karte-voll .lex__weiter {
+  margin-top: var(--lex-s3);
+}

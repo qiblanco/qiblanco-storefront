@@ -74,6 +74,18 @@ export const WEITERGELEITETE_PAGES_DEF = [
       'und hielt die URL dadurch in der Sitemap.',
     seit: '2026-09-13',
   },
+  {
+    handle: 'support-1',
+    ziel: '/pages/support',
+    grund:
+      'Zusammenlegung dünner Seiten vom 2026-10-07 (Job 20261007-seo-' +
+      'zusammenlegung-duenne-seiten-301-umsetzen): die zweite Supportseite ' +
+      'von 2022 ist in /pages/support aufgegangen. Der 301 steht in ' +
+      'app/routes/pages.$handle.jsx über app/lib/zusammenlegungen.js; das ' +
+      'Shopify-Seitenobjekt bleibt bestehen (nichts löschen) und hielte die ' +
+      'URL sonst in der Sitemap.',
+    seit: '2026-10-07',
+  },
 ];
 
 /**

@@ -236,12 +236,16 @@ export const WV_GRUPPEN = [
         pfad: '/pages/was-ist-elektrosmog',
         anker: 'Was ist Elektrosmog?',
         teaser:
-          'Welche Felder das Wort zusammenfasst, woher sie kommen und in welcher Einheit man sie misst.',
+          'Welche Felder das Wort zusammenfasst, wie man sie misst und was die Belastung im Alltag sofort senkt.',
         fuss: 'Was ist Elektrosmog?',
-        weiter: [
-          '/pages/wie-funktioniert-schutz-vor-elektrosmog',
-          '/pages/wie-weit-reicht-elektrosmog-schutz',
-        ],
+        // Seit 2026-10-07 (Job 20261007-seo-zusammenlegung-duenne-seiten-301-
+        // umsetzen) stehen die Fragen „Was senkt Elektrosmog im Alltag?",
+        // „Wie funktioniert Schutz vor Elektrosmog?", „Wie weit reicht ein
+        // Elektrosmog-Schutz?", „Armband beim Duschen und in der Sauna?" und
+        // „Gibt es Studien zu Elektrosmog-Schutz?" als Abschnitte auf ihren
+        // Zielseiten (app/lib/zusammenlegungen.js). Ihre eigenen Einträge sind
+        // hier entfallen; die Zielseiten stehen in dieser Liste.
+        weiter: ['/pages/technologie', '/pages/kann-elektrosmog-den-schlaf-stoeren'],
       },
       {
         pfad: '/pages/lexikon',
@@ -249,7 +253,7 @@ export const WV_GRUPPEN = [
         teaser:
           'Hohe Frequenz, High Vibe, kohärentes Wasser: was Menschen damit meinen und welche messbare Größe dahinter liegt.',
         fuss: 'Lexikon',
-        weiter: ['/pages/hypothesen', '/pages/gibt-es-studien-zu-elektrosmog-schutz'],
+        weiter: ['/pages/hypothesen', '/pages/studien'],
       },
       {
         pfad: '/pages/faq',
@@ -258,46 +262,18 @@ export const WV_GRUPPEN = [
           'Größe, Wasser und Sauna, Reichweite, Rückgabe und Ratenzahlung, jede Frage in einem Absatz beantwortet.',
       },
       {
-        pfad: '/pages/was-senkt-elektrosmog-im-alltag',
-        anker: 'Was senkt Elektrosmog im Alltag?',
-        teaser:
-          'Handy weg vom Körper, nachts Flugmodus, Router aus: was die Belastung sofort senkt und nichts kostet.',
-        weiter: ['/pages/was-ist-elektrosmog', '/pages/kann-elektrosmog-den-schlaf-stoeren'],
-      },
-      {
         pfad: '/pages/kann-elektrosmog-den-schlaf-stoeren',
         anker: 'Kann Elektrosmog den Schlaf stören?',
         teaser:
           'Was Schlafstudien zum Funkfeld zeigen und warum am Abend vor allem Licht und Nachrichten des Handys stören.',
-        weiter: ['/pages/was-senkt-elektrosmog-im-alltag', '/pages/was-ist-elektrosmog'],
+        weiter: ['/pages/was-ist-elektrosmog', '/pages/faq'],
       },
       {
-        pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
-        anker: 'Wie funktioniert Schutz vor Elektrosmog?',
+        pfad: '/pages/technologie',
+        anker: 'Wie der Schutz am Körper funktioniert',
         teaser:
-          'Die drei Wege, auf denen ein Feld am Körper physikalisch kleiner wird.',
-        weiter: ['/pages/wie-weit-reicht-elektrosmog-schutz', '/pages/hypothesen'],
-      },
-      {
-        pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
-        anker: 'Wie weit reicht ein Elektrosmog-Schutz?',
-        teaser:
-          'Für welchen Bereich der QiHome® Air ausgelegt ist, von der Wohnung bis zum ganzen Haus.',
-        weiter: ['/pages/wie-funktioniert-schutz-vor-elektrosmog', '/pages/armband-duschen-sauna'],
-      },
-      {
-        pfad: '/pages/armband-duschen-sauna',
-        anker: 'Armband beim Duschen und in der Sauna?',
-        teaser:
-          'Wann du QiBracelet® und QiOne® 2 Pro beim Duschen, Schwimmen und in der Sauna anbehalten kannst.',
-        weiter: ['/pages/wie-weit-reicht-elektrosmog-schutz', '/pages/neu-oder-gebraucht'],
-      },
-      {
-        pfad: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
-        anker: 'Gibt es Studien zu Elektrosmog-Schutz?',
-        teaser:
-          'Welche fünf Arbeiten es zu unseren Produkten gibt und wo du sie im Original liest.',
-        weiter: ['/pages/hypothesen', '/pages/ist-qi-blanco-serioes'],
+          'Auf welchen drei Wegen ein Feld am Körper kleiner wird und für welchen Bereich der QiHome® Air ausgelegt ist.',
+        weiter: ['/pages/was-ist-elektrosmog', '/pages/hypothesen'],
       },
       {
         pfad: '/pages/studien',
@@ -310,7 +286,7 @@ export const WV_GRUPPEN = [
         anker: 'Unsere Hypothesen zum Wirkmodell',
         teaser:
           'Wie wir uns die Wirkung erklären, Gedanke für Gedanke und mit allen Quellen.',
-        weiter: ['/pages/gibt-es-studien-zu-elektrosmog-schutz', '/pages/lexikon'],
+        weiter: ['/pages/studien', '/pages/lexikon'],
       },
     ],
   },

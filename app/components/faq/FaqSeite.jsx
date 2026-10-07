@@ -3,6 +3,9 @@ import {Link} from 'react-router';
 import {FAQ_BLOECKE} from '~/data/faq-seite';
 import {FRAGEN} from '~/data/fragen';
 import {HUB_ANKER} from '~/lib/fragen-schema';
+import {FrageAbschnitt} from '~/components/campaign/FrageAbschnitt';
+import {seiteFuer} from '~/data/fragen';
+import {adresse} from '~/lib/zusammenlegungen';
 import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
@@ -193,10 +196,10 @@ function FaqEinzelfragen() {
         <div className="faq-inner faq-inner--schmal">
           <h2>Einzelne Fragen, ausführlich beantwortet</h2>
           <p className="faq-block-intro">
-            Zu jeder dieser Fragen gibt es eine eigene Seite. Sie beginnt mit
-            der Antwort, danach folgen die Belege mit Zahl und Fundstelle, und
-            am Ende steht, was offen ist. Begriffe wie Frequenz oder
-            Elektrosmog erklärt das{' '}
+            Jede dieser Fragen ist ausführlich beantwortet. Die Antwort steht
+            vorn, danach folgen die Belege mit Zahl und Fundstelle, und am Ende
+            steht, was gut zu wissen ist. Begriffe wie Frequenz oder Elektrosmog
+            erklärt das{' '}
             <a href="/pages/lexikon">Lexikon in der Sprache der Physik</a>.
           </p>
         </div>
@@ -210,7 +213,10 @@ function FaqEinzelfragen() {
           <ul className="faq-einzelfragen-liste">
             {FRAGEN.map((s) => (
               <li key={s.slug}>
-                <a href={s.pfad}>{s.frage}</a>
+                {/* Ist die Frageseite in eine andere Seite aufgegangen
+                    (app/lib/zusammenlegungen.js), zeigt der Link direkt auf
+                    deren Abschnitt, nicht auf die Weiterleitung. */}
+                <a href={adresse(s.pfad)}>{s.frage}</a>
               </li>
             ))}
           </ul>
@@ -254,6 +260,16 @@ export function FaqSeite() {
           ) : null}
         </Fragment>
       ))}
+
+      {/* Seit 2026-10-07 steht die Frage „Armband beim Duschen und in der
+          Sauna" hier ganz, mit Antwort, Belegen und Quellen: ihre eigene Seite
+          ist per 301 in die FAQ aufgegangen (Job 20261007-seo-zusammenlegung-
+          duenne-seiten-301-umsetzen). Wasser, Duschen und Sauna ist das
+          stärkste Neugier-Thema im DACH-Raum (13,6 %). */}
+      <FrageAbschnitt
+        seite={seiteFuer('armband-duschen-sauna')}
+        klassen={{inhalt: 'faq-inner faq-inner--schmal'}}
+      />
 
       {/* Seit 2026-09-25 die Sammelstelle der Frageseiten (vorher der Hub
           /pages/fragen, der jetzt per 301 hierher führt). */}

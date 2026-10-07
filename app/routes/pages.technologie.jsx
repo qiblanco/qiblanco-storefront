@@ -1,10 +1,16 @@
 import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import technologieStyles from '~/styles/technologie.css?url';
+import frageAbschnittStyles from '~/styles/frage-abschnitt.css?url';
+import {FrageAbschnitt} from '~/components/campaign/FrageAbschnitt';
+import {seiteFuer} from '~/data/fragen';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 
 export function links() {
-  return [{rel: 'stylesheet', href: technologieStyles}];
+  return [
+    {rel: 'stylesheet', href: technologieStyles},
+    {rel: 'stylesheet', href: frageAbschnittStyles},
+  ];
 }
 
 export const meta = () => {
@@ -589,6 +595,17 @@ export default function TechnologiePage() {
           nicht notwendig. Es war Vorsicht, ist aber nicht notwendig."
           Entfernt wurde ausschließlich dieser Abschnitt; die Studienlage
           darüber und die CTA darunter stehen unverändert. */}
+
+      {/* ── ZWEI FRAGEN, DIE HIER AUFGEGANGEN SIND ──
+          Seit 2026-10-07 stehen „Wie funktioniert ein Schutz gegen Elektrosmog
+          am Körper?" und „Wie groß ist der Wirkungsbereich?" ganz auf dieser
+          Seite; ihre eigenen Frageseiten leiten per 301 auf diese Anker (Job
+          20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen). Text aus
+          app/data/fragen.js, unverändert. */}
+      <FrageAbschnitt seite={seiteFuer('wie-funktioniert-schutz-vor-elektrosmog')} />
+      <div style={{background: '#f7f1e8'}}>
+        <FrageAbschnitt seite={seiteFuer('wie-weit-reicht-elektrosmog-schutz')} />
+      </div>
 
       {/* ── CTA ── */}
       <div style={{padding: '5rem 1.5rem'}}>
