@@ -14,14 +14,14 @@
  *   - Erzeugt KEINE persistente Besucher-ID (kein anon_id, kein Fingerprint).
  *   - Sendet nur: Seite (Origin+Pfad, OHNE Query), Referrer, grobe Ad-Plattform-
  *     KLASSE (aus einer evtl. vorhandenen Klick-ID abgeleitet — NIE die ID selbst).
- *   - Seit 2026-10-07 zusaetzlich, falls in der Einstiegs-URL vorhanden: den
+ *   - Seit 2026-10-07 zusätzlich, falls in der Einstiegs-URL vorhanden: den
  *     NAMEN des Klick-Parameters (`klick`, z. B. "fbclid" — nie seinen Wert)
- *     sowie die Kampagnen-Angaben utm_medium und utm_content (je hoechstens
- *     100 Zeichen). Das sind Angaben des Werbetreibenden ueber den Link, nicht
- *     ueber die Person; sie werden aus der aufgerufenen URL gelesen wie der Pfad,
- *     nicht vom Endgeraet. Der Receiver wertet sie nur als Paid-Beleg aus
+ *     sowie die Kampagnen-Angaben utm_medium und utm_content (je höchstens
+ *     100 Zeichen). Das sind Angaben des Werbetreibenden zum Link, nicht zur
+ *     Person; sie werden aus der aufgerufenen URL gelesen wie der Pfad, nicht
+ *     vom Endgerät. Der Receiver wertet sie nur als Paid-Beleg aus
  *     (bezahlt / organisch / unentscheidbar) und SPEICHERT SIE NICHT. Die
- *     uebrige Query (inkl. Klick-ID-Wert) geht weiterhin nicht in die Nutzlast.
+ *     übrige Query (inkl. Klick-ID-Wert) geht weiterhin nicht in die Nutzlast.
  *   - Die Besucher-Unterscheidung entsteht ERST serverseitig aus einem TAEGLICH
  *     rotierenden Salt-Hash(IP+UA), der nach 24h verworfen wird (siehe Receiver).
  *
@@ -71,7 +71,7 @@
     var klick = '';
     var utmMedium = '';
     var utmContent = '';
-    function entschluessle(s) {
+    function dekodiere(s) {
       try {
         return decodeURIComponent(String(s || '').replace(/\+/g, ' '));
       } catch (errDec) {
@@ -84,13 +84,13 @@
       var parts = qs.split('&');
       for (var i = 0; i < parts.length; i++) {
         var gl = parts[i].indexOf('=');
-        var key = entschluessle(gl < 0 ? parts[i] : parts[i].slice(0, gl));
+        var key = dekodiere(gl < 0 ? parts[i] : parts[i].slice(0, gl));
         if (klass[key]) {
           if (!platform) { platform = klass[key]; klick = key; } // erste Klick-ID
         } else if (key === 'utm_medium' && !utmMedium && gl >= 0) {
-          utmMedium = entschluessle(parts[i].slice(gl + 1)).slice(0, 100);
+          utmMedium = dekodiere(parts[i].slice(gl + 1)).slice(0, 100);
         } else if (key === 'utm_content' && !utmContent && gl >= 0) {
-          utmContent = entschluessle(parts[i].slice(gl + 1)).slice(0, 100);
+          utmContent = dekodiere(parts[i].slice(gl + 1)).slice(0, 100);
         }
       }
     }
