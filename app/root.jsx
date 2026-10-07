@@ -608,8 +608,15 @@ export function Layout({children}) {
               defer
               suppressHydrationWarning
             />
+            {/*
+              FASSUNG IM src: public/ wird mit cache-control max-age=31536000
+              ausgeliefert, unter festem Namen. Ohne neuen URL behaelt ein
+              wiederkehrender Besucher die alte Datei bis zu ein Jahr. Bei
+              jeder Aenderung an public/qiblanco-tracker.js hochzaehlen
+              (eingefuehrt mit dem Hyros-Loader-Rueckbau, 2026-10-07).
+            */}
             <script
-              src="/qiblanco-tracker.js"
+              src="/qiblanco-tracker.js?v=20261007"
               nonce={nonce}
               defer
               suppressHydrationWarning
