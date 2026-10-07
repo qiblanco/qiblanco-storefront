@@ -28,7 +28,8 @@ import {redirect} from 'react-router';
  * auf eine Weiterleitung, auch wenn ein Datenmodul die alte Adresse noch als
  * Kennung trägt.
  *
- * DER ANKER zeigt auf den Abschnitt, in den der Inhalt übernommen wurde. Im
+ * DER ANKER zeigt auf den Abschnitt, in den der Inhalt übernommen wurde, und
+ * heißt wie die alte Adresse (`anker: true` -> Slug der Quelle). Im
  * 301 steht er HINTER dem Query-String (`/ziel?fbclid=…#anker`): so bleiben
  * Klick-IDs und UTM über die Weiterleitung erhalten, und der Browser springt
  * an die richtige Stelle. Suchmaschinen werten den Anker nicht aus; für sie
@@ -39,58 +40,69 @@ import {redirect} from 'react-router';
  * Fällt eine Zielseite im Wirkungskreislauf ab, reiht er den Rückweg selbst
  * ein (Hypothese `rueckweg-301`).
  *
- * @type {Readonly<Record<string, {ziel: string, anker: string|null}>>}
+ * @type {Readonly<Record<string, {ziel: string, anker: boolean}>>}
  */
 export const ZUSAMMENGELEGT = Object.freeze({
-  '/pages/lexikon-energie': {ziel: '/pages/lexikon', anker: 'lexikon-energie'},
+  '/pages/lexikon-energie': {ziel: '/pages/lexikon', anker: true},
   '/pages/lexikon-frequenz': {
     ziel: '/pages/lexikon',
-    anker: 'lexikon-frequenz',
+    anker: true,
   },
   '/pages/lexikon-high-vibe': {
     ziel: '/pages/lexikon',
-    anker: 'lexikon-high-vibe',
+    anker: true,
   },
   '/pages/lexikon-hohe-frequenz-schwingen': {
     ziel: '/pages/lexikon',
-    anker: 'lexikon-hohe-frequenz-schwingen',
+    anker: true,
   },
   '/pages/lexikon-low-vibe': {
     ziel: '/pages/lexikon',
-    anker: 'lexikon-low-vibe',
+    anker: true,
   },
-  '/pages/lexikon-ordnung': {ziel: '/pages/lexikon', anker: 'lexikon-ordnung'},
+  '/pages/lexikon-ordnung': {ziel: '/pages/lexikon', anker: true},
   '/pages/lexikon-spirituell-angebunden-sein': {
     ziel: '/pages/lexikon',
-    anker: 'lexikon-spirituell-angebunden-sein',
+    anker: true,
   },
   '/pages/lexikon-kohaerentes-wasser': {
     ziel: '/pages/was-ist-kohaerentes-wasser',
-    anker: 'lexikon-kohaerentes-wasser',
+    anker: true,
   },
   '/pages/was-senkt-elektrosmog-im-alltag': {
     ziel: '/pages/was-ist-elektrosmog',
-    anker: 'was-senkt-elektrosmog-im-alltag',
+    anker: true,
   },
   '/pages/gibt-es-studien-zu-elektrosmog-schutz': {
     ziel: '/pages/studien',
-    anker: 'gibt-es-studien-zu-elektrosmog-schutz',
+    anker: true,
   },
   '/pages/wie-funktioniert-schutz-vor-elektrosmog': {
     ziel: '/pages/technologie',
-    anker: 'wie-funktioniert-schutz-vor-elektrosmog',
+    anker: true,
   },
   '/pages/wie-weit-reicht-elektrosmog-schutz': {
     ziel: '/pages/technologie',
-    anker: 'wie-weit-reicht-elektrosmog-schutz',
+    anker: true,
   },
   '/pages/armband-duschen-sauna': {
     ziel: '/pages/faq',
-    anker: 'armband-duschen-sauna',
+    anker: true,
   },
-  '/pages/support-1': {ziel: '/pages/support', anker: null},
-  '/products/qione-1': {ziel: '/products/qione-2-pro', anker: null},
+  '/pages/support-1': {ziel: '/pages/support', anker: false},
+  '/products/qione-1': {ziel: '/products/qione-2-pro', anker: false},
 });
+
+/**
+ * Der Anker einer alten Adresse auf ihrer Zielseite — oder null.
+ * @param {string} pfad
+ * @returns {string|null}
+ */
+export function ankerFuer(pfad) {
+  const z = ZUSAMMENGELEGT[pfad];
+  if (!z || !z.anker) return null;
+  return pfad.slice(pfad.lastIndexOf('/') + 1);
+}
 
 /**
  * Der Eintrag zu einer alten Adresse — oder undefined.
@@ -109,7 +121,8 @@ export function zusammenlegungFuer(pfad) {
 export function adresse(pfad) {
   const z = ZUSAMMENGELEGT[pfad];
   if (!z) return pfad;
-  return z.anker ? `${z.ziel}#${z.anker}` : z.ziel;
+  const anker = ankerFuer(pfad);
+  return anker ? `${z.ziel}#${anker}` : z.ziel;
 }
 
 /**
@@ -128,5 +141,6 @@ export function leiteUm(request, pfad) {
     );
   }
   const url = new URL(request.url);
-  throw redirect(`${z.ziel}${url.search}${z.anker ? `#${z.anker}` : ''}`, 301);
+  const anker = ankerFuer(pfad);
+  throw redirect(`${z.ziel}${url.search}${anker ? `#${anker}` : ''}`, 301);
 }

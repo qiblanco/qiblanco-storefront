@@ -7,11 +7,10 @@ const PFAD = '/pages/lexikon-spirituell-angebunden-sein';
  * /pages/lexikon.
  *
  * Bis 07.10.2026 stand hier der Lexikon-Eintrag „spirituell angebunden sein".
- * Die Seite ist in
- * /pages/lexikon aufgegangen (der vollständige Eintrag als Abschnitt des
- * Lexikon-Hubs, Anker #lexikon-spirituell-angebunden-sein), Entscheidung vom
- * 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job
- * 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt
+ * Die Seite ist in /pages/lexikon aufgegangen (der vollständige Eintrag als
+ * Abschnitt des Lexikon-Hubs, Anker #lexikon-spirituell-angebunden-sein),
+ * Entscheidung vom 07.10.2026 (Coworker A im Auftrag Christians), gebaut von
+ * Job 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt
  * unverändert im Datenmodul; diese Route trägt nur noch die Weiterleitung.
  *
  * WARUM DIE ROUTE BLEIBT: ohne sie übernähme pages.$handle.jsx, fände kein

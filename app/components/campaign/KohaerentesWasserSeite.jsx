@@ -8,6 +8,7 @@ import {
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {FaqListe} from '~/components/reusables/FaqListe';
 import {eintragFuer, quellenFuer} from '~/data/lexikon';
+import {ankerFuer} from '~/lib/zusammenlegungen';
 import {WasserStufentafel} from '~/components/campaign/WasserStufentafel';
 import {
   GrafikLeit,
@@ -309,10 +310,11 @@ function TeilFakten() {
 }
 
 /**
- * Abschnitt #lexikon-kohaerentes-wasser: was Kohärenz in der Physik heißt.
+ * Der Abschnitt, in den der Lexikon-Eintrag „kohärentes Wasser" aufgegangen
+ * ist: was Kohärenz in der Physik heißt.
  *
  * Seit 07.10.2026 ist der Lexikon-Eintrag „kohärentes Wasser" in diese Seite
- * aufgegangen (301 von /pages/lexikon-kohaerentes-wasser, Job 20261007-seo-
+ * aufgegangen (301 von der alten Begriffsseite, Anker = ihr Slug; Job 20261007-seo-
  * zusammenlegung-duenne-seiten-301-umsetzen). Übernommen ist, was diese
  * Seite noch nicht sagte: die physikalische Definition mit ihrer Messgröße
  * (Kohärenzlänge, Kohärenzzeit), das Beispiel der Kohärenztomografie und die
@@ -320,25 +322,22 @@ function TeilFakten() {
  * steht schon in Teil 2 und wird nicht doppelt erzählt. Der Text kommt
  * unverändert aus app/data/lexikon.js; die Quellen sind die dieser Absätze.
  */
-const KOHAERENZ_QUELLEN = [
-  'huang1991',
-  'soper2013',
-  'skinner2013',
-  'wernet2004',
-];
+const BEGRIFF_ALT = '/pages/lexikon-kohaerentes-wasser';
+const PHYSIK_QUELLEN = ['huang1991', 'soper2013', 'skinner2013', 'wernet2004'];
 
-function KohaerenzPhysik() {
-  const e = eintragFuer('lexikon-kohaerentes-wasser');
+function BegriffPhysik() {
+  const anker = ankerFuer(BEGRIFF_ALT);
+  const e = anker ? eintragFuer(anker) : null;
   if (!e) return null;
-  const quellen = quellenFuer({quellen: KOHAERENZ_QUELLEN});
+  const quellen = quellenFuer({quellen: PHYSIK_QUELLEN});
   return (
     <section
       className="kw-teil"
-      id="lexikon-kohaerentes-wasser"
-      data-section="kw-kohaerenz-physik"
-      aria-labelledby="kohaerenz-physik-titel"
+      id={anker}
+      data-section="kw-begriff-physik"
+      aria-labelledby="begriff-physik-titel"
     >
-      <h2 id="kohaerenz-physik-titel">Kohärenz in der Sprache der Physik</h2>
+      <h2 id="begriff-physik-titel">Kohärenz in der Sprache der Physik</h2>
       <p className="kw-teil__einleitung">{e.definition}</p>
       <p className="kw-meta">Messbare Größe: {e.physik_groesse}</p>
       {e.physik.slice(0, 3).map((absatz) => (
@@ -440,7 +439,7 @@ export function KohaerentesWasserSeite() {
         </dl>
       </section>
 
-      <KohaerenzPhysik />
+      <BegriffPhysik />
 
       <section
         className="kw-teil"

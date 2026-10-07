@@ -7,13 +7,12 @@ const PFAD = '/pages/wie-funktioniert-schutz-vor-elektrosmog';
  * /pages/technologie.
  *
  * Bis 07.10.2026 stand hier die Frageseite „Wie funktioniert ein Schutz gegen
- * Elektrosmog am Körper?". Die Seite ist in
- * /pages/technologie aufgegangen (die vollständige Antwort als Abschnitt der
- * Technologieseite, Anker #wie-funktioniert-schutz-vor-elektrosmog),
- * Entscheidung vom
- * 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job
- * 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt
- * unverändert im Datenmodul; diese Route trägt nur noch die Weiterleitung.
+ * Elektrosmog am Körper?". Die Seite ist in /pages/technologie aufgegangen
+ * (die vollständige Antwort als Abschnitt der Technologieseite, Anker #wie-
+ * funktioniert-schutz-vor-elektrosmog), Entscheidung vom 07.10.2026 (Coworker
+ * A im Auftrag Christians), gebaut von Job 20261007-seo-zusammenlegung-duenne-
+ * seiten-301-umsetzen. Der Text liegt unverändert im Datenmodul; diese Route
+ * trägt nur noch die Weiterleitung.
  *
  * WARUM DIE ROUTE BLEIBT: ohne sie übernähme pages.$handle.jsx, fände kein
  * Shopify-Seitenobjekt und lieferte 404. Alte Links, Lesezeichen und Zitate

@@ -7,13 +7,12 @@ const PFAD = '/pages/was-senkt-elektrosmog-im-alltag';
  * elektrosmog.
  *
  * Bis 07.10.2026 stand hier die Frageseite „Was senkt die Belastung durch
- * Elektrosmog im Alltag?". Die Seite ist in
- * /pages/was-ist-elektrosmog aufgegangen (die vollständige Antwort als
- * Abschnitt von „Was ist Elektrosmog?", Anker #was-senkt-elektrosmog-im-
- * alltag), Entscheidung vom
- * 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job
- * 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt
- * unverändert im Datenmodul; diese Route trägt nur noch die Weiterleitung.
+ * Elektrosmog im Alltag?". Die Seite ist in /pages/was-ist-elektrosmog
+ * aufgegangen (die vollständige Antwort als Abschnitt von „Was ist
+ * Elektrosmog?", Anker #was-senkt-elektrosmog-im- alltag), Entscheidung vom
+ * 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job 20261007-seo-
+ * zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt unverändert im
+ * Datenmodul; diese Route trägt nur noch die Weiterleitung.
  *
  * WARUM DIE ROUTE BLEIBT: ohne sie übernähme pages.$handle.jsx, fände kein
  * Shopify-Seitenobjekt und lieferte 404. Alte Links, Lesezeichen und Zitate

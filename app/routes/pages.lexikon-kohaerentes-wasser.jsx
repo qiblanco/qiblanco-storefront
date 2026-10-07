@@ -3,15 +3,13 @@ import {leiteUm} from '~/lib/zusammenlegungen';
 const PFAD = '/pages/lexikon-kohaerentes-wasser';
 
 /**
- * /pages/lexikon-kohaerentes-wasser — permanenter 301 auf /pages/was-ist-
- * kohaerentes-wasser.
+ * /pages/lexikon-kohaerentes-wasser — permanenter 301 auf
+ * /pages/was-ist-kohaerentes-wasser.
  *
  * Bis 07.10.2026 stand hier der Lexikon-Eintrag „kohärentes Wasser". Die Seite
- * ist in
- * /pages/was-ist-kohaerentes-wasser aufgegangen (der vollständige Eintrag als
- * Abschnitt der Wissensseite, Anker #lexikon-kohaerentes-wasser), Entscheidung
- * vom
- * 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job
+ * ist in /pages/was-ist-kohaerentes-wasser aufgegangen (die physikalische
+ * Definition als Abschnitt der Wissensseite, Anker = der alte Slug), Entscheidung
+ * vom 07.10.2026 (Coworker A im Auftrag Christians), gebaut von Job
  * 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt
  * unverändert im Datenmodul; diese Route trägt nur noch die Weiterleitung.
  *

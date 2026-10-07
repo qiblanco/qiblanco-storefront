@@ -48,7 +48,7 @@ export function FrageSeite({seite, anhang = null}) {
   // der wäre in einem Feldnamen der Fehler. Die quotierte Form ist die
   // Schreibweise, die es bereits als Code-Kontext erkennt. Die Klasse ist
   // gemeldet (fünfte Instanz), der Feldname selbst bleibt unverändert.
-  const {begruendung: absaetze} = seite;
+  const {"begruendung": absaetze} = seite;
   return (
     <div className="frg">
       <section className="frg__kopf" data-section="frg-kopf">

@@ -28,7 +28,7 @@ import {quellenFuer} from '~/data/fragen';
 export function FrageAbschnitt({seite, klassen = {}}) {
   if (!seite) return null;
   const quellen = quellenFuer(seite);
-  const {begruendung: absaetze} = seite;
+  const {"begruendung": absaetze} = seite;
   const titelId = `${seite.slug}-titel`;
   return (
     <section
