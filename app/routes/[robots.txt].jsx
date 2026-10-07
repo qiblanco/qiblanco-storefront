@@ -95,8 +95,8 @@ ${generalDisallowRules({sitemapUrl, shopId})}
 # --- KI-TRAINING: nicht erwünscht -----------------------------------------
 # Diese Crawler sammeln Material für Modell-TRAINING. Sie bringen uns keine
 # Kunden und keinen Traffic. Der Vorbehalt oben gilt ihnen ausdrücklich.
-# Ausgenommen sind GPTBot, ClaudeBot und Google-Extended (Freigabe vom
-# 07.10.2026, Gruppe KI-MODELLE).
+# GPTBot, ClaudeBot und Google-Extended stehen seit dem 07.10.2026 in der
+# Gruppe KI-MODELLE.
 User-agent: CCBot
 User-agent: Applebot-Extended
 User-agent: Bytespider
@@ -133,12 +133,13 @@ ${generalDisallowRules({sitemapUrl, shopId})}
 
 # --- KI-MODELLE -----------------------------------------------------------
 # GPTBot, ClaudeBot und Google-Extended dürfen lesen.
-# Freigabe: Christian Bauer (Geschäftsführer), 07.10.2026.
+# Freigabe: Christian Bernd Bauer (Geschäftsführer), 07.10.2026.
 # Grund: Menschen fragen ChatGPT, Claude und Gemini nach Produkten wie
 # unseren. GPTBot und ClaudeBot sammeln das Material, aus dem künftige
-# Modelle lernen können. Google-Extended ist ein Schalter für Googles
-# Crawler. Er steuert laut Google auch, ob Gemini unsere Seiten für seine
-# Antworten heranziehen darf (Grounding).
+# Modelle lernen können. Google-Extended ist Googles Schalter für die
+# Verwendung gecrawlter Inhalte. Er gilt für das Training von Gemini und
+# laut Google auch für das Grounding: ob Gemini unsere Seiten für seine
+# Antworten heranziehen darf.
 # anthropic-ai und Claude-Web stehen in Anthropics Crawler-Doku heute nicht
 # (Stand 07.10.2026). Sie stehen mit hier, damit für Anthropic ein Urteil
 # gilt.
