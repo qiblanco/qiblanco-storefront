@@ -381,7 +381,7 @@ export const ANKER_TOLERANZ_CENT_JE_ZEILE = 1;
  * umgerechneten Set-Betrag mit Code. Spielraum ab 4 Packungen deshalb die
  * Rundung selbst: höchstens UMRECHNUNG_EINHEIT_CENT je Packung darunter und
  * je Set-Stück darüber. Ein neu freigeschalteter Markt ohne eigene Preisliste
- * gehört hier hinein (die Nachtmessung partner-codeset-pruefung meldet ihn).
+ * gehört hier hinein (die Nachtmessung des Partner-Managers meldet ihn).
  */
 export const UMRECHNUNGS_LAENDER = ['LI', 'GB', 'PL', 'SE'];
 export const UMRECHNUNG_EINHEIT_CENT = 100;
