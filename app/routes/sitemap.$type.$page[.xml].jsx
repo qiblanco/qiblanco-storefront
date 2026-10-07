@@ -10,6 +10,7 @@ import {
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 import {mitZusammenlegungsLastmod} from '~/lib/zusammenlegungen-lastmod';
+import {mitRoutenLastmod} from '~/lib/routen-lastmod';
 import {
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
   OHNE_BLOG,
@@ -202,9 +203,12 @@ export async function loader({request, params, context: {storefront}}) {
   // älter ist (~/lib/zusammenlegungen-lastmod). NACH dem Nachtrag, damit auch
   // Nur-Route-Ziele wie /pages/lexikon erfasst sind.
   const mitNachtrag = mitNurRouteSeiten(gefiltert, nachtrag);
+  // Danach hebt das Datum der Code-Route an (~/lib/routen-lastmod): die
+  // Klasse "Inhalt steht im Repo, updatedAt bewegt sich nie". Beide heben nur
+  // an, die Reihenfolge ändert also nichts am Ergebnis.
   const body =
     params.type === 'pages'
-      ? mitZusammenlegungsLastmod(mitNachtrag)
+      ? mitRoutenLastmod(mitZusammenlegungsLastmod(mitNachtrag))
       : mitNachtrag;
 
   const headers = new Headers(response.headers);

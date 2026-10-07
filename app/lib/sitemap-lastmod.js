@@ -50,6 +50,7 @@ import {
 } from '~/lib/sitemap-bestand';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 import {zielLastmod} from '~/lib/zusammenlegungen-lastmod';
+import {routenDatenFuer} from '~/lib/routen-lastmod';
 
 /**
  * Kind-Typ im URL-Pfad -> Enum-Wert der Storefront-API.
@@ -227,7 +228,17 @@ export async function lastmodJeKind(storefront, kinder) {
     const sichtbar = sichtbareEintraege(kind.typ, items, bestand);
     if (!sichtbar) return;
     const werte = sichtbar.map((e) => e.updatedAt).filter(Boolean);
-    if (kind.typ === 'pages') werte.push(...nurRoute, ...zusammenlegung);
+    if (kind.typ === 'pages') {
+      werte.push(...nurRoute, ...zusammenlegung);
+      // Und das Datum der Code-Route (~/lib/routen-lastmod), aber nur für
+      // Handles, die das Kind auch ausliefert.
+      werte.push(
+        ...routenDatenFuer([
+          ...sichtbar.map((e) => e.handle),
+          ...NUR_ROUTE_SEITEN.map((s) => s.pfad.replace(/^\/pages\//, '')),
+        ]),
+      );
+    }
     const wert = juengstes(werte);
     if (wert) karte.set(kind.loc, wert);
   });
