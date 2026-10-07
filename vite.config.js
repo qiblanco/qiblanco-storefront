@@ -6,6 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 import {fileURLToPath} from 'node:url';
 import {routenLastmod} from './scripts/routen-lastmod.mjs';
+import {publicSkriptVersionen} from './scripts/public-skript-version.mjs';
 
 // Seiten-Handle -> letzter inhaltlicher Commit der Code-Route, für das
 // <lastmod> der pages-Sitemap (~/lib/routen-lastmod). Ohne volle git-Historie
@@ -22,9 +23,16 @@ console.info(
     : `[routen-lastmod] ${Object.keys(ROUTEN_LASTMOD).length} Routen mit Datum`,
 );
 
+// Datei in public/ -> sha256-8 ihres Inhalts, für `?v=` am Skript-URL
+// (~/lib/public-skript). public/ wird ein Jahr im Browser gecacht.
+const PUBLIC_SKRIPT_V = publicSkriptVersionen(
+  fileURLToPath(new URL('./public', import.meta.url)),
+);
+
 export default defineConfig({
   define: {
     __QB_ROUTEN_LASTMOD__: JSON.stringify(ROUTEN_LASTMOD),
+    __QB_PUBLIC_SKRIPT_V__: JSON.stringify(PUBLIC_SKRIPT_V),
   },
   plugins: [hydrogen(), oxygen(), reactRouter(), tsconfigPaths(), tailwindcss()],
   build: {
