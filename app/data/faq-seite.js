@@ -516,6 +516,19 @@ export const FAQ_KAUF = [
       'app/data/product-faqs.js Material-Item (ungeflaggt) für Chirurgenstahl/750er Goldlegierung/ ' +
       'Handarbeit; „keine Elektronik" ebenda. Der Evidenz-Satz ist derselbe wie oben und wird ' +
       'NICHT abgeschwächt, weil hier von Geld die Rede ist.',
+    // DIE VERTIEFUNG DIESER ANTWORT, und zugleich einer der zwei
+    // eingehenden Links, die /pages/healy-alternative braucht (Job
+    // 20261007-healy-alternative-auffindbar-sitemap-kontextlinks-
+    // uebersicht-prio45; Christian 06.10.2026: eine neue Seite ist erst
+    // fertig mit zwei Kontextlinks von indexierten Seiten). Die Frage nach
+    // dem Preis ist die Stelle, an der der Vergleich mit Healy natürlich ist:
+    // „kein Abo und nichts zum Nachkaufen" steht dort Spalte an Spalte mit
+    // Healys Editionen und Programmgruppen im Monatsabo. Der Linktext nennt
+    // nur die Vergleichsachsen und wertet nicht.
+    weiter: {
+      pfad: '/pages/healy-alternative',
+      text: 'Healy und Qi Blanco im Vergleich: Bauart, Preis, Rückgabe und Belege',
+    },
   },
   {
     q: 'Was kostet der Versand und wie lange dauert er?',
