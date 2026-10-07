@@ -1085,9 +1085,9 @@ export const NUR_ROUTE_SEITEN = [
       'mit PR #828). Sie besteht allein aus der Route ' +
       'pages.healy-alternative.jsx und hat KEIN Shopify-Seitenobjekt. ' +
       'Ohne diesen Eintrag liefert sie HTTP 200 und steht in keiner ' +
-      'Sitemap; dann meldet sie auch der IndexNow-Melder nie, denn er ' +
-      'meldet nur, was er im Sitemap-Diff sieht (gemessen 2026-10-07: 0 ' +
-      'Treffer in seo-manager/data/indexnow/protokoll.jsonl). Nachgetragen ' +
+      'Sitemap. Dann meldet sie auch der IndexNow-Melder nie, er meldet ' +
+      'nur den Sitemap-Diff (am 2026-10-07: 0 Treffer in ' +
+      'seo-manager/data/indexnow/protokoll.jsonl). Nachgetragen ' +
       'von Job 20261007-healy-alternative-auffindbar-sitemap-' +
       'kontextlinks-uebersicht-prio45. Kriterium 2 erfüllt: kein noindex, ' +
       'canonicalLink() in der Route. lastmod ist der Commit-Zeitpunkt der ' +

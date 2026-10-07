@@ -431,10 +431,10 @@ export const FAQ_KAUF = [
     // Rückgabe beider Anbieter Zeile an Zeile, dazu Preis, Bauart und Belege:
     // dieselbe Kaufentscheidung wie diese Antwort, aus der anderen Richtung.
     // WARUM HIER UND NICHT BEI „Warum kostet das so viel?": nur der ERSTE
-    // Eintrag jedes Blocks startet offen, die übrigen tragen `hidden`, und
+    // Eintrag jedes Blocks startet offen, die übrigen tragen `hidden`.
     // seiten_zufahrt zählt einen Link im zugeklappten Teil nicht als
-    // Kontextlink (gemessen 2026-10-07 an der Vorschau: 1 von 2). Der
-    // Linktext nennt nur die Vergleichsachsen und wertet nicht.
+    // Kontextlink (Vorschau 2026-10-07: 1 von 2). Der Linktext nennt nur
+    // die Vergleichsachsen und wertet nicht.
     auch: {
       pfad: '/pages/healy-alternative',
       text: 'Healy und Qi Blanco im Vergleich: Bauart, Preis, Rückgabe und Belege',
