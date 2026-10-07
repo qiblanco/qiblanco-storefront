@@ -55,7 +55,7 @@
   background: var(--hea-grund);
 }
 
-/* „inhalt" im Namen: nur solche Container misst seiten_pruefliste.py. */
+/* Das Wort inhalt im Klassennamen: nur solche Container misst seiten_pruefliste.py. */
 .hea__inhalt {
   width: 100%;
   max-width: var(--hea-breite-schmal);

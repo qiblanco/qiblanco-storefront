@@ -24,9 +24,9 @@ import {isoMitZone} from '~/lib/datum';
  *    (Belege im Segmentordner segmente/s04/belege/healy-quellen-*.json).
  *    Gerätart, App, Lieferumfang, Preisrahmen, Abo, Rückgabe, Vertriebsweg.
  *    Keine Wertung, keine Aussage über Healys Wirkung, keine Indikationen.
- *  - Qi Blanco: _design/gorgias-fact-gate/fakten-basis.yaml (F-RUECKGABE-20,
- *    F-HALTBARKEIT-ALLE, F-MATERIAL, F-WASSERFEST, F-SAUNA-AM-KOERPER,
- *    F-WIRKUNG-GLEICH, F-QIHOME-STROM, F-QIHOME-REICHWEITE-160) und
+ *  - Qi Blanco: _design/gorgias-fact-gate/fakten-basis.yaml (Fakten zu
+ *    Rückgabe, Haltbarkeit, Material, Wasser, Sauna, gleicher Wirkung von
+ *    QiOne und QiBracelet, QiHome Air ohne Strom und mit 160 m Radius) und
  *    STUDIEN_FAKTENBLATT.md (e0001, e0004).
  *  - Preise: live aus der Storefront-API (mmLadeProdukte im Loader der Route),
  *    nie als Literal. Die Healy-Preise sind Healys Angaben mit Datum.
@@ -97,7 +97,7 @@ export const VERGLEICH = [
     qione: 'Direkt bei Qi Blanco in Maßbach, im Online-Shop',
   },
   {
-    id: 'rueckgabe',
+    id: 'frist',
     merkmal: 'Rückgabe',
     healy: '14 Tage Widerruf ab Erhalt, in Deutschland werden 5 € Rücksendekosten abgezogen',
     qione: '20 Tage ab Ankunft, du bekommst den vollen Kaufpreis zurück',
@@ -197,7 +197,7 @@ export function fragen(preis) {
       a: 'Ja. Wasser, Chlor, Meerwasser und Schweiß machen ihm nichts aus, du trägst ihn beim Duschen, Schwimmen und in der Sauna. In der Sauna wird Metall warm, am Körper bleibt der QiOne® 2 Pro aber auf Körpertemperatur.',
     },
     {
-      id: 'rueckgabe',
+      id: 'zwanzig-tage',
       q: 'Wie lange kann ich den QiOne® 2 Pro zurückgeben?',
       a: 'Du hast 20 Tage ab Ankunft der Lieferung. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück, und einen Grund brauchst du nicht.',
     },
@@ -214,15 +214,14 @@ export function fragen(preis) {
   ];
 }
 
-const HEALY_SHOP = 'https://eu.healy.shop/de';
 export const QUELLEN = [
-  {titel: 'Healy Wellness Editionen, Preise', von: 'Healy World', url: `${HEALY_SHOP}/produkt-kategorie/healy-editionen/`},
-  {titel: 'Healy Discover: Lieferumfang, Technische Daten, Abonnement', von: 'Healy World', url: `${HEALY_SHOP}/produkt/healy-discover/`},
-  {titel: 'Healy für ganzheitliche Gesundheit: Gerät, App und Programmgruppen', von: 'Healy World', url: `${HEALY_SHOP}/healy-for-holistic-health/`},
-  {titel: 'Healy Programmgruppen, Preise im Abo', von: 'Healy World', url: `${HEALY_SHOP}/produkt-kategorie/programmgruppen/`},
-  {titel: 'Healy Rückgaberecht', von: 'Healy World', url: `${HEALY_SHOP}/rueckgaberecht/`},
-  {titel: 'Deine Healy-Chance: Healy World Member', von: 'Healy World', url: `${HEALY_SHOP}/your-healy-opportunity/`},
-  {titel: 'Healy World Startseite: Angabe zu den Studien', von: 'Healy World', url: `${HEALY_SHOP}/`},
+  {titel: 'Healy Wellness Editionen, Preise', von: 'Healy World', url: 'https://eu.healy.shop/de/produkt-kategorie/healy-editionen/'},
+  {titel: 'Healy Discover: Lieferumfang, Technische Daten, Abonnement', von: 'Healy World', url: 'https://eu.healy.shop/de/produkt/healy-discover/'},
+  {titel: 'Healy für ganzheitliche Gesundheit: Gerät, App und Programmgruppen', von: 'Healy World', url: 'https://eu.healy.shop/de/healy-for-holistic-health/'},
+  {titel: 'Healy Programmgruppen, Preise im Abo', von: 'Healy World', url: 'https://eu.healy.shop/de/produkt-kategorie/programmgruppen/'},
+  {titel: 'Healy Rückgaberecht', von: 'Healy World', url: 'https://eu.healy.shop/de/rueckgaberecht/'},
+  {titel: 'Deine Healy-Chance: Healy World Member', von: 'Healy World', url: 'https://eu.healy.shop/de/your-healy-opportunity/'},
+  {titel: 'Healy World Startseite: Angabe zu den Studien', von: 'Healy World', url: 'https://eu.healy.shop/de/'},
   {titel: 'QiOne® 2 Pro: Material, Tragen und Preis', von: 'Qi Blanco', to: '/products/qione-2-pro'},
   {titel: 'Studie Immunzellen, Japan Journal of Medicine 2021, DOI 10.31488/JJM.165', von: 'Dartsch Scientific Institut', to: '/pages/studie-immunzellen'},
   {titel: 'Studie Nutzererfahrung, Advances in Bioengineering & Biomedical Science Research 2024', von: 'Dartsch Scientific Institut', to: '/pages/studie-nutzererfahrung'},
@@ -390,7 +389,7 @@ export function HealyAlternativeSeite({products = []}) {
         </div>
       </section>
 
-      <section className="hea__wahl" data-section="hea-wahl" id="fuer-wen">
+      <section className="hea__wahl" data-section="hea-wahl" id="wer-passt">
         <div className="hea__inhalt">
           <h2>Healy oder Qi Blanco: für wen passt was?</h2>
           <ul className="hea__karten">
