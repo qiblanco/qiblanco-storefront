@@ -29,7 +29,7 @@ import {InhaltswegNeuOderGebraucht} from '~/components/product-pages/InhaltswegN
  */
 /*
  * DER TITEL TRÄGT DAS SUCHWORT „KETTE" (2026-10-07, Grossjob 20261007-
- * GROSSJOB-seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme
+ * GROSSJOB-seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme
  * M-20261007-kette-titel). Vorher stand hier der Shopify-Produkttitel:
  * „Necklace für QiOne® | Qi Blanco". Google schlägt „qi blanco kette" auf
  * Rang 1 vor (Vorschlagsliste DACH 07.10.2026), und das Wort Kette stand weder
@@ -180,7 +180,7 @@ export default function Product() {
         />
         <BenefitList />
         {/* Derselbe Satz wie unter der Kaufbox von QiOne® 2 Pro und
-            QiBracelet® (2026-10-07, s05, Massnahme M-20261007-gebraucht-
+            QiBracelet® (2026-10-07, s05, Maßnahme M-20261007-gebraucht-
             zufahrt): die Kette war die einzige Produktseite ohne Weg auf
             /pages/neu-oder-gebraucht. Er steht UNTER der Kaufbox, der
             Kaufweg bleibt unberührt. */}

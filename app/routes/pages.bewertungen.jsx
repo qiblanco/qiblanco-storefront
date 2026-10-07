@@ -64,7 +64,7 @@ export function links() {
  * Keine Zahl im Titel: Note und Anzahl leben im Widget und würden hier still
  * veralten.
  * SEIT 2026-10-07 AUCH „REVIEWS" (Grossjob 20261007-GROSSJOB-seo-keyword-
- * beobachtung-erweitern-nach-beliebtheit, s05, Massnahme M-20261007-
+ * beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme M-20261007-
  * bewertungen-reviews): Google schlägt „qi blanco reviews" in DACH auf Rang 1
  * vor. Vorher: „Qi Blanco Bewertungen – was Kundinnen und Kunden schreiben |
  * Qi Blanco". Ohne Anhang, weil die Marke vorn steht (wie /pages/kritik).
@@ -73,7 +73,7 @@ export function links() {
  */
 const TITEL = 'Qi Blanco Bewertungen und Reviews: was Kundinnen und Kunden schreiben';
 const BESCHREIBUNG =
-  'Google-Bewertungen zu Qi Blanco mit Note und Anzahl, dazu Reviews von Trustpilot: woher sie kommen, was sie zeigen und wie du es 20 Tage selbst prüfst.';
+  'Echte Google-Bewertungen zu Qi Blanco, live mit Note und Anzahl, dazu Reviews von Trustpilot. Woher sie kommen und wie du es 20 Tage selbst prüfst.';
 
 /**
  * DER EINZIGE LOADER-WERT DIESER SEITE IST DER TAG DER AUSLIEFERUNG (2026-09-25,

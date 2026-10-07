@@ -39,7 +39,7 @@
 
 /*
  * VORSPANN UND ANTWORT, GEÄNDERT AM 2026-10-07 (Grossjob 20261007-GROSSJOB-
- * seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme
+ * seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme
  * M-20261007-bewertungen-reviews). Google schlägt „qi blanco reviews" in DACH
  * auf Rang 1 vor; das Wort stand auf der Seite nirgends. Es steht jetzt im
  * Vorspann und im Antwortsatz, dort als das, was es bei Trustpilot heißt.
@@ -78,7 +78,7 @@ export const BEWERTUNGEN_SEITE = {
       {pfad: '/pages/studien', text: 'Die fünf Studien im Original'},
       {pfad: '/pages/kritik', text: 'Sieben Fragen zur Kritik'},
       {pfad: '/pages/erfahrungen', text: 'Menschen, die in eigenen Videos erzählen'},
-      // 2026-10-07, s05, Massnahme M-20261007-reddit-zufahrt: die Reddit-Seite
+      // 2026-10-07, s05, Maßnahme M-20261007-reddit-zufahrt: die Reddit-Seite
       // war aus dem Inhalt nur von /pages/faq verlinkt.
       {pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht', text: 'Was auf Reddit über Qi Blanco steht'},
     ],

@@ -74,7 +74,7 @@ import {isoMitZone} from '~/lib/datum';
 
 /**
  * TITEL UND BESCHREIBUNG, GEÄNDERT AM 2026-10-07 (Grossjob 20261007-GROSSJOB-
- * seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme
+ * seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme
  * M-20261007-erfahrungen-antwort-faq). Vorher: „Erfahrungen mit Qi Blanco –
  * Menschen erzählen selbst | Qi Blanco". Gesucht wird „qi blanco erfahrung"
  * (63 Impressionen) und „qi blanco erfahrungen" (59), Position 6,6 bzw. 6,0,

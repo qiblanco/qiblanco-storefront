@@ -64,9 +64,9 @@ const PFAD = '/pages/ueber-uns';
 
 /**
  * TITEL, GEÄNDERT AM 2026-10-07 (Grossjob 20261007-GROSSJOB-seo-keyword-
- * beobachtung-erweitern-nach-beliebtheit, s05, Massnahme M-20261007-ueber-uns-
- * firma). Vorher: „Über uns: wer hinter Qi Blanco steht | Qi Blanco". Gesucht
- * wird „qi blanco ug" (32 Impressionen, Position 7,1, Search Console
+ * beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme M-20261007-firma-
+ * antwort). Vorher: „Über uns: wer hinter Qi Blanco steht | Qi Blanco".
+ * Gesucht wird „qi blanco ug" (32 Impressionen, Position 7,1, Search Console
  * 06.09.-04.10.2026); geantwortet hat bisher allein die Startseite. Der Titel
  * nennt die Gesellschaft jetzt vorn, so wie sie im Register steht (Kurzform
  * „UG"; die volle Rechtsform steht im ersten Absatz).
@@ -160,7 +160,7 @@ export function links() {
  * Impressum stammt.
  */
 /*
- * NACHTRAG 2026-10-07 (s05, Massnahme M-20261007-ueber-uns-firma): der
+ * NACHTRAG 2026-10-07 (s05, Maßnahme M-20261007-firma-antwort): der
  * Organisationsknoten steht jetzt AUCH hier im Graphen — aus derselben
  * Funktion wie auf der Startseite (organizationSchema, gleiche @id, gleiche
  * Stammdaten), genau so wie auf /pages/affiliate-partnerprogramm: ohne das
@@ -249,8 +249,8 @@ export default function UeberUns() {
       <section className="uu-abschnitt uu-kopf">
         <div className="uu-innen">
           <h1>Wer hinter Qi Blanco steht</h1>
-          {/* DER ANTWORTSATZ (2026-10-07, s05, Massnahme M-20261007-ueber-uns-
-              firma) steht vor der ersten Zwischenüberschrift und trägt sich
+          {/* DER ANTWORTSATZ (2026-10-07, s05, Maßnahme M-20261007-firma-
+              antwort) steht vor der ersten Zwischenüberschrift und trägt sich
               allein: Gesellschaft, Sitz, Register und Geschäftsführer, jede
               Angabe aus ORGANISATION (app/lib/entity-schema.js) bzw. dem
               Impressum, kein Literal. Vorher nannte der Absatz nur, DASS es

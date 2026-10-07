@@ -33,7 +33,7 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
  * "kohärentes Wasser" — das sagen Kunden gemessen fast nie von sich aus.
  *
  * SUCHBEGRIFF UND KURZ GEFRAGT (2026-10-07, Grossjob 20261007-GROSSJOB-seo-
- * keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme M-20261007-
+ * keyword-beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme M-20261007-
  * erfahrungen-antwort-faq): „qi blanco erfahrung" ist mit 63 Impressionen der
  * beliebteste Begriff unter Ziel (Search Console 06.09.-04.10., Position 6,6,
  * keine eigene Seite in den Top 3). Der Vorspann über der H1 trägt deshalb den
