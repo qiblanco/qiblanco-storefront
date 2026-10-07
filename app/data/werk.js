@@ -106,7 +106,7 @@ export const EINSTIEG = [
 export const QUELLEN = [
   {
     "titel": "Auswirkungen hochfrequenter elektromagnetischer Felder auf Gehirnaktivität und Schlaf",
-    "autoren": "Federal Office for Radiation Protection (BfS)",
+    "autoren": "Bundesamt für Strahlenschutz",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -157,7 +157,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "The Future of Fitness, ACSM Announces Top Trends for 2026",
+    "titel": "The Future of Fitness – ACSM Announces Top Trends for 2026",
     "autoren": "American College of Sports Medicine",
     "jahr": 2026,
     "doi": null,
@@ -171,7 +171,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Why The Polyvagal Theory Is Untenable: An international expert evaluation",
-    "autoren": "Paul Grossman et al.",
+    "autoren": "Paul Grossman u. a.",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -184,7 +184,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Wissenschaftlich diskutierte biologische und gesundheitliche Wirkungen hochfrequenter Felder",
-    "autoren": "Federal Office for Radiation Protection (BfS)",
+    "autoren": "Bundesamt für Strahlenschutz",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -196,7 +196,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "AASM Sleep Prioritization Survey: Social Media Sleep Trends",
+    "titel": "AASM Sleep Prioritization Survey — Social Media Sleep Trends",
     "autoren": "American Academy of Sleep Medicine",
     "jahr": 2025,
     "doi": null,
@@ -209,7 +209,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "AASM Sleep Prioritization Survey: Using Sleep Tracking Devices",
+    "titel": "AASM Sleep Prioritization Survey — Using Sleep Tracking Devices",
     "autoren": "American Academy of Sleep Medicine",
     "jahr": 2025,
     "doi": null,
@@ -236,7 +236,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Performance of consumer wrist-worn sleep tracking devices compared to polysomnography: a meta-analysis",
-    "autoren": "Young Jeong Lee et al.",
+    "autoren": "Young Jeong Lee u. a.",
     "jahr": 2025,
     "doi": "10.5664/jcsm.11460",
     "sprache": null,
@@ -262,7 +262,7 @@ export const QUELLEN = [
   },
   {
     "titel": "World Sleep Society recommendations for the use of wearable consumer health trackers that monitor sleep",
-    "autoren": "Michael W. L. Chee et al. (World Sleep Society Sleep Tracker Task Force)",
+    "autoren": "Michael W. L. Chee u. a. (World Sleep Society Sleep Tracker Task Force)",
     "jahr": 2025,
     "doi": "10.1016/j.sleep.2025.106506",
     "sprache": null,
@@ -352,7 +352,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Prevalence of Orthosomnia in a General Population Sample: A Cross-Sectional Study",
-    "autoren": "Haitham Jahrami et al.",
+    "autoren": "Haitham Jahrami u. a.",
     "jahr": 2024,
     "doi": "10.3390/brainsci14111123",
     "sprache": null,
@@ -486,7 +486,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Direct observation of ultrafast hydrogen bond strengthening in liquid water",
-    "autoren": "Jie Yang et al.",
+    "autoren": "Jie Yang u. a.",
     "jahr": 2021,
     "doi": "10.1038/s41586-021-03793-9",
     "sprache": null,
@@ -538,7 +538,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Performance of seven consumer sleep-tracking devices compared with polysomnography",
-    "autoren": "Evan D. Chinoy et al.",
+    "autoren": "Evan D. Chinoy u. a.",
     "jahr": 2021,
     "doi": "10.1093/sleep/zsaa291",
     "sprache": null,
@@ -631,7 +631,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Consumer Sleep Technology: An American Academy of Sleep Medicine Position Statement",
-    "autoren": "Seema Khosla et al.",
+    "autoren": "Seema Khosla u. a.",
     "jahr": 2018,
     "doi": "10.5664/jcsm.7128",
     "sprache": null,
@@ -644,7 +644,7 @@ export const QUELLEN = [
   },
   {
     "titel": "How Breath-Control Can Change Your Life: A Systematic Review on Psycho-Physiological Correlates of Slow Breathing",
-    "autoren": "Andrea Zaccaro et al.",
+    "autoren": "Andrea Zaccaro u. a.",
     "jahr": 2018,
     "doi": null,
     "sprache": null,
@@ -683,7 +683,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Orthosomnia: Are Some Patients Taking the Quantified Self Too Far?",
-    "autoren": "Kelly Glazer Baron et al.",
+    "autoren": "Kelly Glazer Baron u. a.",
     "jahr": 2017,
     "doi": "10.5664/jcsm.6472",
     "sprache": null,
@@ -777,7 +777,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Nobel Prize 2016 — Yoshinori Ohsumi, Autophagy",
+    "titel": "Nobel Prize 2016 – Yoshinori Ohsumi, Autophagy",
     "autoren": "",
     "jahr": 2016,
     "doi": null,
@@ -1207,7 +1207,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "On the \"unreasonable\" effects of ELF magnetic fields upon a system of ions",
+    "titel": "On the „unreasonable“ effects of ELF magnetic fields upon a system of ions",
     "autoren": "Del Giudice, E., Fleischmann, M., Preparata, G., Talpo, G.",
     "jahr": 2002,
     "doi": "10.1002/bem.10046",
