@@ -159,8 +159,10 @@ const ARTIKEL_PFAD_QUERY = `#graphql
  *     wörtlich wie in ~/lib/sitemap-weiterleitungen).
  *
  * WAS DIESE LISTE NICHT ENTSCHEIDET: ob `qione-1` per 301 auf
- * `qione-2-pro` zieht. Das liegt bei Christian. Bis dahin bleibt die Seite für
- * Kunden unverändert, sie steht nur nicht mehr in der Sitemap.
+ * `qione-2-pro` zieht. Entschieden am 2026-10-07 (Coworker A im Auftrag
+ * Christians): ja. Der 301 steht in products.$handle.jsx über
+ * app/lib/zusammenlegungen.js; der Eintrag hier bleibt, weil eine
+ * Weiterleitung ebenso wenig in die Sitemap gehört wie ein 404.
  *
  * DER SCHUTZ GEGEN EINE VERALTETE LISTE liegt nicht hier, sondern am Rand:
  * homepage-bauer/shop-switch/pruefungen/probe_s02_zufahrt_produktname_sitemap.py

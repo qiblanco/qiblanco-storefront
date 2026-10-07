@@ -52,7 +52,7 @@ export const PFAD = '/pages/was-ist-kohaerentes-wasser';
  * (app/lib/seo.js) im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-23';
-const GEAENDERT = '2026-09-23';
+const GEAENDERT = '2026-10-07';
 
 export const SEITE = {
   pfad: PFAD,
@@ -70,7 +70,7 @@ export const SEITE = {
   autorZeile: `Von ${AUTORENKASTEN.name}`,
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
-  standAnzeige: '23. September 2026',
+  standAnzeige: '7. Oktober 2026',
   standZeile:
     'Stand: 23. September 2026. Jede Zahl trägt ihre Quelle. Neue Veröffentlichungen nehmen wir auf, sobald sie erscheinen.',
   leitLegende: `Nimmt das Wassermolekül Energie auf, weitet sich sein Winkel von ${VON} auf ${NACH}. Dann ordnen sich die Nachbarn zu einem Sechseck.`,

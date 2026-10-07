@@ -38,6 +38,8 @@ import {BEWERTUNGEN_SEITE} from '~/data/bewertungen-seite';
 import {useGoogleRating} from '~/lib/googleRating';
 import {studienArten} from '~/lib/studien-schema';
 import {tagLang} from '~/lib/datum';
+import {FrageAbschnitt} from '~/components/campaign/FrageAbschnitt';
+import {seiteFuer} from '~/data/fragen';
 
 /** Bestands-Idiom (reusables/useDragSwipe.js, campaign/SchlafZellenSchutzV3.jsx,
  * index-components/ReputonWidget.jsx) — hier wiederverwendet, nicht neu erfunden. */
@@ -390,6 +392,17 @@ export function StudienUebersicht() {
         <KundenstimmenUndBelege />
 
         <HrvMessreihe />
+
+        {/* Seit 2026-10-07 steht die Frage „Gibt es unabhängige Studien zu
+            Elektrosmog-Schutzprodukten?" ganz auf dieser Seite: ihre eigene
+            Frageseite leitet per 301 auf diesen Anker (Job 20261007-seo-
+            zusammenlegung-duenne-seiten-301-umsetzen). Die Antwort IST diese
+            Seite; dazu kommt die Einordnung in die übrige Feldforschung
+            (COSMOS, WHO-Übersicht, IARC). Text aus app/data/fragen.js. */}
+        <FrageAbschnitt
+          seite={seiteFuer('gibt-es-studien-zu-elektrosmog-schutz')}
+          klassen={{abschnitt: 'qb-st-sektion', inhalt: 'qb-st-frage'}}
+        />
 
         <section
           className="qb-st-sektion"

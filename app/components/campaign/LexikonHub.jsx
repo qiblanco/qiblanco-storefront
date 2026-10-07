@@ -1,4 +1,5 @@
-import {LEXIKON, zielName} from '~/data/lexikon';
+import {LEXIKON, quellenFuer, zielName} from '~/data/lexikon';
+import {adresse, zusammenlegungFuer} from '~/lib/zusammenlegungen';
 
 /**
  * /pages/lexikon — der Hub.
@@ -38,15 +39,15 @@ export function LexikonHub() {
           <p className="lex__lead">
             Viele Wörter, die im Gespräch über Energie und Schutz vorkommen,
             stammen aus der Physik und bedeuten dort etwas anderes. Hier steht
-            zu jedem Wort beides: was Menschen damit meinen, und welche
-            messbare Größe dahinter liegt. Und jedes Mal auch der Satz, an dem
-            das Bild aufhört zu tragen.
+            zu jedem Wort beides: was Menschen damit meinen, und welche messbare
+            Größe dahinter liegt. Und jedes Mal auch der Satz, an dem das Bild
+            aufhört zu tragen.
           </p>
           <p>
             Den Anfang machen vier Ausdrücke, die fast jeder schon benutzt hat:
             hohe Frequenz, High Vibe, Low Vibe und spirituell angebunden. Dazu
-            kommen die Wörter, die wir selbst verwenden und die deshalb
-            erklärt gehören.
+            kommen die Wörter, die wir selbst verwenden und die deshalb erklärt
+            gehören.
           </p>
         </div>
       </section>
@@ -55,8 +56,8 @@ export function LexikonHub() {
         <div className="lex__inhalt">
           <h2>Die Begriffe</h2>
           <p className="lex__einleitung">
-            Zu jedem Begriff steht hier das Wesentliche. Die ganze Herleitung
-            mit allen Quellen steht auf der eigenen Seite des Begriffs.
+            Zu jedem Begriff steht hier die ganze Herleitung, mit allen Quellen
+            zum Nachlesen.
           </p>
           {/* DIE DEFINITIONEN STEHEN SEIT 2026-09-25 AUF DEM HUB SELBST
               (Auftrag 20260926-seo-duenne-vorlagenseiten-aufwerten-oder-
@@ -68,41 +69,67 @@ export function LexikonHub() {
               Absatz „Was die Physik dazu sagt", der Übertragungssatz und die
               Grenze. Kein neuer Text, keine neue Aussage. */}
           <ul className="lex__liste lex__liste--voll">
-            {LEXIKON.map((e) => (
-              <li key={e.slug} id={e.slug} className="lex__karte">
-                <h3>
-                  <a className="lex__karte-link" href={e.pfad}>
-                    {e.begriff}
-                  </a>
-                </h3>
-                <p>{e.definition}</p>
-                <p className="lex__groesse">
-                  Messbare Größe: {e.physik_groesse}
-                </p>
-                <p>
-                  <strong>Was die Physik dazu sagt:</strong> {e.physik[0]}
-                </p>
-                <p>
-                  <strong>Was die Übertragung trägt:</strong>{' '}
-                  {e.uebertragung_satz}
-                </p>
-                <p className="lex__karte-grenze">
-                  <strong>Und was sie nicht trägt:</strong> {e.grenze}
-                </p>
-                {/* Die Grundfrage zum Begriff, wo es eine eigene Frageseite
+            {/* SEIT 2026-10-07 IST DER HUB DIE SEITE DER MEISTEN BEGRIFFE
+                (Job 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen,
+                Entscheidung vom selben Tag: dünne Seiten per 301 in starke
+                zusammenlegen). Ist die eigene Seite eines Begriffs hierher
+                aufgegangen (app/lib/zusammenlegungen.js), trägt seine Karte
+                den VOLLEN Eintrag: Gebrauch, alle Physik-Absätze, Übertragung
+                und Grenze mit Begründung, Quellen und Weiterlesen. Die Karte
+                ist dann selbst das Ziel des 301 (Anker = Slug) und verlinkt
+                nicht auf sich. Begriffe mit eigener Seite (Elektrosmog) oder
+                mit anderem Ziel (kohärentes Wasser) behalten die Kurzfassung
+                und den Link. Kein neuer Text: alles kommt aus
+                app/data/lexikon.js. */}
+            {LEXIKON.map((e) => {
+              const hier =
+                zusammenlegungFuer(e.pfad)?.ziel === '/pages/lexikon';
+              return (
+                <li key={e.slug} id={e.slug} className="lex__karte">
+                  <h3>
+                    {hier ? (
+                      e.begriff
+                    ) : (
+                      <a className="lex__karte-link" href={adresse(e.pfad)}>
+                        {e.begriff}
+                      </a>
+                    )}
+                  </h3>
+                  <p>{e.definition}</p>
+                  <p className="lex__groesse">
+                    Messbare Größe: {e.physik_groesse}
+                  </p>
+                  {hier ? (
+                    <LexikonKarteVoll eintrag={e} />
+                  ) : (
+                    <>
+                      <p>
+                        <strong>Was die Physik dazu sagt:</strong> {e.physik[0]}
+                      </p>
+                      <p>
+                        <strong>Was die Übertragung trägt:</strong>{' '}
+                        {e.uebertragung_satz}
+                      </p>
+                      <p className="lex__karte-grenze">
+                        <strong>Und was sie nicht trägt:</strong> {e.grenze}
+                      </p>
+                    </>
+                  )}
+                  {/* Die Grundfrage zum Begriff, wo es eine eigene Frageseite
                     gibt (Feld `frage` in app/data/lexikon.js). Ankertext ist
                     die Frage selbst. Seit 2026-10-06: Elektrosmog -> „Was ist
                     Elektrosmog?" (Großjob 20261006-GROSSJOB-seo-strategie-…,
                     s06). Ohne belegte Beschriftung kein Link. */}
-                {e.frage && zielName(e.frage) ? (
-                  <p className="lex__karte-frage">
-                    <a className="lex__karte-link" href={e.frage}>
-                      {zielName(e.frage)}
-                    </a>
-                  </p>
-                ) : null}
-              </li>
-            ))}
+                  {e.frage && zielName(e.frage) ? (
+                    <p className="lex__karte-frage">
+                      <a className="lex__karte-link" href={adresse(e.frage)}>
+                        {zielName(e.frage)}
+                      </a>
+                    </p>
+                  ) : null}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
@@ -123,11 +150,75 @@ export function LexikonHub() {
             die andere trägt, ohne zu sagen wie weit sie reichen, erzeugt
             Missverständnisse in beide Richtungen.
           </p>
-          <p>
-            Deshalb steht bei jedem Begriff hier auch, wie weit er trägt.
-          </p>
+          <p>Deshalb steht bei jedem Begriff hier auch, wie weit er trägt.</p>
         </div>
       </section>
+    </div>
+  );
+}
+
+/**
+ * Der volle Eintrag in der Karte eines Begriffs, dessen eigene Seite in den
+ * Hub aufgegangen ist. Dieselben Abschnitte wie LexikonEintrag, als Absätze
+ * mit fettem Etikett statt eigener Überschriften: die Karte ist schon ein
+ * Abschnitt unter „Die Begriffe", eine weitere Überschriftenebene je Karte
+ * hätte den Hub in 35 Zwischenüberschriften zerlegt. Der Grenz-Abschnitt
+ * trägt den Marker data-geo="grenze" wie auf der früheren Begriffsseite.
+ * @param {{eintrag: import('~/data/lexikon').LexikonEintrag}} props
+ */
+function LexikonKarteVoll({eintrag: e}) {
+  const quellen = quellenFuer(e);
+  const weiter = e.verlinkt_auf.filter(
+    (pfad) => zielName(pfad) && adresse(pfad) !== `/pages/lexikon#${e.slug}`,
+  );
+  return (
+    <div className="lex__karte-voll">
+      {e.gebrauch.map((absatz, i) => (
+        <p key={absatz.slice(0, 48)}>
+          {i === 0 ? <strong>Was Menschen damit meinen: </strong> : null}
+          {absatz}
+        </p>
+      ))}
+      {e.physik.map((absatz, i) => (
+        <p key={absatz.slice(0, 48)}>
+          {i === 0 ? <strong>Was die Physik dazu sagt: </strong> : null}
+          {absatz}
+        </p>
+      ))}
+      <p>
+        <strong>Was die Übertragung trägt:</strong> {e.uebertragung_satz}
+      </p>
+      {e.uebertragung_begruendung.map((absatz) => (
+        <p key={absatz.slice(0, 48)}>{absatz}</p>
+      ))}
+      <div className="lex__karte-grenze" data-geo="grenze">
+        <p>
+          <strong>Und was sie nicht trägt:</strong> {e.grenze}
+        </p>
+        {e.grenze_begruendung.map((absatz) => (
+          <p key={absatz.slice(0, 48)}>{absatz}</p>
+        ))}
+      </div>
+      {quellen.length > 0 ? (
+        <ul className="lex__quellen" aria-label={`Quellen zu ${e.begriff}`}>
+          {quellen.map((q) => (
+            <li key={q.url}>
+              <a href={q.url} rel="noopener noreferrer" target="_blank">
+                {q.zitat}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {weiter.length > 0 ? (
+        <ul className="lex__weiter" aria-label={`Weiterlesen zu ${e.begriff}`}>
+          {weiter.map((pfad) => (
+            <li key={pfad}>
+              <a href={adresse(pfad)}>{zielName(pfad)}</a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }

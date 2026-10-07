@@ -13,6 +13,7 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {leiteUm, zusammenlegungFuer} from '~/lib/zusammenlegungen';
 import {TenYearsDealPage} from '~/components/campaign/TenYearsDealPage';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {
@@ -155,6 +156,14 @@ function kuerzeBeschreibung(text) {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // ZUSAMMENGELEGTE PRODUKTSEITEN (Job 20261007-seo-zusammenlegung-duenne-
+  // seiten-301-umsetzen): /products/qione-1 zieht per 301 auf den Nachfolger
+  // /products/qione-2-pro. Vor der Produkt-Abfrage, weil das Produkt im
+  // US-Markt nicht veröffentlicht ist und die Route sonst 404 liefert. Die
+  // Liste führt app/lib/zusammenlegungen.js.
+  const alterPfad = `/products/${args.params.handle}`;
+  if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
+
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
   if (campaignDeal) {

@@ -1,4 +1,5 @@
 import {quellenFuer, zielName} from '~/data/lexikon';
+import {adresse} from '~/lib/zusammenlegungen';
 
 /**
  * /pages/lexikon-<begriff> — EIN Eintrag.
@@ -105,7 +106,7 @@ export function LexikonEintrag({eintrag}) {
                 .filter((pfad) => zielName(pfad))
                 .map((pfad) => (
                   <li key={pfad}>
-                    <a href={pfad}>{zielName(pfad)}</a>
+                    <a href={adresse(pfad)}>{zielName(pfad)}</a>
                   </li>
                 ))}
             </ul>
