@@ -69,7 +69,7 @@ import euGewaehrleistungStyles from '~/styles/eu-gewaehrleistung.css?url';
 // Global geladen wie qb-swipetab/rechtstext/eu-gewaehrleistung und ausschließlich
 // auf .kk-*-Klassen wirksam — eine Seite ohne diese Klassen sieht davon nichts.
 import kakaoKaufseiteStyles from '~/styles/kakao-kaufseite.css?url';
-// Kassen-Rueckkehr-Leiste (GS-090): global wie eu-gewaehrleistung, weil die
+// Kassen-Rückkehr-Leiste (GS-090): global wie eu-gewaehrleistung, weil die
 // Leiste aus root.jsx heraus auf / UND /pages/start-b (beide Arme von
 // start-e1-gs081) erscheint; ein Route-eigenes links() deckte nur einen Arm.
 import kassenRueckkehrLeisteStyles from '~/styles/kassen-rueckkehr-leiste.css?url';
@@ -775,13 +775,13 @@ export function Layout({children}) {
               werden müsste, und keine Route, die man vergessen kann.
             */}
             {/*
-              Kassen-Rueckkehr-Leiste (Job 20261007-ep-startseite-kassen-
+              Kassen-Rückkehr-Leiste (Job 20261007-ep-startseite-kassen-
               rueckkehrer-leiste, GS-090): erstes Kind von <main>, also unter
-              dem fixierten Kopf (main traegt dessen Hoehe als padding-top).
+              dem fixierten Kopf (main trägt dessen Höhe als padding-top).
               Sie entscheidet selbst im Client, ob sie erscheint (Einstieg auf
               / oder /pages/start-b, Referrer checkout.*, Warenkorb nicht leer)
               und steht deshalb ohne Bedingung hier: identisch in beiden Armen
-              von start-e1-gs081. Begruendung in der Komponente.
+              von start-e1-gs081. Begründung in der Komponente.
             */}
             <PageLayout {...data}>
               <KassenRueckkehrLeiste cart={data.cart} />
