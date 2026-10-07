@@ -63,10 +63,17 @@ export function links() {
  * DER TITEL TRÄGT DEN SUCHBEGRIFF und stellt die Frage, die der Suchende hat.
  * Keine Zahl im Titel: Note und Anzahl leben im Widget und würden hier still
  * veralten.
+ * SEIT 2026-10-07 AUCH „REVIEWS" (Grossjob 20261007-GROSSJOB-seo-keyword-
+ * beobachtung-erweitern-nach-beliebtheit, s05, Massnahme M-20261007-
+ * bewertungen-reviews): Google schlägt „qi blanco reviews" in DACH auf Rang 1
+ * vor. Vorher: „Qi Blanco Bewertungen – was Kundinnen und Kunden schreiben |
+ * Qi Blanco". Ohne Anhang, weil die Marke vorn steht (wie /pages/kritik).
+ * Die Beschreibung nennt jetzt auch Trustpilot: der Block steht seit dem
+ * 2026-10-06 auf der Seite, ohne Gesamtzahl.
  */
-const TITEL = 'Qi Blanco Bewertungen – was Kundinnen und Kunden schreiben | Qi Blanco';
+const TITEL = 'Qi Blanco Bewertungen und Reviews: was Kundinnen und Kunden schreiben';
 const BESCHREIBUNG =
-  'Echte Google-Bewertungen zu Qi Blanco, live mit Note und Anzahl: woher sie kommen, was sie zeigen, was nicht – und wie du es 20 Tage selbst prüfst.';
+  'Google-Bewertungen zu Qi Blanco mit Note und Anzahl, dazu Reviews von Trustpilot: woher sie kommen, was sie zeigen und wie du es 20 Tage selbst prüfst.';
 
 /**
  * DER EINZIGE LOADER-WERT DIESER SEITE IST DER TAG DER AUSLIEFERUNG (2026-09-25,

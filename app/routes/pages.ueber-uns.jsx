@@ -1,6 +1,11 @@
 import {Link} from 'react-router';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
-import {ORGANISATION, ORG_ID, SITE_ID} from '~/lib/entity-schema';
+import {
+  ORGANISATION,
+  ORG_ID,
+  SITE_ID,
+  organizationSchema,
+} from '~/lib/entity-schema';
 import {STUDIEN, UEBERSICHT_PFAD} from '~/data/studien';
 import {studienArten} from '~/lib/studien-schema';
 import {STAND_ISO} from '~/data/redaktionsstand';
@@ -57,7 +62,16 @@ import {teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/ueber-uns';
 
-const TITEL = 'Über uns: wer hinter Qi Blanco steht | Qi Blanco';
+/**
+ * TITEL, GEÄNDERT AM 2026-10-07 (Grossjob 20261007-GROSSJOB-seo-keyword-
+ * beobachtung-erweitern-nach-beliebtheit, s05, Massnahme M-20261007-ueber-uns-
+ * firma). Vorher: „Über uns: wer hinter Qi Blanco steht | Qi Blanco". Gesucht
+ * wird „qi blanco ug" (32 Impressionen, Position 7,1, Search Console
+ * 06.09.-04.10.2026); geantwortet hat bisher allein die Startseite. Der Titel
+ * nennt die Gesellschaft jetzt vorn, so wie sie im Register steht (Kurzform
+ * „UG"; die volle Rechtsform steht im ersten Absatz).
+ */
+const TITEL = 'Qi Blanco UG: wer hinter Qi Blanco steht';
 
 /**
  * Meta-Beschreibung. Sie sagt, was die Seite BIETET (Namen, Register,
@@ -145,6 +159,20 @@ export function links() {
  * YMYL-Domain zählt — und sie ist deshalb belegbar, weil sie wörtlich aus dem
  * Impressum stammt.
  */
+/*
+ * NACHTRAG 2026-10-07 (s05, Massnahme M-20261007-ueber-uns-firma): der
+ * Organisationsknoten steht jetzt AUCH hier im Graphen — aus derselben
+ * Funktion wie auf der Startseite (organizationSchema, gleiche @id, gleiche
+ * Stammdaten), genau so wie auf /pages/affiliate-partnerprogramm: ohne das
+ * Logo, das nur die Startseite aus den Shopify-Markendaten zieht. Ein
+ * fehlendes Feld widerspricht nichts; Name, Anschrift und Register sind
+ * dieselben Werte. Das ist keine zweite Fassung: die Drift,
+ * vor der der Absatz oben warnt, entsteht nur bei einem zweiten BAU des
+ * Knotens. Der Grund ist die Suche „qi blanco ug": eine Suchmaschine liest
+ * strukturierte Daten je Seite und folgt einer @id nicht auf die Startseite.
+ * Ohne den Knoten stand auf der Antwortseite zur Frage „wer steht dahinter"
+ * maschinenlesbar weder Firmenname noch Anschrift.
+ */
 function aboutSchema() {
   const url = absoluteCanonical(PFAD);
   const personId = `${url}#person`;
@@ -155,7 +183,7 @@ function aboutSchema() {
         '@type': 'AboutPage',
         '@id': `${url}#seite`,
         url,
-        name: 'Über uns: wer hinter Qi Blanco steht',
+        name: TITEL,
         description: BESCHREIBUNG,
         inLanguage: 'de',
         isPartOf: {'@id': SITE_ID},
@@ -194,6 +222,7 @@ function aboutSchema() {
           {'@type': 'ListItem', position: 2, name: 'Über uns', item: url},
         ],
       },
+      organizationSchema(),
     ],
   };
 }
@@ -220,10 +249,18 @@ export default function UeberUns() {
       <section className="uu-abschnitt uu-kopf">
         <div className="uu-innen">
           <h1>Wer hinter Qi Blanco steht</h1>
+          {/* DER ANTWORTSATZ (2026-10-07, s05, Massnahme M-20261007-ueber-uns-
+              firma) steht vor der ersten Zwischenüberschrift und trägt sich
+              allein: Gesellschaft, Sitz, Register und Geschäftsführer, jede
+              Angabe aus ORGANISATION (app/lib/entity-schema.js) bzw. dem
+              Impressum, kein Literal. Vorher nannte der Absatz nur, DASS es
+              Anschrift und Register gibt. */}
           <p className="uu-lead">
-            Du kaufst hier bei einem Unternehmen mit Anschrift, Handelsregister
-            und einem Menschen, der mit Namen dafür geradesteht. Dazu kommt das
-            Institut, das unsere Produkte zellbiologisch untersucht hat.
+            Hinter Qi Blanco steht die {o.legalName} mit Sitz in{' '}
+            {o.addressLocality}, eingetragen beim {o.registergericht} unter{' '}
+            {o.handelsregister}. Geschäftsführer ist {VERANTWORTLICH.name}, der
+            mit seinem Namen dafür geradesteht. Dazu kommt das Institut, das
+            unsere Produkte zellbiologisch untersucht hat.
           </p>
         </div>
       </section>

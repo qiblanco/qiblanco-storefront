@@ -37,13 +37,25 @@
  * selbst. Geprüft mit homepage-bauer/bin/stil-pruefe.
  */
 
+/*
+ * VORSPANN UND ANTWORT, GEÄNDERT AM 2026-10-07 (Grossjob 20261007-GROSSJOB-
+ * seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme
+ * M-20261007-bewertungen-reviews). Google schlägt „qi blanco reviews" in DACH
+ * auf Rang 1 vor; das Wort stand auf der Seite nirgends. Es steht jetzt im
+ * Vorspann und im Antwortsatz, dort als das, was es bei Trustpilot heißt.
+ * Der Antwortsatz sagte bis dahin „Alle Bewertungen hier kommen aus unserem
+ * Google-Unternehmensprofil". Das stimmt seit dem 2026-10-06 nicht mehr:
+ * TrustpilotStimmen steht mit auf der Seite (Job 20261006-bau-trustpilot-
+ * scroller-ki-seiten-und-faq). Trustpilot ohne Gesamtzahl und ohne „unser
+ * Profil": das Profil ist nicht beansprucht (Kopf von TrustpilotStimmen.jsx).
+ */
 export const BEWERTUNGEN_SEITE = {
-  vorspann: 'Qi Blanco Bewertungen',
+  vorspann: 'Qi Blanco Bewertungen und Reviews',
   titel: 'Was Kundinnen und Kunden über Qi Blanco schreiben',
   antwort:
-    'Alle Bewertungen hier kommen aus unserem Google-Unternehmensprofil, mit Note und Anzahl, so wie Google sie zählt.',
+    'Die Google-Bewertungen kommen aus unserem Google-Unternehmensprofil, mit Note und Anzahl, so wie Google sie zählt. Dazu kommen Reviews von Trustpilot.',
   einleitung: [
-    'Jede Rezension stammt von einem Google-Konto und ist dort öffentlich nachlesbar. Wir schreiben keine um, wir kaufen keine, und wir bezahlen niemanden für eine Bewertung.',
+    'Jede Google-Rezension stammt von einem Google-Konto und ist dort öffentlich nachlesbar. Wir schreiben keine um, wir kaufen keine, und wir bezahlen niemanden für eine Bewertung.',
     'In der oberen Reihe stehen zwölf Stimmen, die wir aus den Google-Rezensionen ausgewählt haben, weil sie am genauesten beschreiben, was Menschen im Alltag gemerkt haben: bei Schlaf, Ruhe und Energie. Darunter läuft der Feed der neuesten Fünf-Sterne-Rezensionen. Alle anderen, auch die kritischen, liest du mit einem Klick auf die Note im Google-Profil.',
   ],
 
@@ -66,6 +78,9 @@ export const BEWERTUNGEN_SEITE = {
       {pfad: '/pages/studien', text: 'Die fünf Studien im Original'},
       {pfad: '/pages/kritik', text: 'Sieben Fragen zur Kritik'},
       {pfad: '/pages/erfahrungen', text: 'Menschen, die in eigenen Videos erzählen'},
+      // 2026-10-07, s05, Massnahme M-20261007-reddit-zufahrt: die Reddit-Seite
+      // war aus dem Inhalt nur von /pages/faq verlinkt.
+      {pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht', text: 'Was auf Reddit über Qi Blanco steht'},
     ],
   },
 

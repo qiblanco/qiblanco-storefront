@@ -31,16 +31,95 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
  * Punkt 1; genau daran ist /pages/wirkt-das gescheitert). Eingestiegen wird mit
  * dem Kundenwort (Schlaf, Energie, Schutz, Ruhe), nicht mit dem Hauswort
  * "kohärentes Wasser" — das sagen Kunden gemessen fast nie von sich aus.
+ *
+ * SUCHBEGRIFF UND KURZ GEFRAGT (2026-10-07, Grossjob 20261007-GROSSJOB-seo-
+ * keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme M-20261007-
+ * erfahrungen-antwort-faq): „qi blanco erfahrung" ist mit 63 Impressionen der
+ * beliebteste Begriff unter Ziel (Search Console 06.09.-04.10., Position 6,6,
+ * keine eigene Seite in den Top 3). Der Vorspann über der H1 trägt deshalb den
+ * Begriff in der Reihenfolge, in der gesucht wird (Hausmuster wie
+ * /pages/bewertungen), und der Abschnitt „Kurz gefragt" beantwortet die vier
+ * Fragen, die hinter der Suche stehen. Aus genau diesen Strings baut die Route
+ * das FAQPage-Schema: Schema und sichtbarer Text sind dieselbe Liste.
+ * ABGRENZUNG BLEIBT: keine Antwort nennt eine Studienzahl oder beantwortet
+ * einen Vorwurf. Die Fragen betreffen Erlebnisse, ihre Herkunft und den
+ * eigenen Test.
  */
+
+/**
+ * Die Fragen des Abschnitts „Kurz gefragt" — EINE Liste für Seite und Schema.
+ * `q`/`a` sind reiner Text (buildFaqPageJsonLd liest genau diese Felder), die
+ * Verweise stehen getrennt in `weiter`, damit der Antworttext im Schema und auf
+ * der Seite Zeichen für Zeichen derselbe ist. Jede Angabe stammt aus dem
+ * Bestand: Herkunft der Videos aus app/data/erfahrungen-beitraege.js
+ * (eigener YouTube-Kanal, kein wörtliches Zitat), der 20-Tage-Test wortgleich
+ * aus app/data/bewertungen-seite.js (Abschnitt test).
+ */
+export function erfahrungenFragen() {
+  const menschen =
+    gruppenNachSprache('de').length + gruppenNachSprache('en').length;
+  return [
+    {
+      id: 'frage-was-berichten-menschen',
+      q: 'Was berichten Menschen über Qi Blanco?',
+      a:
+        `In ${ERFAHRUNGS_BEITRAEGE.length} Videos erzählen ${menschen} Menschen, ` +
+        'was sie mit QiOne®, QiBracelet® und QiHome® Air erlebt haben. Es geht ' +
+        'um Schlaf, Energie und Ruhe im Alltag und darum, was sich für sie ' +
+        'verändert hat.',
+    },
+    {
+      id: 'frage-sind-die-berichte-echt',
+      q: 'Sind die Erfahrungsberichte echt?',
+      a:
+        'Ja. Jedes Video ist das Original von unserem YouTube-Kanal, und alle ' +
+        'sprechen selbst und unter ihrem Namen. Der Text neben dem Video fasst ' +
+        'zusammen, was darin gesagt wird, und zitiert nicht wörtlich.',
+    },
+    {
+      id: 'frage-wo-stehen-bewertungen',
+      q: 'Wo finde ich Bewertungen zu Qi Blanco?',
+      a:
+        'Die Google-Bewertungen stehen mit Note und Anzahl auf unserer ' +
+        'Bewertungsseite, so wie Google sie zählt. Was auf Reddit über Qi Blanco ' +
+        'steht, haben wir Faden für Faden nachgelesen.',
+      weiter: [
+        {pfad: '/pages/bewertungen', text: 'Qi Blanco Bewertungen und Reviews'},
+        {
+          pfad: '/pages/was-auf-reddit-ueber-qi-blanco-steht',
+          text: 'Was auf Reddit über Qi Blanco steht',
+        },
+      ],
+    },
+    {
+      id: 'frage-selbst-ausprobieren',
+      q: 'Kann ich es selbst ausprobieren?',
+      a:
+        'Ja. Du kannst den QiOne® 2 Pro 20 Tage ab Erhalt tragen und ihn ' +
+        'zurückgeben, ohne einen Grund zu nennen. Die Rücksendung ist für dich ' +
+        'kostenlos, und das gilt zusätzlich zum gesetzlichen Widerrufsrecht von ' +
+        '14 Tagen.',
+      weiter: [
+        {
+          pfad: '/pages/neu-oder-gebraucht',
+          text: 'Was du beim Kauf bei uns bekommst',
+        },
+      ],
+    },
+  ];
+}
+
 export function ErfahrungenSeite() {
   const deutsch = gruppenNachSprache('de');
   const englisch = gruppenNachSprache('en');
   const menschen = deutsch.length + englisch.length;
+  const fragen = erfahrungenFragen();
 
   return (
     <div className="erf">
       <section className="erf__kopf" data-section="erf-kopf">
         <div className="erf__schmal">
+          <p className="erf__vorspann">Qi Blanco Erfahrungen</p>
           <h1>Was Menschen mit Qi Blanco erlebt haben</h1>
           <p className="erf__lead">
             Hier sprechen {menschen} Menschen selbst. In{' '}
@@ -76,6 +155,35 @@ export function ErfahrungenSeite() {
 
       {/* Trustpilot-Stimmen (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). */}
       <TrustpilotStimmen praefix="erf-" />
+
+      {/* Kurz gefragt (2026-10-07, s05): die vier Fragen hinter der Suche
+          „qi blanco erfahrungen". Dieselbe Liste speist das FAQPage-Schema der
+          Route. Bauform wie „Kurz gefragt" auf /pages/neu-oder-gebraucht. */}
+      <section className="erf__kurz" data-section="erf-fragen">
+        <div className="erf__schmal">
+          <h2>Kurz gefragt</h2>
+          <dl className="erf__fragen">
+            {fragen.map((f) => (
+              <div className="erf__frage" key={f.id} id={f.id}>
+                <dt>{f.q}</dt>
+                <dd>
+                  <p>{f.a}</p>
+                  {f.weiter ? (
+                    <p className="erf__auch">
+                      {f.weiter.map((w, i) => (
+                        <span key={w.pfad}>
+                          {i > 0 ? ' · ' : null}
+                          <a href={w.pfad}>{w.text}</a>
+                        </span>
+                      ))}
+                    </p>
+                  ) : null}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
 
       {/* Der Verweis auf die Absicht — nach den Erfahrungen anderer die
           Frage, warum es das Ganze überhaupt gibt. */}

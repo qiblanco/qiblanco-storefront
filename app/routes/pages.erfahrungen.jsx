@@ -1,8 +1,13 @@
-import {ErfahrungenSeite} from '~/components/campaign/ErfahrungenSeite';
+import {
+  ErfahrungenSeite,
+  erfahrungenFragen,
+} from '~/components/campaign/ErfahrungenSeite';
 import erfahrungenStyles from '~/styles/erfahrungen.css?url';
 import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {absoluteCanonical, canonicalLink} from '~/lib/seo';
 import {erfahrungenSchema} from '~/lib/erfahrungen-schema';
+import {buildFaqPageJsonLd} from '~/lib/faq-schema';
+import {isoMitZone} from '~/lib/datum';
 
 /**
  * /pages/erfahrungen — LIVE UND INDEXIERBAR seit 2026-09-11.
@@ -67,13 +72,35 @@ import {erfahrungenSchema} from '~/lib/erfahrungen-schema';
  * erzeugt einen Reparaturfall gegen gesunden Code.
  */
 
-const TITEL =
-  'Erfahrungen mit Qi Blanco – Menschen erzählen selbst | Qi Blanco';
+/**
+ * TITEL UND BESCHREIBUNG, GEÄNDERT AM 2026-10-07 (Grossjob 20261007-GROSSJOB-
+ * seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Massnahme
+ * M-20261007-erfahrungen-antwort-faq). Vorher: „Erfahrungen mit Qi Blanco –
+ * Menschen erzählen selbst | Qi Blanco". Gesucht wird „qi blanco erfahrung"
+ * (63 Impressionen) und „qi blanco erfahrungen" (59), Position 6,6 bzw. 6,0,
+ * keine eigene Seite in den Top 3 (Search Console 06.09.-04.10.2026). Der
+ * Titel nennt den Begriff jetzt in der Suchreihenfolge vorn und sagt, was die
+ * Seite einlöst. Ohne „| Qi Blanco"-Anhang: die Marke steht schon am Anfang
+ * (dieselbe Abwägung wie auf /pages/kritik).
+ */
+const TITEL = 'Qi Blanco Erfahrungen: Menschen erzählen in eigenen Videos';
 
 const BESCHREIBUNG =
-  'Menschen berichten in eigenen Videos, was sie mit QiOne, QiBracelet und ' +
-  'QiHome Air erlebt haben – zu Schlaf, Energie und Ruhe im Alltag. Mit ' +
-  'Zusammenfassung neben jedem Video.';
+  'Qi Blanco Erfahrungen aus erster Hand: Menschen erzählen in eigenen Videos ' +
+  'von Schlaf, Energie und Ruhe im Alltag, jedes mit einer Zusammenfassung.';
+
+/**
+ * FAQPage-SCHEMA AUS DEM SICHTBAREN TEXT: `erfahrungenFragen()` ist dieselbe
+ * Liste, die die Komponente als „Kurz gefragt" ausgibt. `buildFaqPageJsonLd`
+ * wirft Items aus, die sein Deny-Netz treffen, und liefert dann still ein
+ * kürzeres Schema. Am 2026-10-07 passieren alle vier Fragen das Netz; die
+ * Rand-Probe des Segments (claude-jobs/20261007-GROSSJOB-seo-keyword-
+ * beobachtung-erweitern-nach-beliebtheit/segmente/s05/probe_s05_massnahmen_
+ * rand.py --arm erfahrungen) verlangt mindestens vier sichtbare Fragen im
+ * Schema. WER DIE FRAGEN ÄNDERT, ZIEHT `FRAGEN_GEAENDERT` NACH.
+ */
+const FRAGEN_VEROEFFENTLICHT = '2026-10-07';
+const FRAGEN_GEAENDERT = '2026-10-07';
 
 const PFAD = '/pages/erfahrungen';
 
@@ -127,7 +154,18 @@ export const meta = () => [
   {name: 'twitter:description', content: BESCHREIBUNG},
   {name: 'twitter:image', content: OG_BILD},
   {'script:ld+json': erfahrungenSchema()},
+  ...faqSchema(),
 ];
+
+function faqSchema() {
+  const schema = buildFaqPageJsonLd(erfahrungenFragen(), {
+    inLanguage: 'de-DE',
+    author: 'Qi Blanco',
+    datePublished: isoMitZone(FRAGEN_VEROEFFENTLICHT),
+    dateModified: isoMitZone(FRAGEN_GEAENDERT),
+  });
+  return schema ? [{'script:ld+json': schema}] : [];
+}
 
 export default function ErfahrungenRoute() {
   return <ErfahrungenSeite />;
