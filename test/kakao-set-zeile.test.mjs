@@ -250,3 +250,46 @@ test('Preisschutz DE/US/CH: nie teurer, nie billiger, Anker benannt', () => {
   // unlesbar -> alter Weg
   assert.equal(ps({packungen: 4, gemischt: false, setCent: NaN, zeileCent: 19892}).ok, false);
 });
+
+// --- Umgerechnete Währung (gemessen 2026-10-07, alle 26 Sets, Job
+// 20261007-update-kakao-set-ab4-fremdwaehrung-partnercode-greift-prio45) ------
+// In LI/GB (Markt international, Basis USD) und PL/SE (Markt eu, Basis EUR)
+// gibt es keine Preisliste in der Landeswährung. Shopify rechnet Einzelpackung
+// und Set um und rundet jeden Preis auf eine ganze Einheit auf. Rot-Arm: gegen
+// den Stand vor diesem Job (strikt 1 Cent) liefert jeder Fall hier ok=false.
+
+test('Preisschutz umgerechnete Währung: Rundungsband der Umrechnung, sonst strikt', () => {
+  const {kakaoPreisschutz, UMRECHNUNGS_LAENDER} = lib;
+  assert.deepEqual([...UMRECHNUNGS_LAENDER].sort(), ['GB', 'LI', 'PL', 'SE']);
+  const ps = (o) => kakaoPreisschutz({einzelZeilen: 1, setStueck: 1, gemischt: false, ...o});
+  // LI 4A: Set 236 gegen Einzelweg 4 x 59,50 = 238 -> legt um
+  assert.deepEqual(ps({packungen: 4, setCent: 23600, zeileCent: 23800, umgerechnet: true}),
+    {ok: true, grund: 'anker_einzelweg_umrechnung'});
+  // LI 7: 413 gegen 416,50 (-3,50), GB 7: 374 gegen 377,30 (-3,30)
+  assert.equal(ps({packungen: 7, setCent: 41300, zeileCent: 41650, umgerechnet: true}).ok, true);
+  assert.equal(ps({packungen: 7, setCent: 37400, zeileCent: 37730, umgerechnet: true, einzelZeilen: 2}).ok, true);
+  // PL 4A: 888 gegen 887,60 (+0,40), PL 7: 1554 gegen 1553,30 (+0,70), SE 4A +0,20
+  assert.equal(ps({packungen: 4, setCent: 88800, zeileCent: 88760, umgerechnet: true}).ok, true);
+  assert.equal(ps({packungen: 7, setCent: 155400, zeileCent: 155330, umgerechnet: true}).ok, true);
+  assert.equal(ps({packungen: 4, setCent: 228500, zeileCent: 228480, umgerechnet: true}).ok, true);
+  // Grenzen: mehr als eine Einheit je Set darüber -> nie teurer
+  assert.deepEqual(ps({packungen: 4, setCent: 88861, zeileCent: 88760, umgerechnet: true}),
+    {ok: false, grund: 'nie_teurer_als_umrechnung'});
+  // zwei Set-Stück (8 Packungen): zwei Einheiten darüber erlaubt, mehr nicht
+  assert.equal(ps({packungen: 8, setStueck: 2, setCent: 177700, zeileCent: 177520, umgerechnet: true}).ok, true);
+  assert.equal(ps({packungen: 8, setStueck: 2, setCent: 177721, zeileCent: 177520, umgerechnet: true}).ok, false);
+  // mehr als eine Einheit je Packung darunter -> nie billiger
+  assert.deepEqual(ps({packungen: 4, setCent: 23399, zeileCent: 23800, umgerechnet: true}),
+    {ok: false, grund: 'nie_billiger_als_umrechnung'});
+  // Dieselben Beträge OHNE umgerechnet (CH, US, EUR) bleiben strikt
+  assert.deepEqual(ps({packungen: 4, setCent: 23600, zeileCent: 23800}),
+    {ok: false, grund: 'nie_billiger_als_automatik'});
+  assert.deepEqual(ps({packungen: 4, setCent: 88800, zeileCent: 88760}), {ok: false, grund: 'nie_teurer'});
+  // CH 07.10.: Festpreis 202,05 gegen Einzelweg 202,08 bleibt strikt (Heilung über den Festpreis)
+  assert.equal(ps({packungen: 4, setCent: 20205, zeileCent: 20208}).ok, false);
+  // unter 4 Packungen ändert umgerechnet nichts (Sorten-Set-Anker)
+  assert.deepEqual(ps({packungen: 2, gemischt: true, setCent: 13900, zeileCent: 16557, sortenSetCent: 15900, umgerechnet: true}),
+    {ok: false, grund: 'nie_billiger_als_sorten_set'});
+  // unlesbar bleibt alter Weg
+  assert.equal(ps({packungen: 4, setCent: NaN, zeileCent: 23800, umgerechnet: true}).ok, false);
+});
