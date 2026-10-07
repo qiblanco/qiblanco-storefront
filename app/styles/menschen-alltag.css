@@ -1,0 +1,45 @@
+/* ============================================================================
+   /pages/menschen-alltag — STUFE B des Funnel-Managers („Menschen und Alltag
+   statt Zellen", Grossjob 20261007-GROSSJOB-funnel-manager-customer-journey-
+   ad-lp, s02).
+
+   REGEL DIESES FILES: es gibt KEINEN eigenen Wert. Die Seite steht im
+   Token-System von A (styles/schlaf-zellen-schutz.css, Scope .lp-a3: Typo-
+   Skala, 8pt-Raster, warmes Neutral-Kontinuum, EIN Gold-Akzent, EIN Bild-
+   Radius, EIN H2-Stil). Hier stehen nur die Anordnungen, die A nicht hat —
+   ein schmaler Textblock unter einer Überschrift und die Text-Karten der
+   Menschen —, jede aus diesen Tokens.
+   Scope: .lp-a3.lp-ma (trifft keine andere Seite).
+   ========================================================================== */
+
+/* Ein schmaler Textblock unter der zentrierten H2 (A: EIN H2-Stil, zentriert).
+   Kurze Einleitungen laufen als zentrierte Lede wie bei A; mehrere Absätze
+   mit eigenem Inhalt laufen linksbündig in derselben schmalen Spalte. */
+.lp-a3.lp-ma .lp-ma-schmal {
+  max-width: var(--a-breite-schmal);
+  margin: 0 auto;
+}
+.lp-a3.lp-ma .lp-ma-einwand .lp-ma-schmal p {
+  font-size: var(--a-fs-md);
+  margin: 0 0 var(--a-s3);
+}
+.lp-a3.lp-ma .lp-ma-einwand .lp-ma-schmal p:last-child { margin-bottom: 0; }
+/* Zwischen der Antwort und den Studienzahlen (Block von A ohne eigenen oberen
+   Abstand) ein Raster-Schritt, sonst klebt die Ueberschrift am letzten Absatz. */
+.lp-a3.lp-ma .lp-ma-einwand .lp-ma-schmal { margin-bottom: var(--a-s8); }
+
+/* Menschen: die Text-Karten unter den Videos. Der Text ist die schon
+   veröffentlichte Zusammenfassung des Videos — Fließtext, keine Unterzeile. */
+.lp-a3.lp-ma .lp-ma-person .lp-vp-video__title { margin-top: var(--a-s3); }
+.lp-a3.lp-ma .lp-ma-person__text {
+  font-size: var(--a-fs-base);
+  color: var(--a-text);
+  margin: 0;
+}
+
+/* Produkte: die Einleitung sitzt über dem Raster von A. */
+.lp-a3.lp-ma .lp-ma-produkte .lp-vp-section__lede:last-child { margin-bottom: var(--a-s6); }
+
+@media (max-width: 767px) {
+  .lp-a3.lp-ma .lp-ma-einwand .lp-ma-schmal p { font-size: var(--a-fs-base); }
+}
