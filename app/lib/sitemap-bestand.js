@@ -130,3 +130,62 @@ const ARTIKEL_PFAD_QUERY = `#graphql
   }
   ${ARTIKEL_PFAD_FRAGMENT}
 `;
+
+/**
+ * Produkt-Handles, die Google nicht abrufen kann — und die deshalb nicht in
+ * der Produkt-Sitemap stehen dürfen. Beide Sitemap-Routen lesen sie (Kind und
+ * Index-lastmod), darum steht die Liste hier und nicht in einer der Routen.
+ *
+ * WARUM GOOGLE EINE SEITE NICHT SIEHT, DIE EIN DEUTSCHER KUNDE SIEHT
+ * (gemessen 2026-10-06, Grossjob 20261006-GROSSJOB-seo-strategie-seiten-
+ * bewertung-crawl-kannibalisierung, s02):
+ * `resolveCountry()` in ~/lib/markt-pricing wählt den Markt aus dem Header
+ * `oxygen-buyer-country`. US ist ein freigeschalteter Markt. Googlebot crawlt
+ * aus den USA, die Produkt-Query läuft also im US-Kontext. Ist ein Produkt im
+ * US-Markt nicht veröffentlicht, liefert die Route 404, obwohl dieselbe URL
+ * in Deutschland 200 antwortet. Gemessen per `?markt=US` (dieselbe Weiche):
+ * von 14 Produkt-URLs der Sitemap antworteten genau zwei mit 404. Die Search
+ * Console bestätigt es für `qione-1`: „Nicht gefunden (404)", letzter Abruf
+ * 2026-10-04.
+ *
+ * WARUM NICHT IN `NICHT_INDEXIERBARE_PRODUKTE` (~/lib/seo):
+ *  1. Jene Liste setzt zusätzlich `noindex` auf die Produktseite und nimmt das
+ *     Produkt aus Kollektionen und Suche. Beide Produkte hier sind für Kunden
+ *     in Deutschland kaufbar; das wäre ein Eingriff in den Laden, nicht in die
+ *     Sitemap.
+ *  2. Ihr Aufnahme-Kriterium lautet „nur Handles ohne Zweck für Kunden". Das
+ *     trifft hier nicht zu.
+ *  3. Reichweite: ~/lib/seo wird von rund 36 Routen gelesen (Begründung
+ *     wörtlich wie in ~/lib/sitemap-weiterleitungen).
+ *
+ * WAS DIESE LISTE NICHT ENTSCHEIDET: ob `qione-1` per 301 auf
+ * `qione-2-pro` zieht. Das liegt bei Christian. Bis dahin bleibt die Seite für
+ * Kunden unverändert, sie steht nur nicht mehr in der Sitemap.
+ *
+ * DER SCHUTZ GEGEN EINE VERALTETE LISTE liegt nicht hier, sondern am Rand:
+ * homepage-bauer/shop-switch/pruefungen/probe_s02_zufahrt_produktname_sitemap.py
+ * `--arm crawlermarkt` ruft jede Produkt-URL der AUSGELIEFERTEN Sitemap im
+ * Markt US ab und wird rot, sobald eine davon 404 liefert, auch bei einem
+ * Produkt, das hier niemand eingetragen hat. Wird ein Produkt hier später im
+ * US-Markt veröffentlicht, gehört sein Eintrag wieder heraus.
+ *
+ * @type {Array<{handle: string, grund: string, seit: string}>}
+ */
+export const IM_CRAWLER_MARKT_NICHT_ABRUFBAR_DEF = [
+  {
+    handle: 'qione-1',
+    grund:
+      'Vorgängermodell, im US-Markt nicht veröffentlicht: Googlebot bekommt 404',
+    seit: '2026-10-06',
+  },
+  {
+    handle: 'broschure',
+    grund:
+      'Faltbroschüre für Partner, im US-Markt nicht veröffentlicht: Googlebot bekommt 404',
+    seit: '2026-10-06',
+  },
+];
+
+/** @type {string[]} */
+export const IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE =
+  IM_CRAWLER_MARKT_NICHT_ABRUFBAR_DEF.map((e) => e.handle);

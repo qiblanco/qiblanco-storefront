@@ -280,4 +280,35 @@ const D = (t) => ({handle: 'egal', updatedAt: t});
   }
 }
 
-console.log('sitemap-index-lastmod: alle 8 Arme grün');
+// ---------------------------------------------------------------- ARM 9
+// Ein Produkt, das Googlebot im US-Markt nur als 404 sieht
+// (IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE, ~/lib/sitemap-bestand, seit
+// 2026-10-06), steht nicht im Kind und darf den Index nicht bewegen.
+// Negativ-Kontrolle wie in ARM 2: ein sichtbares Produkt tut es.
+{
+  // sitemap-bestand.js importiert selbst über `~/`: derselbe Auflöser wie
+  // für die Route, kein nacktes import().
+  const {IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE} = await ladeMitAufgeloestenImporten(
+    join(appDir, 'lib', 'sitemap-bestand.js'),
+    'sitemap-bestand-crawlermarkt-index',
+  );
+  assert.ok(
+    IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE?.length,
+    'die Fixture braucht ein real gelistetes Produkt',
+  );
+  const bau = (handle) =>
+    storefrontAttrappe({
+      items: {
+        products: [D('2026-01-01T00:00:00Z'), {handle, updatedAt: '2026-12-31T00:00:00Z'}],
+      },
+      blogsAlle: [],
+    });
+  const {karte: gefiltert} = await indexHolen(bau(IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE[0]));
+  assert.equal(gefiltert.products, '2026-01-01T00:00:00Z',
+    'ein im Crawler-Markt nicht abrufbares Produkt bewegt den Index nicht');
+  const {karte: sichtbar} = await indexHolen(bau('ein-sichtbares-produkt'));
+  assert.equal(sichtbar.products, '2026-12-31T00:00:00Z',
+    'NEGATIV-KONTROLLE: ein sichtbares Produkt bewegt ihn sehr wohl');
+}
+
+console.log('sitemap-index-lastmod: alle 9 Arme grün');

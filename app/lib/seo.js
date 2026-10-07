@@ -143,6 +143,13 @@ export function canonicalLink(pathname) {
  * beiden tut die Übergangsstufe, wofür sie gebaut wurde. Wer sie später kippt,
  * MISST vorher erneut — ein Datum ist hier nie der Beleg.
  *
+ * NACHMESSUNG 2026-10-06 (Grossjob 20261006-GROSSJOB-seo-strategie-seiten-
+ * bewertung-crawl-kannibalisierung, s02, `gsc-seitenstand --url` je Seite):
+ * `linkseite` und `ketogenes-wochenende` stehen jetzt beide auf „Durch
+ * noindex-Tag ausgeschlossen". Stufe 1 ist erfüllt, beide Einträge kippen auf
+ * `ausSitemap: true`. Damit trägt keine Seite dieser Liste mehr die
+ * Übergangsstufe.
+ *
  * DIE GEGENRICHTUNG, damit daraus keine Räumungslizenz wird: „nicht im Index"
  * ist KEIN Grund, eine Seite noindex zu setzen. Diese Lesart entscheidet
  * ausschließlich über den SITEMAP-Eintrag eines bereits entschiedenen
@@ -304,7 +311,8 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   },
   {
     handle: 'linkseite',
-    ausSitemap: false,
+    // false bis 2026-10-06; seitdem „Durch noindex-Tag ausgeschlossen" (s. o.)
+    ausSitemap: true,
     klasse: 'hygiene',
     grund: 'leere Link-in-Bio-Restseite ohne eigenen Inhalt',
     seit: '2026-08-27',
@@ -319,7 +327,8 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   },
   {
     handle: 'ketogenes-wochenende',
-    ausSitemap: false,
+    // false bis 2026-10-06; seitdem „Durch noindex-Tag ausgeschlossen" (s. o.)
+    ausSitemap: true,
     klasse: 'hygiene',
     grund:
       'leere Kursseite; die zugehörige Bestätigungsseite ist bereits noindex',
