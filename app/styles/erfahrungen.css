@@ -248,6 +248,25 @@
   padding-left: 5px;
 }
 
+/* ─── Kurz gefragt (2026-10-07) ───────────────────────────────────────────── */
+/* Frage und Antwort als Liste, getrennt durch die Haarlinie der Videoblöcke.
+   Nur Tokens aus dem :root-Block: Frage in --erf-fs-md, keine neue Stufe. */
+.erf__fragen { margin: var(--erf-s3) 0 0; }
+.erf__frage + .erf__frage {
+  margin-top: var(--erf-s3);
+  padding-top: var(--erf-s3);
+  border-top: 1px solid var(--erf-linie);
+}
+.erf__frage dt {
+  font-size: var(--erf-fs-md);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--erf-s1);
+  color: var(--erf-text);
+}
+.erf__frage dd { margin: 0; }
+.erf p.erf__auch { margin: var(--erf-s1) 0 0; }
+
 /* ─── Abschluss ───────────────────────────────────────────────────────────── */
 .erf__abschluss { background: var(--erf-flaeche); }
 
