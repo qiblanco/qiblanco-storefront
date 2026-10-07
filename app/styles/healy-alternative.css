@@ -1,0 +1,381 @@
+/* /pages/healy-alternative (GEO-Grossjob 20261007, s04). Token-System wie
+   trustpilot-tatsachen.css: warmes Neutral, EIN Gold-Akzent nur auf Handlung,
+   8pt-Grid, Sektions-Takt 96/64, Zeilenlaenge <= 75ch. Farbe, Gold und Radius
+   aus qb-tokens.css. Ausserhalb von :root KEIN freier Wert. Scope .hea; der
+   Dateiname folgt dem Slug, weil Gate 12 CSS per Dateiname zuordnet. */
+
+:root {
+  --hea-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --hea-fs-xs: 0.8125rem; /* 13px, nur Quellenzeilen und Tabellen-Etikett */
+  --hea-fs-base: 1rem; /* 16px */
+  --hea-fs-md: 1.125rem; /* 18px */
+  --hea-fs-lg: 1.25rem; /* 20px */
+  --hea-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --hea-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --hea-s1: 8px;
+  --hea-s2: 16px;
+  --hea-s3: 24px;
+  --hea-s4: 32px;
+  --hea-s6: 48px;
+  --hea-s8: 64px;
+  --hea-s12: 96px;
+
+  /* Farbe: Grund, Flaeche und Tinte; der Akzent kommt aus der Token-Wurzel */
+  --hea-grund: #faf9f5;
+  --hea-flaeche: var(--qb-flaeche);
+  --hea-text: var(--qb-text);
+  --hea-muted: var(--qb-text-gedaempft);
+  --hea-akzent: var(--qb-akzent); /* NUR Handlung: die Knoepfe zur Kaufseite */
+  --hea-linie: rgba(44, 42, 38, 0.12);
+  --hea-weiss: #ffffff;
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --hea-r1: var(--qb-radius-klein); /* 8px */
+  --hea-r2: 16px;
+  --hea-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --hea-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte, die Tabelle darf breiter laufen */
+  --hea-mass: 68ch;
+  --hea-breite-schmal: 760px;
+  --hea-breite-tabelle: 1040px;
+  --hea-knopf-hoehe: 56px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.hea {
+  font-family: var(--hea-font);
+  font-size: var(--hea-fs-base);
+  line-height: 1.65;
+  color: var(--hea-text);
+  background: var(--hea-grund);
+}
+
+/* Das Wort inhalt im Klassennamen: nur solche Container misst seiten_pruefliste.py. */
+.hea__inhalt {
+  width: 100%;
+  max-width: var(--hea-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--hea-s2);
+}
+
+.hea__inhalt--breit { max-width: var(--hea-breite-tabelle); }
+
+.hea section {
+  padding-block: var(--hea-s8);
+}
+@media (min-width: 768px) {
+  .hea section {
+    padding-block: var(--hea-s12);
+  }
+}
+
+.hea h1 {
+  font-size: var(--hea-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--hea-s3);
+  color: var(--hea-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
+.hea h2 {
+  font-size: var(--hea-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--hea-s2);
+  color: var(--hea-text);
+}
+
+.hea h3 {
+  font-size: var(--hea-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--hea-s1);
+  color: var(--hea-text);
+}
+
+.hea p,
+.hea li,
+.hea dd {
+  font-size: var(--hea-fs-base);
+  line-height: 1.65;
+  color: var(--hea-text);
+  max-width: var(--hea-mass);
+  margin: 0 0 var(--hea-s2);
+}
+
+.hea p:last-child,
+.hea dd:last-child { margin-bottom: 0; }
+
+.hea a {
+  color: var(--hea-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.hea a:hover { text-decoration-thickness: 3px; }
+
+.hea ol,
+.hea ul,
+.hea dl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hea__nur-lesbar {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ─── Kopf: Frage und Antwort ─────────────────────────────────────────────── */
+.hea__kopf,
+.hea__wahl,
+.hea__fragen-teil { background: var(--hea-flaeche); }
+
+.hea p.hea__vorspann {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hea-muted);
+}
+
+.hea p.hea__lead { font-size: var(--hea-fs-md); }
+
+.hea__stimme {
+  margin: var(--hea-s4) 0 0;
+  padding-left: var(--hea-s3);
+  border-left: 3px solid var(--hea-linie);
+}
+
+.hea p.hea__einleitung {
+  color: var(--hea-muted);
+  margin-bottom: var(--hea-s4);
+}
+
+/* Die Quellenzeile: kleinste Schrift der Seite, wichtigstes Bauteil. */
+.hea p.hea__quelle {
+  font-size: var(--hea-fs-xs);
+  color: var(--hea-muted);
+  margin-top: var(--hea-s1);
+}
+
+.hea h3.hea__klasse { margin-top: var(--hea-s4); }
+
+/* ─── Vergleichstabelle ───────────────────────────────────────────────────── */
+.hea__tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--hea-weiss);
+  border-radius: var(--hea-r2);
+  box-shadow: var(--hea-shadow-sm);
+  overflow: hidden;
+}
+
+.hea__tabelle th,
+.hea__tabelle td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--hea-s2) var(--hea-s3);
+  border-bottom: 1px solid var(--hea-linie);
+  font-size: var(--hea-fs-base);
+  line-height: 1.55;
+}
+
+.hea__tabelle tbody tr:last-child th,
+.hea__tabelle tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.hea__tabelle thead th {
+  font-size: var(--hea-fs-md);
+  font-weight: 600;
+  background: var(--hea-flaeche);
+}
+
+.hea__tabelle tbody th {
+  font-weight: 600;
+  width: 20%;
+}
+
+@media (max-width: 767px) {
+  .hea__tabelle,
+  .hea__tabelle thead,
+  .hea__tabelle tbody {
+    display: block;
+  }
+
+  .hea__tabelle thead tr { display: none; }
+
+  .hea__tabelle tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--hea-linie);
+  }
+
+  .hea__tabelle tbody tr:last-child { border-bottom: 0; }
+
+  .hea__tabelle tbody th {
+    grid-column: 1 / -1;
+    width: auto;
+    padding: var(--hea-s2) var(--hea-s2) 0;
+    border-bottom: 0;
+  }
+
+  .hea__tabelle td {
+    padding: var(--hea-s1) var(--hea-s2) var(--hea-s2);
+    border-bottom: 0;
+  }
+
+  .hea__tabelle td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: var(--hea-fs-xs);
+    font-weight: 600;
+    color: var(--hea-muted);
+  }
+}
+
+/* ─── Für wen passt was ───────────────────────────────────────────────────── */
+.hea__karten {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hea-s3);
+}
+
+.hea li.hea__karte {
+  max-width: none;
+  margin: 0;
+  padding: var(--hea-s3);
+  background: var(--hea-weiss);
+  border-radius: var(--hea-r2);
+  box-shadow: var(--hea-shadow-sm);
+}
+
+.hea p.hea__karte-fuss {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hea-s2);
+  margin-top: var(--hea-s2);
+}
+
+.hea__preis {
+  font-size: var(--hea-fs-md);
+  font-weight: 600;
+}
+
+/* ─── Der eine Akzent: Handlung ───────────────────────────────────────────── */
+.hea a.hea__knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--hea-knopf-hoehe);
+  padding: var(--hea-s2) var(--hea-s4);
+  font-size: var(--hea-fs-md);
+  font-weight: 600;
+  color: var(--qb-text-auf-akzent);
+  background: var(--hea-akzent);
+  border-radius: var(--hea-r1);
+  text-decoration: none;
+  box-shadow: var(--hea-shadow-sm);
+}
+
+.hea a.hea__knopf:hover { box-shadow: var(--hea-shadow-md); }
+.hea a.hea__weiter { font-weight: 600; }
+
+.hea__handlung {
+  margin-top: var(--hea-s6);
+  padding: var(--hea-s4);
+  background: var(--hea-flaeche);
+  border-radius: var(--hea-r2);
+}
+
+.hea__handlung p {
+  font-size: var(--hea-fs-md);
+  margin-bottom: var(--hea-s3);
+}
+
+
+/* ─── Häufige Fragen ──────────────────────────────────────────────────────── */
+.hea__fragen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hea-s4);
+}
+
+.hea__frage {
+  padding-top: var(--hea-s3);
+  border-top: 1px solid var(--hea-linie);
+}
+
+.hea__frage dt {
+  font-size: var(--hea-fs-lg);
+  font-weight: 600;
+  color: var(--hea-text);
+  margin: 0 0 var(--hea-s1);
+}
+
+.hea__frage dd { margin-inline: 0; }
+
+/* ─── Quellen ─────────────────────────────────────────────────────────────── */
+.hea__quellen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hea-s1);
+  counter-reset: quelle;
+}
+
+.hea__quellen li {
+  counter-increment: quelle;
+  padding-left: var(--hea-s4);
+  position: relative;
+  margin: 0;
+}
+
+.hea__quellen li::before {
+  content: counter(quelle) '.';
+  position: absolute;
+  left: 0;
+  color: var(--hea-muted);
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Wie trustpilot-tatsachen.css: fremde Goldtoene erben den EINEN Akzent, ein
+   Bild-Radius fuer die Huelle, Newsletter-Knopf im Fuss ohne zweiten Ocker. */
+body:has(.hea) {
+  background: var(--hea-grund);
+  --color-accent-primary: var(--hea-akzent);
+  --rd3-gold: var(--hea-akzent);
+  --qb-sterne-gold: var(--hea-akzent);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
+}
+
+body:has(.hea) img,
+body:has(.hea) picture,
+body:has(.hea) video {
+  border-radius: var(--hea-r1);
+}
+
+body:has(.hea) #_form_15_submit._submit,
+body:has(.hea) ._form_15 button,
+body:has(.hea) ._form_15 ._submit,
+body:has(.hea) ._form_15 input[type='submit'] {
+  background: var(--hea-akzent) !important;
+  color: var(--hea-text) !important;
+  border-radius: var(--hea-r1) !important;
+  font-family: var(--hea-font) !important;
+}
