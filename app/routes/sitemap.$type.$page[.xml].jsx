@@ -9,6 +9,7 @@ import {
 } from '~/lib/seo';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
+import {mitZusammenlegungsLastmod} from '~/lib/zusammenlegungen-lastmod';
 import {
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
   OHNE_BLOG,
@@ -197,7 +198,14 @@ export async function loader({request, params, context: {storefront}}) {
     },
   );
 
-  const body = mitNurRouteSeiten(gefiltert, nachtrag);
+  // Zielseiten einer Zusammenlegung tragen deren Datum, wenn ihr eigenes
+  // älter ist (~/lib/zusammenlegungen-lastmod). NACH dem Nachtrag, damit auch
+  // Nur-Route-Ziele wie /pages/lexikon erfasst sind.
+  const mitNachtrag = mitNurRouteSeiten(gefiltert, nachtrag);
+  const body =
+    params.type === 'pages'
+      ? mitZusammenlegungsLastmod(mitNachtrag)
+      : mitNachtrag;
 
   const headers = new Headers(response.headers);
   headers.set('Cache-Control', `max-age=${cacheSekunden}`);
