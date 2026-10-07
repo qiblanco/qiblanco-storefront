@@ -570,7 +570,7 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?",
-    "antwort": "Unser QiHome® Air ist laut Herstellerangabe auf einen Einsatzbereich von bis zu 160 Metern Radius ausgelegt, das reicht für eine Wohnung und auch für ein ganzes Haus.",
+    "antwort": "Wir haben unser QiHome® Air auf einen Einsatzbereich von bis zu 160 Metern Radius ausgelegt, das reicht für eine Wohnung und auch für ein ganzes Haus.",
     "begruendung": [
       "Jedes Feld wird mit dem Abstand zur Quelle schnell schwächer. Diese Reichweite gehört zur Quelle, also zum Handy, zum Router oder zur Sendeanlage.",
       "Im Fernfeld einer Antenne verteilt sich die Leistung über eine immer größere Kugelfläche. Bei doppeltem Abstand kommt noch ein Viertel der Leistungsdichte an, bei zehnfachem Abstand ein Hundertstel.",
