@@ -293,21 +293,22 @@
       secure;
   }
 
-  function boot() {
-    if (window._qiblancoBooted) return;
-    window._qiblancoBooted = true;
-    var s = document.createElement('script');
-    s.async = true;
-    s.src =
-      'https://t.qiblanco.com/v1/lst/universal-script?ph=5d7ec374b760de265c8e689aea1de481d066f670ad78f9970f2c407e375dcdb6&tag=!clicked&ref_url=' +
-      encodeURIComponent(location.href);
-    document.head.appendChild(s);
-  }
+  // HYROS-LOADER ENTFERNT (Job 20261007-hb-hyros-loader-rest-skriptfehler-
+  // dach). Hier stand `boot()`, das bei Marketing-Einwilligung das Hyros-
+  // Skript von unserem CNAME auf Hyros nachlud. Hyros ist abgeloest (eigenes
+  // Tracking qpx, hyros-eigenbau), und seit 2026-08-06 antwortete der Host mit
+  // einer JSON-401-Antwort als text/javascript. Im Browser wurde daraus
+  // `SyntaxError: Unexpected token ':'` bzw. maskiert `Script error.` auf rund
+  // jedem dritten Seitenaufruf mit Einwilligung (gemessen 07.10.: 65 von 220).
+  // Rueckweg: git revert dieses Merges. Die Weiterleitung der hyros_*-Cookies
+  // in app/lib/checkout-tracking.js bleibt bewusst stehen (harmlos, es kommen
+  // keine neuen mehr hinzu). Die Datei kommt mit max-age=31536000: eine
+  // Aenderung erreicht wiederkehrende Besucher erst mit neuem URL im src von
+  // app/root.jsx.
   function ready() {
     if (trackingAllowed()) {
       persistClickCookies();
       persistAttributionParams();
-      boot();
     }
   }
 
@@ -490,7 +491,7 @@
   ready();
   window.addEventListener('CookiebotOnAccept', ready);
   window.addEventListener('CookiebotOnDecline', function () {
-    // optout-Region + aktive Ablehnung: ab jetzt kein persist/boot mehr
+    // optout-Region + aktive Ablehnung: ab jetzt kein persist mehr
     // (bereits geladene Drittscripte dieser Seite lassen sich nicht
     // entladen; ab der naechsten Navigation greift trackingAllowed()).
   });
