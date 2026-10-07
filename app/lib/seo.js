@@ -557,6 +557,11 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
  * Ohne Feld = kein `<lastmod>` — das ist erlaubt und ehrlicher als ein
  * geratenes Datum.
  */
+// ZUSAMMENGELEGT AM 2026-10-07 (Job 20261007-seo-zusammenlegung-duenne-seiten-
+// 301-umsetzen): 13 Nur-Route-Seiten sind per 301 in stärkere Seiten
+// aufgegangen und stehen deshalb nicht mehr in dieser Liste — eine
+// Weiterleitung gehört in keine Sitemap. Welche und wohin: app/lib/
+// zusammenlegungen.js. Die Zielseiten tragen ein neues `lastmod`.
 export const NUR_ROUTE_SEITEN = [
   {
     pfad: '/pages/wie-funktioniert-der-gitterchip-im-qione',
@@ -827,7 +832,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon',
-    lastmod: '2026-10-06T20:05:00Z',
+    lastmod: '2026-10-07T04:30:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -857,119 +862,6 @@ export const NUR_ROUTE_SEITEN = [
       'Rest aus dem Hub.',
   },
   {
-    pfad: '/pages/lexikon-hohe-frequenz-schwingen',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „auf einer hohen Frequenz schwingen“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route ' +
-      'pages.lexikon-hohe-frequenz-schwingen.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
-      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
-      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
-      '(Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-high-vibe',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „High Vibe“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route pages.lexikon-high-vibe.jsx ' +
-      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
-      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
-      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
-      'der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-low-vibe',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „Low Vibe“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route pages.lexikon-low-vibe.jsx ' +
-      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
-      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
-      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
-      'der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-spirituell-angebunden-sein',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „spirituell angebunden sein“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route ' +
-      'pages.lexikon-spirituell-angebunden-sein.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
-      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
-      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
-      '(Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-kohaerentes-wasser',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „kohärentes Wasser“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route ' +
-      'pages.lexikon-kohärentes-wasser.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP ' +
-      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
-      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
-      '(Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
     pfad: '/pages/lexikon-elektrosmog',
     lastmod: '2026-10-06T20:05:00Z',
     grund:
@@ -985,72 +877,6 @@ export const NUR_ROUTE_SEITEN = [
       '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
       'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
       '(Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-frequenz',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „Frequenz“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route pages.lexikon-frequenz.jsx ' +
-      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
-      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
-      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
-      'der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-energie',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „Energie“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route pages.lexikon-energie.jsx ' +
-      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
-      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
-      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
-      'der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
-      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
-      'die gleiche Auslieferung an Mensch, Googlebot und ' +
-      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
-      'weil er ohne sie Werbung wäre.',
-  },
-  {
-    pfad: '/pages/lexikon-ordnung',
-    lastmod: '2026-09-16T00:08:30Z',
-    grund:
-      'Lexikon-Eintrag „Ordnung“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
-      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
-      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
-      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
-      'Seite besteht allein aus der Route pages.lexikon-ordnung.jsx ' +
-      'und hat KEIN Shopify-Seitenobjekt — ohne diesen Eintrag ' +
-      'liefert sie HTTP 200 mit vollem Text und steht in keiner ' +
-      'Sitemap. Kriterium 2 erfüllt: kein noindex, canonicalLink() in ' +
-      'der Route. WACHE (Kriterium 3): ' +
       'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
       '(nachbau-audit h5f5ad493) — sie folgt den Hub-Links und prüft ' +
       'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
@@ -1116,50 +942,6 @@ export const NUR_ROUTE_SEITEN = [
       'User-Agents.',
   },
   {
-    pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
-    lastmod: '2026-09-28T12:00:00Z',
-    grund:
-      'Frageseite „Wie funktioniert ein Schutz gegen Elektrosmog am ' +
-      'Körper?“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
-      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
-      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
-      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
-      'unangetastet. Die Seite besteht allein aus der Route ' +
-      'pages.wie-funktioniert-schutz-vor-elektrosmog.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
-      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
-      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
-      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
-      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
-      'User-Agents.',
-  },
-  {
-    pfad: '/pages/gibt-es-studien-zu-elektrosmog-schutz',
-    lastmod: '2026-09-28T12:00:00Z',
-    grund:
-      'Frageseite „Gibt es unabhängige Studien zu ' +
-      'Elektrosmog-Schutzprodukten?“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
-      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
-      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
-      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
-      'unangetastet. Die Seite besteht allein aus der Route ' +
-      'pages.gibt-es-studien-zu-elektrosmog-schutz.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
-      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
-      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
-      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
-      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
-      'User-Agents.',
-  },
-  {
     pfad: '/pages/ist-qi-blanco-serioes',
     lastmod: '2026-09-28T12:00:00Z',
     grund:
@@ -1180,35 +962,13 @@ export const NUR_ROUTE_SEITEN = [
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
       'User-Agents.',
   },
-  {
-    pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
-    lastmod: '2026-09-28T12:00:00Z',
-    grund:
-      'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
-      'Elektrosmog-Schutzes?“ (Grossjob ' +
-      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
-      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
-      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
-      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
-      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
-      'unangetastet. Die Seite besteht allein aus der Route ' +
-      'pages.wie-weit-reicht-elektrosmog-schutz.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
-      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
-      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493) — sie folgt den Links des Fragen-Hubs ' +
-      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
-      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
-      'User-Agents.',
-  },
   // /pages/was-sagen-die-quarks-science-cops steht seit 2026-09-28 NICHT mehr
   // hier: die Adresse leitet per 301 auf /pages/ist-qi-blanco-serioes (Grossjob
   // 20260928-GROSSJOB-frageseiten-menschlich-schreiben-und-bestmoegliches-licht),
   // und eine Sitemap-URL, die weiterleitet, sendet ein gegenlaeufiges Signal.
   {
     pfad: '/pages/was-ist-elektrosmog',
-    lastmod: '2026-10-06T22:10:00Z',
+    lastmod: '2026-10-07T04:30:00Z',
     grund:
       'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
       '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
@@ -1222,55 +982,6 @@ export const NUR_ROUTE_SEITEN = [
       'entsteht aus der SITEMAP: die Messung sähe die Seite nie. Ein ' +
       'Seitenobjekt wäre der zweite mögliche Träger und ist nicht ' +
       'gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
-      '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
-      'Seite ohne Zutun mit ab; zusätzlich ' +
-      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die ' +
-      'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
-      'Indexierbarkeit prüft, nicht den Statuscode.',
-  },
-  {
-    pfad: '/pages/armband-duschen-sauna',
-    lastmod: '2026-09-28T12:00:00Z',
-    grund:
-      'Antwortseite zur Frage „Kann man ein Armband gegen Elektrosmog ' +
-      'beim Duschen und in der Sauna tragen?“ (Großjob ' +
-      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
-      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
-      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
-      'sauna-portal.com und armstark.com zitiert. Sie besteht allein ' +
-      'aus der Route pages.armband-duschen-sauna.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
-      'mit vollem Text und steht in keiner Sitemap, und der Eigenkorpus ' +
-      'der Zitatmessung entsteht aus der SITEMAP: die Messung sähe die ' +
-      'Seite nie. Ein Seitenobjekt wäre der zweite mögliche Träger und ' +
-      'ist nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
-      '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
-      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
-      'Seite ohne Zutun mit ab; zusätzlich ' +
-      'homepage-bauer/pruefungen/probe_ki_luecke_am_kundenrand.py, die ' +
-      'am ausgelieferten HTML Inhalt, Sitemap-Eintrag und ' +
-      'Indexierbarkeit prüft, nicht den Statuscode.',
-  },
-  {
-    pfad: '/pages/was-senkt-elektrosmog-im-alltag',
-    lastmod: '2026-09-28T12:00:00Z',
-    grund:
-      'Antwortseite zur Frage „Was senkt die Belastung durch ' +
-      'Elektrosmog im Alltag?“ (Großjob ' +
-      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
-      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
-      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
-      'aerzteblatt.de, schutz-vor-strahlung.ch und ' +
-      'rumpfinger-schlafen.de zitiert. Sie besteht allein aus der Route ' +
-      'pages.was-senkt-elektrosmog-im-alltag.jsx und hat KEIN ' +
-      'Shopify-Seitenobjekt — ohne diesen Eintrag liefert sie HTTP 200 ' +
-      'mit vollem Text und steht in keiner Sitemap, und der Eigenkorpus ' +
-      'der Zitatmessung entsteht aus der SITEMAP: die Messung sähe die ' +
-      'Seite nie. Ein Seitenobjekt wäre der zweite mögliche Träger und ' +
-      'ist nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei ' +
       '/pages/fragen und den übrigen Frageseiten. Wache (Kriterium 3): ' +
       'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
       'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
@@ -1332,7 +1043,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/was-ist-kohaerentes-wasser',
-    lastmod: '2026-09-23T22:00:00Z',
+    lastmod: '2026-10-07T04:30:00Z',
     grund:
       'Die Info-Seite „Kohärentes Wasser" (Großjob vom 23.09.2026, ' +
       'Christian: ' +
@@ -1350,7 +1061,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wissen-und-vertrauen',
-    lastmod: '2026-10-06T20:05:00Z',
+    lastmod: '2026-10-07T04:30:00Z',
     grund:
       'Die Übersicht „Alle Antworten rund um Qi Blanco" (Großjob ' +
       '20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-' +

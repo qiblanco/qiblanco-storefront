@@ -37,6 +37,7 @@ import {
   HUB_ANKER,
 } from '../app/lib/fragen-schema.js';
 import {NUR_ROUTE_SEITEN} from '../app/lib/seo.js';
+import {zusammenlegungFuer} from '../app/lib/zusammenlegungen.js';
 
 const WURZEL = path.resolve(import.meta.dirname, '..');
 const DATUM = {
@@ -235,10 +236,27 @@ test('jede Route steht in NUR_ROUTE_SEITEN — sonst ist sie unauffindbar', () =
   // HTTP 200 mit vollem Text und steht in keiner Sitemap: erreichbar und
   // trotzdem unauffindbar, von aussen nicht davon zu unterscheiden, dass alles
   // stimmt.
+  //
+  // SEIT 2026-10-07 IN BEIDE RICHTUNGEN: eine Frageseite, die per 301 in eine
+  // andere Seite aufgegangen ist (app/lib/zusammenlegungen.js), darf NICHT
+  // drinstehen — dieselbe Begründung wie bei /pages/fragen unten.
   const pfade = new Set(NUR_ROUTE_SEITEN.map((e) => e.pfad));
+  let zusammengelegt = 0;
   for (const s of FRAGEN) {
-    assert.ok(pfade.has(s.pfad), `${s.slug}: fehlt in NUR_ROUTE_SEITEN`);
+    if (zusammenlegungFuer(s.pfad)) {
+      zusammengelegt += 1;
+      assert.ok(
+        !pfade.has(s.pfad),
+        `${s.slug}: leitet per 301 weiter und gehört in keine Sitemap`,
+      );
+    } else {
+      assert.ok(pfade.has(s.pfad), `${s.slug}: fehlt in NUR_ROUTE_SEITEN`);
+    }
   }
+  assert.ok(
+    zusammengelegt < FRAGEN.length,
+    'jede Frageseite gilt als zusammengelegt: der Prüfarm "fehlt" läuft leer',
+  );
   // Die Weiterleitung steht in KEINER Sitemap: eine Sitemap-URL, die
   // weiterleitet, sendet ein gegenläufiges Signal. Die FAQ selbst steht über
   // ihr Shopify-Seitenobjekt in der Sitemap, nicht in dieser Liste.

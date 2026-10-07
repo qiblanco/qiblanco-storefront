@@ -46,7 +46,7 @@ const BESCHREIBUNG =
  * selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-10-06';
-const GEAENDERT = '2026-10-06';
+const GEAENDERT = '2026-10-07';
 
 export function links() {
   return [{rel: 'stylesheet', href: wvStyles}];

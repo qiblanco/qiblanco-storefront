@@ -3,6 +3,7 @@ import {FAQ_ALLE} from '~/data/faq-seite';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import faqStyles from '~/styles/faq.css?url';
+import frageAbschnittStyles from '~/styles/frage-abschnitt.css?url';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/faq';
@@ -44,7 +45,10 @@ const PFAD = '/pages/faq';
  * JEDES Item im Schema landet.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: faqStyles}];
+  return [
+    {rel: 'stylesheet', href: faqStyles},
+    {rel: 'stylesheet', href: frageAbschnittStyles},
+  ];
 }
 
 const TITEL = 'Häufige Fragen zu Qi Blanco — ehrlich beantwortet';

@@ -3,6 +3,7 @@
 import {data as mitHeadern, useLoaderData} from 'react-router';
 import {Rechtsseite} from '~/components/Rechtsseite';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {leiteUm, zusammenlegungFuer} from '~/lib/zusammenlegungen';
 import {
   canonicalLink,
   istNichtIndexierbar,
@@ -88,6 +89,14 @@ export const meta = ({data, params}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // ZUSAMMENGELEGTE SHOPIFY-SEITEN (Job 20261007-seo-zusammenlegung-duenne-
+  // seiten-301-umsetzen): /pages/support-1 ist in /pages/support aufgegangen.
+  // Der 301 steht VOR der Seiten-Abfrage, weil das Seitenobjekt in Shopify
+  // bestehen bleibt (nichts löschen) und sonst weiter gerendert würde. Die
+  // Liste führt app/lib/zusammenlegungen.js, kein Sonderfall hier.
+  const alterPfad = `/pages/${args.params?.handle}`;
+  if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 

@@ -1,0 +1,52 @@
+/* ============================================================================
+   FrageAbschnitt — eine frühere Frageseite als Abschnitt einer Gastseite
+   (seit 2026-10-07, Job 20261007-seo-zusammenlegung-duenne-seiten-301-
+   umsetzen).
+
+   KEINE SCHRIFTGRÖSSEN, KEINE SCHRIFTFAMILIE: Überschriften und Absätze erben
+   die Stile der Gastseite (technologie, studien, faq). Eine eigene Skala würde
+   deren Design-Rubrik verschieben. Hier stehen nur Abstand im 8pt-Raster, das
+   Lesemaß, die eine Akzentlinie am Antwortsatz (das Hausgold als Linie, nie
+   als Schrift) und die Form der Quellenliste.
+   ========================================================================== */
+
+.frage-abschnitt {
+  padding: 4rem 1.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.frage-abschnitt__inhalt {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.frage-abschnitt__inhalt p {
+  max-width: 68ch;
+}
+
+.frage-abschnitt__inhalt h3 {
+  margin-top: 2rem;
+}
+
+.frage-abschnitt__antwort {
+  font-weight: 600;
+  border-left: 4px solid var(--qb-akzent-kauf);
+  padding-left: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.frage-abschnitt__quellen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.frage-abschnitt__quellen li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(44, 42, 38, 0.12);
+  max-width: 68ch;
+}
+
+.frage-abschnitt__quellen a {
+  color: inherit;
+}

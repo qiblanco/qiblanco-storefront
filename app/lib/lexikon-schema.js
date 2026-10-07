@@ -54,6 +54,7 @@
 import {FORBIDDEN_PATTERNS, normalizeText} from './faq-schema.js';
 import {CANONICAL_ORIGIN, absoluteCanonical} from './seo.js';
 import {ORG_ID, SITE_ID} from './entity-schema.js';
+import {adresse} from './zusammenlegungen.js';
 
 export const HUB_PFAD = '/pages/lexikon';
 export const SET_ID = `${absoluteCanonical(HUB_PFAD)}#begriffssammlung`;
@@ -105,6 +106,21 @@ export function istSchemaSicher(e) {
 }
 
 /**
+ * Die URL, unter der ein Begriff HEUTE steht. Ist seine eigene Seite per 301
+ * aufgegangen (app/lib/zusammenlegungen.js), ist das der Abschnitt der
+ * Zielseite (`…/pages/lexikon#lexikon-energie`), nicht die Weiterleitung:
+ * strukturierte Daten, die auf eine 301-Adresse zeigen, schicken eine
+ * Suchmaschine über einen Umweg. absoluteCanonical() streicht den Anker,
+ * deshalb wird er hier wieder angehängt.
+ * @param {{pfad: string}} e
+ */
+export function begriffUrl(e) {
+  const [pfad, anker] = adresse(e.pfad).split('#');
+  const basis = absoluteCanonical(pfad);
+  return anker ? `${basis}#${anker}` : basis;
+}
+
+/**
  * `DefinedTerm` eines Eintrags.
  *
  * `description` trägt Definition UND Grenze in einem Feld — bewusst. Ein
@@ -114,13 +130,15 @@ export function istSchemaSicher(e) {
  * @param {object} e
  */
 export function definedTerm(e) {
-  const url = absoluteCanonical(e.pfad);
+  const url = begriffUrl(e);
   const belege = (e.quellen_aufgeloest || [])
     .map((q) => q && q.url)
     .filter(Boolean);
   return {
     '@type': 'DefinedTerm',
-    '@id': `${url}#begriff`,
+    // Steht der Begriff als Abschnitt (URL mit Anker), bekommt die Kennung
+    // ein Suffix statt eines zweiten `#`.
+    '@id': url.includes('#') ? `${url}-begriff` : `${url}#begriff`,
     name: normalizeText(e.begriff),
     url,
     inLanguage: 'de',
@@ -229,7 +247,7 @@ export function hubSchema(eintraege, datum) {
           '@type': 'ListItem',
           position: i + 1,
           name: normalizeText(e.begriff),
-          url: absoluteCanonical(e.pfad),
+          url: begriffUrl(e),
         })),
       },
       {
