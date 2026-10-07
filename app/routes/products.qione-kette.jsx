@@ -23,24 +23,8 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
-import {InhaltswegNeuOderGebraucht} from '~/components/product-pages/InhaltswegNeuOderGebraucht';
 /**
  * @type {MetaFunction<typeof loader>}
- */
-/*
- * DER TITEL TRÄGT DAS SUCHWORT „KETTE" (2026-10-07, Grossjob 20261007-
- * GROSSJOB-seo-keyword-beobachtung-erweitern-nach-beliebtheit, s05, Maßnahme
- * M-20261007-kette-titel). Vorher stand hier der Shopify-Produkttitel:
- * „Necklace für QiOne® | Qi Blanco". Google schlägt „qi blanco kette" auf
- * Rang 1 vor (Vorschlagsliste DACH 07.10.2026), und das Wort Kette stand weder
- * im Titel noch in der H1. Die Beschreibung trägt es schon („Die passende
- * Kette …", app/lib/produkt-seo.js). Die H1 bleibt der Produkttitel aus
- * Shopify: sie zu ändern wäre ein Schreibvorgang im Fremdsystem.
- * WARUM HIER UND NICHT IN PRODUKT_TITEL (app/lib/produkt-seo.js): jene Tafel
- * überschreibt die Titel der Flaggschiff-Routen, deren Route keinen eigenen
- * Titel setzt. Diese Route setzt ihren Titel selbst; die Zeile bleibt damit an
- * der einen Stelle, die für diese Seite gilt, und ein Eintrag in der geteilten
- * Tafel würde jede Produktroute in die Deploy-Reichweite ziehen.
  */
 export const meta = ({data}) => {
   return produktMeta({
@@ -48,7 +32,7 @@ export const meta = ({data}) => {
     produkt: data?.product,
     marktLand: data?.marktLand,
     pfad: '/products/qione-kette',
-    titel: `QiOne® Kette: das Necklace für deinen Anhänger | ${MARKE}`,
+    titel: `${data?.product?.title ?? ''} | ${MARKE}`,
     bildUrl:
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
@@ -179,12 +163,6 @@ export default function Product() {
           gewaehrleistungsHinweis={false}
         />
         <BenefitList />
-        {/* Derselbe Satz wie unter der Kaufbox von QiOne® 2 Pro und
-            QiBracelet® (2026-10-07, s05, Maßnahme M-20261007-gebraucht-
-            zufahrt): die Kette war die einzige Produktseite ohne Weg auf
-            /pages/neu-oder-gebraucht. Er steht UNTER der Kaufbox, der
-            Kaufweg bleibt unberührt. */}
-        <InhaltswegNeuOderGebraucht />
       </div>
       <Analytics.ProductView
         data={{
