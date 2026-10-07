@@ -51,6 +51,7 @@ import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
 import {LP_EXP_B_PFAD, LP_V2_PFAD} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
 import {MM_MARKER, mmZielPfad, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
+import {STUFE_B_MARKER, STUFE_B_PFAD, stufeBZielPfad} from './ad-weiche-stufe-b.server.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
 const FETCH_TIMEOUT_MS = 1500;
@@ -208,6 +209,13 @@ export const AUSSCHLUSS_SEGMENTE = [
   // leitete die Weiche jeden bezahlten Besucher von B zurück auf A — B wäre
   // für Anzeigen-Verkehr unerreichbar und der 15-%-Arm stünde leer.
   LP_EXP_B_PFAD,
+  // Stufe-B-Seite des Funnel-Managers (/pages/menschen-alltag, Grossjob
+  // 20261007-...-funnel-manager-customer-journey-ad-lp, s02). SCHLEIFEN-
+  // KRITISCH aus demselben Grund wie die Zeile darüber: der Stufe-B-Arm unten
+  // schickt bezahlte Klicks mit vollem Query dorthin, ohne diese Zeile würfe
+  // die Weiche sie auf LP A zurück. Steht der Arm aus, kostet die Zeile nichts:
+  // kein bezahlter Klick zielt heute auf diesen Pfad.
+  STUFE_B_PFAD,
   // LP-V3 (Review-Artefakt, 20260726-lp-v3-apple-microsoft-scrollanim):
   // NICHT schleifen-kritisch (nichts leitet auf V3), aber ein GETEILTER
   // Review-Link trägt schnell fbclid/utm (Messenger/WhatsApp-Klicks) —
@@ -436,6 +444,18 @@ export function mmAktivAusRoh(roh) {
 }
 
 /**
+ * Schalter des STUFE-B-ARMS (Funnel-Manager, s02), Feld `ad_weiche_b`.
+ * Gleiche Polarität wie `ad_weiche_mm`: NUR der Wert 'an' aktiviert;
+ * Abwesenheit, Fetch-Fehler, Timeout und kaputtes JSON heißen AUS — und AUS
+ * heißt alles auf LP A wie heute. Der Feldzugriff steht aus demselben Grund
+ * hier wie beim MM-Arm (ARM-NAHT von lp-rotation, HAND_FELDER).
+ * @param {unknown} roh
+ */
+export function stufeBAktivAusRoh(roh) {
+  return Boolean(roh) && roh.ad_weiche_b === 'an';
+}
+
+/**
  * Glue für den root-Loader: prueft Methode + Entscheidung + Schalter und
  * liefert das Redirect-Ziel (String) oder null. Der Schalter-Fetch läuft
  * NUR bei erkanntem Paid-Marker — organischer Traffic kostet nichts.
@@ -476,6 +496,7 @@ export async function pruefeAdWeiche(request, fetchImpl) {
 
   let ziel = entscheidung.ziel;
   let mm_pfad = null;
+  let b_pfad = null;
   let code_ziel = null;
   try {
     const url = new URL(request.url);
@@ -487,7 +508,19 @@ export async function pruefeAdWeiche(request, fetchImpl) {
       // exakt dem heutigen, dekretierten Verhalten.
       mm_pfad = mmZielPfad(url.pathname, adId, url.searchParams, mmAktivAusRoh(zuteilungRoh));
       if (mm_pfad) ziel = zielUrl(mm_pfad, url.search, MM_MARKER);
+    }
 
+    // STUFE-B-ARM (Funnel-Manager, s02): nur, wenn kein Message-Match-Ziel
+    // gewählt ist. Er braucht keine Ad-ID — er teilt den bezahlten Verkehr
+    // aller Quellen, den die Weiche sonst auf LP A schickt. Steht der Schalter
+    // nicht auf 'an' oder fällt der Besucher in den Kontrollarm, bleibt es
+    // bei LP A, also beim heutigen Verhalten.
+    if (!mm_pfad) {
+      b_pfad = stufeBZielPfad(request, stufeBAktivAusRoh(zuteilungRoh), entscheidung.erkennung);
+      if (b_pfad) ziel = zielUrl(b_pfad, url.search, STUFE_B_MARKER);
+    }
+
+    if (adId) {
       // Ad-scharfer Rabattcode (s03): NUR ein anderes Ziel derselben Weiche.
       // Er setzt bewusst AUF dem bereits gewaehlten Ziel auf — der Rabatt
       // gehört zur Anzeige, nicht zur Landeflaeche, und muss deshalb auch
@@ -496,9 +529,10 @@ export async function pruefeAdWeiche(request, fetchImpl) {
       if (code_ziel) ziel = code_ziel;
     }
   } catch {
-    // Weder Message-Match noch Rabattweg duerfen die Weiche brechen:
-    // im Zweifel LP A wie bisher.
+    // Weder Message-Match noch Stufe-B-Arm noch Rabattweg duerfen die Weiche
+    // brechen: im Zweifel LP A wie bisher.
     ziel = entscheidung.ziel;
+    b_pfad = null;
   }
 
   try {
@@ -508,6 +542,7 @@ export async function pruefeAdWeiche(request, fetchImpl) {
         erkennung: entscheidung.erkennung,
         pfad: new URL(request.url).pathname,
         mm: mm_pfad || 'nein',
+        stufe_b: b_pfad ? 'ja' : 'nein',
         rabatt: code_ziel ? 'ja' : 'nein',
       }),
     );
