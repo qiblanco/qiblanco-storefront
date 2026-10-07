@@ -136,7 +136,11 @@
     window.QPX_CONFIG = {endpoint: ep};
     var s = document.createElement('script');
     s.async = true;
-    s.src = '/qiblanco-qpx.js';
+    // Versionierter URL aus root.jsx (data-qpx-src, ?v=<sha256-8>), damit
+    // ein wiederkehrender Browser eine neue Fassung nicht aus dem
+    // Jahres-Cache nimmt. Ohne das Attribut der feste Pfad wie bisher.
+    var el = document.querySelector('script[data-qpx-src]');
+    s.src = (el && el.getAttribute('data-qpx-src')) || '/qiblanco-qpx.js';
     document.head.appendChild(s);
   }
 

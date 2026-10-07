@@ -78,6 +78,7 @@ import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
+import {publicSkript} from '~/lib/public-skript';
 import {
   ladeGoogleRating,
   GOOGLE_RATING_FALLBACK_VOLL,
@@ -600,29 +601,32 @@ export function Layout({children}) {
           homepage-bauer/pruefungen/probe_hydration_cookiebot_naht.py
           homepage-bauer/pruefungen/probe_head_ohne_react_skript.py
         */}
+        {/*
+          FASSUNG IM src: public/ wird mit cache-control max-age=31536000
+          ausgeliefert, unter festem Namen. Ohne neuen URL behaelt ein
+          wiederkehrender Besucher die alte Datei bis zu ein Jahr.
+          publicSkript() haengt ?v=<sha256-8 des Inhalts> an, beim Build
+          berechnet (scripts/public-skript-version.mjs) — niemand zaehlt
+          von Hand hoch. Das gilt auch fuer /qiblanco-qpx.js: der Loader
+          liest den versionierten URL aus data-qpx-src.
+          Wache: homepage-bauer/pruefungen/probe_public_skripte_version.py
+        */}
         {shouldLoadThirdPartyScripts && (
           <>
             <script
-              src="/cookiebot-shopify-consent-sync.js"
-              nonce={nonce}
-              defer
-              suppressHydrationWarning
-            />
-            {/*
-              FASSUNG IM src: public/ wird mit cache-control max-age=31536000
-              ausgeliefert, unter festem Namen. Ohne neuen URL behaelt ein
-              wiederkehrender Besucher die alte Datei bis zu ein Jahr. Bei
-              jeder Aenderung an public/qiblanco-tracker.js hochzaehlen
-              (eingefuehrt mit dem Hyros-Loader-Rueckbau, 2026-10-07).
-            */}
-            <script
-              src="/qiblanco-tracker.js?v=20261007"
+              src={publicSkript('/cookiebot-shopify-consent-sync.js')}
               nonce={nonce}
               defer
               suppressHydrationWarning
             />
             <script
-              src="/qiblanco-google-tracking.js"
+              src={publicSkript('/qiblanco-tracker.js')}
+              nonce={nonce}
+              defer
+              suppressHydrationWarning
+            />
+            <script
+              src={publicSkript('/qiblanco-google-tracking.js')}
               nonce={nonce}
               defer
               suppressHydrationWarning
@@ -640,7 +644,7 @@ export function Layout({children}) {
               Marketing-Tor wie das Meta-Pixel nachgeladen.
             */}
             <script
-              src="/qiblanco-uppromote-tracker.js"
+              src={publicSkript('/qiblanco-uppromote-tracker.js')}
               nonce={nonce}
               defer
               suppressHydrationWarning
@@ -692,7 +696,8 @@ export function Layout({children}) {
             */}
             {data?.qpxEndpoint ? (
               <script
-                src="/qiblanco-qpx-loader.js"
+                src={publicSkript('/qiblanco-qpx-loader.js')}
+                data-qpx-src={publicSkript('/qiblanco-qpx.js')}
                 data-qpx-endpoint={data.qpxEndpoint}
                 nonce={nonce}
                 defer
@@ -704,7 +709,7 @@ export function Layout({children}) {
               // Consent-Loader) — einwilligungsfrei, setzt nichts auf dem
               // Endgerät. Ohne PUBLIC_QPX_BASIS_ENDPOINT rendert nichts.
               <script
-                src="/qiblanco-qpx-basis.js"
+                src={publicSkript('/qiblanco-qpx-basis.js')}
                 data-qpx-basis-endpoint={data.qpxBasisEndpoint}
                 nonce={nonce}
                 defer
