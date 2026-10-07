@@ -1,6 +1,6 @@
 {
   "_hinweis": "GENERIERT, nicht von Hand ändern. Quelle: trustpilot-wache/exports/scroller-daten.json (die Bewertungs-Wache liest das öffentliche Profil jeden Morgen), erzeugt von trustpilot-wache/bin/scroller-abgleich. Gezeigt: 5 Sterne, neueste zuerst, wie beim Google-Live-Feed; was fehlt, steht mit Grund in scroller-daten.json. Texte wortgleich, Namen als Vorname + Initial. KEINE GESAMTZAHL (Christian 2026-10-06): die Länge der Liste wird nirgends angezeigt.",
-  "profil_url": "https://www.trustpilot.com/review/qiblanco.com",
+  "profil_url": "https://de.trustpilot.com/review/qiblanco.com",
   "bewertungen": [
     {
       "id": "trustpilot:698734a61774ca208346a139",
