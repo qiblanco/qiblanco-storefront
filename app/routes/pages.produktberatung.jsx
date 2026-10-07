@@ -70,6 +70,9 @@ const PFAD = '/pages/produktberatung';
  * als `quelle` an /api/buchen. Ohne oder mit unbekanntem `von` bleibt es
  * 'seite'. Nie freie Weitergabe: der Endpunkt prüft zusätzlich selbst
  * (produktberatung/src/server.py). Umbuchen und Absagen bleiben unberührt.
+ * Zweiter Wert ig-stichwort-call: Link aus dem Instagram-Stichwort-Weg (Job
+ * 20261007-anna-kommentar-stichwort-call-donnerstag, s03). Ein neuer Wert
+ * gehört immer an beide Stellen, sonst bucht er still als 'seite'.
  *
  * TESTUMGEBUNG: die Env-Variable PRODUKTBERATUNG_API lenkt Loader und Action
  * auf einen Wegwerf-Endpunkt um (lokaler Dev-Server). Ohne sie gilt der
@@ -93,7 +96,7 @@ function signal(ms) {
 }
 
 /** Quellen, die ein Link über ?von= setzen darf; alles andere bucht als 'seite'. */
-const QUELLEN_AUS_LINK = ['warenkorb-mail'];
+const QUELLEN_AUS_LINK = ['warenkorb-mail', 'ig-stichwort-call'];
 
 function quelleAusLink(wert) {
   const v = String(wert || '').trim();
