@@ -22,6 +22,47 @@ export async function loader({request, context}) {
 }
 
 /**
+ * KI-CRAWLER: DREI GRUPPEN, DREI ENTSCHEIDUNGEN (Stand 2026-10-07).
+ *   KI-TRAINING  gesperrt mit `Disallow: /`
+ *                (Job 20260729-homepage-anti-scraping)
+ *   KI-SUCHE     frei (Job 20260729-homepage-anti-scraping)
+ *   KI-MODELLE   frei: GPTBot, ClaudeBot (mit anthropic-ai und Claude-Web)
+ *                und Google-Extended. Christian am 2026-10-07, wörtlich:
+ *                „robots.txt bzw. Shopify-Einstellungen für GPTBot,
+ *                OAI-SearchBot, ChatGPT-User, PerplexityBot, Google-Extended,
+ *                ClaudeBot, Bingbot prüfen und freigeben." Die vier übrigen
+ *                waren an dem Tag schon frei (KI-SUCHE bzw. `*`).
+ *                (Auftrag 20261007-GROSSJOB-geo-manager-chatgpt-perplexity-
+ *                grok-gemini-sichtbarkeit, Segment s02)
+ *
+ * DIE REIHENFOLGE DER DREI GRUPPEN IST FÜR CRAWLER OHNE BEDEUTUNG (es gilt
+ * die Gruppe mit dem passenden Namen, RFC 9309). KI-MODELLE steht hinter
+ * KI-SUCHE, weil das Stil-Tor von hb-deploy die User-agent-Listen als
+ * Sätze liest: zwischen KI-TRAINING und KI-SUCHE entstand so ein zusätzlicher
+ * Langsatz aus Agentennamen, hinter KI-SUCHE entsteht keiner.
+ *
+ * DIE GRUPPE KI-MODELLE TRÄGT KEINE EIGENE Content-Signal-ZEILE, und das ist
+ * Absicht: die Freigabe betrifft den ABRUF. Ein `ai-train=yes` wäre eine
+ * Erklärung über die NUTZUNG, also ein Rechtstext. Der Nutzungsvorbehalt im
+ * Kopf der Datei, AGB § 12, /.well-known/tdm-policy.json, tdmrep.json und der
+ * Kopf `tdm-reservation` sind mit dieser Freigabe NICHT angefasst worden; ob
+ * sie nachgezogen werden, entscheidet Christian.
+ *
+ * WER EINEN AGENTEN ZWISCHEN DEN GRUPPEN VERSCHIEBT, liest vorher die Leser
+ * dieser Datei. Sie urteilen an der LIVE ausgelieferten robots.txt, nicht am
+ * Repo, und jeder von ihnen kippt sonst gegen eine gewollte Entscheidung:
+ *   sicherheitsmeister/src/tool_signaturen.yaml und src/kundenpfad.py
+ *       eigene Listen derselben Agenten in der Abwehr-Schicht
+ *   seo-manager/pruefungen/probe_robots_urteil_stimmt.py
+ *       verlangt, dass ein benannter Agent der Gruppe KI-TRAINING auf `/`
+ *       gesperrt ist (Gruppentrennung des Matchers)
+ *   seo-manager/pruefungen/probe_ki_systeme_erreichen_gleiches.py
+ *       ruft jede GEO-Fläche unter jedem KI-Agenten ab, dessen Gruppe kein
+ *       `Disallow: /` trägt
+ *   seo-manager/geo/conf/massnahmen.yaml (M01, M03)
+ *       misst die Freigaben täglich; eine erneute Sperre meldet der
+ *       GEO-Manager als Rückfall
+ *
  * @param {{shopId?: string; url?: string}}
  */
 function robotsTxtData({url, shopId}) {
@@ -54,12 +95,9 @@ ${generalDisallowRules({sitemapUrl, shopId})}
 # --- KI-TRAINING: nicht erwünscht -----------------------------------------
 # Diese Crawler sammeln Material für Modell-TRAINING. Sie bringen uns keine
 # Kunden und keinen Traffic. Der Vorbehalt oben gilt ihnen ausdrücklich.
-User-agent: GPTBot
-User-agent: ClaudeBot
-User-agent: anthropic-ai
-User-agent: Claude-Web
+# Ausgenommen sind GPTBot, ClaudeBot und Google-Extended (Freigabe vom
+# 07.10.2026, Gruppe KI-MODELLE).
 User-agent: CCBot
-User-agent: Google-Extended
 User-agent: Applebot-Extended
 User-agent: Bytespider
 User-agent: meta-externalagent
@@ -91,6 +129,26 @@ User-agent: Claude-User
 User-agent: Claude-SearchBot
 User-agent: PerplexityBot
 User-agent: Perplexity-User
+${generalDisallowRules({sitemapUrl, shopId})}
+
+# --- KI-MODELLE -----------------------------------------------------------
+# GPTBot, ClaudeBot und Google-Extended dürfen lesen.
+# Freigabe: Christian Bauer (Geschäftsführer), 07.10.2026.
+# Grund: Menschen fragen ChatGPT, Claude und Gemini nach Produkten wie
+# unseren. GPTBot und ClaudeBot sammeln das Material, aus dem künftige
+# Modelle lernen können. Google-Extended ist ein Schalter für Googles
+# Crawler. Er steuert laut Google auch, ob Gemini unsere Seiten für seine
+# Antworten heranziehen darf (Grounding).
+# anthropic-ai und Claude-Web stehen in Anthropics Crawler-Doku heute nicht
+# (Stand 07.10.2026). Sie stehen mit hier, damit für Anthropic ein Urteil
+# gilt.
+# Gesperrt bleiben alle übrigen Trainings-Crawler (Gruppe KI-TRAINING) und
+# die Sperrpfade des Shops, dieselben wie unter User-agent: *.
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: Google-Extended
 ${generalDisallowRules({sitemapUrl, shopId})}
 
 # Google adsbot ignores robots.txt unless specifically named!
@@ -173,10 +231,11 @@ Crawl-delay: 1
  * indexierbar aussieht. Fallen beide im SELBEN Deploy, ist die Reihenfolge
  * gegenstandslos; getrennt deployt gilt sie strikt.
  *
- * ACHTUNG BEIM GEGENMESSEN: diese Funktion wird aus VIER User-agent-Gruppen
- * gerufen. Eine Quellzeile hier ist vier Zeilen in der ausgelieferten
- * robots.txt — wer live „beide Vorkommen" sucht und entfernt, lässt zwei
- * stehen. Gemessen wird auf 0 von 4.
+ * ACHTUNG BEIM GEGENMESSEN: diese Funktion wird aus FÜNF User-agent-Gruppen
+ * gerufen (`*`, KI-SUCHE, KI-MODELLE, AhrefsBot, AhrefsSiteAudit; bis zum
+ * 2026-10-07 waren es vier, ohne KI-MODELLE). Eine Quellzeile hier ist fünf
+ * Zeilen in der ausgelieferten robots.txt — wer live „beide Vorkommen" sucht
+ * und entfernt, lässt drei stehen. Gemessen wird auf 0 von 5.
  *
  * Wachen: homepage-bauer/pruefungen/probe_zweifelsseite_dunkel.py (Arm
  * A2-ROBOTS für dunkle, H2-ROBOTS für freigeschaltete Flächen) und
