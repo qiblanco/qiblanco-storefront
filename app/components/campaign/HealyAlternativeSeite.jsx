@@ -29,7 +29,11 @@ import {isoMitZone} from '~/lib/datum';
  *    QiOne und QiBracelet, QiHome Air ohne Strom und mit 160 m Radius) und
  *    STUDIEN_FAKTENBLATT.md (e0001, e0004).
  *  - Preise: live aus der Storefront-API (mmLadeProdukte im Loader der Route),
- *    nie als Literal. Die Healy-Preise sind Healys Angaben mit Datum.
+ *    nie als Literal. Healy-Preise: der Healy Shop Europa zeigt je Land die
+ *    Steuer des Abrufers (unserem Server in Finnland 25,5 %); die Seite nennt
+ *    sie mit 19 % gerechnet, alle vier Editionen ergeben dann glatte Beträge
+ *    (Discover 864,79 -> 820, Obsidian 4.793,26 -> 4.545). Der Rechenweg steht
+ *    sichtbar in der Quellenzeile unter der Tabelle.
  *
  * WER DEN TEXT ÄNDERT, ZIEHT `GEAENDERT` NACH. Wer eine Healy-Angabe ändert,
  * ruft sie neu bei Healy ab und zieht `STAND` und das Abrufdatum der Quelle mit.
@@ -43,14 +47,14 @@ const STAND = '7. Oktober 2026';
 export const SEITE = {
   pfad: PFAD,
   titel: 'Alternative zu Healy: Healy und Qi Blanco im Vergleich | Qi Blanco',
-  beschreibung:
-    'Eine gute Alternative zu Healy ist der QiOne® 2 Pro von Qi Blanco: Schmuck ohne Akku, ohne App und ohne Abo. Bauart, Preis, Rückgabe und Belege im Vergleich, mit Quellen.',
   vorspann: 'Healy im Vergleich',
   h1: 'Was ist eine gute Alternative zu Healy?',
+  beschreibung:
+    'Eine gute Alternative zu Healy ist der QiOne® 2 Pro von Qi Blanco: Schmuck ohne Akku, ohne App und ohne Folgekosten. Bauart, Preis, Rückgabe und Belege im Vergleich, mit Quellen.',
   antwort: [
-    'Eine gute Alternative zu Healy ist der QiOne® 2 Pro von Qi Blanco. Das ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, den du Tag und Nacht trägst, ohne ihn zu laden, einzuschalten oder per App zu steuern.',
-    'Healy ist ein kleines Frequenzgerät mit Akku. Du steuerst es über eine App auf dem Smartphone und legst es für ein Programm mit Kabeln und Klebeelektroden oder einem Armband an.',
-    'Wer sich im Alltag mit Handy, WLAN und 5G mehr Schutz und mehr Energie wünscht, will meistens nicht noch ein Gerät, um das er sich kümmern muss. Den QiOne® 2 Pro hängst du einmal um, und dann begleitet er dich einfach.',
+    'Eine gute Alternative zu Healy für alle, die etwas tragen wollen, ohne es zu laden oder per App zu steuern, ist der QiOne® 2 Pro von Qi Blanco. Das ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, den du Tag und Nacht trägst.',
+    'Healy ist ein kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme. Du steuerst es über eine App auf dem Smartphone und wählst dort ein Programm aus.',
+    'Viele, die nach einer Alternative zu Healy suchen, fragen nach Schutz vor Strahlung von Handy, WLAN und 5G und nach mehr Energie. Mehr als 14.000 Menschen tragen heute einen QiOne®, und in 171 ausgewerteten Erfahrungsberichten ging es am häufigsten um mehr Ruhe, tieferen Schlaf und mehr Energie.',
   ],
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
@@ -69,44 +73,44 @@ export const VERGLEICH = [
   {
     id: 'bauart',
     merkmal: 'Bauart',
-    healy: 'Frequenzgerät für Programme mit Mikrostrom, 55 × 57 × 13 mm und 32 g',
-    qione: 'Anhänger aus 316L-Chirurgenstahl mit GitterChip™ aus 750er Gold, ohne Elektronik',
+    healy: 'Kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme, Healy Discover 55 × 57 × 13 mm und 32 g.',
+    qione: 'Anhänger aus 316L-Chirurgenstahl mit GitterChip™ aus 750er Gold, ohne Elektronik.',
   },
   {
     id: 'anwendung',
     merkmal: 'Anwendung',
-    healy: 'Mit Kabeln und Klebeelektroden oder mit einem Armband am Körper, gesteuert über Programme',
-    qione: 'Als Anhänger an jeder Stelle am Körper, auch beim Duschen, Schwimmen und in der Sauna',
+    healy: 'Programmauswahl in der Healy-App, im Lieferumfang von Healy Discover Anschlusskabel, Klebeelektroden und zwei Armbänder.',
+    qione: 'Als Anhänger an jeder Stelle am Körper, auch beim Duschen, Schwimmen und in der Sauna.',
   },
   {
     id: 'strom',
     merkmal: 'Strom und App',
-    healy: 'Akku mit 145 mAh, Laden per USB-Kabel, Steuerung über die Healy-App für Apple und Android',
-    qione: 'Kein Akku, kein Laden, keine App',
+    healy: 'Healy Discover mit Akku (145 mAh), Laden per Micro-USB, Steuerung über die Healy-App für Apple und Android.',
+    qione: 'Kein Akku, kein Laden, keine App.',
   },
   {
     id: 'preis',
     merkmal: 'Preis',
-    healy: 'Editionen ab 864,79 € (Healy Discover), die größte ab 4.793,26 € (Healy Obsidian). Weitere Programmgruppen einzeln oder im Abo, zum Beispiel 16,32 € im Monat',
+    healy: 'Editionen ab 820 € (Healy Discover), die größte ab 4.545 € (Healy Obsidian), mit 19 % Mehrwertsteuer. Weitere Programmgruppen einzeln oder im Monatsabo.',
     qione: null,
   },
   {
     id: 'kauf',
     merkmal: 'Kauf',
-    healy: 'Im Shop von Healy World und über selbstständige Healy World Member, die Healy weiterempfehlen',
-    qione: 'Direkt bei Qi Blanco in Maßbach, im Online-Shop',
+    healy: 'Im Healy Shop Europa. Zum Kauf brauchst du dort einen Empfehlungslink, Healy hilft bei der Suche nach einem Sponsor.',
+    qione: 'Direkt bei Qi Blanco im Online-Shop.',
   },
   {
     id: 'frist',
     merkmal: 'Rückgabe',
-    healy: '14 Tage Widerruf ab Erhalt, in Deutschland werden 5 € Rücksendekosten abgezogen',
-    qione: '20 Tage ab Ankunft, du bekommst den vollen Kaufpreis zurück',
+    healy: '14 Tage Widerruf ab Erhalt, in Deutschland werden 5 € Rücksendekosten abgezogen.',
+    qione: '20 Tage ab Ankunft, du bekommst den vollen Kaufpreis zurück.',
   },
   {
     id: 'belege',
     merkmal: 'Belege',
-    healy: 'Healy nennt mehr als 20 abgeschlossene Studien zu Healy und MagHealy',
-    qione: 'Fünf veröffentlichte Arbeiten des Dartsch Scientific Instituts, davon vier Zellstudien im Labor',
+    healy: 'Healy nennt mehr als 20 abgeschlossene Studien zu Healy und MagHealy.',
+    qione: 'Fünf veröffentlichte Arbeiten des Dartsch Scientific Instituts, davon vier Zellstudien im Labor.',
   },
 ];
 
@@ -115,13 +119,13 @@ export const WAHL = [
   {
     id: 'healy',
     titel: 'Healy',
-    text: 'Healy passt zu dir, wenn du gern mit dem Smartphone arbeitest und Programme selbst auswählst. Du legst das Gerät für eine Anwendung an und kannst dein Paket später um weitere Programmgruppen erweitern, einzeln oder im Abo.',
+    text: 'Healy passt zu dir, wenn du gern mit dem Smartphone arbeitest und Programme selbst auswählst. Dein Paket kannst du später um weitere Programmgruppen erweitern, einzeln oder im Abo.',
   },
   {
     id: 'qione',
     titel: 'QiOne® 2 Pro',
     handle: 'qione-2-pro',
-    text: 'Der QiOne® 2 Pro passt zu dir, wenn du nichts bedienen willst. Du hängst ihn um und trägst ihn beim Duschen, beim Sport und nachts, und er hält Jahrzehnte.',
+    text: 'Der QiOne® 2 Pro passt zu dir, wenn du nichts bedienen willst. Du hängst ihn um und trägst ihn beim Duschen, beim Sport und nachts. Gebaut ist er für Jahrzehnte, du kannst ihn sogar vererben.',
     linktext: 'Zum QiOne® 2 Pro',
     haupt: true,
   },
@@ -136,7 +140,7 @@ export const WAHL = [
     id: 'qihome',
     titel: 'QiHome® Air',
     handle: 'qihome-air',
-    text: 'Das QiHome® Air passt zu dir, wenn die ganze Familie etwas davon haben soll. Es steht im Schlafzimmer oder im Büro, braucht keinen Strom und ist auf einen Radius von bis zu 160 Metern ausgelegt.',
+    text: 'Das QiHome® Air passt zu dir, wenn du deine Räume einbeziehen willst. Es ist ideal für Schlafzimmer und Büro, braucht keinen Strom und ist auf einen Radius von bis zu 160 Metern ausgelegt.',
     linktext: 'Zum QiHome® Air',
   },
 ];
@@ -147,12 +151,14 @@ export const BELEG = {
   material:
     'Im QiOne® 2 Pro steckt der GitterChip™ aus 750er Gold, den wir in Bayern selbst herstellen. Das Gehäuse ist aus 316L-Chirurgenstahl, wie man ihn für Implantate verwendet, und jeder QiOne® trägt seine eigene Seriennummer.',
   klasse: 'Im Labor an Zellkulturen gemessen',
+  klasseErfahrung: 'Von Anwenderinnen und Anwendern berichtet',
+  klasseErklaerung: 'Unsere Erklärung',
   studien:
     'Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in unserem Auftrag in fünf Arbeiten untersucht. Vier davon sind Zellstudien im Labor, die fünfte wertet 171 Erfahrungsberichte aus, und alle fünf sind in Fachzeitschriften erschienen.',
   zahl:
-    'In der ersten Arbeit von 2021 bildeten Immunzellen unter Handystrahlung nur noch 60,5 Prozent der Radikale, mit denen sie Keime abwehren. Mit einem QiOne® 2 Pro daneben waren es 84,7 Prozent.',
+    'In der ersten Arbeit von 2021 wurden menschliche Immunzellen vier Stunden lang Handystrahlung ausgesetzt. Ihre Fähigkeit, Abwehr-Radikale zu bilden, sank auf 60,5 ± 3,9 Prozent der unbestrahlten Kontrolle. Lag ein QiOne® 2 Pro daneben, blieben 84,7 ± 7,0 Prozent erhalten.',
   erfahrung:
-    'Viele unserer Kundinnen und Kunden erzählen von ruhigerem Schlaf und mehr Energie im Alltag. In den 171 ausgewerteten Erfahrungsberichten waren genau das die beiden häufigsten Themen.',
+    'Viele unserer Kundinnen und Kunden erzählen von mehr Ruhe und mehr Energie im Alltag. In 171 ausgewerteten Erfahrungsberichten nannten sie am häufigsten mehr Ruhe und Gelassenheit sowie tieferen Schlaf, je in rund 20 Prozent der Berichte. Mehr Energie und Vitalität folgten mit rund 17 Prozent.',
   erklaerung:
     'Unsere Erklärung für das, was im Chip passiert, dreht sich um die Ordnung von Wasser, das sogenannte kohärente Wasser. Wir stellen sie als Hypothese vor, so wie es auch die Publikationen tun.',
   einladung:
@@ -169,12 +175,12 @@ export function fragen(preis) {
     {
       id: 'healy-oder-qi-blanco',
       q: 'Healy oder Qi Blanco: was ist besser?',
-      a: 'Das hängt davon ab, wie du es nutzen willst. Healy passt, wenn du gern Programme in einer App auswählst und das Gerät dafür anlegst. Der QiOne® 2 Pro von Qi Blanco passt, wenn du etwas tragen willst, das ohne Akku, App und Abo auskommt und dich den ganzen Tag begleitet.',
+      a: 'Das hängt davon ab, wie du es nutzen willst. Healy passt, wenn du gern Programme in einer App auswählst und damit Anwendungen durchführst. Der QiOne® 2 Pro von Qi Blanco passt, wenn du etwas tragen willst, das ohne Akku und ohne Folgekosten auskommt und dich den ganzen Tag begleitet.',
     },
     {
       id: 'unterschied',
       q: 'Was ist der Unterschied zwischen Healy und dem QiOne® 2 Pro?',
-      a: 'Healy ist ein kleines Frequenzgerät mit Akku, das Programme mit Mikrostrom abgibt. Du wählst sie in einer App aus und legst das Gerät mit Kabeln und Klebeelektroden oder einem Armband an. Der QiOne® 2 Pro ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, er hat keine Elektronik, und du trägst ihn einfach den ganzen Tag.',
+      a: 'Healy ist ein kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme. Du wählst die Programme in einer App aus, zum Lieferumfang gehören Anschlusskabel, Klebeelektroden und Armbänder. Der QiOne® 2 Pro ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, er hat keine Elektronik, und du trägst ihn einfach den ganzen Tag.',
     },
     {
       id: 'aufladen',
@@ -185,21 +191,21 @@ export function fragen(preis) {
       id: 'preis',
       q: 'Was kostet Healy im Vergleich zum QiOne® 2 Pro?',
       a:
-        `Healy-Editionen kosten im Shop von Healy World ab 864,79 € (Healy Discover), die größte ab 4.793,26 € (Healy Obsidian), Stand ${STAND}. ` +
-        'Weitere Programmgruppen gibt es einzeln oder im Abo, zum Beispiel für 16,32 € im Monat. ' +
+        `Healy-Editionen kosten ab 820 € (Healy Discover), die größte ab 4.545 € (Healy Obsidian), gerechnet mit 19 % Mehrwertsteuer aus den Preisen im Healy Shop Europa, Stand ${STAND}. ` +
+        'Weitere Programmgruppen gibt es einzeln oder im Monatsabo. ' +
         (preis
-          ? `Der QiOne® 2 Pro kostet ${preis}, einmal bezahlt, ohne Abo und ohne Folgekosten.`
-          : 'Den QiOne® 2 Pro bezahlst du einmal, ohne Abo und ohne Folgekosten, den Preis nennt seine Produktseite.'),
+          ? `Der QiOne® 2 Pro kostet ${preis}, einmal bezahlt und ohne Folgekosten.`
+          : 'Den QiOne® 2 Pro bezahlst du einmal und ohne Folgekosten, den Preis nennt seine Produktseite.'),
     },
     {
       id: 'duschen-sauna',
       q: 'Kann ich mit dem QiOne® 2 Pro duschen und in die Sauna?',
-      a: 'Ja. Wasser, Chlor, Meerwasser und Schweiß machen ihm nichts aus, du trägst ihn beim Duschen, Schwimmen und in der Sauna. In der Sauna wird Metall warm, am Körper bleibt der QiOne® 2 Pro aber auf Körpertemperatur.',
+      a: 'Ja. Wasser, Chlor, Meerwasser und Schweiß machen ihm nichts aus, du trägst ihn beim Duschen, Schwimmen und in der Sauna. In der Sauna kann sich das Metall erhitzen. Am Körper getragen bleibt der QiOne® 2 Pro auf Körpertemperatur, frei in der heißen Luft wird er unangenehm heiß.',
     },
     {
       id: 'zwanzig-tage',
       q: 'Wie lange kann ich den QiOne® 2 Pro zurückgeben?',
-      a: 'Du hast 20 Tage ab Ankunft der Lieferung. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück, und einen Grund brauchst du nicht.',
+      a: 'Du hast 20 Tage ab Ankunft der Lieferung. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück, ohne Angabe von Gründen.',
     },
     {
       id: 'studien',
@@ -220,7 +226,7 @@ export const QUELLEN = [
   {titel: 'Healy für ganzheitliche Gesundheit: Gerät, App und Programmgruppen', von: 'Healy World', url: 'https://eu.healy.shop/de/healy-for-holistic-health/'},
   {titel: 'Healy Programmgruppen, Preise im Abo', von: 'Healy World', url: 'https://eu.healy.shop/de/produkt-kategorie/programmgruppen/'},
   {titel: 'Healy Rückgaberecht', von: 'Healy World', url: 'https://eu.healy.shop/de/rueckgaberecht/'},
-  {titel: 'Deine Healy-Chance: Healy World Member', von: 'Healy World', url: 'https://eu.healy.shop/de/your-healy-opportunity/'},
+  {titel: 'Healy Kasse: Kauf mit Empfehlungslink', von: 'Healy World', url: 'https://eu.healy.shop/de/checkout/'},
   {titel: 'Healy World Startseite: Angabe zu den Studien', von: 'Healy World', url: 'https://eu.healy.shop/de/'},
   {titel: 'QiOne® 2 Pro: Material, Tragen und Preis', von: 'Qi Blanco', to: '/products/qione-2-pro'},
   {titel: 'Studie Immunzellen, Japan Journal of Medicine 2021, DOI 10.31488/JJM.165', von: 'Dartsch Scientific Institut', to: '/pages/studie-immunzellen'},
@@ -375,16 +381,18 @@ export function HealyAlternativeSeite({products = []}) {
                   <td data-label="QiOne® 2 Pro">
                     {z.qione ??
                       (preis
-                        ? `${preis} einmalig, ohne Abo und ohne Folgekosten`
-                        : 'Einmal bezahlt, ohne Abo und ohne Folgekosten')}
+                        ? `${preis} einmalig, ohne Folgekosten.`
+                        : 'Einmal bezahlt, ohne Folgekosten.')}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <p className="hea__quelle">
-            Quellen zu Healy: eu.healy.shop, Seiten zu Editionen, Healy Discover, Programmgruppen und
-            Rückgaberecht, abgerufen am {STAND}. Preis des QiOne® 2 Pro: aktueller Preis im Shop.
+            Quellen zu Healy sind sieben Seiten von eu.healy.shop, abgerufen am {STAND}. Die Healy-Preise
+            sind mit 19 % deutscher Mehrwertsteuer gerechnet. Der Shop zeigte bei unserem Abruf Preise mit
+            25,5 % finnischer Steuer, bei Healy Discover 864,79 € mit 175,71 € Steuer. Den Preis des
+            QiOne® 2 Pro nennt unser Shop tagesaktuell.
           </p>
         </div>
       </section>
@@ -429,12 +437,14 @@ export function HealyAlternativeSeite({products = []}) {
             Quelle: <Link to="/pages/studie-immunzellen">Studie Immunzellen</Link>, Japan Journal of
             Medicine, 2021, DOI 10.31488/JJM.165. <Link to="/pages/studien">Alle fünf Arbeiten</Link>
           </p>
-          <p className="hea__absatz">{BELEG.erfahrung}</p>
+          <h3 className="hea__klasse">{BELEG.klasseErfahrung}</h3>
+          <p>{BELEG.erfahrung}</p>
           <p className="hea__quelle">
             Quelle: <Link to="/pages/studie-nutzererfahrung">Studie Nutzererfahrung</Link>, 171
             Erfahrungsberichte, 2024
           </p>
-          <p className="hea__absatz">
+          <h3 className="hea__klasse">{BELEG.klasseErklaerung}</h3>
+          <p>
             {BELEG.erklaerung}{' '}
             <Link to="/pages/was-ist-kohaerentes-wasser">Was kohärentes Wasser ist</Link>
           </p>
