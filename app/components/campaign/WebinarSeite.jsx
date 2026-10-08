@@ -288,7 +288,10 @@ export function WebinarSeite({w}) {
             <p className="wb-vorzeile">Kostenloses Webinar · live per Zoom</p>
             <h1 className="wb-h1">{w.titel}</h1>
             <p className="wb-lede">{w.versprechen.slice(0, -1).join(' ')}</p>
-            <a className="btn--primary wb-knopf" href="#anmelden" data-qa="cta">
+            {/* data-qb-kaufknopf: der nächste Klick dieser Seite zählt für
+                KaufknopfChatSignal wie ein Kaufknopf. Am Handy (390 px) lag das
+                Chat-Widget sonst in den ersten Sekunden über dem Knopf (s11). */}
+            <a className="btn--primary wb-knopf" href="#anmelden" data-qa="cta" data-qb-kaufknopf="">
               Kostenlos anmelden
             </a>
           </div>
