@@ -77,8 +77,8 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * CHRISTIANS ENTSCHEIDUNGEN 08.10. ~07:25-07:35Z (s02, vor allen Testvarianten):
  * Überschrift mit Umbruch nach „Produktberatung:" (zwei Zeilen in derselben h1,
  * im Seitentitel bleibt es ein Satz); sein Block heißt „Live mit mir :)" und
- * trägt Fassung 2 seiner Gründungsgeschichte (coordination/fuer-coworker-a/
- * originaltexte-christian/cold-story_2026-10-08.md); unter dem Foto klein und
+ * trägt Fassung 2 seiner Gründungsgeschichte (Quelle: originaltexte-christian/
+ * cold-story_2026-10-08.md bei Coworker A); unter dem Foto klein und
  * dezent „Dipl.-Ing. (FH) Christian Bernd Bauer" (ersetzt die Unterschriftzeile);
  * der Absatz „Du hast schon einen QiOne®? Dann komm erst recht :)" unter den
  * Fragen ist ebenfalls sein Wortlaut. Alles davon trägt data-fremdtext.
