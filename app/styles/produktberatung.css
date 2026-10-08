@@ -136,6 +136,13 @@
   letter-spacing: -0.01em;
   margin: 0 0 var(--pb-s3);
   color: var(--pb-text);
+  text-wrap: balance;
+}
+/* Christian 08.10.: Umbruch nach „Produktberatung:", auf Handy und Rechner. Jede
+   Zeile ist ein Block; reicht die Breite fuer die zweite Zeile nicht (unter rund
+   370 px), bricht sie ausgewogen statt mit einem einzelnen Wort. */
+.pb h1 .pb__h1-zeile {
+  display: block;
 }
 
 /* EIN H2-Stil, EINE Ausrichtung — linksbuendig auf allen Sektionstypen. */
@@ -231,7 +238,8 @@
 
 /* Christian: Bild + seine Worte als EINE Karte. Am Handy fliesst der Text um das
    Bild (eine schmale Spalte neben dem Bild war 30 Zeilen lang), ab 768 px steht
-   das Bild links neben dem Text. */
+   das Bild links neben dem Text. Das Bild steht mit seiner Bildunterschrift in
+   EINEM Rahmen (.pb__foto-rahmen), der Rahmen fliesst bzw. steht im Raster. */
 .pb figure.pb__christian {
   display: flow-root;
   margin: 0;
@@ -240,7 +248,7 @@
   border-radius: var(--pb-r2);
   box-shadow: var(--pb-shadow-md);
 }
-.pb figure.pb__christian img.pb__foto {
+.pb figure.pb__christian .pb__foto-rahmen {
   float: left;
   width: var(--pb-foto);
   margin: 0 var(--pb-s2) var(--pb-s1) 0;
@@ -253,10 +261,13 @@
     align-items: center;
     padding: var(--pb-s3);
   }
-  .pb figure.pb__christian img.pb__foto {
+  /* Oben buendig: Fassung 2 seiner Geschichte ist lang, mittig stuende das Foto
+     sonst weit unter seiner Ueberschrift. */
+  .pb figure.pb__christian .pb__foto-rahmen {
     float: none;
     width: 100%;
     margin: 0;
+    align-self: start;
   }
 }
 /* CHAT-FENSTER ZWISCHEN 768 UND 1139 PX (gemessen live 02.10., PR #758): das Widget
@@ -269,13 +280,14 @@
     display: flow-root;
     max-width: calc(100vw - var(--pb-chat-frei));
   }
-  .pb .pb__kopf figure.pb__christian img.pb__foto {
+  .pb .pb__kopf figure.pb__christian .pb__foto-rahmen {
     float: left;
     width: var(--pb-foto);
     margin: 0 var(--pb-s3) var(--pb-s1) 0;
   }
 }
 .pb img.pb__foto {
+  display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 1200 / 1535;
@@ -283,11 +295,20 @@
   object-fit: cover;
   border-radius: var(--pb-r1);
 }
+/* Bildunterschrift (Christian 08.10.: „in klein und dezent"): kleine Schrift,
+   gedeckte Farbe wie die uebrigen Nebenzeilen, kein Fett, kein Gold. */
+.pb p.pb__foto-name {
+  margin: var(--pb-s1) 0 0;
+  font-size: var(--pb-fs-xs);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--pb-muted);
+}
 .pb .pb__christian-text p {
   font-size: var(--pb-fs-base);
 }
-/* Christians Überschrift (08.10.) traegt den EINEN H2-Stil; Vorspann und
-   Unterschriftzeile sind in ihr aufgegangen. */
+/* Christians Ueberschrift („Live mit mir :)", 08.10.) traegt den EINEN H2-Stil;
+   wer spricht, zeigen das Foto und seine Bildunterschrift. */
 .pb .pb__christian-text p.pb__christian-wort {
   font-size: var(--pb-fs-md);
 }
@@ -309,7 +330,8 @@
 }
 
 /* Jeder Termintag ist eine Karte; ab 768 px stehen die Tage nebeneinander. */
-/* Nur Tageskarten im Raster: zwei Donnerstage teilen sich die Breite, ein dritter rueckt daneben. */
+/* Nur Tageskarten im Raster. Seit 08.10. zeigt die Seite immer drei Termintage
+   (produktberatung/config/plan.json vorschau_tage_anzahl). */
 .pb__tage {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -464,6 +486,12 @@
   box-shadow: none;
 }
 
+/* Tabellarische Ziffern: setzt der Browser nach dem Laden die Ortszeit, bleibt
+   die Breite gleich (kein Springen). */
+.pb .pb__zeit,
+.pb .pb__zeit-wert {
+  font-variant-numeric: tabular-nums;
+}
 .pb .pb__zeit {
   font-size: var(--pb-fs-md);
   font-weight: 600;
