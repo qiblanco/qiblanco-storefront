@@ -438,7 +438,7 @@ export const SEO_BELEGE = [
     platz: 1,
     begriff: 'Qi Blanco Kritik',
     traeger: 'video',
-    text: 'Ihr Video auf YouTube',
+    text: 'Video der Partnerin auf YouTube',
   },
   {
     iso: '2026-09-28',
@@ -447,7 +447,7 @@ export const SEO_BELEGE = [
     platz: 2,
     begriff: 'Qi Blanco',
     traeger: 'erfahrungsbericht',
-    text: 'Ihr Erfahrungsbericht auf der eigenen Website',
+    text: 'Erfahrungsbericht auf ihrer Website',
   },
   {
     iso: '2026-10-04',
@@ -456,7 +456,7 @@ export const SEO_BELEGE = [
     platz: 3,
     begriff: 'Qi Blanco Erfahrung',
     traeger: 'video',
-    text: 'Ihr Video auf YouTube',
+    text: 'Video der Partnerin auf YouTube',
   },
   {
     iso: '2026-10-04',
@@ -465,16 +465,17 @@ export const SEO_BELEGE = [
     platz: null,
     begriff: 'Qi Blanco Bewertungen',
     traeger: 'video',
-    text: 'Googles KI-Übersicht nennt ihr Video als Quelle',
+    text: 'Google nennt ihr Video als Quelle',
   },
 ];
 
-const SEITE_BAUEN = [
+const BEITRAG_BAUEN = [
   'Erzähl, wie es dir mit Qi Blanco geht: seit wann, was du erlebt hast und ' +
     'was dich zweifeln ließ.',
-  'Beantworte die Frage gleich im ersten Absatz und schreib das Datum dazu.',
-  'Sag offen, dass du Partner bist, und nenne deinen Code.',
-  'Bau lieber eine ausführliche Seite als viele kurze Beiträge.',
+  'Beantworte gleich am Anfang, was deine Leser wissen wollen, und nenn das ' +
+    'Datum.',
+  'Sag offen, dass du Partner bist, und nenn deinen Code.',
+  'Mach lieber einen ausführlichen Beitrag als viele kurze.',
 ];
 
 const SCHRITTE = [
@@ -889,12 +890,13 @@ function Gefunden() {
       </h2>
       <p className="lp-vp-section__lede">
         Ja. Wer „Qi Blanco Erfahrungen“ sucht, will wissen, wie es anderen
-        damit geht. Deine eigene Erfahrung beantwortet genau diese Frage, auf
-        deiner Website oder in deinem Video.
+        damit geht. Deine eigene Erfahrung beantwortet diese Frage, auf deiner
+        Website oder in deinem Video. Wer dabei deine Seite findet, findet auch
+        deinen Code.
       </p>
       <p className="lp-pw-belege__einleitung">
-        Eine Partnerin erzählt auf ihrer Website und auf YouTube von ihrer
-        Erfahrung mit Qi Blanco. Das haben wir bei Google gemessen:
+        Eine Partnerin hat einen Erfahrungsbericht auf ihrer Website und ein
+        Video über Qi Blanco auf YouTube. So standen beide bei Google:
       </p>
       <ul className="lp-pw-eckdaten lp-pw-belege">
         {SEO_BELEGE.map((b) => (
@@ -919,27 +921,27 @@ function Gefunden() {
         ))}
       </ul>
       <p className="lp-a-note">
-        Gemessen von uns auf google.de. Gezählt sind die normalen
-        Suchergebnisse ohne Anzeigen und Infokästen. Die Plätze wechseln von
-        Tag zu Tag.
+        Gemessen von uns auf google.de, je Karte an einem Tag. Gezählt sind die
+        normalen Suchergebnisse ohne Anzeigen und Infokästen. Die Plätze
+        wechseln von Tag zu Tag.
       </p>
       <div className="lp-pw-zwei lp-pw-zwei--text">
         <div className="lp-pw-zwei__text">
-          <h3>Warum das klappt</h3>
+          <h3>Warum dort Platz für dich ist</h3>
           <p>
             Google zeigt bei einer Suche meist höchstens zwei Treffer derselben
-            Website. Die übrigen Plätze gehen an andere Seiten, zum Beispiel an
-            Videos, Blogs und Erfahrungsberichte.
+            Website. Die übrigen Plätze gehen an andere Websites, zum Beispiel
+            an Videos, Blogs und Erfahrungsberichte.
           </p>
           <p>
-            Auch die KI-Übersicht von Google nennt solche Seiten als Quelle.
-            Google selbst rät dazu, Erfahrung aus erster Hand zu zeigen.
+            Google rät in seinem Leitfaden für hilfreiche Inhalte, Erfahrung aus
+            erster Hand zu zeigen. Diese Erfahrung hast du.
           </p>
         </div>
         <div className="lp-pw-zwei__text">
-          <h3>So baust du deine Seite</h3>
+          <h3>So baust du deinen Beitrag</h3>
           <ul className="lp-pw-liste">
-            {SEITE_BAUEN.map((s) => (
+            {BEITRAG_BAUEN.map((s) => (
               <li key={s}>{s}</li>
             ))}
           </ul>
@@ -947,9 +949,10 @@ function Gefunden() {
       </div>
       <p className="lp-a-note">
         Wir geben dir den Aufbau in neun Bausteinen, Studien mit Quelle und
-        Zahl, Produktbilder und einen Technik-Check deiner Seite. Den Text
-        schreibst du selbst, denn gleiche Texte auf vielen Seiten zeigt Google
-        nur einmal. Schreib uns an <a href={`mailto:${KONTAKT}`}>{KONTAKT}</a>.
+        Zahl zum Zitieren, Produktbilder und einen Technik-Check, damit Google
+        deine Seite gut lesen kann. Den Text schreibst du selbst, denn gleiche
+        Texte auf vielen Seiten zeigt Google nur einmal. Schreib uns an{' '}
+        <a href={`mailto:${KONTAKT}`}>{KONTAKT}</a>.
       </p>
     </section>
   );
