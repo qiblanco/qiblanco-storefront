@@ -5,6 +5,7 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {ORG_ID} from '~/lib/entity-schema';
 import {buyerIpAusRequest} from '~/lib/interner-verkehr';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
 import {
   verwaltenAdresse,
   verwaltenCookie,
@@ -12,6 +13,15 @@ import {
 } from '~/lib/produktberatung-verwalten.server';
 
 const PFAD = '/pages/produktberatung';
+/** Arm B des Seiten-Experiments pb-e1-gs107 (Route pages.produktberatung-b.jsx). */
+export const PFAD_B = '/pages/produktberatung-b';
+/** Persönliche Aufrufe (Mail-Link, Verwalten, Bestätigung) bleiben, wo sie sind: nie umleiten. */
+const PERSOENLICH = ['b', 'verwalten', 'status'];
+
+/** Der Pfad des Arms, auf dem diese Anfrage läuft (React Router reicht ihn ohne .data durch). */
+function armPfad(url) {
+  return url.pathname.replace(/\.data$/, '') === PFAD_B ? PFAD_B : PFAD;
+}
 
 /**
  * /pages/produktberatung — 20 Minuten Produktberatung mit Christian per Zoom.
@@ -105,6 +115,18 @@ const PFAD = '/pages/produktberatung';
  *
  * WACHE: produktberatung/pruefungen/probe_seite_zeigt_termine.py — misst am
  * Live-Rand, dass jeder freie Termin des Endpunkts im SSR-HTML steht.
+ *
+ * TEST-KREISLAUF (Seiten-Experiment pb-e1-gs107, Hypothese GS-107; Grossjob
+ * 20261008-GROSSJOB-produktberatung-christians-text-und-seite-optimieren, s02;
+ * Christian 08.10.2026: „Live heißt Test-Kreislauf, nicht nur Bericht"): die
+ * Hälfte der Besucher sieht Arm B unter /pages/produktberatung-b, zugeteilt in
+ * app/lib/experiment-weiche.server.js (Eimer aus IP und Gerät, kein Cookie,
+ * Bots und eigener Verkehr immer A, Pin ?shop_exp=a|b, Kill-Schalter Env
+ * EXP_PB_MODE=off). Dieser Loader lenkt NUR auf dem Pfad von A um und NIE mit
+ * ?b=, ?verwalten oder ?status. B benutzt diesen Loader und diese Action
+ * unverändert; der Arm folgt aus dem Pfad der Anfrage, und nach dem Buchen
+ * landet die Kundin auf der Bestätigung DES PFADS IHRES ARMS (verwaltenAdresse).
+ * Christians Wortlaut steht in beiden Armen gleich (dieselbe Komponente).
  */
 export const ENDPUNKT = 'https://termin.65-108-150-121.sslip.io';
 
@@ -161,8 +183,8 @@ export function links() {
 export const headers = () => ({'Cache-Control': 'private, no-store'});
 
 /** Weiter in die Verwalten-Ansicht: der Token reist im Cookie, die Adresse bleibt ohne ihn. */
-function zurVerwaltung(token, status) {
-  return redirect(verwaltenAdresse(status), {
+function zurVerwaltung(token, status, pfad = PFAD) {
+  return redirect(verwaltenAdresse(status, pfad), {
     status: 303,
     headers: {
       'Set-Cookie': verwaltenCookie(token),
@@ -173,12 +195,24 @@ function zurVerwaltung(token, status) {
 
 export async function loader({request, context}) {
   const url = new URL(request.url);
+  const pfad = armPfad(url);
+  // SEITEN-EXPERIMENT pb-e1-gs107: nur auf dem Pfad von A, nie bei Mail-Link, Verwalten oder Bestätigung.
+  const exp =
+    pfad === PFAD && !PERSOENLICH.some((p) => url.searchParams.has(p))
+      ? entscheideSeitenExperiment(request, context.env, 'pb-e1-gs107')
+      : null;
+  if (exp)
+    throw redirect(exp.ziel, {
+      status: 302,
+      headers: {'Cache-Control': 'no-store'},
+    });
   const ausLink = (url.searchParams.get('b') || '').trim();
   if (ausLink) {
     const s = (url.searchParams.get('status') || '').trim();
     return zurVerwaltung(
       ausLink,
       ['gebucht', 'umgebucht'].includes(s) ? s : '',
+      pfad,
     );
   }
   const verwalten = url.searchParams.has('verwalten');
@@ -191,6 +225,7 @@ export async function loader({request, context}) {
 
   if (verwalten && !token) {
     return {
+      pfad,
       jetzt,
       verwalten: true,
       vorwahl,
@@ -214,6 +249,7 @@ export async function loader({request, context}) {
     );
     if (r.status === 200 && r.body?.ok) {
       return {
+        pfad,
         jetzt,
         verwalten: true,
         vorwahl,
@@ -228,6 +264,7 @@ export async function loader({request, context}) {
       };
     }
     return {
+      pfad,
       jetzt,
       verwalten: true,
       vorwahl,
@@ -253,6 +290,7 @@ export async function loader({request, context}) {
   );
   if (r.status === 200 && Array.isArray(r.body?.termine)) {
     return {
+      pfad,
       jetzt,
       verwalten: false,
       vorwahl,
@@ -267,6 +305,7 @@ export async function loader({request, context}) {
     };
   }
   return {
+    pfad,
     jetzt,
     verwalten: false,
     vorwahl,
@@ -283,6 +322,7 @@ export async function loader({request, context}) {
 const FELDER = ['name', 'email', 'telefon', 'produkt', 'anliegen'];
 
 export async function action({request, context}) {
+  const pfad = armPfad(new URL(request.url));
   const form = await request.formData();
   const intent = String(form.get('intent') || '');
   const api = basis(context);
@@ -291,9 +331,9 @@ export async function action({request, context}) {
     Accept: 'application/json',
     'X-PB-Kunde-IP': buyerIpAusRequest(request),
   };
-  const post = (pfad, body) =>
+  const post = (weg, body) =>
     holeJson(
-      `${api}${pfad}`,
+      `${api}${weg}`,
       {method: 'POST', headers: kopf, body: JSON.stringify(body)},
       15000,
     );
@@ -326,7 +366,7 @@ export async function action({request, context}) {
     if (r.status === 200 && r.body?.ok && r.body.buchung) {
       // POST -> REDIRECT -> GET: die Bestaetigung lebt unter ?verwalten=1, der Token im Cookie. Neuladen schickt
       // die Buchung so nie ein zweites Mal ab (ohne JavaScript), und die Angaben gehen beim Neuladen nicht verloren.
-      if (r.body.t) return zurVerwaltung(r.body.t, 'gebucht');
+      if (r.body.t) return zurVerwaltung(r.body.t, 'gebucht', pfad);
       return {intent, ok: true, buchung: r.body.buchung, token: ''};
     }
     if (r.status === 200 && r.body?.ok) {
@@ -358,7 +398,7 @@ export async function action({request, context}) {
     const r = await post('/api/umbuchen', {t, slot_start: slot});
     if (r.status === 200 && r.body?.ok) {
       // Das alte Token zeigt danach auf eine stornierte Buchung: weiter auf das NEUE.
-      if (r.body.t) return zurVerwaltung(r.body.t, 'umgebucht');
+      if (r.body.t) return zurVerwaltung(r.body.t, 'umgebucht', pfad);
       return {intent, ok: true, buchung: r.body.buchung, token: ''};
     }
     return {intent, ok: false, text: r.body?.text || NICHT_ERREICHBAR};
@@ -371,8 +411,11 @@ export async function action({request, context}) {
  * Bar"), dazu das, was die Kundin bekommt: 20 Minuten mit Christian.
  */
 const TITEL = 'Produktberatung: 20 Minuten mit Christian per Zoom | Qi Blanco';
+// Christian-Sprachmodul (08.10.2026, Christian: „anwenden auf alle Texte, die ich heute nicht korrigiert habe");
+// vorher: „Kostenlose Produktberatung mit Christian von Qi Blanco: 20 Minuten live per Zoom. Termin wählen,
+// buchen, Fragen zu QiOne® 2 Pro, QiBracelet, QiHome Air und Qi Master klären."
 const BESCHREIBUNG =
-  'Kostenlose Produktberatung mit Christian von Qi Blanco: 20 Minuten live per Zoom. Termin wählen, buchen, Fragen zu QiOne® 2 Pro, QiBracelet, QiHome Air und Qi Master klären.';
+  'Produktberatung live mit Christian per Zoom. 20 Minuten kostenlos, jeden Donnerstag. Hole dir jetzt deinen Termin für Fragen zum QiOne® 2 Pro.';
 
 /** @type {MetaFunction<typeof loader>} */
 export const meta = ({location}) => {
