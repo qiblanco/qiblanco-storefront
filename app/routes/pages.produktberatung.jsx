@@ -127,6 +127,9 @@ function armPfad(url) {
  * unverändert; der Arm folgt aus dem Pfad der Anfrage, und nach dem Buchen
  * landet die Kundin auf der Bestätigung DES PFADS IHRES ARMS (verwaltenAdresse).
  * Christians Wortlaut steht in beiden Armen gleich (dieselbe Komponente).
+ * Solange pb-e1-gs107 nicht in SEITEN_EXPERIMENTE steht, gibt die Weiche null
+ * zurück und A bleibt A: der Eintrag (zusammen mit B in AUSSCHLUSS_SEGMENTE der
+ * Ad-Weiche) ist der Einschalter, ein eigener PR.
  */
 export const ENDPUNKT = 'https://termin.65-108-150-121.sslip.io';
 

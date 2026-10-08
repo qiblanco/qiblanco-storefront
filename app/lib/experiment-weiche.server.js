@@ -6,20 +6,6 @@
  *
  *   GET /            -> Loader _index.jsx           -> 302 /pages/start-b       (15 %)
  *   GET /pages/qione-2-pro -> Loader pages.qione-2-pro.jsx -> 302 /pages/qione-2-pro-b (15 %)
- *   GET /pages/produktberatung -> Loader pages.produktberatung.jsx
- *                                 -> 302 /pages/produktberatung-b       (50 %)
- *
- * DRITTER EINTRAG pb-e1-gs107 (Grossjob 20261008-GROSSJOB-produktberatung-
- * christians-text-und-seite-optimieren, s02; Christian 08.10.2026: „Live heißt
- * Test-Kreislauf, nicht nur Bericht"): die Beratungsseite, A = Christians Text +
- * heutiger Rest, B = Christians Text gleich + umgebauter Rest. 50 % statt 15 %,
- * weil die Seite rund 15 Aufrufe am Tag hat: bei zwei Armen gibt die gleiche
- * Aufteilung bei gleichem Verkehr die kleinste Unsicherheit über den Unterschied.
- * Der Loader von A lenkt NIE um, wenn ?b=, ?verwalten oder ?status anliegt
- * (Mail-Link, Verwalten, Bestätigung nach dem Buchen). pin_param ist bewusst
- * dasselbe `shop_exp` wie bei q2p: Pins sind nur für Messwerkzeuge, jeder Loader
- * fragt seine EIGENE id ab, und die Aufträge der Segmente s05/s06 messen B mit
- * ?shop_exp=b.
  *
  * NICHT DOPPELT GEBAUT: Hash (fnv1a/besucherEimer) kommt aus lp-ab-v2.server.js,
  * das Ziel aus zielUrl() (go-router-logic.js), der eigene Verkehr aus
@@ -45,8 +31,8 @@
  * Zuteilung, dann A. Eigener Verkehr (Server-IP, Marker-UA) bleibt auf A.
  * Pin für Messwerkzeuge: ?start_exp=a|b bzw. ?shop_exp=a|b.
  *
- * KILL je Experiment: Code-Schalter `aktiv` (PR) ODER Env EXP_START_MODE=off,
- * EXP_SHOP_MODE=off bzw. EXP_PB_MODE=off (Handgriff). Nur 'off' schaltet ab.
+ * KILL je Experiment: Code-Schalter `aktiv` (PR) ODER Env EXP_START_MODE=off
+ * bzw. EXP_SHOP_MODE=off (Handgriff). Nur der Wert 'off' schaltet ab.
  * Antwort: 302 + Cache-Control no-store (wie E1), gesetzt im Loader.
  *
  * Die Werte jeder Zeile stehen gleichlautend in
@@ -63,7 +49,7 @@ import {besucherEimer} from './lp-ab-v2.server.js';
 
 /**
  * Laufende Seiten-Experimente. Neuer Test = neue id + neues Salz.
- * marker: Buchstabe für lp_m (belegt sind w r f v x m h p b n s q k).
+ * marker: Buchstabe für lp_m (belegt sind w r f v x m h p b).
  */
 export const SEITEN_EXPERIMENTE = Object.freeze({
   'start-e1-gs081': Object.freeze({
@@ -88,18 +74,6 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pin_param: 'shop_exp',
     env_kill: 'EXP_SHOP_MODE',
     marker: 'q',
-    aktiv: true,
-  }),
-  'pb-e1-gs107': Object.freeze({
-    id: 'pb-e1-gs107',
-    hypothese_id: 'GS-107',
-    pfad_a: '/pages/produktberatung',
-    pfad_b: '/pages/produktberatung-b',
-    salz: 'pb-e1-gs107',
-    anteil_prozent: 50,
-    pin_param: 'shop_exp',
-    env_kill: 'EXP_PB_MODE',
-    marker: 'k',
     aktiv: true,
   }),
 });

@@ -87,11 +87,6 @@ test('LP V3 (Review-Artefakt) ist ausgeschlossen — geteilter Link mit fbclid r
   );
 });
 
-test('Beratungsseite A und B (pb-e1-gs107) sind beide ausgeschlossen', () => {
-  assert.equal(istAusgeschlossen('/pages/produktberatung'), true);
-  assert.equal(istAusgeschlossen('/pages/produktberatung-b'), true);
-});
-
 test('Infra-Segmente ausgeschlossen', () => {
   for (const pfad of [
     '/collect', '/b', '/api/x', '/cart', '/checkouts/c/123', '/account',

@@ -1,8 +1,6 @@
 /**
  * Tests der Seiten-Weiche (experiment-weiche.server.js), node --test.
  * Grossjob 20261006-GROSSJOB-rookie-15pct-qione-2-pro-und-startseite, s05.
- * Dritter Eintrag pb-e1-gs107 (Beratungsseite, 50 %): Grossjob
- * 20261008-GROSSJOB-produktberatung-christians-text-und-seite-optimieren, s02.
  *
  * Mutanten, die rot werden müssen: Anteil, Salz, Bot-Regel, _routes-Streichung
  * (Matrix im RESULT des Segments).
@@ -21,8 +19,6 @@ import {E1, besucherEimer, fnv1a} from './lp-ab-v2.server.js';
 
 const START = 'start-e1-gs081';
 const SHOP = 'q2p-e1-gs080';
-const PB = 'pb-e1-gs107';
-const ALLE = [START, SHOP, PB];
 const IPHONE =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
 const ANDROID =
@@ -77,19 +73,10 @@ function istB(id, {ip, ua}) {
 
 const POP = population(20000);
 
-test('Tabelle: drei Experimente, Salz = id, Anteile 15/15/50, eigene Marker, keine Kollision mit E1', () => {
-  assert.deepEqual(Object.keys(SEITEN_EXPERIMENTE).sort(), [PB, SHOP, START].sort());
+test('Tabelle: zwei Experimente, Salz = id, Anteil 15, eigene Marker, keine Kollision mit E1', () => {
+  assert.deepEqual(Object.keys(SEITEN_EXPERIMENTE).sort(), [SHOP, START].sort());
   const s = SEITEN_EXPERIMENTE[START];
   const q = SEITEN_EXPERIMENTE[SHOP];
-  const k = SEITEN_EXPERIMENTE[PB];
-  assert.equal(k.salz, PB);
-  assert.equal(k.pfad_a, '/pages/produktberatung');
-  assert.equal(k.pfad_b, '/pages/produktberatung-b');
-  assert.equal(k.anteil_prozent, 50);
-  // bewusst derselbe Pin wie q2p (Auftraege s02/s05 messen B mit ?shop_exp=b); jeder Loader fragt nur seine id ab
-  assert.equal(k.pin_param, 'shop_exp');
-  assert.equal(k.env_kill, 'EXP_PB_MODE');
-  assert.equal(k.hypothese_id, 'GS-107');
   assert.equal(s.salz, START);
   assert.equal(q.salz, SHOP);
   assert.equal(s.pfad_a, '/');
@@ -102,22 +89,16 @@ test('Tabelle: drei Experimente, Salz = id, Anteile 15/15/50, eigene Marker, kei
   assert.equal(q.pin_param, 'shop_exp');
   assert.equal(s.env_kill, 'EXP_START_MODE');
   assert.equal(q.env_kill, 'EXP_SHOP_MODE');
-  const belegt = new Set(['w', 'r', 'f', 'v', 'x', 'm', 'h', 'p', 'b', 'n']);
-  assert.ok(!belegt.has(s.marker) && !belegt.has(q.marker) && !belegt.has(k.marker));
-  assert.equal(new Set([s.marker, q.marker, k.marker]).size, 3);
+  const belegt = new Set(['w', 'r', 'f', 'v', 'x', 'm', 'h', 'p', 'b']);
+  assert.ok(!belegt.has(s.marker) && !belegt.has(q.marker) && s.marker !== q.marker);
   assert.notEqual(s.salz, E1.salz);
   assert.notEqual(q.salz, E1.salz);
-  assert.notEqual(k.salz, E1.salz);
 });
 
 test('Goldwerte: Eimer = fnv1a(salz|ip|ua) % 100 je Experiment-Salz (festgeschrieben 06.10.2026)', () => {
   assert.equal(besucherEimer('203.0.113.7', IPHONE, START), fnv1a(`${START}|203.0.113.7|${IPHONE}`) % 100);
-  const gold = {
-    [START]: [65, 31, 56, 24, 57, 23],
-    [SHOP]: [77, 91, 12, 40, 81, 87],
-    [PB]: [26, 58, 55, 97, 64, 72], // festgeschrieben 08.10.2026
-  };
-  for (const id of ALLE) {
+  const gold = {[START]: [65, 31, 56, 24, 57, 23], [SHOP]: [77, 91, 12, 40, 81, 87]};
+  for (const id of [START, SHOP]) {
     const salz = SEITEN_EXPERIMENTE[id].salz;
     const ist = ['198.51.100.23', '203.0.113.7', '192.0.2.44'].flatMap((ip) => [
       besucherEimer(ip, ANDROID, salz),
@@ -127,12 +108,11 @@ test('Goldwerte: Eimer = fnv1a(salz|ip|ua) % 100 je Experiment-Salz (festgeschri
   }
 });
 
-for (const id of ALLE) {
-  const soll = SEITEN_EXPERIMENTE[id].anteil_prozent / 100;
-  test(`${id}: Anteil B über 20 000 synthetische Besucher, Wilson-Intervall enthält ${soll * 100} %`, () => {
+for (const id of [START, SHOP]) {
+  test(`${id}: Anteil B über 20 000 synthetische Besucher, Wilson-Intervall enthält 15 %`, () => {
     const k = POP.filter((b) => istB(id, b)).length;
     const [lo, hi] = wilson(k, POP.length);
-    assert.ok(lo <= soll && soll <= hi, `${id}: ${k}/${POP.length} = ${(k / POP.length).toFixed(4)}, Wilson [${lo.toFixed(4)}, ${hi.toFixed(4)}]`);
+    assert.ok(lo <= 0.15 && 0.15 <= hi, `${id}: ${k}/${POP.length} = ${(k / POP.length).toFixed(4)}, Wilson [${lo.toFixed(4)}, ${hi.toFixed(4)}]`);
   });
 
   test(`${id}: stabil je Besucher (derselbe Arm bei jedem Aufruf, auch per .data)`, () => {
@@ -151,15 +131,13 @@ for (const id of ALLE) {
   });
 }
 
-test('Salze unabhängig: Start, Shop, Beratung und LP-E1 (szs-e1-gs050) teilen paarweise wie Zufall', () => {
+test('Salze unabhängig: Start, Shop und LP-E1 (szs-e1-gs050) teilen paarweise wie Zufall', () => {
   const lpB = (b) => besucherEimer(b.ip, b.ua, E1.salz) < E1.anteil_prozent;
-  const arme = {start: (b) => istB(START, b), shop: (b) => istB(SHOP, b), pb: (b) => istB(PB, b), lp: lpB};
-  const anteil = {start: 0.15, shop: 0.15, pb: 0.5, lp: E1.anteil_prozent / 100};
+  const arme = {start: (b) => istB(START, b), shop: (b) => istB(SHOP, b), lp: lpB};
   const n = POP.length;
-  const paare = [['start', 'shop'], ['start', 'lp'], ['shop', 'lp'], ['pb', 'start'], ['pb', 'shop'], ['pb', 'lp']];
-  for (const [x, y] of paare) {
-    const p = anteil[x] * anteil[y];
-    const toleranz = 4 * Math.sqrt(n * p * (1 - p));
+  const p = 0.15 * 0.15;
+  const toleranz = 4 * Math.sqrt(n * p * (1 - p));
+  for (const [x, y] of [['start', 'shop'], ['start', 'lp'], ['shop', 'lp']]) {
     const beide = POP.filter((b) => arme[x](b) && arme[y](b)).length;
     assert.ok(Math.abs(beide - n * p) < toleranz, `${x}×${y}: beide B ${beide}, erwartet ${(n * p).toFixed(0)} ± ${toleranz.toFixed(0)}`);
   }
@@ -187,7 +165,7 @@ test('Bots sehen A: jede Liste-Kennung, Google, Meta, Vorschau und generische Bo
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/129.0.0.0 Safari/537.36',
     ...SUCH_UND_VORSCHAU_CRAWLER.map((k) => `Mozilla/5.0 (compatible; ${k}/1.0)`),
   ];
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     // eine IP, die mit Menschen-UA in B fällt: der Bot darf trotzdem nie umgeleitet werden
     for (const ua of uas) {
       for (const b of POP.slice(0, 400)) {
@@ -206,7 +184,7 @@ const KONZEPT_CRAWLER = [
 ];
 
 test('Such- und Vorschau-Crawler sehen A auch mit Pin b; Messwerkzeug (HeadlessChrome) erreicht B per Pin', () => {
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     const exp = SEITEN_EXPERIMENTE[id];
     for (const k of KONZEPT_CRAWLER) {
       const ua = `Mozilla/5.0 (compatible; ${k[0].toUpperCase()}${k.slice(1)}/1.0)`;
@@ -222,7 +200,7 @@ test('Menschen-UAs gelten nicht als Crawler (In-App-Browser, CUBOT)', () => {
 });
 
 test('Eigener Verkehr sieht A: Server-IP und Marker-UA', () => {
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     const b = einBBesucher(id);
     const pfad = SEITEN_EXPERIMENTE[id].pfad_a;
     assert.equal(entscheideSeitenExperiment(req(pfad, {ip: '65.108.150.121', ua: b.ua}), {}, id), null);
@@ -231,7 +209,7 @@ test('Eigener Verkehr sieht A: Server-IP und Marker-UA', () => {
 });
 
 test('Ohne Client-IP: A (60 verschiedene Geräte)', () => {
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     for (let i = 0; i < 60; i += 1) {
       const ua = `${MENSCHEN[i % MENSCHEN.length]} v${i}`;
       assert.equal(entscheideSeitenExperiment(req(SEITEN_EXPERIMENTE[id].pfad_a, {ip: '', ua}), {}, id), null);
@@ -240,7 +218,7 @@ test('Ohne Client-IP: A (60 verschiedene Geräte)', () => {
 });
 
 test('Pin a und b, je Experiment nur sein eigener Parameter', () => {
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     const exp = SEITEN_EXPERIMENTE[id];
     const anderer = id === START ? 'shop_exp' : 'start_exp';
     const b = einBBesucher(id);
@@ -253,7 +231,7 @@ test('Pin a und b, je Experiment nur sein eigener Parameter', () => {
 });
 
 test('Kill: Env-Wert off und Code-Schalter; andere Env-Werte schalten nicht ab', () => {
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     const exp = SEITEN_EXPERIMENTE[id];
     const b = einBBesucher(id);
     assert.ok(entscheideSeitenExperiment(req(exp.pfad_a, b), {}, id));
@@ -264,24 +242,9 @@ test('Kill: Env-Wert off und Code-Schalter; andere Env-Werte schalten nicht ab',
     assert.equal(entscheideSeitenExperiment(req(exp.pfad_a, b), {}, id, aus), null);
     assert.equal(seitenExperimentAktiv(exp, {[exp.env_kill]: 'off'}), false);
   }
-  // Kill des einen Experiments lässt die anderen laufen
+  // Kill des einen Experiments lässt das andere laufen
   const bS = einBBesucher(START);
   assert.ok(entscheideSeitenExperiment(req('/', bS), {EXP_SHOP_MODE: 'off'}, START));
-  assert.ok(entscheideSeitenExperiment(req('/', bS), {EXP_PB_MODE: 'off'}, START));
-  const bP = einBBesucher(PB);
-  assert.ok(entscheideSeitenExperiment(req('/pages/produktberatung', bP), {EXP_SHOP_MODE: 'off'}, PB));
-});
-
-test('pb-e1: geteilter Pin shop_exp wirkt nur über die eigene id; das Ziel trägt den Marker k', () => {
-  const intern = {ip: '65.108.150.121', ua: 'x QiBlancoInternal'};
-  const pin = entscheideSeitenExperiment(req('/pages/produktberatung?shop_exp=b', intern), {}, PB);
-  assert.equal(pin.ziel, '/pages/produktberatung-b?shop_exp=b&lp_m=k');
-  assert.equal(entscheideSeitenExperiment(req('/pages/produktberatung?shop_exp=a', intern), {}, PB), null);
-  // Die Weiche selbst prüft keinen Pfad: dass q2p und pb sich nicht in die Quere kommen, sichern die
-  // Loader, die je nur ihre id abfragen (pages.qione-2-pro.jsx bzw. pages.produktberatung.jsx).
-  const bP = einBBesucher(PB);
-  const roh = '?von=warenkorb-mail&termin=2026-10-15T14%3A00%3A00%2B02%3A00&utm_source=mail';
-  assert.equal(entscheideSeitenExperiment(req(`/pages/produktberatung${roh}`, bP), {}, PB).ziel, `/pages/produktberatung-b${roh}&lp_m=k`);
 });
 
 test('.data-Request (React Router: Pfad ohne .data, mit _routes) bleibt im Arm, Ziel ohne _routes und index', () => {
@@ -298,7 +261,7 @@ test('.data-Request (React Router: Pfad ohne .data, mit _routes) bleibt im Arm, 
 test('Roher Query byte-gleich plus Marker (fbclid, gclid, gad_*, utm_*, Kodierung, Reihenfolge)', () => {
   const roh =
     '?utm_source=facebook&utm_medium=social&utm_campaign=Herbst%20Aktion&fbclid=IwZXh0bgNhZW0BMABhZGlkAasb%2B_x&gclid=Cj0K-x_y&gad_source=1&gad_campaignid=22841&a=1&&b=';
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     const exp = SEITEN_EXPERIMENTE[id];
     const b = einBBesucher(id);
     const ent = entscheideSeitenExperiment(req(`${exp.pfad_a}${roh}`, b), {}, id);
@@ -313,7 +276,7 @@ test('Roher Query byte-gleich plus Marker (fbclid, gclid, gad_*, utm_*, Kodierun
 });
 
 test('POST, PUT und unbekannte Experiment-id: null; HEAD wird geteilt wie GET', () => {
-  for (const id of ALLE) {
+  for (const id of [START, SHOP]) {
     const exp = SEITEN_EXPERIMENTE[id];
     const b = einBBesucher(id);
     assert.equal(entscheideSeitenExperiment(req(exp.pfad_a, {...b, method: 'POST'}), {}, id), null);

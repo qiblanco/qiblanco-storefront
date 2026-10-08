@@ -887,7 +887,7 @@
   margin: 0;
 }
 /* Ueber den Angaben: welche Zeit gewaehlt ist (nach dem Sprung aus dem Kopf). */
-.pb p.pb__gewaehlt {
+.pb p.pb__wahl {
   padding-left: var(--pb-s2);
   border-left: 3px solid var(--pb-dunkel);
   font-weight: 600;

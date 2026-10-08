@@ -312,13 +312,6 @@ export const AUSSCHLUSS_SEGMENTE = [
   // hierher kommt, will einen Termin mit Christian, kein Kaufversprechen.
   // Additiv, reversibel: eine Zeile löschen.
   '/pages/produktberatung',
-  // ARM B DER BERATUNGSSEITE (Seiten-Experiment pb-e1-gs107, Grossjob
-  // 20261008-GROSSJOB-produktberatung-christians-text-und-seite-optimieren,
-  // s02): dieselbe Lage wie LP_EXP_B_PFAD oben. Ohne diese Zeile schickte die
-  // Weiche einen bezahlten Besucher von B auf LP A, der Arm stünde für
-  // Anzeigen-Verkehr leer. Die Naht-Probe probe_seiten_weiche_naht.py verlangt
-  // A und B beide oder keinen in dieser Liste.
-  '/pages/produktberatung-b',
   // DIE ANMELDESEITE ZU COMING HOME (Grossjob growth-m-lp-coming-home-
   // anmeldeseite, s04; Christian 26.09.2026, Leitplanke Folie 15). Die Anzeige
   // V18 („Sonntags live: Coming Home“, Ads-Konzept vom 27.09.2026) lädt zur

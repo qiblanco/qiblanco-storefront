@@ -350,7 +350,7 @@ function ZeitHinweis({zone}) {
 function NaechsterTermin({termine, zone}) {
   const tag = nachTag(inAnzeige(termine, zone))[0];
   if (!tag) return null;
-  const waehle = (e, t) => {
+  const nimmZeit = (e, t) => {
     const radio = document.getElementById(`pb-slot-${t.utc}`);
     if (!radio) return;
     e.preventDefault();
@@ -372,7 +372,7 @@ function NaechsterTermin({termine, zone}) {
             <a
               className="pb__naechster-zeit"
               href={`?termin=${encodeURIComponent(t.slot_start)}#termine`}
-              onClick={(e) => waehle(e, t)}
+              onClick={(e) => nimmZeit(e, t)}
             >
               {t.zeit} Uhr
             </a>
@@ -461,11 +461,11 @@ function Kopf({mitWeg, naechster, b}) {
             <img
               className="pb__foto"
               src={`${FOTO}&width=480`}
-              srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w`}
+              srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1080 1080w`}
               sizes={
                 b
-                  ? '(min-width: 768px) 240px, 100vw'
-                  : '(min-width: 768px) 240px, 112px'
+                  ? '(min-width: 1140px) 240px, (min-width: 768px) 112px, 100vw'
+                  : '(min-width: 1140px) 240px, 112px'
               }
               width="240"
               height="307"
@@ -661,7 +661,7 @@ function Buchen({daten, fehler, zone, mitWahl}) {
     setMarkiert(slot);
     setVerpasst('');
   };
-  const gewaehlt = mitWahl && markiert ? ortsTeile(markiert, zone) : null;
+  const wahl = mitWahl && markiert ? ortsTeile(markiert, zone) : null;
 
   if (daten.ladeFehler) {
     return (
@@ -732,9 +732,9 @@ function Buchen({daten, fehler, zone, mitWahl}) {
           {/* data-section pb-angaben: sichtbar erst nach der Terminwahl (:has unten im CSS), der Haus-Beacon
               zählt sie je Besuch einmal ab 1 s Sichtbarkeit — das ist der Messpunkt „Termin gewählt". */}
           <div className="pb__felder" data-section="pb-angaben" id="pb-angaben">
-            {gewaehlt ? (
-              <p className="pb__gewaehlt">
-                Dein Termin: {tagName(gewaehlt.datum)}, {gewaehlt.zeit} Uhr
+            {wahl ? (
+              <p className="pb__wahl">
+                Dein Termin: {tagName(wahl.datum)}, {wahl.zeit} Uhr
               </p>
             ) : null}
             <h2>Deine Angaben</h2>
