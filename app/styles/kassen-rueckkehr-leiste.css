@@ -1,0 +1,112 @@
+/* ----------------------------------------------------------------------------
+   Kassen-Rueckkehr-Leiste (components/KassenRueckkehrLeiste.jsx, GS-090)
+   Erscheint nur fuer Besucher, die aus der Kasse auf die Startseite kommen.
+   Alle Werte aus der Token-Wurzel qb-tokens.css: warme Flaeche, Tinte, EIN
+   Gold-Akzent nur auf der Handlung, ein Radius, 8-px-Raster, zwei Schriftgroessen.
+   ---------------------------------------------------------------------------- */
+.kassen-leiste {
+  --kl-raster: var(--qb-ref-raster, 8px);
+  --kl-schrift-kopf: var(--qb-ref-fs-3, 16px);
+  --kl-schrift-zeile: var(--qb-ref-fs-2, 14px);
+  --kl-radius: var(--qb-radius-klein, 8px);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--kl-raster) * 2);
+  max-width: 1200px;
+  /* main traegt nur die Nennhoehe des Kopfes als padding-top (64 + 40 px).
+     Wo der gemessene Kopf hoeher ist (schmale Schirme, umbrechende Bewertungs-
+     zeile), rueckt die Leiste um die Differenz nach unten, sonst laege ihre
+     Kopfzeile unter dem fixierten Kopf. --qb-kopf-hoehe: useKopfHoeheVariable. */
+  margin: max(
+      0px,
+      calc(var(--qb-kopf-hoehe, 0px) - var(--header-height, 64px) - 40px + var(--kl-raster))
+    )
+    auto calc(var(--kl-raster) * 3);
+  padding: calc(var(--kl-raster) * 2) calc(var(--kl-raster) * 6)
+    calc(var(--kl-raster) * 2) calc(var(--kl-raster) * 3);
+  position: relative;
+  background: var(--qb-flaeche, #f8f4ee);
+  color: var(--qb-text, #2c2a26);
+  border-radius: var(--kl-radius);
+  font-family: 'Open Sans Variable', sans-serif;
+}
+
+.kassen-leiste__text {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.kassen-leiste__kopf {
+  margin: 0;
+  font-size: var(--kl-schrift-kopf);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.kassen-leiste__zeile {
+  margin: calc(var(--kl-raster) / 2) 0 0;
+  font-size: var(--kl-schrift-zeile);
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft, #6b665d);
+}
+
+/* Ein Versprechen bricht nie in sich um, nur zwischen den Versprechen. */
+.kassen-leiste__zeile > span:not([aria-hidden]) {
+  white-space: nowrap;
+}
+
+.kassen-leiste__knopf {
+  display: inline-block;
+  padding: var(--kl-raster) calc(var(--kl-raster) * 3);
+  min-height: 48px;
+  line-height: 32px;
+  font-size: var(--kl-schrift-kopf);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--qb-text-auf-akzent, #2c2a26) !important;
+  background: var(--qb-akzent-kauf, rgb(242, 191, 114));
+  border-radius: var(--kl-radius);
+  transition: filter 0.2s linear;
+}
+
+.kassen-leiste__knopf:hover {
+  filter: brightness(0.95);
+}
+
+.kassen-leiste__knopf:focus-visible,
+.kassen-leiste__zu:focus-visible {
+  outline: 2px solid var(--qb-text, #2c2a26);
+  outline-offset: 2px;
+}
+
+.kassen-leiste__zu {
+  position: absolute;
+  top: var(--kl-raster);
+  right: var(--kl-raster);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--qb-text-gedaempft, #6b665d);
+  font-size: var(--kl-schrift-kopf);
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--kl-radius);
+}
+
+@media (max-width: 749px) {
+  .kassen-leiste {
+    margin-left: calc(var(--kl-raster) * 2);
+    margin-right: calc(var(--kl-raster) * 2);
+    padding-left: calc(var(--kl-raster) * 2);
+  }
+
+  .kassen-leiste__knopf {
+    flex: 1 1 100%;
+  }
+}
