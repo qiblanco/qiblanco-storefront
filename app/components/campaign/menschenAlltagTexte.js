@@ -37,11 +37,14 @@ export const MENSCHEN_ALLTAG_TEXTE = Object.freeze({
     absaetze: Object.freeze([
       "Tiefer Schlaf und innere Ruhe, das berichten viele von unseren Kunden. Wie stark du es spürst, ist bei jedem anders.",
       "Christian Bauer hat Maschinenbau studiert und den QiOne 2 Pro entwickelt. Im Labor von Prof. Dr. Peter C. Dartsch wurde er an menschlichen Zellen unter Belastung getestet, mit einem Schutzeffekt. Das ist Grundlagenforschung im Labor, kein Heilversprechen.",
-      "Am Ende zählt, was du in deinem Alltag merkst. 20 Tage nach Erhalt risikofrei testen. Überzeugt er dich nicht, bekommst du 100 % zurück. Probier es selbst.",
+      "Am Ende zählt, was du in deinem Alltag merkst, und das findest du am besten selbst heraus. Du kannst ihn 20 Tage nach Erhalt risikofrei testen, und überzeugt er dich nicht, bekommst du 100 % zurück.",
     ]),
-    // Werkstatt tw-20261007-lp-47c3d7, Lauf 20261007T053734Z-lp-block-09c3bb, Fassung Kandidat 4 von 5;
-    // Freigabe 2026-10-07: gesamt 83, Menschlichkeit 69.
-    text_id: "tw-20261007-lp-47c3d7",
+    // Werkstatt tw-20261008-lp-2fdcfa (registriert 2026-10-08, Job 20261008-aiceo-k2-j4-lp-menschen-alltag-
+    // einwand-block-freigabe): Absatz 1 und 2 wortgleich aus tw-20261007-lp-47c3d7 (Lauf 20261007T053734Z-lp-block-
+    // 09c3bb, Kandidat 4 von 5); Absatz 3 neu verbunden, weil das KI-Klang-Tor 1.1.0 (menschlichkeit, 08.10.)
+    // dort Kurzsatz-Takt (6,5 Woerter je Satz) und den Stakkato-Befehl "Probier es selbst." fand.
+    // Freigabe 2026-10-08: gesamt 83, Menschlichkeit 69, KI-Klang p 0,166 (vorher 0,927).
+    text_id: "tw-20261008-lp-2fdcfa",
   }),
   produkte: Object.freeze({
     ueberschrift: "Welcher davon passt zu dir?",
