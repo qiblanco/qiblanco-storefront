@@ -58,6 +58,14 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * echten Alltagsbildern aus dem Shopify-Bestand, Ablauf als dunkler Akt.
  * Die Listen „Was wir klären"/„Für wen" sind in Christians Worten aufgegangen.
  *
+ * CHRISTIANS EIGENER TEXT 2026-10-08 (Grossjob 20261008-GROSSJOB-produktberatung-
+ * christians-text-und-seite-optimieren, s01): Einstieg (pb__lead) und der Block
+ * neben seinem Foto sind SEIN Wortlaut. Erlaubt sind nur Rechtschreibung,
+ * Zeichensetzung, Anrede und das Markenzeichen; jede Abweichung steht im Export
+ * produktberatung/exports/seitentext-christian-20261008.json. Nicht umschreiben,
+ * nicht glätten, auch nicht in einem Testarm: jeder Arm zeigt diese Sätze gleich.
+ * Seine Überschrift nennt ihn als Gründer, deshalb entfällt die Unterschriftzeile.
+ *
  * ABDATEN IM BROWSER: siehe useJetzt()/nochBuchbar() unten. Die Grenze kommt
  * allein aus `buchungsschluss_min` des Endpunkts; die Seite kennt keine Zahl.
  */
@@ -236,10 +244,10 @@ function lokaleZeit(utc, zone) {
 
 /**
  * Kopf: Überschrift, dann Christian selbst (Bild + seine Worte), dann der Weg zu
- * den Terminen. Christian 01.10.: der Bereich „Wer mit dir spricht" steht ÜBER
- * „Wähl deinen Termin". Die Seite fängt bei der Lage des Besuchers an (drei Tabs
- * offen, welches Stück passt), nicht bei uns. Einspaltig, damit das Chat-Fenster
- * unten rechts Christians Worte nicht verdeckt.
+ * den Terminen. Christian 01.10.: der Bereich über ihn steht ÜBER „Wähl deinen
+ * Termin". Einstieg und Gründungsgeschichte sind seit 08.10. Christians eigener
+ * Wortlaut (siehe Kopfkommentar). Einspaltig, damit das Chat-Fenster unten
+ * rechts Christians Worte nicht verdeckt.
  */
 function Kopf({mitWeg}) {
   const g = useGoogleRating();
@@ -250,9 +258,13 @@ function Kopf({mitWeg}) {
           <p className="pb__vorspann">Kostenlos · live per Zoom</p>
           <h1>Produktberatung: 20 Minuten mit Christian</h1>
           <p className="pb__lead">
-            Du hast drei Tabs offen und weißt nicht, ob der Anhänger, das
-            Armband oder der QiHome Air zu dir passt? Frag mich. 20 Minuten, du
-            und ich, per Zoom. Kaufen musst du danach nichts.
+            Du hast Fragen zu unseren Produkten? Ich nehme mir persönlich Zeit
+            für dich!
+          </p>
+          <p className="pb__lead">
+            Wir können über deine aktuelle Situation sprechen, über den Grund,
+            warum du einen QiOne® kaufen möchtest, oder auch einfach Fragen, die
+            noch offen sind, klären.
           </p>
           <p className="pb__vertrauen">
             <a
@@ -294,20 +306,18 @@ function Kopf({mitWeg}) {
             alt="Christian Bernd Bauer, Gründer von Qi Blanco"
           />
           <figcaption className="pb__christian-text">
-            <p className="pb__vorspann">Wer mit dir spricht</p>
+            <h2 className="pb__christian-titel">
+              Im 1:1-Call mit dir: Christian, Gründer von Qi Blanco
+            </h2>
             <p className="pb__christian-wort">
-              Ich bin Christian, und seit mehr als zehn Jahren baue ich Qi
-              Blanco. Erzähl mir, wie dein Tag aussieht, von der ersten Mail bis
-              zum Handy am Bett. Dann sage ich dir, welches Stück zu dir passt
-              und wie du es am besten trägst.
-            </p>
-            <p>
-              Frag mich die ganz praktischen Sachen: Unterm Shirt oder drüber?
-              Auch beim Sport? Und wenn du skeptisch bist, bring genau das mit.
-              Deine kritischste Frage ist mir die liebste.
-            </p>
-            <p className="pb__unterschrift">
-              Christian Bauer, Gründer von Qi Blanco®
+              Vor mehr als 10 Jahren habe ich Qi Blanco aus meiner eigenen
+              Leidensgeschichte gegründet. Ein WLAN-Router hing auf einmal direkt
+              neben meinem Kopf. Ich wurde müder, war ständig genervt und ging
+              nicht mehr so glücklich wie früher durchs Leben. Ich musste vieles
+              testen, bis ich verstand, dass es nicht an mir lag, sondern am
+              E-Smog, der direkt mein Nervensystem angriff! Als Ingenieur war
+              klar: Ich brauche eine einfache und elegante Lösung. Einfach
+              umhängen und das Problem ist erledigt. Gesagt, getan: QiOne®.
             </p>
           </figcaption>
         </figure>
