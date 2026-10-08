@@ -34,6 +34,12 @@ import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
  * Neu ist der Abschnitt „Warum es Qi Blanco gibt“ mit Christians Gründungs-
  * geschichte (siehe Warum unten). data-section je Abschnitt (wb-*, Muster pb-*
  * der ProduktberatungSeite): qpx.js ordnet Klicks und Sichtzeit darüber zu.
+ *
+ * NACHZUG K3 (08.10.2026, Gegenprüfung Merge s07): auch `sprecher` und `wissen`
+ * stehen jetzt in thema.json (`sprecher.kurz`, `sprecher.wissen`) und werden dort
+ * geändert; probe_s11_lp_texte.py misst sie im Abschnitt wb-sprecher (Arm F).
+ * Wirkaussagen tragen ihre Grundlage im Satz: „nachweislich“ nur für starke Felder
+ * (Reizung, Erwärmung), Warnkes Erklärung heißt Modell, Qi Blanco ist eine Idee.
  */
 
 const FOTO = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
@@ -93,11 +99,11 @@ export const WEBINARE = {
       'Kostenloses Webinar mit Christian von Qi Blanco: 45 Minuten über Handy, WLAN und Strom ' +
       'im Alltag, mit Live-Experiment und Fragerunde. Live per Zoom.',
     versprechen: [
-      'In 45 Minuten verstehst du, warum dein Körper ein elektrisches System ist, was Funk und ' +
-        'Strom darin nachweislich bewirken und was die Forschung noch untersucht.',
+      'In 45 Minuten verstehst du, warum dein Körper ein elektrisches System ist und was starke ' +
+        'Felder darin nachweislich bewirken: Reizung und Erwärmung.',
+      'Ob schwache Felder im Alltag etwas bewirken, untersucht die Forschung noch, und du ' +
+        'erfährst, wie weit sie ist.',
       'Du lernst Handgriffe, mit denen es in deinem Schlafzimmer noch heute Abend weniger funkt.',
-      'Mit dem Wissen von Dr. Ulrich Warnke, verständlich erklärt, und mit einem Live-Experiment, ' +
-        'das Elektrosmog hörbar macht.',
     ],
     szene:
       'Es ist kurz vor Mitternacht. Das Handy liegt auf dem Nachttisch, im Flur blinkt der ' +
@@ -106,18 +112,18 @@ export const WEBINARE = {
       'heute Abend selbst tun?',
     agenda: [
       'Warum es Qi Blanco gibt: Christians Geschichte',
-      'Dein Körper ist elektrisch: was Funk und Strom darin nachweislich bewirken und was die ' +
-        'Forschung noch untersucht',
-      'Live-Experiment: Elektrosmog hörbar machen',
+      'Dein Körper ist elektrisch: was starke Felder darin nachweislich bewirken und was die ' +
+        'Forschung bei schwachen Feldern im Alltag noch untersucht',
+      'Live-Experiment: Störfelder von Netzteilen hörbar machen',
       'Dein Schlafzimmer: drei Handgriffe für heute Abend',
       'Deine Fragen an Christian',
     ],
     // Gekürzt (s11): den Grund der Gründung erzählt Christian selbst im Abschnitt Warum.
     sprecher: 'Christian hat Qi Blanco gegründet. Jeden Sonntag ist er mit Anna bei Coming Home live.',
     wissen:
-      'Im Webinar erzählt er dir, was Dr. Ulrich Warnke in Jahrzehnten Forschung darüber ' +
-      'herausgefunden hat, wie Felder auf den Körper wirken. Und zwar so, dass du es am ' +
-      'Küchentisch weitererzählen kannst.',
+      'Im Webinar erzählt er dir, wie Dr. Ulrich Warnke sich die Wirkung von Feldern auf den ' +
+      'Körper erklärt. Das ist Warnkes Modell, und du erfährst, was davon gemessen ist und was ' +
+      'nicht. Und zwar so, dass du es am Küchentisch weitererzählen kannst.',
     zitat: null,
     anderes: 'wasser',
   },
@@ -134,10 +140,11 @@ export const WEBINARE = {
       'Ordnung, mit Experiment zum Nachmachen und Fragerunde. Live per Zoom.',
     versprechen: [
       'In 45 Minuten erfährst du, was Prof. Dr. Gerald H. Pollack in seinem Labor in Seattle an ' +
-        'Wasser beobachtet hat: eine Zone an Oberflächen, die fast alles wegschiebt und die er ' +
-        'die vierte Phase des Wassers nennt, aufgeladen vom Licht wie eine Batterie.',
-      'Du siehst ein Experiment, das du zu Hause nachmachen kannst, und verstehst, warum diese ' +
-        'Ordnung für Qi Blanco so wichtig ist.',
+        'Wasser beobachtet hat.',
+      'An Oberflächen fand er eine geordnete Zone, die er die vierte Phase des Wassers nennt: ' +
+        'Sie schiebt fast alles weg und lädt sich im Licht auf wie eine Batterie.',
+      'Du siehst ein Experiment, das du zu Hause nachmachen kannst, und verstehst, warum sich ' +
+        'unsere Idee hinter Qi Blanco um die Ordnung im Wasser dreht.',
     ],
     szene:
       'Häng ein Küchentuch mit einer Ecke in ein Glas Wasser. Nach ein paar Minuten ist das Tuch ' +
@@ -154,8 +161,8 @@ export const WEBINARE = {
       'Christian hat Qi Blanco gegründet und beschäftigt sich seit Jahren mit der Ordnung von ' +
       'Wasser. Jeden Sonntag ist er mit Anna bei Coming Home live.',
     wissen:
-      'Unsere Erklärung, wie Qi Blanco wirkt, dreht sich um genau diese Ordnung, und wir stellen ' +
-      'sie dir als Hypothese vor. Das Experiment aus dem Webinar kannst du danach ' +
+      'Unsere Idee, warum Qi Blanco funktionieren könnte, dreht sich um genau diese Ordnung, und ' +
+      'wir stellen sie dir als Hypothese vor. Das Experiment aus dem Webinar kannst du danach ' +
       'zu Hause selbst ausprobieren.',
     zitat: null,
     anderes: 'esmog',
