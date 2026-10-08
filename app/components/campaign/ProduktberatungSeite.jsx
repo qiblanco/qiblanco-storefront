@@ -28,12 +28,16 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * ZWEI ANSICHTEN, EINE SEITE:
  *   Buchen      (ohne ?b=)       Termine als große Tipp-Flächen (Radio im
  *                                Formular, funktioniert ohne JavaScript).
- *   Verwalten   (?b=<token>)     Termin, Zoom-Link, Kenncode, Kalenderdatei,
+ *   Verwalten   (?verwalten=1)   Termin, Zoom-Link, Kenncode, Kalenderdatei,
  *                                Absagen, Umbuchen. Zugleich die Bestätigung:
  *                                nach Buchen/Umbuchen leitet die Action hierher
  *                                weiter (?status=gebucht|umgebucht). Die Kundin
  *                                sieht alles sofort, nicht erst in der Mail, und
  *                                Neuladen bucht nie ein zweites Mal.
+ *                                Der Mail-Link ?b=<token> landet hier ohne
+ *                                Token in der Adresse: er reist im HttpOnly-
+ *                                Cookie (Route pages.produktberatung.jsx) und
+ *                                steht weder im HTML noch in einem Formular.
  *
  * BUCHUNG ZU (Zoom fehlt oder Schalter aus): Termine bleiben sichtbar, das
  * Formular weicht dem Satz „Die Buchung öffnet in Kürze." Kein toter Knopf.
@@ -619,7 +623,7 @@ function Buchen({daten, fehler, zone}) {
  * Termin, Zoom, Kalender: dieselben Angaben in Bestätigung und Verwalten-Ansicht.
  * `data-clarity-mask`: Zoom-Link und Kenncode gehören nicht in eine Sitzungsaufzeichnung.
  */
-function Termindaten({buchung, token, zone, api}) {
+function Termindaten({buchung, verwalten, zone}) {
   const {datum, zeit} = teile(buchung.slot_start);
   const lokal = lokaleZeit(buchung.slot_utc, zone);
   return (
@@ -652,12 +656,13 @@ function Termindaten({buchung, token, zone, api}) {
           <dd className="pb__kenncode">{buchung.zoom_kenncode}</dd>
         </div>
       ) : null}
-      {token ? (
+      {verwalten ? (
         <div className="pb__aktionen">
           <a
             className="pb__knopf-zwei"
-            href={`${api || TERMIN_API}/api/buchung?t=${encodeURIComponent(token)}&ics=1`}
-            rel="nofollow noopener"
+            href="/pages/produktberatung-kalender"
+            download="produktberatung-qiblanco.ics"
+            rel="nofollow"
           >
             In meinen Kalender
           </a>
@@ -698,8 +703,8 @@ const ABGESAGT = {
 };
 
 /**
- * Verwalten-Ansicht (?b=<token>), zugleich die Bestätigung: nach dem Buchen und
- * Umbuchen leitet die Action hierher weiter (?status=gebucht|umgebucht).
+ * Verwalten-Ansicht (?verwalten=1), zugleich die Bestätigung: nach dem Buchen und
+ * Umbuchen leitet die Action hierher weiter (?verwalten=1&status=gebucht|umgebucht).
  */
 function Verwalten({daten, ergebnis, zone}) {
   const nav = useNavigation();
@@ -766,18 +771,12 @@ function Verwalten({daten, ergebnis, zone}) {
           art="fehler"
           text={ergebnis && !ergebnis.ok ? ergebnis.text : ''}
         />
-        <Termindaten
-          buchung={b}
-          token={daten.token}
-          zone={zone}
-          api={daten.api}
-        />
+        <Termindaten buchung={b} verwalten zone={zone} />
         {vorbei ? null : (
           <>
             {daten.buchungMoeglich && andere.length ? (
               <Form method="post" className="pb__form" preventScrollReset>
                 <input type="hidden" name="intent" value="umbuchen" />
-                <input type="hidden" name="t" value={daten.token} />
                 <h2>Umbuchen</h2>
                 <Terminliste termine={andere} mitRadio zone={zone} />
                 <button type="submit" className="pb__knopf" disabled={sendet}>
@@ -787,7 +786,6 @@ function Verwalten({daten, ergebnis, zone}) {
             ) : null}
             <Form method="post" className="pb__absagen" preventScrollReset>
               <input type="hidden" name="intent" value="absagen" />
-              <input type="hidden" name="t" value={daten.token} />
               <h2>Absagen</h2>
               <p>
                 Wenn du nicht kannst, sag ab, damit der Platz für jemand anderen
@@ -973,7 +971,7 @@ export function ProduktberatungSeite() {
   };
 
   let mitte;
-  if (daten.token)
+  if (daten.verwalten)
     mitte = <Verwalten daten={daten} ergebnis={ergebnis} zone={zone} />;
   else if (ergebnis?.ok && ergebnis.intent === 'buchen') mitte = <Danke />;
   else
@@ -986,7 +984,7 @@ export function ProduktberatungSeite() {
     );
 
   const buchenAnsicht =
-    !daten.token && !(ergebnis?.ok && ergebnis.intent === 'buchen');
+    !daten.verwalten && !(ergebnis?.ok && ergebnis.intent === 'buchen');
   return (
     <div className="pb">
       <Kopf mitWeg={buchenAnsicht} />
