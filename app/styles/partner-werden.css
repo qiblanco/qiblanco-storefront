@@ -12,8 +12,11 @@
    zweiter Goldton, ein Bild-Radius (--a-r2), ein H2-Stil.
 
    Farb-Dramaturgie (3 Farbwelten, abwechselnd):
-     grund:   Hero, Vorteile, Produkte, Wo teilen
-     fläche:  Idee, Rechenbeispiel, Ablauf, Fragen
+     grund:   Hero, Vorteile, Produkte, Wo teilen, Fragen
+     fläche:  Idee, Rechenbeispiel, Ablauf, Gefunden werden
+     (Fragen stand bis 2026-10-08 auf fläche; mit „Gefunden werden" zwischen
+     „Wo teilen" und „Fragen" wechselt sie auf grund, damit die Akte weiter
+     abwechseln.)
      dunkel:  Anmeldung (EIN dunkler Schluss-Akt, trägt den Hauptknopf)
 
    BEWEGUNG: ruhig und kurz. Der Hero taucht beim Laden einmal auf, Karten
@@ -26,7 +29,7 @@
 .lp-a3 [data-section='lp-pw-idee'],
 .lp-a3 [data-section='lp-pw-verdienst'],
 .lp-a3 [data-section='lp-pw-ablauf'],
-.lp-a3 [data-section='lp-pw-faq'] {
+.lp-a3 [data-section='lp-pw-gefunden'] {
   background: var(--a-flaeche);
 }
 
@@ -400,6 +403,57 @@
 .lp-pw .lp-a-hero__trust li,
 .lp-pw .lp-vp-final-cta__trust li {
   font-size: inherit;
+}
+
+/* ─── Gefunden werden: gemessene Beispiele, Warum, So geht es ────────────────
+   Die Belege benutzen die Eckdaten-Karten der Vorteile (eine Kartenform auf der
+   Seite); auf dem Flächen-Akt wechseln sie auf den Grund-Ton, wie das
+   Rechenbeispiel. Gold trägt nur den Messwert: das ist der Beweis. */
+.lp-a3 [data-section='lp-pw-gefunden'] .lp-pw-eckdatum {
+  background: var(--a-grund);
+}
+.lp-a3 .lp-pw-belege__einleitung {
+  max-width: var(--a-mass);
+  margin: 0 auto var(--a-s4);
+  text-align: center;
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-eckdatum__datum {
+  margin-top: auto;
+  padding-top: var(--a-s1);
+  font-size: var(--a-fs-xs);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-zwei--text {
+  align-items: start;
+}
+.lp-a3 .lp-pw-zwei__text h3 {
+  margin: 0 0 var(--a-s2);
+  font-size: var(--a-fs-lg);
+}
+.lp-a3 .lp-pw-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s1);
+}
+.lp-a3 .lp-pw-liste li {
+  position: relative;
+  padding-left: var(--a-s2);
+  font-size: var(--a-fs-base);
+  color: var(--a-muted);
+}
+.lp-a3 .lp-pw-liste li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--a-linie);
 }
 
 /* ─── Anmeldung (dunkler Schluss-Akt) ─────────────────────────────────────── */

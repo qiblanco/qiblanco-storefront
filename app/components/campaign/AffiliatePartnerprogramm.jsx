@@ -64,6 +64,14 @@
  * Testimonial-Korpus (app/data/ig-testimonials.js); die Nutzungsrechte sind
  * dort vermerkt, der Name steht unter dem Bild.
  *
+ * GEFUNDEN WERDEN (Christian 2026-09-26, Leitplanke Folie 16: eine Partner-
+ * Landingpage, „die das Konzept erklärt und auch gleich Beispiele für eigene
+ * SEO/GEO-Erfolge mit sich bringt"; Auftrag growth-m-lp-partner-mail-
+ * landeseite): die Sektion #gefunden-werden zeigt an gemessenen, datierten
+ * Beispielen, dass eine eigene Erfahrungsseite bei Google und in der
+ * KI-Übersicht vorn stehen kann, und erklärt in vier Sätzen, wie. Quelle und
+ * Regeln stehen über SEO_BELEGE. Die Partnermail verlinkt genau diesen Anker.
+ *
  * DESIGN: geteilte Token-Quelle styles/schlaf-zellen-schutz.css (Scope .lp-a3)
  * + lp-pp-*-Regeln aus affiliate-partnerprogramm.css (Ablauf, Fragen,
  * Partnerkonto-Zeile) + eigene lp-pw-*-Regeln in partner-werden.css. Die
@@ -399,6 +407,74 @@ const ECKDATEN = [
   {wert: '5 %', titel: 'für deine Community', text: 'mit deinem eigenen Gutscheincode'},
   {wert: '30 Tage', titel: 'Zuordnung', text: 'auch wenn erst später bestellt wird'},
   {wert: '0 €', titel: 'Kosten', text: 'kostenlos und jederzeit kündbar'},
+];
+
+/*
+ * Die gemessenen Beispiele für #gefunden-werden. NUR GEMESSENES, NIE
+ * ERFUNDENES: jede Zeile ist ein Messpunkt aus dem Google-Zensus des
+ * seo-managers (seo-manager/data/seo.db, Tabelle flaeche, google.de).
+ *   art 'platz'  Platz nach der Hausregel: der repräsentative Tageslauf
+ *                (flaechen_rang.tageslauf), Ordnungszahl unter den organischen
+ *                Treffern. Wissenspanel, Anzeigen und KI-Übersicht zählen nicht
+ *                mit, daher der Satz unter den Karten.
+ *   art 'ki'     ein Treffer der Fläche ki_antwort im selben Tageslauf.
+ *   traeger      rolle_id der Fläche in ruf-manager/conf/partnerseiten.json;
+ *                dort steht, wessen Seite es ist. Auf der Seite steht kein Name
+ *                und keine Adresse: die Partnerin hat keiner Nennung zugestimmt
+ *                (Konzept partnerseiten-ranken 7.4, keine Daten Dritter).
+ * Gemessen am 2026-10-08 über alle Tagesläufe seit 2026-09-09. Wer eine Zeile
+ * ergänzt oder ändert, misst sie vorher am Zensus; die Abnahme-Probe
+ * homepage-bauer/pruefungen/probe_partnerprogramm_belege_live.py rechnet jede
+ * Karte der Live-Seite gegen seo.db nach (Datum, Begriff, Platz, Träger).
+ * Die Beispielseite /pages/partner-beispielseite wird hier NICHT verlinkt:
+ * sie ist noindex und von keiner indexierbaren Seite verlinkt (Konzept
+ * partnerseiten-ranken Abschnitt 9); die Partner bekommen sie per Mail.
+ */
+export const SEO_BELEGE = [
+  {
+    iso: '2026-09-26',
+    datum: '26. September 2026',
+    art: 'platz',
+    platz: 1,
+    begriff: 'Qi Blanco Kritik',
+    traeger: 'video',
+    text: 'Ihr Video auf YouTube',
+  },
+  {
+    iso: '2026-09-28',
+    datum: '28. September 2026',
+    art: 'platz',
+    platz: 2,
+    begriff: 'Qi Blanco',
+    traeger: 'erfahrungsbericht',
+    text: 'Ihr Erfahrungsbericht auf der eigenen Website',
+  },
+  {
+    iso: '2026-10-04',
+    datum: '4. Oktober 2026',
+    art: 'platz',
+    platz: 3,
+    begriff: 'Qi Blanco Erfahrung',
+    traeger: 'video',
+    text: 'Ihr Video auf YouTube',
+  },
+  {
+    iso: '2026-10-04',
+    datum: '4. Oktober 2026',
+    art: 'ki',
+    platz: null,
+    begriff: 'Qi Blanco Bewertungen',
+    traeger: 'video',
+    text: 'Googles KI-Übersicht nennt ihr Video als Quelle',
+  },
+];
+
+const SEITE_BAUEN = [
+  'Erzähl, wie es dir mit Qi Blanco geht: seit wann, was du erlebt hast und ' +
+    'was dich zweifeln ließ.',
+  'Beantworte die Frage gleich im ersten Absatz und schreib das Datum dazu.',
+  'Sag offen, dass du Partner bist, und nenne deinen Code.',
+  'Bau lieber eine ausführliche Seite als viele kurze Beiträge.',
 ];
 
 const SCHRITTE = [
@@ -799,6 +875,86 @@ function Kanaele() {
   );
 }
 
+/* ───────── Gefunden werden: gemessene Beispiele, Warum, So geht es ───────── */
+function Gefunden() {
+  return (
+    <section
+      id="gefunden-werden"
+      aria-labelledby="lp-pw-gefunden-title"
+      data-section="lp-pw-gefunden"
+    >
+      <span className="eyebrow">Gefunden werden</span>
+      <h2 id="lp-pw-gefunden-title">
+        Kann meine eigene Seite bei Google gefunden werden?
+      </h2>
+      <p className="lp-vp-section__lede">
+        Ja. Wer „Qi Blanco Erfahrungen“ sucht, will wissen, wie es anderen
+        damit geht. Deine eigene Erfahrung beantwortet genau diese Frage, auf
+        deiner Website oder in deinem Video.
+      </p>
+      <p className="lp-pw-belege__einleitung">
+        Eine Partnerin erzählt auf ihrer Website und auf YouTube von ihrer
+        Erfahrung mit Qi Blanco. Das haben wir bei Google gemessen:
+      </p>
+      <ul className="lp-pw-eckdaten lp-pw-belege">
+        {SEO_BELEGE.map((b) => (
+          <li
+            className="lp-pw-eckdatum"
+            key={`${b.iso}-${b.begriff}`}
+            data-beleg-iso={b.iso}
+            data-beleg-art={b.art}
+            data-beleg-platz={b.platz ?? ''}
+            data-beleg-begriff={b.begriff}
+            data-beleg-traeger={b.traeger}
+          >
+            <span className="lp-pw-eckdatum__wert">
+              {b.art === 'ki' ? 'KI-Übersicht' : `Platz ${b.platz}`}
+            </span>
+            <span className="lp-pw-eckdatum__titel">„{b.begriff}“</span>
+            <span className="lp-pw-eckdatum__text">{b.text}</span>
+            <time className="lp-pw-eckdatum__datum" dateTime={b.iso}>
+              {b.datum}
+            </time>
+          </li>
+        ))}
+      </ul>
+      <p className="lp-a-note">
+        Gemessen von uns auf google.de. Gezählt sind die normalen
+        Suchergebnisse ohne Anzeigen und Infokästen. Die Plätze wechseln von
+        Tag zu Tag.
+      </p>
+      <div className="lp-pw-zwei lp-pw-zwei--text">
+        <div className="lp-pw-zwei__text">
+          <h3>Warum das klappt</h3>
+          <p>
+            Google zeigt bei einer Suche meist höchstens zwei Treffer derselben
+            Website. Die übrigen Plätze gehen an andere Seiten, zum Beispiel an
+            Videos, Blogs und Erfahrungsberichte.
+          </p>
+          <p>
+            Auch die KI-Übersicht von Google nennt solche Seiten als Quelle.
+            Google selbst rät dazu, Erfahrung aus erster Hand zu zeigen.
+          </p>
+        </div>
+        <div className="lp-pw-zwei__text">
+          <h3>So baust du deine Seite</h3>
+          <ul className="lp-pw-liste">
+            {SEITE_BAUEN.map((s) => (
+              <li key={s}>{s}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <p className="lp-a-note">
+        Wir geben dir den Aufbau in neun Bausteinen, Studien mit Quelle und
+        Zahl, Produktbilder und einen Technik-Check deiner Seite. Den Text
+        schreibst du selbst, denn gleiche Texte auf vielen Seiten zeigt Google
+        nur einmal. Schreib uns an <a href={`mailto:${KONTAKT}`}>{KONTAKT}</a>.
+      </p>
+    </section>
+  );
+}
+
 /* ───────── Fragen ───────── */
 function Fragen() {
   return (
@@ -890,6 +1046,7 @@ export function AffiliatePartnerprogramm() {
       <Produkte />
       <Ablauf />
       <Kanaele />
+      <Gefunden />
       <Fragen />
       <Anmeldung />
     </div>
