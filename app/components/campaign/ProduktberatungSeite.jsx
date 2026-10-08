@@ -42,10 +42,19 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * BUCHUNG ZU (Zoom fehlt oder Schalter aus): Termine bleiben sichtbar, das
  * Formular weicht dem Satz „Die Buchung öffnet in Kürze." Kein toter Knopf.
  *
- * ZEITEN: angezeigt wird die Zeitzone Berlin aus den Feldern `datum`/`zeit` des
- * Endpunkts, ohne Intl auf dem Server (zwei Uhren = Hydrierungsfehler). Die
- * Zeit der Kundin ergänzt erst der Browser nach dem Laden, und nur, wenn ihre
- * Zeitzone abweicht.
+ * ZEITEN (Christian 08.10.2026 ~07:10Z: „Es kann nicht sein, dass wir da zwei
+ * Uhrzeiten anzeigen … Warum wird einfach nicht die Uhrzeit angezeigt in der
+ * Zeitzone, in der sich der Browser befindet?"): je Termin EINE Uhrzeit, und
+ * zwar in der Zeitzone des Browsers; auch Tag und Datum der Karte sind
+ * Ortsdatum (aus Donnerstag kann in Australien Freitag werden). Gespeichert und
+ * gebucht wird weiter über `slot_start`/`utc` des Endpunkts.
+ * Server und erster Browser-Render zeigen die Zeitzone Berlin aus `datum`/`zeit`
+ * (ohne Intl auf dem Server, sonst zwei Uhren = Hydrierungsfehler); erst nach
+ * dem Laden setzt der Browser die Ortszeit, an derselben Stelle und gleich breit
+ * (tabellarische Ziffern). Berlin, Wien und Zürich haben dieselbe Uhr: dort
+ * bleibt alles, wie es ist, ohne Hinweis. Sonst steht unter den Terminen „Zeiten
+ * in deiner Ortszeit." Ohne JavaScript bleibt Berlin, mit dem Hinweis
+ * „Alle Zeiten: Zeitzone Berlin." (noscript).
  *
  * KEIN PREIS, KEIN WARENKORB, KEIN HEILVERSPRECHEN. Die Seite wird am nächsten
  * Schritt gemessen: an der Buchung.
@@ -64,13 +73,26 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * Zeichensetzung, Anrede und das Markenzeichen; jede Abweichung steht im Export
  * produktberatung/exports/seitentext-christian-20261008.json. Nicht umschreiben,
  * nicht glätten, auch nicht in einem Testarm: jeder Arm zeigt diese Sätze gleich.
- * Seine Überschrift nennt ihn als Gründer, deshalb entfällt die Unterschriftzeile.
+ *
+ * CHRISTIANS ENTSCHEIDUNGEN 08.10. ~07:25-07:35Z (s02, vor allen Testvarianten):
+ * Überschrift mit Umbruch nach „Produktberatung:" (zwei Zeilen in derselben h1,
+ * im Seitentitel bleibt es ein Satz); sein Block heißt „Live mit mir :)" und
+ * trägt Fassung 2 seiner Gründungsgeschichte (coordination/fuer-coworker-a/
+ * originaltexte-christian/cold-story_2026-10-08.md); unter dem Foto klein und
+ * dezent „Dipl.-Ing. (FH) Christian Bernd Bauer" (ersetzt die Unterschriftzeile);
+ * der Absatz „Du hast schon einen QiOne®? Dann komm erst recht :)" unter den
+ * Fragen ist ebenfalls sein Wortlaut. Alles davon trägt data-fremdtext.
  *
  * ABDATEN IM BROWSER: siehe useJetzt()/nochBuchbar() unten. Die Grenze kommt
  * allein aus `buchungsschluss_min` des Endpunkts; die Seite kennt keine Zahl.
  */
 
-const ZONE = 'Europe/Berlin';
+/** Zonen mit der Uhr Berlins: dort zeigt die Seite die Zeiten des Endpunkts ohne Hinweis. */
+const ZONEN_WIE_BERLIN = new Set([
+  'Europe/Berlin',
+  'Europe/Vienna',
+  'Europe/Zurich',
+]);
 const WOCHENTAGE = [
   'Sonntag',
   'Montag',
@@ -215,31 +237,86 @@ function nachTag(termine) {
   return tage;
 }
 
-/** Zeitzone der Kundin, erst nach dem Laden (Server und erster Browser-Render sind gleich). */
+/**
+ * Zeitzone der Kundin, erst nach dem Laden: null auf dem Server und im ersten
+ * Browser-Render (gleiches HTML), danach der Name der Zone oder '' (Zone nicht
+ * lesbar oder vom Browser nicht formatierbar; dann bleibt Berlin mit Hinweis).
+ */
 function useKundenZone() {
-  const [zone, setZone] = useState('');
+  const [zone, setZone] = useState(null);
   useEffect(() => {
+    let z = '';
     try {
-      setZone(Intl.DateTimeFormat().resolvedOptions().timeZone || '');
+      z = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (z) new Intl.DateTimeFormat('de-DE', {timeZone: z}).format(0);
     } catch {
-      setZone('');
+      z = '';
     }
+    setZone(z);
   }, []);
   return zone;
 }
 
-function lokaleZeit(utc, zone) {
-  if (!utc || !zone || zone === ZONE) return '';
+/** true, wenn die Seite die Zeiten in der Ortszeit der Kundin zeigt. */
+function inOrtszeit(zone) {
+  return Boolean(zone) && !ZONEN_WIE_BERLIN.has(zone);
+}
+
+/**
+ * Datum und Uhrzeit eines Termins, wie die Kundin sie sieht: in ihrer Zone,
+ * sobald der Browser sie kennt und sie nicht die Uhr Berlins hat; sonst die
+ * Zeitzone Berlin aus `slot_start` (Server, erster Browser-Render, ohne JS).
+ */
+function ortsTeile(slotStart, zone) {
+  const berlin = teile(slotStart);
+  if (!inOrtszeit(zone)) return berlin;
   try {
-    return new Intl.DateTimeFormat('de-DE', {
+    const w = {};
+    for (const t of new Intl.DateTimeFormat('de-DE', {
       timeZone: zone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      weekday: 'short',
-    }).format(new Date(utc));
+      hourCycle: 'h23',
+    }).formatToParts(new Date(slotStart))) {
+      w[t.type] = t.value;
+    }
+    if (!w.year || !w.month || !w.day || !w.hour || !w.minute) return berlin;
+    return {
+      datum: `${w.year}-${w.month}-${w.day}`,
+      zeit: `${w.hour}:${w.minute}`,
+    };
   } catch {
-    return '';
+    return berlin;
   }
+}
+
+/** Die Termine mit ihrer Anzeige (Ortsdatum, Ortszeit); slot_start bleibt der Wert des Formulars. */
+function inAnzeige(termine, zone) {
+  return termine.map((t) => ({...t, ...ortsTeile(t.slot_start, zone)}));
+}
+
+/**
+ * Der eine Hinweis unter den Terminen: in Ortszeit „Zeiten in deiner Ortszeit.",
+ * ohne lesbare Zone und ohne JavaScript (noscript) „Alle Zeiten: Zeitzone
+ * Berlin.", in Berlin, Wien und Zürich keiner.
+ */
+function ZeitHinweis({zone}) {
+  return (
+    <>
+      <noscript>
+        <p className="pb__klein pb__zone">Alle Zeiten: Zeitzone Berlin.</p>
+      </noscript>
+      {zone === '' ? (
+        <p className="pb__klein pb__zone">Alle Zeiten: Zeitzone Berlin.</p>
+      ) : null}
+      {inOrtszeit(zone) ? (
+        <p className="pb__klein pb__zone">Zeiten in deiner Ortszeit.</p>
+      ) : null}
+    </>
+  );
 }
 
 /**
@@ -256,7 +333,11 @@ function Kopf({mitWeg}) {
       <div className="pb__inhalt pb__inhalt--breit">
         <div className="pb__kopf-text">
           <p className="pb__vorspann">Kostenlos · live per Zoom</p>
-          <h1>Produktberatung: 20 Minuten mit Christian</h1>
+          {/* Christian 08.10. ~07:25Z: Umbruch nach dem Doppelpunkt, auf Handy und Rechner. */}
+          <h1>
+            <span className="pb__h1-zeile">Produktberatung:</span>{' '}
+            <span className="pb__h1-zeile">20 Minuten mit Christian</span>
+          </h1>
           <p className="pb__lead" data-fremdtext="christian-wortlaut-20261008">
             Du hast Fragen zu unseren Produkten? Ich nehme mir persönlich Zeit
             für dich!
@@ -294,33 +375,51 @@ function Kopf({mitWeg}) {
           ) : null}
         </div>
         <figure className="pb__christian" data-section="pb-person">
-          <img
-            className="pb__foto"
-            src={`${FOTO}&width=480`}
-            srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w`}
-            sizes="(min-width: 768px) 240px, 112px"
-            width="240"
-            height="307"
-            fetchpriority="high"
-            decoding="async"
-            alt="Christian Bernd Bauer, Gründer von Qi Blanco"
-          />
+          {/* Foto mit Bildunterschrift (Christian 08.10. ~07:27Z: „unter dem Bild von mir in klein
+              und dezent"); sie ersetzt die frühere Unterschriftzeile. */}
+          <div className="pb__foto-rahmen">
+            <img
+              className="pb__foto"
+              src={`${FOTO}&width=480`}
+              srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w`}
+              sizes="(min-width: 768px) 240px, 112px"
+              width="240"
+              height="307"
+              fetchpriority="high"
+              decoding="async"
+              alt="Christian Bernd Bauer, Gründer von Qi Blanco"
+            />
+            <p
+              className="pb__foto-name"
+              data-fremdtext="christian-wortlaut-20261008"
+            >
+              Dipl.-Ing. (FH) Christian Bernd Bauer
+            </p>
+          </div>
           <figcaption
             className="pb__christian-text"
             data-fremdtext="christian-wortlaut-20261008"
           >
-            <h2 className="pb__christian-titel">
-              Im 1:1-Call mit dir: Christian, Gründer von Qi Blanco
-            </h2>
+            <h2 className="pb__christian-titel">Live mit mir :)</h2>
             <p className="pb__christian-wort">
               Vor mehr als 10 Jahren habe ich Qi Blanco aus meiner eigenen
-              Leidensgeschichte gegründet. Ein WLAN-Router hing auf einmal
-              direkt neben meinem Kopf. Ich wurde müder, war ständig genervt und
-              ging nicht mehr so glücklich wie früher durchs Leben. Ich musste
-              vieles testen, bis ich verstand, dass es nicht an mir lag, sondern
-              am E-Smog, der direkt mein Nervensystem angriff! Als Ingenieur war
-              klar: Ich brauche eine einfache und elegante Lösung. Einfach
-              umhängen und das Problem ist erledigt. Gesagt, getan: QiOne®.
+              Leidensgeschichte gegründet. Ich war Leiter einer
+              Entwicklungsabteilung für Automotive und Aerospace. Das Büro wurde
+              modernisiert. Das Spannende: Ich wurde müder, war ständig genervt
+              und ging nicht mehr so glücklich wie früher durchs Leben. Die
+              ersten Tage schob ich es auf meinen beruflichen Stress, dann auf
+              meine Ernährung, dann auf meine Beziehung … bis ich ziemlich mit
+              allem durch war, hatte ich vieles getestet. Und dann fiel es mir
+              wie Schuppen von den Augen: Ein riesiger WLAN-Router hing auf
+              einmal direkt rechts neben mir an der Wand. 60 cm oberhalb von
+              meinem Kopf. Heureka! Es liegt nicht an mir, sondern am E-Smog,
+              der direkt mein Nervensystem angriff! Als Ingenieur war klar: Ich
+              brauche eine einfache und elegante Lösung. Einfach umhängen und
+              das Problem ist erledigt.
+            </p>
+            <p className="pb__christian-wort">
+              Gesagt, getan: In dieser Nacht entstand noch die Blaupause für den
+              QiOne®.
             </p>
           </figcaption>
         </figure>
@@ -358,7 +457,7 @@ function Terminliste({
   return (
     <>
       <div className="pb__tage">
-        {nachTag(termine).map((tag) => {
+        {nachTag(inAnzeige(termine, zone)).map((tag) => {
           const k = kachel(tag.datum);
           return (
             <fieldset className="pb__tag" key={tag.datum}>
@@ -378,7 +477,6 @@ function Terminliste({
               </legend>
               <ul className="pb__slots">
                 {tag.termine.map((t) => {
-                  const lokal = lokaleZeit(t.utc, zone);
                   const id = `pb-slot-${t.utc}`;
                   return (
                     <li key={t.slot_start} data-pb-slot={t.slot_start}>
@@ -398,17 +496,11 @@ function Terminliste({
                           />
                           <label className="pb__slot" htmlFor={id}>
                             <span className="pb__zeit">{t.zeit} Uhr</span>
-                            {lokal ? (
-                              <span className="pb__lokal">bei dir {lokal}</span>
-                            ) : null}
                           </label>
                         </>
                       ) : (
                         <span className="pb__slot pb__slot--anzeige">
                           <span className="pb__zeit">{t.zeit} Uhr</span>
-                          {lokal ? (
-                            <span className="pb__lokal">bei dir {lokal}</span>
-                          ) : null}
                         </span>
                       )}
                     </li>
@@ -419,10 +511,7 @@ function Terminliste({
           );
         })}
       </div>
-      <p className="pb__klein pb__zone">
-        Alle Uhrzeiten gelten für die Zeitzone Berlin. In Wien und Zürich ist es
-        dieselbe Uhrzeit.
-      </p>
+      <ZeitHinweis zone={zone} />
     </>
   );
 }
@@ -447,13 +536,18 @@ function Feld({name, label, typ = 'text', pflicht = false, auto, wert}) {
   );
 }
 
-/** Der eine Satz unter „Wähl deinen Termin"; die Frist nur, wenn der Endpunkt sie meldet. */
+/**
+ * Die Zeile unter „Wähl deinen Termin"; die Frist nur, wenn der Endpunkt sie meldet.
+ * Christian 08.10. ~07:05Z verwarf „Donnerstags halte ich mir dafür Zeit frei.
+ * Spontan? …" als KI-Klang; seine Richtung „Jeden Donnerstag. Buchen kannst du
+ * bis 8 Stunden vorher." steht hier wörtlich, die Zahl kommt aus der API.
+ */
 function Unterzeile({schlussMin}) {
   const frist = fristText(schlussMin);
   return (
     <p className="pb__unterzeile">
-      Donnerstags halte ich mir dafür Zeit frei.
-      {frist ? ` Spontan? Bis ${frist} vorher kannst du noch buchen.` : ''}
+      Jeden Donnerstag.
+      {frist ? ` Buchen kannst du bis ${frist} vorher.` : ''}
     </p>
   );
 }
@@ -472,13 +566,13 @@ function Buchen({daten, fehler, zone}) {
   const [verpasst, setVerpasst] = useState('');
   useEffect(() => {
     if (markiert && !daten.termine.some((t) => t.slot_start === markiert)) {
-      const {datum, zeit} = teile(markiert);
+      const {datum, zeit} = ortsTeile(markiert, zone);
       setVerpasst(
         `${tagName(datum)}, ${zeit} Uhr ist jetzt zu kurzfristig. Such dir bitte eine andere Zeit aus.`,
       );
       setMarkiert('');
     }
-  }, [daten.termine, markiert]);
+  }, [daten.termine, markiert, zone]);
   const nimm = (slot) => {
     setMarkiert(slot);
     setVerpasst('');
@@ -531,7 +625,7 @@ function Buchen({daten, fehler, zone}) {
       <div className="pb__inhalt pb__inhalt--breit">
         <Form method="post" className="pb__form" preventScrollReset>
           <input type="hidden" name="intent" value="buchen" />
-          <input type="hidden" name="tz" value={zone} />
+          <input type="hidden" name="tz" value={zone || ''} />
           {/* Quelle aus dem Link (?von=warenkorb-mail), vom Loader gegen die Allowlist geprüft. */}
           {daten.von ? (
             <input type="hidden" name="von" value={daten.von} />
@@ -637,15 +731,23 @@ function Buchen({daten, fehler, zone}) {
  * `data-clarity-mask`: Zoom-Link und Kenncode gehören nicht in eine Sitzungsaufzeichnung.
  */
 function Termindaten({buchung, verwalten, zone}) {
-  const {datum, zeit} = teile(buchung.slot_start);
-  const lokal = lokaleZeit(buchung.slot_utc, zone);
+  const {datum, zeit} = ortsTeile(buchung.slot_start, zone);
   return (
     <dl className="pb__daten" data-clarity-mask="true">
       <div>
         <dt>Termin</dt>
         <dd>
-          {tagName(datum, true)}, {zeit} Uhr (Zeitzone Berlin)
-          {lokal ? <span className="pb__lokal"> · bei dir {lokal}</span> : null}
+          {tagName(datum, true)}, <span className="pb__zeit-wert">{zeit}</span>{' '}
+          Uhr
+          {inOrtszeit(zone) ? (
+            <span className="pb__lokal"> · deine Ortszeit</span>
+          ) : null}
+          {zone === '' ? (
+            <span className="pb__lokal"> · Zeitzone Berlin</span>
+          ) : null}
+          <noscript>
+            <span className="pb__lokal"> · Zeitzone Berlin</span>
+          </noscript>
         </dd>
       </div>
       {buchung.zoom_url ? (
@@ -869,10 +971,13 @@ function Fragen() {
             </li>
           ))}
         </ul>
-        <p className="pb__schon">
-          Du trägst schon eins? Dann komm erst recht. Wir reden über die
-          Kleinigkeiten: wie lang die Kette sein soll, ob du ihn nachts
-          abnimmst, ob das Armband als Ergänzung Sinn ergibt.
+        {/* Christians Wortlaut (08.10. ~07:35Z), der Umbruch nach „:)" ist von ihm. */}
+        <p className="pb__schon" data-fremdtext="christian-wortlaut-20261008">
+          Du hast schon einen QiOne®? Dann komm erst recht :)
+          <br />
+          Wir können gerne über die Nutzung reden, deine persönlichen
+          Erfahrungen oder Fragen klären, die erst bei der Nutzung entstanden
+          sind. Oder welcher Vorteil ein QiHome® Air für dich sein könnte?
         </p>
       </div>
     </section>

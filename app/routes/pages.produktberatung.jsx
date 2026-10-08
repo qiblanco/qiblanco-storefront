@@ -39,7 +39,8 @@ const PFAD = '/pages/produktberatung';
  *
  * FUNKTIONIERT OHNE JAVASCRIPT: Termine und Formular kommen serverseitig, das
  * Formular ist ein normaler POST. JavaScript ergänzt nur die Zeitzone der
- * Kundin (verstecktes Feld + „bei dir …"-Zeit) und das Abdaten im Browser.
+ * Kundin (verstecktes Feld + Termine in ihrer Ortszeit, Christian 08.10.) und
+ * das Abdaten im Browser.
  *
  * ABDATEN IM BROWSER (Grossjob 20261002-…-lebensfroh, s02; Christian 02.10.:
  * „sind die 8 h für den Donnerstag um, zeigt die Seite automatisch den nächsten
