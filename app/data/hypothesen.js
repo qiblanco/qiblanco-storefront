@@ -257,7 +257,7 @@ export const HYPOTHESEN = [
     stand: 'teilweise',
     pro: [
       {
-        text: 'Die Schweizer Beratende Expertengruppe BERENIS hat die Literatur gesichtet und kommt zu einem klaren Zwischenstand: „the majority of the animal and more than half of the cell studies provided evidence of increased oxidative stress caused by RF-EMF or ELF-MF". Diese Einschätzung stammt aus einem Behördenbericht.',
+        text: 'Die Schweizer Beratende Expertengruppe BERENIS hat die Literatur gesichtet und kommt zu einem klaren Zwischenstand: „the majority of the animal and more than half of the cell studies provided evidence of increased oxidative stress caused by RF-EMF or ELF-MF". Die Gruppe berät das Schweizer Bundesamt für Umwelt.',
         quellen: ['berenis-2021'],
       },
       {
