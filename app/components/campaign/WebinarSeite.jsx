@@ -39,7 +39,8 @@ import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
  * stehen jetzt in thema.json (`sprecher.kurz`, `sprecher.wissen`) und werden dort
  * geändert; probe_s11_lp_texte.py misst sie im Abschnitt wb-sprecher (Arm F).
  * Wirkaussagen tragen ihre Grundlage im Satz: „nachweislich“ nur für starke Felder
- * (Reizung, Erwärmung), Warnkes Erklärung heißt Modell, Qi Blanco ist eine Idee.
+ * (Reizung, Erwärmung), Warnkes Erklärung heißt Modell, „geordnet“ ist Pollacks
+ * Deutung, die Batterie sein Vergleich, Qi Blanco ist eine Idee.
  */
 
 const FOTO = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
@@ -101,6 +102,7 @@ export const WEBINARE = {
     versprechen: [
       'In 45 Minuten verstehst du, warum dein Körper ein elektrisches System ist und was starke ' +
         'Felder darin nachweislich bewirken: Reizung und Erwärmung.',
+      'Davor schützen die Grenzwerte.',
       'Ob schwache Felder im Alltag etwas bewirken, untersucht die Forschung noch, und du ' +
         'erfährst, wie weit sie ist.',
       'Du lernst Handgriffe, mit denen es in deinem Schlafzimmer noch heute Abend weniger funkt.',
@@ -121,9 +123,9 @@ export const WEBINARE = {
     // Gekürzt (s11): den Grund der Gründung erzählt Christian selbst im Abschnitt Warum.
     sprecher: 'Christian hat Qi Blanco gegründet. Jeden Sonntag ist er mit Anna bei Coming Home live.',
     wissen:
-      'Im Webinar erzählt er dir, wie Dr. Ulrich Warnke sich die Wirkung von Feldern auf den ' +
-      'Körper erklärt. Das ist Warnkes Modell, und du erfährst, was davon gemessen ist und was ' +
-      'nicht. Und zwar so, dass du es am Küchentisch weitererzählen kannst.',
+      'Im Webinar erzählt er dir, wie Dr. Ulrich Warnke sich erklärt, ob und wie Felder auf den ' +
+      'Körper wirken. Das ist Warnkes Modell, und du erfährst, wo die Messungen enden. Und du ' +
+      'kannst das Modell danach am Küchentisch weitererzählen.',
     zitat: null,
     anderes: 'wasser',
   },
@@ -141,10 +143,11 @@ export const WEBINARE = {
     versprechen: [
       'In 45 Minuten erfährst du, was Prof. Dr. Gerald H. Pollack in seinem Labor in Seattle an ' +
         'Wasser beobachtet hat.',
-      'An Oberflächen fand er eine geordnete Zone, die er die vierte Phase des Wassers nennt: ' +
-        'Sie schiebt fast alles weg und lädt sich im Licht auf wie eine Batterie.',
+      'An wasserliebenden Flächen fand er eine Zone, die fast alles wegschiebt und im Licht wächst.',
+      'Er deutet sie als geordnetes Wasser, nennt sie die vierte Phase des Wassers und vergleicht ' +
+        'sie mit einer Batterie.',
       'Du siehst ein Experiment, das du zu Hause nachmachen kannst, und verstehst, warum sich ' +
-        'unsere Idee hinter Qi Blanco um die Ordnung im Wasser dreht.',
+        'unsere Idee hinter Qi Blanco um die Ordnung dreht, die Pollack im Wasser beschreibt.',
     ],
     szene:
       'Häng ein Küchentuch mit einer Ecke in ein Glas Wasser. Nach ein paar Minuten ist das Tuch ' +
@@ -161,8 +164,8 @@ export const WEBINARE = {
       'Christian hat Qi Blanco gegründet und beschäftigt sich seit Jahren mit der Ordnung von ' +
       'Wasser. Jeden Sonntag ist er mit Anna bei Coming Home live.',
     wissen:
-      'Unsere Idee, warum Qi Blanco funktionieren könnte, dreht sich um genau diese Ordnung, und ' +
-      'wir stellen sie dir als Hypothese vor. Das Experiment aus dem Webinar kannst du danach ' +
+      'Unsere Idee, warum Qi Blanco funktionieren könnte, dreht sich um die Ordnung von Wasser, ' +
+      'und wir stellen diese Idee als Hypothese vor. Das Experiment aus dem Webinar kannst du danach ' +
       'zu Hause selbst ausprobieren.',
     zitat: null,
     anderes: 'esmog',
