@@ -26,6 +26,14 @@ import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
  * für seinen eigenen Satz. TRACKING: kein Cookie, kein neuer Schlüssel; echtes
  * <form> mit input[type=email], damit qpx.js das Absenden wie überall meldet.
  * Marker: data-webinar, data-webinar-seite, data-webinar-zustand, data-qa="cta".
+ *
+ * NACHZUG s11 (08.10.2026): `versprechen`, `szene` und `agenda` stehen wortgleich
+ * wie `versprechen`, `lp_szene` und `agenda` in themen/<thema>/thema.json (Stand
+ * 11:29 UTC, Inhalts-Segmente s09/s10). Die Texte gehören den Inhalten: geändert
+ * wird dort, hier nur nachgezogen; probe_s11_lp_texte.py misst die Naht am HTML.
+ * Neu ist der Abschnitt „Warum es Qi Blanco gibt“ mit Christians Gründungs-
+ * geschichte (siehe Warum unten). data-section je Abschnitt (wb-*, Muster pb-*
+ * der ProduktberatungSeite): qpx.js ordnet Klicks und Sichtzeit darüber zu.
  */
 
 const FOTO = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
@@ -68,6 +76,9 @@ const FRAGEN = [
  * themen/<slug>) und der Wert von data-webinar; als Datenfeld in Anführungs-
  * zeichen, weil er ein ASCII-Bezeichner ist. termin: ISO mit Zone, etwa
  * '2026-11-05T19:00:00+01:00'. formularId: Id des ActiveCampaign-Formulars.
+ * versprechen: die Sätze aus thema.json in ihrer Reihenfolge. Der letzte steht
+ * unter „Das erwartet dich in 45 Minuten“, damit der Knopf im Kopf auch am Handy
+ * bald kommt (am Handy mit 390 px rutschte er sonst unter die erste Bildschirmhöhe).
  */
 export const WEBINARE = {
   esmog: {
@@ -81,24 +92,28 @@ export const WEBINARE = {
     beschreibung:
       'Kostenloses Webinar mit Christian von Qi Blanco: 45 Minuten über Handy, WLAN und Strom ' +
       'im Alltag, mit Live-Experiment und Fragerunde. Live per Zoom.',
-    versprechen:
-      'In 45 Minuten verstehst du, warum dein Körper ein elektrisches System ist und was Funk ' +
-      'und Strom darin anstoßen können. Dazu nimmst du Handgriffe mit, die dein Schlafzimmer ' +
-      'noch heute Abend ruhiger machen.',
+    versprechen: [
+      'In 45 Minuten verstehst du, warum dein Körper ein elektrisches System ist, was Funk und ' +
+        'Strom darin nachweislich bewirken und was die Forschung noch untersucht.',
+      'Du lernst Handgriffe, mit denen es in deinem Schlafzimmer noch heute Abend weniger funkt.',
+      'Mit dem Wissen von Dr. Ulrich Warnke, verständlich erklärt, und mit einem Live-Experiment, ' +
+        'das Elektrosmog hörbar macht.',
+    ],
     szene:
       'Es ist kurz vor Mitternacht. Das Handy liegt auf dem Nachttisch, im Flur blinkt der ' +
-      'Router, und du schläfst längst. Um dich herum funkt es trotzdem weiter, die ganze Nacht. ' +
-      'Was macht das mit deinem Körper?',
+      'Router. Noch ein letzter Blick auf die Nachrichten, dann machst du das Licht aus. Und du ' +
+      'fragst dich: Was ist gemessen, was wird noch erforscht, und was kannst du ' +
+      'heute Abend selbst tun?',
     agenda: [
-      'Dein Körper ist elektrisch: Nerven, Herz und Zellen arbeiten mit Spannung',
-      'Was Funk und Strom im Körper anstoßen können, und was die Forschung dazu zeigt',
+      'Warum es Qi Blanco gibt: Christians Geschichte',
+      'Dein Körper ist elektrisch: was Funk und Strom darin nachweislich bewirken und was die ' +
+        'Forschung noch untersucht',
       'Live-Experiment: Elektrosmog hörbar machen',
-      'Dein Schlafzimmer: die Handgriffe mit der größten Wirkung',
+      'Dein Schlafzimmer: drei Handgriffe für heute Abend',
       'Deine Fragen an Christian',
     ],
-    sprecher:
-      'Christian hat Qi Blanco gegründet, weil er selbst wissen wollte, was Funk im Alltag mit ' +
-      'uns macht. Jeden Sonntag ist er mit Anna bei Coming Home live.',
+    // Gekürzt (s11): den Grund der Gründung erzählt Christian selbst im Abschnitt Warum.
+    sprecher: 'Christian hat Qi Blanco gegründet. Jeden Sonntag ist er mit Anna bei Coming Home live.',
     wissen:
       'Im Webinar erzählt er dir, was Dr. Ulrich Warnke in Jahrzehnten Forschung darüber ' +
       'herausgefunden hat, wie Felder auf den Körper wirken. Und zwar so, dass du es am ' +
@@ -117,28 +132,31 @@ export const WEBINARE = {
     beschreibung:
       'Kostenloses Webinar mit Christian von Qi Blanco: 45 Minuten über Wasser, Licht und ' +
       'Ordnung, mit Experiment zum Nachmachen und Fragerunde. Live per Zoom.',
-    versprechen:
-      'In 45 Minuten erfährst du, was Prof. Dr. Gerald H. Pollack in seinem Labor an Wasser ' +
-      'beobachtet hat. Er nennt es die vierte Phase, neben fest, flüssig und gasförmig: geordnet ' +
-      'wie ein Kristall und aufgeladen vom Licht.',
+    versprechen: [
+      'In 45 Minuten erfährst du, was Prof. Dr. Gerald H. Pollack in seinem Labor in Seattle an ' +
+        'Wasser beobachtet hat: eine Zone an Oberflächen, die fast alles wegschiebt und die er ' +
+        'die vierte Phase des Wassers nennt, aufgeladen vom Licht wie eine Batterie.',
+      'Du siehst ein Experiment, das du zu Hause nachmachen kannst, und verstehst, warum diese ' +
+        'Ordnung für Qi Blanco so wichtig ist.',
+    ],
     szene:
       'Häng ein Küchentuch mit einer Ecke in ein Glas Wasser. Nach ein paar Minuten ist das Tuch ' +
       'nass, weit über dem Wasserspiegel. Das Wasser ist nach oben geklettert, gegen die ' +
       'Schwerkraft. Warum eigentlich?',
     agenda: [
-      'Die vierte Phase des Wassers: was Prof. Dr. Gerald H. Pollack beobachtet hat',
+      'Warum es Qi Blanco gibt: Christians Geschichte',
+      'Die vierte Phase des Wassers: was Prof. Dr. Gerald H. Pollack im Labor beobachtet hat',
       'Live-Experiment: Wasser klettert gegen die Schwerkraft',
-      'Was kohärent heißt, einfach erklärt: Ordnung und Takt',
-      'Wasser in deinem Körper: Zellen, Licht und Energie',
-      'Unsere Erklärung, wie Qi Blanco wirkt, und deine Fragen an Christian',
+      'Wasser in deinem Körper, was kohärent heißt und was du heute schon tun kannst',
+      'Die Idee hinter Qi Blanco und deine Fragen an Christian',
     ],
     sprecher:
       'Christian hat Qi Blanco gegründet und beschäftigt sich seit Jahren mit der Ordnung von ' +
       'Wasser. Jeden Sonntag ist er mit Anna bei Coming Home live.',
     wissen:
       'Unsere Erklärung, wie Qi Blanco wirkt, dreht sich um genau diese Ordnung, und wir stellen ' +
-      'sie dir als Hypothese vor. Das Experiment aus dem Webinar kannst du danach zu Hause selbst ' +
-      'ausprobieren.',
+      'sie dir als Hypothese vor. Das Experiment aus dem Webinar kannst du danach ' +
+      'zu Hause selbst ausprobieren.',
     zitat: null,
     anderes: 'esmog',
   },
@@ -224,15 +242,52 @@ function Nummernliste({className, punkte}) {
   );
 }
 
+/**
+ * Christians Gründungsgeschichte in seinen Worten, auf beiden Seiten gleich:
+ * Fassung 2B aus webinar-manager/quellen/cold_story.json, von ihm am 08.10.2026
+ * dauerhaft freigegeben. Nicht umschreiben, nicht kürzen, nichts dazwischen; den
+ * Absatz vor „Gesagt, getan“ hat er selbst gesetzt. data-fremdtext nimmt seinen
+ * Wortlaut aus der Stilmessung (stil-pruefe, wie auf /pages/produktberatung).
+ * Ändert er die Geschichte, wird probe_s11_lp_texte.py rot, bis sie hier nachgezogen ist.
+ */
+function Warum() {
+  return (
+    <section className="wb-abschnitt" data-section="wb-warum">
+      <div className="wb-innen wb-innen-schmal">
+        <h2 className="wb-h2">Warum es Qi Blanco gibt</h2>
+        <figure className="wb-geschichte">
+          <blockquote className="wb-geschichte-text" data-fremdtext="christian-cold-story-2b-20261008">
+            <p>
+              Vor mehr als 10 Jahren habe ich Qi Blanco gegründet, aus meiner eigenen
+              Leidensgeschichte heraus. Damals leitete ich eine Entwicklungsabteilung für
+              Automotive und Aerospace, und unser Büro wurde gerade modernisiert. Das Spannende:
+              Ab da wurde ich immer müder, war ständig genervt und ging nicht mehr so glücklich
+              durchs Leben wie früher. Die ersten Tage schob ich es auf meinen beruflichen Stress,
+              dann auf meine Ernährung, dann auf meine Beziehung … Ich habe vieles getestet, bis
+              ich mit allem ziemlich durch war. Und dann fiel es mir wie Schuppen von den Augen:
+              Seit dem Umbau hing ein riesiger WLAN-Router direkt rechts neben mir an der Wand,
+              60&nbsp;cm über meinem Kopf. Heureka! Es lag nicht an mir, sondern am E-Smog, der direkt
+              mein Nervensystem angriff! Als Ingenieur war mir klar: Ich brauche eine einfache und
+              elegante Lösung. Einfach umhängen, und das Problem ist erledigt.
+            </p>
+            <p>Gesagt, getan: Noch in derselben Nacht entstand die Blaupause für den QiOne®.</p>
+          </blockquote>
+          <figcaption className="wb-geschichte-von">Christian, Gründer von Qi Blanco</figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
 export function WebinarSeite({w}) {
   return (
     <div className="wb" data-webinar={w.slug} data-webinar-seite="anmeldung">
-      <section className="wb-abschnitt">
+      <section className="wb-abschnitt" data-section="wb-kopf">
         <div className="wb-innen wb-kopf-raster">
           <div>
             <p className="wb-vorzeile">Kostenloses Webinar · live per Zoom</p>
             <h1 className="wb-h1">{w.titel}</h1>
-            <p className="wb-lede">{w.versprechen}</p>
+            <p className="wb-lede">{w.versprechen.slice(0, -1).join(' ')}</p>
             <a className="btn--primary wb-knopf" href="#anmelden" data-qa="cta">
               Kostenlos anmelden
             </a>
@@ -251,21 +306,22 @@ export function WebinarSeite({w}) {
         </div>
       </section>
 
-      <section className="wb-abschnitt wb-band" aria-label="Auf einen Blick">
+      <section className="wb-abschnitt wb-band" aria-label="Auf einen Blick" data-section="wb-eckdaten">
         <div className="wb-innen">
           <Eckdaten w={w} />
         </div>
       </section>
 
-      <section className="wb-abschnitt">
+      <section className="wb-abschnitt" data-section="wb-agenda">
         <div className="wb-innen wb-innen-schmal">
           <h2 className="wb-h2">Das erwartet dich in 45 Minuten</h2>
+          <p className="wb-text">{w.versprechen[w.versprechen.length - 1]}</p>
           <p className="wb-text wb-szene">{w.szene}</p>
           <Nummernliste className="wb-agenda" punkte={w.agenda.map((p) => [p])} />
         </div>
       </section>
 
-      <section className="wb-abschnitt wb-flaeche">
+      <section className="wb-abschnitt wb-flaeche" data-section="wb-sprecher">
         <div className="wb-innen wb-innen-schmal">
           <h2 className="wb-h2">Wer mit dir spricht</h2>
           <p className="wb-text">{w.sprecher}</p>
@@ -279,7 +335,9 @@ export function WebinarSeite({w}) {
         </div>
       </section>
 
-      <section className="wb-abschnitt wb-dunkel" id="anmelden">
+      <Warum />
+
+      <section className="wb-abschnitt wb-dunkel" id="anmelden" data-section="wb-anmeldung">
         <div className="wb-innen">
           <h2 className="wb-h2">So bist du dabei</h2>
           <div className="wb-dabei">
@@ -289,7 +347,7 @@ export function WebinarSeite({w}) {
         </div>
       </section>
 
-      <section className="wb-abschnitt">
+      <section className="wb-abschnitt" data-section="wb-fragen">
         <div className="wb-innen wb-innen-schmal">
           <h2 className="wb-h2">Häufige Fragen</h2>
           <dl className="wb-fragen">
@@ -505,7 +563,7 @@ export function WebinarBestaetigung({w}) {
   }, [location.state]);
 
   return (
-    <div className="wb" data-webinar={w.slug} data-webinar-seite="bestaetigung">
+    <div className="wb" data-webinar={w.slug} data-webinar-seite="bestaetigung" data-section="wb-bestaetigung">
       <section className="wb-abschnitt">
         <div className="wb-innen wb-innen-schmal">
           <p className="wb-vorzeile">{w.kurztitel}</p>
