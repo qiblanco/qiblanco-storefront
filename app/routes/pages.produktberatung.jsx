@@ -5,6 +5,11 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {ORG_ID} from '~/lib/entity-schema';
 import {buyerIpAusRequest} from '~/lib/interner-verkehr';
+import {
+  verwaltenAdresse,
+  verwaltenCookie,
+  verwaltenToken,
+} from '~/lib/produktberatung-verwalten.server';
 
 const PFAD = '/pages/produktberatung';
 
@@ -53,13 +58,32 @@ const PFAD = '/pages/produktberatung';
  *   (3) SITEMAP über `NUR_ROUTE_SEITEN` (app/lib/seo.js), kein Seitenobjekt.
  *   (4) NICHT im Menü, NICHT auf der Startseite. Der Einstieg kommt später
  *       (Startseiten-Entwurf s03, Anna s04).
- * Die Verwalten-Ansicht (?b=<token>) trägt noindex: sie ist persönlich.
+ * Die Verwalten-Ansicht (?verwalten=1) trägt noindex: sie ist persönlich.
+ *
+ * DER VERWALTEN-TOKEN STEHT IN KEINER ADRESSE, DIE EIN SKRIPT LESEN KANN (Job
+ * 20261008-produktberatung-verwalten-token-aus-der-url-vor-den-trackern, offene
+ * Flanke #24 B). Der Mail-Link lautet weiter ?b=<token>. Der Loader nimmt den
+ * Token heraus, legt ihn in den Cookie `pb_verwalten` (HttpOnly, Path=/pages,
+ * ein Tag) und leitet mit 303 auf ?verwalten=1 um. Die Seite mit ?b= wird nie
+ * gerendert, also liest kein Tracker, kein Chat-iframe und kein Referer sie.
+ * Gemessen vorher: mit Einwilligung 36 Tracker-Anfragen mit Token (GA4, Meta,
+ * TikTok, Bing, Clarity, Taboola, Shopify), ohne Einwilligung Shopify-Monorail
+ * und das Chat-iframe, Letzteres noch vor der Hydration. Deshalb kein
+ * replaceState im Browser: das käme zu spät und verlöre den Token bei der
+ * Revalidierung nach der Cookie-Wahl. Absagen, Umbuchen und die Kalenderdatei
+ * lesen den Token aus dem Cookie; er steht weder im HTML noch in den
+ * Hydrationsdaten. Buchen und Umbuchen setzen den Cookie selbst und leiten auf
+ * ?verwalten=1&status=… weiter. Ohne Cookie (abgelaufen, anderes Gerät) sagt die
+ * Seite, dass der Link aus der Mail neu zu öffnen ist.
+ * Wache: produktberatung/pruefungen/probe_token_nicht_in_trackern.py.
  *
  * AD-WEICHE: der Pfad steht in AUSSCHLUSS_SEGMENTE (app/lib/ad-weiche.server.js),
  * damit ein bezahlter Klick nicht auf eine Kaufseite umgeleitet wird.
  *
- * TRACKING-NAHT: kein Cookie, kein neuer Identitäts- oder Tracking-Key, kein
- * eigener Pixel. TRACKING_COOKIE_NAMES bleibt unangetastet. Die Kunden-IP geht
+ * TRACKING-NAHT: kein Tracking-Cookie, kein neuer Identitäts- oder
+ * Tracking-Key, kein eigener Pixel. Der einzige Cookie ist `pb_verwalten`
+ * (oben): HttpOnly, nur für unseren Server lesbar, trägt keine Person über
+ * Seiten hinweg und geht an keinen Tracker. TRACKING_COOKIE_NAMES bleibt unangetastet. Die Kunden-IP geht
  * nur als X-PB-Kunde-IP an den eigenen Endpunkt (Mengen-Deckel je Kundin statt
  * je Oxygen-Knoten), nirgendwo sonst hin.
  *
@@ -83,7 +107,7 @@ const PFAD = '/pages/produktberatung';
  */
 export const ENDPUNKT = 'https://termin.65-108-150-121.sslip.io';
 
-function basis(context) {
+export function basis(context) {
   const env = context?.env?.PRODUKTBERATUNG_API;
   return (typeof env === 'string' && env.trim()) || ENDPUNKT;
 }
@@ -135,14 +159,51 @@ export function links() {
 /** Persönliche Daten und frische Termine: nie in einem Zwischenspeicher. */
 export const headers = () => ({'Cache-Control': 'private, no-store'});
 
+/** Weiter in die Verwalten-Ansicht: der Token reist im Cookie, die Adresse bleibt ohne ihn. */
+function zurVerwaltung(token, status) {
+  return redirect(verwaltenAdresse(status), {
+    status: 303,
+    headers: {
+      'Set-Cookie': verwaltenCookie(token),
+      'Cache-Control': 'private, no-store',
+    },
+  });
+}
+
 export async function loader({request, context}) {
   const url = new URL(request.url);
-  const token = (url.searchParams.get('b') || '').trim();
+  const ausLink = (url.searchParams.get('b') || '').trim();
+  if (ausLink) {
+    const s = (url.searchParams.get('status') || '').trim();
+    return zurVerwaltung(
+      ausLink,
+      ['gebucht', 'umgebucht'].includes(s) ? s : '',
+    );
+  }
+  const verwalten = url.searchParams.has('verwalten');
+  const token = verwalten ? verwaltenToken(request) : '';
   const vorwahl = (url.searchParams.get('termin') || '').trim();
   const status = (url.searchParams.get('status') || '').trim();
   const von = quelleAusLink(url.searchParams.get('von'));
   const api = basis(context);
   const jetzt = new Date().toISOString();
+
+  if (verwalten && !token) {
+    return {
+      jetzt,
+      verwalten: true,
+      vorwahl,
+      von,
+      status,
+      api,
+      buchung: null,
+      verwaltenFehler:
+        'Öffne bitte den Link aus deiner Bestätigungsmail noch einmal, dann siehst du deinen Termin.',
+      termine: [],
+      buchungMoeglich: false,
+      ladeFehler: false,
+    };
+  }
 
   if (token) {
     const r = await holeJson(
@@ -153,7 +214,7 @@ export async function loader({request, context}) {
     if (r.status === 200 && r.body?.ok) {
       return {
         jetzt,
-        token,
+        verwalten: true,
         vorwahl,
         von,
         status,
@@ -167,7 +228,7 @@ export async function loader({request, context}) {
     }
     return {
       jetzt,
-      token,
+      verwalten: true,
       vorwahl,
       von,
       status,
@@ -192,7 +253,7 @@ export async function loader({request, context}) {
   if (r.status === 200 && Array.isArray(r.body?.termine)) {
     return {
       jetzt,
-      token: '',
+      verwalten: false,
       vorwahl,
       von,
       status,
@@ -206,7 +267,7 @@ export async function loader({request, context}) {
   }
   return {
     jetzt,
-    token: '',
+    verwalten: false,
     vorwahl,
     von,
     status,
@@ -219,10 +280,6 @@ export async function loader({request, context}) {
 }
 
 const FELDER = ['name', 'email', 'telefon', 'produkt', 'anliegen'];
-
-function verwaltenPfad(token, status) {
-  return `${PFAD}?b=${encodeURIComponent(token)}&status=${status}`;
-}
 
 export async function action({request, context}) {
   const form = await request.formData();
@@ -266,9 +323,9 @@ export async function action({request, context}) {
         'seite',
     });
     if (r.status === 200 && r.body?.ok && r.body.buchung) {
-      // POST -> REDIRECT -> GET: die Bestaetigung lebt unter ?b=<token>. Neuladen schickt die Buchung so
-      // nie ein zweites Mal ab (ohne JavaScript), und die Angaben gehen beim Neuladen nicht verloren.
-      if (r.body.t) return redirect(verwaltenPfad(r.body.t, 'gebucht'));
+      // POST -> REDIRECT -> GET: die Bestaetigung lebt unter ?verwalten=1, der Token im Cookie. Neuladen schickt
+      // die Buchung so nie ein zweites Mal ab (ohne JavaScript), und die Angaben gehen beim Neuladen nicht verloren.
+      if (r.body.t) return zurVerwaltung(r.body.t, 'gebucht');
       return {intent, ok: true, buchung: r.body.buchung, token: ''};
     }
     if (r.status === 200 && r.body?.ok) {
@@ -285,7 +342,8 @@ export async function action({request, context}) {
     };
   }
 
-  const t = String(form.get('t') || '');
+  // Der Token kommt aus dem Cookie; das Formularfeld t trägt nur noch ein Tab, der vor dem Umbau geöffnet wurde.
+  const t = verwaltenToken(request) || String(form.get('t') || '');
   if (intent === 'absagen') {
     const r = await post('/api/absagen', {t});
     if (r.status === 200 && r.body?.ok)
@@ -299,7 +357,7 @@ export async function action({request, context}) {
     const r = await post('/api/umbuchen', {t, slot_start: slot});
     if (r.status === 200 && r.body?.ok) {
       // Das alte Token zeigt danach auf eine stornierte Buchung: weiter auf das NEUE.
-      if (r.body.t) return redirect(verwaltenPfad(r.body.t, 'umgebucht'));
+      if (r.body.t) return zurVerwaltung(r.body.t, 'umgebucht');
       return {intent, ok: true, buchung: r.body.buchung, token: ''};
     }
     return {intent, ok: false, text: r.body?.text || NICHT_ERREICHBAR};
@@ -317,7 +375,8 @@ const BESCHREIBUNG =
 
 /** @type {MetaFunction<typeof loader>} */
 export const meta = ({location}) => {
-  const persoenlich = new URLSearchParams(location?.search || '').has('b');
+  const such = new URLSearchParams(location?.search || '');
+  const persoenlich = such.has('verwalten') || such.has('b');
   return [
     {title: TITEL},
     {name: 'description', content: BESCHREIBUNG},
