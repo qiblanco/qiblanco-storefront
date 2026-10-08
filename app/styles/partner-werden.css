@@ -534,6 +534,12 @@
   .lp-a3 .lp-pw-hero__inner {
     gap: var(--a-s6);
   }
+  /* Handy: die gemessenen Beispiele untereinander. Zweispaltig sind
+     „KI-Übersicht“ und „Erfahrungsbericht“ breiter als die Karte
+     (hb-formate mobil-360, 2026-10-08: +7 px seitlicher Überlauf). */
+  .lp-a3 .lp-pw-belege {
+    grid-template-columns: 1fr;
+  }
   /* Handy: die Vorteilskarten wieder senkrecht, Bild über volle Breite. */
   .lp-a3 .lp-pw-karte {
     flex-direction: column;
