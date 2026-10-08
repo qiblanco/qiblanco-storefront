@@ -660,7 +660,7 @@ function Termindaten({buchung, verwalten, zone}) {
         <div className="pb__aktionen">
           <a
             className="pb__knopf-zwei"
-            href="/pages/produktberatung/kalender"
+            href="/pages/produktberatung-kalender"
             download="produktberatung-qiblanco.ics"
             rel="nofollow"
           >

@@ -10,7 +10,7 @@
  *
  * HttpOnly: kein Skript der Seite kann ihn lesen. Path=/pages: React Router
  * holt die Daten unter /pages/produktberatung.data, die Kalenderdatei liegt
- * unter /pages/produktberatung/kalender; ein Path=/pages/produktberatung
+ * unter /pages/produktberatung-kalender; ein Path=/pages/produktberatung
  * erreichte .data nicht (Pfadregel verlangt "/" nach dem Präfix). Host-only
  * (kein Domain): t.qiblanco.com und checkout.qiblanco.com bekommen ihn nie.
  * Ein Tag: so lange gilt der Weg ohne neuen Klick in der Mail.

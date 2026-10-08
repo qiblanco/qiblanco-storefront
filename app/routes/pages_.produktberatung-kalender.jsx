@@ -2,7 +2,7 @@ import {basis} from './pages.produktberatung';
 import {verwaltenToken} from '~/lib/produktberatung-verwalten.server';
 
 /**
- * /pages/produktberatung/kalender — die Kalenderdatei des eigenen Termins.
+ * /pages/produktberatung-kalender — die Kalenderdatei des eigenen Termins.
  *
  * Bis 2026-10-08 zeigte der Knopf „In meinen Kalender" direkt auf den
  * Buchungs-Endpunkt mit ?t=<token>&ics=1. Damit stand der Token im HTML und,
