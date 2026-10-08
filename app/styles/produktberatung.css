@@ -286,17 +286,10 @@
 .pb .pb__christian-text p {
   font-size: var(--pb-fs-base);
 }
-.pb .pb__christian-text p.pb__vorspann {
-  font-size: var(--pb-fs-xs);
-  margin-bottom: var(--pb-s1);
-}
+/* Christians Überschrift (08.10.) traegt den EINEN H2-Stil; Vorspann und
+   Unterschriftzeile sind in ihr aufgegangen. */
 .pb .pb__christian-text p.pb__christian-wort {
   font-size: var(--pb-fs-md);
-}
-.pb p.pb__unterschrift {
-  font-size: var(--pb-fs-xs);
-  font-weight: 600;
-  color: var(--pb-muted);
 }
 .pb p.pb__weg {
   margin: var(--pb-s3) 0 0;
