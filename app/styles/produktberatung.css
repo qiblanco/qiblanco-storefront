@@ -524,6 +524,7 @@
 .pb__felder {
   max-width: var(--pb-breite-schmal);
   position: relative; /* Anker des Honigtopfs */
+  scroll-margin-top: var(--pb-s4); /* Sprungziel aus dem Kopf von Arm B */
   display: flex;
   flex-direction: column;
   gap: var(--pb-s2);
@@ -833,6 +834,77 @@
 /* ─── Schluss ─────────────────────────────────────────────────────────────── */
 .pb__schluss {
   background: var(--pb-flaeche);
+}
+
+/* ─── Arm B (Seiten-Experiment pb-e1-gs107, Hypothese GS-107) ─────────────── */
+/* Der naechste Termin im Kopf: Titelzeile, die freien Uhrzeiten als Tipp-
+   Flaechen, darunter der Weg zu allen Terminen. Bewusst KEINE Karte: ohne
+   Innenabstand passen drei Uhrzeiten ab 360 px in eine Zeile (gemessen
+   3 x 98 px + 2 x 8 px), und die Zeile steht bei 390 x 844 ueber der Ecke, die
+   der Chat-Hinweis im ersten Bild belegt (ab y 626, gemessen 08.10.). Die
+   Uhrzeiten tragen das Gold des Einstiegs: in A traegt es der Knopf „Termin
+   aussuchen", den sie in B ersetzen. Keine neue Farbe, Groesse oder Radius. */
+.pb .pb__naechster {
+  margin: var(--pb-s3) 0 var(--pb-s2);
+}
+.pb p.pb__naechster-titel {
+  margin: 0 0 var(--pb-s1);
+  font-size: var(--pb-fs-base);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.pb ul.pb__naechster-zeiten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pb-s1);
+  margin: 0 0 var(--pb-s1);
+}
+.pb ul.pb__naechster-zeiten li {
+  margin: 0;
+  max-width: none;
+}
+.pb a.pb__naechster-zeit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--pb-tipp);
+  min-width: 96px; /* drei in einer Zeile ab 360 px (gemessen: 3 x 98 px + 2 x 8 px) */
+  padding: var(--pb-s1);
+  border-radius: var(--pb-r1);
+  background: var(--pb-akzent);
+  color: var(--pb-text);
+  font-size: var(--pb-fs-md);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pb a.pb__naechster-zeit:hover {
+  background: var(--pb-dunkel);
+  color: var(--pb-text-hell);
+}
+.pb p.pb__naechster-alle {
+  margin: 0;
+}
+/* Ueber den Angaben: welche Zeit gewaehlt ist (nach dem Sprung aus dem Kopf). */
+.pb p.pb__wahl {
+  padding-left: var(--pb-s2);
+  border-left: 3px solid var(--pb-dunkel);
+  font-weight: 600;
+}
+/* Am Handy steht Christians Foto ueber seinem Text: sein Gesicht zuerst, und
+   die Ecke unten rechts im ersten Bild (Chat-Hinweis) liegt auf dem Foto statt
+   auf seinen Worten. Ab 768 px wie A. */
+@media (max-width: 767px) {
+  .pb figure.pb__christian--b .pb__foto-rahmen {
+    float: none;
+    width: 100%;
+    margin: 0 0 var(--pb-s2);
+  }
+  .pb figure.pb__christian--b img.pb__foto {
+    aspect-ratio: 3 / 2;
+    object-position: 50% 18%;
+  }
 }
 
 /* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */

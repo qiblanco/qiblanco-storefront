@@ -40,7 +40,13 @@ export function verwaltenCookie(token) {
   return `${NAME}=${encodeURIComponent(token)}; Path=/pages; Max-Age=${MAX_S}; HttpOnly; Secure; SameSite=Lax`;
 }
 
-/** Adresse der Verwalten-Ansicht, ohne Token. */
-export function verwaltenAdresse(status) {
-  return `${PFAD}?verwalten=1${status ? `&status=${status}` : ''}`;
+/**
+ * Adresse der Verwalten-Ansicht, ohne Token. `pfad` ist der Pfad des Arms, auf
+ * dem gebucht wurde (Seiten-Experiment pb-e1-gs107: A /pages/produktberatung,
+ * B /pages/produktberatung-b). So landet die Bestätigung auf dem Pfad DES ARMS
+ * und der Abschluss ist je Arm zählbar; der Cookie gilt für beide (Path=/pages).
+ * Mail-Links (?b=) zeigen weiter auf A.
+ */
+export function verwaltenAdresse(status, pfad = PFAD) {
+  return `${pfad}?verwalten=1${status ? `&status=${status}` : ''}`;
 }
