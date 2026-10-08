@@ -88,7 +88,7 @@
   --pb-breite-schmal: 760px;
   --pb-breite: 1080px;
   --pb-tipp: 48px; /* Mindesthoehe jeder Tipp-Flaeche */
-  --pb-foto: 112px; /* Handy: Bild neben Christians Worten */
+  --pb-foto: 112px; /* 768-1139 px: Bild neben Christians Worten (am Handy steht es darueber) */
   --pb-foto-gross: 240px; /* ab 768 px */
   --pb-bewegung: 160ms ease; /* EINE Bewegung: Hover der Tipp-Flaechen */
   --pb-chat-frei: 400px; /* Chat-Fenster unten rechts: 332 px breit + 7 px Rand, dazu Luft */
@@ -236,10 +236,11 @@
   max-width: var(--pb-breite-schmal);
 }
 
-/* Christian: Bild + seine Worte als EINE Karte. Am Handy fliesst der Text um das
-   Bild (eine schmale Spalte neben dem Bild war 30 Zeilen lang), ab 768 px steht
-   das Bild links neben dem Text. Das Bild steht mit seiner Bildunterschrift in
-   EINEM Rahmen (.pb__foto-rahmen), der Rahmen fliesst bzw. steht im Raster. */
+/* Christian: Bild + seine Worte als EINE Karte. Am Handy steht das Bild mit seiner
+   Bildunterschrift UEBER dem Text (Christian 08.10. ~10:00Z/~10:25Z, beide Arme:
+   neben dem Foto standen Ein-Wort-Zeilen), zwischen 768 und 1139 px fliesst der
+   Text um das Bild, ab 1140 px steht das Bild links neben dem Text. Das Bild steht
+   mit seiner Bildunterschrift in EINEM Rahmen (.pb__foto-rahmen). */
 .pb figure.pb__christian {
   display: flow-root;
   margin: 0;
@@ -252,6 +253,17 @@
   float: left;
   width: var(--pb-foto);
   margin: 0 var(--pb-s2) var(--pb-s1) 0;
+}
+@media (max-width: 767px) {
+  .pb figure.pb__christian .pb__foto-rahmen {
+    float: none;
+    width: 100%;
+    margin: 0 0 var(--pb-s2);
+  }
+  .pb figure.pb__christian img.pb__foto {
+    aspect-ratio: 3 / 2;
+    object-position: 50% 18%;
+  }
 }
 @media (min-width: 768px) {
   .pb figure.pb__christian {
@@ -891,20 +903,6 @@
   padding-left: var(--pb-s2);
   border-left: 3px solid var(--pb-dunkel);
   font-weight: 600;
-}
-/* Am Handy steht Christians Foto ueber seinem Text: sein Gesicht zuerst, und
-   die Ecke unten rechts im ersten Bild (Chat-Hinweis) liegt auf dem Foto statt
-   auf seinen Worten. Ab 768 px wie A. */
-@media (max-width: 767px) {
-  .pb figure.pb__christian--b .pb__foto-rahmen {
-    float: none;
-    width: 100%;
-    margin: 0 0 var(--pb-s2);
-  }
-  .pb figure.pb__christian--b img.pb__foto {
-    aspect-ratio: 3 / 2;
-    object-position: 50% 18%;
-  }
 }
 
 /* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */

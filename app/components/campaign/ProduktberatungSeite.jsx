@@ -83,6 +83,16 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * der Absatz „Du hast schon einen QiOne®? Dann komm erst recht :)" unter den
  * Fragen ist ebenfalls sein Wortlaut. Alles davon trägt data-fremdtext.
  *
+ * SATZBAU-FASSUNG (Christian 08.10. ~10:00Z „mach mal Variante B Satzbau-
+ * Optimierung, sodass es korrektes Deutsch ist", ~10:25Z „ja lass B dauerhaft
+ * sein und gut ist es"): der zweite Absatz im Einstieg, sein Block „Live mit
+ * mir :)" und der Absatz „Du hast schon einen QiOne®?" stehen in der Fassung mit
+ * korrigiertem Satzbau, für alle Besucher. Kein Text-Test: diese Fassung IST
+ * jetzt sein Wortlaut und für Testvarianten tabu (Änderungen gegenüber der
+ * Vorfassung: Export, variante_b.aenderungen). Am Handy steht das Foto mit der
+ * Bildunterschrift über seinem Text, damit neben dem Foto keine Ein-Wort-Zeilen
+ * entstehen; ab 768 px unverändert.
+ *
  * ABDATEN IM BROWSER: siehe useJetzt()/nochBuchbar() unten. Die Grenze kommt
  * allein aus `buchungsschluss_min` des Endpunkts; die Seite kennt keine Zahl.
  *
@@ -99,9 +109,10 @@ import {GOOGLE_REVIEWS_CURATED} from '~/lib/googleReviewsCurated';
  * TEST-KREISLAUF (Seiten-Experiment pb-e1-gs107, Hypothese GS-107): die Route
  * pages.produktberatung-b.jsx rendert diese Komponente mit variante="b". B hat
  * den nächsten Termin mit seinen freien Uhrzeiten im Kopf (ein Tipp wählt vor
- * und springt zu den Angaben), am Handy Christians Foto über seinem Text, nach
- * den Terminen zuerst den Ablauf, dann die Stimmen (andere Auswahl), dann die
- * Fragen. Alles andere ist in beiden Armen gleich, Christians Wortlaut sowieso.
+ * und springt zu den Angaben), nach den Terminen zuerst den Ablauf, dann die
+ * Stimmen (andere Auswahl), dann die Fragen. Alles andere ist in beiden Armen
+ * gleich, Christians Wortlaut sowieso; das Foto über dem Text am Handy gilt seit
+ * Christians Entscheidung von ~10:25Z für beide Arme.
  * MESSPUNKTE (first-party, Haus-Beacon, je Arm über den Pfad): data-section
  * „pb-angaben" an den Angaben (sichtbar erst nach der Terminwahl) und
  * „pb-gebucht" an der Bestätigung direkt nach dem Buchen. Kein Fremdwerkzeug.
@@ -393,7 +404,7 @@ function NaechsterTermin({termine, zone}) {
  * Wortlaut (siehe Kopfkommentar). Einspaltig, damit das Chat-Fenster unten
  * rechts Christians Worte nicht verdeckt.
  */
-function Kopf({mitWeg, naechster, b}) {
+function Kopf({mitWeg, naechster}) {
   const g = useGoogleRating();
   const vertrauen = (
     <p className="pb__vertrauen">
@@ -425,9 +436,9 @@ function Kopf({mitWeg, naechster, b}) {
             für dich!
           </p>
           <p className="pb__lead" data-fremdtext="christian-wortlaut-20261008">
-            Wir können über deine aktuelle Situation sprechen, über den Grund,
-            warum du einen QiOne® kaufen möchtest, oder auch einfach Fragen,
-            die noch offen sind, klären.
+            Wir können über deine aktuelle Situation sprechen und darüber, warum
+            du einen QiOne® kaufen möchtest. Oder wir klären einfach die Fragen,
+            die noch offen sind.
           </p>
           {naechster ? (
             <>
@@ -451,10 +462,7 @@ function Kopf({mitWeg, naechster, b}) {
             </p>
           ) : null}
         </div>
-        <figure
-          className={`pb__christian${b ? ' pb__christian--b' : ''}`}
-          data-section="pb-person"
-        >
+        <figure className="pb__christian" data-section="pb-person">
           {/* Foto mit Bildunterschrift (Christian 08.10. ~07:27Z: „unter dem Bild von mir in klein
               und dezent"); sie ersetzt die frühere Unterschriftzeile. */}
           <div className="pb__foto-rahmen">
@@ -462,11 +470,7 @@ function Kopf({mitWeg, naechster, b}) {
               className="pb__foto"
               src={`${FOTO}&width=480`}
               srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1080 1080w`}
-              sizes={
-                b
-                  ? '(min-width: 1140px) 240px, (min-width: 768px) 112px, 100vw'
-                  : '(min-width: 1140px) 240px, 112px'
-              }
+              sizes="(min-width: 1140px) 240px, (min-width: 768px) 112px, 100vw"
               width="240"
               height="307"
               fetchpriority="high"
@@ -486,24 +490,24 @@ function Kopf({mitWeg, naechster, b}) {
           >
             <h2 className="pb__christian-titel">Live mit mir :)</h2>
             <p className="pb__christian-wort">
-              Vor mehr als 10 Jahren habe ich Qi Blanco aus meiner eigenen
-              Leidensgeschichte gegründet. Ich war Leiter einer
-              Entwicklungsabteilung für Automotive und Aerospace. Das Büro wurde
-              modernisiert. Das Spannende: Ich wurde müder, war ständig genervt
-              und ging nicht mehr so glücklich wie früher durchs Leben. Die
-              ersten Tage schob ich es auf meinen beruflichen Stress, dann auf
-              meine Ernährung, dann auf meine Beziehung … bis ich ziemlich mit
-              allem durch war, hatte ich vieles getestet. Und dann fiel es mir
-              wie Schuppen von den Augen: Ein riesiger WLAN-Router hing auf
-              einmal direkt rechts neben mir an der Wand. 60 cm oberhalb von
-              meinem Kopf. Heureka! Es liegt nicht an mir, sondern am E-Smog,
-              der direkt mein Nervensystem angriff! Als Ingenieur war klar: Ich
-              brauche eine einfache und elegante Lösung. Einfach umhängen und
-              das Problem ist erledigt.
+              Vor mehr als 10 Jahren habe ich Qi Blanco gegründet, aus meiner
+              eigenen Leidensgeschichte heraus. Damals leitete ich eine
+              Entwicklungsabteilung für Automotive und Aerospace, und unser Büro
+              wurde gerade modernisiert. Das Spannende: Ab da wurde ich immer
+              müder, war ständig genervt und ging nicht mehr so glücklich durchs
+              Leben wie früher. Die ersten Tage schob ich es auf meinen
+              beruflichen Stress, dann auf meine Ernährung, dann auf meine
+              Beziehung … Ich habe vieles getestet, bis ich mit allem ziemlich
+              durch war. Und dann fiel es mir wie Schuppen von den Augen: Seit
+              dem Umbau hing ein riesiger WLAN-Router direkt rechts neben mir an
+              der Wand, 60 cm über meinem Kopf. Heureka! Es lag nicht an mir,
+              sondern am E-Smog, der direkt mein Nervensystem angriff! Als
+              Ingenieur war mir klar: Ich brauche eine einfache und elegante
+              Lösung. Einfach umhängen, und das Problem ist erledigt.
             </p>
             <p className="pb__christian-wort">
-              Gesagt, getan: In dieser Nacht entstand noch die Blaupause für den
-              QiOne®.
+              Gesagt, getan: Noch in derselben Nacht entstand die Blaupause für
+              den QiOne®.
             </p>
           </figcaption>
         </figure>
@@ -1073,13 +1077,14 @@ function Fragen() {
             </li>
           ))}
         </ul>
-        {/* Christians Wortlaut (08.10. ~07:35Z), der Umbruch nach „:)" ist von ihm. */}
+        {/* Christians Wortlaut (08.10. ~07:35Z, Satzbau-Fassung ~10:25Z), der Umbruch nach „:)" ist von ihm. */}
         <p className="pb__schon" data-fremdtext="christian-wortlaut-20261008">
           Du hast schon einen QiOne®? Dann komm erst recht :)
           <br />
-          Wir können gerne über die Nutzung reden, deine persönlichen
-          Erfahrungen oder Fragen klären, die erst bei der Nutzung entstanden
-          sind. Oder welcher Vorteil ein QiHome® Air für dich sein könnte?
+          Wir können gerne über die Nutzung reden und über deine persönlichen
+          Erfahrungen. Oder wir klären Fragen, die erst bei der Nutzung
+          entstanden sind. Vielleicht auch, welchen Vorteil dir ein QiHome® Air
+          bringen könnte?
         </p>
       </div>
     </section>
@@ -1228,7 +1233,7 @@ export function ProduktberatungSeite({variante = 'a'} = {}) {
     ) : null;
   return (
     <div className={b ? 'pb pb--b' : 'pb'}>
-      <Kopf mitWeg={buchenAnsicht} naechster={naechster} b={b} />
+      <Kopf mitWeg={buchenAnsicht} naechster={naechster} />
       {mitte}
       {b ? (
         <>
