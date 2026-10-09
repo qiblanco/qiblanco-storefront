@@ -624,6 +624,16 @@ export default async function handleRequest(
       // KEINER Direktive. Gemessen 2026-09-18 auf /products/qibracelet,
       // 3 Meldungen auf connect-src und 3 auf img-src — also beide Stellen.
       'https://www.googleadservices.com',
+      // Google-Ads-Conversion-Endpunkt, der dritte von genau drei. Die
+      // Endpunktkarte im gtag-Code unseres GTM (Kj in gtm.js) kennt für
+      // ccm/conversion, pagead/conversion und measurement/conversion nur
+      // www.google.com, www.googleadservices.com und diesen Host. Die ersten
+      // beiden stehen schon, die Menge ist geschlossen und wächst nicht wie
+      // die ccTLDs. Googles CSP-Leitfaden führt ihn in connect-src für Ads
+      // und für Ads-verknüpftes GA4. Gemessen 2026-10-08 auf
+      // /pages/produktberatung, 1 Meldung. img-src trägt ihn NICHT: dort ist
+      // bisher keine Meldung gemessen.
+      'https://pagead2.googlesyndication.com',
       'https://*.clarity.ms',
       'https://consent.cookiebot.com',
       'https://consentcdn.cookiebot.com',
