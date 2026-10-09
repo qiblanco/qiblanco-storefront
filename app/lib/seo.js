@@ -1043,7 +1043,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/was-ist-kohaerentes-wasser',
-    lastmod: '2026-10-07T04:30:00Z',
+    lastmod: '2026-10-09T15:00:00Z',
     grund:
       'Die Info-Seite „Kohärentes Wasser" (Großjob vom 23.09.2026, ' +
       'Christian: ' +
@@ -1058,6 +1058,17 @@ export const NUR_ROUTE_SEITEN = [
       'prüft am ausgelieferten HTML den INHALT (beide Teile, Quellen-Links, ' +
       'Grafiken, JSON-LD), kein noindex, den Canonical und den Sitemap-<loc>, ' +
       'nicht den Statuscode.',
+  },
+  {
+    pfad: '/pages/was-ist-hexagonales-wasser',
+    lastmod: '2026-10-09T15:00:00Z',
+    grund:
+      'Die Seite „Hexagonales Wasser" (Christian, 23.09.2026: „Platz eins ' +
+      'in SEO und GEO" für hexagonales und kohärentes Wasser; Job ' +
+      '20261009-kohaerentes-und-hexagonales-wasser-platz-eins-seo-geo). ' +
+      'Reine Route wie die Info-Seite, ohne Shopify-Seitenobjekt; ohne ' +
+      'diesen Eintrag stünde sie in keiner Sitemap. Kein noindex, ' +
+      'canonicalLink() in der Route.',
   },
   {
     pfad: '/pages/wissen-und-vertrauen',

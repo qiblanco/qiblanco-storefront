@@ -52,13 +52,18 @@ export const PFAD = '/pages/was-ist-kohaerentes-wasser';
  * (app/lib/seo.js) im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-23';
-const GEAENDERT = '2026-10-07';
+const GEAENDERT = '2026-10-09';
 
 export const SEITE = {
   pfad: PFAD,
-  titel: 'Kohärentes Wasser einfach erklärt, mit Quellen | Qi Blanco',
+  // Titel als die Frage der H1 (09.10.2026, Job 20261009-kohaerentes-und-
+  // hexagonales-wasser-platz-eins-seo-geo): der Platz-1-Halter bei google.de
+  // trägt genau diese Frage im Titel, wir trugen sie nur in der H1. Die
+  // Beschreibung spricht seitdem allein vom kohärenten Wasser; das
+  // hexagonale hat seine eigene Seite (/pages/was-ist-hexagonales-wasser).
+  titel: 'Was ist kohärentes Wasser? Erklärt mit Quellen | Qi Blanco',
   beschreibung:
-    'Kohärentes und hexagonales Wasser einfach erklärt: Winkel, kohärente Domäne, EZ-Wasser. Dann die harten Fakten mit animierten Grafiken und Primärquellen.',
+    'Kohärentes Wasser einfach erklärt: Gleichtakt der Moleküle, kohärente Domänen, EZ-Wasser. Dann die harten Fakten mit animierten Grafiken und Primärquellen.',
   marke: 'Deep Dive',
   h1: 'Was ist kohärentes Wasser?',
   unterzeile:
@@ -70,7 +75,7 @@ export const SEITE = {
   autorZeile: `Von ${AUTORENKASTEN.name}`,
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
-  standAnzeige: '7. Oktober 2026',
+  standAnzeige: '9. Oktober 2026',
   standZeile:
     'Stand: 23. September 2026. Jede Zahl trägt ihre Quelle. Neue Veröffentlichungen nehmen wir auf, sobald sie erscheinen.',
   leitLegende: `Nimmt das Wassermolekül Energie auf, weitet sich sein Winkel von ${VON} auf ${NACH}. Dann ordnen sich die Nachbarn zu einem Sechseck.`,
@@ -450,7 +455,7 @@ export const BEGRIFFE = {
       bedeutung:
         'Wasser mit sechseckiger Anordnung der Moleküle. Gemessen im Eis, im EZ-Modell als Wabenschicht.',
       herkunft:
-        'Eis: Kuhs und Lehmann {q:kuhs1981}; EZ: Pollack {q:pollack2013}',
+        'Eis: Kuhs und Lehmann {q:kuhs1981}; EZ: Pollack {q:pollack2013}; ausführlich: {l:/pages/was-ist-hexagonales-wasser|Was ist hexagonales Wasser?}',
     },
     {
       begriff: 'Strukturiertes Wasser',
@@ -1075,6 +1080,11 @@ export const QUELLEN = [
 export const ZITATMARKEN = ZITIERT;
 
 export const WEITER = [
+  {
+    to: '/pages/was-ist-hexagonales-wasser',
+    titel: 'Was ist hexagonales Wasser?',
+    text: 'Wo Wasser sechseckig ist, was davon gemessen ist, und die Abgrenzung zu Eis Ih, EZ, strukturiert und belebt.',
+  },
   {
     to: '/pages/technologie',
     titel: 'Die Technologie',
