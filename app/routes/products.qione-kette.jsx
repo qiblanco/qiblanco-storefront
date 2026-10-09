@@ -180,7 +180,7 @@ export default function Product() {
         }}
       />
     </div>
-    <CallToAction img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476"} imgBreite={1024} imgHoehe={1024} link={"/products/qione-2-pro"} linkStyle={"secondary"} linkText={"Hol' dir jetzt deinen QiOne® 2 pro"} 
+    <CallToAction img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476"} imgBreite={1024} imgHoehe={1024} imgAlt="QiOne® 2 Pro mit goldfarbenem Gitterchip™ und eingeprägtem Qi-Blanco-Zeichen" link={"/products/qione-2-pro"} linkStyle={"secondary"} linkText={"Hol' dir jetzt deinen QiOne® 2 pro"} 
     text={<>
     <h2>Lass deinen QiOne® 2 Pro kohärentes Wasser für dich produzieren</h2>
     <p className='mt-2'><b>✅ 100% deutsche Produktion <br />
@@ -192,7 +192,7 @@ export default function Product() {
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
-    <SingleImage size={"fullscreen"} link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} />
+    <SingleImage size={"fullscreen"} link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} alt="QiOne® 2 Pro an einer silbernen Kette auf hellem Stoff" />
     </>
   );
 }

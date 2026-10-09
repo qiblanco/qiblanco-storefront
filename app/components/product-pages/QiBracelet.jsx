@@ -28,6 +28,7 @@ export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
         link={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2025-05-qiblanco-canggu-06482.jpg?v=1752531662'
         }
+        alt="Zwei Handgelenke mit je einem QiBracelet® über blauem Wasser"
       />
       <MainFeatures />
       <PerfektePassform />
@@ -87,6 +88,7 @@ export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
         img={'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha.webp?v=1732220427'}
         imgBreite={2048}
         imgHoehe={2048}
+        imgAlt="Geöffnetes QiBracelet® mit goldfarbenem Gitterchip™"
       />
       <UpsellLineUp block={block} />
       <ProductFAQ items={faqItems} />
@@ -166,7 +168,7 @@ function MainFeatures() {
         <img
           width={350}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2023_Siegel.png?v=1732616406"
-          alt=""
+          alt="Siegel „Produkt zellbiologisch geprüft“ von dartsch scientific, 2023, mit Unterschrift von Prof. Dr. Peter C. Dartsch, Diplom-Biochemiker"
         />
         <div className="MainFeaturesColumn">
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>
@@ -212,7 +214,7 @@ function PerfektePassform() {
         </p>
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/massband-bracelet.webp?v=1760784243"
-          alt=""
+          alt="Zeichnung: Maßband um das Handgelenk, um den Umfang für das QiBracelet® zu messen"
         />
         <p>
           Natürlich kann das QiBracelet® <b>gedehnt</b> oder <b>verengt</b>{' '}
@@ -352,12 +354,12 @@ function Gitterchip() {
         <img
           width={300}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-e1668521164461_1_21efb1fc-4b64-469f-96d2-33dcf70d6506.jpg?v=1670809038"
-          alt=""
+          alt="Gitterchip™ in Nahaufnahme: goldfarbene Scheibe mit wabenartigem Gittermuster"
         />
         <img
           width={300}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px.jpg_1_f94bd190-0e41-40bc-aa0c-e94cf253f975.webp?v=1670809046"
-          alt=""
+          alt="Ende des QiBracelet® in Nahaufnahme, mit eingelassenem goldfarbenem Gitterchip™"
         />
       </div>
       <div className="mb-3 mt-2 text-center">
@@ -513,7 +515,7 @@ function MassgeschneiderteTechnologie() {
             width={400}
             style={{borderRadius: '20px'}}
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010739_1.webp?v=1676979374"
-            alt=""
+            alt="Mehrere QiBracelet® ineinandergelegt vor goldfarbenem Hintergrund"
           />
         </div>
       </div>
@@ -590,11 +592,11 @@ function ImageDivider() {
     <div className="ImageDivider NormalSectionSize">
       <img
         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010701-min-1-973x1024.jpg_1_3131118a-00d4-466e-9c63-dd69cd0d005b.webp?v=1704278162"
-        alt=""
+        alt="Zwei geöffnete QiBracelet® auf einer weißen Schmuckschachtel"
       />
       <img
         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp?v=1670807595"
-        alt=""
+        alt="QiBracelet® auf seinem Ständer mit dem Qi-Blanco-Zeichen"
       />
     </div>
   );

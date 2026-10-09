@@ -45,13 +45,45 @@ test('ARM-SETZT: Größenvariante ändert nichts (Namensteil statt URL-Literal)'
   }
 });
 
-test('ARM-BESTAND: vorhandenes alt bleibt unverändert, auch leeres', () => {
-  for (const a of ['alt=""', 'alt="Zellgesundheit"', "alt=''"]) {
-    const roh = `<img ${a} src="${CDN}/WIFI_ICON_x.webp">`;
-    const {html, gesetzt} = bilderAuszeichnen(roh);
-    assert.equal(html, roh, `verändert bei ${a}`);
+test('ARM-BESTAND: nichtleeres alt bleibt byte-gleich, auch am Icon', () => {
+  for (const roh of [
+    `<img alt="Zellgesundheit" src="${CDN}/WIFI_ICON_x.webp">`,
+    `<img alt="Titelseite" src="${CDN}/studie.png">`,
+    `<img alt="" src="${CDN}/studie.png">`,
+  ]) {
+    const {html, gesetzt, markiert} = bilderAuszeichnen(roh);
+    assert.equal(html, roh, `verändert: ${roh}`);
     assert.deepEqual(gesetzt, []);
+    assert.deepEqual(markiert, []);
   }
+});
+
+test('ARM-MARKIERT: bekanntes Icon mit leerem alt bekommt NUR role="presentation"', () => {
+  // Rot am Stand vor 2026-10-09: das Icon blieb byte-gleich, die Rand-Messung
+  // zaehlte es als "ohne Alt-Text".
+  for (const a of ['alt=""', "alt=''"]) {
+    const roh = `<img ${a} src="${CDN}/WIFI_ICON_x.webp">`;
+    const {html, gesetzt, markiert} = bilderAuszeichnen(roh);
+    assert.equal(html, `<img role="presentation" ${a} src="${CDN}/WIFI_ICON_x.webp">`);
+    assert.deepEqual(gesetzt, []);
+    assert.equal(markiert.length, 1);
+  }
+});
+
+test('ARM-MARKIERT: vorhandene role/aria-hidden wird nie überschrieben', () => {
+  for (const roh of [
+    `<img role="img" alt="" src="${CDN}/WIFI_ICON_x.webp">`,
+    `<img aria-hidden="true" alt="" src="${CDN}/WIFI_ICON_x.webp">`,
+  ]) {
+    assert.equal(bilderAuszeichnen(roh).html, roh);
+  }
+  const ohneAlt = `<img aria-hidden="true" src="${CDN}/WIFI_ICON_x.webp">`;
+  assert.equal(bilderAuszeichnen(ohneAlt).html, `<img alt="" aria-hidden="true" src="${CDN}/WIFI_ICON_x.webp">`);
+});
+
+test('ARM-SETZT: das gesetzte alt="" kommt mit role="presentation"', () => {
+  const {html} = bilderAuszeichnen(`<img src="${CDN}/Green_Checkmark_480x480.webp">`);
+  assert.match(html, /^<img alt="" role="presentation" src=/);
 });
 
 test('ARM-OFFEN: unbekanntes Bild ohne alt bleibt unberührt UND wird gemeldet', () => {
@@ -85,7 +117,7 @@ test('ARM-FREMDATTRIBUT: data-alt zählt NICHT als vorhandenes alt', () => {
   const roh = `<img data-alt="x" src="${CDN}/WIFI_ICON_a_16x16.webp">`;
   const {html, gesetzt} = bilderAuszeichnen(roh);
   assert.equal(gesetzt.length, 1, 'data-alt wurde als echtes alt gelesen');
-  assert.match(html, /<img alt="" data-alt="x"/);
+  assert.match(html, /<img alt="" role="presentation" data-alt="x"/);
 });
 
 test('ARM-FREMDATTRIBUT: ?alt= IN der Bild-URL zählt NICHT als alt', () => {
@@ -104,7 +136,10 @@ test('ARM-FREMDATTRIBUT: die Gegenrichtung bleibt heil (echtes alt wird erkannt)
   ]) {
     const {gesetzt, html} = bilderAuszeichnen(roh);
     assert.deepEqual(gesetzt, [], `echtes alt übersehen: ${roh}`);
-    assert.equal(html, roh);
+    // Kein zweites alt; einzig zulässige Änderung ist die Deko-Rolle am
+    // leeren alt (ARM-MARKIERT).
+    assert.equal((html.match(/\salt\s*=/g) || []).length, 1);
+    assert.equal(html.replace('<img role="presentation" ', '<img '), roh);
   }
 });
 
@@ -114,7 +149,7 @@ test('ARM-TAGENDE: ein > im Attributwert beendet das Tag nicht', () => {
   const {html, gesetzt, offen} = bilderAuszeichnen(roh);
   assert.equal(gesetzt.length, 1, 'Tag am > im Attributwert abgeschnitten');
   assert.deepEqual(offen, []);
-  assert.match(html, /<img alt="" title="a > b"/);
+  assert.match(html, /<img alt="" role="presentation" title="a > b"/);
 });
 
 test('ARM-TAGENDE: ein unabgeschlossenes Tag wird übersprungen, nicht geraten', () => {
@@ -130,14 +165,14 @@ test('ARM-STILLE: leere und fehlende Eingabe werfen nicht', () => {
   assert.equal(fremdHtmlMitBildAuszeichnung(null), '');
 });
 
-test('ARM-UNVERSEHRT: ausser alt="" ändert sich kein Byte', () => {
+test('ARM-UNVERSEHRT: ausser alt="" und role ändert sich kein Byte', () => {
   const roh = [
     '<p class="p1"><meta charset="utf-8">Text mit   und &amp; Entität</p>',
     `<ul><li><b><img style="float: none;" height="17" width="23" src="${CDN}/WIFI_ICON_a_16x16.webp?v=1">  E-Smog Schutz</b></li></ul>`,
     `<img alt="Titelseite der Publikation" src="${CDN}/studie.png">`,
   ].join('\n');
   const {html} = bilderAuszeichnen(roh);
-  assert.equal(html.replace(' alt=""', ''), roh);
+  assert.equal(html.replace(' alt="" role="presentation"', ''), roh);
 });
 
 test('ARM-UNVERSEHRT: idempotent -- ein zweiter Lauf ändert nichts mehr', () => {

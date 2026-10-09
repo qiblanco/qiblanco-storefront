@@ -157,7 +157,7 @@ code {
   padding: 0.25rem;
 }
 aside,
-aside main{
+aside .aside-zone{
   background: rgb(245, 253, 255)!important; 
 }
 .background-divs{

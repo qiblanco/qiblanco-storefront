@@ -667,6 +667,10 @@ export function YoutubeTimestamp({
         {...posterProps}
         ref={posterBild}
         alt={posterAlt}
+        /* Ohne eigenen Bildtext ist das Poster ausdruecklich dekorativ: der
+         * Name kommt aus dem aria-label des Knopfes (probe_videofassade_
+         * nennt_das_video.py). role=presentation macht das maschinenlesbar. */
+        role={posterAlt ? undefined : 'presentation'}
         loading="lazy"
         data-qb-video-poster={posterAus ? 'aus' : undefined}
         /* Sobald der Player läuft, ist die Vorschau nur noch UNTERLAGE und
@@ -904,7 +908,7 @@ export function YoutubeTimestamp({
             `<a class="${eigenesKleid ? className : 'YoutubeTimestamp'}" ` +
             `href="${watchUrl}" target="_blank" rel="noopener noreferrer" ` +
             `aria-label="Video auf YouTube ansehen: ${titelText}">` +
-            `<img src="${posterUrl}" alt="${posterAltText}" width="480" height="360" ` +
+            `<img src="${posterUrl}" alt="${posterAltText}"${posterAlt ? '' : ' role="presentation"'} width="480" height="360" ` +
             `style="width:100%;height:100%;object-fit:cover" /></a>`,
         }}
       />

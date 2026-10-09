@@ -75,6 +75,8 @@ export const DEKORATIVE_ICONS = [
  *   darf nicht als vorhandenes alt gelesen werden; das erledigt HAT_ALT mit.
  */
 const HAT_ALT = /(?:^<img|\s)alt\s*=/i;
+const LEERES_ALT = /(?:^<img|\s)alt\s*=\s*(?:""|'')/i;
+const HAT_ROLLE = /(?:^<img|\s)(?:role|aria-hidden)\s*=/i;
 const SRC = /(?:^<img|\s)src\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i;
 
 /**
@@ -115,32 +117,49 @@ function quelleVon(tag) {
 }
 
 /**
- * Zeichnet bekannte dekorative Icons in fremdem HTML mit alt="" aus.
+ * Zeichnet bekannte dekorative Icons in fremdem HTML mit alt="" und
+ * role="presentation" aus.
+ *
+ * DEKO-MARKIERUNG (seit 2026-10-09, Job 20261009-update-alt-texte-
+ * produktbilder-alle-shops s02): alt="" allein ist fuer Werkzeuge nicht von
+ * einem vergessenen Text zu unterscheiden -- die Rand-Messung des Jobs zaehlte
+ * die vier Icons deshalb als "ohne Alt-Text". role="presentation" macht die
+ * Entscheidung "dekorativ" maschinenlesbar. Ein Icon, das im RTE schon alt=""
+ * traegt (so liefert Shopify sie heute aus), bekommt NUR die Rolle; ein
+ * NICHTLEERES alt bleibt byte-gleich (das meldet probe_alt_texte_live.py,
+ * Raum STUMM), und eine vorhandene role/aria-hidden wird nie ueberschrieben.
  *
  * @param {string} html rohes Fremd-HTML (Shopify descriptionHtml)
- * @returns {{html: string, gesetzt: string[], offen: string[]}}
- *   html    — dasselbe HTML, nur mit alt="" an den bekannten Icons
- *   gesetzt — Bildquellen, die ausgezeichnet wurden
+ * @returns {{html: string, gesetzt: string[], markiert: string[], offen: string[]}}
+ *   html     — dasselbe HTML, nur mit alt=""/role an den bekannten Icons
+ *   gesetzt  — Bildquellen ohne alt, die alt="" + role bekamen
+ *   markiert — Bildquellen mit schon leerem alt, die nur die role bekamen
  *   offen   — Bildquellen OHNE alt, die bewusst unberührt blieben, weil ihr
  *             Motiv hier nicht bekannt ist (der Restbericht des Selektors)
  */
 export function bilderAuszeichnen(html) {
   const gesetzt = [];
+  const markiert = [];
   const offen = [];
   if (typeof html !== 'string' || html === '') {
-    return {html: typeof html === 'string' ? html : '', gesetzt, offen};
+    return {html: typeof html === 'string' ? html : '', gesetzt, markiert, offen};
   }
   let neu = '';
   let zuletzt = 0;
   for (const {tag, start, ende} of imgTags(html)) {
     neu += html.slice(zuletzt, start);
     zuletzt = ende;
-    if (HAT_ALT.test(tag)) {
-      neu += tag;
-      continue;
-    }
     const quelle = quelleVon(tag);
     const bekannt = DEKORATIVE_ICONS.some((n) => quelle.includes(n));
+    if (HAT_ALT.test(tag)) {
+      if (bekannt && LEERES_ALT.test(tag) && !HAT_ROLLE.test(tag)) {
+        markiert.push(quelle);
+        neu += tag.replace(/^<img\b/i, '<img role="presentation"');
+      } else {
+        neu += tag;
+      }
+      continue;
+    }
     if (!bekannt) {
       offen.push(quelle);
       neu += tag;
@@ -149,10 +168,10 @@ export function bilderAuszeichnen(html) {
     gesetzt.push(quelle);
     // Direkt hinter "<img" einsetzen: die einzige Stelle, die unabhängig von
     // der Attribut-Reihenfolge und von "/>" gegen ">" ist.
-    neu += tag.replace(/^<img\b/i, '<img alt=""');
+    neu += tag.replace(/^<img\b/i, HAT_ROLLE.test(tag) ? '<img alt=""' : '<img alt="" role="presentation"');
   }
   neu += html.slice(zuletzt);
-  return {html: neu, gesetzt, offen};
+  return {html: neu, gesetzt, markiert, offen};
 }
 
 /**

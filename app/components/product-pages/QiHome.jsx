@@ -70,6 +70,7 @@ export function QiHome({block = undefined, faqItems = FAQ_QIHOME_AIR}) {
         img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_a9b8e70e-d183-48e9-96cd-81b9a5efed82.webp?v=1732708229"}
         imgBreite={1024}
         imgHoehe={906}
+        imgAlt="QiHome® Air mit Holzkappe und goldfarbenem Gitterchip™"
         text={
         <>
             <h2>Fördere die Gesundheit deines Zuhauses mit dem QiHome® Air.</h2>
@@ -95,7 +96,7 @@ function MainFeatures() {
         <img
           width={350}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/597208a9-7cd9-41d3-897b-42cf60daa7f2.png?v=1732617145"
-          alt=""
+          alt="Siegel „Produkt zellbiologisch geprüft“ von dartsch scientific mit Unterschrift von Prof. Dr. Peter C. Dartsch, Diplom-Biochemiker"
         />
         <div className="MainFeaturesColumn">
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>
@@ -312,7 +313,7 @@ function MassgeschneiderteTechnologie() {
             width={400}
             style={{borderRadius: '20px'}}
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1000782-min-scaled-e1666038171750-1024x1024_1.jpg?v=1670800892"
-            alt=""
+            alt="QiHome® Air in einer Steckdose an einer Betonwand"
           />
         </div>
       </div>
@@ -330,7 +331,7 @@ function SchutzVorGeopathogenerStrahlung(){
         <p className='mt-2'>Durch die unterschiedlichen Erdbedingungen bekommen diese geopathogene Strahlungen ihr individuelles Frequenzspektrum. Abhängig von der persönlichen körperlichen Verfassung, empfinden das vor allem sensible Menschen als äußerst unangenehm.</p>
       </div>
       <div>
-      <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHome_Air.webp?v=1675434206" alt="" />
+      <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHome_Air.webp?v=1675434206" alt="QiHome® Air vor einem hellen Badezimmer mit Waschtisch und Bogenspiegel" />
       </div>
     </div>
     <p>Am Ende sind all diese geopathogenen Strahlungen auch „nur“ elektromagnetische Strahlung. Es ist also eine zusätzliche Strahlenbelastung zu den technisch erzeugten, wie Handy- oder Funkstrahlung.</p>
