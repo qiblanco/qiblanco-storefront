@@ -27,6 +27,8 @@ export function QiBracelet() {
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha-1024x1024.png_1.webp?v=1670806857'
         }
+        imgBreite={1024}
+        imgHoehe={1024}
         imgAlt={'QiBracelet® aus gebürstetem Edelstahl, geöffneter Reif mit goldfarbenem Gitterchip™'}
         link={'/products/qibracelet'}
         linkStyle={'secondary'}
@@ -58,6 +60,8 @@ export function QiBracelet() {
       </div>
         <CallToAction
           img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351"}
+          imgBreite={526}
+          imgHoehe={296}
           imgAlt={'Der Videokurs „In 5 Stufen zum Superhuman“ auf Laptop und Smartphone'}
           text={
           <>

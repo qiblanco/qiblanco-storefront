@@ -85,6 +85,8 @@ export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
         linkText={"Hol' dir jetzt dein QiBracelet®"}
         linkStyle={'primary'}
         img={'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha.webp?v=1732220427'}
+        imgBreite={2048}
+        imgHoehe={2048}
       />
       <UpsellLineUp block={block} />
       <ProductFAQ items={faqItems} />

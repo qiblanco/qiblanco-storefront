@@ -128,6 +128,8 @@ export default function QiOne2Pro({
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/New_Project_1.webp?v=1733928571'
         }
+        imgBreite={1080}
+        imgHoehe={1080}
         text={
           <>
             <h2>

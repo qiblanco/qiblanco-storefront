@@ -43,6 +43,8 @@ export function QiOne() {
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476'
         }
+        imgBreite={1024}
+        imgHoehe={1024}
         imgAlt={'QiOne® 2 Pro'}
         link={'/products/qione-2-pro'}
         linkStyle={'secondary'}
@@ -78,6 +80,8 @@ export function QiOne() {
         img={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476'
         }
+        imgBreite={1024}
+        imgHoehe={1024}
         imgAlt={'QiOne® 2 Pro'}
         link={'/products/qione-2-pro'}
         linkStyle={'secondary'}

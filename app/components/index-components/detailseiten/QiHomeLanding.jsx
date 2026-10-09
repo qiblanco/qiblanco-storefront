@@ -48,6 +48,8 @@ export function QiHomeLanding() {
         linkText="Hol dir jetzt dein QiHome® Air"
         linkStyle="primary"
         img="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QIHome_82a49997-785a-4958-b924-a5e83517682a.webp?v=1736352632"
+        imgBreite={1080}
+        imgHoehe={1080}
         imgAlt="QiHome® Air: quadratisches Gerät aus gebürstetem Metall mit Holzoberteil, Schriftzug QiHome und rundem goldfarbenem Einsatz"
         text={
           <>

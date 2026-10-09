@@ -68,6 +68,8 @@ export function QiHome({block = undefined, faqItems = FAQ_QIHOME_AIR}) {
         linkText={"Hol' dir jetzt dein QiHome® Air"}
         linkStyle={"primary"}
         img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_a9b8e70e-d183-48e9-96cd-81b9a5efed82.webp?v=1732708229"}
+        imgBreite={1024}
+        imgHoehe={906}
         text={
         <>
             <h2>Fördere die Gesundheit deines Zuhauses mit dem QiHome® Air.</h2>
