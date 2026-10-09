@@ -382,7 +382,7 @@ export default function Product() {
           <br />
         </p>
         <p className="mt-1">
-          Wir stehen für Transparenz, Qualität und echten Mehrwert. Unser Ziel:
+          Unser Ziel:
           Dir einen Kakao zu bieten, der wirkt – und hält, was er verspricht.
           <br />
         </p>

@@ -180,7 +180,7 @@ export const FRAGEN = [
     ton: 'ja',
     antwort: [
       'Dass die Studien von uns finanziert sind, steht auch so in den Publikationen. Alle fünf Arbeiten kommen aus demselben Labor, dem Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch. So läuft Produktforschung in aller Regel, und falsch werden die Ergebnisse dadurch nicht. Eine Wiederholung durch ein zweites, unabhängiges Labor steht noch aus.',
-      'Offengelegt ist alles, was dazugehört: Auftraggeber, Labor, Methode, Fallzahlen und Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Unabhängigkeit können wir dagegen nicht belegen, und deshalb schreiben wir nirgends „unabhängig getestet".',
+      'Auftraggeber, Labor, Methode, Fallzahlen und Grenzen stehen in den Arbeiten und auf unseren Studienseiten. Unabhängigkeit können wir dagegen nicht belegen, und deshalb schreiben wir nirgends „unabhängig getestet".',
     ],
   },
   {

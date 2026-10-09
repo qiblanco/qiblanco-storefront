@@ -127,7 +127,7 @@ export function MmHaeltDasAus({products}) {
     <MmPage scope="mm-alltag">
       <MmHero
         dataSection="mm-alltag-hero"
-        eyebrow="Alltag, ehrlich getestet"
+        eyebrow="Im Alltag getestet"
         headline={'„Hält das mein Leben aus?" Dusche, Sport, Sauna. Er bleibt dran.'}
         sub="Ein Premium-Schmuckstück, das man schont, wäre kein Alltagsbegleiter. Der QiOne 2 Pro ist so gebaut, dass ihm Wasser, Hitze, Schweiß und Chlor nichts anhaben. Er ist passiv und enthält keine Elektronik."
         bullets={[
@@ -171,7 +171,7 @@ export function MmHaeltDasAus({products}) {
           {titel: 'Sauna & Schwimmbad', text: 'Beständig gegen Hitze und Chlor. Du kannst ihn anbehalten, wo du ihn sonst abnehmen würdest.'},
           {titel: 'Über Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig. Er ist als vererbbares Stück gedacht, nicht als Wegwerfprodukt.'},
         ]}
-        note="Ehrliche Grenze: Robustheit ist eine Materialeigenschaft. Sie sagt nichts über eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, ist präklinisch."
+        note="Grenze: Robustheit ist eine Materialeigenschaft. Sie sagt nichts über eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, ist präklinisch."
       />
 
       <MmStatBand
@@ -187,7 +187,7 @@ export function MmHaeltDasAus({products}) {
       <MmEvidenz
         dataSection="mm-alltag-evidenz"
         eyebrow="Und die Wirkung?"
-        title="Was gemessen wurde, kurz und ehrlich"
+        title="Was gemessen wurde"
         intro="Robustheit ist das eine. Die eigentliche Frage ist die Wirkung. Vier publizierte In-vitro-Studien (Zellkultur, nicht Mensch) zeigen einen messbaren Schutzeffekt unter Stress. Kein Heilversprechen."
         studien={STUDIEN}
         mehrHref="/pages/zellstudien-ehrlich"
@@ -214,7 +214,7 @@ export function MmHaeltDasAus({products}) {
 
       <MmPick dataSection="mm-alltag-pick" title="Drei Möglichkeiten für deinen Alltag" products={products} handles={PICK} variante="flaeche" />
 
-      <MmFaq dataSection="mm-alltag-faq" title="Ehrliche Antworten zum Alltag" items={FAQ} />
+      <MmFaq dataSection="mm-alltag-faq" title="Antworten zum Alltag" items={FAQ} />
 
       <MmFunnel dataSection="mm-alltag-funnel" links={FUNNEL} />
 

@@ -129,8 +129,8 @@ const FUNNEL = [
     cta: 'Mechanismus',
   },
   {
-    titel: 'Die Zellstudien, ehrlich',
-    text: 'Alle vier Publikationen mit Methode, Ergebnis und ehrlichen Grenzen.',
+    titel: 'Die Zellstudien',
+    text: 'Alle vier Publikationen mit Methode, Ergebnis und Grenzen.',
     href: '/pages/zellstudien-ehrlich',
     cta: 'Evidenz',
   },
@@ -175,7 +175,7 @@ function MalibuHero() {
         <h1>Dein Körper ist zu 70 % Wasser. Der QiOne bringt es in Ordnung.</h1>
         <p className="mm-mal-hero__sub">
           Kein Strom, kein Aufladen, keine App. Du trägst ihn, mehr nicht. Hier erklären wir in einfachen
-          Worten, was dabei passiert. Ehrlich, mit klaren Grenzen.
+          Worten, was dabei passiert.
         </p>
         <div className="mm-mal-hero__actions">
           <Link className="mm-cta" to="#wirkungen" prefetch="intent">
@@ -241,7 +241,7 @@ export function MmSoFunktioniertQiOne({products}) {
         <h2>Was der QiOne für dich tun soll</h2>
         <p className="mm-lede" style={{marginBottom: 'var(--mm-s8)'}}>
           Ein einziges Prinzip, geordnetes Wasser, zeigt sich auf drei Ebenen. Jede erklären wir simpel,
-          jede mit einer ehrlichen Zahl aus den Studien.
+          jede mit einer Zahl aus den Studien.
         </p>
         <div className="mm-mal-effekte">
           {EFFEKTE.map((e) => (
@@ -266,7 +266,7 @@ export function MmSoFunktioniertQiOne({products}) {
             <MmDiagramWasser caption="Modell: von ungeordneten zu geordneten Wassermolekülen entlang der Gitterstruktur." />
           </>
         }
-        note="Ehrliche Grenze: „Kohärentes Wasser“ ist ein Modell aus der Grenzforschung, keine etablierte Medizin. Belegt sind Effekte in Zellkulturen (in vitro), kein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
+        note="Grenze: „Kohärentes Wasser“ ist ein Modell aus der Grenzforschung, keine etablierte Medizin. Belegt sind Effekte in Zellkulturen (in vitro), kein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
       />
 
       <MmStatBand
@@ -293,11 +293,11 @@ export function MmSoFunktioniertQiOne({products}) {
       <MmTrust
         dataSection="mm-malibu-trust"
         eyebrow="Woran du dich festhalten kannst"
-        title="Ehrlich und nachprüfbar"
+        title="Nachprüfbar"
         badges={BADGES}
       />
 
-      <MmFaq dataSection="mm-malibu-faq" title="Kurze, ehrliche Antworten" items={FAQ} />
+      <MmFaq dataSection="mm-malibu-faq" title="Kurze Antworten" items={FAQ} />
 
       <MmFunnel dataSection="mm-malibu-funnel" title="Tiefer einsteigen: die ganze Kette" links={FUNNEL} />
 
