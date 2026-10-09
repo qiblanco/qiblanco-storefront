@@ -41,6 +41,13 @@ import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
  * Wirkaussagen tragen ihre Grundlage im Satz: „nachweislich“ nur für starke Felder
  * (Reizung, Erwärmung), Warnkes Erklärung heißt Modell, „geordnet“ ist Pollacks
  * Deutung, die Batterie sein Vergleich, Qi Blanco ist eine Idee.
+ *
+ * NACHZUG Vollzug ovd3c2c60033 (09.10.2026): `titel` ist wortgleich der
+ * `arbeitstitel` aus thema.json (so heißen Foliensatz, Strategie und Kalender-
+ * eintrag; vorher stand hier eine Frageform, s11-Befund B5). Die Wasser-Seite
+ * führt nach Christians Geschichte mit `warumBruecke` (thema.json
+ * `lp_warum_bruecke`) zum Wasser; die Zeile steht hinter seinem Zitat, nie darin.
+ * probe_christian_aussagen.py --teil seiten misst beides am ausgelieferten HTML.
  */
 
 const FOTO = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
@@ -95,9 +102,11 @@ export const WEBINARE = {
     termin: null,
     formularId: null,
     kurztitel: 'Webinar Elektrosmog',
-    titel: 'Strahlung im Alltag: Was machen Handy, WLAN und Strom mit deinem Körper?',
+    titel: 'Strahlung im Alltag: Was Handy, WLAN und Strom mit deinem Körper machen',
+    // Erster Satz endet mit Punkt: der Titel trägt als Arbeitstitel kein Satzzeichen, und
+    // stil-pruefe liest Titel und Beschreibung sonst als einen Satz (Arm E, ovd3c2c60033).
     beschreibung:
-      'Kostenloses Webinar mit Christian von Qi Blanco: 45 Minuten über Handy, WLAN und Strom ' +
+      'Kostenloses Webinar mit Christian von Qi Blanco. 45 Minuten über Handy, WLAN und Strom ' +
       'im Alltag, mit Live-Experiment und Fragerunde. Live per Zoom.',
     versprechen: [
       'In 45 Minuten verstehst du, warum dein Körper ein elektrisches System ist und was starke ' +
@@ -127,6 +136,7 @@ export const WEBINARE = {
       'Körper wirken. Das ist Warnkes Modell, und du erfährst, wo die Messungen enden. Und du ' +
       'kannst das Modell danach am Küchentisch weitererzählen.',
     zitat: null,
+    warumBruecke: null,
     anderes: 'wasser',
   },
   wasser: {
@@ -136,9 +146,9 @@ export const WEBINARE = {
     termin: null,
     formularId: null,
     kurztitel: 'Webinar Wasser',
-    titel: 'Das Geheimnis im Wasser: Warum kann Wasser mehr, als wir in der Schule gelernt haben?',
+    titel: 'Das Geheimnis im Wasser: Warum Wasser mehr kann, als wir in der Schule gelernt haben',
     beschreibung:
-      'Kostenloses Webinar mit Christian von Qi Blanco: 45 Minuten über Wasser, Licht und ' +
+      'Kostenloses Webinar mit Christian von Qi Blanco. 45 Minuten über Wasser, Licht und ' +
       'Ordnung, mit Experiment zum Nachmachen und Fragerunde. Live per Zoom.',
     versprechen: [
       'In 45 Minuten erfährst du, was Prof. Dr. Gerald H. Pollack in seinem Labor in Seattle an ' +
@@ -168,6 +178,10 @@ export const WEBINARE = {
       'und wir stellen diese Idee als Hypothese vor. Das Experiment aus dem Webinar kannst du danach ' +
       'zu Hause selbst ausprobieren.',
     zitat: null,
+    warumBruecke:
+      'Zum Wasser kam Christian 2018 auf der Komplementären Medizinischen Woche in Baden-Baden. ' +
+      'Dort hörte er Dr. Ulrich Warnke und Prof. Dr. Gerald H. Pollack, und beide sagten: Das ' +
+      'Wasser kann mehr.',
     anderes: 'esmog',
   },
 };
@@ -259,8 +273,9 @@ function Nummernliste({className, punkte}) {
  * Absatz vor „Gesagt, getan“ hat er selbst gesetzt. data-fremdtext nimmt seinen
  * Wortlaut aus der Stilmessung (stil-pruefe, wie auf /pages/produktberatung).
  * Ändert er die Geschichte, wird probe_s11_lp_texte.py rot, bis sie hier nachgezogen ist.
+ * `w.warumBruecke` (nur Wasser) steht HINTER der Figur: unsere Überleitung, nicht sein Text.
  */
-function Warum() {
+function Warum({w}) {
   return (
     <section className="wb-abschnitt" data-section="wb-warum">
       <div className="wb-innen wb-innen-schmal">
@@ -284,6 +299,7 @@ function Warum() {
           </blockquote>
           <figcaption className="wb-geschichte-von">Christian, Gründer von Qi Blanco</figcaption>
         </figure>
+        {w.warumBruecke ? <p className="wb-text wb-warum-bruecke">{w.warumBruecke}</p> : null}
       </div>
     </section>
   );
@@ -348,7 +364,7 @@ export function WebinarSeite({w}) {
         </div>
       </section>
 
-      <Warum />
+      <Warum w={w} />
 
       <section className="wb-abschnitt wb-dunkel" id="anmelden" data-section="wb-anmeldung">
         <div className="wb-innen">

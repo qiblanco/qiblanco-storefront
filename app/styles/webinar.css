@@ -251,6 +251,7 @@ body:has(.wb) { background: var(--wb-grund); }
 }
 .wb .wb-geschichte-text p:last-child { margin-bottom: 0; }
 .wb .wb-geschichte-von { margin: var(--wb-s3) 0 0 var(--wb-s3); }
+.wb .wb-warum-bruecke { margin-top: var(--wb-s4); }
 
 /* Akt 3: dunkel, die Anmeldung */
 .wb .wb-dunkel {
