@@ -226,8 +226,8 @@ export const FAQ_BELEGE = [
     anker: 'wirkt-ein-armband-gegen-elektrosmog',
     a:
       'Im Labor ist unter Handystrahlung ein deutlicher Unterschied gemessen, und du kannst jede ' +
-      'Zahl nachlesen. Untersucht wurde der QiOne® 2 Pro, er trägt denselben GitterChip™ wie das ' +
-      'QiBracelet®. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
+      'Zahl nachlesen. Untersucht wurde der QiOne® 2 Pro, das QiBracelet® arbeitet mit derselben ' +
+      'GitterChip™-Technik. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
       'Handys. Ohne Gerät sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf 60,5 Prozent des ' +
       'Normalwerts, mit einem QiOne® 2 Pro daneben blieben 84,7 Prozent erhalten. Bei Darmzellen ' +
       'unter derselben Belastung brach die Zellbarriere ohne Gerät auf 6 Prozent ein, mit Gerät ' +
