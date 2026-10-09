@@ -73,7 +73,7 @@ const FUNNEL = [
     cta: 'Mechanismus',
   },
   {
-    titel: 'Die Zellstudien, ehrlich',
+    titel: 'Die Zellstudien',
     text: 'Die Evidenz, die für beide gilt.',
     href: '/pages/zellstudien-ehrlich',
     cta: 'Evidenz',

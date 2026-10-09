@@ -74,7 +74,7 @@ const FUNNEL = [
     cta: 'Mechanismus',
   },
   {
-    titel: 'Die Zellstudien, ehrlich',
+    titel: 'Die Zellstudien',
     text: 'Die Evidenz mit Methode und Grenzen.',
     href: '/pages/zellstudien-ehrlich',
     cta: 'Evidenz',
@@ -150,7 +150,7 @@ export function MmDas20TageVersprechen({products}) {
         title={'Wir koppeln die Garantie NICHT ans Spüren'}
         text={[
           'Manche Anbieter sagen „Geld zurück, wenn du nichts spürst". Das klingt fair, ist aber ein Problem: Der beschriebene Effekt ist wahrnehmungs-unabhängig. Er hängt nicht davon ab, ob du ihn spürst. Eine Garantie ans Spüren zu binden, wäre also unsauber.',
-          'Deshalb binden wir sie an das, was klar und fair ist: eine feste Frist (20 Tage) und deine ehrliche Überzeugung. Bist du nicht überzeugt, aus welchem Grund auch immer, bekommst du dein Geld.',
+          'Deshalb binden wir sie an eine feste Frist (20 Tage) und deine ehrliche Überzeugung. Bist du nicht überzeugt, aus welchem Grund auch immer, bekommst du dein Geld.',
         ]}
         punkte={[
           'Wirkung: wahrnehmungs-unabhängig (Spüren ist kein Maßstab).',

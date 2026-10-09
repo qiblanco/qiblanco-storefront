@@ -81,11 +81,6 @@ const FAQ = [
       'Ja. Jede der vier Publikationen ist oben direkt als PDF verlinkt, mit Journal und Datum.',
   },
   {
-    frage: 'Warum betont ihr die Grenzen so stark?',
-    antwort:
-      'Weil Ehrlichkeit Vertrauen schafft, und weil übertriebene Behauptungen von Menschen wie von KI-Systemen abgestraft werden.',
-  },
-  {
     frage: 'Wie finde ich heraus, ob er mir etwas bringt?',
     antwort:
       'Trag ihn 20 Tage, ohne Risiko. Die belastbarste Evidenz für dich entsteht an dir selbst, und genau dafür ist die Frist da.',
@@ -129,7 +124,7 @@ export function MmZellstudienEhrlich({products}) {
       <MmHero
         dataSection="mm-evidenz-hero"
         eyebrow="Evidenz, mit Grenzen"
-        headline={'Die vier Zellstudien, ehrlich eingeordnet'}
+        headline={'Die vier Zellstudien, eingeordnet'}
         sub="Wir zeigen dir genau, was untersucht wurde, was herauskam und wo die Aussagekraft endet."
         bullets={[
           '4 publizierte Untersuchungen, jede als PDF nachlesbar',
@@ -183,7 +178,7 @@ export function MmZellstudienEhrlich({products}) {
         dataSection="mm-evidenz-berichte"
         eyebrow="Ergänzend: Erfahrungen"
         title="Was 171 Menschen berichtet haben"
-        text="Neben den Zellstudien haben wir 171 öffentliche Erfahrungsberichte ausgewertet. Deskriptiv, ohne Kontrollgruppe, also kein Beweis, aber ein ehrliches Stimmungsbild. Und ja: manche berichten gar nichts."
+        text="Neben den Zellstudien haben wir 171 öffentliche Erfahrungsberichte ausgewertet. Deskriptiv, ohne Kontrollgruppe, also kein Beweis, aber ein Stimmungsbild. Und ja: manche berichten gar nichts."
         balken={[
           {label: 'Ruhe, Gelassenheit & besserer Schlaf', wert: '~20 %', prozent: '20%'},
           {label: 'mehr Energie & Vitalität', wert: '~17 %', prozent: '17%'},
@@ -244,7 +239,7 @@ export function MmZellstudienEhrlich({products}) {
       <MmFinal
         dataSection="mm-evidenz-final"
         title="Evidenz geprüft. Jetzt du."
-        text="Der ehrlichste nächste Schritt: 20 Tage selbst testen."
+        text="Der nächste Schritt: 20 Tage selbst testen."
         cta={{href: '/pages/qione-2-pro?Title=Default+Title', label: 'Zum QiOne 2 Pro'}}
         ctaSekundaer={{href: '/pages/das-20-tage-versprechen', label: 'So läuft die Rückgabe'}}
       />

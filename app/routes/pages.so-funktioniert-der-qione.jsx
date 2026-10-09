@@ -34,7 +34,7 @@ export const meta = () => [
   {
     name: 'description',
     content:
-      'In einfachen Worten: Wie der QiOne 2 Pro wirkt — tieferer Schlaf, Zellschutz, E-Smog-Schutz. Ehrlich, mit klaren Grenzen.',
+      'In einfachen Worten: Wie der QiOne 2 Pro wirkt — tieferer Schlaf, Zellschutz, E-Smog-Schutz.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
 ];

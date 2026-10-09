@@ -89,7 +89,7 @@ const FAQ = [
 
 const FUNNEL = [
   {
-    titel: 'Die Zellstudien, ehrlich',
+    titel: 'Die Zellstudien',
     text: 'Die vier Publikationen mit Methode, Ergebnis und Grenzen.',
     href: '/pages/zellstudien-ehrlich',
     cta: 'Evidenz',
@@ -125,7 +125,7 @@ export function MmSoWirktWasser({products}) {
         dataSection="mm-mechanismus-hero"
         eyebrow="Der Mechanismus, in Ruhe erklärt"
         headline={'So soll kohärentes Wasser wirken, Schritt für Schritt'}
-        sub="Bevor du irgendetwas kaufst: verstehe den Gedanken dahinter. Kein Wunder, kein Heilstrahl. Ein physikalisches Ordnungs-Modell, das wir offen erklären und ehrlich begrenzen."
+        sub="Bevor du irgendetwas kaufst: verstehe den Gedanken dahinter. Kein Wunder, kein Heilstrahl. Ein physikalisches Ordnungs-Modell."
         bullets={[
           'Was „Kohärenz" konkret meint, in einfachen Worten',
           'Welche Rolle der Gitterchip™ spielt',
@@ -142,7 +142,7 @@ export function MmSoWirktWasser({products}) {
 
       <MmProblem
         dataSection="mm-mechanismus-problem"
-        eyebrow="Ehrlicher Rahmen"
+        eyebrow="Einordnung"
         title="Was wir behaupten und was nicht"
         text={[
           'Rund um „strukturiertes" oder „kohärentes" Wasser kursiert viel Überzogenes. Gemeint ist etwas Nüchternes: die Art, wie sich Wassermoleküle anordnen.',
@@ -185,7 +185,7 @@ export function MmSoWirktWasser({products}) {
             <MmDiagramWasser caption="Modell: von ungeordneten zu geordneten Wassermolekülen entlang der Gitterstruktur." />
           </>
         }
-        note="Ehrliche Grenze: Die Schritte 1-3 sind ein Modell. Belegt (präklinisch) ist Schritt 4 in Zellkulturen, nicht ein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
+        note="Grenze: Die Schritte 1-3 sind ein Modell. Belegt (präklinisch) ist Schritt 4 in Zellkulturen, nicht ein Heileffekt am Menschen. Die Diagramme sind schematisch, keine Messbilder."
       />
 
       <MmStatBand

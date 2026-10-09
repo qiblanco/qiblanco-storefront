@@ -101,8 +101,8 @@ const FUNNEL = [
     cta: 'Mechanismus',
   },
   {
-    titel: 'Die Zellstudien, ehrlich',
-    text: 'Alle vier Publikationen mit Methode, Ergebnis und ehrlichen Grenzen.',
+    titel: 'Die Zellstudien',
+    text: 'Alle vier Publikationen mit Methode, Ergebnis und Grenzen.',
     href: '/pages/zellstudien-ehrlich',
     cta: 'Evidenz',
   },
@@ -142,7 +142,7 @@ export function MmWirMachenIhnAuf({products}) {
         media={{
           src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919',
           alt: 'Querschnitt des QiOne 2 Pro mit sichtbarem Gold-Gitterchip™',
-          hint: 'Querschnitt: das Gold-Gitter im Inneren, nichts Verstecktes.',
+          hint: 'Querschnitt: das Gold-Gitter im Inneren.',
         }}
       />
 
@@ -179,7 +179,7 @@ export function MmWirMachenIhnAuf({products}) {
             <MmDiagramWasser caption="Modell: von ungeordneten zu geordneten Wassermolekülen entlang der Gitterstruktur." />
           </>
         }
-        note="Ehrliche Grenze: Der beschriebene Mechanismus ist ein Modell. Belegt sind Effekte in Zellkulturen (Ebene 2), nicht ein Heileffekt am Menschen. Die Diagramme sind schematische Darstellungen, keine Messbilder."
+        note="Grenze: Der beschriebene Mechanismus ist ein Modell. Belegt sind Effekte in Zellkulturen (Ebene 2), nicht ein Heileffekt am Menschen. Die Diagramme sind schematische Darstellungen, keine Messbilder."
       />
 
       <MmStatBand
@@ -196,7 +196,7 @@ export function MmWirMachenIhnAuf({products}) {
         dataSection="mm-messbar-evidenz"
         eyebrow="Ebene 2: Messung"
         title="Was in Zellkulturen gemessen wurde"
-        intro="Vier unabhängig publizierte Untersuchungen. Wichtig und ehrlich: Das sind präklinische In-vitro-Studien an Zellen im Labor, nicht am Menschen. Sie zeigen einen messbaren Schutzeffekt unter Stress, kein Heilversprechen."
+        intro="Vier unabhängig publizierte Untersuchungen. Das sind präklinische In-vitro-Studien an Zellen im Labor, nicht am Menschen. Sie zeigen einen messbaren Schutzeffekt unter Stress, kein Heilversprechen."
         studien={STUDIEN}
         mehrHref="/pages/zellstudien-ehrlich"
         mehrLabel="Die Studien im Detail, mit Grenzen"
@@ -206,7 +206,7 @@ export function MmWirMachenIhnAuf({products}) {
         dataSection="mm-messbar-berichte"
         eyebrow="Ebene 3: Erfahrung"
         title="Was 171 Menschen berichtet haben"
-        text="Wir haben 171 öffentliche Erfahrungsberichte ausgewertet. Das ist deskriptiv, ohne Kontrollgruppe und damit kein wissenschaftlicher Beweis. Und ehrlich: Manche berichten gar nichts. Trotzdem zeigt sich ein wiederkehrendes Muster."
+        text="Wir haben 171 öffentliche Erfahrungsberichte ausgewertet. Das ist deskriptiv, ohne Kontrollgruppe und damit kein wissenschaftlicher Beweis. Manche berichten gar nichts. Trotzdem zeigt sich ein wiederkehrendes Muster."
         balken={[
           {label: 'Ruhe, Gelassenheit & besserer Schlaf', wert: '~20 %', prozent: '20%'},
           {label: 'mehr Energie & Vitalität', wert: '~17 %', prozent: '17%'},
@@ -238,7 +238,7 @@ export function MmWirMachenIhnAuf({products}) {
 
       <MmPick dataSection="mm-messbar-pick" title="Ein Chip, drei Möglichkeiten" products={products} handles={PICK} variante="flaeche" />
 
-      <MmFaq dataSection="mm-messbar-faq" title="Ehrliche Antworten auf die häufigsten Zweifel" items={FAQ} />
+      <MmFaq dataSection="mm-messbar-faq" title="Antworten auf die häufigsten Zweifel" items={FAQ} />
 
       <MmFunnel dataSection="mm-messbar-funnel" links={FUNNEL} />
 
