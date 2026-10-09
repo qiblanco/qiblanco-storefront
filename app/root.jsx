@@ -1,4 +1,11 @@
-import {Children, isValidElement} from 'react';
+import {
+  Children,
+  isValidElement,
+  startTransition,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
   Outlet,
@@ -769,51 +776,7 @@ export function Layout({children}) {
         <KaufknopfChatSignal />
         <LoadingBar />
         {data ? (
-          <Analytics.Provider
-            cart={data.cart}
-            shop={data.shop}
-            consent={data.consent}
-          >
-            {/*
-              EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
-              27.09.2026): HIER STEHT BEWUSST NICHTS MEHR.
-              Elina EL-20260901-3fb38a2a: der Overlay-Baustein und der
-              Trigger-Link duerfen NICHT im globalen Seitengeruest und nicht
-              in der Footer-Komponente liegen, sondern ausschließlich dort,
-              wo ein Produkt gekauft werden kann. Das Overlay bringt seit dem
-              2026-09-06 die Mitteilung SELBST mit
-              (EuGewaehrleistungsHinweis in EuGewaehrleistungsLabel.jsx) --
-              es gibt darum keine Stelle mehr, an der es global montiert
-              werden müsste, und keine Route, die man vergessen kann.
-            */}
-            {/*
-              Kassen-Rückkehr-Leiste (Job 20261007-ep-startseite-kassen-
-              rueckkehrer-leiste, GS-090): erstes Kind von <main>, also unter
-              dem fixierten Kopf (main trägt dessen Höhe als padding-top).
-              Sie entscheidet selbst im Client, ob sie erscheint (Einstieg auf
-              / oder /pages/start-b, Referrer checkout.*, Warenkorb nicht leer)
-              und steht deshalb ohne Bedingung hier: identisch in beiden Armen
-              von start-e1-gs081. Begründung in der Komponente.
-            */}
-            <PageLayout {...data}>
-              <KassenRueckkehrLeiste cart={data.cart} />
-              {children}
-            </PageLayout>
-            {(data.isProductionHost || data.enableTrackingInPreview) && (
-              <>
-                <MetaPixel />
-                <QpxCommerce />
-                {/*
-                  UpPromote-Affiliate-Tracking: lädt collect.js nach und gibt
-                  cart_updated für den Auto-Rabatt weiter. Steht bewusst HIER im
-                  selben Production/Preview-Gate wie Meta/qpx und trägt sein
-                  Cookiebot-Marketing-Tor zusätzlich in sich (importiert aus
-                  MetaPixel.jsx).
-                */}
-                <UpPromoteTracking />
-              </>
-            )}
-          </Analytics.Provider>
+          <AnalytikNachHydration data={data}>{children}</AnalytikNachHydration>
         ) : (
           children
         )}
@@ -821,6 +784,112 @@ export function Layout({children}) {
         <Scripts nonce={nonce} />
       </body>
     </html>
+  );
+}
+
+/**
+ * React #421: das Analytik-Update bekommt einen eigenen Lane, nicht den der Hydration.
+ *
+ * WARUM ES DIESES BAUTEIL GIBT. React 18.3.1 wirft #421, sobald eine noch nicht
+ * hydrierte Suspense-Grenze in demselben Lane ein Update sieht
+ * (react-dom.development.js: `didReceiveUpdate || includesSomeLane(renderLanes,
+ * current.childLanes)`). Vier solche Grenzen gibt es hier — Warenkorb-Schublade,
+ * Anmeldestand und Warenkorb-Zähler in der Kopfzeile, Fußzeile —, und genau vier
+ * Vorkommen zeigt die Messung in jedem einzelnen Lauf.
+ *
+ * DIE QUELLE DES UPDATES LIEGT IN FREMDEM CODE. `Analytics.Provider` aus
+ * @shopify/hydrogen führt eigene Zustände: den aufgelösten Shop, den Ladezustand
+ * der Shopify-Analytik, die Einwilligungsfrage, den Warenkorb und (seit 2026.4)
+ * `consentCollected`. Jeder davon schreibt den Kontextwert neu, und
+ * `useAnalytics()` in `CartBadge` (Header.jsx) sitzt im Teilbaum einer der vier
+ * Grenzen — damit markiert React den Pfad dorthin, während die Grenze noch am
+ * Server hängt. Ein `startTransition` um das auslösende `setState` wäre der von
+ * React selbst genannte Weg; diese Zeilen stehen aber in node_modules.
+ *
+ * WAS WIR STATTDESSEN IN DER HAND HABEN: die Montage. Alle Zustände des Providers
+ * hängen an einer einzigen Bedingung — er rendert seine Analytik-Kinder erst, wenn
+ * der Shop aufgelöst ist (`!!shop`). Solange `shop` null ist, läuft
+ * `Promise.resolve(null).then(setShop)` in Reacts Bail-out und kein Zustand bewegt
+ * sich. Wir reichen den Shop deshalb erst nach dem ersten Commit nach, und zwar in
+ * einem `startTransition`: das Update landet in einem Transition-Lane, während die
+ * Hydration im Default-Lane läuft, und `includesSomeLane` trennt die beiden.
+ *
+ * `seitengeruest` hält die Element-Identität des Seitenaufbaus über diesen einen
+ * Zustandswechsel fest. Ohne das Festhalten baute der Wechsel `PageLayout` neu,
+ * die vier Grenzen bekämen frische Props, und `didReceiveUpdate` — die ANDERE
+ * Hälfte derselben Bedingung — löste genau den Fehler aus, den dieses Bauteil
+ * verhindern soll.
+ *
+ * WAS SICH FÜR DAS TRACKING ÄNDERT: nichts außer der Reihenfolge um einen Tick.
+ * Die Analytik-Kinder melden sich nach dem ersten Commit an, `page_viewed` und die
+ * Warenkorb-Ereignisse laufen unverändert; kein Ereignis fällt weg.
+ *
+ * HERKUNFT: Zweig feat/r421st-armB-20260913 (Commit 88addda, gemessen am lokalen
+ * Doppelbau 38/270 gegen 0/270), am 2026-10-09 auf den heutigen Stand übertragen
+ * (Job 20261009-react421-huellenklasse-ausliefern-qiblanco-und-crystal-prio20,
+ * FEHLER-DB F-2372). Dieselbe Bauform trägt crystal-cacao.com in seiner
+ * laden-eigenen root.jsx. Rückweg: git revert dieses Commits.
+ */
+function AnalytikNachHydration({data, children}) {
+  const [hydriert, setHydriert] = useState(false);
+
+  useEffect(() => {
+    startTransition(() => setHydriert(true));
+  }, []);
+
+  const seitengeruest = useMemo(
+    () => (
+      <PageLayout {...data}>
+        <KassenRueckkehrLeiste cart={data.cart} />
+        {children}
+      </PageLayout>
+    ),
+    [data, children],
+  );
+
+  return (
+    <Analytics.Provider
+      cart={data.cart}
+      shop={hydriert ? data.shop : null}
+      consent={data.consent}
+    >
+      {/*
+        EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
+        27.09.2026): HIER STEHT BEWUSST NICHTS MEHR.
+        Elina EL-20260901-3fb38a2a: der Overlay-Baustein und der
+        Trigger-Link duerfen NICHT im globalen Seitengeruest und nicht
+        in der Footer-Komponente liegen, sondern ausschließlich dort,
+        wo ein Produkt gekauft werden kann. Das Overlay bringt seit dem
+        2026-09-06 die Mitteilung SELBST mit
+        (EuGewaehrleistungsHinweis in EuGewaehrleistungsLabel.jsx) --
+        es gibt darum keine Stelle mehr, an der es global montiert
+        werden müsste, und keine Route, die man vergessen kann.
+      */}
+      {/*
+        Kassen-Rückkehr-Leiste (Job 20261007-ep-startseite-kassen-
+        rueckkehrer-leiste, GS-090): erstes Kind von <main>, also unter
+        dem fixierten Kopf (main trägt dessen Höhe als padding-top).
+        Sie entscheidet selbst im Client, ob sie erscheint (Einstieg auf
+        / oder /pages/start-b, Referrer checkout.*, Warenkorb nicht leer)
+        und steht deshalb ohne Bedingung hier: identisch in beiden Armen
+        von start-e1-gs081. Begründung in der Komponente.
+      */}
+      {seitengeruest}
+      {(data.isProductionHost || data.enableTrackingInPreview) && (
+        <>
+          <MetaPixel />
+          <QpxCommerce />
+          {/*
+            UpPromote-Affiliate-Tracking: lädt collect.js nach und gibt
+            cart_updated für den Auto-Rabatt weiter. Steht bewusst HIER im
+            selben Production/Preview-Gate wie Meta/qpx und trägt sein
+            Cookiebot-Marketing-Tor zusätzlich in sich (importiert aus
+            MetaPixel.jsx).
+          */}
+          <UpPromoteTracking />
+        </>
+      )}
+    </Analytics.Provider>
   );
 }
 
