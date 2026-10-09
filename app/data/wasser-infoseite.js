@@ -56,8 +56,8 @@ const GEAENDERT = '2026-10-09';
 
 export const SEITE = {
   pfad: PFAD,
-  // Titel als die Frage der H1 (09.10.2026, Job 20261009-kohaerentes-und-
-  // hexagonales-wasser-platz-eins-seo-geo): der Platz-1-Halter bei google.de
+  // Titel als die Frage der H1 (09.10.2026, Grossjob „Platz eins für
+  // kohärentes und hexagonales Wasser“): der Platz-1-Halter bei google.de
   // trägt genau diese Frage im Titel, wir trugen sie nur in der H1. Die
   // Beschreibung spricht seitdem allein vom kohärenten Wasser; das
   // hexagonale hat seine eigene Seite (/pages/was-ist-hexagonales-wasser).

@@ -12,7 +12,7 @@ import {SEITE, strukturierteDaten} from '~/data/hexagonales-wasser-seite';
  * Auftrag: Christian, 23.09.2026 (wörtlich): „Welche Seiten kommen als
  * erstes, wenn man hexagonales Wasser eingibt oder kohärentes Wasser? Wie
  * können wir hier einen Platz eins erreichen in SEO und GEO?" Träger:
- * Job 20261009-kohaerentes-und-hexagonales-wasser-platz-eins-seo-geo.
+ * der Grossjob „Platz eins für kohärentes und hexagonales Wasser“ vom 09.10.2026.
  *
  * DIE FRAGE STEHT IM PFAD, wie bei der Info-Seite (Christians Entscheidung
  * vom 23.09.2026 zu /pages/was-ist-kohaerentes-wasser). Warum eine eigene

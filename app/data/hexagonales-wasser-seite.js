@@ -14,7 +14,7 @@ import {
  * Auftrag: Christian, 23.09.2026 (wörtlich): „Welche Seiten kommen als erstes,
  * wenn man hexagonales Wasser eingibt oder kohärentes Wasser? Wie können wir
  * hier einen Platz eins erreichen in SEO und GEO?" Träger der Zusage Z6:
- * Job 20261009-kohaerentes-und-hexagonales-wasser-platz-eins-seo-geo.
+ * der Grossjob „Platz eins für kohärentes und hexagonales Wasser“ vom 09.10.2026.
  *
  * WARUM EINE EIGENE SEITE UND KEIN ABSCHNITT DER INFO-SEITE (gemessen am
  * 09.10.2026): die Info-Seite /pages/was-ist-kohaerentes-wasser trägt seit dem
@@ -24,7 +24,7 @@ import {
  * Console zählt 0 Impressionen. 7 der 8 organischen Treffer tragen den Begriff
  * im Titel. Die Frage steht deshalb hier im Pfad, im Titel und in der H1.
  *
- * DIE LÜCKE, DIE DIESE SEITE SCHLIESST (Wettbewerbs-Befund 23.09., Punkt 7):
+ * WELCHE LÜCKE DIESE SEITE FÜLLT (Wettbewerbs-Befund 23.09., Punkt 7):
  * keine Seite im Netz trennt hexagonal, Eis Ih, EZ, kohärent, strukturiert
  * und belebt sauber und sagt je Begriff, was gemessen ist und was ein Modell.
  *
@@ -237,7 +237,7 @@ export const ABGRENZUNG = {
       beleg: 'Modell {q:pollack2013}.',
     },
     {
-      id: 'kohaerentes-wasser',
+      id: 'kohaerent',
       begriff: 'Kohärentes Wasser',
       bedeutung:
         'Wasser, dessen Moleküle im Gleichtakt schwingen, in kohärenten Domänen.',

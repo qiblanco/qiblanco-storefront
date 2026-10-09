@@ -1063,10 +1063,10 @@ export const NUR_ROUTE_SEITEN = [
     pfad: '/pages/was-ist-hexagonales-wasser',
     lastmod: '2026-10-09T15:00:00Z',
     grund:
-      'Die Seite „Hexagonales Wasser" (Christian, 23.09.2026: „Platz eins ' +
-      'in SEO und GEO" für hexagonales und kohärentes Wasser; Job ' +
-      '20261009-kohaerentes-und-hexagonales-wasser-platz-eins-seo-geo). ' +
-      'Reine Route wie die Info-Seite, ohne Shopify-Seitenobjekt; ohne ' +
+      'Die Seite „Hexagonales Wasser" für Christians Auftrag vom ' +
+      '23.09.2026 („Platz eins in SEO und GEO"). ' +
+      'Sie ist eine reine Route wie die Info-Seite. ' +
+      'Ein Shopify-Seitenobjekt hat sie nicht; ohne ' +
       'diesen Eintrag stünde sie in keiner Sitemap. Kein noindex, ' +
       'canonicalLink() in der Route.',
   },

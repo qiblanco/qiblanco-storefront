@@ -1,6 +1,6 @@
 // Hermetische Tests der Seite /pages/was-ist-hexagonales-wasser (Christian,
 // 23.09.2026: „Platz eins in SEO und GEO" für hexagonales und kohärentes
-// Wasser; Job 20261009-kohaerentes-und-hexagonales-wasser-platz-eins-seo-geo).
+// Wasser; Grossjob vom 09.10.2026).
 // node:test/node:assert sind Bordmittel, KEIN Netz.
 // Ausführen: node --test test/hexagonales-wasser-seite.test.mjs
 //
