@@ -4,7 +4,7 @@ import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
 import {
   QUELLEN as QUELLEN_INFOSEITE,
-  PFAD as PFAD_KOHAERENT,
+  PFAD as PFAD_INFOSEITE,
   istSchemaSicher,
 } from '~/data/wasser-infoseite';
 
@@ -237,11 +237,11 @@ export const ABGRENZUNG = {
       beleg: 'Modell {q:pollack2013}.',
     },
     {
-      id: 'kohaerent',
+      id: 'gleichtakt',
       begriff: 'Kohärentes Wasser',
       bedeutung:
         'Wasser, dessen Moleküle im Gleichtakt schwingen, in kohärenten Domänen.',
-      beleg: `Modell der Quantenelektrodynamik {q:delgiudice1988}. Ausführlich: {l:${PFAD_KOHAERENT}|Was ist kohärentes Wasser?}`,
+      beleg: `Modell der Quantenelektrodynamik {q:delgiudice1988}. Ausführlich: {l:${PFAD_INFOSEITE}|Was ist kohärentes Wasser?}`,
     },
     {
       id: 'strukturiertes-wasser',
@@ -399,7 +399,7 @@ export function quellenNummer(id) {
 
 export const WEITER = [
   {
-    to: PFAD_KOHAERENT,
+    to: PFAD_INFOSEITE,
     titel: 'Was ist kohärentes Wasser?',
     text: 'Gleichtakt der Moleküle, kohärente Domänen und EZ-Wasser, mit animierten Grafiken und Primärquellen.',
   },
@@ -455,7 +455,7 @@ export function strukturierteDaten() {
       {'@type': 'Thing', name: 'Eis Ih'},
       {'@type': 'Thing', name: 'EZ-Wasser'},
     ],
-    isPartOf: {'@id': `${absoluteCanonical(PFAD_KOHAERENT)}#artikel`},
+    isPartOf: {'@id': `${absoluteCanonical(PFAD_INFOSEITE)}#artikel`},
     citation: QUELLEN.filter((q) => q.url).map((q) => ({
       '@type': q.art === 'buch' ? 'Book' : 'ScholarlyArticle',
       name: q.titel,
