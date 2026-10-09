@@ -293,3 +293,55 @@ test('Preisschutz umgerechnete Währung: Rundungsband der Umrechnung, sonst stri
   // unlesbar bleibt alter Weg
   assert.equal(ps({packungen: 4, setCent: NaN, zeileCent: 23800, umgerechnet: true}).ok, false);
 });
+
+// --- Festbeträge DE ab 4 Packungen (Christian 09.10.2026: "ja zu 5", Job
+// 20261009-update-kakao-staffel-ab-4-festbetraege) ----------------------------
+// Nach dem Brutto-Kipp kosten die Sets 213 / 266 / 319 / 372 €, der Einzelweg
+// mit 30 % 212,80 / 266,00 / 319,20 / 372,40 €. Rot-Arm: ohne den Anker lehnt
+// der Preisschutz 4, 6 und 7 Packungen ab (erste drei Asserts unten).
+
+test('Festbetrag DE: ohne Anker lehnt der Preisschutz 4/6/7 nach dem Kipp ab', () => {
+  const ps = (o) => lib.kakaoPreisschutz({einzelZeilen: 1, setStueck: 1, gemischt: false, ...o});
+  assert.deepEqual(ps({packungen: 4, setCent: 21300, zeileCent: 21280}), {ok: false, grund: 'nie_teurer'});
+  assert.deepEqual(ps({packungen: 6, setCent: 31900, zeileCent: 31920}),
+    {ok: false, grund: 'nie_billiger_als_automatik'});
+  assert.deepEqual(ps({packungen: 7, setCent: 37200, zeileCent: 37240}),
+    {ok: false, grund: 'nie_billiger_als_automatik'});
+  // mit Anker: legt um
+  for (const [n, set, zeile] of [[4, 21300, 21280], [5, 26600, 26600], [6, 31900, 31920], [7, 37200, 37240]]) {
+    assert.deepEqual(ps({packungen: n, setCent: set, zeileCent: zeile, festbetrag: true}),
+      {ok: true, grund: 'anker_festbetrag'}, `${n} Packungen`);
+  }
+  // unter 4 Packungen ändert der Anker nichts (2/3 haben ihren eigenen Weg)
+  assert.deepEqual(ps({packungen: 2, gemischt: true, setCent: 13900, zeileCent: 16557, sortenSetCent: 15900, festbetrag: true}),
+    {ok: false, grund: 'nie_billiger_als_sorten_set'});
+  // unlesbar bleibt alter Weg, auch mit Anker
+  assert.equal(ps({packungen: 4, setCent: NaN, zeileCent: 21280, festbetrag: true}).ok, false);
+});
+
+test('Festbetrag DE: scharf nur bei DE, EUR, brutto und Set auf den Cent', () => {
+  const {kakaoFestbetragGetroffen: fb, KAKAO_FESTBETRAG_CENT} = lib;
+  assert.deepEqual(KAKAO_FESTBETRAG_CENT, {DE: {EUR: {4: 21300, 5: 26600, 6: 31900, 7: 37200}}});
+  const nach = {land: 'DE', waehrung: 'EUR', brutto: true};
+  assert.equal(fb({...nach, sets: [{packungen: 4, cent: 21300}]}), true);
+  assert.equal(fb({...nach, land: 'de', sets: [{packungen: 7, cent: 37200}]}), true);
+  // ab 8 Packungen: jede Set-Zeile mit ihrem Festbetrag (4+4, 5+4)
+  assert.equal(fb({...nach, sets: [{packungen: 4, cent: 21300}, {packungen: 4, cent: 21300}]}), true);
+  assert.equal(fb({...nach, sets: [{packungen: 5, cent: 26600}, {packungen: 4, cent: 21284}]}), false);
+  // VOR dem Kipp: Preismodus netto, Sets netto 198,92 -> nie scharf
+  assert.equal(fb({land: 'DE', waehrung: 'EUR', brutto: false, sets: [{packungen: 4, cent: 19892}]}), false);
+  // brutto, aber Set noch nicht ganz (Kipp läuft noch) -> nicht scharf
+  assert.equal(fb({...nach, sets: [{packungen: 4, cent: 21284}]}), false);
+  // netto mit zufällig gleichem Betrag -> nicht scharf (brutto ist Pflicht)
+  assert.equal(fb({land: 'DE', waehrung: 'EUR', brutto: false, sets: [{packungen: 4, cent: 21300}]}), false);
+  assert.equal(fb({land: 'DE', waehrung: 'EUR', sets: [{packungen: 4, cent: 21300}]}), false);
+  // andere Länder und Währungen sind nicht Teil der Entscheidung
+  for (const land of ['AT', 'FR', 'CH', 'US', 'LI', '']) {
+    assert.equal(fb({...nach, land, sets: [{packungen: 4, cent: 21300}]}), false, land);
+  }
+  assert.equal(fb({...nach, waehrung: 'CHF', sets: [{packungen: 4, cent: 21300}]}), false);
+  // 2/3 Packungen haben keinen Festbetrag, leere Liste nie
+  assert.equal(fb({...nach, sets: [{packungen: 3, cent: 15900}]}), false);
+  assert.equal(fb({...nach, sets: []}), false);
+  assert.equal(fb({...nach, sets: [{packungen: 4, cent: NaN}]}), false);
+});
