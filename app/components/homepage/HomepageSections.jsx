@@ -182,7 +182,9 @@ export function HomepageSections({overrides = {}}) {
       link={"/products/qione-2-pro"}
       linkStyle={"primary"}
       linkText={"Erlebe jetzt den Unterschied"}
-      img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ezgif-5-b78604ff40.webp?v=1682415134"} />
+      img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/ezgif-5-b78604ff40.webp?v=1682415134"}
+      imgBreite={2160}
+      imgHoehe={2160} />
       <div className="Stretched mt-[100px]!" data-section="superhuman-banner">
       <HeroBanner
         backgroundImage={"qiblanco-com-in-5-stufen-zum-superhuman-hintergrund.png?v=1645178965"}
@@ -194,6 +196,8 @@ export function HomepageSections({overrides = {}}) {
         <CallToAction
           dataSection="cta-videokurs"
           img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-masterclass-showcase-app-526x296.png?v=1645756351"}
+          imgBreite={526}
+          imgHoehe={296}
           text={
           <>
             <h2>DER KOSTENLOSE VIDEO-KURS</h2>

@@ -180,7 +180,7 @@ export default function Product() {
         }}
       />
     </div>
-    <CallToAction img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476"} link={"/products/qione-2-pro"} linkStyle={"secondary"} linkText={"Hol' dir jetzt deinen QiOne® 2 pro"} 
+    <CallToAction img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476"} imgBreite={1024} imgHoehe={1024} link={"/products/qione-2-pro"} linkStyle={"secondary"} linkText={"Hol' dir jetzt deinen QiOne® 2 pro"} 
     text={<>
     <h2>Lass deinen QiOne® 2 Pro kohärentes Wasser für dich produzieren</h2>
     <p className='mt-2'><b>✅ 100% deutsche Produktion <br />

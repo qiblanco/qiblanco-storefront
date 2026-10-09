@@ -69,9 +69,35 @@ import { Link } from "react-router"
  * `sizes`-ANGABE HIER ENTFERNT, MUSS `anzeigeBreite` MITZIEHEN: ohne sie
  * schreibt bildQuellen wieder `sizes="659px"` und der Defekt ist zurück.
  */
+/*
+ * DIE HÖHE DES BILDES STEHT VOR DEM LADEN FEST (Job 20261009-schluss-cta-
+ * rand-unter-chatpille-prio45). Bis dahin trug das <img> nur width={500}:
+ * ohne Höhe ist ein `loading="lazy"`-Bild 0 px hoch, bis es geladen ist.
+ * Gemessen 2026-10-09 live (390x844, Chromium): der Schluss-CTA auf
+ * /pages/qihome-details, /pages/qione-2-pro-details und /products/qibracelet
+ * sprang dann ohne jedes Scrollen um 358 px nach unten, auf zwei der Seiten
+ * genau unter Annas Chat-Pille. Das Signal in KaufknopfChatSignal.jsx blendet
+ * die Pille erst ein bis zwei Bilder danach aus; in diesem Fenster traf ein
+ * Klick auf den rechten Knopfrand den Chat (Probe
+ * probe_oeffentlich_knopf_chatblase.py, 4 Funde in 439 Hit-Tests).
+ *
+ * `imgBreite`/`imgHoehe` sind die Masse der MASTERDATEI, nicht der Anzeige:
+ * aus ihnen wird das Höhen-Attribut zur festen Breite 500 gerechnet. Das
+ * width-Attribut bleibt 500, denn an ihm hängt der Umbruch bei 1032 px
+ * (Block oben). Die Anzeigegrösse ändert sich nicht: Tailwinds Grundregel
+ * setzt `img {height: auto}`, das Attribut-Paar liefert nur das
+ * Seitenverhältnis für die Zeit vor dem Laden. Die Masterdateien haben
+ * verschiedene Formate (1:1, 1024x906, 526x296), deshalb nennt jeder
+ * Aufrufer seine; test/call-to-action-bildmasse.test.mjs prüft, dass keiner
+ * fehlt. Ohne die beiden Angaben bleibt es beim alten Verhalten.
+ *
+ * RÜCKWEG: `hoehe` hier entfernen.
+ */
 export function CallToAction({
     img,
     imgAlt = '',
+    imgBreite,
+    imgHoehe,
     text,
     link,
     linkText,
@@ -80,7 +106,8 @@ export function CallToAction({
 }){
     return (
         <div className="CallToAction NormalSectionSize" data-section={dataSection}>
-            <CdnBild width={500}
+            <CdnBild breite={500}
+            hoehe={imgBreite && imgHoehe ? Math.round((500 * imgHoehe) / imgBreite) : undefined}
             src={img}
             alt={imgAlt}
             anzeigeBreite={659}
