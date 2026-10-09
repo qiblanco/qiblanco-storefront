@@ -225,14 +225,14 @@ export const FAQ_BELEGE = [
     // setzt es als id der h3). Seit 2026-10-09, Begründung im Feld `quelle`.
     anker: 'wirkt-ein-armband-gegen-elektrosmog',
     a:
-      'Im Labor ja, dort ist ein deutlicher Unterschied gemessen, und du kannst jede Zahl ' +
-      'nachlesen. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
+      'Im Labor ist unter Handystrahlung ein deutlicher Unterschied gemessen, und du kannst jede ' +
+      'Zahl nachlesen. Untersucht wurde der QiOne® 2 Pro, er trägt denselben GitterChip™ wie das ' +
+      'QiBracelet®. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
       'Handys. Ohne Gerät sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf 60,5 Prozent des ' +
       'Normalwerts, mit einem QiOne® 2 Pro daneben blieben 84,7 Prozent erhalten. Bei Darmzellen ' +
-      'unter derselben Belastung brach die Zellbarriere ohne Gerät auf etwa ein Zehntel ein, mit ' +
-      'Gerät hielt sie gut sieben Zehntel des unbelasteten Werts. Das Gerät schirmt dabei nichts ' +
-      'ab, gemessen wurde, wie sich die Zellen verhalten. Das QiBracelet® arbeitet mit derselben ' +
-      'GitterChip™-Technologie. Zu unseren Produkten gibt es fünf Arbeiten in Fachzeitschriften: ' +
+      'unter derselben Belastung brach die Zellbarriere ohne Gerät auf 6 Prozent ein, mit Gerät ' +
+      'hielt sie 72,6 Prozent des unbelasteten Werts. Das Gerät schirmt dabei nichts ab, ' +
+      'gemessen wurde, wie sich die Zellen verhalten. Zu unseren Produkten gibt es fünf Arbeiten in Fachzeitschriften: ' +
       'vier Laborversuche an Zellkulturen, also in vitro, und eine Auswertung von 171 ' +
       'Erfahrungsberichten. Durchgeführt hat sie das Dartsch Scientific Institut in unserem ' +
       'Auftrag, und alle fünf liegen bei uns vollständig als PDF. Wie es sich im Alltag anfühlt, ' +
@@ -244,7 +244,10 @@ export const FAQ_BELEGE = [
       'Lernschleife frageseite:dach-wirkt-das, Urauftrag Christian 15.09.2026): Die Frage steht ' +
       'jetzt so, wie sie gesucht wird, und die Antwort beginnt mit dem, was zu genau dieser Frage ' +
       'gemessen ist. Die Zahlen stammen aus kritik-vorwuerfe.js BEFUNDE e0001 und e0002 (Registry ' +
-      'e0001/e0002.json, QiOne® 2 Pro). 1.837 von 2.542 Ω/cm² ergeben die „gut sieben Zehntel". ' +
+      'e0001/e0002.json, QiOne® 2 Pro); 6,0 und 72,6 Prozent stehen wörtlich in e0002 (TEER relativ ' +
+      'zur Kontrolle). NACHGESCHÄRFT im selben Job nach adversarialer Prüfung (K3 P2): erst ' +
+      '„Im Labor ja" auf die Armband-Frage legte das Ergebnis dem Armband nahe, jetzt steht der ' +
+      'gemessene Gegenstand im zweiten Satz. ' +
       '„Schirmt nichts ab" steht wie Frage K1 auf /pages/kritik. Das QiBracelet® ist nicht unter ' +
       'Mobilfunk untersucht (e0003 ist oxidativer Stress), deshalb steht es nur mit seiner ' +
       'Technologie im Satz und ohne eine Zahl. Vorher lautete die Frage „Wirkt das überhaupt? Was ' +

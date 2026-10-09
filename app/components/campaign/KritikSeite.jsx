@@ -191,8 +191,10 @@ export function KritikSeite() {
           </h2>
           <p className="krit__einleitung">
             Im Kern steht dahinter eine Frage: Kann etwas so Einfaches gegen
-            Elektrosmog überhaupt etwas ausrichten? Unsere Antwort sind fünf
-            Arbeiten vom Dartsch Scientific Institut, in Fachzeitschriften
+            Elektrosmog überhaupt etwas ausrichten? Unsere Antwort sind
+            Messungen. In zwei Laborarbeiten hielten Zellen unter Handystrahlung
+            mit dem QiOne® 2 Pro deutlich besser stand als ohne. Insgesamt gibt
+            es fünf Arbeiten vom Dartsch Scientific Institut, in Fachzeitschriften
             erschienen und mit allen Zahlen im Original nachlesbar. Und du
             prüfst es an dir selbst: 20 Tage tragen, und wenn es nichts für
             dich ist, ohne Angabe von Gründen zurückgeben. Die sieben Fragen
