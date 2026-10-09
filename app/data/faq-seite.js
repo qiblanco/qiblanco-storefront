@@ -420,7 +420,7 @@ export const FAQ_KAUF = [
       'zusätzlich zum gesetzlichen Widerrufsrecht von 14 Tagen.',
     quelle:
       'FRAGE NEU 2026-10-09 (Job 20261009-ki-lernschleife-bau-dach-0f6163, KI-Lernschleife ' +
-      'frageseite:dach-rueckgabe): Die Frage steht jetzt so, wie sie gesucht wird, die Antwort ' +
+      'Frage zur Rückgabe): Die Frage steht jetzt so, wie sie gesucht wird, die Antwort ' +
       'beginnt mit „Ja." Fristen, Erstattung und Kosten sind unverändert. Das Wort „20-Tage-Test" ' +
       'aus der alten Frage steht jetzt im letzten Satz. Vorher lautete die Frage „Wie läuft der ' +
       '20-Tage-Test, und was, wenn ich nichts merke?" (origin/main d78a668). BIS 2026-10-09: ' +
