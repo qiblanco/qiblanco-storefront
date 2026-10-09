@@ -22,6 +22,11 @@
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
+import {setzePreismodus} from '../app/lib/preismodus.js';
+// Die Fixturen dieser Datei sind NETTO-Basispreise (Shop-Zustand bis zum Kipp
+// 2026-10-09). Seit dem Kipp ist PREISMODUS_VORGABE 'brutto'; der Netto-Pfad
+// bleibt als Rueckbau-Weg im Code und wird hier gepinnt. Brutto: preismodus.test.mjs.
+setzePreismodus('netto');
 import {readFileSync, readdirSync} from 'node:fs';
 import {
   MARKE,
