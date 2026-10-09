@@ -832,7 +832,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon',
-    lastmod: '2026-10-09T09:30:00Z',
+    lastmod: '2026-10-07T04:30:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
