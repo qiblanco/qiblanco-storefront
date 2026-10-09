@@ -85,7 +85,10 @@ function FaqEintrag({item, id, offen, onToggle}) {
   const antwortId = `${id}-antwort`;
   return (
     <div className="faq-eintrag">
-      <h3 style={{margin: 0}}>
+      {/* `item.anker` (optional) macht die Frage per #anker ansteuerbar. Er
+          steht nur an Fragen, die der Anfang ihres Blocks sind und damit offen
+          starten: ein Sprung auf eine zugeklappte Frage zeigte keine Antwort. */}
+      <h3 id={item.anker || undefined} style={{margin: 0}}>
         <button
           type="button"
           className="faq-frage"

@@ -171,6 +171,20 @@ test('5 — Struktur der Seite: Blöcke vollständig, Closer am Ende', () => {
   // FAQ_ALLE muss die Blöcke wirklich abbilden — sonst zeigt die Seite etwas
   // anderes an, als sie auszeichnet.
   assert.equal(FAQ_ALLE.length, FAQ_BLOECKE.reduce((n, b) => n + b.items.length, 0));
+
+  // SPRUNGZIELE (`anker`, seit 2026-10-09): nur am ersten Eintrag eines Blocks,
+  // denn nur der startet offen. Ein Anker auf einer zugeklappten Frage führte
+  // auf eine Überschrift ohne sichtbare Antwort. Eindeutig und als id brauchbar.
+  const anker = [];
+  for (const block of FAQ_BLOECKE) {
+    block.items.forEach((item, i) => {
+      if (item.anker === undefined) return;
+      assert.match(item.anker, /^[a-z0-9-]+$/, `Anker unbrauchbar: ${item.anker}`);
+      assert.equal(i, 0, `Anker "${item.anker}" steht nicht am offenen ersten Eintrag von ${block.id}`);
+      anker.push(item.anker);
+    });
+  }
+  assert.equal(new Set(anker).size, anker.length, 'Ein Anker ist doppelt vergeben');
 });
 
 test('6 — die Route ist indexierbar gebaut: Canonical ja, noindex nein', () => {

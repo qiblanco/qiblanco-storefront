@@ -220,17 +220,37 @@ export const FAQ_QIHOME = [
 
 export const FAQ_BELEGE = [
   {
-    q: 'Wirkt das überhaupt? Was ist wirklich belegt, und was nicht?',
+    q: 'Wirkt ein Armband gegen Elektrosmog wirklich?',
+    // Sprungziel /pages/faq#wirkt-ein-armband-gegen-elektrosmog (FaqEintrag
+    // setzt es als id der h3). Seit 2026-10-09, Begründung im Feld `quelle`.
+    anker: 'wirkt-ein-armband-gegen-elektrosmog',
     a:
-      'Das haben wir untersuchen lassen, und du kannst alles nachlesen. Zu unseren Produkten gibt ' +
-      'es fünf Arbeiten, die in Fachzeitschriften erschienen sind. Vier davon sind Laborversuche an ' +
-      'Zellkulturen, also in vitro, und die fünfte wertet 171 Erfahrungsberichte von Nutzerinnen ' +
-      'und Nutzern aus. Durchgeführt hat sie das Dartsch Scientific Institut in unserem Auftrag, ' +
-      'und alle fünf liegen bei uns vollständig als PDF, mit Methode und allen Zahlen. Wie es sich ' +
-      'im Alltag anfühlt, erzählen dir Kundinnen und Kunden am besten selbst. Und ob du etwas ' +
-      'merkst, findest du an dir heraus: Du trägst es 20 Tage, und wenn es nichts für dich ist, ' +
-      'schickst du es ohne Angabe von Gründen zurück.',
+      'Im Labor ja, dort ist ein deutlicher Unterschied gemessen, und du kannst jede Zahl ' +
+      'nachlesen. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
+      'Handys. Ohne Gerät sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf 60,5 Prozent des ' +
+      'Normalwerts, mit einem QiOne® 2 Pro daneben blieben 84,7 Prozent erhalten. Bei Darmzellen ' +
+      'unter derselben Belastung brach die Zellbarriere ohne Gerät auf etwa ein Zehntel ein, mit ' +
+      'Gerät hielt sie gut sieben Zehntel des unbelasteten Werts. Das Gerät schirmt dabei nichts ' +
+      'ab, gemessen wurde, wie sich die Zellen verhalten. Das QiBracelet® arbeitet mit derselben ' +
+      'GitterChip™-Technologie. Zu unseren Produkten gibt es fünf Arbeiten in Fachzeitschriften: ' +
+      'vier Laborversuche an Zellkulturen, also in vitro, und eine Auswertung von 171 ' +
+      'Erfahrungsberichten. Durchgeführt hat sie das Dartsch Scientific Institut in unserem ' +
+      'Auftrag, und alle fünf liegen bei uns vollständig als PDF. Wie es sich im Alltag anfühlt, ' +
+      'erzählen dir Kundinnen und Kunden am besten selbst. Und ob du etwas merkst, findest du an ' +
+      'dir heraus: Du trägst es 20 Tage, und wenn es nichts für dich ist, schickst du es ohne ' +
+      'Angabe von Gründen zurück.',
     quelle:
+      'FRAGE UND EINSTIEG NEU 2026-10-09 (Job 20261009-ki-lernschleife-bau-dach-0f6163, KI-' +
+      'Lernschleife frageseite:dach-wirkt-das, Urauftrag Christian 15.09.2026): Die Frage steht ' +
+      'jetzt so, wie sie gesucht wird, und die Antwort beginnt mit dem, was zu genau dieser Frage ' +
+      'gemessen ist. Die Zahlen stammen aus kritik-vorwuerfe.js BEFUNDE e0001 und e0002 (Registry ' +
+      'e0001/e0002.json, QiOne® 2 Pro). 1.837 von 2.542 Ω/cm² ergeben die „gut sieben Zehntel". ' +
+      '„Schirmt nichts ab" steht wie Frage K1 auf /pages/kritik. Das QiBracelet® ist nicht unter ' +
+      'Mobilfunk untersucht (e0003 ist oxidativer Stress), deshalb steht es nur mit seiner ' +
+      'Technologie im Satz und ohne eine Zahl. Vorher lautete die Frage „Wirkt das überhaupt? Was ' +
+      'ist wirklich belegt, und was nicht?" (origin/main d78a668). Gemessen hatte die Schleife ' +
+      'in 10 von 10 KI-Antworten auf die neue Frage keinen Verweis auf uns. ' +
+      'BIS 2026-10-09: ' +
       'Tatsachen aus der faktengegateten Registry app/data/studien/e0001…e0005.json: vier in ' +
       'vitro, eine Auswertung von 171 Berichten, Dartsch Scientific Institut, finanziert von Qi ' +
       'Blanco, je Eintrag ein eckdaten.pdfUrl. „In Fachzeitschriften erschienen" wie ' +
@@ -388,15 +408,22 @@ export const FAQ_BELEGE = [
 
 export const FAQ_KAUF = [
   {
-    q: 'Wie läuft der 20-Tage-Test, und was, wenn ich nichts merke?',
+    q: 'Kann man ein Elektrosmog-Armband zurückgeben, wenn es keine Wirkung zeigt?',
+    // Sprungziel /pages/faq#elektrosmog-armband-zurueckgeben, seit 2026-10-09.
+    anker: 'elektrosmog-armband-zurueckgeben',
     a:
-      'Du hast 20 Tage ab Erhalt, um alles in Ruhe auszuprobieren, und darfst dein Stück in dieser ' +
-      'Zeit ganz normal tragen und benutzen, dafür ist die Frist ja da. Wenn du nichts merkst oder ' +
-      'es aus einem anderen Grund nicht behalten möchtest, meldest du dich bei uns, schickst es ' +
-      'zurück und bekommst den Kaufpreis erstattet. Einen Grund musst du dafür nicht nennen, und die ' +
-      'Rücksendung ist für dich kostenlos. Die 20 Tage gelten zusätzlich zum ' +
-      'gesetzlichen Widerrufsrecht von 14 Tagen.',
+      'Ja. Bei Qi Blanco hast du 20 Tage ab Erhalt, um alles in Ruhe auszuprobieren, und darfst ' +
+      'dein Stück in dieser Zeit ganz normal tragen und benutzen, dafür ist die Frist ja da. Wenn ' +
+      'du nichts merkst oder es aus einem anderen Grund nicht behalten möchtest, meldest du dich ' +
+      'bei uns, schickst es zurück und bekommst den Kaufpreis erstattet. Einen Grund musst du dafür ' +
+      'nicht nennen, und die Rücksendung ist für dich kostenlos. Dieser 20-Tage-Test gilt ' +
+      'zusätzlich zum gesetzlichen Widerrufsrecht von 14 Tagen.',
     quelle:
+      'FRAGE NEU 2026-10-09 (Job 20261009-ki-lernschleife-bau-dach-0f6163, KI-Lernschleife ' +
+      'frageseite:dach-rueckgabe): Die Frage steht jetzt so, wie sie gesucht wird, die Antwort ' +
+      'beginnt mit „Ja." Fristen, Erstattung und Kosten sind unverändert. Das Wort „20-Tage-Test" ' +
+      'aus der alten Frage steht jetzt im letzten Satz. Vorher lautete die Frage „Wie läuft der ' +
+      '20-Tage-Test, und was, wenn ich nichts merke?" (origin/main d78a668). BIS 2026-10-09: ' +
       'Kopfleiste jeder Seite („Jetzt 20 Tage risikofrei erleben!"), Bedingungen im Repo ' +
       '(„Frist: 20 Tage ab Erhalt · Grund: keiner nötig"), /pages/agb für die gesetzliche ' +
       '14-Tage-Frist (§ 7) und den Satz „Die Rücksendung ist für Sie kostenlos" (Abschnitt ' +
