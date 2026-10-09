@@ -190,25 +190,6 @@ export function KaufknopfChatSignal() {
       });
     };
 
-    /**
-     * Ein Layout-Sprung wird im selben Bild beurteilt, nicht im nächsten.
-     * Der ResizeObserver meldet NACH dem Layout und VOR dem Zeichnen; ein
-     * Umweg über requestAnimationFrame hätte das Urteil auf das folgende Bild
-     * geschoben, und dieses eine Bild zeigte die Pille über dem Knopf. Gemessen
-     * 2026-10-09 (Job 20261009-schluss-cta-rand-unter-chatpille-prio45): ein
-     * nachladendes Bild schob den Schluss-CTA um 358 px unter die Pille, das
-     * Signal folgte 20 bis 60 ms später, und ein Hit-Test in dieser Lücke traf
-     * den Chat. Scroll braucht das nicht: das Ereignis kommt vor den
-     * rAF-Rückrufen desselben Bilds.
-     */
-    const sofort = () => {
-      if (angefordert) {
-        window.cancelAnimationFrame(angefordert);
-        angefordert = 0;
-      }
-      schreibe();
-    };
-
     schreibe();
     // Erst jetzt gibt app.css das Widget frei. Beim Abbau bleibt das Attribut
     // stehen: ohne Signal gilt wieder der Stand vor dem Bau (Widget sichtbar),
@@ -238,8 +219,7 @@ export function KaufknopfChatSignal() {
      *  - childList an <body>: der Rahmen erscheint erst nach dem Loader, und
      *    Kaufknöpfe kommen per Client-Navigation;
      *  - ResizeObserver an <body>: Inhalt oberhalb des Knopfs lädt nach
-     *    (Bilder) und schiebt ihn, ohne dass gescrollt wird. Er urteilt
-     *    sofort (siehe `sofort` oben), alle anderen über `anfordern`.
+     *    (Bilder) und schiebt ihn, ohne dass gescrollt wird.
      */
     window.addEventListener('scroll', anfordern, {passive: true});
     window.addEventListener('resize', anfordern);
@@ -252,7 +232,7 @@ export function KaufknopfChatSignal() {
     const wurzelWaechter = new MutationObserver(anfordern);
     wurzelWaechter.observe(wurzel, {attributes: true, attributeFilter: ['class']});
     const groesse =
-      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(sofort);
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(anfordern);
     groesse?.observe(document.body);
 
     return () => {
