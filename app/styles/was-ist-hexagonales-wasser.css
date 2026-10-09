@@ -1,0 +1,66 @@
+/* ============================================================================
+   /pages/was-ist-hexagonales-wasser — die Seite „Hexagonales Wasser"
+   (Christian, 23.09.2026: „Platz eins in SEO und GEO" für hexagonales und
+   kohärentes Wasser; Job 20261009-kohaerentes-und-hexagonales-wasser-platz-
+   eins-seo-geo).
+
+   Die Seite trägt die Klassen der Info-Seite „Kohärentes Wasser" (.kw-*), und
+   die Route lädt deren Stylesheet mit: dieselbe Typo-Skala, dasselbe 8pt-
+   Raster, EIN Gold. Diese Datei setzt nur, was es dort nicht gibt: die
+   dreispaltige Abgrenzungstabelle. Jeder Wert kommt aus den Tokens der
+   Info-Seite (--kw-*) oder der Wurzel (--qb-*); kein freier Wert.
+   ========================================================================== */
+
+.hw-abgrenzung__rahmen {
+  max-width: var(--kw-breite);
+}
+
+.hw-abgrenzung__tabelle tbody td:last-child {
+  color: var(--qb-text-gedaempft);
+  font-size: var(--qb-ref-fs-2);
+}
+
+.hw-abgrenzung__tabelle tbody tr:first-child th,
+.hw-abgrenzung__tabelle tbody tr:first-child td {
+  background: var(--kw-grund);
+}
+
+.hw-abgrenzung__tabelle tbody tr:first-child th {
+  box-shadow: inset 3px 0 0 var(--qb-akzent);
+  padding-left: var(--kw-s1);
+}
+
+/* Schmal: jede Zeile wird ein Block, damit der Begriff nicht neben zwei
+   Textspalten auf ein Wort je Zeile schrumpft. */
+@media (max-width: 749px) {
+  .hw-abgrenzung__tabelle thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .hw-abgrenzung__tabelle tr,
+  .hw-abgrenzung__tabelle th,
+  .hw-abgrenzung__tabelle td {
+    display: block;
+  }
+
+  .hw-abgrenzung__tabelle tbody tr {
+    padding: var(--kw-s2) 0;
+    border-bottom: 1px solid var(--kw-linie);
+  }
+
+  .hw-abgrenzung__tabelle tbody th,
+  .hw-abgrenzung__tabelle tbody td {
+    border-bottom: 0;
+    padding: 0 0 var(--kw-s1);
+    white-space: normal;
+  }
+
+  .hw-abgrenzung__tabelle tbody tr:first-child {
+    background: var(--kw-grund);
+    padding-inline: var(--kw-s2);
+  }
+}
