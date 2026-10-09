@@ -121,13 +121,13 @@ function quelleVon(tag) {
  * role="presentation" aus.
  *
  * DEKO-MARKIERUNG (seit 2026-10-09, Job 20261009-update-alt-texte-
- * produktbilder-alle-shops s02): alt="" allein ist fuer Werkzeuge nicht von
- * einem vergessenen Text zu unterscheiden -- die Rand-Messung des Jobs zaehlte
+ * produktbilder-alle-shops s02): alt="" allein ist für Werkzeuge nicht von
+ * einem vergessenen Text zu unterscheiden -- die Rand-Messung des Jobs zählte
  * die vier Icons deshalb als "ohne Alt-Text". role="presentation" macht die
  * Entscheidung "dekorativ" maschinenlesbar. Ein Icon, das im RTE schon alt=""
- * traegt (so liefert Shopify sie heute aus), bekommt NUR die Rolle; ein
+ * trägt (so liefert Shopify sie heute aus), bekommt NUR die Rolle; ein
  * NICHTLEERES alt bleibt byte-gleich (das meldet probe_alt_texte_live.py,
- * Raum STUMM), und eine vorhandene role/aria-hidden wird nie ueberschrieben.
+ * Raum STUMM), und eine vorhandene role/aria-hidden wird nie überschrieben.
  *
  * @param {string} html rohes Fremd-HTML (Shopify descriptionHtml)
  * @returns {{html: string, gesetzt: string[], markiert: string[], offen: string[]}}

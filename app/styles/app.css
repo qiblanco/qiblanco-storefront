@@ -399,7 +399,7 @@ footer *{
  * und er ist gemessen, nicht gewaehlt: der Haupt-CTA der Produktseite hat
  * computed `line-height: 26.4px` bei `font-size: 17.6px`, also exakt 1.5. Er
  * bezieht sie von einem Vorfahren der Produktseite; die Eltern-Kette im Drawer
- * (aside > .aside-zone > .cart-main > .cart-summary-aside) fuehrt sie nicht, weshalb
+ * (aside > .aside-zone > .cart-main > .cart-summary-aside) führt sie nicht, weshalb
  * der Knopf sonst auf `normal` faellt und 64 statt 70 px hoch wird. Mit 1.5
  * ergibt die Box 20 + 26,4 + 20 + 2*2 = 70,4 px — dieselbe Hoehe wie der
  * Haupt-CTA, Tabelle Zeile 6. */
@@ -2112,7 +2112,7 @@ footer.footer :focus-visible {
  * ganzen Umbaus (Flexbox automatic minimum size) — ohne ihn waechst dieser
  * Kasten auf die Summe seiner Zeilen und schiebt den Kaufbutton hinaus.
  * `overflow` steht auf beiden Achsen, damit die X-Achse nicht still zu `auto`
- * erhoben wird (siehe Begruendung an .overlay > aside > .aside-zone). */
+ * erhoben wird (siehe Begründung an .overlay > aside > .aside-zone). */
 .cart-main {
   flex: 1 1 auto;
   min-height: 0;
@@ -5177,10 +5177,10 @@ ul.kakao-children li {
   h1 { font-size: 1.4rem !important; }
   h2 { font-size: 1.2rem !important; }
 }
-/* Paritaet zu Fix #12: bis 2026-10-09 war die Drawer-Zone ein <main> und erbte
- * von der Regel darueber `min-width: 0` (gemessen: einzige Abweichung der
+/* Parität zu Fix #12: bis 2026-10-09 war die Drawer-Zone ein <main> und erbte
+ * von der Regel darüber `min-width: 0` (gemessen: einzige Abweichung der
  * berechneten Styles live/Vorschau bei 300 px). Nur diese eine Eigenschaft;
- * Polsterung und Ueberlauf setzt `.overlay > aside > .aside-zone` selbst. */
+ * Polsterung und Überlauf setzt `.overlay > aside > .aside-zone` selbst. */
 @media (max-width: 319px) {
   .overlay > aside > .aside-zone {
     min-width: 0;

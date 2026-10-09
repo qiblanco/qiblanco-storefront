@@ -53,7 +53,7 @@ export function Aside({children, heading, type}) {
             (axe landmark-no-duplicate-main), und das steht in PageLayout.jsx.
             Bis 2026-10-09 lag hier ein <main> je Schublade -- vier auf jeder
             Seite, und document.querySelector('main') traf den Warenkorb statt
-            den Seiteninhalt. Die Klasse traegt die bisherigen Regeln
+            den Seiteninhalt. Die Klasse trägt die bisherigen Regeln
             (app.css .overlay > aside > .aside-zone, reset.css). */}
         <div className="aside-zone">
         <header>

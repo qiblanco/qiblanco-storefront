@@ -667,7 +667,7 @@ export function YoutubeTimestamp({
         {...posterProps}
         ref={posterBild}
         alt={posterAlt}
-        /* Ohne eigenen Bildtext ist das Poster ausdruecklich dekorativ: der
+        /* Ohne eigenen Bildtext ist das Poster ausdrücklich dekorativ: der
          * Name kommt aus dem aria-label des Knopfes (probe_videofassade_
          * nennt_das_video.py). role=presentation macht das maschinenlesbar. */
         role={posterAlt ? undefined : 'presentation'}
