@@ -5177,6 +5177,15 @@ ul.kakao-children li {
   h1 { font-size: 1.4rem !important; }
   h2 { font-size: 1.2rem !important; }
 }
+/* Paritaet zu Fix #12: bis 2026-10-09 war die Drawer-Zone ein <main> und erbte
+ * von der Regel darueber `min-width: 0` (gemessen: einzige Abweichung der
+ * berechneten Styles live/Vorschau bei 300 px). Nur diese eine Eigenschaft;
+ * Polsterung und Ueberlauf setzt `.overlay > aside > .aside-zone` selbst. */
+@media (max-width: 319px) {
+  .overlay > aside > .aside-zone {
+    min-width: 0;
+  }
+}
 /* QiHome Landing Page */
 .QiHomeHero {
   background: #000;
