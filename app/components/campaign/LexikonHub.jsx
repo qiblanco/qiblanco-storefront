@@ -142,7 +142,21 @@ export function LexikonHub() {
               K1-K4: die Seite erklärte, warum sie geschrieben wurde — ein
               Selbstgespräch, keine Angabe für den Leser). Was er daraus
               mitnimmt, steht jetzt als Satz über den Begriffen. */}
+          {/* 2026-10-09: Christians Selbstpositionierung steht wieder da, in
+              seinen Worten vom 15.09. („dass wir uns selbst als Plattform
+              verstehen, als Bindeglied zwischen Spiritualität, Physik und
+              Metaphysik. Und dass es uns am Herzen liegt, hier eine
+              gemeinsame Sprache zu finden"). Gestrichen hatte sie PR #642
+              ohne sein Wort; nachgezogen von
+              zusagen-nachzug-20260915-GEO-lexikon-…-82a667, Rand-Probe
+              auftragstreue/pruefungen/probe_nachzug_lexikon_positionierung.py.
+              Kein Satz über diese Seite, sondern eine Angabe, wer spricht. */}
           <h2>Zwei Sprachen für dieselbe Erfahrung</h2>
+          <p>
+            Qi Blanco versteht sich als Plattform und als Bindeglied zwischen
+            Spiritualität, Physik und Metaphysik. Uns liegt am Herzen, für alle
+            drei eine gemeinsame Sprache zu finden.
+          </p>
           <p>
             Zwischen Spiritualität und Physik liegt kein Widerspruch, sondern
             ein Übersetzungsproblem. Beide Seiten beschreiben Erfahrungen, und
