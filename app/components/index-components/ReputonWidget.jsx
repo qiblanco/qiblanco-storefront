@@ -616,6 +616,7 @@ function ReviewKarte({review, quelle = 'google'}) {
             <img
               src={review.foto}
               alt=""
+              role="presentation"
               width="36"
               height="36"
               loading="lazy"

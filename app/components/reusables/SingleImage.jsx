@@ -13,13 +13,19 @@ import {CdnBild} from './CdnBild';
  * `anzeigeBreite` folgt der DESKTOP-Breite (1318 px gemessen), weil die Leiter
  * die größte vorkommende Fläche decken muss; `sizes` sagt dem Telefon,
  * dass es dort nur 92vw sind, und lässt es eine kleinere Sprosse wählen.
+ *
+ * `alt` (seit 2026-10-09, Job 20261009-update-alt-texte-produktbilder-alle-
+ * shops s02): beschreibender Text des Bildes, am Bild abgelesen und am
+ * Aufrufort gesetzt. Ohne Angabe bleibt alt="" wie bisher -- OHNE
+ * role=presentation, denn ob ein Bild dekorativ ist, weiß nur der Aufrufort.
+ * Ein erfundener Vorgabewert hier wäre schlechter als keiner.
  */
-export function SingleImage({link, size, dataSection}){
+export function SingleImage({link, size, dataSection, alt = ''}){
     const bild = (
         <CdnBild
             className="SingleImageCentered"
             src={link}
-            alt=""
+            alt={alt}
             anzeigeBreite={1318}
             sizes="(min-width: 1000px) 1318px, 92vw"
             loading="lazy"

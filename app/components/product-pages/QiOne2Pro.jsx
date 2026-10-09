@@ -65,6 +65,7 @@ export default function QiOne2Pro({
         link={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/taje__1.webp?v=1710262080'
         }
+        alt="Frau hält den QiOne® 2 Pro an seiner Kette vor der Brust"
       />
       <Gitterchip />
       {gitterchipAnimation}
@@ -116,6 +117,7 @@ export default function QiOne2Pro({
         link={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065'
         }
+        alt="Gitterchips im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"
         size={'normal'}
       />
       <div style={{marginBottom: '50px'}} className="text-center mt-2 NormalSectionSize">
@@ -130,6 +132,7 @@ export default function QiOne2Pro({
         }
         imgBreite={1080}
         imgHoehe={1080}
+        imgAlt="QiOne® 2 Pro von vorn, mit goldfarbenem Gitterchip™"
         text={
           <>
             <h2>
@@ -260,7 +263,7 @@ function MainFeatures() {
         <img
           width={350}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Siegel_2021.png?v=1732616616"
-          alt=""
+          alt="Siegel „Produkt zellbiologisch geprüft“ von dartsch scientific, 2021, mit Unterschrift von Prof. Dr. Peter C. Dartsch, Diplom-Biochemiker"
         />
         <div className="MainFeaturesColumn">
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>
@@ -351,7 +354,7 @@ function MassgeschneiderteTechnologie() {
           <img
             width={400}
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_03_transparent_1.webp?v=1676978032"
-            alt=""
+            alt="Rückseite des QiOne® 2 Pro mit der Gravur „QiOne 2 Pro“, Seriennummer und „Made in Germany“"
           />
         </div>
       </div>

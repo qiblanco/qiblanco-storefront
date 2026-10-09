@@ -278,7 +278,7 @@ export function ProduktVideoKachel({handle}) {
         aria-label={BEDIENUNG.kachelLabel(produkt, videos.length)}
         onClick={() => setOffen(true)}
       >
-        <img src={videos[0].vorschau} alt="" loading="lazy" width="240" height="240" />
+        <img src={videos[0].vorschau} alt="" role="presentation" loading="lazy" width="240" height="240" />
         <span className="qb-pv-kachel__schleier" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="24" height="24">
             <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="1.5" />

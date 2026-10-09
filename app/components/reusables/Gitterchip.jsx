@@ -3,8 +3,8 @@ export function Gitterchip(){
         <div className="Gitterchip NormalSectionSize">
             <h2 className="text-center">Der revolutionäre Gitterchip™ 2.0</h2>
             <div className="GitterchipImageWrapper mt-2">
-                <img width={300} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861" alt="" />
-                <img width={300} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919" alt="" />
+                <img width={300} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861" alt="Gitterchip™ in Nahaufnahme: goldfarbene Scheibe mit wabenartigem Gittermuster" />
+                <img width={300} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919" alt="Querschnitt des QiOne® 2 Pro mit dem eingelassenen goldfarbenen Gitterchip™" />
             </div>
             <div className="mb-3 mt-2 text-center"><small><strong>22,61 mm³ Leistungsvolumen, (rechts: Querschnitt des QiOne® 2 Pro)</strong></small></div>
             <h3>Vererbbar</h3>
