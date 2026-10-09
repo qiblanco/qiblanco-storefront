@@ -1,0 +1,356 @@
+/* ============================================================================
+   Webinar-Anmeldeseiten /pages/webinar-* und ihre Bestätigungsseiten
+   (Grossjob Webinar-Manager, s02, 08.10.2026). Rezept von coming-home.css
+   (100/100): Gold, Tinte und Fläche aus app/styles/qb-tokens.css, hier nur die
+   Rollen (--wb-*). Warmes Neutral-Kontinuum, EIN Gold nur auf Handlung,
+   8pt-Raster, EIN H2-Stil, zwei Radien, drei Farb-Akte. Außerhalb von :root
+   kein freier Wert. Knöpfe aus dem Bausatz (.btn--primary/.btn--secondary).
+   Eigene Datei, damit Gate 12 sie nur diesen vier Routen zurechnet.
+   ========================================================================== */
+
+:root {
+  --wb-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+  /* Typo-Skala 13 / 16 / 20 / 25 / H2 / H1 (wie Coming Home) */
+  --wb-fs-xs: 0.8125rem;
+  --wb-fs-base: 1rem;
+  --wb-fs-lg: 1.25rem;
+  --wb-fs-xl: 1.5625rem;
+  --wb-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --wb-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+  /* 8pt-Raster */
+  --wb-s1: 8px;
+  --wb-s2: 16px;
+  --wb-s3: 24px;
+  --wb-s4: 32px;
+  --wb-s6: 48px;
+  --wb-s8: 64px;
+  --wb-s12: 96px;
+  /* Farbe */
+  --wb-grund: #faf9f5;
+  --wb-flaeche: var(--qb-flaeche);
+  --wb-dunkel: #191714;
+  --wb-text: var(--qb-text);
+  --wb-text-hell: #f4f0e9;
+  --wb-muted: var(--qb-text-gedaempft);
+  --wb-muted-hell: rgba(244, 240, 233, 0.72);
+  --wb-akzent: var(--qb-akzent);
+  --wb-akzent-tinte: var(--qb-akzent-tinte);
+  --wb-linie: rgba(44, 42, 38, 0.12);
+  /* Radien, Schatten, Layout */
+  --wb-r1: 8px;
+  --wb-r2: 16px;
+  --wb-schatten: 0 12px 32px rgba(25, 23, 20, 0.11);
+  --wb-mass: 60ch;
+  --wb-breite: 1080px;
+  --wb-breite-schmal: 760px;
+  --wb-bild: 400px;
+  --wb-bild-schmal: 360px;
+  --wb-nr: 40px;
+}
+
+body:has(.wb) { background: var(--wb-grund); }
+.wb {
+  font-family: var(--wb-font);
+  font-size: var(--wb-fs-base);
+  line-height: 1.65;
+  color: var(--wb-text);
+  background: var(--wb-grund);
+}
+.wb *,
+.wb *::before,
+.wb *::after { box-sizing: border-box; }
+/* reset.css setzt p und li global auf 1.2rem/1.4 in --color-dark; hier gilt der Grundfluss. */
+.wb p,
+.wb li {
+  font-size: var(--wb-fs-base);
+  line-height: 1.65;
+  color: inherit;
+}
+.wb .wb-abschnitt {
+  margin: 0;
+  padding: var(--wb-s12) var(--wb-s3);
+  max-width: none;
+  background: var(--wb-grund);
+}
+.wb .wb-innen {
+  max-width: var(--wb-breite);
+  margin: 0 auto;
+}
+.wb .wb-innen-schmal { max-width: var(--wb-breite-schmal); }
+
+/* Typo: EIN H1, EIN H2, EIN H3 */
+.wb .wb-h1,
+.wb .wb-h2,
+.wb .wb-h3 {
+  font-family: var(--wb-font);
+  font-weight: 600;
+  color: inherit;
+}
+.wb .wb-h1 {
+  font-size: var(--wb-fs-h1);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin: 0 0 var(--wb-s3);
+}
+.wb .wb-h2 {
+  font-size: var(--wb-fs-h2);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-align: center;
+  max-width: var(--wb-breite-schmal);
+  margin: 0 auto var(--wb-s6);
+}
+.wb .wb-h3 {
+  font-size: var(--wb-fs-xl);
+  line-height: 1.25;
+  margin: 0 0 var(--wb-s1);
+}
+.wb .wb-vorzeile,
+.wb .wb-eckdatum-begriff,
+.wb .wb-zitat-von,
+.wb .wb-geschichte-von {
+  font-size: var(--wb-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+  margin: 0;
+}
+.wb .wb-vorzeile {
+  color: var(--wb-akzent-tinte);
+  margin-bottom: var(--wb-s2);
+}
+.wb .wb-lede {
+  font-size: var(--wb-fs-lg);
+  line-height: 1.5;
+  color: var(--wb-muted);
+  max-width: var(--wb-mass);
+  margin: 0 0 var(--wb-s4);
+  text-wrap: pretty;
+}
+.wb .wb-text {
+  max-width: var(--wb-mass);
+  margin: 0 0 var(--wb-s2);
+}
+.wb .wb-text:last-child { margin-bottom: 0; }
+.wb .wb-hinweis,
+.wb .wb-einwilligung {
+  font-size: var(--wb-fs-xs);
+  line-height: 1.6;
+  color: var(--wb-muted);
+  margin: var(--wb-s2) 0 0;
+}
+.wb .wb-einwilligung { margin: 0 0 var(--wb-s3); }
+.wb .wb-verweis {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.wb .wb-knopf {
+  margin: 0;
+  text-decoration: none;
+}
+
+/* Akt 1: Kopf mit Christian */
+.wb .wb-kopf-raster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--wb-bild);
+  gap: var(--wb-s8);
+  align-items: center;
+}
+.wb .wb-bild { margin: 0; }
+.wb .wb-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--wb-r2);
+  box-shadow: var(--wb-schatten);
+}
+
+/* Band und zweite Fläche */
+.wb .wb-band,
+.wb .wb-flaeche { background: var(--wb-flaeche); }
+.wb .wb-band { padding: var(--wb-s4) var(--wb-s3); }
+.wb .wb-eckdaten {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--wb-s3);
+  margin: 0;
+}
+.wb .wb-eckdatum-wert {
+  font-size: var(--wb-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Akt 2: Agenda, Schritte, Zitat */
+.wb .wb-szene { margin-bottom: var(--wb-s6); }
+.wb .wb-agenda,
+.wb .wb-schritte {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--wb-s3);
+}
+.wb .wb-agenda-punkt,
+.wb .wb-schritt {
+  display: grid;
+  grid-template-columns: var(--wb-nr) minmax(0, 1fr);
+  gap: var(--wb-s3);
+  margin: 0;
+}
+.wb .wb-agenda-punkt {
+  align-items: center;
+  padding: var(--wb-s3) 0 0;
+  border-top: 1px solid var(--wb-linie);
+  font-size: var(--wb-fs-lg);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.wb .wb-nr {
+  display: grid;
+  place-items: center;
+  width: var(--wb-nr);
+  height: var(--wb-nr);
+  border: 1px solid var(--wb-akzent);
+  border-radius: 50%;
+  font-size: var(--wb-fs-base);
+  font-weight: 600;
+  color: var(--wb-akzent-tinte);
+}
+.wb .wb-zitat {
+  margin: var(--wb-s6) 0 0;
+  padding: 0 0 0 var(--wb-s3);
+  border: 0;
+  border-left: 2px solid var(--wb-akzent);
+}
+.wb .wb-zitat-satz {
+  font-size: var(--wb-fs-xl);
+  line-height: 1.35;
+  margin: 0 0 var(--wb-s1);
+}
+
+/* Warum: Christians Gründungsgeschichte in seinen Worten (s11). Eine ruhige
+   Linie statt Gold, denn Gold bleibt der Handlung vorbehalten. */
+.wb .wb-geschichte { margin: 0; }
+.wb .wb-geschichte-text {
+  margin: 0;
+  padding: 0 0 0 var(--wb-s3);
+  border: 0;
+  border-left: 2px solid var(--wb-linie);
+}
+.wb .wb-geschichte-text p {
+  font-size: var(--wb-fs-lg);
+  line-height: 1.5;
+  max-width: var(--wb-mass);
+  margin: 0 0 var(--wb-s3);
+  text-wrap: pretty;
+}
+.wb .wb-geschichte-text p:last-child { margin-bottom: 0; }
+.wb .wb-geschichte-von { margin: var(--wb-s3) 0 0 var(--wb-s3); }
+.wb .wb-warum-bruecke { margin-top: var(--wb-s4); }
+
+/* Akt 3: dunkel, die Anmeldung */
+.wb .wb-dunkel {
+  background: var(--wb-dunkel);
+  color: var(--wb-text-hell);
+  scroll-margin-top: var(--wb-s8);
+}
+.wb .wb-dabei {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--wb-s8);
+  align-items: start;
+}
+.wb .wb-schritte { gap: var(--wb-s4); }
+.wb .wb-schritt .wb-text { color: var(--wb-muted-hell); }
+.wb .wb-dunkel .wb-nr { color: var(--wb-akzent); }
+.wb .wb-karte {
+  margin: 0;
+  padding: var(--wb-s4);
+  border-radius: var(--wb-r2);
+  background: var(--wb-grund);
+  color: var(--wb-text);
+}
+.wb .wb-karte .wb-h3 { margin-bottom: var(--wb-s3); }
+.wb .wb-karte-hell { background: var(--wb-flaeche); }
+.wb .wb-status {
+  font-weight: 600;
+  margin-bottom: var(--wb-s3);
+}
+.wb .wb-feldname {
+  display: block;
+  font-size: var(--wb-fs-xs);
+  font-weight: 600;
+  margin: 0 0 var(--wb-s1);
+}
+.wb .wb-feld {
+  display: block;
+  width: 100%;
+  min-height: var(--wb-s6);
+  padding: var(--wb-s1) var(--wb-s2);
+  margin: 0 0 var(--wb-s3);
+  font: inherit;
+  color: var(--wb-text);
+  background: var(--wb-flaeche);
+  border: 1px solid var(--wb-linie);
+  border-radius: var(--wb-r1);
+}
+.wb .wb-feld:focus-visible {
+  outline: 2px solid var(--wb-akzent-tinte);
+  outline-offset: 2px;
+}
+.wb .wb-feld:disabled { cursor: not-allowed; }
+.wb .wb-topf {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.wb .wb-fehler {
+  font-weight: 600;
+  margin: var(--wb-s2) 0 0;
+}
+.wb .wb-link-text { overflow-wrap: anywhere; }
+.wb .wb-kalender,
+.wb .wb-weiter { margin-top: var(--wb-s4); }
+
+/* Fragen */
+.wb .wb-frage {
+  padding: var(--wb-s3) 0;
+  border-top: 1px solid var(--wb-linie);
+}
+.wb .wb-frage-titel {
+  font-size: var(--wb-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 var(--wb-s1);
+}
+.wb .wb-fragen,
+.wb .wb-fragen dd { margin: 0; }
+
+/* Schmal */
+@media (max-width: 899px) {
+  .wb .wb-abschnitt { padding: var(--wb-s8) var(--wb-s3); }
+  .wb .wb-band { padding: var(--wb-s4) var(--wb-s3); }
+  .wb .wb-kopf-raster,
+  .wb .wb-dabei {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--wb-s6);
+  }
+  .wb .wb-bild { max-width: var(--wb-bild-schmal); }
+  .wb .wb-eckdaten { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wb .wb-h2 { margin-bottom: var(--wb-s4); }
+  .wb .wb-karte { padding: var(--wb-s3); }
+  .wb .wb-agenda-punkt,
+  .wb .wb-zitat-satz,
+  .wb .wb-geschichte-text p {
+    font-size: var(--wb-fs-base);
+  }
+  .wb .wb-geschichte-text { padding-left: var(--wb-s2); }
+  .wb .wb-geschichte-von { margin-left: var(--wb-s2); }
+}
