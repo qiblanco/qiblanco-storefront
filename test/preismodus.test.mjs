@@ -66,9 +66,9 @@ const cartLine = (handle, amount, quantity = 1, currencyCode = 'EUR') => ({
 beforeEach(() => preismodusZuruecksetzen());
 
 describe('Träger: Metafeld-Wert und Rückfall-Reihenfolge', () => {
-  it('Deploy-Vorgabe ist netto (heutiger Shop-Zustand)', () => {
-    assert.equal(PREISMODUS_VORGABE, 'netto');
-    assert.deepEqual(preismodusStand(), {modus: 'netto', quelle: 'vorgabe'});
+  it('Deploy-Vorgabe ist brutto (Shop-Zustand seit dem Kipp 2026-10-09)', () => {
+    assert.equal(PREISMODUS_VORGABE, 'brutto');
+    assert.deepEqual(preismodusStand(), {modus: 'brutto', quelle: 'vorgabe'});
   });
 
   it('gültiger Metafeld-Wert gewinnt, normalisiert', () => {
@@ -89,16 +89,16 @@ describe('Träger: Metafeld-Wert und Rückfall-Reihenfolge', () => {
 
   it('unlesbar ohne je gelesen zu haben: Vorgabe, als solche markiert', () => {
     assert.deepEqual(uebernehmeMetafeld(null), {
-      modus: 'netto',
+      modus: 'brutto',
       quelle: 'vorgabe',
     });
   });
 
   it('unbekannter Wert erzeugt keinen dritten Zustand', () => {
     assert.equal(setzePreismodus('inkl'), false);
-    assert.equal(preismodus(), 'netto');
-    uebernehmeMetafeld('brutto');
-    assert.equal(uebernehmeMetafeld('inkl').modus, 'brutto');
+    assert.equal(preismodus(), 'brutto');
+    uebernehmeMetafeld('netto');
+    assert.equal(uebernehmeMetafeld('inkl').modus, 'netto');
   });
 
   it('ladePreismodus: Storefront-Fehler wirft nicht, fällt zurück', async () => {
@@ -108,15 +108,15 @@ describe('Träger: Metafeld-Wert und Rückfall-Reihenfolge', () => {
       },
     };
     assert.deepEqual(await ladePreismodus(kaputt), {
-      modus: 'netto',
+      modus: 'brutto',
       quelle: 'vorgabe',
     });
     const heil = {
-      query: async () => ({shop: {metafield: {value: 'brutto'}}}),
+      query: async () => ({shop: {metafield: {value: 'netto'}}}),
     };
     assert.equal((await ladePreismodus(heil)).quelle, 'metafeld');
     assert.equal((await ladePreismodus(kaputt)).quelle, 'zuletzt');
-    assert.equal(preismodus(), 'brutto');
+    assert.equal(preismodus(), 'netto');
   });
 });
 
