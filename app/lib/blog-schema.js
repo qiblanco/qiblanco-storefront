@@ -103,7 +103,7 @@ export function artikelSchema({pfad, artikel, blog}) {
 
   const graph = [beitrag];
 
-  // DIE BROTKRUME Startseite › Blog › Artikel (GEO-Massnahme M2, Job
+  // DIE BROTKRUME Startseite › Blog › Artikel (GEO-Maßnahme M2, Job
   // 20261010-geo-sageo-m2-schema-paritaet-us-wie-de). Am 2026-10-10 am
   // ausgelieferten HTML gemessen: die Artikel trugen BlogPosting, aber keine
   // BreadcrumbList, obwohl der Blogindex (blog-seo.js) und jede /pages-Seite

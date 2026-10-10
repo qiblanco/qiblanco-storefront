@@ -257,7 +257,7 @@ export const meta = () => [
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:image', content: `${BILD}&width=1200`},
   {property: 'og:image:alt', content: BILD_ALT},
-  // WebPage + BreadcrumbList (GEO-Massnahme M2, Job
+  // WebPage + BreadcrumbList (GEO-Maßnahme M2, Job
   // 20261010-geo-sageo-m2-schema-paritaet-us-wie-de): am 2026-10-10 trug diese
   // Seite als einzige der gemessenen gar kein JSON-LD. Aus seitenSignale nur
   // die ld+json-Descriptoren, denn die og-Tags stehen oben schon von Hand.

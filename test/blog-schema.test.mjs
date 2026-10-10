@@ -157,7 +157,7 @@ test('die Route zieht die Fabrik wirklich — ein Modul ohne Aufrufer ist wirkun
   assert.match(route, /artikelSchema\(\{/, 'Fabrik wird nicht aufgerufen');
 });
 
-// GEO-Massnahme M2 (2026-10-10): Brotkrume Startseite › Blog › Artikel.
+// GEO-Maßnahme M2 (2026-10-10): Brotkrume Startseite › Blog › Artikel.
 test('mit blog.handle trägt der Graph eine BreadcrumbList mit drei echten Stufen', () => {
   const s = artikelSchema({
     pfad: PFAD,
