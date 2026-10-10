@@ -1,6 +1,7 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import {Link, data, useFetcher} from 'react-router';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
 import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
 import {teilnahmeLink} from '~/lib/coming-home.server';
 import comingHomeStyles from '~/styles/coming-home.css?url';
@@ -256,6 +257,27 @@ export const meta = () => [
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:image', content: `${BILD}&width=1200`},
   {property: 'og:image:alt', content: BILD_ALT},
+  // WebPage + BreadcrumbList (GEO-Massnahme M2, Job
+  // 20261010-geo-sageo-m2-schema-paritaet-us-wie-de): am 2026-10-10 trug diese
+  // Seite als einzige der gemessenen gar kein JSON-LD. Aus seitenSignale nur
+  // die ld+json-Descriptoren, denn die og-Tags stehen oben schon von Hand.
+  // Das Seitenbild ist das Foto dieser Seite, nicht das Standardbild der
+  // Marke, das seitenSignale ohne kuratierten Eintrag nimmt.
+  ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG})
+    .filter((d) => d['script:ld+json'])
+    .map((d) =>
+      d['script:ld+json']['@type'] === 'WebPage'
+        ? {
+            'script:ld+json': {
+              ...d['script:ld+json'],
+              primaryImageOfPage: {
+                '@type': 'ImageObject',
+                url: `${BILD}&width=1200`,
+              },
+            },
+          }
+        : d,
+    ),
 ];
 
 /**

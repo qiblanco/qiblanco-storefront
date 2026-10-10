@@ -1,7 +1,7 @@
 import {BewertungenSeite} from '~/components/campaign/BewertungenSeite';
 import bewertungenStyles from '~/styles/bewertungen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, seitenSignale, teilbildTags} from '~/lib/seiten-seo';
 
 const PFAD = '/pages/bewertungen';
 
@@ -107,6 +107,15 @@ export const meta = () => [
   {property: 'og:description', content: BESCHREIBUNG},
   {property: 'og:url', content: absoluteCanonical(PFAD)},
   {property: 'og:site_name', content: MARKE},
+  // Seitenknoten WebPage + BreadcrumbList (GEO-Massnahme M2, Job
+  // 20261010-geo-sageo-m2-schema-paritaet-us-wie-de). Bis hierher trug die
+  // Seite nur den Organization-Knoten mit der Google-Bewertung
+  // (BewertungenSeite). Aus seitenSignale nur die ld+json-Descriptoren, die
+  // og-Tags stehen oben schon. Keine Review-Knoten: die Seite zeigt Stimmen,
+  // erhebt aber keine Produktbewertungen.
+  ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG}).filter(
+    (d) => d['script:ld+json'],
+  ),
 ];
 
 export default function BewertungenRoute() {

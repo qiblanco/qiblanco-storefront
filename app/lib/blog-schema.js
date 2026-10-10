@@ -35,19 +35,21 @@
 // und aus demselben Grund: den '~'-Alias loest nur Vite auf, `node --test`
 // nicht. Der Import-Stil entscheidet hier darueber, ob dieses Modul aus einem
 // Bordmittel-Test überhaupt ladbar ist.
-import {absoluteCanonical} from './seo.js';
+import {CANONICAL_ORIGIN, absoluteCanonical} from './seo.js';
 import {ORG_ID} from './entity-schema.js';
 
 /**
  * BlogPosting-Graph EINES Fachartikels.
  *
- * @param {{pfad: string, artikel: object}} args
+ * @param {{pfad: string, artikel: object, blog?: {handle?: string, title?: string}}} args
  *   pfad     Pfad der angefragten Seite (location.pathname)
  *   artikel  Artikel-Knoten aus ARTICLE_QUERY
+ *   blog     handle und title des Blogs (für die Brotkrume); fehlt der
+ *            handle, entsteht die Brotkrume nicht
  * @returns {object|null} JSON-LD-Objekt, oder null wenn die Pflichtangaben
  *   fehlen — dann steht lieber KEIN Block im Kopf als ein leerer.
  */
-export function artikelSchema({pfad, artikel}) {
+export function artikelSchema({pfad, artikel, blog}) {
   // OHNE TITEL ODER DATUM KEIN OBJEKT. Beides sind die Angaben, wegen derer
   // dieser Block überhaupt gebaut wurde; ein BlogPosting ohne headline oder
   // ohne datePublished trägt genau das Signal nicht, das er tragen soll.
@@ -99,5 +101,37 @@ export function artikelSchema({pfad, artikel}) {
     beitrag.image = bild;
   }
 
-  return {'@context': 'https://schema.org', '@graph': [beitrag]};
+  const graph = [beitrag];
+
+  // DIE BROTKRUME Startseite › Blog › Artikel (GEO-Massnahme M2, Job
+  // 20261010-geo-sageo-m2-schema-paritaet-us-wie-de). Am 2026-10-10 am
+  // ausgelieferten HTML gemessen: die Artikel trugen BlogPosting, aber keine
+  // BreadcrumbList, obwohl der Blogindex (blog-seo.js) und jede /pages-Seite
+  // (seiten-seo.js) eine haben. Die mittlere Stufe ist echt: jeder Artikel
+  // verlinkt sichtbar „Alle Beiträge" auf /blogs/<handle>. Ihr Name ist
+  // derselbe wie auf dem Blogindex (`blog.title`, sonst „Wissen"), damit beide
+  // Seiten denselben Weg beschreiben.
+  if (blog?.handle) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${url}#brotkrume`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Startseite',
+          item: `${CANONICAL_ORIGIN}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: blog.title?.trim() || 'Wissen',
+          item: absoluteCanonical(`/blogs/${blog.handle}`),
+        },
+        {'@type': 'ListItem', position: 3, name: artikel.title, item: url},
+      ],
+    });
+  }
+
+  return {'@context': 'https://schema.org', '@graph': graph};
 }
