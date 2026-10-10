@@ -162,3 +162,80 @@ body:has(.cc) footer.footer {
     font-size: 1.25rem !important;
   }
 }
+
+/* --- 8. Anzeigegröße an die Quellauflösung binden (Gate 12, bild-aufloesung) */
+/* Bildschuld-Fall homepage-bauer-formate-belege-blockieren-c0354e, Job
+ * 20261008-hb-eskstau-bildschuld-crystal-formate-und-header-master-prio30.
+ *
+ * BEFUND (live und im Gate-12-Beleg gemessen 2026-10-10): 19 Bild-Format-Paare
+ * wurden größer dargestellt, als ihre Datei Pixel hat. Am deutlichsten das
+ * Banner „100% naturrein“: 937 px Quelle auf voller Breite (1440 px bei dpr 1).
+ *
+ * WARUM KEIN GRÖSSERES BILD: in Shopify Files (Admin-API files(query)) ist für
+ * jede betroffene Datei die verbaute Fassung schon die größte. Das CDN kann
+ * nicht hochskalieren. Einzige Ausnahme ist DSC01510 (Original 4000 px); es
+ * wird hier trotzdem gekappt, weil der Tausch in Kakao.jsx zwei weitere Routen
+ * mitändern würde.
+ *
+ * REGEL = Hausregel aus app.css („Anzeigegroesse an die Quellaufloesung
+ * binden“): Fläche höchstens Quellbreite / (dpr · 0,95), bei dpr ≥ 2 also
+ * Quellbreite / 1,9. Gebunden an den Dateinamen, also an die Eigenschaft „diese
+ * Datei hat N Pixel“, nicht an einen Platz im Layout. Paare teilen die kleinere
+ * Kappe, damit zusammengehörige Bilder gleich groß bleiben.
+ *
+ * KOSTEN: auf Retina-Tablets steht das Banner 493 px breit statt randlos. Kommt
+ * ein echter Master, wird der Token angehoben oder die Regel gelöscht.
+ *
+ * RÜCKWEG: diesen Block löschen. Es sind reine max-width-Zusätze, kein
+ * Bestandsselektor ist geändert. */
+.cc {
+  --cc-quelle-937-1x: 986px;  /* DSC00308_Kopie 937 / 0,95 */
+  --cc-quelle-937: 493px;     /* 937 / 1,9 */
+  --cc-quelle-935: 492px;     /* kakao-snippet 935 (Paar mit -beans 953) / 1,9 */
+  --cc-quelle-1000: 526px;    /* 1000er-Master / 1,9 */
+  --cc-quelle-766: 403px;     /* kakao-image, kakao-muster 766 / 1,9 */
+}
+
+.cc .relative:has(> img[src*='DSC00308_Kopie']) {
+  max-width: min(100%, var(--cc-quelle-937-1x));
+  margin-inline: auto;
+}
+
+@media (min-resolution: 2dppx) {
+  .cc .relative:has(> img[src*='DSC00308_Kopie']) {
+    max-width: min(100%, var(--cc-quelle-937));
+  }
+
+  .cc img[src*='kakao-snippet'] {
+    display: block;
+    max-width: min(100%, var(--cc-quelle-935));
+    margin-inline: auto;
+  }
+
+  .cc img[src*='qiblanco-berlin-1001273'] {
+    display: block;
+    max-width: min(100%, var(--cc-quelle-1000));
+    margin-inline: auto;
+  }
+
+  /* Quadrat- und 16:9-Rahmen: der Rahmen wird gekappt, nicht das Bild —
+   * sonst stünde ein kleineres Bild in einem leeren, gerundeten Kasten. */
+  .cc .aspect-square:has(> img[src*='DSC01510_Kopie']),
+  .cc .aspect-square:has(> img[src*='qiblanco-bali-06493']),
+  .cc .aspect-video:has(> img[src*='kakao-ad-0']),
+  .cc .aspect-video:has(> img[src*='qiblanco-berlin-1001190']),
+  .cc .aspect-video:has(> img[src*='qiblanco-berlin-1001239']) {
+    max-width: min(100%, var(--cc-quelle-1000));
+    margin-inline: auto;
+  }
+
+  .cc .aspect-square:has(> img[src*='kakao-image.webp']) {
+    max-width: min(100%, var(--cc-quelle-766));
+    margin-inline: auto;
+  }
+
+  .cc img[src*='kakao-muster.webp'] {
+    max-width: min(100%, var(--cc-quelle-766));
+    margin-inline: auto;
+  }
+}
