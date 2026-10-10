@@ -221,6 +221,21 @@ test('die Rolle „Gründer" steht bei demselben Namen auf einer öffentlichen S
   assert.match(ABSENDER.rolle, /Gründer/);
 });
 
+// Die @id-Ausdrücke, die eine Personenseite verwenden darf. Alles andere ist
+// eine neue Entität und braucht eine Begründung an dieser Liste.
+const ERLAUBTE_IDS = new Set([
+  'personId',
+  'ORG_ID',
+  'SITE_ID',
+  '`${url}#seite`',
+  '`${url}#artikel`',
+  '`${url}#brotkrume`',
+]);
+const fremdeIds = (quelle) =>
+  [...quelle.matchAll(/'@id':\s*(`[^`]*`|[^,}\n]+)/g)]
+    .map((m) => m[1].trim())
+    .filter((v) => !ERLAUBTE_IDS.has(v));
+
 test('beide Personenseiten geben den EINEN Gründer-Knoten aus', () => {
   // Seit 2026-10-10 baut keine Route ihre Person-@id mehr aus dem eigenen
   // Pfad. Vorher lieferte die Absicht-Seite `…/warum-qi-blanco#person` mit
@@ -240,6 +255,18 @@ test('beide Personenseiten geben den EINEN Gründer-Knoten aus', () => {
     // Kein zweiter, selbst gebauter Person-Knoten neben dem gemeinsamen.
     assert.equal(/'@type': 'Person'/.test(quelle), false, `${pfad}: eigener Person-Knoten`);
     assert.equal(/#person`/.test(quelle), false, `${pfad}: eigene #person-Formel`);
+    // Jede @id der Route steht auf einer Liste. Eine neue Knoten-@id (etwa
+    // `${url}#autor` für einen zweiten Autor-Knoten) macht diesen Test rot,
+    // auch wenn sie ohne „Person" und ohne „#person" gebaut ist (Fund der
+    // unabhängigen Gegenprüfung vom 2026-10-10).
+    assert.deepEqual(fremdeIds(quelle), [], `${pfad}: unbekannte @id`);
+    assert.deepEqual(
+      [...quelle.matchAll(/\b(author|creator|founder|mainEntity)\s*:\s*\{'@id':\s*([^}]+)\}/g)]
+        .filter((m) => m[1] !== 'mainEntity')
+        .map((m) => m[2].trim()),
+      ['personId'],
+      `${pfad}: author zeigt nicht auf den Gründer`,
+    );
   }
   // Und die Routen geben ihren Graphen auch AUS. Stünde die Funktion nur
   // noch da, zeigte die @id des Gründers auf einen Knoten, den keine Seite
@@ -270,6 +297,20 @@ test('POSITIV-KONTROLLE: eine Route mit eigener #person-Formel würde auffallen'
   assert.notEqual(alt, WARUM, 'die Zuweisung steht nicht in der Route');
   assert.equal(/#person`/.test(alt), true);
   assert.equal(/const personId = FOUNDER_ID;/.test(alt), false);
+});
+
+test('POSITIV-KONTROLLE: ein zweiter Autor-Knoten mit eigener @id würde auffallen', () => {
+  // Die Mutante der unabhängigen Gegenprüfung: author zeigt auf `#autor`, und
+  // ein zusätzlicher Knoten trägt diese @id. Ohne die @id-Liste blieb sie grün.
+  const mutante = WARUM.replace(
+    "author: {'@id': personId},",
+    "author: {'@id': url + '#autor'},",
+  ).replace(
+    'founderPerson({',
+    "{'@type': 'Thing', '@id': url + '#autor'}, founderPerson({",
+  );
+  assert.notEqual(mutante, WARUM, 'die Mutante greift nicht');
+  assert.deepEqual(fremdeIds(mutante), ["url + '#autor'", "url + '#autor'"]);
 });
 
 // --- sameAs: die Unterlassung wurde BEWUSST aufgehoben ---------------------
