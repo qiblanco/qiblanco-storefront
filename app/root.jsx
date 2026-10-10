@@ -91,6 +91,7 @@ import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {MetaAbschnittPixel} from './components/MetaAbschnittPixel';
+import {META_ABSCHNITT_MODUS} from '~/lib/meta-abschnitt';
 import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
@@ -518,6 +519,7 @@ export function Layout({children}) {
       data-qb-consent-strict={data?.consentStrictRegions || undefined}
       data-qb-preismodus={data?.preismodus?.modus || undefined}
       data-qb-preismodus-quelle={data?.preismodus?.quelle || undefined}
+      data-qb-meta-abschnitt={META_ABSCHNITT_MODUS}
     >
       <head>
         <meta charSet="utf-8" />
