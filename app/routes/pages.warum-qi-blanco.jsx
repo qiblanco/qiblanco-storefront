@@ -1,7 +1,13 @@
 import {AbsichtSeite} from '~/components/campaign/AbsichtSeite';
 import {ABSICHT, ABSENDER, ABSENDER_FOTO} from '~/data/absicht';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
-import {ORGANISATION, ORG_ID, SITE_ID, MARKEN_PROFILE} from '~/lib/entity-schema';
+import {
+  ORG_ID,
+  SITE_ID,
+  MARKEN_PROFILE,
+  FOUNDER_ID,
+  founderPerson,
+} from '~/lib/entity-schema';
 import absichtStyles from '~/styles/absicht.css?url';
 import {teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
@@ -110,7 +116,11 @@ export function links() {
  */
 function absichtSchema() {
   const url = absoluteCanonical(PFAD);
-  const personId = `${url}#person`;
+  // Die @id des Gründers (app/lib/entity-schema.js). Bis 2026-10-10 stand
+  // hier `${url}#person`: eine zweite @id für denselben Menschen, mit einem
+  // dritten Namen („Dipl.-Ing. (FH) …"). Autor und Verantwortlicher sind
+  // EINE Person, und der Knoten kommt deshalb aus EINER Funktion.
+  const personId = FOUNDER_ID;
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -129,12 +139,7 @@ function absichtSchema() {
         dateModified: isoMitZone(ABSENDER.stand),
         about: {'@id': ORG_ID},
       },
-      {
-        '@type': 'Person',
-        '@id': personId,
-        name: ABSENDER.name,
-        jobTitle: 'Geschäftsführer',
-        worksFor: {'@id': ORG_ID},
+      founderPerson({
         // Das Portrait — dieselbe Datei, die die Seite sichtbar zeigt
         // (app/data/absicht.js, ABSENDER_FOTO). Bewusst die MASTER-URL ohne
         // Größen-Parameter: das JSON-LD nennt die Quelle, nicht die
@@ -146,17 +151,9 @@ function absichtSchema() {
         // Teilbild für die Seite — das hat sie über teilbildTags(), und
         // beides zu vermischen erzeugt zwei Aussagen über dasselbe Feld.
         image: ABSENDER_FOTO.bild_id,
-        // Anschrift der Gesellschaft — dieselbe Quelle wie /pages/ueber-uns
-        // (§ 18 Abs. 2 MStV nennt genau sie). Eine Privatanschrift stünde
-        // hier nicht und wäre auch nicht belegt.
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: ORGANISATION.streetAddress,
-          postalCode: ORGANISATION.postalCode,
-          addressLocality: ORGANISATION.addressLocality,
-          addressCountry: ORGANISATION.addressCountry,
-        },
-      },
+        // Name, Grad, Anschrift und worksFor kommen aus founderPerson() und
+        // sind damit dieselben wie auf /pages/ueber-uns.
+      }),
       {
         '@type': 'Organization',
         '@id': ORG_ID,

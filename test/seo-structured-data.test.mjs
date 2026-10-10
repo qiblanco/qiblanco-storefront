@@ -16,6 +16,8 @@ import {
   KANAELE_OHNE_ZUGANG,
   FOUNDER,
   FOUNDER_ID,
+  FOUNDER_ANZEIGE,
+  founderPerson,
   organizationSchema,
   websiteSchema,
   entityGraph,
@@ -41,6 +43,10 @@ const routenDatei = (pfad) =>
   `../app/routes/${pfad.slice(1).replaceAll('/', '.')}.jsx`;
 const UEBER_UNS = ohneProsa(
   readFileSync(new URL(routenDatei(UEBER_UNS_PFAD), import.meta.url), 'utf8'),
+);
+const WARUM_PFAD = '/pages/warum-qi-blanco';
+const WARUM = ohneProsa(
+  readFileSync(new URL(routenDatei(WARUM_PFAD), import.meta.url), 'utf8'),
 );
 
 // --- Der eigentliche Befund: es MUSS überhaupt ein Schema geben ------------
@@ -112,11 +118,18 @@ test('Organization nennt den Gründer als Person mit @id und Name', () => {
   assert.equal(f['@type'], 'Person');
   assert.equal(f['@id'], FOUNDER_ID);
   assert.equal(f.name, FOUNDER.name);
-  // Der Knoten trägt GENAU diese drei Felder. Wer ein viertes ergänzt
+  // Der Knoten trägt GENAU diese vier Felder. Wer ein weiteres ergänzt
   // (jobTitle, sameAs, image), bringt dessen Beleg mit und zieht diese Zeile
   // bewusst nach. Ein unbelegtes Feld an einer Person kostet mehr Vertrauen,
-  // als ein fehlendes an Reichweite kostet.
-  assert.deepEqual(Object.keys(f).sort(), ['@id', '@type', 'name']);
+  // als ein fehlendes an Reichweite kostet. Das vierte, honorificPrefix, kam
+  // am 2026-10-10 dazu; sein Beleg ist die Geschäftsführer-Zeile des
+  // Impressums (Wächter unten).
+  assert.deepEqual(Object.keys(f).sort(), [
+    '@id',
+    '@type',
+    'honorificPrefix',
+    'name',
+  ]);
 });
 
 // Die Zeile des Impressums, die den Namen trägt: „Verantwortlich für den
@@ -138,6 +151,31 @@ test('der Name des Gründers steht WÖRTLICH im Impressum', () => {
   // braucht dann eine andere öffentliche Quelle, und die wird hier benannt.
 });
 
+// Die Zeile des Impressums, die den GRAD trägt: „Vertreten durch",
+// „Geschäftsführer: <Grad> <Name>". Verlangt wird die ganze Zeile bis zum
+// schließenden Tag, damit ein Zusatz wie „(FH)" nicht als Teilstring durchgeht.
+const gfZeile = (grad, name) => `<p>Geschäftsführer: ${grad} ${name}</p>`;
+
+test('der Grad des Gründers steht WÖRTLICH im Impressum, und nicht im Namen', () => {
+  assert.ok(
+    IMPRESSUM.includes(gfZeile(FOUNDER.honorificPrefix, FOUNDER.name)),
+    `FOUNDER.honorificPrefix = ${JSON.stringify(FOUNDER.honorificPrefix)} ` +
+      'steht NICHT in der Geschäftsführer-Zeile des Impressums',
+  );
+  assert.equal(FOUNDER_ANZEIGE, `${FOUNDER.honorificPrefix} ${FOUNDER.name}`);
+  assert.equal(/Dipl|Dr\.|Prof\./.test(FOUNDER.name), false, 'Grad im Namen');
+});
+
+test('POSITIV-KONTROLLE: „(FH)" und ein fehlender Grad würden auffallen', () => {
+  for (const falsch of ['Dipl.-Ing. (FH)', 'Dipl.-Ing. (FH) ', '', 'Dr.']) {
+    assert.equal(
+      IMPRESSUM.includes(gfZeile(falsch, FOUNDER.name)),
+      false,
+      `der Wächter ließe ${JSON.stringify(falsch)} als Grad durch`,
+    );
+  }
+});
+
 test('POSITIV-KONTROLLE: Teilnamen und der leere Name würden auffallen', () => {
   for (const falsch of ['Christian', 'Bernd Bauer', 'Christian Bauer', '']) {
     assert.equal(
@@ -152,7 +190,12 @@ test('founder steht mit und ohne Logo am Knoten, und nur an der Organization', (
   // Die Startseite ruft entityGraph({logoUrl}). Ein founder, der nur im Zweig
   // ohne Logo gesetzt wäre, fehlte genau dort, wo er ausgeliefert wird.
   const logoUrl = 'https://cdn.example/logo.png';
-  const soll = {'@type': 'Person', '@id': FOUNDER_ID, name: FOUNDER.name};
+  const soll = {
+    '@type': 'Person',
+    '@id': FOUNDER_ID,
+    name: FOUNDER.name,
+    honorificPrefix: FOUNDER.honorificPrefix,
+  };
   assert.deepEqual(organizationSchema().founder, soll);
   assert.deepEqual(organizationSchema({logoUrl}).founder, soll);
   const graph = entityGraph({logoUrl})['@graph'];
@@ -178,28 +221,96 @@ test('die Rolle „Gründer" steht bei demselben Namen auf einer öffentlichen S
   assert.match(ABSENDER.rolle, /Gründer/);
 });
 
-test('founder trägt die @id des Person-Knotens von /pages/ueber-uns', () => {
-  // Die Route baut ihre @id selbst und importiert FOUNDER_ID nicht. Diese
-  // drei Zeilen sind die Formel dort; zieht eine der beiden Stellen allein
-  // um, beschreiben Startseite und Über-uns-Seite zwei verschiedene Personen.
+// Die @id-Ausdrücke, die eine Personenseite verwenden darf. Alles andere ist
+// eine neue Entität und braucht eine Begründung an dieser Liste.
+const ERLAUBTE_IDS = new Set([
+  'personId',
+  'ORG_ID',
+  'SITE_ID',
+  '`${url}#seite`',
+  '`${url}#artikel`',
+  '`${url}#brotkrume`',
+]);
+const fremdeIds = (quelle) =>
+  [...quelle.matchAll(/'@id':\s*(`[^`]*`|[^,}\n]+)/g)]
+    .map((m) => m[1].trim())
+    .filter((v) => !ERLAUBTE_IDS.has(v));
+
+test('beide Personenseiten geben den EINEN Gründer-Knoten aus', () => {
+  // Seit 2026-10-10 baut keine Route ihre Person-@id mehr aus dem eigenen
+  // Pfad. Vorher lieferte die Absicht-Seite `…/warum-qi-blanco#person` mit
+  // „Dipl.-Ing. (FH) …" und die Über-uns-Seite ihre eigene #person-@id mit
+  // „Dipl.-Ing. …": zwei @id, drei Namensformen, eine Person.
   assert.equal(FOUNDER_ID, `${absoluteCanonical(UEBER_UNS_PFAD)}#person`);
-  assert.ok(
-    UEBER_UNS.includes(`const PFAD = '${UEBER_UNS_PFAD}';`),
-    'die Route nennt ihren Pfad nicht mehr als PFAD-Konstante',
-  );
-  assert.match(UEBER_UNS, /const url = absoluteCanonical\(PFAD\);/);
-  assert.match(UEBER_UNS, /const personId = `\$\{url\}#person`;/);
-  assert.match(UEBER_UNS, /'@type': 'Person',\s*'@id': personId,/);
-  // Und die Route gibt den Graphen auch AUS. Stünde aboutSchema() nur noch
-  // als Funktion da, zeigte die @id des Gründers auf einen Knoten, den keine
-  // Seite mehr liefert.
+  for (const [pfad, quelle] of [
+    [UEBER_UNS_PFAD, UEBER_UNS],
+    [WARUM_PFAD, WARUM],
+  ]) {
+    assert.ok(
+      quelle.includes(`const PFAD = '${pfad}';`),
+      `${pfad}: die Route nennt ihren Pfad nicht mehr als PFAD-Konstante`,
+    );
+    assert.match(quelle, /const personId = FOUNDER_ID;/, `${pfad}: personId`);
+    assert.match(quelle, /founderPerson\(/, `${pfad}: founderPerson()`);
+    // Kein zweiter, selbst gebauter Person-Knoten neben dem gemeinsamen.
+    assert.equal(/'@type': 'Person'/.test(quelle), false, `${pfad}: eigener Person-Knoten`);
+    assert.equal(/#person`/.test(quelle), false, `${pfad}: eigene #person-Formel`);
+    // Jede @id der Route steht auf einer Liste. Eine neue Knoten-@id (etwa
+    // `${url}#autor` für einen zweiten Autor-Knoten) macht diesen Test rot,
+    // auch wenn sie ohne „Person" und ohne „#person" gebaut ist (Fund der
+    // unabhängigen Gegenprüfung vom 2026-10-10).
+    assert.deepEqual(fremdeIds(quelle), [], `${pfad}: unbekannte @id`);
+    assert.deepEqual(
+      [...quelle.matchAll(/\b(author|creator|founder|mainEntity)\s*:\s*\{'@id':\s*([^}]+)\}/g)]
+        .filter((m) => m[1] !== 'mainEntity')
+        .map((m) => m[2].trim()),
+      ['personId'],
+      `${pfad}: author zeigt nicht auf den Gründer`,
+    );
+  }
+  // Und die Routen geben ihren Graphen auch AUS. Stünde die Funktion nur
+  // noch da, zeigte die @id des Gründers auf einen Knoten, den keine Seite
+  // mehr liefert.
   assert.match(UEBER_UNS, /\{'script:ld\+json': aboutSchema\(\)\}/);
 });
 
-test('POSITIV-KONTROLLE: eine umgezogene Person-@id würde auffallen', () => {
-  const umgezogen = UEBER_UNS.replace('#person`', '#gruender`');
-  assert.notEqual(umgezogen, UEBER_UNS, 'die Formel steht nicht in der Route');
-  assert.equal(/const personId = `\$\{url\}#person`;/.test(umgezogen), false);
+test('founderPerson: Kernfelder fest, ein Zusatz ergänzt nur', () => {
+  const p = founderPerson({image: 'https://cdn.example/x.jpg', name: 'Falsch', '@id': 'x'});
+  assert.equal(p['@id'], FOUNDER_ID);
+  assert.equal(p.name, FOUNDER.name);
+  assert.equal(p.honorificPrefix, FOUNDER.honorificPrefix);
+  assert.equal(p.image, 'https://cdn.example/x.jpg');
+  assert.deepEqual(p.worksFor, {'@id': ORG_ID});
+  assert.equal(p.address.streetAddress, ORGANISATION.streetAddress);
+  // Der Knoten ist dasselbe Objekt wie der founder, nur voller: kein Feld,
+  // das beide tragen, darf sich unterscheiden.
+  const f = organizationSchema().founder;
+  for (const k of Object.keys(f)) assert.deepEqual(p[k], f[k], k);
+  assert.doesNotThrow(() => JSON.parse(JSON.stringify(founderPerson())));
+});
+
+test('POSITIV-KONTROLLE: eine Route mit eigener #person-Formel würde auffallen', () => {
+  const alt = WARUM.replace(
+    'const personId = FOUNDER_ID;',
+    'const personId = `${url}#person`;',
+  );
+  assert.notEqual(alt, WARUM, 'die Zuweisung steht nicht in der Route');
+  assert.equal(/#person`/.test(alt), true);
+  assert.equal(/const personId = FOUNDER_ID;/.test(alt), false);
+});
+
+test('POSITIV-KONTROLLE: ein zweiter Autor-Knoten mit eigener @id würde auffallen', () => {
+  // Die Mutante der unabhängigen Gegenprüfung: author zeigt auf `#autor`, und
+  // ein zusätzlicher Knoten trägt diese @id. Ohne die @id-Liste blieb sie grün.
+  const mutante = WARUM.replace(
+    "author: {'@id': personId},",
+    "author: {'@id': url + '#autor'},",
+  ).replace(
+    'founderPerson({',
+    "{'@type': 'Thing', '@id': url + '#autor'}, founderPerson({",
+  );
+  assert.notEqual(mutante, WARUM, 'die Mutante greift nicht');
+  assert.deepEqual(fremdeIds(mutante), ["url + '#autor'", "url + '#autor'"]);
 });
 
 // --- sameAs: die Unterlassung wurde BEWUSST aufgehoben ---------------------

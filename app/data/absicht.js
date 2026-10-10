@@ -55,9 +55,22 @@
  * stehen — er darf nicht IM Text stehen. Arm G der Wache misst das.
  */
 
-/** Der Mensch, der unterschreibt. Aus dem Impressum, woertlich. */
+// Relativ statt '~': test/seo-structured-data.test.mjs lädt dieses Modul
+// ohne Bundler (Begründung im Kopf von app/lib/entity-schema.js).
+import {FOUNDER_ANZEIGE} from '../lib/entity-schema.js';
+
+/**
+ * Der Mensch, der unterschreibt. Aus dem Impressum, woertlich.
+ *
+ * KORREKTUR 2026-10-10 (Auftrag 20261010-geo-flanke-gruender-person-schema-
+ * eine-konstante-prio45): hier stand „Dipl.-Ing. (FH) Christian Bernd Bauer"
+ * unter derselben Überschrift „aus dem Impressum, wörtlich". Das Impressum
+ * sagt „Dipl.-Ing." ohne „(FH)". Der Name kommt jetzt aus der EINEN
+ * Gründer-Konstante (app/lib/entity-schema.js, FOUNDER_ANZEIGE), damit
+ * Unterschrift, die Über-uns-Seite und das JSON-LD nicht wieder auseinanderlaufen.
+ */
 export const ABSENDER = {
-  name: 'Dipl.-Ing. (FH) Christian Bernd Bauer',
+  name: FOUNDER_ANZEIGE,
   rolle: 'Gründer und Geschäftsführer von Qi Blanco',
   // Der Stand des Textes. Er ist Teil der Zitierfaehigkeit: eine Aussage ohne
   // Datum kann eine Maschine nicht einordnen.
