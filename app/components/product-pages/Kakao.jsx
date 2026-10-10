@@ -72,6 +72,7 @@ function Hero() {
           <LazyImage
             highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
             compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851&width=100"
+            alt="Hände halten eine Platte Crystal Cacao mit eingeprägtem Rautenmuster auf einem Geschirrtuch."
           />
         </div>
         <h2 className="text-2xl">Crystal Cacao® - Bio</h2>
@@ -124,6 +125,7 @@ function Hero() {
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851&width=100"
+          alt="Hände halten eine Platte Crystal Cacao mit eingeprägtem Rautenmuster auf einem Geschirrtuch."
         />
       </div>
     </div>
@@ -176,10 +178,12 @@ function Benefits() {
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet.jpg?v=1771790329"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet_small.jpg?v=1771790329"
+          alt="Hand hält einen Tonbecher mit Kakao und Milchschaum."
         />
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet-beans.jpg?v=1771790303"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet-beans_small.jpg?v=1771790303"
+          alt="Zwei Hände halten getrocknete Kakaobohnen."
         />
       </div>
     </div>
@@ -257,6 +261,7 @@ function ComparisonTable() {
                     width={50}
                     src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-bean-logo.png?v=1764252027"
                     alt=""
+                    role="presentation"
                     className="mx-auto! mb-1"
                   />
                   {/* Tinte statt #cab581 (2,01:1 auf Weiss): der Spaltenkopf ist Schrift,
@@ -271,6 +276,7 @@ function ComparisonTable() {
                     width={50}
                     src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/coffee-logo.png?v=1763976173"
                     alt=""
+                    role="presentation"
                     className="mx-auto! mb-1"
                   />
                   <h3 className="text-sm font-bold" style={{color: '#5b3b26'}}>
@@ -283,6 +289,7 @@ function ComparisonTable() {
                     width={50}
                     src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/energy-logo.png?v=1763976173"
                     alt=""
+                    role="presentation"
                     className="mx-auto! mb-1"
                   />
                   <h3 className="text-sm font-bold" style={{color: '#c04718'}}>
