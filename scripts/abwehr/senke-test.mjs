@@ -8,8 +8,11 @@
  *  - der Körper trägt nur die Whitelist-Felder, keine IP und keinen User-Agent;
  *  - ein hängender, werfender oder abgelehnter fetch ändert die Antwort nicht
  *    (Body-Hash identisch, INV-1) und blockiert sie nicht;
- *  - SM_SENKE=off, SM_MODE=off und ein fehlendes ctx senden nichts;
- *  - der Deckel SM_SENKE_PRO_MIN greift je Minute.
+ *  - SM_SENKE=off (auch 'aus', '0', ' off '), SM_MODE=off und ein fehlendes
+ *    ctx senden nichts; SM_SENKE_PRO_MIN=0 sendet nichts;
+ *  - der Deckel SM_SENKE_PRO_MIN greift je Minute (feste Uhr, kein
+ *    Minutenwechsel mitten im Test);
+ *  - der Abruf startet erst, NACHDEM next() die Antwort geliefert hat.
  *
  * SENKE_KORPUS=<datei> schreibt die gesendeten Körper als JSONL — die Naht-Probe
  * sicherheitsmeister/proben/naht_storefront_senke.py prüft sie gegen die
@@ -194,24 +197,66 @@ try {
   await mitAbwehr(req('/f.env'), {SM_MODE: 'off'}, ctx(), next, SIGNALE_45);
   ok(abrufe.length === 0 && logs.length === 0, 'S8 mode-off-nichts');
 
-  // S9: Deckel je Minute
+  // S9: Deckel je Minute — feste Uhr: ein Minutenwechsel mitten in der
+  // Schleife setzte sonst den Zaehler zurueck (Review K3-P2: Wackel-Arm).
   frisch();
   {
     const env = {SM_SENKE_PRO_MIN: '5'};
     const c = ctx();
-    for (let i = 0; i < 20; i++) {
-      await mitAbwehr(req(`/g${i}.env`), env, c, next, SIGNALE_45);
-    }
-    ok(abrufe.length === 5, `S9 deckel-5-je-minute (ist ${abrufe.length})`);
     const e = eintragAusVerdikt({
+      // in sich stimmig wie ein echtes Verdikt (15+30 = 45 -> S1): die Naht-Probe
+      // prueft jeden gesendeten Koerper gegen die Plausibilitaet des Servers.
       stufe: 'S1', modus: 'shadow', score: 45, score_roh: 45, aktion: {typ: 'none'},
-      lane: null, lane_aktiv: false, lane_fehler: null, "gruende": [], signale: {},
+      lane: null, lane_aktiv: false, lane_fehler: null, "gruende": [],
+      signale: {header_anomaly: true, waf_severity: 3},
       schluessel: '0123456789abcdef', pfad: '/h', challengeBestanden: false,
     });
-    const t0 = Date.now();
+    const t0 = 1_800_000_000_000; // Minutenanfang
+    for (let i = 0; i < 20; i++) senke(e, env, c, t0 + i);
+    ok(abrufe.length === 5, `S9 deckel-5-je-minute (ist ${abrufe.length})`);
     const vorher = abrufe.length;
     senke(e, env, c, t0 + 120_000); // nächste Minute
     ok(abrufe.length === vorher + 1, 'S9 deckel-folgeminute-frei');
+    // Deckel 0 = nichts senden (vorher fiel 0 still auf den Default 30)
+    frisch();
+    for (let i = 0; i < 3; i++) senke(e, {SM_SENKE_PRO_MIN: '0'}, c, t0 + i);
+    ok(abrufe.length === 0, `S9 deckel-0-sendet-nichts (ist ${abrufe.length})`);
+  }
+
+  // S12: Kill-Varianten — jede Schreibweise von "aus" schaltet ab
+  for (const wert of ['aus', '0', ' off ', 'OFF', 'false', 'nein']) {
+    frisch();
+    await mitAbwehr(req('/k.env'), {SM_SENKE: wert}, ctx(), next, SIGNALE_45);
+    ok(abrufe.length === 0 && logs.length === 1, `S12 senke-${JSON.stringify(wert)}-aus`);
+  }
+  frisch();
+  await mitAbwehr(req('/k.env'), {SM_SENKE: 'on'}, ctx(), next, SIGNALE_45);
+  ok(abrufe.length === 1, 'S12 senke-on-sendet');
+
+  // S13: Reihenfolge — next() liefert, DANN startet der Abruf
+  frisch();
+  {
+    const folge = [];
+    const echt = globalThis.fetch;
+    globalThis.fetch = (url, init) => {
+      folge.push('fetch');
+      return echt(url, init);
+    };
+    const nextMitSpur = async () => {
+      folge.push('next-start');
+      await new Promise((r) => setTimeout(r, 5));
+      folge.push('next-fertig');
+      return next();
+    };
+    try {
+      await mitAbwehr(req('/l.env'), {}, ctx(), nextMitSpur, SIGNALE_45);
+    } finally {
+      globalThis.fetch = echt;
+    }
+    ok(
+      JSON.stringify(folge) === JSON.stringify(['next-start', 'next-fertig', 'fetch']),
+      `S13 abruf-nach-next (${folge.join('>')})`,
+    );
   }
 
   // S10: URL-Override
@@ -225,9 +270,9 @@ try {
   try {
     senke(null, {}, ctx());
     const e = eintragAusVerdikt({
-      stufe: 'S2', modus: 'shadow', score: 60, score_roh: 60, aktion: {typ: 'challenge'},
+      stufe: 'S1', modus: 'shadow', score: 45, score_roh: 45, aktion: {typ: 'retry_after_hint'},
       lane: null, lane_aktiv: true, lane_fehler: null, "gruende": ['waf-dotenv'],
-      signale: {waf_severity: 3}, schluessel: 'fedcba9876543210', pfad: '/j',
+      signale: {header_anomaly: true, waf_severity: 3}, schluessel: 'fedcba9876543210', pfad: '/j',
       challengeBestanden: false,
     });
     senke(e, null, {waitUntil: () => { throw new Error('x'); }});
