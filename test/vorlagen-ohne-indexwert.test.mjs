@@ -1,6 +1,6 @@
 /**
  * Vorlagen ohne eigenen Indexwert (GEO-Maßnahme M3, 2026-10-10): EINE Liste in
- * ~/lib/sitemap-bestand, vier Leser. Dieser Test prüft jeden Leser an der
+ * ~/lib/vorlagen-ohne-indexwert, vier Leser. Dieser Test prüft jeden Leser an der
  * echten Datei, nicht an einem Nachbau.
  *
  *   node test/vorlagen-ohne-indexwert.test.mjs      # exit 0 = grün
@@ -28,10 +28,9 @@ const appDir = join(hier, '..', 'app');
 const kindPfad = join(appDir, 'routes', 'sitemap.$type.$page[.xml].jsx');
 const indexPfad = join(appDir, 'routes', '[sitemap.xml].jsx');
 
-// sitemap-bestand.js importiert selbst `~/`-Module, darum über denselben
-// Auflöser wie die Routen.
+// Über denselben Auflöser wie die Routen (gleiche Lade-Form wie dort).
 const {VORLAGEN_OHNE_INDEXWERT_DEF, vorlagenOhneIndexwert, istVorlageOhneIndexwert} =
-  await ladeMitAufgeloestenImporten(join(appDir, 'lib', 'sitemap-bestand.js'), 'vorlagen-liste');
+  await ladeMitAufgeloestenImporten(join(appDir, 'lib', 'vorlagen-ohne-indexwert.js'), 'vorlagen-liste');
 const {NICHT_INDEXIERBARE_PRODUKTE, NICHT_INDEXIERBARE_KOLLEKTIONEN} =
   await import(pathToFileURL(join(appDir, 'lib', 'seo.js')).href);
 

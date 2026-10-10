@@ -46,9 +46,9 @@ import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {
   artikelKarte,
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
-  istVorlageOhneIndexwert,
   leereBlogHandles,
 } from '~/lib/sitemap-bestand';
+import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
 import {zielLastmod} from '~/lib/zusammenlegungen-lastmod';
 import {routenDatenFuer} from '~/lib/routen-lastmod';

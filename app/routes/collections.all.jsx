@@ -7,7 +7,7 @@ import {
   canonicalLink,
   istNichtIndexierbaresProdukt,
 } from '~/lib/seo';
-import {istVorlageOhneIndexwert} from '~/lib/sitemap-bestand';
+import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 
 /**

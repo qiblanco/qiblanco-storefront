@@ -28,7 +28,7 @@ import {
   istNichtIndexierbaresProdukt,
   noindexMeta,
 } from '~/lib/seo';
-import {istVorlageOhneIndexwert} from '~/lib/sitemap-bestand';
+import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {brotkrumeSchema, produktSchema} from '~/lib/produkt-schema';
 import {MARKE, produktBeschreibung} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
@@ -53,7 +53,7 @@ export const meta = ({data}) => {
   // bis 2026-08-15 lagen hier und dort ZWEI Listen mit gleichem Inhalt, und
   // genau vor deren Auseinanderdriften warnt der Kommentar an der Liste.
   // Dazu die Vorlagen ohne eigenen Indexwert (GEO M3, 2026-10-10): kaufbar,
-  // aber nicht im Index. Ihre Liste steht in ~/lib/sitemap-bestand, die
+  // aber nicht im Index. Ihre Liste steht in ~/lib/vorlagen-ohne-indexwert, die
   // Sitemap liest dieselbe. Kein canonical neben dem noindex.
   if (
     istNichtIndexierbaresProdukt(data?.product?.handle) ||
