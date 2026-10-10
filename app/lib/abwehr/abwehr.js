@@ -20,7 +20,10 @@
  * Log geht, geht zusätzlich per ctx.waitUntil(fetch) an die Senke des
  * Servers (qpx-Host, Route /sm -> sicherheitsmeister sm-senke). Nie im
  * Request-Pfad abgewartet, jeder Fehler geschluckt, gedeckelt je Isolate und
- * Minute (SM_SENKE_PRO_MIN). 'off' schaltet nur den Versand ab, das Log bleibt.
+ * Minute (SM_SENKE_PRO_MIN, 0 = nichts senden). Angestossen erst NACH
+ * `await next()`, damit der Abruf keinen Verbindungsplatz belegt, solange die
+ * Seite ihre eigenen Daten lädt. 'off' (auch 'aus', '0', 'false', 'nein',
+ * Leerraum egal) schaltet nur den Versand ab, das Log bleibt.
  *
  * NEVER-BREAK (homepage-bauer F-002): der gesamte Vorfilter läuft in
  * try/catch — jeder Fehler führt zum normalen Passthrough. Ein Abwehr-Bug
@@ -60,6 +63,7 @@ const KATALOG_PRAEFIXE = ['/products/', '/pages/'];
 const SENKE_URL_DEFAULT = 'https://qpx.65-108-150-121.sslip.io/sm';
 const SENKE_PRO_MIN_DEFAULT = 30; // Abrufe je Isolate und Minute
 const SENKE_TIMEOUT_MS = 3000;
+const SENKE_AUS = ['off', 'aus', '0', 'false', 'nein'];
 const ASSET_RE =
   /\.(js|mjs|css|map|png|jpe?g|webp|avif|gif|svg|ico|woff2?|ttf|otf|txt|xml|json|webmanifest)$/i;
 
@@ -533,12 +537,15 @@ let senkeFenster = {minute: -1, n: 0};
 export function senke(eintrag, env, ctx, jetzt = Date.now()) {
   try {
     if (!eintrag) return false;
-    if ((env?.SM_SENKE || '').toLowerCase() === 'off') return false;
+    if (SENKE_AUS.includes(String(env?.SM_SENKE ?? '').trim().toLowerCase())) return false;
     if (!ctx || typeof ctx.waitUntil !== 'function') return false;
     if (typeof fetch !== 'function') return false;
     const minute = Math.floor(jetzt / 60_000);
     if (senkeFenster.minute !== minute) senkeFenster = {minute, n: 0};
-    const deckel = intAusEnv(env, 'SM_SENKE_PRO_MIN', SENKE_PRO_MIN_DEFAULT);
+    // Anders als intAusEnv gilt hier 0 als Wert (= nichts senden), nicht als Fehler.
+    const deckelRoh = parseInt(env?.SM_SENKE_PRO_MIN, 10);
+    const deckel =
+      Number.isFinite(deckelRoh) && deckelRoh >= 0 ? deckelRoh : SENKE_PRO_MIN_DEFAULT;
     if (senkeFenster.n >= deckel) return false;
     senkeFenster.n += 1;
     const signal =
@@ -597,15 +604,20 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
   // zweites Mal laufen (der catch unten ruft next() erneut).
   if (modus(env) === 'off') return next();
   let verdikt = null;
+  let eintrag = null;
   try {
     verdikt = await pruefe(request, env, ctx, testSignale, testLaneSignale);
-    const eintrag = eintragAusVerdikt(verdikt);
+    try {
+      eintrag = eintragAusVerdikt(verdikt);
+    } catch {
+      eintrag = null; // ein Log-Fehler darf die Challenge unten nie kosten
+    }
     shadowLog(eintrag);
-    senke(eintrag, env, ctx);
     if (
       verdikt.modus === 'on' &&
       (verdikt.aktion.typ === 'challenge' || verdikt.aktion.typ === 'temp_block')
     ) {
+      senke(eintrag, env, ctx);
       return antwort(verdikt);
     }
   } catch {
@@ -613,6 +625,9 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
   }
 
   const response = await next();
+  // Erst jetzt: die Antwort steht, der Abruf an die Senke konkurriert nicht
+  // mehr mit den Datenabrufen der Seite. senke() wirft nie.
+  senke(eintrag, env, ctx);
 
   try {
     if (
