@@ -70,7 +70,12 @@ export const meta = ({data}) => {
   // und JSON-LD denselben Satz tragen wie die meta description. Ein Netzwerk,
   // das beim Teilen etwas anderes zeigt als die Suchmaschine, erzeugt zwei
   // Versprechen (qione-2-pro-Präzedenz).
-  const titel = 'QiBracelet\u00AE im Detail | Qi Blanco';
+  // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
+  // strukturfelder-de-us): Kundenwort vor dem Namen, „Technik und Studien“
+  // sagt, was die Seite trägt (Gitterchip™-Abschnitt, Zellstudien). Vorher:
+  // „QiBracelet® im Detail | Qi Blanco“. Arm B (/pages/qione-2-pro-details)
+  // bleibt 28 Tage wortgleich als Kontrollgruppe.
+  const titel = 'E-Smog-Armband QiBracelet\u00AE: Technik und Studien | Qi Blanco';
   return [
     {title: titel},
     ...beschreibungTags('/pages/qibracelet-details', data?.page?.seo?.description),

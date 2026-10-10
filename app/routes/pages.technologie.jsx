@@ -21,17 +21,25 @@ export const meta = () => {
   // hinten, keine Kurs-Nummerierung und keine Minutenangabe: beides sagt dem
   // Suchenden nicht, was er auf der Seite bekommt.
   const titel = 'Wie der Schutz wirkt: die Technologie dahinter | Qi Blanco';
+  // BESCHREIBUNG (2026-10-10, GEO-Maßnahme M1, Job 20261010-geo-sageo-m1-
+  // kundenwortschatz-strukturfelder-de-us): vorher „Die Technologie hinter
+  // den Qi Blanco® Systemen – kohärentes Wasser, Frequenzkommunikation und
+  // das Leiternetzwerk des Körpers.“ Das waren drei Fachwörter, die Kunden
+  // nicht tippen. Jetzt das Kundenwort vorn und danach, was die Seite
+  // sichtbar erklärt: Abstand, Abschirmung, Grenzwerte (26. BImSchV), die
+  // Legierung aus Feingold, Kupfer und Kohlenstoff, die Studien. Der Satz
+  // geht zusätzlich an seitenSignale: og:description fehlte bisher, und
+  // Teilen und Suchergebnis sollen denselben Satz zeigen.
+  const beschreibung =
+    'Wie Schutz vor Elektrosmog funktioniert: Abstand, Abschirmung und Grenzwerte erklärt, dazu die Legierung aus Feingold, Kupfer und Kohlenstoff und die Studien.';
   return [
     {title: titel},
-    {
-      name: 'description',
-      content:
-        'Die Technologie hinter den Qi Blanco® Systemen – kohärentes Wasser, Frequenzkommunikation und das Leiternetzwerk des Körpers.',
-    },
+    {name: 'description', content: beschreibung},
     canonicalLink('/pages/technologie'),
     ...seitenSignale({
       pfad: '/pages/technologie',
       titel,
+      beschreibung,
     }),
   ];
 };

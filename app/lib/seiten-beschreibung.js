@@ -87,8 +87,13 @@ export const BESCHREIBUNGEN = {
   // Die Nutzerzahl steht dort als Auszeichnung der Seite selbst; die
   // Superlative des Marketing-Textes („der ultimative Schutz") bleiben
   // bewusst draußen — eine Meta-Beschreibung ist kein Werbeplatz.
+  //
+  // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
+  // strukturfelder-de-us): Kundenwort vorn, dann die Angaben der Seite
+  // (160 m Radius, „keinerlei elektronische Bauteile“, 14.000+ Nutzer).
+  // Vorher: „QiHome® Air im Detail: wie das Gerät dein Zuhause abdeckt, …“.
   '/pages/qihome-details':
-    'QiHome® Air im Detail: wie das Gerät dein Zuhause abdeckt, welche Technologie dahintersteckt und was über 14.000 Nutzer daran schätzen.',
+    'Schutz vor E-Smog und 5G für dein Zuhause: wie das QiHome® Air bis zu 160 m Radius abdeckt, ohne Elektronik auskommt und was über 14.000 Nutzer daran schätzen.',
 
   // Quelle: app/components/index-components/detailseiten/QiBracelet.jsx
   // („Molekularer E-Smog Schutz“, „Gitterchip™ aus eigens entwickelter
@@ -98,8 +103,12 @@ export const BESCHREIBUNGEN = {
   // konkurrieren in der Suche um denselben Namen, und nichts sagte bisher,
   // welche von beiden die Kaufseite ist. Eine Landingpage wird am nächsten
   // Klick gemessen, eine Kaufseite an der Bestellung.
+  //
+  // GEO-Maßnahme M1 (2026-10-10): „Armband“ und „E-Smog“ stehen vorn, der
+  // Satz zur Produktseite bleibt. Vorher: „QiBracelet® im Detail: wie der
+  // Gitterchip™ dich vor Strahlung im Alltag schützt …“.
   '/pages/qibracelet-details':
-    'QiBracelet® im Detail: wie der Gitterchip™ dich vor Strahlung im Alltag schützt und was Zellstudien dazu zeigen. Kaufen kannst du es auf der Produktseite.',
+    'Wie das Armband dich vor E-Smog und Strahlung schützt: der Gitterchip™ des QiBracelet® und was Zellstudien zeigen. Kaufen kannst du es auf der Produktseite.',
 
   // --- Service -------------------------------------------------------------
   // Quelle: Shopify-`body` von /pages/support-1 (Rückmeldeformular).
