@@ -493,11 +493,73 @@
   // Probe: claude-jobs/20260924-cookiehinweis-knoepfe-pendeln-cls-prio20/
   // mess_pendeln.py (exit 0 = kein Layout-Shift mit Knopf-Quelle).
 
+  // --- Der Hinweis ist ein Dialog und hält den Fokus ----------------------
+  // Auftrag 20261008-hb-eskstau-cookiebanner-kompakt-mandat-prio30 (Christian
+  // 22.08.2026: „Bedienbarkeit — Fokusfalle, Escape, Tastaturbedienung").
+  // Gemessen am 09.10.2026 auf 1440x900: der erste Tab landet im Hinweis,
+  // nach sieben Zielen läuft der Fokus aber in die Seite dahinter, die bis zur
+  // Wahl gesperrt ist (23 von 30 Tab-Schritten draußen), und der Hinweis trug
+  // weder role="dialog" noch aria-modal. Ein Tastatur-Kunde tabbte damit
+  // durch Ziele, die er nicht bedienen kann.
+  // Jetzt: role/aria-modal/aria-labelledby am Hinweis, und Tab bzw.
+  // Umschalt+Tab laufen am Ende des Hinweises an seinen Anfang zurück.
+  // Escape trifft bewusst KEINE Wahl: ein Tastendruck ist keine Einwilligung
+  // und keine Ablehnung, der Hinweis bleibt stehen (so auch vorher gemessen).
+  // Aussehen und Klickverhalten bleiben unberührt; nur Attribute und die
+  // Tab-Taste. Probe: pruefungen/probe_consent_dialog_kompakt__20261009.py
+  // im Modul homepage-bauer, Arm C.
+  function dialogRolleSetzen(wurzel) {
+    if (wurzel.getAttribute('role') !== 'dialog') wurzel.setAttribute('role', 'dialog');
+    if (wurzel.getAttribute('aria-modal') !== 'true') wurzel.setAttribute('aria-modal', 'true');
+    var titel = wurzel.querySelector('#cookie-consent-banner h2');
+    if (!titel) return;
+    if (!titel.id) titel.id = 'qb-consent-titel';
+    if (wurzel.getAttribute('aria-labelledby') !== titel.id) {
+      wurzel.setAttribute('aria-labelledby', titel.id);
+    }
+  }
+
+  function hinweisOffen(wurzel) {
+    return !!wurzel && window.getComputedStyle(wurzel).display !== 'none';
+  }
+
+  function fokusZiele(wurzel) {
+    var kandidaten = wurzel.querySelectorAll(
+      'a[href], button, input, select, textarea, [tabindex]');
+    var ziele = [];
+    for (var i = 0; i < kandidaten.length; i++) {
+      var el = kandidaten[i];
+      if (el.getAttribute('tabindex') === '-1' || el.disabled) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) ziele.push(el);
+    }
+    return ziele;
+  }
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Tab') return;
+    var wurzel = document.getElementById('cookiebanner');
+    if (!hinweisOffen(wurzel)) return;
+    var ziele = fokusZiele(wurzel);
+    if (!ziele.length) return;
+    var erstes = ziele[0];
+    var letztes = ziele[ziele.length - 1];
+    var aktiv = document.activeElement;
+    var drin = wurzel.contains(aktiv);
+    if (ev.shiftKey) {
+      if (!drin || aktiv === erstes) { ev.preventDefault(); letztes.focus(); }
+    } else if (!drin || aktiv === letztes) {
+      ev.preventDefault();
+      erstes.focus();
+    }
+  }, true);
+
   function belebeBanner() {
     var wurzel = document.getElementById('cookiebanner');
     if (!wurzel) return;
     cspKnopfNachruesten();
     knopfordnungStellen();
+    dialogRolleSetzen(wurzel);
     var anker = wurzel.getElementsByTagName('a');
     for (var i = 0; i < anker.length; i++) {
       var el = anker[i];

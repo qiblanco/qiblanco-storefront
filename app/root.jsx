@@ -80,6 +80,11 @@ import kakaoKaufseiteStyles from '~/styles/kakao-kaufseite.css?url';
 // Leiste aus root.jsx heraus auf / UND /pages/start-b (beide Arme von
 // start-e1-gs081) erscheint; ein Route-eigenes links() deckte nur einen Arm.
 import kassenRueckkehrLeisteStyles from '~/styles/kassen-rueckkehr-leiste.css?url';
+// Cookie-Hinweis als kompakter Dialog statt Vorhang (Christian 22.08.2026,
+// repair-Fall 609089): global, weil Cookiebot den Hinweis auf jeder Seite
+// einblendet. Wirkt ausschließlich auf #cookiebanner — Begründung, Maße und
+// Rückweg stehen in der Datei selbst.
+import consentDialogStyles from '~/styles/consent-dialog.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
@@ -565,6 +570,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
         <link rel="stylesheet" href={kakaoKaufseiteStyles}></link>
         <link rel="stylesheet" href={kassenRueckkehrLeisteStyles}></link>
+        <link rel="stylesheet" href={consentDialogStyles}></link>
         {metaKopf}
         <Links />
       </head>
