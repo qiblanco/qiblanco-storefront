@@ -194,25 +194,102 @@ export function besucherEimer(ip, userAgent, salz = E1.salz) {
   return fnv1a(`${salz}|${ip || ''}|${userAgent || ''}`) % 100;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * ZWEITER ARM B2 NEBEN E1 (Grossjob „LP-Tests je Gerät, Sticky isoliert“,
+ * s02; Christian 10.10.2026: „Vielleicht ist der feste Kaufknopf zu
+ * aggressiv, das muss dann mobil auch nochmal mit der alten Ansicht und mehr
+ * Knöpfen getestet werden … die Tests können gleichzeitig laufen").
+ *
+ * B2 = Seite A plus die Weiter-Knöpfe an ihren Stellen von vor dem 20.09.2026
+ * (nach dem Mechanismus, im und nach dem Wissenschaftsblock), ohne festen
+ * Kaufknopf (Hypothese GS-126). Definition vollständig in
+ * heatmap-manager/config/experimente.yaml (szs-e2-gs126).
+ *
+ * ENTSCHEIDE, je begründet:
+ *  - DASSELBE SALZ WIE E1, ANDERE EIMER: B nimmt die untersten Eimer
+ *    (< E1.anteil_prozent), B2 die obersten (>= 100 - E2.anteil_prozent). Ein
+ *    Besucher hat genau einen Eimer, also höchstens einen Arm; A ist die
+ *    gemeinsame Kontrolle beider Tests (70/15/15). Ein eigenes Salz machte die
+ *    Arme unabhängig statt ausschließend: rund 2 % der Besucher stünden in
+ *    beiden, und B rendert immer B.
+ *  - B BLEIBT, WIE ER IST: dieselbe Eimer-Funktion, dieselbe Grenze, dieselbe
+ *    Prüfreihenfolge. Ein laufender Test wird nicht umgedeutet; die Unit-Tests
+ *    halten das an einer festen Stichprobe fest.
+ *  - HARTE BEDINGUNG E1 + E2 <= 100 IM CODE: wer einen der beiden Anteile
+ *    hochzieht und den anderen vergisst, schaltet B2 ab (Fail-Richtung auf den
+ *    Bestand), statt Eimer doppelt zu vergeben.
+ *  - EIGENER SCHALTER, EIGENER KILL: E2_AKTIV (PR) und Env
+ *    LP_EXP_SZS_B2_MODE=off (Handgriff). Der Kill von E1 lässt B2 laufen und
+ *    umgekehrt: zwei Tests, zwei Entscheidungen.
+ *  - Ausnahmen, 302 + no-store, zielUrl() und Pin wie E1: ?lp_exp=b2.
+ *    Marker z (belegt: w r h p b f v m x s q k n).
+ *  - Die Ad-Weiche schließt LP_EXP_B2_PFAD aus (ad-weiche.server.js). Ohne
+ *    diese Zeile schickte sie bezahlten Verkehr von B2 zurück auf A, A würfelte
+ *    denselben Eimer und schickte ihn wieder auf B2: eine Schleife.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Ziel-Route der Variante B2. EINE Definition (ad-weiche importiert sie). */
+export const LP_EXP_B2_PFAD = '/pages/schlaf-zellen-schutz-b2';
+
+/** Marker in der Ziel-URL: z = zweiter Arm (unterscheidbar von allen belegten). */
+export const LP_EXP_B2_MARKER = 'z';
+
+/** Zweiter Arm. Gleiches Salz wie E1 (ausschließend), oberste Eimer. */
+export const E2 = Object.freeze({
+  id: 'szs-e2-gs126',
+  hypothese_id: 'GS-126',
+  salz: E1.salz,
+  anteil_prozent: 15,
+});
+
+/** Code-Schalter von B2; false = kein Besucher auf B2. */
+export const E2_AKTIV = true;
+
 /**
- * Reine Entscheidungsfunktion: {ziel, eimer} wenn dieser Request Variante B
- * sehen soll, sonst null. Ohne Client-IP gibt es keine stabile Zuteilung —
- * dann A (Fail-Richtung auf den Bestand).
+ * B2 läuft nur, wenn der Code-Schalter steht, die Env ihn nicht abschaltet
+ * (NUR 'off' schaltet ab), beide Arme dasselbe Salz tragen und zusammen
+ * höchstens 100 Eimer brauchen. Jede verletzte Bedingung heißt: B2 aus.
  */
-export function entscheideLpExperiment(request, env, codeSchalter = E1_AKTIV) {
+export function experimentB2Aktiv(env, codeSchalter = E2_AKTIV, e1 = E1, e2 = E2) {
+  if (!codeSchalter) return false;
+  if (env && env.LP_EXP_SZS_B2_MODE === 'off') return false;
+  if (e2.salz !== e1.salz) return false;
+  if (!(e1.anteil_prozent + e2.anteil_prozent <= 100)) return false;
+  return e2.anteil_prozent > 0;
+}
+
+/**
+ * Reine Entscheidungsfunktion: {ziel, eimer, arm} wenn dieser Request
+ * Variante B (arm 'b') oder B2 (arm 'b2') sehen soll, sonst null. Ohne
+ * Client-IP gibt es keine stabile Zuteilung — dann A (Fail-Richtung auf den
+ * Bestand). Pins: ?lp_exp=a | b | b2; ein Pin auf einen abgeschalteten Arm
+ * zeigt A.
+ */
+export function entscheideLpExperiment(
+  request,
+  env,
+  codeSchalter = E1_AKTIV,
+  codeSchalterB2 = E2_AKTIV,
+) {
   if (!request || (request.method !== 'GET' && request.method !== 'HEAD')) return null;
-  if (!experimentAktiv(env, codeSchalter)) return null;
+  const bAn = experimentAktiv(env, codeSchalter);
+  const b2An = experimentB2Aktiv(env, codeSchalterB2);
+  if (!bAn && !b2An) return null;
   const url = new URL(request.url);
   if (url.pathname.endsWith('.data')) return null;
   if (url.searchParams.has('_data')) return null;
+  const nachB = () => zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_MARKER);
+  const nachB2 = () => zielUrl(LP_EXP_B2_PFAD, url.search, LP_EXP_B2_MARKER);
   const pin = url.searchParams.get('lp_exp');
   if (pin === 'a') return null;
-  if (pin === 'b') return {ziel: zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_MARKER), eimer: -1};
+  if (pin === 'b') return bAn ? {ziel: nachB(), eimer: -1, arm: 'b'} : null;
+  if (pin === 'b2') return b2An ? {ziel: nachB2(), eimer: -1, arm: 'b2'} : null;
   const ua = request.headers?.get?.('user-agent') || '';
   const ip = request.headers?.get ? buyerIpAusRequest(request) : '';
   if (istInternerZugriff({userAgent: ua, ip})) return null;
   if (!ip) return null;
-  const eimer = besucherEimer(ip, ua);
-  if (eimer >= E1.anteil_prozent) return null;
-  return {ziel: zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_MARKER), eimer};
+  const eimer = besucherEimer(ip, ua, E1.salz);
+  if (bAn && eimer < E1.anteil_prozent) return {ziel: nachB(), eimer, arm: 'b'};
+  if (b2An && eimer >= 100 - E2.anteil_prozent) return {ziel: nachB2(), eimer, arm: 'b2'};
+  return null;
 }

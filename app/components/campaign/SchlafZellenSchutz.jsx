@@ -1075,10 +1075,15 @@ function StickyKaufknopf() {
    ist (Default; A rendert damit byte-gleich wie vor dem Experiment), 'b' = A
    plus die Änderung der laufenden Hypothese. NUR die Route
    pages.schlaf-zellen-schutz-b.jsx übergibt 'b'. Gewinnt B, übernimmt A die
-   Änderung fest und die Weiche kommt in den nächsten Test. */
+   Änderung fest und die Weiche kommt in den nächsten Test.
+   'b2' (zweiter Arm, szs-e2-gs126, 10.10.2026) = A plus die Weiter-Knöpfe
+   nr=1 und nr=2 an ihren Stellen von vor dem 20.09., OHNE festen Kaufknopf
+   (nr=6 steht in A schon). NUR pages.schlaf-zellen-schutz-b2.jsx übergibt
+   'b2'. Mobil und desktop gleich. */
 export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
   const istB = variante === 'b';
+  const istB2 = variante === 'b2';
 
   return (
     <LiveDataCtx.Provider value={{data}}>
@@ -1118,8 +1123,15 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             Block"). Gleicher Schlüssel lp-a-weiter-1 wie bis zum 20.09.: die
             Arme trennen sich am Pfad, der Knopf behält seine Historie. A bleibt
             ohne ihn, bis B gewinnt. */}
-        {istB && <WeiterCta nr={1} />}
+        {(istB || istB2) && <WeiterCta nr={1} />}
         <ScienceSection />
+        {/* IN VARIANTE B2 KEHRT AUCH nr=2 ZURÜCK (Christian 10.10.2026, Test
+            GS-126: „mobil auch nochmal mit der alten Ansicht und mehr Knöpfen
+            … einfach nur einen Button …, der häufiger vorkommt"). Stelle wie
+            bis zum 20.09.: nach dem Wissenschaftsblock, vor den Bewertungen.
+            Wortlaut ist der EINE der Seite (QIONE_CTA): eine Formulierung je
+            Ziel, und B2 unterscheidet sich von B nur im festen Kaufknopf. */}
+        {istB2 && <WeiterCta nr={2} />}
         {/* <WeiterCta nr={2} /> ERSATZLOS GESTRICHEN — Christians zweiter Streich,
             20.09.2026. Die Bildbelege lagen weder s01 noch s02 vor; die Wahl
             zwischen nr=2 und nr=6 ist deshalb GEMESSEN statt geraten, und sie fiel

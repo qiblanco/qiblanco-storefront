@@ -48,7 +48,7 @@
  */
 import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
-import {LP_EXP_B_PFAD, LP_V2_PFAD} from './lp-ab-v2.server.js';
+import {LP_EXP_B_PFAD, LP_EXP_B2_PFAD, LP_V2_PFAD} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
 import {MM_MARKER, mmZielPfad, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
 import {STUFE_B_MARKER, STUFE_B_PFAD, stufeBZielPfad} from './ad-weiche-stufe-b.server.js';
@@ -209,6 +209,13 @@ export const AUSSCHLUSS_SEGMENTE = [
   // leitete die Weiche jeden bezahlten Besucher von B zurück auf A — B wäre
   // für Anzeigen-Verkehr unerreichbar und der 15-%-Arm stünde leer.
   LP_EXP_B_PFAD,
+  // Variante B2 (szs-e2-gs126, 10.10.2026), SCHLEIFEN-KRITISCH: LP A schickt
+  // einen B2-Besucher mit vollem Query (auch utm_medium=paid) per 302 auf B2.
+  // Ohne diese Zeile würfe die Weiche ihn zurück auf A, A würfelte denselben
+  // Eimer (gleiche IP, gleicher UA) und schickte ihn wieder auf B2. Die Zeile
+  // darüber deckt B2 nicht: istAusgeschlossen matcht nur exakt oder
+  // '<eintrag>/...', '-b2' ist keins von beiden.
+  LP_EXP_B2_PFAD,
   // Stufe-B-Seite des Funnel-Managers (/pages/menschen-alltag, Grossjob
   // 20261007-...-funnel-manager-customer-journey-ad-lp, s02). SCHLEIFEN-
   // KRITISCH aus demselben Grund wie die Zeile darüber: der Stufe-B-Arm unten
