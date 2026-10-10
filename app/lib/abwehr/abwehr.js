@@ -65,8 +65,8 @@ const LANE_FENSTER_MS = KATALOG_FENSTER_MS;
  *            sweep: boolean, seit: number}} LaneState
  */
 /**
- * @typedef {{fenster: number[], katalog: Set<string>, verlauf: number[],
- *            zuletzt: number, lane: LaneState}} KeyState
+ * @typedef {{fenster: number[], katalog: Set<string>, katalogSeit: number,
+ *            verlauf: number[], zuletzt: number, lane: LaneState}} KeyState
  */
 /** @type {Map<string, KeyState>} */
 const zustand = new Map();
@@ -156,6 +156,7 @@ function keyState(schluessel, jetzt) {
     st = {
       fenster: [],
       katalog: new Set(),
+      katalogSeit: jetzt,
       verlauf: [],
       zuletzt: jetzt,
       lane: leeresLaneFenster(jetzt),
@@ -255,6 +256,7 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
     challengeBestanden = true;
     st.fenster = [];
     st.katalog.clear();
+    st.katalogSeit = jetzt;
     st.verlauf = [];
     // Das Lane-Fenster gehört zum selben Reset: wer die Challenge geloest
     // hat, startet auf ALLEN Achsen frisch. Ein stehenbleibendes Lane-Fenster
@@ -305,17 +307,23 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
 
     // 5) Vollkatalog-Detektor (OWASP OAT-011): distinct Katalog-Pfade des
     //    Schluessels im Fenster. Fenster-Reset erfolgt zeitbasiert grob.
-    if (KATALOG_PRAEFIXE.some((p) => pfad.startsWith(p))) {
-      st.katalog.add(pfad);
-    }
-    if (
-      st.fenster.length &&
-      jetzt - st.fenster[0] > KATALOG_FENSTER_MS &&
-      st.katalog.size
-    ) {
+    //    Festes Fenster ab dem Fensterbeginn: nach KATALOG_FENSTER_MS beginnt
+    //    es neu. Bis 2026-10-10 hing der Reset an st.fenster[0]; das
+    //    Rate-Fenster ist auf 60 s beschnitten, der Reset griff deshalb nie,
+    //    und ein Stöberer stand nach 80 Produktseiten auf Quote 1.
+    if (jetzt - st.katalogSeit > KATALOG_FENSTER_MS) {
       st.katalog.clear();
+      st.katalogSeit = jetzt;
     }
     const katalogN = intAusEnv(env, 'SM_KATALOG_N', KATALOG_N_DEFAULT);
+    //    Speicher-Deckel: ab katalogN Pfaden steht die Quote ohnehin auf 1,
+    //    weitere Pfade ändern das Urteil nicht und belegen nur Speicher.
+    if (
+      st.katalog.size < katalogN &&
+      KATALOG_PRAEFIXE.some((p) => pfad.startsWith(p))
+    ) {
+      st.katalog.add(pfad);
+    }
     const ratio = vollkatalogRatio(st.katalog.size, katalogN);
 
     // 6) ASN-Typ: auf Oxygen NICHT verfuegbar (kein MMDB/ASN-Header im
@@ -512,9 +520,11 @@ function shadowLog(verdikt) {
  * @param {Record<string, unknown>} [testLaneSignale] NUR für Tests (Lane-Lage).
  */
 export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSignale) {
+  // Kill-Pfad VOR dem try: wirft der Bestands-Handler, darf er nicht ein
+  // zweites Mal laufen (der catch unten ruft next() erneut).
+  if (modus(env) === 'off') return next();
   let verdikt = null;
   try {
-    if (modus(env) === 'off') return await next();
     verdikt = await pruefe(request, env, ctx, testSignale, testLaneSignale);
     shadowLog(verdikt);
     if (
@@ -548,6 +558,13 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
     return response;
   }
   return response;
+}
+
+/** NUR für Tests: größtes Katalog-Set über alle Schlüssel. */
+export function _testKatalogMax() {
+  let m = 0;
+  for (const st of zustand.values()) m = Math.max(m, st.katalog.size);
+  return m;
 }
 
 /** NUR für Tests: setzt den In-Memory-State zurück (hermetische Laeufe). */

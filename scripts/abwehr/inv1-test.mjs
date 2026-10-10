@@ -12,7 +12,12 @@
  */
 import {createHash} from 'node:crypto';
 
-import {mitAbwehr, _testReset} from '../../app/lib/abwehr/abwehr.js';
+import {
+  mitAbwehr,
+  pruefe,
+  _testReset,
+  _testKatalogMax,
+} from '../../app/lib/abwehr/abwehr.js';
 import {aktion, AKTION_FELDER} from '../../app/lib/abwehr/eskalation.js';
 
 let pass = 0;
@@ -192,6 +197,59 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
   ok(
     kaputt.status === 200 && (await hash(kaputt)) === (await hash(await next())),
     'Never-break: interner Abwehr-Fehler => normaler 200-Passthrough',
+  );
+}
+
+// ---- Fenster, Deckel, Kill (gefunden von der adversarialen Prüfung am
+// 2026-10-10, Job 20261010-aiceo-s04-abwehr-pr47-rebase-schatten) ---------
+{
+  const echtesJetzt = Date.now;
+  let uhr = Date.UTC(2026, 9, 10, 12, 0, 0);
+  Date.now = () => uhr;
+  try {
+    _testReset();
+    // K1: ein Stöberer, der 100 verschiedene Produktseiten über 30 Minuten
+    // ansieht (alle 18 s eine), darf nicht als Vollkatalog-Abzug gelten: das
+    // Katalog-Fenster (10 min) muss ablaufen.
+    let letzte = null;
+    for (let i = 0; i < 100; i++) {
+      letzte = await pruefe(req(`/products/p${i}`), {}, undefined);
+      uhr += 18_000;
+    }
+    ok(
+      letzte.signale.vollkatalog_ratio < 1,
+      `Katalog-Fenster läuft ab: 100 Seiten in 30 min => vollkatalog_ratio ${letzte.signale.vollkatalog_ratio} < 1`,
+    );
+
+    _testReset();
+    // K2: Speicher-Deckel. 1000 verschiedene Pfade in einer Minute: das
+    // Katalog-Set eines Schlüssels wächst nicht über die Katalog-Größe hinaus
+    // (ab dort steht die Quote ohnehin auf 1).
+    for (let i = 0; i < 1000; i++) {
+      await pruefe(req(`/products/x${i}`), {}, undefined);
+      uhr += 50;
+    }
+    const groesste = _testKatalogMax();
+    ok(groesste <= 80, `Katalog-Set gedeckelt: größtes Set ${groesste} <= 80`);
+  } finally {
+    Date.now = echtesJetzt;
+  }
+
+  // K3: SM_MODE=off ruft den Bestands-Handler genau einmal, auch wenn er wirft.
+  let aufrufe = 0;
+  const wirft = async () => {
+    aufrufe++;
+    throw new Error('Bestands-Handler wirft');
+  };
+  let geworfen = false;
+  try {
+    await mitAbwehr(req(), {SM_MODE: 'off'}, undefined, wirft);
+  } catch {
+    geworfen = true;
+  }
+  ok(
+    aufrufe === 1 && geworfen,
+    `Kill: SM_MODE=off ruft next genau einmal (gezählt ${aufrufe}) und reicht den Fehler durch`,
   );
 }
 

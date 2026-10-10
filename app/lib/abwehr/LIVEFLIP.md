@@ -47,6 +47,15 @@ Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 4. `SM_MODE=on` = scharf. Eigener Schritt über das Gate `sm-mode-vollzug-storefront`,
    erst mit Trefferquote und Fehlalarm-Zahlen aus der Shadow-Phase.
 
+## Vor dem Flip offen (adversariale Prüfung 2026-10-10)
+
+- `/api/` (Storefront-API-Proxy) steht nicht in `CHECKOUT_PFADE`. Bei `on` könnte
+  der Proxy eine HTML-Antwort mit 429/503 bekommen. Vor dem Flip in die
+  geschützten Pfade aufnehmen.
+- Beim ersten Request eines Schlüssels trägt der Verlauf nur einen Wert, die
+  Hysterese greift dann nicht. Ein einzelner Ausreißer eskaliert bei `on` sofort.
+- Beides wirkt nur bei `SM_MODE=on`. Im Schatten ändert die Middleware keine Antwort.
+
 ## Rollback
 
 - Vor Merge: Branch verwerfen. Der Bestand bleibt unberührt.
