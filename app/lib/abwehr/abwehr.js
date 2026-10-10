@@ -16,6 +16,12 @@
  *   'off'             -> Kill-Switch: kompletter Passthrough, keine Rechnung,
  *                        kein Log.
  *
+ * RÜCKFLUSS (rz-0037 s02, env.SM_SENKE, Default an): jedes Verdikt, das ins
+ * Log geht, geht zusätzlich per ctx.waitUntil(fetch) an die Senke des
+ * Servers (qpx-Host, Route /sm -> sicherheitsmeister sm-senke). Nie im
+ * Request-Pfad abgewartet, jeder Fehler geschluckt, gedeckelt je Isolate und
+ * Minute (SM_SENKE_PRO_MIN). 'off' schaltet nur den Versand ab, das Log bleibt.
+ *
  * NEVER-BREAK (homepage-bauer F-002): der gesamte Vorfilter läuft in
  * try/catch — jeder Fehler führt zum normalen Passthrough. Ein Abwehr-Bug
  * darf den Shop nie brechen.
@@ -49,6 +55,11 @@ const KATALOG_FENSTER_MS = 600_000; // Fenster des Vollkatalog-Detektors
 const KATALOG_N_DEFAULT = 80; // angenommene Katalog-Groesse (distinct URLs)
 const MAX_SCHLUESSEL = 2000; // Memory-Deckel (128-MB-Isolate)
 const KATALOG_PRAEFIXE = ['/products/', '/pages/'];
+// Senke (Rückfluss in sicherheitsmeister.db). Die Route /sm des qpx-Hosts
+// nimmt nur eine Feld-Whitelist an (sicherheitsmeister/src/storefront_spool.py).
+const SENKE_URL_DEFAULT = 'https://qpx.65-108-150-121.sslip.io/sm';
+const SENKE_PRO_MIN_DEFAULT = 30; // Abrufe je Isolate und Minute
+const SENKE_TIMEOUT_MS = 3000;
 const ASSET_RE =
   /\.(js|mjs|css|map|png|jpe?g|webp|avif|gif|svg|ico|woff2?|ttf|otf|txt|xml|json|webmanifest)$/i;
 
@@ -453,48 +464,110 @@ export function antwort(verdikt) {
   });
 }
 
-function shadowLog(verdikt) {
-  // Structured Log in den Oxygen-Log-Drain — die einzige Shadow-Sichtbarkeit
-  // (kein DB-Zugriff aus workerd). Nur Hash-Praefix + objektive Signale,
-  // keine IP/UA (INV-3). Rueckfluss in die sicherheitsmeister-Signal-DB =
-  // deklarierte offene Flanke (s05/s06).
-  try {
-    if (
+/**
+ * Das Log-Objekt eines Verdikts — oder null, wenn das Verdikt nichts Meldbares
+ * trägt. EIN Filter für Log und Senke: was der Server bekommt, ist genau das,
+ * was im Log-Drain steht. Nur Hash-Präfix + objektive Signale, keine IP/UA
+ * (INV-3); die Senke weist jedes andere Feld ab.
+ * @param {Awaited<ReturnType<typeof pruefe>>} verdikt
+ */
+export function eintragAusVerdikt(verdikt) {
+  if (
+    !(
       verdikt.stufe !== 'S0' ||
       verdikt.challengeBestanden ||
       verdikt.lane_fehler ||
       // Eine wirksame Daempfung ist das interessanteste Ereignis der
       // Lane — sie faellt oft AUF S0 und wäre sonst unsichtbar.
       (verdikt.lane && verdikt.lane.gedaempft_um > 0)
-    ) {
+    )
+  ) {
+    return null;
+  }
+  return {
+    sm_abwehr: 1,
+    modus: verdikt.modus,
+    stufe: verdikt.stufe,
+    score: verdikt.score,
+    score_roh: verdikt.score_roh,
+    aktion_typ: verdikt.aktion?.typ ?? 'none',
+    lane: verdikt.lane
+      ? {
+          verdikt: verdikt.lane.verdikt,
+          max_stufe: verdikt.lane.max_stufe,
+          gedaempft_um: verdikt.lane.gedaempft_um,
+          signale: verdikt.lane.signale,
+        }
+      : null,
+    lane_aktiv: verdikt.lane_aktiv,
+    lane_fehler: verdikt.lane_fehler,
+    "gruende": verdiktUrsachen(verdikt),
+    signale: verdikt.signale,
+    schluessel: verdikt.schluessel,
+    pfad: verdikt.pfad,
+    challenge_bestanden: verdikt.challengeBestanden,
+  };
+}
+
+function shadowLog(eintrag) {
+  // Structured Log in den Oxygen-Log-Drain.
+  try {
+    if (eintrag) {
       // eslint-disable-next-line no-console -- structured Shadow-Log ist der Zweck
-      console.log(
-        JSON.stringify({
-          sm_abwehr: 1,
-          modus: verdikt.modus,
-          stufe: verdikt.stufe,
-          score: verdikt.score,
-          score_roh: verdikt.score_roh,
-          lane: verdikt.lane
-            ? {
-                verdikt: verdikt.lane.verdikt,
-                max_stufe: verdikt.lane.max_stufe,
-                gedaempft_um: verdikt.lane.gedaempft_um,
-                signale: verdikt.lane.signale,
-              }
-            : null,
-          lane_aktiv: verdikt.lane_aktiv,
-          lane_fehler: verdikt.lane_fehler,
-          "gruende": verdiktUrsachen(verdikt),
-          signale: verdikt.signale,
-          schluessel: verdikt.schluessel,
-          pfad: verdikt.pfad,
-          challenge_bestanden: verdikt.challengeBestanden,
-        }),
-      );
+      console.log(JSON.stringify(eintrag));
     }
   } catch {
     // Logging darf nie werfen.
+  }
+}
+
+let senkeFenster = {minute: -1, n: 0};
+
+/**
+ * Schickt einen Log-Eintrag an die Senke des Servers. Nie abgewartet: der
+ * Abruf hängt an ctx.waitUntil und läuft nach der Antwort an den Besucher
+ * weiter. Ohne waitUntil wird nichts gesendet (ein unbehüteter Abruf würde
+ * mit dem Request abgebrochen oder ihn verlängern).
+ * @returns {boolean} true = Abruf angestoßen
+ */
+export function senke(eintrag, env, ctx, jetzt = Date.now()) {
+  try {
+    if (!eintrag) return false;
+    if ((env?.SM_SENKE || '').toLowerCase() === 'off') return false;
+    if (!ctx || typeof ctx.waitUntil !== 'function') return false;
+    if (typeof fetch !== 'function') return false;
+    const minute = Math.floor(jetzt / 60_000);
+    if (senkeFenster.minute !== minute) senkeFenster = {minute, n: 0};
+    const deckel = intAusEnv(env, 'SM_SENKE_PRO_MIN', SENKE_PRO_MIN_DEFAULT);
+    if (senkeFenster.n >= deckel) return false;
+    senkeFenster.n += 1;
+    const signal =
+      typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+        ? AbortSignal.timeout(SENKE_TIMEOUT_MS)
+        : undefined;
+    // Ein synchron werfender fetch landet im catch unten (false), ein
+    // abgelehnter im zweiten then-Arm: beides erreicht den Besucher nie.
+    const abruf = Promise.resolve(
+      fetch(env?.SM_SENKE_URL || SENKE_URL_DEFAULT, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(eintrag),
+        signal,
+      }),
+    ).then(
+        (r) => {
+          try {
+            r?.body?.cancel?.();
+          } catch {
+            // Antwort-Körper ist egal.
+          }
+        },
+        () => {},
+      );
+    ctx.waitUntil(abruf);
+    return true;
+  } catch {
+    return false; // die Senke darf nie werfen
   }
 }
 
@@ -526,7 +599,9 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
   let verdikt = null;
   try {
     verdikt = await pruefe(request, env, ctx, testSignale, testLaneSignale);
-    shadowLog(verdikt);
+    const eintrag = eintragAusVerdikt(verdikt);
+    shadowLog(eintrag);
+    senke(eintrag, env, ctx);
     if (
       verdikt.modus === 'on' &&
       (verdikt.aktion.typ === 'challenge' || verdikt.aktion.typ === 'temp_block')
@@ -571,4 +646,5 @@ export function _testKatalogMax() {
 export function _testReset() {
   zustand.clear();
   salz = {tag: '', wert: ''};
+  senkeFenster = {minute: -1, n: 0};
 }
