@@ -255,7 +255,7 @@ export const STUFEN = [
         // Abbildung abgelesen; Differenz 47 = publizierter Effekt 47,3 %.
         id: 'viabilitaet',
         titel: ['Lebende Leberzellen', 'unter oxidativem Stress'],
-        messgroesse: 'Lebende Leberzellen nach 24 Stunden',
+        messgroesse: 'Lebende Leberzellen nach 24 h, aus Abbildung 3 abgelesen',
         balken: [
           {bezeichnung: 'Ungeschützt', wert: 41, stellen: 0, ton: 'ohne'},
           {bezeichnung: 'Mit QiBracelet®', wert: 88, stellen: 0, ton: 'mit'},
