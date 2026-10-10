@@ -36,7 +36,10 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  const titel = 'QiHome\u00AE Air im Detail | Qi Blanco';
+  // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
+  // strukturfelder-de-us): Kundenwort vor dem Namen, gleiche Bauform wie
+  // /pages/qibracelet-details. Vorher: „QiHome® Air im Detail | Qi Blanco“.
+  const titel = 'E-Smog-Schutz QiHome\u00AE Air: Technik und Studien | Qi Blanco';
   return [
     {title: titel},
     ...beschreibungTags('/pages/qihome-details', data?.page?.seo?.description),

@@ -87,12 +87,25 @@ export const PRODUKT_BESCHREIBUNGEN = {
   '/products/qione-2-pro':
     'E-Smog ist überall, wo du bist — der QiOne® 2 Pro auch. Sein Gitterchip™ ' +
     'reduziert die Auswirkungen. Original vom Hersteller, 20 Tage risikofrei.',
+  // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
+  // strukturfelder-de-us): QiBracelet und QiHome Air sind Arm A, die
+  // QiOne-Familie darüber und darunter ist für 28 Tage die Kontrollgruppe
+  // und bleibt wortgleich. Grundlage: SAGEO Arena (arXiv 2602.12187) — die
+  // KI-Websuche findet Seiten zuerst über Titel, Meta-Beschreibung und
+  // JSON-LD; Alltagswörter darin heben die Trefferquote, Fachwörter senken
+  // sie. Darum steht das Kundenwort (Schutz, E-Smog, Elektrosmog, 5G) vorn
+  // und danach nur Angaben, die die Seite selbst sichtbar trägt: Material,
+  // Größen S/M/L bzw. 160 m Radius und Eiche, „20 Tage zu Hause testen".
+  // Vorfassung: „Schutz, den man nicht sieht: …" bzw. „Ein Gitterchip™ für
+  // den ganzen Raum: …" (Vorher-Abzug im Job-Ordner).
   '/products/qibracelet':
-    'Schutz, den man nicht sieht: Der QiBracelet® reduziert mit integriertem ' +
-    'Gitterchip™ die Auswirkungen von E-Smog und 5G — elegant am Handgelenk.',
+    'Schutz vor E-Smog und 5G am Handgelenk: Der QiBracelet® reduziert mit ' +
+    'Gitterchip™ die Auswirkungen von Elektrosmog. Chirurgenstahl, S, M oder L, ' +
+    '20 Tage testen.',
   '/products/qihome-air':
-    'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air ist auf einen Radius ' +
-    'von bis zu 160 m ausgelegt. Ideal für Wohnung, Haus, Schlafzimmer und Büro.',
+    'Schutz vor E-Smog und 5G fürs ganze Zuhause: Das QiHome® Air ist auf einen ' +
+    'Radius von bis zu 160 m ausgelegt. Chirurgenstahl, deutsche Eiche, 20 Tage ' +
+    'testen.',
   // QiMaster (2026-09-10, Job 20260910-BAU-qi-master-…, Christian-Auftrag
   // CW-20260910-0e45045b): Produkt liegt als DRAFT in Shopify; die Zeile
   // wirkt erst, wenn Christian es aktiviert. Nur Beschaffenheit, keine
@@ -317,7 +330,20 @@ export const PRODUKT_TITEL = {
   // real gesuchte Getrenntschreibung „Qi Bracelet" gehört NICHT in einen
   // kundensichtbaren Titel, sondern in `alternateName` des Produktknotens —
   // siehe `suchformen()` in app/lib/produkt-schema.js.
-  '/products/qibracelet': `QiBracelet® kaufen — 20 Tage risikofrei | ${MARKE}`,
+  //
+  // ABGELÖST 2026-10-10 (GEO-Maßnahme M1, siehe PRODUKT_BESCHREIBUNGEN): der
+  // Titel oben beantwortete die Suche nach dem NAMEN. Die KI-Websuche und die
+  // meisten neuen Besucher kommen mit der FRAGE — „Armband gegen Elektrosmog",
+  // „5G Schutz Armband" — und der Name allein trifft sie nicht. US führt
+  // dieses Muster seit 2026-09-28 („QiBracelet® – EMF Protection Bracelet").
+  // „20 Tage testen" zieht in die Meta-Beschreibung um, die Risikoumkehr
+  // bleibt also im Suchergebnis stehen. „Schutz vor E-Smog & 5G" steht
+  // wörtlich auf der Seite, der Titel sagt nicht mehr als sie.
+  '/products/qibracelet': `Armband gegen E-Smog und 5G: QiBracelet® | ${MARKE}`,
+  // QiHome Air (2026-10-10, M1): bisher galt hier der Rohtitel
+  // „QiHome® Air | Qi Blanco" aus Shopify. „gesamtes Zuhause" und „Schutz vor
+  // E-Smog & 5G" stehen sichtbar auf der Seite.
+  '/products/qihome-air': `E-Smog-Schutz fürs ganze Zuhause: QiHome® Air | ${MARKE}`,
 };
 
 /**
