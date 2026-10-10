@@ -6,7 +6,7 @@ import {Produkt360Video} from "../reusables/Produkt360Video"
 /* Fläche der Drehung, aus app/styles/startseite.css: höchstens 490 px
    (max-width an Video und Hülle), unter 750 px eine volle Spalte. 100vw
    statt der Spalte (358 px bei 390) ist Absicht: lieber eine Sprosse zu
-   gross als zu klein. Gemessen 10.10.2026 vorher: desktop 490 px Fläche,
+   groß als zu klein. Gemessen 10.10.2026 vorher: desktop 490 px Fläche,
    1080 px geliefert (2,20x). Ändert sich der Deckel in startseite.css,
    zieht diese Zeile mit. */
 const ERSATZBILD_ANZEIGE = {anzeigeBreite: 490, sizes: '(max-width: 749px) 100vw, 490px'};
