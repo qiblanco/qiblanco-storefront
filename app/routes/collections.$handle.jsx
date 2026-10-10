@@ -17,6 +17,7 @@ import {
   noindexMeta,
 } from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
+import {istVorlageOhneIndexwert} from '~/lib/sitemap-bestand';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 
 /**
@@ -34,7 +35,12 @@ export const meta = ({data, params}) => {
   // ENTWEDER noindex ODER canonical (s04, 2026-08-26) — dieselbe Regel wie in
   // `pages.$handle.jsx` und `pages.uebersicht.jsx`. Die Liste steht in
   // ~/lib/seo, damit sie nicht neben einer zweiten in der Sitemap-Route driftet.
-  if (istNichtIndexierbareKollektion(params?.handle)) {
+  // Dazu die leeren Vorlagen-Kollektionen (GEO M3, 2026-10-10), Liste in
+  // ~/lib/sitemap-bestand: erreichbar, aber nicht im Index.
+  if (
+    istNichtIndexierbareKollektion(params?.handle) ||
+    istVorlageOhneIndexwert('collections', params?.handle)
+  ) {
     tags.push(noindexMeta());
     return tags;
   }
@@ -115,7 +121,13 @@ export const meta = ({data, params}) => {
       // Sichtbaren nennen — sie darf nur nichts nennen, was es nicht gibt oder
       // was ausgeschlossen ist.
       eintraege: produkte
-        .filter((p) => !istNichtIndexierbaresProdukt(p.handle))
+        .filter(
+          (p) =>
+            !istNichtIndexierbaresProdukt(p.handle) &&
+            // Vorlagen ohne Indexwert (GEO M3, 2026-10-10): sie bleiben im
+            // Raster kaufbar, die ItemList nennt sie wie jedes noindex nicht.
+            !istVorlageOhneIndexwert('products', p.handle),
+        )
         .map((p) => ({
           url: absoluteCanonical(`/products/${p.handle}`),
           name: p.title,
@@ -143,7 +155,10 @@ export async function loader(args) {
   // Objekt zurück. Gegenprobe zur Header-Kette steht in `pages.$handle.jsx`:
   // `app/root.jsx` exportiert kein `headers`, die CSP-Header setzt
   // `entry.server.jsx` ausserhalb der Routen-Kette — es geht nichts verloren.
-  if (istNichtIndexierbareKollektion(args.params?.handle)) {
+  if (
+    istNichtIndexierbareKollektion(args.params?.handle) ||
+    istVorlageOhneIndexwert('collections', args.params?.handle)
+  ) {
     return mitHeadern(payload, {headers: noindexHeader()});
   }
 

@@ -201,14 +201,16 @@ await pruefe('MUTATIONSARM: eine gefüllte Zweitsicht entfernt wirklich', async 
     'collections',
     NICHT_INDEXIERBARE_KOLLEKTIONEN,
     (quelle) => {
+      // Seit 2026-10-10 (GEO M3) steht die Zweitsicht als erstes Glied von
+      // NICHT_IN_COLLECTIONS_SITEMAP (daneben die Vorlagen ohne Indexwert).
       const neu = quelle.replace(
-        'collections: ausSitemapEntfernteKollektionen(),',
-        `collections: ['${opfer}'],`,
+        '  ...ausSitemapEntfernteKollektionen(),',
+        `  '${opfer}',`,
       );
       assert.notEqual(
         neu,
         quelle,
-        'Die Zeile `collections: ausSitemapEntfernteKollektionen(),` steht ' +
+        'Die Zeile `...ausSitemapEntfernteKollektionen(),` steht ' +
           'nicht mehr in der Route — die Mutation hat ins Leere gegriffen ' +
           'und der Arm wäre falsch grün.',
       );

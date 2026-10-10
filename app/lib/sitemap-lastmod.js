@@ -46,6 +46,7 @@ import {artikelPfad} from '~/lib/blog-artikel-pfad';
 import {
   artikelKarte,
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
+  istVorlageOhneIndexwert,
   leereBlogHandles,
 } from '~/lib/sitemap-bestand';
 import {WEITERGELEITETE_PAGES_HANDLES} from '~/lib/sitemap-weiterleitungen';
@@ -108,7 +109,10 @@ function sichtbareEintraege(typ, items, bestand) {
       return items.filter(
         (i) =>
           !istNichtIndexierbaresProdukt(i.handle) &&
-          !IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE.includes(i.handle),
+          !IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE.includes(i.handle) &&
+          // Vorlagen ohne Indexwert (GEO M3, 2026-10-10): dieselbe Liste wie
+          // in der Kind-Route und im robots-Meta.
+          !istVorlageOhneIndexwert('products', i.handle),
       );
     case 'pages':
       // Dieselbe Vereinigung wie in der Kind-Route: nennt der Index ein
@@ -121,7 +125,9 @@ function sichtbareEintraege(typ, items, bestand) {
       );
     case 'collections':
       return items.filter(
-        (i) => !ausSitemapEntfernteKollektionen().includes(i.handle),
+        (i) =>
+          !ausSitemapEntfernteKollektionen().includes(i.handle) &&
+          !istVorlageOhneIndexwert('collections', i.handle),
       );
     case 'blogs':
       return items.filter((i) => !bestand.leereBlogs.includes(i.handle));

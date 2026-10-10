@@ -7,6 +7,7 @@ import {
   canonicalLink,
   istNichtIndexierbaresProdukt,
 } from '~/lib/seo';
+import {istVorlageOhneIndexwert} from '~/lib/sitemap-bestand';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 
 /**
@@ -69,7 +70,13 @@ export const meta = ({data}) => {
       // Sichtbaren nennen — sie darf nur nichts nennen, was es nicht gibt oder
       // was ausgeschlossen ist.
       eintraege: produkte
-        .filter((p) => !istNichtIndexierbaresProdukt(p.handle))
+        .filter(
+          (p) =>
+            !istNichtIndexierbaresProdukt(p.handle) &&
+            // Vorlagen ohne Indexwert (GEO M3, 2026-10-10): sie bleiben im
+            // Raster kaufbar, die ItemList nennt sie wie jedes noindex nicht.
+            !istVorlageOhneIndexwert('products', p.handle),
+        )
         .map((p) => ({
           url: absoluteCanonical(`/products/${p.handle}`),
           name: p.title,
