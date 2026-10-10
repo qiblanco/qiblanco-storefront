@@ -17,10 +17,16 @@
  * KONZEPT-NUTZUNG.md Satz 6: „Verhalten wird nie zum Gebotssignal").
  *
  * EINWILLIGUNG. Strenger als das Tor des Pixels selbst: das Ereignis verlangt
- * die AUSDRÜCKLICHE Cookiebot-Marketing-Einwilligung. Die Region-Regel
- * 'optout' (Pixel lädt ohne Ablehnung) reicht hier nicht, das
- * Vorschau-Attribut auch nicht. Ohne Einwilligung: 0 Ereignisse, auch kein
- * Schatten-Eintrag.
+ * die AUSDRÜCKLICHE Cookiebot-Marketing-Einwilligung (consent.marketing true
+ * UND consent.method 'explicit'). Die Region-Regel 'optout' (Pixel lädt ohne
+ * Ablehnung), eine von Cookiebot unterstellte Einwilligung (method 'implied')
+ * und das Vorschau-Attribut reichen hier nicht. Ohne Einwilligung:
+ * 0 Ereignisse, auch kein Schatten-Eintrag.
+ *
+ * NUR LP-ABSCHNITTE. Gezählt werden data-section-Werte mit dem Präfix 'lp-'
+ * (Hauskonvention der Landingpages: lp-a, lp-b, lp-d, lp-ma, lp-v3 …) auf
+ * /pages/<handle>. Andere Abschnitte (Beratungsbuchung pb-*, Rechtsseiten,
+ * Lexikon) gehen nie an Meta.
  *
  * SCHALTER META_ABSCHNITT_MODUS:
  *   'aus'      nichts beobachten, nichts senden.
@@ -39,6 +45,24 @@ const MODI = new Set(['aus', 'schatten', 'an']);
 /** Nur Landingpages (/pages/<handle>), nie Kaufseiten oder Startseite. */
 export function istLpPfad(pfad) {
   return typeof pfad === 'string' && /^\/pages\/[^/?#]+\/?$/.test(pfad);
+}
+
+/** Nur Abschnitte nach der LP-Konvention (data-section="lp-…"). */
+export function istLpAbschnitt(id) {
+  return typeof id === 'string' && /^lp-[a-z0-9-]+$/.test(id);
+}
+
+/**
+ * Ausdrückliche Marketing-Einwilligung aus dem Cookiebot-Objekt: marketing
+ * true UND method 'explicit'. Alles andere (fehlt, implied, Lesefehler) = nein.
+ */
+export function ausdruecklicheEinwilligung(cookiebot) {
+  try {
+    const c = cookiebot && cookiebot.consent;
+    return Boolean(c && c.marketing === true && c.method === 'explicit');
+  } catch {
+    return false;
+  }
 }
 
 /** Pfad ohne Schluss-Schrägstrich, so wie er im Parameter `seite` steht. */
@@ -76,7 +100,9 @@ export function erstelleErfasser({modus, einwilligung, senden, notieren}) {
     modus: m,
     gesehen,
     melde(abschnitt, seite) {
-      if (m === 'aus' || !abschnitt || gesehen.has(abschnitt)) return false;
+      if (m === 'aus' || !istLpAbschnitt(abschnitt) || gesehen.has(abschnitt)) {
+        return false;
+      }
       let ok = false;
       try {
         ok = Boolean(einwilligung());

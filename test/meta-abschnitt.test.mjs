@@ -3,7 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   META_ABSCHNITT_MODUS,
+  ausdruecklicheEinwilligung,
   erstelleErfasser,
+  istLpAbschnitt,
   istLpPfad,
   seiteAusPfad,
   sichtbarGenug,
@@ -38,12 +40,12 @@ test('ohne Einwilligung: 0 Ereignisse, 0 Notizen, Abschnitt bleibt ungesehen', (
 
 test('an: je Abschnitt genau eines, nur abschnitt+seite', () => {
   const {e, gesendet, notiert} = aufbau('an', {wert: true});
-  e.melde('a', '/pages/x');
-  e.melde('a', '/pages/x');
-  e.melde('b', '/pages/x');
+  e.melde('lp-x-a', '/pages/x');
+  e.melde('lp-x-a', '/pages/x');
+  e.melde('lp-x-b', '/pages/x');
   assert.deepEqual(gesendet, [
-    {abschnitt: 'a', seite: '/pages/x'},
-    {abschnitt: 'b', seite: '/pages/x'},
+    {abschnitt: 'lp-x-a', seite: '/pages/x'},
+    {abschnitt: 'lp-x-b', seite: '/pages/x'},
   ]);
   assert.equal(notiert.length, 2);
   assert.equal(notiert[0].modus, 'an');
@@ -51,15 +53,15 @@ test('an: je Abschnitt genau eines, nur abschnitt+seite', () => {
 
 test('schatten: notiert, sendet nie', () => {
   const {e, gesendet, notiert} = aufbau('schatten', {wert: true});
-  e.melde('a', '/pages/x');
+  e.melde('lp-x-a', '/pages/x');
   assert.equal(gesendet.length, 0);
-  assert.deepEqual(notiert, [{abschnitt: 'a', seite: '/pages/x', modus: 'schatten'}]);
+  assert.deepEqual(notiert, [{abschnitt: 'lp-x-a', seite: '/pages/x', modus: 'schatten'}]);
 });
 
 test('aus und unbekannter Modus: nichts', () => {
   for (const m of ['aus', 'irgendwas', undefined]) {
     const {e, gesendet, notiert} = aufbau(m, {wert: true});
-    assert.equal(e.melde('a', '/pages/x'), false);
+    assert.equal(e.melde('lp-x-a', '/pages/x'), false);
     assert.equal(gesendet.length + notiert.length, 0);
   }
 });
@@ -74,7 +76,7 @@ test('Einwilligungs-Prüfung wirft: zählt als keine Einwilligung', () => {
     senden: (p) => gesendet.push(p),
     notieren: () => {},
   });
-  assert.equal(e.melde('a', '/pages/x'), false);
+  assert.equal(e.melde('lp-x-a', '/pages/x'), false);
   assert.equal(gesendet.length, 0);
 });
 
@@ -94,4 +96,26 @@ test('Sichtbarkeit: halber Abschnitt oder halbe Fensterhöhe', () => {
   // Abschnitt höher als das Fenster: Anteil klein, aber halbes Fenster belegt
   assert.equal(sichtbarGenug({isIntersecting: true, intersectionRatio: 0.2, intersectionRect: {height: 450}}, 900), true);
   assert.equal(sichtbarGenug({isIntersecting: true, intersectionRatio: 0.2, intersectionRect: {height: 449}, rootBounds: {height: 900}}, 0), false);
+});
+
+test('nur LP-Abschnitte (Präfix lp-)', () => {
+  const {e, gesendet} = aufbau('an', {wert: true});
+  for (const id of ['pb-gebucht', 'pb-angaben', 'lex-eintrag', 'bew-kopf', '', null, 'lp-', 'LP-A-HERO']) {
+    assert.equal(e.melde(id, '/pages/x'), false, String(id));
+  }
+  assert.equal(gesendet.length, 0);
+  assert.equal(istLpAbschnitt('lp-a-mechanismus'), true);
+  assert.equal(istLpAbschnitt('lp-ma-kopf'), true);
+});
+
+test('ausdrückliche Einwilligung: marketing true UND method explicit', () => {
+  assert.equal(ausdruecklicheEinwilligung({consent: {marketing: true, method: 'explicit'}}), true);
+  assert.equal(ausdruecklicheEinwilligung({consent: {marketing: true, method: 'implied'}}), false);
+  assert.equal(ausdruecklicheEinwilligung({consent: {marketing: true}}), false);
+  assert.equal(ausdruecklicheEinwilligung({consent: {marketing: false, method: 'explicit'}}), false);
+  assert.equal(ausdruecklicheEinwilligung({consent: {marketing: 'true', method: 'explicit'}}), false);
+  assert.equal(ausdruecklicheEinwilligung(undefined), false);
+  assert.equal(ausdruecklicheEinwilligung({}), false);
+  const boese = {get consent() { throw new Error('x'); }};
+  assert.equal(ausdruecklicheEinwilligung(boese), false);
 });

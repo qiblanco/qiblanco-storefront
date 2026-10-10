@@ -19,10 +19,7 @@ import {useAnalytics, parseGid} from '@shopify/hydrogen';
  */
 const META_PIXEL_ID = '9450046881736733';
 
-// Seit 2026-10-10 exportiert: MetaAbschnittPixel.jsx (GS-076) verlangt die
-// AUSDRÜCKLICHE Marketing-Einwilligung und benutzt genau diese Prüfung statt
-// einer Abschrift. Logik unverändert.
-export function hasMarketingConsent() {
+function hasMarketingConsent() {
   return Boolean(
     window.Cookiebot &&
       window.Cookiebot.consent &&

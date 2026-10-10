@@ -1,11 +1,12 @@
 import {useEffect} from 'react';
 import {useLocation} from 'react-router';
-import {hasMarketingConsent} from './MetaPixel';
 import {
   META_ABSCHNITT_MODUS,
   META_ABSCHNITT_EREIGNIS,
   VERWEIL_MS,
+  ausdruecklicheEinwilligung,
   erstelleErfasser,
+  istLpAbschnitt,
   istLpPfad,
   seiteAusPfad,
   sichtbarGenug,
@@ -18,6 +19,12 @@ import {
  * Steht in root.jsx im selben Production/Preview-Gate wie MetaPixel. Sendet
  * nur über das schon gebootete fbq des MetaPixel; ist es nicht gebootet,
  * geht nichts raus.
+ *
+ * AUFRÄUMEN BEI NAVIGATION (adversariale Prüfung 2026-10-10): ein beim
+ * Aufräumen noch ausstehender Scan-Frame hätte den getrennten Observer an die
+ * Abschnitte der NÄCHSTEN Seite gehängt und dort mit der alten `seite`
+ * gezählt. Deshalb: Riegel `aktiv`, abgebrochener Frame, und jede Uhr prüft
+ * vor dem Melden, dass der Besucher noch auf derselben Seite ist.
  */
 function sendeAnMeta(parameter) {
   if (!window._qiblancoMetaPixelBooted) return;
@@ -44,10 +51,14 @@ export function MetaAbschnittPixel() {
     if (!istLpPfad(pathname)) return undefined;
     if (typeof window.IntersectionObserver !== 'function') return undefined;
 
+    let aktiv = true;
+    let frame = 0;
     const seite = seiteAusPfad(pathname);
+    const nochHier = () =>
+      aktiv && seiteAusPfad(window.location.pathname) === seite;
     const erfasser = erstelleErfasser({
       modus: META_ABSCHNITT_MODUS,
-      einwilligung: hasMarketingConsent,
+      einwilligung: () => ausdruecklicheEinwilligung(window.Cookiebot),
       senden: sendeAnMeta,
       notieren: notiere,
     });
@@ -56,16 +67,17 @@ export function MetaAbschnittPixel() {
 
     const io = new window.IntersectionObserver(
       (eintraege) => {
+        if (!aktiv) return;
         for (const en of eintraege) {
           const id = en.target.getAttribute('data-section');
-          if (!id || erfasser.gesehen.has(id)) continue;
+          if (!istLpAbschnitt(id) || erfasser.gesehen.has(id)) continue;
           if (sichtbarGenug(en, window.innerHeight)) {
             if (!uhren.has(en.target)) {
               uhren.set(
                 en.target,
                 window.setTimeout(() => {
                   uhren.delete(en.target);
-                  erfasser.melde(id, seite);
+                  if (nochHier()) erfasser.melde(id, seite);
                 }, VERWEIL_MS),
               );
             }
@@ -79,7 +91,8 @@ export function MetaAbschnittPixel() {
     );
 
     const scan = () => {
-      document.querySelectorAll('[data-section]').forEach((el) => {
+      if (!nochHier()) return;
+      document.querySelectorAll('[data-section^="lp-"]').forEach((el) => {
         if (beobachtet.has(el)) return;
         beobachtet.add(el);
         io.observe(el);
@@ -88,14 +101,12 @@ export function MetaAbschnittPixel() {
     scan();
 
     // Spät gerenderte Abschnitte (Client-Komponenten) nachziehen.
-    let geplant = false;
     const mo =
       typeof window.MutationObserver === 'function'
         ? new window.MutationObserver(() => {
-            if (geplant) return;
-            geplant = true;
-            window.requestAnimationFrame(() => {
-              geplant = false;
+            if (frame || !aktiv) return;
+            frame = window.requestAnimationFrame(() => {
+              frame = 0;
               scan();
             });
           })
@@ -103,6 +114,9 @@ export function MetaAbschnittPixel() {
     if (mo) mo.observe(document.body, {childList: true, subtree: true});
 
     return () => {
+      aktiv = false;
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
       io.disconnect();
       if (mo) mo.disconnect();
       uhren.forEach((t) => window.clearTimeout(t));
