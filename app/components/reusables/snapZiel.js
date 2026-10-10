@@ -8,7 +8,7 @@
  * Snap-Punkt, und das wieder eingeschaltete CSS-Snap setzte ihn ein zweites
  * Mal (421 -> 360). Am IG-Slider kam scroll-padding dazu (188 -> 284).
  *
- * Hier wird der Punkt so gerechnet, wie das CSS-Snap ihn waehlt: Kartenkante
+ * Hier wird der Punkt so gerechnet, wie das CSS-Snap ihn wählt: Kartenkante
  * aus dem Rect relativ zum Scrollport, scroll-margin der Karte, scroll-padding
  * der Reihe, scroll-snap-align (start/center/end) und auf den Scrollbereich
  * begrenzt.
@@ -32,11 +32,11 @@ function inlineAlign(wert) {
  * @param {{scrollLeft:number, portBreite:number, padStart:number, padEnd:number,
  *          max:number, kinder:{links:number, rechts:number, align:string}[]}} g
  *   links/rechts: Kartenkanten inkl. scroll-margin, in scrollLeft-Koordinaten.
- * @returns {number|null} naechster Snap-Punkt oder null (keine Karte)
+ * @returns {number|null} nächster Snap-Punkt oder null (keine Karte)
  */
-export function naechsterSnapPunkt(g) {
+export function snapPunktNahe(g) {
   const mitAlign = g.kinder.filter((k) => k.align !== 'none');
-  // Kein Kind traegt ein Align: wie bisher an den Kartenanfang.
+  // Kein Kind trägt ein Align: wie bisher an den Kartenanfang.
   const kinder = mitAlign.length ? mitAlign : g.kinder.map((k) => ({...k, align: 'start'}));
   const innen = g.portBreite - g.padStart - g.padEnd;
   let bester = null;

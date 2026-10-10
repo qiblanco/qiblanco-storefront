@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {naechsterSnapPunkt, snapGeometrie} from './snapZiel';
+import {snapPunktNahe, snapGeometrie} from './snapZiel';
 
 /*
  * Gemeinsamer Drag-/Swipe-Hook fuer ALLE Slider der Storefront
@@ -37,7 +37,7 @@ const SNAP_RATIO = 0.5; // Weg-Schwelle: halber slideStep
 // (min(210, 374) = 210, exakt der Bestandswert).
 const VIEWPORT_RATIO = 0.3;
 // restoreSnap: Snap wieder an, sobald der Slider so nah am Ziel steht
-// (fraktionales scrollLeft), spaetestens nach SNAP_RESTORE_MAX_MS.
+// (fraktionales scrollLeft), spätestens nach SNAP_RESTORE_MAX_MS.
 const SNAP_ANKUNFT_PX = 1;
 const SNAP_RESTORE_MAX_MS = 1000;
 
@@ -94,7 +94,7 @@ export function useDragSwipe({
       s.snapRestoreTimer = 0;
     }
     // Abgebrochenes Ausschwingen (neuer pointerdown, Unmount): Snap sofort
-    // zurueck. Sonst bliebe es nach einem blossen Klick auf 'none' stehen;
+    // zurück. Sonst bliebe es nach einem bloßen Klick auf 'none' stehen;
     // ein neuer Drag schaltet es in onPointerMove wieder ab.
     const track = opts.current.trackRef?.current;
     if (offen && track) track.style.scrollSnapType = '';
@@ -121,15 +121,15 @@ export function useDragSwipe({
     // scroll-snap war fuer den Drag ausgeschaltet (mandatory-Snap wuerde
     // waehrend scrollLeft-Updates springen); sanft auf den naechsten
     // Snap-Punkt setteln, dann CSS-Snap wieder aktivieren.
-    // Das Ziel ist der Punkt, den das CSS-Snap selbst waehlen wuerde
+    // Das Ziel ist der Punkt, den das CSS-Snap selbst wählen würde
     // (snapZiel.js) -- nicht child.offsetLeft: das ist relativ zum
     // offsetParent und lag @1440 61 px daneben, das Snap ruckte dann ein
     // zweites Mal (Job 20261010-hb-dragswipe-restoresnap-offsetleft-ziel).
-    // Snap kommt erst zurueck, wenn der Slider angekommen ist, sonst kann es
+    // Snap kommt erst zurück, wenn der Slider angekommen ist, sonst kann es
     // eine noch laufende Bewegung abfangen.
     const s = state.current;
     if (!track) return;
-    const ziel = naechsterSnapPunkt(snapGeometrie(track));
+    const ziel = snapPunktNahe(snapGeometrie(track));
     if (ziel !== null) {
       track.scrollTo({
         left: ziel,
@@ -137,16 +137,16 @@ export function useDragSwipe({
       });
     }
     const start = performance.now();
-    const pruefe = () => {
+    const warteAufAnkunft = () => {
       const da = ziel === null || Math.abs(track.scrollLeft - ziel) <= SNAP_ANKUNFT_PX;
       if (da || performance.now() - start >= SNAP_RESTORE_MAX_MS) {
         track.style.scrollSnapType = '';
         s.snapRestoreTimer = 0;
       } else {
-        s.snapRestoreTimer = window.setTimeout(pruefe, 50);
+        s.snapRestoreTimer = window.setTimeout(warteAufAnkunft, 50);
       }
     };
-    s.snapRestoreTimer = window.setTimeout(pruefe, 50);
+    s.snapRestoreTimer = window.setTimeout(warteAufAnkunft, 50);
   }, []);
 
   const velocityFromSamples = useCallback(() => {
