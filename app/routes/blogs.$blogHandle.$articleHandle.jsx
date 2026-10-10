@@ -78,6 +78,8 @@ export const meta = ({data, location}) => {
   const schema = artikelSchema({
     pfad: location?.pathname ?? '',
     artikel: data?.article,
+    // Für die Brotkrume Startseite › Blog › Artikel (blog-schema.js).
+    blog: {handle: data?.blogHandle, title: data?.blogTitle},
   });
   const ldJson = schema ? [{'script:ld+json': schema}] : [];
 
@@ -154,7 +156,7 @@ async function loadCriticalData({context, request, params}) {
   // Server-Render und Hydration zwei Antworten auf dieselbe Frage.
   const autorenkasten = autorenkastenSichtbarkeit(request.url);
 
-  return {article, blogHandle, weitere, autorenkasten};
+  return {article, blogHandle, blogTitle: blog.title, weitere, autorenkasten};
 }
 
 /**
@@ -276,6 +278,9 @@ const ARTICLE_QUERY = `#graphql
   ) @inContext(language: $language, country: $country) {
     blog(handle: $blogHandle) {
       handle
+      # title: Name der mittleren Brotkrumen-Stufe, derselbe wie auf dem
+      # Blogindex (blog-schema.js, GEO M2).
+      title
       # NUR handle und title, bewusst KEIN contentHtml und kein Bild:
       # der Abschluss-Block braucht Namen, keine Inhalte. Ein zweites Mal
       # Artikeltext im Payload war 2026-09-03 der Grund, warum die Uebersicht

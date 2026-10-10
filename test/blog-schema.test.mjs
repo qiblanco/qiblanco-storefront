@@ -156,3 +156,39 @@ test('die Route zieht die Fabrik wirklich — ein Modul ohne Aufrufer ist wirkun
   assert.match(route, /'script:ld\+json'/, 'Descriptor-Weg fehlt');
   assert.match(route, /artikelSchema\(\{/, 'Fabrik wird nicht aufgerufen');
 });
+
+// GEO-Maßnahme M2 (2026-10-10): Brotkrume Startseite › Blog › Artikel.
+test('mit blog.handle trägt der Graph eine BreadcrumbList mit drei echten Stufen', () => {
+  const s = artikelSchema({
+    pfad: PFAD,
+    artikel: ARTIKEL,
+    blog: {handle: 'wissen', title: 'Wissen'},
+  });
+  const krume = s['@graph'].find((k) => k['@type'] === 'BreadcrumbList');
+  assert.ok(krume, 'BreadcrumbList fehlt');
+  assert.equal(krume['@id'], `https://qiblanco.com${PFAD}#brotkrume`);
+  assert.deepEqual(
+    krume.itemListElement.map((e) => [e.position, e.name, e.item]),
+    [
+      [1, 'Startseite', 'https://qiblanco.com/'],
+      [2, 'Wissen', 'https://qiblanco.com/blogs/wissen'],
+      [3, ARTIKEL.title, `https://qiblanco.com${PFAD}`],
+    ],
+  );
+  // Der BlogPosting-Knoten bleibt der erste: beitrag() und die übrigen Tests
+  // lesen ihn dort.
+  assert.equal(s['@graph'][0]['@type'], 'BlogPosting');
+  assert.deepEqual(JSON.parse(JSON.stringify(s)), s);
+});
+
+test('ohne Blogtitel heißt die mittlere Stufe wie auf dem Blogindex: Wissen', () => {
+  const s = artikelSchema({pfad: PFAD, artikel: ARTIKEL, blog: {handle: 'wissen'}});
+  const krume = s['@graph'].find((k) => k['@type'] === 'BreadcrumbList');
+  assert.equal(krume.itemListElement[1].name, 'Wissen');
+});
+
+test('ohne blog.handle entsteht keine Brotkrume mit erfundenem Weg', () => {
+  const s = artikelSchema({pfad: PFAD, artikel: ARTIKEL});
+  assert.equal(s['@graph'].length, 1);
+  assert.equal(s['@graph'][0]['@type'], 'BlogPosting');
+});
