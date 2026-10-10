@@ -1,14 +1,14 @@
 /**
  * inv1-test.mjs — automatischer Beweis der Anti-Cloaking-Leitplanke (INV-1)
- * fuer die T2-Abwehr-Middleware.
+ * für die T2-Abwehr-Middleware.
  *
  * Kern-Beweis (Ticket T2): zwei simulierte Requests (Score 0 vs. Score 90)
  * auf einer 200-Route liefern byte-identischen Body (gleicher Content-Hash).
  * Dazu strukturelle Pruefungen: Aktions-Objekte tragen NIE ein body-Feld,
- * Challenge-/Block-Seiten sind fuer JEDEN Besucher identische Konstanten,
+ * Challenge-/Block-Seiten sind für JEDEN Besucher identische Konstanten,
  * Kill-/Fehler-Pfade sind reine Passthroughs (never-break).
  *
- * Aufruf:  node scripts/abwehr/inv1-test.mjs   (plain node, kein Build noetig)
+ * Aufruf:  node scripts/abwehr/inv1-test.mjs   (plain node, kein Build nötig)
  */
 import {createHash} from 'node:crypto';
 
@@ -59,10 +59,10 @@ const SIGNALE_90 = {
 
 // LANE-LAGE (seit der Erlaub-Lane, kundenpfad.js): der Score allein bestimmt
 // die Stufe nicht mehr — er wird VOR der Eskalation lane-gedeckelt. Ein
-// Besucher, ueber den nichts Belastendes bekannt ist, kommt hoechstens auf S2;
+// Besucher, über den nichts Belastendes bekannt ist, kommt hoechstens auf S2;
 // ein Besucher mit Kunden-Muster hoechstens auf S1. Tests, die eine BESTIMMTE
-// Stufe erzwingen wollen, muessen die Lane-Lage deshalb explizit benennen —
-// sie zu umgehen waere genau die Test-Umgebung, in der die Lane nie laeuft.
+// Stufe erzwingen wollen, müssen die Lane-Lage deshalb explizit benennen —
+// sie zu umgehen wäre genau die Test-Umgebung, in der die Lane nie läuft.
 const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
 
 // ---- 1) Struktur: Aktions-Objekt kann baulich keinen Content tragen --------
@@ -79,7 +79,7 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
       sauber = false;
     }
   }
-  ok(sauber, 'Struktur: aktion(0..100) traegt nie ein body-Feld (INV-1)');
+  ok(sauber, 'Struktur: aktion(0..100) trägt nie ein body-Feld (INV-1)');
 }
 
 // ---- 2) SHADOW (Default): Score 0 vs. 90 -> identischer 200-Body -----------
@@ -142,7 +142,7 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
   );
 }
 
-// ---- 6) Challenge-Seite ist fuer JEDEN Besucher identisch ------------------
+// ---- 6) Challenge-Seite ist für JEDEN Besucher identisch ------------------
 {
   _testReset();
   const env = {SM_MODE: 'on'};
@@ -166,7 +166,7 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
   );
   ok(
     a.status === 429 && b.status === 429 && (await hash(a)) === (await hash(b)),
-    'On/S2: Challenge-Seite byte-identisch fuer verschiedene Besucher (uniform)',
+    'On/S2: Challenge-Seite byte-identisch für verschiedene Besucher (uniform)',
   );
 }
 
@@ -181,7 +181,7 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
 
   _testReset();
   // Identitaets-Feld in den Signalen: scoring wirft (INV-2) -> die Middleware
-  // faengt das und faellt auf den normalen Handler zurueck (never-break).
+  // faengt das und faellt auf den normalen Handler zurück (never-break).
   const kaputt = await mitAbwehr(
     req(),
     {SM_MODE: 'on'},

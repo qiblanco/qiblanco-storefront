@@ -2,7 +2,7 @@
  * qb-verhalten.js — Sicherheitsmeister Verhaltens-Token (T2, uniform).
  *
  * Wird an ALLE Besucher identisch ausgeliefert (Anti-Cloaking-Leitplanke:
- * gleiche Pruefung fuer jeden, kein Identitaets-Judgment). Prueft zwei
+ * gleiche Prüfung für jeden, kein Identitaets-Judgment). Prueft zwei
  * OBJEKTIVE Automations-Artefakte (navigator.webdriver, CDP-Stack-
  * Serialisierung) und misst grob gebucketed die Zeit bis zur ersten
  * Interaktion — KEIN Mouse-Tracking, KEIN Profil, KEINE persistente ID
@@ -22,7 +22,7 @@
       if (navigator.webdriver === true) artefakt = 1;
       // CDP-Artefakt (Headless-Detection 2026): ist ein DevTools-Protokoll
       // aktiv, serialisiert die Konsole das Error-Objekt inkl. stack —
-      // der Getter feuert. Fuer normale Browser bleibt er stumm.
+      // der Getter feuert. Für normale Browser bleibt er stumm.
       var e = new Error();
       Object.defineProperty(e, 'stack', {
         get() {
@@ -33,7 +33,7 @@
       // eslint-disable-next-line no-console -- der debug-Call IST der Detektor
       console.debug(e);
     } catch {
-      /* Artefakt-Pruefung darf nie stoeren */
+      /* Artefakt-Prüfung darf nie stoeren */
     }
 
     var start = Date.now();

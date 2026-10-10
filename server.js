@@ -4,10 +4,10 @@ import * as serverBuild from 'virtual:react-router/server-build';
 // createRequestHandler kommt seit Hydrogen 2025.7.1 aus @shopify/hydrogen, nicht
 // mehr aus @shopify/remix-oxygen (seit 2026.4.1 deprecated). Nur dieser Handler
 // betreibt den Storefront-API-Proxy auf der eigenen Domain (/api/<version>/
-// graphql.json). Ueber ihn setzt Shopify die server-gesetzten Cookies
+// graphql.json). Über ihn setzt Shopify die server-gesetzten Cookies
 // (_shopify_analytics/_shopify_marketing) und ab Hydrogen 2026.4 auch die
 // Einwilligung (backend consent) -- ohne ihn fiele die Consent-Schicht still
-// auf den Checkout-Domain-Weg zurueck. Upgrade 2025.7 -> 2026.4, Job
+// auf den Checkout-Domain-Weg zurück. Upgrade 2025.7 -> 2026.4, Job
 // 20260926-qiblanco-hydrogen-2025-7-auf-2026-4-vor-sfapi-ruhestand-2026-10-16.
 import {createRequestHandler, storefrontRedirect} from '@shopify/hydrogen';
 import {createAppLoadContext} from '~/lib/context';
@@ -51,7 +51,7 @@ export default {
 
         const response = await handleRequest(request);
 
-        // MESSPUNKT AM RAND: welche Storefront-API-Version dieser Server fuer
+        // MESSPUNKT AM RAND: welche Storefront-API-Version dieser Server für
         // seine eigenen Abfragen WIRKLICH benutzt. Shopify schaltet Versionen
         // nach rund zwölf Monaten ab und liefert dann still eine andere aus
         // (2025-10 am 2026-10-16). Die Wache vergleicht diesen Kopf mit dem
@@ -69,9 +69,9 @@ export default {
         }
 
         if (appLoadContext.session.isPending) {
-          // append, nicht set: seit Hydrogen 2026.4 haengt createRequestHandler
+          // append, nicht set: seit Hydrogen 2026.4 hängt createRequestHandler
           // die Set-Cookie-Zeilen der Storefront-API-Unterabfragen (server-
-          // gesetzte _shopify_*-Cookies) an die Dokument-Antwort. `set` wuerde
+          // gesetzte _shopify_*-Cookies) an die Dokument-Antwort. `set` würde
           // sie beim Session-Commit still ueberschreiben.
           response.headers.append(
             'Set-Cookie',

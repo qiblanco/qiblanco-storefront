@@ -30,11 +30,11 @@ import {
 } from '../../app/lib/abwehr/kundenpfad.js';
 import {ausVerlauf} from '../../app/lib/abwehr/kundenpfad_signale.js';
 
-// ---- Vektoren (deterministisch; Zahlen so gewaehlt, dass JSON sie fuer
+// ---- Vektoren (deterministisch; Zahlen so gewählt, dass JSON sie für
 // ---- Python und JS identisch typisiert — keine 2.0-Ambiguitaeten) ---------
 
 const SCORING = [];
-// Voll-Grid ueber alle 6 objektiven Signale (inkl. Banker's-Rounding-Kanten
+// Voll-Grid über alle 6 objektiven Signale (inkl. Banker's-Rounding-Kanten
 // wie rate=30 => 10.5 => 10, NICHT 11).
 for (const rate of [0, 15, 30, 50, 77, 100, 130, 200]) {
   for (const header of [false, true]) {
@@ -59,7 +59,7 @@ for (const rate of [0, 15, 30, 50, 77, 100, 130, 200]) {
 // Partielle Signale (fehlende Felder = neutral) + leeres Objekt.
 SCORING.push({}, {rate_over_pct: 42}, {header_anomaly: true}, {waf_severity: 3});
 // INV-2-Fehlerfaelle: Identitaets-/Unbekannt-Felder + Definitionsbereich —
-// BEIDE Seiten muessen werfen.
+// BEIDE Seiten müssen werfen.
 SCORING.push(
   {ip: '203.0.113.7'},
   {name: 'mustermann'},
@@ -116,8 +116,8 @@ for (const s of [0, 45, 65, 90]) {
 
 // ---- Erlaub-Lane (kundenpfad.js / kundenpfad_signale.js) ------------------
 // ACHTUNG bei neuen Vektoren: ein Integral-Float im INT-Slot (z. B.
-// `anfragen: 12.0`) ist ueber JSON nicht uebertragbar — Python bekaeme dort
-// einen float und wuerde werfen, JS sieht 12 und wirft nicht. Solche Faelle
+// `anfragen: 12.0`) ist über JSON nicht uebertragbar — Python bekaeme dort
+// einen float und würde werfen, JS sieht 12 und wirft nicht. Solche Faelle
 // gehoeren in scripts/abwehr/lane-test.mjs (JS-seitig), nicht hierher.
 const LANE_ENTSCHEIDE = [
   {}, // Leer-Signale: alles auf Default => unbestimmt
@@ -152,7 +152,7 @@ const LANE_ENTSCHEIDE = [
   ...['good_bot', 'bot_behauptet', 'cdn_proxy', 'rechenzentrum', 'endkunde', 'unbestimmt'].map(
     (netz_klasse) => ({netz_klasse, anfragen: 3, distinkte_pfade: 3, katalog_ratio: 0.05, intent_ratio: 1}),
   ),
-  // --- Fehlerfaelle: BEIDE Seiten muessen werfen --------------------------
+  // --- Fehlerfaelle: BEIDE Seiten müssen werfen --------------------------
   {ip: '203.0.113.7'},
   {user_agent: 'GPTBot'},
   {netz_klasse: '203.0.113.7'},
@@ -223,10 +223,10 @@ const LANE_SIGNALE = [
   {abrufe: [['/products/a?cursor=7', '2026-08-04']]},
   {abrufe: [['/products/a?limit=+4', '2026-08-04']]},
   {abrufe: [['/products/a?offset=-9', '2026-08-04']]},
-  {abrufe: [['/PRODUCTS/GROSS', '2026-08-04']]},
+  {abrufe: [['/PRODUCTS/XL', '2026-08-04']]},
   {abrufe: [['/impressum', '2026-08-04'], ['/products/a', '2026-08-04'], ['/x', '2026-08-04']]},
   {abrufe: [['/products/a', 'mo'], ['/products/b', 'di'], ['/products/c', 'mi']]},
-  {abrufe: [['/products/a', ''], ['/products/b', '']]}, // leerer Tag zaehlt nicht
+  {abrufe: [['/products/a', ''], ['/products/b', '']]}, // leerer Tag zählt nicht
   {abrufe: [{pfad: '/pages/zell-schutz', tag: '2026-08-04'}]}, // dict-Form
   {abrufe: [{pfad: '/wp-admin/x', tag: '2026-08-04'}]},
   {abrufe: [['/products/a', '2026-08-04']], katalog_groesse: 0}, // max(1, ...)
@@ -256,7 +256,7 @@ const HEADER = [
   {'User-Agent': '', 'Accept': ''},
   // Firefox ohne sec-ch-ua ist KEIN Mismatch (sendet keine Client-Hints)
   {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:127.0) Gecko/20100101 Firefox/127.0', 'Accept': 'text/html', 'Accept-Language': 'de'},
-  // Gross-/Kleinschreibung der Headernamen
+  // Groß-/Kleinschreibung der Headernamen
   {'USER-AGENT': CHROME_UA, 'ACCEPT': 'text/html', 'ACCEPT-LANGUAGE': 'de', 'SEC-CH-UA': '"Chromium"'},
 ];
 
@@ -330,10 +330,10 @@ const jsErgebnis = {
   waf_version: WAF_RULES_VERSION,
 };
 
-// Kategorien, deren Ergebnis FLIESSKOMMA-Felder traegt (katalog_ratio,
+// Kategorien, deren Ergebnis FLIESSKOMMA-Felder trägt (katalog_ratio,
 // intent_ratio). Python serialisiert `0.0` als "0.0", JS `0` als "0" — ein
 // strikter JSON-Vergleich meldet dort einen Unterschied, den es nicht gibt.
-// Fuer diese Kategorien werden Zahlen deshalb beidseitig auf dieselbe
+// Für diese Kategorien werden Zahlen deshalb beidseitig auf dieselbe
 // kanonische Dezimalform gebracht. Das schwaecht den Vergleich NICHT: beide
 // Runtimes rechnen IEEE-754-double, und die kanonische Form ist die
 // kuerzeste rundreise-treue Darstellung — verschiedene Werte bleiben

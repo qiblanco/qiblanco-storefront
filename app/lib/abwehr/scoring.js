@@ -1,11 +1,11 @@
 /**
- * scoring.js — Missbrauchs-Score 0..100 aus AUSSCHLIESSLICH objektiven Signalen.
+ * scoring.js — Missbrauchs-Score 0..100 aus ausschließlich objektiven Signalen.
  *
  * JS-PORTIERUNG der Python-SSoT `shared-state/sicherheitsmeister/src/scoring.py`
  * (T1-Kern, Job 20260715-abwehr-scraping-content-schutz-deepdive). Die Python-
- * Version bleibt die Regel-Wahrheit; Aenderungen dort MUESSEN hier nachgezogen
+ * Version bleibt die Regel-Wahrheit; Aenderungen dort MÜSSEN hier nachgezogen
  * werden. Der Paritaets-Test (scripts/abwehr/paritaet.mjs) beweist die
- * Deckungsgleichheit ueber dieselben Vektoren.
+ * Deckungsgleichheit über dieselben Vektoren.
  *
  * INV-2 STRUKTURELL ERZWUNGEN: Whitelist der 6 objektiven Verhaltenssignale —
  * jedes unbekannte Feld (insbesondere jedes denkbare Identitaets-Feld) wirft.
@@ -17,7 +17,7 @@
 
 // Die EINZIGEN zulaessigen Eingabe-Felder (S_objektiv). Kein Identitaets-Feld.
 export const ERLAUBTE_SIGNALE = new Set([
-  'rate_over_pct', // 0..N: Prozent UEBER der Rate-Schwelle (0 = im Limit)
+  'rate_over_pct', // 0..N: Prozent ÜBER der Rate-Schwelle (0 = im Limit)
   'header_anomaly', // bool: fehlende/inkonsistente Header (signals.js)
   'asn_type', // 'datacenter'|'residential'|'mobile'|'business'|'unknown'
   'missing_behavior_token', // bool: uniform ausgeliefertes Verhaltens-Token fehlt
@@ -33,7 +33,7 @@ export const ASN_TYPEN = new Set([
   'unknown',
 ]);
 
-// Gewichte — MUESSEN mit scoring.py identisch bleiben (Paritaets-Test).
+// Gewichte — MÜSSEN mit scoring.py identisch bleiben (Paritaets-Test).
 const MAX_RATE = 35;
 const W_HEADER = 15;
 const W_DATACENTER = 15;
@@ -43,7 +43,7 @@ const MAX_VOLLKATALOG = 45;
 
 /**
  * Python-`round()` ist Banker's Rounding (half-to-even); JS `Math.round()`
- * rundet half-up. Fuer bit-genaue Paritaet mit der Python-SSoT wird hier
+ * rundet half-up. Für bit-genaue Paritaet mit der Python-SSoT wird hier
  * half-to-even nachgebildet (beide Runtimes rechnen IEEE-754 double).
  * @param {number} x  (x >= 0)
  */
@@ -88,7 +88,7 @@ export function score(signale) {
   if (!istZahl(rate) || rate < 0) {
     throw new Error('rate_over_pct muss Zahl >= 0 sein');
   }
-  // 100% ueber Schwelle = volle Rate-Punkte; darunter linear.
+  // 100% über Schwelle = volle Rate-Punkte; darunter linear.
   punkte += MAX_RATE * Math.min(1.0, rate / 100.0);
 
   const header = signale.header_anomaly ?? false;

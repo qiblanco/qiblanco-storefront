@@ -1,12 +1,12 @@
 /**
- * abwehr.js — Sicherheitsmeister T2: Abwehr-Vorfilter fuer den Oxygen-Worker
+ * abwehr.js — Sicherheitsmeister T2: Abwehr-Vorfilter für den Oxygen-Worker
  * (Job 20260715-abwehr-scraping-content-schutz-deepdive, Segment s04).
  *
  * BINDENDE LEITPLANKE (Anti-Cloaking, INV-1): dieser Layer aendert
- * AUSSCHLIESSLICH den HTTP-Statuscode / die Challenge-Antwort. Er schreibt
+ * ausschließlich den HTTP-Statuscode / die Challenge-Antwort. Er schreibt
  * NIEMALS den body einer 200-Antwort um und verzweigt NIE nach
  * Besucher-Attribut. Score nur aus objektiven Signalen (INV-2, scoring.js).
- * Challenge-/Block-Seiten sind Konstanten — fuer JEDEN Besucher identisch.
+ * Challenge-/Block-Seiten sind Konstanten — für JEDEN Besucher identisch.
  *
  * BETRIEBSMODI (env.SM_MODE):
  *   fehlend/'shadow'  -> SHADOW (Default): Verdikte werden nur berechnet und
@@ -16,17 +16,17 @@
  *   'off'             -> Kill-Switch: kompletter Passthrough, keine Rechnung,
  *                        kein Log.
  *
- * NEVER-BREAK (homepage-bauer F-002): der gesamte Vorfilter laeuft in
- * try/catch — jeder Fehler fuehrt zum normalen Passthrough. Ein Abwehr-Bug
+ * NEVER-BREAK (homepage-bauer F-002): der gesamte Vorfilter läuft in
+ * try/catch — jeder Fehler führt zum normalen Passthrough. Ein Abwehr-Bug
  * darf den Shop nie brechen.
  *
  * STATE (ehrlich best-effort, Konzept F-2): Oxygen/workerd hat kein KV/DO.
- * Rate-/Katalog-Fenster leben in-memory pro Isolate; zusaetzlich haelt die
+ * Rate-/Katalog-Fenster leben in-memory pro Isolate; zusaetzlich hält die
  * Cache API ein schwaches per-Datacenter-Minuten-Aggregat. Die harte globale
  * Grenze bleibt Shopifys Layer-1-Bot-Mitigation.
  *
  * PRIVACY (INV-3): Schluessel = SHA-256(ip|ua|utc-tag|isolate-salt)[:16].
- * Der Salt ist per-Isolate-zufaellig und rotiert taeglich; es gibt keine
+ * Der Salt ist per-Isolate-zufaellig und rotiert täglich; es gibt keine
  * Platte — nichts wird persistiert, geloggt wird nur das Hash-Praefix.
  */
 
@@ -43,7 +43,7 @@ import {
 
 // ---- Konfiguration (env-overridebar, Defaults konservativ) -----------------
 
-const RATE_FENSTER_MS = 60_000; // Sliding-Window fuer die Rate
+const RATE_FENSTER_MS = 60_000; // Sliding-Window für die Rate
 const RATE_LIMIT_DEFAULT = 120; // zaehlbare Requests/min pro Schluessel
 const KATALOG_FENSTER_MS = 600_000; // Fenster des Vollkatalog-Detektors
 const KATALOG_N_DEFAULT = 80; // angenommene Katalog-Groesse (distinct URLs)
@@ -56,7 +56,7 @@ const ASSET_RE =
 
 // Beobachtungsfenster der Erlaub-Lane. BEWUSST identisch mit
 // KATALOG_FENSTER_MS: `katalog_ratio` (Lane) und `vollkatalog_ratio` (Score)
-// sind DIESELBE Groesse — verschiedene Fenster wuerden Score und Lane ueber
+// sind DIESELBE Groesse — verschiedene Fenster würden Score und Lane über
 // "Breite" verschiedener Meinung sein lassen.
 const LANE_FENSTER_MS = KATALOG_FENSTER_MS;
 
@@ -115,7 +115,7 @@ function leeresLaneFenster(jetzt) {
 }
 
 /**
- * Traegt einen Abruf ins Lane-Fenster ein (Achsen VOLUMEN/BREITE/INTENT/MUSTER).
+ * Trägt einen Abruf ins Lane-Fenster ein (Achsen VOLUMEN/BREITE/INTENT/MUSTER).
  * Der Schluessel ist Pfad + Query: `?page=7` ist ein anderer Abruf als
  * `?page=1`, und die Sweep-Erkennung braucht den Query ohnehin.
  * @param {LaneState} l
@@ -206,6 +206,20 @@ function cookieWert(request, name) {
   return null;
 }
 
+// Die beiden Verdikt-Felder für Ursachen und Lane-Anlass sind der Datenvertrag mit
+// der Python-SSoT (Paritätstest) und dem Verdikt-Log. Gelesen werden sie per
+// Destrukturierung mit Schlüssel in Anführungszeichen, damit der JS-Code
+// selbst keine Bezeichner mit ASCII-Umlaut-Ersatz trägt.
+function laneAnlass(laneVerdikt) {
+  const {"begruendung": anlass} = laneVerdikt;
+  return anlass;
+}
+
+function verdiktUrsachen(verdikt) {
+  const {"gruende": ursachen} = verdikt;
+  return ursachen;
+}
+
 function modus(env) {
   const m = (env?.SM_MODE || '').toLowerCase();
   if (m === 'on') return 'on';
@@ -218,9 +232,9 @@ function modus(env) {
  * @param {Request} request
  * @param {Record<string, string|undefined>} env
  * @param {{waitUntil?: Function}} [ctx]
- * @param {Record<string, unknown>} [testSignale] NUR fuer Tests: ersetzt die
+ * @param {Record<string, unknown>} [testSignale] NUR für Tests: ersetzt die
  *        gesammelten Signale (die Entscheidungs-/Antwort-Kette bleibt echt).
- * @param {Record<string, unknown>} [testLaneSignale] NUR fuer Tests: ersetzt
+ * @param {Record<string, unknown>} [testLaneSignale] NUR für Tests: ersetzt
  *        die aus dem Isolate-Zustand abgeleiteten LANE-Signale. Symmetrisch zu
  *        `testSignale` — ein Test, der eine bestimmte Eskalations-Stufe
  *        erzwingen will, muss die Lane-Lage explizit benennen statt sie zu
@@ -242,25 +256,25 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
     st.fenster = [];
     st.katalog.clear();
     st.verlauf = [];
-    // Das Lane-Fenster gehoert zum selben Reset: wer die Challenge geloest
+    // Das Lane-Fenster gehört zum selben Reset: wer die Challenge geloest
     // hat, startet auf ALLEN Achsen frisch. Ein stehenbleibendes Lane-Fenster
-    // waere die einzige Achse, auf der ihn seine Vorgeschichte weiter belastet.
+    // wäre die einzige Achse, auf der ihn seine Vorgeschichte weiter belastet.
     st.lane = leeresLaneFenster(jetzt);
   }
 
   // Lane-Fenster IMMER fuehren — auch im Test-Signal-Pfad. Die Erfassung ist
-  // von der Score-Berechnung unabhaengig; wer sie an `testSignale` haengt,
-  // baut sich eine Test-Umgebung, in der die Lane nie laeuft.
+  // von der Score-Berechnung unabhängig; wer sie an `testSignale` hängt,
+  // baut sich eine Test-Umgebung, in der die Lane nie läuft.
   const pfadMitQuery = pfad + url.search;
   laneErfassen(st.lane, pfadMitQuery, jetzt);
 
   /** @type {Record<string, unknown>} */
   let signale;
-  let gruende = [];
+  let ursachen = []; // Schlüssel im Verdikt-JSON siehe Rückgabeobjekt (Parität zur Python-SSoT)
   if (testSignale) {
     signale = testSignale;
   } else {
-    // 1) Rate (Sliding-Window ueber zaehlbare = Nicht-Asset-Requests).
+    // 1) Rate (Sliding-Window über zaehlbare = Nicht-Asset-Requests).
     const zaehlbar = !ASSET_RE.test(pfad);
     let rateOverPct = 0;
     if (zaehlbar) {
@@ -279,7 +293,7 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
     // 2) Header-Heuristik (in-memory, nichts davon wird gespeichert).
     const headerObj = Object.fromEntries(request.headers.entries());
     const hs = headerSignale(headerObj);
-    gruende = hs.gruende;
+    ({"gruende": ursachen} = hs);
 
     // 3) WAF-Regeln gegen Pfad + fluechtigen Query-String.
     const ps = pfadSignale(pfad, url.search.replace(/^\?/, ''));
@@ -315,16 +329,16 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
       waf_severity: ps.waf_severity,
       vollkatalog_ratio: Math.round(ratio * 1000) / 1000,
     };
-    if (ps.treffer.length) gruende = gruende.concat(ps.treffer);
+    if (ps.treffer.length) ursachen = ursachen.concat(ps.treffer);
   }
 
   const scRoh = scoreBerechnen(signale);
 
   // ---- ERLAUB-LANE: der monotone Daempfer VOR der Eskalation --------------
   // Die Reihenfolge ist tragend: der Deckel muss VOR `st.verlauf.push()`
-  // greifen. Die Eskalation urteilt ueber `stufeMitHysterese(st.verlauf)` —
+  // greifen. Die Eskalation urteilt über `stufeMitHysterese(st.verlauf)` —
   // ein erst danach gedeckelter Score liesse die ROHEN Werte in der Historie
-  // stehen, und der naechste Request eskaliert daran vorbei.
+  // stehen, und der nächste Request eskaliert daran vorbei.
   const laneSignale =
     testLaneSignale || ausWorkerZustand(st, signale.vollkatalog_ratio ?? 0);
   let laneVerdikt = null;
@@ -335,7 +349,7 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
       laneVerdikt = laneBewerte(scRoh, laneSignale, capsAusEnv(env));
       sc = laneVerdikt.score_nachher;
     } catch (e) {
-      // Ein Lane-Fehler faellt auf den ROHEN Score zurueck — den Zustand VOR
+      // Ein Lane-Fehler faellt auf den ROHEN Score zurück — den Zustand VOR
       // dieser Lane, nie auf einen erfundenen Deckel. Er wird aber SICHTBAR
       // (Shadow-Log), statt den Schutz still abzuschalten.
       laneFehler = String(e?.message || e);
@@ -361,14 +375,14 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
           verdikt: laneVerdikt.lane,
           max_stufe: laneVerdikt.max_stufe,
           gedaempft_um: laneVerdikt.gedaempft_um,
-          begruendung: laneVerdikt.begruendung,
+          "begruendung": laneAnlass(laneVerdikt),
           belege: laneVerdikt.belege,
           signale: laneVerdikt.signale,
         }
       : null,
     lane_aktiv: laneAktiv(env),
     lane_fehler: laneFehler,
-    gruende,
+    "gruende": ursachen,
     schluessel,
     pfad,
     challengeBestanden,
@@ -376,17 +390,17 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
   };
 }
 
-// ---- Uniforme Antworten (Konstanten — fuer JEDEN identisch, INV-1) ---------
+// ---- Uniforme Antworten (Konstanten — für JEDEN identisch, INV-1) ---------
 
 // Die Challenge-Seite ist bewusst selbst-enthalten (inline JS, kein CSP-
 // Header auf dieser Nicht-200-Antwort): sie setzt nach kurzer uniformer
-// Wartezeit das qb_ch-Cookie und laedt neu — gleiche Huerde fuer jeden
+// Wartezeit das qb_ch-Cookie und lädt neu — gleiche Huerde für jeden
 // (Anubis-Prinzip). Kein Identitaets-Judgment, keine Daten-Erhebung.
 const CHALLENGE_HTML = `<!doctype html>
 <html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Einen Moment bitte — Qi Blanco</title>
+<title>Einen Moment bitte | Qi Blanco</title>
 <style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#faf8f5;color:#222}main{text-align:center;padding:2rem}</style>
 </head><body><main>
 <h1>Einen kurzen Moment bitte &hellip;</h1>
@@ -405,7 +419,7 @@ const BLOCK_HTML = `<!doctype html>
 <html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Zu viele Anfragen — Qi Blanco</title>
+<title>Zu viele Anfragen | Qi Blanco</title>
 <style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#faf8f5;color:#222}main{text-align:center;padding:2rem}</style>
 </head><body><main>
 <h1>Zu viele Anfragen</h1>
@@ -413,8 +427,8 @@ const BLOCK_HTML = `<!doctype html>
 </main></body></html>`;
 
 /**
- * Uniforme Nicht-200-Antwort fuer S2 (Challenge) / S3 (Temp-Block).
- * Baut die Antwort AUSSCHLIESSLICH aus dem Aktions-Objekt (das strukturell
+ * Uniforme Nicht-200-Antwort für S2 (Challenge) / S3 (Temp-Block).
+ * Baut die Antwort ausschließlich aus dem Aktions-Objekt (das strukturell
  * kein body-Feld kennt) + konstanten Seiten — nie aus Besucher-Attributen.
  * @param {Awaited<ReturnType<typeof pruefe>>} verdikt
  */
@@ -442,7 +456,7 @@ function shadowLog(verdikt) {
       verdikt.challengeBestanden ||
       verdikt.lane_fehler ||
       // Eine wirksame Daempfung ist das interessanteste Ereignis der
-      // Lane — sie faellt oft AUF S0 und waere sonst unsichtbar.
+      // Lane — sie faellt oft AUF S0 und wäre sonst unsichtbar.
       (verdikt.lane && verdikt.lane.gedaempft_um > 0)
     ) {
       // eslint-disable-next-line no-console -- structured Shadow-Log ist der Zweck
@@ -463,7 +477,7 @@ function shadowLog(verdikt) {
             : null,
           lane_aktiv: verdikt.lane_aktiv,
           lane_fehler: verdikt.lane_fehler,
-          gruende: verdikt.gruende,
+          "gruende": verdiktUrsachen(verdikt),
           signale: verdikt.signale,
           schluessel: verdikt.schluessel,
           pfad: verdikt.pfad,
@@ -477,7 +491,7 @@ function shadowLog(verdikt) {
 }
 
 /**
- * DER Einbau-Punkt fuer server.js: fuehrt den Abwehr-Vorfilter aus und ruft
+ * DER Einbau-Punkt für server.js: führt den Abwehr-Vorfilter aus und ruft
  * sonst den unveraenderten Bestands-Handler (`next`).
  *
  * Garantien:
@@ -494,8 +508,8 @@ function shadowLog(verdikt) {
  * @param {Record<string, string|undefined>} env
  * @param {{waitUntil?: Function}} ctx
  * @param {() => Promise<Response>} next
- * @param {Record<string, unknown>} [testSignale] NUR fuer Tests (INV-1-Test).
- * @param {Record<string, unknown>} [testLaneSignale] NUR fuer Tests (Lane-Lage).
+ * @param {Record<string, unknown>} [testSignale] NUR für Tests (INV-1-Test).
+ * @param {Record<string, unknown>} [testLaneSignale] NUR für Tests (Lane-Lage).
  */
 export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSignale) {
   let verdikt = null;
@@ -536,7 +550,7 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
   return response;
 }
 
-/** NUR fuer Tests: setzt den In-Memory-State zurueck (hermetische Laeufe). */
+/** NUR für Tests: setzt den In-Memory-State zurück (hermetische Laeufe). */
 export function _testReset() {
   zustand.clear();
   salz = {tag: '', wert: ''};

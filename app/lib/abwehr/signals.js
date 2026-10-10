@@ -5,13 +5,13 @@
  * JS-PORTIERUNG der Python-SSoT `shared-state/sicherheitsmeister/src/signals.py`
  * + `waf_rules.yaml` (version 1). Die YAML-Datei bleibt die Regel-Wahrheit —
  * neue Regeln dort = HIER nachziehen (der Paritaets-Test scripts/abwehr/
- * paritaet.mjs reisst bei Drift). Oxygen/workerd laedt kein YAML zur Laufzeit,
+ * paritaet.mjs reißt bei Drift). Oxygen/workerd lädt kein YAML zur Laufzeit,
  * darum sind die Regeln hier als Konstante eingebettet (inkl. version-Feld
- * fuer den Drift-Abgleich).
+ * für den Drift-Abgleich).
  *
  * Uniform-Prinzip (Anti-Cloaking): bewertet VERHALTEN/FORM der Anfrage —
- * nie, WER anfragt. Roh-Header/UA werden NUR in-memory ausgewertet; zurueck
- * kommen ausschliesslich Booleans, Severities und Regel-IDs (INV-3).
+ * nie, WER anfragt. Roh-Header/UA werden NUR in-memory ausgewertet; zurück
+ * kommen ausschließlich Booleans, Severities und Regel-IDs (INV-3).
  */
 
 // Spiegel von waf_rules.yaml — version MUSS mit der YAML uebereinstimmen.
@@ -39,9 +39,9 @@ const SCRAPER_UA = [
 
 /** @param {string} uaL */
 function istBekannterBot(uaL) {
-  // Nur fuer die Sprach-Header-Heuristik (legitime Crawler senden keine
-  // Accept-Language). KEINE Allowlist — die Verifikation guter Bots laeuft
-  // ueber Reverse-DNS (Eigenserver/T3), auf Oxygen nicht verfuegbar.
+  // Nur für die Sprach-Header-Heuristik (legitime Crawler senden keine
+  // Accept-Language). KEINE Allowlist — die Verifikation guter Bots läuft
+  // über Reverse-DNS (Eigenserver/T3), auf Oxygen nicht verfuegbar.
   return ['googlebot', 'bingbot', 'duckduckbot', 'applebot'].some((b) =>
     uaL.includes(b),
   );
@@ -49,7 +49,7 @@ function istBekannterBot(uaL) {
 
 /**
  * Header-Anomalie-Heuristik. Eingabe: Header-Objekt (in-memory, wird NICHT
- * gespeichert). Ausgabe: {header_anomaly: bool, gruende: [regel-ids]}.
+ * gespeichert). Ausgabe: {header_anomaly: bool, Gründe: [regel-ids]}.
  * @param {Record<string, string>} headers
  */
 export function headerSignale(headers) {
@@ -60,21 +60,23 @@ export function headerSignale(headers) {
   }
   const ua = h['user-agent'] || '';
   const uaL = ua.toLowerCase();
-  const gruende = [];
+  // Der JSON-Schlüssel der Liste steht im Rückgabeobjekt (Parität zur
+  // Python-SSoT); als JS-Bezeichner trägt sie den Namen ursachen.
+  const ursachen = [];
 
-  if (!h['accept']) gruende.push('hdr-kein-accept');
+  if (!h['accept']) ursachen.push('hdr-kein-accept');
   if (!h['accept-language'] && !istBekannterBot(uaL)) {
-    gruende.push('hdr-keine-sprache');
+    ursachen.push('hdr-keine-sprache');
   }
-  if (SCRAPER_UA.some((m) => uaL.includes(m))) gruende.push('hdr-scraper-lib');
-  if (!ua) gruende.push('hdr-kein-ua');
+  if (SCRAPER_UA.some((m) => uaL.includes(m))) ursachen.push('hdr-scraper-lib');
+  if (!ua) ursachen.push('hdr-kein-ua');
   // Browser-UA behauptet Chrome/Chromium, aber Client-Hints fehlen komplett:
   // moderne Chrome-Browser senden sec-ch-ua immer mit (UA<->Hints-Mismatch).
   if ((uaL.includes('chrome/') || uaL.includes('chromium/')) && !('sec-ch-ua' in h)) {
-    gruende.push('hdr-ua-hints-mismatch');
+    ursachen.push('hdr-ua-hints-mismatch');
   }
 
-  return {header_anomaly: gruende.length > 0, gruende};
+  return {header_anomaly: ursachen.length > 0, "gruende": ursachen};
 }
 
 /**

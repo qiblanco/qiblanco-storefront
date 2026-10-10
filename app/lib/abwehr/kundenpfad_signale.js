@@ -8,9 +8,9 @@
  *
  * WARUM DIE ABLEITUNG NEBEN DER LANE STEHT und nicht im Vollzugs-Pfad: die
  * Ableitung ist der Ort, an dem man aus Versehen Identitaet einschmuggelt
- * ("diese IP kennen wir doch"). Sie gehoert deshalb unter dieselbe Whitelist-
- * Disziplin — `ausVerlauf()` gibt AUSSCHLIESSLICH Felder aus
- * `ERLAUBTE_LANE_SIGNALE` zurueck.
+ * ("diese IP kennen wir doch"). Sie gehört deshalb unter dieselbe Whitelist-
+ * Disziplin — `ausVerlauf()` gibt ausschließlich Felder aus
+ * `ERLAUBTE_LANE_SIGNALE` zurück.
  *
  * ---------------------------------------------------------------------------
  * WAS AUF OXYGEN EHRLICH NICHT HERLEITBAR IST  (der Kern dieser Datei)
@@ -25,7 +25,7 @@
  *   netz_klasse  -> 'unbestimmt'  kein Reverse-DNS/FCrDNS, kein ASN-Header.
  *                   FOLGE: der good_bot-Zweig in kundenpfad.entscheide() ist
  *                   auf Oxygen UNERREICHBAR. Die Lane schuetzt hier
- *                   ausschliesslich ueber VERHALTEN. Ein verifizierter
+ *                   ausschließlich über VERHALTEN. Ein verifizierter
  *                   Good-Bot mit breitem Durchlauf faellt auf 'bulk' und
  *                   bekommt keinen Deckel — deklarierte Grenze, siehe
  *                   SEAM-erlaub-lane.md §4.
@@ -43,7 +43,7 @@
  *
  * Alle drei fehlen in der Richtung "weniger Abwehr, nie ein getroffener
  * Kunde" (INV-8). Das ist Absicht: `unbestimmt` deckelt immer noch den harten
- * Block weg, und Nichtwissen fuehrt nie nach `bulk`.
+ * Block weg, und Nichtwissen führt nie nach `bulk`.
  *
  * REIN, kein I/O.
  */
@@ -94,8 +94,8 @@ export const SWEEP_MARKER = [
 export const SWEEP_PARAMETER = ['page=', 'cursor=', 'offset=', 'limit=', 'after='];
 
 /**
- * Bildet Pythons `int(str)` nach — bewusst STRIKT: `parseInt` wuerde "3abc"
- * als 3 lesen, Python wirft dort. Ein grosszuegigerer Parser wuerde hier
+ * Bildet Pythons `int(str)` nach — bewusst STRIKT: `parseInt` würde "3abc"
+ * als 3 lesen, Python wirft dort. Ein grosszuegigerer Parser würde hier
  * Sweeps erfinden, die keine sind.
  * @param {string} text
  * @returns {number|null} null = Python haette ValueError geworfen
@@ -118,7 +118,7 @@ export function istIntent(pfad) {
 export function istSweep(pfad) {
   const p = String(pfad || '').toLowerCase();
   if (SWEEP_MARKER.some((x) => p.includes(x))) return true;
-  // Paginierung zaehlt erst ab Seite 3 als Sweep — Seite 1/2 blaettert auch
+  // Paginierung zählt erst ab Seite 3 als Sweep — Seite 1/2 blaettert auch
   // ein Mensch durch.
   for (const param of SWEEP_PARAMETER) {
     const i = p.indexOf(param);
@@ -135,7 +135,7 @@ export function istSweep(pfad) {
  *
  * `abrufe` ist eine Sequenz von [pfad, tag]-Paaren oder von Objekten mit den
  * Schluesseln `pfad` und `tag`. `tag` ist ein beliebiger Tages-Marker — nur
- * seine DISTINKTHEIT zaehlt, nie sein Wert.
+ * seine DISTINKTHEIT zählt, nie sein Wert.
  *
  * Ein leerer Verlauf ergibt neutrale Signale -> Verdikt 'unbestimmt'
  * (konservativ geschuetzt, nie 'bulk').
@@ -190,7 +190,7 @@ export function ausVerlauf(
     anfragen: n,
     distinkte_pfade: distinkt,
     // Breite wird an DISTINKTEN Pfaden gemessen, nicht an Abrufen: wer
-    // dieselbe Produktseite zehnmal laedt, grast nichts ab.
+    // dieselbe Produktseite zehnmal lädt, grast nichts ab.
     katalog_ratio: Math.min(1.0, distinkt / groesse),
     intent_ratio: intent / n,
     sweep_marker: pfade.some((p) => istSweep(p)),
@@ -204,7 +204,7 @@ export function ausVerlauf(
 // Worker-Adapter — aus dem, was der Isolate-Zustand REAL hat
 // ---------------------------------------------------------------------------
 
-/** Deckel fuer die Pfad-Menge je Schluessel (128-MB-Isolate). */
+/** Deckel für die Pfad-Menge je Schluessel (128-MB-Isolate). */
 export const LANE_MAX_PFADE_GEMERKT = 64;
 
 /**
@@ -214,7 +214,7 @@ export const LANE_MAX_PFADE_GEMERKT = 64;
  *
  *  (a) `katalog_ratio` kommt aus DERSELBEN Groesse, die der Score als
  *      `vollkatalog_ratio` sieht (`st.katalog`/`katalogGroesse`). Score und
- *      Lane koennen ueber "Breite" damit baulich nicht verschiedener Meinung
+ *      Lane können über "Breite" damit baulich nicht verschiedener Meinung
  *      sein — genau die Drift, an der solche Naehte sonst reissen.
  *  (b) `LANE_MAX_PFADE_GEMERKT` saettigt bei 64 und damit OBERHALB von
  *      `BULK_PFADE` (40). Ein saturierter Zaehler faellt also nach `bulk` =

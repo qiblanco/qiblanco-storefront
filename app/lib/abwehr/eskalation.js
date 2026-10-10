@@ -5,7 +5,7 @@
  * (T1-Kern). Die Python-Version bleibt die Regel-Wahrheit; der Paritaets-Test
  * (scripts/abwehr/paritaet.mjs) beweist die Deckungsgleichheit.
  *
- * INV-1 STRUKTURELL ERZWUNGEN: Eine Aktion beschreibt AUSSCHLIESSLICH
+ * INV-1 STRUKTURELL ERZWUNGEN: Eine Aktion beschreibt ausschließlich
  * Statuscode/Transport (Retry-After, Challenge, befristeter Block). Das
  * Aktions-Objekt hat KEIN 'body'-Feld und KEINEN Content-Transformer — der
  * Abwehr-Layer KANN den Inhalt einer 200-Antwort baulich nicht veraendern.
@@ -14,12 +14,12 @@
  * Besucher, keinen Hash, keine Identitaet.
  */
 
-// Stufen-Baender (Konzept Kap. 4) — fuer JEDEN Besucher identisch.
+// Stufen-Baender (Konzept Kap. 4) — für JEDEN Besucher identisch.
 const S1_AB = 40;
 const S2_AB = 60;
 const S3_AB = 80;
 
-// Hysterese: die letzten N Scores muessen die Schwelle halten.
+// Hysterese: die letzten N Scores müssen die Schwelle halten.
 export const HYSTERESE_N = 3;
 
 // Befristung des Temp-Blocks (S3). NIE permanent, NIE IP-Dauerbann.
@@ -85,7 +85,7 @@ function istCheckout(pfad) {
 }
 
 /**
- * Uniforme Eskalations-Aktion fuer einen Score (+optional Verlauf/Hysterese).
+ * Uniforme Eskalations-Aktion für einen Score (+optional Verlauf/Hysterese).
  * Liefert NUR Transport-Anweisungen — KEIN 'body', KEIN Content (INV-1).
  * Never-block-Checkout: auf Checkout-Pfaden maximal Challenge (S2).
  * @param {number} score

@@ -1,11 +1,11 @@
 /**
- * kundenpfad.js — die ERLAUB-LANE ("feiner Pfad") fuer legitime Kunden-AI.
+ * kundenpfad.js — die ERLAUB-LANE ("feiner Pfad") für legitime Kunden-AI.
  *
  * JS-PORTIERUNG der Python-SSoT `shared-state/sicherheitsmeister/src/kundenpfad.py`
  * (Job 20260729-anti-scraping-feiner-pfad-kunden-ai-guardrail). Die Python-
  * Version bleibt die Regel-Wahrheit; der Paritaets-Test (scripts/abwehr/
  * paritaet.mjs, Kategorien lane_entscheide/lane_deckel/lane_bewerte) beweist
- * die Deckungsgleichheit ueber dieselben Vektoren.
+ * die Deckungsgleichheit über dieselben Vektoren.
  *
  * WARUM ES DIESE DATEI GIBT (Konzept-Luecke, gemessen 2026-08-01/-04):
  * `SEAM-erlaub-lane.md` §4 schrieb die Integration als EINE Python-Zeile im
@@ -16,7 +16,7 @@
  * Eskalations-Stelle in `abwehr.js` nahm den ROHEN Score.
  *
  * INV-8 (die tragende Invariante): MONOTONIE. `deckelScore()` ist ein `min()`.
- * Die Lane kann eine Eskalation AUSSCHLIESSLICH SENKEN, niemals anheben. Ein
+ * Die Lane kann eine Eskalation ausschließlich SENKEN, niemals anheben. Ein
  * Fehler in dieser Datei kostet Abwehr, niemals einen Kunden.
  *
  * REIN: keine Netz-/Storage-/Zeit-Zugriffe. Die einzige Betriebs-Kante
@@ -46,7 +46,7 @@ export const ERLAUBTE_LANE_SIGNALE = new Set([
   'netz_klasse', // str (Bonus, optional)
 ]);
 
-// Vokabular von `netzherkunft.py`. Bewusst als Literale gefuehrt statt
+// Vokabular von `netzherkunft.py`. Bewusst als Literale geführt statt
 // importiert — diese Lane darf nicht ausfallen, wenn das Netz-Modul fehlt.
 // Ein unbekannter Wert ist ein Fehler, kein stiller Durchlauf.
 export const NETZ_KLASSEN = new Set([
@@ -58,16 +58,16 @@ export const NETZ_KLASSEN = new Set([
   'unbestimmt',
 ]);
 
-// ---- Schwellen — Kunden-Pfad (ALLE muessen erfuellt sein) ------------------
+// ---- Schwellen — Kunden-Pfad (ALLE müssen erfuellt sein) ------------------
 // EHRLICH: begruendete Startwerte, keine kalibrierten Schwellen (Forschungs-
 // Frage `erlaub-lane-schwellen-kalibrierung`). INV-8 macht Fehl-Schwellen in
-// der Richtung ungefaehrlich, die zaehlt: zu grosszuegig = weniger Abwehr.
+// der Richtung ungefaehrlich, die zählt: zu großzügig = weniger Abwehr.
 export const KUNDE_MAX_ANFRAGEN = 12;
 export const KUNDE_MAX_PFADE = 8;
 export const KUNDE_MAX_KATALOG = 0.25;
 export const KUNDE_MIN_INTENT = 0.6;
 
-// ---- Schwellen — Bulk (EINE genuegt: positive Evidenz) ---------------------
+// ---- Schwellen — Bulk (EINE genügt: positive Evidenz) ---------------------
 export const BULK_KATALOG = 0.5;
 export const BULK_PFADE = 40;
 export const BULK_SWEEP_ANFRAGEN = 30;
@@ -94,9 +94,9 @@ export const STANDARD_DECKEL = {
  * half-to-EVEN. `Number.prototype.toFixed` rundet half-UP und weicht damit
  * genau dort ab, wo ein Gleichstand exakt darstellbar ist — also bei
  * x = j/8 (0.125, 0.375, 0.625, 0.875). `katalog_ratio = 10/80 = 0.125` ist
- * ein voellig realistischer Wert, die Abweichung waere also kein Randfall,
- * sondern Betrieb. `toFixed(20)` liefert fuer diese Groessenordnung die
- * exakte Dezimal-Expansion, an der sich der Gleichstand erkennen laesst.
+ * ein voellig realistischer Wert, die Abweichung wäre also kein Randfall,
+ * sondern Betrieb. `toFixed(20)` liefert für diese Groessenordnung die
+ * exakte Dezimal-Expansion, an der sich der Gleichstand erkennen lässt.
  * @param {number} x  0.0..1.0
  */
 export function fmt2(x) {
@@ -130,9 +130,9 @@ export function fmt2(x) {
 import {stufe as eskalationStufe} from './eskalation.js';
 
 /**
- * Groesster Score, der noch hoechstens `maxStufe` ergibt.
+ * Größter Score, der noch hoechstens `maxStufe` ergibt.
  * Der Ersatzpfad entspricht dem Stand 2026-07-29 und ist im Zweifel zu
- * NIEDRIG, also ueber-schuetzend — die sichere Richtung (INV-8).
+ * NIEDRIG, also über-schuetzend — die sichere Richtung (INV-8).
  * @param {string} maxStufe
  */
 export function hoechsterScoreFuer(maxStufe) {
@@ -226,26 +226,26 @@ function pruefeSignale(signale) {
 
 /** Positive Bulk-Evidenz. Leere Liste = KEIN Bulk-Verdikt (konservativ). */
 function bulkBelegt(s) {
-  const gruende = [];
-  if (s.evasion) gruende.push('evasion (UA-Rotation/robots-Verstoss/Honeypot)');
+  const ursachen = [];
+  if (s.evasion) ursachen.push('evasion (UA-Rotation/robots-Verstoss/Honeypot)');
   if (s.katalog_ratio >= BULK_KATALOG) {
-    gruende.push(`katalog_ratio ${fmt2(s.katalog_ratio)} >= ${BULK_KATALOG}`);
+    ursachen.push(`katalog_ratio ${fmt2(s.katalog_ratio)} >= ${BULK_KATALOG}`);
   }
   if (s.distinkte_pfade >= BULK_PFADE) {
-    gruende.push(`distinkte_pfade ${s.distinkte_pfade} >= ${BULK_PFADE}`);
+    ursachen.push(`distinkte_pfade ${s.distinkte_pfade} >= ${BULK_PFADE}`);
   }
   if (s.sweep_marker && s.anfragen >= BULK_SWEEP_ANFRAGEN) {
-    gruende.push(
+    ursachen.push(
       `sweep_marker + ${s.anfragen} Anfragen >= ${BULK_SWEEP_ANFRAGEN}`,
     );
   }
   if (s.tage_aktiv >= BULK_TAGE && s.katalog_ratio >= BULK_TAGE_KATALOG) {
-    gruende.push(
+    ursachen.push(
       `${s.tage_aktiv} Tage aktiv bei katalog_ratio ` +
         `${fmt2(s.katalog_ratio)} >= ${BULK_TAGE_KATALOG}`,
     );
   }
-  return gruende;
+  return ursachen;
 }
 
 /** Positive Kunden-Evidenz (ALLE Bedingungen). Leere Liste = nicht belegt. */
@@ -262,12 +262,12 @@ function kundeBelegt(s) {
   ];
 }
 
-function verdiktObjekt(lane, begruendung, s, gruende) {
+function verdiktObjekt(lane, anlass, s, ursachen) {
   if (!VERDIKTE.has(lane)) throw new Error('interner Fehler: unbekannte Lane');
   return {
     lane,
-    begruendung,
-    belege: gruende,
+    "begruendung": anlass,
+    belege: ursachen,
     max_stufe: STANDARD_DECKEL[lane],
     signale: s,
   };
@@ -285,7 +285,7 @@ function verdiktObjekt(lane, begruendung, s, gruende) {
  *      Zweig bleibt portiert, damit die Paritaet zur SSoT vollstaendig ist.
  *   3. Positive BULK-Evidenz -> kein Schutz.
  *   4. Positive KUNDEN-Evidenz -> voller Schutz.
- *   5. Sonst `unbestimmt` -> milder Schutz. Nichtwissen fuehrt NIE nach bulk.
+ *   5. Sonst `unbestimmt` -> milder Schutz. Nichtwissen führt NIE nach bulk.
  * @param {Record<string, unknown>} signale
  */
 export function entscheide(signale) {
@@ -294,7 +294,7 @@ export function entscheide(signale) {
   if (s.evasion) {
     return verdiktObjekt(
       LANE_BULK,
-      'evasion belegt — schlaegt jede Identitaet',
+      'evasion belegt: schlägt jede Identität',
       s,
       bulkBelegt(s),
     );
@@ -304,7 +304,7 @@ export function entscheide(signale) {
     return verdiktObjekt(
       LANE_KUNDE,
       'verifizierte Netz-Klasse good_bot (Assistenz/Suchmaschine); ' +
-        'Mengen-Steuerung gehoert hier zu robots.txt/TDMRep, nicht zum Block',
+        'Mengen-Steuerung gehört hier zu robots.txt/TDMRep, nicht zum Block',
       s,
       [],
     );
@@ -322,7 +322,7 @@ export function entscheide(signale) {
 
   return verdiktObjekt(
     LANE_UNBESTIMMT,
-    'weder Kunden- noch Bulk-Muster belegt — konservativ geschuetzt ' +
+    'weder Kunden- noch Bulk-Muster belegt: konservativ geschützt ' +
       '(im Zweifel NICHT blocken)',
     s,
     [],
@@ -333,8 +333,8 @@ export function entscheide(signale) {
 // Der monotone Daempfer — DIE Stelle, die der Vollzugs-Pfad braucht.
 // ---------------------------------------------------------------------------
 /**
- * Deckelt einen Missbrauchs-Score gemaess Lane-Verdikt. STRENG MONOTON:
- * die Rueckgabe ist IMMER <= `score` (INV-8).
+ * Deckelt einen Missbrauchs-Score gemäß Lane-Verdikt. STRENG MONOTON:
+ * die Rückgabe ist IMMER <= `score` (INV-8).
  * @param {number} score
  * @param {string} lane
  * @param {string|null} [maxStufe] weglassen = Standard-Deckel des Verdikts,
