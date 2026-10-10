@@ -223,8 +223,8 @@ test('die Rolle „Gründer" steht bei demselben Namen auf einer öffentlichen S
 
 test('beide Personenseiten geben den EINEN Gründer-Knoten aus', () => {
   // Seit 2026-10-10 baut keine Route ihre Person-@id mehr aus dem eigenen
-  // Pfad. Vorher lieferte /pages/warum-qi-blanco `…/warum-qi-blanco#person`
-  // mit „Dipl.-Ing. (FH) …" und /pages/ueber-uns `…/ueber-uns#person` mit
+  // Pfad. Vorher lieferte die Absicht-Seite `…/warum-qi-blanco#person` mit
+  // „Dipl.-Ing. (FH) …" und die Über-uns-Seite ihre eigene #person-@id mit
   // „Dipl.-Ing. …": zwei @id, drei Namensformen, eine Person.
   assert.equal(FOUNDER_ID, `${absoluteCanonical(UEBER_UNS_PFAD)}#person`);
   for (const [pfad, quelle] of [

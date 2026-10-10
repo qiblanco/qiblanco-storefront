@@ -55,8 +55,8 @@
  * stehen — er darf nicht IM Text stehen. Arm G der Wache misst das.
  */
 
-// Relativ statt '~': test/seo-structured-data.test.mjs laedt dieses Modul
-// ohne Bundler (Begruendung im Kopf von app/lib/entity-schema.js).
+// Relativ statt '~': test/seo-structured-data.test.mjs lädt dieses Modul
+// ohne Bundler (Begründung im Kopf von app/lib/entity-schema.js).
 import {FOUNDER_ANZEIGE} from '../lib/entity-schema.js';
 
 /**
@@ -64,10 +64,10 @@ import {FOUNDER_ANZEIGE} from '../lib/entity-schema.js';
  *
  * KORREKTUR 2026-10-10 (Auftrag 20261010-geo-flanke-gruender-person-schema-
  * eine-konstante-prio45): hier stand „Dipl.-Ing. (FH) Christian Bernd Bauer"
- * unter derselben Ueberschrift „aus dem Impressum, woertlich". Das Impressum
+ * unter derselben Überschrift „aus dem Impressum, wörtlich". Das Impressum
  * sagt „Dipl.-Ing." ohne „(FH)". Der Name kommt jetzt aus der EINEN
- * Gruender-Konstante (app/lib/entity-schema.js, FOUNDER_ANZEIGE), damit
- * Unterschrift, /pages/ueber-uns und das JSON-LD nicht wieder auseinanderlaufen.
+ * Gründer-Konstante (app/lib/entity-schema.js, FOUNDER_ANZEIGE), damit
+ * Unterschrift, die Über-uns-Seite und das JSON-LD nicht wieder auseinanderlaufen.
  */
 export const ABSENDER = {
   name: FOUNDER_ANZEIGE,
