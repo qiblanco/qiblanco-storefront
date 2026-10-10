@@ -138,3 +138,41 @@ test('ladeStaffelKasse: Fehler, Frist, fremde Währung, Aufschlag -> null', asyn
     null,
   );
 });
+
+// Der Laden legt 2/3 Packungen als Sorten-Set, wenn es nicht teurer ist
+// (kakao-set-zeile.server.js). Gemessen 2026-10-10 CH: Warenkorb Awake x2
+// 127,53 CHF, bundle-2x-awake 124 CHF -> die Kasse nimmt 124, die Seite
+// nannte 127,53 (Job 20261010-update-kakao-mengen-schweiz-ganze-franken).
+test('ladeStaffelKasse: Sorten-Set statt Einzelweg, wenn der Laden es legt', async () => {
+  cp._ablageLeeren();
+  const z = {n: 0};
+  const sets = (antwort) => ({
+    ...laden((m) => ({amount: m === 2 ? '127.53' : '168.53', currencyCode: 'CHF'}), z),
+    query: async () => antwort,
+  });
+  const preis = (amount, currencyCode = 'CHF', availableForSale = true) => ({
+    selectedOrFirstAvailableVariant: {availableForSale, price: {amount, currencyCode}},
+  });
+  const angabe = {variantId: 'gid://v/3', waehrung: 'CHF', land: 'CH', listenpreis: '78.0'};
+  const awake = {variante: {product: {handle: 'crystal-cacao-awake'}},
+    awake2: preis('124.0'), awake3: preis('161.0'), create2: preis('1.0'), create3: preis('1.0')};
+  assert.deepEqual((await cp.ladeStaffelKasse(sets(awake), angabe)).zeilen, {'2': 124, '3': 161});
+  // Set teurer als der Einzelweg: der Laden lässt die Einzelzeile, die Seite auch
+  cp._ablageLeeren();
+  assert.deepEqual((await cp.ladeStaffelKasse(sets({...awake, awake2: preis('128.0')}), angabe)).zeilen,
+    {'2': 127.53, '3': 161});
+  // nicht verfügbar oder fremde Währung: Einzelweg
+  cp._ablageLeeren();
+  assert.deepEqual((await cp.ladeStaffelKasse(
+    sets({...awake, awake2: preis('124.0', 'CHF', false), awake3: preis('161.0', 'EUR')}), angabe)).zeilen,
+    {'2': 127.53, '3': 168.53});
+  // die Sorte kommt aus der Variante: Create liest create2/create3
+  cp._ablageLeeren();
+  assert.deepEqual((await cp.ladeStaffelKasse(sets({...awake,
+    variante: {product: {handle: 'crystal-cacao-create'}}, create2: preis('124.0'), create3: preis('161.0')}),
+  {...angabe, variantId: 'gid://v/4'})).zeilen, {'2': 124, '3': 161});
+  // Abfrage scheitert: Stand davor (Warenkorb-Betrag)
+  cp._ablageLeeren();
+  const kaputt = {...sets(awake), query: async () => { throw new Error('429'); }};
+  assert.deepEqual((await cp.ladeStaffelKasse(kaputt, angabe)).zeilen, {'2': 127.53, '3': 168.53});
+});
