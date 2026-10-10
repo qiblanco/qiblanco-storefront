@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useEffect, useRef } from "react";
+import {CdnBild} from '../reusables/CdnBild';
 
 export function Finanzierungsbanner({dataSection}) {
     const bannerRef = useRef(null);
@@ -49,14 +50,16 @@ export function Finanzierungsbanner({dataSection}) {
                     Jetzt mit 0%<br />Finanzierung!
                 </h2>
                 <div>
-                    <img
-                        width={75}
+                    {/* CdnBild statt nacktem <img> (Bildschuld-Fall a421cd, 2026-10-10):
+                        der PayPal-Master ist 1280 px / 73,7 KiB breit und lief
+                        ungekürzt in diese 75-px-Fläche. Dieselben zwei Logos
+                        stehen in HerobannerFeatured.jsx schon so. */}
+                    <CdnBild breite={75} hoehe={42} anzeigeBreite={75}
                         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816"
                         alt="Klarna"
                     />
                     &nbsp;&nbsp;&nbsp;
-                    <img
-                        width={75}
+                    <CdnBild breite={75} hoehe={38} anzeigeBreite={75}
                         src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082"
                         alt="PayPal"
                     />
