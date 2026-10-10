@@ -193,7 +193,7 @@ export default function Product() {
               Eintreffen des Originals auf Spaltenbreite — mobil +104 px, CLS 0,128. */}
           <LazyImage highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug.webp?v=1766482188"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Awake_Schriftzug_small.webp?v=1766482188"
-          breite={995} hoehe={356} />
+          breite={995} hoehe={356} alt="Schriftzug Awake" />
         </div>
         <h2 className="kk-h2 kk-h2--hero">Herzöffnend. Powerful.</h2>
         <h3 className="kk-lead">High Performance Cacao</h3>

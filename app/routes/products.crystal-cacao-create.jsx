@@ -194,7 +194,7 @@ export default function Product() {
               mobil +104 px, CLS 0,128). */}
           <LazyImage highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Create_Schriftzug_1.png?v=1766481502"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Create_Schriftzug_1_small.png?v=1766481502"
-          breite={950} hoehe={420} />
+          breite={950} hoehe={420} alt="Schriftzug Create" />
         </div>
         <h2 className="kk-h2 kk-h2--hero">Fokus. High Performance.</h2>
         <h3 className="kk-lead">High Performance Cacao</h3>
