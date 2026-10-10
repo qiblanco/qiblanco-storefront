@@ -321,7 +321,7 @@ test('Festbetrag DE: ohne Anker lehnt der Preisschutz 4/6/7 nach dem Kipp ab', (
 
 test('Festbetrag DE: scharf nur bei DE, EUR, brutto und Set auf den Cent', () => {
   const {kakaoFestbetragGetroffen: fb, KAKAO_FESTBETRAG_CENT} = lib;
-  assert.deepEqual(KAKAO_FESTBETRAG_CENT, {DE: {EUR: {4: 21300, 5: 26600, 6: 31900, 7: 37200}}});
+  assert.deepEqual(KAKAO_FESTBETRAG_CENT.DE, {EUR: {4: 21300, 5: 26600, 6: 31900, 7: 37200}});
   const nach = {land: 'DE', waehrung: 'EUR', brutto: true};
   assert.equal(fb({...nach, sets: [{packungen: 4, cent: 21300}]}), true);
   assert.equal(fb({...nach, land: 'de', sets: [{packungen: 7, cent: 37200}]}), true);
@@ -344,4 +344,65 @@ test('Festbetrag DE: scharf nur bei DE, EUR, brutto und Set auf den Cent', () =>
   assert.equal(fb({...nach, sets: [{packungen: 3, cent: 15900}]}), false);
   assert.equal(fb({...nach, sets: []}), false);
   assert.equal(fb({...nach, sets: [{packungen: 4, cent: NaN}]}), false);
+});
+
+// GANZE FRANKEN UND DOLLAR (Job 20261010-update-kakao-mengen-schweiz-ganze-
+// franken). CH je Zusammensetzung (Awake 78, Create 77 CHF), US je Größe.
+// Rot-Arm: vor dem Anker lehnte der Preisschutz 219 gegen den Einzelweg
+// 218,40 ab (nie_teurer) und 381 gegen 382,20 (nie_billiger_als_automatik).
+test('Festbetrag CH/US: ohne Anker lehnt der Preisschutz die ganzen Beträge ab', () => {
+  const ps = (o) => lib.kakaoPreisschutz({einzelZeilen: 1, setStueck: 1, gemischt: false, ...o});
+  assert.deepEqual(ps({packungen: 4, setCent: 21900, zeileCent: 21840}), {ok: false, grund: 'nie_teurer'});
+  assert.deepEqual(ps({packungen: 7, setCent: 38100, zeileCent: 38220}),
+    {ok: false, grund: 'nie_billiger_als_automatik'});
+  assert.deepEqual(ps({packungen: 4, setCent: 27800, zeileCent: 27720}), {ok: false, grund: 'nie_teurer'});
+  assert.deepEqual(ps({packungen: 4, setCent: 21900, zeileCent: 21840, festbetrag: true}),
+    {ok: true, grund: 'anker_festbetrag'});
+});
+
+test('Festbetrag CH: je Zusammensetzung, nur CHF, brutto, auf den Rappen', () => {
+  const {kakaoFestbetragGetroffen: fb, KAKAO_FESTBETRAG_CENT: T} = lib;
+  const ch = T.CH.CHF;
+  assert.equal(Object.keys(ch).length, 26);
+  assert.deepEqual([4, 5, 6, 7].map((n) => ch[`${n}+0`]), [21900, 27300, 32700, 38100]);
+  assert.deepEqual([4, 5, 6, 7].map((n) => ch[`0+${n}`]), [21600, 27000, 32400, 37700]);
+  // jeder Betrag ganz, Stückpreis der Sorten-Sets steigt nie, gemischt geklammert
+  for (const [k, c] of Object.entries(ch)) assert.equal(c % 100, 0, k);
+  for (const n of [4, 5, 6]) {
+    assert.ok(ch[`${n + 1}+0`] * n <= ch[`${n}+0`] * (n + 1), `Awake ${n}->${n + 1}`);
+    assert.ok(ch[`0+${n + 1}`] * n <= ch[`0+${n}`] * (n + 1), `Create ${n}->${n + 1}`);
+  }
+  for (const n of [4, 5, 6, 7]) {
+    for (let a = 0; a <= n; a += 1) {
+      const c = ch[`${a}+${n - a}`];
+      assert.ok(c >= ch[`0+${n}`] && c <= ch[`${n}+0`], `${a}+${n - a}`);
+    }
+  }
+  const nach = {land: 'CH', waehrung: 'CHF', brutto: true};
+  const set = (awake, create, cent) => ({packungen: awake + create, je: {awake, create}, cent});
+  assert.equal(fb({...nach, sets: [set(4, 0, 21900)]}), true);
+  assert.equal(fb({...nach, land: 'ch', sets: [set(3, 1, 21800)]}), true);
+  assert.equal(fb({...nach, sets: [set(0, 7, 37700), set(4, 0, 21900)]}), true);
+  // Set noch auf dem Einzelweg (Takt hat nicht geschrieben) -> nicht scharf
+  assert.equal(fb({...nach, sets: [set(4, 0, 21840)]}), false);
+  // falsche Zusammensetzung: 219 ist der Betrag von 4+0, nicht von 0+4
+  assert.equal(fb({...nach, sets: [set(0, 4, 21900)]}), false);
+  // ohne Zusammensetzung kein CH-Treffer (die Tabelle hat keine Größen)
+  assert.equal(fb({...nach, sets: [{packungen: 4, cent: 21900}]}), false);
+  assert.equal(fb({...nach, brutto: false, sets: [set(4, 0, 21900)]}), false);
+  assert.equal(fb({...nach, waehrung: 'EUR', sets: [set(4, 0, 21900)]}), false);
+  // LI rechnet um und bleibt beim Rundungsband
+  assert.equal(fb({...nach, land: 'LI', sets: [set(4, 0, 21900)]}), false);
+});
+
+test('Festbetrag US: je Größe in USD, Stückpreis steigt nie', () => {
+  const {kakaoFestbetragGetroffen: fb, KAKAO_FESTBETRAG_CENT: T} = lib;
+  assert.deepEqual(T.US, {USD: {4: 27800, 5: 34700, 6: 41600, 7: 48500}});
+  const u = T.US.USD;
+  for (const n of [4, 5, 6]) assert.ok(u[n + 1] * n <= u[n] * (n + 1), `${n}->${n + 1}`);
+  const nach = {land: 'US', waehrung: 'USD', brutto: true};
+  assert.equal(fb({...nach, sets: [{packungen: 4, je: {awake: 2, create: 2}, cent: 27800}]}), true);
+  assert.equal(fb({...nach, sets: [{packungen: 7, cent: 48500}]}), true);
+  assert.equal(fb({...nach, sets: [{packungen: 4, cent: 27720}]}), false);
+  assert.equal(fb({...nach, waehrung: 'CAD', sets: [{packungen: 4, cent: 27800}]}), false);
 });
