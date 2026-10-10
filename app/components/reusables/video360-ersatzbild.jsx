@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
+import {bildQuellen} from './shopifyBildQuellen';
 
 /*
  * Ersatzbild an jeder 360-Grad-Drehung (Christian, 01.10.2026):
@@ -189,12 +190,29 @@ export function useErsatzbild(videoRef, an = true) {
  * dieser Stelle zu sehen ist.
  * fetchpriority high: alle Einbindungen stehen im Kopfbereich, das Bild ist
  * dort das größte Element beim ersten Malen.
+ *
+ * `anzeige` (optional, seit 10.10.2026, Job 20261009-aiceo-k2-j2-bildlast-
+ * dach-desktop-rot-seit-0110): {anzeigeBreite, sizes} der Fläche. Dann
+ * bekommt das Bild eine srcset-Leiter (bildQuellen, geklemmt an die
+ * 1080er-Kante). Anlass: auf der Startseite steht die Drehung auf
+ * höchstens 490 CSS-px, geliefert wurden 1080 px — 2,20x, die Bildlast-
+ * Wache (bildlast-dach-desktop) stand seit dem 01.10. auf Befund.
+ * Der `src` BLEIBT die Masterdatei, anders als bei bildQuellen üblich: die
+ * Bauten-Wache video360-ersatzbild-steht liest genau diesen `src` und
+ * verlangt >= 1000 px (vollwertiges Bild). Der Master wiegt 17 654 B, als
+ * Rückfall ohne srcset-Auswertung ist das tragbar.
+ * Ohne `anzeige` bleibt das Bild byte-gleich wie bisher.
  */
-export function Ersatzbild({ersatz, zustand, objectFit = 'contain'}) {
+export function Ersatzbild({ersatz, zustand, objectFit = 'contain', anzeige = null}) {
+  const leiter = anzeige
+    ? bildQuellen(ersatz.bild, {...anzeige, masterBreite: ERSATZBILD_KANTE})
+    : {srcSet: undefined, sizes: undefined};
   return (
     <img
       data-qb-ersatzbild=""
       src={ersatz.bild}
+      srcSet={leiter.srcSet}
+      sizes={leiter.sizes}
       alt={ersatz.alt}
       width={ERSATZBILD_KANTE}
       height={ERSATZBILD_KANTE}
