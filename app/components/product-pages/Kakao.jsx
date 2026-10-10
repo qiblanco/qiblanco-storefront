@@ -72,7 +72,7 @@ function Hero() {
           <LazyImage
             highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
             compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851&width=100"
-            alt="Hände halten eine Platte Crystal Cacao mit eingeprägtem Rautenmuster auf einem Geschirrtuch"
+            alt="Hände halten eine Platte Crystal Cacao mit eingeprägtem Rautenmuster auf einem Geschirrtuch."
           />
         </div>
         <h2 className="text-2xl">Crystal Cacao® - Bio</h2>
@@ -125,7 +125,7 @@ function Hero() {
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-07-26-qiblanco-berlin-1001273-v2b-min.jpg_1.webp?v=1669001851&width=100"
-          alt="Hände halten eine Platte Crystal Cacao mit eingeprägtem Rautenmuster auf einem Geschirrtuch"
+          alt="Hände halten eine Platte Crystal Cacao mit eingeprägtem Rautenmuster auf einem Geschirrtuch."
         />
       </div>
     </div>
@@ -178,12 +178,12 @@ function Benefits() {
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet.jpg?v=1771790329"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet_small.jpg?v=1771790329"
-          alt="Hand hält einen Tonbecher mit Kakao und Milchschaum"
+          alt="Hand hält einen Tonbecher mit Kakao und Milchschaum."
         />
         <LazyImage
           highQualityLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet-beans.jpg?v=1771790303"
           compressedLink="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-snippet-beans_small.jpg?v=1771790303"
-          alt="Zwei Hände halten getrocknete Kakaobohnen"
+          alt="Zwei Hände halten getrocknete Kakaobohnen."
         />
       </div>
     </div>
