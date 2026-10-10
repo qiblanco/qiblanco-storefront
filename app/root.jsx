@@ -242,6 +242,11 @@ export async function loader(args) {
     // (Metafeld qb_preis.modus); hier nur an den Client gereicht, damit die
     // Hydration mit demselben Modus rechnet wie der Server.
     preismodus: args.context.preismodus ?? preismodusStand(),
+    // Sicherheitsmeister Verhaltens-Token (T2): das uniforme First-Party-
+    // Snippet lädt NUR bei SM_VERHALTEN=on (eigener Rollout-Schalter,
+    // Default aus = Verhalten unverändert). An ALLE Besucher identisch
+    // ausgeliefert (Anti-Cloaking-Leitplanke).
+    smVerhaltenAktiv: env.SM_VERHALTEN === 'on',
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -730,6 +735,21 @@ export function Layout({children}) {
               <script
                 src={publicSkript('/qiblanco-qpx-basis.js')}
                 data-qpx-basis-endpoint={data.qpxBasisEndpoint}
+                nonce={nonce}
+                defer
+                suppressHydrationWarning
+              />
+            ) : null}
+            {data?.smVerhaltenAktiv ? (
+              // Sicherheitsmeister Verhaltens-Token (T2): first-party,
+              // an ALLE Besucher identisch (Anti-Cloaking-Leitplanke).
+              // Setzt genau EIN Sicherheits-Cookie (qb_vt, 24 h, kein
+              // Tracking/keine ID) — als technisch notwendig markiert
+              // (data-cookieconsent="ignore", Cookiebot-Auto-Modus).
+              // Ohne SM_VERHALTEN=on rendert nichts.
+              <script
+                src="/qb-verhalten.js"
+                data-cookieconsent="ignore"
                 nonce={nonce}
                 defer
                 suppressHydrationWarning
