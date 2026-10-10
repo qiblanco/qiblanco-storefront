@@ -1,4 +1,4 @@
-// node --test app/lib/meta-abschnitt.test.mjs
+// node --test test/meta-abschnitt.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -7,7 +7,7 @@ import {
   istLpPfad,
   seiteAusPfad,
   sichtbarGenug,
-} from './meta-abschnitt.js';
+} from '../app/lib/meta-abschnitt.js';
 
 function aufbau(modus, einwilligung) {
   const gesendet = [];
@@ -31,7 +31,7 @@ test('ohne Einwilligung: 0 Ereignisse, 0 Notizen, Abschnitt bleibt ungesehen', (
   assert.equal(e.melde('lp-a-mechanismus', '/pages/x'), false);
   assert.equal(gesendet.length, 0);
   assert.equal(notiert.length, 0);
-  ew.wert = true; // spaete Einwilligung: derselbe Abschnitt zaehlt dann
+  ew.wert = true; // späte Einwilligung: derselbe Abschnitt zählt dann
   assert.equal(e.melde('lp-a-mechanismus', '/pages/x'), true);
   assert.deepEqual(gesendet, [{abschnitt: 'lp-a-mechanismus', seite: '/pages/x'}]);
 });
@@ -64,7 +64,7 @@ test('aus und unbekannter Modus: nichts', () => {
   }
 });
 
-test('Einwilligungs-Pruefung wirft: zaehlt als keine Einwilligung', () => {
+test('Einwilligungs-Prüfung wirft: zählt als keine Einwilligung', () => {
   const gesendet = [];
   const e = erstelleErfasser({
     modus: 'an',
@@ -87,11 +87,11 @@ test('nur Landingpages', () => {
   assert.equal(seiteAusPfad('/pages/x/'), '/pages/x');
 });
 
-test('Sichtbarkeit: halber Abschnitt oder halbe Fensterhoehe', () => {
+test('Sichtbarkeit: halber Abschnitt oder halbe Fensterhöhe', () => {
   assert.equal(sichtbarGenug({isIntersecting: false, intersectionRatio: 1}, 900), false);
   assert.equal(sichtbarGenug({isIntersecting: true, intersectionRatio: 0.5}, 900), true);
   assert.equal(sichtbarGenug({isIntersecting: true, intersectionRatio: 0.49, intersectionRect: {height: 100}}, 900), false);
-  // Abschnitt hoeher als das Fenster: Anteil klein, aber halbes Fenster belegt
+  // Abschnitt höher als das Fenster: Anteil klein, aber halbes Fenster belegt
   assert.equal(sichtbarGenug({isIntersecting: true, intersectionRatio: 0.2, intersectionRect: {height: 450}}, 900), true);
   assert.equal(sichtbarGenug({isIntersecting: true, intersectionRatio: 0.2, intersectionRect: {height: 449}, rootBounds: {height: 900}}, 0), false);
 });
