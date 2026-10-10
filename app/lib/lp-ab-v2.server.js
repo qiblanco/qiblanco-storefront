@@ -195,11 +195,10 @@ export function besucherEimer(ip, userAgent, salz = E1.salz) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
- * ZWEITER ARM B2 NEBEN E1 (Grossjob 20261010-update-lp-tests-geraete-getrennt-
- * sticky-isolieren-thesentester, s02; Christian 10.10.2026: „Vielleicht ist der
- * feste Kaufknopf zu aggressiv, das muss dann mobil auch nochmal mit der alten
- * Ansicht und mehr Knöpfen getestet werden … die Tests können gleichzeitig
- * laufen").
+ * ZWEITER ARM B2 NEBEN E1 (Grossjob „LP-Tests je Gerät, Sticky isoliert“,
+ * s02; Christian 10.10.2026: „Vielleicht ist der feste Kaufknopf zu
+ * aggressiv, das muss dann mobil auch nochmal mit der alten Ansicht und mehr
+ * Knöpfen getestet werden … die Tests können gleichzeitig laufen").
  *
  * B2 = Seite A plus die Weiter-Knöpfe an ihren Stellen von vor dem 20.09.2026
  * (nach dem Mechanismus, im und nach dem Wissenschaftsblock), ohne festen

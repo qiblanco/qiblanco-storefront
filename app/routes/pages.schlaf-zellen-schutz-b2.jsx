@@ -7,10 +7,9 @@ import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 
 /**
  * VARIANTE B2 der Ads-LP /pages/schlaf-zellen-schutz — zweiter Arm neben E1
- * (Grossjob 20261010-update-lp-tests-geraete-getrennt-sticky-isolieren-
- * thesentester, s02; Christian 10.10.2026: „Vielleicht ist der feste
- * Kaufknopf zu aggressiv, das muss dann mobil auch nochmal mit der alten
- * Ansicht und mehr Knöpfen getestet werden.").
+ * (Grossjob „LP-Tests je Gerät, Sticky isoliert“, s02; Christian 10.10.2026:
+ * „Vielleicht ist der feste Kaufknopf zu aggressiv, das muss dann mobil auch
+ * nochmal mit der alten Ansicht und mehr Knöpfen getestet werden.").
  *
  * Diese Seite IST Seite A plus genau die Änderung der Hypothese GS-126 —
  * dieselbe Komponente, dieselben Stylesheets, derselbe Loader-Inhalt wie A und

@@ -277,8 +277,7 @@ test('E1: Ad-Weiche schließt B aus (sonst Schleife B -> A für bezahlten Verkeh
 });
 
 // ═══ Zweiter Arm B2 (szs-e2-gs126, 10.10.2026): ausschließend neben B ════════
-// Grossjob 20261010-update-lp-tests-geraete-getrennt-sticky-isolieren-
-// thesentester, s02. Dasselbe Salz wie E1, B die untersten, B2 die obersten
+// Grossjob „LP-Tests je Gerät, Sticky isoliert“ vom 10.10.2026, s02. Dasselbe Salz wie E1, B die untersten, B2 die obersten
 // Eimer, A die gemeinsame Kontrolle.
 
 /** Synthetische Population: 30.000 IP/UA-Paare, mobil und desktop gemischt. */
