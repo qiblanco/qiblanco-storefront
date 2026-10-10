@@ -31,6 +31,7 @@ Vollkatalog-Muster), gestufte **uniforme** Eskalation S0–S3.
 | `SM_MODE` | fehlt = **shadow** | `shadow`: nur Verdikt-Logs in den Oxygen-Log-Drain, 0 Wirkung. `on`: S1 Retry-After+tarpit, S2 429-Challenge, S3 befristeter 503 (15 min). `off`: Kill, purer Passthrough, kein Log. |
 | `SM_VERHALTEN` | fehlt = aus | `on`: root.jsx liefert das uniforme First-Party-Snippet `/qb-verhalten.js` an ALLE aus (setzt Sicherheits-Cookie `qb_vt`, 24 h). Ohne Flag rendert nichts und das Token-Signal ist neutral. |
 | `SM_RATE_LIMIT_PRO_MIN` / `SM_KATALOG_N` | 120 / 80 | Kalibrier-Schrauben (erst nach Shadow-Messung anfassen). |
+| `SM_SENKE` | fehlt = **an** | Rückfluss: jedes geloggte Verdikt geht zusätzlich per `ctx.waitUntil(fetch)` an `https://qpx.65-108-150-121.sslip.io/sm` (sicherheitsmeister `sm-senke`) und landet über den stündlichen Tick in `data/sicherheitsmeister.db` (`pfad_muster` `storefront:<pfad>`). `off`: nur Log. `SM_SENKE_PRO_MIN` (30 je Isolate und Minute), `SM_SENKE_URL`. |
 
 Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 (NICHT im Shopify-Admin suchen, homepage-bauer-Lehre).
@@ -70,8 +71,11 @@ Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 - **ASN-Typ** ist im Worker nicht verfügbar (kein MMDB) → Signal steht auf
   `unknown`; Datacenter-Erkennung leistet der T1-Kern offline (events.db)
   bzw. der Eigenserver (T3).
-- **Shadow-Sink:** Verdikte landen im Oxygen-Log-Drain, noch **nicht**
-  automatisch in `data/sicherheitsmeister.db` (offene Flanke, s06/W-Map).
+- **Shadow-Sink:** Verdikte landen im Oxygen-Log-Drain und seit 2026-10-10
+  (rz-0037 s02) zusätzlich in `data/sicherheitsmeister.db` (Senke, s. Schalter).
+  Die Senke hat kein gemeinsames Geheimnis: sie prüft eine Feld-Whitelist und
+  markiert die Herkunft (Cloudflare-Netz ja/nein). Wer die Zahlen für den Flip
+  liest, filtert auf `herkunft = cf`.
 - **F-5:** Adaptive Scraper lösen Challenges. Die Middleware ist Dämpfer
   im Mehrschicht-Verbund, kein Wall.
 - **Gute Bots:** Reverse-DNS-Verifikation (Googlebot) ist im Worker nicht
