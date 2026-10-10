@@ -22,7 +22,7 @@
  * Request-Pfad abgewartet, jeder Fehler geschluckt, gedeckelt je Isolate und
  * Minute (SM_SENKE_PRO_MIN, 0 = nichts senden). Angestossen erst NACH
  * `await next()`, damit der Abruf keinen Verbindungsplatz belegt, solange die
- * Seite ihre eigenen Daten laedt. 'off' (auch 'aus', '0', 'false', 'nein',
+ * Seite ihre eigenen Daten lädt. 'off' (auch 'aus', '0', 'false', 'nein',
  * Leerraum egal) schaltet nur den Versand ab, das Log bleibt.
  *
  * NEVER-BREAK (homepage-bauer F-002): der gesamte Vorfilter läuft in

@@ -198,14 +198,14 @@ try {
   ok(abrufe.length === 0 && logs.length === 0, 'S8 mode-off-nichts');
 
   // S9: Deckel je Minute — feste Uhr: ein Minutenwechsel mitten in der
-  // Schleife setzte sonst den Zaehler zurueck (Review K3-P2: Wackel-Arm).
+  // Schleife setzte sonst den Zähler zurück (Review K3-P2: Wackel-Arm).
   frisch();
   {
     const env = {SM_SENKE_PRO_MIN: '5'};
     const c = ctx();
     const e = eintragAusVerdikt({
       // in sich stimmig wie ein echtes Verdikt (15+30 = 45 -> S1): die Naht-Probe
-      // prueft jeden gesendeten Koerper gegen die Plausibilitaet des Servers.
+      // prüft jeden gesendeten Körper gegen die Plausibilität des Servers.
       stufe: 'S1', modus: 'shadow', score: 45, score_roh: 45, aktion: {typ: 'none'},
       lane: null, lane_aktiv: false, lane_fehler: null, "gruende": [],
       signale: {header_anomaly: true, waf_severity: 3},
