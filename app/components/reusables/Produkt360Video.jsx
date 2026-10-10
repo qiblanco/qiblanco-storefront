@@ -109,8 +109,17 @@ const QIONE_360_KANTE = ERSATZBILD_KANTE;
  * Screenreader dasselbe Produkt zweimal. `alt` der Aufrufer wird deshalb
  * nicht mehr gelesen; die Hülle nimmt Größe und Ausrichtung, die bisher
  * das <video> trug (startseite.css).
+ *
+ * `anzeige` (optional, 10.10.2026): {anzeigeBreite, sizes} der Fläche,
+ * durchgereicht an <Ersatzbild> (srcset-Leiter statt 1080er-Master). Dann
+ * entfällt das `poster`: es liegt immer UNTER dem Bild, sichtbar wird es
+ * nie (das Bild weicht erst, wenn das Video nachweislich läuft, und dann
+ * malt das Video seine Bilder). Bliebe es der Master, lüde der Browser
+ * dieselbe Datei zweimal — gemessen am CDN: 490er-Sprosse 8 120 B plus
+ * Master 17 654 B statt 8 120 B am Desktop. Ohne `anzeige` (Zellschutz-
+ * Seite) bleibt alles wie bisher, Poster eingeschlossen.
  */
-export function Produkt360Video({className}) {
+export function Produkt360Video({className, anzeige = null}) {
   const ref = useRef(null);
   const {zustand, zuBild} = useErsatzbild(ref);
   const zuBildRef = useRef(zuBild);
@@ -157,7 +166,7 @@ export function Produkt360Video({className}) {
       ref={ref}
       className={className || undefined}
       src={QIONE_360_VIDEO}
-      poster={QIONE_ERSATZ.bild}
+      poster={anzeige ? undefined : QIONE_ERSATZ.bild}
       width={QIONE_360_KANTE}
       height={QIONE_360_KANTE}
       aria-hidden="true"
@@ -170,7 +179,7 @@ export function Produkt360Video({className}) {
       autoPlay
       preload="metadata"
     />
-    <Ersatzbild ersatz={QIONE_ERSATZ} zustand={zustand} />
+    <Ersatzbild ersatz={QIONE_ERSATZ} zustand={zustand} anzeige={anzeige} />
     </div>
   );
 }
