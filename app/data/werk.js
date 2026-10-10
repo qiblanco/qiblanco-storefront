@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-10-06T12:14:29Z";
+export const WERK_STAND = "2026-10-10T09:50:36Z";
 
 export const STRAENGE = [
   {
@@ -32,6 +32,9 @@ export const STRAENGE = [
     "frage": "Wie wirkt das überhaupt?",
     "kurz": "Die Physik dahinter, in Größenordnungen statt in Behauptungen.",
     "slugs": [
+      {
+        "slug": "magnetfeld-wasser-ausschlusszone-messung"
+      },
       {
         "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst"
       },
@@ -127,6 +130,19 @@ export const QUELLEN = [
       {
         "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
         "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
+    "titel": "Geomagnetism Frequently Asked Questions, Abschnitt zur Feldstärke (abgerufen am 26",
+    "autoren": "National Centers for Environmental Information (NOAA)",
+    "jahr": 2026,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "magnetfeld-wasser-ausschlusszone-messung",
+        "titel": "Magnetfeld und Wasser: was gemessen ist und was daraus nicht folgt"
       }
     ]
   },
@@ -455,6 +471,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Magnetic fields induce exclusion zones in water",
+    "autoren": "Shalatonin, V., Pollack, G. H.",
+    "jahr": 2022,
+    "doi": "10.1371/journal.pone.0268747",
+    "sprache": "en",
+    "zitiert_in": [
+      {
+        "slug": "magnetfeld-wasser-ausschlusszone-messung",
+        "titel": "Magnetfeld und Wasser: was gemessen ist und was daraus nicht folgt"
+      }
+    ]
+  },
+  {
     "titel": "Dartsch PC, Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation , Applied Cell Biology 9(3), 2021, 69–74",
     "autoren": "Peter C. Dartsch",
     "jahr": 2021,
@@ -537,6 +566,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Low frequency weak electric fields can induce structural changes in water",
+    "autoren": "Rad, I., Stahlberg, R., Kung, K., Pollack, G. H.",
+    "jahr": 2021,
+    "doi": "10.1371/journal.pone.0260967",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "magnetfeld-wasser-ausschlusszone-messung",
+        "titel": "Magnetfeld und Wasser: was gemessen ist und was daraus nicht folgt"
+      }
+    ]
+  },
+  {
     "titel": "Performance of seven consumer sleep-tracking devices compared with polysomnography",
     "autoren": "Evan D. Chinoy u. a.",
     "jahr": 2021,
@@ -567,6 +609,10 @@ export const QUELLEN = [
       {
         "slug": "ausschlusszone-drei-mechanismen-pruefstand",
         "titel": "Ausschlusszone: drei Mechanismen auf dem Prüfstand"
+      },
+      {
+        "slug": "magnetfeld-wasser-ausschlusszone-messung",
+        "titel": "Magnetfeld und Wasser: was gemessen ist und was daraus nicht folgt"
       },
       {
         "slug": "strukturiertes-wasser-trend-was-gemessen-ist",
