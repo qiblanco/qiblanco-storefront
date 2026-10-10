@@ -100,7 +100,7 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 const PDF = {
   e0001: `${CDN}QiOne2Pro-human-cell-study-publication-april-30-2021_1.pdf?v=1679586513`,
   e0002: `${CDN}protective-effect-of-qionereg-2-pro-on-cultured-intestinal-epithelial-358_1.pdf?v=1679586513`,
-  e0003: `${CDN}Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505`,
+  e0003: `${CDN}qb-studien--e0003--98a5ee2d2b49.pdf?v=1791640835`,
   e0004: `${CDN}ABBSR-24_-31_3.pdf?v=1717500318`,
   e0005: `${CDN}qb-studien--e0005--b754deb9ee0d.pdf?v=1786753494`,
 };

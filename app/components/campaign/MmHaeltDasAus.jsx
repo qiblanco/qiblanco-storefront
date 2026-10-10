@@ -46,7 +46,7 @@ const STUDIEN = [
     titel: 'QiBracelet gegen oxidativen Stress',
     meta: 'Applied Cell Biology Journal · 12. Januar 2024',
     body: 'Messbarer Schutz kultivierter Zellen unter oxidativem Stress.',
-    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Studie_-_Appl_Cell_Biol_12_1_2024_1-6_-_Protective_Effect_of_the_QiBracelet_Against_Oxidative_Stress.pdf?v=1709036505',
+    href: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-studien--e0003--98a5ee2d2b49.pdf?v=1791640835',
   },
   {
     tag: 'Nutzererfahrung',
