@@ -17,6 +17,9 @@ import {BalkenDiagramm} from '../reusables/BalkenDiagramm';
  *   Hep G2: vitale Zellen ohne Schutz ~41 %, mit QiBracelet® ~88 %, aus der
  *   Abbildung abgelesen (deshalb ganzzahlig). Gegenprobe: die Differenz 47
  *   entspricht dem publizierten Schutzeffekt 47,3 ± 7,1 %.
+ *   Seit 10.10.2026 sagt die Messgroesse das auch sichtbar: im Text der Studie
+ *   stehen 41/88 nicht, wer ihnen von der Studienzeile aus folgt, findet sie
+ *   nur in Abbildung 3.
  */
 export function ZellDiagramme({dataSection}) {
   return (
@@ -49,7 +52,7 @@ export function ZellDiagramme({dataSection}) {
         <div className="ZellDiagramm">
           <BalkenDiagramm
             titel={<>Zellviabilität<br />unter oxidativem Stress</>}
-            messgroesse="Lebende Leberzellen nach 24 Stunden"
+            messgroesse="Lebende Leberzellen nach 24 h, aus Abbildung 3 abgelesen"
             balken={[
               {bezeichnung: 'Ungeschützt', wert: 41, stellen: 0, ton: 'ohne'},
               {bezeichnung: 'Mit QiBracelet®', wert: 88, stellen: 0, ton: 'mit'},
