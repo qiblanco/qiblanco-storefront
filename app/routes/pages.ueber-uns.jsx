@@ -4,6 +4,9 @@ import {
   ORGANISATION,
   ORG_ID,
   SITE_ID,
+  FOUNDER_ANZEIGE,
+  FOUNDER_ID,
+  founderPerson,
   organizationSchema,
 } from '~/lib/entity-schema';
 import {STUDIEN, UEBERSICHT_PFAD} from '~/data/studien';
@@ -100,9 +103,14 @@ const BESCHREIBUNG =
   'Wer Qi Blanco verantwortet, mit Namen, Anschrift und Handelsregister, und ' +
   'in welchem Institut unsere Produkte zellbiologisch geprüft wurden.';
 
-/** Aus dem Impressum, wörtlich. Die einzige natürliche Person dieser Seite. */
+/**
+ * Aus dem Impressum, wörtlich. Die einzige natürliche Person dieser Seite.
+ * Der Name kommt seit 2026-10-10 aus der EINEN Gründer-Konstante
+ * (app/lib/entity-schema.js, FOUNDER): sichtbar mit Grad wie im Impressum,
+ * im JSON-LD als `name` ohne Grad plus `honorificPrefix`.
+ */
 const VERANTWORTLICH = {
-  name: 'Dipl.-Ing. Christian Bernd Bauer',
+  name: FOUNDER_ANZEIGE,
   rolle: 'Geschäftsführer der Qi Blanco UG (haftungsbeschränkt)',
   // § 18 Abs. 2 MStV nennt denselben Namen — das ist die Angabe, die eine
   // Suchmaschine als „wer verantwortet den Inhalt" liest.
@@ -175,7 +183,9 @@ export function links() {
  */
 function aboutSchema() {
   const url = absoluteCanonical(PFAD);
-  const personId = `${url}#person`;
+  // Die @id des Gründers, nicht eine aus dem eigenen Pfad gebaute: dieselbe
+  // steht im founder der Organization und auf /pages/warum-qi-blanco.
+  const personId = FOUNDER_ID;
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -193,22 +203,9 @@ function aboutSchema() {
         publisher: {'@id': ORG_ID},
         dateModified: STAND_ISO,
       },
-      {
-        '@type': 'Person',
-        '@id': personId,
-        name: VERANTWORTLICH.name,
-        jobTitle: 'Geschäftsführer',
-        worksFor: {'@id': ORG_ID},
-        // Anschrift der Gesellschaft, weil § 18 Abs. 2 MStV genau sie nennt.
-        // Eine Privatanschrift stünde hier nicht und wäre auch nicht belegt.
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: ORGANISATION.streetAddress,
-          postalCode: ORGANISATION.postalCode,
-          addressLocality: ORGANISATION.addressLocality,
-          addressCountry: ORGANISATION.addressCountry,
-        },
-      },
+      // Der volle Person-Knoten aus der EINEN Konstante (Anschrift der
+      // Gesellschaft, weil § 18 Abs. 2 MStV genau sie nennt).
+      founderPerson(),
       {
         '@type': 'BreadcrumbList',
         '@id': `${url}#brotkrume`,
