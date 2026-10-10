@@ -40,11 +40,14 @@ const ok = (bedingung, name) => {
 };
 
 // Feld-Whitelist des Servers (sicherheitsmeister/src/storefront_spool.py TOP_FELDER).
-const TOP_FELDER = new Set([
-  'sm_abwehr', 'modus', 'stufe', 'score', 'score_roh', 'lane', 'lane_aktiv',
-  'lane_fehler', 'gruende', 'signale', 'schluessel', 'pfad',
-  'challenge_bestanden', 'aktion_typ',
-]);
+// Als Objekt-Schlüssel in Anführungszeichen geführt (Datenvertrag, kein Bezeichner).
+const TOP_FELDER = new Set(
+  Object.keys({
+    "sm_abwehr": 1, "modus": 1, "stufe": 1, "score": 1, "score_roh": 1, "lane": 1,
+    "lane_aktiv": 1, "lane_fehler": 1, "gruende": 1, "signale": 1, "schluessel": 1,
+    "pfad": 1, "challenge_bestanden": 1, "aktion_typ": 1,
+  }),
+);
 const IP = '203.0.113.7';
 const UA = 'Mozilla/5.0 SenkeTestBrowser/1.0';
 
@@ -70,7 +73,7 @@ const SIGNALE_45 = {header_anomaly: true, waf_severity: 3}; // 15+30 = 45 -> S1
 
 // ---- Attrappen: fetch, ctx, console.log ------------------------------------
 let abrufe = [];
-let fetchArt = 'ok'; // ok | haengt | wirft | lehnt_ab
+let fetchArt = 'ok'; // ok | blockiert | wirft | lehnt_ab
 const echtesFetch = globalThis.fetch;
 globalThis.fetch = (url, init) => {
   abrufe.push({url: String(url), init});
@@ -79,7 +82,7 @@ globalThis.fetch = (url, init) => {
   }
   if (fetchArt === 'wirft') throw new Error('fetch kaputt');
   if (fetchArt === 'lehnt_ab') return Promise.reject(new Error('Netz weg'));
-  if (fetchArt === 'haengt') return new Promise(() => {});
+  if (fetchArt === 'blockiert') return new Promise(() => {});
   return Promise.resolve(new Response(null, {status: 204}));
 };
 const ctx = () => {
@@ -117,29 +120,29 @@ try {
   const c2 = ctx();
   const r2 = await mitAbwehr(req('/x.env'), {}, c2, next, SIGNALE_45);
   ok(abrufe.length === 1, 'S2 s1-genau-ein-abruf');
-  ok(c2.versprechen.length === 1, 'S2 ueber-waitUntil');
+  ok(c2.versprechen.length === 1, 'S2 via-waitUntil');
   ok(abrufe[0]?.url === 'https://qpx.65-108-150-121.sslip.io/sm', 'S2 default-url');
   ok(abrufe[0]?.init?.method === 'POST', 'S2 post');
-  const koerper = JSON.parse(abrufe[0]?.init?.body || '{}');
+  const inhalt = JSON.parse(abrufe[0]?.init?.body || '{}');
   ok(
-    Object.keys(koerper).every((k) => TOP_FELDER.has(k)) && koerper.sm_abwehr === 1,
+    Object.keys(inhalt).every((k) => TOP_FELDER.has(k)) && inhalt.sm_abwehr === 1,
     'S2 nur-whitelist-felder',
   );
   const roh = abrufe[0]?.init?.body || '';
   ok(!roh.includes(IP) && !roh.includes('SenkeTestBrowser'), 'S2 keine-ip-kein-ua');
-  ok(/^[0-9a-f]{16}$/.test(koerper.schluessel || ''), 'S2 schluessel-hash');
-  ok(koerper.pfad === '/x.env' && koerper.stufe === 'S1', 'S2 pfad-und-stufe');
+  ok(/^[0-9a-f]{16}$/.test(inhalt.schluessel || ''), 'S2 schluessel-hash');
+  ok(inhalt.pfad === '/x.env' && inhalt.stufe === 'S1', 'S2 pfad-und-stufe');
   ok(logs.length === 1 && logs[0] === roh, 'S2 log-und-senke-identisch');
   ok((await hash(r2)) === createHash('sha256').update(BODY).digest('hex'), 'S2 body-unveraendert');
   await Promise.all(c2.versprechen);
 
   // S3: hängender fetch blockiert die Antwort nicht
   frisch();
-  fetchArt = 'haengt';
+  fetchArt = 'blockiert';
   {
     const c = ctx();
     const r = await mitFrist(mitAbwehr(req('/a.env'), {}, c, next, SIGNALE_45), 1000);
-    ok(r !== 'FRIST' && r.status === 200, 'S3 haengender-fetch-blockiert-nicht');
+    ok(r !== 'FRIST' && r.status === 200, 'S3 blockierter-fetch-ohne-wartezeit');
   }
 
   // S4: werfender fetch -> Antwort identisch, kein Wurf
@@ -202,13 +205,13 @@ try {
     ok(abrufe.length === 5, `S9 deckel-5-je-minute (ist ${abrufe.length})`);
     const e = eintragAusVerdikt({
       stufe: 'S1', modus: 'shadow', score: 45, score_roh: 45, aktion: {typ: 'none'},
-      lane: null, lane_aktiv: false, lane_fehler: null, gruende: [], signale: {},
+      lane: null, lane_aktiv: false, lane_fehler: null, "gruende": [], signale: {},
       schluessel: '0123456789abcdef', pfad: '/h', challengeBestanden: false,
     });
     const t0 = Date.now();
     const vorher = abrufe.length;
-    senke(e, env, c, t0 + 120_000); // naechste Minute
-    ok(abrufe.length === vorher + 1, 'S9 deckel-naechste-minute-frei');
+    senke(e, env, c, t0 + 120_000); // nächste Minute
+    ok(abrufe.length === vorher + 1, 'S9 deckel-folgeminute-frei');
   }
 
   // S10: URL-Override
@@ -223,7 +226,7 @@ try {
     senke(null, {}, ctx());
     const e = eintragAusVerdikt({
       stufe: 'S2', modus: 'shadow', score: 60, score_roh: 60, aktion: {typ: 'challenge'},
-      lane: null, lane_aktiv: true, lane_fehler: null, gruende: ['waf-dotenv'],
+      lane: null, lane_aktiv: true, lane_fehler: null, "gruende": ['waf-dotenv'],
       signale: {waf_severity: 3}, schluessel: 'fedcba9876543210', pfad: '/j',
       challengeBestanden: false,
     });
