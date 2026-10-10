@@ -17,7 +17,7 @@ import {
   noindexMeta,
 } from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
-import {istVorlageOhneIndexwert} from '~/lib/sitemap-bestand';
+import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 
 /**
@@ -36,7 +36,7 @@ export const meta = ({data, params}) => {
   // `pages.$handle.jsx` und `pages.uebersicht.jsx`. Die Liste steht in
   // ~/lib/seo, damit sie nicht neben einer zweiten in der Sitemap-Route driftet.
   // Dazu die leeren Vorlagen-Kollektionen (GEO M3, 2026-10-10), Liste in
-  // ~/lib/sitemap-bestand: erreichbar, aber nicht im Index.
+  // ~/lib/vorlagen-ohne-indexwert: erreichbar, aber nicht im Index.
   if (
     istNichtIndexierbareKollektion(params?.handle) ||
     istVorlageOhneIndexwert('collections', params?.handle)

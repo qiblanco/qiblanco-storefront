@@ -13,11 +13,11 @@ import {mitZusammenlegungsLastmod} from '~/lib/zusammenlegungen-lastmod';
 import {mitRoutenLastmod} from '~/lib/routen-lastmod';
 import {
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
-  vorlagenOhneIndexwert,
   OHNE_BLOG,
   artikelKarte,
   leereBlogHandles,
 } from '~/lib/sitemap-bestand';
+import {vorlagenOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -86,7 +86,7 @@ const NICHT_IN_PRODUCTS_SITEMAP = [
 
 /**
  * Seit 2026-10-10 (GEO-Maßnahme M3) dritte Produkt-Klasse und zweite
- * Kollektions-Klasse: Vorlagen ohne eigenen Indexwert (~/lib/sitemap-bestand).
+ * Kollektions-Klasse: Vorlagen ohne eigenen Indexwert (~/lib/vorlagen-ohne-indexwert).
  * Sie tragen `noindex` und bleiben kaufbar bzw. erreichbar; Begründung und
  * Messung stehen an der Definition.
  */
