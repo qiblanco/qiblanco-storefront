@@ -13,6 +13,7 @@ import {mitZusammenlegungsLastmod} from '~/lib/zusammenlegungen-lastmod';
 import {mitRoutenLastmod} from '~/lib/routen-lastmod';
 import {
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
+  vorlagenOhneIndexwert,
   OHNE_BLOG,
   artikelKarte,
   leereBlogHandles,
@@ -80,12 +81,24 @@ const NICHT_IN_PAGES_SITEMAP = [
 const NICHT_IN_PRODUCTS_SITEMAP = [
   ...NICHT_INDEXIERBARE_PRODUKTE,
   ...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
+  ...vorlagenOhneIndexwert('products'),
+];
+
+/**
+ * Seit 2026-10-10 (GEO-Maßnahme M3) dritte Produkt-Klasse und zweite
+ * Kollektions-Klasse: Vorlagen ohne eigenen Indexwert (~/lib/sitemap-bestand).
+ * Sie tragen `noindex` und bleiben kaufbar bzw. erreichbar; Begründung und
+ * Messung stehen an der Definition.
+ */
+const NICHT_IN_COLLECTIONS_SITEMAP = [
+  ...ausSitemapEntfernteKollektionen(),
+  ...vorlagenOhneIndexwert('collections'),
 ];
 
 const VERSTECKTE_HANDLES = {
   products: NICHT_IN_PRODUCTS_SITEMAP,
   pages: NICHT_IN_PAGES_SITEMAP,
-  collections: ausSitemapEntfernteKollektionen(),
+  collections: NICHT_IN_COLLECTIONS_SITEMAP,
 };
 
 /**

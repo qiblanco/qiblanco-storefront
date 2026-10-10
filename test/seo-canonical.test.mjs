@@ -531,7 +531,10 @@ test('s04 NAHT: die Kollektions-Route trägt beide Hälften und schließt sie au
   // noindex-Zweig verlässt meta() SOFORT (return), erreicht den canonical also nie.
   assert.match(
     quelle,
-    /if\s*\(\s*istNichtIndexierbareKollektion\([^)]*\)\s*\)\s*\{[^}]*noindexMeta\(\)[^}]*return\s+tags;[^}]*\}/s,
+    // Seit 2026-10-10 (GEO M3) darf die Bedingung eine zweite Liste
+    // mitprüfen (~/lib/sitemap-bestand, Vorlagen ohne Indexwert); die
+    // Struktur „noindex kehrt vor dem canonical um" bleibt der Gegenstand.
+    /if\s*\(\s*istNichtIndexierbareKollektion\([^)]*\)(?:\s*\|\|\s*istVorlageOhneIndexwert\([^)]*\))?\s*\)\s*\{[^}]*noindexMeta\(\)[^}]*return\s+tags;[^}]*\}/s,
     'der noindex-Zweig muss vor dem canonical zurückkehren',
   );
   assert.match(quelle, /canonicalLink\(`\/collections\/\$\{params\.handle\}`\)/);
