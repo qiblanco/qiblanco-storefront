@@ -9,7 +9,13 @@ import {seitenSignale} from '~/lib/seiten-seo';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  const titel = `Qi Blanco | ${data?.page.title ?? ''}`;
+  // GEO M5-F2 (2026-10-11, SAGEO), Job
+  // 20261011-geo-sageo-m5f2-strukturfelder-ratgeber-de-us-crystal:
+  // Title höchstens 60 Zeichen mit Gegenstand,
+  // Marke am Ende (Seitenregel R3); Meta 120-160 Zeichen mit Zahlen, die die
+  // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
+  // nach Livegang. Vorher: `Qi Blanco | ${page.title}` = 'Qi Blanco | Zeremonie Kakao Kurs'
+  const titel = 'Zeremonie-Kakao-Kurs: kostenlos in vier Videos | Qi Blanco';
   return [
     {title: titel},
     ...beschreibungTags('/pages/zeremonie-kakao-kurs', data?.page?.seo?.description),

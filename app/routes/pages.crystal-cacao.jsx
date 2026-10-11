@@ -24,13 +24,22 @@ export const meta = ({data}) => {
   // darunter Flaeche verschenkt und darueber abschneidet. Aussage vorn, Marke
   // hinten, keine Kurs-Nummerierung und keine Minutenangabe: beides sagt dem
   // Suchenden nicht, was er auf der Seite bekommt.
-  const titel = 'Crystal Cacao®: Kakao für einen wachen, klaren Kopf | Qi Blanco';
+  // GEO M5-F2 (2026-10-11, SAGEO), Job
+  // 20261011-geo-sageo-m5f2-strukturfelder-ratgeber-de-us-crystal:
+  // Title höchstens 60 Zeichen mit Gegenstand,
+  // Marke am Ende (Seitenregel R3); Meta 120-160 Zeichen mit Zahlen, die die
+  // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
+  // nach Livegang. Vorher: 'Crystal Cacao®: Kakao für einen wachen, klaren Kopf | Qi Blanco'
+  // Meta vorher: 'Crystal Cacao® – High Performance Cacao. Wach. Klar. …' (109 Zeichen)
+  const titel = 'Crystal Cacao®: Kakao für Energie und Klarheit | Qi Blanco';
   return [
     {title: titel},
     {
       name: 'description',
       content:
-        'Crystal Cacao® – High Performance Cacao. Wach. Klar. Mineralisiert. 100 % reiner Premium-Naturkakao aus Peru.',
+        'Crystal Cacao® aus Peru: 24 Mineralstoffe, 158 mg Theobromin und ' +
+        '21 mg Koffein je 15 g. Bio, ohne Zucker, 20 Tage ' +
+        'Geld-zurück-Garantie.',
     },
     canonicalLink('/pages/crystal-cacao'),
     ...seitenSignale({

@@ -27,15 +27,22 @@ import {FaqListe} from '~/components/reusables/FaqListe';
  * Entscheidung.
  */
 export const meta = () => {
-  const titel = 'Kontakt & Hilfe | Qi Blanco';
+  // GEO M5-F2 (2026-10-11, SAGEO), Job
+  // 20261011-geo-sageo-m5f2-strukturfelder-ratgeber-de-us-crystal:
+  // Title höchstens 60 Zeichen mit Gegenstand,
+  // Marke am Ende (Seitenregel R3); Meta 120-160 Zeichen mit Zahlen, die die
+  // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
+  // nach Livegang. Vorher: 'Kontakt & Hilfe | Qi Blanco'
+  // Meta vorher: 'Schreib uns direkt, … unter „Häufige Fragen“.' (183 Zeichen)
+  const titel = 'Kontakt & Hilfe: Wirkung, Tragen, Rückgabe | Qi Blanco';
   return [
     {title: titel},
     {
       name: 'description',
       content:
-        'Schreib uns direkt, wir antworten dir persönlich. Kontaktformular für Fragen zu ' +
-        'Bestellung, Größe und Rückgabe. Die häufigsten Fragen beantworten wir gebündelt ' +
-        'unter „Häufige Fragen".',
+        'Schreib uns über das Kontaktformular. Dazu Antworten zu Wirkung ' +
+        'und Tragen des QiOne® und zur Rückgabe: 14 Tage Widerrufsrecht, ' +
+        'Rücksendung kostenlos.',
     },
     canonicalLink('/pages/support'),
     ...seitenSignale({

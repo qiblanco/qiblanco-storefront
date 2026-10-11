@@ -18,7 +18,13 @@ export const meta = ({data}) => {
   // darunter Flaeche verschenkt und darueber abschneidet. Aussage vorn, Marke
   // hinten, keine Kurs-Nummerierung und keine Minutenangabe: beides sagt dem
   // Suchenden nicht, was er auf der Seite bekommt.
-  const titel = 'Zeremonie-Kakao-Kur: so bereitest du ihn richtig zu | Qi Blanco';
+  // GEO M5-F2 (2026-10-11, SAGEO), Job
+  // 20261011-geo-sageo-m5f2-strukturfelder-ratgeber-de-us-crystal:
+  // Title höchstens 60 Zeichen mit Gegenstand,
+  // Marke am Ende (Seitenregel R3); Meta 120-160 Zeichen mit Zahlen, die die
+  // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
+  // nach Livegang. Vorher: 'Zeremonie-Kakao-Kur: so bereitest du ihn richtig zu | Qi Blanco'
+  const titel = 'Zeremonie-Kakao-Kur: Zubereitung und Anwendung | Qi Blanco';
   return [
     {title: titel},
     ...beschreibungTags('/pages/kakao-anwendung', data?.page?.seo?.description),
