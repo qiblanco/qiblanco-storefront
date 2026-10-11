@@ -37,6 +37,17 @@
  * PRIVACY (INV-3): Schluessel = SHA-256(ip|ua|utc-tag|isolate-salt)[:16].
  * Der Salt ist per-Isolate-zufaellig und rotiert täglich; es gibt keine
  * Platte — nichts wird persistiert, geloggt wird nur das Hash-Praefix.
+ *
+ * NETZ + STICHPROBE (Job 20261011-fm-folge-sicherheitsmeister-asn-und-kalibrierung):
+ * Den ASN-Typ kennt der Worker nicht (kein MMDB). Die Senke bekommt darum
+ * zusätzlich das GEKÜRZTE Präfix der Besucher-IP (IPv4 /24, IPv6 /48, Feld
+ * `netz`), klassiert es auf dem Server gegen die Rechenzentrums-Listen und
+ * verwirft es; gespeichert wird nur der Netz-Typ. Ins Log geht `netz` nie.
+ * Kill: SM_SENKE_NETZ=off. Damit die Kalibrier-Quote einen Nenner hat, meldet
+ * der Worker außerdem die erste Anfrage jedes Schlüssels, dessen erstes
+ * Hex-Zeichen '0' ist (1/16, unabhängig vom Verhalten), auch auf S0
+ * (Feld `stichprobe: 16`). Kill: SM_STICHPROBE=off. Beides ändert an der
+ * Antwort an den Besucher nichts.
  */
 
 import {score as scoreBerechnen} from './scoring.js';
@@ -64,6 +75,10 @@ const SENKE_URL_DEFAULT = 'https://qpx.65-108-150-121.sslip.io/sm';
 const SENKE_PRO_MIN_DEFAULT = 30; // Abrufe je Isolate und Minute
 const SENKE_TIMEOUT_MS = 3000;
 const SENKE_AUS = ['off', 'aus', '0', 'false', 'nein'];
+// Stichprobe für den Nenner der Kalibrier-Quote (Server: storefront_spool
+// STICHPROBE_MODUL/STICHPROBE_PRAEFIX — beide Seiten müssen gleich bleiben).
+const STICHPROBE_MODUL = 16;
+const STICHPROBE_PRAEFIX = '0';
 const ASSET_RE =
   /\.(js|mjs|css|map|png|jpe?g|webp|avif|gif|svg|ico|woff2?|ttf|otf|txt|xml|json|webmanifest)$/i;
 
@@ -106,12 +121,54 @@ function salzFuerTag(jetzt) {
   return salz.wert;
 }
 
-/** Tages-gesalzener Besucher-Schluessel, 16 hex (Muster receiver/basis.py). */
-async function besucherSchluessel(request, jetzt) {
-  const ip =
+function besucherIp(request) {
+  return (
     request.headers.get('oxygen-buyer-ip') ||
     request.headers.get('cf-connecting-ip') ||
-    '';
+    ''
+  );
+}
+
+/**
+ * Gekürztes Präfix einer IP: IPv4 -> a.b.c.0/24, IPv6 -> x:y:z::/48.
+ * Alles andere (leer, Zonen-Index, kaputt) -> null, dann fehlt das Feld.
+ * Die volle Adresse verlässt diese Funktion nie.
+ * @param {string} ip
+ * @returns {string|null}
+ */
+export function netzPraefix(ip) {
+  const roh = String(ip || '').trim();
+  const v4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(roh);
+  if (v4) {
+    const o = v4.slice(1, 4).map((x) => parseInt(x, 10));
+    if (o.some((x) => x > 255) || parseInt(v4[4], 10) > 255) return null;
+    return `${o.join('.')}.0/24`;
+  }
+  if (!/^[0-9a-fA-F:.]+$/.test(roh) || !roh.includes(':')) return null;
+  let text = roh;
+  // Eingebettetes IPv4 am Ende (::ffff:1.2.3.4): die letzten 32 Bit liegen
+  // ohnehin hinter /48, sie werden nur fürs Zählen der Gruppen ersetzt.
+  const eingebettet = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/.exec(text);
+  if (eingebettet) text = text.slice(0, -eingebettet[1].length) + '0:0';
+  const teile = text.split('::');
+  if (teile.length > 2) return null;
+  const links = teile[0] ? teile[0].split(':') : [];
+  const rechts = teile.length === 2 && teile[1] ? teile[1].split(':') : [];
+  const fehlend = 8 - links.length - rechts.length;
+  if (teile.length === 1 ? fehlend !== 0 : fehlend < 1) return null;
+  const gruppen = [...links, ...Array(teile.length === 2 ? fehlend : 0).fill('0'), ...rechts];
+  if (gruppen.length !== 8 || gruppen.some((g) => !/^[0-9a-fA-F]{1,4}$/.test(g))) return null;
+  // Ein v4-gemapptes ::ffff:a.b.c.d ist eine IPv4: als /24 melden.
+  if (eingebettet && gruppen.slice(0, 5).every((g) => parseInt(g, 16) === 0) &&
+      parseInt(gruppen[5], 16) === 0xffff) {
+    return netzPraefix(eingebettet[1]);
+  }
+  return `${gruppen.slice(0, 3).map((g) => parseInt(g, 16).toString(16)).join(':')}::/48`;
+}
+
+/** Tages-gesalzener Besucher-Schluessel, 16 hex (Muster receiver/basis.py). */
+async function besucherSchluessel(request, jetzt) {
+  const ip = besucherIp(request);
   const ua = request.headers.get('user-agent') || '';
   const roh = `${ip}|${ua}|${utcTag(jetzt)}|${salzFuerTag(jetzt)}`;
   const digest = await crypto.subtle.digest(
@@ -175,6 +232,7 @@ function keyState(schluessel, jetzt) {
       verlauf: [],
       zuletzt: jetzt,
       lane: leeresLaneFenster(jetzt),
+      stichprobeGemeldet: false,
     };
     zustand.set(schluessel, st);
   }
@@ -263,6 +321,21 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
 
   const schluessel = await besucherSchluessel(request, jetzt);
   const st = keyState(schluessel, jetzt);
+
+  // Stichprobe (Nenner der Kalibrier-Quote): die ERSTE Anfrage eines
+  // Schlüssels im Stichprobenraum wird gemeldet, gleich welche Stufe.
+  let stichprobe = false;
+  if (
+    !SENKE_AUS.includes(String(env?.SM_STICHPROBE ?? '').trim().toLowerCase()) &&
+    schluessel.startsWith(STICHPROBE_PRAEFIX) &&
+    !st.stichprobeGemeldet
+  ) {
+    stichprobe = true;
+    st.stichprobeGemeldet = true;
+  }
+  const netz = SENKE_AUS.includes(String(env?.SM_SENKE_NETZ ?? '').trim().toLowerCase())
+    ? null
+    : netzPraefix(besucherIp(request));
 
   // Challenge bestanden (qb_ch, gesetzt von der uniformen Challenge-Seite):
   // Score-Reset — Fenster/Verlauf des Schluessels werden geleert (Konzept 4).
@@ -410,6 +483,8 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
     pfad,
     challengeBestanden,
     verhaltensToken: cookieWert(request, 'qb_vt') || '',
+    stichprobe,
+    netz,
   };
 }
 
@@ -483,12 +558,13 @@ export function eintragAusVerdikt(verdikt) {
       verdikt.lane_fehler ||
       // Eine wirksame Daempfung ist das interessanteste Ereignis der
       // Lane — sie faellt oft AUF S0 und wäre sonst unsichtbar.
-      (verdikt.lane && verdikt.lane.gedaempft_um > 0)
+      (verdikt.lane && verdikt.lane.gedaempft_um > 0) ||
+      verdikt.stichprobe
     )
   ) {
     return null;
   }
-  return {
+  const eintrag = {
     sm_abwehr: 1,
     modus: verdikt.modus,
     stufe: verdikt.stufe,
@@ -511,6 +587,8 @@ export function eintragAusVerdikt(verdikt) {
     pfad: verdikt.pfad,
     challenge_bestanden: verdikt.challengeBestanden,
   };
+  if (verdikt.stichprobe) eintrag.stichprobe = STICHPROBE_MODUL;
+  return eintrag;
 }
 
 function shadowLog(eintrag) {
@@ -532,9 +610,10 @@ let senkeFenster = {minute: -1, n: 0};
  * Abruf hängt an ctx.waitUntil und läuft nach der Antwort an den Besucher
  * weiter. Ohne waitUntil wird nichts gesendet (ein unbehüteter Abruf würde
  * mit dem Request abgebrochen oder ihn verlängern).
+ * `netz` (gekürztes Präfix, netzPraefix) geht NUR hierher, nie ins Log.
  * @returns {boolean} true = Abruf angestoßen
  */
-export function senke(eintrag, env, ctx, jetzt = Date.now()) {
+export function senke(eintrag, env, ctx, jetzt = Date.now(), netz = null) {
   try {
     if (!eintrag) return false;
     if (SENKE_AUS.includes(String(env?.SM_SENKE ?? '').trim().toLowerCase())) return false;
@@ -558,7 +637,7 @@ export function senke(eintrag, env, ctx, jetzt = Date.now()) {
       fetch(env?.SM_SENKE_URL || SENKE_URL_DEFAULT, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(eintrag),
+        body: JSON.stringify(netz ? {...eintrag, netz} : eintrag),
         signal,
       }),
     ).then(
@@ -617,7 +696,7 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
       verdikt.modus === 'on' &&
       (verdikt.aktion.typ === 'challenge' || verdikt.aktion.typ === 'temp_block')
     ) {
-      senke(eintrag, env, ctx);
+      senke(eintrag, env, ctx, Date.now(), verdikt.netz);
       return antwort(verdikt);
     }
   } catch {
@@ -627,7 +706,7 @@ export async function mitAbwehr(request, env, ctx, next, testSignale, testLaneSi
   const response = await next();
   // Erst jetzt: die Antwort steht, der Abruf an die Senke konkurriert nicht
   // mehr mit den Datenabrufen der Seite. senke() wirft nie.
-  senke(eintrag, env, ctx);
+  senke(eintrag, env, ctx, Date.now(), verdikt?.netz ?? null);
 
   try {
     if (

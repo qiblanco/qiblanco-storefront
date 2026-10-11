@@ -32,6 +32,8 @@ Vollkatalog-Muster), gestufte **uniforme** Eskalation S0–S3.
 | `SM_VERHALTEN` | fehlt = aus | `on`: root.jsx liefert das uniforme First-Party-Snippet `/qb-verhalten.js` an ALLE aus (setzt Sicherheits-Cookie `qb_vt`, 24 h). Ohne Flag rendert nichts und das Token-Signal ist neutral. |
 | `SM_RATE_LIMIT_PRO_MIN` / `SM_KATALOG_N` | 120 / 80 | Kalibrier-Schrauben (erst nach Shadow-Messung anfassen). |
 | `SM_SENKE` | fehlt = **an** | Rückfluss: jedes geloggte Verdikt geht zusätzlich per `ctx.waitUntil(fetch)` an `https://qpx.65-108-150-121.sslip.io/sm` (sicherheitsmeister `sm-senke`) und landet über den stündlichen Tick in `data/sicherheitsmeister.db` (`pfad_muster` `storefront:<pfad>`). `off` (auch `aus`, `0`, `false`, `nein`): nur Log. `SM_SENKE_PRO_MIN` (30 je Isolate und Minute, `0` = nichts senden), `SM_SENKE_URL`. Gesendet wird erst nach `await next()`. |
+| `SM_SENKE_NETZ` | fehlt = **an** | Nur im Senke-Körper, nie im Log: das gekürzte Präfix der Besucher-IP (`netz`, IPv4 /24, IPv6 /48). Der Server klassiert es gegen die Rechenzentrums-Listen und speichert nur den Netz-Typ (`ereignis.asn_type`). `off` (auch `aus`, `0`, `false`, `nein`): Präfix weglassen, `asn_type` bleibt `unknown`. |
+| `SM_STICHPROBE` | fehlt = **an** | Nenner der Kalibrier-Quote: die erste Anfrage jedes Schlüssels mit erstem Hex-Zeichen `0` (1/16) geht auch auf S0 an die Senke (`stichprobe: 16`). `off`: nur noch auffällige Verdikte. Server: `sicherheitsmeister kalibrierung`. |
 
 Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 (NICHT im Shopify-Admin suchen, homepage-bauer-Lehre).
@@ -44,6 +46,8 @@ Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 2. **Monitor-Phase** (Akamai-Best-Practice, Konzept Kap. 2): 1–2 Wochen
    Shadow-Logs sichten, Schwellen aus p99 echter Sessions kalibrieren
    (FM-Eintrag `sicherheitsmeister-schwellen-14t` existiert seit s02).
+   Messung seit 2026-10-11 auf dem Server: `sicherheitsmeister kalibrierung --tage 14`
+   (Anteil echter, also nicht Rechenzentrum, Schlüssel auf S2 oder höher; Soll unter 1 %, n ≥ 500).
 3. Optional `SM_VERHALTEN=on` (nur Snippet + Cookie, weiterhin 0 Blocking).
 4. `SM_MODE=on` = scharf. Eigener Schritt über das Gate `sm-mode-vollzug-storefront`,
    erst mit Trefferquote und Fehlalarm-Zahlen aus der Shadow-Phase.
@@ -72,9 +76,11 @@ Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 - **F-2:** Kein KV/DO auf Oxygen → Rate-/Katalog-State ist in-memory pro
   Isolate + Cache-API-Minuten-Aggregat (per-Datacenter) = **best-effort**,
   kein globaler Zähler. Harte Grenze bleibt Shopifys Layer-1.
-- **ASN-Typ** ist im Worker nicht verfügbar (kein MMDB) → Signal steht auf
-  `unknown`; Datacenter-Erkennung leistet der T1-Kern offline (events.db)
-  bzw. der Eigenserver (T3).
+- **ASN-Typ** ist im Worker nicht verfügbar (kein MMDB). Das Score-Signal
+  `asn_type` bleibt im Worker `unknown`, für Rechenzentrums-Verkehr ist der Score
+  damit 15 Punkte milder (INV-7). Seit 2026-10-11 klassiert der Server das
+  gekürzte Präfix (`SM_SENKE_NETZ`) und trägt den Netz-Typ in `ereignis.asn_type`
+  ein. Das dient der Kalibrierung vor dem Flip, nicht dem Live-Verdikt.
 - **Shadow-Sink:** Verdikte landen im Oxygen-Log-Drain und seit 2026-10-10
   (rz-0037 s02) zusätzlich in `data/sicherheitsmeister.db` (Senke, s. Schalter).
   Die Senke hat kein gemeinsames Geheimnis. Sie prüft eine Feld-Whitelist, ob

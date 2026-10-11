@@ -12,7 +12,12 @@
  *    ctx senden nichts; SM_SENKE_PRO_MIN=0 sendet nichts;
  *  - der Deckel SM_SENKE_PRO_MIN greift je Minute (feste Uhr, kein
  *    Minutenwechsel mitten im Test);
- *  - der Abruf startet erst, NACHDEM next() die Antwort geliefert hat.
+ *  - der Abruf startet erst, NACHDEM next() die Antwort geliefert hat;
+ *  - NETZ (2026-10-11): der Senke-Körper trägt das gekürzte Präfix (`netz`,
+ *    /24 bzw. /48), das Log nie; SM_SENKE_NETZ=off lässt es weg;
+ *  - STICHPROBE: S0 wird genau dann gesendet, wenn der Schlüssel mit '0'
+ *    beginnt, und nur einmal je Schlüssel (`stichprobe: 16`);
+ *    SM_STICHPROBE=off schaltet das ab.
  *
  * SENKE_KORPUS=<datei> schreibt die gesendeten Körper als JSONL — die Naht-Probe
  * sicherheitsmeister/proben/naht_storefront_senke.py prüft sie gegen die
@@ -48,7 +53,7 @@ const TOP_FELDER = new Set(
   Object.keys({
     "sm_abwehr": 1, "modus": 1, "stufe": 1, "score": 1, "score_roh": 1, "lane": 1,
     "lane_aktiv": 1, "lane_fehler": 1, "gruende": 1, "signale": 1, "schluessel": 1,
-    "pfad": 1, "challenge_bestanden": 1, "aktion_typ": 1,
+    "pfad": 1, "challenge_bestanden": 1, "aktion_typ": 1, "netz": 1, "stichprobe": 1,
   }),
 );
 const IP = '203.0.113.7';
@@ -114,7 +119,8 @@ try {
   frisch();
   {
     const c = ctx();
-    await mitAbwehr(req(), {}, c, next, SIGNALE_0);
+    // Ohne Stichprobe: sonst sendet ein Schlüssel mit '0' (1/16) zu Recht.
+    await mitAbwehr(req(), {SM_STICHPROBE: 'off'}, c, next, SIGNALE_0);
     ok(abrufe.length === 0 && c.versprechen.length === 0, 'S1 s0-sendet-nichts');
   }
 
@@ -135,7 +141,18 @@ try {
   ok(!roh.includes(IP) && !roh.includes('SenkeTestBrowser'), 'S2 keine-ip-kein-ua');
   ok(/^[0-9a-f]{16}$/.test(inhalt.schluessel || ''), 'S2 schluessel-hash');
   ok(inhalt.pfad === '/x.env' && inhalt.stufe === 'S1', 'S2 pfad-und-stufe');
-  ok(logs.length === 1 && logs[0] === roh, 'S2 log-und-senke-identisch');
+  {
+    // Senke = Log + genau das Feld `netz`; das Log trägt kein Präfix.
+    const ohneNetz = {...inhalt};
+    delete ohneNetz.netz;
+    ok(
+      logs.length === 1 && JSON.stringify(JSON.parse(logs[0])) === JSON.stringify(ohneNetz),
+      'S2 log-und-senke-identisch-bis-auf-netz',
+    );
+    ok(inhalt.netz === '203.0.113.0/24', `N1 netz-im-senke-gesendet (${inhalt.netz})`);
+    ok(logs.length === 1 && !logs[0].includes('203.0.113') && !('netz' in JSON.parse(logs[0])),
+      'N2 log-ohne-netz');
+  }
   ok((await hash(r2)) === createHash('sha256').update(BODY).digest('hex'), 'S2 body-unveraendert');
   await Promise.all(c2.versprechen);
 
@@ -258,6 +275,52 @@ try {
       `S13 abruf-nach-next (${folge.join('>')})`,
     );
   }
+
+  // N3: SM_SENKE_NETZ=off -> kein Präfix im Körper, Abruf trotzdem
+  frisch();
+  await mitAbwehr(req('/n.env'), {SM_SENKE_NETZ: 'off'}, ctx(), next, SIGNALE_45);
+  ok(abrufe.length === 1 && !('netz' in JSON.parse(abrufe[0]?.init?.body || '{}')),
+    'N3 netz-off-ohne-praefix');
+
+  // N4: IPv6 -> /48
+  frisch();
+  await mitAbwehr(req('/n6.env', {'oxygen-buyer-ip': '2001:db8:1:2::77'}), {}, ctx(), next, SIGNALE_45);
+  ok(JSON.parse(abrufe[0]?.init?.body || '{}').netz === '2001:db8:1::/48', 'N4 v6-48');
+  ok(!(abrufe[0]?.init?.body || '').includes('2::77'), 'N4 v6-ohne-hostteil');
+
+  // N5/N6: Stichprobe — S0 geht genau dann raus, wenn der Schlüssel mit '0'
+  // beginnt, und nur beim ersten Mal. Ein Salz für den ganzen Lauf.
+  frisch();
+  {
+    const ips = Array.from({length: 254}, (_, i) => `198.51.100.${i + 1}`);
+    for (const ip of ips) {
+      await mitAbwehr(req('/', {'oxygen-buyer-ip': ip}), {}, ctx(), next, SIGNALE_0);
+    }
+    const gesendet = abrufe.map((a) => JSON.parse(a.init.body));
+    ok(gesendet.length > 0, `N5 stichprobe-sendet (${gesendet.length} von 254)`);
+    ok(
+      gesendet.every((k) => k.stichprobe === 16 && k.schluessel.startsWith('0') && k.stufe === 'S0'),
+      'N5 nur-raum-0-mit-stichprobe-16',
+    );
+    ok(new Set(gesendet.map((k) => k.schluessel)).size === gesendet.length, 'N5 je-schluessel-einmal');
+    const n = abrufe.length;
+    for (const ip of ips) {
+      await mitAbwehr(req('/', {'oxygen-buyer-ip': ip}), {}, ctx(), next, SIGNALE_0);
+    }
+    ok(abrufe.length === n, 'N6 zweite-anfrage-nicht-erneut');
+    // Ein Schlüssel ausserhalb des Raums auf S1 trägt kein stichprobe-Feld.
+    frisch();
+    await mitAbwehr(req('/s.env'), {SM_STICHPROBE: 'off'}, ctx(), next, SIGNALE_45);
+    ok(!('stichprobe' in JSON.parse(abrufe[0]?.init?.body || '{}')), 'N6 off-ohne-feld');
+  }
+
+  // N7: SM_STICHPROBE=off -> kein S0 wird gesendet
+  frisch();
+  for (let i = 1; i <= 254; i++) {
+    await mitAbwehr(req('/', {'oxygen-buyer-ip': `192.0.2.${i}`}), {SM_STICHPROBE: 'off'},
+      ctx(), next, SIGNALE_0);
+  }
+  ok(abrufe.length === 0, `N7 stichprobe-off (${abrufe.length})`);
 
   // S10: URL-Override
   frisch();
