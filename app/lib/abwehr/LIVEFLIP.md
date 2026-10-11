@@ -33,7 +33,7 @@ Vollkatalog-Muster), gestufte **uniforme** Eskalation S0–S3.
 | `SM_RATE_LIMIT_PRO_MIN` / `SM_KATALOG_N` | 120 / 80 | Kalibrier-Schrauben (erst nach Shadow-Messung anfassen). |
 | `SM_SENKE` | fehlt = **an** | Rückfluss: jedes geloggte Verdikt geht zusätzlich per `ctx.waitUntil(fetch)` an `https://qpx.65-108-150-121.sslip.io/sm` (sicherheitsmeister `sm-senke`) und landet über den stündlichen Tick in `data/sicherheitsmeister.db` (`pfad_muster` `storefront:<pfad>`). `off` (auch `aus`, `0`, `false`, `nein`): nur Log. `SM_SENKE_PRO_MIN` (30 je Isolate und Minute, `0` = nichts senden), `SM_SENKE_URL`. Gesendet wird erst nach `await next()`. |
 | `SM_SENKE_NETZ` | fehlt = **an** | Nur im Senke-Körper, nie im Log: das gekürzte Präfix der Besucher-IP (`netz`, IPv4 /24, IPv6 /48). Der Server klassiert es gegen die Rechenzentrums-Listen und speichert nur den Netz-Typ (`ereignis.asn_type`). `off` (auch `aus`, `0`, `false`, `nein`): Präfix weglassen, `asn_type` bleibt `unknown`. |
-| `SM_STICHPROBE` | fehlt = **an** | Nenner der Kalibrier-Quote: die erste Anfrage jedes Schlüssels mit erstem Hex-Zeichen `0` (1/16) geht auch auf S0 an die Senke (`stichprobe: 16`). `off`: nur noch auffällige Verdikte. Server: `sicherheitsmeister kalibrierung`. |
+| `SM_STICHPROBE` | fehlt = **an** | Nenner der Kalibrier-Quote: die erste Anfrage jedes Schlüssels mit erstem Hex-Zeichen `0` bis `3` (1/4) geht auch auf S0 an die Senke (`stichprobe: 4`). `off`: nur noch auffällige Verdikte. Server: `sicherheitsmeister kalibrierung`. |
 
 Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 (NICHT im Shopify-Admin suchen, homepage-bauer-Lehre).
