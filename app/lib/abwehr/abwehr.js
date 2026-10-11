@@ -45,8 +45,8 @@
  * verwirft es; gespeichert wird nur der Netz-Typ. Ins Log geht `netz` nie.
  * Kill: SM_SENKE_NETZ=off. Damit die Kalibrier-Quote einen Nenner hat, meldet
  * der Worker außerdem die erste Anfrage jedes Schlüssels, dessen erstes
- * Hex-Zeichen '0' ist (1/16, unabhängig vom Verhalten), auch auf S0
- * (Feld `stichprobe: 16`). Kill: SM_STICHPROBE=off. Beides ändert an der
+ * Hex-Zeichen 0 bis 3 ist (1/4, unabhängig vom Verhalten), auch auf S0
+ * (Feld `stichprobe: 4`). Kill: SM_STICHPROBE=off. Beides ändert an der
  * Antwort an den Besucher nichts.
  */
 
@@ -76,9 +76,14 @@ const SENKE_PRO_MIN_DEFAULT = 30; // Abrufe je Isolate und Minute
 const SENKE_TIMEOUT_MS = 3000;
 const SENKE_AUS = ['off', 'aus', '0', 'false', 'nein'];
 // Stichprobe für den Nenner der Kalibrier-Quote (Server: storefront_spool
-// STICHPROBE_MODUL/STICHPROBE_PRAEFIX — beide Seiten müssen gleich bleiben).
-const STICHPROBE_MODUL = 16;
-const STICHPROBE_PRAEFIX = '0';
+// STICHPROBE_MODUL, im_stichprobenraum — beide Seiten müssen gleich bleiben).
+// Raum: erstes Hex-Zeichen h mit h * STICHPROBE_MODUL < 16. Bis zum zweiten
+// Deploy am 2026-10-11 war der Modul 16 (nur '0'); bei rund 370 DACH-Besuchern
+// am Tag hätte das n >= 500 in 14 Tagen nur knapp erreicht.
+const STICHPROBE_MODUL = 4;
+function imStichprobenraum(schluessel) {
+  return parseInt(schluessel.slice(0, 1), 16) * STICHPROBE_MODUL < 16;
+}
 const ASSET_RE =
   /\.(js|mjs|css|map|png|jpe?g|webp|avif|gif|svg|ico|woff2?|ttf|otf|txt|xml|json|webmanifest)$/i;
 
@@ -327,7 +332,7 @@ export async function pruefe(request, env, ctx, testSignale, testLaneSignale) {
   let stichprobe = false;
   if (
     !SENKE_AUS.includes(String(env?.SM_STICHPROBE ?? '').trim().toLowerCase()) &&
-    schluessel.startsWith(STICHPROBE_PRAEFIX) &&
+    imStichprobenraum(schluessel) &&
     !st.stichprobeGemeldet
   ) {
     stichprobe = true;

@@ -15,8 +15,8 @@
  *  - der Abruf startet erst, NACHDEM next() die Antwort geliefert hat;
  *  - NETZ (2026-10-11): der Senke-Körper trägt das gekürzte Präfix (`netz`,
  *    /24 bzw. /48), das Log nie; SM_SENKE_NETZ=off lässt es weg;
- *  - STICHPROBE: S0 wird genau dann gesendet, wenn der Schlüssel mit '0'
- *    beginnt, und nur einmal je Schlüssel (`stichprobe: 16`);
+ *  - STICHPROBE: S0 wird genau dann gesendet, wenn der Schlüssel mit 0 bis 3
+ *    beginnt, und nur einmal je Schlüssel (`stichprobe: 4`);
  *    SM_STICHPROBE=off schaltet das ab.
  *
  * SENKE_KORPUS=<datei> schreibt die gesendeten Körper als JSONL — die Naht-Probe
@@ -119,7 +119,7 @@ try {
   frisch();
   {
     const c = ctx();
-    // Ohne Stichprobe: sonst sendet ein Schlüssel mit '0' (1/16) zu Recht.
+    // Ohne Stichprobe: sonst sendet ein Schlüssel mit 0 bis 3 (1/4) zu Recht.
     await mitAbwehr(req(), {SM_STICHPROBE: 'off'}, c, next, SIGNALE_0);
     ok(abrufe.length === 0 && c.versprechen.length === 0, 'S1 s0-sendet-nichts');
   }
@@ -288,24 +288,29 @@ try {
   ok(JSON.parse(abrufe[0]?.init?.body || '{}').netz === '2001:db8:1::/48', 'N4 v6-48');
   ok(!(abrufe[0]?.init?.body || '').includes('2::77'), 'N4 v6-ohne-hostteil');
 
-  // N5/N6: Stichprobe — S0 geht genau dann raus, wenn der Schlüssel mit '0'
+  // N5/N6: Stichprobe — S0 geht genau dann raus, wenn der Schlüssel mit 0 bis 3
   // beginnt, und nur beim ersten Mal. Ein Salz für den ganzen Lauf.
   frisch();
   {
     const ips = Array.from({length: 254}, (_, i) => `198.51.100.${i + 1}`);
+    // Deckel hoch: sonst zählt der Arm den Senke-Deckel (30/min), nicht die Stichprobe.
+    const ohneDeckel = {SM_SENKE_PRO_MIN: '100000'};
     for (const ip of ips) {
-      await mitAbwehr(req('/', {'oxygen-buyer-ip': ip}), {}, ctx(), next, SIGNALE_0);
+      await mitAbwehr(req('/', {'oxygen-buyer-ip': ip}), ohneDeckel, ctx(), next, SIGNALE_0);
     }
     const gesendet = abrufe.map((a) => JSON.parse(a.init.body));
-    ok(gesendet.length > 0, `N5 stichprobe-sendet (${gesendet.length} von 254)`);
+    // Binomial(254, 1/4): Mittel 63,5, sd 6,9; [30, 110] liegt > 4,8 sd weit.
+    // Ein Modul 16 (Mittel 16) oder "alle" (254) fiele heraus.
+    ok(gesendet.length >= 30 && gesendet.length <= 110,
+      `N5 stichprobe-rate-ein-viertel (${gesendet.length} von 254)`);
     ok(
-      gesendet.every((k) => k.stichprobe === 16 && k.schluessel.startsWith('0') && k.stufe === 'S0'),
-      'N5 nur-raum-0-mit-stichprobe-16',
+      gesendet.every((k) => k.stichprobe === 4 && '0123'.includes(k.schluessel[0]) && k.stufe === 'S0'),
+      'N5 nur-raum-0-3-mit-stichprobe-4',
     );
     ok(new Set(gesendet.map((k) => k.schluessel)).size === gesendet.length, 'N5 je-schluessel-einmal');
     const n = abrufe.length;
     for (const ip of ips) {
-      await mitAbwehr(req('/', {'oxygen-buyer-ip': ip}), {}, ctx(), next, SIGNALE_0);
+      await mitAbwehr(req('/', {'oxygen-buyer-ip': ip}), ohneDeckel, ctx(), next, SIGNALE_0);
     }
     ok(abrufe.length === n, 'N6 zweite-anfrage-nicht-erneut');
     // Ein Schlüssel ausserhalb des Raums auf S1 trägt kein stichprobe-Feld.
@@ -317,7 +322,8 @@ try {
   // N7: SM_STICHPROBE=off -> kein S0 wird gesendet
   frisch();
   for (let i = 1; i <= 254; i++) {
-    await mitAbwehr(req('/', {'oxygen-buyer-ip': `192.0.2.${i}`}), {SM_STICHPROBE: 'off'},
+    await mitAbwehr(req('/', {'oxygen-buyer-ip': `192.0.2.${i}`}),
+      {SM_STICHPROBE: 'off', SM_SENKE_PRO_MIN: '100000'},
       ctx(), next, SIGNALE_0);
   }
   ok(abrufe.length === 0, `N7 stichprobe-off (${abrufe.length})`);
