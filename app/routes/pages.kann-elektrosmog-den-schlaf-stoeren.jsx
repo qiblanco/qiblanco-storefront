@@ -3,7 +3,7 @@ import fragenStyles from '~/styles/fragen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {seiteFuer} from '~/data/fragen';
 import {frageSchema} from '~/lib/fragen-schema';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, brotkrume, kurzName, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/kann-elektrosmog-den-schlaf-stoeren';
@@ -62,7 +62,16 @@ if (!SEITE) {
 }
 
 const TITEL = "Kann Elektrosmog den Schlaf stören? | Qi Blanco";
-const BESCHREIBUNG = "Den Schlaf stört vor allem das Handy selbst, mit seinem Licht und seinen Nachrichten am Abend, während Schlafstudien beim Funkfeld allein keinen Einfluss gefunden haben.";
+// Beschreibung seit 2026-10-11 mit der Feldstudie, die die Seite unter „Was
+// gemessen ist" trägt (397 Anwohner, zwölf Nächte, kein Unterschied in den
+// Schlafdaten), auf 120 bis 160 Zeichen (GEO-Seitenregel R4, Job
+// 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us). Die
+// 41 Experimente der WHO-Übersicht stehen bewusst NICHT drin: sie zählen
+// Beschwerden aller Art, Schlaf ist dort nur ein Teilergebnis. Der Titel
+// bleibt.
+const BESCHREIBUNG =
+  'Am Abend stört vor allem das Handy den Schlaf. Bei 397 Anwohnern in zwölf ' +
+  'Nächten machte das Funkfeld einer Versuchsanlage keinen Unterschied im Schlaf.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -94,6 +103,14 @@ export const meta = () => {
     {property: 'og:url', content: absoluteCanonical(PFAD)},
     {property: 'og:site_name', content: MARKE},
     ...(schema ? [{'script:ld+json': schema}] : []),
+    // Brotkrume Startseite -> diese Seite (GEO-Seitenregel R6,
+    // schema_pflicht.frageseite), aus der gemeinsamen Fabrik.
+    {
+      'script:ld+json': brotkrume({
+        url: absoluteCanonical(PFAD),
+        name: kurzName(TITEL),
+      }),
+    },
   ];
 };
 

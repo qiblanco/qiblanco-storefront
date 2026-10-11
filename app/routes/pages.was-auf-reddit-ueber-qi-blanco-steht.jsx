@@ -2,8 +2,8 @@ import {RedditTatsachenSeite} from '~/components/campaign/RedditTatsachenSeite';
 import rdtStyles from '~/styles/reddit-tatsachen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
-import {FRAGEN, ZAHL, zahlwort} from '~/data/reddit-tatsachen';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {BERICHTE_STUDIE, FRAGEN, ZAHL, zahlwort} from '~/data/reddit-tatsachen';
+import {MARKE, brotkrume, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/was-auf-reddit-ueber-qi-blanco-steht';
@@ -52,13 +52,18 @@ export function links() {
   return [{rel: 'stylesheet', href: rdtStyles}];
 }
 
-// Die Zahlen im Titel kommen aus dem Datenmodul, nicht aus der Hand.
-const versal = (w) => w.charAt(0).toUpperCase() + w.slice(1);
-const TITEL = `Qi Blanco auf Reddit: ${zahlwort(ZAHL.alle)} Fäden, einzeln nachgelesen | Qi Blanco`;
+// Die Zahlen in Titel und Beschreibung kommen aus dem Datenmodul, nicht aus
+// der Hand. Seit 2026-10-11 hält der Titel 60 Zeichen und die Beschreibung
+// 120 bis 160 Zeichen mit einer Zahl, die die Seite sichtbar trägt
+// (GEO-Seitenregeln R3/R4, Job
+// 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us). Die
+// Google-Rezensionszahl steht bewusst NICHT drin: sie kommt live aus dem
+// root-Loader und würde in einem festen Text veralten.
+const TITEL = `Qi Blanco auf Reddit: ${zahlwort(ZAHL.alle)} Fäden nachgelesen | Qi Blanco`;
 const BESCHREIBUNG =
-  'Was auf Reddit über Qi Blanco steht: die Fäden, die Google zeigt, mit ' +
-  `Datum und Quelle. ${versal(zahlwort(ZAHL.fremd))} handeln von etwas ` +
-  'anderem, in keinem berichtet jemand vom eigenen Tragen.';
+  `In den ${zahlwort(ZAHL.alle)} Reddit-Fäden, die Google zeigt, berichtet ` +
+  'niemand vom eigenen Tragen. Erfahrungen stehen in Google-Rezensionen und ' +
+  `in ${BERICHTE_STUDIE} ausgewerteten Berichten.`;
 
 /**
  * SCHEMA-DATEN als Konstanten, keine Laufzeit-Uhr. WER DEN INHALT ÄNDERT,
@@ -92,6 +97,15 @@ export const meta = () => {
     {property: 'og:url', content: absoluteCanonical(PFAD)},
     {property: 'og:site_name', content: MARKE},
     ...(schema ? [{'script:ld+json': schema}] : []),
+    // Brotkrume Startseite -> diese Seite (GEO-Seitenregel R6,
+    // schema_pflicht.frageseite), aus der gemeinsamen Fabrik. Der Name ist
+    // die H1 der Seite, nicht der Suchtitel.
+    {
+      'script:ld+json': brotkrume({
+        url: absoluteCanonical(PFAD),
+        name: 'Was auf Reddit über Qi Blanco steht',
+      }),
+    },
   ];
 };
 

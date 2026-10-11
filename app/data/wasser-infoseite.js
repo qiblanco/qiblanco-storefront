@@ -61,9 +61,20 @@ export const SEITE = {
   // trägt genau diese Frage im Titel, wir trugen sie nur in der H1. Die
   // Beschreibung spricht seitdem allein vom kohärenten Wasser; das
   // hexagonale hat seine eigene Seite (/pages/was-ist-hexagonales-wasser).
-  titel: 'Was ist kohärentes Wasser? Erklärt mit Quellen | Qi Blanco',
-  beschreibung:
-    'Kohärentes Wasser einfach erklärt: Gleichtakt der Moleküle, kohärente Domänen, EZ-Wasser. Dann die harten Fakten mit animierten Grafiken und Primärquellen.',
+  //
+  // Seit 2026-10-11 (GEO-Seitenregeln R3/R4, Job
+  // 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us): die
+  // Frage bleibt vorn, danach steht das Kundenwort „Energie" statt „Erklärt
+  // mit Quellen". Die Seite trägt Energie sichtbar (Leitgrafik: „Nimmt das
+  // Wassermolekül Energie auf …", Karte „Energie aus Licht"). Die Quellen
+  // wandern als Zahl in die Beschreibung.
+  titel: 'Was ist kohärentes Wasser? Energie und Ordnung | Qi Blanco',
+  // Getter, weil QUELLEN weiter unten in dieser Datei entsteht: ein
+  // Template-Literal hier läse es vor seiner Definition. Die Zahl ist
+  // dieselbe, die der Kopf der Seite als „N Quellen" anzeigt.
+  get beschreibung() {
+    return `Kohärentes Wasser einfach erklärt: Gleichtakt der Moleküle, kohärente Domänen, EZ-Wasser. Dann die harten Fakten mit animierten Grafiken und ${QUELLEN.length} Quellen.`;
+  },
   marke: 'Deep Dive',
   h1: 'Was ist kohärentes Wasser?',
   unterzeile:

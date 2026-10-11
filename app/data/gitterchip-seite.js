@@ -58,9 +58,16 @@ const ZELLSTUDIEN = zahlwort(anzahlNachArt('in-vitro'));
 
 export const SEITE = {
   pfad: PFAD,
+  // Der Titel ist Christians Frage (23.09.2026, „pages/wie-funktioniert-der-
+  // Gitterchip-im-QiOne?") und bleibt wortgleich, auch wenn ihm das
+  // Kundenwort der GEO-Seitenregel R3 fehlt (Ausnahme im RESULT des Jobs
+  // 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us).
   titel: 'Wie funktioniert der GitterChip im QiOne? | Qi Blanco',
-  beschreibung:
-    `Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser. Stufe für Stufe erklärt nach Dr. Warnke, Prof. Del Giudice und Prof. Dr. Pollack, mit ${ZELLSTUDIEN} Zellstudien.`,
+  // Beschreibung seit 2026-10-11 höchstens 160 Zeichen (R4). „Abgeleitet"
+  // ist das Wort der Seite („So leiten wir es aus der Forschung ab") und
+  // hängt an der Wirkkette, nicht an jeder Stufe; die Zellstudien stehen
+  // getrennt, weil sie von Dartsch stammen, nicht von den drei Forschern.
+  beschreibung: `Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser, abgeleitet aus Forschung von Warnke, Del Giudice und Pollack. Sieben Stufen, ${ZELLSTUDIEN} Zellstudien.`,
   dachzeile: 'QiOne® 2 Pro · GitterChip™',
   h1: 'Wie funktioniert der GitterChip im QiOne?',
   kurz: [
