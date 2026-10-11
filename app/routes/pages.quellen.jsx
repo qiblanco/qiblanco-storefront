@@ -72,11 +72,20 @@ export function loader() {
  * Eine vollstaendige Angabe, so wie sie ein Leser braucht: wer, wann, was,
  * und wo er es findet. Fehlt ein Teil, faellt genau dieser Teil weg — nie ein
  * Platzhalter und nie eine erfundene Ergänzung.
+ *
+ * Fundstelle (Journal, Datum, Herausgeber) und Hinweis (Redaktionsnotiz des
+ * Artikels) hat werk.py aus dem Titel genommen; sie stehen hier, damit beim
+ * Trennen nichts verloren geht. Das Jahr entfällt, wenn die Fundstelle es
+ * schon nennt.
  */
 function Angabe({quelle}) {
-  const teile = [quelle.autoren, quelle.jahr && String(quelle.jahr)].filter(
-    Boolean,
-  );
+  const jahr = quelle.jahr && String(quelle.jahr);
+  const teile = [
+    quelle.autoren,
+    quelle.fundstelle,
+    jahr && !quelle.fundstelle?.includes(jahr) ? jahr : null,
+    quelle.hinweis,
+  ].filter(Boolean);
   return (
     <li className="qb-qu__eintrag">
       <span className="qb-qu__titel">{quelle.titel}</span>
