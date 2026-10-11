@@ -71,7 +71,7 @@ test('cartLineContentIds: Ergebnis ist ein string[] (fbq content_ids-Form)', () 
 });
 
 // ── Verdrahtung: CartSummary.jsx feuert IC mit content_ids/content_type ──
-test('CartSummary.jsx: InitiateCheckout-fbq traegt content_ids + content_type', () => {
+test('CartSummary.jsx: InitiateCheckout-fbq trägt content_ids + content_type', () => {
   const src = readFileSync(join(APP, 'components', 'CartSummary.jsx'), 'utf8');
   const ic = src.slice(src.indexOf("'InitiateCheckout'"));
   const block = ic.slice(0, ic.indexOf('}'));
@@ -86,9 +86,12 @@ test('CartSummary.jsx: InitiateCheckout-fbq traegt content_ids + content_type', 
 });
 
 // ── Regressionsschutz: ViewContent/AddToCart bleiben unangetastet ──
-test('MetaPixel.jsx: ViewContent & AddToCart tragen weiterhin content_ids', () => {
+// ViewContent baut seinen Payload seit s05 (2026-10-11) in pixel-content.js
+// viewContentPayload(); dessen Felder prüft meta-pixel-viewcontent-contents.test.mjs
+// am Verhalten. Hier bleibt der Quelltext-Schutz für AddToCart.
+test('MetaPixel.jsx: AddToCart trägt weiterhin content_ids', () => {
   const src = readFileSync(join(APP, 'components', 'MetaPixel.jsx'), 'utf8');
-  for (const ev of ['ViewContent', 'AddToCart']) {
+  for (const ev of ['AddToCart']) {
     const seg = src.slice(src.indexOf(`'${ev}'`));
     const block = seg.slice(0, seg.indexOf('});'));
     assert.match(block, /content_ids:/, `${ev} verlor content_ids`);

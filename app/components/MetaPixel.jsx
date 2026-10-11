@@ -1,5 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {useAnalytics, parseGid} from '@shopify/hydrogen';
+import {viewContentPayload} from '~/lib/pixel-content';
 
 /**
  * Meta-Pixel (Browser) für qiblanco.com — Pixel „Qi Blanco Germany Pixel 2023".
@@ -172,15 +173,10 @@ export function MetaPixel() {
     });
 
     subscribe('product_viewed', (data) => {
-      const product = data?.products?.[0];
-      if (!product) return;
-      fbqTrack('ViewContent', {
-        content_ids: [numericProductId(product.id)].filter(Boolean),
-        content_name: product.title,
-        content_type: 'product',
-        value: parseFloat(product.price) || 0,
-        currency: data?.shop?.currency || 'EUR',
-      });
+      // Payload inkl. `contents` aus app/lib/pixel-content.js (s05, da_checks).
+      const payload = viewContentPayload(data);
+      if (!payload) return;
+      fbqTrack('ViewContent', payload);
     });
 
     subscribe('product_added_to_cart', (data) => {
