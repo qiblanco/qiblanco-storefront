@@ -570,8 +570,9 @@ export const FAQ_KAUF = [
       'und Österreich versandkostenfrei. Für das Necklace und Crystal Cacao® kostet der Versand ' +
       'nach Deutschland 5,90 €. Ab 99 € Warenwert ist er frei, und mit zwei ' +
       'Packungen Crystal Cacao® bist du schon darüber. Nach Österreich kostet er 6,90 € und ist ab ' +
-      '250 € Warenwert frei. In die Schweiz zahlst du 9 Franken für ein ' +
-      'einzelnes Necklace oder eine Packung Crystal Cacao® und 21 Franken für alles andere. Zoll ' +
+      '250 € Warenwert frei. In die Schweiz kostet der Versand 9 € für ein ' +
+      'einzelnes Necklace oder eine Packung Crystal Cacao® und 21 € für alles andere. Die Kasse ' +
+      'rechnet das zum Tageskurs in Franken um, auf ganze Franken gerundet. Zoll ' +
       'und Einfuhrabgaben sind dort schon im Preis enthalten. ' +
       'Wie lange die Lieferung dauert, steht auf jeder Produktseite. QiOne® 2 Pro, QiBracelet®, ' +
       'QiHome® Air und das Necklace sind in 2 bis 3 Tagen bei dir, die Crystal Cacao®-Sorten in 1 ' +
@@ -582,8 +583,10 @@ export const FAQ_KAUF = [
       '20260923-versand-faq-widerspricht-rate-engine-prio35). Gerät allein DE/AT 0,00; Necklace ' +
       '(94 € brutto) und 1x Kakao zahlen. Seit dem Brutto-Kipp am 2026-10-09 gelten die Schwellen ' +
       'auf den Warenwert, den der Kunde sieht. Gemessen 2026-10-11: AT 4x Kakao 212,80 zahlt, ' +
-      '5x 266,00 frei. CH in CHF: ' +
-      'einzelnes Necklace oder 1x Kakao 9,00, alles Gemessene darüber 21,00. Die Versandrichtlinie ' +
+      '5x 266,00 frei. CH: die Rate steht in Euro (CH-Adresse im Euro-Kontext 9,00 für ' +
+      'ein einzelnes Necklace oder 1x Kakao, 21,00 für alles andere), die Kasse zeigt Franken zum ' +
+      'Tageskurs (gemessen 2026-10-11: 9 und 20 CHF, an anderen Tagen 21). Deshalb nennt die ' +
+      'Antwort Euro und keinen festen Frankenbetrag. Die Versandrichtlinie ' +
       'nennt „Österreich 6,90 €" und „EU ab 250€" — die frühere FAQ zitierte nur die erste Hälfte ' +
       'und nannte das Necklace irrtümlich über 99 €. Lieferzeiten aus der Messreihe von Segment s03 über ' +
       'alle 13 DACH-Produktseiten (2026-09-01; die Kakao-Seiten am 2026-09-09 auf die Hausform ' +
