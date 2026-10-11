@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-10-11T15:47:58Z";
+export const WERK_STAND = "2026-10-11T16:09:36Z";
 
 export const STRAENGE = [
   {
@@ -140,9 +140,10 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Geomagnetism Frequently Asked Questions, Abschnitt zur Feldstärke (abgerufen am 26. September 2026)",
+    "titel": "Geomagnetism Frequently Asked Questions, Abschnitt zur Feldstärke",
     "autoren": "National Centers for Environmental Information (NOAA)",
     "jahr": 2026,
+    "fundstelle": "abgerufen am 26. September 2026",
     "doi": null,
     "sprache": null,
     "zitiert_in": [
@@ -153,9 +154,10 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Research Themes, Pollack Laboratory, University of Washington (abgerufen am 7. September 2026)",
-    "autoren": "",
+    "titel": "Research Themes, Pollack Laboratory",
+    "autoren": "University of Washington",
     "jahr": 2026,
+    "fundstelle": "abgerufen am 7. September 2026",
     "doi": null,
     "sprache": null,
     "zitiert_in": [
