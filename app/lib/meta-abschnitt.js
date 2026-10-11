@@ -36,7 +36,9 @@
  * Rückweg: Wert auf 'aus' (ein Commit über hb-deploy) oder hb-deploy revert.
  * Messung: homepage-bauer/pruefungen/meta-abschnitt/probe_meta_abschnitt_live.py
  */
-export const META_ABSCHNITT_MODUS = 'schatten';
+// Stufe 2 (Job wv-852dc001874c, 2026-10-11): Schatten lief live grün
+// (probe_meta_abschnitt_live.py --erwarte schatten rc=0), deshalb scharf.
+export const META_ABSCHNITT_MODUS = 'an';
 export const META_ABSCHNITT_EREIGNIS = 'LPAbschnitt';
 export const VERWEIL_MS = 1000;
 
