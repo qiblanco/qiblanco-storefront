@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-10-11T07:21:25Z";
+export const WERK_STAND = "2026-10-11T09:51:23Z";
 
 export const STRAENGE = [
   {
@@ -16,6 +16,9 @@ export const STRAENGE = [
     "frage": "Was ist an dem Trend wirklich dran?",
     "kurz": "Für alles, was gerade herumgereicht wird – und die ruhige Frage, was davon gemessen ist.",
     "slugs": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist"
+      },
       {
         "slug": "schlaf-vermessen-trend-optimierte-nacht"
       },
@@ -400,6 +403,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Wie viele Beschäftigte in Deutschland können oft keine Pause machen?",
+    "autoren": "Landesinstitut für Arbeitsschutz und Arbeitsgestaltung Nordrhein-Westfalen (2024)",
+    "jahr": 2024,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
+      }
+    ]
+  },
+  {
     "titel": "Zellstudie zum QiBracelet®, Applied Cell Biology, Januar 2024, Dartsch Scientific GmbH. Werte einsehbar auf der Studienseite von Qi Blanco",
     "autoren": "",
     "jahr": 2024,
@@ -478,6 +494,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Arbeitszeitreport Deutschland: Ergebnisse der BAuA-Arbeitszeitbefragung 2021",
+    "autoren": "Backhaus N, Nold J, Vieten L, Entgelmeier I, Tisch A (Hrsg.) (2022)",
+    "jahr": 2022,
+    "doi": "10.21934/baua:bericht20221103",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
+      }
+    ]
+  },
+  {
     "titel": "Magnetic fields induce exclusion zones in water",
     "autoren": "Shalatonin, V., Pollack, G. H.",
     "jahr": 2022,
@@ -487,6 +516,19 @@ export const QUELLEN = [
       {
         "slug": "magnetfeld-wasser-ausschlusszone-messung",
         "titel": "Magnetfeld und Wasser: was gemessen ist und was daraus nicht folgt"
+      }
+    ]
+  },
+  {
+    "titel": "„Give me a break!“ A systematic review and meta-analysis on the efficacy of micro-breaks for increasing well-being and performance",
+    "autoren": "Albulescu P, Macsinga I, Rusu A, Sulea C, Bodnaru A, Tulbure BT (2022)",
+    "jahr": 2022,
+    "doi": "10.1371/journal.pone.0272460",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
       }
     ]
   },
@@ -539,6 +581,19 @@ export const QUELLEN = [
       {
         "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt",
         "titel": "Selbsttest: was ein einzelner Versuch über Wirkung sagt"
+      }
+    ]
+  },
+  {
+    "titel": "Interventions for improving psychological detachment from work: A meta-analysis",
+    "autoren": "Karabinski T, Haun VC, Nübold A, Wendsche J, Wegge J (2021)",
+    "jahr": 2021,
+    "doi": "10.1037/ocp0000280",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
       }
     ]
   },
@@ -683,6 +738,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Spending at least 120 minutes a week in nature is associated with good health and wellbeing",
+    "autoren": "White MP, Alcock I, Grellier J, Wheeler BW, Hartig T, Warber SL, Bone A, Depledge MH, Fleming LE (2019)",
+    "jahr": 2019,
+    "doi": "10.1038/s41598-019-44097-3",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
+      }
+    ]
+  },
+  {
     "titel": "Consumer Sleep Technology: An American Academy of Sleep Medicine Position Statement",
     "autoren": "Seema Khosla u. a.",
     "jahr": 2018,
@@ -705,6 +773,45 @@ export const QUELLEN = [
       {
         "slug": "nervensystem-regulieren-trend-innere-ruhe",
         "titel": "Nervensystem regulieren: was hinter dem Trend steckt"
+      }
+    ]
+  },
+  {
+    "titel": "The recovery paradox: Portraying the complex interplay between job stressors, lack of recovery, and poor well-being",
+    "autoren": "Sonnentag S (2018)",
+    "jahr": 2018,
+    "doi": "10.1016/j.riob.2018.11.002",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
+      }
+    ]
+  },
+  {
+    "titel": "A Meta-Analysis on Antecedents and Outcomes of Detachment from Work",
+    "autoren": "Wendsche J, Lohmann-Haislah A (2017)",
+    "jahr": 2017,
+    "doi": "10.3389/fpsyg.2016.02072",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
+      }
+    ]
+  },
+  {
+    "titel": "Advances in recovery research: What have we learned? What should be done next?",
+    "autoren": "Sonnentag S, Venz L, Casper A (2017)",
+    "jahr": 2017,
+    "doi": "10.1037/ocp0000079",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
       }
     ]
   },
@@ -1072,6 +1179,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Do we recover from vacation? Meta-analysis of vacation effects on health and well-being",
+    "autoren": "de Bloom J, Kompier M, Geurts S, de Weerth C, Taris T, Sonnentag S (2009)",
+    "jahr": 2009,
+    "doi": "10.1539/joh.k8004",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
+      }
+    ]
+  },
+  {
     "titel": "Effect of radiant energy on near-surface water",
     "autoren": "Chai, B., Yoo, H., Pollack, G. H.",
     "jahr": 2009,
@@ -1123,6 +1243,19 @@ export const QUELLEN = [
       {
         "slug": "zellulaere-hydration-biophysik",
         "titel": "Zelluläre Hydration: Was die Biophysik sagt"
+      }
+    ]
+  },
+  {
+    "titel": "The Recovery Experience Questionnaire: development and validation of a measure for assessing recuperation and unwinding from work",
+    "autoren": "Sonnentag S, Fritz C (2007)",
+    "jahr": 2007,
+    "doi": "10.1037/1076-8998.12.3.204",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "erholung-im-alltag-abschalten-was-gemessen-ist",
+        "titel": "Erholung im Alltag: was beim Abschalten gemessen ist"
       }
     ]
   },
