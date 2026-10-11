@@ -62,14 +62,16 @@ if (!SEITE) {
 }
 
 const TITEL = "Kann Elektrosmog den Schlaf stören? | Qi Blanco";
-// Beschreibung seit 2026-10-11 mit den zwei Zahlen, die die Seite unter „Was
-// gemessen ist" trägt (397 Anwohner, 41 Experimente), und auf 120 bis 160
-// Zeichen (GEO-Seitenregel R4, Job
+// Beschreibung seit 2026-10-11 mit der Feldstudie, die die Seite unter „Was
+// gemessen ist" trägt (397 Anwohner, zwölf Nächte, kein Unterschied in den
+// Schlafdaten), auf 120 bis 160 Zeichen (GEO-Seitenregel R4, Job
 // 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us). Die
-// Aussage ist dieselbe wie im ersten Absatz der Seite; der Titel bleibt.
+// 41 Experimente der WHO-Übersicht stehen bewusst NICHT drin: sie zählen
+// Beschwerden aller Art, Schlaf ist dort nur ein Teilergebnis. Der Titel
+// bleibt.
 const BESCHREIBUNG =
-  'Am Abend stört vor allem das Handy den Schlaf. Studien mit 397 Anwohnern ' +
-  'und 41 Experimenten fanden beim Funkfeld allein keinen Einfluss auf den Schlaf.';
+  'Am Abend stört vor allem das Handy den Schlaf. Bei 397 Anwohnern in zwölf ' +
+  'Nächten machte das Funkfeld einer Versuchsanlage keinen Unterschied im Schlaf.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei

@@ -3,7 +3,7 @@ import rdtStyles from '~/styles/reddit-tatsachen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {BERICHTE_STUDIE, FRAGEN, ZAHL, zahlwort} from '~/data/reddit-tatsachen';
-import {MARKE, brotkrume, kurzName, teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, brotkrume, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/was-auf-reddit-ueber-qi-blanco-steht';
@@ -98,11 +98,12 @@ export const meta = () => {
     {property: 'og:site_name', content: MARKE},
     ...(schema ? [{'script:ld+json': schema}] : []),
     // Brotkrume Startseite -> diese Seite (GEO-Seitenregel R6,
-    // schema_pflicht.frageseite), aus der gemeinsamen Fabrik.
+    // schema_pflicht.frageseite), aus der gemeinsamen Fabrik. Der Name ist
+    // die H1 der Seite, nicht der Suchtitel.
     {
       'script:ld+json': brotkrume({
         url: absoluteCanonical(PFAD),
-        name: kurzName(TITEL),
+        name: 'Was auf Reddit über Qi Blanco steht',
       }),
     },
   ];

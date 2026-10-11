@@ -63,9 +63,11 @@ export const SEITE = {
   // Kundenwort der GEO-Seitenregel R3 fehlt (Ausnahme im RESULT des Jobs
   // 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us).
   titel: 'Wie funktioniert der GitterChip im QiOne? | Qi Blanco',
-  // Beschreibung seit 2026-10-11 höchstens 160 Zeichen (R4): „In sieben
-  // Stufen" ist die Gliederung der Seite („In sieben Stufen erklärt").
-  beschreibung: `Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser. In sieben Stufen nach Dr. Warnke, Prof. Del Giudice und Prof. Dr. Pollack, mit ${ZELLSTUDIEN} Zellstudien.`,
+  // Beschreibung seit 2026-10-11 höchstens 160 Zeichen (R4): „Sieben
+  // Stufen" ist die Gliederung der Seite („In sieben Stufen erklärt"), und
+  // „abgeleitet" ist ihr eigenes Wort („So leiten wir es aus der Forschung
+  // ab"): die drei Forscher liefern die Grundlage, nicht jede Stufe.
+  beschreibung: `Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser. Sieben Stufen, abgeleitet aus Forschung von Warnke, Del Giudice und Pollack, mit ${ZELLSTUDIEN} Zellstudien.`,
   dachzeile: 'QiOne® 2 Pro · GitterChip™',
   h1: 'Wie funktioniert der GitterChip im QiOne?',
   kurz: [

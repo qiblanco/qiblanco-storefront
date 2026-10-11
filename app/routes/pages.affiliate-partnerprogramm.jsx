@@ -7,7 +7,7 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import ppStyles from '~/styles/affiliate-partnerprogramm.css?url';
 import pwStyles from '~/styles/partner-werden.css?url';
-import {MARKE, brotkrume, kurzName, teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, brotkrume, teilbildTags} from '~/lib/seiten-seo';
 import {organizationSchema, ORG_ID, SITE_ID} from '~/lib/entity-schema';
 
 const PFAD = '/pages/affiliate-partnerprogramm';
@@ -135,11 +135,13 @@ export const meta = () => [
   {'script:ld+json': faqSchema()},
   {'script:ld+json': seitenSchema()},
   // Brotkrume Startseite -> diese Seite aus der gemeinsamen Fabrik
-  // (GEO-Seitenregel R6, schema_pflicht.frageseite).
+  // (GEO-Seitenregel R6, schema_pflicht.frageseite). Der Name ist der
+  // Gegenstand der Seite (Pfad, H2-Fragen zum Partnerprogramm), nicht der
+  // Suchtitel.
   {
     'script:ld+json': brotkrume({
       url: absoluteCanonical(PFAD),
-      name: kurzName(TITEL),
+      name: 'Partnerprogramm',
     }),
   },
 ];
