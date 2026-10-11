@@ -76,14 +76,17 @@ export function loader() {
  * Fundstelle (Journal, Datum, Herausgeber) und Hinweis (Redaktionsnotiz des
  * Artikels) hat werk.py aus dem Titel genommen; sie stehen hier, damit beim
  * Trennen nichts verloren geht. Das Jahr entfällt, wenn die Fundstelle es
- * schon nennt.
+ * schon nennt oder die Autorenangabe es als „(2012)“ trägt.
  */
 function Angabe({quelle}) {
   const jahr = quelle.jahr && String(quelle.jahr);
+  const jahrSchonDa =
+    quelle.fundstelle?.includes(jahr) ||
+    quelle.autoren?.includes(`(${jahr})`);
   const teile = [
     quelle.autoren,
     quelle.fundstelle,
-    jahr && !quelle.fundstelle?.includes(jahr) ? jahr : null,
+    jahr && !jahrSchonDa ? jahr : null,
     quelle.hinweis,
   ].filter(Boolean);
   return (
