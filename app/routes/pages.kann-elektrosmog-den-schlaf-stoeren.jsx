@@ -3,7 +3,7 @@ import fragenStyles from '~/styles/fragen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {seiteFuer} from '~/data/fragen';
 import {frageSchema} from '~/lib/fragen-schema';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, brotkrume, kurzName, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/kann-elektrosmog-den-schlaf-stoeren';
@@ -62,7 +62,14 @@ if (!SEITE) {
 }
 
 const TITEL = "Kann Elektrosmog den Schlaf stören? | Qi Blanco";
-const BESCHREIBUNG = "Den Schlaf stört vor allem das Handy selbst, mit seinem Licht und seinen Nachrichten am Abend, während Schlafstudien beim Funkfeld allein keinen Einfluss gefunden haben.";
+// Beschreibung seit 2026-10-11 mit den zwei Zahlen, die die Seite unter „Was
+// gemessen ist" trägt (397 Anwohner, 41 Experimente), und auf 120 bis 160
+// Zeichen (GEO-Seitenregel R4, Job
+// 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us). Die
+// Aussage ist dieselbe wie im ersten Absatz der Seite; der Titel bleibt.
+const BESCHREIBUNG =
+  'Am Abend stört vor allem das Handy den Schlaf. Studien mit 397 Anwohnern ' +
+  'und 41 Experimenten fanden beim Funkfeld allein keinen Einfluss auf den Schlaf.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -94,6 +101,14 @@ export const meta = () => {
     {property: 'og:url', content: absoluteCanonical(PFAD)},
     {property: 'og:site_name', content: MARKE},
     ...(schema ? [{'script:ld+json': schema}] : []),
+    // Brotkrume Startseite -> diese Seite (GEO-Seitenregel R6,
+    // schema_pflicht.frageseite), aus der gemeinsamen Fabrik.
+    {
+      'script:ld+json': brotkrume({
+        url: absoluteCanonical(PFAD),
+        name: kurzName(TITEL),
+      }),
+    },
   ];
 };
 

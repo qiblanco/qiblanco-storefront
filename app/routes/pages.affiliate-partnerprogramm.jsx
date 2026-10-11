@@ -7,14 +7,19 @@ import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import ppStyles from '~/styles/affiliate-partnerprogramm.css?url';
 import pwStyles from '~/styles/partner-werden.css?url';
-import {MARKE, teilbildTags} from '~/lib/seiten-seo';
+import {MARKE, brotkrume, kurzName, teilbildTags} from '~/lib/seiten-seo';
 import {organizationSchema, ORG_ID, SITE_ID} from '~/lib/entity-schema';
 
 const PFAD = '/pages/affiliate-partnerprogramm';
 /* Titel und Beschreibung tragen beide Suchformen: „Partner werden" (so heißt
    der Menüpunkt, so fragen Interessenten) und „Partnerprogramm". Neu gefasst
-   am 2026-09-24 mit dem Umbau zur Erklärseite. */
-const TITEL = 'Qi Blanco Partnerprogramm: Partner werden, 10 % Provision';
+   am 2026-09-24 mit dem Umbau zur Erklärseite.
+   Seit 2026-10-11 steht die Marke am Ende (GEO-Seitenregel R3, Job
+   20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us); die
+   Wörter sind dieselben. Ein Kundenwort aus kundenvokabular.dach_haeufig
+   steht bewusst nicht drin: wer nach dieser Seite sucht, fragt nach
+   „Partnerprogramm" und „Partner werden", nicht nach Schutz oder Strahlung. */
+const TITEL = 'Partnerprogramm: Partner werden, 10 % Provision | Qi Blanco';
 const BESCHREIBUNG =
   'Werde Partner von Qi Blanco: Deine Community spart 5 % mit deinem Code, ' +
   'du bekommst 10 % Provision. Kostenlos, 30 Tage Zuordnung, Anmeldung in ' +
@@ -129,6 +134,14 @@ export const meta = () => [
   {property: 'og:site_name', content: MARKE},
   {'script:ld+json': faqSchema()},
   {'script:ld+json': seitenSchema()},
+  // Brotkrume Startseite -> diese Seite aus der gemeinsamen Fabrik
+  // (GEO-Seitenregel R6, schema_pflicht.frageseite).
+  {
+    'script:ld+json': brotkrume({
+      url: absoluteCanonical(PFAD),
+      name: kurzName(TITEL),
+    }),
+  },
 ];
 
 export function loader() {
