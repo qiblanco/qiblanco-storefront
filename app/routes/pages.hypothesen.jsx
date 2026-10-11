@@ -103,11 +103,20 @@ export const meta = () => [
   // Die Beschreibung folgt dem Lead der Seite und den Feldern, die sie seit
   // dem 2026-09-19 trägt („Was dafür spricht“, „Was offen ist“). Gemessen
   // werden beide am Kundenrand: seo-manager neue_seiten_pruefung, Feld `kopf`.
-  {title: 'Qi Blanco – unsere Hypothesen: das Wirkmodell in sechs Annahmen | Qi Blanco'},
+  // GEO M5-F2 (2026-10-11, SAGEO), Job
+  // 20261011-geo-sageo-m5f2-strukturfelder-ratgeber-de-us-crystal:
+  // Title höchstens 60 Zeichen mit Gegenstand,
+  // Marke am Ende (Seitenregel R3); Meta 120-160 Zeichen mit Zahlen, die die
+  // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
+  // nach Livegang. Vorher: 'Qi Blanco – unsere Hypothesen: das Wirkmodell in sechs Annahmen | Qi Blanco'
+  // Meta vorher: 'Das Wirkmodell hinter Qi Blanco in sechs Hypothesen: …' (168 Zeichen)
+  {title: 'Sechs Hypothesen zur Wirkung, mit allen Quellen | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Das Wirkmodell hinter Qi Blanco in sechs Hypothesen: was für jede spricht, was offen ist und was sie für unser Produkt bedeutet. Dazu alle Quellen mit ihrer Reichweite.',
+      'Sechs Annahmen, nach denen wir bauen: was für jede spricht, was ' +
+      'offen ist. Quellen im Volltext, eigene Messungen an Zellkulturen, ' +
+      'keine klinische Studie.',
   },
   // Die Autorenangabe. Sie stand hier schon, als die Seite noch auf noindex
   // stand — damit sie am Tag der Freischaltung fertig ist. Ein Text mit Autor
