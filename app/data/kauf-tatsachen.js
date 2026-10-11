@@ -69,8 +69,8 @@ export const IM_PREIS = [
     text:
       'Nach Deutschland und Österreich schicken wir QiOne® 2 Pro, ' +
       'QiBracelet®, QiHome® Air und Qi Master® versandkostenfrei. In die ' +
-      'Schweiz kostet der Versand 21 Franken, Zoll und Einfuhrabgaben sind ' +
-      'dort im Preis enthalten.',
+      'Schweiz kostet der Versand 21 €, an der Kasse in Franken zum ' +
+      'Tageskurs. Zoll und Einfuhrabgaben sind dort im Preis enthalten.',
     beleg: 'Versandrichtlinie',
     belegPfad: '/policies/shipping-policy',
   },
