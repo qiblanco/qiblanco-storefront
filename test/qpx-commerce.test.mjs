@@ -278,9 +278,15 @@ test('products.$handle.jsx: pdp-Sektionen sind DISJUNKT (nicht verschachtelt)', 
 test('MetaPixel.jsx: ViewContent & AddToCart tragen weiterhin content_ids (fbq)', () => {
   const src = readFileSync(join(APP, 'components', 'MetaPixel.jsx'), 'utf8');
   assert.doesNotMatch(src, /window\.qpx/, 'MetaPixel darf qpx nicht anfassen');
-  for (const ev of ['ViewContent', 'AddToCart']) {
-    const seg = src.slice(src.indexOf(`'${ev}'`));
-    const block = seg.slice(0, seg.indexOf('});'));
-    assert.match(block, /content_ids:/, `${ev} verlor content_ids`);
-  }
+  // AddToCart baut seinen Payload inline, ViewContent seit 2026-10-11 über
+  // viewContentPayload(data) aus app/lib/pixel-content.js (Verhalten geprüft in
+  // test/meta-pixel-viewcontent-contents.test.mjs).
+  const seg = src.slice(src.indexOf("'AddToCart'"));
+  const block = seg.slice(0, seg.indexOf('});'));
+  assert.match(block, /content_ids:/, 'AddToCart verlor content_ids');
+  assert.match(src, /fbqTrack\('ViewContent', payload\)/, 'ViewContent-Aufruf fehlt');
+  assert.match(src, /const payload = viewContentPayload\(data\)/, 'ViewContent ohne geteilten Payload');
+  const lib = readFileSync(join(APP, 'lib', 'pixel-content.js'), 'utf8');
+  const vc = lib.slice(lib.indexOf('export function viewContentPayload'));
+  assert.match(vc, /content_ids:/, 'ViewContent verlor content_ids');
 });

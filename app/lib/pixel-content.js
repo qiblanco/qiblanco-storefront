@@ -38,15 +38,15 @@ export function cartLineContentIds(lines) {
 }
 
 /**
- * Meta-Pixel-Payload fuer ViewContent aus dem Hydrogen-`product_viewed`-Event.
+ * Meta-Pixel-Payload für ViewContent aus dem Hydrogen-`product_viewed`-Event.
  *
  * Grossjob 20261011-fm-folge-attribution-nachzuege (s05): Meta da_checks
- * meldete `pixel_missing_param_in_events` fuer ViewContent. Live gesendet
+ * meldete `pixel_missing_param_in_events` für ViewContent. Live gesendet
  * wurden content_ids + content_type, `contents` fehlte immer. `contents`
- * traegt dieselbe ID wie content_ids (Katalog-Match), quantity 1 (ein
- * Produkt-View, Paritaet zu D-006) und den Stueckpreis.
+ * trägt dieselbe ID wie content_ids (Katalog-Match), quantity 1 (ein
+ * Produkt-View, Parität zu D-006) und den Stückpreis.
  * Bis hierher stand der Payload inline in MetaPixel.jsx; die Felder dort
- * sind unveraendert uebernommen.
+ * sind unverändert übernommen.
  *
  * @param {{products?: Array<{id?: string, title?: string, price?: string}>,
  *   shop?: {currency?: string}}|undefined|null} data

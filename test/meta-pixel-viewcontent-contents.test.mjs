@@ -1,10 +1,10 @@
-// Hermetische Tests: ViewContent traegt content_ids, contents und content_type
+// Hermetische Tests: ViewContent trägt content_ids, contents und content_type
 // (Grossjob 20261011-fm-folge-attribution-nachzuege, Segment s05).
 // Bordmittel wie meta-pixel-initiate-checkout.test.mjs: node:test, kein Netz.
-// Ausfuehren: node --test test/meta-pixel-viewcontent-contents.test.mjs
+// Ausführen: node --test test/meta-pixel-viewcontent-contents.test.mjs
 //
 // Anlass: Meta da_checks am Pixel 9450046881736733 meldete am 2026-10-11
-// `pixel_missing_param_in_events` fuer ViewContent (content_ids, contents,
+// `pixel_missing_param_in_events` für ViewContent (content_ids, contents,
 // content_type). Live gemessen sendete ViewContent content_ids + content_type,
 // `contents` fehlte immer. Der Payload kommt jetzt aus EINER testbaren
 // Funktion (viewContentPayload), MetaPixel.jsx ruft sie nur noch auf.
@@ -66,7 +66,7 @@ test('viewContentPayload: kaputte GID -> leere Listen, kein undefined im Array',
   assert.equal(p.content_type, 'product');
 });
 
-test('viewContentPayload: Preis fehlt -> 0, Waehrung fehlt -> EUR', () => {
+test('viewContentPayload: Preis fehlt -> 0, Währung fehlt -> EUR', () => {
   const p = viewContentPayload({products: [{id: 'gid://shopify/Product/9'}]});
   assert.equal(p.value, 0);
   assert.equal(p.currency, 'EUR');
