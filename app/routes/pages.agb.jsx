@@ -220,7 +220,7 @@ export default function AGBPage() {
           senden Sie das Formular an uns.
           <br />
           <a
-            href="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/WIDERRUFORMULAR-QiBlanco-08-2024-DE.pdf?v=1722259529"
+            href="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/WIDERRUFORMULAR-QiBlanco-08-2025-DE.pdf?v=1787988555"
             target="_blank"
             rel="noopener noreferrer"
           >
