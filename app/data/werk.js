@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-10-11T16:09:36Z";
+export const WERK_STAND = "2026-10-11T17:00:56Z";
 
 export const STRAENGE = [
   {
@@ -154,8 +154,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Research Themes, Pollack Laboratory",
-    "autoren": "University of Washington",
+    "titel": "Research Themes",
+    "autoren": "Pollack Laboratory, University of Washington",
     "jahr": 2026,
     "fundstelle": "abgerufen am 7. September 2026",
     "doi": null,
