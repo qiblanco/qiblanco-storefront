@@ -90,6 +90,8 @@ import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
+import {MetaAbschnittPixel} from './components/MetaAbschnittPixel';
+import {META_ABSCHNITT_MODUS} from '~/lib/meta-abschnitt';
 import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
@@ -517,6 +519,7 @@ export function Layout({children}) {
       data-qb-consent-strict={data?.consentStrictRegions || undefined}
       data-qb-preismodus={data?.preismodus?.modus || undefined}
       data-qb-preismodus-quelle={data?.preismodus?.quelle || undefined}
+      data-qb-meta-abschnitt={META_ABSCHNITT_MODUS}
     >
       <head>
         <meta charSet="utf-8" />
@@ -904,6 +907,12 @@ function AnalytikNachHydration({data, children}) {
       {(data.isProductionHost || data.enableTrackingInPreview) && (
         <>
           <MetaPixel />
+          {/*
+            Meta-Pixel-Ereignis je LP-Abschnitt (GS-076): nur /pages/*, nur
+            mit ausdrücklicher Cookiebot-Marketing-Einwilligung, Schalter
+            aus|schatten|an in app/lib/meta-abschnitt.js.
+          */}
+          <MetaAbschnittPixel />
           <QpxCommerce />
           {/*
             UpPromote-Affiliate-Tracking: lädt collect.js nach und gibt
