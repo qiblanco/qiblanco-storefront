@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-10-11T09:51:23Z";
+export const WERK_STAND = "2026-10-11T15:47:58Z";
 
 export const STRAENGE = [
   {
@@ -296,9 +296,10 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Deskriptive Auswertung von 171 freiwilligen Anwenderberichten zu QiOne® 2 Pro und QiBracelet®, Advances in Bioengineering & Biomedical Science Research, 10. Mai 2024",
+    "titel": "Deskriptive Auswertung von 171 freiwilligen Anwenderberichten zu QiOne® 2 Pro und QiBracelet®",
     "autoren": "",
     "jahr": 2024,
+    "fundstelle": "Advances in Bioengineering & Biomedical Science Research, 10. Mai 2024",
     "doi": null,
     "sprache": null,
     "zitiert_in": [
@@ -356,7 +357,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Protective Effect of the QiBracelet® Against Oxidative Stress",
+    "titel": "Protective Effect of the QiBracelet Against Oxidative Stress",
     "autoren": "Dartsch PC",
     "jahr": 2024,
     "doi": "10.53043/2320-1991.acb12001",
@@ -416,9 +417,11 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Zellstudie zum QiBracelet®, Applied Cell Biology, Januar 2024, Dartsch Scientific GmbH. Werte einsehbar auf der Studienseite von Qi Blanco",
+    "titel": "Zellstudie zum QiBracelet®",
     "autoren": "",
     "jahr": 2024,
+    "fundstelle": "Applied Cell Biology, Januar 2024, Dartsch Scientific GmbH",
+    "hinweis": "Werte einsehbar auf der Studienseite von Qi Blanco",
     "doi": null,
     "sprache": null,
     "zitiert_in": [
@@ -654,8 +657,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Exclusion Zone Phenomena in Water – A Critical Review of Experimental Findings and Theories",
-    "autoren": "Elton, D. C., Spencer, P. D., Riches, J. D., Williams, E. D.",
+    "titel": "Exclusion Zone Phenomena in Water — A Critical Review of Experimental Findings and Theories",
+    "autoren": "Daniel C. Elton, Peter D. Spencer, James D. Riches, Elizabeth D. Williams",
     "jahr": 2020,
     "doi": "10.3390/ijms21145041",
     "sprache": "en",
@@ -989,10 +992,10 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Recommended amount of sleep for a healthy adult: a joint consensus statement of the American Academy of Sleep Medicine and Sleep Research Society",
+    "titel": "Recommended Amount of Sleep for a Healthy Adult — A Joint Consensus Statement of the American Academy of Sleep Medicine and Sleep Research Society",
     "autoren": "Watson NF, Badr MS, Belenky G et al. (2015)",
     "jahr": 2015,
-    "doi": "10.5664/jcsm.4758",
+    "doi": "10.5665/sleep.4716",
     "sprache": null,
     "zitiert_in": [
       {
@@ -1067,7 +1070,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "The Fourth Phase of Water: Beyond Solid, Liquid, and Vapor (Buch)",
+    "titel": "The Fourth Phase of Water: Beyond Solid, Liquid, and Vapor",
     "autoren": "Pollack, G. H.",
     "jahr": 2013,
     "doi": null,
@@ -1084,7 +1087,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "A Paravascular Pathway Facilitates CSF Flow Through the Brain Parenchyma and the Clearance of Interstitial Solutes, Including Amyloid β. Science Translational Medicine 4(147):147ra111",
+    "titel": "A Paravascular Pathway Facilitates CSF Flow Through the Brain Parenchyma and the Clearance of Interstitial Solutes, Including Amyloid β",
     "autoren": "Iliff JJ et al. (2012)",
     "jahr": 2012,
     "doi": "10.1126/scitranslmed.3003748",
@@ -1124,7 +1127,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Mild dehydration impairs cognitive performance and mood of men",
-    "autoren": "Ganio MS, Armstrong LE, Casa DJ et al.",
+    "autoren": "Ganio MS, Armstrong LE, Casa DJ, McDermott BP, Lee EC, Yamamoto LM et al.",
     "jahr": 2011,
     "doi": "10.1017/S0007114511002005",
     "sprache": null,
@@ -1231,7 +1234,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Water as an Active Constituent in Cell Biology",
-    "autoren": "Ball, P.",
+    "autoren": "Philip Ball",
     "jahr": 2008,
     "doi": "10.1021/cr068037a",
     "sprache": "en",
@@ -1445,32 +1448,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Cellosaurus, Eintrag IPEC-J2 (CVCL_2246), SIB Swiss Institute of Bioinformatics",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
-        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Cellosaurus, Einträge HL-60 (CVCL_0002), SH-SY5Y (CVCL_0019) und IPEC-J2 (CVCL_2246), SIB Swiss Institute of Bioinformatics",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
-        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
-      }
-    ]
-  },
-  {
     "titel": "Effects of Sleep Deprivation",
     "autoren": "Sleep Foundation",
     "jahr": null,
@@ -1484,8 +1461,47 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Fakultätsseite Gerald Pollack, University of Washington, Department of Bioengineering",
-    "autoren": "",
+    "titel": "Eintrag IPEC-J2 (CVCL_2246)",
+    "autoren": "Cellosaurus, SIB Swiss Institute of Bioinformatics",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Einträge HL-60 (CVCL_0002), SH-SY5Y (CVCL_0019) und IPEC-J2 (CVCL_2246)",
+    "autoren": "Cellosaurus, SIB Swiss Institute of Bioinformatics",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
+    "titel": "Einträge zu drei der Zelllinien: Hep G2, A-549, IPEC-J2",
+    "autoren": "Cellosaurus, SIB Swiss Institute of Bioinformatics",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Fakultätsseite Gerald Pollack",
+    "autoren": "University of Washington, Department of Bioengineering",
     "jahr": null,
     "doi": null,
     "sprache": null,
@@ -1510,8 +1526,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Hep G2, A-549, IPEC-J2",
-    "autoren": "Cellosaurus, SIB Swiss Institute of Bioinformatics, Einträge zu drei der Zelllinien",
+    "titel": "Häufige Fragen zu Größe, Wasser, Sauna, Material und Rückgabe",
+    "autoren": "Qi Blanco",
     "jahr": null,
     "doi": null,
     "sprache": null,
@@ -1523,15 +1539,29 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Leitlinien, Stellungnahmen und Positionspapiere — allgemeine Fachreferenz, sie belegt keine der Einzelzahlen dieses Artikels",
+    "titel": "Leitlinien, Stellungnahmen und Positionspapiere",
     "autoren": "Deutsche Gesellschaft für Schlafmedizin (DGSM)",
     "jahr": null,
+    "hinweis": "allgemeine Fachreferenz, sie belegt keine der Einzelzahlen dieses Artikels",
     "doi": null,
     "sprache": null,
     "zitiert_in": [
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
+      }
+    ]
+  },
+  {
+    "titel": "Necklace für den QiOne®",
+    "autoren": "Qi Blanco",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
       }
     ]
   },
@@ -1549,72 +1579,12 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Qi Blanco, Häufige Fragen zu Größe, Wasser, Sauna, Material und Rückgabe",
-    "autoren": "",
+    "titel": "QiOne® 2 Pro im Detail",
+    "autoren": "Qi Blanco",
     "jahr": null,
     "doi": null,
     "sprache": null,
     "zitiert_in": [
-      {
-        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
-        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Qi Blanco, Necklace für den QiOne®",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
-        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Qi Blanco, QiOne® 2 Pro im Detail",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
-        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Qi Blanco, Studie zu oxidativem Stress, vollständige deutsche Fassung",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
-        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Qi Blanco, Studienübersicht mit allen Volltexten",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
-        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
-      },
-      {
-        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
-        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
-      },
       {
         "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
         "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
@@ -1652,6 +1622,40 @@ export const QUELLEN = [
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
+      }
+    ]
+  },
+  {
+    "titel": "Studie zu oxidativem Stress, vollständige deutsche Fassung",
+    "autoren": "Qi Blanco",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      }
+    ]
+  },
+  {
+    "titel": "Studienübersicht mit allen Volltexten",
+    "autoren": "Qi Blanco",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      },
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
       }
     ]
   },
