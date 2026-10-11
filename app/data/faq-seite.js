@@ -568,9 +568,9 @@ export const FAQ_KAUF = [
     a:
       'QiOne® 2 Pro, QiBracelet®, QiHome® Air und Qi Master® schicken wir dir nach Deutschland ' +
       'und Österreich versandkostenfrei. Für das Necklace und Crystal Cacao® kostet der Versand ' +
-      'nach Deutschland 5,90 €. Ab 99 € Warenwert vor Mehrwertsteuer ist er frei, und mit zwei ' +
+      'nach Deutschland 5,90 €. Ab 99 € Warenwert ist er frei, und mit zwei ' +
       'Packungen Crystal Cacao® bist du schon darüber. Nach Österreich kostet er 6,90 € und ist ab ' +
-      '250 € Warenwert vor Mehrwertsteuer frei. In die Schweiz zahlst du 9 Franken für ein ' +
+      '250 € Warenwert frei. In die Schweiz zahlst du 9 Franken für ein ' +
       'einzelnes Necklace oder eine Packung Crystal Cacao® und 21 Franken für alles andere. Zoll ' +
       'und Einfuhrabgaben sind dort schon im Preis enthalten. ' +
       'Wie lange die Lieferung dauert, steht auf jeder Produktseite. QiOne® 2 Pro, QiBracelet®, ' +
@@ -580,8 +580,9 @@ export const FAQ_KAUF = [
       'Versandkosten JE PRODUKT aus der rechnenden Instanz, nicht aus der Prosa: Storefront-API ' +
       'cartCreate/deliveryGroups mit Lieferadresse DE/AT/CH, gemessen 2026-09-23 (Job ' +
       '20260923-versand-faq-widerspricht-rate-engine-prio35). Gerät allein DE/AT 0,00; Necklace ' +
-      '(94 € brutto) und 1x Kakao zahlen. Die Schwellen greifen auf den NETTO-Warenwert ' +
-      '(taxes_included=false): DE 98,91 zahlt, 99,74 frei; AT 249,42 zahlt, 250,25 frei. CH in CHF: ' +
+      '(94 € brutto) und 1x Kakao zahlen. Seit dem Brutto-Kipp am 2026-10-09 gelten die Schwellen ' +
+      'auf den Warenwert, den der Kunde sieht. Gemessen 2026-10-11: AT 4x Kakao 212,80 zahlt, ' +
+      '5x 266,00 frei. CH in CHF: ' +
       'einzelnes Necklace oder 1x Kakao 9,00, alles Gemessene darüber 21,00. Die Versandrichtlinie ' +
       'nennt „Österreich 6,90 €" und „EU ab 250€" — die frühere FAQ zitierte nur die erste Hälfte ' +
       'und nannte das Necklace irrtümlich über 99 €. Lieferzeiten aus der Messreihe von Segment s03 über ' +
