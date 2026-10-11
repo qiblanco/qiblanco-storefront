@@ -8,7 +8,7 @@
 // Zäune steht im Kopf des Erzeugers, nicht hier — sie gehört zur
 // Entscheidung, nicht zu den Daten.
 
-export const WERK_STAND = "2026-10-10T09:50:36Z";
+export const WERK_STAND = "2026-10-11T07:21:25Z";
 
 export const STRAENGE = [
   {
@@ -73,6 +73,9 @@ export const STRAENGE = [
     "kurz": "Schlaf ist das Thema, zu dem uns am meisten geschrieben wird – hier steht, was dabei messbar ist.",
     "slugs": [
       {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie"
+      },
+      {
         "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest"
       },
       {
@@ -121,8 +124,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Dartsch PC, Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells , Neurodegener Dis Current Res 6(1), 2026, 1–8",
-    "autoren": "",
+    "titel": "Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells",
+    "autoren": "Dartsch PC",
     "jahr": 2026,
     "doi": null,
     "sprache": null,
@@ -134,7 +137,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Geomagnetism Frequently Asked Questions, Abschnitt zur Feldstärke (abgerufen am 26",
+    "titel": "Geomagnetism Frequently Asked Questions, Abschnitt zur Feldstärke (abgerufen am 26. September 2026)",
     "autoren": "National Centers for Environmental Information (NOAA)",
     "jahr": 2026,
     "doi": null,
@@ -147,7 +150,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Research Themes, Pollack Laboratory, University of Washington (abgerufen am 7",
+    "titel": "Research Themes, Pollack Laboratory, University of Washington (abgerufen am 7. September 2026)",
     "autoren": "",
     "jahr": 2026,
     "doi": null,
@@ -290,24 +293,7 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Dartsch PC, Protective Effect of the QiBracelet Against Oxidative Stress , Applied Cell Biology 12(1), 2024, 1–6",
-    "autoren": "",
-    "jahr": 2024,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
-        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
-      },
-      {
-        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
-        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Deskriptive Auswertung von 171 freiwilligen Anwenderberichten zu QiOne® 2 Pro und QiBracelet®, Advances in Bioengineering & Biomedical Science Research, 10",
+    "titel": "Deskriptive Auswertung von 171 freiwilligen Anwenderberichten zu QiOne® 2 Pro und QiBracelet®, Advances in Bioengineering & Biomedical Science Research, 10. Mai 2024",
     "autoren": "",
     "jahr": 2024,
     "doi": null,
@@ -354,19 +340,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Halliwell B, Understanding mechanisms of antioxidant action in health and disease , Nature Reviews Molecular Cell Biology, 2024",
-    "autoren": "",
-    "jahr": 2024,
-    "doi": "10.1038/s41580-023-00645-4",
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
-        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
-      }
-    ]
-  },
-  {
     "titel": "Prevalence of Orthosomnia in a General Population Sample: A Cross-Sectional Study",
     "autoren": "Haitham Jahrami u. a.",
     "jahr": 2024,
@@ -380,15 +353,49 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Relationship Between Individual User Observations and Experimental Preclinical Data , Adv Bioeng Biomed Sci Res 7(3), 2024, 1–4",
-    "autoren": "Dartsch PC, *QTA Gitterchip Technology",
+    "titel": "Protective Effect of the QiBracelet® Against Oxidative Stress",
+    "autoren": "Dartsch PC",
     "jahr": 2024,
-    "doi": null,
-    "sprache": null,
+    "doi": "10.53043/2320-1991.acb12001",
+    "sprache": "en",
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      },
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data",
+    "autoren": "Dartsch PC",
+    "jahr": 2024,
+    "doi": "10.33140/abbsr.07.03.03",
+    "sprache": "en",
     "zitiert_in": [
       {
         "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
         "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
+    "titel": "Understanding mechanisms of antioxidant action in health and disease",
+    "autoren": "Halliwell B",
+    "jahr": 2024,
+    "doi": "10.1038/s41580-023-00645-4",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
       }
     ]
   },
@@ -484,36 +491,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Dartsch PC, Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation , Applied Cell Biology 9(3), 2021, 69–74",
-    "autoren": "Peter C. Dartsch",
-    "jahr": 2021,
-    "doi": "10.53043/2320-1991.acb90012",
-    "sprache": "en",
-    "zitiert_in": [
-      {
-        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
-        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
-      },
-      {
-        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
-        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
-      }
-    ]
-  },
-  {
-    "titel": "Dartsch PC, QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation , Japan Journal of Medicine 4(1), 2021, 484–488",
-    "autoren": "",
-    "jahr": 2021,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
-        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
-      }
-    ]
-  },
-  {
     "titel": "Direct observation of ultrafast hydrogen bond strengthening in liquid water",
     "autoren": "Jie Yang u. a.",
     "jahr": 2021,
@@ -554,7 +531,7 @@ export const QUELLEN = [
   },
   {
     "titel": "Immunzellstudie HL-60 zum QiOne 2 Pro",
-    "autoren": "Dartsch PC, *Immunzellstudie HL-60 zum QiOne 2 Pro*, Japan Journal of Medicine, 30.04.2021. Volltext auf der Studienseite",
+    "autoren": "Dartsch PC",
     "jahr": 2021,
     "doi": null,
     "sprache": null,
@@ -588,6 +565,36 @@ export const QUELLEN = [
       {
         "slug": "schlaf-vermessen-trend-optimierte-nacht",
         "titel": "Schlaf vermessen: Was hinter dem Trend zur optimierten Nacht steckt"
+      }
+    ]
+  },
+  {
+    "titel": "Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation",
+    "autoren": "Dartsch PC",
+    "jahr": 2021,
+    "doi": "10.53043/2320-1991.acb90012",
+    "sprache": "en",
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation",
+    "autoren": "Dartsch PC",
+    "jahr": 2021,
+    "doi": null,
+    "sprache": "en",
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
       }
     ]
   },
@@ -633,8 +640,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Sies H, Jones DP, Reactive oxygen species (ROS) as pleiotropic physiological signalling agents , Nature Reviews Molecular Cell Biology, 2020",
-    "autoren": "",
+    "titel": "Reactive oxygen species (ROS) as pleiotropic physiological signalling agents",
+    "autoren": "Sies H, Jones DP",
     "jahr": 2020,
     "doi": "10.1038/s41580-020-0230-3",
     "sprache": null,
@@ -728,6 +735,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Hydrogen peroxide as a central redox signaling molecule in physiological oxidative stress: Oxidative eustress",
+    "autoren": "Sies H",
+    "jahr": 2017,
+    "doi": "10.1016/j.redox.2016.12.035",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
+      }
+    ]
+  },
+  {
     "titel": "Orthosomnia: Are Some Patients Taking the Quantified Self Too Far?",
     "autoren": "Kelly Glazer Baron u. a.",
     "jahr": 2017,
@@ -754,21 +774,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Oxidative eustress , Redox Biology, 2017",
-    "autoren": "Sies H, *Hydrogen peroxide as a central redox signaling molecule in physiological oxidative stress",
-    "jahr": 2017,
-    "doi": "10.1016/j.redox.2016.12.035",
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
-        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
-      }
-    ]
-  },
-  {
-    "titel": "Sies H, Berndt C, Jones DP, Oxidative Stress , Annual Review of Biochemistry, 2017",
-    "autoren": "",
+    "titel": "Oxidative Stress",
+    "autoren": "Sies H, Berndt C, Jones DP",
     "jahr": 2017,
     "doi": "10.1146/annurev-biochem-061516-045037",
     "sprache": null,
@@ -780,8 +787,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Sleep inertia and sleep drunkenness , Sleep Medicine Reviews 35, 2017, 76–84",
-    "autoren": "Trotti LM, *Waking up is the hardest thing I do all day",
+    "titel": "Waking up is the hardest thing I do all day: Sleep inertia and sleep drunkenness",
+    "autoren": "Trotti LM",
     "jahr": 2017,
     "doi": "10.1016/j.smrv.2016.08.005",
     "sprache": null,
@@ -810,19 +817,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "American Statistical Association, Statement on Statistical Significance and P-Values , 2016",
-    "autoren": "",
-    "jahr": 2016,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
-        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
-      }
-    ]
-  },
-  {
     "titel": "Nobel Prize 2016 – Yoshinori Ohsumi, Autophagy",
     "autoren": "",
     "jahr": 2016,
@@ -836,8 +830,21 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Statement on Statistical Significance and P-Values",
+    "autoren": "American Statistical Association",
+    "jahr": 2016,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
+        "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
     "titel": "Estimating the reproducibility of psychological science",
-    "autoren": "Open Science Collaboration, *Estimating the reproducibility of psychological science*, Science 349(6251), 2015, aac4716. · Nachweis",
+    "autoren": "Open Science Collaboration",
     "jahr": 2015,
     "doi": "10.1126/science.aac4716",
     "sprache": null,
@@ -862,6 +869,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Oxidative stress: a concept in redox biology and medicine",
+    "autoren": "Sies H",
+    "jahr": 2015,
+    "doi": "10.1016/j.redox.2015.01.002",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
+        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
+      }
+    ]
+  },
+  {
     "titel": "Recommended amount of sleep for a healthy adult: a joint consensus statement of the American Academy of Sleep Medicine and Sleep Research Society",
     "autoren": "Watson NF, Badr MS, Belenky G et al. (2015)",
     "jahr": 2015,
@@ -871,19 +891,6 @@ export const QUELLEN = [
       {
         "slug": "schlaf-zellschutz-mechanismen-der-nacht",
         "titel": "Schlaf und Zellschutz: Mechanismen der Nacht"
-      }
-    ]
-  },
-  {
-    "titel": "a concept in redox biology and medicine , Redox Biology, 2015",
-    "autoren": "Sies H, *Oxidative stress",
-    "jahr": 2015,
-    "doi": "10.1016/j.redox.2015.01.002",
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "oxidativer-stress-der-rost-den-du-nicht-siehst",
-        "titel": "Oxidativer Stress: der Rost, den du nicht siehst"
       }
     ]
   },
@@ -927,6 +934,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Entrainment of the human circadian clock to the natural light-dark cycle",
+    "autoren": "Wright KP Jr, McHill AW, Birks BR, Griffin BR, Rusterholz T, Chinoy ED",
+    "jahr": 2013,
+    "doi": "10.1016/j.cub.2013.06.039",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "womit-faengt-der-tag-an-erste-stunde",
+        "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
+      }
+    ]
+  },
+  {
     "titel": "Sleep drives metabolite clearance from the adult brain",
     "autoren": "Xie L, Kang H, Xu Q et al. (2013)",
     "jahr": 2013,
@@ -957,19 +977,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Wright KP Jr, McHill AW, Birks BR, Griffin BR, Rusterholz T, Chinoy ED, Entrainment of the human circadian clock to the natural light-dark cycle , Current Biology 23(16), 2013, 1554–1558",
-    "autoren": "",
-    "jahr": 2013,
-    "doi": "10.1016/j.cub.2013.06.039",
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "womit-faengt-der-tag-an-erste-stunde",
-        "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
-      }
-    ]
-  },
-  {
     "titel": "A Paravascular Pathway Facilitates CSF Flow Through the Brain Parenchyma and the Clearance of Interstitial Solutes, Including Amyloid β. Science Translational Medicine 4(147):147ra111",
     "autoren": "Iliff JJ et al. (2012)",
     "jahr": 2012,
@@ -996,8 +1003,21 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Ganio MS, Armstrong LE, Casa DJ et al., Mild dehydration impairs cognitive performance and mood of men , British Journal of Nutrition 106(10), 2011, 1535–1543",
-    "autoren": "Ganio MS, Armstrong LE, Casa DJ, McDermott BP, Lee EC, Yamamoto LM et al.",
+    "titel": "Impact of Hydrophilic Surfaces on Interfacial Water Dynamics Probed with NMR Spectroscopy",
+    "autoren": "Yoo, H.; Paranji, R.; Pollack, G. H.",
+    "jahr": 2011,
+    "doi": "10.1021/jz200057g",
+    "sprache": "en",
+    "zitiert_in": [
+      {
+        "slug": "vierte-phase-koerperwasser-was-gemessen-ist",
+        "titel": "Die vierte Phase deines Körperwassers: was daran gemessen ist"
+      }
+    ]
+  },
+  {
+    "titel": "Mild dehydration impairs cognitive performance and mood of men",
+    "autoren": "Ganio MS, Armstrong LE, Casa DJ et al.",
     "jahr": 2011,
     "doi": "10.1017/S0007114511002005",
     "sprache": null,
@@ -1013,21 +1033,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Impact of Hydrophilic Surfaces on Interfacial Water Dynamics Probed with NMR Spectroscopy",
-    "autoren": "Yoo, H.; Paranji, R.; Pollack, G. H.",
-    "jahr": 2011,
-    "doi": "10.1021/jz200057g",
-    "sprache": "en",
-    "zitiert_in": [
-      {
-        "slug": "vierte-phase-koerperwasser-was-gemessen-ist",
-        "titel": "Die vierte Phase deines Körperwassers: was daran gemessen ist"
-      }
-    ]
-  },
-  {
-    "titel": "An updated systematic review of provocation studies , Bioelectromagnetics 31(1), 2010, 1–11",
-    "autoren": "Rubin GJ, Nieto-Hernandez R, Wessely S, *Idiopathic environmental intolerance attributed to electromagnetic fields",
+    "titel": "Idiopathic environmental intolerance attributed to electromagnetic fields: An updated systematic review of provocation studies",
+    "autoren": "Rubin GJ, Nieto-Hernandez R, Wessely S",
     "jahr": 2010,
     "doi": "10.1002/bem.20536",
     "sprache": null,
@@ -1039,8 +1046,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "more than a measure of HPA axis function , Neuroscience & Biobehavioral Reviews 35(1), 2010, 97–103",
-    "autoren": "Clow A, Hucklebridge F, Stalder T, Evans P, Thorn L, *The cortisol awakening response",
+    "titel": "The cortisol awakening response: more than a measure of HPA axis function",
+    "autoren": "Clow A, Hucklebridge F, Stalder T, Evans P, Thorn L",
     "jahr": 2010,
     "doi": "10.1016/j.neubiorev.2009.12.011",
     "sprache": null,
@@ -1133,19 +1140,6 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Ioannidis JPA, Why Most Published Research Findings Are False , PLoS Medicine 2(8), 2005, e124",
-    "autoren": "",
-    "jahr": 2005,
-    "doi": "10.1371/journal.pmed.0020124",
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt",
-        "titel": "Selbsttest: was ein einzelner Versuch über Wirkung sagt"
-      }
-    ]
-  },
-  {
     "titel": "Ultrafast memory loss and energy redistribution in the hydrogen bond network of liquid H2O",
     "autoren": "Cowan, M. L., Bruner, B. D., Huse, N. et al.",
     "jahr": 2005,
@@ -1159,6 +1153,19 @@ export const QUELLEN = [
       {
         "slug": "ausschlusszone-drei-mechanismen-pruefstand",
         "titel": "Ausschlusszone: drei Mechanismen auf dem Prüfstand"
+      }
+    ]
+  },
+  {
+    "titel": "Why Most Published Research Findings Are False",
+    "autoren": "Ioannidis JPA",
+    "jahr": 2005,
+    "doi": "10.1371/journal.pmed.0020124",
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt",
+        "titel": "Selbsttest: was ein einzelner Versuch über Wirkung sagt"
       }
     ]
   },
@@ -1240,8 +1247,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Dröge W, Free Radicals in the Physiological Control of Cell Function , Physiological Reviews, 2002",
-    "autoren": "",
+    "titel": "Free Radicals in the Physiological Control of Cell Function",
+    "autoren": "Dröge W",
     "jahr": 2002,
     "doi": "10.1152/physrev.00018.2001",
     "sprache": null,
@@ -1266,8 +1273,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Hróbjartsson A, Gøtzsche PC, Is the placebo powerless? An analysis of clinical trials comparing placebo with no treatment , New England Journal of Medicine 344(21), 2001, 1594–1602",
-    "autoren": "",
+    "titel": "Is the placebo powerless? An analysis of clinical trials comparing placebo with no treatment",
+    "autoren": "Hróbjartsson A, Gøtzsche PC",
     "jahr": 2001,
     "doi": "10.1056/NEJM200105243442106",
     "sprache": null,
@@ -1279,8 +1286,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "a reliable biological marker for the assessment of adrenocortical activity , Life Sciences 61(26), 1997, 2539–2549",
-    "autoren": "Pruessner JC, Wolf OT, Hellhammer DH, Buske-Kirschbaum A, von Auer K, Jobst S, Kaspers F, Kirschbaum C, *Free cortisol levels after awakening",
+    "titel": "Free cortisol levels after awakening: a reliable biological marker for the assessment of adrenocortical activity",
+    "autoren": "Pruessner JC, Wolf OT, Hellhammer DH, Buske-Kirschbaum A, von Auer K, Jobst S, Kaspers F, Kirschbaum C",
     "jahr": 1997,
     "doi": "10.1016/s0024-3205(97)01008-4",
     "sprache": null,
@@ -1301,40 +1308,6 @@ export const QUELLEN = [
       {
         "slug": "ausschlusszone-drei-mechanismen-pruefstand",
         "titel": "Ausschlusszone: drei Mechanismen auf dem Prüfstand"
-      }
-    ]
-  },
-  {
-    "titel": "Bundesamt für Strahlenschutz, Grenzwerte für hochfrequente Felder",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "womit-faengt-der-tag-an-erste-stunde",
-        "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
-      }
-    ]
-  },
-  {
-    "titel": "Bundesamt für Strahlenschutz, SAR-Werte von Handys",
-    "autoren": "",
-    "jahr": null,
-    "doi": null,
-    "sprache": null,
-    "zitiert_in": [
-      {
-        "slug": "womit-faengt-der-tag-an-erste-stunde",
-        "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
-      },
-      {
-        "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt",
-        "titel": "Selbsttest: was ein einzelner Versuch über Wirkung sagt"
-      },
-      {
-        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
-        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
       }
     ]
   },
@@ -1391,6 +1364,32 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Grenzwerte für hochfrequente Felder",
+    "autoren": "Bundesamt für Strahlenschutz",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "womit-faengt-der-tag-an-erste-stunde",
+        "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
+      }
+    ]
+  },
+  {
+    "titel": "Hep G2, A-549, IPEC-J2",
+    "autoren": "Cellosaurus, SIB Swiss Institute of Bioinformatics, Einträge zu drei der Zelllinien",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      }
+    ]
+  },
+  {
     "titel": "Leitlinien, Stellungnahmen und Positionspapiere — allgemeine Fachreferenz, sie belegt keine der Einzelzahlen dieses Artikels",
     "autoren": "Deutsche Gesellschaft für Schlafmedizin (DGSM)",
     "jahr": null,
@@ -1404,8 +1403,8 @@ export const QUELLEN = [
     ]
   },
   {
-    "titel": "Oxford Centre for Evidence-Based Medicine, OCEBM Levels of Evidence",
-    "autoren": "",
+    "titel": "OCEBM Levels of Evidence",
+    "autoren": "Oxford Centre for Evidence-Based Medicine",
     "jahr": null,
     "doi": null,
     "sprache": null,
@@ -1413,6 +1412,19 @@ export const QUELLEN = [
       {
         "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
         "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      }
+    ]
+  },
+  {
+    "titel": "Qi Blanco, Häufige Fragen zu Größe, Wasser, Sauna, Material und Rückgabe",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
       }
     ]
   },
@@ -1443,6 +1455,19 @@ export const QUELLEN = [
     ]
   },
   {
+    "titel": "Qi Blanco, Studie zu oxidativem Stress, vollständige deutsche Fassung",
+    "autoren": "",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      }
+    ]
+  },
+  {
     "titel": "Qi Blanco, Studienübersicht mit allen Volltexten",
     "autoren": "",
     "jahr": null,
@@ -1450,8 +1475,33 @@ export const QUELLEN = [
     "sprache": null,
     "zitiert_in": [
       {
+        "slug": "qibracelet-groesse-wasser-sauna-zellstudie",
+        "titel": "QiBracelet®: Größe, Wasser, Sauna und was die Studie misst"
+      },
+      {
         "slug": "qi-blanco-studien-was-gemessen-ist-und-wie-man-sie-liest",
         "titel": "Qi Blanco Studien: was die fünf Arbeiten messen und wie du sie einordnest"
+      },
+      {
+        "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
+        "titel": "QiOne® 2 Pro: Wasser, Tragen und was die Zellstudie misst"
+      }
+    ]
+  },
+  {
+    "titel": "SAR-Werte von Handys",
+    "autoren": "Bundesamt für Strahlenschutz",
+    "jahr": null,
+    "doi": null,
+    "sprache": null,
+    "zitiert_in": [
+      {
+        "slug": "womit-faengt-der-tag-an-erste-stunde",
+        "titel": "Womit fängt der Tag an? Was in der ersten Stunde nach dem Aufwachen messbar passiert"
+      },
+      {
+        "slug": "selbsttest-wirkung-was-ein-einzelner-versuch-zeigt",
+        "titel": "Selbsttest: was ein einzelner Versuch über Wirkung sagt"
       },
       {
         "slug": "qione-2-pro-im-alltag-wasser-tragen-zellstudie",
