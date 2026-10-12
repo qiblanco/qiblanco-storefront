@@ -12,6 +12,7 @@ import assert from 'node:assert/strict';
 
 import {
   beschreibung,
+  clipKapitel,
   FOLGEN,
   GAESTE,
   PRO_SEITE,
@@ -195,6 +196,52 @@ test('jedes VideoObject trägt die Pflichtfelder', () => {
       assert.ok(v.embedUrl.includes('youtube-nocookie.com'), 'Embed ohne nocookie');
     }
   }
+});
+
+// Search Console 10.10.2026: "Missing field endOffset (in hasPart)" für
+// alle Folgen mit Kapiteln (Auftrag EL-20261012-2b5b8863). Geprueft über ALLE
+// Seiten, damit jede künftige Folge mit Kapiteln dieselbe Zusicherung trägt.
+test('jeder Clip trägt endOffset > startOffset, der letzte endet mit der Videodauer', () => {
+  let clips = 0;
+  for (let nr = 1; nr <= SEITEN_ZAHL; nr++) {
+    const daten = seite(nr);
+    const liste = schemaGraph(daten, BASIS)['@graph'][2].itemListElement;
+    liste.forEach((v, i) => {
+      const f = daten.folgen[i];
+      assert.notEqual(v.hasPart, null, `hasPart null bei ${f.id}`);
+      if (!('hasPart' in v)) return;
+      assert.ok(Array.isArray(v.hasPart) && v.hasPart.length > 0, `hasPart leer bei ${f.id}`);
+      v.hasPart.forEach((c, j) => {
+        clips++;
+        assert.equal(c['@type'], 'Clip');
+        assert.ok(Number.isInteger(c.startOffset) && Number.isInteger(c.endOffset), `Offsets ganzzahlig: ${f.id}`);
+        assert.ok(c.endOffset > c.startOffset, `${f.id} Clip ${j}: ${c.startOffset} -> ${c.endOffset}`);
+        if (j > 0) assert.equal(c.startOffset, v.hasPart[j - 1].endOffset, `${f.id} Clip ${j}: Lücke/Überlappung`);
+      });
+      assert.equal(v.hasPart.at(-1).endOffset, f.dur, `${f.id}: letzter endOffset != Dauer`);
+    });
+  }
+  assert.ok(clips > 0, 'keine einzige Kapitelmarke im Schema — Test ohne Gegenstand');
+});
+
+test('dur (Sekunden) und duration (ISO) beschreiben dieselbe Länge', () => {
+  for (const f of FOLGEN) {
+    const m = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(f.iso);
+    assert.ok(m, `ISO-Dauer unlesbar: ${f.id}`);
+    const sek = (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0);
+    assert.equal(sek, f.dur, `${f.id}: ${f.iso} != ${f.dur}`);
+  }
+});
+
+test('clipKapitel ordnet Teaser-Marken ein und lässt Doppelte und Ausreißer fallen', () => {
+  const f = {id: 'abcdefghijk', dur: 100, kap: [[60, 'Teaser'], [0, 'Start'], [30, 'Mitte'], [60, 'Ende'], [100, 'zu spät']]};
+  assert.deepEqual(
+    clipKapitel(f).map((c) => [c.startOffset, c.endOffset, c.name]),
+    [[0, 30, 'Start'], [30, 60, 'Mitte'], [60, 100, 'Teaser']],
+  );
+  assert.deepEqual(clipKapitel({id: 'abcdefghijk', dur: 100, kap: []}), []);
+  const ohne = schemaGraph({nr: 1, folgen: [{...FOLGEN[0], kap: []}], seitenZahl: 1}, BASIS)['@graph'][2].itemListElement[0];
+  assert.ok(!('hasPart' in ohne), 'ohne Kapitel darf hasPart nicht erscheinen (auch nicht als null)');
 });
 
 test('die Position zählt über die Seiten hinweg durch', () => {
