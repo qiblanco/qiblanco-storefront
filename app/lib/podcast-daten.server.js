@@ -157,6 +157,36 @@ export function beschreibung(f) {
   return laengster || f.t;
 }
 
+/** Clip-Knoten einer Folge, mit `endOffset` (Search Console 10.10.2026,
+ *  "Missing field endOffset (in hasPart)", Auftrag EL-20261012-2b5b8863).
+ *  endOffset = startOffset des nächsten Kapitels, beim letzten Kapitel die
+ *  Videodauer `dur` in Sekunden — abgeleitet, nie von Hand gepflegt, damit
+ *  jede künftige Folge es ebenso trägt.
+ *  Vorher sortiert und je Sekunde nur die ERSTE Marke behalten: manche
+ *  YouTube-Beschreibungen stellen Teaser-Zeitmarken vor die Kapitelliste
+ *  (mH0vaUEeFqg: 2685 und 3463 stehen doppelt, vor der 0). Ungeordnet ergäbe
+ *  "naechstes Kapitel" ein endOffset VOR dem startOffset. Marken außerhalb
+ *  [0, dur) fallen weg, damit endOffset > startOffset immer gilt.
+ *  Nur das Schema wird so geordnet — die sichtbare Kapitelliste bleibt, wie
+ *  sie ist. */
+export function clipKapitel(f) {
+  const dur = Number(f.dur);
+  if (!Array.isArray(f.kap) || !(dur > 0)) return [];
+  const gesehen = new Set();
+  const marken = f.kap
+    .filter((k) => Number.isInteger(k[0]) && k[0] >= 0 && k[0] < dur && k[1])
+    .slice()
+    .sort((a, b) => a[0] - b[0])
+    .filter((k) => (gesehen.has(k[0]) ? false : (gesehen.add(k[0]), true)));
+  return marken.map((k, i) => ({
+    '@type': 'Clip',
+    name: k[1],
+    startOffset: k[0],
+    endOffset: i + 1 < marken.length ? marken[i + 1][0] : dur,
+    url: `https://www.youtube.com/watch?v=${f.id}&t=${k[0]}`,
+  }));
+}
+
 /** JSON-LD @graph: CollectionPage + BreadcrumbList + ItemList(VideoObject).
  *  Clip-Knoten je Kapitelmarke — dieselbe Struktur, die auf dem US-Shop
  *  maschinell gegen Pflichtfelder geprueft wurde. */
@@ -176,16 +206,9 @@ export function schemaGraph(daten, basis) {
     inLanguage: f.lang,
     publisher: {'@type': 'Organization', name: 'Qi Blanco', url: basis},
     creator: {'@type': 'Organization', name: 'Qi Blanco', url: basis},
-    ...(f.kap.length
-      ? {
-          hasPart: f.kap.map((k) => ({
-            '@type': 'Clip',
-            name: k[1],
-            startOffset: k[0],
-            url: `https://www.youtube.com/watch?v=${f.id}&t=${k[0]}`,
-          })),
-        }
-      : {}),
+    // hasPart NUR, wenn es Kapitel gibt: fehlt es, fehlt der Schlüssel ganz
+    // (nie `hasPart: null` und nie eine leere Liste).
+    ...((kapitel) => (kapitel.length ? {hasPart: kapitel} : {}))(clipKapitel(f)),
   }));
   return {
     '@context': 'https://schema.org',
