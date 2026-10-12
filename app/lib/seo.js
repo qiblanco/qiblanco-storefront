@@ -319,10 +319,13 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   },
   {
     handle: 'one-inch',
+    // Stand 2026-10-12, gemessen: Shopify DACH führt die Seite veröffentlicht
+    // (Page/114678366476), sie liefert 200 mit leerem Rumpf. Bis dahin stand
+    // hier „laut Grossjob depubliziert". Das traf nur die gleichnamige Seite
+    // des US-Ladens (2026-08-23). Für DACH gibt es keinen Entscheid.
     ausSitemap: true,
     klasse: 'hygiene',
-    grund:
-      'leere Kampagnen-Restseite (One Inch Club), laut Grossjob depubliziert',
+    grund: 'leere Kampagnen-Restseite (One Inch Club) ohne eigenen Inhalt',
     seit: '2026-08-27',
   },
   {
