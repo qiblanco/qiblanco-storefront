@@ -75,7 +75,6 @@ const MAP_DE_US = {
   "/products/crystal-cacao-create": "/products/crystal-cacao-create",
   "/products/qibracelet": "/products/qibracelet",
   "/products/qihome-air": "/products/qihome",
-  "/products/qione-1": "/products/qione",
   "/products/qione-2-pro": "/products/qione",
   "/products/qione-kette": "/products/necklace"
 };
