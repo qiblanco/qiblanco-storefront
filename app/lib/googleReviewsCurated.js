@@ -21,21 +21,18 @@ export const GOOGLE_REVIEWS_CURATED = [
     "id": "253716832",
     "name": "Mirko Naber",
     "foto": "https://lh3.googleusercontent.com/a-/ALV-UjVI7w98Hi-syQKYTer5tXBdFtVf_QbPM031WB80KZy5CT6X3gk=s120-c-rp-mo-br100",
-    // FOTO ENTFERNT 2026-09-10, weil die Adresse TOT ist — nicht das Foto.
-    // Gemessen (GET, User-Agent gesetzt): diese grass-cs-URL antwortet mit
-    // HTTP 403, die des Nachbareintrags mit 200 image/jpeg. Es ist also kein
-    // gelöschtes Kundenfoto, sondern eine von Google ROTIERTE Adresse — die
-    // Klasse ist im Kopf von ReviewKarte (ReputonWidget.jsx) beschrieben und
-    // trifft jede fest hinterlegte Google-Bild-URL.
-    // SICHTBAR ÄNDERT SICH NICHTS: ReviewKarte blendet ein fehlgeschlagenes
-    // Foto ohnehin aus. Was wegfällt, ist der fehlgeschlagene REQUEST — er
-    // kostete 10 Hygiene-Punkte in der Design-Rubrik, ohne dem Kunden je ein
-    // Bild zu zeigen. Der Bewertungstext bleibt vollständig stehen.
-    // OFFEN und bewusst NICHT hier entschieden: die Reihenfolge dieser Liste
-    // ist kuratiert (Foto-Einträge zuerst, siehe Kopf). Mirko Naber steht
-    // weiter vorn, hat aber jetzt kein Bild mehr. Umsortiert wird NICHT — der
-    // Dateikopf warnt ausdrücklich davor; das gehört dem Kuratierungs-Job.
-    "bilder": [],
+    // FOTO ZURÜCK 2026-10-12 (Job 20261011-eilbefund-storefront-rezensionsbild-
+    // und-umschalter-prio22). Am 2026-09-10 war es entfernt worden, weil seine
+    // grass-cs-Adresse mit 403 antwortete — eine von Google ROTIERTE Adresse,
+    // kein gelöschtes Foto (Klasse im Kopf von ReviewKarte, ReputonWidget.jsx).
+    // Der Live-Feed führt dasselbe Foto unter neuer Id; gemessen 200 image/jpeg.
+    // Damit ist die Reihenfolge wieder stimmig: Foto-Einträge zuerst (Kopf).
+    "bilder": [
+      {
+        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLfAc2DxFjcCBW4jtb_ISbU6fqo48bgH7J7DVD8QbuCtPInkH-XbmCTdfa4BJZcIhrFidKvKjhkaxFyNERx8cEbgUszGkJs_T0vXDp39Jws6Tvs7t5gFKbEn621f9BkfKUMIXZyNoqULdYI3=k-no",
+        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLfAc2DxFjcCBW4jtb_ISbU6fqo48bgH7J7DVD8QbuCtPInkH-XbmCTdfa4BJZcIhrFidKvKjhkaxFyNERx8cEbgUszGkJs_T0vXDp39Jws6Tvs7t5gFKbEn621f9BkfKUMIXZyNoqULdYI3=k-no"
+      }
+    ],
     "rating": 5,
     "text": "Als Sportler und Trainer hatte ich schon sehr intensive Zeiten erlebt und bin im Nachhinein sehr, sehr dankbar, QiOne und das gesamte Umfeld sowie die Thematik kennengelernt zu haben. Themen wie Zellenschutz und Verbesserungen interessierten mich natürlich schon, doch die eigene Intuition nochmal zu schärfen und der neue, gesunde Weg, die eigene Zukunft noch bewusster zu gehen und es täglich zu spüren, ist der absolute positive Wahnsinn.\nDanke an das gesamte QiBlanco Team und besonders an Anna und Christian. Ich bin sehr glücklich damit.\nLiebe Grüße\nMirko",
     "datum": "2026-04-03"
@@ -46,8 +43,8 @@ export const GOOGLE_REVIEWS_CURATED = [
     "foto": "https://lh3.googleusercontent.com/a/ACg8ocJUi0d8M-kNnbG-gdlXEFRpq3x_1Qvds2SUD2LnPv7MtDrmfA=s120-c-rp-mo-br100",
     "bilder": [
       {
-        "url": "https://lh3.googleusercontent.com/grass-cs/ACvplmN0iXLImBiorGhsYDp-VZd1WgLgxTegquybAorRDZpTRizF_DpBTr4Jm3KcOcTdUQiDR7sJiI7pKb_C19IgXHTBKq3K8-I-isfhFRfsixktmr30Sthmg3MHB3bvawJf0ArQxFBpbKHeiK9d=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/ACvplmN0iXLImBiorGhsYDp-VZd1WgLgxTegquybAorRDZpTRizF_DpBTr4Jm3KcOcTdUQiDR7sJiI7pKb_C19IgXHTBKq3K8-I-isfhFRfsixktmr30Sthmg3MHB3bvawJf0ArQxFBpbKHeiK9d=k-no"
+        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLeR6-Od2hrOXdCLkfesXZFPs6C_F8M6mO5zAuFhE2HjjzSA7nLIQw2e7YpXEVNlRLVYAvg7uSqpo3SLiiosV47zs0z2mCd7OELGWhDVxq7bKvJrz5uae4KqDOTf7Yja44JauGYAI393DpTa=k-no",
+        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLeR6-Od2hrOXdCLkfesXZFPs6C_F8M6mO5zAuFhE2HjjzSA7nLIQw2e7YpXEVNlRLVYAvg7uSqpo3SLiiosV47zs0z2mCd7OELGWhDVxq7bKvJrz5uae4KqDOTf7Yja44JauGYAI393DpTa=k-no"
       }
     ],
     "rating": 5,
