@@ -77,7 +77,7 @@ function istB(id, {ip, ua}) {
 
 const POP = population(20000);
 
-test('Tabelle: drei Experimente, Salz = id, Anteile 15/15/50, eigene Marker, keine Kollision mit E1', () => {
+test('Tabelle: drei Experimente, Salz = id, Anteile Start 15 / Shop 15 oder 50 (Rampe) / Beratung 50, eigene Marker, keine Kollision mit E1', () => {
   assert.deepEqual(Object.keys(SEITEN_EXPERIMENTE).sort(), [PB, SHOP, START].sort());
   const s = SEITEN_EXPERIMENTE[START];
   const q = SEITEN_EXPERIMENTE[SHOP];
@@ -97,7 +97,10 @@ test('Tabelle: drei Experimente, Salz = id, Anteile 15/15/50, eigene Marker, kei
   assert.equal(q.pfad_a, '/pages/qione-2-pro');
   assert.equal(q.pfad_b, '/pages/qione-2-pro-b');
   assert.equal(s.anteil_prozent, 15);
-  assert.equal(q.anteil_prozent, 15);
+  // Shopseite: Rampe nach vorab festgeschriebener Regel (Entscheidung Coworker A 07.10.2026 im Auftrag
+  // Christians): 15 % ab Start, 50 % nach 7 Tagen ohne Schaden, zurück auf 15 % bei Guardrail-
+  // Verschlechterung (heatmap-manager experimente.yaml anteil_ruecklauf). Jeder andere Wert ist ein Fehler.
+  assert.ok([15, 50].includes(q.anteil_prozent), `Shop-Anteil ${q.anteil_prozent} liegt nicht auf der Rampe 15/50`);
   assert.equal(s.pin_param, 'start_exp');
   assert.equal(q.pin_param, 'shop_exp');
   assert.equal(s.env_kill, 'EXP_START_MODE');
@@ -127,11 +130,15 @@ test('Goldwerte: Eimer = fnv1a(salz|ip|ua) % 100 je Experiment-Salz (festgeschri
   }
 });
 
+// Band 4 Sigma (z 3,89) wie beim Unabhängigkeitstest unten, nicht 95 %: die 20 000 Besucher sind EINE feste
+// Stichprobe, und drei Experimente mit je einem 95-%-Intervall reißen schon durch Zufall. Belegfall 13.10.2026:
+// q2p auf 50 % ergibt hier 49,10 % (2,6 Sigma); 200 000 frische Besucher je Startwert ergeben 49,9 bis 50,2 %.
+// Grobe Fehler (Vergleich gedreht bei 15 %, Feld fehlt = alle auf B, Prozent als Anteil) bleiben weit außerhalb.
 for (const id of ALLE) {
   const soll = SEITEN_EXPERIMENTE[id].anteil_prozent / 100;
-  test(`${id}: Anteil B über 20 000 synthetische Besucher, Wilson-Intervall enthält ${soll * 100} %`, () => {
+  test(`${id}: Anteil B über 20 000 synthetische Besucher, 4-Sigma-Wilson-Intervall enthält ${soll * 100} %`, () => {
     const k = POP.filter((b) => istB(id, b)).length;
-    const [lo, hi] = wilson(k, POP.length);
+    const [lo, hi] = wilson(k, POP.length, 3.89);
     assert.ok(lo <= soll && soll <= hi, `${id}: ${k}/${POP.length} = ${(k / POP.length).toFixed(4)}, Wilson [${lo.toFixed(4)}, ${hi.toFixed(4)}]`);
   });
 
@@ -154,7 +161,12 @@ for (const id of ALLE) {
 test('Salze unabhängig: Start, Shop, Beratung und LP-E1 (szs-e1-gs050) teilen paarweise wie Zufall', () => {
   const lpB = (b) => besucherEimer(b.ip, b.ua, E1.salz) < E1.anteil_prozent;
   const arme = {start: (b) => istB(START, b), shop: (b) => istB(SHOP, b), pb: (b) => istB(PB, b), lp: lpB};
-  const anteil = {start: 0.15, shop: 0.15, pb: 0.5, lp: E1.anteil_prozent / 100};
+  const anteil = {
+    start: SEITEN_EXPERIMENTE[START].anteil_prozent / 100,
+    shop: SEITEN_EXPERIMENTE[SHOP].anteil_prozent / 100,
+    pb: SEITEN_EXPERIMENTE[PB].anteil_prozent / 100,
+    lp: E1.anteil_prozent / 100,
+  };
   const n = POP.length;
   const paare = [['start', 'shop'], ['start', 'lp'], ['shop', 'lp'], ['pb', 'start'], ['pb', 'shop'], ['pb', 'lp']];
   for (const [x, y] of paare) {
