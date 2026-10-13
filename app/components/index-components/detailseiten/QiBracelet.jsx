@@ -181,7 +181,7 @@ function TechnologieQiBlanco() {
 
         <p className='mt-2'>
           <img
-            alt=""
+            alt="" role="presentation"
             style={{
               float: 'left',
               height: '40px',
@@ -197,7 +197,7 @@ function TechnologieQiBlanco() {
 
         <p className='mt-1'>
           <img
-            alt=""
+            alt="" role="presentation"
             style={{
               float: 'left',
               height: '40px',
@@ -267,19 +267,19 @@ function HerobannerBracelet(){
                     <p className="color-accent-main"><strong>Mehr als 14.000 zufriedene Kunden</strong></p>
                     <p class="mt-1"><strong>Erfahre jetzt die Vorteile der kohärenten Wasserstruktur auf Zellebene</strong></p>
                     <p class="mt-1">
-                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Person_ArmsUp_Icon_79524077-1a55-4f2e-9af6-d2a874f912f2.webp?v=1677002647" alt="" />
+                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Person_ArmsUp_Icon_79524077-1a55-4f2e-9af6-d2a874f912f2.webp?v=1677002647" alt="" role="presentation" />
                         &nbsp; Persönliches Wachstum
                     </p>
                     <p>
-                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/WIFI_ICON_09426b68-adde-48d2-8fa4-2e1d5e43591d.webp?v=1676668860" alt="" />
+                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/WIFI_ICON_09426b68-adde-48d2-8fa4-2e1d5e43591d.webp?v=1676668860" alt="" role="presentation" />
                         &nbsp; Schutz vor E-Smog & 5G
                     </p>
                     <p>
-                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Molecule_Icon_1930bc3d-20ef-4d76-a729-d9b6a19cc772.webp?v=1676669033" alt="" />
+                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Molecule_Icon_1930bc3d-20ef-4d76-a729-d9b6a19cc772.webp?v=1676669033" alt="" role="presentation" />
                         &nbsp; Gesteigerte Anbindung zum Quantenfeld
                     </p>
                     <p class="mt-1 cellstudies-checkmark">
-                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Green_Checkmark.webp?v=1676668861" alt="" />
+                        <img width="17" height="17" class="inline-image" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Green_Checkmark.webp?v=1676668861" alt="" role="presentation" />
                         <strong>&nbsp; Wirkung in Zellstudien bestätigt</strong>
                     </p>
                     <div className="flex-container flex-row small--flex-column flex-align-start flex-justify-start g-10p mt-2">

@@ -130,7 +130,7 @@ function HeroBannerWithHRV() {
                 src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Person_ArmsUp_Icon_79524077-1a55-4f2e-9af6-d2a874f912f2.webp?v=1677002647"
                 className="inline-image"
                 width="20"
-                alt=""
+                alt="" role="presentation"
               />
               Persönliches Wachstum
             </li>
@@ -139,7 +139,7 @@ function HeroBannerWithHRV() {
                 src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/WIFI_ICON_09426b68-adde-48d2-8fa4-2e1d5e43591d.webp?v=1676668860"
                 className="inline-image"
                 width="20"
-                alt=""
+                alt="" role="presentation"
               />
               Schutz vor E-Smog & 5G
             </li>
@@ -148,7 +148,7 @@ function HeroBannerWithHRV() {
                 src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Molecule_Icon_1930bc3d-20ef-4d76-a729-d9b6a19cc772.webp?v=1676669033"
                 className="inline-image"
                 width="20"
-                alt=""
+                alt="" role="presentation"
               />
               Gesteigerte Anbindung zum Quantenfeld
             </li>
@@ -158,7 +158,7 @@ function HeroBannerWithHRV() {
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Green_Checkmark.webp?v=1676668861"
               className="inline-image"
               style={{width: '20px', height: 'auto', marginRight: '5px'}}
-              alt=""
+              alt="" role="presentation"
             />
             Wirkung in Zellstudien bestätigt
           </p>
@@ -430,7 +430,7 @@ function TechnologieSection() {
           <p className="mt-2">
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/KohaerentesWasser_cd3b0e48-323b-46f5-b537-b6aae9eb2bc9.png?v=1701116490"
-              alt=""
+              alt="" role="presentation"
               className="inline-image"
               style={{float: 'left', height: '40px', width: '40px', margin: '5px'}}
             />
@@ -441,7 +441,7 @@ function TechnologieSection() {
           <p className="mt-2" style={{clear: 'left'}}>
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/E-Smog_fe53a4d3-a271-4027-873e-74f815e4ff84.png?v=1701114521"
-              alt=""
+              alt="" role="presentation"
               className="inline-image"
               style={{float: 'left', height: '40px', width: '40px', margin: '5px'}}
             />
@@ -453,7 +453,7 @@ function TechnologieSection() {
           <p className="mt-2" style={{clear: 'left'}}>
             <img
               src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-icon-zellschutz-3.png_1-1.webp?v=1676976963"
-              alt=""
+              alt="" role="presentation"
               className="inline-image"
               style={{float: 'left', height: '40px', width: '40px', margin: '5px'}}
             />
