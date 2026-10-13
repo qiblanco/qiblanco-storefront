@@ -318,7 +318,7 @@ function HerzQiOne() {
 
         <p className='mt-2'>
           <img
-            alt=""
+            alt="" role="presentation"
             style={{
               float: 'left',
               height: '40px',
@@ -334,7 +334,7 @@ function HerzQiOne() {
 
         <p className='mt-1'>
           <img
-            alt=""
+            alt="" role="presentation"
             style={{
               float: 'left',
               height: '40px',
