@@ -109,6 +109,15 @@ export function QiOne2ProSeite({
   // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
   // unveränderte Liste.
   const fragen = teileFragen('qione-2-pro', FAQ_QIONE_2_PRO);
+  // Schalter je Seite (Video-Standard s02, 14.10.2026): die Kaufseite
+  // /products/qione-2-pro lädt die Scroll-Videos seit dem zweiten Schritt erst
+  // in der Nähe. Der LP-Spiegel /pages/qione-2-pro (lp) bleibt auf "bisher":
+  // er ist Arm A des Seiten-Experiments q2p-e1-gs080, und Arm B
+  // (/pages/qione-2-pro-b) läuft ohne Scroll-Videos. Ein Umschalten von A
+  // mitten im Experiment verschöbe genau den Vergleich, den es misst; das
+  // entscheidet der Experiment-Auftrag (Grossjob
+  // 20261006-GROSSJOB-rookie-15pct-qione-2-pro-und-startseite).
+  const videoLaden = lp ? 'bisher' : 'naehe';
 
   // Buy-Box-Struktur (Bilder + Preis + Varianten + ATC + Analytics) lebt
   // geteilt in QiOneBuyBox (Query-SSoT-Bau T1). Beide Routen übergeben
@@ -269,19 +278,16 @@ export function QiOne2ProSeite({
           DIESER Seite (kein Sprung zur SEO-PDP), die Karten per `block` auf
           die Geschwister-Landeziele (Zwei-Block-IA). Ohne LP-Block gelten
           die Defaults von QiOne2Pro. */}
-      {/* Schalter je Seite (Video-Standard s02, 14.10.2026): die Kaufseite
-          bekommt das Nähe-Laden der Scroll-Videos erst im zweiten Schritt,
-          nach der Nachmessung der Kanarien-Seiten. Bis dahin lädt sie wie
-          bisher (laden="bisher"). */}
+      {/* Scroll-Videos je Seite: videoLaden (oben, Schalter je Seite). */}
       <QiOne2Pro
         block={block}
         ctaHref={lp ? `#${ankerId}` : undefined}
         ctaAnchor={lp ? `#${ankerId}` : undefined}
         gitterchipAnimation={
-          <GitterchipMoleculesScrub dataSection={anker.gitterchip} laden="bisher" />
+          <GitterchipMoleculesScrub dataSection={anker.gitterchip} laden={videoLaden} />
         }
         faqItems={fragen.unten}
-        mikroskopLaden="bisher"
+        mikroskopLaden={videoLaden}
       />
     </>
   );
