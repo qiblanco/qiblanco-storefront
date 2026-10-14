@@ -125,6 +125,24 @@ function FooterTop() {
 }
 
 /**
+ * Verweis auf die englische Antwort „Is Qi Blanco legit?" (Hypothese GS-113,
+ * Auftrag km-entw-hebel-umsetzen-seo-top3-zwei-legit-de-gs-113-20261010,
+ * Experiment E-SEO-LEGIT-01). Die Seite steht auf dem US-Laden; der Verweis
+ * ist darum ein gewöhnliches <a> im selben Tab wie der ShopSwitch, kein <Link>.
+ * lang="en", damit Vorleseprogramme den Satz englisch sprechen.
+ *
+ * WARUM NICHT IN wvFussLinks: die Liste trägt nur Routen dieses Ladens, die
+ * Prüfungen in test/hub-seiten.test.mjs verlangen das.
+ * WARUM KEIN hreflang: „Ist Qi Blanco seriös?" ist keine Übersetzung der
+ * US-Seite; ein hreflang-Paar würde Google die eine gegen die andere tauschen
+ * lassen. Rückweg: hb-deploy revert des Merge-Commits.
+ */
+const US_LEGIT = {
+  href: 'https://qi-blanco.com/pages/is-qi-blanco-legit',
+  label: 'English: Is Qi Blanco legit?',
+};
+
+/**
  * Spalte „Wissen & Vertrauen" (Großjob 20261006-GROSSJOB-seo-strategie-
  * seiten-bewertung-crawl-kannibalisierung, Segment s06). Christian am
  * 2026-10-06: die neuen Wissens- und Vertrauensseiten „sauber" verlinken,
@@ -171,6 +189,11 @@ function FooterWissenVertrauen() {
             </Link>
           </li>
         ))}
+        <li>
+          <a href={US_LEGIT.href} lang="en">
+            {US_LEGIT.label}
+          </a>
+        </li>
       </ul>
     </details>
   );
