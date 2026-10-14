@@ -5,9 +5,20 @@
  * SSoT des Verhaltens: claude-jobs/<job>/KONZEPT.md Abschnitt 2 und 7.
  *
  *   GET /            -> Loader _index.jsx           -> 302 /pages/start-b       (15 %)
- *   GET /pages/qione-2-pro -> Loader pages.qione-2-pro.jsx -> 302 /pages/qione-2-pro-b (15 %)
+ *   GET /pages/qione-2-pro -> Loader pages.qione-2-pro.jsx -> 302 /pages/qione-2-pro-b (50 %)
  *   GET /pages/produktberatung -> Loader pages.produktberatung.jsx
  *                                 -> 302 /pages/produktberatung-b       (50 %)
+ *
+ * SHOPSEITE SEIT 14.10.2026 AUF 50 % (Fix-Segment s08 desselben Grossjobs;
+ * Entscheidung Coworker A 07.10. im Auftrag Christians: nach 7 Tagen ohne
+ * Schaden von 15 auf 50 %, je Experiment nach vorab festgeschriebener Regel).
+ * q2p-e1-gs080 erfüllte sie an Tag 7 (P(B < A) 0,59 unter 0,80, Schutz
+ * Kassenstart greift nicht), die Startseite nicht (P(B < A) 0,89): sie bleibt
+ * bei 15 %. Salz und id bleiben, also bleiben die Eimer 0-14 auf B und die
+ * Eimer 15-49 wechseln von A nach B. Die Auswertung schichtet deshalb nach
+ * Epochen konstanter Zuteilung (heatmap-manager, anteil_verlauf). Rückweg auf
+ * 15 % reiht der Heatmap-Kreislauf selbst ein, sobald die Anhebungsregel nicht
+ * mehr trägt (experimente.yaml anteil_ruecklauf).
  *
  * DRITTER EINTRAG pb-e1-gs107 (Grossjob 20261008-GROSSJOB-produktberatung-
  * christians-text-und-seite-optimieren, s02; Christian 08.10.2026: „Live heißt
@@ -84,7 +95,7 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pfad_a: '/pages/qione-2-pro',
     pfad_b: '/pages/qione-2-pro-b',
     salz: 'q2p-e1-gs080',
-    anteil_prozent: 15,
+    anteil_prozent: 50,
     pin_param: 'shop_exp',
     env_kill: 'EXP_SHOP_MODE',
     marker: 'q',
