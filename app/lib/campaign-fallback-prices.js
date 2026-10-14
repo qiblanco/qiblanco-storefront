@@ -15,7 +15,7 @@
  * Shopify-Soll — hier NICHT von Hand pflegen.
  */
 export const FALLBACK_PREISE = {
-  'qione-2-pro': {bruttoWert: 1087, label: '1.087,00 €'},
+  'qione-2-pro': {bruttoWert: 1087, label: '1.087 €'},
 };
 
 /**

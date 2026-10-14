@@ -40,15 +40,18 @@ const CACAO_FALLBACK = {
 export const PACKUNG_GRAMM = 420;
 
 function formatPer100g(wert, waehrung) {
+  // Ganz -> ohne Nachkommastellen, sonst cent-genau (Hausregel, Christian
+  // 13.10.2026); der Grundpreis hat fast immer Cent und bleibt dann gleich.
+  const stellen = Math.round(wert * 100) % 100 === 0 ? 0 : 2;
   if (waehrung === 'USD') {
     return `$${wert.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: stellen,
+      maximumFractionDigits: stellen,
     })} / 100g`;
   }
   const de = wert.toLocaleString('de-DE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: stellen,
+    maximumFractionDigits: stellen,
   });
   return waehrung === 'EUR' ? `${de}€ / 100g` : `${de} ${waehrung} / 100g`;
 }

@@ -81,7 +81,7 @@ function OrderItem({order}) {
       nummer={`#${order.number}`}
       datum={datumText(order.processedAt)}
       status={versand ?? zahlung}
-      summe={<Money data={order.totalPrice} />}
+      summe={<Money data={order.totalPrice} withoutTrailingZeros />}
       zu={`/account/orders/${btoa(order.id)}`}
     />
   );

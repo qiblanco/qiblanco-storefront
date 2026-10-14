@@ -13,6 +13,12 @@ import {KontoAbschnitt, KontoLeer} from '~/components/konto/KontoUI';
  */
 
 const EUR = new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'});
+// Ganzer Betrag ohne Nachkommastellen ("50 €"), sonst cent-genau (Christian 13.10.2026).
+const EUR_GANZ = new Intl.NumberFormat('de-DE', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+});
 const ZAHL = new Intl.NumberFormat('de-DE');
 const STAND = new Intl.DateTimeFormat('de-DE', {
   dateStyle: 'medium',
@@ -24,7 +30,8 @@ const TAG = new Intl.DateTimeFormat('de-DE', {dateStyle: 'medium', timeZone: 'UT
 const STATUS_TEXT = {pending: 'offen', approved: 'freigegeben', paid: 'ausgezahlt'};
 
 function geld(wert) {
-  return EUR.format(Number(wert) || 0);
+  const n = Number(wert) || 0;
+  return (Math.round(n * 100) % 100 === 0 ? EUR_GANZ : EUR).format(n);
 }
 
 function tag(iso) {

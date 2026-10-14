@@ -26,7 +26,8 @@ export function CartSummary({cart, layout}) {
 
   // Cent-genau statt "1.087,- €" (aiceo:digest54:p3, Option c, 2026-09-10):
   // die Kasse belastet den Cent-Betrag, die Zwischensumme muss ihn zeigen.
-  // Format als "159,63 €" / "1.048,00 CHF" / "$1,383.00".
+  // Format als "159,63 €" / "1.048 CHF" / "$1,383" (ganz ohne Nachkommastellen,
+  // Christian 13.10.2026).
   const formatEuroPrice = (money) => {
     if (!money?.amount) return '';
     const amount = parseFloat(money.amount);

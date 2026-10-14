@@ -195,9 +195,12 @@ export function staffelModellAnzeige(betrag, land) {
  * Anzeigeformat je Waehrung. Stile:
  * - 'lp'        (Campaign-/Paket-Karten): "7.345 €" · "1.048 CHF" · "$1,383"
  * - 'pdp'       (ProductPrice-Kanon):    "1.087,- €" · "1.048,- CHF" · "$1,383"
- * - 'cart-cent' (Warenkorb, cent-genau, aiceo:digest54:p3): "76,00 €" ·
- *   "159,63 €" — NUR für bereits cent-genaue Werte aus
+ * - 'cart-cent' (Warenkorb, cent-genau, aiceo:digest54:p3): "76 €" ·
+ *   "159,63 €" · "$1,383" — NUR für bereits cent-genaue Werte aus
  *   cart-display-pricing.js (getCartLine*Exact); kein zweites Runden hier.
+ *   Ein ganzer Betrag steht ohne Nachkommastellen und ohne ",-" (Christian
+ *   13.10.2026: "keine Nachkommastellen im Warenkorb", die Preise sind auf
+ *   ganze Euro bereinigt); ein Betrag mit Cent bleibt cent-genau.
  * @param {number|null} wert Anzeigewert auf den Cent (ganz -> ohne Nachkommastellen)
  * @param {string} [currencyCode]
  * @param {'lp'|'pdp'|'cart-cent'} [stil]
@@ -209,7 +212,7 @@ export function formatPreis(wert, currencyCode = 'EUR', stil = 'lp') {
   // Ganz -> ohne Cent, sonst cent-genau, in jedem Stil (Kassenbetrag-Regel,
   // s03 2026-10-04): "78,13 €" · "1.132,89 CHF" · "$1,234.56".
   const ganz = Math.round(n * 100) % 100 === 0;
-  const digits = stil === 'cart-cent' || !ganz ? 2 : 0;
+  const digits = ganz ? 0 : 2;
   if (currencyCode === 'USD') {
     return `$${n.toLocaleString('en-US', {
       minimumFractionDigits: digits,

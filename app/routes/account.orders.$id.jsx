@@ -82,13 +82,13 @@ export default function OrderRoute() {
   if (discountPercentage) {
     summen.push({text: 'Rabatt', wert: `−${discountPercentage} %`});
   } else if (discountValue && discountValue.amount) {
-    summen.push({text: 'Rabatt', wert: <Money data={discountValue} />});
+    summen.push({text: 'Rabatt', wert: <Money data={discountValue} withoutTrailingZeros />});
   }
-  summen.push({text: 'Zwischensumme', wert: <Money data={order.subtotal} />});
-  summen.push({text: 'Enthaltene Steuer', wert: <Money data={order.totalTax} />});
+  summen.push({text: 'Zwischensumme', wert: <Money data={order.subtotal} withoutTrailingZeros />});
+  summen.push({text: 'Enthaltene Steuer', wert: <Money data={order.totalTax} withoutTrailingZeros />});
   summen.push({
     text: 'Gesamt',
-    wert: <Money data={order.totalPrice} />,
+    wert: <Money data={order.totalPrice} withoutTrailingZeros />,
     gesamt: true,
   });
 
@@ -109,7 +109,7 @@ export default function OrderRoute() {
               titel={lineItem.title}
               variante={lineItem.variantTitle}
               menge={lineItem.quantity}
-              preis={<Money data={lineItem.price} />}
+              preis={<Money data={lineItem.price} withoutTrailingZeros />}
               bild={
                 lineItem?.image ? (
                   <Image
