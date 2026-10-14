@@ -40,6 +40,9 @@ import {InhaltswegNeuOderGebraucht} from './InhaltswegNeuOderGebraucht';
  * den Rest, weil ihre häufigsten Kundenfragen weiter oben stehen (Amazon-Stil
  * Stufe 2, reusables/AmazonStil.jsx). Seit dem 28.09.2026 gilt das auch für
  * /pages/qione-2-pro: beide Routen rendern QiOne2ProSeite.jsx.
+ * mikroskopLaden (Default undefined = Standard des Bausteins): reicht nur den
+ * Lade-Schalter an ScrollMikroskopVideo durch ("bisher" = Laden wie bis
+ * 14.10.2026, Schalter je Seite, Video-Standard s02). Rendert nichts selbst.
  */
 export default function QiOne2Pro({
   block = undefined,
@@ -49,6 +52,7 @@ export default function QiOne2Pro({
   trustVorSlider = null,
   trustNachSlider = null,
   faqItems = FAQ_QIONE_2_PRO,
+  mikroskopLaden = undefined,
 }) {
   return (
     <div className="ProductPageQiOne">
@@ -100,7 +104,7 @@ export default function QiOne2Pro({
       <YoutubeIframe link={"https://www.youtube.com/embed/LLmNflDFcus"} titel="Qi Blanco® | Gründer Interview QiOne® 2 Pro | Anna & Christian Bernd Bauer" />
     </div>
       <StudienCards />
-      <ScrollMikroskopVideo />
+      <ScrollMikroskopVideo laden={mikroskopLaden} />
       <div className="NormalSectionSize text-center">
         <h2>
           Dank innovativem Chip-Design: <br />

@@ -1,28 +1,49 @@
 import { useState, useEffect, useRef } from "react";
+import { useNaeheLaden } from "../reusables/useNaeheLaden";
 
-export function ScrollMikroskopVideo({dataSection}) {
+const QUELLE_DESKTOP = "https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov";
+const QUELLE_MOBIL = "https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov";
+// Vorschaubild = Bild 0 der jeweiligen Datei, von Shopify beim Hochladen erzeugt
+// (Admin-API Video.preview, 1920x1080 bzw. 1080x1920; als WebP 19 bzw. 24 kB).
+const POSTER_DESKTOP =
+  "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/preview_images/940d16da99a2452d9aadd57b9711b037.thumbnail.0000000000.jpg?v=1747048923";
+const POSTER_MOBIL =
+  "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/preview_images/d9d52d90d536415bbb6342ebadb2fe97.thumbnail.0000000000.jpg?v=1744579045";
+
+/*
+ * laden (Schalter je Seite, Video-Standard s02, 14.10.2026):
+ *   "naehe"  (Standard) die Quelle haengt erst an, wenn der Block in die Naehe
+ *            kommt (useNaeheLaden); bis dahin zeigt der Kasten Bild 0 als
+ *            Vorschaubild statt des dunklen Grundes. Vorher lud jede Seite mit
+ *            diesem Block beim Aufruf 13,9-16 MB (Desktop) bzw. 1,5-2,5 MB
+ *            (Mobil), auch wenn niemand bis hierher scrollte.
+ *   "bisher" exakt das Verhalten bis 14.10. (Quelle sofort, preload auto, kein
+ *            Vorschaubild, SSR bytegleich) -- Rueckweg fuer eine einzelne Seite.
+ */
+export function ScrollMikroskopVideo({dataSection, laden = "naehe"}) {
+  const bisher = laden === "bisher";
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
   const [progress, setProgress] = useState(0);
   const [videoSrc, setVideoSrc] = useState("");
+  const [poster, setPoster] = useState(undefined);
+  const nahDran = useNaeheLaden(containerRef, {sofort: bisher});
   const metadataLoadedRef = useRef(false);
   const gesturePrimedRef = useRef(false);
   const handleScrollRef = useRef(null);
 
-  // Pick source by viewport width (unchanged)
+  // Pick source (and its first frame as poster) by viewport width
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 749) {
-        setVideoSrc("https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov");
-      } else {
-        setVideoSrc("https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov");
-      }
+      const mobil = window.innerWidth <= 749;
+      setVideoSrc(mobil ? QUELLE_MOBIL : QUELLE_DESKTOP);
+      if (!bisher) setPoster(mobil ? POSTER_MOBIL : POSTER_DESKTOP);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [bisher]);
 
   // Make the <video> iOS-friendly and listen for metadata
   useEffect(() => {
@@ -56,13 +77,14 @@ export function ScrollMikroskopVideo({dataSection}) {
     };
   }, []);
 
-  // Reload element when src changes so duration/seekable initialize correctly
+  // Reload element when src changes (or is attached near the viewport) so
+  // duration/seekable initialize correctly
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !videoSrc) return;
+    if (!video || !videoSrc || !nahDran) return;
     metadataLoadedRef.current = false;
     video.load(); // important for Safari after src swap
-  }, [videoSrc]);
+  }, [videoSrc, nahDran]);
 
   // One-time user-gesture prime for stricter Safari builds
   useEffect(() => {
@@ -132,6 +154,8 @@ export function ScrollMikroskopVideo({dataSection}) {
     };
   }, []);
 
+  const anhaengen = Boolean(nahDran && videoSrc);
+
   return (
     <div ref={containerRef} className="ScrollMikroskopvideo" data-section={dataSection}>
       <div className="VideoOverlay">
@@ -152,12 +176,13 @@ export function ScrollMikroskopVideo({dataSection}) {
 
         <video
           ref={videoRef}
-          src={videoSrc}
+          src={bisher ? videoSrc : anhaengen ? videoSrc : undefined}
+          poster={bisher ? undefined : poster}
           // important attributes for iOS
           playsInline
           muted
           // remove native loop; we loop manually from 3s
-          preload="auto"
+          preload={bisher || anhaengen ? "auto" : "none"}
         />
 
         <div className="VideoProgressTrackerWrapper">

@@ -269,14 +269,19 @@ export function QiOne2ProSeite({
           DIESER Seite (kein Sprung zur SEO-PDP), die Karten per `block` auf
           die Geschwister-Landeziele (Zwei-Block-IA). Ohne LP-Block gelten
           die Defaults von QiOne2Pro. */}
+      {/* Schalter je Seite (Video-Standard s02, 14.10.2026): die Kaufseite
+          bekommt das Naehe-Laden der Scroll-Videos erst im zweiten Schritt,
+          nach der Nachmessung der Kanarien-Seiten. Bis dahin laedt sie wie
+          bisher (laden="bisher"). */}
       <QiOne2Pro
         block={block}
         ctaHref={lp ? `#${ankerId}` : undefined}
         ctaAnchor={lp ? `#${ankerId}` : undefined}
         gitterchipAnimation={
-          <GitterchipMoleculesScrub dataSection={anker.gitterchip} />
+          <GitterchipMoleculesScrub dataSection={anker.gitterchip} laden="bisher" />
         }
         faqItems={fragen.unten}
+        mikroskopLaden="bisher"
       />
     </>
   );

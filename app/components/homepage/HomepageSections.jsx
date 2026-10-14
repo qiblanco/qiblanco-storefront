@@ -119,7 +119,10 @@ export function HomepageSections({overrides = {}}) {
 
       <Studien dataSection="studien" headline="Wirkung an menschlichen Zellen bestätigt!" />
 
-      <ScrollMikroskopVideo dataSection="mikroskop-video" />
+      {/* Schalter je Seite (Video-Standard s02, 14.10.2026): die Startseite
+          ist Gewinnerseite und bekommt das Naehe-Laden der Scroll-Videos erst
+          im zweiten Schritt, nach der Nachmessung der Kanarien-Seiten. */}
+      <ScrollMikroskopVideo dataSection="mikroskop-video" laden="bisher" />
 
       <Finanzierungsbanner dataSection="finanzierung" />
 
@@ -135,7 +138,7 @@ export function HomepageSections({overrides = {}}) {
           zeigen, GL-DES-0009 SHOW IT): GitterChip-Molecules-Scrub, Quellen/
           Overlays zentral im Wrapper. Die Startseite ist voll anker-
           instrumentiert -> dataSection hier korrekt (kein Collector-Kapern). */}
-      <GitterchipMoleculesScrub dataSection="gitterchip-video" />
+      <GitterchipMoleculesScrub dataSection="gitterchip-video" laden="bisher" />
       <SingleImage dataSection="chip-vergleich" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065"} size={"normal"} alt="Gitterchips im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"/>
       <div className="text-center mt-2" data-section="chip-cta">
         <a className="btn--primary m-center" href="/products/qione-2-pro">Hole dir jetzt deinen QiOne® 2 Pro</a>
