@@ -120,7 +120,7 @@ export function HomepageSections({overrides = {}}) {
       <Studien dataSection="studien" headline="Wirkung an menschlichen Zellen bestätigt!" />
 
       {/* Schalter je Seite (Video-Standard s02, 14.10.2026): die Startseite
-          ist Gewinnerseite und bekommt das Naehe-Laden der Scroll-Videos erst
+          ist Gewinnerseite und bekommt das Nähe-Laden der Scroll-Videos erst
           im zweiten Schritt, nach der Nachmessung der Kanarien-Seiten. */}
       <ScrollMikroskopVideo dataSection="mikroskop-video" laden="bisher" />
 

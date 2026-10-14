@@ -12,12 +12,12 @@ import {NAEHE_RAND, NAEHE_RAND_BISHER, useNaeheLaden} from './useNaeheLaden';
  *
  * Neu gegenueber dem Bestand:
  *  - Quellen/Overlay-Texte/Hoehen als Props (wiederverwendbar je Seite)
- *  - Lazy-Load: die Quelle wird erst angehaengt, wenn der Block in die
- *    Naehe kommt (useNaeheLaden, rootMargin 50 % = Oberkante 1,5
- *    Fensterhoehen unter dem oberen Rand) — vorher laedt nichts. Bis
+ *  - Lazy-Load: die Quelle wird erst angehängt, wenn der Block in die
+ *    Nähe kommt (useNaeheLaden, rootMargin 50 % = Oberkante 1,5
+ *    Fensterhöhen unter dem oberen Rand) — vorher lädt nichts. Bis
  *    14.10.2026 galt 150 %; das lud mobil auf der Gitterchip-Seite 1,3 MB
- *    beim Seitenaufruf (Video-Standard s02). `laden="bisher"` stellt fuer
- *    eine einzelne Seite den alten Rand zurueck (Schalter je Seite).
+ *    beim Seitenaufruf (Video-Standard s02). `laden="bisher"` stellt für
+ *    eine einzelne Seite den alten Rand zurück (Schalter je Seite).
  *  - CLS = 0 per Konstruktion: die vh-Hoehe steht unabhaengig vom Ladezustand
  *
  * Encoding-Vertrag (homepage-bauer SKILL-SCROLL-ANIMATIONEN.md): Quellen
@@ -82,7 +82,7 @@ export function ScrollScrubVideo({
     return () => mq.removeListener(anwenden);
   }, []);
 
-  // Lazy-Gate: erst laden, wenn der Block in die Naehe kommt
+  // Lazy-Gate: erst laden, wenn der Block in die Nähe kommt
   const nahDran = useNaeheLaden(containerRef, {
     rand: laden === 'bisher' ? NAEHE_RAND_BISHER : NAEHE_RAND,
   });

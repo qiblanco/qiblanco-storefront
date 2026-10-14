@@ -270,8 +270,8 @@ export function QiOne2ProSeite({
           die Geschwister-Landeziele (Zwei-Block-IA). Ohne LP-Block gelten
           die Defaults von QiOne2Pro. */}
       {/* Schalter je Seite (Video-Standard s02, 14.10.2026): die Kaufseite
-          bekommt das Naehe-Laden der Scroll-Videos erst im zweiten Schritt,
-          nach der Nachmessung der Kanarien-Seiten. Bis dahin laedt sie wie
+          bekommt das Nähe-Laden der Scroll-Videos erst im zweiten Schritt,
+          nach der Nachmessung der Kanarien-Seiten. Bis dahin lädt sie wie
           bisher (laden="bisher"). */}
       <QiOne2Pro
         block={block}

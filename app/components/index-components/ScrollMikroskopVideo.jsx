@@ -12,13 +12,14 @@ const POSTER_MOBIL =
 
 /*
  * laden (Schalter je Seite, Video-Standard s02, 14.10.2026):
- *   "naehe"  (Standard) die Quelle haengt erst an, wenn der Block in die Naehe
+ *   "naehe"  (Standard) die Quelle hängt erst an, wenn der Block in die Nähe
  *            kommt (useNaeheLaden); bis dahin zeigt der Kasten Bild 0 als
- *            Vorschaubild statt des dunklen Grundes. Vorher lud jede Seite mit
- *            diesem Block beim Aufruf 13,9-16 MB (Desktop) bzw. 1,5-2,5 MB
- *            (Mobil), auch wenn niemand bis hierher scrollte.
+ *            Vorschaubild statt des dunklen Grundes. Vorher luden die fünf
+ *            Seiten, auf denen der Block tief steht, beim Aufruf 13,9-15,7 MB
+ *            (Desktop) bzw. 1,5-2,5 MB (Mobil), auch wenn niemand bis hierher
+ *            scrollte (videostandard, 14.10.2026 07:01Z).
  *   "bisher" exakt das Verhalten bis 14.10. (Quelle sofort, preload auto, kein
- *            Vorschaubild, SSR bytegleich) -- Rueckweg fuer eine einzelne Seite.
+ *            Vorschaubild, SSR bytegleich) -- Rückweg für eine einzelne Seite.
  */
 export function ScrollMikroskopVideo({dataSection, laden = "naehe"}) {
   const bisher = laden === "bisher";
