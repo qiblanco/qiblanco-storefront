@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
+import {NAEHE_RAND, NAEHE_RAND_BISHER, useNaeheLaden} from './useNaeheLaden';
 
 /*
  * ScrollScrubVideo — generalisierte Scroll-Down-Animation (Scroll-Scrub).
@@ -11,8 +12,12 @@ import {useState, useEffect, useRef} from 'react';
  *
  * Neu gegenueber dem Bestand:
  *  - Quellen/Overlay-Texte/Hoehen als Props (wiederverwendbar je Seite)
- *  - Lazy-Load: die Quelle wird erst angehaengt, wenn der Block ~1,5
- *    Viewports entfernt ist (IntersectionObserver) — vorher laedt nichts
+ *  - Lazy-Load: die Quelle wird erst angehängt, wenn der Block in die
+ *    Nähe kommt (useNaeheLaden, rootMargin 50 % = Oberkante 1,5
+ *    Fensterhöhen unter dem oberen Rand) — vorher lädt nichts. Bis
+ *    14.10.2026 galt 150 %; das lud mobil auf der Gitterchip-Seite 1,3 MB
+ *    beim Seitenaufruf (Video-Standard s02). `laden="bisher"` stellt für
+ *    eine einzelne Seite den alten Rand zurück (Schalter je Seite).
  *  - CLS = 0 per Konstruktion: die vh-Hoehe steht unabhaengig vom Ladezustand
  *
  * Encoding-Vertrag (homepage-bauer SKILL-SCROLL-ANIMATIONEN.md): Quellen
@@ -30,13 +35,13 @@ export function ScrollScrubVideo({
   overlayEnd = null,
   fussnote = null,
   dataSection,
+  laden = 'naehe',
 }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
   const [progress, setProgress] = useState(0);
   const [videoSrc, setVideoSrc] = useState('');
-  const [nahDran, setNahDran] = useState(false);
   const [wenigerBewegung, setWenigerBewegung] = useState(false);
   const metadataLoadedRef = useRef(false);
   // Der Scroll-Handler wird EINMAL registriert; ein Ref trägt die aktuelle
@@ -77,26 +82,10 @@ export function ScrollScrubVideo({
     return () => mq.removeListener(anwenden);
   }, []);
 
-  // Lazy-Gate: erst laden, wenn der Block ~1,5 Viewports entfernt ist
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    if (typeof IntersectionObserver === 'undefined') {
-      setNahDran(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setNahDran(true);
-          io.disconnect();
-        }
-      },
-      {rootMargin: '150% 0px 150% 0px'},
-    );
-    io.observe(container);
-    return () => io.disconnect();
-  }, []);
+  // Lazy-Gate: erst laden, wenn der Block in die Nähe kommt
+  const nahDran = useNaeheLaden(containerRef, {
+    rand: laden === 'bisher' ? NAEHE_RAND_BISHER : NAEHE_RAND,
+  });
 
   // Quelle nach Viewport-Breite (Muster ScrollMikroskopVideo)
   useEffect(() => {

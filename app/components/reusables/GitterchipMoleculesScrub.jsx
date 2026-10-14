@@ -21,15 +21,20 @@ const GITTERCHIP_VIDEO_MOBILE =
  * Seite eine ZWEITE Scroll-Strecke trägt (heute: /pages/schlaf-zellen-
  * schutz, 300/250vh) -- der Scroll-Weg ist eine Eigenschaft der SEITE,
  * nicht des Videos. Die Overlay-Texte bleiben zentral und unveränderbar.
+ * `laden` reicht ebenso nur durch (ScrollScrubVideo, Schalter je Seite):
+ * ohne Angabe gilt das Nähe-Laden, "bisher" stellt den Rand bis 14.10.2026
+ * für genau diese Seite zurück.
  */
 export function GitterchipMoleculesScrub({
   dataSection,
   heightVhDesktop,
   heightVhMobile,
+  laden,
 }) {
   return (
     <ScrollScrubVideo
       dataSection={dataSection}
+      {...(laden ? {laden} : {})}
       {...(heightVhDesktop ? {heightVhDesktop} : {})}
       {...(heightVhMobile ? {heightVhMobile} : {})}
       srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
