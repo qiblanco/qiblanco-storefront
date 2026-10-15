@@ -45,8 +45,8 @@ test('DE unverändert: 76 / 61 / 53 pro Packung, Kaufknopf 76 / 122 / 159', () =
   assert.deepEqual(p.map((x) => x.priceNum), [76, 61, 53]);
   assert.deepEqual(p.map((x) => x.gesamtNum), [76, 122, 159]);
   assert.ok(p.every((x) => x.teilbar));
-  assert.equal(label(EUR, 'DE', null, '3'), '3x 420g | 30% Rabatt | 53,- € pro Packung');
-  assert.equal(label(EUR, 'DE', null, '1'), '1x 420g | 76,- € pro Packung');
+  assert.equal(label(EUR, 'DE', null, '3'), '3x 420g | 30% Rabatt | 53 € pro Packung');
+  assert.equal(label(EUR, 'DE', null, '1'), '1x 420g | 76 € pro Packung');
 });
 
 test('AT 3x: Zeilenbetrag statt Packungspreis mal Menge (Punkt 8)', () => {

@@ -466,9 +466,9 @@ test('DE Set 5x: 266,06 wie die Kasse, nicht 267', () => {
   assert.equal(bruttoAnzeige('248.65', 'bundle-5x-awake', 'EUR', 'DE'), 266.06);
 });
 
-test('DE QiOne bleibt 1.087,- (Notbehelf 1 Cent bis zum Brutto-Kipp)', () => {
+test('DE QiOne bleibt 1.087 € (Notbehelf 1 Cent bis zum Brutto-Kipp)', () => {
   assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR', 'DE'), 1087);
-  assert.equal(formatPreis(1087, 'EUR', 'pdp'), '1.087,- €');
+  assert.equal(formatPreis(1087, 'EUR', 'pdp'), '1.087 €');
   assert.equal(formatPreis(76, 'EUR', 'lp'), '76 €');
   // Der Notbehelf gilt nur in DE und nur 1 Cent weit.
   assert.equal(ganzEuroAnzeige(1087.01, 'AT'), 1087.01);
@@ -543,7 +543,7 @@ test('Streichpreis auf der Satz-Achse: Rabatt je Land wie in DE', () => {
   assert.equal(typeof mp.streichAnzeige, 'function', 'streichAnzeige fehlt');
   // DE byte-gleich wie bisher.
   assert.equal(mp.streichAnzeige(eur, 'qione-2-pro', 'DE'), 1238);
-  assert.equal(mp.formatPreis(1238, 'EUR', 'pdp'), '1.238,- €');
+  assert.equal(mp.formatPreis(1238, 'EUR', 'pdp'), '1.238 €');
   // AT: 1238 / 1,19 x 1,20, der gezeigte Rabatt bleibt der deutsche.
   assert.equal(mp.streichAnzeige(eur, 'qione-2-pro', 'AT'), 1248.4);
   const rabatt = (preis, streich) => Math.round((1 - preis / streich) * 1000) / 10;
