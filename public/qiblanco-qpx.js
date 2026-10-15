@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.10) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.11) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -417,6 +417,11 @@
     var letzterAnker = "";
     var ausstiegAn = 0;
     var MED_T0 = Date.now();
+    var MED_STOCK_FENSTER_MS = 10000;
+    var medBootFertig = 0;
+    var medTipp = null;
+    var MED_PERF = false;
+    try { MED_PERF = !!(w.performance && typeof w.performance.now === "function"); } catch (e) {}
 
     function medSanit(s) {
       try {
@@ -463,6 +468,9 @@
     function medCt(el) {
       try { var c = el.currentTime; return (typeof c === "number" && c >= 0) ? c : 0; }
       catch (e) { return 0; }
+    }
+    function medGespielt(el) {
+      try { return !!(el.played && el.played.length > 0); } catch (e) { return true; }
     }
     function medDauer(el) {
       try { var dd = el.duration; return (typeof dd === "number" && dd > 0 && dd < 86400) ? dd : 0; }
@@ -560,16 +568,27 @@
               seit: 0, ctSeit: 0, letztCt: medCt(el), letztP: 0,
               mrc: 0, sichtSeit: 0, start: 0, startOff: 0, q: {},
               scrubMax: 0, scrubUmkehr: 0, scrubN: 0,
+              ldZ: 0, ldPlay: 0, ldAus: 0, ldRvfc: 0, stkT0: 0, stkSeit: 0, stkMs: 0, stkN: 0, stkZu: 0, stkAus: 0,
+              stkBereit: (medCt(el) === 0 && !medGespielt(el)) ? 1 : 0,
               dwell: 0, dwellSeit: 0 };
         medien[o.id] = k;
         if (art === "bild") medBildN++; else medN++;
       }
       el.__qpxMed = k;
+      el.__qpxBoot = medBootFertig ? 0 : 1;
       if (art === "bild") return;
+      try { el.__qpxLaeuft = (el.paused === false && el.readyState >= 3) ? 1 : 0; } catch (e) { el.__qpxLaeuft = 0; }
       var evs = ["play", "playing", "pause", "ended", "volumechange", "seeked", "emptied"];
       for (var i = 0; i < evs.length; i++) {
         el.addEventListener(evs[i], function () { try { medEval(el); } catch (e) {} },
                             { passive: true });
+      }
+      var lev = ["play", "playing", "waiting", "pause", "seeking", "ended", "emptied"];
+      for (var i3 = 0; i3 < lev.length; i3++) {
+        (function (typ) {
+          el.addEventListener(typ, function () { try { medLadenEreignis(el, typ); } catch (e) {} },
+                              { passive: true });
+        })(lev[i3]);
       }
       el.addEventListener("timeupdate", function () {
         var n = Date.now();
@@ -577,6 +596,181 @@
         el.__qpxTu = n;
         try { medEval(el); } catch (e) {}
       }, { passive: true });
+    }
+    function medUhr() {
+      if (MED_PERF) { try { return w.performance.now(); } catch (e) {} }
+      return Date.now();
+    }
+    function medFcp() {
+      if (!MED_PERF) return 0;
+      try {
+        var p = w.performance.getEntriesByName ? w.performance.getEntriesByName("first-contentful-paint") : null;
+        return (p && p.length && p[0].startTime > 0) ? p[0].startTime : 0;
+      } catch (e) { return 0; }
+    }
+    function medTippAn(el, t) {
+      var x = medTipp;
+      if (!x || t < x.t || t - x.t > 1000) return false;
+      try {
+        if (x.el === el) return true;
+        if (x.el && x.el.closest && x.el.closest("button, a, input, select, textarea, [role=button]")) return false;
+        var h = el.parentNode;
+        return !!(h && h.contains && h.contains(x.el));
+      } catch (e) { return false; }
+    }
+    function medZeit(x) {
+      return (MED_PERF && typeof x === "number" && isFinite(x) && x > 0 && x < 1e11) ? x : medUhr();
+    }
+    function medPaintBekannt() {
+      try { return MED_PERF && typeof w.PerformancePaintTiming !== "undefined"; } catch (e) { return false; }
+    }
+    function medGewollt(k, el) {
+      try { if (el.autoplay === true || (el.hasAttribute && el.hasAttribute("autoplay"))) return "auto"; } catch (e) {}
+      if (k.ldPlay) return "play";
+      try { if (el.paused === false) return "play"; } catch (e) {}
+      return "";
+    }
+    function medImErstenBild(en) {
+      try {
+        var r = en.boundingClientRect, vh = (en.rootBounds && en.rootBounds.height) || w.innerHeight || 0;
+        if (!r || !vh) return false;
+        var y = w.pageYOffset || (d.documentElement && d.documentElement.scrollTop) || 0;
+        var oben = r.top + y, unten = r.bottom + y, sicht = Math.min(unten, vh) - Math.max(oben, 0);
+        return sicht > 0 && (sicht >= (unten - oben) * 0.5 || sicht >= vh * 0.5);
+      } catch (e) { return false; }
+    }
+    function medLadenStart(k, el, t0, art) {
+      k.ldZ = 1; k.ldT0 = t0; k.ldT0Art = art; k.ldEl = el; k.ldAn = medGewollt(k, el) || "play";
+      k.ldVorher = (medCt(el) > 0 || medGespielt(el)) ? 1 : 0;
+      if (typeof el.requestVideoFrameCallback === "function") {
+        try {
+          el.requestVideoFrameCallback(function medBildCb(jetzt, md) {
+            try {
+              if (k.ldZ !== 1 || el !== k.ldEl) return;
+              if (el.paused || !el.__qpxLaeuft) { el.requestVideoFrameCallback(medBildCb); return; }
+              var t1 = medZeit(md && md.presentationTime);
+              if (t1 < k.ldT0 - 1000) t1 = medUhr();
+              medLadenBild(k, el, t1, "rvfc");
+            } catch (e) {}
+          });
+          k.ldRvfc = 1;
+          return;
+        } catch (e) {}
+      }
+      try { if (el.__qpxLaeuft && el.paused === false) medLadenBild(k, el, t0, "schon"); } catch (e) {}
+    }
+    function medLadenBild(k, el, t1, art) {
+      if (k.ldZ !== 1 || el !== k.ldEl) return;
+      k.ldZ = 2; k.ldWert = Math.max(0, Math.round(t1 - k.ldT0)); k.ldT1Art = art;
+    }
+    function medRueck(k, el, t0, art, ct) {
+      var jetzt = medUhr(), dur = medDauer(el), rate = 1;
+      try { if (el.playbackRate > 0) rate = el.playbackRate; } catch (e) {}
+      if (!dur || jetzt - t0 >= dur * 1000 / rate) return false;
+      k.ldZ = 2; k.ldT0 = t0; k.ldT0Art = art; k.ldEl = el; k.ldAn = medGewollt(k, el);
+      k.ldWert = Math.max(0, Math.round(jetzt - ct * 1000 / rate - t0)); k.ldT1Art = "rueck";
+      return true;
+    }
+    function medLadenOhne(k, grund, t) {
+      if (k.ldZ === 2) return;
+      var el = k.ldEl || k.el;
+      k.ldOffen = (k.ldZ === 1) ? Math.max(0, Math.round(t - k.ldT0)) : null;
+      try { k.ldRs = el.readyState || 0; k.ldP = el.paused ? 1 : 0; } catch (e) { k.ldRs = 0; k.ldP = 1; }
+      k.ldZ = 2; k.ldWert = null; k.ldGrund = grund; k.ldH = tabSichtbar() ? 0 : 1;
+    }
+    function medLadenPruefe(k, el, t) {
+      if (k.ldZ !== 0 || k.ldAus || !el || el.__qpxMed !== k) return;
+      if (!el.__qpxSicht || !tabSichtbar() || !medGewollt(k, el)) return;
+      medLadenStart(k, el, t, "io");
+    }
+    function medLadenIo(k, el, en, vis, erst) {
+      if (k.ldAus) return;
+      var t = medZeit(en.time);
+      if (vis) k.sichtEl = el;
+      if (k.ldZ === 1 && el === k.ldEl && !vis) { medLadenOhne(k, "weg", t); return; }
+      if (k.ldZ !== 0 || !vis) return;
+      if (erst && el.__qpxBoot && tabSichtbar() && medGewollt(k, el)) {
+        var fcp = medFcp();
+        if (fcp ? fcp > t : medPaintBekannt()) {
+          var ct0 = medCt(el), lauf0 = false;
+          try { lauf0 = !!(el.__qpxLaeuft && el.paused === false && el.readyState >= 3); } catch (e) {}
+          if (ct0 > 0 && lauf0 && medRueck(k, el, t, "io", ct0)) return;
+          medLadenStart(k, el, t, "io");
+          return;
+        }
+        if (!fcp || !medImErstenBild(en)) { medLadenOhne(k, "vor_pixel", t); return; }
+        var ct = medCt(el), spielt = false;
+        try { spielt = el.paused === false && el.readyState >= 3; } catch (e) {}
+        if (ct > 0 || spielt) {
+          if (!spielt || !medRueck(k, el, fcp, "fcp", ct)) medLadenOhne(k, "vor_pixel", t);
+          return;
+        }
+        medLadenStart(k, el, fcp, "fcp");
+        return;
+      }
+      medLadenPruefe(k, el, t);
+    }
+    function medStockenEnde(k) { return k.stkZu || (k.stkT0 + MED_STOCK_FENSTER_MS); }
+    function medStockenMs(k, t) {
+      var ms = k.stkMs;
+      if (k.stkSeit) { var e = Math.min(t, medStockenEnde(k)); if (e > k.stkSeit) ms += e - k.stkSeit; }
+      return Math.round(ms);
+    }
+    function medStockenBuche(k, t) {
+      if (!k.stkSeit) return;
+      var e = Math.min(t, medStockenEnde(k));
+      if (e > k.stkSeit) k.stkMs += e - k.stkSeit;
+      k.stkSeit = 0;
+    }
+    function medStockenSchliesse(k, t) {
+      if (!k.stkT0 || k.stkZu) return;
+      medStockenBuche(k, t);
+      k.stkZu = Math.min(t, k.stkT0 + MED_STOCK_FENSTER_MS);
+    }
+    function medLadenEreignis(el, typ) {
+      if (!MEDIEN_ON) return;
+      var k = el && el.__qpxMed; if (!k || k.art === "bild") return;
+      var t = medUhr();
+      if (typ === "play") {
+        k.ldPlay = 1;
+        if (k.ldZ === 1 && k.ldAn === "auto" && el === k.ldEl && medTippAn(el, t)) {
+          k.ldT0 = t; k.ldT0Art = "tipp"; k.ldAn = "tipp";
+        }
+      }
+      if (typ === "playing") el.__qpxLaeuft = 1;
+      else if (typ === "waiting" || typ === "pause" || typ === "emptied") el.__qpxLaeuft = 0;
+      if (typ === "playing") {
+        if (k.stkBereit) { k.stkBereit = 0; if (!k.stkT0 && !k.stkAus && tabSichtbar()) k.stkT0 = t; }
+        medStockenBuche(k, t);
+      } else if (typ === "waiting") {
+        var sk = false, pa = true;
+        try { sk = !!el.seeking; pa = !!el.paused; } catch (e) {}
+        if (k.stkT0 && !k.stkZu && !k.stkSeit && !sk && !pa && t < medStockenEnde(k)) { k.stkSeit = t; k.stkN++; }
+      } else if (typ === "pause" || typ === "seeking" || typ === "ended" || typ === "emptied") {
+        medStockenBuche(k, t);
+      }
+      if (k.ldZ === 0) medLadenPruefe(k, el, t);
+      if (k.ldZ === 1 && !k.ldRvfc && el === k.ldEl && typ === "playing")
+        medLadenBild(k, el, t, "pl");
+    }
+    function medLadenTab() {
+      var t = medUhr(), id;
+      for (id in medien) {
+        if (!Object.prototype.hasOwnProperty.call(medien, id)) continue;
+        var k = medien[id];
+        if (k.art === "bild" || k.ldZ !== 0) continue;
+        medLadenPruefe(k, k.sichtEl || k.el, t);
+      }
+    }
+    function medLadenSchluss() {
+      var t = medUhr(), id;
+      for (id in medien) {
+        if (!Object.prototype.hasOwnProperty.call(medien, id)) continue;
+        var k = medien[id];
+        if (k.art === "bild") continue;
+        if (k.ldZ === 1) medLadenOhne(k, "abbruch", t);
+        medStockenSchliesse(k, t);
+      }
     }
     function medObserve() {
       if (!MEDIEN_ON || !w.IntersectionObserver) return;
@@ -594,6 +788,8 @@
               continue;
             }
             if (k.vis !== (vis ? 1 : 0)) { k.vis = vis ? 1 : 0; medEval(el); }
+            var erstIo = !el.__qpxIo; el.__qpxIo = 1; el.__qpxSicht = vis ? 1 : 0;
+            try { medLadenIo(k, el, en, vis, erstIo); } catch (e) {}
           }
         }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
       }
@@ -620,6 +816,7 @@
         }
         try { medEval(k.el); } catch (e) {}
       }
+      try { if (tabSichtbar()) medLadenTab(); } catch (e) {}
     }
     function medScroll(pct) {
       if (!MEDIEN_ON) return;
@@ -674,6 +871,22 @@
           out.push({ art: "video_start", obj: id, fam: k.fam, wert: 1, toff: k.startOff,
                      meta: { obj_q: k.objQ, fam_q: k.famQ, dauer_s: Math.round(medDauer(el)),
                              ton_bekannt: k.tonBekannt ? 1 : 0 } });
+        if (k.ldZ === 2 && !k.ldAus) {
+          var stkBis = k.stkZu || medUhr(), stkVoll = (k.stkT0 && stkBis >= k.stkT0 + MED_STOCK_FENSTER_MS) ? 1 : 0;
+          var ml = { t0: k.ldT0Art || "", stk: stkVoll, obj_q: k.objQ, fam_q: k.famQ };
+          if (k.stkT0 && !stkVoll) ml.stk_ms = Math.max(0, Math.round(stkBis - k.stkT0));
+          if (k.ldWert != null) { ml.t1 = k.ldT1Art; ml.an = k.ldAn; if (k.ldVorher) ml.vorher = 1; }
+          else { ml.g = k.ldGrund; ml.rs = k.ldRs; ml.p = k.ldP; ml.h = k.ldH;
+                 if (k.ldOffen != null) ml.offen_ms = k.ldOffen; }
+          out.push({ art: "video_laden", obj: id, fam: k.fam, wert: k.ldWert, toff: 0, meta: ml });
+        }
+        if (k.stkT0 && !k.stkAus) {
+          var tSt = medUhr(), msSt = medStockenMs(k, tSt);
+          if (msSt > 0)
+            out.push({ art: "video_stocken", obj: id, fam: k.fam, wert: msSt, toff: 0,
+                       meta: { n: k.stkN, zu: (k.stkZu || tSt >= medStockenEnde(k)) ? 1 : 0,
+                               obj_q: k.objQ, fam_q: k.famQ } });
+        }
         for (i in k.q) {
           if (!Object.prototype.hasOwnProperty.call(k.q, i)) continue;
           var qq = k.q[i], mq = { zustand_marke: qq.z };
@@ -716,6 +929,8 @@
         else if (e.art === "video_scrub") stufe = Math.round((e.wert || 0) / 5);
         else if (e.art === "scroll_umkehr") stufe = e.nr;
         else if (e.art === "ausstieg") stufe = 1;
+        else if (e.art === "video_laden") stufe = (e.wert == null ? 1 : 2) + (e.meta && e.meta.stk ? 10 : 0);
+        else if (e.art === "video_stocken") stufe = e.meta ? (e.meta.n || 0) * 10 + (e.meta.zu ? 1 : 0) : 0;
         k.push({ a: e.art, o: e.obj, s: stufe, z: e.zus || "" });
       }
       return k;
@@ -753,6 +968,7 @@
         try { routeChanged(); } catch (e) {}
       }
       if (force) ausstiegAn = 1;
+      if (force) { try { medLadenSchluss(); } catch (e) {} }
       var snap = snapshot();
       var sig = JSON.stringify(snap);
       var key = schluessel(snap);
@@ -816,6 +1032,7 @@
     }
     observeSections();
     try { medObserve(); } catch (e) {}
+    medBootFertig = 1;
     try {
       if (w.MutationObserver) {
         var secScanPending = false;
@@ -833,6 +1050,7 @@
 
     d.addEventListener("click", function (e) {
       lastActivity = Date.now();
+      try { medTipp = { t: medUhr(), el: e.target }; } catch (e6) {}
       try {
         var el = e.target && e.target.closest ? e.target.closest("[data-section]") : null;
         if (el) { var id = el.getAttribute("data-section"); if (id) sec(id).clicks++; }
@@ -958,6 +1176,7 @@
         k.dwell = 0; k.dwellSeit = (k.art === "bild" && k.vis && tabSichtbar()) ? now : 0;
         k.scrubMax = 0; k.scrubUmkehr = 0; k.scrubN = 0;
         k.seit = k.spielt ? now : 0; k.letztP = 0;
+        k.ldAus = 1; k.stkAus = 1; k.stkSeit = 0;
       }
       for (i = 0; i < medObserved.length; i++) {
         var n = medObserved[i];
