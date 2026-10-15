@@ -63,7 +63,7 @@ test('(A) Nicht-EUR-Maerkte liefern den Endbetrag, keine deutsche Steuer', () =>
 test('(A) das Anzeigeformat ist deutsch, nie das rohe US-Format', () => {
   const txt = formatPreis(bruttoAnzeige(NETTO_PACKUNG, 'crystal-cacao-create', 'EUR'), 'EUR', 'lp');
   assert.equal(txt, '76 €');
-  assert.equal(formatPreis(1087, 'EUR', 'pdp'), '1.087,- €');
+  assert.equal(formatPreis(1087, 'EUR', 'pdp'), '1.087 €');
   // Genau die Schreibweise, die der Preis-Waechter nicht sehen kann:
   assert.ok(!/€\d/.test(txt), `US-Format "€76" darf nie entstehen, war: ${txt}`);
 });

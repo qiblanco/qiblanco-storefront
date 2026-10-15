@@ -31,6 +31,13 @@ import {
 } from './amazonstil-daten.js';
 import {FAQ_CACAO, FAQ_QIBRACELET, FAQ_QIHOME_AIR, FAQ_QIONE_2_PRO} from '../../data/product-faqs.js';
 import {faqPageJsonLdString, isSchemaSafe} from '../../lib/faq-schema.js';
+import {setzePreismodus} from '../../lib/preismodus.js';
+
+// Die Preis-Fixturen dieser Datei sind NETTO-Basispreise (913,45 -> 1.087 €), wie in
+// test/cacao-pricing.test.mjs. Seit dem Brutto-Kipp am 2026-10-09 ist die Vorgabe
+// 'brutto'; ohne diese Zeile zeigten zwei Tests "913,45 €" statt der Kaufbox-Zahl
+// (vorbestehend rot, gemessen 15.10.2026 auf origin/main 41c5a1c9).
+setzePreismodus('netto');
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const APP = join(HIER, '..', '..');
@@ -110,9 +117,9 @@ test('Rückweg Schalter Vergleich: produkte=[] -> keine Spalten, keine Abfrage, 
 });
 
 test('Preis: dieselbe Rechnung wie die Kaufbox (ProductPrice), Raten wie KaufZusage', () => {
-  // QiOne 2 Pro netto 913,45 -> Kaufbox "1.087,- €" (Kopf von markt-pricing.js).
+  // QiOne 2 Pro netto 913,45 -> Kaufbox "1.087 €" (Kopf von markt-pricing.js).
   const qione = {amount: '913.45', currencyCode: 'EUR'};
-  assert.equal(preisAnzeige(qione, 'qione-2-pro', 'DE'), '1.087,- €');
+  assert.equal(preisAnzeige(qione, 'qione-2-pro', 'DE'), '1.087 €');
   assert.equal(ratenAnzeige(qione, 'qione-2-pro', 'DE'), '12 Raten à 91 €²');
   assert.equal(ratenAnzeige(qione, 'qione-2-pro', 'AT'), null, 'Raten nur im Markt DE');
   assert.equal(preisAnzeige({amount: '1383.0', currencyCode: 'USD'}, 'qione-2-pro', 'US'), '$1,383');
@@ -128,8 +135,8 @@ test('Spalten: eigenes Gerät zuerst, eigener Preis aus der Kaufbox, Name/Bild a
   const s = vergleichSpalten('qibracelet', {preise, eigenerPreis: {amount: '1000', currencyCode: 'EUR'}, land: 'DE'});
   assert.deepEqual(s.map((x) => x.handle), ['qibracelet', 'qione-2-pro', 'qihome-air']);
   assert.equal(s[0].eigenes, true);
-  assert.equal(s[0].preis, '1.190,- €', 'eigenes Gerät nimmt den Kaufbox-Preis');
-  assert.equal(s[1].preis, '1.087,- €');
+  assert.equal(s[0].preis, '1.190 €', 'eigenes Gerät nimmt den Kaufbox-Preis');
+  assert.equal(s[1].preis, '1.087 €');
   for (const x of s) {
     assert.ok(x.name && x.bild && x.alt, `${x.handle}: Name/Bild fehlt`);
   }
