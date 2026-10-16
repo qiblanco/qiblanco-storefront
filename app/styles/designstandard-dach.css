@@ -1,0 +1,102 @@
+/* ERZEUGT — nicht von Hand aendern.
+ * designstandard qiblanco-dach v1 (Stand 2026-10-15) — Quelle: design-meister/db/designstandard/qiblanco-dach.yaml + _basis.yaml
+ * Neu erzeugen: design-meister/bin/designstandard erzeuge --marke qiblanco-dach --format css --ziel app/styles/designstandard-dach.css
+ * Pruefen:      design-meister/bin/designstandard drift --marke qiblanco-dach --repo <laden-repo>
+ * Werte aendern nur im Standard (YAML), dann neu erzeugen. Herkunft je Zahl: designstandard zeige.
+ */
+:root {
+  /* --- typo_skala --- */
+  --qb-ref-fs-1: 12px;  /* typo.stufe.1 */
+  --qb-ref-fs-2: 14px;  /* typo.stufe.2 */
+  --qb-ref-fs-3: 16px;  /* typo.stufe.3 */
+  --qb-ref-fs-4: 18px;  /* typo.stufe.4 */
+  --qb-ref-fs-5: 20px;  /* typo.stufe.5 */
+  --qb-ref-fs-6: 24px;  /* typo.stufe.6 */
+  --qb-ref-fs-7: 28px;  /* typo.stufe.7 */
+  --qb-ref-fs-8: 32px;  /* typo.stufe.8 */
+  --qb-ref-fs-9: 40px;  /* typo.stufe.9 */
+
+  /* --- typo_rollen --- */
+  --qb-text-h1: var(--qb-ref-fs-9);  /* typo.h1.groesse */
+  --qb-text-h1-mobil: var(--qb-ref-fs-7);  /* typo.h1.groesse_mobil */
+  --qb-text-h2: var(--qb-ref-fs-8);  /* typo.h2.groesse */
+  --qb-text-h2-mobil: var(--qb-ref-fs-6);  /* typo.h2.groesse_mobil */
+  --qb-text-h3: var(--qb-ref-fs-6);  /* typo.h3.groesse */
+  --qb-text-h3-mobil: var(--qb-ref-fs-5);  /* typo.h3.groesse_mobil */
+  --qb-text-lead: var(--qb-ref-fs-4);  /* typo.lead.groesse */
+  --qb-text-fliess: var(--qb-ref-fs-3);  /* typo.fliess.groesse */
+  --qb-text-klein: var(--qb-ref-fs-2);  /* typo.klein.groesse */
+  --qb-text-fein: var(--qb-ref-fs-1);  /* typo.fein.groesse */
+  --qb-text-preis: var(--qb-ref-fs-8);  /* typo.preis.groesse */
+  --qb-text-btn-primaer: var(--qb-ref-fs-4);  /* typo.knopf.groesse */
+  --qb-text-btn-sekundaer: var(--qb-ref-fs-3);  /* typo.knopf_sekundaer.groesse */
+  --qb-lh-h1: 1.1;  /* typo.h1.zeilenhoehe */
+  --qb-lh-h2: 1.2;  /* typo.h2.zeilenhoehe */
+  --qb-lh-h3: 1.25;  /* typo.h3.zeilenhoehe */
+  --qb-lh-lead: 1.5;  /* typo.lead.zeilenhoehe */
+  --qb-lh-fliess: 1.65;  /* typo.fliess.zeilenhoehe */
+  --qb-fw-ueberschrift: 600;  /* typo.ueberschrift.gewicht */
+  --qb-fw-fliess: 400;  /* typo.fliess.gewicht */
+  --qb-fw-preis: 600;  /* typo.preis.gewicht */
+  --qb-fw-knopf: 600;  /* typo.knopf.gewicht */
+  --qs-t-fein: var(--qb-ref-fs-2);  /* typo.huelle.fein */
+  --qs-t-basis: var(--qb-ref-fs-3);  /* typo.huelle.basis */
+  --qs-t-gross: var(--qb-ref-fs-5);  /* typo.huelle.gross */
+
+  /* --- raster --- */
+  --qb-ref-raster: 8px;  /* raster.grund */
+  --qb-abstand-1: 8px;  /* raster.1 */
+  --qb-abstand-2: 16px;  /* raster.2 */
+  --qb-abstand-3: 24px;  /* raster.3 */
+  --qb-abstand-4: 32px;  /* raster.4 */
+  --qb-abstand-5: 48px;  /* raster.5 */
+  --qb-abstand-6: 64px;  /* raster.6 */
+  --qb-abstand-7: 96px;  /* raster.7 */
+  --qb-ref-sektion-lg: 96px;  /* raster.sektion_gross */
+  --qb-ref-sektion-md: 64px;  /* raster.sektion_mittel */
+  --qb-ref-sektion-sm: 32px;  /* raster.sektion_klein */
+  --qb-abstand-sektion-gross: var(--qb-ref-sektion-lg);  /* abstand.sektion_gross */
+  --qb-abstand-sektion-mittel: var(--qb-ref-sektion-md);  /* abstand.sektion_mittel */
+  --qb-abstand-sektion-klein: var(--qb-ref-sektion-sm);  /* abstand.sektion_klein */
+
+  /* --- layout --- */
+  --qb-inhalt-max: 1350px;  /* layout.inhalt_max */
+  --qb-rand: var(--qb-abstand-2);  /* layout.rand */
+  --measure-text: 75ch;  /* layout.zeile_max */
+  --qb-anker-abstand: calc(var(--qb-kopf-hoehe, 150px) + var(--qb-abstand-2));  /* kopf.anker_abstand */
+  --aside-width: 500px;  /* schublade.breite */
+  --qb-kaufblock-max: 500px;  /* kaufblock.breite_max */
+
+  /* --- knopf --- */
+  --qb-knopf-hoehe: 70px;  /* knopf.hoehe */
+  --qb-treffer-min: 44px;  /* knopf.treffer_min */
+
+  /* --- radien --- */
+  --qb-ref-radius-klein: 8px;  /* radius.klein_ref */
+  --qb-ref-radius-bild: 4px;  /* radius.bild_ref */
+  --qb-radius-klein: var(--qb-ref-radius-klein);  /* radius.klein */
+  --qb-radius-bild: var(--qb-ref-radius-bild);  /* radius.bild */
+  --qb-radius-knopf: 10px;  /* radius.knopf */
+
+  /* --- farben --- */
+  --qb-ref-tinte: #2c2a26;  /* farbe.tinte_ref */
+  --qb-ref-tinte-gedaempft: #6b665d;  /* farbe.gedaempft_ref */
+  --qb-ref-flaeche-warm: #f8f4ee;  /* farbe.flaeche_ref */
+  --qb-ref-gold-tinte: #856828;  /* farbe.gold_tinte_ref */
+  --qb-ref-gold-kauf: rgb(242, 191, 114);  /* farbe.gold_kauf_ref */
+  --qb-ref-bahn-schatten: rgba(0, 0, 0, 0.2);  /* farbe.bahn_schatten_ref */
+  --qb-grund: #ffffff;  /* farbe.grund */
+  --qb-text: var(--qb-ref-tinte);  /* farbe.text */
+  --qb-text-gedaempft: var(--qb-ref-tinte-gedaempft);  /* farbe.gedaempft */
+  --qb-flaeche: var(--qb-ref-flaeche-warm);  /* farbe.flaeche */
+  --qb-linie: rgba(74, 71, 65, 0.14);  /* farbe.linie */
+  --qb-akzent-kauf: var(--qb-ref-gold-kauf);  /* farbe.akzent_kauf */
+  --qb-akzent: var(--qb-akzent-kauf);  /* farbe.akzent */
+  --qb-akzent-tinte: var(--qb-ref-gold-tinte);  /* farbe.akzent_tinte */
+  --qb-text-auf-akzent: var(--qb-ref-tinte);  /* farbe.schrift_auf_akzent */
+  --qb-fokus: var(--qb-akzent-tinte);  /* farbe.fokus */
+  --qb-schatten-hover: 0 8px 24px rgba(74, 71, 65, 0.14);  /* schatten.hover */
+  --qb-komponente-slider-bahn-hintergrund: var(--qb-ref-bahn-schatten);  /* komponente.slider_bahn */
+  --qb-sterne-gold: #F2BF72;  /* farbe.sterne */
+  --qb-sterne-leer: #dadce0;  /* farbe.sterne_leer */
+}

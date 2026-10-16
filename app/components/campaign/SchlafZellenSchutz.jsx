@@ -12,6 +12,7 @@ import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ExterneStimmen} from '~/components/reusables/ExterneStimmen';
+import {Kaufblock} from '~/components/reusables/Kaufblock';
 import {CdnBild} from '~/components/reusables/CdnBild';
 import {bildQuelle, bildSrcSet} from '~/components/reusables/shopifyBildQuellen';
 import {THEMEN} from '~/lib/redesign3themen';
@@ -984,17 +985,50 @@ function FinalCTA() {
    (`lp-vp-btn lp-vp-btn--primary` -> /pages/qione-2-pro, derselbe Knopf wie im
    Hero). Kein zweiter Gold-Ton, keine neue Schriftgroesse, kein Preis. Auch
    der ABSTAND ist geerbt: die 96 px Sektions-Polsterung ober- und unterhalb
-   tragen den Knopf, er bringt keinen eigenen Rhythmus mit. */
+   tragen den Knopf, er bringt keinen eigenen Rhythmus mit.
+
+   SEIT DEM 16.10.2026 EIN KAUFBLOCK (Job 20261015-GROSSJOB-design-update-…,
+   Segment s07; Christian 15.10.: „die Jetzt-kaufen-Button sind sowas von
+   außerhalb vom Design, dass es weh tut … das verhindert definitiv Käufe").
+   Das „kein Preis" von oben ist damit überholt: der nackte Knopf war genau
+   der Befund (Sicht-Tor F-030..F-032, F-179, F-188, F-439). Die STELLEN
+   bleiben, nur die GESTALT wechselt — Baustein reusables/Kaufblock.jsx,
+   Bauplan aus dem Designstandard. Was gleich bleibt, und warum:
+     - Schlüssel `lp-a-weiter-<nr>` (verhalten.db-Historie, Registry, Proben),
+     - Ziel QIONE_ZIEL und Wortlaut QIONE_CTA (eine Formulierung je Ziel),
+     - Knopfform `lp-vp-btn--primary`: eine Knopfform auf dieser Seite.
+   Neu sind nur Bild, Titel, Preiszeile und die Zusage — die Zusage ist die
+   Vertrauenszeile unter dem Kopf-Knopf, WORTGLEICH (VERTRAUENSZEILE).
+   Preis und Streichpreis kommen aus denselben Helfern wie im Kopf
+   (useLpPreis, fallbackPreis), also im Format des Ladens. A, B und B2
+   bekommen denselben Baustein; der Wechsel steht als Eingriff mit Uhrzeit
+   in heatmap-manager/config/experimente.yaml (szs-e1-gs050, szs-e2-gs126). */
+const VERTRAUENSZEILE =
+  'Jetzt 20 Tage nach Erhalt testen, mit 0\u00a0% Finanzierung & Käuferschutz. 100\u00a0% Geld-zurück-Garantie.';
+
 function WeiterCta({nr, imBlock = false}) {
+  const {preisLabelVon, compareLabelVon} = useLpPreis();
+  const {data} = useLp();
+  const product = findLp(data, 'qione-2-pro');
+  const priceAmount = product?.priceRange?.minVariantPrice?.amount;
+  const fallback = priceAmount ? null : fallbackPreis('qione-2-pro');
+  const preis = priceAmount ? preisLabelVon(product) : fallback.label;
+  const image = product?.featuredImage?.url || QIONE_FALLBACK_IMG;
   return (
-    <div
-      className={`lp-a-weiter${imBlock ? ' lp-a-weiter--im-block' : ''}`}
-      data-section={`lp-a-weiter-${nr}`}
-    >
-      <a className="lp-vp-btn lp-vp-btn--primary" href={QIONE_ZIEL}>
-        {QIONE_CTA}
-      </a>
-    </div>
+    <Kaufblock
+      dataSection={`lp-a-weiter-${nr}`}
+      imAbschnitt={imBlock}
+      bild={bildQuelle(image, LEITER_KARTE)}
+      bildSizes="(max-width: 749px) 88px, 120px"
+      bildAlt="QiOne® 2 Pro"
+      titel="QiOne® 2 Pro"
+      preis={preis}
+      streichpreis={compareLabelVon(product)}
+      ziel={QIONE_ZIEL}
+      knopfText={QIONE_CTA}
+      knopfKlasse="lp-vp-btn lp-vp-btn--primary"
+      zusage={VERTRAUENSZEILE}
+    />
   );
 }
 
@@ -1127,11 +1161,21 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         <ScienceSection />
         {/* IN VARIANTE B2 KEHRT AUCH nr=2 ZURÜCK (Christian 10.10.2026, Test
             GS-126: „mobil auch nochmal mit der alten Ansicht und mehr Knöpfen
-            … einfach nur einen Button …, der häufiger vorkommt"). Stelle wie
-            bis zum 20.09.: nach dem Wissenschaftsblock, vor den Bewertungen.
+            … einfach nur einen Button …, der häufiger vorkommt"). Stelle bis
+            zum 15.10.: nach dem Wissenschaftsblock, vor den Bewertungen.
             Wortlaut ist der EINE der Seite (QIONE_CTA): eine Formulierung je
-            Ziel, und B2 unterscheidet sich von B nur im festen Kaufknopf. */}
-        {istB2 && <WeiterCta nr={2} />}
+            Ziel, und B2 unterscheidet sich von B nur im festen Kaufknopf.
+
+            SEIT DEM 16.10.2026 EINEN ABSCHNITT TIEFER, nach den Bewertungen
+            (unten). Grund: nr=6 ist am 21.09. mit den Studienzahlen ans Ende
+            des Wissenschaftsblocks gewandert; die alte Stelle von nr=2 lag
+            damit direkt darunter. Gemessen am 15.10. (Sicht-Tor F-030,
+            1440 px): zwei „Jetzt kaufen" 160 px untereinander. Zwei Kaufblöcke
+            direkt untereinander schließt der Standard aus — und „häufiger
+            vorkommen" heißt verteilt, nicht gedoppelt. nr=2 bleibt in B2
+            (der Test verliert keinen Knopf), Schlüssel und Wortlaut bleiben;
+            der Umzug steht mit Uhrzeit als Eingriff im Experiment
+            szs-e2-gs126 (heatmap-manager/config/experimente.yaml). */}
         {/* <WeiterCta nr={2} /> ERSATZLOS GESTRICHEN — Christians zweiter Streich,
             20.09.2026. Die Bildbelege lagen weder s01 noch s02 vor; die Wahl
             zwischen nr=2 und nr=6 ist deshalb GEMESSEN statt geraten, und sie fiel
@@ -1183,6 +1227,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             data-section-Anker sind dieselben. Diese Seite war der erste Nutzer
             des Standards und trug ihn bis hier als letzte Abschrift. */}
         <Bewertungsblock praefix="lp-a-" wrapperKlasse="lp-a-bewertungen" />
+        {istB2 && <WeiterCta nr={2} />}
         {/* Externe Stimmen — mit dem Vorbildblock übernommen (Startseite Z.102).
             Derselbe geteilte Baustein, dieselbe Reihenfolge MAXIM → BRAINEFFECT →
             Geldhelden. Erst dadurch haben Christians MAXIM-/Andi-Lew-Textwechsel
