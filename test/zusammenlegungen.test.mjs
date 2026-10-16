@@ -134,3 +134,29 @@ test('kein Baustein rendert einen rohen Link auf eine Weiterleitung', () => {
     }
   }
 });
+
+test('Rückweg: eine zurückgenommene Seite antwortet selbst, steht in der Sitemap, und ihr Abschnitt auf dem Ziel bleibt', () => {
+  // Folgeauftrag des Wirkungskreislaufs zur Hypothese H-537022f708: die
+  // Zielseite fiel am Kontrollpunkt Tag 7 ab, der 301 kam zurück. Geprüft wird die ganze Grenze, nicht nur die Liste: kein Eintrag,
+  // keine Weiterleitung in der Route, ein Sitemap-Eintrag, Links zeigen auf
+  // die Seite selbst, und der übernommene Abschnitt auf der Zielseite hängt
+  // nicht mehr an der Liste (sonst verschwände er still mit dem Eintrag).
+  const paare = [
+    {
+      von: '/pages/lexikon-kohaerentes-wasser',
+      ziel: 'app/components/campaign/KohaerentesWasserSeite.jsx',
+    },
+  ];
+  const nurRoute = new Set(NUR_ROUTE_SEITEN.map((e) => e.pfad));
+  for (const {von, ziel} of paare) {
+    assert.equal(zusammenlegungFuer(von), undefined, `${von} leitet noch um`);
+    assert.equal(adresse(von), von, `${von}: Links zeigen nicht auf die Seite`);
+    const src = lies(`app/routes/pages.${von.slice('/pages/'.length)}.jsx`);
+    assert.doesNotMatch(src, /leiteUm\(/, `${von}: Route wirft noch den 301`);
+    assert.match(src, /export default function/, `${von}: Route rendert nichts`);
+    assert.ok(nurRoute.has(von), `${von} fehlt in NUR_ROUTE_SEITEN (Sitemap)`);
+    const zsrc = lies(ziel);
+    assert.doesNotMatch(zsrc, /^import .*from '~\/lib\/zusammenlegungen'/m, `${ziel}: Abschnitt hängt an der Liste`);
+    assert.ok(zsrc.includes(`'${von}'`), `${ziel}: Abschnitt nennt die alte Adresse nicht (Anker)`);
+  }
+});
