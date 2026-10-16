@@ -565,6 +565,9 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
 // aufgegangen und stehen deshalb nicht mehr in dieser Liste — eine
 // Weiterleitung gehört in keine Sitemap. Welche und wohin: app/lib/
 // zusammenlegungen.js. Die Zielseiten tragen ein neues `lastmod`.
+// ZURÜCK AM 2026-10-16: /pages/lexikon-kohaerentes-wasser antwortet wieder
+// selbst und steht wieder in dieser Liste (Rückweg, Zielseite am
+// Kontrollpunkt Tag 7 abgefallen). Es bleiben 12 zusammengelegte Seiten.
 export const NUR_ROUTE_SEITEN = [
   {
     pfad: '/pages/wie-funktioniert-der-gitterchip-im-qione',
@@ -863,6 +866,34 @@ export const NUR_ROUTE_SEITEN = [
       'dem Browser zusätzliche Hydrations-Zeilen). Sie pinnt keine ' +
       'Eintragszahl, sondern verlangt einen Boden und entdeckt den ' +
       'Rest aus dem Hub.',
+  },
+  {
+    pfad: '/pages/lexikon-kohaerentes-wasser',
+    lastmod: '2026-10-16T13:00:00Z',
+    grund:
+      'Lexikon-Eintrag „kohärentes Wasser“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s06; Inhalt aus s04). Je Begriff eine eigene URL, weil ' +
+      'ein Antwortsystem Abschnitte isoliert bewertet: ein Begriff ' +
+      'als blosser Anker auf dem Hub wird mit dem Nachbarbegriff ' +
+      'zusammen geschnitten und verliert dabei seine Definition. Die ' +
+      'Seite besteht allein aus der Route ' +
+      'pages.lexikon-kohärentes-wasser.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP ' +
+      '200 mit vollem Text und steht in keiner Sitemap. Kriterium 2 ' +
+      'erfüllt: kein noindex, canonicalLink() in der Route. WACHE ' +
+      '(Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Hub-Links und prüft ' +
+      'je Eintragsseite den Abschnitt data-geo="grenze", eine H1 und ' +
+      'die gleiche Auslieferung an Mensch, Googlebot und ' +
+      'OAI-SearchBot. Ein Eintrag ohne seine Grenze fällt dort rot, ' +
+      'weil er ohne sie Werbung wäre. Vom 07.10. bis 16.10.2026 per 301 ' +
+      'in /pages/was-ist-kohaerentes-wasser aufgegangen (PR #815); ' +
+      'zurückgenommen, weil die Zielseite am Kontrollpunkt Tag 7 abfiel ' +
+      '(Folgeauftrag des Wirkungskreislaufs, Hypothese H-537022f708). ' +
+      'lastmod ist die Obergrenze des Merge-Fensters ' +
+      'dieses Rückwegs.',
   },
   {
     pfad: '/pages/lexikon-elektrosmog',

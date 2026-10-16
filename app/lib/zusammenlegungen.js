@@ -40,6 +40,13 @@ import {redirect} from 'react-router';
  * Fällt eine Zielseite im Wirkungskreislauf ab, reiht er den Rückweg selbst
  * ein (Hypothese `rueckweg-301`).
  *
+ * ZURÜCKGENOMMEN (Eintrag entfernt, Quell-Route wieder mit eigenem Inhalt):
+ *  - /pages/lexikon-kohaerentes-wasser seit 16.10.2026. Die Zielseite
+ *    /pages/was-ist-kohaerentes-wasser fiel am Kontrollpunkt Tag 7 ab;
+ *    Folgeauftrag des Wirkungskreislaufs zur Hypothese H-537022f708. Der
+ *    übernommene Abschnitt auf der Zielseite bleibt stehen
+ *    (KohaerentesWasserSeite.jsx, BegriffPhysik).
+ *
  * @type {Readonly<Record<string, {ziel: string, anker: boolean}>>}
  */
 export const ZUSAMMENGELEGT = Object.freeze({
@@ -63,10 +70,6 @@ export const ZUSAMMENGELEGT = Object.freeze({
   '/pages/lexikon-ordnung': {ziel: '/pages/lexikon', anker: true},
   '/pages/lexikon-spirituell-angebunden-sein': {
     ziel: '/pages/lexikon',
-    anker: true,
-  },
-  '/pages/lexikon-kohaerentes-wasser': {
-    ziel: '/pages/was-ist-kohaerentes-wasser',
     anker: true,
   },
   '/pages/was-senkt-elektrosmog-im-alltag': {

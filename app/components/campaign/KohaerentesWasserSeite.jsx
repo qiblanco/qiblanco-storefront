@@ -8,7 +8,6 @@ import {
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {FaqListe} from '~/components/reusables/FaqListe';
 import {eintragFuer, quellenFuer} from '~/data/lexikon';
-import {ankerFuer} from '~/lib/zusammenlegungen';
 import {WasserStufentafel} from '~/components/campaign/WasserStufentafel';
 import {
   GrafikLeit,
@@ -321,13 +320,22 @@ function TeilFakten() {
  * gemessene Nahordnung im Wasser. Die Kurzlebigkeit der Wasserstoffbrücken
  * steht schon in Teil 2 und wird nicht doppelt erzählt. Der Text kommt
  * unverändert aus app/data/lexikon.js; die Quellen sind die dieser Absätze.
+ *
+ * DER ABSCHNITT HÄNGT AN DER ALTEN ADRESSE, NICHT MEHR AN DER WEITERLEITUNG.
+ * Seit 16.10.2026 ist der 301 zurückgenommen (Kontrollpunkt Tag 7 abgefallen,
+ * Folgeauftrag des Wirkungskreislaufs zur Hypothese H-537022f708): die
+ * Begriffsseite antwortet wieder selbst. Der Abschnitt bleibt hier stehen, der
+ * Anker (Slug der alten Adresse) bleibt gleich, damit bestehende Links auf den
+ * Abschnitt weiter treffen. Bis dahin las er den Anker über ankerFuer() aus
+ * app/lib/zusammenlegungen.js und wäre mit dem Eintrag still verschwunden.
  */
 const BEGRIFF_ALT = '/pages/lexikon-kohaerentes-wasser';
+const BEGRIFF_ANKER = BEGRIFF_ALT.slice(BEGRIFF_ALT.lastIndexOf('/') + 1);
 const PHYSIK_QUELLEN = ['huang1991', 'soper2013', 'skinner2013', 'wernet2004'];
 
 function BegriffPhysik() {
-  const anker = ankerFuer(BEGRIFF_ALT);
-  const e = anker ? eintragFuer(anker) : null;
+  const anker = BEGRIFF_ANKER;
+  const e = eintragFuer(anker);
   if (!e) return null;
   const quellen = quellenFuer({quellen: PHYSIK_QUELLEN});
   return (
