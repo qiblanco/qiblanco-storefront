@@ -1,11 +1,10 @@
 import {data as remixData, useLoaderData} from 'react-router';
 import {
+  PartnerBereich,
   PartnerKeinKonto,
-  PartnerKit,
-  PartnerSeitencheck,
   PartnerStoerung,
-  PartnerZahlen,
 } from '~/components/konto/PartnerUI';
+import {meldeEreignis} from '~/lib/partner-saleskit';
 import partnerStyles from '~/styles/konto-partner.css?url';
 
 /**
@@ -27,6 +26,13 @@ import partnerStyles from '~/styles/konto-partner.css?url';
  *
  * RÜCKWEG ohne Deploy: PB_DIENST=off in partnerbereich.conf auf dem Server ->
  * der Dienst antwortet 503, die Seite zeigt PartnerStoerung und keine Zahlen.
+ *
+ * SALES-KIT STUFE 2 (Job 20261007-sales-kit-stufe2-einbindung-partnerbereich):
+ * Beispieltexte und Kundenfragen kommen mit derselben Antwort (gemeinsam.saleskit).
+ * Fehlen sie dort, zeigt die Seite die zwei Abschnitte nicht. Geöffnete Kapitel
+ * und Kopier-Klicks meldet die Seite an account.partner.ereignis.jsx.
+ * RÜCKWEG ohne Deploy: PB_SALESKIT_STUFE2=off (Abschnitte weg), PB_EREIGNIS=off
+ * (nichts mehr gezählt).
  */
 const PARTNER_API = 'https://partner.65-108-150-121.sslip.io/v1/bereich';
 
@@ -79,27 +85,7 @@ export default function Partnerbereich() {
   if (stoerung || !bereich) return <PartnerStoerung />;
   if (!bereich.partner) return <PartnerKeinKonto />;
 
-  const gemeinsam = bereich.gemeinsam || {};
-  const konten = bereich.konten || [];
-  return (
-    <div className="partner-bereich">
-      {bereich.test ? (
-        <p className="konto-merker konto-merker--gold">Testzugang mit Beispieldaten</p>
-      ) : null}
-      {konten.map((konto) => (
-        <div key={konto.partner_id}>
-          <PartnerZahlen
-            konto={konto}
-            stand={bereich.stand_utc}
-            veraltet={bereich.veraltet}
-            portal={gemeinsam.uppromote_portal}
-          />
-          <PartnerKit konto={konto} provisionProzent={gemeinsam.provision_prozent} />
-        </div>
-      ))}
-      <PartnerSeitencheck seitencheck={gemeinsam.seitencheck} />
-    </div>
-  );
+  return <PartnerBereich bereich={bereich} melde={meldeEreignis} />;
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

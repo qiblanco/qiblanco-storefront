@@ -1,0 +1,4 @@
+# Erzeugt von partnerbereich/pruefungen/vorschau_bereich.py (Server), nie committen:
+# die Texte des Sales-Kits stehen nur in partner-manager/exports/sales-kit.json.
+# Gelesen nur von app/routes/konto-vorschau-partner.jsx (import.meta.glob, fehlt = {}).
+*.json
