@@ -1,0 +1,191 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DER KAUFBLOCK — components/reusables/Kaufblock.jsx
+   Bauplan: design-meister/db/designstandard/_basis.yaml, Bausteine
+   `kauf_block`, `preiszeile`, `karte`, `abschnitt_uebergang`.
+
+   NUR ROLLEN-TOKENS (--qb-*) aus styles/designstandard-dach.css bzw.
+   styles/qb-tokens.css. Hier steht kein freier Wert ausser den zwei
+   Bildmassen (120 px desktop, 88 px mobil): sie sind die Kantenlaenge des
+   Produktbilds, keine Abstands- oder Schriftstufe.
+
+   RADIUS 8 (--qb-radius-klein) und nicht der Karten-Radius 4 des Standards:
+   die Doktrin der Seiten (web-soll.yaml radius_set_px [8, 16]) kennt die 4
+   nicht, und design-rubrik zaehlt jeden Radius ausserhalb des Satzes. 8 ist
+   im Satz UND ein Wert des Standards.
+
+   DER SCHALTER: data-kaufblock-desktop / data-kaufblock-mobil (an|aus), Wert
+   aus KAUFBLOCK_AN in Kaufblock.jsx. `aus` zeigt nur den Knopf, so wie er vor
+   dem Block stand: zentriert, 24 px seitlich, ohne eigenen Abstand nach oben
+   und unten (im Abschnitt 64 px) — die Werte der frueheren Regel
+   `.lp-a3 .lp-a-weiter` (styles/schlaf-zellen-schutz.css), hier als Rollen.
+   Die Grenze 750 px ist die Mobilgrenze des Hauses (max-width: 749px).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Gestalt (Schalter `an`) ─────────────────────────────────────────────
+   Der Abstand sitzt am Wrapper, nie am Knopf (abschnitt_uebergang): 48 px bis
+   zu jeder Naht, also zwei Rasterschritte mehr als die verlangten 24. Im
+   Abschnitt 64 px — so viel trug der Knopf dort schon vorher, und er folgt
+   dort auf Inhalt statt auf eine Naht. */
+.qb-kaufblock {
+  padding: var(--qb-abstand-5) var(--qb-abstand-3);
+}
+.qb-kaufblock--im-abschnitt {
+  padding-block: var(--qb-abstand-6);
+  /* Die seitliche Polsterung traegt im Abschnitt schon der Abschnitt; doppelt
+     gemessen war die Karte mobil 48 px schmaler als zwischen den Abschnitten. */
+  padding-inline: 0;
+}
+.qb-kaufblock__karte {
+  position: relative;
+  box-sizing: border-box;
+  max-width: var(--qb-kaufblock-max);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  grid-template-areas:
+    'bild kopf'
+    'bild knopf'
+    'bild zusage';
+  align-items: center;
+  column-gap: var(--qb-abstand-3);
+  row-gap: var(--qb-abstand-2);
+  padding: var(--qb-abstand-3);
+  background: var(--qb-grund);
+  border: 1px solid var(--qb-linie);
+  border-radius: var(--qb-radius-klein);
+  transition: box-shadow 0.2s linear;
+}
+/* Desktop: Bild links, rechts EINE Textkante fuer Titel, Preis, Knopf und
+   Zusage — keine zweite Ausrichtung im Block. */
+/* Hover der Karte = Schatten, keine Farbflaeche (karte.zustaende.hover). */
+.qb-kaufblock__karte:hover {
+  box-shadow: var(--qb-schatten-hover);
+}
+.qb-kaufblock__bild {
+  grid-area: bild;
+}
+.qb-kaufblock__bild img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: var(--qb-radius-bild);
+}
+.qb-kaufblock__kopf {
+  grid-area: kopf;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.qb-kaufblock__titel {
+  margin: 0;
+  font-size: var(--qb-text-fliess);
+  font-weight: var(--qb-fw-ueberschrift);
+  line-height: 1.4;
+  color: var(--qb-text);
+}
+/* preiszeile: Streichpreis kleiner, gedaempft, durchgestrichen, VOR dem Preis. */
+.qb-kaufblock__preiszeile {
+  margin: var(--qb-abstand-1) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--qb-abstand-1);
+}
+.qb-kaufblock__streichpreis {
+  font-size: var(--qb-text-klein);
+  color: var(--qb-text-gedaempft);
+}
+.qb-kaufblock__preis {
+  font-size: var(--qb-text-preis);
+  font-weight: var(--qb-fw-preis);
+  line-height: 1.2;
+  color: var(--qb-text);
+  font-variant-numeric: tabular-nums;
+}
+.qb-kaufblock__knopf {
+  grid-area: knopf;
+}
+/* Die ganze Karte fuehrt zum Kauf — ueber die Trefferflaeche DES Knopfs,
+   nicht ueber einen zweiten Link (Begruendung in Kaufblock.jsx). Der Knopf
+   selbst bleibt position: static, damit sich die Flaeche an der Karte misst. */
+.qb-kaufblock__knopf::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.qb-kaufblock__zusage {
+  grid-area: zusage;
+  margin: 0;
+  font-size: var(--qb-text-klein);
+  line-height: 1.5;
+  color: var(--qb-text-gedaempft);
+  text-wrap: pretty;
+}
+
+/* ─── Mobil: eigene Anordnung ─────────────────────────────────────────────
+   Bild und Preis nebeneinander, der Knopf darunter ueber die volle Breite
+   der Karte (Daumenweg), die Zusage zuletzt. */
+@media (max-width: 749px) {
+  .qb-kaufblock__karte {
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-areas:
+      'bild kopf'
+      'knopf knopf'
+      'zusage zusage';
+    column-gap: var(--qb-abstand-2);
+    padding: var(--qb-abstand-2);
+  }
+  .qb-kaufblock__bild img {
+    width: 88px;
+    height: 88px;
+  }
+  /* Unter dem Knopf ueber volle Breite steht die Zusage auf seiner Mitte. */
+  .qb-kaufblock__zusage {
+    text-align: center;
+    text-wrap: balance;
+  }
+}
+
+/* ─── Schalter `aus`: nur der Knopf, wie vor dem Block ──────────────────── */
+@media (min-width: 750px) {
+  .qb-kaufblock[data-kaufblock-desktop='aus'] {
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--qb-abstand-3);
+  }
+  .qb-kaufblock--im-abschnitt[data-kaufblock-desktop='aus'] {
+    padding-block: var(--qb-abstand-6);
+  }
+  .qb-kaufblock[data-kaufblock-desktop='aus'] .qb-kaufblock__karte {
+    display: contents;
+  }
+  .qb-kaufblock[data-kaufblock-desktop='aus'] .qb-kaufblock__bild,
+  .qb-kaufblock[data-kaufblock-desktop='aus'] .qb-kaufblock__kopf,
+  .qb-kaufblock[data-kaufblock-desktop='aus'] .qb-kaufblock__zusage {
+    display: none;
+  }
+  .qb-kaufblock[data-kaufblock-desktop='aus'] .qb-kaufblock__knopf::after {
+    content: none;
+  }
+}
+@media (max-width: 749px) {
+  .qb-kaufblock[data-kaufblock-mobil='aus'] {
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--qb-abstand-3);
+  }
+  .qb-kaufblock--im-abschnitt[data-kaufblock-mobil='aus'] {
+    padding-block: var(--qb-abstand-6);
+  }
+  .qb-kaufblock[data-kaufblock-mobil='aus'] .qb-kaufblock__karte {
+    display: contents;
+  }
+  .qb-kaufblock[data-kaufblock-mobil='aus'] .qb-kaufblock__bild,
+  .qb-kaufblock[data-kaufblock-mobil='aus'] .qb-kaufblock__kopf,
+  .qb-kaufblock[data-kaufblock-mobil='aus'] .qb-kaufblock__zusage {
+    display: none;
+  }
+  .qb-kaufblock[data-kaufblock-mobil='aus'] .qb-kaufblock__knopf::after {
+    content: none;
+  }
+}

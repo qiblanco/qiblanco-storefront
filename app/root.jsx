@@ -20,6 +20,15 @@ import {
   ScrollRestoration,
 } from 'react-router';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+// Designstandard qiblanco-dach als Rollen-Tokens (--qb-*). ERZEUGT mit
+// `design-meister/bin/designstandard erzeuge --marke qiblanco-dach --format css`
+// — nie von Hand ändern, Werte nur im Standard (YAML). Steht als ERSTES
+// Stylesheet: die Datei deklariert nur Custom Properties, und jede Hand-
+// Datei dahinter (qb-tokens.css, app.css) behält bei gleichem Namen das
+// letzte Wort. Gemessen 16.10.2026: jede Rolle, die der Standard NEU
+// einführt, hatte bis dahin 0 Verwendungen — das Einbinden allein ändert
+// kein Pixel. Erster Nutzer: der Kaufblock (qb-kaufblock.css).
+import designstandardStyles from '~/styles/designstandard-dach.css?url';
 import resetStyles from '~/styles/reset.css?url';
 // Ebenenleiter, Randabstands-Form und Mindest-Tippziel als :root-Tokens.
 // ERZEUGT aus der SSoT (design-meister db/webdesign/web-soll.yaml, Abschnitt
@@ -63,6 +72,11 @@ import qbSwipetabStyles from '~/styles/qb-swipetab.css?url';
 // Baukasten qb-balkendiagramm (Studien-Balkendiagramm): global wie qb-swipetab,
 // wirkt ausschließlich innerhalb von .qb-balkendiagramm.
 import qbBalkendiagrammStyles from '~/styles/qb-balkendiagramm.css?url';
+// Baukasten Kaufblock (reusables/Kaufblock.jsx): global wie qb-swipetab, wirkt
+// ausschließlich innerhalb von .qb-kaufblock. Global statt per links() je
+// Route aus demselben Grund wie bei den Rechtstexten: ein Baustein, dessen
+// Stil man je Seite nachtragen muss, steht irgendwann ungestaltet da.
+import qbKaufblockStyles from '~/styles/qb-kaufblock.css?url';
 // Dokument-/Rechtstext-Seiten (Impressum, Datenschutz, AGB, Widerruf,
 // Teilnahmebedingungen, /policies/*): nach demselben Muster global geladen.
 // Wirkt ausschließlich innerhalb von .rs-doc — eine Seite ohne diese Klasse
@@ -567,6 +581,7 @@ export function Layout({children}) {
           />
         ))}
         {faviconUrl && <link rel="icon" href={faviconUrl} />}
+        <link rel="stylesheet" href={designstandardStyles}></link>
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={overlayOrdnungStyles}></link>
         <link rel="stylesheet" href={qbTokensStyles}></link>
@@ -574,6 +589,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>
         <link rel="stylesheet" href={qbBalkendiagrammStyles}></link>
+        <link rel="stylesheet" href={qbKaufblockStyles}></link>
         <link rel="stylesheet" href={rechtstextStyles}></link>
         <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
         <link rel="stylesheet" href={kakaoKaufseiteStyles}></link>
