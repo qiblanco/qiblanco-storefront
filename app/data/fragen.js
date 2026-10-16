@@ -44,9 +44,20 @@
  * gehört nicht hinein. `beleg_titel` überschreibt auf Wunsch die Überschrift
  * „Was gemessen ist".
  *
+ * DAS FELD `teilfragen` (optional, seit 2026-10-16) stellt über einen
+ * Begründungsabsatz die Frage, die er beantwortet: `teilfragen[i]` gehört zu
+ * dem Begründungsabsatz an derselben Stelle, `null` heißt keine Überschrift. Die Seite zeigt sie als
+ * Zwischenüberschrift, das FAQPage-Schema trägt sie als weitere Question mit
+ * dem Absatz als Antwort. Seiten ohne das Feld bleiben unverändert. Anlass:
+ * Christian 25.09. („dünne Vorlagenseiten … aufwerten"), Musterregel 5 der
+ * Gewinner-Analyse, Auftrag 20261016-seo-duenne-vorlagenseiten-zweiter-
+ * schnitt-serioes-und-familie. Kein neuer Satz, nur die Frage über dem
+ * vorhandenen Absatz.
+ *
  * @typedef {{slug: string, katalog_id: string|null, markt: string,
  *   klasse: string, frage: string, antwort: string,
- *   "begruendung": string[], beleg_titel?: string,
+ *   "begruendung": string[], teilfragen?: Array<string|null>,
+ *   beleg_titel?: string,
  *   beleg: string[], fundstellen?: string[], offen: string[],
  *   weiter: Array<{pfad: string, text: string}>, quellen: string[],
  *   pfad: string}} FrageSeite
@@ -514,6 +525,15 @@ export const FRAGEN = [
       "Viele unserer Kundinnen und Kunden erzählen uns, was sie mit ihrem QiOne® oder ihrem QiHome® Air erleben. Einige berichten darüber unter eigenem Namen auf ihren eigenen Konten, und diese Berichte haben wir bei den Erfahrungen gesammelt. In Deutschland sind inzwischen über 450 QiHome® Air im Einsatz.",
       "Jedes Stück kannst du 20 Tage ab Erhalt tragen und ohne Angabe von Gründen zurückgeben, du bekommst dann den Kaufpreis erstattet. Das ist mehr als das gesetzliche Widerrufsrecht von 14 Tagen, und beide Fristen gelten nebeneinander.",
       "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt."
+    ],
+    "teilfragen": [
+      "Welches Unternehmen steht hinter Qi Blanco?",
+      "Wer hat Qi Blanco gegründet?",
+      "Wo wird der Schmuck entwickelt und gefertigt?",
+      "Wer hat die Produkte untersucht, und wo ist das veröffentlicht?",
+      "Wo erzählen Kundinnen und Kunden von ihren Erfahrungen?",
+      "Wie lange kann ich ein Stück testen und zurückgeben?",
+      "Woher kommen die Bewertungen auf qiblanco.com?"
     ],
     "beleg": [
       "Handelsregister: Amtsgericht Schweinfurt, HRB 7306. Umsatzsteuer-Identifikationsnummer DE306530406. Anschrift und Geschäftsführer stehen im Impressum.",

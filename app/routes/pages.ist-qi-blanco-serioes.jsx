@@ -71,7 +71,7 @@ const BESCHREIBUNG = "Ja, und du kannst es selbst prüfen: Qi Blanco ist ein ein
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-09-28';
+const GEAENDERT = '2026-10-17';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];
