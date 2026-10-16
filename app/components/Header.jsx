@@ -411,14 +411,19 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
 
       <div
         className="header"
+        // Die Werte des gescrollten Kopfs kommen seit dem 16.10.2026 aus
+        // --kopf-* (app.css), weil nur CSS sie je Breite trennen kann
+        // (mobil und desktop getrennt ausgerollt). Sie bleiben INLINE, damit
+        // die Rangfolge gegen fremde .header-Regeln (z. B. body:has(.lp-v2))
+        // dieselbe bleibt. Sicht-Tor F-034: blur(32px) ohne Fläche und Kante
+        // gegen „Kein Glas-Effekt hinter der Kopfzeile" des Designstandards.
         style={{
           marginTop: scrolled ? '10px' : '0',
-          background: scrolled
-            ? 'rgba(74, 71, 65, 0.1)'
-            : 'transparent',
+          background: scrolled ? 'var(--kopf-gescrollt-flaeche)' : 'transparent',
+          boxShadow: scrolled ? 'var(--kopf-gescrollt-kante)' : 'none',
           backdropFilter: scrolled
-            ? 'blur(32px)'
-            : 'blur(0px)',
+            ? 'var(--kopf-gescrollt-glas)'
+            : 'var(--kopf-ruhe-glas)',
         }}
       >
         <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
@@ -1109,9 +1114,10 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
   // SICHTBAR ÄNDERT SICH NICHTS: `submenu` trägt inline
   // position:fixed/top:0/left:0 und transform: translateY(-300%), nimmt also
   // nicht am Fluss teil und steht ausserhalb des Sichtfelds. Im Inline-Zustand
-  // ist sein Containing Block der Kopf (div.header trägt dauerhaft
-  // backdrop-filter, und jeder Wert ausser `none` erzeugt einen) statt des
-  // Viewports — bei -300% ohne sichtbare Folge. GEPRUEFT: app/styles/app.css
+  // ist sein Containing Block der Kopf, solange div.header backdrop-filter
+  // trägt (jeder Wert ausser `none` erzeugt einen; seit F-034 ab 750 px
+  // `none`, siehe --kopf-* in app.css), sonst der Viewport — bei -300%
+  // beides ohne sichtbare Folge. GEPRUEFT: app/styles/app.css
   // gibt `.submenu` weder `transform` noch `overflow`, die den Inline-Zustand
   // sichtbar machen könnten.
   //
