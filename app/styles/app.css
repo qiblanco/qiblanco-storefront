@@ -992,7 +992,27 @@ aside h3 {
   width: 95%;
   padding: 1rem;
   border-radius: 10px;
-  transition: background 0.3s ease, backdrop-filter 0.3s ease, margin-top 0.4s ease;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, margin-top 0.4s ease;
+}
+/* Werte des Kopfs (Header.jsx liest sie inline). Bis 749 px der bisherige
+   Glas-Stil, Wert für Wert wie vorher inline. Ab 750 px ohne Glas-Effekt
+   (Sicht-Tor F-034, Designstandard: „Kein Glas-Effekt hinter der
+   Kopfzeile"): eine feste Fläche mit Kante statt eines Weichzeichners. Die
+   Kante als Schatten, nicht als border — sie verschiebt nichts. Mobil folgt
+   als eigener Merge. */
+:root {
+  --kopf-gescrollt-flaeche: rgba(74, 71, 65, 0.1);
+  --kopf-gescrollt-kante: none;
+  --kopf-gescrollt-glas: blur(32px);
+  --kopf-ruhe-glas: blur(0px);
+}
+@media (min-width: 750px) {
+  :root {
+    --kopf-gescrollt-flaeche: var(--qb-grund, #ffffff);
+    --kopf-gescrollt-kante: 0 0 0 1px var(--qb-linie, rgba(74, 71, 65, 0.14));
+    --kopf-gescrollt-glas: none;
+    --kopf-ruhe-glas: none;
+  }
 }
 .header-ctas a.openCart {
   position: relative;
