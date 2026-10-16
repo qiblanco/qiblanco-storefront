@@ -50,8 +50,12 @@
  * Gerät, ob der Block seine Gestalt zeigt. `aus` zeigt auf diesem Gerät nur
  * den Knopf, genau wie vor dem Block — dieselbe Klasse, kein Abstand. Ein
  * Gerät lässt sich damit zurücknehmen, ohne das andere anzufassen.
+ *
+ * Ausgerollt: desktop 16.10.2026 19:51Z (PR #920), mobil 16.10.2026 als
+ * eigener Merge danach (Uhrzeiten je Gerät als Störgröße in
+ * heatmap-manager/config/experimente.yaml, szs-e1-gs050 und szs-e2-gs126).
  */
-export const KAUFBLOCK_AN = {desktop: true, mobil: false};
+export const KAUFBLOCK_AN = {desktop: true, mobil: true};
 
 export function Kaufblock({
   bild,
