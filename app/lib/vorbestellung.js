@@ -31,9 +31,9 @@
 export const STANDARD_VERSANDHINWEIS = 'In 2 bis 3 Tagen bei dir!';
 
 /** Produkt-Handle -> Anzeige im Warenkorb. */
-// Qi Alpha (bis 2026-10-17 Qi Master; Christian am 2026-10-17: „es heisst
+// Qi Alpha (bis 2026-10-17 Qi Master; Christian am 2026-10-17: „es heißt
 // nun Qi Alpha"). Beide Handles tragen denselben Eintrag, weil der Shopify-
-// Handle erst in s09 des Umbenennungs-Grossjobs wechselt und Warenkoerbe von
+// Handle erst in s09 des Umbenennungs-Grossjobs wechselt und Warenkörbe von
 // vorher den alten behalten.
 const QI_ALPHA_VORBESTELLUNG = {
   warenkorbTitel: 'Qi Alpha - Vorbestellung Jan 2027',

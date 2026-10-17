@@ -3,7 +3,7 @@ import {redirect} from 'react-router';
 /*
  * /products/qi-master-wunschnummer — 301 auf /products/qi-alpha (bis 2026-10-17
  * auf /products/qi-master: Christian benannte das Produkt in Qi Alpha um, und
- * ein Add-on-Pfad leitet in EINEM Sprung auf die Hauptseite, nie ueber den
+ * ein Add-on-Pfad leitet in EINEM Sprung auf die Hauptseite, nie über den
  * alten Pfad).
  *
  * Das Produkt ist ein ADD-ON des Qi Alpha (bis 2026-10-17 Qi Master; Christian 2026-09-24) und wird
