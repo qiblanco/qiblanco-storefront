@@ -10,6 +10,8 @@ import QiMaster, {
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qiMasterStyles from '~/styles/qi-master.css?url';
 import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
+import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
+import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
@@ -77,6 +79,10 @@ export function links() {
     // geteilt mit der Landingpage; Begründung im Kopf von
     // app/styles/qi-master-wortlaut.css.
     {rel: 'stylesheet', href: wortlautStyles},
+    // Kauf zuerst: Preis und Kaufknopf im ersten Fenster; Schalter und
+    // Begründung in components/product-pages/pdpKaufZuerst.js. Das Attribut
+    // sitzt auf dem Seiten-Wrapper .qm-pdp, nicht in der geteilten Buy-Box.
+    {rel: 'stylesheet', href: kaufZuerstStyles},
   ];
 }
 
@@ -200,7 +206,7 @@ export default function Product() {
     : [];
 
   return (
-    <div className="qm-pdp">
+    <div className="qm-pdp" {...kaufZuerstAttribute()}>
       <QiOneBuyBox
         product={product}
         /* SPRUNGZIEL DES PARALLAX-KNOPFES "Hole dir deinen QiMaster" weiter
