@@ -54,8 +54,10 @@ test('AT 3x: Zeilenbetrag statt Packungspreis mal Menge (Punkt 8)', () => {
   assert.equal(p3.gesamtNum, 163.46);
   assert.equal(p3.teilbar, false);
   assert.equal(label(EUR, 'AT', null, '3'), '3x 420g | 30% Rabatt | 163,46 € für 3 Packungen');
-  // 2x geht auf: 125,42 = 2 x 62,71, dort bleibt der Packungspreis.
-  assert.equal(label(EUR, 'AT', null, '2'), '2x 420g | 20% Rabatt | 62,71 € pro Packung');
+  // 2x geht auf den Cent auf (125,42 = 2 x 62,71), aber 62,71 hat Nachkommastellen:
+  // seit s04 (Christian 06.10. "keine Nachkommastellen") steht dann der Zeilenbetrag.
+  assert.equal(cp.cacaoPricing('2', EUR, AWAKE, 'AT').teilbar, false);
+  assert.equal(label(EUR, 'AT', null, '2'), '2x 420g | 20% Rabatt | 125,42 € für 2 Packungen');
   assert.equal(label(EUR, 'AT', null, '1'), '1x 420g | 78,13 € pro Packung');
 });
 
@@ -64,7 +66,7 @@ test('CH: Zeilenbetrag aus dem Warenkorb mal 8,1 Prozent (Punkt 2)', () => {
   assert.equal(p2.gesamtNum, 124.68);
   assert.equal(p2.rabattImWarenkorb, false);
   assert.equal(p2.rabattProzent, 19);
-  assert.equal(label(CHF, 'CH', KASSE_CH, '2'), '2x 420g | 19% Rabatt | 62,34 CHF pro Packung');
+  assert.equal(label(CHF, 'CH', KASSE_CH, '2'), '2x 420g | 19% Rabatt | 124,68 CHF für 2 Packungen');
   const p3 = cp.cacaoPricing('3', CHF, AWAKE, 'CH', KASSE_CH);
   assert.equal(p3.gesamtNum, 163.96);
   assert.equal(label(CHF, 'CH', KASSE_CH, '3'), '3x 420g | 29% Rabatt | 163,96 CHF für 3 Packungen');
@@ -75,12 +77,12 @@ test('CH: Zeilenbetrag aus dem Warenkorb mal 8,1 Prozent (Punkt 2)', () => {
 
 test('US: Zeilenbetrag ohne Steuer, Rabatt aus den echten Beträgen', () => {
   assert.equal(label(USD, 'US', KASSE_US, '2'), '2x 420g | 16% Rabatt | $165.91 für 2 Packungen');
-  assert.equal(label(USD, 'US', KASSE_US, '3'), '3x 420g | 25% Rabatt | $74.40 pro Packung');
+  assert.equal(label(USD, 'US', KASSE_US, '3'), '3x 420g | 25% Rabatt | $223.20 für 3 Packungen');
   assert.equal(cp.cacaoPricing('3', USD, AWAKE, 'US', KASSE_US).gesamtNum, 223.2);
 });
 
 test('Ohne Warenkorb-Betrag (oder fremde Währung): Stand davor, Listenpreis + Hinweis', () => {
-  const alt = '2x 420g | 76,75 CHF pro Packung | Mengenrabatt im Warenkorb';
+  const alt = '2x 420g | 153,50 CHF für 2 Packungen | Mengenrabatt im Warenkorb';
   assert.equal(label(CHF, 'CH', null, '2'), alt);
   assert.equal(label(CHF, 'CH', {...KASSE_US}, '2'), alt);
   assert.equal(cp.cacaoPricing('2', CHF, AWAKE, 'CH', null).rabattImWarenkorb, true);
@@ -175,4 +177,42 @@ test('ladeStaffelKasse: Sorten-Set statt Einzelweg, wenn der Laden es legt', asy
   cp._ablageLeeren();
   const kaputt = {...sets(awake), query: async () => { throw new Error('429'); }};
   assert.deepEqual((await cp.ladeStaffelKasse(kaputt, angabe)).zeilen, {'2': 127.53, '3': 168.53});
+});
+
+// KEINE NACHKOMMASTELLEN IM PACKUNGSPREIS (Grossjob 20261006-repair-glatte-preise-alle-
+// maerkte-keine-nachkommastellen, s04, 2026-10-17). Gemessen am 13.10. im Preismodus brutto:
+// US 2x "$79.50 pro Packung" (Kasse 159), GB 2x "61,50 GBP pro Packung" (Kasse 123). Die Summe
+// war ganz, der Packungspreis nicht. Regel für jede Währung: der Packungspreis steht nur,
+// wenn er ganz ist UND mal Menge den Zeilenbetrag trifft; sonst "<Gesamt> für N Packungen".
+// Für 1 Packung bleibt "pro Packung".
+test('brutto: Packungspreis nur ganz, sonst Zeilenbetrag (US, GB, CH, PL, DE)', () => {
+  setzePreismodus('brutto');
+  try {
+    const fall = [
+      ['US', variante('99.0', 'USD'), {waehrung: 'USD', zeilen: {'2': 159, '3': 210}},
+        ['$159 für 2 Packungen', '$70 pro Packung', '$99 pro Packung']],
+      ['GB', variante('77.0', 'GBP'), {waehrung: 'GBP', zeilen: {'2': 123, '3': 162}},
+        ['123 GBP für 2 Packungen', '54 GBP pro Packung', '77 GBP pro Packung']],
+      ['CH', variante('78.0', 'CHF'), {waehrung: 'CHF', zeilen: {'2': 124, '3': 161}},
+        ['62 CHF pro Packung', '161 CHF für 3 Packungen', '78 CHF pro Packung']],
+      ['PL', variante('340.0', 'PLN'), {waehrung: 'PLN', zeilen: {'2': 544, '3': 709}},
+        ['272 PLN pro Packung', '709 PLN für 3 Packungen', '340 PLN pro Packung']],
+      ['DE', variante('76.0', 'EUR'), null, ['61 € pro Packung', '53 € pro Packung', '76 € pro Packung']],
+    ];
+    for (const [land, v, kasse, [z2, z3, z1]] of fall) {
+      const betrag = (m) => cp.staffelBetragText(cp.cacaoPricing(m, v, AWAKE, land, kasse));
+      assert.equal(betrag('2'), z2, `${land} 2x`);
+      assert.equal(betrag('3'), z3, `${land} 3x`);
+      assert.equal(betrag('1'), z1, `${land} 1x`);
+      // Die Nebenzeile der Kaufbox ("2 x 79.50 pro Packung") liest dasselbe Feld.
+      for (const m of ['2', '3']) {
+        const p = cp.cacaoPricing(m, v, AWAKE, land, kasse);
+        if (p.teilbar) assert.equal(p.priceNum % 1, 0, `${land} ${m}x: teilbar mit Nachkommastellen`);
+      }
+    }
+    // 1 Packung mit Nachkommastellen (Rückbau-Weg netto, Fallback): kein "für 1 Packungen".
+    assert.equal(cp.cacaoPricing('1', variante('78.13', 'EUR'), AWAKE, 'AT').teilbar, true);
+  } finally {
+    setzePreismodus('netto');
+  }
 });
