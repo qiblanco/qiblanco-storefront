@@ -15,13 +15,13 @@
  */
 
 /*
- * HANDLE-TOLERANT (Christian 2026-10-17: „es heisst nun Qi Alpha", Grossjob
+ * HANDLE-TOLERANT (Christian 2026-10-17: „es heißt nun Qi Alpha", Grossjob
  * 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-produkt-seiten-serverweit).
  * Der Shopify-Handle wechselt erst in Segment s09 von qi-master* auf
- * qi-alpha*. Bis dahin und danach (Warenkoerbe von vorher) zaehlt JEDER der
+ * qi-alpha*. Bis dahin und danach (Warenkörbe von vorher) zählt JEDER der
  * beiden Handles als Qi Alpha bzw. als dessen Add-on. Reihenfolge: der neue
  * zuerst. QM_HANDLE ist der neue Handle; Preis- und Steuerweg lesen ihn nur
- * fuer die Steuerklasse, die fuer beide Handles dieselbe ist.
+ * für die Steuerklasse, die für beide Handles dieselbe ist.
  */
 export const QM_HANDLES = ['qi-alpha', 'qi-master'];
 export const QM_HANDLE = QM_HANDLES[0];
