@@ -64,8 +64,8 @@ export function links() {
 // 20261015-m5f3-frageseiten-rest-studien-und-kundenwort). So suchen Kunden die
 // Seite. Als Frage gestellt, weil die Antwort der Seite lautet: in den Fäden
 // berichtet niemand vom eigenen Tragen.
-const gross = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const TITEL = `Erfahrungen auf Reddit? ${gross(zahlwort(ZAHL.alle))} Fäden nachgelesen | Qi Blanco`;
+const versal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const TITEL = `Erfahrungen auf Reddit? ${versal(zahlwort(ZAHL.alle))} Fäden nachgelesen | Qi Blanco`;
 const BESCHREIBUNG =
   `In den ${zahlwort(ZAHL.alle)} Reddit-Fäden, die Google zeigt, berichtet ` +
   'niemand vom eigenen Tragen. Erfahrungen stehen in Google-Rezensionen und ' +

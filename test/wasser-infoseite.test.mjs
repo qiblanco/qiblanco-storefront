@@ -164,7 +164,7 @@ test('strukturierte Daten: Article, FAQPage, DefinedTermSet, VideoObject', () =>
   assert.equal(
     artikel.citation.length,
     W.QUELLEN.length,
-    'Article.citation zaehlt anders als die sichtbare Quellenliste',
+    'Article.citation zählt anders als die sichtbare Quellenliste',
   );
   assert.match(
     artikel.datePublished,
@@ -184,10 +184,10 @@ test('strukturierte Daten: Article, FAQPage, DefinedTermSet, VideoObject', () =>
   for (const k of knoten) JSON.parse(JSON.stringify(k));
 });
 
-test('ein Stand-Datum: Kopf und Fusszeile sagen dasselbe', () => {
+test('ein Stand-Datum: Kopf und Fußzeile sagen dasselbe', () => {
   assert.ok(
     W.SEITE.standZeile.includes(W.SEITE.standAnzeige),
-    `Kopf „Stand ${W.SEITE.standAnzeige}“, Fusszeile „${W.SEITE.standZeile}“`,
+    `Kopf „Stand ${W.SEITE.standAnzeige}“, Fußzeile „${W.SEITE.standZeile}“`,
   );
 });
 

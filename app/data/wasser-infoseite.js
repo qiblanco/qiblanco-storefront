@@ -4,7 +4,7 @@ import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
 import {STUDIEN, anzahlNachArt, zahlwort} from '~/data/studien';
 
-const gross = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const versal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
  * DER INHALT DER INFO-SEITE „KOHÄRENTES WASSER" — /pages/was-ist-kohaerentes-wasser.
@@ -90,7 +90,7 @@ export const SEITE = {
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
   standAnzeige: '9. Oktober 2026',
-  // Fusszeile aus demselben Datum wie der Kopf (bis 2026-10-17 stand hier
+  // Fußzeile aus demselben Datum wie der Kopf (bis 2026-10-17 stand hier
   // noch „23. September“, Prüferbefund im Job
   // 20261015-m5f3-frageseiten-rest-studien-und-kundenwort).
   get standZeile() {
@@ -1115,7 +1115,7 @@ export const WEITER = [
     // Nutzerberichte aus und ist keine Laborstudie; gemessen wurde in
     // Deutschland, veröffentlicht in internationalen Fachzeitschriften
     // (bis 2026-10-17 „Fünf Laborstudien in Japan und den USA“).
-    text: `${gross(zahlwort(STUDIEN.length))} veröffentlichte Studien, ${zahlwort(anzahlNachArt('in-vitro'))} davon an Zellen im Labor, mit Methode und Ergebnis.`,
+    text: `${versal(zahlwort(STUDIEN.length))} veröffentlichte Studien, ${zahlwort(anzahlNachArt('in-vitro'))} davon an Zellen im Labor, mit Methode und Ergebnis.`,
   },
   {
     to: '/pages/kohaerentes-wasser',
