@@ -8,6 +8,7 @@ import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import cartSeiteStyles from '~/styles/cart-seite.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
+import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {
   kakaoPackungenEingabe,
   legeKakaoSetZeile,
@@ -140,6 +141,11 @@ export async function action({request, context}) {
     default:
       throw new Error(`${action} cart action is not defined`);
   }
+
+  // Das Einführungsangebot liegt höchstens einmal im Warenkorb (Großjob
+  // 20261017 kakao-unter-herstellkosten, s02). Vor der Kakao-Normalform, die
+  // das Angebot als fremde Kakao-Zeile mitliest.
+  result = await begrenzeAngebot({cart, action, result});
 
   // Qi-Master-Add-ons hängen am Qi Master: ohne ihn fallen sie mit, eine
   // Wunschnummer steht höchstens einmal im Warenkorb (Christian 2026-09-24).

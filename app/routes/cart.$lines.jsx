@@ -7,6 +7,7 @@ import {
 } from '~/lib/cart-attribution.server';
 import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
+import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 
 /**
@@ -83,9 +84,14 @@ export async function loader({request, context, params}) {
   // Qi-Master-Add-ons hängen am Qi Master — auch über den Permalink: ein
   // /cart/<Wunschnummer>:2 ohne Qi Master führte bis 2026-09-25 direkt zur
   // Kasse (Job 20260925-qm-addon-bindung-greift-nur-bei-attribut).
-  const gebunden = angelegt?.errors?.length
+  // Das Einführungsangebot höchstens einmal — auch über den Permalink, der
+  // direkt zur Kasse führt (/cart/<Angebot>:3).
+  const begrenzt = angelegt?.errors?.length
     ? angelegt
-    : await bindeQiMasterAddons({cart, action: 'LinesAdd', result: angelegt});
+    : await begrenzeAngebot({cart, action: 'LinesAdd', result: angelegt});
+  const gebunden = begrenzt?.errors?.length
+    ? begrenzt
+    : await bindeQiMasterAddons({cart, action: 'LinesAdd', result: begrenzt});
   // Partner-Permalink mit 2/3 Packungen einer Kakao-Sorte: Set-Zeile, damit
   // der ?discount=-Code neben dem Staffelpreis greift (kakao-set-zeile.server.js).
   const result = gebunden?.errors?.length
