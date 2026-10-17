@@ -20,6 +20,8 @@ import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
+import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
@@ -84,6 +86,7 @@ export function qiBraceletSeiteLinks() {
   return [
     {rel: 'stylesheet', href: igStyles},
     {rel: 'stylesheet', href: pdpQiStyles},
+    {rel: 'stylesheet', href: kaufZuerstStyles},
     // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*).
     {rel: 'stylesheet', href: produktVideoStyles},
@@ -135,6 +138,7 @@ export function QiBraceletSeite({
 
   return (
     <>
+    <div className="qb-pdp-kopf" {...kaufZuerstAttribute()}>
     <div className="product-360-hero">
       <div className="product-360-hero__text">
         <h2>QiBracelet®</h2>
@@ -153,7 +157,7 @@ export function QiBraceletSeite({
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiBracelet-Content
         darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
-    <div className="product" id="product" data-qi-shop={shopMarker}>
+    <div className="product" id="product" data-qi-shop={shopMarker} {...kaufZuerstAttribute()}>
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
@@ -212,6 +216,7 @@ export function QiBraceletSeite({
           ],
         }}
       />
+    </div>
     </div>
       {/*
         DIE INSTAGRAM-STIMMEN — WEIT OBEN: unmittelbar nach dem Kaufblock
