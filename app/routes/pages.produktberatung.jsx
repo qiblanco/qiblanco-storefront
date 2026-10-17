@@ -11,6 +11,12 @@ import {
   verwaltenCookie,
   verwaltenToken,
 } from '~/lib/produktberatung-verwalten.server';
+import {
+  holeJson,
+  holeMitWiederholung,
+  istFluechtig,
+  termineBrauchbar,
+} from '~/lib/produktberatung-abruf.server';
 
 const PFAD = '/pages/produktberatung';
 /** Arm B des Seiten-Experiments pb-e1-gs107 (Route pages.produktberatung-b.jsx). */
@@ -62,6 +68,11 @@ function armPfad(url) {
  *
  * FÄLLT DER ENDPUNKT AUS, RENDERT DIE SEITE TROTZDEM — mit dem Satz, dass die
  * Termine gerade nicht laden, und der Service-Adresse. Kein 500.
+ * Vorher ZWEI Versuche (Repair 20261017-repair-prio1-produktberatung-termine-
+ * laden-nicht-kundenrand-fehlerwache, s02): ein flüchtiger Fehlschlag wird nicht
+ * mehr zum Fehlersatz (app/lib/produktberatung-abruf.server.js, 3500 + 3000 ms).
+ * Kommt die Seite trotzdem mit ladeFehler, holt die Komponente die Termine im
+ * Browser bis zu zweimal nach (useNachladen); der Fehlersatz bleibt der Rückfall.
  *
  * SICHTBARKEIT (Christian: „live, aber nicht per …" = nicht verlinkt):
  *   (1) CANONICAL statt noindex — `canonicalLink()`.
@@ -138,13 +149,6 @@ export function basis(context) {
   return (typeof env === 'string' && env.trim()) || ENDPUNKT;
 }
 
-function signal(ms) {
-  return typeof AbortSignal !== 'undefined' &&
-    typeof AbortSignal.timeout === 'function'
-    ? AbortSignal.timeout(ms)
-    : undefined;
-}
-
 /** Quellen, die ein Link über ?von= setzen darf; alles andere bucht als 'seite'. */
 const QUELLEN_AUS_LINK = ['warenkorb-mail', 'ig-stichwort-call'];
 
@@ -155,22 +159,6 @@ function quelleAusLink(wert) {
 
 const NICHT_ERREICHBAR =
   'Das hat gerade nicht geklappt. Bitte versuch es gleich noch einmal oder schreib uns an service@qiblanco.com.';
-
-async function holeJson(url, init, ms) {
-  try {
-    const res = await fetch(url, {...init, signal: signal(ms)});
-    const text = await res.text();
-    let body = null;
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = null;
-    }
-    return {status: res.status, body};
-  } catch {
-    return {status: 0, body: null};
-  }
-}
 
 /** Buchungsschluss in Minuten, wie ihn der Endpunkt meldet; fehlt er oder ist er unbrauchbar: null (dann kein Abdaten). */
 function schlussMin(body) {
@@ -245,10 +233,10 @@ export async function loader({request, context}) {
   }
 
   if (token) {
-    const r = await holeJson(
+    const r = await holeMitWiederholung(
       `${api}/api/buchung?t=${encodeURIComponent(token)}`,
       {headers: {Accept: 'application/json'}},
-      4000,
+      (x) => !istFluechtig(x),
     );
     if (r.status === 200 && r.body?.ok) {
       return {
@@ -277,21 +265,21 @@ export async function loader({request, context}) {
       buchung: null,
       verwaltenFehler:
         r.body?.text ||
-        (r.status === 0
+        (istFluechtig(r)
           ? 'Dein Termin lädt gerade nicht. Bitte versuch es gleich noch einmal oder schreib uns an service@qiblanco.com.'
           : 'Diesen Link kennen wir nicht. Schreib uns gern an service@qiblanco.com.'),
       termine: [],
       buchungMoeglich: false,
-      ladeFehler: r.status === 0,
+      ladeFehler: istFluechtig(r),
     };
   }
 
-  const r = await holeJson(
+  const r = await holeMitWiederholung(
     `${api}/api/termine`,
     {headers: {Accept: 'application/json'}},
-    4000,
+    termineBrauchbar,
   );
-  if (r.status === 200 && Array.isArray(r.body?.termine)) {
+  if (termineBrauchbar(r)) {
     return {
       pfad,
       jetzt,
