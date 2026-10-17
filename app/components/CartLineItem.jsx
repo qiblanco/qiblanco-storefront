@@ -61,11 +61,20 @@ export function CartLineItem({layout, line}) {
             <strong>{warenkorbTitel(line)}</strong>
           </p>
         </Link>
-        <ProductPrice
-          price={displayPrice.price}
-          taxRate={displayPrice.taxRate}
-          centGenau
-        />
+        {/* Nie "0 €" (Register F-056): eine Zeile, die der Server noch nicht
+            bestätigt hat (isOptimistic), trägt noch keinen Preis. Bis dahin
+            steht ein Platzhalter in Preishöhe da, damit nichts springt. */}
+        {parseFloat(displayPrice.price.amount) > 0 ? (
+          <ProductPrice
+            price={displayPrice.price}
+            taxRate={displayPrice.taxRate}
+            centGenau
+          />
+        ) : (
+          <div className="product-price" aria-hidden="true">
+            &nbsp;
+          </div>
+        )}
         <ul>
           {selectedOptions.map((option) =>
             option.value !== 'Default Title' ? (
