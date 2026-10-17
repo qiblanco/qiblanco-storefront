@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.11) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.12) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -178,7 +178,33 @@
     try { fetch(ENDPOINT, { method: "POST", body: body, headers: { "Content-Type": "application/json" }, keepalive: true, mode: "cors" }); } catch (e) {}
   }
 
-  function track(name, props) { send(base(name, props)); }
+  var pvIdent = null;
+  function sichtBeimSenden() {
+    var o = {};
+    try { if (d.visibilityState) o.visibility_state = String(d.visibilityState); } catch (e) {}
+    try { o.prerendering = d.prerendering === true; } catch (e) {}
+    return o;
+  }
+  function identFest(ev) {
+    if (CFG.pv_ident === false || !pvIdent) return;
+    if (ev.consent && ev.consent.ad_storage === "denied") return;
+    if (ev.anon_id === pvIdent.anon_id && ev.session_id === pvIdent.session_id) return;
+    ev.anon_id = pvIdent.anon_id;
+    ev.session_id = pvIdent.session_id;
+    ev.ident_wechsel = 1;
+  }
+  function track(name, props) {
+    if (name === "page_view") {
+      var p = {}, sv = sichtBeimSenden(), k;
+      for (k in sv) { if (Object.prototype.hasOwnProperty.call(sv, k)) p[k] = sv[k]; }
+      if (props) { for (k in props) { if (Object.prototype.hasOwnProperty.call(props, k)) p[k] = props[k]; } }
+      props = p;
+    }
+    var ev = base(name, props);
+    if (name === "page_view") pvIdent = { anon_id: ev.anon_id, session_id: ev.session_id };
+    else if (name === "behavior") identFest(ev);
+    send(ev);
+  }
   function identify(email, props) { props = props || {}; if (email) props.email = email; send(base("identify", props)); }
 
   var q = (w.qpx && w.qpx.q) || [];
@@ -1149,6 +1175,7 @@
         try { medTabWechsel(); } catch (e) {}
         try { flush(true); } catch (e) {}
       } else {
+        lastActivity = now;
         dwellFortsetzen(now);
         try { medTabWechsel(); } catch (e) {}
       }
