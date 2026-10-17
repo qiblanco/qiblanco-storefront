@@ -4,6 +4,7 @@ import {BLOCK_PUBLIC, produktLink} from '~/components/reusables/blockLinks';
 import {ChevronRight} from 'lucide-react';
 import {useState, useEffect, useRef, useCallback} from 'react';
 import {useDragSwipe} from '~/components/reusables/useDragSwipe';
+import {TEASER_KAUFLINK_KLASSE} from '~/components/reusables/teaserKauflink';
 
 /*
  * Zwei-Block-IA (Job 20260717-storefront-ia-zweiblock-umbau): Die Karte
@@ -146,7 +147,9 @@ export function UpsellLineUp({dataSection, block = BLOCK_PUBLIC}) {
               </Link>
               <Link
                 prefetch="render"
-                className="mt-1 UpsellLink"
+                /* Teaser = Navigation: Schalter und Begründung in
+                   reusables/teaserKauflink.js */
+                className={`mt-1 UpsellLink${TEASER_KAUFLINK_KLASSE}`}
                 to={produktLink(item.produktId, block, 'kauf')}
               >
                 Jetzt kaufen <ChevronRight size={20} />

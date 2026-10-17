@@ -1,5 +1,6 @@
 import {CdnBild} from '../reusables/CdnBild';
 import { Link } from "react-router"
+import {TEASER_KAUFLINK_KLASSE} from '../reusables/teaserKauflink';
 
 export function FeaturedProduct({title, label, linkDetailseite, linkKaufseite, bildLinks, bildRechts, dataSection}){
     return(
@@ -8,7 +9,9 @@ export function FeaturedProduct({title, label, linkDetailseite, linkKaufseite, b
             <h3>{label}</h3>
             <div className="FeaturedProduct_Links">
                 <Link prefetch="intent" to={linkDetailseite}>Mehr erfahren</Link>
-                <Link prefetch="intent" to={linkKaufseite}>Jetzt kaufen</Link>
+                {/* Teaser = Navigation: Schalter und Begründung in
+                    reusables/teaserKauflink.js */}
+                <Link prefetch="intent" to={linkKaufseite} className={TEASER_KAUFLINK_KLASSE.trim() || undefined}>Jetzt kaufen</Link>
             </div>
             <div className="FeaturedProduct_ImageWrapper">
                 {/* Bewusst OHNE breite/hoehe: dieser Baustein rendert sechs
