@@ -4454,6 +4454,64 @@ footer.footer :focus-visible {
 .MainFeatures .MainFeaturesColumn {
   flex: 1 1 35%;
 }
+/* TABLET 750-1099 px: Siegel in eigener Zeile, darunter die zwei Textspalten.
+   Vorher standen Siegel und Texte in EINER Zeile; bei 768 blieben jeder
+   Spalte rund 170 px, lange Woerter ("QiBracelet®", "Verbesserungen")
+   ragten bis zu 10 px aus dem Fenster und die Seite liess sich seitlich
+   scrollen (Register F-194, F-196, F-197, F-200, F-201, F-202).
+   Das Siegel bekommt per Rand-Ausgleich genau 100 % der Zeile (Breite plus
+   Raender), so bricht der Fluss ohne DOM-Aenderung danach um; es bleibt in
+   seiner eigenen Groesse (350 px), wird also nicht hochskaliert.
+   `min-width: 0` laesst die Spalten unter die Breite ihres laengsten Worts
+   schrumpfen, statt die Zeile zu sprengen. */
+@media (min-width: 750px) and (max-width: 1099px) {
+  .MainFeatures {
+    flex-wrap: wrap;
+  }
+  .MainFeatures > img {
+    flex: 0 0 auto;
+    width: min(350px, 100%);
+    margin-inline: calc((100% - min(350px, 100%)) / 2);
+  }
+  .MainFeatures .MainFeaturesColumn {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .PerfektePassform {
+    flex-wrap: wrap;
+  }
+  .PerfektePassform img {
+    order: -1;
+    flex: 0 0 auto;
+    width: min(400px, 100%);
+    margin-inline: calc((100% - min(400px, 100%)) / 2);
+  }
+  .PerfektePassform p {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+/* Das Mikroskop-Video ist `min-width: 100vw` breit (s. .ScrollMikroskopvideo
+   video). 100vw zaehlt die senkrechte Scrollleiste mit, das Video ragte
+   deshalb in JEDER Breite um deren 15 px ueber und die Seite liess sich
+   seitlich scrollen (Register F-123, F-134, F-176). `overflow-x: clip`
+   schneidet den Rest ab, ohne einen Scroll-Container zu bauen — das
+   klebende VideoOverlay (position: sticky) klebt also weiter.
+   Bewusst NUR Startseite und QiOne-Seite: die Landingpages (.lp-vp, u. a.
+   die A/B-Seiten schlaf-zellen-schutz*) bleiben unberuehrt. */
+:is(.home, .ProductPageQiOne) > .ScrollMikroskopvideo {
+  overflow-x: clip;
+}
+/* Dasselbe fuer den Scroll-Scrub-Block (Full-Bleed per 100vw und
+   margin-left: calc(50% - 50vw), s. .ScrollScrubVideoBlock unten): er stand
+   um die halbe Scrollleiste links (-7 px) und rechts (+8 px) ueber.
+   Startseite und QiOne-Seite sind ohnehin randlos, der Ausbruch ist dort
+   ueberfluessig -> volle Elternbreite statt 100vw. Landingpages (.lp-vp,
+   u. a. die A/B-Seiten) bleiben unberuehrt. */
+:is(.home, .ProductPageQiOne) > .ScrollScrubVideoBlock {
+  width: auto;
+  margin-inline: 0;
+}
 .RisikofreiErleben {
   margin: 100px auto;
 }
@@ -4903,8 +4961,12 @@ ul.kakao-children li {
     justify-content: space-between;
     gap: 20px;
   }
+  /* 50 % je Bild PLUS 20 px Luecke ragten 10 px ueber die Kante (Seite
+     seitlich scrollbar, Gate 12 layout-overflow qibracelet): jedes Bild gibt
+     die halbe Luecke ab. */
   .ImageDivider img {
-    width: 50%;
+    width: calc(50% - 10px);
+    min-width: 0;
   }
   .SchutzGeopathogeneStrahlung{
     display: flex;
