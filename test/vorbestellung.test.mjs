@@ -33,8 +33,8 @@ const linie = (handle, titel) => ({
   merchandise: {product: {handle, title: titel}},
 });
 
-// Qi Alpha heisst bis 2026-10-17 Qi Master; der Shopify-Handle wechselt erst
-// in s09 des Umbenennungs-Grossjobs. Beide Handles muessen denselben Text tragen.
+// Qi Alpha heißt bis 2026-10-17 Qi Master; der Shopify-Handle wechselt erst
+// in s09 des Umbenennungs-Grossjobs. Beide Handles müssen denselben Text tragen.
 const QI_MASTER = linie('qi-master', 'Qi Alpha');
 const QI_ALPHA = linie('qi-alpha', 'Qi Alpha');
 const ANDERES = linie('qione-2-pro', 'QiOne® 2 Pro');

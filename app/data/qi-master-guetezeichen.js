@@ -57,8 +57,8 @@
  * `zufriedenheit` ist deshalb als Pfad geschrieben (zwei Halbbögen, r=9).
  */
 // Christians Wortlaut vom 2026-09-22 („Lass dich vom Qi Master® tragen."),
-// nicht umformuliert. Seit 2026-10-17 traegt er den neuen Produktnamen
-// (Christian: „ja bitte auch die Shopseite und das Produkt. es heisst nun Qi
+// nicht umformuliert. Seit 2026-10-17 trägt er den neuen Produktnamen
+// (Christian: „ja bitte auch die Shopseite und das Produkt. es heißt nun Qi
 // Alpha"); die Marke ist noch nicht angemeldet, darum ohne ®.
 export const QIMASTER_GUETE_UEBERSCHRIFT = 'Lass dich vom Qi Alpha tragen.';
 

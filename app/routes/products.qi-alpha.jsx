@@ -29,15 +29,15 @@ import {
 /*
  * Organische Produktseite /products/qi-alpha — bis 2026-10-17
  * /products/qi-master. Christian am 2026-10-17: „ja bitte auch die
- * Shopseite und das Produkt. es heisst nun Qi Alpha" (Grossjob
+ * Shopseite und das Produkt. es heißt nun Qi Alpha" (Grossjob
  * 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-produkt-seiten-serverweit,
- * s02). Der alte Pfad ist eine 301-Huelle (products.qi-master.jsx). Interne
+ * s02). Der alte Pfad ist eine 301-Hülle (products.qi-master.jsx). Interne
  * Bezeichner (QiMaster.jsx, qm-*-Klassen, qi-master-*-Dateien) bleiben.
  *
  * HANDLE-TOLERANT (s02 bis s09): der Shopify-Handle wechselt erst in s09
- * von `qi-master` auf `qi-alpha`. Bis dahin laedt der Loader erst `qi-alpha`
+ * von `qi-master` auf `qi-alpha`. Bis dahin lädt der Loader erst `qi-alpha`
  * und, wenn es das nicht gibt, `qi-master`. Nach s09 trifft schon die erste
- * Abfrage; der zweite Handle ist dann nur noch Rueckweg und kann gehen.
+ * Abfrage; der zweite Handle ist dann nur noch Rückweg und kann gehen.
  *
  * Ursprung: QiMaster, „der QiOne mit Diamant" (Christian-Auftrag
  * 2026-09-10, CW-20260910-0e45045b).
@@ -74,7 +74,7 @@ import {
  * Shopify als DRAFT; die Storefront-API liefert dafür null, der Loader
  * antwortet 404 — auch nach einem Merge dieser Route bleibt die Seite
  * unerreichbar, bis das Produkt auf ACTIVE steht und dem Kanal „Main Qi
- * Blanco Storefront" zugeordnet ist. Der Rueckweg ist derselbe Schalter.
+ * Blanco Storefront" zugeordnet ist. Der Rückweg ist derselbe Schalter.
  *
  * TRACKING: KEIN Pixel-Code hier (0-Pixel-Regel, D-006) — ViewContent feuert
  * aus <Analytics.ProductView> in der geteilten QiOneBuyBox, AddToCart als
@@ -174,7 +174,7 @@ async function loadCriticalData({context, request}) {
 
   // `handle` ist der GEFUNDENE Handle, nicht der Pfad: mit dem Pfad-Handle
   // `qi-alpha` gegen ein Produkt `qi-master` ersetzte die Funktion den Pfad
-  // durch /products/qi-master, und dessen 301 fuehrte zurueck hierher —
+  // durch /products/qi-master, und dessen 301 führte zurück hierher —
   // ein Kreis bis zum s09-Handle-Wechsel.
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
@@ -194,7 +194,7 @@ async function loadCriticalData({context, request}) {
     // kasse-nimmt-20-prio8.
     marktLand: storefront.i18n.country,
     addons: {
-      // Neuer Handle zuerst, alter als Rueckfall (s09 wechselt ihn).
+      // Neuer Handle zuerst, alter als Rückfall (s09 wechselt ihn).
       wunschnummer: addonDaten?.wunschnummerNeu ?? addonDaten?.wunschnummer ?? null,
       kette: addonDaten?.ketteNeu ?? addonDaten?.kette ?? null,
     },
