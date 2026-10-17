@@ -55,6 +55,7 @@ export function infoGrafik(typ) {
  * 20260926-studien-zahlwort-probe-und-vorlage-7028, wie PR #660/#661).
  */
 const ZELLSTUDIEN = zahlwort(anzahlNachArt('in-vitro'));
+const ZELLSTUDIEN_GROSS = ZELLSTUDIEN.charAt(0).toUpperCase() + ZELLSTUDIEN.slice(1);
 
 export const SEITE = {
   pfad: PFAD,
@@ -212,9 +213,12 @@ export const STUFEN = [
     anker: 'studien',
     glied: 'zelle',
     marke: 'Was die Zellstudien zeigen',
-    titel: 'Fünf Studien, gemessen an Zellen im Labor',
+    // Bis 2026-10-17 „Fünf Studien, gemessen an Zellen im Labor“: die fünfte
+    // Publikation (e0004) wertet Nutzerberichte aus und hat keine Zellen
+    // gemessen (Prüferbefund, Job 20261015-m5f3-frageseiten-rest-studien-und-kundenwort).
+    titel: `${ZELLSTUDIEN_GROSS} Studien, gemessen an Zellen im Labor`,
     absaetze: [
-      'Prof. Dr. Peter C. Dartsch hat die GitterChip-Technik an seinem Institut für zellbiologische Testsysteme untersucht. Fünf Studien sind international publiziert und Peer-Review-kontrolliert.',
+      `Prof. Dr. Peter C. Dartsch hat die GitterChip-Technik an seinem Institut für zellbiologische Testsysteme untersucht. Fünf Studien sind international publiziert und Peer-Review-kontrolliert. ${ZELLSTUDIEN_GROSS} davon messen an Zellen, die fünfte wertet Berichte von Nutzern aus.`,
       'Gemessen hat er an Immunzellen, Darmzellen, Leberzellen und Nervenzellen, unter Handystrahlung und unter oxidativem Stress.',
     ],
     diagramme: [

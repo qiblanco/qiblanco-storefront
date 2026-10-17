@@ -117,6 +117,19 @@ test('jeder Studienlink hat eine Studie', () => {
   for (const s of slugs) assert.ok(bekannt.has(s), s);
 });
 
+test('die Überschrift der Zellstudien zählt nur Zellstudien (in-vitro)', () => {
+  const zell = ['e0001', 'e0002', 'e0003', 'e0004', 'e0005']
+    .map((id) => JSON.parse(readFileSync(new URL(`../app/data/studien/${id}.json`, import.meta.url), 'utf8')))
+    .filter((d) => d.art === 'in-vitro').length;
+  const wort = ['null', 'Eine', 'Zwei', 'Drei', 'Vier', 'Fünf', 'Sechs'][zell];
+  const stufe = G.STUFEN.find((x) => x.id === 'studien');
+  assert.ok(stufe, 'Stufe studien fehlt');
+  assert.ok(
+    stufe.titel.startsWith(`${wort} Studien`),
+    `Überschrift „${stufe.titel}“, Zellstudien in den Daten: ${zell}`,
+  );
+});
+
 test('jede Stufe führt weiter, die letzte zum Kaufweg', () => {
   const anker = new Set(G.STUFEN.map((s) => s.anker));
   const letzte = G.STUFEN[G.STUFEN.length - 1];

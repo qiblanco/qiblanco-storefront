@@ -159,6 +159,13 @@ test('strukturierte Daten: Article, FAQPage, DefinedTermSet, VideoObject', () =>
     artikel.citation.length >= 12,
     'Article nennt weniger als zwoelf Quellen',
   );
+  // Die Beschreibung und der Kopf nennen „N Quellen“ (QUELLEN.length); das
+  // Schema nennt dieselben N, auch die Bücher ohne Link (seit 2026-10-17).
+  assert.equal(
+    artikel.citation.length,
+    W.QUELLEN.length,
+    'Article.citation zählt anders als die sichtbare Quellenliste',
+  );
   assert.match(
     artikel.datePublished,
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/,
@@ -175,6 +182,13 @@ test('strukturierte Daten: Article, FAQPage, DefinedTermSet, VideoObject', () =>
   }
   // Auf der Seite gilt: dieselben Knoten müssen JSON-serialisierbar sein.
   for (const k of knoten) JSON.parse(JSON.stringify(k));
+});
+
+test('ein Stand-Datum: Kopf und Fußzeile sagen dasselbe', () => {
+  assert.ok(
+    W.SEITE.standZeile.includes(W.SEITE.standAnzeige),
+    `Kopf „Stand ${W.SEITE.standAnzeige}“, Fußzeile „${W.SEITE.standZeile}“`,
+  );
 });
 
 test('die Route trägt canonicalLink und kein noindex', () => {

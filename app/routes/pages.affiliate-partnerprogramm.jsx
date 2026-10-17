@@ -20,6 +20,10 @@ const PFAD = '/pages/affiliate-partnerprogramm';
    steht bewusst nicht drin: wer nach dieser Seite sucht, fragt nach
    „Partnerprogramm" und „Partner werden", nicht nach Schutz oder Strahlung. */
 const TITEL = 'Partnerprogramm: Partner werden, 10 % Provision | Qi Blanco';
+/* Name der Seite in WebPage und Brotkrume: der Gegenstand, nicht der Suchtitel
+   samt Markenzusatz (seit 2026-10-17, Prüferbefund im Job
+   20261015-m5f3-frageseiten-rest-studien-und-kundenwort). */
+const NAME = 'Partnerprogramm';
 const BESCHREIBUNG =
   'Werde Partner von Qi Blanco: Deine Community spart 5 % mit deinem Code, ' +
   'du bekommst 10 % Provision. Kostenlos, 30 Tage Zuordnung, Anmeldung in ' +
@@ -108,7 +112,7 @@ function seitenSchema() {
         '@type': 'WebPage',
         '@id': `${url}#seite`,
         url,
-        name: TITEL,
+        name: NAME,
         description: BESCHREIBUNG,
         inLanguage: 'de-DE',
         isPartOf: {'@id': SITE_ID},
@@ -141,7 +145,7 @@ export const meta = () => [
   {
     'script:ld+json': brotkrume({
       url: absoluteCanonical(PFAD),
-      name: 'Partnerprogramm',
+      name: NAME,
     }),
   },
 ];

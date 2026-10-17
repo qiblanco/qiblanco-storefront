@@ -2,6 +2,9 @@ import {bilder, stufen} from '~/data/kohaerente-wasserstruktur';
 import {AUTORENKASTEN} from '~/lib/autorenkasten';
 import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
+import {STUDIEN, anzahlNachArt, zahlwort} from '~/data/studien';
+
+const versal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
  * DER INHALT DER INFO-SEITE „KOHÄRENTES WASSER" — /pages/was-ist-kohaerentes-wasser.
@@ -87,8 +90,12 @@ export const SEITE = {
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
   standAnzeige: '9. Oktober 2026',
-  standZeile:
-    'Stand: 23. September 2026. Jede Zahl trägt ihre Quelle. Neue Veröffentlichungen nehmen wir auf, sobald sie erscheinen.',
+  // Fußzeile aus demselben Datum wie der Kopf (bis 2026-10-17 stand hier
+  // noch „23. September“, Prüferbefund im Job
+  // 20261015-m5f3-frageseiten-rest-studien-und-kundenwort).
+  get standZeile() {
+    return `Stand: ${this.standAnzeige}. Jede Zahl trägt ihre Quelle. Neue Veröffentlichungen nehmen wir auf, sobald sie erscheinen.`;
+  },
   leitLegende: `Nimmt das Wassermolekül Energie auf, weitet sich sein Winkel von ${VON} auf ${NACH}. Dann ordnen sich die Nachbarn zu einem Sechseck.`,
 };
 
@@ -1104,7 +1111,11 @@ export const WEITER = [
   {
     to: '/pages/studien',
     titel: 'Die Studien',
-    text: 'Fünf Laborstudien in Japan und den USA, mit Methode und Ergebnis.',
+    // Zahlen aus den Studiendaten: eine der fünf Arbeiten (e0004) wertet
+    // Nutzerberichte aus und ist keine Laborstudie; gemessen wurde in
+    // Deutschland, veröffentlicht in internationalen Fachzeitschriften
+    // (bis 2026-10-17 „Fünf Laborstudien in Japan und den USA“).
+    text: `${versal(zahlwort(STUDIEN.length))} veröffentlichte Studien, ${zahlwort(anzahlNachArt('in-vitro'))} davon an Zellen im Labor, mit Methode und Ergebnis.`,
   },
   {
     to: '/pages/kohaerentes-wasser',
@@ -1160,6 +1171,12 @@ function ohneMarken(text) {
     .trim();
 }
 
+/** Schema-Typ einer Quelle: Buch mit ISBN, Fachartikel, sonst ein Werk (Vortrag). */
+function quellenTyp(q) {
+  if (q.art !== 'buch') return 'ScholarlyArticle';
+  return /ISBN/.test(q.ort || '') ? 'Book' : 'CreativeWork';
+}
+
 export function strukturierteDaten() {
   const url = absoluteCanonical(PFAD);
   const autor = {
@@ -1177,12 +1194,15 @@ export function strukturierteDaten() {
     name: 'Qi Blanco',
     url: absoluteCanonical('/'),
   };
-  const zitate = QUELLEN.filter((q) => q.url).map((q) => ({
-    '@type': q.art === 'buch' ? 'Book' : 'ScholarlyArticle',
+  // Alle Quellen der sichtbaren Liste, auch Bücher und der Vortrag ohne Link:
+  // die Beschreibung nennt „${QUELLEN.length} Quellen“, das Schema dieselben
+  // (bis 2026-10-17 nur die 32 mit Link).
+  const zitate = QUELLEN.map((q) => ({
+    '@type': quellenTyp(q),
     name: q.titel,
     author: q.autoren,
     datePublished: q.jahr,
-    url: q.url,
+    ...(q.url ? {url: q.url} : {}),
   }));
   const artikel = {
     '@context': 'https://schema.org',
