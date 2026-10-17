@@ -11,6 +11,7 @@ import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabe
 import qiMasterStyles from '~/styles/qi-master.css?url';
 import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
+import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
@@ -83,6 +84,7 @@ export function links() {
     // Begründung in components/product-pages/pdpKaufZuerst.js. Das Attribut
     // sitzt auf dem Seiten-Wrapper .qm-pdp, nicht in der geteilten Buy-Box.
     {rel: 'stylesheet', href: kaufZuerstStyles},
+    {rel: 'stylesheet', href: kaufleisteStyles},
   ];
 }
 
@@ -224,6 +226,9 @@ export default function Product() {
            zeremonie-kakao.jsx (`<div className="product" id="product">`), hier
            nur über die geteilte Komponente statt von Hand. */
         ankerId="qm-buybox"
+        /* Klebende Kaufleiste mobil (reusables/Kaufleiste.jsx): Preis und
+           Knopf dieser Buy-Box, mit denselben Add-on-Zeilen wie ihr Knopf. */
+        kaufleiste
         /* Die Pflichtmitteilung hängt auf dieser Seite NICHT unter dem
            Kauf-Knopf, sondern als letzter Punkt der Nutzen-Liste darunter —
            dieselbe Bauform wie auf qione-2-pro, qibracelet, qihome-air und
