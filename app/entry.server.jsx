@@ -537,6 +537,19 @@ export default async function handleRequest(
       // steht oben, ad.doubleclick.net und cm.g.doubleclick.net nicht.
       'https://ad.doubleclick.net',
       'https://cm.g.doubleclick.net',
+      // Google-Ads-Remarketing (AW-983804630, GTM-Tag 101, nur mit
+      // Marketing-Einwilligung). STELLE 1 VON 2 — die zweite ist img-src
+      // unten. Der Hauptweg ist ein SKRIPT von googleads.g.doubleclick.net/
+      // pagead/viewthroughconversion/983804630/ und läuft über
+      // 'strict-dynamic'. Fällt es aus, schickt gtag dieselbe URL als BILD
+      // (&fmt=3) — gemessen 2026-10-13 im Chromium gegen
+      // /products/qione-2-pro, je 1 Verstoß img-src enforce und report.
+      // Hier steht der Host für den fetch-Transport desselben Endpunkts;
+      // hermetisch mit dem byte-gleichen Live-Kopf gemessen 2026-10-17:
+      // fetch gesperrt, mit dieser Zeile erlaubt. Exakter Host, weil bei
+      // DoubleClick die Hausform exakt ist. frame-src/td.doubleclick.net
+      // bleibt bewusst offen, bis CSP-Berichte nach dem Livegang es zeigen.
+      'https://googleads.g.doubleclick.net',
       // TikTok, zwei eigene Pixel-IDs. Zwei Domains, nicht eine:
       // analytics.tiktok.com und analytics-ipv6.tiktokw.us.
       'https://*.tiktok.com',
@@ -748,6 +761,10 @@ export default async function handleRequest(
       // Hier stehen nur die Ursprünge, die als img-src gemeldet wurden.
       'https://ad.doubleclick.net',
       'https://cm.g.doubleclick.net',
+      // Google-Ads-Remarketing, STELLE 2 VON 2 zu connect-src oben. Das ist
+      // der gemessene Ersatzweg: das Bild .../viewthroughconversion/
+      // 983804630/?...&fmt=3 starb hier (2026-10-13, img-src enforce).
+      'https://googleads.g.doubleclick.net',
       'https://*.tiktok.com',
       'https://*.tiktokw.us',
       // Taboola (Konto 1695700), STELLE 2 VON 2 zu connect-src oben. img-src
