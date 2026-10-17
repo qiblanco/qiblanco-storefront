@@ -622,7 +622,7 @@ function MechanismSection() {
    slider → Knopf. Die Animation eröffnet den Themenblock, die Erklärung folgt
    darunter. Das ist EINE Sektion geblieben, nur anders geordnet — der Slider
    steht weiterhin genau einmal auf der Seite. */
-function ScienceSection() {
+function ScienceSection({ohneScrollVideo = false}) {
   return (
     <section className="lp-vp-section" data-section="lp-a-wissenschaft">
       {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
@@ -635,26 +635,31 @@ function ScienceSection() {
           Erst die Zellen zeigen, dann sagen, was sechs Jahre Forschung daran
           gemessen haben. Die Regel gilt über diese Stelle hinaus und liegt als
           Standard in SKILL-SCROLL-ANIMATIONEN.md, Kapitel 7. */}
-      <ScrollScrubVideo
-        dataSection="lp-a-mikroskop-video"
-        srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
-        srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
-        overlayStart={{
-          titel: 'Zellbiologisch geprüft',
-          text: 'Entdecke die Effekte auf Zellebene.',
-        }}
-        overlayEnd={[
-          {
-            titel: 'Ohne GitterChip™',
-            text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
-          },
-          {
-            titel: 'Mit GitterChip™',
-            text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
-          },
-        ]}
-        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
-      />
+      {/* Kurz-Arm K50 (szs-e3-gs079, GS-079 Bestandteil „Scrollanimationen
+          raus“): ohne dieses Video. Der Beweis, den es zeigt, steht direkt
+          darunter in Zahlen („6 Jahre Forschung“, Studienslider). */}
+      {!ohneScrollVideo && (
+        <ScrollScrubVideo
+          dataSection="lp-a-mikroskop-video"
+          srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
+          srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
+          overlayStart={{
+            titel: 'Zellbiologisch geprüft',
+            text: 'Entdecke die Effekte auf Zellebene.',
+          }}
+          overlayEnd={[
+            {
+              titel: 'Ohne GitterChip™',
+              text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
+            },
+            {
+              titel: 'Mit GitterChip™',
+              text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
+            },
+          ]}
+          fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
+        />
+      )}
       {/* DIE SCHRIFTLICHE ERKLÄRUNG ZUM BLOCK, den das Video darueber eröffnet:
           „6 Jahre Forschung" (PeerReviewStudies, von der Startseite übernommen)
           und der Studienslider „Wirkung an menschlichen Zellen bestätigt!".
@@ -1120,14 +1125,15 @@ function StickyKaufknopf() {
    die Ads deutlich kürzer ist"). Gekürzt wird NUR durch Weglassen ganzer
    Abschnitte; kein Satz ist umformuliert, kein Abschnitt neu. Was hier fehlt,
    steht unverändert in A.
-   'k50' (szs-e3-gs079, Stufe-1-Paket GS-079, rund die Hälfte): ohne die
-     GitterChip-Scrollanimation vor dem ersten Argument, mit dem Kaufblock nach
-     dem Mechanismus (nr=1), ohne Externe Stimmen, Video-Stimmen und
-     Kachelreihe. Die EINE Scrollanimation, die bleibt, ist der Mikroskop-
-     Beweis im Wissenschaftsblock (Christian 17.10.: „vielleicht ist eine
-     Scroll-Down-Animation pro Seite das Bessere").
+   'k50' (szs-e3-gs079, Stufe-1-Paket GS-079, rund die Hälfte): ohne beide
+     Scrollanimationen (GitterChip vor dem ersten Argument, Mikroskop im
+     Wissenschaftsblock), mit dem Kaufblock nach dem Mechanismus (nr=1), ohne
+     Externe Stimmen, Video-Stimmen, Kachelreihe und Schlussblock. Gemessen an
+     der Vorschau 17.10.: mit dem Mikroskop-Video blieb die Seite mobil bei
+     79 % von A; die Hälfte erreicht sie nur ohne (Begründung und die Frage
+     „eine Animation je Seite“, GS-175: experimente.yaml szs-e3-gs079).
    'k25' (szs-e4-gs174, Radikal-Kurz, rund ein Viertel): Kopf, Bewertungen,
-     Garantie, Preisblock, Schluss. Der eine Beleg sind die Bewertungen:
+     Garantie, Preisblock. Der eine Beleg sind die Bewertungen:
      Menschen ziehen, Studien überzeugen erst beim Zweifel (Kaufüberzeugung,
      Kanon 2026-10-10).
    Beide ohne festen Kaufknopf (eigener Faktor, Test GS-127). */
@@ -1180,7 +1186,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             Arme trennen sich am Pfad, der Knopf behält seine Historie. A bleibt
             ohne ihn, bis B gewinnt. */}
         {(istB || istB2 || istK50) && <WeiterCta nr={1} />}
-        {!istK25 && <ScienceSection />}
+        {!istK25 && <ScienceSection ohneScrollVideo={istK50} />}
         {/* IN VARIANTE B2 KEHRT AUCH nr=2 ZURÜCK (Christian 10.10.2026, Test
             GS-126: „mobil auch nochmal mit der alten Ansicht und mehr Knöpfen
             … einfach nur einen Button …, der häufiger vorkommt"). Stelle bis
@@ -1267,7 +1273,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         {!istKurz && <InfoSlider dataSection="lp-a-info-slider" />}
         <GuaranteeSection />
         <PricingSection />
-        <FinalCTA />
+        {!istKurz && <FinalCTA />}
         {istB && <StickyKaufknopf />}
       </div>
     </LiveDataCtx.Provider>
