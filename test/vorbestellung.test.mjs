@@ -33,11 +33,16 @@ const linie = (handle, titel) => ({
   merchandise: {product: {handle, title: titel}},
 });
 
-const QI_MASTER = linie('qi-master', 'Qi Master®');
+// Qi Alpha heisst bis 2026-10-17 Qi Master; der Shopify-Handle wechselt erst
+// in s09 des Umbenennungs-Grossjobs. Beide Handles muessen denselben Text tragen.
+const QI_MASTER = linie('qi-master', 'Qi Alpha');
+const QI_ALPHA = linie('qi-alpha', 'Qi Alpha');
 const ANDERES = linie('qione-2-pro', 'QiOne® 2 Pro');
 
-test('Warenkorbzeile der Vorbestellung trägt Christians Wortlaut', () => {
-  assert.equal(warenkorbTitel(QI_MASTER), 'Qi Master® - Vorbestellung Jan 2027');
+test('Warenkorbzeile der Vorbestellung trägt Christians Wortlaut (Name seit 17.10.: Qi Alpha)', () => {
+  assert.equal(warenkorbTitel(QI_ALPHA), 'Qi Alpha - Vorbestellung Jan 2027');
+  assert.equal(warenkorbTitel(QI_MASTER), 'Qi Alpha - Vorbestellung Jan 2027');
+  assert.equal(versandhinweisFürLinien([QI_ALPHA]), 'Versandbereit für Dich: Jan 2027');
 });
 
 test('jedes andere Produkt behält seinen Produkttitel', () => {

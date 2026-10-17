@@ -566,7 +566,7 @@ export const FAQ_KAUF = [
   {
     q: 'Was kostet der Versand und wie lange dauert er?',
     a:
-      'QiOne® 2 Pro, QiBracelet®, QiHome® Air und Qi Master® schicken wir dir nach Deutschland ' +
+      'QiOne® 2 Pro, QiBracelet®, QiHome® Air und Qi Alpha schicken wir dir nach Deutschland ' +
       'und Österreich versandkostenfrei. Für das Necklace und Crystal Cacao® kostet der Versand ' +
       'nach Deutschland 5,90 €. Ab 99 € Warenwert ist er frei, und mit zwei ' +
       'Packungen Crystal Cacao® bist du schon darüber. Nach Österreich kostet er 6,90 € und ist ab ' +
