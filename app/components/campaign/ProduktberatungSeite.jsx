@@ -155,6 +155,19 @@ const PRODUKTE = [
   'anderes / weiß noch nicht',
 ];
 export const TERMIN_API = 'https://termin.65-108-150-121.sslip.io';
+/** Mindestlänge für „Worum geht es?" (Christian 17.10.2026); dieselbe Zahl steht in produktberatung/src/store.py. */
+export const ANLIEGEN_MIN = 20;
+const ANLIEGEN_PLATZHALTER =
+  'Zum Beispiel: Ich möchte ein QiHome kaufen und habe eine Frage zur Reichweite.';
+const ANLIEGEN_HINWEIS =
+  'Schreib mir bitte kurz, worum es geht, mindestens 20 Zeichen. Dann kann ich mich vorbereiten.';
+const PRODUKT_HINWEIS =
+  'Wähl bitte ein Produkt aus. Bist du unsicher, nimm „anderes / weiß noch nicht".';
+
+/** Eigener Satz statt der Browser-Meldung; ein leerer Text gibt das Feld wieder frei. */
+function meldung(text) {
+  return (ev) => ev.currentTarget.setCustomValidity(text);
+}
 /** Porträt aus dem Shopify-CDN (Master 1200 x 1535, dieselbe Datei wie /pages/partnerprogramm). */
 const FOTO =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
@@ -240,6 +253,40 @@ function useJetzt() {
     };
   }, []);
   return jetzt;
+}
+
+/** Wartezeiten bis zum ersten und zweiten Nachladen im Browser (ms). */
+export const NACHLADEN_MS = [2000, 6000];
+
+/**
+ * Kam die Seite mit ladeFehler (der Loader bekam auch im zweiten Versuch keine
+ * Termine), holt der Browser sie selbst nach: nach 2 s, und scheitert das, nach
+ * weiteren 6 s, höchstens zweimal (Repair 20261017-repair-prio1-produktberatung-
+ * termine-laden-nicht-kundenrand-fehlerwache, s02). Solange ein Versuch aussteht,
+ * gibt der Hook true zurück. Beim ersten Bild ist er false, damit Server- und
+ * Browser-HTML gleich sind; ohne JavaScript bleibt es beim Fehlersatz.
+ */
+function useNachladen(ladeFehler) {
+  const revalidator = useRevalidator();
+  const reval = useRef(revalidator);
+  reval.current = revalidator;
+  const zustand = revalidator.state;
+  const [versuch, setVersuch] = useState(0);
+  const [wartet, setWartet] = useState(false);
+  useEffect(() => {
+    if (!ladeFehler || versuch >= NACHLADEN_MS.length) {
+      setWartet(false);
+      return undefined;
+    }
+    setWartet(true);
+    if (zustand !== 'idle') return undefined;
+    const id = window.setTimeout(() => {
+      setVersuch((v) => v + 1);
+      reval.current.revalidate();
+    }, NACHLADEN_MS[versuch]);
+    return () => window.clearTimeout(id);
+  }, [ladeFehler, versuch, zustand]);
+  return wartet;
 }
 
 /** '2026-10-01' -> 'Donnerstag, 1. Oktober' (deterministisch, ohne Intl). */
@@ -640,7 +687,7 @@ function Unterzeile({schlussMin}) {
   );
 }
 
-function Buchen({daten, fehler, zone, mitWahl}) {
+function Buchen({daten, fehler, zone, mitWahl, laedtNach = false}) {
   const nav = useNavigation();
   const sendet =
     nav.state !== 'idle' && nav.formData?.get('intent') === 'buchen';
@@ -672,10 +719,15 @@ function Buchen({daten, fehler, zone, mitWahl}) {
       <section className="pb__termine" data-section="pb-termine" id="termine">
         <div className="pb__inhalt pb__inhalt--breit">
           <h2>Termine</h2>
-          <Hinweis
-            art="fehler"
-            text="Die Termine laden gerade nicht. Schreib uns an service@qiblanco.com."
-          />
+          {/* Der Fehlersatz bleibt der Rückfall: ohne JavaScript und wenn auch das Nachladen scheitert. */}
+          {laedtNach ? (
+            <Hinweis text="Die Termine kommen gleich." />
+          ) : (
+            <Hinweis
+              art="fehler"
+              text="Die Termine laden gerade nicht. Schreib uns an service@qiblanco.com."
+            />
+          )}
         </div>
       </section>
     );
@@ -759,14 +811,16 @@ function Buchen({daten, fehler, zone, mitWahl}) {
               wert={e.telefon}
             />
             <div className="pb__feld">
-              <label htmlFor="pb-produkt">
-                Um welches Produkt geht es?
-                <span className="pb__frei"> (freiwillig)</span>
-              </label>
+              <label htmlFor="pb-produkt">Um welches Produkt geht es?</label>
+              {/* Pflicht (Christian 17.10.2026: „ich will genau wissen, worum es geht, damit ich mich
+                  vorbereiten kann"); „bitte wählen" hat den Wert '' und zählt so nicht. Der Server prüft dasselbe. */}
               <select
                 id="pb-produkt"
                 name="produkt"
+                required
                 defaultValue={e.produkt || ''}
+                onInvalid={meldung(PRODUKT_HINWEIS)}
+                onChange={meldung('')}
               >
                 <option value="">bitte wählen</option>
                 {PRODUKTE.map((p) => (
@@ -777,15 +831,20 @@ function Buchen({daten, fehler, zone, mitWahl}) {
               </select>
             </div>
             <div className="pb__feld">
-              <label htmlFor="pb-anliegen">
-                Worum geht es?<span className="pb__frei"> (freiwillig)</span>
-              </label>
+              <label htmlFor="pb-anliegen">Worum geht es?</label>
+              {/* Pflicht, mindestens ANLIEGEN_MIN Zeichen (Christian 17.10. ~12:00Z: „ja dann 20 Zeichen";
+                  „möchte ein QiHome kaufen" reicht). Der Server prüft dasselbe (produktberatung/src/store.py). */}
               <textarea
                 id="pb-anliegen"
                 name="anliegen"
                 rows={3}
+                required
+                minLength={ANLIEGEN_MIN}
                 maxLength={1000}
+                placeholder={ANLIEGEN_PLATZHALTER}
                 defaultValue={e.anliegen || ''}
+                onInvalid={meldung(ANLIEGEN_HINWEIS)}
+                onInput={meldung('')}
               />
             </div>
             {/* Honigtopf: Menschen sehen und erreichen dieses Feld nicht (neben dem
@@ -809,8 +868,10 @@ function Buchen({daten, fehler, zone, mitWahl}) {
             >
               {sendet ? 'Einen Moment …' : 'Termin verbindlich buchen'}
             </button>
+            {/* „freiwilligen" -> „übrigen" (17.10.2026): Produkt und Anliegen sind jetzt Pflicht, der Satz
+                nennt weiter alles, was gespeichert wird. */}
             <p className="pb__klein">
-              Wir speichern deinen Namen, deine E-Mail und deine freiwilligen
+              Wir speichern deinen Namen, deine E-Mail und deine übrigen
               Angaben nur für dieses Gespräch und löschen sie 60 Tage nach dem
               Termin. Mehr dazu in unserer{' '}
               <Link to="/pages/datenschutz">Datenschutzerklärung</Link>.
@@ -1104,7 +1165,10 @@ function Ablauf() {
         <ol className="pb__schritte">
           <li>
             <strong>Suche dir einen freien Termin am Donnerstag aus.</strong>{' '}
-            Zum Buchen reichen dein Name und deine E-Mail.
+            {/* Bis 17.10. „Zum Buchen reichen dein Name und deine E-Mail." Seit Produkt und Anliegen Pflicht
+                sind (Christian 17.10.2026), wäre der Satz falsch; nur das Ende ist ergänzt. */}
+            Zum Buchen reichen dein Name, deine E-Mail und ein kurzer Satz,
+            worum es geht.
           </li>
           <li>
             <strong>Dein Zoom-Link.</strong> Er steht direkt nach der Buchung
@@ -1204,6 +1268,7 @@ export function ProduktberatungSeite({variante = 'a'} = {}) {
   const ergebnis = useAktionsergebnisUeberRevalidierung();
   const zone = useKundenZone();
   const jetzt = useJetzt();
+  const laedtNach = useNachladen(Boolean(roh.ladeFehler));
   // Abgedatete Termine fallen hier heraus, für Buchen UND Umbuchen; leere Tageskarten mit ihnen.
   const daten = {
     ...roh,
@@ -1221,6 +1286,7 @@ export function ProduktberatungSeite({variante = 'a'} = {}) {
         fehler={ergebnis && !ergebnis.ok ? ergebnis : null}
         zone={zone}
         mitWahl={b}
+        laedtNach={laedtNach}
       />
     );
 
