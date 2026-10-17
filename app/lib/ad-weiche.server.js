@@ -48,7 +48,13 @@
  */
 import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
-import {LP_EXP_B_PFAD, LP_EXP_B2_PFAD, LP_V2_PFAD} from './lp-ab-v2.server.js';
+import {
+  LP_EXP_B_PFAD,
+  LP_EXP_B2_PFAD,
+  LP_EXP_K25_PFAD,
+  LP_EXP_K50_PFAD,
+  LP_V2_PFAD,
+} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
 import {MM_MARKER, mmZielPfad, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
 import {STUFE_B_MARKER, STUFE_B_PFAD, stufeBZielPfad} from './ad-weiche-stufe-b.server.js';
@@ -216,6 +222,10 @@ export const AUSSCHLUSS_SEGMENTE = [
   // darüber deckt B2 nicht: istAusgeschlossen matcht nur exakt oder
   // '<eintrag>/...', '-b2' ist keins von beiden.
   LP_EXP_B2_PFAD,
+  // Kurz-Arme K50 (szs-e3-gs079) und K25 (szs-e4-gs174), 17.10.2026:
+  // SCHLEIFEN-KRITISCH wie B2. Stehen die Arme aus, kostet die Zeile nichts.
+  LP_EXP_K50_PFAD,
+  LP_EXP_K25_PFAD,
   // Stufe-B-Seite des Funnel-Managers (/pages/menschen-alltag, Grossjob
   // 20261007-...-funnel-manager-customer-journey-ad-lp, s02). SCHLEIFEN-
   // KRITISCH aus demselben Grund wie die Zeile darüber: der Stufe-B-Arm unten
