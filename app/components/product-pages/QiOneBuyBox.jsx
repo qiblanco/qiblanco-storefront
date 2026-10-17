@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {
   Analytics,
   useOptimisticVariant,
@@ -11,6 +11,7 @@ import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
+import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 
 /**
  * Geteilte Buy-Box für das QiOne-2-Pro-Produkt (Konzept „Shopseite nach LP"
@@ -63,6 +64,7 @@ import {ProductImageList} from '~/components/ProductImageList';
  *   unterKaufknopf?: import('react').ReactNode,
  *   videoKachel?: import('react').ReactNode,
  *   dataSection?: string,
+ *   kaufleiste?: boolean,
  * }} props
  *
  * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
@@ -108,6 +110,15 @@ import {ProductImageList} from '~/components/ProductImageList';
  * damit die Sektions-Messung dieses LP-Landeziels (verhaltens-schicht
  * sektion_registry.yaml) weiterläuft. Die organische PDP bleibt anker-frei;
  * React lässt `data-section={undefined}` weg.
+ *
+ * KAUFLEISTE (`kaufleiste`, additiv, Default false): hängt hinter die Buy-Box
+ * die klebende Kaufleiste mobil (reusables/Kaufleiste.jsx), gespeist aus
+ * DIESER Buy-Box: dasselbe Preis-Objekt, dieselbe Variante, Menge,
+ * Beschriftung und Add-on-Zeilen. Nur die Kaufseiten übergeben sie
+ * (/products/qione-2-pro über QiOne2ProSeite, /products/qi-master). Der
+ * LP-Spiegel /pages/qione-2-pro, die Rookie-Seite und das 2er-Set übergeben
+ * nichts; der `.product`-Knoten bleibt für sie unverändert (ein Fragment
+ * und ein ref erzeugen kein Markup).
  */
 export function QiOneBuyBox({
   product,
@@ -124,6 +135,7 @@ export function QiOneBuyBox({
   unterKaufknopf = null,
   videoKachel = null,
   dataSection = undefined,
+  kaufleiste = false,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -143,8 +155,21 @@ export function QiOneBuyBox({
 
   const {title} = product;
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
+  const kaufbox = useRef(null);
+  // Derselbe Preis für Kaufbox und Kaufleiste: EIN Objekt, zwei Anzeigen.
+  const preis = {
+    handle: product?.handle,
+    price: selectedVariant?.price,
+    compareAtPrice: mitStreichpreisFallback(
+      selectedVariant?.compareAtPrice,
+      product?.handle,
+      selectedVariant?.price?.currencyCode,
+      selectedVariant?.price?.amount,
+    ),
+  };
   return (
-    <div className="product" id={ankerId} data-section={dataSection}>
+    <>
+    <div className="product" id={ankerId} data-section={dataSection} ref={kaufbox}>
       <div className="ProductImages">
         <div className="ProductImageWrapperSticky">
         <ProductImage image={featuredImage} />
@@ -164,14 +189,9 @@ export function QiOneBuyBox({
 
         <div className="Bestseller-Price">
           <ProductPrice
-            handle={product?.handle}
-            price={selectedVariant?.price}
-            compareAtPrice={mitStreichpreisFallback(
-              selectedVariant?.compareAtPrice,
-              product?.handle,
-              selectedVariant?.price?.currencyCode,
-              selectedVariant?.price?.amount,
-            )}
+            handle={preis.handle}
+            price={preis.price}
+            compareAtPrice={preis.compareAtPrice}
           />
           {priceLabel}
         </div>
@@ -203,6 +223,18 @@ export function QiOneBuyBox({
         }}
       />
     </div>
+    {kaufleiste ? (
+      <Kaufleiste
+        kaufbox={kaufbox}
+        preis={preis}
+        selectedVariant={selectedVariant}
+        productOptions={productOptions}
+        quantity={quantity}
+        ctaLabel={ctaLabel}
+        zusatzLinien={zusatzLinien}
+      />
+    ) : null}
+    </>
   );
 }
 
