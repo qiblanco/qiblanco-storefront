@@ -119,10 +119,17 @@ main {
    --qb-kopf-hoehe setzt die Kopfzeile zur Laufzeit (useKopfHoeheVariable);
    150 px ist der Wert des Designstandards (kopf.hoehe) fuer den ersten Paint.
 
-   Ausgenommen: ein erster Block, der sich mit negativem Rand bewusst unter
-   den Kopf zieht (Bild-Heros, mt-[-75px] auf superhuman und den
-   Detailseiten). Mit dem Leerblock verschmolzen wuerde er um die Luecke
-   absinken. */
+   Ausgenommen sind zwei Faelle:
+   1. Ein erster Block, der sich mit negativem Rand bewusst unter den Kopf
+      zieht (Bild-Heros, mt-[-75px] auf superhuman und den Detailseiten).
+      Mit dem Leerblock verschmolzen wuerde er um die Luecke absinken.
+   2. Die Seiten laufender A/B-Experimente, solange sie laufen (Auftrag
+      F-441: nicht anfassen). Erkannt am Wurzelblock: .home (/ und
+      /pages/start-b, start-e1-gs081), .pb (produktberatung A und B,
+      pb-e1-gs107), class="lp-vp lp-a3" genau (SchlafZellenSchutz.jsx, alle
+      drei Arme von szs-e1/e2; Partnerseiten tragen eine dritte Klasse).
+      qione-2-pro(-b) braucht keinen Eintrag: ihr 85-px-Rand ist groesser
+      als die Luecke. Endet ein Experiment, faellt sein Eintrag hier weg. */
 body > main::before {
   content: '';
   display: block;
@@ -133,7 +140,10 @@ body > main::before {
 }
 body > main:has(
     > :first-child[class*='mt-[-'],
-    > :first-child > :first-child[class*='mt-[-']
+    > :first-child > :first-child[class*='mt-[-'],
+    > .home,
+    > .pb,
+    > [class='lp-vp lp-a3']
   )::before {
   margin-bottom: 0;
 }
