@@ -80,14 +80,14 @@ test('Sitemap-Route und Sitemap-Index lesen beide die Spiegel-Menge (eine Verein
   }
 });
 
-test('Menue: Crystal Cacao im Shop-Menue fuehrt in den Spiegel innerhalb von qiblanco.com', () => {
-  // Wert aus dem Shopify-Menue (live gemessen 17.10.2026)
+test('Menü: Crystal Cacao im Shop-Menü führt in den Spiegel innerhalb von qiblanco.com', () => {
+  // Wert aus dem Shopify-Menü (live gemessen 17.10.2026)
   assert.equal(menueZiel('https://www.crystal-cacao.com/'), '/pages/crystal-cacao');
   assert.equal(menueZiel('https://crystal-cacao.com/products/crystal-cacao-awake'), '/products/crystal-cacao-awake');
   assert.equal(menueZiel('https://crystal-cacao.com/products/crystal-cacao-angebot'), '/products/crystal-cacao-angebot');
   // nur bei crystal: bleibt extern
   assert.equal(menueZiel('https://crystal-cacao.com/pages/warum-crystal-cacao'), null);
-  // fremde Hosts, relative und kaputte Werte: nicht zustaendig
+  // fremde Hosts, relative und kaputte Werte: nicht zuständig
   assert.equal(menueZiel('https://qiblanco.com/pages/crystal-cacao'), null);
   assert.equal(menueZiel('https://crystal-cacao.com.evil.example/'), null);
   assert.equal(menueZiel('/pages/crystal-cacao'), null);
