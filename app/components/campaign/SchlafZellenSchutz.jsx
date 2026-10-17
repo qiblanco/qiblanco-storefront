@@ -1130,9 +1130,16 @@ function StickyKaufknopf({nurMobil = false}) {
    Knöpfe stehen in A also auch auf dem Desktop im HTML, dort aber mit
    display: none (.lp-a-nur-mobil, styles/schlaf-zellen-schutz-seite.css) —
    kein Kasten, kein Klick, keine Sichtung. Der feste Knopf behält dazu seine
-   Breitengrenze aus B (bis 767 px), Tablets sehen ihn also wie in B nicht. */
+   Breitengrenze aus B (bis 767 px), Tablets sehen ihn also wie in B nicht.
+
+   KURZ-ARME K50/K25 (27.10.2026, Job 20261017-ads-lp-radikal-kurz-tests-
+   gs079-durch-sim-tor-s03): sie sind der Champion je Gerät minus Abschnitte
+   (Christian 17.10.: „eine Gewinner-LP dann kürzen“). Sie tragen deshalb
+   dieselbe Bedingung: mobil den festen Knopf, K50 dazu lp-a-weiter-1;
+   desktop beides nicht, wie A. Ohne den festen Knopf wäre „fester Knopf
+   raus“ mit „kürzen“ in einem Arm gebündelt. */
 export function traegtChampionMobil(variante) {
-  return variante === 'a';
+  return variante === 'a' || variante === 'k50' || variante === 'k25';
 }
 
 /* ───────── Root ─────────
@@ -1144,18 +1151,38 @@ export function traegtChampionMobil(variante) {
    'b2' (zweiter Arm, szs-e2-gs126, 10.10.2026) = A plus die Weiter-Knöpfe
    nr=1 und nr=2 an ihren Stellen von vor dem 20.09., OHNE festen Kaufknopf
    (nr=6 steht in A schon). NUR pages.schlaf-zellen-schutz-b2.jsx übergibt
-   'b2'. Mobil und desktop gleich. */
+   'b2'. Mobil und desktop gleich.
+
+   KURZ-ARME (Job 20261017-ads-lp-radikal-kurz-tests-gs079-durch-sim-tor,
+   Christian 17.10.2026: „und auch mal radikale Ideen testen, wo die LP für
+   die Ads deutlich kürzer ist"). Gekürzt wird NUR durch Weglassen ganzer
+   Abschnitte; kein Satz ist umformuliert, kein Abschnitt neu. Was hier fehlt,
+   steht unverändert in A.
+   'k50' (szs-e3-gs079, Stufe-1-Paket GS-079, rund die Hälfte): ohne die
+     GitterChip-Scrollanimation vor dem ersten Argument, mit dem Kaufblock nach
+     dem Mechanismus (nr=1), ohne Externe Stimmen, Video-Stimmen und
+     Kachelreihe. Die EINE Scrollanimation, die bleibt, ist der Mikroskop-
+     Beweis im Wissenschaftsblock (Christian 17.10.: „vielleicht ist eine
+     Scroll-Down-Animation pro Seite das Bessere").
+   'k25' (szs-e4-gs174, Radikal-Kurz, rund ein Viertel): Kopf, Bewertungen,
+     Garantie, Preisblock, Schluss. Der eine Beleg sind die Bewertungen:
+     Menschen ziehen, Studien überzeugen erst beim Zweifel (Kaufüberzeugung,
+     Kanon 2026-10-10).
+   Beide ohne festen Kaufknopf (eigener Faktor, Test GS-127). */
 export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
   const istB = variante === 'b';
   const istB2 = variante === 'b2';
+  const istK50 = variante === 'k50';
+  const istK25 = variante === 'k25';
+  const istKurz = istK50 || istK25;
   const championMobil = traegtChampionMobil(variante);
 
   return (
     <LiveDataCtx.Provider value={{data}}>
       <div className="lp-vp lp-a3">
         <Hero />
-        <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
+        {!istK25 && <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />}
         {/* Christian, 19.09.2026: „danach unsere Scroll-down-Animation einfügen“.
             Derselbe Baustein, den Startseite, /products/qione-2-pro,
             /pages/tiefer-schlaf und /pages/E-Smog-Schutz schon tragen — EINE
@@ -1175,13 +1202,15 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             jüngere Anweisung sticht: erst zeigen, dann erklären. Die
             Animation blieb stehen, der Abschnitt ist gewandert — als ein
             Stück, unverändert im Wortlaut und nur an EINER Stelle. */}
-        <GitterchipMoleculesScrub
-          dataSection="lp-a-gitterchip-video"
-          heightVhDesktop={300}
-          heightVhMobile={250}
-        />
-        <IntroSection />
-        <MechanismSection />
+        {!istKurz && (
+          <GitterchipMoleculesScrub
+            dataSection="lp-a-gitterchip-video"
+            heightVhDesktop={300}
+            heightVhMobile={250}
+          />
+        )}
+        {!istK25 && <IntroSection />}
+        {!istK25 && <MechanismSection />}
         {/* <WeiterCta nr={1} /> ERSATZLOS GESTRICHEN — Christian, 20.09.2026:
             der Knopf unter „3 Wirkebenen". Eindeutig benannt, keine Auslegung.
             IN VARIANTE B KEHRT ER ZURÜCK (Christian 06.10.2026, Test GS-050:
@@ -1192,13 +1221,16 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         {(istB || istB2) && <WeiterCta nr={1} />}
         {/* SEIT DEM 20.10.2026 AUCH IN A, NUR MOBIL: B hat mobil gewonnen
             (szs-e1-gs050, Champion mobil oben). Derselbe Baustein, derselbe
-            Schlüssel lp-a-weiter-1, damit seine Historie weiterläuft. */}
-        {championMobil && (
+            Schlüssel lp-a-weiter-1, damit seine Historie weiterläuft.
+            K50 trägt ihn als Ableitung vom Champion mit (mobil ja, desktop
+            nein, wie A); K25 lässt ihn mit dem Mechanismus-Block weg, nach
+            dem er steht. */}
+        {championMobil && !istK25 && (
           <div className="lp-a-nur-mobil">
             <WeiterCta nr={1} />
           </div>
         )}
-        <ScienceSection />
+        {!istK25 && <ScienceSection />}
         {/* IN VARIANTE B2 KEHRT AUCH nr=2 ZURÜCK (Christian 10.10.2026, Test
             GS-126: „mobil auch nochmal mit der alten Ansicht und mehr Knöpfen
             … einfach nur einen Button …, der häufiger vorkommt"). Stelle bis
@@ -1272,8 +1304,8 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             Derselbe geteilte Baustein, dieselbe Reihenfolge MAXIM → BRAINEFFECT →
             Geldhelden. Erst dadurch haben Christians MAXIM-/Andi-Lew-Textwechsel
             auf dieser Seite überhaupt einen Gegenstand. */}
-        <ExterneStimmen dataSection="lp-a-externe-stimmen" />
-        <VideoSection />
+        {!istKurz && <ExterneStimmen dataSection="lp-a-externe-stimmen" />}
+        {!istKurz && <VideoSection />}
         {/* Kachelreihe NACH den Video-Testimonials (Christian, 2026-09-19):
             „Beeindruckende Kundenerfahrungen / alle Google-Bewertungen / und
             dann die 4,8 Sterne klickbar" ist EIN Bereich zusammen. Bis heute
@@ -1282,7 +1314,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             zerschnitt ihn: der Leser bekam Erfahrungsberichte, dann
             Werbekacheln, dann wieder Erfahrungsberichte. Verschoben, nicht
             umgebaut — dieselben fünf Kacheln, dieselbe Bedienung. */}
-        <InfoSlider dataSection="lp-a-info-slider" />
+        {!istKurz && <InfoSlider dataSection="lp-a-info-slider" />}
         <GuaranteeSection />
         <PricingSection />
         <FinalCTA />
