@@ -2,8 +2,8 @@
  * Hermetischer Test: die Kaufseite des Qi Alpha steht in
  * sitemap/products/1.xml unter ihrem Routenpfad /products/qi-alpha, auch
  * solange der Shopify-Handle noch `qi-master` heißt (Handle-Wechsel erst in
- * s09 des Grossjobs 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-
- * produkt-seiten-serverweit). /products/qi-master ist eine 301 und gehört in
+ * s09 des Grossjobs 20261017 zum
+ * neuen Namen). /products/qi-master ist eine 301 und gehört in
  * keine Sitemap.
  *
  *   node test/sitemap-qi-alpha-pfad.test.mjs      # exit 0 = grün

@@ -31,8 +31,7 @@ import {
  * Organische Produktseite /products/qi-alpha — bis 2026-10-17
  * /products/qi-master. Christian am 2026-10-17: „ja bitte auch die
  * Shopseite und das Produkt. es heißt nun Qi Alpha" (Grossjob
- * 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-produkt-seiten-serverweit,
- * s02). Der alte Pfad ist eine 301-Hülle (products.qi-master.jsx). Interne
+ * 20261017 zum neuen Namen, Segment s02). Der alte Pfad ist eine 301-Hülle (products.qi-master.jsx). Interne
  * Bezeichner (QiMaster.jsx, qm-*-Klassen, qi-master-*-Dateien) bleiben.
  *
  * HANDLE-TOLERANT (s02 bis s09): der Shopify-Handle wechselt erst in s09
