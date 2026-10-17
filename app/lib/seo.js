@@ -474,8 +474,8 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     seit: '2026-09-12',
   },
   // Neu 2026-10-17: dieselbe Seite unter ihrem neuen Namen (Christian: „es
-  // heißt nun Qi Alpha", Grossjob 20261017-GROSSJOB-qi-master-heisst-qi-
-  // alpha-shop-produkt-seiten-serverweit, s02). Der Eintrag darueber bleibt
+  // heißt nun Qi Alpha", Grossjob 20261017 zum
+  // neuen Namen, Segment s02). Der Eintrag darueber bleibt
   // stehen, solange der alte Pfad als 301-Hülle lebt: er sperrt weiter eine
   // CMS-Seite mit dem alten Handle.
   {
