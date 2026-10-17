@@ -1,5 +1,5 @@
 /*
- * Qi Master® Add-ons — Wunschnummer und Goldkette (Christian 2026-09-24,
+ * Qi Alpha Add-ons (bis 2026-10-17 Qi Master) — Wunschnummer und Goldkette (Christian 2026-09-24,
  * Job 20260924-GROSSJOB-qi-master-addons-wunschnummer-seriennummern-
  * register-und-goldkette, Konzept dort KONZEPT.md E1–E8).
  *
@@ -14,12 +14,35 @@
  * shop-manager/bin/qm-seriennummern.
  */
 
-export const QM_HANDLE = 'qi-master';
+/*
+ * HANDLE-TOLERANT (Christian 2026-10-17: „es heisst nun Qi Alpha", Grossjob
+ * 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-produkt-seiten-serverweit).
+ * Der Shopify-Handle wechselt erst in Segment s09 von qi-master* auf
+ * qi-alpha*. Bis dahin und danach (Warenkoerbe von vorher) zaehlt JEDER der
+ * beiden Handles als Qi Alpha bzw. als dessen Add-on. Reihenfolge: der neue
+ * zuerst. QM_HANDLE ist der neue Handle; Preis- und Steuerweg lesen ihn nur
+ * fuer die Steuerklasse, die fuer beide Handles dieselbe ist.
+ */
+export const QM_HANDLES = ['qi-alpha', 'qi-master'];
+export const QM_HANDLE = QM_HANDLES[0];
 export const QM_ADDON = {
+  wunschnummer: 'qi-alpha-wunschnummer',
+  kette: 'qi-alpha-goldkette',
+};
+/** Alte Handles der Add-ons (bis s09 die Shopify-Handles). */
+export const QM_ADDON_ALT = {
   wunschnummer: 'qi-master-wunschnummer',
   kette: 'qi-master-goldkette',
 };
-export const QM_ADDON_HANDLES = Object.values(QM_ADDON);
+export const QM_ADDON_HANDLES = [
+  ...Object.values(QM_ADDON),
+  ...Object.values(QM_ADDON_ALT),
+];
+
+/** Ist dieser Handle das Hauptprodukt (Qi Alpha, alter oder neuer Handle)? */
+export function istQiAlpha(handle) {
+  return QM_HANDLES.includes(handle);
+}
 
 /** Zeilen-Merkmal einer Add-on-Zeile. Unterstrich = in der Kasse unsichtbar. */
 export const ADDON_ATTR = '_qm_addon';
@@ -50,7 +73,13 @@ export const KETTE_VORWAHL = '60 cm';
 export const QM_ADDONS_QUERY = `#graphql
   query QiMasterAddons($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
+    wunschnummerNeu: product(handle: "qi-alpha-wunschnummer") {
+      ...QiMasterAddon
+    }
     wunschnummer: product(handle: "qi-master-wunschnummer") {
+      ...QiMasterAddon
+    }
+    ketteNeu: product(handle: "qi-alpha-goldkette") {
       ...QiMasterAddon
     }
     kette: product(handle: "qi-master-goldkette") {
@@ -98,8 +127,9 @@ export function nummerAnzeige(titel) {
 
 /** Welches Add-on ist dieser Handle? null = keines. */
 export function addonArt(handle) {
-  if (handle === QM_ADDON.wunschnummer) return 'wunschnummer';
-  if (handle === QM_ADDON.kette) return 'kette';
+  if (handle === QM_ADDON.wunschnummer || handle === QM_ADDON_ALT.wunschnummer)
+    return 'wunschnummer';
+  if (handle === QM_ADDON.kette || handle === QM_ADDON_ALT.kette) return 'kette';
   return null;
 }
 
@@ -145,7 +175,7 @@ export function addonLinien({wunschnummer, kette}) {
  */
 export function bindungsKorrektur(zeilen) {
   const qm = zeilen
-    .filter((z) => z.handle === QM_HANDLE)
+    .filter((z) => istQiAlpha(z.handle))
     .reduce((s, z) => s + (z.quantity || 0), 0);
   const entfernen = [];
   const aendern = [];

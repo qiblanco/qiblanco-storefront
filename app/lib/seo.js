@@ -473,6 +473,20 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Vorverkaufs-Landingpage, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-12',
   },
+  // Neu 2026-10-17: dieselbe Seite unter ihrem neuen Namen (Christian: „es
+  // heisst nun Qi Alpha", Grossjob 20261017-GROSSJOB-qi-master-heisst-qi-
+  // alpha-shop-produkt-seiten-serverweit, s02). Der Eintrag darueber bleibt
+  // stehen, solange der alte Pfad als 301-Huelle lebt: er sperrt weiter eine
+  // CMS-Seite mit dem alten Handle.
+  {
+    handle: 'qi-alpha-vorverkauf',
+    ausSitemap: true,
+    klasse: 'kanal-anderer',
+    kanal: 'mail',
+    grund:
+      'Vorverkaufs-Landingpage zum Qi Alpha, nur über die Mailkette erreichbar; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
+    seit: '2026-10-17',
+  },
   // Neu 2026-09-30 (Vollzug ov769eece306, Traeger 20260826-formate-gate12-
   // blockade-sechs-belege-rot-vollzug-ov769eece306-w1). `/pages/partner-details`
   // ist die Hilfeseite für angemeldete Partner und wird von der öffentlichen
