@@ -16,7 +16,7 @@ import { UpsellLineUp } from '~/components/UpsellLineUp';
 import {ProductFAQ} from '~/components/ProductFAQ';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {FAQ_QIONE_KETTE} from '~/data/product-faqs';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
@@ -25,8 +25,6 @@ import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabe
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
-import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
-import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
  * Beschreibungstext darunter (components/product-pages/pdpKaufZuerst.js).
@@ -34,10 +32,7 @@ import {Kaufleiste} from '~/components/reusables/Kaufleiste';
  * PDP_KAUF_ZUERST ist ihr Umschaltplan (desktop/mobil je `false` = vorher).
  */
 export function links() {
-  return [
-    {rel: 'stylesheet', href: kaufZuerstStyles},
-    {rel: 'stylesheet', href: kaufleisteStyles},
-  ];
+  return [{rel: 'stylesheet', href: kaufZuerstStyles}];
 }
 
 /**
@@ -132,17 +127,10 @@ export default function Product() {
 
   const {title, descriptionHtml} = product;
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
-  const kaufbox = useRef(null);
-  // Derselbe Preis für Kaufbox und Kaufleiste: EIN Objekt, zwei Anzeigen.
-  const preis = {
-    handle: product.handle,
-    price: selectedVariant?.price,
-    compareAtPrice: selectedVariant?.compareAtPrice,
-  };
 
   return (
     <>
-    <div className="product" {...kaufZuerstAttribute()} ref={kaufbox}>
+    <div className="product" {...kaufZuerstAttribute()}>
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
@@ -172,9 +160,9 @@ export default function Product() {
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
         <ProductPrice
-          handle={preis.handle}
-          price={preis.price}
-          compareAtPrice={preis.compareAtPrice}
+          handle={product.handle}
+          price={selectedVariant?.price}
+          compareAtPrice={selectedVariant?.compareAtPrice}
         />
         <ProductForm
           productOptions={productOptions}
@@ -204,16 +192,6 @@ export default function Product() {
         }}
       />
     </div>
-    {/* Klebende Kaufleiste mobil (reusables/Kaufleiste.jsx). Gewinnerseite
-        (zielsteuerung/exports/gewinner-schutz.json): Umschaltplan ist der
-        Schalter KAUFLEISTE_AN bzw. diese eine Zeile; ohne sie ist die Seite
-        wieder die von vorher. Die Größe wählt der Kunde in der Kaufbox. */}
-    <Kaufleiste
-      kaufbox={kaufbox}
-      preis={preis}
-      selectedVariant={selectedVariant}
-      productOptions={productOptions}
-    />
     <CallToAction img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-qione-2-pro-transparent_1.webp?v=1666591476"} imgBreite={1024} imgHoehe={1024} imgAlt="QiOne® 2 Pro mit goldfarbenem Gitterchip™ und eingeprägtem Qi-Blanco-Zeichen" link={"/products/qione-2-pro"} linkStyle={"secondary"} linkText={"Hol' dir jetzt deinen QiOne® 2 pro"} 
     text={<>
     <h2>Lass deinen QiOne® 2 Pro kohärentes Wasser für dich produzieren</h2>

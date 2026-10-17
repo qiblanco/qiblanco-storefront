@@ -103,7 +103,6 @@ export function QiOne2ProSeite({
   block = BLOCK_PUBLIC,
   ankerId = 'product',
   anker = {},
-  kaufleiste = false,
 }) {
   const lp = block === BLOCK_LP;
   // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
@@ -149,10 +148,6 @@ export function QiOne2ProSeite({
            gleiche Ids in einem Dokument wären kein Anker mehr. */
         ankerId={ankerId}
         dataSection={anker.buybox}
-        /* Klebende Kaufleiste mobil: nur die Kaufseite /products/qione-2-pro
-           schaltet sie ein (reusables/Kaufleiste.jsx). Der LP-Spiegel ist
-           Arm A des Experiments q2p-e1-gs080 und bleibt unverändert. */
-        kaufleiste={kaufleiste}
         product={product}
         /* Die Pflichtmitteilung hängt auf dieser Seite NICHT mehr unter dem
            Kauf-Knopf, sondern weiter unten im benefitList-Slot (Elina
