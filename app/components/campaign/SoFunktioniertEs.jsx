@@ -23,9 +23,10 @@
      S. 81 („desto stärker weiten sich die normalen 104,5-Grad-Bindungswinkel
      auf: zu 109 Grad und mehr“), S. 99 nach Brüesch 2011; Vortrag Warnke,
      Baden-Baden 2018 (qi-brain/brain/Quellen/Warnke/BadenBaden2018/
-     Transkript.md:136-138). Gegenüberstellung mit fünf Quellen:
-     qi-brain/brain/Marketing/kohaerente-wasserstruktur-gegenueberstellung.yaml
-     (Zeilen 113-129, 197-199: kohärente Domäne und EZ-Wasser 109,5°). Ein Buch
+     Transkript.md:136-138). Gegenüberstellung mit fünf Quellen: die
+     YAML-Datei „kohärente Wasserstruktur, Gegenüberstellung“ unter
+     qi-brain/brain/Marketing/ (Zeilen 113-129, 197-199: kohärente Domäne und
+     EZ-Wasser 109,5°). Ein Buch
      und ein Vortrag, keine begutachtete Studie. Winkel im freien Molekül
      104,48°: Császár et al. 2005, J. Chem. Phys. 122, 214305 (data/wasser-
      infoseite.js); Tetraederwinkel 109,47°: Bernal & Fowler 1933.
@@ -40,7 +41,8 @@
    WANN: erst NACH der Ausoptimierung der Ads-LP (Hypothese GS-176, nicht vor
    dem Urteil von szs-e3-gs079/szs-e4-gs174). Dann als eigener Arm durch das
    Sim-Tor (abschnitte_b mit lp-a-so-funktioniert) und vor dem Merge durch
-   menschlichkeit/bin/pruefen --freigabe --zweck lp-block (Stufenplan textregel).
+   die Menschlichkeits-Prüfung (Werkzeug unter menschlichkeit/bin/, Freigabe,
+   Zweck lp-block; Stufenplan textregel).
    Bis dahin rendert ihn keine Route. */
 
 export const SO_FUNKTIONIERT_ES = Object.freeze({
