@@ -24,6 +24,7 @@ import {
   KETTE_VORWAHL,
   addonLinien,
   QM_HANDLES,
+  QM_HANDLE,
 } from '~/lib/qi-master-addons';
 
 /*
@@ -106,7 +107,11 @@ export function links() {
  */
 export const meta = ({data}) => {
   return produktMeta({
-    produkt: data?.product,
+    // Der Strukturknoten (Product-@id, url, Brotkrumen) baut seine Adresse aus
+    // dem HANDLE. Bis zum s09-Handle-Wechsel heißt der in Shopify noch
+    // `qi-master`, und die Auszeichnung zeigte auf die 301-Hülle statt auf
+    // diese Seite. Sie folgt deshalb dem Pfad dieser Route, nicht Shopify.
+    produkt: data?.product && {...data.product, handle: QM_HANDLE},
     marktLand: data?.marktLand,
     pfad: '/products/qi-alpha',
     titel: `${data?.product?.title ?? 'Qi Alpha'} | ${MARKE}`,
