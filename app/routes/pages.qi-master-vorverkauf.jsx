@@ -4,8 +4,7 @@ import {redirect} from 'react-router';
  * /pages/qi-master-vorverkauf — 301 auf /pages/qi-alpha-vorverkauf.
  *
  * Christian am 2026-10-17: „es heißt nun Qi Alpha" (Grossjob
- * 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-produkt-seiten-serverweit,
- * s02). Die Landingpage steht seitdem unter pages.qi-alpha-vorverkauf.jsx;
+ * 20261017 zum neuen Namen, Segment s02). Die Landingpage steht seitdem unter pages.qi-alpha-vorverkauf.jsx;
  * dieser Pfad hält die Links aus der Mailkette am Leben. Query-String
  * bleibt erhalten. Bauform wie products.qi-master-goldkette.jsx.
  * Rückweg: diese Datei durch den Stand vor dem Umbau ersetzen (git).
