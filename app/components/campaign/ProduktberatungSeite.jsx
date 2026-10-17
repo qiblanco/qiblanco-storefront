@@ -151,7 +151,7 @@ const PRODUKTE = [
   'QiOne® 2 Pro',
   'QiBracelet',
   'QiHome Air',
-  'Qi Alpha',
+  'Qi Master',
   'anderes / weiß noch nicht',
 ];
 export const TERMIN_API = 'https://termin.65-108-150-121.sslip.io';
