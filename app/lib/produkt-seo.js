@@ -120,8 +120,8 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // kundensichtbar — sie ist der Satz im Suchergebnis. Wer hier etwas
   // ändert, ändert nicht die Seite, sondern das, was über sie im Netz
   // steht, und die beiden driften ohne Nachzug auseinander.
-  // Seit 2026-10-17 unter /products/qi-alpha (Christian: „es heisst nun Qi
-  // Alpha"); der alte Pfad ist eine 301-Huelle und braucht keine Meta.
+  // Seit 2026-10-17 unter /products/qi-alpha (Christian: „es heißt nun Qi
+  // Alpha"); der alte Pfad ist eine 301-Hülle und braucht keine Meta.
   '/products/qi-alpha':
     'Qi Alpha: Alpha Serie, limitiert auf 111 Stück. Der QiOne mit Diamanten, ' +
     'Gitterchip™ der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',

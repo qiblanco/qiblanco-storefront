@@ -41,7 +41,7 @@ const ROLLE = ['grund', 'herkunft', 'termin', 'versand'];
 
 /**
  * DER PRODUKTNAME IST SEIT 2026-10-17 „Qi Alpha" (Christian: „ja bitte auch
- * die Shopseite und das Produkt. es heisst nun Qi Alpha"). Die Quelle
+ * die Shopseite und das Produkt. es heißt nun Qi Alpha"). Die Quelle
  * app/data/qi-master-wortlaut.json bleibt Christians Fassung vom 22.09.2026
  * Wort für Wort; ersetzt wird beim Anzeigen NUR der Name, kein anderes Wort.
  * Die Marke ist noch nicht angemeldet, darum ohne ®. Rückweg: diese Funktion

@@ -216,8 +216,8 @@ test('REIN ohne attributes-Feld wird kein Merkmal geschrieben (Aufrufer ohne Zei
   ]);
   assert.deepEqual(r, {entfernen: [], aendern: []});
 });
-// HANDLE-TOLERANZ (Qi Master heisst seit 2026-10-17 Qi Alpha; der Shopify-
-// Handle wechselt erst in s09). Alter und neuer Handle muessen in jeder
+// HANDLE-TOLERANZ (Qi Master heißt seit 2026-10-17 Qi Alpha; der Shopify-
+// Handle wechselt erst in s09). Alter und neuer Handle müssen in jeder
 // Mischung dieselbe Bindung ergeben.
 test('TOLERANT neuer Haupt-Handle qi-alpha bindet alte und neue Add-on-Handles', () => {
   const r = bindungsKorrektur([
