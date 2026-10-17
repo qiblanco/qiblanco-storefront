@@ -166,6 +166,15 @@ test('strukturierte Daten: Article, FAQPage, DefinedTermSet, VideoObject', () =>
     W.QUELLEN.length,
     'Article.citation zählt anders als die sichtbare Quellenliste',
   );
+  // Bücher bleiben Book; abweichen dürfen nur Quellen mit `schemaTyp`
+  // (Buchkapitel, Vortrag). Prüferbefund 2026-10-17: eine ISBN-Regel hatte
+  // ein Buch ohne ISBN-Angabe still zu CreativeWork gemacht.
+  const buecher = W.QUELLEN.filter((q) => q.art === 'buch' && !q.schemaTyp).length;
+  assert.equal(
+    artikel.citation.filter((c) => c['@type'] === 'Book').length,
+    buecher,
+    'ein Buch steht im Schema nicht als Book',
+  );
   assert.match(
     artikel.datePublished,
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/,
