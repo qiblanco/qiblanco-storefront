@@ -27,7 +27,7 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
  */
 export function links() {
   // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
-  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet laedt deshalb hier.
+  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet lädt deshalb hier.
   return [...qiOne2ProSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
 }
 

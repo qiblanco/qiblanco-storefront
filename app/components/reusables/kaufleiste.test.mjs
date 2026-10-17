@@ -22,7 +22,7 @@ test('Kaufleiste: weg, sobald der Fuß im Bild ist', () => {
   assert.equal(kaufleisteSichtbar(lage({fussImBild: true})), false);
 });
 
-test('Kaufleiste: Schalter aus fuer das Geraet = keine Leiste', () => {
+test('Kaufleiste: Schalter aus für das Gerät = keine Leiste', () => {
   assert.equal(kaufleisteSichtbar(lage({geraetAn: false})), false);
 });
 
@@ -31,18 +31,18 @@ test('Kaufleiste: ohne Messung des Kaufknopfs keine Leiste', () => {
 });
 
 test('Ziel: eine Variante -> Warenkorb', () => {
-  assert.equal(kaufleisteZiel({mehrereVarianten: false, gewaehlt: false}), 'warenkorb');
+  assert.equal(kaufleisteZiel({mehrereVarianten: false, gewählt: false}), 'warenkorb');
 });
 
-test('Ziel: mehrere Varianten, nichts gewaehlt -> Variantenwahl, nie die vorgewaehlte kaufen', () => {
-  assert.equal(kaufleisteZiel({mehrereVarianten: true, gewaehlt: false}), 'variantenwahl');
+test('Ziel: mehrere Varianten, nichts gewählt -> Variantenwahl, nie die vorgewählte kaufen', () => {
+  assert.equal(kaufleisteZiel({mehrereVarianten: true, gewählt: false}), 'variantenwahl');
 });
 
-test('Ziel: mehrere Varianten, Groesse angetippt -> Warenkorb', () => {
-  assert.equal(kaufleisteZiel({mehrereVarianten: true, gewaehlt: true}), 'warenkorb');
+test('Ziel: mehrere Varianten, Größe angetippt -> Warenkorb', () => {
+  assert.equal(kaufleisteZiel({mehrereVarianten: true, gewählt: true}), 'warenkorb');
 });
 
-test('Beschriftung der Variantenwahl: deutsch, auch fuer Shopifys "Size"', () => {
+test('Beschriftung der Variantenwahl: deutsch, auch für Shopifys "Size"', () => {
   assert.equal(variantenwahlText('Größe'), 'Größe wählen');
   assert.equal(variantenwahlText('Size'), 'Größe wählen');
   assert.equal(variantenwahlText(undefined), 'Größe wählen');

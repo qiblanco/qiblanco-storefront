@@ -181,7 +181,11 @@ export function QiHomeAirSeite({
 
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
-        <ProductPrice {...preis} />
+        <ProductPrice
+          handle={preis.handle}
+          price={preis.price}
+          compareAtPrice={preis.compareAtPrice}
+        />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}

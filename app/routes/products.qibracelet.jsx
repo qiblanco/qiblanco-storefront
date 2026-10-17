@@ -18,7 +18,7 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
  */
 export function links() {
   // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
-  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet laedt deshalb hier.
+  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet lädt deshalb hier.
   return [...qiBraceletSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
 }
 

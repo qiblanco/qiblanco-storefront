@@ -54,11 +54,11 @@ export function kaufleisteSichtbar({geraetAn, gemessen, kaufknopfImBild, fussImB
  * Rücksendung trägt der Kunde. Auch ein Größen-Parameter in der Adresse ist
  * deshalb kein Beleg einer Wahl.
  *
- * @param {{mehrereVarianten: boolean, gewaehlt: boolean}} stand
+ * @param {{mehrereVarianten: boolean, gewählt: boolean}} stand
  * @returns {'warenkorb'|'variantenwahl'}
  */
-export function kaufleisteZiel({mehrereVarianten, gewaehlt}) {
-  if (mehrereVarianten && !gewaehlt) return 'variantenwahl';
+export function kaufleisteZiel({mehrereVarianten, gewählt}) {
+  if (mehrereVarianten && !gewählt) return 'variantenwahl';
   return 'warenkorb';
 }
 

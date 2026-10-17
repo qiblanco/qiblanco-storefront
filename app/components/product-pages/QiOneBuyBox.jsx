@@ -188,7 +188,11 @@ export function QiOneBuyBox({
         {topBadge}
 
         <div className="Bestseller-Price">
-          <ProductPrice {...preis} />
+          <ProductPrice
+            handle={preis.handle}
+            price={preis.price}
+            compareAtPrice={preis.compareAtPrice}
+          />
           {priceLabel}
         </div>
 

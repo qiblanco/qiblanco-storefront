@@ -96,13 +96,13 @@ export function Kaufleiste({
   zusatzLinien = undefined,
 }) {
   const [sichtbar, setSichtbar] = useState(false);
-  const [gewaehlt, setGewaehlt] = useState(false);
+  const [gewählt, setGewählt] = useState(false);
   const {open} = useAside();
 
   const wahlOption = (productOptions || []).find(
     (o) => (o?.optionValues?.length || 0) > 1,
   );
-  const ziel = kaufleisteZiel({mehrereVarianten: !!wahlOption, gewaehlt});
+  const ziel = kaufleisteZiel({mehrereVarianten: !!wahlOption, gewählt});
 
   useEffect(() => {
     const box = kaufbox?.current;
@@ -133,7 +133,7 @@ export function Kaufleiste({
     // Eine Größe gilt als gewählt, sobald der Kunde in der Variantenwahl der
     // Kaufbox eine antippt, auch die schon vorgewählte.
     const beiWahl = (e) => {
-      if (e.target?.closest?.('.product-options-item')) setGewaehlt(true);
+      if (e.target?.closest?.('.product-options-item')) setGewählt(true);
     };
     box.addEventListener('click', beiWahl);
     return () => {
@@ -165,7 +165,11 @@ export function Kaufleiste({
       {sichtbar && (
         <>
           <div className="qb-kaufleiste__preis">
-            <ProductPrice {...preis} />
+            <ProductPrice
+              handle={preis?.handle}
+              price={preis?.price}
+              compareAtPrice={preis?.compareAtPrice}
+            />
           </div>
           {ziel === 'variantenwahl' ? (
             <button
