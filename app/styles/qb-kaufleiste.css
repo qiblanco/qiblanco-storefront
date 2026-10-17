@@ -1,0 +1,101 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DIE KAUFLEISTE DER PRODUKTSEITE — components/reusables/Kaufleiste.jsx
+   Bauplan: design-meister/db/designstandard/_basis.yaml, Seitenregel
+   `pdp_falz.mobil` (Ersatz „klebende Kaufleiste mit Preis und Knopf“),
+   Bausteine `kauf_block`, `preiszeile`, `knopf_primaer`.
+
+   NUR ROLLEN-TOKENS (--qb-*) aus styles/designstandard-dach.css, Ebene und
+   Randabstand aus styles/overlay-ordnung.css (--z-schwebend, Form
+   max(..., env(safe-area-inset-bottom))). Kein freier Wert.
+
+   DER SCHALTER: data-kaufleiste-desktop / data-kaufleiste-mobil (an|aus),
+   Wert aus KAUFLEISTE_AN in Kaufleiste.jsx. Grenze 750 px = Mobilgrenze des
+   Hauses (max-width: 749px). Ohne `an` bleibt der Kasten unsichtbar.
+
+   Versteckt = visibility hidden + aus dem Bild geschoben, Inhalt nicht im
+   DOM: kein Treffer, kein Fokus, und die Chat-Erkennung
+   (KaufknopfChatSignal) sieht kein Rechteck im Fenster. Ohne Gleiten
+   (Begründung im Kopf von Kaufleiste.jsx).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.qb-kaufleiste { display: none; }
+
+@media (max-width: 749px) {
+  .qb-kaufleiste[data-kaufleiste-mobil='an'] { display: flex; }
+}
+@media (min-width: 750px) {
+  .qb-kaufleiste[data-kaufleiste-desktop='an'] { display: flex; }
+}
+
+.qb-kaufleiste {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-schwebend);
+  align-items: center;
+  gap: var(--qb-abstand-2);
+  padding: var(--qb-abstand-1) var(--qb-rand)
+    max(var(--qb-abstand-1), env(safe-area-inset-bottom));
+  background: var(--qb-grund);
+  border-top: 1px solid var(--qb-linie);
+  color: var(--qb-text);
+  transform: translateY(110%);
+  visibility: hidden;
+}
+.qb-kaufleiste--sichtbar {
+  transform: none;
+  visibility: visible;
+}
+
+/* Solange ein Dialog offen ist (Warenkorb-Schublade, Galerie, ...), wird die
+   Leiste nicht dargestellt (overlay_ordnung, DialogSignal.jsx). */
+html[data-dialog-offen] .qb-kaufleiste { display: none; }
+
+/* ─── Preis: dieselbe Komponente wie in der Kaufbox ────────────────────────
+   app.css setzt `.product-price div { font-size: 2rem }` und mobil
+   `.product-price-on-sale { flex-direction: column; margin-top: 20px }`. In
+   der Leiste steht der Streichpreis klein UNTER dem Kaufpreis, ohne Abstand:
+   so bleibt dem Knopf die Breite für „In den Warenkorb legen“ in einer
+   Zeile (390 px, gemessen 17.10.2026; nebeneinander brach er um). */
+.qb-kaufleiste__preis {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.qb-kaufleiste .product-price,
+.qb-kaufleiste .product-price div,
+.qb-kaufleiste .product-price span {
+  font-size: var(--qb-text-h3);
+  font-weight: var(--qb-fw-preis);
+  line-height: var(--qb-lh-h3);
+}
+.qb-kaufleiste .product-price-on-sale {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0;
+}
+.qb-kaufleiste .product-price-on-sale span,
+.qb-kaufleiste .product-price-on-sale s {
+  line-height: var(--qb-lh-h2);
+}
+.qb-kaufleiste .product-price s {
+  font-size: var(--qb-text-klein);
+  font-weight: var(--qb-fw-fliess);
+  color: var(--qb-text-gedaempft);
+}
+
+/* ─── Knopf: .btn--primary aus app.css, in der Leiste flacher ──────────────
+   Höhe mindestens das Tippziel (knopf_primaer.hoehe_min_px 44), nicht die
+   70 px der Kaufbox: die Leiste soll das Fenster nicht zu einem Zehntel
+   füllen. Das CartForm rendert ein <form>; es nimmt den Rest der Zeile. */
+.qb-kaufleiste > form,
+.qb-kaufleiste > .btn--primary {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.qb-kaufleiste .btn--primary {
+  min-height: var(--qb-treffer-min);
+  max-width: none;
+  padding: var(--qb-abstand-1) var(--qb-abstand-2);
+}

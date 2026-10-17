@@ -10,6 +10,7 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
@@ -25,7 +26,9 @@ import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
  * weil /pages/qione-2-pro dieselbe Seite rendert und dieselben Dateien braucht.
  */
 export function links() {
-  return qiOne2ProSeiteLinks();
+  // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
+  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet laedt deshalb hier.
+  return [...qiOne2ProSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
 }
 
 /**
@@ -124,6 +127,7 @@ export default function Product() {
   const {product, vergleichsPreise} = useLoaderData();
   return (
     <QiOne2ProSeite
+      kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
       beschreibung={

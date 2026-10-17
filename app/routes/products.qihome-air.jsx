@@ -9,13 +9,16 @@ import {
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
  * seit dem 28.09.2026 in QiHomeAirSeite.jsx, weil /pages/qihome-air dieselbe Seite
  * rendert und dieselben Dateien braucht.
  */
 export function links() {
-  return qiHomeAirSeiteLinks();
+  // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
+  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet laedt deshalb hier.
+  return [...qiHomeAirSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
 }
 
 /**
@@ -112,6 +115,7 @@ export default function Product() {
   const {product, vergleichsPreise} = useLoaderData();
   return (
     <QiHomeAirSeite
+      kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
       beschreibung={

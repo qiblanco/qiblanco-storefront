@@ -9,6 +9,7 @@ import {
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
@@ -16,7 +17,9 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
  * rendert und dieselben Dateien braucht.
  */
 export function links() {
-  return qiBraceletSeiteLinks();
+  // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
+  // nicht auf dem Landingpage-Spiegel; ihr Stylesheet laedt deshalb hier.
+  return [...qiBraceletSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
 }
 
 /**
@@ -116,6 +119,7 @@ export default function Product() {
   const {product, vergleichsPreise} = useLoaderData();
   return (
     <QiBraceletSeite
+      kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
       beschreibung={
