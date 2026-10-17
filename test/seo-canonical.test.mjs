@@ -308,6 +308,7 @@ test('jeder Definitionseintrag trägt eine gültige Klasse, kanal-anderer nennt 
   assert.equal(k.partner.klasse, 'kanal-anderer');
   assert.equal(k.partner.kanal, 'partner');
   assert.equal(k['qi-master-vorverkauf'].kanal, 'mail');
+  assert.equal(k['qi-alpha-vorverkauf'].kanal, 'mail');
   assert.equal(k['qibracelet_'].klasse, 'hygiene');
 });
 
