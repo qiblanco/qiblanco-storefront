@@ -21,6 +21,7 @@ import {
   leereBlogHandles,
 } from '~/lib/sitemap-bestand';
 import {vorlagenOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
+import {QM_HANDLE, istQiAlpha} from '~/lib/qi-master-addons';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -148,6 +149,11 @@ export async function loader({request, params, context: {storefront}}) {
   const nichtGemessen = params.type === 'articles' && karte === null;
 
   const pfad = (type, handle) => {
+    // Qi Master heißt Qi Alpha (Christian 2026-10-17): die Kaufseite steht
+    // unter /products/qi-alpha, /products/qi-master ist eine 301. Der
+    // Shopify-Handle wechselt erst in s09; bis dahin bildet diese Zeile ihn
+    // auf den Routenpfad ab (test/sitemap-qi-alpha-pfad.test.mjs).
+    if (type === 'products' && istQiAlpha(handle)) return `/products/${QM_HANDLE}`;
     if (type !== 'articles') return `/${type}/${handle}`;
     return artikelPfad(karte, handle) ?? OHNE_BLOG;
   };
