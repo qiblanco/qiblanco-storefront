@@ -81,11 +81,27 @@ export function SpiegelReiter() {
   );
 }
 
+/**
+ * Abstand zum festen qiblanco-Kopf. `main` hält nur `--header-height + 40px`
+ * (104 px) frei, der Kopf endet aber tiefer (Ankündigungsband plus
+ * Navigation; gemessen 17.10.2026 in Ruhelage: 130 px bei 1440, 137 px bei
+ * 390). Ohne diesen Abstand lag die obere Hälfte der Reiter unter dem Kopf,
+ * und mobil traf ein Tipp auf „AWAKE“ den Kopf statt den Reiter. Die Höhe
+ * misst Header.jsx zur Laufzeit (`--qb-kopf-hoehe`, useKopfHoeheVariable);
+ * 150 px ist der Hausrückfall ohne JavaScript.
+ */
+const KOPF_ABSTAND =
+  'max(0px, calc(var(--qb-kopf-hoehe, 150px) - var(--header-height, 64px) - 40px))';
+
 export function SpiegelRahmen({children}) {
   const {pathname} = useLocation();
   const sorte = sorteZuPfad(zuCrystal(pathname));
   return (
-    <div id={SPIEGEL_WURZEL_ID} data-cc-sorte={sorte || undefined}>
+    <div
+      id={SPIEGEL_WURZEL_ID}
+      data-cc-sorte={sorte || undefined}
+      style={{paddingTop: KOPF_ABSTAND}}
+    >
       <SpiegelReiter />
       <ccsp-main>{children}</ccsp-main>
     </div>
