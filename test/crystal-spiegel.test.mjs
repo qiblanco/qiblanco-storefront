@@ -9,7 +9,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {zuQiblanco, zuCrystal, istExtern, SPIEGEL_SEITEN} from '../app/crystal-spiegel-rahmen/pfade.js';
+import {zuQiblanco, zuCrystal, istExtern, menueZiel, SPIEGEL_SEITEN} from '../app/crystal-spiegel-rahmen/pfade.js';
 import {istGespiegelt, gespiegelteHandles} from '../app/crystal-spiegel-rahmen/suchmaschine.js';
 import {GESPIEGELTE_PFADE} from '../app/crystal-spiegel/seiten.js';
 import {hreflangLinks} from '../app/lib/hreflang.js';
@@ -78,4 +78,18 @@ test('Sitemap-Route und Sitemap-Index lesen beide die Spiegel-Menge (eine Verein
     assert.match(code, /gespiegelteHandles\('pages'\)/, name);
     assert.match(code, /gespiegelteHandles\('products'\)/, name);
   }
+});
+
+test('Menue: Crystal Cacao im Shop-Menue fuehrt in den Spiegel innerhalb von qiblanco.com', () => {
+  // Wert aus dem Shopify-Menue (live gemessen 17.10.2026)
+  assert.equal(menueZiel('https://www.crystal-cacao.com/'), '/pages/crystal-cacao');
+  assert.equal(menueZiel('https://crystal-cacao.com/products/crystal-cacao-awake'), '/products/crystal-cacao-awake');
+  assert.equal(menueZiel('https://crystal-cacao.com/products/crystal-cacao-angebot'), '/products/crystal-cacao-angebot');
+  // nur bei crystal: bleibt extern
+  assert.equal(menueZiel('https://crystal-cacao.com/pages/warum-crystal-cacao'), null);
+  // fremde Hosts, relative und kaputte Werte: nicht zustaendig
+  assert.equal(menueZiel('https://qiblanco.com/pages/crystal-cacao'), null);
+  assert.equal(menueZiel('https://crystal-cacao.com.evil.example/'), null);
+  assert.equal(menueZiel('/pages/crystal-cacao'), null);
+  assert.equal(menueZiel(''), null);
 });

@@ -75,3 +75,29 @@ export function zuCrystal(pfad) {
 export function istExtern(ziel) {
   return typeof ziel === 'string' && /^https?:\/\//.test(ziel);
 }
+
+/** Hosts des eigenen Kakao-Ladens (mit und ohne www, wie im Shopify-Menü). */
+const CRYSTAL_HOSTS = new Set(['crystal-cacao.com', 'www.crystal-cacao.com']);
+
+/**
+ * Menüpunkt mit Ziel auf crystal-cacao.com -> Pfad im qiblanco-Laden, sonst null.
+ *
+ * AUFTRAG (Christian, 17.10.2026, Eingang #1 zu Übergabe #71, zum Shop-Menü
+ * „Crystal Cacao®“): „hier wenn man auf Crystal Kakao klickt, soll man eben
+ * auf die Frontseite von Kakao kommen. Das aber innerhalb der Seite“. Der
+ * Eintrag im Shopify-Menü zeigt auf https://www.crystal-cacao.com/ und öffnete
+ * bis hier einen zweiten Laden im neuen Tab. Über dieselbe Karte wie der
+ * Spiegel wird `/` zur Reiter-Seite; ein geteiltes Ziel (Katalog) bleibt im
+ * Laden; was es nur bei crystal gibt, bleibt extern (null).
+ */
+export function menueZiel(rawUrl) {
+  let url;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    return null;
+  }
+  if (!CRYSTAL_HOSTS.has(url.hostname)) return null;
+  const ziel = zuQiblanco(`${url.pathname}${url.search}${url.hash}`);
+  return istExtern(ziel) ? null : ziel;
+}
