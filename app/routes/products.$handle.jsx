@@ -11,6 +11,7 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {ANGEBOT_HINWEIS, istBegrenztesAngebot} from '~/lib/angebot-limit';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {leiteUm, zusammenlegungFuer} from '~/lib/zusammenlegungen';
@@ -338,6 +339,11 @@ function StandardProduct({product}) {
           <ProductForm
             productOptions={productOptions}
             selectedVariant={selectedVariant}
+            unterKaufknopf={
+              istBegrenztesAngebot(product.handle) ? (
+                <p className="mt-2">{ANGEBOT_HINWEIS}</p>
+              ) : null
+            }
           />
         </div>
       </div>
