@@ -5,11 +5,12 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
+import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import {QiHome} from '~/components/product-pages/QiHome';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
@@ -98,6 +99,7 @@ export function qiHomeAirSeiteLinks() {
  *   beschreibung: import('react').ReactNode,
  *   block?: string,
  *   shopMarker?: string,
+ *   kaufleiste?: boolean,
  * }} props
  */
 export function QiHomeAirSeite({
@@ -106,6 +108,7 @@ export function QiHomeAirSeite({
   beschreibung,
   block = BLOCK_PUBLIC,
   shopMarker = undefined,
+  kaufleiste = false,
 }) {
   // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
   // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
@@ -130,6 +133,13 @@ export function QiHomeAirSeite({
 
   const {title, } = product;
   const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
+  const kaufbox = useRef(null);
+  // Derselbe Preis für Kaufbox und Kaufleiste: EIN Objekt, zwei Anzeigen.
+  const preis = {
+    handle: product.handle,
+    price: selectedVariant?.price,
+    compareAtPrice: selectedVariant?.compareAtPrice,
+  };
 
   return (
     <div className="ProductQiHomeAir">
@@ -151,7 +161,7 @@ export function QiHomeAirSeite({
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiHome-Content
         darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
-    <div className="product" id="product" data-qi-shop={shopMarker} {...kaufZuerstAttribute()}>
+    <div className="product" id="product" data-qi-shop={shopMarker} {...kaufZuerstAttribute()} ref={kaufbox}>
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
@@ -172,9 +182,9 @@ export function QiHomeAirSeite({
         <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
 
         <ProductPrice
-          handle={product.handle}
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
+          handle={preis.handle}
+          price={preis.price}
+          compareAtPrice={preis.compareAtPrice}
         />
         <ProductForm
           productOptions={productOptions}
@@ -205,6 +215,17 @@ export function QiHomeAirSeite({
       />
     </div>
     </div>
+    {/* Klebende Kaufleiste mobil (reusables/Kaufleiste.jsx): nur die
+        Kaufseite schaltet sie ein (Prop `kaufleiste`), der Landingpage-
+        Spiegel nicht. Preis und Warenkorbzeilen aus DIESER Kaufbox. */}
+    {kaufleiste ? (
+      <Kaufleiste
+        kaufbox={kaufbox}
+        preis={preis}
+        selectedVariant={selectedVariant}
+        productOptions={productOptions}
+      />
+    ) : null}
       {/*
         DIE QIHOME-EINSATZKARTE — HIER, unmittelbar nach dem Kaufblock und VOR
         dem langen Produkttext ("QiHome® Air – Die Zukunft für ein
