@@ -16,7 +16,7 @@
 
 /*
  * HANDLE-TOLERANT (Christian 2026-10-17: „es heißt nun Qi Alpha", Grossjob
- * 20261017-GROSSJOB-qi-master-heisst-qi-alpha-shop-produkt-seiten-serverweit).
+ * 20261017 zum neuen Namen).
  * Der Shopify-Handle wechselt erst in Segment s09 von qi-master* auf
  * qi-alpha*. Bis dahin und danach (Warenkörbe von vorher) zählt JEDER der
  * beiden Handles als Qi Alpha bzw. als dessen Add-on. Reihenfolge: der neue

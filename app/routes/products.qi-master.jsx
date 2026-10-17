@@ -4,8 +4,8 @@ import {redirect} from 'react-router';
  * /products/qi-master — 301 auf /products/qi-alpha.
  *
  * Christian am 2026-10-17: „ja bitte auch die Shopseite und das Produkt. es
- * heißt nun Qi Alpha" (Grossjob 20261017-GROSSJOB-qi-master-heisst-qi-alpha-
- * shop-produkt-seiten-serverweit, s02). Die Kaufseite steht seitdem unter
+ * heißt nun Qi Alpha" (Grossjob 20261017 zum neuen
+ * Namen, Segment s02). Die Kaufseite steht seitdem unter
  * products.qi-alpha.jsx; dieser alte Pfad ist nur noch die Hülle, damit kein
  * Link aus Mail, Anzeige, Chat oder Suche tot läuft. Query-String bleibt
  * erhalten (UTM, Click-IDs, Partnercode).
