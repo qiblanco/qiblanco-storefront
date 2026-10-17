@@ -4,7 +4,7 @@ import {redirect} from 'react-router';
  * /products/qi-alpha-wunschnummer — 301 auf /products/qi-alpha.
  *
  * Neuer Add-on-Pfad seit der Umbenennung Qi Master -> Qi Alpha (Christian
- * 2026-10-17). Ab dem s09-Handle-Wechsel heisst das Shopify-Produkt so; ohne
+ * 2026-10-17). Ab dem s09-Handle-Wechsel heißt das Shopify-Produkt so; ohne
  * diese Route rendert der Catch-all products.$handle.jsx dann eine eigene
  * Add-on-Kaufseite.
  *
