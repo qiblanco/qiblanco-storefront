@@ -67,11 +67,12 @@ export function links() {
  *
  * DATEN AUS DER GIT-GESCHICHTE, NICHT GESCHÄTZT: öffentlich und indexierbar
  * seit der Freigabe am 2026-10-01 (Kopf dieser Datei), zuletzt inhaltlich
- * geändert am 2026-10-10 (PR #873, Messgröße des Leberzell-Balkens). Wer den
+ * geändert am 2026-10-10 (PR #873, Messgröße des Leberzell-Balkens) und am
+ * 2026-10-17 (Überschrift der Zellstudien: vier statt fünf). Wer den
  * Text ändert, zieht GEAENDERT im selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-10-01';
-const GEAENDERT = '2026-10-10';
+const GEAENDERT = '2026-10-17';
 
 function artikelSchema() {
   const url = absoluteCanonical(SEITE.pfad);

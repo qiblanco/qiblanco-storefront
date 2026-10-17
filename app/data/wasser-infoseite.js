@@ -55,7 +55,7 @@ export const PFAD = '/pages/was-ist-kohaerentes-wasser';
  * (app/lib/seo.js) im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-23';
-const GEAENDERT = '2026-10-09';
+const GEAENDERT = '2026-10-17';
 
 export const SEITE = {
   pfad: PFAD,
@@ -89,7 +89,7 @@ export const SEITE = {
   autorZeile: `Von ${AUTORENKASTEN.name}`,
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
-  standAnzeige: '9. Oktober 2026',
+  standAnzeige: '17. Oktober 2026',
   // Fußzeile aus demselben Datum wie der Kopf (bis 2026-10-17 stand hier
   // noch „23. September“, Prüferbefund im Job
   // 20261015-m5f3-frageseiten-rest-studien-und-kundenwort).
@@ -1032,6 +1032,7 @@ const QUELLEN_ROH = [
     ort: 'In: Fels D, Cifra M, Scholkmann F (Hrsg.): Fields of the Cell, Research Signpost, S. 95–111. ISBN 978-81-308-0544-3',
     url: null,
     art: 'buch',
+    schemaTyp: 'Chapter',
     kern: 'S. 100: 12,06 eV; S. 104–105: aus Domänen-Wasser wird EZ-Wasser.',
   },
   {
@@ -1052,6 +1053,7 @@ const QUELLEN_ROH = [
     titel: 'Vortrag Baden-Baden, 3. November 2018',
     ort: 'Folien 49 bis 56',
     url: null,
+    schemaTyp: 'CreativeWork',
     kern: 'Winkel, Domäne und EZ-Wasser als drei Zustände.',
   },
 ];
@@ -1171,10 +1173,13 @@ function ohneMarken(text) {
     .trim();
 }
 
-/** Schema-Typ einer Quelle: Buch mit ISBN, Fachartikel, sonst ein Werk (Vortrag). */
+/**
+ * Schema-Typ einer Quelle: `schemaTyp` der Quelle, wo die Bauart es verlangt
+ * (Buchkapitel, Vortrag), sonst Buch oder Fachartikel wie bisher.
+ */
 function quellenTyp(q) {
-  if (q.art !== 'buch') return 'ScholarlyArticle';
-  return /ISBN/.test(q.ort || '') ? 'Book' : 'CreativeWork';
+  if (q.schemaTyp) return q.schemaTyp;
+  return q.art === 'buch' ? 'Book' : 'ScholarlyArticle';
 }
 
 export function strukturierteDaten() {
