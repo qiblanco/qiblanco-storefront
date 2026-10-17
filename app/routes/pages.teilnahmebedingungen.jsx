@@ -36,7 +36,7 @@ export default function TeilnahmebedingungenPage() {
       </p>
 
       <p>
-        <strong>Teile deine Erfahrung und gewinne 200€ Cashback</strong>
+        <strong>Teile deine Erfahrung und gewinne 200&nbsp;€ Cashback</strong>
       </p>
 
       <p>Es gelten die folgenden Bedingungen:</p>
