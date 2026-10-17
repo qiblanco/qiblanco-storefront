@@ -68,7 +68,9 @@ export async function holeMitWiederholung(
   let n = 0;
   for (const ms of fristen) {
     n += 1;
-    r = await holeJson(url, init, ms, holer);
+    // X-PB-Versuch: der Endpunkt protokolliert damit, wie oft der erste Versuch scheiterte (Ereignis termine_abruf).
+    const headers = {...(init?.headers || {}), 'X-PB-Versuch': String(n)};
+    r = await holeJson(url, {...init, headers}, ms, holer);
     if (brauchbar(r)) break;
   }
   return {...r, versuche: n};

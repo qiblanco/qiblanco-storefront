@@ -22,7 +22,7 @@ const TERMINE = {termine: [{slot_start: '2026-10-22T19:00:00+02:00'}]};
 function holerAus(antworten) {
   const aufrufe = [];
   const holer = async (url, init) => {
-    aufrufe.push({url, signal: init?.signal});
+    aufrufe.push({url, signal: init?.signal, headers: init?.headers});
     const a = antworten[Math.min(aufrufe.length - 1, antworten.length - 1)];
     if (a === 'netz') throw new TypeError('fetch failed');
     return {status: a.status, text: async () => JSON.stringify(a.body ?? null)};
@@ -92,4 +92,19 @@ test('jeder Versuch trägt eine eigene Frist (AbortSignal)', async () => {
     assert.ok(aufrufe.every((a) => a.signal instanceof AbortSignal));
     assert.notEqual(aufrufe[0].signal, aufrufe[1].signal);
   }
+});
+
+test('jeder Versuch nennt dem Endpunkt seine Nummer (X-PB-Versuch), Accept bleibt', async () => {
+  const {holer, aufrufe} = holerAus(['netz']);
+  await holeMitWiederholung(
+    'x',
+    {headers: {Accept: 'application/json'}},
+    termineBrauchbar,
+    {holer},
+  );
+  assert.deepEqual(
+    aufrufe.map((a) => a.headers['X-PB-Versuch']),
+    ['1', '2'],
+  );
+  assert.ok(aufrufe.every((a) => a.headers.Accept === 'application/json'));
 });
