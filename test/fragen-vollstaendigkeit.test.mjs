@@ -31,6 +31,8 @@ import {FRAGEN, QUELLEN, seiteFuer, quellenFuer} from '../app/data/fragen.js';
 import {FORBIDDEN_PATTERNS} from '../app/lib/faq-schema.js';
 import {
   frageSchema,
+  teilfragenPaare,
+  warumTeilfrageOhneSchema,
   warumKeinSchema,
   antwortIstEinSatz,
   HUB_PFAD,
@@ -208,7 +210,12 @@ test('keine Frageseite trägt einen Kaufweg', () => {
   }
 });
 
-test('das Seiten-Schema trägt GENAU EINE Question, und sie ist der sichtbare Text', () => {
+// SEIT 2026-10-16 (Auftrag 20261016-seo-duenne-vorlagenseiten-zweiter-schnitt-
+// serioes-und-familie): das Schema trägt die Hauptfrage als erste Question und
+// dazu JEDE sichtbare Teilfrage, keine unsichtbare. Eine Seite ohne Teilfragen
+// trägt weiter genau eine. Der Sollwert kommt aus den Daten, nie als Zahl.
+test('das Seiten-Schema trägt die Hauptfrage und jede sichtbare Teilfrage, als sichtbaren Text', () => {
+  const norm = (x) => x.replace(/\s+/g, ' ').trim();
   for (const s of FRAGEN) {
     const schema = frageSchema(s, DATUM);
     assert.ok(
@@ -216,18 +223,77 @@ test('das Seiten-Schema trägt GENAU EINE Question, und sie ist der sichtbare Te
       `${s.slug}: kein FAQPage-Schema — Grund: ${JSON.stringify(warumKeinSchema(s))}`,
     );
     assert.equal(schema['@type'], 'FAQPage');
+    const paare = teilfragenPaare(s);
+    assert.deepEqual(
+      warumTeilfrageOhneSchema(s),
+      [],
+      `${s.slug}: eine sichtbare Teilfrage fällt still aus dem Schema`,
+    );
     assert.equal(
       schema.mainEntity.length,
-      1,
-      `${s.slug}: ${schema.mainEntity.length} Fragen im Schema — genau EINE ist der Vertrag`,
+      1 + paare.length,
+      `${s.slug}: ${schema.mainEntity.length} Fragen im Schema, sichtbar sind ${1 + paare.length}`,
     );
     // Markup, das etwas anderes sagt als die Seite, ist die schlechteste aller
     // Welten: als Täuschung angreifbar und als Inhalt wertlos.
-    assert.equal(schema.mainEntity[0].name, s.frage.replace(/\s+/g, ' ').trim());
-    assert.equal(
-      schema.mainEntity[0].acceptedAnswer.text,
-      s.antwort.replace(/\s+/g, ' ').trim(),
+    assert.equal(schema.mainEntity[0].name, norm(s.frage));
+    assert.equal(schema.mainEntity[0].acceptedAnswer.text, norm(s.antwort));
+    paare.forEach((p, i) => {
+      assert.equal(schema.mainEntity[i + 1].name, norm(p.q));
+      assert.equal(schema.mainEntity[i + 1].acceptedAnswer.text, norm(p.a));
+    });
+  }
+});
+
+test('Teilfragen gehören zu einem vorhandenen Absatz und sind Fragen', () => {
+  for (const s of FRAGEN) {
+    if (s.teilfragen === undefined) continue;
+    const {"begruendung": absaetze} = s;
+    assert.ok(Array.isArray(s.teilfragen), `${s.slug}: teilfragen ist keine Liste`);
+    assert.ok(
+      s.teilfragen.length <= absaetze.length,
+      `${s.slug}: ${s.teilfragen.length} Teilfragen für ${absaetze.length} Absätze`,
     );
+    for (const q of s.teilfragen) {
+      if (q === null) continue;
+      assert.match(q, /\?$/, `${s.slug}: Teilfrage ohne Fragezeichen: ${q}`);
+      assert.notEqual(norm2(q), norm2(s.frage), `${s.slug}: Teilfrage wiederholt die Hauptfrage`);
+    }
+  }
+  function norm2(x) {
+    return x.toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+});
+
+test('ROT-ARM: eine sichtbare Teilfrage mit Deny-Muster wird laut, nicht still', () => {
+  const attrappe = {
+    slug: 'attrappe-teilfrage',
+    frage: 'Ist das eine Frage?',
+    antwort: 'Ja, das ist eine Frage.',
+    "begruendung": ['Ein sauberer Absatz.', 'Ein energetisch aufgeladener Absatz.'],
+    teilfragen: ['Ist der erste Absatz sauber?', 'Ist der zweite Absatz sauber?'],
+    beleg: ['-'],
+    offen: [],
+    weiter: [],
+    quellen: [],
+    pfad: '/pages/attrappe-teilfrage',
+  };
+  assert.deepEqual(warumTeilfrageOhneSchema(attrappe), [
+    {frage: 'Ist der zweite Absatz sauber?', muster: ['energetisch']},
+  ]);
+  const schema = frageSchema(attrappe, DATUM);
+  // Das Netz nimmt das unsaubere Paar heraus: das Schema hat dann WENIGER
+  // Fragen als die Seite zeigt — genau das, was der Vollständigkeitstest oben
+  // für jede echte Seite rot macht.
+  assert.equal(schema.mainEntity.length, 2);
+  assert.notEqual(schema.mainEntity.length, 1 + teilfragenPaare(attrappe).length);
+});
+
+test('GRÜN-ARM: eine Seite ohne Teilfragen trägt unverändert genau eine Question', () => {
+  const ohne = FRAGEN.filter((s) => teilfragenPaare(s).length === 0);
+  assert.ok(ohne.length > 0, 'keine Seite ohne Teilfragen mehr — der Arm hat seinen Gegenstand verloren');
+  for (const s of ohne) {
+    assert.equal(frageSchema(s, DATUM).mainEntity.length, 1, `${s.slug}: mehr als eine Question`);
   }
 });
 

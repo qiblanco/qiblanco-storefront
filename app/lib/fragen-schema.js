@@ -15,6 +15,19 @@
  * hier KEIN Vorbild und wird auch nicht abgelöst: sie bedient den Menschen, der
  * blättert. Diese Seiten bedienen die Frage, die jemand gestellt hat.
  *
+ * NACHTRAG 2026-10-16, DIE 1-FRAGE-FAQPAGE FÜR DIE FAMILIE ENTSCHIEDEN
+ * (Auftrag 20261016-seo-duenne-vorlagenseiten-zweiter-schnitt-serioes-und-
+ * familie): Die Hauptfrage bleibt die erste `Question`, und eine Seite mit
+ * genau einer sichtbaren Frage behält genau eine. Belegt am 16.10.: alle drei
+ * verbliebenen Frageseiten mit 1-Frage-FAQPage sind indexiert, zwei tragen
+ * Impressionen auf Platz ≤ 10. Strukturierte Daten trennen Gewinner nicht von
+ * Verlierern (Musterregel 6 der Gewinner-Analyse, Konfidenz hoch). Neu ist nur,
+ * dass das Schema JEDE sichtbare Frage trägt: Setzt eine Seite `teilfragen`,
+ * stehen diese als Zwischenüberschriften auf der Seite und als weitere
+ * `Question` im Schema, je mit ihrem Absatz als Antwort (Musterregel 5:
+ * FAQPage nur mit allen sichtbaren Fragen). Jeder Abschnitt bleibt für sich
+ * die Antwort auf seine Frage. Die Chunk-Autarkie gilt also weiter.
+ *
  * ── DAS SCHEMA WIRD AUS DEM SICHTBAREN TEXT GEBAUT, NICHT DANEBEN ─────────
  *
  * `name` ist `seite.frage` — derselbe String, den die Route als H1 rendert.
@@ -104,15 +117,49 @@ export function antwortIstEinSatz(s) {
 }
 
 /**
- * `FAQPage` mit GENAU EINER `Question` — oder null, wenn das geerbte Deny-Netz
- * greift.
+ * Die sichtbaren Teilfragen einer Seite als Paare (Frage, Absatz darunter).
+ * `teilfragen[i]` gehört zum Begründungsabsatz an derselben Stelle; leer heißt: über
+ * diesem Absatz steht keine Frage.
+ * @param {object} s
+ * @returns {Array<{q: string, a: string}>}
+ */
+export function teilfragenPaare(s) {
+  const {"begruendung": absaetze = []} = s || {};
+  const fragen = Array.isArray(s?.teilfragen) ? s.teilfragen : [];
+  return absaetze
+    .map((a, i) => ({q: fragen[i], a}))
+    .filter((p) => typeof p.q === 'string' && p.q.trim() && typeof p.a === 'string');
+}
+
+/**
+ * Warum fällt eine Teilfrage aus dem Schema? Liefert je ausgeschlossener
+ * Teilfrage `{frage, muster}`. Leer = alle sichtbaren Teilfragen stehen im
+ * Schema. Der Test verlangt leer: eine sichtbare Frage, die still aus dem
+ * Markup fällt, wäre der stille Verlust von oben.
+ * @param {object} s
+ */
+export function warumTeilfrageOhneSchema(s) {
+  return teilfragenPaare(s)
+    .map((p) => ({
+      frage: p.q,
+      muster: FORBIDDEN_PATTERNS.filter((re) => re.test(`${p.q}\n${p.a}`)).map((re) => re.source),
+    }))
+    .filter((x) => x.muster.length > 0);
+}
+
+/**
+ * `FAQPage` mit der Hauptfrage als erster `Question` — oder null, wenn das
+ * geerbte Deny-Netz auf dem Hauptpaar greift. Trägt die Seite sichtbare
+ * Teilfragen (Feld `teilfragen`), folgen sie als weitere `Question`, jede mit
+ * ihrem Absatz als Antwort: das Schema trägt alle sichtbaren Fragen der Seite
+ * und keine unsichtbare (Musterregel 5 und 6 der Gewinner-Analyse).
  * @param {object} s
  * @param {{datePublished?: string, dateModified?: string}} [datum]
  * @returns {object|null}
  */
 export function frageSchema(s, datum = {}) {
   if (warumKeinSchema(s).length > 0) return null;
-  const schema = buildFaqPageJsonLd([{q: s.frage, a: s.antwort}], {
+  const schema = buildFaqPageJsonLd([{q: s.frage, a: s.antwort}, ...teilfragenPaare(s)], {
     inLanguage: 'de-DE',
     author: MARKE,
     ...(datum.datePublished ? {datePublished: datum.datePublished} : {}),

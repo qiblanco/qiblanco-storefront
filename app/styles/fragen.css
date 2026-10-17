@@ -262,6 +262,18 @@
   box-shadow: var(--frg-shadow-md);
 }
 
+/* EIN Akzent auch in den Trustpilot-Stimmen (2026-10-16, Job z01b): die
+   „weiterlesen"-Schalter der Stimmen-Karten tragen Google-Blau #1565c0 und
+   bilden eine eigene gesättigte Farbwelt (design-rubrik harmonisch -25, live
+   und Vorschau gemessen). Auf das Neutral-Muted gezogen + Unterstreichung,
+   wie startseite.css Regel 5 und qihome.css Regel 6a. Kontrast #6b665d auf
+   der Karte #f3f6f9: 5,2:1. Wirkt nur dort, wo eine Frageseite Stimmen zeigt
+   (data/fragen.js `trustpilot`). */
+.frg .TrustpilotStimmen button[class*='text-[#1565c0]'] {
+  color: var(--frg-muted) !important;
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .frg section {
     padding: var(--frg-s8) 0;

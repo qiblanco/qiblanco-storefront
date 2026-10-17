@@ -1,3 +1,4 @@
+import {Fragment} from 'react';
 import {quellenFuer} from '~/data/fragen';
 import {HUB_PFAD, HUB_ANKER} from '~/lib/fragen-schema';
 import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
@@ -71,9 +72,21 @@ export function FrageSeite({seite, anhang = null}) {
       <section data-geo="antwort" data-section="frg-antwort">
         <div className="frg__inhalt">
           <p className="frg__antwort">{seite.antwort}</p>
-          {absaetze.map((absatz) => (
-            <p key={absatz.slice(0, 48)}>{absatz}</p>
-          ))}
+          {/* TEILFRAGEN (app/data/fragen.js, seit 2026-10-16): die Frage, die
+              ein Absatz beantwortet, steht als Zwischenüberschrift darüber —
+              im H2-Stil der Seite, kein zweiter. Der Antwortsatz bleibt vor
+              der ersten Überschrift. Ohne das Feld ist die Ausgabe gleich. */}
+          {absaetze.map((absatz, i) => {
+            const teilfrage = seite.teilfragen?.[i];
+            return teilfrage ? (
+              <Fragment key={absatz.slice(0, 48)}>
+                <h2 data-geo="teilfrage">{teilfrage}</h2>
+                <p>{absatz}</p>
+              </Fragment>
+            ) : (
+              <p key={absatz.slice(0, 48)}>{absatz}</p>
+            );
+          })}
         </div>
       </section>
 
