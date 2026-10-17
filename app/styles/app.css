@@ -102,6 +102,41 @@
 main {
   padding-top: calc(var(--header-height) + 40px);
 }
+/* ERSTER BLOCK NIE UNTER DEM KOPF (Sicht-Tor F-441, 2026-10-17).
+   `main` haelt nur die Nennhoehe frei: 64 + 40 = 104 px. Der fixierte Kopf ist
+   hoeher, weil die Bewertungszeile darueber sitzt: gemessen 137-140 px bei
+   390 px Breite. Ein Block ohne eigenen oberen Rand beginnt damit 33 px unter
+   dem transparenten Kopf. Auf Weiss sieht das niemand; auf einer Farbflaeche
+   verschwinden Logo-Unterzeile und Kreisraender (live auf ~50 Seiten, dunkel:
+   qibracelet, qihome-air, uebersicht, ueber-uns, warum-qi-blanco).
+
+   WARUM EIN LEERER BLOCK MIT UNTEREM RAND: sein Rand verschmilzt mit dem
+   oberen Rand des ersten Blocks, es gilt der groessere. Ein Block, der schon
+   mit eigenem Abstand unter dem Kopf beginnt (qione-2-pro: 85 px), bleibt
+   stehen; ein buendiger rueckt genau an die Kopfunterkante. Dieselbe Rechnung
+   stand bisher nur an der Kassen-Rueckkehr-Leiste.
+
+   --qb-kopf-hoehe setzt die Kopfzeile zur Laufzeit (useKopfHoeheVariable);
+   150 px ist der Wert des Designstandards (kopf.hoehe) fuer den ersten Paint.
+
+   Ausgenommen: ein erster Block, der sich mit negativem Rand bewusst unter
+   den Kopf zieht (Bild-Heros, mt-[-75px] auf superhuman und den
+   Detailseiten). Mit dem Leerblock verschmolzen wuerde er um die Luecke
+   absinken. */
+body > main::before {
+  content: '';
+  display: block;
+  margin-bottom: max(
+    0px,
+    calc(var(--qb-kopf-hoehe, 150px) - var(--header-height) - 40px)
+  );
+}
+body > main:has(
+    > :first-child[class*='mt-[-'],
+    > :first-child > :first-child[class*='mt-[-']
+  )::before {
+  margin-bottom: 0;
+}
 svg, img{
   display: inline;
 }
