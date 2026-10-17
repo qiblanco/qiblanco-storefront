@@ -1200,7 +1200,7 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
     'app/components/product-pages/QiOne2ProSeite.jsx',
     'app/routes/products.crystal-cacao-awake.jsx',
     'app/routes/products.crystal-cacao-create.jsx',
-    'app/routes/products.qi-master.jsx',
+    'app/routes/products.qi-alpha.jsx',
     'app/routes/products.qione-kette.jsx',
   ]) {
     assert.ok(

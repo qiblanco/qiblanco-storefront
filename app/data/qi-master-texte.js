@@ -249,7 +249,7 @@ export const QIMASTER_DIAMANT = {
      stehen in qi-master.css (.qm-schluss), die Groesse kommt aus dem
      gemeinsamen Token --qm-fs-guete, das auch die Guetezeilen tragen. */
   schluss: [
-    'Qi Master®',
+    'Qi Alpha',
     'The One Eye - ordnet Licht',
     'Gitterchip™ - ordnet Wasser',
   ],
@@ -321,7 +321,7 @@ export const QIMASTER_PERSOENLICHKEIT = {
   // Satzbau sind unangetastet.
   titel: 'Persönlichkeitsentwicklung durch erhöhte Zellschwingung',
   einstieg: [
-    'Der Qi Master® wurde exklusiv für Menschen entwickelt, die neue Ebenen erreichen wollen.',
+    'Der Qi Alpha wurde exklusiv für Menschen entwickelt, die neue Ebenen erreichen wollen.',
     'Jahrtausendealtes Wissen der Menschheit am Puls der Zeit interpretiert.',
   ],
   ueberlieferung: {
@@ -388,7 +388,7 @@ export const QIMASTER_PERSOENLICHKEIT = {
     label: 'Zeitgenössisch interpretiert',
     titel: 'Das Fundament:',
     absaetze: [
-      'Der menschliche Körper muss in eine erhöhte Ordnung kommen, um die unendliche Energie des Universums ausdrücken zu können. Der Qi Master® hilft, auf den beiden wichtigsten Bestandteilen Ordnung zu schaffen – Licht und Wasser.',
+      'Der menschliche Körper muss in eine erhöhte Ordnung kommen, um die unendliche Energie des Universums ausdrücken zu können. Der Qi Alpha hilft, auf den beiden wichtigsten Bestandteilen Ordnung zu schaffen – Licht und Wasser.',
       'Dies bildet die ideale Voraussetzung, den in der Philosophie beschriebenen Einklang zwischen Körper, Geist und Seele zu erzeugen. Kohärenz auf molekularer Ebene.',
     ],
   },
