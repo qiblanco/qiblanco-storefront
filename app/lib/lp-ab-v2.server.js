@@ -268,11 +268,99 @@ export function experimentB2Aktiv(env, codeSchalter = E2_AKTIV, e1 = E1, e2 = E2
   return e2.anteil_prozent > 0;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * KURZ-ARME K50 UND K25 (Job 20261017-ads-lp-radikal-kurz-tests-gs079-durch-
+ * sim-tor; Christian 17.10.2026: „und auch mal radikale Ideen testen, wo die
+ * LP für die Ads deutlich kürzer ist. Also eine Gewinner-LP dann kürzen, um
+ * zu schauen, wie die Effekte sind.").
+ *
+ * K50 = Stufe-1-Paket GS-079 (rund 50 % der Seite), K25 = Radikal-Kurz GS-174
+ * (rund 25 %: Kopf, Bewertungen, Garantie, Preisblock). Definition und
+ * Begründung vollständig in heatmap-manager/config/experimente.yaml
+ * (szs-e3-gs079, szs-e4-gs174; Namen K50/K25 statt B3/B4, weil „B3“ im Stufenplan
+ * schon den Sticky-Arm GS-127 meint).
+ *
+ * ENTSCHEIDE, je begründet:
+ *  - VORGEBAUT, ABER AUS: E3_AKTIV und E4_AKTIV stehen auf false. Scharf
+ *    werden sie erst, wenn das Sim-Tor die Fassung je Gerät bestanden hat
+ *    (heatmap-manager kreislauf start-freigabe <id> exit 0) und B von
+ *    szs-e1-gs050 sein Urteil hat. Bis dahin sieht kein Besucher K50 oder K25;
+ *    die Routen sind nur über den Pin erreichbar (Vorschau, Tor-Prüfung).
+ *  - DASSELBE SALZ WIE E1, EIGENE EIMER: K50 übernimmt die Eimer von B
+ *    (< 15), K25 die nächsten (15 bis 29). B2 behält die obersten. Ein Besucher
+ *    hat genau einen Eimer, also höchstens einen Arm.
+ *  - K50 UND B ZUGLEICH GEHT NICHT: K50 nimmt die Eimer von B. Steht E1 noch,
+ *    ist K50 aus (Fail-Richtung auf den laufenden Test). Ein laufender Test wird
+ *    nicht gestoppt, nur weil ein neuer bereitsteht.
+ *  - HARTE BEDINGUNG IM CODE: die Eimer der Kurz-Arme dürfen die von B2 nicht
+ *    berühren (E4-Ende <= 100 - E2.anteil_prozent). Sonst ist K25 aus.
+ *  - EIGENE SCHALTER, EIGENE KILLS: Env LP_EXP_SZS_K50_MODE=off bzw.
+ *    LP_EXP_SZS_K25_MODE=off. Pins ?lp_exp=k50 | k25. Marker c (K50) und d (K25) (belegt:
+ *    w r h p b f v m x s q k n z).
+ *  - Die Ad-Weiche schließt beide Pfade aus (ad-weiche.server.js), sonst
+ *    schickte sie bezahlten Verkehr zurück auf A: dieselbe Schleife wie bei B2.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Ziel-Route der Variante K50 (GS-079). EINE Definition (ad-weiche importiert sie). */
+export const LP_EXP_K50_PFAD = '/pages/schlaf-zellen-schutz-k50';
+
+/** Ziel-Route der Variante K25 (Radikal-Kurz). EINE Definition. */
+export const LP_EXP_K25_PFAD = '/pages/schlaf-zellen-schutz-k25';
+
+/** Marker in der Ziel-URL: c = K50, d = K25 (unterscheidbar von allen belegten). */
+export const LP_EXP_K50_MARKER = 'c';
+export const LP_EXP_K25_MARKER = 'd';
+
+/** K50: Eimer [0, 15) desselben Salzes, also die Eimer von B. */
+export const E3 = Object.freeze({
+  id: 'szs-e3-gs079',
+  hypothese_id: 'GS-079',
+  salz: E1.salz,
+  eimer_ab: 0,
+  anteil_prozent: 15,
+});
+
+/** K25: Eimer [15, 30) desselben Salzes. */
+export const E4 = Object.freeze({
+  id: 'szs-e4-gs174',
+  hypothese_id: 'GS-174',
+  salz: E1.salz,
+  eimer_ab: 15,
+  anteil_prozent: 15,
+});
+
+/** Code-Schalter der Kurz-Arme; false = kein Besucher auf K50 bzw. K25. */
+export const E3_AKTIV = false;
+export const E4_AKTIV = false;
+
+/**
+ * Ein Kurz-Arm läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht
+ * abschaltet (NUR 'off'), er dasselbe Salz trägt wie E1, seine Eimer in
+ * [0, 100 - E2.anteil_prozent) liegen und B (E1) diese Eimer nicht mehr belegt.
+ */
+export function experimentKurzAktiv(
+  env,
+  e,
+  codeSchalter,
+  envName,
+  e1An = experimentAktiv(env),
+  e2 = E2,
+) {
+  if (!codeSchalter) return false;
+  if (env && env[envName] === 'off') return false;
+  if (e.salz !== E1.salz) return false;
+  if (!(e.anteil_prozent > 0)) return false;
+  if (e.eimer_ab < 0 || e.eimer_ab + e.anteil_prozent > 100 - e2.anteil_prozent) return false;
+  if (e1An && e.eimer_ab < E1.anteil_prozent) return false;
+  return true;
+}
+
 /**
  * Reine Entscheidungsfunktion: {ziel, eimer, arm} wenn dieser Request
- * Variante B (arm 'b') oder B2 (arm 'b2') sehen soll, sonst null. Ohne
+ * Variante B (arm 'b'), B2 (arm 'b2'), K50 (arm 'k50') oder K25 (arm 'k25')
+ * sehen soll, sonst null. Ohne
  * Client-IP gibt es keine stabile Zuteilung — dann A (Fail-Richtung auf den
- * Bestand). Pins: ?lp_exp=a | b | b2; ein Pin auf einen abgeschalteten Arm
+ * Bestand). Pins: ?lp_exp=a | b | b2 | k50 | k25; ein Pin auf einen abgeschalteten Arm
  * zeigt A.
  */
 export function entscheideLpExperiment(
@@ -280,20 +368,28 @@ export function entscheideLpExperiment(
   env,
   codeSchalter = E1_AKTIV,
   codeSchalterB2 = E2_AKTIV,
+  codeSchalterK50 = E3_AKTIV,
+  codeSchalterK25 = E4_AKTIV,
 ) {
   if (!request || (request.method !== 'GET' && request.method !== 'HEAD')) return null;
   const bAn = experimentAktiv(env, codeSchalter);
   const b2An = experimentB2Aktiv(env, codeSchalterB2);
-  if (!bAn && !b2An) return null;
+  const k50An = experimentKurzAktiv(env, E3, codeSchalterK50, 'LP_EXP_SZS_K50_MODE', bAn);
+  const k25An = experimentKurzAktiv(env, E4, codeSchalterK25, 'LP_EXP_SZS_K25_MODE', bAn);
+  if (!bAn && !b2An && !k50An && !k25An) return null;
   const url = new URL(request.url);
   if (url.pathname.endsWith('.data')) return null;
   if (url.searchParams.has('_data')) return null;
   const nachB = () => zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_MARKER);
   const nachB2 = () => zielUrl(LP_EXP_B2_PFAD, url.search, LP_EXP_B2_MARKER);
+  const nachK50 = () => zielUrl(LP_EXP_K50_PFAD, url.search, LP_EXP_K50_MARKER);
+  const nachK25 = () => zielUrl(LP_EXP_K25_PFAD, url.search, LP_EXP_K25_MARKER);
   const pin = url.searchParams.get('lp_exp');
   if (pin === 'a') return null;
   if (pin === 'b') return bAn ? {ziel: nachB(), eimer: -1, arm: 'b'} : null;
   if (pin === 'b2') return b2An ? {ziel: nachB2(), eimer: -1, arm: 'b2'} : null;
+  if (pin === 'k50') return k50An ? {ziel: nachK50(), eimer: -1, arm: 'k50'} : null;
+  if (pin === 'k25') return k25An ? {ziel: nachK25(), eimer: -1, arm: 'k25'} : null;
   const ua = request.headers?.get?.('user-agent') || '';
   const ip = request.headers?.get ? buyerIpAusRequest(request) : '';
   if (istInternerZugriff({userAgent: ua, ip})) return null;
@@ -301,5 +397,8 @@ export function entscheideLpExperiment(
   const eimer = besucherEimer(ip, ua, E1.salz);
   if (bAn && eimer < E1.anteil_prozent) return {ziel: nachB(), eimer, arm: 'b'};
   if (b2An && eimer >= 100 - E2.anteil_prozent) return {ziel: nachB2(), eimer, arm: 'b2'};
+  const imArm = (e) => eimer >= e.eimer_ab && eimer < e.eimer_ab + e.anteil_prozent;
+  if (k50An && imArm(E3)) return {ziel: nachK50(), eimer, arm: 'k50'};
+  if (k25An && imArm(E4)) return {ziel: nachK25(), eimer, arm: 'k25'};
   return null;
 }
