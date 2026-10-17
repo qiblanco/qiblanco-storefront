@@ -18,6 +18,8 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import qihomeAirStyles from '~/styles/qihome-air.css?url';
+import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
+import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
 import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
@@ -78,6 +80,7 @@ import {
 export function qiHomeAirSeiteLinks() {
   return [
     {rel: 'stylesheet', href: qihomeAirStyles},
+    {rel: 'stylesheet', href: kaufZuerstStyles},
     // Scope-CSS der Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte, s04).
     // Eigene Datei, Scope `.qh-karte`: eine Seite ohne diese Klasse sieht von
     // ihr baulich nichts.
@@ -130,6 +133,7 @@ export function QiHomeAirSeite({
 
   return (
     <div className="ProductQiHomeAir">
+    <div className="qb-pdp-kopf" {...kaufZuerstAttribute()}>
     <div className="product-360-hero">
       <div className="product-360-hero__text">
         <h2>QiHome® Air</h2>
@@ -147,7 +151,7 @@ export function QiHomeAirSeite({
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiHome-Content
         darunter (war toter Anker; linkwatch anker-Prüfebene wacht darüber). */}
-    <div className="product" id="product" data-qi-shop={shopMarker}>
+    <div className="product" id="product" data-qi-shop={shopMarker} {...kaufZuerstAttribute()}>
       <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
 
@@ -199,6 +203,7 @@ export function QiHomeAirSeite({
           ],
         }}
       />
+    </div>
     </div>
       {/*
         DIE QIHOME-EINSATZKARTE — HIER, unmittelbar nach dem Kaufblock und VOR

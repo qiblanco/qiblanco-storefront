@@ -1,0 +1,73 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   KAUF ZUERST — Reihenfolge der Kaufbox auf den Produktseiten
+   Schalter und Begründung: app/components/product-pages/pdpKaufZuerst.js (PDP_KAUF_ZUERST).
+   Bauplan: design-meister/db/designstandard/_basis.yaml, Baustein `kauf_block`
+   (Bild, Titel, Preiszeile, Variante, Kaufknopf, Zusage) und Seitenregel
+   `pdp_falz` (Bild, Preis, Variante, Kaufknopf im ersten Fenster).
+
+   Das Attribut sitzt auf `.product` selbst oder auf einem Wrapper um die
+   Kaufbox (.qb-pdp-kopf auf qibracelet/qihome-air; Routen-Wrapper).
+
+   Nur `order`: der DOM bleibt, wie er ist. Titel und Sterne stehen vorn,
+   dann Preis und Formular (Variante, Kaufknopf), dann die Nutzen-Liste
+   (Zusage), danach Beschreibungstext und alles Übrige in seiner bisherigen
+   Reihenfolge. Auf qibracelet und qihome-air rückt das 360°-Band hinter
+   die Kaufbox (Wrapper .qb-pdp-kopf).
+
+   Abstände nur als Rollen aus styles/designstandard-dach.css (--qb-*).
+   Grenze 750 px = Mobilgrenze des Hauses (max-width: 749px).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 750px) {
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main {
+    display: flex;
+    flex-direction: column;
+  }
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > * {
+    order: 3;
+  }
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(h1, .product-rating) {
+    order: 0;
+  }
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(.Bestseller-Price, .product-price, .product-form) {
+    order: 1;
+  }
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(.BenefitList, .CacaoBenefitList) {
+    order: 2;
+  }
+  .qb-pdp-kopf[data-kauf-zuerst-desktop='an'] {
+    display: flex;
+    flex-direction: column;
+  }
+  .qb-pdp-kopf[data-kauf-zuerst-desktop='an'] > .product-360-hero {
+    order: 1;
+    margin-top: var(--qb-abstand-sektion-mittel);
+  }
+}
+
+@media (max-width: 749px) {
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main {
+    display: flex;
+    flex-direction: column;
+  }
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > * {
+    order: 3;
+  }
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(h1, .product-rating) {
+    order: 0;
+  }
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(.Bestseller-Price, .product-price, .product-form) {
+    order: 1;
+  }
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(.BenefitList, .CacaoBenefitList) {
+    order: 2;
+  }
+  .qb-pdp-kopf[data-kauf-zuerst-mobil='an'] {
+    display: flex;
+    flex-direction: column;
+  }
+  .qb-pdp-kopf[data-kauf-zuerst-mobil='an'] > .product-360-hero {
+    order: 1;
+    margin-top: var(--qb-abstand-sektion-klein);
+  }
+}
