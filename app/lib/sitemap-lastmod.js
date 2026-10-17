@@ -43,6 +43,7 @@ import {
   ausSitemapEntfernteKollektionen,
 } from '~/lib/seo';
 import {artikelPfad} from '~/lib/blog-artikel-pfad';
+import {gespiegelteHandles} from '~/crystal-spiegel-rahmen/suchmaschine';
 import {
   artikelKarte,
   IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
@@ -112,7 +113,9 @@ function sichtbareEintraege(typ, items, bestand) {
           !IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE.includes(i.handle) &&
           // Vorlagen ohne Indexwert (GEO M3, 2026-10-10): dieselbe Liste wie
           // in der Kind-Route und im robots-Meta.
-          !istVorlageOhneIndexwert('products', i.handle),
+          !istVorlageOhneIndexwert('products', i.handle) &&
+          // Crystal-Spiegel (2026-10-17): dieselbe Menge wie in der Kind-Route.
+          !gespiegelteHandles('products').includes(i.handle),
       );
     case 'pages':
       // Dieselbe Vereinigung wie in der Kind-Route: nennt der Index ein
@@ -121,7 +124,8 @@ function sichtbareEintraege(typ, items, bestand) {
       return items.filter(
         (i) =>
           !AUS_SITEMAP_ENTFERNTE_SEITEN.includes(i.handle) &&
-          !WEITERGELEITETE_PAGES_HANDLES.includes(i.handle),
+          !WEITERGELEITETE_PAGES_HANDLES.includes(i.handle) &&
+          !gespiegelteHandles('pages').includes(i.handle),
       );
     case 'collections':
       return items.filter(

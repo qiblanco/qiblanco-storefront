@@ -1198,7 +1198,11 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
     'app/components/product-pages/QiHomeAirSeite.jsx',
     'app/components/product-pages/QiOne2Pro2xShop.jsx',
     'app/components/product-pages/QiOne2ProSeite.jsx',
-    'app/routes/products.crystal-cacao-awake.jsx',
+    // products.crystal-cacao-awake ist seit dem 17.10.2026 eine Hülle um den
+    // erzeugten Crystal-Spiegel (app/crystal-spiegel/, 1:1 crystal-cacao.com,
+    // Übergabe #71); ihre Kaufflaeche ist crystals eigene und steht nicht mehr
+    // in app/routes. CREATE folgt, sobald Elinas Sperre EL-20261002-81b93e47
+    // aufgehoben ist -- dann faellt auch diese Zeile hier.
     'app/routes/products.crystal-cacao-create.jsx',
     'app/routes/products.qi-master.jsx',
     'app/routes/products.qione-kette.jsx',

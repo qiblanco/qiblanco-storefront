@@ -239,6 +239,22 @@ function istReineWeiterleitung(inhalt) {
   return !hatMeta && leitet301;
 }
 
+/**
+ * Eine Crystal-Spiegel-Hülle (seit 17.10.2026, Christian, Übergabe #71:
+ * „1:1 Kopie des Crystal Kakao Shops“) nimmt ihren Kopf WÖRTLICH aus dem
+ * erzeugten Spiegel: Titel, Beschreibung, Strukturdaten und das canonical auf
+ * crystal-cacao.com, das den Doppelinhalt auflöst. produktMeta setzte ein
+ * selbstreferenzierendes canonical auf qiblanco.com und machte daraus zwei
+ * konkurrierende Fassungen. Erkannt an der EIGENSCHAFT: der meta-Export ist
+ * der des Spiegels (Import aus ~/crystal-spiegel/routes/ als meta).
+ */
+function istSpiegelHuelle(inhalt) {
+  return (
+    /meta\s+as\s+(\w+)[^;]*from\s+'~\/crystal-spiegel\/routes\//.test(inhalt) &&
+    /export\s+const\s+meta\s*=\s*\(args\)\s*=>\s*spiegelMeta\(args\)/.test(inhalt)
+  );
+}
+
 test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
   // Der Ausgangsbefund war eine Drift zwischen den Routen. Dieser Test
   // findet die vergessene Route, nicht nur die gepflegte.
@@ -251,9 +267,27 @@ test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
     const slug = f.replace(/^products\./, '').replace(/\.jsx$/, '');
     if (slug === 'zeremonie-kakao') continue; // 301, bewusst außen vor
     if (istReineWeiterleitung(inhalt)) continue; // rendert nichts, kein Kopf
+    if (istSpiegelHuelle(inhalt)) continue; // Kopf kommt 1:1 von crystal-cacao.com
     if (!inhalt.includes('produktMeta')) fehlend.push(f);
   }
   assert.deepEqual(fehlend, [], `Routen ohne produktMeta: ${fehlend.join(', ')}`);
+});
+
+test('ROT: die Spiegel-Ausnahme greift nur bei einer echten Spiegel-Hülle', () => {
+  const huelle = readFileSync('app/routes/products.crystal-cacao-awake.jsx', 'utf8');
+  assert.equal(istSpiegelHuelle(huelle), true, 'die AWAKE-Hülle ist eine Spiegel-Hülle');
+  // Eigener meta-Export neben dem Spiegel-Import -> KEINE Ausnahme.
+  const eigenerKopf = huelle.replace(
+    'export const meta = (args) => spiegelMeta(args);',
+    "export const meta = () => [{title: 'T'}];",
+  );
+  assert.equal(istSpiegelHuelle(eigenerKopf), false, 'eigener Kopf bleibt sichtbar');
+  // Ohne Spiegel-Import -> KEINE Ausnahme.
+  assert.equal(
+    istSpiegelHuelle('export const meta = (args) => spiegelMeta(args);'),
+    false,
+    'Name allein reicht nicht',
+  );
 });
 
 test('ROT: die Weiterleitungs-Ausnahme verschluckt keine rendernde Route', () => {

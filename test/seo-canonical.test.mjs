@@ -185,12 +185,15 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
     /pages:\s*NICHT_IN_PAGES_SITEMAP/,
     'pages muss AN die EINE vereinigte Sicht gehaengt sein, nicht an ein eigenes Array',
   );
-  // Die Vereinigung selbst darf nur aus den beiden abgeleiteten Quellen
-  // bestehen — sonst wäre sie das zweite Array durch die Hintertür.
+  // Die Vereinigung selbst darf nur aus abgeleiteten Quellen bestehen —
+  // sonst wäre sie das zweite Array durch die Hintertür.
+  // NACHGEZOGEN AM 2026-10-17, NICHT AUFGEWEICHT: dritte abgeleitete Quelle
+  // sind die Seiten des Crystal-Spiegels (canonical auf crystal-cacao.com),
+  // erzeugt aus SEITEN= des Spiegel-Erzeugers. Weiter kein Literal.
   assert.match(
     quelle,
-    /const NICHT_IN_PAGES_SITEMAP = \[\s*\.\.\.AUS_SITEMAP_ENTFERNTE_SEITEN,\s*\.\.\.WEITERGELEITETE_PAGES_HANDLES,\s*\]/,
-    'die Vereinigung muss aus genau den beiden Quellen gebildet sein',
+    /const NICHT_IN_PAGES_SITEMAP = \[\s*\.\.\.AUS_SITEMAP_ENTFERNTE_SEITEN,\s*\.\.\.WEITERGELEITETE_PAGES_HANDLES,\s*\.\.\.gespiegelteHandles\('pages'\),\s*\]/,
+    'die Vereinigung muss aus genau den drei abgeleiteten Quellen gebildet sein',
   );
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'Import muss aus ~/lib/seo kommen');
   for (const handle of NICHT_INDEXIERBARE_SEITEN) {

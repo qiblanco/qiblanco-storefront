@@ -191,20 +191,27 @@ aside .aside-zone{
   display: none!important; 
 }
 
-form, input, button, textarea, select, option, a{
+/* :where(:not(#ccsp *)) hier und unten: nicht im Crystal-Spiegel (siehe app.css .mt-2). */
+form:where(:not(#ccsp *)),
+input:where(:not(#ccsp *)),
+button:where(:not(#ccsp *)),
+textarea:where(:not(#ccsp *)),
+select:where(:not(#ccsp *)),
+option:where(:not(#ccsp *)),
+a:where(:not(#ccsp *)) {
   -webkit-appearance: none!important;
  -moz-appearance: none !important;
 }
 @media (max-width: 749px) {
-  h1 {
+  h1:where(:not(#ccsp *)) {
     font-size: 1.75rem !important;
     line-height: 1.3;
   }
-  h2 {
+  h2:where(:not(#ccsp *)) {
     font-size: 1.5rem !important;
     line-height: 1.35;
   }
-  h3 {
+  h3:where(:not(#ccsp *)) {
     font-size: 1.25rem !important;
     line-height: 1.4;
   }

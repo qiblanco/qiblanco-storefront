@@ -142,7 +142,10 @@ footer *{
 .mt-1 {
   margin-top: 1rem !important;
 }
-.mt-2 {
+/* `:where(:not(#ccsp *))` (Spezifitaet +0) an dieser und weiteren !important-Regeln:
+   sie gelten nicht im Crystal-Spiegel (app/crystal-spiegel-rahmen/SpiegelRahmen.jsx), der
+   1:1 wie crystal-cacao.com aussehen muss -- gegen !important hilft dort keine Spezifitaet. */
+.mt-2:where(:not(#ccsp *)) {
   margin-top: 2rem !important;
 }
 .mt-3 {
@@ -186,7 +189,7 @@ footer *{
   color: #000;
   font-weight: 500;
 }
-.btn--primary {
+.btn--primary:where(:not(#ccsp *)) {
   display: block;
   font-size: 1.1rem !important;
   font-weight: 600;
@@ -201,7 +204,7 @@ footer *{
   background: var(--color-accent-primary);
   transition: 0.2s all linear;
 }
-.btn--secondary {
+.btn--secondary:where(:not(#ccsp *)) {
   display: block;
   font-size: 1.05rem;
   font-family: 'Open Sans Variable', sans-serif;
@@ -1231,8 +1234,8 @@ aside h3 {
   flex-direction: column;
   gap: 0.75rem;
 }
-.header-menu-item,
-p.header-menu-item {
+.header-menu-item:where(:not(#ccsp *)),
+p.header-menu-item:where(:not(#ccsp *)) {
   text-decoration: none;
   padding: 0.5rem 0 !important;
   display: inline-block;
@@ -2488,7 +2491,7 @@ footer.footer :focus-visible {
   }
 }
 
-.product h1 {
+.product h1:where(:not(#ccsp *)) {
   margin-top: 0;
   margin-bottom: 0!important;
 }
@@ -3298,7 +3301,7 @@ footer.footer :focus-visible {
   margin-top: 20px;
   overflow: hidden;
 }
-.ProgressWrapper .ProgressTracker {
+.ProgressWrapper .ProgressTracker:where(:not(#ccsp *)) {
   height: 100%;
   max-width: 100% !important;
   background: var(--color-dark);
@@ -4011,8 +4014,8 @@ footer.footer :focus-visible {
     overflow: hidden;
   }
 
-  .ProductImages .product-image-list > img.thumb-image,
-  .ProductImages .product-image-list .ImageSeeMore {
+  .ProductImages .product-image-list > img.thumb-image:where(:not(#ccsp *)),
+  .ProductImages .product-image-list .ImageSeeMore:where(:not(#ccsp *)) {
     flex: 1 1 0 !important;
     min-height: 0 !important;
     width: auto !important;
@@ -4023,7 +4026,7 @@ footer.footer :focus-visible {
     display: block;
   }
 
-  .ProductImages .product-image-list .ImageSeeMore img {
+  .ProductImages .product-image-list .ImageSeeMore img:where(:not(#ccsp *)) {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover;
@@ -4032,7 +4035,7 @@ footer.footer :focus-visible {
   .product-main {
     padding-right: 100px;
   }
-  .product-main .btn--primary {
+  .product-main .btn--primary:where(:not(#ccsp *)) {
     max-width: 100% !important;
     width: 100%;
   }
@@ -4048,12 +4051,12 @@ footer.footer :focus-visible {
   .ProductImages{
     margin-bottom: 75px;
   }
-  .ImageSeeMore,
-  .product-image-list img {
+  .ImageSeeMore:where(:not(#ccsp *)),
+  .product-image-list img:where(:not(#ccsp *)) {
     width: 20% !important;
     height: auto !important;
   }
-  .ImageSeeMore img {
+  .ImageSeeMore img:where(:not(#ccsp *)) {
     width: 100% !important;
   }
   .product-main {
@@ -4415,7 +4418,7 @@ footer.footer :focus-visible {
   .menu-toggle-mobile {
     font-size: 1.5rem !important;
   }
-  .header-menu-item {
+  .header-menu-item:where(:not(#ccsp *)) {
     font-size: 1.5rem !important;
   }
   .AddToCartWrapper svg.icon__add {
@@ -5076,12 +5079,12 @@ ul.kakao-children li {
    diese Zwischenstufe zwischen Fliesstext 19,2 px und Ueberschrift 35,2 px
    fehlte der Seite als STUFE: sie war da, aber zu selten besetzt, um in der
    Skalen-Pruefung der Design-Rubrik als Sprosse zu zaehlen. */
-.CacaoPriceCurrent {
+.CacaoPriceCurrent:where(:not(#ccsp *)) {
   font-size: var(--kk-fs-lead)!important;
   font-weight: 700!important;
   line-height: 1!important;
 }
-.CacaoPriceCurrent.sale {
+.CacaoPriceCurrent.sale:where(:not(#ccsp *)) {
   color: #e00!important;
 }
 /* Goldene SCHRIFT auf hellem Grund = die Tinte, kein eigener Goldton (bis
@@ -5089,7 +5092,7 @@ ul.kakao-children li {
 .CacaoPriceCurrent.exclusive {
   color: var(--color-accent-ink)!important;
 }
-.CacaoPriceCompare {
+.CacaoPriceCompare:where(:not(#ccsp *)) {
   font-size: var(--kk-fs-lead)!important;
   color: var(--color-dark)!important;
   text-decoration: line-through!important;
@@ -5104,7 +5107,7 @@ ul.kakao-children li {
 .BestsellerLabel--red {
   background: #e00 !important;
 }
-.BestsellerLabel--gradient {
+.BestsellerLabel--gradient:where(:not(#ccsp *)) {
   background: linear-gradient(90deg, #f30, #ff6f82) !important;
 }
 /* --- Kakao-Titel: fluide Schriftgrade statt fester 60/48 px (2026-09-10) ---

@@ -1,0 +1,969 @@
+// ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/lib/kakao-zone.js
+// NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
+/**
+ * Die EINE Stelle, an der steht, welche Fläche zur KAKAO-Welt gehört und
+ * welche Kennzahlen dort gelten.
+ *
+ * WARUM ES DIESE DATEI GIBT (Christian 2026-08-24, Job
+ * 20260824-kakao-bewertung-49-und-1000-nutzer-drei-domains-prio12):
+ * Auf den Kakaoseiten standen die Qi-Blanco-Zahlen — "4.8 Sterne" und
+ * "über 14.000 aktive Nutzer". Wörtlich: "Das 14.000 wurde fälschlicherweise
+ * von Qi Blanco übernommen." Die Zahlen sind beim Übertragen der Seiten aus
+ * der Qi-Blanco-Welt mitgewandert, weil die Vorlage von dort stammte.
+ *
+ * ZWEI PRODUKTWELTEN, ZWEI KENNZAHL-SÄTZE — das ist der ganze Punkt:
+ *   Qi Blanco (Energieprodukte): 14.000 aktive Nutzer, Bewertung LIVE aus
+ *                                Google (siehe unten), heute 4,8.
+ *   Crystal Cacao:               1.000 aktive Nutzer, Bewertung 4,9.
+ * Eine Zahl aus der einen Welt auf einer Seite der anderen ist ein Fehler,
+ * auch wenn sie für sich genommen stimmt.
+ *
+ * WARUM EINE LISTE UND NICHT EIN SUBSTRING: geprüft und verworfen.
+ * /pages/kakao-anwendung trägt "kakao" im Pfad, ist aber ein KURS der
+ * Qi-Blanco-Welt und zeigt live korrekt die Qi-Blanco-Leiste. Eine Regel
+ * `pathname.includes('kakao')` hätte genau diese Seite umgehängt.
+ *
+ * WARUM DIE LISTE HIERHER GEHÖRT UND NICHT IN DIE HEADER-KOMPONENTE:
+ * Am 2026-08-24 live gemessen zeigten FÜNF Pfade die Kakao-Leiste
+ * (crystal-cacao, kristall-kakao, zeremonie-kakao, crystal-cacao-create,
+ * crystal-cacao-awake), während die Liste in Header.jsx nur DREI davon
+ * kannte. Der nächste Deploy aus main hätte /pages/kristall-kakao und
+ * /products/zeremonie-kakao auf die Qi-Blanco-Leiste gekippt — "über 14.000
+ * zufriedene Kunden" auf einer Kakaoseite, entstanden durch einen völlig
+ * unbeteiligten Deploy. Eine Liste, die in einer Komponente mitwohnt, wird
+ * beim nächsten Seitenbau vergessen; eine Liste mit eigenem Namen und
+ * eigener Probe nicht.
+ *
+ * WENN DU EINE NEUE KAKAOSEITE BAUST: trag ihren Pfad in KAKAO_PFADE ein.
+ * Das ist der einzige Handgriff — Leiste, Sterne und Nutzerzahl folgen dann
+ * von selbst. Die Probe
+ *   homepage-bauer/pruefungen/probe_kakao_zone.py
+ * hält Quelltext und ausgelieferte Seite gegeneinander.
+ */
+
+/** Pfade, die zur Kakao-Produktwelt gehören. */
+export const KAKAO_PFADE = Object.freeze([
+  // DIE STARTSEITE STEHT SEIT DEM 2026-09-08 HIER, und das ist keine
+  // Formalie: `/` rendert seither die Seite „Unser Kakao" selbst. Ohne
+  // diesen Eintrag verlöre ausgerechnet die meistbesuchte Fläche des Ladens
+  // die Kakao-Zone — Vertrauensleiste, Sterne und Nutzerzahl hängen an
+  // istKakaoPfad(). Der Fehler wäre lautlos: die Seite lädt, nichts bricht,
+  // nur die Leiste ist weg.
+  '/',
+  // Bleibt stehen, obwohl die Adresse seit dem 2026-09-08 dauerhaft auf `/`
+  // umleitet: der Eintrag kostet nichts und deckt den Weg ab, falls jemand
+  // die Umleitung je zurücknimmt. Was er NICHT mehr tut, ist die Sitemap
+  // füttern — dafür sorgt UMGELEITETE_SEITEN weiter unten.
+  '/pages/crystal-cacao',
+  '/pages/kristall-kakao',
+  '/products/crystal-cacao-create',
+  '/products/crystal-cacao-awake',
+  '/products/zeremonie-kakao',
+  // DIE ABSICHTSERKLAERUNG (2026-09-11, Job 20260911-BAU-absichtserklaerung-
+  // crystal-cacao-...): sie gehoert zur Kakao-Welt und traegt deshalb deren
+  // Vertrauensleiste (4,9 / 1.000 Nutzer), nicht die Qi-Blanco-Zahlen. Ohne
+  // diesen Eintrag stuende auf der Seite, die Christians Absicht erklaert,
+  // die Kennzahl der FREMDEN Produktwelt -- genau der Fehler, wegen dem diese
+  // Datei am 2026-08-24 entstanden ist.
+  '/pages/warum-crystal-cacao',
+]);
+
+/**
+ * DER SORTIMENTS-ZAUN — welche Shopify-Ressourcen diese Storefront ausliefern darf.
+ * ============================================================================
+ *
+ * WARUM ES DIESEN ZAUN GIBT (gemessen 2026-09-02, Job …-prio6-s02, auf
+ * origin/main 86ee245 am gerenderten HTML des dev-Servers):
+ * Diese Storefront läuft gegen PUBLIC_STORE_DOMAIN=qi-blanco.myshopify.com —
+ * denselben Shopify-Katalog, der auch die Energieprodukte führt. Die
+ * Hydrogen-Catch-all-Routen fragen diesen Katalog ungefiltert ab. Ergebnis
+ * VOR dem Zaun, alles HTTP 200 mit voll gerendertem Fremdinhalt:
+ *   /products/qione-2-pro    26497 B, 18 sichtbare Fremdnennungen
+ *   /products/qibracelet     32441 B, 18
+ *   /products/qihome-air     24221 B, 18
+ *   /pages/studien          105308 B, 59   (aus der Kopfnavigation verlinkt!)
+ *   /collections/all         35067 B, 44   (aus dem leeren Warenkorb verlinkt!)
+ * Auf einem Kakao-Shop hat das nichts zu suchen. Ein grep über den Quelltext
+ * findet davon NICHTS — keine dieser Seiten steht in einer Zeile Code.
+ *
+ * WARUM PRODUKTE DYNAMISCH, KOLLEKTIONEN UND SEITEN STATISCH:
+ * Das Kakao-SORTIMENT wächst im Shopify-Admin, ohne dass jemand Code anfasst
+ * (die Kollektion `zeremonie-kakao` führte am 2026-09-02 acht Produkte). Eine
+ * statische Handle-Liste würde beim nächsten neu angelegten Kakao-Produkt
+ * still 404 liefern — unsichtbar, und ausgerechnet auf dem Kaufweg. Deshalb
+ * entscheidet bei Produkten die KOLLEKTIONS-MITGLIEDSCHAFT, nicht eine Liste.
+ * Kollektionen und Seiten dagegen ändern sich nur durch bewusste
+ * Strukturarbeit; dort ist die Liste richtig und default-deny erwünscht.
+ *
+ * WARUM DIE MITGLIEDSCHAFT NICHTS KOSTET: sie braucht keine zweite
+ * Storefront-Query. Die Produkt-Query in `products.$handle` zieht die
+ * `collections`-Handles einfach mit; der Loader entscheidet daraus.
+ */
+
+/** Die Shopify-Kollektion, die das Kakao-Sortiment führt. */
+export const KAKAO_KOLLEKTION = 'zeremonie-kakao';
+
+/**
+ * Die ABSENDER-MARKE dieser Storefront — der Name, den der Besucher im
+ * Seitentitel und in der Kopfzeile liest.
+ *
+ * WARUM ALS KONSTANTE UND NICHT 13-MAL ALS LITERAL: gemessen 2026-09-02 stand
+ * `| Qi Blanco UG (haftungsbeschränkt)` wörtlich in 13 Route-Dateien. Auf einem
+ * Kakao-Shop ist das die fremde Absender-Marke; sie hier zu ändern und dort
+ * stehen zu lassen hätte den Widerspruch nur verteilt. Eine Marke, eine Stelle.
+ *
+ * ABGRENZUNG, die tragend ist: Das ist die ANZEIGE-Marke, NICHT die
+ * Rechtsperson. Betreiberin bleibt die Qi Blanco UG (haftungsbeschränkt) —
+ * sie steht unverändert in `app/lib/entity-schema.js` (legalName) und in den
+ * Rechtstexten. Diese Konstante fasst KEINE Rechtsfrage an; Impressum,
+ * Datenschutz und AGB bleiben unberührt und sind ausdrücklich nicht Gegenstand
+ * dieses Zauns.
+ */
+export const ABSENDER_MARKE = 'Crystal Cacao®';
+
+/**
+ * IST CRYSTAL CACAO EINE EIGENE MARKE ODER EINE PRODUKTLINIE VON QI BLANCO?
+ * =========================================================================
+ * Diese eine Konstante trägt die Antwort — und sie ist der RÜCKWEG dieses
+ * Baus. `false` setzen und ausrollen stellt den Zustand vom 2026-09-11 her;
+ * es ist ein Handgriff plus Deploy, keine Neuimplementierung.
+ *
+ * ANLASS, am ausgelieferten HTML gemessen (2026-09-11, Job
+ * 20260911-REPAIR-crystal-cacao-gibt-sich-als-qi-blanco-aus-…, Segment s03):
+ * crystal-cacao.com sagte einer Suchmaschine wörtlich „ich bin Qi Blanco" —
+ * `Organization.name = 'Qi Blanco'`, `sameAs` mit den sechs Qi-Blanco-Kanälen
+ * und der Wikidata-Kennung der Mutter, und auf beiden Kaufseiten
+ * `Product.brand.name = 'Qi Blanco'` für ein Produkt namens „Crystal Cacao®".
+ *
+ * WARUM DER VORGÄNGER-ZAUN HIER VERSCHOBEN WIRD (Chesterton's Fence — er war
+ * bewusst gesetzt, und er wird nicht blind entfernt): app/routes/_index.jsx
+ * trägt seit dem 2026-09-10 die Begründung, der Organization-Knoten bleibe
+ * unverändert, weil die Betreiberin von crystal-cacao.com die Qi Blanco UG
+ * IST. Dieser Satz ist zur Hälfte richtig und zur Hälfte falsch, und genau
+ * diese Trennlinie ist der ganze Bau:
+ *   RICHTIG für `legalName`, `address`, `vatID`, das Handelsregister und für
+ *     `offers.seller` — Betreiberin und Verkäuferin IST die Qi Blanco UG.
+ *     Daran ändert sich kein Zeichen, das Impressum bleibt unberührt.
+ *   FALSCH für `name`, `sameAs` und die Wikidata-Kennung. `sameAs` heißt in
+ *     schema.org „dieselbe Entität, anderswo". An einem Knoten mit der Kennung
+ *     `crystal-cacao.com/#organization` behauptet es, die Organisation DIESES
+ *     Ladens SEI das Instagram-Konto @qiblanco. Das ist keine Herkunftsangabe,
+ *     sondern eine Gleichsetzung.
+ * Der Vorgänger hat die Unterscheidung zwischen RECHTSPERSON und MARKE für den
+ * WebSite-Namen bereits gezogen — nur nicht bis zum Organization-Knoten
+ * durchgehalten.
+ *
+ * DIE ZUGEHÖRIGKEIT WIRD NICHT VERSTECKT, sondern in das dafür vorgesehene
+ * Feld gelegt: `parentOrganization`. schema.org wörtlich: „The larger
+ * organization that this organization is a subOrganization of, if any"
+ * (Domain und Range je Organization, Inverse `subOrganization`).
+ *
+ * ENTSCHEIDUNGSVORLAGE: claude-jobs/20260911-REPAIR-crystal-cacao-…/
+ * KONZEPT-marken-identitaet-crystal-cacao.md (Weg 1 empfohlen und gebaut;
+ * Weg 2 = diese Konstante auf `false`).
+ */
+export const MARKE_EIGENSTAENDIG = true;
+
+/**
+ * Die Mutter — als KNOTEN-ZEIGER, nicht als Kopie ihrer Stammdaten.
+ *
+ * `@id` ist am 2026-09-11 an https://qiblanco.com/ nachgemessen und kein
+ * geratenes Fragment: die Startseite der Mutter liefert dort einen
+ * Organization-Knoten mit genau dieser Kennung. Ein `parentOrganization`, das
+ * auf einen nicht existierenden Knoten zeigt, wäre schlechter als keines.
+ *
+ * WARUM NUR EIN ZEIGER UND KEINE ZWEITE ADRESSE/USt-IdNr.: die Stammdaten der
+ * Mutter stehen an ihrem eigenen Knoten. Sie hier zu wiederholen hieße, zwei
+ * Quellen für dieselbe Angabe zu führen — genau der Fehler, gegen den der Kopf
+ * von app/lib/entity-schema.js argumentiert (zwei widersprechende NAP-Angaben
+ * sind für die Entitätsauflösung schlechter als gar keine).
+ *
+ * WARUM DAS LITERAL UND KEIN IMPORT: diese Datei ist importfrei und soll es
+ * bleiben (die im Dateikopf zugesagte Node-Testbarkeit hängt daran).
+ * qiblanco.com ist außerdem eine FREMDE Domain — sie steht in keiner Konstante
+ * dieses Ladens, und CANONICAL_ORIGIN ist hier `https://crystal-cacao.com`.
+ */
+export const MUTTER_ORGANISATION = Object.freeze({
+  name: 'Qi Blanco',
+  origin: 'https://qiblanco.com',
+  knotenId: 'https://qiblanco.com/#organization',
+});
+
+/**
+ * Das Bildzeichen dieser Marke, als WURZEL-RELATIVER Pfad.
+ *
+ * GEMESSENE LAGE, nicht angenommen: dieser Laden hat KEIN Wortmarken-Bild —
+ * Header.jsx rendert die Marke als Text. Das einzige eigene Bildzeichen mit
+ * STABILER Adresse ist public/apple-touch-icon.png (180×180, die aus der
+ * Verpackung abgeleitete Kakaobohne, angelegt 2026-09-08); live am
+ * 2026-09-11 geprüft: HTTP 200, image/png, 7.055 B.
+ *
+ * app/assets/favicon.svg scheidet aus, obwohl sie dasselbe Zeichen trägt: sie
+ * bekommt beim Bau einen Inhalts-Hash in den Namen und ist damit gerade keine
+ * stabile Logo-Adresse.
+ *
+ * EHRLICHE GRENZE: das ist ein ICON, keine Wortmarke. Es ist trotzdem richtig,
+ * es zu setzen statt das Feld wegzulassen — der Kopf von entity-schema.js
+ * begründet die Gegenrichtung („ein leeres logo-Feld ist ein kaputter Knoten,
+ * kein neutraler"), und ein vorhandenes Zeichen ist besser als keines. Kommt
+ * eine echte Wortmarke, wird hier EIN Pfad getauscht.
+ */
+export const MARKEN_LOGO_PFAD = '/apple-touch-icon.png';
+
+/**
+ * DIE EINE @id DES GRÜNDERS AUF DIESEM LADEN (Befund H11, 13.10.2026).
+ *
+ * GEMESSEN am ausgelieferten JSON-LD: dieselbe Person stand mit zwei
+ * Kennungen da — `…/pages/ueber-uns#person` (aus `organizationSchema()` der
+ * Vorlage, FOUNDER_ID in entity-schema.js, K1) auf Startseite, Übersicht und
+ * Erfahrungsseite, `…/#christian-bauer` auf /pages/warum-crystal-cacao. Für
+ * eine Maschine sind das zwei Menschen. Und /pages/ueber-uns gibt es auf
+ * diesem Laden nicht (404): die Kennung zeigte auf eine Seite, die keine ist.
+ *
+ * Die Vorlagen-Kennung ist auf qiblanco.com richtig (dort steht die
+ * Über-uns-Seite). Hier gilt die Kennung, die /pages/warum-crystal-cacao
+ * seit dem 2026-09-11 führt; sie löst auf die Startseite auf (200).
+ * `markenOrganisation()` biegt den `founder` darauf um, die Seite liest
+ * dieselbe Funktion — eine Stelle für die Kennung.
+ *
+ * @param {string} origin `origin` dieses Ladens
+ * @returns {string}
+ */
+export function gruenderId(origin) {
+  return `${origin}/#christian-bauer`;
+}
+
+/**
+ * Macht aus dem Organization-Knoten der Vorlage den Knoten DIESER Marke.
+ *
+ * WARUM HIER UND NICHT IN app/lib/entity-schema.js: die Datei ist im
+ * Vendoring-Manifest (shared/UPSTREAM.json) als K1 geführt, also byte-gleich
+ * zur Qi-Blanco-Vorlage, und bleibt es. Wer sie editiert, bricht den
+ * Vorlagen-Nachzug. Der Anpassungspunkt ist deshalb der AUFRUFER — exakt der
+ * Weg, den der Vorgängerjob am 2026-09-10 für den WebSite-Namen gegangen ist.
+ *
+ * WAS SICH ÄNDERT (und nur das):
+ *   name                → die Marke dieses Ladens
+ *   sameAs              → FÄLLT WEG, nicht `[]`. Es gibt heute keine eigenen
+ *                         Crystal-Kanäle; ein leeres Array ist für eine
+ *                         Suchmaschine kein „wir haben keine", sondern ein
+ *                         kaputtes Feld (gleiche Regel wie beim logo, siehe
+ *                         entity-schema.js). Hier wird nichts erfunden.
+ *   identifier          → die Wikidata-Kennung der Mutter fällt, das
+ *                         Handelsregister bleibt. Begründung unten.
+ *   logo                → das eigene Bildzeichen
+ *   parentOrganization  → Zeiger auf die Mutter
+ * WAS BLEIBT: legalName, address, vatID, email, url, @id — und damit alles,
+ * was die Rechtsperson benennt.
+ *
+ * WARUM DIE WIKIDATA-KENNUNG MITGEHT, obwohl der Auftrag „identifier bleibt"
+ * sagt: `identifier` trägt live ZWEI Einträge. Der Handelsregister-Eintrag
+ * benennt die Rechtsperson und bleibt. Der zweite ist
+ * `{propertyID:'wikidata', value:'Q141070656'}` — die Entitätskennung von
+ * Qi Blanco, dieselbe Aussage wie der Wikidata-Eintrag in `sameAs`, nur in
+ * maschinenlesbarer Form; entity-schema.js sagt das selbst („die QID
+ * zusätzlich als maschinenlesbare Kennung"). `sameAs` zu räumen und die QID
+ * stehen zu lassen wäre die halbe Reparatur, die genau wie eine ganze
+ * aussieht. Gefiltert wird über die EIGENSCHAFT `propertyID = wikidata`, nicht
+ * über das QID-Literal: eine zweite Kennung der Mutter fiele damit von selbst
+ * mit, ohne dass jemand diese Datei anfasst.
+ *
+ * @param {object|null|undefined} knoten Organization-Knoten der Vorlage
+ * @param {{origin?: string}} [opt] `origin` dieses Ladens (für die Logo-URL)
+ * @returns {object|null|undefined} der Knoten dieser Marke
+ */
+export function markenOrganisation(knoten, {origin} = {}) {
+  if (!MARKE_EIGENSTAENDIG || !knoten || typeof knoten !== 'object') {
+    return knoten;
+  }
+  // sameAs wird ENTFERNT, nicht geleert — siehe oben.
+  const {sameAs: _fremdeKanaele, identifier, ...rest} = knoten;
+  const eigen = {
+    ...rest,
+    name: ABSENDER_MARKE,
+  };
+  const eigeneKennungen = (
+    Array.isArray(identifier) ? identifier : identifier ? [identifier] : []
+  ).filter(
+    (k) =>
+      !(
+        k &&
+        typeof k === 'object' &&
+        String(k.propertyID ?? '').toLowerCase() === 'wikidata'
+      ),
+  );
+  if (eigeneKennungen.length) eigen.identifier = eigeneKennungen;
+  else delete eigen.identifier;
+  if (origin) {
+    eigen.logo = {'@type': 'ImageObject', url: `${origin}${MARKEN_LOGO_PFAD}`};
+    // Eine Person, eine Kennung (gruenderId oben, Befund H11).
+    if (eigen.founder && typeof eigen.founder === 'object') {
+      eigen.founder = {...eigen.founder, '@id': gruenderId(origin)};
+    }
+  }
+  eigen.parentOrganization = {
+    '@type': 'Organization',
+    '@id': MUTTER_ORGANISATION.knotenId,
+    name: MUTTER_ORGANISATION.name,
+    url: `${MUTTER_ORGANISATION.origin}/`,
+  };
+  return eigen;
+}
+
+/**
+ * Setzt die Marke DIESES Ladens in einen Product-Knoten.
+ *
+ * WARUM NICHT IN app/lib/produkt-schema.js: dieselbe Randbedingung wie oben —
+ * die Datei ist K1 und bleibt byte-gleich zur Vorlage. Sie setzt
+ * `brand.name = ORGANISATION.name`, also „Qi Blanco"; in der Qi-Blanco-Welt
+ * ist das richtig, auf einem Kakao-Laden ist es die fremde Marke.
+ *
+ * `offers.seller` WIRD AUSDRÜCKLICH NICHT ANGEFASST. Dass Marke und
+ * Verkäuferin auseinandergehen, ist der Punkt und kein Versehen: die Marke des
+ * Produkts ist Crystal Cacao®, verkauft wird es von der Qi Blanco UG
+ * (haftungsbeschränkt).
+ *
+ * DIE KNOTEN-KENNUNG WIRD MIT DEM NAMEN ENTFERNT (Nachzug 2026-09-11, Job
+ * 20260911-crystal-cacao-upstream-drift-…): die Vorlage klammert seit
+ * d1fcac3 den Marken-Knoten per `'@id': ORG_ID` an den Organization-Knoten
+ * derselben Seite — dort ist das richtig, weil Marke und Organisation
+ * DIESELBE Sache sind („Qi Blanco"). Hier sind sie es nicht. Bliebe die
+ * Kennung stehen, sagte die Seite einer Maschine: der Knoten
+ * `https://crystal-cacao.com/#organization` heisst „Crystal Cacao®" — und
+ * genau dieser Knoten traegt zwei Zeilen weiter oben `legalName: Qi Blanco UG
+ * (haftungsbeschränkt)` und die Registerangaben. Zwei Namen fuer eine
+ * Kennung ist schlechter als keine Kennung: ein Widerspruch im
+ * Wissensgraphen, den kein Mensch auf der Seite sieht.
+ * Ohne `@id` bleibt es ein anonymer Brand-Knoten — genau das, was er vor der
+ * Vorlagen-Aenderung war, und was er hier sachlich IST.
+ *
+ * @param {object|null|undefined} knoten Product-Knoten
+ * @returns {object|null|undefined}
+ */
+export function markenProdukt(knoten) {
+  if (!MARKE_EIGENSTAENDIG || !knoten || typeof knoten !== 'object') {
+    return knoten;
+  }
+  if (!knoten.brand) return knoten;
+  const marke = (m) => {
+    if (!m || typeof m !== 'object') return m;
+    const eigen = {...m, name: ABSENDER_MARKE};
+    delete eigen['@id'];
+    return eigen;
+  };
+  return {
+    ...knoten,
+    brand: Array.isArray(knoten.brand)
+      ? knoten.brand.map(marke)
+      : marke(knoten.brand),
+  };
+}
+
+/**
+ * Kollektions-Handles, die diese Storefront ausliefern darf.
+ * Bewusst kurz: alles andere ist Fremdsortiment (gemessen standen unter
+ * /collections die vier Qi-Blanco-Kollektionen frontpage, products,
+ * digitale-kurse und digital-goods-vat-tax).
+ */
+export const KAKAO_KOLLEKTIONEN = Object.freeze([KAKAO_KOLLEKTION]);
+
+/**
+ * CMS-Seiten-Handles, die diese Storefront ausliefern darf.
+ * `studien` steht hier bewusst NICHT: das ist die Qi-Blanco-Studienseite
+ * (105 KB, 59 Fremdnennungen), nicht Kakao.
+ */
+export const KAKAO_SEITEN = Object.freeze(['crystal-cacao', 'kristall-kakao']);
+
+/**
+ * SEITEN, DIE DIESE STOREFRONT SELBST ALS CODE FUEHRT — und die deshalb in
+ * die eigene Sitemap gehoeren.
+ *
+ * WARUM ES DIESE ZWEITE LISTE BRAUCHT UND SIE KEINE DUBLETTE VON KAKAO_SEITEN
+ * IST (gemessen 2026-09-11 an der eigenen Live-Sitemap):
+ * KAKAO_SEITEN ist ein FILTER auf einen fremden Bestand — der Sitemap-Zaun
+ * fragt die Shopify-`pages`-Query ab und laesst durch, was hier steht. Eine
+ * Seite, die es im Shopify-Admin GAR NICHT gibt, weil sie eine Route ist,
+ * kann dieser Filter baulich nie durchlassen: sie steht in keiner Antwort,
+ * die er filtert. Sie in KAKAO_SEITEN zu schreiben waere wirkungslos und
+ * saehe trotzdem nach Erledigung aus.
+ *
+ * DER ZUSTAND OHNE DIESE LISTE STAND AM 2026-09-11 LIVE DA: /sitemap/seiten/
+ * 1.xml fuehrte 9 Adressen — Startseite, eine Kollektion, sieben Produkte —
+ * und NULL Seiten, obwohl /pages/impressum und /pages/datenschutz seit dem
+ * 2026-09-10 mit HTTP 200 antworten. Beide sind Code-Routen. Keine Stelle
+ * haette das je gemeldet.
+ *
+ * WARUM IMPRESSUM UND DATENSCHUTZ TROTZDEM NICHT HIER STEHEN: eine Sitemap
+ * meldet an, was gefunden werden SOLL. Pflichtseiten sind ueber das Fussmenue
+ * von jeder Seite aus erreichbar und sollen keine Suchtreffer werden; sie
+ * fehlen hier also mit Absicht und nicht aus Versehen. Wer sie aufnehmen
+ * will, schreibt ihren Handle hierher — der Weg ist eine Zeile, die
+ * Entscheidung ist eine eigene.
+ *
+ * FORM: Handle ohne `/pages/`-Praefix, genau wie KAKAO_SEITEN. `lastmod`
+ * traegt keinen Wert — eine Code-Route hat kein Aenderungsdatum im Bestand,
+ * und ein erfundenes waere schlechter als keines.
+ */
+export const KAKAO_CODE_SEITEN = Object.freeze([
+  'warum-crystal-cacao',
+  // 2026-10-07 (Hypothese GS-098): die Erfahrungsseite. Ohne diese Zeile
+  // waere sie live und bei keiner Suchmaschine angemeldet -- ihr ganzer
+  // Zweck ist die Suche "Crystal Cacao Erfahrungen".
+  'erfahrungen',
+]);
+
+/**
+ * SEITEN, DIE DAUERHAFT WOANDERS HIN ZEIGEN — Handle -> Ziel.
+ *
+ * ANLASS 2026-09-08: „Unser Kakao" (/pages/crystal-cacao) ist die Startseite
+ * geworden. Damit gibt es denselben Inhalt an zwei Adressen, und genau das
+ * hat Christian „redundant" genannt. Die alte Adresse leitet deshalb
+ * dauerhaft (301) auf die neue.
+ *
+ * WARUM DIE LISTE HIER WOHNT UND NICHT IN DER ROUTE: sie hat ZWEI Leser,
+ * und die dürfen nicht auseinanderlaufen —
+ *   1. app/routes/pages.crystal-cacao.jsx schickt die Weiterleitung,
+ *   2. app/lib/sitemap-zaun.js lässt die Adresse aus der Sitemap weg.
+ * Stünde das Ziel in der Route und die Ausnahme in der Sitemap, führten zwei
+ * Stellen denselben Zustand — und die falsche gewinnt still: die Sitemap
+ * meldete eine Adresse an, die nur noch weiterleitet.
+ */
+export const UMGELEITETE_SEITEN = Object.freeze({
+  'crystal-cacao': '/',
+  // ZWEITE ADRESSE DERSELBEN SEITE, gefunden bei der Redundanz-Suche am
+  // 2026-09-08 („Zwei Seiten mit derselben Aufgabe sind selten die einzigen
+  // zwei"). /pages/kristall-kakao antwortete mit 301 auf
+  // /pages/crystal-cacao — das ist eine Weiterleitung im Shopify-Admin, die
+  // seit dem Umbau auf eine ZWEITE Weiterleitung zeigt. Gemessen:
+  //   /pages/kristall-kakao -> 301 -> /pages/crystal-cacao -> 301 -> /
+  // Eine Kette aus zwei Sprüngen ist nicht kaputt, aber sie kostet den
+  // Besucher einen Umweg und verteilt das Ranking-Signal auf drei Adressen.
+  // Hier steht deshalb das ENDZIEL, nicht der nächste Schritt.
+  'kristall-kakao': '/',
+});
+
+/**
+ * Blog-Handles, die diese Storefront ausliefern darf. HEUTE BEWUSST LEER.
+ *
+ * GEMESSEN 2026-09-02 (Job …-prio6-s05, am gerenderten HTML des dev-Servers):
+ * `/blogs` listete die drei Shopify-Blogs des Fremdshops — und alle drei sind
+ * für einen Kakao-Laden falsch, jeder auf seine Weise:
+ *   /blogs/news     HTTP 200, NULL Artikel — leere Hülle
+ *   /blogs/e-smog   HTTP 200, NULL Artikel — leere Hülle, dazu ein Qi-Blanco-Thema
+ *   /blogs/wissen   HTTP 200, VIER Artikel, alle ohne Kakao-Bezug
+ *                   ("Strukturiertes Wasser", "Nervensystem regulieren",
+ *                    "Schlafqualität und Hydration", "Schlaf vermessen")
+ *
+ * WARUM SPERREN UND NICHT LEER STEHEN LASSEN — zwei Gründe, beide gemessen:
+ * (1) HTTP 200 auf einer leeren Seite ist der teuerste Fall: die Kette sieht an
+ *     jedem Glied gesund aus, und der Kunde findet nichts. Eine 404 sagt die
+ *     Wahrheit.
+ * (2) Die vier Artikel stehen wortgleich live auf qiblanco.com. Auf einer
+ *     ZWEITEN Domain ist das Duplicate Content — und die schwächere Domain
+ *     verliert, hier also crystal-cacao.com.
+ *
+ * WARUM NICHT NUR DIE ZWEI LEEREN: /blogs/wissen zu behalten hieße, genau den
+ * Fremdinhalt zu behalten, den dieser Zaun sperrt. Die Achse ist die
+ * Zugehörigkeit, nicht die Füllmenge.
+ *
+ * DER RÜCKWEG IST EINE ZEILE: sobald Crystal Cacao einen eigenen Blog hat,
+ * kommt sein Handle hier herein — Route, Sitemap und Suche folgen von selbst.
+ */
+export const KAKAO_BLOGS = Object.freeze([]);
+
+/**
+ * PRODUKTE, DIE DAUERHAFT WOANDERS HIN ZEIGEN — Handle -> Ziel.
+ *
+ * ANLASS 2026-09-09: `/products/crystal-cacao-adfiefiale` ist eine DUBLETTE der
+ * Create-Kaufseite unter einem Müll-Handle, `/products/test-page-…-spater-
+ * wieder-loschen` ein Testartefakt, das seinen Zweck im eigenen Titel nennt.
+ * Beide standen in der eigenen Sitemap und wurden damit aktiv bei
+ * Suchmaschinen angemeldet.
+ *
+ * WARUM HIER EINE LISTE STEHT UND DAS TROTZDEM KEIN LITERAL-ZAUN IST — die
+ * Unterscheidung trägt den ganzen Bau, deshalb ausführlich:
+ * Der ZAUN (wer fliegt aus der Sitemap?) ist eine EIGENSCHAFT und steht in
+ * `istTestartefakt()` / `titelSchluessel()` — er fängt den NÄCHSTEN
+ * Müll-Handle ohne Code-Änderung. Diese Liste hier ist kein Zaun, sondern ein
+ * RÜCKWEG: sie beantwortet die Frage „wohin schicke ich einen Besucher, der
+ * eine ALTE Adresse in der Hand hat?". Die kann keine Eigenschaft beantworten
+ * — sie ist historisch. Ein neu auftauchendes Testartefakt wird vom Zaun
+ * stumm aus der Sitemap gehalten und antwortet 404; erst wenn jemand eine
+ * bereits verlinkte Adresse stilllegt, kommt sie hier herein.
+ *
+ * ZWEI LESER, WIE BEI UMGELEITETE_SEITEN — sie dürfen nicht auseinanderlaufen:
+ *   1. app/routes/products.$handle.jsx schickt die Weiterleitung (301),
+ *   2. app/lib/sitemap-zaun.js lässt die Adresse aus der Sitemap weg.
+ * Stünde das Ziel in der Route und die Ausnahme in der Sitemap, führten zwei
+ * Stellen denselben Zustand — und die falsche gewinnt still.
+ *
+ * WARUM WEITERLEITUNG UND NICHT 404: beide Adressen antworten seit Monaten mit
+ * HTTP 200 (gemessen 2026-09-09 an beiden Domains). Wer 200 ausliefert, muss
+ * damit rechnen, dass jemand darauf verlinkt hat. Das Ziel ist in beiden Fällen
+ * die Create-Kaufseite: die Dublette IST sie, und das Testartefakt trägt
+ * „Crystal Cacao® Create" im Titel.
+ */
+export const UMGELEITETE_PRODUKTE = Object.freeze({
+  'crystal-cacao-adfiefiale': '/products/crystal-cacao-create',
+  'test-page-crystal-cacao\u00ae-create-spater-wieder-loschen':
+    '/products/crystal-cacao-create',
+});
+
+/**
+ * MERKMALE, AN DENEN EIN TESTARTEFAKT SICH SELBST ZU ERKENNEN GIBT.
+ *
+ * Gemessen am echten Fall: der Titel lautet „Test Page - Crystal Cacao® Create
+ * später wieder löschen" — die Seite sagt ihren eigenen Zweck an. Das ist die
+ * EIGENSCHAFT, auf die sich ein Zaun stützen darf; der Handle ist es nicht
+ * (`crystal-cacao-adfiefiale` trägt kein Merkmal und wäre so nie zu fassen —
+ * den holt die Dubletten-Prüfung).
+ *
+ * BEWUSST AM TITEL UND NICHT AM HANDLE: ein Handle ist eine technische
+ * Adresse und kann alles heißen; der Titel ist das, was ein Mensch eintippt,
+ * und ein Mensch, der eine Wegwerfseite anlegt, schreibt es hin. Beide realen
+ * Fälle dieses Ladens bestätigen das.
+ *
+ * BEWUSST ENG GEHALTEN — die Gegenrichtung ist der teurere Fehler: ein zu
+ * weites Muster verschluckt eine echte Kaufadresse, und das fällt erst auf,
+ * wenn der Umsatz fehlt. Deshalb NICHT `/test/` als bloßer Teilstring
+ * („Testsieger", „Geschmackstest" wären Kundenware), sondern Wortgrenzen und
+ * die Lösch-Absicht.
+ */
+const TEST_MERKMALE = Object.freeze([
+  /\btest[- ]?(page|seite|produkt|product)\b/i,
+  /\b(sp(ä|ae)ter\s+)?wieder\s+l(ö|oe)schen\b/i,
+  /\bnicht\s+l(ö|oe)schen\b/i,
+  /\b(do\s+not|dont|don't)\s+(use|delete)\b/i,
+  /\bdummy\b/i,
+  /\bplatzhalter\b/i,
+  /\[?\bTESTE?\]\B/,
+]);
+
+/**
+ * Trägt dieser Titel ein Test-/Lösch-Merkmal?
+ * @param {string|undefined|null} titel
+ * @returns {boolean}
+ */
+export function istTestartefakt(titel) {
+  if (typeof titel !== 'string' || !titel.trim()) return false;
+  return TEST_MERKMALE.some((rx) => rx.test(titel));
+}
+
+/**
+ * Der VERGLEICHSSCHLÜSSEL eines Produkttitels — für die Dubletten-Erkennung.
+ *
+ * WARUM NORMALISIERT WERDEN MUSS, am echten Fall gemessen: die Kaufseite heißt
+ * „Crystal Cacao® Create – Bio" (Halbgeviertstrich U+2013), die Dublette
+ * „Crystal Cacao® Create - Bio" (Bindestrich U+002D). Ein Byte-Vergleich hält
+ * die beiden für verschieden und findet die Dublette NIE — genau der Fall, der
+ * diesen Bau ausgelöst hat. Normalisiert wird deshalb alles, was ein Mensch
+ * beim Abtippen variiert: Groß-/Kleinschreibung, Strich-Varianten,
+ * Markenzeichen, Mehrfach-Leerraum.
+ *
+ * NICHT normalisiert werden Wörter: „Create" und „Awake" bleiben verschieden,
+ * „2x CREATE" bleibt von „3x CREATE" verschieden. Der Schlüssel darf nur
+ * Schreibweisen zusammenziehen, nie Bedeutungen — sonst verschluckt er die
+ * Mengenrabatt-Staffeln, und die sind ausdrücklich Kundenware.
+ *
+ * @param {string|undefined|null} titel
+ * @returns {string} '' wenn kein brauchbarer Titel vorliegt
+ */
+export function titelSchluessel(titel) {
+  if (typeof titel !== 'string') return '';
+  return titel
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[\u00ae\u2122\u00a9]/g, '')
+    .replace(/[\u2010-\u2015\u2212]/g, '-')
+    .replace(/[^a-z0-9\u00e4\u00f6\u00fc\u00df]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+/**
+ * Gehört dieses Produkt zum Kakao-Sortiment?
+ * Entscheidet über die Kollektions-Mitgliedschaft, damit ein im Admin neu
+ * angelegtes Kakao-Produkt OHNE Code-Änderung sofort erreichbar ist.
+ *
+ * @param {string[]|undefined|null} kollektionsHandles Handles der Kollektionen,
+ *   in denen das Produkt liegt (aus der ohnehin laufenden Produkt-Query).
+ * @returns {boolean}
+ */
+export function istKakaoProdukt(kollektionsHandles) {
+  if (!Array.isArray(kollektionsHandles)) return false;
+  return kollektionsHandles.some((h) => KAKAO_KOLLEKTIONEN.includes(h));
+}
+
+/** Darf diese Kollektion ausgeliefert werden? @param {string} handle */
+export function istKakaoKollektion(handle) {
+  return Boolean(handle) && KAKAO_KOLLEKTIONEN.includes(handle);
+}
+
+/** Darf diese CMS-Seite ausgeliefert werden? @param {string} handle */
+export function istKakaoSeite(handle) {
+  return Boolean(handle) && KAKAO_SEITEN.includes(handle);
+}
+
+/** Darf dieser Blog ausgeliefert werden? @param {string} handle */
+export function istKakaoBlog(handle) {
+  return Boolean(handle) && KAKAO_BLOGS.includes(handle);
+}
+
+/**
+ * DIE NAVIGATION DIESER STOREFRONT.
+ *
+ * WARUM SIE HIER STEHT UND NICHT AUS SHOPIFY KOMMT (gemessen 2026-09-02):
+ * Kopf- und Fusszeile zogen die Shopify-Menüs `main-menu` und `footer` des
+ * Shops qi-blanco.myshopify.com. Die führen das ganze Fremdsortiment — im
+ * ausgelieferten HTML JEDER Seite standen dadurch die Menüeinträge zu
+ * QiOne®, QiBracelet®, QiHome® Air und der Qi-Blanco-Studienseite, auch auf
+ * /cart und /policies. Sichtbar gerendert wurde davon nur die oberste Ebene
+ * ("Studien" verlinkte /pages/studien), die Kinder lagen im Hydratations-
+ * Datensatz — also EINE Komponentenänderung von der Sichtbarkeit entfernt.
+ *
+ * Diese Liste ist bewusst STATISCH: eine Navigation ändert sich nur durch
+ * bewusste Strukturarbeit, nicht durch das Anlegen eines Produkts. Sobald im
+ * Shopify-Admin ein eigenes Kakao-Menü existiert, kann sie durch dessen
+ * Handle ersetzt werden — bis dahin ist sie die ehrlichere Lösung als ein
+ * Fremdmenü, das zufällig gerade harmlos aussieht.
+ *
+ * Jedes Ziel hier ist am 2026-09-02 mit HTTP 200 gemessen worden.
+ */
+export const KAKAO_MENUE = Object.freeze({
+  id: 'kakao-menue',
+  items: Object.freeze([
+    // EIN EINTRAG STATT ZWEI — 2026-09-08. Bis dahin standen hier „Start"
+    // (auf `/`) und „Unser Kakao" (auf /pages/crystal-cacao) nebeneinander.
+    // Seit `/` genau diese Seite rendert, zeigten beide auf denselben
+    // Inhalt: zwei Menüpunkte, ein Ziel. Christian nennt genau das
+    // „redundant". Der Name bleibt seiner — „Unser Kakao" ist das Wort, mit
+    // dem er die Seite meint, und es sagt einem Besucher mehr als „Start".
+    {id: 'kakao-ueber', title: 'Unser Kakao', url: '/', items: []},
+    {
+      id: 'kakao-awake',
+      title: 'AWAKE',
+      url: '/products/crystal-cacao-awake',
+      items: [],
+    },
+    {
+      id: 'kakao-create',
+      title: 'CREATE',
+      url: '/products/crystal-cacao-create',
+      items: [],
+    },
+    {
+      id: 'kakao-alle',
+      title: 'Alle Sorten',
+      url: `/collections/${KAKAO_KOLLEKTION}`,
+      items: [],
+    },
+  ]),
+});
+
+/**
+ * DEUTSCHE ANZEIGE-TITEL DER RECHTSTEXTE — und was das ausdrücklich NICHT ist.
+ *
+ * DER BEFUND (gemessen 2026-09-02, Job …-prio6-s05, am gerenderten HTML):
+ * Die Rechtstexte kommen als Shopify-Shop-Policies herein und tragen dort
+ * ENGLISCHE Titel — "Privacy Policy", "Shipping Policy", "Terms of Service",
+ * "Refund Policy". Ihr INHALT ist durchgehend deutsch und trägt seine eigene
+ * deutsche Überschrift ("Datenschutzerklärung", "Allgemeine
+ * Geschäftsbedingungen", "§ 7 Widerrufsbelehrung", "Bezahlmethoden"). Der
+ * englische Titel ist also allein eine Anzeige-Lücke, kein inhaltlicher Zustand.
+ *
+ * DAS HIER FASST KEINE RECHTSFRAGE AN. Geändert wird ausschliesslich die
+ * BESCHRIFTUNG des Links und der Seitenüberschrift; kein Zeichen des
+ * Rechtstextes wird berührt, keine Pflichtseite kommt hinzu oder fällt weg.
+ * Welche Pflichtseiten es geben muss und was darin steht, bleibt Christians
+ * Frage — unverändert.
+ *
+ * DIE WÖRTER SIND NICHT ERFUNDEN: sie stehen bereits im Shopify-Fussmenü des
+ * Schwester-Shops (Header.jsx/Footer.jsx FALLBACK_*_MENU: "Datenschutz",
+ * "Widerrufsbelehrung", "Versand", "AGB"). Übernommen, nicht ausgedacht.
+ *
+ * FAIL-SOFT: ein Handle ohne Eintrag behält seinen Shopify-Titel. Legt jemand
+ * im Admin eine fünfte Policy an, erscheint sie mit ihrem eigenen Namen statt
+ * zu verschwinden.
+ */
+export const RECHTSTEXT_TITEL = Object.freeze({
+  'privacy-policy': 'Datenschutz',
+  'shipping-policy': 'Versand & Zahlung',
+  'terms-of-service': 'AGB',
+  'refund-policy': 'Widerruf',
+  'subscription-policy': 'Abo-Bedingungen',
+});
+
+/**
+ * Deutscher Anzeige-Titel eines Rechtstextes, sonst der Shopify-Titel.
+ * @param {string} handle
+ * @param {string} [shopifyTitel]
+ * @returns {string}
+ */
+export function rechtstextTitel(handle, shopifyTitel) {
+  return RECHTSTEXT_TITEL[handle] ?? shopifyTitel ?? handle;
+}
+
+/**
+ * Fusszeile: bewusst nur die Rechtstexte.
+ * Sie werden hier NICHT inhaltlich angefasst — welche Pflichtseiten es geben
+ * muss und was darin steht, ist eine Rechtsfrage und gehört Christian, nicht
+ * diesem Zaun.
+ *
+ * 2026-09-02 (s05): statt EINES Sammel-Links "Rechtliches" stehen die vier
+ * Pflichtseiten jetzt einzeln und auf Deutsch in der Fusszeile. Grund ist der
+ * Kunde, nicht die Ästhetik: wer den Widerruf sucht, brauchte vorher zwei
+ * Klicks und landete dazwischen auf einer Liste mit englischen Titeln. Die
+ * Übersicht /policies bleibt erreichbar und unverändert.
+ */
+export const KAKAO_FUSSMENUE = Object.freeze({
+  id: 'kakao-fussmenue',
+  items: Object.freeze([
+    {
+      id: 'kakao-absicht',
+      title: 'Warum es Crystal Cacao gibt',
+      // KEIN RECHTSTEXT ZWISCHEN RECHTSTEXTEN, und genau deshalb zuerst
+      // (2026-09-11): dieses Menue ist die EINZIGE Flaeche, die auf JEDER
+      // Seite dieses Ladens steht. Die Absichtserklaerung braucht das, weil
+      // eine Absicht, auf die nichts zeigt, nicht gefunden wird. Die drei
+      // gezielten Verweise (Startseite, beide Kaufseiten) stehen im INHALT
+      // und werden dort einzeln gemessen -- dieser hier ist der Boden, nicht
+      // der Nachweis.
+      url: '/pages/warum-crystal-cacao',
+      items: [],
+    },
+    {
+      id: 'kakao-erfahrungen',
+      title: 'Crystal Cacao Erfahrungen',
+      // 2026-10-07 (Hypothese GS-098, Job km-entw-hebel-umsetzen-seo-top3-
+      // zwei-crystal-erfahrungen-de-gs-098-20261007): die zweite Inhaltsseite
+      // nach der Absicht, vor den Rechtstexten. Die Startseite verlinkt sie
+      // (noch) nicht -- die gehoert dem laufenden Grossjob 20261002-GROSSJOB-
+      // crystal-cacao-startseite-hochwertig. Dieses Menue ist deshalb heute der
+      // einzige Weg zu ihr, und probe_erfahrungen_am_kundenrand.py (Arm F)
+      // misst ihn auf JEDER Sitemap-Seite.
+      url: '/pages/erfahrungen',
+      items: [],
+    },
+    {
+      id: 'kakao-impressum',
+      title: 'Impressum',
+      // EIGENE ROUTE (2026-09-10, Job 20260910-crystal-cacao-hat-kein-
+      // impressum): dieser Laden hatte UEBERHAUPT KEIN Impressum --
+      // /pages/impressum antwortete mit HTTP 404, das Wort kam auf der
+      // Startseite 0x vor, und dieses Menue fuehrte vier Rechtstext-Links,
+      // von denen keiner ein Impressum war. Es gibt dafuer auch keinen
+      // Shopify-Rechtstext, auf den man ausweichen koennte: die
+      // Anbieterkennzeichnung ist kein `policies`-Handle. Erste Position wie
+      // im Fussbereich des Schwester-Ladens (Footer.jsx: Impressum ->
+      // Datenschutz -> AGB -> Widerruf).
+      url: '/pages/impressum',
+      items: [],
+    },
+    {
+      id: 'kakao-datenschutz',
+      title: RECHTSTEXT_TITEL['privacy-policy'],
+      // EIGENE ROUTE, NICHT DER SHOPIFY-RECHTSTEXT (2026-09-10): der
+      // Store-Rechtstext `privacy-policy` ist ein alter Generatortext, der
+      // „Jameda" nennt -- siehe Kopf von app/routes/pages.datenschutz.jsx.
+      // /policies/privacy-policy leitet seitdem mit 301 hierher; dieser Link
+      // spart den Umweg.
+      url: '/pages/datenschutz',
+      items: [],
+    },
+    {
+      id: 'kakao-agb',
+      title: RECHTSTEXT_TITEL['terms-of-service'],
+      url: '/policies/terms-of-service',
+      items: [],
+    },
+    {
+      id: 'kakao-widerruf',
+      title: RECHTSTEXT_TITEL['refund-policy'],
+      url: '/policies/refund-policy',
+      items: [],
+    },
+    {
+      id: 'kakao-versand',
+      title: RECHTSTEXT_TITEL['shipping-policy'],
+      url: '/policies/shipping-policy',
+      items: [],
+    },
+  ]),
+});
+
+/**
+ * Die eine Stelle, an der "gehört nicht hierher" zu einer Antwort wird.
+ * 404 und nicht 403: für den Besucher gibt es diese Seite auf dem Kakao-Shop
+ * schlicht nicht, und eine 404 ist die einzige Antwort, die Suchmaschinen
+ * nicht als Inhalt indexieren.
+ */
+export function fremdinhaltAbweisen() {
+  return new Response(null, {status: 404, statusText: 'Not Found'});
+}
+
+/**
+ * Kennzahlen der Kakao-Welt.
+ *
+ * BELEGLAGE, ehrlich (Christian: "Halte im RESULT fest, worauf die 4,9 und
+ * die 1.000 sich stützen"): Beide Werte sind eine REDAKTIONELLE ANGABE, keine
+ * gemessene Größe. Für Crystal Cacao werden am Produkt keine Bewertungen
+ * erhoben — es gibt also keine Quelle, aus der sich ein Sternewert rechnen
+ * ließe. Christian hat am 2026-08-24 von 5,0 auf 4,9 korrigiert, also nach
+ * unten in die vorsichtigere Richtung.
+ *
+ * DESHALB STEHEN DIESE ZAHLEN BEWUSST NICHT IM STRUKTURIERTEN DATENSATZ:
+ * app/lib/produkt-schema.js lässt `aggregateRating` ausdrücklich weg, weil
+ * Google verlangt, dass eine ausgezeichnete Bewertung aus echten Bewertungen
+ * stammt. Diese Zahl hier ist eine Anzeige auf der Seite und darf NICHT ins
+ * JSON-LD wandern.
+ */
+export const KAKAO_KENNZAHLEN = Object.freeze({
+  bewertung: '4,9',
+  bewertungSkala: '4,9/5,0',
+  nutzer: '1.000',
+});
+
+/**
+ * Kennzahlen der Qi-Blanco-Welt (Energieprodukte).
+ *
+ * Die BEWERTUNG steht hier bewusst NICHT: sie wird live geholt
+ * (app/components/reusables/ReviewCount.jsx zieht den echten Google-
+ * Händlerscore, Fallback 4,7). Sie ist damit die einzige der vier Zahlen,
+ * die auf einer Messung beruht — eine feste Zahl daneben wäre eine zweite
+ * Wahrheit über dieselbe Größe.
+ */
+export const QIBLANCO_KENNZAHLEN = Object.freeze({
+  nutzer: '14.000',
+});
+
+/**
+ * Gehört dieser Pfad zur Kakao-Welt?
+ * @param {string} pathname
+ * @returns {boolean}
+ */
+export function istKakaoPfad(pathname) {
+  if (!pathname) return false;
+  // Trailing Slash abschneiden, damit /pages/crystal-cacao/ nicht durchfällt.
+  const p = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  return KAKAO_PFADE.includes(p);
+}
+
+/**
+ * WELCHE SORTE ZEIGT DIESE SEITE? (Job …-prio6, Segment s03)
+ * ==========================================================
+ * Christian: „Awake und Create haben zwei unterschiedliche Farbgebungen im
+ * Namen … auswerten und dezent entsprechend nutzen."
+ *
+ * Die Farbe selbst steht in app/styles/kakao-seiten.css (gemessen an den
+ * Verpackungsbildern, dort mit Werten belegt). Hier steht nur, WELCHE Seite
+ * welche Sorte ist — dieselbe Trennung wie oben: die Zuordnung Pfad→Bedeutung
+ * wohnt in dieser Datei, nicht in einer Komponente.
+ *
+ * WARUM HIER UND NICHT IN DEN ROUTEN: die beiden Produktrouten
+ * products.crystal-cacao-awake.jsx und -create.jsx sind K1 (byte-gleich zur
+ * Vorlage, shared/UPSTREAM.json). Eine Sorten-Markierung dort wäre
+ * Vendoring-Drift und würde beim nächsten Nachzug kommentarlos überschrieben
+ * — die Sortenfarbe wäre still wieder weg. Der Weg über den Pfad kommt ohne
+ * eine einzige K1-Zeile aus.
+ *
+ * WARUM KEIN SUBSTRING-TEST: derselbe Grund wie bei KAKAO_PFADE oben. Die
+ * Übersichtsseite /pages/crystal-cacao trägt „crystal-cacao" im Pfad und ist
+ * bewusst KEINE Sorte — sie zeigt beide und bleibt deshalb neutral.
+ */
+export const SORTEN_PFADE = Object.freeze({
+  '/products/crystal-cacao-awake': 'awake',
+  '/products/crystal-cacao-create': 'create',
+});
+
+/**
+ * IST DIESES PRODUKT EINE SORTE? — abgeleitet aus SORTEN_PFADE, nicht daneben
+ * geschrieben. Wer eine dritte Sorte anlegt, traegt sie dort ohnehin ein
+ * (sonst bleibt sie farblos); eine zweite Liste waere die naechste Stelle, die
+ * auseinanderlaeuft.
+ *
+ * @param {string|undefined|null} handle Produkt-Handle
+ * @returns {boolean}
+ */
+export function istSorte(handle) {
+  if (!handle) return false;
+  return Object.prototype.hasOwnProperty.call(
+    SORTEN_PFADE,
+    `/products/${handle}`,
+  );
+}
+
+/**
+ * DIE AUSWAHL DER SORTENUEBERSICHT — und ihr Restbericht.
+ *
+ * Christian am 2026-09-09: „hier wird noch alles gelistet was nicht gelistet
+ * werden soll. wir haben nur 2 Sorten." Die Kollektion `zeremonie-kakao` ist
+ * und bleibt die SSoT des Sortiments (dort haengt der 7-%-Steuer-Override, und
+ * ein im Admin neu angelegtes Kakao-Produkt soll ohne Code-Aenderung
+ * erreichbar sein) — die UEBERSICHT ist aber eine Anzeige und nicht der
+ * Katalog. Sie zeigt die Sorten; Mengen derselben Sorte gehoeren auf die
+ * Kaufseite, wo die Staffel steht (und wo dieselbe Menge GUENSTIGER ist als
+ * ueber ein Buendel-Produkt — gemessen, siehe cart-display-pricing.js).
+ *
+ * WARUM DAS EIN EINSCHLUSS-SELEKTOR IST UND WAS DAS KOSTET: die Auswahl sagt,
+ * was sie NIMMT ('die Sorten'), nicht was sie weglaesst. Ihre ausgelassene
+ * Menge ist damit nur relativ zum Kandidatenkreis benennbar — ein statischer
+ * Zaun-Detektor kann sie baulich nicht pruefen. Der einzige bekannte Heilweg
+ * ist ein LAUFZEIT-RESTBERICHT im geprueften Modul selbst: diese Funktion
+ * zaehlt das Kandidaten-Universum auf und gibt jeden Ausgelassenen MIT GRUND
+ * zurueck. Bauform uebernommen von homepage-bauer/src/design_beleg.py
+ * `ausnahmen_bericht()`.
+ *
+ * KEIN Rueckweg-Schalter im Code: der Rueckweg ist die ENV-Variable
+ * UEBERSICHT_ZAUN=off, die der Aufrufer liest — ein Schalter, den nur diese
+ * Datei kennt, waere von aussen nicht bedienbar.
+ *
+ * @param {Array<{handle?: string, title?: string}>} produkte Kandidatenkreis
+ *   (die Mitglieder der Kollektion, wie sie die Storefront-API liefert)
+ * @returns {{gezeigt: Array<object>, ausgelassen: Array<{handle: string, titel: string, grund: string}>}}
+ */
+export function uebersichtAuswahl(produkte) {
+  const kandidaten = Array.isArray(produkte) ? produkte : [];
+  const gezeigt = [];
+  const ausgelassen = [];
+  const gesehen = new Map();
+  for (const p of kandidaten) {
+    const handle = p?.handle ?? '';
+    const titel = p?.title ?? '';
+    let grund = null;
+    if (istTestartefakt(titel)) {
+      grund = 'testartefakt';
+    } else if (
+      Object.prototype.hasOwnProperty.call(UMGELEITETE_PRODUKTE, handle)
+    ) {
+      // Eine Kachel, deren Adresse 301 auf eine andere Kaufseite antwortet,
+      // ist eine tote Kachel: der Kunde landet ohnehin woanders.
+      grund = 'umgeleitet';
+    } else if (!istSorte(handle)) {
+      grund = 'keine-sorte';
+    } else {
+      const schluessel = titelSchluessel(titel);
+      if (schluessel && gesehen.has(schluessel)) {
+        grund = `dublette-zu:${gesehen.get(schluessel)}`;
+      }
+    }
+    if (grund) {
+      ausgelassen.push({handle, titel, grund});
+    } else {
+      const schluessel = titelSchluessel(titel);
+      if (schluessel) gesehen.set(schluessel, handle);
+      gezeigt.push(p);
+    }
+  }
+  return {gezeigt, ausgelassen};
+}
+
+/**
+ * Sorte dieses Pfades — 'awake', 'create' oder null (keine Sortenseite).
+ * @param {string} pathname
+ * @returns {string|null}
+ */
+export function sorteZuPfad(pathname) {
+  if (!pathname) return null;
+  const p = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  return SORTEN_PFADE[p] ?? null;
+}

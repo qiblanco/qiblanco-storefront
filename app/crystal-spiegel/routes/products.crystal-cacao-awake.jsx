@@ -1,0 +1,521 @@
+// ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/routes/products.crystal-cacao-awake.jsx
+// NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
+import {useLoaderData} from '~/crystal-spiegel-rahmen/router';
+import {KAKAO_KENNZAHLEN} from '~/crystal-spiegel/lib/kakao-zone';
+import {
+  getSelectedProductOptions,
+  Analytics,
+  useOptimisticVariant,
+  getProductOptions,
+  getAdjacentAndFirstAvailableVariants,
+  useSelectedOptionInUrlParam,
+} from '@shopify/hydrogen';
+import {ProductImage} from '~/components/ProductImage';
+import {CacaoProductForm} from '~/crystal-spiegel/components/CacaoProductForm';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {CacaoPriceDisplay} from '~/crystal-spiegel/components/CacaoPriceDisplay';
+import {ladeStaffelKasse} from '~/lib/cacao-pricing';
+import {ProductImageList} from '~/components/ProductImageList';
+import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {useState} from 'react';
+import Awake from '~/crystal-spiegel/components/product-pages/Awake';
+import {
+  SortenAufmacher,
+  SortenAufmacherBestand,
+} from '~/crystal-spiegel/components/product-pages/SortenAufmacher';
+import {waehleAufmacherFassung} from '~/crystal-spiegel/lib/sortenaufmacher-fassung';
+import {waehleKaufblockFassung} from '~/crystal-spiegel/lib/kaufblock-fassung';
+import {Kaufleiste} from '~/crystal-spiegel/components/product-pages/Kaufleiste';
+
+import {produktMeta, MARKE} from '~/crystal-spiegel/lib/produkt-seo';
+import {StarRating} from '~/components/reusables/StarRating';
+import {IgTestimonialSlideshow} from '~/crystal-spiegel/components/reusables/IgTestimonialSlideshow';
+import igStyles from '~/crystal-spiegel/styles/ig-testimonials.css?url';
+import {igVideoDescriptor} from '~/crystal-spiegel/lib/ig-video-schema';
+import amazonstilStyles from '~/crystal-spiegel/styles/amazonstil.css?url';
+import amazonstilLadenStyles from '~/crystal-spiegel/styles/amazonstil-laden.css?url';
+import {Kundenfragen, Sortenvergleich} from '~/crystal-spiegel/components/reusables/AmazonStil';
+import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
+import {FAQ_CACAO} from '~/crystal-spiegel/data/product-faqs';
+
+/**
+ * IG-STIMMEN (2026-09-26, Job
+ * 20260926-crystal-kakao-zwei-vorlagen-features-ig-stimmen-und-kasse-im-browser):
+ * die Sektion der Vorlage (#376), hier mit der laden-eigenen Datenschicht
+ * app/data/ig-testimonials.js. Das Token-CSS sitzt auf `.qb-igt`, nicht auf
+ * :root, und wird deshalb nur auf den beiden Kakao-Kaufseiten geladen.
+ */
+export function links() {
+  return [
+    {rel: 'stylesheet', href: igStyles},
+    // Sortenvergleich + Kundenfragen (Amazon-Stil wie qiblanco.com, 30.09.2026).
+    // Beide Schalter aus (amazonstil-daten.js): kein Stylesheet, Seite wie vorher.
+    // amazonstil-laden.css: laden-eigene Bruecke (Tokens + Textknopf), direkt
+    // nach der byte-gleichen Vorlage, damit sie nur deren Luecken fuellt.
+    ...(sortenStilAn('crystal-cacao-awake')
+      ? [
+          {rel: 'stylesheet', href: amazonstilStyles},
+          {rel: 'stylesheet', href: amazonstilLadenStyles},
+        ]
+      : []),
+  ];
+}
+/** 
+ * @type {MetaFunction<typeof loader>}
+ */
+export const meta = ({data}) => {
+  const basis = produktMeta({
+    // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js
+    produkt: data?.product,
+    marktLand: data?.marktLand,
+    pfad: '/products/crystal-cacao-awake',
+    titel: `${data?.product?.title ?? ''} | ${MARKE}`,
+    bildUrl:
+      data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
+      data?.product?.images?.nodes?.[0]?.url,
+  });
+  // VideoObject je Stimme MIT Video (ig-video-schema.js, byte-gleich zur
+  // Vorlage). Kein Video in der Reihe: kein Knoten.
+  const videos = igVideoDescriptor({
+    produkt: 'Kakao',
+    pfad: '/products/crystal-cacao-awake',
+    produktTitel: data?.product?.title,
+  });
+  return videos ? [...basis, videos] : basis;
+};
+
+/**
+ * @param {LoaderFunctionArgs} args
+ */
+export async function loader(args) {
+  // Start fetching non-critical data without blocking time to first byte
+  const deferredData = loadDeferredData(args);
+
+  // Await the critical data required to render initial state of the page
+  const criticalData = await loadCriticalData(args, 'crystal-cacao-awake'); // ✅ pass hardcoded handle
+
+  return {...deferredData, ...criticalData};
+}
+
+/**
+ * Load critical data (above-the-fold content)
+ * @param {LoaderFunctionArgs} args
+ * @param {string} handle
+ */
+async function loadCriticalData({context, request}, handle) {
+  const {storefront} = context;
+
+  const [{product}, sortenPreise] = await Promise.all([
+    storefront.query(PRODUCT_QUERY, {
+      variables: {
+        handle, // ✅ use the static handle
+        selectedOptions: getSelectedProductOptions(request),
+      },
+    }),
+    // Preise beider Sorten für den Sortenvergleich, in derselben Runde wie die
+    // Produktabfrage (amazonstil-daten.js, byte-gleich zu qiblanco.com).
+    // Fail-soft; Schalter aus: null, keine Abfrage.
+    ladeSortenPreise(storefront),
+  ]);
+
+  if (!product?.id) {
+    throw new Response(null, {status: 404});
+  }
+
+  redirectIfHandleIsLocalized(request, {handle, data: product});
+
+  // Staffel 2x/3x ausserhalb des EUR-Markts: Zeilenbetrag aus einem Warenkorb
+  // des Landes (lib/cacao-pricing.js, byte-gleich zu qiblanco.com). EUR: null.
+  const variante = product.selectedOrFirstAvailableVariant;
+  const staffelKasse = await ladeStaffelKasse(storefront, {
+    variantId: variante?.id,
+    waehrung: variante?.price?.currencyCode,
+    land: storefront.i18n.country,
+    listenpreis: variante?.price?.amount,
+  });
+
+  return {
+    product,
+    sortenPreise,
+    staffelKasse,
+    aufmacherFassung: waehleAufmacherFassung(request),
+    // Kauf-Block zuerst (?kaufblock=neu, Default) oder die Anordnung davor
+    // (?kaufblock=bestand) -- lib/kaufblock-fassung.js.
+    kaufblockFassung: waehleKaufblockFassung(request),
+    // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
+    // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
+    // (AT 10 statt 7 % beim Kakao). Vorlage c5941ee (#422).
+    marktLand: storefront.i18n.country,
+  };
+}
+
+/**
+ * Load deferred (non-critical) data
+ */
+function loadDeferredData({context, params}) {
+  return {};
+}
+
+export default function Product() {
+  /** @type {LoaderReturnData} */
+  const {product, aufmacherFassung, kaufblockFassung, sortenPreise, staffelKasse} =
+    useLoaderData();
+
+  // Optimistically selects a variant with given available variant information
+  const selectedVariant = useOptimisticVariant(
+    product.selectedOrFirstAvailableVariant,
+    getAdjacentAndFirstAvailableVariants(product),
+  );
+
+  // Sets the search param to the selected variant without navigation
+  // only when no search params are set in the url
+  useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
+
+  // Get the product options array
+  const productOptions = getProductOptions({
+    ...product,
+    selectedOrFirstAvailableVariant: selectedVariant,
+  });
+
+  const {title, descriptionHtml} = product;
+  const [featuredImage, setFeaturedImage] = useState(product?.images.nodes[0]);
+  const [quantity, setQuantity] = useState('3');
+  // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
+  // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
+  // volle Liste, Seite wie vorher.
+  const fragen = teileFragen('crystal-cacao-awake', FAQ_CACAO);
+  const aufmacher =
+    aufmacherFassung === 'bestand' ? (
+      <SortenAufmacherBestand sorte="awake" />
+    ) : (
+      <SortenAufmacher sorte="awake" />
+    );
+  /*
+   * KAUF-BLOCK ZUERST (?kaufblock=neu, lib/kaufblock-fassung.js). Christian
+   * zur Desktopansicht: „das passiert alles bloß kein Kauf". Gemessen am
+   * 2026-10-16 bei 1440x900: Aufmacher 360 px und Beschreibung vor dem
+   * Preis, Groessenwahl ab y=918, Kaufknopf ab y=991 -- unter dem Falz.
+   * Neu steht der Kauf-Block oben, in der Reihenfolge des Designstandards
+   * (bausteine.kauf_block: Bild, Titel, Preiszeile, Variante, Kaufknopf,
+   * Zusage), die Beschreibung folgt der Zusage, der Aufmacher dem
+   * Kauf-Block. Kein Text ist neu oder weg, nur die Reihenfolge.
+   * ?kaufblock=bestand liefert die Anordnung davor, Markup unveraendert.
+   */
+  const kaufblockZuerst = kaufblockFassung !== 'bestand';
+  const beschreibung = (
+    <div
+      className="ProductDescription"
+      dangerouslySetInnerHTML={{__html: descriptionHtml}}
+    />
+  );
+  return (
+    <>
+      {kaufblockZuerst ? null : aufmacher}
+      <div
+        className="product"
+        id="cc-kaufen"
+        data-cc-kaufblock={kaufblockZuerst ? '' : undefined}
+      >
+        <div className="ProductImages">
+          <div className="ProductImageWrapperSticky">
+          <ProductImage image={featuredImage} />
+          <ProductImageList
+            images={product?.images}
+            onSelectImage={(image) => setFeaturedImage(image)}
+          />
+          </div>
+        </div>
+        <div className="product-main">
+          <h1>{title}</h1>
+          {/*
+            * 2026-09-10 — Christian zur Aufnahme der Create-Kaufseite:
+            * „Dass diese 4,9 Sterne mit Button hinterlegt sind, der aufleuchtet
+            * und dann nirgendwo hin geht, ist auch Quatsch. Das entfernen."
+            *
+            * ER HAT RECHT, UND DER GRUND IST BAULICH: <SterneSprung/> ist ein
+            * echter <button>, sein VERHALTEN haengt aber nicht an ihm, sondern
+            * an useSterneSprungDelegation in GoogleRezensionenBereich.jsx (so
+            * steht es im Kopf von StarRating.jsx). DIESE DATEI GIBT ES IN
+            * DIESEM LADEN NICHT — das Bauteil wurde ohne seinen
+            * Verhaltenstraeger uebernommen. Am Kundenrand gemessen
+            * (Playwright, 390/768/1440 px): echter Klick bewegt 0,0 px,
+            * location.hash bleibt leer, Sprungziele auf der Seite = 0.
+            *
+            * DIE AUSNAHME DES AUFTRAGS IST GEPRUEFT UND GREIFT NICHT: einen
+            * Bewertungsabschnitt gibt es auf dieser Seite nicht. Die echten
+            * Google-Stimmen (app/data/kakao-stimmen.js) stehen ausschliesslich
+            * auf der Startseite (Verkaufsauftritt.jsx). Einen Abschnitt nur zu
+            * bauen, damit ein Link ein Ziel hat, verbietet der Auftrag
+            * ausdruecklich.
+            *
+            * ES BLEIBT ALSO REINER TEXT — und der Marker wandert von "s"
+            * (Sprung zum Bewertungsbereich derselben Seite) auf "d" (rein
+            * darstellend). Das ist der Vertrag aus StarRating.jsx, nicht eine
+            * Abkuerzung: "d" ist eine BEWERTUNG, die nur nicht springt, ihre
+            * Farbe wird weiter geurteilt und muss --qb-sterne-gold tragen.
+            * "z" (Zierde) waere hier falsch — die Zeile RENDERT einen Wert.
+            *
+            * StarRating.jsx selbst bleibt UNANGETASTET: die Datei steht in
+            * shared/UPSTREAM.json und wird gegen qiblanco-storefront auf
+            * sha256 gewacht. Geaendert wird die Verwendungsstelle, wie es der
+            * Marker-Vertrag verlangt ("die Klasse wird an der
+            * VERWENDUNGSSTELLE gesetzt, nie zur Laufzeit erraten").
+            *
+            * DIE KENNZAHLEN bleiben, wo sie sind (KAKAO_KENNZAHLEN): 4,9 ist
+            * der Stand von crystal-cacao.com und wird nie mit den 4,8 von
+            * qiblanco.com verrechnet — zwei Marken, zwei Bestaende.
+            */}
+          <p className="product-rating">
+            <span>{KAKAO_KENNZAHLEN.bewertung}</span>{' '}
+            <StarRating
+              value={Number(KAKAO_KENNZAHLEN.bewertung.replace(',', '.'))}
+              qb="d"
+            />{' '}
+            <span>Über {KAKAO_KENNZAHLEN.nutzer} Nutzer</span>
+          </p>
+          {kaufblockZuerst ? null : beschreibung}
+
+          {/*
+            * 2026-09-10 ENTFERNT — Christian: „Mehr als 1.000+ aktive Nutzer
+            * sagt dasselbe wie die Zeile bei den Sternen. Zweimal dieselbe Zahl
+            * in acht Zeilen schwaecht sie, statt sie zu staerken."
+            * Gemessen ueber BLATTKNOTEN im Kaufblock (nie ueber den
+            * Zeichenstrom — ausgeliefertes HTML traegt eingebettete Daten und
+            * fremde Titel): 2 Vorkommen, "Über 1.000 Nutzer" und "Mehr als
+            * 1.000+ aktive Nutzer". Die Zahl bleibt — sie steht jetzt an genau
+            * EINER Stelle, naemlich dort, wo sie als sozialer Beweis neben den
+            * Sternen wirkt. Die Aussage ist nicht verschwunden, sie ist
+            * einmal.
+            * Nebenwirkung, gewollt: der Preis rueckt 47,6 px hoeher an die
+            * Merkmalsliste heran.
+            */}
+
+          <CacaoPriceDisplay
+            quantity={quantity}
+            selectedVariant={selectedVariant}
+            handle={product.handle}
+            staffelKasse={staffelKasse}
+          />
+
+          <CacaoProductForm
+            selectedVariant={selectedVariant}
+            handle={product.handle}
+            quantity={quantity}
+            onQuantityChange={setQuantity}
+            staffelKasse={staffelKasse}
+            /* Die Mitteilung haengt auf dieser Kaufflaeche IN der
+               Vertrauensliste darunter. Hier abgeschaltet — sonst stuende sie
+               zweimal auf der Seite. */
+            gewaehrleistungsHinweis={false}
+          />
+          <CacaoBenefitList />
+          {kaufblockZuerst ? beschreibung : null}
+        </div>
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price.amount || '0',
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
+        />
+      </div>
+      {/* Mobil (bis 749 px) wiederholt die Kaufleiste Preis und Knopf, solange
+          der Knopf des Kauf-Blocks nicht ganz im Fenster steht
+          (Kaufleiste.jsx). Gehoert zur neuen Anordnung: ?kaufblock=bestand
+          liefert die Seite wie vorher, ohne Leiste. */}
+      {kaufblockZuerst ? (
+        <Kaufleiste
+          selectedVariant={selectedVariant}
+          handle={product.handle}
+          quantity={quantity}
+          staffelKasse={staffelKasse}
+        />
+      ) : null}
+      {kaufblockZuerst ? aufmacher : null}
+      {/*
+        DIE INSTAGRAM-STIMME, weit oben: direkt nach dem Kaufblock und vor dem
+        langen Inhaltsteil, wie in der Vorlage. Dort entsteht der Zweifel vor
+        dem Kauf. Dieselbe Kachel auf beiden Sorten: der Beitrag nennt keine
+        Sorte, er zeigt beide Tueten.
+      */}
+      <IgTestimonialSlideshow produkt="Kakao" />
+      {/* AMAZON-STIL (Grossjob 20260930-GROSSJOB-amazonstil-crystal-cacao-...,
+          s04): dieselben Bausteine wie qiblanco.com (s03), byte-gleich
+          uebernommen. Direkt nach den Instagram-Stimmen der Sortenvergleich mit
+          Wofür-Liste und Analyseberichten, dann die häufigsten Kundenfragen.
+          FAQPage-Schema genau einmal: oben über die volle Liste, die FAQ unten
+          bekommt nur den Rest. Die Belege-Sektion unten bleibt. */}
+      <Sortenvergleich
+        handle="crystal-cacao-awake"
+        varianten={sortenPreise}
+        eigeneVariante={selectedVariant}
+      />
+      <Kundenfragen handle="crystal-cacao-awake" oben={fragen.oben} alle={FAQ_CACAO} />
+      <Awake faqItems={fragen.unten} />
+    </>
+  );
+}
+
+/**
+ * DIE VERTRAUENSLISTE — seit dem 2026-09-08 mit einer sechsten Zeile.
+ *
+ * Christian: „Der Button gesetzliche Garantie ist mega gross und komisch.
+ * Das sollte einfach als weitere Zeile bei den Gimmicks aufgelistet werden."
+ *
+ * Die Mitteilung stand bis dahin als eigener Block unter dem Kauf-Button
+ * (in <CacaoProductForm/>). Sie ist NICHT verschwunden und ihr WORTLAUT ist
+ * unveraendert — sie ist eine Zeile geworden; die amtliche Grafik erscheint
+ * weiterhin erst auf den ersten Klick.
+ *
+ * SIE STEHT BEWUSST ALS LETZTE. Die fuenf Zeilen darueber sind Zusagen, die
+ * wir GEBEN; die sechste ist ein Recht, das der Kunde ohnehin HAT. Sie an
+ * die Spitze zu stellen hiesse, ein gesetzliches Minimum als unsere
+ * Leistung zu verkaufen.
+ *
+ * SEIT DEM 2026-09-11 TRAEGT SIE DIE BAUFORM DER VORLAGE (Vendoring-Nachzug
+ * aus fd143bb, Elina EL-20260909-8c4001d1): <EuGewaehrleistungsListenpunkt/>
+ * statt der hier von Hand gebauten Zeile <li>⚖️ <EuGewaehrleistungsHinweis/></li>.
+ * BEIDE tun dasselbe — dieser Laden war mit seiner Fassung sogar ZUERST da
+ * (2026-09-08, Christians Satz oben; die Vorlage zog am 09-09 nach).
+ * Uebernommen wird sie trotzdem, und der Grund ist nicht Ordnungsliebe:
+ *   (1) die Block-Bauform, die <EuGewaehrleistungsHinweis/> rendert, traegt
+ *       seit dem 2026-09-08 ein BILD (Elina EL-20260908-d8349a01, 36 px).
+ *       In einer Zeile mit ⚖️-Emoji stuenden damit ZWEI Zeichen nebeneinander,
+ *       das zweite 2,5 Zeilen hoch — genau das „mega gross und komisch",
+ *       gegen das Christians Satz gerichtet war.
+ *   (2) die Datei, die die Pflichtmitteilung TRAEGT, ist K1 und soll es
+ *       bleiben: sie ist die Stelle, an der die Verordnung (EU) 2025/1960
+ *       gepflegt wird, und zwar oben. Eine eigene Kakao-Fassung haette
+ *       genau diesen Pfad gekappt — vier Wochen vor dem Pflichttag
+ *       27.09.2026.
+ * Abstand, Schrift, Farbe und Zeichenhoehe sind GEERBT (kakao-seiten.css:
+ * `.CacaoBenefitList ul { gap }`, `li { font-size }`, `.eu-gwl__zeichen
+ * { height: 1em }`) — nachgebaute Zahlen laufen still auseinander.
+ */
+function CacaoBenefitList() {
+  return (
+    <div className="CacaoBenefitList">
+      <ul>
+        <li>✅ Kostenloser Versand ab 99 € innerhalb Deutschlands</li>
+        <li>🚚 In 1-3 Tagen bei Dir</li>
+        <li>🔄 100 % Geld-zurück-Garantie bei Unzufriedenheit</li>
+        <li>🔬 Laboranalytisch geprüft (Dartsch Institut)</li>
+        <li>🌿 Bio-zertifiziert nach DE-ÖKO-006</li>
+        <EuGewaehrleistungsListenpunkt />
+      </ul>
+    </div>
+  );
+}
+
+const PRODUCT_VARIANT_FRAGMENT = `#graphql
+  fragment ProductVariant on ProductVariant {
+    availableForSale
+    compareAtPrice {
+      amount
+      currencyCode
+    }
+    id
+    image {
+      __typename
+      id
+      url
+      altText
+      width
+      height
+    }
+    price {
+      amount
+      currencyCode
+    }
+    product {
+      title
+      handle
+    }
+    selectedOptions {
+      name
+      value
+    }
+    sku
+    title
+    unitPrice {
+      amount
+      currencyCode
+    }
+  }
+`;
+
+const PRODUCT_FRAGMENT = `#graphql
+  fragment Product on Product {
+    id
+    title
+    vendor
+    handle
+    descriptionHtml
+    description
+    encodedVariantExistence
+    encodedVariantAvailability
+    images(first: 10) {
+      nodes {
+        id
+        url
+        altText
+        width
+        height
+      }
+    }
+    options {
+      name
+      optionValues {
+        name
+        firstSelectableVariant {
+          ...ProductVariant
+        }
+        swatch {
+          color
+          image {
+            previewImage {
+              url
+            }
+          }
+        }
+      }
+    }
+    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
+      ...ProductVariant
+    }
+    adjacentVariants (selectedOptions: $selectedOptions) {
+      ...ProductVariant
+    }
+    seo {
+      description
+      title
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
+`;
+
+const PRODUCT_QUERY = `#graphql
+  query Product(
+    $country: CountryCode
+    $handle: String!
+    $language: LanguageCode
+    $selectedOptions: [SelectedOptionInput!]!
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $handle) {
+      ...Product
+    }
+  }
+  ${PRODUCT_FRAGMENT}
+`;
+
+/** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
+/** @template T @typedef {import('~/crystal-spiegel-rahmen/router').MetaFunction<T>} MetaFunction */
+/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
