@@ -1093,6 +1093,22 @@ export const NUR_ROUTE_SEITEN = [
       'den Canonical und das Fehlen von noindex; 404 ist dort ein Befund.',
   },
   {
+    pfad: '/pages/live',
+    lastmod: '2026-10-18T10:52:20Z',
+    grund:
+      'Der Reiter „Live“ unter „Mehr“: Coming Home mit dem nächsten Termin, ' +
+      'dem Anmeldefenster und dem Rückblick je Woche (Grossjob 20261018-' +
+      'GROSSJOB-coming-home-zoom-aufnahme-transkript-zusammenfassung-' +
+      'homepage-reiter-live, Christian 18.10.2026). Die Seite besteht allein ' +
+      'aus der Route pages.live.jsx und hat KEIN Shopify-Seitenobjekt. Ohne ' +
+      'diesen Eintrag liefert sie HTTP 200 und steht in keiner Sitemap. Kein ' +
+      'noindex auf der Grundansicht (nur die Schritt-Ansichten der Mail-Links ' +
+      'tragen es), canonicalLink() in der Route. lastmod ist der Merge von ' +
+      'PR #943. Wache: coming-home/pruefungen/probe_live_seite.py prüft am ' +
+      'ausgelieferten HTML die vier Marker, das Anmeldefenster und den ' +
+      'Menü-Link.',
+  },
+  {
     pfad: '/pages/was-ist-kohaerentes-wasser',
     lastmod: '2026-10-09T15:00:00Z',
     grund:
