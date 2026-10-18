@@ -89,3 +89,22 @@ test('NEGATIV-KONTROLLE: die Weiche feuert anderswo weiter', () => {
     entscheideAdWeiche('https://qiblanco.com/pages/coming-home-alt?utm_medium=paid'), null,
     'ein Suffix-Slug erbt den Ausschluss nicht');
 });
+
+// Live-Seite /pages/live (Grossjob 20261018-GROSSJOB-coming-home-zoom-
+// aufnahme-transkript-zusammenfassung-homepage-reiter-live, s08): reine Route
+// ohne Shopify-Seitenobjekt, indexierbar gewollt. Route in main seit dem
+// Merge von PR #943 (2026-10-18T10:52:20Z).
+const LIVE = '/pages/live';
+
+test('/pages/live steht in NUR_ROUTE_SEITEN, lastmod ab dem Route-Merge, mit Wache', () => {
+  const e = NUR_ROUTE_SEITEN.filter((s) => s.pfad === LIVE);
+  assert.equal(e.length, 1);
+  assert.ok(e[0].lastmod >= '2026-10-18T10:52:20Z', `lastmod ${e[0].lastmod} vor dem Merge`);
+  assert.match(e[0].grund, /probe_live_seite\.py/);
+});
+
+test('/pages/live: Canonical in der Route, noindex nur in den Schritt-Ansichten', () => {
+  const route = readFileSync(new URL('../app/routes/pages.live.jsx', import.meta.url), 'utf8');
+  assert.match(route, /canonicalLink\(PFAD\)/);
+  assert.match(route, /d\?\.schritt \? \[\.\.\.basis, \{name: 'robots', content: 'noindex'\}\] : basis/);
+});
