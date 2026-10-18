@@ -6,13 +6,19 @@
  *
  * Mutanten, die rot werden müssen: Anteil, Salz, Bot-Regel, _routes-Streichung
  * (Matrix im RESULT des Segments).
+ * Eigener Desktop-Anteil der Startseite (Grossjob vom 10.10.2026 „LP-Tests
+ * Geräte getrennt", s06): Anteil je Gerät,
+ * Desktop-Kill, Geräteklasse zeichengleich mit entry.server.jsx.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {
   SEITEN_EXPERIMENTE,
   SUCH_UND_VORSCHAU_CRAWLER,
+  anteilProzentFuer,
   entscheideSeitenExperiment,
+  geraeteKlasse,
   istSuchOderVorschauCrawler,
   seitenExperimentAktiv,
   zielSuche,
@@ -97,6 +103,11 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 15 / Shop 15 oder 50 (
   assert.equal(q.pfad_a, '/pages/qione-2-pro');
   assert.equal(q.pfad_b, '/pages/qione-2-pro-b');
   assert.equal(s.anteil_prozent, 15);
+  // Eigener Desktop-Anteil nur auf der Startseite (s06, Anhebungsregel #52 je Gerät); Shop und Beratung ohne
+  assert.equal(s.anteil_prozent_desktop, 50);
+  assert.equal(s.env_kill_desktop, 'EXP_START_DESKTOP_MODE');
+  assert.equal(q.anteil_prozent_desktop, undefined);
+  assert.equal(k.anteil_prozent_desktop, undefined);
   // Shopseite: Rampe nach vorab festgeschriebener Regel (Entscheidung Coworker A 07.10.2026 im Auftrag
   // Christians): 15 % ab Start, 50 % nach 7 Tagen ohne Schaden, zurück auf 15 % bei Guardrail-
   // Verschlechterung (heatmap-manager experimente.yaml anteil_ruecklauf). Jeder andere Wert ist ein Fehler.
@@ -134,13 +145,22 @@ test('Goldwerte: Eimer = fnv1a(salz|ip|ua) % 100 je Experiment-Salz (festgeschri
 // Stichprobe, und drei Experimente mit je einem 95-%-Intervall reißen schon durch Zufall. Belegfall 13.10.2026:
 // q2p auf 50 % ergibt hier 49,10 % (2,6 Sigma); 200 000 frische Besucher je Startwert ergeben 49,9 bis 50,2 %.
 // Grobe Fehler (Vergleich gedreht bei 15 %, Feld fehlt = alle auf B, Prozent als Anteil) bleiben weit außerhalb.
+// Je Geräteklasse gegen ihren eigenen Soll-Anteil (s06): gepoolt gäbe es kein festes Soll, der Mix hängt an der
+// Geräteverteilung der Population.
+const istDesktop = (b) => geraeteKlasse(b.ua) === 'desktop';
 for (const id of ALLE) {
-  const soll = SEITEN_EXPERIMENTE[id].anteil_prozent / 100;
-  test(`${id}: Anteil B über 20 000 synthetische Besucher, 4-Sigma-Wilson-Intervall enthält ${soll * 100} %`, () => {
-    const k = POP.filter((b) => istB(id, b)).length;
-    const [lo, hi] = wilson(k, POP.length, 3.89);
-    assert.ok(lo <= soll && soll <= hi, `${id}: ${k}/${POP.length} = ${(k / POP.length).toFixed(4)}, Wilson [${lo.toFixed(4)}, ${hi.toFixed(4)}]`);
-  });
+  const exp = SEITEN_EXPERIMENTE[id];
+  for (const [wort, teil, soll] of [
+    ['mobil', POP.filter((b) => !istDesktop(b)), exp.anteil_prozent / 100],
+    ['desktop', POP.filter(istDesktop), (exp.anteil_prozent_desktop ?? exp.anteil_prozent) / 100],
+  ]) {
+    test(`${id} ${wort}: Anteil B über ${teil.length} synthetische Besucher, 4-Sigma-Wilson-Intervall enthält ${soll * 100} %`, () => {
+      assert.ok(teil.length >= 3000, `${wort}: nur ${teil.length} Besucher`);
+      const k = teil.filter((b) => istB(id, b)).length;
+      const [lo, hi] = wilson(k, teil.length, 3.89);
+      assert.ok(lo <= soll && soll <= hi, `${id} ${wort}: ${k}/${teil.length} = ${(k / teil.length).toFixed(4)}, Wilson [${lo.toFixed(4)}, ${hi.toFixed(4)}]`);
+    });
+  }
 
   test(`${id}: stabil je Besucher (derselbe Arm bei jedem Aufruf, auch per .data)`, () => {
     for (const b of POP.slice(0, 500)) {
@@ -161,8 +181,11 @@ for (const id of ALLE) {
 test('Salze unabhängig: Start, Shop, Beratung und LP-E1 (szs-e1-gs050) teilen paarweise wie Zufall', () => {
   const lpB = (b) => besucherEimer(b.ip, b.ua, E1.salz) < E1.anteil_prozent;
   const arme = {start: (b) => istB(START, b), shop: (b) => istB(SHOP, b), pb: (b) => istB(PB, b), lp: lpB};
+  // Start hat einen eigenen Desktop-Anteil: sein Randanteil ist das Mittel über die Population. Die anderen Arme
+  // haben je Gerät denselben Anteil, also gilt P(beide) = Randanteil x Randanteil weiter.
+  const randStart = POP.reduce((s, b) => s + anteilProzentFuer(SEITEN_EXPERIMENTE[START], b.ua, {}), 0) / POP.length / 100;
   const anteil = {
-    start: SEITEN_EXPERIMENTE[START].anteil_prozent / 100,
+    start: randStart,
     shop: SEITEN_EXPERIMENTE[SHOP].anteil_prozent / 100,
     pb: SEITEN_EXPERIMENTE[PB].anteil_prozent / 100,
     lp: E1.anteil_prozent / 100,
@@ -334,4 +357,62 @@ test('POST, PUT und unbekannte Experiment-id: null; HEAD wird geteilt wie GET', 
   }
   assert.equal(entscheideSeitenExperiment(req('/', einBBesucher(START)), {}, 'gibt-es-nicht'), null);
   assert.equal(entscheideSeitenExperiment(null, {}, START), null);
+});
+
+test('Geräteklasse: mobil, Tablet und Desktop wie die anonyme Zählung (Receiver basis.device_class)', () => {
+  const IPAD =
+    'Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
+  const ANDROID_TABLET =
+    'Mozilla/5.0 (Linux; Android 14; SM-X710) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36';
+  const MAC =
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15';
+  assert.equal(geraeteKlasse(IPHONE), 'mobile');
+  assert.equal(geraeteKlasse(ANDROID), 'mobile');
+  assert.equal(geraeteKlasse(FB_INAPP), 'mobile');
+  assert.equal(geraeteKlasse(CUBOT), 'mobile');
+  assert.equal(geraeteKlasse(IPAD), 'tablet');
+  assert.equal(geraeteKlasse(ANDROID_TABLET), 'tablet');
+  assert.equal(geraeteKlasse(DESKTOP), 'desktop');
+  assert.equal(geraeteKlasse(MAC), 'desktop');
+  const s = SEITEN_EXPERIMENTE[START];
+  assert.equal(anteilProzentFuer(s, DESKTOP, {}), 50);
+  assert.equal(anteilProzentFuer(s, MAC, {}), 50);
+  // Tablet zählt zu mobil (Geräte-Regel des Heatmap-Managers): eigener Anteil nur für desktop
+  for (const ua of [IPHONE, ANDROID, FB_INAPP, CUBOT, IPAD, ANDROID_TABLET]) assert.equal(anteilProzentFuer(s, ua, {}), 15);
+  for (const id of [SHOP, PB]) {
+    for (const ua of [IPHONE, DESKTOP]) assert.equal(anteilProzentFuer(SEITEN_EXPERIMENTE[id], ua, {}), SEITEN_EXPERIMENTE[id].anteil_prozent);
+  }
+});
+
+test('Desktop-Kill: EXP_START_DESKTOP_MODE=off setzt Desktop auf anteil_prozent zurück, mobil bleibt unberührt', () => {
+  const s = SEITEN_EXPERIMENTE[START];
+  assert.equal(anteilProzentFuer(s, DESKTOP, {EXP_START_DESKTOP_MODE: 'off'}), 15);
+  assert.equal(anteilProzentFuer(s, DESKTOP, {EXP_START_DESKTOP_MODE: 'on'}), 50);
+  assert.equal(anteilProzentFuer(s, IPHONE, {EXP_START_DESKTOP_MODE: 'off'}), 15);
+  const desk = POP.filter(istDesktop);
+  const bAus = desk.filter((b) => entscheideSeitenExperiment(req('/', b), {EXP_START_DESKTOP_MODE: 'off'}, START) !== null);
+  for (const b of bAus) assert.ok(besucherEimer(b.ip, b.ua, s.salz) < 15);
+  // der Gesamt-Kill wirkt weiter auf beide Geräte
+  assert.equal(desk.filter((b) => entscheideSeitenExperiment(req('/', b), {EXP_START_MODE: 'off'}, START) !== null).length, 0);
+});
+
+test('Arm-Treue beim Wechsel 15 -> 50 % auf Desktop: wer vorher B sah, bleibt B; neu B sind genau die Eimer 15-49', () => {
+  const s = SEITEN_EXPERIMENTE[START];
+  for (const b of POP.filter(istDesktop)) {
+    const e = besucherEimer(b.ip, b.ua, s.salz);
+    const jetzt = entscheideSeitenExperiment(req('/', b), {}, START) !== null;
+    if (e < 15) assert.ok(jetzt, `Eimer ${e}: war B, ist A`);
+    assert.equal(jetzt, e < 50, `Eimer ${e}`);
+  }
+});
+
+test('Naht: geraeteKlasse ist zeichengleich mit der Zählung in entry.server.jsx', () => {
+  const rumpf = (text) => {
+    const m = text.match(/export function geraeteKlasse\(ua\) \{\n[\s\S]*?\n\}\n/);
+    assert.ok(m, 'geraeteKlasse nicht gefunden');
+    return m[0];
+  };
+  const hier = readFileSync(new URL('./experiment-weiche.server.js', import.meta.url), 'utf8');
+  const zaehlung = readFileSync(new URL('../entry.server.jsx', import.meta.url), 'utf8');
+  assert.equal(rumpf(hier), rumpf(zaehlung));
 });
