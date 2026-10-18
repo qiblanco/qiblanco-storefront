@@ -88,6 +88,7 @@
 // kennt den Vite-Alias nicht. Dieselbe Form nutzen app/lib/entity-schema.js und
 // app/lib/blog-seo.js für ./seo.js.
 import {HREFLANG_PAARE} from './shop-switch.js';
+import {istGespiegelt} from '../crystal-spiegel-rahmen/suchmaschine.js';
 
 export const DACH_ORIGIN = 'https://qiblanco.com';
 export const US_ORIGIN = 'https://qi-blanco.com';
@@ -122,6 +123,9 @@ export const SEITEN_PAARE = HREFLANG_PAARE;
  */
 export function hreflangLinks(dachPfad) {
   const pfad = normalisiere(dachPfad);
+  // Crystal-Spiegel (seit 17.10.2026): canonical auf crystal-cacao.com, also
+  // nicht selbstreferenzierend -- die Aufnahmebedingung oben ist verletzt.
+  if (istGespiegelt(pfad)) return [];
   const usPfad = SEITEN_PAARE[pfad];
   if (!usPfad) return [];
   return paarLinks(pfad, usPfad);

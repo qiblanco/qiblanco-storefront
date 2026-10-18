@@ -1,0 +1,117 @@
+// ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/components/KachelPreis.jsx
+// NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
+import {cacaoPricing} from './CacaoProductForm';
+import {useMarktLand} from '~/lib/markt-land';
+
+/**
+ * DER PREISBLOCK EINER SORTENKACHEL — EINE Implementierung, ZWEI Leser.
+ *
+ * WARUM DIESE DATEI AM 2026-09-09 ENTSTAND (Christian, an crystal-cacao.com):
+ * „und es sind noch die falschen Preise." Die Startseite zeigte 53,- €, die
+ * Sortenuebersicht 71,03 €. Beide Zahlen waren richtig und beantworteten
+ * verschiedene Fragen: 71,03 ist der NETTO-Betrag der Variante aus der
+ * Storefront-API, 53 der Brutto-Packungspreis im Dreierbund. Es ist
+ * ausdruecklich KEINE Fremdwaehrungs-Umrechnung — der Verdacht lag nahe, ist
+ * aber gemessen widerlegt: die Storefront-API liefert `currencyCode: EUR`, und
+ * der Betrag ist ueber alle Laender-Kontexte hinweg derselbe.
+ *
+ * Der Fix vom 2026-09-08 hat den Preisblock als `preisSlot` in die Kachel
+ * gehaengt (siehe Kopf von ProductItem.jsx) — aber er wohnte in
+ * `app/routes/_index.jsx` und war damit fuer die Sortenuebersicht baulich
+ * unerreichbar. Genau das ist die Klasse, vor der die Auftragszeile warnt:
+ * „Wenn eine zweite Stelle denselben Preis noch einmal selbst formatiert,
+ * laufen sie beim naechsten Mal wieder auseinander." Deshalb steht der Block
+ * hier und nicht in einer Route: gerechnet wird weiterhin ausschliesslich in
+ * `cacaoPricing()` (K1, CacaoProductForm.jsx), diese Datei kennt keine
+ * Preiszahl.
+ */
+/**
+ * DIE MENGE, DIE DIE KACHEL ZEIGT — 2026-09-08.
+ *
+ * Christian: „Auf der Startseite steht bei beiden Sorten €71.03, auf der
+ * Produktseite 53,- € (gestrichen 76,- €). Ein Besucher sieht auf der
+ * Startseite den hoechsten Preis ohne Rabatt und klickt weg, bevor er das
+ * Angebot je sieht."
+ *
+ * BEIDE ZAHLEN WAREN RICHTIG, sie beantworteten nur verschiedene Fragen. 71,03
+ * ist der NETTO-Betrag der Variante aus der Storefront-API; die Kaufseite
+ * rechnet daraus ueber `cacaoPricing()` Brutto (7 % Kakao-Satz) und die
+ * Mengenstaffel: 71,03 -> 76,- € einzeln, 53,- € pro Packung im Dreierbund.
+ * Die Kaufseite steht dabei auf `useState('3')`
+ * (app/routes/products.crystal-cacao-awake.jsx), zeigt also den Dreierbund —
+ * und genau den zeigt die Kachel jetzt auch.
+ *
+ * WARUM DIE ZAHL HIER TROTZDEM NICHT ERFUNDEN IST: gerechnet wird
+ * ausschliesslich mit `cacaoPricing()` aus dem K1-Bauteil CacaoProductForm;
+ * diese Datei kennt keine Preiszahl. Und weil die Kaufseite ihre Menge in
+ * einer eigenen Datei fuehrt, ist die GLEICHHEIT der beiden Anzeigen eine
+ * MESSGROESSE und keine Zusage: `crystal-cacao-node/proben/probe_sofortfehler.py`
+ * vergleicht Achse (1) den Kachelpreis mit dem Hauptpreis der Kaufseite und
+ * geht rot, sobald sie auseinanderlaufen.
+ */
+const KACHEL_MENGE = '3';
+
+/**
+ * Der Preisblock der Sortenkachel: derselbe Betrag, dieselbe Schreibweise und
+ * dieselbe Rabattlogik wie auf der Kaufseite — plus die eine Zeile, die auf der
+ * Kaufseite das Dropdown darunter liefert („3x 420g … pro Packung"). Ohne sie
+ * waere „53,- €" auf einer Kachel ohne Mengenwahl eine halbe Wahrheit.
+ */
+export function KachelPreis({produkt, staffelKasse = produkt?.kachelKasse ?? null}) {
+  // Derselbe Markt wie auf der Kaufseite (AT 10 statt 7 %, Vorlage #422) --
+  // sonst liefen Kachel und Kaufseite in AT auseinander.
+  const marktLand = useMarktLand();
+  const variante = {price: produkt?.priceRange?.minVariantPrice};
+  // AUSSERHALB DES EUR-MARKTS braucht der Set-Preis den Kassenbetrag
+  // (app/lib/kachel-kasse.js, Befund H01 vom 13.10.2026): ohne ihn nennt
+  // cacaoPricing() den Listenpreis und meldet `rabattImWarenkorb`. Die Kachel
+  // stand dann mit 78,- CHF „pro Packung im 3er-Set“ da, die Kaufseite mit
+  // 53,67 CHF.
+  const preis = cacaoPricing(
+    KACHEL_MENGE,
+    variante,
+    produkt?.handle,
+    marktLand,
+    staffelKasse,
+  );
+  if (preis.rabattImWarenkorb) {
+    // Kein Kassenbetrag (Frist, Fehler): dann gibt es auf der Kachel keine
+    // Set-Aussage. Der Einzelpreis steht als das da, was er ist — der Preis
+    // einer Packung —, nie unter dem Zusatz „3er-Set“.
+    const einzel = cacaoPricing('1', variante, produkt?.handle, marktLand);
+    return (
+      <div className="cc-kachel-preis">
+        <span className="cc-kachel-preis-jetzt">{einzel.price}</span>
+        <span className="cc-kachel-preis-hinweis">pro Packung</span>
+      </div>
+    );
+  }
+  // Geht der Packungspreis des Sets nicht ganz auf (CH 161 / 3 = 53,67 CHF),
+  // nennt die Kachel den Set-Betrag -- wie der Kopf der Kaufseite
+  // (CacaoPriceDisplay, Grossjob 20261006-repair-glatte-preise s04: Christian
+  // 06.10. "keine Nachkommastellen").
+  if (!preis.teilbar) {
+    return (
+      <div className="cc-kachel-preis">
+        <span className="cc-kachel-preis-jetzt">{preis.gesamt}</span>
+        {preis.compareAtGesamt ? (
+          <s className="cc-kachel-preis-vorher">{preis.compareAtGesamt}</s>
+        ) : null}
+        <span className="cc-kachel-preis-hinweis">
+          für {preis.menge} Packungen
+        </span>
+      </div>
+    );
+  }
+  return (
+    <div className="cc-kachel-preis">
+      <span className="cc-kachel-preis-jetzt">{preis.price}</span>
+      {preis.compareAt ? (
+        <s className="cc-kachel-preis-vorher">{preis.compareAt}</s>
+      ) : null}
+      <span className="cc-kachel-preis-hinweis">
+        pro Packung im {KACHEL_MENGE}er-Set
+      </span>
+    </div>
+  );
+}

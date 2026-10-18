@@ -8,6 +8,7 @@ import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
+import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
 import {
   istKakaoPfad,
   KAKAO_KENNZAHLEN,
@@ -159,6 +160,10 @@ function resolveMenuLink(rawUrl) {
 
   try {
     const url = new URL(rawUrl, 'https://qiblanco.com');
+    // Crystal-Spiegel (Christian 17.10.2026): ein Menüpunkt auf crystal-cacao.com
+    // führt in den Spiegel innerhalb von qiblanco.com (Begründung: menueZiel).
+    const spiegelZiel = menueZiel(rawUrl);
+    if (spiegelZiel) return {to: spiegelZiel, isExternal: false};
     const isInternalHost =
       rawUrl.startsWith('/') ||
       url.hostname === 'qiblanco.com' ||

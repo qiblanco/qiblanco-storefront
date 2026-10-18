@@ -21,6 +21,7 @@ import {
   leereBlogHandles,
 } from '~/lib/sitemap-bestand';
 import {vorlagenOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
+import {gespiegelteHandles} from '~/crystal-spiegel-rahmen/suchmaschine';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -62,16 +63,20 @@ import {vorlagenOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
  * Discovery-Pfad. Gebaut ist damit die MÖGLICHKEIT, nicht der Vollzug.
  */
 /**
- * Aus der `pages`-Sitemap fliegen ZWEI Klassen, und sie sind nicht dasselbe:
+ * Aus der `pages`-Sitemap fliegen DREI Klassen, und sie sind nicht dasselbe:
  * Seiten mit `noindex` (dort ist der Sitemap-Eintrag der Widerspruch zum
  * Ausschluss-Signal) und Handles, deren URL nur noch WEITERLEITET (dort ist er
- * der Widerspruch zur eigenen Antwort). Jede Klasse hat ihre eigene Quelle mit
+ * der Widerspruch zur eigenen Antwort). Seit 2026-10-17 eine DRITTE: die
+ * Seiten des Crystal-Spiegels, deren canonical auf crystal-cacao.com zeigt
+ * (Begründung in ~/crystal-spiegel-rahmen/suchmaschine; die Menge ist
+ * erzeugt, kein Literal hier). Jede Klasse hat ihre eigene Quelle mit
  * eigener Begründung; hier werden sie EINMAL vereinigt, damit beide Leser
  * dieser Route und `~/lib/sitemap-lastmod` dieselbe Menge sehen.
  */
 const NICHT_IN_PAGES_SITEMAP = [
   ...AUS_SITEMAP_ENTFERNTE_SEITEN,
   ...WEITERGELEITETE_PAGES_HANDLES,
+  ...gespiegelteHandles('pages'),
 ];
 
 /**
@@ -85,6 +90,7 @@ const NICHT_IN_PRODUCTS_SITEMAP = [
   ...NICHT_INDEXIERBARE_PRODUKTE,
   ...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
   ...vorlagenOhneIndexwert('products'),
+  ...gespiegelteHandles('products'), // Crystal-Spiegel, wie oben bei pages
 ];
 
 /**

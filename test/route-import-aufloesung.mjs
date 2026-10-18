@@ -58,6 +58,13 @@ export async function ladeMitAufgeloestenImporten(pfad, marke, wandle = (q) => q
       .replace(
         /from '(\.{1,2}\/[^']+\.json)'/g,
         (_, rel) => `from '${pathToFileURL(join(dirname(datei), rel)).href}' with {type: 'json'}`,
+      )
+      // Relative JS-Importe (seit 2026-10-17: ~/crystal-spiegel-rahmen/
+      // suchmaschine lädt ../crystal-spiegel/seiten.js relativ, damit node:test
+      // sie auch direkt lesen kann): aus demselben Grund absolut machen.
+      .replace(
+        /from '(\.{1,2}\/[^']+\.js)'/g,
+        (_, rel) => `from '${pathToFileURL(join(dirname(datei), rel)).href}'`,
       );
     writeFileSync(ziel, quelle);
     return url;

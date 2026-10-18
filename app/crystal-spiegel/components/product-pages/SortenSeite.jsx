@@ -1,0 +1,592 @@
+// ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/components/product-pages/SortenSeite.jsx
+// NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
+import {Belege} from '../reusables/Belege';
+import {KakaoTiefe} from '~/components/reusables/KakaoTiefe';
+import {KAKAO_TIEFE_AN} from '~/components/reusables/kakao-tiefe-daten';
+import {AbsichtHinweis} from '../reusables/AbsichtHinweis';
+import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
+import {ProductFAQ} from '~/components/ProductFAQ';
+import {FAQ_CACAO} from '~/crystal-spiegel/data/product-faqs';
+import {sortenProfil, bildEintrag, LEITER_HALBSPALTE} from '~/crystal-spiegel/lib/sorten-profil';
+
+/**
+ * DIE SORTENSEITE — der Rumpf unter dem Kaufblock, einmal gebaut, zweimal
+ * benutzt (AWAKE, CREATE).
+ *
+ * Job 20260910-REPAIR-awake-und-create-sind-zwei-kopien-derselben-seite.
+ * Anlass: Awake.jsx und Create.jsx waren am 2026-09-10 zu 82,8 % dieselbe
+ * Datei (351 von 424 Zeilen woertlich gleich, difflib). Der Sorten-Aufmacher
+ * (SortenAufmacher.jsx) hatte den Kopf schon zusammengelegt; hier folgt der
+ * Rest. Was je Sorte verschieden ist, kommt aus app/lib/sorten-profil.js
+ * (`inhaltsstoffe`, `herkunft`); alles andere steht hier genau einmal.
+ *
+ * ABSCHNITTE, in der Reihenfolge des Bestands:
+ *   Inhaltsstoffe (je Sorte) · Mineralstoffe · Zubereitung · Herkunft (je
+ *   Sorte) · Ursprung · Banner · Belege (je Sorte) · FAQ
+ *
+ * ======================================================================
+ * "ANWENDUNG & TAGESZEITEN" IST WEG — "ZUBEREITUNG" BLEIBT. Die Entscheidung:
+ * ======================================================================
+ * Der Abschnitt stand in beiden Dateien ZEICHENGLEICH und mass am Kundenrand
+ * 453 px (1440 px) bzw. 513 px (390 px) bei 0 anklickbaren Zielen und 13,6 %
+ * Fuellgrad — der groesste verbliebene Vertreter der Klasse, gegen die sich
+ * Christian gewandt hat ("Das ist optisch auch nicht gut gemacht").
+ *
+ * Er trug zwei Sorten Inhalt, und die sind verschieden zu behandeln:
+ *
+ * 1. DREI TAGESZEITEN-ZEILEN ("Morgens: Klarer Fokus und kraftvoller Start",
+ *    "Nachmittags: Fuer produktive Arbeit oder Training", "Abends: Sanftes
+ *    Ausklingen des Tages"). Sie sind WEG, aus drei Gruenden:
+ *    (a) Sie waren fuer AWAKE und CREATE identisch — ein Text, der auf beiden
+ *        Sortenseiten gleich lautet, sagt ueber DIESE Sorte nichts.
+ *    (b) Sie widersprechen dem, was der Aufmacher zwei Bildschirme darueber
+ *        sagt: AWAKE ist "fuer den Start in den Tag", CREATE "fuer den klaren
+ *        Kopf, lange Stunden am Schreibtisch" (sorten-profil.js, Bedingung des
+ *        Vorjobs: Gelegenheiten, keine Wirkung). Ein Abschnitt, der beiden
+ *        Sorten dieselben drei Tageszeiten zuweist, loescht genau die
+ *        Einordnung, die der Aufmacher herstellt.
+ *    (c) "Klarer Fokus", "produktive Arbeit" sind halbe Wirkungsaussagen. Der
+ *        Auftrag verbietet, welche zu ERGAENZEN; das Streichen ist die
+ *        sichere Richtung. Es faellt dabei keine pruefbare Angabe weg.
+ *
+ * 2. DIE ZUBEREITUNGS-ZEILE ("15 g in 75 ml warmer Milch oder Wasser (max.
+ *    85 °C)") BLEIBT. Genau: das Praefix "Zubereitung: " ist aus dem Absatz in
+ *    die Ueberschrift gewandert, die Angabe selbst ist unveraendert (Advisor-
+ *    Pruefung 2026-09-11 hat "wortgleich" zu Recht als zu scharf geruegt).
+ *    Sie ist eine PRUEFBARE Angabe, die einzige
+ *    Dosierung auf der Kaufseite, und sie macht das "Fuer 28 Tage" der
+ *    Produktbeschreibung nachrechenbar (420 g / 15 g = 28). Vor allem aber
+ *    verspricht die Startseite sie: "Wie du ihn zubereitest und welche Sorte
+ *    zu dir passt, findest du bei AWAKE und CREATE" (Kakao.jsx). Ein Verweis
+ *    ist eine Zusage, dass der Weg dort gangbar ist — die Zeile hier ist
+ *    dieser Weg. Die Ueberschrift heisst jetzt "Zubereitung": "Anwendung &
+ *    Tageszeiten" haette Inhalt angekuendigt, der nicht mehr da ist, und
+ *    "Zubereitung" ist das Wort, das die Startseite fuer dieselbe Sache
+ *    benutzt. Kein neuer Wortlaut — die Ueberschrift ist der alte Praefix.
+ *
+ * NICHT GETAN, und warum: die Zeile in die Vertrauensliste des Kaufblocks zu
+ * ziehen (CacaoBenefitList in der Route) haette den Kaufblock veraendert, an
+ * dem probe_kakao_naehe und der Kaufweg haengen — fuer eine Zeile, die auch
+ * hier ihren Zweck erfuellt. Und den Dreischritt der Startseite hierher zu
+ * kopieren waere die naechste Kopie gewesen (Kakao.jsx ist K2 mit offenem
+ * Fremd-Drift, eine geteilte Konstante war ohne Eingriff dort nicht zu haben).
+ *
+ * ======================================================================
+ * DREI KLEINE, BEWUSSTE ABWEICHUNGEN VOM BESTAND (am Rand nachgemessen):
+ * ======================================================================
+ * Massstab dabei ist der TEXTINHALT (textContent) und die Geometrie je
+ * Element, nicht das HTML-Byte: SSR setzt zwischen benachbarte Textknoten
+ * ein <!-- -->, und wo frueher {' '} stand, ist jetzt ein Knoten — ein
+ * Byte-Diff des HTML faellt also aus, ohne dass ein Zeichen anders waere.
+ * - Create.jsx setzte die Inhaltsstoff-Titel per dangerouslySetInnerHTML,
+ *   Awake.jsx als Text. Kein Titel traegt Markup; das DOM ist in beiden
+ *   Faellen <b>Titel</b>. Jetzt ueberall Text — eine Angriffsflaeche weniger,
+ *   kein Pixel anders.
+ * - In Create.jsx standen die Herkunfts-Absaetze der Zeilen 1 und 2 als
+ *   nackter Text im <div>, Zeile 3 und alle Awake-Zeilen in <p>. reset.css
+ *   gibt <p> 1rem / 1.4, der <div> traegt text-sm / leading-relaxed — auf
+ *   der Create-Seite standen damit in EINEM Abschnitt zwei Schriftgroessen.
+ *   Jetzt ist jeder Absatz ein <p>; die zwei Create-Zeilen ruecken auf die
+ *   Groesse ihrer dritten und der Awake-Seite. Das ist die einzige sichtbare
+ *   Aenderung ausserhalb des Zubereitungs-Abschnitts.
+ * - Das Banner rendert sein <h2> nur, wenn es Text hat. Beide Seiten riefen
+ *   es mit text="" — ein leeres <h2> im Dokument, unsichtbar, aber eine leere
+ *   Ueberschrift fuer jeden, der die Struktur liest.
+ */
+
+/**
+ * Rendert einen Absatz-String; **so** markierte Stellen werden <b>.
+ * Kein HTML, kein dangerouslySetInnerHTML — die Texte kommen aus
+ * sorten-profil.js und tragen ausser dieser einen Markierung nichts.
+ * Ein fehlendes zweites ** faellt hier lautlos durch (der Rest des Absatzes
+ * wuerde fett); deshalb prueft probe_sorten_eine_seite.py Arm D die Paare.
+ */
+function Fett({text}) {
+  const teile = text.split('**');
+  return teile.map((t, i) => (i % 2 === 1 ? <b key={i}>{t}</b> : t));
+}
+
+/* ======================================================================
+ * BILDLAST DER KAUFSEITEN — gemessene Leiter je Datei, Muster D-061 der
+ * Startseite. Job 20260927-crystal-kaufseiten-schicken-dem-telefon-keine-desktop-pixel.
+ * ======================================================================
+ *
+ * DER GEMESSENE ANLASS (2026-09-27, crystal-cacao.com, mess_ladeverhalten.py
+ * mit 90-s-Fenster, gedrosselt 1,6 Mbit/150 ms, Median aus 3 Laeufen):
+ *   AWAKE   mobil LCP 8 240 ms · 7 436 214 Bildbytes · desktop 7 517 908
+ *   CREATE  mobil LCP 8 224 ms · 4 988 548 Bildbytes · desktop 5 092 530
+ * DAS TELEFON LUD SO VIEL WIE DER RECHNER. Jedes <img> hier trug die nackte
+ * CDN-Adresse, also die Masterdatei (bis 4000 px und 2,5 MB fuer eine
+ * 326-px-Flaeche), ohne srcset, ohne sizes und ohne loading. Und weil keines
+ * `lazy` war, zog der Browser alle schon beim ersten Blick, obwohl das erste
+ * davon mobil erst 3,5 Bildschirme tiefer steht. Das 25-s-Fenster, mit dem
+ * D-061 die Startseite gemessen hat, reichte hier nicht einmal: in 3 von 3
+ * Laeufen kam das load-Ereignis nicht.
+ *
+ * DIE LEITER STEHT JE DATEI (D-061): je Datei und Sprosse am CDN
+ * nachgemessen (Accept avif/webp, echte Pixelbreite dekodiert; Beleg
+ * claude-jobs/20260927-crystal-kaufseiten-schicken-dem-telefon-keine-desktop-pixel/belege/cdn_leiter.json).
+ * Aufgenommen ist nur, was KLEINER ist als der Master. Anders als bei den
+ * 1000-px-Mastern der Startseite war hier keine Sprosse schwerer als ihr
+ * Master — die Regel bleibt trotzdem: wer eine Datei tauscht, misst neu.
+ *
+ * DIE `sizes`-WERTE SIND GEMESSEN, NICHT VON DER STARTSEITE UEBERNOMMEN: die
+ * Boxbreiten wurden an elf Fensterbreiten (360…1920) am gerenderten DOM
+ * abgelesen, und sie folgen genau der CSS — .NormalSectionSize ist
+ * hoechstens 1350 px breit mit 16 px Innenabstand, der Seitenrahmen hat
+ * 16 px, ab 1382 px steht der Inhalt also bei 1318 px. Die Startseite deckelt
+ * bei 548/1152 px; hier waeren das 91 bzw. 736 px zu wenig. Drei Familien:
+ *   HALB_GAP10  Inhaltsstoffe, Mineralstoffe (gap-10): bis 639 px volle
+ *               Spalte (100vw − 64), darueber (100vw − 104)/2, ab 1382 → 639.
+ *   HALB_GAP8   Herkunft, Ursprung (gap-8): dasselbe mit (100vw − 96)/2 → 643.
+ *   BANNER      volle Breite des Seitenrahmens (100vw − 32) OHNE Deckel:
+ *               bei 1920 px sind das 1888 px.
+ *
+ * LOADING: das erste Bild dieser Datei steht mobil bei 2 978 px, am
+ * Schreibtisch bei 2 069 px, also unter dem ersten Bildschirm. Alle sind
+ * deshalb `lazy`. Das erste SICHTBARE Bild der Kaufseite ist die Wortmarke
+ * im SortenAufmacher; sie traegt eager + fetchPriority="high" bereits.
+ * Ein zweiter Gewinn haengt daran: die Desktop-Paare (`hidden sm:flex!`)
+ * sind am Telefon display:none, und ein `lazy`-Bild ohne Box laedt nie.
+ * Vorher holte das Telefon auch sie.
+ *
+ * `width`/`height` sind die INTRINSISCHEN Masse der Masterdatei. Sie
+ * reservieren ueber das Seitenverhaeltnis den Platz, bevor das Bild da ist
+ * (Tailwind-Preflight: max-width 100 %, height auto). Die Lehre aus D-061
+ * gilt hier woertlich: width OHNE height ist kein Mass, sondern ein falsches
+ * Seitenverhaeltnis — deshalb setzt `bildAttr` immer beide.
+ */
+const SIZES_HALB_GAP10 =
+  '(min-width: 1382px) 639px, (min-width: 640px) calc((100vw - 104px) / 2), calc(100vw - 64px)';
+const SIZES_HALB_GAP8 =
+  '(min-width: 1382px) 643px, (min-width: 640px) calc((100vw - 96px) / 2), calc(100vw - 64px)';
+const SIZES_BANNER = 'calc(100vw - 32px)';
+
+/**
+ * Bildquellen als Spread ins <img>: src + srcSet + sizes + width + height.
+ *
+ * `eintrag` ist ein Bild-Eintrag {url, breite, hoehe, leiter}. Einer ohne
+ * gemessene Leiter kommt UNVERAENDERT als nackte Adresse zurueck — dieselbe
+ * Absicht wie `bild()` in Kakao.jsx: eine geratene Leiter ist keine
+ * gemessene, und der stehende Traeger (Gruppe ladeverhalten-bildmasse-kakao)
+ * meldet ein solches Bild als ueberversorgt, statt dass es still falsch wird.
+ */
+function bildAttr(eintrag, sizes) {
+  if (!eintrag?.leiter) return {src: eintrag?.url};
+  return {
+    ...bildQuelle(eintrag.url, eintrag.leiter),
+    sizes,
+    width: eintrag.breite,
+    height: eintrag.hoehe,
+  };
+}
+
+/* Master 470x459: fuer JEDE Flaeche dieser Seite zu klein (Bedarf mobil 652,
+ * desktop 639 px). Shopify skaliert nicht hoch, die Leiter endet am Master;
+ * die Deckung (0,72 mobil) ist Bestand und durch Markup nicht heilbar. */
+const IMG_KAFFEE = bildEintrag(
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-1052459-kaffee.jpg?v=1764250719',
+  470,
+  459,
+  [300, 420, 470],
+);
+
+/* Eine Datei, zwei Flaechen: Halbspalte bei den Mineralstoffen UND das
+ * Banner. Die Leiter deckt deshalb beide — unten wie die Halbspalte, oben
+ * bis zum Master (3111 px): das Banner braucht am Schreibtisch mit DPR 2
+ * 2816 px (1440) und mehr, als es gibt (3776 px bei 1920). */
+const IMG_BOHNE = bildEintrag(
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/bohne-create.jpg?v=1763083566',
+  3111,
+  2902,
+  [...LEITER_HALBSPALTE, 1500, 2000, 2560, 3111],
+);
+
+function BioaktiveInhaltsstoffe({sorte}) {
+  const {bild, bildSeite, liste, fazit} = sorte.inhaltsstoffe;
+  const bilder = (
+    <div className="hidden sm:flex! flex-col gap-4">
+      <img
+        className="w-full rounded-xl"
+        {...bildAttr(bild, SIZES_HALB_GAP10)}
+        alt=""
+        loading="lazy"
+      />
+      <img
+        className="w-full rounded-xl"
+        {...bildAttr(IMG_KAFFEE, SIZES_HALB_GAP10)}
+        alt=""
+        loading="lazy"
+      />
+    </div>
+  );
+  return (
+    <div className="NormalSectionSize my-[100px]!">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 items-start">
+        {bildSeite === 'links' && bilder}
+
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold mb-5">
+            7 bioaktive Inhaltsstoffe:
+          </h2>
+
+          {/* Mobile-only top image */}
+          <img
+            className="block sm:hidden! w-full rounded-xl mb-5"
+            {...bildAttr(bild, SIZES_HALB_GAP10)}
+            alt=""
+            loading="lazy"
+          />
+
+          <ol className="list-decimal list-inside space-y-4 text-sm text-gray-800">
+            {liste.map((item, i) => (
+              <li key={i}>
+                <b>{item.titel}</b>
+                <br />
+                {item.punkte.map((p, j) => (
+                  <span key={j} className="block ml-4 text-gray-600">
+                    → {p}
+                  </span>
+                ))}
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-6 text-sm text-gray-800 leading-relaxed">
+            <Fett text={fazit} />
+          </p>
+
+          {/* Mobile-only bottom image */}
+          <img
+            className="block sm:hidden! w-full rounded-xl mt-5"
+            {...bildAttr(IMG_KAFFEE, SIZES_HALB_GAP10)}
+            alt=""
+            loading="lazy"
+          />
+        </div>
+
+        {bildSeite === 'rechts' && bilder}
+      </div>
+    </div>
+  );
+}
+
+const IMG_BALI = bildEintrag(
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2024-06-qiblanco-bali-06610_1.jpg?v=1764258286',
+  4000,
+  4000,
+);
+
+function Mineralstoffe() {
+  const minerals = [
+    ['Magnesium (Mg)', 'Energiehaushalt, Nerven'],
+    ['Kalium (K)', 'Herzfunktion, Zellspannung'],
+    ['Calcium (Ca)', 'Knochen, Signalwege'],
+    ['Phosphor (P)', 'ATP-Bildung'],
+    ['Natrium (Na)', 'Elektrolytgleichgewicht'],
+    ['Eisen (Fe)', 'Sauerstofftransport'],
+    ['Zink (Zn)', 'Immunsystem, Enzyme'],
+    ['Kupfer (Cu)', 'antioxidative Enzyme'],
+    ['Mangan (Mn)', 'antioxidative Cofaktoren'],
+    ['Chrom (Cr)', 'Glukosestoffwechsel'],
+    ['Nickel (Ni)', 'enzymatische Prozesse'],
+    ['Kobalt (Co)', 'Bestandteil von Vitamin B12'],
+    ['Silizium (Si)', 'Bindegewebe, Struktur'],
+    ['Bor (B)', 'Knochen, kognitive Funktionen'],
+    ['Strontium (Sr)', 'Mineralstoffwechsel'],
+    ['Rubidium (Rb)', 'intrazellulärer Marker'],
+    ['Vanadium (V)', 'Glukosestoffwechsel'],
+    ['Cäsium (Cs)', 'bioenergetische Spur'],
+    ['Barium (Ba)', 'Spurenelement'],
+    ['Gallium (Ga)', 'Ultraspurenelement'],
+    ['Lanthan (La)', 'seltenes Spurenelement'],
+    ['Tellur (Te)', 'Ultraspurenelement'],
+    ['Hafnium (Hf)', 'Spurenelement'],
+    ['Tantal (Ta)', 'Ultraspurenelement'],
+  ];
+  return (
+    <div className="NormalSectionSize my-[100px]!">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 items-start">
+        {/* Left: desktop images stacked */}
+        <div className="hidden sm:flex! flex-col gap-4">
+          <img
+            className="w-full rounded-xl hidden sm:block!"
+            {...bildAttr(IMG_BOHNE, SIZES_HALB_GAP10)}
+            alt=""
+            loading="lazy"
+          />
+          <img
+            className="w-full rounded-xl hidden sm:block!"
+            {...bildAttr(IMG_BALI, SIZES_HALB_GAP10)}
+            alt=""
+            loading="lazy"
+          />
+        </div>
+
+        {/* Right: text */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold mb-5">Enthält 24 Mineralstoffe</h2>
+
+          {/* Mobile-only top image */}
+          <img
+            className="block sm:hidden! w-full rounded-xl mb-5"
+            {...bildAttr(IMG_BOHNE, SIZES_HALB_GAP10)}
+            alt=""
+            loading="lazy"
+          />
+
+          <ol className="space-y-1 text-sm text-gray-800">
+            {minerals.map(([name, desc], i) => (
+              <li key={i}>
+                <b>
+                  {i + 1}. {name}:
+                </b>{' '}
+                {desc}
+              </li>
+            ))}
+          </ol>
+
+          {/* Mobile-only bottom image */}
+          <img
+            className="block sm:hidden! w-full rounded-xl mt-5"
+            {...bildAttr(IMG_BALI, SIZES_HALB_GAP10)}
+            alt=""
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Siehe Kopf: die eine pruefbare Zeile des frueheren "Anwendung"-Abschnitts. */
+function Zubereitung() {
+  return (
+    <div className="NormalSectionSize flex flex-col gap-2">
+      <h2>Zubereitung</h2>
+      <p>15 g in 75 ml warmer Milch oder Wasser (max. 85 °C).</p>
+    </div>
+  );
+}
+
+function Herkunft({sorte}) {
+  return (
+    <div className="NormalSectionSize my-[100px]!">
+      <h2 className="text-center text-2xl font-bold mb-10">
+        Herkunft: Spüre die Kraft des Amazonas
+      </h2>
+      <div className="flex flex-col gap-12">
+        {sorte.herkunft.map((row, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center"
+          >
+            {/* <div> statt <p> um die Absaetze: ein <p> in einem <p> ist
+                ungueltiges HTML, der Parser schliesst das aeussere vorzeitig,
+                Server- und Client-Baum laufen auseinander und React bricht
+                die Hydration ab. Gemessen 2026-09-03 auf der Kaufseite:
+                6 verschachtelte <p> und 8 Konsolenfehler. Die Vorlage
+                (qiblanco-storefront) traegt denselben Bau; der Befund ist
+                dorthin gemeldet. */}
+            <div className="text-sm text-gray-800 leading-relaxed">
+              {row.absaetze.map((a, j) => (
+                <p key={j} className={j > 0 ? 'mt-3' : undefined}>
+                  <Fett text={a} />
+                </p>
+              ))}
+            </div>
+            <img
+              className="w-full rounded-xl"
+              {...bildAttr(row.bild, SIZES_HALB_GAP8)}
+              alt=""
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const COPYRIGHT =
+  'Copyright: Quirino Olivera Núñez, Asociación para la Investigación Científica de la Amazonía del Perú';
+
+const ursprungRows = [
+  {
+    text: (
+      <>
+        <p>
+          Im Norden Perus, im Tal von Jaén und Bagua, erhebt sich der mystische{' '}
+          <b>Spiraltempel von Montegrande</b>, ein Ort, an dem Archäologen
+          Kakaorückstände in <b>6.300 Jahre alten Keramiken entdeckt</b> haben.
+        </p>
+        <p className="mt-3">
+          Diese Funde gelten heute als der{' '}
+          <b>älteste bekannte Nachweis von Kakao weltweit</b>: der Beginn einer
+          Geschichte, die bis in unsere Zeit fortlebt.
+        </p>
+        <p className="mt-3">
+          Nur wenige Kilometer von diesem historischen Fundort entfernt, in
+          denselben fruchtbaren Böden des oberen Amazonasbeckens, wachsen die
+          Pflanzen, aus deren Früchten <b>Crystal Cacao®</b> entsteht.
+        </p>
+      </>
+    ),
+    img: bildEintrag(
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/montegrande.jpg?v=1764260249',
+      1598,
+      1598,
+    ),
+    copyright: COPYRIGHT,
+  },
+  {
+    text: (
+      <>
+        <p>
+          Sie gedeihen auf exakt jenem geologischen Fundament, das seit
+          Jahrtausenden als Heimat des ursprünglichen Kakaos gilt.
+        </p>
+        <p className="mt-3">
+          Die Region bildet eine <b>kontinuierliche Abstammungslinie:</b>
+        </p>
+        <p className="mt-3">
+          Vom urzeitlichen Wildkakao über die ersten domestizierten Pflanzen des
+          Montegrande-Kulturraums bis hin zu den heutigen, naturbelassenen
+          Altlinien, die den genetischen Kern von <b>Crystal Cacao®</b> tragen.
+        </p>
+      </>
+    ),
+    img: bildEintrag(
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/tempel-kakao.jpg?v=1764260567',
+      1459,
+      1459,
+    ),
+    copyright: COPYRIGHT,
+  },
+  {
+    text: (
+      <>
+        <p>
+          Diese Verbindung aus Archäologie, Ökologie und Genetik zeichnet ein
+          klares Bild:
+        </p>
+        <p className="mt-3">
+          <b>
+            Crystal Cacao® wächst dort, wo die Geschichte des Kakaos begann
+          </b>
+          : im selben Boden, unter derselben Sonne und in einer ununterbrochenen
+          Linie, die seit über 6.000 Jahren fortbesteht.
+        </p>
+        <p className="mt-3">
+          Er trägt die Energie, Reinheit und Resonanz des ältesten bekannten
+          Kakaos der Welt und macht sie erlebbar für den Menschen von heute.
+        </p>
+      </>
+    ),
+    img: bildEintrag(
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakao-herkunft.jpg?v=1764260814',
+      1398,
+      1398,
+    ),
+    copyright: COPYRIGHT,
+  },
+];
+
+function Ursprung() {
+  return (
+    <div className="NormalSectionSize my-[100px]!">
+      <h2 className="text-center text-2xl font-bold mb-10">
+        Crystal Cacao®: Ursprung, der 6.300 Jahre zurückreicht
+      </h2>
+      <div className="flex flex-col gap-12">
+        {ursprungRows.map((row, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-start"
+          >
+            <div className="text-sm text-gray-800 leading-relaxed">
+              {row.text}
+            </div>
+            <div>
+              <img
+                className="w-full rounded-xl"
+                {...bildAttr(row.img, SIZES_HALB_GAP8)}
+                alt=""
+                loading="lazy"
+              />
+              {row.copyright && (
+                <p className="text-[0.7em] text-gray-500 mt-1">
+                  {row.copyright}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HerobannerWithText({bild, text}) {
+  return (
+    <div className="my-[10vh]! relative">
+      <img
+        className="w-full h-auto rounded-xl block"
+        {...bildAttr(bild, SIZES_BANNER)}
+        alt=""
+        loading="lazy"
+      />
+      {text && (
+        <h2 className="absolute top-10 left-0 right-0 text-center text-white! text-5xl!">
+          {text}
+        </h2>
+      )}
+    </div>
+  );
+}
+
+/**
+ * @param {{sorte: 'awake'|'create', faqItems?: Array}} props
+ *   faqItems: Fragen der FAQ am Seitenende. Default = volle FAQ_CACAO
+ *   (unverändert). Die Kaufseiten übergeben seit dem 30.09.2026 nur den Rest,
+ *   weil die häufigsten Kundenfragen weiter oben stehen (Amazon-Stil).
+ */
+export function SortenSeite({sorte, faqItems = FAQ_CACAO}) {
+  const profil = sortenProfil(sorte);
+  if (!profil) {
+    throw new Error(`SortenSeite: unbekannte Sorte '${sorte}'`);
+  }
+  /* KAKAO-TIEFE (Grossjob 20261002-GROSSJOB-kakaoseiten-mineralstoffe-
+     dartsch-und-crystal-niveau-auf-dach-und-us): die Abschnitte von den
+     Inhaltsstoffen bis zum Banner weichen dem geteilten Baustein
+     KakaoTiefe (K1, wie auf qiblanco.com), mit den Mineralstoffen aus dem
+     Dartsch-Bericht. Belege, Absicht und FAQ bleiben, wie sie sind; die
+     Pruefdokumente fuehrt dieser Laden schon als .cc-belege, deshalb
+     belege={false}. Rueckweg: KAKAO_TIEFE_AN = false in
+     reusables/kakao-tiefe-daten.js, dann rendert wieder der Bestand unten. */
+  if (KAKAO_TIEFE_AN) {
+    return (
+      <>
+        <KakaoTiefe sorte={sorte} belege={false} />
+        <Belege sorte={`crystal-cacao-${sorte}`} />
+        <AbsichtHinweis />
+        <ProductFAQ items={faqItems} />
+      </>
+    );
+  }
+  return (
+    <>
+      <BioaktiveInhaltsstoffe sorte={profil} />
+      <Mineralstoffe />
+      <Zubereitung />
+      <Herkunft sorte={profil} />
+      <Ursprung />
+      <HerobannerWithText bild={IMG_BOHNE} text="" />
+      <Belege sorte={`crystal-cacao-${sorte}`} />
+      {/* Einmal gebaut, zweimal ausgeliefert (AWAKE und CREATE) — dieselbe
+          Naht, aus der diese Datei ueberhaupt entstanden ist. */}
+      <AbsichtHinweis />
+      <ProductFAQ items={faqItems} />
+    </>
+  );
+}
