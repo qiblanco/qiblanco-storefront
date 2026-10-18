@@ -9,7 +9,9 @@
  * /products/qione-2-pro verlor 7 Tage in Folge mehr als 3 Plätze
  * (Rankingwache, Job 20261017-frageseiten-rankingwache-ruecknahme-qione-2-pro).
  * Die vier Antworten dieses Blocks stehen wieder im Wortlaut vor 43eb5cd949db;
- * die übrigen Blöcke behalten die Fassung vom 28.09.
+ * Einzige Abweichung: der Kratz-Hinweis der Ketten-Antwort ist umgestellt
+ * (alter Satzbau „Bitte beachte, dass …“ ist eine KI-Floskel im Seiten-Gate).
+ * Die übrigen Blöcke behalten die Fassung vom 28.09.
  * BEWUSST NICHT ANGEFASST:
  *  · jedes Item mit `flag`: es wartet auf Christians INHALTLICHE
  *    Umformulierung, und eine Sprachglättung würde dieses Warten unsichtbar
@@ -42,7 +44,7 @@ export const FAQ_QIONE_2_PRO = [
   },
   {
     q: 'Kann ich den QiOne® an einer anderen Kette tragen?',
-    a: 'Ja. Das mitgelieferte Baumwollbändchen ist ein Geschenk an Dich, um den Anhänger sofort tragen zu können. Gerne kannst du es durch Deine Lieblingskette ersetzen. Die Bohrung im QiOne® beträgt 2,5 mm im Durchmesser. Bitte beachte, dass Ketten aus (Edel-)Metall aufgrund ihrer eigenen Härte den QiOne® verkratzen können. Wir haben übrigens auch eine Edelstahlkette für den QiOne®. Sie ist die perfekte Ergänzung für deinen Anhänger.',
+    a: 'Ja. Das mitgelieferte Baumwollbändchen ist ein Geschenk an Dich, um den Anhänger sofort tragen zu können. Gerne kannst du es durch Deine Lieblingskette ersetzen. Die Bohrung im QiOne® beträgt 2,5 mm im Durchmesser. Ketten aus (Edel-)Metall sind härter als der QiOne® und können ihn verkratzen. Wir haben übrigens auch eine Edelstahlkette für den QiOne®. Sie ist die perfekte Ergänzung für deinen Anhänger.',
   },
   {
     q: 'Wie sollte ich den QiOne® tragen?',
