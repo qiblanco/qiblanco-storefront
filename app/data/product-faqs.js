@@ -8,9 +8,9 @@
  * RÜCKNAHME 2026-10-18 für FAQ_QIONE_2_PRO: die Hauptanfrage von
  * /products/qione-2-pro verlor 7 Tage in Folge mehr als 3 Plätze
  * (Rankingwache, Job 20261017-frageseiten-rankingwache-ruecknahme-qione-2-pro).
- * Die vier Antworten dieses Blocks stehen wieder im Wortlaut vor 43eb5cd949db;
- * Einzige Abweichung: der Kratz-Hinweis der Ketten-Antwort ist umgestellt
- * (alter Satzbau „Bitte beachte, dass …“ ist eine KI-Floskel im Seiten-Gate).
+ * Danach behutsam neu gefasst, nah am Wortlaut vor 43eb5cd949db: Fragen,
+ * Reihenfolge und Suchbegriffe wie damals, geglättet sind nur Satzbau,
+ * Du-Großschreibung und der Kratz-Hinweis der Ketten-Antwort.
  * Die übrigen Blöcke behalten die Fassung vom 28.09.
  * BEWUSST NICHT ANGEFASST:
  *  · jedes Item mit `flag`: es wartet auf Christians INHALTLICHE
@@ -36,15 +36,15 @@ export const FAQ_QIONE_2_PRO = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Unsere Produkte zeichnen sich durch erstklassige Materialien aus: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, während der Gitterchip™ auf Basis einer maßgeschneiderten 750er Goldlegierung gefertigt wird. Die finale Optik entsteht durch Oberflächenveredler und Goldschmiede, die jedes Detail per Hand vollenden.',
+    a: 'Unsere Produkte bestehen aus erstklassigen Materialien: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, und der Gitterchip™ wird aus einer maßgeschneiderten 750er Goldlegierung gefertigt. Ihre finale Optik bekommen sie von Oberflächenveredlern und Goldschmieden, die jedes Detail per Hand vollenden.',
   },
   {
     q: 'Darf der QiOne® in die Sauna bzw. nass werden?',
-    a: 'Ja! Die Technik ist unempfindlich gegenüber Wasser. Geeignet für Sonnenanbeter, Saunagänger, Schwimmer und Sportler: der QiOne® 2 Pro und das QiBracelet® sind robust und langlebig. Resistent gegen Chlor- und Meerwasser, Schweiß, Sonneneinstrahlung & Hitze.',
+    a: 'Ja! Die Technik ist unempfindlich gegenüber Wasser. Der QiOne® 2 Pro und das QiBracelet® sind robust und langlebig und eignen sich deshalb für Sonnenanbeter, Saunagänger, Schwimmer und Sportler. Sie sind resistent gegen Chlor- und Meerwasser, Schweiß, Sonneneinstrahlung und Hitze.',
   },
   {
     q: 'Kann ich den QiOne® an einer anderen Kette tragen?',
-    a: 'Ja. Das mitgelieferte Baumwollbändchen ist ein Geschenk an Dich, um den Anhänger sofort tragen zu können. Gerne kannst du es durch Deine Lieblingskette ersetzen. Die Bohrung im QiOne® beträgt 2,5 mm im Durchmesser. Ketten aus (Edel-)Metall sind härter als der QiOne® und können ihn verkratzen. Wir haben übrigens auch eine Edelstahlkette für den QiOne®. Sie ist die perfekte Ergänzung für deinen Anhänger.',
+    a: 'Ja. Das mitgelieferte Baumwollbändchen ist ein Geschenk an dich, damit du den Anhänger sofort tragen kannst. Gerne kannst du es durch deine Lieblingskette ersetzen. Die Bohrung im QiOne® hat einen Durchmesser von 2,5 mm. Ketten aus Metall oder Edelmetall sind härter als der QiOne® und können ihn verkratzen. Wir haben übrigens auch eine Edelstahlkette für den QiOne®, die perfekt zu deinem Anhänger passt.',
   },
   {
     q: 'Wie sollte ich den QiOne® tragen?',
@@ -63,7 +63,7 @@ export const FAQ_QIONE_2_PRO = [
   },
   {
     q: 'Wie funktioniert die Finanzierung über Klarna?',
-    a: 'Lege deinen QiOne in den Warenkorb und klicke auf zur Kasse gehen. Wähle die Bezahlart "Klarna – Sofort oder später bezahlen". Klicke auf "Jetzt Kaufen": Dir wird noch nichts berechnet. Du wirst zum Klarna-Checkout weitergeleitet. Klicke im Klarna-Checkout-Fenster auf "Ratenzahlung" und wähle deine gewünschte Dauer und Betrag aus. Klicke nun auf Jetzt Kaufen. Du kannst mit unserem Partner Klarna von folgenden Deals profitieren: Option 1: Ab einem Warenwert von 25€ kannst du in 6 Monatsraten bezahlen. Option 2: Ab einem Warenwert von 500€ kannst du in 12 Monatsraten bezahlen. Option 3: Ab einem Warenwert von 1000€ kannst du in 24 Monatsraten bezahlen.',
+    a: 'Lege deinen QiOne in den Warenkorb und gehe zur Kasse. Wähle die Bezahlart „Klarna – Sofort oder später bezahlen“ und klicke auf „Jetzt Kaufen“. Dir wird dabei noch nichts berechnet, und du wirst zum Klarna-Checkout weitergeleitet. Klicke dort auf „Ratenzahlung“ und wähle deine gewünschte Dauer und deinen Betrag aus. Klicke zum Schluss noch einmal auf „Jetzt Kaufen“. Mit unserem Partner Klarna kannst du ab einem Warenwert von 25 € in 6 Monatsraten bezahlen, ab 500 € in 12 Monatsraten und ab 1000 € in 24 Monatsraten.',
   },
 ];
 
