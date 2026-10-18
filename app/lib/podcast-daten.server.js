@@ -103,6 +103,56 @@ export function seitenPfad(nr) {
   return nr <= 1 ? '/pages/podcasts' : `/pages/podcasts/seite-${nr}`;
 }
 
+/**
+ * Alle Seiten der Sektion als Nachtrags-Einträge für die Sitemap.
+ *
+ * WARUM ES DIESE FUNKTION GIBT (Naht-Befund Selbst-Debug 2026-09-04): Seite 1
+ * ist ein Shopify-Seitenobjekt und steht deshalb in `sitemap/pages/1.xml`. Die
+ * Folgeseiten `/pages/podcasts/seite-2..N` sind reine Code-Routen
+ * (`app/routes/pages.podcasts_.$seite.jsx`) — eine aus Shopify-Ressourcen
+ * erzeugte Sitemap kann sie baulich NIE führen. Der Weg der Auffindung fehlte
+ * damit für 33 der 43 Folgen, obwohl der `<a>`-Crawlpfad von Seite 1
+ * durchgehend intakt ist.
+ *
+ * Aufgefallen war es niemandem, weil die Zusage einen TRÄGERWECHSEL nicht
+ * überlebte: auf dem Vorgänger (US-Liquid-Shop, Bau 2026-08-13) waren alle
+ * fünf Seiten echte Seitenobjekte, und der Bau-Job mass die Sitemap-
+ * Mitgliedschaft als eigenes Kriterium. Beim Umzug auf Hydrogen am 2026-08-14
+ * ersetzte der Nachfolger dieses Kriterium durch einen Crawlpfad-Test. Jede
+ * Seite für sich stimmig — die Frage "überlebt die Sitemap-Zusage den
+ * Trägerwechsel?" stellte danach niemand mehr.
+ *
+ * ABGELEITET STATT AUFGEZÄHLT, und das ist der Punkt: die Menge folgt aus
+ * `SEITEN_ZAHL`, also aus den Daten. Wächst die Sektion durch neue Folgen auf
+ * sechs Seiten, wächst der Sitemap-Eintrag mit. Eine hingeschriebene Liste der
+ * vier heutigen Pfade wäre ab der ersten neuen Seite falsch, ohne dass
+ * irgendetwas rot würde.
+ *
+ * SEITE 1 IST BEWUSST MIT DABEI, obwohl sie schon in der Sitemap steht: die
+ * Ergänzung in der Sitemap-Route ist idempotent und überspringt, was das
+ * Dokument bereits führt. Damit bleibt der Eintrag auch dann richtig, wenn das
+ * Shopify-Seitenobjekt zu Seite 1 eines Tages verschwindet — dann trägt ihn
+ * diese Liste, statt dass die Seite still aus der Sitemap fällt.
+ *
+ * `grund` erfüllt das Aufnahme-Kriterium von `NUR_ROUTE_SEITEN` in
+ * `~/lib/seo`: eine benannte, stehende Wache auf den Live-Zustand.
+ * @returns {Array<{pfad: string, grund: string}>}
+ */
+export function sitemapSeiten() {
+  return Array.from({length: SEITEN_ZAHL}, (_, i) => ({
+    pfad: seitenPfad(i + 1),
+    grund:
+      'Podcast-Sektion, Seite ' +
+      (i + 1) +
+      ' von ' +
+      SEITEN_ZAHL +
+      ' (aus SEITEN_ZAHL abgeleitet, nicht aufgezaehlt). Wache: ' +
+      'nachbau-audit-Probe probe_podcast_sitemap_naht.py (alle Seiten der ' +
+      'Live-Paginierung stehen in der Sitemap) und probe_podcast_dach.py ' +
+      '(--modus paginierung: jede Seite einzeln crawlbar und indexierbar).',
+  }));
+}
+
 /** Umkehrung von seitenPfad für das URL-Segment: 'seite-3' -> 3, sonst null.
  *  Streng mit Absicht: 'seite-03' und 'seite-3x' ergeben null, damit nicht
  *  mehrere Schreibweisen denselben Inhalt unter verschiedenen URLs zeigen.

@@ -291,4 +291,127 @@ await pruefe('Crawler-Markt: ohne Verdrahtung bleiben sie stehen (Mutation)', as
   }
 });
 
+
+// Die ZWEITE Quelle des Nachtrags: abgeleitete Pfade (Podcast-Paginierung).
+const {NICHT_INDEXIERBARE_SEITEN} = await import(
+  pathToFileURL(join(appDir, 'lib', 'seo.js')).href
+);
+const {SEITEN_ZAHL, seitenPfad, sitemapSeiten: podcastSeiten} =
+  await ladeMitAufgeloestenImporten(
+    join(appDir, 'lib', 'podcast-daten.server.js'),
+    'podcast-daten-sitemap-test',
+  );
+
+// ---------------------------------------------------------------------------
+// ZWEITE QUELLE DES NACHTRAGS: abgeleitete Pfade (Podcast-Paginierung).
+// Naht-Befund Selbst-Debug 2026-09-04 — /pages/podcasts ist ein Shopify-
+// Seitenobjekt und stand in der Sitemap, seine vier Folgeseiten sind reine
+// Code-Routen und standen in KEINER. Der Crawlpfad über <a>-Links war intakt;
+// der WEG der Auffindung fehlte.
+// ---------------------------------------------------------------------------
+
+assert.ok(
+  SEITEN_ZAHL > 1,
+  'Die Podcast-Sektion hat nur eine Seite — die Folgeseiten-Fälle unten ' +
+    'hätten dann keinen Gegenstand. MESSAUSFALL, kein grüner Lauf.',
+);
+
+await pruefe('jede Seite der Podcast-Paginierung steht in der Sitemap', async () => {
+  // 'podcasts' ist als Shopify-Seitenobjekt DA (so ist es live) — Seite 1 kommt
+  // also von Shopify, die Folgeseiten können nur aus dem Nachtrag kommen.
+  const xml = await sitemapXml('pages', ['studien', 'podcasts']);
+  for (const s of podcastSeiten()) {
+    assert.equal(
+      zaehle(xml, s.pfad),
+      1,
+      `${s.pfad} fehlt in der Seiten-Sitemap (oder steht mehrfach)`,
+    );
+  }
+});
+
+await pruefe('die Menge folgt SEITEN_ZAHL, nicht einer Literal-Liste', async () => {
+  // Der eigentliche Auftragspunkt: eine hingeschriebene Liste der heutigen
+  // vier Folgeseiten wäre ab der ersten neuen Podcast-Seite falsch, ohne dass
+  // etwas rot würde. Hier wird gegen die DATENWAHRHEIT gezählt, nie gegen
+  // eine Zahl im Test — ein Zähler-Pin wäre hier rot-by-construction.
+  assert.equal(podcastSeiten().length, SEITEN_ZAHL);
+  assert.equal(
+    podcastSeiten().at(-1).pfad,
+    seitenPfad(SEITEN_ZAHL),
+    'Die letzte abgeleitete Seite ist nicht seitenPfad(SEITEN_ZAHL)',
+  );
+  const xml = await sitemapXml('pages', ['studien', 'podcasts']);
+  const podcastUrls = locs(xml).filter((u) =>
+    /\/pages\/podcasts(\/seite-\d+)?$/.test(u),
+  );
+  assert.equal(
+    podcastUrls.length,
+    SEITEN_ZAHL,
+    `Sitemap führt ${podcastUrls.length} Podcast-Seiten, die Daten kennen ${SEITEN_ZAHL}`,
+  );
+});
+
+await pruefe('Seite 1 steht genau einmal, obwohl beide Quellen sie kennen', async () => {
+  // Der Nachtrag führt Seite 1 bewusst mit (fiele ihr Shopify-Objekt weg,
+  // trägt ihn diese Liste). Solange das Objekt existiert, darf daraus KEIN
+  // Doppel-Eintrag werden.
+  const xml = await sitemapXml('pages', ['studien', 'podcasts']);
+  assert.equal(zaehle(xml, '/pages/podcasts'), 1);
+});
+
+await pruefe('Podcast-Seiten NUR in der Seiten-Sitemap', async () => {
+  const xml = await sitemapXml('products', ['qione-2-pro']);
+  assert.equal(
+    locs(xml).filter((u) => u.includes('/pages/podcasts')).length,
+    0,
+  );
+});
+
+// ---------------------------------------------------------------------------
+// DIE HYGIENE-SPERRE: der Nachtrag läuft NACH dem Versteckt-Filter und
+// könnte zurückholen, was dieser gerade entfernt hat. Die Fixtur ersetzt per
+// `wandle` nur die EINGABE (NUR_ROUTE_SEITEN), nicht die Logik.
+// ---------------------------------------------------------------------------
+
+await pruefe('ein noindex-Handle kommt durch den Nachtrag NICHT zurück', async () => {
+  const noindexHandle = NICHT_INDEXIERBARE_SEITEN[0];
+  assert.ok(noindexHandle, 'keine noindex-Seite definiert — Fall ohne Gegenstand');
+  const fixtur = [
+    {pfad: `/pages/${noindexHandle}`, grund: 'Fixtur: noindex-Seite im Nachtrag'},
+    {pfad: `/pages/${noindexHandle}/unterseite`, grund: 'Fixtur: Unterpfad davon'},
+    {pfad: '/pages/kontroll-fixtur', grund: 'Fixtur: Kontrolle, muss durchkommen'},
+  ];
+  // Ersetzt wird nur die EINGABE der ersten Quelle (NUR_ROUTE_SEITEN) in der
+  // echten Route; Sperre, Dedup und Injektor bleiben der echte Code.
+  const xml = await sitemapXml('pages', ['studien'], (quelle) => {
+    const anker = '[...NUR_ROUTE_SEITEN, ...podcastSitemapSeiten()]';
+    assert.ok(
+      quelle.includes(anker),
+      'Die Zusammenfuehrung beider Quellen steht nicht mehr in der Route — ' +
+        'die Fixtur griffe ins Leere und der Fall wäre falsch grün.',
+    );
+    return quelle.replace(anker, `[...${JSON.stringify(fixtur)}, ...podcastSitemapSeiten()]`);
+  });
+  assert.equal(
+    zaehle(xml, `/pages/${noindexHandle}`),
+    0,
+    `${noindexHandle} trägt noindex und wurde trotzdem nachgetragen`,
+  );
+  assert.equal(
+    zaehle(xml, `/pages/${noindexHandle}/unterseite`),
+    0,
+    'Der Unterpfad einer noindex-Seite wurde nachgetragen — die ' +
+      'Pfad-zu-Handle-Umrechnung greift nicht',
+  );
+  // GEGENPROBE, ohne die der Fall auch bei einem komplett wirkungslosen
+  // Nachtrag grün wäre: die Kontroll-Fixtur MUSS ankommen.
+  assert.equal(
+    zaehle(xml, '/pages/kontroll-fixtur'),
+    1,
+    'Die Kontroll-Fixtur fehlt — der Nachtrag trägt gar nichts ein, der ' +
+      'Fall oben ist damit ohne Aussage',
+  );
+});
+
+
 console.log(`\nsitemap-nur-route-seiten: ${grün} Prüfungen grün`);

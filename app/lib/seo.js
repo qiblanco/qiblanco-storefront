@@ -531,6 +531,23 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
  * "leeres Shopify-Seitenobjekt als Sitemap-Träger" (technologie, studien)
  * bleibt gültig und wird von hier NICHT angefasst. Diese Liste ist für
  * Seiten, deren Träger sichtbar im Repo stehen soll.
+ *
+ * DIESE LISTE IST NICHT DIE EINZIGE QUELLE DES NACHTRAGS, und das ist gewollt
+ * (2026-09-05, Podcast-Sitemap-Naht): sie führt Pfade, die FESTSTEHEN. Für
+ * Pfade, deren MENGE aus Daten folgt, wäre eine Aufzählung hier falsch, sobald
+ * die Daten wachsen — die paginierte Podcast-Sektion hat heute fünf Seiten,
+ * und die fünfte ist keine Entscheidung, sondern das Ergebnis von 43 Folgen zu
+ * je zehn. Solche Pfade werden ABGELEITET (`sitemapSeiten()` in
+ * `~/lib/podcast-daten.server`) und in der Sitemap-Route mit dieser Liste
+ * zusammengeführt.
+ *
+ * WARUM SIE NICHT TROTZDEM HIER STEHEN: die Wahrheit über die Paginierung
+ * (`SEITEN_ZAHL`) liegt in einem `.server`-Modul. Diese Datei wird von
+ * `meta`-Exporten importiert und landet im CLIENT-Bundle; ein Import von dort
+ * würde ein server-only-Modul in den Client ziehen und den Build brechen. Es
+ * sind also zwei QUELLEN, aber nur EIN Mechanismus und EIN Injektor
+ * (`mitNurRouteSeiten`) — die Bauform der beiden ist identisch, inklusive
+ * Aufnahme-Kriterium und benannter Wache je Eintrag.
  * @type {Array<{pfad: string, grund: string}>}
  */
 /**
@@ -1184,6 +1201,23 @@ export const AUS_SITEMAP_ENTFERNTE_SEITEN =
  */
 export function istNichtIndexierbar(handle) {
   return !!handle && NICHT_INDEXIERBARE_SEITEN.includes(handle);
+}
+
+/**
+ * Der Handle-Anteil eines `/pages/…`-Pfades — auch bei Unterpfaden:
+ * `/pages/podcasts/seite-2` -> `podcasts`. Alles andere -> null.
+ *
+ * WOZU: die Sitemap-Route trägt Nur-Route-Seiten als PFAD nach, die
+ * noindex-Hygiene ist aber über HANDLES definiert. Ohne diese Umrechnung
+ * könnten beide nebeneinander laufen, ohne sich je zu widersprechen — und
+ * genau dann entstünde der Konflikt "noindex UND in der Sitemap" durch die
+ * Hintertür, den diese Datei sonst verhindert.
+ * @param {string|undefined} pfad
+ * @returns {string|null}
+ */
+export function seitenHandleAusPfad(pfad) {
+  const m = /^\/pages\/([^/?#]+)/.exec(String(pfad == null ? '' : pfad));
+  return m ? m[1] : null;
 }
 
 /**
