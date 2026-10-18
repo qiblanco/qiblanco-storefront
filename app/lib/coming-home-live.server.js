@@ -15,14 +15,14 @@
  * folgt", nie eine erfundene Uhrzeit) und genau einer von ch-vorschau (vor dem Call:
  * Thema) oder ch-rueckblick (nach dem Call: Geschichte). Sortiert wird nach
  * dem Datum im Tag, nicht nach publishedAt. Kein Laufzeit-Abruf des
- * AI-Servers fuer Inhalte (Lehre Produktberatung "Termine laden nicht").
+ * AI-Servers für Inhalte (Lehre Produktberatung "Termine laden nicht").
  *
- * ANMELDUNG UEBER DEN EIGENEN DIENST (Nahtvertrag N4, s05 liefert):
+ * ANMELDUNG über DEN EIGENEN DIENST (Nahtvertrag N4, s05 liefert):
  * POST {basis}/api/anmeldung | /api/bestaetigen | /api/abmelden, JSON, Frist
  * 4 s, Kopf X-CH-Kunde-IP (Mengen-Deckel je Mensch statt je Oxygen-Knoten)
  * und X-CH-Probe unveraendert durchgereicht (Testmodus der Probe, die Mail
  * geht dann in den Probe-Ausgang). POST wird NIE wiederholt: ein zweiter
- * Versuch nach verlorener Antwort koennte zwei Mails ausloesen.
+ * Versuch nach verlorener Antwort könnte zwei Mails ausloesen.
  *
  * TESTUMGEBUNG: Env COMING_HOME_API lenkt die Anmeldung auf einen
  * Wegwerf-Endpunkt um. Env COMING_HOME_FIXTUR=leer|vorschau|drei ersetzt den
@@ -36,7 +36,7 @@ export const FRIST_MS = 4000;
 export const BLOG_HANDLE = 'coming-home'; // Spiegel in pages.live.jsx (Client-Link)
 export const ZEITZONE = 'Europe/Berlin';
 
-/** So lange nach dem Beginn gilt ein Termin mit Uhrzeit noch als "der naechste". */
+/** So lange nach dem Beginn gilt ein Termin mit Uhrzeit noch als "der nächste". */
 export const DAUER_MIN = 60;
 /** So viele Rueckblicke zeigt die Seite, neueste zuerst (ein halbes Jahr). */
 export const RUECKBLICK_MAX = 26;
@@ -89,7 +89,7 @@ function signal(ms) {
 }
 
 /**
- * Ein POST an den Anmeldedienst. Rueckgabe {status, body}; Netzfehler und
+ * Ein POST an den Anmeldedienst. Rückgabe {status, body}; Netzfehler und
  * Zeitueberschreitung geben status 0.
  */
 export async function apiPost(
@@ -159,7 +159,7 @@ export function abmeldeZustand(r) {
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**
- * Eingabe des Formulars pruefen; Rueckgabe {ok, name, email, grund}.
+ * Eingabe des Formulars prüfen; Rückgabe {ok, name, email, grund}.
  * `version` ist die Einwilligungs-Version, die das Formular zeigt (eine
  * Stelle: die Route, weil das Formular sie im Browser braucht).
  */
@@ -225,9 +225,9 @@ export function berlinZuUtc(datum, hhmm) {
 }
 
 /**
- * Der naechste Sonntag als Kalendertag in Berlin, heute eingeschlossen. Ohne
+ * Der nächste Sonntag als Kalendertag in Berlin, heute eingeschlossen. Ohne
  * Uhrzeit: die kennt erst der Termin ("Uhrzeit folgt"). `start` ist der
- * Mittag des Tages, nur fuer Datumsanzeige und Sortierung.
+ * Mittag des Tages, nur für Datumsanzeige und Sortierung.
  */
 export function naechsterSonntag(jetzt) {
   for (let i = 0; i < 8; i += 1) {
@@ -317,7 +317,7 @@ function frueherZuerst(a, b) {
 /**
  * Artikel -> {naechster, weitere, rueckblicke, rueckblickeGesamt}.
  * `naechster` ist die Vorschau mit dem kleinsten ch-datum, die noch nicht
- * vorbei ist; ohne sie der naechste Sonntag mit "Thema folgt" und "Uhrzeit
+ * vorbei ist; ohne sie der nächste Sonntag mit "Thema folgt" und "Uhrzeit
  * folgt". `rueckblicke` neueste zuerst, hoechstens RUECKBLICK_MAX.
  */
 export function seitenDaten(artikel, jetzt) {
@@ -392,7 +392,7 @@ export const ARTIKEL_QUERY = `#graphql
 `;
 
 /**
- * Artikel des Blogs holen. Rueckgabe {artikel, ladeFehler}. Ein fehlender
+ * Artikel des Blogs holen. Rückgabe {artikel, ladeFehler}. Ein fehlender
  * Blog ist KEIN Fehler (leere Liste), eine gescheiterte Abfrage schon.
  */
 export async function artikelLaden(context) {

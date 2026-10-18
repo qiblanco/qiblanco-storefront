@@ -29,7 +29,9 @@
   --lv-fs-base: 1rem;
   --lv-fs-lg: 1.25rem;
   --lv-fs-xl: 1.5625rem;
-  --lv-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  /* Höchstens 30px: der Sprung vom Lead (20px) bleibt in der Skala (1,5);
+     36px wäre 1,8 und reißt die Typo-Skala der Gestaltungs-Prüfliste. */
+  --lv-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 1.875rem);
   --lv-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
 
   /* Abstände: 8pt-Raster */
@@ -165,7 +167,7 @@ body:has(.lv) {
   margin: 0 auto var(--lv-s4);
 }
 .lv .lv-hinweis {
-  font-size: var(--lv-fs-xs);
+  font-size: var(--lv-fs-base);
   line-height: 1.6;
   color: var(--lv-muted);
   max-width: var(--lv-mass);
@@ -306,7 +308,7 @@ body:has(.lv) {
   grid-template-columns: var(--lv-haken) minmax(0, 1fr);
   gap: var(--lv-s2);
   align-items: start;
-  font-size: var(--lv-fs-xs);
+  font-size: var(--lv-fs-base);
   line-height: 1.6;
   color: var(--lv-text);
   margin: 0;

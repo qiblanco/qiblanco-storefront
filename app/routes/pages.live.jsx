@@ -3,10 +3,10 @@ import {
   Link,
   data,
   redirect,
-  useActionData,
   useFetcher,
   useLoaderData,
 } from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {buyerIpAusRequest} from '~/lib/interner-verkehr';
@@ -409,9 +409,13 @@ function Rueckblick({rueckblicke, gesamt, ladeFehler}) {
   );
 }
 
-/** Antwort der Action: Fetcher (mit JavaScript) oder Seitenantwort (ohne). */
+/**
+ * Antwort der Action: Fetcher (mit JavaScript) oder Seitenantwort (ohne). Die
+ * Seitenantwort über den Haus-Hook, damit eine Revalidierung (Cookie-Banner)
+ * sie nicht wegwirft (F-2566).
+ */
 function useAntwort(fetcher) {
-  const ohneJs = useActionData();
+  const ohneJs = useAktionsergebnisUeberRevalidierung();
   return fetcher.data ?? ohneJs ?? null;
 }
 
