@@ -264,7 +264,7 @@ export function datumKurz(start) {
   }).format(start);
 }
 
-/** "19:00 Uhr"; ohne Uhrzeit null (die Seite zeigt "Uhrzeit folgt"). */
+/** "12:00 Uhr"; ohne Uhrzeit null (die Seite zeigt "Uhrzeit folgt"). */
 export function uhrzeit(hhmm) {
   return hhmm ? `${hhmm.slice(0, 2)}:${hhmm.slice(2)} Uhr` : null;
 }
@@ -423,7 +423,7 @@ function fixturRueckblick(datum, titel, teaser, absaetze) {
     title: titel,
     excerpt: teaser,
     contentHtml: absaetze.map((p) => `<p>${p}</p>`).join(''),
-    tags: ['ch-termin', `ch-datum-${datum}`, 'ch-zeit-1900', 'ch-rueckblick'],
+    tags: ['ch-termin', `ch-datum-${datum}`, 'ch-zeit-1200', 'ch-rueckblick'],
   };
 }
 
@@ -436,7 +436,7 @@ export function fixturArtikel(art, jetzt) {
     title: 'Testthema: Wie viel Ruhe braucht ein Abend?',
     excerpt: 'Testtext für die Vorschau. Er steht nur in der Testumgebung.',
     contentHtml: '<p>Testtext für die Vorschau.</p>',
-    tags: ['ch-termin', `ch-datum-${naechster}`, 'ch-zeit-1900', 'ch-vorschau'],
+    tags: ['ch-termin', `ch-datum-${naechster}`, 'ch-zeit-1200', 'ch-vorschau'],
   };
   // Vorschau-Zustand mit offener Uhrzeit (bis Zoom die Zeit liefert).
   if (art === 'vorschau') {
