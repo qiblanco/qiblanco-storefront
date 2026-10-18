@@ -18,8 +18,17 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * Kaufaufforderung nur im langen Video).
  *
  * WOHER DIE ANGABEN STAMMEN, keine ist geraten:
- *   · jeden Sonntag 19 Uhr, per Zoom  -> Elinas Einladungen an die DACH-Liste
- *     (ActiveCampaign-Kampagnen 1049 vom 18.09. und 1051 vom 24.09.2026)
+ *   · jeden Sonntag 12 Uhr (Berlin),  -> Christian 18.10.2026 („12 Uhr Berlin
+ *     per Zoom                            ... gilt auf jeden Fall bis Anfang April
+ *                                         2027", Grossjob 20261018-GROSSJOB-
+ *                                         coming-home-...-live, Übergabe #42);
+ *                                         Elinas Einladungen nennen 12 Uhr seit
+ *                                         der Kampagne 1056 vom 08.10.2026. Bis
+ *                                         dahin 19 Uhr (Kampagnen 1049, 1051).
+ *                                         Die Wache probe_coming_home_seite.py
+ *                                         (Arm E) liest die Uhrzeit von DIESER
+ *                                         Seite und vergleicht sie mit der
+ *                                         jüngsten Einladung.
  *   · 60 Minuten                      -> Christians Leitplanke, Folie 15
  *   · „Alles kann, nichts muss", Kakao oder Tee, zuhören reicht, ohne
  *     Programm                        -> Wortlaut der Einladungen
@@ -111,11 +120,11 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
 const PFAD = '/pages/coming-home';
 
 const TITEL =
-  'Coming Home live: jeden Sonntag um 19 Uhr mit Anna und Christian | Qi Blanco';
+  'Coming Home live: jeden Sonntag um 12 Uhr mit Anna und Christian | Qi Blanco';
 
 const BESCHREIBUNG =
   'Eine Stunde live mit Anna und Christian von Qi Blanco. Du fragst, wir ' +
-  'antworten. Oder du hörst einfach zu. Jeden Sonntag um 19 Uhr per Zoom, ' +
+  'antworten. Oder du hörst einfach zu. Jeden Sonntag um 12 Uhr (Berliner Zeit) per Zoom, ' +
   'kostenlos.';
 
 /** Eigenes Foto, steht schon auf der Kakao-Kursseite (KakaoKurs.jsx). */
@@ -177,7 +186,7 @@ const AC_FELDER = {
 const TOPF_NAME = 'ch_kontrollfeld';
 
 const ECKDATEN = [
-  {begriff: 'Wann', wert: 'Jeden Sonntag, 19 Uhr'},
+  {begriff: 'Wann', wert: 'Jeden Sonntag, 12 Uhr (Berlin)'},
   {begriff: 'Dauer', wert: '60 Minuten'},
   {begriff: 'Wo', wert: 'Live per Zoom, von zu Hause'},
   {begriff: 'Kosten', wert: 'Keine'},
@@ -213,7 +222,7 @@ const SCHRITTE = [
     text: 'Er erscheint sofort hier auf der Seite.',
   },
   {
-    titel: 'Sonntag um 19 Uhr',
+    titel: 'Sonntag um 12 Uhr',
     text: 'Du öffnest den Link. Mehr brauchst du nicht.',
   },
 ];
@@ -312,7 +321,7 @@ export default function ComingHome() {
           <div className="ch-kopf-text">
             <p className="ch-vorzeile">Coming Home · jeden Sonntag live</p>
             <h1 className="ch-h1">
-              Jeden Sonntag um 19{'\u00a0'}Uhr: eine Stunde live mit Anna und
+              Jeden Sonntag um 12{'\u00a0'}Uhr: eine Stunde live mit Anna und
               Christian
             </h1>
             <p className="ch-lede">
