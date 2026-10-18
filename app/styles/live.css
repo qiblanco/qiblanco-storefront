@@ -1,0 +1,482 @@
+/* ============================================================================
+   /pages/live — Coming Home live: nächster Termin, Anmeldung, Rückblick
+   (2026-10-18, Grossjob 20261018-GROSSJOB-coming-home-zoom-aufnahme-
+   transkript-zusammenfassung-homepage-reiter-live, s04).
+
+   TOKEN-SYSTEM wie app/styles/coming-home.css: Gold, Tinte und Radius aus der
+   Wurzel app/styles/qb-tokens.css (--qb-*), diese Datei setzt nur die Rollen
+   der Seite darauf (--lv-*). Warmes Neutral-Kontinuum, EIN Gold nur auf
+   Handlung, 8pt-Raster, EIN H2-Stil, zwei Radien, drei Farb-Akte (Grund,
+   Fläche für den Termin, dunkler Akt für die Anmeldung).
+
+   REGEL: außerhalb des :root-Blocks erfindet keine Regel einen freien Wert.
+   KNOPF: der Bausatz-Knopf .btn--primary (app.css), .lv-knopf gibt ihm nur
+   seinen Platz.
+
+   ARTIKEL-HTML (.lv-geschichte): reset.css setzt p und li global; die
+   Geschichte aus dem Blog bekommt deshalb ihre Regeln hier ausdrücklich.
+
+   WARUM EIGENE DATEI: Gate 12 ordnet CSS per Dateiname einer Seite zu und
+   löst geteilte Dateien auf alle importierenden Routen auf. Diese Datei
+   gehört allein dieser Route.
+   ========================================================================== */
+
+:root {
+  --lv-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo-Skala: 13 / 16 / 20 / 25 / H2 / H1 */
+  --lv-fs-xs: 0.8125rem;
+  --lv-fs-base: 1rem;
+  --lv-fs-lg: 1.25rem;
+  --lv-fs-xl: 1.5625rem;
+  --lv-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);
+  --lv-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Abstände: 8pt-Raster */
+  --lv-s1: 8px;
+  --lv-s2: 16px;
+  --lv-s3: 24px;
+  --lv-s4: 32px;
+  --lv-s6: 48px;
+  --lv-s8: 64px;
+  --lv-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent */
+  --lv-grund: #faf9f5;
+  --lv-flaeche: #f4f0e9;
+  --lv-dunkel: #191714;
+  --lv-text: var(--qb-text);
+  --lv-text-hell: #f4f0e9;
+  --lv-muted: var(--qb-text-gedaempft);
+  --lv-muted-hell: rgba(244, 240, 233, 0.72);
+  --lv-akzent: var(--qb-akzent);
+  --lv-akzent-tinte: var(--qb-akzent-tinte);
+  --lv-linie: rgba(44, 42, 38, 0.12);
+
+  /* Radien und Schatten */
+  --lv-r1: 8px;
+  --lv-r2: 16px;
+  --lv-schatten: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --lv-mass: 62ch;
+  --lv-breite: 1080px;
+  --lv-breite-schmal: 760px;
+  --lv-haken: 20px;
+  --lv-knopf-breite: 500px;
+  --lv-link-min: 16rem;
+}
+
+body:has(.lv) {
+  background: var(--lv-grund);
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.lv {
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-base);
+  line-height: 1.65;
+  color: var(--lv-text);
+  background: var(--lv-grund);
+}
+.lv *,
+.lv *::before,
+.lv *::after {
+  box-sizing: border-box;
+}
+.lv .lv-abschnitt {
+  margin: 0;
+  padding: var(--lv-s12) var(--lv-s3);
+  max-width: none;
+  background: var(--lv-grund);
+}
+.lv .lv-innen {
+  max-width: var(--lv-breite);
+  margin: 0 auto;
+}
+.lv .lv-innen-schmal {
+  max-width: var(--lv-breite-schmal);
+}
+
+/* ─── Typo: EIN H1, EIN H2, H3, H4 ───────────────────────────────────────── */
+.lv .lv-h1 {
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-h1);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--lv-text);
+  max-width: var(--lv-breite-schmal);
+  margin: 0 0 var(--lv-s3);
+}
+.lv .lv-h2 {
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  color: inherit;
+  margin: 0 auto var(--lv-s6);
+}
+.lv .lv-h3 {
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-xl);
+  font-weight: 600;
+  line-height: 1.25;
+  color: inherit;
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-h4 {
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lv-muted);
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-vorzeile {
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lv-akzent-tinte);
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-lede {
+  font-size: var(--lv-fs-lg);
+  line-height: 1.5;
+  color: var(--lv-muted);
+  max-width: var(--lv-mass);
+  margin: 0 0 var(--lv-s6);
+}
+.lv .lv-text {
+  font-size: var(--lv-fs-base);
+  line-height: 1.65;
+  color: inherit;
+  max-width: var(--lv-mass);
+  margin: 0;
+}
+.lv .lv-text-mitte {
+  text-align: center;
+  margin: 0 auto var(--lv-s4);
+}
+.lv .lv-hinweis {
+  font-size: var(--lv-fs-xs);
+  line-height: 1.6;
+  color: var(--lv-muted);
+  max-width: var(--lv-mass);
+  margin: var(--lv-s2) 0 0;
+}
+.lv .lv-verweis {
+  display: inline-block;
+  margin-top: var(--lv-s2);
+  color: var(--lv-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.lv .lv-knopf {
+  margin: var(--lv-s3) 0 0;
+  text-decoration: none;
+}
+
+/* ─── Akt 1: Kopf ────────────────────────────────────────────────────────── */
+.lv .lv-eckdaten {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--lv-s3);
+  margin: 0 0 var(--lv-s4);
+  padding: var(--lv-s3) 0;
+  border-top: 1px solid var(--lv-linie);
+  border-bottom: 1px solid var(--lv-linie);
+}
+.lv .lv-eckdatum {
+  margin: 0;
+}
+.lv .lv-eckdatum-begriff {
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lv-muted);
+  margin: 0;
+}
+.lv .lv-eckdatum-wert {
+  font-size: var(--lv-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--lv-text);
+  margin: 0;
+}
+.lv .lv-aufnahme {
+  color: var(--lv-muted);
+}
+
+/* ─── Akt 2: der nächste Termin (Fläche) ─────────────────────────────────── */
+.lv .lv-termin {
+  background: var(--lv-flaeche);
+}
+.lv .lv-terminkarte {
+  margin: 0;
+  padding: var(--lv-s4);
+  border-radius: var(--lv-r2);
+  background: var(--lv-grund);
+  box-shadow: var(--lv-schatten);
+  border-top: 2px solid var(--lv-akzent);
+}
+.lv .lv-termin-wann {
+  font-size: var(--lv-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--lv-text);
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-weitere {
+  margin: var(--lv-s6) 0 0;
+}
+.lv .lv-weitere-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lv .lv-weitere-punkt {
+  font-size: var(--lv-fs-base);
+  line-height: 1.65;
+  color: var(--lv-text);
+  margin: 0;
+  padding: var(--lv-s2) 0;
+  border-top: 1px solid var(--lv-linie);
+}
+.lv .lv-weitere-wann {
+  font-weight: 600;
+}
+
+/* ─── Akt 3: dunkel, die Anmeldung ───────────────────────────────────────── */
+.lv .lv-dunkel {
+  background: var(--lv-dunkel);
+  color: var(--lv-text-hell);
+  scroll-margin-top: var(--lv-s8);
+}
+.lv .lv-dunkel .lv-text-mitte {
+  color: var(--lv-muted-hell);
+}
+.lv .lv-karte {
+  margin: 0 auto;
+  max-width: var(--lv-breite-schmal);
+  padding: var(--lv-s4);
+  border-radius: var(--lv-r2);
+  background: var(--lv-grund);
+  color: var(--lv-text);
+}
+.lv .lv-karte .lv-h3:focus {
+  outline: none;
+}
+.lv .lv-feldname {
+  display: block;
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  color: var(--lv-text);
+  margin: 0 0 var(--lv-s1);
+}
+.lv .lv-feld {
+  display: block;
+  width: 100%;
+  min-height: var(--lv-s6);
+  padding: var(--lv-s1) var(--lv-s2);
+  margin: 0 0 var(--lv-s3);
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-base);
+  line-height: 1.4;
+  color: var(--lv-text);
+  background: var(--lv-flaeche);
+  border: 1px solid var(--lv-linie);
+  border-radius: var(--lv-r1);
+}
+.lv .lv-feld:focus-visible,
+.lv .lv-haken:focus-visible,
+.lv .lv-kopieren:focus-visible {
+  outline: 2px solid var(--lv-akzent-tinte);
+  outline-offset: 2px;
+}
+.lv .lv-einwilligung {
+  display: grid;
+  grid-template-columns: var(--lv-haken) minmax(0, 1fr);
+  gap: var(--lv-s2);
+  align-items: start;
+  font-size: var(--lv-fs-xs);
+  line-height: 1.6;
+  color: var(--lv-text);
+  margin: 0;
+  cursor: pointer;
+}
+.lv .lv-haken {
+  width: var(--lv-haken);
+  height: var(--lv-haken);
+  margin: 0;
+  accent-color: var(--lv-akzent-tinte);
+}
+.lv .lv-topf {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.lv .lv-fehler {
+  font-size: var(--lv-fs-base);
+  font-weight: 600;
+  color: var(--lv-text);
+  margin: var(--lv-s2) 0 0;
+}
+.lv .lv-karte-knopf {
+  text-align: center;
+}
+.lv .lv-karte-knopf .lv-text {
+  margin: 0 auto;
+}
+
+/* Zugang nach der Anmeldung: Knopf, darunter der Link als Text. */
+.lv .lv-link-titel {
+  margin-top: var(--lv-s4);
+}
+.lv .lv-link-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--lv-s1);
+  max-width: var(--lv-knopf-breite);
+}
+.lv .lv-link-text {
+  flex: 1 1 var(--lv-link-min);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  min-height: var(--lv-s6);
+  padding: var(--lv-s1) var(--lv-s2);
+  font-size: var(--lv-fs-base);
+  line-height: 1.4;
+  color: var(--lv-text);
+  background: var(--lv-flaeche);
+  border: 1px solid var(--lv-linie);
+  border-radius: var(--lv-r1);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.lv .lv-kopieren {
+  flex: 0 0 auto;
+  min-height: var(--lv-s6);
+  padding: var(--lv-s1) var(--lv-s2);
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  color: var(--lv-text);
+  background: var(--lv-grund);
+  border: 1px solid var(--lv-akzent);
+  border-radius: var(--lv-r1);
+  cursor: pointer;
+}
+.lv .lv-kopieren:hover {
+  background: var(--lv-flaeche);
+}
+.lv .lv-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ─── Rückblick je Woche ─────────────────────────────────────────────────── */
+.lv .lv-woche-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lv .lv-woche {
+  margin: 0;
+  padding: var(--lv-s4) 0;
+  border-top: 1px solid var(--lv-linie);
+  color: var(--lv-text);
+}
+.lv .lv-woche-wann {
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lv-akzent-tinte);
+  margin: 0 0 var(--lv-s1);
+}
+.lv .lv-leer {
+  text-align: center;
+  color: var(--lv-muted);
+  margin: 0 auto;
+}
+.lv .lv-geschichte {
+  max-width: var(--lv-mass);
+}
+.lv .lv-geschichte p,
+.lv .lv-geschichte li {
+  font-size: var(--lv-fs-base);
+  line-height: 1.65;
+  color: var(--lv-text);
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-geschichte h2,
+.lv .lv-geschichte h3,
+.lv .lv-geschichte h4 {
+  font-family: var(--lv-font);
+  font-size: var(--lv-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--lv-text);
+  margin: var(--lv-s3) 0 var(--lv-s1);
+}
+.lv .lv-geschichte ul,
+.lv .lv-geschichte ol {
+  margin: 0 0 var(--lv-s2);
+  padding-left: var(--lv-s3);
+}
+.lv .lv-geschichte a {
+  color: var(--lv-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.lv .lv-geschichte blockquote {
+  margin: var(--lv-s3) 0;
+  padding-left: var(--lv-s2);
+  border-left: 2px solid var(--lv-akzent);
+}
+.lv .lv-geschichte img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--lv-r2);
+}
+
+/* ─── Schmal ─────────────────────────────────────────────────────────────── */
+@media (max-width: 899px) {
+  .lv .lv-abschnitt {
+    padding: var(--lv-s8) var(--lv-s3);
+  }
+  .lv .lv-eckdaten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lv .lv-h2 {
+    margin-bottom: var(--lv-s4);
+  }
+  .lv .lv-karte,
+  .lv .lv-terminkarte {
+    padding: var(--lv-s3);
+  }
+}
+@media (max-width: 479px) {
+  .lv .lv-eckdaten {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--lv-s2);
+  }
+}
