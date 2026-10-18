@@ -39,6 +39,7 @@
   --qm-fs-lg: 1.25rem;                                     /* 20px */
   --qm-fs-xl: 1.5625rem;                                   /* 25px */
   --qm-fs-h2: clamp(1.75rem, 1.2rem + 1.9vw, 2.25rem);     /* EIN H2-Stil */
+  --qm-fs-h2-mobil: 1.5rem;                                /* 24px = Hauswert reset.css:204 */
   --qm-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
 
   /* Die Groesse der Guetezeilen — und seit 2026-09-17 auch die der drei
@@ -1224,4 +1225,47 @@ body:has(.ProductPageQiMaster) .eu-gwl--listenpunkt > .eu-gwl__link:focus-visibl
 .qm-pdp .qm-addons__summe {
   margin: 0;
   font-size: var(--qm-fs-md);
+}
+
+/* ─── Mobil: die H2 auf den Hauswert ──────────────────────────────────────
+   NACHTRAG 2026-09-15, Job 20260915-h2-mobil-altbestand-vier-seiten-prio20.
+
+   GEMESSEN am 2026-09-15 auf https://qiblanco.com/products/qi-master bei
+   600px Breite: 1 von 14 H2 stand auf 30,6px statt auf dem Hauswert 24px
+   (reset.css:204 fuehrt unter 750px `h2 { font-size: 1.5rem !important }`).
+   30,6px ist genau, was --qm-fs-h2 dort ausrechnet: clamp(28, 19,2 + 1,9vw,
+   36) = 19,2 + 11,4.
+
+   WER DEN HAUSWERT SCHLAEGT, UND WER NICHT — die Unterscheidung ist der Fix:
+   Bei !important dreht die Kaskade die Layer-Reihenfolge um. Eine GELAYERTE
+   !important-Regel schlaegt damit jede UNGELAYERTE, auch die des reset.
+     * Zeile 142, `.ProductPageQiMaster .UpsellLineUp h2` in @layer utilities:
+       gelayert + !important -> schlaegt den Hauswert. DAS ist der Taeter.
+     * Zeile 929, dieselbe Zuweisung ungelayert: verliert gegen Zeile 142 und
+       ist wirkungslos. Sie bleibt unangetastet stehen (sie war schon vorher
+       ohne Wirkung; ein Diff dort aendert kein Pixel) -- sie kann den Fix
+       hier auch nicht aushebeln, weil ungelayert gegen gelayert verliert.
+     * Zeile 149, `.ProductPageQiMaster h2` OHNE !important: verliert gegen
+       jedes !important. Deshalb sind die uebrigen 13 H2 der Seite korrekt bei
+       24px -- und deshalb waere ein Fix am Token allein am Ziel vorbei.
+
+   Die Ruecknahme steht darum in DERSELBEN Ebene wie Zeile 142 und hinter ihr
+   in der Datei (gleiche Spezifitaet, spaetere Quellposition gewinnt).
+   Bauform woertlich wie app/styles/pdp-qi.css (Commit 2102512).
+
+   DER ZWEITE SELEKTOR IST ABSICHT: `.ProductPageQiMaster h2[class]` fasst
+   jede kuenftige gelayerte !important-Utility auf einer H2 dieser Route mit.
+   Fuer die 13 heute schon korrekten H2 aendert er nichts -- sie stehen bereits
+   auf 24px, die Regel schreibt denselben Wert.
+
+   WARUM DAS SONST NIEMAND SIEHT: `dim_stimmig` der design-rubrik liest
+   ausschliesslich viewports["desktop"]. Melder ist die h2-mobil-wache
+   (homepage-bauer/bin/h2-mobil-wache, rt-Task seit 2026-09-15). */
+@media (max-width: 749px) {
+  @layer utilities {
+    .ProductPageQiMaster .UpsellLineUp h2,
+    .ProductPageQiMaster h2[class] {
+      font-size: var(--qm-fs-h2-mobil) !important;
+    }
+  }
 }
