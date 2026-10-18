@@ -50,14 +50,17 @@ import liveStyles from '~/styles/live.css?url';
  *       5 des Konzepts). Die Uhrzeit steht nur im Termin, nie im Fließtext:
  *       sie kommt aus dem Termin (Christians Uhrzeit-Widerspruch wird in Zoom
  *       geklärt, nicht hier).
- *   (2) Nächster Termin: frühester ch-vorschau-Artikel, der noch nicht vorbei
- *       ist; ohne ihn der nächste Sonntag 19:00 mit „Thema folgt".
+ *   (2) Nächster Termin: ch-vorschau-Artikel mit dem kleinsten ch-datum, der
+ *       noch nicht vorbei ist; ohne ihn der nächste Sonntag mit „Thema folgt".
+ *       Ohne ch-zeit-HHMM (oder mit ch-zeit-offen) steht „Uhrzeit folgt",
+ *       nie eine erfundene Uhrzeit (Nachtrag P2, 18.10.).
  *   (3) Anmeldung: Name, E-Mail, eigene Einwilligung NUR für Coming Home
  *       (Wortlaut und Version ch-live-1 von s05, kein Newsletter), Honigtopf.
  *       Die Action reicht an den Anmeldedienst (N4). Fällt er aus, zeigt die
  *       Seite den Zoom-Link direkt: niemand wird ausgesperrt.
  *   (4) Rückblick je Woche, neueste zuerst (ch-rueckblick). Die neueste
- *       Geschichte steht ganz da, die älteren mit Teaser und Link.
+ *       Geschichte steht ganz da, die älteren mit Teaser und Link; höchstens
+ *       26, der Rest über den Link in den Blog.
  *
  * MAIL-LINKS ?bestaetigen=<t> und ?abmelden=<t>: der Loader legt den Token in
  * den HttpOnly-Cookie ch_live und leitet auf ?schritt=… um. So liest kein
@@ -258,7 +261,11 @@ export default function Live() {
           )}
         </div>
       </section>
-      <Rueckblick rueckblicke={d.rueckblicke} ladeFehler={d.ladeFehler} />
+      <Rueckblick
+        rueckblicke={d.rueckblicke}
+        gesamt={d.rueckblickeGesamt}
+        ladeFehler={d.ladeFehler}
+      />
     </div>
   );
 }
@@ -304,7 +311,7 @@ function Termin({naechster, weitere}) {
           >
             <p className="lv-termin-wann">
               <time dateTime={naechster.startUtc}>
-                {naechster.datumLang}, {naechster.uhrzeit}
+                {naechster.datumLang}, {naechster.uhrzeit || 'Uhrzeit folgt'}
               </time>
             </p>
             <h3 className="lv-h3">{naechster.titel || 'Thema folgt'}</h3>
@@ -336,12 +343,13 @@ function Termin({naechster, weitere}) {
   );
 }
 
-function Rueckblick({rueckblicke, ladeFehler}) {
+function Rueckblick({rueckblicke, gesamt, ladeFehler}) {
   return (
     <section
       className="lv-abschnitt"
       data-ch-live="rueckblick"
       data-ch-live-anzahl={rueckblicke.length}
+      data-ch-live-gesamt={gesamt}
       data-ch-live-ladefehler={ladeFehler ? 'ja' : 'nein'}
     >
       <div className="lv-innen lv-innen-schmal">
@@ -357,7 +365,7 @@ function Rueckblick({rueckblicke, ladeFehler}) {
             {rueckblicke.map((r, i) => (
               <li
                 className="lv-woche"
-                key={r.datum}
+                key={r.handle || r.datum}
                 data-ch-live-eintrag={r.datum}
               >
                 <p className="lv-woche-wann">
@@ -385,6 +393,17 @@ function Rueckblick({rueckblicke, ladeFehler}) {
             ))}
           </ol>
         )}
+        {gesamt > rueckblicke.length ? (
+          <p className="lv-text lv-alle">
+            <Link
+              className="lv-verweis"
+              to={`/blogs/${BLOG_HANDLE}`}
+              prefetch="intent"
+            >
+              Alle {gesamt} Rückblicke im Blog
+            </Link>
+          </p>
+        ) : null}
       </div>
     </section>
   );

@@ -11,7 +11,8 @@
  * INHALT KOMMT AUS DEM SHOPIFY-BLOG `coming-home` (Nahtvertrag N3 im
  * KONZEPT.md des Grossjobs, s03 schreibt): ein Artikel je Termin, Handle
  * coming-home-YYYY-MM-DD, Tags ch-termin, ch-datum-YYYY-MM-DD, ch-zeit-HHMM
- * (Ortszeit Europe/Berlin) und genau einer von ch-vorschau (vor dem Call:
+ * (Ortszeit Europe/Berlin; ch-zeit-offen oder kein Zeit-Tag = "Uhrzeit
+ * folgt", nie eine erfundene Uhrzeit) und genau einer von ch-vorschau (vor dem Call:
  * Thema) oder ch-rueckblick (nach dem Call: Geschichte). Sortiert wird nach
  * dem Datum im Tag, nicht nach publishedAt. Kein Laufzeit-Abruf des
  * AI-Servers fuer Inhalte (Lehre Produktberatung "Termine laden nicht").
@@ -35,10 +36,10 @@ export const FRIST_MS = 4000;
 export const BLOG_HANDLE = 'coming-home'; // Spiegel in pages.live.jsx (Client-Link)
 export const ZEITZONE = 'Europe/Berlin';
 
-/** Ohne Vorschau-Artikel: der naechste Sonntag zu dieser Ortszeit (KONZEPT §7). */
-export const ERSATZ_ZEIT = '1900';
-/** So lange nach dem Beginn gilt ein Termin noch als "der naechste". */
+/** So lange nach dem Beginn gilt ein Termin mit Uhrzeit noch als "der naechste". */
 export const DAUER_MIN = 60;
+/** So viele Rueckblicke zeigt die Seite, neueste zuerst (ein halbes Jahr). */
+export const RUECKBLICK_MAX = 26;
 
 /** Der Token aus den Mail-Links reist im Cookie, nie in der Adresse. */
 export const COOKIE_NAME = 'ch_live';
@@ -223,20 +224,21 @@ export function berlinZuUtc(datum, hhmm) {
   return new Date(t);
 }
 
-/** Der naechste Sonntag (heute eingeschlossen, solange der Termin laeuft). */
-export function naechsterSonntag(jetzt, hhmm = ERSATZ_ZEIT) {
+/**
+ * Der naechste Sonntag als Kalendertag in Berlin, heute eingeschlossen. Ohne
+ * Uhrzeit: die kennt erst der Termin ("Uhrzeit folgt"). `start` ist der
+ * Mittag des Tages, nur fuer Datumsanzeige und Sortierung.
+ */
+export function naechsterSonntag(jetzt) {
   for (let i = 0; i < 8; i += 1) {
-    const kandidat = new Date(jetzt.getTime() + i * 86400000);
-    const tag = berlinTag(kandidat);
-    const start = berlinZuUtc(tag, hhmm);
+    const tag = berlinTag(new Date(jetzt.getTime() + i * 86400000));
+    const start = berlinZuUtc(tag, '1200');
     if (!start) return null;
     const wochentag = new Intl.DateTimeFormat('en-GB', {
       timeZone: ZEITZONE,
       weekday: 'short',
     }).format(start);
-    if (wochentag === 'Sun' && start.getTime() + DAUER_MIN * 60000 > jetzt.getTime()) {
-      return {datum: tag, zeit: hhmm, start};
-    }
+    if (wochentag === 'Sun') return {datum: tag, zeit: null, start};
   }
   return null;
 }
@@ -262,9 +264,15 @@ export function datumKurz(start) {
   }).format(start);
 }
 
-/** "19:00 Uhr" */
+/** "19:00 Uhr"; ohne Uhrzeit null (die Seite zeigt "Uhrzeit folgt"). */
 export function uhrzeit(hhmm) {
-  return `${hhmm.slice(0, 2)}:${hhmm.slice(2)} Uhr`;
+  return hhmm ? `${hhmm.slice(0, 2)}:${hhmm.slice(2)} Uhr` : null;
+}
+
+/** Noch nicht vorbei: mit Uhrzeit bis Ende des Calls, ohne bis Ende des Tages. */
+function nochOffen(t, jetzt) {
+  if (t.zeit) return t.start.getTime() + DAUER_MIN * 60000 > jetzt.getTime();
+  return t.datum >= berlinTag(jetzt);
 }
 
 // ─── Blog-Artikel -> Termine ────────────────────────────────────────────────
@@ -284,8 +292,9 @@ export function terminAusArtikel(a) {
   const vorschau = tags.includes('ch-vorschau');
   const rueckblick = tags.includes('ch-rueckblick');
   if (!datum || vorschau === rueckblick) return null;
-  const hhmm = zeit || ERSATZ_ZEIT;
-  const start = berlinZuUtc(datum, hhmm);
+  // ch-zeit-offen (oder kein Zeit-Tag): Uhrzeit unbekannt, nie geraten.
+  const hhmm = tags.includes('ch-zeit-offen') ? null : zeit || null;
+  const start = berlinZuUtc(datum, hhmm || '1200');
   if (!start) return null;
   return {
     art: vorschau ? 'vorschau' : 'rueckblick',
@@ -299,30 +308,34 @@ export function terminAusArtikel(a) {
   };
 }
 
+/** Nach ch-datum, bei gleichem Tag nach Uhrzeit (ohne Uhrzeit zuletzt). */
+function frueherZuerst(a, b) {
+  if (a.datum !== b.datum) return a.datum < b.datum ? -1 : 1;
+  return (a.zeit || '9999') < (b.zeit || '9999') ? -1 : 1;
+}
+
 /**
- * Artikel -> {naechster, weitere, rueckblicke}. `naechster` ist der frueheste
- * Vorschau-Termin, der noch nicht vorbei ist; ohne ihn der naechste Sonntag
- * mit "Thema folgt". `rueckblicke` neueste zuerst.
+ * Artikel -> {naechster, weitere, rueckblicke, rueckblickeGesamt}.
+ * `naechster` ist die Vorschau mit dem kleinsten ch-datum, die noch nicht
+ * vorbei ist; ohne sie der naechste Sonntag mit "Thema folgt" und "Uhrzeit
+ * folgt". `rueckblicke` neueste zuerst, hoechstens RUECKBLICK_MAX.
  */
 export function seitenDaten(artikel, jetzt) {
   const termine = (artikel || []).map(terminAusArtikel).filter(Boolean);
   const offen = termine
-    .filter(
-      (t) =>
-        t.art === 'vorschau' &&
-        t.start.getTime() + DAUER_MIN * 60000 > jetzt.getTime(),
-    )
-    .sort((a, b) => a.start - b.start);
+    .filter((t) => t.art === 'vorschau' && nochOffen(t, jetzt))
+    .sort(frueherZuerst);
   const rueckblicke = termine
     .filter((t) => t.art === 'rueckblick')
-    .sort((a, b) => b.start - a.start);
+    .sort((a, b) => frueherZuerst(b, a));
 
   const zeige = (t) => ({
     datum: t.datum,
     datumLang: datumLang(t.start),
     datumKurz: datumKurz(t.start),
     uhrzeit: uhrzeit(t.zeit),
-    startUtc: t.start.toISOString(),
+    // Ohne Uhrzeit nur der Tag: kein erfundener Zeitpunkt im <time>.
+    startUtc: t.zeit ? t.start.toISOString() : t.datum,
     titel: t.titel,
     teaser: t.teaser,
     handle: t.handle,
@@ -339,7 +352,7 @@ export function seitenDaten(artikel, jetzt) {
           datumLang: datumLang(s.start),
           datumKurz: datumKurz(s.start),
           uhrzeit: uhrzeit(s.zeit),
-          startUtc: s.start.toISOString(),
+          startUtc: s.datum,
           titel: '',
           teaser: '',
           handle: '',
@@ -351,7 +364,10 @@ export function seitenDaten(artikel, jetzt) {
   return {
     naechster,
     weitere: offen.slice(1, 4).map(zeige),
-    rueckblicke: rueckblicke.map((t) => ({...zeige(t), html: t.html})),
+    rueckblicke: rueckblicke
+      .slice(0, RUECKBLICK_MAX)
+      .map((t) => ({...zeige(t), html: t.html})),
+    rueckblickeGesamt: rueckblicke.length,
   };
 }
 
@@ -360,7 +376,8 @@ export const ARTIKEL_QUERY = `#graphql
   @inContext(language: $language) {
     blog(handle: $blogHandle) {
       handle
-      articles(first: 50, sortKey: PUBLISHED_AT, reverse: true) {
+      # 250 = Hoechstwert je Seite; sortiert wird danach nach ch-datum.
+      articles(first: 250, sortKey: PUBLISHED_AT, reverse: true) {
         nodes {
           handle
           title
@@ -421,7 +438,10 @@ export function fixturArtikel(art, jetzt) {
     contentHtml: '<p>Testtext für die Vorschau.</p>',
     tags: ['ch-termin', `ch-datum-${naechster}`, 'ch-zeit-1900', 'ch-vorschau'],
   };
-  if (art === 'vorschau') return [vorschau];
+  // Vorschau-Zustand mit offener Uhrzeit (bis Zoom die Zeit liefert).
+  if (art === 'vorschau') {
+    return [{...vorschau, tags: ['ch-termin', `ch-datum-${naechster}`, 'ch-zeit-offen', 'ch-vorschau']}];
+  }
   const vor = (n) => tagPlus(new Date(`${naechster}T12:00:00Z`), -7 * n);
   return [
     vorschau,
