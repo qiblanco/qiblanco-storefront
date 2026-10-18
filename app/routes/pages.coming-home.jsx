@@ -321,7 +321,7 @@ export default function ComingHome() {
           <div className="ch-kopf-text">
             <p className="ch-vorzeile">Coming Home · jeden Sonntag live</p>
             <h1 className="ch-h1">
-              Jeden Sonntag um 19{'\u00a0'}Uhr: eine Stunde live mit Anna und
+              Jeden Sonntag um 12{'\u00a0'}Uhr: eine Stunde live mit Anna und
               Christian
             </h1>
             <p className="ch-lede">
