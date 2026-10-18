@@ -20,6 +20,24 @@
  * 15 % reiht der Heatmap-Kreislauf selbst ein, sobald die Anhebungsregel nicht
  * mehr trägt (experimente.yaml anteil_ruecklauf).
  *
+ * EIGENER DESKTOP-ANTEIL DER STARTSEITE (Grossjob vom 10.10.2026 „LP-Tests
+ * Geräte getrennt", Fix-Segment s06; Christian
+ * 10.10.2026: „dass Desktop und Responsive immer getrennt voneinander bewertet
+ * wird"). Mit 15 % erreicht Desktop auf der Startseite bis zum Deckel rund 62
+ * von 100 B-Sitzungen, also nie ein eigenes Urteil. start-e1-gs081 teilt
+ * Desktop deshalb mit anteil_prozent_desktop 50, mobil und Tablet bleiben bei
+ * anteil_prozent 15. Herleitung: die Anhebungsregel #52 des Rookie-Grossjobs
+ * (nach 7 Tagen ohne Schaden, P(B < A) < 0,80) je Gerät; Desktop stand am
+ * 17.10. bei P(B < A) 0,36. Die Geräteklasse ist dieselbe wie in der
+ * anonymen Zählung (geraeteKlasse in entry.server.jsx, Receiver
+ * basis.device_class): Tablet zählt zu mobil. Salz und id bleiben, also bleiben
+ * die Desktop-Eimer 0-14 auf B und die Eimer 15-49 wechseln von A nach B. Die
+ * Auswertung schichtet nach Epoche x Gerät, das SRM prüft je Gerät
+ * (heatmap-manager experimente.yaml: anteil_verlauf mit Gerätefeld desktop).
+ * KILL nur für Desktop: Env EXP_START_DESKTOP_MODE=off, dann gilt auch auf
+ * Desktop wieder anteil_prozent. SSoT: KONZEPT-s06 im Job-Ordner des
+ * Grossjobs (Desktop-Testdesign).
+ *
  * DRITTER EINTRAG pb-e1-gs107 (Grossjob 20261008-GROSSJOB-produktberatung-
  * christians-text-und-seite-optimieren, s02; Christian 08.10.2026: „Live heißt
  * Test-Kreislauf, nicht nur Bericht"): die Beratungsseite, A = Christians Text +
@@ -51,7 +69,9 @@
  *     werden _routes und index gestrichen; der übrige Query fährt byte-gleich
  *     mit (fbclid, gclid, gad_*, utm_*), dazu der Marker lp_m=<buchstabe>.
  *
- * Zuteilung: Eimer = fnv1a(salz|ip|ua) % 100, Eimer < anteil -> B. Nichts wird
+ * Zuteilung: Eimer = fnv1a(salz|ip|ua) % 100, Eimer < anteil -> B; anteil ist
+ * anteil_prozent_desktop für Desktop, wenn die Zeile ihn trägt, sonst
+ * anteil_prozent. Nichts wird
  * gesetzt oder gespeichert, kein Cookie. Ohne Client-IP gibt es keine stabile
  * Zuteilung, dann A. Eigener Verkehr (Server-IP, Marker-UA) bleibt auf A.
  * Pin für Messwerkzeuge: ?start_exp=a|b bzw. ?shop_exp=a|b.
@@ -84,8 +104,10 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pfad_b: '/pages/start-b',
     salz: 'start-e1-gs081',
     anteil_prozent: 15,
+    anteil_prozent_desktop: 50,
     pin_param: 'start_exp',
     env_kill: 'EXP_START_MODE',
+    env_kill_desktop: 'EXP_START_DESKTOP_MODE',
     marker: 's',
     aktiv: true,
   }),
@@ -161,6 +183,36 @@ export function seitenExperimentAktiv(exp, env) {
   return !(env && env[exp.env_kill] === 'off');
 }
 
+/**
+ * Grobe Geräteklasse wie die anonyme Zählung (geraeteKlasse in
+ * entry.server.jsx, Receiver basis.device_class): mobile | tablet | desktop.
+ * Der Rumpf ist zeichengleich mit dem in entry.server.jsx; der Test
+ * experiment-weiche.test.js hält beide gleich, sonst zählte das SRM je Gerät
+ * eine andere Klasse als die, nach der die Weiche teilt.
+ * @param {string} ua
+ */
+export function geraeteKlasse(ua) {
+  const u = ua.toLowerCase();
+  if (/ipad|tablet|playbook|kindle|silk|nexus [79]/.test(u)) return 'tablet';
+  if (u.includes('android') && !u.includes('mobi')) return 'tablet';
+  if (/mobi|iphone|ipod|android|blackberry|windows phone|opera mini/.test(u)) {
+    return 'mobile';
+  }
+  return 'desktop';
+}
+
+/**
+ * Anteil B in Prozent für diesen Besucher: anteil_prozent_desktop für die
+ * Klasse desktop, wenn die Zeile ihn trägt und EXP_*_DESKTOP_MODE nicht 'off'
+ * ist; sonst anteil_prozent (mobil, Tablet, jede Zeile ohne eigenen Anteil).
+ */
+export function anteilProzentFuer(exp, userAgent, env) {
+  const eigen = exp.anteil_prozent_desktop;
+  if (typeof eigen !== 'number') return exp.anteil_prozent;
+  if (exp.env_kill_desktop && env && env[exp.env_kill_desktop] === 'off') return exp.anteil_prozent;
+  return geraeteKlasse(userAgent || '') === 'desktop' ? eigen : exp.anteil_prozent;
+}
+
 const INTERNE_PARAMETER = new Set(['_routes', 'index']);
 
 function parameterName(teil) {
@@ -213,6 +265,6 @@ export function entscheideSeitenExperiment(request, env, experimentId, tabelle =
   if (istInternerZugriff({userAgent: ua, ip})) return null;
   if (!ip) return null;
   const eimer = besucherEimer(ip, ua, exp.salz);
-  if (eimer >= exp.anteil_prozent) return null;
+  if (eimer >= anteilProzentFuer(exp, ua, env)) return null;
   return {ziel: ziel(), eimer, id: exp.id};
 }
