@@ -31,7 +31,10 @@ export function CartSummary({cart, layout}) {
   const formatEuroPrice = (money) => {
     if (!money?.amount) return '';
     const amount = parseFloat(money.amount);
-    if (!Number.isFinite(amount)) return '';
+    // Nie "0 €" als Summe (Designstandard, Baustein schublade, Zustand
+    // `lädt`; Register F-056): solange der Server die neue Zeile noch nicht
+    // bestätigt hat, hat sie keinen Preis, und die Summe läge kurz bei 0.
+    if (!Number.isFinite(amount) || amount <= 0) return '';
     return formatPreis(amount, money.currencyCode || 'EUR', 'cart-cent') || '';
   };
 
