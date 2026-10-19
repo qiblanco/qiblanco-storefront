@@ -1186,8 +1186,8 @@ export const NUR_ROUTE_SEITEN = [
       'pages.sprechstunde.jsx und hat KEIN Shopify-Seitenobjekt. Kriterium 2: ' +
       'kein noindex (nur die persönlichen Ansichten ?verwalten/?einloesen), ' +
       'canonicalLink() in der Route. lastmod ist der Commit-Zeitpunkt der ' +
-      'Route. WACHE (Kriterium 3): sprechstunde/seite/pruefung/' +
-      'probe_seite_live.py misst den Seitentext am Rand (nachbau-audit-Naht ' +
+      'Route. WACHE (Kriterium 3): probe_seite_live.py ' +
+      '(shared-state/sprechstunde) misst den Seitentext am Rand (nachbau-audit-Naht ' +
       's03->s05), dazu der tägliche Design-Watch (design_gate_seiten.yaml).',
   },
 ];

@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
-import {Form, useActionData, useLoaderData, useNavigation} from 'react-router';
+import {Form, useLoaderData, useNavigation} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 
 /**
  * /pages/sprechstunde — Darstellung (Route: app/routes/pages.sprechstunde.jsx).
@@ -12,7 +13,7 @@ import {Form, useActionData, useLoaderData, useNavigation} from 'react-router';
  *
  * TEXT WORTGLEICH aus shared-state/sprechstunde/seite/text-de.md (Variante B:
  * Christians Diktat, nur getaktet; s03). Nicht umschreiben, nicht glätten: die
- * Naht-Probe sprechstunde/seite/pruefung/probe_seite_live.py misst die
+ * Naht-Probe probe_seite_live.py (shared-state/sprechstunde) misst die
  * Wortlaut-Stellen am ausgelieferten HTML, und jedes geänderte Wort macht das
  * Richter-Urteil von s03 ungültig. Der Abschnitt „erfolge" fehlt mit Absicht:
  * dort steht noch der Platzhalter (kein Erfahrungsbericht mit Einwilligung).
@@ -63,8 +64,6 @@ const ZONEN_WIE_BERLIN = new Set([
 const SERVICE = 'service@qiblanco.com';
 const FOTO =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
-const VORZEITIG_TEXT =
-  'Bitte schon vor Ablauf der Widerrufsfrist beginnen; mir ist bewusst, dass mein Widerrufsrecht mit dem Gespräch erlischt.';
 
 /** '2026-10-23T15:00:00+02:00' -> Teile der deutschen Zeit, ohne Intl (gleich auf Server und Browser). */
 export function berlinTeile(startBerlin) {
@@ -218,7 +217,12 @@ function Vorzeitig({sichtbar}) {
   return (
     <label className="sp__haken">
       <input type="checkbox" name="zustimmung_vorzeitig" value="1" />
-      <span>{VORZEITIG_TEXT}</span>
+      {/* Pflichttext wortgleich aus sprechstunde/konzept/rechtsklaerung-ticket.md
+          (§ 356 Abs. 4 BGB), keine Hausstimme: darum data-fremdtext. */}
+      <span data-fremdtext="rechtsklaerung-ticket">
+        Bitte schon vor Ablauf der Widerrufsfrist beginnen; mir ist bewusst,
+        dass mein Widerrufsrecht mit dem Gespräch erlischt.
+      </span>
     </label>
   );
 }
@@ -784,7 +788,7 @@ function Einloesen({daten, fehler}) {
 
 export function SprechstundeSeite() {
   const daten = useLoaderData();
-  const aktion = useActionData();
+  const aktion = useAktionsergebnisUeberRevalidierung();
   const fehler = aktion && !aktion.ok ? aktion.text : '';
   if (daten.ansicht === 'verwalten')
     return (

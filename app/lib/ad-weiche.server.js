@@ -342,7 +342,7 @@ export const AUSSCHLUSS_SEGMENTE = [
   '/pages/live',
   // DIE SPRECHSTUNDE MIT CHRISTIAN (Grossjob 20261019-GROSSJOB-sprechstunde-mit-
   // christian-ticket-300-eur-freitags-20-uhr-buchung-live-unter-mehr, s05): wer
-  // ueber eine Anzeige kommt, will einen Freitag mit Christian und das Ticket,
+  // über eine Anzeige kommt, will einen Freitag mit Christian und das Ticket,
   // kein Kaufversprechen einer LP. Additiv, reversibel: eine Zeile loeschen.
   '/pages/sprechstunde',
   '/go',
