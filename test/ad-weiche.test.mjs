@@ -92,6 +92,16 @@ test('Beratungsseite A und B (pb-e1-gs107) sind beide ausgeschlossen', () => {
   assert.equal(istAusgeschlossen('/pages/produktberatung-b'), true);
 });
 
+test('Live-Seite Coming Home (/pages/live) ist ausgeschlossen, bezahlter Klick bleibt dort', () => {
+  assert.equal(istAusgeschlossen('/pages/live'), true);
+  assert.equal(
+    entscheideAdWeiche(`${BASIS}/pages/live?utm_medium=paid&utm_source=facebook&fbclid=IwAR0abc`),
+    null,
+  );
+  // Nur exakt oder '<eintrag>/...': ein fremder Pfad mit demselben Anfang bleibt umleitbar.
+  assert.equal(istAusgeschlossen('/pages/live-x'), false);
+});
+
 test('Infra-Segmente ausgeschlossen', () => {
   for (const pfad of [
     '/collect', '/b', '/api/x', '/cart', '/checkouts/c/123', '/account',

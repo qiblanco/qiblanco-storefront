@@ -334,6 +334,12 @@ export const AUSSCHLUSS_SEGMENTE = [
   // Lage wie die Ziele des Kritik-Suchers oben. Additiv, reversibel: eine
   // Zeile löschen.
   '/pages/coming-home',
+  // DIE LIVE-SEITE ZU COMING HOME (Grossjob 20261018-GROSSJOB-coming-home-
+  // zoom-aufnahme-transkript-zusammenfassung-homepage-reiter-live, s08): Termin,
+  // Anmeldefenster und Rückblick. Heute führt keine Anzeige dorthin; kommt ein
+  // bezahlter Klick an, will er sich anmelden und darf nicht auf LP A umgeleitet
+  // werden. Additiv, reversibel: eine Zeile löschen.
+  '/pages/live',
   '/go',
   '/collect',
   '/b',
