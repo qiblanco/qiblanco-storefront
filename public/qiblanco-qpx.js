@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.12) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.13) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -293,6 +293,61 @@
       } catch (e) {}
       return { rx: null, ry: null };
     }
+    var RAHMEN_ON = CFG.abschnitt_rahmen !== false;
+    var RAHMEN_SEL = ".shopify-section[id^=\"shopify-section-\"]";
+    var RAHMEN_KLASSE_GENERISCH = /^(shopify-section|index-section.*|shopify-section-group-.*)$/;
+    var rahmenEl = [], rahmenNm = [];
+    function rahmenBasis(el) {
+      var k = String(el.id || "").replace(/^shopify-section-/, "")
+                .replace(/^(template|sections)--\d+__/, "");
+      var m = k.match(/^([A-Za-z][A-Za-z0-9_-]*?)_(?=[a-z0-9]*[A-Z0-9])[A-Za-z0-9]{6}$/);
+      if (m) k = m[1];
+      else if (/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(k) || /^\d{10}[0-9a-f]{6,10}$/i.test(k)) {
+        var kl = String(el.className || "").split(/\s+/), hint = "";
+        for (var i = 0; i < kl.length && !hint; i++)
+          if (kl[i] && !RAHMEN_KLASSE_GENERISCH.test(kl[i])) hint = kl[i];
+        k = hint || ("abschnitt-" + k.slice(0, 8));
+      }
+      k = k.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+      return (k || "abschnitt").slice(0, 60);
+    }
+    function rahmenMarkiert(el) {
+      try {
+        return el.hasAttribute("data-section") || el.hasAttribute("data-section-type") ||
+               !!el.querySelector("[data-section],[data-section-type]");
+      } catch (e) { return true; }
+    }
+    function rahmenScan() {
+      var out = [];
+      if (!RAHMEN_ON) return out;
+      try {
+        var alle = d.querySelectorAll(RAHMEN_SEL), zahl = {};
+        rahmenEl = []; rahmenNm = [];
+        for (var i = 0; i < alle.length; i++) {
+          if (rahmenMarkiert(alle[i])) continue;
+          var b = rahmenBasis(alle[i]);
+          zahl[b] = (zahl[b] || 0) + 1;
+          rahmenEl.push(alle[i]); rahmenNm.push(zahl[b] > 1 ? b + "-" + zahl[b] : b);
+          out.push(alle[i]);
+        }
+      } catch (e) {}
+      return out;
+    }
+    function rahmenName(el) {
+      for (var i = 0; i < rahmenEl.length; i++) if (rahmenEl[i] === el) return rahmenNm[i];
+      rahmenScan();
+      for (i = 0; i < rahmenEl.length; i++) if (rahmenEl[i] === el) return rahmenNm[i];
+      return "";
+    }
+    function rueckfallAbschnitt(el) {
+      try {
+        var sc = el && el.closest ? el.closest("[data-section-type]") : null;
+        if (sc) return sc.getAttribute("data-section-type") || "";
+        if (!RAHMEN_ON) return "";
+        sc = el && el.closest ? el.closest(RAHMEN_SEL) : null;
+        return sc ? rahmenName(sc) : "";
+      } catch (e) { return ""; }
+    }
     function sectionOf(el) {
       try { var sc = el && el.closest ? el.closest("[data-section]") : null;
             return sc ? (sc.getAttribute("data-section") || "") : ""; }
@@ -333,8 +388,7 @@
       try {
         var sc = el && el.closest ? el.closest("[data-section]") : null;
         if (sc) return sc.getAttribute("data-section") || "";
-        sc = el && el.closest ? el.closest("[data-section-type]") : null;
-        return sc ? (sc.getAttribute("data-section-type") || "") : "";
+        return rueckfallAbschnitt(el);
       } catch (e) { return ""; }
     }
     var ZIEL_LOCALE = /^\/[a-z]{2}(-[a-z]{2})?(?=\/)/i;
@@ -1012,8 +1066,10 @@
     var secIo = null, secObserved = [];
     function anchorId(el) {
       return el.getAttribute("data-section") ||
-             el.getAttribute("data-section-type") || "";
+             el.getAttribute("data-section-type") ||
+             (RAHMEN_ON ? rahmenName(el) : "");
     }
+    var secRueckfall = 0;
     function visEnough(en) {
       if (en.intersectionRatio >= 0.5) return true;
       try {
@@ -1025,7 +1081,13 @@
     function observeSections() {
       if (!w.IntersectionObserver) return;
       var nodes = d.querySelectorAll("[data-section]");
-      if (!nodes.length) nodes = d.querySelectorAll("[data-section-type]");
+      secRueckfall = nodes.length ? 0 : 1;
+      if (!nodes.length && RAHMEN_ON) {
+        var frei = rahmenScan(), kand = d.querySelectorAll("[data-section-type], " + RAHMEN_SEL);
+        nodes = [];
+        for (var k = 0; k < kand.length; k++)
+          if (kand[k].hasAttribute("data-section-type") || frei.indexOf(kand[k]) >= 0) nodes.push(kand[k]);
+      } else if (!nodes.length) nodes = d.querySelectorAll("[data-section-type]");
       if (!nodes.length) return;
       if (!secIo) {
         var thr = []; for (var t = 0; t <= 20; t++) thr.push(t / 20);
@@ -1080,6 +1142,10 @@
       try {
         var el = e.target && e.target.closest ? e.target.closest("[data-section]") : null;
         if (el) { var id = el.getAttribute("data-section"); if (id) sec(id).clicks++; }
+        else if (RAHMEN_ON && secRueckfall) {
+          var rid = rueckfallAbschnitt(e.target);
+          if (rid && Object.prototype.hasOwnProperty.call(sections, rid)) sec(rid).clicks++;
+        }
       } catch (e2) {}
       try { pushKlick(e.target, e.clientX, e.clientY); } catch (e5) {}
       if (!FRUST_ON) return;
