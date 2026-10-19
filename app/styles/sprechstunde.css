@@ -205,6 +205,12 @@
   box-shadow: var(--sp-shadow-md);
 }
 @media (max-width: 899px) {
+  /* Quelle ist 1200 px breit: über 600 px Anzeigebreite würde sie bei 2x hochskaliert (Gate 12 bild-aufloesung) */
+  .sp figure.sp__foto {
+    max-width: 600px;
+    width: 100%;
+    margin-inline: auto;
+  }
   .sp figure.sp__foto img {
     aspect-ratio: 4 / 3;
     object-position: 50% 18%;

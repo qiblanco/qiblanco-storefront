@@ -290,7 +290,7 @@ function Einstieg({termine, preisText}) {
           <img
             src={`${FOTO}&width=720`}
             srcSet={`${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1200 1200w`}
-            sizes="(min-width: 900px) 360px, 100vw"
+            sizes="(min-width: 900px) 360px, (min-width: 640px) 600px, 100vw"
             width="1200"
             height="1535"
             alt="Christian Bernd Bauer, Gründer von Qi Blanco"
