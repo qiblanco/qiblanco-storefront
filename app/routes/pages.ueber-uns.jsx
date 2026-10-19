@@ -277,6 +277,20 @@ export default function UeberUns() {
             </Link>
             .
           </p>
+          {/* Kontextlink auf die Sprechstunde (Folgeauftrag Sprechstunde-
+              Kontextlinks, 19.10.2026; Christians Regel 2026-10-06: zwei
+              Kontextlinks von indexierten Seiten). Kein Preis im Link. */}
+          <p className="uu-text">
+            Du willst mit ihm selbst sprechen? In der{' '}
+            <Link
+              className="uu-link"
+              to="/pages/sprechstunde"
+              prefetch="intent"
+            >
+              Sprechstunde mit Christian
+            </Link>{' '}
+            hast du eine Stunde nur für dich.
+          </p>
         </div>
       </section>
 
