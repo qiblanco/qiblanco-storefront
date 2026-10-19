@@ -1,0 +1,552 @@
+/* ============================================================================
+   /pages/sprechstunde — Sprechstunde mit Christian (2026-10-19, Grossjob
+   20261019-GROSSJOB-sprechstunde-…, s05).
+
+   Token-System nach design-meister web-brief --seite sprechstunde und der
+   Schwesterseite produktberatung.css: warmes Neutral-Kontinuum, EIN Gold-
+   Akzent nur auf Handlung (der Knopf „Ticket kaufen" bzw. „Freitag buchen" und
+   der Einstieg „Freitag wählen"), Weissraum gruppiert statt Boxen, 8pt-Grid,
+   Sektions-Takt 96/64, Zeilenlaenge <= 68ch.
+
+   REGEL DIESES FILES: alle Groessen, Farben, Radien und Schatten kommen aus dem
+   :root-Block. Ausserhalb davon erfindet KEINE Regel einen freien Wert.
+   Scope: .sp — self-contained, eigene Datei (Gate 12 loest geteilte Dateien
+   auf alle importierenden Routen auf).
+
+   DREI FARB-AKTE: grund (Einstieg, Geschichte, Freitage) / flaeche (Was
+   passiert, Fragen) / dunkel (Ablauf). Der gewaehlte Freitag ist DUNKEL, nicht
+   gold: Auswahl ist keine Handlung. Zweite Handlungen (Code einloesen,
+   Kalender, Verschieben) sind Umriss-Knoepfe in Textfarbe.
+
+   MOBIL ZUERST: Tipp-Flaechen >= 48 px, Formular einspaltig, Eingaben 16 px
+   (sonst zoomt iOS beim Tippen).
+   ========================================================================== */
+
+:root {
+  --sp-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, modulare Skala ~1.25, 7 Stufen (Deckel 9) */
+  --sp-fs-xs: 0.875rem; /* 14px, Nebenzeilen */
+  --sp-fs-base: 1rem; /* 16px */
+  --sp-fs-md: 1.125rem; /* 18px, Unterzeile und Kernsatz */
+  --sp-fs-lg: 1.25rem; /* 20px, Fragen, Datum */
+  --sp-fs-h2: 1.5rem; /* EIN H2-Stil, 24px */
+  --sp-fs-xl: 2rem; /* 32px, nur die Tageszahl der Kachel */
+  --sp-fs-h1: clamp(2.25rem, 1.5rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --sp-s1: 8px;
+  --sp-s2: 16px;
+  --sp-s3: 24px;
+  --sp-s4: 32px;
+  --sp-s6: 48px;
+  --sp-s8: 64px;
+  --sp-s12: 96px;
+
+  /* Farbe: warmes Neutral-Kontinuum + EIN Akzent (60-30-10) */
+  --sp-grund: #faf9f5;
+  --sp-flaeche: #f4f0e9;
+  --sp-dunkel: #191714;
+  --sp-text: #2c2a26;
+  --sp-text-hell: #f4f0e9;
+  --sp-muted-hell: rgba(244, 240, 233, 0.78); /* >= 9:1 auf --sp-dunkel */
+  --sp-linie-hell: rgba(244, 240, 233, 0.2);
+  --sp-muted: #6b665d; /* 5,5:1 auf --sp-grund, traegt auch Eingabe-Raender */
+  --sp-akzent: var(--qb-akzent); /* das eine Gold, nur Handlung */
+  --sp-linie: rgba(44, 42, 38, 0.12);
+  --sp-fehler: #8f2d1f; /* 7,4:1 auf --sp-grund, nur Fehlersatz */
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --sp-r1: 8px;
+  --sp-r2: 16px;
+  --sp-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --sp-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout */
+  --sp-mass: 68ch;
+  --sp-breite-schmal: 760px;
+  --sp-breite: 1080px;
+  --sp-tipp: 48px;
+  --sp-foto: 360px;
+  --sp-bewegung: 160ms ease;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.sp {
+  font-family: var(--sp-font);
+  font-size: var(--sp-fs-base);
+  line-height: 1.65;
+  color: var(--sp-text);
+  background: var(--sp-grund);
+}
+
+/* NAME MIT ABSICHT: die Gestaltungs-Pruefliste erkennt einen Textcontainer
+   nur an einem Namen aus _CONTAINER_WOERTER (inhalt/content/...). */
+.sp__inhalt {
+  width: 100%;
+  max-width: var(--sp-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--sp-s2);
+}
+.sp__inhalt.sp__inhalt--breit {
+  max-width: var(--sp-breite);
+}
+@media (min-width: 768px) {
+  .sp__inhalt {
+    padding-inline: var(--sp-s4);
+  }
+}
+
+.sp section {
+  padding-block: var(--sp-s8);
+}
+@media (min-width: 768px) {
+  .sp section {
+    padding-block: var(--sp-s12);
+  }
+}
+
+.sp h1 {
+  font-size: var(--sp-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--sp-s2);
+  color: var(--sp-text);
+  text-wrap: balance;
+}
+.sp h2 {
+  font-size: var(--sp-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--sp-s3);
+  color: var(--sp-text);
+}
+.sp h3 {
+  font-size: var(--sp-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: var(--sp-s4) 0 var(--sp-s1);
+  color: var(--sp-text);
+}
+.sp p,
+.sp li {
+  font-size: var(--sp-fs-base);
+  line-height: 1.65;
+  color: var(--sp-text);
+  max-width: var(--sp-mass);
+  margin: 0 0 var(--sp-s2);
+}
+.sp p:last-child {
+  margin-bottom: 0;
+}
+.sp a {
+  color: var(--sp-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+.sp ol,
+.sp ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sp :focus-visible {
+  outline: 2px solid var(--sp-dunkel);
+  outline-offset: 2px;
+}
+
+/* ─── Einstieg ────────────────────────────────────────────────────────────── */
+.sp__einstieg-raster {
+  display: grid;
+  gap: var(--sp-s4);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .sp__einstieg-raster {
+    grid-template-columns: minmax(0, 1fr) var(--sp-foto);
+    gap: var(--sp-s8);
+  }
+}
+.sp p.sp__unterzeile {
+  font-size: var(--sp-fs-md);
+  color: var(--sp-muted);
+  margin-bottom: var(--sp-s3);
+}
+.sp p.sp__eckdaten {
+  font-weight: 600;
+  margin-top: var(--sp-s3);
+  margin-bottom: var(--sp-s1);
+}
+.sp p.sp__naechster {
+  color: var(--sp-muted);
+  margin-bottom: var(--sp-s3);
+}
+.sp figure.sp__foto {
+  margin: 0;
+  order: -1;
+}
+@media (min-width: 900px) {
+  .sp figure.sp__foto {
+    order: 0;
+  }
+}
+.sp figure.sp__foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 1535;
+  object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: var(--sp-r2);
+  box-shadow: var(--sp-shadow-md);
+}
+@media (max-width: 899px) {
+  .sp figure.sp__foto img {
+    aspect-ratio: 4 / 3;
+    object-position: 50% 18%;
+  }
+}
+
+/* ─── Akte ─────────────────────────────────────────────────────────────────── */
+.sp .sp__akt-flaeche {
+  background: var(--sp-flaeche);
+}
+.sp p.sp__gross {
+  font-size: var(--sp-fs-md);
+}
+.sp .sp__akt-dunkel {
+  background: var(--sp-dunkel);
+}
+.sp .sp__akt-dunkel h2 {
+  color: var(--sp-text-hell);
+}
+.sp ol.sp__schritte {
+  display: grid;
+  gap: var(--sp-s2);
+  counter-reset: schritt;
+}
+@media (min-width: 768px) {
+  .sp ol.sp__schritte {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.sp ol.sp__schritte li {
+  counter-increment: schritt;
+  margin: 0;
+  padding: var(--sp-s3);
+  border: 1px solid var(--sp-linie-hell);
+  border-radius: var(--sp-r2);
+  color: var(--sp-muted-hell);
+}
+.sp ol.sp__schritte li::before {
+  content: counter(schritt);
+  display: block;
+  font-size: var(--sp-fs-h2);
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: var(--sp-s1);
+  color: var(--sp-text-hell);
+}
+
+/* ─── Freitage und Formular ───────────────────────────────────────────────── */
+.sp .sp__buchen {
+  scroll-margin-top: var(--sp-s4);
+}
+.sp fieldset.sp__freitage {
+  border: 0;
+  margin: 0 0 var(--sp-s3);
+  padding: 0;
+  min-width: 0;
+}
+.sp legend.sp__legende {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--sp-s2);
+}
+.sp ul.sp__freitage-liste {
+  display: grid;
+  gap: var(--sp-s2);
+}
+@media (min-width: 600px) {
+  .sp ul.sp__freitage-liste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.sp ul.sp__freitage-liste li {
+  margin: 0;
+  max-width: none;
+}
+.sp label.sp__freitag {
+  display: grid;
+  grid-template-columns: var(--sp-s8) minmax(0, 1fr);
+  gap: var(--sp-s2);
+  align-items: center;
+  min-height: var(--sp-tipp);
+  padding: var(--sp-s2);
+  background: var(--sp-flaeche);
+  border: 1px solid var(--sp-linie);
+  border-radius: var(--sp-r2);
+  cursor: pointer;
+  transition: box-shadow var(--sp-bewegung), border-color var(--sp-bewegung);
+}
+.sp label.sp__freitag:hover {
+  box-shadow: var(--sp-shadow-sm);
+  border-color: var(--sp-muted);
+}
+.sp label.sp__freitag input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.sp label.sp__freitag:has(input:checked) {
+  background: var(--sp-dunkel);
+  border-color: var(--sp-dunkel);
+}
+.sp label.sp__freitag:has(input:checked) .sp__freitag-datum,
+.sp label.sp__freitag:has(input:checked) .sp__kachel-zahl {
+  color: var(--sp-text-hell);
+}
+.sp label.sp__freitag:has(input:checked) .sp__freitag-zeit,
+.sp label.sp__freitag:has(input:checked) .sp__kachel-monat {
+  color: var(--sp-muted-hell);
+}
+.sp label.sp__freitag:has(input:focus-visible) {
+  outline: 2px solid var(--sp-dunkel);
+  outline-offset: 2px;
+}
+.sp .sp__kachel {
+  display: grid;
+  justify-items: center;
+  line-height: 1.1;
+}
+.sp .sp__kachel-zahl {
+  font-size: var(--sp-fs-xl);
+  font-weight: 600;
+  color: var(--sp-text);
+}
+.sp .sp__kachel-monat {
+  font-size: var(--sp-fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--sp-muted);
+}
+.sp .sp__freitag-text,
+.sp p.sp__termin {
+  display: grid;
+}
+.sp .sp__freitag-datum {
+  font-size: var(--sp-fs-lg);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--sp-text);
+}
+.sp .sp__freitag-zeit {
+  color: var(--sp-muted);
+}
+.sp p.sp__termin {
+  margin: var(--sp-s3) 0;
+}
+
+.sp .sp__umschalter {
+  display: inline-flex;
+  gap: var(--sp-s1);
+  margin-bottom: var(--sp-s3);
+}
+.sp button.sp__umschalter-knopf {
+  min-height: var(--sp-tipp);
+  padding: 0 var(--sp-s2);
+  border: 1px solid var(--sp-muted);
+  border-radius: var(--sp-r1);
+  background: transparent;
+  color: var(--sp-text);
+  font-family: var(--sp-font);
+  font-size: var(--sp-fs-base);
+  cursor: pointer;
+}
+.sp button.sp__umschalter-knopf[aria-pressed='true'] {
+  background: var(--sp-dunkel);
+  border-color: var(--sp-dunkel);
+  color: var(--sp-text-hell);
+}
+
+.sp .sp__angaben {
+  display: grid;
+  gap: var(--sp-s3);
+  margin-top: var(--sp-s4);
+}
+.sp .sp__feld {
+  display: grid;
+  gap: var(--sp-s1);
+}
+.sp .sp__feld label,
+.sp form.sp__code label {
+  font-weight: 600;
+}
+.sp input:not([type='radio']):not([type='checkbox']),
+.sp textarea {
+  width: 100%;
+  min-height: var(--sp-tipp);
+  padding: var(--sp-s1) var(--sp-s2);
+  border: 1px solid var(--sp-muted);
+  border-radius: var(--sp-r1);
+  background: var(--sp-grund);
+  color: var(--sp-text);
+  font-family: var(--sp-font);
+  font-size: var(--sp-fs-base);
+  line-height: 1.5;
+}
+.sp textarea {
+  resize: vertical;
+}
+.sp p.sp__klein {
+  font-size: var(--sp-fs-xs);
+  color: var(--sp-muted);
+  margin: 0;
+}
+.sp label.sp__haken {
+  display: grid;
+  grid-template-columns: var(--sp-s3) minmax(0, 1fr);
+  gap: var(--sp-s2);
+  align-items: start;
+  max-width: var(--sp-mass);
+  cursor: pointer;
+}
+.sp label.sp__haken input {
+  width: var(--sp-s3);
+  height: var(--sp-s3);
+  margin: 0;
+  accent-color: var(--sp-dunkel);
+}
+.sp .sp__honig {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.sp p.sp__fehler {
+  color: var(--sp-fehler);
+  font-weight: 600;
+}
+.sp p.sp__hinweis {
+  padding: var(--sp-s3);
+  background: var(--sp-flaeche);
+  border-radius: var(--sp-r2);
+}
+
+/* ─── Knoepfe: EIN Gold, nur Handlung ─────────────────────────────────────── */
+.sp .sp__knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--sp-tipp);
+  padding: var(--sp-s2) var(--sp-s4);
+  border: 0;
+  border-radius: var(--sp-r1);
+  background: var(--sp-akzent);
+  color: var(--sp-text);
+  font-family: var(--sp-font);
+  font-size: var(--sp-fs-base);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--sp-bewegung), color var(--sp-bewegung);
+}
+.sp .sp__knopf:hover,
+.sp .sp__knopf:disabled {
+  background: var(--sp-dunkel);
+  color: var(--sp-text-hell);
+}
+.sp .sp__knopf--breit {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .sp .sp__knopf--breit {
+    width: auto;
+  }
+}
+.sp .sp__knopf-zweit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--sp-tipp);
+  padding: 0 var(--sp-s3);
+  border: 1px solid var(--sp-text);
+  border-radius: var(--sp-r1);
+  background: transparent;
+  color: var(--sp-text);
+  font-family: var(--sp-font);
+  font-size: var(--sp-fs-base);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.sp .sp__knopf-zweit:hover {
+  background: var(--sp-text);
+  color: var(--sp-grund);
+}
+
+/* ─── Gut zu wissen, Ticketcode, Verwalten ────────────────────────────────── */
+.sp details.sp__wissen {
+  margin-top: var(--sp-s4);
+  border-top: 1px solid var(--sp-linie);
+  padding-top: var(--sp-s2);
+}
+.sp details.sp__wissen summary {
+  min-height: var(--sp-tipp);
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sp .sp__wissen-text {
+  padding-top: var(--sp-s2);
+}
+.sp form.sp__code {
+  display: grid;
+  gap: var(--sp-s1);
+  margin-top: var(--sp-s3);
+  max-width: var(--sp-mass);
+}
+.sp .sp__code-zeile {
+  display: grid;
+  gap: var(--sp-s1);
+}
+@media (min-width: 600px) {
+  .sp .sp__code-zeile {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+.sp .sp__karte {
+  display: grid;
+  gap: var(--sp-s2);
+  padding: var(--sp-s3);
+  background: var(--sp-flaeche);
+  border-radius: var(--sp-r2);
+  margin-bottom: var(--sp-s4);
+}
+.sp .sp__karte p {
+  margin: 0;
+}
+/* Ein globaler Stil kappt form auf 400 px und macht fieldset zu flex: auf
+   dieser Seite tragen beide die volle Inhaltsbreite (gemessen 19.10.: Kacheln
+   192 px breit, das Datum brach dreizeilig). */
+.sp form.sp__formular {
+  max-width: none;
+  margin-top: var(--sp-s3);
+}
+.sp fieldset.sp__freitage {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp label.sp__freitag,
+  .sp .sp__knopf {
+    transition: none;
+  }
+}
