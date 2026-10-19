@@ -4601,7 +4601,7 @@ ul.kakao-children li {
 /* MENUE-SYMBOLE + GRUPPE UNTER „MEHR" (Christian 19.10.2026, Grossjob
    20261019-GROSSJOB-hauptmenue-start-shop-studien-beratung-live-mehr-alphabetisch-mit-symbolen).
    Eine feste Symbolspalte je Punkt unter Shop und Mehr: Produktbild oder
-   Linien-Piktogramm aus app/lib/menue-symbole.jsx. Groesse (45 px Mega-Menue,
+   Linien-Piktogramm aus app/components/reusables/menue-symbole.jsx. Groesse (45 px Mega-Menue,
    32 px mobil) und der Abstand 20 px sind die Bestandswerte der vier
    Produktbilder, keine neuen. Das Piktogramm steht in der gedaempften Tinte,
    ohne Gold. */

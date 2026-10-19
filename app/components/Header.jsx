@@ -9,7 +9,7 @@ import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
 import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
-import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/lib/menue-symbole';
+import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/components/reusables/menue-symbole';
 import {
   istKakaoPfad,
   KAKAO_KENNZAHLEN,
@@ -981,7 +981,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
           const {to: childTo, isExternal: isExternalChild} =
             resolveMenuItemLink(child);
           // Symbol am ZIEL des Punkts, der Titel nur als Rückfall — siehe
-          // app/lib/menue-symbole.jsx, warum (Crystal Cacao, 19.10.2026).
+          // app/components/reusables/menue-symbole.jsx, warum (Crystal Cacao, 19.10.2026).
           const childIcons = (
             <>
               {symbolSpalte && <MenueSymbol pfad={childTo} titel={child.title} />}
