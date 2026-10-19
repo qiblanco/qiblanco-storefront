@@ -367,7 +367,7 @@ export async function action({request, context}) {
  * Titel: Hauptgegenstand und Kundenwort zuerst (GEO R3), Marke am Ende.
  * Beschreibung: die Fakten der Seite (GEO R4), in Christians Worten.
  */
-const TITEL = 'Sprechstunde mit Christian: 1:1 per Zoom, freitags | Qi Blanco';
+const TITEL = 'Sprechstunde mit Christian: 1:1 per Zoom | Qi Blanco';
 const BESCHREIBUNG =
   'Ein sehr tiefes Gespräch mit Christian, auf Basis des Jetzt. Eine Stunde live per Zoom, ein Termin pro Woche am Freitag, Ticket 300 EUR.';
 
