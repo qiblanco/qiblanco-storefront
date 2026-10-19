@@ -9,6 +9,7 @@ import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
 import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
+import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/lib/menue-symbole';
 import {
   istKakaoPfad,
   KAKAO_KENNZAHLEN,
@@ -501,6 +502,8 @@ function MenuItem({item, url, isExternal, hasChildren, viewport, close}) {
   const [open, setOpen] = useState(false); // mobile accordion
   const [hover, setHover] = useState(false); // desktop hover/focus
   const [expandedKakaoMobile, setExpandedKakaoMobile] = useState(false);
+  // Aufgeklappte Gruppe im mobilen Untermenü (z. B. „Online-Kurse" unter Mehr)
+  const [offeneGruppeMobil, setOffeneGruppeMobil] = useState(null);
   const hoverTimeout = useRef(null);
   const triggerRef = useRef(null);
 
@@ -600,8 +603,8 @@ function MenuItem({item, url, isExternal, hasChildren, viewport, close}) {
       )}
 
       {hasChildren && viewport === 'mobile' && open && (
-        <ul style={{paddingLeft: '1rem', borderLeft: '1px solid #ccc'}}>
-          {item.items.map((child) => {
+        <ul className={hatSymbolSpalte(item.items) ? 'menue-mit-symbolen' : undefined} style={{paddingLeft: '1rem', borderLeft: '1px solid #ccc'}}>
+          {(istMehr(item) ? alphabetisch(item.items) : item.items).map((child) => {
             const isKakao = child.title.includes('Kakao');
             const isShop = item.title === "Shop";
 
@@ -644,7 +647,40 @@ function MenuItem({item, url, isExternal, hasChildren, viewport, close}) {
               );
             }
 
-            return <SubMenuItem key={child.id} item={child} close={close} />;
+            // Gruppe mit eigenen Unterpunkten (Online-Kurse unter Mehr):
+            // Schalter + Liste. Die Liste steht immer im HTML (hidden statt
+            // nicht gerendert), damit die Kurs-Links ohne JS erreichbar und
+            // auffindbar bleiben.
+            if (child.items && child.items.length > 0) {
+              const offen = offeneGruppeMobil === child.id;
+              return (
+                <li key={child.id} className="menue-gruppe" style={{padding: '0.25rem 0', listStyle: 'none'}}>
+                  <button
+                    type="button"
+                    className="menu-toggle-mobile menue-gruppe-schalter"
+                    aria-expanded={offen}
+                    onClick={() => setOffeneGruppeMobil(offen ? null : child.id)}
+                  >
+                    {hatSymbolSpalte(item.items) && <MenueSymbol pfad={child.url} titel={child.title} groesse={32} />}
+                    {child.title} &nbsp;{offen ? '−' : '+'}
+                  </button>
+                  <ul className="menue-gruppe-kinder" hidden={!offen}>
+                    {child.items.map((enkel) => (
+                      <SubMenuItem key={enkel.id} item={enkel} close={close} ohneSymbol />
+                    ))}
+                  </ul>
+                </li>
+              );
+            }
+
+            return (
+              <SubMenuItem
+                key={child.id}
+                item={child}
+                close={close}
+                ohneSymbol={!hatSymbolSpalte(item.items)}
+              />
+            );
           })}
         </ul>
       )}
@@ -670,6 +706,8 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
   const [container, setContainer] = useState(null);
   const [hoverItem, setHoverItem] = useState("QiOne® 2 Pro");
   const [expandedKakao, setExpandedKakao] = useState(false);
+  // Aufgeklappte Gruppe im Mega-Menü (z. B. „Online-Kurse" unter Mehr)
+  const [offeneGruppe, setOffeneGruppe] = useState(null);
 
   useEffect(() => {
     const el = document.createElement('div');
@@ -691,6 +729,10 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
     clearTimeout(hoverTimeout.current);
     hoverTimeout.current = setTimeout(() => setHover(false), 250);
   };
+
+  // Symbolspalte nur, wo die Punkte Symbole tragen (Shop, Mehr) — Studien
+  // bleibt reine Textliste.
+  const symbolSpalte = hatSymbolSpalte(item.items);
 
   const submenu = (
     <div
@@ -819,7 +861,7 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
       )}
 
       <ul className="NormalSectionSize" style={{margin: 0, padding: 0, listStyle: 'none'}}>
-        {item.items.map((child) => {
+        {(istMehr(item) ? alphabetisch(item.items) : item.items).map((child) => {
           const isKakao = child.title.includes('Kakao');
           const isShop = item.title === "Shop";
 
@@ -883,14 +925,66 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
             );
           }
 
+          // Gruppe mit eigenen Unterpunkten (Online-Kurse unter Mehr, Christian
+          // 19.10.2026): ein Schalter in derselben Zeile wie die Nachbarn, die
+          // Kurse darunter. Die Liste steht immer im HTML (hidden statt nicht
+          // gerendert) — ohne JS und für Suchmaschinen bleiben die Kurs-Links
+          // erreichbar, wie seit dem SSR-Fix vom 09.09. für alle Dropdowns.
+          if (child.items && child.items.length > 0) {
+            const offen = offeneGruppe === child.id;
+            return (
+              <li key={child.id} className="menue-gruppe" style={{padding: '0.25rem 0'}}>
+                <button
+                  type="button"
+                  className="header-submenu-item menue-gruppe-schalter"
+                  aria-expanded={offen}
+                  onClick={() => setOffeneGruppe(offen ? null : child.id)}
+                >
+                  {symbolSpalte && <MenueSymbol pfad={child.url} titel={child.title} />}
+                  {child.title}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1em"
+                    height="1em"
+                    viewBox="0 0 15 15"
+                    aria-hidden="true"
+                    style={{
+                      transition: 'transform 0.2s',
+                      transform: offen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    }}
+                  >
+                    <path fill="currentColor" d="M7.5 9.95a.45.45 0 0 0 .319-.132l3-3a.45.45 0 0 0-.637-.637L7.5 8.863L4.82 6.181l-.07-.057a.451.451 0 0 0-.625.624l.058.07l3 3a.45.45 0 0 0 .318.132" />
+                  </svg>
+                </button>
+                <ul className="menue-gruppe-kinder" hidden={!offen}>
+                  {child.items.map((enkel) => {
+                    const {to: enkelTo, isExternal: enkelExtern} = resolveMenuItemLink(enkel);
+                    return (
+                      <li key={enkel.id}>
+                        {enkelExtern ? (
+                          <a className="header-submenu-item menue-gruppe-kind" href={enkelTo} onClick={close} target="_blank" rel="noopener noreferrer">
+                            {enkel.title}
+                          </a>
+                        ) : (
+                          <NavLink className="header-submenu-item menue-gruppe-kind" onClick={close} prefetch="intent" style={activeLinkStyle} to={enkelTo}>
+                            {enkel.title}
+                          </NavLink>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          }
+
           const {to: childTo, isExternal: isExternalChild} =
             resolveMenuItemLink(child);
+          // Symbol am ZIEL des Punkts, der Titel nur als Rückfall — siehe
+          // app/lib/menue-symbole.jsx, warum (Crystal Cacao, 19.10.2026).
           const childIcons = (
             <>
-              {child.title === "QiOne® 2 Pro" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-qione.png?v=1760088701" alt="" />)}
-              {child.title === "QiBracelet®" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-bracelet.png?v=1760089233" alt="" />)}
-              {child.title === "QiHome® Air" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-home.png?v=1760089232" alt="" />)}
-              {child.title === "Necklace für den QiOne®" && (<CdnBild breite={45} hoehe={45} anzeigeBreite={45} masterBreite={129} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/icon-necklace.png?v=1760090696" alt="" />)}
+              {symbolSpalte && <MenueSymbol pfad={childTo} titel={child.title} />}
               {child.title}
             </>
           );
@@ -961,9 +1055,17 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
 /**
  * Submenu link items (used by mobile accordion)
  */
-function SubMenuItem({item, close}) {
+function SubMenuItem({item, close, ohneSymbol = false}) {
   if (!item.url) return null;
   const {to, isExternal} = resolveMenuItemLink(item);
+  // Mobil dieselben Symbole wie im Mega-Menü (Christian 19.10.2026:
+  // „jeder Punkt unter Mehr"; Auftrag: Desktop und mobil), kleiner gesetzt.
+  const inhalt = (
+    <>
+      {!ohneSymbol && <MenueSymbol pfad={to} titel={item.title} groesse={32} />}
+      {item.title}
+    </>
+  );
 
   return (
     <li style={{padding: '0.25rem 0'}}>
@@ -975,7 +1077,7 @@ function SubMenuItem({item, close}) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {item.title}
+          {inhalt}
         </a>
       ) : (
         <NavLink
@@ -985,7 +1087,7 @@ function SubMenuItem({item, close}) {
           style={activeLinkStyle}
           to={to}
         >
-          {item.title}
+          {inhalt}
         </NavLink>
       )}
     </li>

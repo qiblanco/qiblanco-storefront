@@ -4598,6 +4598,77 @@ ul.kakao-children li {
   opacity: 1;
   border-bottom: none !important;
 }
+/* MENUE-SYMBOLE + GRUPPE UNTER „MEHR" (Christian 19.10.2026, Grossjob
+   20261019-GROSSJOB-hauptmenue-start-shop-studien-beratung-live-mehr-alphabetisch-mit-symbolen).
+   Eine feste Symbolspalte je Punkt unter Shop und Mehr: Produktbild oder
+   Linien-Piktogramm aus app/lib/menue-symbole.jsx. Groesse (45 px Mega-Menue,
+   32 px mobil) und der Abstand 20 px sind die Bestandswerte der vier
+   Produktbilder, keine neuen. Das Piktogramm steht in der gedaempften Tinte,
+   ohne Gold. */
+.menue-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--qb-text-gedaempft);
+}
+.menue-symbol svg {
+  width: 58%;
+  height: 58%;
+}
+.menue-symbol img {
+  width: 100%;
+  height: auto;
+}
+/* „Online-Kurse" unter Mehr: Schalter in der Zeile der Nachbarn, Kurse
+   darunter, fluchtend mit dem Titel (Symbolspalte 45 px + 20 px Abstand). */
+button.header-submenu-item.menue-gruppe-schalter {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0 0 0.5em 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: var(--qs-t-basis);
+  font-weight: 500;
+  color: var(--color-dark) !important;
+}
+.submenu ul.menue-gruppe-kinder {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0;
+  max-width: none;
+  margin: 0 0 0 calc(45px + 20px);
+  padding: 0;
+  list-style: none;
+}
+.submenu ul.menue-gruppe-kinder li {
+  flex: 0 0 auto;
+}
+.submenu ul.menue-gruppe-kinder li a.menue-gruppe-kind {
+  font-weight: 400;
+  padding: 0.25em 0;
+}
+/* hidden muss gegen das display oben gewinnen, sonst stuende die Liste offen */
+ul.menue-gruppe-kinder[hidden] {
+  display: none !important;
+}
+.header-menu-mobile .header-submenu-item,
+.header-menu-mobile .menue-gruppe-schalter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.header-menu-mobile ul.menue-gruppe-kinder {
+  list-style: none;
+  margin: 0.25rem 0 0 calc(32px + 0.75rem);
+  padding: 0;
+}
 .header-menu-mobile
   a:first-child:not(.header-menu-item):not(.header-submenu-item) {
   display: none;
