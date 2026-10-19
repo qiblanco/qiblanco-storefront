@@ -277,9 +277,9 @@ export default function UeberUns() {
             </Link>
             .
           </p>
-          {/* Kontextlink auf die Sprechstunde (Job 20261019-sprechstunde-
-              kontextlinks-ueber-uns-und-live, Christians Regel 2026-10-06:
-              zwei Kontextlinks von indexierten Seiten). Kein Preis im Link. */}
+          {/* Kontextlink auf die Sprechstunde (Folgeauftrag Sprechstunde-
+              Kontextlinks, 19.10.2026; Christians Regel 2026-10-06: zwei
+              Kontextlinks von indexierten Seiten). Kein Preis im Link. */}
           <p className="uu-text">
             Du willst mit ihm selbst sprechen? In der{' '}
             <Link

@@ -293,8 +293,8 @@ function Kopf() {
           gesprochen haben. Die Aufnahme bleibt bei uns. Geschichten aus der
           Runde erzählen wir ohne Namen.
         </p>
-        {/* Kontextlink auf die Sprechstunde (Job 20261019-sprechstunde-
-            kontextlinks-ueber-uns-und-live). Kein Preis im Link. */}
+        {/* Kontextlink auf die Sprechstunde (Folgeauftrag Sprechstunde-
+            Kontextlinks, 19.10.2026). Kein Preis im Link. */}
         <p className="lv-hinweis">
           Eine Stunde allein mit Christian gibt es in der{' '}
           <Link
