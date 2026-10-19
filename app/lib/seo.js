@@ -1175,6 +1175,21 @@ export const NUR_ROUTE_SEITEN = [
       '(homepage-bauer/config/design_gate_seiten.yaml, Seite ' +
       'healy-alternative). Klassenweit wacht probe_sitemap_noindex_naht.py.',
   },
+  {
+    pfad: '/pages/sprechstunde',
+    lastmod: '2026-10-19T11:37:53Z',
+    grund:
+      'Die Seite „Sprechstunde mit Christian“: eine Stunde 1:1 per Zoom, ' +
+      'freitags, Ticket 300 EUR (Grossjob 20261019-GROSSJOB-sprechstunde-mit-' +
+      'christian-ticket-300-eur-freitags-20-uhr-buchung-live-unter-mehr, s05; ' +
+      'Christian 19.10.2026). Sie besteht allein aus der Route ' +
+      'pages.sprechstunde.jsx und hat KEIN Shopify-Seitenobjekt. Kriterium 2: ' +
+      'kein noindex (nur die persönlichen Ansichten ?verwalten/?einloesen), ' +
+      'canonicalLink() in der Route. lastmod ist der Commit-Zeitpunkt der ' +
+      'Route. WACHE (Kriterium 3): probe_seite_live.py ' +
+      '(shared-state/sprechstunde) misst den Seitentext am Rand (nachbau-audit-Naht ' +
+      's03->s05), dazu der tägliche Design-Watch (design_gate_seiten.yaml).',
+  },
 ];
 
 /**
