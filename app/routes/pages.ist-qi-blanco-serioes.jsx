@@ -1,5 +1,6 @@
 import {FrageSeite} from '~/components/campaign/FrageSeite';
 import fragenStyles from '~/styles/fragen.css?url';
+import serioesStyles from '~/styles/ist-qi-blanco-serioes.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {seiteFuer} from '~/data/fragen';
 import {frageSchema} from '~/lib/fragen-schema';
@@ -74,7 +75,12 @@ const VEROEFFENTLICHT = '2026-09-16';
 const GEAENDERT = '2026-10-17';
 
 export function links() {
-  return [{rel: 'stylesheet', href: fragenStyles}];
+  // Nach fragen.css: die Seitendatei bringt den Trustpilot-Kopf in die
+  // Textspalte (EINE H2-Ausrichtung, siehe Kopf von ist-qi-blanco-serioes.css).
+  return [
+    {rel: 'stylesheet', href: fragenStyles},
+    {rel: 'stylesheet', href: serioesStyles},
+  ];
 }
 
 /** @type {MetaFunction} */

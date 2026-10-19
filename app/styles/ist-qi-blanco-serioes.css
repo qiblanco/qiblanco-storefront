@@ -1,0 +1,46 @@
+/* ==========================================================================
+   /pages/ist-qi-blanco-serioes — EINE Ausrichtung für alle H2 der Seite.
+   Geladen NUR von app/routes/pages.ist-qi-blanco-serioes.jsx.
+
+   BEFUND (design-rubrik live, 2026-10-19T02:05Z, Job 20261019-repair-gate12-
+   quarks-design-rueckschritt-h2-ausrichtung): „H2-Ausrichtung gemischt
+   (center, left)". Zehn H2 der Frageseite stehen links in der Textspalte
+   (.frg__inhalt, 960 px, am Desktop x=264), eine einzige steht zentriert: der
+   Kopf der Trustpilot-Stimmen. Eingeführt mit PR #783 (2026-10-06), als der
+   Scroller auf diese Seite kam. Der Baustein TrustpilotStimmen.jsx zentriert
+   Kopf, Hinweis und Links mit Tailwind-`!`-Klassen, weil er auf Seiten mit
+   zentriertem Satz steht (FAQ, Bewertungen, Erfahrungen).
+
+   REGEL: Text steht in der Textspalte und links, die Galerie darf breiter
+   sein. Kopf, Hinweis und die beiden Links des Blocks rücken deshalb in die
+   Spalte der übrigen Überschriften; die Karten und die Leiste bleiben breit.
+
+   WARUM HIER UND NICHT IN fragen.css ODER IM BAUSTEIN: fragen.css lädt jede
+   Frageseite, der Baustein steht auf sieben Seiten mit eigener Ausrichtung.
+   Die Trustpilot-Stimmen zeigt unter den Frageseiten nur diese eine
+   (app/data/fragen.js, `trustpilot: true`). Eine Regel in dieser Datei
+   erreicht genau die Seite, deren Befund sie behebt.
+
+   WARUM @layer utilities: die Klassen text-center!, mx-auto!, max-w-none!
+   sind Tailwind-v4-Utilities mit !important in der Ebene `utilities`. Bei
+   !important dreht die Kaskade die Ebenen-Reihenfolge um, eine ungelayerte
+   Regel verlöre also unabhängig von ihrer Spezifität. In derselben Ebene
+   entscheidet die Spezifität: `.frg .TrustpilotStimmen > h2` (0,2,1) schlägt
+   `.text-center\!` (0,1,0). Dasselbe Muster wie crystal-cacao.css Regel 1.
+
+   Der Kindkombinator `>` ist Absicht: die Bewertungstexte in den Karten
+   sind ebenfalls <p> und behalten ihren Satz.
+
+   RÜCKWEG: diese Datei und ihre Zeile in links() der Route entfernen.
+   ========================================================================== */
+
+@layer utilities {
+  .frg .TrustpilotStimmen > h2,
+  .frg .TrustpilotStimmen > p {
+    /* Spaltenbreite wie .frg__inhalt ohne dessen Innenabstand: der Block
+       sitzt schon in einem Rahmen mit --frg-s3 Seitenrand (FrageSeite.jsx). */
+    max-width: calc(var(--frg-breit) - 2 * var(--frg-s3)) !important;
+    margin-inline: auto !important;
+    text-align: left !important;
+  }
+}
