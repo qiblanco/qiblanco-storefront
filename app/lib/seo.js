@@ -1177,7 +1177,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/sprechstunde',
-    lastmod: '2026-10-19T11:25:49Z',
+    lastmod: '2026-10-19T11:37:53Z',
     grund:
       'Die Seite „Sprechstunde mit Christian“: eine Stunde 1:1 per Zoom, ' +
       'freitags, Ticket 300 EUR (Grossjob 20261019-GROSSJOB-sprechstunde-mit-' +
