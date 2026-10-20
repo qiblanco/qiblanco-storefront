@@ -171,8 +171,12 @@ const MENU_FRAGMENT = `#graphql
     type
     url
   }
+  # Ebene 3 für Gruppen wie Online-Kurse unter Mehr, Naht-Probe probe_menue_tiefe in website-navigation
   fragment ChildMenuItem on MenuItem {
     ...MenuItem
+    items {
+      ...MenuItem
+    }
   }
   fragment ParentMenuItem on MenuItem {
     ...MenuItem
