@@ -54,6 +54,7 @@ export function links() {
  * `<link rel="canonical">` mit absoluter URL.
  */
 export const meta = () => [
+  {name: 'gewinner-fassung', content: '20261020'},
   {title: 'Wissenschaftliche Studien | Qi Blanco'},
   {
     name: 'description',
