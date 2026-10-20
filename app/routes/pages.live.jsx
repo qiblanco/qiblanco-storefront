@@ -436,9 +436,10 @@ function KopfNeu() {
         </p>
         <p className="lv-text lv-aufnahme">{AUFNAHME_TEXT}</p>
         {/* Kontextlink auf die Sprechstunde (Folgeauftrag Sprechstunde-
-            Kontextlinks, 19.10.2026). Kein Preis im Link. */}
+            Kontextlinks, 19.10.2026). Kein Preis im Link, keine Dauer (PR-Chef
+            20.10.2026: die Stunde ist in den Calls nicht belegt). */}
         <p className="lv-hinweis">
-          Eine Stunde allein mit Christian gibt es in der{' '}
+          Ein Gespräch allein mit Christian gibt es in der{' '}
           <Link
             className="lv-verweis lv-verweis-fluss"
             to="/pages/sprechstunde"
