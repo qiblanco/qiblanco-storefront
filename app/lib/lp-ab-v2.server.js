@@ -46,6 +46,7 @@
  * Storefront→Checkout→Backend-Kette transparent.
  */
 import {zielUrl} from './go-router-logic.js';
+import {isbot} from 'isbot';
 import {buyerIpAusRequest, istInternerZugriff} from './interner-verkehr.js';
 
 /** Ziel-Route der Variante B. EINE Definition im Code (Q14 Slug-Konsistenz). */
@@ -373,7 +374,9 @@ export function entscheideLpExperiment(
   const eimer = besucherEimer(ip, ua, E1.salz);
   if (bAn && eimer < E1.anteil_prozent) return {ziel: nachB(), eimer, arm: 'b'};
   if (b2An && eimer >= 100 - E2.anteil_prozent) return {ziel: nachB2(), eimer, arm: 'b2'};
-  if (e5An && eimer >= E5.eimer_ab && eimer < E5.eimer_ab + E5.anteil_prozent) {
+  // Crawler und Vorschau-Bots sehen A (Vertrag experimente.yaml szs-e5-gs082). E1/B2 tragen diesen
+  // Ausschluss nicht; ihn dort nachzuziehen ändert laufende Zuteilungen und ist nicht Teil von GS-082.
+  if (e5An && !isbot(ua) && eimer >= E5.eimer_ab && eimer < E5.eimer_ab + E5.anteil_prozent) {
     return {ziel: nachE5(), eimer, arm: 'e5'};
   }
   return null;

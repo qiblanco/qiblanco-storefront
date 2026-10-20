@@ -547,3 +547,40 @@ test('E5: Kill per Env, E1 auf derselben Route, Eimer in B2 oder fremdes Salz =>
   assert.equal(experimentE5Aktiv({}, true, false, {...def, anteil_prozent: 0}), false);
   assert.equal(experimentE5Aktiv({}, true, false, {...def, eimer_ab: -1}), false);
 });
+
+// P2-Widerleger s02 (2026-10-20): vier Mutanten der E5-Weiche liefen grün durch. Diese Tests schließen die Lücken.
+test('E5 an: eigener Verkehr mit Eimer im E5-Bereich bleibt auf A (Marker-UA)', () => {
+  const ua = 'QiBlancoInternal/1.0 (design-watch)';
+  const ip = ipInE5(ua);
+  assert.equal(mitE5(reqK(LP_A, {ip, ua})), null);
+});
+
+test('E5 an: Crawler und Vorschau-Bots im E5-Eimer bleiben auf A (Vertrag experimente.yaml)', () => {
+  for (const ua of [
+    'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
+  ]) {
+    const ip = ipInE5(ua);
+    assert.equal(mitE5(reqK(LP_A, {ip, ua})), null, ua);
+  }
+  // Ein normales Gerät im selben Eimerbereich kommt weiter nach E5.
+  assert.equal(mitE5(reqK(LP_A, {ip: ipInE5()})).arm, 'e5');
+});
+
+test('E5 an, B2 aus (Env-Kill oder Code-Schalter): E5 läuft weiter, B2-Eimer bleiben auf A', () => {
+  const ip = ipInE5();
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {LP_EXP_SZS_B2_MODE: 'off'}, false, E2_AKTIV, true).arm, 'e5');
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {}, false, false, true).arm, 'e5');
+  const b2 = POP_B2.find((b) => besucherEimer(b.ip, b.ua) >= 100 - E2.anteil_prozent);
+  assert.equal(entscheideLpExperiment(reqK(LP_A, b2), {}, false, false, true), null);
+});
+
+test('E5: B2-Grenze folgt E2.anteil_prozent, Env-Kill nur bei genau off', () => {
+  const def = {salz: E1.salz, eimer_ab: 30, anteil_prozent: 15};
+  assert.equal(experimentE5Aktiv({}, true, false, def, {...E2, anteil_prozent: 55}), true);
+  assert.equal(experimentE5Aktiv({}, true, false, def, {...E2, anteil_prozent: 56}), false);
+  for (const wert of [undefined, '', 'on', 'irgendwas']) {
+    assert.equal(experimentE5Aktiv({LP_EXP_SZS_E5_MODE: wert}, true, false), true, String(wert));
+  }
+});
