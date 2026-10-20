@@ -108,3 +108,86 @@ test('/pages/live: Canonical in der Route, noindex nur in den Schritt-Ansichten'
   assert.match(route, /canonicalLink\(PFAD\)/);
   assert.match(route, /d\?\.schritt \? \[\.\.\.basis, \{name: 'robots', content: 'noindex'\}\] : basis/);
 });
+
+// Neue Fassung /pages/live (Grossjob 20261020-GROSSJOB-coming-home-live-
+// seite-neu-nach-christians-idee-pr-manager-als-chef-zusammenfassungen-live,
+// s02). Christian 20.10.2026 zur vorigen Fassung: „auch die unbequemen
+// Antworten? was für ein Quatsch. die Idee ist doch ganz anders.“ Der Test
+// hält die Sätze, die er gestrichen hat, aus den Bausteinen der neuen Fassung
+// heraus und prüft, dass die alte Fassung per Schalter erreichbar bleibt.
+function liveRoute() {
+  return readFileSync(new URL('../app/routes/pages.live.jsx', import.meta.url), 'utf8');
+}
+
+/** Quelltext der neuen Fassung: Konstanten und Bausteine bis zur alten Kopf-Funktion. */
+function neueFassung(route) {
+  const textAnfang = route.indexOf('const TITEL_NEU');
+  const textEnde = route.indexOf('const ECKDATEN = [');
+  const bauAnfang = route.indexOf('function LiveNeu(');
+  const bauEnde = route.indexOf('function Kopf()');
+  assert.ok(textAnfang > 0 && textEnde > textAnfang, 'Textblock der neuen Fassung fehlt');
+  assert.ok(bauAnfang > 0 && bauEnde > bauAnfang, 'Bausteine der neuen Fassung fehlen');
+  return route.slice(textAnfang, textEnde) + route.slice(bauAnfang, bauEnde);
+}
+
+test('/pages/live: neue Fassung ist an und trägt ihr Merkmal', () => {
+  const route = liveRoute();
+  assert.match(route, /^const SEITE_NEU_AN = true;$/m);
+  assert.match(route, /if \(SEITE_NEU_AN\) return <LiveNeu d=\{d\} \/>;/);
+  assert.match(neueFassung(route), /data-ch-live-fassung="neu-20261020"/);
+});
+
+test('/pages/live neu: Eckdaten, Aufnahme-Satz, Leerzustand und Linktext nach Vertrag', () => {
+  const neu = neueFassung(liveRoute());
+  assert.match(neu, /wert: 'Jeden Sonntag, 12:00 Uhr \(Berlin\)'/);
+  assert.match(neu, /wert: '90 Minuten'/);
+  assert.match(neu, /'Nach jedem Sonntag steht hier, worüber wir gesprochen haben\.'/);
+  assert.match(neu, /const WOCHE_AUFKLAPPEN = 'Zusammenfassung lesen';/);
+  assert.match(neu.replace(/' \+\s+'/g, ''), /Namen und persönliche Geschichten aus der Runde veröffentlichen wir nicht\./);
+  // Reihenfolge der Abschnitte: Kopf, Termin, Anmeldung, Wochen.
+  const lauf = neu.slice(neu.indexOf('function LiveNeu('));
+  const pos = ['<KopfNeu />', '<Termin ', 'data-ch-live="anmeldung"', '<Zusammenfassungen'].map((m) => lauf.indexOf(m));
+  assert.ok(pos.every((p) => p > 0), `Abschnitt fehlt: ${pos}`);
+  assert.deepEqual([...pos].sort((a, b) => a - b), pos, `Reihenfolge ${pos}`);
+});
+
+test('/pages/live neu: keine der gestrichenen Sätze in der neuen Fassung', () => {
+  const neu = neueFassung(liveRoute()).replace(/' \+\s+'/g, '');
+  for (const satz of [
+    /unbequem/i,
+    /Eine Stunde mit Anna und Christian/,
+    /60 Minuten/,
+    /eine Stunde live/i,
+    /erste Zusammenfassung erscheint/,
+    /Geschichte lesen/,
+    /Du fragst, wir antworten/,
+  ]) {
+    assert.ok(!satz.test(neu), `neue Fassung enthält ${satz}`);
+  }
+});
+
+test('NEGATIV-KONTROLLE /pages/live: die alte Fassung bleibt per Schalter erreichbar', () => {
+  const route = liveRoute();
+  // Ohne diesen Bestand wäre SEITE_NEU_AN = false kein Rückweg.
+  assert.match(route, /Du fragst, wir antworten\. Auch die unbequemen Fragen\./);
+  assert.match(route, /'Die erste Zusammenfassung erscheint nach dem nächsten Sonntag\.'/);
+  assert.match(route, /function Rueckblick\(\{rueckblicke, gesamt, ladeFehler\}\)/);
+  // Und der Test der gestrichenen Sätze sähe sie, stünden sie in der neuen Fassung.
+  assert.ok(/unbequem/i.test(route.slice(route.indexOf('function Kopf()'))));
+});
+
+test('/pages/live: Termin gilt 90 Minuten, Überschriften im Artikel werden h4', async () => {
+  const m = await import('../app/lib/coming-home-live.server.js');
+  assert.equal(m.DAUER_MIN, 90);
+  assert.equal(
+    m.ueberschriftenTiefer('<h2 id="a">Die Inhalte</h2><ul><li>x</li></ul><h3>Zum Mitnehmen</h3><hr>'),
+    '<h4 id="a">Die Inhalte</h4><ul><li>x</li></ul><h4>Zum Mitnehmen</h4><hr>',
+  );
+  // 12:00 Uhr Beginn: um 13:29 noch der nächste Termin, um 13:31 vorbei.
+  const artikel = [{
+    handle: 'coming-home-2026-10-25', title: 'T', excerpt: '', contentHtml: '',
+    tags: ['ch-termin', 'ch-datum-2026-10-25', 'ch-zeit-1200', 'ch-vorschau'],
+  }];
+  assert.equal(m.seitenDaten(artikel, new Date('2026-10-25T12:29:00Z')).naechster.quelle, 'blog');
+  assert.equal(m.seitenDaten(artikel, new Date('2026-10-25T12:31:00Z')).naechster.quelle, 'annahme');
+});
