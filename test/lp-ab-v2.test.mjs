@@ -156,6 +156,7 @@ test('Der Pin faehrt im Query mit und zerstört den Passthrough nicht', () => {
 // ═══ Experiment-Kreislauf E1 (06.10.2026): 15 % stabil je Besucher ═══════════
 import {
   E1,
+  E1_AKTIV,
   E2,
   E2_AKTIV,
   LP_EXP_B_PFAD,
@@ -166,6 +167,15 @@ import {
   experimentAktiv,
   experimentB2Aktiv,
 } from '../app/lib/lp-ab-v2.server.js';
+
+/* E1 ist seit dem 20.10.2026 entschieden (szs-e1-gs050: B gewinnt mobil) und
+ * steht im Code auf E1_AKTIV = false. Die Mechanik der Weiche bleibt trotzdem
+ * gepinnt geprüft: die Tests unten fahren E1 ausdrücklich mit Schalter true
+ * (Erwartungswerte gepinnt, nicht aus dem laufenden Schalter gelesen). Was der
+ * ausgelieferte Schalter bewirkt, prüft der eigene Test „E1 beendet". */
+function entscheideMitE1(request, env, codeSchalter = true, ...weitere) {
+  return entscheideLpExperiment(request, env, codeSchalter, ...weitere);
+}
 
 /** Request-Stub mit Kopfzeilen (IP + UA), wie Oxygen sie liefert. */
 function reqK(pfadMitQuery, {ip = '', ua = 'Mozilla/5.0 (iPhone)', method = 'GET'} = {}) {
@@ -197,12 +207,12 @@ test('E1: Anteil ist 15 % und B-Pfad ist eine eigene Route', () => {
 test('E1: Zuteilung ist stabil je Besucher (gleiche IP+UA => gleicher Arm, 50x)', () => {
   const ip = ipMit(true);
   for (let i = 0; i < 50; i += 1) {
-    const e = entscheideLpExperiment(reqK(LP_A, {ip}), {});
+    const e = entscheideMitE1(reqK(LP_A, {ip}), {});
     assert.ok(e, 'derselbe Besucher muss jedes Mal B sehen');
   }
   const ipA = ipMit(false);
   for (let i = 0; i < 50; i += 1) {
-    assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: ipA}), {}), null);
+    assert.equal(entscheideMitE1(reqK(LP_A, {ip: ipA}), {}), null);
   }
 });
 
@@ -212,7 +222,7 @@ test('E1: Anteil über 20.000 Besucher liegt bei 15 % (+-1 Pkt.)', () => {
   for (let i = 0; i < n; i += 1) {
     const ip = `100.${(i >> 16) & 255}.${(i >> 8) & 255}.${i & 255}`;
     // Nur Arm B zählt: seit B2 ist „umgeleitet" nicht mehr dasselbe wie „B".
-    if (entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {})?.arm === 'b') b += 1;
+    if (entscheideMitE1(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {})?.arm === 'b') b += 1;
   }
   const anteil = b / n;
   assert.ok(anteil > 0.14 && anteil < 0.16, `Anteil ${anteil}`);
@@ -221,29 +231,29 @@ test('E1: Anteil über 20.000 Besucher liegt bei 15 % (+-1 Pkt.)', () => {
 test('E1: Zuteilung hängt NICHT an der Quelle (Query) — Markensuche bleibt gleich verteilt', () => {
   const ip = ipMit(true);
   for (const q of ['', '?gclid=x&gad_campaignid=8925560332', '?utm_medium=paid&utm_content=120252123057700236', '?fbclid=abc']) {
-    assert.ok(entscheideLpExperiment(reqK(`${LP_A}${q}`, {ip}), {}), `Quelle ${q}`);
+    assert.ok(entscheideMitE1(reqK(`${LP_A}${q}`, {ip}), {}), `Quelle ${q}`);
   }
 });
 
 test('E1: Ziel trägt den rohen Query byte-identisch + lp_m=x (Tracking-Kette)', () => {
   const ip = ipMit(true);
   const q = '?utm_source=facebook&utm_medium=paid&fbclid=AbC_123&gclid=G-9';
-  const e = entscheideLpExperiment(reqK(`${LP_A}${q}`, {ip}), {});
+  const e = entscheideMitE1(reqK(`${LP_A}${q}`, {ip}), {});
   assert.equal(e.ziel, `${LP_EXP_B_PFAD}${q}&lp_m=x`);
-  const ohne = entscheideLpExperiment(reqK(LP_A, {ip}), {});
+  const ohne = entscheideMitE1(reqK(LP_A, {ip}), {});
   assert.equal(ohne.ziel, `${LP_EXP_B_PFAD}?lp_m=x`);
 });
 
 test('E1: eigener Verkehr (Server-IP oder Marker-UA) bleibt immer auf A', () => {
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: '65.108.150.121'}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: '65.108.150.121'}), {}), null);
   const ip = ipMit(true, 'QiBlancoInternal/1.0 (design-watch)');
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip, ua: 'QiBlancoInternal/1.0 (design-watch)'}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip, ua: 'QiBlancoInternal/1.0 (design-watch)'}), {}), null);
 });
 
 test('E1: Pin ?lp_exp=a|b dominiert den Würfel, auch für eigenen Verkehr', () => {
   const ipB = ipMit(true);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=a`, {ip: ipB}), {}), null);
-  const e = entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {});
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?lp_exp=a`, {ip: ipB}), {}), null);
+  const e = entscheideMitE1(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {});
   assert.ok(e && e.ziel.startsWith(`${LP_EXP_B_PFAD}?lp_exp=b`));
 });
 
@@ -252,20 +262,20 @@ test('E1: ohne Client-IP keine Zuteilung (A), Datenrequests und POST nie', () =>
   let uaOhne = '';
   for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `UA-${i}`) < E1.anteil_prozent) uaOhne = `UA-${i}`;
   assert.ok(uaOhne);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
   const ip = ipMit(true);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}.data`, {ip}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?_data=routes`, {ip}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip, method: 'POST'}), {}), null);
-  assert.ok(entscheideLpExperiment(reqK(LP_A, {ip, method: 'HEAD'}), {}));
+  assert.equal(entscheideMitE1(reqK(`${LP_A}.data`, {ip}), {}), null);
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?_data=routes`, {ip}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip, method: 'POST'}), {}), null);
+  assert.ok(entscheideMitE1(reqK(LP_A, {ip, method: 'HEAD'}), {}));
 });
 
 test('E1: Kill — Env LP_EXP_SZS_MODE=off oder Code-Schalter false => 100 % A', () => {
   const ip = ipMit(true);
-  assert.equal(experimentAktiv({}), true);
-  assert.equal(experimentAktiv({LP_EXP_SZS_MODE: 'off'}), false);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off'}), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {}, false), null);
+  assert.equal(experimentAktiv({}, true), true);
+  assert.equal(experimentAktiv({LP_EXP_SZS_MODE: 'off'}, true), false);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off'}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {}, false), null);
 });
 
 test('E1: Ad-Weiche schließt B aus (sonst Schleife B -> A für bezahlten Verkehr)', () => {
@@ -274,6 +284,31 @@ test('E1: Ad-Weiche schließt B aus (sonst Schleife B -> A für bezahlten Verkeh
   assert.equal(entscheideAdWeiche(`${BASIS}${LP_EXP_B_PFAD}?utm_medium=paid&lp_m=x`), null);
   // Gegenprobe: ein nicht ausgeschlossener Pfad wird weiter umgeleitet.
   assert.ok(entscheideAdWeiche(`${BASIS}/pages/irgendwas?utm_medium=paid`));
+});
+
+test('E1 beendet (20.10.2026): ausgelieferter Schalter aus, niemand kommt mehr nach B, B2 unverändert', () => {
+  assert.equal(E1_AKTIV, false);
+  assert.equal(experimentAktiv({}), false);
+  assert.equal(E1.salz, 'szs-e1-gs050');
+  // Mit dem ausgelieferten Schalter (kein drittes Argument) sieht kein Besucher B.
+  let b = 0;
+  let b2 = 0;
+  for (let i = 0; i < 20000; i += 1) {
+    const ip = `100.${(i >> 16) & 255}.${(i >> 8) & 255}.${i & 255}`;
+    const e = entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {});
+    if (e?.arm === 'b') b += 1;
+    if (e?.arm === 'b2') b2 += 1;
+    // Je Besucher: B2 bleibt byte-gleich zugeteilt (Arm UND Ziel), ob E1 läuft oder nicht.
+    const mit = entscheideMitE1(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {});
+    if (mit?.arm === 'b2' || e?.arm === 'b2') {
+      assert.deepEqual(e, mit, `B2-Zuteilung je Besucher (${ip})`);
+    }
+  }
+  assert.equal(b, 0);
+  assert.ok(b2 / 20000 > 0.14 && b2 / 20000 < 0.16, `B2 ${b2 / 20000}`);
+  // Ein Pin auf den abgeschalteten Arm zeigt A, B2 bleibt per Pin erreichbar.
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {}), null);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b2`, {ip: '65.108.150.121'}), {}).arm, 'b2');
 });
 
 // ═══ Zweiter Arm B2 (szs-e2-gs126, 10.10.2026): ausschließend neben B ════════
@@ -313,7 +348,7 @@ test('B2: dasselbe Salz wie E1, 15 %, eigene Route, eigener Marker', () => {
 test('B2: kein Besucher steht in B und B2 zugleich (30.000 synthetische Besucher)', () => {
   let beide = 0;
   for (const b of POP_B2) {
-    const e = entscheideLpExperiment(reqK(LP_A, b), {});
+    const e = entscheideMitE1(reqK(LP_A, b), {});
     const eimer = besucherEimer(b.ip, b.ua);
     const inB = eimer < E1.anteil_prozent;
     const inB2 = eimer >= 100 - E2.anteil_prozent;
@@ -326,7 +361,7 @@ test('B2: kein Besucher steht in B und B2 zugleich (30.000 synthetische Besucher
 
 test('B2: Anteile A/B/B2 liegen bei 70/15/15 (+-1 Pkt.)', () => {
   const z = {a: 0, b: 0, b2: 0};
-  for (const b of POP_B2) z[entscheideLpExperiment(reqK(LP_A, b), {})?.arm ?? 'a'] += 1;
+  for (const b of POP_B2) z[entscheideMitE1(reqK(LP_A, b), {})?.arm ?? 'a'] += 1;
   const n = POP_B2.length;
   assert.ok(Math.abs(z.a / n - 0.7) < 0.01, `A ${z.a / n}`);
   assert.ok(Math.abs(z.b / n - 0.15) < 0.01, `B ${z.b / n}`);
@@ -337,14 +372,14 @@ test('B2: die Zuteilung von B (gs050) ist unverändert — derselbe Besucher, de
   // Ein laufender Test wird nicht umgedeutet: wer vor B2 in B war, ist es
   // weiter; wer nicht in B war, kommt nie nach B. B2 nimmt nur aus A.
   for (const b of POP_B2) {
-    const e = entscheideLpExperiment(reqK(LP_A, b), {});
+    const e = entscheideMitE1(reqK(LP_A, b), {});
     assert.equal(e?.arm === 'b', bVorher(b), `${b.ip} ${b.ua}`);
     if (e?.arm === 'b') assert.equal(e.ziel, `${LP_EXP_B_PFAD}?lp_m=x`);
   }
   // Auch mit abgeschaltetem B2 bleibt B byte-gleich.
   for (const b of POP_B2.slice(0, 3000)) {
-    const mit = entscheideLpExperiment(reqK(LP_A, b), {});
-    const ohne = entscheideLpExperiment(reqK(LP_A, b), {}, true, false);
+    const mit = entscheideMitE1(reqK(LP_A, b), {});
+    const ohne = entscheideMitE1(reqK(LP_A, b), {}, true, false);
     if (mit?.arm === 'b2') assert.equal(ohne, null);
     else assert.deepEqual(ohne, mit);
   }
@@ -353,36 +388,36 @@ test('B2: die Zuteilung von B (gs050) ist unverändert — derselbe Besucher, de
 test('B2: Ziel trägt den rohen Query byte-identisch + lp_m=z (Tracking-Kette)', () => {
   const ip = ipInB2();
   const q = '?utm_source=facebook&utm_medium=paid&fbclid=AbC_123&gclid=G-9&utm_campaign=x%20y';
-  const e = entscheideLpExperiment(reqK(`${LP_A}${q}`, {ip}), {});
+  const e = entscheideMitE1(reqK(`${LP_A}${q}`, {ip}), {});
   assert.equal(e.arm, 'b2');
   assert.equal(e.ziel, `${LP_EXP_B2_PFAD}${q}&lp_m=z`);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {}).ziel, `${LP_EXP_B2_PFAD}?lp_m=z`);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {}).ziel, `${LP_EXP_B2_PFAD}?lp_m=z`);
 });
 
 test('B2: Pin ?lp_exp=b2 zeigt B2, auch für eigenen Verkehr; ?lp_exp=a hält einen B2-Besucher auf A', () => {
-  const e = entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b2`, {ip: '65.108.150.121'}), {});
+  const e = entscheideMitE1(reqK(`${LP_A}?lp_exp=b2`, {ip: '65.108.150.121'}), {});
   assert.equal(e.arm, 'b2');
   assert.ok(e.ziel.startsWith(`${LP_EXP_B2_PFAD}?lp_exp=b2`), e.ziel);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=a`, {ip: ipInB2()}), {}), null);
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?lp_exp=a`, {ip: ipInB2()}), {}), null);
   // Pin b bleibt B (nicht B2), Pin auf einen abgeschalteten Arm zeigt A.
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {}).arm, 'b');
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b2`, {ip: '65.108.150.121'}), {LP_EXP_SZS_B2_MODE: 'off'}), null);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {LP_EXP_SZS_MODE: 'off'}), null);
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {}).arm, 'b');
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?lp_exp=b2`, {ip: '65.108.150.121'}), {LP_EXP_SZS_B2_MODE: 'off'}), null);
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {LP_EXP_SZS_MODE: 'off'}), null);
 });
 
 test('B2: dieselben Ausnahmen wie E1 (eigener Verkehr, ohne IP, .data, _data, POST)', () => {
   const ip = ipInB2();
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: '65.108.150.121'}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: '65.108.150.121'}), {}), null);
   const ipI = ipInB2('QiBlancoInternal/1.0 (design-watch)');
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: ipI, ua: 'QiBlancoInternal/1.0 (design-watch)'}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: ipI, ua: 'QiBlancoInternal/1.0 (design-watch)'}), {}), null);
   let uaOhne = '';
   for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `UA-${i}`) >= 100 - E2.anteil_prozent) uaOhne = `UA-${i}`;
   assert.ok(uaOhne);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}.data`, {ip}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?_data=routes`, {ip}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip, method: 'POST'}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip, method: 'HEAD'}), {}).arm, 'b2');
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
+  assert.equal(entscheideMitE1(reqK(`${LP_A}.data`, {ip}), {}), null);
+  assert.equal(entscheideMitE1(reqK(`${LP_A}?_data=routes`, {ip}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip, method: 'POST'}), {}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip, method: 'HEAD'}), {}).arm, 'b2');
 });
 
 test('B2: Kill — Env LP_EXP_SZS_B2_MODE=off oder E2_AKTIV false => kein B2, B läuft weiter', () => {
@@ -392,13 +427,13 @@ test('B2: Kill — Env LP_EXP_SZS_B2_MODE=off oder E2_AKTIV false => kein B2, B 
   assert.equal(experimentB2Aktiv({LP_EXP_SZS_B2_MODE: 'off'}), false);
   assert.equal(experimentB2Aktiv({LP_EXP_SZS_B2_MODE: 'on'}), true);
   assert.equal(experimentB2Aktiv({}, false), false);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {LP_EXP_SZS_B2_MODE: 'off'}), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {}, true, false), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: ipB}), {LP_EXP_SZS_B2_MODE: 'off'}).arm, 'b');
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {LP_EXP_SZS_B2_MODE: 'off'}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {}, true, false), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: ipB}), {LP_EXP_SZS_B2_MODE: 'off'}).arm, 'b');
   // Umgekehrt: der Kill von E1 lässt B2 laufen, und B-Besucher sehen dann A.
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off'}).arm, 'b2');
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip: ipB}), {LP_EXP_SZS_MODE: 'off'}), null);
-  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off', LP_EXP_SZS_B2_MODE: 'off'}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off'}).arm, 'b2');
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip: ipB}), {LP_EXP_SZS_MODE: 'off'}), null);
+  assert.equal(entscheideMitE1(reqK(LP_A, {ip}), {LP_EXP_SZS_MODE: 'off', LP_EXP_SZS_B2_MODE: 'off'}), null);
 });
 
 test('B2: Summe der Anteile über 100 oder fremdes Salz => B2 aus (Fail-Richtung Bestand)', () => {

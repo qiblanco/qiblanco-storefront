@@ -166,8 +166,18 @@ export const E1 = Object.freeze({
   anteil_prozent: 15,
 });
 
-/** Code-Schalter des Experiments; false = 100 % LP A. */
-export const E1_AKTIV = true;
+/**
+ * Code-Schalter des Experiments; false = 100 % LP A.
+ *
+ * BEENDET am 20.10.2026 (Urteil des Heatmap-Managers 06:27Z: B gewinnt,
+ * P(B > A) = 95 % nach 13,8 Tagen und 391 B-Sitzungen; mobil 0,977, desktop
+ * 0,17). Seite A trägt seitdem mobil fest, was B mobil zeigte
+ * (traegtChampionMobil in components/campaign/SchlafZellenSchutz.jsx), und
+ * die Eimer 0..14 sind frei. id und Salz bleiben stehen: das Salz trägt B2 und
+ * jeder weitere Arm dieser Seite (ausschließende Eimer), und ein neuer Test auf
+ * /pages/schlaf-zellen-schutz-b bekommt eine neue id, nie diese.
+ */
+export const E1_AKTIV = false;
 
 /** Kill per Env: NUR der Wert 'off' schaltet ab (Abwesenheit = Code-Schalter gilt). */
 export function experimentAktiv(env, codeSchalter = E1_AKTIV) {
