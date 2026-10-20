@@ -88,7 +88,31 @@ const BLOG_HANDLE = 'coming-home';
 /** Einwilligungs-Version und Wortlaut von s05 (Anmeldedienst, Naht N4). */
 const EINWILLIGUNG_VERSION = 'ch-live-1';
 
-const TITEL = 'Coming Home live: nächster Termin und Rückblick | Qi Blanco';
+/**
+ * Titel der Reihe (Christian 20.10.2026 ~03:47Z, wörtlich: „Nein, der Titel
+ * heißt nur Coming Home, eine Reise zu dir selbst.“). Server-SSoT:
+ * shared-state/coming-home/config/coming-home.conf CH_REIHE_* (stand.json
+ * reihe{}); dieselben Konstanten stehen in pages.coming-home.jsx.
+ * Der Zusatz bricht nur als Ganzes um (kein einzelnes Wort allein in Zeile 2).
+ * BLUE-GREEN: NEUER_TITEL_AN = false stellt die Fassung vor dem 20.10.2026
+ * Zeichen für Zeichen wieder her (Original bleibt aktivierbar).
+ */
+const NEUER_TITEL_AN = true;
+const REIHE_NAME = 'Coming Home';
+const REIHE_ZUSATZ = 'Eine Reise zu dir selbst';
+const REIHE_TITEL = `${REIHE_NAME} – ${REIHE_ZUSATZ}`;
+const REIHE_VORZEILE = NEUER_TITEL_AN ? (
+  <>
+    {REIHE_NAME} –{' '}
+    <span style={{whiteSpace: 'nowrap'}}>{REIHE_ZUSATZ}</span>
+  </>
+) : (
+  'Coming Home · jeden Sonntag live'
+);
+
+const TITEL = NEUER_TITEL_AN
+  ? `${REIHE_TITEL}: nächster Termin | Qi Blanco`
+  : 'Coming Home live: nächster Termin und Rückblick | Qi Blanco';
 
 const BESCHREIBUNG =
   'Jeden Sonntag eine Stunde live per Zoom mit Anna und Christian, ' +
@@ -274,7 +298,7 @@ function Kopf() {
   return (
     <section className="lv-abschnitt lv-kopf" data-ch-live="kopf">
       <div className="lv-innen">
-        <p className="lv-vorzeile">Coming Home · jeden Sonntag live</p>
+        <p className="lv-vorzeile">{REIHE_VORZEILE}</p>
         <h1 className="lv-h1">Eine Stunde mit Anna und Christian</h1>
         <p className="lv-lede">
           Du fragst, wir antworten. Auch die unbequemen Fragen. Oder du hörst
