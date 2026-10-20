@@ -1032,7 +1032,7 @@ function WeiterCta({nr, imBlock = false}) {
   );
 }
 
-/* ───────── Sticky-Kaufknopf mobil (nur Variante B) ─────────
+/* ───────── Sticky-Kaufknopf mobil (Variante B; seit 20.10.2026 auch A, Champion mobil) ─────────
    Experiment-Kreislauf E1, Hypothese GS-056 (geschaeftssteuerung/data/
    hypothesen.json): „Wer die Anzeige angeklickt hat, will den nächsten Schritt
    sofort sehen." Gemessen am 05.10.: der einzige Knopf im Kopf liegt mobil bei
@@ -1104,6 +1104,33 @@ function StickyKaufknopf() {
   );
 }
 
+/* ───────── Champion mobil (Urteil szs-e1-gs050, 20.10.2026) ─────────
+   Test E1 ist entschieden: B gewinnt mobil (P(B > A) = 0,977 nach 13,8 Tagen,
+   356 B-Sitzungen mobil; Absprung-Schutz ok). Desktop bleibt A (P = 0,17 bei
+   12 B-Sitzungen, kein Urteil). Ausgerollt wird nur auf dem Gerät, auf dem B
+   gewonnen hat (Christian 10.10.2026, experimente.yaml geraete_regel.
+   ausroll_regel). Seite A trägt deshalb mobil fest, was B mobil zeigte:
+     - den Kaufknopf lp-a-weiter-1 direkt nach dem Mechanismus-Block,
+     - den festen Kaufknopf unten (lp-b-sticky-kaufknopf, StickyKaufknopf).
+
+   EINE BENANNTE BEDINGUNG, damit jede Variante, die vom Champion abgeleitet
+   wird (Kurz-Arme K50/K25, der nächste Test auf -b), sie übernimmt, statt die
+   Regel nachzubauen: traegtChampionMobil(variante). B2 (szs-e2-gs126) läuft
+   weiter mit SEINER Definition (A von vor diesem Urteil plus Text-Knöpfe,
+   kein fester Knopf) und trägt die Bedingung deshalb nicht.
+
+   GERÄT PER CSS, NICHT PER SERVER: die Weiche teilt nicht nach Gerät, und ein
+   Server-Urteil aus dem User-Agent wäre ein zweites Gerätemaß neben dem des
+   Pixels. Mobil heißt hier: schmal (bis 767 px, die Grenze der Seite) ODER
+   grober Zeiger (pointer: coarse — so ordnet der Pixel ein, Tablets zählen
+   zu mobil). Der Knopf steht in A also auch auf dem Desktop im HTML, dort
+   aber mit display: none (.lp-a-nur-mobil, styles/schlaf-zellen-schutz-
+   seite.css) — kein Kasten, kein Klick, keine Sichtung. Der feste Knopf hat
+   seine Gerätegrenze schon in seiner eigenen CSS (bis 767 px), genau wie in B. */
+export function traegtChampionMobil(variante) {
+  return variante === 'a';
+}
+
 /* ───────── Root ─────────
    `variante` (Experiment-Kreislauf E1, 06.10.2026): 'a' = die Seite, wie sie
    ist (Default; A rendert damit byte-gleich wie vor dem Experiment), 'b' = A
@@ -1118,6 +1145,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
   const istB = variante === 'b';
   const istB2 = variante === 'b2';
+  const championMobil = traegtChampionMobil(variante);
 
   return (
     <LiveDataCtx.Provider value={{data}}>
@@ -1158,6 +1186,14 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             Arme trennen sich am Pfad, der Knopf behält seine Historie. A bleibt
             ohne ihn, bis B gewinnt. */}
         {(istB || istB2) && <WeiterCta nr={1} />}
+        {/* SEIT DEM 20.10.2026 AUCH IN A, NUR MOBIL: B hat mobil gewonnen
+            (szs-e1-gs050, Champion mobil oben). Derselbe Baustein, derselbe
+            Schlüssel lp-a-weiter-1, damit seine Historie weiterläuft. */}
+        {championMobil && (
+          <div className="lp-a-nur-mobil">
+            <WeiterCta nr={1} />
+          </div>
+        )}
         <ScienceSection />
         {/* IN VARIANTE B2 KEHRT AUCH nr=2 ZURÜCK (Christian 10.10.2026, Test
             GS-126: „mobil auch nochmal mit der alten Ansicht und mehr Knöpfen
@@ -1246,7 +1282,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         <GuaranteeSection />
         <PricingSection />
         <FinalCTA />
-        {istB && <StickyKaufknopf />}
+        {(istB || championMobil) && <StickyKaufknopf />}
       </div>
     </LiveDataCtx.Provider>
   );

@@ -302,9 +302,21 @@
   margin: 0;
 }
 
+/* ═══ CHAMPION MOBIL: Bausteine, die A nur mobil trägt (Urteil szs-e1-gs050) ═══
+   B hat mobil gewonnen, desktop bleibt A (Ausrollen je Gerät, Christian
+   10.10.2026). Mobil = schmal (bis 767 px, die Grenze dieser Seite) ODER
+   grober Zeiger (so ordnet der Pixel ein; Tablets zählen zu mobil). Versteckt
+   wird also nur auf breiten Bildschirmen mit feinem Zeiger: display none,
+   kein Kasten, kein Klick, keine Sichtung. */
+@media (min-width: 768px) and (pointer: fine) {
+  .lp-a3 .lp-a-nur-mobil { display: none; }
+}
+
 /* ═══ VARIANTE B: STICKY-KAUFKNOPF MOBIL (Experiment-Kreislauf E1, GS-056) ══════
-   Nur die Route /pages/schlaf-zellen-schutz-b rendert das Element (Prop
-   variante="b"); auf A existiert es nicht, diese Regeln treffen dort nichts.
+   Bis zum 20.10.2026 rendert nur die Route /pages/schlaf-zellen-schutz-b das
+   Element. Seit dem Urteil szs-e1-gs050 (B gewinnt mobil) trägt es auch A
+   (traegtChampionMobil in der Komponente); die Gerätegrenze bleibt die eine
+   Regel hier unten (bis 767 px), genau wie in B.
 
    NUR BESTANDS-TOKENS: Fläche --a-grund, Linie --a-linie, Schatten --a-shadow-md,
    Abstände --a-s1/--a-s2 (8pt-Raster), Schrift --a-fs-base, Ebene --z-schwebend
