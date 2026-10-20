@@ -1041,7 +1041,8 @@ function WeiterCta({nr, imBlock = false}) {
    WANN ER STEHT: erst wenn der Kopf (lp-a-hero) aus dem Bild ist — dort steht
    der Kopf-Knopf schon —, und nicht mehr, sobald Preisblock oder Schluss
    (lp-a-pricing, lp-a-final) im Bild sind: dort trägt die Seite ihre eigenen
-   Knöpfe, ein zweiter darunter wäre Doppelung. Nur mobil (bis 749 px).
+   Knöpfe, ein zweiter darunter wäre Doppelung. Nur mobil (bis 767 px, die
+   Grenze in der CSS; in A zusätzlich nur bei grobem Zeiger, nurMobil).
 
    BEWUSST NICHTS NEUES: Ziel, Wortlaut und Knopfklasse sind die des Kopf-
    Knopfs (QIONE_ZIEL, QIONE_CTA, lp-vp-btn--primary; die Einstimmigkeits-
@@ -1059,7 +1060,7 @@ function WeiterCta({nr, imBlock = false}) {
    kein Fokus, kein Klick, kein Kasten im Fenster. Erscheinen OHNE Gleiten:
    die Chat-Erkennung misst im nächsten Bild, und ein Knopf mitten in der
    Bewegung läge dann noch unter dem Rand (Chat bliebe über ihm stehen). */
-function StickyKaufknopf() {
+function StickyKaufknopf({nurMobil = false}) {
   const [sichtbar, setSichtbar] = useState(false);
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return undefined;
@@ -1084,7 +1085,9 @@ function StickyKaufknopf() {
   }, []);
   return (
     <div
-      className={`lp-b-sticky${sichtbar ? ' lp-b-sticky--sichtbar' : ''}`}
+      className={`lp-b-sticky${sichtbar ? ' lp-b-sticky--sichtbar' : ''}${
+        nurMobil ? ' lp-a-nur-mobil' : ''
+      }`}
       data-section="lp-b-sticky-kaufknopf"
       aria-hidden={sichtbar ? undefined : 'true'}
     >
@@ -1121,12 +1124,13 @@ function StickyKaufknopf() {
 
    GERÄT PER CSS, NICHT PER SERVER: die Weiche teilt nicht nach Gerät, und ein
    Server-Urteil aus dem User-Agent wäre ein zweites Gerätemaß neben dem des
-   Pixels. Mobil heißt hier: schmal (bis 767 px, die Grenze der Seite) ODER
-   grober Zeiger (pointer: coarse — so ordnet der Pixel ein, Tablets zählen
-   zu mobil). Der Knopf steht in A also auch auf dem Desktop im HTML, dort
-   aber mit display: none (.lp-a-nur-mobil, styles/schlaf-zellen-schutz-
-   seite.css) — kein Kasten, kein Klick, keine Sichtung. Der feste Knopf hat
-   seine Gerätegrenze schon in seiner eigenen CSS (bis 767 px), genau wie in B. */
+   Pixels. Mobil heißt hier genau, was der Pixel mobil nennt: grober Zeiger
+   (pointer: coarse; Tablets zählen zu mobil). Ein schmales Desktop-Fenster
+   mit Maus zählt der Pixel als desktop, dort bleibt A wie vorher. Beide
+   Knöpfe stehen in A also auch auf dem Desktop im HTML, dort aber mit
+   display: none (.lp-a-nur-mobil, styles/schlaf-zellen-schutz-seite.css) —
+   kein Kasten, kein Klick, keine Sichtung. Der feste Knopf behält dazu seine
+   Breitengrenze aus B (bis 767 px), Tablets sehen ihn also wie in B nicht. */
 export function traegtChampionMobil(variante) {
   return variante === 'a';
 }
@@ -1282,7 +1286,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         <GuaranteeSection />
         <PricingSection />
         <FinalCTA />
-        {(istB || championMobil) && <StickyKaufknopf />}
+        {(istB || championMobil) && <StickyKaufknopf nurMobil={championMobil} />}
       </div>
     </LiveDataCtx.Provider>
   );

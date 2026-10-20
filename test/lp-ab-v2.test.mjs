@@ -298,6 +298,11 @@ test('E1 beendet (20.10.2026): ausgelieferter Schalter aus, niemand kommt mehr n
     const e = entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {});
     if (e?.arm === 'b') b += 1;
     if (e?.arm === 'b2') b2 += 1;
+    // Je Besucher: B2 bleibt byte-gleich zugeteilt (Arm UND Ziel), ob E1 läuft oder nicht.
+    const mit = entscheideMitE1(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {});
+    if (mit?.arm === 'b2' || e?.arm === 'b2') {
+      assert.deepEqual(e, mit, `B2-Zuteilung je Besucher (${ip})`);
+    }
   }
   assert.equal(b, 0);
   assert.ok(b2 / 20000 > 0.14 && b2 / 20000 < 0.16, `B2 ${b2 / 20000}`);
