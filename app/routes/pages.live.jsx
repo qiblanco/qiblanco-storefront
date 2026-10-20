@@ -145,13 +145,13 @@ const BESCHREIBUNG_ALT =
 
 // ─── Text der neuen Fassung (vom PR-Chef geprüft) ───────────────────────────
 
-const TITEL_NEU = `${REIHE_TITEL}: Termine und Zusammenfassungen | Qi Blanco`;
+// Titel höchstens 60 und Beschreibung 120 bis 160 Zeichen (GEO R3/R4).
+const TITEL_NEU = `${REIHE_TITEL} | Qi Blanco`;
 
 const BESCHREIBUNG_NEU =
-  'Jeden Sonntag um 12 Uhr (Berlin) treffen sich Anna und Christian mit allen, ' +
-  'die dabei sein möchten, 90 Minuten per Zoom, kostenlos. Hier stehen der ' +
-  'nächste Termin mit Thema, die Anmeldung und je Woche, worüber wir ' +
-  'gesprochen haben.';
+  'Jeden Sonntag um 12 Uhr (Berlin) live mit Anna und Christian: 90 Minuten ' +
+  'per Zoom, kostenlos. Mit nächstem Termin, Anmeldung und den Themen jeder ' +
+  'Woche.';
 
 const TITEL = SEITE_NEU_AN ? TITEL_NEU : TITEL_ALT;
 const BESCHREIBUNG = SEITE_NEU_AN ? BESCHREIBUNG_NEU : BESCHREIBUNG_ALT;
@@ -182,10 +182,15 @@ const TEILNAHME_TEXT =
   'So bist du dabei: Melde dich mit Name und E-Mail-Adresse an. Den ' +
   'Zoom-Link schicken wir dir per Mail.';
 
+/**
+ * Aufnahme-Satz. Der Entwurf „Aus der Runde nennen wir keine Namen …“ fiel
+ * am Haltungs-Gate durch (Satz über den eigenen Text). Der letzte Satz ist
+ * die Fassung des PR-Chefs (20.10.2026, P5): eine Zusage, die wir halten.
+ */
 const AUFNAHME_TEXT =
   'Wir zeichnen jeden Sonntag auf, um danach aufzuschreiben, worüber wir ' +
-  'gesprochen haben. Die Aufnahme bleibt bei uns. Aus der Runde nennen wir ' +
-  'keine Namen und erzählen keine persönlichen Geschichten.';
+  'gesprochen haben. Die Aufnahme bleibt bei uns. Namen und persönliche ' +
+  'Geschichten aus der Runde veröffentlichen wir nicht.';
 
 const WOCHEN_TITEL = 'Worüber wir gesprochen haben';
 const WOCHEN_LEER = 'Nach jedem Sonntag steht hier, worüber wir gesprochen haben.';
