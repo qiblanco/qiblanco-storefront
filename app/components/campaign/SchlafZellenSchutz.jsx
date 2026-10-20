@@ -1132,7 +1132,26 @@ function StickyKaufknopf({nurMobil = false}) {
    kein Kasten, kein Klick, keine Sichtung. Der feste Knopf behält dazu seine
    Breitengrenze aus B (bis 767 px), Tablets sehen ihn also wie in B nicht. */
 export function traegtChampionMobil(variante) {
-  return variante === 'a';
+  return variante === 'a' || variante === 'b';
+}
+
+/* ───────── GS-082 auf -b: Bewertungen direkt hinter den Kopf (20.10.2026) ─────────
+   Nächster Test auf /pages/schlaf-zellen-schutz-b (szs-e5-gs082, Stufe 2 des
+   Stufenplans: Themenblöcke umstellen). B ist vom Champion abgeleitet
+   (traegtChampionMobil('b') oben) und trägt genau EINE Änderung gegenüber A:
+   der Bewertungsblock (Google-Bewertungen und Reputon, ein Baustein) steht
+   direkt hinter dem Kopf statt nach dem Wissenschaftsblock. Alle anderen
+   Blöcke bleiben in der Reihenfolge von A, kein Satz ist neu.
+
+   WARUM DIESER BLOCK: positionsbereinigt (Verweildauer je Bildschirm der
+   Leser mal Weiterklick der Leser, conversion-evergreens 19.10., 14 Tage) ist
+   google-reviews mit 0,92 der stärkste Inhaltsblock der Seite; er steht heute
+   erst nach rund zwei Dritteln der Seite. Kanon: Menschen ziehen, Studien
+   überzeugen. Definition und Zahlen: heatmap-manager/config/experimente.yaml
+   (szs-e5-gs082). Die Scroll-Animation hinter dem Kopf bleibt stehen; sie
+   rückt in B nur um den Bewertungsblock nach unten. */
+export function bewertungenNachKopf(variante) {
+  return variante === 'b';
 }
 
 /* ───────── Root ─────────
@@ -1147,14 +1166,17 @@ export function traegtChampionMobil(variante) {
    'b2'. Mobil und desktop gleich. */
 export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
-  const istB = variante === 'b';
   const istB2 = variante === 'b2';
   const championMobil = traegtChampionMobil(variante);
+  const bewertungenOben = bewertungenNachKopf(variante);
 
   return (
     <LiveDataCtx.Provider value={{data}}>
       <div className="lp-vp lp-a3">
         <Hero />
+        {bewertungenOben && (
+          <Bewertungsblock praefix="lp-a-" wrapperKlasse="lp-a-bewertungen" />
+        )}
         <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
         {/* Christian, 19.09.2026: „danach unsere Scroll-down-Animation einfügen“.
             Derselbe Baustein, den Startseite, /products/qione-2-pro,
@@ -1189,7 +1211,10 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             Block"). Gleicher Schlüssel lp-a-weiter-1 wie bis zum 20.09.: die
             Arme trennen sich am Pfad, der Knopf behält seine Historie. A bleibt
             ohne ihn, bis B gewinnt. */}
-        {(istB || istB2) && <WeiterCta nr={1} />}
+        {/* Seit dem 20.10.2026 (szs-e1-gs050 entschieden) trägt B den Knopf
+            über den Champion unten (nur mobil), B2 behält ihn auf allen
+            Geräten wie in seiner Definition. */}
+        {istB2 && <WeiterCta nr={1} />}
         {/* SEIT DEM 20.10.2026 AUCH IN A, NUR MOBIL: B hat mobil gewonnen
             (szs-e1-gs050, Champion mobil oben). Derselbe Baustein, derselbe
             Schlüssel lp-a-weiter-1, damit seine Historie weiterläuft. */}
@@ -1266,7 +1291,9 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             DOM ist unverändert — Wrapper, Hälften, Überschrift und beide
             data-section-Anker sind dieselben. Diese Seite war der erste Nutzer
             des Standards und trug ihn bis hier als letzte Abschrift. */}
-        <Bewertungsblock praefix="lp-a-" wrapperKlasse="lp-a-bewertungen" />
+        {!bewertungenOben && (
+          <Bewertungsblock praefix="lp-a-" wrapperKlasse="lp-a-bewertungen" />
+        )}
         {istB2 && <WeiterCta nr={2} />}
         {/* Externe Stimmen — mit dem Vorbildblock übernommen (Startseite Z.102).
             Derselbe geteilte Baustein, dieselbe Reihenfolge MAXIM → BRAINEFFECT →
@@ -1286,7 +1313,7 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         <GuaranteeSection />
         <PricingSection />
         <FinalCTA />
-        {(istB || championMobil) && <StickyKaufknopf nurMobil={championMobil} />}
+        {championMobil && <StickyKaufknopf nurMobil />}
       </div>
     </LiveDataCtx.Provider>
   );
