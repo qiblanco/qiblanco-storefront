@@ -86,7 +86,31 @@ const TRACKING_COOKIE_NAMES = new Set([
   // Multi-Session/Return-Visit ohne fbclid in der URL. Rein first-party/intern,
   // NICHT an Meta/Google gesendet; Capture bleibt consent-gated (wie fbc/fbp).
   '_qpx_anon',
+  // Google-Klick-Cookies (Großjob 20261020-kauf-akte, Segment s02). Gesetzt
+  // vom Conversion Linker im GTM-Container (Tag __gclidw), und zwar nur mit
+  // ad_storage granted, also nur nach Marketing-Einwilligung. _gcl_aw trägt
+  // die gclid, _gcl_gb die gbraid. Bis hierher querte die Kasse nur die
+  // gclid in der URL der Landeseite: ein Käufer, der erst beim zweiten Besuch
+  // ohne Klick-ID kaufte, kam bei uns als Google unbelegt an (gemessen
+  // 20.10.: 37 von 48 Kauf-Akten in 30 T). Gleiches Gatter wie _fbc: die
+  // Liste wird nur gelesen, wenn hasAttributionConsent() zustimmt.
+  // Die Zwillingsliste in public/qiblanco-tracker.js braucht KEINEN Eintrag:
+  // sie entscheidet, welche URL-Parameter gespeichert werden, und diese zwei
+  // Namen kommen nie als URL-Parameter an.
+  // Blue-Green: GOOGLE_KLICK_COOKIES_AN unten; false = Stand vor s02.
+  '_gcl_aw',
+  '_gcl_gb',
 ]);
+
+// Schalter für die zwei Google-Cookies oben. false nimmt sie wieder heraus,
+// das Verhalten ist dann dasselbe wie vor s02. Rückweg ohne Schalter:
+// hb-deploy revert. Die Namen bleiben im Literal stehen, weil linkage-check
+// genau dieses Literal liest.
+const GOOGLE_KLICK_COOKIES_AN = true;
+if (!GOOGLE_KLICK_COOKIES_AN) {
+  TRACKING_COOKIE_NAMES.delete('_gcl_aw');
+  TRACKING_COOKIE_NAMES.delete('_gcl_gb');
+}
 
 const MAX_CART_ATTRIBUTE_VALUE_LENGTH = 500;
 
