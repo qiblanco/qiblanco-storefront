@@ -460,6 +460,105 @@ body:has(.lv) {
   border-radius: var(--lv-r2);
 }
 
+/* ─── Neue Fassung (20.10.2026, SEITE_NEU_AN): Kopftext, Wochen ──────────
+   Nur bestehende Tokens. Die Inhalte einer Woche (h4 + Liste aus dem Blog)
+   bekommen ihre Ordnung hier: Liste mit Punkt, fettes Stichwort, die
+   Überschrift klein und gedämpft wie die Eckdaten-Begriffe. */
+/* Link im Fließtext: bleibt in der Zeile, kein Abstand nach oben. */
+.lv .lv-verweis-fluss {
+  display: inline;
+  margin: 0;
+}
+.lv .lv-lede-eng {
+  margin-bottom: var(--lv-s3);
+}
+.lv .lv-kopftext {
+  margin: 0 0 var(--lv-s6);
+}
+.lv .lv-kopftext .lv-text + .lv-text {
+  margin-top: var(--lv-s2);
+}
+.lv .lv-teilnahme {
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-woche-teaser {
+  font-size: var(--lv-fs-lg);
+  line-height: 1.5;
+  color: var(--lv-muted);
+  margin: 0 0 var(--lv-s3);
+}
+.lv .lv-inhalte h4 {
+  font-size: var(--lv-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--lv-muted);
+  margin: var(--lv-s4) 0 var(--lv-s2);
+}
+.lv .lv-inhalte > :first-child {
+  margin-top: 0;
+}
+.lv .lv-inhalte ul,
+.lv .lv-inhalte ol {
+  margin: 0 0 var(--lv-s3);
+  padding-left: var(--lv-s3);
+}
+.lv .lv-inhalte ul {
+  list-style: disc;
+}
+.lv .lv-inhalte ol {
+  list-style: decimal;
+}
+.lv .lv-inhalte li {
+  display: list-item;
+  padding-left: var(--lv-s1);
+  margin: 0 0 var(--lv-s2);
+}
+.lv .lv-inhalte li::marker {
+  color: var(--lv-akzent-tinte);
+}
+.lv .lv-inhalte strong {
+  font-weight: 600;
+  color: var(--lv-text);
+}
+.lv .lv-aufklapp {
+  margin: 0;
+}
+.lv .lv-aufklapp-knopf {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lv-s1);
+  min-height: var(--lv-s6);
+  font-size: var(--lv-fs-base);
+  font-weight: 600;
+  color: var(--lv-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  list-style: none;
+}
+.lv .lv-aufklapp-knopf::-webkit-details-marker {
+  display: none;
+}
+.lv .lv-aufklapp-knopf::before {
+  content: '+';
+  display: inline-block;
+  width: var(--lv-s2);
+  text-align: center;
+  color: var(--lv-akzent-tinte);
+}
+.lv .lv-aufklapp[open] > .lv-aufklapp-knopf::before {
+  content: '–';
+}
+.lv .lv-aufklapp-knopf:focus-visible {
+  outline: 2px solid var(--lv-akzent-tinte);
+  outline-offset: 2px;
+}
+.lv .lv-aufklapp[open] > .lv-inhalte {
+  margin-top: var(--lv-s2);
+}
+
 /* ─── Schmal ─────────────────────────────────────────────────────────────── */
 @media (max-width: 899px) {
   .lv .lv-abschnitt {
@@ -474,6 +573,13 @@ body:has(.lv) {
   .lv .lv-karte,
   .lv .lv-terminkarte {
     padding: var(--lv-s3);
+  }
+}
+/* Der Zusatz des Titels bricht ab Tablet nur als Ganzes um (Lehre D-3519);
+   auf dem Handy darf er umbrechen, sonst läuft er über den Rand. */
+@media (min-width: 768px) {
+  .lv .lv-h1-zusatz {
+    white-space: nowrap;
   }
 }
 @media (max-width: 479px) {

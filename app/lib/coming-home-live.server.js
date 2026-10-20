@@ -36,8 +36,12 @@ export const FRIST_MS = 4000;
 export const BLOG_HANDLE = 'coming-home'; // Spiegel in pages.live.jsx (Client-Link)
 export const ZEITZONE = 'Europe/Berlin';
 
-/** So lange nach dem Beginn gilt ein Termin mit Uhrzeit noch als "der nächste". */
-export const DAUER_MIN = 60;
+/**
+ * So lange nach dem Beginn gilt ein Termin mit Uhrzeit noch als "der nächste".
+ * 90 Minuten: so plant Zoom den Sonntag (coming-home stand.json
+ * naechster_termin.dauer_min, Grossjob 20261020 Coming Home neu, s02).
+ */
+export const DAUER_MIN = 90;
 /** So viele Rueckblicke zeigt die Seite, neueste zuerst (ein halbes Jahr). */
 export const RUECKBLICK_MAX = 26;
 
@@ -275,6 +279,16 @@ function nochOffen(t, jetzt) {
   return t.datum >= berlinTag(jetzt);
 }
 
+/**
+ * Überschriften im Artikeltext eine Ebene unter das Thema der Woche setzen:
+ * auf der Seite ist „Worüber wir gesprochen haben“ das h2 und das Thema das
+ * h3, also werden „## Die Inhalte“ und „## Zum Mitnehmen“ aus dem Blog zu h4.
+ * So bleibt es bei einem H2-Stil auf der Seite.
+ */
+export function ueberschriftenTiefer(html) {
+  return String(html || '').replace(/<(\/?)h[1-3](?=[\s>])/gi, '<$1h4');
+}
+
 // ─── Blog-Artikel -> Termine ────────────────────────────────────────────────
 
 /** Tags eines Artikels lesen; null, wenn er kein Coming-Home-Termin ist. */
@@ -417,12 +431,17 @@ function tagPlus(jetzt, tage) {
   return berlinTag(new Date(jetzt.getTime() + tage * 86400000));
 }
 
-function fixturRueckblick(datum, titel, teaser, absaetze) {
+function fixturRueckblick(datum, titel, teaser, absatz, inhalte) {
+  const liste = inhalte
+    .map(([stichwort, satz]) => `<li><strong>${stichwort}</strong> ${satz}</li>`)
+    .join('');
   return {
     handle: `coming-home-${datum}`,
     title: titel,
     excerpt: teaser,
-    contentHtml: absaetze.map((p) => `<p>${p}</p>`).join(''),
+    contentHtml:
+      `<p>${absatz}</p><h2>Die Inhalte</h2><ul>${liste}</ul>` +
+      '<h2>Zum Mitnehmen</h2><p>Testgedanke für die Woche.</p>',
     tags: ['ch-termin', `ch-datum-${datum}`, 'ch-zeit-1200', 'ch-rueckblick'],
   };
 }
@@ -443,29 +462,33 @@ export function fixturArtikel(art, jetzt) {
     return [{...vorschau, tags: ['ch-termin', `ch-datum-${naechster}`, 'ch-zeit-offen', 'ch-vorschau']}];
   }
   const vor = (n) => tagPlus(new Date(`${naechster}T12:00:00Z`), -7 * n);
+  const inhalte = [
+    ['Teststichwort eins:', 'Testsatz zum ersten Inhalt. Er steht nur in der Testumgebung.'],
+    ['Teststichwort zwei:', 'Testsatz zum zweiten Inhalt, etwas länger, damit die Zeile umbricht.'],
+    ['Teststichwort drei:', 'Testsatz zum dritten Inhalt.'],
+  ];
   return [
     vorschau,
     fixturRueckblick(
       vor(1),
-      'Testgeschichte eins: Der Abend, an dem jemand einfach zuhörte',
+      'Testthema eins: Zuhören als erster Schritt',
       'Testteaser eins. Er steht nur in der Testumgebung.',
-      [
-        'Testabsatz eins der Geschichte. Eine Teilnehmerin erzählte, wie sie lange nur zugehört hat.',
-        'Testabsatz zwei. Dann stellte sie ihre erste Frage, und das Gespräch nahm eine Wendung.',
-        'Testabsatz drei. Was man mitnehmen kann: Zuhören ist schon Teilnahme.',
-      ],
+      'Testabsatz eins: worüber wir gesprochen haben, Ausgangsfrage und roter Faden.',
+      inhalte,
     ),
     fixturRueckblick(
       vor(2),
-      'Testgeschichte zwei: Fragen, die man sonst nicht stellt',
+      'Testthema zwei: Fragen, die man sonst nicht stellt',
       'Testteaser zwei. Er steht nur in der Testumgebung.',
-      ['Testabsatz der zweiten Geschichte.'],
+      'Testabsatz zwei der Zusammenfassung.',
+      inhalte,
     ),
     fixturRueckblick(
       vor(3),
-      'Testgeschichte drei: Ein Sonntag ohne Programm',
+      'Testthema drei: Ein Sonntag ohne Programm',
       'Testteaser drei. Er steht nur in der Testumgebung.',
-      ['Testabsatz der dritten Geschichte.'],
+      'Testabsatz drei der Zusammenfassung.',
+      inhalte,
     ),
   ];
 }

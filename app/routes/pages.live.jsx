@@ -27,11 +27,27 @@ import {
   tokenCookie,
   tokenCookieLoeschen,
   tokenGueltig,
+  ueberschriftenTiefer,
 } from '~/lib/coming-home-live.server';
 import liveStyles from '~/styles/live.css?url';
 
 /**
  * /pages/live — COMING HOME LIVE: nächster Termin, Anmeldung, Rückblick.
+ *
+ * NEUE FASSUNG (SEITE_NEU_AN, Grossjob 20261020-GROSSJOB-coming-home-live-
+ * seite-neu-nach-christians-idee-pr-manager-als-chef-zusammenfassungen-live,
+ * Segment s02, Vertrag KONZEPT.md Abschnitt 4). Christian 20.10.2026 zur
+ * vorigen Fassung: „die Idee ist doch ganz anders … das bitte jetzt mal neu
+ * machen mit PR-Manager als Chef.“ Reihenfolge nach seiner Idee: Kopf (was
+ * wir machen, in den Worten von Anna und Christian, Eckdaten, wie man
+ * teilnimmt) -> nächster Termin mit Thema -> Anmeldung -> je vergangene Woche
+ * die schriftliche Zusammenfassung (Datum, Thema, Teaser, die Inhalte),
+ * neueste zuerst; jede Woche mit vollem Text im HTML, ältere eingeklappt.
+ * Den sichtbaren Text hat der PR-Chef (pr-manager chef pruefe) freigegeben.
+ * Merkmal nur der neuen Fassung: data-ch-live-fassung="neu-20261020".
+ * BLUE-GREEN: SEITE_NEU_AN = false rendert die Fassung von #957/#958.
+ *
+ * Die Beschreibung unten gilt der Fassung vom 18.10.2026 (SEITE_NEU_AN = false).
  *
  * Grossjob 20261018-GROSSJOB-coming-home-zoom-aufnahme-transkript-
  * zusammenfassung-homepage-reiter-live, Segment s04. Christian 18.10.2026:
@@ -82,6 +98,14 @@ import liveStyles from '~/styles/live.css?url';
 
 const PFAD = '/pages/live';
 
+/**
+ * BLUE-GREEN (Vorbild NEUER_TITEL_AN, homepage-bauer devlog D-3519):
+ * true = neue Fassung nach Christians Idee (20.10.2026), false = die Fassung
+ * von #957/#958 Zeichen für Zeichen (Kopf, Rückblick, Titel, Beschreibung).
+ * Termin und Anmeldung sind in beiden Fassungen dieselben Bausteine.
+ */
+const SEITE_NEU_AN = true;
+
 /** Blog des Nahtvertrags N3; muss dem Server-Modul gleichen (Loader prueft). */
 const BLOG_HANDLE = 'coming-home';
 
@@ -110,14 +134,70 @@ const REIHE_VORZEILE = NEUER_TITEL_AN ? (
   'Coming Home · jeden Sonntag live'
 );
 
-const TITEL = NEUER_TITEL_AN
+const TITEL_ALT = NEUER_TITEL_AN
   ? `${REIHE_TITEL}: nächster Termin | Qi Blanco`
   : 'Coming Home live: nächster Termin und Rückblick | Qi Blanco';
 
-const BESCHREIBUNG =
+const BESCHREIBUNG_ALT =
   'Jeden Sonntag eine Stunde live per Zoom mit Anna und Christian, ' +
   'kostenlos. Der nächste Termin mit Thema, die Anmeldung mit Link per Mail ' +
   'und was wir an den letzten Sonntagen besprochen haben.';
+
+// ─── Text der neuen Fassung (vom PR-Chef geprüft) ───────────────────────────
+
+// Titel höchstens 60 und Beschreibung 120 bis 160 Zeichen (GEO R3/R4).
+const TITEL_NEU = `${REIHE_TITEL} | Qi Blanco`;
+
+const BESCHREIBUNG_NEU =
+  'Jeden Sonntag um 12 Uhr (Berlin) live mit Anna und Christian: 90 Minuten ' +
+  'per Zoom, kostenlos. Mit nächstem Termin, Anmeldung und den Themen jeder ' +
+  'Woche.';
+
+const TITEL = SEITE_NEU_AN ? TITEL_NEU : TITEL_ALT;
+const BESCHREIBUNG = SEITE_NEU_AN ? BESCHREIBUNG_NEU : BESCHREIBUNG_ALT;
+
+/**
+ * Kopftext in den Worten der Gastgeber (Calls 20.09., 11.10., 18.10.2026,
+ * KONZEPT.md Abschnitt 4). Erster Absatz groß, die übrigen als Fließtext.
+ */
+const KOPF_LEDE =
+  'Coming Home heißt: nach Hause kommen, zu dir selbst. Mehr Wahrheit, mehr ' +
+  'Selbstliebe, mehr Freude.';
+const KOPF_TEXT = [
+  'Jeden Sonntag treffen wir uns dafür auf Zoom, Anna und Christian und alle, ' +
+    'die dabei sein möchten. Wir reden über das, was uns gerade bewegt, auch ' +
+    'über Herausforderungen. Und wir suchen gemeinsam einen neuen Blick ' +
+    'darauf, damit du gestärkt aus der Runde gehst.',
+  'Alles darf, nichts muss. Kamera an oder aus, beides ist willkommen.',
+];
+
+const ECKDATEN_NEU = [
+  {begriff: 'Wann', wert: 'Jeden Sonntag, 12:00 Uhr (Berlin)'},
+  {begriff: 'Dauer', wert: '90 Minuten'},
+  {begriff: 'Wo', wert: 'Per Zoom, im Browser oder in der App'},
+  {begriff: 'Kosten', wert: 'Keine'},
+];
+
+const TEILNAHME_TEXT =
+  'So bist du dabei: Melde dich mit Name und E-Mail-Adresse an. Den ' +
+  'Zoom-Link schicken wir dir per Mail.';
+
+/**
+ * Aufnahme-Satz. Der Entwurf „Aus der Runde nennen wir keine Namen …“ fiel
+ * am Haltungs-Gate durch (Satz über den eigenen Text). Der letzte Satz ist
+ * die Fassung des PR-Chefs (20.10.2026, P5): eine Zusage, die wir halten.
+ */
+const AUFNAHME_TEXT =
+  'Wir zeichnen jeden Sonntag auf, um danach aufzuschreiben, worüber wir ' +
+  'gesprochen haben. Die Aufnahme bleibt bei uns. Namen und persönliche ' +
+  'Geschichten aus der Runde veröffentlichen wir nicht.';
+
+const WOCHEN_TITEL = 'Worüber wir gesprochen haben';
+const WOCHEN_LEER = 'Nach jedem Sonntag steht hier, worüber wir gesprochen haben.';
+const WOCHEN_LADEFEHLER =
+  'Die Zusammenfassungen laden gerade nicht. Versuch es in ein paar Minuten ' +
+  'noch einmal.';
+const WOCHE_AUFKLAPPEN = 'Zusammenfassung lesen';
 
 const ECKDATEN = [
   {begriff: 'Wann', wert: 'Jeden Sonntag'},
@@ -176,10 +256,12 @@ export async function loader({request, context}) {
   if (BLOG_HANDLE !== BLOG_HANDLE_SERVER) throw new Error('BLOG_HANDLE driftet');
   const {artikel, ladeFehler} = await artikelLaden(context);
   const seite = seitenDaten(artikel, new Date());
-  const rueckblicke = seite.rueckblicke.map((r) => ({
-    ...r,
-    html: fremdHtmlMitBildAuszeichnung(artikelInhaltAufraeumen(r.html, r.titel)),
-  }));
+  const rueckblicke = seite.rueckblicke.map((r) => {
+    const html = fremdHtmlMitBildAuszeichnung(
+      artikelInhaltAufraeumen(r.html, r.titel),
+    );
+    return {...r, html: SEITE_NEU_AN ? ueberschriftenTiefer(html) : html};
+  });
   return data(
     {...seite, rueckblicke, ladeFehler, schritt},
     schritt ? {headers: KOPF_PRIVAT} : undefined,
@@ -265,6 +347,7 @@ export async function action({request, context}) {
 
 export default function Live() {
   const d = useLoaderData();
+  if (SEITE_NEU_AN) return <LiveNeu d={d} />;
   return (
     <div className="lv">
       <Kopf />
@@ -291,6 +374,159 @@ export default function Live() {
         ladeFehler={d.ladeFehler}
       />
     </div>
+  );
+}
+
+/** Neue Fassung (20.10.2026): Kopf, Termin, Anmeldung, Woche für Woche. */
+function LiveNeu({d}) {
+  return (
+    <div className="lv" data-ch-live-fassung="neu-20261020">
+      <KopfNeu />
+      <Termin naechster={d.naechster} weitere={d.weitere} />
+      <section
+        className="lv-abschnitt lv-dunkel"
+        id="anmelden"
+        data-ch-live="anmeldung"
+      >
+        <div className="lv-innen lv-innen-schmal">
+          {d.schritt ? (
+            <Schritt schritt={d.schritt} />
+          ) : (
+            <>
+              <h2 className="lv-h2">Melde dich an, der Link kommt per Mail</h2>
+              <Anmeldung />
+            </>
+          )}
+        </div>
+      </section>
+      <Zusammenfassungen
+        rueckblicke={d.rueckblicke}
+        gesamt={d.rueckblickeGesamt}
+        ladeFehler={d.ladeFehler}
+      />
+    </div>
+  );
+}
+
+function KopfNeu() {
+  return (
+    <section className="lv-abschnitt lv-kopf" data-ch-live="kopf">
+      <div className="lv-innen">
+        <p className="lv-vorzeile">Live auf Zoom</p>
+        <h1 className="lv-h1">
+          {REIHE_NAME} –{' '}
+          <span className="lv-h1-zusatz">{REIHE_ZUSATZ}</span>
+        </h1>
+        <p className="lv-lede lv-lede-eng">{KOPF_LEDE}</p>
+        <div className="lv-kopftext">
+          {KOPF_TEXT.map((absatz) => (
+            <p className="lv-text" key={absatz.slice(0, 24)}>
+              {absatz}
+            </p>
+          ))}
+        </div>
+        <dl className="lv-eckdaten">
+          {ECKDATEN_NEU.map((e) => (
+            <div className="lv-eckdatum" key={e.begriff}>
+              <dt className="lv-eckdatum-begriff">{e.begriff}</dt>
+              <dd className="lv-eckdatum-wert">{e.wert}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="lv-text lv-teilnahme">
+          {TEILNAHME_TEXT}{' '}
+          <a className="lv-verweis lv-verweis-fluss" href="#anmelden">
+            Zur Anmeldung
+          </a>
+        </p>
+        <p className="lv-text lv-aufnahme">{AUFNAHME_TEXT}</p>
+        {/* Kontextlink auf die Sprechstunde (Folgeauftrag Sprechstunde-
+            Kontextlinks, 19.10.2026). Kein Preis im Link, keine Dauer (PR-Chef
+            20.10.2026: die Stunde ist in den Calls nicht belegt). */}
+        <p className="lv-hinweis">
+          Ein Gespräch allein mit Christian gibt es in der{' '}
+          <Link
+            className="lv-verweis lv-verweis-fluss"
+            to="/pages/sprechstunde"
+            prefetch="intent"
+          >
+            Sprechstunde
+          </Link>
+          .
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Je vergangene Woche die Zusammenfassung, neueste zuerst. Die neueste steht
+ * offen da, die älteren in <details>: ihr voller Text steht trotzdem im HTML
+ * (für Leser ohne Klick, Suchmaschinen und KI-Abruf).
+ */
+function Zusammenfassungen({rueckblicke, gesamt, ladeFehler}) {
+  return (
+    <section
+      className="lv-abschnitt"
+      data-ch-live="rueckblick"
+      data-ch-live-anzahl={rueckblicke.length}
+      data-ch-live-gesamt={gesamt}
+      data-ch-live-ladefehler={ladeFehler ? 'ja' : 'nein'}
+    >
+      <div className="lv-innen lv-innen-schmal">
+        <h2 className="lv-h2">{WOCHEN_TITEL}</h2>
+        {rueckblicke.length === 0 ? (
+          <p className="lv-text lv-leer">
+            {ladeFehler ? WOCHEN_LADEFEHLER : WOCHEN_LEER}
+          </p>
+        ) : (
+          <ol className="lv-woche-liste">
+            {rueckblicke.map((r, i) => (
+              <li
+                className="lv-woche"
+                key={r.handle || r.datum}
+                data-ch-live-eintrag={r.datum}
+              >
+                <p className="lv-woche-wann">
+                  <time dateTime={r.startUtc}>{r.datumLang}</time>
+                </p>
+                <h3 className="lv-h3">{r.titel}</h3>
+                {r.teaser ? (
+                  <p className="lv-text lv-woche-teaser">{r.teaser}</p>
+                ) : null}
+                {i === 0 ? (
+                  <div
+                    className="lv-geschichte lv-inhalte"
+                    dangerouslySetInnerHTML={{__html: r.html}}
+                  />
+                ) : (
+                  <details className="lv-aufklapp">
+                    <summary className="lv-aufklapp-knopf">
+                      {WOCHE_AUFKLAPPEN}
+                    </summary>
+                    <div
+                      className="lv-geschichte lv-inhalte"
+                      dangerouslySetInnerHTML={{__html: r.html}}
+                    />
+                  </details>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
+        {gesamt > rueckblicke.length ? (
+          <p className="lv-text lv-alle">
+            <Link
+              className="lv-verweis"
+              to={`/blogs/${BLOG_HANDLE}`}
+              prefetch="intent"
+            >
+              Alle {gesamt} Zusammenfassungen im Blog
+            </Link>
+          </p>
+        ) : null}
+      </div>
+    </section>
   );
 }
 
