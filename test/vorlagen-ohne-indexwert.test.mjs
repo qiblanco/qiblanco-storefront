@@ -49,9 +49,12 @@ const SOLL = {
 // crystal-cacao-awake stand hier bis 2026-10-17; seitdem ist es eine Seite des
 // Crystal-Spiegels (canonical auf crystal-cacao.com) und fliegt aus eigenem
 // Grund aus der Sitemap (~/crystal-spiegel-rahmen/suchmaschine) -- als
-// Nachbar, der BLEIBEN muss, taugt es nicht mehr. qi-master vertritt es.
+// Nachbar, der BLEIBEN muss, taugt es nicht mehr. qibracelet vertritt es.
+// (qi-master taugt seit 2026-10-20 ebenfalls nicht: der Shopify-Handle steht
+// in der Sitemap als /products/qi-alpha, Qi Master heißt Qi Alpha, eigener
+// Test test/sitemap-qi-alpha-pfad.test.mjs.)
 const NACHBARN = {
-  products: ['qi-master', 'crystal-cacao-create', 'qione-2-pro', 'bundle-2x-awake-neu'],
+  products: ['qibracelet', 'crystal-cacao-create', 'qione-2-pro', 'bundle-2x-awake-neu'],
   collections: ['zeremonie-kakao', 'all'],
 };
 
