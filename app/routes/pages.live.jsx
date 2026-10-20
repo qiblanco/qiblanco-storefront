@@ -408,7 +408,10 @@ function KopfNeu() {
     <section className="lv-abschnitt lv-kopf" data-ch-live="kopf">
       <div className="lv-innen">
         <p className="lv-vorzeile">Live auf Zoom</p>
-        <h1 className="lv-h1">{REIHE_TITEL}</h1>
+        <h1 className="lv-h1">
+          {REIHE_NAME} –{' '}
+          <span className="lv-h1-zusatz">{REIHE_ZUSATZ}</span>
+        </h1>
         <p className="lv-lede lv-lede-eng">{KOPF_LEDE}</p>
         <div className="lv-kopftext">
           {KOPF_TEXT.map((absatz) => (
@@ -427,7 +430,7 @@ function KopfNeu() {
         </dl>
         <p className="lv-text lv-teilnahme">
           {TEILNAHME_TEXT}{' '}
-          <a className="lv-verweis" href="#anmelden">
+          <a className="lv-verweis lv-verweis-fluss" href="#anmelden">
             Zur Anmeldung
           </a>
         </p>
@@ -437,7 +440,7 @@ function KopfNeu() {
         <p className="lv-hinweis">
           Eine Stunde allein mit Christian gibt es in der{' '}
           <Link
-            className="lv-verweis"
+            className="lv-verweis lv-verweis-fluss"
             to="/pages/sprechstunde"
             prefetch="intent"
           >

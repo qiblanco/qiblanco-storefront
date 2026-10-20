@@ -464,6 +464,11 @@ body:has(.lv) {
    Nur bestehende Tokens. Die Inhalte einer Woche (h4 + Liste aus dem Blog)
    bekommen ihre Ordnung hier: Liste mit Punkt, fettes Stichwort, die
    Überschrift klein und gedämpft wie die Eckdaten-Begriffe. */
+/* Link im Fließtext: bleibt in der Zeile, kein Abstand nach oben. */
+.lv .lv-verweis-fluss {
+  display: inline;
+  margin: 0;
+}
 .lv .lv-lede-eng {
   margin-bottom: var(--lv-s3);
 }
@@ -568,6 +573,13 @@ body:has(.lv) {
   .lv .lv-karte,
   .lv .lv-terminkarte {
     padding: var(--lv-s3);
+  }
+}
+/* Der Zusatz des Titels bricht ab Tablet nur als Ganzes um (Lehre D-3519);
+   auf dem Handy darf er umbrechen, sonst läuft er über den Rand. */
+@media (min-width: 768px) {
+  .lv .lv-h1-zusatz {
+    white-space: nowrap;
   }
 }
 @media (max-width: 479px) {
