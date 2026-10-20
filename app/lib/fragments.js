@@ -171,8 +171,18 @@ const MENU_FRAGMENT = `#graphql
     type
     url
   }
+  # Dritte Ebene (Christian 19.10.2026: Online-Kurse unter Mehr, die Kurse
+  # darunter). Bis zum 2026-10-20 endete die Abfrage hier nach Ebene 2: Das Admin
+  # trug die Kurse, Header.jsx rendert child.items als Gruppe, am Rand war
+  # "Online-Kurse" trotzdem ein Link auf "/". Shopify-Menues haben hoechstens drei
+  # Ebenen, deshalb ist hier Schluss. Die Naht misst
+  # website-navigation/proben/probe_menue_tiefe.py (Admin-Tiefe <= Abfragetiefe).
+  # FOOTER_QUERY teilt das Fragment; Footer.jsx liest footer.menu nicht.
   fragment ChildMenuItem on MenuItem {
     ...MenuItem
+    items {
+      ...MenuItem
+    }
   }
   fragment ParentMenuItem on MenuItem {
     ...MenuItem
