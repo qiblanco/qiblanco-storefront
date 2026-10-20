@@ -119,8 +119,31 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
 
 const PFAD = '/pages/coming-home';
 
-const TITEL =
-  'Coming Home live: jeden Sonntag um 12 Uhr mit Anna und Christian | Qi Blanco';
+/**
+ * Titel der Reihe (Christian 20.10.2026 ~03:47Z, wörtlich: „Nein, der Titel
+ * heißt nur Coming Home, eine Reise zu dir selbst.“). Server-SSoT:
+ * shared-state/coming-home/config/coming-home.conf CH_REIHE_* (stand.json
+ * reihe{}); dieselben Konstanten stehen in pages.live.jsx.
+ * Der Zusatz bricht nur als Ganzes um (kein einzelnes Wort allein in Zeile 2).
+ * BLUE-GREEN: NEUER_TITEL_AN = false stellt die Fassung vor dem 20.10.2026
+ * Zeichen für Zeichen wieder her (Original bleibt aktivierbar).
+ */
+const NEUER_TITEL_AN = true;
+const REIHE_NAME = 'Coming Home';
+const REIHE_ZUSATZ = 'Eine Reise zu dir selbst';
+const REIHE_TITEL = `${REIHE_NAME} – ${REIHE_ZUSATZ}`;
+const REIHE_VORZEILE = NEUER_TITEL_AN ? (
+  <>
+    {REIHE_NAME} –{' '}
+    <span style={{whiteSpace: 'nowrap'}}>{REIHE_ZUSATZ}</span>
+  </>
+) : (
+  'Coming Home · jeden Sonntag live'
+);
+
+const TITEL = NEUER_TITEL_AN
+  ? `${REIHE_TITEL}: sonntags 12 Uhr live | Qi Blanco`
+  : 'Coming Home live: jeden Sonntag um 12 Uhr mit Anna und Christian | Qi Blanco';
 
 const BESCHREIBUNG =
   'Eine Stunde live mit Anna und Christian von Qi Blanco. Du fragst, wir ' +
@@ -319,7 +342,7 @@ export default function ComingHome() {
       <section className="ch-abschnitt ch-kopf">
         <div className="ch-innen ch-kopf-raster">
           <div className="ch-kopf-text">
-            <p className="ch-vorzeile">Coming Home · jeden Sonntag live</p>
+            <p className="ch-vorzeile">{REIHE_VORZEILE}</p>
             <h1 className="ch-h1">
               Jeden Sonntag um 12{'\u00a0'}Uhr: eine Stunde live mit Anna und
               Christian
