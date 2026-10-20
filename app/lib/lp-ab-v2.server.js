@@ -268,31 +268,103 @@ export function experimentB2Aktiv(env, codeSchalter = E2_AKTIV, e1 = E1, e2 = E2
   return e2.anteil_prozent > 0;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * NÄCHSTER TEST AUF -b: GS-082 AUF DEM CHAMPION (szs-e5-gs082, Grossjob
+ * 20261020-experiment-szs-e1-gs050-b-gewinnt, s02). szs-e1-gs050 ist
+ * entschieden (B gewinnt mobil, A trägt mobil seitdem den Champion). Die
+ * Route /pages/schlaf-zellen-schutz-b zeigt jetzt den nächsten Test: Champion
+ * plus EINE Änderung, der Bewertungsblock direkt hinter dem Kopf (Stufe 2 des
+ * Stufenplans, Themenblöcke umstellen). Definition vollständig in
+ * heatmap-manager/config/experimente.yaml (szs-e5-gs082).
+ *
+ * ENTSCHEIDE, je begründet:
+ *  - NEUE ID, NIE E1 WIEDER EINSCHALTEN: E1 ist ein abgeschlossener Test mit
+ *    Urteil. Ein neuer Test auf derselben Route ist ein neuer Eintrag mit
+ *    eigener id, eigenem Schalter und eigenem Marker, damit sich die Zahlen
+ *    beider Tests am Marker und am Startzeitpunkt trennen.
+ *  - DASSELBE SALZ WIE E1, EIGENE EIMER 30..44: ein Eimer je Besucher für
+ *    alle Arme der Ads-LP, also ausschließend. Zielplan nach allen Starts:
+ *    K50 0..14, K25 15..29, GS-082 30..44, A 45..84, B2 85..99. Die Eimer
+ *    0..29 bleiben bis zum Start der Kurz-Arme bei A.
+ *  - E1 UND E5 ZUGLEICH GEHT NICHT: beide zeigen auf dieselbe Route. Steht E1
+ *    an, ist E5 aus (Fail-Richtung auf den Bestand).
+ *  - HARTE BEDINGUNG IM CODE: die Eimer von E5 dürfen die von B2 nicht
+ *    berühren (Ende <= 100 - E2.anteil_prozent). Sonst ist E5 aus.
+ *  - VORGEBAUT, ABER AUS: E5_AKTIV steht auf false, bis das Sim-Tor die
+ *    Fassung je Gerät bestanden hat (heatmap-manager kreislauf start-freigabe
+ *    szs-e5-gs082 exit 0). Bis dahin ist die Route nur direkt erreichbar.
+ *  - EIGENER KILL: Env LP_EXP_SZS_E5_MODE=off. Pin ?lp_exp=b zeigt die Route
+ *    des Arms, der dort gerade läuft (E1 oder E5); ist keiner an, A.
+ *    Marker g (belegt: w r h p b f v m x s q k n z c d).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Marker in der Ziel-URL: g = GS-082 auf -b (unterscheidbar von allen belegten). */
+export const LP_EXP_E5_MARKER = 'g';
+
+/** GS-082: Eimer [30, 45) desselben Salzes, Route LP_EXP_B_PFAD. */
+export const E5 = Object.freeze({
+  id: 'szs-e5-gs082',
+  hypothese_id: 'GS-082',
+  salz: E1.salz,
+  eimer_ab: 30,
+  anteil_prozent: 15,
+});
+
+/** Code-Schalter von E5; false = kein Besucher auf GS-082. */
+export const E5_AKTIV = false;
+
+/**
+ * E5 läuft nur, wenn der Code-Schalter steht, die Env ihn nicht abschaltet
+ * (NUR 'off'), er dasselbe Salz trägt wie E1, seine Eimer in
+ * [0, 100 - E2.anteil_prozent) liegen und E1 nicht dieselbe Route belegt.
+ */
+export function experimentE5Aktiv(
+  env,
+  codeSchalter = E5_AKTIV,
+  e1An = experimentAktiv(env),
+  e5 = E5,
+  e2 = E2,
+) {
+  if (!codeSchalter) return false;
+  if (env && env.LP_EXP_SZS_E5_MODE === 'off') return false;
+  if (e5.salz !== E1.salz) return false;
+  if (!(e5.anteil_prozent > 0)) return false;
+  if (e5.eimer_ab < 0 || e5.eimer_ab + e5.anteil_prozent > 100 - e2.anteil_prozent) return false;
+  return !e1An;
+}
+
 /**
  * Reine Entscheidungsfunktion: {ziel, eimer, arm} wenn dieser Request
- * Variante B (arm 'b') oder B2 (arm 'b2') sehen soll, sonst null. Ohne
+ * Variante B (arm 'b'), B2 (arm 'b2') oder GS-082 (arm 'e5', Route von B)
+ * sehen soll, sonst null. Ohne
  * Client-IP gibt es keine stabile Zuteilung — dann A (Fail-Richtung auf den
  * Bestand). Pins: ?lp_exp=a | b | b2; ein Pin auf einen abgeschalteten Arm
- * zeigt A.
+ * zeigt A. Pin b zeigt die Route von B mit dem Arm, der dort läuft.
  */
 export function entscheideLpExperiment(
   request,
   env,
   codeSchalter = E1_AKTIV,
   codeSchalterB2 = E2_AKTIV,
+  codeSchalterE5 = E5_AKTIV,
 ) {
   if (!request || (request.method !== 'GET' && request.method !== 'HEAD')) return null;
   const bAn = experimentAktiv(env, codeSchalter);
   const b2An = experimentB2Aktiv(env, codeSchalterB2);
-  if (!bAn && !b2An) return null;
+  const e5An = experimentE5Aktiv(env, codeSchalterE5, bAn);
+  if (!bAn && !b2An && !e5An) return null;
   const url = new URL(request.url);
   if (url.pathname.endsWith('.data')) return null;
   if (url.searchParams.has('_data')) return null;
   const nachB = () => zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_MARKER);
   const nachB2 = () => zielUrl(LP_EXP_B2_PFAD, url.search, LP_EXP_B2_MARKER);
+  const nachE5 = () => zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_E5_MARKER);
   const pin = url.searchParams.get('lp_exp');
   if (pin === 'a') return null;
-  if (pin === 'b') return bAn ? {ziel: nachB(), eimer: -1, arm: 'b'} : null;
+  if (pin === 'b') {
+    if (bAn) return {ziel: nachB(), eimer: -1, arm: 'b'};
+    return e5An ? {ziel: nachE5(), eimer: -1, arm: 'e5'} : null;
+  }
   if (pin === 'b2') return b2An ? {ziel: nachB2(), eimer: -1, arm: 'b2'} : null;
   const ua = request.headers?.get?.('user-agent') || '';
   const ip = request.headers?.get ? buyerIpAusRequest(request) : '';
@@ -301,5 +373,8 @@ export function entscheideLpExperiment(
   const eimer = besucherEimer(ip, ua, E1.salz);
   if (bAn && eimer < E1.anteil_prozent) return {ziel: nachB(), eimer, arm: 'b'};
   if (b2An && eimer >= 100 - E2.anteil_prozent) return {ziel: nachB2(), eimer, arm: 'b2'};
+  if (e5An && eimer >= E5.eimer_ab && eimer < E5.eimer_ab + E5.anteil_prozent) {
+    return {ziel: nachE5(), eimer, arm: 'e5'};
+  }
   return null;
 }

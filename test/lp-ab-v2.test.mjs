@@ -449,3 +449,101 @@ test('B2: Ad-Weiche schließt B2 aus (sonst Schleife B2 -> A -> B2 für bezahlte
   assert.equal(istAusgeschlossen(LP_EXP_B2_PFAD), true);
   assert.equal(entscheideAdWeiche(`${BASIS}${LP_EXP_B2_PFAD}?utm_medium=paid&fbclid=X&lp_m=z`), null);
 });
+
+// ═══ GS-082 auf -b (szs-e5-gs082, 20.10.2026): Champion + Bewertungen nach oben ═
+// Grossjob 20261020-experiment-szs-e1-gs050-b-gewinnt, s02. Dasselbe Salz, Eimer 30..44, Route von B, Marker g.
+import {E5, E5_AKTIV, LP_EXP_E5_MARKER, experimentE5Aktiv} from '../app/lib/lp-ab-v2.server.js';
+
+/** E5 mit Schalter an (E1 aus, B2 wie ausgeliefert): so läuft der Test nach dem Start. */
+const mitE5 = (request, env = {}) => entscheideLpExperiment(request, env, false, E2_AKTIV, true);
+
+/** Erste IP mit Eimer im E5-Bereich (30..44). */
+function ipInE5(ua = 'Mozilla/5.0 (iPhone)') {
+  for (let i = 1; i < 5000; i += 1) {
+    const ip = `10.2.${i >> 8}.${i & 255}`;
+    const e = besucherEimer(ip, ua);
+    if (e >= 30 && e < 45) return ip;
+  }
+  throw new Error('keine IP gefunden');
+}
+
+test('E5: eigene id, Salz von E1, Eimer 30..44 (15 %), Route von B, Marker g, ausgeliefert AUS', () => {
+  assert.equal(E5.id, 'szs-e5-gs082');
+  assert.equal(E5.hypothese_id, 'GS-082');
+  assert.equal(E5.salz, E1.salz);
+  assert.equal(E5.eimer_ab, 30);
+  assert.equal(E5.anteil_prozent, 15);
+  assert.notEqual(E5.id, E1.id);
+  assert.equal(LP_EXP_E5_MARKER, 'g');
+  for (const belegt of 'wrhpbfvmxsqknzcd') assert.notEqual(LP_EXP_E5_MARKER, belegt);
+  assert.equal(E5_AKTIV, false);
+  assert.equal(experimentE5Aktiv({}), false);
+  // Die Eimer von E5 berühren B2 nicht.
+  assert.ok(E5.eimer_ab + E5.anteil_prozent <= 100 - E2.anteil_prozent);
+});
+
+test('E5 aus (ausgeliefert): niemand kommt nach -b, B2 je Besucher unverändert', () => {
+  let nachB = 0;
+  for (const b of POP_B2) {
+    const e = entscheideLpExperiment(reqK(LP_A, b), {});
+    if (e && e.arm !== 'b2') nachB += 1;
+    const eimer = besucherEimer(b.ip, b.ua);
+    assert.equal(e?.arm ?? 'a', eimer >= 100 - E2.anteil_prozent ? 'b2' : 'a', `${b.ip} Eimer ${eimer}`);
+  }
+  assert.equal(nachB, 0);
+  // Pin b zeigt A, solange weder E1 noch E5 läuft.
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {}), null);
+});
+
+test('E5 an: 14-16 %, nur Eimer 30..44, Ausschluss zu B2, B2 je Besucher unverändert', () => {
+  const z = {a: 0, e5: 0, b2: 0, b: 0};
+  for (const b of POP_B2) {
+    const e = mitE5(reqK(LP_A, b));
+    const ohne = entscheideLpExperiment(reqK(LP_A, b), {});
+    const eimer = besucherEimer(b.ip, b.ua);
+    const arm = e?.arm ?? 'a';
+    z[arm] += 1;
+    if (arm === 'e5') assert.ok(eimer >= 30 && eimer <= 44, `E5 außerhalb 30..44: Eimer ${eimer}`);
+    if (eimer >= 30 && eimer <= 44) assert.equal(arm, 'e5', `Eimer ${eimer} gehört E5`);
+    // B2: derselbe Besucher, derselbe Arm und dasselbe Ziel, ob E5 läuft oder nicht.
+    if (arm === 'b2' || ohne?.arm === 'b2') assert.deepEqual(e, ohne, `B2 je Besucher (${b.ip})`);
+  }
+  const n = POP_B2.length;
+  assert.equal(z.b, 0);
+  assert.ok(z.e5 / n >= 0.14 && z.e5 / n <= 0.16, `E5 ${z.e5 / n}`);
+  assert.ok(Math.abs(z.b2 / n - 0.15) < 0.01, `B2 ${z.b2 / n}`);
+  assert.ok(Math.abs(z.a / n - 0.7) < 0.01, `A ${z.a / n}`);
+});
+
+test('E5 an: Ziel ist die Route von B mit rohem Query byte-identisch + lp_m=g', () => {
+  const ip = ipInE5();
+  const q = '?utm_source=facebook&utm_medium=paid&fbclid=AbC_123&gclid=G-9&utm_campaign=x%20y';
+  const e = mitE5(reqK(`${LP_A}${q}`, {ip}));
+  assert.equal(e.arm, 'e5');
+  assert.equal(e.ziel, `${LP_EXP_B_PFAD}${q}&lp_m=g`);
+  assert.equal(mitE5(reqK(LP_A, {ip})).ziel, `${LP_EXP_B_PFAD}?lp_m=g`);
+  // Pin b zeigt E5, auch für eigenen Verkehr; ?lp_exp=a hält einen E5-Besucher auf A.
+  assert.equal(mitE5(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'})).arm, 'e5');
+  assert.equal(mitE5(reqK(`${LP_A}?lp_exp=a`, {ip})), null);
+  // Eigener Verkehr und Datenrequests bleiben auf A.
+  assert.equal(mitE5(reqK(LP_A, {ip: '65.108.150.121'})), null);
+  assert.equal(mitE5(reqK(`${LP_A}.data`, {ip})), null);
+});
+
+test('E5: Kill per Env, E1 auf derselben Route, Eimer in B2 oder fremdes Salz => E5 aus', () => {
+  const ip = ipInE5();
+  assert.equal(experimentE5Aktiv({}, true, false), true);
+  assert.equal(experimentE5Aktiv({LP_EXP_SZS_E5_MODE: 'off'}, true, false), false);
+  assert.equal(experimentE5Aktiv({LP_EXP_SZS_E5_MODE: 'on'}, true, false), true);
+  assert.equal(mitE5(reqK(LP_A, {ip}), {LP_EXP_SZS_E5_MODE: 'off'}), null);
+  // E1 und E5 zugleich: E1 behält die Route, E5 ist aus.
+  assert.equal(experimentE5Aktiv({}, true, true), false);
+  assert.equal(entscheideLpExperiment(reqK(LP_A, {ip}), {}, true, E2_AKTIV, true), null);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip}), {}, true, E2_AKTIV, true).arm, 'b');
+  const def = {salz: E1.salz, eimer_ab: 30, anteil_prozent: 15};
+  assert.equal(experimentE5Aktiv({}, true, false, {...def, eimer_ab: 71}), false);
+  assert.equal(experimentE5Aktiv({}, true, false, {...def, eimer_ab: 70}), true);
+  assert.equal(experimentE5Aktiv({}, true, false, {...def, salz: 'anders'}), false);
+  assert.equal(experimentE5Aktiv({}, true, false, {...def, anteil_prozent: 0}), false);
+  assert.equal(experimentE5Aktiv({}, true, false, {...def, eimer_ab: -1}), false);
+});
