@@ -757,8 +757,8 @@ export const STUDIEN_SCHUTZFRAGE = {
  * kein unvollständiges Schema aus.
  */
 export function schutzfrageSchemaItem() {
-  const seite = seiteFuer(SCHUTZFRAGE_SLUG);
-  const erster = seite?.begruendung?.[0];
+  const {"begruendung": absaetze = []} = seiteFuer(SCHUTZFRAGE_SLUG) || {};
+  const erster = absaetze[0];
   if (!erster) return null;
   return {
     q: STUDIEN_SCHUTZFRAGE.frage,
