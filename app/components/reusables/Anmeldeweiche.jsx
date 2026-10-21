@@ -87,8 +87,7 @@ function uhrVersatz(wege) {
   return Number.isFinite(server) ? server - Date.now() : 0;
 }
 
-// Auch von WiederLieferbar.jsx genutzt: ein /w-Abruf je Seite, gleiche Fehlerregeln.
-export function holeWege({frisch = false} = {}) {
+function holeWege({frisch = false} = {}) {
   if (!frisch && wegeAnfrage && Date.now() - wegeGeholt < WEICHE_GUELTIG_MS) {
     return wegeAnfrage;
   }
@@ -120,7 +119,7 @@ export function holeWege({frisch = false} = {}) {
   return wegeAnfrage;
 }
 
-export function vorschauEigen(formId) {
+function vorschauEigen(formId) {
   try {
     const wert = window.localStorage.getItem(VORSCHAU_SCHLUESSEL);
     if (!wert) return false;
@@ -395,4 +394,16 @@ function EigenesFormular({formId, anzeige: ersteAnzeige, versatz: ersterVersatz,
       ) : null}
     </form>
   );
+}
+
+// Zugang für WiederLieferbar.jsx: derselbe /w-Abruf (ein Abruf je Seite, gleiche
+// Fehlerregeln) und dieselbe Vorschau-Regel. Als NEUE Namen statt `export` an
+// holeWege/vorschauEigen: so bleiben alle bestehenden Deklarationen byte-gleich,
+// und die Seiten, die nur AnmeldeWeiche binden, sind render-neutral (Gate 12).
+export function holeAnmeldewege(optionen) {
+  return holeWege(optionen);
+}
+
+export function anmeldeVorschauEigen(formId) {
+  return vorschauEigen(formId);
 }

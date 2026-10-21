@@ -1,6 +1,11 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import anmeldeStyles from './anmeldeformular.css?url';
-import {ANMELDE_ENDPUNKT, holeWege, vorschauEigen} from './Anmeldeweiche';
+import lieferbarStyles from './wiederlieferbar.css?url';
+import {
+  ANMELDE_ENDPUNKT,
+  holeAnmeldewege as holeWege,
+  anmeldeVorschauEigen as vorschauEigen,
+} from './Anmeldeweiche';
 
 /*
  * WIEDER LIEFERBAR — „Benachrichtige mich, wenn wieder lieferbar“ unter dem
@@ -95,6 +100,7 @@ export function WiederLieferbar({variantId, ausverkauft}) {
   return (
     <>
       <link rel="stylesheet" href={anmeldeStyles} />
+      <link rel="stylesheet" href={lieferbarStyles} />
       <LieferbarFormular
         key={variantId}
         variantId={variantId}

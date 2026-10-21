@@ -127,33 +127,3 @@ footer form.qb-anmelden .qb-anmelden__knopf {
     align-self: stretch;
   }
 }
-
-/* „Wieder lieferbar“ unter dem Knopf „Ausverkauft“ (WiederLieferbar.jsx,
-   Großjob 20261021-bau-wieder-lieferbar-eintragung-dunkel s02). Dieselben
-   Tokens wie das Anmeldeformular; abgesetzt vom Kaufknopf nur durch Abstand
-   im 8-px-Raster und eine Linie in der gedämpften Textfarbe. */
-.qb-lieferbar {
-  margin-top: calc(var(--qb-ref-raster) * 3);
-  padding-top: calc(var(--qb-ref-raster) * 3);
-  border-top: 1px solid var(--qb-text-gedaempft);
-}
-
-.qb-lieferbar__kopf {
-  display: flex;
-  flex-direction: column;
-  gap: var(--qb-ref-raster);
-}
-
-.qb-lieferbar__titel {
-  margin: 0;
-  font-size: var(--qb-ref-fs-3);
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-.qb-lieferbar__hinweis {
-  margin: 0;
-  font-size: var(--qb-ref-fs-2);
-  line-height: 1.5;
-  color: var(--qb-text-gedaempft);
-}
