@@ -61,6 +61,10 @@ import {
  * (lib/sprechstunde-abruf.server.js). Die Kalenderdatei kommt über
  * ?verwalten=1&kalender=1 aus demselben Loader.
  *
+ * LANDINGPAGE seit 2026-10-21 (Job 20261020-sprechstunde-lp-umbau-kundennutzen-
+ * 3wochen-browserzeit): nur Termine der nächsten 21 Tage (HORIZONT_TAGE), Zeiten
+ * im Browser in Ortszeit; Blue-Green-Schalter LP_FASSUNG in der Komponente.
+ *
  * BUCHUNG ZU (SP_BUCHUNG_MODE=off im Dienst, Zoom aus): die Freitage bleiben
  * sichtbar, statt des Formulars steht „Die Buchung öffnet in Kürze." Kein
  * toter Knopf. Geschaltet wird im Dienst, nicht hier.
@@ -98,10 +102,27 @@ function weiter(ziel, cookies = []) {
   return new Response(null, {status: 303, headers: h});
 }
 
+/**
+ * Die Seite zeigt nur Termine der nächsten 3 Wochen (Christian 20.10.2026:
+ * „immer nur die nächsten 3 Wochen anzeigen“). Der Dienst führt intern mehr;
+ * gefiltert wird hier, für alle Ansichten (buchen, einlösen, verschieben).
+ * Dieselbe Zahl führt sprechstunde/src/stand.py (SEITE_HORIZONT_TAGE) für
+ * termine_angezeigt im Export; die Naht-Probe vergleicht beide.
+ */
+const HORIZONT_TAGE = 21;
+
+function imHorizont(termine, jetztMs = Date.now()) {
+  const bis = jetztMs + HORIZONT_TAGE * 86400000;
+  return termine.filter((t) => {
+    const s = Date.parse(t?.start_utc);
+    return Number.isFinite(s) && s <= bis;
+  });
+}
+
 /** Gemeinsame Felder aus einer Antwort mit termine_antwort() des Dienstes. */
 function angebot(body) {
   return {
-    termine: Array.isArray(body?.termine) ? body.termine : [],
+    termine: imHorizont(Array.isArray(body?.termine) ? body.termine : []),
     buchungMoeglich: Boolean(body?.buchung_moeglich),
     preisText: body?.preis_text || '300 EUR',
     vorzeitigVorUtc: body?.vorzeitig_vor_utc || '',
@@ -369,7 +390,7 @@ export async function action({request, context}) {
  */
 const TITEL = 'Sprechstunde mit Christian: 1:1 per Zoom | Qi Blanco';
 const BESCHREIBUNG =
-  'Ein sehr tiefes Gespräch mit Christian, auf Basis des Jetzt. Eine Stunde live per Zoom, ein Termin pro Woche am Freitag, Ticket 300 EUR.';
+  'Eine Stunde nur für dich und dein Anliegen: Christian persönlich, live per Zoom. Ein Termin pro Woche, Ticket 300 EUR, Termine in deiner Ortszeit.';
 
 /** @type {MetaFunction<typeof loader>} */
 export const meta = ({location}) => {
@@ -429,7 +450,7 @@ function jsonLd() {
       name: 'Sprechstunde mit Christian',
       serviceType: '1:1 Gespräch per Zoom',
       description:
-        'Eine Stunde 1:1 mit Christian live per Zoom, freitags, ein Termin pro Woche.',
+        'Eine Stunde 1:1 mit Christian live per Zoom, dein Anliegen bestimmt das Gespräch, ein Termin pro Woche.',
       url,
       provider: {'@type': 'Organization', '@id': ORG_ID, name: MARKE},
       areaServed: [
