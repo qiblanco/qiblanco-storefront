@@ -10,7 +10,7 @@ import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
  * Kunde“, „wie eine LP gebaut, nicht wie eine Selbstreflexion“, die Geschichte
  * nur kurz. Gliederung fest in neun Abschnitten, jeder mit data-section (das
  * Sim-Tor prüft die Reihenfolge je Gerät):
- *   1 sp-kopf  2 sp-abholen  3 sp-nutzen  4 sp-fuer-wen  5 sp-ablauf
+ *   1 sp-kopf  2 sp-abholen  3 sp-nutzen  4 sp-zielgruppe  5 sp-ablauf
  *   6 sp-christian (2 bis 4 Sätze Hintergrund)  7 sp-ticket  8 sp-fragen
  *   9 sp-termine (Handlungsaufruf mit Terminen und Formular).
  * Text: shared-state/sprechstunde/seite/text-de-lp.md, vom PR-Manager
@@ -426,7 +426,7 @@ function Nutzen() {
 
 function FuerWen() {
   return (
-    <section className="sp__akt-flaeche" data-section="sp-fuer-wen">
+    <section className="sp__akt-flaeche" data-section="sp-zielgruppe">
       <div className="sp__inhalt">
         <h2>Für wen ist die Sprechstunde?</h2>
         <p>Für dich, wenn</p>
@@ -582,7 +582,7 @@ function Buchen({daten, fehler, eingabe, fassung}) {
         <h2>{neu ? 'Such dir deinen Termin aus' : 'Die nächsten Freitage'}</h2>
         {daten.ladeFehler ? (
           <p className="sp__hinweis">
-            Die Termine laden gerade nicht. Bitte versuch es gleich noch einmal
+            Die Termine sind gerade nicht erreichbar. Bitte versuch es gleich noch einmal
             oder schreib uns an <a href={`mailto:${SERVICE}`}>{SERVICE}</a>.
           </p>
         ) : termine.length === 0 ? (
