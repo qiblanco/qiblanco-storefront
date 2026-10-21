@@ -5,6 +5,7 @@ import {
   StudienUebersicht,
   EVIDENZSTUFE_SOLL,
   evidenzstufeSchemaItems,
+  schutzfrageSchemaItem,
 } from '~/components/studien/StudienUebersicht';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import studienStyles from '~/styles/studien.css?url';
@@ -99,18 +100,31 @@ function faqEintrag() {
  * nur ein Paar durch, wird GAR KEIN FAQ-Schema ausgegeben, statt ein
  * unvollständiges auszuliefern, das wie ein vollständiges aussieht. Gegenprobe
  * am Live-Rand: homepage-bauer/pruefungen/probe_zitierfaehige_evidenzstufe.py
- * (Arm A2 verlangt genau EVIDENZ_SOLL=3 Fragen, jede auch sichtbar).
+ * (Arm A2 verlangt genau EVIDENZ_SOLL Fragen, jede auch sichtbar; seit der
+ * Fassung vom 21.10.2026 vier, siehe FAQ_SOLL).
  */
 function evidenzstufeSchema() {
-  const items = evidenzstufeSchemaItems();
-  if (items.length !== EVIDENZSTUFE_SOLL) return null;
+  const schutz = schutzfrageSchemaItem();
+  const items = [...evidenzstufeSchemaItems(), ...(schutz ? [schutz] : [])];
+  if (items.length !== FAQ_SOLL) return null;
   const schema = buildFaqPageJsonLd(items, {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
   });
-  if (!schema || schema.mainEntity.length !== EVIDENZSTUFE_SOLL) return null;
+  if (!schema || schema.mainEntity.length !== FAQ_SOLL) return null;
   return schema;
 }
+
+/**
+ * VIER PAARE STATT DREI (Fassung vom 21.10.2026, SEO-Maßnahme
+ * M-SP-20261017-studien, Job seo-2026-w43-l26-studien-3fbe-sollseite-ohne-
+ * begriff-ohne-): zu den drei Evidenz-Fragen kommt „Gibt es unabhängige
+ * Studien zu Elektrosmog-Schutz?" mit dem sichtbaren Antwortsatz. Dieselbe
+ * Regel wie oben: fehlt eines der vier Paare, gibt es kein Schema. Die
+ * Gegenprobe am Rand zieht mit (probe_zitierfaehige_evidenzstufe.py,
+ * EVIDENZ_SOLL) und probe_studien_schutzfrage_l26.py misst die Frage selbst.
+ */
+const FAQ_SOLL = EVIDENZSTUFE_SOLL + 1;
 
 /**
  * DER EINZIGE LOADER-WERT DIESER SEITE IST DER TAG DER AUSLIEFERUNG
@@ -125,6 +139,13 @@ export function loader() {
   return {ausgeliefert: new Date().toISOString()};
 }
 
+/**
+ * `schutzfrage`: der Abschnitt zu unabhängigen Studien trägt Überschrift und
+ * Antwortsatz im Wortlaut der Suche (STUDIEN_SCHUTZFRAGE in
+ * StudienUebersicht.jsx). Rückweg ist die Gewinnerfassung
+ * gewinner-studien-20261020 (ohne die Prop), umgeschaltet mit
+ * seo-manager/gewinnerschutz/bin/gewinner-version.
+ */
 export default function StudienPage() {
-  return <StudienUebersicht />;
+  return <StudienUebersicht schutzfrage />;
 }
