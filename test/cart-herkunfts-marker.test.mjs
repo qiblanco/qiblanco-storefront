@@ -108,6 +108,10 @@ const PERSONENBEZOGEN = [
   // aus trackingParams abgeleitet, also consent-gegatet — und damit ein Key,
   // der ohne Consent NICHT auftauchen darf.
   'qb_ad_id',
+  // Großjob 20261020-kauf-akte s02: die Google-Klick-Cookies queren die Kasse
+  // seither wie _fbc, also nur mit Consent.
+  '_gcl_aw',
+  '_gcl_gb',
 ];
 
 const UA_META =
@@ -115,7 +119,9 @@ const UA_META =
 const COOKIE_CONSENT_JA = 'CookieConsent={stamp:%27x%27,marketing:true}';
 const COOKIE_CONSENT_NEIN = 'CookieConsent={stamp:%27x%27,marketing:false}';
 // Ein voll bestueckter Besucher: Klick-ID in der URL, Identitaets-Cookies da.
-const COOKIES_PERSONENBEZOGEN = '_fbp=fb.1.1000.222; _qpx_anon=anon-abc-123';
+const GCL_AW = 'GCL.1760000000.TESTGCLIDausCookie';
+const GCL_GB = 'GCL.1760000000.TESTGBRAIDausCookie';
+const COOKIES_PERSONENBEZOGEN = `_fbp=fb.1.1000.222; _qpx_anon=anon-abc-123; _gcl_aw=${GCL_AW}; _gcl_gb=${GCL_GB}`;
 const URL_MIT_KLICK =
   'https://qiblanco.com/cart?fbclid=IwZXh0bgNhZW0BMABhTESTKLICK';
 
@@ -1217,5 +1223,60 @@ test('ARM-H7 DAS FRAGMENT GEGEN DAS ECHTE SCHEMA, nicht gegen unsere Annahme', (
       attrFelder.includes(unter),
       `ARM-H7: Cart.attributes ist vom Typ ${attrTyp}, der hat kein Feld "${unter}" (vorhanden: ${attrFelder.join(', ')})`,
     );
+  }
+});
+
+// ===========================================================================
+// ARM GCL — Google-Klick-Cookies über die Kasse (Großjob 20261020-kauf-akte s02)
+// ===========================================================================
+// Der Käufer kommt beim zweiten Besuch OHNE gclid in der URL, gtag hat beim
+// ersten Besuch _gcl_aw/_gcl_gb gesetzt. Ohne Consent decken ARM-A2, ARM-B1
+// und ARM-C1 die Gegenrichtung ab (beide Namen stehen in PERSONENBEZOGEN).
+// Die Live-Fassung derselben Naht misst
+// umsatz-attribution/pruefungen/probe_s02_gcl_kasse.py am echten Laden.
+
+const URL_OHNE_KLICK = 'https://qiblanco.com/cart';
+
+test('ARM-GCL1 MIT Consent: persistAttributionOnCartResult trägt _gcl_aw und _gcl_gb wertgleich', async () => {
+  const {spur, cart} = cartAttrappe();
+  await persistAttributionOnCartResult({
+    cart,
+    request: anfrage({url: URL_OHNE_KLICK, cookie: `${COOKIE_CONSENT_JA}; ${COOKIES_PERSONENBEZOGEN}`}),
+    env: {},
+    result: {cart: {id: 'gid://cart/1', attributes: []}},
+  });
+  const m = alsMap(spur.updateAttributes);
+  assert.equal(m.get('_gcl_aw'), GCL_AW, 'ARM-GCL1: _gcl_aw fehlt am Warenkorb, die Google-Klick-ID quert die Kasse nicht');
+  assert.equal(m.get('_gcl_gb'), GCL_GB, 'ARM-GCL1: _gcl_gb fehlt am Warenkorb');
+});
+
+test('ARM-GCL2 MIT Consent: der Kassen-Knopf trägt _gcl_aw', async () => {
+  const {spur, cart} = cartAttrappe();
+  await attributionAction({
+    request: anfrage({url: URL_OHNE_KLICK, cookie: `${COOKIE_CONSENT_JA}; ${COOKIES_PERSONENBEZOGEN}`}),
+    context: {cart, env: {}},
+  });
+  assert.equal(alsMap(spur.updateAttributes).get('_gcl_aw'), GCL_AW, 'ARM-GCL2');
+});
+
+test('ARM-GCL3 Direktlink: _gcl_aw in Cart UND Kassen-URL nur mit Consent', async () => {
+  for (const [cookie, erwartet] of [
+    [`${COOKIE_CONSENT_JA}; ${COOKIES_PERSONENBEZOGEN}`, GCL_AW],
+    [`${COOKIE_CONSENT_NEIN}; ${COOKIES_PERSONENBEZOGEN}`, null],
+  ]) {
+    const {spur, cart} = cartAttrappe();
+    let antwort;
+    try {
+      antwort = await linesLoader({
+        request: anfrage({url: 'https://qiblanco.com/cart/41007289663544:1', cookie}),
+        context: {cart, env: {}},
+        params: {lines: '41007289663544:1'},
+      });
+    } catch (e) {
+      antwort = e;
+    }
+    const ziel = new URL(antwort.headers.get('Location'));
+    assert.equal(ziel.searchParams.get('_gcl_aw'), erwartet, `ARM-GCL3 Kassen-URL (${erwartet ? 'mit' : 'ohne'} Consent)`);
+    assert.equal(alsMap(spur.create.attributes).get('_gcl_aw') ?? null, erwartet, `ARM-GCL3 Cart (${erwartet ? 'mit' : 'ohne'} Consent)`);
   }
 });
