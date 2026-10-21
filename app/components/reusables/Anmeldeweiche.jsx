@@ -87,7 +87,8 @@ function uhrVersatz(wege) {
   return Number.isFinite(server) ? server - Date.now() : 0;
 }
 
-function holeWege({frisch = false} = {}) {
+// Auch von WiederLieferbar.jsx genutzt: ein /w-Abruf je Seite, gleiche Fehlerregeln.
+export function holeWege({frisch = false} = {}) {
   if (!frisch && wegeAnfrage && Date.now() - wegeGeholt < WEICHE_GUELTIG_MS) {
     return wegeAnfrage;
   }
@@ -119,7 +120,7 @@ function holeWege({frisch = false} = {}) {
   return wegeAnfrage;
 }
 
-function vorschauEigen(formId) {
+export function vorschauEigen(formId) {
   try {
     const wert = window.localStorage.getItem(VORSCHAU_SCHLUESSEL);
     if (!wert) return false;
