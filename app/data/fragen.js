@@ -350,6 +350,10 @@ export const FRAGEN = [
         "text": "Was an unseren Produkten untersucht ist"
       },
       {
+        "pfad": "/pages/studien#gibt-es-studien-zu-elektrosmog-schutz",
+        "text": "Studien zu Elektrosmog-Schutz"
+      },
+      {
         "pfad": "/pages/wissen-und-vertrauen",
         "text": "Alle Antworten rund um Qi Blanco"
       }
@@ -690,6 +694,10 @@ export const FRAGEN = [
       {
         "pfad": "/pages/kritik",
         "text": "Was an unseren Produkten untersucht ist"
+      },
+      {
+        "pfad": "/pages/studien#gibt-es-studien-zu-elektrosmog-schutz",
+        "text": "Studien zu Elektrosmog-Schutz"
       },
       {
         "pfad": "/pages/wissen-und-vertrauen",

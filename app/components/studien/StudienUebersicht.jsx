@@ -236,7 +236,13 @@ const WEITERFUEHREND = [
   },
 ];
 
-export function StudienUebersicht() {
+/**
+ * @param {{schutzfrage?: boolean}} props  `schutzfrage` schaltet den Abschnitt
+ *   „Gibt es unabhängige Studien zu Elektrosmog-Schutz?" auf Überschrift und
+ *   Antwortsatz aus STUDIEN_SCHUTZFRAGE (siehe dort). Ohne die Prop rendert die
+ *   Seite wie die Gewinnerfassung vom 20.10.2026.
+ */
+export function StudienUebersicht({schutzfrage = false} = {}) {
   const produkte = untersuchteProdukte();
   const anzahl = zahlwort(STUDIEN.length);
 
@@ -400,8 +406,9 @@ export function StudienUebersicht() {
             Seite; dazu kommt die Einordnung in die übrige Feldforschung
             (COSMOS, WHO-Übersicht, IARC). Text aus app/data/fragen.js. */}
         <FrageAbschnitt
-          seite={seiteFuer('gibt-es-studien-zu-elektrosmog-schutz')}
+          seite={seiteFuer(SCHUTZFRAGE_SLUG)}
           klassen={{abschnitt: 'qb-st-sektion', inhalt: 'qb-st-frage'}}
+          {...(schutzfrage ? STUDIEN_SCHUTZFRAGE : {})}
         />
 
         <section
@@ -702,6 +709,61 @@ export function evidenzstufeSchemaItems() {
     {q: EVIDENZSTUFE_TITEL, a: EVIDENZSTUFE_ANTWORT},
     ...EVIDENZSTUFE_FRAGEN.map((f) => ({q: f.frage, a: f.antwort})),
   ];
+}
+
+/** Slug des Abschnitts aus app/data/fragen.js; zugleich der Anker, auf den die
+ *  frühere Frageseite per 301 zeigt (app/lib/zusammenlegungen.js). */
+export const SCHUTZFRAGE_SLUG = 'gibt-es-studien-zu-elektrosmog-schutz';
+
+/**
+ * DIE FRAGE NACH UNABHÄNGIGEN STUDIEN, IM WORTLAUT DER SUCHE (seit 21.10.2026).
+ *
+ * HERKUNFT: SEO-Maßnahme M-SP-20261017-studien des seo-managers (Job
+ * seo-2026-w43-l26-studien-3fbe-sollseite-ohne-begriff-ohne-). Gemessen am
+ * 21.10.2026: diese Seite steht für „qi blanco studien" auf Platz 3, für
+ * „unabhängige studien elektrosmog schutz" außerhalb der Top 10. Der Abschnitt
+ * stand schon da, aber unter „…Elektrosmog-Schutzprodukten?", mit einem
+ * ersten Satz, der weder die Messung noch ihre Grenze nannte, und ohne Eintrag
+ * im FAQPage-Schema.
+ *
+ * WAS SICH ÄNDERT: die Überschrift nimmt den Suchbegriff wörtlich auf, der
+ * erste Satz beantwortet die Frage vollständig: was gemessen ist (die Wirkung
+ * an Zellkulturen), von wem (Prof. Dr. Peter C. Dartsch, in unserem Auftrag)
+ * und wo die Grenze liegt (keine kontrollierte Studie am Menschen). Er steht
+ * ohne Rückverweis, damit ein Antwortsystem ihn allein zitieren kann (GEO-Regel
+ * G03). Die Angaben sind dieselben wie in EVIDENZSTUFE_FRAGEN; neu ist keine.
+ *
+ * WAS GLEICH BLEIBT: Titel und H1 der Seite (sie tragen „qi blanco studien"),
+ * der übrige Abschnitt und der Datensatz in app/data/fragen.js.
+ *
+ * WIE ES LIVE GEHT: nur über die Fassung `pages.studien` in app/versionen
+ * (Gewinnerschutz, Blue-Green). Diese Konstanten wirken erst, wenn die aktive
+ * Routendatei `<StudienUebersicht schutzfrage />` rendert; der Rückweg ist
+ * `gewinner-version umschalten --auf <Gewinnerfassung>`.
+ */
+export const STUDIEN_SCHUTZFRAGE = {
+  frage: 'Gibt es unabhängige Studien zu Elektrosmog-Schutz?',
+  antwort:
+    'Vier Laborstudien von Prof. Dr. Peter C. Dartsch messen die Wirkung ' +
+    'unserer Produkte an Zellkulturen, in unserem Auftrag; eine kontrollierte ' +
+    'Studie am Menschen gibt es nicht.',
+};
+
+/**
+ * Das Frage-Antwort-Paar für das FAQPage-Schema der Seite: der sichtbare
+ * Antwortsatz und der erste Absatz danach (Forschung zu den Feldern selbst,
+ * bezahlt von Behörden). Beide stehen wortgleich im Abschnitt, eine zweite
+ * Textfassung gibt es nicht. Fehlt der Datensatz, `null`: die Route gibt dann
+ * kein unvollständiges Schema aus.
+ */
+export function schutzfrageSchemaItem() {
+  const seite = seiteFuer(SCHUTZFRAGE_SLUG);
+  const erster = seite?.begruendung?.[0];
+  if (!erster) return null;
+  return {
+    q: STUDIEN_SCHUTZFRAGE.frage,
+    a: `${STUDIEN_SCHUTZFRAGE.antwort} ${erster}`,
+  };
 }
 
 /**
