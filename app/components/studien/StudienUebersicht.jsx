@@ -727,11 +727,20 @@ export const SCHUTZFRAGE_SLUG = 'gibt-es-studien-zu-elektrosmog-schutz';
  * im FAQPage-Schema.
  *
  * WAS SICH ÄNDERT: die Überschrift nimmt den Suchbegriff wörtlich auf, der
- * erste Satz beantwortet die Frage vollständig: was gemessen ist (die Wirkung
- * an Zellkulturen), von wem (Prof. Dr. Peter C. Dartsch, in unserem Auftrag)
- * und wo die Grenze liegt (keine kontrollierte Studie am Menschen). Er steht
- * ohne Rückverweis, damit ein Antwortsystem ihn allein zitieren kann (GEO-Regel
- * G03). Die Angaben sind dieselben wie in EVIDENZSTUFE_FRAGEN; neu ist keine.
+ * erste Satz beantwortet die Frage: was gemessen ist (Zellkulturen im
+ * Mobilfunkfeld, mit und ohne Gerät), von wem (Prof. Dr. Peter C. Dartsch, in
+ * unserem Auftrag) und wo die Grenze liegt (Labor, Auftrag; der zweite Satz:
+ * keine kontrollierte Studie am Menschen). Er steht ohne Rückverweis, damit ein
+ * Antwortsystem ihn allein zitieren kann (GEO-Regel G03).
+ *
+ * WARUM „ZWEI" UND NICHT „VIER": nur e0001 (Immunzellen) und e0002
+ * (Darmbarriere), beide zum QiOne® 2 Pro, setzen Zellen einem Mobilfunkfeld
+ * aus. e0003 (QiBracelet®) und e0005 (QiHome® Air) arbeiten mit
+ * Wasserstoffperoxid; e0003 sagt selbst, dass es keinen Schutz vor Elektrosmog
+ * untersucht (app/data/studien/e0003.json). Unter einer Überschrift zu
+ * Elektrosmog-Schutz läse sich „vier Laborstudien" als vier Schutzstudien. So
+ * stand es im ersten Entwurf; der adversariale Prüfer des Jobs hat es
+ * widerlegt.
  *
  * WAS GLEICH BLEIBT: Titel und H1 der Seite (sie tragen „qi blanco studien"),
  * der übrige Abschnitt und der Datensatz in app/data/fragen.js.
@@ -744,26 +753,21 @@ export const SCHUTZFRAGE_SLUG = 'gibt-es-studien-zu-elektrosmog-schutz';
 export const STUDIEN_SCHUTZFRAGE = {
   frage: 'Gibt es unabhängige Studien zu Elektrosmog-Schutz?',
   antwort:
-    'Vier Laborstudien von Prof. Dr. Peter C. Dartsch messen die Wirkung ' +
-    'unserer Produkte an Zellkulturen, in unserem Auftrag; eine kontrollierte ' +
-    'Studie am Menschen gibt es nicht.',
+    'Zwei Laborstudien von Prof. Dr. Peter C. Dartsch messen in unserem ' +
+    'Auftrag, wie Zellkulturen im Mobilfunkfeld mit und ohne QiOne® 2 Pro ' +
+    'reagieren. Eine kontrollierte Studie am Menschen gibt es nicht.',
 };
 
 /**
- * Das Frage-Antwort-Paar für das FAQPage-Schema der Seite: der sichtbare
- * Antwortsatz und der erste Absatz danach (Forschung zu den Feldern selbst,
- * bezahlt von Behörden). Beide stehen wortgleich im Abschnitt, eine zweite
- * Textfassung gibt es nicht. Fehlt der Datensatz, `null`: die Route gibt dann
- * kein unvollständiges Schema aus.
+ * Das Frage-Antwort-Paar für das FAQPage-Schema der Seite: genau der sichtbare
+ * Antworttext, keine zweite Fassung. Der Absatz danach („… fünf davon
+ * betreffen unsere Produkte") bleibt bewusst draußen: allein zitiert, liest
+ * er sich als fünf Schutzstudien. Fehlt der Datensatz, auf dem der Abschnitt
+ * steht, `null`: die Route gibt dann kein unvollständiges Schema aus.
  */
 export function schutzfrageSchemaItem() {
-  const {"begruendung": absaetze = []} = seiteFuer(SCHUTZFRAGE_SLUG) || {};
-  const erster = absaetze[0];
-  if (!erster) return null;
-  return {
-    q: STUDIEN_SCHUTZFRAGE.frage,
-    a: `${STUDIEN_SCHUTZFRAGE.antwort} ${erster}`,
-  };
+  if (!seiteFuer(SCHUTZFRAGE_SLUG)) return null;
+  return {q: STUDIEN_SCHUTZFRAGE.frage, a: STUDIEN_SCHUTZFRAGE.antwort};
 }
 
 /**
