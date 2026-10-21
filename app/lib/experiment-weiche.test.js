@@ -29,6 +29,9 @@ const START = 'start-e1-gs081';
 const SHOP = 'q2p-e1-gs080';
 const PB = 'pb-e1-gs107';
 const ALLE = [START, SHOP, PB];
+// Laufende Experimente (Code-Schalter aktiv). q2p-e1-gs080 ist seit 21.10.2026 beendet (s09, A bleibt): es fällt aus
+// den Anteils-, Pin- und Kill-Tests heraus und hat einen eigenen Test unten.
+const LAUFEND = ALLE.filter((id) => SEITEN_EXPERIMENTE[id].aktiv);
 const IPHONE =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
 const ANDROID =
@@ -83,7 +86,7 @@ function istB(id, {ip, ua}) {
 
 const POP = population(20000);
 
-test('Tabelle: drei Experimente, Salz = id, Anteile Start 15 / Shop 15 oder 50 (Rampe) / Beratung 50, eigene Marker, keine Kollision mit E1', () => {
+test('Tabelle: drei Experimente, Salz = id, Anteile Start 50 (mobil und Desktop) / Shop beendet / Beratung 50, eigene Marker, keine Kollision mit E1', () => {
   assert.deepEqual(Object.keys(SEITEN_EXPERIMENTE).sort(), [PB, SHOP, START].sort());
   const s = SEITEN_EXPERIMENTE[START];
   const q = SEITEN_EXPERIMENTE[SHOP];
@@ -102,7 +105,9 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 15 / Shop 15 oder 50 (
   assert.equal(s.pfad_b, '/pages/start-b');
   assert.equal(q.pfad_a, '/pages/qione-2-pro');
   assert.equal(q.pfad_b, '/pages/qione-2-pro-b');
-  assert.equal(s.anteil_prozent, 15);
+  // Startseite: 15 % ab Start, Desktop 50 % seit 18.10. (s06), mobil und Tablet 50 % seit 21.10. (s09, Regel #52)
+  assert.equal(s.anteil_prozent, 50);
+  assert.equal(s.aktiv, true);
   // Eigener Desktop-Anteil nur auf der Startseite (s06, Anhebungsregel #52 je Gerät); Shop und Beratung ohne
   assert.equal(s.anteil_prozent_desktop, 50);
   assert.equal(s.env_kill_desktop, 'EXP_START_DESKTOP_MODE');
@@ -112,6 +117,10 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 15 / Shop 15 oder 50 (
   // Christians): 15 % ab Start, 50 % nach 7 Tagen ohne Schaden, zurück auf 15 % bei Guardrail-
   // Verschlechterung (heatmap-manager experimente.yaml anteil_ruecklauf). Jeder andere Wert ist ein Fehler.
   assert.ok([15, 50].includes(q.anteil_prozent), `Shop-Anteil ${q.anteil_prozent} liegt nicht auf der Rampe 15/50`);
+  // Shopseite beendet 21.10.2026 (Aussichtslosigkeit, A bleibt): Code-Schalter aus, Zeile bleibt als Beleg
+  assert.equal(q.aktiv, false);
+  assert.equal(k.aktiv, true);
+  assert.deepEqual(LAUFEND.sort(), [PB, START].sort());
   assert.equal(s.pin_param, 'start_exp');
   assert.equal(q.pin_param, 'shop_exp');
   assert.equal(s.env_kill, 'EXP_START_MODE');
@@ -148,7 +157,7 @@ test('Goldwerte: Eimer = fnv1a(salz|ip|ua) % 100 je Experiment-Salz (festgeschri
 // Je Geräteklasse gegen ihren eigenen Soll-Anteil (s06): gepoolt gäbe es kein festes Soll, der Mix hängt an der
 // Geräteverteilung der Population.
 const istDesktop = (b) => geraeteKlasse(b.ua) === 'desktop';
-for (const id of ALLE) {
+for (const id of LAUFEND) {
   const exp = SEITEN_EXPERIMENTE[id];
   for (const [wort, teil, soll] of [
     ['mobil', POP.filter((b) => !istDesktop(b)), exp.anteil_prozent / 100],
@@ -180,7 +189,9 @@ for (const id of ALLE) {
 
 test('Salze unabhängig: Start, Shop, Beratung und LP-E1 (szs-e1-gs050) teilen paarweise wie Zufall', () => {
   const lpB = (b) => besucherEimer(b.ip, b.ua, E1.salz) < E1.anteil_prozent;
-  const arme = {start: (b) => istB(START, b), shop: (b) => istB(SHOP, b), pb: (b) => istB(PB, b), lp: lpB};
+  // Die Shopseite ist beendet; ihr Salz zählt weiter über den Eimer (falls sie je wieder anläuft), nicht über istB.
+  const shopB = (b) => besucherEimer(b.ip, b.ua, SEITEN_EXPERIMENTE[SHOP].salz) < SEITEN_EXPERIMENTE[SHOP].anteil_prozent;
+  const arme = {start: (b) => istB(START, b), shop: shopB, pb: (b) => istB(PB, b), lp: lpB};
   // Start hat einen eigenen Desktop-Anteil: sein Randanteil ist das Mittel über die Population. Die anderen Arme
   // haben je Gerät denselben Anteil, also gilt P(beide) = Randanteil x Randanteil weiter.
   const randStart = POP.reduce((s, b) => s + anteilProzentFuer(SEITEN_EXPERIMENTE[START], b.ua, {}), 0) / POP.length / 100;
@@ -241,7 +252,7 @@ const KONZEPT_CRAWLER = [
 ];
 
 test('Such- und Vorschau-Crawler sehen A auch mit Pin b; Messwerkzeug (HeadlessChrome) erreicht B per Pin', () => {
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     const exp = SEITEN_EXPERIMENTE[id];
     for (const k of KONZEPT_CRAWLER) {
       const ua = `Mozilla/5.0 (compatible; ${k[0].toUpperCase()}${k.slice(1)}/1.0)`;
@@ -257,7 +268,7 @@ test('Menschen-UAs gelten nicht als Crawler (In-App-Browser, CUBOT)', () => {
 });
 
 test('Eigener Verkehr sieht A: Server-IP und Marker-UA', () => {
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     const b = einBBesucher(id);
     const pfad = SEITEN_EXPERIMENTE[id].pfad_a;
     assert.equal(entscheideSeitenExperiment(req(pfad, {ip: '65.108.150.121', ua: b.ua}), {}, id), null);
@@ -266,7 +277,7 @@ test('Eigener Verkehr sieht A: Server-IP und Marker-UA', () => {
 });
 
 test('Ohne Client-IP: A (60 verschiedene Geräte)', () => {
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     for (let i = 0; i < 60; i += 1) {
       const ua = `${MENSCHEN[i % MENSCHEN.length]} v${i}`;
       assert.equal(entscheideSeitenExperiment(req(SEITEN_EXPERIMENTE[id].pfad_a, {ip: '', ua}), {}, id), null);
@@ -275,7 +286,7 @@ test('Ohne Client-IP: A (60 verschiedene Geräte)', () => {
 });
 
 test('Pin a und b, je Experiment nur sein eigener Parameter', () => {
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     const exp = SEITEN_EXPERIMENTE[id];
     const anderer = id === START ? 'shop_exp' : 'start_exp';
     const b = einBBesucher(id);
@@ -288,7 +299,7 @@ test('Pin a und b, je Experiment nur sein eigener Parameter', () => {
 });
 
 test('Kill: Env-Wert off und Code-Schalter; andere Env-Werte schalten nicht ab', () => {
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     const exp = SEITEN_EXPERIMENTE[id];
     const b = einBBesucher(id);
     assert.ok(entscheideSeitenExperiment(req(exp.pfad_a, b), {}, id));
@@ -325,15 +336,17 @@ test('.data-Request (React Router: Pfad ohne .data, mit _routes) bleibt im Arm, 
   assert.equal(ent.ziel, '/pages/start-b?fbclid=AbC_1-2&lp_m=s');
   const nurIntern = entscheideSeitenExperiment(req('/?_routes=routes%2F_index&index', b), {}, START);
   assert.equal(nurIntern.ziel, '/pages/start-b?lp_m=s');
-  const bq = einBBesucher(SHOP);
-  const shop = entscheideSeitenExperiment(req('/pages/qione-2-pro?utm_source=meta&_routes=routes%2Fpages.qione-2-pro', bq), {}, SHOP);
+  // Shopseite beendet: die Query-Regel bleibt für eine wieder eingeschaltete Zeile geprüft (Tabelle nur im Test)
+  const shopAn = {[SHOP]: {...SEITEN_EXPERIMENTE[SHOP], aktiv: true}};
+  const bq = POP.find((x) => entscheideSeitenExperiment(req('/pages/qione-2-pro', x), {}, SHOP, shopAn));
+  const shop = entscheideSeitenExperiment(req('/pages/qione-2-pro?utm_source=meta&_routes=routes%2Fpages.qione-2-pro', bq), {}, SHOP, shopAn);
   assert.equal(shop.ziel, '/pages/qione-2-pro-b?utm_source=meta&lp_m=q');
 });
 
 test('Roher Query byte-gleich plus Marker (fbclid, gclid, gad_*, utm_*, Kodierung, Reihenfolge)', () => {
   const roh =
     '?utm_source=facebook&utm_medium=social&utm_campaign=Herbst%20Aktion&fbclid=IwZXh0bgNhZW0BMABhZGlkAasb%2B_x&gclid=Cj0K-x_y&gad_source=1&gad_campaignid=22841&a=1&&b=';
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     const exp = SEITEN_EXPERIMENTE[id];
     const b = einBBesucher(id);
     const ent = entscheideSeitenExperiment(req(`${exp.pfad_a}${roh}`, b), {}, id);
@@ -348,7 +361,7 @@ test('Roher Query byte-gleich plus Marker (fbclid, gclid, gad_*, utm_*, Kodierun
 });
 
 test('POST, PUT und unbekannte Experiment-id: null; HEAD wird geteilt wie GET', () => {
-  for (const id of ALLE) {
+  for (const id of LAUFEND) {
     const exp = SEITEN_EXPERIMENTE[id];
     const b = einBBesucher(id);
     assert.equal(entscheideSeitenExperiment(req(exp.pfad_a, {...b, method: 'POST'}), {}, id), null);
@@ -377,8 +390,9 @@ test('Geräteklasse: mobil, Tablet und Desktop wie die anonyme Zählung (Receive
   const s = SEITEN_EXPERIMENTE[START];
   assert.equal(anteilProzentFuer(s, DESKTOP, {}), 50);
   assert.equal(anteilProzentFuer(s, MAC, {}), 50);
-  // Tablet zählt zu mobil (Geräte-Regel des Heatmap-Managers): eigener Anteil nur für desktop
-  for (const ua of [IPHONE, ANDROID, FB_INAPP, CUBOT, IPAD, ANDROID_TABLET]) assert.equal(anteilProzentFuer(s, ua, {}), 15);
+  // Tablet zählt zu mobil (Geräte-Regel des Heatmap-Managers): eigener Anteil nur für desktop; mobil folgt anteil_prozent
+  for (const ua of [IPHONE, ANDROID, FB_INAPP, CUBOT, IPAD, ANDROID_TABLET]) assert.equal(anteilProzentFuer(s, ua, {}), s.anteil_prozent);
+  assert.equal(anteilProzentFuer(s, IPHONE, {}), 50);
   for (const id of [SHOP, PB]) {
     for (const ua of [IPHONE, DESKTOP]) assert.equal(anteilProzentFuer(SEITEN_EXPERIMENTE[id], ua, {}), SEITEN_EXPERIMENTE[id].anteil_prozent);
   }
@@ -386,12 +400,18 @@ test('Geräteklasse: mobil, Tablet und Desktop wie die anonyme Zählung (Receive
 
 test('Desktop-Kill: EXP_START_DESKTOP_MODE=off setzt Desktop auf anteil_prozent zurück, mobil bleibt unberührt', () => {
   const s = SEITEN_EXPERIMENTE[START];
-  assert.equal(anteilProzentFuer(s, DESKTOP, {EXP_START_DESKTOP_MODE: 'off'}), 15);
+  // Seit 21.10. (s09) tragen beide Felder 50: der Desktop-Kill führt auf anteil_prozent, also auch 50. Er bleibt
+  // stehen, damit ein Rücklauf nur für mobil (anteil_prozent zurück auf 15) Desktop nicht mitzieht.
+  assert.equal(anteilProzentFuer(s, DESKTOP, {EXP_START_DESKTOP_MODE: 'off'}), s.anteil_prozent);
   assert.equal(anteilProzentFuer(s, DESKTOP, {EXP_START_DESKTOP_MODE: 'on'}), 50);
-  assert.equal(anteilProzentFuer(s, IPHONE, {EXP_START_DESKTOP_MODE: 'off'}), 15);
+  assert.equal(anteilProzentFuer(s, IPHONE, {EXP_START_DESKTOP_MODE: 'off'}), s.anteil_prozent);
+  const nurMobilZurueck = {...s, anteil_prozent: 15};
+  assert.equal(anteilProzentFuer(nurMobilZurueck, DESKTOP, {}), 50);
+  assert.equal(anteilProzentFuer(nurMobilZurueck, IPHONE, {}), 15);
+  assert.equal(anteilProzentFuer(nurMobilZurueck, DESKTOP, {EXP_START_DESKTOP_MODE: 'off'}), 15);
   const desk = POP.filter(istDesktop);
   const bAus = desk.filter((b) => entscheideSeitenExperiment(req('/', b), {EXP_START_DESKTOP_MODE: 'off'}, START) !== null);
-  for (const b of bAus) assert.ok(besucherEimer(b.ip, b.ua, s.salz) < 15);
+  for (const b of bAus) assert.ok(besucherEimer(b.ip, b.ua, s.salz) < s.anteil_prozent);
   // der Gesamt-Kill wirkt weiter auf beide Geräte
   assert.equal(desk.filter((b) => entscheideSeitenExperiment(req('/', b), {EXP_START_MODE: 'off'}, START) !== null).length, 0);
 });
@@ -404,6 +424,33 @@ test('Arm-Treue beim Wechsel 15 -> 50 % auf Desktop: wer vorher B sah, bleibt B;
     if (e < 15) assert.ok(jetzt, `Eimer ${e}: war B, ist A`);
     assert.equal(jetzt, e < 50, `Eimer ${e}`);
   }
+});
+
+test('Arm-Treue beim Wechsel 15 -> 50 % mobil und Tablet (21.10.2026, s09): wer vorher B sah, bleibt B; neu B sind genau die Eimer 15-49', () => {
+  const s = SEITEN_EXPERIMENTE[START];
+  const mobil = POP.filter((b) => !istDesktop(b));
+  assert.ok(mobil.length >= 3000);
+  for (const b of mobil) {
+    const e = besucherEimer(b.ip, b.ua, s.salz);
+    const jetzt = entscheideSeitenExperiment(req('/', b), {}, START) !== null;
+    if (e < 15) assert.ok(jetzt, `Eimer ${e}: war B, ist A`);
+    assert.equal(jetzt, e < 50, `Eimer ${e}`);
+  }
+});
+
+test('Shopseite q2p-e1-gs080 beendet (21.10.2026, s09): niemand sieht B, auch nicht per Pin; Start und Beratung laufen', () => {
+  const q = SEITEN_EXPERIMENTE[SHOP];
+  assert.equal(seitenExperimentAktiv(q, {}), false);
+  assert.equal(POP.filter((b) => istB(SHOP, b)).length, 0);
+  const intern = {ip: '65.108.150.121', ua: 'x QiBlancoInternal'};
+  assert.equal(entscheideSeitenExperiment(req('/pages/qione-2-pro?shop_exp=b', intern), {}, SHOP), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/qione-2-pro?shop_exp=b'), {}, SHOP), null);
+  // Positivkontrolle: dieselbe Zeile mit Schalter an lenkt per Pin um (der Test sähe sonst nichts)
+  const an = {[SHOP]: {...q, aktiv: true}};
+  assert.ok(entscheideSeitenExperiment(req('/pages/qione-2-pro?shop_exp=b', intern), {}, SHOP, an));
+  // der geteilte Pin shop_exp wirkt auf der Beratung weiter
+  assert.ok(entscheideSeitenExperiment(req('/pages/produktberatung?shop_exp=b', intern), {}, PB));
+  assert.ok(einBBesucher(START));
 });
 
 test('Naht: geraeteKlasse ist zeichengleich mit der Zählung in entry.server.jsx', () => {
