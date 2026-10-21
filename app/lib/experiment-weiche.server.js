@@ -1,11 +1,12 @@
 /**
  * SEITEN-EXPERIMENTE (Grossjob 20261006-GROSSJOB-rookie-15pct-qione-2-pro-und-
- * startseite, Segment s05, Christian 06.10.2026): 15 % der Besucher der
- * Startseite / und der Shopseite /pages/qione-2-pro sehen je eine Rookie-Seite.
- * SSoT des Verhaltens: claude-jobs/<job>/KONZEPT.md Abschnitt 2 und 7.
+ * startseite, Segment s05, Christian 06.10.2026): gestartet mit 15 % der
+ * Besucher der Startseite / und der Shopseite /pages/qione-2-pro, die je eine
+ * Rookie-Seite sahen. SSoT des Verhaltens: claude-jobs/<job>/KONZEPT.md
+ * Abschnitt 2 und 7.
  *
- *   GET /            -> Loader _index.jsx           -> 302 /pages/start-b       (15 %)
- *   GET /pages/qione-2-pro -> Loader pages.qione-2-pro.jsx -> 302 /pages/qione-2-pro-b (50 %)
+ *   GET /            -> Loader _index.jsx           -> 302 /pages/start-b       (50 %)
+ *   GET /pages/qione-2-pro -> beendet 21.10.2026 (aktiv: false), alle sehen A
  *   GET /pages/produktberatung -> Loader pages.produktberatung.jsx
  *                                 -> 302 /pages/produktberatung-b       (50 %)
  *
@@ -19,6 +20,20 @@
  * Epochen konstanter Zuteilung (heatmap-manager, anteil_verlauf). Rückweg auf
  * 15 % reiht der Heatmap-Kreislauf selbst ein, sobald die Anhebungsregel nicht
  * mehr trägt (experimente.yaml anteil_ruecklauf).
+ *
+ * STAND 21.10.2026 (Fix-Segment s09, Eigner-Entscheidung s07-r2; Anlass
+ * Christians Auftrag 15.10. „kein Test ohne Entscheidung länger als 14 Tage“):
+ *  - Startseite start-e1-gs081: mobil und Tablet von 15 auf 50 % (Desktop
+ *    steht seit 18.10. auf 50 %). Bei 15 % käme mobil vor dem Deckel kein
+ *    Urteil. Regel #52 am 21.10. erfüllt: P(B < A) 0,25 unter 0,80, Schutz
+ *    Warenkorb greift nicht. Salz und id bleiben: Eimer 0-14 bleiben B, Eimer
+ *    15-49 wechseln von A nach B.
+ *  - Shopseite q2p-e1-gs080: beendet wegen Aussichtslosigkeit, A bleibt
+ *    (vorgezogene Folge „nach 42 Tagen ohne Urteil: kein nachweisbarer
+ *    Unterschied“; bei diesem Verkehr bringen 42 Tage rechnerisch kein Urteil).
+ *    Code-Schalter aktiv: false, die Zeile bleibt als Beleg stehen; auch der
+ *    Pin ?shop_exp=b lenkt nicht mehr um. /pages/qione-2-pro-b bleibt dunkel
+ *    erreichbar (noindex).
  *
  * EIGENER DESKTOP-ANTEIL DER STARTSEITE (Grossjob vom 10.10.2026 „LP-Tests
  * Geräte getrennt", Fix-Segment s06; Christian
@@ -103,7 +118,7 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pfad_a: '/',
     pfad_b: '/pages/start-b',
     salz: 'start-e1-gs081',
-    anteil_prozent: 15,
+    anteil_prozent: 50,
     anteil_prozent_desktop: 50,
     pin_param: 'start_exp',
     env_kill: 'EXP_START_MODE',
@@ -121,7 +136,7 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pin_param: 'shop_exp',
     env_kill: 'EXP_SHOP_MODE',
     marker: 'q',
-    aktiv: true,
+    aktiv: false, // beendet 21.10.2026 (Aussichtslosigkeit, A bleibt), Zeile bleibt als Beleg
   }),
   'pb-e1-gs107': Object.freeze({
     id: 'pb-e1-gs107',
