@@ -3,6 +3,7 @@ import {AddToCartButton} from './AddToCartButton';
 import {LinkPerMail} from '~/components/reusables/LinkPerMail';
 import {EuGewaehrleistungsHinweis} from './EuGewaehrleistungsLabel';
 import {useAside} from './Aside';
+import {WiederLieferbar} from '~/components/reusables/WiederLieferbar';
 
 /**
  * @param {{
@@ -170,6 +171,14 @@ export function ProductForm({
             : 'Ausverkauft'}
         </AddToCartButton>
       </div>
+      {/* „Benachrichtige mich, wenn wieder lieferbar“ (Großjob 20261021-bau-
+          wieder-lieferbar-eintragung-dunkel s02): EINMAL hier unter dem
+          Hauptknopf, nicht in den Kaufleisten. Rendert nichts, solange die
+          Variante kaufbar ist oder /w den Weg 'aus' meldet. */}
+      <WiederLieferbar
+        variantId={selectedVariant?.id}
+        ausverkauft={Boolean(selectedVariant) && !selectedVariant.availableForSale}
+      />
       {unterKaufknopf}
       {/*
         Sichtbarer Text-Link zur Pflichtmitteilung, unmittelbar unter dem
