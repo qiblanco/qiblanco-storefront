@@ -302,9 +302,26 @@
   margin: 0;
 }
 
+/* ═══ CHAMPION MOBIL: Bausteine, die A nur mobil trägt (Urteil szs-e1-gs050) ═══
+   B hat mobil gewonnen, desktop bleibt A (Ausrollen je Gerät, Christian
+   10.10.2026). Mobil heißt hier genau, was der Pixel mobil nennt: grober
+   Zeiger (pointer: coarse, qiblanco-qpx.js device(); Tablets zählen zu mobil).
+   Bei feinem oder keinem Zeiger zählt der Pixel desktop, auch im schmalen
+   Fenster; dort bleibt A wie vor dem Urteil: display none, kein Kasten, kein
+   Klick, keine Sichtung. Der feste Knopf trägt in A dieselbe Klasse; die
+   drei Klassen im zweiten Selektor schlagen seine Breitenregel weiter unten
+   (bis 767 px, gilt für B unverändert). */
+@media (pointer: fine), (pointer: none) {
+  .lp-a3 .lp-a-nur-mobil,
+  .lp-a3 .lp-b-sticky.lp-a-nur-mobil { display: none; }
+}
+
 /* ═══ VARIANTE B: STICKY-KAUFKNOPF MOBIL (Experiment-Kreislauf E1, GS-056) ══════
-   Nur die Route /pages/schlaf-zellen-schutz-b rendert das Element (Prop
-   variante="b"); auf A existiert es nicht, diese Regeln treffen dort nichts.
+   Bis zum 20.10.2026 rendert nur die Route /pages/schlaf-zellen-schutz-b das
+   Element. Seit dem Urteil szs-e1-gs050 (B gewinnt mobil) trägt es auch A
+   (traegtChampionMobil in der Komponente). Für B bleibt die Gerätegrenze die
+   eine Regel hier unten (bis 767 px); A blendet ihn zusätzlich bei feinem
+   Zeiger aus (.lp-a-nur-mobil, CHAMPION MOBIL oben).
 
    NUR BESTANDS-TOKENS: Fläche --a-grund, Linie --a-linie, Schatten --a-shadow-md,
    Abstände --a-s1/--a-s2 (8pt-Raster), Schrift --a-fs-base, Ebene --z-schwebend

@@ -19,13 +19,24 @@ import {quellenFuer} from '~/data/fragen';
  *
  * Der Marker data-geo sitzt wie auf der Frageseite an Frage und Antwort.
  *
+ * ÜBERSCHRIFT UND ANTWORTSATZ JE GASTSEITE (seit 21.10.2026, SEO-Maßnahme
+ * M-SP-20261017-studien, Job seo-2026-w43-l26-studien-3fbe-...): `frage` und
+ * `antwort` ersetzen nur auf DIESER Gastseite die zwei Zeilen aus
+ * app/data/fragen.js. Der Datensatz bleibt, weil andere Seiten (FAQ-Liste,
+ * Lexikon-Verweise) dieselbe Frage im alten Wortlaut führen; eine
+ * Gewinnerseite wie /pages/faq soll sich nicht mitbewegen, weil eine andere
+ * Seite einen Suchbegriff braucht. Ohne die zwei Props rendert der Abschnitt
+ * wie bisher.
+ *
  * @param {{
  *   seite: import('~/data/fragen').FrageSeite,
  *   klassen?: {abschnitt?: string, inhalt?: string, antwort?: string,
  *     quellen?: string},
+ *   frage?: string,
+ *   antwort?: string,
  * }} props
  */
-export function FrageAbschnitt({seite, klassen = {}}) {
+export function FrageAbschnitt({seite, klassen = {}, frage, antwort}) {
   if (!seite) return null;
   const quellen = quellenFuer(seite);
   const {"begruendung": absaetze} = seite;
@@ -39,13 +50,13 @@ export function FrageAbschnitt({seite, klassen = {}}) {
     >
       <div className={klassen.inhalt || 'frage-abschnitt__inhalt'}>
         <h2 id={titelId} data-geo="frage">
-          {seite.frage}
+          {frage || seite.frage}
         </h2>
         <p
           className={klassen.antwort || 'frage-abschnitt__antwort'}
           data-geo="antwort"
         >
-          {seite.antwort}
+          {antwort || seite.antwort}
         </p>
         {absaetze.map((absatz) => (
           <p key={absatz.slice(0, 48)}>{absatz}</p>

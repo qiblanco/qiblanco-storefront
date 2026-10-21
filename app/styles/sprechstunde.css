@@ -20,6 +20,12 @@
 
    MOBIL ZUERST: Tipp-Flaechen >= 48 px, Formular einspaltig, Eingaben 16 px
    (sonst zoomt iOS beim Tippen).
+
+   LANDINGPAGE (2026-10-21, Job 20261020-sprechstunde-lp-umbau-kundennutzen-
+   3wochen-browserzeit): neun Abschnitte, die Akte wechseln grund / flaeche,
+   EIN dunkler Akt (Ablauf). Nutzen- und Bedingungs-Listen tragen einen
+   Punkt in Textfarbe, kein Gold: Gold bleibt der Handlung vorbehalten.
+   Neue Regeln nur mit Tokens aus :root.
    ========================================================================== */
 
 :root {
@@ -556,3 +562,46 @@
     transition: none;
   }
 }
+
+/* ─── Landingpage: Listen, Ablauf in drei Schritten, Zeit-Hinweis ─────────── */
+.sp ul.sp__punkte {
+  display: grid;
+  gap: var(--sp-s2);
+  margin: 0 0 var(--sp-s3);
+}
+.sp ul.sp__punkte li {
+  position: relative;
+  margin: 0;
+  padding-left: var(--sp-s4);
+}
+.sp ul.sp__punkte li::before {
+  content: '';
+  position: absolute;
+  left: var(--sp-s1);
+  top: 0.66em;
+  width: var(--sp-s1);
+  height: var(--sp-s1);
+  border-radius: 50%;
+  background: var(--sp-text);
+}
+.sp ul.sp__punkte:last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 768px) {
+  .sp ol.sp__schritte.sp__schritte--drei {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.sp p.sp__abgrenzung {
+  margin-top: var(--sp-s3);
+}
+.sp p.sp__zeithinweis {
+  font-size: var(--sp-fs-xs);
+  color: var(--sp-muted);
+  margin: 0 0 var(--sp-s2);
+}
+.sp .sp__buchen,
+.sp #ticket {
+  scroll-margin-top: var(--sp-s4);
+}
+
