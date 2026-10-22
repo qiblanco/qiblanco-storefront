@@ -380,3 +380,361 @@ test('tagLang rendert denselben Tag, egal in welcher Zone die Umgebung läuft', 
       'Erwartet ist ueberall der Berliner Kalendertag.',
   );
 });
+
+// ── URSACHE 5: fremder Einschub VOR Reacts erstem body-Kind ────────────────
+// Ursache 3 oben schloss den Einschub im <head>. Er war damit nicht weg,
+// sondern VERLEGT: Cookiebots Banner kommt aus cc.js und geht nach
+// body-Index 0 (gemessen 178 von 178 Einschueben, Job 20260913-restbruch-
+// hydration-standardseiten-ursache-unbekannt). Landet er vor Reacts
+// Hydration-Commit, rueckt jedes von React gehaltene body-Kind um eins --
+// #418 vielfach plus #423, und React raeumt den Banner wieder weg.
+//
+// DIE GEGENMASSNAHME ist app/lib/einschub-weiche.js: derselbe Knoten, ans
+// body-ENDE umgelenkt. A/B mit einer Variablen (Ort), Zeit festgehalten:
+// Anfang 8 von 8 rot und 1 von 8 ueberlebt, Ende 0 von 8 rot und 8 von 8
+// ueberlebt.
+//
+// DIE WIRKUNG misst homepage-bauer/pruefungen/_diag_hydration_einschub.py am
+// echten Browser (--weiche-aus-repo zieht GENAU diese Datei). Die Waechter
+// hier sind der billige Vorposten: sie fallen schon im PR.
+
+const WEICHE_QUELLE = new URL('../app/lib/einschub-weiche.js', import.meta.url);
+
+/**
+ * Der kleinste Baum, an dem sich die Frage entscheidet: ein Elternknoten mit
+ * insertBefore/appendChild/firstChild und ein querySelector, der genau den
+ * Selektor kann, den die Weiche benutzt.
+ *
+ * BEWUSST KEIN jsdom: die Weiche hängt sich an EINE Methode EINES Knotens,
+ * und genau das soll gemessen werden. Ein vollstaendiges DOM würde die Frage
+ * nicht schaerfer machen, aber eine Abhaengigkeit einführen.
+ */
+class Kn {
+  constructor(tag, id) {
+    this.tagName = String(tag).toUpperCase();
+    this.nodeType = 1;
+    this.id = id || '';
+    this.childNodes = [];
+  }
+  get firstChild() {
+    return this.childNodes[0] || null;
+  }
+  // Beide Methoden LOESEN den Knoten zuerst von seinem alten Platz. Das ist
+  // echtes DOM-Verhalten (ein bereits eingehaengter Knoten wird VERSCHOBEN,
+  // nicht gedoppelt) und hier tragend: die Weiche schiebt den geparkten Banner
+  // nach dem Commit von hinten nach vorn. Ein Nachbau ohne dieses Loesen wäre
+  // nachsichtiger als die Wirklichkeit -- und ein Gruen daran hiesse nichts.
+  #loesen(n) {
+    const i = this.childNodes.indexOf(n);
+    if (i >= 0) this.childNodes.splice(i, 1);
+  }
+  // `parentNode` wird mitgefuehrt, weil die Weiche es LIEST: sie schiebt nach
+  // dem Commit nur zurück, was noch im body hängt. Ein Nachbau ohne dieses
+  // Feld lässt die Bedingung still fehlschlagen -- der Test wäre dann rot,
+  // obwohl der Quelltext stimmt, und man sucht den Fehler an der falschen
+  // Stelle (genau so passiert).
+  appendChild(n) {
+    this.#loesen(n);
+    this.childNodes.push(n);
+    n.parentNode = this;
+    return n;
+  }
+  insertBefore(n, ref) {
+    this.#loesen(n);
+    const i = ref ? this.childNodes.indexOf(ref) : -1;
+    if (i < 0) this.childNodes.push(n);
+    else this.childNodes.splice(i, 0, n);
+    n.parentNode = this;
+    return n;
+  }
+  querySelector(sel) {
+    const m = /^\[id\^="([^"]+)"\]$/.exec(sel);
+    assert.ok(
+      m,
+      `Der Nachbau kennt nur [id^="..."], die Weiche fragt nach ${sel}. ` +
+        'Wenn die Weiche ihren Selektor aendert, gehört der Nachbau mit.',
+    );
+    const suche = (k) => {
+      for (const kind of k.childNodes) {
+        if (kind.id && kind.id.startsWith(m[1])) return kind;
+        const tief = suche(kind);
+        if (tief) return tief;
+      }
+      return null;
+    };
+    return suche(this);
+  }
+}
+
+/** Ein body wie unserer: erstes Kind ist ein von React gehaltenes <script>. */
+function bauBody() {
+  const body = new Kn('body');
+  const skript = new Kn('script');
+  skript['__reactFiber$924ze5tvaok'] = {}; // live so vorgefunden
+  body.appendChild(skript);
+  body.appendChild(new Kn('div'));
+  return body;
+}
+
+/** Cookiebots Banner: <div id="cookiebanner"> mit einem Cybot-Nachkommen. */
+function bauBanner() {
+  const banner = new Kn('div', 'cookiebanner');
+  banner.appendChild(new Kn('a', 'CybotCookiebotDialogBodyButtonDecline'));
+  return banner;
+}
+
+/** Genau der Einschub aus cc.js 2.135.0, displaydialog(). */
+function wieCookiebot(body, knoten) {
+  return body.firstChild
+    ? body.insertBefore(knoten, body.firstChild)
+    : body.appendChild(knoten);
+}
+
+/**
+ * Lädt den ausgelieferten Quelltext und hängt ihn an `body`.
+ *
+ * Gibt ein `hydriert()` mit zurück: die Weiche parkt nur, SOLANGE React nicht
+ * hydriert hat, und schiebt Geparktes danach zurück. Beide Phasen gehören
+ * gemessen -- die zweite ist die, an der die erste Fix-Fassung gescheitert ist
+ * (am body-Ende war der Dialog mit der Tastatur nicht mehr erreichbar).
+ */
+async function weicheStarten(body, quelltext, {readyState = 'complete'} = {}) {
+  const src =
+    quelltext ?? (await import(WEICHE_QUELLE.href)).einschubWeicheQuelle();
+  let hörer = [];
+  // readyState ist veränderlich: der zweite Weg (iframes während des
+  // Parsens) hängt genau daran. Die Banner-Tests laufen mit 'complete' und
+  // sehen den zweiten Weg nicht.
+  const doc = {
+    readyState,
+    getElementsByTagName: (t) => (t === 'body' ? [body] : []),
+    addEventListener: (typ, fn) => hörer.push([typ, fn]),
+    removeEventListener: (typ, fn) => {
+      hörer = hörer.filter(([t, f]) => !(t === typ && f === fn));
+    },
+  };
+  // requestAnimationFrame wird SYNCHRON ausgefuehrt: der Nachbau misst, WAS
+  // zurueckgeschoben wird, nicht WANN der Browser das Bild zeichnet.
+  const win = {requestAnimationFrame: (fn) => fn()};
+  new Function('document', 'window', src)(doc, win);
+  return {
+    body,
+    hydriert() {
+      win.__qbHydriert = true;
+      for (const [typ, fn] of hörer) if (typ === 'qb:hydriert') fn();
+    },
+    /** Der Parser ist fertig: readyState verlässt 'loading'. */
+    parsenFertig() {
+      doc.readyState = 'interactive';
+      for (const [typ, fn] of [...hörer]) if (typ === 'readystatechange') fn();
+    },
+  };
+}
+
+test('ROT-VOR-GRUEN: ohne Weiche landet der Banner auf body-Index 0', () => {
+  const body = bauBody();
+  wieCookiebot(body, bauBanner());
+  assert.equal(
+    body.childNodes.indexOf(body.childNodes.find((k) => k.id === 'cookiebanner')),
+    0,
+    'MESSAUSFALL: der Nachbau erzeugt den Defekt nicht. Dann belegt der ' +
+      'Test darunter nichts.',
+  );
+});
+
+test('mit Weiche landet derselbe Banner am body-ENDE -- und bleibt drin', async () => {
+  const {body} = await weicheStarten(bauBody());
+  const banner = bauBanner();
+  const zurück = wieCookiebot(body, banner);
+
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    body.childNodes.length - 1,
+    'Der Banner steht nicht am Ende. Auf body-Index 0 verschiebt er jedes ' +
+      'von React gehaltene Geschwister -- #418 plus #423.',
+  );
+  assert.equal(
+    zurück,
+    banner,
+    'insertBefore gibt den eingefuegten Knoten zurück, und Cookiebot ' +
+      'rechnet damit (this.DOM = bodyObj.insertBefore(...)). Die Weiche darf ' +
+      'diesen Vertrag nicht brechen.',
+  );
+});
+
+test('die Weiche lässt alles andere unangetastet (fail-safe nach aussen)', async () => {
+  // 1. Ein fremder Knoten OHNE Einwilligungs-Merkmal bleibt, wo er hin soll.
+  const {body: a} = await weicheStarten(bauBody());
+  const fremd = new Kn('div', 'irgendwas');
+  a.insertBefore(fremd, a.firstChild);
+  assert.equal(a.childNodes.indexOf(fremd), 0, 'fremder Knoten wurde umgelenkt');
+
+  // 2. Ein Knoten, den REACT einfuegt, bleibt unangetastet -- auch wenn er
+  //    nach Einwilligung aussieht. React soll seinen eigenen Baum bauen.
+  const {body: b} = await weicheStarten(bauBody());
+  const reactKnoten = bauBanner();
+  reactKnoten['__reactFiber$abc'] = {};
+  b.insertBefore(reactKnoten, b.firstChild);
+  assert.equal(
+    b.childNodes.indexOf(reactKnoten),
+    0,
+    'Ein React-eigener Knoten wurde umgelenkt -- das bricht Reacts Baum.',
+  );
+
+  // 3. Ein Einschub, der NICHT vor das erste Kind geht, bleibt an Ort und
+  //    Stelle. Umgelenkt wird nur die eine gemessene Bauform.
+  const {body: c} = await weicheStarten(bauBody());
+  const banner = bauBanner();
+  c.insertBefore(banner, c.childNodes[1]);
+  assert.equal(c.childNodes.indexOf(banner), 1, 'Einschub in der Mitte wurde verschoben');
+});
+
+test('nach dem Hydrations-Signal kehrt der Banner auf body-Index 0 zurück', async () => {
+  // DIE ZWEITE HÄLFTE DES BAUS, und die teurere: am body-Ende ist der
+  // Einwilligungs-Dialog mit der Tastatur nicht mehr erreichbar (gemessen:
+  // Tab 1/2/3/5 auf Index 0 gegen KEINEN Treffer in 60 Tabs am Ende). Geparkt
+  // wird deshalb nur bis zum Commit.
+  const {body, hydriert} = await weicheStarten(bauBody());
+  const banner = bauBanner();
+  wieCookiebot(body, banner);
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    body.childNodes.length - 1,
+    'Vorbedingung: im Fenster vor dem Commit steht der Banner am Ende.',
+  );
+
+  hydriert();
+
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    0,
+    'Der Banner ist nach dem Commit nicht auf Index 0 zurück. Dann bleibt die ' +
+      'Einwilligung für Tastatur-Bedienung am Seitenende liegen.',
+  );
+});
+
+test('nach dem Hydrations-Signal wird nicht mehr umgelenkt', async () => {
+  const {body, hydriert} = await weicheStarten(bauBody());
+  hydriert();
+  const banner = bauBanner();
+  wieCookiebot(body, banner);
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    0,
+    'Nach dem Commit ist der Einschub auf Index 0 harmlos (s01: 160 Läufe, ' +
+      'alle grün). Dann soll die Weiche nichts mehr tun.',
+  );
+});
+
+test('die Weiche hängt sich genau einmal ein', async () => {
+  const body = bauBody();
+  await weicheStarten(body);
+  const nachEinmal = body.insertBefore;
+  await weicheStarten(body);
+  assert.equal(
+    body.insertBefore,
+    nachEinmal,
+    'Zweiter Durchlauf hängt erneut ein. Jede Schicht ruft die darunter ' +
+      'auf -- aus einem Einschub würden mehrere.',
+  );
+});
+
+test('die Weiche steht im Bootstrap VOR dem Cookiebot-Loader', () => {
+  const text = readFileSync(QUELLE, 'utf8');
+  const a = text.indexOf('einschubWeicheQuelle()');
+  const e = text.indexOf('var s=document.createElement("script")');
+  assert.ok(a > 0, 'cookiebotBootstrap ruft einschubWeicheQuelle() nicht auf');
+  assert.ok(e > 0, 'der Cookiebot-Loader im Bootstrap wurde nicht gefunden');
+  assert.ok(
+    a < e,
+    'Die Weiche steht NACH dem Loader. Dann kann uc.js schon angefordert ' +
+      'sein, bevor sie hängt -- und der Einschub geht an ihr vorbei.',
+  );
+});
+
+test('ROT-VOR-GRUEN: der Waechter erkennt eine ausgebaute Weiche', async () => {
+  const quelle = (await import(WEICHE_QUELLE.href)).einschubWeicheQuelle();
+  // Mutant: die Bedingung wird unerfuellbar, die Weiche reicht alles durch.
+  const kaputt = quelle.replace('bezug===this.firstChild', 'false');
+  assert.notEqual(kaputt, quelle, 'Mutant liess sich nicht bauen');
+
+  const {body} = await weicheStarten(bauBody(), kaputt);
+  const banner = bauBanner();
+  wieCookiebot(body, banner);
+  assert.equal(
+    body.childNodes.indexOf(banner),
+    0,
+    'Der Mutant lenkt immer noch um. Dann misst der Test oben nicht die ' +
+      'Weiche, sondern irgendetwas anderes.',
+  );
+});
+
+// ── URSACHE 6: iframes, die WÄHREND DES PARSENS an den body gehen ──────────
+// Gemessen 2026-10-22 (Job 20261017-kundenrand-dach-hydrierung-423-checked-
+// null): uc.js hängt per body.appendChild zwei unsichtbare iframes an
+// (`__uspapiLocator` und ein namenloses), solange readyState noch 'loading'
+// ist -- bei body-Kind 42 bis 52 von später über 100. Der Parser schreibt
+// dahinter weiter, der fremde Knoten steht mitten in Reacts Baum. Mit
+// CPU-Drossel 6 auf /products/qione-2-pro: Banner-Weiche allein 5 von 6
+// Läufen kaputt, mit diesem zweiten Arm 0 von 6.
+
+/** Was der Parser tut: hängt ans Ende, ohne die JS-Methode zu benutzen. */
+function parserSchreibt(body, knoten) {
+  Kn.prototype.appendChild.call(body, knoten);
+}
+
+test('ROT-VOR-GRUEN: ohne Weiche steht ein früh angehängtes iframe mitten im body', () => {
+  const body = bauBody();
+  const rahmen = new Kn('iframe');
+  body.appendChild(rahmen);
+  parserSchreibt(body, new Kn('div'));
+  parserSchreibt(body, new Kn('script'));
+  assert.ok(
+    body.childNodes.indexOf(rahmen) < body.childNodes.length - 1,
+    'MESSAUSFALL: im Nachbau landet das iframe nicht vor späteren ' +
+      'Parser-Knoten. Dann belegt der Test darunter nichts.',
+  );
+});
+
+test('mit Weiche wartet das iframe bis zum Parse-Ende und geht ans body-ENDE', async () => {
+  const w = await weicheStarten(bauBody(), undefined, {readyState: 'loading'});
+  const rahmen = new Kn('iframe');
+  const zurück = w.body.appendChild(rahmen);
+  assert.equal(zurück, rahmen, 'appendChild muss den Knoten zurückgeben.');
+  assert.equal(
+    w.body.childNodes.indexOf(rahmen),
+    -1,
+    'Während des Parsens steht das iframe schon im body -- der Parser ' +
+      'schreibt dahinter weiter, und es sitzt mitten in Reacts Baum.',
+  );
+  parserSchreibt(w.body, new Kn('div'));
+  parserSchreibt(w.body, new Kn('script'));
+  w.parsenFertig();
+  assert.equal(
+    w.body.childNodes.indexOf(rahmen),
+    w.body.childNodes.length - 1,
+    'Nach dem Parse-Ende steht das iframe nicht am body-Ende.',
+  );
+  // Danach ist die Weiche für appendChild ausgehängt.
+  const später = new Kn('iframe');
+  w.body.appendChild(später);
+  assert.equal(w.body.childNodes.indexOf(später), w.body.childNodes.length - 1);
+});
+
+test('der iframe-Arm lässt alles andere unangetastet', async () => {
+  // Nach dem Parsen: nichts zurückhalten.
+  const a = await weicheStarten(bauBody());
+  const r1 = new Kn('iframe');
+  a.body.appendChild(r1);
+  assert.notEqual(a.body.childNodes.indexOf(r1), -1, 'iframe nach dem Parsen zurückgehalten');
+  // Während des Parsens, aber kein iframe: sofort anhängen.
+  const b = await weicheStarten(bauBody(), undefined, {readyState: 'loading'});
+  const div = new Kn('div');
+  b.body.appendChild(div);
+  assert.notEqual(b.body.childNodes.indexOf(div), -1, 'Nicht-iframe zurückgehalten');
+  // React-eigenes iframe: nie anfassen.
+  const reactRahmen = new Kn('iframe');
+  reactRahmen['__reactFiber$abc'] = {};
+  b.body.appendChild(reactRahmen);
+  assert.notEqual(b.body.childNodes.indexOf(reactRahmen), -1, 'React-iframe zurückgehalten');
+});
