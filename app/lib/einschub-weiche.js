@@ -115,29 +115,29 @@
  *      umgelenkt und Geparktes kehrt zurück.
  *
  * DER ZWEITE WEG IN DIESELBE KLASSE (gemessen 2026-10-22, Job
- * 20261017-kundenrand-dach-hydrierung-423-checked-null): uc.js haengt heute
- * zusaetzlich zwei unsichtbare <iframe> per body.appendChild an (eines heisst
- * `__uspapiLocator`, der Fundort der US-Privacy-Schnittstelle fuer fremde
- * Rahmen). Das geschieht, WAEHREND der Parser den <body> noch schreibt
- * (readyState "loading", gemessen bei body-Kind 42 bis 52 von spaeter ueber
+ * 20261017-kundenrand-dach-hydrierung-423-checked-null): uc.js hängt heute
+ * zusaetzlich zwei unsichtbare <iframe> per body.appendChild an (eines heißt
+ * `__uspapiLocator`, der Fundort der US-Privacy-Schnittstelle für fremde
+ * Rahmen). Das geschieht, WÄHREND der Parser den <body> noch schreibt
+ * (readyState "loading", gemessen bei body-Kind 42 bis 52 von später über
  * 100). Alles, was der Parser danach liefert, steht HINTER dem iframe - der
  * fremde Knoten sitzt also mitten in Reacts Baum. Ergebnis wie beim Banner:
- * #418 vielfach, #423, React baut die Wurzel neu und loescht dabei den
+ * #418 vielfach, #423, React baut die Wurzel neu und löscht dabei den
  * Banner; Cookiebot greift danach in cc.js (CookieControl.Dialog.init) auf
- * seine weggeraeumten Kaestchen zu: "Cannot set properties of null (setting
+ * seine weggeräumten Kästchen zu: "Cannot set properties of null (setting
  * 'checked')". Die Kundin bekommt dann KEINE Einwilligungs-Abfrage.
  * Gemessen mit CPU-Drossel 6 auf /products/qione-2-pro: ohne Weiche 6 von 6
- * Laeufen kaputt, mit der Banner-Weiche allein noch 5 von 6.
+ * Läufen kaputt, mit der Banner-Weiche allein noch 5 von 6.
  *
- * DIE GEGENMASSNAHME: ein iframe, das ein Skript waehrend des Parsens an den
- * body haengt, wird zurueckgehalten, bis der Parser fertig ist
- * (readystatechange weg von "loading"), und dann ans body-ENDE gehaengt. Am
- * Ende stoert ein fremder Knoten Reacts Hydration nicht (gemessen, siehe
- * oben). Nur iframes, nur waehrend "loading", nur frische Knoten ohne
+ * DIE GEGENMASSNAHME: ein iframe, das ein Skript während des Parsens an den
+ * body hängt, wird zurückgehalten, bis der Parser fertig ist
+ * (readystatechange weg von "loading"), und dann ans body-ENDE gehängt. Am
+ * Ende stört ein fremder Knoten Reacts Hydration nicht (gemessen, siehe
+ * oben). Nur iframes, nur während "loading", nur frische Knoten ohne
  * Elternteil und ohne React-Eigentum - das ist die gemessene Bauform, sonst
  * nichts. Der Preis: der Fundort-Rahmen existiert erst, wenn das Dokument
- * geparst ist, also Sekundenbruchteile spaeter. Fremde Werbe-Rahmen, die ihn
- * suchen koennten, gibt es auf dieser Seite nicht.
+ * geparst ist, also Sekundenbruchteile später. Fremde Werbe-Rahmen, die ihn
+ * suchen könnten, gibt es auf dieser Seite nicht.
  *
  * DIE KLASSE "fremder Einschub vor Reacts erstem body-Kind" ist damit NICHT
  * abschliessend geschlossen - geschlossen sind die zwei gemessenen Wege dorthin.
@@ -195,7 +195,7 @@ export function einschubWeicheQuelle() {
     '}' +
     'geparkt.length=0;' +
     '}' +
-    // ZWEITER WEG: iframes, die waehrend des Parsens an den body gehaengt
+    // ZWEITER WEG: iframes, die während des Parsens an den body gehängt
     // werden, landen sonst mitten in Reacts Baum (Begründung im Kopf).
     'var echtAnh=b.appendChild;' +
     'var gehalten=[];' +
