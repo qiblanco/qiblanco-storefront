@@ -114,8 +114,33 @@
  *      Nach dem Commit ist der Einschub harmlos - dann wird nichts mehr
  *      umgelenkt und Geparktes kehrt zurück.
  *
+ * DER ZWEITE WEG IN DIESELBE KLASSE (gemessen 2026-10-22, Job
+ * 20261017-kundenrand-dach-hydrierung-423-checked-null): uc.js haengt heute
+ * zusaetzlich zwei unsichtbare <iframe> per body.appendChild an (eines heisst
+ * `__uspapiLocator`, der Fundort der US-Privacy-Schnittstelle fuer fremde
+ * Rahmen). Das geschieht, WAEHREND der Parser den <body> noch schreibt
+ * (readyState "loading", gemessen bei body-Kind 42 bis 52 von spaeter ueber
+ * 100). Alles, was der Parser danach liefert, steht HINTER dem iframe - der
+ * fremde Knoten sitzt also mitten in Reacts Baum. Ergebnis wie beim Banner:
+ * #418 vielfach, #423, React baut die Wurzel neu und loescht dabei den
+ * Banner; Cookiebot greift danach in cc.js (CookieControl.Dialog.init) auf
+ * seine weggeraeumten Kaestchen zu: "Cannot set properties of null (setting
+ * 'checked')". Die Kundin bekommt dann KEINE Einwilligungs-Abfrage.
+ * Gemessen mit CPU-Drossel 6 auf /products/qione-2-pro: ohne Weiche 6 von 6
+ * Laeufen kaputt, mit der Banner-Weiche allein noch 5 von 6.
+ *
+ * DIE GEGENMASSNAHME: ein iframe, das ein Skript waehrend des Parsens an den
+ * body haengt, wird zurueckgehalten, bis der Parser fertig ist
+ * (readystatechange weg von "loading"), und dann ans body-ENDE gehaengt. Am
+ * Ende stoert ein fremder Knoten Reacts Hydration nicht (gemessen, siehe
+ * oben). Nur iframes, nur waehrend "loading", nur frische Knoten ohne
+ * Elternteil und ohne React-Eigentum - das ist die gemessene Bauform, sonst
+ * nichts. Der Preis: der Fundort-Rahmen existiert erst, wenn das Dokument
+ * geparst ist, also Sekundenbruchteile spaeter. Fremde Werbe-Rahmen, die ihn
+ * suchen koennten, gibt es auf dieser Seite nicht.
+ *
  * DIE KLASSE "fremder Einschub vor Reacts erstem body-Kind" ist damit NICHT
- * abschliessend geschlossen - geschlossen ist der eine gemessene Weg dorthin.
+ * abschliessend geschlossen - geschlossen sind die zwei gemessenen Wege dorthin.
  * Die Klasse bewacht weiterhin die stehende Wache
  * `storefront-hydration-cookiebot-naht` (--hoechstens 0): ein neuer Fremd-
  * einschub in dieses Fenster erzeugt wieder #418, und sie wird rot.
@@ -170,6 +195,26 @@ export function einschubWeicheQuelle() {
     '}' +
     'geparkt.length=0;' +
     '}' +
+    // ZWEITER WEG: iframes, die waehrend des Parsens an den body gehaengt
+    // werden, landen sonst mitten in Reacts Baum (Begründung im Kopf).
+    'var echtAnh=b.appendChild;' +
+    'var gehalten=[];' +
+    'b.appendChild=function(neu){' +
+    'if(document.readyState==="loading"&&neu&&neu.nodeType===1' +
+    '&&neu.tagName==="IFRAME"&&!neu.parentNode&&!reactEigen(neu)){' +
+    'gehalten.push(neu);' +
+    'return neu;' +
+    '}' +
+    'return echtAnh.call(this,neu);' +
+    '};' +
+    'function freigeben(){' +
+    'if(document.readyState==="loading")return;' +
+    'document.removeEventListener("readystatechange",freigeben);' +
+    'b.appendChild=echtAnh;' +
+    'for(var i=0;i<gehalten.length;i++){echtAnh.call(b,gehalten[i]);}' +
+    'gehalten.length=0;' +
+    '}' +
+    'document.addEventListener("readystatechange",freigeben);' +
     'document.addEventListener("qb:hydriert",function(){' +
     'var raf=window.requestAnimationFrame;' +
     'if(typeof raf==="function")raf(heimholen);else setTimeout(heimholen,0);' +

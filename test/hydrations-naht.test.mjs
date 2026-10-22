@@ -498,13 +498,20 @@ function wieCookiebot(body, knoten) {
  * gemessen -- die zweite ist die, an der die erste Fix-Fassung gescheitert ist
  * (am body-Ende war der Dialog mit der Tastatur nicht mehr erreichbar).
  */
-async function weicheStarten(body, quelltext) {
+async function weicheStarten(body, quelltext, {readyState = 'complete'} = {}) {
   const src =
     quelltext ?? (await import(WEICHE_QUELLE.href)).einschubWeicheQuelle();
-  const hörer = [];
+  let hörer = [];
+  // readyState ist veränderlich: der zweite Weg (iframes während des
+  // Parsens) hängt genau daran. Die Banner-Tests laufen mit 'complete' und
+  // sehen den zweiten Weg nicht.
   const doc = {
+    readyState,
     getElementsByTagName: (t) => (t === 'body' ? [body] : []),
     addEventListener: (typ, fn) => hörer.push([typ, fn]),
+    removeEventListener: (typ, fn) => {
+      hörer = hörer.filter(([t, f]) => !(t === typ && f === fn));
+    },
   };
   // requestAnimationFrame wird SYNCHRON ausgefuehrt: der Nachbau misst, WAS
   // zurueckgeschoben wird, nicht WANN der Browser das Bild zeichnet.
@@ -515,6 +522,11 @@ async function weicheStarten(body, quelltext) {
     hydriert() {
       win.__qbHydriert = true;
       for (const [typ, fn] of hörer) if (typ === 'qb:hydriert') fn();
+    },
+    /** Der Parser ist fertig: readyState verlässt 'loading'. */
+    parsenFertig() {
+      doc.readyState = 'interactive';
+      for (const [typ, fn] of [...hörer]) if (typ === 'readystatechange') fn();
     },
   };
 }
@@ -655,4 +667,74 @@ test('ROT-VOR-GRUEN: der Waechter erkennt eine ausgebaute Weiche', async () => {
     'Der Mutant lenkt immer noch um. Dann misst der Test oben nicht die ' +
       'Weiche, sondern irgendetwas anderes.',
   );
+});
+
+// ── URSACHE 6: iframes, die WÄHREND DES PARSENS an den body gehen ──────────
+// Gemessen 2026-10-22 (Job 20261017-kundenrand-dach-hydrierung-423-checked-
+// null): uc.js hängt per body.appendChild zwei unsichtbare iframes an
+// (`__uspapiLocator` und ein namenloses), solange readyState noch 'loading'
+// ist -- bei body-Kind 42 bis 52 von später über 100. Der Parser schreibt
+// dahinter weiter, der fremde Knoten steht mitten in Reacts Baum. Mit
+// CPU-Drossel 6 auf /products/qione-2-pro: Banner-Weiche allein 5 von 6
+// Läufen kaputt, mit diesem zweiten Arm 0 von 6.
+
+/** Was der Parser tut: hängt ans Ende, ohne die JS-Methode zu benutzen. */
+function parserSchreibt(body, knoten) {
+  Kn.prototype.appendChild.call(body, knoten);
+}
+
+test('ROT-VOR-GRUEN: ohne Weiche steht ein früh angehängtes iframe mitten im body', () => {
+  const body = bauBody();
+  const rahmen = new Kn('iframe');
+  body.appendChild(rahmen);
+  parserSchreibt(body, new Kn('div'));
+  parserSchreibt(body, new Kn('script'));
+  assert.ok(
+    body.childNodes.indexOf(rahmen) < body.childNodes.length - 1,
+    'MESSAUSFALL: im Nachbau landet das iframe nicht vor späteren ' +
+      'Parser-Knoten. Dann belegt der Test darunter nichts.',
+  );
+});
+
+test('mit Weiche wartet das iframe bis zum Parse-Ende und geht ans body-ENDE', async () => {
+  const w = await weicheStarten(bauBody(), undefined, {readyState: 'loading'});
+  const rahmen = new Kn('iframe');
+  const zurück = w.body.appendChild(rahmen);
+  assert.equal(zurück, rahmen, 'appendChild muss den Knoten zurückgeben.');
+  assert.equal(
+    w.body.childNodes.indexOf(rahmen),
+    -1,
+    'Während des Parsens steht das iframe schon im body -- der Parser ' +
+      'schreibt dahinter weiter, und es sitzt mitten in Reacts Baum.',
+  );
+  parserSchreibt(w.body, new Kn('div'));
+  parserSchreibt(w.body, new Kn('script'));
+  w.parsenFertig();
+  assert.equal(
+    w.body.childNodes.indexOf(rahmen),
+    w.body.childNodes.length - 1,
+    'Nach dem Parse-Ende steht das iframe nicht am body-Ende.',
+  );
+  // Danach ist die Weiche für appendChild ausgehängt.
+  const später = new Kn('iframe');
+  w.body.appendChild(später);
+  assert.equal(w.body.childNodes.indexOf(später), w.body.childNodes.length - 1);
+});
+
+test('der iframe-Arm lässt alles andere unangetastet', async () => {
+  // Nach dem Parsen: nichts zurückhalten.
+  const a = await weicheStarten(bauBody());
+  const r1 = new Kn('iframe');
+  a.body.appendChild(r1);
+  assert.notEqual(a.body.childNodes.indexOf(r1), -1, 'iframe nach dem Parsen zurückgehalten');
+  // Während des Parsens, aber kein iframe: sofort anhängen.
+  const b = await weicheStarten(bauBody(), undefined, {readyState: 'loading'});
+  const div = new Kn('div');
+  b.body.appendChild(div);
+  assert.notEqual(b.body.childNodes.indexOf(div), -1, 'Nicht-iframe zurückgehalten');
+  // React-eigenes iframe: nie anfassen.
+  const reactRahmen = new Kn('iframe');
+  reactRahmen['__reactFiber$abc'] = {};
+  b.body.appendChild(reactRahmen);
+  assert.notEqual(b.body.childNodes.indexOf(reactRahmen), -1, 'React-iframe zurückgehalten');
 });
