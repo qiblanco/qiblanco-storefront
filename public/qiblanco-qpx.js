@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.13) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.14) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -500,6 +500,8 @@
     var MED_STOCK_FENSTER_MS = 10000;
     var medBootFertig = 0;
     var medTipp = null;
+    var MED_ZUSATZ = MEDIEN_ON && CFG.medien_zusatz !== false;
+    if (MED_ZUSATZ) { MED_ARTEN.video_sicht = 1; MED_ARTEN.video_bewusst = 1; }
     var MED_PERF = false;
     try { MED_PERF = !!(w.performance && typeof w.performance.now === "function"); } catch (e) {}
 
@@ -555,6 +557,107 @@
     function medDauer(el) {
       try { var dd = el.duration; return (typeof dd === "number" && dd > 0 && dd < 86400) ? dd : 0; }
       catch (e) { return 0; }
+    }
+    function medS1(x) { return Math.round((x || 0) * 10) / 10; }
+    function medAuto(el) {
+      try { return (el.autoplay === true || (el.hasAttribute && el.hasAttribute("autoplay"))) ? 1 : 0; }
+      catch (e) { return 0; }
+    }
+    function medStumm(el) {
+      try { return (el.muted || (typeof el.volume === "number" && el.volume <= 0)) ? 1 : 0; }
+      catch (e) { return 1; }
+    }
+    function medSichtbarZ(z) { return z === "sichtbar_ton" || z === "sichtbar_stumm"; }
+    function medVerdeckt(el) {
+      try {
+        if (typeof el.checkVisibility === "function" &&
+            el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) === false) return true;
+      } catch (e) {}
+      try {
+        if (typeof d.elementFromPoint !== "function" || !el.getBoundingClientRect) return false;
+        var r = el.getBoundingClientRect(), vh = w.innerHeight || 0, vw = w.innerWidth || 0;
+        var x = r.left + r.width / 2, y = r.top + r.height / 2;
+        if (!(r.width > 0 && r.height > 0) || x < 0 || y < 0 || (vw && x > vw) || (vh && y > vh)) return false;
+        var hit = d.elementFromPoint(x, y);
+        if (!hit || hit === el) return false;
+        var h = el.parentNode;
+        return !(h && h.contains && h.contains(hit)) && !(el.contains && el.contains(hit));
+      } catch (e2) { return false; }
+    }
+    function medSichtPruef(k, now, lief) {
+      if (!MED_ZUSATZ || k.svMarke || k.art === "bild") return;
+      var an = k.vis && tabSichtbar();
+      if (an && k.sv && medVerdeckt(k.sichtEl || k.el)) { k.sv = 0; return; }
+      if (k.sv && now - k.sv >= MED_MRC_MS) {
+        k.svMarke = 1; k.svT = Math.max(0, k.sv + MED_MRC_MS - MED_T0); k.svLief = lief ? 1 : 0;
+        return;
+      }
+      if (!an) { k.sv = 0; return; }
+      if (!k.sv && !medVerdeckt(k.sichtEl || k.el)) k.sv = now;
+    }
+    function medZusatz(k, el, ct, lief, now) {
+      medSichtPruef(k, now, lief);
+      if (ct > k.ctMax) k.ctMax = ct;
+      var rate = 1;
+      try { if (typeof el.playbackRate === "number" && el.playbackRate > 0) rate = el.playbackRate; } catch (e) {}
+      var wand = k.zEval ? (now - k.zEval) / 1000 : 0;
+      var sprung = k.zEval && (ct - k.letztCt) > wand * rate + 1.5;
+      if (sprung) k.sprungN++;
+      else if (lief && medSichtbarZ(k.zustand) && ct > k.letztCt && ct > k.ctSichtMax) k.ctSichtMax = ct;
+      k.zEval = now;
+      var dur = medDauer(el);
+      if (lief && dur && k.letztCt - ct > dur * 0.5) k.runden++;
+    }
+    function medBewusst(k, el, wert, nah) {
+      if (!MED_ZUSATZ || k.bw[wert]) return;
+      var lief = 0;
+      try { lief = (!el.paused && !el.ended) ? 1 : 0; } catch (e) {}
+      k.bw[wert] = { t: Date.now() - MED_T0, ct: medS1(medCt(el)), lief: lief,
+                     auto: medAuto(el), nah: nah, sicht: k.vis ? 1 : 0 };
+    }
+    function medHuelleEng(el) {
+      try {
+        var h = el.parentNode;
+        if (!h || h === d.body || h === d.documentElement || !h.getBoundingClientRect || !el.getBoundingClientRect) return null;
+        var rh = h.getBoundingClientRect(), rv = el.getBoundingClientRect();
+        var fv = rv.width * rv.height, fh = rh.width * rh.height;
+        return (fv > 0 && fh > 0 && fh <= fv * 1.5) ? h : null;
+      } catch (e) { return null; }
+    }
+    function medNah(el, x) {
+      if (!x) return "";
+      if (x === el) return "video";
+      var h = medHuelleEng(el);
+      try { return (h && h.contains && h.contains(x)) ? "huelle" : ""; } catch (e) { return ""; }
+    }
+    function medKnopf(x) {
+      try { return !!(x && x.closest && x.closest("button, a, input, select, textarea, [role=button]")); }
+      catch (e) { return true; }
+    }
+    function medTippVideo(tgt) {
+      if (!MED_ZUSATZ || !tgt) return;
+      if (medKnopf(tgt)) return;
+      var kd = tgt.__qpxMed;
+      if (kd && kd.art !== "bild" && medien[kd.id] === kd) { medBewusst(kd, tgt, 1, "video"); return; }
+      var treffer = null, n = 0;
+      for (var id in medien) {
+        if (!Object.prototype.hasOwnProperty.call(medien, id)) continue;
+        var k = medien[id];
+        if (k.art === "bild" || !k.el) continue;
+        var els = k.sichtEl && k.sichtEl !== k.el ? [k.el, k.sichtEl] : [k.el];
+        for (var j = 0; j < els.length; j++) {
+          if (medNah(els[j], tgt) === "huelle") { n++; treffer = { k: k, el: els[j] }; break; }
+        }
+      }
+      if (n === 1) medBewusst(treffer.k, treffer.el, 1, "huelle");
+    }
+    function medTonAn(k, el) {
+      var stumm = medStumm(el), war = k.tonStumm;
+      k.tonStumm = stumm;
+      if (!MED_ZUSATZ || !war || stumm) return;
+      var x = medTipp;
+      if (!x || medUhr() < x.t || medUhr() - x.t > 1000) return;
+      medBewusst(k, el, 2, medNah(el, x.el) || "seite");
     }
     function medZustand(k, el) {
       if (!tabSichtbar()) return "hintergrund";
@@ -625,6 +728,7 @@
         k.fam = "imgix";
         k.famQ = "laufzeit";
       }
+      if (MED_ZUSATZ) medZusatz(k, el, ct, lief, now);
       k.letztCt = ct;
       k.zustand = medZustand(k, el);
       if (k.spielt) { k.seit = now; k.ctSeit = ct; }
@@ -650,7 +754,11 @@
               scrubMax: 0, scrubUmkehr: 0, scrubN: 0,
               ldZ: 0, ldPlay: 0, ldAus: 0, ldRvfc: 0, stkT0: 0, stkSeit: 0, stkMs: 0, stkN: 0, stkZu: 0, stkAus: 0,
               stkBereit: (medCt(el) === 0 && !medGespielt(el)) ? 1 : 0,
-              dwell: 0, dwellSeit: 0 };
+              dwell: 0, dwellSeit: 0,
+              sv: 0, svMarke: 0, svT: 0, svLief: 0,
+              ctMax: 0, ctSichtMax: 0, ctPause: 0, pauseN: 0, runden: 0,
+              sprungN: 0, zEval: 0, pauseBild: 0, ctStart: 0,
+              bw: {}, tonStumm: medStumm(el) };
         medien[o.id] = k;
         if (art === "bild") medBildN++; else medN++;
       }
@@ -663,6 +771,12 @@
         el.addEventListener(evs[i], function () { try { medEval(el); } catch (e) {} },
                             { passive: true });
       }
+      el.addEventListener("pause", function () {
+        try { var kp = el.__qpxMed || k; if (MED_ZUSATZ) { kp.ctPause = medCt(el); kp.pauseN++; kp.pauseBild = (kp.vis && tabSichtbar()) ? 1 : 0; } } catch (e) {}
+      }, { passive: true });
+      el.addEventListener("volumechange", function () {
+        try { medTonAn(el.__qpxMed || k, el); } catch (e) {}
+      }, { passive: true });
       var lev = ["play", "playing", "waiting", "pause", "seeking", "ended", "emptied"];
       for (var i3 = 0; i3 < lev.length; i3++) {
         (function (typ) {
@@ -936,7 +1050,7 @@
     }
     function medienListe(now) {
       if (!MEDIEN_ON) return [];
-      var out = [], id, i;
+      var out = [], neu = [], id, i;
       for (id in medien) {
         if (!Object.prototype.hasOwnProperty.call(medien, id)) continue;
         var k = medien[id], el = k.el;
@@ -951,6 +1065,19 @@
           out.push({ art: "video_start", obj: id, fam: k.fam, wert: 1, toff: k.startOff,
                      meta: { obj_q: k.objQ, fam_q: k.famQ, dauer_s: Math.round(medDauer(el)),
                              ton_bekannt: k.tonBekannt ? 1 : 0 } });
+        if (MED_ZUSATZ) {
+          medSichtPruef(k, now, k.spielt);
+          if (k.svMarke)
+            neu.push({ art: "video_sicht", obj: id, fam: k.fam, wert: 1, toff: k.svT,
+                       meta: { lief: k.svLief, auto: medAuto(el), obj_q: k.objQ, fam_q: k.famQ } });
+          for (var bwW in k.bw) {
+            if (!Object.prototype.hasOwnProperty.call(k.bw, bwW)) continue;
+            var bw = k.bw[bwW];
+            neu.push({ art: "video_bewusst", obj: id, fam: k.fam, wert: Number(bwW), toff: bw.t,
+                       meta: { ct_s: bw.ct, lief: bw.lief, auto: bw.auto, nah: bw.nah,
+                               sicht: bw.sicht, obj_q: k.objQ, fam_q: k.famQ } });
+          }
+        }
         if (k.ldZ === 2 && !k.ldAus) {
           var stkBis = k.stkZu || medUhr(), stkVoll = (k.stkT0 && stkBis >= k.stkT0 + MED_STOCK_FENSTER_MS) ? 1 : 0;
           var ml = { t0: k.ldT0Art || "", stk: stkVoll, obj_q: k.objQ, fam_q: k.famQ };
@@ -979,6 +1106,16 @@
           var mm = { mrc: k.mrc ? 1 : 0, obj_q: k.objQ, fam_q: k.famQ,
                      ton_bekannt: k.tonBekannt ? 1 : 0 };
           for (var zk2 in kn) mm[zk2] = kn[zk2];
+          if (MED_ZUSATZ) {
+            var ctJ = medCt(el);
+            mm.ct_max_s = medS1(Math.max(k.ctMax, ctJ)); mm.ct_sicht_max_s = medS1(k.ctSichtMax);
+            mm.ct_ende_s = medS1(ctJ); mm.dauer_s = Math.round(medDauer(el));
+            if (k.pauseN) { mm.ct_pause_s = medS1(k.ctPause); mm.pause_n = k.pauseN; }
+            if (k.runden) mm.runden = k.runden;
+            if (k.pauseN) mm.pause_bild = k.pauseBild;
+            if (k.sprungN) mm.sprung_n = k.sprungN;
+            if (k.ctStart) mm.ct_start_s = medS1(k.ctStart);
+          }
           out.push({ art: "video_stand", obj: id, fam: k.fam, wert: summe,
                      zus: k.zustand, toff: 0, meta: mm });
         }
@@ -998,6 +1135,7 @@
       if (medExternVerworfen)
         out.push({ art: "video_stand", obj: "naht-deckel", fam: "unbekannt",
                    wert: 0, toff: 0, meta: { extern_verworfen: medExternVerworfen } });
+      for (i = 0; i < neu.length; i++) out.push(neu[i]);
       return out.slice(0, MED_EINTRAG_MAX);
     }
     function medSchluessel(liste) {
@@ -1006,6 +1144,8 @@
         var e = liste[i], stufe = 0;
         if (e.art === "video_quartil") stufe = e.wert;
         else if (e.art === "video_start") stufe = 1;
+        else if (e.art === "video_sicht") stufe = 1;
+        else if (e.art === "video_bewusst") stufe = e.wert;
         else if (e.art === "video_scrub") stufe = Math.round((e.wert || 0) / 5);
         else if (e.art === "scroll_umkehr") stufe = e.nr;
         else if (e.art === "ausstieg") stufe = 1;
@@ -1139,6 +1279,7 @@
     d.addEventListener("click", function (e) {
       lastActivity = Date.now();
       try { medTipp = { t: medUhr(), el: e.target }; } catch (e6) {}
+      try { medTippVideo(e.target); } catch (e7) {}
       try {
         var el = e.target && e.target.closest ? e.target.closest("[data-section]") : null;
         if (el) { var id = el.getAttribute("data-section"); if (id) sec(id).clicks++; }
@@ -1270,6 +1411,9 @@
         k.scrubMax = 0; k.scrubUmkehr = 0; k.scrubN = 0;
         k.seit = k.spielt ? now : 0; k.letztP = 0;
         k.ldAus = 1; k.stkAus = 1; k.stkSeit = 0;
+        k.sv = (k.vis && tabSichtbar()) ? now : 0; k.svMarke = 0; k.svT = 0; k.svLief = 0;
+        k.ctMax = 0; k.ctSichtMax = 0; k.ctPause = 0; k.pauseN = 0; k.runden = 0; k.bw = {};
+        k.sprungN = 0; k.zEval = 0; k.pauseBild = 0; k.ctStart = k.el ? medCt(k.el) : 0;
       }
       for (i = 0; i < medObserved.length; i++) {
         var n = medObserved[i];
