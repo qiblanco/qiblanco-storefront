@@ -43,6 +43,18 @@ import liveStyles from '~/styles/live.css?url';
  * teilnimmt) -> nächster Termin mit Thema -> Anmeldung -> je vergangene Woche
  * die schriftliche Zusammenfassung (Datum, Thema, Teaser, die Inhalte),
  * neueste zuerst; jede Woche mit vollem Text im HTML, ältere eingeklappt.
+ *
+ * KORREKTUR 22.10.2026 (Grossjob 20261022-coming-home-live-seite-christian-
+ * korrektur-namen-coaching-bild-ausklappen, s02). Christian: „Mir fehlt oben
+ * noch das Bild … wo man Anna und mich zusammen sieht“ und „immer eine
+ * Zusammenfassung und dann zum Ausklappen. Auch die erste schon.“
+ *   BILD_OBEN_AN: Standbild aus der Zoom-Aufnahme vom 11.10.2026 unter dem
+ *     Titel (data-ch-live="bild"). Nur Anna und Christian, das Namensschild
+ *     von Zoom ist weggeschnitten, keine Teilnehmenden im Bild.
+ *   ALLE_EINGEKLAPPT_AN: jede Woche gleich, auch die neueste: Datum, Titel,
+ *     Teaser sichtbar, der volle Text in <details> (steht trotzdem im HTML).
+ * Rückweg je Schalter false, sonst hb-deploy revert.
+ * Probe: coming-home/pruefungen/probe_live_bild_ausklappen.py.
  * Den sichtbaren Text hat der PR-Chef (pr-manager chef pruefe) freigegeben.
  * Merkmal nur der neuen Fassung: data-ch-live-fassung="neu-20261020".
  * BLUE-GREEN: SEITE_NEU_AN = false rendert die Fassung von #957/#958.
@@ -105,6 +117,26 @@ const PFAD = '/pages/live';
  * Termin und Anmeldung sind in beiden Fassungen dieselben Bausteine.
  */
 const SEITE_NEU_AN = true;
+
+/**
+ * Korrektur 22.10.2026 (Christian, siehe Kopfkommentar). Beide wirken nur in
+ * der neuen Fassung. false stellt den Stand von #959 wieder her.
+ */
+const BILD_OBEN_AN = true;
+const ALLE_EINGEKLAPPT_AN = true;
+
+/**
+ * Standbild aus der Coming-Home-Aufnahme vom 11.10.2026 (Zoom, Sekunde 6,5),
+ * Shopify Files (gid://shopify/MediaImage/77476314939660). Die Quelle hat
+ * 640 x 320 Pixel nach dem Zuschnitt, abgelegt in doppelter Größe; das CDN
+ * liefert je Breite WebP oder AVIF nach dem Accept-Kopf.
+ */
+const BILD =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
+  'coming-home-live-anna-christian.jpg?v=1792652402';
+const BILD_BREITEN = [480, 640, 960, 1280];
+const BILD_ALT =
+  'Anna und Christian lachen in die Kamera, Standbild aus dem Coming-Home-Call auf Zoom';
 
 /** Blog des Nahtvertrags N3; muss dem Server-Modul gleichen (Loader prueft). */
 const BLOG_HANDLE = 'coming-home';
@@ -417,6 +449,7 @@ function KopfNeu() {
           {REIHE_NAME} –{' '}
           <span className="lv-h1-zusatz">{REIHE_ZUSATZ}</span>
         </h1>
+        {BILD_OBEN_AN ? <BildOben /> : null}
         <p className="lv-lede lv-lede-eng">{KOPF_LEDE}</p>
         <div className="lv-kopftext">
           {KOPF_TEXT.map((absatz) => (
@@ -459,10 +492,33 @@ function KopfNeu() {
   );
 }
 
+function bildQuelle(breite) {
+  return `${BILD}&width=${breite}`;
+}
+
+/** Anna und Christian im Call: oben, direkt unter dem Titel (LCP-Bild). */
+function BildOben() {
+  return (
+    <figure className="lv-bild" data-ch-live="bild">
+      <img
+        src={bildQuelle(960)}
+        srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(', ')}
+        sizes="(max-width: 807px) calc(100vw - 48px), 760px"
+        width="1280"
+        height="640"
+        alt={BILD_ALT}
+        fetchPriority="high"
+        decoding="async"
+      />
+    </figure>
+  );
+}
+
 /**
- * Je vergangene Woche die Zusammenfassung, neueste zuerst. Die neueste steht
- * offen da, die älteren in <details>: ihr voller Text steht trotzdem im HTML
- * (für Leser ohne Klick, Suchmaschinen und KI-Abruf).
+ * Je vergangene Woche die Zusammenfassung, neueste zuerst. Alle Wochen gleich
+ * (ALLE_EINGEKLAPPT_AN): Datum, Titel, Teaser, der volle Text in <details>.
+ * Er steht trotzdem im HTML (für Leser ohne Klick, Suchmaschinen und
+ * KI-Abruf). Mit false steht die neueste wie bis #959 offen da.
  */
 function Zusammenfassungen({rueckblicke, gesamt, ladeFehler}) {
   return (
@@ -494,7 +550,7 @@ function Zusammenfassungen({rueckblicke, gesamt, ladeFehler}) {
                 {r.teaser ? (
                   <p className="lv-text lv-woche-teaser">{r.teaser}</p>
                 ) : null}
-                {i === 0 ? (
+                {i === 0 && !ALLE_EINGEKLAPPT_AN ? (
                   <div
                     className="lv-geschichte lv-inhalte"
                     dangerouslySetInnerHTML={{__html: r.html}}

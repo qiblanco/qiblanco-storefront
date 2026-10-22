@@ -67,6 +67,8 @@
   --lv-haken: 20px;
   --lv-knopf-breite: 500px;
   --lv-link-min: 16rem;
+  /* Bild oben (22.10.2026): Seitenverhältnis des Zoom-Standbilds */
+  --lv-bild-format: 2 / 1;
 }
 
 body:has(.lv) {
@@ -557,6 +559,24 @@ body:has(.lv) {
 }
 .lv .lv-aufklapp[open] > .lv-inhalte {
   margin-top: var(--lv-s2);
+}
+
+/* ─── Bild oben (Korrektur 22.10.2026, BILD_OBEN_AN) ──────────────────────
+   Unter dem Titel, so breit wie die schmale Spalte. Radius = der eine
+   Bild-Radius der Seite (--lv-r2, wie .lv-geschichte img). */
+.lv .lv-bild {
+  max-width: var(--lv-breite-schmal);
+  margin: 0 0 var(--lv-s4);
+  padding: 0;
+}
+.lv .lv-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--lv-bild-format);
+  object-fit: cover;
+  border-radius: var(--lv-r2);
+  background: var(--lv-flaeche);
 }
 
 /* ─── Schmal ─────────────────────────────────────────────────────────────── */
