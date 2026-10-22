@@ -67,8 +67,10 @@
   --lv-haken: 20px;
   --lv-knopf-breite: 500px;
   --lv-link-min: 16rem;
-  /* Bild oben (22.10.2026): Seitenverhältnis des Zoom-Standbilds */
+  /* Bild oben (22.10.2026): Seitenverhältnis des Zoom-Standbilds; höchstens
+     640px breit, weil die Datei 1280px hat (bei DPR 2 kein Hochskalieren). */
   --lv-bild-format: 2 / 1;
+  --lv-bild-breite: 640px;
 }
 
 body:has(.lv) {
@@ -562,10 +564,10 @@ body:has(.lv) {
 }
 
 /* ─── Bild oben (Korrektur 22.10.2026, BILD_OBEN_AN) ──────────────────────
-   Unter dem Titel, so breit wie die schmale Spalte. Radius = der eine
+   Unter dem Titel, höchstens --lv-bild-breite. Radius = der eine
    Bild-Radius der Seite (--lv-r2, wie .lv-geschichte img). */
 .lv .lv-bild {
-  max-width: var(--lv-breite-schmal);
+  max-width: var(--lv-bild-breite);
   margin: 0 0 var(--lv-s4);
   padding: 0;
 }

@@ -503,7 +503,7 @@ function BildOben() {
       <img
         src={bildQuelle(960)}
         srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(', ')}
-        sizes="(max-width: 807px) calc(100vw - 48px), 760px"
+        sizes="(max-width: 687px) calc(100vw - 48px), 640px"
         width="1280"
         height="640"
         alt={BILD_ALT}
