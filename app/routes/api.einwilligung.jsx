@@ -49,6 +49,7 @@ export async function action({request, context}) {
   const host = hostVon(request.url);
   const origin = request.headers.get('Origin');
   if (origin && hostVon(origin) !== host) {
+    weiter(context, env, {schema: 1, abgewiesen: 'herkunft'});
     return antwort(403);
   }
 
@@ -84,7 +85,7 @@ export async function action({request, context}) {
     ...satz,
     server: {
       ts_server: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
-      land: (request.headers.get('oxygen-buyer-country') || '').toUpperCase().slice(0, 2),
+      land: landVon(request.headers.get('oxygen-buyer-country')),
       ip_gekuerzt: kuerzeIp(ip),
       ip_quelle: quelle,
       ua: (request.headers.get('User-Agent') || '').slice(0, 512),
@@ -127,7 +128,7 @@ function pruefe(s) {
   }
   if (s.wahl.necessary !== true) return 'wahl:necessary';
   if ('test' in s && typeof s.test !== 'boolean') return 'typ:test';
-  if ('probe' in s && (s.test !== true || !/^[a-z0-9-]{1,64}$/.test(String(s.probe)))) {
+  if ('probe' in s && (s.test !== true || typeof s.probe !== 'string' || !/^[a-z0-9-]{1,64}$/.test(s.probe))) {
     return 'wert:probe';
   }
   return '';
@@ -170,9 +171,15 @@ function clientIp(request) {
   return {ip: '', quelle: 'keine'};
 }
 
+/** Ländercode: genau zwei Großbuchstaben, sonst leer (z. B. Cloudflare 'T1', 'XX' bleibt erlaubt). */
+function landVon(roh) {
+  const l = String(roh || '').trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(l) ? l : '';
+}
+
 /**
  * IPv4 -> a.b.c.0 (/24), IPv6 -> die ersten drei Gruppen 'x:y:z::' (/48).
- * IPv4 in IPv6 (::ffff:a.b.c.d) zählt als IPv4. Unbekanntes -> ''.
+ * IPv4 in IPv6 (::ffff:a.b.c.d) und 6to4 (2002::/16) zählen als IPv4. Unbekanntes -> ''.
  */
 function kuerzeIp(roh) {
   const s = String(roh || '').trim().split('%')[0];
@@ -191,6 +198,13 @@ function kuerzeIp(roh) {
   if (halb.length === 1 ? kopf.length !== 8 : fehlend < 1) return '';
   const gruppen = [...kopf, ...Array(halb.length === 2 ? fehlend : 0).fill('0'), ...rumpf];
   if (gruppen.some((g) => !/^[0-9a-f]{1,4}$/i.test(g))) return '';
+  // 6to4 (2002::/16): die Bits 16-47 SIND die IPv4 des Besuchers, ein /48 hieße volle IPv4.
+  // Darum wie IPv4 auf /24 kürzen (wie Python ipaddress.sixtofour in der Annahme).
+  if (parseInt(gruppen[0], 16) === 0x2002) {
+    const g1 = parseInt(gruppen[1], 16);
+    const g2 = parseInt(gruppen[2], 16);
+    return `${g1 >> 8}.${g1 & 255}.${g2 >> 8}.0`;
+  }
   const vorn = gruppen.slice(0, 3).map((g) => parseInt(g, 16).toString(16));
   // Schreibweise wie Python ipaddress.compressed: führende Null-Gruppen am Ende fallen in '::'.
   while (vorn.length && vorn[vorn.length - 1] === '0') vorn.pop();
