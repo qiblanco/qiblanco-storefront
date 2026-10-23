@@ -99,6 +99,7 @@ import kassenRueckkehrLeisteStyles from '~/styles/kassen-rueckkehr-leiste.css?ur
 // einblendet. Wirkt ausschließlich auf #cookiebanner — Begründung, Maße und
 // Rückweg stehen in der Datei selbst.
 import consentDialogStyles from '~/styles/consent-dialog.css?url';
+import einwilligungStyles from '~/styles/einwilligung.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
@@ -116,7 +117,7 @@ import {
   ladeGoogleRating,
   GOOGLE_RATING_FALLBACK_VOLL,
 } from '~/lib/googleRating.server';
-import {redirect} from 'react-router';
+import {data as mitKoepfen, redirect} from 'react-router';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
 import {
   salesbotWidgetOrigin,
@@ -132,6 +133,15 @@ import {
 import {DialogSignal} from './components/DialogSignal';
 import {KassenRueckkehrLeiste} from './components/KassenRueckkehrLeiste';
 import {KaufknopfChatSignal} from './components/KaufknopfChatSignal';
+import {Einwilligungshinweis} from './components/Einwilligungshinweis';
+import {
+  cookieAusHeader,
+  leseEinwilligung,
+  motorFuer,
+  spracheFuer,
+  wahlGilt,
+} from '~/lib/einwilligung-schalter';
+import {EINWILLIGUNG_FASSUNG} from '~/lib/einwilligung-texte';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -205,7 +215,27 @@ export async function loader(args) {
 
   const {storefront, env} = args.context;
 
-  return {
+  // EINWILLIGUNGS-MOTOR (Grossjob Cookiebot-Ablösung, BAUVERTRAG Abschnitt 1):
+  // Query vor Sitzungs-Cookie vor Konstante. Im Motor 'cookiebot' kommt KEIN
+  // Feld dazu, damit das ausgelieferte HTML dort unverändert bleibt.
+  const cookieHeader = args.request.headers.get('Cookie') || '';
+  const einwilligungsMotor = motorFuer(args.request.url, cookieHeader);
+  const einwilligung =
+    einwilligungsMotor.motor === 'eigen'
+      ? {
+          einwilligung: {
+            motor: 'eigen',
+            sprache: spracheFuer(new URL(args.request.url).pathname),
+            entschieden: wahlGilt(
+              leseEinwilligung(cookieAusHeader(cookieHeader)),
+              EINWILLIGUNG_FASSUNG,
+            ),
+          },
+        }
+      : {};
+
+  const antwort = {
+    ...einwilligung,
     ...deferredData,
     ...criticalData,
     // Sitewide dynamische Google-Gesamtbewertung + neueste 5-Sterne-Reviews
@@ -278,6 +308,12 @@ export async function loader(args) {
       language: args.context.storefront.i18n.language,
     },
   };
+  // ?qb_einwilligung=eigen|cookiebot merkt sich die Wahl für die Sitzung.
+  return einwilligungsMotor.setzeCookie
+    ? mitKoepfen(antwort, {
+        headers: {'Set-Cookie': einwilligungsMotor.setzeCookie},
+      })
+    : antwort;
 }
 
 /**
@@ -480,6 +516,10 @@ export function Layout({children}) {
   const data = useRouteLoaderData('root');
   const shouldLoadThirdPartyScripts =
     data?.isProductionHost || data?.enableTrackingInPreview;
+  // Motor 'eigen': eigener Hinweis + /qb-einwilligung.js statt Cookiebot.
+  // Unabhängig vom Produktions-Gate, damit Vorschau und Sicht-Tor ihn sehen;
+  // die Tracker selbst bleiben hinter shouldLoadThirdPartyScripts.
+  const einwilligungEigen = data?.einwilligung?.motor === 'eigen';
   const isTrackingPreview =
     Boolean(data?.enableTrackingInPreview) && !data?.isProductionHost;
 
@@ -628,10 +668,19 @@ export function Layout({children}) {
         <link rel="stylesheet" href={kakaoKaufseiteStyles}></link>
         <link rel="stylesheet" href={kassenRueckkehrLeisteStyles}></link>
         <link rel="stylesheet" href={consentDialogStyles}></link>
+        {einwilligungEigen && (
+          <link rel="stylesheet" href={einwilligungStyles}></link>
+        )}
         {metaKopf}
         <Links />
       </head>
       <body>
+        {einwilligungEigen && (
+          <Einwilligungshinweis
+            sprache={data.einwilligung.sprache}
+            entschieden={data.einwilligung.entschieden}
+          />
+        )}
         {/*
           HIER STEHT ALLES, WAS REACT ALS <script> RENDERT — UND ZWAR BEWUSST
           IM <body> UND NICHT IM <head>.
@@ -687,14 +736,26 @@ export function Layout({children}) {
           liest den versionierten URL aus data-qpx-src.
           Wache: homepage-bauer/pruefungen/probe_public_skripte_version.py
         */}
+        {/* Motor 'eigen': die Cookiebot-Attrappe muss stehen, bevor ein
+            Leser läuft — deshalb das ERSTE defer-Skript. */}
+        {einwilligungEigen && (
+          <script
+            src={publicSkript('/qb-einwilligung.js')}
+            nonce={nonce}
+            defer
+            suppressHydrationWarning
+          />
+        )}
         {shouldLoadThirdPartyScripts && (
           <>
-            <script
-              src={publicSkript('/cookiebot-shopify-consent-sync.js')}
-              nonce={nonce}
-              defer
-              suppressHydrationWarning
-            />
+            {!einwilligungEigen && (
+              <script
+                src={publicSkript('/cookiebot-shopify-consent-sync.js')}
+                nonce={nonce}
+                defer
+                suppressHydrationWarning
+              />
+            )}
             <script
               src={publicSkript('/qiblanco-tracker.js')}
               nonce={nonce}
@@ -832,7 +893,7 @@ export function Layout({children}) {
           der Tag Teil von Reacts Baum, verschöben Cookiebots eigene Einschuebe
           die head-Kinder und zerlegten die Hydration auf jeder Seite.
         */}
-        {shouldLoadThirdPartyScripts && (
+        {shouldLoadThirdPartyScripts && !einwilligungEigen && (
           <script
             nonce={nonce}
             suppressHydrationWarning

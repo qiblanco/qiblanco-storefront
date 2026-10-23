@@ -1,0 +1,201 @@
+/* ============================================================================
+   einwilligung.css — der eigene Einwilligungshinweis (BAUVERTRAG Abschnitt 4)
+   ----------------------------------------------------------------------------
+   Grossjob 20261022-GROSSJOB-cookiebot-abloesen-eigener-einwilligungshinweis-
+   qiblanco, s02. Christian 22.10. (Z4): die Seite ist voll benutzbar, BEVOR
+   der Besucher wählt. Deshalb: feste Leiste unten, KEIN Vorhang, keine
+   Scroll-Sperre, kein Ausgrauen. Mobil höchstens ~35 % der Bildhöhe.
+   Knöpfe: „Notwendige Cookies akzeptieren" grau in der Mitte, „Alle
+   akzeptieren" im Kauf-Gold, jede Zielfläche mindestens 44 px.
+   Nur Tokens aus qb-tokens.css / overlay-ordnung.css.
+   ========================================================================== */
+.qb-einwilligung-wurzel {
+  --qb-ew-abstand: var(--qb-ref-raster);
+  --qb-ew-grau: var(--qb-ref-tinte-gedaempft);
+  --qb-ew-grau-tinte: var(--qb-ref-flaeche-warm);
+  --qb-ew-ziel: calc(var(--qb-ref-raster) * 5.5);
+  --qb-ew-schatten: var(--qb-ref-bahn-schatten);
+}
+
+#qb-einwilligung,
+#qb-einwilligung-dialog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-dialog);
+  box-sizing: border-box;
+  background: var(--qb-flaeche);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.45;
+  box-shadow: 0 calc(var(--qb-ew-abstand) * -0.5) calc(var(--qb-ew-abstand) * 3) var(--qb-ew-schatten);
+}
+
+/* Solange der Banner offen ist: Seitenende frei scrollbar, Kaufleiste ueber dem Banner
+   (qb-einwilligung.js setzt Attribut und Hoehe am <html>). */
+html[data-qb-einwilligung-offen] body {
+  padding-bottom: var(--qb-ew-hoehe, 0px);
+}
+
+html[data-qb-einwilligung-offen] .qb-kaufleiste {
+  bottom: var(--qb-ew-hoehe, 0px);
+}
+
+#qb-einwilligung[hidden],
+#qb-einwilligung-dialog[hidden] {
+  display: none;
+}
+
+#qb-einwilligung {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--qb-ew-abstand) * 1.5) calc(var(--qb-ew-abstand) * 3);
+  padding: calc(var(--qb-ew-abstand) * 2) calc(var(--qb-ew-abstand) * 3)
+    max(calc(var(--qb-ew-abstand) * 2), env(safe-area-inset-bottom));
+}
+
+.qb-ew-text {
+  margin: 0;
+  max-width: calc(var(--qb-ew-abstand) * 80);
+}
+
+.qb-ew-text a,
+.qb-ew-links a {
+  color: var(--qb-akzent-tinte);
+  text-decoration: underline;
+}
+
+.qb-ew-knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--qb-ew-abstand);
+}
+
+.qb-ew-knopf {
+  min-height: var(--qb-ew-ziel);
+  padding: 0 calc(var(--qb-ew-abstand) * 2.5);
+  border: 1px solid transparent;
+  border-radius: var(--qb-radius-klein);
+  font: inherit;
+  font-size: var(--qb-text-btn-sekundaer);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qb-ew-knopf--leise {
+  background: transparent;
+  color: var(--qb-text);
+  border-color: var(--qb-ew-grau);
+}
+
+.qb-ew-knopf--grau {
+  background: var(--qb-ew-grau);
+  color: var(--qb-ew-grau-tinte);
+}
+
+.qb-ew-knopf--gold {
+  background: var(--qb-akzent-kauf);
+  color: var(--qb-text-auf-akzent);
+}
+
+.qb-ew-knopf:focus-visible,
+.qb-ew-zu:focus-visible,
+.qb-ew-kat input:focus-visible {
+  outline: 2px solid var(--qb-akzent-tinte);
+  outline-offset: 2px;
+}
+
+#qb-einwilligung-dialog {
+  left: auto;
+  right: calc(var(--qb-ew-abstand) * 2);
+  bottom: calc(var(--qb-ew-abstand) * 2);
+  width: min(calc(var(--qb-ew-abstand) * 60), calc(100% - var(--qb-ew-abstand) * 4));
+  max-height: calc(100vh - var(--qb-ew-abstand) * 4);
+  overflow-y: auto;
+  padding: calc(var(--qb-ew-abstand) * 3);
+  border-radius: var(--qb-radius-klein);
+}
+
+.qb-ew-titel {
+  margin: 0 0 var(--qb-ew-abstand);
+  font-size: var(--qb-ref-fs-5);
+}
+
+.qb-ew-zu {
+  position: absolute;
+  top: var(--qb-ew-abstand);
+  right: var(--qb-ew-abstand);
+  width: var(--qb-ew-ziel);
+  height: var(--qb-ew-ziel);
+  border: 0;
+  background: transparent;
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-6);
+  cursor: pointer;
+}
+
+.qb-ew-kat {
+  display: block;
+  padding: var(--qb-ew-abstand) 0;
+  border-top: 1px solid var(--qb-ew-schatten);
+}
+
+.qb-ew-kat__kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--qb-ew-abstand);
+  min-height: var(--qb-ew-ziel);
+}
+
+.qb-ew-kat input {
+  width: calc(var(--qb-ew-abstand) * 2.5);
+  height: calc(var(--qb-ew-abstand) * 2.5);
+  accent-color: var(--qb-akzent-tinte);
+}
+
+.qb-ew-kat__text {
+  display: block;
+  color: var(--qb-text-gedaempft);
+}
+
+#qb-einwilligung-dialog .qb-ew-knoepfe {
+  margin-top: calc(var(--qb-ew-abstand) * 2);
+}
+
+.qb-ew-links {
+  margin: calc(var(--qb-ew-abstand) * 2) 0 0;
+}
+
+@media (max-width: 749px) {
+  #qb-einwilligung {
+    padding: calc(var(--qb-ew-abstand) * 1.5) calc(var(--qb-ew-abstand) * 2)
+      max(calc(var(--qb-ew-abstand) * 1.5), env(safe-area-inset-bottom));
+    gap: var(--qb-ew-abstand);
+  }
+
+  .qb-ew-knoepfe {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .qb-ew-knopf {
+    padding: 0 var(--qb-ew-abstand);
+    font-size: var(--qb-ref-fs-2);
+  }
+
+  #qb-einwilligung .qb-ew-knopf--gold {
+    grid-column: 1 / -1;
+  }
+
+  #qb-einwilligung-dialog {
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: var(--qb-radius-klein) var(--qb-radius-klein) 0 0;
+  }
+}
