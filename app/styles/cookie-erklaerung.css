@@ -46,7 +46,14 @@
 
 .rs-doc .ce-tabelle code {
   font-size: var(--rs-fs-sm);
-  overflow-wrap: anywhere;
+}
+
+/* Cookie-Namen und Laufzeiten nie mitten im Wort umbrechen (gemessen 2026-10-23:
+ * "_shopify_essenti|al", "30 | Minuten" bei 1280 px); die Zweck-Spalte nimmt den Rest. */
+.rs-doc .ce-tabelle td:first-child,
+.rs-doc .ce-tabelle td:last-child,
+.rs-doc .ce-tabelle th:last-child {
+  white-space: nowrap;
 }
 
 /* Schmal: jede Zeile wird ein Kasten, die Spaltennamen stehen vor dem Wert. */
@@ -74,9 +81,12 @@
     background: var(--rs-flaeche);
   }
 
-  .rs-doc .ce-tabelle td {
+  .rs-doc .ce-tabelle td,
+  .rs-doc .ce-tabelle td:first-child {
     border: 0;
     padding: var(--rs-s1) var(--rs-s2);
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .rs-doc .ce-tabelle td::before {

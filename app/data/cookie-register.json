@@ -3,7 +3,7 @@
   "stand": "2026-10-23",
   "flaeche": "dach",
   "erzeugt_von": "einwilligung-scanner/bin/einwilligung-register-export",
-  "register_stand": "329e524a4239",
+  "register_stand": "03de997d7e1e",
   "kategorien": [
     {
       "id": "necessary",
@@ -25,7 +25,7 @@
         {
           "name": "qb_einwilligung_motor",
           "anbieter": "Qi Blanco",
-          "zweck": "Nur bei einem Vorschau-Link — merkt sich, welcher Cookie-Hinweis angezeigt wird.",
+          "zweck": "Merkt sich bei einem Vorschau-Link, welcher Cookie-Hinweis angezeigt wird.",
           "laufzeit": "Sitzung"
         },
         {
@@ -171,7 +171,7 @@
         {
           "name": "_qpx_anon",
           "anbieter": "Qi Blanco (qpx)",
-          "zweck": "Unsere eigene Messung — erkennt einen Browser wieder, um Käufe der Werbung zuzuordnen, die dazu geführt hat.",
+          "zweck": "Unsere eigene Messung. Erkennt einen Browser wieder, damit wir einen Kauf der Werbung zuordnen können, die dazu geführt hat.",
           "laufzeit": "13 Monate"
         },
         {
