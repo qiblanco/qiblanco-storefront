@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {hinweisHtml} from '~/lib/einwilligung-texte';
 
 /**
@@ -12,13 +13,19 @@ import {hinweisHtml} from '~/lib/einwilligung-texte';
  * ohne einen Hydrationsfehler auszulösen. Die Hülle trägt keinen Zustand.
  *
  * Gerendert nur im Motor 'eigen' (app/lib/einwilligung-schalter.js).
+ *
+ * Der HTML-Text wird EINMAL beim ersten Rendern festgelegt: der Root-Loader
+ * läuft nach jedem Warenkorb-POST neu, `gewaehlt` kippt dann, und ein neuer
+ * String liesse React Banner und Dialog ersetzen (Befund K3-Gegenprüfung s02:
+ * danach war der Widerruf tot). Den Zustand gleicht das Skript selbst ab.
  */
 export function Einwilligungshinweis({sprache = 'de', gewaehlt = false}) {
+  const [html] = useState(() => hinweisHtml(sprache, {gewaehlt}));
   return (
     <div
       className="qb-einwilligung-wurzel"
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{__html: hinweisHtml(sprache, {gewaehlt})}}
+      dangerouslySetInnerHTML={{__html: html}}
     />
   );
 }

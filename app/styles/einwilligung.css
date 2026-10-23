@@ -32,6 +32,16 @@
   box-shadow: 0 calc(var(--qb-ew-abstand) * -0.5) calc(var(--qb-ew-abstand) * 3) var(--qb-ew-schatten);
 }
 
+/* Solange der Banner offen ist: Seitenende frei scrollbar, Kaufleiste ueber dem Banner
+   (qb-einwilligung.js setzt Attribut und Hoehe am <html>). */
+html[data-qb-einwilligung-offen] body {
+  padding-bottom: var(--qb-ew-hoehe, 0px);
+}
+
+html[data-qb-einwilligung-offen] .qb-kaufleiste {
+  bottom: var(--qb-ew-hoehe, 0px);
+}
+
 #qb-einwilligung[hidden],
 #qb-einwilligung-dialog[hidden] {
   display: none;
@@ -43,7 +53,8 @@
   align-items: center;
   justify-content: center;
   gap: calc(var(--qb-ew-abstand) * 1.5) calc(var(--qb-ew-abstand) * 3);
-  padding: calc(var(--qb-ew-abstand) * 2) calc(var(--qb-ew-abstand) * 3);
+  padding: calc(var(--qb-ew-abstand) * 2) calc(var(--qb-ew-abstand) * 3)
+    max(calc(var(--qb-ew-abstand) * 2), env(safe-area-inset-bottom));
 }
 
 .qb-ew-text {
@@ -160,7 +171,8 @@
 
 @media (max-width: 749px) {
   #qb-einwilligung {
-    padding: calc(var(--qb-ew-abstand) * 1.5) calc(var(--qb-ew-abstand) * 2);
+    padding: calc(var(--qb-ew-abstand) * 1.5) calc(var(--qb-ew-abstand) * 2)
+      max(calc(var(--qb-ew-abstand) * 1.5), env(safe-area-inset-bottom));
     gap: var(--qb-ew-abstand);
   }
 

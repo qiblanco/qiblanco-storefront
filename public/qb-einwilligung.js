@@ -28,7 +28,7 @@
     function t(k) { var r = s.match(new RegExp('(?:^|[,{])\\s*' + k + "\\s*:\\s*'([^']*)'")); return r ? r[1] : ''; }
     var u = s.match(/(?:^|[,{])\s*utc\s*:\s*(\d+)/), mk = b('marketing');
     if (mk === null || !u) return null;
-    var c = {preferences: !!b('preferences'), statistics: !!b('statistics'), marketing: mk, utc: +u[1], qbv: t('qbv'), stamp: t('stamp')};
+    var c = {preferences: !!b('preferences'), statistics: !!b('statistics'), marketing: mk, utc: +u[1], qbv: t('qbv'), stamp: t('stamp'), method: t('method')};
     if (Date.now() - c.utc > JAHR) return null;
     if ((c.qbv ? haupt(c.qbv) : 1) < haupt(FASSUNG)) return null;
     return c;
@@ -44,7 +44,8 @@
     consented: false, declined: false, hasResponse: false, motor: 'eigen'
   };
   function setze(c, stamp) {
-    CB.consent = {stamp: stamp, necessary: true, preferences: !!c.preferences, statistics: !!c.statistics, marketing: !!c.marketing, method: 'explicit'};
+    // method aus dem Bestandscookie behalten (Cookiebot kennt 'implied'); eigene Wahl ist immer 'explicit'.
+    CB.consent = {stamp: stamp, necessary: true, preferences: !!c.preferences, statistics: !!c.statistics, marketing: !!c.marketing, method: c.method || 'explicit'};
     CB.hasResponse = true;
     CB.consented = !!(c.preferences || c.statistics || c.marketing);
     CB.declined = !CB.consented;
@@ -136,7 +137,13 @@
   }
 
   var oeffner = null;
-  function zeige(el, an) { if (el) { if (an) el.removeAttribute('hidden'); else el.setAttribute('hidden', ''); } }
+  // Offener Banner reserviert unten Platz (body-Polster, Kaufleiste darueber), damit nichts verdeckt bleibt.
+  function lage() {
+    var b = banner(), offen = !!b && !b.hasAttribute('hidden'), h = d.documentElement;
+    if (offen) { h.setAttribute('data-qb-einwilligung-offen', ''); h.style.setProperty('--qb-ew-hoehe', b.offsetHeight + 'px'); }
+    else h.removeAttribute('data-qb-einwilligung-offen');
+  }
+  function zeige(el, an) { if (el) { if (an) el.removeAttribute('hidden'); else el.setAttribute('hidden', ''); lage(); } }
   function schliesseDialog() {
     zeige(dialog(), false);
     zeige(banner(), !CB.hasResponse);
@@ -169,6 +176,8 @@
     shopifyMitWarten();
     meldeStand();
     protokoll(methode);
+    // Widerruf: geladene Tracker lassen sich nicht entladen -> Seite neu laden.
+    if (methode === 'widerruf') setTimeout(function () { location.reload(); }, 300);
   }
 
   CB.submitCustomConsent = function (p, s, m) { waehle(!!p, !!s, !!m, 'auswahl'); };
@@ -180,9 +189,10 @@
   w.Cookiebot = w.CookieConsent = CB;
   w.qbEinwilligung = {fassung: FASSUNG, motor: 'eigen', stand: stand, oeffneEinstellungen: oeffneEinstellungen};
 
+  // Delegation am Dokument: ueberlebt, wenn React die Knoten ersetzt.
   function klick(ev) {
     var el = ev.target && ev.target.closest ? ev.target.closest('[data-qb-wahl]') : null;
-    if (!el) return;
+    if (!el || !el.closest('#qb-einwilligung,#qb-einwilligung-dialog')) return;
     var wahl = el.getAttribute('data-qb-wahl');
     if (wahl === 'einstellungen') oeffneEinstellungen();
     else if (wahl === 'notwendig') waehle(false, false, false, 'notwendig');
@@ -198,12 +208,13 @@
   }
 
   function start() {
-    var b = banner(), dg = dialog();
-    if (b) b.addEventListener('click', klick);
-    if (dg) {
-      dg.addEventListener('click', klick);
-      dg.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { ev.preventDefault(); schliesseDialog(); } });
-    }
+    var b = banner();
+    d.addEventListener('click', klick);
+    d.addEventListener('keydown', function (ev) {
+      var dg = dialog();
+      if (ev.key === 'Escape' && dg && !dg.hasAttribute('hidden')) { ev.preventDefault(); schliesseDialog(); }
+    });
+    w.addEventListener('resize', lage);
     if (CB.hasResponse) {
       zeige(b, false);
       feuere('OnConsentReady');

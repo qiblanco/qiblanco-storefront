@@ -44,9 +44,11 @@ export function motorFuer(url, cookieHeader, konstante = EINWILLIGUNG_MOTOR) {
     query = '';
   }
   if (MOTOREN.includes(query)) {
+    // Secure nur auf https: Safari/Firefox verwerfen es sonst auf http-Vorschauen.
+    const sicher = String(url).startsWith('https:') ? '; Secure' : '';
     return {
       motor: query,
-      setzeCookie: `${MOTOR_COOKIE}=${query}; Path=/; SameSite=Lax; Secure`,
+      setzeCookie: `${MOTOR_COOKIE}=${query}; Path=/; SameSite=Lax${sicher}`,
     };
   }
   const ausCookie = cookieWert(cookieHeader, MOTOR_COOKIE);
