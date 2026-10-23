@@ -4,6 +4,12 @@ export const CUSTOMER_FRAGMENT = `#graphql
     id
     firstName
     lastName
+    # Nur für qpx.identify in app/routes/account.jsx (no-store-Route). Nie in
+    # einen Root- oder Seiten-Loader ziehen: dort stünde die E-Mail im HTML
+    # jeder Seite.
+    emailAddress {
+      emailAddress
+    }
     defaultAddress {
       ...Address
     }
