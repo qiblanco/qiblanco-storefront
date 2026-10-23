@@ -49,9 +49,12 @@ const SOLL = {
 // crystal-cacao-awake stand hier bis 2026-10-17; seitdem ist es eine Seite des
 // Crystal-Spiegels (canonical auf crystal-cacao.com) und fliegt aus eigenem
 // Grund aus der Sitemap (~/crystal-spiegel-rahmen/suchmaschine) -- als
-// Nachbar, der BLEIBEN muss, taugt es nicht mehr. qi-master vertritt es.
+// Nachbar, der BLEIBEN muss, taugt es nicht mehr. qi-master vertrat es bis
+// 2026-10-23; seitdem ist es Vorschau-Shop A (Christian: nicht indiziert,
+// ~/lib/vorschau-noindex) und fliegt ebenfalls aus der Sitemap. qibracelet
+// vertritt es.
 const NACHBARN = {
-  products: ['qi-master', 'crystal-cacao-create', 'qione-2-pro', 'bundle-2x-awake-neu'],
+  products: ['qibracelet', 'crystal-cacao-create', 'qione-2-pro', 'bundle-2x-awake-neu'],
   collections: ['zeremonie-kakao', 'all'],
 };
 
@@ -162,9 +165,9 @@ await pruefe('B das Datum einer Vorlage bewegt das lastmod im Index nicht', asyn
   assert.equal(karte.products, alt.updatedAt, 'products-lastmod aus einer Vorlage');
   assert.equal(karte.collections, altK.updatedAt, 'collections-lastmod aus einer Vorlage');
   // Negativ-Kontrolle: an einem sichtbaren Eintrag bewegt dasselbe Datum ihn.
-  // (qi-master statt crystal-cacao-awake seit 2026-10-17, Grund bei NACHBARN.)
+  // (qibracelet seit 2026-10-23, davor qi-master, Grund bei NACHBARN.)
   const kontrolle = await indexKarte(
-    [alt, {handle: 'qi-master', updatedAt: neu}],
+    [alt, {handle: 'qibracelet', updatedAt: neu}],
     [altK, {handle: 'all-x', updatedAt: neu}],
   );
   assert.equal(kontrolle.products, neu);

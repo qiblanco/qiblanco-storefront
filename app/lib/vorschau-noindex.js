@@ -78,15 +78,14 @@ export function vorschauDisallowZeilen({alle = false} = {}) {
 }
 
 /**
- * Handles je Sitemap-Typ (`products`, `pages`), die aus der Sitemap fallen.
- * Die Sitemap folgt der Gruppe `*`: nur Einträge mit `googlebot: true`.
- * Shop A bleibt in der Sitemap, bis Google sein noindex gelesen hat
- * (dieselbe Übergangsstufe wie bei den noindex-Seiten in ~/lib/seo).
+ * Handles je Sitemap-Typ (`products`, `pages`), die aus der Sitemap fallen:
+ * alle Listenpfade, auch Shop A. Google findet Shop A trotzdem wieder, denn
+ * die Adresse ist bekannt und robots.txt lässt Googlebot dort lesen.
  * @param {string} typ
  */
 export function vorschauSitemapHandles(typ) {
   const vorne = `/${typ}/`;
-  return VORSCHAU_NOINDEX.filter(
-    (e) => e.googlebot && e.pfad.startsWith(vorne),
-  ).map((e) => e.pfad.slice(vorne.length));
+  return VORSCHAU_NOINDEX.filter((e) => e.pfad.startsWith(vorne)).map((e) =>
+    e.pfad.slice(vorne.length),
+  );
 }

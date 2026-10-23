@@ -125,15 +125,15 @@ test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar
   for (const p of ['/products/qi-master', '/products/qi-alpha']) assert.equal(erlaubt(r, p), true, p);
 });
 
-test('Sitemap-Handles je Typ: die Sitemap folgt der Gruppe *', () => {
-  assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha-b']);
+test('Sitemap-Handles je Typ: alle Listenpfade, auch Shop A', () => {
+  assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master']);
   assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['qi-alpha-b', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
 });
 
-test('Sitemap-Filter: trifft die gesperrten Pfade, lässt Shop A und Nachbarn stehen', () => {
+test('Sitemap-Filter: trifft jeden Listenpfad, lässt die Nachbarn stehen', () => {
   const xml = (p) => `<url><loc>https://qiblanco.com${p}</loc></url>`;
-  const gesperrt = LISTE.filter((e) => e.googlebot).map((e) => e.pfad);
-  const offen = [...NACHBARN, '/products/qi-master', '/products/qi-alpha'];
+  const gesperrt = LISTE.map((e) => e.pfad);
+  const offen = NACHBARN;
   for (const typ of ['products', 'pages']) {
     const versteckt = mod.vorschauSitemapHandles(typ);
     const filter = (eintrag) => versteckt.some((h) => eintrag.includes(`/${typ}/${h}</loc>`));
