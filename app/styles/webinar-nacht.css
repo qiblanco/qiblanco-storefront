@@ -1,0 +1,226 @@
+/* ============================================================================
+   /pages/webinar-die-nacht-entscheidet — Scope .wn (Grossjob
+   20261023-webinar-lp-die-nacht-entscheidet-serie-1511, s03).
+
+   Token-Rezept nach tiefer-schlaf-v3 / .lp-a3 (schlaf-zellen-schutz.css):
+   warmes Neutral-Kontinuum, EIN Gold (das Haus-Gold --qb-akzent) nur auf
+   Handlung, 8pt-Raster, EIN H2-Stil, zwei Radien, drei Farbakte
+   (Grund, Fläche, Dunkel). Ausserhalb von :root stehen keine freien Werte.
+
+   Zwei Hausregeln aus reset.css, die jede Seite treffen: "p, li" tragen ihre
+   Schriftgrösse am ELEMENT (eine Grösse am Container erreicht sie nie), und
+   unter 749 px setzt reset.css h1/h2/h3 mit !important auf 28/24/20 px. Die
+   mobilen Stufen unten sind deshalb genau diese Werte.
+   ========================================================================== */
+
+:root {
+  --wn-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+  --wn-fs-s: 0.8125rem; /* 13 */
+  --wn-fs-base: 1rem; /* 16 */
+  --wn-fs-md: 1.125rem; /* 18 */
+  --wn-fs-lg: 1.25rem; /* 20, mobil = reset h3 */
+  --wn-fs-h2: clamp(1.5rem, 1.1rem + 1.6vw, 1.875rem); /* 24 -> 30, EIN H2-Stil */
+  --wn-fs-h1: clamp(1.75rem, 1rem + 3.2vw, 3rem); /* 28 -> 48 */
+
+  --wn-s1: 8px; --wn-s2: 16px; --wn-s3: 24px; --wn-s4: 32px;
+  --wn-s6: 48px; --wn-s8: 64px; --wn-s12: 96px;
+
+  --wn-grund: #faf9f5;
+  --wn-flaeche: #f4f0e9;
+  --wn-dunkel: #191714;
+  --wn-text: #2c2a26;
+  --wn-muted: #6b665d;
+  --wn-hell: #f4f0e9;
+  --wn-muted-hell: rgba(244, 240, 233, 0.78);
+  --wn-akzent: var(--qb-akzent); /* Kauf-Gold des Hauses, NUR Handlung */
+  --wn-tinte: var(--qb-akzent-tinte); /* dasselbe Gold als Schrift/Fokus auf hell */
+  --wn-linie: rgba(44, 42, 38, 0.14);
+  --wn-feld-grund: #fff;
+
+  --wn-r1: 8px; --wn-r2: 16px;
+  --wn-schatten-s: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --wn-schatten-m: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  --wn-breite: 1080px;
+  --wn-schmal: 720px;
+  --wn-formular: 520px;
+  --wn-portraet: 320px;
+  --wn-knopf-hoehe: 56px;
+}
+
+/* ─── Grundfluss ─────────────────────────────────────────────────────────── */
+.wn {
+  font-family: var(--wn-font);
+  font-size: var(--wn-fs-base);
+  line-height: 1.65;
+  color: var(--wn-text);
+  background: var(--wn-grund);
+}
+.wn * { box-sizing: border-box; }
+.wn p, .wn li, .wn dd, .wn blockquote {
+  font-size: var(--wn-fs-base);
+  line-height: 1.65;
+  color: inherit;
+  margin: 0;
+}
+.wn-abschnitt { padding: var(--wn-s12) var(--wn-s3); }
+.wn-flaeche { background: var(--wn-flaeche); }
+.wn-dunkel { background: var(--wn-dunkel); color: var(--wn-hell); }
+.wn-innen { max-width: var(--wn-schmal); margin: 0 auto; }
+[data-section='wn-vertrauen'] .wn-innen,
+[data-section='wn-erfahrungen'] .wn-innen,
+[data-section='wn-sprecher'] .wn-innen { max-width: var(--wn-breite); }
+
+/* ─── Typo: EIN H1, EIN H2-Stil (zentriert), EIN H3-Stil ─────────────────── */
+.wn h1, .wn h2, .wn h3, .wn dt {
+  font-family: var(--wn-font);
+  font-weight: 600;
+  color: inherit;
+  text-shadow: none;
+  letter-spacing: -0.01em;
+}
+.wn-h1 { font-size: var(--wn-fs-h1); line-height: 1.15; margin: 0 0 var(--wn-s3); text-align: center; }
+.wn-h2 { font-size: var(--wn-fs-h2); line-height: 1.25; margin: 0 0 var(--wn-s4); text-align: center; }
+.wn-h3 { font-size: var(--wn-fs-lg); line-height: 1.35; margin: 0 0 var(--wn-s1); }
+.wn-mitte { text-align: center; }
+.wn .wn-klein, .wn .wn-vermerk { font-size: var(--wn-fs-s); color: var(--wn-muted); }
+
+/* ─── Kopf ───────────────────────────────────────────────────────────────── */
+.wn-kopf .wn-innen { text-align: center; }
+.wn .wn-vorzeile {
+  font-size: var(--wn-fs-s);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wn-muted);
+  margin-bottom: var(--wn-s2);
+}
+.wn .wn-lede { font-size: var(--wn-fs-md); margin: 0 auto var(--wn-s4); max-width: 62ch; }
+.wn .wn-termin { font-size: var(--wn-fs-lg); font-weight: 600; margin-bottom: var(--wn-s2); }
+.wn-merkmale {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--wn-s4);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--wn-s1) var(--wn-s3);
+}
+.wn .wn-merkmale li { color: var(--wn-muted); }
+
+/* ─── Knöpfe: Gold nur hier ──────────────────────────────────────────────── */
+.wn-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--wn-knopf-hoehe);
+  padding: var(--wn-s2) var(--wn-s4);
+  border: 0;
+  border-radius: var(--wn-r1);
+  background: var(--wn-akzent);
+  color: var(--wn-text);
+  font-family: var(--wn-font);
+  font-size: var(--wn-fs-md);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--wn-schatten-s);
+}
+.wn-knopf:hover { box-shadow: var(--wn-schatten-m); }
+.wn-knopf:focus-visible, .wn-feld:focus-visible, .wn-verweis:focus-visible {
+  outline: 3px solid var(--wn-tinte);
+  outline-offset: 2px;
+}
+.wn-knopf:disabled { cursor: progress; opacity: 0.7; }
+.wn-knopf-zweit {
+  background: transparent;
+  border: 1px solid var(--wn-text);
+  box-shadow: none;
+  margin-top: var(--wn-s2);
+}
+
+/* ─── Listen ─────────────────────────────────────────────────────────────── */
+.wn-liste, .wn-schritte { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--wn-s3); }
+.wn .wn-liste li {
+  font-size: var(--wn-fs-md);
+  padding-left: var(--wn-s3);
+  border-left: 2px solid var(--wn-linie);
+}
+.wn-schritte { gap: var(--wn-s2); margin-bottom: var(--wn-s4); }
+.wn .wn-schritte li { font-size: var(--wn-fs-md); display: flex; align-items: center; gap: var(--wn-s2); }
+.wn-nr {
+  flex: 0 0 auto;
+  width: var(--wn-s6);
+  height: var(--wn-s6);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--wn-dunkel);
+  color: var(--wn-hell);
+  font-weight: 600;
+}
+
+/* ─── Bilder, Personen, Zitate, Karten ───────────────────────────────────── */
+.wn-bild { margin: 0 0 var(--wn-s2); }
+.wn-bild img { display: block; width: 100%; height: auto; border-radius: var(--wn-r2); }
+.wn-vermerk { margin-top: var(--wn-s1); }
+.wn-paar { display: grid; gap: var(--wn-s6); align-items: center; }
+.wn-paar .wn-bild { max-width: var(--wn-portraet); margin: 0 auto; }
+.wn-zitat { margin: var(--wn-s3) 0; padding-left: var(--wn-s3); border-left: 2px solid var(--wn-linie); }
+.wn .wn-zitat p { font-size: var(--wn-fs-md); font-style: italic; }
+.wn-gast { margin: 0; text-align: center; }
+.wn-gast .wn-zitat { border-left: 0; padding-left: 0; }
+.wn-zwei { display: grid; gap: var(--wn-s4); }
+.wn-person .wn-bild img { aspect-ratio: 4 / 3; object-fit: cover; }
+.wn-karte {
+  background: var(--wn-grund);
+  color: var(--wn-text);
+  border-radius: var(--wn-r2);
+  padding: var(--wn-s4);
+  margin: 0;
+  box-shadow: var(--wn-schatten-m);
+}
+.wn-karte-hell { background: var(--wn-flaeche); box-shadow: none; }
+.wn .wn-wer { font-weight: 600; margin-top: var(--wn-s2); }
+.wn-bestaetigt { max-width: var(--wn-formular); margin: 0 auto; }
+
+/* ─── Formular ───────────────────────────────────────────────────────────── */
+.wn-dunkel .wn-mitte { color: var(--wn-muted-hell); margin-bottom: var(--wn-s4); }
+.wn-dunkel .wn-karte { max-width: var(--wn-formular); margin: 0 auto; display: grid; gap: var(--wn-s1); }
+.wn-feldname { font-weight: 600; margin-top: var(--wn-s1); }
+.wn-gedaempft { font-weight: 400; color: var(--wn-muted); }
+.wn-feld {
+  width: 100%;
+  min-height: var(--wn-knopf-hoehe);
+  padding: var(--wn-s1) var(--wn-s2);
+  border: 1px solid var(--wn-linie);
+  border-radius: var(--wn-r1);
+  background: var(--wn-feld-grund);
+  color: var(--wn-text);
+  font-family: var(--wn-font);
+  font-size: var(--wn-fs-base);
+}
+.wn-frage-feld { resize: vertical; }
+.wn-falle { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.wn .wn-einwilligung { font-size: var(--wn-fs-s); color: var(--wn-muted); margin: var(--wn-s2) 0; }
+.wn-verweis { color: var(--wn-tinte); text-decoration: underline; }
+.wn-karte .wn-knopf { width: 100%; }
+.wn .wn-status, .wn .wn-meldung { font-weight: 600; }
+.wn-dunkel > .wn-innen > .wn-status { text-align: center; }
+.wn .wn-danke { font-size: var(--wn-fs-md); }
+
+/* ─── Fragen ─────────────────────────────────────────────────────────────── */
+.wn-fragen { margin: 0; display: grid; gap: var(--wn-s4); }
+.wn-fragen dd { margin: 0; }
+
+/* ─── Breiten ────────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .wn-paar { grid-template-columns: var(--wn-portraet) 1fr; }
+  .wn-zwei { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 767px) {
+  .wn-abschnitt { padding: var(--wn-s8) var(--wn-s2); }
+  .wn-karte { padding: var(--wn-s3); }
+}
