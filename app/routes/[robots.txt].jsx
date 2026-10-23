@@ -99,13 +99,13 @@ function robotsTxtData({url, shopId}) {
 # ---------------------------------------------------------------------------
 # VORSCHAU, NICHT AUFFINDBAR (Christian, 23.10.2026, wörtlich):
 #   „Also, dass das alles live ist, aber eben nicht searchbar, nicht indiziert
-#    und nicht crawlbar und nicht für KI verfügbar, bis auf weiteres."
-# Gilt für die Qi-Alpha-Seiten A und B. Die KI-Gruppen sperren alle sechs
-# Pfade. Die Gruppe * sperrt die Landingpages und Shop B, nicht aber
-# /products/qi-master und /products/qi-alpha: Google muss dort das frische
-# noindex lesen können. Christians Freigabe vom 07.10.2026 für die Gruppe
-# KI-MODELLE gilt für alle übrigen Pfade unverändert.
-# Jede Zeile trägt den $-Anker, damit sie nur genau diesen Pfad trifft.
+#    und nicht crawlbar und nicht für KI verfügbar, bis auf weiteres.“
+# Das gilt für die Qi-Alpha-Seiten A und B.
+# Die KI-Gruppen sperren alle sechs Pfade.
+# Die Gruppe * sperrt die Landingpages und Shop B.
+# Shop A bleibt für Google offen. Dort muss Google das noindex lesen.
+# Die Freigabe vom 07.10.2026 für KI-MODELLE gilt sonst unverändert.
+# Jede Zeile trägt den $-Anker. So trifft sie genau einen Pfad.
 # ---------------------------------------------------------------------------
 
 User-agent: *

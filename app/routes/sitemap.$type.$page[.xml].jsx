@@ -81,8 +81,6 @@ const NICHT_IN_PAGES_SITEMAP = [
   ...AUS_SITEMAP_ENTFERNTE_SEITEN,
   ...WEITERGELEITETE_PAGES_HANDLES,
   ...gespiegelteHandles('pages'),
-  // Vorschau-Seiten (live, nicht auffindbar, ~/lib/vorschau-noindex).
-  ...vorschauSitemapHandles('pages'),
 ];
 
 /**

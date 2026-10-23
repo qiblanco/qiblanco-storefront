@@ -33,9 +33,9 @@
  * Anker trifft die Zeile genau den Pfad; eine zweite Zeile `<pfad>?` deckt
  * die Varianten-Adressen (`?Seriennummer=…`) derselben Seite.
  *
- * Beide Formen der Umbenennung Qi Master -> Qi Alpha stehen hier, weil der
- * Umbenennungs-Grossjob (20261017-GROSSJOB-qi-master-heisst-qi-alpha-…)
- * die alten Pfade per 301 auf die neuen lenkt.
+ * Beide Formen der Umbenennung Qi Master -> Qi Alpha stehen hier. Der
+ * Umbenennungs-Grossjob vom 17.10.2026 lenkt die alten Pfade per 301 auf
+ * die neuen.
  */
 export const VORSCHAU_NOINDEX = [
   {pfad: '/pages/qi-alpha-b', googlebot: true, rolle: 'LP B'},
@@ -79,11 +79,14 @@ export function vorschauDisallowZeilen({alle = false} = {}) {
 
 /**
  * Handles je Sitemap-Typ (`products`, `pages`), die aus der Sitemap fallen.
+ * Die Sitemap folgt der Gruppe `*`: nur Einträge mit `googlebot: true`.
+ * Shop A bleibt in der Sitemap, bis Google sein noindex gelesen hat
+ * (dieselbe Übergangsstufe wie bei den noindex-Seiten in ~/lib/seo).
  * @param {string} typ
  */
 export function vorschauSitemapHandles(typ) {
   const vorne = `/${typ}/`;
-  return VORSCHAU_NOINDEX.filter((e) => e.pfad.startsWith(vorne)).map((e) =>
-    e.pfad.slice(vorne.length),
-  );
+  return VORSCHAU_NOINDEX.filter(
+    (e) => e.googlebot && e.pfad.startsWith(vorne),
+  ).map((e) => e.pfad.slice(vorne.length));
 }

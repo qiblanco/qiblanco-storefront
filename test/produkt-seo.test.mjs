@@ -28,6 +28,7 @@ import {setzePreismodus} from '../app/lib/preismodus.js';
 // bleibt als Rueckbau-Weg im Code und wird hier gepinnt. Brutto: preismodus.test.mjs.
 setzePreismodus('netto');
 import {readFileSync, readdirSync} from 'node:fs';
+import {VORSCHAU_NOINDEX} from '../app/lib/vorschau-noindex.js';
 import {
   MARKE,
   PRODUKT_BESCHREIBUNGEN,
@@ -255,6 +256,24 @@ function istSpiegelHuelle(inhalt) {
   );
 }
 
+/**
+ * Eine Vorschau-Route (seit 23.10.2026, Christian: „nicht searchbar, nicht
+ * indiziert und nicht crawlbar") hat keinen Suchkopf, den produktMeta bauen
+ * könnte: sie trägt noindex und bewusst KEIN canonical (wie /pages/qione-2-pro-b).
+ * Erkannt an DREI Eigenschaften zugleich: der Pfad steht in der zentralen
+ * Liste ~/lib/vorschau-noindex mit Sperre für Google, die Route setzt selbst
+ * robots noindex, und sie trägt kein canonical. Shop A steht auch in der
+ * Liste, ist aber für Google offen und bleibt deshalb verdrahtet.
+ */
+function istVorschauRoute(slug, inhalt) {
+  const eintrag = VORSCHAU_NOINDEX.find((e) => e.pfad === `/products/${slug}`);
+  return Boolean(
+    eintrag?.googlebot &&
+      /name:\s*'robots',\s*content:\s*'noindex/.test(inhalt) &&
+      !/rel:\s*'canonical'|canonicalLink\(/.test(inhalt),
+  );
+}
+
 test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
   // Der Ausgangsbefund war eine Drift zwischen den Routen. Dieser Test
   // findet die vergessene Route, nicht nur die gepflegte.
@@ -268,6 +287,7 @@ test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
     if (slug === 'zeremonie-kakao') continue; // 301, bewusst außen vor
     if (istReineWeiterleitung(inhalt)) continue; // rendert nichts, kein Kopf
     if (istSpiegelHuelle(inhalt)) continue; // Kopf kommt 1:1 von crystal-cacao.com
+    if (istVorschauRoute(slug, inhalt)) continue; // noindex-Vorschau, kein Suchkopf
     if (!inhalt.includes('produktMeta')) fehlend.push(f);
   }
   assert.deepEqual(fehlend, [], `Routen ohne produktMeta: ${fehlend.join(', ')}`);
@@ -288,6 +308,19 @@ test('ROT: die Spiegel-Ausnahme greift nur bei einer echten Spiegel-Hülle', () 
     false,
     'Name allein reicht nicht',
   );
+});
+
+test('ROT: die Vorschau-Ausnahme greift nur bei Liste + noindex + ohne canonical', () => {
+  const b = readFileSync('app/routes/products.qi-alpha-b.jsx', 'utf8');
+  assert.equal(istVorschauRoute('qi-alpha-b', b), true, 'Shop B ist eine Vorschau-Route');
+  // Shop A steht in der Liste, ist aber für Google offen -> KEINE Ausnahme.
+  const a = readFileSync('app/routes/products.qi-master.jsx', 'utf8');
+  assert.equal(istVorschauRoute('qi-master', a), false, 'Shop A bleibt verdrahtet');
+  // Mit canonical oder ohne eigenes noindex -> KEINE Ausnahme.
+  assert.equal(istVorschauRoute('qi-alpha-b', `${b}\nconst c = {tagName: 'link', rel: 'canonical', href: '/'};`), false, 'canonical');
+  assert.equal(istVorschauRoute('qi-alpha-b', b.replace(/name: 'robots'/g, "name: 'x'")), false, 'noindex');
+  // Nicht in der Liste -> KEINE Ausnahme.
+  assert.equal(istVorschauRoute('qione-2-pro', b), false, 'Liste');
 });
 
 test('ROT: die Weiterleitungs-Ausnahme verschluckt keine rendernde Route', () => {
