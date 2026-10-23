@@ -66,7 +66,7 @@ if (!SEITE) {
   // Wissens-Blog monatelang hatte. Ein Fehler beim Rendern ist laut und trifft
   // nur diese eine Route.
   throw new Error(
-    `Frageseite "${SLUG}" fehlt in app/data/fragen.js — ` +
+    `Frageseite "${SLUG}" fehlt in app/data/fragen.js. ` +
       'Route und Datenmodul sind auseinandergelaufen.',
   );
 }
