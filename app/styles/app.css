@@ -2043,6 +2043,22 @@ footer.footer :focus-visible {
   color: #fff;
 }
 
+/* „Cookie-Einstellungen" im Fuss (Widerruf-Link, beide Einwilligungs-Motoren):
+   ein <button>, der aussieht wie seine Link-Nachbarn. */
+.footer-menu .footer-menu__einwilligung {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.footer-menu .footer-menu__einwilligung:hover {
+  color: #fff;
+}
+
 /* Newsletter form overrides */
 .footer ._form_15 input[type='text'],
 .footer ._form_15 input[type='email'] {

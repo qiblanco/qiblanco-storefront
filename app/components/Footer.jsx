@@ -597,8 +597,27 @@ function FooterMenu() {
           {label}
         </NavLink>
       ))}
+      {/* Widerruf-Link (Grossjob Cookiebot-Ablösung s02, BAUVERTRAG Abschnitt 4):
+          in beiden Motoren auf jeder Seite. Motor eigen: der eigene Dialog,
+          Motor cookiebot: Cookiebots eigenes erneutes Fragen. */}
+      <button
+        type="button"
+        className="footer-menu__einwilligung"
+        data-qb-wahl="einstellungen"
+        onClick={oeffneEinwilligung}
+      >
+        Cookie-Einstellungen
+      </button>
     </nav>
   );
+}
+
+function oeffneEinwilligung() {
+  if (window.qbEinwilligung) {
+    window.qbEinwilligung.oeffneEinstellungen();
+  } else if (window.Cookiebot && typeof window.Cookiebot.renew === 'function') {
+    window.Cookiebot.renew();
+  }
 }
 
 function activeLinkStyle({isActive, isPending}) {
