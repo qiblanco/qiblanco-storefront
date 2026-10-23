@@ -1,0 +1,85 @@
+/* COOKIE-ERKLAERUNG — /pages/cookie-erklaerung (Grossjob Cookiebot-Abloesung s04).
+ *
+ * Nur ueber links() der Route geladen. Keine eigenen Werte: alles kommt aus den
+ * --rs-*-Tokens von app/styles/rechtstext.css (das EINE Token-System der
+ * Dokument-Seiten). Eigene Datei, weil die Knopf-Klassen des Hinweises
+ * (einwilligung.css, .qb-ew-knopf) nur im Motor eigen geladen werden — der Knopf
+ * hier muss in BEIDEN Motoren gleich aussehen.
+ */
+
+.rs-doc .ce-knopf {
+  display: inline-block;
+  margin: 0 0 var(--rs-s3);
+  padding: var(--rs-s1) var(--rs-s3);
+  min-height: 48px;
+  font: inherit;
+  font-size: var(--rs-fs-base);
+  font-weight: 600;
+  color: var(--rs-text);
+  background: var(--rs-akzent-flaeche);
+  border: 1px solid var(--rs-akzent-flaeche);
+  border-radius: var(--rs-radius);
+  cursor: pointer;
+}
+
+.rs-doc .ce-knopf:hover {
+  border-color: var(--rs-text);
+}
+
+.rs-doc .ce-knopf:focus-visible {
+  outline: 2px solid var(--rs-text);
+  outline-offset: 2px;
+}
+
+.rs-doc .ce-hinweis,
+.rs-doc .ce-leer {
+  color: var(--rs-muted);
+  font-size: var(--rs-fs-sm);
+}
+
+.rs-doc .ce-tabelle {
+  max-width: none;
+}
+
+.rs-doc .ce-tabelle code {
+  font-size: var(--rs-fs-sm);
+  overflow-wrap: anywhere;
+}
+
+/* Schmal: jede Zeile wird ein Kasten, die Spaltennamen stehen vor dem Wert. */
+@media (max-width: 640px) {
+  .rs-doc .ce-tabelle thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .rs-doc .ce-tabelle,
+  .rs-doc .ce-tabelle tbody,
+  .rs-doc .ce-tabelle tr,
+  .rs-doc .ce-tabelle td {
+    display: block;
+    width: 100%;
+  }
+
+  .rs-doc .ce-tabelle tr {
+    margin-bottom: var(--rs-s2);
+    border: 1px solid var(--rs-linie);
+    border-radius: var(--rs-radius);
+    background: var(--rs-flaeche);
+  }
+
+  .rs-doc .ce-tabelle td {
+    border: 0;
+    padding: var(--rs-s1) var(--rs-s2);
+  }
+
+  .rs-doc .ce-tabelle td::before {
+    content: attr(data-spalte);
+    display: block;
+    font-weight: 600;
+    color: var(--rs-muted);
+  }
+}
