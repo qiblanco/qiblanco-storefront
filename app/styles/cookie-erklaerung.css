@@ -1,0 +1,98 @@
+/* COOKIE-ERKLAERUNG — /pages/cookie-erklaerung (Grossjob Cookiebot-Abloesung s04).
+ *
+ * Nur ueber links() der Route geladen. Keine eigenen Werte: alles kommt aus den
+ * --rs-*-Tokens von app/styles/rechtstext.css (das EINE Token-System der
+ * Dokument-Seiten). Eigene Datei, weil die Knopf-Klassen des Hinweises
+ * (einwilligung.css, .qb-ew-knopf) nur im Motor eigen geladen werden — der Knopf
+ * hier muss in BEIDEN Motoren gleich aussehen.
+ */
+
+.rs-doc .ce-knopf {
+  display: inline-block;
+  margin: 0 0 var(--rs-s3);
+  padding: var(--rs-s1) var(--rs-s3);
+  min-height: 48px;
+  font: inherit;
+  font-size: var(--rs-fs-base);
+  font-weight: 600;
+  /* Dunkel statt Gold: neben dem Gold der Links waere die Gold-Flaeche ein zweiter
+   * Akzentton (design-rubrik harmonisch, gemessen 2026-10-23, Score 97 mit Befund). */
+  color: var(--rs-grund);
+  background: var(--rs-text);
+  border: 1px solid var(--rs-text);
+  border-radius: var(--rs-radius);
+  cursor: pointer;
+}
+
+.rs-doc .ce-knopf:hover {
+  background: var(--rs-muted);
+  border-color: var(--rs-muted);
+}
+
+.rs-doc .ce-knopf:focus-visible {
+  outline: 2px solid var(--rs-text);
+  outline-offset: 2px;
+}
+
+.rs-doc .ce-hinweis,
+.rs-doc .ce-leer {
+  color: var(--rs-muted);
+  font-size: var(--rs-fs-sm);
+}
+
+.rs-doc .ce-tabelle {
+  max-width: none;
+}
+
+.rs-doc .ce-tabelle code {
+  font-size: var(--rs-fs-sm);
+}
+
+/* Cookie-Namen und Laufzeiten nie mitten im Wort umbrechen (gemessen 2026-10-23:
+ * "_shopify_essenti|al", "30 | Minuten" bei 1280 px); die Zweck-Spalte nimmt den Rest. */
+.rs-doc .ce-tabelle td:first-child,
+.rs-doc .ce-tabelle td:last-child,
+.rs-doc .ce-tabelle th:last-child {
+  white-space: nowrap;
+}
+
+/* Schmal: jede Zeile wird ein Kasten, die Spaltennamen stehen vor dem Wert. */
+@media (max-width: 640px) {
+  .rs-doc .ce-tabelle thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .rs-doc .ce-tabelle,
+  .rs-doc .ce-tabelle tbody,
+  .rs-doc .ce-tabelle tr,
+  .rs-doc .ce-tabelle td {
+    display: block;
+    width: 100%;
+  }
+
+  .rs-doc .ce-tabelle tr {
+    margin-bottom: var(--rs-s2);
+    border: 1px solid var(--rs-linie);
+    border-radius: var(--rs-radius);
+    background: var(--rs-flaeche);
+  }
+
+  .rs-doc .ce-tabelle td,
+  .rs-doc .ce-tabelle td:first-child {
+    border: 0;
+    padding: var(--rs-s1) var(--rs-s2);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .rs-doc .ce-tabelle td::before {
+    content: attr(data-spalte);
+    display: block;
+    font-weight: 600;
+    color: var(--rs-muted);
+  }
+}
