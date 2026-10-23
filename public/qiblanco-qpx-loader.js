@@ -144,8 +144,60 @@
     document.head.appendChild(s);
   }
 
+  // ---- Zähl-Beacon Ablehnung (Grossjob 20261023 Global Deutsch-Shop, s02) --
+  // Christian 23.10.2026: Ablehnungen nur als Tagesanteil zählen. Je
+  // Dokument-Ladung GENAU EIN Beacon an /a (anon_zaehlung, quelle=loader):
+  // er bucht ein art=aufruf, bei einer im Banner erklärten Ablehnung
+  // zusätzlich art=widerspruch, schluessel=cookiebot. Nur Aggregat, ohne
+  // Kennung, ohne Cookie, ohne Speicher.
+  // WANN: die Wahl fällt hier oft erst nach dem Laden. Gesendet wird darum,
+  // sobald sie feststeht (Cookiebot.hasResponse), sonst beim ersten Verlassen
+  // (pagehide bzw. visibilitychange=hidden) mit dem Stand dieses Moments.
+  // „Noch keine Wahl" ist keine Ablehnung.
+  // LESEWEG: nur die window.Cookiebot-API und ihre Ereignisse. Der eigene
+  // Einwilligungshinweis stellt dieselbe API bereit; der Zähler hängt nicht
+  // am Motor.
+  // ZIEL: derselbe Weg wie die anonyme Zählung in qiblanco-qpx-basis.js
+  // (data-qpx-basis-endpoint, /b -> /a). Fehlt er, wird nichts gesendet.
+  // Diese Zählung ändert nichts daran, ob qpx lädt.
+  var gezaehlt = false;
+
+  function zaehlZiel() {
+    var el = document.querySelector('script[data-qpx-basis-endpoint]');
+    var basis = el ? el.getAttribute('data-qpx-basis-endpoint') || '' : '';
+    var ziel = basis.replace(/\/b$/, '/a');
+    return ziel !== basis ? ziel : '';
+  }
+
+  function zaehle() {
+    if (gezaehlt) return;
+    gezaehlt = true;
+    try {
+      var ziel = zaehlZiel();
+      if (!ziel || !navigator.sendBeacon) return;
+      var m = {quelle: 'loader', host: location.hostname};
+      if (hasDeclined()) m.widerspruch = 'cookiebot';
+      navigator.sendBeacon(ziel, JSON.stringify(m));
+    } catch (e) {
+      // never-break: ein Zählfehler darf die Seite nie stören
+    }
+  }
+
+  function zaehleWennWahlSteht() {
+    if (window.Cookiebot && window.Cookiebot.hasResponse) zaehle();
+  }
+
   boot();
   window.addEventListener('CookiebotOnAccept', boot);
   window.addEventListener('CookiebotOnConsentReady', boot);
   window.addEventListener('CookiebotOnLoad', boot);
+
+  zaehleWennWahlSteht();
+  window.addEventListener('CookiebotOnConsentReady', zaehleWennWahlSteht);
+  window.addEventListener('CookiebotOnAccept', zaehleWennWahlSteht);
+  window.addEventListener('CookiebotOnDecline', zaehleWennWahlSteht);
+  window.addEventListener('pagehide', zaehle);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') zaehle();
+  });
 })();

@@ -1,4 +1,4 @@
-/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.14) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
+/*! qpx.js — ERZEUGT aus receiver/pixel/qpx.js (v2.15) per bin/qpx-ausliefern. NICHT VON HAND AENDERN. */
 (function (w, d) {
   "use strict";
   var CFG = w.QPX_CONFIG || {};
@@ -101,7 +101,7 @@
     } catch (e) { return ""; }
   }
 
-  var FP_MODI = /*__QPX_FP_MODI_START__*/{"DACH":"aus","USA":"aus","notaus":true}/*__QPX_FP_MODI_END__*/;
+  var FP_MODI = /*__QPX_FP_MODI_START__*/{"DACH":"full","USA":"aus","notaus":false}/*__QPX_FP_MODI_END__*/;
 
   function fpMarkt() {
     var h = "";
@@ -138,6 +138,155 @@
     return null;
   }
 
+  function gpcGilt() {
+    var an = false;
+    try { an = navigator.globalPrivacyControl === true; } catch (e) { return false; }
+    if (!an) return false;
+    return fpMarkt() === "USA" || CFG.gpc === true;
+  }
+
+  var FP2_KEY = "_qpx_fp2";
+  var FP2_SCHRIFTEN = ["Arial", "Arial Black", "Calibri", "Cambria", "Comic Sans MS",
+    "Consolas", "Courier New", "Georgia", "Helvetica Neue", "Impact", "Lucida Console",
+    "Lucida Grande", "Menlo", "Monaco", "Palatino", "Segoe UI", "Tahoma",
+    "Times New Roman", "Trebuchet MS", "Verdana", "Roboto", "Ubuntu", "Noto Sans",
+    "Futura", "Gill Sans", "Avenir", "Optima", "Didot", "Garamond",
+    "Franklin Gothic Medium", "Century Gothic", "Segoe UI Emoji"];
+  function fnv(s) {
+    var h = 0x811c9dc5, i;
+    s = String(s);
+    for (i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul ? Math.imul(h, 16777619) : (h * 16777619) | 0;
+    }
+    return ("0000000" + (h >>> 0).toString(16)).slice(-8);
+  }
+  function fp2Gespeichert() {
+    var o = null;
+    try { o = JSON.parse(sessionStorageGet(FP2_KEY) || "null"); } catch (e) { o = null; }
+    return (o && typeof o === "object") ? o : null;
+  }
+  function fp2Canvas() {
+    var c = d.createElement("canvas"), x;
+    c.width = 240; c.height = 60;
+    x = c.getContext && c.getContext("2d");
+    if (!x) return "";
+    x.textBaseline = "top";
+    x.font = "14px Arial";
+    x.fillStyle = "#f60"; x.fillRect(125, 1, 62, 20);
+    x.fillStyle = "#069"; x.fillText("Qi qpx \u00e9\u03a9 1.0", 2, 15);
+    x.fillStyle = "rgba(102,204,0,0.7)"; x.fillText("Qi qpx \u00e9\u03a9 1.0", 4, 17);
+    x.globalCompositeOperation = "multiply";
+    x.fillStyle = "rgb(255,0,255)";
+    x.beginPath(); x.arc(50, 30, 25, 0, Math.PI * 2, true); x.closePath(); x.fill();
+    return fnv(c.toDataURL());
+  }
+  function fp2Webgl() {
+    var c = d.createElement("canvas"), g = null, t = [], ext = null, i, v, l;
+    var ps = ["MAX_TEXTURE_SIZE", "MAX_RENDERBUFFER_SIZE", "MAX_VERTEX_ATTRIBS",
+      "MAX_VARYING_VECTORS", "MAX_VERTEX_UNIFORM_VECTORS", "MAX_FRAGMENT_UNIFORM_VECTORS",
+      "MAX_COMBINED_TEXTURE_IMAGE_UNITS", "MAX_CUBE_MAP_TEXTURE_SIZE", "MAX_VIEWPORT_DIMS",
+      "ALIASED_LINE_WIDTH_RANGE", "ALIASED_POINT_SIZE_RANGE"];
+    try { g = c.getContext("webgl") || c.getContext("experimental-webgl"); } catch (e) { g = null; }
+    if (!g) return "";
+    try { ext = g.getExtension("WEBGL_debug_renderer_info"); } catch (e) { ext = null; }
+    try { t.push(String(ext ? g.getParameter(ext.UNMASKED_VENDOR_WEBGL) : g.getParameter(g.VENDOR))); } catch (e) { t.push(""); }
+    try { t.push(String(ext ? g.getParameter(ext.UNMASKED_RENDERER_WEBGL) : g.getParameter(g.RENDERER))); } catch (e) { t.push(""); }
+    for (i = 0; i < ps.length; i++) {
+      try {
+        v = g.getParameter(g[ps[i]]);
+        t.push(v && typeof v === "object" && v.length !== undefined ? [].slice.call(v).join("x") : String(v));
+      } catch (e) { t.push(""); }
+    }
+    try { t.push((g.getSupportedExtensions() || []).join(",")); } catch (e) {}
+    try { l = g.getExtension("WEBGL_lose_context"); if (l) l.loseContext(); } catch (e) {}
+    return fnv(t.join("|"));
+  }
+  function fp2SchriftenMesser() {
+    var c = d.createElement("canvas"), x = c.getContext && c.getContext("2d");
+    var probe = "mmmmmmmmmmlli1WwQ@#", basen = ["monospace", "sans-serif", "serif"];
+    var bw = [], j, m = 0;
+    if (x) for (j = 0; j < basen.length; j++) { x.font = "72px " + basen[j]; bw.push(x.measureText(probe).width); }
+    return {
+      teil: function (von, bis) {
+        var i, k;
+        if (!x) return;
+        for (i = von; i < bis && i < FP2_SCHRIFTEN.length; i++) {
+          for (k = 0; k < basen.length; k++) {
+            x.font = "72px '" + FP2_SCHRIFTEN[i] + "'," + basen[k];
+            if (x.measureText(probe).width !== bw[k]) { m |= (1 << i); break; }
+          }
+        }
+      },
+      wert: function () { return x ? ("0000000" + (m >>> 0).toString(16)).slice(-8) : ""; }
+    };
+  }
+  function fp2Audio(fertig) {
+    var AC = w.OfflineAudioContext || w.webkitOfflineAudioContext, ctx, o, k, p, erledigt = false;
+    function ende(v) { if (!erledigt) { erledigt = true; fertig(v); } }
+    if (!AC) { ende(""); return; }
+    try {
+      ctx = new AC(1, 5000, 44100);
+      o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = 10000;
+      k = ctx.createDynamicsCompressor();
+      k.threshold.value = -50; k.knee.value = 40; k.ratio.value = 12;
+      k.attack.value = 0; k.release.value = 0.25;
+      o.connect(k); k.connect(ctx.destination); o.start(0);
+      ctx.oncomplete = function (e) {
+        try {
+          var b = e.renderedBuffer.getChannelData(0), s = 0, i;
+          for (i = 4500; i < 5000; i++) s += Math.abs(b[i]);
+          ende(fnv(s.toFixed(6)));
+        } catch (x) { ende(""); }
+      };
+      p = ctx.startRendering();
+      if (p && p.then) p.then(null, function () { ende(""); });
+      w.setTimeout(function () { ende(""); }, 1500);
+    } catch (e) { ende(""); }
+  }
+  function fp2Leicht(o) {
+    try { if (w.devicePixelRatio) o.dpr = String(Math.round(w.devicePixelRatio * 100) / 100); } catch (e) {}
+    try { o.tzn = String(Intl.DateTimeFormat().resolvedOptions().timeZone || "").slice(0, 64); } catch (e) {}
+    try { if (navigator.languages) o.langs = [].slice.call(navigator.languages).join(",").slice(0, 64); } catch (e) {}
+  }
+  function fp2Starten() {
+    if (CFG.fp2 === false || !fpErlaubt() || fp2Gespeichert()) return;
+    var o = {}, i = 0, fo = null;
+    var schritte = [
+      function () { o.cv = fp2Canvas(); },
+      function () { o.gl = fp2Webgl(); },
+      function () { fo = fp2SchriftenMesser(); fo.teil(0, 8); },
+      function () { fo.teil(8, 16); },
+      function () { fo.teil(16, 24); },
+      function () { fo.teil(24, 32); o.fo = fo.wert(); },
+      function () { fp2Leicht(o); }
+    ];
+    function leerlauf(fn) {
+      if (w.requestIdleCallback) w.requestIdleCallback(fn, { timeout: 4000 });
+      else w.setTimeout(fn, 200);
+    }
+    function weiter(dl) {
+      if (dl && !dl.didTimeout && typeof dl.timeRemaining === "function" && dl.timeRemaining() < 8) {
+        leerlauf(weiter);
+        return;
+      }
+      if (i < schritte.length) {
+        try { schritte[i](); } catch (e) {}
+        i++;
+        leerlauf(weiter);
+        return;
+      }
+      fp2Audio(function (au) {
+        o.au = au;
+        o.v = "1";
+        try { sessionStorageSet(FP2_KEY, JSON.stringify(o)); } catch (e) {}
+      });
+    }
+    function los() { leerlauf(weiter); }
+    if (d.readyState === "complete") los();
+    else w.addEventListener("load", los);
+  }
+
   function base(name, props) {
     props = props || {};
     var attr = captureAttr();
@@ -162,12 +311,17 @@
     if (rg) ev.region = rg;
     var fps = fpSignals();
     if (fps) ev.fp = fps;
+    if (fps && CFG.fp2 !== false) {
+      var f2 = fp2Gespeichert();
+      if (f2) ev.fp2 = f2;
+    }
     var eh = mailZeiger();
     if (eh) ev.email_hash = eh;
     for (var k in props) { if (Object.prototype.hasOwnProperty.call(props, k)) ev[k] = props[k]; }
     return ev;
   }
   function send(ev) {
+    if (gpcGilt()) return;
     var body = JSON.stringify(ev);
     try {
       if (navigator.sendBeacon) {
@@ -206,6 +360,20 @@
     send(ev);
   }
   function identify(email, props) { props = props || {}; if (email) props.email = email; send(base("identify", props)); }
+
+  function kundeIdentify() {
+    var k = CFG.kunde, mail, tel, sig;
+    if (CFG.identity === false || !k || typeof k !== "object") return;
+    mail = String(k.email || "").trim().toLowerCase();
+    tel = String(k.phone || "").trim();
+    if (mail && (mail.indexOf("@") < 1 || mail.length > 254)) mail = "";
+    if (tel.length > 32) tel = "";
+    if (!mail && !tel) return;
+    sig = "k" + fnv(mail + "|" + tel);
+    if (sessionStorageGet("_qpx_idk") === sig) return;
+    sessionStorageSet("_qpx_idk", sig);
+    identify(mail || null, tel ? { phone: tel } : {});
+  }
 
   var q = (w.qpx && w.qpx.q) || [];
   function api() {
@@ -1482,20 +1650,35 @@
         var form = e.target;
         if (!form || !form.querySelectorAll) return;
         var inputs = form.querySelectorAll("input[type=email],input[name*=email i]");
-        for (var i = 0; i < inputs.length; i++) {
-          var v = (inputs[i].value || "").trim();
+        var mail = "", tel = "", i, v;
+        for (i = 0; i < inputs.length; i++) {
+          v = (inputs[i].value || "").trim();
           if (!v || v.indexOf("@") < 1 || v.length > 254) continue;
-          var sig = djb2(v.toLowerCase());
-          if (sessionStorageGet("_qpx_idf") === sig) return;
-          sessionStorageSet("_qpx_idf", sig);
-          identify(v.toLowerCase());
-          return;
+          mail = v.toLowerCase();
+          break;
         }
+        var tels = form.querySelectorAll("input[type=tel],input[name*=phone i]");
+        for (i = 0; i < tels.length; i++) {
+          v = (tels[i].value || "").trim();
+          if (v && v.replace(/[^0-9]/g, "").length >= 6 && v.length <= 32) { tel = v; break; }
+        }
+        if (!mail && !tel) return;
+        var sig = djb2(mail + "|" + tel);
+        if (sessionStorageGet("_qpx_idf") === sig) return;
+        sessionStorageSet("_qpx_idf", sig);
+        identify(mail || null, tel ? { phone: tel } : {});
       } catch (e2) {}
     }, { passive: true, capture: true });
   }
 
-  function boot() { track("page_view"); try { initBehavior(); } catch (e) {} try { initIdentify(); } catch (e) {} }
+  function boot() {
+    if (gpcGilt()) return;
+    track("page_view");
+    try { initBehavior(); } catch (e) {}
+    try { initIdentify(); } catch (e) {}
+    try { kundeIdentify(); } catch (e) {}
+    try { fp2Starten(); } catch (e) {}
+  }
   if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", boot);
   else boot();
 })(window, document);
