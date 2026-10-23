@@ -226,7 +226,7 @@ export async function loader(args) {
           einwilligung: {
             motor: 'eigen',
             sprache: spracheFuer(new URL(args.request.url).pathname),
-            gewaehlt: wahlGilt(
+            entschieden: wahlGilt(
               leseEinwilligung(cookieAusHeader(cookieHeader)),
               EINWILLIGUNG_FASSUNG,
             ),
@@ -678,7 +678,7 @@ export function Layout({children}) {
         {einwilligungEigen && (
           <Einwilligungshinweis
             sprache={data.einwilligung.sprache}
-            gewaehlt={data.einwilligung.gewaehlt}
+            entschieden={data.einwilligung.entschieden}
           />
         )}
         {/*

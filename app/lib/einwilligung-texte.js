@@ -32,7 +32,7 @@ export const TEXTE = {
       marketing: ['Marketing', 'Misst, welche Werbung wirkt, und zeigt dir passendere Anzeigen (Meta, Google Ads, UpPromote).'],
     },
     speichern: 'Auswahl speichern',
-    schliessen: 'Schließen',
+    zu: 'Schließen',
     erklaerung: 'Cookie-Erklärung',
     datenschutz: 'Datenschutz',
     fussLink: 'Cookie-Einstellungen',
@@ -54,7 +54,7 @@ export const TEXTE = {
       marketing: ['Marketing', 'Measures which ads work and shows you more relevant ads (Meta, Google Ads, UpPromote).'],
     },
     speichern: 'Save selection',
-    schliessen: 'Close',
+    zu: 'Close',
     erklaerung: 'Cookie declaration',
     datenschutz: 'Privacy policy',
     fussLink: 'Cookie settings',
@@ -117,9 +117,9 @@ const esc = (s) =>
 
 /**
  * Markup von Banner und Dialog (Selektoren = Vertrag für die Proben, s05).
- * `gewaehlt`: am Server gelesene gültige Wahl -> Banner startet verborgen.
+ * `entschieden`: am Server gelesene gültige Wahl -> Banner startet verborgen.
  */
-export function hinweisHtml(sprache, {gewaehlt = false} = {}) {
+export function hinweisHtml(sprache, {entschieden = false} = {}) {
   const t = texteFuer(sprache);
   const kat = ['preferences', 'statistics', 'marketing']
     .map(
@@ -131,7 +131,7 @@ export function hinweisHtml(sprache, {gewaehlt = false} = {}) {
   return (
     `<div id="qb-einwilligung" data-qb-einwilligung="banner" role="region" aria-label="${esc(t.bereich)}"` +
     ` data-qb-fassung="${EINWILLIGUNG_FASSUNG}" data-qb-sprache="${sprache}" data-qb-texte-hash="${texteHash(sprache)}"` +
-    `${gewaehlt ? ' hidden' : ''}>` +
+    `${entschieden ? ' hidden' : ''}>` +
     `<p class="qb-ew-text">${esc(t.kurz)} <a href="/pages/cookie-erklaerung">${esc(t.erklaerung)}</a></p>` +
     `<div class="qb-ew-knoepfe">` +
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--leise" data-qb-wahl="einstellungen">${esc(t.einstellen)}</button>` +
@@ -139,7 +139,7 @@ export function hinweisHtml(sprache, {gewaehlt = false} = {}) {
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--gold" data-qb-wahl="alle">${esc(t.alle)}</button>` +
     `</div></div>` +
     `<div id="qb-einwilligung-dialog" data-qb-einwilligung="dialog" role="dialog" aria-modal="false" aria-labelledby="qb-ew-titel" hidden>` +
-    `<button type="button" class="qb-ew-zu" data-qb-wahl="schliessen" aria-label="${esc(t.schliessen)}">×</button>` +
+    `<button type="button" class="qb-ew-zu" data-qb-wahl="zu" aria-label="${esc(t.zu)}">×</button>` +
     `<h2 id="qb-ew-titel" class="qb-ew-titel">${esc(t.dialogTitel)}</h2>` +
     `<p class="qb-ew-text">${esc(t.dialogText)}</p>` +
     `<label class="qb-ew-kat"><span class="qb-ew-kat__kopf"><input type="checkbox" checked disabled>` +

@@ -66,7 +66,7 @@
     try { d.dispatchEvent(new CustomEvent('qb:einwilligung', {detail: stand()})); } catch (e) {}
   }
 
-  // Shopify Customer Privacy: daran haengt der Checkout (Vorbild cookiebot-shopify-consent-sync.js).
+  // Shopify Customer Privacy: daran hängt der Checkout (Vorbild cookiebot-shopify-consent-sync.js).
   function shopify() {
     var sp = w.Shopify && w.Shopify.customerPrivacy;
     if (!CB.hasResponse || !sp || typeof sp.setTrackingConsent !== 'function') return false;
@@ -90,7 +90,7 @@
     }
     return true;
   }
-  // Vorab-Blockade fuer Markup Dritter: <script type="text/plain" data-cookieconsent="marketing">
+  // Vorab-Blockade für Markup Dritter: <script type="text/plain" data-cookieconsent="marketing">
   // und <iframe data-qb-src|data-cookieblock-src data-cookieconsent>.
   function runScripts() {
     var ss = d.querySelectorAll('script[type="text/plain"][data-cookieconsent]');
@@ -137,7 +137,7 @@
   }
 
   var oeffner = null;
-  // Offener Banner reserviert unten Platz (body-Polster, Kaufleiste darueber), damit nichts verdeckt bleibt.
+  // Offener Banner reserviert unten Platz (body-Polster, Kaufleiste darüber), damit nichts verdeckt bleibt.
   function lage() {
     var b = banner(), offen = !!b && !b.hasAttribute('hidden'), h = d.documentElement;
     if (offen) { h.setAttribute('data-qb-einwilligung-offen', ''); h.style.setProperty('--qb-ew-hoehe', b.offsetHeight + 'px'); }
@@ -189,7 +189,7 @@
   w.Cookiebot = w.CookieConsent = CB;
   w.qbEinwilligung = {fassung: FASSUNG, motor: 'eigen', stand: stand, oeffneEinstellungen: oeffneEinstellungen};
 
-  // Delegation am Dokument: ueberlebt, wenn React die Knoten ersetzt.
+  // Delegation am Dokument: überlebt, wenn React die Knoten ersetzt.
   function klick(ev) {
     var el = ev.target && ev.target.closest ? ev.target.closest('[data-qb-wahl]') : null;
     if (!el || !el.closest('#qb-einwilligung,#qb-einwilligung-dialog')) return;
@@ -197,7 +197,7 @@
     if (wahl === 'einstellungen') oeffneEinstellungen();
     else if (wahl === 'notwendig') waehle(false, false, false, 'notwendig');
     else if (wahl === 'alle') waehle(true, true, true, 'alle');
-    else if (wahl === 'schliessen') schliesseDialog();
+    else if (wahl === 'zu') schliesseDialog();
     else if (wahl === 'auswahl') {
       var v = {};
       var boxen = dialog().querySelectorAll('input[data-qb-kategorie]');
@@ -229,7 +229,7 @@
     }
     meldeStand();
   }
-  // defer-Skripte laufen vor DOMContentLoaded: so hoeren alle Leser schon zu.
+  // defer-Skripte laufen vor DOMContentLoaded: so hören alle Leser schon zu.
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', start);
   else setTimeout(start, 0);
 })();
