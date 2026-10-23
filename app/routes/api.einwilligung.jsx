@@ -72,8 +72,8 @@ export async function action({request, context}) {
   }
   const grund = pruefe(satz);
   if (grund) {
-    // Ein abgewiesener TESTsatz (Rot-Arm der Naht-Probe) traegt test:true weiter,
-    // damit die Annahme ihn nicht als Fehler am Rand zaehlt (sonst Fehlalarm der Wache).
+    // Ein abgewiesener TESTsatz (Rot-Arm der Naht-Probe) trägt test:true weiter,
+    // damit die Annahme ihn nicht als Fehler am Rand zählt (sonst Fehlalarm der Wache).
     const test = satz && typeof satz === 'object' && satz.test === true;
     weiter(context, env, {schema: 1, abgewiesen: grund, ...(test ? {test: true} : {})});
     return antwort(400);
