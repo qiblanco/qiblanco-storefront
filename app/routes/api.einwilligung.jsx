@@ -14,7 +14,8 @@
  * Kein Cookie, kein Tracking, keine Antwort mit Inhalt.
  *
  * Einen abgewiesenen Satz meldet die Route ohne seinen Inhalt weiter
- * ({abgewiesen: <grund>}), damit die Annahme Fehler zählen kann. Die Wache
+ * ({abgewiesen: <grund>}, bei einem Testsatz zusätzlich test: true), damit die
+ * Annahme Fehler zählen kann. Die Wache
  * einwilligung-protokoll-wache liest diese Zähler.
  *
  * Abschalten ohne Deploy: Oxygen-Env EINWILLIGUNG_PROTOKOLL=off (dann nur 204).
@@ -71,7 +72,10 @@ export async function action({request, context}) {
   }
   const grund = pruefe(satz);
   if (grund) {
-    weiter(context, env, {schema: 1, abgewiesen: grund});
+    // Ein abgewiesener TESTsatz (Rot-Arm der Naht-Probe) trägt test:true weiter,
+    // damit die Annahme ihn nicht als Fehler am Rand zählt (sonst Fehlalarm der Wache).
+    const test = satz && typeof satz === 'object' && satz.test === true;
+    weiter(context, env, {schema: 1, abgewiesen: grund, ...(test ? {test: true} : {})});
     return antwort(400);
   }
 
