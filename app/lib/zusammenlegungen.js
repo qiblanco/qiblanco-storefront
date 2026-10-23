@@ -46,6 +46,11 @@ import {redirect} from 'react-router';
  *    Folgeauftrag des Wirkungskreislaufs zur Hypothese H-537022f708. Der
  *    übernommene Abschnitt auf der Zielseite bleibt stehen
  *    (KohaerentesWasserSeite.jsx, BegriffPhysik).
+ *  - /pages/armband-duschen-sauna seit 23.10.2026. Die Zielseite /pages/faq
+ *    fiel am Kontrollpunkt Tag 14 ab; Folgeauftrag des Wirkungskreislaufs zur
+ *    Hypothese H-395796ad98. Der übernommene Abschnitt auf der FAQ bleibt
+ *    stehen (FaqSeite.jsx, FrageAbschnitt; sein Anker hängt am Slug, nicht an
+ *    dieser Liste).
  *
  * @type {Readonly<Record<string, {ziel: string, anker: boolean}>>}
  */
@@ -86,10 +91,6 @@ export const ZUSAMMENGELEGT = Object.freeze({
   },
   '/pages/wie-weit-reicht-elektrosmog-schutz': {
     ziel: '/pages/technologie',
-    anker: true,
-  },
-  '/pages/armband-duschen-sauna': {
-    ziel: '/pages/faq',
     anker: true,
   },
   '/pages/support-1': {ziel: '/pages/support', anker: false},

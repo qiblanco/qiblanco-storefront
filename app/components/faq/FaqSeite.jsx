@@ -265,10 +265,12 @@ export function FaqSeite() {
       ))}
 
       {/* Seit 2026-10-07 steht die Frage „Armband beim Duschen und in der
-          Sauna" hier ganz, mit Antwort, Belegen und Quellen: ihre eigene Seite
-          ist per 301 in die FAQ aufgegangen (Job 20261007-seo-zusammenlegung-
-          duenne-seiten-301-umsetzen). Wasser, Duschen und Sauna ist das
-          stärkste Neugier-Thema im DACH-Raum (13,6 %). */}
+          Sauna" hier ganz, mit Antwort, Belegen und Quellen (Job 20261007-seo-
+          zusammenlegung-duenne-seiten-301-umsetzen). Wasser, Duschen und
+          Sauna ist das stärkste Neugier-Thema im DACH-Raum (13,6 %). Seit
+          2026-10-23 antwortet auch ihre eigene Seite wieder selbst (Rückweg
+          der Zusammenlegung, Hypothese H-395796ad98); der Abschnitt bleibt.
+          Sein Anker hängt am Slug, nicht an app/lib/zusammenlegungen.js. */}
       <FrageAbschnitt
         seite={seiteFuer('armband-duschen-sauna')}
         klassen={{inhalt: 'faq-inner faq-inner--schmal'}}

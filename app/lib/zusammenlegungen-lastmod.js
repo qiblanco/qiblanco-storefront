@@ -35,7 +35,15 @@ import {ZUSAMMENGELEGT} from '~/lib/zusammenlegungen';
  * RÜCKWEG: eine Zeile entfernen (die Seite zeigt dann wieder ihr
  * `updatedAt`), oder `hb-deploy revert --sha <merge>`.
  *
- * @type {ReadonlyArray<{am: string, beleg: string, quellen: string[]}>}
+ * ZURÜCKGENOMMEN, ABSCHNITT BLEIBT (`inhaltBleibt`, seit 23.10.2026): kommt
+ * der 301 einer Quelle zurück, fehlt sie in `ZUSAMMENGELEGT`, und ihr Ziel
+ * verlöre das Datum. Bleibt der übernommene Abschnitt auf dem Ziel stehen
+ * (der Normalfall des Rückwegs im Wirkungskreislauf), hat sich das Ziel an
+ * diesem Tag trotzdem geändert. `inhaltBleibt` nennt dann Quelle -> Ziel, damit
+ * das Datum nicht zurückfällt. Erster Fall: /pages/armband-duschen-sauna ->
+ * /pages/faq (Hypothese H-395796ad98).
+ *
+ * @type {ReadonlyArray<{am: string, beleg: string, quellen: string[], inhaltBleibt?: Readonly<Record<string, string>>}>}
  */
 export const ZUSAMMENLEGUNGS_STAENDE = Object.freeze([
   {
@@ -56,6 +64,9 @@ export const ZUSAMMENLEGUNGS_STAENDE = Object.freeze([
       '/pages/wie-weit-reicht-elektrosmog-schutz',
       '/pages/armband-duschen-sauna',
     ],
+    inhaltBleibt: {
+      '/pages/armband-duschen-sauna': '/pages/faq',
+    },
   },
 ]);
 
@@ -64,7 +75,8 @@ export const ZUSAMMENLEGUNGS_STAENDE = Object.freeze([
  *
  * Gelesen wird das Ziel aus `ZUSAMMENGELEGT`, nie hier abgeschrieben: zeigt
  * eine Quelle dort auf ein anderes Ziel, wandert das Datum mit. Eine Quelle,
- * die dort fehlt (Eintrag zurückgenommen), trägt kein Datum mehr bei.
+ * die dort fehlt (Eintrag zurückgenommen), trägt kein Datum mehr bei, außer
+ * ihr Abschnitt bleibt auf dem Ziel stehen (`inhaltBleibt`).
  *
  * @returns {Map<string, string>}
  */
@@ -72,7 +84,8 @@ export function zielLastmod() {
   const karte = new Map();
   for (const stand of ZUSAMMENLEGUNGS_STAENDE) {
     for (const quelle of stand.quellen) {
-      const ziel = ZUSAMMENGELEGT[quelle]?.ziel;
+      const ziel =
+        ZUSAMMENGELEGT[quelle]?.ziel ?? stand.inhaltBleibt?.[quelle];
       if (!ziel || !ziel.startsWith('/pages/')) continue;
       const bisher = karte.get(ziel);
       if (!bisher || Date.parse(stand.am) > Date.parse(bisher)) {
