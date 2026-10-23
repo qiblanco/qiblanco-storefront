@@ -586,7 +586,10 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
 // selbst und steht wieder in dieser Liste (Rückweg, Zielseite am
 // Kontrollpunkt Tag 7 abgefallen).
 // ZURÜCK AM 2026-10-23: /pages/armband-duschen-sauna ebenso (Zielseite
-// /pages/faq am Kontrollpunkt Tag 14 abgefallen). Es bleiben 11
+// /pages/faq am Kontrollpunkt Tag 14 abgefallen).
+// ZURÜCK AM 2026-10-24: /pages/wie-funktioniert-schutz-vor-elektrosmog und
+// /pages/wie-weit-reicht-elektrosmog-schutz ebenso (Zielseite
+// /pages/technologie am Kontrollpunkt Tag 14 abgefallen). Es bleiben 9
 // zusammengelegte Seiten.
 export const NUR_ROUTE_SEITEN = [
   {
@@ -936,6 +939,58 @@ export const NUR_ROUTE_SEITEN = [
       '/pages/faq aufgegangen (PR #815); zurückgenommen, weil die ' +
       'Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
       'Wirkungskreislaufs, Hypothese H-395796ad98). lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+    lastmod: '2026-10-24T21:00:00Z',
+    grund:
+      'Frageseite „Wie funktioniert ein Schutz gegen Elektrosmog am ' +
+      'Körper?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.wie-funktioniert-schutz-vor-elektrosmog.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents. Vom 07.10. bis 24.10.2026 per 301 in ' +
+      '/pages/technologie aufgegangen (PR #815); zurückgenommen, weil ' +
+      'die Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-11352f2aff). lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
+    lastmod: '2026-10-24T21:00:00Z',
+    grund:
+      'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
+      'Elektrosmog-Schutzes?“ (Grossjob ' +
+      '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
+      'Segment s07; Text aus s05). Je Frage eine eigene URL, weil ein ' +
+      'Antwortsystem Abschnitte isoliert bewertet: eine Frage als blosse ' +
+      'Zeile unter zwoelf anderen auf /pages/faq konkurriert mit ihren ' +
+      'Nachbarn um dieselbe Adresse. Die Bestands-FAQ bleibt ' +
+      'unangetastet. Die Seite besteht allein aus der Route ' +
+      'pages.wie-weit-reicht-elektrosmog-schutz.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
+      'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs ' +
+      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
+      'User-Agents. Vom 07.10. bis 24.10.2026 per 301 in ' +
+      '/pages/technologie aufgegangen (PR #815); zurückgenommen, weil ' +
+      'die Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-11352f2aff). lastmod ist die ' +
       'Obergrenze des Merge-Fensters dieses Rückwegs.',
   },
   {

@@ -608,9 +608,11 @@ export default function TechnologiePage() {
       {/* ── ZWEI FRAGEN, DIE HIER AUFGEGANGEN SIND ──
           Seit 2026-10-07 stehen „Wie funktioniert ein Schutz gegen Elektrosmog
           am Körper?" und „Wie groß ist der Wirkungsbereich?" ganz auf dieser
-          Seite; ihre eigenen Frageseiten leiten per 301 auf diese Anker (Job
-          20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen). Text aus
-          app/data/fragen.js, unverändert. */}
+          Seite (Job 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen).
+          Text aus app/data/fragen.js, unverändert. Seit 2026-10-24 antworten
+          ihre eigenen Frageseiten wieder selbst (301 zurückgenommen, Hypothese
+          H-11352f2aff); die Abschnitte bleiben stehen, ihr Anker hängt am Slug,
+          nicht an app/lib/zusammenlegungen.js. */}
       <FrageAbschnitt seite={seiteFuer('wie-funktioniert-schutz-vor-elektrosmog')} />
       <div style={{background: '#f7f1e8'}}>
         <FrageAbschnitt seite={seiteFuer('wie-weit-reicht-elektrosmog-schutz')} />
