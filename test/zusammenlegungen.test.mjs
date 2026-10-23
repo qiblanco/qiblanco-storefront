@@ -59,7 +59,7 @@ test('eine Adresse ohne Eintrag ist ein Baufehler, kein stiller 200', () => {
 });
 
 test('adresse() zeigt aufs Ziel, alles andere bleibt unverändert', () => {
-  assert.equal(adresse('/pages/armband-duschen-sauna'), '/pages/faq#armband-duschen-sauna');
+  assert.equal(adresse('/pages/lexikon-energie'), '/pages/lexikon#lexikon-energie');
   assert.equal(adresse('/products/qione-1'), '/products/qione-2-pro');
   assert.equal(adresse('/pages/lexikon-elektrosmog'), '/pages/lexikon-elektrosmog');
 });
@@ -141,14 +141,24 @@ test('Rückweg: eine zurückgenommene Seite antwortet selbst, steht in der Sitem
   // keine Weiterleitung in der Route, ein Sitemap-Eintrag, Links zeigen auf
   // die Seite selbst, und der übernommene Abschnitt auf der Zielseite hängt
   // nicht mehr an der Liste (sonst verschwände er still mit dem Eintrag).
+  // H-395796ad98 (23.10.): /pages/faq fiel am Kontrollpunkt Tag 14 ab. Die
+  // FAQ braucht adresse() weiter für ihre Fragenliste; ihr Abschnitt hängt
+  // dort am Slug (seiteFuer), nicht am Anker der Liste. Dafür `merkmal` und
+  // `listeErlaubt`: dann darf nur ankerFuer() nicht vorkommen.
   const paare = [
     {
       von: '/pages/lexikon-kohaerentes-wasser',
       ziel: 'app/components/campaign/KohaerentesWasserSeite.jsx',
     },
+    {
+      von: '/pages/armband-duschen-sauna',
+      ziel: 'app/components/faq/FaqSeite.jsx',
+      merkmal: "seiteFuer('armband-duschen-sauna')",
+      listeErlaubt: true,
+    },
   ];
   const nurRoute = new Set(NUR_ROUTE_SEITEN.map((e) => e.pfad));
-  for (const {von, ziel} of paare) {
+  for (const {von, ziel, merkmal, listeErlaubt} of paare) {
     assert.equal(zusammenlegungFuer(von), undefined, `${von} leitet noch um`);
     assert.equal(adresse(von), von, `${von}: Links zeigen nicht auf die Seite`);
     const src = lies(`app/routes/pages.${von.slice('/pages/'.length)}.jsx`);
@@ -156,7 +166,12 @@ test('Rückweg: eine zurückgenommene Seite antwortet selbst, steht in der Sitem
     assert.match(src, /export default function/, `${von}: Route rendert nichts`);
     assert.ok(nurRoute.has(von), `${von} fehlt in NUR_ROUTE_SEITEN (Sitemap)`);
     const zsrc = lies(ziel);
-    assert.doesNotMatch(zsrc, /^import .*from '~\/lib\/zusammenlegungen'/m, `${ziel}: Abschnitt hängt an der Liste`);
-    assert.ok(zsrc.includes(`'${von}'`), `${ziel}: Abschnitt nennt die alte Adresse nicht (Anker)`);
+    if (listeErlaubt) {
+      assert.doesNotMatch(zsrc, /ankerFuer\(/, `${ziel}: Abschnitt hängt an der Liste`);
+    } else {
+      assert.doesNotMatch(zsrc, /^import .*from '~\/lib\/zusammenlegungen'/m, `${ziel}: Abschnitt hängt an der Liste`);
+    }
+    const kennung = merkmal || `'${von}'`;
+    assert.ok(zsrc.includes(kennung), `${ziel}: Abschnitt nennt ${kennung} nicht (Anker)`);
   }
 });

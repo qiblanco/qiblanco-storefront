@@ -584,7 +584,10 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
 // zusammenlegungen.js. Die Zielseiten tragen ein neues `lastmod`.
 // ZURÜCK AM 2026-10-16: /pages/lexikon-kohaerentes-wasser antwortet wieder
 // selbst und steht wieder in dieser Liste (Rückweg, Zielseite am
-// Kontrollpunkt Tag 7 abgefallen). Es bleiben 12 zusammengelegte Seiten.
+// Kontrollpunkt Tag 7 abgefallen).
+// ZURÜCK AM 2026-10-23: /pages/armband-duschen-sauna ebenso (Zielseite
+// /pages/faq am Kontrollpunkt Tag 14 abgefallen). Es bleiben 11
+// zusammengelegte Seiten.
 export const NUR_ROUTE_SEITEN = [
   {
     pfad: '/pages/wie-funktioniert-der-gitterchip-im-qione',
@@ -911,6 +914,29 @@ export const NUR_ROUTE_SEITEN = [
       '(Folgeauftrag des Wirkungskreislaufs, Hypothese H-537022f708). ' +
       'lastmod ist die Obergrenze des Merge-Fensters ' +
       'dieses Rückwegs.',
+  },
+  {
+    pfad: '/pages/armband-duschen-sauna',
+    lastmod: '2026-10-23T12:00:00Z',
+    grund:
+      'Antwortseite zur Frage „Kann man ein Armband gegen Elektrosmog ' +
+      'beim Duschen und in der Sauna tragen?“ (Großjob ' +
+      '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +
+      'Segment s08). Ausgewählt anhand der Zitatmessung des seo-manager ' +
+      '(exports/KI-QUELLENLUECKE.json): zu dieser Frage werden heute ' +
+      'sauna-portal.com und armstark.com zitiert. Sie besteht allein ' +
+      'aus der Route pages.armband-duschen-sauna.jsx und hat KEIN ' +
+      'Shopify-Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 ' +
+      'mit vollem Text und steht in keiner Sitemap, und der Eigenkorpus ' +
+      'der Zitatmessung entsteht aus der SITEMAP: die Messung sähe die ' +
+      'Seite nie. Wache (Kriterium 3): ' +
+      'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
+      'leitet ihre Prüfmenge aus dem Fragen-Hub ab und deckt diese ' +
+      'Seite ohne Zutun mit ab. Vom 07.10. bis 23.10.2026 per 301 in ' +
+      '/pages/faq aufgegangen (PR #815); zurückgenommen, weil die ' +
+      'Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-395796ad98). lastmod ist die ' +
+      'Obergrenze des Merge-Fensters dieses Rückwegs.',
   },
   {
     pfad: '/pages/lexikon-elektrosmog',
