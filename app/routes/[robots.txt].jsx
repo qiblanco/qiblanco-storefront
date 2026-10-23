@@ -94,12 +94,9 @@ function robotsTxtData({url, shopId}) {
 #   search=yes, ai-input=yes, ai-train=no
 # Lies: gefunden werden JA, als Antwortquelle zitiert werden JA,
 #       als Trainingsmaterial verwendet werden NEIN.
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-# VORSCHAU, NICHT AUFFINDBAR (Christian, 23.10.2026, wörtlich):
-#   „Also, dass das alles live ist, aber eben nicht searchbar, nicht indiziert
-#    und nicht crawlbar und nicht für KI verfügbar, bis auf weiteres.“
+#
+# VORSCHAU, NICHT AUFFINDBAR.
+# Christian, 23.10.2026: „Also, dass das alles live ist, aber eben nicht searchbar, nicht indiziert und nicht crawlbar und nicht für KI verfügbar, bis auf weiteres“.
 # Das gilt für die Qi-Alpha-Seiten A und B.
 # Die KI-Gruppen sperren alle sechs Pfade.
 # Die Gruppe * sperrt die Landingpages und Shop B.
