@@ -276,6 +276,22 @@
   }
 }
 
+/* EIN Akzent: die „weiterlesen"-Schalter der Bewertungskarten tragen
+   Google-Blau #1565c0 und bildeten eine zweite gesättigte Farbwelt
+   (design-rubrik harmonisch -25 auf LP B). Auf Muted gezogen, die
+   Unterstreichung hält sie als Schalter erkennbar (wie pdp-qi.css Regel 4). */
+.qa-b button[class*='text-[#1565c0]'] {
+  color: var(--qa-muted) !important;
+  text-decoration: underline;
+}
+
+/* Studienkarten auf der Skala: Titel und Knopf standen bei 16,8 px, einer
+   Zwischenstufe zwischen 16 und 18 (design-rubrik stimmig). */
+.qa-lp .ghx-studie__title,
+.qa-lp .btn--secondary {
+  font-size: var(--qa-fs-md);
+}
+
 /* ─── Fragen ────────────────────────────────────────────────────────────── */
 .qa-lp__fragen {
   padding: var(--qa-s4) 0;
