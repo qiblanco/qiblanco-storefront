@@ -101,7 +101,7 @@
     } catch (e) { return ""; }
   }
 
-  var FP_MODI = /*__QPX_FP_MODI_START__*/{"DACH":"full","USA":"aus","notaus":false}/*__QPX_FP_MODI_END__*/;
+  var FP_MODI = /*__QPX_FP_MODI_START__*/{"DACH":"aus","USA":"aus","notaus":true}/*__QPX_FP_MODI_END__*/;
 
   function fpMarkt() {
     var h = "";
