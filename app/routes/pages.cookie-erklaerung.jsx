@@ -32,6 +32,9 @@ export const meta = () => {
       content:
         'Welche Cookies qiblanco.com setzt: wer sie setzt, wozu und wie lange sie bleiben. Mit Knopf zum Ändern deiner Cookie-Wahl.',
     },
+    // Nicht in den Index: eine Cookie-Liste beantwortet keine Suchfrage. Erreichbar über
+    // den Cookie-Hinweis (Link im Banner, BAUVERTRAG Abschnitt 4) und den Knopf hier.
+    {name: 'robots', content: 'noindex,nofollow'},
     canonicalLink(PFAD),
     ...seitenSignale({pfad: PFAD, titel}),
   ];

@@ -15,15 +15,18 @@
   font: inherit;
   font-size: var(--rs-fs-base);
   font-weight: 600;
-  color: var(--rs-text);
-  background: var(--rs-akzent-flaeche);
-  border: 1px solid var(--rs-akzent-flaeche);
+  /* Dunkel statt Gold: neben dem Gold der Links waere die Gold-Flaeche ein zweiter
+   * Akzentton (design-rubrik harmonisch, gemessen 2026-10-23, Score 97 mit Befund). */
+  color: var(--rs-grund);
+  background: var(--rs-text);
+  border: 1px solid var(--rs-text);
   border-radius: var(--rs-radius);
   cursor: pointer;
 }
 
 .rs-doc .ce-knopf:hover {
-  border-color: var(--rs-text);
+  background: var(--rs-muted);
+  border-color: var(--rs-muted);
 }
 
 .rs-doc .ce-knopf:focus-visible {
