@@ -1,11 +1,8 @@
+import {useEffect} from 'react';
 import {data as remixData} from 'react-router';
 import {Outlet, useLoaderData} from 'react-router';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
-import {
-  KontoNav,
-  KontoRahmen,
-  KontoStoerung,
-} from '~/components/konto/KontoUI';
+import {KontoNav, KontoRahmen, KontoStoerung} from '~/components/konto/KontoUI';
 import kontoStyles from '~/styles/konto.css?url';
 
 /**
@@ -49,9 +46,104 @@ export async function loader({context}) {
   );
 }
 
+/**
+ * Kunden-identify der Konto-Fläche (Global Deutsch-Shop, Folgeauftrag
+ * 20261023-global-deutsch-shop-konto-route-qpx-identify-kunden-email).
+ *
+ * Ein eingeloggter Kunde wird mit seinem Gerät verbunden: Gegenstück zu
+ * kundeIdentify() in public/qiblanco-qpx.js, das im Global Englisch-Shop aus
+ * dem Liquid-Theme die E-Mail bekommt. Hydrogen kennt die E-Mail nur über die
+ * Customer-Account-API, und die fragt nur diese Route ab (no-store). Darum
+ * sitzt der Aufruf hier und nicht im Root-Loader.
+ *
+ * Gerufen wird NUR, wenn qpx.js wirklich geladen ist (`window.qpx.identify`
+ * setzt erst qpx.js; der Warteschlangen-Stub aus qpx-commerce.js hat es
+ * nicht). qpx.js lädt der Loader nur ohne Banner-Ablehnung, und send() in
+ * qpx.js prüft GPC. Dieser Code lädt qpx nie und legt keinen Stub an.
+ * Ablehnende bleiben also unberührt.
+ *
+ * Wie kundeIdentify(): Kill-Schalter QPX_CONFIG.identity === false,
+ * gleiche Normalisierung, höchstens ein identify je Sitzung und Adresse
+ * (sessionStorage hält nur einen Hash, nie die Adresse).
+ *
+ * RÜCKWEG: KONTO_IDENTIFY_AN = false (ein Deploy) oder `hb-deploy revert`
+ * des Merge-Commits.
+ */
+const KONTO_IDENTIFY_AN = true;
+
+const KONTO_IDENTIFY_SCHLUESSEL = '_qpx_idkonto';
+const KONTO_IDENTIFY_TAKT_MS = 500;
+const KONTO_IDENTIFY_VERSUCHE = 60; // 30 s: Zeit für den Banner-Klick
+
+function kontoMailNormal(roh) {
+  const mail = String(roh || '')
+    .trim()
+    .toLowerCase();
+  if (!mail || mail.indexOf('@') < 1 || mail.length > 254) return '';
+  return mail;
+}
+
+function kontoMailSignatur(mail) {
+  let h = 5381;
+  for (let i = 0; i < mail.length; i++)
+    h = ((h << 5) + h + mail.charCodeAt(i)) | 0;
+  return 'k' + String(h);
+}
+
+function qpxGeladen() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.qpx === 'function' &&
+    typeof window.qpx.identify === 'function'
+  );
+}
+
+/**
+ * Ein Versuch. true heißt: erledigt (gesendet, schon gesendet oder
+ * abgeschaltet), weiteres Warten ist überflüssig.
+ */
+function kontoIdentifyVersuch(mail) {
+  if (!qpxGeladen()) return false;
+  try {
+    if (window.QPX_CONFIG && window.QPX_CONFIG.identity === false) return true;
+    const sig = kontoMailSignatur(mail);
+    let gesehen = null;
+    try {
+      gesehen = window.sessionStorage.getItem(KONTO_IDENTIFY_SCHLUESSEL);
+    } catch {
+      gesehen = null;
+    }
+    if (gesehen === sig) return true;
+    try {
+      window.sessionStorage.setItem(KONTO_IDENTIFY_SCHLUESSEL, sig);
+    } catch {
+      // ohne sessionStorage: einmal je Seitenaufruf
+    }
+    window.qpx.identify(mail);
+  } catch {
+    // Tracking darf das Konto nie brechen.
+  }
+  return true;
+}
+
+function useKontoIdentify(roh) {
+  const mail = kontoMailNormal(roh);
+  useEffect(() => {
+    if (!KONTO_IDENTIFY_AN || !mail) return undefined;
+    if (kontoIdentifyVersuch(mail)) return undefined;
+    let rest = KONTO_IDENTIFY_VERSUCHE;
+    const takt = window.setInterval(() => {
+      rest -= 1;
+      if (kontoIdentifyVersuch(mail) || rest <= 0) window.clearInterval(takt);
+    }, KONTO_IDENTIFY_TAKT_MS);
+    return () => window.clearInterval(takt);
+  }, [mail]);
+}
+
 export default function AccountLayout() {
   /** @type {LoaderReturnData} */
   const {customer} = useLoaderData();
+  useKontoIdentify(customer?.emailAddress?.emailAddress);
 
   const titel = customer?.firstName
     ? `Willkommen, ${customer.firstName}`
