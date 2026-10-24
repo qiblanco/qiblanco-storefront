@@ -961,10 +961,10 @@ export const NUR_ROUTE_SEITEN = [
       '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs. ' +
       'An dieser Seite prueft sie den Marker data-geo="frage" an der ' +
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
-      'User-Agents. Vom 07.10. bis 24.10.2026 per 301 in ' +
-      '/pages/technologie aufgegangen (PR #815); zurückgenommen, weil ' +
-      'die Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
-      'Wirkungskreislaufs, Hypothese H-11352f2aff). lastmod ist die ' +
+      'User-Agents. Vom 7. bis 24. Oktober 2026 ging sie per 301 in ' +
+      '/pages/technologie auf (PR #815). Zurückgenommen ist das, weil ' +
+      'die Zielseite am Kontrollpunkt Tag 14 abfiel. Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-11352f2aff. lastmod ist die ' +
       'Obergrenze des Merge-Fensters dieses Rückwegs.',
   },
   {
@@ -987,10 +987,10 @@ export const NUR_ROUTE_SEITEN = [
       '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs. ' +
       'An dieser Seite prueft sie den Marker data-geo="frage" an der ' +
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
-      'User-Agents. Vom 07.10. bis 24.10.2026 per 301 in ' +
-      '/pages/technologie aufgegangen (PR #815); zurückgenommen, weil ' +
-      'die Zielseite am Kontrollpunkt Tag 14 abfiel (Folgeauftrag des ' +
-      'Wirkungskreislaufs, Hypothese H-11352f2aff). lastmod ist die ' +
+      'User-Agents. Vom 7. bis 24. Oktober 2026 ging sie per 301 in ' +
+      '/pages/technologie auf (PR #815). Zurückgenommen ist das, weil ' +
+      'die Zielseite am Kontrollpunkt Tag 14 abfiel. Folgeauftrag des ' +
+      'Wirkungskreislaufs, Hypothese H-11352f2aff. lastmod ist die ' +
       'Obergrenze des Merge-Fensters dieses Rückwegs.',
   },
   {
