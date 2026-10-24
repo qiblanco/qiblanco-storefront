@@ -943,7 +943,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
-    lastmod: '2026-10-24T21:00:00Z',
+    lastmod: '2026-10-25T00:00:00Z',
     grund:
       'Frageseite „Wie funktioniert ein Schutz gegen Elektrosmog am ' +
       'Körper?“ (Grossjob ' +
@@ -958,8 +958,8 @@ export const NUR_ROUTE_SEITEN = [
       'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
       'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
       'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs ' +
-      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs. ' +
+      'An dieser Seite prueft sie den Marker data-geo="frage" an der ' +
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
       'User-Agents. Vom 07.10. bis 24.10.2026 per 301 in ' +
       '/pages/technologie aufgegangen (PR #815); zurückgenommen, weil ' +
@@ -969,7 +969,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
-    lastmod: '2026-10-24T21:00:00Z',
+    lastmod: '2026-10-25T00:00:00Z',
     grund:
       'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
       'Elektrosmog-Schutzes?“ (Grossjob ' +
@@ -984,8 +984,8 @@ export const NUR_ROUTE_SEITEN = [
       'mit vollem Text und steht in keiner Sitemap. Kriterium 2 erfuellt: ' +
       'kein noindex, canonicalLink() in der Route. WACHE (Kriterium 3): ' +
       'seo-manager/pruefungen/probe_lexikon_und_frageseiten_live.py ' +
-      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs ' +
-      'und prueft an dieser Seite den Marker data-geo="frage" an der ' +
+      '(nachbau-audit h5f5ad493). Sie folgt den Links des Fragen-Hubs. ' +
+      'An dieser Seite prueft sie den Marker data-geo="frage" an der ' +
       'Ueberschrift, HTTP 200 und die gleiche Auslieferung an drei ' +
       'User-Agents. Vom 07.10. bis 24.10.2026 per 301 in ' +
       '/pages/technologie aufgegangen (PR #815); zurückgenommen, weil ' +
