@@ -43,13 +43,13 @@
   font-size: 0.9375rem;
 }
 .mm-formular__input {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   padding: 0.625rem 0.75rem;
   border: 1px solid #bbb;
   border-radius: 6px;
 }
 .mm-formular__knopf {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   padding: 0.75rem 1.25rem;
   border: 0;
@@ -73,5 +73,5 @@
 }
 .mm-formular__danke {
   white-space: pre-line;
-  font-size: 1rem;
+  font-size: 1.0625rem;
 }
