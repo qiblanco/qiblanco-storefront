@@ -43,3 +43,29 @@
 @media (max-width: 767px) {
   .lp-a3.lp-ma .lp-ma-einwand .lp-ma-schmal p { font-size: var(--a-fs-base); }
 }
+
+/* ─── Kopf auf dem Handy: Bild direkt unter der Überschrift (wie A) ────────
+   Gemessen 2026-10-24 (390x844, Touch, frischer Kontext, Weg des Sim-Tors):
+   das Kopfbild stand mobil unter Text, Knopf und Zahlarten bei y=796 und lag
+   damit fast ganz unter dem ersten Bildschirm. Größtes Element im Bild war
+   so der Text des Cookie-Banners (47094 px², gemalt erst nach ~1,5 s) —
+   LCP B 1,5 bis 2,8 s gegen A 0,8 bis 1,3 s, wo das Video nach der dritten
+   Kopfzeile steht. Jetzt folgt das Bild der Überschrift wie bei A das
+   Video; Wortlaut, Reihenfolge der Texte und Abschnitte bleiben gleich.
+   Technik: Kopf-Spalte und Textplatz geben ihre Kinder ans Raster ab
+   (display: contents, der Textplatz-Anker bleibt im DOM), die Überschrift
+   und das Bild rücken per order nach vorn. Im Raster fallen Außenabstände
+   nicht mehr zusammen: die Knopfzeile gibt deshalb 16 px ab, damit der
+   Abstand zur Vertrauenszeile (deren .mt-1 trägt !important) bei den 32 px
+   von vorher bleibt. Desktop unverändert. */
+@media (max-width: 767px) {
+  .lp-a3.lp-ma .lp-ma-kopf .lp-a-hero__inner { gap: 0; }
+  .lp-a3.lp-ma .lp-ma-kopf .lp-a-hero__copy,
+  .lp-a3.lp-ma .lp-ma-kopf .lp-a-hero__copy > .lp-ma-text { display: contents; }
+  .lp-a3.lp-ma .lp-ma-kopf .lp-a-hero__title { order: -2; }
+  .lp-a3.lp-ma .lp-ma-kopf .lp-ma-kopf__bild {
+    order: -1;
+    margin: var(--a-s2) 0 var(--a-s4);
+  }
+  .lp-a3.lp-ma .lp-ma-kopf .lp-a-hero__cta-row { margin-bottom: var(--a-s2); }
+}
