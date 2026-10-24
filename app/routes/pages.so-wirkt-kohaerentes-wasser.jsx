@@ -10,8 +10,19 @@ import {mmLadeProdukte} from '~/components/campaign/mmProducts';
  * Zentrale „how it works"-Erklärseite: die Message-Match-Landingpages linken
  * hier hinein. Ruhig, nüchtern, evidenzbasiert, ehrlich über Grenzen.
  *
- * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosenträger, D-006): Freigabe-
- * Ansicht für Christian, NICHT öffentlich indexiert. BEWUSST kein canonical.
+ * PFLICHT noindex (Meta + X-Robots-Tag, Gurt+Hosenträger, D-006): die Seite
+ * gehört zum LANDING-BEREICH, dem bezahlten Funnel. noindex ist hier
+ * ISOLATION, keine Freigabe-Sperre: der Bereich soll nur über die Ad
+ * erreichbar sein (Christian 2026-08-26, funnel-substrat/src/landing_bereich.py:
+ * „das ist alles, was von den Ads kommt. Deswegen bauen wir die ja getrennt.").
+ * Der Ads-Sitelink „Wirkweise, ehrlich" ist bezahlter Verkehr und passt dazu.
+ * Ein organischer Google-Platz ist das Leck, das noindex schließt.
+ * Entschieden am 2026-10-24 als Variante B (Beleg im devlog homepage-bauer).
+ * Benannt in seo-manager/conf/gewollt-noindex.yaml,
+ * damit die Flächenbesitz-Wache den Indexaustritt als H1 führt statt als B2.
+ * Soll die Seite öffentlich werden: noindex hier UND den Eintrag dort im
+ * selben Zug entfernen, und den Inhalt besser auf eine öffentliche Seite
+ * KOPIEREN (Kopierregel R7, selftest_zweiblock.py). BEWUSST kein canonical.
  * Tracking hängt global im root-Layout — der Loader fragt NUR Produktdaten ab.
  */
 export function links() {
