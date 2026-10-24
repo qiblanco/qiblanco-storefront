@@ -1,4 +1,5 @@
 import {parseGid} from '@shopify/hydrogen';
+import {vorschauDisallowZeilen} from '~/lib/vorschau-noindex';
 
 /**
  * @param {LoaderFunctionArgs}
@@ -93,6 +94,15 @@ function robotsTxtData({url, shopId}) {
 #   search=yes, ai-input=yes, ai-train=no
 # Lies: gefunden werden JA, als Antwortquelle zitiert werden JA,
 #       als Trainingsmaterial verwendet werden NEIN.
+#
+# VORSCHAU, NICHT AUFFINDBAR.
+# Christian, 23.10.2026: „Also, dass das alles live ist, aber eben nicht searchbar, nicht indiziert und nicht crawlbar und nicht für KI verfügbar, bis auf weiteres“.
+# Das gilt für die Qi-Alpha-Seiten A und B.
+# Die KI-Gruppen sperren alle sechs Pfade.
+# Die Gruppe * sperrt die Landingpages und Shop B.
+# Shop A bleibt für Google offen. Dort muss Google das noindex lesen.
+# Die Freigabe vom 07.10.2026 für KI-MODELLE gilt sonst unverändert.
+# Jede Zeile trägt den $-Anker. So trifft sie genau einen Pfad.
 # ---------------------------------------------------------------------------
 
 User-agent: *
@@ -136,7 +146,7 @@ User-agent: Claude-User
 User-agent: Claude-SearchBot
 User-agent: PerplexityBot
 User-agent: Perplexity-User
-${generalDisallowRules({sitemapUrl, shopId})}
+${generalDisallowRules({sitemapUrl, shopId, vorschauAlle: true})}
 
 # --- KI-MODELLE -----------------------------------------------------------
 # GPTBot, ClaudeBot und Google-Extended dürfen lesen.
@@ -157,7 +167,7 @@ User-agent: ClaudeBot
 User-agent: anthropic-ai
 User-agent: Claude-Web
 User-agent: Google-Extended
-${generalDisallowRules({sitemapUrl, shopId})}
+${generalDisallowRules({sitemapUrl, shopId, vorschauAlle: true})}
 
 # Google adsbot ignores robots.txt unless specifically named!
 User-agent: adsbot-google
@@ -256,7 +266,7 @@ Crawl-delay: 1
  *   sitemapUrl?: string;
  * }}
  */
-function generalDisallowRules({shopId, sitemapUrl}) {
+function generalDisallowRules({shopId, sitemapUrl, vorschauAlle = false}) {
   return `Disallow: /admin
 Disallow: /cart
 Disallow: /orders
@@ -297,6 +307,7 @@ Allow: /search/
 Disallow: /search/?*
 Disallow: /apple-app-site-association
 Disallow: /.well-known/shopify/monorail
+${vorschauDisallowZeilen({alle: vorschauAlle})}
 ${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ''}`;
 }
 

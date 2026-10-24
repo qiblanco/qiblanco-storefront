@@ -22,6 +22,10 @@ import {
 } from '~/lib/sitemap-bestand';
 import {vorlagenOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {gespiegelteHandles} from '~/crystal-spiegel-rahmen/suchmaschine';
+import {
+  istVorschauNoindex,
+  vorschauSitemapHandles,
+} from '~/lib/vorschau-noindex';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -91,6 +95,8 @@ const NICHT_IN_PRODUCTS_SITEMAP = [
   ...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
   ...vorlagenOhneIndexwert('products'),
   ...gespiegelteHandles('products'), // Crystal-Spiegel, wie oben bei pages
+  // Vorschau-Seiten (live, nicht auffindbar, ~/lib/vorschau-noindex).
+  ...vorschauSitemapHandles('products'),
 ];
 
 /**
@@ -273,6 +279,8 @@ function nurRouteSeiten() {
   return alle.filter((s) => {
     if (gesehen.has(s.pfad)) return false;
     if (istNichtIndexierbar(seitenHandleAusPfad(s.pfad))) return false;
+    // Der Nachtrag darf eine Vorschau-Seite nicht zurückholen.
+    if (istVorschauNoindex(s.pfad)) return false;
     gesehen.add(s.pfad);
     return true;
   });

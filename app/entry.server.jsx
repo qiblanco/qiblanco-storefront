@@ -10,6 +10,10 @@ import {
   buyerIpAusRequest,
   istInternerZugriff,
 } from '~/lib/interner-verkehr';
+import {
+  istVorschauNoindex,
+  VORSCHAU_ROBOTS_KOPF,
+} from '~/lib/vorschau-noindex';
 
 /**
  * First-Party-Pixel (qpx): erlaubt die Receiver-Origins in connect-src NUR,
@@ -876,6 +880,15 @@ export default async function handleRequest(
   // nur die beiden .well-known-Routen. Hier und nicht in server.js, weil
   // server.* auf der HARD-DENY-Liste von hb-deploy steht.
   responseHeaders.set('tdm-reservation', '1');
+
+  // VORSCHAU-NOINDEX (Christian 23.10.2026, Z8): live, aber nicht indexiert.
+  // Die Pfade stehen in der EINEN Liste app/lib/vorschau-noindex.js; dieselbe
+  // Liste speist robots.txt und den Sitemap-Filter. Hier und nicht in den
+  // Routen, weil /products/qi-master dem Umbenennungs-Grossjob gehört und
+  // Shop A unverändert bleibt (KONZEPT Festlegung 1).
+  if (istVorschauNoindex(new URL(request.url).pathname)) {
+    responseHeaders.set('X-Robots-Tag', VORSCHAU_ROBOTS_KOPF);
+  }
 
   // Meldeweg: siehe den Block CSP-MELDEWEG am Kopf dieser Datei.
   // `header` geht UNVERÄNDERT in den scharfen Kopf darüber — dieser

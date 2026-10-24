@@ -1,0 +1,347 @@
+/* ==========================================================================
+   qi-alpha-b.css — Scope-Schicht der Qi-Alpha-Vorschau B
+   (/pages/qi-alpha-b und /products/qi-alpha-b; Grossjob 20261023-GROSSJOB-
+   qi-alpha-landingpage-produktseite-finalisieren-lp-simulation, s04).
+
+   TOKEN STATT FREIER WERTE: alle Größen, Abstände, Farben und Radien stehen
+   im Token-Block von `.qa-b`. Er leitet sich aus den `--qm-*`-Token von
+   qi-master.css ab, die beide Routen zusätzlich laden: dieselbe Typo-Skala
+   (Ratio ~1.25), dasselbe 8pt-Raster, derselbe EINE Gold-Akzent nur auf
+   Handlung (Knopf), dieselben zwei Radien. Ein zweiter Goldton oder eine
+   zehnte Schriftgröße wären genau die Befunde, an denen die Live-LPs am
+   2026-07-24 bei 65-78/100 lagen.
+
+   DREI FARB-AKTE auf LP B: Grund (Kopf, Strecke), Fläche (Beweis, Garantie),
+   Dunkel (Schluss mit Wortlaut und Knöpfen). EIN H2-Stil, links.
+
+   SCOPE: `.qa-b` am Wurzel-Element der Route. app.css bleibt unberührt.
+   ========================================================================== */
+
+.qa-b {
+  --qa-font: var(--qm-font);
+  --qa-fs-xs: var(--qm-fs-xs);
+  --qa-fs-base: var(--qm-fs-base);
+  --qa-fs-md: var(--qm-fs-md);
+  --qa-fs-lg: var(--qm-fs-lg);
+  --qa-fs-h2: var(--qm-fs-h2);
+  --qa-fs-h2-mobil: var(--qm-fs-h2-mobil);
+  --qa-fs-h1: var(--qm-fs-h1);
+  --qa-s1: var(--qm-s1);
+  --qa-s2: var(--qm-s2);
+  --qa-s3: var(--qm-s3);
+  --qa-s4: var(--qm-s4);
+  --qa-s6: var(--qm-s6);
+  --qa-s8: var(--qm-s8);
+  --qa-s12: var(--qm-s12);
+  --qa-grund: var(--qm-grund);
+  --qa-flaeche: var(--qm-flaeche);
+  --qa-dunkel: var(--qm-dunkel);
+  --qa-text: var(--qm-text);
+  --qa-muted: var(--qm-muted);
+  --qa-akzent: var(--qm-akzent);
+  --qa-linie: var(--qm-linie);
+  --qa-r1: var(--qm-r1);
+  --qa-r2: var(--qm-r2);
+  --qa-breite: var(--qm-breite-schmal);
+  --qa-breite-weit: 1120px;
+  --qa-knopf-hoehe: 48px; /* Touch-Ziel, 6 x 8pt */
+  --qa-zeilenhoehe: 1.6;
+  --qa-zeilenhoehe-titel: 1.15;
+  --qa-sperrung: 0.08em;
+  --qa-z-fest: 10;
+}
+
+/* ─── Grundtext ─────────────────────────────────────────────────────────── */
+.qa-lp {
+  font-family: var(--qa-font);
+  color: var(--qa-text);
+  background: var(--qa-grund);
+  font-size: var(--qa-fs-base);
+  line-height: var(--qa-zeilenhoehe);
+}
+
+.qa-lp h2 {
+  font-size: var(--qa-fs-h2);
+  line-height: var(--qa-zeilenhoehe-titel);
+  font-weight: 700;
+  text-align: left;
+  color: var(--qa-dunkel);
+  margin: 0 0 var(--qa-s3);
+}
+@media (max-width: 767px) {
+  .qa-lp h2 {
+    font-size: var(--qa-fs-h2-mobil);
+  }
+}
+
+.qa-lp p,
+.qa-lp li,
+.qa-lp dt,
+.qa-lp dd {
+  font-size: var(--qa-fs-base);
+}
+.qa-lp p {
+  margin: 0 0 var(--qa-s2);
+}
+
+.qa-auge {
+  display: block;
+  font-size: var(--qa-fs-xs);
+  letter-spacing: var(--qa-sperrung);
+  text-transform: uppercase;
+  color: var(--qa-muted);
+  margin: 0 0 var(--qa-s2);
+}
+
+/* ─── Kopf ──────────────────────────────────────────────────────────────── */
+.qa-lp__kopf {
+  background: var(--qa-flaeche);
+  padding: var(--qa-s8) var(--qa-s3) var(--qa-s8);
+}
+.qa-lp__kopf-inhalt {
+  max-width: var(--qa-breite);
+  margin: 0 auto;
+}
+.qa-lp__kopf--bild .qa-lp__kopf-inhalt {
+  max-width: var(--qa-breite-weit);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--qa-s6);
+  align-items: center;
+}
+.qa-lp__kopf-bild {
+  width: 100%;
+  height: auto;
+  border-radius: var(--qa-r2);
+}
+.qa-lp__titel {
+  font-size: var(--qa-fs-h1);
+  line-height: var(--qa-zeilenhoehe-titel);
+  font-weight: 700;
+  color: var(--qa-dunkel);
+  margin: 0 0 var(--qa-s3);
+}
+.qa-lp .qa-lp__zeile {
+  font-size: var(--qa-fs-md);
+  color: var(--qa-text);
+  margin: 0 0 var(--qa-s4);
+}
+@media (max-width: 767px) {
+  .qa-lp__kopf {
+    padding: var(--qa-s6) var(--qa-s2) var(--qa-s6);
+  }
+  .qa-lp__kopf--bild .qa-lp__kopf-inhalt {
+    grid-template-columns: 1fr;
+    gap: var(--qa-s3);
+  }
+}
+
+/* ─── Abschnitte ────────────────────────────────────────────────────────── */
+.qa-abschnitt {
+  max-width: var(--qa-breite);
+  margin: 0 auto;
+  padding: var(--qa-s8) var(--qa-s3);
+}
+.qa-abschnitt--flaeche {
+  max-width: none;
+  background: var(--qa-flaeche);
+}
+.qa-abschnitt__inner {
+  max-width: var(--qa-breite);
+  margin: 0 auto;
+}
+@media (max-width: 767px) {
+  .qa-abschnitt {
+    padding: var(--qa-s6) var(--qa-s2);
+  }
+}
+
+.qa-weiter {
+  margin: var(--qa-s4) 0 0;
+}
+.qa-textknopf {
+  font-size: var(--qa-fs-md);
+  font-weight: 700;
+  color: var(--qa-dunkel);
+  text-decoration: underline;
+  text-underline-offset: var(--qa-s1);
+}
+.qa-textknopf:hover,
+.qa-textknopf:focus-visible {
+  color: var(--qa-text);
+}
+
+.qa-video {
+  margin: var(--qa-s4) 0 0;
+}
+.qa-video__medium {
+  width: 100%;
+  height: auto;
+  border-radius: var(--qa-r2);
+}
+
+/* ─── Preis ─────────────────────────────────────────────────────────────── */
+.qa-preise {
+  margin: 0 0 var(--qa-s3);
+  border-top: 1px solid var(--qa-linie);
+}
+.qa-preise__zeile {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--qa-s2);
+  padding: var(--qa-s2) 0;
+  border-bottom: 1px solid var(--qa-linie);
+}
+.qa-preise dt {
+  margin: 0;
+  color: var(--qa-text);
+}
+.qa-preise dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--qa-dunkel);
+  white-space: nowrap;
+}
+.qa-lp .qa-preise__wert {
+  font-size: var(--qa-fs-lg);
+}
+.qa-liste {
+  margin: 0 0 var(--qa-s4);
+  padding-left: var(--qa-s3);
+}
+.qa-liste li {
+  margin: 0 0 var(--qa-s1);
+}
+
+/* ─── Knöpfe: EIN Gold, nur hier ─────────────────────────────────────────── */
+.qa-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--qa-knopf-hoehe);
+  box-sizing: border-box;
+  padding: var(--qa-s2) var(--qa-s4);
+  border-radius: var(--qa-r1);
+  background: var(--qa-akzent);
+  color: var(--qa-dunkel);
+  font-size: var(--qa-fs-md);
+  font-weight: 700;
+  line-height: var(--qa-zeilenhoehe-titel);
+  text-decoration: none;
+}
+.qa-knopf:hover,
+.qa-knopf:focus-visible {
+  background: var(--qa-dunkel);
+  color: var(--qa-grund);
+}
+.qa-knopf:focus-visible {
+  outline: 2px solid var(--qa-dunkel);
+  outline-offset: 2px;
+}
+.qa-knopf--zweit {
+  background: transparent;
+  color: var(--qa-grund);
+  box-shadow: inset 0 0 0 1px var(--qa-grund);
+}
+.qa-knopf--zweit:hover,
+.qa-knopf--zweit:focus-visible {
+  background: var(--qa-grund);
+  color: var(--qa-dunkel);
+}
+.qa-knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--qa-s2);
+  justify-content: center;
+  margin-top: var(--qa-s4);
+}
+
+/* Fester Knopf mobil (gs050): sticky am Ende der Strecke, nur mobil. */
+.qa-lp__fest {
+  display: none;
+}
+@media (max-width: 767px) {
+  .qa-lp__fest {
+    display: block;
+    position: sticky;
+    bottom: 0;
+    z-index: var(--qa-z-fest);
+    padding: var(--qa-s1) var(--qa-s2);
+    background: var(--qa-grund);
+    box-shadow: 0 -1px 0 var(--qa-linie);
+  }
+  .qa-knopf--fest {
+    display: flex;
+    width: 100%;
+  }
+}
+
+/* EIN Akzent: die „weiterlesen"-Schalter der Bewertungskarten tragen
+   Google-Blau #1565c0 und bildeten eine zweite gesättigte Farbwelt
+   (design-rubrik harmonisch -25 auf LP B). Auf Muted gezogen, die
+   Unterstreichung hält sie als Schalter erkennbar (wie pdp-qi.css Regel 4). */
+.qa-b button[class*='text-[#1565c0]'] {
+  color: var(--qa-muted) !important;
+  text-decoration: underline;
+}
+
+/* Studienkarten auf der Skala: Titel und Knopf standen bei 16,8 px, einer
+   Zwischenstufe zwischen 16 und 18 (design-rubrik stimmig). */
+.qa-lp .ghx-studie__title,
+.qa-lp .btn--secondary {
+  font-size: var(--qa-fs-md);
+}
+
+/* ─── Fragen ────────────────────────────────────────────────────────────── */
+.qa-lp__fragen {
+  padding: var(--qa-s4) 0;
+}
+
+/* ─── Schluss (dunkler dritter Akt) ─────────────────────────────────────── */
+.qa-abschluss {
+  max-width: none;
+  background: var(--qa-dunkel);
+  color: var(--qa-grund);
+}
+.qa-abschluss__inhalt {
+  max-width: var(--qa-breite);
+  margin: 0 auto;
+  text-align: center;
+}
+.qa-b .qa-abschluss h2,
+.qa-b .qa-abschluss p {
+  color: var(--qa-grund);
+  text-align: center;
+}
+.qa-lp .qa-wortlaut {
+  text-align: left;
+}
+
+/* ─── Shop B ────────────────────────────────────────────────────────────── */
+.qa-auge--kaufbox {
+  margin: 0 0 var(--qa-s2);
+}
+.qa-shop__beratung {
+  margin: var(--qa-s2) 0 0;
+  font-size: var(--qa-fs-base);
+}
+.qa-shop__beratung a {
+  color: var(--qa-dunkel);
+  text-decoration: underline;
+  text-underline-offset: var(--qa-s1);
+}
+.qa-shop__zeile {
+  max-width: var(--qa-breite);
+  margin: var(--qa-s2) auto var(--qa-s6);
+  padding: 0 var(--qa-s3);
+  text-align: center;
+  color: var(--qa-text);
+  font-size: var(--qa-fs-base);
+}
+.qa-shop .qa-abschluss {
+  padding: var(--qa-s8) var(--qa-s3);
+}
+.qa-shop .qa-abschluss h2 {
+  font-size: var(--qa-fs-h2);
+  margin: 0 0 var(--qa-s2);
+}
