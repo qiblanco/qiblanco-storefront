@@ -608,7 +608,7 @@ export default function TechnologiePage() {
       {/* ── ZWEI FRAGEN, DIE HIER AUFGEGANGEN SIND ──
           Seit 2026-10-07 stehen „Wie funktioniert ein Schutz gegen Elektrosmog
           am Körper?" und „Wie groß ist der Wirkungsbereich?" ganz auf dieser
-          Seite (Job 20261007-seo-zusammenlegung-duenne-seiten-301-umsetzen).
+          Seite (PR #815, Zusammenlegung vom 07.10.).
           Text aus app/data/fragen.js, unverändert. Seit 2026-10-24 antworten
           ihre eigenen Frageseiten wieder selbst (301 zurückgenommen, Hypothese
           H-11352f2aff); die Abschnitte bleiben stehen, ihr Anker hängt am Slug,
