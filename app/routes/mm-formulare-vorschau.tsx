@@ -38,8 +38,8 @@ export default function MmFormulareVorschau() {
     <div className="mm-vorschau">
       <h1>Anmeldeformulare aus dem Mail Manager</h1>
       <p className="mm-vorschau__hinweis">
-        Vorschau für qiblanco.com. Diese Seite ist nicht verlinkt und erscheint in keiner Suchmaschine.
-        Jedes Formular meldet echt an: Danach kommt die Bestätigungsmail.
+        Vorschau für qiblanco.com: im Shop nicht verlinkt und in keiner Suchmaschine. Jedes Formular meldet echt an.
+        Danach kommt die Bestätigungsmail.
       </p>
       {FORMULARE.map((f) => (
         <section key={f.m.KONFIG.formularId} className="mm-vorschau__kachel" id={`formular-${f.m.KONFIG.formularId}`}>

@@ -10,13 +10,13 @@ export const KONFIG: MmFormularKonfig = {
     {
       "name": "vorname",
       "typ": "text",
-      "label": "Vorname*",
+      "label": "Vorname",
       "pflicht": true
     },
     {
       "name": "email",
       "typ": "email",
-      "label": "Email Adresse*",
+      "label": "Email Adresse",
       "pflicht": true
     }
   ],
