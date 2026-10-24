@@ -1,34 +1,121 @@
-import {leiteUm} from '~/lib/zusammenlegungen';
+import {FrageSeite} from '~/components/campaign/FrageSeite';
+import fragenStyles from '~/styles/fragen.css?url';
+import {canonicalLink, absoluteCanonical} from '~/lib/seo';
+import {seiteFuer} from '~/data/fragen';
+import {frageSchema} from '~/lib/fragen-schema';
+import {MARKE, brotkrume, kurzName, teilbildTags} from '~/lib/seiten-seo';
+import {isoMitZone} from '~/lib/datum';
 
 const PFAD = '/pages/wie-weit-reicht-elektrosmog-schutz';
+// EIN Traeger für die Adresse: der Slug wird abgeleitet, nicht danebengeschrieben.
+const SLUG = PFAD.slice('/pages/'.length);
 
 /**
- * /pages/wie-weit-reicht-elektrosmog-schutz — permanenter 301 auf
- * /pages/technologie.
+ * /pages/wie-weit-reicht-elektrosmog-schutz — die Frage „Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes?".
  *
- * Bis 07.10.2026 stand hier die Frageseite „Wie groß ist der Wirkungsbereich
- * eines Elektrosmog-Schutzes?". Die Seite ist in /pages/technologie
- * aufgegangen (die vollständige Antwort als Abschnitt der Technologieseite,
- * Anker #wie-weit-reicht-elektrosmog-schutz), Entscheidung vom 07.10.2026
- * (Coworker A im Auftrag Christians), gebaut von Job 20261007-seo-
- * zusammenlegung-duenne-seiten-301-umsetzen. Der Text liegt unverändert im
- * Datenmodul; diese Route trägt nur noch die Weiterleitung.
+ * Gebaut von 20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert,
+ * Segment s07. Den Text schrieb Segment s05; er steht committet in
+ * app/data/fragen.js, die Darstellung in
+ * app/components/campaign/FrageSeite.jsx. DIESE DATEI TRÄGT KEINEN INHALT —
+ * wer den Text aendert, aendert das Datenmodul, nicht die Route.
  *
- * WARUM DIE ROUTE BLEIBT: ohne sie übernähme pages.$handle.jsx, fände kein
- * Shopify-Seitenobjekt und lieferte 404. Alte Links, Lesezeichen und Zitate
- * laufen so auf den neuen Abschnitt. Ziel und Anker stehen in EINEM Träger,
- * app/lib/zusammenlegungen.js; der Query-String bleibt erhalten.
+ * DIE FRAGE IST DIE ADRESSE UND DIE UEBERSCHRIFT. Das ist keine Kosmetik: ein
+ * Antwortsystem schneidet Texte in Abschnitte und bewertet sie isoliert. Eine
+ * Frage, die nur eine Zeile unter zwoelf anderen auf /pages/faq ist,
+ * konkurriert mit ihren Nachbarn um dieselbe URL. Die Bestands-FAQ bleibt
+ * unangetastet — sie bedient den Menschen, der blaettert.
  *
- * RÜCKWEG: hb-deploy revert --sha <merge> stellt die Seite wieder her.
+ * Die Datei sticht ausserdem den Katchall pages.$handle.jsx, der sonst ein
+ * Shopify-Seitenobjekt dieses Handles suchen und 404 liefern würde.
+ *
+ * ZUSAMMENLEGUNG ZURÜCKGENOMMEN (23.10.2026): vom 07.10. bis 23.10. trug diese
+ * Route nur einen 301 auf /pages/technologie#wie-weit-reicht-elektrosmog-schutz (PR #815). /pages/technologie
+ * fiel am Kontrollpunkt Tag 14 ab (Position 10,4 -> 21,1); nach der Entscheidung
+ * vom 07.10. (Coworker A im Auftrag Christians) kommen die 301 dann zurück.
+ * Folgeauftrag des Wirkungskreislaufs
+ * 20261023-seo-wk-rueckweg-301-technologie-11352f2aff, Hypothese H-11352f2aff.
+ * Der übernommene Abschnitt auf /pages/technologie bleibt stehen
+ * (pages.technologie.jsx, FrageAbschnitt, Anker am Slug).
+ *
+ * SITEMAP ÜBER `NUR_ROUTE_SEITEN` (app/lib/seo.js), NICHT über ein
+ * Shopify-Seitenobjekt: die Shopify-Sitemap entsteht aus Seitenobjekten, eine
+ * reine Route kaeme dort baulich nie hinein und wäre erreichbar UND
+ * unauffindbar. Ein Seitenobjekt wäre der zweite mögliche Traeger und ist
+ * bewusst nicht gewählt (Fremdsystem) — dieselbe Begründung wie bei
+ * /pages/kritik, /pages/hypothesen und /pages/lexikon.
+ *
+ * NICHT IM MENUE, UND DAS IST KEIN VERSTECK: die Route hängt nicht am
+ * Shopify-Menue-Objekt, also gibt es keinen Dropdown-Eintrag. Öffentlich,
+ * indexierbar, in der Sitemap, vom Fragen-Hub verlinkt — nur eben nicht im
+ * Navigationsband. Jeder Besucher bekommt denselben Text, Mensch wie Crawler;
+ * das misst die Abnahme und nicht dieser Kommentar.
+ *
+ * TRACKING-NAHT: keine Cookies, kein neuer Identitaets- oder Tracking-Key,
+ * kein eigener Pixel, kein Kaufknopf. Die R1/R2/R3-Kette hängt pfad-agnostisch
+ * im root-Layout; TRACKING_COOKIE_NAMES bleibt unangetastet.
+ *
+ * KEIN LOADER: Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
+ * lesen.
  */
+const SEITE = seiteFuer(SLUG);
+if (!SEITE) {
+  // FAIL-LOUD AN DER RICHTIGEN STELLE. Faehrt jemand diese Frage aus
+  // app/data/fragen.js heraus, wäre die stille Variante eine leere Seite mit
+  // HTTP 200 — erreichbar und inhaltslos, also genau der Zustand, den der
+  // Wissens-Blog monatelang hatte. Ein Fehler beim Rendern ist laut und trifft
+  // nur diese eine Route.
+  throw new Error(
+    `Frageseite "${SLUG}" fehlt in app/data/fragen.js. ` +
+      'Route und Datenmodul sind auseinandergelaufen.',
+  );
+}
+
+const TITEL = "Wie groß ist der Wirkungsbereich eines Elektrosmog-Schutzes? | Qi Blanco";
+const BESCHREIBUNG = "Wir haben unser QiHome® Air auf einen Einsatzbereich von bis zu 160 Metern Radius ausgelegt, das reicht für eine Wohnung und auch für ein ganzes Haus.";
 
 /**
- * @param {{request: Request}} args
+ * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
+ * jedem Abruf bewegt, behauptet eine Pflege, die nicht stattfindet.
+ * WER DEN TEXT DIESER SEITE AENDERT, ZIEHT `GEAENDERT` NACH — und den
+ * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
-export async function loader({request}) {
-  leiteUm(request, PFAD);
+const VEROEFFENTLICHT = '2026-09-16';
+const GEAENDERT = '2026-10-07';
+
+export function links() {
+  return [{rel: 'stylesheet', href: fragenStyles}];
 }
 
-export default function WieWeitReichtElektrosmogSchutzWeiterleitung() {
-  return null;
+/** @type {MetaFunction} */
+export const meta = () => {
+  const schema = frageSchema(SEITE, {
+    datePublished: isoMitZone(VEROEFFENTLICHT),
+    dateModified: isoMitZone(GEAENDERT),
+  });
+  return [
+    {title: TITEL},
+    {name: 'description', content: BESCHREIBUNG},
+    canonicalLink(PFAD),
+    ...teilbildTags(PFAD),
+    {property: 'og:type', content: 'article'},
+    {property: 'og:title', content: TITEL},
+    {property: 'og:description', content: BESCHREIBUNG},
+    {property: 'og:url', content: absoluteCanonical(PFAD)},
+    {property: 'og:site_name', content: MARKE},
+    ...(schema ? [{'script:ld+json': schema}] : []),
+    // Brotkrume Startseite -> diese Seite (GEO-Seitenregel R6,
+    // schema_pflicht.frageseite), aus der gemeinsamen Fabrik.
+    {
+      'script:ld+json': brotkrume({
+        url: absoluteCanonical(PFAD),
+        name: kurzName(TITEL),
+      }),
+    },
+  ];
+};
+
+export default function FrageRoute() {
+  return <FrageSeite seite={SEITE} />;
 }
+
+/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */

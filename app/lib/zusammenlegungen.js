@@ -51,6 +51,12 @@ import {redirect} from 'react-router';
  *    Hypothese H-395796ad98. Der übernommene Abschnitt auf der FAQ bleibt
  *    stehen (FaqSeite.jsx, FrageAbschnitt; sein Anker hängt am Slug, nicht an
  *    dieser Liste).
+ *  - /pages/wie-funktioniert-schutz-vor-elektrosmog und
+ *    /pages/wie-weit-reicht-elektrosmog-schutz seit 24.10.2026. Die Zielseite
+ *    /pages/technologie fiel am Kontrollpunkt Tag 14 ab (Position 10,4 ->
+ *    21,1); Folgeauftrag des Wirkungskreislaufs zur Hypothese H-11352f2aff.
+ *    Die übernommenen Abschnitte auf der Technologieseite bleiben stehen
+ *    (pages.technologie.jsx, FrageAbschnitt; ihr Anker hängt am Slug).
  *
  * @type {Readonly<Record<string, {ziel: string, anker: boolean}>>}
  */
@@ -83,14 +89,6 @@ export const ZUSAMMENGELEGT = Object.freeze({
   },
   '/pages/gibt-es-studien-zu-elektrosmog-schutz': {
     ziel: '/pages/studien',
-    anker: true,
-  },
-  '/pages/wie-funktioniert-schutz-vor-elektrosmog': {
-    ziel: '/pages/technologie',
-    anker: true,
-  },
-  '/pages/wie-weit-reicht-elektrosmog-schutz': {
-    ziel: '/pages/technologie',
     anker: true,
   },
   '/pages/support-1': {ziel: '/pages/support', anker: false},

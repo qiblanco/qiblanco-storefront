@@ -41,7 +41,8 @@ import {ZUSAMMENGELEGT} from '~/lib/zusammenlegungen';
  * (der Normalfall des Rückwegs im Wirkungskreislauf), hat sich das Ziel an
  * diesem Tag trotzdem geändert. `inhaltBleibt` nennt dann Quelle -> Ziel, damit
  * das Datum nicht zurückfällt. Erster Fall: /pages/armband-duschen-sauna ->
- * /pages/faq (Hypothese H-395796ad98).
+ * /pages/faq (Hypothese H-395796ad98). Zweiter Fall: die beiden Frageseiten
+ * zu Schutz und Wirkungsbereich -> /pages/technologie (Hypothese H-11352f2aff).
  *
  * @type {ReadonlyArray<{am: string, beleg: string, quellen: string[], inhaltBleibt?: Readonly<Record<string, string>>}>}
  */
@@ -66,6 +67,8 @@ export const ZUSAMMENLEGUNGS_STAENDE = Object.freeze([
     ],
     inhaltBleibt: {
       '/pages/armband-duschen-sauna': '/pages/faq',
+      '/pages/wie-funktioniert-schutz-vor-elektrosmog': '/pages/technologie',
+      '/pages/wie-weit-reicht-elektrosmog-schutz': '/pages/technologie',
     },
   },
 ]);

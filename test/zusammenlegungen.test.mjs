@@ -156,6 +156,18 @@ test('Rückweg: eine zurückgenommene Seite antwortet selbst, steht in der Sitem
       merkmal: "seiteFuer('armband-duschen-sauna')",
       listeErlaubt: true,
     },
+    // H-11352f2aff (24.10.): /pages/technologie fiel am Kontrollpunkt Tag 14
+    // ab. Beide Abschnitte hängen dort am Slug, die Seite liest die Liste nicht.
+    {
+      von: '/pages/wie-funktioniert-schutz-vor-elektrosmog',
+      ziel: 'app/routes/pages.technologie.jsx',
+      merkmal: "seiteFuer('wie-funktioniert-schutz-vor-elektrosmog')",
+    },
+    {
+      von: '/pages/wie-weit-reicht-elektrosmog-schutz',
+      ziel: 'app/routes/pages.technologie.jsx',
+      merkmal: "seiteFuer('wie-weit-reicht-elektrosmog-schutz')",
+    },
   ];
   const nurRoute = new Set(NUR_ROUTE_SEITEN.map((e) => e.pfad));
   for (const {von, ziel, merkmal, listeErlaubt} of paare) {
