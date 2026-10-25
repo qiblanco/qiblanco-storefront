@@ -44,6 +44,14 @@ export const VORSCHAU_NOINDEX = [
   {pfad: '/pages/qi-alpha-vorverkauf', googlebot: true, rolle: 'LP A nach Umbenennung'},
   {pfad: '/products/qi-master', googlebot: false, rolle: 'Shop A'},
   {pfad: '/products/qi-alpha', googlebot: false, rolle: 'Shop A nach Umbenennung'},
+  // Testarme der The-Alpha-Seite (Grossjob 20261025-prio1-the-alpha-
+  // landingpage-figma-vorlage-a-server-b-ki-c, s03 trägt sie VORAB ein, damit
+  // s04/s05 diese gemeinsame Datei nicht anfassen). A = /pages/The-Alpha ist
+  // die Hauptseite und steht NICHT hier. Die Pfade stehen in Christians
+  // Schreibweise (Z6); der Vergleich in istVorschauNoindex ist Groß/Klein-frei,
+  // robots.txt bekommt beide Schreibweisen (vorschauDisallowZeilen).
+  {pfad: '/pages/The-Alpha-B', googlebot: true, rolle: 'The Alpha Testarm C (KI-optimiert)'},
+  {pfad: '/pages/The-Alpha-C', googlebot: true, rolle: 'The Alpha Testarm B (Server)'},
 ];
 
 /** Der Kopf, den jeder Listenpfad trägt. */
@@ -63,7 +71,7 @@ function normiere(pfad) {
  */
 export function istVorschauNoindex(pathname) {
   const p = normiere(pathname);
-  return VORSCHAU_NOINDEX.some((e) => e.pfad === p);
+  return VORSCHAU_NOINDEX.some((e) => normiere(e.pfad) === p);
 }
 
 /**
@@ -73,8 +81,20 @@ export function istVorschauNoindex(pathname) {
  */
 export function vorschauDisallowZeilen({alle = false} = {}) {
   return VORSCHAU_NOINDEX.filter((e) => alle || e.googlebot)
-    .flatMap((e) => [`Disallow: ${e.pfad}$`, `Disallow: ${e.pfad}?`])
+    .flatMap((e) => schreibweisen(e.pfad))
+    .flatMap((p) => [`Disallow: ${p}$`, `Disallow: ${p}?`])
     .join('\n');
+}
+
+/**
+ * robots.txt vergleicht Groß/Klein genau, die Storefront nicht: ein Pfad in
+ * Großschreibung (/pages/The-Alpha-B) ist auch klein erreichbar. Beide
+ * Schreibweisen bekommen deshalb eine Zeile; ein klein geschriebener Pfad
+ * bleibt bei genau einer.
+ */
+function schreibweisen(pfad) {
+  const klein = pfad.toLowerCase();
+  return klein === pfad ? [pfad] : [pfad, klein];
 }
 
 /**

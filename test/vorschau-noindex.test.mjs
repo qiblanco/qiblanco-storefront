@@ -75,6 +75,8 @@ const PFLICHT = [
   '/pages/qi-alpha-vorverkauf',
   '/products/qi-master',
   '/products/qi-alpha',
+  '/pages/The-Alpha-B',
+  '/pages/The-Alpha-C',
 ];
 const NACHBARN = [
   '/products/qi-alpha-goldkette',
@@ -84,9 +86,12 @@ const NACHBARN = [
   '/pages/qi-alpha-b-test',
   '/products/qione-2-pro',
   '/pages/qione-2-pro-b',
+  // The-Alpha A ist die Hauptseite und bleibt indexierbar (s03, 25.10.2026).
+  '/pages/The-Alpha',
+  '/pages/the-alpha',
 ];
 
-test('Pfadliste trägt genau die sechs Pfade aus dem Auftrag', () => {
+test('Pfadliste trägt genau die Pfade aus den Aufträgen (sechs + zwei The-Alpha-Testarme)', () => {
   assert.deepEqual(LISTE.map((e) => e.pfad).sort(), [...PFLICHT].sort());
 });
 
@@ -113,7 +118,7 @@ test('robots $-Anker: goldkette, wunschnummer und andere Nachbarn bleiben offen'
     for (const p of NACHBARN) assert.equal(erlaubt(r, p), true, `${p} alle=${alle}`);
   }
   for (const z of zeilen({alle: true}).split('\n')) {
-    assert.match(z, /^Disallow: \/[a-z0-9/-]+(\$|\?)$/, z);
+    assert.match(z, /^Disallow: \/[A-Za-z0-9/-]+(\$|\?)$/, z);
   }
 });
 
@@ -127,7 +132,20 @@ test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar
 
 test('Sitemap-Handles je Typ: alle Listenpfade, auch Shop A', () => {
   assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master']);
-  assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['qi-alpha-b', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
+  assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['The-Alpha-B', 'The-Alpha-C', 'qi-alpha-b', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
+});
+
+test('Groß/Klein (The-Alpha, s03): Header in jeder Schreibweise, robots sperrt beide, A bleibt offen', () => {
+  for (const p of ['/pages/the-alpha-b', '/pages/THE-ALPHA-B', '/pages/the-alpha-c', '/pages/The-Alpha-C/']) {
+    assert.equal(istNoindex(p), true, p);
+  }
+  for (const alle of [true, false]) {
+    const r = regelnAus(zeilen({alle}));
+    for (const p of ['/pages/The-Alpha-B', '/pages/the-alpha-b', '/pages/The-Alpha-C', '/pages/the-alpha-c']) {
+      assert.equal(erlaubt(r, p), false, `${p} alle=${alle}`);
+    }
+    for (const p of ['/pages/The-Alpha', '/pages/the-alpha']) assert.equal(erlaubt(r, p), true, `${p} alle=${alle}`);
+  }
 });
 
 test('Sitemap-Filter: trifft jeden Listenpfad, lässt die Nachbarn stehen', () => {

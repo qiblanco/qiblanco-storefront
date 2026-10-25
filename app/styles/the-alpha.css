@@ -1,0 +1,229 @@
+/*
+ * THE ALPHA, Variante A — Token-Schicht der Seite /pages/The-Alpha und des
+ * Kauf-Bausteins TheAlphaKauf (Grossjob 20261025-prio1-the-alpha-landingpage-
+ * figma-vorlage-a-server-b-ki-c, s03).
+ *
+ * FARBEN AUS CHRISTIANS VORLAGE gemessen (vorlage/the-alpha-figma.png,
+ * Pixelwerte): Kopf #1e1e1e, Text #333333, Flächen weiß, Knopf #b92200.
+ * Alle dunklen Texte (Überschriften, Zeilen, Edition) tragen EIN Token.
+ * Das Rot steht NUR auf dem Knopf „Jetzt Exklusiv Reservieren“. Die Seite
+ * folgt der Vorlage, nicht der Hauspalette (Christians Vorgabe geht vor).
+ *
+ * TYPO: eine Familie (die des Ladens), modulare Skala 1,25 ab 16 px
+ * (16 / 20 / 25 / 31,25: Text, Zeilen, Abschnitte, Kopf und Edition).
+ * ABSTÄNDE: 8-px-Raster. RADIUS: ein Token.
+ * Alle Regeln hängen an .ta-seite bzw. .ta-kauf (B und C importieren den
+ * Kauf-Baustein und binden diese Datei mit ein).
+ */
+.ta-seite,
+.ta-kauf {
+  --ta-fs-0: 1rem;
+  --ta-fs-1: 1.25rem;
+  --ta-fs-2: 1.5625rem;
+  --ta-fs-3: 1.953rem;
+
+  --ta-s-1: 8px;
+  --ta-s-2: 16px;
+  --ta-s-3: 24px;
+  --ta-s-4: 32px;
+  --ta-s-6: 48px;
+  --ta-s-8: 64px;
+  --ta-s-12: 96px;
+
+  --ta-dunkel: #1e1e1e;
+  --ta-text: #333333;
+  --ta-weiss: #ffffff;
+  --ta-rot: #b92200;
+
+  --ta-radius: 8px;
+  --ta-spalte: 560px;
+}
+
+.ta-seite {
+  background: var(--ta-weiss);
+  color: var(--ta-text);
+  /* Abstand zum Seitenkopf: das Logo ragt am Handy unter die Kopfleiste und
+     läge sonst auf dem schwarzen Block. */
+  padding-top: var(--ta-s-2);
+}
+
+.ta-spalte {
+  max-width: var(--ta-spalte);
+  margin: 0 auto;
+}
+
+/* Kopf, schwarz */
+.ta-kopf {
+  background: var(--ta-dunkel);
+  color: var(--ta-weiss);
+  padding: var(--ta-s-6) var(--ta-s-3);
+}
+
+.ta-kopf-titel {
+  margin: 0;
+  font-size: var(--ta-fs-3);
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--ta-weiss);
+}
+
+.ta-kopf-unter {
+  display: block;
+  margin-top: var(--ta-s-1);
+  font-size: var(--ta-fs-1);
+}
+
+.ta-kopf-text {
+  margin-top: var(--ta-s-4);
+  font-size: var(--ta-fs-0);
+  line-height: 1.5;
+}
+
+/* reset.css setzt `p, li` Farbe und Größe direkt; ohne diese Zeilen erbt der
+   Kopftext nicht Weiß, sondern Dunkelgrau auf Schwarz (unlesbar). */
+.ta-kopf-text p {
+  margin: 0 0 var(--ta-s-2);
+  color: var(--ta-weiss);
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.ta-kopf-text p:last-child {
+  margin-bottom: 0;
+}
+
+.ta-kopf-text strong {
+  font-weight: 700;
+}
+
+/* Video-Feld: Video oder ruhiges Standbild, nie ein leeres Viereck */
+.ta-video {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--ta-weiss);
+}
+
+.ta-video img,
+.ta-video video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Abschnitte Manifestation / Protection / Longevity */
+.ta-abschnitt {
+  padding: var(--ta-s-8) var(--ta-s-3) var(--ta-s-6);
+  text-align: center;
+}
+
+.ta-h2 {
+  margin: 0 0 var(--ta-s-3);
+  font-size: var(--ta-fs-2);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--ta-text);
+  text-align: center;
+}
+
+.ta-zeilen {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  font-size: var(--ta-fs-1);
+  line-height: 1.5;
+}
+
+.ta-zeilen li {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.ta-paar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ta-s-1);
+  padding: 0 var(--ta-s-2);
+}
+
+.ta-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--ta-radius);
+}
+
+.ta-banner {
+  padding: var(--ta-s-2) var(--ta-s-2) 0;
+}
+
+.ta-banner .ta-bild {
+  aspect-ratio: auto;
+}
+
+/* Limited 1st. Edition 111/111 */
+.ta-edition {
+  padding: var(--ta-s-12) var(--ta-s-3) var(--ta-s-6);
+  text-align: center;
+}
+
+.ta-edition-titel {
+  margin: 0;
+  font-size: var(--ta-fs-3);
+  line-height: 1.4;
+  color: var(--ta-text);
+}
+
+/* Kauf-Baustein */
+.ta-kauf {
+  padding: 0 var(--ta-s-2) var(--ta-s-8);
+  color: var(--ta-text);
+}
+
+.ta-knopf {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  padding: var(--ta-s-3) var(--ta-s-2);
+  border: 0;
+  border-radius: 0;
+  background: var(--ta-rot);
+  color: var(--ta-weiss);
+  font: inherit;
+  font-size: var(--ta-fs-1);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ta-knopf:hover {
+  filter: brightness(0.92);
+}
+
+.ta-knopf:focus-visible {
+  outline: 2px solid var(--ta-dunkel);
+  outline-offset: 2px;
+}
+
+/* Handy: reset.css setzt h1/h2 unter 750 px mit !important auf 1.75/1.5rem.
+   Die oberste Stufe dieser Seite folgt dem, damit Edition und Überschriften
+   auf EINER Skala bleiben (sonst 31,25 px neben 24 px). */
+@media (max-width: 749px) {
+  .ta-seite,
+  .ta-kauf {
+    --ta-fs-3: 1.5rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .ta-seite {
+    padding: var(--ta-s-6) 0 var(--ta-s-8);
+  }
+}
