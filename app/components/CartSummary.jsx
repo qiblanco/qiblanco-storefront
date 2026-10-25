@@ -1,11 +1,5 @@
 import {useEffect, useState} from 'react';
 import {Form} from 'react-router';
-import {
-  GESCHENK_ANGEZEIGT_FELD,
-  GESCHENK_FELD,
-  GESCHENK_TEXT,
-  geschenkVermerkt,
-} from '~/lib/geschenk';
 import {getCartLineGrossDisplayTotalExact} from '~/lib/cart-display-pricing';
 import {formatPreis} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
@@ -77,7 +71,6 @@ export function CartSummary({cart, layout}) {
         subtotal={taxedSubtotal}
         numItems={lines.length}
         contentIds={cartLineContentIds(lines)}
-        geschenk={geschenkVermerkt(cart.attributes)}
       />
       {/* Direkt unter dem Kassenknopf und nur im Instagram-/Facebook-Browser:
           der Weg zu Apple Pay / Google Pay führt über die Kasse, nicht über
@@ -89,14 +82,13 @@ export function CartSummary({cart, layout}) {
 }
 
 /**
- * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[], geschenk?: boolean}}
+ * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[]}}
  */
 function CartCheckoutActions({
   checkoutUrl,
   subtotal,
   numItems,
   contentIds,
-  geschenk = false,
 }) {
   // Der Tracker hält den Ankunfts-Zustand als reine Fenster-Variable
   // (public/qiblanco-tracker.js, `merkeAnkunft`) — er speichert dafür nichts
@@ -149,23 +141,17 @@ function CartCheckoutActions({
       onSubmit={trackInitiateCheckout}
     >
       {/*
-        GESCHENK-ANGABE (~/lib/geschenk). Freiwillig, nie verlangt: der
-        Kasse-Knopf geht mit und ohne Haken. Das versteckte Feld sagt dem
-        Server, dass die Frage gestellt wurde; ohne es wäre "nicht angehakt"
-        von "nie gesehen" nicht zu unterscheiden, weil der Browser eine leere
-        Checkbox gar nicht mitschickt. Vorbelegt ist der Haken nur, wenn
-        dieser Warenkorb schon "Geschenk" trägt.
+        KEIN GESCHENK-KÄSTCHEN MEHR (Job 20261025-repair-warenkorb-geschenk-
+        feld-entfernen-checkout-funktions-wache, Christian 25.10.2026). Das
+        Geschenk-Kästchen stand hier seit PR #737. Es zeigte nie
+        einen Haken: app/styles/reset.css setzt `appearance: none !important`
+        auf jedes input, und für :checked gab es keinen eigenen Stil. Wer es
+        antippte, sah nichts passieren. Im Kaufweg steht nur, was nachweislich
+        funktioniert (homepage-bauer/GOVERNANCE.md, Regel Kaufweg-Funktion).
+        Ein neues Element hier braucht vorher einen Klick-Test auf Handy und
+        Desktop. Die tägliche Wache dafür ist
+        homepage-bauer/warenkorb-funktionswache.
       */}
-      <input type="hidden" name={GESCHENK_ANGEZEIGT_FELD} value="1" />
-      <label className="cart-geschenk">
-        <input
-          type="checkbox"
-          name={GESCHENK_FELD}
-          value="ja"
-          defaultChecked={geschenk}
-        />
-        <span>{GESCHENK_TEXT}</span>
-      </label>
       {/*
         CONSENT-FREIER ANKUNFTS-MARKER (Job 20260922-blinde-menge-...).
         Es reist EIN Wort — 'yes', 'no' oder (bei leerem Feld) nichts —, nie

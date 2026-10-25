@@ -2,6 +2,16 @@
 // AI-CEO-Entscheid zum forschungs-meister-Eintrag
 // sequenz-m2-geschenkfeld-checkout).
 //
+// STAND 2026-10-25: DAS KÄSTCHEN IST AUS DEM WARENKORB ENTFERNT (Job
+// 20261025-repair-warenkorb-geschenk-feld-entfernen-checkout-funktions-wache).
+// Es zeigte nie einen Haken, weil app/styles/reset.css jedem input
+// `appearance: none !important` gibt. Ohne das versteckte Feld
+// geschenk_angezeigt liefert geschenkAusFormular() null, die Route
+// /cart/attribution schreibt also kein geschenk-Attribut mehr. Der Leser
+// bleibt, damit ein Warenkorb, der vor dem Rückbau geöffnet wurde, beim
+// Kasse-Klick nicht bricht. Wer das Kästchen zurückholt, braucht vorher einen
+// sichtbaren :checked-Stil und einen Klick-Test auf Handy und Desktop.
+//
 // WOZU: wer einen zweiten QiOne kauft (Muster M2 im postkauf-manager), kauft
 // ihn für sich oder verschenkt ihn. Aus der Order war das bis heute nicht zu
 // lesen. Die Checkbox fragt es dort, wo der Kunde es ohnehin weiß.

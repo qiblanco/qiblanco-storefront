@@ -158,17 +158,17 @@ test('ARM-G9 Vorbelegung des Hakens folgt nur einem echten ja', () => {
   assert.equal(geschenkVermerkt(null), false, 'ARM-G9c');
 });
 
-test('ARM-G10 Wortlaut und Checkbox: nie fest vorausgefüllt, kein Versprechen', () => {
-  assert.equal(GESCHENK_TEXT, 'Das ist ein Geschenk');
+test('ARM-G10 Rückbau 2026-10-25: kein Geschenk-Kästchen im Kasse-Formular', () => {
+  // Das Kästchen zeigte nie einen Haken (reset.css: appearance:none auf jedem
+  // input) und ist darum entfernt (Job 20261025-repair-warenkorb-geschenk-
+  // feld-entfernen-checkout-funktions-wache). Kommt es zurück, muss dieser Arm
+  // bewusst angepasst werden, zusammen mit einem sichtbaren :checked-Stil und
+  // einem Klick-Test auf Handy und Desktop.
   const quelle = readFileSync(new URL('../app/components/CartSummary.jsx', import.meta.url), 'utf8');
-  // Nur den EIGENEN Label-Block prüfen: andere Checkboxen im selben Formular
-  // (Bewertungs-Opt-in) und deren Kommentare gehen diesen Arm nichts an.
-  const block = quelle.match(/<label className="cart-geschenk">[\s\S]*?<\/label>/)?.[0];
-  assert.ok(block, 'ARM-G10a: Label-Block .cart-geschenk fehlt im Kasse-Formular');
-  assert.ok(/name=\{GESCHENK_FELD\}/.test(block), 'ARM-G10b: Checkbox ohne Feldnamen');
-  const ohneVorbelegung = block.replace('defaultChecked={geschenk}', '');
-  assert.ok(!/checked|required/i.test(ohneVorbelegung),
-    'ARM-G10c: die Checkbox darf nur aus dem Warenkorb vorbelegt und nie Pflicht sein');
-  assert.ok(!/Rechnung/.test(block + GESCHENK_TEXT),
-    'ARM-G10d: kein Rechnungs-Versprechen ohne Beleg des Versandwegs');
+  assert.ok(!/className="cart-geschenk"/.test(quelle),
+    'ARM-G10a: das Geschenk-Kästchen steht wieder im Kasse-Formular');
+  assert.ok(!/GESCHENK_ANGEZEIGT_FELD|GESCHENK_FELD|GESCHENK_TEXT/.test(quelle),
+    'ARM-G10b: CartSummary fragt die Geschenk-Angabe wieder ab');
+  const css = readFileSync(new URL('../app/styles/app.css', import.meta.url), 'utf8');
+  assert.ok(!/\.cart-geschenk/.test(css), 'ARM-G10c: toter Stil .cart-geschenk in app.css');
 });
