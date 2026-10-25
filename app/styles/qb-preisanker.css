@@ -66,15 +66,24 @@
 
 /* Zeile 3 — Preis, dahinter das goldene Banner. Die Preis-Typo selbst
    bleibt die des Kaufwegs (app.css). */
+/* Grundlinie statt Mitte (s03, 25.10.2026): mit Streichpreis stapelt app.css
+   den Preis mobil zweizeilig (.product-price-on-sale, flex-direction column).
+   Mittig stand das Banner dann zwischen den Zeilen statt hinter dem Preis;
+   an der ersten Grundlinie steht es in beiden Fällen in der Preiszeile. */
 .qb-preisanker__preiszeile {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   gap: var(--qb-pa-abstand-preis);
   margin-top: var(--qb-pa-abstand);
 }
 .qb-preisanker__preiszeile .product-price {
   margin: 0;
+}
+/* app.css gibt dem Streichpreis-Block mobil 20px Abstand nach oben; im
+   Dreizeiler steht der Preis direkt unter der Nutzerzahl (Regel 1). */
+.qb-preisanker__preiszeile .product-price-on-sale {
+  margin-top: 0;
 }
 .qb-preisanker__banner {
   display: inline-block;
