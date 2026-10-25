@@ -1,8 +1,12 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {useMatches} from 'react-router';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {ProductPrice} from '~/components/ProductPrice';
+import {qpxTrack} from '~/lib/qpx-commerce';
 import {
+  KAUFLEISTE_AB_TEST,
+  kaufleisteAnzeige,
   kaufleisteSichtbar,
   kaufleisteZiel,
   variantenwahlText,
@@ -70,6 +74,24 @@ import {
  * Gestalt: styles/qb-kaufleiste.css (nur Rollen aus designstandard-dach.css),
  * geladen über links() der Kaufseiten. Bausteinregel:
  * homepage-bauer/baukasten/qb-kaufleiste/README.md.
+ *
+ * DAS GESICHT RUTSCHT HOCH (s03 des Grossjobs vom 25.10.2026, Christian:
+ * „dann sollte das gesicht nicht verschweinden sondern hochrutschen“): im
+ * sichtbaren Zustand trägt die Leiste data-qb-chat-weicht. Daran erkennt
+ * KaufknopfChatSignal sie und schiebt die geschlossene Chat-Kugel über sie,
+ * statt sie auszublenden (lib/kaufknopf-chat.js, chatHub). Das ersetzt die
+ * Nebenwirkung oben: die Kugel bleibt stehen, nur höher.
+ *
+ * A/B-TEST (s03, Christian 25.10.2026, Z4): der Loader der Kaufseite legt
+ * `kaufleisteAb` = {arm, erzwungen} in seine Daten (lib/kaufleiste-ab.
+ * server.js). Arm b zeigt statt des Preises die Nutzenaussage des Produkts
+ * und „Jetzt kaufen“ statt „In den Warenkorb legen“; die Aktion bleibt
+ * dieselbe (Zeilen, Schublade). „Größe wählen“ bleibt der erste Schritt.
+ * Ausnahme von der Formulierungsregel oben, nur in Arm b, auf Christians
+ * Wort. Beim ersten Sichtbarwerden meldet die Leiste ihren Arm einmal je
+ * Seitenaufruf als Stempel ab_zuteilung an den eigenen Receiver (qpxTrack,
+ * nur mit Einwilligung, wie add_to_cart). Gezählt wird also, wer die Leiste
+ * gesehen hat, in beiden Armen nach derselben Regel.
  */
 export const KAUFLEISTE_AN = {desktop: false, mobil: true};
 
@@ -98,6 +120,22 @@ export function Kaufleiste({
   const [sichtbar, setSichtbar] = useState(false);
   const [gewählt, setGewählt] = useState(false);
   const {open} = useAside();
+  const ab = useMatches()
+    .map((m) => m?.data?.kaufleisteAb)
+    .find((x) => x && typeof x === 'object');
+  const anzeige = kaufleisteAnzeige({arm: ab?.arm, handle: preis?.handle});
+  const gestempelt = useRef(false);
+
+  // Stempel des A/B-Tests: einmal je Seitenaufruf, beim ersten Sichtbarwerden.
+  useEffect(() => {
+    if (!sichtbar || !ab || gestempelt.current) return;
+    gestempelt.current = true;
+    qpxTrack('ab_zuteilung', {
+      test: KAUFLEISTE_AB_TEST,
+      arm: anzeige.arm,
+      erzwungen: ab.erzwungen ? 1 : 0,
+    });
+  }, [sichtbar, ab, anzeige.arm]);
 
   const wahlOption = (productOptions || []).find(
     (o) => (o?.optionValues?.length || 0) > 1,
@@ -160,17 +198,23 @@ export function Kaufleiste({
       data-section="pdp-kaufleiste"
       data-kaufleiste-desktop={KAUFLEISTE_AN.desktop ? 'an' : 'aus'}
       data-kaufleiste-mobil={KAUFLEISTE_AN.mobil ? 'an' : 'aus'}
+      data-kaufleiste-arm={ab ? anzeige.arm : undefined}
+      data-qb-chat-weicht={sichtbar ? '' : undefined}
       aria-hidden={sichtbar ? undefined : 'true'}
     >
       {sichtbar && (
         <>
-          <div className="qb-kaufleiste__preis">
-            <ProductPrice
-              handle={preis?.handle}
-              price={preis?.price}
-              compareAtPrice={preis?.compareAtPrice}
-            />
-          </div>
+          {anzeige.nutzen ? (
+            <div className="qb-kaufleiste__nutzen">{anzeige.nutzen}</div>
+          ) : (
+            <div className="qb-kaufleiste__preis">
+              <ProductPrice
+                handle={preis?.handle}
+                price={preis?.price}
+                compareAtPrice={preis?.compareAtPrice}
+              />
+            </div>
+          )}
           {ziel === 'variantenwahl' ? (
             <button
               type="button"
@@ -195,7 +239,9 @@ export function Kaufleiste({
                   : []
               }
             >
-              {verfuegbar ? ctaLabel ?? 'In den Warenkorb legen' : 'Ausverkauft'}
+              {verfuegbar
+                ? anzeige.knopf ?? ctaLabel ?? 'In den Warenkorb legen'
+                : 'Ausverkauft'}
             </AddToCartButton>
           )}
         </>

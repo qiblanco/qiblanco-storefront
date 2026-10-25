@@ -3,6 +3,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  JETZT_KAUFEN,
+  KAUFLEISTE_AB_TEST,
+  KAUFLEISTE_NUTZEN,
+  kaufleisteAnzeige,
   kaufleisteSichtbar,
   kaufleisteZiel,
   variantenwahlText,
@@ -46,4 +50,30 @@ test('Beschriftung der Variantenwahl: deutsch, auch für Shopifys "Size"', () =>
   assert.equal(variantenwahlText('Größe'), 'Größe wählen');
   assert.equal(variantenwahlText('Size'), 'Größe wählen');
   assert.equal(variantenwahlText(undefined), 'Größe wählen');
+});
+
+// A/B-Test der Kaufleiste (s03, 25.10.2026, Christian Z4)
+test('Kaufleiste A/B: Arm b zeigt Nutzenaussage und „Jetzt kaufen“', () => {
+  assert.deepEqual(kaufleisteAnzeige({arm: 'b', handle: 'qione-2-pro'}),
+    {arm: 'b', nutzen: 'E-Smog Schutz', knopf: 'Jetzt kaufen'});
+  assert.equal(JETZT_KAUFEN, 'Jetzt kaufen');
+  for (const h of ['qione-kette', 'qibracelet', 'qihome-air']) {
+    assert.equal(kaufleisteAnzeige({arm: 'b', handle: h}).nutzen, 'E-Smog Schutz', h);
+  }
+});
+
+test('Kaufleiste A/B: Arm a, kein Arm und Produkt ohne Nutzen zeigen den Bestand', () => {
+  const bestand = {arm: 'a', nutzen: null, knopf: null};
+  assert.deepEqual(kaufleisteAnzeige({arm: 'a', handle: 'qione-2-pro'}), bestand);
+  assert.deepEqual(kaufleisteAnzeige({arm: undefined, handle: 'qione-2-pro'}), bestand);
+  assert.deepEqual(kaufleisteAnzeige({arm: 'b', handle: 'qi-master'}), bestand);
+  assert.deepEqual(kaufleisteAnzeige({arm: 'x', handle: 'qibracelet'}), bestand);
+});
+
+test('Kaufleiste A/B: Nutzen eine Zeile kurz, echte Umlaute, Testkennung gültig', () => {
+  for (const [h, t] of Object.entries(KAUFLEISTE_NUTZEN)) {
+    assert.ok(t.split(/\s+/).length <= 3, h);
+    assert.ok(!/ae|oe|ue/.test(t.toLowerCase().replace('smog', '')), h);
+  }
+  assert.match(KAUFLEISTE_AB_TEST, /^[a-z0-9_]{1,32}$/);
 });

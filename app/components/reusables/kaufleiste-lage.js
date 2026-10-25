@@ -76,3 +76,61 @@ export function variantenwahlText(optionName) {
   const deutsch = OPTION_DEUTSCH[name.toLowerCase()] || name || 'Größe';
   return `${deutsch} wählen`;
 }
+
+/*
+ * A/B-TEST DER KAUFLEISTE (Grossjob 20261025-design-ai-anna-fenster-wie-
+ * apple-handy-hochrutschen-ab-jetzt-kaufen, s03; Christian 25.10.2026: „statt
+ * dem Preis etwas wie "E-Smog Schutz" "Jetzt kaufen" also eine Nutzenaussage
+ * und auch obowhl es nur in den warenkorb gelegt wird, ruhigh mal "Jetzt
+ * kaufen" abfragen. und dann wie gewohtn weiter machen und den warenkorb
+ * äöffnen.“).
+ *
+ * Arm a (Kontrolle): Preis + „In den Warenkorb legen“, wie bisher.
+ * Arm b: Nutzenaussage statt Preis + „Jetzt kaufen“. Die Aktion bleibt
+ * dieselbe: dieselben Warenkorbzeilen, die Schublade öffnet sich. Bei
+ * mehreren Varianten bleibt „Größe wählen“ der erste Schritt (kaufleisteZiel),
+ * erst danach heißt der Knopf „Jetzt kaufen“.
+ *
+ * Die Ausnahme von der Formulierungsregel in Kaufleiste.jsx („In den
+ * Warenkorb legen heißt immer Warenkorb“) ist Christians Auftrag und gilt
+ * nur für Arm b dieses Tests.
+ *
+ * NUTZENAUSSAGE JE PRODUKT, je mit Quelle (eine Zeile bei 390 px, echte
+ * Umlaute). Alle vier stehen wortgleich in der Nutzenleiste der eigenen
+ * Seite:
+ *  - qione-2-pro: Christians Wortlaut (prompt.txt des Auftrags) und
+ *    product-pages/QiOneHeroBulletsPages.jsx ('E-Smog Schutz').
+ *  - qione-kette: dieselbe QiOne-Familie, QiOneHeroBulletsPages.jsx.
+ *  - qibracelet: product-pages/QiBraceletHeroBullets.jsx ('E-Smog Schutz').
+ *  - qihome-air: product-pages/QiHomeHeroBullets.jsx ('E-Smog Schutz').
+ * qi-master ist NICHT im Test: seine Texte (data/qi-master-texte.js,
+ * qi-master-wortlaut.json) tragen keinen kurzen Nutzen in Kundensprache, und
+ * einen zu erfinden wäre eine zweite Wahrheit neben Christians Wortlaut. Ohne
+ * Eintrag bekommt die Seite keinen Arm (kaufleiste-ab.server.js) und zeigt a.
+ */
+export const KAUFLEISTE_NUTZEN = Object.freeze({
+  'qione-2-pro': 'E-Smog Schutz',
+  'qione-kette': 'E-Smog Schutz',
+  qibracelet: 'E-Smog Schutz',
+  'qihome-air': 'E-Smog Schutz',
+});
+
+/** Kennung des Tests im Stempel ab_zuteilung (events.db, [a-z0-9_]{1,32}). */
+export const KAUFLEISTE_AB_TEST = 'kaufleiste_z4';
+
+/** Beschriftung des Kaufknopfs in Arm b. */
+export const JETZT_KAUFEN = 'Jetzt kaufen';
+
+/**
+ * Was zeigt die Leiste? Reine Entscheidung über Arm und Produkt.
+ *
+ * @param {{arm?: string|null, handle?: string|null}} stand
+ * @returns {{arm: 'a'|'b', nutzen: string|null, knopf: string|null}}
+ *   nutzen = Text statt Preis (nur b), knopf = Beschriftung des
+ *   Warenkorb-Knopfs (null = die der Kaufbox)
+ */
+export function kaufleisteAnzeige({arm, handle}) {
+  const nutzen = KAUFLEISTE_NUTZEN[String(handle || '')] || null;
+  if (arm === 'b' && nutzen) return {arm: 'b', nutzen, knopf: JETZT_KAUFEN};
+  return {arm: 'a', nutzen: null, knopf: null};
+}

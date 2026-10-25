@@ -207,3 +207,131 @@ export function ueberdecktKaufknopf({
       k.bottom > rahmen.top - ABSTAND_PX,
   );
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * DAS GESICHT RUTSCHT ÜBER DIE KAUFLEISTE (Grossjob 20261025-design-ai-anna-
+ * fenster-wie-apple-handy-hochrutschen-ab-jetzt-kaufen, s03; Christian
+ * 25.10.2026: „wenn dieser jetzt Kauf button mit Preis kommt ist cool, aber
+ * dann sollte das gesicht nicht verschweinden sondern hochrutschen“).
+ *
+ * Bis hier deckte die geschlossene Kugel auf dem Handy den Knopf der
+ * Kaufleiste, und ueberdecktKaufknopf blendete sie aus, solange die Leiste
+ * stand (gemessen 25.10.2026 auf /products/qione-2-pro, 390x844: Rahmen
+ * [309,763,74,74], Leiste ab y=781, visibility hidden). Jetzt weicht sie
+ * nach OBEN aus: um so viel, dass die Unterkante des Rahmens ABSTAND_PX über
+ * der Oberkante der Leiste liegt. Die Strecke folgt aus beiden Rechtecken,
+ * nicht aus einer Konstante: Kugel, Blase und Leiste dürfen ihre Größe
+ * ändern (s02 hat die Pille zur Kugel verkleinert, parallel zu diesem Bau).
+ *
+ * Die Leisten, über die er ausweicht, als EIGENSCHAFT: jedes Element mit
+ * data-qb-chat-weicht, das gerade im Fenster steht. Kaufleiste.jsx setzt es
+ * nur im sichtbaren Zustand.
+ *
+ * DIE FALLE, um die das hier gebaut ist: getBoundingClientRect() enthält die
+ * Transformation. Mitten im Hochrutschen deckt der Rahmen den Knopf der
+ * Leiste noch, und ueberdecktKaufknopf hätte ihn ausgeblendet (Flackern).
+ * Gemessen wird deshalb gegen die RUHELAGE (Rechteck minus aktuelle
+ * Verschiebung, ruhelage) und geurteilt gegen die ZIELLAGE (ruhelage minus
+ * Hub, verschoben). Beide bewegen sich während des Übergangs nicht.
+ *
+ * Der offene Chat wird nie verschoben: höher als GESCHLOSSEN_MAX_ANTEIL des
+ * Fensters oder angedockt heißt offen (dieselben Merkmale wie oben).
+ *
+ * RÜCKWEG: HOCHRUTSCHEN_AN = false. Dann ist der Hub immer 0 und es gilt
+ * wieder das Ausblenden über dem Knopf der Leiste, Stand vor s03.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Code-Schalter des Hochrutschens. false = Stand vor s03 (Ausblenden). */
+export const HOCHRUTSCHEN_AN = true;
+
+/** Die Leisten, über die das geschlossene Widget ausweicht (Eigenschaft). */
+export const AUSWEICH_SELEKTOR = '[data-qb-chat-weicht]';
+
+/** Am <html>: das Widget steht verschoben. Die Strecke trägt HUB_VARIABLE. */
+export const HUB_ATTRIBUT = 'data-chat-rutscht';
+export const HUB_VARIABLE = '--qb-chat-hub';
+
+/** Am <html>: der Chat ist offen, er gleitet nicht (app.css). */
+export const OFFEN_ATTRIBUT = 'data-chat-offen';
+
+/**
+ * Senkrechte Verschiebung aus einem berechneten `transform`
+ * (getComputedStyle): `none`, `matrix(a,b,c,d,tx,ty)` oder
+ * `matrix3d(... 16 Werte)`. Während eines Übergangs ist das der aktuelle
+ * Zwischenwert. Unlesbar heißt 0.
+ *
+ * @param {string} transform
+ * @returns {number}
+ */
+export function verschiebungY(transform) {
+  if (typeof transform !== 'string' || !transform || transform === 'none') {
+    return 0;
+  }
+  const innen = /\(([^)]*)\)/.exec(transform)?.[1];
+  if (!innen) return 0;
+  const werte = innen.split(',').map((w) => parseFloat(w));
+  const ty = transform.startsWith('matrix3d') ? werte[13] : werte[5];
+  return Number.isFinite(ty) ? ty : 0;
+}
+
+/**
+ * @param {{left:number, top:number, right:number, bottom:number}} rect
+ * @param {number} dy Verschiebung nach oben in px (positiv = höher)
+ */
+export function verschoben(rect, dy) {
+  if (!rect || !dy) return rect;
+  return {left: rect.left, right: rect.right, top: rect.top - dy, bottom: rect.bottom - dy};
+}
+
+/**
+ * Ruhelage des Rahmens: gemessenes Rechteck ohne die aktuelle Verschiebung.
+ *
+ * @param {{left:number, top:number, right:number, bottom:number}|null} rect
+ * @param {number} ty aktuelle senkrechte Verschiebung (verschiebungY)
+ */
+export function ruhelage(rect, ty) {
+  if (!rect) return null;
+  return {left: rect.left, right: rect.right, top: rect.top - ty, bottom: rect.bottom - ty};
+}
+
+/**
+ * Wie weit rutscht das geschlossene Widget nach oben? Reine Entscheidung.
+ *
+ * @param {{
+ *   ruhe: {left:number, top:number, right:number, bottom:number} | null,
+ *   leisten: Array<{left:number, top:number, right:number, bottom:number}>,
+ *   fensterHoehe: number,
+ *   angedockt: boolean,
+ *   an?: boolean,
+ * }} lage
+ * @returns {number} px nach oben, 0 = nicht verschieben
+ */
+export function chatHub({ruhe, leisten, fensterHoehe, angedockt, an = HOCHRUTSCHEN_AN}) {
+  if (!an || !ruhe || angedockt) return 0;
+  const hoehe = ruhe.bottom - ruhe.top;
+  const breite = ruhe.right - ruhe.left;
+  if (!(hoehe > 0 && breite > 0)) return 0;
+  if (hoehe > fensterHoehe * GESCHLOSSEN_MAX_ANTEIL + 1) return 0;
+  let oben = Infinity;
+  for (const l of leisten || []) {
+    if (!(l.bottom > l.top && l.right > l.left)) continue;
+    if (l.top >= fensterHoehe || l.bottom <= 0) continue;
+    // Nur eine Leiste, die waagrecht unter dem Rahmen liegt.
+    if (l.right <= ruhe.left || l.left >= ruhe.right) continue;
+    oben = Math.min(oben, l.top);
+  }
+  if (!Number.isFinite(oben)) return 0;
+  const hub = Math.ceil(ruhe.bottom - oben + ABSTAND_PX);
+  return hub > 0 ? hub : 0;
+}
+
+/**
+ * Ist der Rahmen offen (nicht verschieben, nicht gleiten)? Dieselben
+ * Merkmale wie ueberdecktKaufknopf: angedockt oder höher als der Deckel
+ * geschlossener Flächen.
+ */
+export function rahmenOffen({rahmen, fensterHoehe, angedockt}) {
+  if (angedockt) return true;
+  if (!rahmen) return false;
+  return rahmen.bottom - rahmen.top > fensterHoehe * GESCHLOSSEN_MAX_ANTEIL + 1;
+}

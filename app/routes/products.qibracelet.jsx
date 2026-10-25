@@ -11,6 +11,7 @@ import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
+import {kaufleisteAbDaten} from '~/lib/kaufleiste-ab.server';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
  * seit dem 28.09.2026 in QiBraceletSeite.jsx, weil /pages/qibracelet dieselbe Seite
@@ -58,7 +59,9 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'qibracelet'); // ✅ pass hardcoded handle
 
-  return { ...deferredData, ...criticalData };
+  // A/B-Test der Kaufleiste (lib/kaufleiste-ab.server.js): der Arm steht im
+  // SSR fest; ohne Test bleibt der Schlüssel weg.
+  return {...deferredData, ...criticalData, ...kaufleisteAbDaten(args, 'qibracelet')};
 }
 
 /**

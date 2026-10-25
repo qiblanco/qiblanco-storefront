@@ -1,7 +1,11 @@
 import {useEffect} from 'react';
 import {
+  AUSWEICH_SELEKTOR,
   BEREIT_ATTRIBUT,
+  chatHub,
   DOCK_KLASSE,
+  HUB_ATTRIBUT,
+  HUB_VARIABLE,
   KAUFKNOPF_SELEKTOR,
   LP_KAUFAUSGANG_VORFILTER,
   OEFFENTLICH_KNOPF_VORFILTER,
@@ -10,8 +14,13 @@ import {
   hatKnopfOptik,
   istLpKaufausgang,
   istOeffentlichesProduktziel,
+  OFFEN_ATTRIBUT,
+  rahmenOffen,
+  ruhelage,
   UEBERDECKUNG_ATTRIBUT,
   ueberdecktKaufknopf,
+  verschiebungY,
+  verschoben,
 } from '~/lib/kaufknopf-chat';
 
 /**
@@ -96,6 +105,16 @@ import {
  * RÜCKWEG: beide Regeln in app.css löschen (die zu data-chat-deckt-kaufknopf
  * und die zu data-chat-signal-bereit). <KaufknopfChatSignal /> allein aus
  * root.jsx zu nehmen genügt NICHT mehr: das Widget bliebe dann unsichtbar.
+ *
+ * ÜBER DER KAUFLEISTE WEICHT ES NACH OBEN AUS (s03 des Grossjobs vom
+ * 25.10.2026, Christian: „dann sollte das gesicht nicht verschweinden sondern
+ * hochrutschen“). Steht eine Leiste mit data-qb-chat-weicht unter dem
+ * geschlossenen Widget, setzt dieses Signal `data-chat-rutscht` und die
+ * Strecke `--qb-chat-hub` an <html>; app.css verschiebt den Rahmen per
+ * transform. Die Überdeckung oben wird gegen die ZIELLAGE beurteilt, nicht
+ * gegen das gemessene Rechteck: das enthält die Transformation und läge
+ * mitten im Übergang noch über dem Knopf der Leiste. Regel, Falle und
+ * Rückweg: lib/kaufknopf-chat.js, chatHub.
  */
 
 // Modulweit statt je Effekt: der Rahmen überlebt Client-Navigationen (er hängt
@@ -156,7 +175,12 @@ export function KaufknopfChatSignal() {
     // ersetzt werden (Nachzug in SalesbotWidget.jsx) — beobachtet wird immer
     // der aktuelle.
     let beobachteterRahmen = null;
-    const rahmenWaechter = new MutationObserver(() => anfordern());
+    // Sofort und nicht über requestAnimationFrame (seit s03): öffnet der
+    // Kunde den Chat, schreibt der Loader die neue Größe inline, und im
+    // selben Bild muss die Verschiebung fallen. Ein Bild später stünde das
+    // offene Fenster um die Leistenhöhe nach oben geschoben. Der Rückruf
+    // eines MutationObservers läuft vor dem Zeichnen.
+    const rahmenWaechter = new MutationObserver(() => sofort());
 
     const schreibe = () => {
       const rahmen = document.getElementById(RAHMEN_ID);
@@ -168,13 +192,46 @@ export function KaufknopfChatSignal() {
         beobachteterRahmen = rahmen;
       }
       if (rahmen && document.activeElement === rahmen) chatBeruehrt = true;
+      const angedockt = wurzel.classList.contains(DOCK_KLASSE);
+      const fensterHoehe = window.innerHeight;
+      // Ruhelage = gemessenes Rechteck ohne die eigene Verschiebung (die
+      // Falle getBoundingClientRect, lib/kaufknopf-chat.js).
+      const ruhe = rahmen
+        ? ruhelage(
+            rahmen.getBoundingClientRect(),
+            verschiebungY(window.getComputedStyle(rahmen).transform),
+          )
+        : null;
+      const leisten = [];
+      if (ruhe) {
+        document.querySelectorAll(AUSWEICH_SELEKTOR).forEach((l) => {
+          leisten.push(l.getBoundingClientRect());
+        });
+      }
+      const hub = chatHub({ruhe, leisten, fensterHoehe, angedockt});
+      const offen = rahmenOffen({rahmen: ruhe, fensterHoehe, angedockt});
       const unterdruecken = ueberdecktKaufknopf({
-        rahmen: rahmen ? rahmen.getBoundingClientRect() : null,
+        rahmen: verschoben(ruhe, hub),
         knoepfe: rahmen ? knopfRechtecke() : [],
-        fensterHoehe: window.innerHeight,
-        angedockt: wurzel.classList.contains(DOCK_KLASSE),
+        fensterHoehe,
+        angedockt,
         beruehrt: chatBeruehrt,
       });
+      // Strecke vor dem Attribut: im selben synchronen Schritt, ohne Bild
+      // dazwischen. Ohne Verschiebung bleibt keine Variable stehen.
+      const hubWert = hub > 0 ? `${hub}px` : '';
+      if (wurzel.style.getPropertyValue(HUB_VARIABLE) !== hubWert) {
+        if (hubWert) wurzel.style.setProperty(HUB_VARIABLE, hubWert);
+        else wurzel.style.removeProperty(HUB_VARIABLE);
+      }
+      if ((hub > 0) !== wurzel.hasAttribute(HUB_ATTRIBUT)) {
+        if (hub > 0) wurzel.setAttribute(HUB_ATTRIBUT, '');
+        else wurzel.removeAttribute(HUB_ATTRIBUT);
+      }
+      if (offen !== wurzel.hasAttribute(OFFEN_ATTRIBUT)) {
+        if (offen) wurzel.setAttribute(OFFEN_ATTRIBUT, '');
+        else wurzel.removeAttribute(OFFEN_ATTRIBUT);
+      }
       if (unterdruecken === wurzel.hasAttribute(UEBERDECKUNG_ATTRIBUT)) return;
       if (unterdruecken) wurzel.setAttribute(UEBERDECKUNG_ATTRIBUT, '');
       else wurzel.removeAttribute(UEBERDECKUNG_ATTRIBUT);
@@ -266,6 +323,10 @@ export function KaufknopfChatSignal() {
       if (angefordert) window.cancelAnimationFrame(angefordert);
       // Ein hängendes Attribut würde den Chat dauerhaft abschalten.
       wurzel.removeAttribute(UEBERDECKUNG_ATTRIBUT);
+      // ... bzw. dauerhaft verschoben stehen lassen.
+      wurzel.removeAttribute(HUB_ATTRIBUT);
+      wurzel.removeAttribute(OFFEN_ATTRIBUT);
+      wurzel.style.removeProperty(HUB_VARIABLE);
     };
   }, []);
 

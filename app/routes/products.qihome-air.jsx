@@ -10,6 +10,7 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import {kaufleisteAbDaten} from '~/lib/kaufleiste-ab.server';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
  * seit dem 28.09.2026 in QiHomeAirSeite.jsx, weil /pages/qihome-air dieselbe Seite
@@ -54,7 +55,9 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'qihome-air'); // ✅ pass hardcoded handle
 
-  return { ...deferredData, ...criticalData };
+  // A/B-Test der Kaufleiste (lib/kaufleiste-ab.server.js): der Arm steht im
+  // SSR fest; ohne Test bleibt der Schlüssel weg.
+  return {...deferredData, ...criticalData, ...kaufleisteAbDaten(args, 'qihome-air')};
 }
 
 /**
