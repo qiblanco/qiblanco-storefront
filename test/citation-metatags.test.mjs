@@ -1,6 +1,6 @@
 // Hermetische Tests der citation_*-Metatags und der about-Produktreferenz
 // (Hypothese GS-203, Auftrag km-entw-hebel-umsetzen-seo-top3-zwei-qibracelet-de-gs-203-20261025).
-// Ausfuehren: node --test test/studie-citation-meta.test.mjs
+// Ausfuehren: node --test test/citation-metatags.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -55,5 +55,5 @@ test('about traegt die Produktreferenz nur mit produktPfad', () => {
 test('die Route der Studienseite haengt beides wirklich ein', () => {
   // Positiv-Kontrolle gegen eine Bibliothek ohne Aufrufer.
   assert.match(ROUTE, /\.\.\.citationMeta\(STUDIE\)/);
-  assert.match(ROUTE, /studieSchema\(STUDIE, \{produktPfad: PRODUKT_PFAD\}\)/);
+  assert.match(ROUTE, /studieSchema\(STUDIE, \{\s*produktPfad: untersuchteProdukte\(\)\.find\(/);
 });

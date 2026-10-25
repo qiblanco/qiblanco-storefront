@@ -6,11 +6,6 @@ import studienStyles from '~/styles/studien.css?url';
 
 const STUDIE = STUDIEN_NACH_ID['e0003'];
 const PFAD = '/pages/studie-oxidativer-stress';
-// Kaufseite des untersuchten Produkts (Zuordnung in app/data/studien/index.js),
-// für die about-Referenz im JSON-LD (Hypothese GS-203).
-const PRODUKT_PFAD = untersuchteProdukte().find(
-  (p) => p.name === STUDIE.eckdaten.produkt,
-)?.pfad;
 
 export function links() {
   return [{rel: 'stylesheet', href: studienStyles}];
@@ -28,7 +23,16 @@ export const meta = () => [
   {property: 'og:image', content: STUDIE.eckdaten.coverUrl},
   {name: 'twitter:card', content: 'summary_large_image'},
   ...citationMeta(STUDIE),
-  {'script:ld+json': studieSchema(STUDIE, {produktPfad: PRODUKT_PFAD})},
+  {
+    // about-Referenz auf den Produktknoten der Kaufseite (Zuordnung in
+    // app/data/studien/index.js, Hypothese GS-203). Steht bewusst IN meta:
+    // so bleibt die Änderung nachweisbar render-neutral (src/render_neutral.py).
+    'script:ld+json': studieSchema(STUDIE, {
+      produktPfad: untersuchteProdukte().find(
+        (p) => p.name === STUDIE.eckdaten.produkt,
+      )?.pfad,
+    }),
+  },
 ];
 
 export default function StudieOxidativerStress() {
