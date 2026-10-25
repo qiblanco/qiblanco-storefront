@@ -1,0 +1,108 @@
+/* ============================================================================
+   qb-preisanker.css — der Dreizeiler Bewertung / Nutzerzahl / Preis + Banner
+   Baustein: app/components/reusables/Preisanker.jsx (Begründung und
+   Christians Wortlaut dort). Scope: `.qb-preisanker` — eine Seite ohne den
+   Baustein sieht von dieser Datei baulich nichts.
+
+   TOKENS statt freier Werte. Alle Stufen kommen aus der Haus-Skala
+   (qb-tokens.css, --qb-ref-fs-*), bis auf EINE:
+     --qb-pa-fs-nutzer 28px — Christian 25.10.: die Nutzerzahl "muss nicht
+     viel kleiner sein als der Preis". Der Preis steht auf 32px (app.css
+     `.product .product-price`, Kaufweg, unverändert). 24px (die nächste
+     Haus-Stufe) wäre ein Viertel kleiner; 28px liegt im Verhältnis 1,14
+     zwischen 24 und 32 und schließt die Lücke der Skala, die dort ohnehin
+     eine Stufe vorsieht (--qb-ref-fs-7 fehlt nur, weil die Startseite sie
+     nicht braucht).
+   Gold: das EINE Haus-Gold als Fläche (--qb-akzent-kauf), Schrift darauf
+   --color-on-accent (8,51:1). Kein zweiter Goldton.
+   Abstände auf dem 8px-Raster.
+   ========================================================================== */
+
+.qb-preisanker {
+  --qb-pa-fs-bewertung: var(--qb-ref-fs-3, 16px);
+  --qb-pa-fs-nutzer: 28px;
+  --qb-pa-fs-banner: var(--qb-ref-fs-2, 14px);
+  --qb-pa-abstand: 8px;
+  --qb-pa-abstand-preis: 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin: var(--qb-pa-abstand-preis) 0;
+}
+
+/* Zeile 1 — Bewertung. Ruhig: kein Unterstrich, keine Zeigehand, kein
+   Sprung. Die Bestandsregel `.sterne-sprung:hover { text-decoration:
+   underline }` (app.css) ist hier aufgehoben; der Hover zeigt nur einen
+   leichten Farbwechsel der Note. Der Fokusring für die Tastatur bleibt
+   (app.css .sterne-sprung:focus-visible). */
+.qb-preisanker .qb-preisanker__bewertung {
+  gap: var(--qb-pa-abstand);
+  font-size: var(--qb-pa-fs-bewertung);
+  font-weight: 600;
+  line-height: 1.5;
+  cursor: default;
+}
+.qb-preisanker .qb-preisanker__bewertung:hover {
+  text-decoration: none;
+}
+.qb-preisanker__note {
+  color: var(--color-accent-ink);
+  transition: color 0.2s ease;
+}
+.qb-preisanker .qb-preisanker__bewertung:hover .qb-preisanker__note {
+  color: var(--qb-text, #2c2a26);
+}
+
+/* Zeile 2 — Nutzerzahl, fast so groß und kräftig wie der Preis darunter. */
+.qb-preisanker__nutzer {
+  margin: var(--qb-pa-abstand) 0 0;
+  font-size: var(--qb-pa-fs-nutzer);
+  font-weight: 700;
+  line-height: 1.2;
+  color: inherit;
+}
+
+/* Zeile 3 — Preis, dahinter das goldene Banner. Die Preis-Typo selbst
+   bleibt die des Kaufwegs (app.css). */
+.qb-preisanker__preiszeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--qb-pa-abstand-preis);
+  margin-top: var(--qb-pa-abstand);
+}
+.qb-preisanker__preiszeile .product-price {
+  margin: 0;
+}
+.qb-preisanker__banner {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--qb-radius-klein, 8px);
+  background: var(--qb-akzent-kauf);
+  color: var(--color-on-accent, #2c2a26);
+  font-size: var(--qb-pa-fs-banner);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Reihenfolge am Bildschirm (Kauf zuerst). Das geteilte Blatt
+   qb-pdp-kauf-zuerst.css stellt `.product-price` auf Stufe 1 — der Preis
+   steckt hier aber IM Dreizeiler, also braucht der Dreizeiler selbst die
+   Stufe des Preises. Bewusst HIER und nicht im geteilten Blatt: das laden
+   auch qione-kette und Qi Alpha, und eine Zeile dort zieht deren Messung
+   in jeden Diff dieses Bausteins. Gleiche Spezifitaet wie dort (0,4,0);
+   diese Datei laedt danach (links() der Seite), also gewinnt sie. */
+@media (min-width: 750px) {
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > .qb-preisanker {
+    order: 1;
+  }
+}
+@media (max-width: 749px) {
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > .qb-preisanker {
+    order: 1;
+  }
+}

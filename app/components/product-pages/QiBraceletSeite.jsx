@@ -22,6 +22,7 @@ import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlides
 import igStyles from '~/styles/ig-testimonials.css?url';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
+import rand360Styles from '~/styles/qb-360-rand.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
@@ -88,6 +89,10 @@ export function qiBraceletSeiteLinks() {
     {rel: 'stylesheet', href: igStyles},
     {rel: 'stylesheet', href: pdpQiStyles},
     {rel: 'stylesheet', href: kaufZuerstStyles},
+    // Weicher Rand des 360-Videos ins schwarze Band (Job 20261025-design-
+    // repair-qihome-air-animation-schwarz-preisanker-ultimate-power).
+    // Rückweg: diese Zeile entfernen.
+    {rel: 'stylesheet', href: rand360Styles},
     // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*).
     {rel: 'stylesheet', href: produktVideoStyles},

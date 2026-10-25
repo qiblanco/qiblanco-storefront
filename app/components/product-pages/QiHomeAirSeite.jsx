@@ -6,7 +6,6 @@ import {
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {useRef, useState} from 'react';
-import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
@@ -15,11 +14,13 @@ import {QiHome} from '~/components/product-pages/QiHome';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {Preisanker} from '~/components/reusables/Preisanker';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import qihomeAirStyles from '~/styles/qihome-air.css?url';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
+import preisankerStyles from '~/styles/qb-preisanker.css?url';
+import rand360Styles from '~/styles/qb-360-rand.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {Einsatzkarte} from '~/components/product-pages/Einsatzkarte';
 import einsatzkarteStyles from '~/styles/qihome-einsatzkarte.css?url';
@@ -82,6 +83,12 @@ export function qiHomeAirSeiteLinks() {
   return [
     {rel: 'stylesheet', href: qihomeAirStyles},
     {rel: 'stylesheet', href: kaufZuerstStyles},
+    // Preisanker-Dreizeiler + Gold-Banner und der weiche Rand des
+    // 360-Videos (Job 20261025-design-repair-qihome-air-animation-schwarz-
+    // preisanker-ultimate-power). Scope `.qb-preisanker` bzw. der Video-
+    // Kasten im 360-Band. Rückweg: diese zwei Zeilen entfernen.
+    {rel: 'stylesheet', href: preisankerStyles},
+    {rel: 'stylesheet', href: rand360Styles},
     // Scope-CSS der Einsatzkarte (Grossjob 20260914-qihome-einsatzkarte, s04).
     // Eigene Datei, Scope `.qh-karte`: eine Seite ohne diese Klasse sieht von
     // ihr baulich nichts.
@@ -172,20 +179,20 @@ export function QiHomeAirSeite({
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <SterneSprung className="product-rating"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         {/* DIE EINZIGE ABWEICHUNG ZWISCHEN DEN BEIDEN ROUTEN (Christian
             28.09.2026: "gleich bis auf den Beschreibungstext oben beim
             Produkt"): /products den Shopify-Beschreibungstext, /pages die
             Hero-Punkte der Landingpage-Fassung. */}
         {beschreibung}
 
-        <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
-
-        <ProductPrice
-          handle={preis.handle}
-          price={preis.price}
-          compareAtPrice={preis.compareAtPrice}
-        />
+        {/* PREISANKER (Christian 25.10.2026): Bewertung, Nutzerzahl, Preis
+            als Dreizeiler direkt über dem Kaufknopf, dahinter das goldene
+            Banner "Ultimate Power". Ersetzt die Sterne-Zeile unter dem Titel
+            und die Zeile "Mehr als 14.000+ aktive Nutzer" über dem Preis.
+            Desktop (Kauf zuerst): Titel, Dreizeiler, Formular, Nutzen-Liste,
+            dann der Beschreibungstext. Mobil: Titel, Beschreibungstext,
+            Dreizeiler, Formular. */}
+        <Preisanker preis={preis} />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
