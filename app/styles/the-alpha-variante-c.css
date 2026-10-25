@@ -1,0 +1,530 @@
+/*
+ * THE ALPHA, Variante C (/pages/The-Alpha-B, KI-optimiert) — Token-Schicht der
+ * Seite (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s05).
+ *
+ * GLEICHE MARKE WIE A: Dunkel, Text und Weiß sind die Werte aus Christians
+ * Vorlage (the-alpha.css, --ta-*), das Rot steht nur auf dem Knopf (TheAlphaKauf,
+ * Stil in the-alpha.css). Dazu EIN warmes Neutral für helle Wechselflächen und
+ * EIN Gold: das Haus-Gold (--qb-akzent-kauf) nur am Banner „Ultimate Power“
+ * (Preisanker) und als feine Linie an den Belegen.
+ *
+ * DREI FARB-AKTE: hell (Produkt und Antwort oben, Nutzen), dunkel (Christians
+ * Vorlage und Live), warm (Belege und Abschluss).
+ * TYPO: eine Familie, Skala 1,25 ab 16 px (14 / 16 / 20 / 25 / 31,25 / 39) plus
+ * Preis 32 aus dem Preisanker. ABSTÄNDE: 8-px-Raster. RADIUS: ein Token.
+ * Alles hängt an .tac-seite.
+ */
+.tac-seite {
+  --tac-fs-0: 0.875rem;
+  --tac-fs-1: 1rem;
+  --tac-fs-2: 1.25rem;
+  --tac-fs-3: 1.5625rem;
+  --tac-fs-4: 1.953rem;
+  --tac-fs-5: 2.441rem;
+  --tac-fs-preis: 2rem;
+
+  --tac-s-1: 8px;
+  --tac-s-2: 16px;
+  --tac-s-3: 24px;
+  --tac-s-4: 32px;
+  --tac-s-6: 48px;
+  --tac-s-8: 64px;
+  --tac-s-12: 96px;
+
+  --tac-dunkel: #1e1e1e;
+  --tac-text: #333333;
+  --tac-gedaempft: #5c5752;
+  --tac-gedaempft-hell: #c9c4bc;
+  --tac-weiss: #ffffff;
+  --tac-warm: #f6f3ee;
+  --tac-linie: #e4ded5;
+  --tac-gold: var(--qb-akzent-kauf, #c9a14b);
+
+  --tac-radius: 8px;
+  --tac-breite: 1040px;
+  --tac-schmal: 680px;
+
+  background: var(--tac-weiss);
+  color: var(--tac-text);
+  font-size: var(--tac-fs-1);
+  line-height: 1.5;
+  /* Abstand zum Seitenkopf wie in A und B: das Logo ragt am Handy unter die
+     Kopfleiste. */
+  padding-top: var(--tac-s-2);
+}
+
+.tac-seite section {
+  padding: var(--tac-s-8) var(--tac-s-2);
+}
+
+.tac-innen {
+  max-width: var(--tac-breite);
+  margin: 0 auto;
+}
+
+.tac-innen-schmal {
+  max-width: var(--tac-schmal);
+}
+
+/* Überschriften: EIN H2-Stil, EIN H3-Stil */
+.tac-h1,
+.tac-h2,
+.tac-h3 {
+  text-shadow: none;
+}
+
+.tac-h1 {
+  margin: 0 0 var(--tac-s-1);
+  font-size: var(--tac-fs-3);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--tac-dunkel);
+}
+
+.tac-h2 {
+  margin: 0 0 var(--tac-s-4);
+  font-size: var(--tac-fs-3);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--tac-dunkel);
+}
+
+.tac-h2-hell {
+  color: var(--tac-weiss);
+}
+
+.tac-h3 {
+  margin: 0 0 var(--tac-s-1);
+  font-size: var(--tac-fs-2);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tac-dunkel);
+}
+
+.tac-h3-hell {
+  color: var(--tac-weiss);
+}
+
+.tac-text {
+  margin: 0;
+  font-size: var(--tac-fs-1);
+  line-height: 1.6;
+}
+
+.tac-text-hell {
+  color: var(--tac-gedaempft-hell);
+}
+
+.tac-verweis {
+  display: inline-block;
+  margin-top: var(--tac-s-1);
+  color: var(--tac-dunkel);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.tac-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--tac-radius);
+}
+
+.tac-seite .tac-kauf {
+  padding: 0;
+}
+
+/* 1 — Antwort oben (hell): Bild, Überschrift, Preis, Knopf */
+.tac-seite .tac-held {
+  padding-top: var(--tac-s-2);
+  padding-bottom: var(--tac-s-6);
+}
+
+.tac-held-raster {
+  display: grid;
+  gap: var(--tac-s-2);
+}
+
+.tac-held-bild {
+  /* Quelle 2048 px; am Handy in voller Breite, höchstens so hoch, dass
+     Überschrift, Preis und Knopf im ersten Bildschirm bleiben. */
+  max-width: 280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tac-auge {
+  margin: 0 0 var(--tac-s-1);
+  font-size: var(--tac-fs-0);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--tac-gedaempft);
+}
+
+.tac-gegenstand {
+  margin: 0;
+  font-size: var(--tac-fs-1);
+  line-height: 1.5;
+  color: var(--tac-gedaempft);
+}
+
+.tac-preiszeile {
+  margin: var(--tac-s-1) 0 var(--tac-s-2);
+  font-size: var(--tac-fs-2);
+  font-weight: 700;
+  color: var(--tac-dunkel);
+}
+
+.tac-sicher {
+  margin: var(--tac-s-1) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  font-size: var(--tac-fs-0);
+  color: var(--tac-gedaempft);
+}
+
+.tac-sicher li {
+  padding-left: var(--tac-s-3);
+  position: relative;
+}
+
+.tac-sicher li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--tac-dunkel);
+}
+
+/* 2 — Was du bekommst (warm) */
+.tac-seite .tac-nutzen {
+  background: var(--tac-warm);
+}
+
+.tac-vorteile {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tac-s-3);
+}
+
+.tac-vorteil {
+  display: grid;
+  gap: 4px;
+  padding-left: var(--tac-s-2);
+  border-left: 2px solid var(--tac-dunkel);
+}
+
+.tac-vorteil-titel {
+  color: var(--tac-dunkel);
+  font-size: var(--tac-fs-2);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tac-vorteil-grundlage {
+  font-size: var(--tac-fs-1);
+  line-height: 1.5;
+  color: var(--tac-gedaempft);
+}
+
+.tac-nutzen .tac-kauf {
+  margin-top: var(--tac-s-4);
+}
+
+/* 3 — Christians Vorlage (dunkel) */
+.tac-seite .tac-vorlage {
+  background: var(--tac-dunkel);
+  color: var(--tac-gedaempft-hell);
+}
+
+.tac-unterzeile {
+  display: block;
+  margin-top: var(--tac-s-1);
+  font-size: var(--tac-fs-2);
+  font-weight: 400;
+}
+
+.tac-vorlage-text p {
+  margin: 0 0 var(--tac-s-2);
+  color: var(--tac-gedaempft-hell);
+}
+
+.tac-vorlage-text strong {
+  color: var(--tac-weiss);
+}
+
+.tac-saeulen {
+  margin: var(--tac-s-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tac-s-3);
+}
+
+.tac-saeule {
+  padding-top: var(--tac-s-2);
+  border-top: 1px solid #4a4a4a;
+}
+
+.tac-saeule-zeilen {
+  margin: 0;
+  color: var(--tac-weiss);
+}
+
+/* 4 — Produkt (hell) */
+.tac-paar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--tac-s-2);
+  /* Die Diamant-Quellen sind 604 px breit: breiter als 600 px je Paar würde
+     ein Bild am Tablet und Desktop hochskaliert (Gate 12, bild-aufloesung). */
+  max-width: 600px;
+  margin: 0 auto var(--tac-s-6);
+}
+
+.tac-punkte {
+  margin: 0 0 var(--tac-s-6);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tac-s-3);
+}
+
+.tac-banner {
+  /* Quelle 1720 px: höchstens 800 px breit. */
+  max-width: 800px;
+  margin: var(--tac-s-2) auto 0;
+}
+
+/* 5 — Belege (warm) */
+.tac-seite .tac-belege {
+  background: var(--tac-warm);
+}
+
+.tac-personen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tac-s-4);
+}
+
+.tac-person {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--tac-s-2);
+  align-items: start;
+  padding-top: var(--tac-s-3);
+  border-top: 2px solid var(--tac-gold);
+}
+
+.tac-person-foto {
+  margin: 0;
+}
+
+.tac-person-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--tac-radius);
+}
+
+.tac-vermerk {
+  margin-top: 4px;
+  font-size: var(--tac-fs-0);
+  color: var(--tac-gedaempft);
+}
+
+/* 6 — Abschluss: Einwände, Preis, Knopf (hell) */
+.tac-karten {
+  margin: 0 0 var(--tac-s-6);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tac-s-3);
+}
+
+.tac-karte {
+  padding: var(--tac-s-3);
+  border: 1px solid var(--tac-linie);
+  border-radius: var(--tac-radius);
+}
+
+.tac-preis {
+  padding: var(--tac-s-4) var(--tac-s-3);
+  background: var(--tac-warm);
+  border-radius: var(--tac-radius);
+}
+
+.tac-preis .product-price,
+.tac-festpreis {
+  font-size: var(--tac-fs-preis);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--tac-dunkel);
+}
+
+/* Dreizeiler: zwei Edition-Zeilen über dem Preis (kein Nutzer-Anker, siehe
+   the-alpha-variante-c-daten.js). Erste Zeile klein, zweite so groß, dass sie
+   als Anker am Preis wirkt. */
+.tac-anker {
+  margin: 0;
+  font-size: var(--tac-fs-1);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  color: var(--tac-gedaempft);
+}
+
+.tac-anker + .tac-anker {
+  margin-top: 4px;
+  font-size: var(--tac-fs-3);
+  letter-spacing: 0;
+  color: var(--tac-dunkel);
+}
+
+.tac-preis-zeilen {
+  margin: var(--tac-s-3) 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tac-s-1);
+}
+
+.tac-preis-zeilen li {
+  padding-left: var(--tac-s-3);
+  position: relative;
+}
+
+.tac-preis-zeilen li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--tac-dunkel);
+}
+
+.tac-beratung {
+  margin-top: var(--tac-s-3);
+}
+
+/* 7 — Live (dunkel) */
+.tac-seite .tac-live {
+  background: var(--tac-dunkel);
+  color: var(--tac-weiss);
+  scroll-margin-top: var(--tac-s-8);
+}
+
+.tac-live-wann {
+  margin: 0 0 var(--tac-s-2);
+  color: var(--tac-weiss);
+  font-size: var(--tac-fs-2);
+  font-weight: 700;
+}
+
+.tac-live .tal-karte {
+  margin-top: var(--tac-s-4);
+}
+
+/* 8 — Fragen (hell) */
+.tac-frage {
+  border-bottom: 1px solid var(--tac-linie);
+}
+
+.tac-frage-kopf {
+  padding: var(--tac-s-2) 0;
+  font-size: var(--tac-fs-2);
+  font-weight: 700;
+  color: var(--tac-dunkel);
+  cursor: pointer;
+}
+
+.tac-frage .tac-text {
+  padding-bottom: var(--tac-s-2);
+}
+
+/* 9 — Fester Kaufknopf mobil (ab dem zweiten Bildschirm) */
+.tac-sticky {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .tac-sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-schwebend, 200);
+    display: flex;
+    align-items: center;
+    gap: var(--tac-s-2);
+    padding: var(--tac-s-1) var(--tac-s-2) max(var(--tac-s-1), env(safe-area-inset-bottom));
+    background: var(--tac-weiss);
+    border-top: 1px solid var(--tac-linie);
+    visibility: hidden;
+  }
+  .tac-sticky--sichtbar {
+    visibility: visible;
+  }
+  .tac-sticky-name {
+    font-size: var(--tac-fs-0);
+    font-weight: 700;
+    color: var(--tac-dunkel);
+    white-space: nowrap;
+  }
+  .tac-sticky .tac-sticky-kauf {
+    flex: 1 1 auto;
+    padding: 0;
+  }
+  .tac-sticky .ta-knopf {
+    min-height: 48px;
+    padding: 12px var(--tac-s-2);
+    font-size: var(--tac-fs-1);
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .tac-seite section {
+    padding: var(--tac-s-12) var(--tac-s-4);
+  }
+  .tac-saeulen,
+  .tac-karten {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .tac-vorteile,
+  .tac-punkte,
+  .tac-personen {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tac-person {
+    grid-template-columns: 160px 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tac-seite .tac-held {
+    padding-top: var(--tac-s-6);
+    padding-bottom: var(--tac-s-8);
+  }
+  .tac-held-raster {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--tac-s-8);
+    align-items: center;
+  }
+  .tac-held-bild {
+    max-width: 480px;
+    order: 2;
+  }
+  .tac-h1 {
+    font-size: var(--tac-fs-5);
+    margin-bottom: var(--tac-s-2);
+  }
+}
