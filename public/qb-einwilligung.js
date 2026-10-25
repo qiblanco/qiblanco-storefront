@@ -10,6 +10,12 @@
   'use strict';
   if (window.qbEinwilligung) return;
   var d = document, w = window;
+  // GTM-N7DRSN5 trägt das Cookiebot-Vorlagen-Tag cvt_31884966_92, das uc.js ohne Bedingung
+  // nachlädt (s06, gemessen 25.10.: nach "Alle akzeptieren" 1 Anfrage an consent.cookiebot.com).
+  // Die CSP hält es nicht ('strict-dynamic'). Die Sperrliste muss vor gtm.js im dataLayer stehen;
+  // sie gilt nur hier, also nur im Motor eigen. Rückweg Motor cookiebot: dieses Skript lädt dort nicht.
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({'gtm.blocklist': ['cvt_31884966_92']});
   var JAHR = 31536000000;
   var nonce = (d.currentScript && (d.currentScript.nonce || d.currentScript.getAttribute('nonce'))) || '';
   function $(id) { return d.getElementById(id); }
