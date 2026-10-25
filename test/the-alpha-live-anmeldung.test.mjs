@@ -1,7 +1,7 @@
 // Hermetische Tests der Live-Anmeldung Qi Alpha und der Daten von Variante B
 // (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s04).
 // Bordmittel node:test/node:assert, KEIN Netz. Ausführen:
-//   node --test test/the-alpha-live-anmeldung.test.mjs (laeuft in der PR-Suite mit)
+//   node --test test/the-alpha-live-anmeldung.test.mjs (läuft in der PR-Suite mit)
 // ARME: NAHT (Einwilligung, Version und Feldnamen gleichen der Action von
 // /pages/live, sonst lehnt sie still als 'einwilligung'/'eingabe' ab),
 // FORM (echtes <form> mit E-Mail-Feld an /pages/live), NUTZEN (3 bis 5
