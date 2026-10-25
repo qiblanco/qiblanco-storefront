@@ -1,7 +1,7 @@
 import {ProductPrice} from '~/components/ProductPrice';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
-import {QM_ADDON, QM_HANDLE} from '~/lib/qi-master-addons';
+import {QM_ADDON, QM_HANDLE, nummerAnzeige} from '~/lib/qi-master-addons';
 
 /*
  * QiMasterAddons — der Bereich direkt unter dem Kaufknopf von
@@ -51,7 +51,7 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
           der schmalen Kaufspalte lauter als der Preis. Die Zeile benennt den
           Bereich über aria-labelledby. */}
       <p id="qm-addons-titel" className="qm-addons__titel">
-        Dazu für deinen Qi Master®
+        Dazu für deinen Qi Alpha
       </p>
       <div className="qm-addons__karten">
         {wn ? (
@@ -64,7 +64,7 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
               />
             </div>
             <p className="qm-addon__text">
-              Jeder Qi Master® trägt eine Nummer der Alpha Serie von 1 bis 100.
+              Jeder Qi Alpha trägt eine Nummer der Alpha-Serie von 1 bis 111.
               Wähle deine.
             </p>
             <label className="qm-addon__feld">
@@ -78,7 +78,9 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
                 <option value="">Ohne Wunschnummer</option>
                 {wn.variants.nodes.map((v) => (
                   <option key={v.id} value={v.id} disabled={!v.availableForSale}>
-                    {v.availableForSale ? v.title : `${v.title} (vergeben)`}
+                    {v.availableForSale
+                      ? nummerAnzeige(v.title)
+                      : `${nummerAnzeige(v.title)} (vergeben)`}
                   </option>
                 ))}
               </select>

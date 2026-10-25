@@ -112,10 +112,14 @@ export default function QiMaster({block = undefined}) {
       <SechsGAbschnitt />
       <PersoenlichkeitAbschnitt />
       <AlphaSerie />
+      {/* KEIN QiOne-2-Pro-Foto auf der Qi-Alpha-Seite (Christian 25.10.2026:
+          „für den qi alpha keine fotos verwenden vom qione 2 pro, weil es ein
+          anderes logo hat“). Bis dahin stand hier ein Paar-Foto von 2023, auf
+          dem die Frau einen QiOne trägt. Jetzt das Qi-Alpha-Rendering (Gerät
+          links), der Text steht rechts daneben (reverse). */}
       <HeroBannerParallax
-        backgroundImage={
-          '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
-        }
+        backgroundImage={'qi-alpha-01-front.jpg?v=1792849253'}
+        reverse
         headline={<>Dein Qi Master® begleitet dich<br />Tag und Nacht.</>}
         subheadline={'Ein Stück, das du nicht ablegen musst.'}
         parallax={true}
@@ -809,14 +813,14 @@ function PersoenlichkeitAbschnitt() {
 function AlphaSerie() {
   return (
     <div className="MassgeschneiderteTechnologie NormalSectionSize">
-      <h2 className="text-center">Alpha Serie - Limitiert auf 100 Stück</h2>
+      <h2 className="text-center">Alpha Serie - Limitiert auf 111 Stück</h2>
       <div className="MassgeschneidertWrapper">
         <div className="Column">
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 17h3l-4 4l-4-4h3V3h2zM9 13H7c-1.1 0-2 .9-2 2v1a2 2 0 0 0 2 2h2v1H5v2h4c1.11 0 2-.89 2-2v-4a2 2 0 0 0-2-2m0 3H7v-1h2zM9 3H7c-1.1 0-2 .9-2 2v4a2 2 0 0 0 2 2h2c1.11 0 2-.89 2-2V5a2 2 0 0 0-2-2m0 6H7V5h2z"></path></svg>{' '}
             Eigene Seriennummer
           </h3>
-          <p>Jeder Qi Master® ist mit einer einmaligen Seriennummer versehen. "Alpha - 1/100"</p>
+          <p>Jeder Qi Master® ist mit einer einmaligen Seriennummer versehen. "Alpha - 1/111"</p>
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m1 22l1.5-5h7l1.5 5zm12 0l1.5-5h7l1.5 5zm-7-7l1.5-5h7l1.5 5zm17-8.95l-3.86 1.09L18.05 11l-1.09-3.86l-3.86-1.09l3.86-1.09l1.09-3.86l1.09 3.86z"></path></svg>{' '}
             Eigene Goldlegierung

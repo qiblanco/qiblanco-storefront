@@ -19,8 +19,12 @@ import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 export function CartLineItem({layout, line}) {
   const marktLand = useMarktLand();
   const {id, merchandise, isOptimistic} = line;
-  const {product, title, image, selectedOptions} = merchandise;
-  const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
+  // Eine Zeile ohne `product` (optimistische Zeile einer Variante ohne
+  // Produktbezug) darf den Warenkorb nie zum Absturz bringen (Christian
+  // 25.10.2026: „Application Error … reading 'handle'“).
+  const {product, title, image} = merchandise ?? {};
+  const selectedOptions = merchandise?.selectedOptions ?? [];
+  const lineItemUrl = useVariantUrl(product?.handle ?? '', selectedOptions);
   const {close} = useAside();
   // Cent-genau statt Ganz-Euro-Rundung (aiceo:digest54:p3, Option c,
   // 2026-09-10): der Warenkorb zeigte 53,- bei 53,21 Kassenbelastung.
