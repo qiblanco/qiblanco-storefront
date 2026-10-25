@@ -128,7 +128,7 @@ export const meta = () => [
   {
     name: 'description',
     content:
-      'Der Preis des Qi Master® ist fixiert. Limitierte Auflage von 100 Stück, von Goldschmieden per Hand poliert. Designed in Germany. Made in Germany.',
+      'Der Preis des Qi Master® ist fixiert. Limitierte Auflage von 111 Stück, von Goldschmieden per Hand poliert. Designed in Germany. Made in Germany.',
   },
   noindexMeta(),
 ];
@@ -146,7 +146,7 @@ export default function QiMasterVorverkaufRoute() {
         <div className="qm-lp__kopf-inhalt">
           <span className="qm-lp__auge">Alpha Serie</span>
           <h1 className="qm-lp__titel">
-            Qi Master®: 100 Stück, von Hand poliert, zu einem festen Preis.
+            Qi Master®: 111 Stück, von Hand poliert, zu einem festen Preis.
           </h1>
         </div>
       </header>
