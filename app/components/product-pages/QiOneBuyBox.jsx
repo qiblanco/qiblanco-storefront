@@ -30,6 +30,13 @@ import {Kaufleiste} from '~/components/reusables/Kaufleiste';
  *                      ungeprüfte Claims-Quelle, Konzept Kap. 2)
  *   - `topBadge`     : der „Mehr als 14.000+"-Absatz (PDP-Bestand, unverändert)
  *   - `priceLabel`   : Label unter dem Preis (PDP: „Bestseller Angebot")
+ *   - `preisblock`   : (preis) => Knoten. Gesetzt, ersetzt er den ganzen
+ *                      Preisblock (`.Bestseller-Price` samt priceLabel) und
+ *                      bekommt DASSELBE Preisobjekt wie die Kaufleiste. Für
+ *                      den Preisanker-Dreizeiler (Christian 25.10.2026,
+ *                      reusables/Preisanker.jsx), der Bewertung, Nutzerzahl
+ *                      und Preis als EINEN Block braucht. Default null: das
+ *                      DOM jedes Aufrufers ohne die Prop bleibt byte-gleich.
  *   - `benefitList`  : geteilte BenefitList-Komponente (beide Seiten reusen sie;
  *                      der Text lebt einmal in QiOneBenefitList)
  *
@@ -55,6 +62,7 @@ import {Kaufleiste} from '~/components/reusables/Kaufleiste';
  *   description?: import('react').ReactNode,
  *   topBadge?: import('react').ReactNode,
  *   priceLabel?: import('react').ReactNode,
+ *   preisblock?: ((preis: object) => import('react').ReactNode) | null,
  *   benefitList?: import('react').ReactNode,
  *   quantity?: number,
  *   ctaLabel?: string,
@@ -126,6 +134,7 @@ export function QiOneBuyBox({
   description = null,
   topBadge = null,
   priceLabel = null,
+  preisblock = null,
   benefitList = null,
   quantity = 1,
   ctaLabel,
@@ -187,14 +196,18 @@ export function QiOneBuyBox({
 
         {topBadge}
 
-        <div className="Bestseller-Price">
-          <ProductPrice
-            handle={preis.handle}
-            price={preis.price}
-            compareAtPrice={preis.compareAtPrice}
-          />
-          {priceLabel}
-        </div>
+        {preisblock ? (
+          preisblock(preis)
+        ) : (
+          <div className="Bestseller-Price">
+            <ProductPrice
+              handle={preis.handle}
+              price={preis.price}
+              compareAtPrice={preis.compareAtPrice}
+            />
+            {priceLabel}
+          </div>
+        )}
 
         <ProductForm
           productOptions={productOptions}

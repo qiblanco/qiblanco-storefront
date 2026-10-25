@@ -6,8 +6,9 @@ import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabe
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {Preisanker} from '~/components/reusables/Preisanker';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
@@ -80,6 +81,11 @@ export function qiOne2ProSeiteLinks() {
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*), berührt keinen
     // Selektor von pdp-qi.css — die Reihenfolge darüber bleibt tragend.
     {rel: 'stylesheet', href: produktVideoStyles},
+    // Preisanker-Dreizeiler + Gold-Banner wie auf QiHome Air (Job 20261025-
+    // design-repair-qihome-air-animation-schwarz-preisanker-ultimate-power,
+    // s03). Scope `.qb-preisanker`, berührt keinen Selektor von pdp-qi.css.
+    // Rückweg: diese Zeile entfernen.
+    {rel: 'stylesheet', href: preisankerStyles},
     // Gerätevergleich + Kundenfragen (Amazon-Stil Stufe 2, s04, 27.09.2026).
     // Eigene Klassen (.qb-gv-*, .qb-kf-*); beide Schalter aus = keine Zeile.
     ...(amazonstilAn('qione-2-pro') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
@@ -161,20 +167,22 @@ export function QiOne2ProSeite({
            sie zweimal auf der Seite steht. Jede andere Kaufflaeche behaelt
            den Default (siehe ProductForm.jsx). */
         gewaehrleistungsHinweis={false}
-        socialProof={
-          <SterneSprung className="product-rating"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
-        }
         /* DIE EINZIGE ABWEICHUNG ZWISCHEN DEN BEIDEN ROUTEN (Christian
            28.09.2026: "gleich bis auf den Beschreibungstext oben beim
            Produkt"). /products übergibt den Shopify-Beschreibungstext,
            /pages die Hero-Punkte der Landingpage-Fassung. */
         description={beschreibung}
-        topBadge={
-          <p className="mt-2">
-            <b>Mehr als 14.000+ aktive Nutzer</b>
-          </p>
-        }
-        priceLabel={<div className="BestsellerLabel">Bestseller Angebot</div>}
+        /* PREISANKER (Christian 25.10.2026, wie auf QiHome Air): Bewertung,
+           Nutzerzahl, Preis als Dreizeiler direkt über dem Kaufknopf,
+           dahinter das goldene Banner "Ultimate Power". Ersetzt drei Slots:
+           die Sterne-Zeile unter dem Titel (socialProof), die Zeile "Mehr als
+           14.000+ aktive Nutzer" über dem Preis (topBadge) und das rote
+           Label "Bestseller Angebot" hinter dem Preis (priceLabel). Der
+           Preisblock bekommt dasselbe Preisobjekt wie die Kaufleiste
+           (QiOneBuyBox `preisblock`). Rückweg: die drei Slots wie in
+           git show f713ca85:app/components/product-pages/QiOne2ProSeite.jsx
+           zurück, diese Prop weg. */
+        preisblock={(preis) => <Preisanker preis={preis} />}
         /* HIER STAND BIS ZUM 2026-09-08 DIE ZWEIFEL-ZEILE ("Wirkt das
            überhaupt? …"). Elina EL-20260908-d8349a01 nimmt sie ERSATZLOS
            heraus — ausdrücklich ohne Ersatzformulierung — und setzt an genau
