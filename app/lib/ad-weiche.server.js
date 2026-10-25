@@ -345,6 +345,17 @@ export const AUSSCHLUSS_SEGMENTE = [
   // über eine Anzeige kommt, will einen Freitag mit Christian und das Ticket,
   // kein Kaufversprechen einer LP. Additiv, reversibel: eine Zeile loeschen.
   '/pages/sprechstunde',
+  // DIE ANMELDESEITE DER LIVE-SERIE „DIE NACHT ENTSCHEIDET“ (Grossjob 20261023-
+  // webinar-lp-die-nacht-entscheidet-serie-1511, s04). Die Anzeigen der Serie
+  // zeigen ab etwa 05.11. hierher; gemessen am 23.10.: ?utm_medium=paid gab 302
+  // auf LP A. Wer der Einladung folgt, will sich anmelden, und die Anmeldequote
+  // der Seite misst nur, wenn der bezahlte Klick dort ankommt. NICHT schleifen-
+  // kritisch: die Seite leitet selbst nicht weiter, und nichts leitet dorthin.
+  // Bewusst exakt, kein Präfix für alle Webinar-Seiten: '/pages/webinar' deckte
+  // diesen Pfad am Matcher nicht (nur exakt oder '<eintrag>/...'), und ein
+  // Eintrag in AUSSCHLUSS_PREFIXE nähme ungefragt fremde Seiten mit. Additiv,
+  // reversibel: eine Zeile löschen.
+  '/pages/webinar-die-nacht-entscheidet',
   '/go',
   '/collect',
   '/b',

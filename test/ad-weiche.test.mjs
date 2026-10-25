@@ -102,6 +102,23 @@ test('Live-Seite Coming Home (/pages/live) ist ausgeschlossen, bezahlter Klick b
   assert.equal(istAusgeschlossen('/pages/live-x'), false);
 });
 
+test('Webinar-Seite Die Nacht entscheidet ist ausgeschlossen, bezahlter Klick bleibt dort', () => {
+  const pfad = '/pages/webinar-die-nacht-entscheidet';
+  assert.equal(istAusgeschlossen(pfad), true);
+  assert.equal(
+    entscheideAdWeiche(`${BASIS}${pfad}?utm_medium=paid&utm_source=facebook&fbclid=IwAR0abc`),
+    null,
+  );
+  assert.equal(entscheideAdWeiche(`${BASIS}${pfad}?gclid=Cj0KCQ`), null);
+  // Negativkontrolle: derselbe Klick auf einen nicht ausgeschlossenen Pfad wird weiter umgeleitet,
+  // auch auf die ungemergten Webinar-Seiten aus PR 838 (kein Praefix-Eintrag).
+  for (const anderer of ['/pages/wirkt-das', '/pages/webinar-elektrosmog', '/pages/webinar']) {
+    const r = entscheideAdWeiche(`${BASIS}${anderer}?utm_medium=paid&utm_source=facebook&fbclid=IwAR0abc`);
+    assert.equal(r?.erkennung, 'meta-paid', anderer);
+    assert.ok(r.ziel.startsWith(`${LP_A_PFAD}?`), anderer);
+  }
+});
+
 test('Infra-Segmente ausgeschlossen', () => {
   for (const pfad of [
     '/collect', '/b', '/api/x', '/cart', '/checkouts/c/123', '/account',
