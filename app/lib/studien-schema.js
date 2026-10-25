@@ -29,6 +29,9 @@ const VERLAG = {
   url: 'https://www.dartsch-scientific.com/',
 };
 
+// Derselbe Autor in der Zitationsform „Nachname, Vorname“ (citation_author).
+const AUTOR_ZITATION = 'Dartsch, Peter C.';
+
 const AUTOR = {
   '@type': 'Person',
   name: 'Prof. Dr. Peter C. Dartsch',
@@ -87,7 +90,15 @@ export function ueberEntitaeten(produkte, themen) {
   return [...knoten, ...themen.filter(Boolean)];
 }
 
-export function studieSchema(studie) {
+/**
+ * @param {object} studie eine Studie aus app/data/studien/
+ * @param {{produktPfad?: string}} [optionen] `produktPfad` (z. B.
+ *   '/products/qibracelet') setzt in `about` zusätzlich die
+ *   ENTITÄTS-REFERENZ auf den Produktknoten der Kaufseite — dieselbe Form wie
+ *   `ueberEntitaeten()` auf der Übersicht. Ohne Angabe bleibt `about` reiner
+ *   Text wie bisher; geraten wird keine `@id`.
+ */
+export function studieSchema(studie, {produktPfad} = {}) {
   const url = absoluteCanonical(`/pages/${studie.slug}`);
   const e = studie.eckdaten;
 
@@ -114,7 +125,12 @@ export function studieSchema(studie) {
     translationOfWork: e.titelOriginal
       ? {'@type': 'ScholarlyArticle', name: e.titelOriginal, inLanguage: 'en'}
       : undefined,
-    about: [e.produkt, 'Zellbiologie', 'In-vitro-Untersuchung'].filter(Boolean),
+    about: [
+      ...ueberEntitaeten(produktPfad ? [{pfad: produktPfad}] : [], []),
+      e.produkt,
+      'Zellbiologie',
+      'In-vitro-Untersuchung',
+    ].filter(Boolean),
     learningResourceType: 'research paper',
   };
 
@@ -326,4 +342,50 @@ export function übersichtSchema(studien, produkte = []) {
       },
     ],
   };
+}
+
+/**
+ * Highwire-Press-Metatags (`citation_*`) EINER Studie für den <head>.
+ *
+ * WARUM (Hypothese GS-203, KPI seo-top3-zwei-qibracelet-de, 2026-10-25): bei
+ * „QiBracelet" (google.de) hält ResearchGate seit dem 11.09. den Studienplatz
+ * der Top 3 (39 von 40 Tagen auf 3–4); unsere Wiedergabe der Arbeit stand nur
+ * 11.–19.09. davor. Das ScholarlyArticle-JSON-LD trägt die Seite schon; die
+ * Metatags, an denen Google Scholar und andere Fachindexe eine Arbeit
+ * erkennen (Google Scholar Inclusion Guidelines), fehlten — 0 Treffer live.
+ * Ob Google den Platz danach vergibt, ist eine Hypothese mit Probe
+ * (seo-manager/pruefungen/probe_studienseite_primaerquelle_live__gs203.py),
+ * keine Gewissheit.
+ *
+ * Nur Angaben aus den Eckdaten der Originalarbeit, kein neuer Satz. Fehlt
+ * eine Angabe, entfällt ihr Tag — ein geratener Wert wäre eine falsche
+ * Zitation in einem Fachindex. Der Titel ist der ORIGINALTITEL (englisch),
+ * denn der Tag benennt die Arbeit, nicht unsere Seite.
+ *
+ * @returns {Array<{name: string, content: string}>} fertige meta-Einträge
+ */
+export function citationMeta(studie) {
+  const e = studie?.eckdaten || {};
+  const tags = [];
+  const setze = (name, content) => {
+    if (content) tags.push({name, content: String(content)});
+  };
+  setze('citation_title', e.titelOriginal);
+  // Highwire erwartet „Nachname, Vorname"; Titel (Prof. Dr.) gehören nicht hinein.
+  setze('citation_author', AUTOR_ZITATION);
+  setze('citation_journal_title', e.journal);
+  // e.band hat die Form „12(1): 1-6" = Band(Heft): erste-letzte Seite.
+  const band = /^\s*(\d+)\s*\((\d+)\)\s*:\s*(\d+)\s*[-–]\s*(\d+)/.exec(e.band || '');
+  if (band) {
+    setze('citation_volume', band[1]);
+    setze('citation_issue', band[2]);
+    setze('citation_firstpage', band[3]);
+    setze('citation_lastpage', band[4]);
+  }
+  // Scholar-Datumsform JJJJ/MM/TT.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(e.veroeffentlicht || '')) {
+    setze('citation_publication_date', e.veroeffentlicht.replaceAll('-', '/'));
+  }
+  setze('citation_doi', e.doi);
+  return tags;
 }
