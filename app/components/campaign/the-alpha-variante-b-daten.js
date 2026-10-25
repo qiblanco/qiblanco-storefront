@@ -98,8 +98,7 @@ export const TAB_BELEGE = {
       name: 'Prof. Dr. Peter C. Dartsch',
       text:
         'Sein Labor hat den Gitterchip™ in fünf veröffentlichten Arbeiten untersucht: vier an Zellen, ' +
-        'eine mit 171 Erfahrungsberichten. Gemessen am QiOne® 2 Pro, am QiBracelet und am QiHome Air. ' +
-        'Zellen im Labor haben keine Erwartung.',
+        'eine mit 171 Erfahrungsberichten. Gemessen hat er am QiOne® 2 Pro, am QiBracelet und am QiHome Air.',
       foto: {
         src: `${CDN}webinar-nacht-dartsch-portraet.jpg?v=1792770671`,
         b: 1132,
@@ -133,8 +132,8 @@ export const TAB_EINWAENDE = {
     {
       frage: 'Wirkt das wirklich?',
       antwort:
-        'Zellen im Labor haben keine Erwartung, darum misst Prof. Dartsch an Zellen. ' +
-        'Und du testest deinen Qi Alpha 20 Tage selbst, mit vollem Kaufpreis zurück.',
+        'Das findest du am besten selbst heraus: Du trägst deinen Qi Alpha 20 Tage. ' +
+        'Spürst du nichts, schickst du ihn zurück und bekommst den vollen Kaufpreis.',
     },
     {
       frage: 'Wird er irgendwann günstiger?',
@@ -145,8 +144,8 @@ export const TAB_EINWAENDE = {
     {
       frage: 'Wie funktioniert der Gitterchip™?',
       antwort:
-        'Ohne Elektronik und ohne Akku: Sein statisches Feld entsteht aus der Anordnung der Goldatome. ' +
-        'Erfunden hat ihn ein Ingenieur.',
+        'Er braucht keinen Strom und keinen Akku. ' +
+        'Sein statisches Feld entsteht aus der Anordnung der Goldatome in der Legierung.',
     },
   ],
 };
