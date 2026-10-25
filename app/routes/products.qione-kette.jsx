@@ -7,7 +7,6 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
@@ -20,12 +19,13 @@ import { useRef, useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {Preisanker} from '~/components/reusables/Preisanker';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
@@ -37,6 +37,11 @@ export function links() {
   return [
     {rel: 'stylesheet', href: kaufZuerstStyles},
     {rel: 'stylesheet', href: kaufleisteStyles},
+    // Preisanker-Dreizeiler + Gold-Banner wie auf QiHome Air (Job 20261025-
+    // design-repair-qihome-air-animation-schwarz-preisanker-ultimate-power,
+    // s03). Steht HINTER qb-pdp-kauf-zuerst.css, damit seine Kauf-zuerst-
+    // Stufe gewinnt. Rückweg: diese Zeile entfernen.
+    {rel: 'stylesheet', href: preisankerStyles},
   ];
 }
 
@@ -152,7 +157,6 @@ export default function Product() {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         {/* Die Kette ist Zubehör, das Gerät hat seine eigene Kaufseite
             (Grossjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-
             kannibalisierung, s02). Für „qione 2 pro" stand diese Seite in der
@@ -169,13 +173,12 @@ export default function Product() {
         </p>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
-        <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
-
-        <ProductPrice
-          handle={preis.handle}
-          price={preis.price}
-          compareAtPrice={preis.compareAtPrice}
-        />
+        {/* PREISANKER (Christian 25.10.2026, wie auf QiHome Air): Bewertung,
+            Nutzerzahl, Preis als Dreizeiler direkt über dem Kaufknopf,
+            dahinter das goldene Banner "Ultimate Power". Ersetzt die
+            Sterne-Zeile unter dem Titel und die Zeile "Mehr als 14.000+
+            aktive Nutzer" über dem Preis. */}
+        <Preisanker preis={preis} />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
