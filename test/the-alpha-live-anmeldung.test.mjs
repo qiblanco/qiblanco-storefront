@@ -1,7 +1,7 @@
 // Hermetische Tests der Live-Anmeldung Qi Alpha und der Daten von Variante B
 // (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s04).
 // Bordmittel node:test/node:assert, KEIN Netz. Ausführen:
-//   node --test app/components/campaign/the-alpha-live-anmeldung.test.mjs
+//   node --test test/the-alpha-live-anmeldung.test.mjs (laeuft in der PR-Suite mit)
 // ARME: NAHT (Einwilligung, Version und Feldnamen gleichen der Action von
 // /pages/live, sonst lehnt sie still als 'einwilligung'/'eingabe' ab),
 // FORM (echtes <form> mit E-Mail-Feld an /pages/live), NUTZEN (3 bis 5
@@ -11,13 +11,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
-import * as B from './the-alpha-variante-b-daten.js';
+import * as B from '../app/components/campaign/the-alpha-variante-b-daten.js';
 
 const hier = dirname(fileURLToPath(import.meta.url));
 const lies = (...teile) => readFileSync(join(hier, ...teile), 'utf8');
-const BAUSTEIN = lies('TheAlphaLiveAnmeldung.jsx');
-const LIVE = lies('..', '..', 'routes', 'pages.live.jsx');
-const SEITE = lies('TheAlphaVarianteB.jsx');
+const BAUSTEIN = lies('..', 'app', 'components', 'campaign', 'TheAlphaLiveAnmeldung.jsx');
+const LIVE = lies('..', 'app', 'routes', 'pages.live.jsx');
+const SEITE = lies('..', 'app', 'components', 'campaign', 'TheAlphaVarianteB.jsx');
 
 /** Wert einer String-Konstante, auch wenn sie aus 'a' + 'b' zusammengesetzt ist. */
 function konstante(quelle, name) {
