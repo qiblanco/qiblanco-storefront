@@ -161,7 +161,7 @@ function Inhalt() {
           ))}
         </div>
         <div className="tab-banner">
-          <Bild bild={LONGEVITY.banner} className="tab-bild" sizes="(min-width: 1024px) 976px, 100vw" />
+          <Bild bild={LONGEVITY.banner} className="tab-bild" sizes="(min-width: 832px) 800px, 100vw" />
         </div>
       </div>
     </section>

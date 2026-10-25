@@ -289,7 +289,9 @@
 }
 
 .tab-banner {
-  margin-top: var(--tab-s-2);
+  /* Quelle 1600 px: höchstens 800 px breit, sonst hochskaliert (Gate 12). */
+  max-width: 800px;
+  margin: var(--tab-s-2) auto 0;
 }
 
 /* 4 — Belege (warm) */
