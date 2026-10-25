@@ -43,6 +43,10 @@ import {
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
+// C zeigt Christians Säulen ohne „Starke Zellen.“: Gesundheitsaussage ohne sichtbare
+// Grundlage, und auf Qi-Alpha-Seiten stehen keine Zellwerte (Christian 28.09.;
+// Challenger s05 #13). A bleibt unverändert.
+const OHNE_ZEILE = /Zellen/;
 
 function Bild({bild, sizes, className, loading = 'lazy'}) {
   return (
@@ -151,7 +155,7 @@ function Vorlage() {
             <li className="tac-saeule" key={a.id}>
               <h3 className="tac-h3 tac-h3-hell">{a.titel}</h3>
               <p className="tac-saeule-zeilen">
-                {a.zeilen.map((z, i) => (
+                {a.zeilen.filter((z) => !OHNE_ZEILE.test(z)).map((z, i) => (
                   <Fragment key={z}>
                     {i > 0 ? <br /> : null}
                     {z}

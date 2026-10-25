@@ -65,16 +65,19 @@ export const TAC_NUTZEN = {
       id: 'schutz',
       // Christians Wort aus der Vorlage („Starker Schutz.“).
       titel: 'Starker Schutz, Tag und Nacht',
+      // Challenger s05 #1: die Messungen gelten anderen Geräten; das steht sichtbar da.
       grundlage:
         'Der Gitterchip™ arbeitet ganz ohne Strom und Akku. Das Labor von Prof. Dr. Dartsch hat ihn ' +
-        'in fünf Arbeiten untersucht, gemessen am QiOne® 2 Pro, am QiBracelet und am QiHome Air.',
+        'in fünf Arbeiten untersucht, gemessen am QiOne® 2 Pro, am QiBracelet und am QiHome Air. ' +
+        'Eine eigene Messung am Qi Alpha gibt es noch nicht.',
     },
     {
       id: 'ruhe',
-      titel: 'Ruhigere Nächte, mehr Energie im Alltag',
+      // Challenger s05 #4: Erfahrung, kein Versprechen (R3-Form), Herkunft der Berichte sichtbar.
+      titel: 'Ruhigere Nächte, mehr Energie: davon erzählen Träger',
       grundlage:
-        'In 171 Erfahrungsberichten zum Gitterchip™ erzählen uns Menschen vor allem von ruhigeren ' +
-        'Nächten und mehr Energie.',
+        'In 171 Erfahrungsberichten zu unseren Produkten mit Gitterchip™ erzählen Menschen vor allem ' +
+        'davon. Berichte zum Qi Alpha selbst gibt es noch nicht, er kommt erst im Januar zu dir.',
     },
     {
       id: 'alltag',
@@ -128,7 +131,8 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 
 /** Belege: Menschen mit Namen, nur was im Bestand belegt ist. */
 export const TAC_BELEGE = {
-  titel: 'Wer den Gitterchip™ prüft',
+  // Challenger s05 #2/#3: „prüft“ klang nach laufender Prüfung des Qi Alpha.
+  titel: 'Wer am Gitterchip™ forscht',
   personen: [
     {
       id: 'dartsch',
