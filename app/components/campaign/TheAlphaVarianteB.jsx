@@ -123,8 +123,11 @@ function Vorlage() {
             <li className="tab-saeule" key={a.id}>
               <h3 className="tab-h3 tab-h3-hell">{a.titel}</h3>
               <p className="tab-saeule-zeilen">
-                {a.zeilen.map((z) => (
-                  <span key={z}>{z}</span>
+                {a.zeilen.map((z, i) => (
+                  <Fragment key={z}>
+                    {i > 0 ? <br /> : null}
+                    {z}
+                  </Fragment>
                 ))}
               </p>
             </li>

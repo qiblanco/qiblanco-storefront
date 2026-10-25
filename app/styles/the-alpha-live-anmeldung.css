@@ -90,7 +90,9 @@
   padding: 16px;
   border: 0;
   border-radius: 0;
-  background: var(--tal-rot);
+  /* Dunkel, nicht Rot: Rot steht auf der Seite nur auf dem Kaufknopf
+     (TheAlphaKauf), die Anmeldung ist der zweite Weg. */
+  background: var(--tal-dunkel);
   color: var(--tal-weiss);
   font: inherit;
   font-weight: 700;

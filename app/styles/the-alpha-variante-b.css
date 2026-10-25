@@ -264,7 +264,6 @@
 }
 
 .tab-saeule-zeilen {
-  display: grid;
   margin: 0;
   color: var(--tab-weiss);
 }
