@@ -1,0 +1,49 @@
+/* ============================================================================
+   qb-360-rand.css — das 360°-Video verläuft weich ins schwarze Band
+   ----------------------------------------------------------------------------
+   Christian, 25.10.2026: "das schwarz aus der 360 grad animaiton ist nicht
+   das gleiche wie im banner, man sieht das viereck, das wirkt nach anfänger."
+
+   GEMESSEN (ffmpeg-Einzelbilder des ausgelieferten Shopify-mp4, 25.10.):
+   der Videogrund ist KEIN einheitliches Schwarz, sondern ein Verlauf —
+   QiHome oben 0-4, unten links rgb(13,12,15); QiBracelet Ecken 6-25.
+   Das Band (.product-360-hero, app.css) ist #000. Ein einzelner Farbwert
+   für das Band kann einen Verlauf nicht treffen; deshalb bekommt der
+   Video-Kasten eine Maske, die zum Rand hin auf durchsichtig ausläuft. Am
+   Rand steht dann das Band selbst, unabhängig davon, wie Browser und
+   Bildschirm den Videogrund dekodieren (tv-range, Farbprofil, HDR).
+
+   Die Maske liegt auf dem Wrapper (.ImgixVideo-wrap) und trifft damit Video,
+   Poster UND das Ersatzbild in einem. Zwei lineare Verläufe, geschnitten
+   (intersect), statt eines radialen: das QiHome-Gerät ist fast quadratisch
+   und reicht bis in die Ecken, ein Kreis würde es anschneiden.
+
+   BREITE DES VERLAUFS je Video (gemessen über alle Einzelbilder, 4 fps):
+   - QiHome: Produkt bleibt >= 11,9 % vom Rand weg -> 9 % rundum.
+   - QiBracelet: der Reif reicht in der Frontansicht bis 1 px an den linken
+     und rechten Rand, oben/unten >= 12 % -> 5 % seitlich, 9 % oben/unten.
+     (3 % gemessen zu knapp: der Reif-Grund reicht bis 25, am Rand blieb
+     Abstand 3; mit 5 % blendet der Reif in wenigen Bildern an seinen
+     aeussersten Spitzen weich aus.)
+   Haken je Seite: data-qb-360 am Wrapper (ImgixVideo-Ersatzbild).
+
+   RÜCKWEG: diesen links()-Eintrag in QiHomeAirSeite.jsx / QiBraceletSeite.jsx
+   entfernen — die Datei wirkt nirgends sonst.
+   ========================================================================== */
+
+.product-360-hero__video .ImgixVideo-wrap {
+  --qb-360-rand-x: 9%;
+  --qb-360-rand-y: 9%;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 var(--qb-360-rand-x), #000 calc(100% - var(--qb-360-rand-x)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--qb-360-rand-y), #000 calc(100% - var(--qb-360-rand-y)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 var(--qb-360-rand-x), #000 calc(100% - var(--qb-360-rand-x)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--qb-360-rand-y), #000 calc(100% - var(--qb-360-rand-y)), transparent);
+  mask-composite: intersect;
+}
+
+.product-360-hero__video .ImgixVideo-wrap[data-qb-360='qibracelet'] {
+  --qb-360-rand-x: 5%;
+}

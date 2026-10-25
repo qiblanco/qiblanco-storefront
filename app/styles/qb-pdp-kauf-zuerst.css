@@ -11,7 +11,9 @@
    Nur `order`: der DOM bleibt, wie er ist. Titel und Sterne stehen vorn,
    dann Preis und Formular (Variante, Kaufknopf), dann die Nutzen-Liste
    (Zusage), danach Beschreibungstext und alles Übrige in seiner bisherigen
-   Reihenfolge. Auf qibracelet und qihome-air rückt das 360°-Band hinter
+   Reihenfolge. Der Preisanker-Dreizeiler (.qb-preisanker, Bewertung /
+   Nutzerzahl / Preis, reusables/Preisanker.jsx) steht als Ganzes auf der
+   Stufe des Preises. Auf qibracelet und qihome-air rückt das 360°-Band hinter
    die Kaufbox (Wrapper .qb-pdp-kopf).
 
    Abstände nur als Rollen aus styles/designstandard-dach.css (--qb-*).
@@ -29,7 +31,7 @@
   :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(h1, .product-rating) {
     order: 0;
   }
-  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(.Bestseller-Price, .product-price, .product-form) {
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(.Bestseller-Price, .product-price, .qb-preisanker, .product-form) {
     order: 1;
   }
   :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > :is(.BenefitList, .CacaoBenefitList) {
@@ -56,7 +58,7 @@
   :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(h1, .product-rating) {
     order: 0;
   }
-  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(.Bestseller-Price, .product-price, .product-form) {
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(.Bestseller-Price, .product-price, .qb-preisanker, .product-form) {
     order: 1;
   }
   :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > :is(.BenefitList, .CacaoBenefitList) {
