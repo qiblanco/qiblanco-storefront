@@ -1,0 +1,125 @@
+/*
+ * Live-Anmeldung Qi Alpha (app/components/campaign/TheAlphaLiveAnmeldung.jsx),
+ * Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s04.
+ * Eine helle Karte, die auf dunklem und hellem Grund steht. Eigene Tokens am
+ * Scope .tal-karte, Knopf im Rot der Vorlage (the-alpha.css --ta-rot), damit
+ * die Handlung überall gleich aussieht. 8-px-Raster, ein Radius.
+ */
+.tal-karte {
+  --tal-fs-0: 0.875rem;
+  --tal-fs-1: 1rem;
+  --tal-fs-2: 1.25rem;
+  --tal-dunkel: #1e1e1e;
+  --tal-text: #333333;
+  --tal-gedaempft: #5c5752;
+  --tal-linie: #c9c4bc;
+  --tal-rot: #b92200;
+  --tal-weiss: #ffffff;
+  --tal-radius: 8px;
+
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
+  padding: 24px;
+  border-radius: var(--tal-radius);
+  background: var(--tal-weiss);
+  color: var(--tal-text);
+  font-size: var(--tal-fs-1);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.tal-titel {
+  margin: 0 0 8px;
+  font-size: var(--tal-fs-2);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tal-dunkel);
+}
+
+.tal-feldname {
+  font-weight: 700;
+  color: var(--tal-dunkel);
+}
+
+.tal-feld {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 16px;
+  border: 1px solid var(--tal-linie);
+  border-radius: var(--tal-radius);
+  background: var(--tal-weiss);
+  color: var(--tal-dunkel);
+  font: inherit;
+}
+
+.tal-feld:focus-visible {
+  outline: 2px solid var(--tal-dunkel);
+  outline-offset: 2px;
+}
+
+.tal-einwilligung {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: var(--tal-fs-0);
+  color: var(--tal-gedaempft);
+}
+
+.tal-haken {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+.tal-topf {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.tal-knopf,
+.tal-link {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  margin-top: 8px;
+  padding: 16px;
+  border: 0;
+  border-radius: 0;
+  /* Dunkel, nicht Rot: Rot steht auf der Seite nur auf dem Kaufknopf
+     (TheAlphaKauf), die Anmeldung ist der zweite Weg. */
+  background: var(--tal-dunkel);
+  color: var(--tal-weiss);
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tal-knopf:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.tal-fehler {
+  margin: 0;
+  color: var(--tal-rot);
+  font-weight: 700;
+}
+
+.tal-hinweis,
+.tal-text {
+  margin: 0;
+  font-size: var(--tal-fs-0);
+  color: var(--tal-gedaempft);
+}
+
+.tal-verweis {
+  color: var(--tal-dunkel);
+  text-decoration: underline;
+}

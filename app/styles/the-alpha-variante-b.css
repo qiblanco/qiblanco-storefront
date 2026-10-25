@@ -1,0 +1,482 @@
+/*
+ * THE ALPHA, Variante B (/pages/The-Alpha-C) — Token-Schicht der Seite
+ * (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s04).
+ *
+ * GLEICHE MARKE WIE A: Dunkel, Text und Weiß sind die Werte aus Christians
+ * Vorlage (the-alpha.css, --ta-*), das Rot steht nur auf dem Knopf (TheAlphaKauf,
+ * Stil in the-alpha.css). Dazu EIN warmes Neutral für helle Wechselflächen und
+ * EIN Gold: das Haus-Gold (--qb-akzent-kauf) nur am Banner „Ultimate Power“
+ * (Preisanker) und als feine Linie an den Belegen.
+ *
+ * DREI FARB-AKTE: dunkel (Nutzen oben, Christians Vorlage), hell (Produkt,
+ * Belege, Einwände, Preis), dunkel (Live), hell (Fragen).
+ * TYPO: eine Familie, Skala 1,25 ab 16 px (14 / 16 / 20 / 25 / 31,25 / 39) plus
+ * Preis 32 und Nutzerzahl 28 aus dem Preisanker. ABSTÄNDE: 8-px-Raster.
+ * RADIUS: ein Token. Alles hängt an .tab-seite.
+ */
+.tab-seite {
+  --tab-fs-0: 0.875rem;
+  --tab-fs-1: 1rem;
+  --tab-fs-2: 1.25rem;
+  --tab-fs-3: 1.5625rem;
+  --tab-fs-4: 1.953rem;
+  --tab-fs-5: 2.441rem;
+  --tab-fs-preis: 2rem;
+
+  --tab-s-1: 8px;
+  --tab-s-2: 16px;
+  --tab-s-3: 24px;
+  --tab-s-4: 32px;
+  --tab-s-6: 48px;
+  --tab-s-8: 64px;
+  --tab-s-12: 96px;
+
+  --tab-dunkel: #1e1e1e;
+  --tab-text: #333333;
+  --tab-gedaempft: #5c5752;
+  --tab-gedaempft-hell: #c9c4bc;
+  --tab-weiss: #ffffff;
+  --tab-warm: #f6f3ee;
+  --tab-linie: #e4ded5;
+  --tab-gold: var(--qb-akzent-kauf, #c9a14b);
+
+  --tab-radius: 8px;
+  --tab-breite: 1040px;
+  --tab-schmal: 680px;
+
+  background: var(--tab-weiss);
+  color: var(--tab-text);
+  font-size: var(--tab-fs-1);
+  line-height: 1.5;
+  /* Abstand zum Seitenkopf wie in A: das Logo ragt am Handy unter die
+     Kopfleiste und läge sonst auf dem dunklen Block. */
+  padding-top: var(--tab-s-2);
+}
+
+.tab-seite section {
+  padding: var(--tab-s-8) var(--tab-s-2);
+}
+
+.tab-innen {
+  max-width: var(--tab-breite);
+  margin: 0 auto;
+}
+
+.tab-innen-schmal {
+  max-width: var(--tab-schmal);
+}
+
+/* Überschriften: EIN H2-Stil, EIN H3-Stil */
+.tab-h1,
+.tab-h2,
+.tab-h3 {
+  text-shadow: none;
+}
+
+.tab-h1 {
+  margin: 0;
+  font-size: var(--tab-fs-3);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--tab-weiss);
+}
+
+.tab-h2 {
+  margin: 0 0 var(--tab-s-4);
+  font-size: var(--tab-fs-3);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--tab-dunkel);
+}
+
+.tab-h2-hell {
+  color: var(--tab-weiss);
+}
+
+.tab-h3 {
+  margin: 0 0 var(--tab-s-1);
+  font-size: var(--tab-fs-2);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tab-dunkel);
+}
+
+.tab-h3-hell {
+  color: var(--tab-weiss);
+}
+
+.tab-text {
+  margin: 0;
+  font-size: var(--tab-fs-1);
+  line-height: 1.6;
+}
+
+.tab-text-hell {
+  color: var(--tab-gedaempft-hell);
+}
+
+.tab-verweis {
+  display: inline-block;
+  margin-top: var(--tab-s-1);
+  color: var(--tab-dunkel);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.tab-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--tab-radius);
+}
+
+/* 1 — Nutzen zuerst (dunkel) */
+.tab-seite .tab-nutzen {
+  background: var(--tab-dunkel);
+  color: var(--tab-weiss);
+  padding-top: var(--tab-s-3);
+  padding-bottom: var(--tab-s-6);
+}
+
+.tab-nutzen-raster {
+  display: grid;
+  grid-template-columns: 1fr 112px;
+  grid-template-areas:
+    'kopf kopf'
+    'gegen bild'
+    'rest rest';
+  column-gap: var(--tab-s-2);
+  row-gap: var(--tab-s-1);
+  align-items: start;
+}
+
+.tab-nutzen-kopf {
+  grid-area: kopf;
+}
+
+.tab-nutzen-bild {
+  grid-area: bild;
+}
+
+.tab-nutzen-rest {
+  grid-area: rest;
+}
+
+.tab-gegenstand {
+  grid-area: gegen;
+  align-self: center;
+  margin: 0;
+  font-size: var(--tab-fs-1);
+  line-height: 1.5;
+  color: var(--tab-gedaempft-hell);
+}
+
+.tab-preiszeile {
+  display: block;
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--tab-weiss);
+}
+
+.tab-auge {
+  margin: 0 0 var(--tab-s-1);
+  font-size: var(--tab-fs-0);
+  letter-spacing: 0.06em;
+  color: var(--tab-gedaempft-hell);
+}
+
+.tab-vorteile {
+  margin: var(--tab-s-1) 0 var(--tab-s-2);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tab-s-1);
+}
+
+.tab-vorteil {
+  display: grid;
+  gap: 4px;
+  padding-left: var(--tab-s-2);
+  border-left: 2px solid var(--tab-weiss);
+}
+
+.tab-vorteil-titel {
+  color: var(--tab-weiss);
+  font-size: var(--tab-fs-1);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tab-vorteil-grundlage {
+  font-size: var(--tab-fs-0);
+  line-height: 1.5;
+  color: var(--tab-gedaempft-hell);
+}
+
+.tab-seite .tab-kauf {
+  padding: 0;
+}
+
+.tab-live-verweis {
+  display: inline-block;
+  margin-top: var(--tab-s-2);
+  color: var(--tab-weiss);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* 2 — Christians Vorlage (dunkel, Fortsetzung) */
+.tab-seite .tab-vorlage {
+  background: var(--tab-dunkel);
+  color: var(--tab-gedaempft-hell);
+  border-top: 1px solid #333333;
+}
+
+.tab-unterzeile {
+  display: block;
+  margin-top: var(--tab-s-1);
+  font-size: var(--tab-fs-2);
+  font-weight: 400;
+}
+
+.tab-vorlage-text p {
+  margin: 0 0 var(--tab-s-2);
+  color: var(--tab-gedaempft-hell);
+}
+
+.tab-vorlage-text strong {
+  color: var(--tab-weiss);
+}
+
+.tab-saeulen {
+  margin: var(--tab-s-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tab-s-3);
+}
+
+.tab-saeule {
+  padding-top: var(--tab-s-2);
+  border-top: 1px solid #4a4a4a;
+}
+
+.tab-saeule-zeilen {
+  margin: 0;
+  color: var(--tab-weiss);
+}
+
+/* 3 — Produkt (hell) */
+.tab-paar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--tab-s-2);
+  /* Die Quellen sind 604 px breit: breiter als 600 px je Paar würde ein Bild
+     am Tablet und Desktop hochskaliert (Gate 12, bild-aufloesung). */
+  max-width: 600px;
+  margin: 0 auto var(--tab-s-6);
+}
+
+.tab-punkte {
+  margin: 0 0 var(--tab-s-6);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tab-s-3);
+}
+
+.tab-banner {
+  /* Quelle 1600 px: höchstens 800 px breit, sonst hochskaliert (Gate 12). */
+  max-width: 800px;
+  margin: var(--tab-s-2) auto 0;
+}
+
+/* 4 — Belege (warm) */
+.tab-seite .tab-belege {
+  background: var(--tab-warm);
+}
+
+.tab-personen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tab-s-4);
+}
+
+.tab-person {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--tab-s-2);
+  align-items: start;
+  padding-top: var(--tab-s-3);
+  border-top: 2px solid var(--tab-gold);
+}
+
+.tab-person-foto {
+  margin: 0;
+}
+
+.tab-person-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--tab-radius);
+}
+
+.tab-vermerk {
+  margin-top: 4px;
+  font-size: var(--tab-fs-0);
+  color: var(--tab-gedaempft);
+}
+
+/* 5 — Einwände (hell) */
+.tab-karten {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tab-s-3);
+}
+
+.tab-karte {
+  padding: var(--tab-s-3);
+  border: 1px solid var(--tab-linie);
+  border-radius: var(--tab-radius);
+}
+
+/* 6 — Preis (warm) */
+.tab-seite .tab-preis {
+  background: var(--tab-warm);
+}
+
+.tab-preis .product-price,
+.tab-festpreis {
+  font-size: var(--tab-fs-preis);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--tab-dunkel);
+}
+
+.tab-preis .qb-preisanker__nutzer {
+  color: var(--tab-dunkel);
+}
+
+.tab-preis-zeilen {
+  margin: var(--tab-s-3) 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--tab-s-1);
+}
+
+.tab-preis-zeilen li {
+  padding-left: var(--tab-s-3);
+  position: relative;
+}
+
+.tab-preis-zeilen li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--tab-dunkel);
+}
+
+.tab-beratung {
+  margin-top: var(--tab-s-3);
+}
+
+/* 7 — Live (dunkel) */
+.tab-seite .tab-live {
+  background: var(--tab-dunkel);
+  color: var(--tab-weiss);
+  scroll-margin-top: var(--tab-s-8);
+}
+
+.tab-live-wann {
+  margin: 0 0 var(--tab-s-2);
+  color: var(--tab-weiss);
+  font-size: var(--tab-fs-2);
+  font-weight: 700;
+}
+
+.tab-live .tal-karte {
+  margin-top: var(--tab-s-4);
+}
+
+/* 8 — Fragen (hell) */
+.tab-frage {
+  border-bottom: 1px solid var(--tab-linie);
+}
+
+.tab-frage-kopf {
+  padding: var(--tab-s-2) 0;
+  font-size: var(--tab-fs-2);
+  font-weight: 700;
+  color: var(--tab-dunkel);
+  cursor: pointer;
+}
+
+.tab-frage .tab-text {
+  padding-bottom: var(--tab-s-2);
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .tab-seite section {
+    padding: var(--tab-s-12) var(--tab-s-4);
+  }
+  .tab-saeulen,
+  .tab-karten {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .tab-punkte,
+  .tab-personen {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tab-person {
+    grid-template-columns: 160px 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tab-seite .tab-nutzen {
+    padding-top: var(--tab-s-8);
+    padding-bottom: var(--tab-s-8);
+  }
+  .tab-nutzen-raster {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'kopf bild'
+      'gegen bild'
+      'rest bild';
+    column-gap: var(--tab-s-8);
+    align-items: center;
+  }
+  .tab-h1 {
+    font-size: var(--tab-fs-5);
+  }
+  .tab-nutzen-kopf {
+    align-self: end;
+  }
+  .tab-nutzen-rest {
+    align-self: start;
+  }
+  .tab-vorteil-titel {
+    font-size: var(--tab-fs-2);
+  }
+  .tab-vorteil-grundlage {
+    font-size: var(--tab-fs-1);
+  }
+  .tab-vorteile {
+    gap: var(--tab-s-2);
+  }
+  .tab-h1 {
+    margin-bottom: var(--tab-s-3);
+  }
+}
