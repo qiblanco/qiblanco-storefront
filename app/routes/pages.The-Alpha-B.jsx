@@ -47,7 +47,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Alpha: Schutz vor Strahlung mit Diamant, 111 Stück | Qi Blanco'},
+  {title: 'Qi Alpha: Gitterchip™ mit Naturdiamant, nur 111 Stück | Qi Blanco'},
   {
     name: 'description',
     content:
@@ -55,7 +55,7 @@ export const meta = () => [
       'Nummer, 10.639 €, 20 Tage testen. Live-Vorstellung mit Christian am 8. November.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
-  {property: 'og:title', content: 'Qi Alpha: Schutz vor Strahlung mit Diamant'},
+  {property: 'og:title', content: 'Qi Alpha: Gitterchip™ mit Naturdiamant, nur 111 Stück'},
   {
     property: 'og:image',
     content:

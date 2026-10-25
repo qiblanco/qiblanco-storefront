@@ -39,48 +39,54 @@
 export const TAC_HELD = {
   // Christians Wortlaut aus der Vorlage („Limited 1st. Edition“, „111/111“).
   auge: 'Limited 1st. Edition · nur 111 Stück',
-  // Stärkster Ads-Hook im Global Deutsch-Shop (ads.db, tof-unternehmer-h2,
-  // CTR 8,75 % bei 89.701 Impressionen), danach Gegenstand und Auflage.
-  titel: 'Kein Schmuck. Technologie mit einem Diamanten, nur 111 Mal.',
+  // Idee des stärksten Ads-Hooks im Global Deutsch-Shop (ads.db,
+  // tof-unternehmer-h2 „Das ist kein Schmuck. Das ist Technologie.“, CTR 8,75 %
+  // bei 89.701 Impressionen) ohne dessen Abgrenzungston, Gegenstand im ersten
+  // Satz (Hook-DB K-H-02), danach die Auflage.
+  titel: 'Mehr als Schmuck: dein Gitterchip™ mit Naturdiamant, nur 111 Mal',
   gegenstand:
-    'Der Qi Alpha trägt den Gitterchip™ aus 750er Gold und einen Naturdiamanten. ' +
-    'Du trägst ihn jeden Tag, mit deiner eigenen Nummer.',
+    'Im Qi Alpha steckt unser Gitterchip™ aus 750er Gold, gefasst mit einem hochreinen ' +
+    'Naturdiamanten. Du trägst ihn jeden Tag bei dir, und er trägt deine ganz eigene Nummer.',
   // Hinter dem Preis aus der Storefront (Rückfall: TAC_ABSCHLUSS.festpreis).
-  preisZusatz: 'fester Preis, kein Sale',
+  preisZusatz: 'fester Preis, nie im Sale',
   // Direkt unter dem Knopf, was das Risiko nimmt (Kanon: Risikoumkehr ist ein
   // Abschluss-Thema; Einwand „Testfrist ab Zustellung rechnen und das sagen“).
   sicher: [
-    '20 Tage ab Erhalt testen, voller Kaufpreis zurück',
-    'Versand ab Mitte Januar 2027, versichert',
+    '20 Tage ab Erhalt in Ruhe testen, voller Kaufpreis zurück',
+    'Versand ab Mitte Januar 2027, zu 100 % versichert',
   ],
 };
 
 /** Was der Mensch bekommt, der den Qi Alpha trägt. */
 export const TAC_NUTZEN = {
-  titel: 'Was du mit dem Qi Alpha bekommst',
+  titel: 'Was du mit deinem Qi Alpha bekommst',
   vorteile: [
     {
       id: 'schutz',
       // Christians Wort aus der Vorlage („Starker Schutz.“).
-      titel: 'Starker Schutz, jeden Tag',
+      titel: 'Starker Schutz, Tag und Nacht',
       grundlage:
-        'Der Gitterchip™ arbeitet ohne Strom und Akku. Das Labor von Prof. Dr. Dartsch hat ihn ' +
+        'Der Gitterchip™ arbeitet ganz ohne Strom und Akku. Das Labor von Prof. Dr. Dartsch hat ihn ' +
         'in fünf Arbeiten untersucht, gemessen am QiOne® 2 Pro, am QiBracelet und am QiHome Air.',
     },
     {
       id: 'ruhe',
-      titel: 'Ruhige Nächte, mehr Energie',
-      grundlage: 'Das berichten Gitterchip™-Träger in 171 Erfahrungsberichten am häufigsten.',
+      titel: 'Ruhigere Nächte, mehr Energie im Alltag',
+      grundlage:
+        'In 171 Erfahrungsberichten zum Gitterchip™ erzählen uns Menschen vor allem von ruhigeren ' +
+        'Nächten und mehr Energie.',
     },
     {
       id: 'alltag',
-      titel: 'Immer dabei: Dusche, Sauna, Meer',
-      grundlage: 'Der Gitterchip™ ist unempfindlich gegenüber Wasser, Salz, Schweiß und Hitze.',
+      titel: 'Immer an dir, unter der Dusche wie im Meer',
+      grundlage: 'Wasser, Salz, Schweiß und die Hitze der Sauna machen dem Gitterchip™ nichts aus.',
     },
     {
       id: 'einzig',
-      titel: 'Einer von 111, mit deiner Nummer',
-      grundlage: 'Ein Naturdiamant, eine Seriennummer von 1 bis 111, von Hand poliert.',
+      titel: 'Einer von 111, und er trägt deine Nummer',
+      grundlage:
+        'Jeder Qi Alpha hat seinen eigenen Naturdiamanten und eine Seriennummer von 1 bis 111. ' +
+        'Die letzte Politur macht ein Goldschmied von Hand.',
     },
   ],
 };
@@ -91,19 +97,29 @@ export const TAC_INHALT = {
   punkte: [
     {
       titel: '„The One Eye“',
-      text: 'Ein hochreiner Naturdiamant, gefasst am Gitterchip™. Rund um das Auge laufen 108 Striche.',
+      text: 'Ein hochreiner Naturdiamant sitzt mitten im Gitterchip™, rund um das Auge laufen 108 feine Striche.',
     },
     {
       titel: 'Gitterchip™ aus 750er Gold',
-      text: 'Eine eigene Goldlegierung, deren Atome in einer festen Ordnung stehen. Ohne Elektronik, ohne Verschleiß.',
+      // Christians Wortlaut der Kaufseite (QiMaster.jsx, „Der Gitterchip™ der
+      // ultimativen Generation“).
+      text:
+        'Der Kern des Qi Alpha ist ein zweiteiliger Gitterchip™, definiert durch die über ein ' +
+        'Jahrzehnt andauernde Forschung am QiOne®: eine Goldlegierung, deren Atome in einer ' +
+        'einmalig definierten Ordnung stehen.',
     },
     {
       titel: 'Deine Nummer',
-      text: 'Jeder Qi Alpha trägt eine eigene Seriennummer von 1 bis 111. Deine Wunschnummer kostet 2.000 € extra.',
+      text:
+        'Jeder Qi Alpha trägt seine eigene Seriennummer von 1 bis 111. Du hast eine Lieblingszahl? ' +
+        'Deine Wunschnummer bekommst du für 2.000 € extra.',
     },
     {
       titel: 'Von Hand vollendet',
-      text: 'Die finale Politur machen Goldschmiede per Hand.',
+      // Christians Sätze der Kaufseite (app/data/qi-master-wortlaut.json).
+      text:
+        'Spezialisten mit jahrzehntelanger Erfahrung begleiten jeden Qi Alpha Stück für Stück durch ' +
+        'die Fertigung. Die finale Politur führen Goldschmiede per Hand mit meisterhafter Genauigkeit durch.',
     },
   ],
 };
@@ -157,23 +173,26 @@ export const TAC_BELEGE = {
  * Haus (qb-preisanker.css).
  */
 export const TAC_ABSCHLUSS = {
-  titel: 'Bevor du reservierst',
+  titel: 'Was dich vielleicht noch beschäftigt',
   fragen: [
     {
       frage: 'Und wenn ich nichts spüre?',
       antwort:
-        'Du testest deinen Qi Alpha 20 Tage ab Erhalt. Passt er nicht zu dir, schickst du ihn ' +
-        'zurück und bekommst den vollen Kaufpreis.',
+        'Dann musst du ihn nicht behalten. Ab dem Tag, an dem er bei dir ankommt, hast du 20 Tage ' +
+        'Zeit, ihn in Ruhe zu tragen. Passt er nicht zu dir, schickst du ihn zurück und bekommst ' +
+        'den vollen Kaufpreis.',
     },
     {
       frage: 'Warum kostet er 10.639 €?',
+      // Christians Wortlaut der Kaufseite („Durch seine sehr aufwendige Herstellung ...“).
       antwort:
-        'Es gibt nur 111 Stück. In jedem sitzt ein Naturdiamant, jeder trägt eine eigene Nummer, ' +
-        'und Goldschmiede polieren ihn von Hand. Der Preis bleibt fest: kein Rabatt, kein Sale.',
+        'Durch seine sehr aufwendige Herstellung ist der Preis fest. Es gibt nur 111 Stück, jedes ' +
+        'mit eigenem Naturdiamanten und eigener Nummer, und diese Auflage wird es nie in einem Sale ' +
+        'geben, weder am Black Friday noch im Sommer.',
     },
     {
       frage: 'Wann bekomme ich ihn?',
-      antwort: 'Der Versand startet ab Mitte Januar 2027, weltweit und zu 100 % versichert.',
+      antwort: 'Ab Mitte Januar 2027 geht dein Qi Alpha auf die Reise, weltweit und zu 100 % versichert.',
     },
   ],
   anker: ['Limited 1st. Edition', '111 Stück, jedes mit eigener Nummer'],
@@ -184,11 +203,12 @@ export const TAC_ABSCHLUSS = {
   zeilen: [
     'Wunschnummer von 1 bis 111: + 2.000 €',
     '20 Tage ab Erhalt testen, voller Kaufpreis zurück',
-    'Versand ab Mitte Januar 2027, versichert',
+    'Versand ab Mitte Januar 2027, zu 100 % versichert',
   ],
   beratung: {
-    text: 'Du hast noch Fragen? Christian nimmt sich persönlich Zeit für dich.',
-    knopf: 'Persönliches Gespräch buchen',
+    // Christians eigener Satz (KI-Klang-Lehre: seine warmen Sätze tragen).
+    text: 'Du hast noch Fragen? Christian nimmt sich persönlich Zeit für dich!',
+    knopf: 'Persönliches Gespräch mit Christian buchen',
     ziel: '/pages/produktberatung?von=qi-alpha-live',
   },
 };
@@ -202,11 +222,11 @@ export const TAC_STICKY = {
 /** Live-Vorstellung 08.11. (Coming-Home-Spezial, coming-home/config/themen.json). */
 export const TAC_LIVE = {
   anker: 'live',
-  titel: 'Erst live kennenlernen',
+  titel: 'Lern den Qi Alpha zuerst live kennen',
   wann: 'Sonntag, 8. November 2026, 12 Uhr (Berlin), auf Zoom',
   text:
-    'Christian stellt den Qi Alpha zum ersten Mal live vor. Du siehst ihn aus nächster Nähe ' +
-    'und kannst Christian alles fragen. Das Live wird aufgezeichnet.',
+    'Am 8. November stellt Christian den Qi Alpha zum ersten Mal live vor. Du siehst ihn aus ' +
+    'nächster Nähe, und deine Fragen beantwortet Christian dir direkt. Wir freuen uns auf dich!',
 };
 
 /** Fragen zum Ablauf (FAQ). */
@@ -216,28 +236,33 @@ export const TAC_FRAGEN = {
     {
       frage: 'Kann ich meine Nummer wählen?',
       antwort:
-        'Ja. Jeder Qi Alpha trägt eine eigene Seriennummer von 1 bis 111. Deine Wunschnummer kostet ' +
-        '2.000 € extra. Ohne Wunschnummer bekommst du beim Versand eine freie Nummer der Serie.',
+        'Ja, sehr gern! Jeder Qi Alpha trägt seine eigene Seriennummer von 1 bis 111. Deine ' +
+        'Wunschnummer kostet 2.000 € extra, und ohne Wunsch bekommst du beim Versand eine freie ' +
+        'Nummer der Serie.',
     },
     {
       frage: 'Was für ein Diamant sitzt im Qi Alpha?',
-      antwort: '„The One Eye“: ein hochreiner Naturdiamant, gefasst am Gitterchip™.',
+      antwort: '„The One Eye“ ist ein hochreiner Naturdiamant, der mitten im Gitterchip™ gefasst ist.',
     },
     {
       frage: 'Kann ich damit in die Sauna oder ins Meer?',
       antwort:
-        'Ja. Der Gitterchip™ ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und Hitze. ' +
-        'Die Goldkette sollte nicht dauerhaft Chlorwasser ausgesetzt werden.',
+        // Christians Wortlaut der Qi-Alpha-FAQ (app/data/product-faqs.js); der
+        // Pflegehinweis zur Goldkette steht dort und auf der Kaufseite.
+        'Ja! Der Gitterchip™ ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und ' +
+        'Hitze. Du kannst deinen Qi Alpha also unter der Dusche, in der Sauna und im Meer tragen.',
     },
     {
       frage: 'Wie funktioniert der Gitterchip™?',
       antwort:
-        'Er braucht keinen Strom und keinen Akku. ' +
-        'Sein statisches Feld entsteht aus der Anordnung der Goldatome in der Legierung.',
+        'Ganz ohne Strom und ohne Akku: Sein statisches Feld entsteht aus der Anordnung der ' +
+        'Goldatome in unserer Legierung.',
     },
     {
       frage: 'Gibt es eine Aufzeichnung vom Live?',
-      antwort: 'Ja, wir zeichnen das Live auf. Fragen stellen kannst du Christian aber nur live.',
+      antwort:
+        'Ja, wir zeichnen das Live auf. Wenn du Christian etwas fragen möchtest, sei am besten ' +
+        'live dabei!',
     },
   ],
 };
