@@ -121,7 +121,7 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // ändert, ändert nicht die Seite, sondern das, was über sie im Netz
   // steht, und die beiden driften ohne Nachzug auseinander.
   '/products/qi-master':
-    'Qi Master®: Alpha Serie, limitiert auf 100 Stück. Der QiOne mit Diamanten, ' +
+    'Qi Master®: Alpha Serie, limitiert auf 111 Stück. Der QiOne mit Diamanten, ' +
     'Gitterchip™ der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +

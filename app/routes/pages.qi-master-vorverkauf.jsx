@@ -124,7 +124,7 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Master® – Alpha Serie, limitiert auf 100 Stück | Qi Blanco'},
+  {title: 'Qi Master® – Alpha Serie, limitiert auf 111 Stück | Qi Blanco'},
   {
     name: 'description',
     content:

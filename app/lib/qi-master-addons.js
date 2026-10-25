@@ -8,7 +8,7 @@
  * (qi-master-addons.server.js), damit beide dieselben Regeln sprechen.
  *
  * WARUM DIE ADD-ONS EIGENE PRODUKTE SIND: die Wunschnummer hat je Nummer eine
- * Variante ("Alpha N/100"). Shopify sperrt eine vergebene Nummer selbst
+ * Variante ("Alpha N/111", bis 25.10.2026 "Alpha N/100"). Shopify sperrt eine vergebene Nummer selbst
  * (inventoryPolicy DENY -> availableForSale false) — an Seite, Warenkorb und
  * Kasse, nicht nur in dieser Oberfläche. Das Register dahinter führt
  * shop-manager/bin/qm-seriennummern.
@@ -37,6 +37,16 @@ export const ADDON_WAEHRUNGEN = ['EUR', 'CHF'];
 /** Vorausgewählte Kettenlänge (Christian/Coworker A 2026-09-24). */
 export const KETTE_VORWAHL = '60 cm';
 
+/*
+ * variants(first: 250) statt 100: die Alpha-Serie geht seit 25.10.2026 bis
+ * 111 (Christian: „es geht nun bis 111.“). Mit 100 fehlten 101..111 still.
+ *
+ * product + selectedOptions je Variante: die Variante geht als selectedVariant
+ * in die OPTIMISTISCHE Warenkorbzeile (addonLinien -> useOptimisticCart).
+ * Ohne product las CartLineItem `product.handle` von undefined, und der
+ * Warenkorb stürzte ab (Christian 25.10.2026: „Application Error … Cannot
+ * read properties of undefined (reading 'handle')“).
+ */
 export const QM_ADDONS_QUERY = `#graphql
   query QiMasterAddons($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
@@ -51,10 +61,19 @@ export const QM_ADDONS_QUERY = `#graphql
     id
     handle
     title
-    variants(first: 100) {
+    variants(first: 250) {
       nodes {
         id
         title
+        product {
+          id
+          handle
+          title
+        }
+        selectedOptions {
+          name
+          value
+        }
         availableForSale
         price {
           amount
@@ -64,6 +83,18 @@ export const QM_ADDONS_QUERY = `#graphql
     }
   }
 `;
+
+/**
+ * Anzeige einer Wunschnummer: die Serie geht seit 25.10.2026 bis 111. Bis die
+ * Shopify-Varianten umbenannt sind, heißen 1..100 noch "Alpha N/100"; die
+ * Seite zeigt sie schon als "Alpha N/111". Andere Titel bleiben, wie sie sind.
+ */
+export function nummerAnzeige(titel) {
+  return String(titel ?? '').replace(
+    /^(Alpha\s*\d{1,3}\s*\/\s*)100$/,
+    (_, kopf) => `${kopf}111`,
+  );
+}
 
 /** Welches Add-on ist dieser Handle? null = keines. */
 export function addonArt(handle) {
