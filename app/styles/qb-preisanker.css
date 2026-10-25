@@ -88,3 +88,21 @@
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
+
+/* Reihenfolge am Bildschirm (Kauf zuerst). Das geteilte Blatt
+   qb-pdp-kauf-zuerst.css stellt `.product-price` auf Stufe 1 — der Preis
+   steckt hier aber IM Dreizeiler, also braucht der Dreizeiler selbst die
+   Stufe des Preises. Bewusst HIER und nicht im geteilten Blatt: das laden
+   auch qione-kette und Qi Alpha, und eine Zeile dort zieht deren Messung
+   in jeden Diff dieses Bausteins. Gleiche Spezifitaet wie dort (0,4,0);
+   diese Datei laedt danach (links() der Seite), also gewinnt sie. */
+@media (min-width: 750px) {
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > .qb-preisanker:is(div) {
+    order: 1;
+  }
+}
+@media (max-width: 749px) {
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > .qb-preisanker:is(div) {
+    order: 1;
+  }
+}
