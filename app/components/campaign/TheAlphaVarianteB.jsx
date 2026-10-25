@@ -183,9 +183,9 @@ function Belege() {
             <li className="tab-person" key={p.id} data-tab-beleg={p.id}>
               <figure className="tab-person-foto">
                 <img
-                  src={`${p.foto.src}&width=640`}
-                  srcSet={[320, 640, 960].map((w) => `${p.foto.src}&width=${w} ${w}w`).join(', ')}
-                  sizes="(min-width: 768px) 200px, 120px"
+                  src={`${p.foto.src}&width=320`}
+                  srcSet={[160, 240, 320, 480].map((w) => `${p.foto.src}&width=${w} ${w}w`).join(', ')}
+                  sizes="(min-width: 768px) 160px, 120px"
                   width={p.foto.b}
                   height={p.foto.h}
                   alt={p.foto.alt}
