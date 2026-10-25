@@ -45,7 +45,8 @@ export const TAC_HELD = {
   gegenstand:
     'Der Qi Alpha trägt den Gitterchip™ aus 750er Gold und einen Naturdiamanten. ' +
     'Du trägst ihn jeden Tag, mit deiner eigenen Nummer.',
-  preiszeile: '10.639 € · fester Preis, kein Sale',
+  // Hinter dem Preis aus der Storefront (Rückfall: TAC_ABSCHLUSS.festpreis).
+  preisZusatz: 'fester Preis, kein Sale',
   // Direkt unter dem Knopf, was das Risiko nimmt (Kanon: Risikoumkehr ist ein
   // Abschluss-Thema; Einwand „Testfrist ab Zustellung rechnen und das sagen“).
   sicher: [

@@ -55,7 +55,20 @@ function Bild({bild, sizes, className, loading = 'lazy'}) {
   );
 }
 
-function Held() {
+/** Ganze Beträge ohne Nachkommastellen, echte Cents centgenau. */
+function betrag({amount, currencyCode}) {
+  const zahl = Number(amount);
+  const ganz = Number.isInteger(zahl);
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: currencyCode || 'EUR',
+    minimumFractionDigits: ganz ? 0 : 2,
+    maximumFractionDigits: ganz ? 0 : 2,
+  }).format(zahl);
+}
+
+function Held({preis}) {
+  const price = preis?.price?.amount ? preis.price : TAC_ABSCHLUSS.festpreis;
   return (
     <section className="tac-held" data-tac-held="" aria-labelledby="tac-held-titel">
       <div className="tac-innen tac-held-raster">
@@ -73,7 +86,9 @@ function Held() {
             {TAC_HELD.titel}
           </h1>
           <p className="tac-gegenstand">{TAC_HELD.gegenstand}</p>
-          <p className="tac-preiszeile">{TAC_HELD.preiszeile}</p>
+          <p className="tac-preiszeile">
+            {betrag(price)} · {TAC_HELD.preisZusatz}
+          </p>
           <TheAlphaKauf className="tac-kauf" />
           <ul className="tac-sicher" data-tac-sicher="">
             {TAC_HELD.sicher.map((z) => (
@@ -221,18 +236,6 @@ function Belege() {
       </div>
     </section>
   );
-}
-
-/** Ganze Beträge ohne Nachkommastellen, echte Cents centgenau. */
-function betrag({amount, currencyCode}) {
-  const zahl = Number(amount);
-  const ganz = Number.isInteger(zahl);
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: currencyCode || 'EUR',
-    minimumFractionDigits: ganz ? 0 : 2,
-    maximumFractionDigits: ganz ? 0 : 2,
-  }).format(zahl);
 }
 
 /**
@@ -407,7 +410,7 @@ function Fragen() {
 export default function TheAlphaVarianteC({preis}) {
   return (
     <div className="tac-seite" data-the-alpha-variante="C">
-      <Held />
+      <Held preis={preis} />
       <Nutzen />
       <Vorlage />
       <Inhalt />
