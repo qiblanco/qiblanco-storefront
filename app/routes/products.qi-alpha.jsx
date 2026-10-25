@@ -14,6 +14,8 @@ import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
+import {noindexMeta} from '~/lib/seo';
+import {istVorschauNoindex} from '~/lib/vorschau-noindex';
 import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
@@ -105,6 +107,20 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  // VORSCHAU-NOINDEX (Christian 23.10.2026, Liste app/lib/vorschau-noindex.js):
+  // solange der Pfad dort steht, trägt die Seite das noindex AUCH im HTML,
+  // nicht nur als X-Robots-Tag aus entry.server.jsx (Hausmuster D-006 „Gurt
+  // und Hosenträger"), und wie products.$handle.jsx nur Titel + noindex,
+  // kein canonical daneben. Grund am 2026-10-25 gemessen: die Zufahrts-
+  // prüfung (src/seiten_zufahrt.py) liest nur den HTML-Kopf und hielt die
+  // Seite für indexierbar. Der Eintrag raus = alles unten gilt wieder, die
+  // Liste bleibt die einzige Stelle.
+  if (istVorschauNoindex('/products/qi-alpha')) {
+    return [
+      {title: `${data?.product?.title ?? 'Qi Alpha'} | ${MARKE}`},
+      noindexMeta(),
+    ];
+  }
   return produktMeta({
     // Der Strukturknoten (Product-@id, url, Brotkrumen) baut seine Adresse aus
     // dem HANDLE. Bis zum s09-Handle-Wechsel heißt der in Shopify noch
