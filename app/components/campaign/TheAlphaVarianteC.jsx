@@ -318,7 +318,8 @@ export function tacStickySichtbar({heldUnterkante, knopfImBild, fussImBild}) {
  * Chat-Signal (KaufknopfChatSignal) bemerkt ihn per childList und lässt die
  * Blase weichen. Der Knopf ist derselbe Baustein TheAlphaKauf.
  */
-function StickyKauf() {
+function StickyKauf({preis}) {
+  const price = preis?.price?.amount ? preis.price : TAC_ABSCHLUSS.festpreis;
   const [sichtbar, setSichtbar] = useState(false);
 
   useEffect(() => {
@@ -360,7 +361,9 @@ function StickyKauf() {
     >
       {sichtbar && (
         <>
-          <span className="tac-sticky-name">{TAC_STICKY.name}</span>
+          <span className="tac-sticky-name">
+            {TAC_STICKY.name} · {betrag(price)}
+          </span>
           <TheAlphaKauf className="tac-sticky-kauf" />
         </>
       )}
@@ -418,7 +421,7 @@ export default function TheAlphaVarianteC({preis}) {
       <Abschluss preis={preis} />
       <Live />
       <Fragen />
-      <StickyKauf />
+      <StickyKauf preis={preis} />
     </div>
   );
 }

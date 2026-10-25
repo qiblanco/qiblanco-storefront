@@ -195,7 +195,8 @@ export const TAC_ABSCHLUSS = {
 
 /** Fester Kaufknopf mobil (ab dem zweiten Bildschirm). */
 export const TAC_STICKY = {
-  name: 'Qi Alpha · 10.639 €',
+  // Dahinter der Preis aus der Storefront wie oben und im Abschluss.
+  name: 'Qi Alpha',
 };
 
 /** Live-Vorstellung 08.11. (Coming-Home-Spezial, coming-home/config/themen.json). */
