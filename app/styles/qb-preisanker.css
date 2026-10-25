@@ -97,12 +97,12 @@
    in jeden Diff dieses Bausteins. Gleiche Spezifitaet wie dort (0,4,0);
    diese Datei laedt danach (links() der Seite), also gewinnt sie. */
 @media (min-width: 750px) {
-  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > .qb-preisanker:is(div) {
+  :is(.product[data-kauf-zuerst-desktop='an'], [data-kauf-zuerst-desktop='an'] .product) > .product-main > .qb-preisanker {
     order: 1;
   }
 }
 @media (max-width: 749px) {
-  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > .qb-preisanker:is(div) {
+  :is(.product[data-kauf-zuerst-mobil='an'], [data-kauf-zuerst-mobil='an'] .product) > .product-main > .qb-preisanker {
     order: 1;
   }
 }
