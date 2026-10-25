@@ -251,6 +251,23 @@ export const AUSWEICH_SELEKTOR = '[data-qb-chat-weicht]';
 export const HUB_ATTRIBUT = 'data-chat-rutscht';
 export const HUB_VARIABLE = '--qb-chat-hub';
 
+/**
+ * Was die HOCHGERUTSCHTE Kugel außer Kaufknöpfen nicht decken darf: die
+ * Pfeile der Slider (Auftrag s03: „nach dem Hochrutschen nichts anderes
+ * decken (Galerie-/Slider-Pfeile, Cookie-Hinweis, andere Kaufknöpfe)“).
+ * Als EIGENSCHAFT des Hausbausteins: reusables/StandardSlider.jsx und
+ * UpsellLineUp.jsx geben jedem Pfeil die Klasse SliderButton, und jeder
+ * Slider der Kaufseiten kommt aus ihnen. Gemessen im Preview 25.10.2026 auf
+ * /products/qione-2-pro: an einer von 11 Scrollstellen lagen „Vorheriger
+ * Slide“ und „Nächster Slide“ unter der hochgerutschten Kugel. Die
+ * Produktgalerie hat mobil keine Pfeile (Vorschaubilder). Der Cookie-Hinweis
+ * liegt über dem Widget (eigene Ebene), er wird nie gedeckt.
+ *
+ * Nur bei Hub > 0: in der Ruhelage am unteren Rand gilt der Schnitt von
+ * OEFFENTLICH_KNOPF_VORFILTER unverändert (der Chat weicht nur Kaufknöpfen).
+ */
+export const PFEIL_SELEKTOR = 'button.SliderButton';
+
 /** Am <html>: der Chat ist offen, er gleitet nicht (app.css). */
 export const OFFEN_ATTRIBUT = 'data-chat-offen';
 

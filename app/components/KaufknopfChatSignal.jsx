@@ -15,6 +15,7 @@ import {
   istLpKaufausgang,
   istOeffentlichesProduktziel,
   OFFEN_ATTRIBUT,
+  PFEIL_SELEKTOR,
   rahmenOffen,
   ruhelage,
   UEBERDECKUNG_ATTRIBUT,
@@ -210,9 +211,19 @@ export function KaufknopfChatSignal() {
       }
       const hub = chatHub({ruhe, leisten, fensterHoehe, angedockt});
       const offen = rahmenOffen({rahmen: ruhe, fensterHoehe, angedockt});
+      const knoepfe = rahmen ? knopfRechtecke() : [];
+      // Hochgerutscht deckt die Kugel auch keine Slider-Pfeile (lib, PFEIL_SELEKTOR).
+      if (hub > 0) {
+        document.querySelectorAll(PFEIL_SELEKTOR).forEach((b) => {
+          const r = b.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < fensterHoehe) {
+            knoepfe.push(r);
+          }
+        });
+      }
       const unterdruecken = ueberdecktKaufknopf({
         rahmen: verschoben(ruhe, hub),
-        knoepfe: rahmen ? knopfRechtecke() : [],
+        knoepfe,
         fensterHoehe,
         angedockt,
         beruehrt: chatBeruehrt,
