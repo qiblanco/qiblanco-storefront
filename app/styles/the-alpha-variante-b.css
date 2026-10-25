@@ -274,7 +274,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--tab-s-2);
-  margin-bottom: var(--tab-s-6);
+  /* Die Quellen sind 604 px breit: breiter als 600 px je Paar würde ein Bild
+     am Tablet und Desktop hochskaliert (Gate 12, bild-aufloesung). */
+  max-width: 600px;
+  margin: 0 auto var(--tab-s-6);
 }
 
 .tab-punkte {

@@ -141,7 +141,7 @@ function Inhalt() {
       <div className="tab-innen">
         <div className="tab-paar">
           {PROTECTION.bilder.map((b) => (
-            <Bild key={b.url} bild={b} className="tab-bild" sizes="(min-width: 1024px) 480px, 50vw" />
+            <Bild key={b.url} bild={b} className="tab-bild" sizes="(min-width: 640px) 292px, 50vw" />
           ))}
         </div>
         <h2 className="tab-h2" id="tab-inhalt-titel">
@@ -157,7 +157,7 @@ function Inhalt() {
         </ul>
         <div className="tab-paar">
           {MANIFESTATION.bilder.map((b) => (
-            <Bild key={b.url} bild={b} className="tab-bild" sizes="(min-width: 1024px) 480px, 50vw" />
+            <Bild key={b.url} bild={b} className="tab-bild" sizes="(min-width: 640px) 292px, 50vw" />
           ))}
         </div>
         <div className="tab-banner">
