@@ -77,6 +77,8 @@ const PFLICHT = [
   '/products/qi-alpha',
   // Umzug auf the-alpha (Christian Z4 vom 25.10.2026, s06): Shop A lebt hier.
   '/products/the-alpha',
+  // B-Fassung der Kaufseite (Christian Z10 vom 25.10.2026, s12).
+  '/products/the-alpha-b',
   '/pages/The-Alpha-B',
   '/pages/The-Alpha-C',
 ];
@@ -93,7 +95,7 @@ const NACHBARN = [
   '/pages/the-alpha',
 ];
 
-test('Pfadliste trägt genau die Pfade aus den Aufträgen (sechs + Shop A unter the-alpha + zwei The-Alpha-Testarme)', () => {
+test('Pfadliste trägt genau die Pfade aus den Aufträgen (sechs + Shop A unter the-alpha + Shop B the-alpha-b + zwei The-Alpha-Testarme)', () => {
   assert.deepEqual(LISTE.map((e) => e.pfad).sort(), [...PFLICHT].sort());
 });
 
@@ -126,14 +128,14 @@ test('robots $-Anker: goldkette, wunschnummer und andere Nachbarn bleiben offen'
 
 test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar', () => {
   const r = regelnAus(zeilen({alle: false}));
-  for (const p of ['/pages/qi-alpha-b', '/products/qi-alpha-b', '/pages/qi-master-vorverkauf', '/pages/qi-alpha-vorverkauf']) {
+  for (const p of ['/pages/qi-alpha-b', '/products/qi-alpha-b', '/products/the-alpha-b', '/pages/qi-master-vorverkauf', '/pages/qi-alpha-vorverkauf']) {
     assert.equal(erlaubt(r, p), false, p);
   }
   for (const p of ['/products/qi-master', '/products/qi-alpha', '/products/the-alpha']) assert.equal(erlaubt(r, p), true, p);
 });
 
 test('Sitemap-Handles je Typ: alle Listenpfade, auch Shop A', () => {
-  assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master', 'the-alpha']);
+  assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master', 'the-alpha', 'the-alpha-b']);
   assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['The-Alpha-B', 'The-Alpha-C', 'qi-alpha-b', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
 });
 

@@ -1,35 +1,28 @@
-import {useState} from 'react';
 import {redirect, useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
-import {QiOneBuyBox} from '~/components/product-pages/QiOneBuyBox';
-import QiMaster, {
-  QiMasterBenefitList,
-} from '~/components/product-pages/QiMaster';
-import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
-import qiMasterStyles from '~/styles/qi-master.css?url';
-import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
-import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
-import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
-import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
+import {TheAlphaShop} from '~/components/campaign/TheAlphaShop';
+import shopStyles from '~/styles/the-alpha-produkt.css?url';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {istVorschauNoindex} from '~/lib/vorschau-noindex';
-import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
-import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
-import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
-import {QiMasterAddons} from '~/components/product-pages/QiMasterAddons';
-import {
-  QM_ADDONS_QUERY,
-  ADDON_WAEHRUNGEN,
-  KETTE_VORWAHL,
-  addonLinien,
-  QM_HANDLES,
-} from '~/lib/qi-master-addons';
+import {QM_ADDONS_QUERY, QM_HANDLES} from '~/lib/qi-master-addons';
 
 /** Der kanonische Pfad dieser Kaufseite (Christian Z4, 25.10.2026). */
 const THE_ALPHA_PDP_PFAD = '/products/the-alpha';
 
 /*
+ * SEIT 2026-10-26 (Segment s12): /products/the-alpha zeigt die NEUE Shopseite
+ * nach Christians Figma-Spalte und der Apple-Kaufseite (Z9: „so habe im
+ * gleichen link nochmal einen neue shopseite gebaut, sie soll sehr nahe an dem
+ * hier gebaut werden aber eben nur mit den inhalten die ich definiert habe“).
+ * Seite: components/campaign/TheAlphaShop.jsx, Daten the-alpha-shop-daten.js,
+ * Stil styles/the-alpha-produkt.css. Die bisherige Kaufseite (QiOneBuyBox +
+ * QiMaster-Sektionen) lebt unverändert als B-Fassung unter
+ * /products/the-alpha-b (products.the-alpha-b.jsx, Christian Z10). Rückweg:
+ * den Default-Export unten wieder auf die Fassung aus products.the-alpha-b.jsx
+ * setzen (oder hb-deploy revert des s12-PR). Was unten über BuyBox, Add-ons
+ * und Steuerhinweis steht, gilt seitdem für die B-Fassung.
+ *
  * Organische Produktseite /products/the-alpha — seit 2026-10-26. Christian am
  * 25.10.2026 (Z4): „d.h. wir gehen im link weg von qi-alpha hin zu the alpha"
  * (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c,
@@ -97,18 +90,7 @@ const THE_ALPHA_PDP_PFAD = '/products/the-alpha';
  * die Token-Schicht der Seite, damit app.css unangetastet bleibt.
  */
 export function links() {
-  return [
-    {rel: 'stylesheet', href: qiMasterStyles},
-    // Christians Fassung vom 22.09.2026 (QiMasterWortlaut) — eigene Datei,
-    // geteilt mit der Landingpage; Begründung im Kopf von
-    // app/styles/qi-master-wortlaut.css.
-    {rel: 'stylesheet', href: wortlautStyles},
-    // Kauf zuerst: Preis und Kaufknopf im ersten Fenster; Schalter und
-    // Begründung in components/product-pages/pdpKaufZuerst.js. Das Attribut
-    // sitzt auf dem Seiten-Wrapper .qm-pdp, nicht in der geteilten Buy-Box.
-    {rel: 'stylesheet', href: kaufZuerstStyles},
-    {rel: 'stylesheet', href: kaufleisteStyles},
-  ];
+  return [{rel: 'stylesheet', href: shopStyles}];
 }
 
 /**
@@ -244,130 +226,7 @@ function loadDeferredData() {
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, addons} = useLoaderData();
-  const {descriptionHtml} = product;
-  const qmVariante = product.selectedOrFirstAvailableVariant;
-  // Add-ons nur neben einem KAUFBAREN Qi Master: ist er nicht bestellbar,
-  // sind es die Add-ons auch nicht (Auftrag 2026-09-24, Grenzen). Und nur in
-  // den Märkten, für die Christian einen Preis genannt hat (ADDON_WAEHRUNGEN).
-  const addonsSichtbar =
-    qmVariante?.availableForSale &&
-    ADDON_WAEHRUNGEN.includes(qmVariante?.price?.currencyCode)
-      ? addons
-      : null;
-  const [auswahl, setAuswahl] = useState(() => ({
-    wunschnummer: null,
-    ketteAn: false,
-    kette:
-      addons?.kette?.variants?.nodes?.find((v) => v.title === KETTE_VORWAHL)?.id ??
-      addons?.kette?.variants?.nodes?.[0]?.id ??
-      null,
-  }));
-  const zusatzLinien = addonsSichtbar
-    ? addonLinien({
-        wunschnummer: addonsSichtbar.wunschnummer?.variants?.nodes?.find(
-          (v) => v.id === auswahl.wunschnummer && v.availableForSale,
-        ),
-        kette: auswahl.ketteAn
-          ? addonsSichtbar.kette?.variants?.nodes?.find((v) => v.id === auswahl.kette)
-          : null,
-      })
-    : [];
-
-  return (
-    <div className="qm-pdp" {...kaufZuerstAttribute()}>
-      <QiOneBuyBox
-        product={product}
-        /* SPRUNGZIEL DES PARALLAX-KNOPFES "Hole dir deinen QiMaster" weiter
-           unten auf der Seite (product-pages/QiMaster.jsx, link={'#qm-buybox'}).
-           BIS ZUM 2026-09-16 GAB ES DIESE ID IM GANZEN LADEN NICHT: der Knopf
-           stand seit dem ersten Tag der Seite da und tat beim Klick nichts —
-           gemessen 2026-09-16T20:24Z im Browser, ein einziger seiteninterner
-           Sprungziel-Link auf der Seite, und der war tot. Der Kopfkommentar in
-           QiMaster.jsx nannte ihn ausdrücklich "ein echtes Ziel"; genau diese
-           Behauptung ist der Grund, warum es niemandem auffiel.
-
-           Die Id hängt an der Buy-Box und nicht an einem neuen Wrapper: sie
-           IST das Ziel, das der Knopf verspricht. Dieselbe Hausform wie
-           products.qibracelet.jsx / products.qihome-air.jsx / products.
-           zeremonie-kakao.jsx (`<div className="product" id="product">`), hier
-           nur über die geteilte Komponente statt von Hand. */
-        ankerId="qm-buybox"
-        /* Klebende Kaufleiste mobil (reusables/Kaufleiste.jsx): Preis und
-           Knopf dieser Buy-Box, mit denselben Add-on-Zeilen wie ihr Knopf. */
-        kaufleiste
-        /* Die Pflichtmitteilung hängt auf dieser Seite NICHT unter dem
-           Kauf-Knopf, sondern als letzter Punkt der Nutzen-Liste darunter —
-           dieselbe Bauform wie auf qione-2-pro, qibracelet, qihome-air und
-           qione-kette (Hausregel: ProductForm.jsx, `gewaehrleistungsHinweis`,
-           Elina EL-20260909-8c4001d1). Dieser Schalter ist die einzige
-           Stelle, die verhindert, dass sie zweimal auf der Seite steht.
-
-           BIS ZUM 2026-09-12 FEHLTE ER HIER, und die Seite war damit die
-           einzige im Laden, die eine eigene Liste hatte UND das Siegel
-           daneben klebte (Christian: „So soll das aussehen bei der
-           garantierten gesetzlichen Leistung", mit Bildschirmfoto der
-           qione-2-pro-Liste). Der Default ist bewusst true — er trägt die
-           Mehrheit der Kaufflächen, die über products.$handle laufen und
-           gar keine Liste haben. */
-        gewaehrleistungsHinweis={false}
-        /* DIE ADD-ONS STEHEN UNTER DEM KAUFKNOPF, nicht darüber (Christian
-           2026-09-24, woertlich: „einen Bereich unterhalb vom Kaufknopf, wo
-           man Add-ons auswählen kann"). Der Knopf legt die gewählten Add-ons
-           im selben Klick mit in den Warenkorb; die Warenkorb-Action bindet
-           sie dort an den Qi Master (lib/qi-master-addons.server.js). */
-        zusatzLinien={zusatzLinien}
-        unterKaufknopf={
-          <QiMasterAddons
-            addons={addonsSichtbar}
-            qmPreis={qmVariante?.price}
-            auswahl={auswahl}
-            setAuswahl={setAuswahl}
-          />
-        }
-        description={
-          <div
-            className="ProductDescription"
-            /* ZWEI Durchlaeufe über dasselbe fremde HTML, und die Reihenfolge ist
-               beliebig: der eine zeichnet Bilder aus (alt), der andere setzt die
-               Symbole vor die vier Zeilen des Kopfblocks (Christian am 2026-09-16).
-               Sie fassen disjunkte Knoten an -- <img> gegen <li> --, können sich
-               also nicht ueberschreiben. */
-            dangerouslySetInnerHTML={{
-              __html: fremdHtmlMitKopfsymbolen(
-                fremdHtmlMitBildAuszeichnung(descriptionHtml),
-              ),
-            }}
-          />
-        }
-        /* DIE STEUERANGABE HÄNGT AM PREIS, NICHT UNTER DER TABELLE
-           (Christian am 2026-09-16, woertlich: „Das inkl. 19 % MwSt. muss in
-           klein hinter den großen Kaufpreis von: 10.639,- €").
-
-           WARUM HIER UND NICHT IN ProductPrice.jsx: die Komponente trägt
-           JEDE Kaufseite des Ladens. Ein Zusatz dort hätte 45 Seiten
-           verändert, um eine zu bedienen. Der `priceLabel`-Slot steht im
-           ausgelieferten HTML unmittelbar hinter <div class="product-price">
-           — genau die Stelle, die Christian benennt — und gehört allein
-           dieser Route. Dass „hinter" auch optisch „in derselben Zeile"
-           heißt, macht die Regel .qm-pdp .Bestseller-Price in
-           app/styles/qi-master.css; „in klein" ist dort --qm-fs-xs, also
-           kleiner als die 2rem des Preises. */
-        priceLabel={
-          <>
-            <p className="qm-steuerhinweis">inkl. 19 % MwSt.</p>
-            {/* Christians Fassung vom 22.09.2026 an der Stelle der
-                abgelösten Vorverkaufstreppe — aus der einen Quelle
-                app/data/qi-master-wortlaut.json. */}
-            <QiMasterWortlaut kompakt />
-          </>
-        }
-        benefitList={
-          <QiMasterBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
-        }
-      />
-      <QiMaster />
-    </div>
-  );
+  return <TheAlphaShop product={product} addons={addons} />;
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
