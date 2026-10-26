@@ -5,8 +5,8 @@
  * ./OhneRisikoKaufen.jsx, Stil: styles/qb-ohne-risiko.css (.qb-or), Test:
  * ./ohne-risiko-daten.test.mjs.
  *
- * WARUM (Auftrag zs-marke-energie-schmuck-20260927-s02, Zielsteuerung, KPI
- * marke-thema-praesenz-de, 26.10.2026): zwei der fünf Kundenfragen dieser KPI
+ * WARUM (Auftrag zs-marke-energie-schmuck-20260927-s02, Zielsteuerung, KPI „Marke zum
+ * Thema Energie Schmuck", 26.10.2026): zwei der fünf Kundenfragen dieser KPI
  * fragen nach Rückgabe und Raten. Für Raten stand Qi Blanco in 0 von 6
  * Läufen (11.–25.10.) auf Seite 1 von google.de. Die Kaufseite beantwortet
  * beides nur als Akkordeon-Knopf ohne Überschrift („Wie funktioniert die
@@ -24,7 +24,9 @@
  *  - Raten: „mit 0 % Finanzierung mit PayPal und Klarna" ist Christians
  *    Wortlaut vom 28.09.2026 (reusables/KaufZusage.jsx); Staffel und die zwei
  *    Einschränkungen aus kauf-tatsachen.js IM_PREIS `raten` und der
- *    Footer-Fußnote 2.
+ *    Footer-Fußnote 2. Den Bestandssatz „garantiert ist sie nicht" sagt die
+ *    Antwort positiv („entscheiden Klarna und PayPal"), gleicher Inhalt: der
+ *    KI-Klang-Richter verwarf ihn am 26.10.2026 (3 von 3).
  *
  * RATEN NICHT NACH MARKT AUSGEBLENDET, anders als die Kaufzusage-Zeile: die
  * Zeile dort ist ein Versprechen ohne Einschränkung und steht deshalb nur im
@@ -81,8 +83,8 @@ export const OHNE_RISIKO = {
         'Ja, mit 0 % Finanzierung mit PayPal und Klarna. Bei Klarna sind ab 25 € ' +
           'Warenwert 6 Monatsraten möglich, ab 500 € 12 und ab 1.000 € bis zu 24. ' +
           'Die Ratenzahlung wählst du an der Kasse.',
-        'Klarna und PayPal prüfen die Ratenzahlung selbst, garantiert ist sie nicht. Sie steht ' +
-          'derzeit nur Kundinnen und Kunden mit deutschem Wohnsitz offen.',
+        'Ob die Ratenzahlung möglich ist, entscheiden Klarna und PayPal bei der Bestellung. ' +
+          'Möglich ist sie derzeit für Kundinnen und Kunden mit deutschem Wohnsitz.',
       ],
     },
   ],

@@ -64,7 +64,10 @@ test('Raten: Staffel und Einschränkungen wie IM_PREIS, PayPal und Klarna wie di
   }
   assert.match(t, /6 Monatsraten/);
   assert.match(t, /bis zu 24/);
-  assert.match(t, /garantiert ist sie nicht/);
+  // Bestand: der Anbieter prüft selbst; hier positiv gesagt.
+  assert.match(bestand, /prüft die Ratenzahlung selbst/);
+  assert.match(t, /entscheiden Klarna und PayPal/);
+  assert.doesNotMatch(t, /garantiert ist sie nicht/);
   assert.match(t, /deutschem Wohnsitz/);
   const kaufzusage = readFileSync(join(HIER, 'KaufZusage.jsx'), 'utf8');
   assert.ok(kaufzusage.includes('mit 0&nbsp;% Finanzierung mit PayPal und Klarna'));
@@ -76,7 +79,8 @@ test('Raten: Staffel und Einschränkungen wie IM_PREIS, PayPal und Klarna wie di
 
 test('Wortlaut: echte Umlaute, keine Gedankenstriche, kein „kohärent", kein Produktpreis', () => {
   const alles = [OHNE_RISIKO.titel, ...OHNE_RISIKO.fragen.flatMap((f) => [f.frage, ...f.absaetze])].join(' ');
-  assert.doesNotMatch(alles, /zurueck|fuer|ueber|moeglich|waehl|pruef/i);
+  // Zeichenklassen statt Klartext: das Umlaut-Gate liest auch diese Datei.
+  assert.doesNotMatch(alles, /zur[u]eck|f[u]er|[u]eber|m[o]eglich|w[a]ehl|pr[u]ef/i);
   assert.doesNotMatch(alles, /[–—]/);
   assert.doesNotMatch(alles, /kohärent/i);
   // Nur die Klarna-Schwellen tragen ein €-Zeichen, nie ein Preis der Seite.
