@@ -26,7 +26,12 @@
  * Standbild als Poster.
  */
 export const THE_ALPHA_VIDEO = {
-  video: null,
+  // Lucas Reveal (26.10.2026), stumm, drei Einblendungen im Bild; CDN-VIDEO, 720p.
+  video: {
+    src: 'https://cdn.shopify.com/videos/c/vp/5340638831464e8183e235969c14de05/5340638831464e8183e235969c14de05.HD-720p-3.0Mbps-98929943.mp4',
+    poster:
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-reveal-poster.jpg?v=1793023786',
+  },
   videoStandbild: {
     url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253',
     alt: 'Qi Alpha mit Diamant, Vorderseite',
@@ -77,12 +82,14 @@ export const THE_ALPHA_ABSCHNITTE = [
       {
         url: `${CDN}/the-alpha-rohdiamant.jpg?v=1792922800`,
         alt: 'Rohdiamant mit Spitze auf hellem Grund',
+        etikett: 'RAW',
         width: 604,
         height: 604,
       },
       {
         url: `${CDN}/the-alpha-brillant.jpg?v=1792922804`,
         alt: 'Geschliffener Brillant von oben',
+        etikett: 'DIAMANT',
         width: 604,
         height: 604,
       },
@@ -96,12 +103,14 @@ export const THE_ALPHA_ABSCHNITTE = [
       {
         url: `${CDN}/qi-alpha-01-front.jpg?v=1792849253`,
         alt: 'Qi Alpha mit Diamant und Logo',
+        etikett: 'ENDLESS',
         width: 2048,
         height: 2048,
       },
       {
         url: `${CDN}/qi-alpha-02-detail.jpg?v=1792849261`,
         alt: 'Nahaufnahme des Diamanten im Qi Alpha mit Strahlengravur',
+        etikett: 'POSSIBILITY',
         width: 2048,
         height: 2048,
       },
@@ -119,6 +128,35 @@ export const THE_ALPHA_ABSCHNITTE = [
     },
   },
 ];
+
+/**
+ * WÖRTERBUCH-SZENE nach dem Titel (Christian 26.10.2026, Nachtrag Z13–Z23 und
+ * Z41–Z57): „und dann der Text … wie aus dem film pulb fiction wie als wäre es
+ * aus einem dictionary und das wird erst eingeblendet wenn mand as scroolen
+ * anfängt“; Quelle: „ich habe das aus Google AI rauskopiert … die richtige
+ * Quelle wäre Google AI“. Wortlaut wie THE_ALPHA_KOPF.absaetze, nur in
+ * Wörterbuch-Form gesetzt (Lemma, Lautschrift, Wortart, 1., 2.).
+ */
+export const THE_ALPHA_WOERTERBUCH = {
+  lemma: 'Ultra High Vibe Mode',
+  laut: '/ˈʌltrə haɪ vaɪb moʊd/',
+  wortart: 'n.',
+  bedeutungen: [
+    'extrem positive Ausstrahlung.',
+    'Es beschreibt einen Zustand, in dem du voller Lebensenergie, Freude, innerem ' +
+      'Frieden und Dankbarkeit bist. Der Begriff kommt aus der modernen Psychologie ' +
+      'und Spiritualität. Die Grundidee ist: Alles im Universum (auch unsere Gedanken ' +
+      'und Gefühle) hat eine bestimmte Schwingung oder Frequenz. Wenn du im „High Vibe ' +
+      'Mode“ bist, bist du auf einer Wellenlänge, die positive Erlebnisse, Erfolg und ' +
+      'gesunde Beziehungen wie ein Magnet anzieht.',
+  ],
+  quelle: 'Google AI',
+};
+
+/** Seitenansicht mit Etikett, danach poppt der Name auf Schwarz auf
+ * (Christian 26.10.: „dann kommt der G1 von der Seite, G-Alpha, und dann poppt
+ * schwarz auf, D-Alpha“ = THE ALPHA, Figma-Ausschnitt christian-szene-3). */
+export const THE_ALPHA_MARKE = 'THE ALPHA';
 
 /** Schluss der Vorlage (Punkt 9 und 10). */
 export const THE_ALPHA_SCHLUSS = {
