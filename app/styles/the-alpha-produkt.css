@@ -1,0 +1,611 @@
+/*
+ * SHOPSEITE /products/the-alpha — Token-Schicht (Grossjob 20261025-prio1-the-
+ * alpha-landingpage-figma-vorlage-a-server-b-ki-c, s12). Vorbild ist die
+ * Apple-Kaufseite (Christian 26.10.: „große klare Auswahl-Karten mit Rahmen,
+ * ausgewählt dunkel umrandet, viel Weißraum, ruhige Typografie“).
+ *
+ * TYPO: eine Familie (die des Ladens), sieben Größen als Tokens.
+ * ABSTÄNDE: 8-px-Raster. RADIUS: ein Token für Karten und Bilder.
+ * FARBE: neutrales Kontinuum (Tinte, Grau, Linie, Fläche) plus das Schwarz
+ * des Bandes aus Christians Vorlage (#1e1e1e). Gold steht nur auf dem
+ * Kaufknopf (Hausknopf .btn--primary); die gewählte Karte ist dunkel umrandet.
+ * Handy zuerst; ab 1024 px zwei Spalten, die Galerie bleibt beim Scrollen
+ * stehen wie bei Apple.
+ */
+.tas-seite {
+  --tas-fs-1: 0.75rem;
+  --tas-fs-2: 0.875rem;
+  --tas-fs-3: 1.0625rem;
+  --tas-fs-4: 1.3125rem;
+  --tas-fs-5: 1.75rem;
+  --tas-fs-6: 2.5rem;
+  --tas-fs-7: 3.5rem;
+
+  --tas-s-1: 8px;
+  --tas-s-2: 16px;
+  --tas-s-3: 24px;
+  --tas-s-4: 32px;
+  --tas-s-6: 48px;
+  --tas-s-8: 64px;
+  --tas-s-12: 96px;
+
+  --tas-tinte: #1d1d1f;
+  --tas-grau: #6e6e73;
+  --tas-linie: #d2d2d7;
+  --tas-flaeche: #f5f5f7;
+  --tas-weiss: #ffffff;
+  --tas-band: #1e1e1e;
+
+  --tas-radius: 18px;
+  --tas-breite: 1200px;
+  --tas-dauer: 240ms;
+
+  color: var(--tas-tinte);
+  background: var(--tas-weiss);
+  font-size: var(--tas-fs-3);
+  line-height: 1.47;
+  padding-bottom: var(--tas-s-12);
+}
+
+/* Die Hausregeln für h1/h2/p/li (reset.css: 1,2 rem, --color-dark, Schatten)
+   gelten hier nicht: Größe und Farbe setzen die Klassen unten. :where hält
+   diese Zeile auf der Stärke einer Klasse, damit jede spätere Klasse gewinnt. */
+.tas-seite :where(h1, h2, p, li, dt, dd, figcaption) {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-shadow: none;
+}
+
+.tas-seite h1,
+.tas-seite h2,
+.tas-seite p,
+.tas-seite figure,
+.tas-seite dl,
+.tas-seite dd,
+.tas-seite ul {
+  margin: 0;
+}
+
+.tas-unsichtbar {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Schwarzes Band */
+/* Das Hauslogo ragt auf dem Handy über den Abstand von main (104 px) hinaus;
+   ohne diesen Rand liegt es auf dem schwarzen Band. */
+.tas-band {
+  margin-top: var(--tas-s-4);
+  background: var(--tas-band);
+  color: var(--tas-weiss);
+  padding: var(--tas-s-4) var(--tas-s-3);
+  text-align: center;
+}
+
+.tas-band-titel {
+  font-size: var(--tas-fs-6);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.tas-band-unter {
+  margin-top: var(--tas-s-1);
+  font-size: var(--tas-fs-4);
+  color: var(--tas-weiss);
+}
+
+/* Raster: Galerie + Auswahl */
+.tas-raster-seite {
+  max-width: var(--tas-breite);
+  margin: 0 auto;
+  padding: var(--tas-s-4) var(--tas-s-2) 0;
+  display: grid;
+  gap: var(--tas-s-4);
+}
+
+.tas-galerie-haupt {
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.tas-bild {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tas-daumen {
+  display: flex;
+  gap: var(--tas-s-1);
+  margin-top: var(--tas-s-2);
+  overflow-x: auto;
+}
+
+.tas-daumen-knopf {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+  background: var(--tas-flaeche);
+  cursor: pointer;
+}
+
+.tas-daumen-knopf[aria-pressed='true'] {
+  border-color: var(--tas-tinte);
+}
+
+.tas-daumen-knopf img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Produkt */
+.tas-name {
+  font-size: var(--tas-fs-6);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.tas-edition {
+  margin-top: var(--tas-s-1);
+  font-size: var(--tas-fs-4);
+  font-weight: 600;
+}
+
+.tas-claim {
+  margin-top: var(--tas-s-2);
+  font-size: var(--tas-fs-3);
+  color: var(--tas-grau);
+}
+
+.tas-punkte {
+  margin-top: var(--tas-s-2);
+  padding-left: var(--tas-s-3);
+  font-size: var(--tas-fs-3);
+  line-height: 1.5;
+}
+
+.tas-preis {
+  margin-top: var(--tas-s-3);
+  font-size: var(--tas-fs-4);
+  font-weight: 600;
+}
+
+.tas-herkunft {
+  margin-top: var(--tas-s-2);
+  font-size: var(--tas-fs-3);
+  font-weight: 600;
+}
+
+/* Kaufknopf im ersten Fenster: Designstandard pdp_falz verlangt Preis und
+   Kaufknopf ohne Scrollen, auf dem Handy wie auf dem Desktop. */
+.tas-kauf-oben {
+  margin-top: var(--tas-s-3);
+}
+
+.tas-kauf-oben .btn--primary {
+  max-width: none;
+}
+
+.tas-kauf-oben + .tas-herkunft {
+  margin-top: var(--tas-s-3);
+}
+
+/* Handy und Tablet: Produktkopf mit Preis und Knopf vor der Galerie, wie auf
+   Apples Kaufseite mobil. Ab 1024 px steht die Auswahl wieder als Spalte. */
+.tas-auswahl {
+  display: contents;
+}
+
+.tas-produkt {
+  order: -1;
+}
+
+.tas-klein {
+  margin-top: var(--tas-s-1);
+  font-size: var(--tas-fs-1);
+  color: var(--tas-grau);
+}
+
+/* Schritte */
+.tas-schritt {
+  margin-top: var(--tas-s-8);
+}
+
+.tas-schritt-titel {
+  font-size: var(--tas-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--tas-tinte);
+}
+
+.tas-auszeichnung {
+  color: var(--tas-tinte);
+}
+
+.tas-schritt-titel {
+  text-wrap: balance;
+}
+
+.tas-karten {
+  display: grid;
+  gap: var(--tas-s-2);
+  margin-top: var(--tas-s-3);
+}
+
+.tas-karte {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--tas-s-2) var(--tas-s-3);
+  min-height: 64px;
+  background: var(--tas-weiss);
+  color: var(--tas-tinte);
+  border: 1px solid var(--tas-linie);
+  border-radius: var(--tas-radius);
+  box-shadow: inset 0 0 0 1px transparent;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    border-color var(--tas-dauer),
+    box-shadow var(--tas-dauer);
+}
+
+.tas-karte:hover {
+  border-color: var(--tas-grau);
+}
+
+.tas-karte[aria-checked='true'] {
+  border-color: var(--tas-tinte);
+  box-shadow: inset 0 0 0 1px var(--tas-tinte);
+}
+
+.tas-karte:focus-visible,
+.tas-nr:focus-visible,
+.tas-daumen-knopf:focus-visible,
+.tas-textknopf:focus-visible {
+  outline: 2px solid var(--tas-tinte);
+  outline-offset: 2px;
+}
+
+.tas-karte-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--tas-s-2);
+}
+
+.tas-karte-titel {
+  font-size: var(--tas-fs-3);
+  font-weight: 600;
+}
+
+.tas-karte-preis {
+  font-size: var(--tas-fs-2);
+  color: var(--tas-tinte);
+  white-space: nowrap;
+}
+
+.tas-karte-text {
+  display: block;
+  margin-top: var(--tas-s-1);
+  font-size: var(--tas-fs-2);
+  line-height: 1.45;
+  color: var(--tas-grau);
+}
+
+/* Raster 1..111 hinter „Freie Auswahl" */
+.tas-raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: var(--tas-s-1);
+  margin-top: var(--tas-s-2);
+  padding: var(--tas-s-2);
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+}
+
+.tas-nr {
+  min-height: 44px;
+  border: 1px solid var(--tas-linie);
+  border-radius: var(--tas-radius);
+  background: var(--tas-weiss);
+  color: var(--tas-tinte);
+  font: inherit;
+  font-size: var(--tas-fs-2);
+  cursor: pointer;
+}
+
+.tas-nr[aria-pressed='true'] {
+  border-color: var(--tas-tinte);
+  box-shadow: inset 0 0 0 1px var(--tas-tinte);
+  font-weight: 600;
+}
+
+.tas-nr:disabled {
+  cursor: not-allowed;
+  color: var(--tas-grau);
+  background: var(--tas-flaeche);
+  text-decoration: line-through;
+}
+
+/* Bildpaare unter Seriennummer und Kette */
+.tas-bildpaar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--tas-s-2);
+  margin-top: var(--tas-s-3);
+}
+
+.tas-bildpaar img,
+.tas-gravur-rahmen,
+.tas-kette-lagen {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+}
+
+.tas-gravur-rahmen {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 1 / 1;
+}
+
+/* Die Bilder zeigen das ganze Gerät, die Gravur sitzt klein auf dem Band. Der
+   Zoom holt das Band ins Bild; Gravur und Bild skalieren gemeinsam, so bleibt
+   die Nummer an ihrer Stelle. */
+.tas-zoom {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.8);
+  transform-origin: var(--tas-zoom-mitte, 60% 49%);
+}
+
+.tas-zoom img {
+  border-radius: 0;
+}
+
+/* Die gewählte Nummer als Gravur: graue Tiefe, heller Rand unten, wie in den
+   gestrahlten Stahl geschnitten. Größe folgt der Bildbreite. */
+.tas-gravur {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-size: 3cqw;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgb(74 81 90 / 0.86);
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.55),
+    0 -1px 0 rgb(0 0 0 / 0.12);
+  pointer-events: none;
+}
+
+.tas-kette-lagen {
+  position: relative;
+}
+
+.tas-kette-lagen img {
+  border-radius: 0;
+}
+
+.tas-kette-gold {
+  position: absolute;
+  inset: 0;
+  filter: url(#tas-gold);
+  opacity: 0;
+  transition: opacity var(--tas-dauer) ease;
+}
+
+[data-tas-kette-farbe='gold'] .tas-kette-gold {
+  opacity: 1;
+}
+
+.tas-blende {
+  animation: tas-blende var(--tas-dauer) ease;
+}
+
+@keyframes tas-blende {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tas-blende {
+    animation: none;
+  }
+  .tas-kette-gold,
+  .tas-karte {
+    transition: none;
+  }
+}
+
+/* Hinweis beim Ratenkauf */
+.tas-hinweis {
+  margin-top: var(--tas-s-2);
+  padding: var(--tas-s-2) var(--tas-s-3);
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+  font-size: var(--tas-fs-2);
+  line-height: 1.5;
+}
+
+.tas-textknopf {
+  margin-top: var(--tas-s-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--tas-tinte);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+/* Zusammenfassung */
+.tas-summe {
+  max-width: var(--tas-breite);
+  margin: var(--tas-s-12) auto 0;
+  padding: var(--tas-s-4) var(--tas-s-3);
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+  display: grid;
+  gap: var(--tas-s-4);
+}
+
+.tas-summe-titel {
+  font-size: var(--tas-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tas-summe-unter {
+  display: block;
+  color: var(--tas-grau);
+}
+
+.tas-summe-bild {
+  display: block;
+  margin-top: var(--tas-s-3);
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--tas-radius);
+}
+
+.tas-posten > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--tas-s-2);
+  padding: var(--tas-s-1) 0;
+  font-size: var(--tas-fs-2);
+  border-bottom: 1px solid var(--tas-linie);
+}
+
+.tas-posten-summe {
+  font-size: var(--tas-fs-3) !important;
+  font-weight: 600;
+}
+
+.tas-posten dd {
+  white-space: nowrap;
+}
+
+.tas-versand {
+  list-style: none;
+  padding: var(--tas-s-2);
+  background: var(--tas-weiss);
+  border-radius: var(--tas-radius);
+  font-size: var(--tas-fs-2);
+  line-height: 1.6;
+}
+
+.tas-kaufknopf {
+  margin-top: var(--tas-s-2);
+}
+
+.tas-kaufknopf .btn--primary {
+  max-width: none;
+}
+
+/* What's in the Box */
+.tas-box {
+  max-width: var(--tas-breite);
+  margin: var(--tas-s-8) auto 0;
+  padding: 0 var(--tas-s-2);
+  text-align: center;
+}
+
+.tas-box-titel {
+  font-size: var(--tas-fs-6);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.tas-box-flaeche {
+  display: flex;
+  justify-content: center;
+  gap: var(--tas-s-3);
+  margin-top: var(--tas-s-4);
+  padding: var(--tas-s-4) var(--tas-s-2);
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+}
+
+.tas-box-teil {
+  flex: 0 1 220px;
+}
+
+.tas-box-teil img,
+.tas-box-teil .tas-kette-lagen {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+}
+
+.tas-box-teil figcaption {
+  margin-top: var(--tas-s-2);
+  font-size: var(--tas-fs-2);
+  color: var(--tas-tinte);
+}
+
+@media (min-width: 750px) {
+  .tas-band {
+    padding: var(--tas-s-6) var(--tas-s-3);
+  }
+  .tas-band-titel {
+    font-size: var(--tas-fs-7);
+  }
+  .tas-karten {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tas-summe {
+    grid-template-columns: 1fr 1.2fr 1fr;
+    padding: var(--tas-s-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .tas-raster-seite {
+    grid-template-columns: 7fr 5fr;
+    gap: var(--tas-s-6);
+    padding-top: var(--tas-s-6);
+  }
+  .tas-auswahl {
+    display: block;
+  }
+  .tas-produkt {
+    order: 0;
+  }
+  .tas-galerie-fest {
+    position: sticky;
+    top: 120px;
+  }
+  .tas-karten {
+    grid-template-columns: 1fr;
+  }
+  .tas-karten--zwei {
+    grid-template-columns: 1fr 1fr;
+  }
+}

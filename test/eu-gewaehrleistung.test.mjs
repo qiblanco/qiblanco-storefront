@@ -1205,7 +1205,10 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
     // aufgehoben ist -- dann faellt auch diese Zeile hier.
     'app/routes/products.crystal-cacao-create.jsx',
     // Seit 2026-10-26 /products/the-alpha (Umzug, Christian Z4 vom 25.10.).
-    'app/routes/products.the-alpha.jsx',
+    // Am selben Tag (s12, Christian Z9/Z10) zog diese Kaufseite unverändert
+    // nach /products/the-alpha-b; /products/the-alpha ist seitdem die neue
+    // Shopseite (TheAlphaShop) OHNE Nutzen-Liste, Hinweis unter dem Knopf.
+    'app/routes/products.the-alpha-b.jsx',
     'app/routes/products.qione-kette.jsx',
   ]) {
     assert.ok(

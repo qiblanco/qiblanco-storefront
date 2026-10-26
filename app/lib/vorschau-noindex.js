@@ -49,6 +49,11 @@ export const VORSCHAU_NOINDEX = [
   // Zeilen darüber sind 301-Hüllen. Dieselbe Rolle, dieselbe Lesbarkeit für
   // Googlebot wie Shop A.
   {pfad: '/products/the-alpha', googlebot: false, rolle: 'Shop A nach Umzug the-alpha'},
+  // B-Fassung der Kaufseite (Christian Z10 vom 25.10.2026: „die alte seite als
+  // B Vraitne aufheben mit ienem link wo ich drauf zugreifen kann“; s12). Nur
+  // für Christian zum Nachlesen, deshalb auch für Googlebot gesperrt wie
+  // Shop B.
+  {pfad: '/products/the-alpha-b', googlebot: true, rolle: 'Shop B: bisherige Kaufseite the-alpha'},
   // Testarme der The-Alpha-Seite (Grossjob 20261025-prio1-the-alpha-
   // landingpage-figma-vorlage-a-server-b-ki-c, s03 trägt sie VORAB ein, damit
   // s04/s05 diese gemeinsame Datei nicht anfassen). A = /pages/The-Alpha ist
