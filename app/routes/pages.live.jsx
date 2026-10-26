@@ -59,6 +59,20 @@ import liveStyles from '~/styles/live.css?url';
  * Merkmal nur der neuen Fassung: data-ch-live-fassung="neu-20261020".
  * BLUE-GREEN: SEITE_NEU_AN = false rendert die Fassung von #957/#958.
  *
+ * SPEZIAL BEIM GASTGEBER (Grossjob 20261025-webinar-heal-world-0111, s03).
+ * Christian 25.10.2026:
+ * „das bitte auf live so implemtnieren das die leute sich anmelden können.
+ * bitte dazu schreiben das anmeldung notwendig ist. thema aus dem link
+ * nehmen.“ und „1.11 => Coming Home Spezial: Live bei Heal World Summit also
+ * das ganze pro aktive Framen“. Trägt der nächste Termin `extern` (Blog-Tag
+ * ch-anmeldung-extern, Naht N1), zeigt die Termin-Karte „Anmeldung notwendig“
+ * und den Knopf zur Zoom-Anmeldung des Gastgebers, im selben Tab
+ * (data-ch-live-extern-link). Der Coming-Home-Anmeldeblock nennt dann den
+ * nächsten eigenen Sonntag; nach Anmeldung oder Bestätigung steht dort, dass
+ * am Spezial-Tag nur die Anmeldung des Gastgebers gilt.
+ * Rückweg: SPEZIAL_AN = false (Karte wie vor s03, ohne Knopf zum Gastgeber),
+ * sonst hb-deploy revert. Testdaten: COMING_HOME_FIXTUR=spezial.
+ *
  * Die Beschreibung unten gilt der Fassung vom 18.10.2026 (SEITE_NEU_AN = false).
  *
  * Grossjob 20261018-GROSSJOB-coming-home-zoom-aufnahme-transkript-
@@ -124,6 +138,14 @@ const SEITE_NEU_AN = true;
  */
 const BILD_OBEN_AN = true;
 const ALLE_EINGEKLAPPT_AN = true;
+
+/**
+ * Spezial beim Gastgeber (s03, 26.10.2026): true = Termin-Karte mit
+ * „Anmeldung notwendig“ und Knopf zur Zoom-Anmeldung des Gastgebers.
+ * false = Stand vor s03 (die Karte zeigt nur Titel und Teaser, dazu den
+ * Coming-Home-Knopf).
+ */
+const SPEZIAL_AN = true;
 
 /**
  * Standbild aus der Coming-Home-Aufnahme vom 11.10.2026 (Zoom, Sekunde 6,5),
@@ -288,6 +310,10 @@ export async function loader({request, context}) {
   if (BLOG_HANDLE !== BLOG_HANDLE_SERVER) throw new Error('BLOG_HANDLE driftet');
   const {artikel, ladeFehler} = await artikelLaden(context);
   const seite = seitenDaten(artikel, new Date());
+  if (!SPEZIAL_AN) {
+    seite.naechster = seite.naechster && {...seite.naechster, extern: null};
+    seite.weitere = seite.weitere.map((w) => ({...w, extern: null}));
+  }
   const rueckblicke = seite.rueckblicke.map((r) => {
     const html = fremdHtmlMitBildAuszeichnung(
       artikelInhaltAufraeumen(r.html, r.titel),
@@ -380,6 +406,7 @@ export async function action({request, context}) {
 export default function Live() {
   const d = useLoaderData();
   if (SEITE_NEU_AN) return <LiveNeu d={d} />;
+  const spezial = spezialDaten(d);
   return (
     <div className="lv">
       <Kopf />
@@ -391,12 +418,11 @@ export default function Live() {
       >
         <div className="lv-innen lv-innen-schmal">
           {d.schritt ? (
-            <Schritt schritt={d.schritt} />
+            <Schritt schritt={d.schritt} spezial={spezial} />
           ) : (
-            <>
-              <h2 className="lv-h2">Melde dich an, der Link kommt per Mail</h2>
-              <Anmeldung />
-            </>
+            <AnmeldeKopf spezial={spezial}>
+              <Anmeldung spezial={spezial} />
+            </AnmeldeKopf>
           )}
         </div>
       </section>
@@ -411,6 +437,7 @@ export default function Live() {
 
 /** Neue Fassung (20.10.2026): Kopf, Termin, Anmeldung, Woche für Woche. */
 function LiveNeu({d}) {
+  const spezial = spezialDaten(d);
   return (
     <div className="lv" data-ch-live-fassung="neu-20261020">
       <KopfNeu />
@@ -422,12 +449,11 @@ function LiveNeu({d}) {
       >
         <div className="lv-innen lv-innen-schmal">
           {d.schritt ? (
-            <Schritt schritt={d.schritt} />
+            <Schritt schritt={d.schritt} spezial={spezial} />
           ) : (
-            <>
-              <h2 className="lv-h2">Melde dich an, der Link kommt per Mail</h2>
-              <Anmeldung />
-            </>
+            <AnmeldeKopf spezial={spezial}>
+              <Anmeldung spezial={spezial} />
+            </AnmeldeKopf>
           )}
         </div>
       </section>
@@ -632,7 +658,9 @@ function Termin({naechster, weitere}) {
     <section className="lv-abschnitt lv-termin" data-ch-live="termin">
       <div className="lv-innen lv-innen-schmal">
         <h2 className="lv-h2">Der nächste Termin</h2>
-        {naechster ? (
+        {naechster?.extern ? (
+          <TerminExtern naechster={naechster} />
+        ) : naechster ? (
           <article
             className="lv-terminkarte"
             data-ch-live-termin={naechster.datum}
@@ -653,15 +681,21 @@ function Termin({naechster, weitere}) {
           </article>
         ) : null}
         {weitere.length ? (
-          <div className="lv-weitere">
-            <h3 className="lv-h4">Danach geplant</h3>
+          <div className="lv-weitere" data-ch-live="weitere">
+            <h3 className="lv-h4">Die nächsten Sonntage</h3>
             <ul className="lv-weitere-liste">
               {weitere.map((w) => (
-                <li className="lv-weitere-punkt" key={w.datum}>
+                <li
+                  className="lv-weitere-punkt"
+                  key={w.datum}
+                  data-ch-live-eintrag={w.datum}
+                >
                   <time className="lv-weitere-wann" dateTime={w.startUtc}>
                     {w.datumKurz}
                   </time>{' '}
-                  <span>{w.titel || 'Thema folgt'}</span>
+                  <span className="lv-weitere-titel">
+                    {w.titel || 'Thema folgt'}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -669,6 +703,120 @@ function Termin({naechster, weitere}) {
         ) : null}
       </div>
     </section>
+  );
+}
+
+/**
+ * Termin beim Gastgeber (Naht N1): Datum und Uhrzeit, Titel, Thema (Teaser
+ * ohne den Schluss „Anmeldung notwendig.“, der steht eigens darunter), Knopf
+ * zur Zoom-Anmeldung im selben Tab. Ohne gültige URL kein Knopf.
+ */
+function TerminExtern({naechster}) {
+  const {url, gastgeber} = naechster.extern;
+  return (
+    <article
+      className="lv-terminkarte"
+      data-ch-live-termin={naechster.datum}
+      data-ch-live-quelle={naechster.quelle}
+      data-ch-live-extern={url ? 'link' : 'ohne-link'}
+    >
+      <p className="lv-termin-wann">
+        <time dateTime={naechster.startUtc}>
+          {naechster.datumLang}, {naechster.uhrzeit || 'Uhrzeit folgt'}
+          {naechster.uhrzeit ? ' (Berlin)' : ''}
+        </time>
+      </p>
+      <h3 className="lv-h3">{naechster.titel || 'Thema folgt'}</h3>
+      {naechster.teaser ? <p className="lv-text">{naechster.teaser}</p> : null}
+      <p className="lv-pflicht">Anmeldung notwendig</p>
+      {url ? (
+        <>
+          <a
+            className="btn--primary lv-knopf"
+            href={url}
+            data-ch-live-extern-link=""
+          >
+            Jetzt bei Zoom anmelden
+          </a>
+          <p className="lv-hinweis">
+            {gastgeber
+              ? `Die Anmeldung läuft über Zoom beim ${gastgeber}. Den Zugang schickt dir Zoom per Mail.`
+              : 'Die Anmeldung läuft über Zoom. Den Zugang schickt dir Zoom per Mail.'}
+          </p>
+        </>
+      ) : null}
+    </article>
+  );
+}
+
+/**
+ * Spezial-Woche: der nächste Termin ist beim Gastgeber. Rückgabe null oder
+ * {datumKurz, gastgeber, url, danach} mit `danach` = nächster eigener Sonntag
+ * (datumKurz) aus der Vorschau, sonst ''.
+ */
+function spezialDaten(d) {
+  const n = d?.naechster;
+  if (!n?.extern) return null;
+  const danach = (d.weitere || []).find((w) => !w.extern);
+  return {
+    datumKurz: tagMonat(n.datumKurz),
+    gastgeber: n.extern.gastgeber,
+    url: n.extern.url,
+    danach: danach ? tagMonat(danach.datumKurz) : '',
+  };
+}
+
+/** „8. November 2026“ -> „8. November“ */
+function tagMonat(datumKurz) {
+  return String(datumKurz || '').replace(/\s+\d{4}$/, '');
+}
+
+/** Überschrift des Anmeldeblocks; in der Spezial-Woche für die Sonntage danach. */
+function AnmeldeKopf({spezial, children}) {
+  if (!spezial) {
+    return (
+      <>
+        <h2 className="lv-h2">Melde dich an, der Link kommt per Mail</h2>
+        {children}
+      </>
+    );
+  }
+  return (
+    <>
+      <h2 className="lv-h2" data-ch-live-anmeldung-ab={spezial.danach || ''}>
+        {spezial.danach
+          ? `Coming Home ab dem ${spezial.danach}: melde dich an`
+          : 'Melde dich für die Sonntage danach an'}
+      </h2>
+      <p className="lv-text lv-text-mitte">
+        {spezial.gastgeber
+          ? `Für den ${spezial.datumKurz} gilt die Zoom-Anmeldung beim ${spezial.gastgeber}.`
+          : `Für den ${spezial.datumKurz} gilt die Zoom-Anmeldung des Gastgebers.`}
+      </p>
+      {children}
+    </>
+  );
+}
+
+/** Nach Anmeldung oder Bestätigung: was am Spezial-Sonntag gilt. */
+function SpezialHinweis({spezial}) {
+  if (!spezial) return null;
+  const wer = spezial.gastgeber ? `beim ${spezial.gastgeber}` : 'beim Gastgeber';
+  return (
+    <p className="lv-hinweis" data-ch-live-spezial-hinweis="">
+      Am {spezial.datumKurz} gilt nur die{' '}
+      {spezial.url ? (
+        <a className="lv-verweis lv-verweis-fluss" href={spezial.url}>
+          Zoom-Anmeldung {wer}
+        </a>
+      ) : (
+        `Zoom-Anmeldung ${wer}`
+      )}
+      .
+      {spezial.danach
+        ? ` Ab dem ${spezial.danach} kommst du mit deinem Coming-Home-Link rein.`
+        : ''}
+    </p>
   );
 }
 
@@ -748,7 +896,7 @@ function useAntwort(fetcher) {
   return fetcher.data ?? ohneJs ?? null;
 }
 
-function Anmeldung() {
+function Anmeldung({spezial = null}) {
   const fetcher = useFetcher();
   const antwort = useAntwort(fetcher);
   const id = useId();
@@ -776,8 +924,13 @@ function Anmeldung() {
         <h3 className="lv-h3" tabIndex={-1} ref={erfolgRef}>
           {ERFOLG_TITEL[zustand]}
         </h3>
-        <p className="lv-text">{ERFOLG_TEXT[zustand]}</p>
+        <p className="lv-text">
+          {spezial && zustand === 'schon_bestaetigt'
+            ? ERFOLG_TEXT_SPEZIAL
+            : ERFOLG_TEXT[zustand]}
+        </p>
         {antwort?.link ? <ZoomZugang link={antwort.link} id={id} /> : null}
+        <SpezialHinweis spezial={spezial} />
       </div>
     );
   }
@@ -868,6 +1021,11 @@ const ERFOLG_TITEL = {
   direkt: 'Hier ist dein Zoom-Link',
 };
 
+/** schon_bestaetigt in der Spezial-Woche: der Link gilt nicht für den Sonntag. */
+const ERFOLG_TEXT_SPEZIAL =
+  'Vor jedem Termin bekommst du eine Erinnerung per Mail. Hier ist dein ' +
+  'Link für Coming Home.';
+
 const ERFOLG_TEXT = {
   doi_gesendet:
     'Wir haben dir eine Mail geschickt. Klick dort auf den Knopf, dann ' +
@@ -884,7 +1042,7 @@ const ERFOLG_TEXT = {
 };
 
 /** Ansicht der Mail-Links: ein Knopf, erst der Klick schickt den POST. */
-function Schritt({schritt}) {
+function Schritt({schritt, spezial = null}) {
   const fetcher = useFetcher();
   const antwort = useAntwort(fetcher);
   const id = useId();
@@ -898,7 +1056,7 @@ function Schritt({schritt}) {
         <p className="lv-text lv-text-mitte">
           Melde dich einfach noch einmal an. Das dauert eine Minute.
         </p>
-        <Anmeldung />
+        <Anmeldung spezial={spezial} />
       </>
     );
   }
@@ -912,6 +1070,7 @@ function Schritt({schritt}) {
             Meeting:
           </p>
           {antwort?.link ? <ZoomZugang link={antwort.link} id={id} /> : null}
+          <SpezialHinweis spezial={spezial} />
         </div>
       </>
     );
