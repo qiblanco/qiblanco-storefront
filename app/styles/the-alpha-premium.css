@@ -246,15 +246,26 @@
   max-width: var(--tap-breite);
   height: auto;
   margin: 0 auto;
-  aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: 0;
 }
 
+/* Hydrogens <Image> schreibt aspect-ratio inline (Bildmaß 2048/2048); ohne
+   !important kommt das Format nicht an und das Standbild steht am Desktop
+   1440 x 1440 px (gemessen s02, 26.10.). */
+.tap-vollbild img {
+  aspect-ratio: 4 / 5 !important;
+}
+
+/* Lucas Reveal ist 16:9 mit eingebrannten Sätzen: ganz zeigen, nie
+   beschneiden. */
+.tap-vollbild video {
+  aspect-ratio: 16 / 9;
+}
+
 @media (min-width: 768px) {
-  .tap-vollbild img,
-  .tap-vollbild video {
-    aspect-ratio: 3 / 2;
+  .tap-vollbild img {
+    aspect-ratio: 3 / 2 !important;
   }
 }
 
@@ -321,17 +332,17 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1 !important;
   object-fit: cover;
 }
 
 .tap-karte-band img {
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 2 / 1 !important;
 }
 
 @media (min-width: 768px) {
   .tap-karte-band img {
-    aspect-ratio: 3 / 1;
+    aspect-ratio: 3 / 1 !important;
   }
 }
 
