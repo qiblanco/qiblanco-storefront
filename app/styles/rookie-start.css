@@ -57,18 +57,8 @@
 }
 
 @media screen and (max-width: 749px) {
-  /* align-self: stretch, damit die Bildspalte die volle Inhaltsbreite nimmt
-     und das 256-px-Bild darin per margin auto in die MITTE rueckt. Ohne die
-     Zeile schrumpfte die Spalte auf 256 px (die Reihe traegt
-     flex-align-start), das Bild klebte links, rechts blieb ein leerer
-     Streifen (Christian, 26.10.2026, Screenshot: „Optisch besser wenn
-     zentriert"). Gemessen 26.10. live vorher: Bild 16..272 in 16..396 bei
-     412 px, also 62 px aus der Mitte. A (/) traegt die volle Spaltenbreite
-     und war mittig. Probe: claude-jobs/20261026-design-kiss-balken-
-     untertitel-streichen-startseite-bild-zentrieren/probe_kopfbild_zentriert.py */
   .qb-rookie-start .qb-rs-kopf .qb-rs-kopf__bild {
     order: -1;
-    align-self: stretch;
   }
   /* Mobil 256 px statt der vollen Spalte (358 px bei 390): das Produktfoto
      trägt viel weißen Rand, und erst damit steht „Jetzt kaufen“ auch auf

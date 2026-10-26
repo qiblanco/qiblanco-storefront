@@ -79,7 +79,18 @@ export function RookieKopf({dataSection}) {
             loading="lazy" anzeigeBreite={75}
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/paypal-784404_1280.webp?v=1708904082" alt="PayPal" />
         </div>
-        <div className="featured-image qb-rs-kopf__bild">
+        {/* MITTIG (Christian, 26.10.2026, Screenshot /pages/start-b: „Optisch
+            besser wenn zentriert"). Die Reihe trägt flex-align-start; mobil
+            (Spalte) schrumpfte diese Bildspalte deshalb auf das 256-px-Bild,
+            und `margin: auto` am Bild (rookie-start.css) hatte keinen Raum:
+            Bild links, rechts leer (live gemessen 62 px aus der Mitte bei
+            412 px). `stretch` gibt der Spalte die volle Breite, das Bild rückt
+            in die Mitte. Desktop (Reihe): die Spalte wird nur höher, das Bild
+            bleibt oben an der rechten Inhaltskante, sichtbar unverändert.
+            Inline statt in rookie-start.css, weil die Reichweite einer
+            Routen-CSS am Formate-Gate heute nicht auflösbar ist (Job-RESULT
+            20261026-design-kiss-…). Probe: probe_kopfbild_zentriert.py dort. */}
+        <div className="featured-image qb-rs-kopf__bild" style={{alignSelf: 'stretch'}}>
           <LazyImage
             highQualityLink={KOPFBILD}
             sofort
