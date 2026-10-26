@@ -126,5 +126,5 @@ test('Kettenbilder: je Aufnahme ein Stahl- und ein Goldbild, die Box-Unterschrif
     assert.match(b.gold, /the-alpha-kette-.+-gold(-f5)?\.jpg/);
   }
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
-  assert.match(shop, /data-tas-box-kette="">\{kette\?\.box/);
+  assert.match(shop, /data-tas-box-kette="">\s*\{kette\?\.box/);
 });
