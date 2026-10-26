@@ -179,7 +179,8 @@ export const BEZAHLUNG = {
 export const RATEN = {
   ratenpreis: 9999,
   grenze: 10000,
-  text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999 €',
+  // Geschütztes Leerzeichen: „9.999 €“ bricht nicht um (Challenger s04).
+  text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999\u00a0€',
   code: 'Deinen Ratencode bekommst du von Anna, unten rechts im Chat.',
   mitExtras:
     'Den Qi Alpha ohne Wunschnummer und mit der Kette aus Chirurgenstahl kannst du auch in Raten zahlen.',

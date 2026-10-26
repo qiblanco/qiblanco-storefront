@@ -309,7 +309,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   <div className="tas-gravur-rahmen">
                     <div
                       className="tas-zoom"
-                      style={{'--tas-zoom-mitte': '58% 48%'}}
+                      style={{'--tas-zoom-mitte': '58% 34%'}}
                     >
                       <img
                         src={`${NUMMER.bildRueckseite.url}&width=900`}

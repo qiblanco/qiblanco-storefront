@@ -186,6 +186,7 @@
 .tas-punkte {
   margin-top: var(--tas-s-2);
   padding-left: var(--tas-s-3);
+  list-style: disc;
   font-size: var(--tas-fs-3);
   line-height: 1.5;
 }
@@ -382,6 +383,9 @@
   position: relative;
   container-type: inline-size;
   aspect-ratio: 1 / 1;
+  /* clip-path schneidet auch die skalierte Zoom-Lage rund (overflow allein
+     ließ die Ecke unten rechts eckig, Challenger s04). */
+  clip-path: inset(0 round var(--tas-radius));
 }
 
 /* Die Bilder zeigen das ganze Gerät, die Gravur sitzt klein auf dem Band. Der
@@ -398,19 +402,22 @@
   border-radius: 0;
 }
 
-/* Die gewählte Nummer als Gravur: graue Tiefe, heller Rand unten, wie in den
-   gestrahlten Stahl geschnitten. Größe folgt der Bildbreite. */
+/* Die gewählte Nummer als Gravur: in den Stahl gelasert, also dunkler Grund
+   der Vertiefung (multipliziert mit dem Schliff des Bandes, so bleibt die
+   Struktur sichtbar), oben eine Schattenkante, unten eine Lichtkante. Größe
+   folgt der Bildbreite. */
 .tas-gravur {
   position: absolute;
   transform: translate(-50%, -50%);
   white-space: nowrap;
   font-size: 3cqw;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  color: rgb(74 81 90 / 0.86);
+  letter-spacing: 0.02em;
+  color: rgb(74 80 88 / 0.82);
+  mix-blend-mode: multiply;
   text-shadow:
-    0 1px 0 rgb(255 255 255 / 0.55),
-    0 -1px 0 rgb(0 0 0 / 0.12);
+    0 0.08em 0 rgb(255 255 255 / 0.5),
+    0 -0.06em 0 rgb(0 0 0 / 0.35);
   pointer-events: none;
 }
 
