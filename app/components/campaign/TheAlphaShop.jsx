@@ -133,7 +133,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
       <div className="tas-raster-seite">
         <div className="tas-galerie" data-tas-galerie="">
           <div className="tas-galerie-fest">
-            <div className="tas-galerie-gross">
+            <div className="tas-galerie-haupt">
               {GALERIE.animation360 ? (
                 <video
                   className="tas-bild"
@@ -196,6 +196,25 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               {betragText(hauptPreis, waehrung)} - {PRODUKT.preisZusatz}
             </p>
             <p className="tas-klein">inkl. 19 % MwSt.</p>
+            {/* Kaufknopf im ersten Fenster (Designstandard pdp_falz, Sicht-Tor
+                F-163): dieselben Warenkorbzeilen wie der Knopf der
+                Zusammenfassung, also immer die aktuelle Auswahl. */}
+            <div className="tas-kauf-oben" data-tas-kauf-oben="">
+              <AddToCartButton
+                disabled={!haupt?.availableForSale}
+                onClick={() => open('cart')}
+                lines={linien}
+              >
+                {haupt?.availableForSale
+                  ? ZUSAMMENFASSUNG.knopf
+                  : 'Ausverkauft'}
+              </AddToCartButton>
+              {summe !== hauptPreis ? (
+                <p className="tas-klein" data-tas-auswahl-summe="">
+                  Deine Auswahl: {betragText(summe, waehrung)}
+                </p>
+              ) : null}
+            </div>
             <p className="tas-herkunft">{PRODUKT.herkunft}</p>
           </section>
 
@@ -253,7 +272,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               {freiOffen ? (
                 <TheAlphaNummernwahl
                   nummern={stand.nummern}
-                  gewaehlt={nummerEintrag?.n ?? null}
+                  aktiv={nummerEintrag?.n ?? null}
                   onWaehle={(n) => wahlNummer(n)}
                 />
               ) : null}
@@ -380,7 +399,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             {zahlart === 'raten' ? (
               <div
                 className="tas-hinweis"
-                data-tas-raten={raten ? 'moeglich' : 'extras'}
+                data-tas-raten={raten ? 'offen' : 'extras'}
                 aria-live="polite"
               >
                 {raten ? (
@@ -418,8 +437,8 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           </h2>
           <img
             className="tas-summe-bild"
-            src={`${BOX.geraetBild.url}&width=480`}
-            alt={BOX.geraetBild.alt}
+            src={`${BOX.hauptBild.url}&width=480`}
+            alt={BOX.hauptBild.alt}
             width="240"
             height="240"
             loading="lazy"
@@ -476,7 +495,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             </AddToCartButton>
           </div>
           <EuGewaehrleistungsHinweis />
-          <p className="tas-klein">{ZUSAMMENFASSUNG.rueckgabe}</p>
+          <p className="tas-klein">{ZUSAMMENFASSUNG.frist}</p>
         </div>
       </section>
 
@@ -491,13 +510,13 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         <div className="tas-box-flaeche">
           <figure className="tas-box-teil">
             <img
-              src={`${BOX.geraetBild.url}&width=600`}
-              alt={BOX.geraetBild.alt}
+              src={`${BOX.hauptBild.url}&width=600`}
+              alt={BOX.hauptBild.alt}
               width="300"
               height="300"
               loading="lazy"
             />
-            <figcaption data-tas-box-geraet="">
+            <figcaption data-tas-box-haupt="">
               {PRODUKT.name} · {gravur}
             </figcaption>
           </figure>

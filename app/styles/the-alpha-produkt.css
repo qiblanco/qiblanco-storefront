@@ -81,7 +81,7 @@
   margin-top: var(--tas-s-4);
   background: var(--tas-band);
   color: var(--tas-weiss);
-  padding: var(--tas-s-6) var(--tas-s-3);
+  padding: var(--tas-s-4) var(--tas-s-3);
   text-align: center;
 }
 
@@ -107,7 +107,7 @@
   gap: var(--tas-s-4);
 }
 
-.tas-galerie-gross {
+.tas-galerie-haupt {
   background: var(--tas-flaeche);
   border-radius: var(--tas-radius);
   overflow: hidden;
@@ -187,6 +187,30 @@
   margin-top: var(--tas-s-2);
   font-size: var(--tas-fs-3);
   font-weight: 600;
+}
+
+/* Kaufknopf im ersten Fenster: Designstandard pdp_falz verlangt Preis und
+   Kaufknopf ohne Scrollen, auf dem Handy wie auf dem Desktop. */
+.tas-kauf-oben {
+  margin-top: var(--tas-s-3);
+}
+
+.tas-kauf-oben .btn--primary {
+  max-width: none;
+}
+
+.tas-kauf-oben + .tas-herkunft {
+  margin-top: var(--tas-s-3);
+}
+
+/* Handy und Tablet: Produktkopf mit Preis und Knopf vor der Galerie, wie auf
+   Apples Kaufseite mobil. Ab 1024 px steht die Auswahl wieder als Spalte. */
+.tas-auswahl {
+  display: contents;
+}
+
+.tas-produkt {
+  order: -1;
 }
 
 .tas-klein {
@@ -547,6 +571,9 @@
 }
 
 @media (min-width: 750px) {
+  .tas-band {
+    padding: var(--tas-s-6) var(--tas-s-3);
+  }
   .tas-band-titel {
     font-size: var(--tas-fs-7);
   }
@@ -564,6 +591,12 @@
     grid-template-columns: 7fr 5fr;
     gap: var(--tas-s-6);
     padding-top: var(--tas-s-6);
+  }
+  .tas-auswahl {
+    display: block;
+  }
+  .tas-produkt {
+    order: 0;
   }
   .tas-galerie-fest {
     position: sticky;

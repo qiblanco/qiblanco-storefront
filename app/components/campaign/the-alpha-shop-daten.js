@@ -152,7 +152,7 @@ export const RATEN = {
   text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999 €',
   code: 'Deinen Ratencode bekommst du von Anna, unten rechts im Chat.',
   mitExtras:
-    'Ratenzahlung gibt es für den Qi Alpha ohne Wunschnummer und mit der Kette aus Chirurgenstahl.',
+    'Den Qi Alpha ohne Wunschnummer und mit der Kette aus Chirurgenstahl kannst du auch in Raten zahlen.',
   extrasAbwaehlen: 'Wunschnummer und Goldkette abwählen',
 };
 
@@ -160,11 +160,11 @@ export const ZUSAMMENFASSUNG = {
   titel: 'Dein neuer Qi Alpha.',
   unter: 'Genau so, wie du ihn willst.',
   versand: ['Weltweit Kostenloser Versand', '100% Versicherter Versand'],
-  rueckgabe: '20 Tage volles Rückgaberecht nach Erhalt der Ware',
+  frist: '20 Tage volles Rückgaberecht nach Erhalt der Ware',
   knopf: 'In den Warenkorb',
 };
 
 export const BOX = {
   titel: "What's in the Box",
-  geraetBild: GALERIE.bilder[0],
+  hauptBild: GALERIE.bilder[0],
 };

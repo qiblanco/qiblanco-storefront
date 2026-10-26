@@ -7,7 +7,7 @@
  * (Shopify-Sperre ODER Christians Liste THE_ALPHA_VERGEBEN); fehlt die
  * Shopify-Variante, ist die Nummer ebenfalls nicht wählbar.
  */
-export function TheAlphaNummernwahl({nummern, gewaehlt, onWaehle}) {
+export function TheAlphaNummernwahl({nummern, aktiv, onWaehle}) {
   return (
     <div className="tas-raster" role="group" aria-label="Seriennummer frei wählen">
       {nummern.map((x) => {
@@ -20,7 +20,7 @@ export function TheAlphaNummernwahl({nummern, gewaehlt, onWaehle}) {
             data-nummer={x.n}
             data-status={x.status}
             disabled={!frei}
-            aria-pressed={gewaehlt === x.n}
+            aria-pressed={aktiv === x.n}
             aria-label={frei ? `Nummer ${x.n}` : `Nummer ${x.n}, vergeben`}
             onClick={() => onWaehle(x.n)}
           >
