@@ -6,7 +6,7 @@
  * begann mit „Limited 1st. Edition · nur 111 Stück / Mehr als Schmuck …“ und
  * hatte Christians Konzept verlassen (Z5/Z6).
  *
- * KI-OPTIMIERT HEISST HIER (Christian Z9: „C: KI-optimiert (Messdaten), aber
+ * KI-optimiert heißt hier (Christian Z9: „C: KI-optimiert (Messdaten), aber
  * auf derselben Geschichte“): die Messdaten der alten C-Fassung werden zu
  * Feinheiten INNERHALB der Szenen, nicht zu eigenen Abschnitten.
  *  - Länge: C ist der kurze Schnitt. Lernkarte scrollklippe (Klasse A, n=673
