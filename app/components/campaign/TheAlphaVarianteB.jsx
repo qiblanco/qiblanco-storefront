@@ -71,7 +71,11 @@ function Abschluss({preis}) {
       <p className="tab-preis" data-tab-preis="" data-preis-quelle={preis ? 'shopify' : 'fest'}>
         {text}
       </p>
-      <p className="tab-preis-zeile">{TAB_ABSCHLUSS.zeilen.join(' · ')}</p>
+      <ul className="tab-preis-zeile">
+        {TAB_ABSCHLUSS.zeilen.map((z) => (
+          <li key={z}>{z}</li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -124,7 +128,9 @@ export default function TheAlphaVarianteB({preis}) {
         <TapKarten bilder={PROTECTION.bilder} />
       </TapKapitel>
       <TapKapitel abschnitt={LONGEVITY} akzent={TAB_AKZENT.longevity} />
-      <TapVollbild bild={TAB_UNTERSEITE} />
+      <div className="tab-unterseite">
+        <TapVollbild bild={TAB_UNTERSEITE} />
+      </div>
       <TapMarke bild={TAB_SEITENBAND} />
       <TapEdition>
         <Abschluss preis={preis} />
