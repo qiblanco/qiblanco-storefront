@@ -104,7 +104,8 @@ test('Inhalte nur aus Christians Vorlage: Kopf, Produkt, Zusammenfassung, Box', 
 
 test('Verdrahtung: /products/the-alpha rendert TheAlphaShop, the-alpha-b die bisherige Kaufseite', () => {
   const a = lies('app/routes/products.the-alpha.jsx');
-  assert.match(a, /<TheAlphaShop product=\{product\} addons=\{addons\} \/>/);
+  // seit s07 (Grossjob 20261026) mit Wissens-Strecke und Fragen unter der Box
+  assert.match(a, /<TheAlphaShop\s+product=\{product\}\s+addons=\{addons\}[\s\S]*?\/>/);
   assert.match(a, /const THE_ALPHA_PDP_PFAD = '\/products\/the-alpha';/);
   assert.match(a, /\{name: 'robots', content: 'noindex,nofollow'\}/);
   const b = lies('app/routes/products.the-alpha-b.jsx');
