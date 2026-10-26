@@ -26,7 +26,8 @@
  *    Einschränkungen aus kauf-tatsachen.js IM_PREIS `raten` und der
  *    Footer-Fußnote 2. Den Bestandssatz „garantiert ist sie nicht" sagt die
  *    Antwort positiv („entscheiden Klarna und PayPal"), gleicher Inhalt: der
- *    KI-Klang-Richter verwarf ihn am 26.10.2026 (3 von 3).
+ *    KI-Klang-Richter verwarf ihn am 26.10.2026 (3 von 3); Wortlaut aus
+ *    menschlichkeit/bin/christian-fassung.
  *
  * RATEN NICHT NACH MARKT AUSGEBLENDET, anders als die Kaufzusage-Zeile: die
  * Zeile dort ist ein Versprechen ohne Einschränkung und steht deshalb nur im
@@ -83,8 +84,8 @@ export const OHNE_RISIKO = {
         'Ja, mit 0 % Finanzierung mit PayPal und Klarna. Bei Klarna sind ab 25 € ' +
           'Warenwert 6 Monatsraten möglich, ab 500 € 12 und ab 1.000 € bis zu 24. ' +
           'Die Ratenzahlung wählst du an der Kasse.',
-        'Ob die Ratenzahlung möglich ist, entscheiden Klarna und PayPal bei der Bestellung. ' +
-          'Möglich ist sie derzeit für Kundinnen und Kunden mit deutschem Wohnsitz.',
+        'Ob du in Raten zahlen kannst, entscheiden Klarna und PayPal direkt bei der Bestellung. ' +
+          'Möglich ist die Ratenzahlung derzeit nur mit Wohnsitz in Deutschland.',
       ],
     },
   ],

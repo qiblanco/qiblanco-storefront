@@ -68,7 +68,7 @@ test('Raten: Staffel und Einschränkungen wie IM_PREIS, PayPal und Klarna wie di
   assert.match(bestand, /prüft die Ratenzahlung selbst/);
   assert.match(t, /entscheiden Klarna und PayPal/);
   assert.doesNotMatch(t, /garantiert ist sie nicht/);
-  assert.match(t, /deutschem Wohnsitz/);
+  assert.match(t, /nur mit Wohnsitz in Deutschland/);
   const kaufzusage = readFileSync(join(HIER, 'KaufZusage.jsx'), 'utf8');
   assert.ok(kaufzusage.includes('mit 0&nbsp;% Finanzierung mit PayPal und Klarna'));
   assert.match(t, /mit 0 % Finanzierung mit PayPal und Klarna/);
