@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
+import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -31,7 +32,12 @@ import {
  * → Seitenansicht THE ALPHA → „THE ALPHA“ → Limited 1st. Edition 111/111 →
  * roter Balken „Jetzt Exklusiv Reservieren“. Die Varianten setzen diese
  * Bausteine verschieden zusammen (Bildwahl, Länge, Akzent), die Geschichte
- * bleibt gleich. Ton und Lucas Video-Ton kommen in einem eigenen Segment.
+ * bleibt gleich. Ton und Video (Segment s06, TheAlphaTon.jsx): TapSeite
+ * bringt „Sound on“, Grundsound und Lautsprecher mit; die Szenen tragen ihren
+ * Akzent als [data-tap-ton] (Gong am Titel, Klang am Wörterbuch, „bam“ an den
+ * Kapiteln, Glanz an der DIAMANT-Karte, tiefer Schlag an THE ALPHA,
+ * Schlussakkord an 111/111). Eine Variante bekommt den Ton, indem sie diese
+ * Bausteine benutzt.
  *
  * Texte und Bilder kommen aus the-alpha-daten.js (Christians Wortlaut, EINE
  * Datenstelle). Stil: app/styles/the-alpha-premium.css, alle Regeln hängen an
@@ -117,6 +123,7 @@ export function TapSeite({children, variante = 'a', kaufText = THE_ALPHA_SCHLUSS
   return (
     <div className="tap-seite" data-the-alpha-premium={variante} ref={wurzel}>
       {children}
+      <TapTon wurzel={wurzel} />
       <div className={`tap-leiste${leiste ? ' tap-leiste-an' : ''}`} aria-hidden={!leiste}>
         <span className="tap-leiste-marke">{THE_ALPHA_MARKE}</span>
         <Link
@@ -150,7 +157,7 @@ export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_AL
   return (
     <header className="tap-titelkarte" data-tap-buehne="" data-tap-anfang="">
       <div className="tap-titelkarte-bild">
-        <h1 className="tap-hero-titel">
+        <h1 className="tap-hero-titel" data-tap-ton="gong">
           <span className="tap-hero-zeile">{titel}</span>
           <span className="tap-hero-unter">{untertitel}</span>
         </h1>
@@ -184,7 +191,7 @@ export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
           </p>
         </div>
       </div>
-      <span className="tap-buehne-marke" data-tap-marke="" aria-hidden="true" />
+      <span className="tap-buehne-marke" data-tap-marke="" data-tap-ton="klang" aria-hidden="true" />
     </section>
   );
 }
@@ -199,22 +206,36 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
 }
 
 /** Lucas Video. Solange es fehlt: das ruhige Standbild, nie ein schwarzes
- * Viereck. Mit Video: stumm, inline, Standbild als Poster (Ton, Vorladen und
- * Abspielen beim Erreichen der Szene: Segment Ton & Video). */
+ * Viereck. Mit Video: Poster sofort, Vorladen in Stufen, Abspielen beim
+ * Erreichen der Szene, Pause beim Wegscrollen, inline (TheAlphaTon.jsx).
+ * Felder in the-alpha-daten.js THE_ALPHA_VIDEO.video: src (MP4, Pflicht),
+ * poster, optional hls (sonst aus der Shopify-CDN-Adresse abgeleitet),
+ * untertitel (WebVTT, gezeigt solange der Video-Ton nicht zu hören ist) und
+ * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist). */
 export function TapFilm({film}) {
   const {video, videoStandbild} = film;
   if (video?.src) {
+    const tonFeld = video.ton === true ? 'ja' : video.ton === false ? 'nein' : undefined;
     return (
-      <figure className="tap-vollbild tap-format-hoch" data-tap-ein="">
+      <figure className="tap-vollbild tap-format-hoch tap-film" data-tap-ein="" data-tap-film="">
         <video
-          src={video.src}
+          data-tap-video=""
+          data-tap-video-ton={tonFeld}
           poster={video.poster || videoStandbild.url}
-          autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
-        />
+          preload="none"
+          aria-label={videoStandbild.alt}
+        >
+          {videoQuellen(video).map((q) => (
+            <source key={q.src} src={q.src} type={q.type} />
+          ))}
+          {video.untertitel ? (
+            <track kind="captions" src={video.untertitel} srcLang="de" label="Deutsch" default />
+          ) : null}
+        </video>
+        <TapFilmTon />
       </figure>
     );
   }
@@ -230,7 +251,12 @@ export function TapKapitel({abschnitt, akzent = null, children}) {
       id={abschnitt.id}
       aria-labelledby={`${abschnitt.id}-titel`}
     >
-      <h2 className="tap-h2 tap-bam" id={`${abschnitt.id}-titel`} data-tap-ein="">
+      <h2
+        className="tap-h2 tap-bam"
+        id={`${abschnitt.id}-titel`}
+        data-tap-ein=""
+        data-tap-ton="bam"
+      >
         {abschnitt.titel}
       </h2>
       <ul className="tap-zeilen">
@@ -250,12 +276,16 @@ export function TapKapitel({abschnitt, akzent = null, children}) {
   );
 }
 
-/** Bildkarte mit schwarzem Etikett unten mittig (Figma-Stil). */
+/** Bildkarte mit schwarzem Etikett unten mittig (Figma-Stil). Die
+ * DIAMANT-Karte klingt beim Erscheinen (Glanz-Ton, RAW → DIAMANT). */
 function Karte({bild, sizes, folge = 0, format = 'quadrat'}) {
+  const glanz = /diamant/i.test(bild.etikett || '');
   return (
     <figure
       className={`tap-karte tap-karte-${format}`}
       data-tap-ein=""
+      data-tap-ton={glanz ? 'glanz' : undefined}
+      data-tap-ton-verzug={glanz ? folge * 180 : undefined}
       style={{'--tap-folge': folge}}
     >
       <Bild bild={bild} sizes={sizes} />
@@ -285,7 +315,7 @@ export function TapMarke({bild, marke = THE_ALPHA_MARKE}) {
         <Karte bild={{...bild, etikett: marke}} format="band" sizes="(min-width: 1200px) 1152px, 100vw" />
       </div>
       <div className="tap-marke-szene">
-        <p className="tap-marke-name tap-bam" data-tap-ein="">
+        <p className="tap-marke-name tap-bam" data-tap-ein="" data-tap-ton="tief">
           {marke}
         </p>
       </div>
@@ -300,7 +330,13 @@ export function TapEdition({schluss = THE_ALPHA_SCHLUSS, children}) {
       <p className="tap-edition-titel" data-tap-ein="">
         {schluss.edition}
       </p>
-      <p className="tap-zahl" data-tap-ein="" style={{'--tap-folge': 2}}>
+      <p
+        className="tap-zahl"
+        data-tap-ein=""
+        data-tap-ton="schluss"
+        data-tap-ton-verzug={360}
+        style={{'--tap-folge': 2}}
+      >
         {schluss.auflage}
       </p>
       {children}

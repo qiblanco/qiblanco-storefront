@@ -26,7 +26,12 @@
  * Standbild als Poster.
  */
 export const THE_ALPHA_VIDEO = {
-  video: null,
+  // Lucas Reveal (26.10.2026), stumm, drei Einblendungen im Bild; CDN-VIDEO, 720p.
+  video: {
+    src: 'https://cdn.shopify.com/videos/c/vp/5340638831464e8183e235969c14de05/5340638831464e8183e235969c14de05.HD-720p-3.0Mbps-98929943.mp4',
+    poster:
+      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-reveal-poster.jpg?v=1793023786',
+  },
   videoStandbild: {
     url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253',
     alt: 'Qi Alpha mit Diamant, Vorderseite',
