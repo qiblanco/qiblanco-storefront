@@ -28,6 +28,7 @@ import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
 import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
+import {OhneRisikoKaufen} from '~/components/reusables/OhneRisikoKaufen';
 import {amazonstilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {FAQ_QIBRACELET} from '~/data/product-faqs';
@@ -282,6 +283,12 @@ export function QiBraceletSeite({
         <GoogleRezensionenBereich />
       </div>
       <Kundenfragen handle="qibracelet" oben={fragen.oben} alle={FAQ_QIBRACELET} />
+      {/* Rückgabe und Raten in Kundenworten, offen unter den Kundenfragen:
+          die zwei Fragen, die vor dem Kauf zögern lassen (Auftrag
+          zs-marke-energie-schmuck-20260927-s02, 26.10.2026; Texte und
+          Schalter in reusables/ohne-risiko-daten.js). BEWUSST ohne
+          dataSection. */}
+      <OhneRisikoKaufen handle="qibracelet" />
       <QiBracelet block={block} faqItems={fragen.unten} />
     </>
   );

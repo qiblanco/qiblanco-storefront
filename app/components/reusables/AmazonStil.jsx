@@ -11,6 +11,7 @@ import {
   berichtQuelle,
   sortenSpalten,
   vergleichSpalten,
+  weiterFuer,
 } from './amazonstil-daten';
 
 /*
@@ -322,11 +323,25 @@ export function Kundenfragen({handle, oben, alle}) {
         {KUNDENFRAGEN.titel}
       </h2>
       <div className="qb-kf__liste">
-        {oben.map((item) => (
-          <div key={item.q} data-qb-kundenfrage="">
-            <FaqListe items={[item]} />
-          </div>
-        ))}
+        {oben.map((item) => {
+          // Sichtbarer Weg zur ganzen Antwort, AUSSERHALB der zugeklappten
+          // Antwort (KUNDENFRAGEN.weiter, nur wo eingetragen).
+          const weg = weiterFuer(item.q);
+          return (
+            <div
+              key={item.q}
+              data-qb-kundenfrage=""
+              className={weg ? 'qb-kf__mit-weiter' : undefined}
+            >
+              <FaqListe items={[item]} />
+              {weg ? (
+                <p className="qb-kf__weiter">
+                  <a href={weg.pfad}>{weg.text}</a>
+                </p>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

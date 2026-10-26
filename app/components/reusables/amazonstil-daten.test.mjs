@@ -28,6 +28,7 @@ import {
   teileFragen,
   vergleichAn,
   vergleichSpalten,
+  weiterFuer,
 } from './amazonstil-daten.js';
 import {FAQ_CACAO, FAQ_QIBRACELET, FAQ_QIHOME_AIR, FAQ_QIONE_2_PRO} from '../../data/product-faqs.js';
 import {faqPageJsonLdString, isSchemaSafe} from '../../lib/faq-schema.js';
@@ -359,4 +360,20 @@ test('Kakao Wortlaut: Analyseberichte statt Studien, kein "kohärent", nichts in
   assert.doesNotMatch(texte, /studie/i, 'Christian: nicht die Studien, sondern die Analyseberichte');
   assert.doesNotMatch(texte, /koh(ä|ae)rent/i);
   assert.doesNotMatch(texte, /stärker|stärkste|besser als/i, 'kein Stärke-Vergleich');
+});
+
+test('Weiter: nur unter der QiBracelet-Saunafrage, Ziel die Sauna-Antwortseite, sonst null', () => {
+  const eintraege = Object.entries(KUNDENFRAGEN.weiter || {});
+  assert.equal(eintraege.length, 1);
+  const bracelet = new Set(FAQ_QIBRACELET.map((it) => it.q));
+  const andere = new Set([...FAQ_QIONE_2_PRO, ...FAQ_QIHOME_AIR, ...FAQ_CACAO].map((it) => it.q));
+  for (const [q, w] of eintraege) {
+    assert.ok(bracelet.has(q), `Frage nicht im QiBracelet-Bestand: ${q}`);
+    assert.ok(!andere.has(q), `Frage steht auch auf einer anderen Kaufseite: ${q}`);
+    assert.match(w.pfad, /^\/pages\/[a-z0-9-]+$/);
+    assert.equal(existsSync(join(APP, 'routes', `pages.${w.pfad.slice(7)}.jsx`)), true, `Route fehlt: ${w.pfad}`);
+  }
+  assert.equal(weiterFuer('Darf das QiBracelet® nass werden, bzw. in die Sauna?').pfad, '/pages/armband-duschen-sauna');
+  assert.equal(weiterFuer('Darf der QiOne® in die Sauna bzw. nass werden?'), null);
+  assert.equal(weiterFuer('Darf das QiBracelet® nass werden, bzw. in die Sauna?', {...KUNDENFRAGEN, weiter: {}}), null);
 });
