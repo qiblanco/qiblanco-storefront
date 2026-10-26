@@ -67,6 +67,19 @@
   margin: 0;
 }
 
+/* reset.css gibt jeder <section> 1 bzw. 2 rem Polster. Hier trägt nur der
+   Außenabstand den Takt (drei Stufen: 16 · 64 · 64 + Flächenpolster), also
+   kein Polster aus der Hülle. Klassen weiter unten (Zusammenfassung) setzen
+   ihr eigenes Polster und gewinnen, weil sie später stehen. */
+.tas-seite :where(section) {
+  padding-block: 0;
+}
+
+.tas-summe .eu-gwl--pdp {
+  margin-top: var(--tas-s-2);
+  padding-block: 0;
+}
+
 .tas-unsichtbar {
   position: absolute;
   width: 0;
@@ -231,8 +244,14 @@
   color: var(--tas-tinte);
 }
 
+/* Zwei Töne wie bei Apple („Model. Which is best for you?“): der Satz vorn
+   steht in Tinte, der Rest in Grau. Ein H2-Stil für alle Abschnitte. */
 .tas-auszeichnung {
   color: var(--tas-tinte);
+}
+
+.tas-titel-rest {
+  color: var(--tas-grau);
 }
 
 .tas-schritt-titel {
@@ -406,7 +425,6 @@
 .tas-kette-gold {
   position: absolute;
   inset: 0;
-  filter: url(#tas-gold);
   opacity: 0;
   transition: opacity var(--tas-dauer) ease;
 }
@@ -464,7 +482,7 @@
 /* Zusammenfassung */
 .tas-summe {
   max-width: var(--tas-breite);
-  margin: var(--tas-s-12) auto 0;
+  margin: var(--tas-s-8) auto 0;
   padding: var(--tas-s-4) var(--tas-s-3);
   background: var(--tas-flaeche);
   border-radius: var(--tas-radius);
@@ -480,7 +498,6 @@
 
 .tas-summe-unter {
   display: block;
-  color: var(--tas-grau);
 }
 
 .tas-summe-bild {
@@ -532,13 +549,16 @@
   max-width: var(--tas-breite);
   margin: var(--tas-s-8) auto 0;
   padding: 0 var(--tas-s-2);
-  text-align: center;
 }
 
 .tas-box-titel {
-  font-size: var(--tas-fs-6);
+  font-size: var(--tas-fs-5);
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1.2;
+}
+
+.tas-box-teil figcaption {
+  text-align: center;
 }
 
 .tas-box-flaeche {
@@ -552,7 +572,7 @@
 }
 
 .tas-box-teil {
-  flex: 0 1 220px;
+  flex: 0 1 300px;
 }
 
 .tas-box-teil img,

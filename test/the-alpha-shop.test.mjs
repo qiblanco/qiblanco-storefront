@@ -60,6 +60,13 @@ test('Kettenwahl: Christians 60/50/45 in seiner Reihenfolge, dann Chirurgenstahl
     '60 cm Kette aus Chirurgenstahl',
   ]);
   assert.equal(o[3].variante, null);
+  // Box-Unterschrift (Christian 26.10.: „so wie "60 cm - 750iger ethisches Vollgold"“)
+  assert.deepEqual(o.map((x) => x.box), [
+    '60 cm - 750iger ethisches Vollgold',
+    '50 cm - 750iger ethisches Vollgold',
+    '45 cm - 750iger ethisches Vollgold',
+    '60 cm - Kette aus Chirurgenstahl',
+  ]);
   // ohne Goldkette-Produkt bleibt nur der Stahl
   assert.deepEqual(regeln.kettenOptionen(null).map((x) => x.art), ['stahl']);
 });
@@ -111,4 +118,13 @@ test('Verdrahtung: /products/the-alpha rendert TheAlphaShop, the-alpha-b die bis
   assert.match(shop, /\{merchandiseId: haupt\.id, quantity: 1, selectedVariant: haupt\}/);
   assert.match(shop, /<EuGewaehrleistungsHinweis \/>/);
   assert.match(shop, /<Analytics\.ProductView/);
+});
+
+test('Kettenbilder: je Aufnahme ein Stahl- und ein Goldbild, die Box-Unterschrift liest `box` (s04)', () => {
+  for (const b of daten.KETTE.bilder) {
+    assert.match(b.stahl, /the-alpha-kette-.+-stahl\.jpg/);
+    assert.match(b.gold, /the-alpha-kette-.+-gold\.jpg/);
+  }
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  assert.match(shop, /data-tas-box-kette="">\{kette\?\.box/);
 });

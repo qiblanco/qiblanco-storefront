@@ -124,7 +124,6 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
 
   return (
     <div className="tas-seite" data-the-alpha-shop="">
-      <GoldFilter />
       <header className="tas-band">
         <p className="tas-band-titel">{KOPF.titel}</p>
         <p className="tas-band-unter">{KOPF.unter}</p>
@@ -226,7 +225,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             >
               <h2 id="tas-nummer-titel" className="tas-schritt-titel">
                 <span className="tas-auszeichnung">{NUMMER.auszeichnung}</span>{' '}
-                {NUMMER.titel}
+                <span className="tas-titel-rest">{NUMMER.titel}</span>
               </h2>
               <div
                 className="tas-karten"
@@ -333,7 +332,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           >
             <h2 id="tas-kette-titel" className="tas-schritt-titel">
               <span className="tas-auszeichnung">{KETTE.auszeichnung}</span>{' '}
-              {KETTE.titel}
+              <span className="tas-titel-rest">{KETTE.titel}</span>
             </h2>
             <div
               className="tas-karten"
@@ -360,7 +359,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               data-tas-kette-farbe={ketteGold ? 'gold' : 'stahl'}
             >
               {KETTE.bilder.map((b) => (
-                <figure key={b.url} className="tas-kette-bild">
+                <figure key={b.stahl} className="tas-kette-bild">
                   <KettenBild bild={b} breite={900} />
                 </figure>
               ))}
@@ -374,7 +373,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           >
             <h2 id="tas-zahl-titel" className="tas-schritt-titel">
               <span className="tas-auszeichnung">{BEZAHLUNG.titel}</span>{' '}
-              {BEZAHLUNG.unter}
+              <span className="tas-titel-rest">{BEZAHLUNG.unter}</span>
             </h2>
             <div
               className="tas-karten tas-karten--zwei"
@@ -433,7 +432,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         <div className="tas-summe-kopf">
           <h2 id="tas-summe-titel" className="tas-summe-titel">
             {ZUSAMMENFASSUNG.titel}{' '}
-            <span className="tas-summe-unter">{ZUSAMMENFASSUNG.unter}</span>
+            <span className="tas-titel-rest tas-summe-unter">{ZUSAMMENFASSUNG.unter}</span>
           </h2>
           <img
             className="tas-summe-bild"
@@ -525,7 +524,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             data-tas-kette-farbe={ketteGold ? 'gold' : 'stahl'}
           >
             <KettenBild bild={KETTE.bilder[1]} breite={600} />
-            <figcaption data-tas-box-kette="">{kette?.name}</figcaption>
+            <figcaption data-tas-box-kette="">{kette?.box ?? kette?.name}</figcaption>
           </figure>
         </div>
       </section>
@@ -571,16 +570,16 @@ function Karte({an, onClick, titel, text = null, preis = null, data = {}}) {
 }
 
 /**
- * Kettenbild in zwei Lagen: unten die Aufnahme (Chirurgenstahl), darüber
- * dieselbe Aufnahme durch den Goldfilter. Die Wahl blendet nur die Deckkraft
- * der oberen Lage um, so springt nichts (Christian 26.10.: Überblendung).
+ * Kettenbild in zwei Lagen: unten die Stahlaufnahme, darüber die Goldfassung
+ * derselben Aufnahme (gleicher Grund, gleiche Lage). Die Wahl blendet nur die
+ * Deckkraft der oberen Lage um, so springt nichts (Christian 26.10.:
+ * Überblendung).
  */
 function KettenBild({bild, breite}) {
-  const src = `${bild.url}&width=${breite}`;
   return (
     <span className="tas-kette-lagen">
       <img
-        src={src}
+        src={`${bild.stahl}&width=${breite}`}
         alt={bild.alt}
         width={breite}
         height={breite}
@@ -588,7 +587,7 @@ function KettenBild({bild, breite}) {
       />
       <img
         className="tas-kette-gold"
-        src={src}
+        src={`${bild.gold}&width=${breite}`}
         alt=""
         aria-hidden="true"
         width={breite}
@@ -596,47 +595,6 @@ function KettenBild({bild, breite}) {
         loading="lazy"
       />
     </span>
-  );
-}
-
-/*
- * GOLD-ANSICHT DER KETTE (Christian 26.10.: „bei der asuwahl an godl sich die
- * kettenfarbe in gold ändert … das gold von der umrandung beim diamten ist
- * sehr gut getroffen, bitte das farbscheme übernehemn“). Verfahren: Gradient
- * Map, also die Graustufen der Silberaufnahme auf eine mehrstufige Goldrampe
- * gelegt, damit Glanzlichter und Schatten bleiben (statt einer flachen
- * Farbe). Die Rampe ist an der Diamant-Fassung in qi-alpha-02-detail.jpg
- * gemessen (Perzentile 5–99: #614601 · #846a37 · #a2712f · #c9a46f · #e1c192);
- * die hellsten Stufen laufen in ein warmes Weiß aus, damit der helle
- * Bildgrund hell bleibt.
- */
-function GoldFilter() {
-  return (
-    <svg
-      className="tas-unsichtbar"
-      width="0"
-      height="0"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <filter id="tas-gold" colorInterpolationFilters="sRGB">
-        <feColorMatrix type="saturate" values="0" />
-        <feComponentTransfer>
-          <feFuncR
-            type="table"
-            tableValues="0.18 0.38 0.52 0.64 0.79 0.88 0.96 0.99"
-          />
-          <feFuncG
-            type="table"
-            tableValues="0.12 0.27 0.42 0.44 0.64 0.76 0.92 0.97"
-          />
-          <feFuncB
-            type="table"
-            tableValues="0.00 0.01 0.22 0.18 0.44 0.57 0.84 0.94"
-          />
-        </feComponentTransfer>
-      </filter>
-    </svg>
   );
 }
 
