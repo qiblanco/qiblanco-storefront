@@ -44,6 +44,11 @@ export const VORSCHAU_NOINDEX = [
   {pfad: '/pages/qi-alpha-vorverkauf', googlebot: true, rolle: 'LP A nach Umbenennung'},
   {pfad: '/products/qi-master', googlebot: false, rolle: 'Shop A'},
   {pfad: '/products/qi-alpha', googlebot: false, rolle: 'Shop A nach Umbenennung'},
+  // Umzug auf the-alpha (Christian Z4 vom 25.10.2026, Grossjob 20261025-prio1-
+  // the-alpha-..., s06): die Kaufseite lebt seit 2026-10-26 hier, die beiden
+  // Zeilen darüber sind 301-Hüllen. Dieselbe Rolle, dieselbe Lesbarkeit für
+  // Googlebot wie Shop A.
+  {pfad: '/products/the-alpha', googlebot: false, rolle: 'Shop A nach Umzug the-alpha'},
   // Testarme der The-Alpha-Seite (Grossjob 20261025-prio1-the-alpha-
   // landingpage-figma-vorlage-a-server-b-ki-c, s03 trägt sie VORAB ein, damit
   // s04/s05 diese gemeinsame Datei nicht anfassen). A = /pages/The-Alpha ist

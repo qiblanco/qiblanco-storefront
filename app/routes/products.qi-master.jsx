@@ -1,7 +1,11 @@
 import {redirect} from 'react-router';
 
 /*
- * /products/qi-master — 301 auf /products/qi-alpha.
+ * /products/qi-master — 301 auf /products/the-alpha.
+ *
+ * SEIT 2026-10-26 ZIEL /products/the-alpha (Christian Z4 vom 25.10.2026: „wir
+ * gehen im link weg von qi-alpha hin zu the alpha"; Grossjob 20261025-prio1-
+ * the-alpha-..., s06). Ein Sprung, keine Kette über /products/qi-alpha.
  *
  * Christian am 2026-10-17: „ja bitte auch die Shopseite und das Produkt. es
  * heißt nun Qi Alpha" (Grossjob 20261017 zum neuen
@@ -21,7 +25,7 @@ import {redirect} from 'react-router';
  */
 export async function loader({request}) {
   const url = new URL(request.url);
-  throw redirect(`/products/qi-alpha${url.search}`, 301);
+  throw redirect(`/products/the-alpha${url.search}`, 301);
 }
 
 export default function QiMasterAltpfadRedirect() {

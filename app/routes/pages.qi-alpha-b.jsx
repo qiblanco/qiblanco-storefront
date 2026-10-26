@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import QiAlphaLpB, {betrag} from '~/components/campaign/QiAlphaLpB';
 import {QM_ADDONS_QUERY, KETTE_VORWAHL} from '~/lib/qi-master-addons';
 import qiMasterStyles from '~/styles/qi-master.css?url';
@@ -79,8 +79,24 @@ const LP_PRODUKT_QUERY = `#graphql
   }
 `;
 
+/*
+ * SEIT 2026-10-26: 301 AUF /pages/The-Alpha, in EINEM Sprung, Query bleibt.
+ * Christian am 25.10.2026 (Z4): „d.h. wir gehen im link weg von qi-alpha hin
+ * zu the alpha" (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-
+ * a-server-b-ki-c, Segment s06). Christian nannte
+ * diese Seite am 25.10. „Sofawerbung“; die Komponente QiAlphaLpB bleibt als
+ * Negativbeispiel im Code. Der Rest dieser Datei bleibt
+ * unverändert stehen und wird nicht mehr erreicht: Rückweg = UMZUG_THE_ALPHA
+ * auf false (oder git revert des Umzug-PR).
+ */
+const UMZUG_THE_ALPHA = true;
+
 /** @param {LoaderFunctionArgs} args */
-export async function loader({context}) {
+export async function loader({context, request}) {
+  if (UMZUG_THE_ALPHA) {
+    const url = new URL(request.url);
+    throw redirect(`/pages/The-Alpha${url.search}`, 301);
+  }
   const {storefront} = context;
   const [produkte, addons] = await Promise.all([
     storefront.query(LP_PRODUKT_QUERY, {

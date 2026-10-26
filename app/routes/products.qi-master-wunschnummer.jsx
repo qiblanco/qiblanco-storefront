@@ -1,7 +1,7 @@
 import {redirect} from 'react-router';
 
 /*
- * /products/qi-master-wunschnummer — 301 auf /products/qi-alpha (bis 2026-10-17
+ * /products/qi-master-wunschnummer — 301 auf /products/the-alpha (seit 2026-10-26, davor /products/qi-alpha; bis 2026-10-17
  * auf /products/qi-master: Christian benannte das Produkt in Qi Alpha um, und
  * ein Add-on-Pfad leitet in EINEM Sprung auf die Hauptseite, nie über den
  * alten Pfad).
@@ -20,7 +20,7 @@ import {redirect} from 'react-router';
  */
 export async function loader({request}) {
   const url = new URL(request.url);
-  throw redirect(`/products/qi-alpha${url.search}`, 301);
+  throw redirect(`/products/the-alpha${url.search}`, 301);
 }
 
 export default function QiMasterAddonRedirect() {
