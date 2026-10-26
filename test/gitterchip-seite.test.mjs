@@ -40,7 +40,7 @@ function alleTexte() {
       t.push(s.grafik.legende);
       for (const gl of s.grafik.glieder || []) t.push(gl.titel, gl.text, gl.quelle);
     }
-    for (const d of s.diagramme || []) t.push(...d.titel, d.messgroesse, d.zeile);
+    for (const d of s.diagramme || []) t.push(...d.titel, d.zeile);
     for (const k of s.kennzahlen || []) t.push(k.text, k.zeile);
     if (s.weiter) t.push(s.weiter.text);
     if (s.kauf) t.push(s.kauf.text, s.neben.text);

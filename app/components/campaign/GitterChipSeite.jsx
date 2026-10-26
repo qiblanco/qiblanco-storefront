@@ -107,7 +107,6 @@ function Studien({stufe}) {
                   {d.titel[1]}
                 </>
               }
-              messgroesse={d.messgroesse}
               balken={d.balken}
               studieHref={studienPfad(d.studie)}
               studieZeile={d.zeile}

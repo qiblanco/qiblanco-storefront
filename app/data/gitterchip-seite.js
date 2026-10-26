@@ -227,7 +227,6 @@ export const STUFEN = [
         // der unbestrahlten Kontrolle (Radikalbildung der Neutrophilen).
         id: 'immunzellen',
         titel: ['Abwehrleistung von Immunzellen', 'unter Handystrahlung'],
-        messgroesse: 'Radikalbildung nach 4 Stunden, ohne Strahlung = 100 %',
         balken: [
           {bezeichnung: 'Ungeschützt', wert: 60.5, ton: 'ohne'},
           {bezeichnung: 'Mit QiOne® 2 Pro', wert: 84.7, ton: 'mit'},
@@ -240,7 +239,6 @@ export const STUFEN = [
         // TEER relativ zur Kontrolle 6,0 ± 3,2 % und 72,6 ± 14,5 %.
         id: 'barriere',
         titel: ['Barrierefunktion der Zelle', 'unter E-Smog Stress'],
-        messgroesse: 'Barriere-Widerstand, ohne E-Smog = 100 %',
         balken: [
           {bezeichnung: 'Ungeschützt', wert: 6.0, ton: 'ohne'},
           {bezeichnung: 'Mit QiOne® 2 Pro', wert: 72.6, ton: 'mit'},
@@ -253,7 +251,6 @@ export const STUFEN = [
         // = 100 − verbleibende zellfreie Fläche (43,7 / 14,5 / 13,8 %).
         id: 'regeneration',
         titel: ['Zellregeneration', 'unter E-Smog Stress'],
-        messgroesse: 'Geschlossene Fläche nach 8 h, ohne E-Smog 86,2 %',
         balken: [
           {bezeichnung: 'Ungeschützt', wert: 56.3, ton: 'ohne'},
           {bezeichnung: 'Mit QiOne® 2 Pro', wert: 85.5, ton: 'mit'},
@@ -266,7 +263,6 @@ export const STUFEN = [
         // Abbildung abgelesen; Differenz 47 = publizierter Effekt 47,3 %.
         id: 'viabilitaet',
         titel: ['Lebende Leberzellen', 'unter oxidativem Stress'],
-        messgroesse: 'Lebende Leberzellen nach 24 h, aus Abbildung 3 abgelesen',
         balken: [
           {bezeichnung: 'Ungeschützt', wert: 41, stellen: 0, ton: 'ohne'},
           {bezeichnung: 'Mit QiBracelet®', wert: 88, stellen: 0, ton: 'mit'},

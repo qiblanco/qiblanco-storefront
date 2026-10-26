@@ -33,6 +33,13 @@
  * - Die Zahl wird am Textknoten geschrieben (nodeValue), nicht über React-State:
  *   60 Renders je Sekunde je Säule wären teuer, und React hält den Text im
  *   JSX ohnehin auf dem Endwert.
+ * - KEIN UNTERTITEL (Christian, 26.10.2026: „das ist zu viel Text balast.
+ *   KISS Keep it short and simple. D.h. bei jeder dieser Balken den
+ *   untertitelsatz streichen"). Ein Diagramm trägt nur Überschrift, Balken
+ *   mit Zahl und Bezeichnung und die Studienzeile darunter. Die frühere
+ *   Zeile „messgroesse" (seit 23.09.) ist deshalb kein Prop mehr: wer sie
+ *   wieder will, baut gegen Christians Wort. Was genau gemessen wurde, steht
+ *   auf der Studienseite, auf die jeder Balken verlinkt.
  */
 import {Link} from 'react-router';
 import {useEffect, useLayoutEffect, useRef, useState} from 'react';
@@ -57,13 +64,12 @@ function ausrollen(t) {
 /**
  * @param {{
  *   titel: import('react').ReactNode,
- *   messgroesse: string,
  *   balken: Array<{bezeichnung: string, wert: number, stellen?: number, ton: 'ohne'|'mit'}>,
  *   studieHref: string,
  *   studieZeile: string,
  * }} props
  */
-export function BalkenDiagramm({titel, messgroesse, balken, studieHref, studieZeile}) {
+export function BalkenDiagramm({titel, balken, studieHref, studieZeile}) {
   const wurzel = useRef(null);
   const [zustand, setZustand] = useState('fertig');
 
@@ -144,7 +150,6 @@ export function BalkenDiagramm({titel, messgroesse, balken, studieHref, studieZe
       ref={wurzel}
     >
       <h3 className="qb-balkendiagramm__titel">{titel}</h3>
-      <p className="qb-balkendiagramm__messgroesse">{messgroesse}</p>
       <div className="qb-balkendiagramm__flaeche">
         {balken.map((b) => {
           const stellen = b.stellen ?? 1;
