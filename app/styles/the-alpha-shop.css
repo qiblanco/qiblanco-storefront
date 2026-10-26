@@ -1,0 +1,176 @@
+/*
+ * WISSENS-STRECKE /products/the-alpha (TheAlphaWissen.jsx, Grossjob
+ * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung, s07).
+ *
+ * Keine eigenen Größen und Farben: die Strecke steht in .tas-seite und
+ * benutzt deren Tokens (the-alpha-produkt.css, s12). Ein H2-Stil, gleich dem
+ * von „What's in the Box“ (--tas-fs-6, 600, zentriert). Das Etikett ist das
+ * schwarze Schild aus Christians Figma (--tas-band, weiße Schrift). Bilder in
+ * der hellen Fläche mit dem einen Radius-Token. Quellen in Kleinschrift
+ * (--tas-fs-1, --tas-grau).
+ */
+.taw {
+  max-width: var(--tas-breite);
+  margin: 0 auto;
+  padding: 0 var(--tas-s-2);
+}
+
+.taw-abschnitt {
+  margin-top: var(--tas-s-12);
+}
+
+.taw-kopf {
+  text-align: center;
+}
+
+.taw-etikett {
+  display: inline-block;
+  padding: var(--tas-s-1) var(--tas-s-2);
+  border-radius: 6px;
+  background: var(--tas-band);
+  color: var(--tas-weiss);
+  font-size: var(--tas-fs-3);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.tas-seite .taw-titel {
+  margin-top: var(--tas-s-2);
+  font-size: var(--tas-fs-6);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.taw-raster {
+  display: grid;
+  gap: var(--tas-s-4);
+  margin-top: var(--tas-s-4);
+  align-items: center;
+}
+
+.taw-bild {
+  margin: 0;
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+}
+
+.taw-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.taw-text {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.tas-seite .taw-text p,
+.tas-seite .taw-spalte p {
+  font-size: var(--tas-fs-3);
+  line-height: 1.55;
+}
+
+.tas-seite .taw-text p + p,
+.tas-seite .taw-text div + blockquote {
+  margin-top: var(--tas-s-2);
+}
+
+.taw-zitat {
+  margin: var(--tas-s-3) 0 0;
+  padding-left: var(--tas-s-2);
+  border-left: 2px solid var(--tas-linie);
+}
+
+.tas-seite .taw-zitat p {
+  font-style: italic;
+  color: var(--tas-tinte);
+}
+
+.taw-zitat-von {
+  display: block;
+  font-style: normal;
+  margin-top: var(--tas-s-1);
+  font-size: var(--tas-fs-2);
+  color: var(--tas-grau);
+}
+
+.taw-quellen {
+  margin: var(--tas-s-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tas-seite .taw-quellen li {
+  font-size: var(--tas-fs-1);
+  line-height: 1.5;
+  color: var(--tas-grau);
+}
+
+.tas-seite .taw-quellen li + li {
+  margin-top: 4px;
+}
+
+/* Abschnitt 6: drei Spalten (Christians Figma) */
+.taw-spalten {
+  display: grid;
+  gap: var(--tas-s-4);
+  margin-top: var(--tas-s-4);
+}
+
+.taw-spalte {
+  padding: var(--tas-s-3);
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+}
+
+.tas-seite .taw-spalte-titel {
+  margin: 0 0 var(--tas-s-1);
+  font-size: var(--tas-fs-4);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--tas-tinte);
+}
+
+.taw-liga .taw-quellen {
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .taw-raster {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--tas-s-8);
+    margin-top: var(--tas-s-6);
+  }
+  .taw-bild {
+    max-width: 512px;
+    width: 100%;
+    justify-self: end;
+  }
+  .taw-text {
+    margin: 0;
+  }
+  .taw-abschnitt[data-taw-seite='rechts'] .taw-bild {
+    order: 2;
+    justify-self: start;
+  }
+  .taw-abschnitt--text .taw-raster {
+    grid-template-columns: 1fr;
+  }
+  .taw-abschnitt--text .taw-text {
+    margin: 0 auto;
+    max-width: 760px;
+  }
+  .taw-spalten {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* reset.css legt allen Überschriften einen Schatten an; auf der hellen
+   Fläche wirkt er unscharf. Die Strecke bleibt flach wie „What's in the Box“. */
+.taw :where(h2, h3) {
+  text-shadow: none;
+}

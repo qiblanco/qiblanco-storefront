@@ -3,6 +3,10 @@ import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {TheAlphaShop} from '~/components/campaign/TheAlphaShop';
 import shopStyles from '~/styles/the-alpha-produkt.css?url';
+import wissenStyles from '~/styles/the-alpha-shop.css?url';
+import faqStyles from '~/styles/the-alpha-faq.css?url';
+import {TheAlphaWissen} from '~/components/the-alpha-shop/TheAlphaWissen';
+import {TheAlphaFaq} from '~/components/campaign/TheAlphaFaq';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {istVorschauNoindex} from '~/lib/vorschau-noindex';
 import {QM_ADDONS_QUERY, QM_HANDLES} from '~/lib/qi-master-addons';
@@ -90,7 +94,11 @@ const THE_ALPHA_PDP_PFAD = '/products/the-alpha';
  * die Token-Schicht der Seite, damit app.css unangetastet bleibt.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: shopStyles}];
+  return [
+    {rel: 'stylesheet', href: shopStyles},
+    {rel: 'stylesheet', href: wissenStyles},
+    {rel: 'stylesheet', href: faqStyles},
+  ];
 }
 
 /**
@@ -226,7 +234,20 @@ function loadDeferredData() {
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, addons} = useLoaderData();
-  return <TheAlphaShop product={product} addons={addons} />;
+  // Unter „What's in the Box“: Wissens-Strecke und Fragen (Christian
+  // 26.10.2026, Z150–Z208; Grossjob 20261026-…-premium-gestaltung, s07).
+  return (
+    <TheAlphaShop
+      product={product}
+      addons={addons}
+      nachDerBox={
+        <>
+          <TheAlphaWissen />
+          <TheAlphaFaq ton="hell" />
+        </>
+      }
+    />
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
