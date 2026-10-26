@@ -24,8 +24,18 @@
  * geht dann in den Probe-Ausgang). POST wird NIE wiederholt: ein zweiter
  * Versuch nach verlorener Antwort könnte zwei Mails ausloesen.
  *
+ * SPEZIAL BEIM GASTGEBER (Grossjob 20261025-webinar-heal-world-0111, s03,
+ * Naht N1; Christian
+ * 25.10.2026: „das bitte auf live so implemtnieren das die leute sich anmelden
+ * können. bitte dazu schreiben das anmeldung notwendig ist“). Ein Vorschau-
+ * Artikel mit Tag ch-anmeldung-extern ist ein Termin bei einem anderen
+ * Gastgeber mit eigener Zoom-Anmeldung. Die Anmelde-URL ist der erste Link im
+ * Artikeltext, der auf ANMELDE_URL_RX passt (nur Zoom-Registrierung). Kein
+ * passender Link: die Karte zeigt keinen Knopf, weder einen toten noch den
+ * Coming-Home-Knopf, der zum falschen Termin anmelden würde.
+ *
  * TESTUMGEBUNG: Env COMING_HOME_API lenkt die Anmeldung auf einen
- * Wegwerf-Endpunkt um. Env COMING_HOME_FIXTUR=leer|vorschau|drei ersetzt den
+ * Wegwerf-Endpunkt um. Env COMING_HOME_FIXTUR=leer|vorschau|drei|spezial ersetzt den
  * Blog durch die Testdaten unten (Sicht-Tor und Design-Messung der Zustaende,
  * nie erfundene Artikel im echten Blog). Auf Oxygen ist keine der beiden
  * gesetzt.
@@ -291,6 +301,45 @@ export function ueberschriftenTiefer(html) {
 
 // ─── Blog-Artikel -> Termine ────────────────────────────────────────────────
 
+/** Allowlist der externen Anmeldung (Naht N1): nur Zoom-Registrierungen. */
+export const ANMELDE_URL_RX =
+  /^https:\/\/([a-z0-9-]+\.)?zoom\.us\/meeting\/register\/[A-Za-z0-9_-]+$/;
+
+function entitaetenLoesen(text) {
+  return String(text || '')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0*39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+}
+
+/**
+ * Erster Link im Artikeltext, dessen Ziel auf ANMELDE_URL_RX passt:
+ * {url, gastgeber}. `gastgeber` kommt aus dem Linktext („Zur Anmeldung beim
+ * Heal World Summit“), sonst ''. Ohne passenden Link {url: null, gastgeber: ''}.
+ */
+export function anmeldungExtern(html) {
+  const rx = /<a\b[^>]*?\bhref\s*=\s*(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
+  for (const m of String(html || '').matchAll(rx)) {
+    const url = entitaetenLoesen(m[2]).trim();
+    if (!ANMELDE_URL_RX.test(url)) continue;
+    const linktext = entitaetenLoesen(m[3].replace(/<[^>]+>/g, ' '))
+      .replace(/\s+/g, ' ')
+      .trim();
+    const g = /\bbei(?:m| der| dem)?\s+(.+)$/.exec(linktext);
+    return {url, gastgeber: g ? g[1].replace(/[.!]+$/, '').trim() : ''};
+  }
+  return {url: null, gastgeber: ''};
+}
+
+/** Schluss „Anmeldung notwendig.“ eines Teasers; die Karte zeigt ihn eigens. */
+export function teaserOhnePflicht(teaser) {
+  return String(teaser || '')
+    .replace(/\s*Anmeldung (ist )?notwendig\.?\s*$/i, '')
+    .trim();
+}
+
 /** Tags eines Artikels lesen; null, wenn er kein Coming-Home-Termin ist. */
 export function terminAusArtikel(a) {
   const tags = Array.isArray(a?.tags) ? a.tags.map((t) => String(t).trim()) : [];
@@ -310,6 +359,12 @@ export function terminAusArtikel(a) {
   const hhmm = tags.includes('ch-zeit-offen') ? null : zeit || null;
   const start = berlinZuUtc(datum, hhmm || '1200');
   if (!start) return null;
+  const html = String(a.contentHtml || '');
+  // Nur eine Vorschau kann extern sein: ein Rückblick hat keine Anmeldung.
+  const extern =
+    vorschau && tags.includes('ch-anmeldung-extern')
+      ? anmeldungExtern(html)
+      : null;
   return {
     art: vorschau ? 'vorschau' : 'rueckblick',
     datum,
@@ -318,7 +373,8 @@ export function terminAusArtikel(a) {
     handle: String(a.handle || ''),
     titel: String(a.title || '').trim(),
     teaser: String(a.excerpt || '').trim(),
-    html: String(a.contentHtml || ''),
+    html,
+    extern,
   };
 }
 
@@ -351,8 +407,9 @@ export function seitenDaten(artikel, jetzt) {
     // Ohne Uhrzeit nur der Tag: kein erfundener Zeitpunkt im <time>.
     startUtc: t.zeit ? t.start.toISOString() : t.datum,
     titel: t.titel,
-    teaser: t.teaser,
+    teaser: t.extern ? teaserOhnePflicht(t.teaser) : t.teaser,
     handle: t.handle,
+    extern: t.extern,
   });
 
   let naechster;
@@ -371,6 +428,7 @@ export function seitenDaten(artikel, jetzt) {
           teaser: '',
           handle: '',
           html: '',
+          extern: null,
           quelle: 'annahme',
         }
       : null;
@@ -446,8 +504,67 @@ function fixturRueckblick(datum, titel, teaser, absatz, inhalte) {
   };
 }
 
+/**
+ * Fixtur `spezial`: der nächste Sonntag, an dem 11 Uhr noch offen ist, als
+ * Termin beim Gastgeber (Tag ch-anmeldung-extern, Aufbau wie der Artikel aus
+ * coming-home/src/text/vorschau.py), danach drei Coming-Home-Sonntage und zwei
+ * Rückblicke. Die Anmelde-URL ist eine Attrappe mit gültiger Form.
+ */
+export const FIXTUR_ANMELDE_URL =
+  'https://us06web.zoom.us/meeting/register/NurTestumgebung01';
+
+function fixturSpezial(jetzt) {
+  let s = naechsterSonntag(jetzt);
+  if (!s) return [];
+  let tag = s.datum;
+  const offen = (d) =>
+    berlinZuUtc(d, '1100').getTime() + DAUER_MIN * 60000 > jetzt.getTime();
+  if (!offen(tag)) tag = tagPlus(new Date(`${tag}T12:00:00Z`), 7);
+  const plus = (n) => tagPlus(new Date(`${tag}T12:00:00Z`), 7 * n);
+  const vorschau = (datum, title) => ({
+    handle: `coming-home-${datum}`,
+    title,
+    excerpt: 'Testtext für die Vorschau. Er steht nur in der Testumgebung.',
+    contentHtml: '<p>Testtext für die Vorschau.</p>',
+    tags: ['ch-termin', `ch-datum-${datum}`, 'ch-zeit-1200', 'ch-vorschau'],
+  });
+  const inhalte = [
+    ['Teststichwort eins:', 'Testsatz zum ersten Inhalt. Er steht nur in der Testumgebung.'],
+    ['Teststichwort zwei:', 'Testsatz zum zweiten Inhalt.'],
+  ];
+  return [
+    {
+      handle: `coming-home-${tag}`,
+      title: 'Testspezial: Live beim Testgastgeber',
+      excerpt:
+        'Testteaser des Spezials: Christian spricht live beim Testgastgeber ' +
+        'über ein Testthema, das etwas länger ist. Anmeldung notwendig.',
+      contentHtml:
+        '<p>Testtext des Spezials. </p> <p>Anmeldung notwendig: Testsatz. </p> ' +
+        `<p><a href="${FIXTUR_ANMELDE_URL}">Zur Anmeldung beim Testgastgeber Summit. </a></p>`,
+      tags: [
+        'ch-termin',
+        `ch-datum-${tag}`,
+        'ch-zeit-1100',
+        'ch-vorschau',
+        'ch-anmeldung-extern',
+      ],
+    },
+    vorschau(plus(1), 'Testspezial zwei: Präsentation'),
+    vorschau(plus(2), 'Testthema lang – mit Umbruch auf dem Handy'),
+    vorschau(plus(3), 'Testthema kurz'),
+    fixturRueckblick(plus(-1), 'Testthema eins: Zuhören als erster Schritt',
+      'Testteaser eins. Er steht nur in der Testumgebung.',
+      'Testabsatz eins der Zusammenfassung.', inhalte),
+    fixturRueckblick(plus(-2), 'Testthema zwei: Fragen, die man sonst nicht stellt',
+      'Testteaser zwei. Er steht nur in der Testumgebung.',
+      'Testabsatz zwei der Zusammenfassung.', inhalte),
+  ];
+}
+
 export function fixturArtikel(art, jetzt) {
   if (art === 'leer') return [];
+  if (art === 'spezial') return fixturSpezial(jetzt);
   const s = naechsterSonntag(jetzt);
   const naechster = s ? s.datum : tagPlus(jetzt, 7);
   const vorschau = {

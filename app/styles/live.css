@@ -257,7 +257,17 @@ body:has(.lv) {
   border-top: 1px solid var(--lv-linie);
 }
 .lv .lv-weitere-wann {
+  display: block;
   font-weight: 600;
+}
+/* Spezial beim Gastgeber (s03, 26.10.2026): „Anmeldung notwendig“ als
+   eigene Zeile direkt über dem Knopf zur Zoom-Anmeldung. */
+.lv .lv-pflicht {
+  font-size: var(--lv-fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--lv-text);
+  margin: var(--lv-s3) 0 0;
 }
 
 /* ─── Akt 3: dunkel, die Anmeldung ───────────────────────────────────────── */
