@@ -36,6 +36,46 @@
   padding-bottom: var(--tap-s-8);
 }
 
+/* ---------- Bildformate ---------- */
+/* Hydrogens <Image> schreibt aspect-ratio INLINE (Breite/Höhe der Datei,
+   hier 2048/2048 bzw. 1936/968). Dagegen kommen die Formatregeln des Gerüsts
+   (.tap-vollbild 4:5 / 3:2, Band 3:1) nicht an; gemessen 26.10. in der
+   Vorschau: Standbild am Desktop 1440 x 1440 px, über zwei Bildschirme
+   (Challenger: „Heldbild zerschnitten“). B setzt die Formate deshalb mit
+   !important, und jede Szene passt höchstens in einen Bildschirm. */
+.tap-seite[data-the-alpha-premium='b'] .tap-vollbild img {
+  aspect-ratio: 4 / 5 !important;
+  max-height: 100svh;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tap-karte-band img {
+  aspect-ratio: 2 / 1 !important;
+}
+
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='b'] .tap-vollbild img {
+    aspect-ratio: 3 / 2 !important;
+  }
+
+  .tap-seite[data-the-alpha-premium='b'] .tap-karte-band img {
+    aspect-ratio: 3 / 1 !important;
+  }
+}
+
+/* Die Unterseite „Made in Germany“: am Handy das ganze Quadrat, ab 768 px
+   ein Breitbild 21:9 um den Riegel (Challenger 26.10.: im hohen Schnitt
+   blieb oben eine leere graue Fläche). */
+.tap-seite[data-the-alpha-premium='b'] .tab-unterseite .tap-vollbild img {
+  aspect-ratio: 1 / 1 !important;
+}
+
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='b'] .tab-unterseite .tap-vollbild img {
+    aspect-ratio: 21 / 9 !important;
+    object-position: 50% 45%;
+  }
+}
+
 /* ---------- Abschluss: Preis, kleiner als der Titel ---------- */
 .tap-seite[data-the-alpha-premium='b'] .tap-zahl {
   margin-bottom: var(--tap-s-4);
@@ -55,10 +95,23 @@
 }
 
 .tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--tap-s-2);
   margin: 0;
+  padding: 0;
+  list-style: none;
   color: var(--tap-leise);
   font-size: var(--tap-fs-text);
   line-height: 1.5;
+}
+
+/* Umbruch nur zwischen den Angaben, nie mitten in „Mitte Januar“. Farbe am
+   li selbst: app.css färbt li global dunkelgrau. */
+.tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile li {
+  color: var(--tap-leise);
+  white-space: nowrap;
 }
 
 /* Nach dem Knopf folgt noch Inhalt: der Abspann braucht unten keinen
@@ -117,8 +170,9 @@
   --tal-linie: var(--tab-linie);
   --tal-weiss: var(--tap-nacht);
   --tal-radius: var(--tap-radius);
-  margin: var(--tap-s-6) auto 0;
-  border: 1px solid var(--tab-linie);
+  margin: var(--tap-s-4) auto 0;
+  padding: 0;
+  background: transparent;
 }
 
 .tap-seite[data-the-alpha-premium='b'] .tab-live-karte p {
@@ -127,6 +181,47 @@
 
 .tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-titel {
   color: var(--tap-weiss);
+  font-weight: 500;
+}
+
+/* Felder als Unterstrich (Challenger 26.10.: „wirkt wie ein Standard-
+   Formular“). */
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-feldname {
+  font-weight: 500;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-feld {
+  padding: var(--tap-s-1) 0;
+  border: 0;
+  border-bottom: 1px solid var(--tap-leise);
+  border-radius: 0;
+  background: transparent;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-feld:focus-visible {
+  outline: none;
+  border-bottom-color: var(--tap-weiss);
+  box-shadow: 0 1px 0 var(--tap-weiss);
+}
+
+/* Die Ankreuzbox: app.css setzt appearance:none mit schwarzem Rand, auf
+   Schwarz war sie unsichtbar (Challenger 26.10.). Kontur hell, angehakt
+   gefüllt. */
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken {
+  border: 1px solid var(--tap-weiss);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken:checked {
+  background: var(--tap-weiss);
+  box-shadow: inset 0 0 0 4px var(--tap-nacht);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken:focus-visible {
+  outline: 2px solid var(--tap-weiss);
+  outline-offset: 2px;
 }
 
 .tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-knopf,
@@ -141,10 +236,6 @@
 .tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-link:hover {
   background: var(--tap-weiss);
   color: var(--tap-nacht);
-}
-
-.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken {
-  accent-color: var(--tap-weiss);
 }
 
 .tap-seite[data-the-alpha-premium='b'] .tab-frage {
