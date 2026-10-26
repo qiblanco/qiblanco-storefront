@@ -724,8 +724,13 @@
 
 /* Lucas Video: Ton-Symbol im Bild nur, wenn das Video Ton hat und „Sound on“
    aus ist (Z127). */
+/* Das Video steht mittig im Bildschirm, mit Schwarz davor und danach. Sonst
+   klebt die Wörterbuch-Quelle „Google AI“ am Handy direkt über dem Film und
+   liest sich wie seine Quelle (Challenger s06). Rand statt Innenabstand,
+   damit der Tonknopf am Videorand bleibt. */
 .tap-film {
   position: relative;
+  margin-block: max(var(--tap-takt), calc((100svh - min(100vw, var(--tap-breite)) * 9 / 16) / 2));
 }
 
 .tap-film-ton {
