@@ -1,0 +1,426 @@
+/*
+ * THE ALPHA PREMIUM: Token-Schicht der gestalteten The-Alpha-Seiten
+ * (Bausteine app/components/campaign/TheAlphaPremium.jsx; Grossjob
+ * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung).
+ *
+ * REZEPT (Designmeister, Referenz tiefer-schlaf-v3 / .lp-a3-Tokens):
+ *  - TYPO: die Familie des Ladens, sieben Größen als Tokens auf der Skala
+ *    1,25. Der Hero „Kohärentes Licht“ ist IMMER die größte (Christian
+ *    26.10.), 111/111 die zweitgrößte. Stufig je Breite, Handy zuerst.
+ *  - ABSTAND: 8-px-Raster, ein Abschnittstakt (96 Handy, 144 Desktop).
+ *  - FARBE: drei Akte (Nacht, Tag, Nacht) aus einem warmen Neutral-Kontinuum.
+ *    EIN Akzent: das Rot aus Christians Vorlage, nur auf dem Knopf.
+ *  - RADIUS: ein Token, nur am Knopf. Bilder ohne Rahmen und ohne Radius;
+ *    ihre Ränder laufen in den Abschnitt aus (kein sichtbares Viereck).
+ *  - BEWEGUNG: ruhig. Einblenden 0,9 s ohne Sprung, der Lichtschein im Hero
+ *    atmet langsam. Bei prefers-reduced-motion steht alles still.
+ * Alle Regeln hängen an .tap-seite; die Seiten B und C der alten Fassung
+ * bleiben davon unberührt.
+ */
+.tap-seite {
+  /* Modulare Skala 16 px x 1,25^n, stufig je Breite statt fluid (die Rubrik
+     wertet vw-Zwischenwerte als „wilde Skala“). Gemessen 26.10.: „Kohärentes“
+     ist bei 61,04 px 318 px breit, passt also ab 360 px Fensterbreite. */
+  --tap-fs-hero: 3.052rem;   /* 48,83 */
+  --tap-fs-zahl: 2.441rem;   /* 39,06 */
+  --tap-fs-h2: 1.953rem;     /* 31,25 */
+  --tap-fs-zeile: 1.25rem;   /* 20 */
+  --tap-fs-unter: 1.25rem;   /* 20 */
+  --tap-fs-text: 1rem;       /* 16 */
+  --tap-fs-klein: 0.8rem;    /* 12,8 */
+
+  --tap-s-1: 8px;
+  --tap-s-2: 16px;
+  --tap-s-3: 24px;
+  --tap-s-4: 32px;
+  --tap-s-6: 48px;
+  --tap-s-8: 64px;
+  --tap-takt: 96px;
+
+  --tap-nacht: #0c0c0d;
+  --tap-nacht-text: #f5f3ef;
+  --tap-nacht-leise: rgba(245, 243, 239, 0.78);
+  --tap-tag: #f6f4f0;
+  --tap-tag-text: #1d1c1a;
+  --tap-tag-leise: #5f5b54;
+  /* Sand = Grund der beiden Diamant-Aufnahmen (gemessen an den Ecken,
+     um RGB 236/229/215): so stehen die Diamanten ohne sichtbaren Kasten. */
+  --tap-sand: #ebe4d6;
+  /* Rot aus Christians Vorlage (#b92200), eine Stufe tiefer und satter
+     (Challenger 26.10.: Ziegelrot beißt sich mit Silber und Creme). */
+  --tap-rot: #a3170c;
+  --tap-rot-tief: #861207;
+
+  --tap-radius: 8px;
+  --tap-mass: 36rem;
+  --tap-breite: 1440px;
+  --tap-dauer: 900ms;
+  --tap-kurve: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: inherit;
+  text-align: center;
+  overflow-x: clip;
+  /* Der Hero ist schwarz und steht als erster Block hinter dem durchsichtigen
+     Kopf. Ohne Ausgleich läge die Logo-Unterzeile dunkel auf Schwarz. Formel
+     wie PR #1020 (.product-360-hero): gemessene Kopf-Ruhelage minus der Platz,
+     den <main> schon frei hält; Rückfall 135 px = 390er Kopf. */
+  margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+}
+
+@media (min-width: 360px) {
+  .tap-seite {
+    --tap-fs-hero: 3.815rem;   /* 61,04 */
+    --tap-fs-zahl: 3.052rem;   /* 48,83 */
+    --tap-fs-h2: 2.441rem;     /* 39,06 */
+  }
+}
+
+@media (min-width: 768px) {
+  .tap-seite {
+    --tap-takt: 144px;
+    --tap-fs-hero: 5.96rem;    /* 95,37 */
+    --tap-fs-zahl: 3.815rem;   /* 61,04 */
+    --tap-fs-h2: 3.052rem;     /* 48,83 */
+    --tap-fs-zeile: 1.5625rem; /* 25 */
+    --tap-fs-unter: 1.5625rem; /* 25 */
+    --tap-fs-text: 1.25rem;    /* 20 */
+  }
+}
+
+@media (min-width: 1200px) {
+  .tap-seite {
+    --tap-fs-hero: 7.451rem;   /* 119,2 */
+    --tap-fs-zahl: 5.96rem;    /* 95,37 */
+    --tap-fs-h2: 3.815rem;     /* 61,04 */
+  }
+}
+
+.tap-nacht {
+  background: var(--tap-nacht);
+  color: var(--tap-nacht-text);
+}
+
+.tap-tag,
+.tap-sand {
+  background: var(--tap-tag);
+  color: var(--tap-tag-text);
+}
+
+.tap-sand {
+  background: var(--tap-sand);
+}
+
+/* app.css legt allen h1/h2 einen weichen Schatten an; hier nie. */
+.tap-seite h1,
+.tap-seite h2 {
+  text-shadow: none;
+}
+
+/* ---------- Hero ---------- */
+.tap-hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 62svh;
+  padding: var(--tap-takt) var(--tap-s-2);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Kohärentes Licht: ein warmer Schein hinter dem Titel, der langsam atmet. */
+.tap-licht {
+  position: absolute;
+  inset: -20% -40%;
+  z-index: -1;
+  background: radial-gradient(
+    closest-side at 50% 50%,
+    rgba(255, 244, 222, 0.22),
+    rgba(255, 244, 222, 0.06) 45%,
+    rgba(255, 244, 222, 0) 70%
+  );
+  animation: tap-atmen 9s ease-in-out infinite alternate;
+}
+
+@keyframes tap-atmen {
+  from {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.tap-hero-titel {
+  margin: 0;
+  /* !important: app.css setzt h1/h2 am Handy (<= 749 px) per !important auf
+     1,75/1,5 rem. Der Hero muss die größte Schrift der Seite bleiben
+     (Christian 26.10.), darum hier und in .tap-h2 die Gegenregel im Scope. */
+  font-size: var(--tap-fs-hero) !important;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  color: var(--tap-nacht-text);
+}
+
+.tap-hero-unter {
+  display: block;
+  margin-top: var(--tap-s-3);
+  font-size: var(--tap-fs-unter);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--tap-nacht-leise);
+}
+
+/* ---------- Definition ---------- */
+.tap-definition {
+  padding: 0 var(--tap-s-3) var(--tap-takt);
+}
+
+.tap-auge {
+  margin: 0 auto var(--tap-s-3);
+  max-width: var(--tap-mass);
+  font-size: var(--tap-fs-klein);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tap-nacht .tap-auge {
+  color: var(--tap-nacht-leise);
+}
+
+.tap-tag .tap-auge,
+.tap-sand .tap-auge {
+  color: var(--tap-tag-leise);
+}
+
+.tap-text {
+  margin: 0 auto var(--tap-s-3);
+  max-width: min(var(--tap-mass), 34ch);
+  font-size: var(--tap-fs-text);
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  .tap-text {
+    max-width: var(--tap-mass);
+  }
+}
+
+.tap-text:last-child {
+  margin-bottom: 0;
+}
+
+.tap-nacht .tap-text {
+  color: var(--tap-nacht-leise);
+}
+
+.tap-tag .tap-text,
+.tap-tag .tap-akzent,
+.tap-sand .tap-akzent {
+  color: var(--tap-tag-leise);
+}
+
+.tap-nacht .tap-akzent {
+  color: var(--tap-nacht-leise);
+}
+
+.tap-nacht .tap-text strong {
+  color: var(--tap-nacht-text);
+  font-weight: 600;
+}
+
+/* ---------- Vollbild ---------- */
+.tap-vollbild {
+  margin: 0;
+  padding: 0;
+}
+
+.tap-vollbild img,
+.tap-vollbild video {
+  display: block;
+  width: 100%;
+  max-width: var(--tap-breite);
+  height: auto;
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 0;
+  /* Harte Kante, randlos über die volle Breite (Challenger 26.10.: ein
+     weicher Verlauf ins Schwarz wirkt wie ein Nebelstreifen). */
+}
+
+/* Seitenband: eigener Zuschnitt 2:1 mit Rand um den Riegel. */
+.tap-format-band img {
+  aspect-ratio: 2 / 1;
+}
+
+@media (min-width: 768px) {
+  .tap-vollbild img,
+  .tap-vollbild video {
+    aspect-ratio: 3 / 2;
+  }
+
+  .tap-format-band img {
+    aspect-ratio: 2 / 1;
+  }
+}
+
+/* ---------- Kapitel ---------- */
+.tap-kapitel {
+  padding: var(--tap-takt) var(--tap-s-3);
+}
+
+.tap-h2 {
+  margin: 0 0 var(--tap-s-4);
+  font-size: var(--tap-fs-h2) !important;
+  color: inherit;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.tap-zeilen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tap-zeilen li {
+  font-size: var(--tap-fs-zeile);
+  font-weight: 400;
+  line-height: 1.45;
+  --tap-verzug: calc(var(--tap-folge, 0) * 140ms);
+}
+
+.tap-nacht .tap-zeilen li {
+  color: var(--tap-nacht-leise);
+}
+
+.tap-tag .tap-zeilen li,
+.tap-sand .tap-zeilen li {
+  color: var(--tap-tag-leise);
+}
+
+.tap-akzent {
+  margin: var(--tap-s-4) auto 0;
+  max-width: var(--tap-mass);
+  font-size: var(--tap-fs-text);
+  line-height: 1.7;
+}
+
+.tap-paar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  max-width: 288px;
+  margin: var(--tap-s-8) auto 0;
+}
+
+.tap-paar img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  /* Der Grund der Aufnahmen weicht leicht vom Sand ab: die Ecken laufen
+     aus, der Diamant bleibt scharf. Kein Kasten. */
+  border-radius: 0;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 70%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 70%);
+}
+
+/* Handy: die Steine untereinander, je rund drei Viertel der Breite.
+   Ab 768 px nebeneinander. */
+@media (min-width: 768px) {
+  .tap-paar {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--tap-s-4);
+    max-width: 960px;
+  }
+}
+
+/* ---------- Abschluss ---------- */
+.tap-edition {
+  padding: var(--tap-takt) var(--tap-s-3) calc(var(--tap-takt) * 1.5);
+}
+
+.tap-edition-titel {
+  margin: 0 0 var(--tap-s-2);
+  font-size: var(--tap-fs-zeile);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: var(--tap-nacht-leise);
+}
+
+.tap-zahl {
+  margin: 0 0 var(--tap-s-6);
+  color: inherit;
+  font-size: var(--tap-fs-zahl);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tap-seite .tap-kauf {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.tap-seite .ta-knopf {
+  display: block;
+  padding: var(--tap-s-3) var(--tap-s-4);
+  border-radius: var(--tap-radius);
+  background: var(--tap-rot);
+  color: #ffffff;
+  font-size: var(--tap-fs-text);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background-color 300ms ease;
+}
+
+.tap-seite .ta-knopf:hover {
+  background: var(--tap-rot-tief);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.tap-seite .ta-knopf:focus-visible {
+  outline: 2px solid var(--tap-nacht-text);
+  outline-offset: 4px;
+}
+
+/* ---------- Einblenden (nur mit JavaScript, ohne Sprung) ---------- */
+.tap-js [data-tap-ein] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--tap-dauer) var(--tap-kurve) var(--tap-verzug, 0ms),
+    transform var(--tap-dauer) var(--tap-kurve) var(--tap-verzug, 0ms);
+}
+
+.tap-js [data-tap-ein].tap-sichtbar {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-licht {
+    animation: none;
+  }
+
+  .tap-js [data-tap-ein] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
