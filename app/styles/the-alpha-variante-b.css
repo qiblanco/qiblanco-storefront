@@ -1,482 +1,348 @@
 /*
- * THE ALPHA, Variante B (/pages/The-Alpha-C) — Token-Schicht der Seite
- * (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s04).
+ * THE ALPHA, Variante B (/pages/The-Alpha-C): nur was B über das geteilte
+ * Film-Gerüst hinaus hat (app/styles/the-alpha-premium.css, Tokens --tap-*).
+ * Grossjob 20261026-prio1-the-alpha-variante-a-designmeister-premium-
+ * gestaltung, s02. Alle Regeln hängen am Scope
+ * .tap-seite[data-the-alpha-premium='b']; A und C bleiben unberührt.
  *
- * GLEICHE MARKE WIE A: Dunkel, Text und Weiß sind die Werte aus Christians
- * Vorlage (the-alpha.css, --ta-*), das Rot steht nur auf dem Knopf (TheAlphaKauf,
- * Stil in the-alpha.css). Dazu EIN warmes Neutral für helle Wechselflächen und
- * EIN Gold: das Haus-Gold (--qb-akzent-kauf) nur am Banner „Ultimate Power“
- * (Preisanker) und als feine Linie an den Belegen.
- *
- * DREI FARB-AKTE: dunkel (Nutzen oben, Christians Vorlage), hell (Produkt,
- * Belege, Einwände, Preis), dunkel (Live), hell (Fragen).
- * TYPO: eine Familie, Skala 1,25 ab 16 px (14 / 16 / 20 / 25 / 31,25 / 39) plus
- * Preis 32 und Nutzerzahl 28 aus dem Preisanker. ABSTÄNDE: 8-px-Raster.
- * RADIUS: ein Token. Alles hängt an .tab-seite.
+ * REZEPT: keine eigenen Größen, Farben oder Radien. Schrift, Abstand, Farbe
+ * und Radius kommen aus den Tokens des Gerüsts; Rot bleibt allein am
+ * Kaufknopf. Der Nutzen-Akzent ist ein leiser zweiter Ton unter Christians
+ * Zeilen: ein kurzer Strich in Creme (der Farbe der Wörterbuch-Szene), darunter
+ * ein Satz. Nach dem Knopf wird es ruhiger, nicht lauter.
  */
-.tab-seite {
-  --tab-fs-0: 0.875rem;
-  --tab-fs-1: 1rem;
-  --tab-fs-2: 1.25rem;
-  --tab-fs-3: 1.5625rem;
-  --tab-fs-4: 1.953rem;
-  --tab-fs-5: 2.441rem;
-  --tab-fs-preis: 2rem;
-
-  --tab-s-1: 8px;
-  --tab-s-2: 16px;
-  --tab-s-3: 24px;
-  --tab-s-4: 32px;
-  --tab-s-6: 48px;
-  --tab-s-8: 64px;
-  --tab-s-12: 96px;
-
-  --tab-dunkel: #1e1e1e;
-  --tab-text: #333333;
-  --tab-gedaempft: #5c5752;
-  --tab-gedaempft-hell: #c9c4bc;
-  --tab-weiss: #ffffff;
-  --tab-warm: #f6f3ee;
-  --tab-linie: #e4ded5;
-  --tab-gold: var(--qb-akzent-kauf, #c9a14b);
-
-  --tab-radius: 8px;
-  --tab-breite: 1040px;
-  --tab-schmal: 680px;
-
-  background: var(--tab-weiss);
-  color: var(--tab-text);
-  font-size: var(--tab-fs-1);
-  line-height: 1.5;
-  /* Abstand zum Seitenkopf wie in A: das Logo ragt am Handy unter die
-     Kopfleiste und läge sonst auf dem dunklen Block. */
-  padding-top: var(--tab-s-2);
+.tap-seite[data-the-alpha-premium='b'] {
+  --tab-linie: rgba(255, 255, 255, 0.24);
 }
 
-.tab-seite section {
-  padding: var(--tab-s-8) var(--tab-s-2);
+/* ---------- Nutzen-Akzent je Kapitel ---------- */
+.tap-seite[data-the-alpha-premium='b'] .tap-akzent {
+  margin-top: var(--tap-s-6);
+  color: var(--tap-creme);
 }
 
-.tab-innen {
-  max-width: var(--tab-breite);
-  margin: 0 auto;
+.tap-seite[data-the-alpha-premium='b'] .tap-akzent::before {
+  content: '';
+  display: block;
+  width: var(--tap-s-4);
+  height: 1px;
+  margin: 0 auto var(--tap-s-3);
+  background: var(--tap-creme);
+  opacity: 0.6;
 }
 
-.tab-innen-schmal {
-  max-width: var(--tab-schmal);
+/* Longevity hat keine Karten; das Bild der Unterseite folgt randlos. */
+.tap-seite[data-the-alpha-premium='b'] #longevity {
+  padding-bottom: var(--tap-s-8);
 }
 
-/* Überschriften: EIN H2-Stil, EIN H3-Stil */
-.tab-h1,
-.tab-h2,
-.tab-h3 {
-  text-shadow: none;
+/* ---------- Bildformate ---------- */
+/* Hydrogens <Image> schreibt aspect-ratio INLINE (Breite/Höhe der Datei,
+   hier 2048/2048 bzw. 1936/968). Dagegen kommen die Formatregeln des Gerüsts
+   (.tap-vollbild 4:5 / 3:2, Band 3:1) nicht an; gemessen 26.10. in der
+   Vorschau: Standbild am Desktop 1440 x 1440 px, über zwei Bildschirme
+   (Challenger: „Heldbild zerschnitten“). B setzt die Formate deshalb mit
+   !important, und jede Szene passt höchstens in einen Bildschirm. */
+.tap-seite[data-the-alpha-premium='b'] .tap-vollbild img {
+  aspect-ratio: 4 / 5 !important;
+  max-height: 100svh;
 }
 
-.tab-h1 {
-  margin: 0;
-  font-size: var(--tab-fs-3);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--tab-weiss);
+.tap-seite[data-the-alpha-premium='b'] .tap-karte-band img {
+  aspect-ratio: 2 / 1 !important;
 }
 
-.tab-h2 {
-  margin: 0 0 var(--tab-s-4);
-  font-size: var(--tab-fs-3);
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--tab-dunkel);
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='b'] .tap-vollbild img {
+    aspect-ratio: 3 / 2 !important;
+  }
+
+  .tap-seite[data-the-alpha-premium='b'] .tap-karte-band img {
+    aspect-ratio: 3 / 1 !important;
+  }
 }
 
-.tab-h2-hell {
-  color: var(--tab-weiss);
+/* Die Unterseite „Made in Germany“: am Handy das ganze Quadrat, ab 768 px
+   ein Breitbild 21:9 um den Riegel in Kartenbreite (Challenger 26.10.: im
+   hohen Schnitt blieb oben eine leere graue Fläche, über die volle Breite
+   wurde die Gravur weich). */
+.tap-seite[data-the-alpha-premium='b'] .tab-unterseite .tap-vollbild img {
+  aspect-ratio: 1 / 1 !important;
 }
 
-.tab-h3 {
-  margin: 0 0 var(--tab-s-1);
-  font-size: var(--tab-fs-2);
-  font-weight: 700;
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='b'] .tab-unterseite .tap-vollbild img {
+    aspect-ratio: 21 / 9 !important;
+    max-width: 1152px;
+    object-position: 50% 45%;
+  }
+}
+
+/* Das Studio-Grau kommt aus dem Schwarz und geht wieder hinein, statt mit
+   harter Kante zu enden (Challenger 26.10., Runde 2: „wie ein Wechsel zum
+   Tageslicht“). Am Handy oben und unten, ab 768 px an allen vier Rändern. */
+.tap-seite[data-the-alpha-premium='b'] .tab-film img,
+.tap-seite[data-the-alpha-premium='b'] .tab-unterseite img {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+}
+
+@media (min-width: 768px) {
+  /* Am Desktop zeigt das Standbild das ganze Stück: quadratisch, höchstens
+     ein Bildschirm hoch (unter der Leiste), statt eines zufälligen
+     3:2-Anschnitts. Lucas Video (<video>) bleibt davon unberührt. */
+  .tap-seite[data-the-alpha-premium='b'] .tab-film img {
+    aspect-ratio: 1 / 1 !important;
+    width: min(100%, calc(100svh - 52px)) !important;
+    max-height: none;
+  }
+
+  .tap-seite[data-the-alpha-premium='b'] .tab-film img,
+  .tap-seite[data-the-alpha-premium='b'] .tab-unterseite img {
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+      linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+      linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    mask-composite: intersect;
+  }
+}
+
+/* Die Kaufleiste deckt ganz (Challenger 26.10., Runde 2: Text schien als
+   Geisterbild durch). */
+.tap-seite[data-the-alpha-premium='b'] .tap-leiste {
+  background: var(--tap-nacht);
+}
+
+/* ---------- Abschluss: Preis, kleiner als der Titel ---------- */
+.tap-seite[data-the-alpha-premium='b'] .tap-zahl {
+  margin-bottom: var(--tap-s-4);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-abschluss {
+  margin: 0 auto var(--tap-s-6);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-preis {
+  margin: 0 0 var(--tap-s-1);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-zeile);
+  font-weight: 500;
   line-height: 1.3;
-  color: var(--tab-dunkel);
+  font-variant-numeric: tabular-nums;
 }
 
-.tab-h3-hell {
-  color: var(--tab-weiss);
-}
-
-.tab-text {
+.tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--tap-s-2);
   margin: 0;
-  font-size: var(--tab-fs-1);
+  padding: 0;
+  list-style: none;
+  color: var(--tap-leise);
+  font-size: var(--tap-fs-text);
+  line-height: 1.5;
+}
+
+/* Umbruch nur zwischen den Angaben, nie mitten in „Mitte Januar“. Farbe am
+   li selbst: app.css färbt li global dunkelgrau. */
+.tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile li {
+  color: var(--tap-leise);
+  white-space: nowrap;
+}
+
+/* Mittelpunkt als Trenner erst ab 768 px, wo die drei Angaben in einer
+   Zeile stehen; am Handy steht jede für sich (ein Punkt am Zeilenanfang
+   sähe nach Aufzählung aus). */
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile li + li::before {
+    content: '·';
+    margin-right: var(--tap-s-2);
+  }
+}
+
+/* Nach dem Knopf folgt noch Inhalt: der Abspann braucht unten keinen
+   Bildschirm Schwarz mehr, nur einen Szenentakt. */
+.tap-seite[data-the-alpha-premium='b'] .tap-edition {
+  padding-bottom: var(--tap-takt);
+}
+
+/* ---------- Nach dem Knopf: Live und Fragen ---------- */
+.tap-seite[data-the-alpha-premium='b'] .tab-live,
+.tap-seite[data-the-alpha-premium='b'] .tab-fragen {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: var(--tap-takt) var(--tap-s-3);
+  border-top: 1px solid var(--tab-linie);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-fragen {
+  padding-bottom: calc(var(--tap-takt) * 1.5);
+}
+
+/* Ruhige Überschrift nach dem Knopf (h3; h2 tragen nur die Kapitel). */
+.tap-seite[data-the-alpha-premium='b'] .tab-h3 {
+  margin: 0 0 var(--tap-s-3);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-edition);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-wann {
+  margin: 0 0 var(--tap-s-2);
+  color: var(--tap-creme);
+  font-size: var(--tap-fs-text);
+  line-height: 1.5;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-text {
+  margin: 0;
+  color: var(--tap-leise);
+  font-size: var(--tap-fs-text);
   line-height: 1.6;
 }
 
-.tab-text-hell {
-  color: var(--tab-gedaempft-hell);
-}
-
-.tab-verweis {
-  display: inline-block;
-  margin-top: var(--tab-s-1);
-  color: var(--tab-dunkel);
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.tab-bild {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: var(--tab-radius);
-}
-
-/* 1 — Nutzen zuerst (dunkel) */
-.tab-seite .tab-nutzen {
-  background: var(--tab-dunkel);
-  color: var(--tab-weiss);
-  padding-top: var(--tab-s-3);
-  padding-bottom: var(--tab-s-6);
-}
-
-.tab-nutzen-raster {
-  display: grid;
-  grid-template-columns: 1fr 112px;
-  grid-template-areas:
-    'kopf kopf'
-    'gegen bild'
-    'rest rest';
-  column-gap: var(--tab-s-2);
-  row-gap: var(--tab-s-1);
-  align-items: start;
-}
-
-.tab-nutzen-kopf {
-  grid-area: kopf;
-}
-
-.tab-nutzen-bild {
-  grid-area: bild;
-}
-
-.tab-nutzen-rest {
-  grid-area: rest;
-}
-
-.tab-gegenstand {
-  grid-area: gegen;
-  align-self: center;
-  margin: 0;
-  font-size: var(--tab-fs-1);
-  line-height: 1.5;
-  color: var(--tab-gedaempft-hell);
-}
-
-.tab-preiszeile {
-  display: block;
-  margin-top: 4px;
-  font-weight: 700;
-  color: var(--tab-weiss);
-}
-
-.tab-auge {
-  margin: 0 0 var(--tab-s-1);
-  font-size: var(--tab-fs-0);
-  letter-spacing: 0.06em;
-  color: var(--tab-gedaempft-hell);
-}
-
-.tab-vorteile {
-  margin: var(--tab-s-1) 0 var(--tab-s-2);
+/* Die Live-Karte ist hell gebaut (the-alpha-live-anmeldung.css); auf dem
+   Film wird sie dunkel und ihr Knopf umrandet, damit Rot allein am Kauf
+   steht. Größen auf die Tokens des Gerüsts gelegt. */
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte {
+  --tal-fs-0: 1rem;
+  --tal-fs-1: 1rem;
+  --tal-fs-2: var(--tap-fs-zeile);
+  --tal-dunkel: var(--tap-weiss);
+  --tal-text: var(--tap-leise);
+  --tal-gedaempft: var(--tap-leise);
+  --tal-linie: var(--tab-linie);
+  --tal-weiss: var(--tap-nacht);
+  --tal-radius: var(--tap-radius);
+  margin: var(--tap-s-4) auto 0;
   padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--tab-s-1);
+  background: transparent;
 }
 
-.tab-vorteil {
-  display: grid;
-  gap: 4px;
-  padding-left: var(--tab-s-2);
-  border-left: 2px solid var(--tab-weiss);
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte p {
+  color: inherit;
 }
 
-.tab-vorteil-titel {
-  color: var(--tab-weiss);
-  font-size: var(--tab-fs-1);
-  font-weight: 700;
-  line-height: 1.3;
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte {
+  max-width: var(--tap-mass);
+  text-align: center;
 }
 
-.tab-vorteil-grundlage {
-  font-size: var(--tab-fs-0);
-  line-height: 1.5;
-  color: var(--tab-gedaempft-hell);
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-titel {
+  color: var(--tap-weiss);
+  font-weight: 500;
+  text-wrap: balance;
 }
 
-.tab-seite .tab-kauf {
-  padding: 0;
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-einwilligung {
+  text-align: left;
 }
 
-.tab-live-verweis {
-  display: inline-block;
-  margin-top: var(--tab-s-2);
-  color: var(--tab-weiss);
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+/* Felder als Unterstrich (Challenger 26.10.: „wirkt wie ein Standard-
+   Formular“). */
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-feldname {
+  font-weight: 500;
 }
 
-/* 2 — Christians Vorlage (dunkel, Fortsetzung) */
-.tab-seite .tab-vorlage {
-  background: var(--tab-dunkel);
-  color: var(--tab-gedaempft-hell);
-  border-top: 1px solid #333333;
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-feld {
+  padding: var(--tap-s-1) 0;
+  border: 0;
+  border-bottom: 1px solid var(--tap-leise);
+  border-radius: 0;
+  background: transparent;
 }
 
-.tab-unterzeile {
-  display: block;
-  margin-top: var(--tab-s-1);
-  font-size: var(--tab-fs-2);
-  font-weight: 400;
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-feld:focus-visible {
+  outline: none;
+  border-bottom-color: var(--tap-weiss);
+  box-shadow: 0 1px 0 var(--tap-weiss);
 }
 
-.tab-vorlage-text p {
-  margin: 0 0 var(--tab-s-2);
-  color: var(--tab-gedaempft-hell);
-}
-
-.tab-vorlage-text strong {
-  color: var(--tab-weiss);
-}
-
-.tab-saeulen {
-  margin: var(--tab-s-4) 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--tab-s-3);
-}
-
-.tab-saeule {
-  padding-top: var(--tab-s-2);
-  border-top: 1px solid #4a4a4a;
-}
-
-.tab-saeule-zeilen {
-  margin: 0;
-  color: var(--tab-weiss);
-}
-
-/* 3 — Produkt (hell) */
-.tab-paar {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--tab-s-2);
-  /* Die Quellen sind 604 px breit: breiter als 600 px je Paar würde ein Bild
-     am Tablet und Desktop hochskaliert (Gate 12, bild-aufloesung). */
-  max-width: 600px;
-  margin: 0 auto var(--tab-s-6);
-}
-
-.tab-punkte {
-  margin: 0 0 var(--tab-s-6);
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--tab-s-3);
-}
-
-.tab-banner {
-  /* Quelle 1600 px: höchstens 800 px breit, sonst hochskaliert (Gate 12). */
-  max-width: 800px;
-  margin: var(--tab-s-2) auto 0;
-}
-
-/* 4 — Belege (warm) */
-.tab-seite .tab-belege {
-  background: var(--tab-warm);
-}
-
-.tab-personen {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--tab-s-4);
-}
-
-.tab-person {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: var(--tab-s-2);
-  align-items: start;
-  padding-top: var(--tab-s-3);
-  border-top: 2px solid var(--tab-gold);
-}
-
-.tab-person-foto {
-  margin: 0;
-}
-
-.tab-person-foto img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: var(--tab-radius);
-}
-
-.tab-vermerk {
-  margin-top: 4px;
-  font-size: var(--tab-fs-0);
-  color: var(--tab-gedaempft);
-}
-
-/* 5 — Einwände (hell) */
-.tab-karten {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--tab-s-3);
-}
-
-.tab-karte {
-  padding: var(--tab-s-3);
-  border: 1px solid var(--tab-linie);
-  border-radius: var(--tab-radius);
-}
-
-/* 6 — Preis (warm) */
-.tab-seite .tab-preis {
-  background: var(--tab-warm);
-}
-
-.tab-preis .product-price,
-.tab-festpreis {
-  font-size: var(--tab-fs-preis);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--tab-dunkel);
-}
-
-.tab-preis .qb-preisanker__nutzer {
-  color: var(--tab-dunkel);
-}
-
-.tab-preis-zeilen {
-  margin: var(--tab-s-3) 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--tab-s-1);
-}
-
-.tab-preis-zeilen li {
-  padding-left: var(--tab-s-3);
-  position: relative;
-}
-
-.tab-preis-zeilen li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  font-weight: 700;
-  color: var(--tab-dunkel);
-}
-
-.tab-beratung {
-  margin-top: var(--tab-s-3);
-}
-
-/* 7 — Live (dunkel) */
-.tab-seite .tab-live {
-  background: var(--tab-dunkel);
-  color: var(--tab-weiss);
-  scroll-margin-top: var(--tab-s-8);
-}
-
-.tab-live-wann {
-  margin: 0 0 var(--tab-s-2);
-  color: var(--tab-weiss);
-  font-size: var(--tab-fs-2);
-  font-weight: 700;
-}
-
-.tab-live .tal-karte {
-  margin-top: var(--tab-s-4);
-}
-
-/* 8 — Fragen (hell) */
-.tab-frage {
-  border-bottom: 1px solid var(--tab-linie);
-}
-
-.tab-frage-kopf {
-  padding: var(--tab-s-2) 0;
-  font-size: var(--tab-fs-2);
-  font-weight: 700;
-  color: var(--tab-dunkel);
+/* Die Ankreuzbox: app.css setzt appearance:none mit schwarzem Rand, auf
+   Schwarz war sie unsichtbar (Challenger 26.10.). Kontur hell, angehakt
+   gefüllt. */
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken {
+  border: 1px solid var(--tap-weiss);
+  border-radius: 2px;
+  background: transparent;
   cursor: pointer;
 }
 
-.tab-frage .tab-text {
-  padding-bottom: var(--tab-s-2);
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken:checked {
+  background: var(--tap-weiss);
+  box-shadow: inset 0 0 0 4px var(--tap-nacht);
 }
 
-/* Desktop */
-@media (min-width: 768px) {
-  .tab-seite section {
-    padding: var(--tab-s-12) var(--tab-s-4);
-  }
-  .tab-saeulen,
-  .tab-karten {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .tab-punkte,
-  .tab-personen {
-    grid-template-columns: 1fr 1fr;
-  }
-  .tab-person {
-    grid-template-columns: 160px 1fr;
-  }
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-haken:focus-visible {
+  outline: 2px solid var(--tap-weiss);
+  outline-offset: 2px;
 }
 
-@media (min-width: 1024px) {
-  .tab-seite .tab-nutzen {
-    padding-top: var(--tab-s-8);
-    padding-bottom: var(--tab-s-8);
-  }
-  .tab-nutzen-raster {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      'kopf bild'
-      'gegen bild'
-      'rest bild';
-    column-gap: var(--tab-s-8);
-    align-items: center;
-  }
-  .tab-h1 {
-    font-size: var(--tab-fs-5);
-  }
-  .tab-nutzen-kopf {
-    align-self: end;
-  }
-  .tab-nutzen-rest {
-    align-self: start;
-  }
-  .tab-vorteil-titel {
-    font-size: var(--tab-fs-2);
-  }
-  .tab-vorteil-grundlage {
-    font-size: var(--tab-fs-1);
-  }
-  .tab-vorteile {
-    gap: var(--tab-s-2);
-  }
-  .tab-h1 {
-    margin-bottom: var(--tab-s-3);
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-knopf,
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-link {
+  border: 1px solid var(--tap-weiss);
+  border-radius: var(--tap-radius);
+  background: transparent;
+  color: var(--tap-weiss);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-knopf:hover,
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-link:hover {
+  background: var(--tap-weiss);
+  color: var(--tap-nacht);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage {
+  border-bottom: 1px solid var(--tab-linie);
+  text-align: left;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage-kopf {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--tap-s-2);
+  padding: var(--tap-s-3) 0;
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-text);
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  list-style: none;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage-kopf::-webkit-details-marker {
+  display: none;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage-kopf::after {
+  content: '+';
+  flex: none;
+  color: var(--tap-leise);
+  transition: transform 300ms var(--tap-kurve);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage[open] .tab-frage-kopf::after {
+  transform: rotate(45deg);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage .tab-text {
+  padding-bottom: var(--tap-s-3);
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-frage-kopf:focus-visible {
+  outline: 2px solid var(--tap-weiss);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-seite[data-the-alpha-premium='b'] .tab-frage-kopf::after {
+    transition: none;
   }
 }
