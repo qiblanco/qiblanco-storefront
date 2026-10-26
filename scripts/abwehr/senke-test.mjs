@@ -333,6 +333,35 @@ try {
   await mitAbwehr(req('/i.env'), {SM_SENKE_URL: 'https://beispiel.invalid/sm'}, ctx(), next, SIGNALE_45);
   ok(abrufe[0]?.url === 'https://beispiel.invalid/sm', 'S10 url-override');
 
+  // S12: GESENKTE STUFE (Job 20261011-fm-folge-sicherheitsmeister-asn-und-kalibrierung-s02).
+  // Der Worker meldet die ANGEWANDTE Stufe; Hysterese (unvolles Fenster),
+  // API-Kappe und Checkout-Kappe senken sie unter stufe(score). Diese Körper
+  // gehen ins Korpus der Naht-Probe: die Senke muss sie annehmen (bis
+  // 2026-10-26 wies sie genau diese Klasse als "stufe passt nicht zu score" ab).
+  frisch();
+  {
+    const S90 = {rate_over_pct: 200, header_anomaly: true, waf_severity: 3, missing_behavior_token: true};
+    const BULK = {evasion: true};
+    const gesendet = () => abrufe.map((a) => JSON.parse(a.init?.body || '{}'));
+    await mitAbwehr(req('/products/erste'), {}, ctx(), next, S90, BULK);
+    const k1 = gesendet()[0] || {};
+    ok(k1.stufe === 'S1' && k1.score === 90, `S12a erste-anfrage-s1-bei-score-90 (${k1.stufe}/${k1.score})`);
+    frisch();
+    for (let i = 0; i < 3; i++) {
+      await mitAbwehr(req('/api/unstable/graphql.json'), {}, ctx(), next, S90, BULK);
+    }
+    const ka = gesendet();
+    ok(ka.length === 3 && ka.every((k) => k.stufe === 'S1' && k.score === 90),
+      `S12b api-gehalten-bleibt-s1 (${ka.map((k) => k.stufe).join(',')})`);
+    frisch();
+    for (let i = 0; i < 3; i++) {
+      await mitAbwehr(req('/cart'), {}, ctx(), next, S90, BULK);
+    }
+    const kc = gesendet();
+    ok(kc.length === 3 && kc[2].stufe === 'S2' && kc[2].score === 90,
+      `S12c checkout-kappe-s2-bei-score-90 (${kc.map((k) => k.stufe).join(',')})`);
+  }
+
   // S11: senke() mit null-Eintrag oder kaputtem env wirft nie
   frisch();
   let wurf = false;

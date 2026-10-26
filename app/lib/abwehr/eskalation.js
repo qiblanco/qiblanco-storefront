@@ -12,6 +12,15 @@
  *
  * INV-6: stufe() ist eine reine Funktion des Scores — sie kennt keinen
  * Besucher, keinen Hash, keine Identitaet.
+ *
+ * Vor dem DACH-Flip (LIVEFLIP "Vor dem Flip offen", Job
+ * 20261011-fm-folge-sicherheitsmeister-asn-und-kalibrierung-s02) zwei Kappen:
+ *  - UNVOLLES FENSTER: weniger als HYSTERESE_N Beobachtungen sind nicht
+ *    gehalten -> hoechstens S1 (200, Body gleich). Vorher eskalierte die
+ *    erste Anfrage eines Schluessels mit ihrem eigenen Score sofort.
+ *  - API_PFADE: der Storefront-API-Proxy (/api/...) wird per fetch()
+ *    gerufen; eine Challenge-Seite kann dort niemand loesen, eine
+ *    HTML-429/503 braeche Warenkorb und Suche -> hoechstens S1.
  */
 
 // Stufen-Baender (Konzept Kap. 4) — für JEDEN Besucher identisch.
@@ -34,6 +43,9 @@ export const CHECKOUT_PFADE = [
   '/pay',
   '/payments',
 ];
+
+// Maschinen-Pfade der eigenen Seite (fetch, kein Dokument): hoechstens S1.
+export const API_PFADE = ['/api/'];
 
 // Die EINZIGEN Felder, die eine Aktion tragen darf (kein 'body'!).
 export const AKTION_FELDER = new Set([
@@ -69,19 +81,28 @@ export function stufe(score) {
 /**
  * Effektive Stufe aus dem Score-VERLAUF (juengster zuletzt): das MINIMUM der
  * letzten HYSTERESE_N Beobachtungen — ueberschreiten UND halten. Ein
- * einzelner Ausreisser eskaliert nicht.
+ * einzelner Ausreisser eskaliert nicht. Weniger als HYSTERESE_N
+ * Beobachtungen: hoechstens S1 — gehalten ist erst ein volles Fenster.
  * @param {number[]} scoreVerlauf
  */
 export function stufeMitHysterese(scoreVerlauf) {
   if (!scoreVerlauf || !scoreVerlauf.length) return 'S0';
   const fenster = scoreVerlauf.slice(-HYSTERESE_N);
-  return stufe(Math.min(...fenster));
+  const st = stufe(Math.min(...fenster));
+  if (fenster.length < HYSTERESE_N && (st === 'S2' || st === 'S3')) return 'S1';
+  return st;
 }
 
 /** @param {string} pfad */
 function istCheckout(pfad) {
   const pf = (pfad || '').toLowerCase();
   return CHECKOUT_PFADE.some((c) => pf.startsWith(c));
+}
+
+/** @param {string} pfad */
+function istApi(pfad) {
+  const pf = (pfad || '').toLowerCase();
+  return API_PFADE.some((c) => pf.startsWith(c));
 }
 
 /**
@@ -100,6 +121,10 @@ export function aktion(score, pfad = '', scoreVerlauf = null) {
 
   if (st === 'S3' && istCheckout(pfad)) {
     st = 'S2';
+  }
+  // Storefront-API-Proxy: nie Challenge/Block, hoechstens S1.
+  if ((st === 'S2' || st === 'S3') && istApi(pfad)) {
+    st = 'S1';
   }
 
   let a;
