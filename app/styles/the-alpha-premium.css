@@ -3,17 +3,25 @@
  * (Bausteine app/components/campaign/TheAlphaPremium.jsx; Grossjob
  * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung).
  *
- * REZEPT (Designmeister, Referenz tiefer-schlaf-v3 / .lp-a3-Tokens):
- *  - TYPO: die Familie des Ladens, sieben Größen als Tokens auf der Skala
- *    1,25. Der Hero „Kohärentes Licht“ ist IMMER die größte (Christian
- *    26.10.), 111/111 die zweitgrößte. Stufig je Breite, Handy zuerst.
- *  - ABSTAND: 8-px-Raster, ein Abschnittstakt (96 Handy, 144 Desktop).
- *  - FARBE: drei Akte (Nacht, Tag, Nacht) aus einem warmen Neutral-Kontinuum.
- *    EIN Akzent: das Rot aus Christians Vorlage, nur auf dem Knopf.
- *  - RADIUS: ein Token, nur am Knopf. Bilder ohne Rahmen und ohne Radius;
- *    ihre Ränder laufen in den Abschnitt aus (kein sichtbares Viereck).
- *  - BEWEGUNG: ruhig. Einblenden 0,9 s ohne Sprung, der Lichtschein im Hero
- *    atmet langsam. Bei prefers-reduced-motion steht alles still.
+ * LEITIDEE (Christian 26.10.): die Seite ist ein Film. „Die ganze Seite ist
+ * ja oben schwarz … und dann wird es eingeblendet in weißer Schrift“, „Wir
+ * wollen hier Drama erzählen“.
+ *
+ * REZEPT (Designmeister):
+ *  - TYPO: die Familie des Ladens, Größen als Tokens auf der Skala 1,25,
+ *    stufig je Breite, Handy zuerst. Der Titel „Kohärentes Licht“ ist IMMER
+ *    die größte Schrift (Z10). EINE Ausnahme in der Familie: die
+ *    Wörterbuch-Szene setzt eine Serifenschrift aus dem System (keine
+ *    Schriftdatei, Ladezeit Z23), wie der Vorspann von Pulp Fiction.
+ *  - ABSTAND: 8-px-Raster, ein Szenentakt (96 Handy, 144 Desktop).
+ *  - FARBE: Schwarz, Weiß, das Creme der Wörterbuch-Schrift, und EIN Akzent:
+ *    das Qi-Alpha-Rot aus Christians Figma (#b92200), nur am Kaufknopf
+ *    (design-meister/db/designsprache/qi-alpha-rot.yaml).
+ *  - BILDER: Karten mit kleinem Radius und schwarzem Etikett unten mittig
+ *    (Figma-Ausschnitte christian-szene-1..3).
+ *  - BEWEGUNG: Einblenden 0,9 s ohne Sprung; Kapitel-Überschriften kommen
+ *    mit Wucht (0,5 s, aus 1,12-facher Größe). Bei prefers-reduced-motion
+ *    steht alles still und ist sofort sichtbar.
  * Alle Regeln hängen an .tap-seite; die Seiten B und C der alten Fassung
  * bleiben davon unberührt.
  */
@@ -23,11 +31,12 @@
      ist bei 61,04 px 318 px breit, passt also ab 360 px Fensterbreite. */
   --tap-fs-hero: 3.052rem;   /* 48,83 */
   --tap-fs-zahl: 2.441rem;   /* 39,06 */
-  --tap-fs-h2: 1.953rem;     /* 31,25 */
+  --tap-fs-h2: 2.441rem;     /* 39,06 */
   --tap-fs-zeile: 1.25rem;   /* 20 */
   --tap-fs-unter: 1.25rem;   /* 20 */
+  --tap-fs-wb: 1.25rem;      /* 20 */
   --tap-fs-text: 1rem;       /* 16 */
-  --tap-fs-klein: 0.8rem;    /* 12,8 */
+  --tap-fs-etikett: 0.8rem;  /* 12,8 */
 
   --tap-s-1: 8px;
   --tap-s-2: 16px;
@@ -37,19 +46,17 @@
   --tap-s-8: 64px;
   --tap-takt: 96px;
 
-  --tap-nacht: #0c0c0d;
-  --tap-nacht-text: #f5f3ef;
-  --tap-nacht-leise: rgba(245, 243, 239, 0.78);
-  --tap-tag: #f6f4f0;
-  --tap-tag-text: #1d1c1a;
-  --tap-tag-leise: #5f5b54;
-  /* Sand = Grund der beiden Diamant-Aufnahmen (gemessen an den Ecken,
-     um RGB 236/229/215): so stehen die Diamanten ohne sichtbaren Kasten. */
-  --tap-sand: #ebe4d6;
-  /* Rot aus Christians Vorlage (#b92200), eine Stufe tiefer und satter
-     (Challenger 26.10.: Ziegelrot beißt sich mit Silber und Creme). */
-  --tap-rot: #a3170c;
-  --tap-rot-tief: #861207;
+  --tap-nacht: #000000;
+  --tap-weiss: #ffffff;
+  --tap-leise: rgba(255, 255, 255, 0.82);
+  /* Creme der Wörterbuch-Schrift (Referenzbild Pulp Fiction). */
+  --tap-creme: #f2ead3;
+  /* Qi-Alpha-Rot: gemessen in Christians Figma (christian-szene-4.png,
+     roter Balken) = #b92200. Im Bestand war kein Qi-Alpha-Rot festgelegt;
+     Christian 26.10.: „in diesem Rot, den wir für den G-Alpha eigentlich
+     festgelegt haben“. */
+  --tap-rot: #b92200;
+  --tap-rot-tief: #961c00;
 
   --tap-radius: 8px;
   --tap-mass: 36rem;
@@ -59,11 +66,13 @@
 
   font-family: inherit;
   text-align: center;
+  background: var(--tap-nacht);
+  color: var(--tap-weiss);
   overflow-x: clip;
-  /* Der Hero ist schwarz und steht als erster Block hinter dem durchsichtigen
-     Kopf. Ohne Ausgleich läge die Logo-Unterzeile dunkel auf Schwarz. Formel
-     wie PR #1020 (.product-360-hero): gemessene Kopf-Ruhelage minus der Platz,
-     den <main> schon frei hält; Rückfall 135 px = 390er Kopf. */
+  /* Die Seite ist schwarz und steht hinter dem durchsichtigen Kopf. Ohne
+     Ausgleich läge die Logo-Unterzeile dunkel auf Schwarz. Formel wie PR
+     #1020 (.product-360-hero): gemessene Kopf-Ruhelage minus der Platz, den
+     <main> schon frei hält; Rückfall 135 px = 390er Kopf. */
   margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
 }
 
@@ -71,7 +80,6 @@
   .tap-seite {
     --tap-fs-hero: 3.815rem;   /* 61,04 */
     --tap-fs-zahl: 3.052rem;   /* 48,83 */
-    --tap-fs-h2: 2.441rem;     /* 39,06 */
   }
 }
 
@@ -80,34 +88,22 @@
     --tap-takt: 144px;
     --tap-fs-hero: 5.96rem;    /* 95,37 */
     --tap-fs-zahl: 3.815rem;   /* 61,04 */
-    --tap-fs-h2: 3.052rem;     /* 48,83 */
+    --tap-fs-h2: 3.815rem;     /* 61,04 */
     --tap-fs-zeile: 1.5625rem; /* 25 */
     --tap-fs-unter: 1.5625rem; /* 25 */
+    --tap-fs-wb: 1.5625rem;    /* 25 */
     --tap-fs-text: 1.25rem;    /* 20 */
+    --tap-fs-etikett: 1rem;    /* 16 */
   }
 }
 
 @media (min-width: 1200px) {
   .tap-seite {
     --tap-fs-hero: 7.451rem;   /* 119,2 */
-    --tap-fs-zahl: 5.96rem;    /* 95,37 */
-    --tap-fs-h2: 3.815rem;     /* 61,04 */
+    --tap-fs-zahl: 4.768rem;   /* 76,29 */
+    --tap-fs-h2: 4.768rem;     /* 76,29 */
+    --tap-fs-wb: 1.953rem;     /* 31,25 */
   }
-}
-
-.tap-nacht {
-  background: var(--tap-nacht);
-  color: var(--tap-nacht-text);
-}
-
-.tap-tag,
-.tap-sand {
-  background: var(--tap-tag);
-  color: var(--tap-tag-text);
-}
-
-.tap-sand {
-  background: var(--tap-sand);
 }
 
 /* app.css legt allen h1/h2 einen weichen Schatten an; hier nie. */
@@ -116,126 +112,103 @@
   text-shadow: none;
 }
 
-/* ---------- Hero ---------- */
-.tap-hero {
+/* ---------- Szene 1 und 2: Titelkarte ---------- */
+/* Die Bühne ist höher als der Bildschirm; der Titel steht darin still
+   (sticky), und auf halbem Weg erscheint der Untertitel. */
+.tap-titelkarte {
   position: relative;
+  height: 180svh;
+}
+
+.tap-titelkarte-bild {
+  position: sticky;
+  top: 0;
   display: grid;
   place-items: center;
-  min-height: 62svh;
-  padding: var(--tap-takt) var(--tap-s-2);
-  isolation: isolate;
-  overflow: hidden;
+  height: 100svh;
+  padding: 0 var(--tap-s-2);
 }
 
-/* Kohärentes Licht: ein warmer Schein hinter dem Titel, der langsam atmet. */
-.tap-licht {
+/* Die Marke reicht von 45 svh bis zum Ende der Bühne: auch ein schneller
+   Wisch, der über ihre Oberkante springt, landet in ihr und schaltet den
+   Untertitel zu (eine 1-px-Marke würde übersprungen). */
+.tap-titelkarte-marke {
   position: absolute;
-  inset: -20% -40%;
-  z-index: -1;
-  background: radial-gradient(
-    closest-side at 50% 50%,
-    rgba(255, 244, 222, 0.22),
-    rgba(255, 244, 222, 0.06) 45%,
-    rgba(255, 244, 222, 0) 70%
-  );
-  animation: tap-atmen 9s ease-in-out infinite alternate;
-}
-
-@keyframes tap-atmen {
-  from {
-    opacity: 0.65;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.06);
-  }
+  top: 45svh;
+  bottom: 0;
+  left: 0;
+  width: 1px;
 }
 
 .tap-hero-titel {
   margin: 0;
   /* !important: app.css setzt h1/h2 am Handy (<= 749 px) per !important auf
-     1,75/1,5 rem. Der Hero muss die größte Schrift der Seite bleiben
+     1,75/1,5 rem. Der Titel muss die größte Schrift der Seite bleiben
      (Christian 26.10.), darum hier und in .tap-h2 die Gegenregel im Scope. */
   font-size: var(--tap-fs-hero) !important;
   font-weight: 500;
   line-height: 0.98;
   letter-spacing: -0.035em;
   text-wrap: balance;
-  color: var(--tap-nacht-text);
+  color: var(--tap-weiss);
+}
+
+.tap-hero-zeile {
+  display: block;
 }
 
 .tap-hero-unter {
   display: block;
-  margin-top: var(--tap-s-3);
+  margin-top: var(--tap-s-4);
   font-size: var(--tap-fs-unter);
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: 0.04em;
-  color: var(--tap-nacht-leise);
+  color: var(--tap-leise);
 }
 
-/* ---------- Definition ---------- */
-.tap-definition {
-  padding: 0 var(--tap-s-3) var(--tap-takt);
+/* ---------- Szene 3: Wörterbuch (Pulp Fiction) ---------- */
+.tap-woerterbuch {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: var(--tap-takt) var(--tap-s-3);
 }
 
-.tap-auge {
-  margin: 0 auto var(--tap-s-3);
-  max-width: var(--tap-mass);
-  font-size: var(--tap-fs-klein);
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.tap-wb-blatt {
+  max-width: 40rem;
+  font-family: 'Times New Roman', Times, 'Liberation Serif', 'Noto Serif', Georgia, serif;
+  font-size: var(--tap-fs-wb);
+  line-height: 1.35;
+  color: var(--tap-creme);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
 }
 
-.tap-nacht .tap-auge {
-  color: var(--tap-nacht-leise);
+/* Farbe am Absatz selbst: app.css färbt <p> global und sticht die
+   geerbte Farbe. */
+.tap-wb-satz,
+.tap-wb-quelle {
+  color: var(--tap-creme);
+  font-size: inherit;
+  line-height: inherit;
 }
 
-.tap-tag .tap-auge,
-.tap-sand .tap-auge {
-  color: var(--tap-tag-leise);
+.tap-wb-satz {
+  margin: 0 0 var(--tap-s-1);
 }
 
-.tap-text {
-  margin: 0 auto var(--tap-s-3);
-  max-width: min(var(--tap-mass), 34ch);
-  font-size: var(--tap-fs-text);
-  line-height: 1.7;
+.tap-wb-satz b {
+  font-weight: 700;
 }
 
-@media (min-width: 768px) {
-  .tap-text {
-    max-width: var(--tap-mass);
-  }
+/* Quelle unten rechts, linksbündig in sich (wie im Referenzbild). */
+.tap-wb-quelle {
+  width: fit-content;
+  margin: var(--tap-s-6) 0 0 auto;
 }
 
-.tap-text:last-child {
-  margin-bottom: 0;
-}
-
-.tap-nacht .tap-text {
-  color: var(--tap-nacht-leise);
-}
-
-.tap-tag .tap-text,
-.tap-tag .tap-akzent,
-.tap-sand .tap-akzent {
-  color: var(--tap-tag-leise);
-}
-
-.tap-nacht .tap-akzent {
-  color: var(--tap-nacht-leise);
-}
-
-.tap-nacht .tap-text strong {
-  color: var(--tap-nacht-text);
-  font-weight: 600;
-}
-
-/* ---------- Vollbild ---------- */
+/* ---------- Video / Vollbild ---------- */
 .tap-vollbild {
   margin: 0;
   padding: 0;
@@ -251,23 +224,12 @@
   aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: 0;
-  /* Harte Kante, randlos über die volle Breite (Challenger 26.10.: ein
-     weicher Verlauf ins Schwarz wirkt wie ein Nebelstreifen). */
-}
-
-/* Seitenband: eigener Zuschnitt 2:1 mit Rand um den Riegel. */
-.tap-format-band img {
-  aspect-ratio: 2 / 1;
 }
 
 @media (min-width: 768px) {
   .tap-vollbild img,
   .tap-vollbild video {
     aspect-ratio: 3 / 2;
-  }
-
-  .tap-format-band img {
-    aspect-ratio: 2 / 1;
   }
 }
 
@@ -279,7 +241,7 @@
 .tap-h2 {
   margin: 0 0 var(--tap-s-4);
   font-size: var(--tap-fs-h2) !important;
-  color: inherit;
+  color: var(--tap-weiss);
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -0.025em;
@@ -294,17 +256,8 @@
 .tap-zeilen li {
   font-size: var(--tap-fs-zeile);
   font-weight: 400;
-  line-height: 1.45;
-  --tap-verzug: calc(var(--tap-folge, 0) * 140ms);
-}
-
-.tap-nacht .tap-zeilen li {
-  color: var(--tap-nacht-leise);
-}
-
-.tap-tag .tap-zeilen li,
-.tap-sand .tap-zeilen li {
-  color: var(--tap-tag-leise);
+  line-height: 1.5;
+  color: var(--tap-leise);
 }
 
 .tap-akzent {
@@ -312,100 +265,225 @@
   max-width: var(--tap-mass);
   font-size: var(--tap-fs-text);
   line-height: 1.7;
+  color: var(--tap-leise);
 }
 
-.tap-paar {
+/* ---------- Bildkarten mit Etikett ---------- */
+.tap-karten {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0;
-  max-width: 288px;
+  gap: var(--tap-s-3);
+  max-width: 560px;
   margin: var(--tap-s-8) auto 0;
 }
 
-.tap-paar img {
+@media (min-width: 768px) {
+  .tap-karten {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--tap-s-4);
+    max-width: 1152px;
+  }
+}
+
+.tap-karte {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--tap-radius);
+}
+
+.tap-karte img {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  /* Der Grund der Aufnahmen weicht leicht vom Sand ab: die Ecken laufen
-     aus, der Diamant bleibt scharf. Kein Kasten. */
-  border-radius: 0;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 70%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 70%);
 }
 
-/* Handy: die Steine untereinander, je rund drei Viertel der Breite.
-   Ab 768 px nebeneinander. */
-@media (min-width: 768px) {
-  .tap-paar {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--tap-s-4);
-    max-width: 960px;
-  }
+.tap-karte-band img {
+  aspect-ratio: 2 / 1;
 }
 
-/* ---------- Abschluss ---------- */
+.tap-etikett {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  min-width: 40%;
+  padding: var(--tap-s-2) var(--tap-s-4);
+  border-radius: var(--tap-radius) var(--tap-radius) 0 0;
+  background: var(--tap-nacht);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-etikett);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---------- THE ALPHA ---------- */
+.tap-marke {
+  padding: var(--tap-takt) 0 0;
+}
+
+.tap-band {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--tap-s-3);
+}
+
+.tap-marke-name {
+  margin: 0;
+  padding: var(--tap-takt) var(--tap-s-2) 0;
+  /* h2-Stufe: „THE ALPHA“ mit Sperrung passt so ab 320 px in eine Zeile. */
+  font-size: var(--tap-fs-h2);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  color: var(--tap-weiss);
+}
+
+/* ---------- Abspann ---------- */
 .tap-edition {
   padding: var(--tap-takt) var(--tap-s-3) calc(var(--tap-takt) * 1.5);
 }
 
-.tap-edition-titel {
-  margin: 0 0 var(--tap-s-2);
-  font-size: var(--tap-fs-zeile);
+.tap-edition-titel,
+.tap-zahl {
+  margin: 0;
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-zahl);
   font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  color: var(--tap-nacht-leise);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .tap-zahl {
-  margin: 0 0 var(--tap-s-6);
-  color: inherit;
-  font-size: var(--tap-fs-zahl);
-  font-weight: 300;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  margin-bottom: var(--tap-s-8);
   font-variant-numeric: tabular-nums;
 }
 
 .tap-seite .tap-kauf {
-  max-width: 360px;
+  max-width: 1152px;
   margin: 0 auto;
 }
 
-.tap-seite .ta-knopf {
+.tap-seite .tap-kauf .ta-knopf {
   display: block;
-  padding: var(--tap-s-3) var(--tap-s-4);
+  padding: var(--tap-s-4) var(--tap-s-3);
   border-radius: var(--tap-radius);
   background: var(--tap-rot);
-  color: #ffffff;
-  font-size: var(--tap-fs-text);
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-zeile);
+  font-weight: 700;
+  line-height: 1.3;
   text-decoration: none;
   transition: background-color 300ms ease;
 }
 
-.tap-seite .ta-knopf:hover {
+.tap-seite .tap-kauf .ta-knopf:hover {
   background: var(--tap-rot-tief);
-  color: #ffffff;
+  color: var(--tap-weiss);
   text-decoration: none;
 }
 
-.tap-seite .ta-knopf:focus-visible {
-  outline: 2px solid var(--tap-nacht-text);
+.tap-seite .ta-knopf:focus-visible,
+.tap-leiste-knopf:focus-visible {
+  outline: 2px solid var(--tap-weiss);
   outline-offset: 4px;
 }
 
-/* ---------- Einblenden (nur mit JavaScript, ohne Sprung) ---------- */
+/* ---------- Kaufleiste (dezent, Z40) ---------- */
+/* Unten mittig, damit sie der Chat-Blase rechts nicht im Weg ist. */
+.tap-leiste {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tap-s-2) + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  transform: translate3d(-50%, 16px, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 500ms var(--tap-kurve),
+    transform 500ms var(--tap-kurve);
+}
+
+.tap-leiste-an {
+  transform: translate3d(-50%, 0, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Dezent (Z40): dunkle, leicht durchscheinende Pille mit feiner Kante; das
+   Rot bleibt dem großen Balken im Abspann vorbehalten. */
+.tap-leiste-knopf {
+  display: block;
+  padding: 12px var(--tap-s-3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-etikett);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.tap-leiste-knopf:hover {
+  background: var(--tap-rot);
+  border-color: var(--tap-rot);
+  color: var(--tap-weiss);
+  text-decoration: none;
+}
+
+/* ---------- Einblenden (ohne Sprung) ---------- */
+@keyframes tap-auf {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Titel blendet beim Laden aus dem Schwarz ein (auch ohne JavaScript). */
+.tap-hero-zeile {
+  animation: tap-auf 1600ms var(--tap-kurve) 200ms both;
+}
+
+.tap-js .tap-hero-unter {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 1200ms var(--tap-kurve),
+    transform 1200ms var(--tap-kurve);
+}
+
+.tap-js .tap-weiter .tap-hero-unter {
+  opacity: 1;
+  transform: none;
+}
+
 .tap-js [data-tap-ein] {
+  --tap-verzug: calc(var(--tap-folge, 0) * 180ms);
   opacity: 0;
   transform: translate3d(0, 24px, 0);
   transition:
-    opacity var(--tap-dauer) var(--tap-kurve) var(--tap-verzug, 0ms),
-    transform var(--tap-dauer) var(--tap-kurve) var(--tap-verzug, 0ms);
+    opacity var(--tap-dauer) var(--tap-kurve) var(--tap-verzug),
+    transform var(--tap-dauer) var(--tap-kurve) var(--tap-verzug);
+}
+
+/* Kapitel-Überschriften: „bam“, aus etwas größer in die Ruhe. */
+.tap-js .tap-bam[data-tap-ein] {
+  transform: scale(1.12);
+  transition:
+    opacity 500ms cubic-bezier(0.2, 0.9, 0.2, 1) var(--tap-verzug),
+    transform 500ms cubic-bezier(0.2, 0.9, 0.2, 1) var(--tap-verzug);
 }
 
 .tap-js [data-tap-ein].tap-sichtbar {
@@ -414,13 +492,20 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tap-licht {
+  .tap-hero-zeile {
     animation: none;
   }
 
+  .tap-js .tap-hero-unter,
+  .tap-js [data-tap-ein],
+  .tap-js .tap-bam[data-tap-ein],
+  .tap-leiste {
+    transition: none;
+  }
+
+  .tap-js .tap-hero-unter,
   .tap-js [data-tap-ein] {
     opacity: 1;
     transform: none;
-    transition: none;
   }
 }

@@ -1,11 +1,11 @@
 import {
   TapSeite,
-  TapHero,
-  TapDefinition,
+  TapTitelkarte,
+  TapWoerterbuch,
   TapFilm,
   TapKapitel,
-  TapPaar,
-  TapVollbild,
+  TapKarten,
+  TapMarke,
   TapEdition,
 } from '~/components/campaign/TheAlphaPremium';
 import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-alpha-daten';
@@ -17,14 +17,14 @@ import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-a
  * Vorlage; Christian: „das war nicht das Ziel, sondern der Desinger Meister
  * sollte das in eine umwandlen“.
  *
- * Reihenfolge wie die Vorlage, Wortlaut Christians: Kohärentes Licht (Hero)
- * → Definition → Video Luca → Manifestation + Diamant-Paar → Protection +
- * Gerät → Longevity + Seitenband „Qi Alpha ®“ → Limited 1st. Edition 111/111
- * → „Jetzt Exklusiv Reservieren“ (TheAlphaKauf, Ziel aus the-alpha-daten.js).
- *
- * Rhythmus: dunkel (Hero, Definition, Video) → Sand (Manifestation, der Grund
- * der Diamant-Aufnahmen) → dunkel (Protection) → hell (Longevity) → dunkel
- * (Abschluss).
+ * Drehbuch (Christian 26.10., Nachträge Z24–Z98, Figma-Ausschnitte
+ * christian-szene-1..4): die Seite ist ein Film, alles auf Schwarz.
+ * Titelkarte „Kohärentes Licht“ → beim Scrollen „- Ultra High Vibe Mode -“ →
+ * Wörterbuch im Pulp-Fiction-Stil (Quelle Google AI) → Video Luca →
+ * Manifestation + RAW/DIAMANT → Protection + ENDLESS/POSSIBILITY → Longevity
+ * → Seitenansicht mit Etikett THE ALPHA → „THE ALPHA“ → Limited 1st. Edition
+ * 111/111 → roter Balken „Jetzt Exklusiv Reservieren“ (TheAlphaKauf, Ziel aus
+ * the-alpha-daten.js).
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -43,16 +43,17 @@ const SEITENBAND = {
 export default function TheAlpha() {
   return (
     <TapSeite variante="a">
-      <TapHero />
-      <TapDefinition />
+      <TapTitelkarte />
+      <TapWoerterbuch />
       <TapFilm film={THE_ALPHA_VIDEO} />
-      <TapKapitel abschnitt={MANIFESTATION} ton="sand">
-        <TapPaar bilder={MANIFESTATION.bilder} />
+      <TapKapitel abschnitt={MANIFESTATION}>
+        <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>
-      <TapKapitel abschnitt={PROTECTION} ton="nacht" />
-      <TapVollbild bild={PROTECTION.bilder[1]} ton="nacht" />
-      <TapKapitel abschnitt={LONGEVITY} ton="tag" />
-      <TapVollbild bild={SEITENBAND} ton="tag" format="band" />
+      <TapKapitel abschnitt={PROTECTION}>
+        <TapKarten bilder={PROTECTION.bilder} />
+      </TapKapitel>
+      <TapKapitel abschnitt={LONGEVITY} />
+      <TapMarke bild={SEITENBAND} />
       <TapEdition />
     </TapSeite>
   );

@@ -1,7 +1,14 @@
-import {Fragment, useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
-import {THE_ALPHA_KOPF, THE_ALPHA_SCHLUSS} from '~/components/campaign/the-alpha-daten';
+import {
+  THE_ALPHA_KOPF,
+  THE_ALPHA_SCHLUSS,
+  THE_ALPHA_WOERTERBUCH,
+  THE_ALPHA_MARKE,
+  THE_ALPHA_KAUF_ZIEL,
+} from '~/components/campaign/the-alpha-daten';
 
 /*
  * THE ALPHA PREMIUM: die geteilten Bausteine der gestalteten The-Alpha-Seiten
@@ -11,53 +18,112 @@ import {THE_ALPHA_KOPF, THE_ALPHA_SCHLUSS} from '~/components/campaign/the-alpha
  * sollte das in eine umwandlen“. Seine Figma-Vorlage gibt Inhalt, Reihenfolge
  * und Aussage vor; die Gestaltung kommt vom Designmeister.
  *
- * GEMEINSAME GESCHICHTE für A, B und C (Nachtrag Christian 26.10.): Kohärentes
- * Licht → Video → Manifestation → Protection → Longevity → 111/111 →
- * Reservieren. Die Varianten setzen diese Bausteine verschieden zusammen
- * (Bildwahl, Länge, Kauf-Element), die Geschichte bleibt gleich.
+ * LEITIDEE (Nachtrag Z24–Z57): die Seite ist ein Film. „Ich möchte eine
+ * Geschichte erzählen und das soll wie ein Movie ausschauen“, „die ganze
+ * Seite ist ja oben schwarz … und dann wird es eingeblendet in weißer
+ * Schrift“, „Wir wollen hier Drama erzählen“. Darum: alles auf Schwarz,
+ * Szene für Szene, vom Scrollen gesteuert, Bilder als Karten mit Etikett
+ * (Figma-Ausschnitte christian-szene-1..4).
  *
- * HERO (verbindlich für alle drei): „Kohärentes Licht“ ist die größte Schrift
- * der Seite, darunter klein „- Ultra High Vibe Mode -“. Die Definition steht
- * erst im nächsten Abschnitt (TapDefinition), nicht im Hero.
+ * DREHBUCH für A, B und C: Titelkarte „Kohärentes Licht“ → beim Scrollen
+ * „- Ultra High Vibe Mode -“ → Wörterbuch (Pulp Fiction) → Video Luca →
+ * Manifestation + RAW/DIAMANT → Protection + ENDLESS/POSSIBILITY → Longevity
+ * → Seitenansicht THE ALPHA → „THE ALPHA“ → Limited 1st. Edition 111/111 →
+ * roter Balken „Jetzt Exklusiv Reservieren“. Die Varianten setzen diese
+ * Bausteine verschieden zusammen (Bildwahl, Länge, Akzent), die Geschichte
+ * bleibt gleich. Ton und Lucas Video-Ton kommen in einem eigenen Segment.
  *
  * Texte und Bilder kommen aus the-alpha-daten.js (Christians Wortlaut, EINE
  * Datenstelle). Stil: app/styles/the-alpha-premium.css, alle Regeln hängen an
- * .tap-seite. Ohne JavaScript ist alles sichtbar; die ruhigen Einblendungen
- * schaltet erst useTapEinblenden() zu (Klasse tap-js an der Wurzel).
+ * .tap-seite. Ohne JavaScript ist alles sichtbar; Einblendungen und
+ * Szenenwechsel schaltet erst useTapFilm() zu (Klasse tap-js an der Wurzel).
  */
 
-/** Schaltet die Einblendungen zu: Elemente mit data-tap-ein werden sichtbar,
- * sobald sie ins Bild kommen. Einmal sichtbar, bleibt sichtbar (nichts springt
- * beim Zurückscrollen). */
-function useTapEinblenden(wurzel) {
+/**
+ * Schaltet den Film zu.
+ * - [data-tap-ein]: wird sichtbar, sobald es ins Bild kommt (bleibt sichtbar).
+ * - [data-tap-marke]: unsichtbare Marke in einer Bühne [data-tap-buehne];
+ *   erreicht sie die obere Bildhälfte, bekommt die Bühne die Klasse
+ *   tap-weiter (zweite Einblendung derselben Szene, z. B. der Untertitel).
+ * - Kaufleiste: sichtbar, sobald die Titelkarte [data-tap-anfang] aus dem
+ *   Bild ist, und wieder weg, solange der Abschluss [data-tap-ende] zu sehen
+ *   ist (dort steht der große Knopf).
+ */
+function useTapFilm(wurzel) {
+  const [leiste, setLeiste] = useState(false);
   useEffect(() => {
     const el = wurzel.current;
     if (!el || typeof IntersectionObserver === 'undefined') return undefined;
-    const ziele = el.querySelectorAll('[data-tap-ein]');
-    const io = new IntersectionObserver(
+    const beobachter = [];
+
+    const ein = new IntersectionObserver(
       (eintraege) => {
         for (const e of eintraege) {
           if (e.isIntersecting) {
             e.target.classList.add('tap-sichtbar');
-            io.unobserve(e.target);
+            ein.unobserve(e.target);
           }
         }
       },
-      {rootMargin: '0px 0px -8% 0px', threshold: 0.12},
+      {rootMargin: '0px 0px -10% 0px', threshold: 0.15},
     );
-    ziele.forEach((z) => io.observe(z));
+    el.querySelectorAll('[data-tap-ein]').forEach((z) => ein.observe(z));
+    beobachter.push(ein);
+
+    const marke = new IntersectionObserver(
+      (eintraege) => {
+        for (const e of eintraege) {
+          if (e.isIntersecting) {
+            e.target.closest('[data-tap-buehne]')?.classList.add('tap-weiter');
+            marke.unobserve(e.target);
+          }
+        }
+      },
+      {rootMargin: '0px 0px -45% 0px'},
+    );
+    el.querySelectorAll('[data-tap-marke]').forEach((z) => marke.observe(z));
+    beobachter.push(marke);
+
+    let anfangWeg = false;
+    let endeDa = false;
+    const kauf = new IntersectionObserver((eintraege) => {
+      for (const e of eintraege) {
+        if (e.target.hasAttribute('data-tap-anfang')) {
+          anfangWeg = !e.isIntersecting && e.boundingClientRect.top < 0;
+        } else {
+          // Abschluss im Bild oder schon vorbei (Fußbereich): Leiste weg.
+          endeDa = e.isIntersecting || e.boundingClientRect.top < 0;
+        }
+      }
+      setLeiste(anfangWeg && !endeDa);
+    });
+    el.querySelectorAll('[data-tap-anfang], [data-tap-ende]').forEach((z) => kauf.observe(z));
+    beobachter.push(kauf);
+
     el.classList.add('tap-js');
-    return () => io.disconnect();
+    return () => beobachter.forEach((b) => b.disconnect());
   }, [wurzel]);
+  return leiste;
 }
 
-/** Wurzel jeder gestalteten The-Alpha-Seite. */
-export function TapSeite({children, variante = 'a'}) {
+/** Wurzel jeder gestalteten The-Alpha-Seite, mit der dezenten Kaufleiste
+ * (Z40: „Wer nicht scrollen will, findet den Kaufknopf“). */
+export function TapSeite({children, variante = 'a', kaufText = THE_ALPHA_SCHLUSS.knopf}) {
   const wurzel = useRef(null);
-  useTapEinblenden(wurzel);
+  const leiste = useTapFilm(wurzel);
   return (
     <div className="tap-seite" data-the-alpha-premium={variante} ref={wurzel}>
       {children}
+      <div className={`tap-leiste${leiste ? ' tap-leiste-an' : ''}`} aria-hidden={!leiste}>
+        <Link
+          className="tap-leiste-knopf"
+          to={THE_ALPHA_KAUF_ZIEL}
+          prefetch="intent"
+          tabIndex={leiste ? undefined : -1}
+        >
+          {kaufText}
+        </Link>
+      </div>
     </div>
   );
 }
@@ -73,59 +139,64 @@ function Bild({bild, sizes, className, loading = 'lazy'}) {
   );
 }
 
-/** Erster Bildschirm, dunkel: „Kohärentes Licht“ groß, Untertitel klein. */
-export function TapHero({titel = THE_ALPHA_KOPF.titel, untertitel = THE_ALPHA_KOPF.untertitel}) {
+/** Szene 1 und 2: Titelkarte auf Schwarz. „Kohärentes Licht“ blendet beim
+ * Laden ein, bleibt stehen, und beim Weiterscrollen erscheint darunter
+ * „- Ultra High Vibe Mode -“ (eigene Einblendung, Z30/Z31/Z53). */
+export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_ALPHA_KOPF.untertitel}) {
   return (
-    <header className="tap-hero tap-nacht">
-      <div className="tap-licht" aria-hidden="true" />
-      <h1 className="tap-hero-titel">
-        {titel}
-        <span className="tap-hero-unter">{untertitel}</span>
-      </h1>
+    <header className="tap-titelkarte" data-tap-buehne="" data-tap-anfang="">
+      <div className="tap-titelkarte-bild">
+        <h1 className="tap-hero-titel">
+          <span className="tap-hero-zeile">{titel}</span>
+          <span className="tap-hero-unter">{untertitel}</span>
+        </h1>
+      </div>
+      <span className="tap-titelkarte-marke" data-tap-marke="" aria-hidden="true" />
     </header>
   );
 }
 
-/** Christians Definition des Ultra High Vibe Mode, nach dem Hero und ruhig
- * gesetzt. Die erste Zeile der Vorlage wird zur kleinen Überschrift. */
-export function TapDefinition({absaetze = THE_ALPHA_KOPF.absaetze}) {
-  const [erster, ...rest] = absaetze;
-  const kopf = erster[0]?.zeile ? erster[0] : null;
-  const ersterRumpf = kopf ? erster.slice(1) : erster;
+/** Szene 3: die Definition als Wörterbuch-Eintrag wie im Vorspann von Pulp
+ * Fiction (cremeweiße Serifenschrift auf Schwarz, Quelle unten rechts). */
+export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
+  const [erste, ...weitere] = eintrag.bedeutungen;
   return (
-    <section className="tap-definition tap-nacht" aria-label="Ultra High Vibe Mode">
-      {kopf ? (
-        <p className="tap-auge" data-tap-ein="">
-          {kopf.text.replace(/\s-(?=\S)/, ' – ')}
+    <section className="tap-woerterbuch" aria-label={eintrag.lemma}>
+      <div className="tap-wb-blatt">
+        <p className="tap-wb-satz" data-tap-ein="">
+          <b>{eintrag.lemma}</b> <span className="tap-wb-laut">{eintrag.laut}</span>{' '}
+          <i>{eintrag.wortart}</i> <b>1.</b> {erste}
         </p>
-      ) : null}
-      {[ersterRumpf, ...rest].map((teile, i) => (
-        <p className="tap-text" key={i} data-tap-ein="">
-          {teile.map((t, j) => (
-            <Fragment key={j}>{t.fett ? <strong>{t.text}</strong> : t.text}</Fragment>
-          ))}
+        {weitere.map((b, i) => (
+          <p className="tap-wb-satz" key={b} data-tap-ein="" style={{'--tap-folge': i + 1}}>
+            <b>{i + 2}.</b> {b}
+          </p>
+        ))}
+        <p className="tap-wb-quelle" data-tap-ein="" style={{'--tap-folge': weitere.length + 2}}>
+          {eintrag.quelle}
         </p>
-      ))}
+      </div>
     </section>
   );
 }
 
-/** Vollflächen-Bild ohne Rahmen; die Ränder laufen in den Abschnitt aus. */
-export function TapVollbild({bild, ton = 'nacht', format = 'hoch', loading = 'lazy'}) {
+/** Vollflächen-Bild auf Schwarz, randlos. */
+export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
   return (
-    <figure className={`tap-vollbild tap-${ton} tap-format-${format}`} data-tap-ein="">
+    <figure className={`tap-vollbild tap-format-${format}`} data-tap-ein="">
       <Bild bild={bild} sizes="100vw" loading={loading} />
     </figure>
   );
 }
 
 /** Lucas Video. Solange es fehlt: das ruhige Standbild, nie ein schwarzes
- * Viereck. Mit Video: stumm, inline, Standbild als Poster. */
-export function TapFilm({film, ton = 'nacht'}) {
+ * Viereck. Mit Video: stumm, inline, Standbild als Poster (Ton, Vorladen und
+ * Abspielen beim Erreichen der Szene: Segment Ton & Video). */
+export function TapFilm({film}) {
   const {video, videoStandbild} = film;
   if (video?.src) {
     return (
-      <figure className={`tap-vollbild tap-${ton} tap-format-hoch`} data-tap-ein="">
+      <figure className="tap-vollbild tap-format-hoch" data-tap-ein="">
         <video
           src={video.src}
           poster={video.poster || videoStandbild.url}
@@ -138,23 +209,24 @@ export function TapFilm({film, ton = 'nacht'}) {
       </figure>
     );
   }
-  return <TapVollbild bild={videoStandbild} ton={ton} />;
+  return <TapVollbild bild={videoStandbild} />;
 }
 
-/** Ein Kapitel der Geschichte: große Überschrift, Christians drei Zeilen. */
-export function TapKapitel({abschnitt, ton = 'tag', akzent = null, children}) {
+/** Ein Kapitel: die englische Überschrift kommt mit Wucht („bam, bam, bam“),
+ * danach Christians drei Zeilen nacheinander. */
+export function TapKapitel({abschnitt, akzent = null, children}) {
   return (
     <section
-      className={`tap-kapitel tap-${ton}`}
+      className="tap-kapitel"
       id={abschnitt.id}
       aria-labelledby={`${abschnitt.id}-titel`}
     >
-      <h2 className="tap-h2" id={`${abschnitt.id}-titel`} data-tap-ein="">
+      <h2 className="tap-h2 tap-bam" id={`${abschnitt.id}-titel`} data-tap-ein="">
         {abschnitt.titel}
       </h2>
       <ul className="tap-zeilen">
         {abschnitt.zeilen.map((z, i) => (
-          <li key={z} data-tap-ein="" style={{'--tap-folge': i}}>
+          <li key={z} data-tap-ein="" style={{'--tap-folge': i + 1}}>
             {z}
           </li>
         ))}
@@ -169,29 +241,59 @@ export function TapKapitel({abschnitt, ton = 'tag', akzent = null, children}) {
   );
 }
 
-/** Zwei Bilder nebeneinander ohne Rahmen (Diamant-Paar). */
-export function TapPaar({bilder}) {
+/** Bildkarte mit schwarzem Etikett unten mittig (Figma-Stil). */
+function Karte({bild, sizes, folge = 0, format = 'quadrat'}) {
   return (
-    <div className="tap-paar" data-tap-ein="">
-      {bilder.map((b) => (
-        <Bild key={b.url} bild={b} sizes="(min-width: 768px) 464px, 288px" />
+    <figure
+      className={`tap-karte tap-karte-${format}`}
+      data-tap-ein=""
+      style={{'--tap-folge': folge}}
+    >
+      <Bild bild={bild} sizes={sizes} />
+      {bild.etikett ? <figcaption className="tap-etikett">{bild.etikett}</figcaption> : null}
+    </figure>
+  );
+}
+
+/** Zwei Karten: am Handy untereinander, ab 768 px nebeneinander; die zweite
+ * kommt nach der ersten (RAW → DIAMANT, ENDLESS → POSSIBILITY). */
+export function TapKarten({bilder}) {
+  return (
+    <div className="tap-karten">
+      {bilder.map((b, i) => (
+        <Karte key={b.url} bild={b} folge={i * 3} sizes="(min-width: 768px) 560px, 90vw" />
       ))}
     </div>
   );
 }
 
-/** Abschluss, dunkel: Limited 1st. Edition, 111/111, der rote Knopf. */
+/** Seitenansicht als breite Karte mit Etikett, danach der Name groß auf
+ * Schwarz. */
+export function TapMarke({bild, marke = THE_ALPHA_MARKE}) {
+  return (
+    <section className="tap-marke" aria-label={marke}>
+      <div className="tap-band">
+        <Karte bild={{...bild, etikett: marke}} format="band" sizes="(min-width: 1200px) 1152px, 100vw" />
+      </div>
+      <p className="tap-marke-name tap-bam" data-tap-ein="">
+        {marke}
+      </p>
+    </section>
+  );
+}
+
+/** Abspann: Limited 1st. Edition, 111/111, der rote Balken. */
 export function TapEdition({schluss = THE_ALPHA_SCHLUSS, children}) {
   return (
-    <section className="tap-edition tap-nacht" aria-label={schluss.edition}>
+    <section className="tap-edition" aria-label={schluss.edition} data-tap-ende="">
       <p className="tap-edition-titel" data-tap-ein="">
         {schluss.edition}
       </p>
-      <p className="tap-zahl" data-tap-ein="">
+      <p className="tap-zahl" data-tap-ein="" style={{'--tap-folge': 2}}>
         {schluss.auflage}
       </p>
       {children}
-      <div data-tap-ein="">
+      <div data-tap-ein="" style={{'--tap-folge': 4}}>
         <TheAlphaKauf className="tap-kauf" knopfText={schluss.knopf} />
       </div>
     </section>
