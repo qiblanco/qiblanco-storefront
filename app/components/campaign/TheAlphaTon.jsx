@@ -437,24 +437,49 @@ function binde_akzente(wurzel, m) {
   };
 }
 
+/** Lautsprecher als Linie in der Strichstärke der Schrift (Challenger 26.10.:
+ * ein gefülltes Symbol neben gesperrter, leichter Schrift wirkte schwer). */
 function Lautsprecher({an}) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor" />
+    <svg
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
       {an ? (
-        <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+        <>
           <path d="M15.5 9.2a4 4 0 0 1 0 5.6" />
           <path d="M18 6.8a7.4 7.4 0 0 1 0 10.4" />
-        </g>
+        </>
       ) : (
-        <path
-          d="M15.5 9.5l5 5m0-5l-5 5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
+        <path d="M15.5 9.5l5 5m0-5l-5 5" />
       )}
+    </svg>
+  );
+}
+
+function Kreuz() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+    >
+      <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   );
 }
@@ -469,6 +494,7 @@ export function TapTon({wurzel}) {
   const [zustand, setZustand] = useState('aus');
   // Fenster: null (nie) | 'auf' | 'zu' (schließt gerade) | 'weg'
   const [fenster, setFenster] = useState(null);
+  const [oben, setOben] = useState(null);
 
   useEffect(() => {
     const el = wurzel.current;
@@ -486,6 +512,15 @@ export function TapTon({wurzel}) {
     let zuTimer = null;
     let anGeste = null;
     if (!gemerkt) {
+      // Fester Abstand über dem Titel (48 px), nie höher als knapp unter den
+      // Kopf: „Sound on“, dann „Kohärentes Licht“ (Z109/Z114, Challenger 26.10.).
+      const titel = el.querySelector('.tap-hero-titel');
+      const buehne = el.querySelector('.tap-titelkarte');
+      if (titel && buehne) {
+        const t = titel.getBoundingClientRect().top;
+        const b = buehne.getBoundingClientRect().top;
+        setOben(Math.round(Math.max(b + 24, t - 64 - 48)));
+      }
       setFenster('auf');
       zuTimer = window.setTimeout(() => {
         merke('gesehen');
@@ -547,6 +582,7 @@ export function TapTon({wurzel}) {
           className={`tap-ton-fenster${fenster === 'zu' ? ' tap-ton-fenster-zu' : ''}`}
           role="dialog"
           aria-label="Sound on"
+          style={oben === null ? undefined : {top: `${oben}px`}}
           onAnimationEnd={() => {
             if (fenster === 'zu') setFenster('weg');
           }}
@@ -561,7 +597,7 @@ export function TapTon({wurzel}) {
             onClick={ohneTon}
             aria-label="Ohne Ton weiter"
           >
-            <span aria-hidden="true">×</span>
+            <Kreuz />
           </button>
         </div>
       ) : null}

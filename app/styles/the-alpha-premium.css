@@ -638,7 +638,7 @@
   gap: var(--tap-s-1);
   padding: var(--tap-s-1);
   background: var(--tap-nacht);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--tap-radius);
   transform: translateX(-50%);
   animation: tap-ton-auf 700ms var(--tap-kurve) 150ms both;
@@ -674,16 +674,18 @@
   min-width: 44px;
   font-size: var(--tap-fs-zeile);
   color: var(--tap-leise);
-  border-left: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
 /* Lautsprecher: immer da (Z113), unten links. Über dem Chat-Rahmen (z-index
    200): an 320 px reicht dessen Teaser in den ersten Sekunden bis x = 33 und
-   würde den Tipp sonst schlucken (HB-OVERLAY-0001). */
+   würde den Tipp sonst schlucken (HB-OVERLAY-0001). Lage spiegelbildlich zum
+   Chat-Avatar unten rechts: 20 px Rand, Mitte auf seiner Höhe (gemessen
+   26.10.: Avatar-Mitte 44 px über der Unterkante am Handy, 48 px ab 768 px). */
 .tap-ton-schalter {
   position: fixed;
-  left: var(--tap-s-2);
-  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--tap-s-2));
+  left: 20px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
   z-index: 201;
   display: flex;
   align-items: center;
@@ -700,6 +702,12 @@
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   animation: tap-auf 600ms var(--tap-kurve) both;
+}
+
+@media (min-width: 768px) {
+  .tap-ton-schalter {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
+  }
 }
 
 .tap-ton-schalter-an {
