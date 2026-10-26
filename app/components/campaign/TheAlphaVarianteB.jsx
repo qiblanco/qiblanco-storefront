@@ -120,7 +120,9 @@ export default function TheAlphaVarianteB({preis}) {
     <TapSeite variante="b">
       <TapTitelkarte />
       <TapWoerterbuch />
-      <TapFilm film={THE_ALPHA_VIDEO} />
+      <div className="tab-film">
+        <TapFilm film={THE_ALPHA_VIDEO} />
+      </div>
       <TapKapitel abschnitt={MANIFESTATION} akzent={TAB_AKZENT.manifestation}>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>
