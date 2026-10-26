@@ -40,16 +40,12 @@
 export const TAC_ABSCHLUSS = {
   // Rückfall, wenn die Storefront nicht antwortet (data-preis-quelle="fest").
   festpreis: {amount: '10639.0', currencyCode: 'EUR'},
-  preisZusatz: 'fester Preis',
   // Direkt unter dem roten Knopf: was das Risiko nimmt und wie man zahlt.
+  // Geschützte Leerzeichen halten „Mitte Januar 2027“ und „100 %“ zusammen
+  // (Challenger 26.10.: „Januar / 2027“ brach am Handy um).
   sicher: [
     '20 Tage ab Erhalt testen, voller Kaufpreis zurück',
     'Auch in Raten zahlbar',
-    'Versand ab Mitte Januar 2027, zu 100 % versichert',
+    'Versand ab Mitte\u00a0Januar\u00a02027, zu 100\u00a0% versichert',
   ],
-};
-
-/** Ruhiger zweiter Knopf nach Protection (Ziel: THE_ALPHA_KAUF_ZIEL). */
-export const TAC_ZWISCHEN = {
-  knopf: 'Jetzt reservieren',
 };
