@@ -1,5 +1,9 @@
 import {ProductPrice} from '~/components/ProductPrice';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {
+  GOOGLE_REVIEWS_URL,
+  StarRating,
+  SterneSprung,
+} from '~/components/reusables/StarRating';
 
 /**
  * PREISANKER — Bewertung, Nutzerzahl und Preis als EIN Dreizeiler, dahinter
@@ -38,23 +42,55 @@ import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
  * Kauf-zuerst-Blatt (qb-pdp-kauf-zuerst.css) stellt ihn wie bisher den
  * Preis vor das Formular.
  *
+ * EINHEITLICH UND RUHIG (Christian, 26.10.2026, Job 20261026-design-
+ * preisanker-google-bewertungen-link-einheitlich-alle-produkte), wörtlich:
+ *   "nach den sternen steht in gleicher schriftgröße Google Bewertungen und
+ *    wenn man drüber fährt verändert sich die schriftfarbe, sodass man
+ *    erkennt das es ein Link ist. das 4,8 soll auch in der gleichen
+ *    schriftfarbe sein wie die nutzer und preis ... Nutzer und preis sind
+ *    nicht die gleiche schriftart oder? das wirkt zu bunt"
+ *   "Ultimate Power ... nicht umrandung sondern ausfüllen, also das was
+ *    vorher goldfarben war wird nun das rot, und die schrift ändert sich
+ *    von schwarz in weiß" (das Rot von Qi Alpha, --qb-alpha-rot)
+ * Daraus: Zeile 1 ist "4.8 ★★★★★ Google Bewertungen". Der Link steht NEBEN
+ * dem Sprung-Knopf, nicht in ihm (ein <a> in einem <button> ist kein
+ * gültiges HTML). Ziel ist GOOGLE_REVIEWS_URL, die eine Quelle in
+ * StarRating.jsx; er öffnet einen neuen Tab, damit der Kaufweg offen bleibt.
+ * 4.8, Nutzerzahl und Preis tragen EINE Farbe und EINE Schriftstärke
+ * (qb-preisanker.css, --qb-pa-farbe / --qb-pa-gewicht), auch ein
+ * Angebotspreis: der Verlauf von `.gradient-price` gilt hier nicht.
+ *
+ * `banner={null}` lässt das Banner weg (QiBracelet, Kette); QiOne 2 Pro
+ * übergibt "Bestseller Angebot". Jedes Banner im Preisanker hat dieselbe
+ * Form und Farbe.
+ *
  * @param {{
  *   preis: {handle?: string, price?: object, compareAtPrice?: object},
  *   nutzer?: string,
  *   banner?: string | null,
+ *   quelle?: string,
  * }} props
  */
 export function Preisanker({
   preis,
   nutzer = '+ 14.000 Nutzer',
   banner = 'Ultimate Power',
+  quelle = 'Google Bewertungen',
 }) {
   return (
     <div className="qb-preisanker" data-qb-preisanker="">
-      <SterneSprung className="qb-preisanker__bewertung">
-        <span className="qb-preisanker__note">4.8</span>
-        <StarRating value={4.8} size={16} />
-      </SterneSprung>
+      <div className="qb-preisanker__bewertungszeile">
+        <SterneSprung className="qb-preisanker__bewertung">
+          <span className="qb-preisanker__note">4.8</span>
+          <StarRating value={4.8} size={16} />
+        </SterneSprung>
+        <a
+          className="qb-preisanker__quelle"
+          href={GOOGLE_REVIEWS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >{quelle}</a>
+      </div>
       <p className="qb-preisanker__nutzer">{nutzer}</p>
       <div className="qb-preisanker__preiszeile">
         <ProductPrice

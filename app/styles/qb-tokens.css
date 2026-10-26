@@ -170,6 +170,14 @@
      als Referenz ohne Semantik-Konsument stehen: sie ist der Rueckweg. */
   --qb-ref-gold-kauf: rgb(242, 191, 114);
 
+  /* QI-ALPHA-ROT -- der Wert des Knopfs "Jetzt Exklusiv Reservieren" der
+     Qi-Alpha-Seiten (the-alpha.css --ta-rot). Hier als Haus-Token, weil er
+     seit 2026-10-26 auch ausserhalb der Alpha-Seiten steht: Christian
+     ("Ultimate Power ... das gleiche rot von qi Alpha, da der qi alpha ja ein
+     qihome zum umhaengen ist") -- Flaeche des Preisanker-Banners
+     (qb-preisanker.css). Weiss darauf 6,3:1. */
+  --qb-ref-alpha-rot: #b92200;
+
   /* Neutrale Bahn-Flaeche des Fortschrittsbalkens -- app/styles/app.css:2789
      (.ProgressWrapper, Bestandteil des qb-standard-slider aus Segment s03).
      Von s03 ausdruecklich als offene Stelle an s02 benannt (baukasten/
@@ -198,6 +206,8 @@
   --qb-akzent-tinte: var(--qb-ref-gold-tinte);
   /* Das EINE Gold fuer Flaeche und Linie (Kauf-Gold, siehe Tier 1). */
   --qb-akzent-kauf: var(--qb-ref-gold-kauf);
+  /* Qi-Alpha-Rot als Flaeche (Preisanker-Banner), Schrift darauf weiss. */
+  --qb-alpha-rot: var(--qb-ref-alpha-rot);
   /* Schrift AUF einer Gold-Flaeche -- derselbe Wert wie --qb-text, hier
      unter eigenem semantischen Namen, weil die Rolle eine andere ist
      (vgl. app/styles/app.css:20 --color-on-accent, exakt derselbe Wert). */

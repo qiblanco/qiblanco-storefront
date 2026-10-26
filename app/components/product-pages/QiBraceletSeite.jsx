@@ -6,7 +6,6 @@ import {
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {useRef, useState} from 'react';
-import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
@@ -15,7 +14,7 @@ import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {Preisanker} from '~/components/reusables/Preisanker';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
@@ -23,6 +22,7 @@ import igStyles from '~/styles/ig-testimonials.css?url';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import rand360Styles from '~/styles/qb-360-rand.css?url';
+import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
@@ -95,6 +95,10 @@ export function qiBraceletSeiteLinks() {
     // repair-qihome-air-animation-schwarz-preisanker-ultimate-power).
     // Rückweg: diese Zeile entfernen.
     {rel: 'stylesheet', href: rand360Styles},
+    // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
+    // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
+    // Rückweg: diese Zeile und <Preisanker> unten entfernen.
+    {rel: 'stylesheet', href: preisankerStyles},
     // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*).
     {rel: 'stylesheet', href: produktVideoStyles},
@@ -195,20 +199,18 @@ export function QiBraceletSeite({
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <SterneSprung className="product-rating"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         {/* DIE EINZIGE ABWEICHUNG ZWISCHEN DEN BEIDEN ROUTEN (Christian
             28.09.2026: "gleich bis auf den Beschreibungstext oben beim
             Produkt"): /products den Shopify-Beschreibungstext, /pages die
             Hero-Punkte der Landingpage-Fassung. */}
         {beschreibung}
 
-        <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
-
-        <ProductPrice
-          handle={preis.handle}
-          price={preis.price}
-          compareAtPrice={preis.compareAtPrice}
-        />
+        {/* PREISANKER (Christian 26.10.2026: "das braucht es nun für qione 2
+            pro, qi bracelet und necklace auch"): "4.8 ★★★★★ Google
+            Bewertungen" / "+ 14.000 Nutzer" / Preis, eine Farbe und eine
+            Schrift, ohne Banner. Ersetzt die Sterne-Zeile unter dem Titel und
+            den Absatz "Mehr als 14.000+ aktive Nutzer". */}
+        <Preisanker preis={preis} banner={null} />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}

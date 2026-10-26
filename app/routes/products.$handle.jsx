@@ -8,7 +8,6 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ANGEBOT_HINWEIS, istBegrenztesAngebot} from '~/lib/angebot-limit';
@@ -32,11 +31,17 @@ import {
 import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {brotkrumeSchema, produktSchema} from '~/lib/produkt-schema';
 import {MARKE, produktBeschreibung} from '~/lib/produkt-seo';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
+import {Preisanker} from '~/components/reusables/Preisanker';
+import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 
 export function links() {
-  return [{rel: 'stylesheet', href: tenYearsDealStyles}];
+  return [
+    {rel: 'stylesheet', href: tenYearsDealStyles},
+    // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
+    // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
+    {rel: 'stylesheet', href: preisankerStyles},
+  ];
 }
 /**
  * @type {MetaFunction<typeof loader>}
@@ -325,16 +330,21 @@ function StandardProduct({product}) {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
-        <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
-
         <div data-section="pdp-buybox">
-          <ProductPrice
-            handle={product.handle}
-            price={selectedVariant?.price}
-            compareAtPrice={selectedVariant?.compareAtPrice}
+          {/* PREISANKER (Christian 26.10.2026, Job 20261026-design-
+              preisanker-google-bewertungen-link-einheitlich-alle-produkte):
+              derselbe Dreizeiler wie auf den Kaufseiten, ohne Banner. Ersetzt
+              die Sterne-Zeile unter dem Titel und den Absatz "Mehr als
+              14.000+ aktive Nutzer". */}
+          <Preisanker
+            preis={{
+              handle: product.handle,
+              price: selectedVariant?.price,
+              compareAtPrice: selectedVariant?.compareAtPrice,
+            }}
+            banner={null}
           />
           <ProductForm
             productOptions={productOptions}

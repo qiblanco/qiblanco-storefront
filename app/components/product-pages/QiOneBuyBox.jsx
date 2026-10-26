@@ -7,6 +7,7 @@ import {
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {ProductPrice} from '~/components/ProductPrice';
+import {Preisanker} from '~/components/reusables/Preisanker';
 import {mitStreichpreisFallback} from '~/lib/streichpreis-paritaet';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
@@ -65,7 +66,16 @@ import {Kaufleiste} from '~/components/reusables/Kaufleiste';
  *   videoKachel?: import('react').ReactNode,
  *   dataSection?: string,
  *   kaufleiste?: boolean,
+ *   preisanker?: {banner?: string | null} | null,
  * }} props
+ *
+ * `preisanker` (Default null = Bestand): gesetzt, ersetzt der Dreizeiler
+ * reusables/Preisanker.jsx die Sterne-Zeile (`socialProof`), den
+ * „Mehr als 14.000+"-Absatz (`topBadge`) und den Preis samt `priceLabel` —
+ * alle drei werden dann NICHT gerendert. `banner` geht an den Preisanker
+ * (Christian 26.10.2026: der Dreizeiler auch auf QiOne 2 Pro; Job
+ * 20261026-design-preisanker-google-bewertungen-link-einheitlich-alle-
+ * produkte). Wer ihn setzt, lädt styles/qb-preisanker.css über sein links().
  *
  * `gewaehrleistungsHinweis` wird nur DURCHGEREICHT (Default true, Bestand
  * bleibt byte-identisch). Die Buy-Box entscheidet nichts darueber -- sie
@@ -136,6 +146,7 @@ export function QiOneBuyBox({
   videoKachel = null,
   dataSection = undefined,
   kaufleiste = false,
+  preisanker = null,
 }) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -182,19 +193,25 @@ export function QiOneBuyBox({
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        {socialProof}
+        {preisanker ? null : socialProof}
         {description}
 
-        {topBadge}
+        {preisanker ? (
+          <Preisanker preis={preis} banner={preisanker.banner ?? null} />
+        ) : (
+          <>
+            {topBadge}
 
-        <div className="Bestseller-Price">
-          <ProductPrice
-            handle={preis.handle}
-            price={preis.price}
-            compareAtPrice={preis.compareAtPrice}
-          />
-          {priceLabel}
-        </div>
+            <div className="Bestseller-Price">
+              <ProductPrice
+                handle={preis.handle}
+                price={preis.price}
+                compareAtPrice={preis.compareAtPrice}
+              />
+              {priceLabel}
+            </div>
+          </>
+        )}
 
         <ProductForm
           productOptions={productOptions}
