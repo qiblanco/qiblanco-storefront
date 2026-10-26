@@ -107,7 +107,10 @@ function useTapFilm(wurzel) {
 }
 
 /** Wurzel jeder gestalteten The-Alpha-Seite, mit der dezenten Kaufleiste
- * (Z40: „Wer nicht scrollen will, findet den Kaufknopf“). */
+ * (Z40: „Wer nicht scrollen will, findet den Kaufknopf“). Die Leiste sitzt
+ * oben wie die Produktleiste auf Apple-Seiten: ein schmaler dunkler Streifen,
+ * links der Name, rechts der Knopf; unten läge sie auf Bildern und Etiketten
+ * (Challenger 26.10., Runde 4). */
 export function TapSeite({children, variante = 'a', kaufText = THE_ALPHA_SCHLUSS.knopf}) {
   const wurzel = useRef(null);
   const leiste = useTapFilm(wurzel);
@@ -115,6 +118,7 @@ export function TapSeite({children, variante = 'a', kaufText = THE_ALPHA_SCHLUSS
     <div className="tap-seite" data-the-alpha-premium={variante} ref={wurzel}>
       {children}
       <div className={`tap-leiste${leiste ? ' tap-leiste-an' : ''}`} aria-hidden={!leiste}>
+        <span className="tap-leiste-marke">{THE_ALPHA_MARKE}</span>
         <Link
           className="tap-leiste-knopf"
           to={THE_ALPHA_KAUF_ZIEL}
@@ -151,31 +155,36 @@ export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_AL
           <span className="tap-hero-unter">{untertitel}</span>
         </h1>
       </div>
-      <span className="tap-titelkarte-marke" data-tap-marke="" aria-hidden="true" />
+      <span className="tap-buehne-marke" data-tap-marke="" aria-hidden="true" />
     </header>
   );
 }
 
 /** Szene 3: die Definition als Wörterbuch-Eintrag wie im Vorspann von Pulp
- * Fiction (cremeweiße Serifenschrift auf Schwarz, Quelle unten rechts). */
+ * Fiction (cremeweiße Serifenschrift auf Schwarz, Quelle unten rechts). Die
+ * Tafel steht still (sticky) und „poppt auf“, sobald man in die Szene
+ * scrollt: erst der Eintrag, dann die zweite Bedeutung, dann die Quelle. */
 export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
   const [erste, ...weitere] = eintrag.bedeutungen;
   return (
-    <section className="tap-woerterbuch" aria-label={eintrag.lemma}>
-      <div className="tap-wb-blatt">
-        <p className="tap-wb-satz" data-tap-ein="">
-          <b>{eintrag.lemma}</b> <span className="tap-wb-laut">{eintrag.laut}</span>{' '}
-          <i>{eintrag.wortart}</i> <b>1.</b> {erste}
-        </p>
-        {weitere.map((b, i) => (
-          <p className="tap-wb-satz" key={b} data-tap-ein="" style={{'--tap-folge': i + 1}}>
-            <b>{i + 2}.</b> {b}
+    <section className="tap-woerterbuch" aria-label={eintrag.lemma} data-tap-buehne="">
+      <div className="tap-wb-bild">
+        <div className="tap-wb-blatt">
+          <p className="tap-wb-satz">
+            <b>{eintrag.lemma}</b> <span className="tap-wb-laut">{eintrag.laut}</span>{' '}
+            <i>{eintrag.wortart}</i> <b>1.</b> {erste}
           </p>
-        ))}
-        <p className="tap-wb-quelle" data-tap-ein="" style={{'--tap-folge': weitere.length + 2}}>
-          {eintrag.quelle}
-        </p>
+          {weitere.map((b, i) => (
+            <p className="tap-wb-satz" key={b} style={{'--tap-folge': i + 1}}>
+              <b>{i + 2}.</b> {b}
+            </p>
+          ))}
+          <p className="tap-wb-quelle" style={{'--tap-folge': weitere.length + 1}}>
+            {eintrag.quelle}
+          </p>
+        </div>
       </div>
+      <span className="tap-buehne-marke" data-tap-marke="" aria-hidden="true" />
     </section>
   );
 }
@@ -275,9 +284,11 @@ export function TapMarke({bild, marke = THE_ALPHA_MARKE}) {
       <div className="tap-band">
         <Karte bild={{...bild, etikett: marke}} format="band" sizes="(min-width: 1200px) 1152px, 100vw" />
       </div>
-      <p className="tap-marke-name tap-bam" data-tap-ein="">
-        {marke}
-      </p>
+      <div className="tap-marke-szene">
+        <p className="tap-marke-name tap-bam" data-tap-ein="">
+          {marke}
+        </p>
+      </div>
     </section>
   );
 }

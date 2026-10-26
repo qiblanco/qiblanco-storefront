@@ -35,8 +35,13 @@
   --tap-fs-zeile: 1.25rem;   /* 20 */
   --tap-fs-unter: 1.25rem;   /* 20 */
   --tap-fs-wb: 1.25rem;      /* 20 */
+  --tap-fs-marke: 2.441rem;  /* 39,06 */
+  --tap-fs-edition: 1.5625rem; /* 25 */
   --tap-fs-text: 1rem;       /* 16 */
-  --tap-fs-etikett: 0.8rem;  /* 12,8 */
+  /* Etiketten groß wie in Christians Figma; die Kaufleiste eine Stufe
+     kleiner, damit Name und Knopf am Handy in eine Zeile passen. */
+  --tap-fs-etikett: 1rem;    /* 16 */
+  --tap-fs-leiste: 0.8rem;   /* 12,8 */
 
   --tap-s-1: 8px;
   --tap-s-2: 16px;
@@ -80,6 +85,7 @@
   .tap-seite {
     --tap-fs-hero: 3.815rem;   /* 61,04 */
     --tap-fs-zahl: 3.052rem;   /* 48,83 */
+    --tap-fs-marke: 3.052rem;  /* 48,83 */
   }
 }
 
@@ -92,8 +98,11 @@
     --tap-fs-zeile: 1.5625rem; /* 25 */
     --tap-fs-unter: 1.5625rem; /* 25 */
     --tap-fs-wb: 1.5625rem;    /* 25 */
+    --tap-fs-marke: 4.768rem;  /* 76,29 */
+    --tap-fs-edition: 2.441rem; /* 39,06 */
     --tap-fs-text: 1.25rem;    /* 20 */
-    --tap-fs-etikett: 1rem;    /* 16 */
+    --tap-fs-etikett: 1.25rem; /* 20 */
+    --tap-fs-leiste: 1rem;     /* 16 */
   }
 }
 
@@ -102,7 +111,10 @@
     --tap-fs-hero: 7.451rem;   /* 119,2 */
     --tap-fs-zahl: 4.768rem;   /* 76,29 */
     --tap-fs-h2: 4.768rem;     /* 76,29 */
-    --tap-fs-wb: 1.953rem;     /* 31,25 */
+    /* „THE ALPHA“ ist nach dem Titel die zweitgrößte Schrift (Challenger
+       26.10.: am Höhepunkt muss der Name tragen), der Titel bleibt größer. */
+    --tap-fs-marke: 5.96rem;   /* 95,37 */
+    --tap-fs-edition: 3.052rem; /* 48,83 */
   }
 }
 
@@ -129,15 +141,19 @@
   padding: 0 var(--tap-s-2);
 }
 
-/* Die Marke reicht von 45 svh bis zum Ende der Bühne: auch ein schneller
-   Wisch, der über ihre Oberkante springt, landet in ihr und schaltet den
-   Untertitel zu (eine 1-px-Marke würde übersprungen). */
-.tap-titelkarte-marke {
+/* Bühnen-Marke: reicht von ihrer Oberkante bis zum Ende der Bühne; auch ein
+   schneller Wisch, der über die Oberkante springt, landet in ihr und schaltet
+   die zweite Einblendung zu (eine 1-px-Marke würde übersprungen). */
+.tap-buehne-marke {
   position: absolute;
   top: 45svh;
   bottom: 0;
   left: 0;
   width: 1px;
+}
+
+.tap-woerterbuch .tap-buehne-marke {
+  top: 15svh;
 }
 
 .tap-hero-titel {
@@ -168,15 +184,25 @@
 }
 
 /* ---------- Szene 3: Wörterbuch (Pulp Fiction) ---------- */
+/* Die Tafel steht einen Bildschirm lang still (sticky) und passt ganz auf
+   ihn: Handy 20 px, ab 768 px 25 px (Challenger 26.10.: sie lief vorher über
+   zwei Bildschirme und „poppte“ nicht). */
 .tap-woerterbuch {
+  position: relative;
+  height: 200svh;
+}
+
+.tap-wb-bild {
+  position: sticky;
+  top: 0;
   display: grid;
   place-items: center;
   min-height: 100svh;
-  padding: var(--tap-takt) var(--tap-s-3);
+  padding: var(--tap-s-6) var(--tap-s-3);
 }
 
 .tap-wb-blatt {
-  max-width: 40rem;
+  max-width: 46rem;
   font-family: 'Times New Roman', Times, 'Liberation Serif', 'Noto Serif', Georgia, serif;
   font-size: var(--tap-fs-wb);
   line-height: 1.35;
@@ -304,13 +330,19 @@
   aspect-ratio: 2 / 1;
 }
 
+@media (min-width: 768px) {
+  .tap-karte-band img {
+    aspect-ratio: 3 / 1;
+  }
+}
+
 .tap-etikett {
   position: absolute;
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  min-width: 40%;
-  padding: var(--tap-s-2) var(--tap-s-4);
+  min-width: 11em;
+  padding: var(--tap-s-2) var(--tap-s-3);
   border-radius: var(--tap-radius) var(--tap-radius) 0 0;
   background: var(--tap-nacht);
   color: var(--tap-weiss);
@@ -333,39 +365,56 @@
   padding: 0 var(--tap-s-3);
 }
 
+/* Der Name bekommt einen ganzen Bildschirm Schwarz für sich. */
+.tap-marke-szene {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 0 var(--tap-s-2);
+}
+
 .tap-marke-name {
   margin: 0;
-  padding: var(--tap-takt) var(--tap-s-2) 0;
-  /* h2-Stufe: „THE ALPHA“ mit Sperrung passt so ab 320 px in eine Zeile. */
-  font-size: var(--tap-fs-h2);
+  font-size: var(--tap-fs-marke);
   font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
   color: var(--tap-weiss);
 }
 
 /* ---------- Abspann ---------- */
+/* Schlussszene: ein Bildschirm, darunter Schwarz, bevor der Shop-Fuß kommt. */
 .tap-edition {
-  padding: var(--tap-takt) var(--tap-s-3) calc(var(--tap-takt) * 1.5);
+  display: grid;
+  place-content: center;
+  min-height: 100svh;
+  padding: var(--tap-takt) var(--tap-s-3) max(30svh, calc(var(--tap-takt) * 1.5));
 }
 
 .tap-edition-titel,
 .tap-zahl {
   margin: 0;
   color: var(--tap-weiss);
-  font-size: var(--tap-fs-zahl);
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
+.tap-edition-titel {
+  margin-bottom: var(--tap-s-2);
+  font-size: var(--tap-fs-edition);
+  white-space: nowrap;
+}
+
 .tap-zahl {
+  font-size: var(--tap-fs-zahl);
   margin-bottom: var(--tap-s-8);
   font-variant-numeric: tabular-nums;
 }
 
 .tap-seite .tap-kauf {
-  max-width: 1152px;
+  width: min(1152px, calc(100vw - 2 * var(--tap-s-3)));
   margin: 0 auto;
 }
 
@@ -395,13 +444,26 @@
 }
 
 /* ---------- Kaufleiste (dezent, Z40) ---------- */
-/* Unten mittig, damit sie der Chat-Blase rechts nicht im Weg ist. */
+/* Oben wie die Produktleiste auf Apple-Seiten: schmal, dunkel, durchscheinend;
+   links der Name, rechts der Knopf. Erscheint nach der Titelkarte und geht
+   am Abspann weg. */
 .tap-leiste {
   position: fixed;
-  left: 50%;
-  bottom: calc(var(--tap-s-2) + env(safe-area-inset-bottom, 0px));
-  z-index: 20;
-  transform: translate3d(-50%, 16px, 0);
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tap-s-2);
+  min-height: 52px;
+  padding: env(safe-area-inset-top, 0px) max(var(--tap-s-2), calc((100vw - 1152px) / 2)) 0;
+  background: rgba(0, 0, 0, 0.72);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  transform: translate3d(0, -100%, 0);
   opacity: 0;
   pointer-events: none;
   transition:
@@ -410,33 +472,34 @@
 }
 
 .tap-leiste-an {
-  transform: translate3d(-50%, 0, 0);
+  transform: none;
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Dezent (Z40): dunkle, leicht durchscheinende Pille mit feiner Kante; das
-   Rot bleibt dem großen Balken im Abspann vorbehalten. */
+.tap-leiste-marke {
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-leiste);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
 .tap-leiste-knopf {
   display: block;
-  padding: 12px var(--tap-s-3);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: var(--tap-s-1) var(--tap-s-2);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.72);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: var(--tap-rot);
   color: var(--tap-weiss);
-  font-size: var(--tap-fs-etikett);
+  font-size: var(--tap-fs-leiste);
   font-weight: 600;
   line-height: 1.5;
-  letter-spacing: 0.02em;
   white-space: nowrap;
   text-decoration: none;
 }
 
 .tap-leiste-knopf:hover {
-  background: var(--tap-rot);
-  border-color: var(--tap-rot);
+  background: var(--tap-rot-tief);
   color: var(--tap-weiss);
   text-decoration: none;
 }
@@ -469,6 +532,19 @@
   transform: none;
 }
 
+/* Wörterbuch: wie ein Schnitt im Film; erst der Eintrag, dann Bedeutung 2,
+   dann die Quelle, je 0,5 s später. */
+.tap-js .tap-wb-satz,
+.tap-js .tap-wb-quelle {
+  opacity: 0;
+  transition: opacity 400ms ease calc(var(--tap-folge, 0) * 500ms);
+}
+
+.tap-js .tap-weiter .tap-wb-satz,
+.tap-js .tap-weiter .tap-wb-quelle {
+  opacity: 1;
+}
+
 .tap-js [data-tap-ein] {
   --tap-verzug: calc(var(--tap-folge, 0) * 180ms);
   opacity: 0;
@@ -499,11 +575,15 @@
   .tap-js .tap-hero-unter,
   .tap-js [data-tap-ein],
   .tap-js .tap-bam[data-tap-ein],
+  .tap-js .tap-wb-satz,
+  .tap-js .tap-wb-quelle,
   .tap-leiste {
     transition: none;
   }
 
   .tap-js .tap-hero-unter,
+  .tap-js .tap-wb-satz,
+  .tap-js .tap-wb-quelle,
   .tap-js [data-tap-ein] {
     opacity: 1;
     transform: none;
