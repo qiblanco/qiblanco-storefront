@@ -2,7 +2,7 @@
  * ohne-risiko-daten.js — Texte und Schalter des Abschnitts „ohne Risiko
  * kaufen" auf der Kaufseite /products/qibracelet (und ihrem Spiegel
  * /pages/qibracelet, dieselbe Komponente QiBraceletSeite). Komponente:
- * ./OhneRisikoKaufen.jsx, Stil: styles/amazonstil.css (.qb-or), Test:
+ * ./OhneRisikoKaufen.jsx, Stil: styles/qb-ohne-risiko.css (.qb-or), Test:
  * ./ohne-risiko-daten.test.mjs.
  *
  * WARUM (Auftrag zs-marke-energie-schmuck-20260927-s02, Zielsteuerung, KPI
