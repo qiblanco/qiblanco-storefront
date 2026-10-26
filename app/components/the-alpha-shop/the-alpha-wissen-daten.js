@@ -33,6 +33,7 @@
  */
 
 import {QIMASTER_LITERATURBILDER as BILD} from '../../data/qi-master-literaturbilder.js';
+import {QIMASTER_SECHS_G} from '../../data/qi-master-texte.js';
 
 const KOENIG = 'Dr. Michael König: Das Urwort – Die Physik Gottes. Scorpio, 2011';
 
@@ -95,26 +96,14 @@ export const THE_ALPHA_WISSEN = [
   {
     id: 'sechs-g',
     etikett: '6G',
-    // Christians Wortlaut: das Stil-Tor schneidet ihn über data-fremdtext aus.
+    // Christians Wortlaut vom 17.09.: Text, Überschrift und Quellen kommen aus
+    // der einen Stelle (QIMASTER_SECHS_G), nicht als Kopie. Auf der Seite steht
+    // er in data-fremdtext (Stil-Tor schneidet ihn dort aus).
     wortlaut: 'christian-6g-2026-09-17',
-    titel: '6G-Protection: Die Zukunft kommt.',
+    titel: QIMASTER_SECHS_G.titel,
     bild: null,
-    absaetze: [
-      '6G steht vor der Tür, und die Debatte darüber wird bisher völlig falsch geführt. Wer glaubt, es gehe wieder nur um höhere Datenraten und ein stärkeres Signal, hat den entscheidenden Punkt nicht verstanden. 6G ist keine Verstärkung dessen, was wir kennen — es ist ein Bruch mit der bisherigen Funktechnik. [1][2]',
-      'Der Grund heißt Integrated Sensing and Communication, kurz ISAC. Das Netz sendet nicht mehr nur, es misst. Jede Basisstation, jedes Endgerät wird gleichzeitig zum Radar. Das Netz erfasst Entfernung, Geschwindigkeit, Position, Ausrichtung, Größe, Form, Abbild und sogar Materialien von Objekten in seiner Umgebung [1][2][3][4] — und rekonstruiert daraus die physische Welt, in der es arbeitet. [4][5] Räume, Wände, Möbel, Bewegungen, Gesten, Atmung: alles wird zur auswertbaren Größe. Das ist keine Verschwörungstheorie, das ist der erklärte Zweck der Technologie, nachzulesen in den Papieren von ETSI, ITU und 3GPP.',
-      'Und genau hier liegt das Problem. Wir bekommen eine Infrastruktur, die permanent, flächendeckend und unsichtbar den Raum abtastet, in dem wir leben [3][6] — ohne dass jemand die gesundheitliche Wirkung dieser neuen Signalform ernsthaft untersucht hätte. [8][9] Die Grenzwerte, auf die man sich beruft, stammen aus einer Zeit, in der Funk Sprache übertrug und nicht Räume vermaß. [7] Die Beweislast wird umgedreht: Ausgerollt wird zuerst, geprüft wird — vielleicht — später. Wer Bedenken anmeldet, gilt als fortschrittsfeindlich. Das ist die eigentliche Zumutung.',
-    ],
-    quellen: [
-      '[1] International Telecommunication Union: Framework and Overall Objectives of the Future Development of IMT for 2030 and Beyond. Recommendation ITU-R M.2160-0, Genf, November 2023.',
-      '[2] 3rd Generation Partnership Project: Feasibility Study on Integrated Sensing and Communication. 3GPP TR 22.837, Release 19, V19.4.0, Juni 2024. Ders.: Service Requirements for Integrated Sensing and Communication; Stage 1. 3GPP TS 22.137, Release 19.',
-      '[3] European Telecommunications Standards Institute: ETSI Launches a New Group for Integrated Sensing and Communications, a Candidate Technology for 6G. Pressemitteilung, Sophia Antipolis, 21. November 2023.',
-      '[4] Thorsten Wild, Artjom Grudnitsky, Silvio Mandelli, Marcus Henninger, Junqing Guan, Frank Schaich: 6G Integrated Sensing and Communication – From Vision to Realization. Nokia Bell Labs, Stuttgart 2023.',
-      '[5] Yameng Liu, Jianhua Zhang, Yuxiang Zhang u. a.: A Novel Multi-Reference-Point Modeling Framework for Monostatic Background Channel – Toward 3GPP ISAC Standardization. 2025.',
-      '[6] Elmehdi Illi, Marwa Qaraqe u. a.: Integrating Sensing and Communications in 6G? Not Until It Is Secure to Do So. 2025.',
-      '[7] International Commission on Non-Ionizing Radiation Protection: Guidelines for Limiting Exposure to Electromagnetic Fields (100 kHz to 300 GHz). Health Physics 118(5), 2020, S. 483–524.',
-      '[8] Peter C. Dartsch: Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Applied Cell Biology 9(3), 2021, S. 69–74.',
-      '[9] Ders.: QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japanese Journal of Medicine 4(1), 2021, S. 484–488.',
-    ],
+    absaetze: QIMASTER_SECHS_G.absaetze,
+    quellen: QIMASTER_SECHS_G.quellen,
   },
 ];
 
