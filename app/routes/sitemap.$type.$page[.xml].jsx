@@ -26,7 +26,9 @@ import {
   istVorschauNoindex,
   vorschauSitemapHandles,
 } from '~/lib/vorschau-noindex';
-import {QM_HANDLE, istQiAlpha} from '~/lib/qi-master-addons';
+import {istQiAlpha} from '~/lib/qi-master-addons';
+
+const THE_ALPHA_PFAD = '/products/the-alpha';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?
@@ -165,7 +167,10 @@ export async function loader({request, params, context: {storefront}}) {
     // unter /products/qi-alpha, /products/qi-master ist eine 301. Der
     // Shopify-Handle wechselt erst in s09; bis dahin bildet diese Zeile ihn
     // auf den Routenpfad ab (test/sitemap-qi-alpha-pfad.test.mjs).
-    if (type === 'products' && istQiAlpha(handle)) return `/products/${QM_HANDLE}`;
+    // Seit 2026-10-26 /products/the-alpha (Christian Z4, Grossjob
+    // 20261025-prio1-the-alpha-..., s06); /products/qi-alpha ist jetzt
+    // ebenfalls eine 301.
+    if (type === 'products' && istQiAlpha(handle)) return THE_ALPHA_PFAD;
     if (type !== 'articles') return `/${type}/${handle}`;
     return artikelPfad(karte, handle) ?? OHNE_BLOG;
   };

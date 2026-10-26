@@ -356,6 +356,22 @@ export const AUSSCHLUSS_SEGMENTE = [
   // Eintrag in AUSSCHLUSS_PREFIXE nähme ungefragt fremde Seiten mit. Additiv,
   // reversibel: eine Zeile löschen.
   '/pages/webinar-die-nacht-entscheidet',
+  // DIE DREI ARME DES THE-ALPHA-TESTS (Grossjob 20261025-prio1-the-alpha-
+  // landingpage-figma-vorlage-a-server-b-ki-c, s06; Christian 25.10.2026:
+  // A = Figma 1:1, C = /pages/The-Alpha-B, B = /pages/The-Alpha-C). Gemessen am
+  // 2026-10-25T16:00Z: /pages/The-Alpha?gclid=x gab 302 auf LP A mit lp_m=w.
+  // Ohne diese Zeilen stünden alle drei Arme für Google-Verkehr leer, und
+  // s07 lenkt die Qi-Alpha-Anzeigen genau hierher.
+  '/pages/The-Alpha',
+  '/pages/The-Alpha-B',
+  '/pages/The-Alpha-C',
+  // DIE ALTEN QI-ALPHA-LANDINGPAGES leiten seit s06 per 301 auf
+  // /pages/The-Alpha (Christian Z4: „wir gehen im link weg von qi-alpha hin
+  // zu the alpha"). Ein alter Link mit gclid käme sonst nie bis zur 301,
+  // sondern vorher auf LP A. Additiv, reversibel: Zeilen löschen.
+  '/pages/qi-master-vorverkauf',
+  '/pages/qi-alpha-vorverkauf',
+  '/pages/qi-alpha-b',
   '/go',
   '/collect',
   '/b',
@@ -375,8 +391,16 @@ export const AUSSCHLUSS_PREFIXE = ['/__qb', '/sitemap', '/robots', '/favicon', '
 
 /** true, wenn die Weiche auf diesem Pfad grundsaetzlich nie feuert. */
 export function istAusgeschlossen(pfad) {
+  // GROSS/KLEIN ZÄHLT NICHT (seit 2026-10-26, s06 des The-Alpha-Grossjobs):
+  // React Router löst Routen ohne Rücksicht auf Gross/Klein auf, und Seiten
+  // wie /pages/The-Alpha leiten /pages/the-alpha per 301 auf ihre kanonische
+  // Schreibweise. Die Weiche läuft VOR der Route; verglich sie exakt, warf
+  // sie /pages/the-alpha?gclid=x auf LP A, bevor die 301 greifen konnte.
+  // Mehr Ausschluss erzeugt keine Schleife, nur weniger Umleitung.
+  const pfadKlein = pfad.toLowerCase();
   for (const seg of AUSSCHLUSS_SEGMENTE) {
-    if (pfad === seg || pfad.startsWith(`${seg}/`)) return true;
+    const segKlein = seg.toLowerCase();
+    if (pfadKlein === segKlein || pfadKlein.startsWith(`${segKlein}/`)) return true;
   }
   for (const pre of AUSSCHLUSS_PREFIXE) {
     if (pfad.startsWith(pre)) return true;

@@ -75,6 +75,8 @@ const PFLICHT = [
   '/pages/qi-alpha-vorverkauf',
   '/products/qi-master',
   '/products/qi-alpha',
+  // Umzug auf the-alpha (Christian Z4 vom 25.10.2026, s06): Shop A lebt hier.
+  '/products/the-alpha',
   '/pages/The-Alpha-B',
   '/pages/The-Alpha-C',
 ];
@@ -91,7 +93,7 @@ const NACHBARN = [
   '/pages/the-alpha',
 ];
 
-test('Pfadliste trägt genau die Pfade aus den Aufträgen (sechs + zwei The-Alpha-Testarme)', () => {
+test('Pfadliste trägt genau die Pfade aus den Aufträgen (sechs + Shop A unter the-alpha + zwei The-Alpha-Testarme)', () => {
   assert.deepEqual(LISTE.map((e) => e.pfad).sort(), [...PFLICHT].sort());
 });
 
@@ -127,11 +129,11 @@ test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar
   for (const p of ['/pages/qi-alpha-b', '/products/qi-alpha-b', '/pages/qi-master-vorverkauf', '/pages/qi-alpha-vorverkauf']) {
     assert.equal(erlaubt(r, p), false, p);
   }
-  for (const p of ['/products/qi-master', '/products/qi-alpha']) assert.equal(erlaubt(r, p), true, p);
+  for (const p of ['/products/qi-master', '/products/qi-alpha', '/products/the-alpha']) assert.equal(erlaubt(r, p), true, p);
 });
 
 test('Sitemap-Handles je Typ: alle Listenpfade, auch Shop A', () => {
-  assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master']);
+  assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master', 'the-alpha']);
   assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['The-Alpha-B', 'The-Alpha-C', 'qi-alpha-b', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
 });
 

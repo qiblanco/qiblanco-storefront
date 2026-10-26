@@ -136,5 +136,10 @@ export const THE_ALPHA_SCHLUSS = {
  * Kaufknopf live antwortet (s06): hier '/products/the-alpha' eintragen, sonst
  * nichts. Auch ohne Umstellung bleibt der Knopf heil: s06 leitet
  * /products/qi-master per 301 auf /products/the-alpha.
+ * UMGESTELLT 2026-10-26 (s06-r2) im selben PR wie die Route: der alte Wert
+ * führte nach dem Umzug per 301 auf genau dieselbe Seite, der neue spart nur
+ * den Sprung. Die Seite dahinter ist die kaufbare Produktseite des Qi Alpha
+ * (bis dahin /products/qi-alpha); die neue Shopseite im Apple-Stil (Z9) zieht
+ * an dieselbe Adresse ein. Rückweg: '/products/qi-master'.
  */
-export const THE_ALPHA_KAUF_ZIEL = '/products/qi-master';
+export const THE_ALPHA_KAUF_ZIEL = '/products/the-alpha';

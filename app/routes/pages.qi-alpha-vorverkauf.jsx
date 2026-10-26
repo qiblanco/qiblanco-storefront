@@ -1,3 +1,4 @@
+import {redirect} from 'react-router';
 import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import qiMasterStyles from '~/styles/qi-master.css?url';
@@ -113,6 +114,20 @@ import lpStyles from '~/styles/qi-master-vorverkauf.css?url';
  * es auf der Produktseite nicht gibt. Eine eigene Skala hier wäre ein zweiter
  * Goldton und eine zehnte Schriftgrösse.
  */
+
+/*
+ * SEIT 2026-10-26: 301 AUF /pages/The-Alpha, in EINEM Sprung, Query bleibt.
+ * Christian am 25.10.2026 (Z4): „d.h. wir gehen im link weg von qi-alpha hin
+ * zu the alpha" (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-
+ * a-server-b-ki-c, Segment s06). Der Rest dieser Datei bleibt
+ * unverändert stehen und wird nicht mehr erreicht: Rückweg = den Loader-Sprung
+ * unten entfernen (oder git revert des Umzug-PR).
+ */
+/** @param {LoaderFunctionArgs} args */
+export async function loader({request}) {
+  const url = new URL(request.url);
+  throw redirect(`/pages/The-Alpha${url.search}`, 301);
+}
 
 export function links() {
   return [

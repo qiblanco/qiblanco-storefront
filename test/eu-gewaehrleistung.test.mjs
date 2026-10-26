@@ -1204,7 +1204,8 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
     // in app/routes. CREATE folgt, sobald Elinas Sperre EL-20261002-81b93e47
     // aufgehoben ist -- dann faellt auch diese Zeile hier.
     'app/routes/products.crystal-cacao-create.jsx',
-    'app/routes/products.qi-alpha.jsx',
+    // Seit 2026-10-26 /products/the-alpha (Umzug, Christian Z4 vom 25.10.).
+    'app/routes/products.the-alpha.jsx',
     'app/routes/products.qione-kette.jsx',
   ]) {
     assert.ok(
