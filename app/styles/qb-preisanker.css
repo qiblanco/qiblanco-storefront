@@ -27,6 +27,7 @@
   --qb-pa-fs-bewertung: var(--qb-ref-fs-3, 16px);
   --qb-pa-fs-nutzer: 28px;
   --qb-pa-fs-banner: var(--qb-ref-fs-2, 14px);
+  --qb-pa-fs-streich: var(--qb-ref-fs-5, 20px);
   --qb-pa-abstand: 8px;
   --qb-pa-abstand-preis: 16px;
   --qb-pa-farbe: var(--qb-text, #2c2a26);
@@ -130,8 +131,12 @@
   background: none;
   -webkit-text-fill-color: currentColor;
 }
+.qb-preisanker .qb-preisanker__preiszeile .product-price-on-sale {
+  align-items: baseline;
+  gap: var(--qb-pa-abstand);
+}
 .qb-preisanker .qb-preisanker__preiszeile .product-price s {
-  font-size: var(--qb-pa-fs-bewertung);
+  font-size: var(--qb-pa-fs-streich);
   font-weight: 400;
   color: var(--qb-pa-farbe-gedaempft);
 }
