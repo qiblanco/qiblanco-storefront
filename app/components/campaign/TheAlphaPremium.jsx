@@ -206,7 +206,7 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
 }
 
 /** Lucas Video. Solange es fehlt: das ruhige Standbild, nie ein schwarzes
- * Viereck. Mit Video: Poster sofort, Vorladen in Stufen, Abspielen beim
+ * Viereck. Mit Video: Poster nach dem Titel, Vorladen in Stufen, Abspielen beim
  * Erreichen der Szene, Pause beim Wegscrollen, inline (TheAlphaTon.jsx).
  * Felder in the-alpha-daten.js THE_ALPHA_VIDEO.video: src (MP4, Pflicht),
  * poster, optional hls (sonst aus der Shopify-CDN-Adresse abgeleitet),
@@ -221,7 +221,7 @@ export function TapFilm({film}) {
         <video
           data-tap-video=""
           data-tap-video-ton={tonFeld}
-          poster={video.poster || videoStandbild.url}
+          data-tap-poster={video.poster || videoStandbild.url}
           muted
           loop
           playsInline

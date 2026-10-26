@@ -26,8 +26,9 @@ import {useEffect, useState} from 'react';
  *   ein Akzent ([data-tap-ton] im Gerüst). Tab-Wechsel und Verlassen blenden
  *   aus und halten an. iOS: audioSession „ambient“, damit der Stummschalter
  *   gilt und fremde Musik nicht abbricht.
- * - Video ([data-tap-video]): Poster sofort, die ersten Sekunden nach dem
- *   Laden der Seite im Leerlauf, der Rest kurz vor der Szene. Abspielen beim
+ * - Video ([data-tap-video]): erst steht der Titel, dann kommt das Poster
+ *   (erstes Scrollen oder 3,5 s nach dem Laden), mit dem ersten Scrollen die
+ *   ersten Sekunden, anderthalb Bildschirme vor der Szene der Rest. Abspielen beim
  *   Erreichen der Szene, Pause beim Wegscrollen, am Handy inline. Hat das
  *   Video Ton und ist „Sound on“ an: Grundsound weich herunter (Ducking),
  *   Video-Ton an, danach wieder hoch. Ohne „Sound on“: stumm, Untertitel an,
@@ -304,23 +305,40 @@ function binde_videos(wurzel, m) {
     });
   }
 
-  // Stufe 1: nach dem Laden der Seite, im Leerlauf, die ersten Sekunden.
+  // Stufe 1: das Poster, Stufe 2: die ersten Sekunden. Beides erst, wenn der
+  // Titel steht: beim ersten Scrollen (der Besucher will weiter) oder 3,5 s
+  // nach dem Laden. Gemessen 26.10. (Lighthouse Handy, je 5 Läufe): Poster im
+  // HTML und Vorladen im Leerlauf kosteten +477 ms LCP, weil das Poster vor
+  // dem Titel lud und Chrome über HLS bei „metadata“ schon ~6 MB holte.
   const vorladen = (stufe) => (v) => {
     const rang = {none: 0, metadata: 1, auto: 2};
+    if (!v.poster && v.dataset.tapPoster) v.poster = v.dataset.tapPoster;
     if (rang[v.preload] >= rang[stufe]) return;
     v.preload = stufe;
     if (v.readyState === 0 && v.networkState !== 2) v.load();
   };
-  const leerlauf = () => {
-    const los = () => videos.forEach(vorladen('metadata'));
-    if ('requestIdleCallback' in window) window.requestIdleCallback(los, {timeout: 2500});
-    else window.setTimeout(los, 1200);
+  let ersteStufe = false;
+  const poster = () => videos.forEach((v) => {
+    if (!v.poster && v.dataset.tapPoster) v.poster = v.dataset.tapPoster;
+  });
+  const gescrollt = () => {
+    if (ersteStufe) return;
+    ersteStufe = true;
+    poster();
+    videos.forEach(vorladen('metadata'));
   };
-  if (document.readyState === 'complete') leerlauf();
-  else {
-    window.addEventListener('load', leerlauf, {once: true});
-    aufraeumen.push(() => window.removeEventListener('load', leerlauf));
-  }
+  let spaet = null;
+  const geladen = () => {
+    spaet = window.setTimeout(poster, 3500);
+  };
+  window.addEventListener('scroll', gescrollt, {passive: true, once: true});
+  if (document.readyState === 'complete') geladen();
+  else window.addEventListener('load', geladen, {once: true});
+  aufraeumen.push(() => {
+    window.clearTimeout(spaet);
+    window.removeEventListener('scroll', gescrollt);
+    window.removeEventListener('load', geladen);
+  });
 
   // Stufe 2: anderthalb Bildschirme vor der Szene den Rest puffern.
   const nah = new IntersectionObserver(
