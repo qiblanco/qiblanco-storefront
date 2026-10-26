@@ -1,11 +1,9 @@
 import {redirect, useLoaderData} from 'react-router';
 import TheAlphaVarianteC from '~/components/campaign/TheAlphaVarianteC';
-import {THE_ALPHA_LIVE_ANMELDUNG_STIL} from '~/components/campaign/TheAlphaLiveAnmeldung';
 import {THE_ALPHA_KAUF_ZIEL} from '~/components/campaign/the-alpha-daten';
 import {canonicalLink} from '~/lib/seo';
-import theAlphaStyles from '~/styles/the-alpha.css?url';
+import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 import varianteCStyles from '~/styles/the-alpha-variante-c.css?url';
-import preisankerStyles from '~/styles/qb-preisanker.css?url';
 
 /*
  * /pages/The-Alpha-B — Variante C (KI-optimiert) der The-Alpha-Seite
@@ -13,6 +11,11 @@ import preisankerStyles from '~/styles/qb-preisanker.css?url';
  * s05). Adresse nach KONZEPT Abschnitt 2 und Christian Z6: „C wäre dann
  * https://qiblanco.com/pages/The-Alpha-B“. A = /pages/The-Alpha (Figma),
  * B (Server) = /pages/The-Alpha-C.
+ *
+ * Seit 26.10.2026 erzählt C Christians Film-Geschichte wie A auf dem Gerüst
+ * TheAlphaPremium (Grossjob 20261026-prio1-the-alpha-variante-a-
+ * designmeister-premium-gestaltung, s03); KI-optimiert sind nur die
+ * Feinheiten (TheAlphaVarianteC.jsx).
  *
  * TESTARM: noindex,nofollow (meta + X-Robots-Tag; der Pfad steht zusätzlich
  * in app/lib/vorschau-noindex.js), canonical auf sich selbst, nicht in der
@@ -29,8 +32,7 @@ import preisankerStyles from '~/styles/qb-preisanker.css?url';
  * Antwortet die Storefront nicht, zeigt die Seite Christians Endpreis
  * (data-preis-quelle="fest"), nie einen leeren Preis.
  *
- * TRACKING: kein Pixel-Code hier, kein neuer Schlüssel. Die Live-Anmeldung
- * sendet an die bestehende Action von /pages/live.
+ * TRACKING: kein Pixel-Code hier, kein neuer Schlüssel.
  * RÜCKWEG: hb-deploy revert des Merge-Commits (Seite antwortet dann 404).
  */
 
@@ -38,24 +40,22 @@ const KANON_PFAD = '/pages/The-Alpha-B';
 
 export function links() {
   return [
-    {rel: 'stylesheet', href: theAlphaStyles},
-    {rel: 'stylesheet', href: preisankerStyles},
-    {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
+    {rel: 'stylesheet', href: theAlphaPremiumStyles},
     {rel: 'stylesheet', href: varianteCStyles},
   ];
 }
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Alpha: Gitterchip™ mit Naturdiamant, nur 111 Stück | Qi Blanco'},
+  {title: 'Qi Alpha, Limited 1st. Edition 111/111 | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Qi Alpha: Anhänger aus 750er Gold mit Naturdiamant und Gitterchip™. 111 Stück mit eigener ' +
-      'Nummer, 10.639 €, 20 Tage testen. Live-Vorstellung mit Christian am 8. November.',
+      'Qi Alpha mit Naturdiamant und Gitterchip™, Limited 1st. Edition: 111 Stück, jedes mit eigener ' +
+      'Nummer. 10.639 €, 20 Tage ab Erhalt testen, Versand ab Mitte Januar 2027.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
-  {property: 'og:title', content: 'Qi Alpha: Gitterchip™ mit Naturdiamant, nur 111 Stück'},
+  {property: 'og:title', content: 'Qi Alpha, Limited 1st. Edition 111/111'},
   {
     property: 'og:image',
     content:
