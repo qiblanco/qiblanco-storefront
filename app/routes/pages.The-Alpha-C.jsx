@@ -3,9 +3,8 @@ import TheAlphaVarianteB from '~/components/campaign/TheAlphaVarianteB';
 import {THE_ALPHA_LIVE_ANMELDUNG_STIL} from '~/components/campaign/TheAlphaLiveAnmeldung';
 import {THE_ALPHA_KAUF_ZIEL} from '~/components/campaign/the-alpha-daten';
 import {canonicalLink} from '~/lib/seo';
-import theAlphaStyles from '~/styles/the-alpha.css?url';
+import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 import varianteBStyles from '~/styles/the-alpha-variante-b.css?url';
-import preisankerStyles from '~/styles/qb-preisanker.css?url';
 
 /*
  * /pages/The-Alpha-C — Variante B (Server-Fassung) der The-Alpha-Seite
@@ -18,13 +17,19 @@ import preisankerStyles from '~/styles/qb-preisanker.css?url';
  * Sitemap, kein Menüeintrag. Verkehr bekommt die Seite über die A/B/C-Weiche
  * (s07, lib/experiment-weiche.server.js im Loader von A).
  *
+ * SEIT 26.10.2026 (Grossjob 20261026-prio1-the-alpha-variante-a-designmeister-
+ * premium-gestaltung, s02): B erzählt Christians Film-Geschichte wie A, auf
+ * dem geteilten Gerüst (the-alpha-premium.css) plus Varianten-Stil
+ * (the-alpha-variante-b.css, Scope data-the-alpha-premium='b').
+ *
  * GROß/KLEIN wie A: jede andere Schreibweise -> 301 auf /pages/The-Alpha-C,
  * die Abfrage bleibt erhalten.
  *
  * PREIS: zur Laufzeit aus der Storefront, Produkt = Ziel des roten Knopfs
  * (THE_ALPHA_KAUF_ZIEL), damit Seite und Kaufseite denselben Betrag zeigen.
  * Antwortet die Storefront nicht, zeigt die Seite Christians Endpreis
- * (data-preis-quelle="fest"), nie einen leeren Preis.
+ * (data-preis-quelle="fest"), nie einen leeren Preis. Der Preis steht nur im
+ * Abschluss und ist kleiner als der Titel (Christian Z10).
  *
  * TRACKING: kein Pixel-Code hier, kein neuer Schlüssel. Die Live-Anmeldung
  * sendet an die bestehende Action von /pages/live.
@@ -35,8 +40,7 @@ const KANON_PFAD = '/pages/The-Alpha-C';
 
 export function links() {
   return [
-    {rel: 'stylesheet', href: theAlphaStyles},
-    {rel: 'stylesheet', href: preisankerStyles},
+    {rel: 'stylesheet', href: theAlphaPremiumStyles},
     {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
     {rel: 'stylesheet', href: varianteBStyles},
   ];
@@ -44,15 +48,15 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Alpha: was du bekommst, Limited 1st. Edition 111 Stück | Qi Blanco'},
+  {title: 'Qi Alpha, Limited 1st. Edition 111/111 | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Qi Alpha mit einem Naturdiamanten am Gitterchip™: 111 Stück mit eigener Nummer, 10.639 €, ' +
+      'Qi Alpha mit Diamant, Limited 1st. Edition: 111 Stück mit eigener Nummer, 10.639 €, ' +
       'Versand ab Mitte Januar 2027. Live-Vorstellung mit Christian am 8. November.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
-  {property: 'og:title', content: 'Qi Alpha: was du bekommst'},
+  {property: 'og:title', content: 'Qi Alpha, Limited 1st. Edition 111/111'},
   {
     property: 'og:image',
     content:

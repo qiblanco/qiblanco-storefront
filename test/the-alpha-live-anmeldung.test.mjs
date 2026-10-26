@@ -4,8 +4,8 @@
 //   node --test test/the-alpha-live-anmeldung.test.mjs (läuft in der PR-Suite mit)
 // ARME: NAHT (Einwilligung, Version und Feldnamen gleichen der Action von
 // /pages/live, sonst lehnt sie still als 'einwilligung'/'eingabe' ab),
-// FORM (echtes <form> mit E-Mail-Feld an /pages/live), NUTZEN (3 bis 5
-// Vorteile, jeder mit Grundlage), ALTLAST (kein „Qi Master“, keine Treppe).
+// FORM (echtes <form> mit E-Mail-Feld an /pages/live), FILM (Geschichte wie A,
+// je Kapitel ein Nutzen-Akzent, seit 26.10.), ALTLAST (kein „Qi Master“, keine Treppe).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -52,18 +52,32 @@ test('FORM: echtes Formular mit E-Mail-Feld an /pages/live', () => {
   assert.match(BAUSTEIN, /export function TheAlphaLiveAnmeldung\(/);
 });
 
-test('NUTZEN: 3 bis 5 Vorteile, jeder mit sichtbarer Grundlage', () => {
-  const v = B.TAB_NUTZEN.vorteile;
-  assert.ok(v.length >= 3 && v.length <= 5, `${v.length} Vorteile`);
-  for (const x of v) {
-    assert.ok(x.titel.trim().length > 0);
-    assert.ok(x.grundlage.trim().length > 20, `Grundlage zu ${x.id} fehlt`);
+test('FILM: B erzählt Christians Geschichte, je Kapitel ein Nutzen-Akzent', () => {
+  // Seit 26.10.2026 (Grossjob 20261026-prio1-the-alpha-variante-a-designmeister-
+  // premium-gestaltung, s02): Reihenfolge wie A (Christian Z7/Z8), Feinheit von
+  // B ist der Akzent unter Christians Zeilen (Z9); Live und Fragen erst NACH
+  // dem Knopf.
+  for (const id of ['manifestation', 'protection', 'longevity']) {
+    const a = B.TAB_AKZENT[id];
+    assert.ok(typeof a === 'string' && a.trim().length > 20, `Akzent zu ${id} fehlt`);
+    assert.ok(a.split(/[.!?](\s|$)/).filter((t) => t && t.trim()).length === 1, `Akzent zu ${id} ist mehr als ein Satz`);
   }
-  // Die Seite rendert den Nutzen-Block zuerst.
-  const reihe = ['<Nutzen />', '<Vorlage />', '<Inhalt />', '<Belege />', '<Einwaende />', '<Preis ', '<Live />', '<Fragen />'];
+  const reihe = [
+    '<TapTitelkarte />',
+    '<TapWoerterbuch />',
+    '<TapFilm ',
+    'abschnitt={MANIFESTATION} akzent={TAB_AKZENT.manifestation}',
+    'abschnitt={PROTECTION} akzent={TAB_AKZENT.protection}',
+    'abschnitt={LONGEVITY} akzent={TAB_AKZENT.longevity}',
+    '<TapMarke ',
+    '<TapEdition>',
+    '<Live />',
+    '<Fragen />',
+  ];
   const pos = reihe.map((r) => SEITE.indexOf(r));
-  assert.ok(pos.every((p) => p > 0), `Abschnitt fehlt: ${reihe[pos.indexOf(-1)]}`);
-  assert.deepEqual([...pos].sort((a, b) => a - b), pos, 'Reihenfolge der Abschnitte geändert');
+  assert.ok(pos.every((p) => p > 0), `Szene fehlt: ${reihe[pos.indexOf(-1)]}`);
+  assert.deepEqual([...pos].sort((a, b) => a - b), pos, 'Reihenfolge der Szenen geändert');
+  assert.match(SEITE, /<TapSeite variante="b">/);
 });
 
 test('ALTLAST: kein Qi Master, keine Rabattstaffel oder Vorverkaufstreppe', () => {
