@@ -1,11 +1,14 @@
 import {redirect} from 'react-router';
 import TheAlpha from '~/components/campaign/TheAlpha';
 import {canonicalLink} from '~/lib/seo';
-import theAlphaStyles from '~/styles/the-alpha.css?url';
+import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 
 /*
- * /pages/The-Alpha — Variante A, Christians Figma-Vorlage 1:1 (Grossjob
- * 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s03). Christian (Z2): „link wird sein
+ * /pages/The-Alpha — Variante A (Grossjob 20261025-prio1-the-alpha-landingpage-
+ * figma-vorlage-a-server-b-ki-c, s03). Seit 26.10.2026 gestaltet statt 1:1
+ * (Grossjob 20261026-prio1-the-alpha-variante-a-designmeister-premium-
+ * gestaltung): Bausteine TheAlphaPremium.jsx, Stil the-alpha-premium.css.
+ * Christian (Z2): „link wird sein
  * https://qiblanco.com/pages/The-Alpha“, (Z4): „wir gehen im link weg von
  * qi-alpha hin zu the alpha“. Gekauft wird auf der Shopseite (Z9/Z10); der
  * rote Knopf (TheAlphaKauf) führt dorthin.
@@ -27,7 +30,7 @@ import theAlphaStyles from '~/styles/the-alpha.css?url';
 const KANON_PFAD = '/pages/The-Alpha';
 
 export function links() {
-  return [{rel: 'stylesheet', href: theAlphaStyles}];
+  return [{rel: 'stylesheet', href: theAlphaPremiumStyles}];
 }
 
 /** @type {MetaFunction} */

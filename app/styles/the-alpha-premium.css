@@ -1,0 +1,590 @@
+/*
+ * THE ALPHA PREMIUM: Token-Schicht der gestalteten The-Alpha-Seiten
+ * (Bausteine app/components/campaign/TheAlphaPremium.jsx; Grossjob
+ * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung).
+ *
+ * LEITIDEE (Christian 26.10.): die Seite ist ein Film. „Die ganze Seite ist
+ * ja oben schwarz … und dann wird es eingeblendet in weißer Schrift“, „Wir
+ * wollen hier Drama erzählen“.
+ *
+ * REZEPT (Designmeister):
+ *  - TYPO: die Familie des Ladens, Größen als Tokens auf der Skala 1,25,
+ *    stufig je Breite, Handy zuerst. Der Titel „Kohärentes Licht“ ist IMMER
+ *    die größte Schrift (Z10). EINE Ausnahme in der Familie: die
+ *    Wörterbuch-Szene setzt eine Serifenschrift aus dem System (keine
+ *    Schriftdatei, Ladezeit Z23), wie der Vorspann von Pulp Fiction.
+ *  - ABSTAND: 8-px-Raster, ein Szenentakt (96 Handy, 144 Desktop).
+ *  - FARBE: Schwarz, Weiß, das Creme der Wörterbuch-Schrift, und EIN Akzent:
+ *    das Qi-Alpha-Rot aus Christians Figma (#b92200), nur am Kaufknopf
+ *    (design-meister/db/designsprache/qi-alpha-rot.yaml).
+ *  - BILDER: Karten mit kleinem Radius und schwarzem Etikett unten mittig
+ *    (Figma-Ausschnitte christian-szene-1..3).
+ *  - BEWEGUNG: Einblenden 0,9 s ohne Sprung; Kapitel-Überschriften kommen
+ *    mit Wucht (0,5 s, aus 1,12-facher Größe). Bei prefers-reduced-motion
+ *    steht alles still und ist sofort sichtbar.
+ * Alle Regeln hängen an .tap-seite; die Seiten B und C der alten Fassung
+ * bleiben davon unberührt.
+ */
+.tap-seite {
+  /* Modulare Skala 16 px x 1,25^n, stufig je Breite statt fluid (die Rubrik
+     wertet vw-Zwischenwerte als „wilde Skala“). Gemessen 26.10.: „Kohärentes“
+     ist bei 61,04 px 318 px breit, passt also ab 360 px Fensterbreite. */
+  --tap-fs-hero: 3.052rem;   /* 48,83 */
+  --tap-fs-zahl: 2.441rem;   /* 39,06 */
+  --tap-fs-h2: 2.441rem;     /* 39,06 */
+  --tap-fs-zeile: 1.25rem;   /* 20 */
+  --tap-fs-unter: 1.25rem;   /* 20 */
+  --tap-fs-wb: 1.25rem;      /* 20 */
+  --tap-fs-marke: 2.441rem;  /* 39,06 */
+  --tap-fs-edition: 1.5625rem; /* 25 */
+  --tap-fs-text: 1rem;       /* 16 */
+  /* Etiketten groß wie in Christians Figma; die Kaufleiste eine Stufe
+     kleiner, damit Name und Knopf am Handy in eine Zeile passen. */
+  --tap-fs-etikett: 1rem;    /* 16 */
+  --tap-fs-leiste: 0.8rem;   /* 12,8 */
+
+  --tap-s-1: 8px;
+  --tap-s-2: 16px;
+  --tap-s-3: 24px;
+  --tap-s-4: 32px;
+  --tap-s-6: 48px;
+  --tap-s-8: 64px;
+  --tap-takt: 96px;
+
+  --tap-nacht: #000000;
+  --tap-weiss: #ffffff;
+  --tap-leise: rgba(255, 255, 255, 0.82);
+  /* Creme der Wörterbuch-Schrift (Referenzbild Pulp Fiction). */
+  --tap-creme: #f2ead3;
+  /* Qi-Alpha-Rot: gemessen in Christians Figma (christian-szene-4.png,
+     roter Balken) = #b92200. Im Bestand war kein Qi-Alpha-Rot festgelegt;
+     Christian 26.10.: „in diesem Rot, den wir für den G-Alpha eigentlich
+     festgelegt haben“. */
+  --tap-rot: #b92200;
+  --tap-rot-tief: #961c00;
+
+  --tap-radius: 8px;
+  --tap-mass: 36rem;
+  --tap-breite: 1440px;
+  --tap-dauer: 900ms;
+  --tap-kurve: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: inherit;
+  text-align: center;
+  background: var(--tap-nacht);
+  color: var(--tap-weiss);
+  overflow-x: clip;
+  /* Die Seite ist schwarz und steht hinter dem durchsichtigen Kopf. Ohne
+     Ausgleich läge die Logo-Unterzeile dunkel auf Schwarz. Formel wie PR
+     #1020 (.product-360-hero): gemessene Kopf-Ruhelage minus der Platz, den
+     <main> schon frei hält; Rückfall 135 px = 390er Kopf. */
+  margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+}
+
+@media (min-width: 360px) {
+  .tap-seite {
+    --tap-fs-hero: 3.815rem;   /* 61,04 */
+    --tap-fs-marke: 3.052rem;  /* 48,83 - 111/111 bleibt eine Stufe darunter */
+  }
+}
+
+@media (min-width: 768px) {
+  .tap-seite {
+    --tap-takt: 144px;
+    --tap-fs-hero: 5.96rem;    /* 95,37 */
+    --tap-fs-zahl: 3.815rem;   /* 61,04 */
+    --tap-fs-h2: 3.815rem;     /* 61,04 */
+    --tap-fs-zeile: 1.5625rem; /* 25 */
+    --tap-fs-unter: 1.5625rem; /* 25 */
+    --tap-fs-wb: 1.5625rem;    /* 25 */
+    --tap-fs-marke: 4.768rem;  /* 76,29 */
+    --tap-fs-edition: 2.441rem; /* 39,06 */
+    --tap-fs-text: 1.25rem;    /* 20 */
+    --tap-fs-etikett: 1.25rem; /* 20 */
+    --tap-fs-leiste: 1rem;     /* 16 */
+  }
+}
+
+@media (min-width: 1200px) {
+  .tap-seite {
+    --tap-fs-hero: 7.451rem;   /* 119,2 */
+    --tap-fs-zahl: 4.768rem;   /* 76,29 */
+    --tap-fs-h2: 4.768rem;     /* 76,29 */
+    /* „THE ALPHA“ ist nach dem Titel die zweitgrößte Schrift (Challenger
+       26.10.: am Höhepunkt muss der Name tragen), der Titel bleibt größer. */
+    --tap-fs-marke: 5.96rem;   /* 95,37 */
+    --tap-fs-edition: 3.052rem; /* 48,83 */
+  }
+}
+
+/* app.css legt allen h1/h2 einen weichen Schatten an; hier nie. */
+.tap-seite h1,
+.tap-seite h2 {
+  text-shadow: none;
+}
+
+/* ---------- Szene 1 und 2: Titelkarte ---------- */
+/* Die Bühne ist höher als der Bildschirm; der Titel steht darin still
+   (sticky), und auf halbem Weg erscheint der Untertitel. */
+.tap-titelkarte {
+  position: relative;
+  height: 180svh;
+}
+
+.tap-titelkarte-bild {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 100svh;
+  padding: 0 var(--tap-s-2);
+}
+
+/* Bühnen-Marke: reicht von ihrer Oberkante bis zum Ende der Bühne; auch ein
+   schneller Wisch, der über die Oberkante springt, landet in ihr und schaltet
+   die zweite Einblendung zu (eine 1-px-Marke würde übersprungen). */
+.tap-buehne-marke {
+  position: absolute;
+  top: 45svh;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+}
+
+.tap-woerterbuch .tap-buehne-marke {
+  top: 15svh;
+}
+
+.tap-hero-titel {
+  margin: 0;
+  /* !important: app.css setzt h1/h2 am Handy (<= 749 px) per !important auf
+     1,75/1,5 rem. Der Titel muss die größte Schrift der Seite bleiben
+     (Christian 26.10.), darum hier und in .tap-h2 die Gegenregel im Scope. */
+  font-size: var(--tap-fs-hero) !important;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  color: var(--tap-weiss);
+}
+
+.tap-hero-zeile {
+  display: block;
+}
+
+.tap-hero-unter {
+  display: block;
+  margin-top: var(--tap-s-4);
+  font-size: var(--tap-fs-unter);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--tap-leise);
+}
+
+/* ---------- Szene 3: Wörterbuch (Pulp Fiction) ---------- */
+/* Die Tafel steht einen Bildschirm lang still (sticky) und passt ganz auf
+   ihn: Handy 20 px, ab 768 px 25 px (Challenger 26.10.: sie lief vorher über
+   zwei Bildschirme und „poppte“ nicht). */
+.tap-woerterbuch {
+  position: relative;
+  height: 200svh;
+}
+
+.tap-wb-bild {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: var(--tap-s-6) var(--tap-s-3);
+}
+
+.tap-wb-blatt {
+  max-width: 46rem;
+  font-family: 'Times New Roman', Times, 'Liberation Serif', 'Noto Serif', Georgia, serif;
+  font-size: var(--tap-fs-wb);
+  line-height: 1.35;
+  color: var(--tap-creme);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Farbe am Absatz selbst: app.css färbt <p> global und sticht die
+   geerbte Farbe. */
+.tap-wb-satz,
+.tap-wb-quelle {
+  color: var(--tap-creme);
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.tap-wb-satz {
+  margin: 0 0 var(--tap-s-1);
+}
+
+.tap-wb-satz b {
+  font-weight: 700;
+}
+
+/* Quelle unten rechts, linksbündig in sich (wie im Referenzbild). */
+.tap-wb-quelle {
+  width: fit-content;
+  margin: var(--tap-s-6) 0 0 auto;
+}
+
+/* ---------- Video / Vollbild ---------- */
+.tap-vollbild {
+  margin: 0;
+  padding: 0;
+}
+
+.tap-vollbild img,
+.tap-vollbild video {
+  display: block;
+  width: 100%;
+  max-width: var(--tap-breite);
+  height: auto;
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  .tap-vollbild img,
+  .tap-vollbild video {
+    aspect-ratio: 3 / 2;
+  }
+}
+
+/* ---------- Kapitel ---------- */
+.tap-kapitel {
+  padding: var(--tap-takt) var(--tap-s-3);
+}
+
+.tap-h2 {
+  margin: 0 0 var(--tap-s-4);
+  font-size: var(--tap-fs-h2) !important;
+  color: var(--tap-weiss);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.tap-zeilen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tap-zeilen li {
+  font-size: var(--tap-fs-zeile);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--tap-leise);
+}
+
+.tap-akzent {
+  margin: var(--tap-s-4) auto 0;
+  max-width: var(--tap-mass);
+  font-size: var(--tap-fs-text);
+  line-height: 1.7;
+  color: var(--tap-leise);
+}
+
+/* ---------- Bildkarten mit Etikett ---------- */
+.tap-karten {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tap-s-3);
+  max-width: 560px;
+  margin: var(--tap-s-8) auto 0;
+}
+
+@media (min-width: 768px) {
+  .tap-karten {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--tap-s-4);
+    max-width: 1152px;
+  }
+}
+
+.tap-karte {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--tap-radius);
+}
+
+.tap-karte img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.tap-karte-band img {
+  aspect-ratio: 2 / 1;
+}
+
+@media (min-width: 768px) {
+  .tap-karte-band img {
+    aspect-ratio: 3 / 1;
+  }
+}
+
+.tap-etikett {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  min-width: 11em;
+  padding: var(--tap-s-2) var(--tap-s-3);
+  border-radius: var(--tap-radius) var(--tap-radius) 0 0;
+  background: var(--tap-nacht);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-etikett);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---------- THE ALPHA ---------- */
+.tap-marke {
+  padding: var(--tap-takt) 0 0;
+}
+
+.tap-band {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--tap-s-3);
+}
+
+/* Der Name bekommt einen ganzen Bildschirm Schwarz für sich. */
+.tap-marke-szene {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 0 var(--tap-s-2);
+}
+
+.tap-marke-name {
+  margin: 0;
+  font-size: var(--tap-fs-marke);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--tap-weiss);
+}
+
+/* ---------- Abspann ---------- */
+/* Schlussszene: ein Bildschirm, darunter Schwarz, bevor der Shop-Fuß kommt. */
+.tap-edition {
+  display: grid;
+  place-content: center;
+  min-height: 100svh;
+  padding: var(--tap-takt) var(--tap-s-3) max(30svh, calc(var(--tap-takt) * 1.5));
+}
+
+.tap-edition-titel,
+.tap-zahl {
+  margin: 0;
+  color: var(--tap-weiss);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.tap-edition-titel {
+  margin-bottom: var(--tap-s-2);
+  font-size: var(--tap-fs-edition);
+  white-space: nowrap;
+}
+
+.tap-zahl {
+  font-size: var(--tap-fs-zahl);
+  margin-bottom: var(--tap-s-8);
+  font-variant-numeric: tabular-nums;
+}
+
+.tap-seite .tap-kauf {
+  width: min(1152px, calc(100vw - 2 * var(--tap-s-3)));
+  margin: 0 auto;
+}
+
+.tap-seite .tap-kauf .ta-knopf {
+  display: block;
+  padding: var(--tap-s-4) var(--tap-s-3);
+  border-radius: var(--tap-radius);
+  background: var(--tap-rot);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-zeile);
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background-color 300ms ease;
+}
+
+.tap-seite .tap-kauf .ta-knopf:hover {
+  background: var(--tap-rot-tief);
+  color: var(--tap-weiss);
+  text-decoration: none;
+}
+
+.tap-seite .ta-knopf:focus-visible,
+.tap-leiste-knopf:focus-visible {
+  outline: 2px solid var(--tap-weiss);
+  outline-offset: 4px;
+}
+
+/* ---------- Kaufleiste (dezent, Z40) ---------- */
+/* Oben wie die Produktleiste auf Apple-Seiten: schmal, dunkel, durchscheinend;
+   links der Name, rechts der Knopf. Erscheint nach der Titelkarte und geht
+   am Abspann weg. */
+.tap-leiste {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tap-s-2);
+  min-height: 52px;
+  padding: env(safe-area-inset-top, 0px) max(var(--tap-s-2), calc((100vw - 1152px) / 2)) 0;
+  background: rgba(0, 0, 0, 0.9);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 500ms var(--tap-kurve),
+    transform 500ms var(--tap-kurve);
+}
+
+.tap-leiste-an {
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tap-leiste-marke {
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-leiste);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
+.tap-leiste-knopf {
+  display: block;
+  padding: var(--tap-s-1) var(--tap-s-2);
+  border-radius: 999px;
+  background: var(--tap-rot);
+  color: var(--tap-weiss);
+  font-size: var(--tap-fs-leiste);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.tap-leiste-knopf:hover {
+  background: var(--tap-rot-tief);
+  color: var(--tap-weiss);
+  text-decoration: none;
+}
+
+/* ---------- Einblenden (ohne Sprung) ---------- */
+@keyframes tap-auf {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Titel blendet beim Laden aus dem Schwarz ein (auch ohne JavaScript). */
+.tap-hero-zeile {
+  animation: tap-auf 1600ms var(--tap-kurve) 200ms both;
+}
+
+.tap-js .tap-hero-unter {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 1200ms var(--tap-kurve),
+    transform 1200ms var(--tap-kurve);
+}
+
+.tap-js .tap-weiter .tap-hero-unter {
+  opacity: 1;
+  transform: none;
+}
+
+/* Wörterbuch: wie ein Schnitt im Film; erst der Eintrag, dann Bedeutung 2,
+   dann die Quelle, je 0,5 s später. */
+.tap-js .tap-wb-satz,
+.tap-js .tap-wb-quelle {
+  opacity: 0;
+  transition: opacity 400ms ease calc(var(--tap-folge, 0) * 500ms);
+}
+
+.tap-js .tap-weiter .tap-wb-satz,
+.tap-js .tap-weiter .tap-wb-quelle {
+  opacity: 1;
+}
+
+.tap-js [data-tap-ein] {
+  --tap-verzug: calc(var(--tap-folge, 0) * 180ms);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--tap-dauer) var(--tap-kurve) var(--tap-verzug),
+    transform var(--tap-dauer) var(--tap-kurve) var(--tap-verzug);
+}
+
+/* Kapitel-Überschriften: „bam“, aus etwas größer in die Ruhe. */
+.tap-js .tap-bam[data-tap-ein] {
+  transform: scale(1.12);
+  transition:
+    opacity 500ms cubic-bezier(0.2, 0.9, 0.2, 1) var(--tap-verzug),
+    transform 500ms cubic-bezier(0.2, 0.9, 0.2, 1) var(--tap-verzug);
+}
+
+.tap-js [data-tap-ein].tap-sichtbar {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-hero-zeile {
+    animation: none;
+  }
+
+  .tap-js .tap-hero-unter,
+  .tap-js [data-tap-ein],
+  .tap-js .tap-bam[data-tap-ein],
+  .tap-js .tap-wb-satz,
+  .tap-js .tap-wb-quelle,
+  .tap-leiste {
+    transition: none;
+  }
+
+  .tap-js .tap-hero-unter,
+  .tap-js .tap-wb-satz,
+  .tap-js .tap-wb-quelle,
+  .tap-js [data-tap-ein] {
+    opacity: 1;
+    transform: none;
+  }
+}
