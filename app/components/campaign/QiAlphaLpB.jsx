@@ -1,3 +1,4 @@
+import {useEffect, useRef} from 'react';
 import quelle from '~/data/qi-master-wortlaut.json';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {StudienCards} from '~/components/product-pages/StudienCards';
@@ -91,21 +92,73 @@ export function betrag(preis) {
   }).format(wert);
 }
 
+/**
+ * Produktvideo von Luca (Drive „QiOne Alpha/Animationen“, 26.10.2026): stumm,
+ * mit Christians drei Einblendungen im Bild, Quelle Shopify-CDN (720p-Rendition
+ * des als VIDEO hochgeladenen Reveal, HLS und 480p/1080p am selben Stamm).
+ */
+export const QA_PRODUKTVIDEO = {
+  src: 'https://cdn.shopify.com/videos/c/vp/5340638831464e8183e235969c14de05/5340638831464e8183e235969c14de05.HD-720p-3.0Mbps-98929943.mp4',
+  poster:
+    'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-reveal-poster.jpg?v=1793023786',
+  breite: 1920,
+  hoehe: 1080,
+  alt: 'Qi Alpha: Nahaufnahme des Naturdiamanten, dann der Alpha von allen Seiten',
+  schleife: true,
+};
+
+/** Stummes Schleifenvideo: spielt erst im Bild, steht bei reduzierter Bewegung. */
+function QaSchleifenVideo({video}) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const beobachter = new IntersectionObserver(
+      ([eintrag]) => {
+        if (eintrag.isIntersecting) el.play().catch(() => {});
+        else el.pause();
+      },
+      {threshold: 0.25},
+    );
+    beobachter.observe(el);
+    return () => beobachter.disconnect();
+  }, []);
+  return (
+    <video
+      ref={ref}
+      className="qa-video__medium"
+      src={video.src}
+      poster={video.poster}
+      width={video.breite}
+      height={video.hoehe}
+      aria-label={video.alt}
+      muted
+      loop
+      playsInline
+      preload="none"
+    />
+  );
+}
+
 /** Video-Slot: leer = nichts im DOM (kein Rahmen, kein Abstand). */
 export function QaVideoSlot({video = null}) {
   if (!video?.src) return null;
   return (
     <figure className="qa-video">
-      <video
-        className="qa-video__medium"
-        src={video.src}
-        poster={video.poster}
-        controls
-        playsInline
-        preload="none"
-      >
-        <track kind="captions" src={video.untertitel} srcLang="de" label="Deutsch" />
-      </video>
+      {video.schleife ? (
+        <QaSchleifenVideo video={video} />
+      ) : (
+        <video
+          className="qa-video__medium"
+          src={video.src}
+          poster={video.poster}
+          controls
+          muted
+          playsInline
+          preload="none"
+        />
+      )}
     </figure>
   );
 }
