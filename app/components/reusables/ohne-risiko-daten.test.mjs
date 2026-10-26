@@ -12,7 +12,8 @@ import {readFileSync} from 'node:fs';
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {OHNE_RISIKO, ohneRisikoAn} from './ohne-risiko-daten.js';
+import {OHNE_RISIKO, SAUNA_WEG, ohneRisikoAn} from './ohne-risiko-daten.js';
+import {existsSync} from 'node:fs';
 import {FRISTEN, IM_PREIS} from '../../data/kauf-tatsachen.js';
 import {FAQ_KAUF} from '../../data/faq-seite.js';
 import {FAQ_QIBRACELET} from '../../data/product-faqs.js';
@@ -81,4 +82,27 @@ test('Wortlaut: echte Umlaute, keine Gedankenstriche, kein „kohärent", kein P
   // Nur die Klarna-Schwellen tragen ein €-Zeichen, nie ein Preis der Seite.
   const euro = [...alles.matchAll(/([\d.]+)\s€/g)].map((m) => m[1]);
   assert.deepEqual(euro, ['25', '500', '1.000']);
+});
+
+test('Sauna-Weg: nur qibracelet, Ziel ist die Route der Sauna-Antwort, Linktext wie im Lexikon', () => {
+  assert.deepEqual(SAUNA_WEG.seiten, ['qibracelet']);
+  assert.equal(ohneRisikoAn('qione-2-pro', SAUNA_WEG), false);
+  assert.equal(ohneRisikoAn('qibracelet', {...SAUNA_WEG, seiten: []}), false);
+  assert.equal(SAUNA_WEG.pfad, '/pages/armband-duschen-sauna');
+  assert.ok(existsSync(join(HIER, '..', '..', 'routes', 'pages.armband-duschen-sauna.jsx')));
+  const lexikon = readFileSync(join(HIER, '..', '..', 'data', 'lexikon.js'), 'utf8');
+  assert.ok(lexikon.includes(SAUNA_WEG.text), 'Linktext weicht vom Lexikon-Eintrag ab');
+  // Die Sauna-Seite ist keine Weiterleitung (zusammenlegungen.js führt sie nicht).
+  const zus = readFileSync(join(HIER, '..', '..', 'lib', 'zusammenlegungen.js'), 'utf8');
+  assert.doesNotMatch(zus, /'\/pages\/armband-duschen-sauna':\s*\{/);
+});
+
+test('Einbau: QiBraceletSeite rendert SaunaWeg und Abschnitt direkt nach den Kundenfragen, lädt das Blatt', () => {
+  const seite = readFileSync(join(HIER, '..', 'product-pages', 'QiBraceletSeite.jsx'), 'utf8');
+  const kf = seite.indexOf('<Kundenfragen handle="qibracelet"');
+  const weg = seite.indexOf('<SaunaWeg handle="qibracelet" />');
+  const or = seite.indexOf('<OhneRisikoKaufen handle="qibracelet" />');
+  const qb = seite.indexOf('<QiBracelet block={block}');
+  assert.ok(kf > 0 && kf < weg && weg < or && or < qb, `Reihenfolge ${kf} ${weg} ${or} ${qb}`);
+  assert.match(seite, /qb-ohne-risiko\.css\?url/);
 });

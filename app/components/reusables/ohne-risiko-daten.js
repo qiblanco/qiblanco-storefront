@@ -35,8 +35,19 @@
  * ?markt=US). Eine marktabhängige Überschrift sähe Google, das meist aus den
  * USA liest, nie.
  *
- * RÜCKWEG OHNE CODE-LOGIK: OHNE_RISIKO.seiten = [] (kein Abschnitt, Seite
- * byte-gleich zum Stand davor). Mit Code: hb-deploy revert.
+ * DER WEG ZUR SAUNA-ANTWORT (SAUNA_WEG): eine sichtbare Zeile direkt unter dem
+ * Block „Kunden fragen", dessen erste QiBracelet-Frage Wasser und Sauna ist.
+ * Er führt auf /pages/armband-duschen-sauna, die Seite, deren Titel die
+ * Kundenfrage stellt. Nicht IN den Block geschrieben: AmazonStil.jsx und
+ * amazonstil-daten.js sind mit /products/qione-2-pro und /products/qihome-air
+ * geteilt, und jede Änderung dort zöge beide Seiten in den Deploy (Gate 12,
+ * gemessen 26.10.2026). Diese Datei und OhneRisikoKaufen.jsx erreicht nur die
+ * QiBracelet-Seite. Linktext wie im Lexikon-Eintrag Elektrosmog
+ * (data/lexikon.js).
+ *
+ * RÜCKWEG OHNE CODE-LOGIK: OHNE_RISIKO.seiten = [] (kein Abschnitt) und
+ * SAUNA_WEG.seiten = [] (keine Zeile); beide aus = Seite byte-gleich zum Stand
+ * davor. Mit Code: hb-deploy revert.
  *
  * Nur relative Importe, kein React: läuft unter `node --test` ohne Build.
  */
@@ -81,3 +92,11 @@ export const OHNE_RISIKO = {
 export function ohneRisikoAn(handle, daten = OHNE_RISIKO) {
   return Array.isArray(daten?.seiten) && daten.seiten.includes(handle);
 }
+
+export const SAUNA_WEG = {
+  // Schalter wie oben. [] = aus.
+  seiten: ['qibracelet'],
+  vorspann: 'Wasser, Duschen und Sauna:',
+  pfad: '/pages/armband-duschen-sauna',
+  text: 'Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen?',
+};

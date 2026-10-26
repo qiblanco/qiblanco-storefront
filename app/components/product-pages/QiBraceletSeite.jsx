@@ -28,7 +28,8 @@ import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
 import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
-import {OhneRisikoKaufen} from '~/components/reusables/OhneRisikoKaufen';
+import {OhneRisikoKaufen, SaunaWeg} from '~/components/reusables/OhneRisikoKaufen';
+import ohneRisikoStyles from '~/styles/qb-ohne-risiko.css?url';
 import {amazonstilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {FAQ_QIBRACELET} from '~/data/product-faqs';
@@ -100,6 +101,9 @@ export function qiBraceletSeiteLinks() {
     // Gerätevergleich + Kundenfragen (Amazon-Stil Stufe 2, s04, 27.09.2026).
     // Eigene Klassen (.qb-gv-*, .qb-kf-*); beide Schalter aus = keine Zeile.
     ...(amazonstilAn('qibracelet') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
+    // Rückgabe/Raten in Kundenworten + Weg zur Sauna-Antwort (Auftrag
+    // zs-marke-energie-schmuck-20260927-s02). Eigene Klassen (.qb-or*).
+    {rel: 'stylesheet', href: ohneRisikoStyles},
   ];
 }
 
@@ -283,6 +287,9 @@ export function QiBraceletSeite({
         <GoogleRezensionenBereich />
       </div>
       <Kundenfragen handle="qibracelet" oben={fragen.oben} alle={FAQ_QIBRACELET} />
+      {/* Sichtbarer Weg zur Sauna-Antwortseite direkt unter den
+          Kundenfragen, deren erste Frage hier Wasser und Sauna ist. */}
+      <SaunaWeg handle="qibracelet" />
       {/* Rückgabe und Raten in Kundenworten, offen unter den Kundenfragen:
           die zwei Fragen, die vor dem Kauf zögern lassen (Auftrag
           zs-marke-energie-schmuck-20260927-s02, 26.10.2026; Texte und

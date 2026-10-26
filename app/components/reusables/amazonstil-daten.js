@@ -375,30 +375,7 @@ export const KUNDENFRAGEN = {
     {thema: 'kakao-wie-oft', fragen: ['Wie oft darf man zeremoniellen Kakao trinken?']},
     {thema: 'kakao-psychoaktiv', fragen: ['Was bedeutet psychoaktiv in diesem Zusammenhang?']},
   ],
-  /*
-   * WEITER (Auftrag zs-marke-energie-schmuck-20260927-s02, 26.10.2026): ein
-   * sichtbarer Weg unter einer Frage zu der Seite, die sie ganz beantwortet.
-   * Schlüssel = die Frage wörtlich. Er steht AUSSERHALB der zugeklappten
-   * Antwort: ein Link im `hidden`-Teil sieht niemand, und als Zufahrt zählt er
-   * nicht (Hausregel seiten_zufahrt, faq-seite.js FAQ_KAUF `auch`). Nur die
-   * QiBracelet-Frage: /products/qione-2-pro bleibt unberührt (Rankingwache-
-   * Rücknahme 18.10.2026). Linktext wie im Lexikon-Eintrag Elektrosmog
-   * (data/lexikon.js), dem Titel der Zielseite nachgebaut. {} = aus, jede
-   * Seite byte-gleich zum Stand davor.
-   */
-  weiter: {
-    'Darf das QiBracelet® nass werden, bzw. in die Sauna?': {
-      pfad: '/pages/armband-duschen-sauna',
-      text: 'Kann man ein Armband gegen Elektrosmog beim Duschen und in der Sauna tragen?',
-    },
-  },
 };
-
-/** Der sichtbare Weg unter einer Frage, oder null (KUNDENFRAGEN.weiter). */
-export function weiterFuer(frage, kundenfragen = KUNDENFRAGEN) {
-  const w = kundenfragen?.weiter?.[frage];
-  return w && w.pfad && w.text ? w : null;
-}
 
 function rangVon(frage, rang) {
   let i = 0;
