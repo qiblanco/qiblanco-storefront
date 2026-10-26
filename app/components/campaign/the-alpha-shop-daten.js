@@ -98,33 +98,63 @@ export const NUMMER = {
   },
 };
 
+/*
+ * KETTENBILDER als Paar je Aufnahme (Christian 26.10.: „bei der asuwahl an
+ * godl sich die kettenfarbe in gold ändert … das gold von der umrandung beim
+ * diamten ist sehr gut getroffen“). Beide Fassungen sind aus derselben
+ * Aufnahme gerechnet (claude-jobs/20261026-prio1-the-alpha-variante-a-
+ * designmeister-premium-gestaltung/bin/s04_kette_gold.py): Kette freigestellt,
+ * Grund flach #f5f5f7 (die Seitenfläche) und in beiden Bildern pixelgleich,
+ * Gold als Gradient Map auf die Graustufen der Stahlaufnahme mit der Rampe,
+ * die an der Diamant-Fassung gemessen ist. Die Wahl blendet nur zwischen den
+ * beiden Bildern über, so ändert sich nur die Kette und nichts springt.
+ */
 export const KETTE = {
   auszeichnung: 'Trage ihn luxuriös.',
   titel:
     'Hole Dir jetzt Deine Qi Blanco Goldkette - 750iger ethisches Vollgold',
   bilder: [
     {
-      url: `${CDN}/products/necklace_06.png?v=1698259307`,
+      stahl: `${CDN}/files/the-alpha-kette-verschluss-stahl-f5.jpg?v=1793037744`,
+      gold: `${CDN}/files/the-alpha-kette-verschluss-gold-f5.jpg?v=1793037748`,
       alt: 'Kette von Qi Blanco, Verschluss in Nahaufnahme',
     },
     {
-      url: `${CDN}/files/Necklace_07_fb5094a4-f6c8-4565-a5a8-5b86208cbb94.webp?v=1698259307`,
+      stahl: `${CDN}/files/the-alpha-kette-ganz-stahl-f5.jpg?v=1793037752`,
+      gold: `${CDN}/files/the-alpha-kette-ganz-gold-f5.jpg?v=1793037756`,
       alt: 'Kette von Qi Blanco, ganze Kette mit Karabinerverschluss',
     },
   ],
 };
 
-/** Christians drei Goldlängen, in seiner Reihenfolge; `titel` = Shopify-Variante. */
+/**
+ * Christians drei Goldlängen, in seiner Reihenfolge; `titel` = Shopify-Variante,
+ * `box` = Bildunterschrift in „What's in the Box“ (Christian 26.10.: „so wie
+ * "60 cm - 750iger ethisches Vollgold"“).
+ */
 export const KETTE_LAENGEN = [
-  {titel: '60 cm', name: '60 cm - 750iger ethisches Vollgold'},
-  {titel: '50 cm', name: '50 cm - 750iger ethisches Vollgold'},
-  {titel: '45 cm', name: '45 cm - 750iger ethisches Vollgold'},
+  {
+    titel: '60 cm',
+    name: '60 cm - 750iger ethisches Vollgold',
+    box: '60 cm - 750iger ethisches Vollgold',
+  },
+  {
+    titel: '50 cm',
+    name: '50 cm - 750iger ethisches Vollgold',
+    box: '50 cm - 750iger ethisches Vollgold',
+  },
+  {
+    titel: '45 cm',
+    name: '45 cm - 750iger ethisches Vollgold',
+    box: '45 cm - 750iger ethisches Vollgold',
+  },
 ];
 
 /** Die Kette, die ohne Aufpreis dabei ist (Figma: „60 cm Kette aus Chirurgenstahl - 0€“). */
 export const KETTE_STAHL = {
   titel: 'stahl',
   name: '60 cm Kette aus Chirurgenstahl',
+  box: '60 cm - Kette aus Chirurgenstahl',
 };
 
 export const BEZAHLUNG = {
@@ -149,7 +179,8 @@ export const BEZAHLUNG = {
 export const RATEN = {
   ratenpreis: 9999,
   grenze: 10000,
-  text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999 €',
+  // Geschütztes Leerzeichen: „9.999 €“ bricht nicht um (Challenger s04).
+  text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999\u00a0€',
   code: 'Deinen Ratencode bekommst du von Anna, unten rechts im Chat.',
   mitExtras:
     'Den Qi Alpha ohne Wunschnummer und mit der Kette aus Chirurgenstahl kannst du auch in Raten zahlen.',
@@ -164,6 +195,12 @@ export const ZUSAMMENFASSUNG = {
   knopf: 'In den Warenkorb',
 };
 
+/*
+ * „What's in the Box“ zeigt, was im Karton liegt: der Qi Alpha mit der
+ * gewählten Nummer und die gewählte Kette. Weitere Teile (Etui, Zertifikat,
+ * Ladegerät) nennen weder Shopify noch die Produkttexte; die Box zeigt deshalb
+ * nur diese zwei, bis ein belegter Lieferumfang vorliegt.
+ */
 export const BOX = {
   titel: "What's in the Box",
   hauptBild: GALERIE.bilder[0],
