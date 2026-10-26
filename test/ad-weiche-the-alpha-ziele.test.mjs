@@ -14,7 +14,7 @@
  * /pages/qi-alpha-b) leiten per 301 auf /pages/The-Alpha. Ein alter Link mit
  * gclid käme sonst gar nicht bis zur 301, sondern vorher auf LP A.
  *
- * GROSS/KLEIN: /pages/the-alpha und /pages/THE-ALPHA leiten per 301 auf
+ * SCHREIBWEISE: /pages/the-alpha und /pages/THE-ALPHA leiten per 301 auf
  * /pages/The-Alpha. Die Weiche läuft vor der Route; sie muss diese
  * Schreibweisen deshalb selbst als ausgeschlossen erkennen.
  *

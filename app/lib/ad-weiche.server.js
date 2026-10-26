@@ -391,8 +391,8 @@ export const AUSSCHLUSS_PREFIXE = ['/__qb', '/sitemap', '/robots', '/favicon', '
 
 /** true, wenn die Weiche auf diesem Pfad grundsaetzlich nie feuert. */
 export function istAusgeschlossen(pfad) {
-  // GROSS/KLEIN ZÄHLT NICHT (seit 2026-10-26, s06 des The-Alpha-Grossjobs):
-  // React Router löst Routen ohne Rücksicht auf Gross/Klein auf, und Seiten
+  // DIE SCHREIBWEISE ZÄHLT NICHT (seit 2026-10-26, s06 des The-Alpha-Grossjobs):
+  // React Router löst Routen ohne Rücksicht auf die Schreibweise auf, und Seiten
   // wie /pages/The-Alpha leiten /pages/the-alpha per 301 auf ihre kanonische
   // Schreibweise. Die Weiche läuft VOR der Route; verglich sie exakt, warf
   // sie /pages/the-alpha?gclid=x auf LP A, bevor die 301 greifen konnte.

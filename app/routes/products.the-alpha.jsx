@@ -13,7 +13,6 @@ import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {noindexMeta} from '~/lib/seo';
 import {istVorschauNoindex} from '~/lib/vorschau-noindex';
 import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
@@ -37,7 +36,7 @@ const THE_ALPHA_PDP_PFAD = '/products/the-alpha';
  * Segment s06). Der Produktname bleibt „Qi Alpha", nur die Adresse wechselt.
  * /products/qi-alpha und /products/qi-master sind 301-Hüllen auf diesen Pfad,
  * je in EINEM Sprung. Andere Schreibweisen (/products/The-Alpha) treffen diese
- * Route, weil React Router Gross/Klein nicht unterscheidet; der Loader leitet
+ * Route, weil React Router die Schreibweise nicht unterscheidet; der Loader leitet
  * sie per 301 auf die kleine Schreibweise.
  *
  * Bis 2026-10-26 /products/qi-alpha, bis 2026-10-17 /products/qi-master. Christian am 2026-10-17: „ja bitte auch die
@@ -127,7 +126,9 @@ export const meta = ({data}) => {
   if (istVorschauNoindex(THE_ALPHA_PDP_PFAD)) {
     return [
       {title: `${data?.product?.title ?? 'Qi Alpha'} | ${MARKE}`},
-      noindexMeta(),
+      // Statisch, nicht noindexMeta(): das Zufahrts-Gate (hb-deploy) liest
+      // das Literal in meta() und erspart dann den Zufahrts-Beleg.
+      {name: 'robots', content: 'noindex,nofollow'},
     ];
   }
   return produktMeta({
@@ -150,7 +151,7 @@ export const meta = ({data}) => {
  */
 export async function loader(args) {
   // EINE Schreibweise: /products/The-Alpha und /products/THE-ALPHA treffen
-  // diese Route (Gross/Klein-frei) und gehen in einem Sprung hierher, die
+  // diese Route (Schreibweise egal) und gehen in einem Sprung hierher, die
   // Query bleibt (UTM, Click-IDs, Varianten-Parameter).
   const url = new URL(args.request.url);
   if (url.pathname !== THE_ALPHA_PDP_PFAD) {
