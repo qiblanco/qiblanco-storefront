@@ -47,3 +47,34 @@
 .product-360-hero__video .ImgixVideo-wrap[data-qb-360='qibracelet'] {
   --qb-360-rand-x: 5%;
 }
+
+/* ============================================================================
+   OBERKANTE DES SCHWARZEN BANDS AM HANDY — unter dem Kopf, nicht darunter
+   ----------------------------------------------------------------------------
+   Sicht-Tor dach F-315 (qibracelet) und F-321 (qihome-air), 390x844:
+   "Der schwarze Hero-Block beginnt zu hoch und überdeckt den unteren Teil der
+   Kopfzeile" — die Logo-Unterzeile "FREQUENCY TECHNOLOGY" und die Ränder der
+   Konto-/Warenkorb-Kreise stehen dunkel auf Schwarz und verschwinden.
+
+   GEMESSEN live 2026-10-25 (Rect gegen Rect, HB-OVERLAY-0001): der Kopf
+   (header.header-wrapper, fixed, OHNE eigenen Grund) endet je nach Breite bei
+   118–137 px (390: 137, --qb-kopf-hoehe 135). <main> hält nur
+   calc(var(--header-height) + 40px) = 104 px frei. Unter 750 px steht das
+   Band als ERSTER Block in .qb-pdp-kopf (Kauf-zuerst ist mobil aus) und
+   beginnt bei y=104 — also bis zu 33 px hinter dem durchsichtigen Kopf.
+   Ab 750 px schiebt qb-pdp-kauf-zuerst.css das Band hinter die Kaufbox; dort
+   gibt es den Befund nicht, deshalb wirkt die Regel nur darunter.
+
+   Der Ausgleich ist dieselbe Formel wie im Crystal-Spiegel (SpiegelRahmen)
+   und in der Kassen-Rückkehr-Leiste: gemessene Kopf-Ruhelage minus der Platz,
+   den <main> schon frei hält. Rückfall 135px = 390er Kopf, damit der erste
+   Paint vor dem Messen (useKopfHoeheVariable läuft nach dem Hydrieren) am
+   häufigsten Handy schon richtig steht und nichts nachspringt.
+
+   RÜCKWEG: diesen Block löschen; das Band beginnt dann wieder bei 104 px.
+   ========================================================================== */
+@media (max-width: 749px) {
+  .qb-pdp-kopf:not([data-kauf-zuerst-mobil='an']) > .product-360-hero:first-child {
+    margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+  }
+}
