@@ -63,8 +63,9 @@
 }
 
 /* Die Unterseite „Made in Germany“: am Handy das ganze Quadrat, ab 768 px
-   ein Breitbild 21:9 um den Riegel (Challenger 26.10.: im hohen Schnitt
-   blieb oben eine leere graue Fläche). */
+   ein Breitbild 21:9 um den Riegel in Kartenbreite (Challenger 26.10.: im
+   hohen Schnitt blieb oben eine leere graue Fläche, über die volle Breite
+   wurde die Gravur weich). */
 .tap-seite[data-the-alpha-premium='b'] .tab-unterseite .tap-vollbild img {
   aspect-ratio: 1 / 1 !important;
 }
@@ -72,8 +73,47 @@
 @media (min-width: 768px) {
   .tap-seite[data-the-alpha-premium='b'] .tab-unterseite .tap-vollbild img {
     aspect-ratio: 21 / 9 !important;
+    max-width: 1152px;
     object-position: 50% 45%;
   }
+}
+
+/* Das Studio-Grau kommt aus dem Schwarz und geht wieder hinein, statt mit
+   harter Kante zu enden (Challenger 26.10., Runde 2: „wie ein Wechsel zum
+   Tageslicht“). Am Handy oben und unten, ab 768 px an allen vier Rändern. */
+.tap-seite[data-the-alpha-premium='b'] .tab-film img,
+.tap-seite[data-the-alpha-premium='b'] .tab-unterseite img {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+}
+
+@media (min-width: 768px) {
+  /* Am Desktop zeigt das Standbild das ganze Stück: quadratisch, höchstens
+     ein Bildschirm hoch (unter der Leiste), statt eines zufälligen
+     3:2-Anschnitts. Lucas Video (<video>) bleibt davon unberührt. */
+  .tap-seite[data-the-alpha-premium='b'] .tab-film img {
+    aspect-ratio: 1 / 1 !important;
+    width: min(100%, calc(100svh - 52px)) !important;
+    max-height: none;
+  }
+
+  .tap-seite[data-the-alpha-premium='b'] .tab-film img,
+  .tap-seite[data-the-alpha-premium='b'] .tab-unterseite img {
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+      linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+      linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    mask-composite: intersect;
+  }
+}
+
+/* Die Kaufleiste deckt ganz (Challenger 26.10., Runde 2: Text schien als
+   Geisterbild durch). */
+.tap-seite[data-the-alpha-premium='b'] .tap-leiste {
+  background: var(--tap-nacht);
 }
 
 /* ---------- Abschluss: Preis, kleiner als der Titel ---------- */
@@ -114,6 +154,16 @@
   white-space: nowrap;
 }
 
+/* Mittelpunkt als Trenner erst ab 768 px, wo die drei Angaben in einer
+   Zeile stehen; am Handy steht jede für sich (ein Punkt am Zeilenanfang
+   sähe nach Aufzählung aus). */
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile li + li::before {
+    content: '·';
+    margin-right: var(--tap-s-2);
+  }
+}
+
 /* Nach dem Knopf folgt noch Inhalt: der Abspann braucht unten keinen
    Bildschirm Schwarz mehr, nur einen Szenentakt. */
 .tap-seite[data-the-alpha-premium='b'] .tap-edition {
@@ -123,7 +173,7 @@
 /* ---------- Nach dem Knopf: Live und Fragen ---------- */
 .tap-seite[data-the-alpha-premium='b'] .tab-live,
 .tap-seite[data-the-alpha-premium='b'] .tab-fragen {
-  max-width: var(--tap-mass);
+  max-width: 46rem;
   margin: 0 auto;
   padding: var(--tap-takt) var(--tap-s-3);
   border-top: 1px solid var(--tab-linie);
@@ -141,6 +191,7 @@
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.015em;
+  text-wrap: balance;
 }
 
 .tap-seite[data-the-alpha-premium='b'] .tab-live-wann {
@@ -179,9 +230,19 @@
   color: inherit;
 }
 
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte {
+  max-width: var(--tap-mass);
+  text-align: center;
+}
+
 .tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-titel {
   color: var(--tap-weiss);
   font-weight: 500;
+  text-wrap: balance;
+}
+
+.tap-seite[data-the-alpha-premium='b'] .tab-live-karte .tal-einwilligung {
+  text-align: left;
 }
 
 /* Felder als Unterstrich (Challenger 26.10.: „wirkt wie ein Standard-
