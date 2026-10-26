@@ -23,8 +23,12 @@ import {
  * erst per JavaScript geladen.
  *
  * DIE KAUFLEISTE der Film-Seiten bleibt über diesem Abschnitt verborgen wie
- * im Abspann (Z40): der Abschnitt trägt data-tap-ende, das Merkmal, an dem
- * TheAlphaPremium die Leiste ausblendet.
+ * im Abspann (Z40), weil er NACH der Edition-Szene steht: TheAlphaPremium
+ * blendet die Leiste aus, solange [data-tap-ende] im Bild ODER schon oben
+ * vorbei ist. Der Abschnitt trägt bewusst KEIN eigenes data-tap-ende: der
+ * Beobachter führt nur EINEN Merker (endeDa), ein zweites Ende darunter
+ * setzt ihn beim Zurückscrollen auf false, und die Leiste käme über der
+ * Edition-Szene wieder.
  */
 export function TheAlphaFaq({ton = 'hell', vergeben}) {
   const fragen = theAlphaFaqAufgeloest(vergeben);
@@ -48,7 +52,6 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
       className={`taf taf--${ton}`}
       aria-labelledby={`${basis}-titel`}
       data-the-alpha-faq=""
-      data-tap-ende=""
     >
       <div className="taf-innen">
         <h2 id={`${basis}-titel`} className="taf-titel">
