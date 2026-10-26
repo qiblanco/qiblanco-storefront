@@ -720,12 +720,6 @@
   position: relative;
 }
 
-/* Lucas Reveal ist 16:9 mit eingebrannten Sätzen: ganz zeigen, nie
-   beschneiden (das 4:5 der Standbilder schnitte den Text ab). */
-.tap-film video {
-  aspect-ratio: 16 / 9;
-}
-
 .tap-film-ton {
   position: absolute;
   right: var(--tap-s-2);
