@@ -72,17 +72,17 @@ export const THE_ALPHA_FAQ = [
     id: 'unterschied',
     frage: 'Was trägt der Qi Alpha, das mein QiOne® 2 Pro nicht hat?',
     antwort: [
-      'Im Auge des Qi Alpha sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip™ aus unserer eigenen 750er Goldlegierung.',
+      'Im Auge des Qi Alpha sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip™ aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
       (vergeben) =>
-        `Jeder Qi Alpha trägt seine eigene Nummer. Die finale Politur machen Goldschmiede per Hand. Bereits vergeben sind die Nummern ${vergeben}.`,
+        `Jeder Qi Alpha trägt seine eigene Nummer und wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Bereits vergeben sind die Nummern ${vergeben}.`,
     ],
   },
   {
     id: 'gitterchip',
     frage: 'Wie arbeitet der Gitterchip™ der ultimativen Generation?',
     antwort: [
-      'Der Gitterchip™ arbeitet ganz ohne Strom, ohne Elektronik und ohne Batterie. Seine Kraft kommt aus der Ordnung der Goldatome in unserer eigenen 750er Legierung.',
-      'Sie bilden ein statisches Feld, das das Wasser in deiner Umgebung ordnet, sodass die Wassermoleküle im Gleichtakt schwingen. Der Physiker Emilio Del Giudice hat solche geordneten Bereiche im Wasser beschrieben: ein Zehntel Mikrometer groß, mit Millionen Molekülen im selben Takt.',
+      'Er ordnet das Wasser um dich herum: Seine Moleküle schwingen im Gleichtakt. Der Gitterchip™ ist das Ergebnis von über einem Jahrzehnt Forschung am QiOne® und die außergewöhnlichste Erscheinung: eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
+      'Der Physiker Emilio Del Giudice hat solche geordneten Bereiche im Wasser beschrieben, ein Zehntel Mikrometer groß, mit Millionen Molekülen im selben Takt.',
     ],
   },
   {
@@ -97,8 +97,8 @@ export const THE_ALPHA_FAQ = [
     id: 'sechs-g',
     frage: 'Bin ich mit dem Qi Alpha für 6G gerüstet?',
     antwort: [
-      'Ja, ab dem ersten Tag. Der Gitterchip™ ist auf keine Frequenz gebaut, er arbeitet passiv und ohne Abschirmung. Damit ist es egal, welches Netz sendet: 5G heute, 6G morgen.',
-      'Prof. Dr. Peter C. Dartsch hat den Gitterchip™ des QiOne® 2 Pro in zwei Zellstudien untersucht. Getestet wurde unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg).',
+      'Ja. Durch das einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
+      'Den Gitterchip™ des QiOne® 2 Pro hat Prof. Dr. Peter C. Dartsch unter der Strahlung eines sendenden Smartphones in zwei Zellstudien untersucht.',
     ],
   },
   {
