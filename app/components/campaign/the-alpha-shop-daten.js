@@ -104,10 +104,10 @@ export const NUMMER = {
  * diamten ist sehr gut getroffen“). Beide Fassungen sind aus derselben
  * Aufnahme gerechnet (claude-jobs/20261026-prio1-the-alpha-variante-a-
  * designmeister-premium-gestaltung/bin/s04_kette_gold.py): Kette freigestellt,
- * Grund neutral und in beiden Bildern pixelgleich, Gold als Gradient Map auf
- * die Graustufen der Stahlaufnahme mit der Rampe, die an der Diamant-Fassung
- * gemessen ist. Die Wahl blendet nur zwischen den beiden Bildern über, so
- * ändert sich nur die Kette und nichts springt.
+ * Grund flach #f5f5f7 (die Seitenfläche) und in beiden Bildern pixelgleich,
+ * Gold als Gradient Map auf die Graustufen der Stahlaufnahme mit der Rampe,
+ * die an der Diamant-Fassung gemessen ist. Die Wahl blendet nur zwischen den
+ * beiden Bildern über, so ändert sich nur die Kette und nichts springt.
  */
 export const KETTE = {
   auszeichnung: 'Trage ihn luxuriös.',
@@ -115,13 +115,13 @@ export const KETTE = {
     'Hole Dir jetzt Deine Qi Blanco Goldkette - 750iger ethisches Vollgold',
   bilder: [
     {
-      stahl: `${CDN}/files/the-alpha-kette-verschluss-stahl.jpg?v=1793036566`,
-      gold: `${CDN}/files/the-alpha-kette-verschluss-gold.jpg?v=1793036570`,
+      stahl: `${CDN}/files/the-alpha-kette-verschluss-stahl-f5.jpg?v=1793037744`,
+      gold: `${CDN}/files/the-alpha-kette-verschluss-gold-f5.jpg?v=1793037748`,
       alt: 'Kette von Qi Blanco, Verschluss in Nahaufnahme',
     },
     {
-      stahl: `${CDN}/files/the-alpha-kette-ganz-stahl.jpg?v=1793036575`,
-      gold: `${CDN}/files/the-alpha-kette-ganz-gold.jpg?v=1793036579`,
+      stahl: `${CDN}/files/the-alpha-kette-ganz-stahl-f5.jpg?v=1793037752`,
+      gold: `${CDN}/files/the-alpha-kette-ganz-gold-f5.jpg?v=1793037756`,
       alt: 'Kette von Qi Blanco, ganze Kette mit Karabinerverschluss',
     },
   ],

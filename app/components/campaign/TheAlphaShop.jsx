@@ -432,7 +432,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         <div className="tas-summe-kopf">
           <h2 id="tas-summe-titel" className="tas-summe-titel">
             {ZUSAMMENFASSUNG.titel}{' '}
-            <span className="tas-titel-rest tas-summe-unter">{ZUSAMMENFASSUNG.unter}</span>
+            <span className="tas-titel-rest tas-summe-unter">
+              {ZUSAMMENFASSUNG.unter}
+            </span>
           </h2>
           <img
             className="tas-summe-bild"
@@ -524,7 +526,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             data-tas-kette-farbe={ketteGold ? 'gold' : 'stahl'}
           >
             <KettenBild bild={KETTE.bilder[1]} breite={600} />
-            <figcaption data-tas-box-kette="">{kette?.box ?? kette?.name}</figcaption>
+            <figcaption data-tas-box-kette="">
+              {kette?.box ?? kette?.name}
+            </figcaption>
           </figure>
         </div>
       </section>

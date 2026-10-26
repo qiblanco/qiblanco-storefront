@@ -122,8 +122,8 @@ test('Verdrahtung: /products/the-alpha rendert TheAlphaShop, the-alpha-b die bis
 
 test('Kettenbilder: je Aufnahme ein Stahl- und ein Goldbild, die Box-Unterschrift liest `box` (s04)', () => {
   for (const b of daten.KETTE.bilder) {
-    assert.match(b.stahl, /the-alpha-kette-.+-stahl\.jpg/);
-    assert.match(b.gold, /the-alpha-kette-.+-gold\.jpg/);
+    assert.match(b.stahl, /the-alpha-kette-.+-stahl(-f5)?\.jpg/);
+    assert.match(b.gold, /the-alpha-kette-.+-gold(-f5)?\.jpg/);
   }
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
   assert.match(shop, /data-tas-box-kette="">\{kette\?\.box/);
