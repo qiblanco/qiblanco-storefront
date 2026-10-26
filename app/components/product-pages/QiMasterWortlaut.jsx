@@ -40,13 +40,25 @@ import quelle from '~/data/qi-master-wortlaut.json';
 const ROLLE = ['grund', 'herkunft', 'termin', 'versand'];
 
 /**
+ * DER PRODUKTNAME IST SEIT 2026-10-17 „Qi Alpha" (Christian: „ja bitte auch
+ * die Shopseite und das Produkt. es heißt nun Qi Alpha"). Die Quelle
+ * app/data/qi-master-wortlaut.json bleibt Christians Fassung vom 22.09.2026
+ * Wort für Wort; ersetzt wird beim Anzeigen NUR der Name, kein anderes Wort.
+ * Die Marke ist noch nicht angemeldet, darum ohne ®. Rückweg: diese Funktion
+ * auf `(t) => t` setzen.
+ */
+export function heutigerName(text) {
+  return String(text ?? '').replace(/Qi Master®?/g, 'Qi Alpha');
+}
+
+/**
  * @param {{kompakt?: boolean, ariaLabel?: string}} props
  * `kompakt` schaltet nur die Dichte um (Produktseite: neben dem Kaufknopf;
  * Landingpage: eigener Abschnitt). Es ändert KEINEN Satz.
  */
 export function QiMasterWortlaut({
   kompakt = false,
-  ariaLabel = 'Preis, Auflage und Versand des Qi Master®',
+  ariaLabel = 'Preis, Auflage und Versand des Qi Alpha',
 }) {
   const absaetze = quelle?.wortlaut?.absaetze ?? [];
   if (!absaetze.length) return null;
@@ -56,14 +68,17 @@ export function QiMasterWortlaut({
       className={`qm-wortlaut${kompakt ? ' qm-wortlaut--kompakt' : ''}`}
       aria-label={ariaLabel}
     >
-      {absaetze.map((text, i) => (
-        <p
-          key={ROLLE[i] ?? `absatz-${i}`}
-          className={`qm-wortlaut__absatz qm-wortlaut__absatz--${ROLLE[i] ?? 'grund'}`}
-        >
-          {text}
-        </p>
-      ))}
+      {absaetze.map((roh, i) => {
+        const text = heutigerName(roh);
+        return (
+          <p
+            key={ROLLE[i] ?? `absatz-${i}`}
+            className={`qm-wortlaut__absatz qm-wortlaut__absatz--${ROLLE[i] ?? 'grund'}`}
+          >
+            {text}
+          </p>
+        );
+      })}
     </section>
   );
 }

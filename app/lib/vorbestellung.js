@@ -2,7 +2,8 @@
  * SSoT der Vorbestellungs-Anzeige IM WARENKORB.
  *
  * Christians Anweisung (2026-09-16): liegt der Qi Master im Warenkorb, lautet
- * die Zeile "Qi Master® - Vorbestellung Jan 2027" und der Lieferhinweis
+ * die Zeile "Qi Master® - Vorbestellung Jan 2027" (seit der Umbenennung vom
+ * 2026-10-17: "Qi Alpha - Vorbestellung Jan 2027") und der Lieferhinweis
  * darunter "Versandbereit für Dich: Jan 2027" statt "In 2 bis 3 Tagen bei dir!".
  *
  * WARUM DIE ANZEIGE UND NICHT DER PRODUKTTITEL: der Warenkorb zeigt
@@ -30,11 +31,17 @@
 export const STANDARD_VERSANDHINWEIS = 'In 2 bis 3 Tagen bei dir!';
 
 /** Produkt-Handle -> Anzeige im Warenkorb. */
+// Qi Alpha (bis 2026-10-17 Qi Master; Christian am 2026-10-17: „es heißt
+// nun Qi Alpha"). Beide Handles tragen denselben Eintrag, weil der Shopify-
+// Handle erst in s09 des Umbenennungs-Grossjobs wechselt und Warenkörbe von
+// vorher den alten behalten.
+const QI_ALPHA_VORBESTELLUNG = {
+  warenkorbTitel: 'Qi Alpha - Vorbestellung Jan 2027',
+  versandhinweis: 'Versandbereit für Dich: Jan 2027',
+};
 export const VORBESTELLUNGEN = {
-  'qi-master': {
-    warenkorbTitel: 'Qi Master® - Vorbestellung Jan 2027',
-    versandhinweis: 'Versandbereit für Dich: Jan 2027',
-  },
+  'qi-alpha': QI_ALPHA_VORBESTELLUNG,
+  'qi-master': QI_ALPHA_VORBESTELLUNG,
 };
 
 /** Eintrag zu einem Produkt-Handle, sonst null. */
