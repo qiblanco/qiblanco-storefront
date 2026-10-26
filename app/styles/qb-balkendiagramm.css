@@ -47,6 +47,13 @@
   margin: 0;
 }
 
+.qb-balkendiagramm__messgroesse {
+  margin: var(--qb-ref-raster, 8px) 0 0;
+  font-size: var(--qb-ref-fs-2, 14px);
+  line-height: 1.4;
+  color: var(--qb-text-gedaempft, #6b665d);
+}
+
 .qb-balkendiagramm__flaeche {
   position: relative;
   display: grid;
