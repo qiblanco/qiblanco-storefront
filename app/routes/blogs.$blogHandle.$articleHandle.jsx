@@ -63,10 +63,15 @@ export const meta = ({data, location}) => {
   //
   // KEIN RUECKFALL: fehlt das Metafeld, kommt eine leere Liste und es steht
   // nichts im Kopf. Begründung in app/lib/hreflang.js.
-  const hreflang = artikelHreflangLinks(
-    location?.pathname ?? '',
-    data?.article?.hreflangEn?.value,
-  );
+  //
+  // GEBAUT WIRD IM LOADER, HIER NUR GELESEN (2026-10-26, Elina
+  // EL-20261026-c4d7ed0d): bis dahin stand der rohe Metafeld-Wert
+  // "/blogs/knowledge/..." in den Loader-Daten, die im HTML eingebettet
+  // ausgeliefert werden. Google liest pfadartige Zeichenketten dort auf,
+  // loest sie gegen qiblanco.com auf und meldete 404 auf
+  // qiblanco.com/blogs/knowledge/... Jetzt stehen dort nur die fertigen,
+  // absoluten Adressen (siehe loadCriticalData).
+  const hreflang = data?.hreflangLinks ?? [];
 
   // DAS STRUKTURIERTE DATENOBJEKT (2026-09-09). Bis hierher trugen alle acht
   // Artikel NULL ld+json -- gemessen am ausgelieferten HTML, nicht im Repo.
@@ -156,7 +161,26 @@ async function loadCriticalData({context, request, params}) {
   // Server-Render und Hydration zwei Antworten auf dieselbe Frage.
   const autorenkasten = autorenkastenSichtbarkeit(request.url);
 
-  return {article, blogHandle, blogTitle: blog.title, weitere, autorenkasten};
+  // DIE hreflang-LINKS FERTIG BAUEN, DEN ROHEN METAFELD-WERT NICHT AUSLIEFERN
+  // (2026-10-26, Elina EL-20261026-c4d7ed0d, Search Console 404). Die
+  // Loader-Daten stehen eingebettet im HTML. Stand dort der relative Pfad
+  // "/blogs/knowledge/...", las Google ihn als Adresse auf qiblanco.com auf
+  // (14 Artikel, je ein 404). Der DACH-Pfad kommt aus den Parametern, nicht
+  // aus request.url: er ist dann für Dokument- und Daten-Anfrage derselbe.
+  const {hreflangEn, ...artikelOhneRohwert} = article;
+  const hreflangLinks = artikelHreflangLinks(
+    `/blogs/${blogHandle}/${articleHandle}`,
+    hreflangEn?.value,
+  );
+
+  return {
+    article: artikelOhneRohwert,
+    hreflangLinks,
+    blogHandle,
+    blogTitle: blog.title,
+    weitere,
+    autorenkasten,
+  };
 }
 
 /**
