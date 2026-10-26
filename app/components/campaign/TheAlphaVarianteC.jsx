@@ -10,7 +10,7 @@ import {
 } from '~/components/campaign/TheAlphaPremium';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-alpha-daten';
-import {TAC_ABSCHLUSS, TAC_ZWISCHEN} from '~/components/campaign/the-alpha-variante-c-daten';
+import {TAC_ABSCHLUSS} from '~/components/campaign/the-alpha-variante-c-daten';
 
 /*
  * THE ALPHA, Variante C (KI-optimiert), Adresse /pages/The-Alpha-B.
@@ -27,7 +27,8 @@ import {TAC_ABSCHLUSS, TAC_ZWISCHEN} from '~/components/campaign/the-alpha-varia
  * WAS C ANDERS MACHT (Z9, Feinheiten aus Messdaten, Belege in
  * the-alpha-variante-c-daten.js):
  *  - Länge: der kurze Schnitt, kürzere Bühnen, nichts nach dem Knopf,
- *  - nach Protection ein ruhiger zweiter Knopf (Umriss, kein Rot),
+ *  - nach Protection ein ruhiger zweiter Knopf (Umriss in Etikett-Schrift,
+ *    kein Rot, derselbe Wortlaut wie der rote Knopf),
  *  - im Abschluss der Preis klein über dem roten Knopf, darunter Rückgabe,
  *    Raten und Versand.
  *
@@ -74,7 +75,7 @@ function Preis({preis}) {
       data-tap-ein=""
       style={{'--tap-folge': 3}}
     >
-      {text} · {TAC_ABSCHLUSS.preisZusatz}
+      {text}
     </p>
   );
 }
@@ -92,7 +93,7 @@ export default function TheAlphaVarianteC({preis}) {
       <TapKapitel abschnitt={PROTECTION}>
         <TapKarten bilder={PROTECTION.bilder} />
         <div className="tac-zwischen" data-tac-zwischen="" data-tap-ein="">
-          <TheAlphaKauf className="tac-zwischen-kauf" knopfText={TAC_ZWISCHEN.knopf} />
+          <TheAlphaKauf className="tac-zwischen-kauf" />
         </div>
       </TapKapitel>
       <TapKapitel abschnitt={LONGEVITY} />
