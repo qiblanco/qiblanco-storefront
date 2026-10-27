@@ -808,3 +808,20 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/*
+ * KLEINES, HOCHGESTELLTES ® wie im Qi-Blanco-Logo (Elina EL-20261027-c05a2273:
+ * „nicht in Schriftgröße des Namens“). Gesetzt von reusables/MarkenName.jsx.
+ * Größe in em des Namens, die Oberkante sitzt auf der Versalhöhe; ohne
+ * Einfluss auf die Zeilenhöhe (vertical-align 0 + position relative).
+ */
+.qb-reg {
+  font-size: 0.3em;
+  font-weight: 400;
+  line-height: 0;
+  vertical-align: 0;
+  position: relative;
+  top: -1.75em;
+  margin-left: 0.08em;
+  letter-spacing: 0;
+}
