@@ -7,6 +7,7 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
+import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductImageList} from '~/components/ProductImageList';
@@ -19,14 +20,12 @@ import { useRef, useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {Preisanker} from '~/components/reusables/Preisanker';
+import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
-import preisankerStyles from '~/styles/qb-preisanker.css?url';
-import pdpKetteStyles from '~/styles/pdp-kette.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
@@ -38,11 +37,6 @@ export function links() {
   return [
     {rel: 'stylesheet', href: kaufZuerstStyles},
     {rel: 'stylesheet', href: kaufleisteStyles},
-    // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
-    // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
-    {rel: 'stylesheet', href: preisankerStyles},
-    // Ein H2-Stil, ein Akzent (Rubrik-Pflicht 95, Christian 27.10.2026).
-    {rel: 'stylesheet', href: pdpKetteStyles},
   ];
 }
 
@@ -158,6 +152,7 @@ export default function Product() {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
+        <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
         {/* Die Kette ist Zubehör, das Gerät hat seine eigene Kaufseite
             (Grossjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-
             kannibalisierung, s02). Für „qione 2 pro" stand diese Seite in der
@@ -174,11 +169,13 @@ export default function Product() {
         </p>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
-        {/* PREISANKER (Christian 26.10.2026: "das braucht es nun für qione 2
-            pro, qi bracelet und necklace auch"): der Dreizeiler statt der
-            kleinen Sterne-Zeile unter dem Titel und des Absatzes "Mehr als
-            14.000+ aktive Nutzer", ohne Banner (reusables/Preisanker.jsx). */}
-        <Preisanker preis={preis} banner={null} />
+        <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
+
+        <ProductPrice
+          handle={preis.handle}
+          price={preis.price}
+          compareAtPrice={preis.compareAtPrice}
+        />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
