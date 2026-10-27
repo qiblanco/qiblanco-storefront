@@ -25,7 +25,7 @@ const WEICH = /(?<![\p{L}])(könnte\p{L}*|würde\p{L}*|sollte\p{L}*|soll|sollen|
 
 test('Fragen: acht Themen in Christians Folge, Leitfrage wörtlich zuerst', () => {
   const ids = faq.THE_ALPHA_FAQ.map((f) => f.id);
-  assert.deepEqual(ids, ['mehr', 'fuer-wen', 'unterschied', 'gitterchip', 'diamant', 'sechs-g', 'sauna-wasser', 'rueckgabe']);
+  assert.deepEqual(ids, ['mehr', 'bereit', 'unterschied', 'gitterchip', 'diamant', 'sechs-g', 'sauna-wasser', 'passt-nicht']);
   assert.equal(
     faq.THE_ALPHA_FAQ[0].frage,
     'Was bekomme ich mit dem Qi Alpha, das kein anderes Qi-Blanco-Produkt kann?',
@@ -43,10 +43,10 @@ test('Antworten: ohne Weichmacher, vergebene Nummern aus der einen Liste', () =>
 
 test('Wissen: sechs Abschnitte in Christians Folge, jeder mit Quelle', () => {
   const ids = wissen.THE_ALPHA_WISSEN.map((a) => a.id);
-  assert.deepEqual(ids, ['diamant', 'kristall', 'kohaerenz', 'licht', 'sechs-g']);
+  assert.deepEqual(ids, ['diamant', 'kristall', 'gleichtakt', 'licht', 'sechs-g']);
   for (const a of wissen.THE_ALPHA_WISSEN) assert.ok(a.quellen?.length, `${a.id} ohne Quelle`);
   assert.match(wissen.THE_ALPHA_LIGA.titel, /eine bisher unerreichte Liga/);
-  const k = wissen.THE_ALPHA_WISSEN.find((a) => a.id === 'kohaerenz').absaetze.join(' ');
+  const k = wissen.THE_ALPHA_WISSEN.find((a) => a.id === 'gleichtakt').absaetze.join(' ');
   for (const z of ['3.545 °C', 'Zehntel Mikrometer', 'Millionen Moleküle']) assert.ok(k.includes(z), z);
   const l = wissen.THE_ALPHA_WISSEN.find((a) => a.id === 'licht').absaetze.join(' ');
   for (const z of [/200 und 800 Nanometern/, /41 (%|Prozent)/, /fünf Minuten/]) assert.match(l, z);

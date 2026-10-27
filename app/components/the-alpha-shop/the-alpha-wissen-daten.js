@@ -65,7 +65,7 @@ export const THE_ALPHA_WISSEN = [
     quellen: [`${KOENIG}, S. 169–172.`],
   },
   {
-    id: 'kohaerenz',
+    id: 'gleichtakt',
     etikett: 'Kohärenz',
     titel: 'Kohärenz: alles schwingt im Gleichtakt.',
     bild: BILD['Kohärenz'],

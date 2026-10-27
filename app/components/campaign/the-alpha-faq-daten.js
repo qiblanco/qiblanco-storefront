@@ -61,7 +61,7 @@ export const THE_ALPHA_FAQ = [
     ],
   },
   {
-    id: 'fuer-wen',
+    id: 'bereit',
     frage: 'Bin ich bereit für den Qi Alpha?',
     antwort: [
       'Ja, wenn du alles willst. Der Qi Alpha ist gemacht für Menschen, die das Maximum aus ihrem Leben holen, beruflich und privat. Für den Alltag ist der QiOne® 2 Pro mehr als ausreichend.',
@@ -110,7 +110,7 @@ export const THE_ALPHA_FAQ = [
     ],
   },
   {
-    id: 'rueckgabe',
+    id: 'passt-nicht',
     frage: 'Was ist, wenn er nicht zu mir passt?',
     antwort: [
       'Dann gibst du ihn zurück. Ab Erhalt hast du 20 Tage, um den Qi Alpha in Ruhe zu erleben. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück.',
