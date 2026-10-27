@@ -40,19 +40,23 @@ const SEITENBAND = {
   height: 968,
 };
 
-export default function TheAlpha() {
+/** Elina 27.10.2026 (EL-20261027-9707359d, Vorschau): die Dreier-Zeilen
+ * stehen in EINER Zeile mit Mittelpunkt (`reihe`), die Bild-Etiketten ohne
+ * schwarzen Balken. `etikett` = 'verlauf' (Variante A) oder 'pille'
+ * (Variante B); Elina wählt, danach bleibt nur ihr Wert stehen. */
+export default function TheAlpha({etikett = 'verlauf'}) {
   return (
-    <TapSeite variante="a">
+    <TapSeite variante="a" etikett={etikett}>
       <TapTitelkarte />
       <TapWoerterbuch />
       <TapFilm film={THE_ALPHA_VIDEO} />
-      <TapKapitel abschnitt={MANIFESTATION}>
+      <TapKapitel abschnitt={MANIFESTATION} reihe>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>
-      <TapKapitel abschnitt={PROTECTION}>
+      <TapKapitel abschnitt={PROTECTION} reihe>
         <TapKarten bilder={PROTECTION.bilder} />
       </TapKapitel>
-      <TapKapitel abschnitt={LONGEVITY} />
+      <TapKapitel abschnitt={LONGEVITY} reihe />
       <TapMarke bild={SEITENBAND} />
       <TapEdition />
     </TapSeite>

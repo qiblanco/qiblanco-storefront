@@ -1,4 +1,4 @@
-import {redirect} from 'react-router';
+import {Link, redirect, useLoaderData} from 'react-router';
 import TheAlpha from '~/components/campaign/TheAlpha';
 import {canonicalLink} from '~/lib/seo';
 import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
@@ -57,11 +57,67 @@ export async function loader({request}) {
   if (pfad !== KANON_PFAD) {
     throw redirect(`${KANON_PFAD}${url.search}`, 301);
   }
-  return {};
+  // NUR VORSCHAU (Elina EL-20261027-9707359d, Zweig vorschau/the-alpha-
+  // dreier-etikett, NICHT MERGEN): ?etikett=a (Verlauf) | b (Pille) wählt
+  // die Etikett-Variante, ?schalter=0 blendet den Umschalter aus
+  // (Bildschirmfotos). Nach Elinas Wahl fallen Abfrage und Umschalter weg.
+  const wahl = url.searchParams.get('etikett') === 'b' ? 'b' : 'a';
+  return {wahl, schalter: url.searchParams.get('schalter') !== '0'};
 }
 
+const ETIKETT_STIL = {a: 'verlauf', b: 'pille'};
+
 export default function TheAlphaRoute() {
-  return <TheAlpha />;
+  const {wahl, schalter} = useLoaderData();
+  return (
+    <>
+      <TheAlpha etikett={ETIKETT_STIL[wahl]} />
+      {schalter ? <VorschauSchalter wahl={wahl} /> : null}
+    </>
+  );
+}
+
+/** Umschalter der Vorschau, unten links, nicht Teil der Seite. */
+function VorschauSchalter({wahl}) {
+  const knopf = (w, text) => (
+    <Link
+      to={`?etikett=${w}`}
+      preventScrollReset
+      replace
+      aria-current={wahl === w ? 'true' : undefined}
+      style={{
+        padding: '6px 12px',
+        borderRadius: 999,
+        textDecoration: 'none',
+        color: wahl === w ? '#000' : '#fff',
+        background: wahl === w ? '#fff' : 'transparent',
+      }}
+    >
+      {text}
+    </Link>
+  );
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left: 12,
+        bottom: 12,
+        zIndex: 60,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+        padding: 4,
+        borderRadius: 999,
+        background: 'rgba(30,30,30,0.92)',
+        border: '1px solid rgba(255,255,255,0.25)',
+        font: '500 13px/1 system-ui, sans-serif',
+      }}
+    >
+      <span style={{color: 'rgba(255,255,255,0.7)', padding: '0 8px'}}>Vorschau</span>
+      {knopf('a', 'A Verlauf')}
+      {knopf('b', 'B Pille')}
+    </div>
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {Fragment, useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
@@ -117,11 +117,21 @@ function useTapFilm(wurzel) {
  * oben wie die Produktleiste auf Apple-Seiten: ein schmaler dunkler Streifen,
  * links der Name, rechts der Knopf; unten läge sie auf Bildern und Etiketten
  * (Challenger 26.10., Runde 4). */
-export function TapSeite({children, variante = 'a', kaufText = THE_ALPHA_SCHLUSS.knopf}) {
+export function TapSeite({
+  children,
+  variante = 'a',
+  kaufText = THE_ALPHA_SCHLUSS.knopf,
+  etikett = null,
+}) {
   const wurzel = useRef(null);
   const leiste = useTapFilm(wurzel);
   return (
-    <div className="tap-seite" data-the-alpha-premium={variante} ref={wurzel}>
+    <div
+      className="tap-seite"
+      data-the-alpha-premium={variante}
+      data-tap-etikett={etikett || undefined}
+      ref={wurzel}
+    >
       {children}
       <TapTon wurzel={wurzel} />
       <div className={`tap-leiste${leiste ? ' tap-leiste-an' : ''}`} aria-hidden={!leiste}>
@@ -242,9 +252,73 @@ export function TapFilm({film}) {
   return <TapVollbild bild={videoStandbild} />;
 }
 
+/** Dreier-Zeile in EINER Zeile (Elina EL-20261027-9707359d): „Starker Schutz
+ * · Starke Zellen · Starker Willen“, Mittelpunkt statt Punkt am Ende. Bricht
+ * die Zeile am Handy um, darf kein Punkt am Zeilenrand hängen: der Trenner vor
+ * dem ersten Wort einer neuen Zeile wird zum harten Umbruch ohne Breite
+ * (tap-reihe-bruch), so steht jede Zeile sauber zentriert. Gemessen wird mit
+ * allen Trennern sichtbar; der Umbruch ist erzwungen, also springt nach dem
+ * Ausblenden nichts zurück. Ohne JavaScript bleibt die Reihe lesbar. */
+function useReihenUmbruch(reihe) {
+  useEffect(() => {
+    const el = reihe.current;
+    if (!el) return undefined;
+    let breite = -1;
+    const messen = () => {
+      const trenner = el.querySelectorAll('.tap-reihe-trenner');
+      trenner.forEach((t) => t.classList.remove('tap-reihe-bruch'));
+      const woerter = el.querySelectorAll('.tap-reihe-wort');
+      for (let i = 1; i < woerter.length; i++) {
+        if (woerter[i].offsetTop > woerter[i - 1].offsetTop + 2) {
+          trenner[i - 1]?.classList.add('tap-reihe-bruch');
+        }
+      }
+    };
+    messen();
+    document.fonts?.ready?.then(messen);
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(([e]) => {
+      const w = Math.round(e.contentRect.width);
+      if (w === breite) return;
+      breite = w;
+      messen();
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [reihe]);
+}
+
+function TapReihe({zeilen}) {
+  const reihe = useRef(null);
+  useReihenUmbruch(reihe);
+  const woerter = zeilen.map((z) => z.replace(/\.\s*$/, ''));
+  return (
+    <p className="tap-zeilen tap-reihe" ref={reihe}>
+      {woerter.map((w, i) => (
+        <Fragment key={w}>
+          {i > 0 ? (
+            <span
+              className="tap-reihe-trenner"
+              aria-hidden="true"
+              data-tap-ein=""
+              style={{'--tap-folge': i + 1}}
+            >
+              ·
+            </span>
+          ) : null}
+          <span className="tap-reihe-wort" data-tap-ein="" style={{'--tap-folge': i + 1}}>
+            {w}
+          </span>
+        </Fragment>
+      ))}
+    </p>
+  );
+}
+
 /** Ein Kapitel: die englische Überschrift kommt mit Wucht („bam, bam, bam“),
- * danach Christians drei Zeilen nacheinander. */
-export function TapKapitel({abschnitt, akzent = null, children}) {
+ * danach Christians drei Zeilen nacheinander, mit `reihe` in einer Zeile
+ * (TapReihe). */
+export function TapKapitel({abschnitt, akzent = null, reihe = false, children}) {
   return (
     <section
       className="tap-kapitel"
@@ -259,13 +333,17 @@ export function TapKapitel({abschnitt, akzent = null, children}) {
       >
         {abschnitt.titel}
       </h2>
-      <ul className="tap-zeilen">
-        {abschnitt.zeilen.map((z, i) => (
-          <li key={z} data-tap-ein="" style={{'--tap-folge': i + 1}}>
-            {z}
-          </li>
-        ))}
-      </ul>
+      {reihe ? (
+        <TapReihe zeilen={abschnitt.zeilen} />
+      ) : (
+        <ul className="tap-zeilen">
+          {abschnitt.zeilen.map((z, i) => (
+            <li key={z} data-tap-ein="" style={{'--tap-folge': i + 1}}>
+              {z}
+            </li>
+          ))}
+        </ul>
+      )}
       {akzent ? (
         <p className="tap-akzent" data-tap-ein="">
           {akzent}
@@ -277,12 +355,16 @@ export function TapKapitel({abschnitt, akzent = null, children}) {
 }
 
 /** Bildkarte mit schwarzem Etikett unten mittig (Figma-Stil). Die
- * DIAMANT-Karte klingt beim Erscheinen (Glanz-Ton, RAW → DIAMANT). */
+ * DIAMANT-Karte klingt beim Erscheinen (Glanz-Ton, RAW → DIAMANT).
+ * Etikett-Stil über TapSeite etikett (Elina EL-20261027-9707359d, Vorschau):
+ * 'verlauf' = Variante A, weißes Wort auf weichem schwarzem Verlauf;
+ * 'pille' = Variante B, schwarzes Wort in heller Pille mit Haarlinie.
+ * Ohne Angabe bleibt der schwarze Balken. Nur CSS (tap-karte-etikett). */
 function Karte({bild, sizes, folge = 0, format = 'quadrat'}) {
   const glanz = /diamant/i.test(bild.etikett || '');
   return (
     <figure
-      className={`tap-karte tap-karte-${format}`}
+      className={`tap-karte tap-karte-${format}${bild.etikett ? ' tap-karte-etikett' : ''}`}
       data-tap-ein=""
       data-tap-ton={glanz ? 'glanz' : undefined}
       data-tap-ton-verzug={glanz ? folge * 180 : undefined}

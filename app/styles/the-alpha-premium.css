@@ -364,6 +364,91 @@
   white-space: nowrap;
 }
 
+/* Etikett ohne Balken (Elina EL-20261027-9707359d, Vorschau, zwei
+   Varianten an [data-tap-etikett] der Wurzel). Schrift, Größe und Laufweite
+   bleiben die von .tap-etikett.
+   A „verlauf“: unten im Bild ein weicher schwarzer Verlauf, am Bildrand nur
+   leicht abgedunkelt (55 %, nie ganz schwarz), nach oben auslaufend; das
+   Wort weiß an der Stelle des alten Balkens. */
+[data-tap-etikett='verlauf'] .tap-karte-etikett::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 48%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.42) 22%,
+    rgba(0, 0, 0, 0.22) 50%,
+    rgba(0, 0, 0, 0.08) 75%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+}
+
+[data-tap-etikett='verlauf'] .tap-etikett {
+  z-index: 1;
+  background: none;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* B „pille“: keine Abdunklung; das Wort schwarz in einer schlichten Pille,
+   hell durchscheinend mit Haarlinie. Kein Schatten, kein Zeiger, kein
+   Hover: es soll elegant wirken, nicht wie ein Knopf. Die Pille sitzt mit
+   Luft über der Unterkante, damit sie nicht wie angeklebt wirkt. */
+[data-tap-etikett='pille'] .tap-etikett {
+  bottom: var(--tap-s-2);
+  min-width: 0;
+  padding: 0.6em 1.5em;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--tap-nacht);
+  font-size: calc(var(--tap-fs-etikett) * 0.8);
+  letter-spacing: 0.22em;
+  cursor: default;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  [data-tap-etikett='pille'] .tap-etikett {
+    bottom: var(--tap-s-3);
+  }
+}
+
+/* ---------- Dreier-Zeile in einer Zeile ---------- */
+/* Elina EL-20261027-9707359d: „Starker Schutz · Starke Zellen · Starker
+   Willen“. Jedes Wortpaar bricht nie in sich; bricht die Reihe am Handy um,
+   wird der Trenner davor zum Umbruch ohne Breite (TapReihe), jede Zeile
+   steht zentriert. */
+.tap-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  font-size: var(--tap-fs-zeile);
+  line-height: 1.5;
+  color: var(--tap-leise);
+}
+
+.tap-reihe-wort {
+  white-space: nowrap;
+}
+
+.tap-reihe-trenner {
+  padding: 0 0.6em;
+}
+
+.tap-reihe-trenner.tap-reihe-bruch {
+  flex-basis: 100%;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 0;
+}
+
 /* ---------- THE ALPHA ---------- */
 .tap-marke {
   padding: var(--tap-takt) 0 0;
