@@ -20,19 +20,48 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750';
 export const KOPF = {
   titel: 'Kohärentes Licht',
   unter: '- Ultra High Vibe Mode -',
+  /*
+   * 360-GRAD-LOOP im schwarzen Band (Christian 27.10.2026 Z218: „wir brauchen
+   * hier im schwarzen Bereich noch die 360 Gradanimation, das muss rein“).
+   * Lucas Loop 1:1, 9 s, stumm, ohne Text, auf dem Shopify-CDN (Übergabe #16
+   * im jobmem des Grossjobs 20261026). Grund des Films ist reines Schwarz;
+   * die Seite legt ihn per `mix-blend-mode: lighten` auf das Schwarz des
+   * Bandes, so bleibt kein Viereck sichtbar.
+   */
+  loop: {
+    src: 'https://cdn.shopify.com/videos/c/vp/719017d4447d42eabe22c203cb6a3f51/719017d4447d42eabe22c203cb6a3f51.HD-720p-1.6Mbps-98929981.mp4',
+    poster: `${CDN}/files/qi-alpha-360-poster.jpg?v=1793023790`,
+    alt: 'Qi Alpha, 360-Grad-Ansicht',
+  },
 };
 
+/*
+ * PRODUKTKOPF genau in Christians Folge und Wortlaut (27.10.2026 Z237–Z252):
+ * „Qi Alpha® / Ultimate Wearable / 1st. Edition · 111 Stück“, drei Punkte je
+ * mit eigenem, ruhig bewegtem roten Zeichen, Preis, Herkunft. Gestrichen:
+ * „Weltneuheit“, der lange Claim, die Steuerzeile und der Knopf unter dem
+ * Preis (Z229, Z232, Z237: „nicht sagen sondern zeigen“). Gekauft wird im
+ * Konfigurator darunter.
+ */
 export const PRODUKT = {
   name: 'Qi Alpha®',
+  claim: 'Ultimate Wearable',
   edition: '1st. Edition · 111 Stück',
-  claim: '- Das ultimative Wearable der Zukunft -',
   punkte: [
-    'Zweiteiliger Gitterchip®',
-    'Hochreiner Natur Diamant eingelassen in den Gitterchip®',
-    'Kohärentes Licht & Kohärentes Wasser',
+    {zeichen: 'gitter', text: 'Zweiteiliger Gitterchip®'},
+    {
+      zeichen: 'diamant',
+      text: 'Hochreiner Natur Diamant eingelassen in den Gitterchip®',
+    },
+    {
+      zeichen: 'licht-wasser',
+      text: 'Kohärentes Licht vereinigt sich mit Kohärentem Wasser',
+    },
   ],
-  preisZusatz: 'Weltneuheit',
-  herkunft: 'Designed in Germany. Made in Germany.',
+  herkunft: ['Designed in Germany.', 'Made in Germany.'],
+  // Sprung zum Konfigurator unter dem Kopf (Christian Z231, nur weil der
+  // Designmeister ihn für nötig hält; s07-r2).
+  sprung: 'Jetzt konfigurieren ↓',
 };
 
 /*

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
@@ -124,9 +124,10 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
 
   return (
     <div className="tas-seite" data-the-alpha-shop="">
-      <header className="tas-band">
+      <header className="tas-band" data-tas-band="">
         <p className="tas-band-titel">{KOPF.titel}</p>
         <p className="tas-band-unter">{KOPF.unter}</p>
+        {KOPF.loop ? <BandLoop loop={KOPF.loop} /> : null}
       </header>
 
       <div className="tas-raster-seite">
@@ -180,45 +181,52 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         </div>
 
         <div className="tas-auswahl">
-          <section className="tas-produkt" aria-labelledby="tas-name">
+          {/* Produktkopf genau in Christians Folge (27.10. Z243–Z248): Name,
+              Claim, Edition, drei Punkte mit rotem Zeichen, Preis, Herkunft.
+              Kein Knopf, keine Steuerzeile: gekauft wird im Konfigurator
+              darunter (Z229–Z233). */}
+          <section
+            className="tas-produkt"
+            aria-labelledby="tas-name"
+            data-tas-kopf=""
+          >
             <h1 id="tas-name" className="tas-name">
               {PRODUKT.name}
             </h1>
-            <p className="tas-edition">{PRODUKT.edition}</p>
             <p className="tas-claim">{PRODUKT.claim}</p>
+            <p className="tas-edition">{PRODUKT.edition}</p>
             <ul className="tas-punkte">
               {PRODUKT.punkte.map((p) => (
-                <li key={p}>{p}</li>
+                <li key={p.text} className="tas-punkt">
+                  <Zeichen art={p.zeichen} />
+                  <span>{p.text}</span>
+                </li>
               ))}
             </ul>
             <p className="tas-preis" data-tas-preis="">
-              {betragText(hauptPreis, waehrung)} - {PRODUKT.preisZusatz}
+              {betragText(hauptPreis, waehrung)}
             </p>
-            <p className="tas-klein">inkl. 19 % MwSt.</p>
-            {/* Kaufknopf im ersten Fenster (Designstandard pdp_falz, Sicht-Tor
-                F-163): dieselben Warenkorbzeilen wie der Knopf der
-                Zusammenfassung, also immer die aktuelle Auswahl. */}
-            <div className="tas-kauf-oben" data-tas-kauf-oben="">
-              <AddToCartButton
-                disabled={!haupt?.availableForSale}
-                onClick={() => open('cart')}
-                lines={linien}
-              >
-                {haupt?.availableForSale
-                  ? ZUSAMMENFASSUNG.knopf
-                  : 'Ausverkauft'}
-              </AddToCartButton>
-              {summe !== hauptPreis ? (
-                <p className="tas-klein" data-tas-auswahl-summe="">
-                  Deine Auswahl: {betragText(summe, waehrung)}
-                </p>
-              ) : null}
-            </div>
-            <p className="tas-herkunft">{PRODUKT.herkunft}</p>
+            <p className="tas-herkunft">
+              {PRODUKT.herkunft.map((z) => (
+                <span key={z}>{z}</span>
+              ))}
+            </p>
           </section>
+          {/* Sprung zum Konfigurator statt Knopf im Kopf (Christian Z231,
+              Designmeister-Auflage s07-r2). Steht bewusst außerhalb des
+              Kopfes: der Kopf trägt nur Christians neun Zeilen. */}
+          <a
+            className="tas-sprung"
+            href="#tas-konfigurator"
+            data-tas-sprung=""
+            onClick={springeZumKonfigurator}
+          >
+            {PRODUKT.sprung}
+          </a>
 
           {nummernAn ? (
             <section
+              id="tas-konfigurator"
               className="tas-schritt"
               aria-labelledby="tas-nummer-titel"
               data-tas-schritt="nummer"
@@ -326,6 +334,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           ) : null}
 
           <section
+            id={nummernAn ? undefined : 'tas-konfigurator'}
             className="tas-schritt"
             aria-labelledby="tas-kette-titel"
             data-tas-schritt="kette"
@@ -475,7 +484,6 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               </div>
             ) : null}
           </dl>
-          <p className="tas-klein">inkl. 19 % MwSt.</p>
         </div>
         <div className="tas-summe-kasse">
           <ul className="tas-versand">
@@ -550,6 +558,119 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         }}
       />
     </div>
+  );
+}
+
+/** Weicher Sprung zum ersten Konfigurator-Schritt; bei weniger Bewegung hart. */
+function springeZumKonfigurator(e) {
+  const ziel = document.getElementById('tas-konfigurator');
+  if (!ziel) return;
+  e.preventDefault();
+  const ruhig =
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ziel.scrollIntoView({behavior: ruhig ? 'auto' : 'smooth', block: 'start'});
+}
+
+/**
+ * Lucas 360-Grad-Loop im schwarzen Band: stumm, inline, in Schleife, ohne
+ * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
+ * (prefers-reduced-motion), sieht den ersten Rahmen still.
+ */
+function BandLoop({loop}) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || typeof window.matchMedia !== 'function') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.pause();
+    }
+  }, []);
+  return (
+    <video
+      ref={ref}
+      className="tas-band-loop"
+      src={loop.src}
+      poster={loop.poster}
+      width="720"
+      height="720"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      disablePictureInPicture
+      aria-label={loop.alt}
+      data-tas-loop=""
+    />
+  );
+}
+
+/*
+ * Die drei Zeichen des Produktkopfs (Christian Z240/Z251: „jeweils mit Gimik
+ * in Rot, die leicht animiert ist, also sich ruhig bewegt“): Gitterchip aus
+ * zwei Hälften, Diamant mit Facetten, Licht über Wasser. Linien in
+ * currentColor (Qi-Alpha-Rot), Bewegung nur in CSS (the-alpha-produkt.css,
+ * ruht bei prefers-reduced-motion).
+ */
+function Zeichen({art}) {
+  const gemeinsam = {
+    className: `tas-zeichen tas-zeichen--${art}`,
+    viewBox: '0 0 32 32',
+    width: 32,
+    height: 32,
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.5,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': 'true',
+    focusable: 'false',
+  };
+  // Alle drei Zeichen füllen dasselbe Feld 5..27 (Designmeister s07-r2:
+  // gleiche optische Masse, bündig links).
+  if (art === 'gitter') {
+    return (
+      <svg {...gemeinsam}>
+        <rect x="5" y="5.5" width="10" height="21" rx="2" />
+        <rect x="17" y="5.5" width="10" height="21" rx="2" />
+        <g className="tas-zeichen-puls">
+          <path d="M5 12.5h10M5 19.5h10M10 5.5v21M17 12.5h10M17 19.5h10M22 5.5v21" />
+        </g>
+      </svg>
+    );
+  }
+  if (art === 'diamant') {
+    return (
+      <svg {...gemeinsam}>
+        <path d="M10 8h12l5 6-11 13L5 14z" />
+        <path d="M5 14h22M13 8l-2 6 5 13M19 8l2 6-5 13" />
+        <g className="tas-zeichen-funkeln">
+          <path d="M26 2.5v4M24 4.5h4" />
+        </g>
+      </svg>
+    );
+  }
+  return (
+    <svg {...gemeinsam}>
+      <defs>
+        <clipPath id="tas-zeichen-feld">
+          <rect x="5" y="0" width="22" height="32" />
+        </clipPath>
+      </defs>
+      <g className="tas-zeichen-puls">
+        <path d="M16 4v3.5M10.5 6l1.8 2.8M21.5 6l-1.8 2.8" />
+      </g>
+      <circle cx="16" cy="14" r="3" />
+      {/* Wellen eine Periode (15) breiter als das Feld: die Bewegung um 15
+          nach rechts ist nahtlos. */}
+      <g clipPath="url(#tas-zeichen-feld)">
+        <g className="tas-zeichen-welle">
+          <path d="M-28 21.5c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+          <path d="M-28 26.5c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+        </g>
+      </g>
+    </svg>
   );
 }
 

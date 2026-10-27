@@ -9,6 +9,7 @@
  * FARBE: neutrales Kontinuum (Tinte, Grau, Linie, Fläche) plus das Schwarz
  * des Bandes aus Christians Vorlage (#1e1e1e). Gold steht nur auf dem
  * Kaufknopf (Hausknopf .btn--primary); die gewählte Karte ist dunkel umrandet.
+ * Qi-Alpha-Rot trägt nur die drei Zeichen im Produktkopf (s07-r2, Z251).
  * Handy zuerst; ab 1024 px zwei Spalten, die Galerie bleibt beim Scrollen
  * stehen wie bei Apple.
  */
@@ -35,6 +36,9 @@
   --tas-flaeche: #f5f5f7;
   --tas-weiss: #ffffff;
   --tas-band: #1e1e1e;
+  /* Qi-Alpha-Rot (Christian, Figma; Film-Gerüst #b92200): nur auf den drei
+     Zeichen des Produktkopfs. */
+  --tas-rot: #b92200;
 
   --tas-radius: 18px;
   --tas-breite: 1200px;
@@ -76,7 +80,7 @@
 }
 
 .tas-summe .eu-gwl--pdp {
-  margin-top: var(--tas-s-2);
+  margin-top: 0;
   padding-block: 0;
 }
 
@@ -94,8 +98,34 @@
   margin-top: var(--tas-s-4);
   background: var(--tas-band);
   color: var(--tas-weiss);
-  padding: var(--tas-s-4) var(--tas-s-3);
+  padding: var(--tas-s-4) var(--tas-s-3) 0;
   text-align: center;
+  /* Die Mischung des Loops (unten) rechnet nur gegen das Band; was über die
+     Bandkante ragte, hätte keinen Grund mehr und stünde als Schwarz da. */
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* 360-Grad-Loop (Z218–Z220): Lucas Film hat reines Schwarz als Grund. `lighten`
+   nimmt je Kanal den helleren Wert, also wird sein Schwarz genau zum Schwarz
+   des Bandes und das Gerät bleibt unverändert: kein Viereck, auch nicht im
+   Poster beim Laden. Handy zuerst: das Gerät füllt die Mitte unter dem Titel. */
+.tas-band-loop {
+  /* Breite des Films; das Gerät füllt davon in der Höhe 62 % (Rand oben
+     18,8 %, unten 19,4 %, an Lucas Film gemessen). Die Ränder werden so weit
+     unter Untertitel und Bandkante gezogen, dass über und unter dem Gerät
+     derselbe Raum steht (Designmeister s07-r2: Handy 40, Desktop 56). */
+  --tas-loop: min(80vw, 320px);
+  --tas-loop-luft: 40px;
+  display: block;
+  width: var(--tas-loop);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin: calc(var(--tas-loop-luft) - 0.188 * var(--tas-loop)) auto
+    calc(var(--tas-loop-luft) - 0.194 * var(--tas-loop));
+  background: transparent;
+  mix-blend-mode: lighten;
+  pointer-events: none;
 }
 
 .tas-band-titel {
@@ -164,57 +194,171 @@
   object-fit: cover;
 }
 
-/* Produkt */
+/* Produkt: Hierarchie Name → Claim → Edition → Punkte → Preis → Herkunft
+   (Christian 27.10. Z234/Z243). Große Ruhe zwischen den Gruppen, eng in der
+   Gruppe; die Punkte stehen als Zeilen mit Haarlinie, nicht als Liste. */
+/* Zwei Klassen tief, weil `.tas-seite p` / `ul` (Rand 0, oben) stärker ist als
+   eine einzelne Klasse: daran lagen die Abstände des alten Kopfes flach
+   (Christian Z224: „abständige“). */
+.tas-produkt {
+  padding-top: var(--tas-s-2);
+}
+
 .tas-name {
   font-size: var(--tas-fs-6);
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
-.tas-edition {
+/* Das Haus setzt auf dem Handy jedes h1 auf 1,75 rem !important (app.css,
+   h1:where(:not(#ccsp *))). Dann war der Name so groß wie der Preis und die
+   Hierarchie kippte (Designmeister-STOP s07-r2). Zwei Klassen + !important
+   holen den Token zurück. */
+.tas-seite .tas-name {
+  font-size: var(--tas-fs-6) !important;
+}
+
+.tas-produkt .tas-claim {
   margin-top: var(--tas-s-1);
   font-size: var(--tas-fs-4);
-  font-weight: 600;
+  line-height: 1.2;
+  color: var(--tas-tinte);
 }
 
-.tas-claim {
+.tas-produkt .tas-edition {
   margin-top: var(--tas-s-2);
-  font-size: var(--tas-fs-3);
+  font-size: var(--tas-fs-2);
+  font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--tas-grau);
 }
 
-.tas-punkte {
-  margin-top: var(--tas-s-2);
-  padding-left: var(--tas-s-3);
-  list-style: disc;
+.tas-produkt .tas-punkte {
+  margin-top: var(--tas-s-4);
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--tas-linie);
+}
+
+.tas-punkt > span {
+  text-wrap: balance;
+}
+
+.tas-punkt {
+  display: grid;
+  grid-template-columns: var(--tas-s-4) 1fr;
+  align-items: center;
+  gap: var(--tas-s-2);
+  padding-block: var(--tas-s-2);
+  border-bottom: 1px solid var(--tas-linie);
   font-size: var(--tas-fs-3);
+  line-height: 1.4;
+}
+
+/* Die Zeichen: Linien in Qi-Alpha-Rot, Bewegung langsam (4–6 s) und klein,
+   je Zeichen eine eigene Art, keine springt. */
+.tas-zeichen {
+  display: block;
+  width: 28px;
+  height: 28px;
+  color: var(--tas-rot);
+  overflow: hidden;
+}
+
+.tas-zeichen-puls {
+  animation: tas-puls 4.8s ease-in-out infinite;
+}
+
+.tas-zeichen--licht-wasser .tas-zeichen-puls {
+  animation-delay: -1.6s;
+}
+
+.tas-zeichen-funkeln {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tas-funkeln 5.6s ease-in-out infinite;
+}
+
+.tas-zeichen-welle {
+  animation: tas-welle 6s linear infinite;
+}
+
+@keyframes tas-puls {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes tas-funkeln {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tas-welle {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(15px);
+  }
+}
+
+.tas-produkt .tas-preis {
+  margin-top: var(--tas-s-4);
+  font-size: var(--tas-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.tas-produkt .tas-herkunft {
+  margin-top: var(--tas-s-2);
+  font-size: var(--tas-fs-2);
   line-height: 1.5;
+  color: var(--tas-grau);
 }
 
-.tas-preis {
-  margin-top: var(--tas-s-3);
-  font-size: var(--tas-fs-4);
-  font-weight: 600;
+.tas-herkunft span {
+  display: block;
 }
 
-.tas-herkunft {
-  margin-top: var(--tas-s-2);
+/* „Jetzt konfigurieren ↓“ (Christian Z231: nur wenn der Designmeister es für
+   nötig hält; er hält es für nötig, weil auf dem Handy nach dem Kopf sonst
+   nichts den Weg zum Kauf zeigt). Textlink im Rot der Zeichen, kein Knopf. */
+.tas-sprung {
+  display: inline-block;
+  margin-top: 0;
+  padding-block: var(--tas-s-1);
   font-size: var(--tas-fs-3);
   font-weight: 600;
+  color: var(--tas-rot);
+  text-decoration: none;
 }
 
-/* Kaufknopf im ersten Fenster: Designstandard pdp_falz verlangt Preis und
-   Kaufknopf ohne Scrollen, auf dem Handy wie auf dem Desktop. */
-.tas-kauf-oben {
-  margin-top: var(--tas-s-3);
+.tas-sprung:hover {
+  color: var(--tas-tinte);
 }
 
-.tas-kauf-oben .btn--primary {
-  max-width: none;
+.tas-sprung:focus-visible {
+  outline: 2px solid var(--tas-tinte);
+  outline-offset: 2px;
 }
 
-.tas-kauf-oben + .tas-herkunft {
-  margin-top: var(--tas-s-3);
+/* Der feste Kopf der Seite (KopfHaftet) liegt über dem Sprungziel. */
+#tas-konfigurator {
+  scroll-margin-top: 136px;
 }
 
 /* Handy und Tablet: Produktkopf mit Preis und Knopf vor der Galerie, wie auf
@@ -223,8 +367,15 @@
   display: contents;
 }
 
-.tas-produkt {
+.tas-produkt,
+.tas-sprung {
   order: -1;
+}
+
+/* Auf dem Handy steht der Sprung als eigene Zeile über der Galerie (der
+   Rasterabstand 32 trennt ihn vom Kopf). */
+.tas-sprung {
+  justify-self: start;
 }
 
 .tas-klein {
@@ -454,7 +605,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tas-blende {
+  .tas-blende,
+  .tas-zeichen-puls,
+  .tas-zeichen-funkeln,
+  .tas-zeichen-welle {
     animation: none;
   }
   .tas-kette-gold,
@@ -544,7 +698,7 @@
 }
 
 .tas-kaufknopf {
-  margin-top: var(--tas-s-2);
+  margin-block: var(--tas-s-2);
 }
 
 .tas-kaufknopf .btn--primary {
@@ -599,16 +753,23 @@
 
 @media (min-width: 750px) {
   .tas-band {
-    padding: var(--tas-s-6) var(--tas-s-3);
+    padding: var(--tas-s-6) var(--tas-s-3) 0;
   }
   .tas-band-titel {
     font-size: var(--tas-fs-7);
   }
+  .tas-band-loop {
+    --tas-loop: 480px;
+    --tas-loop-luft: 56px;
+  }
   .tas-karten {
     grid-template-columns: 1fr 1fr;
   }
+  /* Abstand + Polster = 96, derselbe Takt wie Wissen und Fragen (Rubrik:
+     höchstens drei Abschnitts-Abstände, hier 32 · 64 · 96). */
   .tas-summe {
     grid-template-columns: 1fr 1.2fr 1fr;
+    margin-top: var(--tas-s-6);
     padding: var(--tas-s-6);
   }
 }
@@ -624,6 +785,16 @@
   }
   .tas-produkt {
     order: 0;
+    padding-top: var(--tas-s-4);
+  }
+  .tas-sprung {
+    margin-top: var(--tas-s-4);
+  }
+  .tas-seite .tas-name {
+    font-size: var(--tas-fs-7) !important;
+  }
+  .tas-produkt .tas-claim {
+    font-size: var(--tas-fs-5);
   }
   .tas-galerie-fest {
     position: sticky;
