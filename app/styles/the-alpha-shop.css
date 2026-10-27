@@ -70,6 +70,36 @@
   object-fit: cover;
 }
 
+/* Die vier Zeichnungen als Bewegung (Job 20261027-qi-alpha-wissen-4-grafiken-
+   high-end-animationen). Die Fläche trägt den Papierton der Zeichnung, damit
+   vor dem Laden kein graues Viereck aufblitzt. Die Leinwand liegt über dem
+   Poster (= ihr eigenes Startbild) und blendet erst nach dem ersten
+   gezeichneten Bild ein. Reduzierte Bewegung: keine Leinwand, das Poster bleibt. */
+.taw-anim {
+  position: relative;
+  background: var(--tas-papier);
+}
+
+.taw-leinwand {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity var(--tas-dauer) ease;
+}
+
+.taw-leinwand[data-aktiv] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taw-leinwand {
+    display: none;
+  }
+}
+
 .taw-text {
   max-width: 640px;
   margin: 0 auto;
