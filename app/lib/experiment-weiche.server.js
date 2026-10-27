@@ -101,6 +101,26 @@
  *
  * CROSS-BOUNDARY-LINKAGE: kein neuer Identitäts-Key, kein Set-Cookie, keine
  * Änderung an TRACKING_COOKIE_NAMES. Der rohe Query reist unverändert mit.
+ *
+ * VIERTER EINTRAG the-alpha-abc-e1 MIT DREI ARMEN (Grossjob 20261025-prio1-
+ * the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s07; Christian Z5: „A/B/C
+ * Test wie bei den Ads"). A = /pages/The-Alpha (Figma 1:1), B = /pages/The-Alpha-C
+ * (Server), C = /pages/The-Alpha-B (KI). Additiv verallgemeinert: eine Zeile mit
+ * pfad_c teilt Eimer < anteil_prozent auf B, Eimer < anteil_prozent +
+ * anteil_prozent_c auf C, den Rest auf A (33/33/34). Zeilen ohne pfad_c
+ * rechnen byte-gleich wie vorher (kein C, Pin c wirkt nicht). Die Rückgabe
+ * trägt zusätzlich arm ('b' | 'c'); bestehende Aufrufer lesen nur ziel.
+ * ohne_kasse_rueckkehr: true lenkt nie um, wenn der Referer die Kasse
+ * (checkout.*, /checkouts, /cart) ist: wer aus der Kasse zurückkommt, sieht die
+ * Seite, die er anfragt, und wird nicht neu verteilt. Die Variante reist für die
+ * Bestellung über das Cookie qb_ab_the_alpha_abc (gesetzt von der Seite des Arms,
+ * TheAlphaArm.jsx) in das Warenkorb-Attribut _the_alpha_variante
+ * (checkout-tracking.js buildOriginCartAttributes); die Weiche selbst setzt
+ * weiterhin nichts. KILL: aktiv:false (PR) oder Env EXP_THE_ALPHA_MODE=off.
+ * GELIEFERT RUHEND (26.10.2026): anteil_prozent 0 und anteil_prozent_c 0. Die
+ * Seiten hatten vor dem Start kaum Verkehr (events.db 12.-26.10.: 2 Sitzungen
+ * auf A), start-freigabe gab den Test darum nicht frei (Wirkzeit gegen
+ * Teststärke). Scharf schaltet ein eigener PR 0/0 -> 33/33, sobald Zulauf da ist.
  */
 import {isbot} from 'isbot';
 import {zielUrl} from './go-router-logic.js';
@@ -109,7 +129,8 @@ import {besucherEimer} from './lp-ab-v2.server.js';
 
 /**
  * Laufende Seiten-Experimente. Neuer Test = neue id + neues Salz.
- * marker: Buchstabe für lp_m (belegt sind w r f v x m h p b n s q k).
+ * marker: Buchstabe für lp_m (belegt sind w r f v x m h p b n s q k t u).
+ * marker_c: Buchstabe des dritten Arms (nur Zeilen mit pfad_c).
  */
 export const SEITEN_EXPERIMENTE = Object.freeze({
   'start-e1-gs081': Object.freeze({
@@ -148,6 +169,25 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pin_param: 'shop_exp',
     env_kill: 'EXP_PB_MODE',
     marker: 'k',
+    aktiv: true,
+  }),
+  'the-alpha-abc-e1': Object.freeze({
+    id: 'the-alpha-abc-e1',
+    hypothese_id: 'GS-221',
+    pfad_a: '/pages/The-Alpha',
+    pfad_b: '/pages/The-Alpha-C',
+    pfad_c: '/pages/The-Alpha-B',
+    salz: 'the-alpha-abc-e1',
+    // RUHEND bis zur Startfreigabe: 0/0 lenkt keinen Besucher um, Pins a|b|c
+    // wirken (Messung, Ende-zu-Ende-Proben). Scharf = eigener PR auf 33/33;
+    // hb-deploy BLOCK[sim_tor] verlangt dafür start-freigabe the-alpha-abc-e1.
+    anteil_prozent: 0,
+    anteil_prozent_c: 0,
+    pin_param: 'shop_exp',
+    env_kill: 'EXP_THE_ALPHA_MODE',
+    marker: 't',
+    marker_c: 'u',
+    ohne_kasse_rueckkehr: true,
     aktiv: true,
   }),
 });
@@ -272,14 +312,40 @@ export function entscheideSeitenExperiment(request, env, experimentId, tabelle =
   if (istSuchOderVorschauCrawler(ua)) return null;
   const url = new URL(request.url);
   const ziel = () => zielUrl(exp.pfad_b, zielSuche(url.search), exp.marker);
+  const zielC = () => zielUrl(exp.pfad_c, zielSuche(url.search), exp.marker_c);
   const pin = url.searchParams.get(exp.pin_param);
   if (pin === 'a') return null;
-  if (pin === 'b') return {ziel: ziel(), eimer: -1, id: exp.id};
+  if (pin === 'b') return {ziel: ziel(), eimer: -1, id: exp.id, arm: 'b'};
+  if (pin === 'c' && exp.pfad_c) return {ziel: zielC(), eimer: -1, id: exp.id, arm: 'c'};
   if (isbot(ua)) return null;
+  if (exp.ohne_kasse_rueckkehr && kommtAusDerKasse(request)) return null;
   const ip = request.headers?.get ? buyerIpAusRequest(request) : '';
   if (istInternerZugriff({userAgent: ua, ip})) return null;
   if (!ip) return null;
   const eimer = besucherEimer(ip, ua, exp.salz);
-  if (eimer >= anteilProzentFuer(exp, ua, env)) return null;
-  return {ziel: ziel(), eimer, id: exp.id};
+  const anteilB = anteilProzentFuer(exp, ua, env);
+  if (eimer < anteilB) return {ziel: ziel(), eimer, id: exp.id, arm: 'b'};
+  if (exp.pfad_c && eimer < anteilB + (exp.anteil_prozent_c || 0)) {
+    return {ziel: zielC(), eimer, id: exp.id, arm: 'c'};
+  }
+  return null;
+}
+
+/**
+ * true, wenn der Referer die Kasse oder der Warenkorb ist (checkout.<host>,
+ * /checkouts/..., /cart...). Nur für Zeilen mit ohne_kasse_rueckkehr.
+ * Ein fehlender oder unlesbarer Referer heißt „nicht aus der Kasse".
+ * @param {Request} request
+ */
+export function kommtAusDerKasse(request) {
+  const roh = request.headers?.get?.('referer') || '';
+  if (!roh) return false;
+  try {
+    const r = new URL(roh);
+    if (r.hostname.toLowerCase().startsWith('checkout.')) return true;
+    const p = r.pathname.toLowerCase().replace(/^\/[a-z]{2}(-[a-z]{2})?(?=\/)/, '');
+    return /^\/(checkouts?|cart)(\/|$)/.test(p);
+  } catch {
+    return false;
+  }
 }

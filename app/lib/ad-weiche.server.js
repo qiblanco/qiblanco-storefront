@@ -50,7 +50,7 @@ import {ZUTEILUNG_URL} from './go-router.server.js';
 import {DEFAULT_ZUTEILUNG, zielUrl} from './go-router-logic.js';
 import {LP_EXP_B_PFAD, LP_EXP_B2_PFAD, LP_V2_PFAD} from './lp-ab-v2.server.js';
 import {LP_V3_PFAD} from './lp-v3.server.js';
-import {MM_MARKER, mmZielPfad, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
+import {MM_MARKER, mmZielPfad, produktLpZiel, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
 import {STUFE_B_MARKER, STUFE_B_PFAD, stufeBZielPfad} from './ad-weiche-stufe-b.server.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
@@ -457,7 +457,8 @@ export function entscheideAdWeiche(requestUrl) {
   if (erkennung === 'google-paid' && (pfad === '/products' || pfad.startsWith('/products/'))) {
     return null;
   }
-  return {erkennung, ziel: zielUrl(LP_A_PFAD, url.search, 'w')};
+  // Qi-Alpha-Kaufseiten gehen auf die Qi-Alpha-LP (s07 The-Alpha, ad-weiche-ziele.js produktLpZiel).
+  return {erkennung, ziel: zielUrl(produktLpZiel(pfad) || LP_A_PFAD, url.search, 'w')};
 }
 
 /**

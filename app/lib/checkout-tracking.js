@@ -940,5 +940,39 @@ export function buildOriginCartAttributes({
       bisher: bisherigerAdMarker,
     }),
   );
+  addCartAttribute(
+    attributes,
+    THE_ALPHA_VARIANTE_ATTRIBUT,
+    theAlphaVarianteAusCookie(cookieHeader ?? null),
+  );
   return attributes;
+}
+
+// ---------------------------------------------------------------------------
+// A/B/C-TEST the-alpha-abc-e1 (Grossjob 20261025-prio1-the-alpha-landingpage-
+// figma-vorlage-a-server-b-ki-c, s07; Christian Z5). Die Seite des Arms
+// (app/components/campaign/TheAlphaArm.jsx) legt ihren Buchstaben in das
+// Cookie qb_ab_the_alpha_abc; hier wird er zum Warenkorb-Attribut
+// _the_alpha_variante (Unterstrich = in der Kasse unsichtbar), damit die
+// Bestellung (note_attributes) ihrer Variante zugeordnet wird.
+//
+// WARUM HIER UND NICHT IN TRACKING_COOKIE_NAMES: der Wert ist keine Kennung
+// (ein Buchstabe a|b|c, gleich für alle Besucher eines Arms) und überquert
+// keine Domaingrenze; er geht wie consent_state und ua_class per
+// cart.updateAttributes direkt in den Shopify-Warenkorb. TRACKING_COOKIE_NAMES
+// ist die Liste der Identitäts-Cookies, die nur mit Einwilligung gelesen wird.
+// Fehlt das Cookie oder trägt es etwas anderes als a|b|c, entsteht kein
+// Attribut (kein Ersatzwert): "nicht im Test" bleibt von "Arm A" getrennt.
+export const THE_ALPHA_VARIANTE_ATTRIBUT = '_the_alpha_variante';
+export const THE_ALPHA_ARM_COOKIE = 'qb_ab_the_alpha_abc';
+
+/**
+ * @param {string | null} cookieHeader
+ * @returns {'a' | 'b' | 'c' | null}
+ */
+export function theAlphaVarianteAusCookie(cookieHeader) {
+  const wert = String(parseCookieHeader(cookieHeader)[THE_ALPHA_ARM_COOKIE] || '')
+    .trim()
+    .toLowerCase();
+  return wert === 'a' || wert === 'b' || wert === 'c' ? wert : null;
 }
