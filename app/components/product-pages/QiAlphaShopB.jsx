@@ -18,6 +18,7 @@ import {
 } from '~/data/qi-master-texte';
 import {
   QA_AUFLAGE,
+  QA_PRODUKTVIDEO,
   QaVideoSlot,
   alpha,
   alphaFragen,
@@ -183,7 +184,7 @@ function DiamantBilder() {
           </figure>
         ))}
       </div>
-      <QaVideoSlot />
+      <QaVideoSlot video={QA_PRODUKTVIDEO} />
     </section>
   );
 }
