@@ -10,7 +10,7 @@
    Typo-Skala, sieben Stufen, jedes Nachbarpaar 1,11 bis 1,38:
      14 / 16 / 18 / 20 / 25 / 32 / 44 px (Handy: h1 32, h2 25, Lead 20).
    Abstand: 8er-Raster, Sektions-Takt 96 / 64 px.
-   Farb-Akte: Papier (grund), warme Fläche (flaeche), dunkel nur für die
+   Farb-Akte: Weiß (grund), warme Fläche (flaeche), dunkel nur für die
    Kategorie „Wirken" und den Abschluss. Gold nur auf Handlung (Knöpfe) und
    Beweis (Studienzahlen, als Gold-Tinte).
    Radien: 8 px (Knöpfe, Marken) und 16 px (Karten, Bilder).
@@ -33,9 +33,9 @@
   --lg-s8: 64px;
   --lg-s12: 96px;
 
-  --lg-grund: #faf9f5;
+  --lg-grund: #ffffff; /* Weiss wie die geteilte Huelle: vier Farbwelten statt fuenf */
   --lg-flaeche: var(--qb-flaeche, #f8f4ee);
-  --lg-karte: #ffffff;
+  --lg-karte: var(--lg-grund);
   --lg-dunkel: #1a1a1a;
   --lg-text: var(--qb-text, #2c2a26);
   --lg-muted: var(--qb-text-gedaempft, #6b665d);
@@ -116,7 +116,7 @@
   letter-spacing: -0.01em;
   margin: 0 0 var(--lg-s4);
   text-align: left;
-  max-width: 24ch;
+  max-width: 30ch;
   color: inherit;
 }
 
@@ -143,7 +143,7 @@
   line-height: 1.65;
 }
 
-.lg27-einleitung {
+.lg27 .lg27-einleitung {
   font-size: var(--lg-fs-md);
   color: var(--lg-muted);
   margin-bottom: var(--lg-s6);
@@ -430,7 +430,7 @@
   border-radius: var(--lg-r2);
   border: 1px solid var(--lg-linie);
   background: var(--lg-karte);
-  text-align: center;
+  text-align: left;
 }
 
 .lg27-produkt__bild {
@@ -452,7 +452,7 @@
 }
 
 .lg27-produkt p {
-  margin: 0 auto var(--lg-s2);
+  margin: 0 0 var(--lg-s2);
   color: var(--lg-muted);
 }
 

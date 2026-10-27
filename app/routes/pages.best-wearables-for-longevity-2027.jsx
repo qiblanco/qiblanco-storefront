@@ -123,6 +123,12 @@ export async function loader({context}) {
       bilder[`/products/${p.handle}`] = p.featuredImage;
     }
   }
+  // Der Qi Alpha trägt in der Storefront-API kein Hauptbild (gemessen
+  // 27.10.2026); seine Kaufseite zeigt dieses Frontbild
+  // (the-alpha-shop-daten.js, KOPF.bilder[0]).
+  for (const [pfad, bild] of Object.entries(ERSATZBILD)) {
+    if (!bilder[pfad]) bilder[pfad] = bild;
+  }
   return {bilder};
 }
 
@@ -389,7 +395,7 @@ function ProduktKarte({p, bild}) {
         {bild ? (
           <img
             src={bild.url}
-            alt={bild.altText || p.name}
+            alt={ALT[p.link] || p.name}
             width={bild.width || 720}
             height={bild.height || 720}
             loading="lazy"
@@ -406,6 +412,27 @@ function ProduktKarte({p, bild}) {
     </article>
   );
 }
+
+/**
+ * Alt-Texte je Produktkarte: eigene statt der Shopify-Bildtexte, weil diese
+ * am 27.10.2026 für QiOne® 2 Pro und QiBracelet® „Aluminium" nennen, während
+ * die Kaufseiten Chirurgenstahl 316L führen (gemeldet im RESULT von s02).
+ */
+const ALT = {
+  '/products/qione-2-pro': 'QiOne® 2 Pro Anhänger, Vorderseite',
+  '/products/qibracelet': 'QiBracelet® offener Armreif, Vorderansicht',
+  '/products/qione-kette': 'Necklace, Kette für den QiOne®',
+  '/products/the-alpha':
+    'Qi Alpha, Vorderseite mit Diamant in goldener Fassung',
+};
+
+const ERSATZBILD = {
+  '/products/the-alpha': {
+    url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253&width=720',
+    width: 720,
+    height: 720,
+  },
+};
 
 const GUIDE_PRODUKTE_QUERY = `#graphql
   fragment GuideProdukt on Product {
