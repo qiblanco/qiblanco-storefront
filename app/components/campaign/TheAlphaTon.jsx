@@ -34,11 +34,23 @@ import {useEffect, useState} from 'react';
  *   Video-Ton an, danach wieder hoch. Ohne „Sound on“: stumm, Untertitel an,
  *   ein Ton-Symbol im Video schaltet ein.
  *
- * Klänge: public/the-alpha-ton/*.mp3, Eigenproduktion (additive Synthese wie
- * die Qi-Blanco-Reihe qb-ambient-* aus reel-musik), Rezept im Jobordner s06.
+ * Klänge: Shopify-CDN (Shopify Files, GL-PRO-0015: Medien nicht ins Repo),
+ * Eigenproduktion (additive Synthese wie die Qi-Blanco-Reihe qb-ambient-* aus
+ * reel-musik), Rezept und Originale im Jobordner s06 (nachher/ton/).
  */
 
-const PFAD = '/the-alpha-ton/';
+// CDN-Adressen der Klänge, hochgeladen per medien-hosting/bin/cdn-upload
+// (Segment s09). Ein neuer Klang: hochladen, URL hier eintragen.
+const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+const QUELLE = {
+  grundsound: `${CDN}grundsound.mp3?v=1793065581`,
+  gong: `${CDN}gong.mp3?v=1793065573`,
+  klang: `${CDN}klang.mp3?v=1793065586`,
+  bam: `${CDN}bam.mp3?v=1793065565`,
+  glanz: `${CDN}glanz.mp3?v=1793065569`,
+  tief: `${CDN}tief.mp3?v=1793065594`,
+  schluss: `${CDN}schluss.mp3?v=1793065591`,
+};
 const SPEICHER = 'tap-ton'; // 'an' | 'aus' | 'gesehen'
 
 // Lautstärke zurückhaltend (Z120). Gesamt 0,5; der Grundsound liegt darunter,
@@ -167,7 +179,7 @@ class TonMotor {
   lade() {
     if (this.laden) return this.laden;
     const holen = (name) =>
-      fetch(`${PFAD}${name}.mp3`)
+      fetch(QUELLE[name])
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status))))
         // Rückruf-Form: ältere Safari kennen das Promise von decodeAudioData nicht
         .then((daten) => new Promise((ok, fehler) => this.ctx.decodeAudioData(daten, ok, fehler)))
