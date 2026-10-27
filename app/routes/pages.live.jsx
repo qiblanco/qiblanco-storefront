@@ -688,7 +688,7 @@ function Termin({naechster, weitere}) {
                 <li
                   className="lv-weitere-punkt"
                   key={w.datum}
-                  data-ch-live-eintrag={w.datum}
+                  data-ch-live-weitere-eintrag={w.datum}
                 >
                   <time className="lv-weitere-wann" dateTime={w.startUtc}>
                     {w.datumKurz}
