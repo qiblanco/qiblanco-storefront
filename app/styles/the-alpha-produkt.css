@@ -80,7 +80,7 @@
 }
 
 .tas-summe .eu-gwl--pdp {
-  margin-top: var(--tas-s-2);
+  margin-top: 0;
   padding-block: 0;
 }
 
@@ -648,7 +648,7 @@
 }
 
 .tas-kaufknopf {
-  margin-top: var(--tas-s-2);
+  margin-block: var(--tas-s-2);
 }
 
 .tas-kaufknopf .btn--primary {
@@ -716,8 +716,11 @@
   .tas-karten {
     grid-template-columns: 1fr 1fr;
   }
+  /* Abstand + Polster = 96, derselbe Takt wie Wissen und Fragen (Rubrik:
+     höchstens drei Abschnitts-Abstände, hier 32 · 64 · 96). */
   .tas-summe {
     grid-template-columns: 1fr 1.2fr 1fr;
+    margin-top: var(--tas-s-6);
     padding: var(--tas-s-6);
   }
 }

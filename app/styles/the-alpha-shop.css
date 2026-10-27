@@ -3,11 +3,13 @@
  * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung, s07).
  *
  * Keine eigenen Größen und Farben: die Strecke steht in .tas-seite und
- * benutzt deren Tokens (the-alpha-produkt.css, s12). Ein H2-Stil, gleich dem
- * von „What's in the Box“ (--tas-fs-6, 600, zentriert). Das Etikett ist das
- * schwarze Schild aus Christians Figma (--tas-band, weiße Schrift). Bilder in
- * der hellen Fläche mit dem einen Radius-Token. Quellen in Kleinschrift
- * (--tas-fs-1, --tas-grau).
+ * benutzt deren Tokens (the-alpha-produkt.css, s12). Ein H2-Stil für die
+ * ganze Seite, der von „What's in the Box“ und den Konfigurator-Schritten
+ * (--tas-fs-5, 600, linksbündig; s07-r2, Rubrik: „EIN H2-Stil je Seite“, eine
+ * Ausrichtung). Das Etikett ist das schwarze Schild aus Christians Figma
+ * (--tas-band, weiße Schrift). Bilder in der hellen Fläche mit dem einen
+ * Radius-Token. Quellen klein (--tas-fs-2, --tas-grau), höchstens ~70 Zeichen
+ * je Zeile.
  */
 .taw {
   max-width: var(--tas-breite);
@@ -20,7 +22,7 @@
 }
 
 .taw-kopf {
-  text-align: center;
+  text-align: left;
 }
 
 .taw-etikett {
@@ -36,9 +38,10 @@
 
 .tas-seite .taw-titel {
   margin-top: var(--tas-s-2);
-  font-size: var(--tas-fs-6);
+  font-size: var(--tas-fs-5);
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 
 .taw-raster {
@@ -99,13 +102,14 @@
 }
 
 .taw-quellen {
+  max-width: 560px;
   margin: var(--tas-s-3) 0 0;
   padding: 0;
   list-style: none;
 }
 
 .tas-seite .taw-quellen li {
-  font-size: var(--tas-fs-1);
+  font-size: var(--tas-fs-2);
   line-height: 1.5;
   color: var(--tas-grau);
 }
@@ -136,6 +140,7 @@
 }
 
 .taw-liga .taw-quellen {
+  margin-inline: auto;
   text-align: center;
 }
 
@@ -162,7 +167,7 @@
   }
   .taw-abschnitt--text .taw-text {
     margin: 0 auto;
-    max-width: 760px;
+    max-width: 720px;
   }
   .taw-spalten {
     grid-template-columns: repeat(3, 1fr);
@@ -173,4 +178,18 @@
    Fläche wirkt er unscharf. Die Strecke bleibt flach wie „What's in the Box“. */
 .taw :where(h2, h3) {
   text-shadow: none;
+}
+
+/* Fragen auf der Shopseite: der Baustein bringt eigene Tokens für die
+   Film-Seiten mit; hier gelten die der Shopseite (eine Skala, ein H2-Stil,
+   linksbündig). Die Film-Seiten bleiben unberührt. */
+.tas-seite .taf {
+  --taf-fs-frage: var(--tas-fs-3);
+  --taf-fs-titel: var(--tas-fs-5);
+}
+
+.tas-seite .taf .taf-titel {
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-align: left;
 }
