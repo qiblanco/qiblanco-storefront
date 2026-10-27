@@ -3,6 +3,10 @@ import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
+import {
+  GOOGLE_REVIEWS_URL,
+  StarRating,
+} from '~/components/reusables/StarRating';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonLinien, ADDON_WAEHRUNGEN, QM_ADDON} from '~/lib/qi-master-addons';
@@ -76,7 +80,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const [freiOffen, setFreiOffen] = useState(false);
   const [ketteTitel, setKetteTitel] = useState('stahl');
   const [zahlart, setZahlart] = useState('direkt');
-  const [bild, setBild] = useState(0);
+  const [bild, setBild] = useState(KOPF.loop ? -1 : 0);
 
   const nummerEintrag = stand.nummern.find(
     (x) => x.n === nummer && x.status === 'frei',
@@ -120,32 +124,31 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
     stand.nummern.find((x) => x.n === n)?.status === 'frei';
   const freiGewaehlt =
     nummerEintrag && !NUMMER.vorschlaege.includes(nummerEintrag.n);
-  const grossesBild = GALERIE.bilder[bild] ?? GALERIE.bilder[0];
+  const grossesBild = GALERIE.bilder[Math.max(bild, 0)] ?? GALERIE.bilder[0];
 
   return (
     <div className="tas-seite" data-the-alpha-shop="">
-      <header className="tas-band" data-tas-band="">
-        <p className="tas-band-titel">{KOPF.titel}</p>
-        <p className="tas-band-unter">{KOPF.unter}</p>
-        {KOPF.loop ? <BandLoop loop={KOPF.loop} /> : null}
-      </header>
-
+      {/* ERSTES FENSTER (Christian 27.10. Z2 „abständige, schriftgrößen,
+          kompositionen“; Sicht-Tor seitenregeln.pdp_falz.konfigurator): Bühne,
+          Preis und die erste Option stehen ohne Scrollen da. Das schwarze Band
+          mit dem 360-Grad-Loop (Z218) ist dafür die Bühne der linken Spalte
+          geworden: am Desktop steht es neben dem Kopf statt darüber (vorher
+          Preis y=1205, erste Option y=1525 bei 1440x900). */}
       <div className="tas-raster-seite">
         <div className="tas-galerie" data-tas-galerie="">
           <div className="tas-galerie-fest">
-            <div className="tas-galerie-haupt">
-              {GALERIE.animation360 ? (
-                <video
-                  className="tas-bild"
-                  src={GALERIE.animation360.src}
-                  poster={GALERIE.animation360.poster}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  aria-label="Qi Alpha, 360-Grad-Ansicht"
-                />
-              ) : (
+            {bild < 0 ? (
+              <header
+                className="tas-band"
+                data-tas-band=""
+                data-tas-buehne="loop"
+              >
+                <p className="tas-band-titel">{KOPF.titel}</p>
+                <p className="tas-band-unter">{KOPF.unter}</p>
+                {KOPF.loop ? <BandLoop loop={KOPF.loop} /> : null}
+              </header>
+            ) : (
+              <div className="tas-galerie-haupt" data-tas-buehne="bild">
                 <img
                   key={grossesBild.url}
                   className="tas-bild tas-blende"
@@ -153,11 +156,27 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   alt={grossesBild.alt}
                   width="1200"
                   height="1200"
-                  fetchPriority="high"
                 />
-              )}
-            </div>
+              </div>
+            )}
             <div className="tas-daumen" role="group" aria-label="Ansichten">
+              {KOPF.loop ? (
+                <button
+                  type="button"
+                  className="tas-daumen-knopf tas-daumen-knopf--loop"
+                  aria-pressed={bild < 0}
+                  aria-label={KOPF.loop.alt}
+                  onClick={() => setBild(-1)}
+                >
+                  <img
+                    src={`${KOPF.loop.poster}&width=160`}
+                    alt=""
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                  />
+                </button>
+              ) : null}
               {GALERIE.bilder.map((b, i) => (
                 <button
                   key={b.url}
@@ -181,10 +200,11 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         </div>
 
         <div className="tas-auswahl">
-          {/* Produktkopf genau in Christians Folge (27.10. Z243–Z248): Name,
-              Claim, Edition, drei Punkte mit rotem Zeichen, Preis, Herkunft.
-              Kein Knopf, keine Steuerzeile: gekauft wird im Konfigurator
-              darunter (Z229–Z233). */}
+          {/* Produktkopf in Christians Folge (27.10. Z243–Z248): Name, Claim,
+              Edition, drei Punkte mit rotem Zeichen, Preis, Herkunft. Der Preis
+              steht im Preisanker-Dreizeiler (Shop-Regel S3, Kanon
+              preisanker-und-videokante.md). Kein Knopf, keine Steuerzeile:
+              gekauft wird im Konfigurator direkt darunter (Z229–Z233). */}
           <section
             className="tas-produkt"
             aria-labelledby="tas-name"
@@ -199,35 +219,18 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               {PRODUKT.punkte.map((p) => (
                 <li key={p.text} className="tas-punkt">
                   <Zeichen art={p.zeichen} />
-                  <span>{p.text}</span>
+                  {p.text}
                 </li>
               ))}
             </ul>
-            <p className="tas-preis" data-tas-preis="">
-              {betragText(hauptPreis, waehrung)}
-            </p>
-            <p className="tas-herkunft">
-              {PRODUKT.herkunft.map((z) => (
-                <span key={z}>{z}</span>
-              ))}
-            </p>
+            <TasPreisanker betrag={betragText(hauptPreis, waehrung)} />
+            <p className="tas-herkunft">{PRODUKT.herkunft.join(' ')}</p>
           </section>
-          {/* Sprung zum Konfigurator statt Knopf im Kopf (Christian Z231,
-              Designmeister-Auflage s07-r2). Steht bewusst außerhalb des
-              Kopfes: der Kopf trägt nur Christians neun Zeilen. */}
-          <a
-            className="tas-sprung"
-            href="#tas-konfigurator"
-            data-tas-sprung=""
-            onClick={springeZumKonfigurator}
-          >
-            {PRODUKT.sprung}
-          </a>
 
           {nummernAn ? (
             <section
               id="tas-konfigurator"
-              className="tas-schritt"
+              className="tas-schritt tas-schritt--erster"
               aria-labelledby="tas-nummer-titel"
               data-tas-schritt="nummer"
             >
@@ -335,7 +338,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
 
           <section
             id={nummernAn ? undefined : 'tas-konfigurator'}
-            className="tas-schritt"
+            className={
+              nummernAn ? 'tas-schritt' : 'tas-schritt tas-schritt--erster'
+            }
             aria-labelledby="tas-kette-titel"
             data-tas-schritt="kette"
           >
@@ -561,17 +566,6 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   );
 }
 
-/** Weicher Sprung zum ersten Konfigurator-Schritt; bei weniger Bewegung hart. */
-function springeZumKonfigurator(e) {
-  const ziel = document.getElementById('tas-konfigurator');
-  if (!ziel) return;
-  e.preventDefault();
-  const ruhig =
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  ziel.scrollIntoView({behavior: ruhig ? 'auto' : 'smooth', block: 'start'});
-}
-
 /**
  * Lucas 360-Grad-Loop im schwarzen Band: stumm, inline, in Schleife, ohne
  * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
@@ -671,6 +665,45 @@ function Zeichen({art}) {
         </g>
       </g>
     </svg>
+  );
+}
+
+/**
+ * PREISANKER-DREIZEILER der Konfigurator-Seite: „4.8 ★★★★★ Google
+ * Bewertungen“ / „+ 14.000 Nutzer“ / Preis (Kanon preisanker-und-videokante.md,
+ * Christian 25./26.10.2026; Shop-Regel S3). Dieselben Klassen wie der
+ * Haus-Baustein reusables/Preisanker.jsx, daran misst das Shop-Tor. Eigene
+ * Fassung aus zwei Gründen: der Preis ist derselbe Betrag wie in der
+ * Zusammenfassung (betragText, eine Rechnung für Kopf und Summe), und die
+ * Bewertung ist hier kein Sprung-Knopf, weil diese Seite keinen
+ * Bewertungsbereich trägt (ein Knopf ohne Ziel wäre ein toter Klick). Kein
+ * Banner: der Kanon nennt für den Qi Alpha keines (Regel 3). Gestaltung im
+ * Scope .tas-seite (the-alpha-produkt.css), Tokens der Seite.
+ */
+function TasPreisanker({betrag}) {
+  return (
+    <div className="qb-preisanker tas-anker" data-qb-preisanker="">
+      <p className="qb-preisanker__bewertungszeile">
+        <span className="qb-preisanker__bewertung">
+          <span className="qb-preisanker__note">4.8</span>
+          <StarRating value={4.8} size={16} qb={null} />
+        </span>
+        <a
+          className="qb-preisanker__quelle"
+          href={GOOGLE_REVIEWS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google Bewertungen
+        </a>
+      </p>
+      <p className="qb-preisanker__nutzer">+ 14.000 Nutzer</p>
+      <p className="qb-preisanker__preiszeile">
+        <span className="tas-preis" data-tas-preis="">
+          {betrag}
+        </span>
+      </p>
+    </div>
   );
 }
 
