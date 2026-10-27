@@ -34,6 +34,8 @@ const ALTE_LPS = [
   '/pages/qi-master-vorverkauf',
   '/pages/qi-alpha-vorverkauf',
   '/pages/qi-alpha-b',
+  '/pages/qi-master',
+  '/pages/qi-master-lp',
 ];
 const SCHREIBWEISEN = [
   '/pages/the-alpha',

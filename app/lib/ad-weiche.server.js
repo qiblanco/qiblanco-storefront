@@ -378,6 +378,12 @@ export const AUSSCHLUSS_SEGMENTE = [
   // sondern vorher auf LP A. Additiv, reversibel: Zeilen löschen.
   '/pages/qi-master-vorverkauf',
   '/pages/qi-alpha-vorverkauf',
+  // /pages/qi-master und /pages/qi-master-lp: seit dem Umzug Qi Alpha (27.10.2026)
+  // eigene 301-Hüllen (vorher nur Shopify-Admin-Weiterleitungen). Ohne diese Zeilen
+  // landete ein alter Link mit gclid per 302 auf LP A statt in der 301
+  // (gemessen am Testserver 27.10. 08:31Z). Additiv, reversibel: Zeilen löschen.
+  '/pages/qi-master',
+  '/pages/qi-master-lp',
   // '/pages/qi-alpha-b' deckt seit dem 27.10.2026 die Zeile '/pages/Qi-Alpha-B'
   // oben (Vergleich Schreibweise-frei).
   '/go',
