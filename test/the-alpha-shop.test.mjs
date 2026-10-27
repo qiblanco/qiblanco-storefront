@@ -158,10 +158,15 @@ test('Produktkopf (s07-r2, Christian 27.10. Z237–Z252): genau Christians Zeile
 test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Poster vom CDN, ohne Viereck', () => {
   assert.match(daten.KOPF.loop.src, /^https:\/\/cdn\.shopify\.com\/videos\/.+\.mp4$/);
   assert.match(daten.KOPF.loop.poster, /^https:\/\/cdn\.shopify\.com\/.+qi-alpha-360-poster\.jpg/);
-  assert.equal(daten.GALERIE.animation360, null);
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
   const band = shop.slice(shop.indexOf('data-tas-band'), shop.indexOf('</header>'));
   assert.match(band, /<BandLoop loop=\{KOPF\.loop\}/);
+  // Z2 (27.10.): das Band ist die Bühne der Galerie-Spalte, nicht mehr ein Streifen über dem Raster
+  const galerie = shop.indexOf('data-tas-galerie');
+  assert.ok(galerie > 0 && galerie < shop.indexOf('data-tas-band'), 'Band steht in der Galerie');
+  assert.ok(shop.indexOf('data-tas-band') < shop.indexOf('className="tas-auswahl"'), 'Band vor der Auswahl-Spalte');
+  assert.match(shop, /useState\(KOPF\.loop \? -1 : 0\)/);
+  assert.match(shop, /tas-daumen-knopf--loop/);
   const loop = shop.slice(shop.indexOf('function BandLoop'), shop.indexOf('function Zeichen'));
   for (const attr of ['autoPlay', 'muted', 'loop', 'playsInline', 'poster={loop.poster}']) assert.ok(loop.includes(attr), attr);
   const css = lies('app/styles/the-alpha-produkt.css');
@@ -170,14 +175,30 @@ test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Po
   assert.match(route, /rel: 'preload', as: 'image', href: KOPF\.loop\.poster/);
 });
 
-test('Sprung „Jetzt konfigurieren ↓“ (Z231, Designmeister-Auflage s07-r2): außerhalb des Kopfes, Ziel ist der erste Schritt', () => {
-  assert.equal(daten.PRODUKT.sprung, 'Jetzt konfigurieren ↓');
+test('Erstes Fenster (Christian Z2, 27.10.): Preisanker-Dreizeiler im Kopf, erste Option direkt darunter, kein Sprung', () => {
+  assert.equal(daten.PRODUKT.sprung, undefined);
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
-  const kopfEnde = shop.indexOf('</section>', shop.indexOf('data-tas-kopf'));
-  const sprung = shop.indexOf('data-tas-sprung');
-  assert.ok(sprung > kopfEnde, 'Sprung steht nach dem Kopf, nicht darin');
-  assert.match(shop, /href="#tas-konfigurator"/);
-  // genau ein Ziel je Zustand: Nummer-Schritt, sonst Ketten-Schritt
-  assert.match(shop, /id="tas-konfigurator"\s+className="tas-schritt"\s+aria-labelledby="tas-nummer-titel"/);
+  assert.doesNotMatch(shop, /data-tas-sprung|springeZumKonfigurator/);
+  const kopf = shop.slice(shop.indexOf('data-tas-kopf'), shop.indexOf('</section>', shop.indexOf('data-tas-kopf')));
+  assert.match(kopf, /<TasPreisanker betrag=\{betragText\(hauptPreis, waehrung\)\} \/>/);
+  // Kanon preisanker-und-videokante.md: Bewertung -> Nutzer -> Preis, die Klassen des Haus-Bausteins (Shop-Tor S3)
+  const anker = shop.slice(shop.indexOf('function TasPreisanker'), shop.indexOf('/** Eine Auswahl-Karte'));
+  const pos = ['qb-preisanker__bewertung"', 'qb-preisanker__nutzer', 'qb-preisanker__preiszeile'].map((k) => anker.indexOf(k));
+  assert.ok(pos.every((x) => x > 0) && pos[0] < pos[1] && pos[1] < pos[2], 'Reihenfolge Bewertung, Nutzer, Preis');
+  assert.match(anker, /data-qb-preisanker=""/);
+  assert.match(anker, /href=\{GOOGLE_REVIEWS_URL\}/);
+  assert.doesNotMatch(anker, /SterneSprung|qb-preisanker__banner/);
+  // Punkte als Liste: Text direkt im <li> (Shop-Tor D4 K1), Zeichen davor
+  assert.match(kopf, /<Zeichen art=\{p\.zeichen\} \/>\s*\{p\.text\}/);
+  // genau ein erster Schritt je Zustand: Nummer-Schritt, sonst Ketten-Schritt
+  assert.match(shop, /id="tas-konfigurator"\s+className="tas-schritt tas-schritt--erster"\s+aria-labelledby="tas-nummer-titel"/);
   assert.match(shop, /id=\{nummernAn \? undefined : 'tas-konfigurator'\}/);
+  const css = lies('app/styles/the-alpha-produkt.css');
+  // Handy: Kopf, erste Option, dann Bühne; keine Spalte breiter als das Fenster
+  assert.match(css, /\.tas-produkt \{\s*order: -2;/);
+  assert.match(css, /\.tas-schritt--erster \{\s*order: -1;/);
+  assert.match(css, /grid-template-columns: minmax\(0, 1fr\);/);
+  // Nutzerzahl >= 80 % der Preisschrift (28 zu 32 px)
+  assert.match(css, /--tas-fs-5: 1\.75rem;/);
+  assert.match(css, /--tas-fs-preis: 2rem;/);
 });

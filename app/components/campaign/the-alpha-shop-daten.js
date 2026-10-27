@@ -59,20 +59,17 @@ export const PRODUKT = {
     },
   ],
   herkunft: ['Designed in Germany.', 'Made in Germany.'],
-  // Sprung zum Konfigurator unter dem Kopf (Christian Z231, nur weil der
-  // Designmeister ihn für nötig hält; s07-r2).
-  sprung: 'Jetzt konfigurieren ↓',
+  // Kein Sprung „Jetzt konfigurieren ↓“ mehr (Christian Z231: nur wenn der
+  // Designmeister ihn für nötig hält): die erste Option steht seit dem
+  // Kopf-Umbau (Z2, 27.10.) im ersten Fenster direkt unter dem Preis.
 };
 
 /*
  * GALERIE: Renderings mit neuem Logo (keine QiOne-2-Pro-Fotos). Das große Feld
- * ist in der Vorlage eine 360-Grad-Animation. Die gibt es noch nicht: solange
- * `animation360` null ist, zeigt das Feld das gewählte Rendering. Liegt die
- * Animation vor, hier `{src: '<cdn .mp4>', poster: '<bild>'}` setzen; die Seite
- * spielt sie dann stumm, inline, in Schleife, ohne Bedienleiste.
+ * ist zuerst die Bühne mit dem 360-Grad-Loop aus KOPF (schwarzes Band, Z218);
+ * die Daumen darunter wechseln auf die Renderings und zurück auf den Loop.
  */
 export const GALERIE = {
-  animation360: null,
   bilder: [
     {
       url: `${CDN}/files/qi-alpha-01-front.jpg?v=1792849253`,
@@ -113,8 +110,9 @@ export const NUMMER = {
   titel: 'Hole Dir jetzt Deine einzigartige Nummer.',
   vorschlaege: [100, 1, 69],
   ohneTitel: 'Ohne Wunschnummer',
-  ohneHinweis:
-    'Ohne Wunschnummer bekommst du beim Versand eine zufällige noch freie Nummer.',
+  // Kurz, weil die Karte im ersten Fenster steht (Z2, 27.10.) und der Titel
+  // „Ohne Wunschnummer“ den Rest schon sagt. Nicht aus der Figma-Spalte.
+  ohneHinweis: 'Zufällige freie Nummer beim Versand.',
   freiTitel: 'Freie Auswahl',
   bildGravur: {
     url: `${CDN}/files/qi-alpha-05-seite-gravurflaeche.jpg?v=1793021845`,
