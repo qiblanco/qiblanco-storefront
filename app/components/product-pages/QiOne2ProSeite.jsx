@@ -6,8 +6,8 @@ import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabe
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
-import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
+import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import amazonstilStyles from '~/styles/amazonstil.css?url';
@@ -80,6 +80,10 @@ export function qiOne2ProSeiteLinks() {
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*), berührt keinen
     // Selektor von pdp-qi.css — die Reihenfolge darüber bleibt tragend.
     {rel: 'stylesheet', href: produktVideoStyles},
+    // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
+    // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
+    // Rückweg: diese Zeile und das Prop `preisanker` unten entfernen.
+    {rel: 'stylesheet', href: preisankerStyles},
     // Gerätevergleich + Kundenfragen (Amazon-Stil Stufe 2, s04, 27.09.2026).
     // Eigene Klassen (.qb-gv-*, .qb-kf-*); beide Schalter aus = keine Zeile.
     ...(amazonstilAn('qione-2-pro') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
@@ -161,20 +165,19 @@ export function QiOne2ProSeite({
            sie zweimal auf der Seite steht. Jede andere Kaufflaeche behaelt
            den Default (siehe ProductForm.jsx). */
         gewaehrleistungsHinweis={false}
-        socialProof={
-          <SterneSprung className="product-rating"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
-        }
+        /* PREISANKER (Christian 26.10.2026: "das braucht es nun für qione 2
+           pro, qi bracelet und necklace auch"): "4.8 ★★★★★ Google
+           Bewertungen" / "+ 14.000 Nutzer" / Preis + Banner, eine Farbe und
+           eine Schrift. Er ersetzt die Sterne-Zeile unter dem Titel, den
+           Absatz "Mehr als 14.000+ aktive Nutzer" und das rote Verlaufs-Label
+           am Preis; "Bestseller Angebot" steht jetzt im Banner des
+           Preisankers (reusables/Preisanker.jsx). */
+        preisanker={{banner: 'Bestseller Angebot'}}
         /* DIE EINZIGE ABWEICHUNG ZWISCHEN DEN BEIDEN ROUTEN (Christian
            28.09.2026: "gleich bis auf den Beschreibungstext oben beim
            Produkt"). /products übergibt den Shopify-Beschreibungstext,
            /pages die Hero-Punkte der Landingpage-Fassung. */
         description={beschreibung}
-        topBadge={
-          <p className="mt-2">
-            <b>Mehr als 14.000+ aktive Nutzer</b>
-          </p>
-        }
-        priceLabel={<div className="BestsellerLabel">Bestseller Angebot</div>}
         /* HIER STAND BIS ZUM 2026-09-08 DIE ZWEIFEL-ZEILE ("Wirkt das
            überhaupt? …"). Elina EL-20260908-d8349a01 nimmt sie ERSATZLOS
            heraus — ausdrücklich ohne Ersatzformulierung — und setzt an genau

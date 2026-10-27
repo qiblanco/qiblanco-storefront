@@ -13,17 +13,39 @@
      zwischen 24 und 32 und schließt die Lücke der Skala, die dort ohnehin
      eine Stufe vorsieht (--qb-ref-fs-7 fehlt nur, weil die Startseite sie
      nicht braucht).
-   Gold: das EINE Haus-Gold als Fläche (--qb-akzent-kauf), Schrift darauf
-   --color-on-accent (8,51:1). Kein zweiter Goldton.
+   EINE Farbe, EINE Schriftstärke für die drei Zahlen (Christian 26.10.:
+   "das wirkt zu bunt"): 4.8, Nutzerzahl und Preis tragen --qb-pa-farbe
+   (die Haus-Tinte --qb-text) und --qb-pa-gewicht, Schriftfamilie geerbt.
+   Nur die Größe staffelt (16 / 28 / 32); Banner und Streichpreis
+   stehen auf der 16er-Stufe, damit der Kopf keine eigenen Stufen dazubekommt. Die Sterne bleiben gelb.
+   Banner: Fläche Qi-Alpha-Rot (--qb-pa-alpha-rot, unten), Schrift
+   weiß (6,3:1). Christian 26.10.: "das was vorher goldfarben war wird nun
+   das rot, und die schrift ändert sich von schwarz in weiß".
    Abstände auf dem 8px-Raster.
    ========================================================================== */
 
 .qb-preisanker {
   --qb-pa-fs-bewertung: var(--qb-ref-fs-3, 16px);
   --qb-pa-fs-nutzer: 28px;
-  --qb-pa-fs-banner: var(--qb-ref-fs-2, 14px);
+  /* Banner und Streichpreis auf der Stufe der Bewertungszeile (16px), nicht
+     auf eigenen Stufen: Christian 27.10. "alle Seiten Premium", das Shop-
+     Regeln-Tor zaehlt im Kopf hoechstens 6 Schriftstufen. Mit 14px-Banner und
+     20px-Streichpreis stand QiOne 2 Pro bei 8 (Kopf 90/100, STOP). */
+  --qb-pa-fs-banner: var(--qb-pa-fs-bewertung);
+  --qb-pa-fs-streich: var(--qb-pa-fs-bewertung);
   --qb-pa-abstand: 8px;
   --qb-pa-abstand-preis: 16px;
+  --qb-pa-farbe: var(--qb-text, #2c2a26);
+  --qb-pa-farbe-gedaempft: var(--qb-text-gedaempft, #6b665d);
+  --qb-pa-farbe-link-hover: var(--color-accent-ink, #856828);
+  --qb-pa-gewicht: 700;
+  /* QI-ALPHA-ROT: der Wert des Knopfs "Jetzt Exklusiv Reservieren" der
+     Qi-Alpha-Seiten (the-alpha.css --ta-rot). Christian 26.10.: "das gleiche
+     rot von qi Alpha, da der qi alpha ja ein qihome zum umhaengen ist".
+     Bewusst HIER im Scope und nicht in qb-tokens.css: qb-tokens laedt auf
+     jeder Route, und ein neues Token dort zog im Formate-Gate 74 fremde Seiten
+     mit ihrer Alt-Schuld in diesen Diff. Weiss darauf 6,3:1. */
+  --qb-pa-alpha-rot: #b92200;
 
   display: flex;
   flex-direction: column;
@@ -32,36 +54,67 @@
   margin: var(--qb-pa-abstand-preis) 0;
 }
 
-/* Zeile 1 — Bewertung. Ruhig: kein Unterstrich, keine Zeigehand, kein
-   Sprung. Die Bestandsregel `.sterne-sprung:hover { text-decoration:
-   underline }` (app.css) ist hier aufgehoben; der Hover zeigt nur einen
-   leichten Farbwechsel der Note. Der Fokusring für die Tastatur bleibt
-   (app.css .sterne-sprung:focus-visible). */
+/* Zeile 1 — "4.8 ★★★★★ Google Bewertungen". Ruhig: 4.8 + Sterne sind der
+   Sprung zu den Bewertungen (SterneSprung) ohne Unterstrich, ohne Zeigehand,
+   ohne Farbwechsel — die Bestandsregel `.sterne-sprung:hover { text-
+   decoration: underline }` (app.css) ist hier aufgehoben, der Fokusring für
+   die Tastatur bleibt (app.css .sterne-sprung:focus-visible).
+   "Google Bewertungen" ist der EINE Link der Zeile, gleiche Schriftgröße wie
+   4.8. Er poppt nicht (kein Hover-Unterstrich, keine Bewegung): eine feine,
+   gedämpfte Linie zeigt ihn dauerhaft als Link (auch am Handy, wo es kein
+   Drüberfahren gibt), beim Drüberfahren/Antippen wechselt NUR die
+   Schriftfarbe auf die Gold-Tinte (5,24:1 auf Weiß). */
+.qb-preisanker__bewertungszeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--qb-pa-abstand);
+  font-size: var(--qb-pa-fs-bewertung);
+  line-height: 1.5;
+}
 .qb-preisanker .qb-preisanker__bewertung {
   gap: var(--qb-pa-abstand);
   font-size: var(--qb-pa-fs-bewertung);
-  font-weight: 600;
+  font-weight: var(--qb-pa-gewicht);
   line-height: 1.5;
   cursor: default;
 }
 .qb-preisanker .qb-preisanker__bewertung:hover {
   text-decoration: none;
 }
-.qb-preisanker__note {
-  color: var(--color-accent-ink);
-  transition: color 0.2s ease;
+.qb-preisanker .qb-preisanker__note {
+  color: var(--qb-pa-farbe);
 }
-.qb-preisanker .qb-preisanker__bewertung:hover .qb-preisanker__note {
-  color: var(--qb-text, #2c2a26);
+.qb-preisanker .qb-preisanker__quelle {
+  font-size: var(--qb-pa-fs-bewertung);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--qb-pa-farbe);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--qb-pa-farbe-gedaempft);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.qb-preisanker .qb-preisanker__quelle:hover,
+.qb-preisanker .qb-preisanker__quelle:active,
+.qb-preisanker .qb-preisanker__quelle:focus-visible {
+  color: var(--qb-pa-farbe-link-hover);
+  text-decoration-color: currentColor;
+}
+.qb-preisanker .qb-preisanker__quelle:focus-visible {
+  outline: 2px solid var(--qb-pa-farbe-link-hover);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* Zeile 2 — Nutzerzahl, fast so groß und kräftig wie der Preis darunter. */
-.qb-preisanker__nutzer {
+.qb-preisanker .qb-preisanker__nutzer {
   margin: var(--qb-pa-abstand) 0 0;
   font-size: var(--qb-pa-fs-nutzer);
-  font-weight: 700;
+  font-weight: var(--qb-pa-gewicht);
   line-height: 1.2;
-  color: inherit;
+  color: var(--qb-pa-farbe);
 }
 
 /* Zeile 3 — Preis, dahinter das goldene Banner. Die Preis-Typo selbst
@@ -76,12 +129,35 @@
 .qb-preisanker__preiszeile .product-price {
   margin: 0;
 }
+/* Preis in Farbe und Stärke der beiden Zeilen darüber. Gilt auch für den
+   Angebotspreis: app.css malt `.gradient-price` als Rot-Verlauf in die
+   Schrift — im Preisanker wäre das die dritte Farbe der drei Zahlen. Der
+   Streichpreis bleibt kleiner und gedämpft, damit er Vergleich bleibt und
+   nicht mit dem Preis konkurriert. */
+.qb-preisanker .qb-preisanker__preiszeile .product-price,
+.qb-preisanker .qb-preisanker__preiszeile .product-price span {
+  color: var(--qb-pa-farbe);
+  font-weight: var(--qb-pa-gewicht);
+}
+.qb-preisanker .qb-preisanker__preiszeile .gradient-price {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+.qb-preisanker .qb-preisanker__preiszeile .product-price-on-sale {
+  align-items: baseline;
+  gap: var(--qb-pa-abstand);
+}
+.qb-preisanker .qb-preisanker__preiszeile .product-price s {
+  font-size: var(--qb-pa-fs-streich);
+  font-weight: 400;
+  color: var(--qb-pa-farbe-gedaempft);
+}
 .qb-preisanker__banner {
   display: inline-block;
   padding: 4px 12px;
   border-radius: var(--qb-radius-klein, 8px);
-  background: var(--qb-akzent-kauf);
-  color: var(--color-on-accent, #2c2a26);
+  background: var(--qb-pa-alpha-rot);
+  color: var(--color-light, #fff);
   font-size: var(--qb-pa-fs-banner);
   font-weight: 700;
   line-height: 1.5;
