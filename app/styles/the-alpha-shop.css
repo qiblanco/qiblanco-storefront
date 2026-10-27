@@ -6,8 +6,12 @@
  * benutzt deren Tokens (the-alpha-produkt.css, s12). Ein H2-Stil für die
  * ganze Seite, der von „What's in the Box“ und den Konfigurator-Schritten
  * (--tas-fs-5, 600, linksbündig; s07-r2, Rubrik: „EIN H2-Stil je Seite“, eine
- * Ausrichtung). Das Etikett ist das schwarze Schild aus Christians Figma
- * (--tas-band, weiße Schrift). Bilder in der hellen Fläche mit dem einen
+ * Ausrichtung). Das Etikett ist das Schild aus Christians Figma, seit
+ * Nachtrag 9 (Christian 27.10.2026: „das Fensterchen … in dem Rotton halten“)
+ * in Qi-Alpha-Rot (--tas-rot, derselbe Ton wie Knopf und Zeichen im Kopf),
+ * weiße Schrift; das Rot wiederholt sich nur noch als Linie am Zitat, damit
+ * es ein roter Faden bleibt und keine zweite Akzentfarbe wird. Bilder in der
+ * hellen Fläche mit dem einen
  * Radius-Token. Quellen klein (--tas-fs-2, --tas-grau), höchstens ~70 Zeichen
  * je Zeile.
  */
@@ -29,7 +33,7 @@
   display: inline-block;
   padding: var(--tas-s-1) var(--tas-s-2);
   border-radius: 6px;
-  background: var(--tas-band);
+  background: var(--tas-rot);
   color: var(--tas-weiss);
   font-size: var(--tas-fs-3);
   font-weight: 600;
@@ -85,7 +89,7 @@
 .taw-zitat {
   margin: var(--tas-s-3) 0 0;
   padding-left: var(--tas-s-2);
-  border-left: 2px solid var(--tas-linie);
+  border-left: 2px solid var(--tas-rot);
 }
 
 .tas-seite .taw-zitat p {
