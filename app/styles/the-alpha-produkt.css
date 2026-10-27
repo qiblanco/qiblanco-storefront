@@ -9,7 +9,8 @@
  * FARBE: neutrales Kontinuum (Tinte, Grau, Linie, Fläche) plus das Schwarz
  * des Bandes aus Christians Vorlage (#1e1e1e). Gold steht nur auf dem
  * Kaufknopf (Hausknopf .btn--primary); die gewählte Karte ist dunkel umrandet.
- * Qi-Alpha-Rot trägt nur die drei Zeichen im Produktkopf (s07-r2, Z251).
+ * Qi-Alpha-Rot trägt die drei Zeichen im Produktkopf (s07-r2, Z251) und
+ * die Etiketten der Wissens-Strecke samt Zitat-Linie (Nachtrag 9, 27.10.).
  * Handy zuerst; ab 1024 px zwei Spalten, die Galerie bleibt beim Scrollen
  * stehen wie bei Apple.
  */
@@ -36,8 +37,8 @@
   --tas-flaeche: #f5f5f7;
   --tas-weiss: #ffffff;
   --tas-band: #1e1e1e;
-  /* Qi-Alpha-Rot (Christian, Figma; Film-Gerüst #b92200): nur auf den drei
-     Zeichen des Produktkopfs. */
+  /* Qi-Alpha-Rot (Christian, Figma; Film-Gerüst #b92200): die drei Zeichen
+     des Produktkopfs und die Etiketten der Wissens-Strecke (the-alpha-shop.css). */
   --tas-rot: #b92200;
 
   --tas-radius: 18px;

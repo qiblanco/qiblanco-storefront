@@ -57,3 +57,14 @@ test('Verdrahtung: Wissen und Fragen unter der Box, Stile route-gebunden', () =>
   assert.match(r, /nachDerBox=\{\s*<>\s*<TheAlphaWissen \/>\s*<TheAlphaFaq ton="hell" \/>/);
   for (const s of ['shopStyles', 'wissenStyles', 'faqStyles']) assert.match(r, new RegExp(`href: ${s}`));
 });
+
+test('Etiketten der Wissens-Strecke in Qi-Alpha-Rot, weiße Schrift (Nachtrag 9, Christian 27.10.2026)', () => {
+  const css = lies('app/styles/the-alpha-shop.css');
+  const regel = css.match(/\.taw-etikett \{([^}]*)\}/);
+  assert.ok(regel, 'Regel .taw-etikett fehlt');
+  assert.match(regel[1], /background: var\(--tas-rot\);/);
+  assert.match(regel[1], /color: var\(--tas-weiss\);/);
+  // Das Rot ist der eine Ton aus dem Kopf (kein zweites Rot als freier Wert).
+  assert.doesNotMatch(css, /#[0-9a-fA-F]{3,6}\b/);
+  assert.match(lies('app/styles/the-alpha-produkt.css'), /--tas-rot: #b92200;/);
+});
