@@ -299,10 +299,10 @@ const MARKT_LAENDER = new Set([
 // MARKT_LAENDER bleibt, wie es ist: es speist auch die CSP-Liste der Google-
 // ccTLDs (entry.server.jsx) und ist dort bewusst klein.
 // Abgeleitet 2026-10-27 aus Shopify: localization.availableCountries und
-// je Land ein Warenkorb. Werkzeug: preisanzeige-pruefung/bin/preisanzeige
-// laender --voll --js. Nie von Hand ergaenzen: die Probe (preisanzeige
-// laender) wird rot, sobald Shopify in ein Land verkauft, das hier fehlt,
-// oder ein Kontext nicht mehr stimmt.
+// je Land ein Warenkorb. Erzeugt mit `preisanzeige laender --voll --js`
+// (Modul Preisanzeige-Prüfung). Nie von Hand ergänzen: die Probe
+// (preisanzeige laender) wird rot, sobald Shopify in ein Land verkauft,
+// das hier fehlt, oder ein Kontext nicht mehr stimmt.
 export const KASSEN_KONTEXT = Object.freeze({
   // ch: 1
   CH: 'CH',
