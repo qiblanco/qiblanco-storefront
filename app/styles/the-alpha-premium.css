@@ -653,6 +653,29 @@ html:has(main[data-film-seite]) body {
   }
 }
 
+/* Standbild (?film=still, useTapFilm): dieselbe Fassung wie bei
+   prefers-reduced-motion, für Prüfer, die nicht scrollen. */
+.tap-still .tap-hero-zeile {
+  animation: none;
+}
+
+.tap-js.tap-still [data-tap-ein],
+.tap-js.tap-still [data-tap-schritt] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.tap-still .tap-scrub {
+  height: auto;
+}
+
+.tap-still .tap-scrub-bild {
+  position: static;
+  min-height: 0;
+  padding-block: var(--tap-takt);
+}
+
 /* ---------- Ton (Segment s06, TheAlphaTon.jsx) ---------- */
 /* „Sound on“: ein schwarzes Fenster, das wie eine Blende im Film aufgeht und
    wieder zugeht (Z107/Z108). Es steht zwischen Kopf und Titel: zuerst „Sound

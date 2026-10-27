@@ -61,7 +61,9 @@ import {
  * - Kaufleiste: sichtbar, sobald die Titelkarte [data-tap-anfang] aus dem
  *   Bild ist, und wieder weg, solange der Abschluss [data-tap-ende] zu sehen
  *   ist (dort steht der große Knopf).
- * Bei prefers-reduced-motion steht alles sofort und still da.
+ * Bei prefers-reduced-motion steht alles sofort und still da, ebenso mit
+ * ?film=still (Standbild: dieselbe Fassung, die ein Kunde mit „Bewegung
+ * reduzieren“ sieht; für Prüfer, die nicht scrollen, z. B. das Shop-Tor).
  */
 function useTapFilm(wurzel) {
   const [leiste, setLeiste] = useState(false);
@@ -70,14 +72,17 @@ function useTapFilm(wurzel) {
     if (!el || typeof IntersectionObserver === 'undefined') return undefined;
     const beobachter = [];
     const aufraeumen = [];
-    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const still =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+      new URLSearchParams(window.location.search).get('film') === 'still';
+    if (still) el.classList.add('tap-still');
 
     const ein = new IntersectionObserver(
       (eintraege) => {
         for (const e of eintraege) {
           const bild = e.rootBounds?.height || window.innerHeight;
           const ganz = e.intersectionRatio >= 0.98 || e.intersectionRect.height >= bild * 0.92;
-          if (e.isIntersecting && ganz) {
+          if (still || (e.isIntersecting && ganz)) {
             e.target.classList.add('tap-sichtbar');
             ein.unobserve(e.target);
           }
@@ -245,7 +250,7 @@ function Bild({bild, sizes, className, loading = 'lazy'}) {
 export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_ALPHA_KOPF.untertitel}) {
   const worte = tapWorte(untertitel).length;
   return (
-    <header
+    <section
       className="tap-titelkarte tap-scrub"
       data-tap-anfang=""
       data-tap-scrub=""
@@ -259,7 +264,7 @@ export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_AL
           </span>
         </h1>
       </div>
-    </header>
+    </section>
   );
 }
 
