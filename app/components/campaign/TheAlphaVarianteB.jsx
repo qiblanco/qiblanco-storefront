@@ -9,15 +9,12 @@ import {
   TapMarke,
   TapEdition,
 } from '~/components/campaign/TheAlphaPremium';
-import {TheAlphaLiveAnmeldung} from '~/components/campaign/TheAlphaLiveAnmeldung';
 import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-alpha-daten';
 import {
   TAB_AKZENT,
   TAB_UNTERSEITE,
   TAB_SEITENBAND,
   TAB_ABSCHLUSS,
-  TAB_LIVE,
-  TAB_FRAGEN,
 } from '~/components/campaign/the-alpha-variante-b-daten';
 
 /*
@@ -36,8 +33,10 @@ import {
  * WAS B ANDERS MACHT (Z9, Feinheiten, nicht Geschichte):
  *  - unter Christians drei Zeilen je Kapitel ein Nutzen-Akzent (TAB_AKZENT),
  *  - Longevity mit eigenem Bild: die Unterseite „Made in Germany“ randlos,
- *  - im Abschluss der Preis, kleiner als der Titel, mit einer ruhigen Zeile;
- *    NACH dem Knopf die Live-Anmeldung 8. November und die Fragen.
+ *  - im Abschluss der Preis, kleiner als der Titel, mit einer ruhigen Zeile.
+ * Seit 27.10. endet B wie A und C mit dem roten Knopf (Christian Z258–Z263:
+ * „Die Seite muss hier aufhören“); Live-Anmeldung und Fragen stehen nicht
+ * mehr auf der Landingpage, die Fragen gehören auf die Shopseite (Z262/Z267).
  *
  * Bausteine und Tokens: TheAlphaPremium.jsx / the-alpha-premium.css (geteilt,
  * hier nicht geändert). Eigenes nur im Scope
@@ -45,10 +44,9 @@ import {
  * Ton und Video-Ton kommen über TapSeite/TapFilm aus dem Gerüst.
  *
  * ÜBERSCHRIFTEN: h2 tragen nur die drei Kapitel (EIN H2-Stil je Seite, die
- * Rubrik zählt Größe x Gewicht); Live und Fragen nach dem Knopf sind ruhige h3.
+ * Rubrik zählt Größe x Gewicht).
  *
- * MESSMARKEN: data-tab-preis (Preis im Abschluss), data-tab-live,
- * data-tab-fragen; Probe claude-jobs/<grossjob>/nachher/variante-b/probe_b_film.py.
+ * MESSMARKEN: data-tab-preis (Preis im Abschluss); Probe claude-jobs/<grossjob>/nachher/variante-b/probe_b_film.py.
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -80,40 +78,6 @@ function Abschluss({preis}) {
   );
 }
 
-function Live() {
-  return (
-    <section
-      className="tab-live"
-      data-tab-live=""
-      id={TAB_LIVE.anker}
-      aria-labelledby="tab-live-titel"
-    >
-      <h3 className="tab-h3" id="tab-live-titel">
-        {TAB_LIVE.titel}
-      </h3>
-      <p className="tab-live-wann">{TAB_LIVE.wann}</p>
-      <p className="tab-text">{TAB_LIVE.text}</p>
-      <TheAlphaLiveAnmeldung className="tab-live-karte" quelle="the-alpha" variante="B" />
-    </section>
-  );
-}
-
-function Fragen() {
-  return (
-    <section className="tab-fragen" data-tab-fragen="" aria-labelledby="tab-fragen-titel">
-      <h3 className="tab-h3" id="tab-fragen-titel">
-        {TAB_FRAGEN.titel}
-      </h3>
-      {TAB_FRAGEN.liste.map((f) => (
-        <details className="tab-frage" key={f.frage}>
-          <summary className="tab-frage-kopf">{f.frage}</summary>
-          <p className="tab-text">{f.antwort}</p>
-        </details>
-      ))}
-    </section>
-  );
-}
-
 /** @param {{preis: {handle: string, price: object} | null}} props */
 export default function TheAlphaVarianteB({preis}) {
   return (
@@ -137,8 +101,6 @@ export default function TheAlphaVarianteB({preis}) {
       <TapEdition>
         <Abschluss preis={preis} />
       </TapEdition>
-      <Live />
-      <Fragen />
     </TapSeite>
   );
 }

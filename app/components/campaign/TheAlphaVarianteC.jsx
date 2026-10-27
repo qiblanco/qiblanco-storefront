@@ -29,8 +29,9 @@ import {TAC_ABSCHLUSS} from '~/components/campaign/the-alpha-variante-c-daten';
  *  - Länge: der kurze Schnitt, kürzere Bühnen, nichts nach dem Knopf,
  *  - nach Protection ein ruhiger zweiter Knopf (Umriss in Etikett-Schrift,
  *    kein Rot, derselbe Wortlaut wie der rote Knopf),
- *  - im Abschluss der Preis klein über dem roten Knopf, darunter Rückgabe,
- *    Raten und Versand.
+ *  - im Abschluss der Preis klein über dem roten Knopf, mit Rückgabe, Raten
+ *    und Versand zwischen Preis und Knopf. Seit 27.10. endet die Seite mit
+ *    dem Knopf (Christian Z258–Z263), die Zeilen stehen deshalb davor.
  *
  * Bausteine und Tokens: TheAlphaPremium.jsx / the-alpha-premium.css (geteilt,
  * hier nicht geändert). Eigenes nur im Scope
@@ -38,7 +39,7 @@ import {TAC_ABSCHLUSS} from '~/components/campaign/the-alpha-variante-c-daten';
  * Ton und Video-Ton kommen über TapSeite/TapFilm aus dem Gerüst.
  *
  * MESSMARKEN: data-tac-zwischen (zweiter Knopf), data-tac-preis (Preis im
- * Abschluss, data-preis-quelle shopify|fest), data-tac-sicher (Zeilen unter
+ * Abschluss, data-preis-quelle shopify|fest), data-tac-sicher (Zeilen über
  * dem roten Knopf).
  */
 
@@ -100,12 +101,12 @@ export default function TheAlphaVarianteC({preis}) {
       <TapMarke bild={SEITENBAND} />
       <TapEdition>
         <Preis preis={preis} />
+        <ul className="tac-sicher" data-tac-sicher="" data-tap-ein="" style={{'--tap-folge': 3}}>
+          {TAC_ABSCHLUSS.sicher.map((z) => (
+            <li key={z}>{z}</li>
+          ))}
+        </ul>
       </TapEdition>
-      <ul className="tac-sicher" data-tac-sicher="">
-        {TAC_ABSCHLUSS.sicher.map((z) => (
-          <li key={z}>{z}</li>
-        ))}
-      </ul>
     </TapSeite>
   );
 }

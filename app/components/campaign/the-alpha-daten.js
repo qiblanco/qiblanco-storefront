@@ -141,14 +141,24 @@ export const THE_ALPHA_WOERTERBUCH = {
   lemma: 'Ultra High Vibe Mode',
   laut: '/ˈʌltrə haɪ vaɪb moʊd/',
   wortart: 'n.',
+  // Je Bedeutung Teile; `fett: true` wie in Christians Vorlage (THE_ALPHA_KOPF
+  // oben, vorlage/kopf-text.png) und wie im Original (Pulp Fiction, Christian
+  // 27.10. Z289: „die wichtigen Wörter in der Definition fett“). Der Wortlaut
+  // ist unverändert; nur die Auszeichnung ist neu.
   bedeutungen: [
-    'extrem positive Ausstrahlung.',
-    'Es beschreibt einen Zustand, in dem du voller Lebensenergie, Freude, innerem ' +
-      'Frieden und Dankbarkeit bist. Der Begriff kommt aus der modernen Psychologie ' +
-      'und Spiritualität. Die Grundidee ist: Alles im Universum (auch unsere Gedanken ' +
-      'und Gefühle) hat eine bestimmte Schwingung oder Frequenz. Wenn du im „High Vibe ' +
-      'Mode“ bist, bist du auf einer Wellenlänge, die positive Erlebnisse, Erfolg und ' +
-      'gesunde Beziehungen wie ein Magnet anzieht.',
+    [{text: 'extrem positive Ausstrahlung.', fett: true}],
+    [
+      {text: 'Es beschreibt einen Zustand, in dem du '},
+      {text: 'voller Lebensenergie, Freude, innerem Frieden und Dankbarkeit', fett: true},
+      {
+        text:
+          ' bist. Der Begriff kommt aus der modernen Psychologie und Spiritualität. ' +
+          'Die Grundidee ist: Alles im Universum (auch unsere Gedanken und Gefühle) ' +
+          'hat eine bestimmte Schwingung oder Frequenz. Wenn du im „High Vibe ' +
+          'Mode“ bist, bist du auf einer Wellenlänge, die positive ',
+      },
+      {text: 'Erlebnisse, Erfolg und gesunde Beziehungen wie ein Magnet anzieht.', fett: true},
+    ],
   ],
   quelle: 'Google AI',
 };
@@ -156,7 +166,13 @@ export const THE_ALPHA_WOERTERBUCH = {
 /** Seitenansicht mit Etikett, danach poppt der Name auf Schwarz auf
  * (Christian 26.10.: „dann kommt der G1 von der Seite, G-Alpha, und dann poppt
  * schwarz auf, D-Alpha“ = THE ALPHA, Figma-Ausschnitt christian-szene-3). */
-export const THE_ALPHA_MARKE = 'THE ALPHA';
+export const THE_ALPHA_MARKE = 'Qi Alpha®';
+
+/** Das Etikett links oben in der Kaufleiste. Christian 27.10.2026 (Z1): „Und
+ * links oben das THE ALPHA machen wir zu QI ALPHA mit dem Registry-Zeichen.“
+ * Am selben Vormittag: die Schluss-Szene zeigt „Qi Alpha®“ statt „THE ALPHA“
+ * (THE_ALPHA_MARKE oben); „The Alpha“ als sichtbarer Name fällt weg. */
+export const QI_ALPHA_LEISTE = 'QI ALPHA®';
 
 /** Schluss der Vorlage (Punkt 9 und 10). */
 export const THE_ALPHA_SCHLUSS = {
