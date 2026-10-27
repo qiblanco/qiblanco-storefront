@@ -362,6 +362,13 @@ export const AUSSCHLUSS_SEGMENTE = [
   // 2026-10-25T16:00Z: /pages/The-Alpha?gclid=x gab 302 auf LP A mit lp_m=w.
   // Ohne diese Zeilen stünden alle drei Arme für Google-Verkehr leer, und
   // s07 lenkt die Qi-Alpha-Anzeigen genau hierher.
+  // UMZUG QI ALPHA (Christian 27.10.2026, Z1: „den Link ändern wir auch wieder
+  // von The Alpha in Qi Alpha“): die drei Arme leben jetzt unter /pages/Qi-Alpha,
+  // -B und -C. Die The-Alpha-Zeilen bleiben, damit alte Anzeigen-Links mit
+  // gclid ihre 301 erreichen statt LP A.
+  '/pages/Qi-Alpha',
+  '/pages/Qi-Alpha-B',
+  '/pages/Qi-Alpha-C',
   '/pages/The-Alpha',
   '/pages/The-Alpha-B',
   '/pages/The-Alpha-C',
@@ -371,7 +378,8 @@ export const AUSSCHLUSS_SEGMENTE = [
   // sondern vorher auf LP A. Additiv, reversibel: Zeilen löschen.
   '/pages/qi-master-vorverkauf',
   '/pages/qi-alpha-vorverkauf',
-  '/pages/qi-alpha-b',
+  // '/pages/qi-alpha-b' deckt seit dem 27.10.2026 die Zeile '/pages/Qi-Alpha-B'
+  // oben (Vergleich Schreibweise-frei).
   '/go',
   '/collect',
   '/b',

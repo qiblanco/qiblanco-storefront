@@ -102,14 +102,14 @@ test('Inhalte nur aus Christians Vorlage: Kopf, Produkt, Zusammenfassung, Box', 
   for (const b of daten.GALERIE.bilder) assert.match(b.url, /qi-alpha-0\d/);
 });
 
-test('Verdrahtung: /products/the-alpha rendert TheAlphaShop, the-alpha-b die bisherige Kaufseite', () => {
-  const a = lies('app/routes/products.the-alpha.jsx');
+test('Verdrahtung: /products/qi-alpha rendert TheAlphaShop, qi-alpha-b die bisherige Kaufseite (Umzug 27.10.2026)', () => {
+  const a = lies('app/routes/products.qi-alpha.jsx');
   // seit s07 (Grossjob 20261026) mit Wissens-Strecke und Fragen unter der Box
   assert.match(a, /<TheAlphaShop\s+product=\{product\}\s+addons=\{addons\}[\s\S]*?\/>/);
-  assert.match(a, /const THE_ALPHA_PDP_PFAD = '\/products\/the-alpha';/);
+  assert.match(a, /const THE_ALPHA_PDP_PFAD = '\/products\/qi-alpha';/);
   assert.match(a, /\{name: 'robots', content: 'noindex,nofollow'\}/);
-  const b = lies('app/routes/products.the-alpha-b.jsx');
-  assert.match(b, /const THE_ALPHA_PDP_PFAD = '\/products\/the-alpha-b';/);
+  const b = lies('app/routes/products.qi-alpha-b.jsx');
+  assert.match(b, /const THE_ALPHA_PDP_PFAD = '\/products\/qi-alpha-b';/);
   assert.match(b, /<QiOneBuyBox/);
   assert.match(b, /<QiMasterAddons/);
   assert.match(b, /throw redirect\(`\$\{THE_ALPHA_PDP_PFAD\}\$\{url\.search\}`, 301\)/);
@@ -171,7 +171,7 @@ test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Po
   for (const attr of ['autoPlay', 'muted', 'loop', 'playsInline', 'poster={loop.poster}']) assert.ok(loop.includes(attr), attr);
   const css = lies('app/styles/the-alpha-produkt.css');
   assert.match(css, /\.tas-band-loop \{[^}]*mix-blend-mode: lighten;/);
-  const route = lies('app/routes/products.the-alpha.jsx');
+  const route = lies('app/routes/products.qi-alpha.jsx');
   assert.match(route, /rel: 'preload', as: 'image', href: KOPF\.loop\.poster/);
 });
 

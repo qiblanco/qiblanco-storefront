@@ -126,7 +126,7 @@ import lpStyles from '~/styles/qi-master-vorverkauf.css?url';
 /** @param {LoaderFunctionArgs} args */
 export async function loader({request}) {
   const url = new URL(request.url);
-  throw redirect(`/pages/The-Alpha${url.search}`, 301);
+  throw redirect(`/pages/Qi-Alpha${url.search}`, 301);
 }
 
 export function links() {

@@ -27,7 +27,9 @@ import assert from 'node:assert/strict';
 // entscheideAdWeiche(), kein Abruf und kein Zulauf auf einen echten Shop.
 import {entscheideAdWeiche, istAusgeschlossen} from '../app/lib/ad-weiche.server.js';
 
-const ARME = ['/pages/The-Alpha', '/pages/The-Alpha-B', '/pages/The-Alpha-C'];
+// Seit dem Umzug Qi Alpha (Christian Z1 vom 27.10.2026) leben die Arme unter
+// /pages/Qi-Alpha*, die The-Alpha-Pfade sind 301-Hüllen und bleiben ausgeschlossen.
+const ARME = ['/pages/Qi-Alpha', '/pages/Qi-Alpha-B', '/pages/Qi-Alpha-C', '/pages/The-Alpha', '/pages/The-Alpha-B', '/pages/The-Alpha-C'];
 const ALTE_LPS = [
   '/pages/qi-master-vorverkauf',
   '/pages/qi-alpha-vorverkauf',
@@ -40,6 +42,8 @@ const SCHREIBWEISEN = [
   '/pages/THE-ALPHA-C',
   '/pages/Qi-Alpha-B',
   '/pages/QI-MASTER-VORVERKAUF',
+  '/pages/qi-alpha',
+  '/pages/QI-ALPHA-C',
 ];
 const PAID = ['utm_medium=paid&utm_source=google', 'gclid=TESTS06'];
 const BASIS = 'https://qiblanco.com';
@@ -54,7 +58,7 @@ for (const pfad of [...ARME, ...ALTE_LPS, ...SCHREIBWEISEN]) {
 }
 
 test('Negativ-Kontrolle: die Weiche feuert anderswo weiter', () => {
-  for (const pfad of ['/', '/pages/wirkt-das', '/pages/the-alpha-x']) {
+  for (const pfad of ['/', '/pages/wirkt-das', '/pages/the-alpha-x', '/pages/qi-alpha-x']) {
     for (const q of PAID) {
       const e = entscheideAdWeiche(`${BASIS}${pfad}?${q}`);
       assert.ok(e && e.ziel.includes('/pages/schlaf-zellen-schutz'), `${pfad}?${q}`);

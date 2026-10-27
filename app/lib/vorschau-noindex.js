@@ -38,30 +38,33 @@
  * die neuen.
  */
 export const VORSCHAU_NOINDEX = [
-  {pfad: '/pages/qi-alpha-b', googlebot: true, rolle: 'LP B'},
-  {pfad: '/products/qi-alpha-b', googlebot: true, rolle: 'Shop B'},
+  // /pages/qi-alpha-b (LP B) trifft seit dem Umzug Qi Alpha (27.10.2026) die
+  // Route pages.Qi-Alpha-B.jsx (Schreibweise egal) und geht per 301 dorthin.
+  {pfad: '/pages/Qi-Alpha-B', googlebot: true, rolle: 'Qi Alpha Testarm C (KI-optimiert)'},
+  {pfad: '/pages/Qi-Alpha-C', googlebot: true, rolle: 'Qi Alpha Testarm B (Server)'},
+  {pfad: '/products/qi-alpha-b', googlebot: true, rolle: 'Shop B: bisherige Kaufseite, seit 27.10.2026 hier'},
   {pfad: '/pages/qi-master-vorverkauf', googlebot: true, rolle: 'LP A'},
   {pfad: '/pages/qi-alpha-vorverkauf', googlebot: true, rolle: 'LP A nach Umbenennung'},
   {pfad: '/products/qi-master', googlebot: false, rolle: 'Shop A'},
-  {pfad: '/products/qi-alpha', googlebot: false, rolle: 'Shop A nach Umbenennung'},
+  {pfad: '/products/qi-alpha', googlebot: false, rolle: 'Shop A (Kaufseite seit dem Umzug Qi Alpha 27.10.2026)'},
   // Umzug auf the-alpha (Christian Z4 vom 25.10.2026, Grossjob 20261025-prio1-
   // the-alpha-..., s06): die Kaufseite lebt seit 2026-10-26 hier, die beiden
   // Zeilen darüber sind 301-Hüllen. Dieselbe Rolle, dieselbe Lesbarkeit für
   // Googlebot wie Shop A.
-  {pfad: '/products/the-alpha', googlebot: false, rolle: 'Shop A nach Umzug the-alpha'},
+  {pfad: '/products/the-alpha', googlebot: false, rolle: '301-Hülle auf /products/qi-alpha'},
   // B-Fassung der Kaufseite (Christian Z10 vom 25.10.2026: „die alte seite als
   // B Vraitne aufheben mit ienem link wo ich drauf zugreifen kann“; s12). Nur
   // für Christian zum Nachlesen, deshalb auch für Googlebot gesperrt wie
   // Shop B.
-  {pfad: '/products/the-alpha-b', googlebot: true, rolle: 'Shop B: bisherige Kaufseite the-alpha'},
+  {pfad: '/products/the-alpha-b', googlebot: true, rolle: '301-Hülle auf /products/qi-alpha-b'},
   // Testarme der The-Alpha-Seite (Grossjob 20261025-prio1-the-alpha-
   // landingpage-figma-vorlage-a-server-b-ki-c, s03 trägt sie VORAB ein, damit
   // s04/s05 diese gemeinsame Datei nicht anfassen). A = /pages/The-Alpha ist
   // die Hauptseite und steht NICHT hier. Die Pfade stehen in Christians
   // Schreibweise (Z6); der Vergleich in istVorschauNoindex ist Groß/Klein-frei,
   // robots.txt bekommt beide Schreibweisen (vorschauDisallowZeilen).
-  {pfad: '/pages/The-Alpha-B', googlebot: true, rolle: 'The Alpha Testarm C (KI-optimiert)'},
-  {pfad: '/pages/The-Alpha-C', googlebot: true, rolle: 'The Alpha Testarm B (Server)'},
+  {pfad: '/pages/The-Alpha-B', googlebot: true, rolle: '301-Hülle auf /pages/Qi-Alpha-B'},
+  {pfad: '/pages/The-Alpha-C', googlebot: true, rolle: '301-Hülle auf /pages/Qi-Alpha-C'},
 ];
 
 /** Der Kopf, den jeder Listenpfad trägt. */

@@ -1208,7 +1208,8 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
     // Am selben Tag (s12, Christian Z9/Z10) zog diese Kaufseite unverändert
     // nach /products/the-alpha-b; /products/the-alpha ist seitdem die neue
     // Shopseite (TheAlphaShop) OHNE Nutzen-Liste, Hinweis unter dem Knopf.
-    'app/routes/products.the-alpha-b.jsx',
+    // Seit 27.10.2026 (Umzug Qi Alpha) unter /products/qi-alpha-b.
+    'app/routes/products.qi-alpha-b.jsx',
     'app/routes/products.qione-kette.jsx',
   ]) {
     assert.ok(

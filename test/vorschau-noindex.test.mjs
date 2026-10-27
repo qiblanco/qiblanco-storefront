@@ -69,7 +69,10 @@ const regelnAus = (text) =>
     .map((m) => ({art: m[1].toLowerCase(), muster: m[2]}));
 
 const PFLICHT = [
-  '/pages/qi-alpha-b',
+  // Umzug Qi Alpha (Christian Z1 vom 27.10.2026): die Testarme heißen
+  // /pages/Qi-Alpha-B und -C; /pages/qi-alpha-b ist dieselbe Adresse klein.
+  '/pages/Qi-Alpha-B',
+  '/pages/Qi-Alpha-C',
   '/products/qi-alpha-b',
   '/pages/qi-master-vorverkauf',
   '/pages/qi-alpha-vorverkauf',
@@ -93,9 +96,12 @@ const NACHBARN = [
   // The-Alpha A ist die Hauptseite und bleibt indexierbar (s03, 25.10.2026).
   '/pages/The-Alpha',
   '/pages/the-alpha',
+  // Qi Alpha A ist seit dem Umzug (27.10.2026) die Hauptseite.
+  '/pages/Qi-Alpha',
+  '/pages/qi-alpha',
 ];
 
-test('Pfadliste trägt genau die Pfade aus den Aufträgen (sechs + Shop A unter the-alpha + Shop B the-alpha-b + zwei The-Alpha-Testarme)', () => {
+test('Pfadliste trägt genau die Pfade aus den Aufträgen (fünf + Shop A + Shop B + vier Testarm-Pfade + zwei the-alpha-Hüllen)', () => {
   assert.deepEqual(LISTE.map((e) => e.pfad).sort(), [...PFLICHT].sort());
 });
 
@@ -128,7 +134,7 @@ test('robots $-Anker: goldkette, wunschnummer und andere Nachbarn bleiben offen'
 
 test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar', () => {
   const r = regelnAus(zeilen({alle: false}));
-  for (const p of ['/pages/qi-alpha-b', '/products/qi-alpha-b', '/products/the-alpha-b', '/pages/qi-master-vorverkauf', '/pages/qi-alpha-vorverkauf']) {
+  for (const p of ['/pages/qi-alpha-b', '/pages/Qi-Alpha-B', '/pages/Qi-Alpha-C', '/products/qi-alpha-b', '/products/the-alpha-b', '/pages/qi-master-vorverkauf', '/pages/qi-alpha-vorverkauf']) {
     assert.equal(erlaubt(r, p), false, p);
   }
   for (const p of ['/products/qi-master', '/products/qi-alpha', '/products/the-alpha']) assert.equal(erlaubt(r, p), true, p);
@@ -136,7 +142,7 @@ test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar
 
 test('Sitemap-Handles je Typ: alle Listenpfade, auch Shop A', () => {
   assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master', 'the-alpha', 'the-alpha-b']);
-  assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['The-Alpha-B', 'The-Alpha-C', 'qi-alpha-b', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
+  assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['Qi-Alpha-B', 'Qi-Alpha-C', 'The-Alpha-B', 'The-Alpha-C', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
 });
 
 test('Groß/Klein (The-Alpha, s03): Header in jeder Schreibweise, robots sperrt beide, A bleibt offen', () => {
