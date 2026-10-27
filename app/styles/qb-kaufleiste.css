@@ -99,3 +99,26 @@ html[data-dialog-offen] .qb-kaufleiste { display: none; }
   max-width: none;
   padding: var(--qb-abstand-1) var(--qb-abstand-2);
 }
+
+/* ─── Erstes Fenster am Handy: Titel über der Leiste ───────────────────────
+   app.css gibt der Galerie unter 750 px `.ProductImages { margin-bottom: 75px }`
+   (Altbestand vor der Kaufleiste). Mit der festen Leiste unten (781–844 bei
+   390x844) fiel der Titel damit unter die Leiste, darüber stand ein leeres
+   Band (Sicht-Tor F-330 qione-kette, F-336 qi-master, gemessen 25.10.2026:
+   Vorschaubilder enden y 691, Titel oben y 776). Mit einem Rasterschritt
+   beginnt der Titel bei y 717, über der Leiste. Nur, wenn die Leiste am Handy
+   an ist; Desktop und Seiten ohne Leiste behalten den Altwert. */
+@media (max-width: 749px) {
+  body:has(.qb-kaufleiste[data-kaufleiste-mobil='an']) .ProductImages {
+    margin-bottom: var(--qb-abstand-2);
+  }
+}
+
+/* ─── Letzte Vorschaukachel: das Plus steht einmal ─────────────────────────
+   ProductImageList.jsx (K1, byte-gleich mit crystal-cacao.com) setzt in
+   .imageOverlay ein Plus-Zeichen als SVG und darunter den Zähler „+N“. Auf
+   den Kaufseiten mit dieser Datei zeigt die Kachel nur den Zähler (Sicht-Tor
+   F-308). Die K1-Datei bleibt unverändert. */
+.ImageSeeMore .imageOverlay svg {
+  display: none;
+}
