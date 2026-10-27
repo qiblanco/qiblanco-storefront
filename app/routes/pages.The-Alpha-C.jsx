@@ -36,6 +36,10 @@ import varianteBStyles from '~/styles/the-alpha-variante-b.css?url';
  * RÜCKWEG: hb-deploy revert des Merge-Commits (Seite antwortet dann 404).
  */
 
+/** Film-Seite: ohne Shop-Kopf, Ankündigungsband, Fuß und AI Anna (root.jsx
+ * istFilmSeite; Christian 27.10.2026, Z275–Z279). */
+export const handle = {filmSeite: true};
+
 const KANON_PFAD = '/pages/The-Alpha-C';
 
 export function links() {
