@@ -336,7 +336,16 @@ body > main img:not(.google-rating-badge__logo) {
    Groesse dazu. 28,8 geht auf 24 und nicht auf 32, weil der Titel absolut
    ueber dem Kartenbild steht (bottom: 1rem): groesser waere er dort in
    die obere Etikett-Zeile gelaufen.
+     13     Handle und "auf Instagram" im IG-Karussell (--igt-fs-xs)
+                                                                 -> 12 (fs-1)
+   13 ist der Grund fuer den Fit "modulare Skala": 12 -> 13 -> 14 sind zwei
+   Schritte von je 1,08, die Rubrik zaehlt beide als wilde Zwischenwerte.
+   12 -> 14 (1,17) liegt auf der Skala. Die Huelle fuehrt ihre 13px weiter,
+   sie zaehlt nicht gegen die Seite.
    Rueckweg: diesen Block loeschen. */
+body > main .qb-igt {
+  --igt-fs-xs: var(--qb-ref-fs-1, 12px);
+}
 body > main .qb-pv-kachel__schleier,
 body > main .qb-pv-kachel__schleier span,
 body > main .ImageSeeMore .imageOverlay span,
