@@ -18,7 +18,7 @@
    (die Haus-Tinte --qb-text) und --qb-pa-gewicht, Schriftfamilie geerbt.
    Nur die Größe staffelt (16 / 28 / 32); Banner und Streichpreis
    stehen auf der 16er-Stufe, damit der Kopf keine eigenen Stufen dazubekommt. Die Sterne bleiben gelb.
-   Banner: Fläche Qi-Alpha-Rot (--qb-alpha-rot, qb-tokens.css), Schrift
+   Banner: Fläche Qi-Alpha-Rot (--qb-pa-alpha-rot, unten), Schrift
    weiß (6,3:1). Christian 26.10.: "das was vorher goldfarben war wird nun
    das rot, und die schrift ändert sich von schwarz in weiß".
    Abstände auf dem 8px-Raster.
@@ -39,6 +39,13 @@
   --qb-pa-farbe-gedaempft: var(--qb-text-gedaempft, #6b665d);
   --qb-pa-farbe-link-hover: var(--color-accent-ink, #856828);
   --qb-pa-gewicht: 700;
+  /* QI-ALPHA-ROT: der Wert des Knopfs "Jetzt Exklusiv Reservieren" der
+     Qi-Alpha-Seiten (the-alpha.css --ta-rot). Christian 26.10.: "das gleiche
+     rot von qi Alpha, da der qi alpha ja ein qihome zum umhaengen ist".
+     Bewusst HIER im Scope und nicht in qb-tokens.css: qb-tokens laedt auf
+     jeder Route, und ein neues Token dort zog im Formate-Gate 74 fremde Seiten
+     mit ihrer Alt-Schuld in diesen Diff. Weiss darauf 6,3:1. */
+  --qb-pa-alpha-rot: #b92200;
 
   display: flex;
   flex-direction: column;
@@ -149,7 +156,7 @@
   display: inline-block;
   padding: 4px 12px;
   border-radius: var(--qb-radius-klein, 8px);
-  background: var(--qb-alpha-rot, #b92200);
+  background: var(--qb-pa-alpha-rot);
   color: var(--color-light, #fff);
   font-size: var(--qb-pa-fs-banner);
   font-weight: 700;

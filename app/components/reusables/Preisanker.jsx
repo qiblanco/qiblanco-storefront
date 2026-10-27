@@ -51,7 +51,7 @@ import {
  *    nicht die gleiche schriftart oder? das wirkt zu bunt"
  *   "Ultimate Power ... nicht umrandung sondern ausfüllen, also das was
  *    vorher goldfarben war wird nun das rot, und die schrift ändert sich
- *    von schwarz in weiß" (das Rot von Qi Alpha, --qb-alpha-rot)
+ *    von schwarz in weiß" (das Rot von Qi Alpha, --qb-pa-alpha-rot)
  * Daraus: Zeile 1 ist "4.8 ★★★★★ Google Bewertungen". Der Link steht NEBEN
  * dem Sprung-Knopf, nicht in ihm (ein <a> in einem <button> ist kein
  * gültiges HTML). Ziel ist GOOGLE_REVIEWS_URL, die eine Quelle in

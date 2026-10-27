@@ -109,9 +109,9 @@ test('(B) jeder ProductPrice-Aufruf nennt seine Steuersatz-Quelle', () => {
     }
   }
   // POSITIV-KONTROLLE statt Mindestzahl: die Suche muss den bekannten
-  // Aufrufer im Preisanker-Dreizeiler finden. Eine Zahl (frueher >= 9) fiel
+  // Aufrufer im Preisanker-Dreizeiler finden. Eine Zahl (früher >= 9) fiel
   // falsch-rot, sobald Seiten ihren Preis in einen gemeinsamen Baustein
-  // buendelten (Job 20261026-design-preisanker-..., 9 -> 8 Aufrufe, alle mit
+  // bündelten (Job 20261026-design-preisanker-..., 9 -> 8 Aufrufe, alle mit
   // handle=). Die Kontrolle prueft dasselbe ("sucht der Test noch richtig?"),
   // ohne den Umfang des Baums zu pinnen.
   const anker = dateien.find((d) => d.endsWith('reusables/Preisanker.jsx'));
