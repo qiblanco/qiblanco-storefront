@@ -216,7 +216,11 @@ describe('ARM C Paketkarte mit Festbetrag: vor und nach dem Kipp derselbe Karten
     const nachher = paketBetraege(lines(BRUTTO, 'DE'), paket, 'DE');
     assert.equal(vorher.rabattart, 'fest');
     assert.equal(nachher.rabattart, 'fest');
-    assert.equal(nachher.compare, vorher.compare);
+    // Seit s09 (27.10.2026) ohne DE-1-Cent-Notbehelf: der Netto-Rueckbau-Weg
+    // nennt die drei Kalibrier-Cent (4983,006 -> 4983,01, 2 x 1087,0055 ->
+    // 1087,01), der Brutto-Pfad den ganzen Euro. Der Kartenpreis bleibt gleich.
+    assert.equal(nachher.compare, 7345);
+    assert.equal(vorher.compare, 7345.03);
     assert.equal(nachher.preis, vorher.preis);
   });
 

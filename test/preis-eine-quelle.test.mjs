@@ -50,7 +50,10 @@ test('(A) dieselbe Ware, derselbe Satz — egal unter welchem Handle', () => {
 
 test('(A) der Regelsatz bleibt für Nicht-Lebensmittel unangetastet', () => {
   assert.equal(taxRateForHandle('qione-2-pro'), 0.19);
-  assert.equal(bruttoAnzeige(NETTO_QIONE, 'qione-2-pro', 'EUR'), 1087);
+  // Netto-Rueckbau-Weg auf den Cent: 913,45 x 1,19 = 1087,0055 -> 1087,01 wie
+  // die Kasse (der DE-1-Cent-Notbehelf ist seit Grossjob 20261004-...-
+  // preisanzeige s09 abgebaut; im Brutto-Modus ist der Preis selbst 1087).
+  assert.equal(bruttoAnzeige(NETTO_QIONE, 'qione-2-pro', 'EUR'), 1087.01);
   // Unbekanntes Handle -> Regelsatz (fail-safe in die teurere Richtung).
   assert.equal(taxRateForHandle('gibt-es-nicht'), 0.19);
 });

@@ -68,7 +68,10 @@ const FAELLE = [
   // kassenAnzeige; Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-
   // rundung-alle-shops-waehrungen s03). Davor AT aufgerundet (1097 / 79 /
   // 6815), noch davor kaufmaennisch (1096 / 78 / 6814).
-  ['qione-2-pro',          '913.45',   'DE', '173.56', 1087],
+  // DE QiOne seit s09 (27.10.2026) 1087,01 wie die Kasse: der 1-Cent-Notbehelf
+  // ist abgebaut (Grossjob 20261004-...-preisanzeige s09). Im Brutto-Modus ist
+  // der DE-Preis selbst ganz (1087), dieser Netto-Fall ist der Rueckbau-Weg.
+  ['qione-2-pro',          '913.45',   'DE', '173.56', 1087.01],
   ['qione-2-pro',          '913.45',   'AT', '182.69', 1096.14],
   ['crystal-cacao-awake',  '71.03',    'DE', '4.97',     76],
   ['crystal-cacao-awake',  '71.03',    'AT', '7.10',  78.13],
@@ -89,11 +92,11 @@ test('(A) die Anzeige trifft den Betrag, den die Kasse belastet -- je Markt', ()
       erwartet,
       `${land}/${handle} netto ${netto} -> erwartet ${erwartet}, war ${anzeige}`,
     );
-    // Die eigentliche Zusage: die Anzeige ist der gemessene Kassenbetrag, bis
-    // auf den benannten DE-Notbehelf von 1 Cent (QiOne 1087 gegen 1087,01).
+    // Die eigentliche Zusage: die Anzeige ist der gemessene Kassenbetrag
+    // (seit s09 ohne DE-Notbehelf, also auf den Cent genau).
     const kasse = Number(netto) + Number(steuer);
     assert.ok(
-      Math.abs(anzeige - kasse) < 0.015,
+      Math.abs(anzeige - kasse) < 0.005,
       `${land}/${handle}: Anzeige ${anzeige} gegen Kasse ${kasse.toFixed(2)} ` +
         `-- Abstand ${Math.abs(anzeige - kasse).toFixed(2)} > 0,01`,
     );
@@ -403,8 +406,8 @@ test('glatter Betrag bleibt glatt, auch aufgerundet', () => {
   assert.equal(ganzEuroAnzeige(99, 'US'), 99);
 });
 
-test('DE: kalibrierte Preise bleiben, 1 Cent Toleranz (Gegenrichtung)', () => {
-  assert.equal(ganzEuroAnzeige(913.45 * 1.19, 'DE'), 1087);
+test('DE: auf den Cent wie jedes Land (1-Cent-Notbehelf seit s09 abgebaut)', () => {
+  assert.equal(ganzEuroAnzeige(913.45 * 1.19, 'DE'), 1087.01);
   // Staffel-Modell 3x: 53,21 im Modell, Kasse 53,00 (Festbetrag) -> 53
   assert.equal(staffelModellAnzeige((71.03 - 21.3) * 1.07, 'DE'), 53);
   assert.equal(staffelModellAnzeige((71.03 - 14.2) * 1.07, 'DE'), 61);
@@ -416,9 +419,9 @@ test('DE: kalibrierte Preise bleiben, 1 Cent Toleranz (Gegenrichtung)', () => {
   assert.equal(ganzEuroAnzeige(78.99 * 1.19, 'DE'), 94); // 93,9981
   assert.equal(Object.is(ganzEuroAnzeige(0, 'DE'), 0), true, 'kein -0');
   // ohne Land = DE (fail-closed wie taxRateForHandle)
-  assert.equal(ganzEuroAnzeige(913.45 * 1.19), 1087);
+  assert.equal(ganzEuroAnzeige(913.45 * 1.19), 1087.01);
   assert.equal(bruttoAnzeige('71.03', 'crystal-cacao-awake', 'EUR', 'DE'), 76);
-  assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR'), 1087);
+  assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR'), 1087.01);
 });
 
 /* KAKAO-SETS AB 4 PACKUNGEN (Job 20261001-kakao-sets-ab-4-seite-nennt-weniger-
@@ -466,14 +469,18 @@ test('DE Set 5x: 266,06 wie die Kasse, nicht 267', () => {
   assert.equal(bruttoAnzeige('248.65', 'bundle-5x-awake', 'EUR', 'DE'), 266.06);
 });
 
-test('DE QiOne bleibt 1.087 € (Notbehelf 1 Cent bis zum Brutto-Kipp)', () => {
-  assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR', 'DE'), 1087);
+test('DE ohne Notbehelf: die Seite nennt den Cent, den die Kasse nimmt (s09)', () => {
+  // Bis 27.10.2026 nannte DE 1087,01 als 1.087 (Notbehelf bis zum
+  // Brutto-Kipp). Abgebaut in Grossjob 20261004-...-preisanzeige s09.
+  assert.equal(bruttoAnzeige('913.45', 'qione-2-pro', 'EUR', 'DE'), 1087.01);
   assert.equal(formatPreis(1087, 'EUR', 'pdp'), '1.087 €');
   assert.equal(formatPreis(76, 'EUR', 'lp'), '76 €');
-  // Der Notbehelf gilt nur in DE und nur 1 Cent weit.
+  // DE und AT rechnen gleich: kein Land hat eine Toleranz.
   assert.equal(ganzEuroAnzeige(1087.01, 'AT'), 1087.01);
-  assert.equal(ganzEuroAnzeige(1086.99, 'DE'), 1087);
+  assert.equal(ganzEuroAnzeige(1087.01, 'DE'), 1087.01);
+  assert.equal(ganzEuroAnzeige(1086.99, 'DE'), 1086.99);
   assert.equal(ganzEuroAnzeige(1087.02, 'DE'), 1087.02);
+  assert.equal(ganzEuroAnzeige(1087.001, 'DE'), 1087);
 });
 
 test('FR: gemessener Satz 20 / 5,5 Prozent', () => {

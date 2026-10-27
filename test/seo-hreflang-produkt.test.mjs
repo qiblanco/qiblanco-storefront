@@ -295,8 +295,9 @@ test('EUR-Preis wird als Brutto ausgezeichnet (19 %)', () => {
       price: {amount: '913.45', currencyCode: 'EUR'},
     },
   });
-  // Genau der Betrag, den die Live-Seite als "1.087,- €" anzeigt.
-  assert.equal(s.offers.price, '1087');
+  // Netto-Rueckbau-Weg: 913,45 x 1,19 auf den Cent, wie die Kasse (seit s09
+  // ohne DE-1-Cent-Notbehelf). Live (Brutto-Modus) steht der Preis selbst ganz.
+  assert.equal(s.offers.price, '1087.01');
 });
 
 test('Kakao trägt den ermaessigten Satz (7 %), nicht 19 %', () => {

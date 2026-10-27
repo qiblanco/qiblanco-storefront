@@ -47,21 +47,21 @@ const PAKETE = {
     rabattFest: 494.97,
     fest: [['qihome-air', 1], ['qione-2-pro', 2]],
     waehlbar: ['qione-kette'],
-    erwartet: {preis: 6756, compare: 7345},
+    erwartet: {preis: 6756, compare: 7345.03},
   },
   'Unabhängig': {
     rabatt: 0.12,
     rabattFest: 1063.04,
     fest: [['qihome-air', 1], ['qione-2-pro', 2]],
     waehlbar: ['qibracelet', 'qione-kette'],
-    erwartet: {preis: 9236, compare: 10501},
+    erwartet: {preis: 9235.99, compare: 10501.03},
   },
   'Erholungs-Residenz': {
     rabatt: 0.15,
     rabattFest: 2585.73,
     fest: [['qihome-air', 3], ['qione-2-pro', 2]],
     waehlbar: ['qibracelet', 'qione-kette'],
-    erwartet: {preis: 17390, compare: 20467},
+    erwartet: {preis: 17390.01, compare: 20467.05},
   },
 };
 
@@ -122,9 +122,13 @@ describe('Paketpreis hängt nicht an der Groessenwahl', () => {
   }
 });
 
+// NETTO-Rückbau-Weg, seit Grossjob 20261004-...-preisanzeige s09 (27.10.2026)
+// ohne DE-1-Cent-Notbehelf: die erwarteten Werte stehen auf den Cent (vorher
+// 6756/7345, 9236/10501, 17390/20467 über die Toleranz). Die ganzen Euro der
+// Paketkarte trägt seit dem Kipp der Brutto-Pfad (preismodus.test.mjs ARM C).
 describe('Der Kartenpreis ist der Betrag, den die Kasse verlangt', () => {
   for (const [name, p] of Object.entries(PAKETE)) {
-    it(`${name}: Festbetrag ergibt den beworbenen ganzen Euro`, () => {
+    it(`${name}: Festbetrag ergibt den erwarteten Kartenpreis (netto, auf den Cent)`, () => {
       const r = paketBetraege(strukturen(p)[0], p);
       assert.equal(r.preis, p.erwartet.preis);
       assert.equal(r.compare, p.erwartet.compare);
@@ -153,7 +157,7 @@ describe('Kassenbetrag auf den Cent (Job 20261006-preisanzeige-rest)', () => {
     // Streichpreis = Einzelpreise der Kaufseiten (AT 5024,88 + 2 x 1096,14 + ...).
     assert.equal(at.compare, 7406.74);
   });
-  it('DE bleibt ganz (1 Cent Kalibrier-Toleranz bis zum Brutto-Kipp)', () => {
+  it('DE netto auf den Cent (seit s09 ohne 1-Cent-Toleranz)', () => {
     for (const p of Object.values(PAKETE)) {
       const de = paketBetraege(strukturen(p)[0], p, 'DE');
       assert.equal(de.preis, p.erwartet.preis);
@@ -174,8 +178,8 @@ describe('Fremdwaehrung: der EUR-Festbetrag wird NICHT auf CHF angewendet', () =
       0,
     );
     assert.equal(chf.waehrung, 'CHF');
-    // Seit 2026-10-06: Einzelpreise je Stück wie die Kaufseite (ohne Land gilt
-    // DE, also auch dessen 1-Cent-Toleranz: 78,99 -> 79), nicht mehr ganz.
+    // Seit 2026-10-06: Einzelpreise je Stück wie die Kaufseite, auf den Cent
+    // (seit s09 ohne die fruehere DE-1-Cent-Toleranz), nicht mehr ganz.
     const einzeln = strukturen(p, 'CHF')[0].reduce(
       (s, l) => s + kassenAnzeige(l.einzelNetto, 'DE') * l.quantity,
       0,
