@@ -17,9 +17,10 @@ import {BalkenDiagramm} from '../reusables/BalkenDiagramm';
  *   Hep G2: vitale Zellen ohne Schutz ~41 %, mit QiBracelet® ~88 %, aus der
  *   Abbildung abgelesen (deshalb ganzzahlig). Gegenprobe: die Differenz 47
  *   entspricht dem publizierten Schutzeffekt 47,3 ± 7,1 %.
- *   Seit 10.10.2026 sagt die Messgroesse das auch sichtbar: im Text der Studie
- *   stehen 41/88 nicht, wer ihnen von der Studienzeile aus folgt, findet sie
- *   nur in Abbildung 3.
+ *   Vom 10.10. bis 26.10.2026 stand das als Untertitel sichtbar am Diagramm
+ *   („aus Abbildung 3 abgelesen"). Seit 26.10.2026 tragen die Diagramme keinen
+ *   Untertitel mehr (Christian: „KISS", s. BalkenDiagramm.jsx); die Herleitung
+ *   steht hier und auf /pages/studie-oxidativer-stress, Abbildung 3.
  */
 export function ZellDiagramme({dataSection}) {
   return (
@@ -28,7 +29,6 @@ export function ZellDiagramme({dataSection}) {
         <div className="ZellDiagramm">
           <BalkenDiagramm
             titel={<>Zellregeneration<br />unter E-Smog Stress</>}
-            messgroesse={'Geschlossene Fläche nach 8 h, ohne E-Smog 86,2\u00a0%'}
             balken={[
               {bezeichnung: 'Ungeschützt', wert: 56.3, ton: 'ohne'},
               {bezeichnung: 'Mit QiOne® 2 Pro', wert: 85.5, ton: 'mit'},
@@ -40,7 +40,6 @@ export function ZellDiagramme({dataSection}) {
         <div className="ZellDiagramm">
           <BalkenDiagramm
             titel={<>Barrierefunktion der Zelle<br />unter E-Smog Stress</>}
-            messgroesse={'Barriere-Widerstand, ohne E-Smog = 100\u00a0%'}
             balken={[
               {bezeichnung: 'Ungeschützt', wert: 6.0, ton: 'ohne'},
               {bezeichnung: 'Mit QiOne® 2 Pro', wert: 72.6, ton: 'mit'},
@@ -52,7 +51,6 @@ export function ZellDiagramme({dataSection}) {
         <div className="ZellDiagramm">
           <BalkenDiagramm
             titel={<>Zellviabilität<br />unter oxidativem Stress</>}
-            messgroesse="Lebende Leberzellen nach 24 h, aus Abbildung 3 abgelesen"
             balken={[
               {bezeichnung: 'Ungeschützt', wert: 41, stellen: 0, ton: 'ohne'},
               {bezeichnung: 'Mit QiBracelet®', wert: 88, stellen: 0, ton: 'mit'},
