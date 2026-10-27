@@ -41,6 +41,10 @@ import varianteBStyles from '~/styles/the-alpha-variante-b.css?url';
  * wieder von The Alpha in Qi Alpha“; Job 20261027-prio1-umzug-the-alpha-zu-
  * qi-alpha-links-name). Bis dahin stand diese Seite unter /pages/The-Alpha-C.
  */
+/** Film-Seite: ohne Shop-Kopf, Ankündigungsband, Fuß und AI Anna (root.jsx
+ * istFilmSeite; Christian 27.10.2026, Z275–Z279). */
+export const handle = {filmSeite: true};
+
 const KANON_PFAD = '/pages/Qi-Alpha-C';
 
 export function links() {
