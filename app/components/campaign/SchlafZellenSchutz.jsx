@@ -1089,9 +1089,6 @@ function StickyKaufknopf({nurMobil = false}) {
         nurMobil ? ' lp-a-nur-mobil' : ''
       }`}
       data-section="lp-b-sticky-kaufknopf"
-      // Annas Kugel rutscht über die stehende Leiste (s03-r2, Christian 26.10.:
-      // „muss das Gesicht flüssig nach oben rutschen“), kaufknopf-chat.js AUSWEICH_SELEKTOR.
-      data-qb-chat-weicht={sichtbar ? '' : undefined}
       aria-hidden={sichtbar ? undefined : 'true'}
     >
       {/* Inhalt NUR im sichtbaren Zustand im DOM: das Einhängen ist eine

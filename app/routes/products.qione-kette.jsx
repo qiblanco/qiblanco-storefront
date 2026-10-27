@@ -29,7 +29,6 @@ import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import pdpKetteStyles from '~/styles/pdp-kette.css?url';
 import medienRandStyles from '~/styles/qb-360-rand.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
-import {kaufleisteAbDaten} from '~/lib/kaufleiste-ab.server';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
  * Beschreibungstext darunter (components/product-pages/pdpKaufZuerst.js).
@@ -75,9 +74,7 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'qione-kette'); // ✅ pass hardcoded handle
 
-  // A/B-Test der Kaufleiste (lib/kaufleiste-ab.server.js): der Arm steht im
-  // SSR fest; ohne Test bleibt der Schlüssel weg.
-  return {...deferredData, ...criticalData, ...kaufleisteAbDaten(args, 'qione-kette')};
+  return { ...deferredData, ...criticalData };
 }
 
 /**

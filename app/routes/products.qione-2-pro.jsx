@@ -11,7 +11,6 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
-import {kaufleisteAbDaten} from '~/lib/kaufleiste-ab.server';
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
@@ -68,9 +67,7 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'qione-2-pro'); // ✅ pass hardcoded handle
 
-  // A/B-Test der Kaufleiste (lib/kaufleiste-ab.server.js): der Arm steht im
-  // SSR fest; ohne Test bleibt der Schlüssel weg.
-  return {...deferredData, ...criticalData, ...kaufleisteAbDaten(args, 'qione-2-pro')};
+  return {...deferredData, ...criticalData};
 }
 
 /**
