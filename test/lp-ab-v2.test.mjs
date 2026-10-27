@@ -488,7 +488,9 @@ test('Kurz-Arme: Definition, Pfade, Marker; im Code AUS', () => {
 test('Kurz-Arme: im Auslieferungszustand ändert sich für keinen Besucher etwas', () => {
   for (const b of POP_B2.slice(0, 5000)) {
     const heute = entscheideLpExperiment(reqK(LP_A, b), {});
-    const alt = entscheide4(reqK(LP_A, b), {}, true, true, false, false);
+    // Vergleich gegen den ausgelieferten Stand ohne Kurz-Arme (seit 20.10.
+    // E1 beendet, B2 läuft): die Schalter von main, K50/K25 aus.
+    const alt = entscheide4(reqK(LP_A, b), {}, E1_AKTIV, E2_AKTIV, false, false);
     assert.deepEqual(heute, alt);
   }
   // Pins auf abgeschaltete Kurz-Arme zeigen A.
@@ -499,6 +501,10 @@ test('Kurz-Arme: im Auslieferungszustand ändert sich für keinen Besucher etwas
 test('Kurz-Arme: K50 nimmt die Eimer von B nur, wenn B aus ist (laufender Test wird nicht gestoppt)', () => {
   assert.equal(experimentKurzAktiv({}, E3, true, 'LP_EXP_SZS_K50_MODE', true), false);
   assert.equal(experimentKurzAktiv({}, E3, true, 'LP_EXP_SZS_K50_MODE', false), true);
+  // Seit dem 20.10.2026 ist E1 beendet (E1_AKTIV false): mit dem
+  // ausgelieferten E1-Zustand (Default-Parameter) ist K50 frei.
+  assert.equal(E1_AKTIV, false);
+  assert.equal(experimentKurzAktiv({}, E3, true, 'LP_EXP_SZS_K50_MODE'), true);
   // K25 (Eimer 15-29) überschneidet B nicht und darf neben B stehen.
   assert.equal(experimentKurzAktiv({}, E4, true, 'LP_EXP_SZS_K25_MODE', true), true);
   for (const b of POP_B2.slice(0, 5000)) {
