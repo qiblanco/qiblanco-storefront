@@ -599,3 +599,174 @@
     transform: none;
   }
 }
+
+/* ---------- Ton (Segment s06, TheAlphaTon.jsx) ---------- */
+/* „Sound on“: ein schwarzes Fenster, das wie eine Blende im Film aufgeht und
+   wieder zugeht (Z107/Z108). Es steht zwischen Kopf und Titel: zuerst „Sound
+   on“, darunter „Kohärentes Licht“, nie auf dem Titel. Unten läge es unter
+   dem Chat-Rahmen (Teaser 298 x 188 px, z-index 200, gemessen 26.10.). Es
+   rendert erst im Browser: der erste Bildschirm lädt wie vorher. */
+@keyframes tap-ton-auf {
+  from {
+    opacity: 0;
+    clip-path: inset(50% 0 50% 0 round var(--tap-radius));
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round var(--tap-radius));
+  }
+}
+
+@keyframes tap-ton-zu {
+  from {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round var(--tap-radius));
+  }
+  to {
+    opacity: 0;
+    clip-path: inset(50% 0 50% 0 round var(--tap-radius));
+  }
+}
+
+.tap-ton-fenster {
+  position: fixed;
+  left: 50%;
+  top: 26svh;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--tap-s-1);
+  padding: var(--tap-s-1);
+  background: var(--tap-nacht);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--tap-radius);
+  transform: translateX(-50%);
+  animation: tap-ton-auf 700ms var(--tap-kurve) 150ms both;
+}
+
+.tap-ton-fenster-zu {
+  animation: tap-ton-zu 500ms var(--tap-kurve) both;
+  pointer-events: none;
+}
+
+.tap-ton-fenster button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin: 0;
+  border: 0;
+  background: none;
+  color: var(--tap-weiss);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tap-ton-fenster-an {
+  gap: var(--tap-s-2);
+  padding: 0 var(--tap-s-3);
+  font-size: var(--tap-fs-zeile);
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
+.tap-ton-fenster-ohne {
+  min-width: 44px;
+  font-size: var(--tap-fs-zeile);
+  color: var(--tap-leise);
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Lautsprecher: immer da (Z113), unten links. Über dem Chat-Rahmen (z-index
+   200): an 320 px reicht dessen Teaser in den ersten Sekunden bis x = 33 und
+   würde den Tipp sonst schlucken (HB-OVERLAY-0001). Lage spiegelbildlich zum
+   Chat-Avatar unten rechts: 20 px Rand, Mitte auf seiner Höhe (gemessen
+   26.10.: Avatar-Mitte 44 px über der Unterkante am Handy, 48 px ab 768 px). */
+.tap-ton-schalter {
+  position: fixed;
+  left: 20px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  z-index: 201;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--tap-leise);
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: tap-auf 600ms var(--tap-kurve) both;
+}
+
+@media (min-width: 768px) {
+  .tap-ton-schalter {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
+  }
+}
+
+.tap-ton-schalter-an {
+  color: var(--tap-weiss);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.tap-ton-fenster button:focus-visible,
+.tap-ton-schalter:focus-visible,
+.tap-film-ton:focus-visible {
+  outline: 2px solid var(--tap-weiss);
+  outline-offset: 4px;
+}
+
+/* Lucas Video: Ton-Symbol im Bild nur, wenn das Video Ton hat und „Sound on“
+   aus ist (Z127). */
+/* Das Video steht mittig im Bildschirm, mit Schwarz davor und danach. Sonst
+   klebt die Wörterbuch-Quelle „Google AI“ am Handy direkt über dem Film und
+   liest sich wie seine Quelle (Challenger s06). Rand statt Innenabstand,
+   damit der Tonknopf am Videorand bleibt. */
+.tap-film {
+  position: relative;
+  margin-block: max(var(--tap-takt), calc((100svh - min(100vw, var(--tap-breite)) * 9 / 16) / 2));
+}
+
+.tap-film-ton {
+  position: absolute;
+  right: var(--tap-s-2);
+  bottom: var(--tap-s-2);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--tap-weiss);
+  cursor: pointer;
+}
+
+.tap-seite:not([data-tap-ton-stand='an']) .tap-film-hat-ton .tap-film-ton {
+  display: flex;
+}
+
+.tap-film video::cue {
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--tap-weiss);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-ton-fenster,
+  .tap-ton-fenster-zu {
+    animation-name: tap-auf;
+    clip-path: none;
+  }
+
+  .tap-ton-fenster-zu {
+    animation-direction: reverse;
+  }
+}
