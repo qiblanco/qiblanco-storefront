@@ -342,7 +342,16 @@ body > main img:not(.google-rating-badge__logo) {
    Schritte von je 1,08, die Rubrik zaehlt beide als wilde Zwischenwerte.
    12 -> 14 (1,17) liegt auf der Skala. Die Huelle fuehrt ihre 13px weiter,
    sie zaehlt nicht gegen die Seite.
+   Dasselbe gilt fuer den EU-Gewaehrleistungsdialog (Absaetze und
+   Amtstitel, --qs-t-fein = 13px): er ist im Ruhezustand geschlossen, die
+   Rubrik zaehlt seine Kinder trotzdem (ein Kind eines geschlossenen
+   <dialog> behaelt display:block). 13 -> 14px, wortgleich zur Regel in
+   qihome-air.css; kein Wort daran wird angefasst.
    Rueckweg: diesen Block loeschen. */
+body > main .eu-gwl-dialog__absatz,
+body > main .eu-gwl-dialog__amtstitel {
+  font-size: var(--qb-ref-fs-2, 14px);
+}
 body > main .qb-igt {
   --igt-fs-xs: var(--qb-ref-fs-1, 12px);
 }
