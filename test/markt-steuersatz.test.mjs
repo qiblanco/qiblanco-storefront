@@ -527,13 +527,39 @@ test('Länder-Achse: Besucher aus jedem Land mit gemessenem Kassensatz bekommen 
   for (const land of ['FR', 'IT', 'ES', 'NL', 'BE', 'PT', 'IE', 'PL', 'SE', 'GB', 'LI', 'AT', 'CH', 'US']) {
     assert.equal(mp.resolveCountry(besucher(land)), land, `Besucher ${land}`);
   }
-  // Länder ohne gemessenen Satz bleiben auf der DE-Seite (Status quo).
-  for (const land of ['CZ', 'DK', 'HU', 'XX', '']) {
+  // Seit s11 (Grossjob 20261004, KONZEPT 2.3) gilt die Achse gegen Shopifys
+  // Länderliste: CZ/DK/HU lösen auf sich selbst auf. Nur ein Land, in das
+  // Shopify nicht verkauft, und ein fehlender Kopf bleiben auf der DE-Seite.
+  for (const land of ['XX', 'KP', '']) {
     assert.equal(mp.resolveCountry(besucher(land)), 'DE', `Besucher ${land || 'ohne'}`);
   }
   // Jedes freigeschaltete Land hat einen Satz (sonst rechnete es mit dem DE-Satz).
   for (const land of mp.FREIGESCHALTETE_MAERKTE) {
     assert.ok(cdp.STEUER_LAENDER.includes(land), `${land} ohne Satz`);
+  }
+});
+
+test('Länder-Achse aus Shopify (s11): jedes Land mit seiner Kassenlage', () => {
+  const tab = mp.KASSEN_KONTEXT;
+  assert.ok(tab && Object.isFrozen(tab), 'KASSEN_KONTEXT fehlt');
+  // Gemessen 2026-10-27: Warenkorb und Kasse nehmen den API-Preis des Landes.
+  for (const land of ['CZ', 'DK', 'HU', 'RO', 'FI', 'AU', 'JP', 'AD']) {
+    assert.equal(mp.resolveCountry(besucher(land)), land, `Besucher ${land}`);
+  }
+  // API lokalisiert in EUR (1.241,89), Korb und Kasse nehmen 1.383 USD:
+  // die Seite zeigt den USD-Kontext desselben Markts.
+  for (const [land, kontext] of [['NO', 'US'], ['TR', 'US'], ['ZA', 'BM'], ['BR', 'BM']]) {
+    assert.equal(mp.resolveCountry(besucher(land)), kontext, `Besucher ${land}`);
+    const vorschau = new Request(`https://qiblanco.com/?markt=${land}`);
+    assert.equal(mp.resolveCountry(vorschau), kontext, `?markt=${land}`);
+  }
+  // Die handgepflegte Stufe bleibt unverändert und ist mit der Ableitung einig.
+  for (const land of mp.FREIGESCHALTETE_MAERKTE) {
+    assert.equal(tab[land], land, `${land} freigeschaltet, aber Kontext ${tab[land]}`);
+  }
+  // Ein Kontextland ist selbst Fixpunkt (keine Kette, keine Schleife).
+  for (const [land, kontext] of Object.entries(tab)) {
+    assert.equal(tab[kontext], kontext, `${land} -> ${kontext} ist kein Fixpunkt`);
   }
 });
 
