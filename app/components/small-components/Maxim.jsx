@@ -26,7 +26,7 @@ import {CdnBild} from '../reusables/CdnBild';
  *   3. „best" kommt in Bezug auf uns nicht vor.
  *   4. Der bei uns zitierte Titel „Das beste Produkt zum Schutz vor EMF" steht
  *      nicht im Artikel.
- *   5. Genannt ist das „Qi One necklace", nicht das QiOne(R) 2 Pro.
+ *   5. Genannt ist das „Qi One necklace", nicht der QiOne(R) 2 Pro.
  * Wörtlich: „However, German company Qi Blanco is changing the way we adapt to
  * this with a Qi One necklace."
  *
@@ -64,7 +64,7 @@ export function Maxim({dataSection}){
                     Der Absatz darunter samt Archiv-Link bleibt UNANGETASTET: er ist der
                     Beleg und verschwindet nicht, weil die Überschrift wechselt. */}
                 <h2>MAXIM feiert den QiOne® 2 Pro</h2>
-                <p>Die Wellness-Expertin und Autorin Andi Lew (@andi.lew) stellt in MAXIM Australia ihre Wellness-Trends für 2022 vor. Unter dem Punkt „EMF“ nennt sie das QiOne® von Qi Blanco als ihre Antwort auf elektromagnetische Strahlung.</p>
+                <p>Die Wellness-Expertin und Autorin Andi Lew (@andi.lew) stellt in MAXIM Australia ihre Wellness-Trends für 2022 vor. Unter dem Punkt „EMF“ nennt sie den QiOne® von Qi Blanco als ihre Antwort auf elektromagnetische Strahlung.</p>
                 <p className="MaximQuelle">Quelle: <a href="https://web.archive.org/web/20221029050232/https://www.maxim.com.au/archives/17224" rel="nofollow noopener" target="_blank">MAXIM Australia, „Wellbeing 2022“ von Andi Lew, Ausgabe März 2022</a></p>
             </div>
         </div>
