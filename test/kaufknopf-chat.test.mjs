@@ -285,3 +285,27 @@ test('rahmenOffen: angedockt oder höher als der Deckel', async () => {
     angedockt: false}), true);
   assert.equal(rahmenOffen({rahmen: null, fensterHoehe: 844, angedockt: false}), false);
 });
+
+test('jede Sticky-Kaufleiste trägt data-qb-chat-weicht (s03-r2, Christian 26.10.: Gesicht rutscht hoch)', async () => {
+  // Eigenschaft statt Liste: jede Komponente, die eine Leiste per
+  // `<name>-sticky--sichtbar` bzw. `qb-kaufleiste--sichtbar` einblendet, muss
+  // der Kugel sagen, dass sie ausweichen soll. Belegfall: /pages/start-b
+  // (StickyKaufknopf) - die Kugel lag auf „Jetzt kaufen“.
+  const {readFileSync, readdirSync, statSync} = await import('node:fs');
+  const {join} = await import('node:path');
+  const wurzel = new URL('../app/components/', import.meta.url).pathname;
+  const dateien = [];
+  const lauf = (d) => {
+    for (const n of readdirSync(d)) {
+      const p = join(d, n);
+      if (statSync(p).isDirectory()) lauf(p);
+      else if (n.endsWith('.jsx')) dateien.push(p);
+    }
+  };
+  lauf(wurzel);
+  const leisten = dateien.filter((p) =>
+    /(-sticky|qb-kaufleiste)--sichtbar/.test(readFileSync(p, 'utf8')));
+  assert.ok(leisten.length >= 4, `zu wenige Leisten gefunden: ${leisten.length}`);
+  const ohne = leisten.filter((p) => !readFileSync(p, 'utf8').includes("data-qb-chat-weicht={sichtbar ? '' : undefined}"));
+  assert.deepEqual(ohne, []);
+});
