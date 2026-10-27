@@ -19,8 +19,14 @@ import {CdnBild} from './CdnBild';
  * Aufrufort gesetzt. Ohne Angabe bleibt alt="" wie bisher -- OHNE
  * role=presentation, denn ob ein Bild dekorativ ist, weiß nur der Aufrufort.
  * Ein erfundener Vorgabewert hier wäre schlechter als keiner.
+ *
+ * `auslauf` (seit 2026-10-27, Job 20261025-design-repair-qihome-air-animation-
+ * schwarz-preisanker-ultimate-power-s05): lässt eine Bildkante weich in die
+ * Fläche auslaufen, statt sie als Rechteck zu zeigen ("oben"). Setzt den Haken
+ * data-qb-auslauf; die Maske steht in app/styles/qb-360-rand.css, die der
+ * Aufrufort per links() lädt. Ohne Angabe kein Attribut, DOM wie bisher.
  */
-export function SingleImage({link, size, dataSection, alt = ''}){
+export function SingleImage({link, size, dataSection, alt = '', auslauf}){
     const bild = (
         <CdnBild
             className="SingleImageCentered"
@@ -29,6 +35,7 @@ export function SingleImage({link, size, dataSection, alt = ''}){
             anzeigeBreite={1318}
             sizes="(min-width: 1000px) 1318px, 92vw"
             loading="lazy"
+            data-qb-auslauf={auslauf}
         />
     );
     if (size === "fullscreen"){

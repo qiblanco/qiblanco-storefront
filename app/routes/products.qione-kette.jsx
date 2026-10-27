@@ -27,6 +27,7 @@ import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import pdpKetteStyles from '~/styles/pdp-kette.css?url';
+import medienRandStyles from '~/styles/qb-360-rand.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
@@ -43,6 +44,7 @@ export function links() {
     {rel: 'stylesheet', href: preisankerStyles},
     // Ein H2-Stil, ein Akzent (Rubrik-Pflicht 95, Christian 27.10.2026).
     {rel: 'stylesheet', href: pdpKetteStyles},
+    {rel: 'stylesheet', href: medienRandStyles},
   ];
 }
 
@@ -229,7 +231,9 @@ export default function Product() {
     {/* Google-Rezensionsbereich (Job 20260731-google-rezensionen):
         Live-Reputon + Überschrift + Anker für den 4,8-Banner-Klick. */}
     <GoogleRezensionenBereich />
-    <SingleImage size={"fullscreen"} link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} alt="QiOne® 2 Pro an einer silbernen Kette auf hellem Stoff" />
+    {/* Foto läuft oben weich in die Leinwand aus (qb-360-rand.css, Medien-Auslauf):
+        sein Grund oben ist ein Grauverlauf 185–248, die Fläche darüber weiß. */}
+    <SingleImage size={"fullscreen"} auslauf="oben" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} alt="QiOne® 2 Pro an einer silbernen Kette auf hellem Stoff" />
     </>
   );
 }
