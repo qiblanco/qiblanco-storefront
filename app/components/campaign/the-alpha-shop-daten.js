@@ -59,6 +59,9 @@ export const PRODUKT = {
     },
   ],
   herkunft: ['Designed in Germany.', 'Made in Germany.'],
+  // Sprung zum Konfigurator unter dem Kopf (Christian Z231, nur weil der
+  // Designmeister ihn für nötig hält; s07-r2).
+  sprung: 'Jetzt konfigurieren ↓',
 };
 
 /*

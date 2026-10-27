@@ -169,3 +169,15 @@ test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Po
   const route = lies('app/routes/products.the-alpha.jsx');
   assert.match(route, /rel: 'preload', as: 'image', href: KOPF\.loop\.poster/);
 });
+
+test('Sprung „Jetzt konfigurieren ↓“ (Z231, Designmeister-Auflage s07-r2): außerhalb des Kopfes, Ziel ist der erste Schritt', () => {
+  assert.equal(daten.PRODUKT.sprung, 'Jetzt konfigurieren ↓');
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  const kopfEnde = shop.indexOf('</section>', shop.indexOf('data-tas-kopf'));
+  const sprung = shop.indexOf('data-tas-sprung');
+  assert.ok(sprung > kopfEnde, 'Sprung steht nach dem Kopf, nicht darin');
+  assert.match(shop, /href="#tas-konfigurator"/);
+  // genau ein Ziel je Zustand: Nummer-Schritt, sonst Ketten-Schritt
+  assert.match(shop, /id="tas-konfigurator"\s+className="tas-schritt"\s+aria-labelledby="tas-nummer-titel"/);
+  assert.match(shop, /id=\{nummernAn \? undefined : 'tas-konfigurator'\}/);
+});

@@ -98,7 +98,7 @@
   margin-top: var(--tas-s-4);
   background: var(--tas-band);
   color: var(--tas-weiss);
-  padding: var(--tas-s-4) var(--tas-s-3) var(--tas-s-6);
+  padding: var(--tas-s-4) var(--tas-s-3) 0;
   text-align: center;
   /* Die Mischung des Loops (unten) rechnet nur gegen das Band; was über die
      Bandkante ragte, hätte keinen Grund mehr und stünde als Schwarz da. */
@@ -111,14 +111,18 @@
    des Bandes und das Gerät bleibt unverändert: kein Viereck, auch nicht im
    Poster beim Laden. Handy zuerst: das Gerät füllt die Mitte unter dem Titel. */
 .tas-band-loop {
+  /* Breite des Films; das Gerät füllt davon in der Höhe 62 % (Rand oben
+     18,8 %, unten 19,4 %, an Lucas Film gemessen). Die Ränder werden so weit
+     unter Untertitel und Bandkante gezogen, dass über und unter dem Gerät
+     derselbe Raum steht (Designmeister s07-r2: Handy 40, Desktop 56). */
+  --tas-loop: min(80vw, 320px);
+  --tas-loop-luft: 40px;
   display: block;
-  width: min(80vw, 320px);
+  width: var(--tas-loop);
   height: auto;
   aspect-ratio: 1 / 1;
-  /* Das Gerät füllt im Film nur die mittleren gut 60 % der Höhe; der schwarze
-     Rand oben und unten darf unter Untertitel und Bandkante liegen, so bleibt
-     das Band kompakt und das Gerät groß. */
-  margin: calc(-1 * var(--tas-s-4)) auto calc(-1 * var(--tas-s-6));
+  margin: calc(var(--tas-loop-luft) - 0.188 * var(--tas-loop)) auto
+    calc(var(--tas-loop-luft) - 0.194 * var(--tas-loop));
   background: transparent;
   mix-blend-mode: lighten;
   pointer-events: none;
@@ -207,6 +211,14 @@
   letter-spacing: -0.02em;
 }
 
+/* Das Haus setzt auf dem Handy jedes h1 auf 1,75 rem !important (app.css,
+   h1:where(:not(#ccsp *))). Dann war der Name so groß wie der Preis und die
+   Hierarchie kippte (Designmeister-STOP s07-r2). Zwei Klassen + !important
+   holen den Token zurück. */
+.tas-seite .tas-name {
+  font-size: var(--tas-fs-6) !important;
+}
+
 .tas-produkt .tas-claim {
   margin-top: var(--tas-s-1);
   font-size: var(--tas-fs-4);
@@ -229,6 +241,10 @@
   border-top: 1px solid var(--tas-linie);
 }
 
+.tas-punkt > span {
+  text-wrap: balance;
+}
+
 .tas-punkt {
   display: grid;
   grid-template-columns: var(--tas-s-4) 1fr;
@@ -244,8 +260,8 @@
    je Zeichen eine eigene Art, keine springt. */
 .tas-zeichen {
   display: block;
-  width: var(--tas-s-4);
-  height: var(--tas-s-4);
+  width: 28px;
+  height: 28px;
   color: var(--tas-rot);
   overflow: hidden;
 }
@@ -318,14 +334,48 @@
   display: block;
 }
 
+/* „Jetzt konfigurieren ↓“ (Christian Z231: nur wenn der Designmeister es für
+   nötig hält; er hält es für nötig, weil auf dem Handy nach dem Kopf sonst
+   nichts den Weg zum Kauf zeigt). Textlink im Rot der Zeichen, kein Knopf. */
+.tas-sprung {
+  display: inline-block;
+  margin-top: 0;
+  padding-block: var(--tas-s-1);
+  font-size: var(--tas-fs-3);
+  font-weight: 600;
+  color: var(--tas-rot);
+  text-decoration: none;
+}
+
+.tas-sprung:hover {
+  color: var(--tas-tinte);
+}
+
+.tas-sprung:focus-visible {
+  outline: 2px solid var(--tas-tinte);
+  outline-offset: 2px;
+}
+
+/* Der feste Kopf der Seite (KopfHaftet) liegt über dem Sprungziel. */
+#tas-konfigurator {
+  scroll-margin-top: 136px;
+}
+
 /* Handy und Tablet: Produktkopf mit Preis und Knopf vor der Galerie, wie auf
    Apples Kaufseite mobil. Ab 1024 px steht die Auswahl wieder als Spalte. */
 .tas-auswahl {
   display: contents;
 }
 
-.tas-produkt {
+.tas-produkt,
+.tas-sprung {
   order: -1;
+}
+
+/* Auf dem Handy steht der Sprung als eigene Zeile über der Galerie (der
+   Rasterabstand 32 trennt ihn vom Kopf). */
+.tas-sprung {
+  justify-self: start;
 }
 
 .tas-klein {
@@ -703,15 +753,14 @@
 
 @media (min-width: 750px) {
   .tas-band {
-    padding: var(--tas-s-6) var(--tas-s-3) var(--tas-s-6);
+    padding: var(--tas-s-6) var(--tas-s-3) 0;
   }
   .tas-band-titel {
     font-size: var(--tas-fs-7);
   }
   .tas-band-loop {
-    width: 400px;
-    margin-top: calc(-1 * var(--tas-s-6));
-    margin-bottom: calc(-1 * var(--tas-s-6));
+    --tas-loop: 480px;
+    --tas-loop-luft: 56px;
   }
   .tas-karten {
     grid-template-columns: 1fr 1fr;
@@ -738,8 +787,11 @@
     order: 0;
     padding-top: var(--tas-s-4);
   }
-  .tas-name {
-    font-size: var(--tas-fs-7);
+  .tas-sprung {
+    margin-top: var(--tas-s-4);
+  }
+  .tas-seite .tas-name {
+    font-size: var(--tas-fs-7) !important;
   }
   .tas-produkt .tas-claim {
     font-size: var(--tas-fs-5);

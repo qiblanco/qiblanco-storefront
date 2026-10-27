@@ -212,9 +212,21 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               ))}
             </p>
           </section>
+          {/* Sprung zum Konfigurator statt Knopf im Kopf (Christian Z231,
+              Designmeister-Auflage s07-r2). Steht bewusst außerhalb des
+              Kopfes: der Kopf trägt nur Christians neun Zeilen. */}
+          <a
+            className="tas-sprung"
+            href="#tas-konfigurator"
+            data-tas-sprung=""
+            onClick={springeZumKonfigurator}
+          >
+            {PRODUKT.sprung}
+          </a>
 
           {nummernAn ? (
             <section
+              id="tas-konfigurator"
               className="tas-schritt"
               aria-labelledby="tas-nummer-titel"
               data-tas-schritt="nummer"
@@ -322,6 +334,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           ) : null}
 
           <section
+            id={nummernAn ? undefined : 'tas-konfigurator'}
             className="tas-schritt"
             aria-labelledby="tas-kette-titel"
             data-tas-schritt="kette"
@@ -548,6 +561,17 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   );
 }
 
+/** Weicher Sprung zum ersten Konfigurator-Schritt; bei weniger Bewegung hart. */
+function springeZumKonfigurator(e) {
+  const ziel = document.getElementById('tas-konfigurator');
+  if (!ziel) return;
+  e.preventDefault();
+  const ruhig =
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ziel.scrollIntoView({behavior: ruhig ? 'auto' : 'smooth', block: 'start'});
+}
+
 /**
  * Lucas 360-Grad-Loop im schwarzen Band: stumm, inline, in Schleife, ohne
  * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
@@ -603,13 +627,15 @@ function Zeichen({art}) {
     'aria-hidden': 'true',
     focusable: 'false',
   };
+  // Alle drei Zeichen füllen dasselbe Feld 5..27 (Designmeister s07-r2:
+  // gleiche optische Masse, bündig links).
   if (art === 'gitter') {
     return (
       <svg {...gemeinsam}>
-        <rect x="4.5" y="7.5" width="10.5" height="17" rx="2.5" />
-        <rect x="17" y="7.5" width="10.5" height="17" rx="2.5" />
+        <rect x="5" y="5.5" width="10" height="21" rx="2" />
+        <rect x="17" y="5.5" width="10" height="21" rx="2" />
         <g className="tas-zeichen-puls">
-          <path d="M8 12h4M8 16h4M8 20h4M20.5 12h4M20.5 16h4M20.5 20h4" />
+          <path d="M5 12.5h10M5 19.5h10M10 5.5v21M17 12.5h10M17 19.5h10M22 5.5v21" />
         </g>
       </svg>
     );
@@ -617,25 +643,32 @@ function Zeichen({art}) {
   if (art === 'diamant') {
     return (
       <svg {...gemeinsam}>
-        <path d="M9.5 8.5h13L27 14 16 26.5 5 14z" />
-        <path d="M5 14h22M12.5 8.5 11 14l5 12.5M19.5 8.5 21 14l-5 12.5" />
+        <path d="M10 8h12l5 6-11 13L5 14z" />
+        <path d="M5 14h22M13 8l-2 6 5 13M19 8l2 6-5 13" />
         <g className="tas-zeichen-funkeln">
-          <path d="M25.5 3v4M23.5 5h4" />
+          <path d="M26 2.5v4M24 4.5h4" />
         </g>
       </svg>
     );
   }
   return (
     <svg {...gemeinsam}>
+      <defs>
+        <clipPath id="tas-zeichen-feld">
+          <rect x="5" y="0" width="22" height="32" />
+        </clipPath>
+      </defs>
       <g className="tas-zeichen-puls">
-        <path d="M16 3.5v4M9 6l2 3.2M23 6l-2 3.2" />
+        <path d="M16 4v3.5M10.5 6l1.8 2.8M21.5 6l-1.8 2.8" />
       </g>
       <circle cx="16" cy="14" r="3" />
       {/* Wellen eine Periode (15) breiter als das Feld: die Bewegung um 15
           nach rechts ist nahtlos. */}
-      <g className="tas-zeichen-welle">
-        <path d="M-28 22c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
-        <path d="M-28 27c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+      <g clipPath="url(#tas-zeichen-feld)">
+        <g className="tas-zeichen-welle">
+          <path d="M-28 21.5c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+          <path d="M-28 26.5c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+        </g>
       </g>
     </svg>
   );
