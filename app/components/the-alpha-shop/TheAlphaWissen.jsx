@@ -1,4 +1,6 @@
+import {useEffect, useRef} from 'react';
 import {THE_ALPHA_LIGA, THE_ALPHA_WISSEN} from './the-alpha-wissen-daten.js';
+import {PERIODE_S, POSTER_T, SZENEN, WISSEN_POSTER} from './wissen-animationen.js';
 
 /*
  * WISSENS-STRECKE der Shopseite /products/the-alpha, direkt unter „What's in
@@ -27,21 +29,7 @@ export function TheAlphaWissen() {
         >
           <Kopf etikett={a.etikett} titel={a.titel} id={`taw-${a.id}`} />
           <div className="taw-raster">
-            {a.bild ? (
-              <figure className="taw-bild">
-                <img
-                  src={`${a.bild.src}&width=1024`}
-                  srcSet={`${a.bild.src}&width=512 512w, ${a.bild.src}&width=1024 1024w`}
-                  sizes="(min-width: 1024px) 512px, calc(100vw - 32px)"
-                  alt={a.bild.alt}
-                  width={a.bild.breite}
-                  height={a.bild.hoehe}
-                  loading="lazy"
-                  decoding="async"
-                  data-herkunft={a.bild.herkunft}
-                />
-              </figure>
-            ) : null}
+            {a.bild ? <WissensBild id={a.id} bild={a.bild} /> : null}
             <div className="taw-text">
               <div data-fremdtext={a.wortlaut || undefined}>
                 {a.absaetze.map((p) => (
@@ -86,6 +74,116 @@ export function TheAlphaWissen() {
         <Quellen liste={THE_ALPHA_LIGA.quellen} />
       </section>
     </div>
+  );
+}
+
+/*
+ * Die Zeichnung als Bewegung (Christian 27.10.2026: „diese 4 grafiken auf
+ * high end niveau animaitonen umsetzen“). Im Server-HTML steht das Poster,
+ * das genau das Startbild der Szene ist; darüber liegt die Leinwand. Sie
+ * läuft nur, solange sie im Sichtbereich ist, und bleibt bei reduzierter
+ * Bewegung ganz aus: dann bleibt das Poster als Standbild.
+ */
+function WissensBild({id, bild}) {
+  const leinwand = useRef(null);
+  const szene = SZENEN[id];
+  const poster = WISSEN_POSTER[id];
+
+  useEffect(() => {
+    const c = leinwand.current;
+    if (!c || !szene) return undefined;
+    const ruhe = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (ruhe?.matches) return undefined;
+    const ctx = c.getContext('2d');
+    if (!ctx) return undefined;
+
+    let kante = 0;
+    let raf = 0;
+    let start = null;
+    let tBasis = POSTER_T[id] ?? 0;
+    let sichtbar = false;
+
+    const passe = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const px = Math.round(Math.min(c.clientWidth * dpr, 1200));
+      if (px > 0 && px !== kante) {
+        kante = px;
+        c.width = px;
+        c.height = px;
+      }
+    };
+    const bild = (jetzt) => {
+      if (start === null) start = jetzt;
+      const t = (tBasis + (jetzt - start) / 1000) % PERIODE_S;
+      if (kante) szene(ctx, kante, t);
+      if (!c.hasAttribute('data-laeuft')) c.setAttribute('data-laeuft', '');
+      raf = requestAnimationFrame(bild);
+    };
+    const los = () => {
+      if (raf || !sichtbar || document.hidden) return;
+      passe();
+      raf = requestAnimationFrame(bild);
+    };
+    const halt = () => {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+      if (start !== null) tBasis += (performance.now() - start) / 1000;
+      start = null;
+    };
+    const io = new IntersectionObserver(
+      ([e]) => {
+        sichtbar = e.isIntersecting;
+        if (sichtbar) los();
+        else halt();
+      },
+      {rootMargin: '0px 0px -8% 0px', threshold: 0.15},
+    );
+    io.observe(c);
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(passe) : null;
+    ro?.observe(c);
+    const sicht = () => (document.hidden ? halt() : los());
+    document.addEventListener('visibilitychange', sicht);
+    const ruheWechsel = () => {
+      if (!ruhe.matches) return;
+      halt();
+      io.disconnect();
+      c.removeAttribute('data-laeuft');
+    };
+    ruhe?.addEventListener?.('change', ruheWechsel);
+    return () => {
+      halt();
+      io.disconnect();
+      ro?.disconnect();
+      document.removeEventListener('visibilitychange', sicht);
+      ruhe?.removeEventListener?.('change', ruheWechsel);
+    };
+  }, [id, szene]);
+
+  const src = poster?.src || bild.src;
+  return (
+    <figure className="taw-bild taw-anim">
+      <img
+        src={`${src}&width=1024`}
+        srcSet={`${src}&width=512 512w, ${src}&width=1024 1024w`}
+        sizes="(min-width: 1024px) 512px, calc(100vw - 32px)"
+        alt={poster?.alt || bild.alt}
+        width={1024}
+        height={1024}
+        loading="lazy"
+        decoding="async"
+        data-herkunft={poster?.herkunft || bild.herkunft}
+      />
+      {szene ? (
+        <canvas
+          ref={leinwand}
+          className="taw-leinwand"
+          data-wissen-anim={id}
+          data-poster={src}
+          aria-hidden="true"
+        />
+      ) : null}
+    </figure>
   );
 }
 

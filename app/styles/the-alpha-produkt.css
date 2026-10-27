@@ -40,6 +40,9 @@
   /* Qi-Alpha-Rot (Christian, Figma; Film-Gerüst #b92200): die drei Zeichen
      des Produktkopfs und die Etiketten der Wissens-Strecke (the-alpha-shop.css). */
   --tas-rot: #b92200;
+  /* Papierton der vier Wissens-Zeichnungen (wissen-animationen.js PAPIER):
+     Fläche unter Poster und Leinwand, damit kein Viereck aufblitzt. */
+  --tas-papier: #f5f1e5;
 
   --tas-radius: 18px;
   --tas-breite: 1200px;
