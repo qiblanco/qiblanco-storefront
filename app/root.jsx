@@ -545,6 +545,13 @@ export function Layout({children}) {
   const salesbotSeite = (matches || []).some(
     (match) => match?.handle?.salesbotWidget === true,
   );
+  // FILM-SEITEN (Christian 27.10.2026, Z275–Z279 zum Qi-Alpha-Film): „Und AI
+  // Anna und das normale banner muss komplett weg“. Eine Route, die
+  // `export const handle = {filmSeite: true}` trägt, bekommt weder Shop-Kopf
+  // noch Ankündigungsband noch Fuß noch den Assistenten — nicht versteckt,
+  // sondern nicht gerendert (auch der Loader-Tag fehlt im HTML). Merkmal aus
+  // den Matches wie salesbotWidget oben, kein Pfad hier.
+  const filmSeite = istFilmSeite(matches);
 
   // ── HYDRATIONS-SIGNAL ────────────────────────────────────────────────────
   // Dieser Effekt läuft NACH dem Hydration-Commit — das ist seine Definition,
@@ -584,6 +591,7 @@ export function Layout({children}) {
   );
   const salesbotAktiv =
     Boolean(data?.salesbotWidgetOrigin) &&
+    !filmSeite &&
     (salesbotSeite || salesbotDeutscherShop);
 
   // Client: den Preismodus des Servers übernehmen, BEVOR ein Kind rechnet
@@ -915,7 +923,9 @@ export function Layout({children}) {
         <KaufknopfChatSignal />
         <LoadingBar />
         {data ? (
-          <AnalytikNachHydration data={data}>{children}</AnalytikNachHydration>
+          <AnalytikNachHydration data={data} filmSeite={filmSeite}>
+            {children}
+          </AnalytikNachHydration>
         ) : (
           children
         )}
@@ -969,7 +979,20 @@ export function Layout({children}) {
  * FEHLER-DB F-2372). Dieselbe Bauform trägt crystal-cacao.com in seiner
  * laden-eigenen root.jsx. Rückweg: git revert dieses Commits.
  */
-function AnalytikNachHydration({data, children}) {
+/**
+ * Trägt die aktuelle Route das Merkmal `handle.filmSeite`? Dann rendert das
+ * Layout nur den Film: kein Shop-Kopf, kein Ankündigungsband, kein Fuß, kein
+ * Chat-Assistent (Christian 27.10.2026 zu den Qi-Alpha-Landingpages, Z275–Z279:
+ * „Und AI Anna und das normale banner muss komplett weg“; Z258: „Die Seite muss
+ * hier aufhören.“). Aus den Matches, damit es bei Client-Navigation stimmt
+ * (Begründung wie bei salesbotWidget in Layout).
+ * @param {Array<{handle?: {filmSeite?: boolean}}>} matches
+ */
+export function istFilmSeite(matches) {
+  return (matches || []).some((match) => match?.handle?.filmSeite === true);
+}
+
+function AnalytikNachHydration({data, filmSeite = false, children}) {
   const [hydriert, setHydriert] = useState(false);
 
   useEffect(() => {
@@ -977,13 +1000,18 @@ function AnalytikNachHydration({data, children}) {
   }, []);
 
   const seitengeruest = useMemo(
-    () => (
-      <PageLayout {...data}>
-        <KassenRueckkehrLeiste cart={data.cart} />
-        {children}
-      </PageLayout>
-    ),
-    [data, children],
+    () =>
+      filmSeite ? (
+        // Film-Seite: nur der Film, ohne Kopf, Band, Fuß und Seiten-Asides
+        // (Begründung bei istFilmSeite). Stil: the-alpha-premium.css.
+        <main data-film-seite="">{children}</main>
+      ) : (
+        <PageLayout {...data}>
+          <KassenRueckkehrLeiste cart={data.cart} />
+          {children}
+        </PageLayout>
+      ),
+    [data, filmSeite, children],
   );
 
   return (

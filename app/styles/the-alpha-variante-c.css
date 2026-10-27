@@ -11,30 +11,21 @@
  * weißer Umriss, leiser als der Abschluss.
  *
  * DER KURZE SCHNITT (Lernkarte scrollklippe, Klasse A): die Bühnen stehen
- * kürzer still als in A, die Kapitel rücken enger, und die Schlussszene endet
- * mit den Zeilen unter dem Knopf. Die Geschichte bleibt Szene für Szene.
+ * kürzer still als in A, die Kapitel rücken enger. Seit 27.10. endet auch C
+ * mit dem roten Knopf (Christian Z258–Z263); Preis und Zeilen stehen davor.
  */
 
 /* ---------- Kürzere Bühnen ---------- */
-.tap-seite[data-the-alpha-premium='c'] .tap-titelkarte {
-  height: 150svh;
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tap-woerterbuch {
-  height: 160svh;
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tap-kapitel {
-  padding-top: var(--tap-s-8);
-  padding-bottom: var(--tap-s-8);
+/* Seit 27.10. bauen sich die Bühnen mit dem Scrollen auf (the-alpha-
+   premium.css, --tap-schritt je Wort bzw. Absatz); C nimmt kürzere Schritte,
+   die Bühnenhöhe folgt daraus. */
+.tap-seite[data-the-alpha-premium='c'] {
+  --tap-schritt-wort: 40px;
+  --tap-schritt-absatz: 120px;
 }
 
 .tap-seite[data-the-alpha-premium='c'] .tap-marke {
   padding-top: var(--tap-s-8);
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tap-marke-szene {
-  min-height: 60svh;
 }
 
 /* Die Kaufleiste deckt ganz (Challenger B 26.10.: Text schien durch). */
@@ -42,90 +33,3 @@
   background: var(--tap-nacht);
 }
 
-/* ---------- Zweiter Knopf nach Protection ---------- */
-/* Ein ruhiger Zwischentitel, kein zweiter Aufruf: Großbuchstaben und
-   Sperrung wie die Etiketten, feine Linie in halbem Weiß (Challenger 26.10.:
-   der Standard-Rahmenknopf wirkte generisch neben der roten Pille). */
-.tap-seite[data-the-alpha-premium='c'] {
-  --tac-linie: rgba(255, 255, 255, 0.5);
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tac-zwischen {
-  margin-top: var(--tap-s-6);
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tac-zwischen-kauf .ta-knopf {
-  display: inline-block;
-  padding: var(--tap-s-2) var(--tap-s-4);
-  border: 1px solid var(--tac-linie);
-  border-radius: var(--tap-radius);
-  background: transparent;
-  color: var(--tap-weiss);
-  font-size: var(--tap-fs-leiste);
-  font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: border-color 300ms ease;
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tac-zwischen-kauf .ta-knopf:hover {
-  border-color: var(--tap-weiss);
-  color: var(--tap-weiss);
-  text-decoration: none;
-}
-
-/* ---------- Abschluss: Preis klein, Zeilen unter dem Knopf ---------- */
-/* Die Szene wächst nicht auf einen Bildschirm (sonst stünde zwischen Knopf
-   und Zeilen ein leeres Schwarz); den Schluss-Abstand trägt .tac-sicher. */
-.tap-seite[data-the-alpha-premium='c'] .tap-edition {
-  min-height: 0;
-  padding-bottom: var(--tap-s-3);
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tap-zahl {
-  margin-bottom: var(--tap-s-4);
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tac-preis {
-  margin: 0 0 var(--tap-s-4);
-  color: var(--tap-weiss);
-  font-size: var(--tap-fs-zeile);
-  font-weight: 500;
-  line-height: 1.3;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Rückgabe, Raten, Versand: direkt unter dem roten Knopf, leiser als der
-   Preis, danach Schwarz bis zum Shop-Fuß (die Schlussszene des Gerüsts endet
-   in C hier). Ab 768 px eine Zeile mit „·“, nie breiter als der Knopf
-   (Challenger 26.10.). */
-.tap-seite[data-the-alpha-premium='c'] .tac-sicher {
-  max-width: min(1152px, calc(100vw - 2 * var(--tap-s-3)));
-  margin: 0 auto;
-  padding: 0 0 max(24svh, calc(var(--tap-takt) * 1.5));
-  list-style: none;
-  text-align: center;
-  text-wrap: balance;
-}
-
-.tap-seite[data-the-alpha-premium='c'] .tac-sicher li {
-  color: var(--tap-leise);
-  font-size: var(--tap-fs-leiste);
-  line-height: 1.7;
-  letter-spacing: 0.02em;
-}
-
-@media (min-width: 768px) {
-  .tap-seite[data-the-alpha-premium='c'] .tac-sicher {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .tap-seite[data-the-alpha-premium='c'] .tac-sicher li + li::before {
-    content: '·';
-    margin: 0 var(--tap-s-2);
-  }
-}

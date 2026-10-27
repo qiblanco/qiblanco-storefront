@@ -27,6 +27,10 @@ import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
  * s07 über lib/experiment-weiche.server.js in diesen Loader.
  */
 
+/** Film-Seite: ohne Shop-Kopf, Ankündigungsband, Fuß und AI Anna (root.jsx
+ * istFilmSeite; Christian 27.10.2026, Z275–Z279). */
+export const handle = {filmSeite: true};
+
 const KANON_PFAD = '/pages/The-Alpha';
 
 export function links() {

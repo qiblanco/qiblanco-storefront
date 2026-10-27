@@ -50,6 +50,11 @@
   --tap-s-6: 48px;
   --tap-s-8: 64px;
   --tap-takt: 96px;
+  /* Scroll-Takt (Christian 27.10., Z280–Z295): so viele Pixel Scrollweg
+     zeigen das nächste Wort bzw. den nächsten Absatz einer Bühne. Die Höhe
+     jeder Bühne folgt daraus (Bildschirm + Schritte), keine freie Länge. */
+  --tap-schritt-wort: 48px;
+  --tap-schritt-absatz: 160px;
 
   --tap-nacht: #000000;
   --tap-weiss: #ffffff;
@@ -91,6 +96,8 @@
 @media (min-width: 768px) {
   .tap-seite {
     --tap-takt: 144px;
+    --tap-schritt-wort: 64px;
+    --tap-schritt-absatz: 200px;
     --tap-fs-hero: 5.96rem;    /* 95,37 */
     --tap-fs-zahl: 3.815rem;   /* 61,04 */
     --tap-fs-h2: 3.815rem;     /* 61,04 */
@@ -110,7 +117,7 @@
     --tap-fs-hero: 7.451rem;   /* 119,2 */
     --tap-fs-zahl: 4.768rem;   /* 76,29 */
     --tap-fs-h2: 4.768rem;     /* 76,29 */
-    /* „THE ALPHA“ ist nach dem Titel die zweitgrößte Schrift (Challenger
+    /* „Qi Alpha®“ ist nach dem Titel die zweitgrößte Schrift (Challenger
        26.10.: am Höhepunkt muss der Name tragen), der Titel bleibt größer. */
     --tap-fs-marke: 5.96rem;   /* 95,37 */
     --tap-fs-edition: 3.052rem; /* 48,83 */
@@ -123,38 +130,62 @@
   text-shadow: none;
 }
 
-/* ---------- Szene 1 und 2: Titelkarte ---------- */
-/* Die Bühne ist höher als der Bildschirm; der Titel steht darin still
-   (sticky), und auf halbem Weg erscheint der Untertitel. */
-.tap-titelkarte {
-  position: relative;
-  height: 180svh;
+/* ---------- Seite ohne Shop-Kopf (Christian 27.10., Z275–Z279) ---------- */
+/* Auf den Film-Routen rendert root.jsx weder Kopf, Band noch Fuß (Routen-
+   Merkmal handle.filmSeite, <main data-film-seite>). Dann gibt es nichts
+   auszugleichen: der Film beginnt bei y = 0, und alles um ihn ist schwarz,
+   auch beim Überscrollen am Handy. */
+main[data-film-seite] {
+  padding-top: 0;
+  background: #000;
 }
 
-.tap-titelkarte-bild {
+main[data-film-seite] .tap-seite {
+  margin-top: 0;
+}
+
+html:has(main[data-film-seite]),
+html:has(main[data-film-seite]) body {
+  background: #000;
+}
+
+/* ---------- Scroll-Bühnen (Z286/Z287, Z294) ---------- */
+/* Die Bühne ist einen Bildschirm plus ihre Schritte hoch; ihr Inhalt steht
+   still (sticky) und baut sich mit dem Scrollen auf (useTapFilm). Nach dem
+   letzten Schritt bleibt ein Schritt Ruhe, dann geht es weiter. */
+.tap-scrub {
+  --tap-schritt: var(--tap-schritt-wort);
+  position: relative;
+  height: calc(100svh + (var(--tap-schritte, 0) + 1) * var(--tap-schritt));
+}
+
+.tap-scrub-bild {
   position: sticky;
   top: 0;
   display: grid;
-  place-items: center;
-  height: 100svh;
-  padding: 0 var(--tap-s-2);
+  place-content: center;
+  min-height: 100svh;
+  padding: 0 var(--tap-s-3);
 }
 
-/* Bühnen-Marke: reicht von ihrer Oberkante bis zum Ende der Bühne; auch ein
-   schneller Wisch, der über die Oberkante springt, landet in ihr und schaltet
-   die zweite Einblendung zu (eine 1-px-Marke würde übersprungen). */
+/* Bühnen-Marke für den Ton: ihre Oberkante liegt bei 55 % des Bildschirms,
+   so löst der Akzent (Beobachter mit -45 % unten in TheAlphaTon.jsx) genau in
+   dem Moment aus, in dem die Bühne stillsteht. */
 .tap-buehne-marke {
   position: absolute;
-  top: 45svh;
+  top: 55svh;
   bottom: 0;
   left: 0;
   width: 1px;
 }
 
-.tap-woerterbuch .tap-buehne-marke {
-  top: 15svh;
+/* Ein Wort, das noch nicht dran ist, behält seinen Platz (kein Springen der
+   Zeile), es ist nur unsichtbar. */
+.tap-wort {
+  display: inline;
 }
 
+/* ---------- Szene 1 und 2: Titelkarte ---------- */
 .tap-hero-titel {
   margin: 0;
   /* !important: app.css setzt h1/h2 am Handy (<= 749 px) per !important auf
@@ -183,20 +214,16 @@
 }
 
 /* ---------- Szene 3: Wörterbuch (Pulp Fiction) ---------- */
-/* Die Tafel steht einen Bildschirm lang still (sticky) und passt ganz auf
-   ihn: Handy 20 px, ab 768 px 25 px (Challenger 26.10.: sie lief vorher über
-   zwei Bildschirme und „poppte“ nicht). */
+/* Wie ein Eintrag im Wörterbuch (Christian 27.10., Z288/Z289, Z296–Z298):
+   zuerst der Begriff, darunter die Aussprache; beim Scrollen Punkt 1 als
+   eigener Absatz, dann Punkt 2 mit sichtbarem Abstand, dann die Quelle.
+   Wichtige Wörter fett wie im Original. Die Tafel passt auf einen
+   Bildschirm (Handy 20 px, ab 768 px 25 px). */
 .tap-woerterbuch {
-  position: relative;
-  height: 200svh;
+  --tap-schritt: var(--tap-schritt-absatz);
 }
 
 .tap-wb-bild {
-  position: sticky;
-  top: 0;
-  display: grid;
-  place-items: center;
-  min-height: 100svh;
   padding: var(--tap-s-6) var(--tap-s-3);
 }
 
@@ -212,18 +239,41 @@
 
 /* Farbe am Absatz selbst: app.css färbt <p> global und sticht die
    geerbte Farbe. */
-.tap-wb-satz,
+.tap-wb-kopf,
+.tap-wb-punkt,
 .tap-wb-quelle {
   color: var(--tap-creme);
   font-size: inherit;
   line-height: inherit;
 }
 
-.tap-wb-satz {
-  margin: 0 0 var(--tap-s-1);
+.tap-wb-kopf {
+  margin: 0 0 var(--tap-s-4);
 }
 
-.tap-wb-satz b {
+.tap-wb-lemma {
+  display: block;
+  font-size: var(--tap-fs-edition);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.tap-wb-laut {
+  display: block;
+  margin-top: var(--tap-s-1);
+}
+
+.tap-wb-punkt {
+  margin: 0;
+}
+
+/* Zwischen Punkt 1 und Punkt 2 sichtbarer Abstand (Z288). */
+.tap-wb-punkt + .tap-wb-punkt {
+  margin-top: var(--tap-s-4);
+}
+
+.tap-wb-punkt b,
+.tap-wb-kopf b {
   font-weight: 700;
 }
 
@@ -270,8 +320,13 @@
 }
 
 /* ---------- Kapitel ---------- */
+/* Die Bühne trägt Überschrift und Zeilen, die Karten folgen darunter. */
 .tap-kapitel {
-  padding: var(--tap-takt) var(--tap-s-3);
+  padding: 0 var(--tap-s-3) var(--tap-takt);
+}
+
+.tap-kapitel-buehne {
+  margin: 0 calc(-1 * var(--tap-s-3));
 }
 
 .tap-h2 {
@@ -310,7 +365,7 @@
   grid-template-columns: 1fr;
   gap: var(--tap-s-3);
   max-width: 560px;
-  margin: var(--tap-s-8) auto 0;
+  margin: 0 auto;
 }
 
 @media (min-width: 768px) {
@@ -364,9 +419,9 @@
   white-space: nowrap;
 }
 
-/* ---------- THE ALPHA ---------- */
+/* ---------- Seitenband mit Etikett ---------- */
 .tap-marke {
-  padding: var(--tap-takt) 0 0;
+  padding: 0 0 var(--tap-takt);
 }
 
 .tap-band {
@@ -375,31 +430,35 @@
   padding: 0 var(--tap-s-3);
 }
 
-/* Der Name bekommt einen ganzen Bildschirm Schwarz für sich. */
-.tap-marke-szene {
-  display: grid;
-  place-items: center;
-  min-height: 100svh;
-  padding: 0 var(--tap-s-2);
-}
-
-.tap-marke-name {
-  margin: 0;
-  font-size: var(--tap-fs-marke);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  color: var(--tap-weiss);
-}
-
-/* ---------- Abspann ---------- */
-/* Schlussszene: ein Bildschirm, darunter Schwarz, bevor der Shop-Fuß kommt. */
+/* ---------- Schluss-Szene ---------- */
+/* Der letzte Bildschirm, nach Christians Skizze (27.10., Z268–Z274):
+   „Qi Alpha®“ groß in der Titel-Typo, Limited 1st. Edition, 111/111, der
+   rote Balken. Danach ist die Seite zu Ende, kein Fuß (Z258–Z263). */
 .tap-edition {
   display: grid;
   place-content: center;
   min-height: 100svh;
-  padding: var(--tap-takt) var(--tap-s-3) max(30svh, calc(var(--tap-takt) * 1.5));
+  padding: var(--tap-takt) var(--tap-s-3);
+}
+
+/* Titel-Typo wie „Kohärentes Licht“ (Z265), eine Stufe kleiner: der
+   Filmtitel bleibt die größte Schrift der Seite (Z10). */
+.tap-marke-name {
+  margin: 0 0 var(--tap-s-8);
+  font-size: var(--tap-fs-marke);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  color: var(--tap-weiss);
+}
+
+.tap-reg {
+  margin-left: 0.04em;
+  font-size: 0.4em;
+  vertical-align: super;
+  line-height: 0;
+  letter-spacing: 0;
 }
 
 .tap-edition-titel,
@@ -421,6 +480,13 @@
   font-size: var(--tap-fs-zahl);
   margin-bottom: var(--tap-s-8);
   font-variant-numeric: tabular-nums;
+}
+
+/* Schluss-Szene in A, B und C gleich: 111/111, dann direkt der rote Knopf
+   (Christian, Nachtrag 27.10.2026 ~21:40 Bangkok: kein Preis, keine
+   Detailzeile dazwischen). Schlägt die Varianten-Abstände von B. */
+.tap-seite[data-the-alpha-premium] .tap-edition .tap-zahl {
+  margin-bottom: var(--tap-s-8);
 }
 
 .tap-seite .tap-kauf {
@@ -529,52 +595,39 @@
   animation: tap-auf 1600ms var(--tap-kurve) 200ms both;
 }
 
-.tap-js .tap-hero-unter {
+/* Scroll-Schritte (Wörter, Absätze): da oder nicht da, mit kurzem Fade; der
+   Platz bleibt reserviert, damit nichts springt. Rückwärts gehen sie wieder. */
+.tap-js [data-tap-schritt] {
   opacity: 0;
-  transform: translate3d(0, 12px, 0);
-  transition:
-    opacity 1200ms var(--tap-kurve),
-    transform 1200ms var(--tap-kurve);
+  transition: opacity 260ms ease;
 }
 
-.tap-js .tap-weiter .tap-hero-unter {
+.tap-js [data-tap-schritt].tap-an {
   opacity: 1;
-  transform: none;
-}
-
-/* Wörterbuch: wie ein Schnitt im Film; erst der Eintrag, dann Bedeutung 2,
-   dann die Quelle, je 0,5 s später. */
-.tap-js .tap-wb-satz,
-.tap-js .tap-wb-quelle {
-  opacity: 0;
-  transition: opacity 400ms ease calc(var(--tap-folge, 0) * 500ms);
-}
-
-.tap-js .tap-weiter .tap-wb-satz,
-.tap-js .tap-weiter .tap-wb-quelle {
-  opacity: 1;
-}
-
-.tap-js [data-tap-ein] {
-  --tap-verzug: calc(var(--tap-folge, 0) * 180ms);
-  opacity: 0;
-  transform: translate3d(0, 24px, 0);
-  transition:
-    opacity var(--tap-dauer) var(--tap-kurve) var(--tap-verzug),
-    transform var(--tap-dauer) var(--tap-kurve) var(--tap-verzug);
 }
 
 /* Kapitel-Überschriften: „bam“, aus etwas größer in die Ruhe. */
-.tap-js .tap-bam[data-tap-ein] {
+.tap-js .tap-bam[data-tap-schritt] {
   transform: scale(1.12);
   transition:
-    opacity 500ms cubic-bezier(0.2, 0.9, 0.2, 1) var(--tap-verzug),
-    transform 500ms cubic-bezier(0.2, 0.9, 0.2, 1) var(--tap-verzug);
+    opacity 450ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    transform 450ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.tap-js .tap-bam[data-tap-schritt].tap-an {
+  transform: none;
+}
+
+/* Einzelne Elemente (Karten, Video, Schluss): erst wenn sie ganz im Bild
+   sind, dann auf einmal mit kurzem Fade, ohne Hereinschieben (Z283–Z285,
+   Z292/Z293). */
+.tap-js [data-tap-ein] {
+  opacity: 0;
+  transition: opacity 450ms ease calc(var(--tap-folge, 0) * 120ms);
 }
 
 .tap-js [data-tap-ein].tap-sichtbar {
   opacity: 1;
-  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -582,22 +635,52 @@
     animation: none;
   }
 
-  .tap-js .tap-hero-unter,
   .tap-js [data-tap-ein],
-  .tap-js .tap-bam[data-tap-ein],
-  .tap-js .tap-wb-satz,
-  .tap-js .tap-wb-quelle,
+  .tap-js [data-tap-schritt],
+  .tap-js .tap-bam[data-tap-schritt],
   .tap-leiste {
     transition: none;
   }
 
-  .tap-js .tap-hero-unter,
-  .tap-js .tap-wb-satz,
-  .tap-js .tap-wb-quelle,
-  .tap-js [data-tap-ein] {
+  .tap-js [data-tap-ein],
+  .tap-js [data-tap-schritt] {
     opacity: 1;
     transform: none;
   }
+
+  /* Ohne Bewegung keine stillstehenden Bühnen: alles steht untereinander. */
+  .tap-scrub {
+    height: auto;
+  }
+
+  .tap-scrub-bild {
+    position: static;
+    min-height: 0;
+    padding-block: var(--tap-takt);
+  }
+}
+
+/* Standbild (?film=still, useTapFilm): dieselbe Fassung wie bei
+   prefers-reduced-motion, für Prüfer, die nicht scrollen. */
+.tap-still .tap-hero-zeile {
+  animation: none;
+}
+
+.tap-js.tap-still [data-tap-ein],
+.tap-js.tap-still [data-tap-schritt] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.tap-still .tap-scrub {
+  height: auto;
+}
+
+.tap-still .tap-scrub-bild {
+  position: static;
+  min-height: 0;
+  padding-block: var(--tap-takt);
 }
 
 /* ---------- Ton (Segment s06, TheAlphaTon.jsx) ---------- */
@@ -730,7 +813,11 @@
    damit der Tonknopf am Videorand bleibt. */
 .tap-film {
   position: relative;
-  margin-block: max(var(--tap-takt), calc((100svh - min(100vw, var(--tap-breite)) * 9 / 16) / 2));
+  /* Ein Szenentakt Schwarz davor und danach. Bis 27.10. stand das Video mit
+     einem halben Bildschirm Schwarz auf jeder Seite mittig; am Handy waren
+     das 0,74 Bildschirme leerer Scrollweg (Christian Z281: „manche Stellen
+     brauchen zu lang“). */
+  margin-block: var(--tap-takt);
 }
 
 .tap-film-ton {
