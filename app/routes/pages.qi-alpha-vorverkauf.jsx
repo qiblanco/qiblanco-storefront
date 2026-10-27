@@ -116,7 +116,8 @@ import lpStyles from '~/styles/qi-master-vorverkauf.css?url';
  */
 
 /*
- * SEIT 2026-10-26: 301 AUF /pages/The-Alpha, in EINEM Sprung, Query bleibt.
+ * SEIT 2026-10-27: 301 AUF /pages/Qi-Alpha (Umzug Qi Alpha, Christian Z1),
+ * vorher seit 2026-10-26 auf /pages/The-Alpha. Ein Sprung, Query bleibt.
  * Christian am 25.10.2026 (Z4): „d.h. wir gehen im link weg von qi-alpha hin
  * zu the alpha" (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-
  * a-server-b-ki-c, Segment s06). Der Rest dieser Datei bleibt

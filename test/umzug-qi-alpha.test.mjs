@@ -60,6 +60,10 @@ const HUELLEN = [
   ['pages.The-Alpha-C.jsx', '/pages/The-Alpha-C', '/pages/Qi-Alpha-C'],
   ['pages.The-Alpha-C.jsx', '/pages/the-alpha-c', '/pages/Qi-Alpha-C'],
   ['pages.qi-master-vorverkauf.jsx', '/pages/qi-master-vorverkauf', '/pages/Qi-Alpha'],
+  // DACH-Admin-Weiterleitungen (gelesen 27.10.2026) zeigten auf the-alpha;
+  // die Routen halten den einen Sprung ohne Shopify-Schreibvorgang.
+  ['pages.qi-master.jsx', '/pages/qi-master', '/products/qi-alpha'],
+  ['pages.qi-master-lp.jsx', '/pages/qi-master-lp', '/pages/Qi-Alpha'],
 ];
 
 for (const [datei, pfad, ziel] of HUELLEN) {
