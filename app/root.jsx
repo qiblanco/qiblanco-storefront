@@ -736,6 +736,46 @@ export function Layout({children}) {
           liest den versionierten URL aus data-qpx-src.
           Wache: homepage-bauer/pruefungen/probe_public_skripte_version.py
         */}
+        {/*
+          Motor 'eigen': HALTEPUNKT FÜR DEN ERSTEN FRAME (Grossjob Cookiebot-
+          Ablösung s06-r2, gemessen am 2026-10-26 auf ax41, Produktseite
+          1440x900, Daten unter claude-jobs/<Grossjob>/gegenprobe/laeufe/r2/).
+
+          Ein Inline-Skript, das nichts tut, ausser DA zu stehen. Ein vom Parser
+          gefundenes Inline-Skript wartet, bis alle render-blockierenden
+          Stylesheets geladen sind (im <head> stehen rund zwanzig). Solange hält
+          der Parser hier an; danach läuft es, und der Browser zeichnet den
+          ersten Frame über das bis hierhin gelesene Teildokument.
+
+          Ohne diesen Halt liest der Parser die ganze Seite (Produktseite rund
+          440 KB HTML), während er auf das CSS wartet. Der erste Frame muss dann
+          Stil und Layout für das GANZE Dokument rechnen: in der Chromium-Spur
+          (n=6 je Motor, Median) Layout 556 gegen 340 ms, 6864 gegen 2190
+          Layout-Objekte. Motor cookiebot hatte einen Halt nebenbei: sein
+          Bootstrap (cookiebotBootstrap) ist ein Inline-Skript im <body>, nach
+          den defer-Skripten und vor dem Seiteninhalt. Auf der Produktseite
+          (Desktop 1440x900, n=12) holte der Halt den Rückstand des Motors eigen
+          weitgehend auf (erstes Bild gepaart -316 ms); das zusätzliche CSS und
+          das Zeichnen des Hinweises waren es nicht (je eine Grösse einzeln
+          geprüft). Auf der Startseite ist seine Wirkung bei Einbau noch nicht
+          gemessen.
+
+          Leer darf es nicht sein: ein Inline-Skript ohne Text wird vom Parser
+          übersprungen und hält nicht. Von React gerendert (wie der Bootstrap),
+          damit die Hydration den Knoten kennt; ein am Baum vorbei eingefügter
+          Knoten an dieser Stelle zerlegte sie (109 x #418/#423 im Versuch).
+
+          Vor jeder Änderung hier messen:
+          claude-jobs/<Grossjob>/gegenprobe/diag/ab_einzelgroesse.py
+          (Varianten cb_doc, e_doc, e_doc_halt) und gegenprobe/ladezeit.py.
+        */}
+        {einwilligungEigen && (
+          <script
+            nonce={nonce}
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{__html: '/* qb: erster Frame */'}}
+          />
+        )}
         {/* Motor 'eigen': die Cookiebot-Attrappe muss stehen, bevor ein
             Leser läuft — deshalb das ERSTE defer-Skript. */}
         {einwilligungEigen && (

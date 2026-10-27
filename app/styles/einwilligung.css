@@ -199,3 +199,27 @@ html[data-qb-einwilligung-offen] .qb-kaufleiste {
     border-radius: var(--qb-radius-klein) var(--qb-radius-klein) 0 0;
   }
 }
+
+/* Laptop und Desktop (s06-r2, Christian Z4): Text und Knoepfe in EINER Zeile, Text in
+   Grundschrift. Gemessen am 26.10. auf der Produktseite: der Hinweis war 113 px (1440 bis
+   1920) bzw. 169 px (1024 bis 1366) hoch und deckte bei 1536x864 die Unterkante des
+   Kaufknopfs ab. In einer Zeile: 69 px ab 1440, 91 px bei 1280/1366; bei 1536x864 und
+   1440x900 steht der Kaufknopf frei. Mobil unveraendert. */
+@media (min-width: 1024px) {
+  #qb-einwilligung {
+    flex-wrap: nowrap;
+    padding-top: calc(var(--qb-ew-abstand) * 1.5);
+    padding-bottom: max(calc(var(--qb-ew-abstand) * 1.5), env(safe-area-inset-bottom));
+  }
+
+  #qb-einwilligung .qb-ew-text {
+    flex: 1 1 auto;
+    max-width: calc(var(--qb-ew-abstand) * 100);
+    font-size: var(--qb-ref-fs-3);
+  }
+
+  #qb-einwilligung .qb-ew-knoepfe {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+  }
+}
