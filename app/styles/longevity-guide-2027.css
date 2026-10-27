@@ -138,7 +138,7 @@
   margin: 0 0 var(--lg-s2);
 }
 
-.lg27-text-gross {
+.lg27-text-lead {
   font-size: var(--lg-fs-md);
   line-height: 1.65;
 }
@@ -235,7 +235,7 @@
 
 /* ---- Kurz gesagt ----------------------------------------------------- */
 
-.lg27-sek--flaeche .lg27-schmal > .lg27-text-gross:last-child {
+.lg27-sek--flaeche .lg27-schmal > .lg27-text-lead:last-child {
   margin-bottom: 0;
 }
 
@@ -396,20 +396,20 @@
   color: var(--lg-muted);
 }
 
-/* ---- Messende Geräte ------------------------------------------------- */
+/* ---- Messende Wearables ------------------------------------------------- */
 
-.lg27-geraete {
+.lg27-tracker-raster {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--lg-s4) var(--lg-s4);
 }
 
-.lg27-geraet {
+.lg27-tracker {
   padding-top: var(--lg-s3);
   border-top: 1px solid var(--lg-linie);
 }
 
-.lg27-geraet p {
+.lg27-tracker p {
   margin: 0;
   color: var(--lg-muted);
 }
@@ -621,7 +621,7 @@
 
 /* ---- Abschluss ------------------------------------------------------- */
 
-.lg27-sek--dunkel .lg27-text-gross {
+.lg27-sek--dunkel .lg27-text-lead {
   color: var(--lg-hell-muted);
   margin-bottom: var(--lg-s4);
 }
@@ -651,7 +651,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .lg27-geraete {
+  .lg27-tracker-raster {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -674,7 +674,7 @@
 
   .lg27-kategorien,
   .lg27-kriterien,
-  .lg27-geraete,
+  .lg27-tracker-raster,
   .lg27-ziele {
     grid-template-columns: minmax(0, 1fr);
   }

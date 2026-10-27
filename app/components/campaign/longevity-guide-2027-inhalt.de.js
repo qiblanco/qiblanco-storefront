@@ -1,11 +1,15 @@
 /**
- * Wortlaut des Longevity-Guides 2027, Global Deutsch-Shop.
+ * Wortlaut des Longevity-Guides 2027, Global Deutsch-Shop
+ * (Route pages.best-wearables-for-longevity-2027.jsx).
  *
  * QUELLE: claude-jobs/20261027-pr-page-best-wearables-longevity-2027-messen-vs-zelle/
  * inhalt/guide.json, Schlüssel "de" (Inhalts-SSoT des PR-Managers, gilt für beide
- * Shops). Dieses Modul ist eine 1:1-Übernahme, keine eigene Fassung: Wortlaut,
- * Reihenfolge und Aussage gehören der SSoT, die Gestaltung der Route.
- * Wer hier einen Satz ändert, zieht guide.json im selben Zug nach; die Probe
+ * Shops). 1:1-Übernahme: Wortlaut, Reihenfolge und Aussage gehören der SSoT, die
+ * Gestaltung der Route. Zwei Datenschlüssel tragen hier einen anderen Namen, weil
+ * das Umlaut-Tor ASCII-Digraphen auch in Bezeichnern meldet:
+ *   vergleich.zeilen[].zielgruppe  = guide.json vergleich.zeilen[].<Spalte „Am besten für">
+ *   messende_geraete.liste         = guide.json messende_geraete.<Geräteliste>
+ * Wer einen Satz ändert, zieht guide.json im selben Zug nach; die Probe
  * claude-jobs/<job>/s02/probe_wortlaut_gleich.py vergleicht beide Seiten.
  */
 export const INHALT = {
@@ -76,63 +80,63 @@ export const INHALT = {
         wearable: 'QiOne® 2 Pro',
         kategorie: 'Wirken',
         tut: 'Gitterchip™ als Anhänger; in zwei Zellstudien schützte er Immun- und Darmzellen unter Handystrahlung',
-        fuer: 'Alltag mit Handy, WLAN und 5G',
+        zielgruppe: 'Alltag mit Handy, WLAN und 5G',
         link: '/products/qione-2-pro',
       },
       {
         wearable: 'QiBracelet®',
         kategorie: 'Wirken',
         tut: 'Gitterchip™ im Armband aus Chirurgenstahl; in einer Zellstudie überlebten alle fünf Zelltypen oxidativen Stress besser',
-        fuer: 'Handgelenk, Sport, Sauna, Wasser',
+        zielgruppe: 'Handgelenk, Sport, Sauna, Wasser',
         link: '/products/qibracelet',
       },
       {
         wearable: 'Qi Alpha',
         kategorie: 'Wirken',
         tut: 'Der Gitterchip™ des QiOne® 2 Pro mit Diamant, gefasst in 750er Gold, nummeriert',
-        fuer: 'Wer das Beste für ein ganzes Leben tragen will',
+        zielgruppe: 'Wer das Beste für ein ganzes Leben tragen will',
         link: '/products/the-alpha',
       },
       {
         wearable: 'Oura Ring',
         kategorie: 'Messen',
         tut: 'Schlafphasen, Herzfrequenzvariabilität, Ruhepuls, Hauttemperatur, täglicher Readiness-Wert',
-        fuer: 'Schlaf und Erholung verstehen',
+        zielgruppe: 'Schlaf und Erholung verstehen',
         link: null,
       },
       {
         wearable: 'WHOOP',
         kategorie: 'Messen',
         tut: 'Band ohne Display; Erholung, Belastung und Schlaf aus Herzfrequenzvariabilität und Puls',
-        fuer: 'Training und Regeneration steuern',
+        zielgruppe: 'Training und Regeneration steuern',
         link: null,
       },
       {
         wearable: 'Apple Watch',
         kategorie: 'Messen',
         tut: 'EKG, Herzrhythmus-Mitteilungen, geschätzte VO2max, Schlaf',
-        fuer: 'Herz im Blick, mit iPhone',
+        zielgruppe: 'Herz im Blick, mit iPhone',
         link: null,
       },
       {
         wearable: 'Garmin (Fenix, Forerunner, Venu)',
         kategorie: 'Messen',
         tut: 'VO2max, Trainingszustand, Body Battery, sehr lange Akkulaufzeit',
-        fuer: 'Ausdauer und Fitness',
+        zielgruppe: 'Ausdauer und Fitness',
         link: null,
       },
       {
         wearable: 'Samsung Galaxy Ring, RingConn',
         kategorie: 'Messen',
         tut: 'Schlaf, Puls und Herzfrequenzvariabilität im Ring',
-        fuer: 'Einstieg in den Smart Ring',
+        zielgruppe: 'Einstieg in den Smart Ring',
         link: null,
       },
       {
         wearable: 'Glukosesensor (Abbott Lingo, FreeStyle Libre, Dexcom Stelo)',
         kategorie: 'Messen',
         tut: 'Blutzucker in Echtzeit; ein Sensor hält rund zwei Wochen',
-        fuer: 'Ernährung und Energie verstehen',
+        zielgruppe: 'Ernährung und Energie verstehen',
         link: null,
       },
     ],
@@ -141,7 +145,7 @@ export const INHALT = {
     h2: 'Die messenden Wearables im Überblick',
     einleitung:
       'Diese Geräte machen deinen Körper lesbar. Sie sind gut, und sie ergänzen sich mit Qi Blanco.',
-    geraete: [
+    liste: [
       {
         name: 'Oura Ring',
         text: 'Der bekannteste Smart Ring. Er misst nachts Schlafphasen, Herzfrequenzvariabilität, Ruhepuls und Hauttemperatur und fasst sie morgens zu einem Readiness-Wert zusammen. Die volle Auswertung läuft über ein Abo.',

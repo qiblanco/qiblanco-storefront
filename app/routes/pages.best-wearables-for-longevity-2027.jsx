@@ -1,5 +1,5 @@
 import {useLoaderData} from 'react-router';
-import {INHALT} from '~/components/longevity-guide-2027/inhalt.de';
+import {INHALT} from '~/components/campaign/longevity-guide-2027-inhalt.de';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {seitenSignale, teilbild, MARKE, ORG_ID} from '~/lib/seiten-seo';
@@ -14,7 +14,7 @@ import guideStyles from '~/styles/longevity-guide-2027.css?url';
  * wenn man aktiv was in den Zellen ändert". Eigner des Wortlauts ist der
  * PR-Manager (Grossjob 20261027-pr-page-best-wearables-longevity-2027-
  * messen-vs-zelle, s01); diese Route gestaltet nur. Der Text kommt 1:1 aus
- * ~/components/longevity-guide-2027/inhalt.de.js (= guide.json "de").
+ * ~/components/campaign/longevity-guide-2027-inhalt.de.js (= guide.json "de").
  *
  * NUR-ROUTE-SEITE: es gibt kein Shopify-Seitenobjekt. Indexierbar, mit
  * eigenem Canonical. Die hreflang-Gegenseite (qi-blanco.com, gleicher Pfad)
@@ -164,7 +164,7 @@ export default function LongevityGuide2027() {
         <div className="lg27-wrap lg27-schmal">
           <h2 id="lg27-kurz">{G.kurz_gesagt.h2}</h2>
           {G.kurz_gesagt.text.map((t) => (
-            <p key={t} className="lg27-text-gross">
+            <p key={t} className="lg27-text-lead">
               {t}
             </p>
           ))}
@@ -253,7 +253,7 @@ export default function LongevityGuide2027() {
                       </span>
                     </td>
                     <td>{z.tut}</td>
-                    <td>{z.fuer}</td>
+                    <td>{z.zielgruppe}</td>
                   </tr>
                 ))}
               </tbody>
@@ -269,9 +269,9 @@ export default function LongevityGuide2027() {
         <div className="lg27-wrap">
           <h2 id="lg27-messend">{G.messende_geraete.h2}</h2>
           <p className="lg27-einleitung">{G.messende_geraete.einleitung}</p>
-          <div className="lg27-geraete">
-            {G.messende_geraete.geraete.map((g) => (
-              <article key={g.name} className="lg27-geraet">
+          <div className="lg27-tracker-raster">
+            {G.messende_geraete.liste.map((g) => (
+              <article key={g.name} className="lg27-tracker">
                 <h3>{g.name}</h3>
                 <p>{g.text}</p>
               </article>
@@ -364,7 +364,7 @@ export default function LongevityGuide2027() {
       >
         <div className="lg27-wrap lg27-schmal">
           <h2 id="lg27-abschluss">{G.abschluss.h2}</h2>
-          <p className="lg27-text-gross">{G.abschluss.text}</p>
+          <p className="lg27-text-lead">{G.abschluss.text}</p>
           <a className="lg27-btn" href={G.abschluss.cta.ziel}>
             {G.abschluss.cta.text}
           </a>
