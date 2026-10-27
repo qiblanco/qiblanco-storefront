@@ -18,6 +18,12 @@ export async function loader({request}) {
   throw redirect(`/products/qi-alpha${url.search}`, 301);
 }
 
+/*
+ * Nie im Index: die Adresse ist nur noch eine Weiterleitung (Zufahrts-Gate,
+ * statisches noindex in meta() wie bei den Testarmen).
+ */
+export const meta = () => [{name: 'robots', content: 'noindex,nofollow'}];
+
 export default function QiMasterAltadresseRedirect() {
   return null;
 }
