@@ -1165,7 +1165,7 @@ export function traegtChampionMobil(variante) {
    steht unverändert in A.
    'k50' (szs-e3-gs079, Stufe-1-Paket GS-079, rund die Hälfte): ohne beide
      Scrollanimationen (GitterChip vor dem ersten Argument, Mikroskop im
-     Wissenschaftsblock), mit dem Kaufblock nach dem Mechanismus (nr=1), ohne
+     Wissenschaftsblock), ohne
      Externe Stimmen, Video-Stimmen, Kachelreihe und Schlussblock. Gemessen an
      der Vorschau 17.10.: mit dem Mikroskop-Video blieb die Seite mobil bei
      79 % von A; die Hälfte erreicht sie nur ohne (Begründung und die Frage
@@ -1174,7 +1174,11 @@ export function traegtChampionMobil(variante) {
      Garantie, Preisblock. Der eine Beleg sind die Bewertungen:
      Menschen ziehen, Studien überzeugen erst beim Zweifel (Kaufüberzeugung,
      Kanon 2026-10-10).
-   Beide ohne festen Kaufknopf (eigener Faktor, Test GS-127). */
+   SEIT DEM 27.10.2026 VOM CHAMPION ABGELEITET (Urteil szs-e1-gs050, B
+   gewinnt mobil): beide tragen traegtChampionMobil (oben), also mobil den
+   festen Kaufknopf und K50 dazu den Kaufblock nach dem Mechanismus (nr=1);
+   desktop beides nicht, wie A. Vorher (17.10.) trug K50 nr=1 auf beiden
+   Geräten und keiner der beiden den festen Knopf. */
 export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
   const istB = variante === 'b';
