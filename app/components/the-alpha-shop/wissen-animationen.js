@@ -190,7 +190,7 @@ function szeneDiamant(ctx, w, t) {
       if (kk < 1) teile.push({art: 'l', pts: [A[i], A[i + 1]], a: (1 - m) * a, b: 1.5});
     }
     // Die Sprosse, sie entsteht beim Falten
-    teile.push({art: 'l', pts: D_REIHE.map((i) => A[i]), a: m * a * 0.85, b: 1.25});
+    teile.push({art: 'l', pts: D_REIHE.map((i) => A[i]), a: m * a * 0.6, b: 1.1});
     // Längsverbindungen zur nächsten Scheibe, als Kurve abgetastet
     if (xi + 1 < D.n) {
       const a2 = Math.min(a, sicht(xi + 1));
@@ -200,13 +200,13 @@ function szeneDiamant(ctx, w, t) {
         const mm = (m + pts[6].m) / 2;
         const strang = D_STRANG[i];
         const al = strang ? a2 : a2 * (1 - mm);
-        if (al > 0.01) teile.push({art: 'l', pts, a: al, b: strang ? 1.5 + 0.9 * mm : 1.5});
+        if (al > 0.01) teile.push({art: 'l', pts, a: al, b: strang ? 1.5 + 1.3 * mm : 1.5});
       }
     }
     for (let i = 0; i < 9; i++) {
       const strang = D_STRANG[i];
-      const r = (strang ? 14 : 12.5) * (1 - m * (strang ? 0.04 : 0.6));
-      teile.push({art: 'k', at: A[i], r, a: a * (strang ? 1 : 1 - m * 0.2)});
+      const r = (strang ? 14 : 12.5) * (1 - m * (strang ? 0.04 : 0.66));
+      teile.push({art: 'k', at: A[i], r, a: a * (strang ? 1 : 1 - m * 0.45)});
     }
   }
   teile.forEach((tl, n) => {
@@ -604,10 +604,10 @@ const HERKUNFT =
 
 export const WISSEN_POSTER = {
   diamant: {
-    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-diamant--4897bdb700b2.webp?v=1793109759',
+    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-diamant--4a2e382366dd.webp?v=1793110354',
     alt: 'Zeichnung: ein Gitter aus Kugeln und Stäben faltet sich Scheibe für Scheibe zur Doppelhelix, die sich langsam um ihre Achse dreht. Animierte Zeichnung.',
     herkunft: HERKUNFT,
-    abdruck: '1d6116889e3baae6',
+    abdruck: 'c5b63d0eb21a5516',
   },
   kristall: {
     src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-kristall--e7bd524f5ae5.webp?v=1793109763',
