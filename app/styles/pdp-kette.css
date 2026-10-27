@@ -1,0 +1,39 @@
+/* ============================================================================
+   pdp-kette.css — zwei Regeln fuer /products/qione-kette (Necklace)
+   Job 20261026-design-preisanker-google-bewertungen-link-einheitlich-alle-
+   produkte. Christian 27.10.2026: "alles unsere Seiten sind Premium seiten
+   => Premium-Seiten brauchen mindestens 95 Punkte". Die Kette stand bei
+   87/100. Die zwei groessten Posten hat pdp-qi.css auf QiOne 2 Pro und
+   QiBracelet laengst geschlossen (Regeln 1 und 4 dort); hier dieselben
+   zwei Regeln, nicht die ganze Datei: pdp-qi.css setzt auch Lesemass,
+   Kartengrund und Bild-Radius, und die Kette steht auf der Gewinnerschutz-
+   Liste - sie bekommt nur, was ihr Befund verlangt.
+     (1) EIN H2-Stil: die UpsellLineUp-Ueberschrift traegt `text-5xl!` und
+         stand auf 48px, alle anderen auf 35,2px ("2 H2-Stil-Kombis").
+         Warum @layer utilities und h2[class]: siehe pdp-qi.css Regel 1.
+     (2) EIN Akzent: die 16 "weiterlesen"-Schalter der Reputon-Karten
+         (#1565c0) bildeten eine zweite Akzent-Farbwelt neben dem Gold.
+   Werte = Hauswerte aus reset.css (h2 2.2rem/600, mobil 1.5rem) und die
+   gedaempfte Haus-Tinte; keine neue Stufe, keine neue Farbe.
+   Rueckweg: Import-Zeile in app/routes/products.qione-kette.jsx entfernen.
+   ========================================================================== */
+@layer utilities {
+  body > main h2,
+  body > main h2[class] {
+    font-size: 2.2rem !important;
+    font-weight: 600 !important;
+  }
+}
+@media (max-width: 749px) {
+  @layer utilities {
+    body > main h2,
+    body > main h2[class] {
+      font-size: 1.5rem !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+body > main .snap-start button[class*='text-[#1565c0]'] {
+  color: var(--qb-text-gedaempft, #6b665d) !important;
+  text-decoration: underline;
+}
