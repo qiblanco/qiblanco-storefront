@@ -71,6 +71,75 @@ const KLAENGE = {
   schluss: 0.85,
 };
 const FENSTER_ZU_MS = 6000; // unbeachtet schließt das Fenster von selbst
+// Beim Erstbesuch liegt der Cookie-Hinweis modal über der Seite. Ginge das
+// Fenster sofort auf, liefe es unsichtbar darunter ab (live gemessen 27.10.,
+// s09). Es wartet deshalb, bis die Cookie-Frage beantwortet ist.
+const NACH_HINWEIS_MS = 400; // Atempause, nachdem der Hinweis zugeht
+const OHNE_HINWEIS_MS = 5000; // kein Hinweis zu sehen: dann trotzdem auf
+const HINWEIS_IDS = ['cookiebanner', 'CybotCookiebotDialog'];
+const EINWILLIGUNG_EREIGNISSE = [
+  'CookiebotOnAccept',
+  'CookiebotOnDecline',
+  'CookiebotOnConsentReady',
+];
+
+function einwilligungBeantwortet() {
+  if (/(?:^|;\s*)CookieConsent=/.test(document.cookie)) return true;
+  return Boolean(window.Cookiebot && window.Cookiebot.hasResponse);
+}
+
+function hinweisSichtbar() {
+  return HINWEIS_IDS.some((id) => {
+    const h = document.getElementById(id);
+    if (!h) return false;
+    const r = h.getBoundingClientRect();
+    const s = window.getComputedStyle(h);
+    return r.width > 0 && r.height > 0 && s.display !== 'none' && s.visibility !== 'hidden';
+  });
+}
+
+/**
+ * Ruft `los` auf, sobald die Cookie-Frage beantwortet ist (beide Motoren,
+ * Cookiebot und der eigene Hinweis, feuern die Cookiebot-Ereignisse). Ist nach
+ * OHNE_HINWEIS_MS kein Hinweis zu sehen (Skript blockiert), geht es trotzdem
+ * los. Gibt die Aufräum-Funktion zurück.
+ */
+function nachEinwilligung(los) {
+  if (einwilligungBeantwortet() && !hinweisSichtbar()) {
+    los();
+    return () => {};
+  }
+  let fertig = false;
+  let pause = null;
+  let notfall = null;
+  let beiEreignis = null;
+  const aufraeumen = () => {
+    window.clearTimeout(notfall);
+    EINWILLIGUNG_EREIGNISSE.forEach((e) => window.removeEventListener(e, beiEreignis));
+  };
+  const ende = () => {
+    if (fertig) return;
+    fertig = true;
+    aufraeumen();
+    los();
+  };
+  beiEreignis = () => {
+    if (!einwilligungBeantwortet()) return;
+    window.clearTimeout(pause);
+    pause = window.setTimeout(ende, NACH_HINWEIS_MS);
+  };
+  const pruefe = () => {
+    if (!hinweisSichtbar()) ende();
+    else notfall = window.setTimeout(pruefe, 1000);
+  };
+  notfall = window.setTimeout(pruefe, OHNE_HINWEIS_MS);
+  EINWILLIGUNG_EREIGNISSE.forEach((e) => window.addEventListener(e, beiEreignis));
+  return () => {
+    fertig = true;
+    window.clearTimeout(pause);
+    aufraeumen();
+  };
+}
 
 function lies() {
   try {
@@ -523,21 +592,24 @@ export function TapTon({wurzel}) {
     const gemerkt = lies();
     let zuTimer = null;
     let anGeste = null;
+    let warteHinweis = () => {};
     if (!gemerkt) {
-      // Fester Abstand über dem Titel (48 px), nie höher als knapp unter den
-      // Kopf: „Sound on“, dann „Kohärentes Licht“ (Z109/Z114, Challenger 26.10.).
-      const titel = el.querySelector('.tap-hero-titel');
-      const buehne = el.querySelector('.tap-titelkarte');
-      if (titel && buehne) {
-        const t = titel.getBoundingClientRect().top;
-        const b = buehne.getBoundingClientRect().top;
-        setOben(Math.round(Math.max(b + 24, t - 64 - 48)));
-      }
-      setFenster('auf');
-      zuTimer = window.setTimeout(() => {
-        merke('gesehen');
-        setFenster((f) => (f === 'auf' ? 'zu' : f));
-      }, FENSTER_ZU_MS);
+      warteHinweis = nachEinwilligung(() => {
+        // Fester Abstand über dem Titel (48 px), nie höher als knapp unter den
+        // Kopf: „Sound on“, dann „Kohärentes Licht“ (Z109/Z114, Challenger 26.10.).
+        const titel = el.querySelector('.tap-hero-titel');
+        const buehne = el.querySelector('.tap-titelkarte');
+        if (titel && buehne) {
+          const t = titel.getBoundingClientRect().top;
+          const b = buehne.getBoundingClientRect().top;
+          setOben(Math.round(Math.max(b + 24, t - 64 - 48)));
+        }
+        setFenster('auf');
+        zuTimer = window.setTimeout(() => {
+          merke('gesehen');
+          setFenster((f) => (f === 'auf' ? 'zu' : f));
+        }, FENSTER_ZU_MS);
+      });
     } else if (gemerkt === 'an' && m.zustand !== 'an') {
       // Neu geladen mit „Sound on“: Browser verlangen wieder eine Geste. Die
       // erste Berührung der Seite startet den Ton, ohne neues Fenster.
@@ -555,6 +627,7 @@ export function TapTon({wurzel}) {
     setBereit(true);
 
     return () => {
+      warteHinweis();
       window.clearTimeout(zuTimer);
       if (anGeste) {
         document.removeEventListener('pointerdown', anGeste, {capture: true});
