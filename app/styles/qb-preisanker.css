@@ -16,7 +16,8 @@
    EINE Farbe, EINE Schriftstärke für die drei Zahlen (Christian 26.10.:
    "das wirkt zu bunt"): 4.8, Nutzerzahl und Preis tragen --qb-pa-farbe
    (die Haus-Tinte --qb-text) und --qb-pa-gewicht, Schriftfamilie geerbt.
-   Nur die Größe staffelt (16 / 28 / 32). Die Sterne bleiben gelb.
+   Nur die Größe staffelt (16 / 28 / 32); Banner und Streichpreis
+   stehen auf der 16er-Stufe, damit der Kopf keine eigenen Stufen dazubekommt. Die Sterne bleiben gelb.
    Banner: Fläche Qi-Alpha-Rot (--qb-alpha-rot, qb-tokens.css), Schrift
    weiß (6,3:1). Christian 26.10.: "das was vorher goldfarben war wird nun
    das rot, und die schrift ändert sich von schwarz in weiß".
@@ -26,8 +27,12 @@
 .qb-preisanker {
   --qb-pa-fs-bewertung: var(--qb-ref-fs-3, 16px);
   --qb-pa-fs-nutzer: 28px;
-  --qb-pa-fs-banner: var(--qb-ref-fs-2, 14px);
-  --qb-pa-fs-streich: var(--qb-ref-fs-5, 20px);
+  /* Banner und Streichpreis auf der Stufe der Bewertungszeile (16px), nicht
+     auf eigenen Stufen: Christian 27.10. "alle Seiten Premium", das Shop-
+     Regeln-Tor zaehlt im Kopf hoechstens 6 Schriftstufen. Mit 14px-Banner und
+     20px-Streichpreis stand QiOne 2 Pro bei 8 (Kopf 90/100, STOP). */
+  --qb-pa-fs-banner: var(--qb-pa-fs-bewertung);
+  --qb-pa-fs-streich: var(--qb-pa-fs-bewertung);
   --qb-pa-abstand: 8px;
   --qb-pa-abstand-preis: 16px;
   --qb-pa-farbe: var(--qb-text, #2c2a26);

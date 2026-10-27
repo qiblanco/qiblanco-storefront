@@ -316,3 +316,43 @@ body > main img:not(.google-rating-badge__logo) {
 .ProductPageQiOne .HeroBanner {
   z-index: 0;
 }
+
+/* --- 8. Verstreute Zwischengroessen auf die Haus-Skala --------------------
+   Job 20261026-design-preisanker-google-bewertungen-link-einheitlich-alle-
+   produkte, Christian 27.10.2026: "alles unsere Seiten sind Premium seiten
+   => Premium-Seiten brauchen mindestens 95 Punkte". Beide Seiten standen
+   bei 93 (qione) und 94 (qibracelet). Groesster Einzelposten war
+   "technisch: 16 bzw. 14 Schriftgroessen im Einsatz (Soll <= 9)".
+   Gemessen am gerenderten DOM (Desktop 1280), jede Zeile mit ihrer Quelle:
+     12,8   Video-Zaehler der Galerie (.qb-pv-kachel, .ImageSeeMore) und die
+            <small> unter dem Gitterchip-Bild                  -> 12 (fs-1)
+     14,4   Etikett der InfoSlider-Karten (.CardLabel p, 0.9em) -> 14 (fs-2)
+     15,2   "444 Bewertungen · Google" (.google-rating-badge__powered)
+                                                                 -> 14 (fs-2)
+     16,8   Titel der Studienkarten (.ghx-studie__title)        -> 16 (fs-3)
+     20,8   "Loose Fit" / "Tight Fit" (.bracelet-table h3)      -> 20 (fs-5)
+     28,8   Titel der InfoSlider-Karten (.CardTitle h3, 1.8rem) -> 24 (fs-6)
+   Jede Zielstufe steht auf beiden Seiten schon im DOM; es kommt KEINE neue
+   Groesse dazu. 28,8 geht auf 24 und nicht auf 32, weil der Titel absolut
+   ueber dem Kartenbild steht (bottom: 1rem): groesser waere er dort in
+   die obere Etikett-Zeile gelaufen.
+   Rueckweg: diesen Block loeschen. */
+body > main .qb-pv-kachel__schleier,
+body > main .qb-pv-kachel__schleier span,
+body > main .ImageSeeMore .imageOverlay span,
+body > main .Gitterchip small {
+  font-size: var(--qb-ref-fs-1, 12px);
+}
+body > main .InfoSlider .InfoSliderCard .CardLabel p,
+body > main .google-rating-badge__powered {
+  font-size: var(--qb-ref-fs-2, 14px);
+}
+body > main .ghx-studie__title {
+  font-size: var(--qb-ref-fs-3, 16px);
+}
+body > main .bracelet-table h3 {
+  font-size: var(--qb-ref-fs-5, 20px);
+}
+body > main .InfoSlider .InfoSliderCard .CardTitle h3 {
+  font-size: var(--qb-ref-fs-6, 24px);
+}

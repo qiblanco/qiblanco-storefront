@@ -26,6 +26,7 @@ import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import preisankerStyles from '~/styles/qb-preisanker.css?url';
+import pdpKetteStyles from '~/styles/pdp-kette.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
@@ -40,6 +41,8 @@ export function links() {
     // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
     // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
     {rel: 'stylesheet', href: preisankerStyles},
+    // Ein H2-Stil, ein Akzent (Rubrik-Pflicht 95, Christian 27.10.2026).
+    {rel: 'stylesheet', href: pdpKetteStyles},
   ];
 }
 
