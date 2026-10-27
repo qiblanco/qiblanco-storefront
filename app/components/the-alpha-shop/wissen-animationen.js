@@ -99,7 +99,7 @@ function papier(ctx, w) {
 }
 
 /* ---------------------------------------------------------------------
- * 1  DIAMANT — das Kristallgitter fliesst in die Doppelhelix.
+ * 1  DIAMANT — das Kristallgitter fließt in die Doppelhelix.
  * Scheiben wandern von links nach rechts. Links ist jede Scheibe ein
  * 3×3-Quadrat des kubischen Gitters, rechts ist sie eine Sprosse der
  * Helix; dazwischen faltet sich das Quadrat zur Sprosse und beginnt zu
@@ -133,7 +133,7 @@ const D_X = (() => {
     const m = glatt(D.a, D.b, i * h);
     x += (D.dxGit + (D.dxHel - D.dxGit) * m) * h;
   }
-  return {tab, h, laenge: x};
+  return {tab, h, spanne: x};
 })();
 function dX(xi) {
   const f = xi / D_X.h;
@@ -158,7 +158,7 @@ function dOrt(i, xi, p) {
   const z = gz * (1 - m);
   const y2 = y * ct - z * st;
   const z2 = y * st + z * ct;
-  const xw = (1000 - D_X.laenge) / 2 + dX(xi) - 500;
+  const xw = (1000 - D_X.spanne) / 2 + dX(xi) - 500;
   const cY = Math.cos(D.kamY), sY = Math.sin(D.kamY);
   const cX = Math.cos(D.kamX), sX = Math.sin(D.kamX);
   const x3 = xw * cY + z2 * sY;
@@ -410,7 +410,7 @@ function szeneGleichtakt(ctx, w, t) {
   // Teilchen: eigener Takt links, gemeinsamer Takt rechts
   for (const tc of G.teilchen) {
     const sy = sync(tc.x);
-    // Im Gleichtakt reitet das Teilchen auf dem Wellenkamm (zeitfreie Phase, damit der Loop schliesst).
+    // Im Gleichtakt reitet das Teilchen auf dem Wellenkamm (zeitfreie Phase, damit der Loop schließt).
     const ph = tc.ph * (1 - sy) + (0.5 - tc.x / G_LAMBDA) * sy;
     const y = tc.y + 9 * Math.sin(TAU * (G_TAKT * p + ph));
     const x = tc.x;
@@ -605,25 +605,25 @@ const HERKUNFT =
 export const WISSEN_POSTER = {
   diamant: {
     src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-diamant--8b1a26a06fe1.webp?v=1793110725',
-    alt: 'Zeichnung: ein Gitter aus Kugeln und Stäben faltet sich Scheibe für Scheibe zur Doppelhelix, die sich langsam um ihre Achse dreht. Animierte Zeichnung.',
+    alt: 'Ein Gitter aus Kugeln und Stäben faltet sich Scheibe für Scheibe zur Doppelhelix, die sich langsam um ihre Achse dreht.',
     herkunft: HERKUNFT,
     abdruck: '4b102e7584ad5e24',
   },
   kristall: {
     src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-kristall--40bc940c5168.webp?v=1793110729',
-    alt: 'Zeichnung: ungeordnete Lichtfäden treten von links in ein regelmäßiges Kugelgitter ein und verlassen es rechts als ruhige, parallele Schar. Animierte Zeichnung.',
+    alt: 'Ungeordnete Lichtfäden treten von links in ein regelmäßiges Kugelgitter ein und verlassen es rechts als ruhige, parallele Schar.',
     herkunft: HERKUNFT,
     abdruck: '7338dc82e326e703',
   },
   gleichtakt: {
     src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-gleichtakt--7f4f2faf76cd.webp?v=1793110733',
-    alt: 'Zeichnung: links pulsieren viele kleine Wellenringe jeder in eigenem Takt, nach rechts hin schwingen sie zusammen und laufen als parallele Wellenkämme weiter. Animierte Zeichnung.',
+    alt: 'Links pulsieren viele kleine Wellenringe, jeder in eigenem Takt, nach rechts hin schwingen sie zusammen und laufen als parallele Wellenkämme weiter.',
     herkunft: HERKUNFT,
     abdruck: '566805f6dadd8fbf',
   },
   licht: {
     src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-licht--3dd0b52747f4.webp?v=1793110736',
-    alt: 'Zeichnung: eine Zelle mit Kern und doppelter Membran, um die ein feiner Lichtsaum leuchtet und von der einzelne Lichtpunkte nach außen wandern. Animierte Zeichnung.',
+    alt: 'Eine Zelle mit Kern und doppelter Membran, um die ein feiner Lichtsaum leuchtet und von der einzelne Lichtpunkte nach außen wandern.',
     herkunft: HERKUNFT,
     abdruck: 'd4688f311ecf0067',
   },

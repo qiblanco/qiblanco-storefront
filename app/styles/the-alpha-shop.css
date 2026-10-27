@@ -90,7 +90,7 @@
   transition: opacity var(--tas-dauer) ease;
 }
 
-.taw-leinwand[data-laeuft] {
+.taw-leinwand[data-aktiv] {
   opacity: 1;
 }
 

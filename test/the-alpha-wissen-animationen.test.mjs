@@ -6,7 +6,7 @@
  *
  * Gemessen wird an den Zeichenbefehlen, nicht an Pixeln: jede Szene zeichnet
  * in einen Aufzeichnungs-Kontext, Zahlen auf zwei Stellen gerundet.
- *  - Der Loop schliesst: Bild bei t und bei t + PERIODE_S sind derselbe
+ *  - Der Loop schließt: Bild bei t und bei t + PERIODE_S sind derselbe
  *    Befehlsstrom (Rot-Beleg beim Bau: ein im Übergang mit m gewichteter
  *    Drehwinkel ergab dort einen sichtbaren Sprung).
  *  - Das Poster ist das Startbild: sein Abdruck ist der Abdruck der Szene bei
@@ -79,7 +79,7 @@ test('vier Szenen, genau für die vier Abschnitte mit Zeichnung', () => {
   for (const id of IDS) assert.ok(befehle(id, 1).length > 50, `${id} zeichnet nichts`);
 });
 
-test('Loop schliesst: t und t + PERIODE_S zeichnen dasselbe', () => {
+test('Loop schließt: t und t + PERIODE_S zeichnen dasselbe', () => {
   for (const id of IDS) {
     for (const t of [0, 1.3, 5.75, 9.9]) {
       const a = befehle(id, t);

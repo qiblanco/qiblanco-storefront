@@ -110,13 +110,15 @@ function WissensBild({id, bild}) {
         kante = px;
         c.width = px;
         c.height = px;
+        // Neue Kante leert die Leinwand; steht die Schleife, sofort neu zeichnen.
+        if (!raf && c.hasAttribute('data-aktiv')) szene(ctx, kante, tBasis % PERIODE_S);
       }
     };
     const bild = (jetzt) => {
       if (start === null) start = jetzt;
       const t = (tBasis + (jetzt - start) / 1000) % PERIODE_S;
       if (kante) szene(ctx, kante, t);
-      if (!c.hasAttribute('data-laeuft')) c.setAttribute('data-laeuft', '');
+      if (!c.hasAttribute('data-aktiv')) c.setAttribute('data-aktiv', '');
       raf = requestAnimationFrame(bild);
     };
     const los = () => {
@@ -148,7 +150,7 @@ function WissensBild({id, bild}) {
       if (!ruhe.matches) return;
       halt();
       io.disconnect();
-      c.removeAttribute('data-laeuft');
+      c.removeAttribute('data-aktiv');
     };
     ruhe?.addEventListener?.('change', ruheWechsel);
     return () => {
