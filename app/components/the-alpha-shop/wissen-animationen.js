@@ -107,7 +107,7 @@ function papier(ctx, w) {
  * Bild am Ende ist das Bild am Anfang.
  * ------------------------------------------------------------------- */
 const D = {
-  n: 33, schub: 4, dreh: 1, e: 50, dxGit: 50, dxHel: 20, R: 116,
+  n: 30, schub: 4, dreh: 1, e: 54, dxGit: 52, dxHel: 22, R: 126,
   a: 5.0, b: 10.5, drall: TAU / 16, kamY: -0.3, kamX: 0.26,
 };
 const D_GITTER = [];
@@ -205,7 +205,7 @@ function szeneDiamant(ctx, w, t) {
     }
     for (let i = 0; i < 9; i++) {
       const strang = D_STRANG[i];
-      const r = (strang ? 14 : 12.5) * (1 - m * (strang ? 0.04 : 0.66));
+      const r = (strang ? 15.5 : 14) * (1 - m * (strang ? 0.04 : 0.66));
       teile.push({art: 'k', at: A[i], r, a: a * (strang ? 1 : 1 - m * 0.45)});
     }
   }
@@ -239,12 +239,12 @@ function szeneDiamant(ctx, w, t) {
  * Das Gitter atmet im Takt: alle Kugeln zugleich, und eine Lichtwelle
  * läuft im selben Takt durch die Reihen.
  * ------------------------------------------------------------------- */
-const K = {spalten: 10, zeilen: 10, abstand: 46, r: 17.5, cx: 512, cy: 500};
+const K = {spalten: 11, zeilen: 11, abstand: 49, r: 19.5, cx: 520, cy: 500};
 const K_FAEDEN = (() => {
   const rnd = zufall(77);
-  return Array.from({length: 17}, (_, j) => ({
+  return Array.from({length: 26}, (_, j) => ({
     j,
-    yLinks: 300 + rnd() * 400,
+    yLinks: 250 + rnd() * 500,
     wellen: Array.from({length: 3}, (_, w) => ({
       amp: 14 + rnd() * 22,
       k: (0.012 + rnd() * 0.02) * (w + 1),
@@ -287,10 +287,10 @@ function szeneKristall(ctx, w, t) {
   // Lichtfäden
   ctx.lineCap = 'round';
   for (const f of K_FAEDEN) {
-    const yBand = K.cy - 62 + (f.j / (nF - 1)) * 124;
-    const yAus = K.cy - 170 + (f.j / (nF - 1)) * 340;
-    ctx.strokeStyle = GOLD(0.62);
-    ctx.lineWidth = 1.25 * s;
+    const yBand = K.cy - 78 + (f.j / (nF - 1)) * 156;
+    const yAus = K.cy - 215 + (f.j / (nF - 1)) * 430;
+    ctx.strokeStyle = GOLD(0.55);
+    ctx.lineWidth = 1.15 * s;
     ctx.beginPath();
     for (let x = 0; x <= 1000; x += 5) {
       const ordnung = glatt(x0 - 40, xRechts - 30, x);
@@ -311,8 +311,8 @@ function szeneKristall(ctx, w, t) {
   }
   // Pulse auf der geordneten Schar
   for (const f of K_FAEDEN) {
-    const yBand = K.cy - 62 + (f.j / (nF - 1)) * 124;
-    const yAus = K.cy - 170 + (f.j / (nF - 1)) * 340;
+    const yBand = K.cy - 78 + (f.j / (nF - 1)) * 156;
+    const yAus = K.cy - 215 + (f.j / (nF - 1)) * 430;
     const q = (2 * p + f.puls) % 1;
     const x = xRechts + 8 + q * (1000 - xRechts);
     const y = yBand + (yAus - yBand) * glatt(xRechts, 1000, x) * ((x - xRechts) / (1000 - xRechts));
@@ -337,15 +337,15 @@ function szeneKristall(ctx, w, t) {
 const G = (() => {
   const rnd = zufall(31);
   const quellen = [];
-  while (quellen.length < 96) {
-    const x = 40 + rnd() * 500;
+  while (quellen.length < 150) {
+    const x = 30 + rnd() * 530;
     if (rnd() > 1 - glatt(560, 120, x) * 0.95) continue;
     quellen.push({
-      x, y: 372 + rnd() * 256, rMax: 22 + rnd() * 22, ph: rnd(), rnd: rnd(),
+      x, y: 318 + rnd() * 364, rMax: 24 + rnd() * 26, ph: rnd(), rnd: rnd(),
     });
   }
-  const teilchen = Array.from({length: 46}, () => ({
-    x: 200 + rnd() * 560, y: 384 + rnd() * 232, ph: rnd(),
+  const teilchen = Array.from({length: 72}, () => ({
+    x: 180 + rnd() * 600, y: 326 + rnd() * 348, ph: rnd(),
   }));
   return {quellen, teilchen};
 })();
@@ -362,8 +362,8 @@ function szeneGleichtakt(ctx, w, t) {
 
   // Wellenkämme rechts
   ctx.lineCap = 'round';
-  for (let i = 0; i < 21; i++) {
-    const yb = 370 + i * 13;
+  for (let i = 0; i < 29; i++) {
+    const yb = 318 + i * 13;
     ctx.strokeStyle = TINTE(0.62);
     ctx.lineWidth = 1.2 * s;
     ctx.beginPath();
@@ -371,7 +371,7 @@ function szeneGleichtakt(ctx, w, t) {
     for (let x = 330; x <= 1000; x += 4) {
       const ein = glatt(330, 560, x);
       const amp = 9 * ein + 2.5 * Math.sin(i * 0.9 + x * 0.004);
-      const y = yb + amp * Math.sin(TAU * wellenPhase(x)) + (i - 10) * 0.9 * (x - 330) / 670;
+      const y = yb + amp * Math.sin(TAU * wellenPhase(x)) + (i - 14) * 0.9 * (x - 330) / 670;
       ctx.globalAlpha = 1;
       if (erster) {
         ctx.moveTo(x * s, y * s);
@@ -385,7 +385,7 @@ function szeneGleichtakt(ctx, w, t) {
   fade.addColorStop(0, 'rgba(245,241,229,1)');
   fade.addColorStop(1, 'rgba(245,241,229,0)');
   ctx.fillStyle = fade;
-  ctx.fillRect(318 * s, 330 * s, 244 * s, 340 * s);
+  ctx.fillRect(318 * s, 280 * s, 244 * s, 440 * s);
 
   // Quellen mit Ringen
   for (const q of G.quellen) {
@@ -434,17 +434,17 @@ const L = (() => {
   const rnd = zufall(9);
   return {
     strahlen: Array.from({length: 170}, (_, i) => ({
-      w: (i / 170) * TAU + rnd() * 0.02, l: 0.18 + rnd() * 0.42, a: 0.4 + rnd() * 0.6,
+      w: (i / 170) * TAU + rnd() * 0.02, l: 0.14 + rnd() * 0.32, a: 0.4 + rnd() * 0.6,
     })),
-    photonen: Array.from({length: 44}, () => ({
-      w: rnd() * TAU, n: 1 + Math.floor(rnd() * 2), ph: rnd(), weit: 0.5 + rnd() * 0.5,
+    photonen: Array.from({length: 56}, () => ({
+      w: rnd() * TAU, n: 1 + Math.floor(rnd() * 2), ph: rnd(), weit: 0.4 + rnd() * 0.35,
     })),
-    blasen: Array.from({length: 11}, () => {
+    blasen: Array.from({length: 14}, () => {
       const w = rnd() * TAU, d = 0.3 + rnd() * 0.55;
       return {x: Math.cos(w) * d, y: Math.sin(w) * d, r: 4 + rnd() * 9, ph: rnd()};
     }),
-    schraffur: Array.from({length: 46}, () => ({
-      w: -0.9 + rnd() * 0.25, o: -1 + rnd() * 2, a: 0.05 + rnd() * 0.07,
+    schraffur: Array.from({length: 84}, () => ({
+      w: -0.9 + rnd() * 0.25, o: -1 + rnd() * 2, a: 0.05 + rnd() * 0.08,
     })),
   };
 })();
@@ -458,7 +458,7 @@ function szeneLicht(ctx, w, t) {
   const s = w / 1000;
   papier(ctx, w);
   const p = t / PERIODE_S;
-  const cx = 500, cy = 500, R = 228;
+  const cx = 500, cy = 500, R = 288;
   const g = 0.5 - 0.5 * Math.cos(TAU * p); // 0 → 1 → 0
   const hell = 0.3 + 0.7 * g;
 
@@ -476,7 +476,7 @@ function szeneLicht(ctx, w, t) {
     const r0 = zellRand(st.w, p, R) * 1.03;
     const lang = R * st.l * (0.75 + 0.35 * hell);
     const flackern = 0.65 + 0.35 * Math.sin(st.w * 7 + TAU * p * 2);
-    ctx.strokeStyle = GOLD(0.28 * st.a * hell * flackern + 0.04);
+    ctx.strokeStyle = GOLD(0.36 * st.a * hell * flackern + 0.05);
     ctx.lineWidth = 1 * s;
     const c = Math.cos(st.w), sn = Math.sin(st.w);
     ctx.beginPath();
@@ -520,12 +520,12 @@ function szeneLicht(ctx, w, t) {
   for (let b = 0; b < 2; b++) {
     ctx.strokeStyle = TINTE(0.32);
     ctx.lineWidth = 1.1 * s;
-    for (let l = 0; l < 4; l++) {
+    for (let l = 0; l < 6; l++) {
       ctx.beginPath();
       for (let i = 0; i <= 60; i++) {
         const u = i / 60;
         const wi = (b ? 0.35 : 2.6) + u * 1.5;
-        const rr = R * (0.68 + l * 0.045) + 6 * Math.sin(u * 14 + TAU * p + b);
+        const rr = R * (0.62 + l * 0.04) + 7 * Math.sin(u * 14 + TAU * p + b);
         const x = (cx + Math.cos(wi) * rr) * s, y = (cy + Math.sin(wi) * rr) * s;
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
@@ -540,7 +540,7 @@ function szeneLicht(ctx, w, t) {
     zeichneKugel(ctx, x, y, bl.r * s, 0.8);
   }
   // Kern mit eigenem Leuchten
-  const kx = cx + 12, ky = cy - 22, kr = 62;
+  const kx = cx + 14, ky = cy - 26, kr = 80;
   const kl = ctx.createRadialGradient(kx * s, ky * s, 0, kx * s, ky * s, kr * 2.1 * s);
   kl.addColorStop(0, LICHT(0.9 * hell));
   kl.addColorStop(1, LICHT(0));
@@ -549,7 +549,7 @@ function szeneLicht(ctx, w, t) {
   zeichneKugel(ctx, kx * s, ky * s, kr * s, 1);
   ctx.fillStyle = TINTE(0.22);
   ctx.beginPath();
-  ctx.arc((kx + 14) * s, (ky + 10) * s, 13 * s, 0, TAU);
+  ctx.arc((kx + 18) * s, (ky + 13) * s, 17 * s, 0, TAU);
   ctx.fill();
   ctx.restore();
 
@@ -604,27 +604,27 @@ const HERKUNFT =
 
 export const WISSEN_POSTER = {
   diamant: {
-    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-diamant--4a2e382366dd.webp?v=1793110354',
+    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-diamant--8b1a26a06fe1.webp?v=1793110725',
     alt: 'Zeichnung: ein Gitter aus Kugeln und Stäben faltet sich Scheibe für Scheibe zur Doppelhelix, die sich langsam um ihre Achse dreht. Animierte Zeichnung.',
     herkunft: HERKUNFT,
-    abdruck: 'c5b63d0eb21a5516',
+    abdruck: '4b102e7584ad5e24',
   },
   kristall: {
-    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-kristall--e7bd524f5ae5.webp?v=1793109763',
+    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-kristall--40bc940c5168.webp?v=1793110729',
     alt: 'Zeichnung: ungeordnete Lichtfäden treten von links in ein regelmäßiges Kugelgitter ein und verlassen es rechts als ruhige, parallele Schar. Animierte Zeichnung.',
     herkunft: HERKUNFT,
-    abdruck: '0cacea853a3c02e1',
+    abdruck: '7338dc82e326e703',
   },
   gleichtakt: {
-    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-gleichtakt--bebdf32b3ce2.webp?v=1793109766',
+    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-gleichtakt--7f4f2faf76cd.webp?v=1793110733',
     alt: 'Zeichnung: links pulsieren viele kleine Wellenringe jeder in eigenem Takt, nach rechts hin schwingen sie zusammen und laufen als parallele Wellenkämme weiter. Animierte Zeichnung.',
     herkunft: HERKUNFT,
-    abdruck: '783d26b0fbc6c7dd',
+    abdruck: '566805f6dadd8fbf',
   },
   licht: {
-    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-licht--2259aef33e4a.webp?v=1793109769',
+    src: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-qi-alpha-wissen--qi-alpha-wissen-licht--3dd0b52747f4.webp?v=1793110736',
     alt: 'Zeichnung: eine Zelle mit Kern und doppelter Membran, um die ein feiner Lichtsaum leuchtet und von der einzelne Lichtpunkte nach außen wandern. Animierte Zeichnung.',
     herkunft: HERKUNFT,
-    abdruck: 'c0a00e86da0085c3',
+    abdruck: 'd4688f311ecf0067',
   },
 };
