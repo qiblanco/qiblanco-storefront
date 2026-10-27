@@ -246,3 +246,52 @@ export function mmZielPfad(aktuellerPfad, adId, searchParams, aktiv, zufall = Ma
   if (zufall() * 100 >= MM_ANTEIL_PROZENT) return null; // Kontrollarm: LP A
   return ziel;
 }
+
+/**
+ * QI-ALPHA: BEZAHLTER VERKEHR AUF DER KAUFSEITE GEHÖRT AUF DIE QI-ALPHA-LP
+ * (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c,
+ * s07, Auftrag 5: Qi-Alpha-Anzeigen landen auf /pages/The-Alpha, dort teilt der
+ * A/B/C-Test the-alpha-abc-e1).
+ *
+ * GEMESSEN 2026-10-26 ~12:55Z, live: /products/the-alpha?fbclid=x&utm_medium=paid
+ * und /products/qi-master?utm_medium=paid&gclid=x gaben 302 auf
+ * /pages/schlaf-zellen-schutz (lp_m=w), also auf die LP eines anderen Produkts
+ * (QiOne). /pages/The-Alpha selbst lässt die Weiche seit s06 durch (200).
+ * Am Stichtag lief keine aktive Qi-Alpha-Anzeige (ads_steuerung.db ad_content,
+ * Ingest 2026-10-26 09:23, 18 aktiv, keine mit Qi Alpha/Qi Master); deshalb
+ * steht hier keine Ad-ID-Karte, sondern die Regel für die Kaufseiten-Pfade:
+ * eine künftige Qi-Alpha-Anzeige mit Ziel Kaufseite oder alter Adresse kommt so
+ * auf die Qi-Alpha-LP statt auf LP A. Google-Klicks auf /products/* lässt die
+ * Weiche schon vorher durch (Shopping braucht die Produktseite), daran ändert
+ * sich nichts.
+ *
+ * Bewusst NICHT an ad_weiche_mm gekoppelt: der Schalter steht seit dem Ende des
+ * Message-Match-Arms auf 'aus' (lp-rotation 7c2aa4c882). Diese Regel ist kein
+ * Experiment, sondern das richtige Produkt. Kill: ad_weiche='aus' (ganze
+ * Weiche) oder THE_ALPHA_PRODUKT_ZIEL_AN = false (PR); Rückweg hb-deploy revert.
+ */
+export const THE_ALPHA_LP_PFAD = '/pages/The-Alpha';
+export const THE_ALPHA_PRODUKT_ZIEL_AN = true;
+export const THE_ALPHA_PRODUKT_PFADE = Object.freeze([
+  '/products/the-alpha',
+  '/products/the-alpha-b',
+  '/products/qi-alpha',
+  '/products/qi-alpha-b',
+  '/products/qi-master',
+  '/products/qi-alpha-goldkette',
+  '/products/qi-alpha-wunschnummer',
+  '/products/qi-master-goldkette',
+  '/products/qi-master-wunschnummer',
+]);
+
+/**
+ * LP-Ziel der Weiche für eine Qi-Alpha-Kaufseite, sonst null (= LP A wie bisher).
+ * Die Schreibweise zählt nicht (React Router löst Routen ohne sie auf).
+ * @param {string} pfad
+ * @returns {string | null}
+ */
+export function produktLpZiel(pfad) {
+  if (!THE_ALPHA_PRODUKT_ZIEL_AN) return null;
+  const klein = String(pfad || '').toLowerCase().replace(/\/+$/, '');
+  return THE_ALPHA_PRODUKT_PFADE.includes(klein) ? THE_ALPHA_LP_PFAD : null;
+}
