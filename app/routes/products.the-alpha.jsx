@@ -2,6 +2,7 @@ import {redirect, useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {TheAlphaShop} from '~/components/campaign/TheAlphaShop';
+import {KOPF} from '~/components/campaign/the-alpha-shop-daten';
 import shopStyles from '~/styles/the-alpha-produkt.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
@@ -95,6 +96,9 @@ const THE_ALPHA_PDP_PFAD = '/products/the-alpha';
  */
 export function links() {
   return [
+    // Poster des 360-Grad-Loops im schwarzen Band (s07-r2): es steht im ersten
+    // Fenster, also früh laden, damit beim Laden das Gerät statt Schwarz steht.
+    {rel: 'preload', as: 'image', href: KOPF.loop.poster, fetchPriority: 'high'},
     {rel: 'stylesheet', href: shopStyles},
     {rel: 'stylesheet', href: wissenStyles},
     {rel: 'stylesheet', href: faqStyles},

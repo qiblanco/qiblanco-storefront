@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
@@ -124,9 +124,10 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
 
   return (
     <div className="tas-seite" data-the-alpha-shop="">
-      <header className="tas-band">
+      <header className="tas-band" data-tas-band="">
         <p className="tas-band-titel">{KOPF.titel}</p>
         <p className="tas-band-unter">{KOPF.unter}</p>
+        {KOPF.loop ? <BandLoop loop={KOPF.loop} /> : null}
       </header>
 
       <div className="tas-raster-seite">
@@ -180,41 +181,36 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         </div>
 
         <div className="tas-auswahl">
-          <section className="tas-produkt" aria-labelledby="tas-name">
+          {/* Produktkopf genau in Christians Folge (27.10. Z243–Z248): Name,
+              Claim, Edition, drei Punkte mit rotem Zeichen, Preis, Herkunft.
+              Kein Knopf, keine Steuerzeile: gekauft wird im Konfigurator
+              darunter (Z229–Z233). */}
+          <section
+            className="tas-produkt"
+            aria-labelledby="tas-name"
+            data-tas-kopf=""
+          >
             <h1 id="tas-name" className="tas-name">
               {PRODUKT.name}
             </h1>
-            <p className="tas-edition">{PRODUKT.edition}</p>
             <p className="tas-claim">{PRODUKT.claim}</p>
+            <p className="tas-edition">{PRODUKT.edition}</p>
             <ul className="tas-punkte">
               {PRODUKT.punkte.map((p) => (
-                <li key={p}>{p}</li>
+                <li key={p.text} className="tas-punkt">
+                  <Zeichen art={p.zeichen} />
+                  <span>{p.text}</span>
+                </li>
               ))}
             </ul>
             <p className="tas-preis" data-tas-preis="">
-              {betragText(hauptPreis, waehrung)} - {PRODUKT.preisZusatz}
+              {betragText(hauptPreis, waehrung)}
             </p>
-            <p className="tas-klein">inkl. 19 % MwSt.</p>
-            {/* Kaufknopf im ersten Fenster (Designstandard pdp_falz, Sicht-Tor
-                F-163): dieselben Warenkorbzeilen wie der Knopf der
-                Zusammenfassung, also immer die aktuelle Auswahl. */}
-            <div className="tas-kauf-oben" data-tas-kauf-oben="">
-              <AddToCartButton
-                disabled={!haupt?.availableForSale}
-                onClick={() => open('cart')}
-                lines={linien}
-              >
-                {haupt?.availableForSale
-                  ? ZUSAMMENFASSUNG.knopf
-                  : 'Ausverkauft'}
-              </AddToCartButton>
-              {summe !== hauptPreis ? (
-                <p className="tas-klein" data-tas-auswahl-summe="">
-                  Deine Auswahl: {betragText(summe, waehrung)}
-                </p>
-              ) : null}
-            </div>
-            <p className="tas-herkunft">{PRODUKT.herkunft}</p>
+            <p className="tas-herkunft">
+              {PRODUKT.herkunft.map((z) => (
+                <span key={z}>{z}</span>
+              ))}
+            </p>
           </section>
 
           {nummernAn ? (
@@ -475,7 +471,6 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               </div>
             ) : null}
           </dl>
-          <p className="tas-klein">inkl. 19 % MwSt.</p>
         </div>
         <div className="tas-summe-kasse">
           <ul className="tas-versand">
@@ -550,6 +545,99 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         }}
       />
     </div>
+  );
+}
+
+/**
+ * Lucas 360-Grad-Loop im schwarzen Band: stumm, inline, in Schleife, ohne
+ * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
+ * (prefers-reduced-motion), sieht den ersten Rahmen still.
+ */
+function BandLoop({loop}) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || typeof window.matchMedia !== 'function') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.pause();
+    }
+  }, []);
+  return (
+    <video
+      ref={ref}
+      className="tas-band-loop"
+      src={loop.src}
+      poster={loop.poster}
+      width="720"
+      height="720"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      disablePictureInPicture
+      aria-label={loop.alt}
+      data-tas-loop=""
+    />
+  );
+}
+
+/*
+ * Die drei Zeichen des Produktkopfs (Christian Z240/Z251: „jeweils mit Gimik
+ * in Rot, die leicht animiert ist, also sich ruhig bewegt“): Gitterchip aus
+ * zwei Hälften, Diamant mit Facetten, Licht über Wasser. Linien in
+ * currentColor (Qi-Alpha-Rot), Bewegung nur in CSS (the-alpha-produkt.css,
+ * ruht bei prefers-reduced-motion).
+ */
+function Zeichen({art}) {
+  const gemeinsam = {
+    className: `tas-zeichen tas-zeichen--${art}`,
+    viewBox: '0 0 32 32',
+    width: 32,
+    height: 32,
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.5,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': 'true',
+    focusable: 'false',
+  };
+  if (art === 'gitter') {
+    return (
+      <svg {...gemeinsam}>
+        <rect x="4.5" y="7.5" width="10.5" height="17" rx="2.5" />
+        <rect x="17" y="7.5" width="10.5" height="17" rx="2.5" />
+        <g className="tas-zeichen-puls">
+          <path d="M8 12h4M8 16h4M8 20h4M20.5 12h4M20.5 16h4M20.5 20h4" />
+        </g>
+      </svg>
+    );
+  }
+  if (art === 'diamant') {
+    return (
+      <svg {...gemeinsam}>
+        <path d="M9.5 8.5h13L27 14 16 26.5 5 14z" />
+        <path d="M5 14h22M12.5 8.5 11 14l5 12.5M19.5 8.5 21 14l-5 12.5" />
+        <g className="tas-zeichen-funkeln">
+          <path d="M25.5 3v4M23.5 5h4" />
+        </g>
+      </svg>
+    );
+  }
+  return (
+    <svg {...gemeinsam}>
+      <g className="tas-zeichen-puls">
+        <path d="M16 3.5v4M9 6l2 3.2M23 6l-2 3.2" />
+      </g>
+      <circle cx="16" cy="14" r="3" />
+      {/* Wellen eine Periode (15) breiter als das Feld: die Bewegung um 15
+          nach rechts ist nahtlos. */}
+      <g className="tas-zeichen-welle">
+        <path d="M-28 22c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+        <path d="M-28 27c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+      </g>
+    </svg>
   );
 }
 

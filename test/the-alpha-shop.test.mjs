@@ -94,7 +94,7 @@ test('Inhalte nur aus Christians Vorlage: Kopf, Produkt, Zusammenfassung, Box', 
   assert.equal(daten.KOPF.unter, '- Ultra High Vibe Mode -');
   assert.equal(daten.PRODUKT.name, 'Qi Alpha®');
   assert.equal(daten.PRODUKT.edition, '1st. Edition · 111 Stück');
-  assert.equal(daten.PRODUKT.herkunft, 'Designed in Germany. Made in Germany.');
+  assert.deepEqual(daten.PRODUKT.herkunft, ['Designed in Germany.', 'Made in Germany.']);
   assert.equal(daten.ZUSAMMENFASSUNG.titel, 'Dein neuer Qi Alpha.');
   assert.equal(daten.ZUSAMMENFASSUNG.unter, 'Genau so, wie du ihn willst.');
   assert.equal(daten.BOX.titel, "What's in the Box");
@@ -128,4 +128,44 @@ test('Kettenbilder: je Aufnahme ein Stahl- und ein Goldbild, die Box-Unterschrif
   }
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
   assert.match(shop, /data-tas-box-kette="">\s*\{kette\?\.box/);
+});
+
+test('Produktkopf (s07-r2, Christian 27.10. Z237–Z252): genau Christians Zeilen, kein Knopf, keine Steuerzeile', () => {
+  assert.equal(daten.PRODUKT.name, 'Qi Alpha®');
+  assert.equal(daten.PRODUKT.claim, 'Ultimate Wearable');
+  assert.deepEqual(
+    daten.PRODUKT.punkte.map((p) => p.text),
+    [
+      'Zweiteiliger Gitterchip®',
+      'Hochreiner Natur Diamant eingelassen in den Gitterchip®',
+      'Kohärentes Licht vereinigt sich mit Kohärentem Wasser',
+    ],
+  );
+  assert.deepEqual(daten.PRODUKT.punkte.map((p) => p.zeichen), ['gitter', 'diamant', 'licht-wasser']);
+  assert.equal(daten.PRODUKT.preisZusatz, undefined);
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  const kopf = shop.slice(shop.indexOf('data-tas-kopf'), shop.indexOf('{nummernAn ?'));
+  assert.ok(kopf.length > 100, 'Kopfbereich gefunden');
+  assert.doesNotMatch(kopf, /AddToCartButton|MwSt|Weltneuheit|preisZusatz|tas-kauf-oben/);
+  assert.doesNotMatch(shop, /inkl\. 19 % MwSt/);
+  // der Konfigurator unten behält den einen Kaufknopf
+  assert.equal((shop.match(/<AddToCartButton/g) || []).length, 1);
+  const css = lies('app/styles/the-alpha-produkt.css');
+  assert.match(css, /--tas-rot: #b92200;/);
+  assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tas-zeichen-puls/);
+});
+
+test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Poster vom CDN, ohne Viereck', () => {
+  assert.match(daten.KOPF.loop.src, /^https:\/\/cdn\.shopify\.com\/videos\/.+\.mp4$/);
+  assert.match(daten.KOPF.loop.poster, /^https:\/\/cdn\.shopify\.com\/.+qi-alpha-360-poster\.jpg/);
+  assert.equal(daten.GALERIE.animation360, null);
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  const band = shop.slice(shop.indexOf('data-tas-band'), shop.indexOf('</header>'));
+  assert.match(band, /<BandLoop loop=\{KOPF\.loop\}/);
+  const loop = shop.slice(shop.indexOf('function BandLoop'), shop.indexOf('function Zeichen'));
+  for (const attr of ['autoPlay', 'muted', 'loop', 'playsInline', 'poster={loop.poster}']) assert.ok(loop.includes(attr), attr);
+  const css = lies('app/styles/the-alpha-produkt.css');
+  assert.match(css, /\.tas-band-loop \{[^}]*mix-blend-mode: lighten;/);
+  const route = lies('app/routes/products.the-alpha.jsx');
+  assert.match(route, /rel: 'preload', as: 'image', href: KOPF\.loop\.poster/);
 });
