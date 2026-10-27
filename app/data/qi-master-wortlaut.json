@@ -1,23 +1,23 @@
 {
   "_zweck": "DIE EINE Stelle fuer Christians Qi-Master-Wortlaut vom 22.09.2026. Die Produktseite /products/qi-master, die Landingpage /pages/qi-master-vorverkauf und Anna (qi-salesbot) lesen ALLE hier - und nie voneinander ab. Wer den Text an einer zweiten Stelle hinschreibt, baut die zweite Wahrheit, und die falsche gewinnt still.",
   "_warum_hier_und_nicht_in_shared_state": "Oxygen kann zur Laufzeit nichts aus shared-state lesen - genau deshalb liegt auch app/data/qi-master-preisstufen.json in diesem Repo (ausformuliert in shop-manager/config/qi-master-preisstufen-usd.json, Block _warum_hier_und_nicht_im_storefront_repo). Die Storefront liest diese Datei zur Bauzeit per Import. Anna kann sie nicht importieren; sie zieht sie ueber qi-salesbot/bin/qi-master-vertrag aus dem FREIGEGEBENEN Stand (git show origin/main:<pfad>), nach dem Muster von shop-manager/src/qm_quelle.py - nie aus einer Arbeitskopie.",
-  "_aenderung": "WER HIER ETWAS AENDERT, AENDERT DREI DINGE ZUGLEICH: die Produktseite /products/qi-master, die Landingpage /pages/qi-master-vorverkauf UND Annas Auskunft. Der Wortlaut gehoert Christian (Feld eigner) - er wird nicht umformuliert, nicht ergaenzt und nicht korrigiert, auch nicht der Satz 'Der Vorverkauf starte im Oktober 2026' (GL-SPR-0008: seine Angaben zu Produkt, Fertigung und Preis sind Festlegungen). Eine Aenderung erreicht Anna erst ueber origin/main: bis der PR gemergt ist, meldet bin/qi-master-vertrag --pruefe-frische exit 1 mit dem Marker QUELLE-FEHLT. Das ist der gewollte laute Zustand, kein Defekt.",
+  "_aenderung": "WER HIER ETWAS AENDERT, AENDERT DREI DINGE ZUGLEICH: die Produktseite /products/qi-master, die Landingpage /pages/qi-master-vorverkauf UND Annas Auskunft. Der Wortlaut gehoert Christian (Feld eigner) - er wird nicht umformuliert, nicht ergaenzt und nicht korrigiert, auch nicht der Termin-Satz (GL-SPR-0008: seine Angaben zu Produkt, Fertigung und Preis sind Festlegungen). Den Termin hat Christian am 25.10.2026 selbst gesetzt ('Vorverkaufsstart am 01.11'); geaendert wurde nur Absatz 3, von 'Der Vorverkauf starte im Oktober 2026.' auf 'Der Vorverkauf startet am 01.11.2026.' (Job 20261025-qi-alpha-vorverkaufsstart-0111-wortlaut). Eine Aenderung erreicht Anna erst ueber origin/main: bis der PR gemergt ist, meldet bin/qi-master-vertrag --pruefe-frische exit 1 mit dem Marker QUELLE-FEHLT. Das ist der gewollte laute Zustand, kein Defekt.",
   "_keine_zahl_der_treppe": "Diese Datei traegt BEWUSST keinen Prozentsatz, keinen Preis und kein Stufendatum der abgeloesten Vorverkaufstreppe (24,9/20/15/10 Prozent, 7.989/8.511/9.043/9.575/10.639, 2.650/2.128/1.596/1.064, 18.09.2026). Die Zahlen-Quelle ist und bleibt app/data/qi-master-preisstufen.json; sie wird von dieser Datei weder abgeloest noch gedoppelt. bin/qi-master-vertrag weist eine Quelle ab, die eine dieser Angaben traegt (Marker QUELLE-TRAEGT-ABGELOESTE-ANGABE).",
   "handle": "qi-master",
   "eigner": "christian",
-  "stand": "2026-09-22",
+  "stand": "2026-10-25",
   "gilt_ab": "2026-09-22",
   "_maerkte": "Dieser Wortlaut ist DEUTSCH und gilt fuer den DACH-Shop qiblanco.com. Fuer den US-Shop qi-blanco.com (englisch, eigenes Liquid-Theme, eigener Traeger im shop-manager) gibt es KEINE freigegebene Fassung dieses Textes - das ist eine benannte Deckungsgrenze, keine Uebersetzungsaufgabe fuer den naechsten Leser. Wer hier eine englische Fassung einhaengt, holt sie bei Christian ab.",
   "maerkte_gedeckt": [
     "dach"
   ],
-  "_wortlaut": "WOERTLICH von Christian, 22.09.2026, vier Absaetze in dieser Reihenfolge. Kundensichtbar mit echten Umlauten.",
+  "_wortlaut": "WOERTLICH von Christian, 22.09.2026, vier Absaetze in dieser Reihenfolge. Kundensichtbar mit echten Umlauten. Absatz 3 seit 25.10.2026 nach Christians Satz 'Vorverkaufsstart am 01.11' (Tag ausgeschrieben als 01.11.2026, wie die US-Seite 'starts on November 1, 2026'). Ab dem 01.11.2026 stellt der Folgejob 20261025-qi-alpha-vorverkaufsstart-0111-wortlaut-s02 Absatz 3 auf eine laufende Fassung um.",
   "wortlaut": {
     "sprache": "de",
     "absaetze": [
       "Durch seine sehr aufwendige Herstellung ist der Preis des Qi Master® fixiert. Es handelt sich hier um eine Limitierte Auflage von 111 Stück. Diese wird es nie in einem Sale geben wie Black Friday oder Sommer Sale. Jeder Qi Master® wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Dadurch können wir stolz von einer Herstellqualität sprechen, die weltweit den höchsten Standard übertrifft.",
       "Designed in Germany. Made in Germany.",
-      "Der Vorverkauf starte im Oktober 2026.",
+      "Der Vorverkauf startet am 01.11.2026.",
       "Inklusive zu 100 % versichertem weltweitem Versand. Versand startet ab Mitte Januar 2027."
     ]
   },
@@ -28,6 +28,8 @@
     "eigner": "christian",
     "register": "forschungs-meister",
     "register_id": "qi-master-vorverkauf-oktober-2026",
+    "beantwortet": "2026-10-25",
+    "antwort": "Christian 25.10.2026 (woertlich, uebermittelt von coworker-bs): 'Vorverkaufsstart am 01.11'. Absatz 3 traegt den Tag seitdem. Die Umstellung auf eine laufende Fassung ab dem 01.11.2026 traegt der Folgejob 20261025-qi-alpha-vorverkaufsstart-0111-wortlaut-s02 (Seite und Anna aus dieser Quelle).",
     "nachschlagen": "/srv/openclaw/shared-state/forschungs-meister/bin/forschung show qi-master-vorverkauf-oktober-2026",
     "_warum": "Ohne diese Frage bleibt die am 22.09.2026 gebaute Fassung stehen und behauptet ab dem Start einen Vorverkauf in der Zukunft, der dann laeuft - derselbe Defekt mit umgekehrtem Vorzeichen. Einen Tag erfinden ist ausgeschlossen (GL-SPR-0008)."
   },
