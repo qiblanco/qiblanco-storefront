@@ -482,6 +482,13 @@ html:has(main[data-film-seite]) body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Schluss-Szene in A, B und C gleich: 111/111, dann direkt der rote Knopf
+   (Christian, Nachtrag 27.10.2026 ~21:40 Bangkok: kein Preis, keine
+   Detailzeile dazwischen). Schlägt die Varianten-Abstände von B. */
+.tap-seite[data-the-alpha-premium] .tap-edition .tap-zahl {
+  margin-bottom: var(--tap-s-8);
+}
+
 .tap-seite .tap-kauf {
   width: min(1152px, calc(100vw - 2 * var(--tap-s-3)));
   margin: 0 auto;

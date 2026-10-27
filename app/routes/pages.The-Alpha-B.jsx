@@ -1,6 +1,5 @@
-import {redirect, useLoaderData} from 'react-router';
+import {redirect} from 'react-router';
 import TheAlphaVarianteC from '~/components/campaign/TheAlphaVarianteC';
-import {THE_ALPHA_KAUF_ZIEL} from '~/components/campaign/the-alpha-daten';
 import {canonicalLink} from '~/lib/seo';
 import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 import varianteCStyles from '~/styles/the-alpha-variante-c.css?url';
@@ -27,10 +26,9 @@ import varianteCStyles from '~/styles/the-alpha-variante-c.css?url';
  * statische Route schlägt pages.$handle.jsx; /pages/qi-alpha-b ist ein
  * anderer Pfad (eigene Route pages.qi-alpha-b.jsx) und wird hier nie erreicht.
  *
- * PREIS: zur Laufzeit aus der Storefront, Produkt = Ziel des roten Knopfs
- * (THE_ALPHA_KAUF_ZIEL), damit Seite und Kaufseite denselben Betrag zeigen.
- * Antwortet die Storefront nicht, zeigt die Seite Christians Endpreis
- * (data-preis-quelle="fest"), nie einen leeren Preis.
+ * PREIS: steht nicht auf der Film-Seite. Die Schluss-Szene endet mit dem
+ * roten Knopf; Preis und Details zeigt die Shopseite (Christian, Nachtrag
+ * 27.10.2026 ~21:40 Bangkok).
  *
  * TRACKING: kein Pixel-Code hier, kein neuer Schlüssel.
  * RÜCKWEG: hb-deploy revert des Merge-Commits (Seite antwortet dann 404).
@@ -72,48 +70,18 @@ export const meta = () => [
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
 /** @param {LoaderFunctionArgs} args */
-export async function loader({request, context}) {
+export async function loader({request}) {
   const url = new URL(request.url);
   const pfad = url.pathname.replace(/\/+$/, '');
   if (pfad !== KANON_PFAD) {
     throw redirect(`${KANON_PFAD}${url.search}`, 301);
   }
-  const handle = THE_ALPHA_KAUF_ZIEL.replace(/^\/products\//, '').split(/[?#]/)[0];
-  let preis = null;
-  try {
-    const {product} = await context.storefront.query(PREIS_QUERY, {
-      variables: {handle},
-    });
-    const price = product?.selectedOrFirstAvailableVariant?.price;
-    if (price?.amount) preis = {handle: product.handle, price};
-  } catch {
-    preis = null;
-  }
-  return {preis};
+  return null;
 }
 
 export default function TheAlphaBRoute() {
-  const {preis} = useLoaderData();
-  return <TheAlphaVarianteC preis={preis ?? null} />;
+  return <TheAlphaVarianteC />;
 }
-
-const PREIS_QUERY = `#graphql
-  query TheAlphaBPreis(
-    $handle: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    product(handle: $handle) {
-      handle
-      selectedOrFirstAvailableVariant {
-        price {
-          amount
-          currencyCode
-        }
-      }
-    }
-  }
-`;
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */

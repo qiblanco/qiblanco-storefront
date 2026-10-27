@@ -14,7 +14,6 @@ import {
   TAB_AKZENT,
   TAB_UNTERSEITE,
   TAB_SEITENBAND,
-  TAB_ABSCHLUSS,
 } from '~/components/campaign/the-alpha-variante-b-daten';
 
 /*
@@ -33,10 +32,12 @@ import {
  * WAS B ANDERS MACHT (Z9, Feinheiten, nicht Geschichte):
  *  - unter Christians drei Zeilen je Kapitel ein Nutzen-Akzent (TAB_AKZENT),
  *  - Longevity mit eigenem Bild: die Unterseite „Made in Germany“ randlos,
- *  - im Abschluss der Preis, kleiner als der Titel, mit einer ruhigen Zeile.
  * Seit 27.10. endet B wie A und C mit dem roten Knopf (Christian Z258–Z263:
  * „Die Seite muss hier aufhören“); Live-Anmeldung und Fragen stehen nicht
  * mehr auf der Landingpage, die Fragen gehören auf die Shopseite (Z262/Z267).
+ * Seit dem Nachtrag 27.10. (~21:40 Bangkok) trägt die Schluss-Szene weder
+ * Preis noch Detailzeile: Qi Alpha® / Limited 1st. Edition / 111/111 / roter
+ * Knopf / Ende. Preis und Details zeigt die Shopseite.
  *
  * Bausteine und Tokens: TheAlphaPremium.jsx / the-alpha-premium.css (geteilt,
  * hier nicht geändert). Eigenes nur im Scope
@@ -46,40 +47,12 @@ import {
  * ÜBERSCHRIFTEN: h2 tragen nur die drei Kapitel (EIN H2-Stil je Seite, die
  * Rubrik zählt Größe x Gewicht).
  *
- * MESSMARKEN: data-tab-preis (Preis im Abschluss); Probe claude-jobs/<grossjob>/nachher/variante-b/probe_b_film.py.
+ * Probe: claude-jobs/<grossjob>/nachher/variante-b/probe_b_film.py.
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
 
-/** „10.639 €“: glatte Beträge ohne Nachkommastellen, echte Cents bleiben. */
-export function preisText(price) {
-  const betrag = Number(price?.amount);
-  if (!Number.isFinite(betrag) || betrag <= 0) return null;
-  const ganz = Math.floor(betrag);
-  const cent = Math.round((betrag - ganz) * 100);
-  const tausender = String(ganz).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  const zeichen = price.currencyCode === 'EUR' || !price.currencyCode ? '€' : price.currencyCode;
-  return cent ? `${tausender},${String(cent).padStart(2, '0')} ${zeichen}` : `${tausender} ${zeichen}`;
-}
-
-function Abschluss({preis}) {
-  const text = preisText(preis?.price) || preisText(TAB_ABSCHLUSS.festpreis);
-  return (
-    <div className="tab-abschluss" data-tap-ein="" style={{'--tap-folge': 3}}>
-      <p className="tab-preis" data-tab-preis="" data-preis-quelle={preis ? 'shopify' : 'fest'}>
-        {text}
-      </p>
-      <ul className="tab-preis-zeile">
-        {TAB_ABSCHLUSS.zeilen.map((z) => (
-          <li key={z}>{z}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-/** @param {{preis: {handle: string, price: object} | null}} props */
-export default function TheAlphaVarianteB({preis}) {
+export default function TheAlphaVarianteB() {
   return (
     <TapSeite variante="b">
       <TapTitelkarte />
@@ -98,9 +71,7 @@ export default function TheAlphaVarianteB({preis}) {
         <TapVollbild bild={TAB_UNTERSEITE} />
       </div>
       <TapMarke bild={TAB_SEITENBAND} />
-      <TapEdition>
-        <Abschluss preis={preis} />
-      </TapEdition>
+      <TapEdition />
     </TapSeite>
   );
 }

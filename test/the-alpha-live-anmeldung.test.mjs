@@ -58,6 +58,7 @@ test('FILM: B erzählt Christians Geschichte, je Kapitel ein Nutzen-Akzent', () 
   // B ist der Akzent unter Christians Zeilen (Z9). Seit 27.10.2026 (Christian
   // Z258–Z263: „Die Seite muss hier aufhören“) endet B mit dem Knopf; Live und
   // Fragen stehen nicht mehr auf der Seite (Wächter: the-alpha-lp-ende.test.mjs).
+  // Seit dem Nachtrag 27.10. (~21:40 Bangkok) trägt die Schluss-Szene keinen Preis.
   for (const id of ['manifestation', 'protection', 'longevity']) {
     const a = B.TAB_AKZENT[id];
     assert.ok(typeof a === 'string' && a.trim().length > 20, `Akzent zu ${id} fehlt`);
@@ -71,7 +72,7 @@ test('FILM: B erzählt Christians Geschichte, je Kapitel ein Nutzen-Akzent', () 
     'abschnitt={PROTECTION} akzent={TAB_AKZENT.protection}',
     'abschnitt={LONGEVITY} akzent={TAB_AKZENT.longevity}',
     '<TapMarke ',
-    '<TapEdition>',
+    '<TapEdition />',
   ];
   const pos = reihe.map((r) => SEITE.indexOf(r));
   assert.ok(pos.every((p) => p > 0), `Szene fehlt: ${reihe[pos.indexOf(-1)]}`);

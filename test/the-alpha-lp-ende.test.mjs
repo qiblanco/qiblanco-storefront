@@ -96,3 +96,22 @@ test('Wörterbuch: Wortlaut unverändert, Fettungen der Vorlage', () => {
   assert.ok(fett.includes('voller Lebensenergie, Freude, innerem Frieden und Dankbarkeit'));
   assert.equal(wb.quelle, 'Google AI');
 });
+
+test('Schluss-Szene ohne Preis und Detailzeile, kein zweiter Knopf (A, B, C)', () => {
+  // Christian, Nachtrag 27.10.2026 ~21:40 Bangkok: „der knopf kommt raus“
+  // (umrandeter Zwischenknopf in C) und Preis samt Detailzeile raus. Schluss
+  // genau: Qi Alpha® / Limited 1st. Edition / 111/111 / roter Knopf / Ende.
+  for (const f of [
+    'app/components/campaign/TheAlpha.jsx',
+    'app/components/campaign/TheAlphaVarianteB.jsx',
+    'app/components/campaign/TheAlphaVarianteC.jsx',
+  ]) {
+    const s = lies(f);
+    assert.match(s, /<TapEdition \/>/, `${f}: Schluss-Szene ohne eingeschobene Kinder`);
+    assert.doesNotMatch(s, /data-tac-zwischen|data-tac-preis|data-tac-sicher|data-tab-preis/, f);
+    assert.equal((s.match(/<TheAlphaKauf/g) || []).length, 0, `${f}: kein eigener Knopf neben dem roten`);
+  }
+  for (const r of ['app/routes/pages.The-Alpha-B.jsx', 'app/routes/pages.The-Alpha-C.jsx']) {
+    assert.doesNotMatch(lies(r), /PREIS_QUERY|preis=/, `${r}: lädt keinen Preis mehr`);
+  }
+});
