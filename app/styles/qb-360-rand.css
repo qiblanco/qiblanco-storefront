@@ -28,7 +28,8 @@
    Haken je Seite: data-qb-360 am Wrapper (ImgixVideo-Ersatzbild).
 
    RÜCKWEG: diesen links()-Eintrag in QiHomeAirSeite.jsx / QiBraceletSeite.jsx
-   entfernen — die Datei wirkt nirgends sonst.
+   entfernen — die Datei wirkt nirgends sonst (seit 27.10. zusätzlich auf
+   products.qione-kette.jsx, Abschnitt MEDIEN-AUSLAUF unten).
    ========================================================================== */
 
 .product-360-hero__video .ImgixVideo-wrap {
@@ -77,4 +78,31 @@
   .qb-pdp-kopf:not([data-kauf-zuerst-mobil='an']) > .product-360-hero:first-child {
     margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
   }
+}
+
+/* ============================================================================
+   MEDIEN-AUSLAUF: ein Foto zeigt seine Oberkante nicht als Rechteck
+   ----------------------------------------------------------------------------
+   Kanon Regel 5, Auftrag Punkt 5 ("dasselbe auf anderen Seiten prüfen und
+   angleichen"). Zensus des Sicht-Tors (s07, 64 Zellen) fand genau einen Fall:
+   /products/qione-kette, Vollbreiten-Foto ganz unten (SingleImage fullscreen,
+   QiOne2Pro_White.webp), Oberkante grau gegen die weiße Leinwand, Abstand 47.
+
+   GEMESSEN (Bilddatei 1158x490, 27.10.): der Grund der obersten Zeile ist ein
+   Verlauf, kein Einzelwert: links 237, Mitte 244–246, rechts 199, Spanne
+   185–248. Ein Flächenwert kann ihn nicht treffen; die Kante läuft deshalb per
+   Maske auf durchsichtig aus, darunter steht die Leinwand selbst.
+
+   HÖHE DES AUSLAUFS: 15 % der Bildhöhe, mindestens 48 px, höchstens 120 px
+   (Desktop 1440: ~90 px, Handy 390: 48 px). Ein Zeilensprung am Rand bleibt so
+   <= 2 bei einem Grundabstand bis 70; die ersten 3 px sind ganz durchsichtig.
+   Der Anhänger beginnt erst bei ~38 % der Höhe, nur die Kette läuft oben aus.
+   Haken: data-qb-auslauf="oben" (SingleImage-Prop auslauf).
+
+   RÜCKWEG: auslauf="oben" in products.qione-kette.jsx entfernen.
+   ========================================================================== */
+img[data-qb-auslauf='oben'] {
+  --qb-auslauf-oben: clamp(48px, 15%, 120px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 3px, #000 var(--qb-auslauf-oben));
+  mask-image: linear-gradient(to bottom, transparent 0, transparent 3px, #000 var(--qb-auslauf-oben));
 }
