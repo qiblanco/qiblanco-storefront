@@ -282,6 +282,16 @@ export const WV_GRUPPEN = [
           'Die fünf veröffentlichten Arbeiten mit Methode und allen Zahlen, vollständig als PDF.',
       },
       {
+        // Longevity-Guide 2027 (Grossjob 20261027-pr-page-best-wearables-
+        // longevity-2027-messen-vs-zelle, s02): reine Route, in der Sitemap
+        // über NUR_ROUTE_SEITEN, kein noindex.
+        pfad: '/pages/best-wearables-for-longevity-2027',
+        anker: 'Die besten Wearables für Longevity (Guide 2027)',
+        teaser:
+          'Smart Ring, Uhr, Glukosesensor und Qi Blanco im Vergleich: was misst, was in der Zelle wirkt und wie beides zusammenpasst.',
+        weiter: ['/pages/studien', '/pages/technologie'],
+      },
+      {
         pfad: '/pages/hypothesen',
         anker: 'Unsere Hypothesen zum Wirkmodell',
         teaser:
