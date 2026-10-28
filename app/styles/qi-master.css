@@ -405,8 +405,9 @@
 /* .qm-preishinweis trug bis zum 2026-09-16 den Sammelsatz „Alle Preise inkl.
    19 % MwSt., inklusive versichertem weltweitem Versand mit UPS." unter der
    Tabelle. Christian hat die Steuerangabe an den grossen Preis verlegt
-   (.qm-steuerhinweis, weiter unten); der Versandhinweis steht jetzt in
-   .qm-treppe__versand. Die Klasse hat kein Element mehr. */
+   (.qm-steuerhinweis, seit 2026-10-27 ebenfalls entfernt, siehe unten); der
+   Versandhinweis steht jetzt in .qm-treppe__versand. Die Klasse hat kein
+   Element mehr. */
 
 /* ─── Vorverkaufstreppe (QiMasterTreppe.jsx) ─────────────────────────────────
    Sitzt im priceLabel-Slot der Buy-Box, also ZWISCHEN Preiszeile und
@@ -490,32 +491,12 @@
   border: 0;
 }
 
-/* ─── „inkl. 19 % MwSt." hinter dem grossen Kaufpreis ────────────────────────
-   Christian am 2026-09-16, woertlich: „Das inkl. 19 % MwSt. muss in klein
-   hinter den grossen Kaufpreis von: 10.639,- €".
-
-   ZWEI ANFORDERUNGEN, beide woertlich zu nehmen — „hinter" (dieselbe Zeile)
-   und „in klein" (kleiner als der Preis). Der Preis steht in .product-price
-   mit 2rem (app.css); dieser Hinweis traegt --qm-fs-xs (13px) und ist damit
-   messbar kleiner, nicht nur gefuehlt.
-
-   WARUM .product-price hier inline-flex wird: es ist im Bestand ein
-   display:flex-Block und schoebe den Hinweis sonst in die naechste Zeile. Die
-   Regel haengt am Seiten-Scope .qm-pdp UND am Eltern-Element .Bestseller-Price
-   — sie kann keine andere Kaufseite erreichen. Die Treppe darunter bleibt ein
-   eigener Block und rutscht nicht daneben. */
-.qm-pdp .Bestseller-Price > .product-price {
-  display: inline-flex;
-  vertical-align: baseline;
-}
-.qm-pdp .qm-steuerhinweis {
-  display: inline-block;
-  margin: 0 0 0 var(--qm-s1);
-  font-size: var(--qm-fs-xs);
-  line-height: 1.4;
-  color: var(--qm-muted);
-  white-space: nowrap;
-}
+/* Bis zum 2026-10-27 stand hier .qm-steuerhinweis („inkl. 19 % MwSt." in
+   klein hinter dem grossen Kaufpreis, Christian 2026-09-16) samt
+   .product-price als inline-flex, damit der Hinweis in derselben Zeile sitzt.
+   Christian am 2026-10-27 (Register Z223/Z232-Z233): die Steuerangabe wird
+   auf keiner Produktseite gezeigt, erst im Checkout. Element und beide
+   Regeln sind entfernt, .product-price ist wieder der Block aus app.css. */
 .qm-pdp .Bestseller-Price > .qm-treppe { display: block; }
 
 .qm-treppe__tabelle {

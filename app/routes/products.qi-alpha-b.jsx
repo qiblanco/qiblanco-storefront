@@ -352,22 +352,13 @@ export default function Product() {
             }}
           />
         }
-        /* DIE STEUERANGABE HÄNGT AM PREIS, NICHT UNTER DER TABELLE
-           (Christian am 2026-09-16, woertlich: „Das inkl. 19 % MwSt. muss in
-           klein hinter den großen Kaufpreis von: 10.639,- €").
-
-           WARUM HIER UND NICHT IN ProductPrice.jsx: die Komponente trägt
-           JEDE Kaufseite des Ladens. Ein Zusatz dort hätte 45 Seiten
-           verändert, um eine zu bedienen. Der `priceLabel`-Slot steht im
-           ausgelieferten HTML unmittelbar hinter <div class="product-price">
-           — genau die Stelle, die Christian benennt — und gehört allein
-           dieser Route. Dass „hinter" auch optisch „in derselben Zeile"
-           heißt, macht die Regel .qm-pdp .Bestseller-Price in
-           app/styles/qi-master.css; „in klein" ist dort --qm-fs-xs, also
-           kleiner als die 2rem des Preises. */
+        /* KEINE STEUERANGABE AM PREIS (Christian am 2026-10-27, Register
+           Z223/Z232-Z233: „das mit den Mehrwertsteuern wird nirgendwo
+           angezeigt, das zeigen wir erst im Checkout"). Bis dahin stand hier
+           <p class="qm-steuerhinweis">inkl. 19 % MwSt.</p> (Christian
+           2026-09-16); Element und CSS sind an der Quelle entfernt. */
         priceLabel={
           <>
-            <p className="qm-steuerhinweis">inkl. 19 % MwSt.</p>
             {/* Christians Fassung vom 22.09.2026 an der Stelle der
                 abgelösten Vorverkaufstreppe — aus der einen Quelle
                 app/data/qi-master-wortlaut.json. */}
