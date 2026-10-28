@@ -16,6 +16,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
+import {registerHooks} from 'node:module';
 
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 const lies = (f) => readFileSync(join(WURZEL, f), 'utf8');
@@ -156,6 +157,37 @@ test('Teil-1-Warenkorb nur in DE/AT, andere Permalinks überall', () => {
   assert.equal(tz.teil1Erlaubt({varianten: ['gid://shopify/ProductVariant/1'], land: 'US'}), true);
 });
 
+test('Teil-1-Sperre ist nicht per Schreibweise umgehbar (Gegenpruefer 28.10.: /cart/0<Variante>:1?markt=CH legte 9.428 CHF an)', () => {
+  const v = tz.TEILZAHLUNG.variante;
+  // Shopify liest die führenden Ziffern (gemessen 28.10. live, CH: 0<v>, <v>e0
+  // und <v>abc legten je einen Ratenanteil-Warenkorb zu 9.427 CHF an).
+  for (const roh of [`0${v}`, `000${v}`, ` ${v}`, `${v} `, `+${v}`, `${v}e0`, `${v}abc`, `${v}.0`, `0${v}e5`]) {
+    const gid = `gid://shopify/ProductVariant/${roh}`;
+    assert.equal(tz.teil1Erlaubt({varianten: [gid], land: 'CH'}), false, roh);
+    assert.equal(tz.teil1Erlaubt({varianten: [gid], land: undefined}), false, roh);
+    assert.equal(tz.mitRatenanteil([gid]), true, roh);
+  }
+  assert.equal(tz.mitRatenanteil(['gid://shopify/ProductVariant/62077673767180']), false);
+  assert.equal(tz.mitRatenanteil([`gid://shopify/ProductVariant/1${v}`]), false);
+  assert.equal(tz.mitRatenanteil([`gid://shopify/ProductVariant/${v}1`]), false);
+});
+
+test('Zweite Linie: außerhalb DE/AT zählt der angelegte Warenkorb, nicht die Schreibweise im Link', () => {
+  const permalink = lies('app/routes/cart.$lines.jsx');
+  const nachAnlage = permalink.slice(permalink.indexOf('const cartResult = result.cart'));
+  assert.match(nachAnlage, /cart\.get\(/, 'nach cart.create muss der angelegte Warenkorb gelesen werden');
+  assert.match(nachAnlage, /teil1Erlaubt\(/, 'die angelegten Zeilen laufen durch teil1Erlaubt');
+  const sperre = nachAnlage.slice(0, nachAnlage.indexOf('cart.setCartId'));
+  assert.match(sperre, /redirect\('\/products\/qi-alpha'\)/, 'Sperre vor dem Cookie, ohne Warenkorb-Kopf');
+});
+
+test('Merkmale _qa_* nur am Permalink mit Ratenanteil (Gegenpruefer 28.10.)', () => {
+  const permalink = lies('app/routes/cart.$lines.jsx');
+  assert.match(permalink, /mitRatenanteil\(/);
+  const block = permalink.slice(permalink.indexOf('const mitTeilzahlung'), permalink.indexOf('let sitzungsCodes'));
+  assert.match(block, /mitRatenanteil\(/, 'mitTeilzahlung muss den Ratenanteil im Link verlangen');
+});
+
 test('NAHT Vertrag: Variante, Betrag, Märkte und Merkmale der Seite = vertrag.json', () => {
   assert.ok(existsSync(VERTRAG_PFAD), `Vertrag fehlt: ${VERTRAG_PFAD}`);
   const v = JSON.parse(readFileSync(VERTRAG_PFAD, 'utf8'));
@@ -182,4 +214,71 @@ test('Verdrahtung: Seite zeigt Ratenzahlung statt Ratencode, cart.$lines liest M
   assert.match(permalink, /teil1Erlaubt\(/);
   const route = lies('app/routes/products.qi-alpha.jsx');
   assert.match(route, /qi-alpha-teilzahlung\.css\?url/);
+});
+
+// Verhalten der zweiten Linie am echten Loader (Attrappen-Kontext wie in
+// test/cart-herkunfts-marker.test.mjs, ~/-Alias per registerHooks).
+const APP = new URL('../app/', import.meta.url).href;
+registerHooks({
+  resolve(spez, kontext, weiter) {
+    if (spez.startsWith('~/')) {
+      const pfad = APP + spez.slice(2);
+      return weiter(/\.(js|jsx|mjs|ts|tsx)$/.test(pfad) ? pfad : pfad + '.js', kontext);
+    }
+    return weiter(spez, kontext);
+  },
+  load(url, kontext, weiter) {
+    if (url.endsWith('.jsx')) {
+      return {format: 'module', shortCircuit: true, source: readFileSync(fileURLToPath(url), 'utf8')};
+    }
+    return weiter(url, kontext);
+  },
+});
+
+async function permalink({land, angelegt, getWirft = false}) {
+  const spur = {get: 0, setCartId: 0};
+  const cart = {
+    get: async () => {
+      spur.get += 1;
+      if (getWirft) throw new Error('Storefront-API nicht erreichbar');
+      return {id: 'gid://cart/1', lines: {nodes: angelegt.map((id) => ({merchandise: {id}}))}};
+    },
+    create: async (e) => ({cart: {id: 'gid://cart/1', checkoutUrl: 'https://checkout.qiblanco.com/c/1', totalQuantity: 1, attributes: e.attributes ?? []}}),
+    updateAttributes: async (attributes) => ({cart: {id: 'gid://cart/1', attributes}}),
+    setCartId: () => {
+      spur.setCartId += 1;
+      return new Headers();
+    },
+  };
+  const {loader} = await import('../app/routes/cart.$lines.jsx');
+  let antwort;
+  try {
+    antwort = await loader({
+      request: new Request('https://qiblanco.com/cart/41007289663544:1'),
+      context: {cart, env: {}, storefront: {i18n: {country: land}}},
+      params: {lines: '41007289663544:1'},
+    });
+  } catch (e) {
+    antwort = e;
+  }
+  return {ort: antwort?.headers?.get?.('Location'), spur};
+}
+
+test('Zweite Linie (Verhalten): Shopify legt in CH den Ratenanteil an -> kein Cookie, zurück zur Kaufseite', async () => {
+  const anteil = `gid://shopify/ProductVariant/${tz.TEILZAHLUNG.variante}`;
+  const gesperrt = await permalink({land: 'CH', angelegt: [anteil]});
+  assert.equal(gesperrt.ort, '/products/qi-alpha');
+  assert.equal(gesperrt.spur.setCartId, 0, 'gesperrt wird ohne Warenkorb-Cookie');
+  // Positiv-Kontrolle: anderer Artikel in CH geht zur Kasse.
+  const frei = await permalink({land: 'CH', angelegt: ['gid://shopify/ProductVariant/41007289663544']});
+  assert.match(frei.ort ?? '', /checkout\.qiblanco\.com/);
+  // DE/AT: Ratenanteil geht zur Kasse, ohne den zusätzlichen Lesezugriff
+  // (andere Bindungen lesen den Warenkorb auch, verglichen wird die Differenz).
+  const de = await permalink({land: 'DE', angelegt: [anteil]});
+  assert.match(de.ort ?? '', /checkout\.qiblanco\.com/);
+  const deFrei = await permalink({land: 'DE', angelegt: ['gid://shopify/ProductVariant/41007289663544']});
+  assert.equal(frei.spur.get - deFrei.spur.get, 1);
+  // Lesefehler sperrt nicht (erste Linie hat den Link schon geprüft).
+  const lesefehler = await permalink({land: 'CH', angelegt: [], getWirft: true});
+  assert.match(lesefehler.ort ?? '', /checkout\.qiblanco\.com/);
 });

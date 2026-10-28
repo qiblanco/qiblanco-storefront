@@ -11,6 +11,7 @@ import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {
   merkmaleAusQuery,
+  mitRatenanteil,
   rabattcodesAusQuery,
   TEILZAHLUNG,
   teil1Erlaubt,
@@ -83,12 +84,15 @@ export async function loader({request, context, params}) {
   // zahlung-10000-raten-rest-sofort, s03): der Schritt-1-Link trägt die zwei
   // Vertrags-Merkmale _qa_vorgang/_qa_konfig; der Wächter liest sie aus
   // Bestellung 1. Nur diese zwei Schlüssel, nur in ihrer Form
-  // (lib/qi-alpha-teilzahlung.js). Der Partnercode kommt aus dem Warenkorb,
+  // (lib/qi-alpha-teilzahlung.js), und nur, wenn der Link den Ratenanteil
+  // trägt. Der Partnercode kommt aus dem Warenkorb,
   // den der Kunde schon hat; gelesen wird nur, wenn ein Merkmal da ist.
-  const mitTeilzahlung = Boolean(
-    searchParams.get(TEILZAHLUNG.merkmale.konfig) ||
-      searchParams.get(TEILZAHLUNG.merkmale.vorgang),
-  );
+  const mitTeilzahlung =
+    mitRatenanteil(linesMap.map((l) => l.merchandiseId)) &&
+    Boolean(
+      searchParams.get(TEILZAHLUNG.merkmale.konfig) ||
+        searchParams.get(TEILZAHLUNG.merkmale.vorgang),
+    );
   let sitzungsCodes = [];
   if (mitTeilzahlung) {
     try {
@@ -151,6 +155,28 @@ export async function loader({request, context, params}) {
     throw new Response('Link may be expired. Try checking the URL.', {
       status: 410,
     });
+  }
+
+  // Zweite Linie der Teil-1-Sperre: außerhalb DE/AT zählt, was Shopify
+  // angelegt hat, nicht wie der Link die Variante schreibt. Gesperrt wird ohne
+  // Warenkorb-Cookie. Ein Lesefehler sperrt nicht: die erste Linie oben hat
+  // den Link schon geprüft, und ein Partnerlink in CH bliebe sonst tot.
+  if (!TEILZAHLUNG.maerkte.includes(storefront?.i18n?.country)) {
+    let angelegteZeilen = null;
+    try {
+      angelegteZeilen = (await cart.get({cartId: cartResult.id}))?.lines?.nodes;
+    } catch {
+      angelegteZeilen = null;
+    }
+    if (
+      Array.isArray(angelegteZeilen) &&
+      !teil1Erlaubt({
+        varianten: angelegteZeilen.map((z) => z?.merchandise?.id),
+        land: storefront?.i18n?.country,
+      })
+    ) {
+      return redirect('/products/qi-alpha');
+    }
   }
 
   // Update cart id in cookie
