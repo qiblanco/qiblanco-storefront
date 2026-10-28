@@ -48,10 +48,10 @@ export const PRODUKT = {
   claim: 'Ultimate Wearable',
   edition: '1st. Edition · 111 Stück',
   punkte: [
-    {zeichen: 'gitter', text: 'Zweiteiliger Gitterchip®'},
+    {zeichen: 'gitter', text: 'Zweiteiliger Gitterchip™'},
     {
       zeichen: 'diamant',
-      text: 'Hochreiner Natur Diamant eingelassen in den Gitterchip®',
+      text: 'Hochreiner Natur Diamant eingelassen in den Gitterchip™',
     },
     {
       zeichen: 'licht-wasser',
