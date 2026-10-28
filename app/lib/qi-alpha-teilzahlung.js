@@ -147,16 +147,16 @@ export function teil1Erlaubt({varianten, land}) {
 
 /**
  * Trägt der Permalink den Ratenanteil? Verglichen wird die Variante so, wie
- * Shopify sie liest: nur die Ziffern, ohne führende Nullen. Ein Textvergleich
- * liess „/cart/0<Variante>:1?markt=CH“ durch, Shopify nahm die Null an und
- * legte 9.428 CHF an (Gegenprüfer 28.10.2026).
+ * Shopify sie liest: die führenden Ziffern, ohne führende Nullen. Gemessen am
+ * 28.10.2026 im Markt CH: „0<Variante>“, „<Variante>e0“ und „<Variante>abc“
+ * legten je einen Ratenanteil-Warenkorb zu 9.427 CHF an. Die zweite Linie
+ * im Permalink prüft danach den angelegten Warenkorb selbst.
  */
 export function mitRatenanteil(varianten) {
-  return varianten.some(
-    (v) =>
-      String(v).split('/').pop().replace(/\D/g, '').replace(/^0+/, '') ===
-      TEILZAHLUNG.variante,
-  );
+  return varianten.some((v) => {
+    const roh = String(v).split('/').pop().replace(/^\D+/, '');
+    return roh.match(/^\d*/)[0].replace(/^0+/, '') === TEILZAHLUNG.variante;
+  });
 }
 
 /**

@@ -157,6 +157,28 @@ export async function loader({request, context, params}) {
     });
   }
 
+  // Zweite Linie der Teil-1-Sperre: außerhalb DE/AT zählt, was Shopify
+  // angelegt hat, nicht wie der Link die Variante schreibt. Gesperrt wird ohne
+  // Warenkorb-Cookie. Ein Lesefehler sperrt nicht: die erste Linie oben hat
+  // den Link schon geprüft, und ein Partnerlink in CH bliebe sonst tot.
+  if (!TEILZAHLUNG.maerkte.includes(storefront?.i18n?.country)) {
+    let angelegteZeilen = null;
+    try {
+      angelegteZeilen = (await cart.get({cartId: cartResult.id}))?.lines?.nodes;
+    } catch {
+      angelegteZeilen = null;
+    }
+    if (
+      Array.isArray(angelegteZeilen) &&
+      !teil1Erlaubt({
+        varianten: angelegteZeilen.map((z) => z?.merchandise?.id),
+        land: storefront?.i18n?.country,
+      })
+    ) {
+      return redirect('/products/qi-alpha');
+    }
+  }
+
   // Update cart id in cookie
   const headers = cart.setCartId(cartResult.id);
 
