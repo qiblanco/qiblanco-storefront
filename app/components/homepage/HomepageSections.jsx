@@ -142,7 +142,7 @@ export function HomepageSections({overrides = {}}) {
           Overlays zentral im Wrapper. Die Startseite ist voll anker-
           instrumentiert -> dataSection hier korrekt (kein Collector-Kapern). */}
       <GitterchipMoleculesScrub dataSection="gitterchip-video" laden="naehe" />
-      <SingleImage dataSection="chip-vergleich" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065"} size={"normal"} alt="Der Gitterchip® im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"/>
+      <SingleImage dataSection="chip-vergleich" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065"} size={"normal"} alt="Gitterchip® im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"/>
       <div className="text-center mt-2" data-section="chip-cta">
         <a className="btn--primary m-center" href="/products/qione-2-pro">Hole dir jetzt deinen QiOne® 2 Pro</a>
       </div>

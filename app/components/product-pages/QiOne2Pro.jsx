@@ -121,7 +121,7 @@ export default function QiOne2Pro({
         link={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065'
         }
-        alt="Der Gitterchip® im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"
+        alt="Gitterchip® im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"
         size={'normal'}
       />
       <div style={{marginBottom: '50px'}} className="text-center mt-2 NormalSectionSize">
