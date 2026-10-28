@@ -60,7 +60,7 @@
 // nicht umformuliert. Seit 2026-10-17 trägt er den neuen Produktnamen
 // (Christian: „ja bitte auch die Shopseite und das Produkt. es heißt nun Qi
 // Alpha"); die Marke ist noch nicht angemeldet, darum ohne ®.
-export const QIMASTER_GUETE_UEBERSCHRIFT = 'Lass dich vom Qi Alpha tragen.';
+export const QIMASTER_GUETE_UEBERSCHRIFT = 'Lass dich vom Qi Alpha® tragen.';
 
 export const QIMASTER_GUETEZEICHEN = [
   {
