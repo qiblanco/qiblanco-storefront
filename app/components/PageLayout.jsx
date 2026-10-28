@@ -1,9 +1,14 @@
-import {Await, Link} from 'react-router';
+import {Await, Link, useLocation} from 'react-router';
 import {Suspense, useId} from 'react';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {WissenVertrauenWeiter} from '~/components/reusables/WissenVertrauenWeiter';
-import {Header, HeaderMenu} from '~/components/Header';
+import {
+  Header,
+  HeaderMenu,
+  QiAlphaFunnelKopf,
+  istQiAlphaFunnelPfad,
+} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
 import {
   SEARCH_ENDPOINT,
@@ -22,6 +27,17 @@ export function PageLayout({
   isLoggedIn,
   publicStoreDomain,
 }) {
+  const {pathname} = useLocation();
+  // Qi-Alpha-Kaufseite: eigene enge Funnel-Seite (Begründung bei
+  // QiAlphaFunnelLayout unten). Aus useLocation, damit es auch bei
+  // Client-Navigation stimmt.
+  if (istQiAlphaFunnelPfad(pathname)) {
+    return (
+      <QiAlphaFunnelLayout cart={cart} isLoggedIn={isLoggedIn}>
+        {children}
+      </QiAlphaFunnelLayout>
+    );
+  }
   return (
     <Aside.Provider>
       <CartAside cart={cart} />
@@ -50,6 +66,28 @@ export function PageLayout({
         header={header}
         publicStoreDomain={publicStoreDomain}
       />
+    </Aside.Provider>
+  );
+}
+
+/**
+ * QI-ALPHA-KAUFSEITE ALS ENGE FUNNEL-SEITE (Christian 28.10.2026 Z13: „von
+ * dieser Produktseite kommt man nirgendwo anders dahin. Außer in den
+ * Warenkorb. Das ist eine richtig enge Funnel-Seite“; Z17: „die shopseite
+ * hört auch da auf, kein footer mehr“). Nur der eigene Kopf (Konto,
+ * Warenkorb) und die Warenkorb-Schublade; kein Hauskopf mit Band und Menü,
+ * keine Menü- und Such-Schublade, keine Weiterlesen-Leiste, kein Fuß, keine
+ * Hintergrund-Verläufe des Hauses. AI Anna bleibt (root.jsx, unabhängig vom
+ * Layout), ebenso alle Tracking-Bausteine (root.jsx) und cart_viewed
+ * (CartBadge im Kopf). Stil: app/styles/qi-alpha-funnel-kopf.css.
+ * @param {Pick<PageLayoutProps, 'cart' | 'isLoggedIn' | 'children'>}
+ */
+function QiAlphaFunnelLayout({cart, children = null, isLoggedIn}) {
+  return (
+    <Aside.Provider>
+      <CartAside cart={cart} />
+      <QiAlphaFunnelKopf cart={cart} isLoggedIn={isLoggedIn} />
+      <main data-qa-funnel="">{children}</main>
     </Aside.Provider>
   );
 }

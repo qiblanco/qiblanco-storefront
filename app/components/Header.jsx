@@ -23,6 +23,7 @@ import {
   useKopfHoeheVariable,
   GOOGLE_REZENSIONEN_ANKER_ID,
 } from '~/components/reusables/GoogleRezensionenBereich';
+import {MarkeR} from '~/components/reusables/MarkeR';
 
 /**
  * „Partner werden" im Menü „Mehr" führt auf UNSERE Erklärseite, nicht mehr
@@ -444,6 +445,75 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         />
 
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </div>
+    </header>
+  );
+}
+
+/*
+ * EIGENER KOPF DER QI-ALPHA-KAUFSEITE (Christian 28.10.2026 Z13: „Wir brauchen
+ * für die G-Alpha-Produktseite oben einen eigenen Kopf … das muss sich
+ * anfühlen, wie als wären wir auf einer anderen Seite“, „links oben in der
+ * Ecke … rechts einfach nur Nutzerkonto und Warnknopf. Und sonst überhaupt
+ * kein Dropdown-Menü … von dieser Produktseite kommt man nirgendwo anders
+ * dahin. Außer in den Warenkorb“; Z17 „kein footer mehr“. Grossjob
+ * 20261028-qi-alpha-kopf-99-registered-hochgestellt-ohne-bewertungen-chat-
+ * ratenzahlung, s04).
+ *
+ * Ein schmaler schwarzer Streifen wie die Kaufleiste der Landingpage
+ * /pages/Qi-Alpha (the-alpha-premium.css .tap-leiste): links die Wortmarke
+ * „Qi Alpha®“ mit kleinem ®, rechts dieselben Bausteine Konto und Warenkorb
+ * wie im Hauskopf. Der Warenkorb öffnet die Schublade und meldet cart_viewed
+ * wie bisher (CartBadge), es geht kein Tracking-Baustein verloren. Kein
+ * Ankündigungsband, kein Menü, kein Shop-Wechsel, kein Fuß (PageLayout).
+ * Stil: app/styles/qi-alpha-funnel-kopf.css. Rückweg: hb-deploy revert des
+ * s04-Merges; ohne Treffer in istQiAlphaFunnelPfad rendert der Hauskopf.
+ */
+const QI_ALPHA_FUNNEL_PFAD = '/products/qi-alpha';
+
+/**
+ * Nur die Kaufseite selbst, auch mit Schrägstrich am Ende, anderer
+ * Schreibweise (der Loader leitet sie per 301 um) oder /en davor. Die
+ * B-Fassung und die Zusatzprodukte (Wunschnummer, Kette) behalten den
+ * Hauskopf.
+ * @param {string} pathname
+ */
+export function istQiAlphaFunnelPfad(pathname) {
+  return /^(\/en)?\/products\/qi-alpha\/?$/i.test(String(pathname || ''));
+}
+
+/**
+ * @param {Pick<HeaderProps, 'cart' | 'isLoggedIn'>}
+ */
+export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
+  // Kopfhöhe für Sprungziele (scroll-margin-top), wie im Hauskopf.
+  useKopfHoeheVariable();
+  const {pathname} = useLocation();
+  const nachOben = useCallback(
+    (e) => {
+      // Die Marke führt auf die Seite selbst: dort angekommen, nach oben.
+      if (!istQiAlphaFunnelPfad(pathname)) return;
+      e.preventDefault();
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    },
+    [pathname],
+  );
+
+  return (
+    <header className="qfk" data-qa-funnel-kopf="">
+      <div className="qfk-innen">
+        <Link
+          className="qfk-marke"
+          to={QI_ALPHA_FUNNEL_PFAD}
+          prefetch="none"
+          onClick={nachOben}
+        >
+          <MarkeR text="Qi Alpha®" />
+        </Link>
+        <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
+          <AccountToggle isLoggedIn={isLoggedIn} />
+          <CartToggle cart={cart} />
+        </nav>
       </div>
     </header>
   );

@@ -94,6 +94,11 @@ import kakaoKaufseiteStyles from '~/styles/kakao-kaufseite.css?url';
 // Leiste aus root.jsx heraus auf / UND /pages/start-b (beide Arme von
 // start-e1-gs081) erscheint; ein Route-eigenes links() deckte nur einen Arm.
 import kassenRueckkehrLeisteStyles from '~/styles/kassen-rueckkehr-leiste.css?url';
+// Eigener Kopf der Qi-Alpha-Kaufseite (Christian 28.10.2026 Z13, Grossjob
+// 20261028-qi-alpha-kopf-99-…, s04): global wie die Kassen-Rückkehr-Leiste,
+// weil das Layout ihn rendert, nicht die Route. Wirkt ausschließlich auf .qfk
+// und main[data-qa-funnel]; jede andere Seite sieht davon nichts.
+import qiAlphaFunnelKopfStyles from '~/styles/qi-alpha-funnel-kopf.css?url';
 // Cookie-Hinweis als kompakter Dialog statt Vorhang (Christian 22.08.2026,
 // repair-Fall 609089): global, weil Cookiebot den Hinweis auf jeder Seite
 // einblendet. Wirkt ausschließlich auf #cookiebanner — Begründung, Maße und
@@ -675,6 +680,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={euGewaehrleistungStyles}></link>
         <link rel="stylesheet" href={kakaoKaufseiteStyles}></link>
         <link rel="stylesheet" href={kassenRueckkehrLeisteStyles}></link>
+        <link rel="stylesheet" href={qiAlphaFunnelKopfStyles}></link>
         <link rel="stylesheet" href={consentDialogStyles}></link>
         {einwilligungEigen && (
           <link rel="stylesheet" href={einwilligungStyles}></link>
