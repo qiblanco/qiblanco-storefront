@@ -6,6 +6,9 @@ import {KOPF} from '~/components/campaign/the-alpha-shop-daten';
 import shopStyles from '~/styles/the-alpha-produkt.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
+// Fenster der geteilten Zahlung (Grossjob 20261027-qi-alpha-geteilte-
+// zahlung-10000-raten-rest-sofort, s03): eigene Datei, Portal an <body>.
+import teilzahlungStyles from '~/styles/qi-alpha-teilzahlung.css?url';
 import {TheAlphaWissen} from '~/components/the-alpha-shop/TheAlphaWissen';
 import {TheAlphaFaq} from '~/components/campaign/TheAlphaFaq';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
@@ -107,6 +110,7 @@ export function links() {
     {rel: 'stylesheet', href: shopStyles},
     {rel: 'stylesheet', href: wissenStyles},
     {rel: 'stylesheet', href: faqStyles},
+    {rel: 'stylesheet', href: teilzahlungStyles},
   ];
 }
 

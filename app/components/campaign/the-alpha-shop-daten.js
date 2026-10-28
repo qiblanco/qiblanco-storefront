@@ -187,27 +187,56 @@ export const BEZAHLUNG = {
     name: 'Direkt bezahlen',
     text: 'PayPal, Klarna, Karte oder Überweisung',
   },
+  // Markt ohne geteilte Zahlung (CHF, USD): nur die direkte Zahlung.
+  unterDirekt: 'Zahle sicher an der Kasse.',
   raten: {
-    name: 'In Raten zahlen',
+    // Christian 27.10.2026 Z13: „Und das Feld könnte ja Ratenzahlung heißen,
+    // zahle 10.000 Euro der Gesamtsumme in Raten zum Beispiel.“
+    name: 'Ratenzahlung',
+    text: 'Zahle 10.000\u00a0€ der Gesamtsumme in Raten',
+    // Summe bis 10.000 € (heute baulich nicht erreichbar): normaler Ratenweg.
+    textGanz: 'PayPal oder Klarna, direkt an der Kasse',
   },
 };
 
 /*
- * RATEN (Christian 25.10.2026, Ratenzahlungs-Job und Folgejob): PayPal
- * Ratenzahlung und Klarna Finanzierung gehen bis 10.000 €. Für den Qi Alpha
- * gibt es deshalb einen persönlichen Ratencode, Endpreis glatt 9.999 €, nicht
- * mit Wunschnummer oder Goldkette. Anna stellt ihn im Chat aus
- * (qi-salesbot/config/ratencode-anna.conf RATENCODE_ANNA=an).
+ * GETEILTE ZAHLUNG (Christian 27.10.2026 Z1–Z4; Grossjob 20261027-qi-alpha-
+ * geteilte-zahlung-10000-raten-rest-sofort, s03). PayPal Ratenzahlung und
+ * Klarna Finanzierung gehen bis 10.000 €. Liegt die Konfiguration darüber,
+ * zahlt der Kunde 10.000 € in Raten (Schritt 1, eigener Checkout) und den
+ * Rest sofort (Schritt 2, Link per E-Mail nach der Genehmigung). Der
+ * Ratencode 9.999 € mit „Code von Anna“ ist damit am Qi Alpha weg; Wunsch-
+ * nummer und Goldkette gehen jetzt auch mit Ratenzahlung.
+ * Beträge rechnet lib/qi-alpha-teilzahlung.js aus derselben Summe wie die
+ * Zusammenfassung; hier stehen nur Wörter.
  */
-export const RATEN = {
-  ratenpreis: 9999,
-  grenze: 10000,
-  // Geschütztes Leerzeichen: „9.999 €“ bricht nicht um (Challenger s04).
-  text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999\u00a0€',
-  code: 'Deinen Ratencode bekommst du von Anna, unten rechts im Chat.',
-  mitExtras:
-    'Den Qi Alpha® ohne Wunschnummer und mit der Kette aus Chirurgenstahl kannst du auch in Raten zahlen.',
-  extrasAbwaehlen: 'Wunschnummer und Goldkette abwählen',
+export const TEILZAHLUNG_TEXT = {
+  hinweis: (sofort, raten) =>
+    `Zahle jetzt sofort ${sofort} und ${raten} bequem in Raten.`,
+  sofort: 'Zahle jetzt sofort',
+  raten: 'Bequem in Raten',
+  ablauf: 'So läuft die Ratenzahlung',
+  weiter: 'Weiter zur Ratenzahlung',
+  fenster: {
+    titel: 'In zwei Schritten zu deinem Qi Alpha®.',
+    gesamt: 'Gesamt',
+    schritte: [
+      {
+        marke: 'Schritt 1 von 2',
+        titel: (raten) => `${raten} in Raten`,
+        text: 'PayPal oder Klarna prüft deinen Antrag und genehmigt ihn. Ratenzahlung geht bis 10.000\u00a0€.',
+      },
+      {
+        marke: 'Schritt 2 von 2',
+        titel: (sofort) => `${sofort} sofort`,
+        text: 'Direkt nach der Genehmigung kommt dein Zahlungslink per E-Mail. Er gilt 14 Tage.',
+      },
+    ],
+    versand: 'Dein Qi Alpha® geht auf den Weg, sobald beide Zahlungen da sind.',
+    rechnungen: 'Du bekommst zwei Rechnungen mit einer Vorgangsnummer.',
+    knopf: (raten) => `Schritt 1: ${raten} in Raten beantragen`,
+    fensterZu: 'Fenster schließen',
+  },
 };
 
 export const ZUSAMMENFASSUNG = {

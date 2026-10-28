@@ -1,0 +1,165 @@
+/*
+ * GETEILTE ZAHLUNG AM QI ALPHA (Christian 27.10.2026 Z1–Z4; Grossjob
+ * 20261027-qi-alpha-geteilte-zahlung-10000-raten-rest-sofort, Segment s03).
+ * „Ratenzahlung nur bis 10.000 Euro … und der Restbetrag als Einmal-
+ * Sofortzahlung … erst wenn beides bezahlt ist, wird die Ware versendet.“
+ *
+ * WEG (KONZEPT.md des Grossjobs, Abschnitt 3): zwei verknüpfte Bestellungen.
+ * Teil 1 ist ein verstecktes Shopify-Produkt „Qi Alpha – Ratenanteil“ über
+ * genau 10.000 € ohne Versand, bezahlt in einem eigenen Checkout mit PayPal
+ * oder Klarna. Den Rest-Link mit der Ware schickt der Server-Wächter
+ * (shared-state/qi-alpha-teilzahlung) erst, wenn Bestellung 1 da ist.
+ *
+ * VERTRAG: die Konstanten unten sind die aus qi-alpha-teilzahlung/config/
+ * vertrag.json. Die Naht-Probe in test/qi-alpha-teilzahlung.test.mjs liest
+ * die Datei und hält beide Seiten gleich; wer eine Zahl hier ändert, ändert
+ * sie dort im selben Schritt.
+ *
+ * TRACKING (Auftrag Punkt 5): Schritt 1 sendet am Storefront KEIN
+ * AddToCart und kein InitiateCheckout. Der Knopf ist ein Link auf den
+ * Permalink; der Warenkorb entsteht auf dem Server, der Kunde geht direkt in
+ * die Kasse (kein Cart-Event, kein CartSummary). Gezählt wird der Kauf dort,
+ * wo das Geld fließt: Bestellung 1 (10.000 €) und Bestellung 2 (Rest nach
+ * Anrechnung) ergeben zusammen genau den Preis der Konfiguration, also kein
+ * doppelter Qi-Alpha-Umsatz. Ein AddToCart über 10.000 € für einen Artikel
+ * ohne Ware hätte Meta dagegen einen zweiten Qi-Alpha-Warenkorb gemeldet.
+ * Herkunfts- und Tracking-Merkmale des Permalinks bleiben unverändert.
+ *
+ * Reine Regeln ohne Netz und ohne React: gelesen von der Kaufseite
+ * (TheAlphaShop.jsx) und vom Warenkorb-Permalink (routes/cart.$lines.jsx).
+ */
+
+export const TEILZAHLUNG = {
+  // Shopify-Variante „qi-alpha-ratenanteil“ (angelegt 2026-10-28, s06).
+  variante: '66048336396556',
+  // Ratenobergrenze von PayPal Ratenzahlung und Klarna Finanzierung in DE.
+  betrag: 10000,
+  waehrung: 'EUR',
+  // Nur hier trägt der Katalog den Ratenanteil (CH/International entfernt).
+  maerkte: ['DE', 'AT'],
+  merkmale: {vorgang: '_qa_vorgang', konfig: '_qa_konfig'},
+};
+
+/** Bietet dieser Markt die geteilte Zahlung an? */
+export function ratenMarkt({waehrung, land}) {
+  return (
+    waehrung === TEILZAHLUNG.waehrung && TEILZAHLUNG.maerkte.includes(land)
+  );
+}
+
+/**
+ * Die Live-Aufteilung zur gewählten Konfiguration. null heißt: keine
+ * Aufteilung (Markt ohne Ratenanteil oder Summe bis 10.000 €, dort trägt der
+ * normale Ratenweg an der Kasse). Gerechnet wird auf den Cent.
+ */
+export function aufteilung({summe, waehrung, land}) {
+  const gesamt = Number(summe);
+  if (!Number.isFinite(gesamt) || !ratenMarkt({waehrung, land})) return null;
+  const cent = Math.round(gesamt * 100);
+  const ratenCent = TEILZAHLUNG.betrag * 100;
+  if (cent <= ratenCent) return null;
+  return {
+    gesamt: cent / 100,
+    raten: TEILZAHLUNG.betrag,
+    sofort: (cent - ratenCent) / 100,
+  };
+}
+
+/** „gid://shopify/ProductVariant/123“ oder „123“ -> „123“, sonst „-“. */
+function varianteNr(id) {
+  const nr = String(id ?? '').split('/').pop();
+  return /^\d{1,20}$/.test(nr) ? nr : '-';
+}
+
+const CODE_RX = /^[\w-]{1,40}$/;
+
+/** Das Merkmal _qa_konfig im Format des Vertrags (konfig_format). */
+export function konfigText({qiAlpha, nummer, kette, partner = null}) {
+  const p = partner && CODE_RX.test(partner) ? partner : '-';
+  return [
+    `qi-alpha=${varianteNr(qiAlpha)}`,
+    `nummer=${varianteNr(nummer)}`,
+    `kette=${varianteNr(kette)}`,
+    `partner=${p}`,
+  ].join(';');
+}
+
+const KONFIG_RX =
+  /^qi-alpha=\d{1,20};nummer=(?:\d{1,20}|-);kette=(?:\d{1,20}|-);partner=(?:[\w-]{1,40}|-)$/;
+const VORGANG_RX = /^[A-Za-z0-9_-]{1,40}$/;
+
+/** Eine Vorgangskennung für _qa_vorgang: Zeit plus vier Zufallszeichen. */
+export function vorgangsKennung(zufall = Math.random, jetzt = Date.now()) {
+  const z = Math.floor(zufall() * 36 ** 4)
+    .toString(36)
+    .padStart(4, '0')
+    .slice(-4);
+  return `qa-${Math.floor(jetzt).toString(36)}-${z}`;
+}
+
+/** Adresse des Schritt-1-Checkouts: nur der Ratenanteil, Menge 1. */
+export function teil1Link({vorgang, konfig}) {
+  const q = new URLSearchParams();
+  if (vorgang) q.set(TEILZAHLUNG.merkmale.vorgang, vorgang);
+  if (konfig) q.set(TEILZAHLUNG.merkmale.konfig, konfig);
+  const such = q.toString();
+  return `/cart/${TEILZAHLUNG.variante}:1${such ? `?${such}` : ''}`;
+}
+
+/**
+ * Warenkorb-Merkmale aus der Adresse des Permalinks. Angenommen werden NUR
+ * die zwei Schlüssel des Vertrags und nur in ihrer Form; alles andere fällt
+ * weg, nichts wird gekürzt oder repariert. Herkunfts- und Tracking-Merkmale
+ * kommen nie über diesen Weg (die setzt cart-attribution.server.js).
+ *
+ * `sitzungsCodes`: Rabattcodes des Warenkorbs, den der Kunde schon hat (sein
+ * Partnercode). Steht in _qa_konfig `partner=-`, setzt der erste brauchbare
+ * Code dort ein; ob er sich mit der Anrechnung verträgt, prüft der Wächter.
+ */
+export function merkmaleAusQuery(searchParams, {sitzungsCodes = []} = {}) {
+  const out = [];
+  const vorgang = searchParams.get(TEILZAHLUNG.merkmale.vorgang);
+  if (vorgang && VORGANG_RX.test(vorgang)) {
+    out.push({key: TEILZAHLUNG.merkmale.vorgang, value: vorgang});
+  }
+  let konfig = searchParams.get(TEILZAHLUNG.merkmale.konfig);
+  if (konfig && konfig.length <= 200 && KONFIG_RX.test(konfig)) {
+    if (konfig.endsWith(';partner=-')) {
+      const code = sitzungsCodes.find(
+        (c) => CODE_RX.test(String(c)) && !/^QA-REST-/i.test(String(c)),
+      );
+      if (code) konfig = `${konfig.slice(0, -1)}${code}`;
+    }
+    out.push({key: TEILZAHLUNG.merkmale.konfig, value: konfig});
+  }
+  return out;
+}
+
+/**
+ * Darf dieser Permalink einen Warenkorb anlegen? Trägt er den Ratenanteil,
+ * nur im Markt DE/AT: der Storefront-Warenkorb nimmt die Zeile in CH/US
+ * sonst trotzdem an (s06 gemessen: 9.409 CHF / 9.538 USD ohne Fehler), und
+ * der Ratenanteil wäre dort kein 10.000-€-Teil mehr.
+ */
+export function teil1Erlaubt({varianten, land}) {
+  const mitAnteil = varianten.some(
+    (v) => String(v).split('/').pop() === TEILZAHLUNG.variante,
+  );
+  return !mitAnteil || TEILZAHLUNG.maerkte.includes(land);
+}
+
+/**
+ * `?discount=` als Komma-Liste: der Restzahlungs-Link des Wächters trägt den
+ * Anrechnungscode und, wenn kombinierbar, den Partnercode. Ein einzelner
+ * Code bleibt ein Code (bisheriges Verhalten). Höchstens fünf.
+ */
+export function rabattcodesAusQuery(searchParams) {
+  const roh = searchParams.get('discount') || '';
+  const codes = [];
+  for (const teil of roh.split(',')) {
+    const c = teil.trim();
+    if (c && !codes.includes(c)) codes.push(c);
+    if (codes.length === 5) break;
+  }
+  return codes;
+}

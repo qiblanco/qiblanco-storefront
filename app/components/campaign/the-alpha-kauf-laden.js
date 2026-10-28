@@ -11,7 +11,7 @@
  * QM_ADDONS_QUERY gesetzt.
  */
 import {THE_ALPHA_SERIE, THE_ALPHA_VERGEBEN} from './the-alpha-daten-serie-vergeben.js';
-import {KETTE_STAHL, KETTE_LAENGEN, RATEN} from './the-alpha-shop-daten.js';
+import {KETTE_STAHL, KETTE_LAENGEN} from './the-alpha-shop-daten.js';
 
 /**
  * Nummer aus einem Variantentitel „Alpha 19/100“, „Alpha 105/111“ bzw. seit
@@ -68,15 +68,13 @@ export function gravurText(nummer, serie = THE_ALPHA_SERIE) {
   return `${nummer ?? 'xx'}/${serie} - 1st. Edition`;
 }
 
-/**
- * Raten: PayPal und Klarna finanzieren bis 10.000 € (qi-salesbot/config/
- * ratenzahlung-code.json). Der Ratenpreis 9.999 € gilt nur für den Qi Alpha
- * allein (Christian 25.10., Z53/Z55). Mit Wunschnummer oder Goldkette liegt
- * der Betrag über der Grenze, und der Ratencode greift nicht.
+/*
+ * Raten: bis 2026-10-28 stand hier ratenMoeglich() für den Ratencode 9.999 €
+ * (nur ohne Wunschnummer und Goldkette). Seit der geteilten Zahlung (Grossjob
+ * 20261027-qi-alpha-geteilte-zahlung-10000-raten-rest-sofort, s03) geht
+ * Ratenzahlung mit jeder Konfiguration; die Regeln stehen in
+ * lib/qi-alpha-teilzahlung.js.
  */
-export function ratenMoeglich({nummer, kette}) {
-  return !nummer && (!kette || kette.art === 'stahl');
-}
 
 /** Ganzer Betrag ohne Nachkommastellen, echte Cents bleiben. */
 export function betragText(wert, waehrung = 'EUR') {
@@ -91,4 +89,3 @@ export function betragText(wert, waehrung = 'EUR') {
   }).format(zahl);
 }
 
-export {RATEN};

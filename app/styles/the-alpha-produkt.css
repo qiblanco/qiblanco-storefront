@@ -20,7 +20,7 @@
  * und die erste Option ohne Scrollen. Das schwarze Band mit dem 360-Grad-Loop
  * ist die Bühne der linken Spalte (Desktop) bzw. steht am Handy nach der
  * ersten Option. Der Kopf rückt eng in der Gruppe, weit zwischen den Gruppen:
- * Name · Claim · Edition (8) | Punkte und Preisanker (24 Desktop, 16 Handy) |
+ * Name · Claim · Edition (8) | Punkte und Preis (24 Desktop, 16 Handy) |
  * Herkunft (8) | erste Option (32: Desktop Rand, Handy Rasterabstand).
  */
 .tas-seite {
@@ -349,64 +349,11 @@
   color: var(--tas-grau);
 }
 
-/* PREISANKER-DREIZEILER (Kanon preisanker-und-videokante.md): Bewertung →
-   Nutzerzahl → Preis, eine Farbe (Tinte) und eine Stärke (600) für die drei
-   Zahlen, nur die Größe staffelt 17 / 28 / 32 (Nutzerzahl 0,875 des Preises,
-   Probe-Untergrenze 0,8). Die Sterne bleiben gelb (Hausfarbe aus app.css).
-   „Google Bewertungen“ ist der eine Link: feine gedämpfte Linie dauerhaft,
-   Hover wechselt nur die Farbe, nichts poppt (Kanon Regel 4). */
-.tas-produkt .tas-anker {
+/* PREIS im Kopf, allein: der Qi Alpha wird erst vorgestellt, es gibt noch
+   keine Bewertung und keine Nutzerzahl (Christian 28.10. Z1/Z2, Shop-Regel
+   S5_launch_ohne_bewertung). Größe und Stärke wie bisher die Preiszeile. */
+.tas-produkt .tas-preiszeile {
   margin-top: var(--tas-s-2);
-}
-
-.tas-anker .qb-preisanker__bewertungszeile {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--tas-s-1);
-  font-size: var(--tas-fs-3);
-  line-height: 1.5;
-}
-
-.tas-anker .qb-preisanker__bewertung {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--tas-s-1);
-  font-weight: 600;
-  color: var(--tas-tinte);
-}
-
-.tas-anker .qb-preisanker__quelle {
-  color: var(--tas-tinte);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--tas-linie);
-  transition:
-    color var(--tas-dauer),
-    text-decoration-color var(--tas-dauer);
-}
-
-.tas-anker .qb-preisanker__quelle:hover,
-.tas-anker .qb-preisanker__quelle:focus-visible {
-  color: var(--tas-grau);
-  text-decoration-color: currentColor;
-}
-
-.tas-anker .qb-preisanker__quelle:focus-visible {
-  outline: 2px solid var(--tas-tinte);
-  outline-offset: 2px;
-}
-
-.tas-anker .qb-preisanker__nutzer {
-  margin-top: var(--tas-s-1);
-  font-size: var(--tas-fs-5);
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-.tas-anker .qb-preisanker__preiszeile {
-  margin-top: var(--tas-s-1);
   font-size: var(--tas-fs-preis);
   font-weight: 600;
   line-height: 1.2;
@@ -864,7 +811,7 @@
     margin-top: var(--tas-s-4);
   }
   .tas-produkt .tas-punkte,
-  .tas-produkt .tas-anker {
+  .tas-produkt .tas-preiszeile {
     margin-top: var(--tas-s-3);
   }
   /* Bühne quadratisch wie das Bildfeld: der Wechsel Loop ↔ Rendering
