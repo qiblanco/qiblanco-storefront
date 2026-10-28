@@ -24,6 +24,7 @@ import {
   versandhinweisFürLinien,
   vorbestellungFürHandle,
   warenkorbTitel,
+  warenkorbUnterzeile,
 } from '../app/lib/vorbestellung.js';
 
 const wurzel = new URL('../', import.meta.url);
@@ -40,8 +41,10 @@ const QI_ALPHA = linie('qi-alpha', 'Qi Alpha');
 const ANDERES = linie('qione-2-pro', 'QiOne® 2 Pro');
 
 test('Warenkorbzeile der Vorbestellung trägt Christians Wortlaut (Name seit 17.10.: Qi Alpha)', () => {
-  assert.equal(warenkorbTitel(QI_ALPHA), 'Qi Alpha - Vorbestellung Jan 2027');
-  assert.equal(warenkorbTitel(QI_MASTER), 'Qi Alpha - Vorbestellung Jan 2027');
+  assert.equal(warenkorbTitel(QI_ALPHA), 'Qi Alpha®');
+  assert.equal(warenkorbTitel(QI_MASTER), 'Qi Alpha®');
+  assert.equal(warenkorbUnterzeile(QI_ALPHA), 'Vorbestellung · Versand Jan 2027');
+  assert.equal(warenkorbUnterzeile(ANDERES), null);
   assert.equal(versandhinweisFürLinien([QI_ALPHA]), 'Versandbereit für Dich: Jan 2027');
 });
 
@@ -100,4 +103,58 @@ test('NAHT: beide Komponenten lesen die SSoT und halten keinen eigenen Text', ()
     !summe.includes(STANDARD_VERSANDHINWEIS),
     'CartSummary hält den Standard-Lieferhinweis noch selbst',
   );
+});
+
+// Warenkorb der Qi-Alpha-Konfiguration wie die Kasse (Christian 27.10.2026,
+// Job 20261027-qi-alpha-immer-mit-registered-zeichen): „Qi Alpha immer mit R“,
+// Nummer als „Qi Alpha® 19/111“, Kette mit Länge darunter.
+const addons = await import('../app/lib/qi-master-addons.js');
+const addonLinie = (handle, titel, optionen = [], produktTitel = 'P') => ({
+  merchandise: {
+    title: titel,
+    product: {handle, title: produktTitel},
+    selectedOptions: optionen,
+  },
+});
+
+test('Nummer in allen drei Schreibweisen wird „N/111“', () => {
+  for (const t of ['Alpha 19/100', 'Alpha 19/111', '19/111']) {
+    assert.equal(addons.nummerKurz(t), '19/111', t);
+  }
+  assert.equal(addons.nummerKurz('60 cm'), null);
+});
+
+test('Nummern-Zeile heißt „Qi Alpha® 19/111“, ohne Unterzeile', () => {
+  for (const t of ['Alpha 19/111', '19/111']) {
+    const z = addons.addonZeile(
+      addonLinie('qi-alpha-wunschnummer', t, [{name: 'Nummer', value: t}], 'Qi Alpha®'),
+    );
+    assert.deepEqual(z, {titel: 'Qi Alpha® 19/111', unterzeilen: []});
+  }
+});
+
+test('Kette: Produkttitel, darunter nur die Länge', () => {
+  const z = addons.addonZeile(
+    addonLinie('qi-alpha-goldkette', '60 cm', [{name: 'Länge', value: '60 cm'}],
+      'Qi Blanco® Goldkette - 750iger ethisches Vollgold'),
+  );
+  assert.deepEqual(z, {
+    titel: 'Qi Blanco® Goldkette - 750iger ethisches Vollgold',
+    unterzeilen: ['60 cm'],
+  });
+});
+
+test('Hauptprodukt und Fremdes sind keine Add-on-Zeile', () => {
+  assert.equal(addons.addonZeile(addonLinie('qi-alpha', 'Default Title')), null);
+  assert.equal(addons.addonZeile(addonLinie('qione-2-pro', 'Default Title')), null);
+  assert.equal(addons.addonZeile({}), null);
+});
+
+test('CartLineItem: Titel aus addonZeile, zweite Zeile klein darunter statt „Name: Wert“', () => {
+  const src = lies('app/components/CartLineItem.jsx');
+  assert.match(src, /<strong>\{addon\?\.titel \|\| warenkorbTitel\(line\)\}<\/strong>/);
+  assert.match(src, /\(unterzeilen \?\? \[\]\)\.map\(\(zeile\) => \([\s\S]*?<br \/>[\s\S]*?<small>\{zeile\}<\/small>/);
+  assert.match(src, /\(unterzeilen \? \[\] : selectedOptions\)\.map/);
+  // der Wortlaut steht in den libs, nicht in der Komponente
+  assert.doesNotMatch(src, /Vorbestellung · Versand|Qi Alpha®/);
 });

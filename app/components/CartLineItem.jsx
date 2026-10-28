@@ -1,12 +1,13 @@
+import {Fragment} from 'react';
 import {CartForm, Image} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
-import {warenkorbTitel} from '~/lib/vorbestellung';
+import {warenkorbTitel, warenkorbUnterzeile} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
-import {addonArt} from '~/lib/qi-master-addons';
+import {addonArt, addonZeile} from '~/lib/qi-master-addons';
 import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 /**
  * A single line item in the cart. It displays the product image, title, price.
@@ -29,6 +30,13 @@ export function CartLineItem({layout, line}) {
   // Cent-genau statt Ganz-Euro-Rundung (aiceo:digest54:p3, Option c,
   // 2026-09-10): der Warenkorb zeigte 53,- bei 53,21 Kassenbelastung.
   const displayPrice = getCartLinePriceDisplayExact(line, marktLand);
+  // Qi Alpha und seine Add-ons stehen wie in der Kasse: Name, darunter klein
+  // die zweite Zeile (Vorbestellung bzw. Kettenlänge), die Nummer in einer
+  // Zeile mit dem Namen (Christian 27.10.2026; Wortlaut in den libs).
+  const addon = addonZeile(line);
+  const vorbestellungZeile = warenkorbUnterzeile(line);
+  const unterzeilen =
+    addon?.unterzeilen ?? (vorbestellungZeile ? [vorbestellungZeile] : null);
 
   return (
     <li
@@ -62,7 +70,13 @@ export function CartLineItem({layout, line}) {
                 alles andere den Produkttitel. Quelle ist ~/lib/vorbestellung —
                 dieselbe, aus der CartSummary den Lieferhinweis zieht; der
                 Wortlaut steht dort und bewusst nicht hier. */}
-            <strong>{warenkorbTitel(line)}</strong>
+            <strong>{addon?.titel || warenkorbTitel(line)}</strong>
+            {(unterzeilen ?? []).map((zeile) => (
+              <Fragment key={zeile}>
+                <br />
+                <small>{zeile}</small>
+              </Fragment>
+            ))}
           </p>
         </Link>
         {/* Nie "0 €" (Register F-056): eine Zeile, die der Server noch nicht
@@ -80,7 +94,7 @@ export function CartLineItem({layout, line}) {
           </div>
         )}
         <ul>
-          {selectedOptions.map((option) =>
+          {(unterzeilen ? [] : selectedOptions).map((option) =>
             option.value !== 'Default Title' ? (
               <li key={option.name}>
                 <small>

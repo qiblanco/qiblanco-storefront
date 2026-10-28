@@ -125,6 +125,51 @@ export function nummerAnzeige(titel) {
   );
 }
 
+/*
+ * NAME AN DER KASSE (Christian 27.10.2026, Job 20261027-qi-alpha-immer-mit-
+ * registered-zeichen): „Qi Alpha immer mit R“, die Nummern-Position heißt
+ * genau „Qi Alpha® 19/111“, die Kette „Qi Blanco® Goldkette - 750iger
+ * ethisches Vollgold“ mit der Länge darunter. Die Shopify-Varianten der Nummer
+ * heißen seit 28.10. „N/111“ (vorher „Alpha N/111“, davor „Alpha N/100“);
+ * jeder Leser hier versteht alle drei Schreibweisen.
+ */
+export const QI_ALPHA_NAME = 'Qi Alpha®';
+
+/** „Alpha 19/100“, „Alpha 19/111“, „19/111“ -> „19/111“; sonst null. */
+export function nummerKurz(titel) {
+  const m = /^(?:Alpha\s*)?(\d{1,3})\s*\/\s*(100|111)$/.exec(
+    String(titel ?? '').trim(),
+  );
+  return m ? `${Number(m[1])}/111` : null;
+}
+
+/**
+ * Anzeige einer Add-on-Zeile im Warenkorb: Titel und Unterzeilen (nur die
+ * Werte, ohne „Name:“), genau wie Shopify sie in der Kasse untereinander
+ * setzt. Die Nummer steht in einer Zeile mit dem Namen: „Qi Alpha® 19/111“.
+ * null = keine Add-on-Zeile.
+ */
+export function addonZeile(line) {
+  const merchandise = line?.merchandise;
+  const art = addonArt(merchandise?.product?.handle);
+  if (!art) return null;
+  if (art === 'wunschnummer') {
+    const nummer = nummerKurz(merchandise?.title);
+    return {
+      titel: nummer
+        ? `${QI_ALPHA_NAME} ${nummer}`
+        : merchandise?.product?.title || QI_ALPHA_NAME,
+      unterzeilen: [],
+    };
+  }
+  return {
+    titel: merchandise?.product?.title || '',
+    unterzeilen: (merchandise?.selectedOptions ?? [])
+      .map((o) => o?.value)
+      .filter((v) => v && v !== 'Default Title'),
+  };
+}
+
 /** Welches Add-on ist dieser Handle? null = keines. */
 export function addonArt(handle) {
   if (handle === QM_ADDON.wunschnummer || handle === QM_ADDON_ALT.wunschnummer)

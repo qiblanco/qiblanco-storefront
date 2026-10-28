@@ -35,8 +35,16 @@ export const STANDARD_VERSANDHINWEIS = 'In 2 bis 3 Tagen bei dir!';
 // nun Qi Alpha"). Beide Handles tragen denselben Eintrag, weil der Shopify-
 // Handle erst in s09 des Umbenennungs-Grossjobs wechselt und Warenkörbe von
 // vorher den alten behalten.
+//
+// Seit 2026-10-28 (Christian 27.10.: „Qi Alpha immer mit R“ und „dass z.b.
+// Vorbestellung Jan 2027 eine eigene Zeile bekommt“; Job 20261027-qi-alpha-
+// immer-mit-registered-zeichen): der Name steht allein, die Vorbestellung in
+// einer eigenen, kleineren zweiten Zeile. Derselbe Wortlaut steht in Shopify
+// als Variante des Qi Alpha, damit Kasse, Bestellbestätigung und Rechnung die
+// zweite Zeile genauso zeigen.
 const QI_ALPHA_VORBESTELLUNG = {
-  warenkorbTitel: 'Qi Alpha - Vorbestellung Jan 2027',
+  warenkorbTitel: 'Qi Alpha®',
+  unterzeile: 'Vorbestellung · Versand Jan 2027',
   versandhinweis: 'Versandbereit für Dich: Jan 2027',
 };
 export const VORBESTELLUNGEN = {
@@ -62,6 +70,14 @@ export function vorbestellungFürLinie(line) {
 export function warenkorbTitel(line) {
   const eintrag = vorbestellungFürLinie(line);
   return eintrag?.warenkorbTitel || line?.merchandise?.product?.title || '';
+}
+
+/**
+ * Die zweite Zeile unter dem Titel (kleiner, dezent), sonst null. Sie ersetzt
+ * für diese Zeile die Liste „Name: Wert“ der Varianten-Optionen.
+ */
+export function warenkorbUnterzeile(line) {
+  return vorbestellungFürLinie(line)?.unterzeile || null;
 }
 
 /**
