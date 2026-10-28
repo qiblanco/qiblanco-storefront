@@ -68,7 +68,14 @@ import {
  * data-section: die Kaufseiten sind bewusst anker-frei (Design-Rubrik-
  * Collector, siehe products.qione-2-pro.jsx).
  */
-export function KaufZusagePunkte({ruecknahmeTage = 20, preis = null, handle}) {
+export function KaufZusagePunkte({
+  ruecknahmeTage = 20,
+  preis = null,
+  handle,
+  // false = ohne den Punkt „… Google-Bewertungen, im Schnitt …“ (Alpha-Vorlage,
+  // Elina EL-20261027-c05a2273: Sterne und Nutzerzahl stehen dort im Kopf).
+  bewertungen = true,
+}) {
   const marktLand = useMarktLand();
   const rate =
     preis && (preis.currencyCode || 'EUR') === 'EUR'
@@ -123,6 +130,7 @@ export function KaufZusagePunkte({ruecknahmeTage = 20, preis = null, handle}) {
           <b>{rate ? `In 12 Raten à ${rate}\u00a0€ zahlen` : 'In Raten zahlen'}</b>, mit 0&nbsp;% Finanzierung mit PayPal und Klarna
         </li>
       ) : null}
+      {bewertungen ? (
       <li data-qb-kaufzusage="bewertungen">
         <SymbolStimmen />
         {/* OHNE STÄNDIGE UNTERSTREICHUNG, BEWUSST ENTGEGEN DEM HAUSSTANDARD
@@ -144,6 +152,7 @@ export function KaufZusagePunkte({ruecknahmeTage = 20, preis = null, handle}) {
         </button>
         {`, im Schnitt ${bewertung.komma} von 5 Sterne`}
       </li>
+      ) : null}
     </>
   );
 }

@@ -10,7 +10,24 @@ import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import {AlphaVorlage, kettenQuery} from '~/components/product-pages/AlphaVorlage';
+import * as ALPHA_DATEN from '~/components/product-pages/qione-2-pro-alpha-daten';
+import {QiOneBenefitList} from '~/components/product-pages/QiOneBuyBox';
+import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
+import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
+import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
+
+/*
+ * ALPHA-VORLAGE (Elina EL-20261027-c05a2273, 27.10.2026, NUR VORSCHAU — kein
+ * Livegang ohne ihr GO): der Kaufbereich oben ist die neue Produktseiten-
+ * Vorlage nach der Qi-Alpha-Kaufseite (product-pages/AlphaVorlage.jsx, Daten
+ * qione-2-pro-alpha-daten.js). Alles darunter bleibt, wie es war.
+ * RÜCKWEG: ALPHA_VORLAGE auf false = die bisherige Buy-Box, byte-gleich.
+ */
+const ALPHA_VORLAGE = true;
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
@@ -28,7 +45,17 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 export function links() {
   // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
   // nicht auf dem Landingpage-Spiegel; ihr Stylesheet lädt deshalb hier.
-  return [...qiOne2ProSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
+  return [
+    ...qiOne2ProSeiteLinks(),
+    {rel: 'stylesheet', href: kaufleisteStyles},
+    // Alpha-Stil zuerst, die Vorlage danach (sie verfeinert ihn).
+    ...(ALPHA_VORLAGE
+      ? [
+          {rel: 'stylesheet', href: produktVorlageStyles},
+          {rel: 'stylesheet', href: alphaVorlageStyles},
+        ]
+      : []),
+  ];
 }
 
 /**
@@ -78,7 +105,7 @@ export async function loader(args) {
 async function loadCriticalData({context, request}, handle) {
   const {storefront} = context;
 
-  const [{product}, vergleichsPreise] = await Promise.all([
+  const [{product}, vergleichsPreise, ketten] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle, // ✅ use the static handle
@@ -89,6 +116,9 @@ async function loadCriticalData({context, request}, handle) {
     // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
     // null = Vergleich aus, dann fragt niemand.
     ladeVergleichsPreise(storefront),
+    // Ketten-Kacheln der Alpha-Vorlage. FAIL-SOFT: scheitert die Abfrage,
+    // entfallen nur die Kacheln, der Kauf des Geräts bleibt heil.
+    ALPHA_VORLAGE ? ladeKetten(storefront) : null,
   ]);
 
   if (!product?.id) {
@@ -107,7 +137,23 @@ async function loadCriticalData({context, request}, handle) {
     // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
     // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
     ...(vergleichsPreise ? {vergleichsPreise} : {}),
+    ...(ketten ? {ketten} : {}),
   };
+}
+
+/** Stahlkette und (nur wenn eingeschaltet) Goldkette; null bei Fehler. */
+async function ladeKetten(storefront) {
+  const gold = Boolean(ALPHA_DATEN.KETTE_GOLD.sichtbar);
+  try {
+    return await storefront.query(kettenQuery({gold}), {
+      variables: {
+        stahl: ALPHA_DATEN.KETTE.handle,
+        ...(gold ? {gold: ALPHA_DATEN.KETTE_GOLD.handle} : {}),
+      },
+    });
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -124,9 +170,32 @@ function loadDeferredData({context, params}) {
  */
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, vergleichsPreise} = useLoaderData();
+  const {product, vergleichsPreise, ketten} = useLoaderData();
+  const kaufbereich = ALPHA_VORLAGE ? (
+    <AlphaVorlage
+      product={product}
+      daten={ALPHA_DATEN}
+      ketten={ketten}
+      videoKachel={<ProduktVideoKachel handle="qione-2-pro" />}
+      vertrauen={
+        /* Die bisherigen Vertrauens-Icons OHNE „444 Google-Bewertungen“,
+           die gesetzliche Gewährleistung bleibt (Elina Punkt 8). */
+        <QiOneBenefitList
+          vorPunkte={
+            <KaufZusagePunkte
+              preis={product?.selectedOrFirstAvailableVariant?.price}
+              handle={product?.handle}
+              bewertungen={false}
+            />
+          }
+          zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
+        />
+      }
+    />
+  ) : null;
   return (
     <QiOne2ProSeite
+      kaufbereich={kaufbereich}
       kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}

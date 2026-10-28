@@ -98,6 +98,7 @@ export function qiOne2ProSeiteLinks() {
  *   block?: string,
  *   ankerId?: string,
  *   anker?: {buybox?: string, gitterchip?: string, rezensionen?: string},
+ *   kaufbereich?: import('react').ReactNode,
  * }} props
  */
 export function QiOne2ProSeite({
@@ -108,6 +109,7 @@ export function QiOne2ProSeite({
   ankerId = 'product',
   anker = {},
   kaufleiste = false,
+  kaufbereich = null,
 }) {
   const lp = block === BLOCK_LP;
   // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
@@ -127,8 +129,14 @@ export function QiOne2ProSeite({
   // Buy-Box-Struktur (Bilder + Preis + Varianten + ATC + Analytics) lebt
   // geteilt in QiOneBuyBox (Query-SSoT-Bau T1). Beide Routen übergeben
   // dieselben Slots; allein `description` kommt von der Route (Beschreibung).
+  // ALPHA-VORLAGE (Elina EL-20261027-c05a2273, Vorschau): gibt die Route
+  // einen `kaufbereich` herein, steht er an der Stelle der Buy-Box; alles
+  // darunter bleibt wie es ist („der restliche Seiteninhalt unverändert“).
+  // Ohne die Prop ist die Seite byte-gleich zum Stand davor (/pages/qione-2-pro
+  // ist Arm A eines laufenden Experiments und übergibt sie nicht).
   return (
     <>
+      {kaufbereich ?? (
       <QiOneBuyBox
         /* VIDEOS IM VORSCHAUSTREIFEN (Amazon-Muster, Maßnahme „Produktseite,
            die verkauft“, Christian 26.09.2026): Zellvideo, Stimme aus dem
@@ -219,6 +227,7 @@ export function QiOne2ProSeite({
           />
         }
       />
+      )}
       {/*
         DIE INSTAGRAM-STIMMEN — WEIT OBEN, und zwar hier und nicht tiefer:
         unmittelbar nach dem Kaufblock (QiOneBuyBox trägt Bilder, Preis,

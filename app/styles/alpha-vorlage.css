@@ -1,0 +1,139 @@
+/*
+ * ALPHA-VORLAGE FÜR PRODUKTSEITEN — nur, was über den Alpha-Stil hinausgeht
+ * (Elina EL-20261027-c05a2273). Grundlage ist styles/the-alpha-produkt.css
+ * (tas-*), die jede Route mit der Vorlage davor lädt. Scope: .av-seite.
+ */
+.av-seite {
+  /* Marken-Gold (qb-tokens.css --qb-ref-gold, marke.gold) statt Qi-Alpha-Rot:
+     Elina Punkt 4 „Linien-Icons in GOLD statt Rot“. */
+  --av-gold: var(--qb-ref-gold, #c9a14b);
+  /* Die Alpha schließt mit Zusammenfassung und Box; hier folgt der übrige
+     Seiteninhalt, also kein Polster der Alpha-Hülle unten. */
+  padding-bottom: 0;
+}
+
+.av-seite .tas-zeichen {
+  color: var(--av-gold);
+}
+
+/* 3: Sterne + Nutzerzahl an der Stelle der Edition, gleiche Zeilenart. */
+.av-bewertung {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.av-bewertung-knopf {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  min-height: 24px;
+}
+.av-bewertung-knopf:hover .av-bewertung-wert,
+.av-bewertung-knopf:focus-visible .av-bewertung-wert {
+  text-decoration: underline;
+}
+.av-bewertung-knopf:focus-visible {
+  outline: 2px solid var(--tas-tinte);
+  outline-offset: 2px;
+}
+.av-sterne {
+  color: var(--av-gold);
+  letter-spacing: 0.08em;
+  font-size: 1.05em;
+}
+
+/* 6: Kettenbilder ruhen auf der Fläche wie bei der Alpha. */
+.av-kette-bild {
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+.av-kette-bild img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 7 + 8: Kaufknopf und Vertrauensliste schließen die rechte Spalte ab. */
+.av-kauf {
+  margin-top: var(--tas-s-6);
+}
+.av-kaufknopf form,
+.av-kaufknopf .btn--primary {
+  width: 100%;
+  max-width: none;
+}
+.av-kauf .BenefitList {
+  margin-top: var(--tas-s-4);
+}
+
+/* Video-Kachel (reusables/ProduktVideos.jsx) als letztes Vorschaubild. */
+.av-seite .tas-daumen > .qb-pv-kachel {
+  position: relative;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--tas-flaeche);
+}
+.av-seite .tas-daumen > .qb-pv-kachel img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.av-seite .tas-daumen > .qb-pv-kachel .qb-pv-kachel__schleier span {
+  display: none;
+}
+
+/* Am Handy eine Spalte, die nie breiter als das Fenster wird: die Reihe der
+   Vorschaubilder (Bilder + Video-Kachel) ist länger als bei der Alpha und
+   scrollt in sich, statt die Seite seitlich zu verbreitern. */
+.av-seite > .tas-raster-seite {
+  grid-template-columns: minmax(0, 1fr);
+}
+.av-seite .tas-galerie {
+  min-width: 0;
+}
+
+/* What's in the Box steht vor dem übrigen Seiteninhalt; Abstand nach unten
+   wie oben, damit die Instagram-Fläche nicht anstößt. Als Polster der
+   weißen Hülle, nicht als Außenabstand der Box: der fiele durch die Hülle
+   hindurch und stünde als fremder Grund zwischen Box und Instagram. */
+.av-seite:has(> .av-box) {
+  padding-bottom: var(--tas-s-8);
+}
+.av-seite > .tas-raster-seite {
+  padding-bottom: var(--tas-s-8);
+}
+
+@media (min-width: 1024px) {
+  .av-seite > .tas-raster-seite {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+  /* Galerie klebt, bis die rechte Spalte durch ist (Elina, „sticky wie Alpha“):
+     the-alpha-produkt.css setzt .tas-galerie-fest sticky; die Zelle der
+     Galerie reicht über die ganze Höhe des Rasters. */
+  .av-seite .tas-galerie {
+    align-self: stretch;
+  }
+}
+
+/* Zwischen Spalten-Ende und Box genau ein Abschnittsabstand (64), nicht
+   Polster des Rasters plus Außenabstand der Box. */
+.av-seite > .tas-raster-seite + .av-box {
+  margin-top: 0;
+}
