@@ -66,6 +66,16 @@
   --igt-breite: 1080px;
   --igt-kachel: 268px;
 
+  /* ── YouTube-Short in der 4:5-Bühne (Kachel --yt) ─────────────────────
+     Keine Gestaltungswerte, sondern Geometrie der Quelle:
+     maxresdefault eines Shorts ist 1280x720 mit dem Video als Streifen von
+     405 px in der Mitte; `cover` auf 4:5 zeigt 576 px davon, 576/405 = 1.4222.
+     Der Player ist 9:16 und deckt die 4:5-Bühne erst mit (16/9)/(5/4) =
+     142.22 % Höhe, mittig also 21.11 % über dem oberen Rand. */
+  --igt-yt-poster-zoom: 1.4222;
+  --igt-yt-player-hoehe: 142.22%;
+  --igt-yt-player-oben: -21.11%;
+
   font-family: inherit;
   color: var(--igt-text);
   padding: var(--igt-s8) var(--igt-s3);
@@ -245,7 +255,8 @@ span.qb-igt__flaeche {
   pointer-events: none;
 }
 
-.qb-igt__abzeichen {
+.qb-igt__abzeichen,
+.qb-igt__kachel--yt .qb-igt__zeichen > span {
   display: grid;
   place-items: center;
   width: 56px;
@@ -277,6 +288,28 @@ span.qb-igt__flaeche {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ─── Die YouTube-Kachel: dasselbe Kleid, Quelle YouTube ─────────────────
+   Die Haus-Fassade YoutubeTimestamp liefert Hülle (.qb-igt__flaeche),
+   Stapel (ihr erstes <span>) und Zeichen (.qb-igt__zeichen); hier bekommen
+   Stapel und Schichten nur, was die Instagram-Kacheln auch haben, plus den
+   Zuschnitt auf den hochkant gedrehten Bildstreifen. */
+.qb-igt__kachel--yt .qb-igt__flaeche > span {
+  border-radius: var(--igt-r2);
+  background: var(--igt-flaeche);
+}
+
+.qb-igt__kachel--yt .qb-igt__flaeche img {
+  transform: scale(var(--igt-yt-poster-zoom));
+}
+
+/* Die Fassade setzt Lage und Größe des Players inline (inset 0, 100 %);
+   der Zuschnitt muss sie deshalb mit !important übersteuern. Was oben und
+   unten übersteht (Titelzeile, Kanal-Logo), verdeckt der Rahmen. */
+.qb-igt__kachel--yt .qb-igt__flaeche iframe {
+  top: var(--igt-yt-player-oben) !important;
+  height: var(--igt-yt-player-hoehe) !important;
 }
 
 /* ─── Die Namenszeile (nur T1/T2 — T3 hat baulich keine) ─────────────────── */
