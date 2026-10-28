@@ -15,7 +15,7 @@
  * Alles hier ist rein (kein window, kein Request-Objekt): der Root-Loader ruft
  * es am Server, die Probe am Quelltext.
  */
-export const EINWILLIGUNG_MOTOR = 'cookiebot';
+export const EINWILLIGUNG_MOTOR = 'eigen';
 
 export const MOTOR_COOKIE = 'qb_einwilligung_motor';
 export const MOTOR_QUERY = 'qb_einwilligung';
